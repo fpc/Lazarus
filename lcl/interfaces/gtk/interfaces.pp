@@ -40,7 +40,7 @@ uses
   GTKInt, Forms;
 
 initialization
-  InterfaceObject:= TgtkObject.Create;
+  InterfaceObject:= TGTKWidgetSet.Create;
 
 finalization
   FreeInterfaceObject;

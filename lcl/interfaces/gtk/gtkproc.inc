@@ -3463,7 +3463,7 @@ begin
       and (func_data = Pointer(ALCLObject))
       and (((flags and bmSignalAfter)<>0)=(csfAfter in ASFlags))
       then begin
-        Assert(False, Format('Trace:WARNING: [TGTKObject.SetCallback] %s signal <%s> set twice', [ALCLObject.ClassName, ASignal]));
+        Assert(False, Format('Trace:WARNING: [ConnectSignal] %s signal <%s> set twice', [ALCLObject.ClassName, ASignal]));
         // signal is already connected
         // update the DesignSignalMask
         if (DesignSignalType <> dstUnknown)
@@ -4518,7 +4518,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  TgtkObject SetSizeNotification
+  SaveSizeNotification
   Params: Widget: PGtkWidget  A widget that is the handle of a lcl control.
 
   When the gtk sends a size signal, it is not send directly to the LCL. All gtk
@@ -4551,7 +4551,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  TgtkObject SaveClientSizeNotification
+  SaveClientSizeNotification
   Params: FixWidget: PGtkWidget  A widget that is the fixed widget
                                  of a lcl control.
 
@@ -4928,36 +4928,36 @@ var
 begin
   Result:=false;
   {$IFDEF DEBUG_CLIPBOARD}
-  writeln('[TgtkObject.WaitForClipboardAnswer] A');
+  writeln('[WaitForClipboardAnswer] A');
   {$ENDIF}
   if (ValidDateSelection) or (c^.Waiting) or (c^.Stopping) then begin
-    //writeln('[TgtkObject.WaitForClipboardAnswer] B');
+    //writeln('[WaitForClipboardAnswer] B');
     Result:=(ValidDateSelection);
     exit;
   end;
   c^.Waiting:=true;
   DateTimeToSystemTime(Time,StartTime);
-  //writeln('[TgtkObject.WaitForClipboardAnswer] C');
+  //writeln('[WaitForClipboardAnswer] C');
   Application.ProcessMessages;
-  //writeln('[TgtkObject.WaitForClipboardAnswer] D');
+  //writeln('[WaitForClipboardAnswer] D');
   if (ValidDateSelection) or (c^.Stopping) then begin
-    //writeln('[TgtkObject.WaitForClipboardAnswer] E  Yeah, Response received');
+    //writeln('[WaitForClipboardAnswer] E  Yeah, Response received');
     Result:=(ValidDateSelection);
     exit;
   end;
-  //writeln('[TgtkObject.WaitForClipboardAnswer] F');
+  //writeln('[WaitForClipboardAnswer] F');
   // start a timer to make sure not waiting forever
   Timer := gtk_timeout_add(500, @WaitForClipbrdAnswerDummyTimer, nil);
   try
     repeat
       // just wait ...
       {$IFDEF DEBUG_CLIPBOARD}
-      writeln('[TgtkObject.WaitForClipboardAnswer] G');
+      writeln('[WaitForClipboardAnswer] G');
       {$ENDIF}
       Application.HandleMessage;
       if (ValidDateSelection) or (c^.Stopping) then begin
         {$IFDEF DEBUG_CLIPBOARD}
-        writeln('[TgtkObject.WaitForClipboardAnswer] E  Yeah, Response received');
+        writeln('[WaitForClipboardAnswer] E  Yeah, Response received');
         {$ENDIF}
         Result:=(ValidDateSelection);
         exit;
@@ -4968,14 +4968,14 @@ begin
            >1000);
   finally
     {$IFDEF DEBUG_CLIPBOARD}
-    writeln('[TgtkObject.WaitForClipboardAnswer] H');
+    writeln('[WaitForClipboardAnswer] H');
     {$ENDIF}
     // stop the timer
     gtk_timeout_remove(Timer);
-//writeln('[TgtkObject.WaitForClipboardAnswer] END');
+//writeln('[WaitForClipboardAnswer] END');
   end;
   { $IFDEF DEBUG_CLIPBOARD}
-  writeln('[TgtkObject.WaitForClipboardAnswer] WARNING: no answer received in time');
+  writeln('[WaitForClipboardAnswer] WARNING: no answer received in time');
   { $ENDIF}
 end;
 
@@ -6632,6 +6632,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.265  2004/03/05 00:31:52  marc
+  * Renamed TGtkObject to TGtkWidgetSet
+
   Revision 1.264  2004/02/28 10:16:02  mattias
   fixed 1.0.x compilation
 

@@ -81,7 +81,7 @@ uses
 
 
 type
-  TgtkObject = class(TWidgetSet)
+  TGTKWidgetSet = class(TWidgetSet)
   protected
     FKeyStateList_: TList; // Keeps track of which keys are pressed
     FDeviceContexts: TDynHashArray;// hasharray of HDC
@@ -425,6 +425,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.172  2004/03/05 00:31:52  marc
+  * Renamed TGtkObject to TGtkWidgetSet
+
   Revision 1.171  2004/03/05 00:14:02  marc
   * Renamed TInterfaceBase to TWidgetSet
 

@@ -44,7 +44,7 @@ uses
   libgnome, libart, libgnomeui;
 
 type
-  TGnomeObject = class(TGtkObject)
+  TGnomeObject = class(TGtkWidgetSet)
   private
     procedure PassCmdLineOptions; override;
     Function PromptUserWidget(const DialogCaption, DialogMessage : String;
@@ -245,6 +245,9 @@ end.
 
 {
   $Log$
+  Revision 1.21  2004/03/05 00:31:52  marc
+  * Renamed TGtkObject to TGtkWidgetSet
+
   Revision 1.20  2003/10/17 03:35:16  ajgenius
   fixed compiling of gnome interface, gtk2 lpk
 

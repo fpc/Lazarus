@@ -47,7 +47,7 @@ const
   Zero degrees is at the 3'o clock position.
 
  ------------------------------------------------------------------------------}
-function TgtkObject.Arc(DC: HDC;
+function TGtkWidgetSet.Arc(DC: HDC;
   x,y,width,height,angle1,angle2 : Integer): Boolean;
 var
   DCOrigin: TPoint;
@@ -58,7 +58,7 @@ begin
   begin
     if GC = nil
     then begin
-      WriteLn('WARNING: [TgtkObject.Arc] Uninitialized GC');
+      WriteLn('WARNING: [TGtkWidgetSet.Arc] Uninitialized GC');
       Result := False;
     end
     else begin
@@ -98,7 +98,7 @@ end;
   position.
 
 ------------------------------------------------------------------------------}
-function TgtkObject.AngleChord(DC: HDC;
+function TGtkWidgetSet.AngleChord(DC: HDC;
   x,y,width,height,angle1,angle2 : Integer): Boolean;
 begin
   Result := IsValidDC(DC);
@@ -107,7 +107,7 @@ begin
   begin
     if GC = nil
     then begin
-      WriteLn('WARNING: [TgtkObject.AngleChord] Uninitialized GC');
+      WriteLn('WARNING: [TGtkWidgetSet.AngleChord] Uninitialized GC');
       Result := False;
     end
     else
@@ -121,7 +121,7 @@ end;
   Returns: 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.BeginPaint(Handle: hWnd; Var PS : TPaintStruct) : hdc;
+function TGtkWidgetSet.BeginPaint(Handle: hWnd; Var PS : TPaintStruct) : hdc;
 {$IFDEF Gtk1}
 var
   Widget: PGtkWidget;
@@ -140,7 +140,7 @@ begin
     PaintWidget:=GetFixedWidget(PGtkWidget(TWinControl(TargetObject).Handle));
     IsDoubleBuffered:=(PaintWidget=Widget);
     //if not IsDoubleBuffered then begin
-    //  writeln('TgtkObject.BeginPaint Not the paint widget: ',
+    //  writeln('TGtkWidgetSet.BeginPaint Not the paint widget: ',
     //    TWinControl(TargetObject).Name,':',TWinControl(TargetObject).ClassName,
     //    ' PaintWidget=',GetWidgetClassName(PaintWidget),
     //    ' Widget=',GetWidgetClassName(Widget));
@@ -172,7 +172,7 @@ end;
   The BitBlt function copies a bitmap from a source context into a destination
   context using the specified raster operation.
  ------------------------------------------------------------------------------}
-function TgtkObject.BitBlt(DestDC: HDC; X, Y, Width, Height: Integer;
+function TGtkWidgetSet.BitBlt(DestDC: HDC; X, Y, Width, Height: Integer;
   SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean;
 begin
   Result := StretchBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Width,
@@ -185,7 +185,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-Function TGTKObject.BringWindowToTop(hWnd : HWND): Boolean;
+Function TGtkWidgetSet.BringWindowToTop(hWnd : HWND): Boolean;
 var
   {$IFDEF VerboseFocus}
   LCLObject: TControl;
@@ -194,7 +194,7 @@ var
   AForm: TCustomForm;
 begin
   {$IFDEF VerboseFocus}
-  write('TGTKObject.BringWindowToTop hWnd=',HexStr(Cardinal(hWnd),8));
+  write('TGtkWidgetSet.BringWindowToTop hWnd=',HexStr(Cardinal(hWnd),8));
   LCLObject:=TControl(GetLCLObject(Pointer(hWnd)));
   if LCLObject<>nil then
     writeln(' LCLObject=',LCLObject.Name,':',LCLObject.ClassName)
@@ -224,7 +224,7 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.CallNextHookEx(hhk : HHOOK; ncode : Integer; wParam: WParam; lParam : LParam) : Integer;
+function TGtkWidgetSet.CallNextHookEx(hhk : HHOOK; ncode : Integer; wParam: WParam; lParam : LParam) : Integer;
 begin
   Result := 0;
   //TODO: Does anything need to be done here?
@@ -245,7 +245,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-Function TGTKObject.CallWindowProc(lpPrevWndFunc : TFarProc; Handle : HWND;
+Function TGtkWidgetSet.CallWindowProc(lpPrevWndFunc : TFarProc; Handle : HWND;
   Msg : UINT; wParam: WParam; lParam : LParam) : Integer;
 var
   Proc : TWndMethod;
@@ -275,7 +275,7 @@ end;
 
   Converts the client-area coordinates of P to screen coordinates.
  ------------------------------------------------------------------------------}
-Function TgtkObject.ClientToScreen(Handle : HWND; var P : TPoint) : Boolean;
+Function TGtkWidgetSet.ClientToScreen(Handle : HWND; var P : TPoint) : Boolean;
 var
   Position: TPoint;
 Begin
@@ -301,7 +301,7 @@ end;
   Params:  FormatID - a registered format identifier (0 is invalid)
   Returns: the corresponding mime type as string
  ------------------------------------------------------------------------------}
-function TgtkObject.ClipboardFormatToMimeType(
+function TGtkWidgetSet.ClipboardFormatToMimeType(
   FormatID: TClipboardFormat): string;
 var p: PChar;
 begin
@@ -320,7 +320,7 @@ end;
            Stream - If format is available, it will be appended to this stream
   Returns: true on success
  ------------------------------------------------------------------------------}
-function TgtkObject.ClipboardGetData(ClipboardType: TClipboardType;
+function TGtkWidgetSet.ClipboardGetData(ClipboardType: TClipboardType;
   FormatID: TClipboardFormat; Stream: TStream): boolean;
 type
   PGdkAtom = ^TGdkAtom;
@@ -366,7 +366,7 @@ var FormatAtom, FormatTry: Cardinal;
 
 begin
   {$IfDef DEBUG_CLIPBOARD}
-  writeln('[TgtkObject.ClipboardGetData] A ClipboardWidget=',HexStr(Cardinal(ClipboardWidget),8),' Format=',ClipboardFormatToMimeType(FormatID),' Now=',Now);
+  writeln('[TGtkWidgetSet.ClipboardGetData] A ClipboardWidget=',HexStr(Cardinal(ClipboardWidget),8),' Format=',ClipboardFormatToMimeType(FormatID),' Now=',Now);
   {$EndIf}
   Result:=false;
   if (FormatID=0) or (Stream=nil) then exit;
@@ -413,7 +413,7 @@ begin
     end;
 
     {$IfDef DEBUG_CLIPBOARD}
-    writeln('[TgtkObject.ClipboardGetData] B  Format=',ClipboardFormatToMimeType(FormatAtom),' Now=',Now);
+    writeln('[TGtkWidgetSet.ClipboardGetData] B  Format=',ClipboardFormatToMimeType(FormatAtom),' Now=',Now);
     {$EndIf}
     if FormatAtom=0 then exit;
 
@@ -421,7 +421,7 @@ begin
     SelData:=RequestSelectionData(ClipboardWidget,ClipboardType,FormatAtom);
     try
       {$IfDef DEBUG_CLIPBOARD}
-      writeln('[TgtkObject.ClipboardGetData] C  Length=',SelData.Length,' Now=',Now);
+      writeln('[TGtkWidgetSet.ClipboardGetData] C  Length=',SelData.Length,' Now=',Now);
       {$EndIf}
       if (SelData.Selection<>ClipboardTypeAtoms[ClipboardType])
       or (SelData.Target<>FormatAtom) then
@@ -436,7 +436,7 @@ begin
             CompoundTextCount:=gdk_text_property_to_text_list(SelData.{$IfDef GTK2}_Type{$Else}theType{$EndIf},
               SelData.Format,SelData.Data,SelData.Length,{$IfDef GTK1}@{$EndIf}CompoundTextList);
             {$IfDef DEBUG_CLIPBOARD}
-            writeln('[TgtkObject.ClipboardGetData] D  CompoundTextCount=',CompoundTextCount,' Now=',Now);
+            writeln('[TGtkWidgetSet.ClipboardGetData] D  CompoundTextCount=',CompoundTextCount,' Now=',Now);
             {$EndIf}
             for i:=0 to CompoundTextCount-1 do
               if (CompoundTextList[i]<>nil) then
@@ -450,7 +450,7 @@ begin
       end;
 
       {$IfDef DEBUG_CLIPBOARD}
-      writeln('[TgtkObject.ClipboardGetData] END ',' Now=',Now);
+      writeln('[TGtkWidgetSet.ClipboardGetData] END ',' Now=',Now);
       {$EndIf}
     finally
       if SelData.Data<>nil then FreeMem(SelData.Data);
@@ -470,7 +470,7 @@ end;
 
   ! List will be created. You must free it yourself with FreeMem(List) !
  ------------------------------------------------------------------------------}
-function TGtkObject.ClipboardGetFormats(ClipboardType: TClipboardType;
+function TGtkWidgetSet.ClipboardGetFormats(ClipboardType: TClipboardType;
   var Count: integer; var List: PClipboardFormat): boolean;
 type
   PGdkAtom = ^TGdkAtom;
@@ -514,7 +514,7 @@ var AllID: cardinal;
 
 begin
   {$IfDef DEBUG_CLIPBOARD}
-  writeln('[TgtkObject.ClipboardGetFormats] A ClipboardWidget=',HexStr(Cardinal(ClipboardWidget),8),' Now=',Now);
+  writeln('[TGtkWidgetSet.ClipboardGetFormats] A ClipboardWidget=',HexStr(Cardinal(ClipboardWidget),8),' Now=',Now);
   {$EndIf}
   Result:=false;
   Count:=0;
@@ -528,7 +528,7 @@ begin
 
   try
     {$IfDef DEBUG_CLIPBOARD}
-    writeln('[TgtkObject.ClipboardGetFormats] Checking TARGETS answer ',
+    writeln('[TGtkWidgetSet.ClipboardGetFormats] Checking TARGETS answer ',
       ' selection: ',SelData.Selection,'=',ClipboardTypeAtoms[ClipboardType],
                 ' "',gdk_atom_name(SelData.Selection),'"',
       ' target: ',SelData.Target,'=',AllID,
@@ -572,7 +572,7 @@ begin
       i:=0;
       while (i<Cnt) do begin
         {$IfDef DEBUG_CLIPBOARD}
-        writeln('[TgtkObject.ClipboardGetFormats] Supported formats: ',
+        writeln('[TGtkWidgetSet.ClipboardGetFormats] Supported formats: ',
                 i,'/',Cnt,':  ',FormatAtoms[i]);
         writeln('  MimeType="',ClipboardFormatToMimeType(FormatAtoms[i]),'"');
         {$EndIf}
@@ -609,7 +609,7 @@ end;
   If someone else requests the ownership, the OnRequestProc will be executed
   with the invalid FormatID 0 to notify the old owner of the lost of ownership.
  ------------------------------------------------------------------------------}
-function TgtkObject.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
+function TGtkWidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
   OnRequestProc: TClipboardRequestEvent;  FormatCount: integer;
   Formats: PClipboardFormat): boolean;
 var TargetEntries: PGtkTargetEntry;
@@ -637,7 +637,7 @@ var TargetEntries: PGtkTargetEntry;
     inc(Index);
   end;
 
-{function TgtkObject.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
+{function TGtkWidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
   OnRequestProc: TClipboardRequestEvent;  FormatCount: integer;
   Formats: PClipboardFormat): boolean;}
 var
@@ -649,7 +649,7 @@ begin
   if ClipboardType in [ctPrimarySelection, ctSecondarySelection, ctClipboard] then
   begin
     {$IfDef DEBUG_CLIPBOARD}
-    writeln('[TgtkObject.ClipboardGetOwnerShip] A');
+    writeln('[TGtkWidgetSet.ClipboardGetOwnerShip] A');
     {$EndIf}
     ClipboardHandler[ClipboardType]:=nil;
     Result:=false;
@@ -677,7 +677,7 @@ begin
     for gtkFormat:=Low(TGtkClipboardFormat) to High(TGtkClipboardFormat) do
       ClipboardExtraGtkFormats[ClipboardType][gtkFormat]:=false;
     {$IfDef DEBUG_CLIPBOARD}
-    writeln('[TgtkObject.ClipboardGetOwnerShip] B');
+    writeln('[TGtkWidgetSet.ClipboardGetOwnerShip] B');
     {$EndIf}
     if IsFormatSupported(gdk_atom_intern('text/plain',GdkTrue)) then
     begin
@@ -718,19 +718,19 @@ begin
 
     // taking the ownership
     {$IfDef DEBUG_CLIPBOARD}
-    writeln('[TgtkObject.ClipboardGetOwnerShip] C');
+    writeln('[TGtkWidgetSet.ClipboardGetOwnerShip] C');
     {$EndIf}
     if gtk_selection_owner_set(ClipboardWidget,
       ClipboardTypeAtoms[ClipboardType],0)=GdkFalse
     then begin
       {$IfDef DEBUG_CLIPBOARD}
-      writeln('[TgtkObject.ClipboardGetOwnerShip] D FAILED');
+      writeln('[TGtkWidgetSet.ClipboardGetOwnerShip] D FAILED');
       {$EndIf}
       exit;
     end;
 
     {$IfDef DEBUG_CLIPBOARD}
-    writeln('[TgtkObject.ClipboardGetOwnerShip] YEAH, got it!');
+    writeln('[TGtkWidgetSet.ClipboardGetOwnerShip] YEAH, got it!');
     {$EndIf}
     ClipboardHandler[ClipboardType]:=OnRequestProc;
 
@@ -750,7 +750,7 @@ end;
   Params:  AMimeType
   Returns: the registered Format identifier (TClipboardFormat)
  ------------------------------------------------------------------------------}
-function TgtkObject.ClipboardRegisterFormat(
+function TGtkWidgetSet.ClipboardRegisterFormat(
   const AMimeType:String): TClipboardFormat;
 var AtomName: PChar;
 begin
@@ -759,7 +759,7 @@ begin
     Result:=gdk_atom_intern(AtomName,GdkFalse);
   end else
     RaiseException(
-      'ERROR: TgtkObject.ClipboardRegisterFormat gdk not initialized');
+      'ERROR: TGtkWidgetSet.ClipboardRegisterFormat gdk not initialized');
 end;
 
 
@@ -770,22 +770,22 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.CreateBitmap(Width, Height: Integer;
+function TGtkWidgetSet.CreateBitmap(Width, Height: Integer;
   Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP;
 var
   GdiObject: PGdiObject;
   DefGdkWindow: PGdkWindow;
 begin
-  Assert(False, Format('Trace:> [TgtkObject.CreateBitmap] Width: %d, Height: %d, Planes: %d, BitCount: %d, BitmapBits: 0x%x', [Width, Height, Planes, BitCount, Longint(BitmapBits)]));
+  Assert(False, Format('Trace:> [TGtkWidgetSet.CreateBitmap] Width: %d, Height: %d, Planes: %d, BitCount: %d, BitmapBits: 0x%x', [Width, Height, Planes, BitCount, Longint(BitmapBits)]));
 
   if (BitCount < 1) or (Bitcount > 32)
   then begin
     Result := 0;
-    WriteLn(Format('ERROR: [TgtkObject.CreateBitmap] Illegal depth %d', [BitCount]));
+    WriteLn(Format('ERROR: [TGtkWidgetSet.CreateBitmap] Illegal depth %d', [BitCount]));
     Exit;
   end;
 
-//write('TgtkObject.CreateBitmap->');
+//write('TGtkWidgetSet.CreateBitmap->');
   GdiObject := NewGDIObject(gdiBitmap);
 
   {$IFDEF DebugGDKTraps}
@@ -798,7 +798,7 @@ begin
 
   {if BitCount > 1
   then begin
-    Assert(False, Format('Trace:  [TgtkObject.CreateBitmap] gbPixmap', [])); }
+    Assert(False, Format('Trace:  [TGtkWidgetSet.CreateBitmap] gbPixmap', [])); }
     DefGdkWindow := nil;
     If BitCount = 1 then begin
       GdiObject^.GDIBitmapType := gbBitmap;
@@ -818,7 +818,7 @@ begin
     else begin
       GdiObject^.Visual := gdk_visual_get_best_with_depth(BitCount);
       if GdiObject^.Visual=nil then begin
-        writeln('Warning: [TgtkObject.CreateBitmap] No visual for depth ',
+        writeln('Warning: [TGtkWidgetSet.CreateBitmap] No visual for depth ',
                 BitCount,'. Using default.');
         GdiObject^.Visual := gdk_visual_get_system;
       end;
@@ -835,7 +835,7 @@ begin
   {end
   else if Bitcount = 1
   then begin
-    Assert(False, Format('Trace:  [TgtkObject.CreateBitmap] gbBitmap', []));
+    Assert(False, Format('Trace:  [TGtkWidgetSet.CreateBitmap] gbBitmap', []));
     GdiObject^.GDIBitmapType := gbBitmap;
     GdiObject^.GDIBitmapObject := gdk_pixmap_new(nil, Width, Height, BitCount);
 
@@ -848,7 +848,7 @@ begin
     GdiObject^.Colormap := gdk_colormap_new(GdiObject^.Visual, 1)
   end;
   else begin
-    Assert(False, Format('Trace:  [TgtkObject.CreateBitmap] gbImage', []));
+    Assert(False, Format('Trace:  [TGtkWidgetSet.CreateBitmap] gbImage', []));
     GdiObject^.GDIBitmapType := gbImage;
     GdiObject^.GDI_RGBImageObject := NewGDI_RGBImage(Width, Height, BitCount);
     GdiObject^.Visual := gdk_visual_get_best_with_depth(BitCount);
@@ -856,17 +856,17 @@ begin
   end;}
 
   Result := HBITMAP(GdiObject);
-//writeln('[TgtkObject.CreateBitmap] ',HexStr(Result,8));
-  Assert(False, Format('Trace:< [TgtkObject.CreateBitmap] --> 0x%x', [Integer(Result)]));
+//writeln('[TGtkWidgetSet.CreateBitmap] ',HexStr(Result,8));
+  Assert(False, Format('Trace:< [TGtkWidgetSet.CreateBitmap] --> 0x%x', [Integer(Result)]));
 end;
 
 
 {------------------------------------------------------------------------------
-  function TgtkObject.CreateBitmapFromRawImage(const RawImage: TRawImage;
+  function TGtkWidgetSet.CreateBitmapFromRawImage(const RawImage: TRawImage;
     var Bitmap, MaskBitmap: HBitmap; AlwaysCreateMask: boolean): Boolean;
 
  ------------------------------------------------------------------------------}
-function TgtkObject.CreateBitmapFromRawImage(const RawImage: TRawImage;
+function TGtkWidgetSet.CreateBitmapFromRawImage(const RawImage: TRawImage;
   var Bitmap, MaskBitmap: HBitmap; AlwaysCreateMask: boolean): boolean;
 var
   GdiObject: PGDIObject;
@@ -890,7 +890,7 @@ begin
 
   try
     {$IFDEF VerboseRawImage}
-    writeln('TgtkObject.CreateBitmapFromRawImage A ',
+    writeln('TGtkWidgetSet.CreateBitmapFromRawImage A ',
       ' AlwaysCreateMask=',AlwaysCreateMask,
       ' Depth=',RawImage.Description.Depth,
       ' Width=',RawImage.Description.Width,
@@ -932,7 +932,7 @@ begin
       Visual:=gdk_visual_get_best_with_depth(ImgDepth);
       GdkImage:=gdk_image_new(GDK_IMAGE_FASTEST,Visual,ImgWidth,ImgHeight);
       {$IFDEF VerboseRawImage}
-      writeln('TgtkObject.CreateBitmapFromRawImage GdkImage: ',
+      writeln('TGtkWidgetSet.CreateBitmapFromRawImage GdkImage: ',
         ' BytesPerLine=',GdkImage^.bpl,
         ' BytesPerPixel=',GdkImage^.bpp,
         ' ByteOrder=',GdkImage^.byte_order,
@@ -940,10 +940,10 @@ begin
       {$ENDIF}
       if (RawImage.Description.BitsPerPixel<>(cardinal(GdkImage^.bpp) shl 3))
       then begin
-        RaiseGDBException('TgtkObject.CreateBitmapFromRawImage Incompatible BitsPerPixel');
+        RaiseGDBException('TGtkWidgetSet.CreateBitmapFromRawImage Incompatible BitsPerPixel');
       end;
       if (ImgDataSize<>GdkImage^.bpl*ImgHeight) then begin
-        RaiseGDBException('TgtkObject.CreateBitmapFromRawImage Incompatible DataSize');
+        RaiseGDBException('TGtkWidgetSet.CreateBitmapFromRawImage Incompatible DataSize');
       end;
       System.Move(ImgData^,GdkImage^.mem^,ImgDataSize);
       GC:=gdk_gc_new(GDkWindow);
@@ -963,7 +963,7 @@ begin
     if (AlwaysCreateMask or (not RawImageMaskIsEmpty(@RawImage,true)))
     and (RawImage.Mask<>nil) then begin
       {$IFDEF VerboseRawImage}
-      writeln('TgtkObject.CreateBitmapFromRawImage creating mask .. ');
+      writeln('TGtkWidgetSet.CreateBitmapFromRawImage creating mask .. ');
       {$ENDIF}
       GdiObject^.GDIBitmapMaskObject :=
           gdk_bitmap_create_from_data(DefGdkWindow,PGChar(RawImage.Mask),
@@ -988,7 +988,7 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH;
+function TGtkWidgetSet.CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH;
 const
   //HATCH_NULL      : array[0..7] of Byte = ($00, $00, $00, $00, $00, $00, $00, $00);
   HATCH_BDIAGONAL : array[0..7] of Byte = ($80, $40, $20, $10, $08, $04, $02, $01);
@@ -1002,7 +1002,7 @@ var
   GObject: PGdiObject;
   sError: String;
 begin
-  Assert(False, Format('Trace:> [TgtkObject.CreateBrushIndirect]  Style: %d, Color: %8x', [LogBrush.lbStyle, LogBrush.lbColor]));
+  Assert(False, Format('Trace:> [TGtkWidgetSet.CreateBrushIndirect]  Style: %d, Color: %8x', [LogBrush.lbStyle, LogBrush.lbColor]));
 
   sError := '';
 
@@ -1012,7 +1012,7 @@ begin
 
 //write('CreateBrushIndirect->');
   GObject := NewGDIObject(gdiBrush);
-//writeln('[TgtkObject.CreateBrushIndirect] ',HexStr(Cardinal(GObject),8));
+//writeln('[TGtkWidgetSet.CreateBrushIndirect] ',HexStr(Cardinal(GObject),8));
   GObject^.IsNullBrush := False;
   with LogBrush do
   begin
@@ -1054,7 +1054,7 @@ begin
               GObject^.GDIBrushPixmap := gdk_bitmap_create_from_data(
                  nil, @HATCH_VERTICAL, 8, 8);
             else
-              sError := Format('WARNING: [TgtkObject.CreateBrushIndirect] Got unsupported Hatch %d', [lbHatch]);
+              sError := Format('WARNING: [TGtkWidgetSet.CreateBrushIndirect] Got unsupported Hatch %d', [lbHatch]);
           end;
         end;
 
@@ -1074,11 +1074,11 @@ begin
           GObject^.GDIBrushFill := GDK_TILED;
           if IsValidGDIObject(lbHatch) and (PGdiObject(lbHatch)^.GDIType = gdiBitmap)
           then GObject^.GDIBrushPixmap := PGdiObject(lbHatch)^.GDIBitmapObject
-          else sError := 'WARNING: [TgtkObject.CreateBrushIndirect] Got unsupported bitmap';
+          else sError := 'WARNING: [TGtkWidgetSet.CreateBrushIndirect] Got unsupported bitmap';
         end;
 
       else
-        sError := Format('WARNING: [TgtkObject.CreateBrushIndirect] Got unsupported Style %d'
+        sError := Format('WARNING: [TGtkWidgetSet.CreateBrushIndirect] Got unsupported Style %d'
                         , [lbStyle]);
     end;
 
@@ -1096,7 +1096,7 @@ begin
     Result := 0;
     DisposeGDIObject(GObject)
   end;
-  Assert(False, Format('Trace:< [TgtkObject.CreateBrushIndirect] Got --> %x', [Result]));
+  Assert(False, Format('Trace:< [TGtkWidgetSet.CreateBrushIndirect] Got --> %x', [Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -1106,13 +1106,13 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.CreateCaret(Handle: HWND; Bitmap: hBitmap;
+function TGtkWidgetSet.CreateCaret(Handle: HWND; Bitmap: hBitmap;
   Width, Height: Integer): Boolean;
 var
   GTKObject: PGTKObject;
   BMP: PGDKPixmap;
 begin
-  Assert(False, 'Trace:TODO: [TgtkObject.CreateCaret] Finish');
+  Assert(False, 'Trace:TODO: [TGtkWidgetSet.CreateCaret] Finish');
 
   GTKObject := PGTKObject(Handle);
   Result := GTKObject <> nil;
@@ -1131,7 +1131,7 @@ begin
       Result := False;
     end;
   end
-  else Assert(False, 'Trace:WARNING: [TgtkObject.CreateCaret] Got null HWND');
+  else Assert(False, 'Trace:WARNING: [TGtkWidgetSet.CreateCaret] Got null HWND');
 end;
 
 {------------------------------------------------------------------------------
@@ -1143,14 +1143,14 @@ end;
 
   Creates a bitmap compatible with the specified device context.
  ------------------------------------------------------------------------------}
-function TGTKObject.CreateCompatibleBitmap(DC: HDC;
+function TGtkWidgetSet.CreateCompatibleBitmap(DC: HDC;
   Width, Height: Integer): HBITMAP;
 var
   Depth : Longint;
   GDIObject: PGdiObject;
   DefGdkWindow: PGDkWindow;
 begin
-  Assert(False, Format('Trace:> [TgtkObject.CreateCompatibleBitmap] DC: 0x%x, W: %d, H: %d', [DC, Width, Height]));
+  Assert(False, Format('Trace:> [TGtkWidgetSet.CreateCompatibleBitmap] DC: 0x%x, W: %d, H: %d', [DC, Width, Height]));
 
   Depth := -1;
 
@@ -1169,7 +1169,7 @@ begin
     if (Depth < 1) or (Depth > 32)
     then begin
       Result := 0;
-      WriteLn(Format('ERROR: [TgtkObject.CreateCompatibleBitmap] Illegal depth %d', [Depth]));
+      WriteLn(Format('ERROR: [TGtkWidgetSet.CreateCompatibleBitmap] Illegal depth %d', [Depth]));
       {$IFDEF DebugGDKTraps}
       EndGDKErrorTrap;
       {$ENDIF}
@@ -1207,7 +1207,7 @@ begin
   end else
     Result := 0;
 
-  Assert(False, Format('Trace:< [TgtkObject.CreateCompatibleBitmap] DC: 0x%x --> 0x%x', [DC, Result]));
+  Assert(False, Format('Trace:< [TGtkWidgetSet.CreateCompatibleBitmap] DC: 0x%x --> 0x%x', [DC, Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -1217,7 +1217,7 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.CreateCompatibleDC(DC: HDC): HDC;
+function TGtkWidgetSet.CreateCompatibleDC(DC: HDC): HDC;
 var
   pNewDC: TDeviceContext;
 begin
@@ -1246,7 +1246,7 @@ begin
 
   Result := HDC(pNewDC);
 
-  Assert(False,Format('trace:  [TgtkObject.CreateCompatibleDC] DC: 0x%x --> 0x%x', [Integer(DC), Integer(Result)]));
+  Assert(False,Format('trace:  [TGtkWidgetSet.CreateCompatibleDC] DC: 0x%x --> 0x%x', [Integer(DC), Integer(Result)]));
 end;
 
 {------------------------------------------------------------------------------
@@ -1256,7 +1256,7 @@ end;
 
   Creates a font GDIObject.
  ------------------------------------------------------------------------------}
-function TgtkObject.CreateFontIndirect(const LogFont: TLogFont): HFONT;
+function TGtkWidgetSet.CreateFontIndirect(const LogFont: TLogFont): HFONT;
 begin
   Result:=CreateFontIndirectEx(LogFont,'');
 end;
@@ -1268,11 +1268,11 @@ end;
 
   Creates a font GDIObject.
  ------------------------------------------------------------------------------}
-function TgtkObject.CreateFontIndirectEx(const LogFont: TLogFont;
+function TGtkWidgetSet.CreateFontIndirectEx(const LogFont: TLogFont;
   const LongFontName: string): HFONT;
 {$IfDef GTK2}
 begin
-  writeln('ToDo: TgtkObject.CreateFontIndirectEx');
+  writeln('ToDo: TGtkWidgetSet.CreateFontIndirectEx');
   Result:=0;
 end;
 {$Else}
@@ -1305,7 +1305,7 @@ var
     DisposeGDIObject(GdiObject);
     GdiObject:=CreateDefaultFont;
     {$IFDEF VerboseFonts}
-    writeln('TgtkObject.CreateFontIndirectEx.LoadDefaultFont');
+    writeln('TGtkWidgetSet.CreateFontIndirectEx.LoadDefaultFont');
     {$ENDIF}
   end;
   
@@ -1331,7 +1331,7 @@ begin
   // Lets fill in all the xlfd parts. Assume we have scalable fonts
 
   {$IFDEF VerboseFonts}
-  writeln('TgtkObject.CreateFontIndirectEx A Name=',LogFont.lfFaceName,' Height=',LogFont.lfHeight);
+  writeln('TGtkWidgetSet.CreateFontIndirectEx A Name=',LogFont.lfFaceName,' Height=',LogFont.lfHeight);
   {$ENDIF}
 
   Result := 0;
@@ -1361,7 +1361,7 @@ begin
     // This way, the user can set X fonts that are not supported by TFont.
 
     {$IFDEF VerboseFonts}
-    writeln('TgtkObject.CreateFontIndirectEx Name="',LogFont.lfFaceName,'"',
+    writeln('TGtkWidgetSet.CreateFontIndirectEx Name="',LogFont.lfFaceName,'"',
     ' Long="',LongFontName,'" IsXLFD=',IsFontNameXLogicalFontDesc(LongFontName)
     ,' ',ord(LogFont.lfFaceName[0]));
     {$ENDIF}
@@ -1389,7 +1389,7 @@ begin
 
       if lfFaceName[0] = #0
       then begin
-        Assert(false,'ERROR: [TgtkObject.CreateFontIndirectEx] No fontname');
+        Assert(false,'ERROR: [TGtkWidgetSet.CreateFontIndirectEx] No fontname');
         Exit;
       end;
 
@@ -1402,7 +1402,7 @@ begin
       
       if AnsiCompareText(FamilyName,'default')=0 then begin
         {$IFDEF VerboseFonts}
-        writeln('TgtkObject.CreateFontIndirectEx FamilyName="',FamilyName,'" PixelSize=',PixelSize,' LogFont.lfHeight=',LogFont.lfHeight);
+        writeln('TGtkWidgetSet.CreateFontIndirectEx FamilyName="',FamilyName,'" PixelSize=',PixelSize,' LogFont.lfHeight=',LogFont.lfHeight);
         {$ENDIF}
         if (LogFont.lfHeight=0) then begin
           LoadDefaultFont;
@@ -1413,7 +1413,7 @@ begin
         end;
       end;
 
-      Assert(False, Format('trace:  [TgtkObject.CreateFontIndirectEx] Name: %s, Height: %d', [FamilyName, lfHeight]));
+      Assert(False, Format('trace:  [TGtkWidgetSet.CreateFontIndirectEx] Name: %s, Height: %d', [FamilyName, lfHeight]));
 
       // calculate weight offset.
       //        API                 XLFD
@@ -1602,7 +1602,7 @@ begin
     if GdiObject^.GDIFontObject = nil
     then begin
       {$IFDEF VerboseFonts}
-      writeln('[TgtkObject.CreateFontIndirect] ',HexStr(Cardinal(GdiObject),8),'  ',FGDIObjects.Count);
+      writeln('[TGtkWidgetSet.CreateFontIndirect] ',HexStr(Cardinal(GdiObject),8),'  ',FGDIObjects.Count);
       {$ENDIF}
       DisposeGDIObject(GdiObject);
       Result := 0;
@@ -1612,8 +1612,8 @@ begin
     end;
 
     if Result = 0
-    then WriteLn(Format('WARNING: [TgtkObject.CreateFontIndirectEx] NOT found XLFD: <%s>', [S]))
-    else Assert(False, Format('Trace:  [TgtkObject.CreateFontIndirectEx] found XLFD: <%s>', [S]));
+    then WriteLn(Format('WARNING: [TGtkWidgetSet.CreateFontIndirectEx] NOT found XLFD: <%s>', [S]))
+    else Assert(False, Format('Trace:  [TGtkWidgetSet.CreateFontIndirectEx] found XLFD: <%s>', [S]));
   end;
 end;
 {$EndIf}
@@ -1625,11 +1625,11 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.CreatePalette(const LogPalette: TLogPalette): HPALETTE;
+function TGtkWidgetSet.CreatePalette(const LogPalette: TLogPalette): HPALETTE;
 var
   GObject: PGdiObject;
 begin
-  Assert(False, 'trace:[TgtkObject.CreatePalette]');
+  Assert(False, 'trace:[TGtkWidgetSet.CreatePalette]');
   GObject := NewGDIObject(gdiPalette);
 
   with LogPalette, GObject^ do
@@ -1675,11 +1675,11 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.CreatePenIndirect(const LogPen: TLogPen): HPEN;
+function TGtkWidgetSet.CreatePenIndirect(const LogPen: TLogPen): HPEN;
 var
   GObject: PGdiObject;
 begin
-  Assert(False, 'trace:[TgtkObject.CreatePenIndirect]');
+  Assert(False, 'trace:[TGtkWidgetSet.CreatePenIndirect]');
 //write('CreatePenIndirect->');
   GObject := NewGDIObject(gdiPen);
 
@@ -1702,7 +1702,7 @@ end;
   Creates a bitmap from raw pixmap data.
   If TransColor < 0 the transparency mask will be automatically gnerated.
  ------------------------------------------------------------------------------}
-function TgtkObject.CreatePixmapIndirect(const Data: Pointer;
+function TGtkWidgetSet.CreatePixmapIndirect(const Data: Pointer;
   const TransColor: Longint): HBITMAP;
 var
   GdiObject: PGdiObject;
@@ -1778,7 +1778,7 @@ end;
   algorithm. NumPts indicates the number of points to use.
   The first point is always connected to the last point.
  ------------------------------------------------------------------------------}
-Function TgtkObject.CreatePolygonRgn(Points: PPoint; NumPts: Integer;
+Function TGtkWidgetSet.CreatePolygonRgn(Points: PPoint; NumPts: Integer;
   FillMode: integer): HRGN;
 var
   i: integer;
@@ -1815,7 +1815,7 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.CreateRectRgn(X1,Y1,X2,Y2 : Integer): HRGN;
+function TGtkWidgetSet.CreateRectRgn(X1,Y1,X2,Y2 : Integer): HRGN;
 var
   R: TGDKRectangle;
   RRGN: PGDKRegion;
@@ -1844,7 +1844,7 @@ begin
   gdk_region_destroy(RRGN);
 
   Result := HRGN(GObject);
-  //writeln('TgtkObject.CreateRectRgn A ',GDKRegionAsString(RegionObj));
+  //writeln('TGtkWidgetSet.CreateRectRgn A ',GDKRegionAsString(RegionObj));
 end;
 
 {------------------------------------------------------------------------------
@@ -1877,7 +1877,7 @@ end;
       ComplexRegion
 
  ------------------------------------------------------------------------------}
-Function TgtkObject.CombineRgn(Dest, Src1, Src2 : HRGN;
+Function TGtkWidgetSet.CombineRgn(Dest, Src1, Src2 : HRGN;
   fnCombineMode : Longint) : Longint;
 var
   Continue : Boolean;
@@ -1891,7 +1891,7 @@ begin
   Continue := IsValidGDIObject(Dest) and IsValidGDIObject(Src1)
               and IsValidGDIObject(Src2);
   If Not Continue then begin
-    WriteLn('WARNING: [TgtkObject.CombineRgn] Invalid HRGN');
+    WriteLn('WARNING: [TGtkWidgetSet.CombineRgn] Invalid HRGN');
     Result := Error;
   end
   else begin
@@ -1901,7 +1901,7 @@ begin
     end;
     S1 := S1Obj^.GDIRegionObject;
     S2 := S2Obj^.GDIRegionObject;
-    //writeln('TgtkObject.CombineRgn A fnCombineMode=',fnCombineMode);
+    //writeln('TGtkWidgetSet.CombineRgn A fnCombineMode=',fnCombineMode);
     Case fnCombineMode of
       RGN_AND :
         D := PGDKRegion(gdk_region_intersect(S1, S2));
@@ -1920,16 +1920,16 @@ begin
     end;
     DObj^.GDIRegionObject := D;
     Result := RegionType(D);
-    //writeln('TgtkObject.CombineRgn B Mode=',fnCombineMode,
+    //writeln('TGtkWidgetSet.CombineRgn B Mode=',fnCombineMode,
     //  ' S1=',GDKRegionAsString(S1),' S2=',GDKRegionAsString(S2),' D=',GDKRegionAsString(D),'');
   end;
 end;
 
 {------------------------------------------------------------------------------
-  function TgtkObject.ComboBoxDropDown(Handle: HWND;
+  function TGtkWidgetSet.ComboBoxDropDown(Handle: HWND;
                                        DropDown: boolean): boolean; override;
 ------------------------------------------------------------------------------}
-function TgtkObject.ComboBoxDropDown(Handle: HWND; DropDown: boolean): boolean;
+function TGtkWidgetSet.ComboBoxDropDown(Handle: HWND; DropDown: boolean): boolean;
 
   procedure gtk_combo_get_pos(combo : PGtkCombo; var x : gint; var  y : gint;
     var height : gint; var width : gint);
@@ -2065,7 +2065,7 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.DeleteDC(hDC: HDC): Boolean;
+function TGtkWidgetSet.DeleteDC(hDC: HDC): Boolean;
 begin
   // TODO:
   // for now it's just the same, however CreateDC/FreeDC
@@ -2081,7 +2081,7 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.DeleteObject(GDIObject: HGDIOBJ): Boolean;
+function TGtkWidgetSet.DeleteObject(GDIObject: HGDIOBJ): Boolean;
 var
   GDIObjectExists: boolean;
 begin
@@ -2144,14 +2144,14 @@ begin
           end;
         else begin
           Result:= false;
-          writeln('[TgtkObject.DeleteObject] TODO : Unimplemented GDI type');
+          writeln('[TGtkWidgetSet.DeleteObject] TODO : Unimplemented GDI type');
           Assert(False, 'Trace:TODO : Unimplemented GDI object in delete object');
         end;
       end;
     end;
 
     { Dispose of the GDI object }
-    //writeln('[TgtkObject.DeleteObject] ',Result,'  ',HexStr(GDIObject,8),'  ',FGDIObjects.Count);
+    //writeln('[TGtkWidgetSet.DeleteObject] ',Result,'  ',HexStr(GDIObject,8),'  ',FGDIObjects.Count);
     DisposeGDIObject(PGDIObject(GDIObject));
   end;
 end;
@@ -2163,7 +2163,7 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.DestroyCaret(Handle: HWND): Boolean;
+function TGtkWidgetSet.DestroyCaret(Handle: HWND): Boolean;
 var
   GTKObject: PGTKObject;
 begin
@@ -2180,7 +2180,7 @@ begin
       Result := False;
     end;
   end
-  else Assert(False, 'Trace:WARNING: [TgtkObject.DestroyCaret] Got null HWND');
+  else Assert(False, 'Trace:WARNING: [TGtkWidgetSet.DestroyCaret] Got null HWND');
 end;
 
 {------------------------------------------------------------------------------
@@ -2190,7 +2190,7 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.DrawFrameControl(DC: HDC; var Rect : TRect;
+function TGtkWidgetSet.DrawFrameControl(DC: HDC; var Rect : TRect;
   uType, uState : Cardinal) : Boolean;
 {const
   ADJUST_FLAG: array[Boolean] of Integer = (0, BF_ADJUST);
@@ -2373,7 +2373,7 @@ begin
       end;
     DFC_BUTTON:
       begin
-        Assert(False, Format('Trace:  [TgtkObject.DrawFrameControl] DFC_BUTTON --> draw rect = %d,%d,%d,%d',[Rect.Left,Rect.Top,REct.Right,REct.Bottom]));
+        Assert(False, Format('Trace:  [TGtkWidgetSet.DrawFrameControl] DFC_BUTTON --> draw rect = %d,%d,%d,%d',[Rect.Left,Rect.Top,REct.Right,REct.Bottom]));
         //figure out the style first
         case uState and $1F of
           DFCS_BUTTONRADIOIMAGE:
@@ -2403,11 +2403,11 @@ begin
               DrawCheck;
             end;
         else
-          WriteLn(Format('ERROR: [TgtkObject.DrawFrameControl] Unknown State 0x%x', [uState]));
+          WriteLn(Format('ERROR: [TGtkWidgetSet.DrawFrameControl] Unknown State 0x%x', [uState]));
         end;
       end;
   else
-    WriteLn(Format('ERROR: [TgtkObject.DrawFrameControl] Unknown type %d', [uType]));
+    WriteLn(Format('ERROR: [TGtkWidgetSet.DrawFrameControl] Unknown type %d', [uType]));
   end;
 end;
 
@@ -2419,7 +2419,7 @@ end;
   Draws one or more edges of a rectangle. The rectangle is the area
   Left to Right-1 and Top to Bottom-1.
  ------------------------------------------------------------------------------}
-function TgtkObject.DrawEdge(DC: HDC; var ARect: TRect; Edge: Cardinal;
+function TGtkWidgetSet.DrawEdge(DC: HDC; var ARect: TRect; Edge: Cardinal;
   grfFlags: Cardinal): Boolean;
   
   procedure DrawEdges(var R: TRect; GC: pgdkGC; Drawable:PGdkDrawable;
@@ -2454,14 +2454,14 @@ Var
   R: TRect;
   DCOrigin: TPoint;
 begin
-  //writeln('TgtkObject.DrawEdge Edge=',HexStr(Cardinal(Edge),8),' grfFlags=',HexStr(Cardinal(grfFlags),8));
+  //writeln('TGtkWidgetSet.DrawEdge Edge=',HexStr(Cardinal(Edge),8),' grfFlags=',HexStr(Cardinal(grfFlags),8));
   Result := IsValidDC(DC);
   if Result
   then with TDeviceContext(DC) do
   begin
     if GC = nil
     then begin
-      Assert(False, 'Trace:[TgtkObject.DrawEdge] Uninitialized GC');
+      Assert(False, 'Trace:[TGtkWidgetSet.DrawEdge] Uninitialized GC');
       Result := False;
     end
     else begin
@@ -2547,7 +2547,7 @@ end;
   Returns: If the string was drawn, or CalcRect run
 
  ------------------------------------------------------------------------------}
-function Tgtkobject.DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer;
+function TGtkWidgetSet.DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer;
 var
   TM : TTextmetric;
   theRect     : TRect;
@@ -2697,7 +2697,7 @@ var
 
 begin
   if (Str=nil) or (Str[0]=#0) then exit;
-  Assert(False, Format('trace:> [TgtkObject.DrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
+  Assert(False, Format('trace:> [TGtkWidgetSet.DrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
     [DC, Str, Count, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, Flags]));
 
   Result := Longint(IsValidDC(DC));
@@ -2706,7 +2706,7 @@ begin
   begin
     if GC = nil
     then begin
-      WriteLn('WARNING: [TgtkObject.DrawText] Uninitialized GC');
+      WriteLn('WARNING: [TGtkWidgetSet.DrawText] Uninitialized GC');
       Result := 0;
     end
     else begin
@@ -2773,7 +2773,7 @@ begin
         RestoreDC(DC, TempDC);
     end;
   end;
-  Assert(False, Format('trace:> [TgtkObject.DrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
+  Assert(False, Format('trace:> [TGtkWidgetSet.DrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
     [DC, Str, Count, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, Flags]));
 end;
 
@@ -2784,9 +2784,9 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal): Boolean;
+function TGtkWidgetSet.EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal): Boolean;
 begin
-  Assert(False, 'Trace:TODO: [TgtkObject.EnableScrollBar]');
+  Assert(False, 'Trace:TODO: [TGtkWidgetSet.EnableScrollBar]');
   //TODO: Implement this;
   Result := False;
 end;
@@ -2798,9 +2798,9 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGTKObject.EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean;
+function TGtkWidgetSet.EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean;
 begin
-  Assert(False, Format('Trace:  [TGTKObject.EnableWindow] hWnd: 0x%x, Enable: %s', [hwnd, BOOL_TEXT[bEnable]]));
+  Assert(False, Format('Trace:  [TGtkWidgetSet.EnableWindow] hWnd: 0x%x, Enable: %s', [hwnd, BOOL_TEXT[bEnable]]));
   if hWnd <> 0 then
     gtk_widget_set_sensitive(pgtkwidget(hWnd), bEnable);
   Result:=true;
@@ -2812,7 +2812,7 @@ end;
   Returns: 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.EndPaint(Handle: hwnd; var PS: TPaintStruct): Integer;
+function TGtkWidgetSet.EndPaint(Handle: hwnd; var PS: TPaintStruct): Integer;
 {$IFDEF Gtk1}
 var
   Widget: PGtkWidget;
@@ -2839,7 +2839,7 @@ begin
       // copy
       gdk_window_get_size(DCDrawable,@Width,@Height);
       {$IFDEF VerboseDoubleBuffer}
-      writeln('TgtkObject.EndPaint Copying from buffer to window: ',Width,' ',Height);
+      writeln('TGtkWidgetSet.EndPaint Copying from buffer to window: ',Width,' ',Height);
       {$ENDIF}
       gdk_gc_set_clip_region(DevContext.GC, nil);
       gdk_gc_set_clip_rectangle(DevContext.GC, nil);
@@ -2854,7 +2854,7 @@ begin
       if (LCLObject is TPanel)
       and (csDesigning in TPanel(LCLObject).ComponentState) then begin
         gdk_window_get_origin(Widget^.Window,@x,@y);
-        writeln('TgtkObject.EndPaint ',TPanel(LCLObject).Name,':',TPanel(LCLObject).ClassName,
+        writeln('TGtkWidgetSet.EndPaint ',TPanel(LCLObject).Name,':',TPanel(LCLObject).ClassName,
           ' Widget=',GetWidgetClassName(Widget),
           ' Origin=',x,',',y,
           ' ',Widget^.allocation.x,',',Widget^.allocation.y);
@@ -2877,7 +2877,7 @@ end;
   Use Ellipse to draw a filled circle or ellipse.
 
  ------------------------------------------------------------------------------}
-function TgtkObject.Ellipse(DC: HDC;
+function TGtkWidgetSet.Ellipse(DC: HDC;
   x1,y1,x2,y2: Integer): Boolean;
 var
   x,y,width,height: integer;
@@ -2889,7 +2889,7 @@ begin
   begin
     if GC = nil
     then begin
-      WriteLn('WARNING: [TgtkObject.Ellipse] Uninitialized GC');
+      WriteLn('WARNING: [TGtkWidgetSet.Ellipse] Uninitialized GC');
       Result := False;
     end
     else begin
@@ -2951,7 +2951,7 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.ExcludeClipRect(dc: hdc;
+function TGtkWidgetSet.ExcludeClipRect(dc: hdc;
   Left, Top, Right, Bottom : Integer) : Integer;
 begin
   Result := SIMPLEREGION;
@@ -2961,7 +2961,7 @@ begin
   begin
     if GC = nil
     then begin
-      WriteLn('WARNING: [TgtkObject.ExcludeClipRect] Uninitialized GC');
+      WriteLn('WARNING: [TGtkWidgetSet.ExcludeClipRect] Uninitialized GC');
       Result := ERROR;
     end
     else
@@ -2997,7 +2997,7 @@ end;
       SimpleRegion
       ComplexRegion
  ------------------------------------------------------------------------------}
-function TgtkObject.ExtSelectClipRGN(dc: hdc; rgn : hrgn;
+function TGtkWidgetSet.ExtSelectClipRGN(dc: hdc; rgn : hrgn;
   Mode : Longint) : Integer;
 var
   Clip,
@@ -3011,11 +3011,11 @@ begin
   begin
     if GC = nil
     then begin
-      WriteLn('WARNING: [TgtkObject.ExtSelectClipRGN] Uninitialized GC');
+      WriteLn('WARNING: [TGtkWidgetSet.ExtSelectClipRGN] Uninitialized GC');
       Result := ERROR;
     end
     else begin
-      //writeln('TgtkObject.ExtSelectClipRGN A ClipRegValid=',DCClipRegionValid(DC),
+      //writeln('TGtkWidgetSet.ExtSelectClipRGN A ClipRegValid=',DCClipRegionValid(DC),
       //  ' Mode=',Mode,' RGN=',GDKRegionAsString(PGdiObject(RGN)^.GDIRegionObject));
       If ClipRegion=0 then begin
         // there is no clipping region in the DC
@@ -3056,11 +3056,11 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
+function TGtkWidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
   Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 {$Ifdef GTK2}
 begin
-  writeln('ToDo: TgtkObject.ExtTextOut');
+  writeln('ToDo: TGtkWidgetSet.ExtTextOut');
   Result:=false;
 end;
 {$Else}
@@ -3122,19 +3122,19 @@ var
   end;
 
 begin
-  Assert(False, Format('trace:> [TgtkObject.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
+  Assert(False, Format('trace:> [TGtkWidgetSet.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
   Result := IsValidDC(DC);
   if Result
   then with TDeviceContext(DC) do
   begin
     if GC = nil
     then begin
-      WriteLn('WARNING: [TgtkObject.ExtTextOut] Uninitialized GC');
+      WriteLn('WARNING: [TGtkWidgetSet.ExtTextOut] Uninitialized GC');
       Result := False;
     end
     else if ((Options and (ETO_OPAQUE+ETO_CLIPPED)) <> 0)
     and (Rect=nil) then begin
-      WriteLn('WARNING: [TgtkObject.ExtTextOut] Rect=nil');
+      WriteLn('WARNING: [TGtkWidgetSet.ExtTextOut] Rect=nil');
       Result := False;
     end else begin
       // TODO: implement other parameters.
@@ -3165,7 +3165,7 @@ begin
                               Rect^.Right, Rect^.Bottom);
           end;
         end else begin
-          WriteLn('WARNING: [TgtkObject.ExtTextOut] Missing Font');
+          WriteLn('WARNING: [TGtkWidgetSet.ExtTextOut] Missing Font');
           Result := False;
         end;
       end;
@@ -3262,7 +3262,7 @@ begin
       end;
     end;
   end;
-  Assert(False, Format('trace:< [TgtkObject.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
+  Assert(False, Format('trace:< [TGtkWidgetSet.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
 end;
 {$EndIf}
 {------------------------------------------------------------------------------
@@ -3274,20 +3274,20 @@ end;
   This function includes the left and top borders, but excludes the right and
   bottom borders of the rectangle.
  ------------------------------------------------------------------------------}
-function TgtkObject.FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean;
+function TGtkWidgetSet.FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean;
 var
   Width, Height: Integer;
   OldCurrentBrush: PGdiObject;
   DCOrigin: TPoint;
 begin
-  Assert(False, Format('trace:> [TgtkObject.FillRect] DC:0x%x; Rect: ((%d,%d)(%d,%d)); brush: %x', [Integer(DC), Rect.left, rect.top, rect.right, rect.bottom, brush]));
+  Assert(False, Format('trace:> [TGtkWidgetSet.FillRect] DC:0x%x; Rect: ((%d,%d)(%d,%d)); brush: %x', [Integer(DC), Rect.left, rect.top, rect.right, rect.bottom, brush]));
   Result := IsValidDC(DC) and IsValidGDIObject(Brush);
   if Result
   then with TDeviceContext(DC) do
   begin
     if GC = nil
     then begin
-      WriteLn('WARNING: [TgtkObject.FillRect] Uninitialized GC');
+      WriteLn('WARNING: [TGtkWidgetSet.FillRect] Uninitialized GC');
       Result := False;
     end
     else begin
@@ -3326,7 +3326,7 @@ begin
       Result := True;
     end;
   end;
-  Assert(False, Format('trace:< [TgtkObject.FillRect] DC:0x%x; Rect: ((%d,%d)(%d,%d)); brush: %x', [Integer(DC), Rect.left, rect.top, rect.right, rect.bottom, brush]));
+  Assert(False, Format('trace:< [TGtkWidgetSet.FillRect] DC:0x%x; Rect: ((%d,%d)(%d,%d)); brush: %x', [Integer(DC), Rect.left, rect.top, rect.right, rect.bottom, brush]));
 end;
 
 {------------------------------------------------------------------------------
@@ -3334,7 +3334,7 @@ end;
 
   Draws the border of a rectangle.
  ------------------------------------------------------------------------------}
-function TGtkObject.Frame(DC: HDC; const ARect: TRect): Integer;
+function TGtkWidgetSet.Frame(DC: HDC; const ARect: TRect): Integer;
 var
   DCOrigin: TPoint;
 begin
@@ -3364,7 +3364,7 @@ end;
 
   Draws a 3d border in GTK native style.
  ------------------------------------------------------------------------------}
-function TGtkObject.Frame3d(DC : HDC; var ARect : TRect;
+function TGtkWidgetSet.Frame3d(DC : HDC; var ARect : TRect;
   const FrameWidth : integer; const Style : TBevelCut) : boolean;
 
 const GTKThinShadowType: array[TBevelCut] of integer =
@@ -3385,7 +3385,7 @@ begin
   if not Result then exit;
   if FrameWidth=0 then exit;
   TheStyle:=GetStyle(lgsButton);
-  //writeln('TGtkObject.Frame3d A ',HexStr(Cardinal(TheStyle),8));
+  //writeln('TGtkWidgetSet.Frame3d A ',HexStr(Cardinal(TheStyle),8));
   if TheStyle=nil then exit;
 
   with TDeviceContext(DC) do
@@ -3449,7 +3449,7 @@ begin
       gdk_draw_line(Drawable, RightBottomGC,
                  ARect.Left+DCOrigin.X, ARect.Bottom+DCOrigin.Y,
                  ARect.Right+DCOrigin.X, ARect.Bottom+DCOrigin.Y);}
-      //writeln('TGtkObject.Frame3d A TheStyle=',HexStr(Cardinal(TheStyle),8),
+      //writeln('TGtkWidgetSet.Frame3d A TheStyle=',HexStr(Cardinal(TheStyle),8),
       //  ' Drawable=',GetDrawableDebugReport(Drawable),
       //  ' ClientWidget=',GetWidgetDebugReport(ClientWidget)
       //  );
@@ -3468,10 +3468,10 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function TGtkObject.FrameRect(DC: HDC; const ARect: TRect;
+  function TGtkWidgetSet.FrameRect(DC: HDC; const ARect: TRect;
     hBr: HBRUSH): Integer;
  ------------------------------------------------------------------------------}
-function TGtkObject.FrameRect(DC: HDC; const ARect: TRect;
+function TGtkWidgetSet.FrameRect(DC: HDC; const ARect: TRect;
   hBr: HBRUSH): Integer;
 var
   DCOrigin: TPoint;
@@ -3501,7 +3501,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-Function TGTKObject.GetActiveWindow : HWND;
+Function TGtkWidgetSet.GetActiveWindow : HWND;
 var
   TopList, List: PGList;
   Widget: PGTKWidget;
@@ -3540,10 +3540,10 @@ end;
   Returns: 
 
  ------------------------------------------------------------------------------}
-function Tgtkobject.GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT;
+function TGtkWidgetSet.GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT;
   Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer;
 begin
-  Assert(False, 'trace:[TgtkObject.GetDIBits]');
+  Assert(False, 'trace:[TGtkWidgetSet.GetDIBits]');
   Result := 0;
   if IsValidGDIObject(Bitmap)
   then begin
@@ -3552,11 +3552,11 @@ begin
         Result := InternalGetDIBits(DC, Bitmap, StartScan, NumScans, -1, Bits,
                                       BitInfo, Usage, True);
       else
-        writeln('WARNING: [TgtkObject.GetDIBits] not a Bitmap!');
+        writeln('WARNING: [TGtkWidgetSet.GetDIBits] not a Bitmap!');
     end;
   end
   else
-    writeln('WARNING: [TgtkObject.GetDIBits] invalid Bitmap!');
+    writeln('WARNING: [TGtkWidgetSet.GetDIBits] invalid Bitmap!');
 end;
 
 {------------------------------------------------------------------------------
@@ -3565,11 +3565,11 @@ end;
   Returns: 
 
  ------------------------------------------------------------------------------}
-function Tgtkobject.GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint;
+function TGtkWidgetSet.GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint;
 var
   BitInfo : tagBitmapInfo;
 begin
-  Assert(False, 'trace:[TgtkObject.GetBitmapBits]');
+  Assert(False, 'trace:[TGtkWidgetSet.GetBitmapBits]');
   Result := 0;
   if IsValidGDIObject(Bitmap)
   then begin
@@ -3577,11 +3577,11 @@ begin
       gdiBitmap:
         Result := InternalGetDIBits(0, Bitmap, 0, 0, Count, Bits, BitInfo, 0, False);
       else
-        writeln('WARNING: [TgtkObject.GetBitmapBits] not a Bitmap!');
+        writeln('WARNING: [TGtkWidgetSet.GetBitmapBits] not a Bitmap!');
     end;
   end
   else
-    writeln('WARNING: [TgtkObject.GetBitmapBits] invalid Bitmap!');
+    writeln('WARNING: [TGtkWidgetSet.GetBitmapBits] invalid Bitmap!');
 end;
 
 {------------------------------------------------------------------------------
@@ -3591,7 +3591,7 @@ end;
   Returns: boolean;
 
  ------------------------------------------------------------------------------}
-function Tgtkobject.GetBitmapRawImageDescription(Bitmap: HBITMAP;
+function TGtkWidgetSet.GetBitmapRawImageDescription(Bitmap: HBITMAP;
   Desc: PRawImageDescription): boolean;
 var
   GDIObject: PGDIObject;
@@ -3599,7 +3599,7 @@ var
 begin
   Result:=false;
   if not IsValidGDIObject(Bitmap) then begin
-    writeln('WARNING: [TgtkObject.GetBitmapRawImageDescription] invalid Bitmap!');
+    writeln('WARNING: [TGtkWidgetSet.GetBitmapRawImageDescription] invalid Bitmap!');
     exit;
   end;
   GDIObject:=PGDIObject(Bitmap);
@@ -3608,7 +3608,7 @@ begin
   gbBitmap: GdkPixmap:=PGdkPixmap(PGdiObject(Bitmap)^.GDIBitmapObject);
   gbPixmap: GdkPixmap:=PGdkPixmap(PGdiObject(Bitmap)^.GDIPixmapObject);
   else
-    writeln('WARNING: [TgtkObject.GetBitmapRawImageDescription] GDI_RGBImage not implemented');
+    writeln('WARNING: [TGtkWidgetSet.GetBitmapRawImageDescription] GDI_RGBImage not implemented');
     exit;
   end;
   Result:=GetWindowRawImageDescription(PGdkWindow(GdkPixmap),Desc);
@@ -3621,7 +3621,7 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.GetCapture: HWND;
+function TGtkWidgetSet.GetCapture: HWND;
 var
   Widget: PGtkWidget;
   AWindow: PGtkWindow;
@@ -3646,19 +3646,19 @@ end;
   Returns: True if succesful
 
  ------------------------------------------------------------------------------}
-function TgtkObject.GetCaretPos(var lpPoint: TPoint): Boolean;
+function TGtkWidgetSet.GetCaretPos(var lpPoint: TPoint): Boolean;
 var
   //FocusObject: PGTKObject;
   modmask : TGDKModifierType;
 begin
-{  Assert(False, 'Trace:TODO: [TgtkObject.GetCaretPos] finish');
+{  Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetCaretPos] finish');
 
   FocusObject := PGTKObject(GetFocus);
   Result := FocusObject <> nil;
 
   if Result
   then begin
-//    Assert(False, Format('Trace:[TgtkObject.GetCaretPos] Got focusObject 0x%x --> %s', [Integer(FocusObject), gtk_type_name(FocusObject^.Klass^.theType)]));
+//    Assert(False, Format('Trace:[TGtkWidgetSet.GetCaretPos] Got focusObject 0x%x --> %s', [Integer(FocusObject), gtk_type_name(FocusObject^.Klass^.theType)]));
 
     if gtk_type_is_a(gtk_object_type(FocusObject), GTKAPIWidget_GetType)
     then begin
@@ -3669,7 +3669,7 @@ begin
       Result := False;
     end;
   end
-  else WriteLn('[TgtkObject.GetCaretPos] got focusObject nil');
+  else WriteLn('[TGtkWidgetSet.GetCaretPos] got focusObject nil');
  }
 
 Assert(False, 'Trace:GetCaretPos');
@@ -3681,10 +3681,10 @@ Assert(False, 'Trace:GetCaretPos');
 end;
 
 {------------------------------------------------------------------------------
-  function TgtkObject.GetCaretRespondToFocus(handle: HWND;
+  function TGtkWidgetSet.GetCaretRespondToFocus(handle: HWND;
     var ShowHideOnFocus: boolean): Boolean;
  ------------------------------------------------------------------------------}
-function TgtkObject.GetCaretRespondToFocus(handle: HWND;
+function TGtkWidgetSet.GetCaretRespondToFocus(handle: HWND;
   var ShowHideOnFocus: boolean): Boolean;
 begin
   if handle<>0 then begin
@@ -3709,7 +3709,7 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.GetCharABCWidths(DC: HDC; p2, p3: UINT;
+function TGtkWidgetSet.GetCharABCWidths(DC: HDC; p2, p3: UINT;
   const ABCStructs): Boolean;
 begin
   Result := False;
@@ -3725,7 +3725,7 @@ end;
   the inner area of a control, where the child controls are visible. The
   coordinates are relative to the control's left and top.
  ------------------------------------------------------------------------------}
-Function TGTKObject.GetClientBounds(handle : HWND; var ARect : TRect) : Boolean;
+Function TGtkWidgetSet.GetClientBounds(handle : HWND; var ARect : TRect) : Boolean;
 var
   Widget, ClientWidget: PGtkWidget;
   MainOrigin, ClientOrigin: TPoint;
@@ -3799,7 +3799,7 @@ end;
   The client rectangle is the size of the inner area of a control, where the
   child controls are visible.
  ------------------------------------------------------------------------------}
-Function TGTKObject.GetClientRect(handle : HWND; var ARect : TRect) : Boolean;
+Function TGtkWidgetSet.GetClientRect(handle : HWND; var ARect : TRect) : Boolean;
 var
   Widget, ClientWidget: PGtkWidget;
 begin
@@ -3851,7 +3851,7 @@ end;
       SimpleRegion
       ComplexRegion
  ------------------------------------------------------------------------------}
-Function TGTKObject.GetClipBox(DC : hDC; lpRect : PRect) : Longint;
+Function TGtkWidgetSet.GetClipBox(DC : hDC; lpRect : PRect) : Longint;
 var
   CRect : TGDKRectangle;
   X, Y : Longint;
@@ -3903,7 +3903,7 @@ end;
 
 
  ------------------------------------------------------------------------------}
-Function TGTKObject.GetRgnBox(RGN : HRGN; lpRect : PRect) : Longint;
+Function TGtkWidgetSet.GetRgnBox(RGN : HRGN; lpRect : PRect) : Longint;
 var
   CRect : TGDKRectangle;
 begin
@@ -3939,7 +3939,7 @@ end;
      1 = ok
     -1 = error
  ------------------------------------------------------------------------------}
-Function TGTKObject.GetClipRGN(DC : hDC; RGN : hRGN) : longint;
+Function TGtkWidgetSet.GetClipRGN(DC : hDC; RGN : hRGN) : longint;
 
   function GetDefaultClipRgn: longint;
   var
@@ -3952,7 +3952,7 @@ Function TGTKObject.GetClipRGN(DC : hDC; RGN : hRGN) : longint;
     if GdiObject^.GDIRegionObject<>nil then
       gdk_region_destroy(GdiObject^.GDIRegionObject);
     GdiObject^.GDIRegionObject:=CreateRectGDKRegion(ARect);
-    //writeln('TGTKObject.GetClipRGN A DC=',HexStr(Cardinal(DC),8),
+    //writeln('TGtkWidgetSet.GetClipRGN A DC=',HexStr(Cardinal(DC),8),
     //  ' RGN=',GDKRegionAsString(PGdiObject(RGN)^.GDIRegionObject),
     //  ' Result=',Result);
   end;
@@ -3966,7 +3966,7 @@ begin
     Result := ERROR
   else If Not IsValidGDIObject(RGN) then begin
     Result := ERROR;
-    WriteLn('WARNING: [TGTKObject.GetClipRGN] Invalid HRGN');
+    WriteLn('WARNING: [TGtkWidgetSet.GetClipRGN] Invalid HRGN');
   end
   else if TDeviceContext(DC).ClipRegion=0 then
     Result:=GetDefaultClipRgn
@@ -3988,7 +3988,7 @@ begin
     PGdiObject(RGN)^.GDIRegionObject := ClipRegionWithDCOffset;
 
     Result := RegionType(ClipRegionWithDCOffset);
-    //writeln('TGTKObject.GetClipRGN B DC=',HexStr(Cardinal(DC),8),
+    //writeln('TGtkWidgetSet.GetClipRGN B DC=',HexStr(Cardinal(DC),8),
     //  ' DCOrigin=',DCOrigin.X,',',DCOrigin.Y,' RGN=',GDKRegionAsString(ClipRegionWithDCOffset),' Result=',Result);
     If Result = NULLREGION then
       Result := 0
@@ -4007,7 +4007,7 @@ end;
   Returns a description of the command line parameters, that are understood by
   the interface.
  ------------------------------------------------------------------------------}
-Function TGTKObject.GetCmdLineParamDescForInterface: string;
+Function TGtkWidgetSet.GetCmdLineParamDescForInterface: string;
   function b(const s: string): string;
   begin
     Result:=BreakString(s,75,22)+LineEnding+LineEnding;
@@ -4035,11 +4035,11 @@ end;
   Returns: True if succesful
 
  ------------------------------------------------------------------------------}
-function TgtkObject.GetCursorPos(var lpPoint: TPoint ): Boolean;
+function TGtkWidgetSet.GetCursorPos(var lpPoint: TPoint ): Boolean;
 {$IFDEF GTK2}
 begin
   // TODO: GTK2 GetCursorPos
-  writeln('TGTKObject.GetCursorPos ToDo');
+  writeln('TGtkWidgetSet.GetCursorPos ToDo');
   Result:=false;
 end;
 {$ELSE}
@@ -4096,17 +4096,17 @@ end;
   (they are clipped away). Child areas are all child gdkwindows
   (e.g. not TControls).
  ------------------------------------------------------------------------------}
-function TgtkObject.GetDC(hWnd: HWND): HDC;
+function TGtkWidgetSet.GetDC(hWnd: HWND): HDC;
 begin
   Result:=CreateDCForWidget(PGtkWidget(hWnd),nil,false);
 end;
 
 {------------------------------------------------------------------------------
-  function TgtkObject.GetDeviceCaps(DC: HDC; Index: Integer): Integer;
+  function TGtkWidgetSet.GetDeviceCaps(DC: HDC; Index: Integer): Integer;
 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.GetDeviceCaps(DC: HDC; Index: Integer): Integer;
+function TGtkWidgetSet.GetDeviceCaps(DC: HDC; Index: Integer): Integer;
 var
   Visual: PGdkVisual;
 
@@ -4188,7 +4188,7 @@ begin
     Result:=0;
 
   else
-    writeln('TgtkObject.GetDeviceCaps not supported: Type=',Index);
+    writeln('TGtkWidgetSet.GetDeviceCaps not supported: Type=',Index);
   end;
   EndGDKErrorTrap;
 end;
@@ -4199,7 +4199,7 @@ end;
 
   Retrieves the information about the structure of the supported image data.
  ------------------------------------------------------------------------------}
-function TgtkObject.GetDeviceRawImageDescription(DC: HDC;
+function TGtkWidgetSet.GetDeviceRawImageDescription(DC: HDC;
   Desc: PRawImageDescription): boolean;
 var
   GDKWindow: PGdkWindow;
@@ -4215,7 +4215,7 @@ end;
 
   Retrieves the width and height of the device context in pixels.
  ------------------------------------------------------------------------------}
-function TgtkObject.GetDeviceSize(DC: HDC; var p: TPoint): boolean;
+function TGtkWidgetSet.GetDeviceSize(DC: HDC; var p: TPoint): boolean;
 begin
   Result := false;
   P := Point(0,0);
@@ -4226,9 +4226,9 @@ begin
       Result := true;
     end else begin
       {$IFDEF RaiseExceptionOnNilPointers}
-      RaiseException('TGTKObject.GetDeviceSize Window=nil');
+      RaiseException('TGtkWidgetSet.GetDeviceSize Window=nil');
       {$ENDIF}
-      writeln('TgtkObject.GetDeviceSize:',
+      writeln('TGtkWidgetSet.GetDeviceSize:',
         ' WARNING: DC ',HexStr(Cardinal(DC),8),' without gdkwindow.',
         ' Widget=',HexStr(Cardinal(wnd),8));
     end;
@@ -4236,7 +4236,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function TgtkObject.GetDCOriginRelativeToWindow(PaintDC: HDC;
+  function TGtkWidgetSet.GetDCOriginRelativeToWindow(PaintDC: HDC;
     WindowHandle: HWND; var OriginDiff: TPoint): boolean;
     
   Returns the origin of PaintDC relative to the window handle.
@@ -4246,15 +4246,15 @@ end;
     Then OriginDiff will be the the difference between the Forms client origin
     and the PaintDC will be 20,10.
  ------------------------------------------------------------------------------}
-function TgtkObject.GetDCOriginRelativeToWindow(PaintDC: HDC;
+function TGtkWidgetSet.GetDCOriginRelativeToWindow(PaintDC: HDC;
   WindowHandle: HWND; var OriginDiff: TPoint): boolean;
 
   procedure InvalidDrawable;
   begin
     {$IFDEF RaiseExceptionOnNilPointers}
-    RaiseException('TGTKObject.GetDCOriginRelativeToWindow Window=nil');
+    RaiseException('TGtkWidgetSet.GetDCOriginRelativeToWindow Window=nil');
     {$ENDIF}
-    writeln('TgtkObject.GetDCOriginRelativeToWindow:',
+    writeln('TGtkWidgetSet.GetDCOriginRelativeToWindow:',
       ' WARNING: PaintDC ',HexStr(Cardinal(PaintDC),8),' without gdkwindow.',
       ' Widget=',HexStr(Cardinal(TDeviceContext(PaintDC).wnd),8));
   end;
@@ -4298,9 +4298,9 @@ end;
   WindowHandle is any widget.
   The DC will be created for the client area including the child areas.
  ------------------------------------------------------------------------------}
-function TgtkObject.GetDesignerDC(WindowHandle: HWND): HDC;
+function TGtkWidgetSet.GetDesignerDC(WindowHandle: HWND): HDC;
 begin
-  //writeln('TgtkObject.GetDesignerDC A');
+  //writeln('TGtkWidgetSet.GetDesignerDC A');
   Result:=CreateDCForWidget(PGtkWidget(WindowHandle),nil,true);
 end;
 
@@ -4311,7 +4311,7 @@ end;
 
   The GetFocus function retrieves the handle of the window that has the focus.
  ------------------------------------------------------------------------------}
-function TgtkObject.GetFocus: HWND;
+function TGtkWidgetSet.GetFocus: HWND;
 var
   TopList, List: PGList;
   Widget: PGTKWidget;
@@ -4352,7 +4352,7 @@ end;
 {------------------------------------------------------------------------------
   function GetFontLanguageInfo(DC: HDC): DWord; override;
  ------------------------------------------------------------------------------}
-function TgtkObject.GetFontLanguageInfo(DC: HDC): DWord;
+function TGtkWidgetSet.GetFontLanguageInfo(DC: HDC): DWord;
 begin
   Result := 0;
   If IsValidDC(DC) then
@@ -4372,7 +4372,7 @@ end;
 
   The GetKeyState function retrieves the status of the specified virtual key.
  ------------------------------------------------------------------------------}
-function TgtkObject.GetKeyState(nVirtKey: Integer): Smallint;
+function TGtkWidgetSet.GetKeyState(nVirtKey: Integer): Smallint;
 const
   KEYSTATE: array[Boolean] of Smallint = (0, -32768 { $8000});
   TOGGLESTATE: array[Boolean] of Smallint = (0, 1);
@@ -4405,16 +4405,16 @@ begin
     Result := Result or TOGGLESTATE[FKeyStateList_.IndexOf(Pointer(
                                              nVirtKey or KEYMAP_TOGGLE)) >=0];
   {$ENDIF}
-  //Assert(False, Format('Trace:[TgtkObject.GetKeyState] %d -> 0x%x', [nVirtKey, Result]));
+  //Assert(False, Format('Trace:[TGtkWidgetSet.GetKeyState] %d -> 0x%x', [nVirtKey, Result]));
 end;
 
 {------------------------------------------------------------------------------
-  function TGtkObject.GetNotebookTabIndexAtPos(Handle: HWND;
+  function TGtkWidgetSet.GetNotebookTabIndexAtPos(Handle: HWND;
     const ClientPos: TPoint): integer;
 
 
  ------------------------------------------------------------------------------}
-function TGtkObject.GetNotebookTabIndexAtPos(Handle: HWND;
+function TGtkWidgetSet.GetNotebookTabIndexAtPos(Handle: HWND;
   const ClientPos: TPoint): integer;
 var
   NoteBookWidget: PGtkNotebook;
@@ -4459,20 +4459,20 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.GetObject(GDIObj: HGDIOBJ; BufSize: Integer;
+function TGtkWidgetSet.GetObject(GDIObj: HGDIOBJ; BufSize: Integer;
   Buf: Pointer): Integer;
 var
   NumColors : Longint;
   BitmapSection : TDIBSECTION;
 begin
-  Assert(False, 'trace:[TgtkObject.GetObject]');
+  Assert(False, 'trace:[TGtkWidgetSet.GetObject]');
   Result := 0;
   if IsValidGDIObject(GDIObj)
   then begin
     case PGDIObject(GDIObj)^.GDIType of
       gdiBitmap:
         begin
-          Assert(False, 'Trace:FINISH: [TgtkObject.GetObject] gdiBitmap');
+          Assert(False, 'Trace:FINISH: [TGtkWidgetSet.GetObject] gdiBitmap');
           if Buf = nil then
             Result := SizeOf(TDIBSECTION)
           else begin
@@ -4585,12 +4585,12 @@ begin
 
       gdiBrush:
         begin
-          Assert(False, 'Trace:TODO: [TgtkObject.GetObject] gdiBrush');
+          Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetObject] gdiBrush');
         end;
       gdiFont:
         begin
           {$IfDef GTK2}
-          Assert(False, 'Trace:TODO: [TgtkObject.GetObject] gdiFont(PANGO)');
+          Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetObject] gdiFont(PANGO)');
           {$Else}
           if Buf = nil then
             Result := SizeOf(PGDIObject(GDIObj)^.LogFont)
@@ -4608,14 +4608,14 @@ begin
         end;
       gdiPen:
         begin
-          Assert(False, 'Trace:TODO: [TgtkObject.GetObject] gdiPen');
+          Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetObject] gdiPen');
         end;
       gdiRegion:
         begin
-          Assert(False, 'Trace:TODO: [TgtkObject.GetObject] gdiRegion');
+          Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetObject] gdiRegion');
         end;
     else
-      WriteLn(Format('WARNING: [TgtkObject.GetObject] Unknown type %d', [Integer(PGDIObject(GDIObj)^.GDIType)]));
+      WriteLn(Format('WARNING: [TGtkWidgetSet.GetObject] Unknown type %d', [Integer(PGDIObject(GDIObj)^.GDIType)]));
     end;
   end;
 end;
@@ -4626,9 +4626,9 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-Function TGTKObject.GetParent(Handle : HWND): HWND;
+Function TGtkWidgetSet.GetParent(Handle : HWND): HWND;
 begin
-  //writeln('TGTKObject.GetParent ',HexStr(Cardinal(Handle),8));
+  //writeln('TGtkWidgetSet.GetParent ',HexStr(Cardinal(Handle),8));
   Result:=0;
   if Handle<>0 then
     Result:=HWnd(PGtkWidget(Handle)^.Parent);
@@ -4641,17 +4641,17 @@ end;
   Returns: Pointer
 
  ------------------------------------------------------------------------------}
-Function TgtkObject.GetProp(Handle : hwnd; Str : PChar): Pointer;
+Function TGtkWidgetSet.GetProp(Handle : hwnd; Str : PChar): Pointer;
 Begin
   Result := gtk_object_get_data(pgtkobject(Handle),Str);
 end;
 
 {------------------------------------------------------------------------------
-  function TgtkObject.GetRawImageFromDevice(SrcDC: HDC; const SrcRect: TRect;
+  function TGtkWidgetSet.GetRawImageFromDevice(SrcDC: HDC; const SrcRect: TRect;
     var NewRawImage: TRawImage): boolean;
 
  ------------------------------------------------------------------------------}
-function TgtkObject.GetRawImageFromDevice(SrcDC: HDC; const SrcRect: TRect;
+function TGtkWidgetSet.GetRawImageFromDevice(SrcDC: HDC; const SrcRect: TRect;
   var NewRawImage: TRawImage): boolean;
 var
   DCOrigin: TPoint;
@@ -4660,13 +4660,13 @@ var
 begin
   Result:=false;
   if not IsValidDC(SrcDC) then begin
-    writeln('WARNING: TgtkObject.GetRawImageFromDevice invalid SrcDC');
+    writeln('WARNING: TGtkWidgetSet.GetRawImageFromDevice invalid SrcDC');
     exit;
   end;
 
   DCOrigin:=GetDCOffset(TDeviceContext(SrcDC));
   {$IFDEF VerboseRawImage}
-  writeln('TgtkObject.GetRawImageFromDevice A DCOrigin=',DCOrigin.X,',',DCOrigin.Y,' SrcRect=',SrcRect.Left,',',SrcRect.Top,',',SrcRect.Right,',',SrcRect.Bottom);
+  writeln('TGtkWidgetSet.GetRawImageFromDevice A DCOrigin=',DCOrigin.X,',',DCOrigin.Y,' SrcRect=',SrcRect.Left,',',SrcRect.Top,',',SrcRect.Right,',',SrcRect.Bottom);
   {$ENDIF}
   ARect:=SrcRect;
   OffSetRect(ARect,DCOrigin.x,DCOrigin.y);
@@ -4676,10 +4676,10 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function TgtkObject.GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP;
+  function TGtkWidgetSet.GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP;
     const SrcRect: TRect; var NewRawImage: TRawImage): boolean; override;
  ------------------------------------------------------------------------------}
-function TgtkObject.GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP;
+function TGtkWidgetSet.GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP;
   const SrcRect: TRect; var NewRawImage: TRawImage): boolean;
 var
   GDIImg: PGDIObject;
@@ -4692,11 +4692,11 @@ begin
   FillChar(NewRawImage,SizeOf(NewRawImage),0);
 
   if (not IsValidGDIObject(SrcBitmap)) then begin
-    writeln('WARNING: [TgtkObject.GetRawImageFromBitmap] invalid SrcBitmap!');
+    writeln('WARNING: [TGtkWidgetSet.GetRawImageFromBitmap] invalid SrcBitmap!');
     exit;
   end;
   if ((SrcMaskBitmap<>0) and not IsValidGDIObject(SrcMaskBitmap)) then begin
-    writeln('WARNING: [TgtkObject.GetRawImageFromBitmap] invalid MaskBitmap!');
+    writeln('WARNING: [TGtkWidgetSet.GetRawImageFromBitmap] invalid MaskBitmap!');
     exit;
   end;
 
@@ -4708,11 +4708,11 @@ begin
     gbBitmap: GdkPixmap:=PGdkPixmap(GDIImg^.GDIBitmapObject);
     gbPixmap: GdkPixmap:=PGdkPixmap(GDIImg^.GDIPixmapObject);
     else
-      writeln('WARNING: [TgtkObject.GetRawImageFromBitmap] GDI_RGBImage not implemented');
+      writeln('WARNING: [TGtkWidgetSet.GetRawImageFromBitmap] GDI_RGBImage not implemented');
       exit;
     end;
     {$IFDEF VerboseRawImage}
-    writeln('TgtkObject.GetRawImageFromBitmap A GdkPixmap=',HexStr(Cardinal(GdkPixmap),8),' SrcMaskBitmap=',HexStr(Cardinal(SrcMaskBitmap),8));
+    writeln('TGtkWidgetSet.GetRawImageFromBitmap A GdkPixmap=',HexStr(Cardinal(GdkPixmap),8),' SrcMaskBitmap=',HexStr(Cardinal(SrcMaskBitmap),8));
     {$ENDIF}
     if not GetRawImageFromGdkWindow(PGdkWindow(GdkPixmap),SrcRect,NewRawImage)
     then exit;
@@ -4729,11 +4729,11 @@ begin
     case GDIMaskImg^.GDIBitmapType of
     gbBitmap: GdkMaskBitmap:=PGdkPixmap(GDIMaskImg^.GDIBitmapObject);
     else
-      writeln('WARNING: [TgtkObject.GetRawImageFromBitmap] invalid MaskBitmap');
+      writeln('WARNING: [TGtkWidgetSet.GetRawImageFromBitmap] invalid MaskBitmap');
       exit;
     end;
     {$IFDEF VerboseRawImage}
-    writeln('TgtkObject.GetRawImageFromBitmap GdkMaskBitmap=',HexStr(Cardinal(GdkMaskBitmap),8));
+    writeln('TGtkWidgetSet.GetRawImageFromBitmap GdkMaskBitmap=',HexStr(Cardinal(GdkMaskBitmap),8));
     {$ENDIF}
     if GdkMaskBitmap<>nil then begin
       if not GetRawImageFromGdkWindow(PGdkWindow(GdkMaskBitmap),SrcRect,
@@ -4743,15 +4743,15 @@ begin
       // check if mask is compatible
       if (MaskRawImage.Description.Width<>NewRawImage.Description.Width)
       or (MaskRawImage.Description.Height<>NewRawImage.Description.Height) then begin
-        writeln('WARNING: [TgtkObject.GetRawImageFromBitmap] MaskBitmap has different Size than Bitmap');
+        writeln('WARNING: [TGtkWidgetSet.GetRawImageFromBitmap] MaskBitmap has different Size than Bitmap');
         exit;
       end;
       if (MaskRawImage.Description.Depth<>1) then begin
-        writeln('WARNING: [TgtkObject.GetRawImageFromBitmap] MaskBitmap Depth<>1');
+        writeln('WARNING: [TGtkWidgetSet.GetRawImageFromBitmap] MaskBitmap Depth<>1');
         exit;
       end;
       if (MaskRawImage.Description.HasPalette) then begin
-        writeln('WARNING: [TgtkObject.GetRawImageFromBitmap] MaskBitmap HasPalette');
+        writeln('WARNING: [TGtkWidgetSet.GetRawImageFromBitmap] MaskBitmap HasPalette');
         exit;
       end;
 
@@ -4775,11 +4775,11 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function TgtkObject.GetScrollBarSize(Handle: HWND; BarKind: Integer): integer;
+  function TGtkWidgetSet.GetScrollBarSize(Handle: HWND; BarKind: Integer): integer;
 
   Returns the current width of the scrollbar of the widget.
  ------------------------------------------------------------------------------}
-function TgtkObject.GetScrollBarSize(Handle: HWND; BarKind: Integer): integer;
+function TGtkWidgetSet.GetScrollBarSize(Handle: HWND; BarKind: Integer): integer;
 var
   Widget, ScrollWidget, BarWidget: PGtkWidget;
 begin
@@ -4804,10 +4804,10 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function TgtkObject.GetScrollbarVisible(Handle: HWND;
+  function TGtkWidgetSet.GetScrollbarVisible(Handle: HWND;
     SBStyle: Integer): boolean;
  ------------------------------------------------------------------------------}
-function TgtkObject.GetScrollbarVisible(Handle: HWND; SBStyle: Integer): boolean;
+function TGtkWidgetSet.GetScrollbarVisible(Handle: HWND; SBStyle: Integer): boolean;
 var
   Widget, ScrollWidget, BarWidget: PGtkWidget;
 begin
@@ -4836,7 +4836,7 @@ end;
   Returns: Nothing
 
  ------------------------------------------------------------------------------}
-function TgtkObject.GetScrollInfo(Handle: HWND; SBStyle: Integer;
+function TGtkWidgetSet.GetScrollInfo(Handle: HWND; SBStyle: Integer;
   var ScrollInfo: TScrollInfo): Boolean;
 var
   Adjustment: PGtkAdjustment;
@@ -4921,9 +4921,9 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function TgtkObject.CreateSystemFont : hFont;
+  Function TGtkWidgetSet.CreateSystemFont : hFont;
  ------------------------------------------------------------------------------}
-Function TgtkObject.CreateSystemFont: hFont;
+Function TGtkWidgetSet.CreateSystemFont: hFont;
 var
   GDIObj : PGDIObject;
 begin
@@ -4943,9 +4943,9 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.GetStockObject(Value: Integer): LongInt;
+function TGtkWidgetSet.GetStockObject(Value: Integer): LongInt;
 begin
-  Assert(False, Format('Trace:> [TgtkObject.GetStockObject] %d', [Value]));
+  Assert(False, Format('Trace:> [TGtkWidgetSet.GetStockObject] %d', [Value]));
   Result := 0;
   case Value of
     BLACK_BRUSH:         // Black brush.
@@ -5003,9 +5003,9 @@ begin
       begin
       end;
 *)  else
-    Assert(False, Format('Trace:TODO: [TgtkObject.GetStockObject] Implement value: %d', [Value]));
+    Assert(False, Format('Trace:TODO: [TGtkWidgetSet.GetStockObject] Implement value: %d', [Value]));
   end;
-  Assert(False, Format('Trace:< [TgtkObject.GetStockObject] %d --> 0x%x', [Value, Result]));
+  Assert(False, Format('Trace:< [TGtkWidgetSet.GetStockObject] %d --> 0x%x', [Value, Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -5014,16 +5014,16 @@ end;
   Returns:  RGB value
 
  ------------------------------------------------------------------------------}
-function TgtkObject.GetSysColor(nIndex: Integer): DWORD;
+function TGtkWidgetSet.GetSysColor(nIndex: Integer): DWORD;
 begin
   if (nIndex < 0) or (nIndex > MAX_SYS_COLORS)
   then begin
     Result := 0;
     //RaiseException('');
-    WriteLn(Format('ERROR: [TgtkObject.GetSysColor] Bad Value: %8x Valid Range between 0 and %d', [nIndex, MAX_SYS_COLORS]));
+    WriteLn(Format('ERROR: [TGtkWidgetSet.GetSysColor] Bad Value: %8x Valid Range between 0 and %d', [nIndex, MAX_SYS_COLORS]));
   end
   else Result := SysColorMap[nIndex];
-  //Assert(False, Format('Trace:[TgtkObject.GetSysColor] Index %d --> %8x', [nIndex, Result]));
+  //Assert(False, Format('Trace:[TGtkWidgetSet.GetSysColor] Index %d --> %8x', [nIndex, Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -5033,47 +5033,47 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.GetSystemMetrics(nIndex: Integer): Integer;
+function TGtkWidgetSet.GetSystemMetrics(nIndex: Integer): Integer;
 var
   P : Pointer;
 begin
-  Assert(False, Format('Trace:> [TgtkObject.GetSystemMetrics] %d', [nIndex]));
+  Assert(False, Format('Trace:> [TGtkWidgetSet.GetSystemMetrics] %d', [nIndex]));
   case nIndex of
     SM_ARRANGE:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_ARRANGE          ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_ARRANGE          ');
       end;
     SM_CLEANBOOT:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_CLEANBOOT        ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CLEANBOOT        ');
       end;
     SM_CMOUSEBUTTONS:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_CMOUSEBUTTONS    ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CMOUSEBUTTONS    ');
       end;
     SM_CXBORDER:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_CXBORDER         ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXBORDER         ');
       end;
     SM_CYBORDER:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_CYBORDER         ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYBORDER         ');
       end;
     SM_CXCURSOR:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_CXCURSOR         ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXCURSOR         ');
       end;
     SM_CYCURSOR:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_CYCURSOR         ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYCURSOR         ');
       end;
     SM_CXDOUBLECLK:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_CXDOUBLECLK      ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXDOUBLECLK      ');
       end;
     SM_CYDOUBLECLK:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_CYDOUBLECLK      ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYDOUBLECLK      ');
       end;
     SM_CXDRAG:
       begin
@@ -5085,27 +5085,27 @@ begin
       end;
     SM_CXEDGE:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_CXEDGE           ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXEDGE           ');
       end;
     SM_CYEDGE:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_CYEDGE           ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYEDGE           ');
       end;
     SM_CXFIXEDFRAME:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_CXFIXEDFRAME     ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXFIXEDFRAME     ');
       end;
     SM_CYFIXEDFRAME:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_CYFIXEDFRAME     ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYFIXEDFRAME     ');
       end;
     SM_CXFULLSCREEN:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_CXFULLSCREEN     ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXFULLSCREEN     ');
       end;
     SM_CYFULLSCREEN:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_CYFULLSCREEN     ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYFULLSCREEN     ');
       end;
     SM_CXHSCROLL:
       begin
@@ -5119,87 +5119,87 @@ begin
       end;
     SM_CXHTHUMB:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_CXHTHUMB         ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXHTHUMB         ');
       end;
     SM_CXICON:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_CXICON           ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXICON           ');
       end;
     SM_CYICON:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_CYICON           ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYICON           ');
       end;
     SM_CXICONSPACING:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_CXICONSPACING    ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXICONSPACING    ');
       end;
     SM_CYICONSPACING:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_CYICONSPACING    ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYICONSPACING    ');
       end;
     SM_CXMAXIMIZED:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_CXMAXIMIZED      ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXMAXIMIZED      ');
       end;
     SM_CYMAXIMIZED:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_CYMAXIMIZED      ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYMAXIMIZED      ');
       end;
     SM_CXMAXTRACK:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_CXMAXTRACK       ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXMAXTRACK       ');
       end;
     SM_CYMAXTRACK:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_CYMAXTRACK       ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYMAXTRACK       ');
       end;
     SM_CXMENUCHECK:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_CXMENUCHECK      ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXMENUCHECK      ');
       end;
     SM_CYMENUCHECK:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_CYMENUCHECK      ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYMENUCHECK      ');
       end;
     SM_CXMENUSIZE:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_CXMENUSIZE       ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXMENUSIZE       ');
       end;
     SM_CYMENUSIZE:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_CYMENUSIZE       ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYMENUSIZE       ');
       end;
     SM_CXMIN:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_CXMIN            ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXMIN            ');
       end;
     SM_CYMIN:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_CYMIN            ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYMIN            ');
       end;
     SM_CXMINIMIZED:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_CXMINIMIZED      ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXMINIMIZED      ');
       end;
     SM_CYMINIMIZED:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_CYMINIMIZED      ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYMINIMIZED      ');
       end;
     SM_CXMINSPACING:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_CXMINSPACING     ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXMINSPACING     ');
       end;
     SM_CYMINSPACING:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_CYMINSPACING     ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYMINSPACING     ');
       end;
     SM_CXMINTRACK:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_CXMINTRACK       ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXMINTRACK       ');
       end;
     SM_CYMINTRACK:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_CYMINTRACK       ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYMINTRACK       ');
       end;
     SM_CXSCREEN:
       begin
@@ -5211,35 +5211,35 @@ begin
       end;
     SM_CXSIZE:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_CXSIZE           ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXSIZE           ');
       end;
     SM_CYSIZE:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_CYSIZE           ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYSIZE           ');
       end;
     SM_CXSIZEFRAME:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_CXSIZEFRAME      ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXSIZEFRAME      ');
       end;
     SM_CYSIZEFRAME:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_CYSIZEFRAME      ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYSIZEFRAME      ');
       end;
     SM_CXSMICON:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_CXSMICON         ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXSMICON         ');
       end;
     SM_CYSMICON:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_CYSMICON         ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYSMICON         ');
       end;
     SM_CXSMSIZE:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_CXSMSIZE         ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXSMSIZE         ');
       end;
     SM_CYSMSIZE:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_CYSMSIZE         ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYSMSIZE         ');
       end;
     SM_CXVSCROLL:
       begin
@@ -5253,75 +5253,75 @@ begin
       end;
     SM_CYCAPTION:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_CYCAPTION        ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYCAPTION        ');
       end;
     SM_CYKANJIWINDOW:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_CYKANJIWINDOW    ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYKANJIWINDOW    ');
       end;
     SM_CYMENU:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_CYMENU           ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYMENU           ');
       end;
     SM_CYSMCAPTION:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_CYSMCAPTION      ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYSMCAPTION      ');
       end;
     SM_CYVTHUMB:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_CYVTHUMB         ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYVTHUMB         ');
       end;
     SM_DBCSENABLED:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_DBCSENABLED      ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_DBCSENABLED      ');
       end;
     SM_DEBUG:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_DEBUG            ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_DEBUG            ');
       end;
     SM_MENUDROPALIGNMENT:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_MENUDROPALIGNMENT');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_MENUDROPALIGNMENT');
       end;
     SM_MIDEASTENABLED:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_MIDEASTENABLED   ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_MIDEASTENABLED   ');
       end;
     SM_MOUSEPRESENT:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_MOUSEPRESENT     ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_MOUSEPRESENT     ');
       end;
     SM_MOUSEWHEELPRESENT:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_MOUSEWHEELPRESENT');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_MOUSEWHEELPRESENT');
       end;
     SM_NETWORK:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_NETWORK          ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_NETWORK          ');
       end;
     SM_PENWINDOWS:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_PENWINDOWS       ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_PENWINDOWS       ');
       end;
     SM_SECURE:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_SECURE           ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_SECURE           ');
       end;
     SM_SHOWSOUNDS:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_SHOWSOUNDS       ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_SHOWSOUNDS       ');
       end;
     SM_SLOWMACHINE:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_SLOWMACHINE      ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_SLOWMACHINE      ');
       end;
     SM_SWAPBUTTON:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_SWAPBUTTON       ');
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_SWAPBUTTON       ');
       end;
     else Result := 0;
   end;
-  Assert(False, Format('Trace:< [TgtkObject.GetSystemMetrics] %d --> 0x%x (%d)', [nIndex, Result, Result]));
+  Assert(False, Format('Trace:< [TGtkWidgetSet.GetSystemMetrics] %d --> 0x%x (%d)', [nIndex, Result, Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -5331,7 +5331,7 @@ end;
 
   Gets the Font Color currently assigned to the Device Context
  ------------------------------------------------------------------------------}
-function TgtkObject.GetTextColor(DC: HDC) : TColorRef;
+function TGtkWidgetSet.GetTextColor(DC: HDC) : TColorRef;
 begin
   Result := 0;
   if IsValidDC(DC) then
@@ -5348,11 +5348,11 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer;
+function TGtkWidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer;
   var Size: TSize): Boolean;
 {$IfDef GTK2}
 begin
-  writeln('TGTKObject.GetTextExtentPoint ToDo');
+  writeln('TGtkWidgetSet.GetTextExtentPoint ToDo');
   Result:=false;
 end;
 {$Else}
@@ -5375,7 +5375,7 @@ begin
       UnRef := False;
     end;
     If UseFont = nil then
-      WriteLn('WARNING: [TgtkObject.GetTextExtentPoint] Missing font')
+      WriteLn('WARNING: [TGtkWidgetSet.GetTextExtentPoint] Missing font')
     else begin
       gdk_text_extents(UseFont, Str, Count,
                        @lbearing, @rBearing, @width, @ascent, @descent);
@@ -5387,7 +5387,7 @@ begin
         GDK_Font_UnRef(UseFont);
     end;
   end;
-  Assert(False, 'trace:< [TgtkObject.GetTextExtentPoint]');
+  Assert(False, 'trace:< [TGtkWidgetSet.GetTextExtentPoint]');
 end;
 {$EndIf}
 
@@ -5398,9 +5398,9 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;
+function TGtkWidgetSet.GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;
 begin
-  Assert(False, Format('Trace:> TODO FINISH[TgtkObject.GetTextMetrics] DC: 0x%x', [DC]));
+  Assert(False, Format('Trace:> TODO FINISH[TGtkWidgetSet.GetTextMetrics] DC: 0x%x', [DC]));
 
   Result := IsValidDC(DC);
   if Result then begin
@@ -5408,7 +5408,7 @@ begin
     TM:=TDeviceContext(DC).DCTextMetric.TextMetric;
   end;
 
-  Assert(False, Format('Trace:< TODO FINISH[TgtkObject.GetTextMetrics] DC: 0x%x', [DC]));
+  Assert(False, Format('Trace:< TODO FINISH[TGtkWidgetSet.GetTextMetrics] DC: 0x%x', [DC]));
 end;
 
 {------------------------------------------------------------------------------
@@ -5416,13 +5416,13 @@ end;
   Params:  none
   Returns: Nothing
  ------------------------------------------------------------------------------}
-Function TgtkObject.GetWindowLong(Handle : hwnd; int : Integer): Longint;
+Function TGtkWidgetSet.GetWindowLong(Handle : hwnd; int : Integer): Longint;
 var
   //Data : Tobject;
   P : Pointer;
 begin
   //TODO:Started but not finished
-  Assert(False, Format('Trace:> [TgtkObject.GETWINDOWLONG] HWND: 0x%x, int: 0x%x (%d)', [Handle, int, int]));
+  Assert(False, Format('Trace:> [TGtkWidgetSet.GETWINDOWLONG] HWND: 0x%x, int: 0x%x (%d)', [Handle, int, int]));
 
   case int of
     GWL_WNDPROC :
@@ -5474,7 +5474,7 @@ begin
     else Result := 0;
   end; //case
 
-  Assert(False, Format('Trace:< [TgtkObject.GETWINDOWLONG] HWND: 0x%x, int: 0x%x (%d) --> 0x%x (%d)', [Handle, int, int, Result, Result]));
+  Assert(False, Format('Trace:< [TGtkWidgetSet.GETWINDOWLONG] HWND: 0x%x, int: 0x%x (%d) --> 0x%x (%d)', [Handle, int, int, Result, Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -5484,7 +5484,7 @@ end;
 
   Returns the current offset of the DC.
  ------------------------------------------------------------------------------}
-function TgtkObject.GetWindowOrgEx(dc : hdc; P : PPoint): Integer;
+function TGtkWidgetSet.GetWindowOrgEx(dc : hdc; P : PPoint): Integer;
 begin
   Result := 0;
   if P=nil then exit;
@@ -5506,7 +5506,7 @@ end;
   of the Handle object and Right and Bottom will be the screen coordinate of
   the BottomRight pixel.
  ------------------------------------------------------------------------------}
-function TgtkObject.GetWindowRect(Handle: hwnd; var ARect: TRect): Integer;
+function TGtkWidgetSet.GetWindowRect(Handle: hwnd; var ARect: TRect): Integer;
 var
   X, Y, W, H: Integer;
   Widget: PGTKWidget;
@@ -5541,7 +5541,7 @@ end;
 
   Returns the Left, Top, relative to the client origin of its parent
  ------------------------------------------------------------------------------}
-function TgtkObject.GetWindowRelativePosition(Handle : hwnd;
+function TGtkWidgetSet.GetWindowRelativePosition(Handle : hwnd;
   var Left, Top: integer): boolean;
 begin
   if GtkWidgetIsA(PGtkWidget(Handle),GTK_TYPE_WIDGET) then begin
@@ -5559,7 +5559,7 @@ end;
 
   Returns the current widget Width and Height
  ------------------------------------------------------------------------------}
-Function TgtkObject.GetWindowSize(Handle : hwnd;
+Function TGtkWidgetSet.GetWindowSize(Handle : hwnd;
   var Width, Height: integer): boolean;
 begin
   if GtkWidgetIsA(PGtkWidget(Handle),GTK_TYPE_WIDGET) then begin
@@ -5587,7 +5587,7 @@ end;
   or a two way Rectangle Gradient, each Vertex point also supports optional
   Alpha/Transparency for more advanced Gradients.
  ------------------------------------------------------------------------------}
-function TgtkObject.GradientFill(DC: HDC; Vertices: PTriVertex; NumVertices : Longint;
+function TGtkWidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex; NumVertices : Longint;
   Meshes: Pointer; NumMeshes : Longint; Mode : Longint): Boolean;
 
   Function DoFillTriangle : Boolean;
@@ -5753,14 +5753,14 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.HideCaret(hWnd: HWND): Boolean;
+function TGtkWidgetSet.HideCaret(hWnd: HWND): Boolean;
 var
   GTKObject: PGTKObject;
   WasVisible: boolean;
 begin
-//writeln('[TgtkObject.HideCaret] A');
-  Assert(False, Format('Trace:  [TgtkObject.HideCaret] HWND: 0x%x', [hWnd]));
-//TODO: [TgtkObject.HideCaret] Finish (in gtkwinapi.inc)
+//writeln('[TGtkWidgetSet.HideCaret] A');
+  Assert(False, Format('Trace:  [TGtkWidgetSet.HideCaret] HWND: 0x%x', [hWnd]));
+//TODO: [TGtkWidgetSet.HideCaret] Finish (in gtkwinapi.inc)
 
   GTKObject := PGTKObject(HWND);
   Result := GTKObject <> nil;
@@ -5776,7 +5776,7 @@ begin
       Result := False;
     end;
   end
-  else WriteLn('WARNING: [TgtkObject.HideCaret] Got null HWND');
+  else WriteLn('WARNING: [TGtkWidgetSet.HideCaret] Got null HWND');
 
 end;
 
@@ -5796,7 +5796,7 @@ end;
       ComplexRegion
 
  ------------------------------------------------------------------------------}
-function TGTKObject.IntersectClipRect(dc: hdc;
+function TGtkWidgetSet.IntersectClipRect(dc: hdc;
   Left, Top, Right, Bottom: Integer): Integer;
 begin
   Result := SIMPLEREGION;
@@ -5806,7 +5806,7 @@ begin
   begin
     if GC = nil
     then begin
-      WriteLn('WARNING: [TgtkObject.IntersectClipRect] Uninitialized GC');
+      WriteLn('WARNING: [TGtkWidgetSet.IntersectClipRect] Uninitialized GC');
       Result := ERROR;
     end
     else begin
@@ -5823,7 +5823,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGTKObject.InvalidateRect(aHandle : HWND; Rect : pRect;
+function TGtkWidgetSet.InvalidateRect(aHandle : HWND; Rect : pRect;
   bErase : Boolean) : Boolean;
 var
   gdkRect : TGDKRectangle;
@@ -5835,14 +5835,14 @@ begin
   LCLObject:=GetLCLObject(Widget);
   if (LCLObject<>nil) then begin
     if (LCLObject=CurrentSentPaintMessageTarget) then begin
-      writeln('NOTE: TGTKObject.InvalidateRect during paint message: ',
+      writeln('NOTE: TGtkWidgetSet.InvalidateRect during paint message: ',
         LCLObject.ClassName);
       //RaiseException('Double paint');
     end;
     {$IFDEF VerboseDsgnPaintMsg}
     if (LCLObject is TComponent)
     and (csDesigning in TComponent(LCLObject).ComponentState) then begin
-      write('TGTKObject.InvalidateRect A ');
+      write('TGtkWidgetSet.InvalidateRect A ');
       write(TComponent(LCLObject).Name,':');
       write(LCLObject.ClassName);
       with Rect^ do
@@ -5879,10 +5879,10 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function TgtkObject.IsWindowVisible(handle: HWND): boolean;
+  function TGtkWidgetSet.IsWindowVisible(handle: HWND): boolean;
 
  ------------------------------------------------------------------------------}
-function TgtkObject.IsWindowVisible(handle: HWND): boolean;
+function TGtkWidgetSet.IsWindowVisible(handle: HWND): boolean;
 begin
   Result:=(handle<>0) and GTK_WIDGET_VISIBLE(PGtkWidget(handle));
 end;
@@ -5894,11 +5894,11 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.LineTo(DC: HDC; X, Y: Integer): Boolean;
+function TGtkWidgetSet.LineTo(DC: HDC; X, Y: Integer): Boolean;
 var
   DCOrigin: TPoint;
 begin
-  Assert(False, Format('trace:> [TgtkObject.LineTo] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
+  Assert(False, Format('trace:> [TGtkWidgetSet.LineTo] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
   Result := IsValidDC(DC);
   if Result
   then with TDeviceContext(DC) do
@@ -5919,11 +5919,11 @@ begin
       end else
         Result := False;
     end else begin
-      WriteLn('WARNING: [TgtkObject.LineTo] Uninitialized GC');
+      WriteLn('WARNING: [TGtkWidgetSet.LineTo] Uninitialized GC');
       Result := False;
     end;
   end;
-  Assert(False, Format('trace:< [TgtkObject.LineTo] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
+  Assert(False, Format('trace:< [TGtkWidgetSet.LineTo] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
 end;
 
 {------------------------------------------------------------------------------
@@ -5957,7 +5957,7 @@ begin
   end else Result:= false;
 end;
 
-function TgtkObject.MessageBox(hWnd: HWND; lpText, lpCaption: PChar;
+function TGtkWidgetSet.MessageBox(hWnd: HWND; lpText, lpCaption: PChar;
   uType : Cardinal): integer;
 var Dialog, ALabel : PGtkWidget;
     ButtonCount, DefButton, ADialogResult : Integer;
@@ -6050,9 +6050,9 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean;
+function TGtkWidgetSet.MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean;
 begin
-  Assert(False, Format('trace:> [TgtkObject.MoveToEx] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
+  Assert(False, Format('trace:> [TGtkWidgetSet.MoveToEx] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
   Result := IsValidDC(DC);
   if Result
   then with TDeviceContext(DC) do
@@ -6060,7 +6060,7 @@ begin
     if OldPoint <> nil then OldPoint^ := PenPos;
     PenPos := Point(X, Y);
   end;
-  Assert(False, Format('trace:< [TgtkObject.MoveToEx] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
+  Assert(False, Format('trace:< [TGtkWidgetSet.MoveToEx] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
 end;
 
 {------------------------------------------------------------------------------
@@ -6071,12 +6071,12 @@ end;
   Moving the Origin to 10,20 and drawing a point to 50,50, results in
   drawing a point to 60,70.
  ------------------------------------------------------------------------------}
-function TgtkObject.MoveWindowOrgEx(DC: HDC; dX, dY: Integer): Boolean;
+function TGtkWidgetSet.MoveWindowOrgEx(DC: HDC; dX, dY: Integer): Boolean;
 begin
   Result:=IsValidDC(DC);
   if Result then
   with TDeviceContext(DC) do begin
-    //writeln('[TgtkObject.MoveWindowOrgEx] B DC=',HexStr(Cardinal(DC),8),
+    //writeln('[TGtkWidgetSet.MoveWindowOrgEx] B DC=',HexStr(Cardinal(DC),8),
     //  ' Old=',Origin.X,',',Origin.Y,' d=',dX,',',dY,' ');
     inc(Origin.X,dX);
     inc(Origin.Y,dY);
@@ -6084,10 +6084,10 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function TgtkObject.PairSplitterAddSide(SplitterHandle, SideHandle: hWnd;
+  function TGtkWidgetSet.PairSplitterAddSide(SplitterHandle, SideHandle: hWnd;
     Side: integer): Boolean;
  ------------------------------------------------------------------------------}
-function TgtkObject.PairSplitterAddSide(SplitterHandle, SideHandle: hWnd;
+function TGtkWidgetSet.PairSplitterAddSide(SplitterHandle, SideHandle: hWnd;
   Side: integer): Boolean;
 begin
   Result:=false;
@@ -6100,31 +6100,31 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function TgtkObject.PairSplitterGetInterfaceInfo: Boolean;
+  function TGtkWidgetSet.PairSplitterGetInterfaceInfo: Boolean;
  ------------------------------------------------------------------------------}
-function TgtkObject.PairSplitterGetInterfaceInfo: Boolean;
+function TGtkWidgetSet.PairSplitterGetInterfaceInfo: Boolean;
 begin
   Result:=true;
 end;
 
 {------------------------------------------------------------------------------
-  function TgtkObject.PairSplitterRemoveSide(SplitterHandle, SideHandle: hWnd;
+  function TGtkWidgetSet.PairSplitterRemoveSide(SplitterHandle, SideHandle: hWnd;
     Side: integer): Boolean;
  ------------------------------------------------------------------------------}
-function TgtkObject.PairSplitterRemoveSide(SplitterHandle, SideHandle: hWnd;
+function TGtkWidgetSet.PairSplitterRemoveSide(SplitterHandle, SideHandle: hWnd;
   Side: integer): Boolean;
 begin
   Result:=false;
-  writeln('WARNING: TgtkObject.PairSplitterRemoveSide not implemented');
+  writeln('WARNING: TGtkWidgetSet.PairSplitterRemoveSide not implemented');
 end;
 
 {------------------------------------------------------------------------------
-  function TgtkObject.PairSplitterSetPosition(SplitterHandle: hWnd;
+  function TGtkWidgetSet.PairSplitterSetPosition(SplitterHandle: hWnd;
     var NewPosition: integer): Boolean;
 
   Negative values for NewPosition will only read the value
  ------------------------------------------------------------------------------}
-function TgtkObject.PairSplitterSetPosition(SplitterHandle: hWnd;
+function TGtkWidgetSet.PairSplitterSetPosition(SplitterHandle: hWnd;
   var NewPosition: integer): Boolean;
 begin
   Result:=false;
@@ -6146,7 +6146,7 @@ end;
 
   Returns: Boolean if an event was there
  ------------------------------------------------------------------------------}
-function TgtkObject.PeekMessage(var lpMsg: TMsg; Handle : HWND;
+function TGtkWidgetSet.PeekMessage(var lpMsg: TMsg; Handle : HWND;
   wMsgFilterMin, wMsgFilterMax, wRemoveMsg: UINT): Boolean;
 var
   vlItem : TGtkMessageQueueItem;
@@ -6181,7 +6181,7 @@ end;
   then the resulting Poly-Bézier will be drawn as a Polygon.
 
  ------------------------------------------------------------------------------}
-Function TgtkObject.PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer;
+Function TGtkWidgetSet.PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer;
   Filled, Continuous: Boolean): Boolean;
 Begin
   Result := IsValidDC(DC);
@@ -6190,7 +6190,7 @@ Begin
   begin
     if GC = nil
     then begin
-      WriteLn('WARNING: [TgtkObject.PolyBezier] Uninitialized GC');
+      WriteLn('WARNING: [TGtkWidgetSet.PolyBezier] Uninitialized GC');
       Result := False;
     end
     else
@@ -6199,7 +6199,7 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
-  Method:   TgtkObject.Polygon
+  Method:   TGtkWidgetSet.Polygon
   Params:   DC: HDC; Points: ^TPoint; NumPts: integer; Winding: Boolean;
   Returns:  Nothing
 
@@ -6216,7 +6216,7 @@ End;
   To draw a polygon on the canvas, without filling it, use the Polyline method,
   specifying the first point a second time at the end.
 }
-function TgtkObject.Polygon(DC: HDC; Points: PPoint; NumPts: Integer;
+function TGtkWidgetSet.Polygon(DC: HDC; Points: PPoint; NumPts: Integer;
   Winding: Boolean): boolean;
 var
   i: integer;
@@ -6233,7 +6233,7 @@ begin
     if NumPts<=0 then exit;
     if GC = nil
     then begin
-      WriteLn('WARNING: [TgtkObject.Polygon] Uninitialized GC');
+      WriteLn('WARNING: [TGtkWidgetSet.Polygon] Uninitialized GC');
       Result := False;
     end
     else begin
@@ -6302,7 +6302,7 @@ begin
   end;
 end;
 
-function TgtkObject.Polyline(DC: HDC; Points: PPoint; NumPts: Integer): boolean;
+function TGtkWidgetSet.Polyline(DC: HDC; Points: PPoint; NumPts: Integer): boolean;
 var i: integer;
   PointArray: PGDKPoint;
   DCOrigin: TPoint;
@@ -6313,7 +6313,7 @@ begin
   begin
     if GC = nil
     then begin
-      WriteLn('WARNING: [TgtkObject.Polyline] Uninitialized GC');
+      WriteLn('WARNING: [TGtkWidgetSet.Polyline] Uninitialized GC');
       Result := False;
     end
     else begin
@@ -6354,7 +6354,7 @@ end;
   The PostMessage function places (posts) a message in the message queue and
   then returns without waiting.
  ------------------------------------------------------------------------------}
-function TGTKObject.PostMessage(Handle: HWND; Msg: Cardinal; wParam: WParam;
+function TGtkWidgetSet.PostMessage(Handle: HWND; Msg: Cardinal; wParam: WParam;
   lParam: LParam): Boolean;
 
   function ParentPaintMessageInQueue: boolean;
@@ -6460,7 +6460,7 @@ end;
   between which the Arc is drawn.
 
 ------------------------------------------------------------------------------}
-function TgtkObject.RadialArc(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean;
+function TGtkWidgetSet.RadialArc(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean;
 Begin
   Result := IsValidDC(DC);
   if Result
@@ -6468,7 +6468,7 @@ Begin
   begin
     if GC = nil
     then begin
-      WriteLn('WARNING: [TgtkObject.RadialArc] Uninitialized GC');
+      WriteLn('WARNING: [TGtkWidgetSet.RadialArc] Uninitialized GC');
       Result := False;
     end
     else
@@ -6486,7 +6486,7 @@ End;
   the bounding-Arc is drawn.
 
 ------------------------------------------------------------------------------}
-function TgtkObject.RadialChord(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean;
+function TGtkWidgetSet.RadialChord(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean;
 begin
   Result := IsValidDC(DC);
   if Result
@@ -6494,7 +6494,7 @@ begin
   begin
     if GC = nil
     then begin
-      WriteLn('WARNING: [TgtkObject.RadialChord] Uninitialized GC');
+      WriteLn('WARNING: [TGtkWidgetSet.RadialChord] Uninitialized GC');
       Result := False;
     end
     else
@@ -6512,7 +6512,7 @@ End;
   the bounding-Arc is drawn.
 
 ------------------------------------------------------------------------------}
-function TgtkObject.RadialPie(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean;
+function TGtkWidgetSet.RadialPie(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean;
 begin
   Result := IsValidDC(DC);
   if Result
@@ -6520,7 +6520,7 @@ begin
   begin
     if GC = nil
     then begin
-      WriteLn('WARNING: [TgtkObject.RadialPie] Uninitialized GC');
+      WriteLn('WARNING: [TGtkWidgetSet.RadialPie] Uninitialized GC');
       Result := False;
     end
     else
@@ -6535,7 +6535,7 @@ end;
 
   Change the group of menuitems to 'radio' or to 'checked'.
  ------------------------------------------------------------------------------}
-function TgtkObject.RadioMenuItemGroup(hndMenu: HMENU; bRadio: Boolean): Boolean;
+function TGtkWidgetSet.RadioMenuItemGroup(hndMenu: HMENU; bRadio: Boolean): Boolean;
 var
   LCLMenuItem: TMenuItem;
 begin
@@ -6554,9 +6554,9 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.RealizePalette(DC: HDC): Cardinal;
+function TGtkWidgetSet.RealizePalette(DC: HDC): Cardinal;
 begin
-  Assert(False, 'Trace:FINISH: [TgtkObject.RealizePalette]');
+  Assert(False, 'Trace:FINISH: [TGtkWidgetSet.RealizePalette]');
   Result := 0;
   if IsValidDC(DC)
   then with TDeviceContext(DC) do
@@ -6573,19 +6573,19 @@ end;
   The Rectangle function draws a rectangle. The rectangle is outlined by using
   the current pen and filled by using the current brush.
  ------------------------------------------------------------------------------}
-function TgtkObject.Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
+function TGtkWidgetSet.Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
 var
   Left, Top, Width, Height: Integer;
   DCOrigin: TPoint;
 begin
-  Assert(False, Format('trace:> [TgtkObject.Rectangle] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d', [DC, X1, Y1, X2, Y2]));
+  Assert(False, Format('trace:> [TGtkWidgetSet.Rectangle] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d', [DC, X1, Y1, X2, Y2]));
   Result := IsValidDC(DC);
   if Result
   then with TDeviceContext(DC) do
   begin
     if GC = nil
     then begin
-      WriteLn('WARNING: [TgtkObject.Rectangle] Uninitialized GC');
+      WriteLn('WARNING: [TGtkWidgetSet.Rectangle] Uninitialized GC');
       Result := False;
     end
     else begin
@@ -6616,7 +6616,7 @@ begin
       EndGDKErrorTrap;
     end;
   end;
-  Assert(False, Format('trace:< [TgtkObject.Rectangle] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d', [DC, X1, Y1, X2, Y2]));
+  Assert(False, Format('trace:< [TGtkWidgetSet.Rectangle] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d', [DC, X1, Y1, X2, Y2]));
 end;
 
 {------------------------------------------------------------------------------
@@ -6624,7 +6624,7 @@ end;
   Params:  dc : hdc; ARect: TRect
   Returns: True if ARect is not completely clipped away.
  ------------------------------------------------------------------------------}
-function TgtkObject.RectVisible(dc : hdc; const ARect: TRect) : Boolean;
+function TGtkWidgetSet.RectVisible(dc : hdc; const ARect: TRect) : Boolean;
 begin
   Result := inherited RectVisible(dc,ARect);
 end;
@@ -6639,7 +6639,7 @@ end;
   GroupIndex. The hndMenu is one of them.
   Update all radio groups.
  ------------------------------------------------------------------------------}
-function TgtkObject.RegroupMenuItem(hndMenu: HMENU;
+function TGtkWidgetSet.RegroupMenuItem(hndMenu: HMENU;
   GroupIndex: Integer): Boolean;
 
 const
@@ -6701,7 +6701,7 @@ begin
 
   if not gtk_is_radio_menu_item(Pointer(hndMenu))
   then begin
-    writeln('WARNING: TgtkObject.RegroupMenuItem: handle is not a GTK_RADIO_MENU_ITEM');
+    writeln('WARNING: TGtkWidgetSet.RegroupMenuItem: handle is not a GTK_RADIO_MENU_ITEM');
     Exit;
   end;
 
@@ -6764,7 +6764,7 @@ end;
       then begin
         Result:=gtk_radio_menu_item_group(
                                  GTK_RADIO_MENU_ITEM(ParentMenuItem[i].Handle));
-        //writeln('TgtkObject.RegroupMenuItem.GetGroup A i=',i,' ',ParentMenuItem[i].Name,' GrpIndex=',ParentMenuItem[i].GroupIndex,' LastRadioItem=',LastRadioItem,' Result=',HexStr(Cardinal(Result),8));
+        //writeln('TGtkWidgetSet.RegroupMenuItem.GetGroup A i=',i,' ',ParentMenuItem[i].Name,' GrpIndex=',ParentMenuItem[i].GroupIndex,' LastRadioItem=',LastRadioItem,' Result=',HexStr(Cardinal(Result),8));
         exit;
       end;
     end;
@@ -6783,7 +6783,7 @@ begin
     if AMenuItem=nil then exit;
     ParentMenuItem:=AMenuItem.Parent;
     if ParentMenuItem=nil then exit;
-    //writeln('TgtkObject.RegroupMenuItem A ',AMenuItem.Name,' ',ParentMenuItem.Name,' GroupIndex=',AMenuItem.GroupIndex);
+    //writeln('TGtkWidgetSet.RegroupMenuItem A ',AMenuItem.Name,' ',ParentMenuItem.Name,' GroupIndex=',AMenuItem.GroupIndex);
     LastRadioGroupStart:=-1;
     for i:=0 to ParentMenuItem.Count-1 do begin
       if ParentMenuItem[i].RadioItem
@@ -6791,7 +6791,7 @@ begin
       and GtkWidgetIsA(Pointer(ParentMenuItem[i].Handle),
                        GTK_RADIO_MENU_ITEM_TYPE)
       then begin
-        //writeln('TgtkObject.RegroupMenuItem B i=',i,' ',ParentMenuItem[i].Name,
+        //writeln('TGtkWidgetSet.RegroupMenuItem B i=',i,' ',ParentMenuItem[i].Name,
         //' GrpIndex=',ParentMenuItem[i].GroupIndex,
         //' LastRadioGroupStart=',LastRadioGroupStart,
         //' LastGroup=',HexStr(Cardinal(gtk_radio_menu_item_group(
@@ -6824,7 +6824,7 @@ begin
     UpdateRadioGroupChecks(RadioGroup);
     Result:=true;
   end else begin
-    writeln('WARNING: TgtkObject.RegroupMenuItem: handle is not a GTK_RADIO_MENU_ITEM');
+    writeln('WARNING: TGtkWidgetSet.RegroupMenuItem: handle is not a GTK_RADIO_MENU_ITEM');
     Result:=false;
   end;
 end;
@@ -6838,7 +6838,7 @@ end;
   The ReleaseCapture function releases the mouse capture from a window
   and restores normal mouse input processing.
  ------------------------------------------------------------------------------}
-function TgtkObject.ReleaseCapture: Boolean;
+function TGtkWidgetSet.ReleaseCapture: Boolean;
 begin
   SetCapture(0);
   Result := True;
@@ -6851,12 +6851,12 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.ReleaseDC(hWnd: HWND; DC: HDC): Integer;
+function TGtkWidgetSet.ReleaseDC(hWnd: HWND; DC: HDC): Integer;
 var
   aDC, pSavedDC: TDeviceContext;
 begin
-//writeln('[TgtkObject.ReleaseDC] ',HexStr(DC,8),'  ',FDeviceContexts.Count);
-  Assert(False, Format('trace:> [TgtkObject.ReleaseDC] DC:0x%x', [DC]));
+//writeln('[TGtkWidgetSet.ReleaseDC] ',HexStr(DC,8),'  ',FDeviceContexts.Count);
+  Assert(False, Format('trace:> [TGtkWidgetSet.ReleaseDC] DC:0x%x', [DC]));
   Result := 0;
 
   if {(hWnd <> 0) and} (DC <> 0)
@@ -6908,7 +6908,7 @@ begin
         on E:Exception do begin
           //Nothing, just try to unref it
           //(it segfaults if the window doesnt exist anymore :-)
-          writeln('TgtkObject.ReleaseDC: ',E.Message);
+          writeln('TGtkWidgetSet.ReleaseDC: ',E.Message);
         end;
       end;
 
@@ -6916,7 +6916,7 @@ begin
       Result := 1;
     end;
   end;
-  Assert(False, Format('trace:< [TgtkObject.ReleaseDC] FDeviceContexts DC:0x%x', [DC]));
+  Assert(False, Format('trace:< [TGtkWidgetSet.ReleaseDC] FDeviceContexts DC:0x%x', [DC]));
 end;
 
 {------------------------------------------------------------------------------
@@ -6926,13 +6926,13 @@ end;
 
 
 -------------------------------------------------------------------------------}
-function TgtkObject.RestoreDC(DC: HDC; SavedDC: Integer): Boolean;
+function TGtkWidgetSet.RestoreDC(DC: HDC; SavedDC: Integer): Boolean;
 var
   aDC, pSavedDC: TDeviceContext;
   Count: Integer;
   ClipRegionChanged: Boolean;
 begin
-  Assert(False, Format('Trace:> [TgtkObject.RestoreDC] DC:0x%x, SavedDC: %d', [DC, SavedDC]));
+  Assert(False, Format('Trace:> [TGtkWidgetSet.RestoreDC] DC:0x%x, SavedDC: %d', [DC, SavedDC]));
   Result := IsValidDC(DC) and (SavedDC <> 0);
   if Result
   then begin
@@ -6965,7 +6965,7 @@ begin
     pSavedDC.SavedContext := nil;
     if ClipRegionChanged then
       SelectGDIRegion(HDC(aDC));
-    //writeln('TgtkObject.RestoreDC A ',GDKRegionAsString(PGdiObject(aDC.ClipRegion)^.GDIRegionObject));
+    //writeln('TGtkWidgetSet.RestoreDC A ',GDKRegionAsString(PGdiObject(aDC.ClipRegion)^.GDIRegionObject));
 
 
     // free saved DC
@@ -6994,7 +6994,7 @@ begin
 
     DeleteDC(HGDIOBJ(pSavedDC));
   end;
-  Assert(False, Format('Trace:< [TgtkObject.RestoreDC] DC:0x%x, Saved: %d --> %s', [Integer(DC), SavedDC, BOOL_TEXT[Result]]));
+  Assert(False, Format('Trace:< [TGtkWidgetSet.RestoreDC] DC:0x%x, Saved: %d --> %s', [Integer(DC), SavedDC, BOOL_TEXT[Result]]));
 end;
 
 {------------------------------------------------------------------------------
@@ -7004,7 +7004,7 @@ end;
 
   Sets left or justification of a menuitem
 -------------------------------------------------------------------------------}
-function TgtkObject.RightJustifyMenuItem(HndMenu: HMenu;
+function TGtkWidgetSet.RightJustifyMenuItem(HndMenu: HMenu;
   bRightJustify: boolean): Boolean;
 var
   MenuItemWidget: PGtkMenuItem;
@@ -7024,22 +7024,22 @@ end;
   of the corner arcs, RX is the radial width. If either is less than or equal to
   0, the routine simly calls to standard Rectangle.
  ------------------------------------------------------------------------------}
-Function TgtkObject.RoundRect(DC : hDC; X1, Y1, X2, Y2: Integer; RX,RY : Integer): Boolean;
+Function TGtkWidgetSet.RoundRect(DC : hDC; X1, Y1, X2, Y2: Integer; RX,RY : Integer): Boolean;
 begin
-  Assert(False, Format('trace:> [TgtkObject.RoundRect] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d, RX:%d, RY:%d', [DC, X1, Y1, X2, Y2, RX, RY]));
+  Assert(False, Format('trace:> [TGtkWidgetSet.RoundRect] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d, RX:%d, RY:%d', [DC, X1, Y1, X2, Y2, RX, RY]));
   Result := IsValidDC(DC);
   if Result
   then with TDeviceContext(DC) do
   begin
     if GC = nil
     then begin
-      WriteLn('WARNING: [TgtkObject.RoundRect] Uninitialized GC');
+      WriteLn('WARNING: [TGtkWidgetSet.RoundRect] Uninitialized GC');
       Result := False;
     end
     else
       Result := Inherited RoundRect(DC, X1, Y1, X2, Y2, RX, RY);
   end;
-  Assert(False, Format('trace:< [TgtkObject.RoundRect] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d, RX:%d, RY:%d', [DC, X1, Y1, X2, Y2, RX, RY]));
+  Assert(False, Format('trace:< [TGtkWidgetSet.RoundRect] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d, RX:%d, RY:%d', [DC, X1, Y1, X2, Y2, RX, RY]));
 end;
 
 {------------------------------------------------------------------------------
@@ -7051,11 +7051,11 @@ end;
   The SaveDC function saves the current state of the specified device
   context (DC) by copying its elements to a context stack.
 -------------------------------------------------------------------------------}
-function TgtkObject.SaveDC(DC: HDC): Integer;
+function TGtkWidgetSet.SaveDC(DC: HDC): Integer;
 var
   aDC, aSavedDC: TDeviceContext;
 begin
-  Assert(False, Format('Trace:> [TgtkObject.SaveDC]  0x%x', [Integer(DC)]));
+  Assert(False, Format('Trace:> [TGtkWidgetSet.SaveDC]  0x%x', [Integer(DC)]));
 
   Result := 0;
   if IsValidDC(DC)
@@ -7068,7 +7068,7 @@ begin
     Result:=1;
   end;
 
-  Assert(False, Format('Trace:< [TgtkObject.SaveDC]  0x%x --> %d', [Integer(DC), Result]));
+  Assert(False, Format('Trace:< [TGtkWidgetSet.SaveDC]  0x%x --> %d', [Integer(DC), Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -7078,7 +7078,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-Function TGTKObject.ScreenToClient(Handle : HWND; var P : TPoint) : Integer;
+Function TGtkWidgetSet.ScreenToClient(Handle : HWND; var P : TPoint) : Integer;
 var
   X, Y: Integer;
   Widget: PGTKWidget;
@@ -7113,7 +7113,7 @@ Begin
     end;
   end;
 
-  //writeln('[TGTKObject.ScreenToClient] ',x,',',y,' P=',P.X,',',P.Y);
+  //writeln('[TGtkWidgetSet.ScreenToClient] ',x,',',y,' P=',P.X,',',P.Y);
   dec(P.X, X);
   dec(P.Y, Y);
   Result := -1;
@@ -7135,7 +7135,7 @@ end;
   The ScrollWindowEx function scrolls the content of the specified window's
   client area
  ------------------------------------------------------------------------------}
-function TgtkObject.ScrollWindowEx(hWnd: HWND; dx, dy: Integer; prcScroll, prcClip: PRect; hrgnUpdate: HRGN; prcUpdate: PRect; flags: UINT): Boolean;
+function TGtkWidgetSet.ScrollWindowEx(hWnd: HWND; dx, dy: Integer; prcScroll, prcClip: PRect; hrgnUpdate: HRGN; prcUpdate: PRect; flags: UINT): Boolean;
 begin
   Result := False;
 end;
@@ -7155,7 +7155,7 @@ end;
       ComplexRegion
 
  ------------------------------------------------------------------------------}
-Function TgtkObject.SelectClipRGN(DC : hDC; RGN : HRGN) : Longint;
+Function TGtkWidgetSet.SelectClipRGN(DC : hDC; RGN : HRGN) : Longint;
 var
   RegObj: PGdkRegion;
   DCOrigin: TPoint;
@@ -7167,7 +7167,7 @@ begin
   begin
     if (GC = nil) and (RGN <> 0)
     then begin
-      WriteLn('WARNING: [TgtkObject.SelectClipRGN] Uninitialized GC');
+      WriteLn('WARNING: [TGtkWidgetSet.SelectClipRGN] Uninitialized GC');
       Result := ERROR;
     end
     else begin
@@ -7188,12 +7188,12 @@ begin
           DCOrigin:=GetDCOffset(TDeviceContext(DC));
           gdk_region_offset(RegObj,DCOrigin.x,DCOrigin.Y);
           Result := RegionType(RegObj);
-          //writeln('TgtkObject.SelectClipRGN RGN=',GDKRegionAsString(RegObj),' DCOrigin=',DCOrigin.X,',',DCOrigin.Y);
+          //writeln('TGtkWidgetSet.SelectClipRGN RGN=',GDKRegionAsString(RegObj),' DCOrigin=',DCOrigin.X,',',DCOrigin.Y);
           SelectGDIRegion(DC);
         end
         else begin
           Result := ERROR;
-          WriteLn('WARNING: [TgtkObject.SelectClipRGN] Invalid RGN');
+          WriteLn('WARNING: [TGtkWidgetSet.SelectClipRGN] Invalid RGN');
         end;
     end;
   end;
@@ -7206,12 +7206,12 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.SelectObject(DC: HDC; GDIObj: HGDIOBJ): HGDIOBJ;
+function TGtkWidgetSet.SelectObject(DC: HDC; GDIObj: HGDIOBJ): HGDIOBJ;
 //var
 //  Color: TGdkColor;
 begin
   //TODO: Finish this;
-  Assert(False, Format('trace:> [TgtkObject.SelectObject] DC: 0x%x', [DC]));
+  Assert(False, Format('trace:> [TGtkWidgetSet.SelectObject] DC: 0x%x', [DC]));
 
   Result := 0;
   if IsValidDC(DC) and IsValidGDIObject(GDIObj)
@@ -7221,7 +7221,7 @@ begin
       gdiBitmap:
         with TDeviceContext(DC) do
         begin
-          Assert(False, Format('trace:  [TgtkObject.SelectObject] DC: 0x%x, Type: Bitmap', [DC]));
+          Assert(False, Format('trace:  [TGtkWidgetSet.SelectObject] DC: 0x%x, Type: Bitmap', [DC]));
           Result := HBITMAP(CurrentBitmap);
           CurrentBitmap := PGDIObject(GDIObj);
           if GC <> nil then begin
@@ -7246,7 +7246,7 @@ begin
       gdiBrush:
         with TDeviceContext(DC), PGdiObject(GDIObj)^ do
         begin
-          Assert(False, Format('trace:  [TgtkObject.SelectObject] DC: 0x%x, Type: Brush', [DC]));
+          Assert(False, Format('trace:  [TGtkWidgetSet.SelectObject] DC: 0x%x, Type: Brush', [DC]));
           Result := HBRUSH(CurrentBrush);
           CurrentBrush := PGDIObject(GDIObj);
           if GC <> nil
@@ -7265,7 +7265,7 @@ begin
       gdiFont:
         with TDeviceContext(DC) do
         begin
-          Assert(False, Format('trace:  [TgtkObject.SelectObject] DC: 0x%x, Type: Font', [DC]));
+          Assert(False, Format('trace:  [TGtkWidgetSet.SelectObject] DC: 0x%x, Type: Font', [DC]));
           Result := HFONT(CurrentFont);
           CurrentFont := PGDIObject(GDIObj);
           {$IfDef GTK1}
@@ -7300,9 +7300,9 @@ begin
       end;
     end;
   end;
-//writeln('[TgtkObject.SelectObject] GDI=',HexStr(Cardinal(GDIObj),8)
+//writeln('[TGtkWidgetSet.SelectObject] GDI=',HexStr(Cardinal(GDIObj),8)
 // ,'  Old=',Hexstr(Cardinal(Result),8));
-  Assert(False, Format('trace:< [TgtkObject.SelectObject] DC: 0x%x  --> 0x%x', [DC, Result]));
+  Assert(False, Format('trace:< [TGtkWidgetSet.SelectObject] DC: 0x%x  --> 0x%x', [DC, Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -7312,9 +7312,9 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.SelectPalette(DC: HDC; Palette: HPALETTE; ForceBackground: Boolean): HPALETTE;
+function TGtkWidgetSet.SelectPalette(DC: HDC; Palette: HPALETTE; ForceBackground: Boolean): HPALETTE;
 begin
-  Assert(False, 'Trace:TODO: [TgtkObject.SelectPalette]');
+  Assert(False, 'Trace:TODO: [TGtkWidgetSet.SelectPalette]');
   //TODO: Implement this;
   Result := 0;
 end;
@@ -7331,7 +7331,7 @@ end;
   The function calls the window procedure for the specified window and does
   not return until the window procedure has processed the message.
  ------------------------------------------------------------------------------}
-function TGTKObject.SendMessage(HandleWnd: HWND; Msg: Cardinal; wParam: WParam;
+function TGtkWidgetSet.SendMessage(HandleWnd: HWND; Msg: Cardinal; wParam: WParam;
   lParam: LParam): LResult;
 var
   OldMsg: Cardinal;
@@ -7356,7 +7356,7 @@ var
         if FindPaintMessage(ParentHandle)<>nil then begin
           {$IFDEF VerboseDsgnPaintMsg}
           if (csDesigning in TComponent(Target).ComponentState) then begin
-            writeln('TGTKObject.SendMessage A ',
+            writeln('TGtkWidgetSet.SendMessage A ',
               TComponent(Target).Name,':',Target.ClassName,
               ' Parent Message found: ',ParentControl.Name,':',ParentControl.ClassName
               );
@@ -7371,7 +7371,7 @@ var
     end; *)
     {$IFDEF VerboseDsgnPaintMsg}
     if (csDesigning in TComponent(TargetObject).ComponentState) then begin
-      write('TGTKObject.SendMessage B ',
+      write('TGtkWidgetSet.SendMessage B ',
         TComponent(TargetObject).Name,':',TargetObject.ClassName,
         ' GtkPaint=',AMessage.Msg=LM_GtkPAINT);
       if AMessage.Msg=LM_GtkPAINT then begin
@@ -7461,7 +7461,7 @@ end;
 
 
 ------------------------------------------------------------------------------}
-function TgtkObject.SetActiveWindow(Handle: HWND): HWND;
+function TGtkWidgetSet.SetActiveWindow(Handle: HWND): HWND;
 begin
   // ToDo
   Result:=GetActiveWindow;
@@ -7475,9 +7475,9 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.SetBKColor(DC: HDC; Color: TColorRef): TColorRef;
+function TGtkWidgetSet.SetBKColor(DC: HDC; Color: TColorRef): TColorRef;
 begin
-  Assert(False, Format('trace:> [TgtkObject.SetBKColor] DC: 0x%x Color: %8x', [Integer(DC), Color]));
+  Assert(False, Format('trace:> [TGtkWidgetSet.SetBKColor] DC: 0x%x Color: %8x', [Integer(DC), Color]));
   Result := CLR_INVALID;
   if IsValidDC(DC)
   then begin
@@ -7488,7 +7488,7 @@ begin
     end;
 
   end;
-  Assert(False, Format('trace:< [TgtkObject.SetBKColor] DC: 0x%x Color: %8x --> %8x', [Integer(DC), Color, Result]));
+  Assert(False, Format('trace:< [TGtkWidgetSet.SetBKColor] DC: 0x%x Color: %8x --> %8x', [Integer(DC), Color, Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -7498,18 +7498,18 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-Function TGTKObject.SetBkMode(DC: HDC; bkMode : Integer) : Integer;
+Function TGtkWidgetSet.SetBkMode(DC: HDC; bkMode : Integer) : Integer;
 begin
   // Your code here
   Result:=0;
 end;
 
 {------------------------------------------------------------------------------
-  Function TGTKObject.SetComboMinDropDownSize(Handle: HWND;
+  Function TGtkWidgetSet.SetComboMinDropDownSize(Handle: HWND;
     MinItemsWidth, MinItemsHeight: integer): boolean;
 
  ------------------------------------------------------------------------------}
-Function TGTKObject.SetComboMinDropDownSize(Handle: HWND;
+Function TGtkWidgetSet.SetComboMinDropDownSize(Handle: HWND;
   MinItemsWidth, MinItemsHeight, MinItemCount: integer): boolean;
 var
   ComboWidget: PGtkCombo;
@@ -7522,7 +7522,7 @@ var
 begin
   Result:=true;
   if not (GtkWidgetIsA(PgtkWidget(Handle),GTK_TYPE_COMBO)) then
-    RaiseException('TGTKObject.SetComboMinDropDownSize invalid handle');
+    RaiseException('TGtkWidgetSet.SetComboMinDropDownSize invalid handle');
 
   // get current items width and height
   ComboWidget:=PGtkCombo(Handle);
@@ -7581,14 +7581,14 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.SetCapture(Value: Longint): Longint;
+function TGtkWidgetSet.SetCapture(Value: Longint): Longint;
 var
   Widget: PGtkWidget;
 begin
-  Assert(False, Format('Trace:> [TgtkObject.SetCapture] 0x%x', [Value]));
+  Assert(False, Format('Trace:> [TGtkWidgetSet.SetCapture] 0x%x', [Value]));
   Widget:=PGtkWidget(Value);
   {$IfDef VerboseMouseCapture}
-  writeln('TgtkObject.SetCapture NewValue=[',GetWidgetDebugReport(Widget),']');
+  writeln('TGtkWidgetSet.SetCapture NewValue=[',GetWidgetDebugReport(Widget),']');
   {$EndIf}
 
   // return old capture handle
@@ -7604,7 +7604,7 @@ end;
   Returns: true on success
 
  ------------------------------------------------------------------------------}
-function TgtkObject.SetCaretPos(X, Y: Integer): Boolean;
+function TGtkWidgetSet.SetCaretPos(X, Y: Integer): Boolean;
 var
   FocusObject: PGTKObject;
 begin
@@ -7618,7 +7618,7 @@ end;
   Returns: true on success
 
  ------------------------------------------------------------------------------}
-function TgtkObject.SetCaretPosEx(Handle: HWNd; X, Y: Integer): Boolean;
+function TGtkWidgetSet.SetCaretPosEx(Handle: HWNd; X, Y: Integer): Boolean;
 var
   GtkObject: PGTKObject;
 begin
@@ -7644,7 +7644,7 @@ end;
   Returns: true on success
 
  ------------------------------------------------------------------------------}
-function TgtkObject.SetCaretRespondToFocus(handle: HWND;
+function TGtkWidgetSet.SetCaretRespondToFocus(handle: HWND;
   ShowHideOnFocus: boolean): Boolean;
 begin
   if handle<>0 then begin
@@ -7668,7 +7668,7 @@ end;
 
   The SetFocus function sets the keyboard focus to the specified window
  ------------------------------------------------------------------------------}
-function TgtkObject.SetFocus(hWnd: HWND): HWND;
+function TGtkWidgetSet.SetFocus(hWnd: HWND): HWND;
 var
   Widget, TopLevel, ImplWidget, NewFocusWidget: PGtkWidget;
   WinWidgetInfo: PWinWidgetInfo;
@@ -7680,7 +7680,7 @@ begin
   Widget:=PGtkWidget(hWnd);
   {$IfDef VerboseFocus}
   writeln('');
-  write('[TgtkObject.SetFocus] A hWnd=',HexStr(Cardinal(hWnd),8));
+  write('[TGtkWidgetSet.SetFocus] A hWnd=',HexStr(Cardinal(hWnd),8));
   LCLObject:=TWinControl(GetLCLObject(Widget));
   if LCLObject<>nil then
     writeln(' LCLObject=',LCLObject.Name,':',LCLObject.ClassName)
@@ -7698,7 +7698,7 @@ begin
 
   TopLevel := gtk_widget_get_toplevel(Widget);
   {$IfDef VerboseFocus}
-  write('[TgtkObject.SetFocus] B hWnd=',HexStr(Cardinal(hWnd),8));
+  write('[TGtkWidgetSet.SetFocus] B hWnd=',HexStr(Cardinal(hWnd),8));
   write(' HndVisible=',GTK_WIDGET_VISIBLE(Widget));
   write(' HndRealized=',GTK_WIDGET_REALIZED(Widget));
   write(' HndMapped=',GTK_WIDGET_MAPPED(Widget));
@@ -7712,7 +7712,7 @@ begin
     write(' OldLCLParent=nil');
   writeln('');
   if not GTK_WIDGET_VISIBLE(Widget) then
-    RaiseException('TgtkObject.SetFocus: Widget is not visible');
+    RaiseException('TGtkWidgetSet.SetFocus: Widget is not visible');
   {$EndIf}
 
   if GtkWidgetIsA(TopLevel, gtk_window_get_type)
@@ -7789,7 +7789,7 @@ begin
     and (fsModal in Screen.FocusedForm.FormState)
     and (GetNearestLCLObject(TopLevel)<>Screen.FocusedForm) then begin
       {$IFDEF VerboseFocus}
-      writeln('[TgtkObject.SetFocus] there is a modal form -> not grabbing');
+      writeln('[TGtkWidgetSet.SetFocus] there is a modal form -> not grabbing');
       {$ENDIF}
     end else begin
       {$IfDef VerboseFocus}
@@ -7800,7 +7800,7 @@ begin
   end;
 
   {$IfDef VerboseFocus}
-  write('[TgtkObject.SetFocus] END hWnd=',HexStr(Cardinal(hWnd),8));
+  write('[TGtkWidgetSet.SetFocus] END hWnd=',HexStr(Cardinal(hWnd),8));
   NewFocusWidget:=PGtkWidget(GetFocus);
   write(' NewFocus=',HexStr(Cardinal(NewFocusWidget),8));
   AWinControl:=TWinControl(GetParentLCLObject(NewFocusWidget));
@@ -7813,10 +7813,10 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function TgtkObject.SetProp(Handle: hwnd; Str : PChar;
+  Function TGtkWidgetSet.SetProp(Handle: hwnd; Str : PChar;
                               Data : Pointer) : Boolean;
  ------------------------------------------------------------------------------}
-Function TgtkObject.SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean;
+Function TGtkWidgetSet.SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean;
 Begin
   gtk_object_set_data(pGTKObject(handle),Str,data);
   Result:=true;
@@ -7829,7 +7829,7 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.SetScrollInfo(Handle : HWND; SBStyle : Integer;
+function TGtkWidgetSet.SetScrollInfo(Handle : HWND; SBStyle : Integer;
   ScrollInfo: TScrollInfo; bRedraw : Boolean): Integer;
 const
   POLICY: array[BOOLEAN] of TGTKPolicyType = (GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
@@ -7842,7 +7842,7 @@ begin
   Result := 0;
   if (Handle = 0) then exit;
 
-  //writeln('TgtkObject.SetScrollInfo A Widget=',GetWidgetClassName(PGtkWidget(Handle)));
+  //writeln('TGtkWidgetSet.SetScrollInfo A Widget=',GetWidgetClassName(PGtkWidget(Handle)));
 
   Adjustment := nil;
   Scroll := GTK_Object_Get_Data(PGTKObject(Handle), odnScrollArea);
@@ -7890,7 +7890,7 @@ begin
         break;
       except
         on e: Exception do begin
-          writeln('TgtkObject.SetScrollInfo Workaround for ',E.Message,' try: ',i);
+          writeln('TGtkWidgetSet.SetScrollInfo Workaround for ',E.Message,' try: ',i);
           Result:=0;
         end;
       end;
@@ -7910,7 +7910,7 @@ begin
     end;
 
     {writeln('');
-    writeln('[TgtkObject.SetScrollInfo] Result=',Result,
+    writeln('[TGtkWidgetSet.SetScrollInfo] Result=',Result,
     ' Lower=',RoundToInt(Lower),
     ' Upper=',RoundToInt(Upper),
     ' Page_Size=',RoundToInt(Page_Size),
@@ -7941,7 +7941,7 @@ begin
           gtk_widget_hide(PGTKWidget(Scroll))
       end;
       {writeln('');
-      writeln('TgtkObject.SetScrollInfo: ',
+      writeln('TGtkWidgetSet.SetScrollInfo: ',
       ' lower=',RoundToInt(lower),'/',nMin,
       ' upper=',RoundToInt(upper),'/',nMax,
       ' value=',RoundToInt(value),'/',nPos,
@@ -7964,7 +7964,7 @@ end;
 
   The SetSysColors function sets the colors for one or more display elements.
  ------------------------------------------------------------------------------}
-function TgtkObject.SetSysColors(cElements: Integer; const lpaElements;
+function TGtkWidgetSet.SetSysColors(cElements: Integer; const lpaElements;
   const lpaRgbValues): Boolean;
 type
   TLongArray = array[0..0] of Longint;
@@ -7983,7 +7983,7 @@ begin
     or (Element < 0)
     then Exit;
     SysColorMap[PLongArray(lpaElements)^[n]] := PLongArray(lpaRgbValues)^[n];
-    //Assert(False, Format('Trace:[TgtkObject.SetSysColor] Index %d (%8x) --> %8x', [PLongArray(lpaElements)^[n], SysColorMap[PLongArray(lpaElements)^[n]], PLongArray(lpaRgbValues)^[n]]));
+    //Assert(False, Format('Trace:[TGtkWidgetSet.SetSysColor] Index %d (%8x) --> %8x', [PLongArray(lpaElements)^[n], SysColorMap[PLongArray(lpaElements)^[n]], PLongArray(lpaRgbValues)^[n]]));
   end;
 
   //TODO send WM_SYSCOLORCHANGE
@@ -7997,7 +7997,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-Function TGTKObject.SetTextCharacterExtra(_hdc : hdc; nCharExtra : Integer):Integer;
+Function TGtkWidgetSet.SetTextCharacterExtra(_hdc : hdc; nCharExtra : Integer):Integer;
 begin
   // Your code here
   Result:=0;
@@ -8012,9 +8012,9 @@ end;
   The SetTextColor function sets the text color for the specified device
   context to the specified color.
  ------------------------------------------------------------------------------}
-function TgtkObject.SetTextColor(DC: HDC; Color: TColorRef): TColorRef;
+function TGtkWidgetSet.SetTextColor(DC: HDC; Color: TColorRef): TColorRef;
 begin
-  Assert(False, Format('trace:> [TgtkObject.SetTextColor] DC: 0x%x Color: %8x', [Integer(DC), Color]));
+  Assert(False, Format('trace:> [TGtkWidgetSet.SetTextColor] DC: 0x%x Color: %8x', [Integer(DC), Color]));
   Result := CLR_INVALID;
   if IsValidDC(DC)
   then begin
@@ -8024,7 +8024,7 @@ begin
       SetGDIColorRef(CurrentTextColor,Color);
     end;
   end;
-  Assert(False, Format('trace:< [TgtkObject.SetTextColor] DC: 0x%x Color: %8x --> %8x', [Integer(DC), Color, Result]));
+  Assert(False, Format('trace:< [TGtkWidgetSet.SetTextColor] DC: 0x%x Color: %8x --> %8x', [Integer(DC), Color, Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -8034,11 +8034,11 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.SetWindowLong(Handle: HWND; Idx: Integer;
+function TGtkWidgetSet.SetWindowLong(Handle: HWND; Idx: Integer;
   NewLong: Longint): LongInt;
 begin
   //TODO: Finish this;
-  Assert(False, Format('Trace:> [TgtkObject.SETWINDOWLONG] HWND: 0x%x, idx: 0x%x(%d), Value: 0x%x(%d)', [Handle, idx, idx, newlong, newlong]));
+  Assert(False, Format('Trace:> [TGtkWidgetSet.SETWINDOWLONG] HWND: 0x%x, idx: 0x%x(%d), Value: 0x%x(%d)', [Handle, idx, idx, newlong, newlong]));
   Result:=0;
 
   case idx of
@@ -8071,21 +8071,21 @@ begin
         gtk_object_set_data(pgtkobject(Handle),'ID',pointer(NewLong));
       end;
   end; //case
-  Assert(False, Format('Trace:< [TgtkObject.SETWINDOWLONG] HWND: 0x%x, idx: 0x%x(%d), Value: 0x%x(%d) --> 0x%x(%d)', [Handle, idx, idx, newlong, newlong, Result, Result]));
+  Assert(False, Format('Trace:< [TGtkWidgetSet.SETWINDOWLONG] HWND: 0x%x, idx: 0x%x(%d), Value: 0x%x(%d) --> 0x%x(%d)', [Handle, idx, idx, newlong, newlong, Result, Result]));
 end;
 
 {------------------------------------------------------------------------------
-  Function TgtkObject.SetWindowOrgEx(DC : HDC; NewX, NewY : Integer;
+  Function TGtkWidgetSet.SetWindowOrgEx(DC : HDC; NewX, NewY : Integer;
     OldPoint: PPoint) : Boolean;
 
   Sets the DC offset for the specified device context.
  ------------------------------------------------------------------------------}
-Function TgtkObject.SetWindowOrgEx(DC : HDC; NewX, NewY : Integer;
+Function TGtkWidgetSet.SetWindowOrgEx(DC : HDC; NewX, NewY : Integer;
   OldPoint: PPoint) : Boolean;
 var
   OldP: TPoint;
 begin
-  //writeln('[TgtkObject.SetWindowOrgEx] ',NewX,' ',NewY);
+  //writeln('[TGtkWidgetSet.SetWindowOrgEx] ',NewX,' ',NewY);
   GetWindowOrgEx(DC,@OldP);
   Result := MoveWindowOrgEx(DC,NewX-OldP.X,NewY-OldP.Y);
   if OldPoint<>nil then
@@ -8093,7 +8093,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function TgtkObject.SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;
+  function TGtkWidgetSet.SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;
     X, Y, cx, cy: Integer; uFlags: UINT): Boolean;
 
   hWnd: Widget to move
@@ -8109,7 +8109,7 @@ end;
     SWP_NOACTIVATE: skip switching focus
 
  ------------------------------------------------------------------------------}
-function TgtkObject.SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;
+function TGtkWidgetSet.SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;
   X, Y, cx, cy: Integer; uFlags: UINT): Boolean;
   
   procedure SetZOrderOnFixedWidget(Widget, FixedWidget: PGtkWidget);
@@ -8120,7 +8120,7 @@ function TgtkObject.SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;
   begin
     OldListItem:=FindFixedChildListItem(PGtkFixed(FixedWidget),Widget);
     if OldListItem=nil then begin
-      writeln('TgtkObject.SetWindowPos WARNING: Widget not on parents fixed widget');
+      writeln('TGtkWidgetSet.SetWindowPos WARNING: Widget not on parents fixed widget');
       exit;
     end;
     AfterWidget:=nil;
@@ -8136,12 +8136,12 @@ function TgtkObject.SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;
       AfterListItem:=FindFixedChildListItem(PGtkFixed(FixedWidget),AfterWidget);
     end;
     if (AfterListItem=nil) and (AfterWidget<>nil) then begin
-      writeln('TgtkObject.SetWindowPos WARNING: AfterWidget not on parents fixed widget');
+      writeln('TGtkWidgetSet.SetWindowPos WARNING: AfterWidget not on parents fixed widget');
       exit;
     end;
     if (OldListItem=AfterListItem) or (OldListItem^.next=AfterListItem) then
       exit;
-    //writeln('TgtkObject.SetWindowPos Moving GList entry');
+    //writeln('TGtkWidgetSet.SetWindowPos Moving GList entry');
     
     // reorder
     // This trick does not work properly
@@ -8164,7 +8164,7 @@ var
   FixedWidget: PGtkWidget;
 begin
   Widget:=PGtkWidget(hWnd);
-  {writeln('[TgtkObject.SetWindowPos] ',GetWidgetDebugReport(Widget),
+  {writeln('[TGtkWidgetSet.SetWindowPos] ',GetWidgetDebugReport(Widget),
     ' Top=',hWndInsertAfter=HWND_TOP,
     ' SWP_NOZORDER=',(SWP_NOZORDER and uFlags)<>0,
     ' SWP_NOSIZE=',(SWP_NOSIZE and uFlags)<>0,
@@ -8181,7 +8181,7 @@ begin
     FixedWidget:=Widget^.Parent;
     if FixedWidget=nil then exit;
     
-    //writeln('TgtkObject.SetWindowPos ZOrdering .. on ',GetWidgetDebugReport(FixedWidget));
+    //writeln('TGtkWidgetSet.SetWindowPos ZOrdering .. on ',GetWidgetDebugReport(FixedWidget));
     if GtkWidgetIsA(FixedWidget,GTK_Fixed_Get_Type) then begin
       // parent's client area is a gtk_fixed widget
       SetZOrderOnFixedWidget(Widget,FixedWidget);
@@ -8202,11 +8202,11 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.ShowCaret(hWnd: HWND): Boolean;
+function TGtkWidgetSet.ShowCaret(hWnd: HWND): Boolean;
 var
   GTKObject: PGTKObject;
 begin
-  Assert(False, Format('Trace:> [TgtkObject.ShowCaret] HWND: 0x%x', [hWnd]));
+  Assert(False, Format('Trace:> [TGtkWidgetSet.ShowCaret] HWND: 0x%x', [hWnd]));
 
   GTKObject := PGTKObject(HWND);
   Result := GTKObject <> nil;
@@ -8221,9 +8221,9 @@ begin
       Result := False;
     end;
   end
-  else WriteLn('WARNING: [TgtkObject.ShowCaret] Got null HWND');
+  else WriteLn('WARNING: [TGtkWidgetSet.ShowCaret] Got null HWND');
 
-  Assert(False, Format('Trace:< [TgtkObject.ShowCaret] HWND: 0x%x --> %s', [hWnd, BOOL_TEXT[Result]]));
+  Assert(False, Format('Trace:< [TGtkWidgetSet.ShowCaret] HWND: 0x%x --> %s', [hWnd, BOOL_TEXT[Result]]));
 end;
 
 {------------------------------------------------------------------------------
@@ -8233,7 +8233,7 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.ShowScrollBar(Handle: HWND; wBar: Integer;
+function TGtkWidgetSet.ShowScrollBar(Handle: HWND; wBar: Integer;
   bShow: Boolean): Boolean;
 const
   POLICY: array[BOOLEAN] of TGTKPolicyType = (GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
@@ -8241,7 +8241,7 @@ var
   Widget: PGtkWidget;
   NewPolicy: Integer;
 begin
-  Assert(False, 'trace:[TgtkObject.ShowScrollBar]');
+  Assert(False, 'trace:[TGtkWidgetSet.ShowScrollBar]');
   Result:=false;
   Result := (Handle <> 0);
   if Result then begin
@@ -8280,14 +8280,14 @@ end;
   nCmdShow:
     SW_SHOWNORMAL, SW_MINIMIZE, SW_SHOWMAXIMIZED
 ------------------------------------------------------------------------------}
-function TgtkObject.ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
+function TGtkWidgetSet.ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
 var
   GtkWindow: PGtkWindow;
 begin
   Result:=false;
   GtkWindow:=PGtkWindow(hWnd);
   if GtkWindow=nil then
-    RaiseException('TgtkObject.ShowWindow  hWnd is nil');
+    RaiseException('TGtkWidgetSet.ShowWindow  hWnd is nil');
 
   {$IFDEF Gtk2}
 
@@ -8319,7 +8319,7 @@ begin
     end;
 
   SW_MINIMIZE, SW_SHOWMAXIMIZED:
-    writeln('TgtkObject.ShowWindow:  not implemented yet');
+    writeln('TGtkWidgetSet.ShowWindow:  not implemented yet');
 
   end;
 
@@ -8347,7 +8347,7 @@ end;
 
   ToDo: Mirroring, extended NonDrawable support (Image, Bitmap, etc)
  ------------------------------------------------------------------------------}
-function TgtkObject.StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer;
+function TGtkWidgetSet.StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer;
   SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; ROp: Cardinal): Boolean;
 begin
   Result:=StretchCopyArea(DestDC,X,Y,Width,Height,
@@ -8375,7 +8375,7 @@ end;
   Sizing is done according to the stretching mode currently set in the
   destination device context.
  ------------------------------------------------------------------------------}
-function TgtkObject.StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer;
+function TGtkWidgetSet.StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer;
   SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Mask: HBITMAP;
   XMask, YMask: Integer; Rop: DWORD): Boolean;
 begin
@@ -8395,11 +8395,11 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-Function TGTKObject.TextOut(DC: HDC; X,Y : Integer; Str : Pchar;
+Function TGtkWidgetSet.TextOut(DC: HDC; X,Y : Integer; Str : Pchar;
   Count: Integer) : Boolean;
 {$IfDef GTK2}
 begin
-  writeln('TGTKObject.TextOut ToDo');
+  writeln('TGtkWidgetSet.TextOut ToDo');
   Result:=false;
 end;
 {$ELSE}
@@ -8423,7 +8423,7 @@ begin
   begin
     if GC = nil
     then begin
-      WriteLn('WARNING: [TgtkObject.TextOut] Uninitialized GC');
+      WriteLn('WARNING: [TGtkWidgetSet.TextOut] Uninitialized GC');
     end
     else begin
       if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
@@ -8440,12 +8440,12 @@ begin
         StrikeOut := LongBool(CurrentFont^.LogFont.lfStrikeOut);
       end;
       If UseFont = nil then
-        WriteLn('WARNING: [TgtkObject.TextOut] Missing Font')
+        WriteLn('WARNING: [TGtkWidgetSet.TextOut] Missing Font')
       else begin
         DCOrigin:=GetDCOffset(TDeviceContext(DC));
         GetTextExtentPoint(DC, Str, Count, Sz);
         aRect := Rect(X+DCOrigin.X,Y+DCOrigin.Y,X + Sz.CX, Sz.CY);
-        //writeln('TGTKObject.TextOut ',ARect.Left,',',ARect.Top,',',ARect.RIght,',',ARect.Bottom);
+        //writeln('TGtkWidgetSet.TextOut ',ARect.Left,',',ARect.Top,',',ARect.RIght,',',ARect.Bottom);
         FillRect(DC,aRect,hBrush(CurrentBrush));
         UpdateDCTextMetric(TDeviceContext(DC));
         TxtPt.X := X;
@@ -8501,7 +8501,7 @@ end;
            HiByte: ALT | CTRL | SHIFT pressed -> bit2 | bit1 | bit0
 
  ------------------------------------------------------------------------------}
-function TGTKObject.VkKeyScan(AChar: Char): Short;
+function TGtkWidgetSet.VkKeyScan(AChar: Char): Short;
 begin
   Result := CharToVkAndFlags(AChar);
 end;
@@ -8512,7 +8512,7 @@ end;
   Returns: The handle of the gtkwidget.  If none exist, then NULL is returned.
 
  ------------------------------------------------------------------------------}
-Function TGTKObject.WindowFromPoint(Point : TPoint) : HWND;
+Function TGtkWidgetSet.WindowFromPoint(Point : TPoint) : HWND;
 var
   ev : TgdkEvent;
   Window : PgdkWindow;
@@ -8580,7 +8580,7 @@ end;
 
 {$EndIf}
 
-Procedure TGTKObject.InitializeCriticalSection(var CritSection: TCriticalSection);
+Procedure TGtkWidgetSet.InitializeCriticalSection(var CritSection: TCriticalSection);
 {$IfDef pthread}
 var
   Crit : ppthread_mutex_t;
@@ -8604,7 +8604,7 @@ begin
 end;
 {$EndIf}
 
-Procedure TGTKObject.EnterCriticalSection(var CritSection: TCriticalSection);
+Procedure TGtkWidgetSet.EnterCriticalSection(var CritSection: TCriticalSection);
 {$IfDef pthread}
 var
   Crit,
@@ -8630,7 +8630,7 @@ begin
 end;
 {$EndIf}
 
-Procedure TGTKObject.LeaveCriticalSection(var CritSection: TCriticalSection);
+Procedure TGtkWidgetSet.LeaveCriticalSection(var CritSection: TCriticalSection);
 {$IfDef pthread}
 var
   Crit,
@@ -8656,7 +8656,7 @@ begin
 end;
 {$EndIf}
 
-Procedure TGTKObject.DeleteCriticalSection(var CritSection: TCriticalSection);
+Procedure TGtkWidgetSet.DeleteCriticalSection(var CritSection: TCriticalSection);
 {$IfDef pthread}
 var
   Crit,
@@ -8691,6 +8691,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.336  2004/03/05 00:31:52  marc
+  * Renamed TGtkObject to TGtkWidgetSet
+
   Revision 1.335  2004/02/28 00:34:36  mattias
   fixed CreateComponent for buttons, implemented basic Drag And Drop
 

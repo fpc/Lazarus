@@ -49,7 +49,7 @@ uses
   gtkDef, gtkProc, gtkInt;
 
 type
-  TGtk2Object = class(TGtkObject)
+  TGtk2Object = class(TGtkWidgetSet)
   protected
     procedure AppendText(Sender: TObject; Str: PChar); override;
     procedure CreateComponent(Sender : TObject); override;
@@ -561,6 +561,9 @@ end.
 
 {
   $Log$
+  Revision 1.28  2004/03/05 00:31:53  marc
+  * Renamed TGtkObject to TGtkWidgetSet
+
   Revision 1.27  2004/01/04 16:44:33  mattias
   updated gtk2 package
 

@@ -1,5 +1,5 @@
 {******************************************************************************
-                                   TGTKObject
+                                   TGtkWidgetSet
  ******************************************************************************
 
  *****************************************************************************
@@ -129,13 +129,13 @@ end;
 
 
 {------------------------------------------------------------------------------
-  Method: TGtkObject.Create
+  Method: TGtkWidgetSet.Create
   Params:  None
   Returns: Nothing
 
   Contructor for the class.
  ------------------------------------------------------------------------------}
-constructor TGtkObject.Create;
+constructor TGtkWidgetSet.Create;
 begin
   inherited Create;
 
@@ -203,13 +203,13 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: Tgtkobject.PassCmdLineOptions
+  Method: TGtkWidgetSet.PassCmdLineOptions
   Params:  None
   Returns: Nothing
 
   Passes command line options to the gtk engine
  ------------------------------------------------------------------------------}
-procedure Tgtkobject.PassCmdLineOptions;
+procedure TGtkWidgetSet.PassCmdLineOptions;
 
   function SearchOption(const Option: string; Remove: boolean): boolean;
   var
@@ -244,9 +244,9 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure TgtkObject.FreeAllStyles;
+  procedure TGtkWidgetSet.FreeAllStyles;
  ------------------------------------------------------------------------------}
-procedure TgtkObject.FreeAllStyles;
+procedure TGtkWidgetSet.FreeAllStyles;
 begin
   If Assigned(Styles) then begin
     ReleaseAllStyles;
@@ -256,15 +256,15 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: Tgtkobject.Destroy
+  Method: TGtkWidgetSet.Destroy
   Params:  None
   Returns: Nothing
 
   Destructor for the class.
  ------------------------------------------------------------------------------}
-destructor TgtkObject.Destroy;
+destructor TGtkWidgetSet.Destroy;
 const
-  ProcName = '[TgtkObject.Destroy]';
+  ProcName = '[TGtkWidgetSet.Destroy]';
   GDITYPENAME: array[TGDIType] of String = (
      'gdiBitmap', 'gdiBrush', 'gdiFont', 'gdiPen', 'gdiRegion', 'gdiPalette');
 var
@@ -385,13 +385,13 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TGtkObject.SetWindowSizeAndPosition
+  Method: TGtkWidgetSet.SetWindowSizeAndPosition
   Params:  Widget: PGtkWidget; AWinControl: TWinControl
   Returns: Nothing
 
   Set the size and position of a top level window.
  ------------------------------------------------------------------------------}
-procedure TgtkObject.SetWindowSizeAndPosition(Window: PGtkWindow;
+procedure TGtkWidgetSet.SetWindowSizeAndPosition(Window: PGtkWindow;
   AWinControl: TWinControl);
 var
   Width, Height: integer;
@@ -403,7 +403,7 @@ begin
   Height:=AWinControl.Height;
   if Height<=0 then Height:=1;
 
-  //writeln('TgtkObject.SetWindowSizeAndPosition ',AWinControl.Name,':',AWinControl.ClassName,' ',AWinControl.Visible,' Old=',PGtkWidget(Window)^.allocation.Width,',',PGtkWidget(Window)^.allocation.Width,' New=',Width,',',Height);
+  //writeln('TGtkWidgetSet.SetWindowSizeAndPosition ',AWinControl.Name,':',AWinControl.ClassName,' ',AWinControl.Visible,' Old=',PGtkWidget(Window)^.allocation.Width,',',PGtkWidget(Window)^.allocation.Width,' New=',Width,',',Height);
   // set geometry default size
   //Info:=gtk_window_get_geometry_info(Window, TRUE);
   //if (Info^.default_width<>Width) or (Info^.default_height<>Height) then
@@ -418,15 +418,15 @@ begin
 
   // reposition
   {$IFDEF VerboseSizeMsg}
-  writeln('TgtkObject.SetWindowSizeAndPosition B ',AWinControl.Name,':',AWinControl.ClassName,' Visible=',AWinControl.Visible,' Old=',PGtkWidget(Window)^.allocation.X,',',PGtkWidget(Window)^.allocation.Y,' New=',AWinControl.Left,',',AWinControl.Top,',',Width,',',Height);
+  writeln('TGtkWidgetSet.SetWindowSizeAndPosition B ',AWinControl.Name,':',AWinControl.ClassName,' Visible=',AWinControl.Visible,' Old=',PGtkWidget(Window)^.allocation.X,',',PGtkWidget(Window)^.allocation.Y,' New=',AWinControl.Left,',',AWinControl.Top,',',Width,',',Height);
   {$ENDIF}
   gtk_widget_set_uposition(PGtkWidget(Window),AWinControl.Left,AWinControl.Top);
 end;
 
 {------------------------------------------------------------------------------
-  procedure TgtkObject.ShowModal(Sender: TObject);
+  procedure TGtkWidgetSet.ShowModal(Sender: TObject);
  ------------------------------------------------------------------------------}
-procedure TgtkObject.ShowModal(Sender: TObject);
+procedure TGtkWidgetSet.ShowModal(Sender: TObject);
 var
   GtkWindow: PGtkWindow;
 begin
@@ -448,7 +448,7 @@ begin
                              TControl(Sender).Left, TControl(Sender).Top);
   end else begin
     GtkWindow:=nil;
-    writeln('WARNING: TgtkObject.ShowModal ',Sender.ClassName);
+    writeln('WARNING: TGtkWidgetSet.ShowModal ',Sender.ClassName);
     exit;
   end;
   if (GtkWindow=nil) then exit;
@@ -461,15 +461,15 @@ begin
   gtk_widget_show(PGtkWidget(GtkWindow));
 
   {$IFDEF VerboseTransient}
-  writeln('TgtkObject.ShowModal ',Sender.ClassName);
+  writeln('TGtkWidgetSet.ShowModal ',Sender.ClassName);
   {$ENDIF}
   UpdateTransientWindows;
 end;
 
 {------------------------------------------------------------------------------
-  procedure TgtkObject.UpdateTransientWindows;
+  procedure TGtkWidgetSet.UpdateTransientWindows;
  ------------------------------------------------------------------------------}
-procedure TgtkObject.UpdateTransientWindows;
+procedure TGtkWidgetSet.UpdateTransientWindows;
 
 type
   PTransientWindow = ^TTransientWindow;
@@ -498,13 +498,13 @@ var
 begin
   if (not UseTransientForModalWindows) then exit;
   if UpdatingTransientWindows then begin
-    writeln('TgtkObject.UpdateTransientWindows already updating');
+    writeln('TGtkWidgetSet.UpdateTransientWindows already updating');
     exit;
   end;
   UpdatingTransientWindows:=true;
   try
     {$IFDEF VerboseTransient}
-    writeln('TgtkObject.UpdateTransientWindows');
+    writeln('TGtkWidgetSet.UpdateTransientWindows');
     {$ENDIF}
     AllWindows:=nil;
 
@@ -567,7 +567,7 @@ begin
       for i:=AllWindows.Count-1 downto 0 do begin
         ATransientWindow:=PTransientWindow(AllWindows[i]);
         {$IFDEF VerboseTransient}
-        write('TgtkObject.UpdateTransientWindows  Untransient ',i);
+        write('TGtkWidgetSet.UpdateTransientWindows  Untransient ',i);
         if ATransientWindow^.Component<>nil then
           write(' ',ATransientWindow^.Component.Name,':',ATransientWindow^.Component.ClassName);
         writeln('');
@@ -680,16 +680,16 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure TgtkObject.UntransientWindow(GtkWindow: PGtkWindow);
+  procedure TGtkWidgetSet.UntransientWindow(GtkWindow: PGtkWindow);
  ------------------------------------------------------------------------------}
-procedure TgtkObject.UntransientWindow(GtkWindow: PGtkWindow);
+procedure TGtkWidgetSet.UntransientWindow(GtkWindow: PGtkWindow);
 {$IFDEF VerboseTransient}
 var
   LCLObject: TObject;
 {$ENDIF}
 begin
   {$IFDEF VerboseTransient}
-  write('TgtkObject.UntransientWindow ',HexStr(Cardinal(GtkWindow),8));
+  write('TGtkWidgetSet.UntransientWindow ',HexStr(Cardinal(GtkWindow),8));
   LCLObject:=GetLCLObject(PGtkWidget(GtkWindow));
   if LCLObject<>nil then
     write(' LCLObject=',LCLObject.ClassName)
@@ -709,13 +709,13 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TGtkObject.SendCachedLCLMessages
+  Method: TGtkWidgetSet.SendCachedLCLMessages
   Params:  None
   Returns: Nothing
 
   Some LCL messages are not sent directly to the gtk. Send them now.
  ------------------------------------------------------------------------------}
-procedure TgtkObject.SendCachedLCLMessages;
+procedure TGtkWidgetSet.SendCachedLCLMessages;
 
   procedure SendCachedLCLResizeRequests;
   var
@@ -735,13 +735,13 @@ procedure TgtkObject.SendCachedLCLMessages;
 
     procedure RaiseWidgetWithoutControl;
     begin
-      RaiseException('ERROR: TgtkObject.SendCachedLCLMessages Widget '
+      RaiseException('ERROR: TGtkWidgetSet.SendCachedLCLMessages Widget '
         +HexStr(Cardinal(Widget),8)+' without LCL control');
     end;
 
     procedure WriteWarningParentWidgetNotFound;
     begin
-      writeln('WARNING: TgtkObject.SendCachedLCLMessages - '
+      writeln('WARNING: TGtkWidgetSet.SendCachedLCLMessages - '
               ,'Parent''s Fixed Widget not found');
       writeln('  Control=',LCLControl.Name,':',LCLControl.ClassName,
         ' Parent=',LCLControl.Parent.Name,':',LCLControl.Parent.ClassName,
@@ -824,26 +824,26 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TGtkObject.LCLtoGtkMessagePending
+  Method: TGtkWidgetSet.LCLtoGtkMessagePending
   Params:  None
   Returns: boolean
 
   Returns true if any messages from the lcl to the gtk is in cache and needs
   delivery.
  ------------------------------------------------------------------------------}
-function TgtkObject.LCLtoGtkMessagePending: boolean;
+function TGtkWidgetSet.LCLtoGtkMessagePending: boolean;
 begin
   Result:=(FWidgetsWithResizeRequest.Count>0);
 end;
 
 {------------------------------------------------------------------------------
-  Method: TGtkObject.SendCachedGtkMessages
+  Method: TGtkWidgetSet.SendCachedGtkMessages
   Params:  None
   Returns: Nothing
 
   Some Gtk messages are not sent directly to the LCL. Send them now.
  ------------------------------------------------------------------------------}
-procedure TGtkObject.SendCachedGtkMessages;
+procedure TGtkWidgetSet.SendCachedGtkMessages;
 
   procedure SendSizeNotificationToLCL(MainWidget: PGtkWidget);
   var
@@ -1074,10 +1074,10 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure TgtkObject.RealizeWidgetSize(Widget: PGtkWidget; NewWidth,
+  procedure TGtkWidgetSet.RealizeWidgetSize(Widget: PGtkWidget; NewWidth,
     NewHeight: integer);
  ------------------------------------------------------------------------------}
-procedure TgtkObject.RealizeWidgetSize(Widget: PGtkWidget; NewWidth,
+procedure TGtkWidgetSet.RealizeWidgetSize(Widget: PGtkWidget; NewWidth,
   NewHeight: integer);
 var
   Requisition: TGtkRequisition;
@@ -1093,7 +1093,7 @@ begin
 
   {$IFDEF VerboseSizeMsg}
   LCLObject:=GetParentLCLObject(Widget);
-  write('TgtkObject.RealizeWidgetSize Widget=',HexStr(Cardinal(Widget),8),
+  write('TGtkWidgetSet.RealizeWidgetSize Widget=',HexStr(Cardinal(Widget),8),
     ' New=',NewWidth,',',NewHeight);
   if (LCLObject<>nil) and (LCLObject is TControl) then begin
     with TControl(LCLObject) do
@@ -1113,7 +1113,7 @@ begin
     end else begin
       NewWidth:=Requisition.width;
     end;
-    //writeln('TgtkObject.RealizeWidgetSize A ',Newwidth,',',Newheight);
+    //writeln('TGtkWidgetSet.RealizeWidgetSize A ',Newwidth,',',Newheight);
   end;
 
   gtk_widget_set_usize(Widget, NewWidth, NewHeight);
@@ -1130,7 +1130,7 @@ begin
   if GtkWidgetIsA(Widget,gtk_toolbar_get_type) then begin
     FixedWidget:=GetFixedWidget(Widget);
     if (FixedWidget<>nil) and (FixedWidget<>Widget) then begin
-      //writeln('WARNING: ToDo TgtkObject.RealizeWidgetSize for TToolBar ',NewWidth,',',NewHeight);
+      //writeln('WARNING: ToDo TGtkWidgetSet.RealizeWidgetSize for TToolBar ',NewWidth,',',NewHeight);
       gtk_widget_set_usize(FixedWidget,NewWidth,NewHeight);
     end;
   end;
@@ -1138,12 +1138,12 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure TGtkObject.SendPaintMessagesForInternalWidgets(
+  procedure TGtkWidgetSet.SendPaintMessagesForInternalWidgets(
     AWinControl: TWinControl);
 
 
  ------------------------------------------------------------------------------}
-procedure TGtkObject.SendPaintMessagesForInternalWidgets(
+procedure TGtkWidgetSet.SendPaintMessagesForInternalWidgets(
   AWinControl: TWinControl);
 type
   TInternalPaintContext = record
@@ -1316,7 +1316,7 @@ begin
       ClientWindow:=nil;
     WindowList:=nil;
   end;
-  {writeln('TGtkObject.SendPaintMessagesForInternalWidgets START ',
+  {writeln('TGtkWidgetSet.SendPaintMessagesForInternalWidgets START ',
     ' ',AWinControl.Name,':',AWinControl.ClassName,
     ' ',HexStr(Cardinal(Context.MainWidget),8),
     ' ',HexStr(Cardinal(Context.MainWindow),8),
@@ -1330,13 +1330,13 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TGtkObject.HandleEvents
+  Method: TGtkWidgetSet.HandleEvents
   Params:  None
   Returns: Nothing
 
   Handle all pending messages of the GTK engine and of this interface
  ------------------------------------------------------------------------------}
-procedure TgtkObject.HandleEvents;
+procedure TGtkWidgetSet.HandleEvents;
 
   function PendingGtkMessagesExists: boolean;
   begin
@@ -1393,13 +1393,13 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TGtkObject.WaitMessage
+  Method: TGtkWidgetSet.WaitMessage
   Params:  None
   Returns: Nothing
 
   Passes execution control to the GTK engine till something happens
  ------------------------------------------------------------------------------}
-procedure TgtkObject.WaitMessage;
+procedure TGtkWidgetSet.WaitMessage;
 begin
   WaitingForMessages:=true;
   gtk_main_iteration_do(True);
@@ -1407,7 +1407,7 @@ begin
 end;
 
 
-procedure TGtkObject.FreeStockItems;
+procedure TGtkWidgetSet.FreeStockItems;
 
   procedure DeleteAndNilObject(var h: HGDIOBJ);
   begin
@@ -1431,20 +1431,20 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TGtkObject.AppTerminate
+  Method: TGtkWidgetSet.AppTerminate
   Params:  None
   Returns: Nothing
 
   *Note: Tells GTK Engine to halt and destroy
  ------------------------------------------------------------------------------}
-procedure TGtkObject.AppTerminate;
+procedure TGtkWidgetSet.AppTerminate;
 begin
   FreeAllStyles;
   // MG: using gtk_main_quit is not a clean way to close
   //gtk_main_quit;
 end;
 
-Procedure Tgtkobject.InitStockItems;
+Procedure TGtkWidgetSet.InitStockItems;
 var
   LogBrush: TLogBrush;
   logPen : TLogPen;
@@ -1477,7 +1477,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TGtkObject.AppInit
+  Method: TGtkWidgetSet.AppInit
   Params:  None
   Returns: Nothing
 
@@ -1485,7 +1485,7 @@ end;
   (is called by TApplication.Initialize which is typically after all
    finalization sections)
  ------------------------------------------------------------------------------}
-procedure TGtkObject.AppInit;
+procedure TGtkWidgetSet.AppInit;
 begin
   If Assigned(Screen) then
     FillScreenFonts(Screen.Fonts);
@@ -1494,13 +1494,13 @@ end;
 
 
 {------------------------------------------------------------------------------
-  Method: TGtkObject.RecreateWnd
+  Method: TGtkWidgetSet.RecreateWnd
   Params:  Sender: TObject - the lcl wincontrol, that is to recreated
   Returns: none
 
   Destroys Handle and child Handles and recreates them.
 -------------------------------------------------------------------------------}
-function TgtkObject.RecreateWnd(Sender: TObject): Integer;
+function TGtkWidgetSet.RecreateWnd(Sender: TObject): Integer;
 var
   aWinControl, aParent : TWinControl;
 Begin
@@ -1528,7 +1528,7 @@ End;
 
   Design: A callback to the TTimer class is implemented.
  ------------------------------------------------------------------------------}
-function TGTKObject.CreateTimer(Interval: integer; TimerFunc: TFNTimerProc) : integer;
+function TGtkWidgetSet.CreateTimer(Interval: integer; TimerFunc: TFNTimerProc) : integer;
 var
   TimerInfo: PGtkITimerinfo;
 begin
@@ -1539,7 +1539,7 @@ begin
     New(TimerInfo);
     TimerInfo^.TimerFunc := TimerFunc;
     {$IFDEF VerboseTimer}
-    writeln('TGTKObject.SetTimer ',HexStr(Cardinal(TimerInfo),8),' CurTimerCount=',FTimerData.Count,' OldTimerCount=',FOldTimerData.Count);
+    writeln('TGtkWidgetSet.SetTimer ',HexStr(Cardinal(TimerInfo),8),' CurTimerCount=',FTimerData.Count,' OldTimerCount=',FOldTimerData.Count);
     {$ENDIF}
     Result:= gtk_timeout_add(Interval, @gtkTimerCB, TimerInfo);
     if Result = 0 then
@@ -1560,7 +1560,7 @@ end;
   WARNING: There seems to be a bug in gtk-1.2.x which breaks gtk_timeout_remove
            thus we can't dispose PGtkITimerinfo here (s.a. gtkTimerCB).
  ------------------------------------------------------------------------------}
-function TGTKObject.DestroyTimer(TimerHandle: integer) : boolean;
+function TGtkWidgetSet.DestroyTimer(TimerHandle: integer) : boolean;
 var
   n : integer;
   TimerInfo : PGtkITimerinfo;
@@ -1573,7 +1573,7 @@ begin
     if (TimerInfo^.TimerHandle=guint(TimerHandle)) then
     begin
       {$IFDEF VerboseTimer}
-      writeln('TGTKObject.KillTimer TimerInfo=',HexStr(Cardinal(TimerInfo),8),' TimerHandle=',TimerHandle,' CurTimerCount=',FTimerData.Count,' OldTimerCount=',FOldTimerData.Count);
+      writeln('TGtkWidgetSet.KillTimer TimerInfo=',HexStr(Cardinal(TimerInfo),8),' TimerHandle=',TimerHandle,' CurTimerCount=',FTimerData.Count,' OldTimerCount=',FOldTimerData.Count);
       {$ENDIF}
       gtk_timeout_remove(TimerInfo^.TimerHandle);
       FTimerData.Delete(n);
@@ -1583,7 +1583,7 @@ begin
   Result:=true;
 end;
 
-procedure TGtkObject.LoadFromXPMFile(Bitmap: TObject; Filename: PChar);
+procedure TGtkWidgetSet.LoadFromXPMFile(Bitmap: TObject; Filename: PChar);
 var
   GdiObject: PGdiObject;
   GDKColor: TGDKColor;
@@ -1594,7 +1594,7 @@ var
   Width, Height, Depth : Longint;
 begin
   if not (Bitmap is TBitmap) then
-    RaiseException('TGtkObject.LoadFromXPMFile Bitmap is not TBitmap: '
+    RaiseException('TGtkWidgetSet.LoadFromXPMFile Bitmap is not TBitmap: '
                    +Bitmap.ClassName);
   TheBitmap:=TBitmap(Bitmap);
   GdiObject := NewGDIObject(gdiBitmap);
@@ -1640,7 +1640,7 @@ begin
     TheBitmap.Transparent := False;
 end;
 
-procedure TGtkObject.LoadFromPixbufFile(Bitmap: TObject; Filename: PChar);
+procedure TGtkWidgetSet.LoadFromPixbufFile(Bitmap: TObject; Filename: PChar);
 var
   TheBitmap: TBitmap;
 
@@ -1690,21 +1690,21 @@ var
     Result := True;
   {$Else not NoGdkPixbufLib}
   begin
-    WriteLn('WARNING: [TgtkObject.LoadFromPixbufFile] GDKPixbuf support has been disabled, unable to load files!');
+    WriteLn('WARNING: [TGtkWidgetSet.LoadFromPixbufFile] GDKPixbuf support has been disabled, unable to load files!');
     Result := True;
   {$EndIf}
   end;
 
 begin
   if not (Bitmap is TBitmap) then
-    RaiseException('TGtkObject.LoadFromPixbufFile Bitmap is not TBitmap: '
+    RaiseException('TGtkWidgetSet.LoadFromPixbufFile Bitmap is not TBitmap: '
                    +Bitmap.ClassName);
   TheBitmap:=TBitmap(Bitmap);
   if not LoadFile then
-    Writeln('WARNING: [TgtkObject.LoadFromPixbufFile] loading file FAILED!');
+    Writeln('WARNING: [TGtkWidgetSet.LoadFromPixbufFile] loading file FAILED!');
 end;
 
-procedure TGtkObject.LoadFromPixbufData(Bitmap : hBitmap; Data : PByte);
+procedure TGtkWidgetSet.LoadFromPixbufData(Bitmap : hBitmap; Data : PByte);
 Type
   TBITMAPHEADER = packed record
     FileHeader : tagBitmapFileHeader;
@@ -1754,13 +1754,13 @@ Type
       begin
         SRC := gdk_pixbuf_loader_get_pixbuf(loader);
         if Src=nil then
-          WriteLn('WARNING: [TgtkObject.LoadFromPixbufData] Error occured loading Pixbuf!');
+          WriteLn('WARNING: [TGtkWidgetSet.LoadFromPixbufData] Error occured loading Pixbuf!');
       end
       else
-        WriteLn('WARNING: [TgtkObject.LoadFromPixbufData] Error occured loading Image!');
+        WriteLn('WARNING: [TGtkWidgetSet.LoadFromPixbufData] Error occured loading Image!');
     end
     else
-      WriteLn('WARNING: [TgtkObject.LoadFromPixbufData] Error occured loading Bitmap Header!');
+      WriteLn('WARNING: [TGtkWidgetSet.LoadFromPixbufData] Error occured loading Bitmap Header!');
     gdk_pixbuf_loader_close(Loader{$IFDEF Gtk2},nil{$ENDIF});
 
     If SRC = nil then
@@ -1798,23 +1798,23 @@ Type
     Result := True;
   {$Else not NoGdkPixbufLib}
   begin
-    WriteLn('WARNING: [TgtkObject.LoadFromPixbufData] GDKPixbuf support has been disabled, unable to load data!');
+    WriteLn('WARNING: [TGtkWidgetSet.LoadFromPixbufData] GDKPixbuf support has been disabled, unable to load data!');
     Result := True;
   {$EndIf}
   end;
 
 begin
   if not LoadData then
-    Writeln('WARNING: [TgtkObject.LoadFromPixbufData] loading data FAILED!');
+    Writeln('WARNING: [TGtkWidgetSet.LoadFromPixbufData] loading data FAILED!');
 end;
 
 {------------------------------------------------------------------------------
-  function Tgtkobject.InternalGetDIBits(DC: HDC; Bitmap: HBitmap;
+  function TGtkWidgetSet.InternalGetDIBits(DC: HDC; Bitmap: HBitmap;
     StartScan, NumScans: UINT;
     BitSize : Longint; Bits: Pointer;
     var BitInfo: BitmapInfo; Usage: UINT; DIB : Boolean): Integer;
  ------------------------------------------------------------------------------}
-function Tgtkobject.InternalGetDIBits(DC: HDC; Bitmap: HBitmap;
+function TGtkWidgetSet.InternalGetDIBits(DC: HDC; Bitmap: HBitmap;
   StartScan, NumScans: UINT;
   BitSize : Longint; Bits: Pointer;
   var BitInfo: BitmapInfo; Usage: UINT; DIB : Boolean): Integer;
@@ -1867,7 +1867,7 @@ var
         end;
       gbImage :
         If Bitmap^.GDI_RGBImageObject <> nil then begin
-          Writeln('WARNING : [TgtkObject.GetDIBits] support for gdiImage unimplimented!.');
+          Writeln('WARNING : [TGtkWidgetSet.GetDIBits] support for gdiImage unimplimented!.');
         end;
     end;
   end;
@@ -1927,7 +1927,7 @@ var
   end;
 
 begin
-  Assert(False, 'trace:[TgtkObject.InternalGetDIBits]');
+  Assert(False, 'trace:[TGtkWidgetSet.InternalGetDIBits]');
   Result := 0;
   if (DC=0) or (Usage=0) then ;
   if IsValidGDIObject(Bitmap)
@@ -1946,7 +1946,7 @@ begin
           end;
           BytesPerPixel:=biBitCount div 8;
 
-          {writeln('TgtkObject.InternalGetDIBits A BitSize=',BitSize,
+          {writeln('TGtkWidgetSet.InternalGetDIBits A BitSize=',BitSize,
           ' biSizeImage=',biSizeImage,' biHeight=',biHeight,' biWidth=',biWidth,
           ' NumScans=',NumScans,' StartScan=',StartScan,
           ' Bits=',HexStr(Cardinal(Bits),8),' MemSize(Bits)=',MemSize(Bits),
@@ -1956,12 +1956,12 @@ begin
                        *(longint(biSizeImage) div biHeight)
                        *longint(NumScans + StartScan);
           If MemSize(Bits) < BitSize then begin
-            writeln('WARNING: [TgtkObject.InternalGetDIBits] not enough memory allocated for Bits!');
+            writeln('WARNING: [TGtkWidgetSet.InternalGetDIBits] not enough memory allocated for Bits!');
             exit;
           end;
           // ToDo: other bitcounts
           if (biBitCount<>24) and (biBitCount<>16) then begin
-            writeln('WARNING: [TgtkObject.InternalGetDIBits] unsupported biBitCount=',biBitCount);
+            writeln('WARNING: [TGtkWidgetSet.InternalGetDIBits] unsupported biBitCount=',biBitCount);
             exit;
           end;
           Pos := 0;
@@ -2008,15 +2008,15 @@ begin
         DataSourceFinalize;
       end;
     else
-      writeln('WARNING: [TgtkObject.InternalGetDIBits] not a Bitmap!');
+      writeln('WARNING: [TGtkWidgetSet.InternalGetDIBits] not a Bitmap!');
     end;
   end
   else
-    writeln('WARNING: [TgtkObject.InternalGetDIBits] invalid Bitmap!');
+    writeln('WARNING: [TGtkWidgetSet.InternalGetDIBits] invalid Bitmap!');
   EndGDKErrorTrap;
 end;
 
-function TgtkObject.GetWindowRawImageDescription(GDKWindow: PGdkWindow;
+function TGtkWidgetSet.GetWindowRawImageDescription(GDKWindow: PGdkWindow;
   Desc: PRawImageDescription): boolean;
 var
   Visual: PGdkVisual;
@@ -2024,7 +2024,7 @@ var
 begin
   Result := false;
   if Desc=nil then begin
-    RaiseGDBException('TgtkObject.GetWindowRawImageDescription');
+    RaiseGDBException('TGtkWidgetSet.GetWindowRawImageDescription');
     exit;
   end;
 
@@ -2052,7 +2052,7 @@ begin
   GDK_VISUAL_TRUE_COLOR:   Desc^.Format:=ricfRGBA;
   GDK_VISUAL_DIRECT_COLOR: Desc^.Format:=ricfRGBA;
   else
-    writeln('TgtkObject.GetWindowRawImageDescription unknown Visual type ',
+    writeln('TGtkWidgetSet.GetWindowRawImageDescription unknown Visual type ',
             integer(Visual^.thetype));
     exit;
   end;
@@ -2112,13 +2112,13 @@ begin
   Desc^.AlphaByteOrder:=riboLSBFirst;
 
   {$IFDEF VerboseRawImage}
-  writeln('TgtkObject.GetWindowRawImageDescription A ',RawImageDescriptionAsString(Desc));
+  writeln('TGtkWidgetSet.GetWindowRawImageDescription A ',RawImageDescriptionAsString(Desc));
   {$ENDIF}
 
   Result:=true;
 end;
 
-function TgtkObject.GetRawImageFromGdkWindow(GDKWindow: PGdkWindow;
+function TGtkWidgetSet.GetRawImageFromGdkWindow(GDKWindow: PGdkWindow;
   const SrcRect: TRect; var NewRawImage: TRawImage): boolean;
 var
   ARect: TRect;
@@ -2129,11 +2129,11 @@ begin
   Result:=false;
   FillChar(NewRawImage,SizeOf(NewRawImage),0);
   if GdkWindow=nil then
-    RaiseGDBException('TgtkObject.GetRawImageFromGdkWindow');
+    RaiseGDBException('TGtkWidgetSet.GetRawImageFromGdkWindow');
 
   // get raw image description
   {$IFDEF VerboseRawImage}
-  writeln('TgtkObject.GetRawImageFromGdkWindow A GdkWindow=',HexStr(Cardinal(GdkWindow),8));
+  writeln('TGtkWidgetSet.GetRawImageFromGdkWindow A GdkWindow=',HexStr(Cardinal(GdkWindow),8));
   {$ENDIF}
   if not GetWindowRawImageDescription(GdkWindow,@NewRawImage.Description) then
     exit;
@@ -2141,19 +2141,19 @@ begin
   // get intersection
   ARect:=SrcRect;
   {$IFDEF VerboseRawImage}
-  writeln('TgtkObject.GetRawImageFromGdkWindow D ARect=',ARect.Left,',',ARect.Top,',',ARect.Right,',',ARect.Bottom,' DevW=',NewRawImage.Description.Width,' DevH=',NewRawImage.Description.Height);
+  writeln('TGtkWidgetSet.GetRawImageFromGdkWindow D ARect=',ARect.Left,',',ARect.Top,',',ARect.Right,',',ARect.Bottom,' DevW=',NewRawImage.Description.Width,' DevH=',NewRawImage.Description.Height);
   {$ENDIF}
   MaxRect:=Rect(0,0,NewRawImage.Description.Width,
                     NewRawImage.Description.Height);
   SourceRect:=ARect;
   IntersectRect(SourceRect,ARect,MaxRect);
   {$IFDEF VerboseRawImage}
-  writeln('TgtkObject.GetRawImageFromGdkWindow E SourceRect=',SourceRect.Left,',',SourceRect.Top,',',SourceRect.Right,',',SourceRect.Bottom);
+  writeln('TGtkWidgetSet.GetRawImageFromGdkWindow E SourceRect=',SourceRect.Left,',',SourceRect.Top,',',SourceRect.Right,',',SourceRect.Bottom);
   {$ENDIF}
   NewRawImage.Description.Width:=SourceRect.Right-SourceRect.Left;
   NewRawImage.Description.Height:=SourceRect.Bottom-SourceRect.Top;
   {$IFDEF VerboseRawImage}
-  writeln('TgtkObject.GetRawImageFromGdkWindow F ',SourceRect.Left,',',SourceRect.Top,',',SourceRect.Right,',',SourceRect.Bottom,' GDKWindow=',HexStr(Cardinal(GDkWindow),8));
+  writeln('TGtkWidgetSet.GetRawImageFromGdkWindow F ',SourceRect.Left,',',SourceRect.Top,',',SourceRect.Right,',',SourceRect.Bottom,' GDKWindow=',HexStr(Cardinal(GDkWindow),8));
   {$ENDIF}
   if (NewRawImage.Description.Width=0) or (NewRawImage.Description.Height=0)
   then exit;
@@ -2163,7 +2163,7 @@ begin
                          NewRawImage.Description.Width,
                          NewRawImage.Description.Height);
   if AnImage=nil then begin
-    writeln('WARNING: TgtkObject.GetRawImageFromGdkWindow gdk_image_get failed');
+    writeln('WARNING: TGtkWidgetSet.GetRawImageFromGdkWindow gdk_image_get failed');
     exit;
   end;
   try
@@ -2176,7 +2176,7 @@ begin
     NewRawImage.DataSize:=(NewRawImage.Description.BitsPerPixel shr 3)
                           * AnImage^.Width * AnImage^.Height;
     {$IFDEF VerboseRawImage}
-    writeln('TgtkObject.GetRawImageFromGdkWindow G Width=',AnImage^.Width,' Height=',AnImage^.Height,' BitsPerPixel=',NewRawImage.Description.BitsPerPixel,' bpl=',AnImage^.bpl);
+    writeln('TGtkWidgetSet.GetRawImageFromGdkWindow G Width=',AnImage^.Width,' Height=',AnImage^.Height,' BitsPerPixel=',NewRawImage.Description.BitsPerPixel,' bpl=',AnImage^.bpl);
     {$ENDIF}
     if NewRawImage.DataSize<>cardinal(AnImage^.bpl) * AnImage^.Height then
       RaiseGDBException('NewRawImage.DataSize<>AnImage^.bpl*AnImage^.Height');
@@ -2200,7 +2200,7 @@ begin
       System.Move(AnImage^.Mem^,NewRawImage.Data^,NewRawImage.DataSize);
 
     {$IFDEF VerboseRawImage}
-    writeln('TgtkObject.GetRawImageFromGdkWindow H ',
+    writeln('TGtkWidgetSet.GetRawImageFromGdkWindow H ',
       ' Width=',NewRawImage.Description.Width,
       ' Height=',NewRawImage.Description.Height,
       ' Depth=',NewRawImage.Description.Depth,
@@ -2214,7 +2214,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: TgtkObject.StretchCopyArea
+  Function: TGtkWidgetSet.StretchCopyArea
   Params:  DestDC:                The destination devicecontext
            X, Y:                  The left/top corner of the destination rectangle
            Width, Height:         The size of the destination rectangle
@@ -2238,7 +2238,7 @@ end;
     Extended NonDrawable support (Image, Bitmap, etc)
     Scale mask
  ------------------------------------------------------------------------------}
-function TgtkObject.StretchCopyArea(DestDC: HDC; X, Y, Width, Height: Integer;
+function TGtkWidgetSet.StretchCopyArea(DestDC: HDC; X, Y, Width, Height: Integer;
   SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer;
   Mask: HBITMAP; XMask, YMask: Integer;
   Rop: Cardinal): Boolean;
@@ -2277,7 +2277,7 @@ var
 
     if DestGC = nil
     then begin
-      WriteLn('WARNING: [TgtkObject.StretchCopyArea] Uninitialized DestGC');
+      WriteLn('WARNING: [TGtkWidgetSet.StretchCopyArea] Uninitialized DestGC');
       exit;
     end;
 
@@ -2490,49 +2490,49 @@ var
 
   function ImageToImage: Boolean;
   begin
-    WriteLn('WARNING: [TgtkObject.StretchCopyArea] ImageToImage unimplemented!');
+    WriteLn('WARNING: [TGtkWidgetSet.StretchCopyArea] ImageToImage unimplemented!');
     Result:=false;
   end;
 
   function ImageToDrawable: Boolean;
   begin
-    WriteLn('WARNING: [TgtkObject.StretchCopyArea] ImageToDrawable unimplemented!');
+    WriteLn('WARNING: [TGtkWidgetSet.StretchCopyArea] ImageToDrawable unimplemented!');
     Result:=false;
   end;
 
   function ImageToBitmap: Boolean;
   begin
-    WriteLn('WARNING: [TgtkObject.StretchCopyArea] ImageToBitmap unimplemented!');
+    WriteLn('WARNING: [TGtkWidgetSet.StretchCopyArea] ImageToBitmap unimplemented!');
     Result:=false;
   end;
 
   function PixmapToImage: Boolean;
   begin
-    WriteLn('WARNING: [TgtkObject.StretchCopyArea] PixmapToImage unimplemented!');
+    WriteLn('WARNING: [TGtkWidgetSet.StretchCopyArea] PixmapToImage unimplemented!');
     Result:=false;
   end;
 
   function PixmapToBitmap: Boolean;
   begin
-    WriteLn('WARNING: [TgtkObject.StretchCopyArea] PixmapToBitmap unimplemented!');
+    WriteLn('WARNING: [TGtkWidgetSet.StretchCopyArea] PixmapToBitmap unimplemented!');
     Result:=false;
   end;
 
   function BitmapToImage: Boolean;
   begin
-    WriteLn('WARNING: [TgtkObject.StretchCopyArea] BitmapToImage unimplemented!');
+    WriteLn('WARNING: [TGtkWidgetSet.StretchCopyArea] BitmapToImage unimplemented!');
     Result:=false;
   end;
 
   function BitmapToPixmap: Boolean;
   begin
-    WriteLn('WARNING: [TgtkObject.StretchCopyArea] BitmapToPixmap unimplemented!');
+    WriteLn('WARNING: [TGtkWidgetSet.StretchCopyArea] BitmapToPixmap unimplemented!');
     Result:=false;
   end;
 
   function Unsupported: Boolean;
   begin
-    WriteLn('WARNING: [TgtkObject.StretchCopyArea] Destination and/or Source '
+    WriteLn('WARNING: [TGtkWidgetSet.StretchCopyArea] Destination and/or Source '
       + 'unsupported!!');
     Result:=false;
   end;
@@ -2622,7 +2622,7 @@ begin
   end;
 
   {$IFDEF VerboseStretchCopyArea}
-  writeln('TgtkObject.StretchCopyArea BEFORE CLIPPING X=',X,' Y=',Y,' Width=',Width,' Height=',Height,
+  writeln('TGtkWidgetSet.StretchCopyArea BEFORE CLIPPING X=',X,' Y=',Y,' Width=',Width,' Height=',Height,
     ' XSrc=',XSrc,' YSrc=',YSrc,' SrcWidth=',SrcWidth,' SrcHeight=',SrcHeight,
     ' SrcDrawable=',HexStr(Cardinal(TDeviceContext(SrcDC).Drawable),8),
     ' SrcOrigin=',SrcDCOrigin.X,',',SrcDCOrigin.Y,
@@ -2711,7 +2711,7 @@ begin
   TempMaskPixmap:=nil;
 
   {$IFDEF VerboseStretchCopyArea}
-  write('TgtkObject.StretchCopyArea AFTER CLIPPING X=',X,' Y=',Y,' Width=',Width,' Height=',Height,
+  write('TGtkWidgetSet.StretchCopyArea AFTER CLIPPING X=',X,' Y=',Y,' Width=',Width,' Height=',Height,
     ' XSrc=',XSrc,' YSrc=',YSrc,' SrcWidth=',SrcWidth,' SrcHeight=',SrcHeight,
     ' SrcDrawable=',HexStr(Cardinal(TDeviceContext(SrcDC).Drawable),8),
     ' DestDrawable=',HexStr(Cardinal(TDeviceContext(DestDC).Drawable),8),
@@ -2759,10 +2759,10 @@ begin
     gdk_pixmap_unref(TempMaskPixmap);
 end;
 
-procedure TGtkObject.ListViewChangeItem(TheListView: TObject; Index: integer);
+procedure TGtkWidgetSet.ListViewChangeItem(TheListView: TObject; Index: integer);
 {$IfDef GTK2}
 begin
-  Writeln('TODO: TGtkObject.ListViewChangeItem');
+  Writeln('TODO: TGtkWidgetSet.ListViewChangeItem');
 end;
 {$Else}
 var
@@ -2813,12 +2813,12 @@ end;
 {$EndIf}
 
 {------------------------------------------------------------------------------
-  procedure TgtkObject.ListViewAddItem(TheListView: TObject);
+  procedure TGtkWidgetSet.ListViewAddItem(TheListView: TObject);
 ------------------------------------------------------------------------------}
-procedure TgtkObject.ListViewAddItem(TheListView: TObject);
+procedure TGtkWidgetSet.ListViewAddItem(TheListView: TObject);
 {$IfDef GTK2}
 begin
-  Writeln('TODO: TGtkObject.ListViewAddItem');
+  Writeln('TODO: TGtkWidgetSet.ListViewAddItem');
 end;
 {$Else}
 var
@@ -2832,7 +2832,7 @@ begin
                          Pointer(ListView.Handle), True)^.ImplementationWidget);
   Count:=ListViewWidget^.columns;
   if Count=0 then begin
-    writeln('WARNING: TgtkObject.ListViewAddItem  ListViewWidget^.columns=0');
+    writeln('WARNING: TGtkWidgetSet.ListViewAddItem  ListViewWidget^.columns=0');
     exit;
   end;
   GetMem(Titles,SizeOf(PGChar)*Count);
@@ -2844,22 +2844,22 @@ end;
 {$EndIf}
 
 {------------------------------------------------------------------------------
-  function TgtkObject.GetTopIndex(Sender: TObject): integer;
+  function TGtkWidgetSet.GetTopIndex(Sender: TObject): integer;
 ------------------------------------------------------------------------------}
-function TgtkObject.GetTopIndex(Sender: TObject): integer;
+function TGtkWidgetSet.GetTopIndex(Sender: TObject): integer;
 begin
   Result:=GetListBoxIndexAtY(Sender as TComponent,0);
 end;
 
 {------------------------------------------------------------------------------
-  function TgtkObject.SetTopIndex(Sender: TObject; NewTopIndex: integer
+  function TGtkWidgetSet.SetTopIndex(Sender: TObject; NewTopIndex: integer
     ): integer;
 ------------------------------------------------------------------------------}
-function TgtkObject.SetTopIndex(Sender: TObject; NewTopIndex: integer
+function TGtkWidgetSet.SetTopIndex(Sender: TObject; NewTopIndex: integer
   ): integer;
 {$IFdef GTK2}
 begin
-  writeln('TODO: TgtkObject.SetTopIndex');
+  writeln('TODO: TGtkWidgetSet.SetTopIndex');
 end;
 {$Else}
 var
@@ -2902,14 +2902,14 @@ end;
 {$EndIf}
 
 {------------------------------------------------------------------------------
-  procedure TgtkObject.SetSelectionMode(Sender: TObject; Widget: PGtkWidget;
+  procedure TGtkWidgetSet.SetSelectionMode(Sender: TObject; Widget: PGtkWidget;
     MultiSelect, ExtendedSelect: boolean);
 ------------------------------------------------------------------------------}
-procedure TgtkObject.SetSelectionMode(Sender: TObject; Widget: PGtkWidget;
+procedure TGtkWidgetSet.SetSelectionMode(Sender: TObject; Widget: PGtkWidget;
   MultiSelect, ExtendedSelect: boolean);
 {$IFdef GTK2}
 begin
-  writeln('TODO: TgtkObject.SetSelectionMode');
+  writeln('TODO: TGtkWidgetSet.SetSelectionMode');
 end;
 {$Else}
 var
@@ -2941,16 +2941,16 @@ begin
           SelectionMode);
 
     else
-      Assert (true, 'WARNING:[TgtkObject.IntSendMessage3] usage of LM_SETSELMODE unimplemented for actual component');
+      Assert (true, 'WARNING:[TGtkWidgetSet.IntSendMessage3] usage of LM_SETSELMODE unimplemented for actual component');
     end;
   end;
 end;
 {$EndIf}
 
 {------------------------------------------------------------------------------
-  procedure TgtkObject.BringFormToFront(Sender: TObject);
+  procedure TGtkWidgetSet.BringFormToFront(Sender: TObject);
 ------------------------------------------------------------------------------}
-procedure TgtkObject.BringFormToFront(Sender: TObject);
+procedure TGtkWidgetSet.BringFormToFront(Sender: TObject);
 var
   AWindow: PGdkWindow;
   Widget: PGtkWidget;
@@ -2963,7 +2963,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TGtkObject.IntSendMessage3
+  Method: TGtkWidgetSet.IntSendMessage3
   Params:  LM_Message - message to be processed by GTK
            Sender     - sending control
            data       - pointer to (optional)
@@ -2974,7 +2974,7 @@ end;
   WARNING: the result of this function sometimes is not always really an
            integer!!!!!
  ------------------------------------------------------------------------------}
-function TgtkObject.IntSendMessage3(LM_Message : Integer; Sender : TObject;
+function TGtkWidgetSet.IntSendMessage3(LM_Message : Integer; Sender : TObject;
   data : pointer) : integer;
 var
   handle      : hwnd;                  // handle of sender
@@ -3000,7 +3000,7 @@ begin
 
   Assert(False, 'Trace:Message received');
   if Sender <> nil then
-    Assert(False, Format('Trace:  [TgtkObject.IntSendMessage3] %s --> Sent LM_Message: $%x (%s); Data: %d', [Sender.ClassName, LM_Message, GetMessageName(LM_Message), Integer(data)]));
+    Assert(False, Format('Trace:  [TGtkWidgetSet.IntSendMessage3] %s --> Sent LM_Message: $%x (%s); Data: %d', [Sender.ClassName, LM_Message, GetMessageName(LM_Message), Integer(data)]));
 
   // The following case is now split into 2 separate parts:
   //   1st part should contain all messages which don't need the "handle" variable
@@ -3053,7 +3053,7 @@ begin
   else
     begin
       handle := hwnd(ObjectToGtkObject(Sender));
-      //???   if handle = nil then assert (false, Format ('Trace:  [TgtkObject.IntSendMessage3] %s --> got handle=nil',[Sender.ClassName]));
+      //???   if handle = nil then assert (false, Format ('Trace:  [TGtkWidgetSet.IntSendMessage3] %s --> got handle=nil',[Sender.ClassName]));
       Case LM_Message of
 
       LM_SetText  : SetText(PgtkWidget(Handle), Data);
@@ -3068,10 +3068,10 @@ begin
         {$ENDIF}
         AParent := (Sender as TWinControl).Parent;
         if Not Assigned(AParent) then Begin
-          Assert(true, Format('Trace: [TgtkObject.IntSendMessage3] %s --> Parent is not assigned', [Sender.ClassName]));
+          Assert(true, Format('Trace: [TGtkWidgetSet.IntSendMessage3] %s --> Parent is not assigned', [Sender.ClassName]));
         end
         else Begin
-          Assert(False, Format('Trace:  [TgtkObject.IntSendMessage3] %s --> Calling Add Child: %s', [AParent.ClassName, Sender.ClassNAme]));
+          Assert(False, Format('Trace:  [TGtkWidgetSet.IntSendMessage3] %s --> Calling Add Child: %s', [AParent.ClassName, Sender.ClassNAme]));
           AddChild(Pgtkwidget(AParent.Handle), PgtkWidget(Handle),
                    AParent.Left, AParent.Top);
         end;
@@ -3082,7 +3082,7 @@ begin
         if (Sender is TListView) then
         begin
           {$IfDef GTK2}
-          Writeln('TODO: TGtkObject.IntSendMessage3 LM_LV_DELETEITEM');
+          Writeln('TODO: TGtkWidgetSet.IntSendMessage3 LM_LV_DELETEITEM');
           {$Else}
           Num := Integer(data^);
           Widget:= GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
@@ -3106,7 +3106,7 @@ begin
       if (Sender is TListView) then
       begin
        {$IfDef GTK2}
-        Writeln('TODO: TGtkObject.IntSendMessage3 LM_LV_SELECTITEM');
+        Writeln('TODO: TGtkWidgetSet.IntSendMessage3 LM_LV_SELECTITEM');
        {$Else}
         Widget:= GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
         gtk_clist_unselect_all(PGtkCList(Widget));
@@ -3341,13 +3341,13 @@ begin
 
       LM_SETFOCUS:
       begin
-        //writeln('[TgtkObject.IntSendMessage3] LM_SETFOCUS ',TObject(Sender).ClassName);
+        //writeln('[TGtkWidgetSet.IntSendMessage3] LM_SETFOCUS ',TObject(Sender).ClassName);
         SetFocus(Handle);
       end;
 
       LM_SetSize:
       begin
-        Assert(False, Format('Trace:  [TgtkObject.IntSendMessage3] %s --> LM_SetSize(%d, %d, %d, %d)', [Sender.ClassNAme, PRect(Data)^.Left,PRect(Data)^.Top,PRect(Data)^.Right,PRect(Data)^.Bottom]));
+        Assert(False, Format('Trace:  [TGtkWidgetSet.IntSendMessage3] %s --> LM_SetSize(%d, %d, %d, %d)', [Sender.ClassNAme, PRect(Data)^.Left,PRect(Data)^.Top,PRect(Data)^.Right,PRect(Data)^.Bottom]));
         //writeln('[IntSendMessage3.lm_setsize] Left=',PRect(Data)^.Left,' Top=',PRect(Data)^.Top,
         //  ' Right=',PRect(Data)^.Right,' Bottom=',PRect(Data)^.Bottom);
         //writeln('[LM_SetSize] A ',Sender.ClassName,' ',PgtkWidget(Handle)^.window<>nil);
@@ -3362,7 +3362,7 @@ begin
       LM_TB_BUTTONCOUNT:
       begin
         {$IFDEF NewToolBar}
-        writeln('Obsolete: TgtkObject.IntSendMessage3 LM_TB_BUTTONCOUNT');
+        writeln('Obsolete: TGtkWidgetSet.IntSendMessage3 LM_TB_BUTTONCOUNT');
         exit;
         {$ENDIF}
         if (Sender is TToolbar)
@@ -3373,7 +3373,7 @@ begin
   //SH: think of TCanvas.handle!!!!
       LM_REDRAW:
       begin
-        Assert(False, Format('Trace:  [TgtkObject.IntSendMessage3] %s --> Redraw', [Sender.ClassName]));
+        Assert(False, Format('Trace:  [TGtkWidgetSet.IntSendMessage3] %s --> Redraw', [Sender.ClassName]));
         if (Sender is TCanvas) then
           ReDraw(PgtkWidget(TCanvas(Sender).Handle))
         else begin
@@ -3422,7 +3422,7 @@ begin
       LM_INSERTTOOLBUTTON:
       begin
         {$IFDEF NewToolBar}
-        writeln('Obsolete: TgtkObject.IntSendMessage3 LM_INSERTTOOLBUTTON');
+        writeln('Obsolete: TGtkWidgetSet.IntSendMessage3 LM_INSERTTOOLBUTTON');
         exit;
         {$ENDIF}
          If (SENDER is TToolbutton) Then
@@ -3453,7 +3453,7 @@ begin
       LM_DELETETOOLBUTTON:
       Begin
         {$IFDEF NewToolBar}
-        writeln('Obsolete: TgtkObject.IntSendMessage3 LM_DELETETOOLBUTTON');
+        writeln('Obsolete: TGtkWidgetSet.IntSendMessage3 LM_DELETETOOLBUTTON');
         exit;
         {$ENDIF}
          with pgtkToolbar(TToolbar(TWinControl(Sender).parent).handle)^ do
@@ -3514,7 +3514,7 @@ begin
       LM_GETITEMS :
       {$IFdef GTK2}
       begin
-        writeln('TODO: TgtkObject.IntSendMessage3 LM_GETITEMS');
+        writeln('TODO: TGtkWidgetSet.IntSendMessage3 LM_GETITEMS');
       end;
       {$Else}
       begin
@@ -3600,7 +3600,7 @@ begin
 
           {$IFdef GTK2}
            else
-             writeln('TODO: TgtkObject.IntSendMessage3 LM_GETITEMINDEX');
+             writeln('TODO: TGtkWidgetSet.IntSendMessage3 LM_GETITEMINDEX');
           {$EndIf}
         end;
       end;
@@ -3638,7 +3638,7 @@ begin
             end;
           {$IFdef GTK2}
            else
-             writeln('TODO: TgtkObject.IntSendMessage3 LM_SETITEMINDEX');
+             writeln('TODO: TGtkWidgetSet.IntSendMessage3 LM_SETITEMINDEX');
           {$EndIf}
           end;
         end;
@@ -3751,7 +3751,7 @@ begin
       LM_GETSELCOUNT :
       {$IFdef GTK2}
       begin
-        writeln('TODO: TgtkObject.IntSendMessage3 LM_GETSELCOUNT');
+        writeln('TODO: TGtkWidgetSet.IntSendMessage3 LM_GETSELCOUNT');
       end;
       {$Else}
       begin
@@ -3769,7 +3769,7 @@ begin
       LM_GETSEL :
       {$IFdef GTK2}
       begin
-        writeln('TODO: TgtkObject.IntSendMessage3 LM_GETSEL');
+        writeln('TODO: TGtkWidgetSet.IntSendMessage3 LM_GETSEL');
       end;
       {$Else}
       begin
@@ -3806,7 +3806,7 @@ begin
       LM_CLB_GETCHECKED :
       {$IFdef GTK2}
       begin
-        writeln('TODO: TgtkObject.IntSendMessage3 LM_CLB_GETCHECKED');
+        writeln('TODO: TGtkWidgetSet.IntSendMessage3 LM_CLB_GETCHECKED');
       end;
       {$Else}
       begin
@@ -3832,7 +3832,7 @@ begin
       LM_CLB_SETCHECKED :
       {$IFdef GTK2}
       begin
-        writeln('TODO: TgtkObject.IntSendMessage3 LM_CLB_SETCHECKED');
+        writeln('TODO: TGtkWidgetSet.IntSendMessage3 LM_CLB_SETCHECKED');
       end;
       {$Else}
       begin
@@ -3878,7 +3878,7 @@ begin
                               TLMSort(Data^).IsSorted;
           {$Else}
           else
-             writeln('TODO: TgtkObject.IntSendMessage3 LM_SORT');
+             writeln('TODO: TGtkWidgetSet.IntSendMessage3 LM_SORT');
           {$Endif}
           end
         end
@@ -3887,7 +3887,7 @@ begin
       LM_SETSEL:
       {$IFdef GTK2}
       begin
-        writeln('TODO: TgtkObject.IntSendMessage3 LM_SETSEL');
+        writeln('TODO: TGtkWidgetSet.IntSendMessage3 LM_SETSEL');
       end;
       {$Else}
       begin
@@ -3921,7 +3921,7 @@ begin
       LM_SETBORDER:
       {$IFdef GTK2}
       begin
-        writeln('TODO: TgtkObject.IntSendMessage3 LM_SETBORDER');
+        writeln('TODO: TGtkWidgetSet.IntSendMessage3 LM_SETBORDER');
       end;
       {$Else}
       begin
@@ -4017,14 +4017,14 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: TGtkObject.GetText
+  Function: TGtkWidgetSet.GetText
   Params:  Sender: The control to retrieve the text from
   Returns: the requested text
 
   Retrieves the text from a gtk control. this is a replacement for
   the LM_GetText message.
  ------------------------------------------------------------------------------}
-function TGtkObject.GetText(Sender: TComponent; var Text: String): Boolean;
+function TGtkWidgetSet.GetText(Sender: TComponent; var Text: String): Boolean;
 var
   CS: PChar;
 begin
@@ -4053,7 +4053,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TGtkObject.ResizeChild
+  Method: TGtkWidgetSet.ResizeChild
 
   Params:  sender - the object which invoked this function
            Left,Top,Width,Height - new dimensions for the control
@@ -4061,13 +4061,13 @@ end;
 
   *Note: Resize a child widget on the parents fixed widget
  ------------------------------------------------------------------------------}
-procedure TgtkObject.ResizeChild(Sender : TObject;
+procedure TGtkWidgetSet.ResizeChild(Sender : TObject;
   Left, Top, Width, Height : Integer);
 var
   Widget: PGtkWidget;
 begin
-  //writeln('[TgtkObject.ResizeChild] START ',TControl(Sender).Name,':',Sender.Classname,' Left=',Left,' Top=',Top,' Width=',Width,' Height=',Height);
-  Assert(false, (Format('trace:  [TgtkObject.ResizeChild] %s --> Resize', [Sender.ClassNAme])));
+  //writeln('[TGtkWidgetSet.ResizeChild] START ',TControl(Sender).Name,':',Sender.Classname,' Left=',Left,' Top=',Top,' Width=',Width,' Height=',Height);
+  Assert(false, (Format('trace:  [TGtkWidgetSet.ResizeChild] %s --> Resize', [Sender.ClassNAme])));
 
   if Sender is TWinControl then begin
     if TWinControl(Sender).HandleAllocated then begin
@@ -4078,11 +4078,11 @@ begin
       //  writeln(' FFF ResizeChild ',Sender.ClassName,' ',Left,',',Top,',',Width,',',Height);
     end;
   end;
-  //writeln('[TgtkObject.ResizeChild] END ',Sender.Classname,' Left=',Left,' Top=',Top,' Width=',Width,' Height=',Height);
+  //writeln('[TGtkWidgetSet.ResizeChild] END ',Sender.Classname,' Left=',Left,' Top=',Top,' Width=',Width,' Height=',Height);
 end;
 
 {------------------------------------------------------------------------------
-  Method: TGtkObject.AddChild
+  Method: TGtkWidgetSet.AddChild
   Params:  parent -
            child  -
            left, top -
@@ -4090,7 +4090,7 @@ end;
 
   *Note: Adds A Child to a Parent Widget
  ------------------------------------------------------------------------------}
-procedure TgtkObject.AddChild(Parent,Child : Pointer; Left,Top: Integer);
+procedure TGtkWidgetSet.AddChild(Parent,Child : Pointer; Left,Top: Integer);
 var
   pFixed: PGTKWidget;
 begin
@@ -4104,7 +4104,7 @@ end;
 
 
 {------------------------------------------------------------------------------
-  Method: TGtkObject.SetText
+  Method: TGtkWidgetSet.SetText
   Params:  Child -
            data  -
   Returns: Nothing
@@ -4115,7 +4115,7 @@ end;
            It's only left in here for TStatusBar right now cause it
            may be nice to use it with different panels.
  ------------------------------------------------------------------------------}
-procedure TgtkObject.SetText(Child, Data: Pointer);
+procedure TGtkWidgetSet.SetText(Child, Data: Pointer);
 {$IFDEF OldStatusBar}
 var
   num : Integer;
@@ -4132,15 +4132,15 @@ begin
       {$ENDIF}
     end
   else
-    writeln ('STOPPOK: [TGtkObject.SetText] Possible superfluous use of SetText, use SetLabel instead!');
+    writeln ('STOPPOK: [TGtkWidgetSet.SetText] Possible superfluous use of SetText, use SetLabel instead!');
   end;
 {STOPPOK: Code seems superfluous, see SetLabel instead}
 end;
 
 {------------------------------------------------------------------------------
-  procedure TgtkObject.AppendText(Sender: TObject; Str: PChar);
+  procedure TGtkWidgetSet.AppendText(Sender: TObject; Str: PChar);
  ------------------------------------------------------------------------------}
-procedure TgtkObject.AppendText(Sender: TObject; Str: PChar);
+procedure TGtkWidgetSet.AppendText(Sender: TObject; Str: PChar);
 var
   Widget: PGtkWidget;
   CurMemoLen: cardinal;
@@ -4165,14 +4165,14 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TGtkObject.SetLabel
+  Method: TGtkWidgetSet.SetLabel
   Params:  sender - the calling object
            data   - String (PChar) to be set as label for a control
   Returns: Nothing
 
   Sets the label text on a widget
  ------------------------------------------------------------------------------}
-procedure TgtkObject.SetLabel(Sender : TObject; Data : Pointer);
+procedure TGtkWidgetSet.SetLabel(Sender : TObject; Data : Pointer);
 
   procedure SetNotebookPageTabLabel;
   var
@@ -4233,15 +4233,15 @@ begin
   end;
 
   if Sender is TWinControl
-  then Assert(False, Format('Trace:  [TgtkObject.SetLabel] %s --> label %s', [Sender.ClassName, TControl(Sender).Caption]))
+  then Assert(False, Format('Trace:  [TGtkWidgetSet.SetLabel] %s --> label %s', [Sender.ClassName, TControl(Sender).Caption]))
   else begin
-    Assert(False, Format('Trace:WARNING: [TgtkObject.SetLabel] %s --> No Decendant of TWinControl', [Sender.ClassName]));
-    RaiseException('[TgtkObject.SetLabel] ERROR: Sender ('+Sender.Classname+')'
+    Assert(False, Format('Trace:WARNING: [TGtkWidgetSet.SetLabel] %s --> No Decendant of TWinControl', [Sender.ClassName]));
+    RaiseException('[TGtkWidgetSet.SetLabel] ERROR: Sender ('+Sender.Classname+')'
         +' is not TWinControl ');
   end;
 
   P := Pointer(TWinControl(Sender).Handle);
-  Assert(p = nil, 'Trace:WARNING: [TgtkObject.SetLabel] --> got nil pointer');
+  Assert(p = nil, 'Trace:WARNING: [TGtkWidgetSet.SetLabel] --> got nil pointer');
   Assert(False, 'Trace:Setting Str1 in SetLabel');
   pLabel := pchar(Data);
 
@@ -4259,11 +4259,11 @@ begin
         //Accel := Ampersands2Underscore(aLabel);
         if gtk_bin_get_child(P) = nil then
         begin
-          Assert(False, Format('trace:  [TgtkObject.SetLabel] %s has no child label', [Sender.ClassName]));
+          Assert(False, Format('trace:  [TGtkWidgetSet.SetLabel] %s has no child label', [Sender.ClassName]));
            gtk_container_add(P, gtk_label_new(aLabel));
         end
         else begin
-          Assert(False, Format('trace:  [TgtkObject.SetLabel] %s has child label', [Sender.ClassName]));
+          Assert(False, Format('trace:  [TGtkWidgetSet.SetLabel] %s has child label', [Sender.ClassName]));
           gtk_label_set_text(pgtkLabel( gtk_bin_get_child(P)), aLabel);
         end;
         //If Accel <> -1 then
@@ -4357,23 +4357,23 @@ begin
     end;
 
   else
-    //writeln('WARNING: [TgtkObject.SetLabel] --> not handled for class ',Sender.ClassName);
+    //writeln('WARNING: [TGtkWidgetSet.SetLabel] --> not handled for class ',Sender.ClassName);
   end;
-  Assert(False, Format('trace:  [TgtkObject.SetLabel] %s --> END', [Sender.ClassName]));
+  Assert(False, Format('trace:  [TGtkWidgetSet.SetLabel] %s --> END', [Sender.ClassName]));
 end;
 
 {------------------------------------------------------------------------------}
-{       TGtkObject SetColor                                                 }
+{       TGtkWidgetSet SetColor                                                 }
 {       *Note: Changes the form's default background color                                 }
 {------------------------------------------------------------------------------}
-procedure TgtkObject.SetColor(Sender : TObject);
+procedure TGtkWidgetSet.SetColor(Sender : TObject);
 begin
   if Sender is TWinControl then
     UpdateWidgetStyleOfControl(TWinControl(Sender));
 end;
 
 {------------------------------------------------------------------------------
-  Function: TGTKObject.SetCallback
+  Function: TGtkWidgetSet.SetCallback
   Params: AMsg - message for which to set a callback
           AGTKObject - object to which callback will be send
           ALCLObject - for compatebility reasons provided, will be used when
@@ -4383,7 +4383,7 @@ end;
   Applies a Message to the sender
  ------------------------------------------------------------------------------}
 //TODO: remove ALCLObject when creation splitup is finished
-procedure TGTKObject.SetCallback(const AMsg: LongInt; const AGTKObject: PGTKObject; const ALCLObject: TObject);
+procedure TGtkWidgetSet.SetCallback(const AMsg: LongInt; const AGTKObject: PGTKObject; const ALCLObject: TObject);
 
   procedure ConnectSenderSignal(const AnObject:PGTKObject; const ASignal: PChar;
     const ACallBackProc: Pointer);
@@ -4563,13 +4563,13 @@ begin
 
     LM_PRESSED :
     begin
-      Assert(False, 'Trace:OBSOLETE: [TGTKObject.SetCallback] LM_PRESSED');
+      Assert(False, 'Trace:OBSOLETE: [TGtkWidgetSet.SetCallback] LM_PRESSED');
       ConnectSenderSignal(gObject, 'pressed', @gtkpressedCB);
     end;
 
     LM_RELEASED :
     begin
-      Assert(False, 'Trace:OBSOLETE: [TGTKObject.SetCallback] LM_RELEASED');
+      Assert(False, 'Trace:OBSOLETE: [TGtkWidgetSet.SetCallback] LM_RELEASED');
       ConnectSenderSignal(gObject, 'released', @gtkreleasedCB);
     end;
 
@@ -4901,13 +4901,13 @@ end;
 
 
 {------------------------------------------------------------------------------
-  Function: TGTKObject.RemoveCallBacks
+  Function: TGtkWidgetSet.RemoveCallBacks
   Params:   Widget
   Returns:  nothing
 
   Removes Call Back Signals from the Widget
  ------------------------------------------------------------------------------}
-procedure TGTKObject.RemoveCallbacks(Widget: PGtkWidget);
+procedure TGtkWidgetSet.RemoveCallbacks(Widget: PGtkWidget);
 var
   MainWidget, ClientWidget, ImplWidget: PGtkWidget;
   WinWidgetInfo: PWinWidgetInfo;
@@ -4932,12 +4932,12 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  TgtkObject.DestroyLCLComponent
+  TGtkWidgetSet.DestroyLCLComponent
   Params: Sender: TObject
 
   Destroy the widget and all associated data
 -------------------------------------------------------------------------------}
-procedure TGTKObject.DestroyLCLComponent(Sender : TObject);
+procedure TGtkWidgetSet.DestroyLCLComponent(Sender : TObject);
 var
   handle: hwnd; // handle of sender
   Widget: PGtkWidget;
@@ -4951,7 +4951,7 @@ begin
   if WidgetIsDestroyingHandle(Widget) then exit;
   SetWidgetIsDestroyingHandle(Widget);
 
-  //writeln('TGTKObject.DestroyLCLComponent A ',GetWidgetClassName(Widget));
+  //writeln('TGtkWidgetSet.DestroyLCLComponent A ',GetWidgetClassName(Widget));
 
   // if one of its widgets has the focus then unfocus
   GtkWindow:=gtk_widget_get_toplevel(Widget);
@@ -5002,7 +5002,7 @@ begin
     LastRight:=EmptyLastMouseClick;
 end;
 
-procedure TgtkObject.DestroyConnectedWidget(Widget: PGtkWidget;
+procedure TGtkWidgetSet.DestroyConnectedWidget(Widget: PGtkWidget;
   CheckIfDestroying: boolean);
 var
   FixWidget: PGtkWidget;
@@ -5025,7 +5025,7 @@ begin
 
   // Remove control accelerators - has to be done due to GTK+ bug?
   {$IFNDef GTK2}
-  //writeln('TGTKObject.DestroyLCLComponent B ',TWinControl(Sender).Name,':',TWinControl(Sender).ClassName);
+  //writeln('TGtkWidgetSet.DestroyLCLComponent B ',TWinControl(Sender).Name,':',TWinControl(Sender).ClassName);
   Accelerators:= gtk_accel_group_entries_from_object(PGtkObject(Widget));
   while Accelerators <> nil do begin
     AccelEntry:= Accelerators^.data;
@@ -5095,14 +5095,14 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  TgtkObject.HookWincontrolSignals
+  TGtkWidgetSet.HookWincontrolSignals
   Params: ALCLObject: TObject;
           AGTKObject: PGTKObject;
 
   Set default Callbacks for TWincontrol descendants defined by AGTKObject.
 -------------------------------------------------------------------------------}
 //TODO: Remove ALCLObject when the creation splitup is finished
-procedure TgtkObject.HookWincontrolSignals(const AGTKObject: PGTKObject; const ALCLObject: TObject);
+procedure TGtkWidgetSet.HookWincontrolSignals(const AGTKObject: PGTKObject; const ALCLObject: TObject);
 begin
   SetCallback(LM_SHOWWINDOW, AGTKObject, ALCLObject);
   SetCallback(LM_DESTROY, AGTKObject, ALCLObject);
@@ -5124,7 +5124,7 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  TgtkObject.HookSignals
+  TGtkWidgetSet.HookSignals
   Params: ALCLObject: TObject;
           AGTKObject: PGTKObject;
 
@@ -5132,7 +5132,7 @@ end;
 -------------------------------------------------------------------------------}
 //TODO: Remove when the creation splitup is finished.
 //      In that case all code here is moved to the specific creation parts
-procedure TgtkObject.HookSignals(const AGTKObject: PGTKObject; const ALCLObject: TObject);
+procedure TGtkWidgetSet.HookSignals(const AGTKObject: PGTKObject; const ALCLObject: TObject);
 begin
   if (ALCLObject is TWinControl)
   then HookWincontrolSignals(AGTKObject, ALCLObject);
@@ -5241,13 +5241,13 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure TGTKObject.InitializeCommonDialog
+  procedure TGtkWidgetSet.InitializeCommonDialog
   Params: ADialog: TCommonDialog; AWindow: PGtkWidget
   Result: none
 
   Initializes a TCommonDialog window.
 ------------------------------------------------------------------------------}
-procedure TGTKObject.InitializeCommonDialog(ADialog: TObject;
+procedure TGtkWidgetSet.InitializeCommonDialog(ADialog: TObject;
   AWindow: PGtkWidget);
 var NewWidth, NewHeight: integer;
 begin
@@ -5486,13 +5486,13 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: TGTKObject.CreateOpenDialogFilter
+  Function: TGtkWidgetSet.CreateOpenDialogFilter
   Params: OpenDialog: TOpenDialog; SelWidget: PGtkWidget
   Returns: -
 
   Adds a Filter pulldown to a gtk file selection dialog.
  ------------------------------------------------------------------------------}
-procedure TGTKObject.CreateOpenDialogFilter(OpenDialog: TOpenDialog;
+procedure TGtkWidgetSet.CreateOpenDialogFilter(OpenDialog: TOpenDialog;
   SelWidget: PGtkWidget);
 var
   FilterList: TList;
@@ -5567,13 +5567,13 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: TGTKObject.CreatePreviewDialogControl
+  Function: TGtkWidgetSet.CreatePreviewDialogControl
   Params: PreviewDialog: TPreviewFileDialog; SelWidget: PGtkWidget
   Returns: -
 
   Adds a preview control to a gtk file selection dialog.
  ------------------------------------------------------------------------------}
-procedure TGTKObject.CreatePreviewDialogControl(
+procedure TGtkWidgetSet.CreatePreviewDialogControl(
   PreviewDialog: TPreviewFileDialog; SelWidget: PGtkWidget);
 var
   PreviewWidget: PGtkWidget;
@@ -5608,7 +5608,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: TGTKObject.InitializeOpenDialog
+  Function: TGtkWidgetSet.InitializeOpenDialog
   Params: OpenDialog: TOpenDialog; SelWidget: PGtkWidget
   Returns: -
 
@@ -5621,7 +5621,7 @@ end;
   - filter pulldown
   - preview control
  ------------------------------------------------------------------------------}
-procedure TGTKObject.InitializeOpenDialog(OpenDialog: TOpenDialog;
+procedure TGtkWidgetSet.InitializeOpenDialog(OpenDialog: TOpenDialog;
   SelWidget: PGtkWidget);
 var
   FileDetailLabel, HBox, FrameWidget: PGtkWidget;
@@ -5709,13 +5709,13 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: TGTKObject.InitializeFileDialog
+  Function: TGtkWidgetSet.InitializeFileDialog
   Params: FileDialog: TFileDialog; var SelWidget: PGtkWidget
   Returns: -
 
   Creates a new TFile/Open/SaveDialog
  ------------------------------------------------------------------------------}
-procedure TGTKObject.InitializeFileDialog(FileDialog: TFileDialog;
+procedure TGtkWidgetSet.InitializeFileDialog(FileDialog: TFileDialog;
   var SelWidget: PGtkWidget; Title: PChar);
 begin
   SelWidget := gtk_file_selection_new(Title);
@@ -5742,13 +5742,13 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: TGTKObject.InitializeFontDialog
+  Function: TGtkWidgetSet.InitializeFontDialog
   Params: FontDialog: TFontialog; var SelWidget: PGtkWidget
   Returns: -
 
   Creates a new TFontDialog
  ------------------------------------------------------------------------------}
-procedure TGTKObject.InitializeFontDialog(FontDialog: TFontDialog;
+procedure TGtkWidgetSet.InitializeFontDialog(FontDialog: TFontDialog;
   var SelWidget: PGtkWidget; Title: PChar);
 begin
   SelWidget := gtk_font_selection_dialog_new(Title);
@@ -5780,9 +5780,9 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  function TGTKObject.CreateComboBox(ComboBoxObject: TObject): Pointer;
+  function TGtkWidgetSet.CreateComboBox(ComboBoxObject: TObject): Pointer;
 -------------------------------------------------------------------------------}
-function TGTKObject.CreateComboBox(ComboBoxObject: TObject): Pointer;
+function TGtkWidgetSet.CreateComboBox(ComboBoxObject: TObject): Pointer;
 var
   Widget: PGtkCombo;
   ItemList: TGtkListStringList;
@@ -5815,7 +5815,7 @@ begin
 end;
 
 
-procedure TgtkObject.FinishComponentCreate(const ALCLObject: TObject; const AGTKObject: Pointer; const ASetupProps : Boolean);
+procedure TGtkWidgetSet.FinishComponentCreate(const ALCLObject: TObject; const AGTKObject: Pointer; const ASetupProps : Boolean);
 begin
   // MWE: next will be obsoleted by WinWidgetInfo
   if AGTKObject <> nil then
@@ -5859,7 +5859,7 @@ begin
   end;
 end;
 
-Function TgtkObject.GetCompStyle(Sender : TObject) : Longint;
+Function TGtkWidgetSet.GetCompStyle(Sender : TObject) : Longint;
 begin
   Result := csNone;
   if (Sender is TControl) then
@@ -5877,7 +5877,7 @@ begin
       result := TCommonDialog(Sender).FCompStyle;
 end;
 
-Function TgtkObject.GetCaption(Sender : TObject) : String;
+Function TGtkWidgetSet.GetCaption(Sender : TObject) : String;
 begin
   Result := Sender.ClassName;
   if (Sender is TControl) then
@@ -5890,7 +5890,7 @@ begin
     Result := rsBlank;
 end;
 
-function TgtkObject.CreateAPIWidget(
+function TGtkWidgetSet.CreateAPIWidget(
   AWinControl: TWinControl): PGtkWidget;
 // currently only used for csFixed
 var
@@ -5926,7 +5926,7 @@ begin
   end;
 end;
 
-function TgtkObject.CreateForm(ACustomForm: TCustomForm): PGtkWidget;
+function TGtkWidgetSet.CreateForm(ACustomForm: TCustomForm): PGtkWidget;
 var
   Box: Pointer;
   ABorderStyle: TFormBorderStyle;
@@ -5977,12 +5977,12 @@ begin
   end;
 end;
 
-function TgtkObject.CreateListView(ListViewObject: TObject): PGtkWidget;
+function TGtkWidgetSet.CreateListView(ListViewObject: TObject): PGtkWidget;
 {$IFdef GTK2}
 begin
   Result:=gtk_scrolled_window_new(nil, nil);//create something just in case
   gtk_widget_show(result);
-  writeln('TODO: TgtkObject.CreateListView');
+  writeln('TODO: TGtkWidgetSet.CreateListView');
 end;
 {$Else}
 var
@@ -6063,12 +6063,12 @@ begin
 end;
 {$EndIF}
 {------------------------------------------------------------------------------
-  function TgtkObject.CreatePairSplitter(PairSplitterObject: TObject
+  function TGtkWidgetSet.CreatePairSplitter(PairSplitterObject: TObject
     ): PGtkWidget;
 
   Create a TCustomPairSplitter widget set
  ------------------------------------------------------------------------------}
-function TgtkObject.CreatePairSplitter(PairSplitterObject: TObject
+function TGtkWidgetSet.CreatePairSplitter(PairSplitterObject: TObject
   ): PGtkWidget;
 var
   APairSplitter: TCustomPairSplitter;
@@ -6084,12 +6084,12 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function TgtkObject.CreatePairSplitter(PairSplitterObject: TObject
+  function TGtkWidgetSet.CreatePairSplitter(PairSplitterObject: TObject
     ): PGtkWidget;
 
   Create a TStatusBar widget set
  ------------------------------------------------------------------------------}
-function TgtkObject.CreateStatusBar(StatusBar: TObject): PGtkWidget;
+function TGtkWidgetSet.CreateStatusBar(StatusBar: TObject): PGtkWidget;
 begin
   {$IFDEF OldStatusBar}
   Result:=gtk_statusbar_new;
@@ -6100,12 +6100,12 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function TgtkObject.CreateStatusBarPanel(StatusBar: TObject; Index: integer
+  function TGtkWidgetSet.CreateStatusBarPanel(StatusBar: TObject; Index: integer
     ): PGtkWidget;
 
   Creates a new statusbar panel widget.
  ------------------------------------------------------------------------------}
-function TgtkObject.CreateStatusBarPanel(StatusBar: TObject; Index: integer
+function TGtkWidgetSet.CreateStatusBarPanel(StatusBar: TObject; Index: integer
   ): PGtkWidget;
 begin
   Result:=gtk_statusbar_new;
@@ -6114,12 +6114,12 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure TgtkObject.UpdateStatusBarPanels(StatusBar: TObject;
+  procedure TGtkWidgetSet.UpdateStatusBarPanels(StatusBar: TObject;
     StatusBarWidget: PGtkWidget);
 
   Update the widget(s) of a TStatusBar.
  ------------------------------------------------------------------------------}
-procedure TgtkObject.UpdateStatusBarPanels(StatusBar: TObject;
+procedure TGtkWidgetSet.UpdateStatusBarPanels(StatusBar: TObject;
   StatusBarWidget: PGtkWidget);
 var
   AStatusBar: TStatusBar;
@@ -6131,7 +6131,7 @@ var
   i: Integer;
   ExpandItem: boolean;
 begin
-  //writeln('TgtkObject.UpdateStatusBarPanels ',HexStr(Cardinal(StatusBar),8));
+  //writeln('TGtkWidgetSet.UpdateStatusBarPanels ',HexStr(Cardinal(StatusBar),8));
 
   AStatusBar:=StatusBar as TStatusBar;
   HBox:=PGtkWidget(StatusBarWidget);
@@ -6161,7 +6161,7 @@ begin
   end;
 
   CurPanelCount:=integer(g_list_length(PGtkBox(HBox)^.children));
-  //writeln('TgtkObject.UpdateStatusBarPanels B ',HexStr(Cardinal(StatusBar),8),' NewPanelCount=',NewPanelCount,' CurPanelCount=',CurPanelCount);
+  //writeln('TGtkWidgetSet.UpdateStatusBarPanels B ',HexStr(Cardinal(StatusBar),8),' NewPanelCount=',NewPanelCount,' CurPanelCount=',CurPanelCount);
   if CurPanelCount<>NewPanelCount then
     RaiseGDBException('');
 
@@ -6180,12 +6180,12 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure TgtkObject.UpdateStatusBarPanel(StatusBar: TObject; Index: integer;
+  procedure TGtkWidgetSet.UpdateStatusBarPanel(StatusBar: TObject; Index: integer;
     StatusPanelWidget: PGtkWidget);
 
   Update the widget(s) of a single TStatusBar panel.
  ------------------------------------------------------------------------------}
-procedure TgtkObject.UpdateStatusBarPanel(StatusBar: TObject; Index: integer;
+procedure TGtkWidgetSet.UpdateStatusBarPanel(StatusBar: TObject; Index: integer;
   StatusPanelWidget: PGtkWidget);
 var
   AStatusBar: TStatusBar;
@@ -6197,7 +6197,7 @@ var
   NewShadowType: TGtkShadowType;
   NewJustification: TGtkJustification;
 begin
-  //writeln('TgtkObject.UpdateStatusBarPanel ',HexStr(Cardinal(StatusBar),8),' Index=',Index);
+  //writeln('TGtkWidgetSet.UpdateStatusBarPanel ',HexStr(Cardinal(StatusBar),8),' Index=',Index);
   AStatusBar:=StatusBar as TStatusBar;
 
   CurPanel:=nil;
@@ -6257,12 +6257,12 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function TgtkObject.CreateSimpleClientAreaWidget(Sender: TObject;
+  function TGtkWidgetSet.CreateSimpleClientAreaWidget(Sender: TObject;
     NotOnParentsClientArea: boolean): PGtkWidget;
 
   Create a fixed widget in a horizontal box
  ------------------------------------------------------------------------------}
-function TgtkObject.CreateSimpleClientAreaWidget(Sender: TObject;
+function TGtkWidgetSet.CreateSimpleClientAreaWidget(Sender: TObject;
   NotOnParentsClientArea: boolean): PGtkWidget;
 var
   TempWidget: PGtkWidget;
@@ -6282,13 +6282,13 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function TgtkObject.CreateToolBar(ToolBarObject: TObject): PGtkWidget;
+  function TGtkWidgetSet.CreateToolBar(ToolBarObject: TObject): PGtkWidget;
   
   Creates a gtk_toolbar and puts a fixed widget as client area.
   Since we are not using the gtk tool buttons, we can put any LCL control as
   child and get all LCL TControl abilities.
  ------------------------------------------------------------------------------}
-function TgtkObject.CreateToolBar(ToolBarObject: TObject): PGtkWidget;
+function TGtkWidgetSet.CreateToolBar(ToolBarObject: TObject): PGtkWidget;
 {$IFDEF NewToolBar}
 var
   ClientWidget: PGtkWidget;
@@ -6308,13 +6308,13 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: TGTKObject.CreateComponent
+  Function: TGtkWidgetSet.CreateComponent
   Params:   sender - object for which to create visual representation
   Returns:  nothing
 
   Tells GTK Engine to create a widget
  ------------------------------------------------------------------------------}
-function TgtkObject.CreateComponent(Sender : TObject): THandle;
+function TGtkWidgetSet.CreateComponent(Sender : TObject): THandle;
 var
   Caption : ansistring;          // the caption of "Sender"
   StrTemp : PChar;               // same as "caption" but as PChar
@@ -6409,7 +6409,7 @@ begin
                                     GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
       gtk_widget_show(p);
 
-      writeln('TODO: TgtkObject.CreateComponent csCListBox');
+      writeln('TODO: TGtkWidgetSet.CreateComponent csCListBox');
     end;
     {$Else}
     begin
@@ -6542,7 +6542,7 @@ begin
                                     GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
       gtk_widget_show(p);
 
-      writeln('TODO: TgtkObject.CreateComponent csListBox, csCheckListBox');
+      writeln('TODO: TGtkWidgetSet.CreateComponent csListBox, csCheckListBox');
     end;
     {$Else}
     begin
@@ -6822,12 +6822,12 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure TgtkObject.DestroyEmptySubmenu(Sender: TObject);
+  procedure TGtkWidgetSet.DestroyEmptySubmenu(Sender: TObject);
 
   Used by DestroyLCLComponent to destroy empty submenus, when destroying the
   last menu item.
 ------------------------------------------------------------------------------}
-procedure TgtkObject.DestroyEmptySubmenu(Sender: TObject);
+procedure TGtkWidgetSet.DestroyEmptySubmenu(Sender: TObject);
 var
   LCLMenuItem: TMenuItem;
   ParentLCLMenuItem: TMenuItem;
@@ -6836,7 +6836,7 @@ var
   SubMenuWidget: PGtkMenu;
 begin
   if not (Sender is TMenuItem) then
-    RaiseException('TgtkObject.DestroyEmptySubmenu');
+    RaiseException('TGtkWidgetSet.DestroyEmptySubmenu');
   // destroying a TMenuItem
   LCLMenuItem:=TMenuItem(Sender);
   // check if in a sub menu
@@ -6856,23 +6856,23 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-       TGtkObject AssignSelf
+       TGtkWidgetSet AssignSelf
        *Note: Assigns a pointer to self on a widget
 ------------------------------------------------------------------------------}
-procedure TgtkObject.AssignSelf(Child,Data : Pointer);
+procedure TGtkWidgetSet.AssignSelf(Child,Data : Pointer);
 begin
    gtk_Object_Set_Data(Pgtkobject(Child),'Self',Data);
 end;
 
 {------------------------------------------------------------------------------
-       TGtkObject ShowHide
+       TGtkWidgetSet ShowHide
        *Note: Show or hide a widget
 ------------------------------------------------------------------------------}
-procedure TgtkObject.ShowHide(Sender : TObject);
+procedure TGtkWidgetSet.ShowHide(Sender : TObject);
 
   procedure RaiseWrongClass;
   begin
-    RaiseException('TgtkObject.ShowHide Sender.ClassName='+Sender.ClassName);
+    RaiseException('TGtkWidgetSet.ShowHide Sender.ClassName='+Sender.ClassName);
   end;
 
 var FormIconGdiObject: PGDIObject;
@@ -6893,7 +6893,7 @@ begin
   if not LCLControl.HandleAllocated then exit;
   SenderWidget:=PgtkWidget(LCLControl.Handle);
   //if (Sender is TForm) and (Sender.ClassName='TForm1') then
-  //  writeln('[TgtkObject.ShowHide] START ',TControl(Sender).Name,':',Sender.ClassName,
+  //  writeln('[TGtkWidgetSet.ShowHide] START ',TControl(Sender).Name,':',Sender.ClassName,
   //    ' Visible=',TControl(Sender).Visible,' GtkVisible=',gtk_widget_visible(SenderWidget),
   //    ' GtkRealized=',gtk_widget_realized(SenderWidget),
   //    ' GtkMapped=',gtk_widget_mapped(SenderWidget),
@@ -6913,7 +6913,7 @@ begin
       if (ACustomForm<>nil) and (LCLControl.Parent=nil) then begin
         // top level control (a form without parent)
         {$IFDEF VerboseFormPositioning}
-        writeln('VFP [TgtkObject.ShowHide] A set bounds ',
+        writeln('VFP [TGtkWidgetSet.ShowHide] A set bounds ',
           LCLControl.Name,':',LCLControl.ClassName,
           ' Window=',GetControlWindow(SenderWidget)<>nil,
           ' ',LCLControl.Left,',',LCLControl.Top,
@@ -6931,7 +6931,7 @@ begin
           FixedMoveControl(ParentFixed, SenderWidget,
                          LCLControl.Left, LCLControl.Top);
         end else if not (LCLControl.Parent is TCustomNoteBook) then begin
-          writeln('WARNING: TgtkObject.ShowHide - no Fixed Widget found');
+          writeln('WARNING: TGtkWidgetSet.ShowHide - no Fixed Widget found');
           writeln('  Control=',LCLControl.Name,':',LCLControl.ClassName);
         end;
       end;
@@ -6985,17 +6985,17 @@ begin
 
     if GtkWidgetIsA(SenderWidget,GTK_TYPE_WINDOW) then begin
       {$IFDEF VerboseTransient}
-      writeln('TgtkObject.ShowHide HIDE ',Sender.ClassName);
+      writeln('TGtkWidgetSet.ShowHide HIDE ',Sender.ClassName);
       {$ENDIF}
       UntransientWindow(PGtkWindow(SenderWIdget));
     end;
   end;
   //if Sender is TForm then
-  //  writeln('[TgtkObject.ShowHide] END ',Sender.ClassName,' Window=',FormWidget^.Window<>nil);
+  //  writeln('[TGtkWidgetSet.ShowHide] END ',Sender.ClassName,' Window=',FormWidget^.Window<>nil);
 end;
 
 {-------------------------------------------------------------------------------
-  method TGtkObject LoadXPMFromLazResource
+  method TGtkWidgetSet LoadXPMFromLazResource
   Params: const ResourceName: string;
           Window: PGdkWindow;
           var PixmapImg, PixmapMask: PGdkPixmap
@@ -7003,7 +7003,7 @@ end;
 
   Loads a pixmap from a lazarus resource. The resource must be a XPM file.
 -------------------------------------------------------------------------------}
-procedure TGtkObject.LoadXPMFromLazResource(const ResourceName: string;
+procedure TGtkWidgetSet.LoadXPMFromLazResource(const ResourceName: string;
   Window: PGdkWindow; var PixmapImg, PixmapMask: PGdkPixmap);
 var
   ImgData: PPGChar;
@@ -7014,7 +7014,7 @@ begin
     ImgData:=PPGChar(LazResourceXPMToPPChar(ResourceName));
   except
     on e: Exception do
-      writeln('WARNING: TGtkObject.LoadXPMFromLazResource: '+e.Message);
+      writeln('WARNING: TGtkWidgetSet.LoadXPMFromLazResource: '+e.Message);
   end;
   BeginGDKErrorTrap;
   PixmapImg:=gdk_pixmap_create_from_xpm_d(Window,PixmapMask,nil,ImgData);
@@ -7023,7 +7023,7 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  method TGtkObject LoadPixbufFromLazResource
+  method TGtkWidgetSet LoadPixbufFromLazResource
   Params: const ResourceName: string;
           var Pixbuf: PGdkPixbuf
   Result: none
@@ -7031,7 +7031,7 @@ end;
   Loads a pixbuf from a lazarus resource. The resource must be a XPM file.
 -------------------------------------------------------------------------------}
 {$IfNDef NoGdkPixbufLib}
-procedure TGtkObject.LoadPixbufFromLazResource(const ResourceName: string;
+procedure TGtkWidgetSet.LoadPixbufFromLazResource(const ResourceName: string;
   var Pixbuf: PGdkPixbuf);
 var
   ImgData: PPChar;
@@ -7041,7 +7041,7 @@ begin
     ImgData:=LazResourceXPMToPPChar(ResourceName);
   except
     on e: Exception do
-      writeln('WARNING: TGtkObject.LoadXPMFromLazResource: '+e.Message);
+      writeln('WARNING: TGtkWidgetSet.LoadXPMFromLazResource: '+e.Message);
   end;
   BeginGDKErrorTrap;
   pixbuf:=gdk_pixbuf_new_from_xpm_data(ImgData);
@@ -7051,14 +7051,14 @@ end;
 {$EndIF}
 
 {-------------------------------------------------------------------------------
-  method TGtkObject GetNoteBookCloseBtnImage
+  method TGtkWidgetSet GetNoteBookCloseBtnImage
   Params:
   Result: none
 
   Loads the image for the close button in the tabs of the TCustomNoteBook(s).
 -------------------------------------------------------------------------------}
 {$IfDef GTK1}
-procedure TgtkObject.GetNoteBookCloseBtnImage(Window: PGdkWindow;
+procedure TGtkWidgetSet.GetNoteBookCloseBtnImage(Window: PGdkWindow;
   var Img, Mask: PGdkPixmap);
 begin
   if (FNoteBookCloseBtnPixmapImg=nil)
@@ -7070,7 +7070,7 @@ begin
   Mask:=FNoteBookCloseBtnPixmapMask;
 end;
 {$Else}
-procedure TgtkObject.GetNoteBookCloseBtnImage(var Img: PGdkPixbuf);
+procedure TGtkWidgetSet.GetNoteBookCloseBtnImage(var Img: PGdkPixbuf);
 begin
   if (FNoteBookCloseBtnPixbuf=nil) then
     LoadPixbufFromLazResource('tnotebook_close_tab', FNoteBookCloseBtnPixbuf);
@@ -7086,7 +7086,7 @@ end;
   no pages at all. Therefore at least a dummy page is added. This dummy page is
   removed as soon as other pages are added.
 -------------------------------------------------------------------------------}
-procedure TgtkObject.AddDummyNoteBookPage(NoteBookWidget: PGtkNoteBook);
+procedure TGtkWidgetSet.AddDummyNoteBookPage(NoteBookWidget: PGtkNoteBook);
 var
   DummyWidget, AWidget, ALabel, MenuLabel: PGtkWidget;
 begin
@@ -7116,7 +7116,7 @@ end;
   Removes the dummy page.
   See also AddDummyNoteBookPage
 -------------------------------------------------------------------------------}
-procedure TGtkObject.RemoveDummyNoteBookPage(NoteBookWidget: PGtkNotebook);
+procedure TGtkWidgetSet.RemoveDummyNoteBookPage(NoteBookWidget: PGtkNotebook);
 var
   DummyWidget: PGtkWidget;
 begin
@@ -7129,14 +7129,14 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  method TGtkObject UpdateNotebookPageTab
+  method TGtkWidgetSet UpdateNotebookPageTab
   Params: ANoteBook: TCustomNotebook; APage: TCustomPage
   Result: none
 
   Updates the tab of a page of a notebook. This contains the image to the left
   side, the label, the close button, the menu image and the menu label.
 -------------------------------------------------------------------------------}
-procedure TgtkObject.UpdateNotebookPageTab(ANoteBook, APage: TObject);
+procedure TGtkWidgetSet.UpdateNotebookPageTab(ANoteBook, APage: TObject);
 var
   TheNoteBook: TCustomNotebook;
   ThePage: TCustomPage;
@@ -7344,7 +7344,7 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  method TGtkObject AddNBPage
+  method TGtkWidgetSet AddNBPage
   Params: ANoteBook, APage: TObject; Index: Integer
   Result: none
 
@@ -7356,7 +7356,7 @@ end;
   an optional close button. The image and the caption will also be added to the
   tab popup menu.
 -------------------------------------------------------------------------------}
-procedure TgtkObject.AddNBPage(ANoteBook, APage: TObject; Index: Integer);
+procedure TGtkWidgetSet.AddNBPage(ANoteBook, APage: TObject; Index: Integer);
 var
   NoteBookWidget: PGtkWidget;  // the notebook
   PageWidget: PGtkWidget;      // the page (content widget)
@@ -7406,10 +7406,10 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-       TGtkObject RemoveNBPage
+       TGtkWidgetSet RemoveNBPage
        *Note: Remove Notebook Page
 ------------------------------------------------------------------------------}
-procedure TgtkObject.RemoveNBPage(ANoteBook: TObject; Index: Integer);
+procedure TGtkWidgetSet.RemoveNBPage(ANoteBook: TObject; Index: Integer);
 begin
   // The gtk does not provide a function to remove a page without destroying it.
   // Luckily the LCL destroys the Handle, when a page is removed, so this
@@ -7417,11 +7417,11 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure TgtkObject.MoveNBPage(ANoteBook, APage: TObject; NewIndex: Integer);
+  procedure TGtkWidgetSet.MoveNBPage(ANoteBook, APage: TObject; NewIndex: Integer);
 
   Move a notebook page.
 ------------------------------------------------------------------------------}
-procedure TgtkObject.MoveNBPage(ANoteBook, APage: TObject; NewIndex: Integer);
+procedure TGtkWidgetSet.MoveNBPage(ANoteBook, APage: TObject; NewIndex: Integer);
 var
   NoteBookWidget: PGtkNotebook;
 begin
@@ -7432,10 +7432,10 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-{       TGtkObject ReDraw                                                      }
+{       TGtkWidgetSet ReDraw                                                      }
 {       *Note:                                                                 }
 {------------------------------------------------------------------------------}
-procedure TgtkObject.ReDraw(Child : Pointer);
+procedure TGtkWidgetSet.ReDraw(Child : Pointer);
 var
   fWindow :pGdkWindow;
   widget : PgtkWIdget;
@@ -7464,14 +7464,14 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TGtkObject.SetPixel
+  Method: TGtkWidgetSet.SetPixel
   Params:  Sender : the lcl object which called this func via SendMessage
            Data   : pointer to a TLMSetGetPixel record
   Returns: nothing
 
   Set the color of the specified pixel on the window?screen?object?
  ------------------------------------------------------------------------------}
-procedure TgtkObject.SetPixel(Sender : TObject; Data : Pointer);
+procedure TGtkWidgetSet.SetPixel(Sender : TObject; Data : Pointer);
 var
   aDC     : TDeviceContext;
   X: Integer;
@@ -7497,14 +7497,14 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TGtkObject.GetPixel
+  Method: TGtkWidgetSet.GetPixel
   Params:  Sender : the lcl object which called this func via SenMessage
            Data   : pointer to a TLMSetGetPixel record
   Returns: nothing
 
   Get the color of the specified pixel on the window?screen?object?
  ------------------------------------------------------------------------------}
-procedure TgtkObject.GetPixel(Sender : TObject; Data : Pointer);
+procedure TGtkWidgetSet.GetPixel(Sender : TObject; Data : Pointer);
 var
   aDC    : TDeviceContext;
   Image  : pGDKImage;
@@ -7551,25 +7551,25 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TGtkObject.SetColorDialogColor
+  Method: TGtkWidgetSet.SetColorDialogColor
   Params:  ColorSelection : a gtk color selection dialog;
            Color          : the color to select
   Returns: nothing
 
   Set the color of the color selection dialog
  ------------------------------------------------------------------------------}
-procedure TgtkObject.SetColorDialogColor(ColorSelection: PGtkColorSelection;
+procedure TGtkWidgetSet.SetColorDialogColor(ColorSelection: PGtkColorSelection;
   Color: TColor);
 var
   SelectionColor: TGDKColor;
   colorSel : PGTKCOLORSELECTION;
 begin
   {$IFDEF VerboseColorDialog}
-  writeln('TgtkObject.SetColorDialogColor Start Color=',HexStr(Cardinal(Color),8));
+  writeln('TGtkWidgetSet.SetColorDialogColor Start Color=',HexStr(Cardinal(Color),8));
   {$ENDIF}
   Color:=ColorToRGB(Color);
   {$IFDEF VerboseColorDialog}
-  writeln('TgtkObject.SetColorDialogColor Converted Color=',HexStr(Cardinal(Color),8));
+  writeln('TGtkWidgetSet.SetColorDialogColor Converted Color=',HexStr(Cardinal(Color),8));
   {$ENDIF}
   SelectionColor.Pixel := 0;
   SelectionColor.Red :=  Red(Color) shl 8;
@@ -7580,7 +7580,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TGtkObject.GetValue
+  Method: TGtkWidgetSet.GetValue
   Params:  Sender : the lcl object which called this func via SenMessage
            Data   : pointer to component specific variable
   Returns: currently always 0
@@ -7591,7 +7591,7 @@ end;
   This function should be used to synchronize the state of an lcl-object
   with the corresponding GTK-object.
  ------------------------------------------------------------------------------}
-function TgtkObject.GetValue (Sender : TObject; data : pointer) : integer;
+function TGtkWidgetSet.GetValue (Sender : TObject; data : pointer) : integer;
 type
   PCheckBoxState = ^TCheckBoxState;
 var
@@ -7601,12 +7601,12 @@ begin
   Result := 0;     // default if nobody sets it
 
   if Sender is TWinControl then
-    Assert(False, Format('Trace:  [TgtkObject.GetValue] %s', [Sender.ClassName]))
+    Assert(False, Format('Trace:  [TGtkWidgetSet.GetValue] %s', [Sender.ClassName]))
   else
-    Assert(False, Format('Trace:WARNING: [TgtkObject.GetValue] %s --> No Decendant of TWinControl', [Sender.ClassName]));
+    Assert(False, Format('Trace:WARNING: [TGtkWidgetSet.GetValue] %s --> No Decendant of TWinControl', [Sender.ClassName]));
 
   Handle    := Pointer(TWinControl(Sender).Handle);
-  Assert (Handle = nil, 'WARNING: [TgtkObject.GetValue] --> got nil pointer (no gtkobject)');
+  Assert (Handle = nil, 'WARNING: [TGtkWidgetSet.GetValue] --> got nil pointer (no gtkobject)');
 
   case TControl(Sender).fCompStyle of
   csTrackbar   :
@@ -7637,12 +7637,12 @@ begin
     end;
 
   else
-    writeln('Warning: TgtkObject.GetValue not implemented for ',Sender.ClassName);
+    writeln('Warning: TGtkWidgetSet.GetValue not implemented for ',Sender.ClassName);
   end;
 end;
 
 {------------------------------------------------------------------------------
-  Method: TGtkObject.SetValue
+  Method: TGtkWidgetSet.SetValue
   Params:  Sender : the lcl object which called this func via SendMessage
            Data   : pointer to component specific variable
   Returns: currently always 0
@@ -7654,7 +7654,7 @@ end;
   of an object has changed (e.g. the position of a trackbar). If more than
   one property changed use the SetProperties function instead;
  ------------------------------------------------------------------------------}
-function TgtkObject.SetValue(Sender : TObject; data : pointer) : integer;
+function TGtkWidgetSet.SetValue(Sender : TObject; data : pointer) : integer;
 var
    Handle    : Pointer;
    //used for csCalendar
@@ -7669,11 +7669,11 @@ begin
   result := 0;     // default if nobody sets it
 
   if Sender is TWinControl
-  then Assert(False, Format('Trace:  [TgtkObject.SetValue] %s', [Sender.ClassName]))
-  else Assert(False, Format('Trace:WARNING: [TgtkObject.SetValue] %s --> No Decendant of TWinControl', [Sender.ClassName]));
+  then Assert(False, Format('Trace:  [TGtkWidgetSet.SetValue] %s', [Sender.ClassName]))
+  else Assert(False, Format('Trace:WARNING: [TGtkWidgetSet.SetValue] %s --> No Decendant of TWinControl', [Sender.ClassName]));
 
   Handle    := Pointer(TWinControl(Sender).Handle);
-//   Assert (Handle = nil, 'WARNING: [TgtkObject.SetValue] --> got nil pointer (no gtkobject)');
+//   Assert (Handle = nil, 'WARNING: [TGtkWidgetSet.SetValue] --> got nil pointer (no gtkobject)');
 
   case TControl(Sender).fCompStyle of
   csProgressBar: gtk_progress_set_value (GTK_PROGRESS (handle), integer (data^));
@@ -7762,19 +7762,19 @@ begin
     end;
 
   else
-    Assert (true, Format ('WARNING:[TgtkObject.SetValue] failed for %s', [Sender.ClassName]));
+    Assert (true, Format ('WARNING:[TGtkWidgetSet.SetValue] failed for %s', [Sender.ClassName]));
   end;
 end;
 
 {------------------------------------------------------------------------------
-  Method: TGtkObject.SetProperties
+  Method: TGtkWidgetSet.SetProperties
   Params:  Sender : the lcl object which called this func via SenMessage
   Returns: currently always 0
 
   Depending on the compStyle, this function will apply all properties of
   the calling object to the corresponding GTK object.
  ------------------------------------------------------------------------------}
-function TgtkObject.SetProperties(Sender : TObject) : integer;
+function TGtkWidgetSet.SetProperties(Sender : TObject) : integer;
 const
   cLabelAlignX : array[TAlignment] of gfloat = (0.0, 1.0, 0.5);
   cLabelAlignY : array[TTextLayout] of gfloat = (0.0, 0.5, 1.0);
@@ -7791,9 +7791,9 @@ begin
 
   if Sender is TWinControl
   then
-    Assert(False, Format('Trace:  [TgtkObject.SetProperties] %s', [Sender.ClassName]))
+    Assert(False, Format('Trace:  [TGtkWidgetSet.SetProperties] %s', [Sender.ClassName]))
   else
-    RaiseException('TgtkObject.SetProperties: '
+    RaiseException('TGtkWidgetSet.SetProperties: '
                    +' Sender.ClassName='+Sender.ClassName);
 
   wHandle:= Pointer(TWinControl(Sender).Handle);
@@ -7926,7 +7926,7 @@ begin
 
   csListView :
   {$IfDef GTK2}
-    Writeln('TODO: TgtkObject.SetProperties csListView');
+    Writeln('TODO: TGtkWidgetSet.SetProperties csListView');
   {$Else}
     begin
       // set up columns..
@@ -8093,18 +8093,18 @@ begin
     End;
 
   else
-    Assert (true, Format ('WARNING:[TgtkObject.SetProperties] failed for %s', [Sender.ClassName]));
+    Assert (true, Format ('WARNING:[TGtkWidgetSet.SetProperties] failed for %s', [Sender.ClassName]));
   end;
 end;
 
 {------------------------------------------------------------------------------
-  Method: TGtkObject.AttachMenu
+  Method: TGtkWidgetSet.AttachMenu
   Params:  Sender : the lcl object which called this func
   Returns: nothing
 
   Attaches the calling Menu to its Parent
  ------------------------------------------------------------------------------}
-procedure TGtkObject.AttachMenu(Sender: TObject);
+procedure TGtkWidgetSet.AttachMenu(Sender: TObject);
 var
   //AccelKey: Integer;
   //AccelGroup: PGTKAccelGroup;
@@ -8125,15 +8125,15 @@ var
 
 begin
   LCLMenuItem:=TMenuItem(Sender);
-  //writeln('TGtkObject.AttachMenu START ',LCLMenuItem.Name,':',LCLMenuItem.ClassName,' Parent=',LCLMenuItem.Parent.Name,':',LCLMenuItem.Parent.ClassName);
+  //writeln('TGtkWidgetSet.AttachMenu START ',LCLMenuItem.Name,':',LCLMenuItem.ClassName,' Parent=',LCLMenuItem.Parent.Name,':',LCLMenuItem.Parent.ClassName);
   with LCLMenuItem do
   begin
     MenuItem := PGtkWidget(Handle);
     if MenuItem=nil then
-      RaiseException('TGtkObject.AttachMenu Handle=0');
+      RaiseException('TGtkWidgetSet.AttachMenu Handle=0');
     ParentMenuWidget := PGtkWidget(Parent.Handle);
     if ParentMenuWidget=nil then
-      RaiseException('TGtkObject.AttachMenu ParentMenuWidget=nil');
+      RaiseException('TGtkWidgetSet.AttachMenu ParentMenuWidget=nil');
 
     if GtkWidgetIsA(ParentMenuWidget,GTK_TYPE_MENU_BAR) then begin
       // mainmenu (= a menu bar)
@@ -8167,7 +8167,7 @@ begin
     if GtkWidgetIsA(MenuItem, GTK_TYPE_RADIO_MENU_ITEM) then
       RegroupMenuItem(HMENU(MenuItem),GroupIndex);
   end;
-  //writeln('TGtkObject.AttachMenu END ',LCLMenuItem.Name,':',LCLMenuItem.ClassName);
+  //writeln('TGtkWidgetSet.AttachMenu END ',LCLMenuItem.Name,':',LCLMenuItem.ClassName);
 end;
 
 {------------------------------------------------------------------------------
@@ -8177,7 +8177,7 @@ end;
 
   Checks if the given DC is valid.
  ------------------------------------------------------------------------------}
-function TgtkObject.IsValidDC(const DC: HDC): Boolean;
+function TGtkWidgetSet.IsValidDC(const DC: HDC): Boolean;
 begin
   Result := FDeviceContexts.Contains(Pointer(DC));
 end;
@@ -8189,7 +8189,7 @@ end;
 
   Checks if the given GDIObject is valid
  ------------------------------------------------------------------------------}
-function TgtkObject.IsValidGDIObject(const GDIObject: HGDIOBJ): Boolean;
+function TGtkWidgetSet.IsValidGDIObject(const GDIObject: HGDIOBJ): Boolean;
 begin
   Result := (GDIObject<>0) and (FGDIObjects.Contains(Pointer(GDIObject)));
   if Result then
@@ -8221,7 +8221,7 @@ end;
 
   Checks if the given GDIObject is valid and the GDItype is the requested type
  ------------------------------------------------------------------------------}
-function TgtkObject.IsValidGDIObjectType(
+function TGtkWidgetSet.IsValidGDIObjectType(
   const GDIObject: HGDIOBJ; const GDIType: TGDIType): Boolean;
 begin
   Result := IsValidGDIObject(GDIObject)
@@ -8229,13 +8229,13 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Procedure: TGTKObject.SelectGDKBrushProps
+  Procedure: TGtkWidgetSet.SelectGDKBrushProps
   Params:  DC: a (LCL)devicecontext
   Returns: Nothing
 
   Sets the forecolor and fill according to the brush
  ------------------------------------------------------------------------------}
-procedure TGTKObject.SelectGDKBrushProps(DC: HDC);
+procedure TGtkWidgetSet.SelectGDKBrushProps(DC: HDC);
 begin
   if (TDeviceContext(DC).SelectedColors=dcscBrush) or
      TDeviceContext(DC).CurrentBrush^.IsNullBrush
@@ -8259,13 +8259,13 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Procedure: TGTKObject.SelectGDKTextProps
+  Procedure: TGtkWidgetSet.SelectGDKTextProps
   Params:  DC: a (LCL)devicecontext
   Returns: Nothing
 
   Sets the forecolor and fill according to the Textcolor
  ------------------------------------------------------------------------------}
-procedure TGTKObject.SelectGDKTextProps(DC: HDC);
+procedure TGtkWidgetSet.SelectGDKTextProps(DC: HDC);
 begin
   if TDeviceContext(DC).SelectedColors=dcscFont then exit;
 
@@ -8278,13 +8278,13 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Procedure: TGTKObject.TGTKObject.SelectGDKPenProps
+  Procedure: TGtkWidgetSet.TGtkWidgetSet.SelectGDKPenProps
   Params:  DC: a (LCL)devicecontext
   Returns: Nothing
 
   Sets the forecolor and fill according to the pen
  ------------------------------------------------------------------------------}
-procedure TGTKObject.SelectGDKPenProps(DC: HDC);
+procedure TGtkWidgetSet.SelectGDKPenProps(DC: HDC);
 
   procedure SetDashes(const Dashes: array of gint8);
   begin
@@ -8348,9 +8348,9 @@ end;
 
   Creates an initial DC
  ------------------------------------------------------------------------------}
-function TgtkObject.NewDC: TDeviceContext;
+function TGtkWidgetSet.NewDC: TDeviceContext;
 begin
-  Assert(False, Format('Trace:> [TgtkObject.NewDC]', []));
+  Assert(False, Format('Trace:> [TGtkWidgetSet.NewDC]', []));
   Result:=GtkDef.NewDeviceContext;
   with Result do
   begin
@@ -8360,16 +8360,16 @@ begin
     BuildColorRefFromGDKColor(CurrentBackColor);
   end;
   FDeviceContexts.Add(Result);
-//writeln('[TgtkObject.NewDC] ',HexStr(Cardinal(Result),8),'  ',FDeviceContexts.Count);
-//  Assert(False, Format('Trace:< [TgtkObject.NewDC] FDeviceContexts[%d] --> 0x%p', [n, Result]));
+//writeln('[TGtkWidgetSet.NewDC] ',HexStr(Cardinal(Result),8),'  ',FDeviceContexts.Count);
+//  Assert(False, Format('Trace:< [TGtkWidgetSet.NewDC] FDeviceContexts[%d] --> 0x%p', [n, Result]));
 end;
 
 {------------------------------------------------------------------------------
-  procedure TgtkObject.DisposeDC(DC: PDeviceContext);
+  procedure TGtkWidgetSet.DisposeDC(DC: PDeviceContext);
 
   Disposes a DC
  ------------------------------------------------------------------------------}
-procedure TgtkObject.DisposeDC(aDC: TDeviceContext);
+procedure TGtkWidgetSet.DisposeDC(aDC: TDeviceContext);
 begin
   if FDeviceContexts.Contains(aDC) then begin
     FDeviceContexts.Remove(aDC);
@@ -8378,17 +8378,17 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function TgtkObject.CreateDCForWidget(TheWidget: PGtkWidget;
+  function TGtkWidgetSet.CreateDCForWidget(TheWidget: PGtkWidget;
     TheWindow: PGdkWindow; WithChildWindows: boolean): HDC;
 
   Creates an initial DC
  ------------------------------------------------------------------------------}
-function TgtkObject.CreateDCForWidget(TheWidget: PGtkWidget;
+function TGtkWidgetSet.CreateDCForWidget(TheWidget: PGtkWidget;
   TheWindow: PGdkWindow; WithChildWindows: boolean): HDC;
 
   procedure RaiseWidgetWithoutClientArea;
   begin
-    RaiseException('TgtkObject.CreateWindowDC widget '
+    RaiseException('TGtkWidgetSet.CreateWindowDC widget '
       +HexStr(Cardinal(TheWidget),8)+' has no client area');
   end;
 
@@ -8420,7 +8420,7 @@ begin
         gtk_widget_realize(ClientWidget);
         TheWindow := GetControlWindow(ClientWidget);
         if TheWindow=nil then
-          RaiseException('TgtkObject.CreateDCForWidget: Unable to realize GdkWindow');
+          RaiseException('TGtkWidgetSet.CreateDCForWidget: Unable to realize GdkWindow');
       end;
     end else
       ClientWidget:=TheWidget;
@@ -8428,7 +8428,7 @@ begin
     aDC.Drawable := TheWindow;
     // create GC
     if WithChildWindows then begin
-      //writeln('TgtkObject.CreateDCForWidget A WithChildWindows');
+      //writeln('TGtkWidgetSet.CreateDCForWidget A WithChildWindows');
       FillChar(GCValues, SizeOf(GCValues), #0);
       GCValues.subwindow_mode := GDK_INCLUDE_INFERIORS;
       aDC.GC := gdk_gc_new_with_values(aDC.Drawable,
@@ -8473,13 +8473,13 @@ begin
   end;
 
   Result := HDC(aDC);
-  Assert(False, Format('trace:< [TgtkObject.GetDC] Got 0x%x', [Result]));
+  Assert(False, Format('trace:< [TGtkWidgetSet.GetDC] Got 0x%x', [Result]));
 end;
 
 {------------------------------------------------------------------------------
-  function TgtkObject.GetDoubleBufferedDC(Handle: HWND): HDC;
+  function TGtkWidgetSet.GetDoubleBufferedDC(Handle: HWND): HDC;
  ------------------------------------------------------------------------------}
-function TgtkObject.GetDoubleBufferedDC(Handle: HWND): HDC;
+function TGtkWidgetSet.GetDoubleBufferedDC(Handle: HWND): HDC;
 var
   Widget: PGtkWidget;
   WidgetInfo: PWinWidgetInfo;
@@ -8497,7 +8497,7 @@ begin
   Result:=0;
   Widget:=PGtkWidget(Handle);
   {$IFDEF VerboseDoubleBuffer}
-  writeln('TgtkObject.GetDoubleBufferedDC ',GetWidgetClassName(Widget));
+  writeln('TGtkWidgetSet.GetDoubleBufferedDC ',GetWidgetClassName(Widget));
   {$ENDIF}
   WidgetInfo:=GetWidgetInfo(Widget,true);
   AWindow:=Widget^.Window;
@@ -8508,7 +8508,7 @@ begin
   if DoubleBuffer<>nil then begin
     gdk_window_get_size(DoubleBuffer,@BufferWidth,@BufferHeight);
     {$IFDEF VerboseDoubleBuffer}
-    writeln('TgtkObject.GetDoubleBufferedDC Checking ',
+    writeln('TGtkWidgetSet.GetDoubleBufferedDC Checking ',
       ' Width=',Width,' Height=',Height,
       ' BufferWidth=',BufferWidth,' BufferHeight=',BufferHeight
       );
@@ -8518,7 +8518,7 @@ begin
     or (BufferWidth>(Width*2+20)) or (BufferHeight>(Height*2+20))
     then begin
       {$IFDEF VerboseDoubleBuffer}
-      writeln('TgtkObject.GetDoubleBufferedDC Destroying old double buffer ');
+      writeln('TGtkWidgetSet.GetDoubleBufferedDC Destroying old double buffer ');
       {$ENDIF}
       gdk_pixmap_unref(DoubleBuffer);
       DoubleBuffer:=nil;
@@ -8529,7 +8529,7 @@ begin
   if DoubleBuffer=nil then begin
     // create DoubleBuffer
     {$IFDEF VerboseDoubleBuffer}
-    writeln('TgtkObject.GetDoubleBufferedDC Creating double buffer ',
+    writeln('TGtkWidgetSet.GetDoubleBufferedDC Creating double buffer ',
       ' Width=',Width,' Height=',Height);
     {$ENDIF}
     DoubleBuffer:=gdk_pixmap_new(AWindow,Width,Height,-1);
@@ -8555,11 +8555,11 @@ begin
       Widget^.Window,0,0,Width,Height);
 
     {LCLObject:=GetParentLCLObject(Widget);
-    writeln('TgtkObject.GetDoubleBufferedDC ',HexStr(Cardinal(Widget),8),'=',GetWidgetClassName(Widget),' ',HexStr(Cardinal(LCLObject),8));
+    writeln('TGtkWidgetSet.GetDoubleBufferedDC ',HexStr(Cardinal(Widget),8),'=',GetWidgetClassName(Widget),' ',HexStr(Cardinal(LCLObject),8));
     if (LCLObject is TPanel)
     and (csDesigning in TPanel(LCLObject).ComponentState) then begin
       gdk_window_get_origin(Widget^.Window,@x,@y);
-      writeln('TgtkObject.BeginPaint ',TPanel(LCLObject).Name,':',TPanel(LCLObject).ClassName,
+      writeln('TGtkWidgetSet.BeginPaint ',TPanel(LCLObject).Name,':',TPanel(LCLObject).ClassName,
         ' Widget=',GetWidgetClassName(Widget),
         ' Origin=',x,',',y,
         ' ',Widget^.allocation.x,',',Widget^.allocation.y);
@@ -8570,7 +8570,7 @@ begin
       GTKAPIWidget_ShowCaret(PGTKAPIWidget(MainWidget));
   end;
   {$IFDEF VerboseDoubleBuffer}
-  writeln('TgtkObject.GetDoubleBufferedDC DC=',HexStr(Cardinal(Result),8));
+  writeln('TGtkWidgetSet.GetDoubleBufferedDC DC=',HexStr(Cardinal(Result),8));
   {$ENDIF}
 end;
 
@@ -8581,14 +8581,14 @@ end;
 
   Creates an initial GDIObject of GDIType.
  ------------------------------------------------------------------------------}
-function TgtkObject.NewGDIObject(const GDIType: TGDIType): PGdiObject;
+function TGtkWidgetSet.NewGDIObject(const GDIType: TGDIType): PGdiObject;
 begin
-  Assert(False, Format('Trace:> [TgtkObject.NewGDIObject]', []));
+  Assert(False, Format('Trace:> [TGtkWidgetSet.NewGDIObject]', []));
   Result:=GtkDef.NewPGDIObject;
   Result^.GDIType := GDIType;
   FGDIObjects.Add(Result);
-//writeln('[TgtkObject.NewGDIObject] ',HexStr(Cardinal(Result),8),'  ',FGDIObjects.Count);
-  Assert(False, Format('Trace:< [TgtkObject.NewGDIObject] FGDIObjects --> 0x%p', [Result]));
+//writeln('[TGtkWidgetSet.NewGDIObject] ',HexStr(Cardinal(Result),8),'  ',FGDIObjects.Count);
+  Assert(False, Format('Trace:< [TGtkWidgetSet.NewGDIObject] FGDIObjects --> 0x%p', [Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -8598,7 +8598,7 @@ end;
 
   Dispose a GdiObject
  ------------------------------------------------------------------------------}
-procedure TgtkObject.DisposeGDIObject(GDIObject: PGdiObject);
+procedure TGtkWidgetSet.DisposeGDIObject(GDIObject: PGdiObject);
 begin
   if FGDIObjects.Contains(GDIObject) then begin
     FGDIObjects.Remove(GDIObject);
@@ -8613,9 +8613,9 @@ end;
 
   Creates an default brush, used for initial values
  ------------------------------------------------------------------------------}
-function TgtkObject.CreateDefaultBrush: PGdiObject;
+function TGtkWidgetSet.CreateDefaultBrush: PGdiObject;
 begin
-//write('  TgtkObject.CreateDefaultBrush ->');
+//write('  TGtkWidgetSet.CreateDefaultBrush ->');
   Result := NewGDIObject(gdiBrush);
   Result^.GDIBrushFill := GDK_SOLID;
   Result^.GDIBrushColor.ColorRef := 0;
@@ -8631,7 +8631,7 @@ end;
 
   Creates an default font, used for initial values
  ------------------------------------------------------------------------------}
-function TgtkObject.CreateDefaultFont: PGdiObject;
+function TGtkWidgetSet.CreateDefaultFont: PGdiObject;
 begin
   Result := NewGDIObject(gdiFont);
 {$Ifdef GTK2}
@@ -8648,9 +8648,9 @@ end;
 
   Creates an default pen, used for initial values
  ------------------------------------------------------------------------------}
-function TgtkObject.CreateDefaultPen: PGdiObject;
+function TGtkWidgetSet.CreateDefaultPen: PGdiObject;
 begin
-//write('  TgtkObject.CreateDefaultPen ->');
+//write('  TGtkWidgetSet.CreateDefaultPen ->');
   Result := NewGDIObject(gdiPen);
   Result^.GDIPenStyle := PS_SOLID;
   Result^.GDIPenColor.ColorRef := 0;
@@ -8660,11 +8660,11 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure TgtkObject.UpdateDCTextMetric(DC: TDeviceContext);
+  procedure TGtkWidgetSet.UpdateDCTextMetric(DC: TDeviceContext);
 
   Sets the gtk resource file and parses it.
  ------------------------------------------------------------------------------}
-procedure TgtkObject.UpdateDCTextMetric(DC: TDeviceContext);
+procedure TGtkWidgetSet.UpdateDCTextMetric(DC: TDeviceContext);
 {$Ifdef GTK2}
 begin
 end;
@@ -8694,7 +8694,7 @@ begin
         UnRef := False;
       end;
       If UseFont = nil then
-        WriteLn('WARNING: [TgtkObject.GetTextMetrics] Missing font')
+        WriteLn('WARNING: [TGtkWidgetSet.GetTextMetrics] Missing font')
       else begin
         FillChar(DCTextMetric, SizeOf(DCTextMetric), 0);
         with DCTextMetric do begin
@@ -8731,10 +8731,10 @@ begin
 end;
 {$EndIf}
 {------------------------------------------------------------------------------
-  function TgtkObject.GetDefaultFont(IncreaseReferenceCount: boolean): PGDKFont;
+  function TGtkWidgetSet.GetDefaultFont(IncreaseReferenceCount: boolean): PGDKFont;
  ------------------------------------------------------------------------------}
 {$Ifdef GTK2}
-function TgtkObject.GetDefaultFontDesc(IncreaseReferenceCount: boolean): PPangoFontDescription;
+function TGtkWidgetSet.GetDefaultFontDesc(IncreaseReferenceCount: boolean): PPangoFontDescription;
 begin
   if FDefaultFontDesc = nil then begin
     FDefaultFontDesc:=LoadDefaultFontDesc;
@@ -8746,7 +8746,7 @@ begin
     result := pango_font_description_copy(Result);
 end;
 {$Else}
-function TgtkObject.GetDefaultFont(IncreaseReferenceCount: boolean): PGDKFont;
+function TGtkWidgetSet.GetDefaultFont(IncreaseReferenceCount: boolean): PGDKFont;
 begin
   if FDefaultFont = nil then begin
     FDefaultFont:=LoadDefaultFont;
@@ -8763,7 +8763,7 @@ begin
 end;
 {$EndIF}
 
-function TgtkObject.CreateRegionCopy(SrcRGN: hRGN): hRGN;
+function TGtkWidgetSet.CreateRegionCopy(SrcRGN: hRGN): hRGN;
 var
   GDIObject: PGDIObject;
 begin
@@ -8772,7 +8772,7 @@ begin
   Result := hRgn(GDIObject);
 end;
 
-function TgtkObject.DCClipRegionValid(DC: HDC): boolean;
+function TGtkWidgetSet.DCClipRegionValid(DC: HDC): boolean;
 var
   ClipRegion: hRGN;
 begin
@@ -8783,14 +8783,14 @@ begin
   Result:=true;
 end;
 
-function TgtkObject.CreateEmptyRegion: hRGN;
+function TGtkWidgetSet.CreateEmptyRegion: hRGN;
 var
   GObject: PGdiObject;
 begin
   GObject := NewGDIObject(gdiRegion);
   GObject^.GDIRegionObject := gdk_region_new;
   Result := HRGN(GObject);
-  //writeln('TgtkObject.CreateEmptyRgn A RGN=',HexStr(Cardinal(Result),8));
+  //writeln('TGtkWidgetSet.CreateEmptyRgn A RGN=',HexStr(Cardinal(Result),8));
 end;
 
 {------------------------------------------------------------------------------
@@ -8800,7 +8800,7 @@ end;
 
   Sets the gtk resource file and parses it.
  ------------------------------------------------------------------------------}
-procedure TgtkObject.SetRCFilename(const AValue: string);
+procedure TGtkWidgetSet.SetRCFilename(const AValue: string);
 begin
   if (FRCFilename=AValue) then exit;
   FRCFilename:=AValue;
@@ -8809,11 +8809,11 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure TgtkObject.CheckRCFilename;
+  procedure TGtkWidgetSet.CheckRCFilename;
 
   Sets the gtk resource file and parses it.
  ------------------------------------------------------------------------------}
-procedure TgtkObject.CheckRCFilename;
+procedure TGtkWidgetSet.CheckRCFilename;
 begin
   if FRCFileParsed and (FRCFilename<>'') and FileExists(FRCFilename)
   and (FileAge(FRCFilename)<>FRCFileAge) then
@@ -8827,7 +8827,7 @@ end;
 
   Sets the gtk resource file and parses it.
  ------------------------------------------------------------------------------}
-procedure TgtkObject.ParseRCFile;
+procedure TGtkWidgetSet.ParseRCFile;
 begin
   if (not FRCFileParsed)
   and (FRCFilename<>'') and FileExists(FRCFilename) then
@@ -8840,7 +8840,7 @@ end;
 
 
 {------------------------------------------------------------------------------
-  TgtkObject SetResizeRequest
+  TGtkWidgetSet SetResizeRequest
   Params: Widget: PGtkWidget
 
   Marks the widget to send a ResizeRequest to the gtk.
@@ -8858,7 +8858,7 @@ end;
   Therefore LCL size requests for a widget are cached and only the final one is
   sent.
  ------------------------------------------------------------------------------}
-procedure TgtkObject.SetResizeRequest(Widget: PGtkWidget);
+procedure TGtkWidgetSet.SetResizeRequest(Widget: PGtkWidget);
 {$IFDEF VerboseSizeMsg}
 var
   LCLControl: TWinControl;
@@ -8866,7 +8866,7 @@ var
 begin
   {$IFDEF VerboseSizeMsg}
   LCLControl:=TWinControl(GetLCLObject(Widget));
-  write('PPP TgtkObject.SetResizeRequest Widget=',HexStr(Cardinal(Widget),8));
+  write('PPP TGtkWidgetSet.SetResizeRequest Widget=',HexStr(Cardinal(Widget),8));
   if (LCLControl<>nil) then begin
     if LCLControl is TWinControl then
       writeln(' ',LCLControl.Name,':',LCLControl.ClassName)
@@ -8881,7 +8881,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  TgtkObject UnsetResizeRequest
+  TGtkWidgetSet UnsetResizeRequest
   Params: Widget: PGtkWidget
 
   Unset the mark for the Widget to send a ResizeRequest to the gtk.
@@ -8889,7 +8889,7 @@ end;
   widgets like forms send a resize request immediately. To avoid sending resize
   requests multiple times they can unset the mark with this procedure.
  ------------------------------------------------------------------------------}
-procedure TgtkObject.UnsetResizeRequest(Widget: PGtkWidget);
+procedure TGtkWidgetSet.UnsetResizeRequest(Widget: PGtkWidget);
 begin
   FWidgetsWithResizeRequest.Remove(Widget);
 end;
@@ -8897,14 +8897,14 @@ end;
 {------------------------------------------------------------------------------
   Function: SetClipboardWidget
   Params: TargetWidget: PGtkWidget - This widget will be connected to all
-                  clipboard signals which are all handled by the TGtkObject
+                  clipboard signals which are all handled by the TGtkWidgetSet
                   itself.
   Returns: none
 
   All supported targets are added to the new widget. This way, no one,
   especially not the lcl, will notice the change. ;)
  ------------------------------------------------------------------------------}
-procedure TgtkObject.SetClipboardWidget(TargetWidget: PGtkWidget);
+procedure TGtkWidgetSet.SetClipboardWidget(TargetWidget: PGtkWidget);
 type
   TGtkTargetSelectionList = record
     Selection: Cardinal;
@@ -8989,7 +8989,7 @@ var c: TClipboardType;
 begin
   if ClipboardWidget=TargetWidget then exit;
   {$IFDEF DEBUG_CLIPBOARD}
-  writeln('[TgtkObject.SetClipboardWidget] ',ClipboardWidget<>nil,' -> ',TargetWidget<>nil);
+  writeln('[TGtkWidgetSet.SetClipboardWidget] ',ClipboardWidget<>nil,' -> ',TargetWidget<>nil);
   {$ENDIF}
   if ClipboardWidget<>nil then begin
     {$IFDEF DEBUG_CLIPBOARD}
@@ -9021,7 +9021,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure TGtkObject.WordWrap(AText: PChar; MaxWidthInPixel: integer;
+  procedure TGtkWidgetSet.WordWrap(AText: PChar; MaxWidthInPixel: integer;
     var Lines: PPChar; var LineCount: integer); virtual;
 
   Breaks AText into several lines and creates a list of PChar. The last entry
@@ -9031,7 +9031,7 @@ end;
   Lines will be one memory block so that you can free the list and all lines
   with FreeMem(Lines).
 ------------------------------------------------------------------------------}
-procedure TGtkObject.WordWrap(DC: HDC; AText: PChar; MaxWidthInPixel: integer;
+procedure TGtkWidgetSet.WordWrap(DC: HDC; AText: PChar; MaxWidthInPixel: integer;
   var Lines: PPChar; var LineCount: integer);
 var
   {$IfDef GTK2}
@@ -9212,7 +9212,7 @@ begin
     inc(i,2);
   end;
   if Integer(Lines)+TotalSize<>Integer(CurLineStart) then
-    RaiseException('TGtkObject.WordWrap Consistency Error:'
+    RaiseException('TGtkWidgetSet.WordWrap Consistency Error:'
       +' Lines+TotalSize<>CurLineStart');
   CurLineEntry[i shr 1]:=nil;
 
@@ -9220,7 +9220,7 @@ begin
   CleanUpFont;
 end;
 
-function TgtkObject.ForceLineBreaks(DC : hDC; Src: PChar; MaxWidthInPixels : Longint;
+function TGtkWidgetSet.ForceLineBreaks(DC : hDC; Src: PChar; MaxWidthInPixels : Longint;
   ProcessAmpersands : Boolean) : PChar;
 var
   Lines : PPChar;
@@ -9268,6 +9268,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.475  2004/03/05 00:31:52  marc
+  * Renamed TGtkObject to TGtkWidgetSet
+
   Revision 1.474  2004/02/28 00:34:35  mattias
   fixed CreateComponent for buttons, implemented basic Drag And Drop
 
