@@ -64,7 +64,8 @@ type
     function DoStepOverProject: TModalResult; virtual; abstract;
     function DoRunToCursor: TModalResult; virtual; abstract;
     function DoStopProject: TModalResult; virtual; abstract;
-    
+    procedure DoToggleCallStack; virtual; abstract;
+
     procedure RunDebugger; virtual; abstract;
     procedure EndDebugging; virtual; abstract;
     function Evaluate(const AExpression: String; var AResult: String

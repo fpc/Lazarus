@@ -635,12 +635,6 @@ type
     function  Modify(const AExpression, AValue: String): Boolean;                 // Modifies the given expression, returns true if valid
     function  TargetIsStarted: boolean; virtual;
 
-(*
-    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
-                      const OnLoadFilename: TOnLoadFilenameFromConfig); virtual;
-    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
-                      const OnSaveFilename: TOnSaveFilenameToConfig); virtual;
-*)
   public
     property Arguments: String read FArguments write FArguments;                 // Arguments feed to the program
     property BreakPoints: TDBGBreakPoints read FBreakPoints;                     // list of all breakpoints
@@ -2456,6 +2450,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.42  2003/06/09 15:58:05  mattias
+  implemented view call stack key and jumping to last stack frame with debug info
+
   Revision 1.41  2003/06/09 14:30:47  marc
   MWE: + Added working dir.
 

@@ -139,6 +139,7 @@ type
     function DoStopProject: TModalResult; override;
     function DoBeginChangeDebugger: TModalResult;
     function DoEndChangeDebugger: TModalResult;
+    procedure DoToggleCallStack; override;
 
     procedure RunDebugger; override;
     procedure EndDebugging; override;
@@ -577,8 +578,12 @@ begin
   if Destroying then exit;
   
   if AExceptionText = ''
-  then msg := Format('Project %s raised exception class ''%s''.', [Project1.Title, AExceptionClass])
-  else msg := Format('Project %s raised exception class ''%s'' with message ''%s''.', [Project1.Title, AExceptionClass, AExceptionText]);
+  then
+    msg := Format('Project %s raised exception class ''%s''.',
+                  [Project1.Title, AExceptionClass])
+  else
+    msg := Format('Project %s raised exception class ''%s'' with message:%s%s',
+                  [Project1.Title, AExceptionClass, #13, AExceptionText]);
 
   MessageDlg('Error', msg, mtError,[mbOk],0);
 end;
@@ -685,22 +690,38 @@ var
   SrcFile: String;
   NewSource: TCodeBuffer;
   Editor: TSourceEditor;
+  SrcLine: Integer;
+  i: Integer;
+  StackEntry: TDBGCallStackEntry;
 begin
   if (Sender<>FDebugger) or (Sender=nil) then exit;
   if Destroying then exit;
 
+  SrcFile:=ALocation.SrcFile;
+  SrcLine:=ALocation.SrcLine;
+
   //TODO: Show assembler window if no source can be found.
-  if ALocation.SrcLine = -1 
+  if SrcLine = -1
   then begin
     MessageDlg(lisExecutionPaused,
       Format(lisExecutionPausedAdress, [#13#13, ALocation.Address, #13,
         ALocation.FuncName, #13, ALocation.SrcFile, #13#13#13, #13]),
       mtInformation, [mbOK],0);
-    
-    Exit;
+
+    // jump to the deepest stack frame with debugging info
+    i:=FDebugger.CallStack.Count-1;
+    while (i>=0) do begin
+      StackEntry:=FDebugger.CallStack.Entries[i];
+      if StackEntry.Line>0 then begin
+        SrcLine:=StackEntry.Line;
+        SrcFile:=StackEntry.Source;
+        break;
+      end;
+    end;
+    if SrcLine<1 then
+      Exit;
   end;
   
-  SrcFile:=ALocation.SrcFile;
   if DebuggerDlgGetFullFilename(nil,SrcFile,true)<>mrOk then exit;
 
   NewSource:=CodeToolBoss.LoadFile(SrcFile,true,false);
@@ -718,8 +739,8 @@ begin
   end;
   
   // jump editor to execution line
-  if MainIDE.DoJumpToCodePos(nil,nil,NewSource,1,ALocation.SrcLine,-1,true)
-    <>mrOk then exit;
+  if MainIDE.DoJumpToCodePos(nil,nil,NewSource,1,SrcLine,-1,true)<>mrOk
+  then exit;
 
   // mark execution line
   if SourceNotebook <> nil
@@ -727,7 +748,7 @@ begin
   else Editor := nil;
 
   if Editor <> nil
-  then Editor.ExecutionLine:=ALocation.SrcLine;
+  then Editor.ExecutionLine:=SrcLine;
 end;
 
 //-----------------------------------------------------------------------------
@@ -1085,6 +1106,7 @@ var
 
 var
   LaunchingCmdLine, LaunchingApplication, LaunchingParams: String;
+  NewWorkingDir: String;
 begin
   WriteLN('[TDebugManager.DoInitDebugger] A');
 
@@ -1094,7 +1116,7 @@ begin
   LaunchingCmdLine:=MainIDE.GetRunCommandLine;
   SplitCmdLine(LaunchingCmdLine,LaunchingApplication,LaunchingParams);
   if (not FileExists(LaunchingApplication)) then exit;
-
+  
   OldWatches := nil;
 
   BeginUpdateDialogs;
@@ -1142,7 +1164,11 @@ begin
 
     FDebugger.FileName := LaunchingApplication;
     FDebugger.Arguments := LaunchingParams;
-    FDebugger.WorkingDir := Project1.RunParameterOptions.WorkingDirectory;
+    NewWorkingDir:=Project1.RunParameterOptions.WorkingDirectory;
+    if NewWorkingDir='' then
+      NewWorkingDir:=Project1.ProjectDirectory;
+    FDebugger.WorkingDir:=NewWorkingDir;
+    
     Project1.RunParameterOptions.AssignEnvironmentTo(FDebugger.Environment);
 
     if FDialogs[ddtOutput] <> nil
@@ -1251,6 +1277,11 @@ begin
     end;
   end;
   Result:=mrOk;
+end;
+
+procedure TDebugManager.DoToggleCallStack;
+begin
+  ViewDebugDialog(ddtCallStack);
 end;
 
 procedure TDebugManager.RunDebugger;
@@ -1389,6 +1420,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.50  2003/06/09 15:58:05  mattias
+  implemented view call stack key and jumping to last stack frame with debug info
+
   Revision 1.49  2003/06/09 14:39:52  mattias
   implemented setting working directory for debugger
 

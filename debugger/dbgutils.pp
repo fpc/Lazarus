@@ -42,6 +42,7 @@ function GetPart(const ASkipTo, AnEnd: array of String; var ASource: String): St
 function GetPart(const ASkipTo, AnEnd: array of String; var ASource: String; const AnIgnoreCase: Boolean): String; overload;
 function GetPart(const ASkipTo, AnEnd: array of String; var ASource: String; const AnIgnoreCase, AnUpdateSource: Boolean): String; overload;
 function ConvertToCString(const AText: String): String;
+function DeleteBackSlashes(const AText: String): String;
 
 const
 {$IFDEF WIN32}
@@ -201,9 +202,27 @@ begin
   end;
 end;
 
+function DeleteBackSlashes(const AText: String): String;
+var
+  i: Integer;
+  l: Integer;
+begin
+  Result:=AText;
+  i:=1;
+  l:=length(Result);
+  while i<l do begin
+    if Result[i]='\' then
+      System.Delete(Result,i,1);
+    inc(i);
+  end;
+end;
+
 end.
 { =============================================================================
   $Log$
+  Revision 1.5  2003/06/09 15:58:05  mattias
+  implemented view call stack key and jumping to last stack frame with debug info
+
   Revision 1.4  2003/05/29 17:40:10  marc
   MWE: * Fixed string resolving
        * Updated exception handling

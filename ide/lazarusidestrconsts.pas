@@ -940,6 +940,7 @@ resourcestring
   uemAddBreakpoint = '&Add Breakpoint';
   uemAddWatchAtCursor = 'Add &Watch At Cursor';
   uemRunToCursor='&Run to Cursor';
+  uemViewCallStackCursor = 'View Call Stack';
   uemMoveEditorLeft='Move Editor Left';
   uemMoveEditorRight='Move Editor Right';
   uemEditorproperties='Editor properties';
