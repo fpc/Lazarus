@@ -25,11 +25,15 @@ uses
   GLib, NVGL, GTKGLArea_Int;
   
 type
+  TGtkGlAreaMakeCurrentEvent = procedure(Sender: TObject;
+    var Allow: boolean) of object;
+
   { TCustomGTKGLAreaControl }
 
   TCustomGTKGLAreaControl = class(TWinControl)
   private
     FCanvas: TCanvas; // only valid at designtime
+    FOnMakeCurrent: TGtkGlAreaMakeCurrentEvent;
     FOnPaint: TNotifyEvent;
     FCurrentFrameTime: integer; // in msec
     FLastFrameTime: integer; // in msec
@@ -46,11 +50,13 @@ type
     procedure DoOnResize; override;
     procedure DoOnPaint; virtual;
     procedure SwapBuffers; virtual;
-    procedure MakeCurrent; virtual;
+    function MakeCurrent: integer; virtual;
   public
     property Widget: PGtkGLArea read GetWidget;
     property OnPaint: TNotifyEvent read FOnPaint write FOnPaint;
     property FrameDiffTimeInMSecs: integer read FFrameDiffTime;
+    property OnMakeCurrent: TGtkGlAreaMakeCurrentEvent read FOnMakeCurrent
+                                                       write FOnMakeCurrent;
   end;
   
   
@@ -131,7 +137,7 @@ procedure TCustomGTKGLAreaControl.Paint;
 begin
   if (not (csDesigning in ComponentState))
   and Enabled and Visible and HandleAllocated
-  and (gint(True) = gtk_gl_area_make_current(Widget)) then begin
+  and (gint(True) = MakeCurrent) then begin
     UpdateFrameTimeDiff;
     DoOnPaint;
   end;
@@ -141,7 +147,7 @@ procedure TCustomGTKGLAreaControl.DoOnResize;
 begin
   if (not (csDesigning in ComponentState))
   and Enabled and Visible and HandleAllocated
-  and (gint(True) = gtk_gl_area_make_current(Widget)) then
+  and (gint(True) = MakeCurrent) then
     glViewport (0, 0, Width, Height);
   inherited DoOnResize;
 end;
@@ -156,9 +162,19 @@ begin
   gtk_gl_area_swap_buffers(Widget);
 end;
 
-procedure TCustomGTKGLAreaControl.MakeCurrent;
+function TCustomGTKGLAreaControl.MakeCurrent: integer;
+var
+  Allowed: Boolean;
 begin
-  gtk_gl_area_make_current(Widget);
+  if Assigned(FOnMakeCurrent) then begin
+    Allowed:=true;
+    OnMakeCurrent(Self,Allowed);
+    if not Allowed then begin
+      Result:=gint(False);
+      exit;
+    end;
+  end;
+  Result:=gtk_gl_area_make_current(Widget);
 end;
 
 procedure TCustomGTKGLAreaControl.WMPaint(var Message: TLMPaint);
