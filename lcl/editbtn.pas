@@ -287,76 +287,36 @@ type
   
   
   { TDateEdit }
-  
+
   TAcceptDateEvent = Procedure (Sender : TObject; Var ADate : TDateTime;
     Var AcceptDate: Boolean) of Object;
-  TDateEdit = Class(TCustomEditButton)
+
+  TDateEdit=class(TEditButton)
   private
-    FDialogTitle: String;
+    FDialogTitle:TCaption;
     FDisplaySettings: TDisplaySettings;
     FOnAcceptDate: TAcceptDateEvent;
-    function GetDate: TDateTime;
-    procedure SetDate(const AValue: TDateTime);
-    Function StoreTitle : Boolean;
-  Protected
-    Function CreateDateBitmap : TBitmap; Virtual;
+
+    FOKCaption:TCaption;
+    FCancelCaption:TCaption;
+    FDate: TDateTime;
+    function IsStoreTitle: boolean;
+    procedure SetDate(Value:TDateTime);
+  protected
     procedure DoButtonClick (Sender: TObject); override;
-    Procedure RunDialog; Virtual;
-  Public
+    procedure Change; override;
+  public
     constructor Create(AOwner: TComponent); override;
-    Destructor Destroy; override;
-    Property Date : TDateTime Read GetDate Write SetDate;
-  Published
-    // TDateEdit settings
+    destructor Destroy; override;
+  published
+    property DialogTitle:TCaption Read FDialogTitle Write FDialogTitle Stored IsStoreTitle;
     Property CalendarDisplaySettings : TDisplaySettings Read FDisplaySettings Write FDisplaySettings;
     Property OnAcceptDate : TAcceptDateEvent Read FOnAcceptDAte Write FOnAcceptDate;
-    Property DialogTitle : String Read FDialogTitle Write FDialogTitle Stored StoreTitle;
-    // TEditButton properties.
-    Property ButtonWidth;
-    Property DirectInput;
-    Property ButtonOnlyWhenFocused;
-    // property Glyph;
-    property NumGlyphs;
-    Property Flat;
-    // Other properties
-    property Align;
-    property Anchors;
-    property BorderSpacing;
-    property AutoSize;
-    property Color;
-    property Ctl3D;
-    property DragCursor;
-    property DragMode;
-    property Enabled;
-    property Font;
-    property MaxLength;
-    property ParentColor;
-    property ParentCtl3D;
-    property ParentFont;
-    property ParentShowHint;
-    property PopupMenu;
-    property ReadOnly;
-    property ShowHint;
-    property TabOrder;
-    property TabStop;
-    property Visible;
-    property OnChange;
-    property OnClick;
-    property OnDblClick;
-    property OnDragDrop;
-    property OnDragOver;
-    property OnEndDrag;
-    property OnEnter;
-    property OnExit;
-    property OnKeyDown;
-    property OnKeyPress;
-    property OnKeyUp;
-    property OnMouseDown;
-    property OnMouseMove;
-    property OnMouseUp;
-    property OnStartDrag;
+    property OKCaption:TCaption Read FOKCaption Write FOKCaption;
+    property CancelCaption:TCaption Read FCancelCaption Write FCancelCaption;
+    property Date: TDateTime Read FDate Write SetDate;
   end;
-  
+
   
   { TCalcEdit }
   
@@ -833,9 +793,19 @@ end;
 constructor TDateEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FDate:=Now;
+  Date:=trunc(FDate);
+  Text:=DateToStr(Date);
   FDisplaySettings:=[dsShowHeadings, dsShowDayNames];
-  FDialogTitle:=rsPickDate;
-  Glyph:=CreateDateBitmap;
+  DialogTitle:='Select a date';
+  OKCaption:='OK';
+  CancelCaption:='Cancel';
+  ReadOnly:=true;
+  Color:=clBtnFace;
+  Button.Glyph:=CreateDateGlyph;//.LoadFromLazarusResource('DateEditGlyph');  //GlyphFromBitmapOrResource(DateGlyph,ResBtnCalendar)
+  Button.OnClick:= @DoButtonClick;
+//  OnChange:=@Change;
+  OnDblClick:=@DoButtonClick;
 end;
 
 destructor TDateEdit.Destroy;
@@ -843,72 +813,61 @@ begin
   inherited Destroy;
 end;
 
-function TDateEdit.GetDate: TDateTime;
-
-begin
-  Result:=0;
-  Try
-    Result:=StrToDate(Text)
-  Except
-    // Catch errors.
-  end;
-end;
-
-
-procedure TDateEdit.SetDate(const AValue: TDateTime);
-begin
-  Text:=DateToStr(AValue);
-end;
-
-function TDateEdit.StoreTitle: Boolean;
-begin
-  Result:=FDialogTitle<>rsPickDate;
-end;
-
-function TDateEdit.CreateDateBitmap: TBitmap;
-begin
-  Result:=CreateDateGlyph;
-end;
-
-procedure TDateEdit.DoButtonClick(Sender: TObject);
+procedure TDateEdit.DoButtonClick(Sender:TObject);//or onClick
+var CD:TCalendarDialog;
+    B:Boolean;
+    D:TDateTime;
 begin
   inherited DoButtonClick(Sender);
-  RunDialog;
-end;
 
-procedure TDateEdit.RunDialog;
-
-Var
-  FCalendar : TCalendarDialogForm;
-  B : Boolean;
-  D : TDateTime;
-  P : TPoint;
-
-begin
-  FCalendar:=CreateCalendarForm(Self,0);
-  Try
-    P.X:=Self.Left;
-    P.Y:=Self.top;
-    P:=ClientToScreen(P);
-    P.Y:=P.Y+Self.Height;
-    FCalendar.Top:=P.Y;
-    FCalendar.Left:=P.X;
-    FCalendar.DisplaySettings:=FDisplaySettings;
-    FCalendar.Date:=Date;
-    FCalendar.Caption:=DialogTitle;
-    If FCalendar.ShowModal=mrOK then
-      begin
-      D:=FCalendar.Date;
-      B:=True;
+  CD:=TCalendarDialog.Create(Self);
+  with CD do begin
+    Date:=Self.Date;
+    CancelCaption:=Self.CancelCaption;
+    OKCaption:=Self.OKCaption;
+    DialogTitle:=Self.DialogTitle;
+    DisplaySettings:=Self.CalendarDisplaySettings;
+  end;
+  try
+    if CD.Execute then begin
+      FDate:=CD.Date;
+      Self.Date:=FDate;
+      D:=FDate;
+      B:=true;
       If Assigned(FOnAcceptDate) then
         FOnAcceptDate(Self,D,B);
-      If B then
-        Date:=D;
-      end;
-  Finally
-    FCalendar.Free;
+      Text:=DateToStr(FDate);
+    end;
+  except
+    raise Exception.Create('Errore in calendar dialog di dateedit');
+  end;
+  FreeAndNil(CD);
+end;
+
+procedure TDateEdit.Change;//(Sender:TObject);
+var Datetmp:TDate;
+begin
+  inherited Change;//(Sender);
+  try
+    Datetmp:=StrToDate(Text);
+    Date:=Datetmp;
+  except
+    //inherited Change(Sender)
   end;
 end;
+
+function TDateEdit.IsStoreTitle: boolean;
+begin
+  Result:=DialogTitle<>rsPickDate;
+end;
+
+procedure TDateEdit.SetDate(Value:TDateTime);
+begin
+  if FDate=Value then exit;
+  FDate:=Value;
+  Text:=DateToStr(FDate);
+end;
+
 
 
 { TCalcEdit }

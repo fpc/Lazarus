@@ -139,7 +139,7 @@ constructor TCustomCalendar.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   fCompStyle := csCalendar;
-  SetInitialBounds(0,0,250,150);
+  SetInitialBounds(0,0,190,153);
   fDisplaySettings := [dsShowHeadings, dsShowDayNames];
   ControlStyle:=ControlStyle-csMultiClicks-[csAcceptsControls];
   Date := FormatDateTime(ShortDateFormat,Now);

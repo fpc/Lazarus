@@ -192,29 +192,7 @@ function CreateCalculatorForm(AOwner: TComponent; ALayout : TCalculatorLayout; A
 
 
 Type
-  TCalendarDialogForm = Class(TForm)
-  private
-    FCalendar : TCalendar;
-    FPanel : TPanel;
-    FOK : TButton;
-    FCancel : TButton;
-    function GetDate: TDateTime;
-    Procedure SetDate (Value : TDateTime);
-    function GetDisplaySettings: TDisplaySettings;
-    procedure SetDisplaySettings(const AValue: TDisplaySettings);
-  Protected
-    Property Calendar : TCalendar Read FCalendar;
-    Property ButtonPanel : TPanel Read FPanel;
-    Property OKButton : TButton Read FOK;
-    Property CancelButton : TButton Read FCancel;
-    Procedure InitForm; virtual;
-  Public
-    Constructor Create(AOwner : TComponent); override;
-    Destructor Destroy; override;
-    Property Date : TDateTime Read GetDate Write SetDate;
-    Property DisplaySettings : TDisplaySettings Read GetDisplaySettings Write SetDisplaySettings;
-  end;
-
+{ TCalendarDialog }
   TCalendarDialog = class(TCommonDialog)
   private
     FDate: TDateTime;
@@ -223,25 +201,28 @@ Type
     FHelpContext: THelpContext;
     FMonthChanged: TNotifyEvent;
     FYearChanged: TNotifyEvent;
-    function GetDialogTitle: String;
-    procedure SetDialogTitle(const AValue: String);
-    Function IsTitleStored: Boolean;
-  Public
-    Constructor Create(AOwner: TComponent); override;
-    Destructor Destroy; override;
-    Function Execute: Boolean; override;
-    Function CreateForm: TCalendarDialogForm; virtual;
-  Published
-    Property DialogTitle: String Read GetDialogTitle Write SetDialogTitle Stored IsTitleStored;
-    Property Date: TDateTime Read FDate Write FDate;
-    Property DisplaySettings: TDisplaySettings Read FDisplaySettings Write FDisplaySettings;
-    property HelpContext: THelpContext read FHelpContext write FHelpContext default 0;
+    FDialogTitle:TCaption;
+    FOKCaption:TCaption;
+    FCancelCaption:TCaption;
+    FCalendar:TCalendar;
+    function IsTitleStored: Boolean;
+  protected
+    procedure GetNewDate(Sender:TObject);//or onClick
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    function Execute: Boolean; override;
+  published
+    property Date: TDateTime Read FDate Write FDate;
     property OnDayChanged: TNotifyEvent read FDayChanged write FDayChanged;
+    property DisplaySettings: TDisplaySettings Read FDisplaySettings Write FDisplaySettings;
+    property HelpContext: THelpContext read FHelpContext write FHelpContext default 0;
     property OnMonthChanged: TNotifyEvent read FMonthChanged write FMonthChanged;
     property OnYearChanged: TNotifyEvent read FYearChanged write FYearChanged;
+    property DialogTitle:TCaption Read FDialogTitle Write FDialogTitle Stored IsTitleStored;
+    property OKCaption:TCaption Read FOKCaption Write FOKCaption;
+    property CancelCaption:TCaption Read FCancelCaption Write FCancelCaption;
   end;
-
-function CreateCalendarForm(AOwner: TComponent; AHelpContext: THelpContext): TCalendarDialogForm;
 
 
 procedure Register;
@@ -478,21 +459,6 @@ begin
     except
       Free;
       raise;
-    end;
-end;
-
-function CreateCalendarForm(AOwner: TComponent; AHelpContext: THelpContext
-  ): TCalendarDialogForm;
-begin
-  Result:=TCalendarDialogForm.Create(AOwner);
-  With Result do
-    Try
-      HelpContext:=AHelpContext;
-      Left:=(Screen.Width div 2) - (Width div 2);
-      Top:=(Screen.Height div 2) - (Height div 2);
-    except
-      Free;
-      Raise;
     end;
 end;
 
@@ -1184,126 +1150,16 @@ end;
   TCalendarDialog
   ---------------------------------------------------------------------}
 
-{ TCalendarDialogForm }
-
-function TCalendarDialogForm.GetDate: TDateTime;
-begin
-  Try
-    Result:=StrToDate(FCalendar.Date);
-  Except
-    Result:=0;
-  end;
-end;
-
-procedure TCalendarDialogForm.SetDate(Value: TDateTime);
-begin
-  FCalendar.Date:=DateToStr(Date);
-end;
-
-function TCalendarDialogForm.GetDisplaySettings: TDisplaySettings;
-begin
-  Result:=FCalendar.DisplaySettings;
-end;
-
-procedure TCalendarDialogForm.SetDisplaySettings(const AValue: TDisplaySettings);
-begin
-  FCalendar.DisplaySettings:=AValue;
-end;
-
-procedure TCalendarDialogForm.InitForm;
-
-begin
-  // TODO: let the size of this dialog dependent on the prefered size of
-  // the calendar, because the gtk calendar is smaller than the win32 calendar.
-  Height:=170;
-  Width:=200;
-  Position:=poScreenCenter;
-  BorderStyle:=bsDialog;
-  FCalendar:=TCalendar.Create(Self);
-  With FCalendar do
-    begin
-    Parent:=Self;
-    SetBounds(0,0,Self.Width,118);
-    Align:=alClient;
-    //Anchors:=[akLeft,akRight,akTop,akBottom];
-    end;
-  FPanel:=TPanel.Create(Self);
-  With FPanel do
-    begin
-    Parent:=Self;
-    Top:=109;
-    Height:=32;
-    Width:=200;
-    Align:=alBottom;
-    Anchors:=[akLeft,akRight,akBottom];
-    Caption:='';
-    BevelOuter:=bvLowered;
-    end;
-  FOK:=TButton.Create(Self);
-  With FOK do
-    begin
-    Parent:=FPanel;
-    Caption:='&OK';
-    Top:=4;
-    Height:=24;
-    Width:=50;
-    Left:=Self.Width-FOK.Width-4;
-    Anchors:=[akRight,akTop];
-    Default:=True;
-    ModalResult:=MrOK;
-    end;
-  FCancel:=TButton.Create(Self);
-  With FCancel do
-    begin
-    Parent:=FPanel;
-    Caption:='&Cancel';
-    Height:=24;
-    Top:=4;
-    Width:=50;
-    Left:=FOK.Left-FCancel.Width-4;
-    Anchors:=[akright,aktop];
-    Cancel:=True;
-    ModalResult:=MrCancel;
-    end;
-end;
-
-constructor TCalendarDialogForm.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  InitForm;
-end;
-
-destructor TCalendarDialogForm.Destroy;
-begin
-  FCalendar.Free;
-  FOK.Free;
-  FCancel.Free;
-  FPanel.Free;
-  inherited Destroy;
-end;
-
 { TCalendarDialog }
-
-function TCalendarDialog.IsTitleStored: Boolean;
-begin
-  Result:=Title<>rsPickDate;
-end;
-
-function TCalendarDialog.GetDialogTitle: String;
-begin
-  Result:=Title;
-end;
-
-procedure TCalendarDialog.SetDialogTitle(const AValue: String);
-begin
-  Title:=AValue;
-end;
 
 constructor TCalendarDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FDate:=Sysutils.Date;
-  Title:=rsPickDate;
+  FDate:=Now;
+  Date:=trunc(FDate);
+  DialogTitle:=rsPickDate;
+  OKCaption:=rsMbOK;
+  CancelCaption:=rsMbCancel;
 end;
 
 destructor TCalendarDialog.Destroy;
@@ -1311,36 +1167,80 @@ begin
   inherited Destroy;
 end;
 
-function TCalendarDialog.Execute: Boolean;
-Var
-  Dlg: TCalendarDialogForm;
-  D: TDateTime;
+procedure TCalendarDialog.GetNewDate(Sender:TObject);//or onClick
 begin
-  Dlg:=CreateForm;
-  With Dlg do
-    Try
-      D:=FDate;
-      Dlg.Date:=D;
-      Result:=ShowModal=mrOK;
-      If Result then
-        Self.Date:=Dlg.Date;
-    Finally
-      Free;
-    end;
+  Date:=FCalendar.DateTime;
 end;
 
-function TCalendarDialog.CreateForm: TCalendarDialogForm;
+function TCalendarDialog.IsTitleStored: Boolean;
 begin
-  Result:=CreateCalendarForm(Self,HelpContext);
-  Result.Caption:=DialogTitle;
-  With Result.Calendar do
-    begin
-    displaySettings:=Self.DisplaySettings;
+  Result:=DialogTitle<>rsPickDate;//controllare
+end;
+
+function TCalendarDialog.Execute:boolean;
+const dw=8;
+var DF:TForm;
+    okButton,cancelButton:TButton;
+    panel:TPanel;
+begin
+  DF:=TForm.Create(Self);
+  DF.Caption:=FDialogTitle;
+  DF.Position:=poMainFormCenter;
+  DF.BorderStyle:=bsDialog;
+
+  FCalendar:=TCalendar.Create(Self);
+  with FCalendar do begin
+    Parent:=DF;
+    DF.Width:=Width;
+    Align:=alTop;
+    DateTime:=Self.Date;
+    DisplaySettings:=Self.DisplaySettings;
     OnDayChanged:=Self.OnDayChanged;
     OnMonthChanged:=Self.OnMonthChanged;
     OnYearChanged:=Self.OnYearChanged;
-    end;
+  end;
+
+  panel:=TPanel.Create(Self);
+  with panel do begin
+    Parent:=DF;
+    Caption:='';
+    Height:=32;
+    DF.Height:=FCalendar.Height+Height;
+    Align:=alBottom;
+    BevelOuter:=bvLowered;
+  end;
+
+  okButton:=TButton.Create(Self);
+  with okButton do begin
+    Parent:=panel;
+    Caption:=OKCaption;
+    Constraints.MinWidth:=75;
+    Constraints.MaxWidth:=FCalendar.Width div 2;
+    Width:=DF.Canvas.TextWidth(OKCaption)+2*dw;
+    ModalResult:=mrOK;
+    OnClick:=@GetNewDate;
+    Align:=alRight;
+  end;
+
+  cancelButton:=TButton.Create(Self);
+  with cancelButton do begin
+    Parent:=panel;
+    Caption:=CancelCaption;
+    Constraints.MinWidth:=75;
+    Constraints.MaxWidth:=FCalendar.Width div 2;
+    Width:=DF.Canvas.TextWidth(CancelCaption)+2*dw;;
+    ModalResult:=mrCancel;
+    Align:=alLeft;
+  end;
+
+  Result:=DF.ShowModal=mrOK;
+  FreeAndNil(FCalendar);
+  FreeAndNil(panel);
+  FreeAndNil(okButton);
+  FreeAndNil(cancelButton);
+  FreeAndNil(DF);
 end;
+
 
 Initialization
 {$i extdlgs.lrs}
