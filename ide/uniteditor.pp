@@ -2233,7 +2233,10 @@ Begin
           Top :=2;
           Width := ClientWidth;
           Height := ClientHeight-Notebook.top;
-          Pages.Strings[0] := 'unit1';
+          if PageCount>0 then
+            Pages.Strings[0] := 'unit1'
+          else
+            Pages.Add('unit1');
           PageIndex := 0;   // Set it to the first page
           if EditorOpts.ShowTabCloseButtons then
             Options:=Options+[nboShowCloseButtons]
@@ -2331,20 +2334,6 @@ Begin
 
   SrcPopupMenu.Items.Add(Seperator);
 
-  SetBookmarkMenuItem := TMenuItem.Create(Self);
-  SetBookmarkMenuItem.Name:='SetBookmarkMenuItem';
-  SetBookmarkMenuItem.Caption := '&Set Bookmark';
-  SrcPopupMenu.Items.Add(SetBookmarkMenuItem);
-
-  for I := 0 to 9 do
-    Begin
-      SubMenuItem := TMenuItem.Create(Self);
-      SubMenuItem.Name:='SubSetBookmarkMenuItem'+IntToStr(I);
-      SubMenuItem.Caption := 'Bookmark '+inttostr(i);
-      SubMenuItem.OnClick := @BookmarkClicked;
-      SetBookmarkMenuItem.Add(SubMenuItem);
-    end;
-
   GotoBookmarkMenuItem := TMenuItem.Create(Self);
   GotoBookmarkMenuItem.Name:='GotoBookmarkMenuItem';
   GotoBookmarkMenuItem.Caption := '&Goto Bookmark';
@@ -2357,6 +2346,20 @@ Begin
       SubMenuItem.Caption := 'Bookmark '+inttostr(i);
       SubMenuItem.OnClick := @BookmarkGotoClicked;
       GotoBookmarkMenuItem.Add(SubMenuItem);
+    end;
+
+  SetBookmarkMenuItem := TMenuItem.Create(Self);
+  SetBookmarkMenuItem.Name:='SetBookmarkMenuItem';
+  SetBookmarkMenuItem.Caption := '&Set Bookmark';
+  SrcPopupMenu.Items.Add(SetBookmarkMenuItem);
+
+  for I := 0 to 9 do
+    Begin
+      SubMenuItem := TMenuItem.Create(Self);
+      SubMenuItem.Name:='SubSetBookmarkMenuItem'+IntToStr(I);
+      SubMenuItem.Caption := 'Bookmark '+inttostr(i);
+      SubMenuItem.OnClick := @BookmarkClicked;
+      SetBookmarkMenuItem.Add(SubMenuItem);
     end;
 
   SrcPopupMenu.Items.Add(Seperator);
