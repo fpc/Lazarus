@@ -67,13 +67,13 @@ type
     procedure SetProject(AProject: TProject);
     procedure SetupApplicationPage;
     procedure SetupFormsPage;
-    function GetAutoCreatedFormsList: TStrings;
     procedure FillAutoCreateFormsListbox;
     procedure FillAvailFormsListBox;
     function IndexOfAutoCreateForm(FormName: string): integer;
     function FirstAutoCreateFormSelected: integer;
     function FirstAvailFormSelected: integer;
     procedure SelectOnlyThisAutoCreateForm(Index: integer);
+    function GetAutoCreatedFormsList: TStrings;
     procedure SetAutoCreateForms;
   public
     constructor Create(AOwner: TComponent); override;
@@ -378,8 +378,11 @@ function TProjectOptionsDialog.GetAutoCreatedFormsList: TStrings;
 var i, j: integer;
 begin
   if (FProject<>nil) and (FProject.MainUnit>=0) then begin
+writeln('==CCC=============================================================');
+writeln(FProject.MainUnitInfo.Source.Source);
+writeln('==DDD=============================================================');
     Result:=CodeToolBoss.ListAllCreateFormStatements(
-         FProject.Units[FProject.MainUnit].Source);
+         FProject.MainUnitInfo.Source);
     if Result<>nil then begin
       // shorten lines of type 'FormName:TFormName' to simply 'FormName'
       for i:=0 to Result.Count-1 do begin
@@ -391,6 +394,7 @@ begin
             Result[i]:=copy(Result[i],1,j-1);
           end;
         end;
+writeln('BBB1 ',Result[i]);
       end;
     end;
   end else begin
@@ -578,11 +582,15 @@ begin
     try
       for i:=0 to FormsAutoCreatedListBox.Items.Count-1 do begin
         NewList.Add(FormsAutoCreatedListBox.Items[i]);
+writeln('AAA3 ',i,' ',NewList[i]);
       end;
       if not CodeToolBoss.SetAllCreateFromStatements(
           Project.Units[Project.MainUnit].Source, NewList) then begin
         // ToDo: print a message
       end;
+writeln('==EEE=============================================================');
+writeln(FProject.MainUnitInfo.Source.Source);
+writeln('==FFF=============================================================');
     finally
       NewList.Free;
     end;

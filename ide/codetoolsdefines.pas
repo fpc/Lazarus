@@ -36,7 +36,8 @@ interface
 uses
   Classes, SysUtils, LCLLinux, Forms, Controls, Buttons, StdCtrls, ComCtrls,
   ExtCtrls, Menus, LResources, Graphics, Dialogs, ImgList, SynEdit, XMLCfg,
-  DefineTemplates, CodeToolManager, CodeToolsOptions, CodeToolsDefPreview;
+  DefineTemplates, CodeToolManager, CodeToolsOptions, CodeToolsDefPreview,
+  InputFileDialog;
 
 type
   TCodeToolsDefinesEditor = class(TForm)
@@ -715,9 +716,24 @@ end;
 
 procedure TCodeToolsDefinesEditor.InsertDelphi5DirectoryTemplateMenuItemClick(
   Sender: TObject);
+var InputFileDlg: TInputFileDialog;
 begin
-  InsertTemplate(Boss.DefinePool.CreateDelphi5DirectoryTemplate(
-                   SetDirSeparators('/Borland/Delphi5')));
+  InputFileDlg:=GetInputFileDialog;
+  with InputFileDlg do begin
+    BeginUpdate;
+    Caption:='Create Defines for Delphi5 Directory';
+    FileCount:=1;
+    FileTitles[0]:='Delphi5 directory';
+    FileDescs[0]:='The Delphi5 main directory,'#13
+          +'where Borland has installed all Delphi5 sources.'#13
+          +'For example: C:/Programme/Borland/Delphi5';
+    FileNames[0]:=SetDirSeparators('C:/Programme/Borland/Delphi5');
+    FileFlags[0]:=[iftDirectory,iftNotEmpty];
+    EndUpdate;
+    if ShowModal=mrCancel then exit;
+    InsertTemplate(Boss.DefinePool.CreateDelphi5DirectoryTemplate(
+                     FileNames[0]));
+  end;
 end;
 
 procedure TCodeToolsDefinesEditor.InsertDelphi5ProjectTemplateMenuItemClick(

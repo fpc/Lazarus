@@ -1,3 +1,4 @@
+{  $Id$  }
 {
  /***************************************************************************
                   project.pp  -  project utility class file
@@ -1353,6 +1354,9 @@ end.
 
 {
   $Log$
+  Revision 1.60  2002/04/05 16:34:16  lazarus
+  MG: fixed autocreate form editing in project opts
+
   Revision 1.59  2002/04/04 17:21:18  lazarus
   MG: fixed outputfilter for linker errors
 

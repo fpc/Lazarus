@@ -92,7 +92,7 @@ begin
     try
       FileVersion:=XMLConfig.GetValue('MiscellaneousOptions/Version/Value',0);
 
-      if FileVersion<MiscOptsVersion then
+      if (FileVersion<MiscOptsVersion) and (FileVersion<>0) then
         writeln('Note: converting old miscellaneous options ...');
 
       BuildLazOpts.Load(XMLConfig,'MiscellaneousOptions/BuildLazarusOptions/');

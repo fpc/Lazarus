@@ -973,7 +973,10 @@ begin
 //writeln('[TOIPropertyGrid.SetBounds] ',Name,' ',aLeft,',',aTop,',',aWidth,',',aHeight,' Visible=',Visible);
   inherited SetBounds(aLeft,aTop,aWidth,aHeight);
   if Visible then begin
-    SplitterX:=SplitterX;
+    if (SplitterX<5) and (aWidth>20) then
+      SplitterX:=100
+    else
+      SplitterX:=SplitterX;
     AlignEditComponents;
   end;
 end;

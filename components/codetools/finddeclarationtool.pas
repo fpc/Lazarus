@@ -27,22 +27,20 @@
 
   ToDo:
     - many things, search for 'ToDo'
-    - Examples:
-       - @ operator
-           + Func -> FuncResult Type
-              OR in Delphi  -> Func type
-           + @Func -> Func type
-           + @Data -> Pointer
-       - 'inherited'
-       - variants
-       - interfaces
-       - Get and Set property access parameter lists
-       - ignore error after cursor position
-       - predefined funcs Pred, Succ, Val, Low, High
-       - find declaration in dead code
-       - operator overloading
-       - ppu, ppw, dcu files
-
+    - @ operator
+        + Func -> FuncResult Type
+           OR in Delphi  -> Func type
+        + @Func -> Func type
+        + @Data -> Pointer
+    - 'inherited'
+    - variants
+    - interfaces
+    - Get and Set property access parameter lists
+    - ignore error after cursor position
+    - predefined funcs Pred, Succ, Val, Low, High
+    - find declaration in dead code
+    - operator overloading
+    - ppu, ppw, dcu files
 }
 unit FindDeclarationTool;
 

@@ -800,6 +800,7 @@ var Position: integer;
   s:string;
   var MainBeginNode: TCodeTreeNode;
 begin
+  BuildTree(false);
   Result:=TStringList.Create;
   MainBeginNode:=FindMainBeginEndNode;
   if MainBeginNode=nil then exit;
@@ -837,6 +838,7 @@ var Position, InsertPos, i, ColonPos, Indent: integer;
 begin
   Result:=false;
   if (List=nil) or (SourceChangeCache=nil) then exit;
+  BuildTree(false);
   // first delete all CreateForm Statements
   SourceChangeCache.MainScanner:=Scanner;
   MainBeginNode:=FindMainBeginEndNode;

@@ -377,7 +377,8 @@ function FilenameIsPascalSource(const Filename: string): boolean;
 var Ext: string;
 begin
   Ext:=lowercase(ExtractFileExt(Filename));
-  Result:=(Ext='.pp') or (Ext='.pas') or (Ext='.dpr') or (Ext='.dpk');
+  Result:=(Ext='.pp') or (Ext='.pas') or (Ext='.lpr')
+          or (Ext='.dpr') or (Ext='.dpk');
 end;
 
 function FilenameIsPascalUnit(const Filename: string): boolean;

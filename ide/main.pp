@@ -1686,7 +1686,7 @@ begin
 end;
 
 procedure TMainIDE.mnuOpenClicked(Sender : TObject);
-var OpenDialog:TOpenDialog;
+var OpenDialog: TOpenDialog;
   AFilename: string;
   I  : Integer;
 begin
@@ -2020,7 +2020,11 @@ begin
 end;
 
 procedure TMainIDE.mnuProjectOptionsClicked(Sender : TObject);
+var
+  ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
 begin
+  BeginCodeTool(ActiveSrcEdit, ActiveUnitInfo, false);
   if ShowProjectOptionsDialog(Project1)=mrOk then begin
     
   end;
@@ -2581,9 +2585,10 @@ writeln('TMainIDE.ShowSaveFileAsDialog C ',ResourceCode<>nil);
   ResourceCode:=CodeToolBoss.FindNextResourceFile(NewSource,LinkIndex);
 
   // change unitname on SourceNotebook
-  SourceNoteBook.NoteBook.Pages[SourceNoteBook.NoteBook.PageIndex]:=
-      CreateSrcEditPageName(NewUnitName,NewFilename,
-                            SourceNoteBook.NoteBook.PageIndex);
+  if AnUnitInfo.EditorIndex>=0 then
+    SourceNoteBook.NoteBook.Pages[AnUnitInfo.EditorIndex]:=
+                      CreateSrcEditPageName(NewUnitName,NewFilename,
+                                            SourceNoteBook.NoteBook.PageIndex);
 
   Result:=mrOk;
 end;
@@ -3032,7 +3037,7 @@ begin
     if NewFilename='' then
       NewFilename:='project1';
     Ext:=lowercase(ExtractFileExt(NewFilename));
-    if (Ext='') or FilenameIsPascalUnit(NewFilename) or (Ext='.dpr') then
+    if (Ext='') or FilenameIsPascalSource(NewFilename) then
       NewFilename:=ChangeFileExt(NewFilename,'.lpi');
     SaveDialog.FileName:=NewFilename;
     
@@ -6201,6 +6206,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.272  2002/04/05 16:34:13  lazarus
+  MG: fixed autocreate form editing in project opts
+
   Revision 1.271  2002/04/04 17:21:17  lazarus
   MG: fixed outputfilter for linker errors
 
