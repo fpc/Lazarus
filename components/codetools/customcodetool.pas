@@ -52,11 +52,32 @@ const
   CodeToolPhaseTool  = 3; // or higher
 
 type
+  TCustomCodeTool = class;
+
+  // types for errors
+  ECodeToolError = class(Exception)
+    Sender: TCustomCodeTool;
+    constructor Create(ASender: TCustomCodeTool; const AMessage: string);
+  end;
+  
+  ECodeToolErrors = class of ECodeToolError;
+
+  // types for user aborts
+  TOnParserProgress = function(Tool: TCustomCodeTool): boolean of object;
+
+  EParserAbort = class(ECodeToolError)
+  end;
+  
+  
+  { TCustomCodeTool }
+
   TCustomCodeTool = class(TObject)
   private
+    FLastProgressPos: integer;
     FLastScannerChangeStep: integer;
     FScanner: TLinkScanner;
     FOnGetGlobalWriteLockInfo: TOnGetWriteLockInfo;
+    FOnParserProgress: TOnParserProgress;
     FOnSetGlobalWriteLock: TOnSetWriteLock;
   protected
     FIgnoreErrorAfter: TCodePosition;
@@ -78,6 +99,8 @@ type
     LastErrorBehindIgnorePosition: boolean;
     LastErrorCheckedForIgnored: boolean;
     CurrentPhase: integer;
+    procedure RaiseExceptionClass(const AMessage: string;
+      ExceptionClass: ECodeToolErrors); virtual;
     procedure RaiseException(const AMessage: string); virtual;
     procedure RaiseExceptionFmt(const AMessage: string;
       const args : array of const);
@@ -86,6 +109,7 @@ type
       const args : array of const);
     procedure ClearLastError;
     procedure RaiseLastError;
+    procedure DoProgress;
   public
     Tree: TCodeTree;
 
@@ -199,6 +223,8 @@ type
     function IgnoreErrorAfterCleanedPos: integer;
     function LastErrorsInFrontOfCleanedPos(ACleanedPos: integer): boolean;
     procedure RaiseLastErrorIfInFrontOfCleanedPos(ACleanedPos: integer);
+    property OnParserProgress: TOnParserProgress
+      read FOnParserProgress write FOnParserProgress;
 
     procedure Clear; virtual;
     function NodeDescToStr(Desc: integer): string;
@@ -208,12 +234,6 @@ type
     constructor Create;
     destructor Destroy; override;
   end;
-
-  ECodeToolError = class(Exception)
-    Sender: TCustomCodeTool;
-    constructor Create(ASender: TCustomCodeTool; const AMessage: string);
-  end;
-
 
 implementation
 
@@ -253,32 +273,8 @@ begin
 end;
 
 procedure TCustomCodeTool.RaiseException(const AMessage: string);
-var CaretXY: TCodeXYPosition;
-  CursorPos: integer;
-  Node: TCodeTreeNode;
 begin
-  ErrorPosition.Code:=nil;
-  CursorPos:=CurPos.StartPos;
-  // close all open nodes, so that FindDeepestNodeAtPos works in the code
-  // already parsed
-  Node:=CurNode;
-  while (Node<>nil) do begin
-    if (Node.StartPos>=Node.EndPos) then
-      Node.EndPos:=CursorPos;
-    Node:=Node.Parent;
-  end;
-  // convert cursor pos to caret pos, which is more human readable
-  if (CursorPos>SrcLen) and (SrcLen>0) then CursorPos:=SrcLen;
-  if (CleanPosToCaret(CursorPos,CaretXY))
-  and (CaretXY.Code<>nil) then begin
-    ErrorPosition:=CaretXY;
-  end else if (Scanner<>nil) and (Scanner.MainCode<>nil) then begin
-    ErrorPosition.Code:=TCodeBuffer(Scanner.MainCode);
-    ErrorPosition.Y:=-1;
-  end;
-  // raise the exception
-  CurrentPhase:=CodeToolPhaseNone;
-  raise ECodeToolError.Create(Self,AMessage);
+  RaiseExceptionClass(AMessage,ECodeToolError);
 end;
 
 procedure TCustomCodeTool.RaiseExceptionFmt(const AMessage: string;
@@ -314,8 +310,23 @@ begin
   CurPos:=LastErrorCurPos;
   CurNode:=nil;
   CurrentPhase:=LastErrorPhase;
-writeln('TCustomCodeTool.RaiseLastError "',LastErrorMessage,'"');
   SaveRaiseException(LastErrorMessage);
+end;
+
+procedure TCustomCodeTool.DoProgress;
+begin
+  // Check every 10.000 chars
+  if (FLastProgressPos-CurPos.StartPos)<10000 then exit;
+  FLastProgressPos:=CurPos.StartPos;
+  
+  if Assigned(OnParserProgress) then begin
+    if OnParserProgress(Self) then exit;
+    // abort the parsing process
+    // mark parsing results as invalid
+    FForceUpdateNeeded:=true;
+    // raise the abort exception to stop the parsing
+    RaiseExceptionClass('Abort',EParserAbort);
+  end;
 end;
 
 procedure TCustomCodeTool.SetScanner(NewScanner: TLinkScanner);
@@ -1380,6 +1391,7 @@ procedure TCustomCodeTool.BeginParsing(DeleteNodes,
   OnlyInterfaceNeeded: boolean);
 begin
   // scan
+  FLastProgressPos:=0;
   CurrentPhase:=CodeToolPhaseScan;
   try
     Scanner.Scan(OnlyInterfaceNeeded,CheckFilesOnDisk);
@@ -1610,6 +1622,36 @@ begin
   {$ENDIF}
   if Scanner<>nil then
     Scanner.SetIgnoreErrorAfter(IgnoreErrorAfter.P,IgnoreErrorAfter.Code);
+end;
+
+procedure TCustomCodeTool.RaiseExceptionClass(const AMessage: string;
+  ExceptionClass: ECodeToolErrors);
+var CaretXY: TCodeXYPosition;
+  CursorPos: integer;
+  Node: TCodeTreeNode;
+begin
+  ErrorPosition.Code:=nil;
+  CursorPos:=CurPos.StartPos;
+  // close all open nodes, so that FindDeepestNodeAtPos works in the code
+  // already parsed
+  Node:=CurNode;
+  while (Node<>nil) do begin
+    if (Node.StartPos>=Node.EndPos) then
+      Node.EndPos:=CursorPos;
+    Node:=Node.Parent;
+  end;
+  // convert cursor pos to caret pos, which is more human readable
+  if (CursorPos>SrcLen) and (SrcLen>0) then CursorPos:=SrcLen;
+  if (CleanPosToCaret(CursorPos,CaretXY))
+  and (CaretXY.Code<>nil) then begin
+    ErrorPosition:=CaretXY;
+  end else if (Scanner<>nil) and (Scanner.MainCode<>nil) then begin
+    ErrorPosition.Code:=TCodeBuffer(Scanner.MainCode);
+    ErrorPosition.Y:=-1;
+  end;
+  // raise the exception
+  CurrentPhase:=CodeToolPhaseNone;
+  raise ExceptionClass.Create(Self,AMessage);
 end;
 
 function TCustomCodeTool.DefaultKeyWordFunc: boolean;

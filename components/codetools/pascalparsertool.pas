@@ -46,8 +46,6 @@ uses
   LinkScanner, CodeCache, AVL_Tree, TypInfo, SourceChanger;
 
 type
-  TOnParserProgress = procedure(Tool: TCustomCodeTool) of object;
-
   TProcHeadAttribute = (
       // extract attributes:
       phpWithStart,          // proc keyword e.g. 'function', 'class procedure'
@@ -100,13 +98,10 @@ type
     ExtractSearchPos: integer;
     ExtractFoundPos: integer;
     ExtractProcHeadPos: TProcHeadExtractPos;
-    FProgressCount: integer;
-    FOnParserProgress: TOnParserProgress;
     procedure RaiseCharExpectedButAtomFound(c: char);
     procedure RaiseStringExpectedButAtomFound(const s: string);
     procedure RaiseUnexpectedKeyWord;
     procedure RaiseIllegalQualifier;
-    procedure DoProgress;
   protected
     procedure InitExtraction;
     function GetExtraction: string;
@@ -187,7 +182,6 @@ type
     function CleanPosIsInComment(CleanPos, CleanCodePosInFront: integer;
         var CommentStart, CommentEnd: integer): boolean;
         
-    procedure BeginParsing(DeleteNodes, OnlyInterfaceNeeded: boolean); override;
     procedure BuildTree(OnlyInterfaceNeeded: boolean); virtual;
     procedure BuildTreeAndGetCleanPos(TreeRange: TTreeRange;
         CursorPos: TCodeXYPosition; var CleanCursorPos: integer;
@@ -253,13 +247,10 @@ type
     procedure MoveCursorToUsesEnd(UsesNode: TCodeTreeNode);
     procedure ReadPriorUsedUnit(var UnitNameAtom, InAtom: TAtomPosition);
     
-    property OnParserProgress: TOnParserProgress
-      read FOnParserProgress write FOnParserProgress;
-
     constructor Create;
     destructor Destroy; override;
   end;
-
+  
 const
   ProcHeadAttributeNames: array[TProcHeadAttribute] of string = (
       // extract attributes:
@@ -3161,14 +3152,6 @@ begin
   SaveRaiseExceptionFmt(ctsIllegalQualifier,[GetAtom]);
 end;
 
-procedure TPascalParserTool.DoProgress;
-begin
-  inc(FProgressCount);
-  if ((FProgressCount and $ff)<>0) then exit;
-  if Assigned(OnParserProgress) then
-    OnParserProgress(Self);
-end;
-
 procedure TPascalParserTool.InitExtraction;
 begin
   if ExtractMemStream=nil then
@@ -3731,13 +3714,6 @@ begin
     end;
     CleanCodePosInFront:=CurPos.EndPos;
   until CurPos.StartPos>=SrcLen;
-end;
-
-procedure TPascalParserTool.BeginParsing(DeleteNodes,
-  OnlyInterfaceNeeded: boolean);
-begin
-  inherited BeginParsing(DeleteNodes, OnlyInterfaceNeeded);
-  FProgressCount:=0;
 end;
 
 procedure TPascalParserTool.BuildTreeAndGetCleanPos(

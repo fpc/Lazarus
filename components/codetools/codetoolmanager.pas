@@ -117,7 +117,7 @@ type
     procedure OnToolSetWriteLock(Lock: boolean);
     procedure OnToolGetWriteLockInfo(var WriteLockIsSet: boolean;
       var WriteLockStep: integer);
-    procedure OnParserProgress(Tool: TCustomCodeTool);
+    function OnParserProgress(Tool: TCustomCodeTool): boolean;
     function GetResourceTool: TResourceCodeTool;
   public
     DefinePool: TDefinePool; // definition templates (rules)
@@ -1545,12 +1545,12 @@ begin
     Result:=nil;
 end;
 
-procedure TCodeToolManager.OnParserProgress(Tool: TCustomCodeTool);
+function TCodeToolManager.OnParserProgress(Tool: TCustomCodeTool): boolean;
 begin
+  Result:=false;
   if not FAbortable then exit;
   if not Assigned(OnCheckAbort) then exit;
-  if OnCheckAbort() then
-    raise ECodeToolAbort.Create('Abort');
+  Result:=not OnCheckAbort();
 end;
 
 function TCodeToolManager.OnScannerGetInitValues(Code: Pointer;

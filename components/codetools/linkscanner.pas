@@ -25,8 +25,7 @@
     macros and reads include files. It builds one source and a link list. The
     resulting source is called the cleaned source. A link points from a position
     of the cleaned source to its position in the real source.
-    The link list makes it possible to change scanned code in the original
-    files.
+    The link list makes it possible to change scanned code in the source files.
 
   ToDo:
     - macros
@@ -53,6 +52,8 @@ const
   MissingIncludeFileCode = 1;
 
 type
+  TLinkScanner = class;
+
 //----------------------------------------------------------------------------
   TOnGetSource = function(Sender: TObject; Code: Pointer): TSourceLog
                  of object;
@@ -93,8 +94,8 @@ type
   TCompilerMode = (cmFPC, cmDELPHI, cmGPC, cmTP, cmOBJFPC);
   TPascalCompiler = (pcFPC, pcDelphi);
 
-  { TMissingIncludeFile is used to a missing include file together with all
-    params needed to find it }
+  { TMissingIncludeFile is a missing include file together with all
+    params involved in the search }
   TMissingIncludeFile = class
   public
     IncludePath: string;
@@ -118,6 +119,22 @@ type
   TLSTokenType = (
     lsttNone, lsttSrcEnd, lsttIdentifier, lsttEqual, lsttPoint, lsttEnd,
     lsttEndOfInterface);
+
+  { Error handling }
+  ELinkScannerError = class(Exception)
+    Sender: TLinkScanner;
+    constructor Create(ASender: TLinkScanner; const AMessage: string);
+  end;
+  
+  ELinkScannerErrors = class of ELinkScannerError;
+  
+  TLinkScannerProgress = function(Sender: TLinkScanner): boolean;
+  
+  ELinkScannerAbort = class(ELinkScannerError)
+  end;
+
+
+  { TLinkScanner }
   
   TLinkScanner = class(TObject)
   private
@@ -131,6 +148,7 @@ type
     FOnCheckFileOnDisk: TOnCheckFileOnDisk;
     FOnGetInitValues: TOnGetInitValues;
     FOnIncludeCode: TOnIncludeCode;
+    FOnProgress: TLinkScannerProgress;
     FIgnoreErrorAfterCode: Pointer;
     FIgnoreErrorAfterCursorPos: integer;
     FInitValues: TExpressionEvaluator;
@@ -143,6 +161,7 @@ type
     FIgnoreMissingIncludeFiles: boolean;
     FNestedComments: boolean;
     FForceUpdateNeeded: boolean;
+    // global write lock
     FLastGlobalWriteLockStep: integer;
     FOnGetGlobalWriteLockInfo: TOnGetWriteLockInfo;
     FOnSetGlobalWriteLock: TOnSetWriteLock;
@@ -235,8 +254,11 @@ type
     CleanedIgnoreErrorAfterPosition: integer;
     procedure RaiseExceptionFmt(const AMessage: string; args: array of const);
     procedure RaiseException(const AMessage: string);
+    procedure RaiseExceptionClass(const AMessage: string;
+      ExceptionClass: ELinkScannerErrors);
     procedure ClearLastError;
     procedure RaiseLastError;
+    procedure DoCheckAbort;
   public
     // current values, positions, source, flags
     CleanedLen: integer;
@@ -317,6 +339,8 @@ type
         read FOnGetInitValues write FOnGetInitValues;
     property OnIncludeCode: TOnIncludeCode
         read FOnIncludeCode write FOnIncludeCode;
+    property OnProgress: TLinkScannerProgress
+        read FOnProgress write FOnProgress;
     property IgnoreMissingIncludeFiles: boolean
         read FIgnoreMissingIncludeFiles write SetIgnoreMissingIncludeFiles;
     property InitialValues: TExpressionEvaluator
@@ -336,11 +360,6 @@ type
     procedure WriteDebugReport;
     constructor Create;
     destructor Destroy; override;
-  end;
-
-  ELinkScannerError = class(Exception)
-    Sender: TLinkScanner;
-    constructor Create(ASender: TLinkScanner; const AMessage: string);
   end;
 
 //----------------------------------------------------------------------------
@@ -905,10 +924,13 @@ begin
 end;
 
 procedure TLinkScanner.Scan(TillInterfaceEnd, CheckFilesOnDisk: boolean);
-var LastTokenType: TLSTokenType;
+var
+  LastTokenType: TLSTokenType;
   cm: TCompilerMode;
   pc: TPascalCompiler;
   s: string;
+  LastProgressPos: integer;
+  CheckForAbort: boolean;
 begin
   if not UpdateNeeded(TillInterfaceEnd,CheckFilesOnDisk) then begin
     // input is the same as last time -> output is the same
@@ -964,11 +986,18 @@ begin
   InitKeyWordList;
   AddLink(1,SrcPos,Code);
   LastTokenType:=lsttNone;
+  LastProgressPos:=0;
+  CheckForAbort:=Assigned(OnProgress);
   {$IFDEF CTDEBUG}
   writeln('TLinkScanner.Scan F ',SrcLen);
   {$ENDIF}
   try
     repeat
+      // check every 10.000 bytes for abort
+      if CheckForAbort and ((LastProgressPos-LastCleanSrcPos)>10000) then begin
+        LastProgressPos:=LastCleanSrcPos;
+        DoCheckAbort;
+      end;
       ReadNextToken;
       //writeln('TLinkScanner.Scan G "',copy(Src,TokenStart,SrcPos-TokenStart),'"');
       UpdateCleanedSource(SrcPos-1);
@@ -989,12 +1018,14 @@ begin
     IncreaseChangeStep;
     FForceUpdateNeeded:=false;
   except
-    if (not IgnoreErrorAfterValid)
-    or (not IgnoreErrAfterPositionIsInFrontOfLastErrMessage) then
-      raise;
-    {$IFDEF ShowIgnoreErrorAfter}
-    writeln('TLinkScanner.Scan IGNORING ERROR: ',LastErrorMessage);
-    {$ENDIF}
+    on E: ELinkScannerError do begin
+      if (not IgnoreErrorAfterValid)
+      or (not IgnoreErrAfterPositionIsInFrontOfLastErrMessage) then
+        raise;
+      {$IFDEF ShowIgnoreErrorAfter}
+      writeln('TLinkScanner.Scan IGNORING ERROR: ',LastErrorMessage);
+      {$ENDIF}
+    end;
   end;
   {$IFDEF CTDEBUG}
   writeln('TLinkScanner.Scan END ',CleanedLen);
@@ -2651,11 +2682,17 @@ end;
 
 procedure TLinkScanner.RaiseException(const AMessage: string);
 begin
+  RaiseExceptionClass(AMessage,ELinkScannerError);
+end;
+
+procedure TLinkScanner.RaiseExceptionClass(const AMessage: string;
+  ExceptionClass: ELinkScannerErrors);
+begin
   LastErrorMessage:=AMessage;
   LastErrorSrcPos:=SrcPos;
   LastErrorCode:=Code;
   LastErrorCheckedForIgnored:=false;
-  raise ELinkScannerError.Create(Self,AMessage);
+  raise ExceptionClass.Create(Self,AMessage);
 end;
 
 procedure TLinkScanner.ClearLastError;
@@ -2669,6 +2706,16 @@ begin
   SrcPos:=LastErrorSrcPos;
   Code:=LastErrorCode;
   RaiseException(LastErrorMessage);
+end;
+
+procedure TLinkScanner.DoCheckAbort;
+begin
+  if not Assigned(OnProgress) then exit;
+  if OnProgress(Self) then exit;
+  // mark scanning results as invalid
+  FForceUpdateNeeded:=true;
+  // raise abort exception
+  RaiseExceptionClass('Abort',ELinkScannerAbort);
 end;
 
 { ELinkScannerError }
