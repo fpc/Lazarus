@@ -27,37 +27,40 @@ Type
     FUpDown : TCustomUpDown;
     FButtonType : TUDBtnType;
   Protected
-    Procedure Click; Override;
-    Procedure ButtonMouseDown(Sender: TObject; Button: TMouseButton;
+    procedure Click; Override;
+    procedure ButtonMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
-    Procedure ButtonMouseUp(Sender: TObject; Button: TMouseButton;
+    procedure ButtonMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
+    procedure DblClick(Sender: TObject);
   Public
     constructor CreateWithParams(UpDown : TCustomUpDown;
       ButtonType : TUDBtnType);
 
-    Procedure Paint; Override;
+    procedure Paint; Override;
   end;
 
-Procedure TUpDownButton.ButtonMouseDown(Sender: TObject; Button: TMouseButton;
+procedure TUpDownButton.ButtonMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-  With FUpDown do begin
-    BTimerProc := @Self.Click;
-    BTimerBounds := Bounds(Self.ClientOrigin.X, Self.ClientOrigin.Y,
-      Self.Width,Self.Height);
-    If Not Assigned(BTimer) then
-      BTimer := TTimer.Create(FUpDown);
-    With BTimer do begin
-      Enabled := False;
-      Interval := 100;
-      OnTimer := @BTimerExec;
-      Enabled := True;
+  if Button = mbLeft then begin
+    With FUpDown do begin
+      BTimerProc := @Self.Click;
+      BTimerBounds := Bounds(Self.ClientOrigin.X, Self.ClientOrigin.Y,
+        Self.Width,Self.Height);
+      If Not Assigned(BTimer) then
+        BTimer := TTimer.Create(FUpDown);
+      With BTimer do begin
+        Enabled := False;
+        Interval := 300;
+        OnTimer := @BTimerExec;
+        Enabled := True;
+      end;
     end;
   end;
 end;
 
-Procedure TUpDownButton.ButtonMouseUp(Sender: TObject; Button: TMouseButton;
+procedure TUpDownButton.ButtonMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
   With FUpDown do
@@ -69,7 +72,12 @@ begin
     end;
 end;
 
-Procedure TUpDownButton.Click;
+procedure TUpDownButton.DblClick(Sender: TObject);
+begin
+  Click;
+end;
+
+procedure TUpDownButton.Click;
 begin
   With FUpDown do begin
     If not CanChange then
@@ -112,6 +120,7 @@ begin
   ControlStyle := ControlStyle + [csNoFocus];
   OnMouseDown := @ButtonMouseDown;
   OnMouseUp := @ButtonMouseUp;
+  OnDblClick := @DblClick;
 end;
 
 Procedure TUpDownButton.Paint;
@@ -219,9 +228,12 @@ end;
 
 Procedure TCustomUpDown.BTimerExec(Sender : TObject);
 begin
-  If Assigned(BTimerProc) then
-    If PtInRect(BTimerBounds,Mouse.CursorPos) then
-      BTimerProc;
+  If Assigned(BTimerProc)
+     and PtInRect(BTimerBounds,Mouse.CursorPos) then begin
+    if TTimer(Sender).Interval > 100
+      then TTimer(Sender).Interval := TTimer(Sender).Interval - 25;
+    BTimerProc;
+  end;
 end;
 
 procedure TCustomUpDown.UpdateUpDownPositionText;
@@ -350,16 +362,24 @@ Procedure TCustomUpDown.AssociateKeyDown(Sender: TObject; var Key: Word;
 begin
   If Assigned(OldKeyDown) then
     OldKeyDown(Sender,Key,ShiftState);
-  If ArrowKeys then
-    If ShiftState = [] then
-      Case Key of
-        VK_Up,
-        VK_Right:
-          TCustomSpeedButton(MaxBtn).Click;
-        VK_Down,
-        VK_Left:
-          TCustomSpeedButton(MinBtn).Click;
-      end;
+  If ArrowKeys and (ShiftState = []) then begin
+    case FOrientation of
+      udVertical:
+        case Key of
+          VK_Up:
+            TCustomSpeedButton(MaxBtn).Click;
+          VK_Down:
+            TCustomSpeedButton(MinBtn).Click;
+        end;
+      udHorizontal:
+        case Key of
+          VK_Left:
+            TCustomSpeedButton(MinBtn).Click;
+          VK_Right:
+            TCustomSpeedButton(MaxBtn).Click;
+        end;
+    end;
+  end
 end;
 
 procedure TCustomUpDown.OnAssociateChangeBounds(Sender: TObject);
@@ -389,26 +409,22 @@ var
   InvalidNumber : Boolean;
 begin
   If Associate <> nil then begin
-    str := Associate.Text;
-    InvalidNumber := False;
+    str := Trim(Associate.Text);
+    InvalidNumber := str = '';
     For I := Length(str) downto 1 do
-      case str[I] of
-        ',' : Delete(Str,I,1);
-        '0'..'9':begin end;
-        else
-          InvalidNumber := True;
+      if str[I] = ThousandSeparator then
+        Delete(Str,I,1)
+      else if str[I] in ['0'..'9'] then
+      else begin
+        InvalidNumber := True;
+        Break;
       end;
     If not InvalidNumber then
       AV := SmallInt(TruncToInt(StrToFloat(str)))
     else begin
-      AV := FPosition;
-      Position := AV - 1;
-      Position := AV;
       Result := FPosition;
-      exit;
+      Exit;
     end;
-    If AV <> FPosition then
-      FPosition := AV - 1;
     If AV > FMax then
       AV := FMax;
     If AV < FMin then
@@ -484,4 +500,6 @@ begin
 end;
 
 // included by comctrls.pp
+
+
 
