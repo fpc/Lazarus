@@ -88,8 +88,8 @@ type
     
     function HashPaintMessage(p: pointer): integer;
     function FindPaintMessage(HandleWnd: HWnd): PLazQueueItem;
-    procedure SetCallback(Msg : LongInt; Sender : TObject); override;
-    procedure RemoveCallbacks(Sender : TObject); override;
+    procedure SetCallback(Msg : LongInt; Sender : TObject);
+    procedure RemoveCallbacks(Sender : TObject);
   protected
     Cursor_Watch    : pGDKCursor;
     Cursor_Arrow    : pGDKCursor;
@@ -325,6 +325,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.34  2002/03/29 19:11:38  lazarus
+  Added Triple Click
+  Shane
+
   Revision 1.33  2002/03/27 00:33:54  lazarus
   MWE:
     * Cleanup in lmessages
