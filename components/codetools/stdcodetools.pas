@@ -161,10 +161,20 @@ type
     function GetStringConstBounds(CursorPos: TCodeXYPosition;
       var StartPos, EndPos: TCodeXYPosition;
       ResolveComments: boolean): boolean;
+    function ReplaceCode(StartPos, EndPos: TCodeXYPosition;
+      const NewCode: string; SourceChangeCache: TSourceChangeCache): boolean;
           
     // resource strings
     function GatherResourceStringSections(CursorPos: TCodeXYPosition;
       PositionList: TCodeXYPositions): boolean;
+    function IdentifierExistsInResourceStringSection(CursorPos: TCodeXYPosition;
+      const ResStrIdentifier: string): boolean;
+    function CreateIdentifierFromStringConst(
+      const StartCursorPos, EndCursorPos: TCodeXYPosition;
+      var Identifier: string; MaxLen: integer): boolean;
+    function StringConstToFormatString(
+      const StartCursorPos, EndCursorPos: TCodeXYPosition;
+      var FormatStringConstant,FormatParameters: string): boolean;
   end;
 
 
@@ -1352,6 +1362,13 @@ begin
   Result:=true;
 end;
 
+function TStandardCodeTool.ReplaceCode(StartPos, EndPos: TCodeXYPosition;
+  const NewCode: string; SourceChangeCache: TSourceChangeCache): boolean;
+begin
+  Result:=false;
+  RaiseException('TStandardCodeTool.ReplaceCode not implemented yet');
+end;
+
 function TStandardCodeTool.GatherResourceStringSections(
   CursorPos: TCodeXYPosition; PositionList: TCodeXYPositions): boolean;
   
@@ -1429,6 +1446,195 @@ begin
     end;
   end;
   Result:=true;
+end;
+
+function TStandardCodeTool.IdentifierExistsInResourceStringSection(
+  CursorPos: TCodeXYPosition; const ResStrIdentifier: string): boolean;
+var
+  CleanCursorPos: integer;
+  ANode: TCodeTreeNode;
+begin
+  Result:=false;
+  if ResStrIdentifier='' then exit;
+  // parse source and find clean positions
+  BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos,[]);
+  // find resource string section
+  ANode:=FindDeepestNodeAtPos(CleanCursorPos,true);
+  if (ANode=nil) then exit;
+  ANode:=ANode.GetNodeOfType(ctnResStrSection);
+  if ANode=nil then exit;
+  // search identifier in section
+  ANode:=ANode.FirstChild;
+  while ANode<>nil do begin
+    if (ANode.Desc=ctnConstDefinition)
+    and CompareSrcIdentifier(ANode.StartPos,ResStrIdentifier) then begin
+      Result:=true;
+      exit;
+    end;
+    ANode:=ANode.NextBrother;
+  end;
+end;
+
+function TStandardCodeTool.CreateIdentifierFromStringConst(const StartCursorPos,
+  EndCursorPos: TCodeXYPosition; var Identifier: string;
+  MaxLen: integer): boolean;
+var
+  StartPos, EndPos: integer;
+  Dummy: Integer;
+  IdentStr: String;
+begin
+  Result:=false;
+  if MaxLen<=0 then exit;
+  // parse source and find clean positions
+  BuildTreeAndGetCleanPos(trAll,StartCursorPos,StartPos,[]);
+  Dummy:=CaretToCleanPos(EndCursorPos, EndPos);
+  if (Dummy<>0) and (Dummy<>-1) then exit;
+  // read string constants and extract identifier characters
+  Identifier:='';
+  MoveCursorToCleanPos(StartPos);
+  repeat
+    ReadNextAtom;
+    if CurPos.EndPos>EndPos then break;
+    if AtomIsStringConstant then begin
+      IdentStr:=ExtractIdentCharsFromStringConstant(CurPos.StartPos,
+                                                     MaxLen-length(Identifier));
+      if (Identifier<>'') and (IdentStr<>'') then
+        IdentStr[1]:=UpChars[IdentStr[1]];
+      Identifier:=Identifier+IdentStr;
+    end;
+  until length(Identifier)>=MaxLen;
+  Result:=Identifier<>'';
+end;
+
+function TStandardCodeTool.StringConstToFormatString(const StartCursorPos,
+  EndCursorPos: TCodeXYPosition; var FormatStringConstant,
+  FormatParameters: string): boolean;
+{ Converts a string constant into the parameters for a Format call of the
+  system unit.
+
+  Examples:
+  
+  'Hallo'           -> "Hallo", ""
+  'A'+IntToStr(1)   -> "A%s", "IntToStr(1)"
+  'A%B'#13#10       -> "A%sB%s", "'%', #13#10"
+}
+var
+  StartPos, EndPos: integer;
+
+  procedure AddChar(c: char);
+  begin
+    FormatStringConstant:=FormatStringConstant+c;
+  end;
+
+  procedure AddParameter(ParamStartPos,ParamEndPos: integer);
+  begin
+    FormatStringConstant:=FormatStringConstant+'%s';
+    if FormatParameters<>'' then
+      FormatParameters:=FormatParameters+',';
+    FormatParameters:=FormatParameters+
+                              copy(Src,ParamStartPos,ParamEndPos-ParamStartPos);
+  end;
+  
+  procedure ConvertStringConstant;
+  var
+    APos: Integer;
+    CharConstStart: Integer;
+  begin
+    APos:=CurPos.StartPos;
+    while APos<EndPos do begin
+      if Src[APos]='''' then begin
+        // read string constant
+        inc(APos);
+        while APos<EndPos do begin
+          case Src[APos] of
+          '''':
+            if (APos<EndPos-1) and (Src[APos+1]='''') then begin
+              // a double ' means a single '
+              AddChar('''');
+              AddChar('''');
+              inc(APos,2);
+            end else begin
+              // a single ' means end of string constant
+              inc(APos);
+              break;
+            end;
+          else
+            begin
+              // normal char
+              AddChar(Src[APos]);
+              inc(APos);
+            end;
+          end;
+        end;
+      end else if Src[APos]='#' then begin
+        CharConstStart:=APos;
+        repeat
+          // read char constant
+          inc(APos);
+          if APos<EndPos then begin
+            if IsNumberChar[Src[APos]] then begin
+              // read decimal number
+              while (APos<EndPos) and IsNumberChar[Src[APos]] do
+                inc(APos);
+            end else if Src[APos]='$' then begin
+              // read hexnumber
+              while (APos<EndPos) and IsHexNumberChar[Src[APos]] do
+                inc(APos);
+            end;
+          end;
+        until (APos>=EndPos) or (Src[APos]<>'#');
+        AddParameter(CharConstStart,APos);
+      end else
+        break;
+    end;
+  end;
+  
+  procedure ConvertOther;
+  var
+    ParamStartPos: Integer;
+    ParamEndPos: Integer;
+  begin
+    // read till next string constant
+    ParamStartPos:=CurPos.StartPos;
+    ParamEndPos:=ParamStartPos;
+    while (not AtomIsStringConstant) and (CurPos.EndPos<=EndPos) do begin
+      if CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen] then
+        ReadTilBracketClose(true);
+      if not AtomIsChar('+') then ParamEndPos:=CurPos.EndPos;
+      ReadNextAtom;
+    end;
+    if ParamEndPos>ParamStartPos then
+      AddParameter(ParamStartPos,ParamEndPos);
+    if AtomIsStringConstant then UndoReadNextAtom;
+  end;
+  
+var
+  Dummy: Integer;
+begin
+  Result:=false;
+  // parse source and find clean positions
+  BuildTreeAndGetCleanPos(trAll,StartCursorPos,StartPos,[]);
+  Dummy:=CaretToCleanPos(EndCursorPos, EndPos);
+  if (Dummy<>0) and (Dummy<>-1) then exit;
+  // read string constants and convert it
+  FormatStringConstant:='';
+  FormatParameters:='';
+  MoveCursorToCleanPos(StartPos);
+  if EndPos>SrcLen then EndPos:=SrcLen+1;
+  repeat
+    ReadNextAtom;
+    if (CurPos.EndPos>EndPos) then break;
+    if AtomIsStringConstant then begin
+      // a string constant
+      ConvertStringConstant;
+    end else if AtomIsChar('+') then begin
+      // simply ignore
+    end else begin
+      // add rest as parameter
+      ConvertOther;
+    end;
+  until false;
+  Result:=FormatStringConstant<>'';
 end;
 
 function TStandardCodeTool.FindPublishedVariable(const UpperClassName,

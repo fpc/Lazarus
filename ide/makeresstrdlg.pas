@@ -30,7 +30,7 @@
  
  Abstract:
    TMakeResStrDialog is the dialog to setup how to convert a string constant
-   into pascal resourcestrings.
+   into a pascal resourcestring.
  
 }
 unit MakeResStrDlg;
@@ -46,46 +46,80 @@ uses
   EditorOptions, InputHistory;
   
 type
+  TResourcestringInsertPolicy = (rsipAppend, rsipAlphabetically);
+
   TMakeResStrDialog = class(TForm)
-    MainNotebook: TNoteBook;
-    SourcePage: TPage;
-    IdentifierPage: TPage;
-    ResStrPage: TPage;
+    // source synedit
     StringConstGroupBox: TGroupBox;
     StringConstSynEdit: TSynEdit;
+    
+    // options
+    ConversionGroupBox: TGroupBox;
+    // identifier prefix
+    IdentPrefixLabel: TLabel;
+    IdentPrefixComboBox: TComboBox;
+    // identifier length
+    IdentLengthLabel: TLabel;
+    IdentLengthComboBox: TComboBox;
+    // identifier
+    CustomIdentifierCheckBox: TCheckBox;
+    IdentifierEdit: TEdit;
+    // resourcestring section
+    ResStrSectionLabel: TLabel;
+    ResStrSectionComboBox: TComboBox;
+    // insert position type
+    AppendResStrRadioButton: TRadioButton;
+    InsertAlphabeticallyResStrRadioButton: TRadioButton;
+    
+    // preview
     SrcPreviewGroupBox: TGroupBox;
     SrcPreviewSynEdit: TSynEdit;
-    IdentPrefixGroupBox: TGroupBox;
-    IdentPrefixComboBox: TComboBox;
-    IdentifierListView: TListView;
-    ResStrSectionGroupBox: TGroupBox;
-    ResStrSectionComboBox: TComboBox;
-    InsertPositionRadioGroup: TRadioGroup;
-    ResStrPreviewGroupBox: TGroupBox;
-    ResStrPreviewSynEdit: TSynEdit;
+
+    // ok+cancel buttons
     OkButton: TButton;
     CancelButton: TButton;
+
+    // highlighter
     SynPasSyn: TSynPasSyn;
+    
     procedure CancelButtonClick(Sender: TObject);
-    procedure IdentPrefixGroupBoxResize(Sender: TObject);
-    procedure IdentifierPageResize(Sender: TObject);
+    procedure ConversionGroupBoxResize(Sender: TObject);
+    procedure CustomIdentifierCheckBoxClick(Sender: TObject);
+    procedure IdentLengthComboBoxChange(Sender: TObject);
+    procedure IdentPrefixComboBoxChange(Sender: TObject);
+    procedure IdentifierEditChange(Sender: TObject);
     procedure MakeResStrDialogResize(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
-    procedure ResStrPageResize(Sender: TObject);
-    procedure ResStrSectionGroupBoxResize(Sender: TObject);
-    procedure SourcePageResize(Sender: TObject);
+    procedure ResStrSectionComboBoxChange(Sender: TObject);
   private
     procedure SetupComponents;
   public
+    DefaultIdentifier: string;
+    Code: TCodeBuffer;
+    StartPos, EndPos: TPoint;
+    Positions: TCodeXYPositions;
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
-    procedure FillResourceStringSections(Positions: TCodeXYPositions);
+    procedure FillResourceStringSections(NewPositions: TCodeXYPositions);
     procedure FillIdentPrefixes;
+    procedure FillIdentLengths;
+    procedure UpdateIdentifier;
+    procedure UpdateSourcePreview;
+    function GetIdentifier: string;
+    function GetDefaultIdentifier: string;
+    procedure SetSource(NewCode: TCodeBuffer;
+      const NewStartPos, NewEndPos: TPoint);
+    function ResourceStringExists(const Identifier: string): boolean;
+    function GetNewSource: string;
   end;
   
 function ShowMakeResStrDialog(
   const StartPos, EndPos: TPoint; Code: TCodeBuffer;
-  Positions: TCodeXYPositions): TModalResult;
+  Positions: TCodeXYPositions;
+  var NewIdentifier: string;
+  var NewSourceLines: string;
+  var ResourcestringSection: integer;
+  var InsertPolicy: TResourcestringInsertPolicy): TModalResult;
   
 
 implementation
@@ -95,142 +129,208 @@ uses
 
 function ShowMakeResStrDialog(
   const StartPos, EndPos: TPoint; Code: TCodeBuffer;
-  Positions: TCodeXYPositions): TModalResult;
+  Positions: TCodeXYPositions;
+  var NewIdentifier: string;
+  var NewSourceLines: string;
+  var ResourcestringSection: integer;
+  var InsertPolicy: TResourcestringInsertPolicy): TModalResult;
 var
   MakeResStrDialog: TMakeResStrDialog;
 begin
   MakeResStrDialog:=TMakeResStrDialog.Create(Application);
+  MakeResStrDialog.SetSource(Code,StartPos,EndPos);
   // string constant
   MakeResStrDialog.StringConstSynEdit.Text:=Code.GetLines(StartPos.Y,EndPos.Y);
   // reachable resourcestring sections
   MakeResStrDialog.FillResourceStringSections(Positions);
   // identifier prefixes
   MakeResStrDialog.FillIdentPrefixes;
-  // identifiers and values
-  // ToDo
-  // resourcestrings
-  // ToDo
-  // new source
-  // ToDo
-  
+  // identifier lengths
+  MakeResStrDialog.FillIdentLengths;
+  // identifier
+  MakeResStrDialog.CustomIdentifierCheckBox.Checked:=false;
+  CodeToolBoss.CreateIdentifierFromStringConst(Code,StartPos.X,StartPos.Y,
+     Code,EndPos.X,EndPos.Y,MakeResStrDialog.DefaultIdentifier,50);
+  MakeResStrDialog.UpdateIdentifier;
+  // show new source
+  MakeResStrDialog.UpdateSourcePreview;
+
+  // show dialog
   Result:=MakeResStrDialog.ShowModal;
+  if Result=mrOk then begin
+    // return results
+    NewIdentifier:=MakeResStrDialog.GetIdentifier;
+    ResourcestringSection:=MakeResStrDialog.ResStrSectionComboBox.ItemIndex;
+    NewSourceLines:=MakeResStrDialog.GetNewSource;
+    if MakeResStrDialog.InsertAlphabeticallyResStrRadioButton.Checked then
+      InsertPolicy:=rsipAlphabetically
+    else
+      InsertPolicy:=rsipAppend;
+  end;
+
+  // save settings and clean up
   IDEDialogLayoutList.SaveLayout(MakeResStrDialog);
   MakeResStrDialog.Free;
 end;
 
 { TMakeResStrDialog }
 
-procedure TMakeResStrDialog.MakeResStrDialogResize(Sender: TObject);
-begin
-  with MainNotebook do begin
-    SetBounds(0,0,Parent.ClientWidth,Parent.ClientHeight-45);
-  end;
-
-  with OkButton do begin
-    SetBounds(Parent.ClientWidth-200,Parent.ClientHeight-35,80,25);
-  end;
-
-  with CancelButton do begin
-    SetBounds(OkButton.Left+100,OkButton.Top,OkButton.Width,OkButton.Height);
-  end;
-end;
-
 procedure TMakeResStrDialog.CancelButtonClick(Sender: TObject);
 begin
   ModalResult:=mrCancel;
 end;
 
-procedure TMakeResStrDialog.IdentPrefixGroupBoxResize(Sender: TObject);
+procedure TMakeResStrDialog.ConversionGroupBoxResize(Sender: TObject);
 begin
+  // identifier prefix
+  with IdentPrefixLabel do begin
+    SetBounds(2,6,150,Height);
+  end;
+
   with IdentPrefixComboBox do begin
-    SetBounds(0,0,Parent.ClientWidth,Height);
+    SetBounds(IdentPrefixLabel.Left+IdentPrefixLabel.Width+5,
+              IdentPrefixLabel.Top-4,
+              100,Height);
+  end;
+
+  // identifier length
+  with IdentLengthLabel do begin
+    SetBounds(IdentPrefixComboBox.Left+IdentPrefixComboBox.Width+60,
+              IdentPrefixLabel.Top,100,Height);
+  end;
+
+  with IdentLengthComboBox do begin
+    SetBounds(IdentLengthLabel.Left+IdentLengthLabel.Width+5,
+              IdentPrefixComboBox.Top,
+              Min(Parent.ClientWidth-Left-5,50),Height);
+  end;
+
+  // identifier
+  with CustomIdentifierCheckBox do begin
+    SetBounds(IdentPrefixLabel.Left,
+              IdentPrefixComboBox.Top+IdentPrefixComboBox.Height+5,
+              150,Height);
+  end;
+
+  with IdentifierEdit do begin
+    SetBounds(CustomIdentifierCheckBox.Left+CustomIdentifierCheckBox.Width+5,
+              CustomIdentifierCheckBox.Top,
+              Parent.ClientWidth-Left-5,Height);
+  end;
+
+  // resourcestring section
+  with ResStrSectionLabel do begin
+    SetBounds(IdentPrefixLabel.Left,
+              IdentifierEdit.Top+IdentifierEdit.Height+9,
+              150,Height);
+  end;
+
+  with ResStrSectionComboBox do begin
+    SetBounds(ResStrSectionLabel.Left+ResStrSectionLabel.Width+5,
+              IdentifierEdit.Top+IdentifierEdit.Height+5,
+              Parent.ClientWidth-Left-5,Height);
+  end;
+
+  // insert position type
+  with AppendResStrRadioButton do begin
+    SetBounds(IdentPrefixLabel.Left,
+              ResStrSectionComboBox.Top+ResStrSectionComboBox.Height+7,
+              Min((Parent.ClientWidth-3*Left) div 2,150),Height);
+  end;
+
+  with InsertAlphabeticallyResStrRadioButton do begin
+    SetBounds(AppendResStrRadioButton.Left+AppendResStrRadioButton.Width+5,
+              AppendResStrRadioButton.Top,
+              Parent.ClientWidth-Left-5,Height);
   end;
 end;
 
-procedure TMakeResStrDialog.IdentifierPageResize(Sender: TObject);
+procedure TMakeResStrDialog.CustomIdentifierCheckBoxClick(Sender: TObject);
+begin
+  UpdateIdentifier;
+end;
+
+procedure TMakeResStrDialog.IdentLengthComboBoxChange(Sender: TObject);
+begin
+  UpdateIdentifier;
+  UpdateSourcePreview;
+end;
+
+procedure TMakeResStrDialog.IdentPrefixComboBoxChange(Sender: TObject);
+begin
+  UpdateIdentifier;
+  UpdateSourcePreview;
+end;
+
+procedure TMakeResStrDialog.IdentifierEditChange(Sender: TObject);
+begin
+  UpdateIdentifier;
+  UpdateSourcePreview;
+end;
+
+procedure TMakeResStrDialog.MakeResStrDialogResize(Sender: TObject);
 var
   NewTop: Integer;
 begin
-  with IdentPrefixGroupBox do begin
-    SetBounds(0,0,Parent.ClientWidth,50);
+  // source synedit
+  with StringConstGroupBox do begin
+    SetBounds(2,2,Parent.ClientWidth-2*Left,Parent.ClientHeight div 4);
   end;
 
-  with IdentifierListView do begin
-    NewTop:=IdentPrefixGroupBox.Top+IdentPrefixGroupBox.Height+5;
-    SetBounds(0,NewTop,Parent.ClientWidth,Parent.ClientHeight-NewTop);
+  // options
+  with ConversionGroupBox do begin
+    SetBounds(StringConstGroupBox.Left,
+              StringConstGroupBox.Top+StringConstGroupBox.Height+5,
+              StringConstGroupBox.Width,140);
+  end;
+
+  // preview
+  with SrcPreviewGroupBox do begin
+    NewTop:=ConversionGroupBox.Top+ConversionGroupBox.Height+5;
+    SetBounds(ConversionGroupBox.Left,NewTop,
+              ConversionGroupBox.Width,Parent.ClientHeight-NewTop-50);
+  end;
+
+  // ok+cancel buttons
+  with OkButton do begin
+    SetBounds(Parent.ClientWidth-200,Parent.ClientHeight-35,
+              Width,Height);
+  end;
+
+  with CancelButton do begin
+    SetBounds(OkButton.Left+OkButton.Width+10,OkButton.Top,Width,Height);
   end;
 end;
 
 procedure TMakeResStrDialog.OkButtonClick(Sender: TObject);
+var
+  Index: Integer;
 begin
+  Index:=ResStrSectionComboBox.ItemIndex;
+  if (Index<0) or (Index>=Positions.Count) then begin
+    MessageDlg('Invalid Resourcestring section',
+      'Please choose a resourstring section from the list.',
+      mtError,[mbCancel],0);
+    exit;
+  end;
   ModalResult:=mrOk;
 end;
 
-procedure TMakeResStrDialog.ResStrPageResize(Sender: TObject);
-var
-  NewTop: Integer;
+procedure TMakeResStrDialog.ResStrSectionComboBoxChange(Sender: TObject);
 begin
-  with ResStrSectionGroupBox do begin
-    SetBounds(0,0,Parent.ClientWidth,50);
-  end;
-
-  with InsertPositionRadioGroup do begin
-    SetBounds(0,ResStrSectionGroupBox.Top+ResStrSectionGroupBox.Height+5,
-              Parent.ClientWidth,50);
-  end;
-
-  with ResStrPreviewGroupBox do begin
-    NewTop:=InsertPositionRadioGroup.Top+InsertPositionRadioGroup.Height+5;
-    SetBounds(0,NewTop,
-              Parent.ClientWidth,Max(Parent.ClientHeight-NewTop,5));
-  end;
-end;
-
-procedure TMakeResStrDialog.ResStrSectionGroupBoxResize(Sender: TObject);
-begin
-  with ResStrSectionComboBox do begin
-    SetBounds(0,0,Parent.ClientWidth,Height);
-  end;
-end;
-
-procedure TMakeResStrDialog.SourcePageResize(Sender: TObject);
-var
-  NewTop: Integer;
-begin
-  with StringConstGroupBox do begin
-    SetBounds(0,0,Parent.ClientWidth,(Parent.ClientHeight div 2)-5);
-  end;
-
-  with SrcPreviewGroupBox do begin
-    NewTop:=StringConstGroupBox.Top+StringConstGroupBox.Height+5;
-    SetBounds(StringConstGroupBox.Left,NewTop,
-              StringConstGroupBox.Width,Parent.ClientHeight-NewTop);
-  end;
+  UpdateIdentifier;
+  UpdateSourcePreview;
 end;
 
 procedure TMakeResStrDialog.SetupComponents;
 begin
   SynPasSyn:=TSynPasSyn.Create(Self);
 
-  MainNotebook:=TNoteBook.Create(Self);
-  with MainNotebook do begin
-    Name:='MainNotebook';
-    Parent:=Self;
-    Pages.Add('Source');
-    Pages.Add('Identifiers');
-    Pages.Add('ResourceStrings');
-    SourcePage:=Page[0];
-    IdentifierPage:=Page[1];
-    ResStrPage:=Page[2];
-  end;
-  SourcePage.OnResize:=@SourcePageResize;
-  IdentifierPage.OnResize:=@IdentifierPageResize;
-  ResStrPage.OnResize:=@ResStrPageResize;
-
+  // source
   StringConstGroupBox:=TGroupBox.Create(Self);
   with StringConstGroupBox do begin
     Name:='StringConstGroupBox';
-    Parent:=SourcePage;
+    Parent:=Self;
     Caption:='String Constant in source';
   end;
   
@@ -242,10 +342,98 @@ begin
     Highlighter:=SynPasSyn;
   end;
 
+  // conversion options
+  ConversionGroupBox:=TGroupBox.Create(Self);
+  with ConversionGroupBox do begin
+    Name:='ConversionGroupBox';
+    Parent:=Self;
+    Caption:='Conversion Options';
+    OnResize:=@ConversionGroupBoxResize;
+  end;
+
+  // identifier prefix
+  IdentPrefixLabel:=TLabel.Create(Self);
+  with IdentPrefixLabel do begin
+    Name:='IdentPrefixLabel';
+    Parent:=ConversionGroupBox;
+    Caption:='Identifier Prefix:';
+  end;
+
+  IdentPrefixComboBox:=TComboBox.Create(Self);
+  with IdentPrefixComboBox do begin
+    Name:='IdentPrefixComboBox';
+    Parent:=ConversionGroupBox;
+    OnChange:=@IdentPrefixComboBoxChange;
+  end;
+
+  // identifier length
+  IdentLengthLabel:=TLabel.Create(Self);
+  with IdentLengthLabel do begin
+    Name:='IdentLengthLabel';
+    Parent:=ConversionGroupBox;
+    Caption:='Identifier Length:';
+  end;
+
+  IdentLengthComboBox:=TComboBox.Create(Self);
+  with IdentLengthComboBox do begin
+    Name:='IdentLengthComboBox';
+    Parent:=ConversionGroupBox;
+    OnChange:=@IdentLengthComboBoxChange;
+  end;
+
+  // custom identifier
+  CustomIdentifierCheckBox:=TCheckBox.Create(Self);
+  with CustomIdentifierCheckBox do begin
+    Name:='CustomIdentifierCheckBox';
+    Parent:=ConversionGroupBox;
+    Caption:='Custom Identifier';
+    Checked:=false;
+    OnClick:=@CustomIdentifierCheckBoxClick;
+  end;
+  
+  IdentifierEdit:=TEdit.Create(Self);
+  with IdentifierEdit do begin
+    Name:='IdentifierEdit';
+    Parent:=ConversionGroupBox;
+    Enabled:=false;
+    OnChange:=@IdentifierEditChange;
+  end;
+  
+  // resourcestring section
+  ResStrSectionLabel:=TLabel.Create(Self);
+  with ResStrSectionLabel do begin
+    Name:='ResStrSectionLabel';
+    Parent:=ConversionGroupBox;
+    Caption:='Resourcestring Section:';
+  end;
+
+  ResStrSectionComboBox:=TComboBox.Create(Self);
+  with ResStrSectionComboBox do begin
+    Name:='ResStrSectionComboBox';
+    Parent:=ConversionGroupBox;
+    OnChange:=@ResStrSectionComboBoxChange;
+  end;
+
+  // insert position type
+  AppendResStrRadioButton:=TRadioButton.Create(Self);
+  with AppendResStrRadioButton do begin
+    Name:='AppendResStrRadioButton';
+    Parent:=ConversionGroupBox;
+    Caption:='Append to section';
+  end;
+
+  InsertAlphabeticallyResStrRadioButton:=TRadioButton.Create(Self);
+  with InsertAlphabeticallyResStrRadioButton do begin
+    Name:='InsertAlphabeticallyResStrRadioButton';
+    Parent:=ConversionGroupBox;
+    Caption:='Insert alphabetically';
+  end;
+
+  // converted source preview
   SrcPreviewGroupBox:=TGroupBox.Create(Self);
   with SrcPreviewGroupBox do begin
     Name:='SrcPreviewGroupBox';
-    Parent:=SourcePage;
+    Parent:=Self;
     Caption:='Source preview';
   end;
 
@@ -257,66 +445,7 @@ begin
     Highlighter:=SynPasSyn;
   end;
 
-  IdentPrefixGroupBox:=TGroupBox.Create(Self);
-  with IdentPrefixGroupBox do begin
-    Name:='IdentPrefixGroupBox';
-    Parent:=IdentifierPage;
-    Caption:='Identifier Prefix';
-    OnResize:=@IdentPrefixGroupBoxResize;
-  end;
-  
-  IdentPrefixComboBox:=TComboBox.Create(Self);
-  with IdentPrefixComboBox do begin
-    Name:='IdentPrefixComboBox';
-    Parent:=IdentPrefixGroupBox;
-  end;
-
-  IdentifierListView:=TListView.Create(Self);
-  with IdentifierListView do begin
-    Name:='IdentifierListView';
-    Parent:=IdentifierPage;
-  end;
-  
-  ResStrSectionGroupBox:=TGroupBox.Create(Self);
-  with ResStrSectionGroupBox do begin
-    Name:='ResStrSectionGroupBox';
-    Parent:=ResStrPage;
-    OnResize:=@ResStrSectionGroupBoxResize;
-  end;
-
-  ResStrSectionComboBox:=TComboBox.Create(Self);
-  with ResStrSectionComboBox do begin
-    Name:='ResStrSectionComboBox';
-    Parent:=ResStrSectionGroupBox;
-  end;
-
-  InsertPositionRadioGroup:=TRadioGroup.Create(Self);
-  with InsertPositionRadioGroup do begin
-    Name:='InsertPositionRadioGroup';
-    Parent:=ResStrPage;
-    Caption:='Insert Position';
-    with Items do begin
-      Add('Alphabetical');
-      Add('Append');
-    end;
-    Columns:=2;
-  end;
-  
-  ResStrPreviewGroupBox:=TGroupBox.Create(Self);
-  with ResStrPreviewGroupBox do begin
-    Name:='ResStrPreviewGroupBox';
-    Parent:=ResStrPage;
-    Caption:='ResourceStrings preview';
-  end;
-
-  ResStrPreviewSynEdit:=TSynEdit.Create(Self);
-  with ResStrPreviewSynEdit do begin
-    Name:='ResStrPreviewSynEdit';
-    Parent:=ResStrPreviewGroupBox;
-    Align:=alClient;
-    Highlighter:=SynPasSyn;
-  end;
-
+  // ok+cancel buttons
   OkButton:=TButton.Create(Self);
   with OkButton do begin
     Name:='OkButton';
@@ -339,7 +468,7 @@ begin
   inherited Create(TheOwner);
   if LazarusResources.Find(Classname)=nil then begin
     Name:='MakeResStrDialog';
-    Caption := 'Make ResourceStrings';
+    Caption := 'Make ResourceString';
     Width:=550;
     Height:=400;
     Position:=poScreenCenter;
@@ -351,10 +480,10 @@ begin
   EditorOpts.GetHighlighterSettings(SynPasSyn);
   EditorOpts.GetSynEditSettings(StringConstSynEdit);
   StringConstSynEdit.ReadOnly:=true;
+  StringConstSynEdit.Gutter.Visible:=false;
   EditorOpts.GetSynEditSettings(SrcPreviewSynEdit);
   SrcPreviewSynEdit.ReadOnly:=true;
-  EditorOpts.GetSynEditSettings(ResStrPreviewSynEdit);
-  ResStrPreviewSynEdit.ReadOnly:=true;
+  SrcPreviewSynEdit.Gutter.Visible:=false;
 end;
 
 destructor TMakeResStrDialog.Destroy;
@@ -363,12 +492,13 @@ begin
 end;
 
 procedure TMakeResStrDialog.FillResourceStringSections(
-  Positions: TCodeXYPositions);
+  NewPositions: TCodeXYPositions);
 var
   i: Integer;
   p: PCodeXYPosition;
   s: String;
 begin
+  Positions:=NewPositions;
   // the history list contains the filenames plus the
   with ResStrSectionComboBox do begin
     Text:='';
@@ -401,6 +531,122 @@ begin
   else
     IdentPrefixComboBox.Text:='rs';
 end;
+
+procedure TMakeResStrDialog.FillIdentLengths;
+var
+  HistoryList: THistoryList;
+begin
+  // get the Length history list
+  HistoryList:=
+    InputHistories.HistoryLists.GetList(hlMakeResourceStringLengths,true);
+  IdentLengthComboBox.Items.Assign(HistoryList);
+  if IdentLengthComboBox.Items.Count>0 then
+    IdentLengthComboBox.Text:=IdentLengthComboBox.Items[0]
+  else begin
+    with IdentLengthComboBox.Items do begin
+      Add('8');
+      Add('12');
+      Add('20');
+      Add('50');
+    end;
+    IdentLengthComboBox.Text:='12';
+  end;
+end;
+
+procedure TMakeResStrDialog.UpdateIdentifier;
+var
+  CustomIdent: Boolean;
+begin
+  CustomIdent:=CustomIdentifierCheckBox.Checked;
+  IdentifierEdit.Enabled:=CustomIdent;
+  IdentPrefixLabel.Enabled:=not CustomIdent;
+  IdentPrefixComboBox.Enabled:=not CustomIdent;
+  IdentLengthLabel.Enabled:=not CustomIdent;
+  IdentLengthComboBox.Enabled:=not CustomIdent;
+  if not CustomIdent then
+    IdentifierEdit.Text:=GetDefaultIdentifier;
+end;
+
+procedure TMakeResStrDialog.UpdateSourcePreview;
+begin
+  SrcPreviewSynEdit.Text:=GetNewSource;
+end;
+
+function TMakeResStrDialog.GetIdentifier: string;
+begin
+  Result:=IdentifierEdit.Text;
+  if Result='' then Result:=GetDefaultIdentifier;
+end;
+
+function TMakeResStrDialog.GetDefaultIdentifier: string;
+var
+  DefIdenLength: Integer;
+  i: Integer;
+begin
+  DefIdenLength:=StrToIntDef(IdentLengthComboBox.Text,8);
+  if DefIdenLength<1 then DefIdenLength:=1;
+  if DefIdenLength>80 then DefIdenLength:=80;
+  Result:=IdentPrefixComboBox.Text+copy(DefaultIdentifier,1,DefIdenLength);
+  if ResourceStringExists(Result) then begin
+    i:=2;
+    while ResourceStringExists(Result+IntToStr(i)) do inc(i);
+    Result:=Result++IntToStr(i);
+  end;
+end;
+
+procedure TMakeResStrDialog.SetSource(NewCode: TCodeBuffer; const NewStartPos,
+  NewEndPos: TPoint);
+begin
+  Code:=NewCode;
+  StartPos:=NewStartPos;
+  EndPos:=NewEndPos;
+end;
+
+function TMakeResStrDialog.ResourceStringExists(const Identifier: string
+  ): boolean;
+var
+  CodeXY: PCodeXYPosition;
+  Index: Integer;
+begin
+  Result:=false;
+  Index:=ResStrSectionComboBox.ItemIndex;
+  if (Index<0) or (Index>=Positions.Count) then exit;
+  CodeXY:=Positions.Items[Index];
+  Result:=CodeToolBoss.IdentifierExistsInResourceStringSection(
+                                CodeXY^.Code,CodeXY^.X,CodeXY^.Y,Identifier);
+end;
+
+function TMakeResStrDialog.GetNewSource: string;
+var
+  FormatStringConstant: string;
+  FormatParameters: string;
+  NewSource: String;
+  LeftSide: String;
+  LastLine: string;
+  NewString: String;
+  RightSide: String;
+begin
+  if not CodeToolBoss.StringConstToFormatString(Code,StartPos.X,StartPos.Y,
+     Code,EndPos.X,EndPos.Y,FormatStringConstant,FormatParameters)
+  then begin
+    SrcPreviewSynEdit.Text:='Error:'#13+CodeToolBoss.ErrorMessage;
+    exit;
+  end;
+  if FormatParameters='' then
+    NewString:=GetIdentifier
+  else
+    NewString:='Format('+GetIdentifier+',['+FormatParameters+'])';
+  LeftSide:=copy(StringConstSynEdit.Lines[0],1,StartPos.X-1);
+  LastLine:=StringConstSynEdit.Lines[EndPos.Y-StartPos.Y];
+  RightSide:=copy(LastLine,EndPos.X,length(LastLine)-EndPos.X+1);
+
+  NewSource:=LeftSide+NewString+RightSide;
+  with CodeToolBoss.SourceChangeCache.BeautifyCodeOptions do
+    NewSource:=BeautifyStatement(NewSource,Indent);
+
+  Result:=NewSource;
+end;
+
 
 end.
 

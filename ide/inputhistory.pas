@@ -45,6 +45,7 @@ const
   hlPublishProjectExcludeFileFilter = 'PublishProjectExcludeFileFilter';
   hlMakeResourceStringSections = 'MakeResourceStringSections';
   hlMakeResourceStringPrefixes = 'MakeResourceStringPrefixes';
+  hlMakeResourceStringLengths = 'MakeResourceStringLengths';
 
 type
   TFileDialogSettings = record

@@ -242,6 +242,10 @@ type
     function ExtractProperty(PropNode: TCodeTreeNode;
         Attr: TProcHeadAttributes): string;
     function GetPropertyNameIdentifier(PropNode: TCodeTreeNode): PChar;
+    
+    function ExtractIdentCharsFromStringConstant(
+        StartPos, MaxLen: integer): string;
+    function ReadStringConstantValue(StartPos: integer): string;
 
     function FindVarNode(StartNode: TCodeTreeNode;
         const UpperVarName: string): TCodeTreeNode;
@@ -4241,6 +4245,120 @@ begin
   ReadNextAtom; // read 'propery'
   ReadNextAtom; // read name
   Result:=@Src[CurPos.StartPos];
+end;
+
+function TPascalParserTool.ExtractIdentCharsFromStringConstant(
+  StartPos, MaxLen: integer): string;
+var
+  APos: Integer;
+  IdentStartPos: Integer;
+  IdentStr: String;
+begin
+  Result:='';
+  APos:=StartPos;
+  while APos<SrcLen do begin
+    if (Src[APos]='#') then begin
+      // skip char constant
+      inc(APos);
+      if IsNumberChar[Src[APos]] then begin
+        while (APos<CurPos.EndPos) and IsNumberChar[Src[APos]] do
+          inc(APos)
+      end else if Src[APos]='$' then begin
+        while (APos<CurPos.EndPos) and IsHexNumberChar[Src[APos]] do
+          inc(APos);
+      end;
+    end else if (Src[APos]='''') then begin
+      inc(APos);
+      repeat
+        // read identifier chars
+        IdentStartPos:=APos;
+        while (IdentStartPos<SrcLen) and (IsIdentChar[Src[IdentStartPos]]) do
+          inc(IdentStartPos);
+        if IdentStartPos>APos then begin
+          if IdentStartPos-APos+length(Result)>MaxLen then
+            IdentStartPos:=APos+MaxLen-length(Result);
+          IdentStr:=copy(Src,APos,IdentStartPos-APos);
+          if (Result<>'') and (IdentStr<>'') then
+            IdentStr[1]:=UpChars[IdentStr[1]];
+          Result:=Result+IdentStr;
+        end;
+        APos:=IdentStartPos;
+        // skip non identifier chars
+        while (APos<SrcLen) and (Src[APos]<>'''')
+        and (not IsIdentChar[Src[APos]])
+        do
+          inc(APos);
+      until (APos>=SrcLen) or (Src[APos]='''') or (length(Result)>=MaxLen);
+      inc(APos);
+    end else
+      break;
+  end;
+end;
+
+function TPascalParserTool.ReadStringConstantValue(StartPos: integer): string;
+// reads a string constant and returns the resulting string
+var
+  APos: Integer;
+  Run: Integer;
+  NumberStart: Integer;
+  ResultLen: Integer;
+  Number: Integer;
+begin
+  Result:='';
+  // first read and calculate the resulting length, then copy the chars
+  for Run:=1 to 2 do begin
+    APos:=StartPos;
+    ResultLen:=0;
+    while APos<=SrcLen do begin
+      if Src[APos]='''' then begin
+        // read string
+        inc(APos);
+        while APos<=SrcLen do begin
+          if (Src[APos]='''') then begin
+            if (APos<SrcLen) and (Src[APos+1]='''') then begin
+              // a double ' means a single '
+              inc(ResultLen);
+              if Run=2 then Result[ResultLen]:='''';
+              inc(APos,2);
+            end else begin
+              // a single ' means end of string constant
+              inc(APos);
+              break;
+            end;
+          end else begin
+            // normal char
+            inc(ResultLen);
+            if Run=2 then Result[ResultLen]:=Src[APos];
+            inc(APos);
+          end;
+        end;
+      end else if Src[APos]='#' then begin
+        // read char constant
+        inc(APos);
+        NumberStart:=APos;
+        if APos<=SrcLen then begin
+          if IsNumberChar[Src[APos]] then begin
+            // read decimal number
+            while (APos<=SrcLen) and IsNumberChar[Src[APos]] do
+              inc(APos);
+            Number:=StrToIntDef(copy(Src,NumberStart,APos-NumberStart),-1);
+          end else if Src[APos]='$' then begin
+            // read hexnumber
+            while (APos<=SrcLen) and IsHexNumberChar[Src[APos]] do
+              inc(APos);
+            Number:=StrToIntDef(copy(Src,NumberStart,APos-NumberStart),-1);
+          end else
+            Number:=-1;
+          // add special character
+          if (Number<0) or (Number>255) then break;
+          inc(ResultLen);
+          if Run=2 then Result[ResultLen]:=chr(Number);
+        end;
+      end else
+        break;
+    end;
+    if Run=1 then SetLength(Result,ResultLen);
+  end;
 end;
 
 function TPascalParserTool.ClassSectionNodeStartsWithWord(

@@ -795,7 +795,9 @@ begin
   and (FIgnoreFileDateOnDisk=Source.FileDateOnDisk) then
     Result:=false;
   if (not IsVirtual) and FileExists(Filename) then
-    FileReadOnly:=FileIsWritable(Filename);
+    FileReadOnly:=not FileIsWritable(Filename)
+  else
+    FileReadOnly:=false;
 end;
 
 procedure TUnitInfo.IgnoreCurrentFileDateOnDisk;
@@ -2243,6 +2245,9 @@ end.
 
 {
   $Log$
+  Revision 1.97  2003/03/08 21:51:57  mattias
+  make resource string dialog nearly complete
+
   Revision 1.96  2003/03/07 13:32:40  mattias
   fixed checking readonly for non existing files
 

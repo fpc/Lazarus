@@ -241,12 +241,24 @@ type
     // resource string sections
     function GatherResourceStringSections(
           Code: TCodeBuffer; X,Y: integer): boolean;
+    function IdentifierExistsInResourceStringSection(Code: TCodeBuffer;
+          X,Y: integer; const ResStrIdentifier: string): boolean;
+    function CreateIdentifierFromStringConst(
+          StartCode: TCodeBuffer; StartX, StartY: integer;
+          EndCode: TCodeBuffer;   EndX, EndY: integer;
+          var Identifier: string; MaxLen: integer): boolean;
+    function StringConstToFormatString(
+          StartCode: TCodeBuffer; StartX, StartY: integer;
+          EndCode: TCodeBuffer;   EndX, EndY: integer;
+          var FormatStringConstant, FormatParameters: string): boolean;
 
     // expressions
     function GetStringConstBounds(Code: TCodeBuffer; X,Y: integer;
           var StartCode: TCodeBuffer; var StartX, StartY: integer;
           var EndCode: TCodeBuffer; var EndX, EndY: integer;
           ResolveComments: boolean): boolean;
+    function ReplaceCode(Code: TCodeBuffer; StartX, StartY: integer;
+          EndX, EndY: integer; const NewCode: string): boolean;
 
     // functions for events in the object inspector
     function GetCompatiblePublishedMethods(Code: TCodeBuffer;
@@ -835,6 +847,80 @@ begin
   end;
 end;
 
+function TCodeToolManager.IdentifierExistsInResourceStringSection(
+  Code: TCodeBuffer; X, Y: integer; const ResStrIdentifier: string): boolean;
+var
+  CursorPos: TCodeXYPosition;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.IdentifierExistsInResourceStringSection A ',Code.Filename,' x=',x,' y=',y);
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  CursorPos.X:=X;
+  CursorPos.Y:=Y;
+  CursorPos.Code:=Code;
+  try
+    Result:=FCurCodeTool.IdentifierExistsInResourceStringSection(CursorPos,
+                                                              ResStrIdentifier);
+  except
+    on e: Exception do HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.CreateIdentifierFromStringConst(
+  StartCode: TCodeBuffer; StartX, StartY: integer;
+  EndCode: TCodeBuffer; EndX, EndY: integer;
+  var Identifier: string; MaxLen: integer): boolean;
+var
+  StartCursorPos, EndCursorPos: TCodeXYPosition;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.CreateIdentifierFromStringConst A ',StartCode.Filename,' x=',StartX,' y=',StartY);
+  {$ENDIF}
+  if not InitCurCodeTool(StartCode) then exit;
+  StartCursorPos.X:=StartX;
+  StartCursorPos.Y:=StartY;
+  StartCursorPos.Code:=StartCode;
+  EndCursorPos.X:=EndX;
+  EndCursorPos.Y:=EndY;
+  EndCursorPos.Code:=EndCode;
+  Identifier:='';
+  try
+    Result:=FCurCodeTool.CreateIdentifierFromStringConst(
+                                 StartCursorPos,EndCursorPos,Identifier,MaxLen);
+  except
+    on e: Exception do HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.StringConstToFormatString(
+  StartCode: TCodeBuffer; StartX, StartY: integer;
+  EndCode: TCodeBuffer; EndX, EndY: integer;
+  var FormatStringConstant, FormatParameters: string): boolean;
+var
+  StartCursorPos, EndCursorPos: TCodeXYPosition;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.StringConstToFormatString A ',StartCode.Filename,' x=',StartX,' y=',StartY);
+  {$ENDIF}
+  if not InitCurCodeTool(StartCode) then exit;
+  StartCursorPos.X:=StartX;
+  StartCursorPos.Y:=StartY;
+  StartCursorPos.Code:=StartCode;
+  EndCursorPos.X:=EndX;
+  EndCursorPos.Y:=EndY;
+  EndCursorPos.Code:=EndCode;
+  try
+    Result:=FCurCodeTool.StringConstToFormatString(
+             StartCursorPos,EndCursorPos,FormatStringConstant,FormatParameters);
+  except
+    on e: Exception do HandleException(e);
+  end;
+end;
+
 function TCodeToolManager.GetStringConstBounds(Code: TCodeBuffer; X, Y: integer;
   var StartCode: TCodeBuffer; var StartX, StartY: integer;
   var EndCode: TCodeBuffer; var EndX, EndY: integer;
@@ -863,6 +949,30 @@ begin
     end;
   except
     on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.ReplaceCode(Code: TCodeBuffer; StartX,
+  StartY: integer; EndX, EndY: integer; const NewCode: string): boolean;
+var
+  StartCursorPos, EndCursorPos: TCodeXYPosition;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.ReplaceCode A ',StartCode.Filename,' x=',StartX,' y=',StartY);
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  StartCursorPos.X:=StartX;
+  StartCursorPos.Y:=StartY;
+  StartCursorPos.Code:=Code;
+  EndCursorPos.X:=EndX;
+  EndCursorPos.Y:=EndY;
+  EndCursorPos.Code:=Code;
+  try
+    Result:=FCurCodeTool.ReplaceCode(StartCursorPos,EndCursorPos,NewCode,
+                                     SourceChangeCache);
+  except
+    on e: Exception do HandleException(e);
   end;
 end;
 

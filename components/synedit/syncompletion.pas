@@ -533,11 +533,12 @@ var
   i: integer;
 begin
   FCurrentString := Value;
+  {$IFDEF SYN_LAZARUS}
   if (FCurrentString<>'') and (FCurrentString[length(FCurrentString)]='.') then
   begin
+    writeln('TSynBaseCompletionForm.SetCurrentString Value=',Value);
     if (length(Value) div (length(Value) div 10000))=0 then ;
   end;
-  {$IFDEF SYN_LAZARUS}
   if Assigned(FOnSearchPosition) then begin
     i:=Position;
     FOnSearchPosition(i);

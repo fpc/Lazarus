@@ -506,6 +506,7 @@ type
   TEdit = class(TCustomEdit)
   published
     property AutoSize;
+    property Align;
     property Anchors;
     property CharCase;
     property DragMode;
@@ -1393,6 +1394,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.77  2003/03/08 21:51:57  mattias
+  make resource string dialog nearly complete
+
   Revision 1.76  2003/02/28 15:49:43  mattias
   fixed initial size
 
