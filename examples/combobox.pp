@@ -34,6 +34,8 @@ type
     	  Button2: TButton;
 	  Button3: TButton;
 	  Button4: TButton;
+	  Button5: TButton;
+	  Button6: TButton;
 	  Edit1 : TEdit;
 	  mnuMain: TMainMenu;
     	  itmFileQuit: TMenuItem;
@@ -50,6 +52,8 @@ type
 	  procedure Button2CLick(Sender : TObject);
 	  procedure Button3CLick(Sender : TObject);
 	  procedure Button4CLick(Sender : TObject);
+	  procedure Button5CLick(Sender : TObject);
+	  procedure Button6CLick(Sender : TObject);
 	  procedure ComboOnChange (Sender:TObject);
 	  procedure ComboOnClick (Sender:TObject);
 	end;
@@ -88,6 +92,34 @@ procedure TForm1.Button4Click(Sender : TObject);
 Begin
    if assigned (ComboBox1) 
       then ComboBox1.Enabled := not ComboBox1.Enabled;
+End;
+
+procedure TForm1.Button5Click(Sender : TObject);
+var
+   i : integer;
+Begin
+   if assigned (ComboBox1) then
+   begin
+      i := 0;
+      while i < ComboBox1.Items.Count do
+      begin
+         if assigned (Memo1)
+            then Memo1.Lines.Add (ComboBox1.Items[i]);
+	 inc (i); 
+      end;
+   end;
+End;
+
+procedure TForm1.Button6Click(Sender : TObject);
+var
+   s : shortstring;
+Begin
+   if assigned (ComboBox1) then
+   begin
+      s := Format ('%x', [ComboBox1.ItemIndex]);
+      if assigned (Memo1)
+         then Memo1.Lines.Add (s);
+   end;
 End;
 
 procedure TForm1.ComboOnChange (Sender:TObject);
@@ -172,6 +204,26 @@ begin
    Button4.Caption := 'Enabled On/Off';
    Button4.OnClick := @Button4Click;
 
+   Button5 := TButton.Create(Self);
+   Button5.Parent := Self;
+   Button5.Left := 50;
+   Button5.Top := 200;
+   Button5.Width := 120;
+   Button5.Height := 30;
+   Button5.Show;
+   Button5.Caption := 'Dump';
+   Button5.OnClick := @Button5Click;
+
+   Button6 := TButton.Create(Self);
+   Button6.Parent := Self;
+   Button6.Left := 50;
+   Button6.Top := 240;
+   Button6.Width := 120;
+   Button6.Height := 30;
+   Button6.Show;
+   Button6.Caption := 'Index ?';
+   Button6.OnClick := @Button6Click;
+
 
    { Create a label for the edit field }
    label1 := TLabel.Create(Self);
@@ -208,6 +260,7 @@ begin
    label2.Enabled:= true;
    label2.Show;
    label2.Caption := 'Combo (unsorted)';
+   label2.Enabled:= true;
 
 
    { Create the menu now }
@@ -216,13 +269,12 @@ begin
    mnuMain := TMainMenu.Create(Self);
    Menu := mnuMain;
    itmFile := TMenuItem.Create(Self);
-   itmFile.Caption := 'File';
+   itmFile.Caption := '&File';
    mnuMain.Items.Add(itmFile);
    itmFileQuit := TMenuItem.Create(Self);
-   itmFileQuit.Caption := 'Quit';
+   itmFileQuit.Caption := '&Quit';
    itmFileQuit.OnClick := @mnuQuitClicked;
    itmFile.Add(itmFileQuit);
-
 
    ComboBox1 := TComboBox.Create (self);
    with ComboBox1 do
@@ -303,6 +355,9 @@ end.
 
 {
   $Log$
+  Revision 1.2  2000/07/23 19:04:42  lazarus
+  enhanced examples, stoppok
+
   Revision 1.1  2000/07/13 10:28:20  michael
   + Initial import
 

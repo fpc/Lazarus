@@ -46,8 +46,8 @@ type
        	  Button8: TButton;
 	  Track1 : TTRackBar;
 	  Track2 : TTRackBar;
-          mnuBarMain: TMenuBar;
-          mnuFile: TMenu;
+          mnuMain: TMainMenu;
+          itmFile: TMenuItem;
           itmFileQuit: TMenuItem;
           constructor Create(AOwner: TComponent); override;	
           procedure LoadMainMenu;
@@ -62,6 +62,7 @@ type
 	  procedure Button6CLick(Sender : TObject);
 	  procedure Button7CLick(Sender : TObject);
 	  procedure Button8CLick(Sender : TObject);
+	  procedure Track1Change(Sender : TObject);
 	end;
 
 var
@@ -141,6 +142,14 @@ Begin
    end;
 End;
 
+procedure TForm1.Track1Change(Sender : TObject);
+begin
+   if assigned (Track1) then begin
+        writeln ('*** CALLBACK ONCHANGE!!!!! ***');
+	Track1.PageSize := Track1.PageSize + 1;
+   end;
+end;
+
 {------------------------------------------------------------------------------}
 
 procedure TForm1.FormKill(Sender : TObject);
@@ -167,6 +176,7 @@ begin
 	Track1.Height := 140;
 	Track1.Min := 0;
 	Track1.Max := 100;
+	Track1.OnChange := @Track1Change;
 	Track1.Show; 
 
 	{ Setting up vertical trackbar }
@@ -264,19 +274,17 @@ begin
 	Button8.Show;
 
 	{ create a menubar }
-	mnuFile := TMenu.Create(nil);
+   mnuMain := TMainMenu.Create(Self);
+   Menu := mnuMain;
 
-	itmFileQuit := TMenuItem.Create(nil);
-	itmFileQuit.Caption := 'Quit';
-	itmFileQuit.OnClick := @mnuQuitClicked;
+   itmFile := TMenuItem.Create(Self);
+   itmFile.Caption := 'File';
+   Menu.Items.Add(itmFile);
 
-	mnuFile.Items.Add (itmFileQuit);
-
-	mnuBarMain := TMenuBar.Create(self);
-//	mnuBarMain.Align := alTop;
-	mnuBarMain.AddMenu('File',mnuFile);
-	mnuBarMain.Show;
-
+   itmFileQuit := TMenuItem.Create(Self);
+   itmFileQuit.Caption := 'Quit';
+   itmFileQuit.OnClick := @mnuQuitClicked;
+   itmFile.Add(itmFileQuit);
 end;
 
 {------------------------------------------------------------------------------}
@@ -293,8 +301,8 @@ begin
 end.
 {
   $Log$
-  Revision 1.1  2000/07/13 10:28:21  michael
-  + Initial import
+  Revision 1.2  2000/07/23 19:04:42  lazarus
+  enhanced examples, stoppok
 
   Revision 1.3  2000/06/18 08:07:18  lazarus
    Enhanced trackbar example. stoppok
