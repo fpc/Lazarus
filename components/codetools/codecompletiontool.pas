@@ -210,7 +210,7 @@ procedure TCodeCompletionCodeTool.AddClassInsertion(PosNode: TCodeTreeNode;
   For example: a request to insert a new variable or a new method to the class
 
   PosNode:   The node, to which the request belongs. e.g. the property node, if
-             the insert is the auto created privat variable
+             the insert is the auto created private variable
   CleanDef:  The skeleton of the new insertion. e.g. the variablename or the
              method header without parameter names.
   Def:       The insertion code.
@@ -222,9 +222,9 @@ procedure TCodeCompletionCodeTool.AddClassInsertion(PosNode: TCodeTreeNode;
 }
 var NewInsert, InsertPos, LastInsertPos: TCodeTreeNodeExtension;
 begin
-{$IFDEF CTDEBUG}
-writeln('[TCodeCompletionCodeTool.AddClassInsertion] ',CleanDef,',',Def,',',Identifiername);
-{$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('[TCodeCompletionCodeTool.AddClassInsertion] ',CleanDef,',',Def,',',Identifiername);
+  {$ENDIF}
   NewInsert:=NodeExtMemManager.NewNode;
   with NewInsert do begin
     Node:=PosNode;
@@ -249,7 +249,7 @@ writeln('[TCodeCompletionCodeTool.AddClassInsertion] ',CleanDef,',',Def,',',Iden
     // insert alphabetically
     InsertPos:=FirstInsert;
     LastInsertPos:=nil;
-//writeln('GGG "',InsertPos.Txt,'" "',CleanDef,'" ',CompareTextIgnoringSpace(InsertPos.Txt,CleanDef,false));
+    //writeln('GGG "',InsertPos.Txt,'" "',CleanDef,'" ',CompareTextIgnoringSpace(InsertPos.Txt,CleanDef,false));
     while (InsertPos<>nil)
     and (CompareTextIgnoringSpace(InsertPos.Txt,CleanDef,false)>=0) do begin
       LastInsertPos:=InsertPos;
@@ -264,11 +264,11 @@ writeln('[TCodeCompletionCodeTool.AddClassInsertion] ',CleanDef,',',Def,',',Iden
       NewInsert.Next:=InsertPos;
       FirstInsert:=NewInsert;
     end;
-{InsertPos:=FirstInsert;
-while InsertPos<>nil do begin
-  writeln(' HHH ',InsertPos.Txt);
-  InsertPos:=InsertPos.Next;
-end;}
+    {InsertPos:=FirstInsert;
+    while InsertPos<>nil do begin
+      writeln(' HHH ',InsertPos.Txt);
+      InsertPos:=InsertPos.Next;
+    end;}
   end;
 end;
 
@@ -769,6 +769,7 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
         // add insert demand for function
         // build function code
         AccessFunc:='function '+AccessParam+':boolean;';
+        CleanAccessFunc:=CleanAccessFunc+';';
         // add new Insert Node
         if CompleteProperties then
           AddClassInsertion(PropNode,CleanAccessFunc,AccessFunc,AccessParam,'',
@@ -927,6 +928,10 @@ begin
       CurCode:=ANodeExt.ExtTxt1;
       CurCode:=ASourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
                           CurCode,Indent);
+      {$IFDEF CTDEBUG}
+      writeln('TCodeCompletionCodeTool.InsertNewClassParts:');
+      writeln(CurCode);
+      {$ENDIF}
       ASourceChangeCache.Replace(gtNewLine,gtNewLine,InsertPos,InsertPos,
          CurCode);
       if (not IsVariable)
@@ -1023,9 +1028,9 @@ procedure TCodeCompletionCodeTool.AddNewPropertyAccessMethodsToClassProcs(
 var ANodeExt: TCodeTreeNodeExtension;
   NewNodeExt: TCodeTreeNodeExtension;
 begin
-{$IFDEF CTDEBUG}
-writeln('[TCodeCompletionCodeTool.AddNewPropertyAccessMethodsToClassProcs]');
-{$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('[TCodeCompletionCodeTool.AddNewPropertyAccessMethodsToClassProcs]');
+  {$ENDIF}
   // add new property access methods to ClassProcs
   ANodeExt:=FirstInsert;
   while ANodeExt<>nil do begin
@@ -1039,6 +1044,11 @@ writeln('[TCodeCompletionCodeTool.AddNewPropertyAccessMethodsToClassProcs]');
              ANodeExt.ExtTxt1,TheClassName,''); // complete proc head code
           ExtTxt3:=ANodeExt.ExtTxt3;
           Position:=ANodeExt.Position;
+          {$IFDEF CTDEBUG}
+          writeln('  Txt="',Txt,'"');
+          writeln('  ExtTxt1="',ExtTxt1,'"');
+          writeln('  ExtTxt3="',ExtTxt3,'"');
+          {$ENDIF}
         end;
         ClassProcs.Add(NewNodeExt);
       end;
@@ -1058,9 +1068,9 @@ var AnAVLNode: TAVLTreeNode;
   BeautifyCodeOptions: TBeautifyCodeOptions;
 begin
   if not AddInheritedCodeToOverrideMethod then exit;
-{$IFDEF CTDEBUG}
-writeln('[TCodeCompletionCodeTool.CheckForOverrideAndAddInheritedCode]');
-{$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('[TCodeCompletionCodeTool.CheckForOverrideAndAddInheritedCode]');
+  {$ENDIF}
   BeautifyCodeOptions:=ASourceChangeCache.BeautifyCodeOptions;
   AnAVLNode:=ClassProcs.FindLowest;
   while AnAVLNode<>nil do begin
@@ -1104,16 +1114,38 @@ var
       ProcCode:=ANodeExt.ExtTxt1;
     ProcCode:=ASourceChangeCache.BeautifyCodeOptions.AddClassAndNameToProc(
                  ProcCode,TheClassName,'');
-{$IFDEF CTDEBUG}
-writeln('>>> InsertProcBody ',TheClassName,' "',ProcCode,'"');
-{$ENDIF}
+    {$IFDEF CTDEBUG}
+    writeln('CreateMissingProcBodies InsertProcBody ',TheClassName,' "',ProcCode,'"');
+    {$ENDIF}
     ProcCode:=ASourceChangeCache.BeautifyCodeOptions.BeautifyProc(
                  ProcCode,Indent,ANodeExt.ExtTxt3='');
     ASourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,
       ProcCode);
     if JumpToProcName='' then begin
-      // remember a proc body to set the cursor at
-      JumpToProcName:=UpperCaseStr(TheClassName)+'.'+ANodeExt.Txt;
+      // remember one proc body to jump to after the completion
+      JumpToProcName:=ANodeExt.Txt;
+      if System.Pos('.',JumpToProcName)<1 then
+        JumpToProcName:=UpperCaseStr(TheClassName)+'.'+JumpToProcName;
+      {$IFDEF CTDEBUG}
+      writeln('CreateMissingProcBodies JumpToProcName="',JumpToProcName,'"');
+      {$ENDIF}
+    end;
+  end;
+
+  procedure CreateCodeForMissingProcBody(TheNodeExt: TCodeTreeNodeExtension);
+  var
+    ANode: TCodeTreeNode;
+    ProcCode: string;
+  begin
+    if (TheNodeExt.ExtTxt1='') and (TheNodeExt.ExtTxt3='') then begin
+      ANode:=TheNodeExt.Node;
+      if (ANode<>nil) and (ANode.Desc=ctnProcedure) then begin
+        ProcCode:=ExtractProcHead(ANode,[phpWithStart,
+             phpWithoutClassKeyword,phpAddClassname,
+             phpWithParameterNames,phpWithResultType,phpWithVarModifiers]);
+        TheNodeExt.ExtTxt3:=ASourceChangeCache.BeautifyCodeOptions.BeautifyProc(
+                     ProcCode,Indent,true);
+      end;
     end;
   end;
 
@@ -1125,32 +1157,30 @@ var
   cmp, MissingNodePosition: integer;
   FirstExistingProcBody, LastExistingProcBody, ImplementationNode,
   ANode, ANode2, TypeSectionNode: TCodeTreeNode;
-  ClassStartComment, ProcCode, s: string;
+  ClassStartComment, s: string;
   Caret1, Caret2: TCodeXYPosition;
   MethodInsertPolicy: TMethodInsertPolicy;
   NearestNodeValid: boolean;
-begin
-{$IFDEF CTDEBUG}
-writeln('TCodeCompletionCodeTool.CreateMissingProcBodies Gather existing method bodies ... ');
-{$ENDIF}
-  Result:=false;
-  MethodInsertPolicy:=ASourceChangeCache.BeautifyCodeOptions.MethodInsertPolicy;
-  // gather existing class proc bodies
-  TypeSectionNode:=ClassNode.Parent;
-  if (TypeSectionNode<>nil) and (TypeSectionNode.Parent<>nil)
-  and (TypeSectionNode.Parent.Desc=ctnTypeSection) then
-    TypeSectionNode:=TypeSectionNode.Parent;
-  ClassProcs:=nil;
-  ProcBodyNodes:=GatherProcNodes(TypeSectionNode,
-                       [phpInUpperCase,phpIgnoreForwards,phpOnlyWithClassname],
-                       ExtractClassName(ClassNode,true));
-  try
+  
+  procedure GatherExistingClassProcBodies;
+  begin
+    TypeSectionNode:=ClassNode.Parent;
+    if (TypeSectionNode<>nil) and (TypeSectionNode.Parent<>nil)
+    and (TypeSectionNode.Parent.Desc=ctnTypeSection) then
+      TypeSectionNode:=TypeSectionNode.Parent;
+    ClassProcs:=nil;
+    ProcBodyNodes:=GatherProcNodes(TypeSectionNode,
+                         [phpInUpperCase,phpIgnoreForwards,phpOnlyWithClassname],
+                         ExtractClassName(ClassNode,true));
+  end;
+  
+  procedure FindTopMostAndBottomMostProcCodies;
+  begin
     ExistingNode:=ProcBodyNodes.FindLowest;
-    if ExistingNode<>nil then 
+    if ExistingNode<>nil then
       LastExistingProcBody:=TCodeTreeNodeExtension(ExistingNode.Data).Node
     else
       LastExistingProcBody:=nil;
-    // find topmost and bottommost proc body
     FirstExistingProcBody:=LastExistingProcBody;
     while ExistingNode<>nil do begin
       ANode:=TCodeTreeNodeExtension(ExistingNode.Data).Node;
@@ -1160,17 +1190,10 @@ writeln('TCodeCompletionCodeTool.CreateMissingProcBodies Gather existing method 
         LastExistingProcBody:=ANode;
       ExistingNode:=ProcBodyNodes.FindSuccessor(ExistingNode);
     end;
-
-{$IFDEF CTDEBUG}
-writeln('TCodeCompletionCodeTool.CreateMissingProcBodies Gather existing method declarations ... ');
-{$ENDIF}
-    TheClassName:=ExtractClassName(ClassNode,false);
-
-    // gather existing class proc definitions
-    ClassProcs:=GatherProcNodes(StartNode,[phpInUpperCase,phpAddClassName],
-       ExtractClassName(ClassNode,true));
-
-    // check for double defined methods in ClassProcs
+  end;
+  
+  procedure CheckForDoubleDefinedMethods;
+  begin
     AnAVLNode:=ClassProcs.FindLowest;
     while AnAVLNode<>nil do begin
       NextAVLNode:=ClassProcs.FindSuccessor(AnAVLNode);
@@ -1198,8 +1221,10 @@ writeln('TCodeCompletionCodeTool.CreateMissingProcBodies Gather existing method 
       end;
       AnAVLNode:=NextAVLNode;
     end;
-    
-    // remove abstract methods
+  end;
+  
+  procedure RemoveAbstractMethods;
+  begin
     AnAVLNode:=ClassProcs.FindLowest;
     while AnAVLNode<>nil do begin
       NextAVLNode:=ClassProcs.FindSuccessor(AnAVLNode);
@@ -1211,6 +1236,76 @@ writeln('TCodeCompletionCodeTool.CreateMissingProcBodies Gather existing method 
       end;
       AnAVLNode:=NextAVLNode;
     end;
+  end;
+  
+  procedure FindInsertPointForNewClass;
+  begin
+    if NodeHasParentOfType(ClassNode,ctnInterface) then begin
+      // class is in interface section
+      // -> insert at the end of the implementation section
+      ImplementationNode:=FindImplementationNode;
+      if ImplementationNode=nil then
+        RaiseException(ctsImplementationNodeNotFound);
+      Indent:=GetLineIndent(Src,ImplementationNode.StartPos);
+      if (ImplementationNode.LastChild=nil)
+      or (ImplementationNode.LastChild.Desc<>ctnBeginBlock) then
+        InsertPos:=ImplementationNode.EndPos
+      else begin
+        InsertPos:=FindLineEndOrCodeInFrontOfPosition(Src,
+           ImplementationNode.LastChild.StartPos,Scanner.NestedComments);
+      end;
+    end else begin
+      // class is not in interface section
+      // -> insert at the end of the type section
+      ANode:=ClassNode.Parent; // type definition
+      if ANode=nil then
+        RaiseException(ctsClassNodeWithoutParentNode);
+      if ANode.Parent.Desc=ctnTypeSection then
+        ANode:=ANode.Parent; // type section
+      if ANode=nil then
+        RaiseException(ctsTypeSectionOfClassNotFound);
+      Indent:=GetLineIndent(Src,ANode.StartPos);
+      InsertPos:=ANode.EndPos;
+    end;
+  end;
+  
+  procedure InsertClassComment;
+  begin
+    // insert class comment
+    if ClassProcs.Count>0 then begin
+      ClassStartComment:=GetIndentStr(Indent)
+                          +'{ '+ExtractClassName(ClassNode,false)+' }';
+      ASourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,
+         ClassStartComment);
+    end;
+  end;
+  
+begin
+  {$IFDEF CTDEBUG}
+  writeln('TCodeCompletionCodeTool.CreateMissingProcBodies Gather existing method bodies ... ');
+  {$ENDIF}
+  Result:=false;
+  MethodInsertPolicy:=ASourceChangeCache.BeautifyCodeOptions.MethodInsertPolicy;
+  // gather existing class proc bodies
+  GatherExistingClassProcBodies;
+  try
+    // find topmost and bottommost proc body
+    FindTopMostAndBottomMostProcCodies;
+
+    {$IFDEF CTDEBUG}
+    writeln('TCodeCompletionCodeTool.CreateMissingProcBodies Gather existing method declarations ... ');
+    {$ENDIF}
+    TheClassName:=ExtractClassName(ClassNode,false);
+
+    // gather existing class proc definitions
+    ClassProcs:=GatherProcNodes(StartNode,[phpInUpperCase,phpAddClassName],
+       ExtractClassName(ClassNode,true));
+
+    // check for double defined methods in ClassProcs
+    CheckForDoubleDefinedMethods;
+
+    // remove abstract methods
+    RemoveAbstractMethods;
 
     CurNode:=FirstExistingProcBody;
     
@@ -1269,69 +1364,18 @@ writeln('TCodeCompletionCodeTool.CreateMissingProcBodies Gather existing method 
       {$IFDEF CTDEBUG}
       writeln('TCodeCompletionCodeTool.CreateMissingProcBodies Starting class in implementation ');
       {$ENDIF}
+      FindInsertPointForNewClass;
+      InsertClassComment;
 
-      if NodeHasParentOfType(ClassNode,ctnInterface) then begin
-        // class is in interface section
-        // -> insert at the end of the implementation section
-        ImplementationNode:=FindImplementationNode;
-        if ImplementationNode=nil then 
-          RaiseException(ctsImplementationNodeNotFound);
-        Indent:=GetLineIndent(Src,ImplementationNode.StartPos);
-        if (ImplementationNode.LastChild=nil)
-        or (ImplementationNode.LastChild.Desc<>ctnBeginBlock) then
-          InsertPos:=ImplementationNode.EndPos
-        else begin
-          InsertPos:=FindLineEndOrCodeInFrontOfPosition(Src,
-             ImplementationNode.LastChild.StartPos,Scanner.NestedComments);
-        end;
-      end else begin
-        // class is not in interface section
-        // -> insert at the end of the type section
-        ANode:=ClassNode.Parent; // type definition
-        if ANode=nil then 
-          RaiseException(ctsClassNodeWithoutParentNode);
-        if ANode.Parent.Desc=ctnTypeSection then
-          ANode:=ANode.Parent; // type section
-        if ANode=nil then
-          RaiseException(ctsTypeSectionOfClassNotFound);
-        Indent:=GetLineIndent(Src,ANode.StartPos);
-        InsertPos:=ANode.EndPos;
-      end;
-      // insert class comment
-      if ClassProcs.Count>0 then begin
-        ClassStartComment:=GetIndentStr(Indent)
-                            +'{ '+ExtractClassName(ClassNode,false)+' }';
-        ASourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,
-           ClassStartComment);
-      end;
-      // insert all missing proc bodies
+      // insert all proc bodies
       MissingNode:=ClassProcs.FindHighest;
       while (MissingNode<>nil) do begin
         ANodeExt:=TCodeTreeNodeExtension(MissingNode.Data);
-        if ANodeExt.ExtTxt3<>'' then
-          ProcCode:=ANodeExt.ExtTxt3
-        else
-          ProcCode:=ANodeExt.ExtTxt1;
-        if (ProcCode='') then begin
-          ANode:=TCodeTreeNodeExtension(MissingNode.Data).Node;
-          if (ANode<>nil) and (ANode.Desc=ctnProcedure) then begin
-            ProcCode:=ExtractProcHead(ANode,[phpWithStart,
-                 phpWithoutClassKeyword,phpAddClassname,
-                 phpWithParameterNames,phpWithResultType,phpWithVarModifiers]);
-          end;
-        end;
-        if ProcCode<>'' then begin
-          ProcCode:=ASourceChangeCache.BeautifyCodeOptions.BeautifyProc(
-                     ProcCode,Indent,ANodeExt.ExtTxt3='');
-          ASourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,
-            InsertPos,ProcCode);
-          if JumpToProcName='' then begin
-            // remember a proc body to set the cursor at
-            JumpToProcName:=ANodeExt.Txt;
-          end;
-        end;
+        CreateCodeForMissingProcBody(ANodeExt);
+        InsertProcBody(ANodeExt);
         MissingNode:=ProcBodyNodes.FindPrecessor(MissingNode);
       end;
+      
     end else begin
       // there were old class procs already
       // -> search a good Insert Position behind or in front of
@@ -1344,6 +1388,7 @@ writeln('TCodeCompletionCodeTool.CreateMissingProcBodies Gather existing method 
       Indent:=GetLineIndent(Src,LastExistingProcBody.StartPos);
       InsertPos:=FindLineEndOrCodeAfterPosition(Src,
                         LastExistingProcBody.EndPos,Scanner.NestedComments);
+                        
       // check for all defined class methods (MissingNode), if there is a body
       MissingNode:=ClassProcs.FindHighest;
       NearestNodeValid:=false;
@@ -1419,34 +1464,8 @@ writeln('TCodeCompletionCodeTool.CreateMissingProcBodies Gather existing method 
               end;
             end;
           end;
-          if ANodeExt.ExtTxt3<>'' then
-            ProcCode:=ANodeExt.ExtTxt3
-          else
-            ProcCode:=ANodeExt.ExtTxt1;
-          if (ProcCode='') then begin
-            ANode:=ANodeExt.Node;
-            if (ANode<>nil) and (ANode.Desc=ctnProcedure) then begin
-              ProcCode:=ExtractProcHead(ANode,[phpWithStart,
-               phpWithoutClassKeyword,phpAddClassname,
-               phpWithParameterNames,phpWithResultType,phpWithVarModifiers]);
-            end;
-          end;
-          if (ProcCode<>'') then begin
-            ProcCode:=
-              ASourceChangeCache.BeautifyCodeOptions.AddClassAndNameToProc(
-                ProcCode,TheClassName,'');
-            ProcCode:=ASourceChangeCache.BeautifyCodeOptions.BeautifyProc(
-                        ProcCode,Indent,ANodeExt.ExtTxt3='');
-            {$IFDEF CTDEBUG}
-            writeln('TCodeCompletionCodeTool.CreateMissingProcBodies  Inserting Method Body: "',ProcCode,'" -----');
-            {$ENDIF}
-            ASourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,
-                  InsertPos,InsertPos,ProcCode);
-            if JumpToProcName='' then begin
-              // remember a proc body to set the cursor at
-              JumpToProcName:=ANodeExt.Txt;
-            end;
-          end;
+          CreateCodeForMissingProcBody(ANodeExt);
+          InsertProcBody(ANodeExt);
         end;
         MissingNode:=ProcBodyNodes.FindPrecessor(MissingNode);
       end;
@@ -1526,7 +1545,7 @@ var CleanCursorPos, Indent, insertPos: integer;
 
       if JumpToProcName<>'' then begin
         {$IFDEF CTDEBUG}
-        writeln('TCodeCompletionCodeTool.CompleteCode Jump to new proc body ... ');
+        writeln('TCodeCompletionCodeTool.CompleteCode Jump to new proc body ... "',JumpToProcName,'"');
         {$ENDIF}
         // there was a new proc body
         // -> find it and jump to
@@ -1540,7 +1559,7 @@ var CleanCursorPos, Indent, insertPos: integer;
         while (ClassNode<>nil) and (ClassNode.Desc<>ctnClass) do
           ClassNode:=ClassNode.Parent;
         if ClassNode=nil then
-          RaiseException('oops, I loose your class');
+          RaiseException('oops, I lost your class');
         ANode:=ClassNode.Parent;
         if ANode=nil then
           RaiseException(ctsClassNodeWithoutParentNode);

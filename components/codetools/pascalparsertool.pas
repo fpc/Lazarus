@@ -2092,7 +2092,7 @@ function TPascalParserTool.KeyWordFuncBeginEnd: boolean;
   var CaretXY: TCodeXYPosition;
     AMessage: string;
   begin
-    AMessage:=Format(ctsStringConstant,[';','.']);
+    AMessage:=Format(ctsStrExpectedButAtomFound,[';','.']);
     if (CleanPosToCaret(CurNode.StartPos,CaretXY))
     and (CaretXY.Code<>nil) then begin
       if CaretXY.Code=TCodeBuffer(Scanner.MainCode) then
@@ -3214,7 +3214,8 @@ begin
       if (not ((phpIgnoreForwards in Attr)
                and ((Result.SubDesc and ctnsForwardDeclaration)>0)))
       and (not ((phpIgnoreProcsWithBody in Attr)
-            and (FindProcBody(Result)<>nil))) then begin
+            and (FindProcBody(Result)<>nil))) then
+      begin
         CurProcHead:=ExtractProcHead(Result,Attr);
         //writeln('TPascalParserTool.FindProcNode B "',CurProcHead,'" =? "',AProcHead,'"');
         if (CurProcHead<>'')
