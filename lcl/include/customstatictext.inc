@@ -32,7 +32,8 @@ var
 begin
   If AutoSizing or not AutoSize then
     Exit;
-  if (not HandleAllocated) or (csLoading in ComponentState) then exit;
+  if (not HandleAllocated) or ([csLoading,csDestroying]*ComponentState<>[]) then
+    exit;
   AutoSizing := True;
   DC := GetDC(Handle);
   Try
@@ -181,6 +182,9 @@ end;
 
 {
   $Log$
+  Revision 1.4  2004/03/07 09:37:20  mattias
+  added workaround for AutoSize in TCustomLabel
+
   Revision 1.3  2004/01/03 23:14:59  mattias
   default font can now change height and fixed gtk crash
 

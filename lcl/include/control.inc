@@ -2525,6 +2525,11 @@ begin
           and not (csReadingState in ControlState);
 end;
 
+function TControl.ParentHandlesAllocated: boolean;
+begin
+  Result:=(Parent<>nil) and (Parent.ParentHandlesAllocated);
+end;
+
 procedure TControl.InitiateAction;
 begin
   if ActionLink <> nil then ActionLink.Update;
@@ -2882,6 +2887,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.176  2004/03/07 09:37:20  mattias
+  added workaround for AutoSize in TCustomLabel
+
   Revision 1.175  2004/02/28 00:34:35  mattias
   fixed CreateComponent for buttons, implemented basic Drag And Drop
 

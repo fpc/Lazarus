@@ -67,10 +67,7 @@ procedure TRadioButton.SetText(const Value: TCaption);
 begin
   if Text=Value then exit;
   Inherited SetText(Value);
-  if (not (csLoading in ComponentState)) and HandleAllocated then begin
-    RecreateWnd;
-    DoAutoSize;
-  end;
+  DoAutoSize;
 end;
 
 {------------------------------------------------------------------------------
@@ -87,7 +84,8 @@ var
 begin
   If Autosizing or (not AutoSize) then
     Exit;
-  if (not HandleAllocated) or (csLoading in ComponentState) then exit;
+  if (not HandleAllocated) or ([csLoading,csDestroying]*ComponentState<>[]) then
+    exit;
   AutoSizing := True;
   DC := GetDC(Handle);
   Try
@@ -108,6 +106,9 @@ end;
 
 {
   $Log$
+  Revision 1.16  2004/03/07 09:37:20  mattias
+  added workaround for AutoSize in TCustomLabel
+
   Revision 1.15  2004/02/24 20:26:50  mattias
   published some TRadioButton properties
 

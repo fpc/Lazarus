@@ -988,6 +988,7 @@ type
     procedure SetZOrderPosition(NewPosition: Integer); virtual;
     Procedure SetZOrder(TopMost: Boolean); virtual;
     function HandleObjectShouldBeVisible: boolean; virtual;
+    function ParentHandlesAllocated: boolean; virtual;
     procedure InitiateAction; virtual;
     property MouseEntered: Boolean read FMouseEntered;
   public
@@ -1343,6 +1344,7 @@ type
     function CreateWindowHandle(const AParams: TCreateParams): THandle; virtual;
     procedure CreateWnd; virtual; //creates the window
     procedure InitializeWnd; virtual; //gets called after the window is created
+    function ParentHandlesAllocated: boolean; override;
     procedure Loaded; override;
     procedure DestroyWnd; virtual;
     procedure UpdateShowing; virtual;
@@ -2231,6 +2233,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.187  2004/03/07 09:37:20  mattias
+  added workaround for AutoSize in TCustomLabel
+
   Revision 1.186  2004/02/28 00:34:35  mattias
   fixed CreateComponent for buttons, implemented basic Drag And Drop
 

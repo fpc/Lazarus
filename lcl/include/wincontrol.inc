@@ -3013,7 +3013,7 @@ begin
 
   // realign childs
   ReAlign;
-
+  
   if FWinControls <> nil then begin
     for n := 0 to FWinControls.Count - 1 do
       with TWinControl(FWinControls.Items[n]) do
@@ -3089,8 +3089,27 @@ begin
   SetProp(Handle,'WinControl',TWinControl(Self));
   SetProp(Handle,'Control',TControl(Self));
 
-  // send pending resize messages
+  if (Parent=nil) then begin
+
+  end;
+
+  // send pending resize event
   Resize;
+end;
+
+function TWinControl.ParentHandlesAllocated: boolean;
+var
+  CurControl: TWinControl;
+begin
+  Result:=false;
+  CurControl:=Self;
+  while CurControl<>nil do begin
+    if (not CurControl.HandleAllocated)
+    or ([csDestroying,csDestroyingHandle]*ComponentState<>[]) then
+      exit;
+    CurControl:=CurControl.Parent;
+  end;
+  Result:=true;
 end;
 
 {------------------------------------------------------------------------------
@@ -3428,6 +3447,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.211  2004/03/07 09:37:20  mattias
+  added workaround for AutoSize in TCustomLabel
+
   Revision 1.210  2004/02/28 00:34:35  mattias
   fixed CreateComponent for buttons, implemented basic Drag And Drop
 

@@ -30,6 +30,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCheckbox.SetText(const Value: TCaption);
 begin
+  if Value=Text then exit;
   Inherited SetText(Value);
   DoAutoSize;
 end;
@@ -48,7 +49,8 @@ var
 begin
   If AutoSizing or not AutoSize then
     Exit;
-  if (not HandleAllocated) or (csLoading in ComponentState) then exit;
+  if (not HandleAllocated) or ([csLoading,csDestroying]*ComponentState<>[]) then
+    exit;
   AutoSizing := True;
   DC := GetDC(Handle);
   Try
@@ -60,7 +62,7 @@ begin
     If R.Bottom > Height then
       Height := R.Bottom + 2;
   Finally
-    ReleaseDC(Handle, DC);
+    ReleaseDC(0, DC);
     AutoSizing := False;
   end;
 end;
@@ -69,6 +71,9 @@ end;
 
 {
   $Log$
+  Revision 1.10  2004/03/07 09:37:20  mattias
+  added workaround for AutoSize in TCustomLabel
+
   Revision 1.9  2003/09/16 11:35:14  mattias
   started TDBCheckBox
 

@@ -658,6 +658,7 @@ type
   protected
     function GetLabelText: String ; virtual;
     procedure DoAutoSize; Override;
+    procedure InitializeWnd; override;
     procedure Notification(AComponent : TComponent; Operation : TOperation); override;
     procedure SetFocusControl(Val : TWinControl); virtual;
     procedure SetShowAccelChar(Val : boolean); virtual;
@@ -1070,7 +1071,8 @@ var
 begin
   If AutoSizing or not AutoSize then
     Exit;
-  if (not HandleAllocated) or (csLoading in ComponentState) then exit;
+  if (not HandleAllocated) or ([csLoading,csDestroying]*ComponentState<>[]) then
+    exit;
   AutoSizing := True;
   DC := GetDC(Handle);
   Try
@@ -1516,6 +1518,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.136  2004/03/07 09:37:20  mattias
+  added workaround for AutoSize in TCustomLabel
+
   Revision 1.135  2004/02/24 20:26:50  mattias
   published some TRadioButton properties
 

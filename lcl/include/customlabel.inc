@@ -81,7 +81,8 @@ var
 begin
   If AutoSizing or (not AutoSize) or (Caption='') then
     Exit;
-  if (not HandleAllocated) or (csLoading in ComponentState) then exit;
+  if (not HandleAllocated) or ([csLoading,csDestroying]*ComponentState<>[]) then
+    exit;
   AutoSizing := True;
   DC := GetDC(Handle);
   Try
@@ -94,6 +95,13 @@ begin
     ReleaseDC(Handle, DC);
     AutoSizing := False;
   end;
+end;
+
+procedure TCustomLabel.InitializeWnd;
+begin
+  inherited InitializeWnd;
+  // workaround, till AutoSizing is completed in TWinControl
+  DoAutoSize;
 end;
 
 {------------------------------------------------------------------------------
@@ -174,6 +182,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.12  2004/03/07 09:37:20  mattias
+  added workaround for AutoSize in TCustomLabel
+
   Revision 1.11  2004/02/23 08:19:04  micha
   revert intf split
 

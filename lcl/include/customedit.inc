@@ -25,16 +25,21 @@ var
   OldFont : hFont;
 begin
   //TCustomEdit.AutoSize only affects Height!!
+  if (not HandleAllocated) or ([csLoading,csDestroying]*ComponentState<>[]) then
+    exit;
   If AutoSize and Not AutoSizing then begin
     AutoSizing := True;
-    DC := GetDC(0);
-    OldFont := SelectObject(DC, Font.Handle);
-    GetTextMetrics(DC, TM);
-    SelectObject(DC, OldFont);
-    ReleaseDC(0, DC);
-    //TextHeight + 5 top space/border + 5 bottom space/border
-    Height := TM.tmHeight + 10;
-    AutoSizing := False;
+    try
+      DC := GetDC(0);
+      OldFont := SelectObject(DC, Font.Handle);
+      GetTextMetrics(DC, TM);
+      SelectObject(DC, OldFont);
+      ReleaseDC(0, DC);
+      //TextHeight + 5 top space/border + 5 bottom space/border
+      Height := TM.tmHeight + 10;
+    finally
+      AutoSizing := False;
+    end;
   end;
 end;
 
@@ -366,6 +371,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.26  2004/03/07 09:37:20  mattias
+  added workaround for AutoSize in TCustomLabel
+
   Revision 1.25  2004/02/23 08:19:04  micha
   revert intf split
 
