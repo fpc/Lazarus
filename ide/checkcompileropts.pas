@@ -171,6 +171,7 @@ end;
 destructor TCheckCompilerOptsDlg.Destroy;
 begin
   Application.RemoveOnIdleHandler(@ApplicationOnIdle);
+  FDirectories.Free;
   inherited Destroy;
 end;
 

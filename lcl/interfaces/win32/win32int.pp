@@ -107,12 +107,12 @@ Type
     Procedure NormalizeIconName(Var IconName: PChar);
     Procedure CreateCommonDialog(Sender: TCommonDialog);
 
+  Public
     { Creates a callback of Lazarus message Msg for Sender }
     Procedure SetCallback(Msg: LongInt; Sender: TObject); virtual;
     { Removes all callbacks for Sender }
     Procedure RemoveCallbacks(Sender: TObject); virtual;
 
-  Public
     { Constructor of the class }
     Constructor Create;
     { Destructor of the class }
@@ -188,6 +188,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.31  2003/08/17 12:47:53  mattias
+  fixed mem leak
+
   Revision 1.30  2003/08/17 12:26:00  mattias
   fixed parts of the win32 intf size system
 
