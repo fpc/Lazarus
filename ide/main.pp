@@ -30,7 +30,7 @@ interface
 
 uses
   Classes, LclLinux, compiler, stdctrls, forms, buttons, menus, comctrls,
-  Spin, project,sysutils, global,
+  Spin, project,sysutils,
   compileroptions, Controls, graphics, extctrls, Dialogs, dlgMEssage,
   process, idecomp, Find_dlg, FormEditor, AbstractFormEditor,
   CustomFormEditor,ObjectInspector, ControlSelection, PropEdits, UnitEditor,
@@ -164,7 +164,6 @@ type
     fProject: TProject;
 
     Function CreateSeperator : TMenuItem;
-    Function ReturnActiveUnitList : TUnitInfo;
     Procedure UpdateViewDialogs;
     Procedure SetDefaultsForForm(aForm : TCustomForm);
  protected
@@ -183,8 +182,6 @@ type
 
     procedure LoadMainMenu;
     Procedure FormKill(Sender : TObject);
-    Procedure SetFlags(SLIst : TUnitInfo);
-    Procedure SetName_Form(SList : TUnitInfo);
     Procedure SetDesigning(Control : TComponent; Value : Boolean);
     procedure FormPaint(Sender : TObject);
     procedure LoadResourceFromFile(Value : String);
@@ -355,8 +352,6 @@ begin
   Notebook1.OnPageChanged := @ControlClick;
   Notebook1.Name := 'Notebook1';
 
-
-
   Pixmap1:=TPixMap.Create;
   Pixmap1.TransparentColor:=clBtnFace;
   if not LoadResource('btn_viewunits',Pixmap1) then
@@ -396,7 +391,6 @@ begin
     Flat := true;
     Name := 'Speedbutton2';
    end;
-
 
   Pixmap1:=TPixMap.Create;
   Pixmap1.TransparentColor:=clBtnFace;
@@ -439,8 +433,8 @@ begin
     Flat := true;
     Name := 'Speedbutton4';
    end;
-//display the down arrow
 
+  //display the down arrow
   Pixmap1:=TPixMap.Create;
   Pixmap1.TransparentColor:=clBtnFace;
   if not LoadResource('btn_downarrow',Pixmap1) then
@@ -709,19 +703,18 @@ end;
 
 procedure TMainIDE.OIOnSelectComponent(AComponent:TComponent);
 var
-Form : TCustomForm;
+  Form : TCustomForm;
 begin
-Form := GetParentForm(TControl(AComponent));
-//not implemented yet
-TDesigner(Form.Designer).SelectOnlyThisComponent(AComponent);
+  Form := GetParentForm(TControl(AComponent));
+  //not implemented yet
+  TDesigner(Form.Designer).SelectOnlyThisComponent(AComponent);
 end;
 
 Procedure TMainIDE.ToolButtonCLick(Sender : TObject);
 Begin
   Assert(False, 'Trace:TOOL BUTTON CLICK!');
 
-
-{if ComboBox1.Parent = Toolbar1 then
+  {if ComboBox1.Parent = Toolbar1 then
   Begin
    ComboBox1.Parent := MainIDE;
    ComboBox1.Left := 25;
@@ -750,18 +743,15 @@ end;
 
 procedure TMainIDE.FormKill(Sender : TObject);
 Begin
-Assert(False, 'Trace:DESTROYING FORM');
+  Assert(False, 'Trace:DESTROYING FORM');
 End;
 
 {------------------------------------------------------------------------------}
 procedure TMainIDE.LoadMainMenu;
 var
-
-fContext : Integer;
-R : TRect;
+  fContext : Integer;
+  R : TRect;
 begin
-
-
 
 //--------------
 // The Menu
@@ -798,11 +788,9 @@ begin
   mnuEnvironment.Caption := 'E&nvironment';
   mnuMain.Items.Add(mnuEnvironment);
 
-
 //--------------
 // File
 //--------------
-
   
   itmFileNew := TMenuItem.Create(Self);
   itmFileNew.Caption := 'New Unit';
@@ -835,7 +823,6 @@ begin
   itmFileSaveAll.Caption := 'Save All';
   mnuFile.Add(itmFileSaveAll);
 
-
   itmFileClose := TMenuItem.Create(Self);
   itmFileClose.Caption := 'Close';
   itmFileClose.Enabled := False;
@@ -851,7 +838,6 @@ begin
 //--------------
 // Edit
 //--------------
-
 
   itmEditUndo := TMenuItem.Create(nil);
   itmEditUndo.Caption := 'Undo';
@@ -875,10 +861,10 @@ begin
   itmEditPaste.Caption := 'Paste';
   mnuEdit.Add(itmEditPaste);
 
-
 //--------------
 // Search
 //--------------
+
   itmSearchFind := TMenuItem.Create(nil);
   itmSearchFind.caption := 'Find';
   itmSearchFind.OnClick := @mnuSearchFindClicked;
@@ -889,6 +875,7 @@ begin
   itmSearchFindAgain.OnClick := @mnuSearchFindAgainClicked;
   itmSearchFindAgain.Enabled := False;
   mnuSearch.add(itmSearchFindAgain);
+
 //--------------
 // View
 //--------------
@@ -926,7 +913,6 @@ begin
   itmViewColors.OnClick := @mnuViewColorClicked;
   mnuView.Add(itmViewColors);
 
-
   itmViewFont := TMenuItem.Create(Self);
   itmViewFont.Caption := 'Font...';
   itmViewFont.OnClick := @mnuViewFontClicked;
@@ -934,12 +920,10 @@ begin
 
   mnuView.Add(CreateSeperator);
 
-
   itmViewMEssage := TMenuItem.Create(Self);
   itmViewMessage.Caption := 'Messages';
   itmViewMessage.OnClick := @mnuViewMessagesClick;
   mnuView.Add(itmViewMessage);
-
 
 //--------------
 // Project
@@ -997,9 +981,6 @@ begin
   itmEnvironmentOptions := TMenuItem.Create(nil);
   itmEnvironmentOptions.Caption := 'Options';
   mnuEnvironment.Add(itmEnvironmentOptions);
-
-
-
 end;
 {------------------------------------------------------------------------------}
 {------------------------------------------------------------------------------}
@@ -1012,7 +993,6 @@ begin
   itmSeperator.Caption := '-';
   Result := itmSeperator;
 end;
-
 
 procedure TMainIDE.LoadResourceFromFile(Value : String);
 Var
@@ -1056,16 +1036,6 @@ Begin
   {what now???}
 end;
 
-function TMainIDE.ReturnActiveUnitList : TUnitInfo;
-var
-  I : Integer;
-  SList : TUnitInfo;
-  TempNum : Integer;
-begin
-
-end;
-
-
 {------------------------------------------------------------------------------}
 {Fills the View Units dialog and the View Forms dialog}
 {------------------------------------------------------------------------------}
@@ -1073,10 +1043,11 @@ end;
 Procedure TMainIDE.UpdateViewDialogs;
 Var
 I : Integer;
-SList : TUnitInfo;
+//SList : TUnitInfo;
 Begin
 ViewUnits1.Listbox1.Items.Clear;
 ViewForms1.Listbox1.Items.Clear;
+{
 For I := 0 to Project.UnitList.Count -1 do
    Begin
     SList := TUnitInfo(Project.UnitList.Items[I]);
@@ -1084,100 +1055,38 @@ For I := 0 to Project.UnitList.Count -1 do
     if SList.FormName <> '' then
     ViewForms1.Listbox1.Items.Add(SList.FormName);
    end;
+}
 End;
 
-
-
 {------------------------------------------------------------------------------}
 {------------------------------------------------------------------------------}
 {------------------------------------------------------------------------------}
 {------------------------------------------------------------------------------}
-
-
-
-
-
-
-Procedure TMainIDE.SetFlags(SList : TUnitInfo);
-var
-Texts : String;
-tempNUm1, TempNUm2 : Integer;
-Begin
-      Assert(False, 'Trace:SList.filename = '+SList.Filename);
-      Texts := Uppercase(ExtractFileName(SList.Filename));
-      Assert(False, 'Trace:Texts := '+Texts);
-      tempNum1 := pos('.',Texts);
-      Assert(False, 'Trace:Tempnum1 = '+inttostr(tempnum1));
-      Texts := Copy(Texts,tempNum1+1,Length(Texts)-tempNum1);
-      Assert(False, 'Trace:Texts = '+Texts);
-      if (Texts = 'PP') or (Texts = 'PAS') then
-        SList.Flags := pfSource
-      else
-      if (Texts = 'LPR') or (Texts = 'DPR') then
-        SList.Flags := pfProject
-      else
-       SList.Flags := pfNone;
-{debugging}
-if SList.Flags = pfProject then
-   Assert(False, 'Trace:' + SLIst.FileName+' is set to pfProject')
-else
-if SList.Flags = pfSource then
-   Assert(False, 'Trace:' + SLIst.FileName+'  is set to pfSource')
-else
-if SList.Flags = pfNone then
-   Assert(False, 'Trace:' + SLIst.FileName+'  is set to pfNone');
-
-end;
-
-Procedure TMainIDE.SetName_Form(SList : TUnitInfo);
-Begin
-  if (SList.flags = pfSource) or (SList.Flags = pfProject) then
-     Begin
-     Assert(False, 'Trace:filename is '+SList.Filename);
-     Assert(False, 'Trace:pos is '+inttostr(pos('.',SList.Filename)));
-     if pos('.',SList.Filename) > 0 then
-     SList.Name := Copy(ExtractFileName(SList.Filename),1,pos('.',ExtractFileName(SList.Filename))-1)
-     else
-     SList.Name := ExtractFileName(SList.Filename);
-
-     Assert(False, 'Trace:Name of new unit is '+SList.Name);
-     end;
-
-  if SList.flags = pfSource then
-     Begin
-     SList.FormName := ReturnFormname(SList.Source);
-     if SList.FormName <> '' then
-        SList.Flags := pfForm;
-     end;
-  Assert(False, 'Trace:Exiting SetName_Form');
-end;
-
 
 Procedure TMainIDE.mnuToggleFormClicked(Sender : TObject);
 Begin
-writeln('Toggle form clicked');
+  writeln('Toggle form clicked');
 
-if FCodeLastActivated then
-   SourceNotebook.DisplayFormforActivePage
-   else
-   SourceNotebook.DisplayCodeforControl(FControlLastActivated);
+  if FCodeLastActivated then
+    SourceNotebook.DisplayFormforActivePage
+  else
+    SourceNotebook.DisplayCodeforControl(FControlLastActivated);
 end;
-
 
 Procedure TMainIDE.CodeorFormActivated(Sender : TObject);
 Begin
-FCodeLastActivated := (TForm(Sender) = TForm(SourceNotebook));
-if FCodeLastActivated then Writeln('TRUE') else Writeln('False');
+  FCodeLastActivated := (TForm(Sender) = TForm(SourceNotebook));
+  if FCodeLastActivated then Writeln('TRUE') else Writeln('False');
 
-FControlLastActivated := Sender;
+  FControlLastActivated := Sender;
 
 end;
 
 Procedure TMainIDE.SetDesigning(Control : TComponent; Value : Boolean);
 Begin
-Writeln('Setting designing');
-Control.SetDesigning(Value);
-Writeln('Set');
+  Writeln('Setting designing');
+  Control.SetDesigning(Value);
+  Writeln('Set');
 end;
 
 
@@ -1185,7 +1094,6 @@ Function TMainIDE.SearchPaths : String;
 Begin
     Result :=  CompilerOpts.OtherUnitFiles;
 End;
-
 
 {
 ------------------------------------------------------------------------
@@ -1275,8 +1183,7 @@ begin
                Writeln('*****************ERROR - Control '+'GlobalMouseSpeedButton'+inttostr(Notebook1.Pageindex)+' not found');
 
      end;
-Writeln('Exiting ControlClick');
-
+  Writeln('Exiting ControlClick');
 end;
 
 
@@ -1291,6 +1198,7 @@ begin
     Result:=nil;
 end;
  }
+
 {procedure TMainIDE.SelectOnlyThisComponent(AComponent:TComponent);
 var
   CurDesigner:TDesigner;
@@ -1307,12 +1215,10 @@ begin
 end;
  }
 
-
 {------------------------------------------------------------------------------}
 procedure TMainIDE.mnuNewFormClicked(Sender : TObject);
 var
   I,N: Integer;
-  SList : TUnitInfo;
   TempName : String;
   TempFormName : String;
   Found : Boolean;
@@ -1341,9 +1247,6 @@ begin
   FormEditor1.AddSelected(TComponent(CInterface.Control));
 end;
 
-
-{------------------------------------------------------------------------------}
-
 {------------------------------------------------------------------------------}
 {------------------------------------------------------------------------------}
 {----------------OpenFileDownArrowClicked--------------------------------------}
@@ -1351,9 +1254,9 @@ end;
 
 Procedure TMainIDE.OpenFileDownArrowClicked(Sender : TObject);
 Begin
-//display the PopupMenu
-if OpenFilePopupMenu.Items.Count > 0 then
-OpenFilePopupMenu.Popup(0,0);
+  //display the PopupMenu
+  if OpenFilePopupMenu.Items.Count > 0 then
+  OpenFilePopupMenu.Popup(0,0);
 end;
 
 //==============================================================================
@@ -1413,12 +1316,7 @@ end;
 
 //==============================================================================
 
-
-
-
 Procedure TMainIDE.FileClosedEvent(Sender : TObject; Filename : String);
-var
-MenuItem : TMenuItem;
 Begin
 
 end;
@@ -1470,20 +1368,19 @@ Begin
 
     end;
 
-//enable save buttons here
-SpeedButton5.Enabled := True;
-SpeedButton6.Enabled := True;
-RunSpeedButton.Enabled := True;
-
+  //enable save buttons here
+  SpeedButton5.Enabled := True;
+  SpeedButton6.Enabled := True;
+  RunSpeedButton.Enabled := True;
 end;
 
 Procedure TMainIDE.FileSavedEvent(Sender : TObject; Filename : String);
 var
-MenuItem : TMenuItem;
+  MenuItem : TMenuItem;
 Begin
-//sender is the TSourceEditor
-writeln('FILESAVEDEVENT');
-If TSourceEditor(Sender).IsControlUnit then
+  //sender is the TSourceEditor
+  writeln('FILESAVEDEVENT');
+  If TSourceEditor(Sender).IsControlUnit then
   begin
    Writeln('*****************CREATING LFM********************');
 //   Writeln('Result = '+Inttostr(CreateLFM(TCustomForm(TSourceEditor(Sender).Control))));
@@ -1500,24 +1397,13 @@ end;
 
 procedure TMainIDE.mnuQuitClicked(Sender : TObject);
 var
-I : Integer;
-SList : TUnitInfo;
+  I : Integer;
 begin
-//if there is a project loaded, check if it should be saved
+  //if there is a project loaded, check if it should be saved
+  Project.Free;
 
-//free the unitlist objects
-if Project.UnitList.Count > 0 then
-  For I := 0 to Project.UnitList.Count -1 do
-            Begin
-            SList := TUnitInfo(Project.UnitList.Items[I]);
-            SList.Destroy;
-            end;
-
-Project.Free;
-
-Close;
+  Close;
 end;
-
 
 {------------------------------------------------------------------------------}
 procedure TMainIDE.mnuViewInspectorClicked(Sender : TObject);
@@ -1525,14 +1411,13 @@ begin
  ObjectInspector1.Show;
 end;
 
-
 {------------------------------------------------------------------------------}
 
 Procedure TMainIDE.mnuViewUnitsClicked(Sender : TObject);
 Begin
-Writeln('View Units Clicked');
-ViewUnits1.ShowModal;
-Writeln('Done with ViewUnits Clicked');
+  Writeln('View Units Clicked');
+  ViewUnits1.ShowModal;
+  Writeln('Done with ViewUnits Clicked');
 end;
 
 Procedure TMainIDE.mnuViewFormsClicked(Sender : TObject);
@@ -1542,7 +1427,7 @@ end;
 
 Procedure TMainIDE.mnuViewCodeExplorerClick(Sender : TObject);
 begin
-SourceNotebook.Show;
+  SourceNotebook.Show;
 end;
 
 Procedure TMainIDE.mnuViewMessagesClick(Sender : TObject);
@@ -1568,20 +1453,18 @@ end;
 
 Procedure TMainIDE.mnuSearchFindClicked(Sender : TObject);
 Begin
-itmSearchFindAgain.Enabled := True;
-FindDialog1.ShowModal;
+  itmSearchFindAgain.Enabled := True;
+  FindDialog1.ShowModal;
 End;
 
 Procedure TMainIDE.mnuSearchFindAgainClicked(Sender : TObject);
 Begin
-DoFind(itmSearchFindAgain);
+  DoFind(itmSearchFindAgain);
 End;
 
 {------------------------------------------------------------}
 
 Procedure TMainIDE.mnuNewProjectClicked(Sender : TObject);
-var
-  SList : TUnitInfo;
 Begin
   Assert(False, 'Trace:New Project Clicked');
 end;
@@ -1609,10 +1492,10 @@ if SourceNotebook.Empty then Begin
    Exit;
    end;
 
-//for now just compile the active unit;
-SourceNotebook.SaveClicked(Sender);
+  //for now just compile the active unit;
+  SourceNotebook.SaveClicked(Sender);
 
-if not(MessageDlg.Visible) then
+  if not(MessageDlg.Visible) then
    Begin  //display the dialog under the TSourceNotebook
       MessageDlg.Show;
       MessageDlg.Top := Screen.Height - 150;
@@ -1623,11 +1506,9 @@ if not(MessageDlg.Visible) then
      MessageDlg.Left := SourceNotebook.Left;
       MessageDlg.Width := SourceNotebook.Width;
    end;
-MessageDlg.Clear;
-Compiler1.Compile(SourceNotebook.ActiveUnitName);
-
+  MessageDlg.Clear;
+  Compiler1.Compile(SourceNotebook.ActiveUnitName);
 end;
-
 
 Procedure TMainIDE.mnuRunProjectClicked(Sender : TObject);
 var
@@ -1636,7 +1517,7 @@ var
   TheProgram : String;
 begin
   Assert(False, 'Trace:Run Project Clicked');
-if SourceNotebook.Empty then Begin
+  if SourceNotebook.Empty then Begin
    Application.MessageBox('No units loaded.  Load a program first!','Error',mb_OK);
    Exit;
    end;
@@ -1670,28 +1551,25 @@ begin
  //frmProjectOptions.Show;
 end;
 
-
-
 Function TMainIDE.ReturnFormName(Source : TStringlist) : String;
 Var
-I : Integer;
-Num,Num2 : Integer;
-Found : Boolean;
-Texts : String;
-Temp : String;
-Temp2 : String;
-
+  I : Integer;
+  Num,Num2 : Integer;
+  Found : Boolean;
+  Texts : String;
+  Temp : String;
+  Temp2 : String;
 Begin
-//Assert(False, 'Trace:************************************************');
-//Assert(False, 'Trace:************************************************');
-//Assert(False, 'Trace:************************************************');
-//Assert(False, 'Trace:************************************************');
-//Assert(False, 'Trace:************************************************');
+  //Assert(False, 'Trace:************************************************');
+  //Assert(False, 'Trace:************************************************');
+  //Assert(False, 'Trace:************************************************');
+  //Assert(False, 'Trace:************************************************');
+  //Assert(False, 'Trace:************************************************');
 
-//move to TUnitInfo
-//parse file for the first class(TForm) I guess
-Found := False;
-for I := 0 to Source.Count-1 do
+  //move to TUnitInfo
+  //parse file for the first class(TForm) I guess
+  Found := False;
+  for I := 0 to Source.Count-1 do
   Begin
     Num := pos(uppercase('class(TForm)'),uppercase(Source.Strings[I]));
     if Num <> 0 then
@@ -1707,20 +1585,20 @@ for I := 0 to Source.Count-1 do
                  if Length(Texts) <> 0 then Break;
               end;
          temp := Texts;
-//  Assert(False, 'Trace:*******************');
-//  Assert(False, 'Trace:Temp := '+Temp);
+  //  Assert(False, 'Trace:*******************');
+  //  Assert(False, 'Trace:Temp := '+Temp);
          Found := True;
          Break;
        end;
   end;
-if Found then
+  if Found then
    Begin
-{Temp now holds TFORM1 or whatever the name of the class is}
-{Search for the var statement from the I line down}
+  {Temp now holds TFORM1 or whatever the name of the class is}
+  {Search for the var statement from the I line down}
    Texts := '';
    Num := I;
 
-for I := Num to Source.Count-1 do
+  for I := Num to Source.Count-1 do
   Begin
    Found := False;
    Num := pos('VAR',uppercase(Source.Strings[I]));
@@ -1731,17 +1609,17 @@ for I := Num to Source.Count-1 do
        if (Length(Temp2) = 3) then
           Begin
            Found := True;
-//           Assert(False, 'Trace:1');
+  //           Assert(False, 'Trace:1');
            Num := I;
            Break;
           end;
 
-//var in the beginning of a sentence
+  //var in the beginning of a sentence
        if (Num = 1) and (  not ( (Temp2[4] in CapLetters) or (Temp2[4] in SmallLetters) or (Temp2[4] in Numbers))) then
            Begin
             Found := True;
            Num := I;
-//           Assert(False, 'Trace:2');
+  //           Assert(False, 'Trace:2');
             Break;
            end;
 
@@ -1749,7 +1627,7 @@ for I := Num to Source.Count-1 do
            Begin
             Found := True;
            Num := I;
-//           Assert(False, 'Trace:3');
+  //           Assert(False, 'Trace:3');
             Break;
            end;
 
@@ -1758,16 +1636,16 @@ for I := Num to Source.Count-1 do
            Begin
             Found := True;
            Num := I;
-//           Assert(False, 'Trace:4');
+  //           Assert(False, 'Trace:4');
             Break;
            end;
        end;
    end;
 
  end;
-Assert(False, 'Trace:Length of temp2 is '+inttostr(Length(Temp2)));
+  Assert(False, 'Trace:Length of temp2 is '+inttostr(Length(Temp2)));
 
-if Found then
+  if Found then
    begin
    for I := Num to Source.Count-1 do
    Begin
@@ -1792,7 +1670,7 @@ if Found then
    end;
   end;
 
-result := Texts;
+  result := Texts;
 end;
 
 Procedure TMainIDE.MessageViewDblClick(Sender : TObject);
@@ -1810,10 +1688,13 @@ initialization
 end.
 
 
-
 { =============================================================================
 
   $Log$
+  Revision 1.51  2001/01/31 06:25:35  lazarus
+  Removed global unit.
+  Removed and commented all references to TUnitInfo.
+
   Revision 1.50  2001/01/29 05:46:30  lazarus
   Moved Project Options and Compiler Options menus to the Project menu.
   Added Project property to TMainIDE class to allow the project to be
