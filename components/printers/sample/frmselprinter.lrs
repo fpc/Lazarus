@@ -1,11 +1,16 @@
 { Ceci est un fichier ressource généré automatiquement par Lazarus }
 
 LazarusResources.Add('TForm1','FORMDATA',[
-  'TPF0'#6'TForm1'#5'Form1'#7'Caption'#6#5'Form1'#12'ClientHeight'#3','#1#11'Cl'
-  +'ientWidth'#3#144#1#13'PixelsPerInch'#2'`'#18'HorzScrollBar.Page'#3#145#1#18
-  +'VertScrollBar.Page'#3'-'#1#4'Left'#3'"'#1#6'Height'#3','#1#3'Top'#3#156#0#5
-  +'Width'#3#144#1#0#7'TButton'#7'Button1'#7'Caption'#6#16'Select a printer'#7
-  +'OnClick'#7#12'Button1Click'#8'TabOrder'#2#0#4'Left'#2#16#6'Height'#2#25#3'T'
-  +'op'#2#16#5'Width'#3#171#0#0#0#14'TPrinterDialog'#2'PD'#4'left'#2#16#3'top'#3
-  +#224#0#0#0#0
+  'TPF0'#6'TForm1'#5'Form1'#7'Caption'#6#5'Form1'#12'ClientHeight'#2't'#11'Clie'
+  +'ntWidth'#3'S'#1#13'PixelsPerInch'#2'K'#18'HorzScrollBar.Page'#3'R'#1#18'Ver'
+  +'tScrollBar.Page'#2's'#4'Left'#3#245#0#6'Height'#2't'#3'Top'#3#167#0#5'Width'
+  +#3'S'#1#0#6'TLabel'#6'Label1'#7'Caption'#6'/This sample show how to use the '
+  +'printer dialogs'#5'Color'#7#6'clNone'#4'Left'#2#16#6'Height'#2#15#3'Top'#2
+  +' '#5'Width'#3'?'#1#0#0#7'TButton'#7'Button2'#7'Caption'#6#27'Execute TPrint'
+  +'erSetupDialog'#7'OnClick'#7#12'Button2Click'#8'TabOrder'#2#0#4'Left'#2#16#6
+  +'Height'#2#25#3'Top'#2'0'#5'Width'#3'8'#1#0#0#7'TButton'#7'Button1'#22'Borde'
+  +'rSpacing.OnChange'#13#7'Caption'#6#20'Execute TPrintDialog'#7'OnClick'#7#12
+  +'Button1Click'#8'TabOrder'#2#1#4'Left'#2#16#6'Height'#2#25#3'Top'#2'P'#5'Wid'
+  +'th'#3'8'#1#0#0#19'TPrinterSetupDialog'#3'PSD'#4'left'#2#8#3'top'#2#8#0#0#12
+  +'TPrintDialog'#2'PD'#6'Copies'#2#1#4'left'#2#8#3'top'#3#248#0#0#0#0
 ]);

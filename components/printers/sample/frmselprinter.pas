@@ -14,11 +14,10 @@
   Author: Olivier GUILBAUD
 
   Abstract:
-    Little sample for show call printer unit
+    Little sample for show how to use PrintersDlgs unit
 
 ------------------------------------------------------------------------------}
-
-unit frmSelPrinter;
+unit frmselprinter;
 
 {$mode objfpc}{$H+}
 
@@ -26,13 +25,20 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
-  PrintersDlgs;
+  PrintersDlgs, StdCtrls;
 
 type
+
+  { TForm1 }
+
   TForm1 = class(TForm)
     Button1: TButton;
-    PD: TPrinterDialog;
+    Button2: TButton;
+    Label1: TLABEL;
+    PD: TPrintDialog;
+    PSD: TPrinterSetupDialog;
     procedure Button1Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
   private
     { private declarations }
   public
@@ -46,10 +52,17 @@ implementation
 
 { TForm1 }
 
+
+procedure TForm1.Button2Click(Sender: TObject);
+begin
+  PSD.Execute;
+end;
+
 procedure TForm1.Button1Click(Sender: TObject);
 begin
   PD.Execute;
 end;
+
 
 initialization
   {$I frmselprinter.lrs}

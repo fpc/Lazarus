@@ -1,0 +1,477 @@
+object dlgSelectPrinter: TdlgSelectPrinter
+  Caption = 'Printing'
+  ClientHeight = 385
+  ClientWidth = 537
+  OnCreate = dlgSelectPrinterCREATE
+  OnShow = dlgSelectPrinterSHOW
+  PixelsPerInch = 75
+  HorzScrollBar.Page = 536
+  VertScrollBar.Page = 384
+  Left = 464
+  Height = 385
+  Top = 153
+  Width = 537
+  object labCUPS: TLabel
+    BorderSpacing.OnChange = nil
+    Caption = 'CUPS (Common Unix Printing System)'
+    Color = clNone
+    Left = 8
+    Height = 17
+    Top = 152
+    Width = 229
+  end
+  object labCUPSServer: TLabel
+    BorderSpacing.OnChange = nil
+    Caption = 'labCUPSServer'
+    Color = clNone
+    Left = 240
+    Height = 17
+    Top = 152
+    Width = 296
+  end
+  object Groupbox1: TGroupBox
+    BorderSpacing.OnChange = nil
+    Caption = ' Printer '
+    ClientHeight = 119
+    ClientWidth = 525
+    ParentColor = True
+    ParentCtl3D = False
+    TabOrder = 0
+    Left = 8
+    Height = 136
+    Top = 8
+    Width = 529
+    object ImgPrn: TImage
+      BorderSpacing.OnChange = nil
+      Transparent = True
+      Left = 124
+      Height = 19
+      Top = 9
+      Width = 17
+    end
+    object Label1: TLabel
+      BorderSpacing.OnChange = nil
+      Caption = 'Name'
+      Color = clNone
+      Left = 19
+      Height = 17
+      Top = 9
+      Width = 97
+    end
+    object Label2: TLabel
+      BorderSpacing.OnChange = nil
+      Caption = 'State'
+      Color = clNone
+      Left = 17
+      Height = 17
+      Top = 36
+      Width = 99
+    end
+    object Label3: TLabel
+      BorderSpacing.OnChange = nil
+      Caption = 'Location'
+      Color = clNone
+      Left = 18
+      Height = 17
+      Top = 64
+      Width = 98
+    end
+    object Label4: TLabel
+      BorderSpacing.OnChange = nil
+      Caption = 'Description'
+      Color = clNone
+      Left = 17
+      Height = 17
+      Top = 92
+      Width = 99
+    end
+    object labState: TLabel
+      AutoSize = True
+      BorderSpacing.OnChange = nil
+      Caption = 'labState'
+      Color = clNone
+      Left = 128
+      Height = 15
+      Top = 40
+      Width = 391
+    end
+    object labLocation: TLabel
+      AutoSize = True
+      BorderSpacing.OnChange = nil
+      Caption = 'labLocation'
+      Color = clNone
+      Left = 128
+      Height = 15
+      Top = 66
+      Width = 391
+    end
+    object labComment: TLabel
+      BorderSpacing.OnChange = nil
+      Caption = 'labComment'
+      Color = clNone
+      Left = 126
+      Height = 17
+      Top = 92
+      Width = 389
+    end
+    object cbPrinters: TComboBox
+      BorderSpacing.OnChange = nil
+      MaxLength = 0
+      OnChange = cbPrintersCHANGE
+      OnKeyPress = cbPrintersKEYPRESS
+      ParentCtl3D = False
+      Style = csDropDownList
+      TabOrder = 0
+      Text = 'cbPrinters'
+      Left = 142
+      Height = 22
+      Top = 6
+      Width = 291
+    end
+    object btnProp: TButton
+      BorderSpacing.OnChange = nil
+      Caption = 'Properties ...'
+      OnClick = btnPropCLICK
+      TabOrder = 1
+      Left = 430
+      Height = 25
+      Top = 4
+      Width = 92
+    end
+  end
+  object NbOpts: TNotebook
+    BorderSpacing.OnChange = nil
+    PageIndex = 0
+    Height = 168
+    Top = 176
+    Width = 537
+    object pgCopies: TPage
+      Caption = 'Copies'
+      ClientWidth = 537
+      ClientHeight = 146
+      Height = 146
+      Top = 22
+      Width = 537
+      object gbPages: TGroupBox
+        BorderSpacing.OnChange = nil
+        Caption = ' Select pages '
+        ClientHeight = 115
+        ClientWidth = 258
+        ParentColor = True
+        ParentCtl3D = False
+        TabOrder = 0
+        Left = 9
+        Height = 132
+        Top = 6
+        Width = 262
+        object Bevel1: TBevel
+          BorderSpacing.OnChange = nil
+          Height = 3
+          Left = 14
+          Name = 'Bevel1'
+          Shape = bsTopLine
+          Top = 73
+          Style = bsRaised
+          Width = 230
+          Left = 14
+          Height = 3
+          Top = 73
+          Width = 230
+        end
+        object labPage: TLabel
+          BorderSpacing.OnChange = nil
+          Caption = 'Pages'
+          Color = clNone
+          Left = 14
+          Height = 17
+          Top = 90
+          Width = 102
+        end
+        object edRange: TEdit
+          BorderSpacing.OnChange = nil
+          TabOrder = 0
+          Left = 92
+          Height = 23
+          Top = 47
+          Width = 112
+        end
+        object edPageSet: TComboBox
+          BorderSpacing.OnChange = nil
+          Items.Strings = (
+            'All pages'
+            'Odd pages'
+            'Even pages'
+          )
+          ItemIndex = 0
+          MaxLength = 0
+          ParentCtl3D = False
+          Style = csDropDownList
+          TabOrder = 1
+          Text = 'All pages'
+          Left = 132
+          Height = 25
+          Top = 82
+          Width = 118
+        end
+        object rbCurrentPage: TRadioButton
+          AllowGrayed = True
+          BorderSpacing.OnChange = nil
+          Caption = 'Current page'
+          DragCursor = crDefault
+          Enabled = False
+          TabOrder = 2
+          Left = 12
+          Height = 20
+          Top = 26
+          Width = 98
+        end
+        object rbRange: TRadioButton
+          AllowGrayed = True
+          BorderSpacing.OnChange = nil
+          Caption = 'Range'
+          DragCursor = crDefault
+          TabOrder = 4
+          Left = 12
+          Height = 20
+          Top = 50
+          Width = 61
+        end
+        object rbAllPage: TRadioButton
+          AllowGrayed = True
+          BorderSpacing.OnChange = nil
+          Caption = 'All '
+          Checked = True
+          DragCursor = crDefault
+          State = cbChecked
+          TabOrder = 3
+          Left = 12
+          Height = 20
+          Top = 2
+          Width = 48
+        end
+      end
+      object gbCopies: TGroupBox
+        BorderSpacing.OnChange = nil
+        Caption = ' Copies '
+        ClientHeight = 114
+        ClientWidth = 253
+        ParentColor = True
+        ParentCtl3D = False
+        TabOrder = 1
+        Left = 279
+        Height = 131
+        Top = 7
+        Width = 257
+        object imgCollate: TImage
+          AutoSize = True
+          BorderSpacing.OnChange = nil
+          Proportional = True
+          Transparent = True
+          Left = 6
+          Height = 37
+          Top = 32
+          Width = 93
+        end
+        object lanNumCopies: TLabel
+          BorderSpacing.OnChange = nil
+          Caption = 'Number of copies'
+          Color = clNone
+          Left = 6
+          Height = 17
+          Top = 8
+          Width = 113
+        end
+        object edCopies: TSpinEdit
+          BorderSpacing.OnChange = nil
+          Decimal_Places = 0
+          MaxValue = 100
+          TabOrder = 0
+          Left = 134
+          Height = 20
+          Top = 3
+          Width = 50
+        end
+        object cbCollate: TCheckBox
+          AllowGrayed = True
+          BorderSpacing.OnChange = nil
+          Caption = 'Collate'
+          DragCursor = crDefault
+          OnClick = cbReverseCLICK
+          TabOrder = 2
+          Left = 119
+          Height = 20
+          Top = 32
+          Width = 104
+        end
+        object cbReverse: TCheckBox
+          AllowGrayed = True
+          BorderSpacing.OnChange = nil
+          Caption = 'Reverse'
+          DragCursor = crDefault
+          OnClick = cbReverseCLICK
+          TabOrder = 1
+          Left = 119
+          Height = 20
+          Top = 60
+          Width = 120
+        end
+      end
+    end
+    object pgAdvance: TPage
+      Caption = 'Advanced'
+      ClientWidth = 537
+      ClientHeight = 146
+      Height = 146
+      Top = 22
+      Width = 537
+      object labTask: TLabel
+        BorderSpacing.OnChange = nil
+        Caption = 'Delayed task'
+        Color = clNone
+        Left = 7
+        Height = 17
+        Top = 10
+        Width = 201
+      end
+      object Label5: TLabel
+        BorderSpacing.OnChange = nil
+        Caption = 'Priority'
+        Color = clNone
+        Left = 7
+        Height = 17
+        Top = 45
+        Width = 112
+      end
+      object cbTasktime: TComboBox
+        BorderSpacing.OnChange = nil
+        Items.Strings = (
+          'Immediate'
+          'Never (suspending)'
+          'during the day'
+          'evening'
+          'night'
+          'Weekend'
+          'After close of business'
+          'After midnight'
+          'At time'
+        )
+        ItemIndex = 0
+        MaxLength = 0
+        OnChange = cbTasktimeCHANGE
+        OnKeyPress = cbPrintersKEYPRESS
+        ParentCtl3D = False
+        Style = csDropDownList
+        TabOrder = 1
+        Text = 'Immediate'
+        Left = 215
+        Height = 25
+        Top = 7
+        Width = 200
+      end
+      object edTimeTask: TMaskEdit
+        BorderSpacing.OnChange = nil
+        DragCursor = crDefault
+        EditMask = '99:99:99'
+        MaxLength = 8
+        ParentCtl3D = False
+        TabOrder = 0
+        Text = '23:00:00'
+        Left = 429
+        Height = 23
+        Top = 9
+        Width = 58
+      end
+      object edPriority: TSpinEdit
+        BorderSpacing.OnChange = nil
+        Decimal_Places = 0
+        MaxValue = 100
+        Left = 127
+        Height = 20
+        Top = 42
+        Width = 50
+      end
+      object tkbPriority: TTrackBar
+        BorderSpacing.OnChange = nil
+        DragCursor = crDefault
+        Frequency = 10
+        Max = 100
+        OnChange = tkbPriorityCHANGE
+        ParentCtl3D = False
+        Position = 10
+        ScalePos = trTop
+        TabOrder = 2
+        TabStop = False
+        TickMarks = tmBoth
+        Frequency = 10
+        Max = 100
+        OnChange = tkbPriorityCHANGE
+        Position = 10
+        ScalePos = trTop
+        TabStop = False
+        TickMarks = tmBoth
+        Left = 192
+        Height = 20
+        Top = 49
+        Width = 335
+      end
+    end
+  end
+  object Panel1: TPanel
+    Align = alBottom
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.OnChange = nil
+    ClientHeight = 41
+    ClientWidth = 537
+    FullRepaint = False
+    TabOrder = 2
+    TabStop = True
+    Height = 41
+    Top = 344
+    Width = 537
+    object btnCancel: TButton
+      Anchors = [akTop, akRight]
+      BorderSpacing.OnChange = nil
+      Cancel = True
+      Caption = 'Cancel'
+      ModalResult = 2
+      TabOrder = 0
+      Left = 432
+      Height = 25
+      Top = 8
+      Width = 91
+    end
+    object btnPrint: TButton
+      Anchors = [akTop, akRight]
+      BorderSpacing.OnChange = nil
+      Caption = 'Print'
+      Default = True
+      ModalResult = 1
+      OnClick = btnPrintCLICK
+      TabOrder = 1
+      Left = 328
+      Height = 25
+      Top = 8
+      Width = 99
+    end
+    object btnReduc: TButton
+      BorderSpacing.OnChange = nil
+      Caption = 'More ...'
+      OnClick = btnReducCLICK
+      TabOrder = 2
+      Left = 8
+      Height = 25
+      Top = 8
+      Width = 88
+    end
+    object btnPreview: TButton
+      BorderSpacing.OnChange = nil
+      Caption = 'Preview'
+      ModalResult = 6
+      TabOrder = 3
+      Left = 208
+      Height = 25
+      Top = 8
+      Width = 123
+    end
+  end
+end

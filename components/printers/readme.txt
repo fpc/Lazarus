@@ -2,16 +2,15 @@ Printer4Lazarus package
 =======================
 
 This package add some components.
+  TPrinterSetupDialog  : for update properties of selected printer
+  TPrintDialog         : for select and/or update an printer before printing
 
 Win32 :
-  TPrinterSetupDialog  : for update properties of selected printer
-  TPrinterDialog       : for select and/or update an printer
-  
+ Native implementation 
   
 Linux :
-  For moment, not use this package, use the cups4lazarus project (if you have CUPS installed)
-
+  Yous must install CUPS and libcups v1.1.19 or more.
 
 FAQ : 
   Q:If I use Printers unit, the call of printer object générate an exception "Access Violation"
-  R:Add in uses clause of your project, WinPrinters (for Win32) or CUPSPrinter (for linux)
+  R:Add in uses clause of your project, osPrinters

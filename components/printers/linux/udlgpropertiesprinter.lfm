@@ -1,0 +1,382 @@
+object dlgpropertiesprinter: Tdlgpropertiesprinter
+  Caption = 'Printer properties'
+  ClientHeight = 417
+  ClientWidth = 457
+  OnCreate = dlgpropertiesprinterCREATE
+  OnShow = dlgpropertiesprinterSHOW
+  PixelsPerInch = 75
+  HorzScrollBar.Page = 456
+  VertScrollBar.Page = 416
+  Left = 333
+  Height = 417
+  Top = 111
+  Width = 457
+  object Panel1: TPanel
+    Align = alBottom
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.OnChange = nil
+    ClientHeight = 41
+    ClientWidth = 457
+    FullRepaint = False
+    TabOrder = 0
+    TabStop = True
+    Height = 41
+    Top = 376
+    Width = 457
+    object btnCancel1: TButton
+      Anchors = [akTop, akRight]
+      BorderSpacing.OnChange = nil
+      Cancel = True
+      Caption = 'Cancel'
+      ModalResult = 2
+      TabOrder = 0
+      Left = 352
+      Height = 25
+      Top = 8
+      Width = 91
+    end
+    object btnOk: TButton
+      Anchors = [akTop, akRight]
+      BorderSpacing.OnChange = nil
+      Caption = 'Ok'
+      Default = True
+      ModalResult = 1
+      TabOrder = 1
+      Left = 255
+      Height = 25
+      Top = 8
+      Width = 91
+    end
+  end
+  object PagesProperties: TNotebook
+    Align = alClient
+    BorderSpacing.OnChange = nil
+    PageIndex = 0
+    Height = 376
+    Width = 457
+    object pgGeneral: TPage
+      Caption = 'General'
+      ClientWidth = 457
+      ClientHeight = 354
+      Height = 354
+      Top = 22
+      Width = 457
+      object labPaperSize: TLabel
+        BorderSpacing.OnChange = nil
+        Caption = 'Paper size'
+        Color = clNone
+        Left = 15
+        Height = 17
+        Top = 19
+        Width = 65
+      end
+      object labPaperType: TLabel
+        BorderSpacing.OnChange = nil
+        Caption = 'Paper type'
+        Color = clNone
+        Left = 15
+        Height = 17
+        Top = 55
+        Width = 65
+      end
+      object labPaperSrc: TLabel
+        BorderSpacing.OnChange = nil
+        Caption = 'Paper source'
+        Color = clNone
+        Left = 15
+        Height = 17
+        Top = 92
+        Width = 112
+      end
+      object cbPaperSize: TComboBox
+        BorderSpacing.OnChange = nil
+        DropDownCount = 10
+        MaxLength = 0
+        OnKeyPress = cbPaperSizeKEYPRESS
+        ParentCtl3D = False
+        Style = csDropDownList
+        TabOrder = 0
+        Left = 131
+        Height = 25
+        Top = 11
+        Width = 309
+      end
+      object cbPaperType: TComboBox
+        BorderSpacing.OnChange = nil
+        MaxLength = 0
+        OnKeyPress = cbPaperSizeKEYPRESS
+        ParentCtl3D = False
+        Style = csDropDownList
+        TabOrder = 1
+        Left = 131
+        Height = 25
+        Top = 47
+        Width = 309
+      end
+      object cbPaperSrc: TComboBox
+        BorderSpacing.OnChange = nil
+        MaxLength = 0
+        OnKeyPress = cbPaperSizeKEYPRESS
+        ParentCtl3D = False
+        Style = csDropDownList
+        TabOrder = 4
+        Left = 131
+        Height = 25
+        Top = 81
+        Width = 309
+      end
+      object gbOrientation: TGroupBox
+        BorderSpacing.OnChange = nil
+        Caption = ' Orientation '
+        ClientHeight = 102
+        ClientWidth = 229
+        ParentColor = True
+        ParentCtl3D = False
+        TabOrder = 6
+        Left = 14
+        Height = 119
+        Top = 123
+        Width = 233
+        object imgOrientation: TImage
+          BorderSpacing.OnChange = nil
+          Transparent = True
+          Left = 167
+          Height = 48
+          Top = 25
+          Width = 52
+        end
+        object rbPortrait: TRadioButton
+          AllowGrayed = True
+          BorderSpacing.OnChange = nil
+          Caption = 'Portrait'
+          Checked = True
+          DragCursor = crDefault
+          OnClick = rbPortraitCLICK
+          State = cbChecked
+          TabOrder = 0
+          Left = 7
+          Height = 20
+          Top = 5
+          Width = 64
+        end
+        object rbLandscape: TRadioButton
+          AllowGrayed = True
+          BorderSpacing.OnChange = nil
+          Caption = 'Landscape'
+          DragCursor = crDefault
+          OnClick = rbPortraitCLICK
+          TabOrder = 1
+          Left = 7
+          Height = 20
+          Top = 29
+          Width = 87
+        end
+        object rbrev_Landscape: TRadioButton
+          AllowGrayed = True
+          BorderSpacing.OnChange = nil
+          Caption = 'Reverse landscape'
+          DragCursor = crDefault
+          OnClick = rbPortraitCLICK
+          TabOrder = 2
+          Left = 7
+          Height = 20
+          Top = 53
+          Width = 133
+        end
+        object rbrev_portrait: TRadioButton
+          AllowGrayed = True
+          BorderSpacing.OnChange = nil
+          Caption = 'Reverse portrait'
+          DragCursor = crDefault
+          OnClick = rbPortraitCLICK
+          TabOrder = 3
+          Left = 7
+          Height = 20
+          Top = 77
+          Width = 113
+        end
+      end
+      object gbDuplex: TGroupBox
+        BorderSpacing.OnChange = nil
+        Caption = ' Duplex printing '
+        ClientHeight = 102
+        ClientWidth = 181
+        ParentColor = True
+        ParentCtl3D = False
+        TabOrder = 2
+        Left = 255
+        Height = 119
+        Top = 123
+        Width = 185
+        object imgDuplex: TImage
+          BorderSpacing.OnChange = nil
+          Transparent = True
+          Left = 126
+          Height = 52
+          Top = 21
+          Width = 44
+        end
+        object rbDuplexNone: TRadioButton
+          AllowGrayed = True
+          BorderSpacing.OnChange = nil
+          Caption = 'None'
+          Checked = True
+          DragCursor = crDefault
+          OnClick = rbPortraitCLICK
+          State = cbChecked
+          TabOrder = 0
+          Left = 14
+          Height = 20
+          Top = 5
+          Width = 55
+        end
+        object rbDuplexLong: TRadioButton
+          AllowGrayed = True
+          BorderSpacing.OnChange = nil
+          Caption = 'Long edge'
+          DragCursor = crDefault
+          OnClick = rbPortraitCLICK
+          TabOrder = 1
+          Left = 14
+          Height = 20
+          Top = 29
+          Width = 85
+        end
+        object rbDuplexShort: TRadioButton
+          AllowGrayed = True
+          BorderSpacing.OnChange = nil
+          Caption = 'Short edge'
+          DragCursor = crDefault
+          OnClick = rbPortraitCLICK
+          TabOrder = 2
+          Left = 14
+          Height = 20
+          Top = 53
+          Width = 86
+        end
+      end
+      object gbBanners: TGroupBox
+        BorderSpacing.OnChange = nil
+        Caption = ' Banners '
+        ClientHeight = 79
+        ClientWidth = 228
+        ParentColor = True
+        ParentCtl3D = False
+        TabOrder = 3
+        Left = 15
+        Height = 96
+        Top = 247
+        Width = 232
+        object labBanStart: TLabel
+          BorderSpacing.OnChange = nil
+          Caption = 'Start'
+          Color = clNone
+          Left = 6
+          Height = 17
+          Top = 9
+          Width = 65
+        end
+        object labBanEnd: TLabel
+          BorderSpacing.OnChange = nil
+          Caption = 'End'
+          Color = clNone
+          Left = 6
+          Height = 17
+          Top = 49
+          Width = 65
+        end
+        object cbBanStart: TComboBox
+          BorderSpacing.OnChange = nil
+          MaxLength = 0
+          OnKeyPress = cbPaperSizeKEYPRESS
+          ParentCtl3D = False
+          Style = csDropDownList
+          TabOrder = 0
+          Left = 94
+          Height = 25
+          Top = 1
+          Width = 128
+        end
+        object cbBanEnd: TComboBox
+          BorderSpacing.OnChange = nil
+          MaxLength = 0
+          OnKeyPress = cbPaperSizeKEYPRESS
+          ParentCtl3D = False
+          Style = csDropDownList
+          TabOrder = 1
+          Left = 94
+          Height = 25
+          Top = 41
+          Width = 128
+        end
+      end
+      object gbPagesSheet: TGroupBox
+        BorderSpacing.OnChange = nil
+        Caption = ' Pages per sheet '
+        ClientHeight = 79
+        ClientWidth = 181
+        ParentColor = True
+        ParentCtl3D = False
+        TabOrder = 5
+        Left = 255
+        Height = 96
+        Top = 247
+        Width = 185
+        object imgPageSheet: TImage
+          BorderSpacing.OnChange = nil
+          Transparent = True
+          Left = 78
+          Height = 50
+          Top = 17
+          Width = 80
+        end
+        object rbSheet1: TRadioButton
+          AllowGrayed = True
+          BorderSpacing.OnChange = nil
+          Caption = '1'
+          Checked = True
+          DragCursor = crDefault
+          OnClick = rbPortraitCLICK
+          State = cbChecked
+          TabOrder = 0
+          Left = 6
+          Height = 20
+          Top = 5
+          Width = 42
+        end
+        object rbSheet2: TRadioButton
+          AllowGrayed = True
+          BorderSpacing.OnChange = nil
+          Caption = '2'
+          DragCursor = crDefault
+          OnClick = rbPortraitCLICK
+          TabOrder = 1
+          Left = 6
+          Height = 20
+          Top = 25
+          Width = 42
+        end
+        object rbSheet4: TRadioButton
+          AllowGrayed = True
+          BorderSpacing.OnChange = nil
+          Caption = '4'
+          DragCursor = crDefault
+          OnClick = rbPortraitCLICK
+          TabOrder = 2
+          Left = 6
+          Height = 20
+          Top = 46
+          Width = 42
+        end
+      end
+    end
+    object pgMarge: TPage
+      Caption = 'Borders'
+      ClientWidth = 457
+      ClientHeight = 354
+      Height = 354
+      Top = 22
+      Width = 457
+    end
+  end
+end
