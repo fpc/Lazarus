@@ -820,7 +820,6 @@ begin
   DebugBoss.ConnectMainBarEvents;
   PkgBoss:=TPkgManager.Create(Self);
   PkgBoss.ConnectMainBarEvents;
-
   // setup the IDE components
   LoadMenuShortCuts;
   SetupOutputFilter;
@@ -1275,6 +1274,12 @@ begin
                     lisLaunchingCmdLine,nil,[]));
   MacroList.Add(TTransferMacro.Create('ProjPublishDir','',
                     lisPublishProjDir,nil,[]));
+  MacroList.Add(TTransferMacro.Create('ProjUnitPath','',
+                    lisProjectUnitPath,nil,[]));
+  MacroList.Add(TTransferMacro.Create('ProjIncPath','',
+                    lisProjectIncPath,nil,[]));
+  MacroList.Add(TTransferMacro.Create('ProjSrcPath','',
+                    lisProjectSrcPath,nil,[]));
   MacroList.OnSubstitution:=@OnMacroSubstitution;
   
   CompilerOptions.OnParseString:=@OnSubstituteCompilerOption;
@@ -3779,6 +3784,7 @@ begin
 
   Result:=LoadCodeToolsDefines(CodeToolBoss,CodeToolsOpts,
                                Project1.ProjectInfoFile);
+  CreateProjectDefineTemplate(Project1.CompilerOptions);
 end;
 
 procedure TMainIDE.OnCopyFile(const Filename: string; var Copy: boolean;
@@ -6230,6 +6236,24 @@ begin
       s:=Project1.ProjectDirectory
     else
       s:='';
+  end else if MacroName='projunitpath' then begin
+    Handled:=true;
+    if Project1<>nil then
+      s:=Project1.CompilerOptions.GetUnitPath(false)
+    else
+      s:='';
+  end else if MacroName='projincpath' then begin
+    Handled:=true;
+    if Project1<>nil then
+      s:=Project1.CompilerOptions.GetIncludePath(false)
+    else
+      s:='';
+  end else if MacroName='projsrcpath' then begin
+    Handled:=true;
+    if Project1<>nil then
+      s:=Project1.CompilerOptions.GetSrcPath(false)
+    else
+      s:='';
   end else if MacroName='projpublishdir' then begin
     Handled:=true;
     if Project1<>nil then
@@ -8447,6 +8471,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.531  2003/04/21 16:21:28  mattias
+  implemented default package for custom IDE components
+
   Revision 1.530  2003/04/20 23:10:03  mattias
   implemented inherited project compiler options
 
