@@ -420,7 +420,8 @@ type
   private
     FOwner : TCustomListView;
     FItems : TList;
-    Function GetCount : Integer;
+    function GetCount : Integer;
+    procedure ItemDeleted(const AItem: TListItem); //called by TListItem when freed
   protected
     function GetItem(const AIndex: Integer): TListItem;
     procedure SetITem(const AIndex: Integer; const AValue: TListItem);
@@ -1782,6 +1783,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.29  2002/03/24 16:38:00  lazarus
+  MWE:
+    * Fixed bug on ListItems.Delete
+
   Revision 1.28  2002/03/23 15:51:17  lazarus
   MWE: Fixed more compatebility issues (Sort, SelectedItem)
 

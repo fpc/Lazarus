@@ -54,10 +54,19 @@ end;
 {------------------------------------------------------------------------------}
 procedure TListItems.Delete(const AIndex: Integer);
 begin
-  if (FItems.Items[Aindex] <> nil) 
-  then Item[AIndex].Delete;
-  FItems.Delete(AIndex);
-  FOwner.ItemDeleted(AIndex);
+  Item[AIndex].Delete;
+end;
+
+{------------------------------------------------------------------------------}
+{   TListItems ItemDeleted                                                     }
+{------------------------------------------------------------------------------}
+procedure TListItems.ItemDeleted(const AItem: TListItem);
+var
+  idx: Integer;
+begin
+  idx := FItems.Remove(AItem);
+  if (idx >= 0) and (FOwner <> nil)
+  then FOwner.ItemDeleted(idx);
 end;
 
 {------------------------------------------------------------------------------}
@@ -111,6 +120,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.10  2002/03/24 16:38:01  lazarus
+  MWE:
+    * Fixed bug on ListItems.Delete
+
   Revision 1.9  2002/03/23 15:49:22  lazarus
   MWE: Fixed more compatebility issues (Sort, SelectedItem)
 

@@ -72,7 +72,7 @@ destructor TListItem.Destroy;
 begin
   FDestroying := True;
   if FOwner <> nil
-  then FOwner.Delete(Index);
+  then FOwner.ItemDeleted(Self);
   
   SubItems.Free;    
   inherited Destroy;
@@ -90,6 +90,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.8  2002/03/24 16:38:01  lazarus
+  MWE:
+    * Fixed bug on ListItems.Delete
+
   Revision 1.7  2002/03/23 15:49:22  lazarus
   MWE: Fixed more compatebility issues (Sort, SelectedItem)
 
