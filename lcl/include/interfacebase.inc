@@ -1100,7 +1100,7 @@ begin
     idButtonYes :
       Result := CreatePixmapIndirect(@IMGOK_Check[0], GetSysColor(COLOR_BTNFACE));
     idButtonNo :
-      Result := CreatePixmapIndirect(@IMGCancel_X[0], GetSysColor(COLOR_BTNFACE));
+      Result := CreatePixmapIndirect(@IMG_NO[0], GetSysColor(COLOR_BTNFACE));
     idButtonCancel : 
       Result := CreatePixmapIndirect(@IMGCancel_X[0], GetSysColor(COLOR_BTNFACE));
     idButtonHelp :
@@ -1114,10 +1114,12 @@ begin
     idButtonAbort :
       Result := CreatePixmapIndirect(@IMGCancel_X[0], GetSysColor(COLOR_BTNFACE));
     idButtonRetry : 
-      Result := CreatePixmapIndirect(@IMGClose[0], GetSysColor(COLOR_BTNFACE));
+      Result := CreatePixmapIndirect(@IMG_RETRY[0], GetSysColor(COLOR_BTNFACE));
     idButtonIgnore : 
+      Result := CreatePixmapIndirect(@IMG_IGNIORE[0], GetSysColor(COLOR_BTNFACE));
+    idButtonClose :
       Result := CreatePixmapIndirect(@IMGClose[0], GetSysColor(COLOR_BTNFACE));
-    
+
     idDialogWarning :
       Result := CreatePixmapIndirect(@IMGWarning[0], GetSysColor(COLOR_BTNFACE));
     idDialogError :
@@ -1633,6 +1635,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.78  2003/01/19 14:44:28  mattias
+  started make resource string
+
   Revision 1.77  2002/12/30 17:24:08  mattias
   added history to identifier completion
 
