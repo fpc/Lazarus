@@ -37,7 +37,9 @@ begin
   inherited Create;
   FKeyStateList := TList.Create;
   FDeviceContexts := TDynHashArray.Create(-1);
+  FDeviceContexts.Options:=FDeviceContexts.Options+[dhaoCacheContains];
   FGDIObjects := TDynHashArray.Create(-1);
+  FGDIObjects.Options:=FGDIObjects.Options+[dhaoCacheContains];
   FMessageQueue := TLazQueue.Create;
   FPaintMessages := TDynHashArray.Create(-1);
   FPaintMessages.OwnerHashFunction := @HashPaintMessage;
@@ -5991,6 +5993,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.239  2002/10/08 16:15:44  lazarus
+  MG: fixed small typos and accelerated TDynHashArray.Contains
+
   Revision 1.238  2002/10/08 14:10:02  lazarus
   MG: added TDeviceContext.SelectedColors
 
