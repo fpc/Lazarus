@@ -907,6 +907,16 @@ Begin
       end;
     end;
     //TODO:LM_MOVEPAGE,LM_MOVETOROW,LM_MOVETOCOLUMN
+    WM_NCACTIVATE:
+    begin
+      // do not allow main form to be deactivated
+      if (Application <> nil) and (Application.MainForm <> nil) and
+          Application.MainForm.HandleAllocated and (Window = Application.MainForm.Handle) and
+          (WParam = 0) then
+      begin
+        WParam := 1;
+      end;
+    end;
     WM_NCHITTEST:
     begin
       if (lWinControl <> nil) and (lWinControl.FCompStyle = csHintWindow) then
@@ -1489,6 +1499,9 @@ end;
 
 {
   $Log$
+  Revision 1.179  2005/01/03 12:15:54  micha
+  keep the mainform (ie. lazarus main ide bar) active
+
   Revision 1.178  2005/01/02 22:27:15  micha
   focus window only if possible
 
