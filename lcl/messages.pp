@@ -39,35 +39,35 @@ const
   WM_ERASEBKGND    = LM_ERASEBKGND;
   WM_GETDLGCODE    = LM_GETDLGCODE;
   WM_HSCROLL       = LM_HSCROLL;
-  WM_LButtonDblClk = LM_LBUTTONDBLCLK;
   WM_KILLFOCUS     = LM_KILLFOCUS;
+  WM_LButtonDblClk = LM_LBUTTONDBLCLK;
+  WM_MOUSEMOVE     = LM_MOUSEMOVE;
   WM_NCHITTEST     = LM_NCHITTEST;
-  WM_SIZE          = LM_SIZE;
+  WM_QUIT          = LM_QUIT;
   WM_SETCURSOR     = LM_SETCURSOR;
   WM_SETFOCUS      = LM_SETFOCUS;
+  WM_SIZE          = LM_SIZE;
   WM_SYSCHAR       = LM_SYSCHAR;
   WM_SYSKEYDOWN    = LM_SYSKEYDOWN;
   WM_SYSKEYUP      = LM_SYSKEYUP;
   WM_VSCROLL       = LM_VSCROLL;
-  WM_MOUSEMOVE     = LM_MOUSEMOVE;
-
 
 type
 
   TMessage = TLMessage;
 
   TWMEraseBkgnd     = TLMEraseBkgnd;
-  TWMKILLFOCUS      = TLMKILLFOCUS;
-  TWMMOUSE          = TLMMouse;
+  TWMKillFocus      = TLMKillFocus;
+  TWMMouse          = TLMMouse;
   TWMNCHITTEST      = TLMNCHITTEST;
   TWMSCROLL         = TLMSCROLL;
   TWMSETCURSOR      = TLMSETCURSOR;
   TWMSetFocus       = TLMSetFocus;
   TWMSIZE           = TLMSIZE;
+  TWMHScroll        = TLMHScroll;
   TWMVScroll        = TLMVScroll;
 
   TWMGetDlgCode = TLMNoParams;
-
 
 
   TWMMouseMove = TLMMouseMove;

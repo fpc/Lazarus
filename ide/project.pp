@@ -82,6 +82,7 @@ type
     fCustomHighlighter: boolean; // do not change highlighter on file extension change
     fEditorIndex: integer;
     fFileName: string;
+    fFileReadOnly: Boolean;
     fForm: TComponent;
     fFormName: string; { classname is always T<FormName>
          this attribute contains the formname even if the unit is not loaded }
@@ -98,24 +99,25 @@ type
     fOnUnitNameChange: TOnUnitNameChange;
     fPrevPartOfProject: TUnitInfo;
     FProject: TProject;
-    fReadOnly:  Boolean;
     FResourceFilename: string;
     fSource: TCodeBuffer;
     fSyntaxHighlighter: TLazSyntaxHighlighter;
     fTopLine: integer;
     fUnitName: String;
     fUsageCount: extended;
+    fUserReadOnly:  Boolean;
 
     function GetFileName: string;
     function GetHasResources:boolean;
     procedure SetEditorIndex(const AValue: integer);
+    procedure SetFileReadOnly(const AValue: Boolean);
     procedure SetForm(const AValue: TComponent);
     procedure SetIsPartOfProject(const AValue: boolean);
     procedure SetLoaded(const AValue: Boolean);
     procedure SetProject(const AValue: TProject);
-    procedure SetReadOnly(const NewValue: boolean);
     procedure SetSource(ABuffer: TCodeBuffer);
     procedure SetUnitName(const NewUnitName:string);
+    procedure SetUserReadOnly(const NewValue: boolean);
   protected
     fNextUnitWithEditorIndex: TUnitInfo;
     fPrevUnitWithEditorIndex: TUnitInfo;
@@ -154,6 +156,7 @@ type
     function NeedsSaveToDisk: boolean;
     procedure UpdateUsageCount(Min, IfBelowThis, IncIfBelow: extended);
     procedure UpdateUsageCount(TheUsage: TUnitUsage; Factor: extended);
+    function ReadOnly: boolean;
 
     { Properties }
   public
@@ -175,6 +178,7 @@ type
           read fCustomHighlighter write fCustomHighlighter;
     property EditorIndex:integer read fEditorIndex write SetEditorIndex;
     property Filename: String read GetFilename;
+    property FileReadOnly: Boolean read fFileReadOnly write SetFileReadOnly;
     property Form: TComponent read fForm write SetForm;
     property FormName: string read fFormName write fFormName;
     property FormResourceName: string
@@ -190,7 +194,6 @@ type
     property OnUnitNameChange: TOnUnitNameChange
           read fOnUnitNameChange write fOnUnitNameChange;
     property Project: TProject read FProject write SetProject;
-    property ReadOnly: Boolean read fReadOnly write SetReadOnly;
     property ResourceFileName: string
           read FResourceFilename write FResourceFilename;
     property Source: TCodeBuffer read fSource write SetSource;
@@ -198,6 +201,7 @@ type
           read fSyntaxHighlighter write fSyntaxHighlighter;
     property TopLine: integer read fTopLine write fTopLine;
     property UnitName: String read fUnitName write SetUnitName;
+    property UserReadOnly: Boolean read fUserReadOnly write SetUserReadOnly;
   end;
 
 
@@ -569,7 +573,8 @@ begin
   fIsPartOfProject := false;
   Loaded := false;
   fModified := false;
-  fReadOnly := false;
+  fUserReadOnly := false;
+  fFileReadOnly := false;
   if fSource<>nil then fSource.Clear;
   fSyntaxHighlighter := lshText;
   fTopLine := -1;
@@ -595,7 +600,7 @@ begin
   XMLConfig.SetDeleteValue(Path+'HasResources/Value',fHasResources,false);
   XMLConfig.SetDeleteValue(Path+'IsPartOfProject/Value',fIsPartOfProject,false);
   XMLConfig.SetDeleteValue(Path+'Loaded/Value',fLoaded,false);
-  XMLConfig.SetDeleteValue(Path+'ReadOnly/Value',fReadOnly,false);
+  XMLConfig.SetDeleteValue(Path+'ReadOnly/Value',fUserReadOnly,false);
   AFilename:=FResourceFilename;
   if Assigned(fOnLoadSaveFilename) then
     fOnLoadSaveFilename(AFilename,false);
@@ -626,7 +631,7 @@ begin
   HasResources:=XMLConfig.GetValue(Path+'HasResources/Value',false);
   IsPartOfProject:=XMLConfig.GetValue(Path+'IsPartOfProject/Value',false);
   Loaded:=XMLConfig.GetValue(Path+'Loaded/Value',false);
-  ReadOnly:=XMLConfig.GetValue(Path+'ReadOnly/Value',false);
+  fUserReadOnly:=XMLConfig.GetValue(Path+'ReadOnly/Value',false);
   AFilename:=XMLConfig.GetValue(Path+'ResourceFilename/Value','');
   if Assigned(fOnLoadSaveFilename) then
     fOnLoadSaveFilename(AFilename,true);
@@ -810,6 +815,11 @@ begin
   end;
 end;
 
+function TUnitInfo.ReadOnly: boolean;
+begin
+  Result:=UserReadOnly or FileReadOnly;
+end;
+
 procedure TUnitInfo.SetSource(ABuffer: TCodeBuffer);
 begin
   if fSource=ABuffer then exit;
@@ -824,11 +834,11 @@ begin
   end;
 end;
 
-procedure TUnitInfo.SetReadOnly(const NewValue: boolean);
+procedure TUnitInfo.SetUserReadOnly(const NewValue: boolean);
 begin
-  fReadOnly:=NewValue;
+  fUserReadOnly:=NewValue;
   if fSource<>nil then
-    fSource.ReadOnly:=fReadOnly;
+    fSource.ReadOnly:=ReadOnly;
 end;
 
 procedure TUnitInfo.CreateStartCode(NewUnitType: TNewUnitType;
@@ -923,6 +933,14 @@ begin
   if fEditorIndex=AValue then exit;
   fEditorIndex:=AValue;
   UpdateEditorIndexList;
+end;
+
+procedure TUnitInfo.SetFileReadOnly(const AValue: Boolean);
+begin
+  if fFileReadOnly=AValue then exit;
+  fFileReadOnly:=AValue;
+  if fSource<>nil then
+    fSource.ReadOnly:=ReadOnly;
 end;
 
 procedure TUnitInfo.SetForm(const AValue: TComponent);
@@ -2185,6 +2203,9 @@ end.
 
 {
   $Log$
+  Revision 1.91  2003/02/26 12:44:52  mattias
+  readonly flag is now only saved if user set
+
   Revision 1.90  2003/01/15 09:08:08  mattias
   fixed search paths for virtual projects
 

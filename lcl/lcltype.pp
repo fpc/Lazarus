@@ -78,12 +78,20 @@ type
   Bool = LongBool;
   pByte = ^byte;
   HGLOBAL = THAndle;
+
+  // from Delphis sysutils.pas
+  PByteArray = ^TByteArray;
+  TByteArray = array[0..32767] of Byte;
   
+
 var
   hInstance :HINST;
 
 
 const
+  INVALID_HANDLE_VALUE  = 0;
+  MaxByte               = 255;
+
   { Ternary raster operations }
   SRCCOPY     = $00CC0020;     { dest = source                    }
   SRCPAINT    = $00EE0086;     { dest = source OR dest            }
@@ -756,14 +764,14 @@ type
 
   PLogPalette = ^tagLogPalette;
   tagLOGPALETTE = packed record
-    palVersion: Word; //what IS this?! Should we use it?
+    palVersion: Word;
     palNumEntries: Word;
     palPalEntry: array[0..0] of tagPaletteEntry;
   end;
   LOGPALETTE = tagLOGPALETTE;
   TLOGPALETTE = tagLOGPALETTE;
 
-{GradientFill Structures}
+{ GradientFill Structures }
   PTriVertex = ^tagTriVertex;
   tagTRIVERTEX = packed record
     x: Longint;
@@ -793,11 +801,7 @@ type
 { ********************************** }
 {        B I T M A P    S T U F F    }
 
-  { TBitmap is an encapsulation of a matrix of pixels.  It has a Canvas to allow
-    modifications to the image.  Creating copies of a TBitmap is very fast
-    since the handle is copied not the image.  If the image is modified, and
-    the handle is shared by more than one TBitmap object, the image is copied
-    before the modification is performed (i.e. copy on write). }
+  { TBitmap is an encapsulation of a matrix of pixels. }
   PBitmap = ^TagBitmap;
   tagBITMAP = packed record
     bmType: Longint;
@@ -1771,6 +1775,9 @@ end.
 
 {
   $Log$
+  Revision 1.32  2003/02/26 12:44:52  mattias
+  readonly flag is now only saved if user set
+
   Revision 1.31  2002/12/27 17:12:37  mattias
   added more Delphi win32 compatibility functions
 

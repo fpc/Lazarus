@@ -703,6 +703,26 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function GetTempFilename(const Path, Prefix: string): string;
+ ------------------------------------------------------------------------------}
+function GetTempFilename(const Path, Prefix: string): string;
+var
+  i: Integer;
+  CurPath: String;
+  CurName: String;
+begin
+  Result:=ExpandFilename(Path);
+  CurPath:=AppendPathDelim(ExtractFilePath(Result));
+  CurName:=Prefix+ExtractFileNameOnly(Result);
+  i:=1;
+  repeat
+    Result:=CurPath+CurName+IntToStr(i)+'.tmp';
+    if not FileExists(Result) then exit;
+    inc(i);
+  until false;
+end;
+
+{------------------------------------------------------------------------------
   function SearchFileInPath(const Filename, BasePath, SearchPath,
     Delimiter: string; SearchLoUpCase: boolean): string;
  ------------------------------------------------------------------------------}
@@ -793,6 +813,9 @@ end;
 
 {
   $Log$
+  Revision 1.15  2003/02/26 12:44:52  mattias
+  readonly flag is now only saved if user set
+
   Revision 1.14  2003/02/20 11:03:20  mattias
   save as of project files now starts in project dierctory
 

@@ -56,7 +56,6 @@ function FileIsSymlink(const AFilename: string): boolean;
 function GetFileDescription(const AFilename: string): string;
 function ReadAllLinks(const Filename: string;
   ExceptionOnError: boolean): string;
-function CopyFile(const SrcFilename, DestFilename: string): boolean;
 
 // directories
 function DirectoryExists(const FileName: String): Boolean;
@@ -79,8 +78,10 @@ function FileIsInPath(const Filename, Path: string): boolean;
 function SearchFileInPath(const Filename, BasePath, SearchPath,
                           Delimiter: string; SearchLoUpCase: boolean): string;
 
-// file read
+// file actions
 function ReadFileToString(const Filename: string): string;
+function CopyFile(const SrcFilename, DestFilename: string): boolean;
+function GetTempFilename(const Path, Prefix: string): string;
 
 implementation
 
@@ -113,6 +114,9 @@ end.
 
 {
   $Log$
+  Revision 1.13  2003/02/26 12:44:52  mattias
+  readonly flag is now only saved if user set
+
   Revision 1.12  2003/02/20 11:03:20  mattias
   save as of project files now starts in project dierctory
 
