@@ -109,8 +109,6 @@ type
     function CreateAPIWidget(AWinControl: TWinControl): PGtkWidget;
     function CreateForm(ACustomForm: TCustomForm): PGtkWidget;
     procedure CreateComponent(Sender : TObject);virtual;
-    Procedure FinishComponentCreate(Sender : TObject; Handle : Pointer;
-      SetupProps : Boolean); Virtual;
     procedure DestroyLCLComponent(Sender : TObject);virtual;
     function  RecreateWnd(Sender: TObject): Integer; virtual;
     procedure AddChild(Parent,Child : Pointer; Left,Top: Integer);virtual;
@@ -217,6 +215,8 @@ type
     procedure SendCachedGtkMessages;virtual;
     procedure RealizeWidgetSize(Widget: PGtkWidget;
       NewWidth, NewHeight: integer);
+    Procedure FinishComponentCreate(Sender : TObject; Handle : Pointer;
+      SetupProps : Boolean); Virtual;
   public
     constructor Create; 
     destructor Destroy; override;
@@ -338,6 +338,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.127  2003/04/29 19:00:43  mattias
+  added package gtkopengl
+
   Revision 1.126  2003/04/29 13:35:39  mattias
   improved configure build lazarus dialog
 
