@@ -2140,7 +2140,7 @@ begin
   try
     for i:=0 to PkgList.Count-1 do begin
       APackage:=TLazPackage(PkgList[i]);
-      IncPath:=APackage.CompilerOptions.IncludeFiles;
+      IncPath:=APackage.CompilerOptions.GetIncludePath(false);
       Result:=SearchFileInPath(Filename,APackage.Directory,IncPath,';',[]);
       if Result<>'' then exit;
     end;

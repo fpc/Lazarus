@@ -148,7 +148,8 @@ type
   // find source flags
   TFindSourceFlag = (
     fsfSearchForProject,
-    fsfUseIncludePaths
+    fsfUseIncludePaths,
+    fsfUseDebugPath
     );
   TFindSourceFlags = set of TFindSourceFlag;
   

@@ -249,6 +249,8 @@ type
     function Add(const ASource: String; const ALine: Integer): TDBGBreakPoint;
     procedure Add(NewBreakPoint: TDBGBreakPoint);
     function Find(const ASource: String; const ALine: Integer): TDBGBreakPoint;
+    function FindBreakPoint(const ASource: String; const ALine: Integer;
+                            Ignore: TDBGBreakPoint): TDBGBreakPoint;
     procedure AddNotification(const ANotification: TDBGBreakPointsNotification);
     procedure RemoveNotification(const ANotification: TDBGBreakPointsNotification);
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
@@ -1342,6 +1344,12 @@ end;
 
 function TDBGBreakPoints.Find(const ASource: String;
   const ALine: Integer): TDBGBreakPoint;
+begin
+  Result := FindBreakPoint(ASource,ALine,nil);
+end;
+
+function TDBGBreakPoints.FindBreakPoint(const ASource: String;
+  const ALine: Integer; Ignore: TDBGBreakPoint): TDBGBreakPoint;
 var
   n: Integer;
 begin
@@ -1350,7 +1358,8 @@ begin
     Result := GetItem(n);
     if  (Result.Line = ALine)
     and (CompareFilenames(Result.Source,ASource)=0)
-    then Exit;
+    and (Ignore<>Result)
+    then exit;
   end;
   Result := nil;
 end;
@@ -1387,6 +1396,7 @@ var
   NewCount: Integer;
   i: Integer;
   NewBreakPoint: TDBGBreakPoint;
+  OldBreakPoint: TDBGBreakPoint;
 begin
   Clear;
   NewCount:=XMLConfig.GetValue(Path+'Count',0);
@@ -1395,8 +1405,12 @@ begin
     NewBreakPoint:=TDBGBreakPoint(inherited Add);
     NewBreakPoint.LoadFromXMLConfig(XMLConfig,
       Path+'Item'+IntToStr(i+1)+'/',OnLoadFilename,OnGetGroup);
+    OldBreakPoint:=FindBreakPoint(NewBreakPoint.Source,NewBreakPoint.Line,
+                                  NewBreakPoint);
     writeln('TDBGBreakPoints.LoadFromXMLConfig i=',i,' ',
-      NewBreakPoint.InitialEnabled,' ',NewBreakPoint.Source,' ',NewBreakPoint.Line);
+      NewBreakPoint.InitialEnabled,' ',NewBreakPoint.Source,' ',NewBreakPoint.Line,
+      ' OldBreakPoint=',OldBreakPoint<>nil);
+    if OldBreakPoint<>nil then NewBreakPoint.Free;
   end;
 end;
 
@@ -2131,6 +2145,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.25  2003/05/26 10:34:47  mattias
+  implemented search, fixed double loading breakpoints
+
   Revision 1.24  2003/05/23 16:46:13  mattias
   added message, that debugger is readonly while running
 

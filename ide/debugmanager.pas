@@ -319,7 +319,7 @@ begin
   end;
 
   SrcFile := MainIDE.FindSourceFile(ALocation.SrcFile,Project1.ProjectDirectory,
-                                    [fsfSearchForProject,fsfUseIncludePaths]);
+                      [fsfSearchForProject,fsfUseIncludePaths,fsfUseDebugPath]);
   if SrcFile = '' then SrcFile := ALocation.SrcFile;
   
   if not FilenameIsAbsolute(SrcFile)
@@ -937,6 +937,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.26  2003/05/26 10:34:46  mattias
+  implemented search, fixed double loading breakpoints
+
   Revision 1.25  2003/05/25 15:31:11  mattias
   implemented searching for indirect include files
 

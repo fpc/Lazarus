@@ -353,6 +353,9 @@ resourcestring
   lisNoProgramFileSFound = 'No program file %s%s%s found.';
   lisErrorInitializingProgramSErrorS = 'Error initializing program%s%s%s%s%s'
     +'Error: %s';
+  lisNotNow = 'Not now';
+  lisYouCanNotBuildLazarusWhileDebuggingOrCompiling = 'You can not build '
+    +'lazarus while debugging or compiling.';
   lisUnableToSaveFile = 'Unable to save file %s%s%s';
   lisReadError = 'Read Error';
   lisUnableToReadFile2 = 'Unable to read file %s%s%s!';
@@ -826,6 +829,7 @@ resourcestring
   dlgCOIncFiles = 'Include Files:';
   dlgCOSources = 'Other Sources:  (.pp/.pas files)';
   dlgCOLibraries = 'Libraries:';
+  dlgCODebugPath = 'Debugger path addition:';
   dlgToFPCPath = 'Path To Compiler:';
   lisCOSkipCallingCompiler = 'Skip calling Compiler';
   lisCOExecuteAfter = 'Execute after';

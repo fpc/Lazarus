@@ -164,6 +164,7 @@ type
     FObjectPath: string;
     FSrcPath: string;
     fUnitOutputDir: string;
+    fDebugPath: string;
     fLCLWidgetType: string;
 
     // Parsing:
@@ -253,6 +254,7 @@ type
     procedure SetUnitOutputDir(const AValue: string); virtual;
     procedure SetObjectPath(const AValue: string); virtual;
     procedure SetSrcPath(const AValue: string); virtual;
+    procedure SetDebugPath(const AValue: string); virtual;
   protected
     procedure LoadTheCompilerOptions(const Path: string); virtual;
     procedure SaveTheCompilerOptions(const Path: string); virtual;
@@ -299,7 +301,8 @@ type
     property ParsedOpts: TParsedCompilerOptions read FParsedOpts;
     property BaseDirectory: string read FBaseDirectory write SetBaseDirectory;
     property TargetFilename: String read fTargetFilename write fTargetFilename;
-    property DefaultMakeOptionsFlags: TCompilerCmdLineOptions read FDefaultMakeOptionsFlags write SetDefaultMakeOptionsFlags;
+    property DefaultMakeOptionsFlags: TCompilerCmdLineOptions
+                 read FDefaultMakeOptionsFlags write SetDefaultMakeOptionsFlags;
 
     property XMLFile: String read fXMLFile write fXMLFile;
     property XMLConfigFile: TXMLConfig read xmlconfig write xmlconfig;
@@ -312,6 +315,7 @@ type
     property ObjectPath: string read FObjectPath write SetObjectPath;
     property SrcPath: string read FSrcPath write SetSrcPath;
     property UnitOutputDirectory: string read fUnitOutputDir write SetUnitOutputDir;
+    property DebugPath: string read FDebugPath write SetDebugPath;
     property LCLWidgetType: string read fLCLWidgetType write fLCLWidgetType;
 
     // parsing:
@@ -319,7 +323,7 @@ type
     property D2Extensions: Boolean read fD2Ext write fD2Ext;
     property CStyleOperators: Boolean read fCStyleOp write fCStyleOp;
     property IncludeAssertionCode: Boolean 
-      read fIncludeAssertionCode write fIncludeAssertionCode;
+                         read fIncludeAssertionCode write fIncludeAssertionCode;
     property DelphiCompat: Boolean read fDelphiCompat write fDelphiCompat;
     property AllowLabel: Boolean read fAllowLabel write fAllowLabel;
     property UseAnsiStrings: Boolean read fUseAnsiStr write fUseAnsiStr;
@@ -336,9 +340,11 @@ type
     property RangeChecks: Boolean read fRangeChecks write fRangeChecks;
     property OverflowChecks: Boolean read fOverflowChecks write fOverflowChecks;
     property StackChecks: Boolean read fStackChecks write fStackChecks;
-    property EmulatedFloatOpcodes: boolean read FEmulatedFloatOpcodes write FEmulatedFloatOpcodes;
+    property EmulatedFloatOpcodes: boolean read FEmulatedFloatOpcodes
+                                           write FEmulatedFloatOpcodes;
     property HeapSize: Integer read fHeapSize write fHeapSize;
-    property VerifyObjMethodCall: boolean read FEmulatedFloatOpcodes write FEmulatedFloatOpcodes;
+    property VerifyObjMethodCall: boolean read FEmulatedFloatOpcodes
+                                          write FEmulatedFloatOpcodes;
     property Generate: Integer read fGenerate write fGenerate;
     property TargetProcessor: Integer read fTargetProc write fTargetProc;
     property VariablesInRegisters: Boolean read fVarsInReg write fVarsInReg;
@@ -381,8 +387,10 @@ type
       read fStopAfterErrCount write fStopAfterErrCount;
 
     // other
-    property DontUseConfigFile: Boolean read fDontUseConfigFile write fDontUseConfigFile;
-    property AdditionalConfigFile: Boolean read fAdditionalConfigFile write fAdditionalConfigFile;
+    property DontUseConfigFile: Boolean read fDontUseConfigFile
+                                        write fDontUseConfigFile;
+    property AdditionalConfigFile: Boolean read fAdditionalConfigFile
+                                           write fAdditionalConfigFile;
     property ConfigFilePath: String read fConfigFilePath write fConfigFilePath;
     property CustomOptions: string read fCustomOptions write SetCustomOptions;
 
@@ -474,6 +482,10 @@ type
     grpUnitOutputDir: TGroupBox;
     edtUnitOutputDir: TEdit;
     btnUnitOutputDir: TButton;
+
+    grpDebugPath: TGroupBox;
+    edtDebugPath: TEdit;
+    DebugPathEditBtn: TPathEditorButton;
 
     LCLWidgetTypeRadioGroup: TRadioGroup;
 
@@ -1008,6 +1020,12 @@ begin
   if FSrcPath=AValue then exit;
   FSrcPath:=AValue;
   ParsedOpts.SetUnparsedValue(pcosSrcPath,FSrcPath);
+end;
+
+procedure TBaseCompilerOptions.SetDebugPath(const AValue: string);
+begin
+  if fDebugPath=AValue then exit;
+  fDebugPath:=AValue;
 end;
 
 procedure TBaseCompilerOptions.SetBaseDirectory(const AValue: string);
@@ -2036,6 +2054,7 @@ begin
   UnitOutputDirectory := '';
   ObjectPath:='';
   SrcPath:='';
+  DebugPath:='';
   fLCLWidgetType := 'gtk';
   
   // parsing
@@ -2127,6 +2146,7 @@ begin
   fLCLWidgetType := CompOpts.fLCLWidgetType;
   ObjectPath := CompOpts.FObjectPath;
   SrcPath := CompOpts.SrcPath;
+  DebugPath := CompOpts.DebugPath;
 
   // Parsing
   fStyle := CompOpts.fStyle;
@@ -2213,6 +2233,7 @@ begin
     and (fUnitOutputDir = CompOpts.fUnitOutputDir)
     and (FObjectPath = CompOpts.FObjectPath)
     and (FSrcPath = CompOpts.FSrcPath)
+    and (fDebugPath = CompOpts.fDebugPath)
 
     and (fLCLWidgetType = CompOpts.fLCLWidgetType)
 
@@ -2602,6 +2623,7 @@ begin
   grpLibraries.Enabled:=EnabledLinkerOpts;
   edtOtherSources.Text := CompilerOpts.SrcPath;
   edtUnitOutputDir.Text := CompilerOpts.UnitOutputDirectory;
+  edtDebugPath.Text := CompilerOpts.DebugPath;
 
   i:=LCLWidgetTypeRadioGroup.Items.IndexOf(CompilerOpts.LCLWidgetType);
   if i<0 then i:=0;
@@ -2751,6 +2773,7 @@ begin
   CompilerOpts.OtherUnitFiles := edtOtherUnits.Text;
   CompilerOpts.SrcPath := edtOtherSources.Text;
   CompilerOpts.UnitOutputDirectory := edtUnitOutputDir.Text;
+  CompilerOpts.DebugPath := edtDebugPath.Text;
 
   i:=LCLWidgetTypeRadioGroup.Itemindex;
   if i<0 then i:=0;
@@ -4329,6 +4352,44 @@ begin
 
   {------------------------------------------------------------}
 
+  grpDebugPath := TGroupBox.Create(Self);
+  with grpDebugPath do
+  begin
+    Parent := PathPage;
+    Left := 10;
+    Top := y;
+    Width := Self.ClientWidth-28;
+    Height := 45;
+    Caption := dlgCODebugPath;
+    inc(y,Height+5);
+  end;
+
+  edtDebugPath := TEdit.Create(Self);
+  with edtDebugPath do
+  begin
+    Parent := grpDebugPath;
+    Left := 8;
+    Top := 0;
+    Width := Parent.ClientWidth-Left-37;
+    Text := '';
+  end;
+
+  DebugPathEditBtn:=TPathEditorButton.Create(Self);
+  with DebugPathEditBtn do begin
+    Name:='DebugPathEditBtn';
+    Parent:=grpDebugPath;
+    Left:=edtDebugPath.Left+edtDebugPath.Width+3;
+    Top:=edtDebugPath.Top;
+    Width:=25;
+    Height:=edtDebugPath.Height;
+    Caption:='...';
+    OnClick:=@PathEditBtnClick;
+    OnExecuted:=@PathEditBtnExecuted;
+  end;
+
+
+  {------------------------------------------------------------}
+
   LCLWidgetTypeRadioGroup:=TRadioGroup.Create(Self);
   with LCLWidgetTypeRadioGroup do begin
     Name:='LCLWidgetTypeRadioGroup';
@@ -4443,7 +4504,16 @@ begin
     if AButton=LibrariesPathEditBtn then begin
       OldPath:=edtLibraries.Text;
       Templates:='';
-    end;
+    end else
+    if AButton=DebugPathEditBtn then begin
+      OldPath:=edtDebugPath.Text;
+      Templates:=SetDirSeparators(
+            '$(LazarusDir)/lcl/include'
+          +';$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)'
+          +';$(LazarusDir)/include/'
+          );
+    end else
+      exit;
     AButton.CurrentPathEditor.Path:=OldPath;
     AButton.CurrentPathEditor.Templates:=SetDirSeparators(Templates);
   end;
@@ -4468,6 +4538,9 @@ begin
     end else
     if AButton=LibrariesPathEditBtn then begin
       edtLibraries.Text:=NewPath;
+    end else
+    if AButton=DebugPathEditBtn then begin
+      edtDebugPath.Text:=NewPath;
     end;
   end;
 end;
