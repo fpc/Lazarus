@@ -84,6 +84,11 @@ const
   ALPHA_UC = ['A'..'Z'];
   ALPHA_LC = ['a'..'z'];
 
+{$IFDEF SYN_LAZARUS}
+// workaround till clientwidth/height is working correctly with scrollbars
+ScrollBarWidth=18;
+{$ENDIF}
+
 {$IFNDEF SYN_COMPILER_3_UP}                                           
    // not defined in all Delphi versions
   WM_MOUSEWHEEL = $020A;
@@ -1354,9 +1359,10 @@ end;
 
 procedure TCustomSynEdit.HideCaret;
 begin
-  if sfCaretVisible in fStateFlags then
+  if sfCaretVisible in fStateFlags then begin
     if {$IFDEF SYN_LAZARUS}LCLLinux{$ELSE}Windows{$ENDIF}.HideCaret(Handle) then
       Exclude(fStateFlags, sfCaretVisible);
+  end;
 end;
 
 {$IFDEF SYN_MBCSSUPPORT}
@@ -1423,7 +1429,8 @@ var
 begin
   if Visible and HandleAllocated then
     if (FirstLine = -1) and (LastLine = -1) then begin
-      rcInval := Rect(0, 0, fGutterWidth, ClientHeight);
+      rcInval := Rect(0, 0, fGutterWidth
+         , ClientHeight{$IFDEF SYN_LAZARUS}-ScrollBarWidth{$ENDIF});
       if sfLinesChanging in fStateFlags then
         UnionRect(fInvalidateRect, fInvalidateRect, rcInval)
       else
@@ -1465,7 +1472,8 @@ begin
       { any line visible? }
       if (LastLine >= FirstLine) then begin
         rcInval := Rect(fGutterWidth, fTextHeight * (FirstLine - TopLine),
-          ClientWidth, fTextHeight * (LastLine - TopLine + 1));
+          ClientWidth{$IFDEF SYN_LAZARUS}-ScrollBarWidth{$ENDIF}
+          , fTextHeight * (LastLine - TopLine + 1));
         if sfLinesChanging in fStateFlags then
           UnionRect(fInvalidateRect, fInvalidateRect, rcInval)
         else
@@ -1562,6 +1570,13 @@ var
   bWasSel: boolean;
   bStartDrag: boolean;
 begin
+  {$IFDEF SYN_LAZARUS}
+  if (X>=ClientWidth-ScrollBarWidth) or (Y>=ClientHeight-ScrollBarWidth) then
+  begin
+    inherited MouseDown(Button, Shift, X, Y);
+    exit;
+  end;
+  {$ENDIF}
 //  if (Button = mbRight) and (Shift = [ssRight]) and Assigned(PopupMenu) and SelAvail
   if (Button = mbRight) and SelAvail then                                       //lt 2000-10-12
     exit;
@@ -1623,6 +1638,13 @@ var
   Z: integer;
 begin
   inherited MouseMove(Shift, x, y);
+exit;
+  {$IFDEF SYN_LAZARUS}
+  if (X>=ClientWidth-ScrollBarWidth) or (Y>=ClientHeight-ScrollBarWidth) then
+  begin
+    exit;
+  end;
+  {$ENDIF}
   if MouseCapture and (sfWaitForDragging in fStateFlags) then begin
     if (Abs(fMouseDownX - X) >= GetSystemMetrics(SM_CXDRAG))
       or (Abs(fMouseDownY - Y) >= GetSystemMetrics(SM_CYDRAG))
@@ -1631,8 +1653,10 @@ begin
       BeginDrag(false);
     end;
   end else if (ssLeft in Shift) and MouseCapture then begin
-    if (X >= fGutterWidth) and (X < ClientWidth)
-      and (Y >= 0) and (Y < ClientHeight)
+    if (X >= fGutterWidth) 
+      and (X < ClientWidth{$IFDEF SYN_LAZARUS}-ScrollBarWidth{$ENDIF})
+      and (Y >= 0) 
+      and (Y < ClientHeight{$IFDEF SYN_LAZARUS}-ScrollBarWidth{$ENDIF})
     then
       ComputeCaret(X, Y);
     SetBlockEnd(CaretXY);
@@ -1703,8 +1727,13 @@ end;
 procedure TCustomSynEdit.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
-writeln('TCustomSynEdit.MouseUp x=',x,' y=',y);
   inherited MouseUp(Button, Shift, X, Y);
+  {$IFDEF SYN_LAZARUS}
+  if (X>=ClientWidth-ScrollBarWidth) or (Y>=ClientHeight-ScrollBarWidth) then
+  begin
+    exit;
+  end;
+  {$ENDIF}
   fScrollTimer.Enabled := False;                                           
   if (Button = mbRight) and (Shift = [ssRight]) and Assigned(PopupMenu) then
     exit;
@@ -2734,8 +2763,8 @@ begin
     fGutterWidth := Value;
     fTextOffset := fGutterWidth + 2 - (LeftChar - 1) * fCharWidth;
     if HandleAllocated then begin
-      fCharsInWindow := (ClientWidth - fGutterWidth -
-            {$IFDEF SYN_LAZARUS}2 - 15{$ELSE}2{$ENDIF}) div fCharWidth;
+      fCharsInWindow := Max(1,(ClientWidth - fGutterWidth - 2
+            {$IFDEF SYN_LAZARUS} - ScrollBarWidth{$ENDIF}) div fCharWidth);
       UpdateScrollBars;
       Invalidate;
     end;
@@ -3150,10 +3179,8 @@ end;
 procedure TCustomSynEdit.ShowCaret;
 begin
   if not (eoNoCaret in Options) and not (sfCaretVisible in fStateFlags) then
-  begin
     if {$IFDEF SYN_LAZARUS}LCLLinux{$ELSE}Windows{$ENDIF}.ShowCaret(Handle) then
-      Include(fStateFlags, sfCaretVisible);
-  end;
+      Include(fStateFlags, sfCaretVisible)
 end;
 
 procedure TCustomSynEdit.UpdateCaret;
@@ -3163,22 +3190,20 @@ var
   cf: TCompositionForm;
 {$ENDIF}
 begin
- Writeln('UPDATECARET---------------------------');
   if (PaintLock <> 0) or not Focused then
     Include(fStateFlags, sfCaretChanged)
   else begin
-    Writeln('Inside UPDATECARET section-------');
     Exclude(fStateFlags, sfCaretChanged);
     CX := CaretXPix + FCaretOffset.X;
     CY := CaretYPix + FCaretOffset.Y;
-    if (CX >= fGutterWidth) and (CX < ClientWidth)
-      and (CY >= 0) and (CY < ClientHeight)
+    if (CX >= fGutterWidth) 
+      and (CX < ClientWidth{$IFDEF SYN_LAZARUS}-ScrollBarWidth{$ENDIF})
+      and (CY >= 0) 
+      and (CY < ClientHeight{$IFDEF SYN_LAZARUS}-ScrollBarWidth{$ENDIF})
     then begin
-      Writeln('setting CaretPos to '+Inttostr(CX)+','+Inttostr(CY));
       SetCaretPos(CX, CY);
       ShowCaret;
     end else begin
-      Writeln('hiding CaretPos');
       HideCaret;
       SetCaretPos(CX, CY);
     end;
@@ -3403,7 +3428,9 @@ begin
           rc := Rect(0, 0, ScrollHint.Canvas.TextWidth(s) + 6,
             ScrollHint.Canvas.TextHeight(s) + 4);
 {$ENDIF}
-          pt := ClientToScreen(Point(ClientWidth - rc.Right - 4, 10));
+          pt := ClientToScreen(Point(
+                ClientWidth{$IFDEF SYN_LAZARUS}-ScrollBarWidth{$ENDIF}
+                        - rc.Right - 4, 10));
           OffsetRect(rc, pt.x, pt.y);
           ScrollHint.ActivateHint(rc, s);
 {$IFNDEF SYN_COMPILER_3_UP}
@@ -3740,7 +3767,7 @@ begin
     // no word under cursor and next char right is not start of a word
     if (Runner.X > 1) and (not (TempString[Runner.X] in IdChars)) then begin
       // find end of word on the left side
-      while Runner.X > 0 do begin
+      while Runner.X > 1 do begin
         if (TempString[Runner.X] in IdChars) then break;
         Dec(Runner.X);
       end;
@@ -3748,7 +3775,8 @@ begin
     // no word on the left side, so look to the right side
     if not (TempString[Runner.X] in IdChars) then begin
       Runner := Value;
-      while Runner.X < fMaxLeftChar do begin
+      while (Runner.X < fMaxLeftChar)
+      {$IFDEF FPC} and (Runner.X < length(TempString)){$ENDIF} do begin
         if (TempString[Runner.X] in IdChars) then break;
         Inc(Runner.X);
       end;
@@ -3765,7 +3793,8 @@ begin
   if Runner.X < 1 then Runner.X := 1;
   fBlockBegin := Runner;
   Runner := Value;
-  while Runner.X < fMaxLeftChar do begin
+  while (Runner.X < fMaxLeftChar)
+  {$IFDEF FPC} and (Runner.X <= length(TempString)){$ENDIF} do begin
     if not (TempString[Runner.X] in IdChars) then break;
     Inc(Runner.X);
   end;
@@ -4332,7 +4361,8 @@ begin
     fRightEdgeColor := Value;
     if HandleAllocated then begin
       nX := fTextOffset + fRightEdge * fCharWidth;
-      rcInval := Rect(nX - 1, 0, nX + 1, ClientHeight);
+      rcInval := Rect(nX - 1, 0, nX + 1
+         , ClientHeight{$IFDEF SYN_LAZARUS}-ScrollBarWidth{$ENDIF});
       InvalidateRect(Handle, @rcInval, FALSE);
     end;
   end;
@@ -5782,8 +5812,8 @@ end;
 procedure TCustomSynEdit.SizeOrFontChanged(bFont: boolean);
 begin
   if HandleAllocated then begin
-    fCharsInWindow := (ClientWidth - fGutterWidth - 
-        {$IFDEF SYN_LAZARUS}15{$ELSE}2{$ENDIF}) div fCharWidth;
+    fCharsInWindow := Max(1,(ClientWidth - fGutterWidth - 2
+        {$IFDEF SYN_LAZARUS}-ScrollBarWidth{$ENDIF}) div fCharWidth);
     fLinesInWindow := (ClientHeight {$IFDEF SYN_LAZARUS}-13{$ENDIF})
          div fTextHeight;
     if bFont then begin
@@ -6282,7 +6312,8 @@ begin
      (Line <= Lines.Count) and HandleAllocated
   then begin
     // we invalidate gutter and text area of this line
-    rcInval := Rect(0, fTextHeight * (Line - TopLine), ClientWidth, 0);
+    rcInval := Rect(0, fTextHeight * (Line - TopLine)
+        , ClientWidth{$IFDEF SYN_LAZARUS}-ScrollBarWidth{$ENDIF}, 0);
     rcInval.Bottom := rcInval.Top + fTextHeight;
     if sfLinesChanging in fStateFlags then
       UnionRect(fInvalidateRect, fInvalidateRect, rcInval)
@@ -6635,7 +6666,7 @@ end;
 procedure TCustomSynEdit.PluginsAfterPaint(ACanvas: TCanvas; AClip: TRect;
   FirstLine, LastLine: integer);
 var
-  i: integer;
+  i: integer; 
 begin
   if fPlugins <> nil then
     for i := 0 to fPlugins.Count - 1 do begin
