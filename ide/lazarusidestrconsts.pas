@@ -1381,6 +1381,9 @@ resourcestring
    
   // Build lazarus dialog
   lisCleanLazarusSource = 'Clean Lazarus Source';
+  lisMakeNotFound = 'Make not found';
+  lisTheProgramMakeWasNotFoundThisToolIsNeededToBuildLa = 'The program %smake%'
+    +'s was not found.%sThis tool is needed to build lazarus.%s';
   lisCompileIDEWithoutLinking = 'Compile IDE (without linking)';
   lisBuildLCL = 'Build LCL';
   lisBuildComponent = 'Build Component';

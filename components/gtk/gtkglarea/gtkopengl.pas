@@ -18,5 +18,5 @@ begin
 end; 
 
 initialization
-  RegisterPackage('GTKOpenGL', @Register)
+  RegisterPackage('GTKOpenGL', @Register); 
 end.

@@ -189,8 +189,8 @@ end;//DoSearch
 
 procedure TSearchForm.SearchFile(TheFileName: string);
   const
-    WordBreakChars = ['.', ',', ';', ':', '"', '''', '!', '?', '[', ']', '(',
-                  ')', '{', '}', '^', '-', '=', '+', '*', '/', '\', '|', ' '];
+    WordBreakChars = [#0..#31,'.', ',', ';', ':', '"', '''', '!', '?', '[', ']',
+               '(', ')', '{', '}', '^', '-', '=', '+', '*', '/', '\', '|', ' '];
     WhiteSpaceChars = [' ',#10,#13,#9];
 
   function SearchInLine(const SearchStr: string; SrcLog: TSourceLog;
@@ -218,7 +218,7 @@ procedure TSearchForm.SearchFile(TheFileName: string);
     SearchLen:=length(SearchStr);
     LineStartPos:=@Src[LineRange.StartPos];
     StartPos:=LineStartPos;
-    EndPos:=@Src[LineRange.EndPos-SearchLen];
+    EndPos:=@Src[LineRange.EndPos-SearchLen+1];
     FirstChar:=SearchStr[1];
     while (StartPos<EndPos) do begin
       if FirstChar=StartPos^ then begin
@@ -233,7 +233,7 @@ procedure TSearchForm.SearchFile(TheFileName: string);
             CharBehind:=StartPos+SearchLen;
             if ((MatchStartInLine=1)
                 or (CharInFront^ in WordBreakChars))
-            and ((StartPos=EndPos)
+            and ((StartPos+SearchLen=@Src[LineRange.EndPos])
                  or (CharBehind^ in WordBreakChars))
             then begin
               // word start and word end

@@ -297,9 +297,9 @@ begin
     if not FileExists(Tool.Filename) then begin
       Tool.Filename:=FindDefaultMakePath;
       if not FileExists(Tool.Filename) then begin
-        MessageDlg('Make not found',
-          'The program "make" was not found.'#13
-          +'This tool is needed to build lazarus.'#13
+        MessageDlg(lisMakeNotFound,
+          Format(lisTheProgramMakeWasNotFoundThisToolIsNeededToBuildLa, ['"',
+            '"', #13, #13])
           ,mtError,[mbCancel],0);
         exit;
       end;

@@ -1828,9 +1828,7 @@ implementation
 
 uses
   WSControls, // Widgetset uses circle is allowed
-
   Forms, // the circle can't be broken without breaking Delphi compatibility
-  //Buttons, // needed for clicking default and cancel buttons
   Math;  // Math is in RTL and only a few functions are used.
 
 var
@@ -2412,6 +2410,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.244  2004/09/08 08:20:50  mattias
+  fixed find in files searching at end of line
+
   Revision 1.243  2004/09/02 09:16:58  mattias
   improved double byte char fonts for gtk1, started synedit UTF8 support
 

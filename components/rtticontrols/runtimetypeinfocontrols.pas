@@ -18,5 +18,5 @@ begin
 end; 
 
 initialization
-  RegisterPackage('RunTimeTypeInfoControls', @Register)
+  RegisterPackage('RunTimeTypeInfoControls', @Register); 
 end.
