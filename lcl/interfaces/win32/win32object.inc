@@ -927,17 +927,36 @@ activate_time :	the time at which the activation event occurred.
       End;
       LM_SETSELSTART:
       Begin
-        If (Sender Is TControl)
-        And (TControl(Sender).FCompStyle = csComboBox) Then
+        if Sender is TControl then
+        case TControl(Sender).FCompStyle of
+          csComboBox:
+            begin
           SendMessage(Handle, CB_SETEDITSEL, 0,
                       MakeLParam(Word(Integer(Data)), High(Word)));
+            end;
+          csEdit:
+            begin
+              //WriteLn('LM_SETSELSTART: Start=',Integer(Data));
+              SendMessage(Handle, EM_SETSEL, Windows.WParam(Data), Windows.LParam(Data));
+            end;
+        end;
       End;
       LM_SETSELLEN:
       Begin
-        If (Sender Is TControl) And (TControl(Sender).FCompStyle = csComboBox) Then
-        Begin
+        if Sender is TControl then
+        Case TControl(Sender).FCompStyle of
+          csComboBox:
+            begin
           Windows.SendMessage(Handle, CB_SETCURSEL, Windows.WParam(Data), 0);
-        End;
+            end;
+          csEdit:
+            begin
+              Windows.SendMessage(Handle, EM_GETSEL, Windows.Wparam(@i), Windows.LParam(@Num));
+              Num := i + Integer(Data);
+              //WriteLn('LM_SETSELLEN: Start=',i, ' End= ',Num, 'Length=',Integer(Data));
+              Windows.SendMessage(Handle, EM_SETSEL, Windows.WParam(i), Windows.LParam(Num));
+            end;
+        end;
       End;
       LM_GETLINECOUNT:
       Begin
@@ -2989,6 +3008,9 @@ End;
 
 {
   $Log$
+  Revision 1.165  2004/02/06 23:58:44  marc
+  + patch from Jesus Reyes, it enables TCustomEdit SelStart/Length
+
   Revision 1.164  2004/02/02 16:56:44  micha
   implement GetControlConstraints for combobox
 
