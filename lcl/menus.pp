@@ -166,7 +166,7 @@ type
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     procedure InitiateActions;
     procedure MenuChanged(Rebuild : Boolean);
-    procedure SetAction(Value: TBasicAction);
+    procedure SetAction(NewAction: TBasicAction);
     procedure SetChildOrder(Child: TComponent; Order: Integer); override;
     procedure SetGroupIndex(AValue: Byte);
     Procedure SetImageIndex(value : Integer);
@@ -225,7 +225,7 @@ type
                                            stored IsHelpContextStored default 0;
     property Hint: String read FHint write FHint stored IsHintStored;
     property ImageIndex: Integer read FImageIndex write SetImageIndex
-                                                      stored IsImageIndexStored;
+                                           stored IsImageIndexStored default -1;
     property RadioItem: Boolean read FRadioItem write SetRadioItem
                                 default False;
     property RightJustify: boolean read FRightJustify write SetRightJustify;
@@ -408,6 +408,9 @@ end.
 
 {
   $Log$
+  Revision 1.67  2004/06/17 20:52:18  mattias
+  fixed setting ImageIndex when TMenuItem.ActionChange
+
   Revision 1.66  2004/03/17 00:34:37  marc
   * Interface reconstruction. Created skeleton units, classes and wscontrols
 

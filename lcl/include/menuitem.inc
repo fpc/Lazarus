@@ -95,6 +95,7 @@ begin
   FVisible := True;
   FEnabled := True;
   FCommand := UniqueCommand;
+  FImageIndex := -1;
 
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := @ImageListChange;
@@ -261,18 +262,18 @@ begin
     Result := nil;
 end;
 
-procedure TMenuItem.SetAction(Value: TBasicAction);
+procedure TMenuItem.SetAction(NewAction: TBasicAction);
 begin
-  if Value = nil then begin
+  if NewAction = nil then begin
     FActionLink.Free;
     FActionLink := nil;
   end else begin
     if FActionLink = nil then
       FActionLink := GetActionLinkClass.Create(Self);
-    FActionLink.Action := Value;
+    FActionLink.Action := NewAction;
     FActionLink.OnChange := @DoActionChange;
-    ActionChange(Value, csLoading in Value.ComponentState);
-    Value.FreeNotification(Self);
+    ActionChange(NewAction, csLoading in NewAction.ComponentState);
+    NewAction.FreeNotification(Self);
   end;
 end;
 
@@ -285,33 +286,33 @@ begin
 end;
 
 procedure TMenuItem.ActionChange(Sender: TObject; CheckDefaults: Boolean);
+var
+  NewAction: TCustomAction;
 begin
   if Sender is TCustomAction then begin
-    with TCustomAction(Sender) do
-    begin
-      if not CheckDefaults or (Self.AutoCheck = False) then
-        Self.AutoCheck := AutoCheck;
-      if not CheckDefaults or (Self.Caption = '') then
-        Self.Caption := Caption;
-      if not CheckDefaults or (Self.Checked = False) then
-        Self.Checked := Checked;
-      if not CheckDefaults or (Self.Enabled = True) then
-        Self.Enabled := Enabled;
-      if not CheckDefaults or (Self.HelpContext = 0) then
-        Self.HelpContext := HelpContext;
-      if not CheckDefaults or (Self.Hint = '') then
-        Self.Hint := Hint;
-      if RadioItem and (not CheckDefaults or (Self.GroupIndex = 0)) then
-        Self.GroupIndex := GroupIndex;
-      if not CheckDefaults or (Self.ImageIndex = -1) then
-        Self.ImageIndex := ImageIndex;
-      if not CheckDefaults or (Self.ShortCut = scNone) then
-        Self.ShortCut := ShortCut;
-      if not CheckDefaults or (Self.Visible = True) then
-        Self.Visible := Visible;
-      if not CheckDefaults or not Assigned(Self.OnClick) then
-        Self.OnClick := OnExecute;
-    end;
+    NewAction:=TCustomAction(Sender);
+    if (not CheckDefaults) or (AutoCheck = False) then
+      AutoCheck := NewAction.AutoCheck;
+    if (not CheckDefaults) or (Caption = '') then
+      Caption := NewAction.Caption;
+    if (not CheckDefaults) or (Checked = False) then
+      Checked := NewAction.Checked;
+    if (not CheckDefaults) or (Enabled = True) then
+      Enabled := NewAction.Enabled;
+    if (not CheckDefaults) or (HelpContext = 0) then
+      HelpContext := NewAction.HelpContext;
+    if (not CheckDefaults) or (Hint = '') then
+      Hint := NewAction.Hint;
+    if RadioItem and (not CheckDefaults or (GroupIndex = 0)) then
+      GroupIndex := NewAction.GroupIndex;
+    if (not CheckDefaults) or (ImageIndex = -1) then
+      ImageIndex := NewAction.ImageIndex;
+    if (not CheckDefaults) or (ShortCut = scNone) then
+      ShortCut := NewAction.ShortCut;
+    if (not CheckDefaults) or (Visible = True) then
+      Visible := NewAction.Visible;
+    if (not CheckDefaults) or not Assigned(OnClick) then
+      OnClick := NewAction.OnExecute;
   end;
 end;
 
@@ -948,8 +949,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TMenuItem.SetImageIndex(Value: Integer);
 begin
+  if FImageIndex = Value then exit;
+  //debugln('TMenuItem.SetImageIndex A ',Name,' Old=',FImageIndex,' New=',Value);
   FImageIndex := Value;
-  //TODO: TMENUITEM.SETINDEXINDEX
+  //TODO: TMenuItem.SetImageIndex
 end;
 
 {------------------------------------------------------------------------------
@@ -1142,6 +1145,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.56  2004/06/17 20:52:19  mattias
+  fixed setting ImageIndex when TMenuItem.ActionChange
+
   Revision 1.55  2004/05/11 12:16:47  mattias
   replaced writeln by debugln
 
@@ -1335,6 +1341,9 @@ end;
 
 
   $Log$
+  Revision 1.56  2004/06/17 20:52:19  mattias
+  fixed setting ImageIndex when TMenuItem.ActionChange
+
   Revision 1.55  2004/05/11 12:16:47  mattias
   replaced writeln by debugln
 

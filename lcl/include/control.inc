@@ -296,17 +296,6 @@ begin
   PosChanged:= (FLeft <> ALeft) or (FTop <> ATop);
   if (not SizeChanged) and (not PosChanged) then exit;
 
-  {If AutoSize and not AutoSizing then begin
-    If SizeChanged then begin
-      DoAutoSize;
-      AutoSizing := True;
-      If PosChanged then
-        ChangeBounds(ALeft, ATop, Width, Height);
-      AutoSizing := False;
-      exit;
-    end;
-  end;}
-
   //DebugLn('TControl.ChangeBounds A ',Name,':',ClassName);
   if (not (csLoading in ComponentState))
   and (not (Self is TWinControl)) then
@@ -3196,6 +3185,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.193  2004/06/17 20:52:18  mattias
+  fixed setting ImageIndex when TMenuItem.ActionChange
+
   Revision 1.192  2004/06/17 10:38:40  mattias
   fixed TToolButton.SetMenuItem while loading
 

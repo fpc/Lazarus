@@ -44,6 +44,7 @@ end;
 
 procedure TToolButtonActionLink.SetImageIndex(Value: Integer);
 begin
+  writeln('TToolButtonActionLink.SetImageIndex A ',ClassName,' Client=',TToolButton(FClient).Name,' IsImageIndexLinked=',IsImageIndexLinked,' Old=',TToolButton(FClient).ImageIndex,' New=',Value);
   if IsImageIndexLinked then TToolButton(FClient).ImageIndex := Value;
 end;
 
@@ -430,6 +431,7 @@ end;
 procedure TToolButton.SetImageIndex(Value: Integer);
 begin
   if FImageIndex = Value then exit;
+  //debugln('TToolButton.SetImageIndex ',Name,':',ClassName,' Old=',FImageIndex,' New=',Value);
   FImageIndex := Value;
   if FToolBar <> nil then begin
     RefreshControl;
@@ -1204,6 +1206,9 @@ end;
 
 {
   $Log$
+  Revision 1.20  2004/06/17 20:52:19  mattias
+  fixed setting ImageIndex when TMenuItem.ActionChange
+
   Revision 1.19  2004/06/17 10:38:40  mattias
   fixed TToolButton.SetMenuItem while loading
 
