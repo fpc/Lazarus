@@ -1356,7 +1356,8 @@ begin
       writeln('TFindDeclarationTool.FindUnitSource Search Compiled unit in current dir=',CurDir);
       {$ENDIF}
       // search compiled unit in current directory
-      if Scanner.InitialValues.IsDefined('WIN32') then
+      if Scanner.InitialValues.IsDefined('WIN32')
+      and Scanner.InitialValues.IsDefined('VER1_0') then
         CompiledSrcExt:='.ppw';
       CompiledResult:=SearchUnitFileInDir(CurDir,AnUnitName,false);
       if CompiledResult=nil then begin
