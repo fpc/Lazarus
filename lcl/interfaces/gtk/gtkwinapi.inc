@@ -5957,6 +5957,16 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function TGtkWidgetSet.IsWindowEnabled(handle: HWND): boolean;
+
+ ------------------------------------------------------------------------------}
+function TGtkWidgetSet.IsWindowEnabled(handle: HWND): boolean;
+begin
+  { TODO: implement me! }
+  Result := false;
+end;
+
+{------------------------------------------------------------------------------
   function TGtkWidgetSet.IsWindowVisible(handle: HWND): boolean;
 
  ------------------------------------------------------------------------------}
@@ -8862,6 +8872,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.392  2005/02/05 09:05:50  micha
+  add platform independent winapi function IsWindowEnabled
+
   Revision 1.391  2005/02/04 01:04:41  mattias
   fixed gtk intf Arc
 

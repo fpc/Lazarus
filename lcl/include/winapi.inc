@@ -510,6 +510,11 @@ begin
   Result := InterfaceObject.IsDBCSLeadByte(TestChar);
 end;
 
+function IsWindowEnabled(handle: HWND): boolean;
+begin
+  Result := InterfaceObject.IsWindowEnabled(Handle);
+end;
+
 function IsWindowVisible(handle: HWND): boolean;
 begin
   Result := InterfaceObject.IsWindowVisible(Handle);
@@ -1325,6 +1330,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.117  2005/02/05 09:05:50  micha
+  add platform independent winapi function IsWindowEnabled
+
   Revision 1.116  2005/01/08 11:03:18  mattias
   implemented TPen.Mode=pmXor  from Jesus
 

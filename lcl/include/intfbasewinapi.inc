@@ -982,6 +982,11 @@ begin
   Result := false;
 end;
 
+function TWidgetSet.IsWindowEnabled(handle: HWND): boolean;
+begin
+  Result := false;
+end;
+
 function TWidgetSet.IsWindowVisible(handle: HWND): boolean;
 begin
   Result := false;
@@ -1415,6 +1420,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.18  2005/02/05 09:05:50  micha
+  add platform independent winapi function IsWindowEnabled
+
   Revision 1.17  2005/01/16 11:40:10  mattias
   fixed TGtkWidgetSet.ExtSelectClipRGN for DCOrigin
 

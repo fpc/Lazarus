@@ -2121,6 +2121,16 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method: IsWindowEnabled
+  Params: handle - window handle
+  Returns: true if window is enabled, false otherwise
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.IsWindowEnabled(handle: HWND): boolean;
+begin
+  Result := Boolean(Windows.IsWindowEnabled(handle));
+end;
+
+{------------------------------------------------------------------------------
   Method: IsWindowVisible
   Params: handle - window handle
   Returns: true if window is visible, false otherwise
@@ -3067,6 +3077,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.134  2005/02/05 09:05:51  micha
+  add platform independent winapi function IsWindowEnabled
+
   Revision 1.133  2005/01/21 22:07:10  micha
   simpler overlay window
 

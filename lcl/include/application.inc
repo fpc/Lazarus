@@ -1253,9 +1253,9 @@ begin
     if Result then
       exit;
   end;
-  // TODO: only send shortcuts to main form if no form is showing modal
+  // only send shortcuts to main form if no form is showing modal
   //  or otherwise disabling the main form
-  if Assigned(FMainForm) {and IsWindowEnabled(FMainForm.Handle)} then
+  if Assigned(FMainForm) and IsWindowEnabled(FMainForm.Handle) then
     Result := FMainForm.IsShortcut(Message);
 end;
 
@@ -1356,6 +1356,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.96  2005/02/05 09:05:50  micha
+  add platform independent winapi function IsWindowEnabled
+
   Revision 1.95  2005/02/03 15:10:23  micha
   implement shortcut handling, tcustomlabel accelerator focuscontrol functionality
 

@@ -135,6 +135,7 @@ function HideCaret(hWnd: HWND): Boolean; override;
 Procedure InitializeCriticalSection(var CritSection: TCriticalSection); Override;
 function IntersectClipRect(dc: hdc; Left, Top, Right, Bottom: Integer): Integer; override;
 function InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean) : Boolean; override;
+function IsWindowEnabled(handle: HWND): boolean; override;
 function IsWindowVisible(handle: HWND): boolean; override;
 
 Procedure LeaveCriticalSection(var CritSection: TCriticalSection); Override;
@@ -214,6 +215,9 @@ Function WindowFromPoint(Point : TPoint) : HWND; override;
 { =============================================================================
 
   $Log$
+  Revision 1.93  2005/02/05 09:05:51  micha
+  add platform independent winapi function IsWindowEnabled
+
   Revision 1.92  2005/01/16 11:40:11  mattias
   fixed TGtkWidgetSet.ExtSelectClipRGN for DCOrigin
 

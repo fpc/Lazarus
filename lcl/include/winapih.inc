@@ -153,6 +153,7 @@ Function InvalidateRect(aHandle : HWND; ARect : pRect; bErase : Boolean) : Boole
 //function IsCharAlphaNumeric --> independent
 function IsDBCSLeadByte(TestChar: Byte): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 //function IsRectEmpty --> independent
+function IsWindowEnabled(handle: HWND): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function IsWindowVisible(handle: HWND): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 Procedure LeaveCriticalSection(var CritSection: TCriticalSection); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -299,6 +300,9 @@ function RGB(R, G, B : Byte) : TColorRef;
 { =============================================================================
 
   $Log$
+  Revision 1.104  2005/02/05 09:05:50  micha
+  add platform independent winapi function IsWindowEnabled
+
   Revision 1.103  2005/01/08 11:03:18  mattias
   implemented TPen.Mode=pmXor  from Jesus
 

@@ -123,6 +123,7 @@ Function HideCaret(HWnd: HWND): Boolean; Override;
 
 function IntersectClipRect(dc: hdc; Left, Top, Right, Bottom: Integer): Integer; override;
 Function InvalidateRect(AHandle: HWND; Rect: PRect; BErase: Boolean): Boolean; Override;
+function IsWindowEnabled(handle: HWND): boolean; override;
 function IsWindowVisible(handle: HWND): boolean; override;
 
 Function LineTo(DC: HDC; X, Y: Integer): Boolean; Override;
@@ -193,6 +194,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.52  2005/02/05 09:05:51  micha
+  add platform independent winapi function IsWindowEnabled
+
   Revision 1.51  2005/01/08 11:03:18  mattias
   implemented TPen.Mode=pmXor  from Jesus
 
