@@ -1498,6 +1498,7 @@ lcl/maskedit.pp svneol=native#text/pascal
 lcl/menus.pp svneol=native#text/pascal
 lcl/nonwin32/messages.pp svneol=native#text/pascal
 lcl/pairsplitter.pas svneol=native#text/pascal
+lcl/postscriptcanvas.pas svneol=native#text/pascal
 lcl/postscriptprinter.pas svneol=native#text/pascal
 lcl/printers.pas svneol=native#text/pascal
 lcl/propertystorage.pas svneol=native#text/pascal
