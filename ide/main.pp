@@ -4059,12 +4059,12 @@ begin
                          and (not (nfIsNotPartOfProject in NewFlags)));
   end;
   if OldUnitIndex<0 then begin
-    Project1.AddUnit(NewUnitInfo,(NewUnitType in [nuForm, nuUnit])
+    Project1.AddUnit(NewUnitInfo,(NewUnitType in [nuForm, nuUnit, nuDataModule])
                                  and NewUnitInfo.IsPartOfProject);
   end;
                               
   // syntax highlighter type
-  if NewUnitType in [nuForm, nuUnit] then begin
+  if NewUnitType in [nuForm, nuUnit,nuDataModule] then begin
     NewUnitInfo.SyntaxHighlighter:=lshFreePascal;
   end else begin
     NewUnitInfo.SyntaxHighlighter:=
@@ -4131,6 +4131,8 @@ begin
     niiUnit: Result:=DoNewEditorFile(nuUnit,'','',
                                      [nfOpenInEditor,nfCreateDefaultSrc]);
     niiForm: Result:=DoNewEditorFile(nuForm,'','',
+                                     [nfOpenInEditor,nfCreateDefaultSrc]);
+    niiDataModule: Result:=DoNewEditorFile(nuDataModule,'','',
                                      [nfOpenInEditor,nfCreateDefaultSrc]);
     // projects
     niiApplication: DoNewProject(ptApplication);
@@ -9096,6 +9098,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.589  2003/05/30 16:25:47  mattias
+  started datamodule
+
   Revision 1.588  2003/05/30 08:10:51  mattias
   added try except to Application.Run, message on changing debugger items during compile
 
