@@ -46,6 +46,12 @@ interface
 
 {off $Define Disable_GC_SysColors}
 
+{$IFDEF gtk2}
+  {$IFDEF NoGdkPixbufLib}
+    {$UNDEF NoGdkPixbufLib}
+  {$EndIF}
+{$EndIF}
+
 uses
   InterfaceBase,
   {$IFDEF gtk2}
@@ -73,9 +79,13 @@ type
     FRCFileAge: integer;
     FWidgetsWithResizeRequest: TDynHashArray; // hasharray of PGtkWidget
     FGTKToolTips: PGtkToolTips;
+    {$IFDef GTK1}
     FNoteBookCloseBtnPixmapImg: PGdkPixmap;
     FNoteBookCloseBtnPixmapMask: PGdkPixmap;
-
+    {$Else}
+    FNoteBookCloseBtnPixbuf : PGdkPixbuf;
+    {$EndIf}
+    
     FStockNullBrush: HBRUSH;
     FStockBlackBrush: HBRUSH;
     FStockLtGrayBrush: HBRUSH;
@@ -156,6 +166,10 @@ type
     // images
     procedure LoadXPMFromLazResource(const ResourceName: string;
       Window: PGdkWindow; var PixmapImg, PixmapMask: PGdkPixmap);virtual;
+    {$IfNDef NoGdkPixbufLib}
+    procedure LoadPixbufFromLazResource(const ResourceName: string;
+      var Pixbuf: PGdkPixbuf);
+    {$EndIf}
     procedure LoadFromXPMFile(Bitmap: TObject; Filename: PChar);virtual;
     procedure LoadFromPixbufFile(Bitmap: TObject; Filename: PChar);virtual;
     procedure LoadFromPixbufData(Bitmap : hBitmap; Data : PByte);virtual;
@@ -172,8 +186,12 @@ type
     procedure ParseRCFile;virtual;
 
     // notebook
-    procedure GetNoteBookCloseBtnPixmap(Window: PGdkWindow;
+    {$IFDef GTK1}
+    procedure GetNoteBookCloseBtnImage(Window: PGdkWindow;
                                         var Img, Mask: PGdkPixmap);virtual;
+    {$Else}
+    procedure GetNoteBookCloseBtnImage(var Img: PGdkPixbuf);virtual;
+    {$EndIF}
     procedure AddDummyNoteBookPage(NoteBookWidget: PGtkNoteBook);virtual;
     procedure RemoveDummyNoteBookPage(NoteBookWidget: PGtkNotebook);virtual;
     procedure UpdateNotebookPageTab(ANoteBook, APage: TObject);virtual;
@@ -368,6 +386,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.151  2003/09/22 15:34:07  ajgenius
+  use GtkImage and Pixbuf for GTK2 instead of Deprecated GtkPixmap
+
   Revision 1.150  2003/09/20 13:27:49  mattias
   varois improvements for ParentColor from Micha
 
