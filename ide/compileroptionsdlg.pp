@@ -534,7 +534,10 @@ var
   DefaultFilename: String;
   NewFilename: String;
 begin
-  OpenDialog:=TOpenDialog.Create(Self);
+  if Sender=btnCompiler then
+    OpenDialog:=TOpenDialog.Create(Self)
+  else
+    OpenDialog:=TSelectDirectoryDialog.Create(Self);
   try
     if Sender=btnCompiler then begin
       OpenDialog.Title:=Format(lisBrowseForCompiler, [GetDefaultCompilerFilename
