@@ -151,7 +151,8 @@ type
   end;
 
   //----------------------------------------------------------------------------
-  TOIPropertyGridState = (pgsChangingItemIndex, pgsApplyingValue);
+  TOIPropertyGridState = (pgsChangingItemIndex, pgsApplyingValue,
+    pgsUpdatingEditControl);
   TOIPropertyGridStates = set of TOIPropertyGridState;
   
   { TOICustomPropertyGrid }
@@ -929,6 +930,7 @@ end;
 procedure TOICustomPropertyGrid.ValueEditChange(Sender: TObject);
 var CurRow:TOIPropertyGridRow;
 begin
+  if pgsUpdatingEditControl in FStates then exit;
   if (FCurrentEdit<>nil) and (FItemIndex>=0) and (FItemIndex<FRows.Count) then
   begin
     CurRow:=Rows[FItemIndex];
@@ -939,12 +941,14 @@ end;
 
 procedure TOICustomPropertyGrid.ValueComboBoxExit(Sender: TObject);
 begin
+  if pgsUpdatingEditControl in FStates then exit;
   SetRowValue;
 end;
 
 procedure TOICustomPropertyGrid.ValueComboBoxChange(Sender: TObject);
 var i:integer;
 begin
+  if pgsUpdatingEditControl in FStates then exit;
   i:=TComboBox(Sender).Items.IndexOf(TComboBox(Sender).Text);
   if i>=0 then SetRowValue;
 end;
@@ -1202,28 +1206,34 @@ var
   NewValue: String;
   NewItemIndex: LongInt;
 begin
-  NewRow:=Rows[FItemIndex];
-  NewValue:=NewRow.Editor.GetVisualValue;
-  ValueComboBox.MaxLength:=NewRow.Editor.GetEditLimit;
+  if pgsUpdatingEditControl in FStates then exit;
+  Include(FStates,pgsUpdatingEditControl);
   ValueComboBox.Items.BeginUpdate;
-  ValueComboBox.Sorted:=paSortList in NewRow.Editor.GetAttributes;
-  ValueComboBox.Enabled:=not NewRow.IsReadOnly;
-  NewRow.Editor.GetValues(@AddStringToComboBox);
-  if FNewComboBoxItems<>nil then begin
-    FNewComboBoxItems.Sorted:=paSortList in NewRow.Editor.GetAttributes;
-    if not ValueComboBox.Items.Equals(FNewComboBoxItems) then begin
-      ValueComboBox.Items.Assign(FNewComboBoxItems);
+  try
+    NewRow:=Rows[FItemIndex];
+    NewValue:=NewRow.Editor.GetVisualValue;
+    ValueComboBox.MaxLength:=NewRow.Editor.GetEditLimit;
+    ValueComboBox.Sorted:=paSortList in NewRow.Editor.GetAttributes;
+    ValueComboBox.Enabled:=not NewRow.IsReadOnly;
+    NewRow.Editor.GetValues(@AddStringToComboBox);
+    if FNewComboBoxItems<>nil then begin
+      FNewComboBoxItems.Sorted:=paSortList in NewRow.Editor.GetAttributes;
+      if not ValueComboBox.Items.Equals(FNewComboBoxItems) then begin
+        ValueComboBox.Items.Assign(FNewComboBoxItems);
+      end;
+      FreeAndNil(FNewComboBoxItems);
+    end else begin
+      ValueComboBox.Items.Text:='';
+      ValueComboBox.Items.Clear;
     end;
-    FreeAndNil(FNewComboBoxItems);
-  end else begin
-    ValueComboBox.Items.Text:='';
-    ValueComboBox.Items.Clear;
+    ValueComboBox.Text:=NewValue;
+    NewItemIndex:=ValueComboBox.Items.IndexOf(NewValue);
+    if NewItemIndex>=0 then
+      ValueComboBox.ItemIndex:=NewItemIndex;
+  finally
+    ValueComboBox.Items.EndUpdate;
+    Exclude(FStates,pgsUpdatingEditControl);
   end;
-  ValueComboBox.Text:=NewValue;
-  NewItemIndex:=ValueComboBox.Items.IndexOf(NewValue);
-  if NewItemIndex>=0 then
-    ValueComboBox.ItemIndex:=NewItemIndex;
-  ValueComboBox.Items.EndUpdate;
 end;
 
 function TOICustomPropertyGrid.MouseToIndex(y:integer;MustExist:boolean):integer;
