@@ -388,6 +388,7 @@ type
     function GetIndexAtY(Y: integer): integer;
     function ItemAtPos(const Pos: TPoint; Existing: Boolean): Integer;
     function ItemRect(Index: Integer): TRect;
+    function ItemVisible(Index: Integer): boolean;
     procedure Clear;
   public
     property BorderStyle : TBorderStyle read FBorderStyle write SetBorderStyle default bsSingle;
@@ -431,6 +432,9 @@ type
     property OnMouseMove;
     property OnMouseDown;
     property OnMouseUp;
+    property OnMouseWheel;
+    property OnMouseWheelDown;
+    property OnMouseWheelUp;
     property OnResize;
     property ParentShowHint;
     property PopupMenu;
@@ -1478,6 +1482,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.122  2004/02/04 00:21:40  mattias
+  added SelectDirectory and TListBox.ItemVisible
+
   Revision 1.121  2004/02/04 00:04:37  mattias
   added some TEdit ideas to TSpinEdit
 

@@ -218,6 +218,30 @@ begin
   InputQuery(ACaption, APrompt, True, Result);
 end;
 
+function SelectDirectory(const Caption, InitialDirectory: string;
+  var Directory: string): boolean;
+begin
+  Result:=SelectDirectory(Caption,InitialDirectory,Directory,false);
+end;
+
+function SelectDirectory(const Caption, InitialDirectory: string;
+  var Directory: string; ShowHidden: boolean): boolean;
+var
+  SelectDirectoryDialog: TSelectDirectoryDialog;
+begin
+  SelectDirectoryDialog:=TSelectDirectoryDialog.Create(nil);
+  if ShowHidden then
+    SelectDirectoryDialog.Options:=SelectDirectoryDialog.Options
+                                   +[ofForceShowHidden];
+  SelectDirectoryDialog.InitialDir:=InitialDirectory;
+  SelectDirectoryDialog.Title:=Caption;
+  Result:=SelectDirectoryDialog.Execute;
+  if Result then
+    Directory:=SelectDirectoryDialog.Filename
+  else
+    Directory:='';
+end;
+
 Function InputQuery(const ACaption, APrompt : String; MaskInput : Boolean;
   var Value : String) : Boolean;
 begin
@@ -233,6 +257,9 @@ end;
 
 {
    $Log$
+   Revision 1.24  2004/02/04 00:21:40  mattias
+   added SelectDirectory and TListBox.ItemVisible
+
    Revision 1.23  2003/09/18 09:21:03  mattias
    renamed LCLLinux to LCLIntf
 

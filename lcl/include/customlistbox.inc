@@ -494,5 +494,21 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  function TCustomListBox.ItemVisible(Index: Integer): boolean;
+
+  Returns true if Item is visible.
+------------------------------------------------------------------------------}
+function TCustomListBox.ItemVisible(Index: Integer): boolean;
+var
+  ARect: TRect;
+begin
+  Result:=false;
+  if (Index<0) or (Index>=Items.Count) then exit;
+  if not GetListBoxItemRect(Self,Index,ARect) then exit;
+  if (ARect.Bottom<0) or (ARect.Top>ClientHeight) then exit;
+  Result:=true;
+end;
+
 
 // back to stdctrls.pp

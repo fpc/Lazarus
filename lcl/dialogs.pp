@@ -294,27 +294,32 @@ type
   end;
 
 
-  { MessageDlg }
-  
-  function MessageDlg(const aMsg: string; DlgType: TMsgDlgType;
-              Buttons: TMsgDlgButtons; HelpCtx: Longint): Integer;
-  function MessageDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
-              Buttons: TMsgDlgButtons; HelpCtx: Longint): Integer;
-  function MessageDlgPos(const aMsg: string; DlgType: TMsgDlgType;
-              Buttons: TMsgDlgButtons; HelpCtx: Longint; X, Y: Integer): Integer;
-  function MessageDlgPosHelp(const aMsg: string; DlgType: TMsgDlgType;
-              Buttons: TMsgDlgButtons; HelpCtx: Longint; X, Y: Integer;
-              const HelpFileName: string): Integer;
-              
-  procedure ShowMessage(const aMsg: string);
-  procedure ShowMessageFmt(const aMsg: string; Params: array of const);
-  procedure ShowMessagePos(const aMsg: string; X, Y: Integer);
+{ MessageDlg }
 
-  Function InputQuery(const ACaption, APrompt : String; MaskInput : Boolean; var Value : String) : Boolean;
-  Function InputQuery(const ACaption, APrompt : String; var Value : String) : Boolean;
-  Function InputBox(const ACaption, APrompt, ADefault : String) : String;
-  Function PasswordBox(const ACaption, APrompt : String) : String;
+function MessageDlg(const aMsg: string; DlgType: TMsgDlgType;
+            Buttons: TMsgDlgButtons; HelpCtx: Longint): Integer;
+function MessageDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
+            Buttons: TMsgDlgButtons; HelpCtx: Longint): Integer;
+function MessageDlgPos(const aMsg: string; DlgType: TMsgDlgType;
+            Buttons: TMsgDlgButtons; HelpCtx: Longint; X, Y: Integer): Integer;
+function MessageDlgPosHelp(const aMsg: string; DlgType: TMsgDlgType;
+            Buttons: TMsgDlgButtons; HelpCtx: Longint; X, Y: Integer;
+            const HelpFileName: string): Integer;
+            
+procedure ShowMessage(const aMsg: string);
+procedure ShowMessageFmt(const aMsg: string; Params: array of const);
+procedure ShowMessagePos(const aMsg: string; X, Y: Integer);
+
+Function InputQuery(const ACaption, APrompt : String; MaskInput : Boolean; var Value : String) : Boolean;
+Function InputQuery(const ACaption, APrompt : String; var Value : String) : Boolean;
+Function InputBox(const ACaption, APrompt, ADefault : String) : String;
+Function PasswordBox(const ACaption, APrompt : String) : String;
   
+function SelectDirectory(const Caption, InitialDirectory: string;
+  var Directory: string): boolean;
+function SelectDirectory(const Caption, InitialDirectory: string;
+  var Directory: string; ShowHidden: boolean): boolean;
+
 
 procedure Register;
 
@@ -405,6 +410,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.43  2004/02/04 00:21:40  mattias
+  added SelectDirectory and TListBox.ItemVisible
+
   Revision 1.42  2004/01/24 16:25:35  mattias
   TSelectDirectoryDialog ofFileMustExist now checks for directory from Vincent
 
