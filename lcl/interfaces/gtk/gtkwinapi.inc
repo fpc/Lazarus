@@ -734,6 +734,8 @@ function TgtkObject.CreateBitmap(Width, Height: Integer;
 var
   GdiObject: PGdiObject;
   //RawImage: PGDIRawImage;
+  P: TPoint;
+  DefGdkWindow: PGdkWindow;
 begin
   Assert(False, Format('Trace:> [TgtkObject.CreateBitmap] Width: %d, Height: %d, Planes: %d, BitCount: %d, BitmapBits: 0x%x', [Width, Height, Planes, BitCount, Longint(BitmapBits)]));
 
@@ -754,19 +756,20 @@ begin
   {if BitCount > 1
   then begin
     Assert(False, Format('Trace:  [TgtkObject.CreateBitmap] gbPixmap', [])); }
-    GdiObject^.GDIBitmapType := gbPixmap;
-    If BitCount = 1 then
-      GdiObject^.GDIBitmapType := gbBitmap;
-
-
+    DefGdkWindow := nil;
     If BitCount = 1 then begin
-      GdiObject^.GDIBitmapObject := gdk_pixmap_new(nil, Width, Height, BitCount);
+      GdiObject^.GDIBitmapType := gbBitmap;
+      GdiObject^.GDIBitmapObject :=
+        gdk_pixmap_new(DefGdkWindow, Width, Height, BitCount);
       GdiObject^.Visual := gdk_window_get_visual(GdiObject^.GDIPixmapObject);
     end
     else begin
-      GdiObject^.GDIPixmapObject := gdk_pixmap_new(nil, Width, Height, BitCount);
+      GdiObject^.GDIBitmapType := gbPixmap;
+      GdiObject^.GDIPixmapObject :=
+        gdk_pixmap_new(DefGdkWindow, Width, Height, BitCount);
       GdiObject^.Visual := gdk_window_get_visual(GdiObject^.GDIBitmapObject);
     end;
+    
     If GdiObject^.Visual = nil then
       GdiObject^.Visual := gdk_visual_get_best_with_depth(BitCount)
     else
@@ -960,26 +963,60 @@ end;
 
   Creates a bitmap compatible with the specified device context.
  ------------------------------------------------------------------------------}
-function TGTKObject.CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP;
+function TGTKObject.CreateCompatibleBitmap(DC: HDC;
+  Width, Height: Integer): HBITMAP;
 var
   Depth : Longint;
+  GDIObject: PGdiObject;
+  DefGdkWindow: PGDkWindow;
 begin
   Assert(False, Format('Trace:> [TgtkObject.CreateCompatibleBitmap] DC: 0x%x, W: %d, H: %d', [DC, Width, Height]));
 
   Depth := -1;
 
-  if (IsValidDC(DC) and (TDeviceContext(DC).Drawable <> nil))
-  then begin
+  if (IsValidDC(DC) and (TDeviceContext(DC).Drawable <> nil)) then begin
+    DefGdkWindow := TDeviceContext(DC).Drawable;
     gdk_window_get_geometry(TDeviceContext(DC).Drawable, nil, nil, nil,
       nil, @Depth);
-    If Depth = -1 then
-      Depth := gdk_visual_get_system^.Depth;
-  end
-  else Depth := gdk_visual_get_system^.Depth;
+  end else
+    DefGdkWindow:=nil;
+  If Depth = -1 then
+    Depth := gdk_visual_get_system^.Depth;
 
-  if Depth <> -1
-  then Result := CreateBitmap(Width, Height, 1, Depth, nil)
-  else Result := 0;
+  if Depth <> -1 then begin
+    if (Depth < 1) or (Depth > 32)
+    then begin
+      Result := 0;
+      WriteLn(Format('ERROR: [TgtkObject.CreateCompatibleBitmap] Illegal depth %d', [Depth]));
+      Exit;
+    end;
+
+    GdiObject := NewGDIObject(gdiBitmap);
+
+    If Depth = 1 then begin
+      GdiObject^.GDIBitmapType := gbBitmap;
+      GdiObject^.GDIBitmapObject :=
+        gdk_pixmap_new(DefGdkWindow, Width, Height, Depth);
+      GdiObject^.Visual := gdk_window_get_visual(GdiObject^.GDIPixmapObject);
+    end
+    else begin
+      GdiObject^.GDIBitmapType := gbPixmap;
+      GdiObject^.GDIPixmapObject :=
+        gdk_pixmap_new(DefGdkWindow, Width, Height, Depth);
+      GdiObject^.Visual := gdk_window_get_visual(GdiObject^.GDIBitmapObject);
+    end;
+
+    If GdiObject^.Visual = nil then
+      GdiObject^.Visual := gdk_visual_get_best_with_depth(Depth)
+    else
+      gdk_visual_ref(GdiObject^.Visual);
+
+    GdiObject^.Colormap := gdk_colormap_new(GdiObject^.Visual, 1);
+
+    Result := HBITMAP(GdiObject);
+
+  end else
+    Result := 0;
 
   Assert(False, Format('Trace:< [TgtkObject.CreateCompatibleBitmap] DC: 0x%x --> 0x%x', [DC, Result]));
 end;
@@ -4428,7 +4465,18 @@ end;
   Returns the x-coordinates and y-coordinates of the window origin for the
   specified device context.
  ------------------------------------------------------------------------------}
-function TgtkObject.GetWindowOrgEx(dc : hdc; var P : TPoint): Integer;
+function TgtkObject.GetWindowOrgEx(dc : hdc; P : PPoint): Integer;
+
+  procedure InvalidDrawable;
+  begin
+    {$IFDEF RaiseExceptionOnNilPointers}
+    RaiseException('TGTKObject.GetWindowOrgEx Window=nil');
+    {$ENDIF}
+    writeln('TgtkObject.GetWindowOrgEx:',
+      ' WARNING: DC ',HexStr(Cardinal(DC),8),' without gdkwindow.',
+      ' Widget=',HexStr(Cardinal(TDeviceContext(DC).wnd),8));
+  end;
+
 var
   DCOrigin: TPoint;
 begin
@@ -4437,23 +4485,18 @@ begin
 //  gdk_window_get_root_origin(pgtkwidget(TDeviceContext(DC).hwnd)^.window, @P.X, @P.Y);
 //write(' / ',p.x,' ',p.y);
   Result := 0;
-  P := Point(0,0);
-  // ToDo: fix this, when Designer is ready
+  if P=nil then exit;
+  P^ := Point(0,0);
   If IsValidDC(DC) then
   with TDeviceContext(DC) do begin
     DCOrigin:=GetDCOffset(TDeviceContext(DC));
     if Drawable<>nil then begin
-      gdk_window_get_origin(PGdkWindow(Drawable), @P.X, @P.Y);
-      inc(P.X,DCOrigin.X);
-      inc(P.Y,DCOrigin.Y);
+      gdk_window_get_origin(PGdkWindow(Drawable), @(P^.X), @(P^.Y));
+      inc(P^.X,DCOrigin.X);
+      inc(P^.Y,DCOrigin.Y);
       Result := 1;
     end else begin
-      {$IFDEF RaiseExceptionOnNilPointers}
-      RaiseException('TGTKObject.GetWindowOrgEx Window=nil');
-      {$ENDIF}
-      writeln('TgtkObject.GetWindowOrgEx:',
-        ' WARNING: DC ',HexStr(Cardinal(DC),8),' without gdkwindow.',
-        ' Widget=',HexStr(Cardinal(wnd),8));
+      InvalidDrawable;
     end;
   end;
 //writeln(' / ',p.x,' ',p.y);
@@ -5928,7 +5971,10 @@ begin
           Assert(False, Format('trace:  [TgtkObject.SelectObject] DC: 0x%x, Type: Bitmap', [DC]));
           Result := HBITMAP(CurrentBitmap);
           CurrentBitmap := PGDIObject(GDIObj);
-          if GC <> nil then gdk_gc_unref(GC);
+          if GC <> nil then begin
+            gdk_gc_unref(GC);
+            GC:=nil;
+          end;
           with PGdiObject(GDIObj)^ do
             case GDIBitmapType of
               gbPixmap: Drawable := GDIPixmapObject;
@@ -5937,6 +5983,7 @@ begin
             else
               Drawable := nil;
             end;
+
           GC := gdk_gc_new(Drawable);
 
           gdk_gc_set_function(GC, GDK_COPY);
@@ -6725,7 +6772,7 @@ var
   OldP: TPoint;
 begin
   //writeln('[TgtkObject.SetWindowOrgEx] ',NewX,' ',NewY);
-  GetWindowOrgEx(DC,OldP);
+  GetWindowOrgEx(DC,@OldP);
   Result := MoveWindowOrgEx(DC,NewX-OldP.X,NewY-OldP.Y);
   if OldPoint<>nil then
     OldPoint^:=OldP;
@@ -7570,6 +7617,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.198  2002/12/27 17:12:38  mattias
+  added more Delphi win32 compatibility functions
+
   Revision 1.197  2002/12/27 08:46:32  mattias
   changes for fpc 1.1
 
