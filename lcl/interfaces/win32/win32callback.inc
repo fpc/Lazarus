@@ -510,7 +510,7 @@ Begin
       PLMsg:=@LMKey;
       With LMKey Do
       Begin
-        Msg := LM_KEYDOWN;
+        Msg := CN_KEYDOWN;
         KeyData := LParam;
         CharCode := Word(WParam);
         Assert(False,Format('WM_KEYDOWN KeyData= %d CharCode= %d ',[KeyData,CharCode]));
@@ -523,7 +523,7 @@ Begin
       PLMsg:=@LMKey;
       With LMKey Do
       Begin
-        Msg := LM_KEYUP;
+        Msg := CN_KEYUP;
         KeyData := LParam;
         CharCode := Word(WParam);
         Assert(False,Format('WM_KEYUP KeyData= %d CharCode= %d ',[KeyData,CharCode]));
@@ -1048,7 +1048,7 @@ begin
         PLMsg:=@LMKey;
         with LMKey Do
         begin
-          Msg := LM_KEYDOWN;
+          Msg := CN_KEYDOWN;
           KeyData := LParam;
           CharCode := Word(WParam);
           Assert(False,Format('WM_KEYDOWN KeyData= %d CharCode= %d ',[KeyData,CharCode]));
@@ -1060,7 +1060,7 @@ begin
         PLMsg:=@LMKey;
         with LMKey do
         begin
-          Msg := LM_KEYUP;
+          Msg := CN_KEYUP;
           KeyData := LParam;
           CharCode := Word(WParam);
           Assert(False,Format('WM_KEYUP KeyData= %d CharCode= %d ',[KeyData,CharCode]));
@@ -1147,6 +1147,9 @@ end;
 
 {
   $Log$
+  Revision 1.102  2004/05/12 15:43:48  micha
+  fix key handling to fire CN_KEYxxx
+
   Revision 1.101  2004/05/08 07:21:10  micha
   fix closeup event; set text manually because windows has only set itemindex, but not the text yet
 
