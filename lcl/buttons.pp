@@ -71,11 +71,12 @@ type
     procedure Click; override;
     //TODO: make this compatible
     procedure CreateWnd; override;
-
-    procedure SetText(const Value: TCaption); override;
+    procedure DoSendBtnDefault; virtual;
 
     property OnMouseEnter : TNotifyEvent read FOnEnter write FOnEnter;
     property OnMouseLeave : TNotifyEvent read FOnLeave write FOnLeave;
+    procedure SetParent(AParent: TWinControl); override;
+    procedure SetText(const Value: TCaption); override;
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -272,6 +273,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.33  2002/12/25 11:53:47  mattias
+  Button.Default now sets focus
+
   Revision 1.32  2002/10/25 10:42:07  lazarus
   MG: broke minor circles
 
