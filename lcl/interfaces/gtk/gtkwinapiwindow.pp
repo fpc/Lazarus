@@ -614,16 +614,23 @@ end;
 function GTKAPIWidget_new: PGTKWidget;
 var
   APIWidget: PGTKAPIWidget;
-  Args : array[0..1] of TGTKArg;
+const
+  Args : array[0..1] of TGTKArg =
+    ((
+      thetype : GTK_TYPE_OBJECT;
+      name : 'hadjustment';
+      d:(object_data : nil)
+    ),
+    (
+      thetype : GTK_TYPE_OBJECT;
+      name : 'vadjustment';
+      d:(object_data : nil)
+    ));
 begin
   Args[0].thetype := GTK_ADJUSTMENT_TYPE;
-  Args[0].name := 'hadjustment';
-  Args[0].d.object_data := nil;
   Args[1].thetype := GTK_ADJUSTMENT_TYPE;
-  Args[1].name := 'vadjustment';
-  Args[1].d.object_data := nil;
 
-  Result := gtk_widget_newv(GTKAPIWidget_GetType, Length(Args), @Args[0]);
+  Result := gtk_widget_newv(GTKAPIWidget_GetType, 2, @Args[0]);
 
   // create client widget
   APIWidget := PGTKAPIWidget(Result);
@@ -715,6 +722,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.34  2002/10/21 00:17:33  lazarus
+  AJ:fix for FPC 1.0
+
   Revision 1.33  2002/10/20 22:57:18  lazarus
   AJ:switched to gtk_widget_newv to work around array of const
 
