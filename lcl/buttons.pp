@@ -78,6 +78,9 @@ type
     function ChildClassAllowed(ChildClass: TClass): boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
+
+    procedure ExecuteDefaultAction; override;
+    procedure ExecuteCancelAction; override;
   published
     property Action;
     property Anchors;
@@ -330,6 +333,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.69  2004/07/01 20:42:11  micha
+  implement better ExecuteXXAction design; break dependency on TButton class in TCustomForm
+
   Revision 1.68  2004/06/30 11:07:20  micha
   implement return key clicks default button; escape key clicks cancel button
 

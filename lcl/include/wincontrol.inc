@@ -2090,26 +2090,24 @@ begin
     Key:=VK_UNKNOWN;
     PerformTab(not (ssShift in Shift));
   end;
+  // check for special actions handled ourselves  
   if (Shift = []) and ((Key = VK_RETURN) or (Key = VK_ESCAPE)) then
   begin
     Form := GetParentForm(Self);
     case Key of
       VK_RETURN:
       begin
-        if Form.DefaultButton <> nil then begin
-          (Form.DefaultButton as TButton).Click;
-          Key:=VK_UNKNOWN;
-        end;
+        if Form.DefaultControl <> nil then 
+          Form.DefaultControl.ExecuteDefaultAction;
       end;
       
       VK_ESCAPE:
       begin
-        if Form.EscapeButton <> nil then begin
-          (Form.EscapeButton as TButton).Click;
-          Key:=VK_UNKNOWN;
-        end;
+        if Form.CancelControl <> nil then 
+          Form.CancelControl.ExecuteCancelAction;
       end;
     end;
+    Key := VK_UNKNOWN;
   end;
 end;
 
@@ -3753,6 +3751,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.248  2004/07/01 20:42:11  micha
+  implement better ExecuteXXAction design; break dependency on TButton class in TCustomForm
+
   Revision 1.247  2004/07/01 17:55:55  mattias
   LCL navigation keys are now handled after interface handles keys
 

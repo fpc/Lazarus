@@ -1153,9 +1153,12 @@ var
   LMessage: TLMessage;
   LMKey: TLMKey;
   PLMsg: PLMessage;
-  NotifyUserInput: Boolean;
+  NotifyUserInput: boolean;
+  WinProcess: boolean;
+  OwnerObject: TObject;
 begin
   // filter messages we want to send to LCL
+  WinProcess := true;
   if (Msg = WM_KILLFOCUS) or (Msg = WM_SETFOCUS) or 
      ((Msg >= WM_KEYFIRST) and (Msg <= WM_KEYLAST)) then
   begin
@@ -1195,10 +1198,26 @@ begin
     if NotifyUserInput then
       NotifyApplicationUserInput(PLMsg^.Msg);
 
-    DeliverMessage(TObject(Windows.GetProp(Window, 'AWinControl')), PLMsg^);
+    OwnerObject := TObject(Windows.GetProp(Window, 'AWinControl'));
+    DeliverMessage(OwnerObject, PLMsg^);
+
+    case Msg of
+      WM_KEYDOWN, WM_KEYUP:
+      begin
+        // if not yet processed, resend normally
+        if LMKey.CharCode <> VK_UNKNOWN then
+        begin
+          LMKey.Msg := Msg;
+          DeliverMessage(OwnerObject, LMKey);
+          // still not handled? then do default processing
+          WinProcess := LMKey.CharCode <> VK_UNKNOWN;
+        end;
+      end;
+    end;
   end;
     
-  Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
+  if WinProcess then
+    Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
 end;
     
 {------------------------------------------------------------------------------
@@ -1256,6 +1275,9 @@ end;
 
 {
   $Log$
+  Revision 1.124  2004/07/01 20:42:11  micha
+  implement better ExecuteXXAction design; break dependency on TButton class in TCustomForm
+
   Revision 1.123  2004/06/30 10:38:51  micha
   fix setcursor to only change cursor within client area, not on scrollbars etc.
 

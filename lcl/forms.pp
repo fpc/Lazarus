@@ -336,8 +336,8 @@ type
   private
     FActive: Boolean;
     FActiveControl: TWinControl;
-    FDefaultButton: TControl;
-    FEscapeButton: TControl;
+    FDefaultControl: TControl;
+    FCancelControl: TControl;
     FDesigner: TIDesigner;
     FDummyTextHeight: Longint;
     FFormState: TFormState;
@@ -373,8 +373,8 @@ type
     procedure SetActive(AValue: Boolean);
     procedure SetActiveControl(AWinControl: TWinControl);
     procedure SetFormBorderStyle(NewStyle: TFormBorderStyle);
-    procedure SetEscapeButton(NewButton: TControl);
-    procedure SetDefaultButton(NewButton: TControl);
+    procedure SetCancelControl(NewControl: TControl);
+    procedure SetDefaultControl(NewControl: TControl);
     procedure SetDesigner(Value : TIDesigner);
     procedure SetFormStyle(Value : TFormStyle);
     procedure SetIcon(AValue: TIcon);
@@ -450,10 +450,10 @@ type
     property ActiveControl: TWinControl read FActiveControl write SetActiveControl;
     property BorderStyle: TFormBorderStyle
                       read FFormBorderStyle write SetFormBorderStyle default bsSizeable;
-    property EscapeButton: TControl read FEscapeButton write SetEscapeButton;
+    property CancelControl: TControl read FCancelControl write SetCancelControl;
     property Caption stored IsForm;
     property Color default clBtnFace;
-    property DefaultButton: TControl read FDefaultButton write SetDefaultButton;
+    property DefaultControl: TControl read FDefaultControl write SetDefaultControl;
     property Designer: TIDesigner read FDesigner write SetDesigner;
     property FormState: TFormState read FFormState;
     property FormStyle: TFormStyle read FFormStyle write SetFormStyle

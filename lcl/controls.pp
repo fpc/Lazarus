@@ -267,7 +267,9 @@ type
     csNeedsBorderPaint, // not implemented
     csParentBackground, // not implemented
     csDesignNoSmoothResize, // no WYSIWYG resizing in designer
-    csDesignFixedBounds // control can not be moved nor resized in designer
+    csDesignFixedBounds, // control can not be moved nor resized in designer
+    csHasDefaultAction, // control implements useful ExecuteDefaultAction
+    csHasCancelAction   // control implements useful ExecuteCancelAction
     );
   TControlStyle = set of TControlStyleType;
 
@@ -1000,6 +1002,8 @@ type
     constructor Create(AOwner: TComponent);override;
     destructor Destroy; override;
     Function PerformTab(ForwardTab: boolean): Boolean; Virtual;
+    procedure ExecuteDefaultAction; virtual;
+    procedure ExecuteCancelAction; virtual;
     procedure BeginDrag(Immediate: Boolean; Threshold: Integer);
     procedure BeginDrag(Immediate: Boolean);
     procedure BringToFront;
@@ -2326,6 +2330,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.219  2004/07/01 20:42:11  micha
+  implement better ExecuteXXAction design; break dependency on TButton class in TCustomForm
+
   Revision 1.218  2004/07/01 10:08:31  mattias
   made key handling more flexible
 

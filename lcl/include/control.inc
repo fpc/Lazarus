@@ -527,6 +527,14 @@ begin
   end;
 end;
 
+procedure TControl.ExecuteDefaultAction;
+begin
+end;
+
+procedure TControl.ExecuteCancelAction;
+begin
+end;
+
 {------------------------------------------------------------------------------
   function TControl.GetFloating: Boolean;
 ------------------------------------------------------------------------------}
@@ -3191,6 +3199,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.200  2004/07/01 20:42:11  micha
+  implement better ExecuteXXAction design; break dependency on TButton class in TCustomForm
+
   Revision 1.199  2004/06/28 23:46:40  marc
   * Fixed compilation on 1.0.10
   * Fixed check for override of GetTextBuf and SetTextBuf

@@ -32,7 +32,7 @@ begin
   end;
   {set the component style to csButton}
   fCompStyle := csButton;
-  ControlStyle:=ControlStyle-[csClickEvents];
+  ControlStyle:=ControlStyle-[csClickEvents]+[csHasDefaultAction,csHasCancelAction];
   TabStop := true;
   {set default alignment}
   Align := alNone;
@@ -80,9 +80,19 @@ end;
   procedure TButton.SetParent(AParent: TWinControl);
  ------------------------------------------------------------------------------}
 procedure TButton.SetParent(AParent: TWinControl);
+var
+  Form: TCustomForm;
 begin
   if Parent=AParent then exit;
   inherited SetParent(AParent);
+  Form := GetParentForm(Self);
+  if Form <> nil then
+  begin
+    if FDefault then
+      Form.DefaultControl := Self;
+    if FCancel then
+      Form.CancelControl := Self;
+  end;
   DoSendBtnDefault;
 end;
 
@@ -98,10 +108,13 @@ begin
   if FCancel = NewCancel then Exit;
   FCancel := NewCancel;
   Form := GetParentForm(Self);
-  if NewCancel then
-    Form.EscapeButton := Self
-  else
-    Form.EscapeButton := nil;
+  if Form <> nil then
+  begin
+    if NewCancel then
+      Form.CancelControl := Self
+    else
+      Form.CancelControl := nil;
+  end;
 end;
  
 {------------------------------------------------------------------------------
@@ -116,12 +129,27 @@ begin
   if FDefault = Value then Exit;
   FDefault := Value;
   Form := GetParentForm(Self);
-  if Value then
-    Form.DefaultButton := Self
-  else
-    Form.DefaultButton := nil;
+  if Form <> nil then
+  begin
+    if Value then
+      Form.DefaultControl := Self
+    else
+      Form.DefaultControl := nil;
+  end;
   DoSendBtnDefault;
-End;
+end;
+
+procedure TButton.ExecuteDefaultAction;
+begin
+  if FDefault then
+    Click;
+end;
+
+procedure TButton.ExecuteCancelAction;
+begin
+  if FCancel then
+    Click;
+end;
 
 {------------------------------------------------------------------------------
   Method:  TButton.Click
@@ -182,6 +210,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.29  2004/07/01 20:42:11  micha
+  implement better ExecuteXXAction design; break dependency on TButton class in TCustomForm
+
   Revision 1.28  2004/06/30 11:07:20  micha
   implement return key clicks default button; escape key clicks cancel button
 

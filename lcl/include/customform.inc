@@ -192,38 +192,37 @@ begin
   Result:=FKeyPreview=true;
 end;
 
-procedure TCustomForm.SetEscapeButton(NewButton: TControl);
-var
-  lButton: TControl;
+procedure TCustomForm.SetCancelControl(NewControl: TControl);
+//var
+//  lControl: TControl;
 begin
-  if NewButton <> FEscapeButton then
+  if NewControl <> FCancelControl then
   begin
     // prevent inf. recursion problems
-    lButton := FEscapeButton;
-    FEscapeButton := nil;
-    // TODO: TControl -> TButton so we don't have to check type ?
-    if lButton <> nil then
-      (lButton as TButton).Cancel := false;
-    FEscapeButton := NewButton;
-    if NewButton <> nil then
-      (NewButton as TButton).Cancel := true;
+//    lControl := FCancelControl;
+//    FCancelControl := nil;
+//    if lControl <> nil then
+//      (lControl as TControl).Cancel := false;
+    FCancelControl := NewControl;
+//    if NewControl <> nil then
+//      (NewControl as TControl).Cancel := true;
   end;
 end;
 
-procedure TCustomForm.SetDefaultButton(NewButton: TControl);
-var
-  lButton: TControl;
+procedure TCustomForm.SetDefaultControl(NewControl: TControl);
+//var
+//  lControl: TControl;
 begin
-  if NewButton <> FDefaultButton then
+  if NewControl <> FDefaultControl then
   begin
     // prevent inf. recursion problems
-    lButton := FDefaultButton;
-    FDefaultButton := nil;
-    if lButton <> nil then
-      (lButton as TButton).Default := false;
-    FDefaultButton := NewButton;
-    if NewButton <> nil then
-      (NewButton as TButton).Default := true;
+//    lControl := FDefaultControl;
+//    FDefaultControl := nil;
+//    if lControl <> nil then
+//      (lControl as TControl).Default := false;
+    FDefaultControl := NewControl;
+//    if NewControl <> nil then
+//      (NewControl as TControl).Default := true;
   end;
 end;
 
@@ -1642,6 +1641,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.142  2004/07/01 20:42:11  micha
+  implement better ExecuteXXAction design; break dependency on TButton class in TCustomForm
+
   Revision 1.141  2004/06/30 11:07:20  micha
   implement return key clicks default button; escape key clicks cancel button
 
