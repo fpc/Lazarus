@@ -349,7 +349,7 @@ type
                                        
     // view project ToDo list events
     procedure ViewProjectTodosOpenFile(Sender: TObject;
-      const Filename: string);
+      const Filename: string; const LineNumber: integer);
 
     // CodeToolBoss events
     procedure OnBeforeCodeToolBossApplyChanges(Manager: TCodeToolManager;
@@ -8183,9 +8183,9 @@ begin
 end;
 
 procedure TMainIDE.ViewProjectTodosOpenFile(Sender: TObject;
-  const Filename: string);
+  const Filename: string; const LineNumber: integer);
 begin
-  DoOpenEditorFile(Filename,-1,[]);
+  DoJumpToSourcePos(Filename,1,LineNumber,-1,true);
 end;
 
 // -----------------------------------------------------------------------------
@@ -10206,6 +10206,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.677  2003/11/28 10:33:43  mattias
+  fixed todolist  by Bob
+
   Revision 1.676  2003/11/27 23:05:39  mattias
   implemented reopen IDE windows
 

@@ -63,7 +63,8 @@ Const
   cTodoFlag = '#todo';
   
 type
-  TOnOpenFile = procedure(Sender: TObject; const Filename: string) of object;
+  TOnOpenFile = procedure(Sender: TObject; const Filename: string;
+                          const LineNumber: integer) of object;
 
   TfrmToDo = class(TForm)
     StatusBar:TStatusBar;
@@ -103,6 +104,8 @@ var
 
 implementation
 
+uses
+  FileCtrl;
 
 Type
    PCharArray   = Array[0..16+5] of PChar;
@@ -390,7 +393,6 @@ begin
     //Load project file
     LoadFile(fFileName);
 
-
     if Assigned(CodeToolBoss) then
     begin
       fRootCBuffer:=CodeToolBoss.LoadFile(fFileName,false,false);
@@ -402,7 +404,6 @@ begin
         try
           for i:=0 to UsedInterfaceFilenames.Count-1 do
             LoadFile(UsedInterfaceFilenames[i]);
-
           for i:=0 to UsedImplementationFilenames.Count-1 do
             LoadFile(UsedImplementationFilenames[i]);
         finally
@@ -434,11 +435,63 @@ end;
 procedure TfrmToDo.actEditGoto(Sender: TObject);
 var
   CurFilename: String;
+  TheItem: TListItem;
+  TheLine: integer;
+  UsedInterfaceFilenames: TStrings;
+  UsedImplementationFilenames: TStrings;
+  i: integer;
+  Found: boolean;
 begin
-  showMessage('not implemented');
-  exit;
+  //showMessage('not implemented');
+  //exit;
   CurFilename:='';
-  if Assigned(OnOpenFile) then OnOpenFile(Self,CurFilename);
+  TheItem:= lvtodo.Selected;
+  Found:= false;
+  if Assigned(TheItem) then
+  begin
+    CurFileName:= TheItem.SubItems[1];
+    TheLine:= StrToInt(TheItem.SubItems[2]);
+    if not FileNameIsAbsolute(CurFileName) then
+    begin
+      if Assigned(CodeToolBoss) then
+      begin
+        fRootCBuffer:=CodeToolBoss.LoadFile(fFileName,false,false);
+        if not Assigned(fRootCBuffer) then Exit;
+        if CodeToolBoss.FindUsedUnits(fRootCBuffer,UsedInterfaceFilenames,
+                                      UsedImplementationFilenames) then
+        begin
+          try
+            for i:=0 to UsedInterfaceFilenames.Count-1 do
+            begin
+              if AnsiCompareStr(ExtractFileName(UsedInterfaceFileNames[i]),
+                                CurFileName) = 0 then
+              begin
+                CurFileName:= UsedInterFaceFileNames[i];
+                Found:= true;
+                break;
+              end;//end
+            end;//for
+            if not Found then
+            begin
+              for i:=0 to UsedImplementationFilenames.Count-1 do
+              begin
+                if AnsiCompareStr(ExtractFileName
+                (UsedImplementationFilenames[i]), CurFileName) = 0 then
+                begin
+                  CurFileName:= UsedImplementationFilenames[i];
+                  break;
+                end;//if
+              end;//for
+            end;//if
+          finally
+            UsedImplementationFilenames.Free;
+            UsedInterfaceFilenames.Free;
+          end;//try-finally
+        end;//if
+      end;//if
+    end;//if
+    if Assigned(OnOpenFile) then OnOpenFile(Self,CurFilename,TheLine);
+  end;//if
 end;
 
 procedure TfrmToDo.actFilePrint(Sender: TObject);
@@ -463,7 +516,7 @@ begin
     //the file name
     ParsingString:=Trim(Copy(aDirective,N+Length('{$I '),MaxInt));
     ParsingString:=Trim(Copy(ParsingString,1,Pos('}',ParsingString)-1));
-    // ToDo: search in include path
+    {#ToDo: search in include path}
     LoadFile(ParsingString);
   end;
 end;
