@@ -108,6 +108,7 @@ type
     function CreateComboBox(ComboBoxObject: TObject): Pointer;
     function CreateAPIWidget(AWinControl: TWinControl): PGtkWidget;
     function CreateForm(ACustomForm: TCustomForm): PGtkWidget;
+    function CreateListView(ListViewObject: TObject): PGtkWidget;
     procedure CreateComponent(Sender : TObject);virtual;
     procedure DestroyEmptySubmenu(Sender: TObject);virtual;
     procedure DestroyLCLComponent(Sender: TObject);virtual;
@@ -339,6 +340,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.129  2003/06/03 10:29:22  mattias
+  implemented updates between source marks and breakpoints
+
   Revision 1.128  2003/05/18 10:42:58  mattias
   implemented deleting empty submenus
 
