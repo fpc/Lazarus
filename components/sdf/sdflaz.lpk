@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Package Version="2">
+    <Name Value="SDFLaz"/>
+    <Author Value="Michael Van Canneyt"/>
+    <CompilerOptions>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib/"/>
+      </SearchPaths>
+      <Other>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="SDF (fixed/delimited file) dataset package for Lazarus"/>
+    <License Value="LGPL"/>
+    <Version Minor="1" Release="1"/>
+    <Files Count="3">
+      <Item1>
+        <Filename Value="registersdf.lrs"/>
+        <Type Value="LRS"/>
+      </Item1>
+      <Item2>
+        <Filename Value="registersdf.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="RegisterSDF"/>
+      </Item2>
+      <Item3>
+        <Filename Value="sdfdata.pp"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="sdfdata"/>
+      </Item3>
+    </Files>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="1">
+      <Item1>
+        <PackageName Value="LCL"/>
+      </Item1>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)/"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>
