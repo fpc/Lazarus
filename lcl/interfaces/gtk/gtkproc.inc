@@ -1167,6 +1167,9 @@ begin
     ' ',TComponent(Target).Name,':',TObject(Target).ClassName,
     ' Message=',GetMessageName(TLMessage(AMessage).Msg));
   {$ENDIF}
+  if (TLMessage(AMessage).Msg=LM_PAINT)
+  or (TLMessage(AMessage).Msg=LM_GtkPaint) then
+    CurrentSentPaintMessageTarget:=TObject(Target);
   if TObject(Target) is TControl then
   begin
     TControl(Target).WindowProc(TLMessage(AMessage));
@@ -1177,6 +1180,7 @@ begin
   end;
   
   Result := TLMessage(AMessage).Result;
+  CurrentSentPaintMessageTarget:=nil;
 end;
 
 {------------------------------------------------------------------------------
@@ -4087,6 +4091,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.177  2003/06/03 08:02:33  mattias
+  implemented showing source lines in breakpoints dialog
+
   Revision 1.176  2003/05/27 17:58:31  mattias
   fixed range checks
 

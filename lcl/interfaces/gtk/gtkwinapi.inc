@@ -5082,35 +5082,44 @@ function TGTKObject.InvalidateRect(aHandle : HWND; Rect : pRect;
   bErase : Boolean) : Boolean;
 var
   gdkRect : TGDKRectangle;
-  Widget: PGtkWidget;
+  Widget, PaintWidget: PGtkWidget;
+  LCLObject: TObject;
   {$IfDef Win32}
   AWindow: PGdkWindow;
   {$EndIf}
 begin
 //  Writeln(format('Rect = %d,%d,%d,%d',[rect^.left,rect^.top,rect^.Right,rect^.Bottom]));
+  Widget:=PGtkWidget(aHandle);
+  LCLObject:=GetLCLObject(Widget);
+  if (LCLObject<>nil) and (LCLObject=CurrentSentPaintMessageTarget) then begin
+    writeln('NOTE: TGTKObject.InvalidateRect during paint message: ',
+      LCLObject.ClassName);
+    //RaiseException('Double paint');
+  end;
   Result := True;
   gdkRect.X := Rect^.Left;
   gdkRect.Y := Rect^.Top;
   gdkRect.Width := (Rect^.Right - Rect^.Left);
   gdkRect.Height := (Rect^.Bottom - Rect^.Top);
   
-  Widget:=GetFixedWidget(PGtkWidget(aHandle));
-  if Widget=nil then Widget:=PgtkWidget(aHandle);
+  PaintWidget:=GetFixedWidget(Widget);
+  if PaintWidget=nil then PaintWidget:=Widget;
 
   {$IfNDef Win32}
   if bErase then
-    gtk_widget_queue_clear_area(Widget,
+    gtk_widget_queue_clear_area(PaintWidget,
                           gdkRect.X,gdkRect.Y,gdkRect.Width,gdkRect.Height);
 
-  gtk_widget_queue_draw_area(Widget, gdkRect.X,gdkRect.Y,gdkRect.Width,gdkRect.Height);
+  gtk_widget_queue_draw_area(PaintWidget,
+                             gdkRect.X,gdkRect.Y,gdkRect.Width,gdkRect.Height);
   {$Else}
   if bErase then begin
-    AWindow:=GetControlWindow(Widget);
+    AWindow:=GetControlWindow(PaintWidget);
     if AWindow<>nil then
       gdk_window_clear_area(AWindow,
                           gdkRect.X,gdkRect.Y,gdkRect.Width,gdkRect.Height);
   end;
-  gtk_widget_draw(Widget, @gdkRect);
+  gtk_widget_draw(PaintWidget, @gdkRect);
   {$EndIf}
 end;
 
@@ -8084,6 +8093,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.239  2003/06/03 08:02:33  mattias
+  implemented showing source lines in breakpoints dialog
+
   Revision 1.238  2003/05/20 21:41:07  mattias
   started loading/saving breakpoints
 
