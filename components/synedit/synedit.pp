@@ -6827,6 +6827,7 @@ var
   counter: Integer;
   InsDelta: integer;
   {$IFDEF SYN_LAZARUS}
+  LogCounter: integer;
   LogCaretXY: TPoint;
   LogCaret: TPoint;
   LogSpacePos: integer;
@@ -7106,20 +7107,21 @@ begin
                   VDelete(Temp, CaretX, counter, drLTR);
                   {$ELSE USE_UTF8BIDI_LCL}
                   LogCaretXY.X:=PhysicalToLogicalCol(Temp,CaretX-counter);
+                  LogCounter:=GetCharLen(Temp,LogCaretXY.X);
                   CaretX := LogicalToPhysicalCol(Temp,LogCaretXY.X);
-                  Helper := Copy(Temp, LogCaretXY.X, counter);
-                  System.Delete(Temp, LogCaretXY.X, counter);
+                  Helper := Copy(Temp, LogCaretXY.X, LogCounter);
+                  System.Delete(Temp, LogCaretXY.X, LogCounter);
                   //debugln('ecDeleteLastChar delete char CaretX=',dbgs(CaretX),
                   //  ' Helper="',DbgStr(Helper),'" Temp="',DbgStr(Temp),'"');
                   {$ENDIF USE_UTF8BIDI_LCL}
                 {$ELSE}
-                {$IFDEF SYN_MBCSSUPPORT}
-                if ByteType(Temp, CaretX - 2) = mbLeadByte then
-                  Inc(counter);
-                {$ENDIF}
-                CaretX := CaretX - counter;
-                Helper := Copy(Temp, CaretX, counter);
-                Delete(Temp, CaretX, counter);
+                  {$IFDEF SYN_MBCSSUPPORT}
+                  if ByteType(Temp, CaretX - 2) = mbLeadByte then
+                    Inc(counter);
+                  {$ENDIF}
+                  CaretX := CaretX - counter;
+                  Helper := Copy(Temp, CaretX, counter);
+                  Delete(Temp, CaretX, counter);
                 {$ENDIF}
                 TrimmedSetLine(CaretY - 1, Temp);
               end;
