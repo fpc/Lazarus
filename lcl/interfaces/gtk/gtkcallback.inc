@@ -22,7 +22,6 @@ const
   DblClickTime = 250;//250 miliseconds or less between clicks is a double click
 
 var
-  //testing
   LMouseButtonDown,MMouseButtonDown,RMouseButtonDown : Boolean;  //used to track the mouse buttons
   LLastClick, RLastClick, MLastClick : TDateTime;
   LastFileSelectRow : gint;
@@ -112,15 +111,19 @@ var
   NewEventMask: TGdkEventMask;
   TheWinControl: TWinControl;
   ClientWidget: PGtkWidget;
+  MainWidget: PGtkWidget;
 begin
   EventTrace('realizeafter', nil);
-  
+
   HiddenLCLObject:=GetHiddenLCLObject(Widget);
   if HiddenLCLObject=nil then begin
     // this is a normal lcl wigdet
   
-    WinWidgetInfo:=GetWidgetInfo(Widget,true);
-    LCLObject:=GetLCLObject(Widget);
+    MainWidget:=GetMainWidget(Widget);
+    if MainWidget=nil then
+      MainWidget:=Widget;
+    WinWidgetInfo:=GetWidgetInfo(MainWidget,true);
+    LCLObject:=GetLCLObject(MainWidget);
     if (LCLObject<>nil) and (WinWidgetInfo<>nil) then begin
       ClientWidget:=GetFixedWidget(Widget);
       if (LCLObject is TWinControl) then
@@ -175,7 +178,7 @@ end;
 function GTKHiddenRealizeAfterCB(Widget: PGtkWidget; Data: Pointer): GBoolean; cdecl;
 begin
   EventTrace('hiddenrealizeafter', nil);
-writeln('CCC1 ',HexStr(Cardinal(Widget),8));
+writeln('CCC1 GTKHiddenRealizeAfterCB ',HexStr(Cardinal(Widget),8));
   Result := True;
 end;
 
@@ -610,9 +613,14 @@ begin
     TControl(Data).Name,':',TObject(Data).ClassName,' ',
     Trunc(Event^.X),',',Trunc(Event^.Y));
   {$ENDIF}
-  //writeln('Widget=',HexStr(Cardinal(Widget),8),' ClientWidget=',HexStr(Cardinal(GetFixedWidget(Widget)),8),
+  //writeln('DDD1 MousePress Widget=',HexStr(Cardinal(Widget),8),
+  //' ClientWidget=',HexStr(Cardinal(GetFixedWidget(Widget)),8),
   //' EventMask=',HexStr(Cardinal(gdk_window_get_events(Widget^.Window)),8),
-  //' GDK_BUTTON_RELEASE_MASK=',HexStr(Cardinal(GDK_BUTTON_RELEASE_MASK),8));
+  //' GDK_BUTTON_RELEASE_MASK=',HexStr(Cardinal(GDK_BUTTON_RELEASE_MASK),8),
+  //' Window=',HexStr(Cardinal(Widget^.Window),8)
+  //);
+  if GetFixedWidget(Widget)<>nil then
+    writeln('DDD2 ClientWindow=',HexStr(Cardinal(PGtkWidget(GetFixedWidget(Widget))^.Window),8));
 
   EventTrace('Mouse button Press', data);
   Assert(False, Format('Trace:[gtkMouseBtnPress] ', []));
@@ -823,6 +831,10 @@ begin
     TControl(Data).Name,':',TObject(Data).ClassName,' ',
     Trunc(Event^.X),',',Trunc(Event^.Y));
   {$ENDIF}
+
+  //writeln('EEE1 MouseRelease Widget=',HexStr(Cardinal(Widget),8),
+  //' EventMask=',HexStr(Cardinal(gdk_window_get_events(Widget^.Window)),8),
+  //' GDK_BUTTON_RELEASE_MASK=',HexStr(Cardinal(GDK_BUTTON_RELEASE_MASK),8));
 
   HiddenLCLObject:=GetHiddenLCLObject(Widget);
   if HiddenLCLObject<>nil then begin
@@ -2157,6 +2169,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.94  2002/08/04 07:09:27  lazarus
+  MG: fixed client events
+
   Revision 1.93  2002/07/29 13:26:57  lazarus
   MG: source notebook pagenames are now updated more often
 
