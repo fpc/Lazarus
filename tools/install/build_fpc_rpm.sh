@@ -70,7 +70,7 @@ if [ "$PkgType" = "deb" ]; then
   # build fpc debs
 
   # change debian files
-  DebianRulezDir=$TmpDir/fpc/install/debian/
+  DebianRulezDir=$TmpDir/install/debian/
   Date=13/07/2003
 
   # prepend changelog information, needed for version
@@ -101,7 +101,7 @@ if [ "$PkgType" = "deb" ]; then
 
 
   # compile
-  cd $TmpDir/fpc
+  cd $TmpDir/
   make debcopy
   cd -
   cd /usr/src/fpc-$LazVersion
