@@ -92,9 +92,13 @@ type
         GDIBrushPixMap: PGdkPixmap;
       );
       gdiFont: (
+      {$Ifdef USE_PANGO} // we should implement pango for gtk2 soon
+        GDIFontObject: PPangoFont;
+      {$else}
         GDIFontObject: PGdkFont;
         LogFont: TLogFont;// for now font info is stored as well, later query font params
-      ); 
+      {$EndIf}
+      );
       gdiPen: (
         IsNullPen : Boolean;//GDK will bomb with a NULL Pen Hatch
         GDIPenColor: TGDIColor;
@@ -456,6 +460,13 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.43  2003/09/06 20:23:53  ajgenius
+  fixes for gtk2
+  added more wrappers for gtk1/gtk2 converstion and sanity
+  removed pointless version $Ifdef GTK2 etc
+  IDE now "runs" Tcontrol drawing/using problems
+  renders it unuseable however
+
   Revision 1.42  2003/08/29 21:21:07  mattias
   fixes for gtk2
 

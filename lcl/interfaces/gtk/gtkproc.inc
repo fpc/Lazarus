@@ -65,6 +65,29 @@ begin
 end;
 
 {$Ifdef GTK1}
+function gtk_class_get_type(aclass : Pointer) : TGtkType;
+begin
+  If (aclass <> nil) then
+    result := PGtkTypeClass(aclass)^.thetype
+  else
+    result := 0;
+end;
+
+function gtk_object_get_class(anobject : Pointer) : Pointer;
+begin
+  If (anobject <> nil) then
+    result := PGtkTypeObject(anobject)^.klass
+  else
+    result := nil;
+end;
+
+function gtk_window_get_modal(window:PGtkWindow):gboolean;
+begin
+  if assigned(Window) then
+    result := (Window^.flag0 and bm_modal)<>0
+  else
+    result := False;
+end;
 
 function gtk_bin_get_child(bin : PGTKBin) : PGTKWidget;
 begin
@@ -72,11 +95,6 @@ begin
     result := bin^.Child
   else
     result := nil;
-end;
-
-function gtk_window_get_modal(window:PGtkWindow):gboolean;
-begin
-  result := (Window^.flag0 and bm_modal)<>0;
 end;
 
 Procedure gtk_menu_item_set_right_justified(menu_item : PGtkMenuItem; right_justified : gboolean);
@@ -107,6 +125,24 @@ begin
   result := gdk_regions_xor(source1, source2);
 end;
 
+function gdk_region_copy(region: PGDKRegion): PGDKRegion;
+var
+  EmptyRegion: PGdkRegion;
+begin
+  EmptyRegion := gdk_region_new;
+  Result := gdk_regions_union(region, EmptyRegion);
+  gdk_region_destroy(EmptyRegion);
+end;
+
+function gdk_region_rectangle(rect: PGdkRectangle): PGDKRegion;
+var
+  EmptyRegion: PGdkRegion;
+begin
+  EmptyRegion := gdk_region_new;
+  Result := gdk_region_union_with_rect(EmptyRegion,Rect);
+  gdk_region_destroy(EmptyRegion);
+end;
+
 Function gdk_drawable_get_depth(Drawable : PGDKDrawable) : gint;
 begin
   gdk_window_get_geometry(Drawable, nil, nil, nil, nil, @result);
@@ -116,10 +152,33 @@ Procedure gdk_drawable_get_size(Drawable : PGDKDrawable; Width, Height : PGInt);
 begin
   gdk_window_get_geometry(Drawable, nil, nil, Width, Height, nil);
 end;
-
 {$EndIf}
 
 {$Ifdef GTK2}
+function gtk_class_get_type(aclass : Pointer) : TGtkType;
+begin
+  If (aclass <> nil) then
+    result := PGtkTypeClass(aclass)^.g_Type
+  else
+    result := 0;
+end;
+
+function gtk_object_get_class(anobject : Pointer) : Pointer;
+begin
+  If (anobject <> nil) then
+    result := PGtkTypeObject(anobject)^.g_Class
+  else
+    result := nil;
+end;
+
+function gtk_window_get_modal(window:PGtkWindow):gboolean;
+begin
+  if assigned(Window) then
+    result := GTK2.gtk_window_get_modal(window)
+  else
+    result := False;
+end;
+
 Procedure gtk_signal_handlers_destroy(anObject : PGtkObject);
 begin
   g_signal_handlers_destroy(PGObject(anObject));
@@ -232,17 +291,9 @@ end;
  ------------------------------------------------------------------------------}
 function GtkWidgetIsA(Widget: PGtkWidget; AType: TGtkType): boolean;
 begin
-  {$IFDEF GTK2}
   Result:=(Widget<>nil)
-    and (PGtkTypeObject(Widget)^.g_class<>nil)
-    and gtk_type_is_a(PGtkTypeClass(PGtkTypeObject(Widget)^.g_class)^.g_type,
-                      AType);
-  {$ELSE}
-  Result:=(Widget<>nil)
-    and (PGtkTypeObject(Widget)^.klass<>nil)
-    and gtk_type_is_a(PGtkTypeClass(PGtkTypeObject(Widget)^.klass)^.thetype,
-                      AType);
-  {$ENDIF}
+    and (gtk_object_get_class(Widget)<>nil)
+    and gtk_type_is_a(gtk_class_get_type(gtk_object_get_class(Widget)), AType);
 end;
 
 {------------------------------------------------------------------------------
@@ -477,7 +528,6 @@ Function RegionType(RGN: PGDKRegion) : Longint;
 var
   aRect : TGDKRectangle;
   SimpleRGN: PGdkRegion;
-  EmptyRGN: PGdkRegion;
 begin
   If RGN = nil then
     Result := ERROR
@@ -486,20 +536,12 @@ begin
       Result := NULLREGION
   else begin
     gdk_region_get_clipbox(RGN,@aRect);
-    EmptyRGN:=gdk_region_new;
-    {$IFDEF GTK2}
-    SimpleRGN:=EmptyRGN;
-    gdk_region_union_with_rect(SimpleRGN,@aRect);
-    {$ELSE}
-    SimpleRGN:=gdk_region_union_with_rect(EmptyRGN,@aRect);
-    {$ENDIF}
+    SimpleRGN := gdk_region_rectangle(@aRect);
     if gdk_region_equal(SimpleRGN, RGN) then
       Result := SIMPLEREGION
     else
       Result := COMPLEXREGION;
-    if SimpleRGN<>EmptyRGN then
-      gdk_region_destroy(SimpleRGN);
-    gdk_region_destroy(EmptyRGN);
+    gdk_region_destroy(SimpleRGN);
   end;
 end;
 
@@ -528,21 +570,6 @@ begin
   end;
 end;
 
-function CopyGDKRegion(RGN: PGDKRegion): PGDKRegion;
-{$IFDEF GTK2}
-begin
-  Result:=gdk_region_copy(RGN);
-end;
-{$ELSE}
-var
-  EmptyRegion: PGdkRegion;
-begin
-  EmptyRegion := gdk_region_new;
-  Result := gdk_regions_union(RGN, EmptyRegion);
-  gdk_region_destroy(EmptyRegion);
-end;
-{$ENDIF}
-
 function GDKRegionAsString(RGN: PGDKRegion): string;
 var
   aRect: TGDKRectangle;
@@ -556,22 +583,13 @@ end;
 
 function CreateRectGDKRegion(const ARect: TRect): PGDKRegion;
 var
-  {$IFNDEF Gtk2}
-  EmptyRegion: PGdkRegion;
-  {$ENDIF}
   GDkRect: TGDKRectangle;
 begin
   GDkRect.x:=ARect.Left;
   GDkRect.y:=ARect.Top;
   GDkRect.Width:=ARect.Right-ARect.Left;
   GDkRect.Height:=ARect.Bottom-ARect.Top;
-  {$IFDEF GTK2}
   Result:=gdk_region_rectangle(@GDKRect);
-  {$ELSE}
-  EmptyRegion := gdk_region_new;
-  Result := gdk_region_union_with_rect(EmptyRegion,@GDkRect);
-  gdk_region_destroy(EmptyRegion);
-  {$ENDIF}
 end;
 
 Procedure FreeGDIColor(GDIColor: PGDIColor);
@@ -1980,19 +1998,6 @@ begin
   end;
 end;
 
-function GtkWindowIsModal(GtkWindow: PGtkWindow): boolean;
-begin
-  writeln('GtkWindowIsModal  This test is buggy');
-  Result := False;
-  {$IfDef GTK2}
-    if assigned(GtkWindow) then
-      result := gtk_window_get_modal(GtkWindow);
-  {$else}
-    if assigned(GtkWindow) then
-      Result:=(GtkWindow^.flag0 and bm_modal)<>0;
-  {$EndIF}
-end;
-
 {-------------------------------------------------------------------------------
   procedure ConnectSignal(const AnObject:PGTKObject; const ASignal: PChar;
     const ACallBackProc: Pointer; const ReqSignalMask: TGdkEventMask;
@@ -2311,6 +2316,8 @@ begin
       gtk_menu_set_accel_group(PGtkMenu(Widget), AnAccelGroup)
     else begin
       {$IfDef GTK2}
+       // Gtk2ToDo
+       writeln('ToDo: gtkproc.inc SetAccelGroup');
       {$else}
       gtk_accel_group_attach(AnAccelGroup, PGtkObject(Widget));
       {$endif}
@@ -2584,6 +2591,7 @@ begin
       '');
     {$ENDIF}
     {$Ifdef GTK2}
+       writeln('ToDo: gtkproc.inc UnrealizeAccelerator');
     {$else}
     gtk_widget_remove_accelerators(Widget, PChar(AccelKey^.Signal), false);
     {$EndIf}
@@ -2698,11 +2706,7 @@ end;
  ------------------------------------------------------------------------------}
 function MENU_ITEM_CLASS(widget: PGtkWidget): PGtkMenuItemClass;
 begin
-  {$ifdef GTK2}
   Result:=GTK_MENU_ITEM_CLASS(gtk_object_get_class(widget));
-  {$else}
-  Result:=GTK_MENU_ITEM_CLASS(PGtkObject(widget)^.klass);
-  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -2712,11 +2716,7 @@ end;
  ------------------------------------------------------------------------------}
 function CHECK_MENU_ITEM_CLASS(widget: PGtkWidget): PGtkCheckMenuItemClass;
 begin
-  {$ifdef GTK2}
   Result:=GTK_CHECK_MENU_ITEM_CLASS(gtk_object_get_class(widget));
-  {$else}
-  Result:=GTK_CHECK_MENU_ITEM_CLASS(PGtkObject(widget)^.klass);
-  {$endif}
 end;
 
 function MenuItemChecked(MenuWidget: PGtkCheckMenuItem): boolean;
@@ -3783,10 +3783,10 @@ begin
         NoName:=nil;
         StyleObject^.Widget :=
           // GTK2 does not allow to instantiate the abstract base Widget
-          // so we use the invisible HBOX, which is hopefully not defined in the
-          // theme
+          // so we use the "invisible" widget, which  should never be defined
+          // by the theme
           GTK_WIDGET_NEW(
-            {$IFDEF Gtk2}GTK_TYPE_HBOX{$ELSE}GTK_WIDGET_TYPE{$ENDIF},
+            {$IFDEF Gtk2}GTK_TYPE_INVISIBLE{$ELSE}GTK_WIDGET_TYPE{$ENDIF},
             NoName,[]);
       end
     else
@@ -4380,10 +4380,9 @@ end;
  ------------------------------------------------------------------------------}
 Function GDKPixel2GDIRGB(Pixel: Longint; Visual: PGDKVisual;
   Colormap: PGDKColormap) : TGDIRGB;
-{$IFDEF Gtk2}
-{$ELSE}
 var
   Color: TGDKColor;
+{$IFDEF Gtk1}
   GdkColorContext: PGdkColorContext;
 {$ENDIF}
 begin
@@ -4394,25 +4393,22 @@ begin
     Colormap := GDK_Colormap_Get_System;
   end;
   
-  {$IFDEF Gtk2}
-  // Gtk2ToDo
-  writeln('ToDo: GDKPixel2GDIRGB');
-  if Pixel=0 then ;
-  FillChar(Result,SizeOf(Result),0);
-  {$ELSE}
   gdk_error_trap_push;
 
+  {$IFDEF Gtk2}
+  gdk_colormap_query_color(colormap, pixel, @color);
+  {$ELSE}
   Color.Pixel := Pixel;
   GdkColorContext := gdk_color_context_new(Visual,Colormap);
   gdk_color_context_query_color(GdkColorContext,@Color);
   gdk_color_context_free(GdkColorContext);
+  {$ENDIF}
 
   Result.Red := Color.Red shr 8;
   Result.Green := Color.Green shr 8;
   Result.Blue := Color.Blue shr 8;
 
   gdk_error_trap_pop;
-  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -4534,6 +4530,13 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.198  2003/09/06 20:23:53  ajgenius
+  fixes for gtk2
+  added more wrappers for gtk1/gtk2 converstion and sanity
+  removed pointless version $Ifdef GTK2 etc
+  IDE now "runs" Tcontrol drawing/using problems
+  renders it unuseable however
+
   Revision 1.197  2003/09/06 17:24:52  ajgenius
   gtk2 changes for pixmap, getcursorpos, mouse events workaround
 

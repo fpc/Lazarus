@@ -1852,7 +1852,7 @@ begin
       RGN_AND :
         D := PGDKRegion(gdk_region_intersect(S1, S2));
       RGN_COPY :
-        D := CopyGDKRegion(S1);
+        D := gdk_region_copy(S1);
       RGN_DIFF :
         D := PGDKRegion(gdk_region_subtract(S1, S2));
       RGN_OR :
@@ -1936,7 +1936,7 @@ function TgtkObject.ComboBoxDropDown(Handle: HWND; DropDown: boolean): boolean;
       if ((not show_hscroll) and (alloc_width < list_requisition^.width)) then
       begin
            work_height := work_height +  popup^.hscrollbar^.requisition.height +
-          GTK_SCROLLED_WINDOW_CLASS(PGtkTypeObject(combo^.popup)^.{$IfDef GTK2}g_Class{$Else}klass{$EndIf})^.scrollbar_spacing;
+          GTK_SCROLLED_WINDOW_CLASS(gtk_object_get_class(combo^.popup))^.scrollbar_spacing;
         show_hscroll := TRUE;
         okay_to_exit := False;
       end;
@@ -1949,7 +1949,7 @@ function TgtkObject.ComboBoxDropDown(Handle: HWND; DropDown: boolean): boolean;
         end;
         alloc_width := alloc_width -
           popup^.vscrollbar^.requisition.width +
-          GTK_SCROLLED_WINDOW_CLASS(PGtkTypeObject(combo^.popup)^.{$IfDef GTK2}g_Class{$Else}klass{$EndIf})^.scrollbar_spacing;
+          GTK_SCROLLED_WINDOW_CLASS(gtk_object_get_class(combo^.popup))^.scrollbar_spacing;
         show_vscroll := TRUE;
         okay_to_exit := False;
       end;
@@ -3685,8 +3685,7 @@ begin
   else with TDeviceContext(DC) do
   begin
     // create a copy of the current clipregion
-    ClipRegionWithDCOffset:=
-                         CopyGDKRegion(PGdiObject(ClipRegion)^.GDIRegionObject);
+    ClipRegionWithDCOffset:= gdk_region_copy(PGdiObject(ClipRegion)^.GDIRegionObject);
     // move it to the DC offset
     // Example: if the ClipRegion is at 10,10 and the DCOrigin is at 10,10,
     //          then the ClipRegion must be moved to 0,0
@@ -8711,6 +8710,13 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.275  2003/09/06 20:23:53  ajgenius
+  fixes for gtk2
+  added more wrappers for gtk1/gtk2 converstion and sanity
+  removed pointless version $Ifdef GTK2 etc
+  IDE now "runs" Tcontrol drawing/using problems
+  renders it unuseable however
+
   Revision 1.274  2003/09/06 17:24:52  ajgenius
   gtk2 changes for pixmap, getcursorpos, mouse events workaround
 

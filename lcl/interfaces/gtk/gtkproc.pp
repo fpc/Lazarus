@@ -61,6 +61,12 @@ uses
   function  GTK_TYPE_MENU_BAR  : TGTKType; cdecl; external gtkdll name 'gtk_menu_bar_get_type';
   function  GTK_TYPE_RADIO_MENU_ITEM  : TGTKType; cdecl; external gtkdll name 'gtk_radio_menu_item_get_type';
   function  GTK_TYPE_CHECK_MENU_ITEM  : TGTKType; cdecl; external gtkdll name 'gtk_check_menu_item_get_type';
+  function  GTK_TYPE_TEXT  : TGTKType; cdecl; external gtkdll name 'gtk_text_get_type';
+  function  GTK_TYPE_ENTRY  : TGTKType; cdecl; external gtkdll name 'gtk_entry_get_type';
+  function  GTK_TYPE_RANGE  : TGTKType; cdecl; external gtkdll name 'gtk_range_get_type';
+  function  GTK_TYPE_SCROLLBAR : TGTKType; cdecl; external gtkdll name 'gtk_scrollbar_get_type';
+  function  GTK_TYPE_HSCROLLBAR : TGTKType; cdecl; external gtkdll name 'gtk_hscrollbar_get_type';
+  function  GTK_TYPE_VSCROLLBAR : TGTKType; cdecl; external gtkdll name 'gtk_vscrollbar_get_type';
 {$ENDIF}
 
 procedure laz_gdk_gc_set_dashes(gc:PGdkGC; dash_offset:gint;
@@ -281,7 +287,6 @@ function CopyDCData(DestinationDC, SourceDC: TDeviceContext): Boolean;
 
 Function RegionType(RGN: PGDKRegion): Longint;
 Procedure SelectGDIRegion(const DC: HDC);
-function CopyGDKRegion(RGN: PGDKRegion): PGDKRegion;
 function GDKRegionAsString(RGN: PGDKRegion): string;
 function CreateRectGDKRegion(const ARect: TRect): PGDKRegion;
 
@@ -331,7 +336,6 @@ function TranslateGdkPointToClientArea(SourceWindow: PGdkWindow;
 procedure ReleaseMouseCapture(OnlyIfCapturedByLCL: boolean);
 procedure UpdateMouseCaptureControl;
 procedure SetCursor(AWinControl : TWinControl; Data: Pointer);
-function GtkWindowIsModal(GtkWindow: PGtkWindow): boolean;
 
 type
   TConnectSignalFlag = (
@@ -477,6 +481,7 @@ Procedure FillScreenFonts(ScreenFonts : TStrings);
 function GetGDKMouseCursor(Cursor: TCursor): PGdkCursor;
 Procedure FreeGDKCursors;
 
+// functions for easier GTK2<->GTK1 Compatibility/Consistancy  ---->
 function gtk_widget_get_xthickness(Style : PGTKStyle) : gint; overload;
 function gtk_widget_get_ythickness(Style : PGTKStyle) : gint; overload;
 
@@ -487,24 +492,36 @@ function gtk_widget_get_ythickness(Style : PGTKWidget) : gint; overload;
   type
      PGtkOldEditable = PGtkEditable;
 
-  Function gtk_bin_get_child(bin : PGTKBin) : PGTKWidget;
+  function gtk_class_get_type(aclass : Pointer) : TGtkType;
 
+  //routines to mimic similar GTK2 routines-->
+  function gtk_object_get_class(anobject : Pointer) : Pointer;
   Function gtk_window_get_modal(window:PGtkWindow):gboolean;
-
+  Function gtk_bin_get_child(bin : PGTKBin) : PGTKWidget;
   Procedure gtk_menu_item_set_right_justified(menu_item : PGtkMenuItem; right_justified : gboolean);
 
+  //Wrapper around misnamed "regions" routines -->
   Function gdk_region_intersect(source1:PGdkRegion; source2:PGdkRegion) : PGdkRegion;
   Function gdk_region_union(source1:PGdkRegion; source2:PGdkRegion) : PGdkRegion;
   Function gdk_region_subtract(source1:PGdkRegion; source2:PGdkRegion) : PGdkRegion;
   Function gdk_region_xor(source1:PGdkRegion; source2:PGdkRegion) : PGdkRegion;
+  function gdk_region_copy(region: PGDKRegion): PGDKRegion;
+  function gdk_region_rectangle(rect: PGdkRectangle): PGDKRegion;
 
+  //Wrapper around window geometry like gtk2 -->
   Function gdk_drawable_get_depth(Drawable : PGDKDrawable) : gint;
   Procedure gdk_drawable_get_size(Drawable : PGDKDrawable; Width, Height : PGInt);
 {$EndIF}
 
 {$Ifdef GTK2}
   Procedure gtk_signal_handlers_destroy(anObject : PGtkObject);
+  function gtk_class_get_type(aclass : Pointer) : TGtkType;
 
+  //we wrap our own versions to handle nil tests -->
+  function gtk_object_get_class(anobject : Pointer) : Pointer;
+  Function gtk_window_get_modal(window:PGtkWindow):gboolean;
+
+  //we wrap our own versions to do gtk1 style result = new region -->
   Function gdk_region_union_with_rect(region:PGdkRegion; rect:PGdkRectangle) : PGdkRegion;
   Function gdk_region_intersect(source1:PGdkRegion; source2:PGdkRegion) : PGdkRegion;
   Function gdk_region_union(source1:PGdkRegion; source2:PGdkRegion) : PGdkRegion;

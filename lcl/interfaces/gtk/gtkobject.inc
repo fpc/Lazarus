@@ -511,8 +511,7 @@ begin
       if (List^.Data <> nil)
       then begin
         gdk_window_get_user_data(PGDKWindow(List^.Data), @Window);
-        if GtkWidgetIsA(PGtkWidget(Window),
-          {$IFDEF Gtk2}GTK_TYPE_WINDOW{$ELSE}GTK_WINDOW_TYPE{$ENDIF})
+        if GtkWidgetIsA(PGtkWidget(Window), GTK_TYPE_WINDOW)
         then begin
           // visible window found -> add to list
           New(ATransientWindow);
@@ -1067,13 +1066,11 @@ begin
   end;
   {$ENDIF}
   
-  if GtkWidgetIsA(Widget,
-    {$IFDEF Gtk2}GTK_TYPE_SCROLLBAR{$ELSE}GTK_SCROLLBAR_TYPE{$ENDIF}) then
+  if GtkWidgetIsA(Widget,GTK_TYPE_SCROLLBAR) then
   begin
     // the width of a scrollbar is fixed and depends only on the theme
     gtk_widget_size_request (widget, @Requisition);
-    if GtkWidgetIsA(Widget,
-      {$IFDEF Gtk2}GTK_TYPE_HSCROLLBAR{$ELSE}GTK_HSCROLLBAR_TYPE{$ENDIF}) then
+    if GtkWidgetIsA(Widget, GTK_TYPE_HSCROLLBAR) then
     begin
       NewHeight:=Requisition.height;
     end else begin
@@ -1084,8 +1081,7 @@ begin
   
   gtk_widget_set_usize(Widget, NewWidth, NewHeight);
   
-  if GtkWidgetIsA(Widget,
-    {$IFDEF Gtk2}GTK_TYPE_COMBO{$ELSE}GTK_COMBO_TYPE{$ENDIF}) then
+  if GtkWidgetIsA(Widget, GTK_TYPE_COMBO) then
   begin
     // the combobox has an entry, which height is not resized
     // automatically. Do it manually.
@@ -1144,8 +1140,7 @@ var
     // check if window belongs to another LCL control
     gdk_window_get_user_data(PaintWindow,@UserData);
     if (UserData<>nil)
-    and (GtkWidgetIsA(PGtkWidget(UserData),
-      {$IFDEF Gtk2}GTK_TYPE_WIDGET{$ELSE}GTK_WIDGET_TYPE{$ENDIF}))
+    and (GtkWidgetIsA(PGtkWidget(UserData), GTK_TYPE_WIDGET))
     then begin
       LCLObject:=GetLCLObject(UserData);
       if (LCLObject<>nil) and (LCLObject<>AWinControl) then exit;
@@ -1199,8 +1194,7 @@ var
     SendPaintMessageForGDkWindow(GetControlWindow(PaintWidget));
 
     // search all child widgets
-    if GtkWidgetIsA(PaintWidget,
-      {$IFDEF Gtk2}GTK_TYPE_CONTAINER{$ELSE}GTK_CONTAINER_TYPE{$ENDIF}) then
+    if GtkWidgetIsA(PaintWidget, GTK_TYPE_CONTAINER) then
     begin
       // this is a container widget -> go through all childs
       {$IFDEF Gtk2}
@@ -1219,24 +1213,20 @@ var
       end;
       {$ENDIF}
     end;
-    if GtkWidgetIsA(PaintWidget,
-      {$IFDEF Gtk2}GTK_TYPE_SCROLLED_WINDOW{$ELSE}GTK_SCROLLED_WINDOW_TYPE{$ENDIF})
+    if GtkWidgetIsA(PaintWidget, GTK_TYPE_SCROLLED_WINDOW)
     then begin
       ForAllChilds(PGtkScrolledWindow(PaintWidget)^.hscrollbar);
       ForAllChilds(PGtkScrolledWindow(PaintWidget)^.vscrollbar);
     end;
-    if GtkWidgetIsA(PaintWidget,
-      {$IFDEF Gtk2}GTK_TYPE_BIN{$ELSE}GTK_BIN_TYPE{$ENDIF}) then
+    if GtkWidgetIsA(PaintWidget, GTK_TYPE_BIN) then
     begin
       ForAllChilds(PGtkBin(PaintWidget)^.child);
     end;
-    if GtkWidgetIsA(PaintWidget,
-      {$IFDEF Gtk2}GTK_TYPE_COMBO{$ELSE}GTK_COMBO_TYPE{$ENDIF}) then begin
+    if GtkWidgetIsA(PaintWidget, GTK_TYPE_COMBO) then begin
       ForAllChilds(PGtkCombo(PaintWidget)^.entry);
       ForAllChilds(PGtkCombo(PaintWidget)^.button);
     end;
-    if GtkWidgetIsA(PaintWidget,
-      {$IFDEF Gtk2}GTK_TYPE_RANGE{$ELSE}GTK_RANGE_TYPE{$ENDIF})
+    if GtkWidgetIsA(PaintWidget, GTK_TYPE_RANGE)
     then begin
       {$IFDEF Gtk2}
       // Gtk2ToDo
@@ -1248,13 +1238,11 @@ var
       SendPaintMessageForGDkWindow(PGtkRange(PaintWidget)^.step_back);
       {$ENDIF}
     end;
-    if GtkWidgetIsA(PaintWidget,
-      {$IFDEF Gtk2}GTK_TYPE_TEXT{$ELSE}GTK_TEXT_TYPE{$ENDIF}) then
+    if GtkWidgetIsA(PaintWidget, GTK_TYPE_TEXT) then
     begin
       SendPaintMessageForGDkWindow(PGtkText(PaintWidget)^.text_area);
     end;
-    if GtkWidgetIsA(PaintWidget,
-      {$IFDEF Gtk2}GTK_TYPE_ENTRY{$ELSE}GTK_ENTRY_TYPE{$ENDIF}) then
+    if GtkWidgetIsA(PaintWidget, GTK_TYPE_ENTRY) then
     begin
       SendPaintMessageForGDkWindow(PGtkEntry(PaintWidget)^.text_area);
     end;
@@ -6524,11 +6512,7 @@ begin
 
   if fWindow<>nil then begin
     gdk_draw_pixmap(fwindow,
-      {$IfDef GTK2}
-      PGtkStyle(widget^.Style)^.fg_gc[GTK_WIDGET_STATE (widget)],
-      {$Else}
-      PGtkStyle(widget^.TheStyle)^.fg_gc[GTK_WIDGET_STATE (widget)],
-      {$EndIf}
+      gtk_widget_get_style(widget)^.fg_gc[GTK_WIDGET_STATE (widget)],
       pixmap,
       0,0,
       0,0,
@@ -7181,7 +7165,7 @@ var
   var MenuClass: PGtkWidgetClass;
   begin
     if GtkWidgetIsA(ContainerMenu,GTK_TYPE_MENU) then begin
-      MenuClass:=GTK_WIDGET_CLASS(PGtkTypeObject(ContainerMenu)^.{$IfDef GTK2}g_Class{$Else}klass{$EndIf});
+      MenuClass:=GTK_WIDGET_CLASS(gtk_object_get_class(ContainerMenu));
       if OldMenuSizeRequestProc=nil then begin
         OldMenuSizeRequestProc:=MenuClass^.size_request;
       end;
@@ -7683,7 +7667,7 @@ var
   GDIObject: PGDIObject;
 begin
   GDIObject := NewGDIObject(gdiRegion);
-  GDIObject^.GDIRegionObject:=CopyGDKRegion(PGdiObject(SrcRGN)^.GDIRegionObject);
+  GDIObject^.GDIRegionObject:=gdk_region_copy(PGdiObject(SrcRGN)^.GDIRegionObject);
   Result := hRgn(GDIObject);
 end;
 
@@ -8164,6 +8148,13 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.409  2003/09/06 20:23:53  ajgenius
+  fixes for gtk2
+  added more wrappers for gtk1/gtk2 converstion and sanity
+  removed pointless version $Ifdef GTK2 etc
+  IDE now "runs" Tcontrol drawing/using problems
+  renders it unuseable however
+
   Revision 1.408  2003/09/06 17:24:52  ajgenius
   gtk2 changes for pixmap, getcursorpos, mouse events workaround
 
