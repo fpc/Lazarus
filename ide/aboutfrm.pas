@@ -34,7 +34,6 @@ type
     Memo1: TMEMO;
     Button1: TBUTTON;
     Label1: TLABEL;
-    procedure AboutFormResize(Sender: TObject);
   private
     FPixmap : TPixmap;
   public
@@ -95,8 +94,6 @@ begin
     +'Tutorials: http://lazarus-ccr.sourceforge.net'+LineEnding
     ;
   Button1.Caption:=lisClose;
-
-  OnResize:=@AboutFormResize;
 end;
 
 
@@ -106,16 +103,6 @@ begin
   FPixmap:=nil;
 
   inherited Destroy;
-end;
-
-procedure TAboutForm.AboutFormResize(Sender: TObject);
-begin
-  with Memo1 do begin
-    Left:=225;
-    Top:=10;
-    Width:=Self.ClientWidth-Left-Top;
-    Height:=Self.ClientHeight-2*Top;
-  end;
 end;
 
 procedure TAboutForm.Paint;

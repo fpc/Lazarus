@@ -2,14 +2,34 @@ object AboutForm: TAboutForm
   Caption = 'About Lazarus'
   ClientHeight = 245
   ClientWidth = 577
+  PixelsPerInch = 90
   Position = poScreenCenter
-  HorzScrollBar.Page = 578
-  VertScrollBar.Page = 246
+  HorzScrollBar.Page = 576
+  VertScrollBar.Page = 244
   Left = 351
   Height = 245
   Top = 389
   Width = 577
+  object Label1: TLabel
+    Alignment = taCenter
+    Caption = 'Version #:'
+    ParentColor = True
+    Left = 14
+    Height = 17
+    Top = 6
+    Width = 200
+  end
+  object Label2: TLabel
+    Alignment = taCenter
+    Caption = 'Date:'
+    ParentColor = True
+    Left = 14
+    Height = 17
+    Top = 23
+    Width = 200
+  end
   object Memo1: TMemo
+    Anchors = [akTop, akLeft, akRight, akBottom]
     ReadOnly = True
     ScrollBars = ssAutoBoth
     TabOrder = 0
@@ -26,21 +46,5 @@ object AboutForm: TAboutForm
     Height = 25
     Top = 184
     Width = 75
-  end
-  object Label1: TLabel
-    Alignment = taCenter
-    Caption = 'Version #:'
-    Left = 14
-    Height = 17
-    Top = 6
-    Width = 200
-  end
-  object Label2: TLabel
-    Alignment = taCenter
-    Caption = 'Date:'
-    Left = 14
-    Height = 17
-    Top = 23
-    Width = 200
   end
 end
