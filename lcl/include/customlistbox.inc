@@ -67,6 +67,8 @@ begin
   
   // new item list is the interface item list
   FItems:= NewStrings;
+
+  CNSendMessage(LM_SETITEMINDEX, Self, Pointer(FItemIndex));
   //writeln('[TCustomListBox.CreateHandle] END ',FItems.ClassName);
 end;
 

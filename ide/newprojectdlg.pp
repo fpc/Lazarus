@@ -47,6 +47,7 @@ type
     procedure NewProjectDialogResize(Sender: TObject);
   private
     procedure FillHelpLabel;
+    procedure SetupComponents;
   public
     constructor Create(AOwner: TComponent); override;
   end;
@@ -79,8 +80,6 @@ end;
 { NewProjectDialog }
 
 constructor TNewProjectDialog.Create(AOwner: TComponent);
-var pt:TProjectType;
-  MaxX, MaxY:integer;
 begin
   inherited Create(AOwner);
   if LazarusResources.Find(ClassName)=nil then begin
@@ -89,67 +88,7 @@ begin
     Position:=poScreenCenter;
     Caption:='Create a new project';
     OnResize:=@NewProjectDialogResize;
-    MaxX:=386;
-    MaxY:=238;
-
-    ListBox:=TListBox.Create(Self);
-    with ListBox do begin
-      Parent:=Self;
-      Name:='ListBox';
-      Left:=5;
-      Top:=5;
-      Width:=150;
-      Height:=MaxY-50;
-      with Items do begin
-        BeginUpdate;
-        for pt:=Low(TProjectType) to High(TProjectType) do
-          Add(ProjectTypeNames[pt]);
-        EndUpdate;
-      end;
-      ItemIndex:=0;
-      OnMouseUp:=@ListBoxMouseUp;
-      Show;
-    end;
-
-    HelpLabel:=TLabel.Create(Self);
-    with HelpLabel do begin
-      Parent:=Self;
-      Name:='HelpLabel';
-      Left:=ListBox.Left+ListBox.Width+10;
-      Top:=ListBox.Top+2;
-      Width:=MaxX-5-Left;
-      Height:=ListBox.Height-2;
-      WordWrap:=true;
-      Caption:='Select a project type';
-      Show;
-    end;
-
-    CreateButton:=TButton.Create(Self);
-    with CreateButton do begin
-      Parent:=Self;
-      Name:='CreateButton';
-      Width:=80;
-      Height:=23;
-      Left:=Self.ClientWidth-Width*2-2*15;
-      Top:=Self.ClientHeight-40;
-      OnClick:=@CreateButtonClick;
-      Caption:='Create';
-      Show;
-    end;
-
-    CancelButton:=TButton.Create(Self);
-    with CancelButton do begin
-      Parent:=Self;
-      Name:='CancelButton';
-      Width:=80;
-      Height:=23;
-      Left:=Self.ClientWidth-Width-15;
-      Top:=CreateButton.Top;
-      OnClick:=@CancelButtonClick;
-      Caption:='Cancel';
-      Show;
-    end;
-
+    SetupComponents;
   end;
   NewProjectDialogResize(nil);
   FillHelpLabel;
@@ -166,6 +105,69 @@ begin
       HelpLabel.Width:=ClientWidth-HelpLabel.Left-10;
     end;
     inc(i);
+  end;
+end;
+
+procedure TNewProjectDialog.SetupComponents;
+var
+  pt: TProjectType;
+  MaxX, MaxY: integer;
+begin
+  MaxX:=386;
+  MaxY:=238;
+
+  ListBox:=TListBox.Create(Self);
+  with ListBox do begin
+    Parent:=Self;
+    Name:='ListBox';
+    Left:=5;
+    Top:=5;
+    Width:=150;
+    Height:=MaxY-50;
+    with Items do begin
+      BeginUpdate;
+      for pt:=Low(TProjectType) to High(TProjectType) do
+        Add(ProjectTypeNames[pt]);
+      EndUpdate;
+    end;
+    ItemIndex:=0;
+    OnMouseUp:=@ListBoxMouseUp;
+  end;
+
+  HelpLabel:=TLabel.Create(Self);
+  with HelpLabel do begin
+    Parent:=Self;
+    Name:='HelpLabel';
+    Left:=ListBox.Left+ListBox.Width+10;
+    Top:=ListBox.Top+2;
+    Width:=MaxX-5-Left;
+    Height:=ListBox.Height-2;
+    WordWrap:=true;
+    Caption:='Select a project type';
+  end;
+
+  CreateButton:=TButton.Create(Self);
+  with CreateButton do begin
+    Parent:=Self;
+    Name:='CreateButton';
+    Width:=80;
+    Height:=23;
+    Left:=Self.ClientWidth-Width*2-2*15;
+    Top:=Self.ClientHeight-40;
+    OnClick:=@CreateButtonClick;
+    Caption:='Create';
+  end;
+
+  CancelButton:=TButton.Create(Self);
+  with CancelButton do begin
+    Parent:=Self;
+    Name:='CancelButton';
+    Width:=80;
+    Height:=23;
+    Left:=Self.ClientWidth-Width-15;
+    Top:=CreateButton.Top;
+    OnClick:=@CancelButtonClick;
+    Caption:='Cancel';
   end;
 end;
 
