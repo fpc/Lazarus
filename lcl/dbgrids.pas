@@ -319,6 +319,7 @@ type
     //property ParentShowHint;
     property PopupMenu;
     property ReadOnly;
+    property Scrollbars;
     property ShowHint;
     property TabOrder;
     property TabStop;
@@ -1029,7 +1030,8 @@ procedure TCustomDbGrid.CreateWnd;
 begin
   inherited CreateWnd;
   LayoutChanged;
-  ScrollBarShow(SB_VERT, True);
+  if Scrollbars in [ssBoth, ssVertical, ssAutoBoth, ssAutoVertical] then
+    ScrollBarShow(SB_VERT, True);
 end;
 
 procedure TCustomDbGrid.DefineProperties(Filer: TFiler);
@@ -1265,7 +1267,7 @@ end;
 function TCustomDbGrid.ScrollBarAutomatic(Which: TScrollStyle): boolean;
 begin
   if Which=ssHorizontal then
-    Result:=True
+    Result:= true
   else
     Result:=inherited ScrollBarAutomatic(Which);
 end;
@@ -1561,6 +1563,13 @@ end;
 procedure TCustomDbGrid.UpdateVertScrollbar(const aVisible: boolean;
   const aRange, aPage: Integer);
 begin
+    if (Scrollbars in [ssAutoVertical, ssAutoBoth]) then begin
+      // ssAutovertical and ssAutoBoth would get the scrollbar hidden
+      // but this case should be handled as if the scrollbar where
+      // ssVertical or ssBoth
+      ScrollBarShow(SB_VERT, True)
+    end else
+      ScrollBarShow(SB_VERT, AVisible);
 end;
 
 procedure TCustomDbGrid.VisualChange;
@@ -1952,6 +1961,9 @@ end.
 
 {
   $Log$
+  Revision 1.30  2005/01/16 13:16:31  mattias
+  added DoCompareCells, changed OnCompareCell  from Jesus
+
   Revision 1.29  2005/01/10 15:59:43  vincents
   some ugly hacks to fix 1.0.x compilation
 

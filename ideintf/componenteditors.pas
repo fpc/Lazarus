@@ -906,7 +906,7 @@ begin
       DstGrid.ColWidths[i]:=srcGrid.ColWidths[i];
     for i:=0 to srcGrid.ColCount-1 do
       for j:=0 to srcGrid.RowCount-1 do
-        if srcGrid.Cells[i,j]<>'' then
+        if srcGrid.Cells[i,j]<>dstGrid.Cells[i,j] then
           dstGrid.Cells[i,j]:=srcGrid.Cells[i,j];
   finally
     Dstgrid.EndUpdate(uoFull);

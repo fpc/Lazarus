@@ -204,7 +204,8 @@ type
     procedure(Sender: TObject; IsColumn: Boolean; index: Integer) of object;
 
   TOnCompareCells =
-    function (Sender: TObject; Acol,ARow,Bcol,BRow: Integer): Integer of object;
+    procedure (Sender: TObject; Acol,ARow,Bcol,BRow: Integer;
+               var Result: integer) of object;
 
   TSelectEditorEvent =
     procedure(Sender: TObject; Col,Row: Integer;
@@ -599,6 +600,7 @@ type
     procedure DblClick; override;
     procedure DefineProperties(Filer: TFiler); override;
     procedure DestroyHandle; override;
+    function  DoCompareCells(Acol,ARow,Bcol,BRow: Integer): Integer; dynamic;
     procedure DoEditorHide; virtual;
     procedure DoEditorShow; virtual;
     procedure DoExit; override;
@@ -672,7 +674,7 @@ type
     procedure SaveContent(cfg: TXMLConfig); virtual;
     procedure ScrollBarRange(Which:Integer; aRange,aPage: Integer);
     procedure ScrollBarPosition(Which, Value: integer);
-    //function  ScrollBarIsVisible(Which:Integer): Boolean;
+    function  ScrollBarIsVisible(Which:Integer): Boolean;
     procedure ScrollBarPage(Which: Integer; aPage: Integer);
     procedure ScrollBarShow(Which: Integer; aValue: boolean);
     function  ScrollBarAutomatic(Which: TScrollStyle): boolean; virtual;
@@ -767,6 +769,7 @@ type
     procedure EditorKeyUp(Sender: TObject; var key:Word; shift:TShiftState);
     procedure EndUpdate(UO: TUpdateOption); overload;
     procedure EndUpdate(FullUpdate: Boolean); overload;
+    procedure EndUpdate; overload;
     procedure ExchangeColRow(IsColumn: Boolean; index, WithIndex: Integer);
     function  IscellSelected(aCol,aRow: Integer): Boolean;
     function  IscellVisible(aCol, aRow: Integer): Boolean;
@@ -1750,11 +1753,11 @@ procedure TCustomGrid.Sort(ColSorting: Boolean; index, IndxFrom, IndxTo: Integer
       P:=(L+R)Div 2;
       repeat
         if ColSorting then begin
-          while OnCompareCells(Self, index, P, index, i)>0 do I:=I+1;
-          while OnCompareCells(Self, index, P, index, j)<0 do J:=J-1;
+          while DoCompareCells(index, P, index, i)>0 do I:=I+1;
+          while DoCompareCells(index, P, index, j)<0 do J:=J-1;
         end else begin
-          while OnCompareCells(Self, P, index, i, index)>0 do I:=I+1;
-          while OnCompareCells(Self, P, index, j, index)<0 do J:=J-1;
+          while DoCompareCells(P, index, i, index)>0 do I:=I+1;
+          while DoCompareCells(P, index, j, index)<0 do J:=J-1;
         end;
         if I<=J then begin
           ExchangeColRow(not ColSorting, i,j);
@@ -1989,15 +1992,24 @@ begin
     SetScrollInfo(Handle, Which, ScrollInfo, Vis);
   end;
 end;
-{
+
 function TCustomGrid.ScrollBarIsVisible(Which: Integer): Boolean;
 begin
   Result:=false;
   if HandleAllocated then begin
+    {$IFNDEF WIN32}
     Result:= getScrollbarVisible(handle, Which);
+    {$ELSE}
+    // Is up to the widgetset to implement GetScrollbarvisible
+    // FVSbVisible, FHSbVisible are supposed to be update (if used ScrolLBarShow)
+    // how can we know if GetScrollbarVisible is indeed implemented?....
+    if Which = SB_VERT then result := FVSbVisible else
+    if Which = SB_HORZ then result := FHsbVisible) else
+    if Which = SB_BOTH then result := FHsbVisible and FVsbVisible;
+    {$ENDIF}
   end;
 end;
-}
+
 procedure TCustomGrid.ScrollBarPage(Which: Integer; aPage: Integer);
 var
   ScrollInfo: TScrollInfo;
@@ -2202,6 +2214,7 @@ begin
       Canvas.Brush.Color := SelectedColor;
       SetCanvasFont(GetColumnFont(aCol, False));
       Canvas.Font.Color := clWindow;
+      FLastFont:=nil;
     end else begin
       Canvas.Brush.Color := GetColumnColor(aCol, gdFixed in AState);
       SetCanvasFont(GetColumnFont(aCol, gdFixed in aState));
@@ -3424,11 +3437,7 @@ end;
 procedure TCustomGrid.SortColRow(IsColumn: Boolean; index, FromIndex,
   ToIndex: Integer);
 begin
-  if Assigned(OnCompareCells) then begin
-    BeginUpdate;
-    Sort(IsColumn, index, FromIndex, ToIndex);
-    EndUpdate(true);
-  end;
+  Sort(IsColumn, index, FromIndex, ToIndex);
 end;
 
 procedure TCustomGrid.DeleteColRow(IsColumn: Boolean; index: Integer);
@@ -3691,6 +3700,13 @@ procedure TCustomGrid.DestroyHandle;
 begin
   editorGetValue;
   inherited DestroyHandle;
+end;
+
+function TCustomGrid.DoCompareCells(Acol, ARow, Bcol, BRow: Integer): Integer;
+begin
+  result := 0;
+  if Assigned(OnCompareCells) then
+    OnCompareCells(Self, ACol, ARow, BCol, BRow, Result);
 end;
 
 procedure TCustomGrid.DoEditorHide;
@@ -4206,6 +4222,11 @@ begin
     EndUpdate(uoFull)
   else
     EndUpdate(uoQuick);
+end;
+
+procedure TCustomGrid.EndUpdate;
+begin
+  EndUpdate(true);
 end;
 
 function TCustomGrid.IsCellSelected(aCol, aRow: Integer): Boolean;
