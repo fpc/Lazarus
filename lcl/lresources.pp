@@ -49,13 +49,14 @@ type
     FList:TList;  // main list with all resource pointer
     FMergeList:TList; // list needed for mergesort
     FSortedCount:integer; // 0 .. FSortedCount-1 resources are sorted
-    function FindPosition(Name:AnsiString):integer;
+    function FindPosition(const Name:AnsiString):integer;
     procedure Sort;
     procedure MergeSort(List,MergeList:TList;Pos1,Pos2:integer);
     procedure Merge(List,MergeList:TList;Pos1,Pos2,Pos3:integer);
   public
-    procedure Add(Name,ValueType,Value:AnsiString);
-    function Find(Name:AnsiString):TLResource;
+    procedure Add(const Name, ValueType, Value: AnsiString);
+    procedure Add(const Name, ValueType: AnsiString; Values: array of string);
+    function Find(const Name: AnsiString):TLResource;
     constructor Create;
     destructor Destroy;  override;
   end;
@@ -81,24 +82,19 @@ procedure BinaryToLazarusResourceCode(BinStream,ResStream:TStream;
     +#83#187#6#78#83
   );
 }
-const LineEnd:ShortString={$IFDEF win32}#13#10{$ELSE}#10{$ENDIF};
+const LineEnd:ShortString={$IFDEF win32}#13+{$ENDIF}#10;
 var s, Indent: ShortString;
   p, x: integer;
   c, h: char;
   RangeString, NewRangeString: boolean;
-  RightMargin: integer;
+  RightMargin, CurLine: integer;
 begin
-  // normally a resource should be split into lines with the right margin at 80,
-  // so that it looks like nice source.
-  // But fpc is not optimized for building a constant string out of thousands of
-  // lines. It needs huge amounts of memory and becomes very slow. Therefore for
-  // big files the right margin is set to 256.
-  RightMargin:=80;
-  p:=BinStream.Size-BinStream.Position;
-  if p>5000 then RightMargin:=256;
-  
+  // fpc is not optimized for building a constant string out of thousands of
+  // lines. It needs huge amounts of memory and becomes very slow. Therefore big
+  // files are split into several strings.
+
   Indent:='';
-  s:=Indent+'LazarusResources.Add('''+ResourceName+''','''+ResourceType+''','
+  s:=Indent+'LazarusResources.Add('''+ResourceName+''','''+ResourceType+''',['
     +LineEnd;
   ResStream.Write(s[1],length(s));
   p:=0;
@@ -106,6 +102,8 @@ begin
   ResStream.Write(Indent[1],length(Indent));
   x:=length(Indent);
   RangeString:=false;
+  CurLine:=1;
+  RightMargin:=80;
   while p<BinStream.Size do begin
     BinStream.Read(c,1);
     NewRangeString:=(ord(c)>=32) and (ord(c)<=127);
@@ -136,7 +134,11 @@ begin
         end;
       end;
       ResStream.Write(LineEnd[1],length(LineEnd));
-      s:=Indent+'+'+s;
+      inc(CurLine);
+      if (CurLine and 63)<>1 then
+        s:=Indent+'+'+s
+      else
+        s:=Indent+','+s;
       x:=length(s);
     end;
     ResStream.Write(s[1],length(s));
@@ -148,7 +150,7 @@ begin
     ResStream.Write(h,1);
   end;
   Indent:=copy(Indent,3,length(Indent)-2);
-  s:=LineEnd+Indent+');'+LineEnd;
+  s:=LineEnd+Indent+']);'+LineEnd;
   ResStream.Write(s[1],length(s));
 end;
 
@@ -191,7 +193,7 @@ begin
       LFMMemStream.Position:=0;
       LFMfilenameExt:=ExtractFileExt(LFMfilename);
       LFCfilename:=copy(LFMfilename,1,
-                    length(LFMfilename)-length(LFMfilenameExt))+'.lfc';
+                    length(LFMfilename)-length(LFMfilenameExt))+'.lrs';
       Result:=LFMtoLRSstream(LFMMemStream,LFCMemStream);
       if not Result then exit;
       LFCMemStream.Position:=0;
@@ -259,33 +261,53 @@ begin
   FMergeList.Free;
 end;
 
-procedure TLResourceList.Add(Name,ValueType,Value:AnsiString);
+procedure TLResourceList.Add(const Name,ValueType: AnsiString;
+  Values: array of string);
 var
-  NewLResource:TLResource;
+  NewLResource: TLResource;
+  i, TotalLen, ValueCount, p: integer;
 begin
   NewLResource:=TLResource.Create;
   NewLResource.Name:=Name;
   NewLResource.ValueType:=uppercase(ValueType);
-  NewLResource.Value:=Value;
+  
+  ValueCount:=High(Values)-Low(Values)+1;
+  case ValueCount of
+    0: raise Exception.Create('TLResourceList.Add: no values');
+    1: NewLResource.Value:=Values[0];
+  else
+    TotalLen:=0;
+    for i:=Low(Values) to High(Values) do begin
+      inc(TotalLen,length(Values[i]));
+    end;
+    SetLength(NewLResource.Value,TotalLen);
+    p:=1;
+    for i:=Low(Values) to High(Values) do begin
+      if length(Values[i])>0 then begin
+        Move(Values[i][1],NewLResource.Value[p],length(Values[i]));
+        inc(p,length(Values[i]));
+      end;
+    end;
+  end;
+  
   FList.Add(NewLResource);
 end;
 
-function TLResourceList.Find(Name:AnsiString):TLResource;
+function TLResourceList.Find(const Name:AnsiString):TLResource;
 var p:integer;
 begin
   p:=FindPosition(Name);
-  if (p>=0) and (p<FList.Count) and (AnsiCompareText(TLResource(FList[p]).Name,Name)=0) then
-    begin
-      Result:=TLResource(FList[p]);
-    end
-    else
-    begin
-//      Writeln('returning nil');
-      Result:=nil;
-    end;
+  if (p>=0) and (p<FList.Count)
+  and (AnsiCompareText(TLResource(FList[p]).Name,Name)=0) then begin
+    Result:=TLResource(FList[p]);
+  end
+  else
+  begin
+    Result:=nil;
+  end;
 end;
 
-function TLResourceList.FindPosition(Name:AnsiString):integer;
+function TLResourceList.FindPosition(const Name:AnsiString):integer;
 var l,r,cmp:integer;
 begin
   if FSortedCount<FList.Count then
@@ -295,7 +317,6 @@ begin
   r:=FList.Count-1;
   while (l<=r) do begin
     Result:=(l+r) shr 1;
-//    Writeln(Format('l,r,Name,FList[Result].Name = %d,%d,%s,%s',[l,r,Name,TLResource(FList[Result]).Name]));
     cmp:=AnsiCompareText(Name,TLResource(FList[Result]).Name);
     if cmp<0 then
       r:=Result-1
@@ -368,6 +389,11 @@ begin
   end;
   for a:=DestPos+1 to Pos3 do
     List[a]:=MergeList[a];
+end;
+
+procedure TLResourceList.Add(const Name, ValueType, Value: AnsiString);
+begin
+  Add(Name,ValueType,[Value]);
 end;
 
 initialization

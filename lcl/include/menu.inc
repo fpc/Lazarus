@@ -62,8 +62,11 @@ end;
  ------------------------------------------------------------------------------}
 destructor TMenu.Destroy;
 begin
+  writeln('AAA1');
   FItems.Free;
+  writeln('AAA2');
   inherited Destroy;
+  writeln('AAA3');
 end;
 
 {------------------------------------------------------------------------------
@@ -133,8 +136,8 @@ end;
 { =============================================================================
 
   $Log$
-  Revision 1.6  2002/05/15 05:58:17  lazarus
-  MG: added TMainMenu.Parent
+  Revision 1.7  2002/05/15 15:38:15  lazarus
+  MG: improved lresources for big files
 
   Revision 1.5  2002/05/10 06:05:53  lazarus
   MG: changed license to LGPL
