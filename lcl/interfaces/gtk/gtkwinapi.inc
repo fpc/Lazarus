@@ -1831,19 +1831,19 @@ var Widget : TGtkWidget;
     i : integer;
 begin
   Result := IsValidDC(DC);
-  if Result
- then with PDeviceContext(DC)^ do
- begin
-    if GC = nil
- then begin
-      Result:= False;
-    end
- else begin
-      Widget:= PGtkFixed(GetFixedWidget(PGtkWidget(PDeviceContext(DC)^.hWnd)))^.Container.Widget;
-      for i:= 1 to FrameWidth do begin
-        gtk_paint_shadow(Widget.thestyle, Widget.window, GTK_STATE_NORMAL, GtkShadowType[Style], nil, @Widget, nil, 
-          Rect.left, Rect.top, Rect.Right - Rect.Left, Rect.Bottom - Rect.Top);
-	InflateRect(Rect, -1, -1);
+  if Result then
+    with PDeviceContext(DC)^ do
+    begin
+      if GC = nil then begin
+        Result:= False;
+      end
+      else begin
+        Widget:= PGtkFixed(GetFixedWidget(PGtkWidget(PDeviceContext(DC)^.hWnd)))^.Container.Widget;
+        for i:= 1 to FrameWidth do begin
+          gtk_paint_shadow(Widget.thestyle, Widget.window, GTK_STATE_NORMAL,
+                           GtkShadowType[Style], nil, @Widget, nil,
+           Rect.left, Rect.top, Rect.Right - Rect.Left, Rect.Bottom - Rect.Top);
+        InflateRect(Rect, -1, -1);
       end;
     end;
   end;
@@ -4456,6 +4456,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.70  2002/05/17 10:45:23  lazarus
+  MG: finddeclaration for stupid things like var a:a;
+
   Revision 1.69  2002/05/16 18:26:08  lazarus
   MG: fixed selection painting of non highlighter
 

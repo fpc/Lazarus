@@ -2861,7 +2861,11 @@ end;
 
 procedure TCustomSynEdit.Update;
 begin
+  {$IFDEF SYN_LAZARUS}
+  Invalidate;
+  {$ELSE}
   Paint;
+  {$ENDIF}
   inherited Update;
 end;
 
@@ -7464,6 +7468,4 @@ initialization
   {$ENDIF}
 
 end.
-
-
 

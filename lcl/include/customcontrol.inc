@@ -63,7 +63,7 @@ end;
   Paint event handler.
  ------------------------------------------------------------------------------}
 procedure TCustomControl.WMPaint(var Message: TLMPaint);
-begin            
+begin
   Include(FControlState, csCustomPaint);
   inherited WMPaint(Message);
   Paint; // TODO move this to the PaintWindow function;
@@ -75,6 +75,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.4  2002/05/17 10:45:23  lazarus
+  MG: finddeclaration for stupid things like var a:a;
+
   Revision 1.3  2002/05/10 06:05:51  lazarus
   MG: changed license to LGPL
 

@@ -1752,9 +1752,10 @@ begin
                         -[fdfIgnoreUsedUnits];
           Params.ContextNode:=Result.Node.Parent;
           if (Params.ContextNode.Desc in [ctnVarDefinition,ctnConstDefinition])
-          then
+          then begin
             // pascal allows things like 'var a: a;' -> skip var definition
-            Params.ContextNode:=Params.ContextNode.Parent;
+            Include(Params.Flags,fdfIgnoreCurContextNode);
+          end;
           if Params.ContextNode.Desc=ctnParameterList then
             // skip search in parameter list
             Params.ContextNode:=Params.ContextNode.Parent;
