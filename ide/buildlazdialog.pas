@@ -35,7 +35,7 @@ interface
 
 uses
   Classes, SysUtils, Math, LCLProc, Forms, Controls, LCLType, LCLIntf,
-  Graphics, GraphType, StdCtrls, ExtCtrls, Buttons, FileCtrl, Dialogs,
+  Graphics, GraphType, StdCtrls, ExtCtrls, Buttons, FileUtil, Dialogs,
   LResources, Laz_XMLCfg, LazarusIDEStrConsts, TransferMacros, LazConf,
   IDEProcs, InputHistory, ExtToolDialog, ExtToolEditDlg, CompilerOptions;
 

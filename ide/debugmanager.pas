@@ -39,7 +39,7 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, Forms, Controls, Dialogs, Menus, FileCtrl, LCLProc,
+  Classes, SysUtils, Forms, Controls, Dialogs, Menus, FileUtil, LCLProc,
   Laz_XMLCfg, SynEdit, CodeCache, CodeToolManager, LazConf, DebugOptionsFrm,
   CompilerOptions, EditorOptions, EnvironmentOpts, KeyMapping, UnitEditor,
   Project, IDEProcs, InputHistory, Debugger,
@@ -1894,6 +1894,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.75  2004/09/27 22:05:40  vincents
+  splitted off unit FileUtil, it doesn't depend on other LCL units
+
   Revision 1.74  2004/09/23 07:45:53  vincents
   moved FDebugger field from BaseDebugManager to DebugManager
 

@@ -35,7 +35,7 @@ unit InputHistory;
 interface
 
 uses
-  Classes, SysUtils, FileCtrl, DiffPatch, IDEProcs, Laz_XMLCfg, LazConf,
+  Classes, SysUtils, FileUtil, DiffPatch, IDEProcs, Laz_XMLCfg, LazConf,
   Dialogs, LCLProc;
 
 const

@@ -109,7 +109,7 @@ uses
 {$ifndef ver1_0}
   StrUtils,
 {$endif}
-  FileCtrl;
+  FileUtil;
 
 Type
    PCharArray   = Array[0..16+5] of PChar;

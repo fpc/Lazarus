@@ -37,7 +37,7 @@ unit DialogProcs;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Dialogs, FileCtrl, CodeCache,
+  Classes, SysUtils, Forms, Controls, Dialogs, FileUtil, CodeCache,
   CodeToolManager, AVL_Tree,
   IDEProcs, LazarusIDEStrConsts;
 

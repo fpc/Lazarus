@@ -46,7 +46,7 @@ unit TransferMacros;
 
 interface
 
-uses Classes, SysUtils, FileCtrl, LazarusIDEStrConsts;
+uses Classes, SysUtils, FileUtil, LazarusIDEStrConsts;
 
 type
   TTransferMacro = class;

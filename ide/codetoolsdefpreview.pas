@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
   Buttons, ComCtrls, SynEdit, DefineTemplates, ExprEval, LazarusIDEStrConsts,
-  FileCtrl, InputHistory;
+  FileUtil, InputHistory;
 
 type
   TCodeToolsDefinesDialog = class(TForm)

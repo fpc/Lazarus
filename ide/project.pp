@@ -48,7 +48,7 @@ uses
   MemCheck,
 {$ENDIF}
   Classes, SysUtils, FPCAdds, LCLProc, LCLIntf, LCLType, Laz_XMLCfg, LazConf,
-  CompilerOptions, FileCtrl, CodeToolManager, CodeCache, Forms, Controls,
+  CompilerOptions, FileUtil, CodeToolManager, CodeCache, Forms, Controls,
   EditorOptions, Dialogs, IDEProcs, RunParamsOpts, ProjectIntf, ProjectDefs,
   EditDefineTree, DefineTemplates, PackageDefs;
 
@@ -2920,6 +2920,9 @@ end.
 
 {
   $Log$
+  Revision 1.165  2004/09/27 22:05:40  vincents
+  splitted off unit FileUtil, it doesn't depend on other LCL units
+
   Revision 1.164  2004/09/18 01:02:23  mattias
   started new feature: find identifier references
 

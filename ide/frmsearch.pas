@@ -33,7 +33,7 @@ interface
 uses
   // LCL
   Classes, SysUtils, LResources, LCLType, LCLIntf, Forms, Controls, Graphics,
-  Dialogs, ExtCtrls, StdCtrls, Buttons, FileCtrl,
+  Dialogs, ExtCtrls, StdCtrls, Buttons, FileUtil,
   // synedit, codetools
   SynRegExpr, SourceLog, KeywordFuncLists,
   // ide

@@ -38,7 +38,7 @@ uses
   Classes, SysUtils, FPCAdds, LCLProc, Forms, Controls, Buttons, GraphType, Graphics,
   Laz_XMLCfg, ObjectInspector, ExtCtrls, StdCtrls, Spin, EditorOptions,
   LResources, LazConf, Dialogs, ExtToolDialog, IDEProcs, IDEOptionDefs,
-  InputHistory, LazarusIDEStrConsts, FileCtrl;
+  InputHistory, LazarusIDEStrConsts, FileUtil;
 
 const
   EnvOptsVersion: integer = 102;

@@ -30,7 +30,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, CompilerOptions, Project, Process,
-  IDEProcs, FileCtrl, LclProc, LazConf;
+  IDEProcs, FileUtil, LclProc, LazConf;
 
 type
   TOnOutputString = procedure(const Msg, Directory: String) of Object;

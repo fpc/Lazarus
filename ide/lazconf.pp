@@ -46,7 +46,7 @@ interface
 {$endif}
 
 uses
-  SysUtils, Classes, FileCtrl;
+  SysUtils, Classes, FileUtil;
 
 type
   TLCLPlatform = (
@@ -206,6 +206,9 @@ end.
 
 {
   $Log$
+  Revision 1.31  2004/09/27 22:05:40  vincents
+  splitted off unit FileUtil, it doesn't depend on other LCL units
+
   Revision 1.30  2004/09/06 22:24:52  mattias
   started the carbon LCL interface
 

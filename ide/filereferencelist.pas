@@ -39,7 +39,7 @@ unit FileReferenceList;
 interface
 
 uses
-  Classes, SysUtils, AVL_Tree, FileCtrl, IDEProcs;
+  Classes, SysUtils, AVL_Tree, FileUtil, IDEProcs;
   
 type
   { TFileReference }

@@ -40,7 +40,7 @@ unit InitialSetupDlgs;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Buttons, Dialogs, FileCtrl, StdCtrls,
+  Classes, SysUtils, Forms, Controls, Buttons, Dialogs, FileUtil, StdCtrls,
   ComCtrls,
   LazarusIDEStrConsts, LazConf, EnvironmentOpts, IDEProcs;
   

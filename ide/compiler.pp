@@ -40,7 +40,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, CompilerOptions, Project,
-  Process, LazarusIDEStrConsts, IDEProcs, OutputFilter, FileCtrl;
+  Process, LazarusIDEStrConsts, IDEProcs, OutputFilter, FileUtil;
 
 type
   TOnCmdLineCreate = procedure(var CmdLine: string; var Abort:boolean)
@@ -190,6 +190,9 @@ end.
 
 {
   $Log$
+  Revision 1.45  2004/09/27 22:05:40  vincents
+  splitted off unit FileUtil, it doesn't depend on other LCL units
+
   Revision 1.44  2004/09/17 20:04:34  vincents
   replaced writeln by DebugLn
 

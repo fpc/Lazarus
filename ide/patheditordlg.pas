@@ -29,7 +29,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, SynEdit, Buttons, StdCtrls, Dialogs,
-  LResources, FileCtrl, LazarusIDEStrConsts;
+  LResources, FileUtil, LazarusIDEStrConsts;
 
 type
   TPathEditorDialog = class(TForm)

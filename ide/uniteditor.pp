@@ -41,7 +41,7 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, Controls, LCLProc, LCLType, LResources, LCLIntf, FileCtrl,
+  Classes, SysUtils, Controls, LCLProc, LCLType, LResources, LCLIntf, FileUtil,
   Forms, Buttons, ComCtrls, Dialogs, StdCtrls, GraphType, Graphics,
   Extctrls, Menus,
   // codetools

@@ -45,7 +45,7 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, Controls, Forms, Dialogs, Buttons, ComCtrls, StdCtrls,
-  Graphics, LCLType, FileCtrl, LResources, LCLProc,
+  Graphics, LCLType, FileUtil, LResources, LCLProc,
   CodeToolManager, CodeCache,
   IDECommands,
   EnvironmentOpts, IDEOptionDefs, LazarusIDEStrConsts, InputHistory;

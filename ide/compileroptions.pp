@@ -41,7 +41,7 @@ unit CompilerOptions;
 interface
 
 uses
-  Classes, SysUtils, FileCtrl, LCLProc,
+  Classes, SysUtils, FileUtil, LCLProc,
   Laz_XMLCfg,
   IDEProcs, LazConf,
   TransferMacros;

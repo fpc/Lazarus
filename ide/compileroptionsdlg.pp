@@ -37,7 +37,7 @@ interface
 
 uses
   Forms, Classes, LCLProc, SysUtils, ComCtrls, Buttons, StdCtrls, ExtCtrls,
-  Graphics, LResources, FileCtrl, Dialogs, Controls, GraphType,
+  Graphics, LResources, FileUtil, Dialogs, Controls, GraphType,
   PathEditorDlg, LazarusIDEStrConsts, IDEOptionDefs, LazConf, IDEProcs,
   CompilerOptions, ShowCompilerOpts, Project, PackageDefs;
 

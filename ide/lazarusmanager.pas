@@ -7,7 +7,7 @@ interface
 
 uses
   Classes, SysUtils, Process,
-  FileCtrl, Forms,
+  FileUtil, Forms,
   LazConf,
   StartLazOpts, Splash;
   
@@ -124,7 +124,8 @@ begin
   FLazarusPath := LazarusPath;
   FProcess := TProcess.Create(nil);
   FProcess.Options := [];
-  FProcess.CommandLine := FLazarusPath + ' --no-splash-screen';
+  FProcess.ShowWindow := swoShow;
+  FProcess.CommandLine := FLazarusPath + ' --no-splash-screen  --by-starter';
 end;
 
 destructor TLazarusProcess.Destroy;
@@ -152,6 +153,9 @@ end;
 end.
 {
   $Log$
+  Revision 1.5  2004/09/27 22:05:40  vincents
+  splitted off unit FileUtil, it doesn't depend on other LCL units
+
   Revision 1.4  2004/09/04 23:02:56  mattias
   added reintroduce to get rid of the warning
 

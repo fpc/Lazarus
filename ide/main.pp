@@ -60,7 +60,7 @@ uses
   Classes, SysUtils, Process, TypInfo,
   // lcl
   LCLProc, LCLMemManager, LCLType, LCLIntf, LMessages, LResources, StdCtrls,
-  Forms, Buttons, Menus, FileCtrl, Controls, GraphType, Graphics, ExtCtrls,
+  Forms, Buttons, Menus, FileUtil, Controls, GraphType, Graphics, ExtCtrls,
   Dialogs, InterfaceBase, {SetDesigning}
   // codetools
   AVL_Tree, Laz_XMLCfg, CodeToolsStructs, CodeToolManager, CodeCache,
@@ -10897,6 +10897,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.780  2004/09/27 22:05:40  vincents
+  splitted off unit FileUtil, it doesn't depend on other LCL units
+
   Revision 1.779  2004/09/25 15:05:38  mattias
   implemented Rename Identifier
 

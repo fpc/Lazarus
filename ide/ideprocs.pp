@@ -30,7 +30,7 @@ unit IDEProcs;
 interface
 
 uses
-  Classes, SysUtils, Laz_XMLCfg, GetText, FileCtrl, FileProcs, SynRegExpr,
+  Classes, SysUtils, Laz_XMLCfg, GetText, FileUtil, FileProcs, SynRegExpr,
   LazConf;
 
 type
@@ -549,7 +549,7 @@ begin
     end;
     if CurDirEndPos-StartPos=CurDirLen then begin
       // directories have same length -> compare chars
-      if FileCtrl.CompareFilenames(@SearchPath[StartPos],CurDirLen,
+      if FileUtil.CompareFilenames(@SearchPath[StartPos],CurDirLen,
                           @Directory[DirStartPos],CurDirLen,
                           false)=0
       then begin
@@ -819,7 +819,7 @@ end;
 
 function CompareFilenames(const Filename1, Filename2: string): integer;
 begin
-  Result:=FileCtrl.CompareFilenames(FileName1,FileName2);
+  Result:=FileUtil.CompareFilenames(FileName1,FileName2);
 end;
 
 function FilenameIsAbsolute(Filename: string):boolean;
@@ -845,7 +845,7 @@ end;
 function CompareFilenames(const Filename1, Filename2: string;
   ResolveLinks: boolean): integer;
 begin
-  Result:=FileCtrl.CompareFilenames(FileName1,FileName2,ResolveLinks);
+  Result:=FileUtil.CompareFilenames(FileName1,FileName2,ResolveLinks);
 end;
 
 function FilenameIsMatching(const Mask, Filename: string;
@@ -1269,7 +1269,7 @@ begin
   if not WithBaseDirectory then
     Include(Flags,sffDontSearchInBasePath);
   GetProgramSearchPath(SearchPath,Delim);
-  Result:=FileCtrl.SearchFileInPath(Programname,BaseDirectory,SearchPath,
+  Result:=FileUtil.SearchFileInPath(Programname,BaseDirectory,SearchPath,
                                     Delim,Flags);
 end;
 
@@ -2031,7 +2031,7 @@ end;
 
 function ProgramDirectory: string;
 begin
-  Result:=FileCtrl.ProgramDirectory;
+  Result:=FileUtil.ProgramDirectory;
 end;
 
 function CreateEmptyFile(const Filename: string): boolean;

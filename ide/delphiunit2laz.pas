@@ -40,7 +40,7 @@ interface
 uses
   // FCL+LCL
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics,
-  Dialogs, Buttons, StdCtrls, FileCtrl,
+  Dialogs, Buttons, StdCtrls, FileUtil,
   // Components
   SynEdit, CodeCache, CodeToolManager, DefineTemplates,
   // IDE

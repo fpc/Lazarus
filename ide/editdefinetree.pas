@@ -35,7 +35,7 @@ unit EditDefineTree;
 interface
 
 uses
-  Classes, SysUtils, FileProcs, FileCtrl, IDEProcs, CodeToolManager,
+  Classes, SysUtils, FileProcs, FileUtil, IDEProcs, CodeToolManager,
   DefineTemplates, CompilerOptions, TransferMacros, LinkScanner,
   LazarusIDEStrConsts;
 

@@ -30,7 +30,7 @@ interface
 uses
   // LCL
   Classes, SysUtils, Math, Forms, Controls, Dialogs, Buttons, StdCtrls,
-  FileCtrl, LResources,
+  FileUtil, LResources,
   // IDE
   TransferMacros, InputHistory;
 

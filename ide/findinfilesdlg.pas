@@ -24,7 +24,7 @@ interface
 
 uses
   Classes, SysUtils, LCLIntf, Controls, StdCtrls, Forms, Buttons, ExtCtrls,
-  LResources, FileCtrl, LazarusIDEStrConsts, Dialogs, SynEditTypes,
+  LResources, FileUtil, LazarusIDEStrConsts, Dialogs, SynEditTypes,
   InputHistory;
 
 type
@@ -232,6 +232,7 @@ begin
       SetBounds(Self.ClientWidth-200,Self.ClientHeight-40,80,Height);
       Caption:=lisLazBuildOk;
       OnClick:=@OkButtonClick;
+      Default:= true;
     end;
     
     CancelButton:=TButton.Create(Self);
@@ -241,6 +242,7 @@ begin
       SetBounds(Self.ClientWidth-100,Self.ClientHeight-40,80,Height);
       Caption:=dlgCancel;
       OnClick:=@CancelButtonClick;
+      Cancel := true;
     end;
   end;
   LazFindInFilesDialogResize(nil);

@@ -55,7 +55,7 @@ uses
   MemCheck,
 {$ENDIF}
   Classes, LCLType, LCLIntf, StdCtrls, Buttons, Menus, ComCtrls, SysUtils,
-  Controls, Graphics, ExtCtrls, Dialogs, FileCtrl, Forms, CodeToolManager,
+  Controls, Graphics, ExtCtrls, Dialogs, FileUtil, Forms, CodeToolManager,
   CodeCache, AVL_Tree, SynEditKeyCmds,
   // IDE
   LazConf, LazarusIDEStrConsts, SrcEditorIntf,

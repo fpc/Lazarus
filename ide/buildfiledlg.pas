@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, LCLType, Forms, Controls, Graphics, Dialogs,
-  Buttons, ExtCtrls, StdCtrls, BasicCodeTools, FileCtrl, IDEProcs, InputHistory,
+  Buttons, ExtCtrls, StdCtrls, BasicCodeTools, FileUtil, IDEProcs, InputHistory,
   EnvironmentOpts, TransferMacros;
 
 type
