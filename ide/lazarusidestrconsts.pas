@@ -349,10 +349,8 @@ resourcestring
     +'once.%sSave project?';
   lisProjectSuccessfullyBuilt = 'Project %s%s%s successfully built. :)';
   lisNoProgramFileSFound = 'No program file %s%s%s found.';
-  lisErrorInitializingProgramSErrorS = 'Error initializing program%s%s%s%s%'
-    +'sError: %s';
-  lisErrorInitializingProgramSErrorS2 = 'Error initializing program%s%s%s%s%'
-    +'sError: %s';
+  lisErrorInitializingProgramSErrorS = 'Error initializing program%s%s%s%s%s'
+    +'Error: %s';
   lisUnableToSaveFile = 'Unable to save file %s%s%s';
   lisReadError = 'Read Error';
   lisUnableToReadFile2 = 'Unable to read file %s%s%s!';
