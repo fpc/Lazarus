@@ -39,7 +39,7 @@ unit IDEComp;
 interface
 
 uses
-  Classes, LclLinux, StdCtrls, Forms, Buttons, Menus, ComCtrls,Arrow,
+  Classes, LclLinux, Process,StdCtrls, Forms, Buttons, Menus, ComCtrls, Arrow,
   Spin, SysUtils, Controls, CompReg, Graphics, ExtCtrls, Dialogs, Calendar,
   ImgList, LResources
   {$IFDEF DATABASE}
@@ -323,10 +323,12 @@ begin
   RegisterComponents('Standard','StdCtrls',[TToggleBox, TCheckBox,
           TRadioButton, TListBox,TComboBox,TScrollBar,TGroupBox]);
   RegisterComponents('Standard', 'ExtCtrls',[TRadioGroup,TPanel]);
+
   RegisterComponents('Additional','Buttons',[TBitBtn,TSpeedButton]);
   RegisterComponents('Additional','ExtCtrls',[TImage, TShape, TBevel, TPaintBox]);
   RegisterComponents('Additional','ComCtrls',[TStaticText, TScrollBox]);
   RegisterComponents('Additional','ExtCtrls',[TNoteBook]);
+
   RegisterComponents('Common Controls','ImgList',[TImageList]);
   RegisterComponents('Common Controls','ComCtrls',[TTrackbar, TProgressBar,
     TTreeView, TListView, TStatusBar, TToolBar, TUpDown]);
@@ -335,6 +337,8 @@ begin
   RegisterComponents('Misc','Arrow',[TArrow]);
 
   RegisterComponents('System','ExtCtrls',[TTimer,TIdleTimer]);
+  RegisterComponents('System','Process',[TProcess]);
+
   RegisterComponents('Dialogs','Dialogs',[TOpenDialog,TSaveDialog,
           TColorDialog,TFontDialog]);
 
@@ -353,7 +357,7 @@ begin
   // components that are streamed but not selectable in the IDE
   RegisterComponents('','ExtCtrls',[TPage]);
   RegisterComponents('','ComCtrls',[TToolbutton]);
-  RegisterComponents('','menus', [TMenuItem]);
+  RegisterComponents('','Menus', [TMenuItem]);
 
   {$IFDEF CustomIDEComps}
   CustomIDEComps.RegisterCustomComponents(@RegisterComponent);

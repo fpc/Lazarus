@@ -390,6 +390,7 @@ images/components/tprinterdialog.ico -text svneol=unset#image/x-icon
 images/components/tprinterdialog.xpm -text svneol=native#image/x-xpixmap
 images/components/tprintersetupdialog.ico -text svneol=unset#image/x-icon
 images/components/tprintersetupdialog.xpm -text svneol=native#image/x-xpixmap
+images/components/tprocess.xpm -text svneol=native#image/x-xpixmap
 images/components/tprogressbar.ico -text svneol=unset#image/x-icon
 images/components/tprogressbar.xpm -text svneol=native#image/x-xpixmap
 images/components/tquery.ico -text svneol=unset#image/x-icon
