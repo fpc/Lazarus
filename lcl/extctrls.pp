@@ -140,12 +140,14 @@ type
     procedure DoSendShowTabs;
     procedure DoSendTabPosition;
     function GetActivePage: String;
+    function GetActivePageComponent: TPage;
     function GetPage(aIndex: Integer): TPage;
     function GetPageCount : integer;
     function GetPageIndex: Integer;
     function IsStoredActivePage: boolean;
     //function InternalSetMultiLine(Value: boolean): boolean;
     procedure SetActivePage(const Value: String);
+    procedure SetActivePageComponent(const AValue: TPage);
     procedure SetImages(const AValue: TImageList);
     procedure SetOptions(const AValue: TNoteBookOptions);
     //procedure SetMultiLine(Value: boolean);
@@ -169,7 +171,10 @@ type
     destructor Destroy; override;
     function TabIndexAtClientPos(ClientPos: TPoint): integer;
   public
-    property ActivePage: String read GetActivePage write SetActivePage stored IsStoredActivePage;
+    property ActivePage: String read GetActivePage write SetActivePage
+                                stored IsStoredActivePage;
+    property ActivePageComponent: TPage read GetActivePageComponent
+                                        write SetActivePageComponent;
     //property MultiLine: boolean read fMultiLine write SetMultiLine default false;
     property Page[Index: Integer]: TPage read GetPage;
     property PageCount : integer read GetPageCount;
@@ -634,6 +639,9 @@ end.
 
  {
   $Log$
+  Revision 1.57  2003/04/22 13:27:10  mattias
+  implemented installing components in component palette
+
   Revision 1.56  2003/04/04 16:35:24  mattias
   started package registration
 
