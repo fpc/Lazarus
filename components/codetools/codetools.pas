@@ -1798,7 +1798,7 @@ begin
       exit;
     end;
     if (AtomIsChar('(')) or (AtomIsChar('[')) then begin
-      if not ReadTilBracketClose(ExceptionOnNotFound) then exit;
+      if not ReadTilBracketClose then exit;
     end;
   until false;
   Result:=true;
@@ -3437,10 +3437,8 @@ begin
       // read constant
       repeat
         ReadNextAtom;
-        if AtomIsChar('(') or AtomIsChar('[') then begin
+        if AtomIsChar('(') or AtomIsChar('[') then
           ReadTilBracketClose(true);
-          ReadNextAtom;
-        end;
         if AtomIsWord and (not IsKeyWordInConstAllowed.DoItUppercase(UpperSrc,
           CurPos.StartPos,CurPos.EndPos-CurPos.StartPos))
         and (UpAtomIs('END') or AtomIsKeyWord) then
@@ -3748,7 +3746,6 @@ function TPascalParserTool.KeyWordFuncTypeDefault: boolean;
     (a)..4
     Low(integer)..High(integer)
     'a'..'z'
-    string[]
 }
 var SubRangeOperatorFound: boolean;
 
@@ -3776,10 +3773,6 @@ begin
   SubRangeOperatorFound:=false;
   if AtomIsIdentifier(false) then begin
     ReadNextAtom;
-    while AtomIsChar('(') or AtomIsChar('[') do begin
-      ReadTilBracketClose(true);
-      ReadNextAtom;
-    end;
     if not AtomIs('..') then begin
       // an identifier
       CurNode.Desc:=ctnIdentifier;

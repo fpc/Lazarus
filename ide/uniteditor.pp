@@ -288,7 +288,6 @@ type
     procedure UpdateStatusBar;
     Procedure ClearUnUsedEditorComponents(Force: boolean);
 
-    Procedure DisplayCodeforControl(Control : TObject);
     Procedure DisplayCodefromUnitName(const UnitName : String);
 
     Procedure NewClicked(Sender: TObject);
@@ -2144,29 +2143,6 @@ writeln('TSourceNotebook.NewSE C ');
 writeln('TSourceNotebook.NewSE end ');
 {$ENDIF}
 end;
-
-Procedure TSourceNotebook.DisplayCodeforControl(Control : TObject);
-Var
-   I,X : Integer;
-Begin
-Writeln('DISPLAY CODE FOR CONTROL');
-Writeln('This was commented out on 11-14-2001');
-Writeln('This should be deleted a month from that day if it''s not used.');
-
-{   X := FSourceEditorList.Count;
-   if X = 0 then Exit;
-   I := 0;
-   while  (I < X)
-   and (TSourceEditor(FSourceEditorList.Items[I]).Control <> TComponent(Control)) do
-     Begin
-       inc(i);
-       Writeln(' I = '+inttostr(i));
-     end;
-
-   if I < X then                s
-     DisplayPage(TSourceEditor(FSOurceEditorList.Items[I]));
-}
-End;
 
 Procedure TSourceNotebook.DisplayCodefromUnitName(const UnitName : String);
 Var

@@ -413,6 +413,7 @@ begin
     Add('EXTERNAL',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('FORWARD' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('PASCAL'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('ASSEMBLER',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   IsKeyWordProcedureTypeSpecifier:=TKeyWordFunctionList.Create;
   with IsKeyWordProcedureTypeSpecifier do begin

@@ -195,7 +195,7 @@ begin
     GetMem(FormatList,SizeOf(TClipboardFormat)*FCount);
     for i:=0 to FCount-1 do
       FormatList[i]:=FData[i].FormatID;
-writeln('[TClipboard.GetOwnerShip] A ',ClipboardTypeName[ClipboardType],' Allocated=',FAllocated);
+//writeln('[TClipboard.GetOwnerShip] A ',ClipboardTypeName[ClipboardType],' Allocated=',FAllocated);
     FAllocated:=ClipboardGetOwnerShip(ClipboardType,@InternalOnRequest,FCount,
       FormatList);
     FreeMem(FormatList);
@@ -588,6 +588,9 @@ end;
 
 {
   $Log$
+  Revision 1.5  2001/11/14 19:10:03  lazarus
+  MG: fixes for parser and linkscanner and small cleanups
+
   Revision 1.4  2001/11/12 16:56:07  lazarus
   MG: CLIPBOARD
 

@@ -4557,13 +4557,12 @@ end;
 
 Procedure TMainIDE.OnSrcNotebookEditorVisibleChanged(Sender : TObject);
 var
-  NewSrcEdit : TSourceEditor;
   ActiveUnitInfo : TUnitInfo;
 begin
   if SourceNotebook.Notebook = nil then Exit;
   
-  NewSrcEdit:=SourceNotebook.GetActiveSE;
-  ActiveUnitInfo := Project.UnitWithEditorIndex(SourceNotebook.Notebook.Pageindex);
+  ActiveUnitInfo :=
+    Project.UnitWithEditorIndex(SourceNotebook.Notebook.Pageindex);
   if ActiveUnitInfo = nil then Exit;
 
   ToggleFormSpeedBtn.Enabled := Assigned(ActiveUnitInfo.Form);
@@ -4593,6 +4592,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.144  2001/11/14 19:10:00  lazarus
+  MG: fixes for parser and linkscanner and small cleanups
+
   Revision 1.143  2001/11/14 17:46:54  lazarus
   Changes to make toggling between form and unit work.
   Added BringWindowToTop
