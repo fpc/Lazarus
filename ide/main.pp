@@ -774,21 +774,27 @@ begin
 end;
 
 procedure TMainIDE.FormCloseQuery(Sender : TObject; var CanClose: boolean);
-Begin
-  writeln('[TMainIDE.FormCloseQuery]');
-  CanClose:=true;
-
+begin
   if SomethingOfProjectIsModified then begin
-    if (MessageDlg(lisProjectChanged,lisSaveChangesToProject,
-      mtConfirmation,[mbYes,mbNo],0)=mrYes) then
-    begin
-      CanClose:=DoSaveProject([])<>mrAbort;
-      if CanClose=false then exit;
-    end;
-  end;
+    case MessageDlg(lisProjectChanged, Format(lisSaveChangesToProject, [Project1.Title]),
+      mtConfirmation, [mbYes, mbNo, mbCancel], 0) of
 
-  CanClose:=(DoCloseProject<>mrAbort);
-End;
+    mrYes:
+      begin
+        CanClose:= DoSaveProject([]) <> mrAbort;
+        if not CanClose then exit;
+      end;
+
+    mrCancel:
+      begin
+        CanClose:= false;
+        Exit;
+      end;
+    end;  
+  end;
+  
+  CanClose:=(DoCloseProject <> mrAbort);
+end;
 
 {------------------------------------------------------------------------------}
 type 
@@ -4003,8 +4009,8 @@ writeln('TMainIDE.DoNewProject A');
   // close current project first
   If Project1<>nil then begin
     if SomethingOfProjectIsModified then begin
-        if MessageDlg('Project changed', 'Save changes to project?', 
-          mtconfirmation, [mbyes, mbno], 0)=mryes then begin
+        if MessageDlg(lisProjectChanged, Format(lisSaveChangesToProject, [Project1.Title]), 
+          mtconfirmation, [mbYes, mbNo, mbCancel], 0) = mrYes then begin
         if DoSaveProject([])=mrAbort then begin
           Result:=mrAbort;
           exit;
@@ -4234,8 +4240,8 @@ begin
   
   // close the old project
   if SomethingOfProjectIsModified then begin
-    if MessageDlg('Project changed', 'Save changes to project?',
-      mtconfirmation,[mbYes, mbNo],0)=mrYes then
+    if MessageDlg(lisProjectChanged, Format(lisSaveChangesToProject, [Project1.Title]),
+      mtconfirmation,[mbYes, mbNo, mbCancel],0) = mrYes then
     begin
       if DoSaveProject([])=mrAbort then begin
         Result:=mrAbort;
@@ -4361,8 +4367,8 @@ begin
   Result:=mrCancel;
 
   if SomethingOfProjectIsModified then begin
-    if MessageDlg('Project changed','Save changes to project?',
-      mtconfirmation,[mbYes, mbNo],0)=mrYes then
+    if MessageDlg(lisProjectChanged, Format(lisSaveChangesToProject, [Project1.Title]),
+      mtconfirmation, [mbYes, mbNo, mbCancel], 0)=mrYes then
     begin
       if DoSaveProject([])=mrAbort then begin
         Result:=mrAbort;
@@ -6731,6 +6737,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.359  2002/09/03 20:01:59  lazarus
+  Intermediate UI patch to show a bug.
+
   Revision 1.358  2002/09/02 19:10:25  lazarus
   MG: TNoteBook now starts with no Page and TPage has no auto names
 
