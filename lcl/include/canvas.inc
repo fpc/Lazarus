@@ -49,7 +49,8 @@ end;
 {-----------------------------------------------}
 {--  TCanvas.CopyRect --}
 {-----------------------------------------------}
-Procedure TCanvas.CopyRect(const Dest : TRect; Canvas : TCanvas; const Source : TRect);
+Procedure TCanvas.CopyRect(const Dest : TRect; Canvas : TCanvas;
+  const Source : TRect);
 var
   SH, SW, DH, DW: Integer;
 Begin
@@ -1014,6 +1015,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.24  2002/08/30 13:43:37  lazarus
+  MG: fixed drawing of non visual components in designer
+
   Revision 1.23  2002/08/19 20:34:47  lazarus
   MG: improved Clipping, TextOut, Polygon functions
 
