@@ -108,6 +108,7 @@ type
     procedure MainIDEitmPkgOpenPackageFileClick(Sender: TObject);
     procedure MainIDEitmPkgPkgGraphClick(Sender: TObject);
     procedure MainIDEitmPkgAddCurUnitToPkgClick(Sender: TObject);
+    procedure mnuPkgOpenPackageOfCurUnitClicked(Sender: TObject);
     procedure mnuConfigCustomCompsClicked(Sender: TObject);
     procedure mnuOpenRecentPackageClicked(Sender: TObject);
     procedure mnuPkgOpenPackageClicked(Sender: TObject);
@@ -329,6 +330,28 @@ end;
 procedure TPkgManager.MainIDEitmPkgAddCurUnitToPkgClick(Sender: TObject);
 begin
   DoAddActiveUnitToAPackage;
+end;
+
+procedure TPkgManager.mnuPkgOpenPackageOfCurUnitClicked(Sender: TObject);
+var
+  ActiveSourceEditor: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+  PkgFile: TPkgFile;
+  Filename: String;
+begin
+  MainIDE.GetCurrentUnitInfo(ActiveSourceEditor,ActiveUnitInfo);
+  if ActiveSourceEditor=nil then exit;
+
+  Filename:=ActiveUnitInfo.Filename;
+
+  PkgFile:=PackageGraph.FindFileInAllPackages(Filename,false,true);
+  if PkgFile=nil then begin
+    MessageDlg(lisProjAddPackageNotFound,
+      lisPkgThisFileIsNotInAnyLoadedPackage, mtInformation,
+      [mbCancel],0);
+    exit;
+  end;
+  DoOpenPackageFile(PkgFile.LazPackage.Filename,[pofAddToRecent])
 end;
 
 function TPkgManager.OnPackageEditorCompilePackage(Sender: TObject;
@@ -1533,6 +1556,7 @@ begin
   with MainIDEBar do begin
     itmPkgOpenPackage.OnClick :=@mnuPkgOpenPackageClicked;
     itmPkgOpenPackageFile.OnClick:=@MainIDEitmPkgOpenPackageFileClick;
+    itmPkgOpenPackageOfCurUnit.OnClick :=@mnuPkgOpenPackageOfCurUnitClicked;
     itmPkgAddCurUnitToPkg.OnClick:=@MainIDEitmPkgAddCurUnitToPkgClick;
     itmPkgPkgGraph.OnClick:=@MainIDEitmPkgPkgGraphClick;
     {$IFDEF CustomIDEComps}

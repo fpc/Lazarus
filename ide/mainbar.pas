@@ -216,6 +216,7 @@ type
     // components menu
     itmPkgOpenPackage: TMenuItem;
     itmPkgOpenPackageFile: TMenuItem;
+    itmPkgOpenPackageOfCurUnit: TMenuItem;
     itmPkgOpenRecent: TMenuItem;
     itmPkgAddCurUnitToPkg: TMenuItem;
     itmPkgPkgGraph: TMenuItem;

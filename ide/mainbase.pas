@@ -119,12 +119,12 @@ type
     destructor Destroy; override;
     procedure CreateOftenUsedForms; virtual; abstract;
 
-    procedure GetCurrentUnitInfo(var ActiveSourceEditor: TSourceEditorInterface;
-                                 var ActiveUnitInfo: TUnitInfo); override;
     procedure GetUnitInfoForDesigner(ADesigner: TIDesigner;
                               var ActiveSourceEditor: TSourceEditorInterface;
                               var ActiveUnitInfo: TUnitInfo); override;
 
+    procedure GetCurrentUnitInfo(var ActiveSourceEditor: TSourceEditorInterface;
+                              var ActiveUnitInfo: TUnitInfo); override;
     procedure GetCurrentUnit(var ActiveSourceEditor: TSourceEditor;
                              var ActiveUnitInfo: TUnitInfo); virtual; abstract;
     procedure GetUnitWithPageIndex(PageIndex: integer;
@@ -296,13 +296,6 @@ begin
   MainIDE:=nil;
 end;
 
-procedure TMainIDEBase.GetCurrentUnitInfo(
-  var ActiveSourceEditor: TSourceEditorInterface; var ActiveUnitInfo: TUnitInfo
-  );
-begin
-  GetCurrentUnitInfo(ActiveSourceEditor,ActiveUnitInfo);
-end;
-
 procedure TMainIDEBase.GetUnitInfoForDesigner(ADesigner: TIDesigner;
   var ActiveSourceEditor: TSourceEditorInterface; var ActiveUnitInfo: TUnitInfo
   );
@@ -315,6 +308,18 @@ begin
     GetDesignerUnit(TDesigner(ADesigner),SrcEdit,ActiveUnitInfo);
     ActiveSourceEditor:=SrcEdit;
   end;
+end;
+
+procedure TMainIDEBase.GetCurrentUnitInfo(
+  var ActiveSourceEditor: TSourceEditorInterface; var ActiveUnitInfo: TUnitInfo
+  );
+var
+  ASrcEdit: TSourceEditor;
+  AnUnitInfo: TUnitInfo;
+begin
+  GetCurrentUnit(ASrcEdit, AnUnitInfo);
+  ActiveSourceEditor:=ASrcEdit;
+  ActiveUnitInfo:=AnUnitInfo;
 end;
 
 function TMainIDEBase.CreateMenuSeparator : TMenuItem;
@@ -655,6 +660,7 @@ begin
   with MainIDEBar do begin
     CreateMenuItem(ParentMI,itmPkgOpenPackage,'itmPkgOpenPackage',lisMenuOpenPackage,'pkg_package');
     CreateMenuItem(ParentMI,itmPkgOpenPackageFile,'itmPkgOpenPackageFile',lisMenuOpenPackageFile,'pkg_package');
+    CreateMenuItem(ParentMI,itmPkgOpenPackageOfCurUnit,'itmPkgOpenPackageOfCurUnit',lisMenuOpenPackageOfCurUnit,'pkg_package');
     CreateMenuItem(ParentMI,itmPkgOpenRecent,'itmPkgOpenRecent',lisMenuOpenRecentPkg,'pkg_package');
     ParentMI.Add(CreateMenuSeparator);
 
@@ -864,6 +870,7 @@ begin
     // components menu
     itmPkgOpenPackage.ShortCut:=CommandToShortCut(ecOpenPackage);
     itmPkgOpenPackageFile.ShortCut:=CommandToShortCut(ecOpenPackageFile);
+    itmPkgOpenPackageOfCurUnit.ShortCut:=CommandToShortCut(ecOpenPackageOfCurUnit);
     itmPkgAddCurUnitToPkg.ShortCut:=CommandToShortCut(ecAddCurUnitToPkg);
     itmPkgPkgGraph.ShortCut:=CommandToShortCut(ecPackageGraph);
     {$IFDEF CustomIDEComps}

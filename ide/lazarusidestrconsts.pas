@@ -220,9 +220,10 @@ resourcestring
   lisMenuRunFile = 'Run File';
   lisMenuConfigBuildFile = 'Configure Build+Run File';
 
-  lisMenuOpenPackage = 'Open package';
+  lisMenuOpenPackage = 'Open loaded package';
   lisMenuOpenRecentPkg = 'Open recent package';
-  lisMenuOpenPackageFile = 'Open package file';
+  lisMenuOpenPackageFile = 'Open package file (.lpk)';
+  lisMenuOpenPackageOfCurUnit = 'Open package of current unit';
   lisMenuAddCurUnitToPkg = 'Add active unit to a package';
   lisMenuPackageGraph = 'Package Graph';
   lisMenuConfigCustomComps = 'Configure custom components';
@@ -1780,6 +1781,8 @@ resourcestring
   lisProjAddTheProjectHasAlreadyADependency = 'The project has already a '
     +'dependency for the package %s%s%s.';
   lisProjAddPackageNotFound = 'Package not found';
+  lisPkgThisFileIsNotInAnyLoadedPackage = 'This file is not in any loaded '
+    +'package.';
   lisProjAddTheDependencyWasNotFound = 'The dependency %s%s%s was not found.%'
     +'sPlease choose an existing package.';
   lisProjAddInvalidVersion = 'Invalid version';

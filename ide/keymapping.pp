@@ -212,6 +212,7 @@ const
   // components menu
   ecOpenPackage          = ecUserFirst + 600;
   ecOpenPackageFile      = ecUserFirst + 601;
+  ecOpenPackageOfCurUnit = ecUserFirst + 602;
   ecAddCurUnitToPkg      = ecUserFirst + 603;
   ecPackageGraph         = ecUserFirst + 604;
   ecConfigCustomComps    = ecUserFirst + 605;
@@ -667,6 +668,7 @@ begin
   // components menu
   ecOpenPackage: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecOpenPackageFile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecOpenPackageOfCurUnit: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecAddCurUnitToPkg: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecPackageGraph: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecConfigCustomComps: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1214,6 +1216,7 @@ begin
     // components menu
     ecOpenPackage           : Result:= lisMenuOpenPackage;
     ecOpenPackageFile       : Result:= lisMenuOpenPackageFile;
+    ecOpenPackageOfCurUnit  : Result:= lisMenuOpenPackageOfCurUnit;
     ecAddCurUnitToPkg       : Result:= lisMenuAddCurUnitToPkg;
     ecPackageGraph          : Result:= lisMenuPackageGraph;
     ecConfigCustomComps     : Result:= lisMenuConfigCustomComps;
@@ -2082,6 +2085,7 @@ begin
   C:=Categories[AddCategory('Components',srkmCatComponentsMenu,caAll)];
   AddDefault(C,'Open package',ecOpenPackage);
   AddDefault(C,'Open package file',ecOpenPackageFile);
+  AddDefault(C,'Open package of current unit',ecOpenPackageOfCurUnit);
   AddDefault(C,'Add active unit to a package',ecAddCurUnitToPkg);
   AddDefault(C,'Package graph',ecPackageGraph);
   AddDefault(C,'Configure custom components',ecConfigCustomComps);
