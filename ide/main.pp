@@ -710,6 +710,7 @@ begin
   Name := DefaultMainIDEName;
   EnvironmentOptions.IDEWindowLayoutList.Apply(TForm(Self),DefaultMainIDEName);
 
+  InitIDEComponents;
   if LazarusResources.Find(ClassName)=nil then begin
     SetupMainMenu;
     SetupSpeedButtons;
@@ -7130,6 +7131,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.383  2002/09/16 06:44:06  lazarus
+  MG: added localization from Vasily
+
   Revision 1.382  2002/09/14 17:27:44  lazarus
   MG: double click on unit dependencies now opens the file
 
