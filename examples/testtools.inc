@@ -9,8 +9,8 @@ Info : Array[0..5] of PChar = ('        Do not exist yet...       ',
                                ' Basic code completed, finalization '+#10#13+' and cleanup is necessary. '+#10#13+' Errors are at presence.  ',
                                ' A few procedures are completed, many errors are at presence. ',
                                ' Could crash/freeze your system! It will be created when you push this button. Try it on your own risk!');
-FileN : Array[0..8] of String =('bitbtn.xpm','listbox.xpm','newform.xpm','newunit.xpm',
-                                'notebook.xpm','memo.xpm','mouse.xpm','checkbox.xpm','viewunits.xpm');
+FileN : Array[0..8] of String =('tbitbtn','tlistbox','btn_newform','btn_newunit',
+                                'tnotebook','tmemo','btn_mouse','tcheckbox','btn_viewunits');
 //-----------------------------------------------------------------------------------
 //                              CreateTestTools is a procedure
 //                              that loads all test components
@@ -1272,14 +1272,14 @@ lblFormCount        := TLabel.Create(Self); //Label showing Screen.PixelsPerInch
 FLeft := 10;
 For i:= 0 to 8 do
 begin
-  S := TFileStream.Create('../images/'+FileN[i], fmOpenRead);
-  try
-    Pixmap1 := TPixmap.Create;
-    Pixmap1.TransparentColor := clBtnFace;
-    Pixmap1.LoadFromStream(S);
-  finally
-    S.Free;
+  
+  Pixmap1:=TPixMap.Create;
+  Pixmap1.TransparentColor:=clBtnFace;
+  if not LoadResource(FileN[i],Pixmap1) then
+  begin
+    LoadResource('default',Pixmap1);
   end;
+
   SpeedB[i]     := TSpeedButton.Create(Self);
   with SpeedB[i] do
   begin
@@ -1287,24 +1287,22 @@ begin
     OnClick     := @EventOnClick;
     OnMouseDown := @EventOnMouseDown;
     OnMouseUp   := @EventOnMouseUp;
-    Case i of
-      0: Left   := SpeedButton1.Left;
-      1: Left   := SpeedButton1.Left + 23;
-      2: Left   := SpeedButton1.Left + 46;
-      3: Left   := SpeedButton1.Left + 69;
-      4: Left   := SpeedButton1.Left + 92;
-      5: Left   := SpeedButton1.Left + 115;
-      6: Left   := SpeedButton1.Left + 138;
-      7: Left   := SpeedButton1.Left + 161;
-      8: Left   := SpeedButton1.Left + 184;
-    end;
+    Left        := SpeedButton1.Left + (i * 23);
     Top         := 20;
-    If i>4 then
-      Flat      := True;
+    if (i > 4) then
+    begin
+       Flat := true;
+       Hint := FileN [i] + '(flat button)';
+    end
+    else begin
+       Flat := false;
+       Hint := FileN [i] + '(normal buton)';
+    end; 
     Color       := clBtnFace;
     Glyph       := Pixmap1;
     Enabled     := True;
     Visible     := True;
+    ShowHint    := true;
   end;
 end;
     
@@ -2241,6 +2239,8 @@ end;
 
 procedure TForm1.EventOnChange(Sender : TObject);
 begin
+  if not (assigned (lbEvents)) then exit;
+
   lbEvents.Items.Add(Sender.ClassName+'.Change');
   EventWatch;
   Assert(False, 'Trace: EventOnChange');
@@ -2662,6 +2662,10 @@ begin
 end;
 {
   $Log$
+  Revision 1.4  2001/02/25 09:22:28  lazarus
+  * Fixed crash caused by missing pixmaps
+  * using resources now instead of xpm file
+
   Revision 1.3  2000/09/22 20:22:03  lazarus
   +Rebuilt from beginning to V0.2
   +Prepared for non existent components (total 60 components).

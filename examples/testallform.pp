@@ -32,7 +32,7 @@ interface
 
 uses classes, forms, buttons, StdCtrls, controls, menus, ExtCtrls, CListBox,
      ComCtrls, SysUtils, Graphics, Dialogs, Inifiles, Spin, clipbrd, lclLinux,
-     registry;
+     registry, lresources;
 
 type
    TForm1 = class(TForm)
@@ -273,8 +273,32 @@ var
 
 implementation
 
-{$I testtools.inc}
+  function LoadResource(ResourceName:string; PixMap:TPixMap):boolean;
+  var 
+    ms:TMemoryStream;
+    res:TLResource;
+  begin
+    Result:=false;
+    res:=LazarusResources.Find(ResourceName);
+    if (res <> nil) then
+    begin
+      if res.ValueType='XPM' then begin
+        ms:=TMemoryStream.Create;
+        try
+          ms.Write(res.Value[1],length(res.Value));
+          ms.Position:=0;
+          PixMap.LoadFromStream(ms);
+          Result:=true;
+        finally
+          ms.Free;
+        end;
+      end;
+    end
+    else
+       writeln ('TestAll Warning: resource "', ResourceName,'" not found!');
+  end;
 
+{$I testtools.inc}
 
 //******** Create Form1.TForm1 ******************************************************
 constructor TForm1.Create(AOwner: TComponent);
@@ -2193,13 +2217,11 @@ ScrollBar1 := TScrollBar.Create(Self);
     Visible := True;
   end;}
 //++++++++++++++++++++++++++++++++++++ SpeedButton1..4 ++++++++++++++++++++++++++++++
-S := TFileStream.Create('../images/openfile.xpm', fmOpenRead);
-  try
-    Pixmap1 := TPixmap.Create;
-    Pixmap1.TransparentColor := clBtnFace;
-    Pixmap1.LoadFromStream(S);
-  finally
-    S.Free;
+  Pixmap1:=TPixMap.Create;
+  Pixmap1.TransparentColor:=clBtnFace;
+  if not LoadResource('btn_openfile',Pixmap1) then
+  begin
+    LoadResource('default',Pixmap1);
   end;
 
 SpeedButton1 := TSpeedButton.Create(Self);
@@ -2222,14 +2244,10 @@ SpeedButton1 := TSpeedButton.Create(Self);
      Visible := True;
   end;
 
-S := TFileStream.Create('../images/save.xpm', fmOpenRead);
-  try
-    Pixmap1 := TPixmap.Create;
-    Pixmap1.TransparentColor := clBtnFace;
-    Pixmap1.LoadFromStream(S);
-  finally
-    S.Free;
-  end;
+  Pixmap1:=TPixMap.Create;
+  Pixmap1.TransparentColor:=clBtnFace;
+  if not LoadResource('btn_save',Pixmap1) 
+        then LoadResource('default',Pixmap1);
 
 SpeedButton2 := TSpeedButton.Create(Self);
    With SpeedButton2 do
@@ -2511,10 +2529,17 @@ TrackBar2 := TTrackBar.Create(Self);
 //++++++++++++++++++++++++++++++++++++ THE END ++++++++++++++++++++++++++++++++++++++
 END;
 
+initialization
+   {$I ../images/laz_images.lrs}
+   {$I ../designer/lazarus_control_images.lrs}
 END.
 
 {
   $Log$
+  Revision 1.3  2001/02/25 09:22:28  lazarus
+  * Fixed crash caused by missing pixmaps
+  * using resources now instead of xpm file
+
   Revision 1.2  2000/09/22 20:22:02  lazarus
   +Rebuilt from beginning to V0.2
   +Prepared for non existent components (total 60 components).
