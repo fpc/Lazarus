@@ -2365,8 +2365,8 @@ begin
   Result:=false;
   if (SourceChangeCache=nil) then 
     RaiseException('need a SourceChangeCache');
-  // in a class or in a forward proc?
   BuildTreeAndGetCleanPos(trAll,CursorPos, CleanCursorPos,[]);
+
   // find CodeTreeNode at cursor
   CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
   CodeCompleteSrcChgCache:=SourceChangeCache;
@@ -2389,9 +2389,12 @@ begin
   {$ENDIF}
   
   // test if forward proc
-  ProcNode:=CursorNode;
-  if ProcNode.Desc=ctnProcedureHead then ProcNode:=ProcNode.Parent;
-  if (ProcNode.Desc=ctnProcedure)
+  ProcNode:=CursorNode.GetNodeOfType(ctnProcedureHead);
+  if ProcNode<>nil then
+    ProcNode:=ProcNode.Parent;
+  if (ProcNode=nil) and (CursorNode.Desc=ctnProcedure) then
+    ProcNode:=CursorNode;
+  if (ProcNode<>nil) and (ProcNode.Desc=ctnProcedure)
   and ((ProcNode.SubDesc and ctnsForwardDeclaration)>0) then begin
     // Node is forward Proc
     CompleteForwardProc;
