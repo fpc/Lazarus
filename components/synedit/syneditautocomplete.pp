@@ -291,6 +291,7 @@ begin
         {$IFDEF SYN_LAZARUS}
         TokenStartX:=p.x;
         s:=AEditor.Lines[p.y-1];
+        if TokenStartX>length(s) then TokenStartX:=length(s);
         while (TokenStartX > 1) and (s[TokenStartX-1] > ' ')
         and (Pos(s[TokenStartX-1], fEOTokenChars) = 0) do
           Dec(TokenStartX);
@@ -304,7 +305,9 @@ begin
           IndentLen:=1;
           if (p.y>0) and (p.y<=AEditor.Lines.Count) then begin
             s:=AEditor.Lines[p.y-1];
-            while (IndentLen<p.x) and (s[IndentLen]<=' ') do inc(IndentLen);
+            while (IndentLen<p.x)
+            and ((IndentLen>length(s)) or (s[IndentLen]<=' ')) do
+              inc(IndentLen);
           end;
           dec(IndentLen);
         end;

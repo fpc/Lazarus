@@ -240,8 +240,8 @@ begin
       Dest.ImageIndex:=Src.ImageIndex;
       Dest.ShortCut:=Src.ShortCut;
       Dest.Visible:=Src.Visible;
-      if (Dest.ImageIndex>=0) then begin
-        // TODO: action image list
+      if (Dest is TContainedAction) and (Dest.ImageIndex>=0) then begin
+
       end;
     end;
   finally
