@@ -36,8 +36,6 @@ unit InterfaceBase;
 
 interface
 
-{$DEFINE ClientRectBugFix}
-
 {$ifdef Trace}
   {$ASSERTIONS ON}
 {$endif}
@@ -101,6 +99,9 @@ end.
 
 {
   $Log$
+  Revision 1.15  2002/10/01 10:15:31  lazarus
+  MG: removed last clientrectbugfix switches
+
   Revision 1.14  2002/10/01 10:12:34  lazarus
   MG: added SendCachedLCLMessages to interfacebase for wysiwyg
 
