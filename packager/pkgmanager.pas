@@ -44,7 +44,7 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, LCLProc, Forms, Controls, FileCtrl, Dialogs,
+  Classes, SysUtils, LCLProc, Forms, Controls, FileCtrl, Dialogs, Menus,
   CodeToolManager, CodeCache, Laz_XMLCfg,
   KeyMapping, EnvironmentOpts, IDEProcs, ProjectDefs, InputHistory,
   IDEDefs, UComponentManMain, PackageEditor, AddToPackageDlg, PackageDefs,
@@ -63,6 +63,7 @@ type
     procedure OnPackageEditorSavePackage(Sender: TObject);
     procedure mnuConfigCustomCompsClicked(Sender: TObject);
     procedure mnuOpenInstalledPckClicked(Sender: TObject);
+    procedure mnuOpenRecentPackageClicked(Sender: TObject);
   private
     function DoShowSavePackageAsDialog(APackage: TLazPackage): TModalResult;
   public
@@ -72,13 +73,18 @@ type
     procedure ConnectMainBarEvents; override;
     procedure ConnectSourceNotebookEvents; override;
     procedure SetupMainBarShortCuts; override;
+    procedure SetRecentPackagesMenu; override;
+    procedure AddFileToRecentPackages(const Filename: string);
 
     procedure LoadInstalledPackages; override;
+    function AddPackageToGraph(APackage: TLazPackage): TModalResult;
 
     function ShowConfigureCustomComponents: TModalResult; override;
     function DoNewPackage: TModalResult; override;
     function DoShowOpenInstalledPckDlg: TModalResult; override;
     function DoOpenPackage(APackage: TLazPackage): TModalResult; override;
+    function DoOpenPackageFile(AFilename: string;
+                         Flags: TPkgOpenFlags): TModalResult; override;
     function DoSavePackage(APackage: TLazPackage;
                            Flags: TPkgSaveFlags): TModalResult; override;
   end;
@@ -180,6 +186,30 @@ begin
   DoShowOpenInstalledPckDlg;
 end;
 
+procedure TPkgManager.mnuOpenRecentPackageClicked(Sender: TObject);
+
+  procedure UpdateEnvironment;
+  begin
+    SetRecentPackagesMenu;
+    MainIDE.SaveEnvironment;
+  end;
+
+var
+  AFilename: string;
+begin
+  AFileName:=ExpandFilename(TMenuItem(Sender).Caption);
+  if DoOpenPackageFile(AFilename,[pofAddToRecent])=mrOk then begin
+    UpdateEnvironment;
+  end else begin
+    // open failed
+    if not FileExists(AFilename) then begin
+      // file does not exist -> delete it from recent file list
+      RemoveFromRecentList(AFilename,EnvironmentOptions.RecentPackageFiles);
+      UpdateEnvironment;
+    end;
+  end;
+end;
+
 function TPkgManager.DoShowSavePackageAsDialog(
   APackage: TLazPackage): TModalResult;
 var
@@ -272,11 +302,20 @@ begin
           'The file name "'+NewFilename+'" is used by'#13
           +'the package "'+PkgFile.LazPackage.IDAsString+'"'#13
           +'in file "'+PkgFile.LazPackage.Filename+'".',
-          mtInformation,[mbRetry,mbAbort],0);
+          mtWarning,[mbRetry,mbAbort],0);
         if Result=mrAbort then exit;
         continue; // try again
       end;
-
+      
+      // check existing file
+      if (CompareFilenames(NewFileName,OldPkgFilename)<>0)
+      and FileExists(NewFileName) then begin
+        Result:=MessageDlg('Replace File',
+          'Replace existing file "'+NewFilename+'"?',
+          mtConfirmation,[mbOk,mbCancel],0);
+        if Result<>mrOk then exit;
+      end;
+      
     until Result<>mrRetry;
   finally
     InputHistories.StoreFileDialogSettings(SaveDialog);
@@ -303,7 +342,10 @@ begin
       'Delete old package file "'+OldPkgFilename+'"?',
       mtConfirmation,[mbOk,mbCancel],0)=mrOk
     then begin
-      if not DeleteFile(OldPkgFilename) then begin
+      if DeleteFile(OldPkgFilename) then begin
+        RemoveFromRecentList(OldPkgFilename,
+                             EnvironmentOptions.RecentPackageFiles);
+      end else begin
         MessageDlg('Delete failed',
           'Deleting of file "'+OldPkgFilename+'"'
              +' failed.',mtError,[mbOk],0);
@@ -346,7 +388,7 @@ procedure TPkgManager.ConnectMainBarEvents;
 begin
   with MainIDE do begin
     itmCompsConfigCustomComps.OnClick :=@mnuConfigCustomCompsClicked;
-    itmOpenInstalledPkg.OnClick :=@mnuOpenInstalledPckClicked;
+    itmPkgOpenInstalled.OnClick :=@mnuOpenInstalledPckClicked;
   end;
 end;
 
@@ -360,6 +402,21 @@ begin
 
 end;
 
+procedure TPkgManager.SetRecentPackagesMenu;
+begin
+writeln('TPkgManager.SetRecentPackagesMenu ',EnvironmentOptions.RecentPackageFiles.Count);
+  MainIDE.SetRecentSubMenu(MainIDE.itmPkgOpenRecent,
+            EnvironmentOptions.RecentPackageFiles,@mnuOpenRecentPackageClicked);
+end;
+
+procedure TPkgManager.AddFileToRecentPackages(const Filename: string);
+begin
+  AddToRecentList(Filename,EnvironmentOptions.RecentPackageFiles,
+                  EnvironmentOptions.MaxRecentPackageFiles);
+  SetRecentPackagesMenu;
+  MainIDE.SaveEnvironment;
+end;
+
 procedure TPkgManager.LoadInstalledPackages;
 begin
   // base packages
@@ -368,6 +425,36 @@ begin
   PackageGraph.RegisterStaticPackages;
   // custom packages
   // ToDo
+end;
+
+function TPkgManager.AddPackageToGraph(APackage: TLazPackage
+  ): TModalResult;
+var
+  ConflictPkg: TLazPackage;
+begin
+  // check Package Name
+  if not IsValidIdent(APackage.Name) then begin
+    Result:=MessageDlg('Invalid Package Name',
+      'The package name "'+APackage.Name+'" of'#13
+      +'the file "'+APackage.Filename+'" is invalid.',
+      mtError,[mbCancel,mbAbort],0);
+    exit;
+  end;
+
+  // check if Package with same name is already loaded
+  ConflictPkg:=PackageGraph.FindAPackageWithName(APackage.Name,nil);
+  if ConflictPkg<>nil then begin
+    Result:=MessageDlg('Package Name already loaded',
+      'There is already a package with the name "'+APackage.Name+'" loaded'#13
+      +'from file "'+ConflictPkg.Filename+'".',
+      mtError,[mbCancel,mbAbort],0);
+    exit;
+  end;
+
+  // add to graph
+  PackageGraph.AddPackage(APackage);
+
+  Result:=mrOk;
 end;
 
 function TPkgManager.ShowConfigureCustomComponents: TModalResult;
@@ -410,6 +497,50 @@ begin
   Result:=mrOk;
 end;
 
+function TPkgManager.DoOpenPackageFile(AFilename: string; Flags: TPkgOpenFlags
+  ): TModalResult;
+var
+  APackage: TLazPackage;
+  XMLConfig: TXMLConfig;
+begin
+  AFilename:=CleanAndExpandFilename(AFilename);
+
+  // check if package is already loaded
+  APackage:=PackageGraph.FindPackageWithFilename(AFilename,true);
+  if APackage=nil then begin
+    // package not yet loaded
+
+    // create a new package
+    Result:=mrCancel;
+    APackage:=TLazPackage.Create;
+    try
+      // load the package file
+      APackage.Filename:=AFilename;
+      try
+        XMLConfig:=TXMLConfig.Create(AFilename);
+        try
+          APackage.LoadFromXMLConfig(XMLConfig,'Package/');
+        finally
+          XMLConfig.Free;
+        end;
+      except
+        on E: Exception do begin
+          Result:=MessageDlg('Error Reading Package',
+            'Unable to read package file "'+APackage.Filename+'".',
+            mtError,[mbAbort,mbCancel],0);
+          exit;
+        end;
+      end;
+
+      Result:=AddPackageToGraph(APackage);
+    finally
+      if Result<>mrOk then APackage.Free;
+    end;
+  end;
+  
+  Result:=DoOpenPackage(APackage);
+end;
+
 function TPkgManager.DoSavePackage(APackage: TLazPackage;
   Flags: TPkgSaveFlags): TModalResult;
 var
@@ -438,13 +569,18 @@ begin
     if Result<>mrOk then exit;
   end;
   
+  Result:=MainIDE.DoBackupFile(APackage.Filename,false);
+  if Result=mrAbort then exit;
+  
   // save
-  Result:=mrCancel;
   try
     XMLConfig:=TXMLConfig.Create(APackage.Filename);
-    APackage.SaveToXMLConfig(XMLConfig,'Package/');
-    XMLConfig.Flush;
-    XMLConfig.Free;
+    try
+      APackage.SaveToXMLConfig(XMLConfig,'Package/');
+      XMLConfig.Flush;
+    finally
+      XMLConfig.Free;
+    end;
   except
     on E: Exception do begin
       Result:=MessageDlg('Error Writing Package',
@@ -457,6 +593,11 @@ begin
   
   // success
   APackage.Modified:=false;
+  // add to recent
+  if (psfSaveAs in Flags) then begin
+    AddFileToRecentPackages(APackage.Filename);
+  end;
+
   Result:=mrOk;
 end;
 

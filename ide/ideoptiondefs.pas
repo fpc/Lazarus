@@ -416,20 +416,21 @@ begin
   if P='' then exit;
   P:=Path+P+'/';
   // placement
-  XMLConfig.SetValue(P+'WindowPlacement/Value',
-    IDEWindowPlacementNames[fWindowPlacement]);
+  XMLConfig.SetDeleteValue(P+'WindowPlacement/Value',
+    IDEWindowPlacementNames[fWindowPlacement],
+    IDEWindowPlacementNames[iwpRestoreWindowSize]);
   // custom position
-  XMLConfig.SetValue(P+'CustomPosition/Left',fLeft);
-  XMLConfig.SetValue(P+'CustomPosition/Top',fTop);
-  XMLConfig.SetValue(P+'CustomPosition/Width',fWidth);
-  XMLConfig.SetValue(P+'CustomPosition/Height',fHeight);
+  XMLConfig.SetDeleteValue(P+'CustomPosition/Left',fLeft,0);
+  XMLConfig.SetDeleteValue(P+'CustomPosition/Top',fTop,0);
+  XMLConfig.SetDeleteValue(P+'CustomPosition/Width',fWidth,0);
+  XMLConfig.SetDeleteValue(P+'CustomPosition/Height',fHeight,0);
   // state
   XMLConfig.SetValue(P+'WindowState/Value',IDEWindowStateNames[fWindowState]);
   // docking
-  XMLConfig.SetValue(P+'Docking/Parent',fDockParent);
-  XMLConfig.SetValue(P+'Docking/ChildCount',fDockChilds.Count);
+  XMLConfig.SetDeleteValue(P+'Docking/Parent',fDockParent,'');
+  XMLConfig.SetDeleteValue(P+'Docking/ChildCount',fDockChilds.Count,0);
   for i:=0 to fDockChilds.Count-1 do begin
-    XMLConfig.SetValue(P+'Docking/Child'+IntToStr(i),fDockChilds[i]);
+    XMLConfig.SetDeleteValue(P+'Docking/Child'+IntToStr(i),fDockChilds[i],'');
   end;
   XMLConfig.SetValue(P+'DockMode/Value',IDEWindowDockModeNames[fDockMode]);
 end;
@@ -1109,7 +1110,7 @@ procedure TIDEDialogLayoutList.SaveToXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
 var i: integer;
 begin
-  XMLConfig.SetValue(Path+'/Count',Count);
+  XMLConfig.SetDeleteValue(Path+'/Count',Count,0);
   for i:=0 to Count-1 do
     Items[i].SaveToXMLConfig(XMLConfig,Path+'/Dialog'+IntToStr(i+1));
 end;

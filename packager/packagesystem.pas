@@ -104,6 +104,8 @@ type
     function FindUnitInAllPackages(const TheUnitName: string): TPkgFile;
     function FindFileInAllPackages(const TheFilename: string;
       ResolveLinks: boolean): TPkgFile;
+    function FindPackageWithFilename(const TheFilename: string;
+      ResolveLinks: boolean): TLazPackage;
     function CreateUniqueUnitName(const Prefix: string): string;
     function PackageNameExists(const PkgName: string;
       IgnorePackage: TLazPackage): boolean;
@@ -344,6 +346,33 @@ begin
   for i:=0 to Cnt-1 do begin
     Result:=Packages[i].FindPkgFile(TheFilename,ResolveLinks);
     if Result<>nil then exit;
+  end;
+  Result:=nil;
+end;
+
+function TLazPackageGraph.FindPackageWithFilename(const TheFilename: string;
+  ResolveLinks: boolean): TLazPackage;
+var
+  Cnt: Integer;
+  i: Integer;
+  AFilename: string;
+begin
+  Cnt:=Count;
+  AFilename:=TheFilename;
+  if ResolveLinks then begin
+    AFilename:=ReadAllLinks(TheFilename,false);
+    if AFilename='' then AFilename:=TheFilename;
+  end;
+  for i:=0 to Cnt-1 do begin
+    Result:=Packages[i];
+    if Result.IsVirtual then continue;
+    if ResolveLinks then begin
+      if CompareFilenames(TheFilename,Result.GetResolvedFilename)=0 then
+        exit;
+    end else begin
+      if CompareFilenames(TheFilename,Result.Filename)=0 then
+        exit;
+    end;
   end;
   Result:=nil;
 end;

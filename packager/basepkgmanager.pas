@@ -51,21 +51,29 @@ type
     psfSaveAs
     );
   TPkgSaveFlags = set of TPkgSaveFlag;
+  
+  TPkgOpenFlag = (
+    pofAddToRecent
+    );
+  TPkgOpenFlags = set of TPkgOpenFlag;
 
   TBasePkgManager = class(TComponent)
   public
     procedure ConnectMainBarEvents; virtual; abstract;
     procedure ConnectSourceNotebookEvents; virtual; abstract;
     procedure SetupMainBarShortCuts; virtual; abstract;
-    
+    procedure SetRecentPackagesMenu; virtual; abstract;
+
     procedure LoadInstalledPackages; virtual; abstract;
     
     function ShowConfigureCustomComponents: TModalResult; virtual; abstract;
     function DoNewPackage: TModalResult; virtual; abstract;
     function DoShowOpenInstalledPckDlg: TModalResult; virtual; abstract;
     function DoOpenPackage(APackage: TLazPackage): TModalResult; virtual; abstract;
+    function DoOpenPackageFile(AFilename: string;
+                         Flags: TPkgOpenFlags): TModalResult; virtual; abstract;
     function DoSavePackage(APackage: TLazPackage;
-                           Flags: TPkgSaveFlags): TModalResult; virtual; abstract;
+                          Flags: TPkgSaveFlags): TModalResult; virtual; abstract;
   end;
 
 var

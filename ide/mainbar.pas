@@ -281,7 +281,8 @@ type
     
     // components menu
     itmCompsConfigCustomComps: TMenuItem;
-    itmOpenInstalledPkg: TMenuItem;
+    itmPkgOpenInstalled: TMenuItem;
+    itmPkgOpenRecent: TMenuItem;
 
     // tools menu
     itmToolConfigure: TMenuItem;
@@ -355,8 +356,13 @@ type
     function DoCheckFilesOnDisk: TModalResult; virtual; abstract;
     function DoCheckAmbigiousSources(const AFilename: string;
       Compiling: boolean): TModalResult;
-      
+    function DoBackupFile(const Filename:string;
+      IsPartOfProject:boolean): TModalResult; virtual; abstract;
+
     procedure UpdateWindowsMenu; virtual;
+    procedure SaveEnvironment; virtual; abstract;
+    procedure SetRecentSubMenu(ParentMenuItem: TMenuItem; FileList: TStringList;
+       OnClickEvent: TNotifyEvent); virtual;
     procedure SaveSourceEditorChangesToCodeCache(PageIndex: integer); virtual; abstract;
   end;
 
@@ -1074,11 +1080,18 @@ begin
   mnuComponents.Add(CreateMenuSeparator);
   {$ENDIF}
 
-  itmOpenInstalledPkg := TMenuItem.Create(Self);
-  itmOpenInstalledPkg.Name:='itmOpenInstalledPkg';
-  itmOpenInstalledPkg.Caption := lisMenuOpenInstalledPkg;
+  itmPkgOpenInstalled := TMenuItem.Create(Self);
+  itmPkgOpenInstalled.Name:='itmPkgOpenInstalled';
+  itmPkgOpenInstalled.Caption := lisMenuOpenInstalledPkg;
   {$IFDEF EnablePkgs}
-  mnuComponents.Add(itmOpenInstalledPkg);
+  mnuComponents.Add(itmPkgOpenInstalled);
+  {$ENDIF}
+
+  itmPkgOpenRecent := TMenuItem.Create(Self);
+  itmPkgOpenRecent.Name:='itmPkgOpenRecent';
+  itmPkgOpenRecent.Caption := lisMenuOpenRecentPkg;
+  {$IFDEF EnablePkgs}
+  mnuComponents.Add(itmPkgOpenRecent);
   {$ENDIF}
 end;
 
@@ -1261,7 +1274,6 @@ begin
     itmProjectNew.ShortCut:=CommandToShortCut(ecNewProject);
     itmProjectNewFromFile.ShortCut:=CommandToShortCut(ecNewProjectFromFile);
     itmProjectOpen.ShortCut:=CommandToShortCut(ecOpenProject);
-    //itmProjectRecentOpen.ShortCut:=CommandToShortCut(ec);
     itmProjectSave.ShortCut:=CommandToShortCut(ecSaveProject);
     itmProjectSaveAs.ShortCut:=CommandToShortCut(ecSaveProjectAs);
     itmProjectPublish.ShortCut:=CommandToShortCut(ecPublishProject);
@@ -1284,7 +1296,7 @@ begin
 
     // components menu
     itmCompsConfigCustomComps.ShortCut:=CommandToShortCut(ecConfigCustomComps);
-    itmOpenInstalledPkg.ShortCut:=CommandToShortCut(ecOpenInstalledPkg);
+    itmPkgOpenInstalled.ShortCut:=CommandToShortCut(ecOpenInstalledPkg);
 
     // tools menu
     itmToolConfigure.ShortCut:=CommandToShortCut(ecExtToolSettings);
@@ -1458,6 +1470,29 @@ begin
     mnuWindows.Items[mnuWindows.Count-1].Free;
   // clean up
   WindowsList.Free;
+end;
+
+procedure TMainIDEBar.SetRecentSubMenu(ParentMenuItem: TMenuItem;
+  FileList: TStringList; OnClickEvent: TNotifyEvent);
+var i: integer;
+  AMenuItem: TMenuItem;
+begin
+  // create enough menuitems
+  while ParentMenuItem.Count<FileList.Count do begin
+    AMenuItem:=TMenuItem.Create(Self);
+    AMenuItem.Name:=
+      ParentMenuItem.Name+'Recent'+IntToStr(ParentMenuItem.Count);
+    ParentMenuItem.Add(AMenuItem);
+  end;
+  // delete unused menuitems
+  while ParentMenuItem.Count>FileList.Count do
+    ParentMenuItem.Items[ParentMenuItem.Count-1].Free;
+  // set captions and event
+  for i:=0 to FileList.Count-1 do begin
+    AMenuItem:=ParentMenuItem.Items[i];
+    AMenuItem.Caption := FileList[i];
+    AMenuItem.OnClick := OnClickEvent;
+  end;
 end;
 
 

@@ -316,6 +316,7 @@ type
     procedure CheckInnerDependencies;
     procedure ShortenFilename(var ExpandedFilename: string);
     procedure LongenFilename(var AFilename: string);
+    function GetResolvedFilename: string;
     procedure IterateComponentClasses(Event: TIterateComponentClassesEvent;
                                       WithUsedPackages: boolean);
     procedure ConsistencyCheck;
@@ -1296,6 +1297,12 @@ begin
   if not HasDirectory then exit;
   if not FilenameIsAbsolute(AFilename) then
     AFilename:=TrimFilename(Directory+AFilename);
+end;
+
+function TLazPackage.GetResolvedFilename: string;
+begin
+  Result:=ReadAllLinks(FFilename,false);
+  if Result='' then Result:=FFilename;
 end;
 
 procedure TLazPackage.IterateComponentClasses(

@@ -1976,7 +1976,7 @@ begin
   try
     XMLConfig:=GetXMLCfg;
 
-    XMLConfig.SetValue('ObjectInspectorOptions/Bounds/Valid',FSaveBounds);
+    XMLConfig.SetDeleteValue('ObjectInspectorOptions/Bounds/Valid',FSaveBounds,true);
     if FSaveBounds then begin
       XMLConfig.SetValue('ObjectInspectorOptions/Bounds/Left',FLeft);
       XMLConfig.SetValue('ObjectInspectorOptions/Bounds/Top',FTop);
@@ -1989,12 +1989,12 @@ begin
     XMLConfig.SetValue(
        'ObjectInspectorOptions/Bounds/EventGridSplitterX'
        ,FEventGridSplitterX);
-    XMLConfig.SetValue(
-       'ObjectInspectorOptions/Bounds/DefaultItemHeight',FDefaultItemHeight);
+    XMLConfig.SetDeleteValue(
+       'ObjectInspectorOptions/Bounds/DefaultItemHeight',FDefaultItemHeight,20);
 
-    XMLConfig.SetValue('ObjectInspectorOptions/GridBackgroundColor'
-       ,FGridBackgroundColor);
-    XMLConfig.SetValue('ObjectInspectorOptions/ShowHints',FShowHints);
+    XMLConfig.SetDeleteValue('ObjectInspectorOptions/GridBackgroundColor'
+       ,FGridBackgroundColor,clBackground);
+    XMLConfig.SetDeleteValue('ObjectInspectorOptions/ShowHints',FShowHints,true);
 
     if XMLConfig<>CustomXMLCfg then XMLConfig.Flush;
   except

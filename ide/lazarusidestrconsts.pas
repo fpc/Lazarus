@@ -207,6 +207,7 @@ resourcestring
   
   lisMenuConfigCustomComps = 'Configure custom components';
   lisMenuOpenInstalledPkg = 'Open installed package';
+  lisMenuOpenRecentPkg = 'Open recent package';
 
   lisMenuSettings = 'Configure custom tools ...';
   lisMenuQuickSyntaxCheck = 'Quick syntax check';
