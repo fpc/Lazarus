@@ -1868,6 +1868,7 @@ procedure TPropertyEditor.PropDrawValue(ACanvas:TCanvas; const ARect:TRect;
 var
   Style : TTextStyle;
 begin
+  FillChar(Style,SizeOf(Style),0);
   With Style do begin
     Alignment := taLeftJustify;
     Layout := tlCenter;
@@ -1876,6 +1877,7 @@ begin
     ShowPrefix := True;
     WordBreak := False;
     SingleLine := True;
+    SystemFont := true;
   end;
   ACanvas.TextRect(ARect, 3,0,GetVisualValue, Style);
 end;
