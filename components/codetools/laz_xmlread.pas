@@ -1307,10 +1307,13 @@ begin
   buf[f.Size] := #0;
   
   reader := TXMLReader.Create;
-  reader.ProcessXML(buf, AFilename);
-  FreeMem(buf, f.Size + 1);
-  ADoc := reader.doc;
-  reader.Free;
+  try
+    reader.ProcessXML(buf, AFilename);
+  finally
+    FreeMem(buf, f.Size + 1);
+    ADoc := reader.doc;
+    reader.Free;
+  end;
 end;
 
 procedure ReadXMLFile(var ADoc: TXMLDocument; var f: TStream);
@@ -1407,6 +1410,9 @@ end.
 
 {
   $Log$
+  Revision 1.14  2004/12/17 14:41:41  vincents
+  fixed memleak after parsing error.
+
   Revision 1.13  2004/10/28 09:38:16  mattias
   fixed COPYING.modifiedLGPL links
 
