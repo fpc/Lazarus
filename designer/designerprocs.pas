@@ -37,7 +37,7 @@ uses
 
 type
   TDesignerDCFlag = (ddcDCOriginValid, ddcFormOriginValid,
-    ddcFormClientOriginValid);
+    ddcFormClientOriginValid, ddcSizeValid);
   TDesignerDCFlags = set of TDesignerDCFlag;
 
   TDesignerDeviceContext = class
@@ -49,8 +49,10 @@ type
     FFormClientOrigin: TPoint; // Form client origin on desktop
     FFormOrigin: TPoint; // DC origin relative to designer Form
     FSavedDC: HDC;
+    FDcSize: TPoint;
     FForm: TCustomForm;
     function GetDCOrigin: TPoint;
+    function GetDCSize: TPoint;
     function GetFormClientOrigin: TPoint;
     function GetFormOrigin: TPoint;
   public
@@ -60,6 +62,7 @@ type
     procedure Clear;
     procedure Save;
     procedure Restore;
+    function RectVisible(ALeft, ATop, ARight, ABottom: integer): boolean;
     property Canvas: TCanvas read FCanvas;
     property DC: HDC read FDC;
     property Form: TCustomForm read FForm;
@@ -68,6 +71,7 @@ type
     property DCOrigin: TPoint read GetDCOrigin; // DC origin on Desktop
     property FormClientOrigin: TPoint
       read GetFormClientOrigin;// Form Client Origin on desktop
+    property DCSize: TPoint read GetDCSize;
   end;
 
 const
@@ -253,6 +257,15 @@ begin
   Result:=FDCOrigin;
 end;
 
+function TDesignerDeviceContext.GetDCSize: TPoint;
+begin
+  if not (ddcSizeValid in FFlags) then begin
+    GetDeviceSize(FDC,FDCSize);
+    Include(FFlags,ddcSizeValid);
+  end;
+  Result:=FDCSize;
+end;
+
 function TDesignerDeviceContext.GetFormClientOrigin: TPoint;
 begin
   if not (ddcFormClientOriginValid in FFlags) then begin
@@ -299,7 +312,8 @@ procedure TDesignerDeviceContext.Clear;
 begin
   Restore;
   FDC:=0;
-  FFlags:=FFlags-[ddcFormOriginValid,ddcFormClientOriginValid,ddcDCOriginValid];
+  FFlags:=FFlags-[ddcFormOriginValid,ddcFormClientOriginValid,ddcDCOriginValid,
+                  ddcSizeValid];
 end;
 
 procedure TDesignerDeviceContext.Save;
@@ -316,6 +330,23 @@ begin
     RestoreDC(DC,FSavedDC);
     FSavedDC:=0;
     FCanvas.Handle:=0;
+  end;
+end;
+
+function TDesignerDeviceContext.RectVisible(ALeft, ATop, ARight,
+  ABottom: integer): boolean;
+// coordinates must be relative to DC origin
+var
+  ASize: TPoint;
+begin
+  if (ARight<0) or (ABottom<0) then
+    Result:=false
+  else begin
+    ASize:=DCSize;
+    if (ALeft>=ASize.X) or (ATop>=ASize.Y) then
+      Result:=false
+    else
+      Result:=true;
   end;
 end;
 

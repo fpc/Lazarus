@@ -274,7 +274,8 @@ type
     property MarkerColor: TColor read FMarkerColor write FMarkerColor;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     procedure DrawMarker(AComponent:TComponent; DC: TDesignerDeviceContext);
-    procedure DrawMarkerAt(ACanvas: TCanvas; ALeft, ATop, AWidth, AHeight: integer);
+    procedure DrawMarkerAt(DC: TDesignerDeviceContext;
+      ALeft, ATop, AWidth, AHeight: integer);
     property ActiveGrabber:TGrabber read FActiveGrabber write SetActiveGrabber;
     
     property Left:integer read FLeft;
@@ -1301,10 +1302,26 @@ begin
 end;
 
 procedure TControlSelection.DrawGrabbers(DC: TDesignerDeviceContext);
-var OldBrushColor:TColor;
+var
+  OldBrushColor:TColor;
   g:TGrabIndex;
   Diff: TPoint;
-//  OldFormHandle: HDC;
+  RestoreBrush: boolean;
+  
+  procedure FillRect(RLeft,RTop,RRight,RBottom: integer);
+  begin
+    if not DC.RectVisible(RLeft,RTop,RRight,RBottom) then exit;
+    if not RestoreBrush then begin
+      DC.Save;
+      with DC.Canvas do begin
+        OldBrushColor:=Brush.Color;
+        Brush.Color:=FGrabberColor;
+      end;
+      RestoreBrush:=true;
+    end;
+    DC.Canvas.FillRect(Rect(RLeft,RTop,RRIght,RBottom));
+  end;
+  
 begin
   if (Count=0) or (FCustomForm=nil)
   or IsSelected(FCustomForm) then exit;
@@ -1315,35 +1332,47 @@ begin
    ,' DC=',Diff.X,',',Diff.Y
    ,' Grabber1=',FGrabbers[0].Left,',',FGrabbers[0].Top);}
 
-  DC.Save;
-  with DC.Canvas do begin
-    OldBrushColor:=Brush.Color;
-    Brush.Color:=FGrabberColor;
-    for g:=Low(TGrabIndex) to High(TGrabIndex) do
-      FillRect(Rect(
-         FGrabbers[g].Left-Diff.X
-        ,FGrabbers[g].Top-Diff.Y
-        ,FGrabbers[g].Left-Diff.X+FGrabbers[g].Width
-        ,FGrabbers[g].Top-Diff.Y+FGrabbers[g].Height
-      ));
-    Brush.Color:=OldbrushColor;
-  end;
+  RestoreBrush:=false;
+  for g:=Low(TGrabIndex) to High(TGrabIndex) do
+    FillRect(
+       FGrabbers[g].Left-Diff.X
+      ,FGrabbers[g].Top-Diff.Y
+      ,FGrabbers[g].Left-Diff.X+FGrabbers[g].Width
+      ,FGrabbers[g].Top-Diff.Y+FGrabbers[g].Height
+    );
+      
+  if RestoreBrush then
+    DC.Canvas.Brush.Color:=OldBrushColor;
 end;
 
-procedure TControlSelection.DrawMarkerAt(ACanvas: TCanvas;
+procedure TControlSelection.DrawMarkerAt(DC: TDesignerDeviceContext;
   ALeft, ATop, AWidth, AHeight: integer);
-var OldBrushColor:TColor;
-begin
-  with ACanvas do begin
-    OldBrushColor:=Brush.Color;
-    Brush.Color:=FMarkerColor;
-    FillRect(Rect(ALeft,ATop,ALeft+MarkerSize,ATop+MarkerSize));
-    FillRect(Rect(ALeft,ATop+AHeight-MarkerSize,ALeft+MarkerSize,ATop+AHeight));
-    FillRect(Rect(ALeft+AWidth-MarkerSize,ATop,ALeft+AWidth,ATop+MarkerSize));
-    FillRect(Rect(ALeft+AWidth-MarkerSize,ATop+AHeight-MarkerSize
-                 ,ALeft+AWidth,ATop+AHeight));
-    Brush.Color:=OldbrushColor;
+var
+  OldBrushColor: TColor;
+  RestoreBrush: boolean;
+  
+  procedure FillRect(RLeft, RTop, RRight, RBottom: integer);
+  begin
+    if not DC.RectVisible(RLeft, RTop, RRight, RBottom) then exit;
+    if not RestoreBrush then begin
+      DC.Save;
+      OldBrushColor:=DC.Canvas.Brush.Color;
+      DC.Canvas.Brush.Color:=FMarkerColor;
+      RestoreBrush:=true;
+    end;
+    DC.Canvas.FillRect(Rect(RLeft,RTop,RRight,RBottom));
   end;
+  
+begin
+  RestoreBrush:=false;
+writeln('TControlSelection.DrawMarkerAt A ');
+  FillRect(ALeft,ATop,ALeft+MarkerSize,ATop+MarkerSize);
+  FillRect(ALeft,ATop+AHeight-MarkerSize,ALeft+MarkerSize,ATop+AHeight);
+  FillRect(ALeft+AWidth-MarkerSize,ATop,ALeft+AWidth,ATop+MarkerSize);
+  FillRect(ALeft+AWidth-MarkerSize,ATop+AHeight-MarkerSize
+               ,ALeft+AWidth,ATop+AHeight);
+  if RestoreBrush then
+    DC.Canvas.Brush.Color:=OldBrushColor;
 end;
 
 procedure TControlSelection.DrawMarker(AComponent: TComponent;
@@ -1355,7 +1384,6 @@ begin
   if (Count<2)
   or (FCustomForm=nil)
   or (AComponent.Owner<>DC.Form)
-  or (AComponent is TCustomForm)
   or (not IsSelected(AComponent)) then exit;
   
   GetComponentBounds(AComponent,CompLeft,CompTop,CompWidth,CompHeight);
@@ -1364,15 +1392,12 @@ begin
   CompLeft:=CompLeft+CompOrigin.X-DCOrigin.X;
   CompTop:=CompTop+CompOrigin.Y-DCOrigin.Y;
 
-  DC.Save;
-{
-writeln('DrawMarker A ',FCustomForm.Name
-    ,' Control=',AControl.Name,',',AControlOrigin.X,',',AControlOrigin.Y
-    ,' DCxy=',DCOrigin.x,',',DCOrigin.y
-    ,' DC=',Hexstr(FCustomForm.Canvas.Handle,8),' ',HexStr(Cardinal(Pointer(FCustomForm)),8)
-    );
-}
-  DrawMarkerAt(DC.Canvas,CompLeft,CompTop,CompWidth,CompHeight);
+{writeln('DrawMarker A ',FCustomForm.Name
+    ,' Component',AComponent.Name,',',CompLeft,',',CompLeft
+    ,' DCOrigin=',DCOrigin.X,',',DCOrigin.Y
+    );}
+
+  DrawMarkerAt(DC,CompLeft,CompTop,CompWidth,CompHeight);
 end;
 
 procedure TControlSelection.DrawRubberband(DC: TDesignerDeviceContext);
@@ -1825,18 +1850,30 @@ end;
 procedure TControlSelection.DrawGuideLines(DC: TDesignerDeviceContext);
 var
   DCOrigin: TPoint;
+  OldPenColor:TColor;
+  RestorePen: boolean;
 
   procedure DrawLine(ARect: TRect; AColor: TColor);
   begin
+    dec(ARect.Left,DCOrigin.X);
+    dec(ARect.Top,DCOrigin.Y);
+    dec(ARect.Right,DCOrigin.X);
+    dec(ARect.Bottom,DCOrigin.Y);
+    if not DC.RectVisible(ARect.Left,ARect.Top,ARect.Right,ARect.Bottom) then
+      exit;
+    if not RestorePen then begin
+      DC.Save;
+      OldPenColor:=DC.Canvas.Pen.Color;
+      RestorePen:=true;
+    end;
     with DC.Canvas do begin
       Pen.Color:=AColor;
-      MoveTo(ARect.Left-DCOrigin.X,ARect.Top-DCOrigin.Y);
-      LineTo(ARect.Right-DCOrigin.X,ARect.Bottom-DCOrigin.Y);
+      MoveTo(ARect.Left,ARect.Top);
+      LineTo(ARect.Right,ARect.Bottom);
     end;
   end;
 
 var
-  OldPenColor:TColor;
   LeftGuideLineExists, RightGuideLineExists,
   TopGuideLineExists, BottomGuideLineExists: boolean;
   LeftGuideLine, RightGuideLine, TopGuideLine, BottomGuideLine: TRect;
@@ -1849,6 +1886,8 @@ begin
   if (not LeftGuideLineExists) and (not RightGuideLineExists)
   and (not TopGuideLineExists) and (not BottomGuideLineExists)
   then exit;
+  
+  RestorePen:=false;
   
   DC.Save;
   DCOrigin:=DC.FormOrigin;
@@ -1865,7 +1904,9 @@ begin
   // draw left guideline
   if LeftGuideLineExists then
     DrawLine(LeftGuideLine,EnvironmentOptions.GuideLineColorLeftTop);
-  DC.Canvas.Pen.Color:=OldPenColor;
+    
+  if RestorePen then
+    DC.Canvas.Pen.Color:=OldPenColor;
 end;
 
 procedure TControlSelection.Sort(SortProc: TSelectionSortCompare);
