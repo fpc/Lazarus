@@ -229,6 +229,8 @@ var
   DestFile: TStringList;
   Node: TAVLTreeNode;
   MsgItem: PMsgItem;
+  Save: Boolean;
+  OldDestFile: TStringList;
 begin
   //writeln(Prefix,'Saving ',Filename,' ...');
   DestFile:=TStringList.Create;
@@ -244,7 +246,15 @@ begin
     WriteMessageItem(MsgItem,DestFile);
     Node:=PoFile.Tree.FindSuccessor(Node);
   end;
-  DestFile.SaveToFile(Filename);
+  Save:=true;
+  if FileExists(Filename) then begin
+    OldDestFile:=TStringList.Create;
+    OldDestFile.LoadFromFile(Filename);
+    if OldDestFile.Text=DestFile.Text then Save:=false;
+    OldDestFile.Free;
+  end;
+  if Save then
+    DestFile.SaveToFile(Filename);
   DestFile.Free;
 end;
 
