@@ -696,7 +696,7 @@ end;
 {------------------------------------------------------------------------------}
 {  TWinControl IsControlMouseMsg                                               }
 {------------------------------------------------------------------------------}
-function TWinControl.IsControlMouseMsg(var Message : TLMMouse) : Boolean;
+function TWinControl.IsControlMouseMsg(var TheMessage : TLMMouse) : Boolean;
 var
   Control : TControl;
   P : TPoint;
@@ -709,14 +709,15 @@ begin
     and (CaptureControl.Parent = Self) 
     then Control := CaptureControl;
   end
-  else Control := ControlAtPos(SmallPointtoPoint(Message.Pos),False,True,False);
+  else Control := ControlAtPos(SmallPointtoPoint(TheMessage.Pos),
+                               False,True,False);
 
   Result := False;
   if Control <> nil then
   begin
     // map mouse coordinates to control
-    P.X := Message.XPos - Control.Left;
-    P.Y := Message.YPos - Control.Top;
+    P.X := TheMessage.XPos - Control.Left;
+    P.Y := TheMessage.YPos - Control.Top;
     if (Control is TWinControl) and TWinControl(Control).HandleAllocated then
     begin
       // map coordinates to client area of control
@@ -725,27 +726,28 @@ begin
       dec(P.Y,ClientBounds.Top);
       {$IFDEF VerboseMouseBugfix}
       writeln('TWinControl.IsControlMouseMsg ',Name,' -> ',Control.Name,
-      ' MsgPos=',Message.Pos.X,',',Message.Pos.Y,
+      ' MsgPos=',TheMessage.Pos.X,',',TheMessage.Pos.Y,
       ' Control=',Control.Left,',',Control.Top,
       ' ClientBounds=',ClientBounds.Left,',',ClientBounds.Top,
       ' P=',P.X,',',P.Y
       );
       {$ENDIF}
     end;
-    Control.Perform(Message.Msg, Message.Keys, LongInt(PointtoSmallPoint(P)));
+    Control.Perform(TheMessage.Msg, TheMessage.Keys,
+                    LongInt(PointtoSmallPoint(P)));
     Result := True;
   end;
 end;
 
-procedure TWinControl.PaintHandler(var Message: TLMPaint);
+procedure TWinControl.PaintHandler(var TheMessage: TLMPaint);
 var
   I, Clip, SaveIndex: Integer;
   DC: HDC;
   PS: TPaintStruct; //defined in LCLLinux.pp
 begin
 //writeln('[TWinControl.PaintHandler] ',Name,':',ClassName,'  DC=',HexStr(Message.DC,8));
-  Assert(False, Format('Trace:> [TWinControl.PaintHandler] %s --> Msg.DC: 0x%x', [ClassName, Message.DC]));
-  DC := Message.DC;
+  Assert(False, Format('Trace:> [TWinControl.PaintHandler] %s --> Msg.DC: 0x%x', [ClassName, TheMessage.DC]));
+  DC := TheMessage.DC;
   if DC = 0 then DC := BeginPaint(Handle, PS);
   try
     if FControls = nil then PaintWindow(DC) else
@@ -766,7 +768,7 @@ begin
     end;
     PaintControls(DC, nil);
   finally
-    if Message.DC = 0 then EndPaint(Handle, PS);
+    if TheMessage.DC = 0 then EndPaint(Handle, PS);
   end;
   Assert(False, Format('Trace:< [TWinControl.PaintHandler] %s', [ClassName]));
 //writeln('[TWinControl.PaintHandler] END  ',Name,':',ClassName,'  DC=',HexStr(Message.DC,8));
@@ -2291,6 +2293,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.74  2002/06/21 15:41:56  lazarus
+  MG: moved RectVisible, ExcludeClipRect and IntersectClipRect to interface dependent functions
+
   Revision 1.73  2002/06/19 19:46:09  lazarus
   MG: Form Editing: snapping, guidelines, modified on move/resize, creating components in csDesigning, ...
 
