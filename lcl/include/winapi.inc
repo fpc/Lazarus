@@ -409,12 +409,10 @@ begin
   Result := InterfaceObject.GetWindowRect(Handle, Rect);
 end;
 
-{$IFDEF ClientRectBugFix}
 Function GetWindowSize(Handle : hwnd; var Width, Height: integer): boolean;
 begin
   Result := InterfaceObject.GetWindowSize(Handle, Width, Height);
 end;
-{$ENDIF}
 
 Function GetWindowOrgEx(dc : hdc; var P : TPoint): Integer;
 begin
@@ -1191,6 +1189,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.42  2002/08/17 15:45:32  lazarus
+  MG: removed ClientRectBugfix defines
+
   Revision 1.41  2002/08/15 15:46:49  lazarus
   MG: added changes from Andrew (Clipping)
 

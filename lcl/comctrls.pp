@@ -34,7 +34,6 @@ unit ComCtrls;
 {$mode objfpc}
 {$H+}
 
-{$DEFINE ClientRectBugFix}
 
 interface
 
@@ -1512,12 +1511,7 @@ const
   ButtonStyles: array[TToolButtonStyle] of Word = (TBSTYLE_BUTTON, TBSTYLE_CHECK,
     TBSTYLE_DROPDOWN, TBSTYLE_SEP, TBSTYLE_SEP);
 
-  {$IFDEF ClientRectBugFix}
   ScrollBarWidth=0;
-  {$ELSE}
-  // workaround till clientwidth/height is working correctly with scrollbars
-  ScrollBarWidth=19;
-  {$ENDIF}
 
 { Toolbar menu support }
 
@@ -1564,6 +1558,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.37  2002/08/17 15:45:31  lazarus
+  MG: removed ClientRectBugfix defines
+
   Revision 1.36  2002/05/28 14:58:29  lazarus
   MG: added scrollbars for TListView
 

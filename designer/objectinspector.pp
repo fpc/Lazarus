@@ -43,7 +43,6 @@ uses
   LCLLinux, LMessages, Controls, ComCtrls, ExtCtrls, PropEdits, TypInfo,
   Messages, LResources, Laz_XMLCfg, Menus, Dialogs;
 
-{$DEFINE ClientRectBugFix}
 
 type
   EObjectInspectorException = class(Exception);
@@ -318,12 +317,7 @@ const
 implementation
 
 const
-  {$IFDEF ClientRectBugFix}
   ScrollBarWidth=0;
-  {$ELSE}
-  // workaround till clientwidth/height is working correctly with scrollbars
-  ScrollBarWidth=19;
-  {$ENDIF}
 
 { TOIPropertyGrid }
 

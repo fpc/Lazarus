@@ -35,7 +35,6 @@ unit StdCtrls;
 
 interface
 
-{$DEFINE ClientRectBugFix}
 
 uses
   VCLGlobals, Classes, SysUtils, Graphics, GraphType, LMessages, Controls,
@@ -122,10 +121,6 @@ type
 
   TCustomGroupBox = class (TWinControl) {class(TCustomControl) }
   protected
-    {$IFDEF ClientRectBugFix}
-    {$ELSE}
-    procedure AdjustClientRect(var Rect: TRect); override;
-    {$ENDIF}
   public
     constructor Create(AOwner : TComponent); Override;
   end;
@@ -594,6 +589,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.32  2002/08/17 15:45:32  lazarus
+  MG: removed ClientRectBugfix defines
+
   Revision 1.31  2002/07/23 07:40:51  lazarus
   MG: fixed get widget position for inherited gdkwindows
 

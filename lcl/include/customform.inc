@@ -400,25 +400,6 @@ begin
     end;
 end;
 
-{$IFDEF ClientRectBugFix}
-{$ELSE}
-{------------------------------------------------------------------------------
-  Method: TCustomForm.GetClientRect
-  Params:   none
-  Returns:  TRect
-
-  Calls user handler
- ------------------------------------------------------------------------------}
-Function TCustomForm.GetClientRect :TRect;
-Begin
-  SetRect(Result,0,0,0,0);
-  AdjustWindowRectEx(Result,GetWindowLong(Handle,GWL_STYLE),Menu <> nil
-      ,GetWindowLong(Handle,GWL_EXSTYLE));
-  SetRect(Result,0,0, Width - Result.Right + Result.Left
-      , Height - Result.Bottom + Result.Top);
-end;
-{$ENDIF}
-
 {------------------------------------------------------------------------------
   Method: TCustomForm.Paint
   Params:   none
@@ -1044,6 +1025,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.50  2002/08/17 15:45:32  lazarus
+  MG: removed ClientRectBugfix defines
+
   Revision 1.49  2002/07/05 09:09:20  lazarus
   MG: fixed TCustomForm.ShowModal reacting to ModalResult
 

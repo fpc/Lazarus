@@ -21,9 +21,20 @@
 const
   DblClickTime = 250;//250 miliseconds or less between clicks is a double click
 
+type
+  TLastMouseClick = record
+    Down: boolean;
+    TheTime: TDateTime;
+    Component: TComponent;
+  end;
+
+const
+  EmptyLastMouseClick: TLastMouseClick =
+    (Down: false; TheTime: -1; Component: nil);
+
+
 var
-  LMouseButtonDown,MMouseButtonDown,RMouseButtonDown : Boolean;  //used to track the mouse buttons
-  LLastClick, RLastClick, MLastClick : TDateTime;
+  LastLeft, LastMiddle, LastRight: TLastMouseClick;
   LastFileSelectRow : gint;
 
 
@@ -612,24 +623,22 @@ var
   HiddenLCLObject: TObject;
 { $DEFINE VerboseMouseBugfix}
 
-  function CheckMouseButtonDown(var ButtonDown: boolean;
-    var LastClick: TDateTime;
+  function CheckMouseButtonDown(var LastMouse: TLastMouseClick;
     BtnKey, MsgNormal, MsgDouble, MsgTriple: longint): boolean;
   begin
-    if (ButtonDown) and
-      (not ((Event^.theType = gdk_2button_press)
-         or (Event^.theType = gdk_3button_press)))
+    if (LastMouse.Down) and
+      (not (Event^.theType in [gdk_2button_press,gdk_3button_press]))
     then begin
       Result:=false;
       Exit;
     end;
 
     MessI.Keys := MessI.Keys or BtnKey;
-    if ((now - LLastClick) <= ((1/86400)*(DblClickTime/1000)))
+    if ((now - LastMouse.TheTime) <= ((1/86400)*(DblClickTime/1000)))
     and (not (Event^.theType = gdk_3button_press))
     then
       Event^.theType := gdk_2Button_press;
-    LLastClick := Now;
+    LastMouse.TheTime := Now;
 
     if event^.thetype = gdk_button_press then
       MessI.Msg := MsgNormal
@@ -637,16 +646,17 @@ var
     if event^.thetype = gdk_2button_press then
     begin
       MessI.Msg := MsgDouble;
-      LLastClick := -1;
+      LastMouse.TheTime := -1;
     end
     else
     if event^.thetype = gdk_3button_press then
     begin
       MessI.Msg := MsgTriple;
-      LLastClick := -1;
+      LastMouse.TheTime := -1;
     end;
 
-    ButtonDown := True;
+    LastMouse.Down := True;
+    LastMouse.Component:=TComponent(Data);
     Result:=true;
   end;
 
@@ -727,15 +737,15 @@ begin
     MessI.Keys := 0;
     case event^.Button of
     
-    1: if not CheckMouseButtonDown(LMouseButtonDown, LLastClick,
+    1: if not CheckMouseButtonDown(LastLeft,
               MK_LBUTTON, LM_LBUTTONDOWN, LM_LBUTTONDBLCLK, LM_LBUTTONTRIPLECLK)
        then exit;
 
-    2: if not CheckMouseButtonDown(MMouseButtonDown, MLastClick,
+    2: if not CheckMouseButtonDown(LastMiddle,
               MK_MBUTTON, LM_MBUTTONDOWN, LM_MBUTTONDBLCLK, LM_MBUTTONTRIPLECLK)
        then exit;
 
-    3: if not CheckMouseButtonDown(RMouseButtonDown, RLastClick,
+    3: if not CheckMouseButtonDown(LastRight,
               MK_RBUTTON, LM_RBUTTONDOWN, LM_RBUTTONDBLCLK, LM_RBUTTONTRIPLECLK)
        then exit;
 
@@ -796,13 +806,28 @@ var
   ShiftState: TShiftState;
   MappedXY: TPoint;
   HiddenLCLObject: TObject;
+  
+  function CheckMouseButtonUp(var LastMouse: TLastMouseClick;
+    MsgUp: integer): boolean;
+  begin
+    if not (LastMouse.Down) then
+      Result:=false
+    else
+    begin
+      MessI.Msg := MsgUp;
+      LastMouse.Down := False;
+      Result:=true;
+    end;
+    LastMouse.Component:=nil;
+  end;
+  
 begin
   Result:=true;
 
   {$IFDEF VerboseMouseBugfix}
   writeln('[gtkMouseBtnRelease] A ',
     TControl(Data).Name,':',TObject(Data).ClassName,' ',
-    Trunc(Event^.X),',',Trunc(Event^.Y));
+    Trunc(Event^.X),',',Trunc(Event^.Y),' Btn=',event^.Button);
   {$ENDIF}
 
   //writeln('EEE1 MouseRelease Widget=',HexStr(Cardinal(Widget),8),
@@ -818,12 +843,6 @@ begin
     end;
   end;
   
-  {$IFDEF VerboseMouseBugfix}
-  writeln('[gtkMouseBtnRelease] ',
-    TControl(Data).Name,':',TObject(Data).ClassName,' ',
-    Trunc(Event^.X),',',Trunc(Event^.Y));
-  {$ENDIF}
-
   if csDesigning in TControl(Data).ComponentState then begin
     // stop the signal, so that the widget does not auto react
     if TControl(Data).FCompStyle<>csNotebook then
@@ -838,31 +857,13 @@ begin
 
   case event^.Button of
   1:
-    if not(LMouseButtonDown) then
-      Exit
-    else
-    begin
-      MessI.Msg := LM_LBUTTONUP;
-      LMouseButtonDown := False;
-    end;
-    
+    if not CheckMouseButtonUp(LastLeft,LM_LBUTTONUP) then Exit;
+
   2:
-    if not(MMouseButtonDown) then
-      Exit
-    else
-    begin
-      MessI.Msg := LM_MBUTTONUP;
-      MMouseButtonDown := False;
-    end;
+    if not CheckMouseButtonUp(LastMiddle,LM_MBUTTONUP) then Exit;
 
   3:
-    if not(RMouseButtonDown) then
-      Exit
-    else
-    begin
-      MessI.Msg := LM_RBUTTONUP;
-      RMouseButtonDown := False;
-    end;
+    if not CheckMouseButtonUp(LastRight,LM_RBUTTONUP) then Exit;
 
   else
     begin
@@ -2142,6 +2143,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.99  2002/08/17 15:45:33  lazarus
+  MG: removed ClientRectBugfix defines
+
   Revision 1.98  2002/08/17 07:57:05  lazarus
   MG: added TPopupMenu.OnPopup and SourceEditor PopupMenu checks
 

@@ -110,6 +110,7 @@ begin
     // create as many TRadioButton as needed
     while (FButtonList.Count<FItems.Count) do begin
       Temp := TRadioButton.Create (self);
+      Temp.Name:='RadioButton'+IntToStr(FButtonList.Count);
       Temp.Parent := Self;
       Temp.OnClick := @Clicked;
       FButtonList.Add(Temp);
@@ -335,6 +336,9 @@ end;
 
 {
   $Log$
+  Revision 1.12  2002/08/17 15:45:32  lazarus
+  MG: removed ClientRectBugfix defines
+
   Revision 1.11  2002/05/13 14:47:00  lazarus
   MG: fixed client rectangles, TRadioGroup, RecreateWnd
 

@@ -2430,7 +2430,6 @@ begin
   ClientWidget := GetFixedWidget(Widget);
   if (ClientWidget <> nil) then
     Widget := ClientWidget;
-  {$IFDEF ClientRectBugFix}
   if (Widget <> nil) then begin
     ARect.Right:=Widget^.Allocation.Width;
     ARect.Bottom:=Widget^.Allocation.Height;
@@ -2438,14 +2437,6 @@ begin
     ARect.Right:=0;
     ARect.Bottom:=0;
   end;
-  {$ELSE}
-  if (Widget <> nil) and (Widget^.Window<>nil) then begin
-    gdk_window_get_size(Widget^.Window, @ARect.Right, @ARect.Bottom);
-  end else begin
-    ARect.Bottom:=0;
-    ARect.Right:=0;
-  end;
-  {$ENDIF}
   {$IFDEF VerboseGetClientRect}
   if ClientWidget<>nil then begin
     writeln('GetClientRect  Widget=',HexStr(Cardinal(handle),8),
@@ -3418,7 +3409,6 @@ begin
   end;
 end;
 
-{$IFDEF ClientRectBugFix}
 {------------------------------------------------------------------------------
   Function: GetWindowSize
   Params:  Handle : hwnd;
@@ -3436,7 +3426,6 @@ begin
   end else
     Result:=false;
 end;
-{$ENDIF}
 
 {------------------------------------------------------------------------------
   Function: HideCaret
@@ -5336,7 +5325,7 @@ var
   end;
 
   function ScaleBuffer(ScaleGC:PGDKGC) : Boolean;
-  {$Ifdef enable_gdkpixbuf}
+  {$Ifndef NoGdkPixbufLib}
   var
     ScaleSrc, ScaleDest : PGDKPixbuf;
     ShrinkWidth,
@@ -5374,7 +5363,7 @@ var
     gdk_pixbuf_render_pixmap_and_mask(ScaleDest,@Scale^.GDIPixmapObject, nil,0);
     GDK_Pixbuf_Unref(ScaleDest);
     Result := True;
-  {$Else}
+  {$Else not NoGdkPixbufLib}
   begin
     WriteLn('WARNING: [TgtkObject.StretchBlt] GDKPixbuf support has been disabled, no stretching is available!');
     Result := True;
@@ -5791,6 +5780,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.94  2002/08/17 15:45:34  lazarus
+  MG: removed ClientRectBugfix defines
+
   Revision 1.93  2002/08/15 15:46:50  lazarus
   MG: added changes from Andrew (Clipping)
 

@@ -63,7 +63,6 @@ interface
 
 uses
 {$IFDEF SYN_LAZARUS}
-  {$DEFINE ClientRectBugFix}
   LCLLinux,
   LCLType, GraphType,
 {$ELSE}
@@ -85,12 +84,7 @@ const
   ALPHA_LC = ['a'..'z'];
 
 {$IFDEF SYN_LAZARUS}
-{$IFDEF ClientRectBugFix}
 ScrollBarWidth=0;
-{$ELSE}
-// workaround till clientwidth/height is working correctly with scrollbars
-ScrollBarWidth=18;
-{$ENDIF}
 {$ENDIF}
 
 {$IFNDEF SYN_COMPILER_3_UP}                                           

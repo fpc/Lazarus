@@ -13,19 +13,6 @@
  *                                                                           *
  *****************************************************************************
 }
-{$IFDEF ClientRectBugFix}
-{$ELSE}
-{------------------------------------------------------------------------------}
-{  function TCustomGroupBox.AdjustClientRect                                   }
-{------------------------------------------------------------------------------}
-procedure TCustomGroupBox.AdjustClientRect(var Rect: TRect);
-begin
-  if HandleAllocated then
-    LCLLinux.GetClientRect(Handle,Rect)
-  else
-    inherited;
-end;
-{$ENDIF}
 
 {------------------------------------------------------------------------------}
 {  function TCustomGroupBox.Create                                             }
@@ -41,6 +28,9 @@ end;
 
 {
   $Log$
+  Revision 1.7  2002/08/17 15:45:32  lazarus
+  MG: removed ClientRectBugfix defines
+
   Revision 1.6  2002/05/10 06:05:51  lazarus
   MG: changed license to LGPL
 

@@ -97,9 +97,7 @@ function GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;  override;
 Function GetWindowLong(Handle : hwnd; int: Integer): Longint; override;
 Function GetWindowOrgEx(dc : hdc; var P: TPoint): Integer;  override;
 Function GetWindowRect(Handle : hwnd; var ARect: TRect): Integer; override;
-{$IFDEF ClientRectBugFix}
 Function GetWindowSize(Handle : hwnd; var Width, Height: integer): boolean; override;
-{$ENDIF}
 
 function HideCaret(hWnd: HWND): Boolean; override;
 
@@ -172,6 +170,9 @@ Function WindowFromPoint(Point : TPoint) : HWND; override;
 { =============================================================================
 
   $Log$
+  Revision 1.40  2002/08/17 15:45:36  lazarus
+  MG: removed ClientRectBugfix defines
+
   Revision 1.39  2002/08/15 15:46:50  lazarus
   MG: added changes from Andrew (Clipping)
 
