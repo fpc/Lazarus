@@ -3460,7 +3460,7 @@ var ActiveSrcEdit:TSourceEditor;
   ResourceCode, LFMCode: TCodeBuffer;
 begin
   {$IFDEF IDE_VERBOSE}
-  writeln('TMainIDE.DoSaveEditorFile A PageIndex=',PageIndex,' SaveAs=',sfSaveAs in Flags,' SaveToTestDir=',sfSaveToTestDir in Flags);
+  writeln('TMainIDE.DoSaveEditorFile A PageIndex=',PageIndex,' Flags=',SaveFlagsToString(Flags));
   {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
   Result:=mrCancel;
@@ -6892,6 +6892,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.369  2002/09/10 14:48:21  lazarus
+  MG: added SaveFlagNames
+
   Revision 1.368  2002/09/10 07:43:19  lazarus
   MG: fixed auto revert
 
