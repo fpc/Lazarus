@@ -471,6 +471,18 @@ type
     ObjectInspectorColorsGroupBox: TGroupBox;
     OIBackgroundColorLabel: TLabel;
     OIBackgroundColorButton: TColorButton;
+
+    OISubPropsColorLabel: TLabel;
+    OISubPropsColorButton: TColorButton;
+    OIReferencesColorLabel: TLabel;
+    OIReferencesColorButton: TColorButton;
+    OIValueColorLabel: TLabel;
+    OIValueColorButton: TColorButton;
+    OIDefaultValueColorLabel: TLabel;
+    OIDefaultValueColorButton: TColorButton;
+    OIPropNameColorLabel: TLabel;
+    OIPropNameColorButton: TColorButton;
+
     OIMiscGroupBox: TGroupBox;
     OIDefaultItemHeightSpinEdit: TSpinEdit;
     OIDefaultItemHeightLabel: TLabel;
@@ -538,8 +550,6 @@ type
     procedure GridGroupBoxResize(Sender: TObject);
     procedure GuideLinesGroupBoxResize(Sender: TObject);
     procedure LazarusDirGroupBoxResize(Sender: TObject);
-    procedure OIMiscGroupBoxResize(Sender: TObject);
-    procedure ObjectInspectorColorsGroupBoxResize(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
     procedure CancelButtonClick(Sender: TObject);
     procedure OnBackupPageResize(Sender: TObject);
@@ -566,6 +576,8 @@ type
     FOldFPCSourceDir: string;
     FOldMakeFilename: string;
     FOldTestDir: string;
+    function CreateColorItem(ATop:Integer; AParent:TWinControl;ACaption:String):TColorButton;
+
     procedure SetCategoryPage(const AValue: TEnvOptsDialogPage);
     procedure SetupFilesPage(Page: integer);
     procedure SetupDesktopPage(Page: integer);
@@ -2897,19 +2909,22 @@ begin
 end;
 
 procedure TEnvironmentOptionsDialog.ResizeObjectInspectorPage;
+var
+  HalfWidth:integer;
 begin
+  HalfWidth:=ClientWidth div 2;
   // object inspector
   with ObjectInspectorColorsGroupBox do begin
-    Left:=6;
+    Left:=5;
     Top:=2;
-    Width:=200;
-    Height:=55;
+    Width:= HalfWidth-15;
+    Height:=180;
   end;
 
   with OIMiscGroupBox do begin
-    Left:=ObjectInspectorColorsGroupBox.Left;
-    Top:=ObjectInspectorColorsGroupBox.Top+ObjectInspectorColorsGroupBox.Height+5;
-    Width:=200;
+    Left:=HalfWidth+5;
+    Top:=ObjectInspectorColorsGroupBox.Top;
+    Width:=HalfWidth-15;
     Height:=77;
   end;
 end;
@@ -3421,39 +3436,6 @@ begin
     SetBounds(x+1,0,w-2-x-1,LazarusDirComboBox.Height);
 end;
 
-procedure TEnvironmentOptionsDialog.OIMiscGroupBoxResize(Sender: TObject);
-begin
-  with OIDefaultItemHeightSpinEdit do begin
-    Left:=6;
-    Top:=4;
-    Width:=50;
-  end;
-
-  with OIDefaultItemHeightLabel do begin
-    Left:=OIDefaultItemHeightSpinEdit.Left+OIDefaultItemHeightSpinEdit.Width+5;
-    Top:=OIDefaultItemHeightSpinEdit.Top+2;
-    Width:=OIMiscGroupBox.ClientWidth-Left-5;
-  end;
-end;
-
-procedure TEnvironmentOptionsDialog.ObjectInspectorColorsGroupBoxResize(
-  Sender: TObject);
-begin
-  with OIBackgroundColorButton do begin
-    Left:=6;
-    Top:=6;
-    Width:=50;
-    Height:=25;
-  end;
-
-  with OIBackgroundColorLabel do begin
-    Left:=OIBackgroundColorButton.Left+OIBackgroundColorButton.Width+5;
-    Top:=OIBackgroundColorButton.Top;
-    Width:=Max(ObjectInspectorColorsGroupBox.ClientWidth-Left-5,10);
-    Height:=23;
-  end;
-end;
-
 procedure TEnvironmentOptionsDialog.OkButtonClick(Sender: TObject);
 begin
   if not CheckValues then exit;
@@ -3612,6 +3594,17 @@ begin
     // object inspector
     OIBackgroundColorButton.ButtonColor:=
        ObjectInspectorOptions.GridBackgroundColor;
+    OISubPropsColorButton.ButtonColor:=
+       ObjectInspectorOptions.SubPropertiesColor;
+    OIReferencesColorButton.ButtonColor:=
+       ObjectInspectorOptions.ReferencesColor;
+    OIValueColorButton.ButtonColor:=
+       ObjectInspectorOptions.ValueColor;
+    OIDefaultValueColorButton.ButtonColor:=
+       ObjectInspectorOptions.DefaultValueColor;
+    OIPropNameColorButton.ButtonColor:=
+       ObjectInspectorOptions.PropertyNameColor;
+
     OIDefaultItemHeightSpinEdit.Value:=
        ObjectInspectorOptions.DefaultItemHeight;
     OIShowHintCheckBox.Checked :=
@@ -3747,6 +3740,17 @@ begin
     // object inspector
     ObjectInspectorOptions.GridBackgroundColor:=
        OIBackgroundColorButton.ButtonColor;
+    ObjectInspectorOptions.SubPropertiesColor:=
+       OISubPropsColorButton.ButtonColor;
+    ObjectInspectorOptions.ReferencesColor:=
+       OIReferencesColorButton.ButtonColor;
+    ObjectInspectorOptions.ValueColor:=
+       OIValueColorButton.ButtonColor;
+    ObjectInspectorOptions.DefaultValueColor:=
+       OIDefaultValueColorButton.ButtonColor;
+    ObjectInspectorOptions.PropertyNameColor:=
+       OIPropNameColorButton.ButtonColor;
+
     ObjectInspectorOptions.DefaultItemHeight:=
       RoundToInt(OIDefaultItemHeightSpinEdit.Value);
     ObjectInspectorOptions.ShowHints :=
@@ -3855,57 +3859,70 @@ begin
   end;
 end;
 
+function TEnvironmentOptionsDialog.CreateColorItem(
+  ATop:Integer; AParent:TWinControl;ACaption:String):TColorButton;
+var
+  ColorButton:TColorButton;
+  ColorLabel:TLabel;
+begin
+  ColorButton:=TColorButton.Create(Self);
+  with ColorButton do begin
+    Name:='ColorButton'+IntToStr(ATop);
+    Left:=6;
+    Top:=ATop;
+    Width:=50;
+    Height:=25;
+    Parent:=AParent;
+  end;
+
+  ColorLabel:=TLabel.Create(Self);
+  with ColorLabel do begin
+    Name:='ColorLabel'+IntToStr(ATop);
+    Left:=ColorButton.Left+ColorButton.Width+5;
+    Top:=ColorButton.Top+2;
+    Width:=AParent.ClientWidth-Left-5;
+    Height:=23;
+    Parent:=AParent;
+    Caption:=ACaption;//dlgBackColor;
+  end;
+  Result:=ColorButton;
+end;
+
 procedure TEnvironmentOptionsDialog.SetupObjectInspectorPage(Page: integer);
-var MaxX: integer;
+var HalfWidth: integer;
 begin
   NoteBook.Page[Page].OnResize:=@OnObjectInspectorPageResize;
 
-  MaxX:=ClientWidth-5;
-  
+  HalfWidth:=ClientWidth div 2;
+
   // object inspector
   ObjectInspectorColorsGroupBox:=TGroupBox.Create(Self);
   with ObjectInspectorColorsGroupBox do begin
     Name:='ObjectInspectorColorsGroupBox';
-    Left:=6;
+    Left:=5;
     Top:=2;
-    Width:=(MaxX div 2) - 15;
-    Height:=55;
+    Width:= HalfWidth-15;
+    Height:=180;
     Parent:=NoteBook.Page[Page];
     Caption:=dlgEnvColors;
-    OnResize:=@ObjectInspectorColorsGroupBoxResize;
   end;
 
-  OIBackgroundColorButton:=TColorButton.Create(Self);
-  with OIBackgroundColorButton do begin
-    Name:='OIBackgroundColorButton';
-    Left:=6;
-    Top:=6;
-    Width:=50;
-    Height:=25;
-    Parent:=ObjectInspectorColorsGroupBox;
-  end;
+  OIBackgroundColorButton:=CreateColorItem(5, ObjectInspectorColorsGroupBox, dlgBackColor);
+  OISubPropsColorButton:=CreateColorItem(30, ObjectInspectorColorsGroupBox, dlgSubPropkColor);
+  OIReferencesColorButton:=CreateColorItem(55, ObjectInspectorColorsGroupBox, dlgReferenceColor);
+  OIValueColorButton:=CreateColorItem(80, ObjectInspectorColorsGroupBox, dlgValueColor);
+  OIDefaultValueColorButton:=CreateColorItem(105, ObjectInspectorColorsGroupBox, dlgDefValueColor);
+  OIPropNameColorButton:=CreateColorItem(130, ObjectInspectorColorsGroupBox, dlgPropNameColor);
 
-  OIBackgroundColorLabel:=TLabel.Create(Self);
-  with OIBackgroundColorLabel do begin
-    Name:='OIBackgroundColorLabel';
-    Left:=OIBackgroundColorButton.Left+OIBackgroundColorButton.Width+5;
-    Top:=OIBackgroundColorButton.Top+2;
-    Width:=ObjectInspectorColorsGroupBox.ClientWidth-Left-5;
-    Height:=23;
-    Parent:=ObjectInspectorColorsGroupBox;
-    Caption:=dlgBackColor;
-  end;
-  
   OIMiscGroupBox:=TGroupBox.Create(Self);
   with OIMiscGroupBox do begin
     Name:='OIMiscGroupBox';
-    Left:=ObjectInspectorColorsGroupBox.Left;
-    Top:=ObjectInspectorColorsGroupBox.Top+ObjectInspectorColorsGroupBox.Height+5;
-    Width:=200;
+    Left:=HalfWidth+5;
+    Top:=ObjectInspectorColorsGroupBox.Top;
+    Width:=HalfWidth-15;
     Height:=77;
     Parent:=NoteBook.Page[Page];
     Caption:=dlgOIMiscellaneous;
-    OnResize:=@OIMiscGroupBoxResize;
   end;
   
   OIDefaultItemHeightSpinEdit:=TSpinEdit.Create(Self);

@@ -1,3 +1,4 @@
+{ $Id$}
 {
  *****************************************************************************
  *                                                                           *
@@ -116,6 +117,11 @@ type
     FHeight: integer;
     FGridSplitterX: array[TObjectInspectorPage] of integer;
 
+    FPropertyNameColor: TColor;
+    FDefaultValueColor: TColor;
+    FSubPropertiesColor: TColor;
+    FValueColor: TColor;
+    FReferencesColor: TColor;
     FGridBackgroundColor: TColor;
     FShowHints: boolean;
     function FPropertyGridSplitterX(Page: TObjectInspectorPage): integer;
@@ -146,6 +152,16 @@ type
 
     property GridBackgroundColor: TColor read FGridBackgroundColor
                                          write FGridBackgroundColor;
+    property SubPropertiesColor: TColor read FSubPropertiesColor
+                                         write FSubPropertiesColor;
+    property ReferencesColor: TColor read FReferencesColor
+                                         write FReferencesColor;
+    property ValueColor: TColor read FValueColor
+                                         write FValueColor;
+    property DefaultValueColor: TColor read FDefaultValueColor
+                                         write FDefaultValueColor;
+    property PropertyNameColor: TColor read FPropertyNameColor
+                                         write FPropertyNameColor;
     property ShowHints: boolean read FShowHints
                                 write FShowHints;
   end;
@@ -211,6 +227,8 @@ type
   TOICustomPropertyGrid = class(TCustomControl)
   private
     FBackgroundColor:TColor;
+    FReferencesColor: TColor;
+    FSubPropertiesColor: TColor;
     FChangeStep: integer;
     FCurrentButton: TWinControl; // nil or ValueButton
     FCurrentEdit: TWinControl;  // nil or ValueEdit or ValueComboBox
@@ -257,6 +275,7 @@ type
     procedure SetSplitterX(const NewValue:integer);
     procedure SetTopY(const NewValue:integer);
 
+    function GetPropNameColor(ARow:TOIPropertyGridRow):TColor;
     function GetTreeIconX(Index:integer):integer;
     function RowRect(ARow:integer):TRect;
     procedure PaintRow(ARow:integer);
@@ -293,6 +312,8 @@ type
 
     procedure WMVScroll(var Msg: TWMScroll); message WM_VSCROLL;
     procedure SetBackgroundColor(const AValue: TColor);
+    procedure SetReferences(const AValue: TColor);
+    procedure SetSubPropertiesColor(const AValue: TColor);
     procedure UpdateScrollBar;
     procedure FillComboboxItems;
   protected
@@ -342,6 +363,10 @@ type
   public
     property BackgroundColor: TColor read FBackgroundColor
                                      write SetBackgroundColor default clBtnFace;
+    property ReferencesColor: TColor read FReferencesColor
+                                     write SetReferences default clMaroon;
+    property SubPropertiesColor: TColor read FSubPropertiesColor
+                                     write SetSubPropertiesColor default clGreen;
     property BorderStyle default bsSingle;
     property CurrentEditValue: string read GetCurrentEditValue
                                       write SetCurrentEditValue;
@@ -451,12 +476,10 @@ type
     FavouriteGrid: TOICustomPropertyGrid;
     StatusBar: TStatusBar;
     MainPopupMenu: TPopupMenu;
-    ColorsPopupMenuItem: TMenuItem;
     SetDefaultPopupMenuItem: TMenuItem;
     AddToFavouritesPopupMenuItem: TMenuItem;
     RemoveFromFavouritesPopupMenuItem: TMenuItem;
     UndoPropertyPopupMenuItem: TMenuItem;
-    BackgroundColPopupMenuItem: TMenuItem;
     ShowHintsPopupMenuItem: TMenuItem;
     ShowComponentTreePopupMenuItem: TMenuItem;
     ShowOptionsPopupMenuItem: TMenuItem;
@@ -468,7 +491,6 @@ type
     procedure OnAddToFavouritesPopupmenuItemClick(Sender: TObject);
     procedure OnRemoveFromFavouritesPopupmenuItemClick(Sender: TObject);
     procedure OnUndoPopupmenuItemClick(Sender: TObject);
-    procedure OnBackgroundColPopupMenuItemClick(Sender: TObject);
     procedure OnShowHintPopupMenuItemClick(Sender: TObject);
     procedure OnShowOptionsPopupMenuItemClick(Sender: TObject);
     procedure OnShowComponentTreePopupMenuItemClick(Sender: TObject);
@@ -617,6 +639,8 @@ begin
   FPreferredSplitterX:=FSplitterX;
   FIndent:=9;
   FBackgroundColor:=clBtnFace;
+  FReferencesColor:=clMaroon;
+  FSubPropertiesColor:=clGreen;
   FNameFont:=TFont.Create;
   FNameFont.Color:=clWindowText;
   FValueFont:=TFont.Create;
@@ -1643,6 +1667,30 @@ begin
   end;
 end;
 
+function TOICustomPropertyGrid.GetPropNameColor(ARow:TOIPropertyGridRow):TColor;
+var
+  ParentRow:TOIPropertyGridRow;
+  IsObjectSubProperty:Boolean;
+begin
+  // Try to guest if ARow, or one of its parents, is a subproperty
+  // of an object (and not an item of a set)
+  IsObjectSubProperty:=false;
+  ParentRow:=ARow.Parent;
+  while Assigned(ParentRow) do
+  begin
+    if ParentRow.Editor is TPersistentPropertyEditor then
+      IsObjectSubProperty:=true;
+    ParentRow:=ParentRow.Parent;
+  end;
+  
+  if IsObjectSubProperty then
+    Result := FSubPropertiesColor
+  else if ARow.Editor is TPersistentPropertyEditor then
+    Result := FReferencesColor
+  else
+    Result := FNameFont.Color;
+end;
+
 procedure TOICustomPropertyGrid.SetBounds(aLeft,aTop,aWidth,aHeight:integer);
 begin
 //writeln('[TOICustomPropertyGrid.SetBounds] ',Name,' ',aLeft,',',aTop,',',aWidth,',',aHeight,' Visible=',Visible);
@@ -1770,6 +1818,7 @@ begin
     // draw name
     OldFont:=Font;
     Font:=FNameFont;
+    Font.Color := GetPropNameColor(CurRow);
     CurRow.Editor.PropDrawName(Canvas,NameTextRect,DrawState);
     Font:=OldFont;
     // draw frame for name
@@ -2156,6 +2205,20 @@ begin
   Invalidate;
 end;
 
+procedure TOICustomPropertyGrid.SetReferences(const AValue: TColor);
+begin
+  if FReferencesColor=AValue then exit;
+  FReferencesColor:=AValue;
+  Invalidate;
+end;
+
+procedure TOICustomPropertyGrid.SetSubPropertiesColor(const AValue: TColor);
+begin
+  if FSubPropertiesColor=AValue then exit;
+  FSubPropertiesColor:=AValue;
+  Invalidate;
+end;
+
 //------------------------------------------------------------------------------
 
 { TOIPropertyGridRow }
@@ -2372,6 +2435,11 @@ begin
   FComponentTreeHeight:=100;
 
   FGridBackgroundColor:=clBtnFace;
+  FDefaultValueColor:=clWindowText;
+  FSubPropertiesColor:= clGreen;
+  FValueColor:=clMaroon;
+  FReferencesColor:= clMaroon;
+  FPropertyNameColor:=clWindowText;
 end;
 
 function TOIOptions.Load: boolean;
@@ -2417,7 +2485,18 @@ begin
        Path+'ComponentTree/Height/Value',100);
 
     FGridBackgroundColor:=ConfigStore.GetValue(
-         Path+'GridBackgroundColor',clBtnFace);
+         Path+'Color/GridBackground',clBtnFace);
+    FDefaultValueColor:=ConfigStore.GetValue(
+         Path+'Color/DefaultValue', clWindowText);
+    FSubPropertiesColor:=ConfigStore.GetValue(
+         Path+'Color/SubProperties', clGreen);
+    FValueColor:=ConfigStore.GetValue(
+         Path+'Color/Value', clMaroon);
+    FReferencesColor:=ConfigStore.GetValue(
+         Path+'Color/References',clMaroon);
+    FPropertyNameColor:=ConfigStore.GetValue(
+         Path+'Color/PropertyName',clWindowText);
+
     FShowHints:=ConfigStore.GetValue(
          Path+'ShowHints',false);
   except
@@ -2462,8 +2541,19 @@ begin
     ConfigStore.SetDeleteValue(Path+'ComponentTree/Height/Value',
                              FComponentTreeHeight,100);
 
-    ConfigStore.SetDeleteValue(Path+'GridBackgroundColor',
+    ConfigStore.SetDeleteValue(Path+'Color/GridBackground',
                              FGridBackgroundColor,clBackground);
+    ConfigStore.SetDeleteValue(Path+'Color/DefaultValue',
+                             FDefaultValueColor,clBackground);
+    ConfigStore.SetDeleteValue(Path+'Color/SubProperties',
+                             FSubPropertiesColor,clBackground);
+    ConfigStore.SetDeleteValue(Path+'Color/Value',
+                             FValueColor,clBackground);
+    ConfigStore.SetDeleteValue(Path+'Color/References',
+                             FReferencesColor,clBackground);
+    ConfigStore.SetDeleteValue(Path+'Color/PropertyName',
+                              FPropertyNameColor,clWindowText);
+
     ConfigStore.SetDeleteValue(Path+'ShowHints',FShowHints,
                              false);
   except
@@ -2489,7 +2579,14 @@ begin
   FDefaultItemHeight:=AnObjInspector.DefaultItemHeight;
   FShowComponentTree:=AnObjInspector.ShowComponentTree;
   FComponentTreeHeight:=AnObjInspector.ComponentTreeHeight;
+  
   FGridBackgroundColor:=AnObjInspector.PropertyGrid.BackgroundColor;
+  FSubPropertiesColor:=AnObjInspector.PropertyGrid.SubPropertiesColor;
+  FReferencesColor:=AnObjInspector.PropertyGrid.ReferencesColor;
+  FValueColor:=AnObjInspector.PropertyGrid.ValueFont.Color;
+  FDefaultValueColor:=AnObjInspector.PropertyGrid.DefaultValueFont.Color;
+  FPropertyNameColor:=AnObjInspector.PropertyGrid.NameFont.Color;
+
   FShowHints:=AnObjInspector.PropertyGrid.ShowHint;
 end;
 
@@ -2507,6 +2604,11 @@ begin
     Grid.PrefferedSplitterX:=FGridSplitterX[Page];
     Grid.SplitterX:=FGridSplitterX[Page];
     Grid.BackgroundColor:=FGridBackgroundColor;
+    Grid.SubPropertiesColor:=FSubPropertiesColor;
+    Grid.ReferencesColor:=FReferencesColor;
+    Grid.ValueFont.Color:=FValueColor;
+    Grid.DefaultValueFont.Color:=FDefaultValueColor;
+    Grid.NameFont.Color:=FPropertyNameColor;
     Grid.ShowHint:=FShowHints;
   end;
   AnObjInspector.DefaultItemHeight:=FDefaultItemHeight;
@@ -2604,11 +2706,6 @@ begin
      'Undo','Set property value to last valid value',
      @OnUndoPopupmenuItemClick,false,true,true);
   AddSeparatorMenuItem(nil,'OptionsSeparatorMenuItem',true);
-  AddPopupMenuItem(ColorsPopupmenuItem,nil,'ColorsPopupMenuItem','Set Colors',''
-     ,nil,false,true,true);
-  AddPopupMenuItem(BackgroundColPopupMenuItem,ColorsPopupMenuItem
-     ,'BackgroundColPopupMenuItem','Background','Grid background color'
-     ,@OnBackgroundColPopupMenuItemClick,false,true,true);
   AddPopupMenuItem(ShowHintsPopupMenuItem,nil
      ,'ShowHintPopupMenuItem','Show Hints','Grid hints'
      ,@OnShowHintPopupMenuItemClick,false,true,true);
@@ -3007,26 +3104,6 @@ begin
   CurRow:=GetActivePropertyRow;
   if CurRow=nil then exit;
   CurGrid.CurrentEditValue:=CurRow.Editor.GetVisualValue;
-end;
-
-procedure TObjectInspector.OnBackgroundColPopupMenuItemClick(Sender :TObject);
-var
-  ColorDialog:TColorDialog;
-  Page: TObjectInspectorPage;
-begin
-  ColorDialog:=TColorDialog.Create(nil);
-  try
-    with ColorDialog do begin
-      Color:=PropertyGrid.BackgroundColor;
-      if Execute then begin
-        for Page:=Low(TObjectInspectorPage) to High(TObjectInspectorPage) do
-          if GridControl[Page]<>nil then
-            GridControl[Page].BackgroundColor:=Color;
-      end;
-    end;
-  finally
-    ColorDialog.Free;
-  end;
 end;
 
 procedure TObjectInspector.OnGridModified(Sender: TObject);

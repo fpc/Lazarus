@@ -718,7 +718,13 @@ resourcestring
   dlgnoAutomaticRenaming = 'no automatic renaming';
   dlgAmbigWarn = 'Warn on compile';
   dlgIgnoreVerb = 'Ignore';
-  dlgBackColor = 'Background color';
+  dlgBackColor = 'Background';
+  dlgSubPropkColor = 'Subpropertes';
+  dlgReferenceColor = 'Reference';
+  dlgValueColor = 'Value';
+  dlgDefValueColor = 'Default value';
+  dlgPropNameColor = 'Property name';
+
   dlgOIMiscellaneous = 'Miscellaneous';
   dlgOIItemHeight = 'Item height';
   dlgEnvColors = 'Colors';
