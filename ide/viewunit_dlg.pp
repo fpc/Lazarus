@@ -155,13 +155,19 @@ end;
 
 
 initialization
+{Do not change the following}
+{<LAZARUSFORMDEF>}
 {$I viewunits1.lrs}
-
+{<LAZARUSFORMDEFEND>}
+{}
 
 
 end.
 {
   $Log$
+  Revision 1.4  2001/01/14 03:56:57  lazarus
+  Shane
+
   Revision 1.3  2001/01/13 06:11:07  lazarus
   Minor fixes
   Shane

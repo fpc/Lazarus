@@ -181,6 +181,8 @@ type
     Procedure SetName_Form(SList : TUnitInfo);
     Procedure SetDesigning(Control : TComponent; Value : Boolean);
     procedure FormPaint(Sender : TObject);
+    procedure LoadResourceFromFile(Value : String);
+
     //these numbers are used to determine where the mouse was when the button was pressed
     MouseDownPos, MouseUpPos, LastMouseMovePos : TPoint;
     MouseDownControl: TObject;
@@ -997,6 +999,49 @@ begin
   itmSeperator := TMenuItem.Create(Self);
   itmSeperator.Caption := '-';
   Result := itmSeperator;
+end;
+
+
+procedure TMainIDE.LoadResourceFromFile(Value : String);
+Var
+  Texts : String;
+  Temps : String;
+  Classnm : String;  //like 'TMainIDE'
+  Datatype : String; //like 'FORMDATA'
+  TextFile : TStringList;
+  ResourceData : String;
+  I,A            : Integer;
+  Instance     : TComponent;
+  CompResource : LResource;
+Begin
+  textFile := TStringList.Create;
+  TextFile.LoadFromFile(Value);
+
+  //Get the first line
+  Texts := TextFile.Strings[0];
+  Texts := Copy(Texts,pos('(''',Texts)+2,Length(Texts));
+  Classnm := Copy(Texts,1,pos('''',Texts));
+  Texts := Copy(Texts,pos('''',Texts)+3,Length(Texts));
+  DataType := Copy(Texts,1,length(Texts)-2);
+
+  Writeln('Classnm is '+Classnm);
+  Writeln('DataType is '+DataType);
+  ResourceData := '';
+  For I := 1 to TextFile.Count-2 do
+    ResourceData := ResourceData+trim(TextFile.Strings[i]);
+
+  While pos('+',ResourceData) <> 0 do
+      Delete(ResourceData,pos('+',ResourceData),1);
+
+  While pos('''',ResourceData) <> 0 do
+      Delete(ResourceData,pos('''',ResourceData),1);
+
+  While pos('#',ResourceData) <> 0 do
+      Delete(ResourceData,pos('#',ResourceData),1);
+
+  LazarusResources.Add(Classnm,Datatype,ResourceData);
+  Delete(Value,pos('.',Value),Length(Value));
+  {what now???}
 end;
 
 function TMainIDE.ReturnActiveUnitList : TUnitInfo;
@@ -1843,7 +1888,6 @@ end;
 
 initialization
 {$I images/laz_images.lrs}
-{$I dlgmessage.lrs}
 
 { $I mainide.lrs}
 { $I finddialog1.lrs}
@@ -1856,6 +1900,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.43  2001/01/14 03:56:57  lazarus
+  Shane
+
   Revision 1.42  2001/01/13 06:11:06  lazarus
   Minor fixes
   Shane

@@ -856,6 +856,7 @@ Var
   Found : Boolean;
   Texts : String;
 Begin
+  Writeln('CREATEFORMFROMUNIT');
   for I := 0 to Source.Count -1 do
       begin
         Found := (Pos('initialization',lowercase(Source.Strings[i])) <> 0);
@@ -864,6 +865,8 @@ Begin
 
   if Not Found then exit;
 
+  Writeln('Found Initialization at '+inttostr(i));
+
   For X := I to Source.Count-1 do
       Begin
       Found := (pos('{<LAZARUSFORMDEF>}',Source.Strings[x]) <> 0);
@@ -871,12 +874,17 @@ Begin
       end;
 
   if Not Found then exit;
+  Writeln('Found the lazarusformdef line');
   inc(x);
   Texts := Source.Strings[x];
+  Writeln('texts = '+texts);
   //grab the file name
   Texts := Copy(Texts,pos('{$I ',Texts)+4,Length(Texts));
   Texts := Copy(Texts,1,pos('.',Texts)+3);
   Writeln('the resource file is '+Texts);
+  Writeln('Calling the function');
+  TMainIDE(TSourceNotebook(FAOwner).MainIDe).LoadResourceFromFile(Texts);
+  Writeln('Called the function');
 
 
 end;

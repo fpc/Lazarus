@@ -123,6 +123,11 @@ if (MessageView.Items.Count > 0) and (MessageView.SelCount > 0) then
    end;
 end;
 
+initialization
+{Do not change the following}
+{<LAZARUSFORMDEF>}
+{$I dlgmessage.lrs}
+{<LAZARUSFORMDEFEND>}
 
 
 end.

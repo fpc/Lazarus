@@ -7,7 +7,6 @@ object MessageDlg: TMESSAGEDLG
   WIDTH = 320
   object MessageView: TLISTBOX
     ALIGN = alClient
-    BORDERSTYLE = bssingle
     ONDBLCLICK = nil
     LEFT = 1
     HEIGHT = 25

@@ -342,6 +342,7 @@ function InitResourceComponent(Instance: TComponent;
       Result:=InitComponent(ClassType.ClassParent);
     CompResource:=LazarusResources.Find(Instance.ClassName);
     if (CompResource.Value='') then exit;
+//    Writeln('Compresource.value is '+CompResource.Value);
     if (ClassType.InheritsFrom(TForm))
     and (CompResource.ValueType<>'FORMDATA') then exit;
     with TMemoryStream.Create do
