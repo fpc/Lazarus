@@ -154,6 +154,18 @@ begin
   Node^.WSClass := AWSComponent;
 end;
 
+procedure FreeRegistration;
+var
+  Node: PClassNode;
+begin
+  while (MComponentIndex.Count>0) do begin
+    Node := PClassNode(MComponentIndex.Objects[MComponentIndex.Count-1]);
+    Dispose(Node);
+    MComponentIndex.Delete(MComponentIndex.Count-1);
+  end;
+  FreeAndNil(MComponentIndex);
+  FreeAndNil(MWSRegisterIndex);
+end;
 
 initialization
   MComponentIndex := TStringList.Create;
@@ -165,7 +177,6 @@ initialization
   MWSRegisterIndex.Duplicates := dupError;
 
 finalization
-  FreeAndNil(MComponentIndex);
-  FreeAndNil(MWSRegisterIndex);
-  
+  FreeRegistration;
+
 end.
