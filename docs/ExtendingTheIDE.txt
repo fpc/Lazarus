@@ -18,13 +18,13 @@ Property Editors
 Experts
   These are all other types.
 
+
 -------------------------------------------------------------------------------
 There are two possibilities to add your own plugins to Lazarus:
 
 1. Write a package, install it and register your plugins in the 'Register'
    procedure of a unit.
 2. Extend the lazarus code, and send your cvs diff to the lazarus mailing list.
-
 
 
 -------------------------------------------------------------------------------
@@ -52,10 +52,11 @@ Hint: see propedits.pp for examples
 -------------------------------------------------------------------------------
 Register event handlers
 
-There are several events in the IDE, where plugins can add their own handlers.
-In propedits.pp there is a GlobalDesignHook object, maintains several events
-for designing. Each event calls a list of handlers. The default handlers are
-added by the IDE. You can add your own handlers with the AddHandlerXXX and
+There are several events in the IDE, for which plugins can add their own
+handlers.
+In propedits.pp there is a GlobalDesignHook object, which maintains several
+events for designing. Each event calls a list of handlers. The default handlers
+are added by the IDE. You can add your own handlers with the AddHandlerXXX and
 RemoveHandlerXXX methods. They will be called before the default handlers.
 Examples:
 
