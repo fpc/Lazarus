@@ -1689,8 +1689,10 @@ begin
 end;
 
 procedure TGtkWidgetSet.LoadFromPixbufFile(Bitmap: TObject; Filename: PChar);
+{$Ifndef NoGdkPixbufLib}
 var
   TheBitmap: TBitmap;
+{$ENDIF}
 
   function LoadFile: Boolean;
   {$Ifndef NoGdkPixbufLib}
@@ -9232,6 +9234,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.524  2004/08/13 12:52:58  mattias
+  removed IFDEF unused var
+
   Revision 1.523  2004/08/13 12:41:54  mattias
   fixed uninitialized argument
 
