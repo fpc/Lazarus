@@ -394,6 +394,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.19  2002/03/08 11:37:42  lazarus
+  MG: outputfilter can now find include files
+
   Revision 1.18  2002/03/04 10:01:01  lazarus
   MG: fixed synedit crash on exit
 
