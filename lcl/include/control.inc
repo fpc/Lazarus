@@ -674,16 +674,22 @@ begin
     Result:=true;
 end;
 
-{------------------------------------------------------------------------------}
-{       TControl.GetClientOrigin
-}
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TControl.GetClientOrigin
+
+------------------------------------------------------------------------------}
 function TControl.GetClientOrigin: TPoint;
+
+  procedure RaiseParentNil;
+  begin
+    raise Exception.Create('TControl.GetClientOrigin: Parent=nil for '
+                           +Name+':'+ClassName);
+  end;
+
 Begin
   Assert(False, Format('Trace:[TControl.GetClientOrigin] %s',  [Classname]));
   if Parent = nil then
-    raise Exception.Create('TControl.GetClientOrigin: Parent=nil for '
-                           +Name+':'+ClassName);
+    RaiseParentNil;
     //raise EInvalidOperation.CreateFmt(SParentRequired, [Name]);
   Result := Parent.ClientOrigin;
   Inc(Result.X, FLeft);
@@ -2305,6 +2311,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.132  2003/06/12 18:55:44  mattias
+  improved designer to recognize auto child moves
+
   Revision 1.131  2003/06/11 22:29:42  mattias
   fixed realizing bounds after loading form
 
