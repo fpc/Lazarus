@@ -130,7 +130,7 @@ type
     function KeyWordFuncConst: boolean;
     function KeyWordFuncResourceString: boolean;
     function KeyWordFuncLabel: boolean;
-    function KeyWordFuncGlobalProperty: boolean;
+    function KeyWordFuncProperty: boolean;
     // types
     function KeyWordFuncClass: boolean;
     function KeyWordFuncClassInterface: boolean;
@@ -327,7 +327,7 @@ begin
     Add('CONST',@KeyWordFuncConst);
     Add('RESOURCESTRING',@KeyWordFuncResourceString);
     Add('LABEL',@KeyWordFuncLabel);
-    Add('PROPERTY',@KeyWordFuncGlobalProperty);
+    Add('PROPERTY',@KeyWordFuncProperty);
 
     Add('PROCEDURE',@KeyWordFuncProc);
     Add('FUNCTION',@KeyWordFuncProc);
@@ -2528,27 +2528,42 @@ begin
   Result:=true;
 end;
 
-function TPascalParserTool.KeyWordFuncGlobalProperty: boolean;
+function TPascalParserTool.KeyWordFuncProperty: boolean;
 {
   examples:
-   property errno : cint read fpgeterrno write fpseterrno;
+   property
+     errno : cint read fpgeterrno write fpseterrno;
+     A2 : Integer Read GetA2 Write SetA2;
 }
 begin
-  // create class method node
+  if not (CurSection in [ctnProgram,ctnInterface,ctnImplementation]) then
+    RaiseUnexpectedKeyWord;
   CreateChildNode;
-  CurNode.Desc:=ctnProperty;
-  // read property Name
-  ReadNextAtom;
-  AtomIsIdentifier(true);
-  ReadNextAtom;
-  if CurPos.Flag=cafEdgedBracketOpen then begin
-    // read parameter list
-    ReadTilBracketClose(true);
+  CurNode.Desc:=ctnPropertySection;
+  // read all global properties
+  repeat
+    // read property Name
     ReadNextAtom;
-  end;
-  while (CurPos.StartPos<=SrcLen) and (CurPos.Flag<>cafSemicolon) do
-    ReadNextAtom;
-  // close property
+    if AtomIsIdentifier(false) then begin
+      CreateChildNode;
+      CurNode.Desc:=ctnGlobalProperty;
+      ReadNextAtom;
+      if CurPos.Flag=cafEdgedBracketOpen then begin
+        // read parameter list
+        ReadTilBracketClose(true);
+        ReadNextAtom;
+      end;
+      while (CurPos.StartPos<=SrcLen) and (CurPos.Flag<>cafSemicolon) do
+        ReadNextAtom;
+      // close global property
+      CurNode.EndPos:=CurPos.EndPos;
+      EndChildNode;
+    end else begin
+      UndoReadNextAtom;
+      break;
+    end;
+  until CurPos.StartPos>SrcLen;
+  // close property section
   CurNode.EndPos:=CurPos.EndPos;
   EndChildNode;
   Result:=true;

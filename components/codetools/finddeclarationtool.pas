@@ -922,9 +922,11 @@ var CleanCursorPos: integer;
   procedure CheckIfCursorInPropertyNode;
   begin
     if SkipChecks then exit;
-    if CursorNode.Desc=ctnProperty then begin
+    if (CursorNode.Desc=ctnProperty) or (CursorNode.Desc=ctnGlobalProperty) then
+    begin
       MoveCursorToNodeStart(CursorNode);
-      ReadNextAtom; // read 'property'
+      if (CursorNode.Desc=ctnProperty) then
+        ReadNextAtom; // read 'property'
       ReadNextAtom; // read property name
       if CleanCursorPos<CurPos.EndPos then begin
         DirectSearch:=true;
@@ -1485,6 +1487,21 @@ begin
           Result:=Result+NewTool.GetAtom+' ';
           IdentAdded:=true;
         end;
+        
+      ctnGlobalProperty:
+        begin
+          IdentNode:=NewNode;
+
+          // ToDo: ppu, ppw, dcu files
+
+          NewTool.MoveCursorToNodeStart(IdentNode);
+          Result:=Result+'property ';
+          NewTool.ReadNextAtom;
+          Result:=Result+NewTool.GetAtom+' ';
+          IdentAdded:=true;
+        end;
+
+
       else
         writeln('ToDo: TFindDeclarationTool.FindSmartHint ',NewNode.DescAsString);
       end;
@@ -1853,7 +1870,7 @@ var
     end;
   end;
   
-  function SearchInTypeVarConstDefinition: boolean;
+  function SearchInTypeVarConstPropDefinition: boolean;
   // returns: true if ok to exit
   //          false if search should continue
   begin
@@ -1908,7 +1925,8 @@ var
     if (fdfCollect in Params.Flags)
     or (Params.Identifier[0]<>'[') then begin
       MoveCursorToNodeStart(ContextNode);
-      ReadNextAtom; // read keyword 'property'
+      if (ContextNode.Desc=ctnProperty) then
+        ReadNextAtom; // read keyword 'property'
       ReadNextAtom; // read name
       if (fdfCollect in Params.Flags)
       or CompareSrcIdentifiers(CurPos.StartPos,Params.Identifier) then begin
@@ -2045,7 +2063,7 @@ var
         case ContextNode.Desc of
 
         ctnTypeSection, ctnVarSection, ctnConstSection, ctnResStrSection,
-        ctnLabelSection,
+        ctnLabelSection, ctnPropertySection,
         ctnInterface, ctnImplementation,
         ctnClassPublished,ctnClassPublic,ctnClassProtected,ctnClassPrivate,
         ctnRecordVariant,
@@ -2149,7 +2167,7 @@ begin
         case ContextNode.Desc of
 
         ctnTypeSection, ctnVarSection, ctnConstSection, ctnResStrSection,
-        ctnLabelSection,
+        ctnLabelSection, ctnPropertySection,
         ctnInterface, ctnImplementation,
         ctnClassPublic, ctnClassPrivate, ctnClassProtected, ctnClassPublished,
         ctnClass, ctnClassInterface,
@@ -2160,8 +2178,9 @@ begin
           // -> search in all childs
           MoveContextNodeToChilds;
           
-        ctnTypeDefinition, ctnVarDefinition, ctnConstDefinition:
-          if SearchInTypeVarConstDefinition then exit;
+        ctnTypeDefinition, ctnVarDefinition, ctnConstDefinition,
+        ctnGlobalProperty:
+          if SearchInTypeVarConstPropDefinition then exit;
 
         ctnProcedure:
           begin
@@ -2185,7 +2204,7 @@ begin
 
         ctnProperty:
           if SearchInProperty then exit;
-
+          
         ctnUsesSection:
           begin
             if FindIdentifierInUsesSection(ContextNode,Params)
@@ -2542,10 +2561,12 @@ begin
         Params.Load(OldInput);
         exit;
       end else
-      if (Result.Node.Desc=ctnProperty) then begin
+      if (Result.Node.Desc=ctnProperty)
+      or (Result.Node.Desc=ctnGlobalProperty) then begin
         // this is a property -> search the type definition of the property
         MoveCursorToNodeStart(Result.Node);
-        ReadNextAtom; // read 'property'
+        if (Result.Node.Desc=ctnProperty) then
+          ReadNextAtom; // read 'property'
         ReadNextAtom; // read name
         ReadNextAtom;
         if CurPos.Flag=cafEdgedBracketOpen then begin
@@ -2583,7 +2604,7 @@ begin
             Result:=CreateFindContext(Self,Result.Node);
           Params.Load(OldInput);
           exit;
-        end else begin
+        end else if (Result.Node.Desc=ctnProperty) then begin
           // property has no type
           // -> search ancestor property
           Params.Save(OldInput);
@@ -3888,6 +3909,9 @@ var
 
       // find base type
       Exclude(Params.Flags,fdfFunctionResult);
+      {$IFDEF ShowExprEval}
+      writeln('ResolveBaseTypeOfIdentifier ExprType=',ExprTypeToString(ExprType));
+      {$ENDIF}
       ExprType:=ExprType.Context.Tool.ConvertNodeToExpressionType(
                         ExprType.Context.Node,Params);
       if (ExprType.Desc=xtContext)
@@ -3987,6 +4011,9 @@ var
 
       // search ...
       Params.SetIdentifier(Self,@Src[CurAtom.StartPos],@CheckSrcIdentifier);
+      {$IFDEF ShowExprEval}
+      writeln('ResolveIdentifier Ident="',GetIdentifier(Params.Identifier),'"');
+      {$ENDIF}
       if ExprType.Context.Tool.FindIdentifierInContext(Params) then begin
         if not Params.NewCodeTool.NodeIsConstructor(Params.NewNode) then begin
           ExprType.Desc:=xtContext;
@@ -4149,7 +4176,7 @@ var
       ExprType.Context:=ExprType.Context.Tool.FindBaseTypeOfNode(Params,
                                               ExprType.Context.Node.FirstChild);
 
-    ctnClass, ctnProperty:
+    ctnClass, ctnProperty, ctnGlobalProperty:
       begin
         if ExprType.Context.Node.Desc=ctnClass then begin
           // search default property of the class
@@ -4317,7 +4344,8 @@ begin
   repeat
     {$IFDEF ShowExprEval}
     writeln('  FindExpressionTypeOfVariable CurAtomType=',
-      VariableAtomTypeNames[CurAtomType],' CurAtom="',GetAtom(CurAtom),'"');
+      VariableAtomTypeNames[CurAtomType],' CurAtom="',GetAtom(CurAtom),'"',
+      ' ExprType=',ExprTypeToString(ExprType));
     {$ENDIF}
     case CurAtomType of
     vatIdentifier, vatPreDefIdentifier: ResolveIdentifier;
@@ -4418,7 +4446,8 @@ begin
     MoveCursorToNodeStart(Node);
     ReadNextAtom;
     ConvertIdentifierAtCursor;
-  end else if Node.Desc=ctnProperty then begin
+  end else if (Node.Desc=ctnProperty) or (Node.Desc=ctnGlobalProperty) then
+  begin
 
     // ToDo: ppu, ppw, dcu files
 
@@ -6024,7 +6053,7 @@ begin
             Result:=GetIdentifier(
                      @FindContext.Tool.Src[FindContext.Node.Parent.StartPos]);
 
-        ctnProperty:
+        ctnProperty,ctnGlobalProperty:
           begin
             FindContext.Tool.MoveCursorToPropType(FindContext.Node);
             Result:=FindContext.Tool.GetAtom;

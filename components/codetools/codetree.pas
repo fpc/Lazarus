@@ -67,11 +67,13 @@ const
   ctnConstSection    = 12;
   ctnResStrSection   = 13;
   ctnLabelSection    = 14;
-  ctnUsesSection     = 15;
+  ctnPropertySection = 15;
+  ctnUsesSection     = 16;
 
   ctnTypeDefinition  = 20;
   ctnVarDefinition   = 21;
   ctnConstDefinition = 22;
+  ctnGlobalProperty  = 23;
 
   ctnClass           = 30;
   ctnClassInterface  = 31;
@@ -308,11 +310,13 @@ begin
   ctnVarSection: Result:='Var Section';
   ctnConstSection: Result:='Const Section';
   ctnResStrSection: Result:='Resource String Section';
+  ctnPropertySection: Result:='Property Section';
   ctnUsesSection: Result:='Uses Section';
 
   ctnTypeDefinition: Result:='Type';
   ctnVarDefinition: Result:='Var';
   ctnConstDefinition: Result:='Const';
+  ctnGlobalProperty: Result:='Global Property';
 
   ctnProperty: Result:='Property';
   ctnMethodMap: Result:='Method Map';

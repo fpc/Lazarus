@@ -230,11 +230,15 @@ function TPascalReaderTool.ExtractPropType(PropNode: TCodeTreeNode;
   InUpperCase, EmptyIfIndexed: boolean): string;
 begin
   Result:='';
-  if (PropNode=nil) or (PropNode.Desc<>ctnProperty) then exit;
+  if (PropNode=nil)
+  or ((PropNode.Desc<>ctnProperty) and (PropNode.Desc<>ctnGlobalProperty)) then
+    exit;
   MoveCursorToNodeStart(PropNode);
   ReadNextAtom;
-  if not UpAtomIs('PROPERTY') then exit;
-  ReadNextAtom;
+  if (PropNode.Desc=ctnProperty) then begin
+    if (not UpAtomIs('PROPERTY')) then exit;
+    ReadNextAtom;
+  end;
   AtomIsIdentifier(true);
   ReadNextAtom;
   if CurPos.Flag=cafEdgedBracketOpen then begin
@@ -612,11 +616,15 @@ function TPascalReaderTool.MoveCursorToPropType(PropNode: TCodeTreeNode
   ): boolean;
 begin
   Result:=false;
-  if (PropNode=nil) or (PropNode.Desc<>ctnProperty) then exit;
+  if (PropNode=nil)
+  or ((PropNode.Desc<>ctnProperty) and (PropNode.Desc<>ctnGlobalProperty)) then
+    exit;
   MoveCursorToNodeStart(PropNode);
   ReadNextAtom;
-  if not UpAtomIs('PROPERTY') then exit;
-  ReadNextAtom;
+  if (PropNode.Desc=ctnProperty) then begin
+    if (not UpAtomIs('PROPERTY')) then exit;
+    ReadNextAtom;
+  end;
   AtomIsIdentifier(true);
   ReadNextAtom;
   if CurPos.Flag=cafEdgedBracketOpen then begin
@@ -697,11 +705,15 @@ function TPascalReaderTool.ExtractPropName(PropNode: TCodeTreeNode;
   InUpperCase: boolean): string;
 begin
   Result:='';
-  if (PropNode=nil) or (PropNode.Desc<>ctnProperty) then exit;
+  if (PropNode=nil)
+  or ((PropNode.Desc<>ctnProperty) and (PropNode.Desc<>ctnGlobalProperty)) then
+    exit;
   MoveCursorToNodeStart(PropNode);
   ReadNextAtom;
-  if not UpAtomIs('PROPERTY') then exit;
-  ReadNextAtom;
+  if (PropNode.Desc=ctnProperty) then begin
+    if (not UpAtomIs('PROPERTY')) then exit;
+    ReadNextAtom;
+  end;
   AtomIsIdentifier(true);
   if InUpperCase then
     Result:=GetUpAtom
@@ -714,14 +726,17 @@ function TPascalReaderTool.ExtractProperty(PropNode: TCodeTreeNode;
 begin
   Result:='';
   ExtractProcHeadPos:=phepNone;
-  if (PropNode=nil) or (PropNode.StartPos<1) or (PropNode.Desc<>ctnProperty)
-  then exit;
+  if (PropNode=nil) or (PropNode.StartPos<1)
+  or ((PropNode.Desc<>ctnProperty) and (PropNode.Desc<>ctnGlobalProperty)) then
+    exit;
   // start extraction
   InitExtraction;
   MoveCursorToNodeStart(PropNode);
   ExtractNextAtom(false,Attr);
-  // parse 'property'
-  ExtractNextAtom(phpWithStart in Attr,Attr);
+  if (PropNode.Desc=ctnProperty) then begin
+    // parse 'property'
+    ExtractNextAtom(phpWithStart in Attr,Attr);
+  end;
   ExtractProcHeadPos:=phepStart;
   // parse name
   ExtractNextAtom(not (phpWithoutName in Attr),Attr);
@@ -751,7 +766,9 @@ begin
   Result:=nil;
   if PropNode=nil then exit;
   MoveCursorToNodeStart(PropNode);
-  ReadNextAtom; // read 'propery'
+  if (PropNode.Desc=ctnProperty) then begin
+    ReadNextAtom; // read 'propery'
+  end;
   ReadNextAtom; // read name
   Result:=@Src[CurPos.StartPos];
 end;
@@ -1225,7 +1242,9 @@ begin
 
   Result:=false;
   MoveCursorToNodeStart(PropNode);
-  ReadNextAtom; // read 'property'
+  if (PropNode.Desc=ctnProperty) then begin
+    ReadNextAtom; // read 'property'
+  end;
   ReadNextAtom; // read name
   ReadNextAtom;
   Result:=(CurPos.Flag=cafEdgedBracketOpen);
@@ -1239,7 +1258,9 @@ begin
 
   Result:=false;
   MoveCursorToNodeStart(PropNode);
-  ReadNextAtom; // read 'property'
+  if (PropNode.Desc=ctnProperty) then begin
+    ReadNextAtom; // read 'property'
+  end;
   ReadNextAtom; // read name
   ReadNextAtom;
   if CurPos.Flag=cafEdgedBracketOpen then begin
