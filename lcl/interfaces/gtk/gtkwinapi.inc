@@ -5960,7 +5960,7 @@ begin
   while ADialogResult = 0 do begin
     Application.HandleMessage;
   end;
-  DestroyWidget(Dialog);
+  DestroyConnectedWidget(Dialog,true);
   Result:= ADialogResult;
 end;
 
@@ -9099,6 +9099,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.311  2004/01/09 20:03:13  mattias
+  implemented new statusbar methods in gtk intf
+
   Revision 1.310  2004/01/05 01:18:16  mattias
   implemented Double Buffering for synedit and deactivated multi buffering in TGTKObject.ExtTextOut
 

@@ -357,6 +357,31 @@ begin
                                    MinItemsWidth, MinItemsHeight, MinItemCount);
 end;
 
+procedure StatusBarInsertPanel(StatusBar: TObject; index: integer);
+begin
+  InterfaceObject.StatusBarInsertPanel(StatusBar, index);
+end;
+
+procedure StatusBarPanelUpdate(StatusBar: TObject; index: integer);
+begin
+  InterfaceObject.StatusBarPanelUpdate(StatusBar, index);
+end;
+
+procedure StatusBarRemovePanel(StatusBar: TObject; index: integer);
+begin
+  InterfaceObject.StatusBarRemovePanel(StatusBar, index);
+end;
+
+procedure StatusBarSetSimpleText(StatusBar: TObject);
+begin
+  InterfaceObject.StatusBarSetSimpleText(StatusBar);
+end;
+
+procedure StatusBarSetStyle(StatusBar: TObject);
+begin
+  InterfaceObject.StatusBarSetStyle(StatusBar);
+end;
+
 function StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer;
   SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer;
   Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean;
@@ -453,6 +478,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.7  2004/01/09 20:03:13  mattias
+  implemented new statusbar methods in gtk intf
+
   Revision 1.6  2004/01/03 11:57:47  mattias
   applied implementation for LM_LB_GETINDEXAT  from Vincent
 

@@ -144,7 +144,7 @@ end;
 
   Enables, disables, or grays the specified menu item.
  ------------------------------------------------------------------------------}
-function TGTKObject.LclEnableMenuItem(BaseMenuItem: TComponent): Boolean;
+function TGTKObject.LCLEnableMenuItem(BaseMenuItem: TComponent): Boolean;
 var
   AMenuItem: TMenuItem;
 begin
@@ -153,12 +153,87 @@ begin
   Result := True;
 end;
 
+{------------------------------------------------------------------------------
+  Procedure: StatusBarInsertPanel
+  Params: StatusBar:
+          index:
+  Returns: Nothing
+
+ ------------------------------------------------------------------------------}
+procedure TGTKObject.StatusBarInsertPanel(StatusBar: TObject; Index: integer);
+begin
+  UpdateStatusBarPanels(StatusBar,PGtkWidget((StatusBar as TStatusBar).Handle));
+end;
+
+{------------------------------------------------------------------------------
+  Procedure: StatusBarPanelUpdate
+  Params: StatusBar:
+          index:
+  Returns: Nothing
+
+ ------------------------------------------------------------------------------}
+procedure TGTKObject.StatusBarPanelUpdate(StatusBar: TObject; Index: integer);
+var
+  AStatusBar: TStatusBar;
+  HBox: PGtkWidget;
+  StatusPanelWidget: PGtkWidget;
+begin
+  AStatusBar:=StatusBar as TStatusBar;
+  if Index>=0 then begin
+    // update one
+    HBox:=PGtkWidget(AStatusBar.Handle);
+    StatusPanelWidget:=PGtkBoxChild(
+                        g_list_nth_data(PGtkBox(HBox)^.children,Index))^.Widget;
+    UpdateStatusBarPanel(StatusBar,Index,StatusPanelWidget);
+  end else begin
+    // update all
+    UpdateStatusBarPanels(StatusBar,PGtkWidget(AStatusBar.Handle));
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Procedure: StatusBarRemovePanel
+  Params: StatusBar:
+          index:
+  Returns: Nothing
+
+ ------------------------------------------------------------------------------}
+procedure TGTKObject.StatusBarRemovePanel(StatusBar: TObject; Index: integer);
+begin
+  UpdateStatusBarPanels(StatusBar,PGtkWidget((StatusBar as TStatusBar).Handle));
+end;
+
+{------------------------------------------------------------------------------
+  Procedure: StatusBarSetSimpleText
+  Params: StatusBar:
+  Returns: Nothing
+
+ ------------------------------------------------------------------------------}
+procedure TGTKObject.StatusBarSetSimpleText(StatusBar: TObject);
+begin
+  UpdateStatusBarPanels(StatusBar,PGtkWidget((StatusBar as TStatusBar).Handle));
+end;
+
+{------------------------------------------------------------------------------
+  Procedure: StatusBarSetStyle
+  Params: StatusBar:
+  Returns: Nothing
+
+ ------------------------------------------------------------------------------}
+procedure TGTKObject.StatusBarSetStyle(StatusBar: TObject);
+begin
+  UpdateStatusBarPanels(StatusBar,PGtkWidget((StatusBar as TStatusBar).Handle));
+end;
+
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
 
 { =============================================================================
 
   $Log$
+  Revision 1.7  2004/01/09 20:03:13  mattias
+  implemented new statusbar methods in gtk intf
+
   Revision 1.6  2004/01/04 16:44:33  mattias
   updated gtk2 package
 

@@ -3561,16 +3561,21 @@ end;
            may be nice to use it with different panels.
  ------------------------------------------------------------------------------}
 procedure TgtkObject.SetText(Child, Data: Pointer);
-type
-  pMsg = ^TLMSetControlText;
+{$IFNDEF NewStatusBar}
 var
   num : Integer;
+{$ENDIF}
 begin
-  case pMsg(Data)^.fCompStyle of
+  case PLMSetControlText(Data)^.fCompStyle of
   csStatusBar :
     begin
-      num := gtk_statusbar_get_context_id(PGTKStatusBar(Child),PChar(inttostr(pMsg(Data)^.panel)));
-      gtk_statusbar_push(PGTKStatusBar(Child),num,pMsg(Data)^.Userdata);
+      {$IFDEF NewStatusBar}
+      {$ELSE}
+      num := gtk_statusbar_get_context_id(PGTKStatusBar(Child),
+                               PChar(inttostr(PLMSetControlText(Data)^.panel)));
+      gtk_statusbar_push(PGTKStatusBar(Child),num,
+                         PLMSetControlText(Data)^.Userdata);
+      {$ENDIF}
     end
   else
     writeln ('STOPPOK: [TGtkObject.SetText] Possible superfluous use of SetText, use SetLabel instead!');
@@ -4377,19 +4382,19 @@ end;
 
 {------------------------------------------------------------------------------
   Function: TGTKObject.RemoveCallBacks
-  Params:   sender - object for which to remove callbacks
+  Params:   Widget
   Returns:  nothing
 
-  Removes Call Back Signals from the sender
+  Removes Call Back Signals from the Widget
  ------------------------------------------------------------------------------}
-procedure TGTKObject.RemoveCallbacks(Sender : TObject);
+procedure TGTKObject.RemoveCallbacks(Widget: PGtkWidget);
 var
   MainWidget, ClientWidget, ImplWidget: PGtkWidget;
   WinWidgetInfo: PWinWidgetInfo;
 begin
-  MainWidget := PGtkWidget(ObjectToGTKObject(Sender));
+  MainWidget := Widget;
   if MainWidget = nil then Exit;
-  if (Sender is TMenuItem) then exit;
+  if GtkWidgetIsA(Widget,GTK_MENU_ITEM_TYPE) then exit;
 
   ClientWidget:=GetFixedWidget(MainWidget);
   WinWidgetInfo:=GetWidgetInfo(MainWidget,false);
@@ -4415,27 +4420,19 @@ end;
 procedure TGTKObject.DestroyLCLComponent(Sender : TObject);
 var
   handle: hwnd; // handle of sender
-  QueueItem : TGtkMessageQueueItem;
-  NextItem  : TGtkMessageQueueItem;
-  MsgPtr: PMsg;
   Widget: PGtkWidget;
-  FixWidget: PGtkWidget;
-  GtkWindow: PGtkWidget;
   APage: TCustomPage;
   NoteBookWidget: PGtkNotebook;
-  {$IFNDef GTK2}
-  Accelerators: PGSlist;
-  AccelEntry : PGtkAccelEntry;
-  {$Endif}
+  GtkWindow: PGtkWidget;
 begin
   Handle := hwnd(ObjectToGtkObject(Sender));
   if Handle=0 then exit;
   Widget:=PGtkWidget(Handle);
   if WidgetIsDestroyingHandle(Widget) then exit;
   SetWidgetIsDestroyingHandle(Widget);
-
-  FixWidget:=GetFixedWidget(Widget);
-
+  
+  //writeln('TGTKObject.DestroyLCLComponent A ',GetWidgetClassName(Widget));
+  
   // if one of its widgets has the focus then unfocus
   GtkWindow:=gtk_widget_get_toplevel(Widget);
   if GtkWidgetIsA(GtkWindow,GTK_TYPE_WINDOW)
@@ -4443,47 +4440,10 @@ begin
   then begin
     gtk_window_set_focus(PGtkWindow(GtkWindow),nil);
   end;
-  
-  //writeln('TGTKObject.DestroyLCLComponent A ',
-  //  ' Widget=',HexStr(Cardinal(Widget),8),
-  //  ' FixWidget=',HexStr(Cardinal(FixWidget),8));
-
-  // Remove control accelerators - has to be done due to GTK+ bug?
-  {$IFNDef GTK2}
-  if Sender is TWinControl then begin
-    //writeln('TGTKObject.DestroyLCLComponent B ',TWinControl(Sender).Name,':',TWinControl(Sender).ClassName);
-    Accelerators:= gtk_accel_group_entries_from_object(PGtkObject(Handle));
-    while Accelerators <> nil do begin
-      AccelEntry:= Accelerators^.data;
-      Accelerators:= Accelerators^.next;
-      with AccelEntry^ do
-        gtk_accel_group_remove(accel_group, accelerator_key, accelerator_mods,
-                               PGtkObject(Handle));
-    end;
-  end;
-  {$EndIf}
-  ClearAccelKey(Widget);
-
-  if GtkWidgetIsA(Widget,GTK_TYPE_WINDOW) then begin
-    //writeln('tgtkObject.DestroyLCLControl Untransient ',Sender.ClassName);
-    {$IFDEF VerboseTransient}
-    writeln('TgtkObject.DestroyLCLComponent ',Sender.ClassName);
-    {$ENDIF}
-    UntransientWindow(PGtkWindow(Widget));
-  end;
-
-  RemoveCallbacks(Sender);
 
   if Sender is TControl then begin
-    case TControl(Sender).fCompStyle of
+    case TControl(Sender).FCompStyle of
 
-    csComboBox:
-      begin
-        SetComboBoxText(PGtkCombo(Widget),nil);
-        FreeWinWidgetInfo(PGtkCombo(Widget)^.Entry);
-        FreeWinWidgetInfo(PGtkCombo(Widget)^.Button);
-      end;
-      
     csPage:
       begin
         // a notebook always need at least one page
@@ -4505,53 +4465,12 @@ begin
     DestroyCommonDialogAddOns(TCommonDialog(Sender));
   end;
 
-  //writeln('>>> LM_DESTROY ',Sender.Classname,' Sender=',HexStr(Cardinal(Sender),8),' Handle=',HexStr(Cardinal(Handle),8));
-  // update mouse capturing
-  if (MouseCaptureWidget=Widget) or (MouseCaptureWidget=FixWidget) then
-    MouseCaptureWidget:=nil;
-  
-  // update clipboard widget
-  if (ClipboardWidget=Widget) or (ClipboardWidget=FixWidget) then
-  begin
-    // clipboard widget destroyed
-    if (Application<>nil) and (Application.MainForm<>nil)
-    and (Application.MainForm.HandleAllocated)
-    and (Application.MainForm.Handle<>Handle) then
-      // there is still the main form left -> use it for clipboard
-      SetClipboardWidget(PGtkWidget(Application.MainForm.Handle))
-    else
-      // program closed -> close clipboard
-      SetClipboardWidget(nil);
-  end;
-  
-  // update caret
-  if gtk_type_is_a(gtk_object_type(PGtkObject(Handle)),GTKAPIWidget_GetType)
-  then
-    DestroyCaret(Handle);
-    
-  // remove pending size messages
-  UnsetResizeRequest(Widget);
-  FWidgetsResized.Remove(Widget);
-  if FixWidget<>Widget then
-    FFixWidgetsResized.Remove(FixWidget);
-
-  // destroy the widget
-  DestroyWidget(Widget);
+  // destroy widget and properties
+  DestroyConnectedWidget(Widget,false);
 
   // clean up unneeded containers
   if Sender is TMenuItem then begin
     DestroyEmptySubmenu(TMenuItem(Sender));
-  end;
-
-  //writeln('>>> LM_DESTROY END ',Sender.Classname,' Sender=',HexStr(Cardinal(Sender),8),' Handle=',HexStr(Cardinal(Handle),8));
-  // remove all remaining messages to this component
-  QueueItem:=FMessageQueue.FirstMessageItem;
-  while (QueueItem<>nil) do begin
-    MsgPtr := QueueItem.Msg;
-    NextItem := TGtkMessagequeueItem(QueueItem.Next);
-    if (MsgPtr^.hWnd=Handle) then
-      fMessageQueue.RemoveMessage(QueueItem,FPMF_All,true);
-    QueueItem := NextItem;
   end;
 
   // mouse click messages
@@ -4561,6 +4480,78 @@ begin
     LastMiddle:=EmptyLastMouseClick;
   if LastRight.Component=Sender then
     LastRight:=EmptyLastMouseClick;
+end;
+
+procedure TgtkObject.DestroyConnectedWidget(Widget: PGtkWidget;
+  CheckIfDestroying: boolean);
+var
+  FixWidget: PGtkWidget;
+  {$IFNDef GTK2}
+  Accelerators: PGSlist;
+  AccelEntry : PGtkAccelEntry;
+  {$Endif}
+  QueueItem : TGtkMessageQueueItem;
+  NextItem  : TGtkMessageQueueItem;
+  MsgPtr: PMsg;
+begin
+  if CheckIfDestroying then begin
+    if WidgetIsDestroyingHandle(Widget) then exit;
+    SetWidgetIsDestroyingHandle(Widget);
+  end;
+
+  FixWidget:=GetFixedWidget(Widget);
+
+  // Remove control accelerators - has to be done due to GTK+ bug?
+  {$IFNDef GTK2}
+  //writeln('TGTKObject.DestroyLCLComponent B ',TWinControl(Sender).Name,':',TWinControl(Sender).ClassName);
+  Accelerators:= gtk_accel_group_entries_from_object(PGtkObject(Widget));
+  while Accelerators <> nil do begin
+    AccelEntry:= Accelerators^.data;
+    Accelerators:= Accelerators^.next;
+    with AccelEntry^ do
+      gtk_accel_group_remove(accel_group, accelerator_key, accelerator_mods,
+                             PGtkObject(Widget));
+  end;
+  {$EndIf}
+  ClearAccelKey(Widget);
+
+  // untransient
+  if GtkWidgetIsA(Widget,GTK_TYPE_WINDOW) then begin
+    UntransientWindow(PGtkWindow(Widget));
+  end;
+
+  // callbacks
+  RemoveCallbacks(Widget);
+
+  // childs
+  if GtkWidgetIsA(Widget,GTK_COMBO_TYPE) then begin
+    SetComboBoxText(PGtkCombo(Widget),nil);
+    FreeWinWidgetInfo(PGtkCombo(Widget)^.Entry);
+    FreeWinWidgetInfo(PGtkCombo(Widget)^.Button);
+  end;
+
+  // update caret
+  if GtkWidgetIsA(Widget,GTKAPIWidget_GetType) then
+    DestroyCaret(HDC(Widget));
+
+  // remove pending size messages
+  UnsetResizeRequest(Widget);
+  FWidgetsResized.Remove(Widget);
+  if FixWidget<>Widget then
+    FFixWidgetsResized.Remove(FixWidget);
+
+  // destroy the widget
+  DestroyWidget(Widget);
+
+  // remove all remaining messages to this widget
+  QueueItem:=FMessageQueue.FirstMessageItem;
+  while (QueueItem<>nil) do begin
+    MsgPtr := QueueItem.Msg;
+    NextItem := TGtkMessagequeueItem(QueueItem.Next);
+    if (PGtkWidget(MsgPtr^.hWnd)=Widget) then
+      fMessageQueue.RemoveMessage(QueueItem,FPMF_All,true);
+    QueueItem := NextItem;
+  end;
 end;
 
 {-------------------------------------------------------------------------------
@@ -5538,6 +5529,176 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function TgtkObject.CreatePairSplitter(PairSplitterObject: TObject
+    ): PGtkWidget;
+
+  Create a TStatusBar widget set
+ ------------------------------------------------------------------------------}
+function TgtkObject.CreateStatusBar(StatusBar: TObject): PGtkWidget;
+{$IFDEF NewStatusBar}
+var
+  HBox: PGtkWidget;
+{$ENDIF}
+begin
+  {$IFDEF NewStatusBar}
+  HBox:=gtk_hbox_new(false,0);
+  UpdateStatusBarPanels(StatusBar,HBox);
+  Result:=HBox;
+  {$ELSE}
+  Result:=gtk_statusbar_new;
+  {$ENDIF}
+end;
+
+{------------------------------------------------------------------------------
+  function TgtkObject.CreateStatusBarPanel(StatusBar: TObject; Index: integer
+    ): PGtkWidget;
+
+  Creates a new statusbar panel widget.
+ ------------------------------------------------------------------------------}
+function TgtkObject.CreateStatusBarPanel(StatusBar: TObject; Index: integer
+  ): PGtkWidget;
+begin
+  Result:=gtk_statusbar_new;
+  gtk_widget_show(Result);
+  // other properties are set in UpdateStatusBarPanels
+end;
+
+{------------------------------------------------------------------------------
+  procedure TgtkObject.UpdateStatusBarPanels(StatusBar: TObject;
+    StatusBarWidget: PGtkWidget);
+    
+  Update the widget(s) of a TStatusBar.
+ ------------------------------------------------------------------------------}
+procedure TgtkObject.UpdateStatusBarPanels(StatusBar: TObject;
+  StatusBarWidget: PGtkWidget);
+var
+  AStatusBar: TStatusBar;
+  HBox: PGtkWidget;
+  CurPanelCount: integer;
+  NewPanelCount: Integer;
+  CurStatusPanelWidget: PGtkWidget;
+  ListItem: PGList;
+  i: Integer;
+  ExpandItem: boolean;
+begin
+  //writeln('TgtkObject.UpdateStatusBarPanels');
+
+  AStatusBar:=StatusBar as TStatusBar;
+  HBox:=PGtkWidget(StatusBarWidget);
+  
+  // create needed panels
+  CurPanelCount:=integer(g_list_length(PGtkBox(HBox)^.children));
+  if AStatusBar.SimplePanel or (AStatusBar.Panels.Count<1) then
+    NewPanelCount:=1
+  else
+    NewPanelCount:=AStatusBar.Panels.Count;
+  while CurPanelCount<NewPanelCount do begin
+    CurStatusPanelWidget:=CreateStatusBarPanel(StatusBar,CurPanelCount);
+    ExpandItem:=(CurPanelCount=NewPanelCount-1);
+    gtk_box_pack_start(PGtkBox(HBox),CurStatusPanelWidget,
+                       ExpandItem,ExpandItem,0);
+    inc(CurPanelCount);
+  end;
+  CurPanelCount:=integer(g_list_length(PGtkBox(HBox)^.children));
+
+  // remove unneeded panels
+  while CurPanelCount>NewPanelCount do begin
+    CurStatusPanelWidget:=PGtkBoxChild(
+              g_list_nth_data(PGtkBox(HBox)^.children,CurPanelCount-1))^.Widget;
+    DestroyConnectedWidget(CurStatusPanelWidget,true);
+  end;
+
+  // set panel properties
+  ListItem:=PGTKBox(HBox)^.children;
+  i:=0;
+  while ListItem<>nil do begin
+    CurStatusPanelWidget:=PGtkBoxChild(PGTKWidget(ListItem^.data))^.widget;
+    ExpandItem:=(ListItem^.next=nil);
+    gtk_box_set_child_packing(PGtkBox(HBox),CurStatusPanelWidget,
+      ExpandItem,ExpandItem,0,GTK_PACK_START);
+    UpdateStatusBarPanel(StatusBar,i,CurStatusPanelWidget);
+    inc(i);
+    ListItem:=ListItem^.next;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  procedure TgtkObject.UpdateStatusBarPanel(StatusBar: TObject; Index: integer;
+    StatusPanelWidget: PGtkWidget);
+
+  Update the widget(s) of a single TStatusBar panel.
+ ------------------------------------------------------------------------------}
+procedure TgtkObject.UpdateStatusBarPanel(StatusBar: TObject; Index: integer;
+  StatusPanelWidget: PGtkWidget);
+var
+  AStatusBar: TStatusBar;
+  CurPanel: TStatusPanel;
+  FrameWidget: PGtkWidget;
+  LabelWidget: PGtkLabel;
+  PanelText: String;
+  ContextID: LongWord;
+  NewShadowType: TGtkShadowType;
+  NewJustification: TGtkJustification;
+begin
+  AStatusBar:=StatusBar as TStatusBar;
+
+  CurPanel:=nil;
+  if (not AStatusBar.SimplePanel) and (AStatusBar.Panels.Count>Index) then
+    CurPanel:=AStatusBar.Panels[Index];
+  //writeln('Panel ',Index,' ',GetWidgetClassName(StatusPanelWidget),
+  //  ' frame=',GetWidgetClassName(PGTKStatusBar(StatusPanelWidget)^.frame),
+  //  ' thelabel=',GetWidgetClassName(PGTKStatusBar(StatusPanelWidget)^.thelabel),
+  // '');
+  FrameWidget:=PGTKStatusBar(StatusPanelWidget)^.frame;
+  LabelWidget:=PGtkLabel(PGTKStatusBar(StatusPanelWidget)^.thelabel);
+
+  // Text
+  if AStatusBar.SimplePanel then
+    PanelText:=AStatusBar.SimpleText
+  else if CurPanel<>nil then
+    PanelText:=CurPanel.Text
+  else
+    PanelText:='';
+  ContextID:=gtk_statusbar_get_context_id(PGTKStatusBar(StatusPanelWidget),
+                                          'state');
+  //writeln('  PanelText="',PanelText,'"');
+  gtk_statusbar_push(PGTKStatusBar(StatusPanelWidget),ContextID,
+                     PGChar(PanelText));
+
+  // Alignment
+  if CurPanel<>nil then begin
+    //writeln('  Alignment="',ord(CurPanel.Alignment),'"');
+    case CurPanel.Alignment of
+    taLeftJustify: NewJustification:=GTK_JUSTIFY_LEFT;
+    taRightJustify: NewJustification:=GTK_JUSTIFY_RIGHT;
+    taCenter: NewJustification:=GTK_JUSTIFY_CENTER;
+    else
+      NewJustification:=GTK_JUSTIFY_LEFT;
+    end;
+    gtk_label_set_justify(LabelWidget,NewJustification);
+  end;
+
+  // Bevel
+  if CurPanel<>nil then begin
+    case CurPanel.Bevel of
+    pbNone: NewShadowType:=GTK_SHADOW_NONE;
+    pbLowered: NewShadowType:=GTK_SHADOW_IN;
+    pbRaised: NewShadowType:=GTK_SHADOW_OUT;
+    else
+      NewShadowType:=GTK_SHADOW_IN;
+    end;
+    gtk_frame_set_shadow_type(PGtkFrame(FrameWidget),NewShadowType);
+  end;
+
+  // Width
+  if (CurPanel<>nil) then begin
+    //writeln('  CurPanel.Width="',CurPanel.Width,'"');
+    gtk_widget_set_usize(StatusPanelWidget,CurPanel.Width,
+      StatusPanelWidget^.allocation.height);
+  end;
+end;
+
+{------------------------------------------------------------------------------
   function TgtkObject.CreateSimpleClientAreaWidget(Sender: TObject;
     NotOnParentsClientArea: boolean): PGtkWidget;
 
@@ -6003,7 +6164,7 @@ begin
 
   csStatusBar :
     begin
-       P := gtk_statusbar_new();
+      p:=CreateStatusBar(Sender);
     end;
 
   csToggleBox :
@@ -7987,8 +8148,6 @@ begin
 end;
 
 
-
-
 {------------------------------------------------------------------------------
   TgtkObject SetResizeRequest
   Params: Widget: PGtkWidget
@@ -8418,6 +8577,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.447  2004/01/09 20:03:13  mattias
+  implemented new statusbar methods in gtk intf
+
   Revision 1.446  2004/01/06 17:58:06  mattias
   fixed setting TRadioButton.Caption for gtk
 

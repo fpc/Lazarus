@@ -47,6 +47,64 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Procedure: StatusBarInsertPanel
+  Params: StatusBar:
+          index:
+  Returns: Nothing
+
+ ------------------------------------------------------------------------------}
+procedure TWIN32Object.StatusBarInsertPanel(StatusBar: TObject; index: integer);
+begin
+  // Your code here
+end;
+
+{------------------------------------------------------------------------------
+  Procedure: StatusBarPanelUpdate
+  Params: StatusBar:
+          index:
+  Returns: Nothing
+
+ ------------------------------------------------------------------------------}
+procedure TWIN32Object.StatusBarPanelUpdate(StatusBar: TObject; index: integer);
+begin
+  // Your code here
+end;
+
+{------------------------------------------------------------------------------
+  Procedure: StatusBarRemovePanel
+  Params: StatusBar:
+          index:
+  Returns: Nothing
+
+ ------------------------------------------------------------------------------}
+procedure TWIN32Object.StatusBarRemovePanel(StatusBar: TObject; index: integer);
+begin
+  // Your code here
+end;
+
+{------------------------------------------------------------------------------
+  Procedure: StatusBarSetSimpleText
+  Params: StatusBar:
+  Returns: Nothing
+
+ ------------------------------------------------------------------------------}
+procedure TWIN32Object.StatusBarSetSimpleText(StatusBar: TObject);
+begin
+  // Your code here
+end;
+
+{------------------------------------------------------------------------------
+  Procedure: StatusBarSetStyle
+  Params: StatusBar:
+  Returns: Nothing
+
+ ------------------------------------------------------------------------------}
+procedure TWIN32Object.StatusBarSetStyle(StatusBar: TObject);
+begin
+  // Your code here
+end;
+
+{------------------------------------------------------------------------------
   Function: LCLCheckMenuItem
   Params:  BaseMenuItem
   Returns: Nothing
@@ -91,6 +149,9 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.6  2004/01/09 20:03:13  mattias
+  implemented new statusbar methods in gtk intf
+
   Revision 1.5  2004/01/03 11:57:48  mattias
   applied implementation for LM_LB_GETINDEXAT  from Vincent
 

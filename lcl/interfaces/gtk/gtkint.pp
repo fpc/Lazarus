@@ -141,11 +141,15 @@ type
     function CreateForm(ACustomForm: TCustomForm): PGtkWidget;
     function CreateListView(ListViewObject: TObject): PGtkWidget;
     function CreatePairSplitter(PairSplitterObject: TObject): PGtkWidget;
+    function CreateStatusBar(StatusBar: TObject): PGtkWidget;
+    function CreateStatusBarPanel(StatusBar: TObject; Index: integer): PGtkWidget;
     function CreateSimpleClientAreaWidget(Sender: TObject;
       NotOnParentsClientArea: boolean): PGtkWidget;
     procedure CreateComponent(Sender : TObject);virtual;
     procedure DestroyEmptySubmenu(Sender: TObject);virtual;
     procedure DestroyLCLComponent(Sender: TObject);virtual;
+    procedure DestroyConnectedWidget(Widget: PGtkWidget;
+                                     CheckIfDestroying: boolean);virtual;
     function  RecreateWnd(Sender: TObject): Integer; virtual;
     procedure AddChild(Parent,Child : Pointer; Left,Top: Integer);virtual;
     procedure AssignSelf(Child ,Data : Pointer);virtual;
@@ -266,13 +270,17 @@ type
       ProcessAmpersands : Boolean) : PChar;
     procedure WordWrap(DC: HDC; AText: PChar; MaxWidthInPixel: integer;
       var Lines: PPChar; var LineCount: integer);
+    procedure UpdateStatusBarPanels(StatusBar: TObject;
+                                    StatusBarWidget: PGtkWidget); virtual;
+    procedure UpdateStatusBarPanel(StatusBar: TObject; Index: integer;
+                                   StatusPanelWidget: PGtkWidget); virtual;
 
     // control functions for messages, callbacks
     Procedure HookSignals(Sender : TObject); virtual;  //hooks all signals for controls
     procedure ResizeChild(Sender : TObject; Left,Top,Width,Height : Integer);virtual;
     procedure SetResizeRequest(Widget: PGtkWidget);virtual;
     procedure UnsetResizeRequest(Widget: PGtkWidget);virtual;
-    procedure RemoveCallbacks(Sender : TObject); virtual;
+    procedure RemoveCallbacks(Widget: PGtkWidget); virtual;
   public
     // for gtk specific components:
     procedure SetCallback(Msg : LongInt; Sender : TObject); virtual;
@@ -409,6 +417,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.165  2004/01/09 20:03:13  mattias
+  implemented new statusbar methods in gtk intf
+
   Revision 1.164  2004/01/04 16:44:33  mattias
   updated gtk2 package
 

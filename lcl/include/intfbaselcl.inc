@@ -462,6 +462,26 @@ begin
   Result := false;
 end;
 
+procedure TInterfaceBase.StatusBarInsertPanel(StatusBar: TObject; index: integer);
+begin
+end;
+
+procedure TInterfaceBase.StatusBarPanelUpdate(StatusBar: TObject; index: integer);
+begin
+end;
+
+procedure TInterfaceBase.StatusBarRemovePanel(StatusBar: TObject; index: integer);
+begin
+end;
+
+procedure TInterfaceBase.StatusBarSetSimpleText(StatusBar: TObject);
+begin
+end;
+
+procedure TInterfaceBase.StatusBarSetStyle(StatusBar: TObject);
+begin
+end;
+
 function TInterfaceBase.StretchMaskBlt(DestDC: HDC;
   X, Y, Width, Height: Integer; SrcDC: HDC;
   XSrc, YSrc, SrcWidth, SrcHeight: Integer;
@@ -474,6 +494,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.8  2004/01/09 20:03:13  mattias
+  implemented new statusbar methods in gtk intf
+
   Revision 1.7  2004/01/03 11:57:47  mattias
   applied implementation for LM_LB_GETINDEXAT  from Vincent
 

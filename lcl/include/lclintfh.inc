@@ -105,6 +105,11 @@ function RightJustifyMenuItem(HndMenu: HMenu; bRightJustify: boolean): Boolean; 
 procedure SendCachedLCLMessages; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetCaretRespondToFocus(handle: HWND; ShowHideOnFocus: boolean): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetComboMinDropDownSize(Handle: HWND; MinItemsWidth, MinItemsHeight, MinItemCount: integer): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+procedure StatusBarInsertPanel(StatusBar: TObject; index: integer); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+procedure StatusBarPanelUpdate(StatusBar: TObject; index: integer); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+procedure StatusBarRemovePanel(StatusBar: TObject; index: integer); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+procedure StatusBarSetSimpleText(StatusBar: TObject); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+procedure StatusBarSetStyle(StatusBar: TObject); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 
@@ -142,6 +147,9 @@ procedure RaiseLastOSError;
 { =============================================================================
 
   $Log$
+  Revision 1.7  2004/01/09 20:03:13  mattias
+  implemented new statusbar methods in gtk intf
+
   Revision 1.6  2004/01/03 11:57:47  mattias
   applied implementation for LM_LB_GETINDEXAT  from Vincent
 

@@ -81,6 +81,9 @@ var
 begin
   if (PanelParts=[]) or (not HandleAllocated) or (csLoading in ComponentState)
   then exit;
+  {$IFDEF NewStatusBar}
+  StatusBarPanelUpdate(Self,PanelIndex);
+  {$ELSE}
   if ppWidth in PanelParts then begin
     Invalidate;
   end else begin
@@ -97,6 +100,7 @@ begin
       InvalidateFrame(Handle,@PanelRect,false,2);
     end;
   end;
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -185,6 +189,9 @@ var
   PW : Longint;
 Begin
   inherited WMPaint(Msg);
+  {$IFDEF NewStatusBar}
+  exit;
+  {$ENDIF}
   FillChar(Style, SizeOf(Style),0);
   With Style do begin
     Layout := tlCenter;

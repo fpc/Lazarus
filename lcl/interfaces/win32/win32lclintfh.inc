@@ -32,12 +32,19 @@ function GetListBoxIndexAtY(ListBox: TComponent; y: integer): integer; override;
 function LclCheckMenuItem(BaseMenuItem: TComponent): Boolean; override;
 function LclEnableMenuItem(BaseMenuItem: TComponent): Boolean; override;
 
-
+procedure StatusBarInsertPanel(StatusBar: TObject; index: integer); override;
+procedure StatusBarPanelUpdate(StatusBar: TObject; index: integer); override;
+procedure StatusBarRemovePanel(StatusBar: TObject; index: integer); override;
+procedure StatusBarSetSimpleText(StatusBar: TObject); override;
+procedure StatusBarSetStyle(StatusBar: TObject); override;
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
 
 { =============================================================================
 
   $Log$
+  Revision 1.5  2004/01/09 20:03:13  mattias
+  implemented new statusbar methods in gtk intf
+
   Revision 1.4  2004/01/03 11:57:48  mattias
   applied implementation for LM_LB_GETINDEXAT  from Vincent
 

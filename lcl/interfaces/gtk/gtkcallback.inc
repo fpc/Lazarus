@@ -2268,7 +2268,7 @@ begin
   DeliverMessage(Data, Mess);
 end;
 
-function gtksize_allocateCB(widget: PGtkWidget; size :pGtkAllocation;
+function gtksize_allocateCB(widget: PGtkWidget; size: pGtkAllocation;
   data: gPointer) : GBoolean; cdecl;
 begin
   Result:=false;
@@ -2280,7 +2280,10 @@ begin
   if not (TObject(Data) is TControl) then begin
     // owner is not TControl -> ignore
     writeln('WARNING: gtksize_allocateCB: Data is not TControl. Data=',
-            HexStr(Cardinal(Data),8));
+            HexStr(Cardinal(Data),8),' ',GetWidgetClassName(Widget));
+    if Data<>nil then
+      writeln('  Data=',TObject(Data).ClassName);
+    RaiseException('');
     exit;
   end;
   
@@ -3224,6 +3227,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.211  2004/01/09 20:03:13  mattias
+  implemented new statusbar methods in gtk intf
+
   Revision 1.210  2004/01/09 13:49:43  mattias
   improved gtk intf key fetching and OI keyboard navigation
 
