@@ -1324,7 +1324,7 @@ procedure TControl.Show;
 begin
   if Parent <> nil then Parent.ShowControl(Self);
   if not (csDesigning in ComponentState)
-  or (not (csNoDesignVisible in ControlStyle)) then begin
+  or (csNoDesignVisible in ControlStyle) then begin
     Visible := true;
   end;
 end;
@@ -1361,7 +1361,7 @@ end;
 {------------------------------------------------------------------------------}
 Function TControl.IsCaptionStored : Boolean;
 Begin
-result := true;
+  Result := true;
 end;
 
 {------------------------------------------------------------------------------}
@@ -2042,6 +2042,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.102  2002/11/16 14:38:48  mattias
+  fixed TControl.Show and Visible of designer forms
+
   Revision 1.101  2002/11/12 16:18:45  lazarus
   MG fixed hidden component page
 
