@@ -3963,7 +3963,7 @@ begin
       
       p := gtk_window_new(FormStyleMap[ABorderStyle]);
 
-      gtk_window_set_policy (GTK_WINDOW (p), FormResizableMap[ABorderStyle],
+      gtk_window_set_policy(GTK_WINDOW(p), FormResizableMap[ABorderStyle],
         FormResizableMap[ABorderStyle], 0);
       gtk_window_set_title(pGtkWindow(p), strTemp);
 
@@ -6280,6 +6280,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.246  2002/10/11 07:28:05  lazarus
+  MG: gtk interface now sends keyboard events via DeliverMessage
+
   Revision 1.245  2002/10/10 19:43:16  lazarus
   MG: accelerated GetTextMetrics
 
