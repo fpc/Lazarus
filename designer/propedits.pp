@@ -868,9 +868,12 @@ type
     function GetCapacity:integer;
     procedure SetCapacity(const NewCapacity:integer);
   public
+    constructor Create;
+    destructor Destroy;  override;
     procedure BeginUpdate;
     procedure EndUpdate;
     function UpdateLock: integer;
+    function IndexOf(AComponent: TComponent): integer;
     procedure Clear;
     function IsEqual(SourceSelectionList: TComponentSelectionList): boolean;
     property Count:integer read GetCount;
@@ -878,8 +881,6 @@ type
     function Add(AComponent: TComponent): integer;
     procedure Assign(SourceSelectionList: TComponentSelectionList);
     property Items[Index: integer]: TComponent read GetItems write SetItems; default;
-    constructor Create;
-    destructor Destroy;  override;
   end;
 
 //==============================================================================
@@ -4177,6 +4178,12 @@ end;
 function TComponentSelectionList.UpdateLock: integer;
 begin
   Result:=FUpdateLock;
+end;
+
+function TComponentSelectionList.IndexOf(AComponent: TComponent): integer;
+begin
+  Result:=Count-1;
+  while (Result>=0) and (Items[Result]<>AComponent) do dec(Result);
 end;
 
 procedure TComponentSelectionList.Assign(

@@ -2287,6 +2287,7 @@ begin
     FillComponentComboBox;
     PropertyGrid.PropertyEditorHook:=FPropertyEditorHook;
     EventGrid.PropertyEditorHook:=FPropertyEditorHook;
+    ComponentTree.PropertyEditorHook:=FPropertyEditorHook;
     RefreshSelections;
   end;
 end;
@@ -2420,6 +2421,7 @@ procedure TObjectInspector.RefreshSelections;
 begin
   PropertyGrid.Selections:=FComponentList;
   EventGrid.Selections:=FComponentList;
+  ComponentTree.Selections:=FComponentList;
   if (not Visible) and (FComponentList.Count>0) then
     Visible:=true;
 end;

@@ -664,7 +664,7 @@ function TApplication.GetTitle: string;
 var
   Ext: string;
 begin
-  Result := Title;
+  Result := inherited Title;
   If Result = '' then begin
     Result := ExtractFileName(GetExeName);
     Ext := ExtractFileExt(Result);
@@ -1131,6 +1131,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.62  2003/08/22 13:51:25  mattias
+  fixed TApplication.GetTitle
+
   Revision 1.61  2003/08/12 21:35:11  mattias
   TApplication now descends from TCustomApplication
 
