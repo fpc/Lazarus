@@ -780,7 +780,7 @@ end;
 // ------------------------------------------------------------//
 procedure TDesignerMainMenu.AddSubMenuClick(Sender: TObject);
 begin
-  AddSubMenu(Root, SelectedDesignerMenuItem);
+  if AddSubMenu(Root, SelectedDesignerMenuItem)=nil then exit;
   SetCoordinates(POSITION_LEFT, POSITION_TOP, 0, Root);
   Parent.Invalidate;
   
