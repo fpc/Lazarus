@@ -20,7 +20,7 @@
 const
   NoInterfaceObject =
     'No interface object. '
-    +'Plz check if "interfaces" was added to the programs uses section.';
+    +'Plz check if the unit "interfaces" was added to the programs uses clause.';
 
   DefHintColor = clInfoBk;  { default hint window color }
   DefHintPause = 500;       { default pause before hint window displays (ms) }
@@ -859,6 +859,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.46  2003/01/13 20:39:19  mattias
+  changed the no interfaceobject message
+
   Revision 1.45  2003/01/04 11:58:32  mattias
   added Windows menu to IDE
 
