@@ -52,30 +52,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: GDKColorIDToRGB
-  Params:  AGDKColorID: A GDK color index
-  Returns: a RGB color (TColor)
-
- ------------------------------------------------------------------------------}
-function GDKColorIDToRGB(AGDKColorID: cardinal): LongInt;
-//var AColor: TGDKColor;
-begin
-//writeln('[GDKColorIDToRGB] ID=',HexStr(AGDKColorID,8),' ',gdk_colormap_get_system_size);
-  Result:=AGDKColorID;
-  exit;
-{ MG:  I don't know what the AGDKColorID from gdk_image_get_pixel is.
-
-  if AGDKColorID >= cardinal(gdk_colormap_get_system_size) then
-    Result:=0
-  else begin
-    AColor:=gdk_colormap_get_system^.Colors[AGDKColorID];
-    Result := (AColor.Red shr 8) or (AColor.Green and $ff00)
-               or ((AColor.Blue and $ff00) shl 8);
-  end;
-  }
-end; 
-
-{------------------------------------------------------------------------------
   Function: CopyDCData
   Params:  DestinationDC:  a dc to copy data to
            SourceDC: a dc to copy data from
@@ -719,8 +695,8 @@ end;
 function TGDKColorToTColor(value : TGDKColor) : TColor;
 begin
 //ReportNotObsolete('TgdkColortoTColor');
-  Result := ((Value.Blue div 257) shl 16) + ((Value.Green div 257) shl 8) 
-           + (Value.Red div 257);
+  Result := ((Value.Blue shr 8) shl 16) + ((Value.Green shr 8) shl 8) 
+           + (Value.Red shr 8);
 end;
 
 function TColortoTGDKColor(value : TColor) : TGDKColor;
@@ -772,6 +748,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.23  2001/10/08 12:57:07  lazarus
+  MG: fixed GetPixel
+
   Revision 1.22  2001/10/08 08:05:08  lazarus
   MG: fixed TColorDialog set color
 

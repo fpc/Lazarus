@@ -2495,7 +2495,8 @@ var
   PDC    : PDeviceContext;
   Image  : pGDKImage;
   Widget : PgtkWidget;
-  GDKColorIndex: Cardinal;
+  GDKColor: TGDKColor;
+  GdkColorContext: PGdkColorContext;
 begin
   PDC := PDeviceContext(TCanvas(Sender).Handle);
   if PDC = nil then exit;
@@ -2509,10 +2510,14 @@ begin
     gtk_Object_set_data(pgtkobject(Widget),'Image',Image);
   end;
 
-  GDKColorIndex := gdk_image_get_pixel(Image,
+  GDKColor.Pixel := gdk_image_get_pixel(Image,
                               TLMSetGetPixel(data^).X,TLMSetGetPixel(data^).Y);
-  
-  TLMSetGetPixel(data^).PixColor := GDKColorIDToRGB(GDKColorIndex);
+  GdkColorContext:=
+    gdk_color_context_new(gdk_visual_get_system,gdk_colormap_get_system);
+  gdk_color_context_query_color(GdkColorContext,@GDKColor);
+  gdk_color_context_free(GdkColorContext);
+    
+  TLMSetGetPixel(data^).PixColor := TGDKColorToTColor(GDKColor);
 end;
 
 {------------------------------------------------------------------------------
@@ -3081,6 +3086,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.59  2001/10/08 12:57:07  lazarus
+  MG: fixed GetPixel
+
   Revision 1.58  2001/10/08 08:05:08  lazarus
   MG: fixed TColorDialog set color
 
