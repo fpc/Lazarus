@@ -695,6 +695,9 @@ begin
 
     CreateMenuItem(ParentMI,itmToolCheckLFM,'itmToolCheckLFM',lisMenuCheckLFM);
     CreateMenuItem(ParentMI,itmToolConvertDelphiUnit,'itmToolConvertDelphiUnit',lisMenuConvertDelphiUnit);
+    {$IFDEF EnableConvertDelphiProject}
+    CreateMenuItem(ParentMI,itmToolConvertDelphiProject,'itmToolConvertDelphiProject',lisMenuConvertDelphiProject);
+    {$ENDIF}
     CreateMenuItem(ParentMI,itmToolConvertDFMtoLFM,'itmToolConvertDFMtoLFM',lisMenuConvertDFMtoLFM);
     ParentMI.Add(CreateMenuSeparator);
 
@@ -887,6 +890,9 @@ begin
     itmToolConvertDFMtoLFM.ShortCut:=CommandToShortCut(ecConvertDFM2LFM);
     itmToolCheckLFM.ShortCut:=CommandToShortCut(ecCheckLFM);
     itmToolConvertDelphiUnit.ShortCut:=CommandToShortCut(ecConvertDelphiUnit);
+    {$IFDEF EnableConvertDelphiProject}
+    itmToolConvertDelphiProject.ShortCut:=CommandToShortCut(ecConvertDelphiProject);
+    {$ENDIF}
     itmToolBuildLazarus.ShortCut:=CommandToShortCut(ecBuildLazarus);
     itmToolConfigureBuildLazarus.ShortCut:=CommandToShortCut(ecConfigBuildLazarus);
 

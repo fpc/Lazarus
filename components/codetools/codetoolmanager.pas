@@ -360,6 +360,10 @@ type
           ImplementationUsesSection: TStrings): boolean;
     function FindUsedUnitNames(Code: TCodeBuffer; var MainUsesSection,
           ImplementationUsesSection: TStrings): boolean;
+    function FindMissingUnits(Code: TCodeBuffer;
+          var MissingUnits: TStrings): boolean;
+    function CommentUnitsInUsesSections(Code: TCodeBuffer;
+          MissingUnits: TStrings): boolean;
 
     // resources
     property OnGetDefineProperties: TOnGetDefineProperties
@@ -2136,6 +2140,37 @@ begin
   try
     Result:=FCurCodeTool.FindUsedUnitNames(MainUsesSection,
                                            ImplementationUsesSection);
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.FindMissingUnits(Code: TCodeBuffer;
+  var MissingUnits: TStrings): boolean;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.FindMissingUnits A ',Code.Filename);
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.FindMissingUnits(MissingUnits);
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.CommentUnitsInUsesSections(Code: TCodeBuffer;
+  MissingUnits: TStrings): boolean;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.CommentUnitsInUsesSections A ',Code.Filename);
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.CommentUnitsInUsesSections(MissingUnits,
+                                                    SourceChangeCache);
   except
     on e: Exception do Result:=HandleException(e);
   end;

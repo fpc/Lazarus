@@ -53,7 +53,7 @@ ResourceString
   ctsIdentExpectedButAtomFound = 'identifier expected, but %s found';
   ctsIdentExpectedButKeyWordFound = 'identifier expected, but keyword %s found';
   ctsStrExpectedButAtomFound = '%s expected, but %s found';
-  ctsinvalidClassName = 'invalid class name=%s%s%s';
+  ctsInvalidClassName = 'invalid class name=%s%s%s';
   ctsclassNotFound = 'class %s%s%s not found';
   ctsinvalidClassName2 = 'invalid class name %s%s%s';
   ctsinvalidVariableName = 'invalid variable name %s%s%s';

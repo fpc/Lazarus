@@ -103,6 +103,9 @@ type
           ImplementationUsesSection: TStrings): boolean;
     function UsesSectionToFilenames(UsesNode: TCodeTreeNode): TStrings;
     function UsesSectionToUnitnames(UsesNode: TCodeTreeNode): TStrings;
+    function FindMissingUnits(var MissingUnits: TStrings): boolean;
+    function CommentUnitsInUsesSections(MissingUnits: TStrings;
+          SourceChangeCache: TSourceChangeCache): boolean;
 
     // lazarus resources
     function FindNextIncludeInInitialization(
@@ -495,10 +498,10 @@ begin
   UsesNode:=FindMainUsesSection;
   if UsesNode<>nil then begin
     // add unit to existing uses section
-    if not(FindUnitInUsesSection(UsesNode,Uppercase(NewUnitName),Junk,Junk))
+    if not (FindUnitInUsesSection(UsesNode,UpperCaseStr(NewUnitName),Junk,Junk))
     then
-       Result:=AddUnitToUsesSection(UsesNode,NewUnitName, NewUnitInFile,
-                                 SourceChangeCache);
+      if not AddUnitToUsesSection(UsesNode,NewUnitName,NewUnitInFile,
+                                   SourceChangeCache) then exit;
   end else begin
     // create a new uses section
     if Tree.Root=nil then exit;
@@ -522,8 +525,8 @@ begin
     if not SourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,
       NewUsesTerm) then exit;
     if not SourceChangeCache.Apply then exit;
-    Result:=true;
   end;
+  Result:=true;
 end;
 
 function TStandardCodeTool.RemoveUnitFromUsesSection(UsesNode: TCodeTreeNode;
@@ -566,7 +569,7 @@ begin
         if not SourceChangeCache.Replace(gtNone,gtNone,
           EndPos,CurPos.StartPos,'') then exit;
       end;
-     if not SourceChangeCache.Apply then exit;
+      if not SourceChangeCache.Apply then exit;
       Result:=true;
       exit;
     end;
@@ -578,6 +581,7 @@ begin
     if AtomIsChar(';') then break;
     if not AtomIsChar(',') then break;
   until (CurPos.StartPos>UsesNode.EndPos) or (CurPos.StartPos>SrcLen);
+  Result:=true;
 end;
 
 function TStandardCodeTool.RemoveUnitFromAllUsesSections(
@@ -585,8 +589,7 @@ function TStandardCodeTool.RemoveUnitFromAllUsesSections(
 var SectionNode: TCodeTreeNode;
 begin
   Result:=false;
-  if (UpperUnitName='') or (length(UpperUnitName)>255)
-  or (SourceChangeCache=nil) then exit;
+  if (UpperUnitName='') or (SourceChangeCache=nil) then exit;
   BuildTree(false);
   SectionNode:=Tree.Root;
   while (SectionNode<>nil) do begin
@@ -714,6 +717,183 @@ begin
     // read keyword 'uses' or comma
     ReadPriorAtom;
   until not AtomIsChar(',');
+end;
+
+function TStandardCodeTool.FindMissingUnits(var MissingUnits: TStrings
+  ): boolean;
+  
+  function CheckUsesSection(UsesNode: TCodeTreeNode): boolean;
+  var
+    UsesSection: TStrings;
+    i: Integer;
+  begin
+    Result:=true;
+    if UsesNode=nil then exit;
+    UsesSection:=nil;
+    try
+      UsesSection:=UsesSectionToFilenames(UsesNode);
+      if UsesSection=nil then exit;
+      // gather all missing units
+      for i:=0 to UsesSection.Count-1 do begin
+        //debugln('TStandardCodeTool.FindMissingUnits A ',UsesSection[i],' ',dbgs(UsesSection.Objects[i]=nil));
+        if UsesSection.Objects[i]=nil then begin
+          if MissingUnits=nil then MissingUnits:=TStringList.Create;
+          MissingUnits.Add(UsesSection[i]);
+        end;
+      end;
+    finally
+      UsesSection.Free;
+    end;
+  end;
+  
+begin
+  Result:=false;
+  BuildTree(false);
+  try
+    if not CheckUsesSection(FindMainUsesSection) then exit;
+    if not CheckUsesSection(FindImplementationUsesSection) then exit;
+  except
+    FreeAndNil(MissingUnits);
+    raise;
+  end;
+  Result:=true;
+end;
+
+function TStandardCodeTool.CommentUnitsInUsesSections(MissingUnits: TStrings;
+  SourceChangeCache: TSourceChangeCache): boolean;
+  
+  procedure Comment(CommentStartPos, CommentEndPos: integer);
+  var
+    i: LongInt;
+  begin
+    if CommentStartPos>=CommentEndPos then
+      RaiseException('TStandardCodeTool Comment');
+  
+    // try curly brackets {}
+    i:=CommentStartPos;
+    while (i<CommentEndPos) and (Src[i]<>'}') do inc(i);
+    if i=CommentEndPos then begin
+      SourceChangeCache.Replace(gtNone,gtNone,CommentStartPos,CommentStartPos,'{');
+      SourceChangeCache.Replace(gtNone,gtNone,CommentEndPos,CommentEndPos,'}');
+      //debugln('Comment {} "',copy(Src,CommentStartPos,CommentEndPos-CommentStartPos));
+      exit;
+    end;
+    // try (*  *)
+    i:=CommentStartPos;
+    while (i<CommentEndPos-1) and ((Src[i]<>'*') or (Src[i+1]<>')')) do inc(i);
+    if i=CommentEndPos-1 then begin
+      SourceChangeCache.Replace(gtNone,gtNone,CommentStartPos,CommentStartPos,'(*');
+      SourceChangeCache.Replace(gtNone,gtNone,CommentEndPos,CommentEndPos,'*)');
+      //debugln('Comment (**) "',copy(Src,CommentStartPos,CommentEndPos-CommentStartPos));
+      exit;
+    end;
+    // do it with // comments
+    SourceChangeCache.Replace(gtNone,gtNone,CommentStartPos,CommentStartPos,'//');
+    SourceChangeCache.Replace(gtNone,gtNewLine,CommentEndPos,CommentEndPos,' ');
+    //debugln('Comment // "',copy(Src,CommentStartPos,CommentEndPos-CommentStartPos));
+    for i:=CommentStartPos+1 to CommentEndPos-1 do
+      if (Src[i-1] in [#10,#13]) and (not (Src[i] in [#10,#13])) then begin
+        SourceChangeCache.Replace(gtNone,gtNone,i,i,'//');
+      end;
+  end;
+  
+  function CommentUnitsInUsesSection(UsesNode: TCodeTreeNode): boolean;
+  // Examples:
+  // 1. uses {a,} b, c;    commenting one unit not at end
+  // 2. uses a, {b,} c;    commenting one unit not at end
+  // 3. uses {a, b,} c;    commenting several units not at end
+  // 4. uses a{, b, c} ;   commenting units at end
+  // 5. {uses a, b, c;}    commenting all units
+  var
+    i: Integer;
+    CurUnitName: String;
+    CommentCurUnit: Boolean;
+    FirstCommentUnitStart: Integer;
+    LastCommaAfterCommentUnitsStart: Integer;
+    FirstNormalUnitEnd: Integer;
+    LastCommentUnitEnd: Integer;
+  begin
+    Result:=true;
+    if UsesNode=nil then exit;
+    MoveCursorToUsesStart(UsesNode);
+    FirstCommentUnitStart:=-1;
+    LastCommaAfterCommentUnitsStart:=-1;
+    FirstNormalUnitEnd:=-1;
+    LastCommentUnitEnd:=-1;
+    repeat
+      // check if unit should be commented
+      AtomIsIdentifier(true);
+      CurUnitName:=GetAtom;
+      i:=MissingUnits.Count-1;
+      while (i>=0) and (SysUtils.CompareText(MissingUnits[i],CurUnitName)<>0) do
+        dec(i);
+      CommentCurUnit:=i>=0;
+      //debugln('CommentUnitsInUsesSection CurUnitName="',CurUnitName,'" CommentCurUnit=',dbgs(CommentCurUnit));
+      
+      if CommentCurUnit then begin
+        // unit should be commented
+        if FirstCommentUnitStart<1 then FirstCommentUnitStart:=CurPos.StartPos;
+        LastCommentUnitEnd:=CurPos.EndPos;
+      end else begin
+        // unit should be kept
+        if FirstNormalUnitEnd<1 then FirstNormalUnitEnd:=CurPos.EndPos;
+        if FirstCommentUnitStart>=1 then begin
+          // there are some units to be commented
+          // See examples: 1., 2., 3.
+          Comment(FirstCommentUnitStart,LastCommaAfterCommentUnitsStart);
+          FirstCommentUnitStart:=-1;
+          LastCommentUnitEnd:=-1;
+          LastCommaAfterCommentUnitsStart:=-1;
+        end;
+      end;
+      
+      ReadNextAtom;
+      if UpAtomIs('IN') then begin
+        ReadNextAtom; // read filename
+        if not AtomIsStringConstant then
+          RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsStringConstant,GetAtom]);
+        if (not CommentCurUnit) and (FirstNormalUnitEnd<1) then
+          FirstNormalUnitEnd:=CurPos.EndPos;
+        if CommentCurUnit then
+          LastCommentUnitEnd:=CurPos.EndPos;
+        ReadNextAtom; // read comma or semicolon
+      end;
+        
+      if CommentCurUnit and (LastCommaAfterCommentUnitsStart<1) then
+        LastCommaAfterCommentUnitsStart:=CurPos.EndPos;
+        
+      if CurPos.Flag<>cafComma then begin
+        if CommentCurUnit then begin
+          // last unit must be commented
+          if FirstNormalUnitEnd>=1 then begin
+            // there are some units to be kept
+            // See example: 4.
+            Comment(FirstNormalUnitEnd,LastCommentUnitEnd);
+          end else begin
+            // all units should be commented
+            // See example: 5.
+            Comment(UsesNode.StartPos,CurPos.EndPos);
+          end;
+        end;
+        break;
+      end;
+      
+      ReadNextAtom;
+    until false;
+  end;
+  
+begin
+  Result:=false;
+  if (MissingUnits=nil) or (MissingUnits.Count=0) then begin
+    Result:=true;
+    exit;
+  end;
+  BuildTree(false);
+  SourceChangeCache.MainScanner:=Scanner;
+  if not CommentUnitsInUsesSection(FindMainUsesSection) then exit;
+  if not CommentUnitsInUsesSection(FindImplementationUsesSection) then exit;
+  if not SourceChangeCache.Apply then exit;
+  Result:=true;
 end;
 
 function TStandardCodeTool.FindNextIncludeInInitialization(
@@ -2482,13 +2662,23 @@ function TStandardCodeTool.ConvertDelphiToLazarusSource(AddLRSCode: boolean;
     if FindUnitInAllUsesSections('WINDOWS',NamePos,InPos)
     and (InPos.StartPos<1) then begin
       if not SourceChangeCache.Replace(gtNone,gtNone,
-                           NamePos.StartPos,NamePos.EndPos,'LCLIntf') then exit;
+                           NamePos.StartPos,NamePos.EndPos,'LCLIntf') then
+      begin
+        debugln('ConvertUsedUnits Unable to replace Windows with LCLIntf unit');
+        exit;
+      end;
     end;
     if AddLRSCode then
       if not AddUnitToMainUsesSection('LResources','',SourceChangeCache) then
+      begin
+        debugln('ConvertUsedUnits Unable to add LResources to main uses section');
         exit;
+      end;
     if not RemoveUnitFromAllUsesSections('VARIANTS',SourceChangeCache) then
+    begin
+      debugln('ConvertUsedUnits Unable to remove Variants from all uses sections');
       exit;
+    end;
     Result:=true;
   end;
 

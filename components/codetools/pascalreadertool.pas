@@ -133,7 +133,9 @@ type
     function FindFirstSectionChild: TCodeTreeNode;
 
     // uses sections
+    procedure MoveCursorToUsesStart(UsesNode: TCodeTreeNode);
     procedure MoveCursorToUsesEnd(UsesNode: TCodeTreeNode);
+    procedure ReadNextUsedUnit(var UnitNameAtom, InAtom: TAtomPosition);
     procedure ReadPriorUsedUnit(var UnitNameAtom, InAtom: TAtomPosition);
   end;
 
@@ -1298,6 +1300,19 @@ begin
   Result:=AtomIsChar('(');
 end;
 
+procedure TPascalReaderTool.MoveCursorToUsesStart(UsesNode: TCodeTreeNode);
+begin
+  if (UsesNode=nil) or (UsesNode.Desc<>ctnUsesSection) then
+    RaiseException('[TPascalParserTool.MoveCursorToUsesStart] '
+      +'internal error: invalid UsesNode');
+  // search backwards through the uses section
+  MoveCursorToCleanPos(UsesNode.StartPos);
+  ReadNextAtom;
+  if not UpAtomIs('USES') then
+    RaiseExceptionFmt(ctsStrExpectedButAtomFound,['uses',GetAtom]);
+  ReadNextAtom;
+end;
+
 procedure TPascalReaderTool.MoveCursorToUsesEnd(UsesNode: TCodeTreeNode);
 begin
   if (UsesNode=nil) or (UsesNode.Desc<>ctnUsesSection) then
@@ -1308,6 +1323,22 @@ begin
   ReadPriorAtom; // read ';'
   if not AtomIsChar(';') then
     RaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',GetAtom]);
+end;
+
+procedure TPascalReaderTool.ReadNextUsedUnit(var UnitNameAtom,
+  InAtom: TAtomPosition);
+begin
+  AtomIsIdentifier(true);
+  UnitNameAtom:=CurPos;
+  ReadNextAtom;
+  if UpAtomIs('IN') then begin
+    ReadNextAtom; // read filename
+    if not AtomIsStringConstant then
+      RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsStringConstant,GetAtom]);
+    InAtom:=CurPos;
+    ReadNextAtom; // read comma or semicolon
+  end else
+    InAtom.StartPos:=-1;
 end;
 
 procedure TPascalReaderTool.ReadPriorUsedUnit(var UnitNameAtom,

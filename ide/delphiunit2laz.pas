@@ -67,6 +67,7 @@ function RenameDelphiUnitToLazarusUnit(const DelphiFilename: string;
 function ConvertDFMFileToLFMFile(const DFMFilename: string): TModalResult;
 function ConvertDelphiSourceToLazarusSource(const LazarusUnitFilename: string;
   AddLRSCode: boolean): TModalResult;
+function FixMissingUnits(const LazarusUnitFilename: string): TModalResult;
 function LoadUnitAndLFMFile(const UnitFileName: string;
   var UnitCode, LFMCode: TCodeBuffer; LFMMustExist: boolean): TModalResult;
 function ConvertLFMtoLRSfile(const LFMFilename: string): TModalResult;
@@ -236,6 +237,59 @@ begin
   if not CTResult then begin
     Result:=mrCancel;
     exit;
+  end;
+  Result:=mrOk;
+end;
+
+function FixMissingUnits(const LazarusUnitFilename: string): TModalResult;
+var
+  LazUnitCode: TCodeBuffer;
+  CTResult: Boolean;
+  MissingUnits: TStrings;
+  MissingUnitsText: String;
+  i: Integer;
+begin
+  Result:=LoadCodeBuffer(LazUnitCode,LazarusUnitFilename,
+                         [lbfCheckIfText,lbfUpdateFromDisk]);
+  if Result<>mrOk then exit;
+  MissingUnits:=nil;
+  try
+    // find missing units
+    writeln('FixMissingUnits FindMissingUnits');
+    CTResult:=CodeToolBoss.FindMissingUnits(LazUnitCode,MissingUnits);
+    if not CTResult then begin
+      Result:=mrCancel;
+      exit;
+    end;
+    if (MissingUnits=nil) or (MissingUnits.Count=0) then begin
+      Result:=mrOk;
+      exit;
+    end;
+
+    MissingUnitsText:='';
+    for i:=0 to MissingUnits.Count-1 do begin
+      if MissingUnitsText<>'' then
+        MissingUnitsText:=MissingUnitsText+', ';
+      MissingUnitsText:=MissingUnitsText+MissingUnits[i];
+    end;
+    writeln('FixMissingUnits FindMissingUnits="',MissingUnitsText,'"');
+    // ask user if missing units should be commented
+    Result:=MessageDlg(lisUnitSNotFound,
+      Format(lisTheFollowingUnitsWereNotFound1EitherTheseUnitsAreN, [#13,
+        MissingUnitsText, #13, #13, #13, #13, #13, #13]),
+      mtConfirmation,[mbYes,mbAbort],0);
+    if Result<>mrYes then exit;
+
+    // comment missing units
+    writeln('FixMissingUnits CommentUnitsInUsesSections');
+    CTResult:=CodeToolBoss.CommentUnitsInUsesSections(LazUnitCode,MissingUnits);
+    if not CTResult then begin
+      Result:=mrCancel;
+      exit;
+    end;
+
+  finally
+    MissingUnits.Free;
   end;
   Result:=mrOk;
 end;

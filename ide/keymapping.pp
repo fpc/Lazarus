@@ -120,9 +120,10 @@ const
   ecConvertDFM2LFM       = ecUserFirst + 106;
   ecCheckLFM             = ecUserFirst + 107;
   ecConvertDelphiUnit    = ecUserFirst + 108;
-  ecMakeResourceString   = ecUserFirst + 109;
-  ecDiff                 = ecUserFirst + 110;
-  ecExtractProc          = ecUserFirst + 111;
+  ecConvertDelphiProject = ecUserFirst + 109;
+  ecMakeResourceString   = ecUserFirst + 110;
+  ecDiff                 = ecUserFirst + 111;
+  ecExtractProc          = ecUserFirst + 112;
 
   // file menu
   ecNew                  = ecUserFirst + 201;
@@ -572,10 +573,9 @@ begin
   ecConvertDFM2LFM: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecCheckLFM: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecConvertDelphiUnit: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecFindProcedureDefinition: SetResult(
-                                 VK_UP,[ssShift,SSCtrl],VK_UNKNOWN,[]);
-  ecFindProcedureMethod: SetResult(
-                                 VK_DOWN,[ssShift,SSCtrl],VK_UNKNOWN,[]);
+  ecConvertDelphiProject: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecFindProcedureDefinition: SetResult(VK_UP,[ssShift,SSCtrl],VK_UNKNOWN,[]);
+  ecFindProcedureMethod: SetResult(VK_DOWN,[ssShift,SSCtrl],VK_UNKNOWN,[]);
   ecFindDeclaration: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecFindBlockOtherEnd: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecFindBlockStart: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1178,6 +1178,7 @@ begin
     ecConvertDFM2LFM        : Result:= lismenuConvertDFMToLFM;
     ecCheckLFM              : Result:= lisMenuCheckLFM;
     ecConvertDelphiUnit     : Result:= lisMenuConvertDelphiUnit;
+    ecConvertDelphiProject  : Result:= lisMenuConvertDelphiProject;
     ecFindDeclaration       : Result:= srkmecFindDeclaration;
     ecFindBlockOtherEnd     : Result:= srkmecFindBlockOtherEnd;
     ecFindBlockStart        : Result:= srkmecFindBlockStart;
@@ -2098,7 +2099,8 @@ begin
   AddDefault(C,'Make resource string',ecMakeResourceString);
   AddDefault(C,'Diff editor files',ecDiff);
   AddDefault(C,'Convert DFM file to LFM',ecConvertDFM2LFM);
-  AddDefault(C,'Convert Delphi unit to lazarus unit',ecConvertDelphiUnit);
+  AddDefault(C,'Convert Delphi unit to Lazarus unit',ecConvertDelphiUnit);
+  AddDefault(C,'Convert Delphi project to Lazarus project',ecConvertDelphiProject);
 
   // environment menu
   C:=Categories[AddCategory('EnvironmentMenu',srkmCatEnvMenu,caAll)];

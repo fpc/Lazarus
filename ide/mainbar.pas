@@ -231,6 +231,7 @@ type
     itmToolGuessMisplacedIFDEF: TMenuItem;
     itmToolCheckLFM: TMenuItem;
     itmToolConvertDelphiUnit: TMenuItem;
+    itmToolConvertDelphiProject: TMenuItem;
     itmToolConvertDFMtoLFM: TMenuItem;
     itmToolMakeResourceString: TMenuItem;
     itmToolDiff: TMenuItem;

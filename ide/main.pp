@@ -241,6 +241,7 @@ type
     procedure mnuToolConvertDFMtoLFMClicked(Sender : TObject);
     procedure mnuToolCheckLFMClicked(Sender: TObject);
     procedure mnuToolConvertDelphiUnitClicked(Sender: TObject);
+    procedure mnuToolConvertDelphiProjectClicked(Sender: TObject);
     procedure mnuToolBuildLazarusClicked(Sender : TObject);
     procedure mnuToolConfigBuildLazClicked(Sender : TObject);
     procedure mnuCustomExtToolClick(Sender : TObject);
@@ -584,6 +585,7 @@ type
     function DoConvertDFMtoLFM: TModalResult;
     function DoCheckLFMInEditor: TModalResult;
     function DoConvertDelphiUnit(const DelphiFilename: string): TModalResult;
+    function DoConvertDelphiProject(const DelphiFilename: string): TModalResult;
     procedure UpdateCustomToolsInMenu;
 
     // external tools
@@ -1717,6 +1719,9 @@ begin
     itmToolDiff.OnClick := @mnuToolDiffClicked;
     itmToolConvertDFMtoLFM.OnClick := @mnuToolConvertDFMtoLFMClicked;
     itmToolConvertDelphiUnit.OnClick := @mnuToolConvertDelphiUnitClicked;
+    {$IFDEF EnableConvertDelphiProject}
+    itmToolConvertDelphiProject.OnClick := @mnuToolConvertDelphiProjectClicked;
+    {$ENDIF}
     itmToolBuildLazarus.OnClick := @mnuToolBuildLazarusClicked;
     itmToolConfigureBuildLazarus.OnClick := @mnuToolConfigBuildLazClicked;
   end;
@@ -2714,6 +2719,35 @@ begin
         and (DoConvertDelphiUnit(AFilename)=mrAbort) then
           break;
       end;
+      UpdateEnvironment;
+    end;
+    InputHistories.StoreFileDialogSettings(OpenDialog);
+  finally
+    OpenDialog.Free;
+  end;
+end;
+
+procedure TMainIDE.mnuToolConvertDelphiProjectClicked(Sender: TObject);
+
+  procedure UpdateEnvironment;
+  begin
+    SetRecentFilesMenu;
+    SaveEnvironment;
+  end;
+
+var
+  OpenDialog: TOpenDialog;
+  AFilename: string;
+begin
+  OpenDialog:=TOpenDialog.Create(Application);
+  try
+    InputHistories.ApplyFileDialogSettings(OpenDialog);
+    OpenDialog.Title:=lisChooseDelphiUnit;
+    OpenDialog.Options:=OpenDialog.Options;
+    if OpenDialog.Execute and (OpenDialog.Files.Count>0) then begin
+      AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
+      if FileExists(AFilename) then
+        DoConvertDelphiProject(AFilename);
       UpdateEnvironment;
     end;
     InputHistories.StoreFileDialogSettings(OpenDialog);
@@ -6716,6 +6750,7 @@ begin
   // remove {$R *.dfm} or {$R *.xfm} directive
   // add initialization
   // add {$i unit.lrs} directive
+  // comment all missing units in uses sections
   writeln('TMainIDE.DoConvertDelphiUnit Convert delphi source');
   FOpenEditorsOnCodeToolChange:=true;
   try
@@ -6730,6 +6765,14 @@ begin
       exit;
     end;
 
+    // comment missing units
+    writeln('TMainIDE.DoConvertDelphiUnit FixMissingUnits');
+    Result:=FixMissingUnits(LazarusUnitFilename);
+    if Result<>mrOk then begin
+      DoJumpToCodeToolBossError;
+      exit;
+    end;
+    
     // check the LFM file and the pascal unit
     writeln('TMainIDE.DoConvertDelphiUnit Check new .lfm and .pas file');
     Result:=LoadUnitAndLFMFile(LazarusUnitFilename,UnitCode,LFMCode,HasDFMFile);
@@ -6757,6 +6800,13 @@ begin
   end;
 
   Result:=mrOk;
+end;
+
+function TMainIDE.DoConvertDelphiProject(const DelphiFilename: string
+  ): TModalResult;
+begin
+  // TODO
+  Result:=mrCancel;
 end;
 
 {-------------------------------------------------------------------------------
@@ -9094,6 +9144,7 @@ var
 begin
   if CodeToolBoss.ErrorMessage='' then begin
     UpdateSourceNames;
+    debugln('TMainIDE.DoJumpToCodeToolBossError No errormessage');
     exit;
   end;
   // syntax error -> show error and jump
@@ -10646,6 +10697,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.768  2004/09/11 01:23:10  mattias
+  implemented commenting missing units for Delphi unit conversion
+
   Revision 1.767  2004/09/10 22:14:47  mattias
   fixed converting vaInt8 and vaUTF8String
 

@@ -2610,17 +2610,19 @@ var
     end;
     writeln('TPkgManager.AddUnitDependenciesForComponentClasses UsesAdditions=',UsesAdditions);
     PackageAdditions:='';
-    for i:=0 to MissingDependencies.Count-1 do begin
-      UnitOwner:=TObject(MissingDependencies[i]);
-      RequiredPackage:=TLazPackage(MissingDependencies.Objects[i]);
-      if UnitOwner is TProject then begin
-        PackageAdditions:=Format(
-          lisPkgMangAddingNewDependencyForProjectPackage, [PackageAdditions,
-          TProject(UnitOwner).Title, RequiredPackage.Name, #13#13]);
-      end else if UnitOwner is TLazPackage then begin
-        PackageAdditions:=Format(
-          lisPkgMangAddingNewDependencyForPackagePackage, [PackageAdditions,
-          TLazPackage(UnitOwner).Name, RequiredPackage.Name, #13#13]);
+    if MissingDependencies<>nil then begin
+      for i:=0 to MissingDependencies.Count-1 do begin
+        UnitOwner:=TObject(MissingDependencies[i]);
+        RequiredPackage:=TLazPackage(MissingDependencies.Objects[i]);
+        if UnitOwner is TProject then begin
+          PackageAdditions:=Format(
+            lisPkgMangAddingNewDependencyForProjectPackage, [PackageAdditions,
+            TProject(UnitOwner).Title, RequiredPackage.Name, #13#13]);
+        end else if UnitOwner is TLazPackage then begin
+          PackageAdditions:=Format(
+            lisPkgMangAddingNewDependencyForPackagePackage, [PackageAdditions,
+            TLazPackage(UnitOwner).Name, RequiredPackage.Name, #13#13]);
+        end;
       end;
     end;
     writeln('TPkgManager.AddUnitDependenciesForComponentClasses PackageAdditions=',PackageAdditions);
@@ -2646,16 +2648,18 @@ var
     UnitOwner: TObject;
     RequiredPackage: TLazPackage;
   begin
-    for i:=0 to MissingDependencies.Count-1 do begin
-      UnitOwner:=TObject(MissingDependencies[i]);
-      RequiredPackage:=TLazPackage(MissingDependencies.Objects[i]);
-      if UnitOwner is TProject then begin
-        writeln('TPkgManager.AddUnitDependenciesForComponentClasses Adding Project Dependency ',TProject(UnitOwner).Title,' -> ',RequiredPackage.Name);
-        AddProjectDependency(TProject(UnitOwner),RequiredPackage);
-      end else if UnitOwner is TLazPackage then begin
-        writeln('TPkgManager.AddUnitDependenciesForComponentClasses Adding Package Dependency ',TLazPackage(UnitOwner).Name,' -> ',RequiredPackage.Name);
-        PackageGraph.AddDependencyToPackage(TLazPackage(UnitOwner),
-                                            RequiredPackage);
+    if MissingDependencies<>nil then begin
+      for i:=0 to MissingDependencies.Count-1 do begin
+        UnitOwner:=TObject(MissingDependencies[i]);
+        RequiredPackage:=TLazPackage(MissingDependencies.Objects[i]);
+        if UnitOwner is TProject then begin
+          writeln('TPkgManager.AddUnitDependenciesForComponentClasses Adding Project Dependency ',TProject(UnitOwner).Title,' -> ',RequiredPackage.Name);
+          AddProjectDependency(TProject(UnitOwner),RequiredPackage);
+        end else if UnitOwner is TLazPackage then begin
+          writeln('TPkgManager.AddUnitDependenciesForComponentClasses Adding Package Dependency ',TLazPackage(UnitOwner).Name,' -> ',RequiredPackage.Name);
+          PackageGraph.AddDependencyToPackage(TLazPackage(UnitOwner),
+                                              RequiredPackage);
+        end;
       end;
     end;
     Result:=mrOk;

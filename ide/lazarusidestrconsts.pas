@@ -237,6 +237,7 @@ resourcestring
   lisMenuConvertDFMtoLFM = 'Convert DFM file to LFM';
   lisMenuCheckLFM = 'Check LFM file in editor';
   lisMenuConvertDelphiUnit = 'Convert Delphi unit to Lazarus unit';
+  lisMenuConvertDelphiProject = 'Convert Delphi Project to Lazarus Project';
   lisMenuBuildLazarus = 'Build Lazarus';
   lisMenuConfigureBuildLazarus = 'Configure "Build Lazarus"';
   
@@ -273,6 +274,15 @@ resourcestring
   lisUnableToWriteFileError = 'Unable to write file %s%s%s%sError: %s';
   lisErrorCreatingLrs = 'Error creating lrs';
   lisLFMFileNotFound = 'LFM file not found';
+  lisUnitSNotFound = 'Unit(s) not found';
+  lisTheFollowingUnitsWereNotFound1EitherTheseUnitsAreN = 'The following '
+    +'units were not found:%s%s%s%s1) Either these units are not in the unit '
+    +'path, then you can abort now, fix the unit path and try again.%s2) Or '
+    +'the units came from a case insensitive file system (windows/Delphi) and '
+    +'are now on a case sensitive filesystem (linux, bsd, macosx). In this '
+    +'case you should abort now, rename the units all lowercase and try '
+    +'again.%s3) Or you can ignore the missing units and continue.%s%sShould '
+    +'the missing units be commented out?';
   lisUnitLFMFile = 'Unit: %s%sLFM file: %s';
   lisUnableToConvertLfmToLrsAndWriteLrsFile = 'Unable to convert lfm to lrs '
     +'and write lrs file.';
