@@ -2510,7 +2510,7 @@ begin
   NewList:=TList.Create;
   try
     Cnt:=FileCount;
-    NewList.Assign(FFiles);
+    for i:=0 to Cnt-1 do NewList.Add(FFiles[i]);
     NewList.Sort(@ComparePkgFilesAlphabetically);
     i:=Cnt-1;
     while (i>=0) and (NewList[i]=FFiles[i]) do dec(i);
