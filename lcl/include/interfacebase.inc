@@ -772,10 +772,21 @@ begin
   Result := false;
 end;
 
-function TInterfaceBase.Frame3d(DC: HDC; var Rect: TRect;
+function TInterfaceBase.Frame(DC: HDC; const ARect: TRect) : integer;
+begin
+  Result:= 0;
+end;
+
+function TInterfaceBase.Frame3d(DC: HDC; var ARect: TRect;
   const FrameWidth : integer; const Style : TBevelCut) : boolean;
 begin
   Result:= false;
+end;
+
+function TInterfaceBase.FrameRect(DC: HDC; const ARect: TRect;
+  hBr: HBRUSH) : integer;
+begin
+  Result:= 0;
 end;
 
 Function TInterfaceBase.GetActiveWindow : HWND;
@@ -1635,6 +1646,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.79  2003/01/27 13:49:16  mattias
+  reduced speedbutton invalidates, added TCanvas.Frame
+
   Revision 1.78  2003/01/19 14:44:28  mattias
   started make resource string
 

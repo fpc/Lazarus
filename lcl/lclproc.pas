@@ -76,6 +76,9 @@ function OffsetRect(var ARect: TRect; dx,dy: Integer): Boolean;
 procedure FreeThenNil(var AnObject: TObject);
 procedure RaiseGDBException(const Msg: string);
 
+procedure MakeMinMax(var i1, i2: integer);
+procedure CalculateLeftTopWidthHeight(X1,Y1,X2,Y2: integer;
+  var Left,Top,Width,Height: integer);
 
 implementation
 
@@ -364,6 +367,36 @@ begin
   // creates an exception, that gdb catches:
   writeln('Creating gdb catchable error:');
   if (length(Msg) div (length(Msg) div 10000))=0 then ;
+end;
+
+procedure MakeMinMax(var i1, i2: integer);
+var
+  h: Integer;
+begin
+  if i1>i2 then begin
+    h:=i1;
+    i1:=i2;
+    i2:=h;
+  end;
+end;
+
+procedure CalculateLeftTopWidthHeight(X1, Y1, X2, Y2: integer;
+  var Left, Top, Width, Height: integer);
+begin
+  if X1<=X2 then begin
+    Left:=X1;
+    Width:=X2 - X1;
+  end else begin
+    Left:=X2;
+    Width:=X1 - X2;
+  end;
+  if Y1<=Y2 then begin
+    Top:=Y1;
+    Height:=Y2 - Y1;
+  end else begin
+    Top:=Y2;
+    Height:=Y1 - Y2;
+  end;
 end;
 
 initialization

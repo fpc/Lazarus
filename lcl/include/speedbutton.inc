@@ -206,6 +206,57 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  procedure TSpeedButton.SetText(const Value: TCaption);
+ ------------------------------------------------------------------------------}
+procedure TSpeedButton.SetText(const Value: TCaption);
+begin
+  if Caption=Value then exit;
+  inherited SetText(Value);
+  Invalidate;
+end;
+
+{------------------------------------------------------------------------------
+  procedure TSpeedButton.UpdateState(InvalidateOnChange: boolean);
+ ------------------------------------------------------------------------------}
+procedure TSpeedButton.UpdateState(InvalidateOnChange: boolean);
+var
+  OldState: TButtonState;
+begin
+  OldState:=FState;
+  if not Enabled then begin
+    FState := bsDisabled;
+    FDragging := False;
+  end else begin
+    if FState = bsDisabled
+    then begin
+      if FDown and (GroupIndex <> 0)
+      then FState := bsExclusive
+      else FState := bsUp;
+    end;
+  end;
+  if InvalidateOnChange
+  and ((FState<>OldState) or (FLastDrawFlags<>GetDrawFlags))
+  then
+    Invalidate;
+end;
+
+{------------------------------------------------------------------------------
+  function TSpeedButton.GetDrawFlags: integer;
+ ------------------------------------------------------------------------------}
+function TSpeedButton.GetDrawFlags: integer;
+begin
+  Result:=DFCS_BUTTONPUSH;
+  if FState in [bsDown, bsExclusive] then inc(Result,DFCS_PUSHED);
+  if FMouseInControl then inc(Result,DFCS_CHECKED);
+  if not Enabled then inc(Result,DFCS_INACTIVE);
+
+  if Flat and (not (csDesigning in ComponentState)) and
+    not FMouseInControl and not (FState in [bsDown, bsExclusive])
+  then
+    inc(Result,DFCS_FLAT);
+end;
+
+{------------------------------------------------------------------------------
   Method: TSpeedButton.UpdateExclusive
   Params: none
   Returns:  nothing
@@ -272,7 +323,7 @@ const
   FillStyles: array[Boolean] of Integer = (BF_MIDDLE, 0);
 var
   PaintRect: TRect;
-  DrawFlags, GlyphWidth, GlyphHeight: Integer;
+  GlyphWidth, GlyphHeight: Integer;
   Offset, OffsetCap: TPoint;
   ClientSize, TotalSize, TextSize: TSize;
   //BrushStyle : TBrushStyle;
@@ -281,17 +332,7 @@ var
   SIndex : Longint;
   TMP : String;
 begin
-  if not Enabled then begin
-    FState := bsDisabled;
-    FDragging := False;
-  end else begin
-    if FState = bsDisabled 
-    then begin
-      if FDown and (GroupIndex <> 0) 
-      then FState := bsExclusive
-      else FState := bsUp;
-    end;
-  end;
+  UpdateState(false);
   if FGlyph=nil then exit;
 
 //  PaintRect := Rect(0, 0, Width, Height);
@@ -302,17 +343,8 @@ begin
   else
     BrushStyle:= bsSolid;}
 
-  DrawFlags:=DFCS_BUTTONPUSH;
-  if FState in [bsDown, bsExclusive] then inc(DrawFlags,DFCS_PUSHED);
-  if FMouseInControl then inc(DrawFlags,DFCS_CHECKED);
-  if not Enabled then inc(DrawFlags,DFCS_INACTIVE);
-
-  if Flat and (not (csDesigning in ComponentState)) and
-    not FMouseInControl and not (FState in [bsDown, bsExclusive])
-  then
-    inc(DrawFlags,DFCS_FLAT);
-
-  DrawFrameControl(Canvas.Handle, PaintRect, DFC_BUTTON, DrawFlags);
+  FLastDrawFlags:=GetDrawFlags;
+  DrawFrameControl(Canvas.Handle, PaintRect, DFC_BUTTON, FLastDrawFlags);
 
   GlyphWidth:= TButtonGlyph(FGlyph).Glyph.Width;
   if TButtonGlyph(FGlyph).NumGlyphs > 1 then
@@ -634,11 +666,11 @@ begin
   inherited CMMouseEnter(Message);
   if csDesigning in ComponentState then exit;
   
-  if  not FMouseInControl
+  if not FMouseInControl
   and Enabled and (GetCapture = 0) 
   then begin
     FMouseInControl := True;
-    Invalidate;
+    UpdateState(true);
   end;
 end;
 
@@ -657,7 +689,7 @@ begin
   and Enabled and not FDragging
   then begin
     FMouseInControl := False;
-    Invalidate;
+    UpdateState(true);
   end;
 end;
 
@@ -673,6 +705,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.32  2003/01/27 13:49:16  mattias
+  reduced speedbutton invalidates, added TCanvas.Frame
+
   Revision 1.31  2002/11/21 18:49:53  mattias
   started OnMouseEnter and OnMouseLeave
 
