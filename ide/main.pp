@@ -767,10 +767,10 @@ begin
     writeln('');
     writeln('--primary-config-path <path>');
     writeln(BreakString(lisprimaryConfigDirectoryWhereLazarusStoresItsConfig,
-        75, 22), GetPrimaryConfigPath);
+                        75, 22), GetPrimaryConfigPath);
     writeln('--secondary-config-path <path>');
     writeln(BreakString(lissecondaryConfigDirectoryWhereLazarusSearchesFor,
-        75, 22), GetSecondaryConfigPath);
+                        75, 22), GetSecondaryConfigPath);
     writeln('');
     writeln(lisCmdLineLCLInterfaceSpecificOptions);
     writeln('');
@@ -5780,19 +5780,21 @@ begin
   end;
 
   ExtTool:=TExternalToolOptions.Create;
-  ExtTool.Filename:=ProgramFilename;
-  ExtTool.ScanOutputForFPCMessages:=Tool.ScanForFPCMessages;
-  ExtTool.ScanOutputForMakeMessages:=Tool.ScanForMakeMessages;
-  ExtTool.ScanOutput:=true;
-  ExtTool.Title:=ToolTitle;
-  ExtTool.WorkingDirectory:=WorkingDir;
-  ExtTool.CmdLineParams:=Params;
-  
-  // run
-  Result:=EnvironmentOptions.ExternalTools.Run(ExtTool,MacroList);
+  try
+    ExtTool.Filename:=ProgramFilename;
+    ExtTool.ScanOutputForFPCMessages:=Tool.ScanForFPCMessages;
+    ExtTool.ScanOutputForMakeMessages:=Tool.ScanForMakeMessages;
+    ExtTool.ScanOutput:=true;
+    ExtTool.Title:=ToolTitle;
+    ExtTool.WorkingDirectory:=WorkingDir;
+    ExtTool.CmdLineParams:=Params;
 
-  // clean up
-  ExtTool.Free;
+    // run
+    Result:=EnvironmentOptions.ExternalTools.Run(ExtTool,MacroList);
+  finally
+    // clean up
+    ExtTool.Free;
+  end;
 end;
 
 function TMainIDE.DoConvertDFMtoLFM: TModalResult;
@@ -9094,6 +9096,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.588  2003/05/30 08:10:51  mattias
+  added try except to Application.Run, message on changing debugger items during compile
+
   Revision 1.587  2003/05/29 23:14:17  mattias
   implemented jump to code on double click for breakpoints and callstack dlg
 
