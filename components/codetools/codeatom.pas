@@ -76,6 +76,7 @@ type
     EndPos: integer;   // char behind Atom
     Flag: TCommonAtomFlag;
   end;
+  PAtomPosition = ^TAtomPosition;
   
 const
   StartAtomPosition: TAtomPosition = (StartPos:1; EndPos:1; Flag:cafNone);
@@ -99,6 +100,25 @@ type
     procedure WriteDebugReport;
     constructor Create;
     destructor Destroy; override;
+  end;
+  
+  TAtomList = class
+  private
+    FCapacity: integer;
+    FCount: integer;
+    FItems: {$ifdef FPC}^{$else}array of {$endif}TAtomPosition;
+    function GetItems(Index: integer): TAtomPosition;
+    procedure SetCapacity(const AValue: integer);
+    procedure SetItems(Index: integer; const AValue: TAtomPosition);
+    procedure Grow;
+  public
+    procedure Add(NewAtom: TAtomPosition);
+    procedure Clear;
+    constructor Create;
+    destructor Destroy; override;
+    property Capacity: integer read FCapacity write SetCapacity;
+    property Count: integer read FCount;
+    property Items[Index: integer]: TAtomPosition read GetItems write SetItems; default;
   end;
   
   
@@ -256,6 +276,64 @@ begin
   Add('RECORD',  {$ifdef FPC}@{$endif}SetFlagToRecord);
 end;
 
+
+{ TAtomList }
+
+function TAtomList.GetItems(Index: integer): TAtomPosition;
+begin
+  Result:=FItems[Index];
+end;
+
+procedure TAtomList.SetCapacity(const AValue: integer);
+begin
+  if FCapacity=AValue then exit;
+  FCapacity:=AValue;
+  if FItems<>nil then begin
+    if FCapacity>0 then begin
+      ReallocMem(FItems,SizeOf(TAtomPosition)*FCapacity);
+    end else begin
+      FreeMem(FItems);
+      FItems:=nil;
+    end;
+  end else begin
+    if FCapacity>0 then
+      GetMem(FItems,SizeOf(TAtomPosition)*FCapacity);
+  end;
+end;
+
+procedure TAtomList.SetItems(Index: integer; const AValue: TAtomPosition);
+begin
+  FItems[Index]:=AValue;
+end;
+
+procedure TAtomList.Grow;
+begin
+  Capacity:=Capacity*2+10;
+end;
+
+procedure TAtomList.Add(NewAtom: TAtomPosition);
+begin
+  if FCount=FCapacity then Grow;
+  inc(FCount);
+  Items[Count-1]:=NewAtom;
+end;
+
+procedure TAtomList.Clear;
+begin
+  FCount:=0;
+  Capacity:=0;
+end;
+
+constructor TAtomList.Create;
+begin
+  inherited Create;
+end;
+
+destructor TAtomList.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
 
 //-----------------------------------------------------------------------------
 procedure InternalInit;

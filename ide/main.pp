@@ -2638,6 +2638,7 @@ begin
           FormSavingOk:=false;
         end;
       until Result<>mrRetry;
+      
       // create lazarus form resource code
       if FormSavingOk then begin
         if ResourceCode=nil then begin
@@ -2675,6 +2676,17 @@ begin
             and (AnUnitInfo.FormResourceName<>'') then begin
               CodeToolBoss.RemoveLazarusResource(ResourceCode,
                                                'T'+AnUnitInfo.FormResourceName);
+            end;
+            if (not CodeToolBoss.AddLazarusResourceHeaderComment(ResourceCode,
+               'This is an automatically created Lazarus Resource file')) then
+            begin
+              ACaption:='Resource save error';
+              AText:='Unable to add resource header comment'
+                +' to resource file '#13
+                +'"'+ResourceCode.FileName+'".'#13
+                +'Probably a syntax error.';
+              Result:=MessageDlg(ACaption,AText,mtError,[mbIgnore,mbAbort],0);
+              if Result=mrAbort then exit;
             end;
             if (not CodeToolBoss.AddLazarusResource(ResourceCode,
                'T'+AnUnitInfo.FormName,CompResourceCode)) then
@@ -6154,6 +6166,7 @@ begin
       NewName,NewClassName);
     ApplyBossResult('Unable to rename form in source.'#13
                     +'See messages.');
+    ActiveUnitInfo.FormName:=NewName;
 
     // rename form class
     FormEditor1.JITFormList.RenameFormClass(TForm(AComponent),NewClassName);
@@ -6676,6 +6689,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.352  2002/08/27 08:21:28  lazarus
+  MG: fixed replacing form resources
+
   Revision 1.351  2002/08/24 15:49:55  lazarus
   MG: loading forms now creates all TComponentInterfaces, fixed removing components
 
