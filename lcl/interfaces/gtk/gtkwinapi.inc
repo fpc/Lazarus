@@ -6714,17 +6714,21 @@ end;
 
 {------------------------------------------------------------------------------
   Function TgtkObject.SetWindowOrgEx(DC : HDC; NewX, NewY : Integer;
-    var OldPoint: TPoint) : Boolean;
+    OldPoint: PPoint) : Boolean;
 
   Sets the x-coordinates and y-coordinates of the window origin for the
   specified device context.
  ------------------------------------------------------------------------------}
 Function TgtkObject.SetWindowOrgEx(DC : HDC; NewX, NewY : Integer;
-  var OldPoint: TPoint) : Boolean;
+  OldPoint: PPoint) : Boolean;
+var
+  OldP: TPoint;
 begin
   //writeln('[TgtkObject.SetWindowOrgEx] ',NewX,' ',NewY);
-  GetWindowOrgEx(DC,OldPoint);
-  Result := MoveWindowOrgEx(DC,NewX-OldPoint.X,NewY-OldPoint.Y);
+  GetWindowOrgEx(DC,OldP);
+  Result := MoveWindowOrgEx(DC,NewX-OldP.X,NewY-OldP.Y);
+  if OldPoint<>nil then
+    OldPoint^:=OldP;
 end;
 
 {------------------------------------------------------------------------------
@@ -7566,6 +7570,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.196  2002/12/26 11:00:15  mattias
+  added included by to unitinfo and a few win32 functions
+
   Revision 1.195  2002/12/25 13:30:37  mattias
   added more windows funcs and fixed jump to compiler error end of file
 
