@@ -5093,10 +5093,8 @@ begin
       for i:=0 to NumPts-1 do begin
         PointArray[i].x:=Points[i].x;
         PointArray[i].y:=Points[i].y;
-	If Not Winding then begin
-          Inc(PointArray[i].x, DCOrigin.X);
-          Inc(PointArray[i].y, DCOrigin.Y);
-	end;	
+        Inc(PointArray[i].x, DCOrigin.X);
+        Inc(PointArray[i].y, DCOrigin.Y);
       end;
 
       OldNumPts:=NumPts;
@@ -7537,6 +7535,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.186  2002/11/03 22:14:44  lazarus
+  MG: fixed Polygon and not winding
+
   Revision 1.185  2002/11/01 17:55:35  lazarus
   AJ: ignore offset in Polygon Winding, Region/FillRect should take care of it
 
