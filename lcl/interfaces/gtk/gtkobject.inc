@@ -1080,6 +1080,7 @@ begin
 
       LM_SETFILTER :
       begin 
+        { ToDo:
         if Sender is TFileDialog then begin
           pStr := StrAlloc(length(TFileDialog(Sender).Filter) + 1); 
           try
@@ -1088,7 +1089,7 @@ begin
           finally
             StrDispose(pStr); 
           end;
-        end;
+        end;}
       end; 
  
       LM_SETFILENAME : 
@@ -1097,7 +1098,7 @@ begin
           pStr := StrAlloc(length(TFileDialog(Sender).Filename) + 1); 
           try
             StrPCopy(pStr, TFileDialog(Sender).Filename); 
-            gtk_file_selection_set_filename( PGtkFileSelection(Handle), pStr); 
+            gtk_file_selection_set_filename( PGtkFileSelection(Handle), pStr);
           finally
             StrDispose(pStr); 
           end;
@@ -2504,6 +2505,8 @@ begin
     if gtk_type_is_a(gtk_object_type(PGtkObject(Handle)),GTKAPIWidget_GetType)
     then
       DestroyCaret(Handle);
+    if Sender is TCommonDialog then
+      DestroyCommonDialogAddOns(TCommonDialog(Sender));
     gtk_widget_destroy(Widget);
     //writeln('>>> LM_DESTROY END ',Sender.Classname,' Sender=',HexStr(Cardinal(Sender),8),' Handle=',HexStr(Cardinal(Handle),8));
   end
@@ -2623,6 +2626,460 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  procedure InitializeCommonDialog
+  Params: ADialog: TCommonDialog; AWindow: PGtkWidget
+  Result: none
+
+  Initializes a TCommonDialog window.
+------------------------------------------------------------------------------}
+procedure InitializeCommonDialog(ADialog: TObject;
+  AWindow: PGtkWidget);
+var NewWidth, NewHeight: integer;
+begin
+  SetLCLObject(AWindow,ADialog);
+
+  // connect events
+  gtk_signal_connect(gtk_object(AWindow),
+    'destroy', gtk_Signal_Func(@gtkDialogDestroyCB), ADialog);
+  gtk_signal_connect(gtk_object(AWindow),
+    'delete-event', gtk_Signal_Func(@gtkDialogCloseQueryCB), ADialog);
+  gtk_signal_connect(gtk_object(AWindow),
+    'key-press-event', gtk_Signal_Func(@GTKDialogKeyUpDownCB), ADialog);
+  gtk_signal_connect(gtk_object(AWindow),
+    'key-release-event', gtk_Signal_Func(@GTKDialogKeyUpDownCB), ADialog);
+  gtk_signal_connect(gtk_object(AWindow),
+    'realize', gtk_Signal_Func(@GTKDialogRealizeCB), ADialog);
+
+  // set default size
+  NewWidth:=TCommonDialog(ADialog).Width;
+  if NewWidth<=0 then NewWidth:=-2; // -2 = let the window manager decide
+  NewHeight:=TCommonDialog(ADialog).Height;
+  if NewHeight<=0 then NewHeight:=-2; // -2 = let the window manager decide
+  if (NewWidth>0) or (NewHeight>0) then
+    gtk_window_set_default_size(PgtkWindow(AWindow),NewWidth,NewHeight);
+end;
+
+{------------------------------------------------------------------------------
+  Function: CreateOpenDialogHistory
+  Params: OpenDialog: TOpenDialog; SelWidget: PGtkWidget
+  Returns: -
+
+  Adds a History pulldown to a gtk file selection dialog.
+ ------------------------------------------------------------------------------}
+procedure CreateOpenDialogHistory(OpenDialog: TOpenDialog;
+  SelWidget: PGtkWidget);
+var
+  HistoryList: TList; // list of THistoryListEntry
+  AHistoryEntry: PFileSelHistoryEntry;
+  i: integer;
+  s: string;
+  HBox, LabelWidget, HistoryPullDownWidget,
+  MenuWidget, MenuItemWidget: PGtkWidget;
+begin
+  if OpenDialog.HistoryList.Count>0 then begin
+
+    // create the HistoryList where the current state of the history is stored
+    HistoryList:=TList.Create;
+    for i:=0 to OpenDialog.HistoryList.Count-1 do begin
+      s:=OpenDialog.HistoryList[i];
+      if s<>'' then begin
+        New(AHistoryEntry);
+        HistoryList.Add(AHistoryEntry);
+        AHistoryEntry^.Filename := StrAlloc(length(s)+1);
+        StrPCopy(AHistoryEntry^.Filename, s);
+        AHistoryEntry^.MenuItem:=nil;
+      end;
+    end;
+
+    // create a HBox so that the history is left justified
+    HBox:=gtk_hbox_new(false,0);
+    gtk_object_set_data(PGtkObject(SelWidget), 'LCLHistoryHBox', HBox);
+    gtk_box_pack_start(GTK_BOX(GTK_FILE_SELECTION(SelWidget)^.main_vbox),
+                       HBox,false,false,0);
+
+    // create the label 'History:'
+    LabelWidget:=gtk_label_new('History:');
+    gtk_box_pack_start(GTK_BOX(HBox),LabelWidget,false,false,5);
+    gtk_widget_show(LabelWidget);
+
+    // create the pull down
+    HistoryPullDownWidget:=gtk_option_menu_new;
+    gtk_object_set_data(PGtkObject(SelWidget), 'LCLHistoryPullDown',
+      HistoryPullDownWidget);
+    gtk_box_pack_start(GTK_BOX(HBox),HistoryPullDownWidget,false,false,5);
+    gtk_widget_show(HistoryPullDownWidget);
+    gtk_widget_show(HBox);
+
+    // create the menu (the content of the pull down)
+    MenuWidget:=gtk_menu_new;
+    SetLCLObject(MenuWidget,OpenDialog);
+    for i:=0 to HistoryList.Count-1 do begin
+      // create the menu items in the history menu
+      MenuItemWidget:=gtk_menu_item_new_with_label(
+                                PFileSelHistoryEntry(HistoryList[i])^.Filename);
+      SetLCLObject(MenuItemWidget,OpenDialog);
+      // connect the new MenuItem to the HistoryList entry
+      gtk_object_set_data(PGtkObject(MenuItemWidget), 'LCLIsHistoryMenuItem',
+        HistoryList[i]);
+      // add activation signal and add to menu
+      gtk_signal_connect(GTK_OBJECT(MenuItemWidget), 'activate',
+                         gtk_signal_func(@GTKDialogMenuActivateCB),
+                         OpenDialog);
+      gtk_menu_append(GTK_MENU(MenuWidget), MenuItemWidget);
+      gtk_widget_show(MenuItemWidget);
+    end;
+    gtk_widget_show(MenuWidget);
+    gtk_option_menu_set_menu(GTK_OPTION_MENU(HistoryPullDownWidget),
+                             MenuWidget);
+  end else begin
+    MenuWidget:=nil;
+    HistoryList:=nil
+  end;
+  gtk_object_set_data(PGtkObject(SelWidget), 'LCLHistoryMenu', MenuWidget);
+  gtk_object_set_data(PGtkObject(SelWidget), 'LCLHistoryList', HistoryList);
+end;
+
+{------------------------------------------------------------------------------
+  Function: ExtractFilterList
+  Params: const Filter: string; var FilterIndex: integer;
+          var FilterList: TStringList
+  Returns: -
+
+  Converts a Delphi file filter of the form
+  'description1|mask1|description2|mask2|...'
+  into a TList of PFileSelFilterEntry(s).
+  Multi masks:
+    - multi masks like '*.pas;*.pp' are converted into multiple entries.
+    - if the masks are found in the description they are adjusted
+    - if the mask is not included in the description it will be concatenated
+    For example:
+      'Pascal files (*.pas;*.pp)|*.pas;*.lpr;*.pp;
+      is converted to three filter entries:
+        'Pascal files (*.pas)' + '*.pas'
+        'Pascal files (*.pp)'  + '*.pp'
+        'Pascal files (*.lpr)' + '*.lpr'
+ ------------------------------------------------------------------------------}
+procedure ExtractFilterList(const Filter: string; var FilterList: TList);
+var
+  Masks: TStringList;
+  CurFilterIndex: integer;
+
+  procedure ExtractMasks(const MultiMask: string);
+  var CurMaskStart, CurMaskEnd: integer;
+    s: string;
+  begin
+    if Masks=nil then
+      Masks:=TStringList.Create
+    else
+      Masks.Clear;
+    CurMaskStart:=1;
+    while CurMaskStart<=length(MultiMask) do begin
+      CurMaskEnd:=CurMaskStart;
+      while (CurMaskEnd<=length(MultiMask)) and (MultiMask[CurMaskEnd]<>';') do
+        inc(CurMaskEnd);
+      s:=Trim(copy(MultiMask,CurMaskStart,CurMaskEnd-CurMaskStart));
+      if s='*.*' then s:='';
+      Masks.Add(s);
+      CurMaskStart:=CurMaskEnd+1;
+    end;
+  end;
+  
+  procedure AddEntry(const Desc, Mask: string);
+  var NewFilterEntry: PFileSelFilterEntry;
+  begin
+    New(NewFilterEntry);
+    NewFilterEntry^.Description:= StrAlloc(length(Desc)+1);
+    StrPCopy(NewFilterEntry^.Description, Desc);
+    NewFilterEntry^.Mask:= StrAlloc(length(Mask)+1);
+    StrPCopy(NewFilterEntry^.Mask, Mask);
+    NewFilterEntry^.FilterIndex:=CurFilterIndex;
+    FilterList.Add(NewFilterEntry);
+  end;
+  
+  // remove all but one masks from description string
+  function RemoveOtherMasks(const Desc: string; MaskIndex: integer): string;
+  var i, StartPos, EndPos: integer;
+  begin
+    Result:=Desc;
+    for i:=0 to Masks.Count-1 do begin
+      if i=MaskIndex then continue;
+      StartPos:=Pos(Masks[i],Result);
+      EndPos:=StartPos+length(Masks[i]);
+      if StartPos<1 then continue;
+      while (StartPos>1) and (Result[StartPos-1] in [' ',#9,';']) do
+        dec(StartPos);
+      while (EndPos<=length(Result)) and (Result[EndPos] in [' ',#9]) do
+        inc(EndPos);
+      if (StartPos>1) and (Result[StartPos-1]='(')
+      and (EndPos<=length(Result)) then begin
+        if (Result[EndPos]=')') then begin
+          dec(StartPos);
+          inc(EndPos);
+        end else if Result[EndPos]=';' then begin
+          inc(EndPos);
+        end;
+      end;
+      System.Delete(Result,StartPos,EndPos-StartPos);
+    end;
+  end;
+  
+  procedure AddEntries(const Desc: string; MultiMask: string);
+  var i: integer;
+    CurDesc: string;
+  begin
+    ExtractMasks(MultiMask);
+    for i:=0 to Masks.Count-1 do begin
+      CurDesc:=RemoveOtherMasks(Desc,i);
+      if (Masks.Count>1) and (Pos(Masks[i],CurDesc)<1) then begin
+        if (CurDesc='') or (CurDesc[length(CurDesc)]<>' ') then
+          CurDesc:=CurDesc+' ';
+        CurDesc:=CurDesc+'('+Masks[i]+')';
+      end;
+      AddEntry(CurDesc,Masks[i]);
+    end;
+    inc(CurFilterIndex);
+  end;
+  
+var
+  CurDescStart, CurDescEnd, CurMultiMaskStart, CurMultiMaskEnd: integer;
+  CurDesc, CurMultiMask: string;
+begin
+  FilterList:=TList.Create;
+  Masks:=nil;
+  CurFilterIndex:=0;
+  CurDescStart:=1;
+  while CurDescStart<=length(Filter) do begin
+    // extract next filter description
+    CurDescEnd:=CurDescStart;
+    while (CurDescEnd<=length(Filter)) and (Filter[CurDescEnd]<>'|') do
+      inc(CurDescEnd);
+    CurDesc:=copy(Filter,CurDescStart,CurDescEnd-CurDescStart);
+    // extract next filter multi mask
+    CurMultiMaskStart:=CurDescEnd+1;
+    CurMultiMaskEnd:=CurMultiMaskStart;
+    while (CurMultiMaskEnd<=length(Filter)) and (Filter[CurMultiMaskEnd]<>'|') do
+      inc(CurMultiMaskEnd);
+    CurMultiMask:=copy(Filter,CurMultiMaskStart,CurMultiMaskEnd-CurMultiMaskStart);
+    if CurDesc='' then CurDesc:=CurMultiMask;
+    // add filter(s)
+    AddEntries(CurDesc,CurMultiMask);
+    // next filter
+    CurDescStart:=CurMultiMaskEnd+1;
+  end;
+  Masks.Free;
+end;
+
+{------------------------------------------------------------------------------
+  Function: CreateOpenDialogFilter
+  Params: OpenDialog: TOpenDialog; SelWidget: PGtkWidget
+  Returns: -
+
+  Adds a Filter pulldown to a gtk file selection dialog.
+ ------------------------------------------------------------------------------}
+procedure CreateOpenDialogFilter(OpenDialog: TOpenDialog;
+  SelWidget: PGtkWidget);
+var
+  FilterList: TList;
+  HBox, LabelWidget, FilterPullDownWidget,
+  MenuWidget, MenuItemWidget: PGtkWidget;
+  i, CurMask: integer;
+begin
+  ExtractFilterList(OpenDialog.Filter,FilterList);
+  if FilterList.Count>0 then begin
+
+    // create a HBox so that the filter pulldown is left justified
+    HBox:=gtk_hbox_new(false,0);
+    gtk_object_set_data(PGtkObject(SelWidget), 'LCLFilterHBox', HBox);
+    gtk_box_pack_start(GTK_BOX(GTK_FILE_SELECTION(SelWidget)^.main_vbox),
+                       HBox,false,false,0);
+
+    // create the label 'Filter:'
+    LabelWidget:=gtk_label_new('Filter:');
+    gtk_box_pack_start(GTK_BOX(HBox),LabelWidget,false,false,5);
+    gtk_widget_show(LabelWidget);
+
+    // create the pull down
+    FilterPullDownWidget:=gtk_option_menu_new;
+    gtk_object_set_data(PGtkObject(SelWidget), 'LCLFilterPullDown',
+      FilterPullDownWidget);
+    gtk_box_pack_start(GTK_BOX(HBox),FilterPullDownWidget,false,false,5);
+    gtk_widget_show(FilterPullDownWidget);
+    gtk_widget_show(HBox);
+
+    // create the menu (the content of the pull down)
+    MenuWidget:=gtk_menu_new;
+    SetLCLObject(MenuWidget,OpenDialog);
+    for i:=0 to FilterList.Count-1 do begin
+      // create the menu items in the filter menu
+      MenuItemWidget:=gtk_menu_item_new_with_label(
+                               PFileSelFilterEntry(FilterList[i])^.Description);
+      SetLCLObject(MenuItemWidget,OpenDialog);
+      // connect the new MenuItem to the FilterList entry
+      gtk_object_set_data(PGtkObject(MenuItemWidget), 'LCLIsFilterMenuItem',
+        FilterList[i]);
+      // add activation signal and add to menu
+      gtk_signal_connect(GTK_OBJECT(MenuItemWidget), 'activate',
+                         gtk_signal_func(@GTKDialogMenuActivateCB),
+                         OpenDialog);
+      gtk_menu_append(GTK_MENU(MenuWidget), MenuItemWidget);
+      gtk_widget_show(MenuItemWidget);
+    end;
+    gtk_widget_show(MenuWidget);
+    gtk_option_menu_set_menu(GTK_OPTION_MENU(FilterPullDownWidget),
+                             MenuWidget);
+  end else begin
+    MenuWidget:=nil;
+  end;
+  gtk_object_set_data(PGtkObject(SelWidget), 'LCLFilterMenu', MenuWidget);
+  gtk_object_set_data(PGtkObject(SelWidget), 'LCLFilterList', FilterList);
+  
+  // set the initial filter
+  if FilterList.Count>0 then begin
+    i:=0;
+    CurMask:=0;
+    while (i<FilterList.Count) do begin
+      if PFileSelFilterEntry(FilterList[i])^.FilterIndex=OpenDialog.FilterIndex
+      then begin
+        CurMask:=i;
+        break;
+      end;
+      inc(i);
+    end;
+    gtk_file_selection_complete(GTK_FILE_SELECTION(SelWidget),
+         PFileSelFilterEntry(FilterList[CurMask])^.Mask);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Function: InitializeOpenDialog
+  Params: OpenDialog: TOpenDialog; SelWidget: PGtkWidget
+  Returns: -
+
+  Adds some functionality to a gtk file selection dialog.
+  - multiselection
+  - range selection
+  - close on escape
+  - file information
+  - history pulldown
+  - filter pulldown
+ ------------------------------------------------------------------------------}
+procedure InitializeOpenDialog(OpenDialog: TOpenDialog;
+  SelWidget: PGtkWidget);
+var
+  FileDetailLabel, HBox, Frame: PGtkWidget;
+begin
+  // Multiselection
+  if ofAllowMultiSelect in OpenDialog.Options then
+  begin
+    LastFileSelectRow := -1;
+    gtk_signal_connect(gtk_object(PGtkCList(
+      PGtkFileSelection(SelWidget)^.file_list)),
+      'select-row',
+      gtk_signal_func(@gtkOpenDialogRowSelectCB), OpenDialog);
+    gtk_clist_set_selection_mode(
+      PGtkCList(PGtkFileSelection(SelWidget)^.file_list),
+      GTK_SELECTION_MULTIPLE);
+  end;
+
+  // Help button
+  if (ofShowHelp in OpenDialog.Options)
+  and (GTK_FILE_SELECTION(SelWidget)^.Help_Button<>nil) then begin
+    gtk_widget_show(GTK_FILE_SELECTION(SelWidget)^.Help_Button);
+    gtk_signal_connect( gtk_object((PGtkFileSelection(SelWidget))^.help_button),
+      'clicked', gtk_signal_func(@gtkDialogHelpclickedCB), OpenDialog);
+  end;
+
+  // connect selection entry (edit field for filename)
+  if (GTK_FILE_SELECTION(SelWidget)^.selection_entry<>nil) then begin
+    SetLCLObject(GTK_FILE_SELECTION(SelWidget)^.selection_entry,OpenDialog);
+    gtk_signal_connect(
+      gtk_object((PGtkFileSelection(SelWidget))^.selection_entry),
+      'key-press-event', gtk_signal_func(@GTKDialogKeyUpDownCB),
+      OpenDialog);
+    gtk_signal_connect(
+      gtk_object((PGtkFileSelection(SelWidget))^.selection_entry),
+      'focus-in-event', gtk_signal_func(@GTKDialogFocusInCB), OpenDialog);
+  end;
+
+  // connect dir list (list of directories)
+  if (GTK_FILE_SELECTION(SelWidget)^.dir_list<>nil) then begin
+    SetLCLObject(GTK_FILE_SELECTION(SelWidget)^.dir_list,OpenDialog);
+    gtk_signal_connect(gtk_object((PGtkFileSelection(SelWidget))^.dir_list),
+      'select-row', gtk_signal_func(@GTKDialogSelectRowCB), OpenDialog);
+  end;
+
+  // connect file list (list of files in current directory)
+  if (GTK_FILE_SELECTION(SelWidget)^.file_list<>nil) then begin
+    SetLCLObject(GTK_FILE_SELECTION(SelWidget)^.file_list,OpenDialog);
+    gtk_signal_connect(gtk_object((PGtkFileSelection(SelWidget))^.file_list),
+      'select-row', gtk_signal_func(@GTKDialogSelectRowCB), OpenDialog);
+  end;
+
+  // History List - a frame with an option menu
+  CreateOpenDialogHistory(OpenDialog,SelWidget);
+
+  // Filter - a frame with an option menu
+  CreateOpenDialogFilter(OpenDialog,SelWidget);
+
+  // Details - a frame with a label
+  if (ofViewDetail in OpenDialog.Options) then begin
+    // create the frame around the information
+    Frame:=gtk_frame_new('File information');
+    gtk_box_pack_start(GTK_BOX(GTK_FILE_SELECTION(SelWidget)^.main_vbox),
+                       Frame,false,false,0);
+    gtk_widget_show(Frame);
+    // create a HBox, so that the information is left justified
+    HBox:=gtk_hbox_new(false,0);
+    gtk_container_add(GTK_CONTAINER(Frame), HBox);
+    // create the label for the file information
+    FileDetailLabel:=gtk_label_new('permissions user group size date time');
+    gtk_box_pack_start(GTK_BOX(HBox),FileDetailLabel,false,false,5);
+    gtk_widget_show_all(HBox);
+  end else
+    FileDetailLabel:=nil;
+  gtk_object_set_data(PGtkObject(SelWidget), 'FileDetailLabel',
+                      FileDetailLabel);
+
+  // set initial filename
+  if OpenDialog.Filename<>'' then
+    gtk_file_selection_set_filename(GTK_FILE_SELECTION(SelWidget),
+      PChar(OpenDialog.Filename));
+end;
+
+{------------------------------------------------------------------------------
+  Function: InitializeFileDialog
+  Params: OpenDialog: TOpenDialog; var SelWidget: PGtkWidget
+  Returns: -
+
+  Creates a new TFile/Open/SaveDialog
+ ------------------------------------------------------------------------------}
+procedure InitializeFileDialog(FileDialog: TFileDialog;
+  var SelWidget: PGtkWidget; Title: PChar);
+begin
+  SelWidget := gtk_file_selection_new(Title);
+
+  {****This is a major hack put by Cliff Baeseman to solve
+   a gtk win32 dll implementation problem where the headers implementation
+   does not match the linux version**** }
+  {$IFNDEF WIN32}
+    gtk_signal_connect(gtk_object(PGtkFileSelection(SelWidget)^.ok_button),
+      'clicked', gtk_signal_func(@gtkDialogOKclickedCB), FileDialog);
+    gtk_signal_connect(gtk_object(PGtkFileSelection(SelWidget)^.cancel_button),
+      'clicked', gtk_signal_func(@gtkDialogCancelclickedCB), FileDialog);
+  {$ELSE}
+    gtk_signal_connect(gtk_object(PGtkFileSelection(SelWidget)^.cancel_button),
+      'clicked', gtk_signal_func(@gtkDialogOKclickedCB), FileDialog);
+    gtk_signal_connect(gtk_object(PGtkFileSelection(SelWidget)^.help_button),
+      'clicked', gtk_signal_func(@gtkDialogCancelclickedCB), FileDialog);
+  {$ENDIF}
+
+  if FileDialog is TOpenDialog then
+    InitializeOpenDialog(TOpenDialog(FileDialog),SelWidget);
+
+  InitializeCommonDialog(TCommonDialog(FileDialog),SelWidget);
+end;
+
+{------------------------------------------------------------------------------
   Function: TGTKObject.CreateComponent
   Params:   sender - object for which to create visual representation
   Returns:  nothing
@@ -2688,149 +3145,6 @@ var
       or (Application.MainForm=nil))
     then
       UpdateSysColorMap(AWidget);
-  end;
-  
-  procedure InitializeOpenDialog;
-  var
-    OpenDialog: TOpenDialog;
-    FileDetailLabel, HBox, Frame, LabelWidget, HistoryPullDownWidget,
-    FilterPullDownWidget, MenuWidget, MenuItemWidget: PGtkWidget;
-    i: integer;
-    s: string;
-  begin
-    //writeln('ZZZ1 ',HexStr(Cardinal(Sender),8));
-    OpenDialog:=TOpenDialog(Sender);
-
-    // Multiselection
-    if ofAllowMultiSelect in OpenDialog.Options then
-    begin
-      LastFileSelectRow := -1;
-      gtk_signal_connect(gtk_object(PGtkCList(
-        PGtkFileSelection(P)^.file_list)),
-        'select-row',
-        gtk_signal_func(@gtkOpenDialogRowSelectCB), Sender);
-      gtk_clist_set_selection_mode(
-        PGtkCList(PGtkFileSelection(P)^.file_list),GTK_SELECTION_MULTIPLE);
-    end;
-    
-    // Help button
-    if (ofShowHelp in OpenDialog.Options)
-    and (GTK_FILE_SELECTION(p)^.Help_Button<>nil) then begin
-      gtk_widget_show(GTK_FILE_SELECTION(p)^.Help_Button);
-      gtk_signal_connect( gtk_object((PGtkFileSelection(P))^.help_button),
-        'clicked', gtk_signal_func(@gtkDialogHelpclickedCB), Sender);
-    end;
-    
-    // connect selection entry (edit field for filename)
-    if (GTK_FILE_SELECTION(p)^.selection_entry<>nil) then begin
-      SetLCLObject(GTK_FILE_SELECTION(p)^.selection_entry,Sender);
-      gtk_signal_connect(gtk_object((PGtkFileSelection(P))^.selection_entry),
-        'key-press-event', gtk_signal_func(@GTKDialogKeyUpDownCB), Sender);
-      gtk_signal_connect(gtk_object((PGtkFileSelection(P))^.selection_entry),
-        'focus-in-event', gtk_signal_func(@GTKDialogFocusInCB), Sender);
-      //gdk_window_set_events(Widget^.Window, gdk_window_get_events(Widget^.Window)
-      //  or GDK_KEY_RELEASE_MASK or GDK_KEY_PRESS_MASK);
-    end;
-    
-    // connect dir list (list of directories)
-    if (GTK_FILE_SELECTION(p)^.dir_list<>nil) then begin
-      SetLCLObject(GTK_FILE_SELECTION(p)^.dir_list,Sender);
-      gtk_signal_connect(gtk_object((PGtkFileSelection(P))^.dir_list),
-        'select-row', gtk_signal_func(@GTKDialogSelectRowCB), Sender);
-    end;
-    
-    // connect file list (list of files in current directory)
-    if (GTK_FILE_SELECTION(p)^.file_list<>nil) then begin
-      SetLCLObject(GTK_FILE_SELECTION(p)^.file_list,Sender);
-      gtk_signal_connect(gtk_object((PGtkFileSelection(P))^.file_list),
-        'select-row', gtk_signal_func(@GTKDialogSelectRowCB), Sender);
-    end;
-
-    // History List - a frame with an option menu
-    if OpenDialog.HistoryList.Count>0 then begin
-      HBox:=gtk_hbox_new(false,0);
-      gtk_box_pack_start(GTK_BOX(GTK_FILE_SELECTION(p)^.main_vbox),
-                         HBox,false,false,0);
-      LabelWidget:=gtk_label_new('History:');
-      gtk_box_pack_start(GTK_BOX(HBox),LabelWidget,false,false,5);
-      gtk_widget_show(LabelWidget);
-      HistoryPullDownWidget:=gtk_option_menu_new;
-      gtk_object_set_data(p, 'HistoryPullDown', HistoryPullDownWidget);
-      gtk_box_pack_start(GTK_BOX(HBox),HistoryPullDownWidget,false,false,5);
-      gtk_widget_show(HistoryPullDownWidget);
-      gtk_widget_show(HBox);
-      MenuWidget:=gtk_menu_new;
-      for i:=0 to OpenDialog.HistoryList.Count-1 do begin
-        s:=OpenDialog.HistoryList[i];
-        MenuItemWidget:=gtk_menu_item_new_with_label(PChar(s));
-        SetLCLObject(MenuItemWidget,Sender);
-        gtk_object_set_data(PGtkObject(MenuItemWidget), 'IsHistoryMenuItem',
-          Sender);
-        gtk_signal_connect(GTK_OBJECT(MenuItemWidget), 'activate',
-                           gtk_signal_func(@GTKDialogMenuActivateCB),
-                           Sender);
-        gtk_menu_append(GTK_MENU(MenuWidget), MenuItemWidget);
-        gtk_widget_show(MenuItemWidget);
-      end;
-      gtk_widget_show(MenuWidget);
-      gtk_option_menu_set_menu(GTK_OPTION_MENU(HistoryPullDownWidget),
-                               MenuWidget);
-    end;
-    
-    // Filter - a frame with an option menu
-    if OpenDialog.Filter<>'' then begin
-      HBox:=gtk_hbox_new(false,0);
-      gtk_box_pack_start(GTK_BOX(GTK_FILE_SELECTION(p)^.main_vbox),
-                         HBox,false,false,0);
-      LabelWidget:=gtk_label_new('Filter:');
-      gtk_box_pack_start(GTK_BOX(HBox),LabelWidget,false,false,5);
-      gtk_widget_show(LabelWidget);
-      FilterPullDownWidget:=gtk_option_menu_new;
-      gtk_object_set_data(p, 'FilterPullDown', FilterPullDownWidget);
-      gtk_box_pack_start(GTK_BOX(HBox),FilterPullDownWidget,false,false,5);
-      gtk_widget_show(FilterPullDownWidget);
-      gtk_widget_show(HBox);
-    end;
-
-    // Details - a frame with a label
-    if (ofViewDetail in OpenDialog.Options) then begin
-      Frame:=gtk_frame_new('File information');
-      gtk_box_pack_start(GTK_BOX(GTK_FILE_SELECTION(p)^.main_vbox),
-                         Frame,false,false,0);
-      gtk_widget_show(Frame);
-      HBox:=gtk_hbox_new(false,0);
-      gtk_container_add(GTK_CONTAINER(Frame), HBox);
-      FileDetailLabel:=gtk_label_new('permissions user group size date time');
-      gtk_box_pack_start(GTK_BOX(HBox),FileDetailLabel,false,false,5);
-      gtk_widget_show(HBox);
-      gtk_widget_show(FileDetailLabel);
-    end else
-      FileDetailLabel:=nil;
-    gtk_object_set_data(p, 'FileDetailLabel', FileDetailLabel);
-  end;
-  
-  procedure InitializeFileDialog;
-  begin
-    P := gtk_file_selection_new(StrTemp);
-
-    {****This is a major hack put by Cliff Baeseman to solve
-     a gtk win32 dll implementation problem where the headers implementation
-     does not match the linux version**** }
-    {$IFNDEF WIN32}
-      gtk_signal_connect(gtk_object(PGtkFileSelection(P)^.ok_button),
-        'clicked', gtk_signal_func(@gtkDialogOKclickedCB), Sender);
-      gtk_signal_connect(gtk_object(PGtkFileSelection(P)^.cancel_button),
-        'clicked', gtk_signal_func(@gtkDialogCancelclickedCB), Sender);
-    {$ELSE}
-      gtk_signal_connect(gtk_object(PGtkFileSelection(P)^.cancel_button),
-        'clicked', gtk_signal_func(@gtkDialogOKclickedCB), Sender);
-      gtk_signal_connect(gtk_object(PGtkFileSelection(P)^.help_button),
-        'clicked', gtk_signal_func(@gtkDialogCancelclickedCB), Sender);
-    {$ENDIF}
-
-    if Sender is TOpenDialog then InitializeOpenDialog;
-
-    InitializeCommonDialog(TCommonDialog(Sender),p);
   end;
 
 begin
@@ -2974,7 +3288,7 @@ begin
     end;
 
     csFileDialog :
-      InitializeFileDialog;
+      InitializeFileDialog(TFileDialog(Sender),p,StrTemp);
 
     csFontDialog :
     begin
@@ -3436,40 +3750,6 @@ begin
 
   StrDispose(StrTemp);
   if P <> nil then HookSignals(Sender);
-end;
-
-{------------------------------------------------------------------------------
-  TGtkObject InitializeCommonDialog
-  Params: ADialog: TCommonDialog; AWindow: PGtkWidget
-  Result: none
-       
-  Initializes a TCommonDialog window.
-------------------------------------------------------------------------------}
-procedure TgtkObject.InitializeCommonDialog(ADialog: TObject;
-  AWindow: PGtkWidget);
-var NewWidth, NewHeight: integer;
-begin
-  SetLCLObject(AWindow,ADialog);
-
-  // connect events
-  gtk_signal_connect(gtk_object(AWindow),
-    'destroy', gtk_Signal_Func(@gtkDialogDestroyCB), ADialog);
-  gtk_signal_connect(gtk_object(AWindow),
-    'delete-event', gtk_Signal_Func(@gtkDialogCloseQueryCB), ADialog);
-  gtk_signal_connect(gtk_object(AWindow),
-    'key-press-event', gtk_Signal_Func(@GTKDialogKeyUpDownCB), ADialog);
-  gtk_signal_connect(gtk_object(AWindow),
-    'key-release-event', gtk_Signal_Func(@GTKDialogKeyUpDownCB), ADialog);
-  gtk_signal_connect(gtk_object(AWindow),
-    'realize', gtk_Signal_Func(@GTKDialogRealizeCB), ADialog);
-
-  // set default size
-  NewWidth:=TCommonDialog(ADialog).InitialWidth;
-  if NewWidth<=0 then NewWidth:=-2; // -2 = let the window manager decide
-  NewHeight:=TCommonDialog(ADialog).InitialHeight;
-  if NewHeight<=0 then NewHeight:=-2; // -2 = let the window manager decide
-  if (NewWidth>0) or (NewHeight>0) then
-    gtk_window_set_default_size(PgtkWindow(AWindow),NewWidth,NewHeight);
 end;
 
 {------------------------------------------------------------------------------}
@@ -4670,6 +4950,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.130  2002/05/30 14:11:12  lazarus
+  MG: added filters and history to TOpenDialog
+
   Revision 1.129  2002/05/29 21:44:38  lazarus
   MG: improved TCommon/File/OpenDialog, fixed TListView scrolling and broder
 
