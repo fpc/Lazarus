@@ -116,7 +116,7 @@ function TCodeCompletionCodeTool.ProcExistsInCodeCompleteClass(
   const NameAndParams: string): boolean;
 // NameAndParams should be uppercase and contains the proc name and the
 // parameter list without names and default values
-// and should not contain any comments, result types
+// and should not contain any comments and no result type
 var ANodeExt: TCodeTreeNodeExtension;
 begin
   Result:=false;
@@ -732,7 +732,7 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
         AccessParam:=copy(Src,Parts[ppName].StartPos,
           Parts[ppName].EndPos-Parts[ppName].StartPos)
           +BeautifyCodeOpts.PropertyStoredIdentPostfix;
-      CleanAccessFunc:=UpperCaseStr(AccessParam);
+      CleanAccessFunc:=UpperCaseStr(AccessParam)+';';
       // check if procedure exists
       if (not ProcExistsInCodeCompleteClass(CleanAccessFunc))
       and (not VarExistsInCodeCompleteClass(CleanAccessFunc))
