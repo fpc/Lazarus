@@ -398,51 +398,51 @@ begin
   // Reason for this split are performance issues since we need RTTI to
   // retrieve the handle
   case LM_Message of
-      LM_Create   : CreateComponent(Sender);
+    LM_Create   : CreateComponent(Sender);
 
-      LM_SETCOLOR : SetColor(Sender);
+    LM_SETCOLOR : SetColor(Sender);
 
-      LM_SETPixel : SetPixel(Sender,Data); 
+    LM_SETPixel : SetPixel(Sender,Data); 
 
-      LM_GETPixel : GetPixel(Sender,Data); 
+    LM_GETPixel : GetPixel(Sender,Data); 
 
-      LM_ShowHide :
-      begin
-         Assert(False, Format('Trace:  [TgtkObject.IntSendMessage3] %s --> Show/Hide', [Sender.ClassNAme]));
-         ShowHide(Sender);
-      end;
+    LM_ShowHide :
+    begin
+       Assert(False, Format('Trace:  [TgtkObject.IntSendMessage3] %s --> Show/Hide', [Sender.ClassNAme]));
+       ShowHide(Sender);
+    end;
 
-      LM_SetCursor : SetCursor(Sender);
+    LM_SetCursor : SetCursor(Sender);
 
-      LM_SetLabel  : SetLabel(Sender,Data);
+    LM_SetLabel  : SetLabel(Sender,Data);
 
-      LM_GETVALUE  : Result := GetValue (Sender, data);
+    LM_GETVALUE  : Result := GetValue (Sender, data);
 
-      LM_SETVALUE  : Result := SetValue (Sender, data);
-     
-      LM_SETPROPERTIES: Result := SetProperties(Sender);
-      
-      {
-      LM_SETDESIGNING
-      Used in Main.pp. Used to set anything specifically needed when setting controls to Designing.
-      }
-      LM_SETDESIGNING : Begin  //Result := SetDesigning(sender);
-                          //trying to prevent some key actions....
-                          //this didn't work....
-                          //if not (csAcceptsControls in TControl(Sender).ControlStyle) then gtk_widget_set_sensitive(PgtkWidget(TWinControl(sender).Handle),False);
-                          if (Sender is TCustomComboBox) then
-                                begin
-                                gtk_combo_disable_activate(PGTKCombo(TWinControl(sender).handle));
-                                end;
-                        end;
+    LM_SETVALUE  : Result := SetValue (Sender, data);
+   
+    LM_SETPROPERTIES: Result := SetProperties(Sender);
+    
+    {
+    LM_SETDESIGNING
+    Used in Main.pp. Used to set anything specifically needed when setting controls to Designing.
+    }
+    LM_SETDESIGNING : Begin  //Result := SetDesigning(sender);
+                        //trying to prevent some key actions....
+                        //this didn't work....
+                        //if not (csAcceptsControls in TControl(Sender).ControlStyle) then gtk_widget_set_sensitive(PgtkWidget(TWinControl(sender).Handle),False);
+                        if (Sender is TCustomComboBox) then
+                              begin
+                              gtk_combo_disable_activate(PGTKCombo(TWinControl(sender).handle));
+                              end;
+                      end;
 
-      LM_RECREATEWND : Result := RecreateWnd(sender);
-      
-      LM_ATTACHMENU: AttachMenu(Sender);
+    LM_RECREATEWND : Result := RecreateWnd(sender);
+    
+    LM_ATTACHMENU: AttachMenu(Sender);
   else begin
-      handle := hwnd(ObjectToGtkObject(Sender));
+    handle := hwnd(ObjectToGtkObject(Sender));
 //???   if handle = nil then assert (false, Format ('Trace:  [TgtkObject.IntSendMessage3] %s --> got handle=nil',[Sender.ClassName])); 
-      Case LM_Message of
+    Case LM_Message of
 
       LM_SetText  : SetText(PgtkWidget(Handle), Data); 
 
@@ -757,26 +757,27 @@ begin
 
       LM_POPUPSHOW :
         Begin 
-              gtk_menu_popup                  (PgtkMenu(TPopupMenu(Sender).Handle),
-                                              nil,
-                                              nil,
-                                              nil,
-                                              nil,
-                                              0,
-                                              0);	
-{Displays a menu and makes it available for selection. Applications can use this
-function to display context-sensitive menus, and will typically supply NULL for
-the parent_menu_shell, parent_menu_item, func and data parameters.
-The default menu positioning function will position the menu at the current
-pointer position.
-menu :	a GtkMenu.	
-parent_menu_shell :	the menu shell containing the triggering menu item.	
-parent_menu_item :	the menu item whose activation triggered the popup.	
-func :	a user supplied function used to position the menu.	
-data :	user supplied data to be passed to func.	
-button :	the button which was pressed to initiate the event.	
-activate_time :	the time at which the activation event occurred. 	
-}
+          gtk_menu_popup(PgtkMenu(TPopupMenu(Sender).Handle),
+                         nil,
+                         nil,
+                         nil,
+                         nil,
+                         0,
+                         0);
+          {Displays a menu and makes it available for selection. Applications
+          can use this function to display context-sensitive menus, and will
+          typically supply NULL for the parent_menu_shell, parent_menu_item,
+          func and data parameters.
+          The default menu positioning function will position the menu at the
+          current pointer position.
+          menu :	a GtkMenu.
+          parent_menu_shell: the menu shell containing the triggering menu item.
+          parent_menu_item: the menu item whose activation triggered the popup.
+          func :	a user supplied function used to position the menu.
+          data :	user supplied data to be passed to func.
+          button :	the button which was pressed to initiate the event.
+          activate_time :	the time at which the activation event occurred.
+          }
 
         end;
 
@@ -808,7 +809,7 @@ activate_time :	the time at which the activation event occurred.
 
       LM_SETFOCUS:
       begin
-writeln('[TgtkObject.IntSendMessage3] LM_SETFOCUS ',TObject(Sender).ClassName);
+        writeln('[TgtkObject.IntSendMessage3] LM_SETFOCUS ',TObject(Sender).ClassName);
         if GTK_WIDGET_CAN_FOCUS(PgtkWidget(Handle)) then
           gtk_widget_grab_focus(PgtkWidget(handle))
         else
@@ -817,13 +818,13 @@ writeln('[TgtkObject.IntSendMessage3] LM_SETFOCUS ',TObject(Sender).ClassName);
 
       LM_SetSize :
       begin
-         Assert(False, Format('Trace:  [TgtkObject.IntSendMessage3] %s --> LM_SetSize(%d, %d, %d, %d)', [Sender.ClassNAme, PRect(Data)^.Left,PRect(Data)^.Top,PRect(Data)^.Right,PRect(Data)^.Bottom]));
-//writeln('[IntSendMessage3.lm_setsize] Left=',PRect(Data)^.Left,' Top=',PRect(Data)^.Top,
-//  ' Right=',PRect(Data)^.Right,' Bottom=',PRect(Data)^.Bottom);
-//writeln('[LM_SetSize] A ',Sender.ClassName,' ',PgtkWidget(Handle)^.window<>nil);
-         ResizeChild(Sender,PRect(Data)^.Left,PRect(Data)^.Top,
+        Assert(False, Format('Trace:  [TgtkObject.IntSendMessage3] %s --> LM_SetSize(%d, %d, %d, %d)', [Sender.ClassNAme, PRect(Data)^.Left,PRect(Data)^.Top,PRect(Data)^.Right,PRect(Data)^.Bottom]));
+        //writeln('[IntSendMessage3.lm_setsize] Left=',PRect(Data)^.Left,' Top=',PRect(Data)^.Top,
+        //  ' Right=',PRect(Data)^.Right,' Bottom=',PRect(Data)^.Bottom);
+        //writeln('[LM_SetSize] A ',Sender.ClassName,' ',PgtkWidget(Handle)^.window<>nil);
+        ResizeChild(Sender,PRect(Data)^.Left,PRect(Data)^.Top,
              PRect(Data)^.Right,PRect(Data)^.Bottom);
-//writeln('[LM_SetSize] B ',Sender.ClassName,' ',PgtkWidget(Handle)^.window<>nil);
+        //writeln('[LM_SetSize] B ',Sender.ClassName,' ',PgtkWidget(Handle)^.window<>nil);
       end;
 
       LM_ShowModal :
@@ -974,7 +975,7 @@ writeln('[TgtkObject.IntSendMessage3] LM_SETFOCUS ',TObject(Sender).ClassName);
         if Sender is TCustomForm then begin
           if (Handle<>0) and (Data<>nil) then begin
             FormIconGdiObject:=Data;
-//writeln('LM_SETFORMICON ',FormIconGdiObject<>nil,' ',pgtkWidget(Handle)^.Window<>nil);
+            //writeln('LM_SETFORMICON ',FormIconGdiObject<>nil,' ',pgtkWidget(Handle)^.Window<>nil);
             if (FormIconGdiObject<>nil) and (pgtkWidget(Handle)^.Window<>nil)
             then begin
               gdk_window_set_icon(pgtkWidget(Handle)^.Window, nil, 
@@ -1069,9 +1070,9 @@ writeln('[TgtkObject.IntSendMessage3] LM_SETFOCUS ',TObject(Sender).ClassName);
           csNotebook:
           begin
             Assert(False, 'Trace:Setting Page to ' + IntToStr(TLMNotebookEvent(Data^).Page));
-//writeln('LM_SETITEMINDEX A ',HexStr(Cardinal(Handle),8),', ',TLMNotebookEvent(Data^).Page);
+            //writeln('LM_SETITEMINDEX A ',HexStr(Cardinal(Handle),8),', ',TLMNotebookEvent(Data^).Page);
             gtk_notebook_set_page(PGtkNotebook(Handle), TLMNotebookEvent(Data^).Page);
-//writeln('LM_SETITEMINDEX B ',TLMNotebookEvent(Data^).Page);
+            //writeln('LM_SETITEMINDEX B ',TLMNotebookEvent(Data^).Page);
           end;
         end;
       end;
@@ -1253,22 +1254,27 @@ writeln('[TgtkObject.IntSendMessage3] LM_SETFOCUS ',TObject(Sender).ClassName);
       begin
         if Sender is TWinControl then begin
           Widget:= PGtkWidget(TWinControl(Sender).Handle);
-	  if Widget <> nil then begin
-	    with Geometry, TControl(Sender) do begin
-	      if Constraints.MinWidth > 0 then min_width:= Constraints.MinWidth else min_width:= 1;
-	      if Constraints.MaxWidth > 0 then max_width:= Constraints.MaxWidth else max_width:= 32767;
-	      if Constraints.MinHeight > 0 then min_height:= Constraints.MinHeight else min_height:= 1;
-	      if Constraints.MaxHeight > 0 then max_height:= Constraints.MaxHeight else max_height:= 32767;
-	      base_width:= Width;
-	      base_height:= Height;
-	      width_inc:= 1;
-	      height_inc:= 1;
-	      min_aspect:= 0;
-	      max_aspect:= 1;
-	    end;
-  	    gtk_window_set_geometry_hints(PGtkWindow(Widget), nil, @Geometry, GDK_HINT_MIN_SIZE or GDK_HINT_MAX_SIZE);
-	  end;
-	end;  
+          if Widget <> nil then begin
+            with Geometry, TControl(Sender) do begin
+      	      if Constraints.MinWidth > 0 then
+                min_width:= Constraints.MinWidth else min_width:= 1;
+      	      if Constraints.MaxWidth > 0 then
+                max_width:= Constraints.MaxWidth else max_width:= 32767;
+      	      if Constraints.MinHeight > 0 then
+                min_height:= Constraints.MinHeight else min_height:= 1;
+      	      if Constraints.MaxHeight > 0 then
+                max_height:= Constraints.MaxHeight else max_height:= 32767;
+      	      base_width:= Width;
+      	      base_height:= Height;
+      	      width_inc:= 1;
+      	      height_inc:= 1;
+      	      min_aspect:= 0;
+      	      max_aspect:= 1;
+      	    end;
+            gtk_window_set_geometry_hints(PGtkWindow(Widget), nil, @Geometry,
+                                        GDK_HINT_MIN_SIZE or GDK_HINT_MAX_SIZE);
+          end;
+        end;
       end;
 
       else
@@ -1319,11 +1325,16 @@ end;
   *Note: Resize a child widget on the parents fixed widget
  ------------------------------------------------------------------------------}
 procedure TgtkObject.ResizeChild(Sender : TObject;Left,Top,Width,Height : Integer);
+{ $DEFINE VerboseResizeChild}
 var
   pFixed: PGTKFixed;
   pWidget: PGTKWidget;
   Parent: TWinControl;
   IsTopLevelWidget: boolean;
+  {$IFDEF VerboseResizeChild}
+  DummyWidget: PGtkWidget;
+  Dummy: TPoint;
+  {$ENDIF}
 begin
   //writeln('[TgtkObject.ResizeChild] START ',TControl(Sender).Name,':',Sender.Classname,' Left=',Left,' Top=',Top,' Width=',Width,' Height=',Height);
   Assert(false, (Format('trace:  [TgtkObject.ResizeChild] %s --> Resize', [Sender.ClassNAme])));
@@ -1336,35 +1347,63 @@ begin
     
       IsTopLevelWidget:= (Sender is TCustomForm) and (Parent = nil);
 
-      if IsTopLevelWidget then
- begin
+      if IsTopLevelWidget then begin
         gtk_window_set_default_size(PgtkWindow(pWidget),Width,Height);
       end;
 
-      gtk_widget_set_usize(pWidget, -1, -1);
-      gtk_widget_set_usize(pWidget, Width, Height);
+      {$IFDEF VerboseResizeChild}
+      if pWidget^.Window<>nil then begin
+        gdk_window_get_size(pWidget^.Window, @Dummy.X, @Dummy.Y);
+        write('ResizeChild: ',TControl(Sender).Name,':',Sender.Classname,
+          ' OldWidSize=',Dummy.X,',',Dummy.Y,
+          ' NewSize=',Width,',',Height);
+        DummyWidget := GetFixedWidget(pWidget);
+        if (DummyWidget <> nil) then begin
+          if (DummyWidget^.Window<>nil) then begin
+            gdk_window_get_size(DummyWidget^.Window, @Dummy.X, @Dummy.Y);
+            writeln('  OldFixWidSize=',Dummy.X,',',Dummy.Y);
+          end else
+            writeln('  FixWid^.Window=nil');
+        end else begin
+          writeln('  NoFixWid');
+        end;
+      end else begin
+        writeln('ResizeChild: ',TControl(Sender).Name,':',Sender.Classname,
+          ' pWidget^.Window=nil',
+          ' NewSize=',Width,',',Height);
+      end;
+      {$ENDIF}
 
-//      if pWidget^.window <> null then begin
-//        gdk_window_move_resize(pWidget^.window, Left, Top, Width, Height);
-//      end;
 
-     { Only move when needed }
-     if not IsTopLevelWidget then begin
+      // move widget on the fixed widget of parent control
+      if not IsTopLevelWidget then begin
+        //gtk_widget_set_usize(pWidget, -1, -1);
+        gtk_widget_set_usize(pWidget, Width, Height);
         if Parent <> nil then begin
           pFixed := GetFixedWidget(PGtkWidget(Parent.Handle));
           if pFixed <> nil then begin
-	    gtk_fixed_move(pFixed, pWidget, Left, Top);
-          end
- else begin
-            Assert(False, 'Trace:ERROR!!!!  - no Fixed Widget found to use when resizing....');
+            gtk_fixed_move(pFixed, pWidget, Left, Top);
+          end else begin
+            if not (Parent is TNoteBook) then begin
+              writeln('WARNING: TgtkObject.ResizeChild - no Fixed Widget found');
+              writeln('  Control=',TControl(Sender).Name,':',Sender.ClassName,
+                      '  Parent=',Parent.Name,':',Parent.ClassName);
+            end;
+            Assert(False, 'WARNING: TgtkObject.ResizeChild - no Fixed Widget found');
+            //raise Exception.Create('TgtkObject.ResizeChild - no Fixed Widget found');
           end;
-        end 
-else begin
-          Assert(False, 'Trace:ERROR !!!  - no Fixed Widget found to use when resizing....');
-          raise Exception('ARG2');
+        end else begin
+          Assert(False, 'ERROR: TgtkObject.ResizeChild - no Parent Control found');
+          raise Exception.Create('TgtkObject.ResizeChild - no Parent Control found');
         end;
       end
- else begin
+      else begin
+        // resize form
+        if pWidget^.window<>nil then begin
+          gdk_window_move_resize(pWidget^.window, Left, Top, Width, Height);
+        end else begin
+          gtk_widget_set_usize(pWidget, Width, Height);
+        end;
         gtk_widget_set_uposition(pWidget, Left, Top);
       end;
     end;
@@ -2176,551 +2215,551 @@ var
    //pStr      : PChar;             // currently only used for TBitBtn to load default pixmap
 
 begin
-   Assert(False, 'Trace:In CreateComponet');
-   p := nil;
-
-   CompStyle := csNone;
-   Caption   := Sender.ClassName;
-   if (Sender is TControl) then
-   begin
-      caption := TControl(Sender).caption;
-      CompStyle := TControl(Sender).FCompStyle
-   end
-   else
-   if (Sender is TMenuItem) then
-   begin
-      caption := TMenuItem(Sender).caption;
-      CompStyle := TMenuItem(Sender).FCompStyle;
-   end
-   else
-   if (Sender is TMenu) or (Sender is TPopupMenu)
-      then CompStyle := TMenu(Sender).FCompStyle
-   else
-   if (Sender is TCommonDialog)
-      then CompStyle := TCommonDialog(Sender).FCompStyle;
-
-   if caption = '' then caption := 'Blank';
-
-   strTemp := StrAlloc(length(caption) + 1);
-   StrPCopy(strTemp, caption);
-
-   case CompStyle of
-      csAlignment :
-      begin
-         p := gtk_alignment_new(0.5,0.5,0,0);
-         gtk_widget_show(p);
-      end;
-
-      csArrow :
-      begin
-         p := gtk_arrow_new(gtk_arrow_left,gtk_shadow_etched_in);
-      end;
-
-      csBitBtn :
-      begin
-        p := gtk_button_new;
-        if ((Sender as TBitBtn).Layout in [blGlyphLeft, blGlyphRight]) then
-          Box := gtk_hbox_new(False,0)
-        else
-          Box := gtk_vbox_new(False,0);
-
-        gtk_container_set_border_width(PgtkContainer(Box),2);
-
-        PixMapWid := nil;
-        Label1 := gtk_label_new(StrTemp);
-
-        gtk_box_pack_start(pGTkBox(Box), Label1, FALSE, FALSE, 3);
-        gtk_widget_show(Label1);
-        gtk_Container_add(PgtkContainer(p),Box);
-        gtk_widget_show(Box);
-
-        gtk_object_set_data(pgtkObject(p),'HBox',Box);
-        gtk_object_set_data(pgtkObject(p),'Pixmap',PixMapwid);
-        gtk_object_set_data(pgtkObject(p),'Label',Label1);
-
-      end;
-
-      csButton :
-      begin
-         p := gtk_button_new_with_label(StrTemp);
-      end;
-
-      csCalendar :
-      begin
-         p := gtk_calendar_new();
-      end;
-
-      csCheckbox :
-      begin
-         p := gtk_check_button_new_with_label(strTemp);
-      end;
-
-      csCListBox :
-      begin
-         p:= gtk_scrolled_window_new(nil, nil);
-         GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.hscrollbar,
-                                GTK_CAN_FOCUS);
-         GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.vscrollbar,
-                                GTK_CAN_FOCUS);
-         gtk_scrolled_window_set_policy(PGtkScrolledWindow(p),
-                                        GTK_POLICY_AUTOMATIC,
-                                        GTK_POLICY_AUTOMATIC);
-         gtk_widget_show(p);
-
-         with Sender as TCListBox
-         do begin
-           TempWidget:= gtk_clist_new(ListColumns);
-           gtk_container_add(PGtkContainer(p), TempWidget);
-
-           for TempInt := 0 to ListColumns - 1 do
-             gtk_clist_set_column_width(PGtkCList(TempWidget), TempInt, (Width-50) div ListColumns);
-         end;
-         gtk_widget_show(TempWidget);
-
-         //--------------------------
-         // MWE: will be obsoleted
-         SetCoreChildWidget(p, TempWidget);
-         //--------------------------
-         GetWidgetInfo(p, True)^.ImplementationWidget := TempWidget;
-         SetMainWidget(p, TempWidget);
-      end;
-
-      csColorDialog :
-      begin
-        P := gtk_color_selection_dialog_new(StrTemp);
-        // We will only add this line if we see problem in the future with the color dialog  MAH 7-31-99
-        // gtk_color_selection_set_update_policy(GTK_COLOR_SELECTION((GTK_COLOR_SELECTION_DIALOG(P))^.colorsel), GTK_UPDATE_DISCONTINUOUS);
-        gtk_signal_connect( gtk_object((GTK_COLOR_SELECTION_DIALOG(P))^.ok_button), 'clicked', gtk_signal_func(@gtkDialogOKclickedCB), Sender);
-        gtk_signal_connect( gtk_object((GTK_COLOR_SELECTION_DIALOG(P))^.cancel_button), 'clicked', gtk_signal_func(@gtkDialogCancelclickedCB), Sender);
-        gtk_signal_connect( gtk_object(P), 'destroy', gtk_Signal_Func(@gtkDialogDestroyCB), Sender);
-      end;
-
-      csComboBox :
-      begin
-         p := gtk_combo_new();
-         gtk_entry_set_text(PGtkEntry(PGtkCombo(p)^.entry), StrTemp);
-      end;
-
-      csEdit :
-      begin
-         p :=  gtk_entry_new();
-      end;
-
-      csFileDialog :
-      begin
-         P := gtk_file_selection_new(StrTemp);
-
-         {****This is a major hack put by Cliff Baeseman to solve
-          a gtk win32 dll implementation problem where the headers implementation
-          does not match the linux version**** }
-         {$ifdef LINUX}
-            gtk_signal_connect( gtk_object((PGtkFileSelection(P))^.ok_button), 'clicked', gtk_signal_func(@gtkDialogOKclickedCB), Sender);
-            gtk_signal_connect( gtk_object((PGtkFileSelection(P))^.cancel_button), 'clicked', gtk_signal_func(@gtkDialogCancelclickedCB), Sender);
-         {$endif}
-
-         {$ifdef WIN32}
-            gtk_signal_connect( gtk_object((PGtkFileSelection(P))^.cancel_button), 'clicked', gtk_signal_func(@gtkDialogOKclickedCB), Sender);
-            gtk_signal_connect( gtk_object((PGtkFileSelection(P))^.help_button), 'clicked', gtk_signal_func(@gtkDialogCancelclickedCB), Sender);
-         {$endif}
-         gtk_signal_connect( gtk_object(P), 'destroy', gtk_Signal_Func(@gtkDialogDestroyCB), Sender);
-
-         if Sender is TOpenDialog then
-         begin
-           // set extra options
-           if ofAllowMultiSelect in TOpenDialog(Sender).Options then
-           begin
-             LastFileSelectRow := -1;
-             gtk_signal_connect( gtk_object(PGtkCList(PGtkFileSelection(P)^.file_list)), 'select-row', gtk_signal_func(@gtkOpenDialogRowSelectCB), Sender);
-             gtk_clist_set_selection_mode(
-             PGtkCList(PGtkFileSelection(P)^.file_list),GTK_SELECTION_MULTIPLE);
-           end;
-         end;
-      end;
-
-      csFontDialog :
-      begin
-         P := gtk_Font_selection_dialog_new(StrTemp);
-         gtk_signal_connect( gtk_object((GTK_FONT_SELECTION_DIALOG(P))^.ok_button), 'clicked', gtk_signal_func(@gtkDialogOKclickedCB), Sender);
-         gtk_signal_connect( gtk_object((GTK_FONT_SELECTION_DIALOG(P))^.cancel_button), 'clicked', gtk_signal_func(@gtkDialogCancelclickedCB), Sender);
-         gtk_signal_connect( gtk_object(P), 'destroy', gtk_Signal_Func(@gtkDialogDestroyCB), Sender);
-      end;
-
-      csFixed: //used for TWinControl, maybe change this to csWinControl
-      begin
-        p := GTKAPIWidget_New;
-        gtk_scrolled_window_set_policy(PGTKScrolledWindow(p), GTK_POLICY_NEVER, GTK_POLICY_NEVER);
-
-        Adjustment := gtk_scrolled_window_get_vadjustment(PGTKScrolledWindow(p));
-        if Adjustment <> nil
-        then with Adjustment^ do
-        begin
-          gtk_object_set_data(PGTKObject(Adjustment), 'ScrollBar', PGTKScrolledWindow(p)^.VScrollBar);
-          Step_Increment := 1;
-        end;
-        Adjustment := gtk_scrolled_window_get_hadjustment(PGTKScrolledWindow(p));
-        if Adjustment <> nil
-        then with Adjustment^ do
-        begin
-          gtk_object_set_data(PGTKObject(Adjustment), 'ScrollBar', PGTKScrolledWindow(p)^.HScrollBar);
-          Step_Increment := 1;
-        end;
-      end;
-
-      csForm :
-      begin
-         Assert(Sender is TForm);
-         p := gtk_window_new(FormStyleMap[TForm(Sender).BorderStyle]);
-
-         gtk_window_set_policy (GTK_WINDOW (p), 1, 1, 0);
-         gtk_window_set_title(pGtkWindow(p), strTemp);
-
-         // the clipboard needs a widget
-         if ClipboardWidget=nil then
-           SetClipboardWidget(p);
-
-         // Create the VBox, we need that to place controls outside
-         // the client area (like menu)
-         Box := gtk_vbox_new(False, 0);
-         gtk_container_add(p, Box);
-         gtk_widget_show(Box);
-
-         // Create the form client area
-         TempWidget := gtk_fixed_new();
-         gtk_box_pack_end(Box, TempWidget, True, True, 0);
-         gtk_widget_show(TempWidget);
-         SetFixedWidget(p, TempWidget);
-         SetMainWidget(p, TempWidget);
-
-         //drag icons
-         if Drag_Icon = nil then
-           Drag_Icon := gdk_pixmap_colormap_create_from_xpm_d (nil,
-                               gtk_widget_get_colormap (p), @Drag_Mask,
-                               nil, @IMGDrag_Icon);
-      end;
-
-      csFrame :
-      begin
-         P := gtk_frame_new(' ');
-         gtk_frame_set_shadow_type(pGtkFrame(P),GTK_SHADOW_NONE);
-      end;
-
-      csGroupBox:
-      begin
-        P := gtk_frame_new (StrTemp);
-        TempWidget := gtk_fixed_new();
-        gtk_container_add(GTK_CONTAINER(p), TempWidget);
-        gtk_widget_show(TempWidget);
-        SetFixedWidget(p, TempWidget);
-        SetMainWidget(p, TempWidget);
-        gtk_widget_show (P);
-      end;
-
-      csGTKTable  :
-      begin
-         P := gtk_table_new(2,2,False);
-      end;
-
-      csHintWindow :
-      Begin
-         p := gtk_window_new(FormStyleMap[bsToolWindow]{gtk_window_Popup});
-         gtk_window_set_policy (GTK_WINDOW (p), 0, 0, 0);
-
-         // Create the form client area
-         TempWidget := gtk_fixed_new();
-         gtk_container_add(p, TempWidget);
-         gtk_widget_show(TempWidget);
-         SetFixedWidget(p, TempWidget);
-         SetMainWidget(p, TempWidget);
-         gtk_widget_show(p);
-      end;
-
-      csImage :
-      Begin
-        p := gtk_image_new(nil,nil);
-      end;
-
-      csLabel :
-      begin
-         P := gtk_label_new(StrTemp);
-         gtk_misc_set_alignment(PGTKMISC(P), 0.0 , 1.0);
-      end;
-
-      csListBox :
-      begin
-         p:= gtk_scrolled_window_new(nil, nil);
-         GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.hscrollbar, GTK_CAN_FOCUS);
-         GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.vscrollbar, GTK_CAN_FOCUS);
-         gtk_scrolled_window_set_policy(PGtkScrolledWindow(p), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-         gtk_widget_show(p);
-         TempWidget:= gtk_list_new;
-         gtk_scrolled_window_add_with_viewport(PGtkScrolledWindow(p), TempWidget);
-               gtk_container_set_focus_vadjustment(PGtkContainer(TempWidget),
-         gtk_scrolled_window_get_vadjustment(PGtkScrolledWindow(p)));
-         gtk_container_set_focus_hadjustment(PGtkContainer(TempWidget),
-         gtk_scrolled_window_get_hadjustment(PGtkScrolledWindow(p)));
-         gtk_widget_show(TempWidget);
-
-         //--------------------------
-         // MWE: will be obsoleted
-         SetCoreChildWidget(p, TempWidget);
-         //--------------------------
-         GetWidgetInfo(p, True)^.ImplementationWidget := TempWidget;
-         SetMainWidget(p, TempWidget);
-      end;
-
-
-      csListView :
-      Begin
-         if TListview(sender).Columns.Count > 0 then
-            p := PgtkWidget(gtk_clist_new(TListview(sender).Columns.Count))
-            else
-            p := PgtkWidget(gtk_clist_new(1));
-
-         if TListview(sender).ScrollBars in [ssBoth, ssHorizontal] then
-         begin
-           tempWidget2 := gtk_hscrollbar_new(gtk_clist_get_hadjustment(PgtkCList(p)));
-           gtk_widget_show(tempwidget2);
-         end;
-
-         if TListview(sender).ScrollBars in [ssBoth, ssVertical] then
-         begin
-           gtk_clist_set_vadjustment(PgtkCList(P),PgtkAdjustment(gtk_adjustment_new(1,1,100,1,10,10)));
-           TempWidget2 := gtk_hscrollbar_new(gtk_clist_get_hadjustment(PgtkCList(p)));
-           gtk_widget_show(tempwidget2);
-         end;
-
-         gtk_widget_show(P);
-      end;
-
-
-      csMainMenu:
-      begin
-         p := gtk_menu_bar_new();
-         // get the VBox, the form has one child, a VBox
-         Box := PGTKBin(TWinControl(TMenu(Sender).Owner).Handle)^.Child;
-         gtk_box_pack_start(Box, p, False, False, 0);
-         SetAccelGroup(p, gtk_accel_group_get_default);
-         gtk_widget_show(p);
-      end;
-
-      csMemo :
-      begin
-        P := gtk_scrolled_window_new(nil, nil);
-        TempWidget := gtk_text_new(nil, nil);
-        gtk_text_set_editable (PGtkText(TempWidget), not (Sender as TMemo).ReadOnly);
-        gtk_text_set_word_wrap(PGtkText(TempWidget), Integer((Sender as TCustomMemo).WordWrap));
-        gtk_widget_show(TempWidget);
-
-        gtk_container_add(p, TempWidget);
-        case (Sender as TCustomMemo).Scrollbars of
-          ssHorizontal: gtk_scrolled_window_set_policy(p, GTK_POLICY_ALWAYS, GTK_POLICY_NEVER);
-          ssVertical:   gtk_scrolled_window_set_policy(p, GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
-          ssBoth:       gtk_scrolled_window_set_policy(p, GTK_POLICY_ALWAYS, GTK_POLICY_ALWAYS);
-        else
-          gtk_scrolled_window_set_policy(p, GTK_POLICY_NEVER, GTK_POLICY_NEVER);
-        end;
-
-        //--------------------------
-        // MWE: will be obsoleted
-        SetCoreChildWidget(p, TempWidget);
-        //--------------------------
-        GetWidgetInfo(p, True)^.ImplementationWidget := TempWidget;
-        gtk_widget_show(P);
-      end;
-
-      csMenuBar :
-      begin
-         P := gtk_menu_bar_new();
-         gtk_container_add(GTK_Container(GetFixedWidget(Pointer(TWinControl(TMenu(Sender).Owner).Handle))), P);
-         SetAccelGroup(p, gtk_accel_group_get_default);
-         gtk_widget_show(p);
-      end;
-
-      csMenuItem :
-      begin
-        if Caption <> '-' then
-        begin
-          //Check for a shortcut key
-          tempInt := pos('&', Caption);
-          if tempInt <> 0 then
-          begin
-             StrTemp[tempInt - 1] := '_';
-             P := gtk_menu_item_new_with_label('');
-             SetAccelKey(P, gtk_label_parse_uline(PGTKLabel(PGTKBin(p)^.Child), StrTemp));
-          end
-          else
-          P := gtk_menu_item_new_with_label(Strtemp)
-        end
-        else
-        P := gtk_menu_item_new;
-
-        gtk_widget_show (p);
-      end;
-
-      csNotebook :
-      begin
-         P := gtk_notebook_new();
-         gtk_notebook_set_scrollable(P, true);
-         gtk_notebook_popup_enable(P);
-         gtk_notebook_set_show_tabs(P, false);   // Turn tabs off
-      end;
-
-      csPage:    // TPage - Notebook page
-      begin
-        // create a fixed widget in a horizontal box
-        P := gtk_hbox_new(false, 0);
-        TempWidget := gtk_fixed_new();
-        gtk_container_add(GTK_CONTAINER(P), TempWidget);
-        gtk_widget_show(TempWidget);
-        SetFixedWidget(p, TempWidget);
-        SetMainWidget(p, TempWidget);
-        gtk_widget_show(P);
-      end;
-
-      csPanel:
-      with (TPanel(Sender)) do
-      begin
-        p := gtk_fixed_new();
-        gtk_widget_show (p);
-        SetFixedWidget(p, p);
-        SetMainWidget(p, p);
-      end;
-
-      csPopupMenu :
-      with (TPopupMenu(Sender)) do
-        P := gtk_menu_new();
-
-      csProgressBar:
-      with (TProgressBar (Sender)) do
-      begin
-         { Create a GtkAdjusment object to hold the range of the progress bar }
-         TempWidget := PGtkWidget( gtk_adjustment_new (Position, Min, Max, 0, 0, 0));
-         { Create the GtkProgressBar using the adjustment }
-         P := gtk_progress_bar_new_with_adjustment (PGtkAdjustment (TempWidget));
-      end;
-
-      csRadioButton :
-      with sender as TRadioButton do
-      begin
-         if group = 0 then
-         begin
-            P := gtk_radio_button_new_with_label(PGsList(group),StrTemp);
-            group := THandle (gtk_radio_button_group (GTk_Radio_Button(P)));
-         end
-         else
-         begin
-            P := gtk_radio_button_new_with_label(gtk_radio_button_group (GTk_Radio_Button(group)),StrTemp);
-         end;
-      end;
-
-      csScrollBar :
-      begin
-        if (TScrollBar(sender).kind = sbHorizontal) then
-        begin
-          P := gtk_hscrollbar_new(PgtkAdjustment(gtk_adjustment_new(1,TScrollBar(sender).min, TScrollBar(sender).max,
-               TScrollBar(sender).SmallChange, TScrollBar(sender).LargeChange,
-               TScrollBar(sender).Pagesize)));
-        end
-        else
-        Begin
-          P := gtk_vscrollbar_new(PgtkAdjustment(gtk_adjustment_new(1,TScrollBar(sender).min, TScrollBar(sender).max,
-          TScrollBar(sender).SmallChange, TScrollBar(sender).LargeChange,
-          TScrollBar(sender).Pagesize)));
-        end;
-      end;
-
-      csScrolledWindow :
-      begin
-         P := gtk_scrolled_window_new(nil,nil);
-      end;
-
-      csSpeedButton:
-      Begin
+  Assert(False, 'Trace:In CreateComponet');
+  p := nil;
+
+  CompStyle := csNone;
+  Caption   := Sender.ClassName;
+  if (Sender is TControl) then
+  begin
+    caption := TControl(Sender).caption;
+    CompStyle := TControl(Sender).FCompStyle
+  end
+  else
+  if (Sender is TMenuItem) then
+  begin
+    caption := TMenuItem(Sender).caption;
+    CompStyle := TMenuItem(Sender).FCompStyle;
+  end
+  else
+  if (Sender is TMenu) or (Sender is TPopupMenu)
+  then
+    CompStyle := TMenu(Sender).FCompStyle
+  else
+  if (Sender is TCommonDialog)
+  then
+    CompStyle := TCommonDialog(Sender).FCompStyle;
+
+  if caption = '' then caption := 'Blank';
+
+  strTemp := StrAlloc(length(caption) + 1);
+  StrPCopy(strTemp, caption);
+
+  case CompStyle of
+    csAlignment :
+    begin
+       p := gtk_alignment_new(0.5,0.5,0,0);
+       gtk_widget_show(p);
+    end;
+
+    csArrow :
+    begin
+       p := gtk_arrow_new(gtk_arrow_left,gtk_shadow_etched_in);
+    end;
+
+    csBitBtn :
+    begin
+      p := gtk_button_new;
+      if ((Sender as TBitBtn).Layout in [blGlyphLeft, blGlyphRight]) then
+        Box := gtk_hbox_new(False,0)
+      else
+        Box := gtk_vbox_new(False,0);
+
+      gtk_container_set_border_width(PgtkContainer(Box),2);
+
+      PixMapWid := nil;
+      Label1 := gtk_label_new(StrTemp);
+
+      gtk_box_pack_start(pGTkBox(Box), Label1, FALSE, FALSE, 3);
+      gtk_widget_show(Label1);
+      gtk_Container_add(PgtkContainer(p),Box);
+      gtk_widget_show(Box);
+
+      gtk_object_set_data(pgtkObject(p),'HBox',Box);
+      gtk_object_set_data(pgtkObject(p),'Pixmap',PixMapwid);
+      gtk_object_set_data(pgtkObject(p),'Label',Label1);
+
+    end;
+
+    csButton :
+    begin
        p := gtk_button_new_with_label(StrTemp);
-      end;
+    end;
 
-      csSpinEdit :
-      begin
-        p := gtk_spin_button_new(PgtkAdjustment(gtk_adjustment_new(1,1,100,1,1,1)),1,0);
-      end;
+    csCalendar :
+    begin
+       p := gtk_calendar_new();
+    end;
 
-      csSTATUSBAR :
-      begin
-         P := gtk_statusbar_new();
-      end;
+    csCheckbox :
+    begin
+       p := gtk_check_button_new_with_label(strTemp);
+    end;
 
-      csToggleBox :
-      begin
-         P := gtk_toggle_button_new_with_label(StrTemp);
-      end;
+    csCListBox :
+    begin
+       p:= gtk_scrolled_window_new(nil, nil);
+       GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.hscrollbar,
+                              GTK_CAN_FOCUS);
+       GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.vscrollbar,
+                              GTK_CAN_FOCUS);
+       gtk_scrolled_window_set_policy(PGtkScrolledWindow(p),
+                                      GTK_POLICY_AUTOMATIC,
+                                      GTK_POLICY_AUTOMATIC);
+       gtk_widget_show(p);
 
-      csToolbar:
-      begin
-         p := gtk_toolbar_new(GTK_ORIENTATION_HORIZONTAL,GTK_TOOLBAR_BOTH);
-         gtk_widget_show (P);
-      end;
+       with Sender as TCListBox
+       do begin
+         TempWidget:= gtk_clist_new(ListColumns);
+         gtk_container_add(PGtkContainer(p), TempWidget);
 
-      csToolButton:
-      begin
-         if TToolButton(Sender).Style = tbsButton then
-         Begin
-            p := gtk_button_new_with_label(StrTemp);
-         end
-         else
-         Begin
-            p := gtk_button_new_with_label(StrTemp);
+         for TempInt := 0 to ListColumns - 1 do
+           gtk_clist_set_column_width(PGtkCList(TempWidget), TempInt, (Width-50) div ListColumns);
+       end;
+       gtk_widget_show(TempWidget);
+
+       //--------------------------
+       // MWE: will be obsoleted
+       SetCoreChildWidget(p, TempWidget);
+       //--------------------------
+       GetWidgetInfo(p, True)^.ImplementationWidget := TempWidget;
+       SetMainWidget(p, TempWidget);
+    end;
+
+    csColorDialog :
+    begin
+      P := gtk_color_selection_dialog_new(StrTemp);
+      // We will only add this line if we see problem in the future with the color dialog  MAH 7-31-99
+      // gtk_color_selection_set_update_policy(GTK_COLOR_SELECTION((GTK_COLOR_SELECTION_DIALOG(P))^.colorsel), GTK_UPDATE_DISCONTINUOUS);
+      gtk_signal_connect( gtk_object((GTK_COLOR_SELECTION_DIALOG(P))^.ok_button), 'clicked', gtk_signal_func(@gtkDialogOKclickedCB), Sender);
+      gtk_signal_connect( gtk_object((GTK_COLOR_SELECTION_DIALOG(P))^.cancel_button), 'clicked', gtk_signal_func(@gtkDialogCancelclickedCB), Sender);
+      gtk_signal_connect( gtk_object(P), 'destroy', gtk_Signal_Func(@gtkDialogDestroyCB), Sender);
+    end;
+
+    csComboBox :
+    begin
+       p := gtk_combo_new();
+       gtk_entry_set_text(PGtkEntry(PGtkCombo(p)^.entry), StrTemp);
+    end;
+
+    csEdit :
+    begin
+       p :=  gtk_entry_new();
+    end;
+
+    csFileDialog :
+    begin
+       P := gtk_file_selection_new(StrTemp);
+
+       {****This is a major hack put by Cliff Baeseman to solve
+        a gtk win32 dll implementation problem where the headers implementation
+        does not match the linux version**** }
+       {$ifdef LINUX}
+          gtk_signal_connect( gtk_object((PGtkFileSelection(P))^.ok_button), 'clicked', gtk_signal_func(@gtkDialogOKclickedCB), Sender);
+          gtk_signal_connect( gtk_object((PGtkFileSelection(P))^.cancel_button), 'clicked', gtk_signal_func(@gtkDialogCancelclickedCB), Sender);
+       {$endif}
+
+       {$ifdef WIN32}
+          gtk_signal_connect( gtk_object((PGtkFileSelection(P))^.cancel_button), 'clicked', gtk_signal_func(@gtkDialogOKclickedCB), Sender);
+          gtk_signal_connect( gtk_object((PGtkFileSelection(P))^.help_button), 'clicked', gtk_signal_func(@gtkDialogCancelclickedCB), Sender);
+       {$endif}
+       gtk_signal_connect( gtk_object(P), 'destroy', gtk_Signal_Func(@gtkDialogDestroyCB), Sender);
+
+       if Sender is TOpenDialog then
+       begin
+         // set extra options
+         if ofAllowMultiSelect in TOpenDialog(Sender).Options then
+         begin
+           LastFileSelectRow := -1;
+           gtk_signal_connect( gtk_object(PGtkCList(PGtkFileSelection(P)^.file_list)), 'select-row', gtk_signal_func(@gtkOpenDialogRowSelectCB), Sender);
+           gtk_clist_set_selection_mode(
+           PGtkCList(PGtkFileSelection(P)^.file_list),GTK_SELECTION_MULTIPLE);
          end;
-         gtk_widget_show (P);
-      end;
+       end;
+    end;
 
-      csTrackBar:
-      with (TTrackBar (Sender)) do
+    csFontDialog :
+    begin
+       P := gtk_Font_selection_dialog_new(StrTemp);
+       gtk_signal_connect( gtk_object((GTK_FONT_SELECTION_DIALOG(P))^.ok_button), 'clicked', gtk_signal_func(@gtkDialogOKclickedCB), Sender);
+       gtk_signal_connect( gtk_object((GTK_FONT_SELECTION_DIALOG(P))^.cancel_button), 'clicked', gtk_signal_func(@gtkDialogCancelclickedCB), Sender);
+       gtk_signal_connect( gtk_object(P), 'destroy', gtk_Signal_Func(@gtkDialogDestroyCB), Sender);
+    end;
+
+    csFixed: //used for TWinControl, maybe change this to csWinControl
+    begin
+      p := GTKAPIWidget_New;
+      gtk_scrolled_window_set_policy(PGTKScrolledWindow(p), GTK_POLICY_NEVER, GTK_POLICY_NEVER);
+
+      Adjustment := gtk_scrolled_window_get_vadjustment(PGTKScrolledWindow(p));
+      if Adjustment <> nil
+      then with Adjustment^ do
       begin
-         TempWidget := PGtkWidget( gtk_adjustment_new (Position, Min, Max, linesize, pagesize, 0));
-         if (Orientation = trHorizontal) then
-           P := gtk_hscale_new (PGTKADJUSTMENT (TempWidget))
-           else
-           P := gtk_vscale_new (PGTKADJUSTMENT (TempWidget));
-         gtk_scale_set_digits (PGTKSCALE (P), 0);
+        gtk_object_set_data(PGTKObject(Adjustment), 'ScrollBar', PGTKScrolledWindow(p)^.VScrollBar);
+        Step_Increment := 1;
+      end;
+      Adjustment := gtk_scrolled_window_get_hadjustment(PGTKScrolledWindow(p));
+      if Adjustment <> nil
+      then with Adjustment^ do
+      begin
+        gtk_object_set_data(PGTKObject(Adjustment), 'ScrollBar', PGTKScrolledWindow(p)^.HScrollBar);
+        Step_Increment := 1;
+      end;
+    end;
+
+    csForm :
+    begin
+       Assert(Sender is TForm);
+       p := gtk_window_new(FormStyleMap[TForm(Sender).BorderStyle]);
+
+       gtk_window_set_policy (GTK_WINDOW (p), 1, 1, 0);
+       gtk_window_set_title(pGtkWindow(p), strTemp);
+
+       // the clipboard needs a widget
+       if ClipboardWidget=nil then
+         SetClipboardWidget(p);
+
+       // Create the VBox, we need that to place controls outside
+       // the client area (like menu)
+       Box := gtk_vbox_new(False, 0);
+       gtk_container_add(p, Box);
+       gtk_widget_show(Box);
+
+       // Create the form client area
+       TempWidget := gtk_fixed_new();
+       gtk_box_pack_end(Box, TempWidget, True, True, 0);
+       gtk_widget_show(TempWidget);
+       SetFixedWidget(p, TempWidget);
+       SetMainWidget(p, TempWidget);
+
+       //drag icons
+       if Drag_Icon = nil then
+         Drag_Icon := gdk_pixmap_colormap_create_from_xpm_d (nil,
+                             gtk_widget_get_colormap (p), @Drag_Mask,
+                             nil, @IMGDrag_Icon);
+    end;
+
+    csFrame :
+    begin
+       P := gtk_frame_new(' ');
+       gtk_frame_set_shadow_type(pGtkFrame(P),GTK_SHADOW_NONE);
+    end;
+
+    csGroupBox:
+    begin
+      P := gtk_frame_new (StrTemp);
+      TempWidget := gtk_fixed_new();
+      gtk_container_add(GTK_CONTAINER(p), TempWidget);
+      gtk_widget_show(TempWidget);
+      SetFixedWidget(p, TempWidget);
+      SetMainWidget(p, TempWidget);
+      gtk_widget_show (P);
+    end;
+
+    csGTKTable  :
+    begin
+       P := gtk_table_new(2,2,False);
+    end;
+
+    csHintWindow :
+    Begin
+       p := gtk_window_new(FormStyleMap[bsToolWindow]{gtk_window_Popup});
+       gtk_window_set_policy (GTK_WINDOW (p), 0, 0, 0);
+
+       // Create the form client area
+       TempWidget := gtk_fixed_new();
+       gtk_container_add(p, TempWidget);
+       gtk_widget_show(TempWidget);
+       SetFixedWidget(p, TempWidget);
+       SetMainWidget(p, TempWidget);
+       gtk_widget_show(p);
+    end;
+
+    csImage :
+    Begin
+      p := gtk_image_new(nil,nil);
+    end;
+
+    csLabel :
+    begin
+       P := gtk_label_new(StrTemp);
+       gtk_misc_set_alignment(PGTKMISC(P), 0.0 , 1.0);
+    end;
+
+    csListBox :
+    begin
+       p:= gtk_scrolled_window_new(nil, nil);
+       GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.hscrollbar, GTK_CAN_FOCUS);
+       GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.vscrollbar, GTK_CAN_FOCUS);
+       gtk_scrolled_window_set_policy(PGtkScrolledWindow(p), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+       gtk_widget_show(p);
+       TempWidget:= gtk_list_new;
+       gtk_scrolled_window_add_with_viewport(PGtkScrolledWindow(p), TempWidget);
+             gtk_container_set_focus_vadjustment(PGtkContainer(TempWidget),
+       gtk_scrolled_window_get_vadjustment(PGtkScrolledWindow(p)));
+       gtk_container_set_focus_hadjustment(PGtkContainer(TempWidget),
+       gtk_scrolled_window_get_hadjustment(PGtkScrolledWindow(p)));
+       gtk_widget_show(TempWidget);
+
+       //--------------------------
+       // MWE: will be obsoleted
+       SetCoreChildWidget(p, TempWidget);
+       //--------------------------
+       GetWidgetInfo(p, True)^.ImplementationWidget := TempWidget;
+       SetMainWidget(p, TempWidget);
+    end;
+
+
+    csListView :
+    Begin
+       if TListview(sender).Columns.Count > 0 then
+          p := PgtkWidget(gtk_clist_new(TListview(sender).Columns.Count))
+          else
+          p := PgtkWidget(gtk_clist_new(1));
+
+       if TListview(sender).ScrollBars in [ssBoth, ssHorizontal] then
+       begin
+         tempWidget2 := gtk_hscrollbar_new(gtk_clist_get_hadjustment(PgtkCList(p)));
+         gtk_widget_show(tempwidget2);
+       end;
+
+       if TListview(sender).ScrollBars in [ssBoth, ssVertical] then
+       begin
+         gtk_clist_set_vadjustment(PgtkCList(P),PgtkAdjustment(gtk_adjustment_new(1,1,100,1,10,10)));
+         TempWidget2 := gtk_hscrollbar_new(gtk_clist_get_hadjustment(PgtkCList(p)));
+         gtk_widget_show(tempwidget2);
+       end;
+
+       gtk_widget_show(P);
+    end;
+
+
+    csMainMenu:
+    begin
+       p := gtk_menu_bar_new();
+       // get the VBox, the form has one child, a VBox
+       Box := PGTKBin(TWinControl(TMenu(Sender).Owner).Handle)^.Child;
+       gtk_box_pack_start(Box, p, False, False, 0);
+       SetAccelGroup(p, gtk_accel_group_get_default);
+       gtk_widget_show(p);
+    end;
+
+    csMemo :
+    begin
+      P := gtk_scrolled_window_new(nil, nil);
+      TempWidget := gtk_text_new(nil, nil);
+      gtk_text_set_editable (PGtkText(TempWidget), not (Sender as TMemo).ReadOnly);
+      gtk_text_set_word_wrap(PGtkText(TempWidget), Integer((Sender as TCustomMemo).WordWrap));
+      gtk_widget_show(TempWidget);
+
+      gtk_container_add(p, TempWidget);
+      case (Sender as TCustomMemo).Scrollbars of
+        ssHorizontal: gtk_scrolled_window_set_policy(p, GTK_POLICY_ALWAYS, GTK_POLICY_NEVER);
+        ssVertical:   gtk_scrolled_window_set_policy(p, GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
+        ssBoth:       gtk_scrolled_window_set_policy(p, GTK_POLICY_ALWAYS, GTK_POLICY_ALWAYS);
+      else
+        gtk_scrolled_window_set_policy(p, GTK_POLICY_NEVER, GTK_POLICY_NEVER);
       end;
 
-   end; //case
+      //--------------------------
+      // MWE: will be obsoleted
+      SetCoreChildWidget(p, TempWidget);
+      //--------------------------
+      GetWidgetInfo(p, True)^.ImplementationWidget := TempWidget;
+      gtk_widget_show(P);
+    end;
+
+    csMenuBar :
+    begin
+       P := gtk_menu_bar_new();
+       gtk_container_add(GTK_Container(GetFixedWidget(Pointer(TWinControl(TMenu(Sender).Owner).Handle))), P);
+       SetAccelGroup(p, gtk_accel_group_get_default);
+       gtk_widget_show(p);
+    end;
+
+    csMenuItem :
+    begin
+      if Caption <> '-' then
+      begin
+        //Check for a shortcut key
+        tempInt := pos('&', Caption);
+        if tempInt <> 0 then
+        begin
+           StrTemp[tempInt - 1] := '_';
+           P := gtk_menu_item_new_with_label('');
+           SetAccelKey(P, gtk_label_parse_uline(PGTKLabel(PGTKBin(p)^.Child), StrTemp));
+        end
+        else
+        P := gtk_menu_item_new_with_label(Strtemp)
+      end
+      else
+      P := gtk_menu_item_new;
+
+      gtk_widget_show (p);
+    end;
+
+    csNotebook :
+    begin
+       P := gtk_notebook_new();
+       gtk_notebook_set_scrollable(P, true);
+       gtk_notebook_popup_enable(P);
+       gtk_notebook_set_show_tabs(P, false);   // Turn tabs off
+    end;
+
+    csPage:    // TPage - Notebook page
+    begin
+      // create a fixed widget in a horizontal box
+      P := gtk_hbox_new(false, 0);
+      TempWidget := gtk_fixed_new();
+      gtk_container_add(GTK_CONTAINER(P), TempWidget);
+      gtk_widget_show(TempWidget);
+      SetFixedWidget(p, TempWidget);
+      SetMainWidget(p, TempWidget);
+      gtk_widget_show(P);
+    end;
+
+    csPanel:
+    with (TPanel(Sender)) do
+    begin
+      p := gtk_fixed_new();
+      gtk_widget_show (p);
+      SetFixedWidget(p, p);
+      SetMainWidget(p, p);
+    end;
+
+    csPopupMenu :
+    with (TPopupMenu(Sender)) do
+      P := gtk_menu_new();
+
+    csProgressBar:
+    with (TProgressBar (Sender)) do
+    begin
+       { Create a GtkAdjusment object to hold the range of the progress bar }
+       TempWidget := PGtkWidget( gtk_adjustment_new (Position, Min, Max, 0, 0, 0));
+       { Create the GtkProgressBar using the adjustment }
+       P := gtk_progress_bar_new_with_adjustment (PGtkAdjustment (TempWidget));
+    end;
+
+    csRadioButton :
+    with sender as TRadioButton do
+    begin
+       if group = 0 then
+       begin
+          P := gtk_radio_button_new_with_label(PGsList(group),StrTemp);
+          group := THandle (gtk_radio_button_group (GTk_Radio_Button(P)));
+       end
+       else
+       begin
+          P := gtk_radio_button_new_with_label(gtk_radio_button_group (GTk_Radio_Button(group)),StrTemp);
+       end;
+    end;
+
+    csScrollBar :
+    begin
+      if (TScrollBar(sender).kind = sbHorizontal) then
+      begin
+        P := gtk_hscrollbar_new(PgtkAdjustment(gtk_adjustment_new(1,TScrollBar(sender).min, TScrollBar(sender).max,
+             TScrollBar(sender).SmallChange, TScrollBar(sender).LargeChange,
+             TScrollBar(sender).Pagesize)));
+      end
+      else
+      Begin
+        P := gtk_vscrollbar_new(PgtkAdjustment(gtk_adjustment_new(1,TScrollBar(sender).min, TScrollBar(sender).max,
+        TScrollBar(sender).SmallChange, TScrollBar(sender).LargeChange,
+        TScrollBar(sender).Pagesize)));
+      end;
+    end;
+
+    csScrolledWindow :
+    begin
+       P := gtk_scrolled_window_new(nil,nil);
+    end;
+
+    csSpeedButton:
+    Begin
+     p := gtk_button_new_with_label(StrTemp);
+    end;
+
+    csSpinEdit :
+    begin
+      p := gtk_spin_button_new(PgtkAdjustment(gtk_adjustment_new(1,1,100,1,1,1)),1,0);
+    end;
+
+    csSTATUSBAR :
+    begin
+       P := gtk_statusbar_new();
+    end;
+
+    csToggleBox :
+    begin
+       P := gtk_toggle_button_new_with_label(StrTemp);
+    end;
+
+    csToolbar:
+    begin
+       p := gtk_toolbar_new(GTK_ORIENTATION_HORIZONTAL,GTK_TOOLBAR_BOTH);
+       gtk_widget_show (P);
+    end;
+
+    csToolButton:
+    begin
+       if TToolButton(Sender).Style = tbsButton then
+       Begin
+          p := gtk_button_new_with_label(StrTemp);
+       end
+       else
+       Begin
+          p := gtk_button_new_with_label(StrTemp);
+       end;
+       gtk_widget_show (P);
+    end;
+
+    csTrackBar:
+    with (TTrackBar (Sender)) do
+    begin
+       TempWidget := PGtkWidget( gtk_adjustment_new (Position, Min, Max, linesize, pagesize, 0));
+       if (Orientation = trHorizontal) then
+         P := gtk_hscale_new (PGTKADJUSTMENT (TempWidget))
+         else
+         P := gtk_vscale_new (PGTKADJUSTMENT (TempWidget));
+       gtk_scale_set_digits (PGTKSCALE (P), 0);
+    end;
+
+  end; //end case
 
 
-   if (Sender is TWinControl) then
-   begin
-     TWinControl(Sender).Handle := THandle(p);
-     if p <> nil then
-         gtk_object_set_data(pgtkobject(p),'Sender',Sender);
-   end
-   else
-   if (Sender is TMenuItem) then
-     TMenuItem(Sender).Handle := HMenu(p)
-   else
-   if (Sender is TMenu) then
-     TMenu(Sender).Items.Handle := HMenu(p)
-   else
-   if (Sender is TCommonDialog) then
-     TCommonDialog(Sender).Handle:= THandle(p);
+  if (Sender is TWinControl) then
+  begin
+    TWinControl(Sender).Handle := THandle(p);
+    if p <> nil then
+      gtk_object_set_data(pgtkobject(p),'Sender',Sender);
+  end
+  else
+  if (Sender is TMenuItem) then
+    TMenuItem(Sender).Handle := HMenu(p)
+  else
+  if (Sender is TMenu) then
+    TMenu(Sender).Items.Handle := HMenu(p)
+  else
+  if (Sender is TCommonDialog) then
+    TCommonDialog(Sender).Handle:= THandle(p);
 
 // MWE: next will be obsoleted by WinWidgetInfo
 //Set these for functions like GetWindowLong  Added 01/07/2000
 {}
-   SetLCLObject(p, Sender);
-   if p <> nil then
-   Begin
-      gtk_object_set_data(pgtkObject(p),'Style',0);
-      gtk_object_set_data(pgtkObject(p),'ExStyle',0);
-   end;
+  SetLCLObject(p, Sender);
+  if p <> nil then
+  Begin
+    gtk_object_set_data(pgtkObject(p),'Style',0);
+    gtk_object_set_data(pgtkObject(p),'ExStyle',0);
+  end;
 
 
 {}
 //--------------------------
 
-   StrDispose(StrTemp);
-   if P <> nil then
-   HookSignals(Sender);
-
+  StrDispose(StrTemp);
+  if P <> nil then HookSignals(Sender);
 end;
 
 {------------------------------------------------------------------------------}
@@ -2881,6 +2920,8 @@ begin
     if Image = nil then exit;
     gtk_Object_set_data(pgtkobject(Widget),'Image',Image);
   end;
+
+  // ToDo: free allocated gdk color
 
   GDKColor:=AllocGDKColor(TLMSetGetPixel(data^).PixColor);
 //writeln('SetPixel: Color=',HexStr(TLMSetGetPixel(data^).PixColor,8),' GDKColor=',HexStr(GDKColor.Pixel,8));
@@ -3267,6 +3308,7 @@ begin
            gtk_misc_set_alignment(PGTKMISC(Handle), xAlign, yAlign);
            gtk_label_set_line_wrap(PGTKLABEL(Handle),WordWrap);
          end;
+         
       csListView :
         begin
           //set up columns..
@@ -3367,6 +3409,7 @@ begin
           then TWinControl(sender).Handle := THandle(gtk_image_new(Image,nil))
           else gtk_image_set(PgtkImage(handle),Image,nil);
         end;
+        
       csSpinEdit:
          Begin
           gtk_spin_button_set_digits(PgtkSpinButton(Widget),TSpinEdit(Sender).Decimal_Places);
@@ -3841,6 +3884,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.115  2002/04/27 15:35:51  lazarus
+  MG: fixed window shrinking
+
   Revision 1.114  2002/04/26 12:26:50  lazarus
   MG: improved clean up
 
