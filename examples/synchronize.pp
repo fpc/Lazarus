@@ -35,9 +35,13 @@
 program Synchronize;
 
 {$mode objfpc}{$H+}
+{$threading on}
 
 uses
   Interfaces, Classes, StdCtrls, Forms, Buttons, Menus, ComCtrls,
+{$ifdef UNIX}
+  cthreads,
+{$endif}
   SysUtils, Extctrls;
 
 
