@@ -274,8 +274,9 @@ begin
   if Macros.SubstituteStr(Filename) 
   and Macros.SubstituteStr(WorkingDir)
   and Macros.SubstituteStr(Params) then begin
+    Filename:=FindProgram(Filename,GetCurrentDir,false);
     CmdLine:=Filename;
-    if Params<>'' then 
+    if Params<>'' then
       CmdLine:=CmdLine+' '+Params;
     writeln('[TExternalToolList.Run] ',CmdLine);
     try
