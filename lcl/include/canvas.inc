@@ -231,11 +231,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCanvas.FillRect(const Rect : TRect);
 begin
-writeln('[TCanvas.FillRect] 1');
   RequiredState([csHandleValid, csBrushValid]);
-writeln('[TCanvas.FillRect] 2');
   LCLLinux.FillRect(FHandle, Rect, Brush.Handle);
-writeln('[TCanvas.FillRect] 3');
 end;
 
 {------------------------------------------------------------------------------
@@ -530,7 +527,6 @@ begin
   Needed := ReqState - FState;
   if Needed <> [] then
   begin
-writeln('[TCanvas.RequiredState] 1');
     if csHandleValid in Needed then
     begin
       CreateHandle;
@@ -538,16 +534,13 @@ writeln('[TCanvas.RequiredState] 1');
       then raise EInvalidOperation.Create('Canvas does not allow drawing');
       Include(FState, csHandleValid);
     end;
-writeln('[TCanvas.RequiredState] 2');
     if csFontValid in Needed then CreateFont;
-writeln('[TCanvas.RequiredState] 3');
     if csPenValid in Needed then
     begin
       CreatePen;
       if Pen.Style in [psDash, psDot, psDashDot, psDashDotDot]
       then Include(Needed, csBrushValid);
     end;
-writeln('[TCanvas.RequiredState] 4');
     if csBrushValid in Needed then CreateBrush;
   end;
 end;
@@ -603,7 +596,7 @@ end;
 { =============================================================================
 
   $Log$
-  Revision 1.6  2001/03/22 22:39:02  lazarus
+  Revision 1.7  2001/03/22 22:46:18  lazarus
   MG: fixed unreleased handle bug
 
   Revision 1.4  2001/03/19 14:00:50  lazarus
