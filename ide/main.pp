@@ -35,7 +35,7 @@ uses
   KeyMapping, ProjectOpts, IDEProcs;
 
 const
-  Version_String = '0.7';
+  Version_String = '0.7 alpha';
 
 type
   TIDEToolStatus = (itNone, itBuilder, itDebugger, itCustom);
@@ -181,7 +181,8 @@ type
         var Handled: boolean);
 
     // ObjectInspector events
-    procedure OIOnAddAvailableComponent(AComponent:TComponent; var Allowed:boolean);
+    procedure OIOnAddAvailableComponent(AComponent:TComponent;
+       var Allowed:boolean);
     procedure OIOnSelectComponent(AComponent:TComponent);
 
     // Environment options dialog events
@@ -214,8 +215,10 @@ type
     // files/units
     function DoNewEditorUnit(NewUnitType:TNewUnitType):TModalResult;
     function DoSaveEditorUnit(PageIndex:integer; SaveAs:boolean):TModalResult;
-    function DoCloseEditorUnit(PageIndex:integer; SaveFirst: boolean):TModalResult;
-    function DoOpenEditorFile(AFileName:string; ProjectLoading:boolean):TModalResult;
+    function DoCloseEditorUnit(PageIndex:integer;
+        SaveFirst: boolean):TModalResult;
+    function DoOpenEditorFile(AFileName:string;
+        ProjectLoading:boolean):TModalResult;
     function DoOpenFileAtCursor(Sender: TObject):TModalResult;
     function DoSaveAll: TModalResult;
     function DoOpenMainUnit(ProjectLoading: boolean): TModalResult;
@@ -251,7 +254,8 @@ type
     procedure OnMacroSubstitution(TheMacro: TTransferMacro; var s:string;
       var Handled, Abort: boolean);
     procedure OnCmdLineCreate(var CmdLine: string; var Abort:boolean);
-    function DoJumpToCompilerMessage(Index:integer; FocusEditor: boolean): boolean;
+    function DoJumpToCompilerMessage(Index:integer;
+      FocusEditor: boolean): boolean;
     procedure DoShowMessagesView;
 
     procedure LoadMainMenu;
@@ -2442,7 +2446,7 @@ var Ext,AText,ACaption,LPIFilename:string;
   SrcStream: TMemoryStream;
   NewSource: string;
 begin
-writeln('TMainIDE.DoOpenProjectFile 1');
+writeln('TMainIDE.DoOpenProjectFile A "'+AFileName+'"');
   Result:=mrCancel;
   if AFileName='' then exit;
   AFilename:=ExpandFileName(AFilename);
@@ -2478,7 +2482,7 @@ writeln('TMainIDE.DoOpenProjectFile 1');
   LPIFilename:=ChangeFileExt(AFilename,'.lpi');
   Project:=TProject.Create(ptProgram);
   Project.ReadProject(LPIFilename);
-  if Project.MainUnit=0 then begin
+  if Project.MainUnit>=0 then begin
     // read MainUnit Source
     SrcStream:=TMemoryStream.Create;
     try
@@ -2500,9 +2504,9 @@ writeln('TMainIDE.DoOpenProjectFile 1');
     LowestEditorIndex:=-1;
     for i:=0 to Project.UnitCount-1 do begin
       if (Project.Units[i].Loaded) then begin
-        if (LastEditorIndex<0) or
-          ((Project.Units[i].EditorIndex>LastEditorIndex)
-            and (Project.Units[i].EditorIndex<LowestEditorIndex)) then
+        if (Project.Units[i].EditorIndex>LastEditorIndex)
+        and ((Project.Units[i].EditorIndex<LowestEditorIndex)
+             or (LowestEditorIndex<0)) then
         begin
           LowestEditorIndex:=Project.Units[i].EditorIndex;
           LowestUnitIndex:=i;
@@ -3319,6 +3323,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.93  2001/05/15 06:39:48  lazarus
+  MG: bugfixed editor restore order
+
   Revision 1.92  2001/04/21 14:50:21  lazarus
   MG: bugfix for mainunits ext <> .lpr
 

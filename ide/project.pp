@@ -156,7 +156,8 @@ type
     procedure CreateStartCode(NewUnitType: TNewUnitType);
 
     { Properties }
-    property Breakpoints: TProjectBreakPointList read fBreakpoints write fBreakpoints;
+    property Breakpoints: TProjectBreakPointList
+        read fBreakpoints write fBreakpoints;
     property CursorPos: TPoint read fCursorPos write fCursorPos;
     property EditorIndex:integer read fEditorIndex write fEditorIndex;
     property Filename: String read fFilename write fFilename;
@@ -228,8 +229,11 @@ type
     procedure AddUnit(AUnit: TUnitInfo; AddToProjectFile:boolean);
     procedure RemoveUnit(Index:integer);
     function IndexOf(AUnitInfo: TUnitInfo):integer;
-    function IndexOfUnitWithName(AUnitName:string; OnlyProjectUnits:boolean):integer;
-    function IndexOfUnitWithForm(AForm: TComponent; OnlyProjectUnits:boolean):integer;
+    function IndexOfUnitWithName(AUnitName:string;
+       OnlyProjectUnits:boolean):integer;
+    function IndexOfUnitWithForm(AForm: TComponent;
+       OnlyProjectUnits:boolean):integer;
+
     function UnitWithEditorIndex(Index:integer):TUnitInfo;
     procedure CloseEditorIndex(EditorIndex:integer);
     procedure InsertEditorIndex(EditorIndex:integer);
@@ -250,13 +254,14 @@ type
     property CompilerOptions: TCompilerOptions 
        read fCompilerOptions write fCompilerOptions;
     property IconPath: String read fIconPath write fIconPath;
-    property MainUnit: Integer  // the MainUnit is the unit index of the program file
+    property MainUnit: Integer //this is the unit index of the program file
        read fMainUnit write fMainUnit;
     property Modified: boolean read fModified write fModified;
     property OnFileBackup: TOnFileBackup read fOnFileBackup write fOnFileBackup;
     property OutputDirectory: String read fOutputDirectory write fOutputDirectory;
     property ProjectFile: String read fProjectFile write SetProjectFile;
-    property ProjectInfoFile: string read GetProjectInfoFile write SetProjectInfoFile;
+    property ProjectInfoFile: string
+       read GetProjectInfoFile write SetProjectInfoFile;
     property ProjectType: TProjectType read fProjectType write fProjectType;
     property TargetFileExt: String read fTargetFileExt write fTargetFileExt;
     property Title: String read fTitle write fTitle;
@@ -960,6 +965,7 @@ writeln('TProject.ReadProject 2 ',LPIFilename);
       AddUnit(NewUnitInfo,false);
       NewUnitInfo.LoadFromXMLConfig(
          xmlcfg,'ProjectOptions/Units/Unit'+IntToStr(i)+'/');
+//writeln('NewUnitInfo: ',NewUnitInfo.Filename,', ',NewUnitInfo.EditorIndex);
     end;
 
     // Load the compiler options
@@ -1397,6 +1403,9 @@ end.
 
 {
   $Log$
+  Revision 1.21  2001/05/15 06:39:48  lazarus
+  MG: bugfixed editor restore order
+
   Revision 1.20  2001/04/04 13:55:35  lazarus
   MG: finished TComponentPropertyEditor, added OnModified to oi, cfe and designer
 
