@@ -825,7 +825,10 @@ begin
     finally
       Exclude(FStates,pgsApplyingValue);
     end;
-    DoPaint(true);
+    if FPropertyEditorHook=nil then
+      DoPaint(true)
+    else
+      FPropertyEditorHook.RefreshPropertyValues;
     if Assigned(FOnModified) then FOnModified(Self);
   end;
 end;

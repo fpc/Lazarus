@@ -3457,6 +3457,7 @@ Type
     procedure UpdateButtons;
     procedure ComponentRenamed(AComponent: TComponent);
     procedure PersistentDeleting(APersistent: TPersistent);
+    procedure RefreshPropertyValues;
   public
     procedure FillCollectionListBox;
     constructor Create(TheOwner: TComponent); Override;
@@ -3593,6 +3594,11 @@ procedure TCollectionPropertyEditorForm.PersistentDeleting(
 begin
   if APersistent=OwnerPersistent then
     SetCollection(nil,nil,'');
+end;
+
+procedure TCollectionPropertyEditorForm.RefreshPropertyValues;
+begin
+  FillCollectionListBox;
 end;
 
 procedure TCollectionPropertyEditorForm.FillCollectionListBox;
@@ -3739,6 +3745,7 @@ begin
     if FOwnerPersistent<>nil then begin
       GlobalDesignHook.AddHandlerComponentRenamed(@ComponentRenamed);
       GlobalDesignHook.AddHandlerPersistentDeleting(@PersistentDeleting);
+      GlobalDesignHook.AddHandlerRefreshPropertyValues(@RefreshPropertyValues);
     end else begin
       GlobalDesignHook.RemoveAllHandlersForObject(Self);
     end;
