@@ -1626,7 +1626,7 @@ var
    TempInt   : Integer;           // local use when neccessary
    Adjustment: PGTKAdjustment;    // currently only used for csFixed
    // - for csBitBtn
-   box1      : pgtkWidget;        // currently only used for TBitBtn
+   Box       : Pointer;           // currently only used for TBitBtn and TForm
    pixmap    : pGdkPixMap;        // TBitBtn - the default pixmap
    pixmapwid : pGtkWidget;        // currently only used for TBitBtn
    mask      : pGDKBitmap;        // currently only used for TBitBtn
@@ -1682,8 +1682,8 @@ begin
       begin
          Assert(False, 'Trace:CSBITBTN CREATE*************************');
          p := gtk_button_new;
-         box1 := gtk_hbox_new(False,0);
-         gtk_container_set_border_width(PgtkContainer(box1),2);
+         Box := gtk_hbox_new(False,0);
+         gtk_container_set_border_width(PgtkContainer(Box),2);
          style := gtk_widget_get_style(pGTKWidget(p));
 
              // is this neccessary?
@@ -1698,14 +1698,14 @@ begin
          pixmapwid := gtk_pixmap_new(pixmap,mask);
          label1 := gtk_label_new(StrTemp);
 
-         gtk_box_pack_start(pGTkBox(Box1),pixmapwid,False,False,3);
-         gtk_box_pack_start(pGTkBox(box1), label1, FALSE, FALSE, 3);
+         gtk_box_pack_start(pGTkBox(Box),pixmapwid,False,False,3);
+         gtk_box_pack_start(pGTkBox(Box), label1, FALSE, FALSE, 3);
          gtk_widget_show(pixmapwid);
          gtk_widget_show(label1);
-         gtk_Container_add(PgtkContainer(p),box1);
-         gtk_widget_show(box1);
+         gtk_Container_add(PgtkContainer(p),Box);
+         gtk_widget_show(Box);
 
-         gtk_object_set_data(pgtkObject(p),'HBox',box1);
+         gtk_object_set_data(pgtkObject(p),'HBox',Box);
          gtk_object_set_data(pgtkObject(p),'Pixmap',PixMapwid);
          gtk_object_set_data(pgtkObject(p),'Label',Label1);
 
@@ -1857,8 +1857,16 @@ begin
          TempInt:= FormSizeableMap[TForm(Sender).BorderStyle];
          gtk_window_set_policy (GTK_WINDOW (p), TempInt, TempInt, 0);
          gtk_window_set_title(pGtkWindow(p), strTemp);
+        
+         // Create the VBox, we need that to place controls outside 
+         // the client area (like menu)
+         Box := gtk_vbox_new(False, 0);
+         gtk_container_add(p, Box);
+         gtk_widget_show(Box);
+
+         // Create the form client area
          TempWidget := gtk_fixed_new();
-         gtk_container_add(GTK_CONTAINER(p), TempWidget);
+         gtk_box_pack_end(Box, TempWidget, True, True, 0);
          gtk_widget_show(TempWidget);
          SetFixedWidget(p, TempWidget);
          SetMainWidget(p, TempWidget);
@@ -1938,6 +1946,16 @@ begin
 }
 *)
          gtk_widget_show(P);
+      end;
+      
+      csMainMenu:
+      begin
+         p := gtk_menu_bar_new();
+         // get the VBox, the form has one child, a VBox
+         Box := PGTKBin(TWinControl(TMenu(Sender).Owner).Handle)^.Child;
+         gtk_box_pack_start(Box, p, False, False, 0);
+         SetAccelGroup(p, gtk_accel_group_get_default);
+         gtk_widget_show(p);
       end;
 
       csMenuBar :
@@ -2823,6 +2841,12 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.44  2001/04/13 17:56:17  lazarus
+  MWE:
+  * Moved menubar outside clientarea
+  * Played a bit with the IDE layout
+  * Moved the creation of the toolbarspeedbuttons to a separate function
+
   Revision 1.43  2001/04/06 22:25:14  lazarus
   * TTimer uses winapi-interface now instead of sendmessage-interface, stoppok
 

@@ -11,13 +11,19 @@
 constructor TMainMenu.Create(AOwner : TComponent);
 begin
   inherited Create(AOwner);
-  FCompStyle := csMenuBar;
+  FCompStyle := csMainMenu;
 end;
 
 
 { =============================================================================
 
   $Log$
+  Revision 1.2  2001/04/13 17:56:17  lazarus
+  MWE:
+  * Moved menubar outside clientarea
+  * Played a bit with the IDE layout
+  * Moved the creation of the toolbarspeedbuttons to a separate function
+
   Revision 1.1  2000/07/13 10:28:26  michael
   + Initial import
 

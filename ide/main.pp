@@ -115,6 +115,8 @@ type
 
     itmEnvGeneralOptions: TMenuItem; 
     itmEnvEditorOptions: TMenuItem; 
+    
+//    pnlSpeedButtons: TPanel;
 
     CheckBox1 : TCheckBox; 
     ComponentNotebook : TNotebook;
@@ -253,6 +255,7 @@ type
     procedure DoShowMessagesView;
 
     procedure LoadMainMenu;
+    procedure LoadSpeedbuttons;
     Procedure SetDesigning(Control : TComponent; Value : Boolean);
 
     // form editor and designer
@@ -300,39 +303,39 @@ uses
   ViewUnit_dlg, Math, LResources, Designer;
 
 
+function LoadPixmapRes(ResourceName:string; PixMap:TPixMap):boolean;
+var
+  ms:TMemoryStream;
+  res:TLResource;
+begin
+  Result:=false;
+  res:=LazarusResources.Find(ResourceName);
+  if (res<>nil) and (res.Value<>'') and (res.ValueType='XPM') then begin
+    ms:=TMemoryStream.Create;
+    try
+      ms.Write(res.Value[1],length(res.Value));
+      ms.Position:=0;
+      Pixmap.LoadFromStream(ms);
+      Result:=true;
+    finally
+      ms.Free;
+    end;
+  end;
+end;
+
+function LoadSpeedBtnPixMap(ResourceName:string):TPixmap;
+begin
+  Result:=TPixmap.Create;
+  Result.TransparentColor:=clBtnFace;
+  if not LoadPixmapRes(ResourceName,Result) then
+    LoadPixmapRes('default',Result);
+end;
+
+
 { TMainIDE }
 
 
 constructor TMainIDE.Create(AOwner: TComponent);
-
-  function LoadPixmapRes(ResourceName:string; PixMap:TPixMap):boolean;
-  var
-    ms:TMemoryStream;
-    res:TLResource;
-  begin
-    Result:=false;
-    res:=LazarusResources.Find(ResourceName);
-    if (res<>nil) and (res.Value<>'') and (res.ValueType='XPM') then begin
-      ms:=TMemoryStream.Create;
-      try
-        ms.Write(res.Value[1],length(res.Value));
-        ms.Position:=0;
-        Pixmap.LoadFromStream(ms);
-        Result:=true;
-      finally
-        ms.Free;
-      end;
-    end;
-  end;
-
-  function LoadSpeedBtnPixMap(ResourceName:string):TPixmap;
-  begin
-    Result:=TPixmap.Create;
-    Result.TransparentColor:=clBtnFace;
-    if not LoadPixmapRes(ResourceName,Result) then
-      LoadPixmapRes('default',Result);
-  end;
-
 var
   i,x : Integer;
   PageCount : Integer;
@@ -344,14 +347,16 @@ begin
   inherited Create(AOwner);
 
   EnvironmentOptions:=TEnvironmentOptions.Create;
-  with EnvironmentOptions do begin
+  with EnvironmentOptions do 
+  begin
     SetLazarusDefaultFilename;
     Load(false);
   end;
   
   EditorOpts.Load;
 
-  if LazarusResources.Find(ClassName)=nil then begin
+  if LazarusResources.Find(ClassName)=nil 
+  then begin
 
   end;
 
@@ -361,29 +366,30 @@ begin
 
   Name := 'MainIDE';
   if (EnvironmentOptions.SaveWindowPositions) 
-  and (EnvironmentOptions.WindowPositionsValid) then begin
-    BoundsRect:=EnvironmentOptions.MainWindowBounds;
-  end else begin
+  and (EnvironmentOptions.WindowPositionsValid) 
+  then begin
+    BoundsRect := EnvironmentOptions.MainWindowBounds;
+  end 
+  else begin
     Left := 0;
     Top := 0;
-    Width := Screen.Width-10;
+    Width := Screen.Width - 10;
     Height := 125;
   end;
   Position:= poDesigned;
 
-
   LoadMainMenu;
-
+  LoadSpeedbuttons;
 
   ComponentNotebook := TNotebook.Create(Self);
   with ComponentNotebook do begin
     Parent := Self;
-    Align := alBottom;
-    Left := 1;
-//  ComponentNotebook.Top :=50+ MnuBarMain.Top+MnuBarMain.Height + 2;
-    Top :=50+ 2;
-    Width := Self.ClientWidth;
-    Height := 100; //Self.ClientHeight - ComponentNotebook.Top;
+//    Align := alBottom;
+    Left := RunSpeedButton.Left + RunSpeedButton.Width + 4;
+//    Top :=50+ 2;
+    Top := 0;
+    Width := Self.ClientWidth - Left;
+    Height := 60; //Self.ClientHeight - ComponentNotebook.Top;
   end;
 
   PageCount := 0;
@@ -430,160 +436,6 @@ begin
   ComponentNotebook.Show;
   ComponentNotebook.OnPageChanged := @ControlClick;
   ComponentNotebook.Name := 'ComponentNotebook';
-
-  ViewUnitsSpeedBtn := TSpeedButton.Create(Self);
-  with ViewUnitsSpeedBtn do
-   Begin
-    Parent := self;
-    Enabled := True;
-    Top := 28;
-    OnClick := @mnuViewUnitsClicked;
-    Glyph := LoadSpeedBtnPixMap('btn_viewunits');
-    Visible := True;
-    Flat := true;
-    Name := 'ViewUnitsSpeedBtn';
-   end;
-
-  ViewFormsSpeedBtn := TSpeedButton.Create(Self);
-  with ViewFormsSpeedBtn do
-   Begin
-    Parent := self;
-    Enabled := True;
-    Top := 28;
-    Left := ViewUnitsSpeedBtn.Left +26;
-    OnClick := @mnuViewFormsClicked;
-    Glyph := LoadSpeedBtnPixMap('btn_viewforms');
-    Visible := True;
-    Flat := true;
-    Name := 'ViewFormsSpeedBtn';
-   end;
-
-  NewUnitSpeedBtn := TSpeedButton.Create(Self);
-  with NewUnitSpeedBtn do
-   Begin
-    Parent := self;
-    Enabled := True;
-    Top := 28;
-    Left := ViewFormsSpeedBtn.Left + 26;
-    OnClick := @mnuNewUnitClicked;
-    Glyph := LoadSpeedBtnPixMap('btn_newunit');
-    Visible := True;
-    Flat := true;
-    Name := 'NewUnitSpeedBtn';
-   end;
-
-  OpenFileSpeedBtn := TSpeedButton.Create(Self);
-  with OpenFileSpeedBtn do
-   Begin
-    Parent := self;
-    Enabled := True;
-    Top := 28;
-    Left := NewUnitSpeedBtn.Left + 26;
-    Glyph := LoadSpeedBtnPixMap('btn_openfile');
-    Visible := True;
-    Flat := true;
-    Name := 'OpenFileSpeedBtn';
-    OnClick:=@mnuOpenClicked;
-   end;
-
-  //display the down arrow right to the openfile speedbutton
-  OpenFileArrowSpeedBtn := TSpeedButton.Create(Self);
-  with OpenFileArrowSpeedBtn do
-   Begin
-    Parent := self;
-    Enabled := True;
-    Top := 28;
-    Left := OpenFileSpeedBtn.Left + 26;
-    OnClick := @OpenFileDownArrowClicked;
-    Glyph := LoadSpeedBtnPixMap('btn_downarrow');
-    Visible := True;
-    Flat := true;
-    Name := 'OpenFileArrowSpeedBtn';
-    Width := 12;
-   end;
-
-//create the popupmenu for this speedbutton
-  OpenFilePopUpMenu := TPopupMenu.Create(self);
-  OpenFilePopupMenu.Name:='OpenFilePopupMenu';
-  OpenFilePopupMenu.AutoPopup := False;
-{  MenuItem := TMenuItem.Create(Self);
-  MenuItem.Caption := 'No files have been opened';
-  MenuItem.OnClick := nil;
- OpenFilePopupMenu.Items.Add(MenuItem);
-}
-
-  SaveSpeedBtn := TSpeedButton.Create(Self);
-  with SaveSpeedBtn do
-   Begin
-    Parent := self;
-    Enabled := False;
-    Top := 28;
-    Left := OpenFileArrowSpeedBtn.Left + 15;
-    Glyph := LoadSpeedBtnPixMap('btn_save');
-    NumGlyphs := 2;
-    Visible := True;
-    Flat := true;
-    Name := 'SaveSpeedBtn';
-    OnClick:=@mnuSaveClicked;
-   end;
-
-  SaveAllSpeedBtn := TSpeedButton.Create(Self);
-  with SaveAllSpeedBtn do
-   Begin
-    Parent := self;
-    Enabled := False;
-    Top := 28;
-    Left := SaveSpeedBtn.left + 26;
-    Glyph := LoadSpeedBtnPixMap('btn_saveall');
-    NumGlyphs := 2;
-    Visible := True;
-    Flat := true;
-    Name := 'SaveAllSpeedBtn';
-    OnClick:=@mnuSaveAllClicked;
-   end;
-
-  ToggleFormSpeedBtn := TSpeedButton.Create(Self);
-  with ToggleFormSpeedBtn do
-   Begin
-    Parent := self;
-    Enabled := True;
-    Top := 28;
-    Left := SaveAllSpeedBtn.Left + 26;
-    OnClick := @mnuToggleFormUnitCLicked;
-    Glyph := LoadSpeedBtnPixMap('btn_toggleform');
-    Visible := True;
-    Flat := true;
-    Name := 'ToggleFormSpeedBtn';
-   end;
-
-  NewFormSpeedBtn := TSpeedButton.Create(Self);
-  with NewFormSpeedBtn do
-   Begin
-    Parent := self;
-    Enabled := True;
-    Top := 28;
-    Left := ToggleFormSpeedBtn.Left + 26;
-    OnClick := @mnuNewFormCLicked;
-    Glyph := LoadSpeedBtnPixMap('btn_newform');
-    Visible := True;
-    Flat := true;
-    Name := 'NewFormSpeedBtn';
-   end;
-
-  RunSpeedButton := TSpeedButton.Create(Self);
-  with RunSpeedbutton do
-   Begin
-    Parent := self;
-    Enabled := False;
-    Top := 28;
-    Left := NewFormSpeedBtn.Left + 26;
-    //OnClick := @mnuRunClicked;
-    Glyph := LoadSpeedBtnPixMap('btn_run');
-    NumGlyphs := 2;
-    Visible := True;
-    Flat := true;
-    Name := 'RunSpeedBtn';
-   end;
 
   OnShow := @FormShow;
   OnClose := @FormClose;
@@ -711,8 +563,6 @@ begin
 
 end;
 
-
-
 {------------------------------------------------------------------------------}
 procedure TMainIDE.FormShow(Sender : TObject);
 Begin
@@ -740,6 +590,88 @@ writeln('[TMainIDE.FormCloseQuery]');
   end;
   CanClose:=(DoCloseProject<>mrAbort);
 End;
+
+{------------------------------------------------------------------------------}
+type 
+  TMoveFlags = set of (mfTop, mfLeft);
+
+procedure TMainIDE.LoadSpeedbuttons;
+  
+  function CreateButton(const AName, APixName: String; ANumGlyphs: Integer; var ALeft, ATop: Integer; const AMoveFlags: TMoveFlags; const AOnClick: TNotifyEvent): TSpeedButton;
+  begin
+    Result := TSpeedButton.Create(Self);
+    with Result do
+    begin
+      Name := AName;
+//      Parent := pnlSpeedButtons;
+      Parent := Self;
+      Enabled := True;
+      Top := ATop;
+      Left := ALeft;
+      OnClick := AOnClick;
+      Glyph := LoadSpeedBtnPixMap(APixName);
+      NumGlyphs := ANumGlyphs;
+      Visible := True;
+      Flat := True;
+      
+      if mfTop in AMoveFlags then Inc(ATop, Height + 1);
+      if mfLeft in AMoveFlags then Inc(ALeft, Width + 1);
+    end;
+  end;
+var
+  ButtonTop, ButtonLeft, n: Integer;
+
+begin
+(*
+  pnlSpeedButtons := TPanel.Create(Self);
+  with pnlSpeedButtons do
+  begin
+    Parent := Self;
+    Visible := True;
+    Name := 'pnlSpeedButtons';
+    Top := 0;
+    Caption := '';
+  end;
+*)
+
+  ButtonTop := 1;
+  ButtonLeft := 1;
+  NewUnitSpeedBtn       := CreateButton('NewUnitSpeedBtn'      , 'btn_newunit'   , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuNewUnitClicked);
+  OpenFileSpeedBtn      := CreateButton('OpenFileSpeedBtn'     , 'btn_openfile'  , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuOpenClicked);
+
+  // store left
+  n := ButtonLeft;
+  OpenFileArrowSpeedBtn := CreateButton('OpenFileArrowSpeedBtn', 'btn_downarrow' , 1, ButtonLeft, ButtonTop, [mfLeft], @OpenFileDownArrowClicked);
+  OpenFileArrowSpeedBtn. Width := 12;
+  ButtonLeft := n;
+  Inc(ButtonLeft, 12);
+  
+  SaveSpeedBtn          := CreateButton('SaveSpeedBtn'         , 'btn_save'      , 2, ButtonLeft, ButtonTop, [mfLeft], @mnuSaveClicked);
+  SaveAllSpeedBtn       := CreateButton('SaveAllSpeedBtn'      , 'btn_saveall'   , 2, ButtonLeft, ButtonTop, [mfLeft, mfTop], @mnuSaveAllClicked);
+  // new row
+  ButtonLeft := 0;
+  ViewUnitsSpeedBtn     := CreateButton('ViewUnitsSpeedBtn'    , 'btn_viewunits' , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuViewUnitsClicked);
+  ViewFormsSpeedBtn     := CreateButton('ViewFormsSpeedBtn'    , 'btn_viewforms' , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuViewFormsClicked);   
+  ToggleFormSpeedBtn    := CreateButton('ToggleFormSpeedBtn'   , 'btn_toggleform', 1, ButtonLeft, ButtonTop, [mfLeft], @mnuToggleFormUnitCLicked);
+  NewFormSpeedBtn       := CreateButton('NewFormSpeedBtn'      , 'btn_newform'   , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuNewFormCLicked);
+  RunSpeedButton        := CreateButton('RunSpeedButton'       , 'btn_run'       , 2, ButtonLeft, ButtonTop, [mfLeft, mfTop], nil {@mnuRunClicked});
+  
+//  pnlSpeedButtons.Width := ButtonLeft;
+//  pnlSpeedButtons.Height := ButtonTop;
+  
+
+  // create the popupmenu for the OpenFileArrowSpeedBtn
+  OpenFilePopUpMenu := TPopupMenu.Create(self);
+  OpenFilePopupMenu.Name:='OpenFilePopupMenu';
+  OpenFilePopupMenu.AutoPopup := False;
+{ 
+  MenuItem := TMenuItem.Create(Self);
+  MenuItem.Caption := 'No files have been opened';
+  MenuItem.OnClick := nil;
+  OpenFilePopupMenu.Items.Add(MenuItem);
+}
+end;
+
 
 {------------------------------------------------------------------------------}
 procedure TMainIDE.LoadMainMenu;
@@ -3387,6 +3319,12 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.91  2001/04/13 17:56:16  lazarus
+  MWE:
+  * Moved menubar outside clientarea
+  * Played a bit with the IDE layout
+  * Moved the creation of the toolbarspeedbuttons to a separate function
+
   Revision 1.90  2001/04/04 13:58:50  lazarus
   Added some changes to compreg.pp
 
