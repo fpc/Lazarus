@@ -5091,8 +5091,12 @@ begin
 
       GetMem(PointArray,SizeOf(TGdkPoint)*(NumPts+1)); // +1 for return line
       for i:=0 to NumPts-1 do begin
-        PointArray[i].x:=Points[i].x+DCOrigin.X;
-        PointArray[i].y:=Points[i].y+DCOrigin.Y;
+        PointArray[i].x:=Points[i].x;
+        PointArray[i].y:=Points[i].y;
+	If Not Winding then begin
+          Inc(PointArray[i].x, DCOrigin.X);
+          Inc(PointArray[i].y, DCOrigin.Y);
+	end;	
       end;
 
       OldNumPts:=NumPts;
@@ -7533,6 +7537,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.185  2002/11/01 17:55:35  lazarus
+  AJ: ignore offset in Polygon Winding, Region/FillRect should take care of it
+
   Revision 1.184  2002/11/01 17:26:45  lazarus
   MG: fixed GetClipBox
 
