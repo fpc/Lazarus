@@ -224,46 +224,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TWin32WidgetSet.GetText
-  Params:  Sender - The control to retrieve the text from
-           Data   - Holds the string
-  Returns: Whether the text has been retrieved
-
-  Retrieves the text from a Windows control. This is a replacement for
-  the LM_GetText message.
- ------------------------------------------------------------------------------}
-Function TWin32WidgetSet.GetText(Sender: TComponent; Handle: HWND; var Data: String): Boolean;
-Var
-  CapLen: Cardinal;
-  Caption: PChar;
-Begin
-  Assert(False, Format('Trace:TWin32WidgetSet.GetText - Start --> %S', [Sender.ClassName]));
-  Data := '';
-  Result := True;
-  Case TControl(Sender).FCompStyle Of
-    csComboBox:
-    Begin
-      // + 1 = terminating null character
-      CapLen := Windows.SendMessage(Handle, WM_GETTEXTLENGTH, 0, 0) + 1;
-      Caption := StrAlloc(CapLen);
-      Windows.SendMessage(Handle, WM_GETTEXT, CapLen, LPARAM(Caption));
-      Data := StrPas(Caption);
-      StrDispose(Caption);
-    End;
-    csEdit, csMemo:
-    Begin
-      CapLen := GetWindowTextLength(Handle);
-      Caption := StrAlloc(CapLen + 1);
-      GetWindowText(Handle, Caption, CapLen + 1);
-      Data := StrPas(Caption);
-      StrDispose(Caption);
-    End;
-    Else
-      Result := False;
-  End;
-End;
-
-{------------------------------------------------------------------------------
   Method: TWin32WidgetSet.IntSendMessage3
   Params:  LM_Message - message to be processed
            Sender     - sending control
@@ -343,9 +303,9 @@ Begin
       Begin
         if (Data <> nil) and (PChar(Data)^ <> #0) then 
         begin
-          GetText(TComponent(Sender), Handle, S);
-          S := S + PChar(Data);
           { TODO: needs to be moved/changed when TWSWinControl.SetText is broken up further }
+          TWin32WSWinControl.GetText(Sender as TWinControl, S);
+          S := S + PChar(Data);
           TWin32WSWinControl.SetText(Sender as TWinControl, S);
         end;
       End;
@@ -641,10 +601,6 @@ activate_time : the time at which the activation event occurred.
           Else Data := TWin32ListStringList.Create(Handle,TWinControl(Sender));
         Result := Integer(Data);
         Windows.SetProp(Handle, 'List', Result);
-      End;
-      LM_GETTEXT :
-      Begin
-        Result := Integer(GetText(TComponent(Sender), Handle, PString(Data)^));
       End;
       LM_GETITEMINDEX :
       Begin
@@ -2815,6 +2771,10 @@ End;
 
 {
   $Log$
+  Revision 1.238  2004/09/10 14:38:29  micha
+  convert lm_gettext to new interface methods
+  remove lm_settext replacement settext methods in twidgetsets
+
   Revision 1.237  2004/09/10 11:20:44  micha
   remove LM_SETTEXT message as it is not used
 

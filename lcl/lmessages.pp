@@ -59,7 +59,6 @@ const
   LM_RESIZECHILDREN = LM_ComUser+13;
   LM_AddPage        = LM_ComUser+15;
   LM_GetLineCount   = LM_ComUser+16;
-  LM_GETTEXT        = LM_ComUser+18;
   LM_CANVASCREATE   = LM_ComUser+19;
   LM_ReDraw         = LM_ComUser+26;
   LM_RemovePage     = LM_ComUser+28;
@@ -870,7 +869,6 @@ begin
   LM_RESIZECHILDREN :Result:='LM_RESIZECHILDREN';
   LM_AddPage        :Result:='LM_AddPage';
   LM_GetLineCount   :Result:='LM_GetLineCount';
-  LM_GETTEXT        :Result:='LM_GETTEXT';
   LM_CANVASCREATE   :Result:='LM_CANVASCREATE';
   LM_ReDraw         :Result:='LM_ReDraw';
   LM_RemovePage     :Result:='LM_RemovePage';
@@ -1036,6 +1034,10 @@ end.
 
 {
   $Log$
+  Revision 1.79  2004/09/10 14:38:29  micha
+  convert lm_gettext to new interface methods
+  remove lm_settext replacement settext methods in twidgetsets
+
   Revision 1.78  2004/09/10 11:20:44  micha
   remove LM_SETTEXT message as it is not used
 

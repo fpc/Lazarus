@@ -112,9 +112,16 @@ procedure TWSWinControl.SetBorderStyle(const AWinControl: TWinControl; const ABo
 begin
 end;
 
+{------------------------------------------------------------------------------
+  Function: TWSWinControl.GetText
+  Params:  Sender: The control to retrieve the text from
+  Returns: the requested text
+
+  Retrieves the text from a control. 
+ ------------------------------------------------------------------------------}
 function TWSWinControl.GetText(const AWinControl: TWinControl; var AText: String): Boolean; 
 begin
-  Result := CNSendMessage(LM_GETTEXT, AWinControl, @AText) <> 0;
+  Result := false;
 end;
   
 function TWSWinControl.GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean; 

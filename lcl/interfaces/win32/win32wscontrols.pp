@@ -64,6 +64,8 @@ type
   private
   protected
   public
+    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+
     class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
     class procedure SetColor(const AWinControl: TWinControl); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
@@ -100,6 +102,40 @@ implementation
 
 uses
   Windows, Win32Int, Win32WSButtons;
+
+function  TWin32WSWinControl.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
+var
+  CapLen: Cardinal;
+  Caption: PChar;
+  Handle: HWND;
+begin
+  Result := AWinControl.HandleAllocated;
+  if not Result then
+    exit;
+  AText := '';
+  Handle := AWinControl.Handle;
+  case AWinControl.FCompStyle of
+    csComboBox:
+    begin
+      // + 1 = terminating null character
+      CapLen := Windows.SendMessage(Handle, WM_GETTEXTLENGTH, 0, 0) + 1;
+      Caption := StrAlloc(CapLen);
+      Windows.SendMessage(Handle, WM_GETTEXT, CapLen, LPARAM(Caption));
+      AText := StrPas(Caption);
+      StrDispose(Caption);
+    end;
+    csEdit, csMemo:
+    begin
+      CapLen := GetWindowTextLength(Handle);
+      Caption := StrAlloc(CapLen + 1);
+      GetWindowText(Handle, Caption, CapLen + 1);
+      AText := StrPas(Caption);
+      StrDispose(Caption);
+    end;
+    else
+      Result := false;
+  end;
+end;
 
 procedure TWin32WSControl.SetCursor(const AControl: TControl; const ACursor: TCursor);
 begin

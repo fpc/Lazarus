@@ -66,6 +66,8 @@ type
     // Internal public
     class procedure SetCallbacks(const AGTKObject: PGTKObject; const AComponent: TComponent);
   public
+    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+    
     class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
     class procedure SetSize(const AWinControl: TWinControl; const AWidth, AHeight: Integer); override;
@@ -110,6 +112,35 @@ uses
 
 { TGtkWSWinControl }
   
+function TGtkWSWinControl.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
+var
+  CS: PChar;
+  Handle: HWND;
+begin
+  Result := true;
+  Handle := AWinControl.Handle;
+  case AWinControl.fCompStyle of
+   csComboBox:
+     begin
+       AText := StrPas(gtk_entry_get_text(PGtkEntry(PGtkCombo(Handle)^.entry)));
+     end;
+
+   {$IfDef GTK1}
+   csEdit, csSpinEdit:
+       AText:= StrPas(gtk_entry_get_text(PgtkEntry(Handle)));
+
+   csMemo    : begin
+                  CS := gtk_editable_get_chars(PGtkOldEditable(
+                    GetWidgetInfo(Pointer(Handle), True)^.CoreWidget), 0, -1);
+                  AText := StrPas(CS);
+                  g_free(CS);
+               end;
+  {$EndIf}
+  else
+    Result := false;
+  end;
+end;
+
 procedure TGtkWSWinControl.SetBounds(const AWinControl: TWinControl;
   const ALeft, ATop, AWidth, AHeight: Integer);
 var

@@ -131,7 +131,6 @@ Type
     InitCommonControlsEx: function(ICC: PInitCommonControlsEx): LongBool; stdcall;
 
     Function  GetOwnerHandle(ADialog : TCommonDialog): HWND;
-    Function  GetText(Sender: TComponent; Handle: HWND; var Data: String): Boolean; virtual;
     Procedure AddChild(Parent, Child: HWND);
     Procedure ResizeChild(Sender: TWinControl; Left, Top, Width, Height: Integer);
     Procedure AssignSelf(Window: HWnd; Data: Pointer);
@@ -282,6 +281,10 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.101  2004/09/10 14:38:29  micha
+  convert lm_gettext to new interface methods
+  remove lm_settext replacement settext methods in twidgetsets
+
   Revision 1.100  2004/09/10 09:43:13  micha
   convert LM_SETLABEL message to interface methods
 

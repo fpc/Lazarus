@@ -157,7 +157,7 @@ Begin
   Begin
     // save any text in edit box
     if FSender.FCompStyle=csComboBox then
-      CNSendMessage(LM_GETTEXT, FSender, @EditText);
+      TWin32WSComboBox.GetText(FSender, EditText);
 
     Windows.SendMessage(FWin32List, FFlagResetContent, 0, 0);
     For Counter := 0 To (TStrings(Source).Count - 1) Do
@@ -549,6 +549,10 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.32  2004/09/10 14:38:29  micha
+  convert lm_gettext to new interface methods
+  remove lm_settext replacement settext methods in twidgetsets
+
   Revision 1.31  2004/09/10 09:43:13  micha
   convert LM_SETLABEL message to interface methods
 

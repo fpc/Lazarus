@@ -3518,11 +3518,6 @@ begin
       end;
       {$EndIf}
 
-      LM_GETTEXT :
-      begin
-        Result := Integer(GetText(Sender As TComponent,PString(Data)^));
-      end;
-
       LM_GETITEMINDEX :
       begin
         case TControl(Sender).fCompStyle of
@@ -3873,42 +3868,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: TGtkWidgetSet.GetText
-  Params:  Sender: The control to retrieve the text from
-  Returns: the requested text
-
-  Retrieves the text from a gtk control. this is a replacement for
-  the LM_GetText message.
- ------------------------------------------------------------------------------}
-function TGtkWidgetSet.GetText(Sender: TComponent; var Text: String): Boolean;
-var
-  CS: PChar;
-begin
-  Result := True;
-  case TControl(Sender).fCompStyle of
-   csComboBox:
-     begin
-       Text := StrPas(gtk_entry_get_text(PGtkEntry(PGtkCombo(
-                                         TComboBox(Sender).Handle)^.entry)));
-     end;
-
-   {$IfDef GTK1}
-   csEdit, csSpinEdit:
-       Text:= StrPas(gtk_entry_get_text(PgtkEntry(TWinControl(Sender).Handle)));
-
-   csMemo    : begin
-                  CS := gtk_editable_get_chars(PGtkOldEditable(
-                    GetWidgetInfo(Pointer(TWinControl(Sender).Handle), True)^.CoreWidget), 0, -1);
-                  Text := StrPas(CS);
-                  g_free(CS);
-               end;
-  {$EndIf}
-  else
-    Result := False;
-  end;
-end;
-
-{------------------------------------------------------------------------------
   Method: TGtkWidgetSet.ResizeChild
 
   Params:  sender - the object which invoked this function
@@ -3956,41 +3915,6 @@ begin
     FixedPutControl(pFixed, Child, Left, Top);
     RegroupAccelerator(Child);
   end;
-end;
-
-
-{------------------------------------------------------------------------------
-  Method: TGtkWidgetSet.SetText
-  Params:  Child -
-           data  -
-  Returns: Nothing
-
-  Sets the text of a control.
-
-  WARNING: This should possibly be merged with the SetLabel method!
-           It's only left in here for TStatusBar right now cause it
-           may be nice to use it with different panels.
- ------------------------------------------------------------------------------}
-procedure TGtkWidgetSet.SetText(Child, Data: Pointer);
-{$IFDEF OldStatusBar}
-var
-  num : Integer;
-{$ENDIF}
-begin
-  case PLMSetControlText(Data)^.fCompStyle of
-  csStatusBar :
-    begin
-      {$IFDEF OldStatusBar}
-      num := gtk_statusbar_get_context_id(PGTKStatusBar(Child),
-                               PChar(inttostr(PLMSetControlText(Data)^.panel)));
-      gtk_statusbar_push(PGTKStatusBar(Child),num,
-                         PLMSetControlText(Data)^.Userdata);
-      {$ENDIF}
-    end
-  else
-    writeln ('STOPPOK: [TGtkWidgetSet.SetText] Possible superfluous use of SetText, use SetLabel instead!');
-  end;
-{STOPPOK: Code seems superfluous, see SetLabel instead}
 end;
 
 {------------------------------------------------------------------------------
@@ -8929,6 +8853,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.545  2004/09/10 14:38:29  micha
+  convert lm_gettext to new interface methods
+  remove lm_settext replacement settext methods in twidgetsets
+
   Revision 1.544  2004/09/10 11:20:44  micha
   remove LM_SETTEXT message as it is not used
 

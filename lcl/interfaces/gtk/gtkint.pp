@@ -255,8 +255,6 @@ type
 
     // misc
     Function GetCaption(Sender : TObject) : String; virtual;
-    function  GetText(Sender: TComponent; var Text: String): Boolean; virtual;
-    procedure SetText(Child,Data : Pointer);virtual;
     procedure AppendText(Sender: TObject; Str: PChar); virtual;
     Procedure SetPixel(Sender : TObject; Data : Pointer);virtual;
     Procedure GetPixel(Sender : TObject; Data : Pointer);virtual;
@@ -462,6 +460,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.194  2004/09/10 14:38:29  micha
+  convert lm_gettext to new interface methods
+  remove lm_settext replacement settext methods in twidgetsets
+
   Revision 1.193  2004/09/10 09:43:13  micha
   convert LM_SETLABEL message to interface methods
 
