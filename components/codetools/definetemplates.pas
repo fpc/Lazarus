@@ -3080,12 +3080,13 @@ const
 var
   MainDir, DirTempl, SubDirTempl, IntfDirTemplate, IfTemplate,
   SubTempl: TDefineTemplate;
-  TargetOS, SrcPath, WidgetStr: string;
   WidgetSet: TLazWidgetSet;
+  TargetOS, SrcOS, SrcPath, WidgetStr: string;
 begin
   Result:=nil;
   if (LazarusSrcDir='') or (WidgetType='') then exit;
   TargetOS:='$('+ExternalMacroStart+'TargetOS)';
+  SrcOS:='$('+ExternalMacroStart+'SrcOS)';
   SrcPath:='$('+ExternalMacroStart+'SrcPath)';
 
   // <LazarusSrcDir>
@@ -3113,9 +3114,9 @@ begin
       +SrcPath
     ,da_Define));
   MainDir.AddChild(TDefineTemplate.Create('includepath addition',
-    Format(ctsSetsIncPathTo,['include, include/TargetOS']),
+    Format(ctsSetsIncPathTo,['include, include/TargetOS, include/SrcOS']),
     ExternalMacroStart+'IncPath',
-    'include;include'+ds+TargetOS,
+    'include;include'+ds+TargetOS+';include'+ds+SrcOS,
     da_Define));
   // turn Nested comments on
   MainDir.AddChild(TDefineTemplate.Create('Nested Comments',

@@ -169,7 +169,7 @@ begin
   PassCmdLineOptions;
   
   // set glib log handler
-  FLogHandlerID := g_log_set_handler(nil, $FFFFFFFF, @GLogFunc, Self);
+  FLogHandlerID := g_log_set_handler(nil, -1, @GLogFunc, Self);
 
   // read gtk rc file
   ParseRCFile;
@@ -2137,7 +2137,7 @@ begin
     {$IFDEF VerboseRawImage}
     writeln('TgtkObject.GetRawImageFromGdkWindow G Width=',AnImage^.Width,' Height=',AnImage^.Height,' BitsPerPixel=',NewRawImage.Description.BitsPerPixel,' bpl=',AnImage^.bpl);
     {$ENDIF}
-    if NewRawImage.DataSize<>AnImage^.bpl*AnImage^.Height then
+    if NewRawImage.DataSize<>cardinal(AnImage^.bpl)*AnImage^.Height then
       RaiseGDBException('NewRawImage.DataSize<>AnImage^.bpl*AnImage^.Height');
 
     // copy data
@@ -8038,6 +8038,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.398  2003/08/15 14:01:20  mattias
+  combined lazconf things for unix
+
   Revision 1.397  2003/08/14 10:36:55  mattias
   added TSelectDirectoryDialog
 

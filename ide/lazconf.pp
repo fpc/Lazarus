@@ -65,16 +65,22 @@ uses
   procedure SetSecondaryConfigPath(const NewValue: String);
   procedure CopySecondaryConfigFile(const AFilename: String);
   
+  function GetDefaultTestBuildDirectory: string;
+  
   function FindDefaultCompilerPath: string;
   function FindDefaultMakePath: string;
   function FindDefaultFPCSrcDirectory: string;
   function CheckFPCSourceDir(const ADirectory: string): boolean;
   function CheckLazarusDirectory(const ADirectory: string): boolean;
 
+  // create a pascal file, which can be used to test the compiler
   function CreateCompilerTestPascalFilename: string;
 
-implementation
+  // returns the standard file extension (e.g '.exe')
+  function GetDefaultExecutableExt: string;
+  
 
+implementation
 
 {$I lazconf.inc}
 
@@ -124,6 +130,9 @@ end.
 
 {
   $Log$
+  Revision 1.16  2003/08/15 14:01:20  mattias
+  combined lazconf things for unix
+
   Revision 1.15  2003/04/01 22:49:47  mattias
   implemented global and user package links
 

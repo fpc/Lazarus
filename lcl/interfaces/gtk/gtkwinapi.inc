@@ -914,7 +914,8 @@ begin
         ' ByteOrder=',GdkImage^.byte_order,
         '');
       {$ENDIF}
-      if (RawImage.Description.BitsPerPixel<>(GdkImage^.bpp shl 3)) then
+      if (RawImage.Description.BitsPerPixel<>(cardinal(GdkImage^.bpp) shl 3))
+      then
         RaiseGDBException('TgtkObject.CreateBitmapFromRawImage Incompatible BitsPerPixel');
       if (ImgDataSize<>GdkImage^.bpl*ImgHeight) then
         RaiseGDBException('TgtkObject.CreateBitmapFromRawImage Incompatible DataSize');
@@ -8749,6 +8750,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.266  2003/08/15 14:01:20  mattias
+  combined lazconf things for unix
+
   Revision 1.265  2003/07/29 00:28:43  marc
   + Implemented GetCursorPos
 

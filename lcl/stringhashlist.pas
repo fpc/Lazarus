@@ -98,6 +98,7 @@ begin
   begin
     First:=0;
     Last:= FCount-1;
+    Larger:=False;
     while First<=Last do
     begin
       I:=(First+Last)shr 1;

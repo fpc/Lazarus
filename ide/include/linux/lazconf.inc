@@ -2,6 +2,9 @@
 
 {***************************************************************************
                                lazconf.inc
+                               
+ linux specific include file for the IDE
+   
  ***************************************************************************
 
  ***************************************************************************
@@ -30,137 +33,15 @@ uses
   linux;
   {$ENDIF}
 
-const
-  DefaultFPCSrcDirs: array[1..9] of string = (
-    '/usr/share/fpcsrc',
-    '/usr/fpcsrc',
-    '/usr/share/fpc/src',
-    '/usr/fpc/src',
-    '/usr/local/fpc/src',
-    '/usr/lib/fpc/src',
-    '/usr/local/lib/fpc/src',
-    '/vol/fpc/src',
-    '/vol/lib/fpc/src'
-    );
-
-var
-  PrimaryConfigPath,
-  SecondaryConfigPath: string;
-
-{---------------------------------------------------------------------------
-  getPrimaryConfigPath function
- ---------------------------------------------------------------------------}
-function GetPrimaryConfigPath: String;
-begin
-  Result := PrimaryConfigPath;
-end;
-
-{---------------------------------------------------------------------------
-  getSecondaryConfigPath function
- ---------------------------------------------------------------------------}
-function GetSecondaryConfigPath: String;
-begin
-  Result := SecondaryConfigPath;
-end;
-
-{---------------------------------------------------------------------------
-  createPrimaryConfigPath function
- ---------------------------------------------------------------------------}
-procedure CreatePrimaryConfigPath;
-begin
-  CreateDir(GetPrimaryConfigPath);
-  //MkDir(GetPrimaryConfigPath);
-end;
-
-{---------------------------------------------------------------------------
-  SetPrimaryConfigPath procedure
- ---------------------------------------------------------------------------}
-procedure SetPrimaryConfigPath(const NewValue: String);
-begin
-  PrimaryConfigPath:=FExpand(NewValue);
-end;
-
-{---------------------------------------------------------------------------
-  SetSecondaryConfigPath procedure
- ---------------------------------------------------------------------------}
-procedure SetSecondaryConfigPath(const NewValue: String);
-begin
-  SecondaryConfigPath:=FExpand(NewValue);
-end;
-
-{---------------------------------------------------------------------------
-  CopySecondaryConfigFile procedure
- ---------------------------------------------------------------------------}
-procedure CopySecondaryConfigFile(const AFilename: String);
-var
-  PrimaryFilename, SecondaryFilename: string;
-  SrcFS, DestFS: TFileStream;
-begin
-  PrimaryFilename:=GetPrimaryConfigPath+PathDelim+AFilename;
-  SecondaryFilename:=GetSecondaryConfigPath+PathDelim+AFilename;
-  if not FileExists(PrimaryFilename) then begin
-    try
-      SrcFS:=TFileStream.Create(SecondaryFilename,fmOpenRead);
-      try
-        DestFS:=TFileStream.Create(PrimaryFilename,fmCreate);
-        try
-          DestFS.CopyFrom(SrcFS,SrcFS.Size);
-        finally
-          DestFS.Free;
-        end;
-      finally
-        SrcFS.Free;
-      end;
-    except
-    end;
-  end;
-end;
-
-{---------------------------------------------------------------------------
-  function CreateCompilerTestPascalFilename: string;
- ---------------------------------------------------------------------------}
-function CreateCompilerTestPascalFilename: string;
-var
-  fs: TFileStream;
-begin
-  Result:=AppendPathDelim(GetPrimaryConfigPath)+'compilertest.pas';
-  if not FileExists(Result) then begin
-    fs:=TFileStream.Create(Result,fmCreate);
-    fs.Free;
-  end;
-end;
-
-{---------------------------------------------------------------------------
-  function FindDefaultCompilerPath: string;
- ---------------------------------------------------------------------------}
-function FindDefaultCompilerPath: string;
-begin
-  Result:=SearchFileInPath('ppc386','',GetEnv('PATH'),':',
-                           [sffDontSearchInBasePath]);
-end;
-
-{---------------------------------------------------------------------------
-  function FindDefaultMakePath: string;
- ---------------------------------------------------------------------------}
-function FindDefaultMakePath: string;
-begin
-  Result:=SearchFileInPath('make','',GetEnv('PATH'),':',
-                           [sffDontSearchInBasePath]);
-end;
-
-{---------------------------------------------------------------------------
-  procedure InternalInit;
- ---------------------------------------------------------------------------}
-procedure InternalInit;
-begin
-  PrimaryConfigPath:=FExpand('~/.lazarus');
-  SecondaryConfigPath:='/etc/lazarus';
-end;
+{$I ../unix/lazbaseconf.inc}
 
 // included by lazconf.pp
 
 {
   $Log$
+  Revision 1.14  2003/08/15 14:01:20  mattias
+  combined lazconf things for unix
+
   Revision 1.13  2003/03/26 11:39:08  mattias
   fixed rtl include path
 

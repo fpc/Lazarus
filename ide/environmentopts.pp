@@ -804,7 +804,7 @@ begin
   FFPCSourceDirHistory:=TStringList.Create;
   DebuggerFilename:='';
   FDebuggerFileHistory:=TStringList.Create;
-  TestBuildDirectory:={$ifdef win32}'c:\temp\'{$else}'/tmp/'{$endif};
+  TestBuildDirectory:=GetDefaultTestBuildDirectory;
   FTestBuildDirHistory:=TStringList.Create;
 
   // recent files and directories
