@@ -556,6 +556,10 @@ resourcestring
   //Environment dialog
   dlgBakDirectory='(no subdirectoy)';
   
+  //Search dialog
+  dlgSearchCaption = 'Searching...';
+  dlgSearchAbort = 'Search terminated by user.';
+  
   dlgDesktop = 'Desktop';
   dlgWindows = 'Windows';
   dlgFrmEditor = 'Form Editor';

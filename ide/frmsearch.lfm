@@ -1,0 +1,108 @@
+object SearchForm: TSearchForm
+  BORDERSTYLE = bsdialog
+  CAPTION = 'Searching....'
+  CLIENTHEIGHT = 149
+  CLIENTWIDTH = 428
+  COLOR = -2147483647
+  ONCREATE = SearchFormCREATE
+  ONDESTROY = SearchFormDESTROY
+  PARENTFONT = True
+  POSITION = poownerformcenter
+  HORZSCROLLBAR.PAGE = 429
+  VERTSCROLLBAR.PAGE = 150
+  LEFT = 461
+  HEIGHT = 149
+  TOP = 289
+  WIDTH = 428
+  object Panel2: TPANEL
+    ALIGN = alclient
+    ANCHORS = [aktop, akleft]
+    BEVELINNER = bvlowered
+    CLIENTHEIGHT = 149
+    CLIENTWIDTH = 428
+    PARENTFONT = True
+    TABORDER = 0
+    TABSTOP = True
+    HEIGHT = 149
+    WIDTH = 428
+    object lblMatches: TLABEL
+      ANCHORS = [aktop, akleft]
+      COLOR = -2147483647
+      LAYOUT = tltop
+      LEFT = 96
+      HEIGHT = 17
+      TOP = 80
+      WIDTH = 321
+    end
+    object Label1: TLABEL
+      ANCHORS = [aktop, akleft]
+      CAPTION = 'Matches'
+      COLOR = -2147483647
+      LAYOUT = tltop
+      LEFT = 16
+      HEIGHT = 17
+      TOP = 80
+      WIDTH = 64
+    end
+    object lblProgress: TLABEL
+      ANCHORS = [aktop, akleft]
+      COLOR = -2147483647
+      LAYOUT = tltop
+      LEFT = 96
+      HEIGHT = 17
+      TOP = 48
+      WIDTH = 320
+    end
+    object Label2: TLABEL
+      ANCHORS = [aktop, akleft]
+      CAPTION = 'Searching:'
+      COLOR = -2147483647
+      LAYOUT = tltop
+      LEFT = 16
+      HEIGHT = 17
+      TOP = 48
+      WIDTH = 64
+    end
+    object Label4: TLABEL
+      ANCHORS = [aktop, akleft]
+      CAPTION = 'Search Text:'
+      COLOR = -2147483647
+      LAYOUT = tltop
+      LEFT = 16
+      HEIGHT = 17
+      TOP = 16
+      WIDTH = 80
+    end
+    object lblSearchText: TLABEL
+      ANCHORS = [aktop, akleft]
+      COLOR = -2147483647
+      LAYOUT = tltop
+      LEFT = 96
+      HEIGHT = 17
+      TOP = 16
+      WIDTH = 320
+    end
+    object btnCancel: TBUTTON
+      ANCHORS = [aktop, akleft]
+      DEFAULT = True
+      CAPTION = 'Cancel'
+      TABSTOP = True
+      TABORDER = 6
+      ONCLICK = btnAbortCLICK
+      LEFT = 177
+      HEIGHT = 25
+      TOP = 112
+      WIDTH = 75
+    end
+  end
+  object Label3: TLABEL
+    ANCHORS = [aktop, akleft]
+    CAPTION = 'Search Text:'
+    COLOR = -2147483647
+    LAYOUT = tltop
+    LEFT = 8
+    HEIGHT = 17
+    TOP = 56
+    WIDTH = 80
+  end
+end

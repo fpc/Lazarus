@@ -634,6 +634,9 @@ type
 
 implementation
 
+uses
+  frmSearch;
+
 var
   Highlighters: array[TLazSyntaxHighlighter] of TSynCustomHighlighter;
   // aCompletion:
@@ -3349,11 +3352,10 @@ End;
 Procedure TSourceNotebook.FindInFiles(AProject: TProject);
 var
   TheFileList:     TStringList; //List of Files to be searched.
-  TheMatchedFiles: TStringList; //List of files that contain a match
   i:               integer;     //loop counter
   AnUnitInfo:      TUnitInfo;
   LocalFindText:   String;      //Text to search for
-  AText:           string;      //Formated message string
+  SearchForm:      TSearchForm; //
 Begin
   if FindInFilesDialog=nil then
     FindInFilesDialog:=TLazFindInFilesDialog.Create(Application);
@@ -3377,106 +3379,61 @@ Begin
     begin
       try
         TheFileList:= TStringList.Create;
-        // find in project files
-        if FindInFilesDialog.WhereRadioGroup.ItemIndex = 0 then
+        if (FindInFilesDialog.WhereRadioGroup.ItemIndex = 1) or
+           (FindInFilesDialog.WhereRadioGroup.ItemIndex = 0) then
         begin
-          AnUnitInfo:=AProject.FirstPartOfProject;
-          while AnUnitInfo<>nil do begin
-            //Only if file exists on disk.
-            if FilenameIsAbsolute(AnUnitInfo.FileName)
-            and FileExists(AnUnitInfo.FileName) then
-              TheFileList.Add(AnUnitInfo.FileName);
-            AnUnitInfo:=AnUnitInfo.NextPartOfProject;
-          end;
-        end;//if
-        // find in open files
-        if FindInFilesDialog.WhereRadioGroup.ItemIndex = 1 then
-        begin
-          for i:= 0 to self.EditorCount -1 do
+          if FindInFilesDialog.WhereRadioGroup.ItemIndex = 0 then
+          begin
+            AnUnitInfo:=AProject.FirstPartOfProject;
+            while AnUnitInfo<>nil do begin
+              //Only if file exists on disk.
+              if FilenameIsAbsolute(AnUnitInfo.FileName)
+              and FileExists(AnUnitInfo.FileName) then
+                 TheFileList.Add(AnUnitInfo.FileName);
+              AnUnitInfo:=AnUnitInfo.NextPartOfProject;
+            end;//while
+          end//if
+          else
+          begin
+            for i:= 0 to self.EditorCount -1 do
+            begin
             //only if file exists on disk
-            if FilenameIsAbsolute(Editors[i].FileName)
-            and FileExists(Editors[i].FileName) then
-              TheFileList.Add(Editors[i].FileName);
+              if FilenameIsAbsolute(Editors[i].FileName) and
+                 FileExists(Editors[i].FileName) then
+              begin
+                TheFileList.Add(Editors[i].FileName);
+              end;//if
+            end;//for
+          end;//else
         end;//if
-        //Find in Directories
-        if FindInFilesDialog.WhereRadioGroup.ItemIndex = 2 then
-        begin
-          FindMatchingTextFiles(TheFileList,
-                            FindInFilesDialog.DirectoryComboBox.Text,
-                            FindInFilesDialog.FileMaskComboBox.Text,
-                            FindInFilesDialog.IncludeSubDirsCheckBox.Checked);
-        end;//if
-        //if the file search returned any files then look for the search
-        //text in each file.
-        if TheFileList.Count > 0 then
-        begin
-{          MessagesView.Clear;
-          MessagesView.ShowOnTop; }
+        try
+          SearchForm:= TSearchForm.Create(SearchResultsView);
           SearchResultsView.Clear;
           SearchResultsView.ShowOnTop;
+          with SearchForm do
+          begin
+            SearchOptions:= FindInFilesDialog.Options;
+            SearchText:= LocalFindText;
+            SearchFileList:= TheFileList;
+            ResultsList:= SearchResultsView.SearchResultView.Items;
+            SearchMask:= FindInFilesDialog.FileMaskComboBox.Text;
+            SearchDirectory:= FindInFilesDialog.DirectoryComboBox.Text;
+          end;//with
           try
-            try
-              TheMatchedFiles:= IDEProcs.FindInFiles(TheFileList,
-                        LocalFindText,
-                        FindInFilesDialog.WholeWordsOnlyCheckBox.Checked,
-                        FindInFilesDialog.CaseSensitiveCheckBox.Checked,
-                        FindInFilesDialog.RegularExpressionsCheckBox.Checked);
-            except
-              on E: ERegExpr do begin
-                MessageDlg(lisUEErrorInRegularExpression,
-                E.Message,mtError,[mbCancel],0);
-                exit;
-              end;//on except
-            end;//try-except
-            //if we matched any files add them to the message window
-            if (TheMatchedFiles<>nil) and (TheMatchedFiles.Count>0) then
-            begin
-              SearchResultsView.AddSeparator;
-              for i:= 0 to TheMatchedFiles.Count -1 do
-              begin
-                SearchResultsView.Add(TheMatchedFiles.Strings[i],'',false);
-              end;//for
-              //Hand off the search to the FindAndReplace Function in the
-              //unit editor.
-              with FindReplaceDlg do
-              begin
-                FindText:=LocalFindText;
-                Options:= FindInFilesDialog.SynSearchOptions;
-                //Multiline RegExpr?
-                Options:= Options-[ssoRegExprMultiLine];
-              end;//with
-            end//if
-            else
-            begin
-              SearchResultsView.Clear;
-              SearchResultsView.ShowOnTop;
-              SearchResultsView.AddSeparator;
-              AText:=Format(lisUESearchStringNotFound,[LocalFindText]);
-              SearchResultsView.Add(AText,'',false);
-            end;//else
-          finally
-            TheMatchedFiles.Free;
-          end;//try-finally
-        end//if
-        else
-        begin
-          SearchResultsView.Clear;
-          SearchResultsView.ShowOnTop;
-          SearchResultsView.AddSeparator;
-          SearchResultsView.Add(lisFileNotFound,'',false);
-        end;//else
+            SearchForm.Show;
+            SearchForm.DoSearch;
+          except
+            on E: ERegExpr do
+              MessageDlg(lisUEErrorInRegularExpression, E.Message,mtError,
+              [mbCancel],0);
+          end;//try-except
+        finally
+          FreeAndNil(SearchForm);
+        end;//finally
       finally
-        TheFileList.Free;
-      end;//try-finally
-    end//if
-    else
-    begin
-      SearchResultsView.Clear;
-      SearchResultsView.ShowOnTop;
-      SearchResultsView.AddSeparator;
-      AText:=Format(lisUESearchStringNotFound,[LocalFindText]);
-      SearchResultsView.Add(AText,'',false);
-    end;//else
+        FreeAndNil(TheFileList);
+      end;//finally
+    end;//if
   end;//if
 End;//FindInFilesClicked
 
