@@ -353,6 +353,8 @@ Begin
     WM_CLOSE:
     Begin
       LMessage.Msg := LM_CLOSEQUERY;
+      // default is to destroy window, inhibit
+      WinProcess := false;
     End;
     WM_COMMAND:
     Begin
@@ -974,6 +976,9 @@ end;
 
 {
   $Log$
+  Revision 1.88  2004/01/19 21:51:50  micha
+  prevent premature window destroy by default wm_close
+
   Revision 1.87  2004/01/12 08:20:50  micha
   implement overlay window for designer
 
