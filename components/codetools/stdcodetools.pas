@@ -154,12 +154,16 @@ type
       
     // search & replace
     function ReplaceIdentifiers(IdentList: TStrings;
-          SourceChangeCache: TSourceChangeCache): boolean;
+      SourceChangeCache: TSourceChangeCache): boolean;
 
     // expressions
     function GetStringConstBounds(CursorPos: TCodeXYPosition;
-          var StartPos, EndPos: TCodeXYPosition;
-          ResolveComments: boolean): boolean;
+      var StartPos, EndPos: TCodeXYPosition;
+      ResolveComments: boolean): boolean;
+          
+    // resource strings
+    function FindNextResourceStringSection(CursorPos: TCodeXYPosition;
+      var ResStrPos: TCodeXYPosition; IgnoreUsedUnits: boolean): boolean;
   end;
 
 
@@ -1194,21 +1198,35 @@ type
     scatInherited, scatPoint, scatUp,
     scatEdgedBracketOpen, scatEdgedBracketClose,
     scatRoundBracketOpen, scatRoundBracketClose);
-    
+{const
+  StrConstTokenTypeName: array[TStrConstTokenType] of string = (
+    'scatNone', 'scatStrConst', 'scatPlus', 'scatIdent',
+    'scatInherited', 'scatPoint', 'scatUp',
+    'scatEdgedBracketOpen', 'scatEdgedBracketClose',
+    'scatRoundBracketOpen', 'scatRoundBracketClose');}
+
   function GetCurrentTokenType: TStrConstTokenType;
   begin
     if AtomIsStringConstant then
       Result:=scatStrConst
     else if AtomIsChar('+') then
       Result:=scatPlus
-    else if UpAtomIs('INHERITED') then
-      Result:=scatInherited
     else if AtomIsIdentifier(false) then
       Result:=scatIdent
+    else if UpAtomIs('INHERITED') then
+      Result:=scatInherited
     else if CurPos.Flag=cafPoint then
       Result:=scatPoint
     else if AtomIsChar('^') then
       Result:=scatUp
+    else if CurPos.Flag=cafRoundBracketOpen then
+      Result:=scatRoundBracketOpen
+    else if CurPos.Flag=cafRoundBracketClose then
+      Result:=scatRoundBracketClose
+    else if CurPos.Flag=cafEdgedBracketOpen then
+      Result:=scatEdgedBracketOpen
+    else if CurPos.Flag=cafEdgedBracketClose then
+      Result:=scatEdgedBracketClose
     else
       Result:=scatNone;
   end;
@@ -1223,12 +1241,15 @@ begin
   EndPos:=CursorPos;
   Result:=true;
   BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos,[]);
+  //writeln('TStandardCodeTool.GetStringConstBounds A ',CleanCursorPos,' "',copy(Src,CleanCursorPos-5,5),'" | "',copy(Src,CleanCursorPos,5),'"');
   GetCleanPosInfo(-1,CleanCursorPos,ResolveComments,SameArea);
+  //writeln('TStandardCodeTool.GetStringConstBounds B ',SameArea.StartPos,'-',SameArea.EndPos,' "',copy(Src,SameArea.StartPos,SameArea.EndPos-SameArea.StartPos),'"');
   if (SameArea.EndPos=SameArea.StartPos) or (SameArea.StartPos>SrcLen) then
     exit;
   // read til end of string constant
   MoveCursorToCleanPos(SameArea.StartPos);
   ReadNextAtom;
+  //writeln('TStandardCodeTool.GetStringConstBounds F ',GetAtom);
   CurrentToken:=GetCurrentTokenType;
   if (CurrentToken=scatNone) then exit;
   repeat
@@ -1236,6 +1257,10 @@ begin
     ReadNextAtom;
     LastToken:=CurrentToken;
     CurrentToken:=GetCurrentTokenType;
+    //writeln('TStandardCodeTool.GetStringConstBounds G ',GetAtom,' EndCleanPos=',EndCleanPos,
+    //' LastToken=',StrConstTokenTypeName[LastToken],
+    //' CurrentToken=',StrConstTokenTypeName[CurrentToken],
+    //' ',StrConstTokenTypeName[GetCurrentTokenType]);
     case CurrentToken of
     scatNone, scatEdgedBracketClose, scatRoundBracketClose:
       if not (LastToken in [scatStrConst,scatIdent,scatUp,
@@ -1275,10 +1300,12 @@ begin
   // read til end of string constant
   MoveCursorToCleanPos(SameArea.StartPos);
   ReadNextAtom;
+  //writeln('TStandardCodeTool.GetStringConstBounds H ',GetAtom);
   CurrentToken:=GetCurrentTokenType;
   repeat
-    StartCleanPos:=CurPos.EndPos;
+    StartCleanPos:=CurPos.StartPos;
     ReadPriorAtom;
+    //writeln('TStandardCodeTool.GetStringConstBounds I ',GetAtom,' StartCleanPos=',StartCleanPos);
     LastToken:=CurrentToken;
     CurrentToken:=GetCurrentTokenType;
     case CurrentToken of
@@ -1317,9 +1344,27 @@ begin
   until false;
   
   // convert start and end position
+  writeln('TStandardCodeTool.GetStringConstBounds END "',copy(Src,StartCleanPos,EndCleanPos-StartCleanPos),'"');
   if not CleanPosToCaret(StartCleanPos,StartPos) then exit;
   if not CleanPosToCaret(EndCleanPos,EndPos) then exit;
 
+  Result:=true;
+end;
+
+function TStandardCodeTool.FindNextResourceStringSection(
+  CursorPos: TCodeXYPosition; var ResStrPos: TCodeXYPosition;
+  IgnoreUsedUnits: boolean): boolean;
+var
+  CleanCursorPos: integer;
+  //CursorNode: TCodeTreeNode;
+begin
+  Result:=false;
+  BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos,[]);
+  //CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
+  // ToDo
+  
+  exit;
+  
   Result:=true;
 end;
 

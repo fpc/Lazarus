@@ -1887,6 +1887,7 @@ begin
   MoveCursorToCleanPos(CodePosInFront);
   repeat
     ReadNextAtom;
+    //writeln('TCustomCodeTool.GetCleanPosInfo A Atom=',GetAtom,' CleanPos=',CleanPos,' CurPos.StartPos=',CurPos.StartPos);
     if (CleanPos>=CurPos.StartPos) and (CleanPos<CurPos.EndPos) then begin
       // clean pos on token
       SameArea:=CurPos;
@@ -1903,6 +1904,7 @@ begin
       end;
       SameArea.EndPos:=SameArea.StartPos;
       repeat
+        //writeln('TCustomCodeTool.GetCleanPosInfo B CleanPos=',CleanPos,' SameArea.StartPos=',SameArea.StartPos,' SameArea.EndPos=',SameArea.EndPos);
         while (SameArea.EndPos<=SrcLen)
         and (IsSpaceChar[Src[SameArea.EndPos]]) do
           inc(SameArea.EndPos);
@@ -1936,7 +1938,7 @@ begin
         SameArea.StartPos:=SameArea.EndPos;
       until false;
     end;
-  until (CurPos.Flag=cafNone) or (CurPos.EndPos>CleanPos);
+  until (CurPos.EndPos>CleanPos) or (CurPos.StartPos>SrcLen);
   SameArea:=CurPos;
 end;
 
