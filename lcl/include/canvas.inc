@@ -905,7 +905,7 @@ begin
   FreeThenNil(FBrush);
   FreeThenNil(FRegion);
   if FLockCount <> 0 then
-     DeleteCriticalSection(FLock);
+    DeleteCriticalSection(FLock);
   inherited Destroy;
 end;
 
@@ -1097,6 +1097,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.35  2002/11/29 15:14:47  mattias
+  replaced many invalidates by invalidaterect
+
   Revision 1.34  2002/10/31 17:31:10  lazarus
   MG: fixed return polygon point
 
