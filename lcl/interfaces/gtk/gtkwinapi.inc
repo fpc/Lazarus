@@ -2347,6 +2347,7 @@ end;
 function TgtkObject.DrawText(DC : hDC; Str: PChar; Count : Integer;
   var Rect: TRect; Flags : Cardinal): Integer;
 begin
+  if (Str=nil) or (Str[0]=#0) then exit;
   Assert(False, Format('trace:> [TgtkObject.DrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
     [DC, Str, Count, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, Flags]));
   Result := Longint(IsValidDC(DC));
@@ -6287,15 +6288,16 @@ function TGTKObject.SetTimer(hWnd: HWND; nIDEvent, uElapse: integer;
 var
   PTimerInfo: PGtkITimerinfo;
 begin
-  if ((hWnd = 0) and (lpTimerFunc = nil))
-     then Result := 0
+  if ((hWnd = 0) or (lpTimerFunc = nil) or (nIDEvent=0) or (uElapse<1))
+  then
+    Result := 0
   else begin
-     New (PTimerInfo);
-     PTimerInfo^.Handle    := hWND;
-     PTimerInfo^.IDEvent   := nIDEvent;
-     PTimerInfo^.TimerFunc := lpTimerFunc;
-     Result:= gtk_timeout_add(uElapse, @gtkTimerCB, PTimerInfo);
-     FTimerData.Add (PTimerInfo);
+    New (PTimerInfo);
+    PTimerInfo^.Handle    := hWND;
+    PTimerInfo^.IDEvent   := nIDEvent;
+    PTimerInfo^.TimerFunc := lpTimerFunc;
+    FTimerData.Add (PTimerInfo);
+    Result:= gtk_timeout_add(uElapse, @gtkTimerCB, PTimerInfo);
   end;
 end;
 
@@ -7162,6 +7164,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.155  2002/10/14 19:00:50  lazarus
+  MG: fixed zombie timers
+
   Revision 1.154  2002/10/10 19:43:17  lazarus
   MG: accelerated GetTextMetrics
 
