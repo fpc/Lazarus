@@ -3084,7 +3084,7 @@ begin
   QueueItem:=FMessageQueue.First;
   while (QueueItem<>nil) do begin
     MsgPtr := PMsg(QueueItem^.Data);
-    if (MsgPtr^.HWnd=Handle) then begin
+    if (MsgPtr^.hWnd=Handle) then begin
       // remove message
       if (MsgPtr^.Message=LM_PAINT) or (MsgPtr^.Message=LM_GtkPAINT) then begin
         FPaintMessages.Remove(QueueItem);
@@ -4969,7 +4969,7 @@ var
 begin
   aDC := TDeviceContext(TCanvas(Sender).Handle);
   if aDC = nil then exit;
-  Widget := PgtkWidget(aDC.HWnd);
+  Widget := PgtkWidget(aDC.Wnd);
 
   Image := gtk_Object_get_data(pgtkobject(widget),'Image');
   if Image = nil then begin
@@ -5015,7 +5015,7 @@ var
 begin
   aDC := TDeviceContext(TCanvas(Sender).Handle);
   if aDC = nil then exit;
-  Widget := PgtkWidget(aDC.HWnd);
+  Widget := PgtkWidget(aDC.Wnd);
 
   Image := gtk_Object_get_data(pgtkobject(Widget),'Image');
   if Image = nil then begin
@@ -5839,7 +5839,7 @@ begin
   aDC := nil;
 
   aDC := NewDC;
-  aDC.hWnd := HWND(TheWidget);
+  aDC.Wnd := HWND(TheWidget);
 
   if TheWidget = nil
   then begin
@@ -6088,7 +6088,7 @@ end;
 function TgtkObject.HashPaintMessage(p: pointer): integer;
 var h: integer;
 begin
-  h:=PMsg(PLazQueueItem(p)^.Data)^.HWnd;
+  h:=PMsg(PLazQueueItem(p)^.Data)^.hWnd;
   if h<0 then h:=-h;
   Result:=((h mod 5364329)+(h mod 17)) mod FPaintMessages.Capacity;
 end;
@@ -6110,12 +6110,12 @@ begin
   HashItem:=FPaintMessages.GetHashItem(h);
   if HashItem<>nil then begin
     Result:=PLazQueueItem(HashItem^.Item);
-    if PMsg(Result^.Data)^.HWnd=HandleWnd then
+    if PMsg(Result^.Data)^.hWnd=HandleWnd then
       exit;
     HashItem:=HashItem^.Next;
     while (HashItem<>nil) and (HashItem^.IsOverflow) do begin
       Result:=PLazQueueItem(HashItem^.Item);
-      if PMsg(Result^.Data)^.HWnd=HandleWnd then
+      if PMsg(Result^.Data)^.hWnd=HandleWnd then
         exit;
       HashItem:=HashItem^.Next;
     end;
@@ -6535,6 +6535,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.255  2002/10/20 19:03:56  lazarus
+  AJ: minor fixes for FPC 1.1
+
   Revision 1.254  2002/10/18 16:08:10  lazarus
   AJ: Partial HintWindow Fix; Added Screen.Font & Font.Name PropEditor; Started to fix ComboBox DropDown size/pos
 
