@@ -356,39 +356,52 @@ end;
 
 Procedure FreeGDIColor(var GDIColor : TGDIColor);
 begin
-  If (GDIColor.Color.Pixel <> -1) and (GDIColor.Colormap <> nil) then
-    gdk_colormap_free_colors(GDIColor.Colormap,@GDIColor.Color, 1);
+  if (cfColorAllocated in GDIColor.ColorFlags) then begin
+    if (GDIColor.Colormap <> nil) then
+      gdk_colormap_free_colors(GDIColor.Colormap,@GDIColor.Color, 1);
 
-  GDIColor.Color.Pixel := -1;
+    GDIColor.Color.Pixel := -1;
+    Exclude(GDIColor.ColorFlags,cfColorAllocated);
+  end;
+end;
+
+procedure SetGDIColorRef(var GDIColor : TGDIColor; NewColorRef: TColorRef);
+begin
+  if GDIColor.ColorRef=NewColorRef then exit;
+  FreeGDIColor(GDIColor);
+  GDIColor.ColorRef:=NewColorRef;
 end;
 
 Procedure AllocGDIColor(DC : hDC; var GDIColor : TGDIColor);
 var
   RGBColor : Longint;
 begin
-  FreeGDIColor(GDIColor);
-  
-  Case GDIColor.ColorRef of
-    clScrollbar..clEndColors:
-      RGBColor := GetSysColor(GDIColor.ColorRef and $FF);
-    else
-      RGBColor := GDIColor.ColorRef and $FFFFFF;
-  end;
-  
-  With GDIColor.Color do begin
-    Red := RGB(0,GetRValue(RGBColor),0);
-    Green := RGB(0,GetGValue(RGBColor),0);
-    Blue := RGB(0,GetBValue(RGBColor),0);
-    Pixel := 0;
-  end;
+  if not (cfColorAllocated in GDIColor.ColorFlags) then begin
+    FreeGDIColor(GDIColor);
 
-  {with TDeviceContext(DC) do
-    If CurrentPalette <> nil then
-      GDIColor.Colormap := CurrentPalette^.PaletteColormap
-    else}
-      GDIColor.Colormap := GDK_Colormap_get_system;
+    Case GDIColor.ColorRef of
+      clScrollbar..clEndColors:
+        RGBColor := GetSysColor(GDIColor.ColorRef and $FF);
+      else
+        RGBColor := GDIColor.ColorRef and $FFFFFF;
+    end;
 
-  gdk_colormap_alloc_color(GDIColor.Colormap, @GDIColor.Color,True,True);
+    With GDIColor.Color do begin
+      Red := RGB(0,GetRValue(RGBColor),0);
+      Green := RGB(0,GetGValue(RGBColor),0);
+      Blue := RGB(0,GetBValue(RGBColor),0);
+      Pixel := 0;
+    end;
+
+    {with TDeviceContext(DC) do
+      If CurrentPalette <> nil then
+        GDIColor.Colormap := CurrentPalette^.PaletteColormap
+      else}
+        GDIColor.Colormap := GDK_Colormap_get_system;
+
+    gdk_colormap_alloc_color(GDIColor.Colormap, @GDIColor.Color,True,True);
+    Include(GDIColor.ColorFlags,cfColorAllocated);
+  end;
 end;
 
 Procedure EnsureGCColor(DC: hDC; GC: PGDKGC; var GDIColor: TGDIColor;
@@ -3506,6 +3519,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.116  2002/10/08 10:08:47  lazarus
+  MG: accelerated GDIColor allocating
+
   Revision 1.115  2002/10/07 20:50:59  lazarus
   MG: accelerated SelectGDKPenProps
 
