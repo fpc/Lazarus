@@ -45,7 +45,6 @@ type
 
   { TScrollBar }
 
-  TEditCharCase = (ecNormal, ecUppercase, ecLowerCase);
   TScrollStyle = (ssNone, ssHorizontal, ssVertical, ssBoth,
     ssAutoHorizontal, ssAutoVertical, ssAutoBoth);
 
@@ -327,12 +326,16 @@ type
     property Visible;
   end;    
 
+  TEditCharCase = (ecNormal, ecUppercase, ecLowerCase);
+  TEchoMode = (emNormal, emNone, emPassword);
+
   TCustomEdit = class(TWinControl)
   private
+    FCharCase : TEditCharCase;
+    FEchoMode : TEchoMode;
     FMaxLength : Integer;
     FModified : Boolean;
     FReadOnly : Boolean;
-    FCharCase : TEditCharCase;
     FOnChange : TNotifyEvent;
     FSelLength : integer;
     FSelStart : integer;
@@ -348,21 +351,22 @@ type
     function GetSelStart : integer; virtual;
     function GetSelText : string; virtual;
     procedure InitializeWnd; override;
+    procedure SetEchoMode(Val : TEchoMode); virtual;
     procedure SetSelLength(Val : integer); virtual;
     procedure SetSelStart(Val : integer); virtual;
     procedure SetSelText(const Val : string); virtual;
 
     property OnChange : TNotifyEvent read FOnChange write FOnChange;
   public
+    constructor Create(AOwner: TComponent); override;
     procedure SelectAll;
     property CharCase : TEditCharCase read FCharCase write SetCharCase default ecNormal;
+    property EchoMode : TEchoMode read FEchoMode write SetEchoMode default emNormal;
     property MaxLength : Integer read FMaxLength write SetMaxLength default 0;
     property ReadOnly : Boolean read FReadOnly write SetReadOnly default false;
     property SelLength: integer read GetSelLength write SetSelLength;
     property SelStart: integer read GetSelStart write SetSelStart;
     property SelText: String read GetSelText write SetSelText;
-
-    constructor Create(AOwner: TComponent); override;
     property Modified : Boolean read GetModified write SetModified;
     property Text;
   published
@@ -393,15 +397,18 @@ type
   TEdit = class(TCustomEdit)
   published
     property Anchors;
-    property OnChange;
-    property OnClick;
     property CharCase;
     property DragMode;
+    property EchoMode;
     property MaxLength;
     property PopupMenu;
     property ReadOnly;
     property Text;
     property Visible;
+    property OnChange;
+    property OnClick;
+    property OnEnter;
+    property OnExit;
   end;
 
   TMemo = class(TCustomMemo)
@@ -418,6 +425,8 @@ type
     property Visible;
     property WordWrap;
     property OnChange;
+    property OnEnter;
+    property OnExit;
   end;
 
   { TCustomLabel }
@@ -725,7 +734,12 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.42  2002/09/07 12:14:50  lazarus
+  EchoMode for TCustomEdit. emNone not implemented for GTK+, falls back to emPassword
+  behaviour.
+
   Revision 1.41  2002/09/05 10:12:06  lazarus
+
   New dialog for multiline caption of TCustomLabel.
   Prettified TStrings property editor.
   Memo now has automatic scrollbars (not fully working), WordWrap and Scrollbars property

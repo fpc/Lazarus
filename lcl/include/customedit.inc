@@ -165,22 +165,34 @@ End;
   Params:  Value to set FMaxLength to
   Returns: Nothing
  ------------------------------------------------------------------------------}
-Procedure TCustomEdit.SetMaxLength(Value : Integer);
-Begin
-FMaxLength := Value;
-CNSendMessage(LM_SETPROPERTIES, Self, nil);
-End;
+procedure TCustomEdit.SetMaxLength(Value : Integer);
+begin
+  FMaxLength := Value;
+  CNSendMessage(LM_SETPROPERTIES, Self, nil);
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCustomEdit.SetModified
   Params:  Value to set FModified to
   Returns: Nothing
  ------------------------------------------------------------------------------}
-Procedure TCustomEdit.SetModified(Value : Boolean);
-Begin
-FModified := Value;
-End;
+procedure TCustomEdit.SetModified(Value : Boolean);
+begin
+  FModified := Value;
+end;
 
-
+{------------------------------------------------------------------------------
+  Method:  TCustomEdit.SetEchoMode
+  Params:  Value to set FModified to
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TCustomEdit.SetEchoMode(Val : TEchoMode);
+begin
+  if (Val <> FEchoMode) then begin
+    FEchoMode:= Val;
+    CNSendMessage(LM_SETPROPERTIES, Self, nil);
+  end;
+end;
 
 {------------------------------------------------------------------------------
   Method:  TCustomEdit.SetReadOnly
@@ -242,7 +254,12 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.10  2002/09/07 12:14:50  lazarus
+  EchoMode for TCustomEdit. emNone not implemented for GTK+, falls back to emPassword
+  behaviour.
+
   Revision 1.9  2002/08/30 06:46:03  lazarus
+
   Use comboboxes. Use history. Prettify the dialog. Preselect text on show.
   Make the findreplace a dialog. Thus removing resiying code (handled by Anchors now anyway).
   Make Anchors work again and publish them for various controls.
