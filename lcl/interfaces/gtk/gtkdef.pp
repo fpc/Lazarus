@@ -158,7 +158,7 @@ type
   TDeviceContext = class
   public
     // device handles
-    Wnd: HWND; 
+    Wnd: HWND; // the owner PGtkWidget
     GC: pgdkGC;
     Drawable: PGDKDrawable;
     
@@ -436,6 +436,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.38  2003/06/13 10:09:04  mattias
+  fixed Set/GetPixel
+
   Revision 1.37  2003/05/27 15:04:00  mattias
   small fixes for debugger without file
 
