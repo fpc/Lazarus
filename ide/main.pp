@@ -3406,7 +3406,7 @@ begin
   writeln('TMainIDE.DoSaveEditorUnit A PageIndex=',PageIndex,' SaveAs=',sfSaveAs in Flags,' SaveToTestDir=',sfSaveToTestDir in Flags);
   {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
   Result:=mrCancel;
-  if ToolStatus<>itNone then begin
+  if not (ToolStatus in [itNone,itDebugger]) then begin
     Result:=mrAbort;
     exit;
   end;
@@ -3962,7 +3962,7 @@ var MainUnitSrcEdit: TSourceEditor;
   i: integer;
 begin
   Result:=mrCancel;
-  if ToolStatus<>itNone then begin
+  if not (ToolStatus in [itNone,itDebugger]) then begin
     Result:=mrAbort;
     exit;
   end;
@@ -6372,6 +6372,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.299  2002/05/24 07:18:14  lazarus
+  MG: save is now possible during debugging
+
   Revision 1.298  2002/05/16 15:51:48  lazarus
   MG: closing editor now switches to left editor
 
