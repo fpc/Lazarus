@@ -277,6 +277,7 @@ end;
 
 procedure TPkgManager.PkgManagerAddPackage(Pkg: TLazPackage);
 begin
+  PkgLinks.AddUserLink(Pkg);
   if PackageGraphExplorer<>nil then
     PackageGraphExplorer.UpdatePackageAdded(Pkg);
 end;
@@ -511,6 +512,7 @@ begin
   IDEComponentPalette:=TIDEComponentPalette.Create;
   
   PkgLinks:=TPackageLinks.Create;
+  PkgLinks.UpdateAll;
 
   PackageGraph:=TLazPackageGraph.Create;
   PackageGraph.OnChangePackageName:=@PackageGraphChangePackageName;
@@ -616,6 +618,9 @@ begin
   // add to graph
   PackageGraph.AddPackage(APackage);
 
+  // save package file links
+  PkgLinks.SaveUserLinks;
+
   Result:=mrOk;
 end;
 
@@ -630,7 +635,7 @@ var
   CurEditor: TPackageEditorForm;
 begin
   // create a new package with standard dependencies
-  NewPackage:=PackageGraph.NewPackage('NewPackage');
+  NewPackage:=PackageGraph.CreateNewPackage('NewPackage');
   NewPackage.AddRequiredDependency(
     PackageGraph.FCLPackage.CreateDependencyForThisPkg);
   NewPackage.Modified:=false;
@@ -711,7 +716,7 @@ begin
       if Result<>mrOk then APackage.Free;
     end;
   end;
-  
+
   Result:=DoOpenPackage(APackage);
 end;
 
@@ -737,7 +742,7 @@ begin
   end;
 
   // ask user if package should be saved
-  if pfAskBeforeSaving in Flags then begin
+  if psfAskBeforeSaving in Flags then begin
     Result:=MessageDlg('Save package?',
                'Package "'+APackage.IDAsString+'" changed. Save?',
                mtConfirmation,[mbYes,mbNo,mbAbort],0);
@@ -768,6 +773,8 @@ begin
     try
       XMLConfig.Clear;
       APackage.SaveToXMLConfig(XMLConfig,'Package/');
+      PkgLinks.AddUserLink(APackage);
+      PkgLinks.SaveUserLinks;
       XMLConfig.Flush;
     finally
       XMLConfig.Free;

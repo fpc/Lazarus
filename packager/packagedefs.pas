@@ -266,6 +266,7 @@ type
     function IDAsString: string;
     function StringToID(const s: string): boolean;
     function Compare(PackageID2: TLazPackageID): integer;
+    procedure AssignID(Source: TLazPackageID); virtual;
   public
     property Name: string read FName write SetName;
     property Version: TPkgVersion read FVersion;
@@ -371,6 +372,7 @@ type
     function IsVirtual: boolean;
     function HasDirectory: boolean;
     procedure CheckInnerDependencies;
+    function MakeSense: boolean;
     procedure ShortenFilename(var ExpandedFilename: string);
     procedure LongenFilename(var AFilename: string);
     function GetResolvedFilename: string;
@@ -433,8 +435,7 @@ type
     property Installed: TPackageInstallType read FInstalled write SetInstalled;
     property Registered: boolean read FRegistered write SetRegistered;
     property Modified: boolean read GetModified write SetModified;
-    property PackageType: TLazPackageType
-      read FPackageType write SetPackageType;
+    property PackageType: TLazPackageType read FPackageType write SetPackageType;
     property ReadOnly: boolean read FReadOnly write SetReadOnly;
     property RemovedFilesCount: integer read GetRemovedCount;
     property RemovedFiles[Index: integer]: TPkgFile read GetRemovedFiles;
@@ -1511,6 +1512,7 @@ begin
   FAddDependCompilerOptions.LoadFromXMLConfig(
                                     XMLConfig,Path+'AddDependCompilerOptions/');
   LoadRect(XMLConfig,Path+'EditorRect/',fEditorRect);
+  Modified:=false;
   UnlockModified;
 end;
 
@@ -1587,6 +1589,14 @@ end;
 procedure TLazPackage.CheckInnerDependencies;
 begin
   // ToDo: make some checks like deactivating double requirements
+end;
+
+function TLazPackage.MakeSense: boolean;
+begin
+  Result:=false;
+  if (Name='') or (not IsValidIdent(Name)) then exit;
+
+  Result:=true;
 end;
 
 procedure TLazPackage.ShortenFilename(var ExpandedFilename: string);
@@ -1996,6 +2006,12 @@ begin
   Result:=AnsiCompareText(Name,PackageID2.Name);
   if Result<>0 then exit;
   Result:=Version.Compare(PackageID2.Version);
+end;
+
+procedure TLazPackageID.AssignID(Source: TLazPackageID);
+begin
+  Name:=Source.Name;
+  Version.Assign(Source.Version);
 end;
 
 { TPkgCompilerOptions }

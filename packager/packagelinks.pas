@@ -80,6 +80,7 @@ type
   TPackageLinks = class
   private
     FGlobalLinks: TAVLTree; // tree of TPackageLink
+    FModified: boolean;
     FUserLinks: TAVLTree; // tree of TPackageLink
     fUpdateLock: integer;
     FStates: TPkgLinksStates;
@@ -89,20 +90,32 @@ type
       const PkgName: string): TPackageLink;
     function FindLinkWithDependencyInTree(LinkTree: TAVLTree;
       Dependency: TPkgDependency): TPackageLink;
+    function FindLinkWithPackageIDInTree(LinkTree: TAVLTree;
+      APackageID: TLazPackageID): TPackageLink;
     procedure IteratePackagesInTree(LinkTree: TAVLTree;
       Event: TIteratePackagesEvent);
+    procedure SetModified(const AValue: boolean);
   public
+    UserLinkLoadTime: longint;
+    UserLinkLoadTimeValid: boolean;
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
+    function GetUserLinkFile: string;
     procedure UpdateGlobalLinks;
     procedure UpdateUserLinks;
     procedure UpdateAll;
     procedure BeginUpdate;
     procedure EndUpdate;
+    procedure SaveUserLinks;
     function FindLinkWithPkgName(const PkgName: string): TPackageLink;
     function FindLinkWithDependency(Dependency: TPkgDependency): TPackageLink;
+    function FindLinkWithPackageID(APackageID: TLazPackageID): TPackageLink;
     procedure IteratePackages(Event: TIteratePackagesEvent);
+    procedure AddUserLink(APackage: TLazPackage);
+    procedure RemoveLink(APackageID: TLazPackageID);
+  public
+    property Modified: boolean read FModified write SetModified;
   end;
   
 var
@@ -123,6 +136,20 @@ begin
   Link1:=TPackageLink(Data1);
   Link2:=TPackageLink(Data2);
   Result:=Link1.Compare(Link2);
+end;
+
+function ComparePackageIDAndLink(Key, Data: Pointer): integer;
+var
+  Link: TPackageLink;
+  PkgID: TLazPackageID;
+begin
+  if Key=nil then
+    Result:=-1
+  else begin
+    PkgID:=TLazPackageID(Key);
+    Link:=TPackageLink(Data);
+    Result:=PkgID.Compare(Link);
+  end;
 end;
 
 function ComparePkgNameAndLink(Key, Data: Pointer): integer;
@@ -150,7 +177,7 @@ end;
 procedure TPackageLink.SetFilename(const AValue: string);
 begin
   if FFilename=AValue then exit;
-  FFilename:=AValue;
+  FFilename:=CleanAndExpandFilename(AValue);
 end;
 
 constructor TPackageLink.Create;
@@ -188,6 +215,7 @@ end;
 
 constructor TPackageLinks.Create;
 begin
+  UserLinkLoadTimeValid:=false;
   FGlobalLinks:=TAVLTree.Create(@ComparePackageLinks);
   FUserLinks:=TAVLTree.Create(@ComparePackageLinks);
 end;
@@ -205,6 +233,11 @@ begin
   FGlobalLinks.FreeAndClear;
   FUserLinks.FreeAndClear;
   FStates:=[plsUserLinksNeedUpdate,plsGlobalLinksNeedUpdate];
+end;
+
+function TPackageLinks.GetUserLinkFile: string;
+begin
+  Result:=AppendPathDelim(GetPrimaryConfigPath)+'packagefiles.xml';
 end;
 
 procedure TPackageLinks.UpdateGlobalLinks;
@@ -304,8 +337,7 @@ begin
       NewPkgLink.Name:=NewPkgName;
       NewPkgLink.Version.Assign(PkgVersion);
       NewPkgLink.Filename:=NewFilename;
-      if IsValidIdent(NewPkgLink.Name) and FileExists(NewPkgLink.Filename)
-      then
+      if IsValidIdent(NewPkgLink.Name) then
         FGlobalLinks.Add(NewPkgLink)
       else
         NewPkgLink.Free;
@@ -331,16 +363,21 @@ begin
     exit;
   end;
   Exclude(FStates,plsUserLinksNeedUpdate);
+
+  // check if file has changed
+  ConfigFilename:=GetUserLinkFile;
+  if UserLinkLoadTimeValid and FileExists(ConfigFilename)
+  and (FileAge(ConfigFilename)=UserLinkLoadTime) then
+    exit;
   
   FUserLinks.FreeAndClear;
-  ConfigFilename:=AppendPathDelim(GetPrimaryConfigPath)+'packagefiles.xml';
   XMLConfig:=nil;
   try
     XMLConfig:=TXMLConfig.Create(ConfigFilename);
     
     Path:='UserPkgLinks/';
     LinkCount:=XMLConfig.GetValue(Path+'Count',0);
-    for i:=0 to LinkCount-1 do begin
+    for i:=1 to LinkCount do begin
       ItemPath:=Path+'Item'+IntToStr(i)+'/';
       NewPkgLink:=TPackageLink.Create;
       NewPkgLink.Origin:=ploUser;
@@ -348,19 +385,22 @@ begin
       NewPkgLink.Version.LoadFromXMLConfig(XMLConfig,ItemPath+'Version/',
                                                           LazPkgXMLFileVersion);
       NewPkgLink.Filename:=XMLConfig.GetValue(ItemPath+'Filename/Value','');
-      if IsValidIdent(NewPkgLink.Name) and FileExists(NewPkgLink.Filename)
-      then
+      if IsValidIdent(NewPkgLink.Name) then
         FUserLinks.Add(NewPkgLink)
       else
         NewPkgLink.Free;
     end;
+    XMLConfig.Free;
+    
+    UserLinkLoadTime:=FileAge(ConfigFilename);
+    UserLinkLoadTimeValid:=true;
   except
     on E: Exception do begin
-      writeln('WARNING: unable to read ',ConfigFilename);
+      writeln('NOTE: unable to read ',ConfigFilename,' ',E.Message);
       exit;
     end;
   end;
-  if XMLConfig<>nil then XMLConfig.Free;
+  Modified:=false;
 end;
 
 procedure TPackageLinks.UpdateAll;
@@ -380,6 +420,57 @@ begin
   dec(fUpdateLock);
   if (plsGlobalLinksNeedUpdate in FStates) then UpdateGlobalLinks;
   if (plsUserLinksNeedUpdate in FStates) then UpdateUserLinks;
+end;
+
+procedure TPackageLinks.SaveUserLinks;
+var
+  ConfigFilename: String;
+  Path: String;
+  CurPkgLink: TPackageLink;
+  XMLConfig: TXMLConfig;
+  ANode: TAVLTreeNode;
+  ItemPath: String;
+  i: Integer;
+begin
+  ConfigFilename:=GetUserLinkFile;
+  
+  // check if file need saving
+  if (not Modified)
+  and UserLinkLoadTimeValid and FileExists(ConfigFilename)
+  and (FileAge(ConfigFilename)=UserLinkLoadTime) then
+    exit;
+
+  XMLConfig:=nil;
+  try
+    ClearFile(ConfigFilename,true);
+    XMLConfig:=TXMLConfig.Create(ConfigFilename);
+
+    Path:='UserPkgLinks/';
+    ANode:=FUserLinks.FindLowest;
+    i:=0;
+    while ANode<>nil do begin
+      inc(i);
+      ItemPath:=Path+'Item'+IntToStr(i)+'/';
+      CurPkgLink:=TPackageLink(ANode.Data);
+      XMLConfig.SetDeleteValue(ItemPath+'Name/Value',CurPkgLink.Name,'');
+      CurPkgLink.Version.SaveToXMLConfig(XMLConfig,ItemPath+'Version/');
+      XMLConfig.SetDeleteValue(ItemPath+'Filename/Value',CurPkgLink.Filename,'');
+      ANode:=FUserLinks.FindSuccessor(ANode);
+    end;
+    XMLConfig.SetDeleteValue(Path+'Count',FUserLinks.Count,0);
+    
+    XMLConfig.Flush;
+    XMLConfig.Free;
+
+    UserLinkLoadTime:=FileAge(ConfigFilename);
+    UserLinkLoadTimeValid:=true;
+  except
+    on E: Exception do begin
+      writeln('NOTE: unable to read ',ConfigFilename,' ',E.Message);
+      exit;
+    end;
+  end;
+  Modified:=false;
 end;
 
 function TPackageLinks.FindLinkWithPkgNameInTree(LinkTree: TAVLTree;
@@ -420,6 +511,18 @@ begin
   end;
 end;
 
+function TPackageLinks.FindLinkWithPackageIDInTree(LinkTree: TAVLTree;
+  APackageID: TLazPackageID): TPackageLink;
+var
+  ANode: TAVLTreeNode;
+begin
+  ANode:=LinkTree.FindKey(APackageID,@ComparePackageIDAndLink);
+  if ANode<>nil then
+    Result:=TPackageLink(ANode.Data)
+  else
+    Result:=nil;
+end;
+
 procedure TPackageLinks.IteratePackagesInTree(LinkTree: TAVLTree;
   Event: TIteratePackagesEvent);
 var
@@ -430,6 +533,12 @@ begin
     Event(TPackageLink(ANode.Data));
     ANode:=LinkTree.FindSuccessor(ANode);
   end;
+end;
+
+procedure TPackageLinks.SetModified(const AValue: boolean);
+begin
+  if FModified=AValue then exit;
+  FModified:=AValue;
 end;
 
 function TPackageLinks.FindLinkWithPkgName(const PkgName: string): TPackageLink;
@@ -447,10 +556,61 @@ begin
     Result:=FindLinkWithDependencyInTree(FGlobalLinks,Dependency);
 end;
 
+function TPackageLinks.FindLinkWithPackageID(APackageID: TLazPackageID
+  ): TPackageLink;
+begin
+  Result:=FindLinkWithPackageIDInTree(FUserLinks,APackageID);
+  if Result=nil then
+    Result:=FindLinkWithPackageIDInTree(FGlobalLinks,APackageID);
+end;
+
 procedure TPackageLinks.IteratePackages(Event: TIteratePackagesEvent);
 begin
   IteratePackagesInTree(FUserLinks,Event);
   IteratePackagesInTree(FGlobalLinks,Event);
+end;
+
+procedure TPackageLinks.AddUserLink(APackage: TLazPackage);
+var
+  OldLink: TPackageLink;
+  NewLink: TPackageLink;
+begin
+  // check if link already exists
+  OldLink:=FindLinkWithPackageID(APackage);
+  if (OldLink<>nil) then begin
+    // link exists -> check if it is already the right value
+    if (OldLink.Compare(APackage)=0)
+    and (OldLink.Filename=APackage.Filename) then exit;
+    RemoveLink(APackage);
+  end;
+  // add user link
+  NewLink:=TPackageLink.Create;
+  NewLink.AssignID(APackage);
+  NewLink.Filename:=APackage.Filename;
+  FUserLinks.Add(NewLink);
+  Modified:=true;
+end;
+
+procedure TPackageLinks.RemoveLink(APackageID: TLazPackageID);
+var
+  ANode: TAVLTreeNode;
+  OldLink: TPackageLink;
+begin
+  // remove from user links
+  ANode:=FUserLinks.Find(APackageID);
+  if ANode<>nil then begin
+    OldLink:=TPackageLink(ANode.Data);
+    FUserLinks.Remove(ANode);
+    OldLink.Free;
+  end;
+  // remove from global links
+  ANode:=FGlobalLinks.Find(APackageID);
+  if ANode<>nil then begin
+    OldLink:=TPackageLink(ANode.Data);
+    FGlobalLinks.Remove(ANode);
+    OldLink.Free;
+  end;
+  Modified:=true;
 end;
 
 

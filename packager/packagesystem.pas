@@ -45,7 +45,7 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, AVL_Tree, FileCtrl, Forms, Controls, Dialogs,
+  Classes, SysUtils, AVL_Tree, Laz_XMLCfg, FileCtrl, Forms, Controls, Dialogs,
   LazarusIDEStrConsts, IDEProcs, PackageLinks, PackageDefs, LazarusPackageIntf,
   ComponentReg, RegisterLCL, RegisterFCL;
   
@@ -97,6 +97,8 @@ type
     procedure SetAbortRegistration(const AValue: boolean);
     procedure SetRegistrationPackage(const AValue: TLazPackage);
     procedure UpdateBrokenDependenciesToPackage(APackage: TLazPackage);
+    function OpenDependencyWithPackageLink(Dependency: TPkgDependency;
+                                           PkgLink: TPackageLink): boolean;
   public
     constructor Create;
     destructor Destroy; override;
@@ -128,7 +130,7 @@ type
                                IgnorePackage: TLazPackage): boolean;
     function CreateUniquePkgName(const Prefix: string;
                                  IgnorePackage: TLazPackage): string;
-    function NewPackage(const Prefix: string): TLazPackage;
+    function CreateNewPackage(const Prefix: string): TLazPackage;
     procedure ConsistencyCheck;
     procedure RegisterUnitHandler(const TheUnitName: string;
                                   RegisterProc: TRegisterProc);
@@ -248,6 +250,37 @@ begin
     ANode:=FindNextPkgDependecyNodeWithSameName(ANode);
   end;
   EndUpdate;
+end;
+
+function TLazPackageGraph.OpenDependencyWithPackageLink(
+  Dependency: TPkgDependency; PkgLink: TPackageLink): boolean;
+var
+  AFilename: String;
+  NewPackage: TLazPackage;
+  XMLConfig: TXMLConfig;
+begin
+  Result:=false;
+  BeginUpdate(false);
+  AFilename:=PkgLink.Filename;
+  if not FileExists(AFilename) then exit;
+  try
+    XMLConfig:=TXMLConfig.Create(AFilename);
+    NewPackage:=TLazPackage.Create;
+    NewPackage.Filename:=AFilename;
+    NewPackage.LoadFromXMLConfig(XMLConfig,'Package/');
+    XMLConfig.Free;
+  except
+    on E: Exception do begin
+      writeln('unable to read file "'+AFilename+'" ',E.Message);
+      exit;
+    end;
+  end;
+  if not NewPackage.MakeSense then exit;
+  if PkgLink.Compare(NewPackage)<>0 then exit;
+  // ok
+  AddPackage(NewPackage);
+  EndUpdate;
+  Result:=true;
 end;
 
 constructor TLazPackageGraph.Create;
@@ -543,7 +576,7 @@ begin
   end;
 end;
 
-function TLazPackageGraph.NewPackage(const Prefix: string): TLazPackage;
+function TLazPackageGraph.CreateNewPackage(const Prefix: string): TLazPackage;
 begin
   BeginUpdate(true);
   Result:=TLazPackage.Create;
@@ -1004,25 +1037,28 @@ var
 begin
   if Dependency.LoadPackageResult=lprUndefined then begin
     BeginUpdate(false);
-    // search in opened packages
+    // search compatible package in opened packages
     ANode:=FindNodeOfDependency(Dependency,fpfSearchPackageEverywhere);
-    if (APackage=nil) then begin
-      // package not yet open
-      PkgLinks.UpdateAll;
-      PkgLink:=PkgLinks.FindLinkWithDependency(Dependency);
-      if PkgLink<>nil then begin
-
-        // ToDo
-
-      end;
-    end;
-    // save result
-    if ANode<>nil then begin
+    if (ANode<>nil) then begin
       Dependency.RequiredPackage:=TLazPackage(ANode.Data);
       Dependency.LoadPackageResult:=lprSuccess;
-    end else begin
+    end;
+    if Dependency.LoadPackageResult=lprUndefined then begin
+      // compatible package not yet open
       Dependency.RequiredPackage:=nil;
       Dependency.LoadPackageResult:=lprNotFound;
+      if FindAPackageWithName(Dependency.PackageName,nil)=nil then begin
+        // no package with same name open
+        // -> try package links
+        repeat
+          PkgLink:=PkgLinks.FindLinkWithDependency(Dependency);
+          if (PkgLink=nil) then break;
+          if OpenDependencyWithPackageLink(Dependency,PkgLink) then break;
+          PkgLinks.RemoveLink(PkgLink);
+        until false;
+      end else begin
+        // there is already a package with this name open
+      end;
     end;
     fChanged:=true;
     EndUpdate;

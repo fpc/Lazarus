@@ -362,6 +362,7 @@ var
   XMLConfig: TXMLConfig;
 begin
   try
+    ClearFile(FFilename,true);
     XMLConfig:=TXMLConfig.Create(FFileName);
     XMLConfig.SetDeleteValue('InputHistory/Version/Value',
       InputHistoryVersion,0);
@@ -369,8 +370,9 @@ begin
     XMLConfig.Flush;
     XMLConfig.Free;
   except
-    // ToDo
-    writeln('[TEnvironmentOptions.Save]  error writing "',FFilename,'"');
+    on E: Exception do begin
+      writeln('[TEnvironmentOptions.Save]  error writing "',FFilename,'" ',E.Message);
+    end;
   end;
 end;
 

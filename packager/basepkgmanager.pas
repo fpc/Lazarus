@@ -49,7 +49,7 @@ uses
 type
   TPkgSaveFlag = (
     psfSaveAs,
-    pfAskBeforeSaving
+    psfAskBeforeSaving
     );
   TPkgSaveFlags = set of TPkgSaveFlag;
   
