@@ -321,6 +321,7 @@ begin
       FLastDoChangeBounds:=CurBounds;
       DoOnChangeBounds;
     end;
+    // for delphi compatibility send size/move messages
     SendMoveSizeMessages(SizeChanged,PosChanged);
   end;
 end;
@@ -2923,6 +2924,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.186  2004/05/15 20:17:09  mattias
+  replaced WMSize by DoSetBounds
+
   Revision 1.185  2004/05/11 11:42:27  mattias
   replaced writeln by debugln
 

@@ -246,7 +246,6 @@ type
           ARect: TRect; State: TOwnerDrawState);
 
     procedure WMVScroll(var Msg: TWMScroll); message WM_VSCROLL;
-    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
     procedure SetBorderStyle(Value: TBorderStyle);
     procedure SetBackgroundColor(const AValue: TColor);
     procedure UpdateScrollBar;
@@ -261,6 +260,8 @@ type
     procedure HandleStandardKeys(var Key : Word; Shift : TShiftState);
     
     procedure EraseBackground(DC: HDC); override;
+    
+    procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
   public
     ValueEdit:TEdit;
     ValueComboBox:TComboBox;
@@ -604,12 +605,6 @@ begin
       // Ends scrolling
     SB_ENDSCROLL: ;
   end;
-end;
-
-procedure TOIPropertyGrid.WMSize(var Msg: TWMSize);
-begin
-  inherited WMSize(Msg);
-  UpdateScrollBar;
 end;
 
 destructor TOIPropertyGrid.Destroy;
@@ -1334,6 +1329,12 @@ end;
 procedure TOIPropertyGrid.EraseBackground(DC: HDC);
 begin
   // everything is painted, so erasing the background is not needed
+end;
+
+procedure TOIPropertyGrid.DoSetBounds(ALeft, ATop, AWidth, AHeight: integer);
+begin
+  inherited DoSetBounds(ALeft, ATop, AWidth, AHeight);
+  UpdateScrollBar;
 end;
 
 procedure TOIPropertyGrid.OnUserInput(Sender: TObject; Msg: Cardinal);

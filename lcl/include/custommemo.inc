@@ -132,8 +132,6 @@ end;
   procedure TCustomMemo.Loaded;
  ------------------------------------------------------------------------------}
 procedure TCustomMemo.Loaded;
-var
-  s: String;
 begin
   inherited Loaded;
   CNSendMessage(LM_SETPROPERTIES, Self, nil);
@@ -160,6 +158,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.26  2004/05/15 20:17:09  mattias
+  replaced WMSize by DoSetBounds
+
   Revision 1.25  2004/05/14 12:53:25  mattias
   improved grids e.g. OnPrepareCanvas   patch from Jesus
 
