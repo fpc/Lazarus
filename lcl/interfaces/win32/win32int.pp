@@ -71,7 +71,8 @@ Type
     FMessageFont: HFONT;
 
     Procedure CreateComponent(Sender: TObject);
-    Function RecreateWnd(Sender: TWinControl): Integer; virtual;
+    Function  RecreateWnd(Sender: TWinControl): Integer; virtual;
+    Function  GetOwnerHandle(ADialog : TCommonDialog): HWND;
     Function  GetText(Sender: TComponent; Handle: HWND; var Data: String): Boolean; virtual;
     Procedure SetLabel(Sender: TObject; Data: Pointer);
     Procedure AddChild(Parent, Child: HWND);
@@ -187,6 +188,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.64  2003/12/27 16:47:18  micha
+  fix dialogs owner handle, fixes focusing issue
+
   Revision 1.63  2003/12/19 18:18:17  micha
   fix window activation z-order
 

@@ -540,19 +540,6 @@ Begin
     Assert (False, 'Trace:[ObjectToHWND]****** Warning: handle = 0 *******');
 End;
 
-function GetOwnerHandle(ADialog : TCommonDialog): HWND;
-begin
-  with ADialog do
-  begin
-    if Owner Is TWinControl then
-      Result := TWinControl(Owner).Handle
-    else if Owner Is TApplication then
-      Result := TApplication(Owner).Handle
-    else
-      Result := TWin32Object(InterfaceObject).FAppHandle;
-  end;
-end;
-
 (***********************************************************************
   Widget member Functions
 ************************************************************************)
@@ -748,6 +735,9 @@ End;
  { =============================================================================
 
   $Log$
+  Revision 1.34  2003/12/27 16:47:18  micha
+  fix dialogs owner handle, fixes focusing issue
+
   Revision 1.33  2003/12/27 16:26:55  micha
   remove redundant window property "lazarus" (from martin)
 

@@ -164,6 +164,30 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
+  Method: TWin32Object.GetOwnerHandle
+  Params:  ADialog - dialog to get 'guiding parent' window handle for
+  Returns: A window handle
+
+  Returns window handle to be used as 'owner handle', ie. so that the user must
+  finish the dialog before continuing
+ ------------------------------------------------------------------------------}
+function TWin32Object.GetOwnerHandle(ADialog : TCommonDialog): HWND;
+begin
+  with ADialog do
+  begin
+    if Owner Is TWinControl then
+      Result := TWinControl(Owner).Handle
+{
+    // TODO: fix Application.Handle to be the same as FAppHandle
+    else if Owner Is TApplication then
+      Result := TApplication(Owner).Handle
+}
+    else
+      Result := FAppHandle;
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Method: TWin32Object.GetText
   Params:  Sender - The control to retrieve the text from
            Data   - Holds the string
@@ -2883,6 +2907,9 @@ End;
 
 {
   $Log$
+  Revision 1.153  2003/12/27 16:47:18  micha
+  fix dialogs owner handle, fixes focusing issue
+
   Revision 1.152  2003/12/27 16:26:55  micha
   remove redundant window property "lazarus" (from martin)
 
