@@ -35,7 +35,7 @@ uses
 ////////////////////////////////////////////////////
   ExtCtrls,
 ////////////////////////////////////////////////////
-  WSExtCtrls, WSLCLClasses, Windows, Win32Int, InterfaceBase, Win32WSControls;
+  WSExtCtrls, WSLCLClasses, Windows, WinExt, Win32Int, InterfaceBase, Win32WSControls;
 
 type
 
@@ -55,6 +55,7 @@ type
   public
     class procedure AddPage(const ANotebook: TCustomNotebook; const AChild: TCustomPage; const AIndex: integer); override;
     class procedure RemovePage(const ANotebook: TCustomNotebook; const AIndex: integer); override;
+    class procedure SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition); override;
     class procedure ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean); override;
   end;
 
@@ -289,6 +290,27 @@ procedure TWin32WSCustomNotebook.RemovePage(const ANotebook: TCustomNotebook;
   const AIndex: integer);
 begin
   Windows.SendMessage(ANotebook.Handle, TCM_DELETEITEM, Windows.WPARAM(AIndex), 0);
+end;
+
+procedure TWin32WSCustomNotebook.SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition);
+var
+  NotebookHandle: HWND;
+  WindowStyle: dword;
+begin
+  // VS: not tested
+  NotebookHandle := ANotebook.Handle;
+  WindowStyle := Windows.GetWindowLong(NotebookHandle, GWL_STYLE);
+  case ATabPosition of
+    tpTop:
+      WindowStyle := WindowStyle and not(TCS_VERTICAL or TCS_MULTILINE or TCS_BOTTOM);
+    tpBottom:
+      WindowStyle := (WindowStyle or TCS_BOTTOM) and not (TCS_VERTICAL or TCS_MULTILINE);
+    tpLeft:
+      WindowStyle := (WindowStyle or TCS_VERTICAL or TCS_MULTILINE) and not TCS_RIGHT;
+    tpRight:
+      WindowStyle := WindowStyle or (TCS_VERTICAL or TCS_RIGHT or TCS_MULTILINE);
+  end;
+  Windows.SetWindowLong(NotebookHandle, GWL_STYLE, WindowStyle);
 end;
 
 procedure TWin32WSCustomNotebook.ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean);

@@ -57,6 +57,7 @@ type
     
     class function GetNotebookMinTabHeight(const AWinControl: TWinControl): integer; override;
     class function GetNotebookMinTabWidth(const AWinControl: TWinControl): integer; override;
+    class procedure SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition); override;
     class procedure ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean); override;
   end;
 
@@ -348,6 +349,19 @@ function TGtkWSCustomNotebook.GetNotebookMinTabWidth(
   const AWinControl: TWinControl): integer;
 begin
   Result:=inherited GetNotebookMinTabWidth(AWinControl);
+end;
+
+procedure TGtkWSCustomNotebook.SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition);
+var
+  GtkNotebook: PGtkNotebook;
+begin
+  GtkNotebook := PGtkNotebook(ANotebook.Handle);
+  case ATabPosition of
+    tpTop   : gtk_notebook_set_tab_pos(GtkNotebook, GTK_POS_TOP);
+    tpBottom: gtk_notebook_set_tab_pos(GtkNotebook, GTK_POS_BOTTOM);
+    tpLeft  : gtk_notebook_set_tab_pos(GtkNotebook, GTK_POS_LEFT);
+    tpRight : gtk_notebook_set_tab_pos(GtkNotebook, GTK_POS_RIGHT);
+  end;
 end;
 
 procedure TGtkWSCustomNotebook.ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean);

@@ -765,14 +765,9 @@ end;
   procedure TCustomNotebook.DoSendTabPosition;
  ------------------------------------------------------------------------------}
 procedure TCustomNotebook.DoSendTabPosition;
-var
-  Msg: TLMNotebookEvent;
 begin
   if not HandleAllocated or (csLoading in ComponentState) then exit;
-  Msg.Parent := Self;
-  Msg.fCompStyle := fCompStyle;
-  Msg.TabPosition := @fTabPosition;
-  CNSendMessage(LM_SetTabPosition, Self, @Msg);
+  TWSCustomNotebookClass(WidgetSetClass).SetTabPosition(Self, FTabPosition);
 end;
 
 {------------------------------------------------------------------------------
@@ -803,6 +798,9 @@ end;}
 { =============================================================================
 
   $Log$
+  Revision 1.58  2004/09/14 12:45:29  micha
+  convert LM_SETTABPOSITION message to interface method
+
   Revision 1.57  2004/09/13 19:57:30  micha
   convert LM_SHOWTABS message to interface method
 

@@ -3123,16 +3123,6 @@ begin
             TLMNotebookEvent(Data^).Page);
         end;
 
-      LM_SetTabPosition :
-      begin
-        case TTabPosition(TLMNotebookEvent(Data^).TabPosition^) of
-          tpTop   : gtk_notebook_set_tab_pos(PGtkNotebook(Handle), GTK_POS_TOP);
-          tpBottom: gtk_notebook_set_tab_pos(PGtkNotebook(Handle), GTK_POS_BOTTOM);
-          tpLeft  : gtk_notebook_set_tab_pos(PGtkNotebook(Handle), GTK_POS_LEFT);
-          tpRight : gtk_notebook_set_tab_pos(PGtkNotebook(Handle), GTK_POS_RIGHT);
-        end;
-      end;
-
       LM_INSERTTOOLBUTTON:
       begin
         {$IFNDEF OldToolBar}
@@ -8290,6 +8280,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.565  2004/09/14 12:45:29  micha
+  convert LM_SETTABPOSITION message to interface method
+
   Revision 1.564  2004/09/14 10:06:26  micha
   convert LM_REDRAW message to interface method (in twidgetset)
 

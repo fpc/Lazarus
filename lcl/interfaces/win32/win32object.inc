@@ -257,7 +257,6 @@ Var
   PStr, PStr2: PChar;
   SizeRect: TRECT; // used by LM_SETSIZE,LM_INVALIDATE,LM_CLB_SET_CHECKED and LM_REDRAW
   TBB: TBBUTTON;
-  WindowStyle: Integer; //used by LM_SETTABPOSITION
   AMenu: TMenu;
   AccelTable: HACCEL;
 
@@ -334,25 +333,6 @@ Begin
         End
         Else
           Assert(False, Format('Trace:I don''t know how to destroy component %S', [Sender.ClassName]));
-      End;
-      LM_SETTABPOSITION :
-      Begin
-        // VS: not tested
-        With TLMNotebookEvent(Data^) Do
-        Begin
-          WindowStyle := Windows.GetWindowLong((Sender As TWinControl).Handle, GWL_STYLE);
-          Case TTabPosition(TabPosition^) Of
-            tpTop:
-              WindowStyle := WindowStyle and not(TCS_VERTICAL or TCS_MULTILINE or TCS_BOTTOM);
-            tpBottom:
-              WindowStyle := (WindowStyle or TCS_BOTTOM) and not (TCS_VERTICAL or TCS_MULTILINE);
-            tpLeft:
-              WindowStyle := (WindowStyle or TCS_VERTICAL or TCS_MULTILINE) and not TCS_RIGHT;
-            tpRight:
-              WindowStyle := WindowStyle or (TCS_VERTICAL or TCS_RIGHT or TCS_MULTILINE);
-          End;
-          Windows.SetWindowLong(TWinControl(Sender).Handle, GWL_STYLE, WindowStyle);
-        End;
       End;
       LM_INSERTTOOLBUTTON:
       Begin
@@ -2318,6 +2298,9 @@ End;
 
 {
   $Log$
+  Revision 1.257  2004/09/14 12:45:29  micha
+  convert LM_SETTABPOSITION message to interface method
+
   Revision 1.256  2004/09/14 10:06:26  micha
   convert LM_REDRAW message to interface method (in twidgetset)
 
