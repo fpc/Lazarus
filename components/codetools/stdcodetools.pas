@@ -996,15 +996,10 @@ function TStandardCodeTool.FindBlockCounterPart(CursorPos: TCodeXYPosition;
       var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
 // jump from bracket-open to bracket-close or 'begin' to 'end'
 // or 'until' to 'repeat' ...
-var Dummy, CleanCursorPos: integer;
+var CleanCursorPos: integer;
 begin
   Result:=false;
-  // scan code
-  if UpdateNeeded(false) then BeginParsing(true,false);
-  // find the CursorPos in cleaned source
-  Dummy:=CaretToCleanPos(CursorPos, CleanCursorPos);
-  if (Dummy<>0) and (Dummy<>-1) then
-    RaiseException('cursor pos outside of code');
+  BeginParsingAndGetCleanPos(true,false,CursorPos,CleanCursorPos);
   // read word at cursor
   MoveCursorToCleanPos(CleanCursorPos);
   if Src[CurPos.StartPos] in ['(','[','{'] then begin
@@ -1044,15 +1039,11 @@ function TStandardCodeTool.FindBlockStart(CursorPos: TCodeXYPosition;
   var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
 // jump to beginning of current block
 // e.g. bracket open, 'begin', 'repeat', ...
-var Dummy, CleanCursorPos: integer;
+var CleanCursorPos: integer;
 begin
   Result:=false;
   // scan code
-  if UpdateNeeded(false) then BeginParsing(true,false);
-  // find the CursorPos in cleaned source
-  Dummy:=CaretToCleanPos(CursorPos, CleanCursorPos);
-  if (Dummy<>0) and (Dummy<>-1) then
-    RaiseException('cursor pos outside of code');
+  BeginParsingAndGetCleanPos(true,false,CursorPos,CleanCursorPos);
   // read word at cursor
   MoveCursorToCleanPos(CleanCursorPos);
   while (CurPos.StartPos>2) and IsWordChar[Src[CurPos.StartPos-1]] do
@@ -1129,15 +1120,10 @@ function TStandardCodeTool.GuessUnclosedBlock(CursorPos: TCodeXYPosition;
     end
     
 }
-var Dummy, CleanCursorPos: integer;
+var CleanCursorPos: integer;
 begin
   Result:=false;
-  // scan code
-  if UpdateNeeded(false) then BeginParsing(true,false);
-  // find the CursorPos in cleaned source
-  Dummy:=CaretToCleanPos(CursorPos, CleanCursorPos);
-  if (Dummy<>0) and (Dummy<>-1) then
-    RaiseException('cursor pos outside of code');
+  BeginParsingAndGetCleanPos(true,false,CursorPos,CleanCursorPos);
   // start reading at beginning of code
   MoveCursorToCleanPos(1);
   BuildBlockKeyWordFuncList;

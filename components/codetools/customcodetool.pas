@@ -43,6 +43,12 @@ uses
   KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache, AVL_Tree, TypInfo,
   SourceChanger;
 
+const
+  CodeToolPhaseNone  = 0;
+  CodeToolPhaseScan  = 1;
+  CodeToolPhaseParse = 2;
+  CodeToolPhaseTool  = 3; // or higher
+
 type
   TCustomCodeTool = class(TObject)
   private
@@ -56,10 +62,20 @@ type
     function DefaultKeyWordFunc: boolean;
     procedure BuildDefaultKeyWordFunctions; virtual;
     procedure SetScanner(NewScanner: TLinkScanner); virtual;
+    procedure DoDeleteNodes; virtual;
+  protected
+    LastErrorMessage: string;
+    LastErrorCurPos: TAtomPosition;
+    LastErrorPhase: integer;
+    CurrentPhase: integer;
     procedure RaiseException(const AMessage: string); virtual;
     procedure RaiseExceptionFmt(const AMessage: string;
-      const args : array of const); virtual;
-    procedure DoDeleteNodes; virtual;
+      const args : array of const);
+    procedure SaveRaiseException(const AMessage: string); virtual;
+    procedure SaveRaiseExceptionFmt(const AMessage: string;
+      const args : array of const);
+    procedure ClearLastError;
+    procedure RaiseLastError;
   public
     Tree: TCodeTree;
 
@@ -101,6 +117,9 @@ type
 
     function UpdateNeeded(OnlyInterfaceNeeded: boolean): boolean;
     procedure BeginParsing(DeleteNodes, OnlyInterfaceNeeded: boolean); virtual;
+    procedure BeginParsingAndGetCleanPos(DeleteNodes,
+        OnlyInterfaceNeeded: boolean; CursorPos: TCodeXYPosition;
+        var CleanCursorPos: integer);
     
     procedure MoveCursorToNodeStart(ANode: TCodeTreeNode);
     procedure MoveCursorToCleanPos(ACleanPos: integer);
@@ -203,6 +222,7 @@ begin
   CurPos.EndPos:=-1;
   LastAtoms.Clear;
   NextPos.StartPos:=-1;
+  ClearLastError;
 end;
 
 procedure TCustomCodeTool.RaiseException(const AMessage: string);
@@ -230,6 +250,7 @@ begin
     ErrorPosition.Y:=-1;
   end;
   // raise the exception
+  CurrentPhase:=CodeToolPhaseNone;
   raise ECodeToolError.Create(Self,AMessage);
 end;
 
@@ -237,6 +258,33 @@ procedure TCustomCodeTool.RaiseExceptionFmt(const AMessage: string;
   const args: array of const);
 begin
   RaiseException(Format(AMessage,args));
+end;
+
+procedure TCustomCodeTool.SaveRaiseException(const AMessage: string);
+begin
+  LastErrorMessage:=AMessage;
+  LastErrorCurPos:=CurPos;
+  LastErrorPhase:=CurrentPhase;
+  RaiseException(AMessage);
+end;
+
+procedure TCustomCodeTool.SaveRaiseExceptionFmt(const AMessage: string;
+  const args: array of const);
+begin
+  SaveRaiseException(Format(AMessage,args));
+end;
+
+procedure TCustomCodeTool.ClearLastError;
+begin
+  LastErrorPhase:=0;
+end;
+
+procedure TCustomCodeTool.RaiseLastError;
+begin
+  CurPos:=LastErrorCurPos;
+  CurNode:=nil;
+  CurrentPhase:=LastErrorPhase;
+  SaveRaiseException(LastErrorMessage);
 end;
 
 procedure TCustomCodeTool.SetScanner(NewScanner: TLinkScanner);
@@ -414,19 +462,19 @@ begin
         Result:=true
       else begin
         if ExceptionOnNotFound then
-          RaiseExceptionFmt(ctsIdentExpectedButKeyWordFound,[GetAtom])
+          SaveRaiseExceptionFmt(ctsIdentExpectedButKeyWordFound,[GetAtom])
         else
           Result:=false;
       end;
     end else begin
       if ExceptionOnNotFound then
-        RaiseExceptionFmt(ctsIdentExpectedButAtomFound,[GetAtom])
+        SaveRaiseExceptionFmt(ctsIdentExpectedButAtomFound,[GetAtom])
       else
         Result:=false;
     end;
   end else begin
     if ExceptionOnNotFound then
-      RaiseException(ctsIdentExpectedButEOFFound)
+      SaveRaiseException(ctsIdentExpectedButEOFFound)
     else
       Result:=false;
   end;
@@ -1087,7 +1135,7 @@ begin
     AntiCloseBracket:=')';
   end else begin
     if ExceptionOnNotFound then
-      RaiseExceptionFmt(ctsBracketOpenExpectedButAtomFound,[GetAtom]);
+      SaveRaiseExceptionFmt(ctsBracketOpenExpectedButAtomFound,[GetAtom]);
     exit;
   end;
   Start:=CurPos;
@@ -1098,7 +1146,7 @@ begin
     or UpAtomIs('END') then begin
       CurPos:=Start;
       if ExceptionOnNotFound then
-        RaiseExceptionFmt(ctsBracketNotFound,[CloseBracket]);
+        SaveRaiseExceptionFmt(ctsBracketNotFound,[CloseBracket]);
       exit;
     end;
     if (AtomIsChar('(')) or (AtomIsChar('[')) then begin
@@ -1123,7 +1171,7 @@ begin
     AntiCloseBracket:='(';
   end else begin
     if ExceptionOnNotFound then
-      RaiseExceptionFmt(ctsBracketCloseExpectedButAtomFound,[GetAtom]);
+      SaveRaiseExceptionFmt(ctsBracketCloseExpectedButAtomFound,[GetAtom]);
     exit;
   end;
   Start:=CurPos;
@@ -1134,7 +1182,7 @@ begin
     or UpAtomIs('END') or UpAtomIs('BEGIN') then begin
       CurPos:=Start;
       if ExceptionOnNotFound then
-        RaiseExceptionFmt(ctsBracketNotFound,[CloseBracket]);
+        SaveRaiseExceptionFmt(ctsBracketNotFound,[CloseBracket]);
       exit;
     end;
     if (AtomIsChar(')')) or (AtomIsChar(']')) then begin
@@ -1147,20 +1195,46 @@ end;
 procedure TCustomCodeTool.BeginParsing(DeleteNodes,
   OnlyInterfaceNeeded: boolean);
 begin
-  Scanner.Scan(OnlyInterfaceNeeded,CheckFilesOnDisk);
-  if FLastScannerChangeStep<>Scanner.ChangeStep then begin
-    FLastScannerChangeStep:=Scanner.ChangeStep;
-    Src:=Scanner.CleanedSrc;
-    UpperSrc:=UpperCaseStr(Src);
-    SrcLen:=length(Src);
-    FForceUpdateNeeded:=true;
+  // scan
+  CurrentPhase:=CodeToolPhaseScan;
+  try
+    Scanner.Scan(OnlyInterfaceNeeded,CheckFilesOnDisk);
+    // update scanned code
+    if FLastScannerChangeStep<>Scanner.ChangeStep then begin
+      // code has changed
+      ClearLastError;
+      FLastScannerChangeStep:=Scanner.ChangeStep;
+      Src:=Scanner.CleanedSrc;
+      UpperSrc:=UpperCaseStr(Src);
+      SrcLen:=length(Src);
+      FForceUpdateNeeded:=true;
+    end else begin
+      if LastErrorPhase=CodeToolPhaseScan then
+        RaiseLastError;
+    end;
+    // init parsing values
+    CurPos.StartPos:=1;
+    CurPos.EndPos:=1;
+    LastAtoms.Clear;
+    NextPos.StartPos:=-1;
+    CurNode:=nil;
+    if DeleteNodes then DoDeleteNodes;
+  finally
+    CurrentPhase:=CodeToolPhaseNone;
   end;
-  CurPos.StartPos:=1;
-  CurPos.EndPos:=1;
-  LastAtoms.Clear;
-  NextPos.StartPos:=-1;
-  CurNode:=nil;
-  if DeleteNodes then DoDeleteNodes;
+end;
+
+procedure TCustomCodeTool.BeginParsingAndGetCleanPos(DeleteNodes,
+  OnlyInterfaceNeeded: boolean; CursorPos: TCodeXYPosition;
+  var CleanCursorPos: integer);
+var Dummy: integer;
+begin
+  if UpdateNeeded(OnlyInterfaceNeeded) then
+    BeginParsing(DeleteNodes,OnlyInterfaceNeeded);
+  // find the CursorPos in cleaned source
+  Dummy:=CaretToCleanPos(CursorPos, CleanCursorPos);
+  if (Dummy<>0) and (Dummy<>-1) then
+    SaveRaiseException(ctsCursorPosOutsideOfCode);
 end;
 
 procedure TCustomCodeTool.MoveCursorToNodeStart(ANode: TCodeTreeNode);
@@ -1318,7 +1392,7 @@ begin
     Result:=nil;
   if (Result=nil) and ExceptionOnNotFound then begin
     MoveCursorToCleanPos(P);
-    RaiseException(ctsNoNodeFoundAtCursor);
+    SaveRaiseException(ctsNoNodeFoundAtCursor);
   end;
 end;
 

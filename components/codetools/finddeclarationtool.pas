@@ -3047,8 +3047,11 @@ end;
 procedure TFindDeclarationTool.BeginParsing(DeleteNodes,
   OnlyInterfaceNeeded: boolean);
 begin
+  // scan code and init parser
   inherited BeginParsing(DeleteNodes,OnlyInterfaceNeeded);
-  
+
+  // now the scanner knows, which compiler mode is needed
+  // -> setup compiler dependent tables
   case Scanner.PascalCompiler of
   pcDelphi: WordIsPredefinedIdentifier:=WordIsPredefinedDelphiIdentifier;
   else

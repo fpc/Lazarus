@@ -68,7 +68,7 @@ type
   TOnGetWriteLockInfo = procedure(var WriteLockIsSet: boolean;
     var WriteLockStep: integer) of object;
 
-
+  { TSourceLink is used to map between the codefiles and the cleaned source }
   PSourceLink = ^TSourceLink;
   TSourceLink = record
     CleanedPos: integer;
@@ -77,6 +77,7 @@ type
     Next: PSourceLink;
   end;
 
+  { TSourceChangeStep is used save the ChangeStep of every used file }
   PSourceChangeStep = ^TSourceChangeStep;
   TSourceChangeStep = record
     Code: Pointer;
@@ -89,6 +90,27 @@ type
   TCompilerMode = (cmFPC, cmDELPHI, cmGPC, cmTP, cmOBJFPC);
   TPascalCompiler = (pcFPC, pcDelphi);
 
+  { TMissingIncludeFile is used to a missing include file together with all
+    params needed to find it }
+  TMissingIncludeFile = class
+  public
+    IncludePath: string;
+    Filename: string;
+    constructor Create(const AFilename, AIncludePath: string);
+  end;
+  
+  { TMissingIncludeFiles is a list of TMissingIncludeFile }
+  TMissingIncludeFiles = class(TList)
+  private
+    function GetIncFile(Index: Integer): TMissingIncludeFile;
+    procedure SetIncFile(Index: Integer; const AValue: TMissingIncludeFile);
+  public
+    procedure Clear; override;
+    procedure Delete(Index: Integer);
+    property Items[Index: Integer]: TMissingIncludeFile
+      read GetIncFile write SetIncFile; default;
+  end;
+  
   TLinkScanner = class(TObject)
   private
     FLinks: TList; // list of PSourceLink
@@ -153,7 +175,7 @@ type
     FDirectiveFuncList: TKeyWordFunctionList;
     FSkipDirectiveFuncList: TKeyWordFunctionList;
     FMacrosOn: boolean;
-    FMissingIncludeFile: boolean;
+    FMissingIncludeFiles: TMissingIncludeFiles;
     FIncludeStack: TList; // list of TSourceLink
     FSkippingTillEndif: boolean;
     FSkipIfLevel: integer;
@@ -172,6 +194,9 @@ type
     function IncludeDirective: boolean;
     function IncludeFile(const AFilename: string): boolean;
     function IncludePathDirective: boolean;
+    function LoadSourceCaseSensitive(const AFilename: string): pointer;
+    function SearchIncludeFile(const AFilename: string; var NewCode: Pointer;
+      var MissingIncludeFile: TMissingIncludeFile): boolean;
     function ShortSwitchDirective: boolean;
     function ReadNextSwitchDirective: boolean;
     function LongSwitchDirective: boolean;
@@ -179,9 +204,18 @@ type
     procedure BuildDirectiveFuncList;
     procedure PushIncludeLink(ACleanedPos, ASrcPos: integer; ACode: Pointer);
     function PopIncludeLink: TSourceLink;
+    function GetIncludeFileIsMissing: boolean;
+    function MissingIncludeFilesNeedsUpdate: boolean;
+    procedure ClearMissingIncludeFiles;
   protected
+    LastErrorMessage: string;
+    LastErrorSrcPos: integer;
+    LastErrorCode: pointer;
+    LastErrorIsValid: boolean;
     procedure RaiseExceptionFmt(const AMessage: string; args: array of const);
     procedure RaiseException(const AMessage: string);
+    procedure ClearLastError;
+    procedure RaiseLastError;
   public
     // current values, positions, source, flags
     CleanedLen: integer;
@@ -235,8 +269,8 @@ type
     property InitialValues: TExpressionEvaluator
         read FInitValues write FInitValues;
     property MainCode: pointer read FMainCode write SetMainCode;
-    property MissingIncludeFile: boolean
-        read FMissingIncludeFile write FMissingIncludeFile;
+    property IncludeFileIsMissing: boolean
+        read GetIncludeFileIsMissing;
     property NestedComments: boolean read FNestedComments;
     property CompilerMode: TCompilerMode read FCompilerMode write FCompilerMode;
     property PascalCompiler: TPascalCompiler
@@ -405,7 +439,8 @@ var i: integer;
   PLink: PSourceLink;
   PStamp: PSourceChangeStep;
 begin
-  FMissingIncludeFile:=false;
+  ClearLastError;
+  ClearMissingIncludeFiles;
   for i:=0 to FIncludeStack.Count-1 do begin
     PLink:=PSourceLink(FIncludeStack[i]);
     PSourceLinkMemManager.DisposePSourceLink(PLink);
@@ -721,7 +756,11 @@ var LastTokenIsEqual, LastTokenIsEnd: boolean;
   pc: TPascalCompiler;
   s: string;
 begin
-  if not UpdateNeeded(TillInterfaceEnd,CheckFilesOnDisk) then exit;
+  if not UpdateNeeded(TillInterfaceEnd,CheckFilesOnDisk) then begin
+    // no input has changed -> the output is the same
+    if LastErrorIsValid then RaiseLastError;
+    exit;
+  end;
   {$IFDEF CTDEBUG}
   writeln('TLinkScanner.Scan A -------- TillInterfaceEnd=',TillInterfaceEnd);
   {$ENDIF}
@@ -1015,8 +1054,8 @@ var i: integer;
 begin
   Result:=true;
   if FForceUpdateNeeded then exit;
-  if MissingIncludeFile and not IgnoreMissingIncludeFiles then
-    exit;
+  
+  // for do a quick test: check for the GlobalWriteLockStep
   if Assigned(OnGetGlobalWriteLockInfo) then begin
     OnGetGlobalWriteLockInfo(GlobalWriteLockIsSet,GlobalWriteLockStep);
     if GlobalWriteLockIsSet then begin
@@ -1035,11 +1074,16 @@ begin
       end;
     end;
   end;
+  
+  // check if any input has changed ...
   FForceUpdateNeeded:=true;
-  //writeln('TLinkScanner.UpdateNeeded A OnlyInterface=',OnlyInterfaceNeeded,' EndOfSourceFound=',EndOfSourceFound);
+  
+  // check if code was ever scanned
   if LinkCount=0 then exit;
+  
   // check if ScanRange has increased
-  if (OnlyInterfaceNeeded=false) and (not EndOfSourceFound) then exit;
+  if (OnlyInterfaceNeeded=false) and (ScanTillInterfaceEnd) then exit;
+  
   // check all used files
   if Assigned(FOnGetSource) then begin
     if CheckFilesOnDisk and Assigned(FOnCheckFileOnDisk) then begin
@@ -1052,11 +1096,11 @@ begin
     end;
     for i:=0 to FSourceChangeSteps.Count-1 do begin
       SrcLog:=FOnGetSource(Self,PSourceChangeStep(FSourceChangeSteps[i])^.Code);
-      //writeln('TLinkScanner.UpdateNeeded D ',i,',',PSourceChangeStep(FSourceChangeSteps[i])^.Code<>nil,' ',PSourceChangeStep(FSourceChangeSteps[i])^.ChangeStep,'<>',SrcLog.ChangeStep,'  ',HexStr(Cardinal(SrcLog),8));
       if PSourceChangeStep(FSourceChangeSteps[i])^.ChangeStep<>SrcLog.ChangeStep
       then exit;
     end;
   end;
+  
   // check initvalues
   if Assigned(FOnGetInitValues) then begin
     if FInitValues=nil then exit;
@@ -1064,6 +1108,10 @@ begin
     if (NewInitValues<>nil) and (not FInitValues.Equals(NewInitValues)) then
       exit;
   end;
+  
+  // check missing include files
+  if MissingIncludeFilesNeedsUpdate then exit;
+  
   // no update needed :)
   FForceUpdateNeeded:=false;
   //writeln('TLinkScanner.UpdateNeeded END');
@@ -1377,109 +1425,122 @@ begin
   Result:=true;
 end;
 
+function TLinkScanner.LoadSourceCaseSensitive(
+  const AFilename: string): pointer;
+var Path, FileNameOnly: string;
+begin
+  Path:=ExtractFilePath(AFilename);
+  if Path<>'' then Path:=ExpandFilename(Path);
+  FileNameOnly:=ExtractFilename(AFilename);
+  Result:=nil;
+  if FileExists(Path+FileNameOnly) then
+    Result:=FOnLoadSource(Self,Path+FileNameOnly);
+  FileNameOnly:=lowercase(FileNameOnly);
+  if (Result=nil) and (FileExists(Path+FileNameOnly)) then
+    Result:=FOnLoadSource(Self,Path+FileNameOnly);
+  FileNameOnly:=UpperCaseStr(FileNameOnly);
+  if (Result=nil) and (FileExists(Path+FileNameOnly)) then
+    Result:=FOnLoadSource(Self,Path+FileNameOnly);
+end;
+
+function TLinkScanner.SearchIncludeFile(const AFilename: string;
+  var NewCode: Pointer; var MissingIncludeFile: TMissingIncludeFile): boolean;
+var PathStart, PathEnd: integer;
+  IncludePath, PathDivider, CurPath: string;
+  ExpFilename: string;
+
+  function SearchPath(const APath: string): boolean;
+  begin
+    Result:=false;
+    if APath='' then exit;
+    if APath[length(APath)]<>PathDelim then
+      ExpFilename:=APath+PathDelim+AFilename
+    else
+      ExpFilename:=APath+AFilename;
+    if not FilenameIsAbsolute(ExpFilename) then
+      ExpFilename:=ExtractFilePath(FMainSourceFilename)+ExpFilename;
+    NewCode:=LoadSourceCaseSensitive(ExpFilename);
+    Result:=NewCode<>nil;
+  end;
+  
+  procedure SetMissingIncludeFile;
+  begin
+    if MissingIncludeFile=nil then
+      MissingIncludeFile:=TMissingIncludeFile.Create(AFilename,'');
+    MissingIncludeFile.IncludePath:=IncludePath;
+  end;
+
+begin
+  IncludePath:='';
+  if not Assigned(FOnLoadSource) then begin
+    NewCode:=nil;
+    SetMissingIncludeFile;
+    Result:=false;
+    exit;
+  end;
+  // if include filename is absolute then load it directly
+  if FilenameIsAbsolute(AFilename) then begin
+    NewCode:=LoadSourceCaseSensitive(AFilename);
+    Result:=(NewCode<>nil);
+    if not Result then SetMissingIncludeFile;
+    exit;
+  end;
+  // include filename is relative
+  
+  // first search include file in the directory of the main source
+  if FilenameIsAbsolute(FMainSourceFilename) then begin
+    // main source has absolute filename
+    ExpFilename:=ExtractFilePath(FMainSourceFilename)+AFilename;
+    NewCode:=LoadSourceCaseSensitive(ExpFilename);
+    Result:=(NewCode<>nil);
+    if Result then exit;
+  end else begin
+    // main source has relative filename (= virtual)
+    NewCode:=LoadSourceCaseSensitive(AFilename);
+    Result:=(NewCode<>nil);
+    if Result then exit;
+  end;
+  
+  // then search the include file in the include path
+  if MissingIncludeFile=nil then
+    IncludePath:=Values.Variables[ExternalMacroStart+'INCPATH']
+  else
+    IncludePath:=MissingIncludeFile.IncludePath;
+    
+  if Values.IsDefined('DELPHI') then
+    PathDivider:=':'
+  else
+    PathDivider:=':;';
+  PathStart:=1;
+  PathEnd:=PathStart;
+  while PathEnd<=length(IncludePath) do begin
+    if ((Pos(IncludePath[PathEnd],PathDivider))>0)
+    {$IFDEF win32}
+    and (not ((PathEnd-PathStart=2) // ignore colon in drive
+          and (IncludePath[PathEnd]=':')
+          and (IsWordChar[IncludePath[PathEnd-1]])))
+    {$ENDIF}
+    then begin
+      CurPath:=Trim(copy(IncludePath,PathStart,PathEnd-PathStart));
+      Result:=SearchPath(CurPath);
+      if Result then exit;
+      PathStart:=PathEnd+1;
+      PathEnd:=PathStart;
+    end else
+      inc(PathEnd);
+  end;
+  CurPath:=Trim(copy(IncludePath,PathStart,PathEnd-PathStart));
+  Result:=SearchPath(CurPath);
+  if not Result then SetMissingIncludeFile;
+end;
+
 function TLinkScanner.IncludeFile(const AFilename: string): boolean;
 var
-  ExpFilename: string;
-  NewCode: pointer;
-
-  function LoadSourceCaseSensitive(const AbsoluteFilename: string): pointer;
-  var Path, FileNameOnly: string;
-  begin
-    Path:=ExpandFilename(ExtractFilePath(AbsoluteFilename));
-    FileNameOnly:=ExtractFilename(AbsoluteFilename);
-    Result:=nil;
-    if FileExists(Path+FileNameOnly) then
-      Result:=FOnLoadSource(Self,Path+FileNameOnly);
-    FileNameOnly:=lowercase(FileNameOnly);
-    if (Result=nil) and (FileExists(Path+FileNameOnly)) then
-      Result:=FOnLoadSource(Self,Path+FileNameOnly);
-    FileNameOnly:=UpperCaseStr(FileNameOnly);
-    if (Result=nil) and (FileExists(Path+FileNameOnly)) then
-      Result:=FOnLoadSource(Self,Path+FileNameOnly);
-  end;
-
-  function SearchIncludeFile: boolean;
-  var PathStart, PathEnd: integer;
-    IncludePath, PathDivider, CurPath: string;
-
-    function SearchPath(const APath: string): boolean;
-    begin
-      Result:=false;
-      if APath='' then exit;
-      if APath[length(APath)]<>PathDelim then
-        ExpFilename:=APath+PathDelim+AFilename
-      else
-        ExpFilename:=APath+AFilename;
-      if not FilenameIsAbsolute(ExpFilename) then
-        ExpFilename:=ExtractFilePath(FMainSourceFilename)+ExpFilename;
-      NewCode:=LoadSourceCaseSensitive(ExpandFilename(ExpFilename));
-      Result:=NewCode<>nil;
-    end;
-
-  begin
-    Result:=true;
-    if not Assigned(FOnLoadSource) then begin
-      NewCode:=nil;
-      Result:=false;
-      exit;
-    end;
-    // if include filename is absolute then load it directly
-    if FilenameIsAbsolute(AFilename) then begin
-      ExpFilename:=AFilename;
-      NewCode:=LoadSourceCaseSensitive(ExpFilename);
-      Result:=(NewCode<>nil);
-      exit;
-    end;
-    // filename is relative
-    // first search file in the directory of the main source
-    if FilenameIsAbsolute(FMainSourceFilename) then begin
-      ExpFilename:=
-        ExpandFilename(ExtractFilePath(FMainSourceFilename)+AFilename);
-      NewCode:=LoadSourceCaseSensitive(ExpFilename);
-      if NewCode<>nil then exit;
-    end;
-    // then search the file in the include path
-    IncludePath:=Values.Variables[ExternalMacroStart+'INCPATH'];
-    if Values.IsDefined('DELPHI') then
-      PathDivider:=':'
-    else
-      PathDivider:=':;';
-    PathStart:=1;
-    PathEnd:=PathStart;
-    //writeln('[TLinkScanner.IncludePathDirective] IncludePath=',IncludePath);
-    //Values.WriteDebugReport;
-    //writeln('');
-    while PathEnd<=length(IncludePath) do begin
-      if ((Pos(IncludePath[PathEnd],PathDivider))>0) 
-      {$IFDEF win32}
-      and (not ((PathEnd-PathStart=2) 
-            and (IncludePath[PathEnd]=':') 
-            and (IsWordChar[IncludePath[PathEnd-1]])))
-      {$ENDIF}
-      then begin
-        CurPath:=Trim(copy(IncludePath,PathStart,PathEnd-PathStart));
-        Result:=SearchPath(CurPath);
-        if Result then exit;
-        PathStart:=PathEnd+1;
-        PathEnd:=PathStart;
-      end else
-        inc(PathEnd);
-    end;
-    CurPath:=Trim(copy(IncludePath,PathStart,PathEnd-PathStart));
-    Result:=SearchPath(CurPath);
-    if Result then exit;
-    // finally if the MainSource is a relative filename (virtual file) then the
-    // include file will also be a relative filename (virtual file)
-    if (not FilenameIsAbsolute(FMainSourceFilename)) then begin
-      NewCode:=FOnLoadSource(Self,AFilename);
-      Result:=(NewCode<>nil);
-    end;   
-    
-  end;
-
-// TLinkScanner.IncludeFile
+  NewCode: Pointer;
+  MissingIncludeFile: TMissingIncludeFile;
 begin
-  Result:=SearchIncludeFile;
+  MissingIncludeFile:=nil;
+  Result:=SearchIncludeFile(AFilename, NewCode, MissingIncludeFile);
   if Result then begin
     // change source
     if Assigned(FOnIncludeCode) then
@@ -1487,13 +1548,16 @@ begin
     SetSource(NewCode);
     AddLink(CleanedLen+1,SrcPos,Code);
   end else begin
+    if MissingIncludeFile<>nil then begin
+      if FMissingIncludeFiles=nil then FMissingIncludeFiles.Create;
+      FMissingIncludeFiles.Add(MissingIncludeFile);
+    end;
     if (not IgnoreMissingIncludeFiles) then begin
       RaiseExceptionFmt(ctsIncludeFileNotFound,[AFilename])
     end else begin
       // add a dummy link
       AddLink(CleanedLen+1,SrcPos,MissingIncludeFileCode);
       AddLink(CleanedLen+1,SrcPos,Code);
-      MissingIncludeFile:=true;
     end;
   end;
 end;
@@ -1566,10 +1630,34 @@ begin
   FIncludeStack.Delete(FIncludeStack.Count-1);
 end;
 
-procedure TLinkScanner.RaiseExceptionFmt(const AMessage: string;
-  args: array of const);
+function TLinkScanner.GetIncludeFileIsMissing: boolean;
 begin
-  RaiseException(Format(AMessage,args));
+  Result:=(FMissingIncludeFiles<>nil);
+end;
+
+function TLinkScanner.MissingIncludeFilesNeedsUpdate: boolean;
+var
+  i: integer;
+  MissingIncludeFile: TMissingIncludeFile;
+  NewCode: Pointer;
+begin
+  Result:=false;
+  if (not IncludeFileIsMissing) or IgnoreMissingIncludeFiles then exit;
+  { last scan missed an include file (i.e. was not in searchpath)
+    -> Check all missing include files again }
+  for i:=0 to FMissingIncludeFiles.Count-1 do begin
+    MissingIncludeFile:=FMissingIncludeFiles[i];
+    if SearchIncludeFile(MissingIncludeFile.Filename,NewCode,MissingIncludeFile)
+    then begin
+      Result:=true;
+      exit;
+    end;
+  end;
+end;
+
+procedure TLinkScanner.ClearMissingIncludeFiles;
+begin
+  FreeAndNil(FMissingIncludeFiles);
 end;
 
 function TLinkScanner.ReturnFromIncludeFile: boolean;
@@ -1842,9 +1930,30 @@ begin
   if Assigned(OnSetGlobalWriteLock) then OnSetGlobalWriteLock(false);
 end;
 
+procedure TLinkScanner.RaiseExceptionFmt(const AMessage: string;
+  args: array of const);
+begin
+  RaiseException(Format(AMessage,args));
+end;
+
 procedure TLinkScanner.RaiseException(const AMessage: string);
 begin
+  LastErrorMessage:=AMessage;
+  LastErrorSrcPos:=SrcPos;
+  LastErrorCode:=Code;
   raise ELinkScannerError.Create(Self,AMessage);
+end;
+
+procedure TLinkScanner.ClearLastError;
+begin
+  LastErrorIsValid:=false;
+end;
+
+procedure TLinkScanner.RaiseLastError;
+begin
+  SrcPos:=LastErrorSrcPos;
+  Code:=LastErrorCode;
+  RaiseException(LastErrorMessage);
 end;
 
 { ELinkScannerError }
@@ -1943,6 +2052,41 @@ begin
     inc(FAllocatedCount);
   end;
   inc(FCount);
+end;
+
+{ TMissingIncludeFile }
+
+constructor TMissingIncludeFile.Create(const AFilename, AIncludePath: string);
+begin
+  inherited Create;
+  Filename:=AFilename;
+  IncludePath:=AIncludePath;
+end;
+
+{ TMissingIncludeFiles }
+
+function TMissingIncludeFiles.GetIncFile(Index: Integer): TMissingIncludeFile;
+begin
+  Result:=TMissingIncludeFile(Get(Index));
+end;
+
+procedure TMissingIncludeFiles.SetIncFile(Index: Integer;
+  const AValue: TMissingIncludeFile);
+begin
+  Put(Index,AValue);
+end;
+
+procedure TMissingIncludeFiles.Clear;
+var i: integer;
+begin
+  for i:=0 to Count-1 do Items[i].Free;
+  inherited Clear;
+end;
+
+procedure TMissingIncludeFiles.Delete(Index: Integer);
+begin
+  Items[Index].Free;
+  inherited Delete(Index);
 end;
 
 
