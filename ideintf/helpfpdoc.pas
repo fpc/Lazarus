@@ -14,6 +14,10 @@
 
   Abstract:
     Help database for FPDoc.
+    
+  ToDo:
+    - localization. Example: german, LANG=de, uses path unitname/de/ instead
+      of unitname/
 }
 unit HelpFPDoc;
 

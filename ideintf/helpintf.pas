@@ -16,11 +16,9 @@
     This unit defines various base classes for the Help System used by the IDE.
     
   ToDo:
-    - Add Macro Support
-    - Add Show help for Classes
-    - Add Show help for (Compiler-) Messages
-    - Standalone help system for LCL applications
+    - localization support.
     - Add Help Editing functions
+    - Standalone help system for LCL applications
 }
 unit HelpIntf;
 

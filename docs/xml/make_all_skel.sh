@@ -1,5 +1,16 @@
 #!/usr/bin/env bash
 #
+# *****************************************************************************
+# *                                                                           *
+# *  See the file COPYING.modifiedLGPL, included in this distribution,        *
+# *  for details about the copyright.                                         *
+# *                                                                           *
+# *  This program is distributed in the hope that it will be useful,          *
+# *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
+# *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
+# *                                                                           *
+# *****************************************************************************
+#
 # Author: Mattias Gaertner
 #
 # This script calls makeskel on every unit in the current directory and creates
@@ -8,9 +19,13 @@
 set -x
 set -e
 
-MakeSkel=$1
+MakeSkel=$MAKESKEL
 if [ -z $MakeSkel ]; then
   MakeSkel=makeskel
+fi
+
+if [ -z $PackageName ]; then
+
 fi
 
 # create unit list

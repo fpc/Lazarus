@@ -1972,7 +1972,7 @@ var
   var
     s: String;
   begin
-    s := copy(Src,TextStart,TextEnd-TextStart);
+    s := lowercase(copy(Src,TextStart,TextEnd-TextStart));
     if s = 'transparent' then
       Result := FPImage.colTransparent
     else if s = 'none' then
@@ -1995,23 +1995,25 @@ var
       Result := FPImage.colWhite
     else if s = 'gray' then
       Result := FPImage.colGray
-    else if s = 'ltgray' then
+    else if s = 'lightgray' then
       Result := FPImage.colLtGray
-    else if s = 'dkblue' then
+    else if (s = 'darkgray') or (s='grey') then
+      Result := FPImage.colDKGray
+    else if s = 'darkblue' then
       Result := FPImage.colDkBlue
-    else if s = 'dkgreen' then
+    else if s = 'darkgreen' then
       Result := FPImage.colDkGreen
-    else if s = 'dkcyan' then
+    else if s = 'darkcyan' then
       Result := FPImage.colDkCyan
-    else if s = 'dkred' then
+    else if s = 'darkred' then
       Result := FPImage.colDkRed
-    else if s = 'dkmagenta' then
+    else if s = 'darkmagenta' then
       Result := FPImage.colDkMagenta
-    else if s = 'dkyellow' then
+    else if s = 'darkyellow' then
       Result := FPImage.colDkYellow
     else if s = 'maroon' then
       Result := FPImage.colMaroon
-    else if s = 'ltgreen' then
+    else if s = 'lightgreen' then
       Result := FPImage.colLtGreen
     else if s = 'olive' then
       Result := FPImage.colOlive

@@ -400,6 +400,7 @@ docs/xml/lcl/toolwin.xml svneol=native#text/xml
 docs/xml/lcl/utrace.xml svneol=native#text/xml
 docs/xml/lcl/vclglobals.xml svneol=native#text/xml
 docs/xml/make_all_skel.sh -text svneol=native#application/x-sh
+docs/xml/multi_makeskel.pl -text svneol=native#application/x-perl
 examples/address_book/addrbook.dpr svneol=native#text/pascal
 examples/address_book/addrbook.lpi svneol=native#text/plain
 examples/address_book/addrbook.lpr svneol=native#text/pascal
