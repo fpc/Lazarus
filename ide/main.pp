@@ -61,6 +61,7 @@ type
     SpeedButton6 : TSpeedButton;
     SpeedButton7 : TSpeedButton;
     SpeedButton8 : TSpeedButton;
+    RunSpeedButton : TSpeedButton;
     OpenFilePopUpMenu : TPopupMenu;
 
     ComboBox1 : TComboBox;
@@ -556,6 +557,26 @@ begin
     Name := 'Speedbutton8';
    end;
 
+  Pixmap1:=TPixMap.Create;
+  Pixmap1.TransparentColor:=clBtnFace;
+  if not LoadResource('btn_run',Pixmap1) then
+  begin
+    LoadResource('default',Pixmap1);
+  end;
+
+  RunSpeedButton := TSpeedButton.Create(Self);
+  with RunSpeedbutton do
+   Begin
+    Parent := self;
+    Enabled := False;
+    Top := 28;
+    Left := Speedbutton8.Left + 26;
+    //OnClick := @mnuNewFormCLicked;
+    Glyph := Pixmap1;
+    Visible := True;
+    Flat := true;
+    Name := 'RunSpeedbutton';
+   end;
 
   if Assigned(Toolbar1) then
   begin
@@ -1438,6 +1459,7 @@ Begin
 //enable save buttons here
 SpeedButton5.Enabled := True;
 SpeedButton6.Enabled := True;
+RunSpeedButton.Enabled := True;
 
 end;
 
@@ -1750,9 +1772,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.28  2000/12/29 20:32:32  lazarus
-  Speedbuttons can now draw disabled images.
-  Shane
+  Revision 1.29  2000/12/29 20:43:17  lazarus
+  I added the run button with an Enable and disable icon
 
   Revision 1.25  2000/12/29 13:35:50  lazarus
   Mattias submitted new lresources.pp and lazres.pp files.
