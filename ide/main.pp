@@ -3285,7 +3285,7 @@ begin
                    +AnUnitInfo.FormName+':T'+AnUnitInfo.FormName
                    +' into text.';
                 Result:=MessageDlg(ACaption, AText, mtError,
-                                    [mbAbort, mbRetry, mbIgnore], 0);
+                                   [mbAbort, mbRetry, mbIgnore], 0);
                 if Result=mrAbort then exit;
                 if Result=mrIgnore then Result:=mrOk;
               end;
@@ -8659,6 +8659,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.553  2003/05/04 21:48:52  mattias
+  added parsing make errors
+
   Revision 1.552  2003/05/03 08:13:27  mattias
   fixed clean all
 
