@@ -3798,7 +3798,9 @@ begin
   // check if file is writable on disk
   if (not ActiveUnitInfo.IsVirtual)
   and FileExists(ActiveUnitInfo.Filename) then
-    ActiveUnitInfo.FileReadOnly:=not FileIsWritable(ActiveUnitInfo.Filename);
+    ActiveUnitInfo.FileReadOnly:=not FileIsWritable(ActiveUnitInfo.Filename)
+  else
+    ActiveUnitInfo.FileReadOnly:=false;
   
   // if this file is part of the project and the project is virtual then save
   // project first
@@ -3995,7 +3997,7 @@ begin
     if CompareFileExt(AFilename,'.lpi',false)=0 then begin
       if MessageDlg('Open Project?',
         'Open the project '+AFilename+'?'#13
-        +'Answer No to load is as xml file.',
+        +'Answer No to load it as xml file.',
         mtConfirmation,[mbYes,mbNo],0)=mrYes
       then begin
         Result:=DoOpenProjectFile(AFilename,[ofAddToRecent]);
@@ -6898,6 +6900,10 @@ var
   ActiveUnitInfo: TUnitInfo;
   StartPos, EndPos: TPoint;
   StartCode, EndCode: TCodeBuffer;
+  NewIdentifier: string;
+  NewSourceLines: string;
+  ResourcestringSectionID: integer;
+  InsertPolicy: TResourcestringInsertPolicy;
 begin
   Result:=mrCancel;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
@@ -6970,7 +6976,8 @@ begin
   end;
   
   Result:=ShowMakeResStrDialog(StartPos,EndPos,StartCode,
-                               CodeToolBoss.Positions);
+               CodeToolBoss.Positions,NewIdentifier,NewSourceLines,
+               ResourcestringSectionID,InsertPolicy);
   if Result<>mrOk then exit;
 
   // ToDo:
@@ -7834,6 +7841,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.477  2003/03/08 21:51:56  mattias
+  make resource string dialog nearly complete
+
   Revision 1.476  2003/03/07 13:32:40  mattias
   fixed checking readonly for non existing files
 
