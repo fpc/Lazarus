@@ -106,6 +106,9 @@ const
       comtCPP,   // lshCPP
       comtPerl   // lshPerl
     );
+    
+const
+  SynEditDefaultOptions = SYNEDIT_DEFAULT_OPTIONS - [eoShowScrollHint];
 
 type
   { TEditOptLanguageInfo stores lazarus IDE additional information
@@ -225,7 +228,7 @@ type
     // general options
     property SynEditOptions:TSynEditorOptions
         read fSynEditOptions write fSynEditOptions
-        default SYNEDIT_DEFAULT_OPTIONS;
+        default SynEditDefaultOptions;
     property CtrlMouseLinks: boolean read fCtrlMouseLinks write fCtrlMouseLinks;
     property ShowTabCloseButtons: boolean
         read fShowTabCloseButtons write fShowTabCloseButtons;
@@ -273,7 +276,7 @@ type
     property AutoToolTipExprEval:boolean
        read fAutoToolTipExprEval write fAutoToolTipExprEval default true;
     property AutoToolTipSymbTools:boolean
-       read fAutoToolTipSymbTools write fAutoToolTipSymbTools default true;
+       read fAutoToolTipSymbTools write fAutoToolTipSymbTools default false;
     property AutoDelayInMSec:integer
        read fAutoDelayInMSec write fAutoDelayInMSec default 1000;
     property CodeTemplateFileName:Ansistring
@@ -1090,7 +1093,7 @@ begin
       end;
       if SynEditOptName<>'' then begin
         if XMLConfig.GetValue('EditorOptions/General/Editor/'+SynEditOptName,
-            SynEditOpt in SYNEDIT_DEFAULT_OPTIONS)
+            SynEditOpt in SynEditDefaultOptions)
         then
           Include(fSynEditOptions,SynEditOpt)
         else
@@ -1162,7 +1165,7 @@ begin
     fAutoToolTipExprEval:=
       XMLConfig.GetValue('EditorOptions/CodeTools/AutoToolTipExprEval',true);
     fAutoToolTipSymbTools:=
-      XMLConfig.GetValue('EditorOptions/CodeTools/AutoToolTipSymbTools',true);
+      XMLConfig.GetValue('EditorOptions/CodeTools/AutoToolTipSymbTools',false);
     fAutoDelayInMSec:=
       XMLConfig.GetValue('EditorOptions/CodeTools/AutoDelayInMSec',1000);
     fCodeTemplateFileName:=
@@ -5199,8 +5202,8 @@ begin
   // code Tools
   EditorOpts.AutoIdentifierCompletion:=AutoIdentifierCompletionCheckBox.Checked;
   EditorOpts.AutoCodeParameters:=AutoCodeParametersCheckBox.Checked;
-  EditorOpts.AutoToolTipSymbTools:=AutoToolTipSymbToolsCheckBox.Checked;
   EditorOpts.AutoToolTipExprEval:=AutoToolTipExprEvalCheckBox.Checked;
+  EditorOpts.AutoToolTipSymbTools:=AutoToolTipSymbToolsCheckBox.Checked;
   EditorOpts.AutoDelayInMSec:=AutoDelayTrackBar.Position*250;
   EditorOpts.CodeTemplateFileName:=CodeTemplateFileNameComboBox.Text;
   EditorOpts.CodeTemplateIndentToTokenStart:=

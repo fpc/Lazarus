@@ -1353,8 +1353,8 @@ begin
 
   // source notebook
   C:=Categories[AddCategory('SourceNotebook','Source Notebook commands',caAll)];
-  Add(C,'Go to next editor',ecNextEditor, VK_S, [ssShift,ssCtrl], VK_UNKNOWN, []);
-  Add(C,'Go to prior editor',ecPrevEditor, VK_A, [ssShift,ssCtrl], VK_UNKNOWN, []);
+  Add(C,'Go to next editor',ecNextEditor, VK_TAB, [ssCtrl], VK_UNKNOWN, []);
+  Add(C,'Go to prior editor',ecPrevEditor, VK_TAB, [ssShift,ssCtrl], VK_UNKNOWN, []);
   Add(C,'Go to source editor 1',ecGotoEditor0,VK_1,[ssAlt],VK_UNKNOWN,[]);
   Add(C,'Go to source editor 2',ecGotoEditor0,VK_2,[ssAlt],VK_UNKNOWN,[]);
   Add(C,'Go to source editor 3',ecGotoEditor0,VK_3,[ssAlt],VK_UNKNOWN,[]);
