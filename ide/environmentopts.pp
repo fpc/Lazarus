@@ -74,6 +74,7 @@ type
     FLazarusDirectory: string;
     FCompilerFilename: string;
     FFPCSourceDirectory: string;
+    FTestBuildDirectory: string;
 
     // recent files and directories
     FRecentOpenFiles: TStringList;
@@ -141,6 +142,8 @@ type
        read FCompilerFilename write FCompilerFilename;
     property FPCSourceDirectory: string
        read FFPCSourceDirectory write FFPCSourceDirectory;
+    property TestBuildDirectory: string
+       read FTestBuildDirectory write FTestBuildDirectory;
 
     // recent files and directories
     property RecentOpenFiles: TStringList
@@ -251,6 +254,8 @@ type
     CompilerPathComboBox: TComboBox;
     FPCSourceDirLabel: TLabel;
     FPCSourceDirComboBox: TComboBox;
+    TestBuildDirLabel: TLabel;
+    TestBuildDirComboBox: TComboBox;
 
     // buttons at bottom
     OkButton: TButton;
@@ -321,9 +326,10 @@ begin
   FObjectInspectorOptions:=TOIOptions.Create;
 
   // files
-  FLazarusDirectory:='';
+  FLazarusDirectory:=ExtractFilePath(ParamStr(0));
   FCompilerFilename:='';
   FFPCSourceDirectory:='';
+  FTestBuildDirectory:={$ifdef win32}'c:/temp'{$else}'/tmp'{$endif};
 
   // recent files and directories
   FRecentOpenFiles:=TStringList.Create;
@@ -481,6 +487,8 @@ begin
          'EnvironmentOptions/CompilerFilename/Value',FCompilerFilename);
       FFPCSourceDirectory:=XMLConfig.GetValue(
          'EnvironmentOptions/FPCSourceDirectory/Value',FFPCSourceDirectory);
+      FTestBuildDirectory:=XMLConfig.GetValue(
+         'EnvironmentOptions/TestBuildDirectory/Value',FTestBuildDirectory);
 
       // backup
       LoadBackupInfo(FBackupInfoProjectFiles
@@ -602,6 +610,8 @@ begin
          'EnvironmentOptions/CompilerFilename/Value',FCompilerFilename);
       XMLConfig.SetValue(
          'EnvironmentOptions/FPCSourceDirectory/Value',FFPCSourceDirectory);
+      XMLConfig.SetValue(
+         'EnvironmentOptions/TestBuildDirectory/Value',FTestBuildDirectory);
 
       // backup
       SaveBackupInfo(FBackupInfoProjectFiles
@@ -1485,6 +1495,37 @@ begin
     end;
     Show;
   end;
+  
+  TestBuildDirLabel:=TLabel.Create(Self);
+  with TestBuildDirLabel do begin
+    Name:='TestBuildDirLabel';
+    Parent:=NoteBook.Page[1];
+    Left:=LazarusDirLabel.Left;
+    Top:=FPCSourceDirComboBox.Top+FPCSourceDirComboBox.Height;
+    Width:=LazarusDirLabel.Width;
+    Height:=23;
+    Caption:='Directory for building test projects';
+    Show;
+  end;
+
+  TestBuildDirComboBox:=TComboBox.Create(Self);
+  with TestBuildDirComboBox do begin
+    Name:='TestBuildDirComboBox';
+    Parent:=NoteBook.Page[1];
+    Left:=LazarusDirLabel.Left;
+    Top:=TestBuildDirLabel.Top+TestBuildDirLabel.Height+2;
+    Width:=LazarusDirLabel.Width;
+    Height:=25;
+    with Items do begin
+      BeginUpdate;
+      Add('/tmp');
+      Add('/var/tmp');
+      Add('c:/tmp');
+      Add('c:/windows/temp');
+      EndUpdate;
+    end;
+    Show;
+  end;
 end;
 
 procedure TEnvironmentOptionsDialog.BakTypeRadioGroupClick(Sender: TObject);
@@ -1609,6 +1650,7 @@ begin
     SetComboBoxText(LazarusDirComboBox,LazarusDirectory);
     SetComboBoxText(CompilerPathComboBox,CompilerFilename);
     SetComboBoxText(FPCSourceDirComboBox,FPCSourceDirectory);
+    SetComboBoxText(TestBuildDirComboBox,TestBuildDirectory);
 
     // recent files and directories
     SetComboBoxText(MaxRecentOpenFilesComboBox,IntToStr(MaxRecentOpenFiles));
@@ -1689,6 +1731,7 @@ begin
     LazarusDirectory:=LazarusDirComboBox.Text;
     CompilerFilename:=CompilerPathComboBox.Text;
     FPCSourceDirectory:=FPCSourceDirComboBox.Text;
+    TestBuildDirectory:=TestBuildDirComboBox.Text;
 
     // recent files and directories
     MaxRecentOpenFiles:=StrToIntDef(

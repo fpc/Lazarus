@@ -216,7 +216,8 @@ type
 
     // files/units
     function DoNewEditorUnit(NewUnitType:TNewUnitType):TModalResult;
-    function DoSaveEditorUnit(PageIndex:integer; SaveAs:boolean):TModalResult;
+    function DoSaveEditorUnit(PageIndex:integer;
+                   SaveAs, SaveToTestDir:boolean):TModalResult;
     function DoCloseEditorUnit(PageIndex:integer;
         SaveFirst: boolean):TModalResult;
     function DoOpenEditorFile(AFileName:string;
@@ -229,7 +230,7 @@ type
     // project(s)
     property Project: TProject read fProject write fProject;
     function DoNewProject(NewProjectType:TProjectType):TModalResult;
-    function DoSaveProject(SaveAs:boolean):TModalResult;
+    function DoSaveProject(SaveAs,SaveToTestDir:boolean):TModalResult;
     function DoCloseProject:TModalResult;
     function DoOpenProjectFile(AFileName:string):TModalResult;
     function DoAddActiveUnitToProject: TModalResult;
@@ -239,8 +240,9 @@ type
     function SomethingOfProjectIsModified: boolean;
     function DoCreateProjectForProgram(ProgramFilename,
        ProgramSource: string): TModalResult;
+    function DoSaveProjectToTestDirectory: TModalResult;
 
-    // helpful methods
+    // useful methods
     procedure GetCurrentUnit(var ActiveSourceEditor:TSourceEditor; 
       var ActiveUnitInfo:TUnitInfo);
     procedure GetUnitWithPageIndex(PageIndex:integer; 
@@ -260,6 +262,7 @@ type
     function DoJumpToCompilerMessage(Index:integer;
       FocusEditor: boolean): boolean;
     procedure DoShowMessagesView;
+    function GetTestProjectFilename: string;
 
     procedure LoadMainMenu;
     procedure LoadSpeedbuttons;
@@ -619,7 +622,7 @@ writeln('[TMainIDE.FormCloseQuery]');
   if SomethingOfProjectIsModified then begin
     if Application.MessageBox('Save changes to project?','Project changed',
         MB_OKCANCEL)=mrOk then begin
-      CanClose:=DoSaveProject(false)<>mrAbort;
+      CanClose:=DoSaveProject(false,false)<>mrAbort;
       if CanClose=false then exit;
     end;
   end;
@@ -1219,13 +1222,13 @@ end;
 procedure TMainIDE.mnuSaveClicked(Sender : TObject);
 begin
   if SourceNoteBook.NoteBook=nil then exit;
-  DoSaveEditorUnit(SourceNoteBook.NoteBook.PageIndex,false);
+  DoSaveEditorUnit(SourceNoteBook.NoteBook.PageIndex,false,false);
 end;
 
 procedure TMainIDE.mnuSaveAsClicked(Sender : TObject);
 begin
   if SourceNoteBook.NoteBook=nil then exit;
-  DoSaveEditorUnit(SourceNoteBook.NoteBook.PageIndex,true);
+  DoSaveEditorUnit(SourceNoteBook.NoteBook.PageIndex,true,false);
 end;
 
 procedure TMainIDE.mnuSaveAllClicked(Sender : TObject);
@@ -1475,12 +1478,12 @@ end;
 
 Procedure TMainIDE.mnuSaveProjectClicked(Sender : TObject);
 Begin
-  DoSaveProject(false);
+  DoSaveProject(false,false);
 end;
 
 procedure TMainIDE.mnuSaveProjectAsClicked(Sender : TObject);
 begin
-  DoSaveProject(true);
+  DoSaveProject(true,false);
 end;
 
 procedure TMainIDE.mnuAddToProjectClicked(Sender : TObject);
@@ -1691,7 +1694,7 @@ writeln('TMainIDE.DoNewUnit end');
 end;
 
 function TMainIDE.DoSaveEditorUnit(PageIndex:integer; 
-  SaveAs:boolean):TModalResult;
+  SaveAs, SaveToTestDir:boolean):TModalResult;
 var ActiveSrcEdit:TSourceEditor;
   ActiveUnitInfo:TUnitInfo;
   SaveDialog:TSaveDialog;
@@ -1700,7 +1703,7 @@ var ActiveSrcEdit:TSourceEditor;
   MemStream,BinCompStream,TxtCompStream:TMemoryStream;
   Driver: TAbstractObjectWriter;
   Writer:TWriter;
-  AText,ACaption,CompResourceCode,s: string;
+  AText,ACaption,CompResourceCode,s,TestFilename: string;
   ResourceCode: TSourceLog;
   FileStream:TFileStream;
 begin
@@ -1712,14 +1715,15 @@ writeln('TMainIDE.DoSaveEditorUnit A PageIndex=',PageIndex);
   end;
   GetUnitWithPageIndex(PageIndex,ActiveSrcEdit,ActiveUnitInfo);
   if ActiveUnitInfo=nil then exit;
-  if (Project.MainUnit>=0) and (Project.Units[Project.MainUnit]=ActiveUnitInfo)
+  if (not SaveToTestDir) and (Project.MainUnit>=0)
+  and (Project.Units[Project.MainUnit]=ActiveUnitInfo)
   and (ActiveUnitInfo.Filename='') then begin
-    Result:=DoSaveProject(false);
+    Result:=DoSaveProject(false,SaveToTestDir);
     exit;
   end;
 
   ActiveUnitInfo.ReadOnly:=ActiveSrcEdit.ReadOnly;
-  if ActiveUnitInfo.ReadOnly then begin
+  if (ActiveUnitInfo.ReadOnly) and (not SaveToTestDir) then begin
     Result:=mrOk;
     exit;
   end;
@@ -1757,7 +1761,7 @@ writeln('TMainIDE.DoSaveEditorUnit A PageIndex=',PageIndex);
 
     SaveAllParts:=false;
     if ActiveUnitInfo.Filename='' then SaveAs:=true;
-    if SaveAs then begin
+    if SaveAs and (not SaveToTestDir) then begin
       // let user choose a filename
       SaveDialog:=TSaveDialog.Create(Application);
       try
@@ -1804,16 +1808,47 @@ writeln('TMainIDE.DoSaveEditorUnit A PageIndex=',PageIndex);
         SaveDialog.Free;
       end;
     end;
-    if ActiveUnitInfo.Modified or SaveAllParts then begin
-      // save source
-      Result:=ActiveUnitInfo.WriteUnitSource;
-      if Result=mrAbort then exit;
+    TestFilename:='';
+    if not SaveToTestDir then begin
+      if ActiveUnitInfo.Modified or SaveAllParts then begin
+        // save source
+        Result:=ActiveUnitInfo.WriteUnitSource;
+        if Result=mrAbort then exit;
+      end;
+    end else begin
+      // save source to test directory
+      s:=EnvironmentOptions.TestBuildDirectory;
+      if s='' then exit;
+      if s[length(s)]<>OSDirSeparator then s:=s+OSDirSeparator;
+      if ActiveUnitInfo.UnitName<>'' then begin
+        TestFilename:=s+lowercase(ActiveUnitInfo.UnitName)+'.pp';
+      end else if (Project.MainUnit>=0)
+      and (Project.Units[Project.MainUnit]=ActiveUnitInfo) then begin
+        TestFilename:=GetTestProjectFilename;
+      end;
+      if TestFilename<>'' then begin
+        MemStream:=TMemoryStream.Create;
+        try
+          MemStream.Write(ActiveUnitInfo.Source.Source[1],
+              length(ActiveUnitInfo.Source.Source));
+              MemStream.Position:=0;
+          Result:=DoSaveStreamToFile(MemStream,TestFilename,false);
+          if Result<>mrOk then exit;
+        finally
+          MemStream.Free;
+        end;
+      end;
     end;
 
     // ToDo: save resources only if modified
 
     if ActiveUnitInfo.HasResources then begin
-      LFMFilename:=ChangeFileExt(ActiveUnitInfo.Filename,'.lfm');
+      if not SaveToTestDir then
+        LFMFilename:=ChangeFileExt(ActiveUnitInfo.Filename,'.lfm')
+      else begin
+        LFMFilename:=ChangeFileExt(TestFilename,'.lfm');
+        ResourceFilename:=ChangeFileExt(TestFilename,ResourceFileExt);
+      end;
 
       // save lrs - lazarus resource file and lfm - lazarus form text file
 
@@ -1876,7 +1911,7 @@ writeln('TMainIDE.DoSaveEditorUnit A PageIndex=',PageIndex);
               TxtCompStream.Position:=0;
               // save lfm file
               Result:=DoSaveStreamToFile(TxtCompStream,LFMFilename
-                ,ActiveUnitInfo.IsPartOfProject);
+                ,(ActiveUnitInfo.IsPartOfProject) and (not SaveToTestDir));
               if Result<>mrOk then exit;
             finally
               TxtCompStream.Free;
@@ -1895,8 +1930,10 @@ writeln('TMainIDE.DoSaveEditorUnit A PageIndex=',PageIndex);
         BinCompStream.Free;
       end;
       // save resource file
-      Result:=DoBackupFile(ResourceFileName,ActiveUnitInfo.IsPartOfProject);
-      if Result=mrAbort then exit;
+      if not SaveToTestDir then begin
+        Result:=DoBackupFile(ResourceFileName,ActiveUnitInfo.IsPartOfProject);
+        if Result=mrAbort then exit;
+      end;
       repeat
         try
           FileStream:=TFileStream.Create(ResourceFileName,fmCreate);
@@ -1918,8 +1955,10 @@ writeln('TMainIDE.DoSaveEditorUnit A PageIndex=',PageIndex);
   finally
     ResourceCode.Free;
   end;
-  ActiveUnitInfo.Modified:=false;
-  ActiveSrcEdit.Modified:=false;
+  if not SaveToTestDir then begin
+    ActiveUnitInfo.Modified:=false;
+    ActiveSrcEdit.Modified:=false;
+  end;
 writeln('TMainIDE.DoSaveEditorUnit END');
   Result:=mrOk;
 end;
@@ -1952,7 +1991,7 @@ writeln('TMainIDE.DoCloseEditorUnit A PageIndex=',PageIndex);
     ACaption:='Source mofified';
     if Application.MessageBox(PChar(AText),PChar(ACaption),MB_YESNO)=mrYes then
     begin
-      Result:=DoSaveEditorUnit(PageIndex,false);
+      Result:=DoSaveEditorUnit(PageIndex,false,false);
       if Result=mrAbort then exit;
     end;
     Result:=mrOk;
@@ -2330,7 +2369,7 @@ writeln('TMainIDE.DoNewProject 1');
     if SomethingOfProjectIsModified then begin
       if Application.MessageBox('Save changes to project?','Project changed'
           ,MB_YESNO)=mrYES then begin
-        if DoSaveProject(false)=mrAbort then begin
+        if DoSaveProject(false,false)=mrAbort then begin
           Result:=mrAbort;
           exit;
         end;
@@ -2377,12 +2416,13 @@ writeln('TMainIDE.DoNewProject end ');
   Result:=mrOk;
 end;
 
-function TMainIDE.DoSaveProject(SaveAs:boolean):TModalResult;
+function TMainIDE.DoSaveProject(SaveAs, SaveToTestDir:boolean):TModalResult;
 var MainUnitSrcEdit, ASrcEdit: TSourceEditor;
   MainUnitInfo, AnUnitInfo: TUnitInfo;
   SaveDialog: TSaveDialog;
   NewFilename, NewProgramFilename, NewPageName, AText, ACaption, Ext: string;
   i, BookmarkID, BookmarkX, BookmarkY :integer;
+  MemStream: TMemoryStream;
 begin
   Result:=mrCancel;
   if ToolStatus<>itNone then begin
@@ -2394,7 +2434,8 @@ writeln('TMainIDE.DoSaveProject A');
   for i:=0 to Project.UnitCount-1 do begin
     if (Project.Units[i].Loaded) and (Project.Units[i].Filename='')
     and (Project.MainUnit<>i) then begin
-      Result:=DoSaveEditorUnit(Project.Units[i].EditorIndex,false);
+      Result:=DoSaveEditorUnit(Project.Units[i].EditorIndex,false,
+                               SaveToTestDir);
       if (Result=mrAbort) or (Result=mrCancel) then exit;
     end;
   end;
@@ -2427,7 +2468,8 @@ writeln('TMainIDE.DoSaveProject A');
       AnUnitInfo.TopLine:=ASrcEdit.EditorComponent.TopLine;
       AnUnitInfo.CursorPos:=ASrcEdit.EditorComponent.CaretXY;
       for BookmarkID:=0 to 9 do begin
-        if (ASrcEdit.EditorComponent.GetBookMark(BookmarkID,BookmarkX,BookmarkY))
+        if (ASrcEdit.EditorComponent.GetBookMark(
+             BookmarkID,BookmarkX,BookmarkY))
         and (Project.Bookmarks.IndexOfID(BookmarkID)<0) then begin
           Project.Bookmarks.Add(TProjectBookmark.Create(BookmarkX,BookmarkX,
               AnUnitInfo.EditorIndex,BookmarkID));
@@ -2437,7 +2479,7 @@ writeln('TMainIDE.DoSaveProject A');
   end;
 
   SaveAs:=SaveAs or (Project.ProjectFile='');
-  if SaveAs then begin
+  if SaveAs and (not SaveToTestDir) then begin
     // let user choose a filename
     SaveDialog:=TSaveDialog.Create(Application);
     try
@@ -2508,33 +2550,49 @@ writeln('TMainIDE.DoSaveProject A');
       SaveDialog.Free;
     end;
   end;
-  Result:=Project.WriteProject;
-  if Result=mrAbort then exit;
+  if not SaveToTestDir then begin
+    Result:=Project.WriteProject;
+    if Result=mrAbort then exit;
+  end;
   // save source
   if MainUnitInfo<>nil then begin
     if MainUnitInfo.Loaded then begin
-      Result:=DoSaveEditorUnit(MainUnitInfo.EditorIndex,false);
+      Result:=DoSaveEditorUnit(MainUnitInfo.EditorIndex,false,SaveToTestDir);
       if Result=mrAbort then exit;
     end else begin
-      Result:=MainUnitInfo.WriteUnitSource;
+      if not SaveToTestDir then
+        Result:=MainUnitInfo.WriteUnitSource
+      else begin
+        MemStream:=TMemoryStream.Create;
+        try
+          MemStream.Write(MainUnitInfo.Source.Source[1],
+             length(MainUnitInfo.Source.Source));
+          MemStream.Position:=0;
+          Result:=DoSaveStreamToFile(MemStream,GetTestProjectFilename,false);
+        finally
+          MemStream.Free;
+        end;
+      end;
       if Result=mrAbort then exit;
     end;
   end;
-  EnvironmentOptions.LastSavedProjectFile:=Project.ProjectInfoFile;
-  EnvironmentOptions.Save(false);
-  if Result=mrOk then begin
-    if MainUnitInfo<>nil then MainUnitInfo.Modified:=false;
-    if MainUnitSrcEdit<>nil then MainUnitSrcEdit.Modified:=false;
+  if not SaveToTestDir then begin
+    EnvironmentOptions.LastSavedProjectFile:=Project.ProjectInfoFile;
+    EnvironmentOptions.Save(false);
+    if (Result=mrOk) then begin
+      if MainUnitInfo<>nil then MainUnitInfo.Modified:=false;
+      if MainUnitSrcEdit<>nil then MainUnitSrcEdit.Modified:=false;
+    end;
+    UpdateMainUnitSrcEdit;
+    UpdateCaption;
   end;
-  UpdateMainUnitSrcEdit;
-  UpdateCaption;
 
   // save editor files
   if (SourceNoteBook.Notebook<>nil) then begin
     for i:=0 to SourceNoteBook.Notebook.Pages.Count-1 do begin
       if (Project.MainUnit<0) 
       or (Project.Units[Project.MainUnit].EditorIndex<>i) then begin
-        Result:=DoSaveEditorUnit(i,false);
+        Result:=DoSaveEditorUnit(i,false,SaveToTestDir);
         if Result=mrAbort then exit;
       end;
     end;
@@ -2587,7 +2645,7 @@ writeln('TMainIDE.DoOpenProjectFile A "'+AFileName+'"');
   if SomethingOfProjectIsModified then begin
     if Application.MessageBox('Save changes to project?','Project changed'
       ,MB_OKCANCEL)=mrOK then begin
-      if DoSaveProject(false)=mrAbort then begin
+      if DoSaveProject(false,false)=mrAbort then begin
         Result:=mrAbort;
         exit;
       end;
@@ -2667,7 +2725,7 @@ writeln('[TMainIDE.DoCreateProjectForProgram] 1');
   if SomethingOfProjectIsModified then begin
     if Application.MessageBox('Save changes to project?','Project changed'
         ,MB_OKCANCEL)=mrOK then begin
-      if DoSaveProject(false)=mrAbort then begin
+      if DoSaveProject(false,false)=mrAbort then begin
         Result:=mrAbort;
         exit;
       end;
@@ -2814,6 +2872,7 @@ end;
 
 function TMainIDE.DoBuildProject: TModalResult;
 var ActiveSrcEdit: TSourceEditor;
+  DefaultFilename: string;
 begin
   Result:=mrCancel;
   if ToolStatus<>itNone then begin
@@ -2823,7 +2882,16 @@ begin
   try
     if not (Project.ProjectType in [ptProgram, ptApplication, ptCustomProgram])
     then exit;
-    DoSaveAll;
+    if Project.ProjectFile<>'' then
+      Result:=DoSaveAll
+    else
+      Result:=DoSaveProjectToTestDirectory;
+    if Result<>mrOk then exit;
+    if Project.ProjectFile<>'' then
+      DefaultFilename:=''
+    else
+      DefaultFilename:=GetTestProjectFilename;
+    
     Assert(False, 'Trace:Build Project Clicked');
     if Project=nil then Begin
       Application.MessageBox('Create a project first!','Error',mb_ok);
@@ -2840,7 +2908,7 @@ begin
       SourceNotebook.Height := Max(50,Min(SourceNotebook.Height,
          MessagesView.Top-SourceNotebook.Top));
     Compiler1.OnOutputString:=@MessagesView.Add;
-    Result:=Compiler1.Compile(Project);
+    Result:=Compiler1.Compile(Project,DefaultFilename);
     if Result=mrOk then begin
       MessagesView.MessageView.Items.Add(
         'Project "'+Project.Title+'" successfully built. :)');
@@ -2850,6 +2918,17 @@ begin
   finally
     ToolStatus:=itNone;
   end;
+end;
+
+function TMainIDE.DoSaveProjectToTestDirectory: TModalResult;
+begin
+  Result:=mrCancel;
+  if (EnvironmentOptions.TestBuildDirectory='')
+  or (not DirectoryExists(EnvironmentOptions.TestBuildDirectory)) then begin
+    Result:=DoSaveAll;
+    exit;
+  end;
+  Result:=DoSaveProject(false,true);
 end;
 
 function TMainIDE.DoRunProject: TModalResult;
@@ -2873,9 +2952,11 @@ writeln('[TMainIDE.DoRunProject] A');
   if not (Project.ProjectType in [ptProgram, ptApplication, ptCustomProgram])
   then exit;
 
-  Ext:=ExtractFileExt(Project.ProjectFile);
-  ProgramFilename := LowerCase(copy(Project.ProjectFile,1,
-                          length(Project.ProjectFile)-length(Ext)));
+  ProgramFilename:=Project.ProjectFile;
+  if ProgramFilename='' then ProgramFilename:=GetTestProjectFilename;
+  Ext:=ExtractFileExt(ProgramFilename);
+  ProgramFilename := LowerCase(copy(ProgramFilename,1,
+                          length(ProgramFilename)-length(Ext)));
   {$ifdef win32}
   ProgramFilename:=ProgramFilename+'.exe';
   {$endif}
@@ -2909,7 +2990,7 @@ end;
 function TMainIDE.DoSaveAll: TModalResult;
 begin
 writeln('TMainIDE.DoSaveAll');
-  Result:=DoSaveProject(false);
+  Result:=DoSaveProject(false,false);
   // ToDo: save package, cvs settings, ...
 end;
 
@@ -3192,7 +3273,8 @@ begin
   if MacroName='save' then begin
     Handled:=true;
     if SourceNoteBook.NoteBook<>nil then
-      Abort:=(DoSaveEditorUnit(SourceNoteBook.NoteBook.PageIndex,false)<>mrOk);
+      Abort:=(DoSaveEditorUnit(SourceNoteBook.NoteBook.PageIndex,false,false)
+              <>mrOk);
     s:='';
   end else if MacroName='saveall' then begin
     Handled:=true;
@@ -3320,6 +3402,23 @@ begin
     SourceNotebook.Hide;
     SourceNotebook.Show;
   end;
+end;
+
+function TMainIDE.GetTestProjectFilename: string;
+var SrcNameStart,SrcNameEnd: integer;
+  Src, TestDir: string;
+begin
+  Result:='';
+  if (Project.MainUnit<0) then exit;
+  TestDir:=EnvironmentOptions.TestBuildDirectory;
+  if (TestDir='') then exit;
+  if TestDir[length(TestDir)]<>OSDirSeparator then
+    TestDir:=TestDir+OSDirSeparator;
+  Src:=Project.Units[Project.MainUnit].Source.Source;
+  Result:=FindSourceType(Src,SrcNameStart,SrcNameEnd);
+  if (Result='') or (SrcNameStart=SrcNameEnd) or (SrcNameStart>length(Src)) then
+    exit;
+  Result:=TestDir+copy(Src,SrcNameStart,SrcNameEnd-SrcNameStart)+'.lpr';
 end;
 
 procedure TMainIDE.OnDesignerGetSelectedComponentClass(Sender: TObject; 
@@ -3495,8 +3594,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.108  2001/07/08 07:09:34  lazarus
-  MG: save project now also saves editor files
+  Revision 1.109  2001/07/08 22:33:56  lazarus
+  MG: added rapid testing project
 
   Revision 1.105  2001/07/01 15:55:43  lazarus
   MG: JumpToCompilerMessage now centered in source editor

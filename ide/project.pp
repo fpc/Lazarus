@@ -1261,6 +1261,7 @@ var s:string;
 begin
   Result:=GetResourceFilename(AnUnitInfo,1);
   if Result='' then begin
+    if AnUnitInfo.Filename='' then exit;
     Result:=ChangeFileExt(AnUnitInfo.Filename,ResourceFileExt);
     exit;
   end;
@@ -1272,7 +1273,7 @@ begin
   end;
   if Result<>'' then
     SearchIncludeFile(AnUnitInfo,Result);
-  if Result='' then
+  if (Result='') and (AnUnitInfo.Filename<>'') then
     Result:=ChangeFileExt(AnUnitInfo.Filename,ResourceFileExt);
 end;
 
@@ -1416,6 +1417,9 @@ end.
 
 {
   $Log$
+  Revision 1.26  2001/07/08 22:33:56  lazarus
+  MG: added rapid testing project
+
   Revision 1.25  2001/06/27 21:43:23  lazarus
   MG: added project bookmark support
 

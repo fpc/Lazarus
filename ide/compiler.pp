@@ -45,7 +45,8 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    function Compile(AProject: TProject): TModalResult;
+    function Compile(AProject: TProject;
+       const DefaultFilename: string): TModalResult;
     function GetSourcePosition(const Line: string; var Filename:string;
        var CaretXY: TPoint; var MsgType: TErrorType): boolean;
     property OnOutputString : TOnOutputString
@@ -106,7 +107,8 @@ end;
 {------------------------------------------------------------------------------}
 {  TCompiler Compile                                                           }
 {------------------------------------------------------------------------------}
-function TCompiler.Compile(AProject: TProject): TModalResult;
+function TCompiler.Compile(AProject: TProject;
+  const DefaultFilename: string): TModalResult;
 const
   BufSize = 1024;
 var
@@ -114,7 +116,7 @@ var
   I, Count, LineStart : longint;
   OutputLine, Buf : String;
   WriteMessage, ABort : Boolean;
-  OldCurDir, ProjectDir: string;
+  OldCurDir, ProjectDir, ProjectFilename: string;
   TheProcess : TProcess;
 
   procedure ProcessOutputLine;
@@ -152,7 +154,9 @@ begin
   Result:=mrCancel;
   if AProject.MainUnit<0 then exit;
   OldCurDir:=GetCurrentDir;
-  ProjectDir:=ExtractFilePath(AProject.ProjectFile);
+  ProjectFilename:=AProject.Units[AProject.MainUnit].Filename;
+  if ProjectFilename='' then ProjectFilename:=DefaultFilename;
+  ProjectDir:=ExtractFilePath(ProjectFilename);
   if not SetCurrentDir(ProjectDir) then exit;
   try
     FOutputList.Clear;
@@ -188,7 +192,7 @@ begin
     end;
     {$ENDIF linux}
     CmdLine := CmdLine + ' '+ AProject.CompilerOptions.MakeOptionsString;
-    CmdLine := CmdLine + ' '+ AProject.Units[AProject.MainUnit].Filename;
+    CmdLine := CmdLine + ' '+ ProjectFilename;
     if Assigned(FOnCmdLineCreate) then begin
       Abort:=false;
       FOnCmdLineCreate(CmdLine,Abort);
@@ -257,10 +261,17 @@ function TCompiler.GetSourcePosition(const Line: string; var Filename:string;
 { This assumes the line has one of the following formats
 <filename>(123,45) <ErrorType>: <some text>
 <filename>(456) <ErrorType>: <some text> in line (123)
+Fatal: <some text>
 }
 var StartPos, EndPos: integer;
 begin
   Result:=false;
+  if copy(Line,1,7)='Fatal: ' then begin
+    Result:=true;
+    Filename:='';
+    MsgType:=etFatal;
+    exit;
+  end;
   StartPos:=1;
   // find filename
   EndPos:=StartPos;
@@ -311,6 +322,9 @@ end.
 
 {
   $Log$
+  Revision 1.14  2001/07/08 22:33:56  lazarus
+  MG: added rapid testing project
+
   Revision 1.13  2001/05/29 08:16:26  lazarus
   MG: bugfixes + starting programs
 
