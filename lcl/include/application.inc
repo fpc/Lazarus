@@ -1334,7 +1334,8 @@ begin
     Form := GetParentForm(AControl);
     if Form<>nil then begin
       if (anoReturnForDefaultControl in Navigation)
-      and (Form.DefaultControl <> nil) then
+      and (Form.DefaultControl <> nil) 
+      and Form.DefaultControl.Enabled then
       begin
         //debugln('TApplication.ControlKeyUp VK_RETURN ', Acontrol.Name);
         Form.DefaultControl.ExecuteDefaultAction;
@@ -1453,6 +1454,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.114  2005/04/01 09:26:56  micha
+  only execute button action when enabled (fixes bug 676)
+
   Revision 1.113  2005/03/31 20:07:44  micha
   mainform may also be an MDI form, or a stay on top form (fixes bug 656)
 
