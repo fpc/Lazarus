@@ -2325,7 +2325,8 @@ writeln('*** TMainIDE.DoOpenEditorFile START "',AFilename,'"');
 CheckHeap(IntToStr(GetMem_Cnt));
 {$ENDIF}
   Result:=mrCancel;
-  if AFileName='' then exit;
+  if (AFileName='') or (not FileExists(AFilename)) or (DirectoryExists(AFilename))
+  then exit;
   Ext:=lowercase(ExtractFileExt(AFilename));
   // check if the project knows this file
   i:=Project.UnitCount-1;
@@ -4369,6 +4370,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.130  2001/10/31 18:09:51  lazarus
+  MG: fixed DirectoryExists
+
   Revision 1.129  2001/10/31 16:29:20  lazarus
   Fixed the gtk mousemove bug where the control gets the coord's based on it's parent instead of itself.
   Shane
@@ -8981,6 +8985,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.130  2001/10/31 18:09:51  lazarus
+  MG: fixed DirectoryExists
+
   Revision 1.129  2001/10/31 16:29:20  lazarus
   Fixed the gtk mousemove bug where the control gets the coord's based on it's parent instead of itself.
   Shane
