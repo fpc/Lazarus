@@ -261,6 +261,7 @@ begin
           if ComparePChar(OldText,PChar(NewText)) then begin
             exit;
           end;
+          //writeln('gtkchangedCB: ',NewText);
           SetComboBoxText(PGtkCombo(TComboBox(Data).Handle),PChar(NewText));
         end;
     end;
@@ -2278,6 +2279,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.117  2002/08/31 07:58:21  lazarus
+  MG: fixed resetting comobobox text
+
   Revision 1.116  2002/08/30 12:32:22  lazarus
   MG: MoveWindowOrgEx, Splitted FWinControls/FControls, TControl drawing, Better DesignerDrawing, ...
 
