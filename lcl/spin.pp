@@ -36,11 +36,12 @@ uses
 type
   TSpinEdit = class(TWinControl)
   private
-    fdecimals : Integer;
+    fDecimals : Integer;
     fValue    : Single;
     fClimbRate : Single;
+    fValueNeedsUpdate: boolean;
     Procedure UpdateControl;
-	protected
+  protected
     procedure SetDecimals(num : Integer);
     Function GetValue : Single;
     procedure SetValue(Num : Single);

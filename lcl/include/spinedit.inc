@@ -19,21 +19,26 @@
 {-----------------------------------------------------------------------------}
 procedure TSpinEdit.UpdateControl;
 begin
- CNSendMessage(LM_SetProperties,self,nil);
+  if not HandleAllocated then exit;
+  CNSendMessage(LM_SetProperties,Self,nil);
+  fValueNeedsUpdate:=false;
 end;
 
 {-----------------------------------------------------------------------------}
 procedure TSpinEdit.SetClimbRate(Num : Single);
 begin
- fClimbRate := Num;
- UpdateControl;
+  if fClimbRate = Num then exit;
+  fClimbRate := Num;
+  UpdateControl;
 end;
 
 {-----------------------------------------------------------------------------}
 Procedure TSpinEdit.SetValue(num : Single);
 begin
- FValue := Num;
- UpdateControl;
+  if FValue = Num then exit;
+  FValue := Num;
+  fValueNeedsUpdate:=true;
+  UpdateControl;
 end;
 
 {-----------------------------------------------------------------------------}
@@ -41,30 +46,33 @@ Function TSpinEdit.GetValue : Single;
 Var
   Temp : Real;
 begin
- CNSendMessage(LM_GETVALUE,Self,@Temp);
- FValue := Temp;
- getvalue := fValue;
+  if HandleAllocated and (not fValueNeedsUpdate) then begin
+    CNSendMessage(LM_GETVALUE,Self,@Temp);
+    FValue := Temp;
+  end;
+  GetValue := fValue;
 end;
 
 {-----------------------------------------------------------------------------}
 procedure TSpinEdit.SetDecimals(Num : Integer);
 begin
- fDecimals := Num;
- UpdateControl;
+  if fDecimals = Num then exit;
+  fDecimals := Num;
+  UpdateControl;
 end;
 
 {-----------------------------------------------------------------------------}
 constructor TSpinEdit.Create(AOwner : TComponent);
 begin
- inherited Create(AOwner);
- fCompStyle := csSpinEdit;
+  inherited Create(AOwner);
+  fCompStyle := csSpinEdit;
 
- fClimbRate := 1;
- fDecimals := 2;
- fValue := 1;
+  fClimbRate := 1;
+  fDecimals := 2;
+  fValue := 1;
+  fValueNeedsUpdate := true;
 
- setbounds(1,1,50,20);
-
+  SetBounds(1,1,50,20);
 end;
 
 {-----------------------------------------------------------------------------}
@@ -72,3 +80,6 @@ destructor TSpinEdit.Destroy;
 begin
   inherited Destroy;
 end;
+
+// included by spin.pp
+
