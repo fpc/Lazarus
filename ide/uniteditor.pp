@@ -257,6 +257,8 @@ type
 
     Function GetCaretPosFromCursorPos(CursorPos : TPoint) : TPoint;
     procedure CenterCursor;
+    
+    procedure Activate;
   public
     // properties
     property CodeBuffer: TCodeBuffer read FCodeBuffer write SetCodeBuffer;
@@ -1851,6 +1853,12 @@ begin
   NewTopLine:=EditorComponent.CaretY-((EditorComponent.LinesInWindow-1) div 2);
   if NewTopLine<1 then NewTopLine:=1;
   EditorComponent.TopLine:=NewTopLine;
+end;
+
+procedure TSourceEditor.Activate;
+begin
+  if (FSourceNoteBook=nil) then exit;
+  FSourceNoteBook.SetActiveSE(Self);
 end;
 
 Function TSourceEditor.GetWordAtCurrentCaret: String;
