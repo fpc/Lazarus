@@ -42,6 +42,7 @@ type
     fBreakpoints: TList;
     fCursorPos: LongInt;
     fFilename: String;
+    fLoaded:  Boolean;
     fReadOnly:  Boolean;
     fSource: TStrings;
     fSyntaxHighlighter: String;
@@ -52,6 +53,7 @@ type
 
     function ReadUnit: Boolean;
     function WriteUnit: Boolean;
+    procedure Clear;
 
     { Properties }
     property AutoCreate: Boolean read fAutoCreate write fAutoCreate;
@@ -59,6 +61,7 @@ type
     property Breakpoints: TList read fBreakpoints write fBreakpoints;
     property CursorPos: LongInt read fCursorPos write fCursorPos;
     property Filename: String read fFilename write fFilename;
+    property Loaded: Boolean read fLoaded write fLoaded;
     property ReadOnly: Boolean read fReadOnly write fReadOnly;
     property Source: TStrings read fSource write fSource;
     property SyntaxHighlighter: String read fSyntaxHighlighter write fSyntaxHighlighter;
@@ -73,6 +76,7 @@ type
     fAliases: String;
     fCompilerOptions: TCompilerOptions;
     fIconPath: String;
+    fLoaded:  Boolean;
     fMainUnit: String;
     fOutputDirectory: String;
     fProjectFile: String;
@@ -101,11 +105,13 @@ type
     { Procedures }
     procedure AddUnit(AUnit: TUnitInfo);
     procedure RemoveUnit(AUnitName: String);
+    procedure Clear;
 
     { Properties }
     property Aliases: String read fAliases write fAliases;
     property CompilerOptions: TCompilerOptions read fCompilerOptions write fCompilerOptions;
     property IconPath: String read fIconPath write fIconPath;
+    property Loaded: Boolean read fLoaded write fLoaded;
     property MainUnit: String read fMainUnit write fMainUnit;
     property OutputDirectory: String read fOutputDirectory write fOutputDirectory;
     property ProjectFile: String read fProjectFile write fProjectFile;
@@ -143,6 +149,7 @@ begin
   fBreakpoints := TList.Create;
   fCursorPos := 0;
   fFilename := '';
+  fLoaded := false;
   fReadOnly :=  false;
   fSource := TStringList.Create;
   fSyntaxHighlighter := 'freepascal';
@@ -186,9 +193,27 @@ begin
   try
     // Load unit source code
     Source.LoadFromFile(Filename);
+    Loaded := true;
   except
     Result := false;
   end;
+end;
+
+{------------------------------------------------------------------------------
+  TUnitInfo Clear
+ ------------------------------------------------------------------------------}
+procedure TUnitInfo.Clear;
+begin
+  fAutoCreate := true;
+  fBookmarks.Clear;
+  fBreakpoints.Clear;
+  fCursorPos := 0;
+  fFilename := '';
+  fLoaded := false;
+  fReadOnly :=  false;
+  fSource.Clear;
+  fSyntaxHighlighter := 'freepascal';
+  fUnitName := '';
 end;
 
 
@@ -210,7 +235,7 @@ begin
   fCompilerOptions := TCompilerOptions.Create;
   fIconPath := '';
   fMainUnit := '';
-  fOutputDirectory := '';
+  fOutputDirectory := '.';
   fProjectFile := '';
   fProjectInfoFile := '';
   fSource := TStringList.Create;
@@ -218,7 +243,7 @@ begin
   fTitle := '';
   fUnitList := TList.Create;
   fUnitNameList := '';
-  fUnitOutputDirectory := '';
+  fUnitOutputDirectory := '.';
 end;
 
 {------------------------------------------------------------------------------
@@ -260,6 +285,12 @@ begin
     xmlcfg.SetValue('ProjectOptions/General/UnitOutputDirectory/Value', UnitOutputDirectory);
 
     // Save project source code
+    {TODO:
+       Check OutputDirectory to see if last character is /. If not, add one. If so, leave it as is
+       Add code to check to ensure we have a good ProjectFile (not nil)
+       Add code to split filename and put output directory into OutputDirectory property and 
+            filename into ProjectFile property
+    }
     Source.SaveToFile(ProjectFile);
 
     // Set options for each Unit
@@ -325,8 +356,8 @@ begin
     IconPath := xmlcfg.GetValue('ProjectOptions/General/IconPath/Value', './');
     TargetFileExt := xmlcfg.GetValue('ProjectOptions/General/TargetFileExt/Value', '');
     Title := xmlcfg.GetValue('ProjectOptions/General/Title/Value', '');
-    OutputDirectory := xmlcfg.GetValue('ProjectOptions/General/OutputDirectory/Value', './');
-    UnitOutputDirectory := xmlcfg.GetValue('ProjectOptions/General/UnitOutputDirectory/Value', './');
+    OutputDirectory := xmlcfg.GetValue('ProjectOptions/General/OutputDirectory/Value', '.');
+    UnitOutputDirectory := xmlcfg.GetValue('ProjectOptions/General/UnitOutputDirectory/Value', '.');
 
     // Save project source code
     Source.LoadFromFile(ProjectFile);
@@ -421,6 +452,28 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  TProject Clear
+ ------------------------------------------------------------------------------}
+procedure TProject.Clear;
+begin
+  xmlcfg := nil;
+
+  fAliases := '';
+  fCompilerOptions.Clear;
+  fIconPath := '';
+  fMainUnit := '';
+  fOutputDirectory := '.';
+  fProjectFile := '';
+  fProjectInfoFile := '';
+  fSource.Clear;
+  fTargetFileExt := '';
+  fTitle := '';
+  fUnitList.Clear;
+  fUnitNameList := '';
+  fUnitOutputDirectory := '.';
+end;
+
+{------------------------------------------------------------------------------
   TProject GetUnitList
  ------------------------------------------------------------------------------}
 function TProject.GetUnitList: TList;
@@ -476,6 +529,10 @@ end;
 end.
 {
   $Log$
+  Revision 1.7  2001/02/08 06:08:13  lazarus
+  Began adding code to save project to the output directory. Added TODO
+  comments and cleaned up some of the code.                            CAW
+
   Revision 1.6  2001/01/31 13:03:33  lazarus
   Commitng source with new editor.
   Shane
