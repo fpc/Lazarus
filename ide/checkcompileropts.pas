@@ -119,7 +119,7 @@ begin
     CompilerFiles:=SearchAllFilesInPath(GetDefaultCompilerFilename,'',
          SysUtils.GetEnvironmentVariable('PATH'),':',[sffDontSearchInBasePath]);
     if (CompilerFiles<>nil) and (CompilerFiles.Count>1) then begin
-      Result:=MessageDlg('Ambigious Compiler',
+      Result:=MessageDlg('Ambiguous Compiler',
         'There are several FreePascal Compilers in your path.'#13#13
         +CompilerFiles.Text+#13
         +'Maybe you forgot to delete an old compiler?',

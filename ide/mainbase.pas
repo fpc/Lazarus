@@ -142,13 +142,13 @@ type
           var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo); virtual; abstract;
     function GetSourceEditorForUnitInfo(AnUnitInfo: TUnitInfo): TSourceEditor; virtual; abstract;
 
-    function DoCheckAmbigiousSources(const AFilename: string;
+    function DoCheckAmbiguousSources(const AFilename: string;
                                      Compiling: boolean): TModalResult; override;
     function DoCheckCreatingFile(const AFilename: string;
                                  CheckReadable: boolean): TModalResult; override;
-    function DoDeleteAmbigiousFiles(const Filename:string
+    function DoDeleteAmbiguousFiles(const Filename:string
                                     ): TModalResult; override;
-    function DoCheckUnitPathForAmbigiousPascalFiles(const BaseDir, TheUnitPath,
+    function DoCheckUnitPathForAmbiguousPascalFiles(const BaseDir, TheUnitPath,
                                     CompiledExt, ContextDescription: string
                                     ): TModalResult; override;
     function DoOpenMacroFile(Sender: TObject; const AFilename: string
@@ -944,7 +944,7 @@ begin
   Result:=mrOk;
 end;
 
-function TMainIDEBase.DoDeleteAmbigiousFiles(const Filename: string
+function TMainIDEBase.DoDeleteAmbiguousFiles(const Filename: string
   ): TModalResult;
 var
   ADirectory: String;
@@ -955,8 +955,8 @@ var
   UnitName: String;
 begin
   Result:=mrOk;
-  if EnvironmentOptions.AmbigiousFileAction=afaIgnore then exit;
-  if EnvironmentOptions.AmbigiousFileAction
+  if EnvironmentOptions.AmbiguousFileAction=afaIgnore then exit;
+  if EnvironmentOptions.AmbiguousFileAction
     in [afaAsk,afaAutoDelete,afaAutoRename]
   then begin
     ADirectory:=AppendPathDelim(ExtractFilePath(Filename));
@@ -975,21 +975,21 @@ begin
           continue;
 
         CurFilename:=ADirectory+FileInfo.Name;
-        if EnvironmentOptions.AmbigiousFileAction=afaAsk then begin
-          if MessageDlg(lisDeleteAmbigiousFile,
-            Format(lisAmbigiousFileFoundThisFileCanBeMistakenWithDelete, ['"',
+        if EnvironmentOptions.AmbiguousFileAction=afaAsk then begin
+          if MessageDlg(lisDeleteAmbiguousFile,
+            Format(lisAmbiguousFileFoundThisFileCanBeMistakenWithDelete, ['"',
               CurFilename, '"', #13, '"', ShortFilename, '"', #13, #13]),
             mtConfirmation,[mbYes,mbNo],0)=mrNo
           then continue;
         end;
-        if EnvironmentOptions.AmbigiousFileAction in [afaAutoDelete,afaAsk]
+        if EnvironmentOptions.AmbiguousFileAction in [afaAutoDelete,afaAsk]
         then begin
           if not DeleteFile(CurFilename) then begin
             MessageDlg(lisDeleteFileFailed,
               Format(lisPkgMangUnableToDeleteFile, ['"', CurFilename, '"']),
               mtError,[mbOk],0);
           end;
-        end else if EnvironmentOptions.AmbigiousFileAction=afaAutoRename then
+        end else if EnvironmentOptions.AmbiguousFileAction=afaAutoRename then
         begin
           Result:=DoBackupFile(CurFilename,false);
           if Result=mrABort then exit;
@@ -1002,14 +1002,14 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  function TMainIDEBase.DoCheckUnitPathForAmbigiousPascalFiles(
+  function TMainIDEBase.DoCheckUnitPathForAmbiguousPascalFiles(
     const BaseDir, TheUnitPath, CompiledExt, ContextDescription: string
     ): TModalResult;
 
   Collect all pascal files and all compiled units in the unit path and check
-  for ambigious files. For example: doubles.
+  for ambiguous files. For example: doubles.
 -------------------------------------------------------------------------------}
-function TMainIDEBase.DoCheckUnitPathForAmbigiousPascalFiles(
+function TMainIDEBase.DoCheckUnitPathForAmbiguousPascalFiles(
   const BaseDir, TheUnitPath, CompiledExt, ContextDescription: string): TModalResult;
 
   procedure FreeUnitTree(var Tree: TAVLTree);
@@ -1046,7 +1046,7 @@ begin
   Result:=mrOk;
   UnitPath:=TrimSearchPath(TheUnitPath,BaseDir);
 
-  //writeln('TMainIDEBase.DoCheckUnitPathForAmbigiousPascalFiles A UnitPath="',UnitPath,'" Ext=',CompiledExt,' Context=',ContextDescription);
+  //writeln('TMainIDEBase.DoCheckUnitPathForAmbiguousPascalFiles A UnitPath="',UnitPath,'" Ext=',CompiledExt,' Context=',ContextDescription);
 
   SourceUnitTree:=TAVLTree.Create(TListSortCompare(@CompareUnitFiles));
   CompiledUnitTree:=TAVLTree.Create(TListSortCompare(@CompareUnitFiles));
@@ -1082,7 +1082,7 @@ begin
                                  TListSortCompare(@CompareUnitNameAndUnitFile));
             if ANode<>nil then begin
               // pascal unit exists twice
-              Result:=MessageDlg('Ambigious unit found',
+              Result:=MessageDlg('Ambiguous unit found',
                 'The unit '+CurUnitName+' exists twice in the unit path of the '
                 +ContextDescription+':'#13
                 +#13
@@ -1114,78 +1114,78 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  function TMainIDEBase.DoCheckAmbigiousSources(const AFilename: string
+  function TMainIDEBase.DoCheckAmbiguousSources(const AFilename: string
     ): TModalResult;
 
   Checks if file exists with same name and similar extension. The compiler
   prefers for example .pp to .pas files. So, if we save a .pas file delete .pp
   file, so that compiling does what is expected.
 -------------------------------------------------------------------------------}
-function TMainIDEBase.DoCheckAmbigiousSources(const AFilename: string;
+function TMainIDEBase.DoCheckAmbiguousSources(const AFilename: string;
   Compiling: boolean): TModalResult;
 
-  function DeleteAmbigiousFile(const AmbigiousFilename: string): TModalResult;
+  function DeleteAmbiguousFile(const AmbiguousFilename: string): TModalResult;
   begin
-    if not DeleteFile(AmbigiousFilename) then begin
+    if not DeleteFile(AmbiguousFilename) then begin
       Result:=MessageDlg(lisErrorDeletingFile,
-       Format(lisUnableToDeleteAmbigiousFile, ['"', AmbigiousFilename, '"']),
+       Format(lisUnableToDeleteAmbiguousFile, ['"', AmbiguousFilename, '"']),
        mtError,[mbOk,mbAbort],0);
     end else
       Result:=mrOk;
   end;
 
-  function RenameAmbigiousFile(const AmbigiousFilename: string): TModalResult;
+  function RenameAmbiguousFile(const AmbiguousFilename: string): TModalResult;
   var
     NewFilename: string;
   begin
-    NewFilename:=AmbigiousFilename+'.ambigious';
-    if not RenameFile(AmbigiousFilename,NewFilename) then
+    NewFilename:=AmbiguousFilename+'.ambiguous';
+    if not RenameFile(AmbiguousFilename,NewFilename) then
     begin
       Result:=MessageDlg(lisErrorRenamingFile,
-       Format(lisUnableToRenameAmbigiousFileTo, ['"', AmbigiousFilename, '"',
+       Format(lisUnableToRenameAmbiguousFileTo, ['"', AmbiguousFilename, '"',
          #13, '"', NewFilename, '"']),
        mtError,[mbOk,mbAbort],0);
     end else
       Result:=mrOk;
   end;
 
-  function AddCompileWarning(const AmbigiousFilename: string): TModalResult;
+  function AddCompileWarning(const AmbiguousFilename: string): TModalResult;
   begin
     Result:=mrOk;
     if Compiling then begin
-      TheOutputFilter.ReadLine(Format(lisWarningAmbigiousFileFoundSourceFileIs,
-        ['"', AmbigiousFilename, '"', '"', AFilename, '"']), true);
+      TheOutputFilter.ReadLine(Format(lisWarningAmbiguousFileFoundSourceFileIs,
+        ['"', AmbiguousFilename, '"', '"', AFilename, '"']), true);
     end;
   end;
 
-  function CheckFile(const AmbigiousFilename: string): TModalResult;
+  function CheckFile(const AmbiguousFilename: string): TModalResult;
   begin
-    if not FileExists(AmbigiousFilename) then exit;
+    if not FileExists(AmbiguousFilename) then exit;
     if Compiling then begin
-      Result:=AddCompileWarning(AmbigiousFilename);
+      Result:=AddCompileWarning(AmbiguousFilename);
       exit;
     end;
-    case EnvironmentOptions.AmbigiousFileAction of
+    case EnvironmentOptions.AmbiguousFileAction of
     afaAsk:
       begin
-        Result:=MessageDlg(lisAmbigiousFileFound,
+        Result:=MessageDlg(lisAmbiguousFileFound,
           Format(lisThereIsAFileWithTheSameNameAndASimilarExtension, [#13,
-            AFilename, #13, AmbigiousFilename, #13, #13]),
+            AFilename, #13, AmbiguousFilename, #13, #13]),
           mtWarning,[mbYes,mbIgnore,mbAbort],0);
         case Result of
-        mrYes:    Result:=DeleteAmbigiousFile(AmbigiousFilename);
+        mrYes:    Result:=DeleteAmbiguousFile(AmbiguousFilename);
         mrIgnore: Result:=mrOk;
         end;
       end;
 
     afaAutoDelete:
-      Result:=DeleteAmbigiousFile(AmbigiousFilename);
+      Result:=DeleteAmbiguousFile(AmbiguousFilename);
 
     afaAutoRename:
-      Result:=RenameAmbigiousFile(AmbigiousFilename);
+      Result:=RenameAmbiguousFile(AmbiguousFilename);
 
     afaWarnOnCompile:
-      Result:=AddCompileWarning(AmbigiousFilename);
+      Result:=AddCompileWarning(AmbiguousFilename);
 
     else
       Result:=mrOk;
@@ -1196,8 +1196,8 @@ var
   Ext, LowExt: string;
 begin
   Result:=mrOk;
-  if EnvironmentOptions.AmbigiousFileAction=afaIgnore then exit;
-  if (EnvironmentOptions.AmbigiousFileAction=afaWarnOnCompile)
+  if EnvironmentOptions.AmbiguousFileAction=afaIgnore then exit;
+  if (EnvironmentOptions.AmbiguousFileAction=afaWarnOnCompile)
   and not Compiling then exit;
 
   if FilenameIsPascalUnit(AFilename) then begin

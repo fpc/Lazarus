@@ -67,6 +67,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.25  2005/03/23 10:45:06  mattias
+  fixed ambigious with ambiguous
+
   Revision 1.24  2004/12/27 12:56:42  mattias
   started TTranslateStrings and .lrt files support  from Vasily
 
@@ -130,7 +133,7 @@ end.
   added TEditButton, TFileNameEdit, TDirectoryEdit, TDateEdit, TCalcEdit from Michael V.C.
 
   Revision 1.4  2003/12/07 09:07:22  mattias
-  fixed ambigious units registry and forms
+  fixed ambiguous units registry and forms
 
   Revision 1.3  2003/11/27 23:02:30  mattias
   removed menutype.pas
@@ -139,7 +142,7 @@ end.
   reduced unit circles, fixed fpImage streaming
 
   Revision 1.1  2003/11/15 13:07:09  mattias
-  added ambigious unit check for IDE
+  added ambiguous unit check for IDE
 
   Revision 1.31  2003/09/20 09:16:07  mattias
   added TDBGrid from Jesus

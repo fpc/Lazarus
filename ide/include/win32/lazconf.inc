@@ -226,6 +226,9 @@ end;
 
 {
   $Log$
+  Revision 1.27  2005/03/23 10:45:05  mattias
+  fixed ambigious with ambiguous
+
   Revision 1.26  2004/12/09 14:30:12  vincents
   moved GetLanguageIDs from Translations to LazConf
 
@@ -245,7 +248,7 @@ end;
   make executable location is a environment option now.
 
   Revision 1.20  2003/12/21 13:58:06  mattias
-  renamed DirectoryExists to DirPathExists to reduce ambigiousity
+  renamed DirectoryExists to DirPathExists to reduce ambiguousity
 
   Revision 1.19  2003/12/20 01:20:52  mattias
   splitted output directories for cross compilation
@@ -254,7 +257,7 @@ end;
   build lazarus now uses custom compiler path
 
   Revision 1.17  2003/11/15 13:07:09  mattias
-  added ambigious unit check for IDE
+  added ambiguous unit check for IDE
 
   Revision 1.16  2003/09/17 22:06:56  mattias
   implemented default lcl widget type

@@ -2984,6 +2984,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.277  2005/03/23 10:45:06  mattias
+  fixed ambigious with ambiguous
+
   Revision 1.276  2005/03/23 09:28:13  mattias
   fixed gtk2 event flags  from Andrew Haines
 
@@ -3193,7 +3196,7 @@ end;
   workaround for inherited bug in fpc 1.9
 
   Revision 1.207  2003/12/21 13:58:06  mattias
-  renamed DirectoryExists to DirPathExists to reduce ambigiousity
+  renamed DirectoryExists to DirPathExists to reduce ambiguousity
 
   Revision 1.206  2003/11/26 21:30:19  mattias
   reduced unit circles, fixed fpImage streaming

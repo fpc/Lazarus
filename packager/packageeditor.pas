@@ -70,7 +70,7 @@ type
     function(Sender: TObject; APackage: TLazPackage): TModalResult of object;
   TOnCreateNewPkgFile =
     function(Sender: TObject; Params: TAddToPkgResult): TModalResult  of object;
-  TOnDeleteAmbigiousFiles =
+  TOnDeleteAmbiguousFiles =
     function(Sender: TObject; APackage: TLazPackage;
              const Filename: string): TModalResult of object;
   TOnFreePkgEditor = procedure(APackage: TLazPackage) of object;
@@ -210,7 +210,7 @@ type
     fLayouts: TAVLTree;// tree of TPackageEditorLayout sorted for filename
     FOnCompilePackage: TOnCompilePackage;
     FOnCreateNewFile: TOnCreateNewPkgFile;
-    FOnDeleteAmbigiousFiles: TOnDeleteAmbigiousFiles;
+    FOnDeleteAmbiguousFiles: TOnDeleteAmbiguousFiles;
     FOnFreeEditor: TOnFreePkgEditor;
     FOnGetIDEFileInfo: TGetIDEFileStateEvent;
     FOnGetUnitRegisterInfo: TOnGetUnitRegisterInfo;
@@ -254,7 +254,7 @@ type
     function InstallPackage(APackage: TLazPackage): TModalResult;
     function UninstallPackage(APackage: TLazPackage): TModalResult;
     function ViewPkgSourcePackage(APackage: TLazPackage): TModalResult;
-    function DeleteAmbigiousFiles(APackage: TLazPackage;
+    function DeleteAmbiguousFiles(APackage: TLazPackage;
                                   const Filename: string): TModalResult;
   public
     property Editors[Index: integer]: TPackageEditorForm read GetEditors;
@@ -285,8 +285,8 @@ type
                                                  write FOnUninstallPackage;
     property OnViewPackageSource: TOnViewPackageSource read FOnViewPackageSource
                                                  write FOnViewPackageSource;
-    property OnDeleteAmbigiousFiles: TOnDeleteAmbigiousFiles
-                     read FOnDeleteAmbigiousFiles write FOnDeleteAmbigiousFiles;
+    property OnDeleteAmbiguousFiles: TOnDeleteAmbiguousFiles
+                     read FOnDeleteAmbiguousFiles write FOnDeleteAmbiguousFiles;
     property OnImExportCompilerOptions: TNotifyEvent
                read FOnImExportCompilerOptions write FOnImExportCompilerOptions;
   end;
@@ -934,7 +934,7 @@ begin
         // add unit file
         with AddParams do
           LazPackage.AddFile(UnitFilename,UnitName,FileType,PkgFileFlags,cpNormal);
-        PackageEditors.DeleteAmbigiousFiles(LazPackage,AddParams.UnitFilename);
+        PackageEditors.DeleteAmbiguousFiles(LazPackage,AddParams.UnitFilename);
         UpdateAll;
       end;
 
@@ -943,7 +943,7 @@ begin
         // add virtual unit file
         with AddParams do
           LazPackage.AddFile(UnitFilename,UnitName,FileType,PkgFileFlags,cpNormal);
-        PackageEditors.DeleteAmbigiousFiles(LazPackage,AddParams.UnitFilename);
+        PackageEditors.DeleteAmbiguousFiles(LazPackage,AddParams.UnitFilename);
         UpdateAll;
       end;
 
@@ -2191,11 +2191,11 @@ begin
     Result:=OnViewPackageSource(Self,APackage);
 end;
 
-function TPackageEditors.DeleteAmbigiousFiles(APackage: TLazPackage;
+function TPackageEditors.DeleteAmbiguousFiles(APackage: TLazPackage;
   const Filename: string): TModalResult;
 begin
-  if Assigned(OnDeleteAmbigiousFiles) then
-    Result:=OnDeleteAmbigiousFiles(Self,APackage,Filename)
+  if Assigned(OnDeleteAmbiguousFiles) then
+    Result:=OnDeleteAmbiguousFiles(Self,APackage,Filename)
   else
     Result:=mrOk;
 end;

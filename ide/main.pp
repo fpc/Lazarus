@@ -594,7 +594,7 @@ type
     function DoShowProjectInspector: TModalResult; override;
     function DoAddActiveUnitToProject: TModalResult;
     function DoRemoveFromProjectDialog: TModalResult;
-    procedure DoWarnAmbigiousFiles;
+    procedure DoWarnAmbiguousFiles;
     function DoSaveForBuild: TModalResult; override;
     function DoBuildProject(const AReason: TCompileReason): TModalResult;
     function DoAbortBuild: TModalResult;
@@ -2021,19 +2021,19 @@ end;
 procedure TMainIDE.mnuSaveClicked(Sender: TObject);
 begin
   if SourceNoteBook.NoteBook=nil then exit;
-  DoSaveEditorFile(SourceNoteBook.NoteBook.PageIndex,[sfCheckAmbigiousFiles]);
+  DoSaveEditorFile(SourceNoteBook.NoteBook.PageIndex,[sfCheckAmbiguousFiles]);
 end;
 
 procedure TMainIDE.mnuSaveAsClicked(Sender: TObject);
 begin
   if SourceNoteBook.NoteBook=nil then exit;
   DoSaveEditorFile(SourceNoteBook.NoteBook.PageIndex,
-                   [sfSaveAs,sfCheckAmbigiousFiles]);
+                   [sfSaveAs,sfCheckAmbiguousFiles]);
 end;
 
 procedure TMainIDE.mnuSaveAllClicked(Sender: TObject);
 begin
-  DoSaveAll([sfCheckAmbigiousFiles]);
+  DoSaveAll([sfCheckAmbiguousFiles]);
 end;
 
 procedure TMainIDE.mnuCloseClicked(Sender: TObject);
@@ -2140,11 +2140,11 @@ begin
     if (Sender is TDesigner) then begin
       GetDesignerUnit(TDesigner(Sender),ASrcEdit,AnUnitInfo);
       if (AnUnitInfo<>nil) and (AnUnitInfo.EditorIndex>=0) then
-        DoSaveEditorFile(AnUnitInfo.EditorIndex,[sfCheckAmbigiousFiles]);
+        DoSaveEditorFile(AnUnitInfo.EditorIndex,[sfCheckAmbiguousFiles]);
     end else if (Sender is TObjectInspector) then begin
       GetObjectInspectorUnit(ASrcEdit,AnUnitInfo);
       if (AnUnitInfo<>nil) and (AnUnitInfo.EditorIndex>=0) then
-        DoSaveEditorFile(AnUnitInfo.EditorIndex,[sfCheckAmbigiousFiles]);
+        DoSaveEditorFile(AnUnitInfo.EditorIndex,[sfCheckAmbiguousFiles]);
     end else if Sender is TSourceNotebook then
       mnuSaveClicked(Self);
 
@@ -2152,7 +2152,7 @@ begin
     mnuOpenClicked(Self);
 
   ecSaveAll:
-    DoSaveAll([sfCheckAmbigiousFiles]);
+    DoSaveAll([sfCheckAmbiguousFiles]);
     
   ecQuit:
     mnuQuitClicked(Self);
@@ -2729,7 +2729,7 @@ var
   i: Integer;
 begin
   //Ensure the project is saved
-  if DoSaveAll([sfCheckAmbigiousFiles])<>mrOk then exit;
+  if DoSaveAll([sfCheckAmbiguousFiles])<>mrOk then exit;
   //Ensure the project is compiled, so all rst files are present
   if DoBuildProject(crBuild)<>mrOk then exit;
   for i:=0 to Project1.FileCount-1 do
@@ -2748,7 +2748,7 @@ var
   ext: String;
   i: Integer;
 begin
-  if DoSaveAll([sfCheckAmbigiousFiles])<>mrOk then exit;
+  if DoSaveAll([sfCheckAmbiguousFiles])<>mrOk then exit;
   LNG:=InputBox(lisEnterTransla, lisLeaveEmptyFo, '');
   SL:=TStringList.Create;
   if LNG='' then ext:='.po' else ext:='.'+LNG+'.po';
@@ -3796,10 +3796,10 @@ var
   OldFilename: String;
   NewResFilename: String;
   NewHighlighter: TLazSyntaxHighlighter;
-  AmbigiousFiles: TStringList;
-  AmbigiousText: string;
+  AmbiguousFiles: TStringList;
+  AmbiguousText: string;
   i: Integer;
-  AmbigiousFilename: String;
+  AmbiguousFilename: String;
 begin
   OldFilename:=AnUnitInfo.Filename;
   OldFilePath:=ExtractFilePath(OldFilename);
@@ -3932,33 +3932,33 @@ begin
   Result:=PkgBoss.OnRenameFile(OldFilename,AnUnitInfo.Filename);
   if Result=mrAbort then exit;
 
-  // delete ambigious files
+  // delete ambiguous files
   NewFilePath:=ExtractFilePath(NewFilename);
-  AmbigiousFiles:=
+  AmbiguousFiles:=
     FindFilesCaseInsensitive(NewFilePath,ExtractFilename(NewFilename),true);
-  if AmbigiousFiles<>nil then begin
+  if AmbiguousFiles<>nil then begin
     try
-      if (AmbigiousFiles.Count=1)
+      if (AmbiguousFiles.Count=1)
       and (CompareFilenames(OldFilePath,NewFilePath)=0)
-      and (CompareFilenames(AmbigiousFiles[0],ExtractFilename(OldFilename))=0)
+      and (CompareFilenames(AmbiguousFiles[0],ExtractFilename(OldFilename))=0)
       then
-        AmbigiousText:=Format(lisDeleteOldFile, ['"', ExtractFilename(
+        AmbiguousText:=Format(lisDeleteOldFile, ['"', ExtractFilename(
           OldFilename), '"'])
       else
-        AmbigiousText:=
+        AmbiguousText:=
           Format(lisThereAreOtherFilesInTheDirectoryWithTheSameName,
-                 [#13, #13, AmbigiousFiles.Text, #13]);
-      Result:=MessageDlg(lisAmbigiousFilesFound, AmbigiousText,
+                 [#13, #13, AmbiguousFiles.Text, #13]);
+      Result:=MessageDlg(lisAmbiguousFilesFound, AmbiguousText,
         mtWarning,[mbYes,mbNo,mbAbort],0);
       if Result=mrAbort then exit;
       if Result=mrYes then begin
         NewFilePath:=AppendPathDelim(ExtractFilePath(NewFilename));
-        for i:=0 to AmbigiousFiles.Count-1 do begin
-          AmbigiousFilename:=NewFilePath+AmbigiousFiles[i];
-          if (FileExists(AmbigiousFilename))
-          and (not DeleteFile(AmbigiousFilename))
+        for i:=0 to AmbiguousFiles.Count-1 do begin
+          AmbiguousFilename:=NewFilePath+AmbiguousFiles[i];
+          if (FileExists(AmbiguousFilename))
+          and (not DeleteFile(AmbiguousFilename))
           and (MessageDlg(lisPkgMangDeleteFailed, Format(lisDeletingOfFileFailed,
-            ['"', AmbigiousFilename, '"']), mtError, [mbIgnore, mbCancel], 0)=
+            ['"', AmbiguousFilename, '"']), mtError, [mbIgnore, mbCancel], 0)=
             mrCancel) then
           begin
             Result:=mrCancel;
@@ -3967,7 +3967,7 @@ begin
         end;
       end;
     finally
-      AmbigiousFiles.Free;
+      AmbiguousFiles.Free;
     end;
   end;
 
@@ -4778,7 +4778,7 @@ begin
 
     if nfSave in NewFlags then begin
       NewUnitInfo.Modified:=true;
-      Result:=DoSaveEditorFile(NewUnitInfo.EditorIndex,[sfCheckAmbigiousFiles]);
+      Result:=DoSaveEditorFile(NewUnitInfo.EditorIndex,[sfCheckAmbiguousFiles]);
       if Result<>mrOk then exit;
     end;
   end else begin
@@ -4916,8 +4916,8 @@ begin
       exit;
   end;
 
-  if sfCheckAmbigiousFiles in Flags then
-    DoCheckAmbigiousSources(DestFilename,false);
+  if sfCheckAmbiguousFiles in Flags then
+    DoCheckAmbiguousSources(DestFilename,false);
 
   {$IFDEF IDE_DEBUG}
   writeln('*** HasResources=',ActiveUnitInfo.HasResources);
@@ -4977,7 +4977,7 @@ begin
     Result:=Messagedlg(ACaption, AText,
                        mtConfirmation, [mbYes, mbNo, mbAbort], 0);
     if Result=mrYes then begin
-      Result:=DoSaveEditorFile(PageIndex,[sfCheckAmbigiousFiles]);
+      Result:=DoSaveEditorFile(PageIndex,[sfCheckAmbiguousFiles]);
     end;
     if Result=mrAbort then exit;
     Result:=mrOk;
@@ -5699,7 +5699,7 @@ begin
     and (Project1.MainUnitID<>i) then begin
       Result:=DoSaveEditorFile(AnUnitInfo.EditorIndex,
            [sfSaveAs,sfProjectSaving]
-           +[sfSaveToTestDir,sfCheckAmbigiousFiles]*Flags);
+           +[sfSaveToTestDir,sfCheckAmbiguousFiles]*Flags);
       if (Result=mrAbort) or (Result=mrCancel) then exit;
     end;
   end;
@@ -5742,7 +5742,7 @@ begin
     if MainUnitInfo.Loaded then begin
       // loaded in source editor
       Result:=DoSaveEditorFile(MainUnitInfo.EditorIndex,
-               [sfProjectSaving]+[sfSaveToTestDir,sfCheckAmbigiousFiles]*Flags);
+               [sfProjectSaving]+[sfSaveToTestDir,sfCheckAmbiguousFiles]*Flags);
       if Result=mrAbort then exit;
     end else begin
       // not loaded in source editor (hidden)
@@ -5774,7 +5774,7 @@ begin
       if (Project1.MainUnitID<0)
       or (Project1.MainUnitInfo.EditorIndex<>i) then begin
         Result:=DoSaveEditorFile(i,[sfProjectSaving]
-                                +[sfSaveToTestDir,sfCheckAmbigiousFiles]*Flags);
+                                +[sfSaveToTestDir,sfCheckAmbiguousFiles]*Flags);
         if Result=mrAbort then exit;
       end;
     end;
@@ -6245,7 +6245,7 @@ Begin
   Result:=mrOk;
 end;
 
-procedure TMainIDE.DoWarnAmbigiousFiles;
+procedure TMainIDE.DoWarnAmbiguousFiles;
 var
   AnUnitInfo: TUnitInfo;
   i: integer;
@@ -6255,7 +6255,7 @@ begin
     AnUnitInfo:=Project1.Units[i];
     if (AnUnitInfo.IsPartOfProject) and (not AnUnitInfo.IsVirtual) then begin
       DestFilename:=GetTargetUnitFilename(AnUnitInfo);
-      DoCheckAmbigiousSources(DestFilename,true);
+      DoCheckAmbiguousSources(DestFilename,true);
     end;
   end;
 end;
@@ -6277,7 +6277,7 @@ begin
 
   // save all files
   if not Project1.IsVirtual then
-    Result:=DoSaveAll([sfCheckAmbigiousFiles])
+    Result:=DoSaveAll([sfCheckAmbiguousFiles])
   else
     Result:=DoSaveProjectToTestDirectory;
   if Result<>mrOk then exit;
@@ -6301,10 +6301,10 @@ begin
        Format(lisTheProjectMustBeSavedBeforeBuildingIfYouSetTheTest, [#13, #13,
          #13]), mtInformation, [mbYes, mbNo], 0);
     if Result<>mrYes then exit;
-    Result:=DoSaveAll([sfCheckAmbigiousFiles]);
+    Result:=DoSaveAll([sfCheckAmbiguousFiles]);
     exit;
   end;
-  Result:=DoSaveProject([sfSaveToTestDir,sfCheckAmbigiousFiles]);
+  Result:=DoSaveProject([sfSaveToTestDir,sfCheckAmbiguousFiles]);
 end;
 
 function TMainIDE.DoShowToDoList: TModalResult;
@@ -6367,8 +6367,8 @@ begin
 
     DoArrangeSourceEditorAndMessageView(false);
 
-    // warn ambigious files
-    DoWarnAmbigiousFiles;
+    // warn ambiguous files
+    DoWarnAmbiguousFiles;
 
     // execute compilation tool 'Before'
     if (AReason in TProjectCompilationTool(Project1.CompilerOptions.ExecuteBefore).CompileReasons)
@@ -6634,7 +6634,7 @@ begin
     // create inherited compiler options
     PkgOptions:=PkgBoss.DoGetIDEInstallPackageOptions(InheritedOptionStrings);
 
-    // check ambigious units
+    // check ambiguous units
     CodeToolBoss.GetFPCVersionForDirectory(
                                EnvironmentOptions.LazarusDirectory,
                                FPCVersion,FPCRelease,FPCPatch);
@@ -6692,13 +6692,13 @@ begin
       // create inherited compiler options
       PkgOptions:=PkgBoss.DoGetIDEInstallPackageOptions(InheritedOptionStrings);
 
-      // check ambigious units
+      // check ambiguous units
       CodeToolBoss.GetFPCVersionForDirectory(
                                  EnvironmentOptions.LazarusDirectory,
                                  FPCVersion,FPCRelease,FPCPatch);
       CompiledUnitExt:=MiscellaneousOptions.BuildLazOpts.CompiledUnitExt(
                          FPCVersion,FPCRelease);
-      Result:=DoCheckUnitPathForAmbigiousPascalFiles(
+      Result:=DoCheckUnitPathForAmbiguousPascalFiles(
                        EnvironmentOptions.LazarusDirectory,
                        InheritedOptionStrings[icoUnitPath],
                        CompiledUnitExt,'IDE');
@@ -6783,7 +6783,7 @@ begin
   Result:=mrCancel;
   if ToolStatus<>itNone then exit;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
-  Result:=DoSaveEditorFile(ActiveUnitInfo.EditorIndex,[sfCheckAmbigiousFiles]);
+  Result:=DoSaveEditorFile(ActiveUnitInfo.EditorIndex,[sfCheckAmbiguousFiles]);
   if Result<>mrOk then exit;
   DirectiveList:=TStringList.Create;
   try
@@ -6864,7 +6864,7 @@ begin
   if ToolStatus<>itNone then exit;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
   if not FilenameIsAbsolute(ActiveUnitInfo.Filename) then begin
-    Result:=DoSaveEditorFile(ActiveUnitInfo.EditorIndex,[sfCheckAmbigiousFiles]);
+    Result:=DoSaveEditorFile(ActiveUnitInfo.EditorIndex,[sfCheckAmbiguousFiles]);
     if Result<>mrOk then exit;
   end;
   DirectiveList:=TStringList.Create;
@@ -6939,7 +6939,7 @@ begin
   Result:=mrCancel;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
   if not FilenameIsAbsolute(ActiveUnitInfo.Filename) then begin
-    Result:=DoSaveEditorFile(ActiveUnitInfo.EditorIndex,[sfCheckAmbigiousFiles]);
+    Result:=DoSaveEditorFile(ActiveUnitInfo.EditorIndex,[sfCheckAmbiguousFiles]);
     if Result<>mrOk then exit;
   end;
   DirectiveList:=TStringList.Create;
@@ -7170,7 +7170,7 @@ begin
     // remove {$R *.dfm} or {$R *.xfm} directive
     // add initialization
     // add {$i unit.lrs} directive
-    // TODO: fix delphi ambigiousities like incomplete proc implementation headers
+    // TODO: fix delphi ambiguousities like incomplete proc implementation headers
     Result:=ConvertDelphiSourceToLazarusSource(LazarusUnitFilename,
                                                LRSFilename<>'');
     if Result<>mrOk then begin
@@ -8141,10 +8141,10 @@ begin
   if MacroName='save' then begin
     if (SourceNoteBook<>nil) and (SourceNoteBook.NoteBook<>nil) then
       Abort:=(DoSaveEditorFile(SourceNoteBook.NoteBook.PageIndex,
-              [sfCheckAmbigiousFiles])<>mrOk);
+              [sfCheckAmbiguousFiles])<>mrOk);
     s:='';
   end else if MacroName='saveall' then begin
-    Abort:=(DoSaveAll([sfCheckAmbigiousFiles])<>mrOk);
+    Abort:=(DoSaveAll([sfCheckAmbiguousFiles])<>mrOk);
     s:='';
   end else if MacroName='edfile' then begin
     if (SourceNoteBook<>nil) and (SourceNoteBook.NoteBook<>nil) then
@@ -10206,7 +10206,7 @@ begin
       if (Trim(ActiveSrcEdit.EditorComponent.SelText)='') then begin
         // the user has not selected text
         // -> check if the string constant is in single file
-        // (replacing code that contains an $include directive is ambigious)
+        // (replacing code that contains an $include directive is ambiguous)
         if (StartCode<>ActiveUnitInfo.Source)
         or (EndCode<>ActiveUnitInfo.Source)
         then begin
@@ -10516,7 +10516,7 @@ begin
                       ADesigner.LookupRoot.Name, '"']),
                    mtConfirmation,[mbYes,mbNo,mbCancel],0) of
       mrYes: begin
-        if DoSaveEditorFile(AnUnitInfo.EditorIndex,[sfCheckAmbigiousFiles])<>mrOk
+        if DoSaveEditorFile(AnUnitInfo.EditorIndex,[sfCheckAmbiguousFiles])<>mrOk
         then Exit;
       end;
       mrNo:;
@@ -11533,6 +11533,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.862  2005/03/23 10:45:05  mattias
+  fixed ambigious with ambiguous
+
   Revision 1.861  2005/03/23 09:13:29  mattias
   implemented minimizing IDE main bar on run
 
@@ -12080,7 +12083,7 @@ end.
   workaround for inherited bug in fpc 1.9
 
   Revision 1.682  2003/12/21 13:58:05  mattias
-  renamed DirectoryExists to DirPathExists to reduce ambigiousity
+  renamed DirectoryExists to DirPathExists to reduce ambiguousity
 
   Revision 1.681  2003/12/20 11:10:35  mattias
   fixed a few directory exists checks
@@ -12125,7 +12128,7 @@ end.
   added searchresultsview.lfm
 
   Revision 1.667  2003/11/15 13:07:09  mattias
-  added ambigious unit check for IDE
+  added ambiguous unit check for IDE
 
   Revision 1.666  2003/11/14 13:13:14  mattias
   fixed checking fpcsrcdir changes
@@ -13038,10 +13041,10 @@ end.
   MG: fixed scrollbars of TTreeView
 
   Revision 1.363  2002/09/05 19:03:34  lazarus
-  MG: improved handling of ambigious source files
+  MG: improved handling of ambiguous source files
 
   Revision 1.362  2002/09/05 15:24:26  lazarus
-  MG: added auto deleting of ambigious source files
+  MG: added auto deleting of ambiguous source files
 
   Revision 1.361  2002/09/05 12:11:39  lazarus
   MG: TNotebook is now streamable

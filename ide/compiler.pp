@@ -190,6 +190,9 @@ end.
 
 {
   $Log$
+  Revision 1.47  2005/03/23 10:45:04  mattias
+  fixed ambigious with ambiguous
+
   Revision 1.46  2004/11/19 13:52:18  vincents
   call compiler with same process settings as other external tools.
 
@@ -230,7 +233,7 @@ end.
   MG: fixed frmactivate
 
   Revision 1.33  2002/09/05 19:03:34  lazarus
-  MG: improved handling of ambigious source files
+  MG: improved handling of ambiguous source files
 
   Revision 1.32  2002/07/05 12:34:08  lazarus
   MG: assembler errors are now shown in output

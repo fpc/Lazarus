@@ -6,7 +6,7 @@
 
 use vars qw/ %opt /;
 use Getopt::Std;
-my $opt_string = 'hvsinbRf:r:m:';
+my $opt_string = 'hvcsinbRf:r:m:';
 getopts( "$opt_string", \%opt ) or usage();
 usage() if $opt{h};
 
@@ -15,7 +15,7 @@ sub usage(){
 
 Replace strings in files with perl search and replace syntax
 
-usage: $0 [-hRvnb] -f text -r replacetext -m filemask file1 file2 ...
+usage: $0 [-hRvcnbis] -f text -r replacetext -m filemask file1 file2 ...
 
  -h            : this (help) message
  -f <text>     : find text
@@ -23,6 +23,7 @@ usage: $0 [-hRvnb] -f text -r replacetext -m filemask file1 file2 ...
  -R            : recursive
  -i            : case insensitive
  -v            : verbose
+ -c            : print changes
  -s            : write summary
  -n            : simulate, do not change files
  -b            : replace in binary files too
@@ -76,6 +77,8 @@ sub DoFile(){
   if($Filename eq "."){ return; }
   if($Filename eq ".."){ return; }
 
+  #print "DoFile $Filename\n";
+
   #
   if(-d $Filename){
     if($opt{R}){
@@ -101,9 +104,11 @@ sub DoFile(){
   if(($FileMask) && ($Filename !~ /$FileMask/)){
     return;
   }
-  
+
+  my $FilenamePrinted = 0;
   if($opt{v}){
     print "Editing $Filename ...\n";
+    $FilenamePrinted = 1;
   }
 
   $TotalFiles++;
@@ -122,7 +127,11 @@ sub DoFile(){
     if($OldLine ne $Line){
       $ChangedLines++;
       $FileChanged=1;
-      if($opt{v}){
+      if($opt{v} || $opt{c}){
+        if (! $FilenamePrinted){
+          print "Editing $Filename ...\n";
+          $FilenamePrinted = 1;
+        }
         print "($LineNumber,old):".$OldLine;
         print "($LineNumber,new):".$Line;
       }

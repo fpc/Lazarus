@@ -46,10 +46,10 @@ type
 
   TAnchorDesignerSideValues = class
   private
-    FAmbigiousBorderSpace: boolean;
-    FAmbigiousEnabled: boolean;
-    FAmbigiousSide: boolean;
-    FAmbigiousSibling: boolean;
+    FAmbiguousBorderSpace: boolean;
+    FAmbiguousEnabled: boolean;
+    FAmbiguousSide: boolean;
+    FAmbiguousSibling: boolean;
     FAnchorKind: TAnchorKind;
     FBorderSpace: integer;
     FEnabled: boolean;
@@ -62,13 +62,13 @@ type
   public
     property AnchorKind: TAnchorKind read FAnchorKind;
     property Enabled: boolean read FEnabled write FEnabled;
-    property AmbigiousEnabled: boolean read FAmbigiousEnabled write FAmbigiousEnabled;
+    property AmbiguousEnabled: boolean read FAmbiguousEnabled write FAmbiguousEnabled;
     property Sibling: string read FSibling write FSibling;
-    property AmbigiousSibling: boolean read FAmbigiousSibling write FAmbigiousSibling;
+    property AmbiguousSibling: boolean read FAmbiguousSibling write FAmbiguousSibling;
     property Side: TAnchorSideReference read FSide write FSide;
-    property AmbigiousSide: boolean read FAmbigiousSide write FAmbigiousSide;
+    property AmbiguousSide: boolean read FAmbiguousSide write FAmbiguousSide;
     property BorderSpace: integer read FBorderSpace write FBorderSpace;
-    property AmbigiousBorderSpace: boolean read FAmbigiousBorderSpace write FAmbigiousBorderSpace;
+    property AmbiguousBorderSpace: boolean read FAmbiguousBorderSpace write FAmbiguousBorderSpace;
   end;
   
 
@@ -76,11 +76,11 @@ type
 
   TAnchorDesignerValues = class
   private
-    FAmbigiousBorderspaceAround: boolean;
+    FAmbiguousBorderspaceAround: boolean;
     FBorderspaceAround: integer;
     FSides: array[TAnchorKind] of TAnchorDesignerSideValues;
     function GetSides(Kind: TAnchorKind): TAnchorDesignerSideValues;
-    procedure SetAmbigiousBorderspaceAround(const AValue: boolean);
+    procedure SetAmbiguousBorderspaceAround(const AValue: boolean);
     procedure SetBorderspaceAround(const AValue: integer);
   public
     constructor Create;
@@ -90,7 +90,7 @@ type
   public
     property Sides[Kind: TAnchorKind]: TAnchorDesignerSideValues read GetSides;
     property BorderspaceAround: integer read FBorderspaceAround write SetBorderspaceAround;
-    property AmbigiousBorderspaceAround: boolean read FAmbigiousBorderspaceAround write SetAmbigiousBorderspaceAround;
+    property AmbiguousBorderspaceAround: boolean read FAmbiguousBorderspaceAround write SetAmbiguousBorderspaceAround;
   end;
   
 
@@ -289,8 +289,8 @@ begin
     exit;
   NewValue:=TCheckBox(Sender).Checked;
   CurSide:=Values.Sides[Kind];
-  //debugln('TAnchorDesigner.AnchorEnabledCheckBoxChange CurSide.AmbigiousEnabled=',dbgs(CurSide.AmbigiousEnabled),' CurSide.Enabled=',dbgs(CurSide.Enabled),' NewValue=',dbgs(NewValue));
-  if CurSide.AmbigiousEnabled or (CurSide.Enabled<>NewValue) then begin
+  //debugln('TAnchorDesigner.AnchorEnabledCheckBoxChange CurSide.AmbiguousEnabled=',dbgs(CurSide.AmbiguousEnabled),' CurSide.Enabled=',dbgs(CurSide.Enabled),' NewValue=',dbgs(NewValue));
+  if CurSide.AmbiguousEnabled or (CurSide.Enabled<>NewValue) then begin
     debugln('TAnchorDesigner.AnchorEnabledCheckBoxChange ',DbgSName(Sender),' NewValue=',dbgs(NewValue));
     // user changed an anchor
     SelectedControls:=GetSelectedControls;
@@ -335,9 +335,9 @@ begin
     exit;
   NewValue:=RoundToInt(TSpinEdit(Sender).Value);
   CurSide:=Values.Sides[Kind];
-  if (Around and (Values.AmbigiousBorderspaceAround
+  if (Around and (Values.AmbiguousBorderspaceAround
                   or (Values.BorderspaceAround<>NewValue)))
-  or ((not Around) and (CurSide.AmbigiousBorderSpace
+  or ((not Around) and (CurSide.AmbiguousBorderSpace
                         or (CurSide.BorderSpace<>NewValue)))
   then begin
     debugln('TAnchorDesigner.BorderSpaceSpinEditChange ',DbgSName(Sender),' NewValue=',dbgs(NewValue));
@@ -380,7 +380,7 @@ begin
     exit;
   NewValue:=TComboBox(Sender).Caption;
   CurSide:=Values.Sides[Kind];
-  if CurSide.AmbigiousSibling or (CompareText(CurSide.Sibling,NewValue)<>0) then
+  if CurSide.AmbiguousSibling or (CompareText(CurSide.Sibling,NewValue)<>0) then
   begin
     if (NewValue<>AnchorDesignerNoSiblingText) then begin
       NewSibling:=FindSibling(NewValue);
@@ -462,7 +462,7 @@ begin
   end else
     exit;
   CurSide:=Values.Sides[Kind];
-  if CurSide.AmbigiousSide or (CurSide.Side<>Side) then
+  if CurSide.AmbiguousSide or (CurSide.Side<>Side) then
   begin
     debugln('TAnchorDesigner.ReferenceSideButtonClicked ',DbgSName(Sender));
     // user changed a sibling
@@ -555,7 +555,7 @@ begin
 
       // all
       BorderSpaceGroupBox.Enabled:=true;
-      if Values.AmbigiousBorderspaceAround then
+      if Values.AmbiguousBorderspaceAround then
         AroundBorderSpaceSpinEdit.Value:=-1
       else
         AroundBorderSpaceSpinEdit.Value:=Values.BorderspaceAround;
@@ -563,16 +563,16 @@ begin
       // Top
       TopGroupBox.Enabled:=true;
       CurSide:=Values.Sides[akTop];
-      TopAnchoredCheckBox.AllowGrayed:=CurSide.AmbigiousEnabled;
-      if CurSide.AmbigiousEnabled then
+      TopAnchoredCheckBox.AllowGrayed:=CurSide.AmbiguousEnabled;
+      if CurSide.AmbiguousEnabled then
         TopAnchoredCheckBox.State:=cbGrayed
       else
         TopAnchoredCheckBox.Checked:=CurSide.Enabled;
-      if CurSide.AmbigiousBorderSpace then
+      if CurSide.AmbiguousBorderSpace then
         TopBorderSpaceSpinEdit.Value:=-1
       else
         TopBorderSpaceSpinEdit.Value:=CurSide.BorderSpace;
-      TopBorderSpaceSpinEdit.ValueEmpty:=CurSide.AmbigiousBorderSpace;
+      TopBorderSpaceSpinEdit.ValueEmpty:=CurSide.AmbiguousBorderSpace;
       Sibling:=CurSide.Sibling;
       TopSiblingComboBox.Text:=Sibling;
       //debugln('TAnchorDesigner.Refresh A TopSiblingComboBox.Text=',TopSiblingComboBox.Text,' Sibling=',Sibling);
@@ -585,16 +585,16 @@ begin
       // Bottom
       BottomGroupBox.Enabled:=true;
       CurSide:=Values.Sides[akBottom];
-      BottomAnchoredCheckBox.AllowGrayed:=CurSide.AmbigiousEnabled;
-      if CurSide.AmbigiousEnabled then
+      BottomAnchoredCheckBox.AllowGrayed:=CurSide.AmbiguousEnabled;
+      if CurSide.AmbiguousEnabled then
         BottomAnchoredCheckBox.State:=cbGrayed
       else
         BottomAnchoredCheckBox.Checked:=CurSide.Enabled;
-      if CurSide.AmbigiousBorderSpace then
+      if CurSide.AmbiguousBorderSpace then
         BottomBorderSpaceSpinEdit.Value:=-1
       else
         BottomBorderSpaceSpinEdit.Value:=CurSide.BorderSpace;
-      BottomBorderSpaceSpinEdit.ValueEmpty:=CurSide.AmbigiousBorderSpace;
+      BottomBorderSpaceSpinEdit.ValueEmpty:=CurSide.AmbiguousBorderSpace;
       Sibling:=CurSide.Sibling;
       BottomSiblingComboBox.Text:=Sibling;
       FillComboBoxWithSiblings(BottomSiblingComboBox);
@@ -605,16 +605,16 @@ begin
       // Left
       LeftGroupBox.Enabled:=true;
       CurSide:=Values.Sides[akLeft];
-      LeftAnchoredCheckBox.AllowGrayed:=CurSide.AmbigiousEnabled;
-      if CurSide.AmbigiousEnabled then
+      LeftAnchoredCheckBox.AllowGrayed:=CurSide.AmbiguousEnabled;
+      if CurSide.AmbiguousEnabled then
         LeftAnchoredCheckBox.State:=cbGrayed
       else
         LeftAnchoredCheckBox.Checked:=CurSide.Enabled;
-      if CurSide.AmbigiousBorderSpace then
+      if CurSide.AmbiguousBorderSpace then
         LeftBorderSpaceSpinEdit.Value:=-1
       else
         LeftBorderSpaceSpinEdit.Value:=CurSide.BorderSpace;
-      LeftBorderSpaceSpinEdit.ValueEmpty:=CurSide.AmbigiousBorderSpace;
+      LeftBorderSpaceSpinEdit.ValueEmpty:=CurSide.AmbiguousBorderSpace;
       Sibling:=CurSide.Sibling;
       LeftSiblingComboBox.Text:=Sibling;
       FillComboBoxWithSiblings(LeftSiblingComboBox);
@@ -625,16 +625,16 @@ begin
       // Right
       RightGroupBox.Enabled:=true;
       CurSide:=Values.Sides[akRight];
-      RightAnchoredCheckBox.AllowGrayed:=CurSide.AmbigiousEnabled;
-      if CurSide.AmbigiousEnabled then
+      RightAnchoredCheckBox.AllowGrayed:=CurSide.AmbiguousEnabled;
+      if CurSide.AmbiguousEnabled then
         RightAnchoredCheckBox.State:=cbGrayed
       else
         RightAnchoredCheckBox.Checked:=CurSide.Enabled;
-      if CurSide.AmbigiousBorderSpace then
+      if CurSide.AmbiguousBorderSpace then
         RightBorderSpaceSpinEdit.Value:=-1
       else
         RightBorderSpaceSpinEdit.Value:=CurSide.BorderSpace;
-      RightBorderSpaceSpinEdit.ValueEmpty:=CurSide.AmbigiousBorderSpace;
+      RightBorderSpaceSpinEdit.ValueEmpty:=CurSide.AmbiguousBorderSpace;
       Sibling:=CurSide.Sibling;
       RightSiblingComboBox.Text:=Sibling;
       FillComboBoxWithSiblings(RightSiblingComboBox);
@@ -753,11 +753,11 @@ begin
   Result:=FSides[Kind];
 end;
 
-procedure TAnchorDesignerValues.SetAmbigiousBorderspaceAround(
+procedure TAnchorDesignerValues.SetAmbiguousBorderspaceAround(
   const AValue: boolean);
 begin
-  if FAmbigiousBorderspaceAround=AValue then exit;
-  FAmbigiousBorderspaceAround:=AValue;
+  if FAmbiguousBorderspaceAround=AValue then exit;
+  FAmbiguousBorderspaceAround:=AValue;
 end;
 
 procedure TAnchorDesignerValues.SetBorderspaceAround(const AValue: integer);
@@ -787,7 +787,7 @@ var
   a: TAnchorKind;
 begin
   BorderspaceAround:=AControl.BorderSpacing.Around;
-  AmbigiousBorderspaceAround:=false;
+  AmbiguousBorderspaceAround:=false;
   for a:=Low(TAnchorKind) to High(TAnchorKind) do
     FSides[a].SetValues(AControl);
 end;
@@ -796,7 +796,7 @@ procedure TAnchorDesignerValues.MergeValues(AControl: TControl);
 var
   a: TAnchorKind;
 begin
-  FAmbigiousBorderspaceAround:=FAmbigiousBorderspaceAround
+  FAmbiguousBorderspaceAround:=FAmbiguousBorderspaceAround
                          or (FBorderspaceAround<>AControl.BorderSpacing.Around);
   for a:=Low(TAnchorKind) to High(TAnchorKind) do
     FSides[a].MergeValues(AControl);
@@ -813,14 +813,14 @@ procedure TAnchorDesignerSideValues.SetValues(AControl: TControl);
 var
   CurSide: TAnchorSide;
 begin
-  FAmbigiousBorderSpace:=false;
+  FAmbiguousBorderSpace:=false;
   FBorderSpace:=AControl.BorderSpacing.GetSpace(FAnchorKind);
-  FAmbigiousEnabled:=false;
+  FAmbiguousEnabled:=false;
   FEnabled:=(FAnchorKind in AControl.Anchors);
   CurSide:=AControl.AnchorSide[FAnchorKind];
-  FAmbigiousSide:=false;
+  FAmbiguousSide:=false;
   FSide:=CurSide.Side;
-  FAmbigiousSibling:=false;
+  FAmbiguousSibling:=false;
   FSibling:=TAnchorDesigner.ControlToStr(CurSide.Control);
 end;
 
@@ -828,13 +828,13 @@ procedure TAnchorDesignerSideValues.MergeValues(AControl: TControl);
 var
   CurSide: TAnchorSide;
 begin
-  FAmbigiousBorderSpace:=FAmbigiousBorderSpace
+  FAmbiguousBorderSpace:=FAmbiguousBorderSpace
                 or (FBorderSpace<>AControl.BorderSpacing.GetSpace(FAnchorKind));
-  FAmbigiousEnabled:=FAmbigiousEnabled
+  FAmbiguousEnabled:=FAmbiguousEnabled
                      or (FEnabled<>(FAnchorKind in AControl.Anchors));
   CurSide:=AControl.AnchorSide[FAnchorKind];
-  FAmbigiousSide:=FAmbigiousSide or (CurSide.Side<>FSide);
-  FAmbigiousSibling:=FAmbigiousSibling
+  FAmbiguousSide:=FAmbiguousSide or (CurSide.Side<>FSide);
+  FAmbiguousSibling:=FAmbiguousSibling
                    or (TAnchorDesigner.ControlToStr(CurSide.Control)<>FSibling);
 end;
 

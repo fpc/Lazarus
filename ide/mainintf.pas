@@ -105,7 +105,7 @@ type
     sfSaveAs,
     sfSaveToTestDir,
     sfProjectSaving,
-    sfCheckAmbigiousFiles
+    sfCheckAmbiguousFiles
     );
   TSaveFlags = set of TSaveFlag;
 
@@ -194,7 +194,7 @@ type
     function DoPublishModule(Options: TPublishModuleOptions;
                              const SrcDirectory, DestDirectory: string
                              ): TModalResult; virtual; abstract;
-    function DoCheckAmbigiousSources(const AFilename: string;
+    function DoCheckAmbiguousSources(const AFilename: string;
                                      Compiling: boolean): TModalResult; virtual; abstract;
     function DoCheckCreatingFile(const AFilename: string;
                                  CheckReadable: boolean): TModalResult; virtual; abstract;
@@ -205,9 +205,9 @@ type
                                     IsPartOfProject:boolean): TModalResult; virtual; abstract;
     function DoBackupFile(const Filename:string;
                       IsPartOfProject:boolean): TModalResult; virtual; abstract;
-    function DoDeleteAmbigiousFiles(const Filename:string
+    function DoDeleteAmbiguousFiles(const Filename:string
                                     ): TModalResult; virtual; abstract;
-    function DoCheckUnitPathForAmbigiousPascalFiles(const BaseDir, TheUnitPath,
+    function DoCheckUnitPathForAmbiguousPascalFiles(const BaseDir, TheUnitPath,
                                     CompiledExt, ContextDescription: string
                                     ): TModalResult; virtual; abstract;
 
@@ -255,7 +255,7 @@ const
      'sfSaveAs',
      'sfSaveToTestDir',
      'sfProjectSaving',
-     'sfCheckAmbigiousFiles'
+     'sfCheckAmbiguousFiles'
     );
 
 function OpenFlagsToString(Flags: TOpenFlags): string;

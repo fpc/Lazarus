@@ -322,7 +322,7 @@ resourcestring
     +'lowercase?';
   lisOverwriteFile = 'Overwrite file?';
   lisAFileAlreadyExistsReplaceIt = 'A file %s%s%s already exists.%sReplace it?';
-  lisAmbigiousFilesFound = 'Ambigious files found';
+  lisAmbiguousFilesFound = 'Ambiguous files found';
   lisThereAreOtherFilesInTheDirectoryWithTheSameName = 'There are other files '
     +'in the directory with the same name,%swhich only differ in case:%s%s%'
     +'sDelete them?';
@@ -456,10 +456,10 @@ resourcestring
     +'not lowercase.%sThe FreePascal compiler 1.0.x needs lowercase '
     +'filenames. If you do not use the fpc 1.0.x to compile this unit, you '
     +'can ignore this message.%s%sRename file?';
-  lisDeleteAmbigiousFile = 'Delete ambigious file?';
-  lisAmbigiousFileFoundThisFileCanBeMistakenWithDelete = 'Ambigious file '
+  lisDeleteAmbiguousFile = 'Delete ambiguous file?';
+  lisAmbiguousFileFoundThisFileCanBeMistakenWithDelete = 'Ambiguous file '
     +'found: %s%s%s%sThis file can be mistaken with %s%s%s%s%sDelete the '
-    +'ambigious file?';
+    +'ambiguous file?';
   lisLazarusEditorV = 'Lazarus Editor v%s';
   lisnewProject = '%s - (new project)';
   liscompiling = '%s (compiling ...)';
@@ -711,7 +711,7 @@ resourcestring
   dlgPasExt = 'Default pascal extension';
   dlgCharCaseFileAct = 'Save As - auto rename pascal files lower case';
   
-  dlgAmbigFileAct = 'Ambigious file action:';
+  dlgAmbigFileAct = 'Ambiguous file action:';
   dlgEnvAsk = 'Ask';
   dlgAutoDel = 'Auto delete file';
   dlgAutoRen = 'Auto rename file lowercase';
@@ -975,7 +975,7 @@ resourcestring
   lisCompiler = 'Compiler';
   lisToFPCPath = 'Path:';
   lisCOSkipCallingCompiler = 'Skip calling Compiler';
-  lisCOAmbigiousAdditionalCompilerConfigFile = 'Ambigious additional compiler '
+  lisCOAmbiguousAdditionalCompilerConfigFile = 'Ambiguous additional compiler '
     +'config file';
   lisCOWarningTheAdditionalCompilerConfigFileHasTheSameNa = 'Warning: The '
     +'additional compiler config file has the same name, as one of the '
@@ -1872,16 +1872,16 @@ resourcestring
   lisUnableToReadFile = 'Unable to read file';
   lisUnableToReadFilename = 'Unable to read file %s%s%s.';
   lisErrorDeletingFile = 'Error deleting file';
-  lisUnableToDeleteAmbigiousFile = 'Unable to delete ambigious file %s%s%s';
+  lisUnableToDeleteAmbiguousFile = 'Unable to delete ambiguous file %s%s%s';
   lisErrorRenamingFile = 'Error renaming file';
-  lisUnableToRenameAmbigiousFileTo = 'Unable to rename ambigious file %s%s%s%'
+  lisUnableToRenameAmbiguousFileTo = 'Unable to rename ambiguous file %s%s%s%'
     +'sto %s%s%s';
-  lisWarningAmbigiousFileFoundSourceFileIs = 'Warning: ambigious file found: %'
+  lisWarningAmbiguousFileFoundSourceFileIs = 'Warning: ambiguous file found: %'
     +'s%s%s. Source file is: %s%s%s';
-  lisAmbigiousFileFound = 'Ambigious file found';
+  lisAmbiguousFileFound = 'Ambiguous file found';
   lisThereIsAFileWithTheSameNameAndASimilarExtension = 'There is a file with '
-    +'the same name and a similar extension ond disk%sFile: %s%sAmbigious '
-    +'File: %s%s%sDelete ambigious file?';
+    +'the same name and a similar extension ond disk%sFile: %s%sAmbiguous '
+    +'File: %s%s%sDelete ambiguous file?';
 
   // add to project dialog
   lisProjAddInvalidMinMaxVersion = 'Invalid Min-Max version';
@@ -2056,12 +2056,12 @@ resourcestring
   lisPkgMangDeleteOldPackageFile = 'Delete Old Package File?';
   lisPkgMangDeleteOldPackageFile2 = 'Delete old package file %s%s%s?';
   lisPkgMangDeleteFailed = 'Delete failed';
-  lisAmbigiousUnitFound = 'Ambigious Unit found';
+  lisAmbiguousUnitFound = 'Ambiguous Unit found';
   lisTheFileWasFoundInOneOfTheSourceDirectoriesOfThePac = 'The file %s%s%s%'
     +'swas found in one of the source directories of the package %s and looks '
     +'like a compiled unit.Compiled units must be in the output directory of '
     +'the package, otherwise other packages can get problems using this '
-    +'package.%s%sDelete ambigious file?';
+    +'package.%s%sDelete ambiguous file?';
   lisPkgMangUnableToDeleteFile = 'Unable to delete file %s%s%s.';
   lisPkgMangUnsavedPackage = 'Unsaved package';
   lisPkgMangThereIsAnUnsavedPackageInTheRequiredPackages = 'There is an '
@@ -2079,7 +2079,7 @@ resourcestring
     +'with the same name:%s%s1. %s%s%s from %s%s2. %s%s%s from %s%s%s';
   lisPkgMangThereIsAUnitWithTheSameNameAsAPackage1From2 = 'There is a unit '
     +'with the same name as a package:%s%s1. %s%s%s from %s%s2. %s%s%s%s';
-  lisPkgMangAmbigiousUnitsFound = 'Ambigious units found';
+  lisPkgMangAmbiguousUnitsFound = 'Ambiguous units found';
   lisPkgMangBothPackagesAreConnectedThisMeansEitherOnePackageU = '%sBoth '
     +'packages are connected. This means, either one package uses the other, '
     +'or they are both used by a third package.';
@@ -2269,8 +2269,8 @@ resourcestring
   
   // add to package dialog
   lisA2PInvalidFilename = 'Invalid filename';
-  lisA2PTheFilenameIsAmbigiousPleaseSpecifiyAFilename = 'The filename %s%s%s '
-    +'is ambigious.%sPlease specifiy a filename with full path.';
+  lisA2PTheFilenameIsAmbiguousPleaseSpecifiyAFilename = 'The filename %s%s%s '
+    +'is ambiguous.%sPlease specifiy a filename with full path.';
   lisA2PFileNotUnit = 'File not unit';
   lisA2PPascalUnitsMustHaveTheExtensionPPOrPas = 'Pascal units must have the '
     +'extension .pp or .pas';
@@ -2280,7 +2280,7 @@ resourcestring
     +'exists in this package.';
   lisA2PTheUnitnameAlreadyExistsInThePackage = 'The unitname %s%s%s already '
     +'exists in the package:%s%s';
-  lisA2PAmbigiousUnitName = 'Ambigious Unit Name';
+  lisA2PAmbiguousUnitName = 'Ambiguous Unit Name';
   lisA2PTheUnitNameIsTheSameAsAnRegisteredComponent = 'The unit name %s%s%s '
     +'is the same as an registered component.%sUsing this can cause strange '
     +'error messages.';
@@ -2324,10 +2324,10 @@ resourcestring
   lisA2PInvalidCircle = 'Invalid Circle';
   lisA2PTheClassNameAndAncestorTypeAreTheSame = 'The class name %s%s%s and '
     +'ancestor type %s%s%s are the same.';
-  lisA2PAmbigiousAncestorType = 'Ambigious Ancestor Type';
+  lisA2PAmbiguousAncestorType = 'Ambiguous Ancestor Type';
   lisA2PTheAncestorTypeHasTheSameNameAsTheUnit = 'The ancestor type %s%s%s '
     +'has the same name as%sthe unit %s%s%s.';
-  lisA2PAmbigiousClassName = 'Ambigious Class Name';
+  lisA2PAmbiguousClassName = 'Ambiguous Class Name';
   lisA2PTheClassNameHasTheSameNameAsTheUnit = 'The class name %s%s%s has the '
     +'same name as%sthe unit %s%s%s.';
   lisA2PClassNameAlreadyExists = 'Class Name already exists';

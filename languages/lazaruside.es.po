@@ -457,44 +457,44 @@ msgstr ""
 msgid "Alternative Key"
 msgstr "Tecla Alternativa"
 
-#: lazarusidestrconsts:lisa2pambigiousancestortype
-msgid "Ambigious Ancestor Type"
+#: lazarusidestrconsts:lisa2pambiguousancestortype
+msgid "Ambiguous Ancestor Type"
 msgstr "Tipo del ancestro ambiguo"
 
-#: lazarusidestrconsts:lisa2pambigiousclassname
-msgid "Ambigious Class Name"
+#: lazarusidestrconsts:lisa2pambiguousclassname
+msgid "Ambiguous Class Name"
 msgstr "Nombre de Clase Ambiguo"
 
-#: lazarusidestrconsts:lisa2pambigiousunitname
-msgid "Ambigious Unit Name"
+#: lazarusidestrconsts:lisa2pambiguousunitname
+msgid "Ambiguous Unit Name"
 msgstr "Nombre de Unidad ambiguo"
 
-#: lazarusidestrconsts:lisambigiousunitfound
-msgid "Ambigious Unit found"
+#: lazarusidestrconsts:lisambiguousunitfound
+msgid "Ambiguous Unit found"
 msgstr ""
 
-#: lazarusidestrconsts:liscoambigiousadditionalcompilerconfigfile
-msgid "Ambigious additional compiler config file"
+#: lazarusidestrconsts:liscoambiguousadditionalcompilerconfigfile
+msgid "Ambiguous additional compiler config file"
 msgstr ""
 
 #: lazarusidestrconsts:dlgambigfileact
-msgid "Ambigious file action:"
+msgid "Ambiguous file action:"
 msgstr "Acción de archivo ambigua:"
 
-#: lazarusidestrconsts:lisambigiousfilefound
-msgid "Ambigious file found"
+#: lazarusidestrconsts:lisambiguousfilefound
+msgid "Ambiguous file found"
 msgstr "Encontrado archivo ambiguo"
 
-#: lazarusidestrconsts:lisambigiousfilefoundthisfilecanbemistakenwithdelete
-msgid "Ambigious file found: %s%s%s%sThis file can be mistaken with %s%s%s%s%sDelete the ambigious file?"
+#: lazarusidestrconsts:lisambiguousfilefoundthisfilecanbemistakenwithdelete
+msgid "Ambiguous file found: %s%s%s%sThis file can be mistaken with %s%s%s%s%sDelete the ambiguous file?"
 msgstr "Encontrado archivo ambiguo: %s%s%sEste archivo puede confundirse con %s%s%s%s%s¿Borrar el archivo ambiguo?"
 
-#: lazarusidestrconsts:lisambigiousfilesfound
-msgid "Ambigious files found"
+#: lazarusidestrconsts:lisambiguousfilesfound
+msgid "Ambiguous files found"
 msgstr "Encontrados archivos ambiguos"
 
-#: lazarusidestrconsts:lispkgmangambigiousunitsfound
-msgid "Ambigious units found"
+#: lazarusidestrconsts:lispkgmangambiguousunitsfound
+msgid "Ambiguous units found"
 msgstr "Encontradas unidades ambiguas"
 
 #: lazarusidestrconsts:lisa2pancestortype
@@ -1661,8 +1661,8 @@ msgstr "Borrar último Caracter"
 msgid "Delete Old Package File?"
 msgstr "¿Borrar Fichero de Paquete Viejo?"
 
-#: lazarusidestrconsts:lisdeleteambigiousfile
-msgid "Delete ambigious file?"
+#: lazarusidestrconsts:lisdeleteambiguousfile
+msgid "Delete ambiguous file?"
 msgstr "¿Borrar fichero ambiguo?"
 
 #: lazarusidestrconsts:srkmecdeletechar
@@ -6254,7 +6254,7 @@ msgid "The file %s%s%s%sseems to be the program file of an existing lazarus Proj
 msgstr "El archivo %s%s%s%s parece ser el archivo de programa de un Proyecto1 de lazarus.%s¿Abrir proyecto?%sCancelar cargará el archivo como un fuente normal."
 
 #: lazarusidestrconsts:listhefilewasfoundinoneofthesourcedirectoriesofthepac
-msgid "The file %s%s%s%swas found in one of the source directories of the package %s and looks like a compiled unit.Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%s%sDelete ambigious file?"
+msgid "The file %s%s%s%swas found in one of the source directories of the package %s and looks like a compiled unit.Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%s%sDelete ambiguous file?"
 msgstr ""
 
 #: lazarusidestrconsts:listhefilewasnotfounddoyouwanttolocateityourself
@@ -6281,8 +6281,8 @@ msgstr "El nombre de archivo %s%s%s está siendo usado por%s el paquete %s%s%s%s 
 msgid "The filename %s%s%s does not correspond to the package name %s%s%s in the file.%sChange package name to %s%s%s?"
 msgstr "El nombre de archivo %s%s%s no se corresponde con el nombre del paquete %s%s%s en el archivo.¿Cambiar el nombre del paquete a %s%s%s?"
 
-#: lazarusidestrconsts:lisa2pthefilenameisambigiouspleasespecifiyafilename
-msgid "The filename %s%s%s is ambigious.%sPlease specifiy a filename with full path."
+#: lazarusidestrconsts:lisa2pthefilenameisambiguouspleasespecifiyafilename
+msgid "The filename %s%s%s is ambiguous.%sPlease specifiy a filename with full path."
 msgstr "El nombre de archivo %s%s%s es ambiguo.%sPor favor especifique un nombre de archivo con una ruta entera."
 
 #: lazarusidestrconsts:listhefollowingpackagesfailedtoload
@@ -6494,7 +6494,7 @@ msgid "There is a circle in the required packages. See package graph."
 msgstr "Hay un círculo en los paquetes requeridos. Mire el gráfico de paquete"
 
 #: lazarusidestrconsts:listhereisafilewiththesamenameandasimilarextension
-msgid "There is a file with the same name and a similar extension ond disk%sFile: %s%sAmbigious File: %s%s%sDelete ambigious file?"
+msgid "There is a file with the same name and a similar extension ond disk%sFile: %s%sAmbiguous File: %s%s%sDelete ambiguous file?"
 msgstr "Hay un archivo con el mismo nombre y extensión similar en disco%sArchivo: %s%sArchivo Ambiguo: %s%s%s¿Borrar archivo ambiguo?"
 
 #: lazarusidestrconsts:lisexttoolthereisamaximumoftools
@@ -6757,8 +6757,8 @@ msgstr "No se ha podido crear el directorio fuente de paquete %s%s%s%s para el p
 msgid "Unable to create target directory for lazarus:%s%s%s%s.%sThis directory is needed for the new changed lazarus IDE with your custom packages."
 msgstr "No se ha podido crear el directorio objetivo para lazarus:%s%s%s%s.%s Este directorio se necesita paralos cambios realizados en el IDE de lazarus con sus propios paquetes."
 
-#: lazarusidestrconsts:lisunabletodeleteambigiousfile
-msgid "Unable to delete ambigious file %s%s%s"
+#: lazarusidestrconsts:lisunabletodeleteambiguousfile
+msgid "Unable to delete ambiguous file %s%s%s"
 msgstr "No se ha podido borrar el archivo ambiguo %s%s%s"
 
 #: lazarusidestrconsts:lispkgmangunabletodeletefilename
@@ -6841,8 +6841,8 @@ msgstr "No se ha podido leer el archivo de estado %s%s%s%s del paquete %s.%s Err
 msgid "Unable to remove old backup file %s%s%s!"
 msgstr "¡No se ha podido eliminar el archivo de copia de seguridad antiguo %s%s%s!"
 
-#: lazarusidestrconsts:lisunabletorenameambigiousfileto
-msgid "Unable to rename ambigious file %s%s%s%sto %s%s%s"
+#: lazarusidestrconsts:lisunabletorenameambiguousfileto
+msgid "Unable to rename ambiguous file %s%s%s%sto %s%s%s"
 msgstr "No se ha podido renombrar el archivo ambiguo %s%s%s%sa %s%s%s"
 
 #: lazarusidestrconsts:lisunabletorenamefile
@@ -7361,8 +7361,8 @@ msgstr ""
 msgid "Warning: The file %s%s%s%sbelongs to the current project."
 msgstr "Advertencia: El archivo %s%s%s%s pertenece al proyecto actual."
 
-#: lazarusidestrconsts:liswarningambigiousfilefoundsourcefileis
-msgid "Warning: ambigious file found: %s%s%s. Source file is: %s%s%s"
+#: lazarusidestrconsts:liswarningambiguousfilefoundsourcefileis
+msgid "Warning: ambiguous file found: %s%s%s. Source file is: %s%s%s"
 msgstr "Advertencia: encontrado archivo ambiguo : %s%s%s. El archivo fuente es: %s%s%s"
 
 #: lazarusidestrconsts:lismenuviewwatches

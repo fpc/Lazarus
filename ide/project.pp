@@ -3171,6 +3171,9 @@ end.
 
 {
   $Log$
+  Revision 1.182  2005/03/23 10:45:05  mattias
+  fixed ambigious with ambiguous
+
   Revision 1.181  2005/01/29 14:36:04  mattias
   reactivated fast xml units without widestrings
 
@@ -3495,7 +3498,7 @@ end.
   MG: removed the 1x1 bitmap from TBitBtn
 
   Revision 1.74  2002/09/05 19:03:36  lazarus
-  MG: improved handling of ambigious source files
+  MG: improved handling of ambiguous source files
 
   Revision 1.73  2002/08/23 07:05:15  lazarus
   MG: started form renaming

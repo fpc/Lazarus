@@ -250,7 +250,7 @@ begin
       AFilename:=LazPackage.Directory+AFilename
     else begin
       MessageDlg(lisA2PInvalidFilename,
-        Format(lisA2PTheFilenameIsAmbigiousPleaseSpecifiyAFilename, ['"',
+        Format(lisA2PTheFilenameIsAmbiguousPleaseSpecifiyAFilename, ['"',
           AFilename, '"', #13]),
         mtError,[mbCancel],0);
       exit;
@@ -308,7 +308,7 @@ begin
 
     // check if unitname is a componentclass
     if IDEComponentPalette.FindComponent(AnUnitName)<>nil then begin
-      if MessageDlg(lisA2PAmbigiousUnitName,
+      if MessageDlg(lisA2PAmbiguousUnitName,
         Format(lisA2PTheUnitNameIsTheSameAsAnRegisteredComponent, ['"',
           AnUnitName, '"', #13]),
         mtWarning,[mbCancel,mbIgnore],0)<>mrIgnore
@@ -1000,7 +1000,7 @@ begin
   // check ancestor type is not unitname
   PkgFile:=PackageGraph.FindUnit(LazPackage,Params.AncestorType,true,true);
   if PkgFile<>nil then begin
-    if MessageDlg(lisA2PAmbigiousAncestorType,
+    if MessageDlg(lisA2PAmbiguousAncestorType,
       Format(lisA2PTheAncestorTypeHasTheSameNameAsTheUnit, ['"',
         Params.AncestorType, '"', #13, '"', PkgFile.Filename, '"']),
       mtError,[mbCancel,mbIgnore],0)<>mrIgnore
@@ -1011,7 +1011,7 @@ begin
   // check classname does not interfere with an existing unitname
   PkgFile:=PackageGraph.FindUnit(LazPackage,Params.NewClassName,true,true);
   if PkgFile<>nil then begin
-    if MessageDlg(lisA2PAmbigiousClassName,
+    if MessageDlg(lisA2PAmbiguousClassName,
       Format(lisA2PTheClassNameHasTheSameNameAsTheUnit, ['"',
         Params.AncestorType, '"', #13, '"', PkgFile.Filename, '"']),
       mtError,[mbCancel,mbIgnore],0)<>mrIgnore

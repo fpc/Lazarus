@@ -877,7 +877,7 @@ begin
       if (CompareFileNames(AdditionalConfig,'fpc.cfg')=0)
       or (CompareFileNames(AdditionalConfig,'ppc386.cfg')=0)
       then begin
-        if MessageDlg(lisCOAmbigiousAdditionalCompilerConfigFile,
+        if MessageDlg(lisCOAmbiguousAdditionalCompilerConfigFile,
           Format(lisCOClickOKIfAreSureToDoThat, [BreakString(
             lisCOWarningTheAdditionalCompilerConfigFileHasTheSameNa,
             60, 0), #13#13]),

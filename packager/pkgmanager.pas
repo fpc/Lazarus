@@ -76,7 +76,7 @@ type
                           CompileClean, CompileRequired: boolean): TModalResult;
     function OnPackageEditorCreateFile(Sender: TObject;
                                        Params: TAddToPkgResult): TModalResult;
-    function OnPackageEditorDeleteAmbigiousFiles(Sender: TObject;
+    function OnPackageEditorDeleteAmbiguousFiles(Sender: TObject;
       APackage: TLazPackage; const Filename: string): TModalResult;
     function OnPackageEditorInstallPackage(Sender: TObject;
                                            APackage: TLazPackage): TModalResult;
@@ -161,7 +161,7 @@ type
     function CheckIfPackageNeedsCompilation(APackage: TLazPackage;
                             const CompilerFilename, CompilerParams,
                             SrcFilename: string): TModalResult;
-    function CheckAmbigiousPackageUnits(APackage: TLazPackage): TModalResult;
+    function CheckAmbiguousPackageUnits(APackage: TLazPackage): TModalResult;
     function MacroFunctionPkgSrcPath(Data: Pointer): boolean;
     function MacroFunctionPkgUnitPath(Data: Pointer): boolean;
     function MacroFunctionPkgIncPath(Data: Pointer): boolean;
@@ -535,10 +535,10 @@ begin
      [nfOpenInEditor,nfIsNotPartOfProject,nfSave,nfAddToRecent]);
 end;
 
-function TPkgManager.OnPackageEditorDeleteAmbigiousFiles(Sender: TObject;
+function TPkgManager.OnPackageEditorDeleteAmbiguousFiles(Sender: TObject;
   APackage: TLazPackage; const Filename: string): TModalResult;
 begin
-  Result:=MainIDE.DoDeleteAmbigiousFiles(Filename);
+  Result:=MainIDE.DoDeleteAmbiguousFiles(Filename);
 end;
 
 function TPkgManager.OnPackageEditorInstallPackage(Sender: TObject;
@@ -925,7 +925,7 @@ begin
   SaveAutoInstallDependencies(false);
   RenamePackageInProject;
 
-  // clean up old package file to reduce ambigiousities
+  // clean up old package file to reduce ambiguousities
   if FileExists(OldPkgFilename)
   and (CompareFilenames(OldPkgFilename,NewFilename)<>0) then begin
     if MessageDlg(lisPkgMangDeleteOldPackageFile,
@@ -1038,8 +1038,8 @@ begin
       exit;
     end;
 
-    // check for ambigious units between packages
-    if PackageGraph.FindAmbigiousUnits(APackage,FirstDependency,
+    // check for ambiguous units between packages
+    if PackageGraph.FindAmbiguousUnits(APackage,FirstDependency,
       PkgFile1,PkgFile2,ConflictPkg)
     then begin
       if (PkgFile1<>nil) and (PkgFile2<>nil) then begin
@@ -1052,15 +1052,15 @@ begin
           #13, '"', PkgFile1.Filename, '"', PkgFile1.LazPackage.IDAsString,
           #13, '"', ConflictPkg.IDAsString, #13, #13]);
       end else
-        s:='Internal inconsistency FindAmbigiousUnits: '
+        s:='Internal inconsistency FindAmbiguousUnits: '
           +'Please report this bug and how you get here.'#13;
-      Result:=MessageDlg(lisPkgMangAmbigiousUnitsFound, Format(
+      Result:=MessageDlg(lisPkgMangAmbiguousUnitsFound, Format(
         lisPkgMangBothPackagesAreConnectedThisMeansEitherOnePackageU, [s]),
           mtError,[mbCancel,mbAbort],0);
       exit;
     end;
 
-    // check for ambigious units between packages
+    // check for ambiguous units between packages
     if PackageGraph.FindFPCConflictUnit(APackage,FirstDependency,Directory,
       @PackageGraphFindFPCUnit,PkgFile1,ConflictPkg)
     then begin
@@ -1073,7 +1073,7 @@ begin
       end else
         s:='Internal inconsistency FindFPCConflictUnits: '
           +'Please report this bug and how you get here.'#13;
-      Result:=MessageDlg(lisPkgMangAmbigiousUnitsFound, s,
+      Result:=MessageDlg(lisPkgMangAmbiguousUnitsFound, s,
           mtError,[mbCancel,mbAbort],0);
       exit;
     end;
@@ -1123,7 +1123,7 @@ begin
     end;
   end;
 
-  Result:=MainIDE.DoDeleteAmbigiousFiles(StateFile);
+  Result:=MainIDE.DoDeleteAmbiguousFiles(StateFile);
   if Result<>mrOk then exit;
 end;
 
@@ -1360,7 +1360,7 @@ begin
   Result:=mrNo;
 end;
 
-function TPkgManager.CheckAmbigiousPackageUnits(APackage: TLazPackage
+function TPkgManager.CheckAmbiguousPackageUnits(APackage: TLazPackage
   ): TModalResult;
 var
   i: Integer;
@@ -1373,7 +1373,7 @@ var
 
   function CheckFile(const ShortFilename: string): TModalResult;
   var
-    AmbigiousFilename: String;
+    AmbiguousFilename: String;
     SearchFlags: TSearchFileInPathFlags;
   begin
     Result:=mrOk;
@@ -1381,13 +1381,13 @@ var
     if CompareFilenames(PkgDir,PkgOutputDir)=0 then
       Include(SearchFlags,sffDontSearchInBasePath);
     repeat
-      AmbigiousFilename:=SearchFileInPath(ShortFilename,PkgDir,SrcDirs,';',
+      AmbiguousFilename:=SearchFileInPath(ShortFilename,PkgDir,SrcDirs,';',
                                           SearchFlags);
-      if (AmbigiousFilename='') then exit;
+      if (AmbiguousFilename='') then exit;
       if not YesToAll then
-        Result:=MessageDlg(lisAmbigiousUnitFound,
+        Result:=MessageDlg(lisAmbiguousUnitFound,
           Format(lisTheFileWasFoundInOneOfTheSourceDirectoriesOfThePac, ['"',
-            AmbigiousFilename, '"', #13, APackage.IDAsString, #13, #13]),
+            AmbiguousFilename, '"', #13, APackage.IDAsString, #13, #13]),
           mtWarning,[mbYes,mbYesToAll,mbNo,mbAbort],0)
       else
         Result:=mrYesToAll;
@@ -1395,9 +1395,9 @@ var
         Result:=mrOk;
       if Result in [mrYes,mrYesToAll] then begin
         YesToAll:=Result=mrYesToAll;
-        if (not DeleteFile(AmbigiousFilename))
+        if (not DeleteFile(AmbiguousFilename))
         and (MessageDlg(lisPkgMangDeleteFailed, Format(lisDeletingOfFileFailed,
-          ['"', AmbigiousFilename, '"']), mtError, [mbIgnore, mbCancel], 0)
+          ['"', AmbiguousFilename, '"']), mtError, [mbIgnore, mbCancel], 0)
           <>mrIgnore) then
         begin
           Result:=mrCancel;
@@ -1736,7 +1736,7 @@ begin
   PackageEditors.OnInstallPackage:=@OnPackageEditorInstallPackage;
   PackageEditors.OnUninstallPackage:=@OnPackageEditorUninstallPackage;
   PackageEditors.OnViewPackageSource:=@OnPackageEditorViewPkgSourcePackage;
-  PackageEditors.OnDeleteAmbigiousFiles:=@OnPackageEditorDeleteAmbigiousFiles;
+  PackageEditors.OnDeleteAmbiguousFiles:=@OnPackageEditorDeleteAmbiguousFiles;
   PackageEditors.OnImExportCompilerOptions:=@OnPackageEditorImExportCompilerOptions;
 
   // package macros
@@ -2237,8 +2237,8 @@ begin
   Result:=MainIDE.DoBackupFile(APackage.Filename,true);
   if Result=mrAbort then exit;
 
-  // delete ambigious files
-  Result:=MainIDE.DoDeleteAmbigiousFiles(APackage.Filename);
+  // delete ambiguous files
+  Result:=MainIDE.DoDeleteAmbiguousFiles(APackage.Filename);
   if Result=mrAbort then exit;
 
   // save
@@ -2450,10 +2450,10 @@ begin
         exit;
       end;
 
-      // check ambigious units
-      Result:=CheckAmbigiousPackageUnits(APackage);
+      // check ambiguous units
+      Result:=CheckAmbiguousPackageUnits(APackage);
       if Result<>mrOk then begin
-        DebugLn('TPkgManager.DoCompilePackage CheckAmbigiousPackageUnits failed');
+        DebugLn('TPkgManager.DoCompilePackage CheckAmbiguousPackageUnits failed');
         exit;
       end;
 
@@ -2569,10 +2569,10 @@ begin
 
   SrcFilename:=APackage.GetSrcFilename;
 
-  // delete ambigious files
-  Result:=MainIDE.DoDeleteAmbigiousFiles(SrcFilename);
+  // delete ambiguous files
+  Result:=MainIDE.DoDeleteAmbiguousFiles(SrcFilename);
   if Result=mrAbort then begin
-    DebugLn('TPkgManager.DoSavePackageMainSource DoDeleteAmbigiousFiles failed');
+    DebugLn('TPkgManager.DoSavePackageMainSource DoDeleteAmbiguousFiles failed');
     exit;
   end;
 

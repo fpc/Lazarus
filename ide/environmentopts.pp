@@ -42,7 +42,7 @@ uses
   InputHistory, EditorOptions, Translations;
 
 const
-  EnvOptsVersion: integer = 103;
+  EnvOptsVersion: integer = 104;
 
   //----------------------------------------------------------------------------
   
@@ -85,16 +85,16 @@ const
   PascalExtension: array[TPascalExtType] of string = ('', '.pas', '.pp');
 
 
-  { Ambigious files }
+  { Ambiguous files }
 type
-  TAmbigiousFileAction = (
+  TAmbiguousFileAction = (
       afaAsk,
       afaAutoDelete,
       afaAutoRename,
       afaWarnOnCompile,
       afaIgnore
     );
-  TAmbigiousFileActions = set of TAmbigiousFileAction;
+  TAmbiguousFileActions = set of TAmbiguousFileAction;
   
   TCharCaseFileAction = (
       ccfaAsk,
@@ -104,7 +104,7 @@ type
   TCharCaseFileActions = set of TCharCaseFileAction;
 
 const
-  AmbigiousFileActionNames: array[TAmbigiousFileAction] of string = (
+  AmbiguousFileActionNames: array[TAmbiguousFileAction] of string = (
       'Ask',
       'AutoDelete',
       'AutoRename',
@@ -213,7 +213,7 @@ type
     // naming conventions
     fPascalFileExtension: TPascalExtType;
     fCharcaseFileAction : TCharCaseFileAction;
-    fAmbigiousFileAction: TAmbigiousFileAction;
+    fAmbiguousFileAction: TAmbiguousFileAction;
 
     // language ID (see LazarusTranslations in translations.pas)
     fLanguageID: string;
@@ -374,8 +374,8 @@ type
     // naming conventions
     property PascalFileExtension: TPascalExtType read fPascalFileExtension
                                                  write fPascalFileExtension;
-    property AmbigiousFileAction: TAmbigiousFileAction read fAmbigiousFileAction
-                                                     write fAmbigiousFileAction;
+    property AmbiguousFileAction: TAmbiguousFileAction read fAmbiguousFileAction
+                                                     write fAmbiguousFileAction;
     property CharcaseFileAction: TCharCaseFileAction read fCharcaseFileAction
                                                      write fCharcaseFileAction;
 
@@ -520,7 +520,7 @@ type
     // naming conventions
     PascalFileExtRadiogroup: TRadioGroup;
     CharCaseFileActionRadioGroup: TRadioGroup;
-    AmbigiousFileActionRadioGroup: TRadioGroup;
+    AmbiguousFileActionRadioGroup: TRadioGroup;
 
     // buttons at bottom
     OkButton: TButton;
@@ -605,7 +605,7 @@ var
 
 function DebuggerNameToType(const s: string): TDebuggerType;
 function PascalExtToType(const Ext: string): TPascalExtType;
-function AmbigiousFileActionNameToType(const Action: string): TAmbigiousFileAction;
+function AmbiguousFileActionNameToType(const Action: string): TAmbiguousFileAction;
 function CharCaseFileActionNameToType(const Action: string): TCharCaseFileAction;
 
 function CheckFileChanged(const OldFilename, NewFilename: string): boolean;
@@ -649,11 +649,11 @@ begin
   Result:=petNone;
 end;
 
-function AmbigiousFileActionNameToType(
-  const Action: string): TAmbigiousFileAction;
+function AmbiguousFileActionNameToType(
+  const Action: string): TAmbiguousFileAction;
 begin
-  for Result:=Low(TAmbigiousFileAction) to High(TAmbigiousFileAction) do begin
-    if CompareText(AmbigiousFileActionNames[Result],Action)=0 then
+  for Result:=Low(TAmbiguousFileAction) to High(TAmbiguousFileAction) do begin
+    if CompareText(AmbiguousFileActionNames[Result],Action)=0 then
       exit;
   end;
   Result:=afaAsk;
@@ -911,6 +911,7 @@ var XMLConfig: TXMLConfig;
   CurDebuggerClass: String;
   OldDebuggerType: TDebuggerType;
   Path: String;
+  CurPath: String;
 
   procedure LoadBackupInfo(var BackupInfo: TBackupInfo; const Path:string);
   var i:integer;
@@ -1141,9 +1142,12 @@ begin
         fCharcaseFileAction:=ccfaIgnore;
     end;
 
-    fAmbigiousFileAction:=AmbigiousFileActionNameToType(XMLConfig.GetValue(
-      Path+'AmbigiousFileAction/Value',
-        AmbigiousFileActionNames[fAmbigiousFileAction]));
+    if FileVersion>=104 then
+      CurPath:=Path+'AmbiguousFileAction/Value'
+    else
+      CurPath:=Path+'AmbigiousFileAction/Value';
+    fAmbiguousFileAction:=AmbiguousFileActionNameToType(XMLConfig.GetValue(
+      CurPath,AmbiguousFileActionNames[fAmbiguousFileAction]));
         
     // object inspector
     FObjectInspectorOptions.Load;
@@ -1330,9 +1334,9 @@ begin
 
     XMLConfig.SetDeleteValue( Path+'CharcaseFileAction/Value', ord(fCharcaseFileAction), ord(ccfaAutoRename));
 
-    XMLConfig.SetDeleteValue(Path+'AutoDeleteAmbigiousSources/Value',
-      AmbigiousFileActionNames[fAmbigiousFileAction],
-      AmbigiousFileActionNames[afaAsk]);
+    XMLConfig.SetDeleteValue(Path+'AutoDeleteAmbiguousSources/Value',
+      AmbiguousFileActionNames[fAmbiguousFileAction],
+      AmbiguousFileActionNames[afaAsk]);
 
     // object inspector
     FObjectInspectorOptions.SaveBounds:=false;
@@ -2722,9 +2726,9 @@ begin
     Parent:=NoteBook.Page[Page];
   end;
 
-  AmbigiousFileActionRadioGroup:=TRadioGroup.Create(Self);
-  with AmbigiousFileActionRadioGroup do begin
-    Name := 'AmbigiousFileActionRadioGroup';
+  AmbiguousFileActionRadioGroup:=TRadioGroup.Create(Self);
+  with AmbiguousFileActionRadioGroup do begin
+    Name := 'AmbiguousFileActionRadioGroup';
     Height:=150;
     Caption:=dlgAmbigFileAct;
     with Items do begin
@@ -3717,7 +3721,7 @@ begin
       then PascalFileExtRadiogroup.ItemIndex:=i;
 
     CharCaseFileActionRadioGroup.ItemIndex  := ord(CharCaseFileAction);
-    AmbigiousFileActionRadioGroup.ItemIndex := ord(AmbigiousFileAction);
+    AmbiguousFileActionRadioGroup.ItemIndex := ord(AmbiguousFileAction);
   end;
 end;
 
@@ -3847,7 +3851,7 @@ begin
       PascalFileExtension:=petPAS;
 
     CharcaseFileAction  := TCharCaseFileAction(CharcaseFileActionRadioGroup.ItemIndex);
-    AmbigiousFileAction := TAmbigiousFileAction(AmbigiousFileActionRadioGroup.ItemIndex);
+    AmbiguousFileAction := TAmbiguousFileAction(AmbiguousFileActionRadioGroup.ItemIndex);
   end;
 end;
 

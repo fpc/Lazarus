@@ -142,7 +142,7 @@ type
     function FindNotInstalledRegisterUnits(APackage: TLazPackage;
                                         FirstDependency: TPkgDependency): TList;
     function FindAutoInstallDependencyPath(ChildPackage: TLazPackage): TList;
-    function FindAmbigiousUnits(APackage: TLazPackage;
+    function FindAmbiguousUnits(APackage: TLazPackage;
                                 FirstDependency: TPkgDependency;
                                 var File1, File2: TPkgFile;
                                 var ConflictPkg: TLazPackage): boolean;
@@ -1536,13 +1536,13 @@ begin
   FindAutoInstallParent(ChildPackage);
 end;
 
-function TLazPackageGraph.FindAmbigiousUnits(APackage: TLazPackage;
+function TLazPackageGraph.FindAmbiguousUnits(APackage: TLazPackage;
   FirstDependency: TPkgDependency; var File1, File2: TPkgFile;
   var ConflictPkg: TLazPackage): boolean;
 // check if two connected packages have units with the same name
 // Connected means here: a Package1 is directly required by a Package2
 // or: a Package1 and a Package2 are directly required by a Package3
-// returns true, if ambigious units found
+// returns true, if ambiguous units found
 // There can either be a conflict between two files (File1,File2)
 // or between a file and a package (File1,ConflictPkg)
 const
@@ -1575,7 +1575,7 @@ var
     end;
   end;
   
-  function FindAmbigiousUnitsBetween2Packages(Pkg1,Pkg2: TLazPackage): boolean;
+  function FindAmbiguousUnitsBetween2Packages(Pkg1,Pkg2: TLazPackage): boolean;
   var
     i: Integer;
     PkgFile1: TPkgFile;
@@ -1639,7 +1639,7 @@ begin
     ANode:=ConnectionsTree.FindLowest;
     while ANode<>nil do begin
       Pair:=TPkgPair(ANode.Data);
-      Result:=FindAmbigiousUnitsBetween2Packages(Pair.Package1,Pair.Package2);
+      Result:=FindAmbiguousUnitsBetween2Packages(Pair.Package1,Pair.Package2);
       if Result then exit;
       ANode:=ConnectionsTree.FindSuccessor(ANode);
     end;

@@ -446,44 +446,44 @@ msgstr "La tecla alt defineix mode columna"
 msgid "Alternative Key"
 msgstr "Tecla alternativa"
 
-#: lazarusidestrconsts:lisa2pambigiousancestortype
-msgid "Ambigious Ancestor Type"
+#: lazarusidestrconsts:lisa2pambiguousancestortype
+msgid "Ambiguous Ancestor Type"
 msgstr "Tipus d'avantpassat ambigu"
 
-#: lazarusidestrconsts:lisa2pambigiousclassname
-msgid "Ambigious Class Name"
+#: lazarusidestrconsts:lisa2pambiguousclassname
+msgid "Ambiguous Class Name"
 msgstr "Nom de classe ambigu"
 
-#: lazarusidestrconsts:lisa2pambigiousunitname
-msgid "Ambigious Unit Name"
+#: lazarusidestrconsts:lisa2pambiguousunitname
+msgid "Ambiguous Unit Name"
 msgstr "Nom d'unitat ambigu"
 
-#: lazarusidestrconsts:lisambigiousunitfound
-msgid "Ambigious Unit found"
+#: lazarusidestrconsts:lisambiguousunitfound
+msgid "Ambiguous Unit found"
 msgstr "He trobat unitat ambigua"
 
-#: lazarusidestrconsts:liscoambigiousadditionalcompilerconfigfile
-msgid "Ambigious additional compiler config file"
+#: lazarusidestrconsts:liscoambiguousadditionalcompilerconfigfile
+msgid "Ambiguous additional compiler config file"
 msgstr "Fitxer de configuració addicional ambigu"
 
 #: lazarusidestrconsts:dlgambigfileact
-msgid "Ambigious file action:"
+msgid "Ambiguous file action:"
 msgstr "Acció ambigua del fitxer:"
 
-#: lazarusidestrconsts:lisambigiousfilefound
-msgid "Ambigious file found"
+#: lazarusidestrconsts:lisambiguousfilefound
+msgid "Ambiguous file found"
 msgstr "He trobat un fitxer ambigu"
 
-#: lazarusidestrconsts:lisambigiousfilefoundthisfilecanbemistakenwithdelete
-msgid "Ambigious file found: %s%s%s%sThis file can be mistaken with %s%s%s%s%sDelete the ambigious file?"
+#: lazarusidestrconsts:lisambiguousfilefoundthisfilecanbemistakenwithdelete
+msgid "Ambiguous file found: %s%s%s%sThis file can be mistaken with %s%s%s%s%sDelete the ambiguous file?"
 msgstr "He trobat un fitxer ambigu: %s%s%s%sAquest fitxer pot ser confós amb %s%s%s%s%sEsborrar el fitxer ambigu?"
 
-#: lazarusidestrconsts:lisambigiousfilesfound
-msgid "Ambigious files found"
+#: lazarusidestrconsts:lisambiguousfilesfound
+msgid "Ambiguous files found"
 msgstr "He trobat fitxers ambigus"
 
-#: lazarusidestrconsts:lispkgmangambigiousunitsfound
-msgid "Ambigious units found"
+#: lazarusidestrconsts:lispkgmangambiguousunitsfound
+msgid "Ambiguous units found"
 msgstr "He trobat unitats ambigües"
 
 #: lazarusidestrconsts:lisa2pancestortype
@@ -1650,8 +1650,8 @@ msgstr "Esborrar l'últim caràcter"
 msgid "Delete Old Package File?"
 msgstr "Esborrar fitxer de paquet antic?"
 
-#: lazarusidestrconsts:lisdeleteambigiousfile
-msgid "Delete ambigious file?"
+#: lazarusidestrconsts:lisdeleteambiguousfile
+msgid "Delete ambiguous file?"
 msgstr "Esborrar fitxer ambigu?"
 
 #: lazarusidestrconsts:srkmecdeletechar
@@ -6243,7 +6243,7 @@ msgid "The file %s%s%s%sseems to be the program file of an existing lazarus Proj
 msgstr "El fitxer %s%s%s%ssembla ser un fitxer de programa d'un projecte Lazarus existent.%sObrir el projecte?%sCancel·lar carregarà el fitxer com un codi font normal."
 
 #: lazarusidestrconsts:listhefilewasfoundinoneofthesourcedirectoriesofthepac
-msgid "The file %s%s%s%swas found in one of the source directories of the package %s and looks like a compiled unit.Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%s%sDelete ambigious file?"
+msgid "The file %s%s%s%swas found in one of the source directories of the package %s and looks like a compiled unit.Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%s%sDelete ambiguous file?"
 msgstr "He trobat el fitxer %s%s%s%s en un dels directoris font del paquet %s i sembla una unitat compilada. Les unitats compilades han d'estar en el directori sortida del paquet, si no, altres paquets poden tenir problemes utilitzant aquest paquet.%s%sEsborrar el fitxer ambigu?"
 
 #: lazarusidestrconsts:listhefilewasnotfounddoyouwanttolocateityourself
@@ -6270,8 +6270,8 @@ msgstr "El nom de fitxer %s%s%s està essent utilitzat pel%s paquet %s%s%s%s en e
 msgid "The filename %s%s%s does not correspond to the package name %s%s%s in the file.%sChange package name to %s%s%s?"
 msgstr "El nom de fitxer %s%s%s no correspon al nom de paquet %s%s%s en el fitxer. %sCanviar nom de paquet a %s%s%s?"
 
-#: lazarusidestrconsts:lisa2pthefilenameisambigiouspleasespecifiyafilename
-msgid "The filename %s%s%s is ambigious.%sPlease specifiy a filename with full path."
+#: lazarusidestrconsts:lisa2pthefilenameisambiguouspleasespecifiyafilename
+msgid "The filename %s%s%s is ambiguous.%sPlease specifiy a filename with full path."
 msgstr "El nom de fitxer %s%s%s és ambigu.%sSi us plau especifica un nom de fitxer amb la trajectòria completa."
 
 #: lazarusidestrconsts:listhefollowingpackagesfailedtoload
@@ -6483,7 +6483,7 @@ msgid "There is a circle in the required packages. See package graph."
 msgstr "Hi ha un cercle en els paquets requerits. Mira la gràfica de paquets."
 
 #: lazarusidestrconsts:listhereisafilewiththesamenameandasimilarextension
-msgid "There is a file with the same name and a similar extension ond disk%sFile: %s%sAmbigious File: %s%s%sDelete ambigious file?"
+msgid "There is a file with the same name and a similar extension ond disk%sFile: %s%sAmbiguous File: %s%s%sDelete ambiguous file?"
 msgstr "Hi ha un fitxer amb el mateix nom i extensió similar en el disc%sFitxer: %s%sFitxer ambigu: %s%s%sEsborrar fitxer ambigu?"
 
 #: lazarusidestrconsts:lisexttoolthereisamaximumoftools
@@ -6746,8 +6746,8 @@ msgstr "No es pot crear el directori sortida font %s%s%s%s pel paquet %s."
 msgid "Unable to create target directory for lazarus:%s%s%s%s.%sThis directory is needed for the new changed lazarus IDE with your custom packages."
 msgstr "No es pot crear directori destinació lazarus:%s%s%s%s.%sAquest directori el necessita el nou IDE Lazarus amb els teus paquets personalitzats."
 
-#: lazarusidestrconsts:lisunabletodeleteambigiousfile
-msgid "Unable to delete ambigious file %s%s%s"
+#: lazarusidestrconsts:lisunabletodeleteambiguousfile
+msgid "Unable to delete ambiguous file %s%s%s"
 msgstr "No es pot esborrar fitxer ambigu %s%s%s"
 
 #: lazarusidestrconsts:lispkgmangunabletodeletefilename
@@ -6830,8 +6830,8 @@ msgstr "No es pot llegir fitxer d'estat %s%s%s%sdel paquet %s.%sError: %s"
 msgid "Unable to remove old backup file %s%s%s!"
 msgstr "No es pot esborrar el fitxer de resguard vell %s%s%s!"
 
-#: lazarusidestrconsts:lisunabletorenameambigiousfileto
-msgid "Unable to rename ambigious file %s%s%s%sto %s%s%s"
+#: lazarusidestrconsts:lisunabletorenameambiguousfileto
+msgid "Unable to rename ambiguous file %s%s%s%sto %s%s%s"
 msgstr "No es pot canviar el nom del fitxer ambigu %s%s%s%sa %s%s%s"
 
 #: lazarusidestrconsts:lisunabletorenamefile
@@ -7350,8 +7350,8 @@ msgstr "Avís: El fitxer de configuració addicional del compilador té el mateix n
 msgid "Warning: The file %s%s%s%sbelongs to the current project."
 msgstr "Avís: El fitxer %s%s%s%spertany al projecte actual."
 
-#: lazarusidestrconsts:liswarningambigiousfilefoundsourcefileis
-msgid "Warning: ambigious file found: %s%s%s. Source file is: %s%s%s"
+#: lazarusidestrconsts:liswarningambiguousfilefoundsourcefileis
+msgid "Warning: ambiguous file found: %s%s%s. Source file is: %s%s%s"
 msgstr "Avís: s'ha trobat el fitxer ambigu: %s%s%s. El fitxer font és: %s%s%s"
 
 #: lazarusidestrconsts:lismenuviewwatches

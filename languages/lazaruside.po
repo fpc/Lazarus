@@ -930,8 +930,8 @@ msgstr ""
 msgid "A file %s%s%s already exists.%sReplace it?"
 msgstr ""
 
-#: lazarusidestrconsts:lisambigiousfilesfound
-msgid "Ambigious files found"
+#: lazarusidestrconsts:lisambiguousfilesfound
+msgid "Ambiguous files found"
 msgstr ""
 
 #: lazarusidestrconsts:listhereareotherfilesinthedirectorywiththesamename
@@ -1302,12 +1302,12 @@ msgstr ""
 msgid "The unit %s%s%s is not lowercase.%sThe FreePascal compiler 1.0.x needs lowercase filenames. If you do not use the fpc 1.0.x to compile this unit, you can ignore this message.%s%sRename file?"
 msgstr ""
 
-#: lazarusidestrconsts:lisdeleteambigiousfile
-msgid "Delete ambigious file?"
+#: lazarusidestrconsts:lisdeleteambiguousfile
+msgid "Delete ambiguous file?"
 msgstr ""
 
-#: lazarusidestrconsts:lisambigiousfilefoundthisfilecanbemistakenwithdelete
-msgid "Ambigious file found: %s%s%s%sThis file can be mistaken with %s%s%s%s%sDelete the ambigious file?"
+#: lazarusidestrconsts:lisambiguousfilefoundthisfilecanbemistakenwithdelete
+msgid "Ambiguous file found: %s%s%s%sThis file can be mistaken with %s%s%s%s%sDelete the ambiguous file?"
 msgstr ""
 
 #: lazarusidestrconsts:lislazaruseditorv
@@ -1955,7 +1955,7 @@ msgid "Save As - auto rename pascal files lower case"
 msgstr ""
 
 #: lazarusidestrconsts:dlgambigfileact
-msgid "Ambigious file action:"
+msgid "Ambiguous file action:"
 msgstr ""
 
 #: lazarusidestrconsts:dlgenvask
@@ -2946,8 +2946,8 @@ msgstr ""
 msgid "Skip calling Compiler"
 msgstr ""
 
-#: lazarusidestrconsts:liscoambigiousadditionalcompilerconfigfile
-msgid "Ambigious additional compiler config file"
+#: lazarusidestrconsts:liscoambiguousadditionalcompilerconfigfile
+msgid "Ambiguous additional compiler config file"
 msgstr ""
 
 #: lazarusidestrconsts:liscowarningtheadditionalcompilerconfigfilehasthesamena
@@ -5798,28 +5798,28 @@ msgstr ""
 msgid "Error deleting file"
 msgstr ""
 
-#: lazarusidestrconsts:lisunabletodeleteambigiousfile
-msgid "Unable to delete ambigious file %s%s%s"
+#: lazarusidestrconsts:lisunabletodeleteambiguousfile
+msgid "Unable to delete ambiguous file %s%s%s"
 msgstr ""
 
 #: lazarusidestrconsts:liserrorrenamingfile
 msgid "Error renaming file"
 msgstr ""
 
-#: lazarusidestrconsts:lisunabletorenameambigiousfileto
-msgid "Unable to rename ambigious file %s%s%s%sto %s%s%s"
+#: lazarusidestrconsts:lisunabletorenameambiguousfileto
+msgid "Unable to rename ambiguous file %s%s%s%sto %s%s%s"
 msgstr ""
 
-#: lazarusidestrconsts:liswarningambigiousfilefoundsourcefileis
-msgid "Warning: ambigious file found: %s%s%s. Source file is: %s%s%s"
+#: lazarusidestrconsts:liswarningambiguousfilefoundsourcefileis
+msgid "Warning: ambiguous file found: %s%s%s. Source file is: %s%s%s"
 msgstr ""
 
-#: lazarusidestrconsts:lisambigiousfilefound
-msgid "Ambigious file found"
+#: lazarusidestrconsts:lisambiguousfilefound
+msgid "Ambiguous file found"
 msgstr ""
 
 #: lazarusidestrconsts:listhereisafilewiththesamenameandasimilarextension
-msgid "There is a file with the same name and a similar extension ond disk%sFile: %s%sAmbigious File: %s%s%sDelete ambigious file?"
+msgid "There is a file with the same name and a similar extension ond disk%sFile: %s%sAmbiguous File: %s%s%sDelete ambiguous file?"
 msgstr ""
 
 #: lazarusidestrconsts:lisprojaddinvalidminmaxversion
@@ -6302,12 +6302,12 @@ msgstr ""
 msgid "Delete failed"
 msgstr ""
 
-#: lazarusidestrconsts:lisambigiousunitfound
-msgid "Ambigious Unit found"
+#: lazarusidestrconsts:lisambiguousunitfound
+msgid "Ambiguous Unit found"
 msgstr ""
 
 #: lazarusidestrconsts:listhefilewasfoundinoneofthesourcedirectoriesofthepac
-msgid "The file %s%s%s%swas found in one of the source directories of the package %s and looks like a compiled unit.Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%s%sDelete ambigious file?"
+msgid "The file %s%s%s%swas found in one of the source directories of the package %s and looks like a compiled unit.Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%s%sDelete ambiguous file?"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangunabletodeletefile
@@ -6350,8 +6350,8 @@ msgstr ""
 msgid "There is a unit with the same name as a package:%s%s1. %s%s%s from %s%s2. %s%s%s%s"
 msgstr ""
 
-#: lazarusidestrconsts:lispkgmangambigiousunitsfound
-msgid "Ambigious units found"
+#: lazarusidestrconsts:lispkgmangambiguousunitsfound
+msgid "Ambiguous units found"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangbothpackagesareconnectedthismeanseitheronepackageu
@@ -6782,8 +6782,8 @@ msgstr ""
 msgid "Invalid filename"
 msgstr ""
 
-#: lazarusidestrconsts:lisa2pthefilenameisambigiouspleasespecifiyafilename
-msgid "The filename %s%s%s is ambigious.%sPlease specifiy a filename with full path."
+#: lazarusidestrconsts:lisa2pthefilenameisambiguouspleasespecifiyafilename
+msgid "The filename %s%s%s is ambiguous.%sPlease specifiy a filename with full path."
 msgstr ""
 
 #: lazarusidestrconsts:lisa2pfilenotunit
@@ -6810,8 +6810,8 @@ msgstr ""
 msgid "The unitname %s%s%s already exists in the package:%s%s"
 msgstr ""
 
-#: lazarusidestrconsts:lisa2pambigiousunitname
-msgid "Ambigious Unit Name"
+#: lazarusidestrconsts:lisa2pambiguousunitname
+msgid "Ambiguous Unit Name"
 msgstr ""
 
 #: lazarusidestrconsts:lisa2ptheunitnameisthesameasanregisteredcomponent
@@ -6918,16 +6918,16 @@ msgstr ""
 msgid "The class name %s%s%s and ancestor type %s%s%s are the same."
 msgstr ""
 
-#: lazarusidestrconsts:lisa2pambigiousancestortype
-msgid "Ambigious Ancestor Type"
+#: lazarusidestrconsts:lisa2pambiguousancestortype
+msgid "Ambiguous Ancestor Type"
 msgstr ""
 
 #: lazarusidestrconsts:lisa2ptheancestortypehasthesamenameastheunit
 msgid "The ancestor type %s%s%s has the same name as%sthe unit %s%s%s."
 msgstr ""
 
-#: lazarusidestrconsts:lisa2pambigiousclassname
-msgid "Ambigious Class Name"
+#: lazarusidestrconsts:lisa2pambiguousclassname
+msgid "Ambiguous Class Name"
 msgstr ""
 
 #: lazarusidestrconsts:lisa2ptheclassnamehasthesamenameastheunit

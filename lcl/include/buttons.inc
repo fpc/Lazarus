@@ -234,6 +234,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.43  2005/03/23 10:45:06  mattias
+  fixed ambigious with ambiguous
+
   Revision 1.42  2005/03/18 01:18:44  marc
   * Delphi compat, TButton.Click is public
 
@@ -319,7 +322,7 @@ end;
   enable tabstops for controls; implement tabstops in win32 intf
 
   Revision 1.15  2003/11/15 13:07:09  mattias
-  added ambigious unit check for IDE
+  added ambiguous unit check for IDE
 
   Revision 1.14  2003/10/22 18:43:23  mattias
   prepared image sharing

@@ -257,6 +257,9 @@ end;
 
 {
    $Log$
+   Revision 1.28  2005/03/23 10:45:06  mattias
+   fixed ambigious with ambiguous
+
    Revision 1.27  2005/03/07 00:52:51  mattias
    various Delphi compatibilities  from C Western
 
@@ -371,7 +374,7 @@ end;
    Simplified and prettified MessageBoxen.
 
    Revision 1.11  2002/07/29 13:39:07  lazarus
-   MG: removed ambigious TBitmap from LCLType and added Escape key to MessageDlgs
+   MG: removed ambiguous TBitmap from LCLType and added Escape key to MessageDlgs
 
    Revision 1.10  2002/06/06 07:23:24  lazarus
    MG: small fixes to reduce form repositioing

@@ -318,6 +318,9 @@ end.
 
 {
   $Log$
+  Revision 1.33  2005/03/23 10:45:06  mattias
+  fixed ambigious with ambiguous
+
   Revision 1.32  2004/11/15 22:58:13  mattias
   implemented Multi mask for TFileListBox
 
@@ -355,7 +358,7 @@ end.
   fixed searching dir in searchpath under win32
 
   Revision 1.20  2003/12/21 13:58:06  mattias
-  renamed DirectoryExists to DirPathExists to reduce ambigiousity
+  renamed DirectoryExists to DirPathExists to reduce ambiguousity
 
   Revision 1.19  2003/10/31 14:25:59  mazen
   * Fixing VER1_1 compile problem to allow using 1.1 compiler

@@ -2336,6 +2336,9 @@ end.
 
 {
   $Log$
+  Revision 1.79  2005/03/23 10:45:06  mattias
+  fixed ambigious with ambiguous
+
   Revision 1.78  2005/03/11 14:40:37  mattias
   moved CM_ message constants from crontrols.pp to lmessages.pp to break circles and clean up controls.pp
 
@@ -2430,7 +2433,7 @@ end.
   * Splitted winapi*.inc into a winapi and a lcl interface communication part
 
   Revision 1.49  2003/11/15 13:07:09  mattias
-  added ambigious unit check for IDE
+  added ambiguous unit check for IDE
 
   Revision 1.48  2003/11/03 16:57:47  peter
     * change $ifdef ver1_1 to $ifndef ver1_0 so it works also with
@@ -2614,7 +2617,7 @@ end.
   MG: added changes from Andrew (Clipping)
 
   Revision 1.8  2002/07/29 13:39:07  lazarus
-  MG: removed ambigious TBitmap from LCLType and added Escape key to MessageDlgs
+  MG: removed ambiguous TBitmap from LCLType and added Escape key to MessageDlgs
 
   Revision 1.7  2002/06/04 15:17:22  lazarus
   MG: improved TFont for XLFD font names

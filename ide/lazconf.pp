@@ -255,6 +255,9 @@ end.
 
 {
   $Log$
+  Revision 1.39  2005/03/23 10:45:04  mattias
+  fixed ambigious with ambiguous
+
   Revision 1.38  2005/03/18 09:51:04  vincents
   fixed default compiler name for windows
 
@@ -301,7 +304,7 @@ end.
   using now fpc constant LineEnding   from Vincent
 
   Revision 1.23  2003/12/21 13:58:05  mattias
-  renamed DirectoryExists to DirPathExists to reduce ambigiousity
+  renamed DirectoryExists to DirPathExists to reduce ambiguousity
 
   Revision 1.22  2003/12/20 01:20:52  mattias
   splitted output directories for cross compilation
@@ -310,7 +313,7 @@ end.
   build lazarus now uses custom compiler path
 
   Revision 1.20  2003/11/15 13:07:09  mattias
-  added ambigious unit check for IDE
+  added ambiguous unit check for IDE
 
   Revision 1.19  2003/09/17 22:06:56  mattias
   implemented default lcl widget type

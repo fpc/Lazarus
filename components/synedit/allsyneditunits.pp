@@ -33,6 +33,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.4  2005/03/23 10:45:05  mattias
+  fixed ambigious with ambiguous
+
   Revision 1.3  2004/07/04 15:58:02  mattias
   added python highlighter
 
@@ -40,7 +43,7 @@ end.
   added sql, php, tex, css synedit highlighter
 
   Revision 1.1  2003/11/15 13:07:09  mattias
-  added ambigious unit check for IDE
+  added ambiguous unit check for IDE
 
   Revision 1.17  2003/06/11 22:56:09  mattias
   added bash scripts highlighter from Tom Lisjac

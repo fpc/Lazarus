@@ -431,6 +431,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.61  2005/03/23 10:45:06  mattias
+  fixed ambigious with ambiguous
+
   Revision 1.60  2005/03/07 00:52:51  mattias
   various Delphi compatibilities  from C Western
 
@@ -623,7 +626,7 @@ end.
   MG: moved TColor definition to graphtype.pp and registered TColor names
 
   Revision 1.16  2002/07/29 13:39:06  lazarus
-  MG: removed ambigious TBitmap from LCLType and added Escape key to MessageDlgs
+  MG: removed ambiguous TBitmap from LCLType and added Escape key to MessageDlgs
 
   Revision 1.15  2002/07/04 11:46:00  lazarus
   MG: moved resourcestring to lclstrconsts.pas

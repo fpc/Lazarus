@@ -1157,6 +1157,9 @@ end;
 
 {
   $Log$
+  Revision 1.12  2005/03/23 10:45:06  mattias
+  fixed ambigious with ambiguous
+
   Revision 1.11  2005/03/21 09:03:54  mattias
   implemented Multi Masks for gtk1 filedialogs
 
@@ -1227,7 +1230,7 @@ end;
   fixed many range check warnings
 
   Revision 1.38  2003/12/21 13:58:06  mattias
-  renamed DirectoryExists to DirPathExists to reduce ambigiousity
+  renamed DirectoryExists to DirPathExists to reduce ambiguousity
 
   Revision 1.37  2003/12/20 11:10:36  mattias
   fixed a few directory exists checks

@@ -936,6 +936,9 @@ end.
 
 {
   $Log$
+  Revision 1.129  2005/03/23 10:45:06  mattias
+  fixed ambigious with ambiguous
+
   Revision 1.128  2005/03/17 00:09:37  marc
   * 64bit patch (partial) from Peter Vreman
 
@@ -1159,7 +1162,7 @@ end.
   implemented ShowAll and hide hints for unused package units option
 
   Revision 1.56  2003/11/15 13:07:09  mattias
-  added ambigious unit check for IDE
+  added ambiguous unit check for IDE
 
   Revision 1.55  2003/10/23 16:15:30  micha
   compatibility with new 1.1
