@@ -2410,11 +2410,17 @@ Procedure TSourceNotebook.ToggleLineNumbersClicked(Sender : TObject);
 var
   MenuITem : TMenuItem;
   ActEdit:TSourceEditor;
+  i: integer;
+  ShowLineNumbers: boolean;
 begin
   MenuItem := TMenuITem(Sender);
   ActEdit:=GetActiveSE;
   MenuItem.Checked := not(ActEdit.EditorComponent.Gutter.ShowLineNumbers);
-  ActEdit.EditorComponent.Gutter.ShowLineNumbers := MenuItem.Checked;
+  ShowLineNumbers:=MenuItem.Checked;
+  for i:=0 to EditorCount-1 do
+    Editors[i].EditorComponent.Gutter.ShowLineNumbers := ShowLineNumbers;
+  EditorOpts.ShowLineNumbers := ShowLineNumbers;
+  EditorOpts.Save;
 end;
 
 Procedure TSourceNotebook.OpenAtCursorClicked(Sender : TObject);

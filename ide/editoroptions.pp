@@ -768,8 +768,8 @@ begin
     XMLConfig.SetValue('EditorOptions/Display/VisibleRightMargin'
       ,fVisibleRightMargin);
     XMLConfig.SetValue('EditorOptions/Display/VisibleGutter',fVisibleGutter);
-    XMLConfig.GetValue('EditorOptions/Display/ShowLineNumbers',fShowLineNumbers);
-    XMLConfig.GetValue('EditorOptions/Display/GutterColor',fGutterColor);
+    XMLConfig.SetValue('EditorOptions/Display/ShowLineNumbers',fShowLineNumbers);
+    XMLConfig.SetValue('EditorOptions/Display/GutterColor',fGutterColor);
     XMLConfig.SetValue('EditorOptions/Display/GutterWidth',fGutterWidth);
     XMLConfig.SetValue('EditorOptions/Display/RightMargin',fRightMargin);
     XMLConfig.SetValue('EditorOptions/Display/RightMarginColor',fRightMarginColor);
