@@ -156,7 +156,7 @@ type
     Function GetModified : Boolean;
     procedure SetModified(NewValue:boolean);
     Function GetInsertMode : Boolean;
-    Function GetReadonly : Boolean;
+    Function GetReadOnly : Boolean;
     procedure SetReadOnly(NewValue: boolean);
     procedure SetCodeTemplates(
          NewCodeTemplates: TSynEditAutoComplete);
@@ -363,6 +363,7 @@ type
     FOnOpenClicked: TNotifyEvent;
     FOnOpenFileAtCursorClicked: TNotifyEvent;
     FOnProcessUserCommand: TOnProcessUserCommand;
+    fOnReadOnlyChanged: TNotifyEvent;
     FOnSaveAsClicked: TNotifyEvent;
     FOnSaveAllClicked: TNotifyEvent;
     FOnSaveClicked: TNotifyEvent;
@@ -555,6 +556,8 @@ type
        read FOnOPenClicked write FOnOpenClicked;
     property OnOpenFileAtCursorClicked : TNotifyEvent 
        read FOnOpenFileAtCursorClicked write FOnOpenFileAtCursorClicked;
+    property OnReadOnlyChanged: TNotifyEvent
+       read fOnReadOnlyChanged write fOnReadOnlyChanged;
     property OnSaveAsClicked : TNotifyEvent
        read FOnSaveAsClicked write FOnSaveAsClicked;
     property OnSaveAllClicked : TNotifyEvent 
@@ -3221,6 +3224,8 @@ begin
     exit;
   end;
   ActEdit.EditorComponent.ReadOnly := not(ActEdit.EditorComponent.ReadOnly);
+  if Assigned(OnReadOnlyChanged) then
+    OnReadOnlyChanged(Self);
   UpdateStatusBar;
 end;
 
