@@ -124,13 +124,13 @@ begin
   stream.WriteByte(10);
 end;
 
-procedure wrtStr(s: string);
+procedure wrtStr(const s: string);
 begin
   if s<>'' then
     wrt(s[1],length(s));
 end;
 
-procedure wrtStrLn(s: string);
+procedure wrtStrLn(const s: string);
 begin
   if s<>'' then
     wrtln(s[1],length(s));
@@ -479,6 +479,9 @@ end.
 
 {
   $Log$
+  Revision 1.4  2002/09/20 09:27:47  lazarus
+  MG: accelerated xml
+
   Revision 1.3  2002/08/04 07:44:44  lazarus
   MG: fixed xml reading writing of special chars
 

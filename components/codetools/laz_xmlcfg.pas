@@ -209,7 +209,8 @@ end;
 
 procedure TXMLConfig.SetFilename(const AFilename: String);
 var
-  f: File;
+  MemStream: TMemoryStream;
+  ok: boolean;
   cfg: TDOMElement;
 begin
   {$IFDEF MEM_CHECK}CheckHeapWrtMemCnt('TXMLConfig.SetFilename A '+AFilename);{$ENDIF}
@@ -225,18 +226,20 @@ begin
     doc.Free;
   end;
 
-  AssignFile(f, AFileName);
-  {$I-}
-  Reset(f, 1);
-  {$I+}
-  if IOResult = 0 then
+  doc:=nil;
+  MemStream:=TMemoryStream.Create;
+  try
     try
-      {$IFDEF MEM_CHECK}CheckHeapWrtMemCnt('TXMLConfig.SetFilename B');{$ENDIF}
-      ReadXMLFile(doc, f);
-      {$IFDEF MEM_CHECK}CheckHeapWrtMemCnt('TXMLConfig.SetFilename C');{$ENDIF}
-    finally
-      CloseFile(f);
+      ok:=false;
+      MemStream.LoadFromFile(AFilename);
+      ok:=true;
+    except
     end;
+    if ok then
+      ReadXMLFile(doc,MemStream);
+  finally
+    MemStream.Free;
+  end;
 
   if not Assigned(doc) then
     doc := TXMLDocument.Create;
@@ -253,6 +256,9 @@ end;
 end.
 {
   $Log$
+  Revision 1.4  2002/09/20 09:27:47  lazarus
+  MG: accelerated xml
+
   Revision 1.3  2002/09/13 16:58:27  lazarus
   MG: removed the 1x1 bitmap from TBitBtn
 
