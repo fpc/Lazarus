@@ -206,13 +206,7 @@ type
       Button : TMouseButton; Shift: TShiftstate; X, Y: Integer);
     procedure OnSrcNotebookDeleteLastJumPoint(Sender: TObject);
     procedure OnSrcNotebookEditorVisibleChanged(Sender : TObject);
-    procedure OnSrcNotebookShowHintForSource(SrcEdit: TSourceEditor;
-          ClientPos: TPoint; CaretPos: TPoint);
-
-    // this is fired when the editor is focused, changed, ?.
-    //   Anything that causes the status change
     procedure OnSrcNotebookEditorChanged(Sender : TObject);
-    
     procedure OnSrcNotebookFileNew(Sender : TObject);
     procedure OnSrcNotebookFileOpen(Sender : TObject);
     procedure OnSrcNotebookFileOpenAtCursor(Sender : TObject);
@@ -220,15 +214,18 @@ type
     procedure OnSrcNotebookFileSaveAs(Sender : TObject);
     procedure OnSrcNotebookFileClose(Sender : TObject);
     procedure OnSrcNotebookFindDeclaration(Sender : TObject);
+    procedure OnSrcNotebookInitIdentCompletion(Sender: TObject;
+      var Handled, Abort: boolean);
     procedure OnSrcNotebookJumpToHistoryPoint(var NewCaretXY: TPoint;
       var NewTopLine, NewPageIndex: integer; Action: TJumpHistoryAction);
     procedure OnSrcNotebookMovingPage(Sender: TObject;
       OldPageIndex, NewPageIndex: integer);
     procedure OnSrcNotebookSaveAll(Sender : TObject);
+    procedure OnSrcNotebookShowHintForSource(SrcEdit: TSourceEditor;
+          ClientPos: TPoint; CaretPos: TPoint);
     procedure OnSrcNoteBookShowUnitInfo(Sender: TObject);
     procedure OnSrcNotebookToggleFormUnit(Sender : TObject);
     procedure OnSrcNotebookToggleObjectInsp(Sender: TObject);
-    
     procedure OnSrcNotebookViewJumpHistory(Sender : TObject);
 
     // ObjectInspector + PropertyEditorHook events
@@ -490,6 +487,7 @@ type
     procedure DoJumpToProcedureSection;
     procedure DoFindDeclarationAtCursor;
     procedure DoFindDeclarationAtCaret(CaretXY: TPoint);
+    function DoInitIdentCompletion: boolean;
     procedure DoCompleteCodeAtCursor;
     function DoCheckSyntax: TModalResult;
     procedure DoGoToPascalBlockOtherEnd;
@@ -1094,6 +1092,7 @@ begin
   SourceNotebook.OnEditorChanged := @OnSrcNotebookEditorChanged;
   SourceNotebook.OnEditorPropertiesClicked := @mnuEnvEditorOptionsClicked;
   SourceNotebook.OnFindDeclarationClicked := @OnSrcNotebookFindDeclaration;
+  SourceNotebook.OnInitIdentCompletion :=@OnSrcNotebookInitIdentCompletion;
   SourceNotebook.OnJumpToHistoryPoint := @OnSrcNotebookJumpToHistoryPoint;
   SourceNotebook.OnMovingPage := @OnSrcNotebookMovingPage;
   SourceNotebook.OnNewClicked := @OnSrcNotebookFileNew;
@@ -1666,6 +1665,18 @@ end;
 Procedure TMainIDE.OnSrcNoteBookFindDeclaration(Sender : TObject);
 begin
   mnuFindDeclarationClicked(Sender);
+end;
+
+procedure TMainIDE.OnSrcNotebookInitIdentCompletion(Sender: TObject;
+  var Handled, Abort: boolean);
+begin
+  {$IFDEF IdentComp}
+  Handled:=true;
+  {$ELSE}
+  Handled:=false;
+  {$ENDIF}
+  if Handled then
+    Abort:=not DoInitIdentCompletion;
 end;
 
 Procedure TMainIDE.OnSrcNotebookSaveAll(Sender : TObject);
@@ -6571,6 +6582,30 @@ begin
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoFindDeclarationAtCaret B');{$ENDIF}
 end;
 
+function TMainIDE.DoInitIdentCompletion: boolean;
+var
+  ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+  CaretXY: TPoint;
+begin
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
+  {$IFDEF IDE_DEBUG}
+  writeln('');
+  writeln('[TMainIDE.DoInitIdentCompletion] ************');
+  {$ENDIF}
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoInitIdentCompletion A');{$ENDIF}
+  CaretXY:=ActiveSrcEdit.EditorComponent.CaretXY;
+  Result:=CodeToolBoss.GatherIdentifiers(ActiveUnitInfo.Source,
+                                         CaretXY.X,CaretXY.Y);
+  if not Result then begin
+    DoJumpToCodeToolBossError;
+    exit;
+  end;
+  
+  
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoInitIdentCompletion B');{$ENDIF}
+end;
+
 procedure TMainIDE.DoGoToPascalBlockOtherEnd;
 var ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
@@ -6747,11 +6782,18 @@ begin
   if SourceNotebook.Notebook = nil then Exit;
   
   ActiveUnitInfo :=
-    Project1.UnitWithEditorIndex(SourceNotebook.Notebook.Pageindex);
+    Project1.UnitWithEditorIndex(SourceNotebook.Notebook.PageIndex);
   if ActiveUnitInfo = nil then Exit;
 
-  SaveSpeedBtn.Enabled := SourceNotebook.GetActiveSe.MOdified;
+  SaveSpeedBtn.Enabled := SourceNotebook.GetActiveSe.Modified;
   ToggleFormSpeedBtn.Enabled := Assigned(ActiveUnitInfo.Form);
+end;
+
+//this is fired when the editor is focused, changed, ?.  Anything that causes the status change
+Procedure TMainIDE.OnSrcNotebookEditorChanged(Sender : TObject);
+begin
+  if SourceNotebook.Notebook = nil then Exit;
+  SaveSpeedBtn.Enabled := SourceNotebook.GetActiveSE.Modified;
 end;
 
 procedure TMainIDE.OnSrcNotebookShowHintForSource(SrcEdit: TSourceEditor;
@@ -7046,14 +7088,6 @@ begin
     // abort codetools
     ToolStatus:=itCodeToolAborting;
   end;
-end;
-
-//this is fired when the editor is focused, changed, ?.  Anything that causes the status change
-Procedure TMainIDE.OnSrcNotebookEditorChanged(Sender : TObject);
-begin
-  if SourceNotebook.Notebook = nil then Exit;
-
-  SaveSpeedBtn.Enabled := SourceNotebook.GetActiveSE.Modified;
 end;
 
 procedure TMainIDE.OnExtToolNeedsOutputFilter(var OutputFilter: TOutputFilter;
@@ -7528,6 +7562,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.445  2002/12/29 18:13:38  mattias
+  identifier completion: basically working, still hidden
+
   Revision 1.444  2002/12/27 10:34:54  mattias
   message view scrolls to message
 
