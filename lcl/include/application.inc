@@ -303,19 +303,22 @@ procedure TApplication.Idle;
 var
   Done: Boolean;
 begin
-  DoFreeReleaseComponents;
+  if FIdleLockCount=0 then
+    DoFreeReleaseComponents;
   MouseIdle(GetControlAtMouse);
 
   Done := True;
-  if Assigned(FOnIdle) then FOnIdle(Self, Done);
+  if (FIdleLockCount=0) and Assigned(FOnIdle) then FOnIdle(Self, Done);
   NotifyIdleHandler;
   if Done then begin
     // wait till something happens
-    DoIdleActions;
+    if (FIdleLockCount=0) then
+      DoIdleActions;
     Include(FFlags,AppWaiting);
     Exclude(FFlags,AppIdleEndSent);
     InterfaceObject.WaitMessage;
-    DoOnIdleEnd;
+    if (FIdleLockCount=0) then
+      DoOnIdleEnd;
     Exclude(FFlags,AppWaiting);
   end;
 end;
@@ -1063,9 +1066,14 @@ begin
   if (Msg <> '') and (Msg[length(Msg)] <> '.') then Msg := Msg + '.';
   if (not Terminated)
   and (Self<>nil) then begin
-    MsgResult:=MessageBox(PChar(Msg+#13#13'Press Ok to ignore.'
-       +#13'Press Cancel to stop the program.'),PChar(GetTitle),
-                          MB_OKCANCEL + MB_ICONERROR);
+    DisableIdleHandler;
+    try
+      MsgResult:=MessageBox(PChar(Msg+#13#13'Press Ok to ignore.'
+         +#13'Press Cancel to stop the program.'),PChar(GetTitle),
+                            MB_OKCANCEL + MB_ICONERROR);
+    finally
+      EnableIdleHandler;
+    end;
     if MsgResult<>mrOk then begin
       Include(FFlags,AppNoExceptionMessages);
       HaltingProgram:=true;
@@ -1083,6 +1091,18 @@ procedure TApplication.Terminate;
 begin
   inherited Terminate;
   InterfaceObject.AppTerminate;
+end;
+
+procedure TApplication.DisableIdleHandler;
+begin
+  inc(FIdleLockCount);
+end;
+
+procedure TApplication.EnableIdleHandler;
+begin
+  if FIdleLockCount<=0 then
+    RaiseGDBException('TApplication.EnableIdleHandler');
+  dec(FIdleLockCount);
 end;
 
 {------------------------------------------------------------------------------
@@ -1357,6 +1377,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.99  2005/02/17 18:54:04  mattias
+  disabling idle handler during TApplication error handling
+
   Revision 1.98  2005/02/17 18:48:24  mattias
   extented error message of TApplication
 

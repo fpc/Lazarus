@@ -860,6 +860,8 @@ type
     ahtUserInput
     );
 
+  { TApplication }
+
   TApplication = class(TCustomApplication)
   private
     FApplicationHandlers: array[TApplicationHandlerType] of TMethodList;
@@ -877,6 +879,7 @@ type
     FHintTimerType: TAppHintTimerType;
     FHintWindow: THintWindow;
     FIcon: TIcon;
+    FIdleLockCount: Integer;
     FFormList: TList;
     FMainForm : TForm;
     FMouseControl: TControl;
@@ -962,6 +965,8 @@ type
     procedure Run;
     procedure ShowException(E: Exception); override;
     procedure Terminate; override;
+    procedure DisableIdleHandler;
+    procedure EnableIdleHandler;
     procedure NotifyUserInputHandler(Msg: Cardinal);
     procedure NotifyKeyDownBeforeHandler(Sender: TObject;
                                          var Key: Word; Shift: TShiftState);
