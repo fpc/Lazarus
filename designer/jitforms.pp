@@ -664,15 +664,14 @@ begin
   if ComponentClass=nil then begin
     RegComp:=FRegCompList.FindComponentClassByName(FindClassName);
     if RegComp<>nil then begin
-      //write('[TJITForms.ReaderFindComponentClass] '''+FindClassName
+      //writeln('[TJITForms.ReaderFindComponentClass] '''+FindClassName
       //   +''' is registered');
       ComponentClass:=RegComp.ComponentClass;
     end else begin
-      write('[TJITForms.ReaderFindComponentClass] '''+FindClassName
+      writeln('[TJITForms.ReaderFindComponentClass] '''+FindClassName
          +''' is unregistered');
     end;
   end;
-  writeln('');
 end;
 
 procedure TJITForms.ReaderCreateComponent(Reader: TReader;

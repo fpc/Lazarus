@@ -670,12 +670,7 @@ var
   Shift : TShiftState;
 Begin
   {$IFDEF VerboseDesigner}
-  Writeln('TDesigner.KEYDOWN');
-  with TheMessage do
-  Begin
-    Writeln('CHARCODE = '+inttostr(charcode));
-    Writeln('KEYDATA = '+inttostr(KeyData));
-  end;
+  Writeln('TDesigner.KEYDOWN ',TheMessage.CharCode,' ',TheMessage.KeyData);
   {$ENDIF}
 
   Shift := KeyDataToShiftState(TheMessage.KeyData);
@@ -722,12 +717,7 @@ end;
 Procedure TDesigner.KeyUp(Sender : TControl; TheMessage:TLMKEY);
 Begin
   {$IFDEF VerboseDesigner}
-  Writeln('KEYUp');
-  with TheMessage do
-  Begin
-    Writeln('CHARCODE = '+inttostr(charcode));
-    Writeln('KEYDATA = '+inttostr(KeyData));
-  end;
+  Writeln('TDesigner.KEYUP ',TheMessage.CharCode,' ',TheMessage.KeyData);
   {$ENDIF}
 end;
 

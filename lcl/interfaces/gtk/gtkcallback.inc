@@ -617,7 +617,7 @@ var
   //parWindow : PgdkWindow;  //the Parent's GDKWindow
   DesignOnlySignal: boolean;
 
-{$DEFINE VerboseMouseBugfix}
+{ $DEFINE VerboseMouseBugfix}
 
   function CheckMouseButtonDown(var LastMouse: TLastMouseClick;
     BtnKey, MsgNormal, MsgDouble, MsgTriple: longint): boolean;
@@ -2139,6 +2139,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.109  2002/08/24 07:11:56  lazarus
+  MG: reduced output
+
   Revision 1.108  2002/08/24 07:09:04  lazarus
   MG: fixed bracket hilighting
 
