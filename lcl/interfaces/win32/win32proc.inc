@@ -1,4 +1,4 @@
-// included by win32int.pp
+{%MainUnit win32int.pp}
 
 {******************************************************************************
                         Misc Support Functs
@@ -740,6 +740,24 @@ Begin
   dec(Top, ORect.Top);
 End;
 
+{
+  Updates the window style of the window indicated by Handle.
+  The new style is the Style parameter.
+  Only the bits set in the StyleMask are changed,
+  the other bits remain untouched.
+  If the bits in the StyleMask are not used in the Style,
+  there are cleared.
+}
+procedure UpdateWindowStyle(Handle: HWnd; Style: integer; StyleMask: integer);
+var
+  CurrentStyle: integer;
+  NewStyle: integer;
+begin
+  CurrentStyle := Windows.GetWindowLong(Handle, GWL_STYLE);
+  NewStyle := (Style and StyleMask) or (CurrentStyle and (not StyleMask));
+  Windows.SetWindowLong(Handle, GWL_STYLE, NewStyle);
+end;
+
 function BorderStyleToWin32Flags(Style: TFormBorderStyle): DWORD;
 begin
   Result := WS_OVERLAPPEDWINDOW or WS_CLIPSIBLINGS or WS_CLIPCHILDREN;
@@ -773,6 +791,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.43  2004/05/31 19:32:34  vincents
+  fixed using ecUpperCase in win32
+
   Revision 1.42  2004/05/29 11:45:19  micha
   cleanup lcl<->win32 bounds code, remove duplicate code
 

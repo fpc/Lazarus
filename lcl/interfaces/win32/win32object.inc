@@ -2676,8 +2676,10 @@ Function TWin32WidgetSet.SetProperties(Sender: TObject): Integer;
 const
   LVS_TYPEMASK = LVS_LIST or LVS_REPORT or LVS_SMALLICON or LVS_ICON;
   LISTVIEWSTYLES: array[TViewStyle] of DWORD = (
-    LVS_LIST, LVS_REPORT
-  );
+    LVS_LIST, LVS_REPORT);
+  EDITSTYLES: array[TEditCharCase] of integer = (
+    0, ES_UPPERCASE, ES_LOWERCASE);
+  EDIT_STYLEMASK = ES_UPPERCASE or ES_LOWERCASE;
 Var
   Handle: HWND;
   I, Count: Integer;
@@ -2703,6 +2705,7 @@ begin
     Begin
       Windows.SendMessage(Handle, EM_SETREADONLY, Windows.WPARAM(ReadOnly), 0);
       Windows.SendMessage(Handle, EM_LIMITTEXT, Windows.WPARAM(MaxLength), 0);
+      UpdateWindowStyle(Handle, EDITSTYLES[CharCase], EDIT_STYLEMASK);
     End;
 
   csListView:
@@ -3000,6 +3003,9 @@ End;
 
 {
   $Log$
+  Revision 1.202  2004/05/31 19:32:34  vincents
+  fixed using ecUpperCase in win32
+
   Revision 1.201  2004/05/31 08:21:52  mattias
   fsStayOnTop is now ignored in design mode
 

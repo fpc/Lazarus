@@ -234,6 +234,9 @@ Begin
   if FCharCase <> value then
   Begin
     FCharCase := Value;
+    // update interface, it might do the case conversion itself.
+    if HandleAllocated then
+      CNSendMessage(LM_SETPROPERTIES, Self, nil);
     if FCharCase = ecUpperCase then
       Text := Uppercase(Text)
     else if FCharCase = ecLowerCase then
@@ -371,6 +374,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.29  2004/05/31 19:32:34  vincents
+  fixed using ecUpperCase in win32
+
   Revision 1.28  2004/04/18 23:55:39  marc
   * Applied patch from Ladislav Michl
   * Changed the way TControl.Text is resolved
