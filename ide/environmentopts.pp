@@ -2216,11 +2216,11 @@ begin
   case AValue of
     eodpFiles: p:=0;
     eodpLanguage, eodpAutoSave, eodpDesktop, eodpMainHints,
-    eodpWindowPositions: p:=1;
-    eodpFormEditor: p:=2;
-    eodpObjectInspector: p:=3;
-    eodpBackup: p:=4;
-    eodpNaming: p:=5;
+    eodpWindowPositions: p:=2;
+    eodpFormEditor: p:=3;
+    eodpObjectInspector: p:=4;
+    eodpBackup: p:=5;
+    eodpNaming: p:=6;
   end;
   Notebook.PageIndex:=p;
 end;

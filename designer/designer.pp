@@ -2301,12 +2301,15 @@ begin
   FPopupMenu.Items.Add(FDeleteSelectionMenuItem);
 
   AddSeparator;
+  
+  // options
 
   FSnapToGridOptionMenuItem:=TMenuItem.Create(FPopupMenu);
   with FSnapToGridOptionMenuItem do begin
     Caption:= fdmSnapToGridOption;
     OnClick:=@OnSnapToGridOptionMenuClick;
     Checked:=EnvironmentOptions.SnapToGrid;
+    ShowAlwaysCheckable:=true;
   end;
   FPopupMenu.Items.Add(FSnapToGridOptionMenuItem);
 
@@ -2315,6 +2318,7 @@ begin
     Caption:= fdmSnapToGuideLinesOption;
     OnClick:=@OnSnapToGuideLinesOptionMenuClick;
     Checked:=EnvironmentOptions.SnapToGuideLines;
+    ShowAlwaysCheckable:=true;
   end;
   FPopupMenu.Items.Add(FSnapToGuideLinesOptionMenuItem);
 

@@ -311,6 +311,7 @@ end;
 procedure TCustomUpDown.SetAssociate(Value: TWinControl);
 var
   I: Integer;
+  OtherControl: TControl;
 
   function IsClass(ClassType: TClass; const Name: string): Boolean;
   begin
@@ -325,14 +326,14 @@ var
 
 begin
   // check that no other updown component is associated to the new Associate
-  if Value <> FAssociate then
-    for I := 0 to Parent.ControlCount - 1 do
-      if (Parent.Controls[I] is TCustomUpDown) and
-        (Parent.Controls[I] <> Self)
-      then
-        if TCustomUpDown(Parent.Controls[I]).Associate = Value then
+  if (Value <> FAssociate) and (Value<>nil) then
+    for I := 0 to Parent.ControlCount - 1 do begin
+      OtherControl:=Parent.Controls[I];
+      if (OtherControl is TCustomUpDown) and (OtherControl <> Self) then
+        if TCustomUpDown(OtherControl).Associate = Value then
           raise Exception.CreateFmt(rsIsAlreadyAssociatedWith,
-            [Value.Name, Parent.Controls[I].Name]);
+                                    [Value.Name,OtherControl.Name]);
+     end;
 
   // disconnect old Associate
   if FAssociate <> nil then

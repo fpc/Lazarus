@@ -3280,8 +3280,12 @@ begin
           DCOrigin:=GetDCOffset(TDeviceContext(DC));
           //writeln('FillRect DC=',HexStr(Cardinal(DC),8),' Drawable',HexStr(Cardinal(Drawable),8));
           if (CurrentBrush^.GDIBrushFill = GDK_SOLID)
-          and (IsBackgroundColor(TColor(CurrentBrush^.GDIBrushColor.ColorRef))) then
-            StyleFillRectangle(drawable, GC, CurrentBrush^.GDIBrushColor.ColorRef, Rect.Left+DCOrigin.X, Rect.Top+DCOrigin.Y, Width, Height)
+          and (IsBackgroundColor(TColor(CurrentBrush^.GDIBrushColor.ColorRef)))
+          then
+            StyleFillRectangle(drawable, GC,
+                               CurrentBrush^.GDIBrushColor.ColorRef,
+                               Rect.Left+DCOrigin.X, Rect.Top+DCOrigin.Y,
+                               Width, Height)
           else
             gdk_draw_rectangle(Drawable, GC, 1,
                                Rect.Left+DCOrigin.X, Rect.Top+DCOrigin.Y,
@@ -9057,6 +9061,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.300  2003/11/23 10:58:47  mattias
+  fixed de-associating TUpDown
+
   Revision 1.299  2003/11/10 16:15:32  micha
   cleanups; win32 fpimage support
 
