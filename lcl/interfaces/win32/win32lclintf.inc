@@ -64,7 +64,8 @@ function TWin32WidgetSet.GetControlConstraints(Constraints: TObject): boolean;
 var
   SizeConstraints: TSizeConstraints;
   SizeRect: TRect;
-  Height: Integer;
+  Height, Width: Integer;
+  FixedHeight, FixedWidth: boolean;
 begin
   Result:=true;
   if Constraints is TSizeConstraints then begin
@@ -72,14 +73,30 @@ begin
 
     if (SizeConstraints.Control=nil) then exit;
 
-    if (SizeConstraints.Control is TComboBox)
-      and TWinControl(SizeConstraints.Control).HandleAllocated then begin
-      // the height of a combobox is fixed
-      Windows.GetWindowRect(TWinControl(SizeConstraints.Control).Handle, @SizeRect);
-      Height := SizeRect.Bottom - SizeRect.Top;
-      SizeConstraints.SetInterfaceConstraints(0, Height, 0, Height);
+    FixedHeight := false;
+    FixedWidth := false;
+    if SizeConstraints.Control is TCustomComboBox then
+      FixedHeight := true;
+    if SizeConstraints.Control is TCustomCalendar then
+    begin
+      FixedHeight := true;
+      FixedWidth := true;
     end;
-
+    
+    if (FixedHeight or FixedWidth)
+      and TWinControl(SizeConstraints.Control).HandleAllocated then 
+    begin
+      Windows.GetWindowRect(TWinControl(SizeConstraints.Control).Handle, @SizeRect);
+      if FixedHeight then
+        Height := SizeRect.Bottom - SizeRect.Top
+      else
+        Height := 0;
+      if FixedWidth then
+        Width := SizeRect.Right - SizeRect.Left
+      else
+        Width := 0;
+      SizeConstraints.SetInterfaceConstraints(Width, Height, Width, Height);
+    end;
   end;
 end;
 
@@ -170,6 +187,9 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.20  2005/02/07 18:53:35  micha
+  implement size constraints for calendar (it is not resizeable)
+
   Revision 1.19  2004/10/16 10:15:45  micha
   cleanup statusbar methods in lcl interfaceobject
   fix statusbar recursive call issue
