@@ -2447,6 +2447,7 @@ begin
         If S^.Ref_Count > 0 then
           GTK_Style_Unref(S);
       Except
+        writeln('ReleaseStyle warning');
       end;
     Styles.Delete(l);
   end;
@@ -2486,6 +2487,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.72  2002/08/23 07:05:17  lazarus
+  MG: started form renaming
+
   Revision 1.71  2002/08/22 16:43:36  lazarus
   MG: improved theme support from Andrew
 
