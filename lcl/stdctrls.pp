@@ -1095,10 +1095,12 @@ type
 
     function  GetShowAccelChar: Boolean;
     function  GetAlignment: TAlignment;
+    function  GetTransparent: boolean;
     procedure SetAlignment(Value: TAlignment);
     procedure SetFocusControl(Value: TWinControl);
     procedure SetLayout(Value: TTextLayout);
     procedure SetShowAccelChar(Value: Boolean);
+    procedure SetTransparent(NewTransparent: boolean);
     procedure SetWordWrap(Value: Boolean);
     procedure Loaded; override;
 
@@ -1106,6 +1108,7 @@ type
     property FocusControl: TWinControl read FFocusControl write SetFocusControl;
     property Layout: TTextLayout read FLayout write SetLayout default tlTop;
     property ShowAccelChar: Boolean read GetShowAccelChar write SetShowAccelChar default true;
+    property Transparent: boolean read GetTransparent write SetTransparent default true;
     property WordWrap: Boolean read FWordWrap write SetWordWrap default false;
   public
     constructor Create(AOwner: TComponent); override;
@@ -1214,6 +1217,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.186  2005/01/21 13:38:10  micha
+  implement TCustomLabel.Transparent
+
   Revision 1.185  2005/01/20 16:58:16  mattias
   published TComboBox.OnDbClick
 

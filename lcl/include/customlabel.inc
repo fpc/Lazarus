@@ -122,6 +122,12 @@ begin
   Width := 65;
   Height := 17;
   FShowAccelChar := True;
+  Color := clNone;
+end;
+
+function TCustomLabel.GetTransparent: boolean;
+begin
+  Result := Color = clNone;
 end;
 
 {------------------------------------------------------------------------------
@@ -136,6 +142,12 @@ begin
     FLayout:= Value;
     Invalidate;
   end;
+end;
+
+procedure TCustomLabel.SetTransparent(NewTransparent: boolean);
+begin
+  if NewTransparent then
+    Color := clNone;
 end;
 
 {------------------------------------------------------------------------------
@@ -216,6 +228,9 @@ end;
 
 {
   $Log$
+  Revision 1.23  2005/01/21 13:38:10  micha
+  implement TCustomLabel.Transparent
+
   Revision 1.22  2005/01/17 16:42:35  mattias
   improved TLabel autosizing
 
