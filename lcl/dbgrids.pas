@@ -307,6 +307,7 @@ type
     FTempText : string;
     FDrawingActiveRecord: Boolean;
     FEditingColumn: Integer;
+    FEditingField: TField;
     function GetCurrentField: TField;
     function GetDataSource: TDataSource;
     procedure OnRecordChanged(Field:TField);
@@ -357,14 +358,13 @@ type
     
     procedure OnTitleFontChanged(Sender: TObject);
     procedure RestoreEditor;
+    function  ISEOF: boolean;
   protected
   {$ifdef ver1_0}
     property FixedColor;
   {$endif}
     procedure BeforeMoveSelection(const DCol,DRow: Integer); override;
     procedure BeginLayout;
-    procedure EditingColumn(aCol: Integer; Ok: boolean);
-    procedure EditorCancelEditing;
     procedure CellClick(const aCol,aRow: Integer); override;
     procedure ChangeBounds(ALeft, ATop, AWidth, AHeight: integer); override;
     procedure ColRowMoved(IsColumn: Boolean; FromIndex,ToIndex: Integer); override;
@@ -377,14 +377,19 @@ type
     procedure DoExit; override;
     procedure DoOnChangeBounds; override;
     procedure DrawByRows; override;
+    procedure DrawFocusRect(aCol,aRow:Integer; ARect:TRect); override;
     procedure DrawRow(ARow: Integer); override;
     procedure DrawCell(aCol,aRow: Integer; aRect: TRect; aState:TGridDrawState); override;
     procedure EditButtonClicked(Sender: TObject);
+    procedure EditingColumn(aCol: Integer; Ok: boolean);
+    procedure EditorCancelEditing;
+    procedure EditordoGetValue; override;
     function  EditorCanAcceptKey(const ch: Char): boolean; override;
     function  EditorIsReadOnly: boolean; override;
     procedure EndLayout;
     function  GetEditMask(aCol, aRow: Longint): string; override;
     function  GetEditText(aCol, aRow: Longint): string; override;
+    function  GridCanModify: boolean;
     procedure HeaderClick(IsColumn: Boolean; index: Integer); override;
     procedure HeaderSized(IsColumn: Boolean; Index: Integer); override;
     procedure KeyDown(var Key : Word; Shift : TShiftState); override;
@@ -724,10 +729,12 @@ begin
     else
       Exclude(OldOptions, goRowSelect);
 
+    {
     if dgAlwaysShowSelection in FOptions then
       Include(OldOptions, goDrawFocusSelected)
     else
       Exclude(OldOptions, goDrawFocusSelected);
+    }
 
     if dgEditing in FOptions then
       Include(OldOptions, goEditing)
@@ -778,6 +785,7 @@ begin
     SelField := SelectedField;
     edField := GetFieldFromGridColumn(FEditingColumn);
     if (edField<>nil) and (edField = SelField) then
+    //if (edField<>nil) and (FEditingField=SelField) then
       edField.AsString := FTempText;
   end;
 end;
@@ -984,14 +992,22 @@ var
 begin
   if csDestroying in ComponentState then
     exit;
+  if not HandleAllocated then
+    exit;
   Count := UpdateGridCounts;
   if Count=0 then
     Clear
   else begin
+    if not FDatalink.Active or not FDatalink.Dataset.Active then
+      NumRows := RowCount
+    else
+      NumRows := FDataLink.DataSet.RecordCount + FixedRows;
+    {
     if FDataLink.Active then
       NumRows := FDataLink.DataSet.RecordCount + FixedRows
     else
       NumRows := RowCount;
+    }
     ScrollBarRange(SB_HORZ, GridWidth + 2);
     ScrollBarRange(SB_VERT, NumRows * DefaultRowHeight + 2);
   end;
@@ -1027,6 +1043,19 @@ begin
     EditorMode := False;
     EditorMode := True;
   end;
+end;
+
+// Workaround: dataset is not EOF after Append!
+type
+  TMyDs=class(TDataSet)
+  end;
+
+function TCustomDbGrid.IsEOF: boolean;
+begin
+  with FDatalink do
+    result :=
+      Active and
+      (TMyDS(Dataset).GetBookmarkFlag(DataSet.ActiveBuffer) = bfEOF);
 end;
 
 function TCustomDbGrid.GetColumnTitle(Column: Integer): string;
@@ -1219,6 +1248,14 @@ procedure TCustomDbGrid.DefaultDrawCell(aCol, aRow: Integer; aRect: TRect;
     else
       result := dsInactive;
   end;
+  procedure FixRectangle;
+  begin
+    case Canvas.TextStyle.Alignment of
+      Classes.taLeftJustify: Inc(aRect.Left, 3);
+      Classes.taRightJustify: Dec(aRect.Right, 3);
+    end;
+    Inc(aRect.Top, 2);
+  end;
 var
   S: string;
   F: TField;
@@ -1228,7 +1265,8 @@ begin
       DrawArrow(Canvas, aRect, GetDataSetState)
     else
     if (aRow=0)and(ACol>=FixedCols) then begin
-      Canvas.TextRect(ARect,ARect.Left+2,ARect.Top+2,GetColumnTitle(aCol));
+      FixRectangle;
+      Canvas.TextRect(ARect,ARect.Left,ARect.Top,GetColumnTitle(aCol));
     end;
   end else begin
     F := GetFieldFromGridColumn(aCol);
@@ -1236,8 +1274,8 @@ begin
       S := F.DisplayText;
     end else
       S := '';
-    Canvas.TextRect(Arect,ARect.Left+2,ARect.Top+2, S);
-    //Canvas.TextOut(aRect.Left+2,ARect.Top+2, S);
+    FixRectangle;
+    Canvas.TextRect(Arect,ARect.Left,ARect.Top, S);
   end;
 end;
 
@@ -1285,17 +1323,50 @@ procedure TCustomDbGrid.KeyDown(var Key: Word; Shift: TShiftState);
     if Assigned(OnKeyDown) then
       OnKeyDown(Self, Key, Shift);
   end;
-  procedure MoveBy(Delta: Integer);
-  begin
-    doOnKeyDown;
-    FDatalink.MoveBy(Delta);
-  end;
 begin
   case Key of
-    VK_DOWN: MoveBy(1);
-    VK_UP: MoveBy(-1);
-    VK_NEXT: MoveBy( VisibleRowCount );
-    VK_PRIOR: MoveBy( -VisibleRowCount );
+    VK_DOWN:
+      if FDatalink.DataSet <> nil then
+      with FDatalink.Dataset do begin
+        DoOnKeyDown;
+        Key := 0;
+        if (State=dsInsert)and not (Modified or FDataLink.FModified) then begin
+          if IsEOF then
+            exit
+          else
+            cancel;
+        end else begin
+          FDatalink.MoveBy(1);
+          if GridCanModify and FDataLink.EOF then
+            Append;
+        end;
+      end;
+      
+    VK_UP:
+      if FDataLink.DataSet <> nil then
+      with FDataLink.DataSet do begin
+        doOnKeyDown;
+        if (State=dsInsert) and IsEOF and not (Modified or FDataLink.FModified) then
+          cancel
+        else
+          FDatalink.MoveBy(-1);
+        key := 0;
+      end;
+      
+    VK_NEXT:
+      begin
+        doOnKeyDown;
+        FDatalink.MoveBy( VisibleRowCount );
+        Key := 0;
+      end;
+      
+    VK_PRIOR:
+      begin
+        doOnKeyDown;
+        FDatalink.MoveBy( -VisibleRowCount );
+        key := 0;
+      end;
+      
     VK_ESCAPE:
       begin
         doOnKeyDown;
@@ -1304,9 +1375,42 @@ begin
         else
           if FDataLink.Active then
             FDataLink.DataSet.Cancel;
+        Key:=0;
+      end;
+      
+    VK_INSERT:
+      begin
+        doOnKeyDown;
+        if GridCanModify then
+          FDataLink.DataSet.Insert;
+        Key:=0;
+      end;
+      
+    VK_HOME:
+      begin
+        doOnKeyDown;
+        if FDatalink.Active then begin
+          if ssCTRL in Shift then
+            FDataLink.DataSet.First
+          else
+            MoveNextSelectable(False, FixedCols, Row);
+        end;
+        Key:=0;
+      end;
+      
+    VK_END:
+      begin
+        doOnKeyDown;
+        if FDatalink.Active then begin
+          if ssCTRL in shift then
+            FDatalink.DataSet.Last
+          else
+            MoveNextSelectable(False, ColCount-1, Row);
+        end;
+        Key:=0;
       end;
     else
-      inherited;
+      inherited KeyDown(Key, Shift);
   end;
 end;
 
@@ -1350,24 +1454,24 @@ begin
   inherited PrepareCanvas(aCol, aRow, aState);
   // we get the default canvas values
   // now, modify canvas according to column values
+  TheAlignment := GetColumnAlignment(ACol, ForTitle);
+  case TheAlignment of
+    taRightJustify: Canvas.TextStyle.Alignment := Classes.taRightJustify;
+    taCenter: Canvas.TextStyle.Alignment := Classes.taCenter;
+    taLeftJustify: Canvas.TextStyle.Alignment := classes.taLeftJustify;
+  end;
+  Canvas.TextStyle.Layout := GetColumnLayout(aCol, ForTitle);
   if gdSelected in aState then begin
     // what to do in selected state?
     //Canvas.Brush.Color := GetColumnColor(ACol, false);
   end else begin
     ForTitle := gdFixed in aState;
     Canvas.Brush.Color := GetColumnColor(ACol, ForTitle);
-    TheAlignment := GetColumnAlignment(ACol, ForTitle);
     aFont := GetColumnFont(ACol, ForTitle);
     if aFont<>FLastFont then begin
       Canvas.Font := aFont;
       FLastFont := aFont;
     end;
-    case TheAlignment of
-      taRightJustify: Canvas.TextStyle.Alignment := Classes.taRightJustify;
-      taCenter: Canvas.TextStyle.Alignment := Classes.taCenter;
-      taLeftJustify: Canvas.TextStyle.Alignment := classes.taLeftJustify;
-    end;
-    Canvas.TextStyle.Layout := GetColumnLayout(aCol, ForTitle);
   end;
   OnPrepareCanvas := OldOnEvent;
   if Assigned(OnPrepareCanvas) then
@@ -1437,12 +1541,19 @@ end;
 
 procedure TCustomDbGrid.EditorCancelEditing;
 begin
+  EditingColumn(FEditingColumn, False);
   if EditorMode then begin
     EditorMode := False;
     if dgAlwaysShowEditor in Options then
       EditorMode := True;
   end;
-  EditingColumn(FEditingColumn, EditorMode);
+end;
+
+procedure TCustomDbGrid.EditordoGetValue;
+begin
+  inherited EditordoGetValue;
+  UpdateData;
+  EditingColumn(FEditingColumn, False);
 end;
 
 procedure TCustomDbGrid.CellClick(const aCol, aRow: Integer);
@@ -1465,11 +1576,13 @@ end;
 
 procedure TCustomDbGrid.DoExit;
 begin
-  if FDataLink.Active then begin
-    if (FDataLink.DataSet.State=dsInsert) and (dgCancelOnExit in Options)
-    then begin
-      FDataLink.DataSet.Cancel;
-      EditorCancelEditing;
+  if not EditorShowing then begin
+    if FDataLink.Active then begin
+      if (FDataLink.DataSet.State=dsInsert) and (dgCancelOnExit in Options)
+      then begin
+        FDataLink.DataSet.Cancel;
+        EditorCancelEditing;
+      end;
     end;
   end;
   inherited DoExit;
@@ -1503,6 +1616,12 @@ begin
   end;
 end;
 
+function TCustomDbGrid.GridCanModify: boolean;
+begin
+  result := not ReadOnly and (dgEditing in Options) and not FDataLink.ReadOnly
+    and FDataLink.Active and FDatalink.DataSet.CanModify;
+end;
+
 procedure TCustomDbGrid.MoveSelection;
 begin
   if FSelectionLock then
@@ -1533,6 +1652,17 @@ begin
       FDataLink.ActiveRecord:=CurActiveRecord;
   end;
 end;
+
+procedure TCustomDbGrid.DrawFocusRect(aCol, aRow: Integer; ARect: TRect);
+begin
+  // Draw focused cell if we have the focus
+  if {Self.Focused and }(dgAlwaysShowSelection in Options) then
+  begin
+    CalcFocusRect(aRect);
+    DrawRubberRect(Canvas, aRect, FocusColor);
+  end;
+end;
+
 // 33 31 21 29 80 90 4 3
 procedure TCustomDbGrid.DrawRow(ARow: Integer);
 begin
@@ -1664,11 +1794,11 @@ begin
   FColumns := CreateColumns;
 
   FOptions := [dgColumnResize, dgTitles, dgIndicator, dgRowLines, dgColLines,
-    dgConfirmDelete, dgCancelOnExit, dgTabs, dgEditing];
+    dgConfirmDelete, dgCancelOnExit, dgTabs, dgEditing, dgAlwaysShowSelection];
     
   inherited Options :=
     [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect,
-     goSmoothScroll, goColMoving, goTabs, goEditing ];
+     goSmoothScroll, goColMoving, goTabs, goEditing, goDrawFocusSelected ];
 
   
   // What a dilema!, we need ssAutoHorizontal and ssVertical!!!
@@ -1703,16 +1833,27 @@ procedure TCustomDbGrid.DefaultDrawColumnCell(const Rect: TRect;
     else
       result := dsInactive;
   end;
+  function FixRectangle: TRect;
+  begin
+    result := Rect;
+    case Canvas.TextStyle.Alignment of
+      Classes.taLeftJustify: Inc(Result.Left, 3);
+      Classes.taRightJustify: Dec(Result.Right, 3);
+    end;
+    Inc(Result.Top, 2);
+  end;
 var
   S: string;
   F: TField;
+  R: TRect;
 begin
   if gdFixed in State then begin
     if (DataCol=0)and FDrawingActiveRecord then
       DrawArrow(Canvas, Rect, GetDataSetState)
     else
     if (DataCol>=FixedCols) then begin
-      Canvas.TextRect(Rect,Rect.Left+2,Rect.Top+2,GetColumnTitle(DataCol));
+      R := FixRectangle();
+      Canvas.TextRect(R,R.Left,R.Top,GetColumnTitle(DataCol));
     end;
   end else begin
     F := GetFieldFromGridColumn(DataCol);
@@ -1720,7 +1861,8 @@ begin
       S := F.DisplayText;
     end else
       S := '';
-    Canvas.TextRect(Rect,Rect.Left+2,Rect.Top+2,S);
+    R := FixRectangle();
+    Canvas.TextRect(R,R.Left,R.Top,S);
     //Canvas.TextOut(aRect.Left+2,ARect.Top+2, S);
   end;
 end;
@@ -2546,6 +2688,9 @@ end.
 
 {
   $Log$
+  Revision 1.19  2004/10/09 12:16:20  mattias
+  From Jesus: Ctrl+HOME does dataset.first, ctrl+END does dataSet.Last and fixes
+
   Revision 1.18  2004/09/24 13:45:31  mattias
   fixed TCanvas.TextRect Delphi compatible Rect and added TBarChart from Michael VC
 

@@ -381,6 +381,7 @@ type
     fGridState: TGridState;
     procedure AutoAdjustColumn(aCol: Integer); virtual;
     procedure BeforeMoveSelection(const DCol,DRow: Integer); virtual;
+    procedure CalcFocusRect(var ARect: TRect);
     procedure CellClick(const aCol,aRow: Integer); virtual;
     procedure CheckLimits(var aCol,aRow: Integer);
     procedure ColRowDeleted(IsColumn: Boolean; index: Integer); dynamic;
@@ -393,9 +394,9 @@ type
     procedure DblClick; override;
     procedure DefineProperties(Filer: TFiler); override;
     procedure DestroyHandle; override;
-    procedure DoOnChangeBounds; override;
     procedure DoExit; override;
     procedure DoEnter; override;
+    procedure DoOnChangeBounds; override;
     procedure DrawBackGround; virtual;
     procedure DrawBorder;
     procedure DrawByRows; virtual;
@@ -432,6 +433,7 @@ type
     procedure MouseMove(Shift: TShiftState; X,Y: Integer);override;
     procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
     function  MoveExtend(Relative: Boolean; DCol, DRow: Integer): Boolean;
+    function  MoveNextAuto: boolean;
     function  MoveNextSelectable(Relative:Boolean; DCol, DRow: Integer): Boolean;
     procedure MoveSelection; virtual;
     function  OffsetToColRow(IsCol,Fisical:Boolean; Offset:Integer; var Rest:Integer): Integer;
@@ -473,6 +475,8 @@ type
     property DragDx: Integer read FDragDx write FDragDx;
     property Editor: TWinControl read FEditor write SetEditor;
     property EditorMode: Boolean read FEditorMode write EditorSetMode;
+    property EditorKey: boolean read FEditorKey write FEditorKey;
+    property EditorShowing: boolean read FEditorShowing;
     property FixedCols: Integer read FFixedCols write SetFixedCols default 1;
     property FixedRows: Integer read FFixedRows write SetFixedRows default 1;
     property FixedColor: TColor read GetFixedColor write SetFixedcolor;
@@ -842,19 +846,29 @@ end;
 procedure DrawRubberRect(Canvas: TCanvas; aRect: TRect; Color: TColor);
   procedure DrawVertLine(X1,Y1,Y2: integer);
   begin
-    if Y2<Y1 then SwapInt(Y1, Y2);
-    while Y1<Y2 do begin
-      Canvas.Pixels[X1, Y1] := Color;
-      inc(Y1, constRubberSpace);
-    end;
+    if Y2<Y1 then
+      while Y2<Y1 do begin
+        Canvas.Pixels[X1, Y1] := Color;
+        dec(Y1, constRubberSpace);
+      end
+    else
+      while Y1<Y2 do begin
+        Canvas.Pixels[X1, Y1] := Color;
+        inc(Y1, constRubberSpace);
+      end;
   end;
   procedure DrawHorzLine(X1,Y1,X2: integer);
   begin
-    if X2<X1 then SwapInt(X1, X2);
-    while X1<X2 do begin
-      Canvas.Pixels[X1, Y1] := Color;
-      inc(X1, constRubberSpace);
-    end;
+    if X2<X1 then
+      while X2<X1 do begin
+        Canvas.Pixels[X1, Y1] := Color;
+        dec(X1, constRubberSpace);
+      end
+    else
+      while X1<X2 do begin
+        Canvas.Pixels[X1, Y1] := Color;
+        inc(X1, constRubberSpace);
+      end;
   end;
 // var OldStyle: TPenStyle;
 begin
@@ -870,10 +884,10 @@ begin
     Canvas.LineTo(Left,    Top+1);
     Canvas.Pen.Style:=OldStyle
     }
-    DrawHorzLine(Left, Top, Right-2);
-    DrawVertLine(Right-2, Top, Bottom-2);
-    DrawHorzLine(Right-1, Bottom-2, Left);
-    DrawVertLine(Left, Bottom-2, Top);
+    DrawHorzLine(Left, Top, Right-1);
+    DrawVertLine(Right-1, Top, Bottom-1);
+    DrawHorzLine(Right-1, Bottom-1, Left);
+    DrawVertLine(Left, Bottom-1, Top);
   end;
 end;
 
@@ -1520,7 +1534,7 @@ begin
   end;
 end;
 
-{Calculate the TopLeft needed to show cell[aCol,aRow]}
+{ Scroll the grid until cell[aCol,aRow] is shown }
 function TCustomGrid.ScrollToCell(const aCol,aRow: Integer): Boolean;
 var
   RNew: TRect;
@@ -1545,11 +1559,15 @@ begin
     else if RNew.Bottom + FGCache.TLRowOff > FGCache.ClientHeight then YInc:=1;
 
     with FTopLeft do
-    if ((XInc=0)and(YInc=0)) or
-       ((X=aCol)and(y=aRow)) or // Only Perfect fit !
-       ((X+XInc>=ColCount)or(Y+Yinc>=RowCount)) or // Last Posible
-       ((X+XInc<0)or(Y+Yinc<0)) // Least Posible
-    then Break;
+    if ((XInc=0)and(YInc=0)) or // the cell is already visible
+       ((X=aCol)and(Y=aRow)) or // the cell is visible by definition
+       ((X+XInc<0)or(Y+Yinc<0)) or // topleft can't be lower 0
+       ((X+XInc>=ColCount)) or // leftmost column can't be equal/higher than colcount
+       ((Y+Yinc>=RowCount)) or // topmost column can't be equal/higher than rowcount
+       ((XInc>0)and(X=aCol)and(GetColWidths(aCol)>FGCache.ClientWidth)) or
+       ((YInc>0)and(Y=aRow)and(GetRowHeights(aRow)>FGCache.ClientHeight))
+    then
+      Break;
     Inc(FTopLeft.x, XInc);
     Inc(FTopLeft.y, YInc);
   end;
@@ -3091,17 +3109,26 @@ begin
           if Relaxed then MoveSel(False, ColCount-1, FRow)
           else            MoveSel(False, FCol, RowCount-1);
       end;
-    VK_F2, VK_RETURN:
+    VK_F2: //, VK_RETURN:
       begin
-        EditorShow(Key=VK_RETURN);
+        EditorShow(False);
         // if Key=VK_RETURN then EditorSelectAll;
         Key:=0;
+      end;
+    VK_RETURN:
+      begin
+        if not FEditorKey then begin
+          EditorShow(True);
+          Key := 0;
+        end;
       end;
     VK_BACK:
       begin
         // Workaround: LM_CHAR doesnt trigger with BACKSPACE
-        EditorShowChar(^H);
-        key:=0;
+        if not FEditorKey then begin
+          EditorShowChar(^H);
+          key:=0;
+        end;
       end;
 
     {$IfDef Dbg}
@@ -3238,6 +3265,25 @@ begin
   {$IfDef dbgFocus}DebugLn(' MoveExtend FIN FCol= ',FCol, ' FRow= ',FRow);{$Endif}
 end;
 
+function TCustomGrid.MoveNextAuto: boolean;
+var
+  aCol,aRow: Integer;
+begin
+  aCol := 0;
+  aRow := 0;
+  case FAutoAdvance of
+    aaRight: ACol := integer(FCol<ColCount-1);
+    aaDown : ARow := integer(FRow<RowCount-1);
+    aaLeft : ACol := -integer(FCol>FixedCols);
+  end;
+  result := (aCol<>0) or (aRow<>0);
+  if result then begin
+    FGCache.TLColOff:=0;
+    FGCache.TLRowOff:=0;
+    MoveNextSelectable(true, aCol, aRow);
+  end;
+end;
+
 function TCustomGrid.MoveNextSelectable(Relative: Boolean; DCol, DRow: Integer
   ): Boolean;
 var
@@ -3265,6 +3311,7 @@ begin
   if DRow<0 then RInc:=-1 else
   if DRow>0 then RInc:= 1
   else           RInc:= 0;
+  
   // Calculation
   SelOk:=SelectCell(NCol,NRow);
   Result:=False;
@@ -3350,6 +3397,30 @@ end;
 procedure TCustomGrid.BeforeMoveSelection(const DCol,DRow: Integer);
 begin
   if Assigned(OnBeforeSelection) then OnBeforeSelection(Self, DCol, DRow);
+end;
+
+procedure TCustomGrid.CalcFocusRect(var ARect: TRect);
+{
+var
+  dx,dy: integer;
+}
+begin
+  if goRowSelect in Options then begin
+    aRect.Left := FGCache.FixedWidth + 1;
+    aRect.Right := FGCache.MaxClientXY.x;
+  end;
+  if goHorzLine in Options then dec(aRect.Bottom, 1);
+  if goVertLine in Options then dec(aRect.Right, 1);
+  {
+  if not (goHorzLine in Options) then begin
+    aRect.Bottom := aRect.Bottom + 1;
+    Dec(aRect.Botton, 1);
+  end;
+  if not (goVertLine in Options) then begin
+    aRect.Right := aRect.Right + 1;
+    Dec(aRect.Botton, 1);
+  end;
+  }
 end;
 
 procedure TCustomGrid.CellClick(const aCol, aRow: Integer);
@@ -3583,30 +3654,72 @@ end;
 procedure TCustomGrid.EditorKeyDown(Sender: TObject; var Key:Word; Shift:TShiftState);
 begin
   FEditorKey:=True; // Just a flag to see from where the event comes
+  KeyDown(Key, shift);
   case Key of
     VK_LEFT, VK_RIGHT, VK_UP, VK_DOWN,
     VK_PRIOR, VK_NEXT:
     begin
-      if not(ssShift in Shift) then KeyDown(Key, Shift);
+      if ssShift in Shift then
+        exit;
     end;
-    VK_RETURN, VK_TAB:
+    VK_TAB:
+      begin
+        if GoTabs in Options then
+          MoveNextAuto;
+      end;
+    VK_RETURN:
+      begin
+        if not MoveNextAuto then begin
+          EditorGetValue;
+          if EditorAlwaysShown then
+            EditorShow(True);
+        end;
+
+        {
+        case FAutoAdvance of
+          aaRight: Key:=VK_RIGHT * Integer( FCol<ColCount-1 );
+          aaDown : Key:=VK_DOWN * Integer( FRow<RowCount-1 );
+          aaLeft : Key:=VK_LEFT * Integer( FCol>FixedCols );
+          else Key := 0;
+        end;
+        if Key=0 then begin
+          EditorGetValue;
+          if EditorAlwaysShown then
+            EditorShow(true);
+        end;
+        }
+      end;
+  end;
+  (*
+  case Key of
+    VK_LEFT, VK_RIGHT, VK_UP, VK_DOWN,
+    VK_PRIOR, VK_NEXT:
     begin
+      if not(ssShift in Shift) then
+        KeyDown(Key, Shift);
+    end;
+    VK_RETURN{, VK_TAB}:
+    begin
+      {
       if (Key=VK_TAB) and not (goTabs in Options) then begin
           // let the focus go
           KeyDown(Key, Shift);
           //DebugLn('Editor KeyTab Pressed, Focus Should leave the grid');
           Exit;
       end;
-      Key:=0;
+      }
+      //Key:=0;
       case FAutoAdvance of
         aaRight: Key:=VK_RIGHT * Integer( FCol<ColCount-1 );
         aaDown : Key:=VK_DOWN * Integer( FRow<RowCount-1 );
         aaLeft : Key:=VK_LEFT * Integer( FCol>FixedCols );
+        else Key := 0;
       end;
+      
       if Key=0 then begin
         EditorGetValue;
-        EditorShow(EditorAlwaysShown);
-        // Select All !
+        if EditorAlwaysShown then
+          EditorShow(true);
       end else
         KeyDown(Key, Shift);
     end;
@@ -3614,6 +3727,7 @@ begin
     else
       KeyDown(Key, Shift);
   end;
+  *)
   FEditorKey:=False;
 end;
 
@@ -4309,12 +4423,41 @@ procedure TStringCellEditor.KeyDown(var Key: Word; Shift: TShiftState);
     if FGrid<>nil then
       FGrid.EditorkeyDown(Self, key, shift);
   end;
+  procedure doGridKeyDown;
+  begin
+    if FGrid<>nil then
+      FGrid.KeyDown(Key, shift);
+  end;
 var
   IntSel: boolean;
 begin
   {$IfDef dbg}
   DebugLn('INI: Key=',Key,' SelStart=',SelStart,' SelLenght=',SelLength);
   {$Endif}
+  inherited KeyDown(Key,Shift);
+  case Key of
+    VK_LEFT, VK_RIGHT, VK_UP, VK_DOWN:
+      begin
+        IntSel:= ((Key=VK_LEFT) and not AtStart) or ((Key=VK_RIGHT) and not AtEnd);
+        if not IntSel then begin
+          doGridKeyDown;
+        end;
+      end;
+    else begin
+      doEditorKeyDown;
+    end;
+  end;
+
+  {
+  case Key of
+    VK_RETURN:
+      begin
+        doEditorKeyDown;
+        Key := 0;
+      end;
+  end;
+  }
+  {
   case Key of
     VK_RETURN:
       if AllSelected then begin
@@ -4336,7 +4479,7 @@ begin
     end;
   end;
   inherited KeyDown(key, shift);
-  
+  }
 
   {
   if FGrid<>nil then begin
@@ -4407,16 +4550,7 @@ begin
   // Draw focused cell if we have the focus
   if Self.Focused or (EditorAlwaysShown and ((Feditor=nil) or not Feditor.Focused)) then
   begin
-    if goRowSelect in Options then begin
-      aRect.Left := FGCache.FixedWidth + 1;
-      aRect.Right := FGCache.MaxClientXY.x;
-    end;
-    if not (goHorzLine in Options) then begin
-      aRect.Bottom := aRect.Bottom + 1;
-    end;
-    if not (goVertLine in Options) then begin
-      aRect.Right := aRect.Right + 1;
-    end;
+    CalcFocusRect(aRect);
     DrawRubberRect(Canvas, aRect, FFocusColor);
   end;
 end;
