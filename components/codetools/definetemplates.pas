@@ -2697,6 +2697,9 @@ var
       NewPath:=copy(Line,18,length(Line)-17);
       if not FilenameIsAbsolute(NewPath) then
         NewPath:=ExpandFileName(NewPath);
+      {$IFDEF VerboseFPCSrcScan}
+      writeln('Using unit path: "',NewPath,'"');
+      {$ENDIF}
       UnitSearchPath:=UnitSearchPath+NewPath+#13;
     end;
   end;
@@ -3108,6 +3111,9 @@ var
     FileInfo: TSearchRec;
     CurMask: String;
   begin
+    {$IFDEF VerboseFPCSrcScan}
+    writeln('FindStandardPPUSources ..');
+    {$ENDIF}
     // try every ppu file in every reachable directory (CompUnitPath)
     if UnitLinkListValid then exit;
     UnitLinkList:='';
@@ -3162,7 +3168,7 @@ var
   SrcPathMacro: String;
 begin
   {$IFDEF VerboseFPCSrcScan}
-  writeln('CreateFPCSrcTemplate ',FPCSrcDir,': ',length(UnitSearchPath),' Valid=',UnitLinkListValid,' PPUExt=',PPUExt);
+  writeln('CreateFPCSrcTemplate ',FPCSrcDir,': length(UnitSearchPath)=',length(UnitSearchPath),' Valid=',UnitLinkListValid,' PPUExt=',PPUExt);
   {$ENDIF}
   Result:=nil;
   if (FPCSrcDir='') or (not DirPathExists(FPCSrcDir)) then exit;

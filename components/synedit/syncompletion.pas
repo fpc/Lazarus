@@ -336,7 +336,9 @@ end;
 procedure TSynBaseCompletionForm.Deactivate;
 begin
   Visible := False;
+  {$IFDEF SYN_LAZARUS}
   SetCaretRespondToFocus(TCustomSynEdit(FCurrentEditor).Handle,true);
+  {$ENDIF}
 end;
 
 destructor TSynBaseCompletionForm.Destroy;

@@ -2364,10 +2364,16 @@ begin
 end;
 
 procedure TSourceNotebook.DeactivateCompletionForm;
+var ActSE: TSourceEditor;
 begin
   CurCompletionControl.Deactivate;
   CurCompletionControl:=nil;
   CurrentCompletionType:=ctNone;
+  ActSE:=GetActiveSE;
+  if ActSE<>nil then begin
+    LCLIntf.ShowCaret(ActSE.EditorComponent.Handle);
+    ActSE.EditorComponent.SetFocus;
+  end;
 end;
 
 procedure TSourceNotebook.InitIdentCompletion(S: TStrings);
@@ -2609,12 +2615,9 @@ End;
 
 Procedure TSourceNotebook.ccCancel(Sender: TObject);
 // user cancels completion form
-var ActSE: TSourceEditor;
 begin
   if CurCompletionControl=nil then exit;
   DeactivateCompletionForm;
-  ActSE:=GetActiveSE;
-  if ActSE<>nil then LCLIntf.ShowCaret(ActSE.EditorComponent.Handle);
 end;
 
 Procedure TSourceNotebook.ccExecute(Sender: TObject);

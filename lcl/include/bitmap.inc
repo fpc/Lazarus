@@ -1047,13 +1047,17 @@ begin
   // free old mask handle
   FImage.FreeMaskHandle;
   // combine (depending on the interface we will end with one or two handles)
-  writeln('TBitmap.SetMaskHandle A FImage.FHandle=',HexStr(Cardinal(FImage.FHandle),8),
+  {$IFDEF VerboseImgMasks}
+  writeln('TBitmap.SetMaskHandle Before Replace FImage.FHandle=',HexStr(Cardinal(FImage.FHandle),8),
     ' FImage.FMaskHandle=',HexStr(Cardinal(FImage.FMaskHandle),8),
     ' NewMaskHandle=',HexStr(Cardinal(NewMaskHandle),8));
+  {$ENDIF}
   ReplaceBitmapMask(FImage.FHandle,FImage.FMaskHandle,NewMaskHandle);
-  writeln('TBitmap.SetMaskHandle END FImage.FHandle=',HexStr(Cardinal(FImage.FHandle),8),
+  {$IFDEF VerboseImgMasks}
+  writeln('TBitmap.SetMaskHandle After Replace FImage.FHandle=',HexStr(Cardinal(FImage.FHandle),8),
     ' FImage.FMaskHandle=',HexStr(Cardinal(FImage.FMaskHandle),8),
     ' NewMaskHandle=',HexStr(Cardinal(NewMaskHandle),8));
+  {$ENDIF}
   Changed(Self);
 end;
 
@@ -1196,6 +1200,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.86  2004/04/23 20:41:11  mattias
+  added SetFocus after closing completion form
+
   Revision 1.85  2004/04/10 17:58:56  mattias
   implemented mainunit hints for include files
 
