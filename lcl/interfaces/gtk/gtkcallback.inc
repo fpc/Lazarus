@@ -396,6 +396,8 @@ var
   Flags: Integer;
   Toggle, Extended, SysKey: Boolean;
 begin
+  Result:=true;
+  FillChar(Msg,SizeOf(Msg),0);
   GetGTKKeyInfo(Event, KeyCode, Msg.CharCode, SysKey, Extended, Toggle);
   // Assert(False, Format('Trace:[GTKKeyUpDown] Type: %3:d, GTK: 0x%0:x(%0:d) LCL: 0x%1:x(%1:d) VK: 0x%2:x(%2:d)', [Event^.keyval, KeyCode, Msg.CharCode, Event^.theType]));
 
@@ -405,116 +407,144 @@ begin
   if SysKey then Flags := Flags or KF_ALTDOWN;
 
   Msg.KeyData := $00000000; //TODO: OEM char
-  
+
+  //writeln('[GTKKeyUpDown] ',TControl(Data).Name,':',TControl(Data).ClassName,' ',Event^.theType);
+
   case Event^.theType of
 
-    GDK_KEY_RELEASE:
-      begin
-        //writeln('GTKKeyUpDown-GDK_KEY_RELEASE Code=',KeyCode,' Char=',Msg.CharCode,' Sys=',SysKey,' Ext=',Extended,' Toggle=',Toggle);
-        EventTrace('key up', data);
-        if SysKey
-        then Msg.msg := LM_SYSKEYUP
-        else Msg.msg := LM_KEYUP;
+  GDK_KEY_RELEASE:
+    begin
+      {writeln('[GTKKeyUpDown] RELEASE ',TControl(Data).Name,':',TControl(Data).ClassName,
+        ' Code=',KeyCode,
+        ' Char=',Msg.CharCode,' Sys=',SysKey,' Ext=',Extended,' Toggle=',Toggle);}
+      EventTrace('key up', data);
+      if SysKey
+      then Msg.msg := LM_SYSKEYUP
+      else Msg.msg := LM_KEYUP;
 
-        Flags := Flags or KF_UP or KF_REPEAT;
+      Flags := Flags or KF_UP or KF_REPEAT;
 
-        Msg.KeyData := Msg.KeyData or (Flags shl 16) or $0001 {allways};
-        Code := Msg.CharCode;
+      Msg.KeyData := Msg.KeyData or (Flags shl 16) or $0001 {allways};
 
-        // ToDo: This should be DeliverMessage and go o the WndProc
-        TObject(Data).Dispatch(Msg);//Result := DeliverPostMessage(Data, Msg);
+      // send the message directly to the LCL
+      Msg.Result:=0;
+      Code := Msg.CharCode;
+      {$IFDEF KeyBugFix}
+      Result := DeliverMessage(Data, Msg);
+      {$ELSE}
+      TObject(Data).Dispatch(Msg);
+      Result := (Msg.Result=0);
+      {$ENDIF}
 
-        If Msg.CharCode <> Code then begin
-          If (Msg.CharCode >= 31) or (Msg.CharCode = 0) then begin
-            {$IfNDef Win32}
-            If Event^.theString <> nil then
-              Event^.theString[0] := Char(Msg.CharCode);
-            {$EndIf}
-            Event^.KeyVal := Msg.CharCode;
-          end else begin
-            Event^.KeyVal := 0;
-          end;
+      If Msg.CharCode <> Code then begin
+        // key was handled by LCL
+        gtk_signal_emit_stop_by_name (GTK_OBJECT (Widget), 'key_release_event');
+        If (Msg.CharCode >= 31) or (Msg.CharCode = 0) then begin
+          {$IfNDef Win32}
+          If Event^.theString <> nil then
+            Event^.theString[0] := Char(Msg.CharCode);
+          {$EndIf}
+          Event^.KeyVal := Msg.CharCode;
+        end else begin
+          Event^.KeyVal := 0;
         end;
-        Result := LongBool(Msg.Result);
       end;
-    GDK_KEY_PRESS:
-      begin
-      
-        {writeln('[GTKKeyUpDown] ',HexStr(Cardinal(Widget),8),' ',HexStr(Cardinal(Data),8));
-        writeln('  [GetGTKKeyInfo] Event^.KeyVal=',Event^.KeyVal,
-          ' State=',HexStr(Cardinal(Event^.State),8),
-          ' Ctrl=',ssCtrl in ShiftState,
-          ' Shift=',ssShift in ShiftState,
-          ' KeyCode=',KeyCode,
-          ' VK=',Msg.CharCode
-          );
-        writeln('   ',
-          ' SysKey=',SysKey,
-          ' Extended=',Extended,
-          ' Toggle=',Toggle
-          );}
+    end;
     
-        EventTrace('key down', data);
-        if SysKey
-        then Msg.msg := LM_SYSKEYDOWN
-        else Msg.msg := LM_KEYDOWN;
+  GDK_KEY_PRESS:
+    begin
+    
+      {writeln('[GTKKeyUpDown] PRESS ',TControl(Data).Name,':',TControl(Data).ClassName,
+        ' Widget=',HexStr(Cardinal(Widget),8));
+      writeln('  Event^.KeyVal=',Event^.KeyVal,
+        ' State=',HexStr(Cardinal(Event^.State),8),
+        ' KeyCode=',KeyCode,
+        ' VK=',Msg.CharCode,
+        ' SysKey=',SysKey,
+        ' Extended=',Extended,
+        ' Toggle=',Toggle
+        );}
+  
+      EventTrace('key down', data);
+      if SysKey
+      then Msg.msg := LM_SYSKEYDOWN
+      else Msg.msg := LM_KEYDOWN;
 
-        // todo  repeat
-        // Flags := Flags or KF_REPEAT;
+      // todo  repeat
+      // Flags := Flags or KF_REPEAT;
 
-        Msg.KeyData := Msg.KeyData or (Flags shl 16) or $0001 {TODO:  repeatcount};
-        Code := Msg.CharCode;
-        TObject(Data).Dispatch(Msg);//DeliverPostMessage(Data, Msg);
+      Msg.KeyData := Msg.KeyData or (Flags shl 16) or $0001 {TODO:  repeatcount};
+      Code := Msg.CharCode;
+      // send the message directly to the LCL
+      {$IFDEF KeyBugFix}
+      Result := DeliverMessage(Data, Msg);
+      {$ELSE}
+      TObject(Data).Dispatch(Msg);
+      Result := (Msg.Result=0);
+      {$ENDIF}
 
-        If Msg.CharCode <> Code then begin
-          If (Msg.CharCode >= 31) or (Msg.CharCode = 0) then begin
+      If Msg.CharCode <> Code then begin
+        // key was handled by LCL
+        gtk_signal_emit_stop_by_name (GTK_OBJECT (Widget), 'key_press_event');
+        //writeln('  KEY PRESS WAS HANDLED');
+        If ((Msg.CharCode >= 31) and (Msg.CharCode <= 255))
+        or (Msg.CharCode = 0) then begin
+          {$IfNDef Win32}
+          Event^.theString[0] := Char(Msg.CharCode);
+          {$EndIf}
+          Event^.KeyVal := Msg.CharCode;
+          If Msg.CharCode <> 0 then
+            KeyCode := Msg.CharCode
+          else
+            KeyCode := $FFFF;
+        end else begin
+          Event^.KeyVal := 0;
+          KeyCode := $FFFF;
+        end;
+      end;
+
+      if (KeyCode <> $FFFF)
+      then begin
+        EventTrace('char', data);
+        if SysKey then
+          Msg.msg := LM_SYSCHAR
+        else
+          Msg.msg := LM_CHAR;
+        Msg.CharCode := KeyCode;
+        Msg.Result:=0;
+        // send the message directly to the LCL
+        {$IFDEF KeyBugFix}
+        Result := DeliverMessage(Data, Msg);
+        {$ELSE}
+        TObject(Data).Dispatch(Msg);
+        Result := (Msg.Result=0);
+        {$ENDIF}
+        If Msg.CharCode <> KeyCode then
+          If ((Msg.CharCode >= 31) and (Msg.CharCode <= 255))
+          or (Msg.CharCode = 0) then
+          begin
             {$IfNDef Win32}
             Event^.theString[0] := Char(Msg.CharCode);
             {$EndIf}
             Event^.KeyVal := Msg.CharCode;
-            If Msg.CharCode <> 0 then
-              KeyCode := Msg.CharCode
-            else
-              KeyCode := $FFFF;
-          end else begin
+          end;
+      end;
+      //This is disabled on account of the
+      //strange behaviour in TSynEdit
+      (*If Msg.CharCode = VK_TAB then
+        If TObject(Data) is TControl then begin
+          Control := TControl(Data);
+          Result := Control.PerformTab;
+          If Result then begin
+            {$IfNDef Win32}
+            Event^.theString[0] := #0;
+            {$EndIf}
             Event^.KeyVal := 0;
           end;
-        end;
-
-        if KeyCode <> $FFFF
-        then begin
-          EventTrace('char', data);
-          if SysKey then Msg.msg := LM_SYSCHAR
-          else Msg.msg := LM_CHAR;
-          Msg.CharCode := KeyCode;
-          // send the message directly to the LCL
-          // (Posting the message via queue
-          //  has the risk of getting out of sync with the gtk)
-          TObject(Data).Dispatch(Msg);//DeliverPostMessage(Data, Msg);
-          Result := LongBool(Msg.Result);
-          If Msg.CharCode <> KeyCode then
-            If (Msg.CharCode >= 31) or (Msg.CharCode = 0) then begin
-              {$IfNDef Win32}
-              Event^.theString[0] := Char(Msg.CharCode);
-              {$EndIf}
-              Event^.KeyVal := Msg.CharCode;
-            end;
-        end;
-        //This is disabled on account of the
-        //strange behaviour in TSynEdit
-        (*If Msg.CharCode = VK_TAB then
-          If TObject(Data) is TControl then begin
-            Control := TControl(Data);
-            Result := Control.PerformTab;
-            If Result then begin
-              {$IfNDef Win32}
-              Event^.theString[0] := #0;
-              {$EndIf}
-              Event^.KeyVal := 0;
-            end;
-          end; *)
-      end;
+        end; *)
+    end;
   end;
+//writeln('AAA1 [GTKKeyUpDown] ',TControl(Data).Name,':',TControl(Data).ClassName,' Result=',Result);
 end;
 
 
@@ -2431,6 +2461,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.140  2002/10/04 20:46:52  lazarus
+  MG: improved TComboBox.SetItemIndex
+
   Revision 1.139  2002/10/04 16:38:15  lazarus
   MG: no OnChange event when app sets Text of TComboBox
 
