@@ -497,6 +497,7 @@ type
     FLastResizeWidth: integer;
     FLastResizeClientHeight: integer;
     FLastResizeClientWidth: integer;
+    FLastChangeboundRect: TRect;
     FLastWidth : Integer;
     FLeft: Integer;
     FMouseEntered: boolean;
@@ -692,6 +693,7 @@ type
     procedure AddControl; virtual;
     Procedure DragDrop(Source: TObject; X,Y : Integer); Dynamic;
     procedure SendToBack;
+    procedure SetInitialBounds(aLeft, aTop, aWidth, aHeight : integer); virtual;
     procedure SetBounds(aLeft, aTop, aWidth, aHeight : integer); virtual;
     function  GetTextBuf(Buffer: PChar; BufSize: Integer): Integer;
     Procedure SetTextBuf(Buffer : PChar);
@@ -772,7 +774,12 @@ type
 
   { TWinControl }
 
-  TWinControlFlag = (wcfClientRectNeedsUpdate,wcfColorChanged);
+  TWinControlFlag = (
+    wcfClientRectNeedsUpdate,
+    wcfColorChanged,
+    wcfReAlignNeeded,
+    wcfRequestAlignNeeded
+    );
   TWinControlFlags = set of TWinControlFlag;
 
   TWinControl = class(TControl)
@@ -800,6 +807,7 @@ type
     FOnExit  : TNotifyEvent;
     FParentWindow : hwnd;
     FParentCtl3D : Boolean;
+    FRealizeBoundsLockCount: integer;
     FHandle: Hwnd;
     FShowing : Boolean;
     FTabList : TList;
@@ -858,6 +866,7 @@ type
     procedure KeyUp(var Key : Word; Shift : TShiftState); dynamic;
     procedure MainWndProc(var Message : TLMessage);
     procedure ReAlign;
+    procedure RequestAlign; override;
     procedure ReCreateWnd;
     procedure RemoveFocus(Removing: Boolean);
     procedure SetText(const Value: TCaption); override;
@@ -911,6 +920,8 @@ type
     destructor Destroy; override;
     procedure BeginUpdateBounds;
     procedure EndUpdateBounds;
+    procedure LockRealizeBounds;
+    procedure UnlockRealizeBounds;
     Function CanFocus : Boolean;
     Function ControlAtPos(const Pos : TPoint; AllowDisabled : Boolean): TControl;
     Function ControlAtPos(const Pos : TPoint;
@@ -1030,6 +1041,9 @@ const
     [akRight, akTop, akBottom],
     { alClient }
     [akLeft, akTop, akRight, akBottom]);
+  AlignNames: array[TAlign] of string = (
+    'alNone', 'alTop', 'alBottom', 'alLeft', 'alRight', 'alClient');
+
 
 function CNSendMessage(LM_Message : integer; Sender : TObject; data : pointer) : integer;
 Function FindDragTarget(const Pos : TPoint; AllowDisabled: Boolean): TControl;
@@ -1117,6 +1131,16 @@ end;
 function SendAppMessage(Msg: Cardinal; WParam, LParam: Longint): Longint;
 begin
   Result:=LCLProc.SendApplicationMessage(Msg,WParam,LParam);
+end;
+
+function CompareRect(R1, R2: PRect): Boolean;
+begin
+  Result:=(R1^.Left=R2^.Left) and (R1^.Top=R2^.Top) and
+          (R1^.Bottom=R2^.Bottom) and (R1^.Right=R2^.Right);
+  {if not Result then begin
+    writeln(' DIFFER: ',R1^.Left,',',R1^.Top,',',R1^.Right,',',R1^.Bottom
+      ,' <> ',R2^.Left,',',R2^.Top,',',R2^.Right,',',R2^.Bottom);
+  end;}
 end;
 
 Procedure MoveWindowOrg(dc : hdc; X,Y : Integer);
@@ -1458,6 +1482,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.122  2003/06/10 00:46:16  mattias
+  fixed aligning controls
+
   Revision 1.121  2003/06/01 21:37:18  mattias
   fixed streaming TDataModule in programs
 
