@@ -2784,6 +2784,9 @@ var
 
       theRect.Right := theRect.Left + LineWidth;
       theRect.Bottom := theRect.Top + NumLines*TM.tmHeight;
+      if NumLines>1 then
+        Inc(theRect.Bottom, (NumLines-1)*TM.tmDescent);// space between lines
+
       //debugln('TGtkWidgetSet.DrawText A ',dbgs(theRect),' TM.tmHeight=',dbgs(TM.tmHeight),' LineWidth=',dbgs(LineWidth),' NumLines=',dbgs(NumLines));
     end;
 
@@ -2905,6 +2908,9 @@ begin
       end
       else If (Lines <> nil) and (NumLines <> 0) then begin
         For I := 0 to NumLines - 1 do begin
+          if I>0 then
+            Inc(theRect.Top, TM.tmDescent);// space between lines
+
           If (((Flags and DT_EditControl) = DT_EditControl) and
             (tm.tmHeight > (theRect.Bottom - theRect.Top))) or
             (theRect.Top > theRect.Bottom)
@@ -8857,6 +8863,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.389  2005/01/27 19:03:51  mattias
+  added QuestionDlg - a MessageDlg with custom buttons
+
   Revision 1.388  2005/01/22 23:53:43  mattias
   fixed gtk2 intf  from Peter Vreman
 

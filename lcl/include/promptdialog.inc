@@ -35,9 +35,6 @@ type
   TPromptDialog = class(TForm)
     procedure PromptDialogKeyDown(Sender: TObject; var Key: Word;
           Shift: TShiftState);
-
-    function GetDialogCaption(idDiag : Integer) : String;
-    function GetDialogButtonText(idBut : Integer): string;
   public
     TheDefaultIndex : Longint;
 
@@ -55,6 +52,38 @@ type
       DialogType : longint; TheButtons: PLongint; ButtonCount, DefaultIndex : Longint);
     Destructor Destroy; Override;
   end;
+
+{** Return the localized or not title of dialog}
+function GetDialogCaption(idDiag: Integer): String;
+begin
+  Result:='?';
+  Case idDiag of
+    idDialogWarning : Result:=rsMtWarning;
+    idDialogError   : Result:=rsMtError;
+    idDialogInfo    : Result:=rsMtInformation;
+    idDialogConfirm : Result:=rsMtConfirmation;
+  end;
+end;
+
+{** Return the text associed a an standard button}
+function GetDialogButtonText(idBut: Integer): string;
+begin
+  Result:='';
+  Case idBut of
+    idButtonOk       : Result:=rsmbOk;
+    idButtonCancel   : Result:=rsmbCancel;
+    idButtonHelp     : Result:=rsmbHelp;
+    idButtonYes      : Result:=rsmbYes;
+    idButtonNo       : Result:=rsmbNo;
+    idButtonClose    : Result:=rsmbClose;
+    idButtonAbort    : Result:=rsmbAbort;
+    idButtonRetry    : Result:=rsmbRetry;
+    idButtonIgnore   : Result:=rsmbIgnore;
+    idButtonAll      : Result:=rsmbAll;
+    idButtonYesToAll : Result:=rsmbYesToAll;
+    idButtonNoToAll  : Result:=rsmbNoToAll;
+  end;
+end;
 
 procedure TPromptDialog.PromptDialogKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
@@ -109,38 +138,6 @@ begin
       ActiveControl:=NewFocusControl;
       Key:=VK_UNKNOWN;
     end;
-  end;
-end;
-
-{** Return the localized or not title of dialog}
-function TPromptDialog.GetDialogCaption(idDiag: Integer): String;
-begin
-  Result:='?';
-  Case idDiag of
-    idDialogWarning : Result:=rsMtWarning;
-    idDialogError   : Result:=rsMtError;
-    idDialogInfo    : Result:=rsMtInformation;
-    idDialogConfirm : Result:=rsMtConfirmation;
-  end;
-end;
-
-{** Return the text associed a an standard button}
-function TPromptDialog.GetDialogButtonText(idBut: Integer): string;
-begin
-  Result:='';
-  Case idBut of
-    idButtonOk       : Result:=rsmbOk;
-    idButtonCancel   : Result:=rsmbCancel;
-    idButtonHelp     : Result:=rsmbHelp;
-    idButtonYes      : Result:=rsmbYes;
-    idButtonNo       : Result:=rsmbNo;
-    idButtonClose    : Result:=rsmbClose;
-    idButtonAbort    : Result:=rsmbAbort;
-    idButtonRetry    : Result:=rsmbRetry;
-    idButtonIgnore   : Result:=rsmbIgnore;
-    idButtonAll      : Result:=rsmbAll;
-    idButtonYesToAll : Result:=rsmbYesToAll;
-    idButtonNoToAll  : Result:=rsmbNoToAll;
   end;
 end;
 
@@ -303,36 +300,36 @@ begin
     begin
       inc(ButtonIndex);
 
-      with TBitBtn.Create(Self) do
-      begin
-        Parent:= Self;
-        SetBounds (ButtonLeft, 2 * cLabelSpacing + reqHeight, cBtnWidth, cBtnHeight);
-        inc(ButtonLeft, cBtnDist);
-        Layout  := blGlyphLeft;
-        OnKeyDown := @PromptDialogKeyDown;
-        Case Buttons[curBtn] of
-          idButtonYesToAll,
-          idButtonNoToAll :
+    with TBitBtn.Create(Self) do
+    begin
+      Parent:= Self;
+      SetBounds (ButtonLeft, 2 * cLabelSpacing + reqHeight, cBtnWidth, cBtnHeight);
+      inc(ButtonLeft, cBtnDist);
+      Layout  := blGlyphLeft;
+      OnKeyDown := @PromptDialogKeyDown;
+      Case Buttons[curBtn] of
+        idButtonYesToAll,
+        idButtonNoToAll :
+          begin
+            Glyph.Handle := LoadStockPixmap(Buttons[curBtn]);
+            If Buttons[curBtn] = idButtonYesToAll then
             begin
-              Glyph.Handle := LoadStockPixmap(Buttons[curBtn]);
-              If Buttons[curBtn] = idButtonYesToAll then
-              begin
-                ModalResult := mrYesToAll;
-                Caption := rsmbYesToAll;
-              end
-              else
-              begin
-                ModalResult := mrNoToAll;
-                Caption := rsmbNoToAll;
-              end;
+              ModalResult := mrYesToAll;
+              Caption := rsmbYesToAll;
+            end
+            else
+            begin
+              ModalResult := mrNoToAll;
+              Caption := rsmbNoToAll;
             end;
-          else
-            Kind := DialogButtonKind[Buttons[curBtn]];
-        end;
-	if Height < Glyph.Height + 5 then
-	  Height := Glyph.Height + 5;
-        if ButtonIndex = TheDefaultIndex then Default := true;
-        Visible:=true;
+          end;
+        else
+          Kind := DialogButtonKind[Buttons[curBtn]];
+      end;
+      if Height < Glyph.Height + 5 then
+        Height := Glyph.Height + 5;
+      if ButtonIndex = TheDefaultIndex then Default := true;
+      Visible:=true;
       end;
     end;
   end;
@@ -377,10 +374,376 @@ begin
 end;
 
 
+type
+
+  { TQuestionDlg }
+
+  TQuestionDlg = class(TForm)
+    procedure ButtonKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+  private
+    FButtons: TList;
+    FBitmap: TBitmap;
+    FBitmapX, FBitmapY: Integer;
+  public
+    TextBox : TRect;
+    TextStyle : TTextStyle;
+    MessageTxt: String;
+    constructor CreateQuestionDlg(const aCaption, aMsg: string;
+      DlgType: TMsgDlgType; Buttons: array of const; HelpCtx: Longint);
+    destructor Destroy; override;
+    procedure Paint; override;
+    procedure LayoutDialog;
+    function ShowModal: TModalResult; override;
+    function FindButton(Order: array of TModalResult): TBitBtn;
+    procedure CalcButtonSize(AButton: TBitBtn; var w, h: Integer);
+  end;
+
+{ TQuestionDlg }
+
+procedure TQuestionDlg.Paint;
+begin
+  Inherited Paint;
+  //Canvas.Brush.Color := clRed;
+  //Canvas.FillRect(TextBox);
+  Canvas.TextRect(TextBox, TextBox.Left, TextBox.Top, MessageTxt, TextStyle);
+  if Assigned(FBitmap) then begin
+    //Canvas.Brush.Color := clBlue;
+    //Canvas.FillRect(Bounds(FBitmapX,FBitmapY,FBitmap.Width,FBitmap.Height));
+    Canvas.CopyRect(Bounds(FBitmapX,FBitmapY,FBitmap.Width,FBitmap.Height),
+                    FBitmap.Canvas, Rect(0,0,FBitmap.Width,FBitmap.Height));
+  end;
+end;
+
+procedure TQuestionDlg.LayoutDialog;
+const
+  cBtnDist = 10; // distance between buttons
+  cLabelSpacing = 8; // space around label
+var
+  Flags: Cardinal;
+  i: Integer;
+  CurButton: TBitBtn;
+  CurBtnWidth, CurBtnHeight: Integer;
+  reqBtnWidth: Integer;
+  reqWidth: LongInt;
+  cMinLeft: Integer;
+  ButtonLeft: Integer;
+  reqHeight: LongInt;
+  CurBtnPos: Integer;
+begin
+  FillChar(TextStyle, SizeOf(TTextStyle), 0);
+
+  With TextStyle do
+  begin
+    Clipping   := True;
+    Wordbreak  := True;
+    SystemFont := True;
+    Opaque     := False;
+  end;
+
+  // calculate the width & height we need to display the Message
+  If MessageTxt = '' then
+    MessageTxt := '   ';
+  TextBox := Rect(0,0, Screen.Width div 2,Screen.Height - 100);
+  Flags:=DT_CalcRect or DT_NoPrefix or DT_WordBreak;
+  DrawText(Canvas.GetUpdatedHandle([csHandleValid,csFontValid]),
+           PChar(MessageTxt),Length(MessageTxt),TextBox,Flags);
+
+  // calculate the width we need to display the buttons
+  reqBtnWidth:=0;
+  CurBtnHeight:=25;
+  if FButtons<>nil then
+    for i:=0 to FButtons.Count-1 do begin
+      if i>0 then
+        Inc(reqBtnWidth, cBtnDist);
+      CurButton:=TBitBtn(FButtons[i]);
+      CalcButtonSize(CurButton,CurBtnWidth,CurBtnHeight);
+      Inc(reqBtnWidth, CurBtnWidth);
+    end;
+
+  // calculate the width of the dialog
+  If FBitmap <> nil then
+    cMinLeft := cLabelSpacing + max(20,FBitmap.Width) + cLabelSpacing
+  else
+    cMinLeft := cLabelSpacing;
+  reqWidth:= reqBtnWidth + 2*cBtnDist;
+  if reqWidth < (TextBox.Right + cMinLeft + cLabelSpacing) then
+    reqWidth:= TextBox.Right + cMinLeft + cLabelSpacing;
+  ButtonLeft := ((reqWidth - reqBtnWidth) div 2);
+
+  // calculate the height of the dialog
+  reqHeight:= TextBox.Bottom;
+  if (FBitmap <> nil) and (FBitmap.Height > reqHeight) then
+    reqHeight := FBitmap.Height;
+  inc(reqHeight,CurBtnHeight+3*cLabelSpacing);
+
+  // calculate the text position
+  OffsetRect(TextBox,
+             ((reqWidth-cMinLeft-TextBox.Right-cLabelSpacing) div 2) + cMinLeft,
+             cLabelSpacing);
+
+  // calculate the icon position
+  if FBitmap<>nil then begin
+    FBitmapX:=cLabelSpacing;
+    FBitmapY:=(reqHeight-CurBtnHeight-FBitmap.Height-cLabelSpacing) div 2;
+  end;
+
+  // set size of form
+  SetBounds((Screen.Width-reqWidth-10) div 2, (Screen.Height-reqHeight-50) div 2,
+         reqWidth,reqHeight);
+
+  // position buttons
+  CurBtnPos:=ButtonLeft;
+  if FButtons<>nil then
+    for i:=0 to FButtons.Count-1 do begin
+      if i>0 then
+        Inc(CurBtnPos,cBtnDist);
+      CurButton:=TBitBtn(FButtons[i]);
+      CalcButtonSize(CurButton,CurBtnWidth,CurBtnHeight);
+      CurButton.SetBounds(CurBtnPos,ClientHeight-CurBtnHeight-cLabelSpacing,
+                          CurBtnWidth,CurBtnHeight);
+      Inc(CurBtnPos,CurBtnWidth);
+    end;
+end;
+
+function TQuestionDlg.ShowModal: TModalResult;
+begin
+  LayoutDialog;
+  Result:=inherited ShowModal;
+end;
+
+function TQuestionDlg.FindButton(Order: array of TModalResult): TBitBtn;
+var
+  i: Integer;
+  CurValue: TModalResult;
+  j: Integer;
+begin
+  if FButtons=nil then begin
+    Result:=nil;
+    exit;
+  end;
+  for i:=Low(Order) to High(Order) do begin
+    CurValue:=Order[i];
+    for j:=0 to FButtons.Count-1 do begin
+      Result:=TBitBtn(FButtons[j]);
+      if Result.ModalResult=CurValue then exit;
+    end;
+  end;
+  Result:=nil;
+end;
+
+procedure TQuestionDlg.CalcButtonSize(AButton: TBitBtn; var w, h: Integer);
+begin
+  w:=length(AButton.Caption)*10;
+  h:=25;
+  Canvas.GetTextSize(AButton.Caption,w,h);
+  if AButton.Kind<>bkCustom then begin
+    inc(w,22); // icon
+  end;
+  h:=Max(h,22); // icon
+  inc(w,12); // borders
+  inc(h,6); // borders
+end;
+
+procedure TQuestionDlg.ButtonKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+var
+  Handled: Boolean;
+begin
+  if Shift<>[] then exit;
+  Handled:=true;
+  if (Key=VK_ESCAPE) and (CancelControl<>nil) then
+    CancelControl.ExecuteCancelAction
+  else if (Key in [VK_RETURN,VK_SPACE]) and (Sender is TBitBtn) then
+    ModalResult:=TBitBtn(Sender).ModalResult
+  else if (Key=VK_RETURN) and (DefaultControl<>nil) then
+    DefaultControl.ExecuteDefaultAction
+  else if (Key=VK_LEFT) then
+    TWinControl(Sender).PerformTab(false)
+  else if (Key=VK_RIGHT) then
+    TWinControl(Sender).PerformTab(true)
+  else
+    Handled:=false;
+  if Handled then Key:=VK_UNKNOWN;
+end;
+
+constructor TQuestionDlg.CreateQuestionDlg(const aCaption, aMsg: string;
+  DlgType: TMsgDlgType; Buttons: array of const; HelpCtx: Longint);
+var
+  i: Integer;
+  CurBtnValue: TModalResult;
+  CurBtnCaption: String;
+  NewButton: TBitBtn;
+  NewKind: TBitBtnKind;
+  NewCaption: String;
+  dlgId: LongInt;
+  ok: Boolean;
+begin
+  inherited Create(nil);
+  MessageTxt:=aMsg;
+  HelpContext:=HelpCtx;
+  OnKeyDown:=@ButtonKeyDown;
+  ok:=false;
+  try
+    i:=Low(Buttons);
+    while i<=High(Buttons) do begin
+      if Buttons[i].VType=vtInteger then begin
+        // get TModalResult
+        CurBtnValue:=Buttons[i].VInteger;
+        //debugln('TQuestionDlg.CreateQuestionDlg i=',dbgs(i),' CurBtnValue=',dbgs(CurBtnValue));
+        inc(i);
+        
+        // get button caption
+        CurBtnCaption:='';
+        if (i<=High(Buttons)) then begin
+          //debugln('TQuestionDlg.CreateQuestionDlg i=',dbgs(i),' Buttons[i].VType=',dbgs(Buttons[i].VType),' vtString=',dbgs(vtString));
+          case Buttons[i].VType of
+          vtString: CurBtnCaption:=Buttons[i].VString^;
+          vtAnsiString: CurBtnCaption:=AnsiString(Buttons[i].VAnsiString);
+          vtChar: CurBtnCaption:=Buttons[i].VChar;
+          vtPChar: CurBtnCaption:=Buttons[i].VPChar;
+          {$ifndef VER1_0}
+          vtPWideChar: CurBtnCaption:=Buttons[i].VPWideChar;
+          vtWideChar: CurBtnCaption:=Buttons[i].VWideChar;
+          vtWidestring: CurBtnCaption:=WideString(Buttons[i].VWideString);
+          {$endif VER1_0}
+          else
+            dec(i);
+          end;
+          inc(i);
+        end;
+        if CurBtnCaption='' then begin
+          // find default caption
+          Case CurBtnValue of
+            mrOk       : CurBtnCaption:=rsmbOk;
+            mrCancel   : CurBtnCaption:=rsmbCancel;
+            mrYes      : CurBtnCaption:=rsmbYes;
+            mrNo       : CurBtnCaption:=rsmbNo;
+            mrAbort    : CurBtnCaption:=rsmbAbort;
+            mrRetry    : CurBtnCaption:=rsmbRetry;
+            mrIgnore   : CurBtnCaption:=rsmbIgnore;
+            mrAll      : CurBtnCaption:=rsmbAll;
+            mrYesToAll : CurBtnCaption:=rsmbYesToAll;
+            mrNoToAll  : CurBtnCaption:=rsmbNoToAll;
+          end;
+        end;
+        if CurBtnCaption='' then begin
+          raise Exception.Create(
+            'TQuestionDlg.Create: missing Button caption '+dbgs(i-1));
+        end;
+        
+        // get button kind
+        case curBtnValue of
+        mrOk:       NewKind:=bkOK;
+        mrCancel:   NewKind:=bkCancel;
+        mrYes:      NewKind:=bkYes;
+        mrNo:       NewKind:=bkNo;
+        mrAbort:    NewKind:=bkAbort;
+        mrRetry:    NewKind:=bkRetry;
+        mrIgnore:   NewKind:=bkIgnore;
+        mrAll:      NewKind:=bkAll;
+        mrNoToAll:  NewKind:=bkNoToAll;
+        mrYesToAll: NewKind:=bkYesToAll;
+        else NewKind:=bkCustom;
+        end;
+
+        // add button
+        if FButtons=nil then FButtons:=TList.Create;
+        NewButton:=TBitBtn.Create(Self);
+        with NewButton do begin
+          AutoSize:=false;
+          ModalResult:=curBtnValue;
+          Caption:=curBtnCaption;
+          Layout:=blGlyphLeft;
+          Kind:=NewKind;
+          Parent:=Self;
+          OnKeyDown:=@ButtonKeyDown;
+        end;
+        FButtons.Add(NewButton);
+      end else
+        raise Exception.Create(
+          'TQuestionDlg.Create: invalid Buttons parameter '+dbgs(i));
+    end;
+    ok:=true;
+  finally
+    if not Ok then
+      FreeAndNil(FButtons);
+  end;
+
+  FBitmap := nil;
+  NewCaption:=ACaption;
+  FBitmap := TBitmap.Create;
+  Case DlgType of
+    mtWarning, mtError, mtInformation, mtConfirmation:
+      begin
+        dlgId:=DialogIds[DlgType];
+        FBitmap.Handle := LoadStockPixmap(dlgId);
+        if NewCaption='' then
+          NewCaption := GetDialogCaption(dlgId);
+      end;
+    else begin
+      FBitmap.Handle := LoadStockPixmap(idDialogInfo);
+    end
+  end;
+  if NewCaption='' then
+    NewCaption := Application.Title;
+  Caption:=NewCaption;
+  
+  // find default and cancel button
+  DefaultControl:=FindButton([mrYes,mrOk,mrYesToAll,mrAll,mrRetry,mrCancel,
+                              mrNo,mrNoToAll,mrAbort,mrIgnore]);
+  CancelControl:=FindButton([mrNo,mrAbort,mrCancel,mrIgnore,mrNoToAll,mrYes,
+                             mrOk,mrRetry,mrAll,mrYesToAll])
+end;
+
+destructor TQuestionDlg.Destroy;
+begin
+  FreeAndNil(FButtons);
+  FreeAndNil(FBitmap);
+  inherited Destroy;
+end;
+
+
+function QuestionDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
+  Buttons: array of const; HelpCtx: Longint): TModalResult;
+{ Show a dialog with aCaption as Title, aMsg as Text, DlgType as Icon,
+  HelpCtx as Help context and Buttons to define the shown buttons and their
+  TModalResult.
+  Buttons is a list of TModalResult and strings. For each number a button is
+  created. To set a custom caption, add a string after a button.
+  The default TModalResults defined in controls.pp (mrNone..mrLast) don't need
+  a caption. The default captions will be used.
+
+  Examples for Buttons:
+    [mrOk,mrCancel,'Cancel now',mrIgnore,300,'Do it']
+    This will result in 4 buttons:
+      'Ok' returning mrOk
+      'Cancel now' returning mrCancel
+      'Ignore' returning mrIgnore
+      'Do it' returning 300
+}
+var
+  QuestionDialog: TQuestionDlg;
+begin
+  QuestionDialog:=TQuestionDlg.CreateQuestionDlg(aCaption,aMsg,DlgType,Buttons,
+                                                 HelpCtx);
+  try
+    Result:=QuestionDialog.ShowModal;
+  finally
+    QuestionDialog.Free;
+  end;
+end;
+
+
+
+
 // included by dialogs.pp
 
 {
    $Log$
+   Revision 1.18  2005/01/27 19:03:51  mattias
+   added QuestionDlg - a MessageDlg with custom buttons
+
    Revision 1.17  2004/09/24 13:45:32  mattias
    fixed TCanvas.TextRect Delphi compatible Rect and added TBarChart from Michael VC
 

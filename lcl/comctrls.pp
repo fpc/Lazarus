@@ -1627,7 +1627,7 @@ type
     procedure ExpandParents;
     function Bottom: integer;
     function BottomExpanded: integer;
-    function GetParentNodeOfAbsoluteLevel(AAbsoluteLevel:integer):TTreeNode;
+    function GetParentNodeOfAbsoluteLevel(TheAbsoluteLevel: integer): TTreeNode;
     function GetFirstChild: TTreeNode;
     function GetHandle: THandle;
     function GetLastSibling: TTreeNode;
@@ -2293,6 +2293,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.160  2005/01/27 19:03:51  mattias
+  added QuestionDlg - a MessageDlg with custom buttons
+
   Revision 1.159  2005/01/27 10:10:25  mattias
   added TTreeNode.GetParentNodeOfAbsoluteLevel  from Sergio
 

@@ -165,6 +165,7 @@ type
     procedure PaintWindow(dc : Hdc); override;
     procedure UpdateScrollbars; virtual;
     function HasVisibleScrollbars: boolean; virtual;
+    procedure DestroyWnd; override;
     property Canvas: TControlCanvas read FCanvas;
   published
     property AutoScroll: Boolean read FAutoScroll write SetAutoScroll;
@@ -334,6 +335,7 @@ type
   TFormState = set of TFormStateType;
 
   TModalResult = low(Integer)..high(Integer);
+  PModalResult = ^TModalResult;
   
   TFormHandlerType = (
     fhtFirstShow,
@@ -471,7 +473,7 @@ type
     procedure SetFocus; override;
     function SetFocusedControl(Control: TWinControl): Boolean ; Virtual;
     procedure FocusControl(WinControl: TWinControl);
-    function ShowModal: Integer;
+    function ShowModal: Integer; virtual;
     procedure SetRestoredBounds(ALeft, ATop, AWidth, AHeight: integer);
     function GetRolesForControl(AControl: TControl): TControlRolesForForm;
     procedure RemoveAllHandlersOfObject(AnObject: TObject); override;

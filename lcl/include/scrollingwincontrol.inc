@@ -114,6 +114,13 @@ begin
   Result:=VertScrollBar.Visible and HorzScrollBar.Visible;
 end;
 
+procedure TScrollingWinControl.DestroyWnd;
+begin
+  inherited DestroyWnd;
+  if Canvas<>nil then
+    Canvas.Handle:=0;
+end;
+
 Function TScrollingWinControl.StoreScrollBars : Boolean;
 begin
   Result := Not AutoScroll;

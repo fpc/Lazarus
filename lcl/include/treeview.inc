@@ -223,15 +223,19 @@ begin
     Result := 0;
 end;
 
-function TTreeNode.GetParentNodeOfAbsoluteLevel(AAbsoluteLevel:integer):TTreeNode;
-var i, x : integer;
+function TTreeNode.GetParentNodeOfAbsoluteLevel(
+  TheAbsoluteLevel: integer): TTreeNode;
+var
+  i: integer;
+  l: LongInt;
 begin
-  if (AAbsoluteLevel > Level) OR (AAbsoluteLevel < 0) then
+  l:=Level;
+  if (TheAbsoluteLevel > l) or (TheAbsoluteLevel < 0) then
     Result := nil
   else
   begin
     Result := Self;
-    for i := AAbsoluteLevel to Level-1 do
+    for i := TheAbsoluteLevel to l-1 do
       Result := Result.Parent;
   end;
 end;

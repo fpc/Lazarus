@@ -302,8 +302,8 @@ type
       read FOnApplyClicked write FOnApplyClicked;
     property PreviewText: string read FPreviewText write FPreviewText;
   end;
-
-
+  
+  
 { MessageDlg }
 
 function MessageDlg(const aMsg: string; DlgType: TMsgDlgType;
@@ -315,6 +315,8 @@ function MessageDlgPos(const aMsg: string; DlgType: TMsgDlgType;
 function MessageDlgPosHelp(const aMsg: string; DlgType: TMsgDlgType;
             Buttons: TMsgDlgButtons; HelpCtx: Longint; X, Y: Integer;
             const HelpFileName: string): Integer;
+function QuestionDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
+            Buttons: array of const; HelpCtx: Longint): TModalResult;
             
 procedure ShowMessage(const aMsg: string);
 procedure ShowMessageFmt(const aMsg: string; Params: array of const);
@@ -421,6 +423,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.58  2005/01/27 19:03:51  mattias
+  added QuestionDlg - a MessageDlg with custom buttons
+
   Revision 1.57  2004/12/27 19:40:59  mattias
   published BorderSpacing for many controls
 
