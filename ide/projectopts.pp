@@ -38,7 +38,7 @@ interface
 uses
   Classes, LCLLinux, SysUtils, Forms, Controls, Graphics, StdCtrls, ExtCtrls,
   Project, LResources, Buttons, Dialogs, IDEProcs, CodeToolManager,
-  LazarusIDEStrConsts;
+  LazarusIDEStrConsts, IDEOptionDefs;
 
 type
   TProjectOptionsDialog = class(TForm)
@@ -177,6 +177,9 @@ begin
       Show;
     end;
   end;
+
+  IDEDialogLayoutList.ApplyLayout(Self,430,375);
+
   ProjectOptionsDialogResize(nil);
 end;
 
@@ -575,11 +578,13 @@ begin
   Project.Flags:=NewFlags;
     
   SetAutoCreateForms;
+  IDEDialogLayoutList.SaveLayout(Self);
   ModalResult:=mrOk;
 end;
 
 procedure TProjectOptionsDialog.CancelButtonClick(Sender: TObject);
 begin
+  IDEDialogLayoutList.SaveLayout(Self);
   ModalResult:=mrCancel;
 end;
 
