@@ -3,27 +3,30 @@
 #   Makefile.fpc for Lazarus for Free Pascal
 #
 
-[targets]
-dirs=synedit mwedit
+[package]
+name=lazarus-components
+version=0.7a
 
-[dirs]
-# target dir needs to be . or a full path otherwise the 
-# unittargetdir will be corrupt
-# not with the lazarusmake.ini
-# targetdir=.
-unittargetdir=./units
+[target]
+#dirs=synedit mwedit
+dirs=synedit 
 
 [install]
-units=$(notdir $(basename $(wildcard $(UNITTARGETDIR)/*$(PPUEXT))))
-packagename=components
 
-
-[presettings]
+[prerules]
+DIST_DESTDIR=$(BASEDIR)/../dist
 ifndef LCLPLATFORM
 LCLPLATFORM=gtk
 export LCLPLATFORM
 endif
 
-[postsettings]
-
 [rules]
+.PHONY: all makefile makefiles
+
+makefile: Makefile.fpc
+        -$(FPCMAKE) -w
+        
+makefiles: makefile
+        $(MAKE) -C mwedit makefiles
+        $(MAKE) -C synedit makefiles
+

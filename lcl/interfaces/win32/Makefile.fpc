@@ -4,26 +4,31 @@
 #
 
 [package]
-name=win32interface
-version=0.7
+name=lazarus-win32
+version=0.7a
+
+[require]
+packages=rtl fcl
 
 [target]
 units=interfaces
-incdir=.
 
 [compiler]
-targetdir=../../units/win32
-unitdir=$(TARGETDIR) ../../units
-
-[install]
-fpcpackage=n
-
-[default]
-fpcdir=C:\FreePascal\cvs\fpc
+options=-gl -Or -S2h
+unittargetdir=../../units/win32
+unitdir=$(COMPILER_UNITTARGETDIR) ../../units 
+includedir=.
 
 [prerules]
-override FPCOPT+=-gl -Or -S2h
+DIST_DESTDIR=$(BASEDIR)/../../../dist
 
 [rules]
-all:
-        $(MAKE) --assume-new=interfaces$(PASEXT) interfaces$(PPUEXT)
+.PHONY: all makefile makefiles
+
+all: 
+        $(MAKE) --assume-new=interfaces.pp interfaces$(PPUEXT)
+
+makefile: Makefile.fpc
+        -$(FPCMAKE) -w
+       
+makefiles: makefile

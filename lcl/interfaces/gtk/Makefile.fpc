@@ -2,41 +2,34 @@
 #
 #   Makefile.fpc for Lazarus for Free Pascal
 #
-
-[targets]
-units=interfaces
+     
+[package]
+name=lazarus
+#name=lazarus-gtk
+version=0.7a
 
 [require]
-rtl=1
-options=-Ca -gl
-packages=fcl gtk
+packages=rtl fcl gtk
 
-[clean]
-units=$(notdir $(basename $(wildcard $(UNITTARGETDIR)/*$(PPUEXT))))
-# not with the lazarusmake.ini
-# files=$(wildcard $(UNITTARGETDIR)/*$(OEXT))
+[target]
+units=interfaces
 
-[dirs]
-# target dir needs to be . or a full path otherwise the 
-# unittargetdir will be corrupt
-# not with the lazarusmake.ini
-# targetdir=.
+[compiler]
+options=-gl
 unittargetdir=../../units/gtk
-unitdir=$(UNITTARGETDIR) ../../units 
-incdir=.
-
-[install]
-units=$(notdir $(basename $(wildcard $(UNITTARGETDIR)/*$(PPUEXT))))
-packagename=gtkinterface
-
-[libs]
-
-[presettings]
-
-[defaults]
-
+unitdir=$(COMPILER_UNITTARGETDIR) ../../units 
+includedir=.
+            
+[prerules]
+DIST_DESTDIR=$(BASEDIR)/../../../dist
+            
 [rules]
-
+.PHONY: all makefile makefiles
 
 all: 
-        $(MAKE) --assume-new=interfaces$(PASEXT) interfaces$(PPUEXT)
+        $(MAKE) --assume-new=interfaces.pp interfaces$(PPUEXT)
+
+makefile: Makefile.fpc
+        -$(FPCMAKE) -w
+       
+makefiles: makefile

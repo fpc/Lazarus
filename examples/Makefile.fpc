@@ -2,36 +2,39 @@
 #   Makefile.fpc for LCL Examples for Free Pascal
 #
 
-[targets]
-programs=hello notebk comdialogs progressbar trackbar listboxtest \
-         bitbutton combobox checkbox selection scrollbar testall
+[package]
+name=lazarus-examples
+version=0.7a
+
+[target]
+examples=hello notebk comdialogs progressbar trackbar listboxtest \
+         bitbutton combobox checkbox scrollbar testall
 
 [clean]
-units=$(notdir $(basename $(wildcard *$(PPUEXT)))) 
+#units=$(notdir $(basename $(wildcard *$(PPUEXT)))) 
 
-[require]
-rtl=1
-options=-gl
-packages=fcl gtk
-
-[dirs]
-# not with the lazarusmake.ini
-# targetdir=.
+[default]
+            
+[compiler]
+options=-gl  
 unitdir=. ../lcl/units ../components/units ../designer ../lcl/units/$(LCLPLATFORM)
 
-[install]
-units=$(basename $(wildcard $(UNITTARGETDIR)/*$(PPUEXT)))
-packagename=examples
 
-[presettings]
+[prerules]
 ifndef LCLPLATFORM
 LCLPLATFORM=gtk
 endif
 
-[libs]
-
 [rules]
-cleartarget:
-        -$(DEL) $(addsuffix $(EXEEXT), $(EXEOBJECTS))
+.PHONY: cleartarget all makefiles makefile
 
-all: cleartarget $(addsuffix $(EXEEXT), $(EXEOBJECTS))
+cleartarget:
+        -$(DEL) $(EXAMPLEFILES)
+
+all: cleartarget $(EXAMPLEFILES)
+
+makefile: Makefile.fpc
+        -$(FPCMAKE) -w
+       
+makefiles: makefile
+

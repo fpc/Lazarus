@@ -3,46 +3,57 @@
 #   Makefile.fpc for Lazarus for Free Pascal
 #
 
-[targets]
-# units=allunits
-# loaders=allunits
+[package]
+name=lazarus
+#name=lazarus-lcl
+version=0.7a
+
+[target]                                 
+dirs=interfaces
+units=buttons clipbrd clistbox comctrls controls dialogs dynhasharray \
+      extctrls filectrl forms graphics imglist interfacebase lazqueue \
+      lcllinux lmessages lresources menus messages registry spin \
+      stdctrls toolwin utrace vclglobals
+            
+[default]
+            
+[compiler]
+options=-gl  
+unittargetdir=./units
+unitdir=$(COMPILER_UNITTARGETDIR) ./interfaces/abstract 
+includedir=./include 
 
 [require]
-rtl=1
-options=-Ca -gl
-packages=fcl gtk
 
 [clean]
-units=$(notdir $(basename $(wildcard $(UNITTARGETDIR)/*$(PPUEXT))))
-# not with the lazarusmake.ini
-# files=$(wildcard $(UNITTARGETDIR)/*$(OEXT))
-
-[dirs]
-# target dir needs to be . or a full path otherwise the 
-# unittargetdir will be corrupt
-# not with the lazarusmake.ini
-# targetdir=.
-unittargetdir=./units
-unitdir=$(UNITTARGETDIR) ./interfaces/abstract 
-incdir=./include 
 
 [install]
-units=$(notdir $(basename $(wildcard $(UNITTARGETDIR)/*$(PPUEXT))))
-packagename=lcl
+#prefixdir=/usr
+#basedir=$(PACKDIR)/lib/lazarus
+
+[dist]
+zipname=lazarus.lcl.$(ZIPSUFFIX)
 
 [libs]
 
-[presettings]
+[prerules]
+DIST_DESTDIR=$(BASEDIR)/../dist
+                     
+[rules]         
+.PHONY: cleartarget all makefile makefiles
 
-[defaults]
-
-[rules]
 cleartarget:
-        -$(DEL) $(UNITTARGETDIR)/allunits$(PPUEXT)
+        -$(DEL) $(COMPILER_UNITTARGETDIR)/allunits$(PPUEXT)
 
 all: cleartarget allunits$(PPUEXT)
-        -$(DEL) $(UNITTARGETDIR)/allunits$(PPUEXT)
-        -$(DEL) $(UNITTARGETDIR)/interfaces$(PPUEXT)
-        -$(DEL) $(UNITTARGETDIR)/interfaces$(OEXT)
+        -$(DEL) $(COMPILER_UNITTARGETDIR)/allunits$(PPUEXT)
+        -$(DEL) $(COMPILER_UNITTARGETDIR)/interfaces$(PPUEXT)
+        -$(DEL) $(COMPILER_UNITTARGETDIR)/interfaces$(OEXT)
         $(MAKE) -C interfaces
 
+makefile: Makefile.fpc
+        -$(FPCMAKE) -w
+        
+makefiles: makefile
+        $(MAKE) -C interfaces makefiles
+        

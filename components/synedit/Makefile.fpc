@@ -3,33 +3,45 @@
 #   Makefile.fpc for Lazarus for Free Pascal
 #
 
-[targets]
-# units=allunits
+[package]
+#name=lazarus-synedit
+name=lazarus
+version=0.7a
+
+[target]
+units=syntextdrawer syneditkeycmds synedittypes syneditstrconst \
+  syneditsearch syneditmiscprocs syneditmiscclasses synedittextbuffer \
+  synedit synedithighlighter synhighlighterpas syncompletion \
+  syneditautocomplete synhighlighterhtml synhighlightercpp
+
+[default]
+            
+[compiler]
+options=-gl  
+unittargetdir=../units
+unitdir=$(COMPILER_UNITTARGETDIR) ../../lcl/units ../../lcl/units/$(LCLPLATFORM)
 
 [require]
-rtl=1
-options=-Ca -gl
-packages=fcl gtk
+packages=rtl fcl
 
 [clean]
-units=$(notdir $(basename $(wildcard $(UNITTARGETDIR)/*$(PPUEXT))))
-# not with the lazarusmake.ini
-# files=$(wildcard $(UNITTARGETDIR)/*$(OEXT))
 
-[dirs]
-# target dir needs to be . or a full path otherwise the 
-# unittargetdir will be corrupt
-# not with the lazarusmake.ini
-# targetdir=.
-unittargetdir=../units
-unitdir=$(UNITTARGETDIR) ../../lcl/units ../../lcl/units/$(LCLPLATFORM)
+[install]
 
-[libs]
+[dist]
+zipname=lazarus.synedit.$(ZIPSUFFIX)
 
 [rules]
+.PHONY: cleartarget all makefile makefiles
+
 cleartarget:
-        -$(DEL) $(UNITTARGETDIR)/allunits$(PPUEXT)
+        -$(DEL) $(COMPILER_UNITTARGETDIR)/allunits$(PPUEXT)
 
 all: cleartarget allunits$(PPUEXT)
-        -$(DEL) $(UNITTARGETDIR)/allunits$(PPUEXT)
+        -$(DEL) $(COMPILER_UNITTARGETDIR)/allunits$(PPUEXT)
+
+makefile: Makefile.fpc
+        -$(FPCMAKE) -w
+       
+makefiles: makefile
 

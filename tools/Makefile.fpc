@@ -3,25 +3,21 @@
 #   Makefile.fpc for Lazarus for Free Pascal
 #
 
-[targets]
-dirs=apiwizz
+[package]
+name=lazarus-tools
+version=0.7a
 
-[dirs]
-# target dir needs to be . or a full path otherwise the 
-# unittargetdir will be corrupt
-# not with the lazarusmake.ini
-# targetdir=.
+[target]
+dirs=apiwizz
 
 [install]
 packagename=tools
 
-[presettings]
-ifndef LCLPLATFORM
-LCLPLATFORM=gtk
-export LCLPLATFORM
-endif
-
-
-[postsettings]
-
 [rules]
+.PHONY: makefile makefiles
+
+makefile: Makefile.fpc
+        -$(FPCMAKE) -w
+        
+makefiles: makefile
+        $(MAKE) -C apiwizz makefiles
