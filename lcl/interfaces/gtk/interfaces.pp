@@ -26,7 +26,7 @@ unit interfaces;
 interface
 
 uses 
-   InterfaceBase;
+   InterfaceBase,Clipbrd,SysUtils;
 
 var
    InterfaceObject : TInterfaceBase;
@@ -49,9 +49,8 @@ initialization
 
 finalization
 
-  Application.Free;
-  Application:=nil;
-  
-  InterfaceObject.Free;
+  FreeandNil(Application);
+  FreeAllClipBoards;
+  FreeAndNil(InterfaceObject);
 
 end.

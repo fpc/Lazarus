@@ -655,10 +655,12 @@ writeln('[TgtkObject.ClipboardGetOwnerShip] A');
 {$ENDIF}
     ClipboardHandler[ClipboardType]:=nil;
     Result:=false;
-    if (ClipboardWidget=nil) or (FormatCount=0) or (Formats=nil) then begin
+    if (ClipboardWidget=nil) or (FormatCount=0) or (Formats=nil) then
+    begin
       // end ownership
-      if (gdk_selection_owner_get(ClipboardTypeAtoms[ClipboardType])
-        = ClipboardWidget^.window) then begin
+      if (ClipBoardWidget <> nil) and
+         (gdk_selection_owner_get(ClipboardTypeAtoms[ClipboardType]) = ClipboardWidget^.window) then
+      begin
         gtk_selection_owner_set(nil,ClipboardTypeAtoms[ClipboardType],0);
       end;
       Result:=true;
@@ -677,7 +679,8 @@ writeln('[TgtkObject.ClipboardGetOwnerShip] A');
 {$IFDEF DEBUG_CLIPBOARD}
 writeln('[TgtkObject.ClipboardGetOwnerShip] B');
 {$ENDIF}
-    if IsFormatSupported(gdk_atom_intern('text/plain',1)) then begin
+    if IsFormatSupported(gdk_atom_intern('text/plain',1)) then
+    begin
       // lcl provides 'text/plain' and the gtk-interface will automatically
       // provide some more text formats
       ClipboardExtraGtkFormats[ClipboardType][gfCOMPOUND_TEXT]:=
@@ -716,8 +719,8 @@ writeln('[TgtkObject.ClipboardGetOwnerShip] B');
 {$IFDEF DEBUG_CLIPBOARD}
 writeln('[TgtkObject.ClipboardGetOwnerShip] C');
 {$ENDIF}
-    if gtk_selection_owner_set(ClipboardWidget,
-      ClipboardTypeAtoms[ClipboardType],0)=0 then begin
+    if gtk_selection_owner_set(ClipboardWidget, ClipboardTypeAtoms[ClipboardType],0)=0 then
+      begin
 {$IFDEF DEBUG_CLIPBOARD}
 writeln('[TgtkObject.ClipboardGetOwnerShip] D FAILED');
 {$ENDIF}
@@ -4379,6 +4382,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.62  2002/03/14 20:28:49  lazarus
+  Bug fix for Mattias.
+  Fixed spinedit so you can now get the value and set the value.
+  Shane
+
   Revision 1.61  2002/02/25 16:48:13  lazarus
   MG: new IDE window layout system
 
