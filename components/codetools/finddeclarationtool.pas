@@ -2933,10 +2933,13 @@ begin
       vatEdgedBracketClose,vatRoundBracketClose]))
     or ((CurAtomType in [vatIdentifier,vatPreDefIdentifier,vatNone])
         and (NextAtomType in [vatIdentifier,vatPreDefIdentifier]))
+    or ((CurAtomType in [vatNone])
+        and (NextAtomType in [vatIdentifier,vatPreDefIdentifier,
+                              vatRoundBracketClose]))
     then begin
       // the next atom is the start of the variable
       if (not (NextAtomType in [vatSpace,vatIdentifier,vatPreDefIdentifier,
-        vatRoundBracketOpen,vatEdgedBracketOpen,vatAddrOp])) then
+        vatRoundBracketClose,vatEdgedBracketClose,vatAddrOp])) then
       begin
         MoveCursorToCleanPos(NextAtom.StartPos);
         ReadNextAtom;
@@ -2976,12 +2979,10 @@ var
 
   procedure InitAtomQueue;
   begin
-//writeln('AAA1');
     if StartPos<1 then
       StartPos:=FindStartOfVariable(EndPos)
     else if EndPos<1 then
       EndPos:=FindEndOfVariable(StartPos,true);
-//writeln('AAA2');
     if (StartPos<1) then
       RaiseException('internal codetool error: FindExpressionTypeOfVariable '
         +' StartPos='+IntToStr(StartPos)+' EndPos='+IntToStr(EndPos));
