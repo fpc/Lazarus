@@ -4068,18 +4068,18 @@ begin
   or (ToolStatus <> itNone)
   then Exit;
 
+  // Build project first
+  if DoBuildProject(false) <> mrOk 
+  then Exit;
+  
   // Check project build
   ProgramFilename := GetProjectTargetFilename;
-  if not FileExists(ProgramFilename) 
+  if not FileExists(ProgramFilename)
   then begin
     MessageDlg('File not found', Format('No program file "%s" found!', [ProgramFilename]), mtError, [mbCancel], 0);
     Exit;
   end;
 
-  // Build project first
-  if DoBuildProject(false) <> mrOk 
-  then Exit;
-  
   // Setup debugger
   case EnvironmentOptions.DebuggerType of
     dtGnuDebugger: begin
@@ -4138,6 +4138,7 @@ begin
     try
       Writeln('  EXECUTING "',FRunProcess.CommandLine,'"');
       FRunProcess.Execute;
+      ToolStatus:=itNone;
       Result := mrOk;
     except
       on e: Exception do 
@@ -5972,6 +5973,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.224  2002/02/17 19:51:10  lazarus
+  MG: fixed running project
+
   Revision 1.223  2002/02/17 19:34:44  lazarus
   MG: fixed view units/forms
 
