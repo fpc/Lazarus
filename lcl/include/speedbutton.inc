@@ -377,6 +377,7 @@ begin
 
   FLastDrawFlags:=GetDrawFlags;
   //DebugLn('TSpeedbutton.Paint ',Name,':',ClassName,' Parent.Name=',Parent.Name);
+  
   // do not draw anything if flat and mouse not in control (simplified)
   if FLastDrawFlags <> 0 then
     DrawFrameControl(Canvas.GetUpdatedHandle([csBrushValid,csPenValid]),
@@ -779,6 +780,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.56  2004/06/28 18:57:55  mattias
+  fixed GetControlAtPos for non designing
+
   Revision 1.55  2004/06/20 12:29:26  micha
   make flat speedbuttons nicer
 

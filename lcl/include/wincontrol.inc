@@ -1669,6 +1669,8 @@ var
              )
              or
              (
+              (not (csDesigning in ComponentState))
+              and
               (Visible)
               and
               (Enabled or AllowDisabled)
@@ -3658,6 +3660,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.243  2004/06/28 18:57:55  mattias
+  fixed GetControlAtPos for non designing
+
   Revision 1.242  2004/06/28 18:54:27  mattias
   further fixed GetControlAtPos
 
