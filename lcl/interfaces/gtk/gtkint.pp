@@ -117,6 +117,7 @@ type
     {$ENDIF}
     
     procedure SendCachedLCLMessages;
+    function  LCLtoGtkMessagePending: boolean;
     procedure SendCachedGtkMessages;
     procedure SetCallback(Msg : LongInt; Sender : TObject); override;
     procedure RemoveCallbacks(Sender : TObject); override;
@@ -392,6 +393,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.47  2002/06/07 06:40:18  lazarus
+  MG: gtk HandleEvents will now process all pending events
+
   Revision 1.46  2002/06/06 07:23:24  lazarus
   MG: small fixes to reduce form repositioing
 
