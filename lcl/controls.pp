@@ -1035,7 +1035,6 @@ function IdentToCursor(const Ident: string; var Cursor: Longint): Boolean;
 
 function GetKeyShiftState: TShiftState;
 
-procedure RaiseGDBException(const Msg: string);
 
 
 implementation
@@ -1054,21 +1053,6 @@ var
   DragStartPos : TPoint;
   //DragThreshold : Integer;
   
-{------------------------------------------------------------------------------
-  procedure RaiseGDBException(const Msg: string);
-
-  Raises an exception.
-  gdb does not catch fpc Exception objects, therefore this procedure raises
-  a standard AV which is catched by gdb.
- ------------------------------------------------------------------------------}
-procedure RaiseGDBException(const Msg: string);
-begin
-  writeln('ERROR in gtk-interface: ',Msg);
-  // creates an exception, that gdb catches:
-  writeln('Creating gdb catchable error:');
-  if (length(Msg) div (length(Msg) div 10000))=0 then ;
-end;
-
 {------------------------------------------------------------------------------}
 {  CNSendMessage                                                               }
 {------------------------------------------------------------------------------}
@@ -1449,6 +1433,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.95  2002/12/18 17:52:18  mattias
+  fixed lazarus xml files for fpc 1.1
+
   Revision 1.94  2002/02/09 01:48:23  mattias
   renamed TinterfaceObject.Init to AppInit and TWinControls can now contain childs in gtk
 
