@@ -273,6 +273,7 @@ function GtkWidgetIsA(Widget: PGtkWidget; AType: TGtkType): boolean;
 function GetWidgetClassName(Widget: PGtkWidget): string;
 function GetWidgetDebugReport(Widget: PGtkWidget): string;
 function GetWindowDebugReport(AWindow: PGDKWindow): string;
+function WidgetFlagsToString(Widget: PGtkWidget): string;
 
 // gtk resources
 procedure Set_RC_Name(Sender: TObject; AWidget: PGtkWidget);

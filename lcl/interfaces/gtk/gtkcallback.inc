@@ -2014,16 +2014,20 @@ begin
   }
   {$IFDEF VerboseSizeMsg}
   DebugLn('gtksize_allocateCB: ',
-    TControl(Data).Name,':',TControl(Data).ClassName,
-    ' widget=',HexStr(Cardinal(Widget),8),
+    TControl(Data).Name+':'+TControl(Data).ClassName,
+    ' widget='+HexStr(Cardinal(Widget),8)+WidgetFlagsToString(widget)+
     ' fixwidget=',HexStr(Cardinal(GetFixedWidget(Widget)),8),
-    ' OldPos=',TControl(Data).Left,',',TControl(Data).Top,',',TControl(Data).Width,',',TControl(Data).Height);
+    ' GtkPos=',dbgs(Widget^.allocation.x)+','+dbgs(Widget^.allocation.y),
+               ','+dbgs(Widget^.allocation.width)+'x'+dbgs(Widget^.allocation.width)+
+    ' LCLPos='+dbgs(TControl(Data).Left)+','+dbgs(TControl(Data).Top),
+               ','+dbgs(TControl(Data).Width)+'x'+dbgs(TControl(Data).Height));
   {$ENDIF}
   {$IFDEF VerboseFormPositioning}
   if TControl(Data) is TCustomForm then
-    DebugLn('VFP gtksize_allocateCB: ',TControl(Data).ClassName,' ',Size^.X,',',Size^.Y);
+    DebugLn('VFP gtksize_allocateCB: ',TControl(Data).ClassName,' ',dbgs(Size^.X),',',dbgs(Size^.Y));
   {$ENDIF}
-  SaveSizeNotification(Widget);
+  if GTK_WIDGET_REALIZED(Widget) then
+    SaveSizeNotification(Widget);
 end;
 
 function gtksize_allocate_client(widget: PGtkWidget; size: pGtkAllocation;
@@ -2040,9 +2044,9 @@ begin
     DebugLn('gtksize_allocate_client: ',
       TControl(Data).Name,':',TControl(Data).ClassName,
       ' widget=',HexStr(Cardinal(Widget),8),
-      ' NewSize=',Size^.Width,',',Size^.Height,
-      ' Allocation=',widget^.Allocation.Width,',',Widget^.Allocation.Height,
-      ' Requisiton=',widget^.Requisition.Width,',',Widget^.Requisition.Height
+      ' NewSize=',dbgs(Size^.Width),',',dbgs(Size^.Height),
+      ' Allocation='+dbgs(widget^.Allocation.Width)+'x'+dbgs(Widget^.Allocation.Height),
+      ' Requisiton='+dbgs(widget^.Requisition.Width)+'x'+dbgs(Widget^.Requisition.Height)
       );
     {$ENDIF}
     if not TWinControl(Data).HandleAllocated then begin
@@ -2050,7 +2054,8 @@ begin
     end;
     MainWidget:=PGtkWidget(TWinControl(Data).Handle);
     ClientWidget:=GetFixedWidget(MainWidget);
-    SaveClientSizeNotification(ClientWidget);
+    if GTK_WIDGET_REALIZED(ClientWidget) then
+      SaveClientSizeNotification(ClientWidget);
   end else begin
     // owner is not TWinControl -> ignore
     DebugLn('WARNING: gtksize_allocate_client: Data is not TWinControl. Data=',
@@ -2872,6 +2877,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.244  2004/08/17 19:01:36  mattias
+  gtk intf now ignores size notifications of unrealized widgets
+
   Revision 1.243  2004/08/04 10:51:13  mazen
   * fix left mouse button click reaction
 

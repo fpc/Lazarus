@@ -290,7 +290,9 @@ var
 
 begin
   {$IFDEF VerboseSizeMsg}
-  DebugLn('TControl.ChangeBounds A ',Name,':',ClassName,' Old=',Left,',',Top,',',Width,',',Height,' New=',ALeft,',',ATop,',',AWidth,',',AHeight);
+  DebugLn('TControl.ChangeBounds A ',Name,':',ClassName,
+    ' Old='+dbgs(Left)+','+dbgs(Top)+','+dbgs(Width),',',dbgs(Height),
+    ' New='+dbgs(ALeft)+','+dbgs(ATop)+','+dbgs(AWidth),',',dbgs(AHeight));
   {$ENDIF}
   // constraint the size
   DoConstrainedResize(AWidth, AHeight);
@@ -2836,12 +2838,15 @@ end;
 
   Undock and float.
   Float means here: create the floating dock site and dock this control into it.
+  Exception: Forms do not need float dock sites and float on their own.
 ------------------------------------------------------------------------------}
 function TControl.ManualFloat(TheScreenRect: TRect): Boolean;
 var
   FloatHost: TWinControl;
 begin
+  // undock from old floating host dock site
   Result := (HostDockSite=nil) or HostDockSite.DoUndock(nil,Self);
+  // create new float dock site and dock this control into it.
   if Result then begin
     FloatHost := CreateFloatingDockSite(TheScreenRect);
     if FloatHost<>nil then
@@ -3049,7 +3054,7 @@ end;
 
   Contructor for the class.
  ------------------------------------------------------------------------------}
-constructor TControl.Create(TheOwner : TComponent);
+constructor TControl.Create(TheOwner: TComponent);
 begin
   //if AnsiCompareText(ClassName,'TSpeedButton')=0 then
   //  DebugLn('TControl.Create START ',Name,':',ClassName);
@@ -3078,6 +3083,7 @@ begin
   FTabOrder := -1;
   TabStop := False;
   FDragCursor := crDrag;
+  FFloatingDockSiteClass := TCustomDockForm;
   //DebugLn('TControl.Create END ',Name,':',ClassName);
 end;
 
@@ -3220,6 +3226,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.208  2004/08/17 19:01:36  mattias
+  gtk intf now ignores size notifications of unrealized widgets
+
   Revision 1.207  2004/08/05 21:20:47  mattias
   moved designer/abstractformeditor.pp to ideintf/formeditingintf.pas
 

@@ -1539,7 +1539,7 @@ constructor TEnvironmentOptionsDialog.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   Position:=poScreenCenter;
-  IDEDialogLayoutList.ApplyLayout(Self,510,450);
+  IDEDialogLayoutList.ApplyLayout(Self,510,480);
   Caption:=lisMenuGeneralOptions;
   OnResize:=@EnvironmentOptionsDialogResize;
   

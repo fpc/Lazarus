@@ -888,7 +888,7 @@ function TWinControl.GetClientRect: TRect;
       FClientWidth:=NewClientRect.Right;
       FClientHeight:=NewClientRect.Bottom;
       {$IFDEF VerboseSizeMsg}
-      DebugLn('StoreClientRect ',Name,':',ClassName,' ',FClientWidth,',',FClientHeight);
+      DebugLn('StoreClientRect ',Name,':',ClassName,' ',dbgs(FClientWidth),',',dbgs(FClientHeight));
       {$ENDIF}
       if ClientSizeChanged then begin
         for i:=0 to ControlCount-1 do
@@ -2973,8 +2973,10 @@ var
   NewWidth, NewHeight: integer;
 begin
   {$IFDEF VerboseSizeMsg}
-  DebugLn('TWinControl.WMMove A ',Name,':',ClassName,' Message=',Message.XPos,',',Message.YPos,
-    ' BoundsRealized=',FBoundsRealized.Left,',',FBoundsRealized.Top,',',FBoundsRealized.Right-FBoundsRealized.Left,',',FBoundsRealized.Bottom-FBoundsRealized.Top);
+  DebugLn('TWinControl.WMMove A ',Name,':',ClassName,' Message=',dbgs(Message.XPos),',',dbgs(Message.YPos),
+    ' BoundsRealized='+dbgs(FBoundsRealized.Left)+','+dbgs(FBoundsRealized.Top),
+      ','+dbgs(FBoundsRealized.Right-FBoundsRealized.Left),
+      'x'+dbgs(FBoundsRealized.Bottom-FBoundsRealized.Top));
   {$ENDIF}
   NewWidth:=Width;
   NewHeight:=Height;
@@ -3791,6 +3793,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.262  2004/08/17 19:01:36  mattias
+  gtk intf now ignores size notifications of unrealized widgets
+
   Revision 1.261  2004/08/13 19:48:53  mattias
   added default assembler style for compiler options
 

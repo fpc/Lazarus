@@ -148,6 +148,10 @@ type
     property Color;
     property Constraints;
     property Ctl3D;
+    property DockSite;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
     property Enabled;
     property Font;
     property ParentColor;
@@ -161,8 +165,15 @@ type
     property Visible;
     property OnClick;
     property OnDblClick;
+    property OnDragDrop;
+    property OnDockDrop;
+    property OnDockOver;
+    property OnDragOver;
+    property OnEndDock;
+    property OnEndDrag;
     property OnEnter;
     property OnExit;
+    property OnGetSiteInfo;
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
@@ -170,6 +181,9 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnResize;
+    property OnStartDock;
+    property OnStartDrag;
+    property OnUnDock;
   end;
 
 
@@ -1158,6 +1172,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.160  2004/08/17 19:01:36  mattias
+  gtk intf now ignores size notifications of unrealized widgets
+
   Revision 1.159  2004/08/15 22:31:51  mattias
   fixed fpc 1.0.10 compilation
 

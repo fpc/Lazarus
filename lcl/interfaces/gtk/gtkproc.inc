@@ -729,6 +729,24 @@ begin
 {$endif gtk1}
 end;
 
+function WidgetFlagsToString(Widget: PGtkWidget): string;
+begin
+  Result:='[';
+  if Widget=nil then
+    Result:=Result+'nil'
+  else begin
+    if GTK_WIDGET_REALIZED(Widget) then
+      Result:=Result+'R';
+    if GTK_WIDGET_MAPPED(Widget) then
+      Result:=Result+'M';
+    if GTK_WIDGET_VISIBLE(Widget) then
+      Result:=Result+'V';
+    if GTK_WIDGET_DRAWABLE(Widget) then
+      Result:=Result+'D';
+  end;
+  Result:=Result+']';
+end;
+
 {------------------------------------------------------------------------------
   function WidgetIsDestroyingHandle(Widget: PGtkWidget): boolean;
 
@@ -7111,6 +7129,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.293  2004/08/17 19:01:37  mattias
+  gtk intf now ignores size notifications of unrealized widgets
+
   Revision 1.292  2004/08/16 16:03:52  mattias
   added UniCode keyvals
 

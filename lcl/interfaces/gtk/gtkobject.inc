@@ -432,7 +432,10 @@ begin
 
   // reposition
   {$IFDEF VerboseSizeMsg}
-  DebugLn('TGtkWidgetSet.SetWindowSizeAndPosition B ',AWinControl.Name,':',AWinControl.ClassName,' Visible=',AWinControl.Visible,' Old=',PGtkWidget(Window)^.allocation.X,',',PGtkWidget(Window)^.allocation.Y,' New=',AWinControl.Left,',',AWinControl.Top,',',Width,',',Height);
+  DebugLn('TGtkWidgetSet.SetWindowSizeAndPosition B ',AWinControl.Name,':',AWinControl.ClassName,
+    ' Visible=',dbgs(AWinControl.Visible),
+    ' Old=',dbgs(PGtkWidget(Window)^.allocation.X)+','+dbgs(PGtkWidget(Window)^.allocation.Y),
+    ' New=',dbgs(AWinControl.Left)+','+dbgs(AWinControl.Top)+','+dbgs(Width)+'x'+dbgs(Height));
   {$ENDIF}
   gtk_widget_set_uposition(PGtkWidget(Window),AWinControl.Left,AWinControl.Top);
 end;
@@ -766,7 +769,7 @@ procedure TGtkWidgetSet.SendCachedLCLMessages;
   begin
     if FWidgetsWithResizeRequest.Count=0 then exit;
     {$IFDEF VerboseSizeMsg}
-    DebugLn('GGG1 SendCachedLCLResizeRequests SizeMsgCount=',FWidgetsWithResizeRequest.Count);
+    DebugLn('GGG1 SendCachedLCLResizeRequests SizeMsgCount=',dbgs(FWidgetsWithResizeRequest.Count));
     {$ENDIF}
 
     TopologicalList:=CreateTopologicalSortedWidgets(FWidgetsWithResizeRequest);
@@ -781,7 +784,7 @@ procedure TGtkWidgetSet.SendCachedLCLMessages;
       {$IFDEF VerboseSizeMsg}
       if AnsiCompareText(LCLControl.ClassName,'TScrollBar')=0 then
       DebugLn('SendCachedLCLMessages ',LCLControl.Name,':',LCLControl.ClassName,
-        ' ',LCLControl.Left,',',LCLControl.Top,',',LCLControl.Width,',',LCLControl.Height);
+        ' ',dbgs(LCLControl.Left)+','+dbgs(LCLControl.Top)+','+dbgs(LCLControl.Width)+'x'+dbgs(LCLControl.Height));
       {$ENDIF}
 
       IsTopLevelWidget:= (LCLControl is TCustomForm)
@@ -882,10 +885,17 @@ procedure TGtkWidgetSet.SendCachedGtkMessages;
     end;
 
   begin
+    if not GTK_WIDGET_REALIZED(MainWidget) then begin
+      {$IFDEF VerboseSizeMsg}
+      DebugLn('SendSizeNotificationToLCL ',LCLControl.Name,':',LCLControl.ClassName,' MainWidget=',WidgetFlagsToString(MainWidget),' Ignored, because not realized ');
+      {$ENDIF}
+      exit;
+    end;
+  
     LCLControl:=TWinControl(GetLCLObject(MainWidget));
     if LCLControl=nil then exit;
     {$IFDEF VerboseSizeMsg}
-    DebugLn('JJJ1 SendSizeNotificationToLCL ',LCLControl.Name,':',LCLControl.ClassName);
+    DebugLn('JJJ1 SendSizeNotificationToLCL ',LCLControl.Name,':',LCLControl.ClassName,' MainWidget=',WidgetFlagsToString(MainWidget));
     {$ENDIF}
 
     GtkLeft:=MainWidget^.Allocation.X;
@@ -927,8 +937,8 @@ procedure TGtkWidgetSet.SendCachedGtkMessages;
 
     {$IFDEF VerboseSizeMsg}
     DebugLn('JJJ2 ',LCLControl.Name,
-      ' GTK=',GtkLeft,',',GtkTop,',',GtkWidth,',',GtkHeight,
-      ' LCL=',LCLLeft,',',LCLTop,',',LCLWidth,',',LCLHeight
+      ' GTK=',dbgs(GtkLeft)+','+dbgs(GtkTop)+','+dbgs(GtkWidth)+'x'+dbgs(GtkHeight),
+      ' LCL=',dbgs(LCLLeft)+','+dbgs(LCLTop)+','+dbgs(LCLWidth)+'x'+dbgs(LCLHeight)
       );
     {$ENDIF}
     // first send a LM_WINDOWPOSCHANGED message
@@ -1028,7 +1038,8 @@ procedure TGtkWidgetSet.SendCachedGtkMessages;
       -> invalidate client rectangles
     }
     {$IFDEF VerboseSizeMsg}
-    DebugLn('HHH1 SendCachedGtkClientResizeNotifications Invalidating ClientRects ... FixSizeMsgCount=',FFixWidgetsResized.Count);
+    DebugLn('HHH1 SendCachedGtkClientResizeNotifications Invalidating ClientRects ... '
+    ,' FixSizeMsgCount=',dbgs(FFixWidgetsResized.Count));
     {$ENDIF}
     FFixWidgetsResized.AssignTo(List);
     for i:=0 to List.Count-1 do begin
@@ -1045,7 +1056,7 @@ procedure TGtkWidgetSet.SendCachedGtkMessages;
       -> send WMSize, WMMove, and WMWindowPosChanged messages
     }
     {$IFDEF VerboseSizeMsg}
-    DebugLn('HHH2 SendCachedGtkClientResizeNotifications SizeMsgCount=',FWidgetsResized.Count);
+    DebugLn('HHH2 SendCachedGtkClientResizeNotifications SizeMsgCount=',dbgs(FWidgetsResized.Count));
     {$ENDIF}
     repeat
       MainWidget:=FWidgetsResized.First;
@@ -1141,7 +1152,7 @@ begin
 
   {$IFDEF VerboseSizeMsg}
   LCLObject:=GetNearestLCLObject(Widget);
-  DbgOut('TGtkWidgetSet.RealizeWidgetSize Widget='+HexStr(Cardinal(Widget),8),
+  DbgOut('TGtkWidgetSet.RealizeWidgetSize Widget='+HexStr(Cardinal(Widget),8)+WidgetFlagsToString(Widget)+
     ' New='+dbgs(NewWidth)+','+dbgs(NewHeight));
   if (LCLObject<>nil) and (LCLObject is TControl) then begin
     with TControl(LCLObject) do
@@ -9239,6 +9250,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.527  2004/08/17 19:01:36  mattias
+  gtk intf now ignores size notifications of unrealized widgets
+
   Revision 1.526  2004/08/13 21:46:31  mattias
   added TLazIntfImage.SetColor_BPP32_R8G8B8_A1_BIO_TTB_RBO
 
