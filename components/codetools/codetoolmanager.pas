@@ -56,9 +56,11 @@ type
   
   TOnSearchUsedUnit = function(const SrcFilename: string;
     const TheUnitName, TheUnitInFilename: string): TCodeBuffer of object;
+  TOnCodeToolCheckAbort = function: boolean of object;
 
   TCodeToolManager = class
   private
+    FAbortable: boolean;
     FAddInheritedCodeToOverrideMethod: boolean;
     FAdjustTopLineDueToComment: boolean;
     FCatchExceptions: boolean;
@@ -75,6 +77,7 @@ type
     FJumpCentered: boolean;
     FOnAfterApplyChanges: TOnAfterApplyChanges;
     FOnBeforeApplyChanges: TOnBeforeApplyChanges;
+    FOnCheckAbort: TOnCodeToolCheckAbort;
     FOnSearchUsedUnit: TOnSearchUsedUnit;
     FResourceTool: TResourceCodeTool;
     FSetPropertyVariablename: string;
@@ -98,6 +101,7 @@ type
     function FindCodeToolForSource(Code: TCodeBuffer): TCustomCodeTool;
     function GetCodeToolForSource(Code: TCodeBuffer;
       ExceptionOnError: boolean): TCustomCodeTool;
+    procedure SetAbortable(const AValue: boolean);
     procedure SetAddInheritedCodeToOverrideMethod(const AValue: boolean);
     procedure SetCheckFilesOnDisk(NewValue: boolean);
     procedure SetCompleteProperties(const AValue: boolean);
@@ -113,6 +117,7 @@ type
     procedure OnToolSetWriteLock(Lock: boolean);
     procedure OnToolGetWriteLockInfo(var WriteLockIsSet: boolean;
       var WriteLockStep: integer);
+    procedure OnParserProgress(Tool: TCustomCodeTool);
     function GetResourceTool: TResourceCodeTool;
   public
     DefinePool: TDefinePool; // definition templates (rules)
@@ -147,6 +152,9 @@ type
     property ErrorLine: integer read fErrorLine;
     property ErrorMessage: string read fErrorMsg;
     property ErrorTopLine: integer read fErrorTopLine;
+    property Abortable: boolean read FAbortable write SetAbortable;
+    property OnCheckAbort: TOnCodeToolCheckAbort
+          read FOnCheckAbort write FOnCheckAbort;
 
     // tool settings
     property AdjustTopLineDueToComment: boolean
@@ -327,6 +335,10 @@ var CodeToolBoss: TCodeToolManager;
 
 implementation
 
+
+type
+  ECodeToolAbort = Exception;
+  
 
 function CompareCodeToolMainSources(Data1, Data2: Pointer): integer;
 var
@@ -571,26 +583,33 @@ var ErrorSrcTool: TCustomCodeTool;
 begin
   fErrorMsg:=AnException.Message;
   fErrorTopLine:=0;
-  if not ((AnException is ELinkScannerError) or (AnException is ECodeToolError))
-  then begin
-    FErrorMsg:=AnException.ClassName+': '+FErrorMsg;
-  end;
   if (AnException is ELinkScannerError) then begin
+    // linker error
     fErrorCode:=TCodeBuffer(ELinkScannerError(AnException).Sender.Code);
     if fErrorCode<>nil then begin
       fErrorCode.AbsoluteToLineCol(
         ELinkScannerError(AnException).Sender.SrcPos,fErrorLine,fErrorColumn);
     end;
   end else if (AnException is ECodeToolError) then begin
+    // codetool error
     ErrorSrcTool:=ECodeToolError(AnException).Sender;
     fErrorCode:=ErrorSrcTool.ErrorPosition.Code;
     fErrorColumn:=ErrorSrcTool.ErrorPosition.X;
     fErrorLine:=ErrorSrcTool.ErrorPosition.Y;
-  end else if FCurCodeTool<>nil then begin
-    fErrorCode:=FCurCodeTool.ErrorPosition.Code;
-    fErrorColumn:=FCurCodeTool.ErrorPosition.X;
-    fErrorLine:=FCurCodeTool.ErrorPosition.Y;
+  end else if (AnException is ECodeToolAbort) then begin
+    // abort
+    FErrorMsg:='Abort';
+    fErrorCode:=nil;
+  end else begin
+    // unknown exception
+    FErrorMsg:=AnException.ClassName+': '+FErrorMsg;
+    if FCurCodeTool<>nil then begin
+      fErrorCode:=FCurCodeTool.ErrorPosition.Code;
+      fErrorColumn:=FCurCodeTool.ErrorPosition.X;
+      fErrorLine:=FCurCodeTool.ErrorPosition.Y;
+    end;
   end;
+  // adjust error topline
   if (fErrorCode<>nil) and (fErrorTopLine<1) then begin
     fErrorTopLine:=fErrorLine;
     if (fErrorTopLine>0) and JumpCentered then begin
@@ -598,6 +617,7 @@ begin
       if fErrorTopLine<1 then fErrorTopLine:=1;
     end;
   end;
+  // write error
   if FWriteExceptions then begin
     {$IFDEF CTDEBUG}
     WriteDebugReport(true,false,false,false,false);
@@ -608,6 +628,7 @@ begin
     if ErrorCode<>nil then write(' in "',ErrorCode.Filename,'"');
     writeln('');
   end;
+  // raise or catch
   if not FCatchExceptions then raise AnException;
   Result:=false;
 end;
@@ -1524,6 +1545,14 @@ begin
     Result:=nil;
 end;
 
+procedure TCodeToolManager.OnParserProgress(Tool: TCustomCodeTool);
+begin
+  if not FAbortable then exit;
+  if not Assigned(OnCheckAbort) then exit;
+  if OnCheckAbort() then
+    raise ECodeToolAbort.Create('Abort');
+end;
+
 function TCodeToolManager.OnScannerGetInitValues(Code: Pointer;
   var AChangeStep: integer): TExpressionEvaluator;
 begin
@@ -1673,6 +1702,13 @@ begin
   TFindDeclarationTool(Result).OnFindUsedUnit:=@DoOnFindUsedUnit;
   Result.OnSetGlobalWriteLock:=@OnToolSetWriteLock;
   Result.OnGetGlobalWriteLockInfo:=@OnToolGetWriteLockInfo;
+  TFindDeclarationTool(Result).OnParserProgress:=@OnParserProgress;
+end;
+
+procedure TCodeToolManager.SetAbortable(const AValue: boolean);
+begin
+  if FAbortable=AValue then exit;
+  FAbortable:=AValue;
 end;
 
 procedure TCodeToolManager.SetAddInheritedCodeToOverrideMethod(

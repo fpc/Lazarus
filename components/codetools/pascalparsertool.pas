@@ -46,6 +46,8 @@ uses
   LinkScanner, CodeCache, AVL_Tree, TypInfo, SourceChanger;
 
 type
+  TOnParserProgress = procedure(Tool: TCustomCodeTool) of object;
+
   TProcHeadAttribute = (
       // extract attributes:
       phpWithStart,          // proc keyword e.g. 'function', 'class procedure'
@@ -98,10 +100,13 @@ type
     ExtractSearchPos: integer;
     ExtractFoundPos: integer;
     ExtractProcHeadPos: TProcHeadExtractPos;
+    FProgressCount: integer;
+    FOnParserProgress: TOnParserProgress;
     procedure RaiseCharExpectedButAtomFound(c: char);
     procedure RaiseStringExpectedButAtomFound(const s: string);
     procedure RaiseUnexpectedKeyWord;
     procedure RaiseIllegalQualifier;
+    procedure DoProgress;
   protected
     procedure InitExtraction;
     function GetExtraction: string;
@@ -182,6 +187,7 @@ type
     function CleanPosIsInComment(CleanPos, CleanCodePosInFront: integer;
         var CommentStart, CommentEnd: integer): boolean;
         
+    procedure BeginParsing(DeleteNodes, OnlyInterfaceNeeded: boolean); override;
     procedure BuildTree(OnlyInterfaceNeeded: boolean); virtual;
     procedure BuildTreeAndGetCleanPos(TreeRange: TTreeRange;
         CursorPos: TCodeXYPosition; var CleanCursorPos: integer;
@@ -193,7 +199,7 @@ type
         var FunctionResult: TCodeTreeNode);
 
     function DoAtom: boolean; override;
-    
+
     function ExtractPropName(PropNode: TCodeTreeNode;
         InUpperCase: boolean): string;
     function ExtractPropType(PropNode: TCodeTreeNode;
@@ -246,6 +252,9 @@ type
     
     procedure MoveCursorToUsesEnd(UsesNode: TCodeTreeNode);
     procedure ReadPriorUsedUnit(var UnitNameAtom, InAtom: TAtomPosition);
+    
+    property OnParserProgress: TOnParserProgress
+      read FOnParserProgress write FOnParserProgress;
 
     constructor Create;
     destructor Destroy; override;
@@ -792,6 +801,7 @@ var Level: integer;
 begin
   Level:=1;
   while (CurPos.StartPos<=SrcLen) and (Level>0) do begin
+    DoProgress;
     ReadNextAtom;
     if CurPos.Flag=cafRECORD then inc(Level)
     else if (CurPos.Flag=cafEND) then dec(Level);
@@ -1603,16 +1613,18 @@ end;
 function TPascalParserTool.DoAtom: boolean;
 begin
 //writeln('[TPascalParserTool.DoAtom] A ',HexStr(Cardinal(CurKeyWordFuncList),8));
-  if (CurPos.StartPos>SrcLen) or (CurPos.EndPos<=CurPos.StartPos) then
-    Result:=false
-  else if IsIdentStartChar[Src[CurPos.StartPos]] then
-    Result:=CurKeyWordFuncList.DoItUpperCase(UpperSrc,CurPos.StartPos,
-                                    CurPos.EndPos-CurPos.StartPos)
-  else begin
-    if Src[CurPos.StartPos] in ['(','['] then
-      ReadTilBracketClose(true);
-    Result:=true;
-  end;
+  DoProgress;
+  if (CurPos.StartPos<=SrcLen) and (CurPos.EndPos>CurPos.StartPos) then begin
+    if IsIdentStartChar[Src[CurPos.StartPos]] then
+      Result:=CurKeyWordFuncList.DoItUpperCase(UpperSrc,CurPos.StartPos,
+                                      CurPos.EndPos-CurPos.StartPos)
+    else begin
+      if Src[CurPos.StartPos] in ['(','['] then
+        ReadTilBracketClose(true);
+      Result:=true;
+    end;
+  end else
+    Result:=false;
 end;
 
 function TPascalParserTool.KeyWordFuncSection: boolean;
@@ -1662,6 +1674,7 @@ begin
         CurNode.Desc:=ctnFinalization;
       CurSection:=CurNode.Desc;
       repeat
+        DoProgress;
         ReadNextAtom;
         if (CurSection=ctnInitialization) and UpAtomIs('FINALIZATION') then
         begin
@@ -1853,6 +1866,7 @@ begin
     RaiseUnknownBlockType;
   BlockStartPos:=CurPos.StartPos;
   repeat
+    DoProgress;
     ReadNextAtom;
     if (CurPos.StartPos>SrcLen) then
       SaveRaiseExceptionWithBlockStartHint(ctsUnexpectedEndOfSource);
@@ -2085,6 +2099,7 @@ begin
   end else begin
     // read till semicolon or 'end'
     while (CurPos.Flag<>cafSemicolon) do begin
+      DoProgress;
       ReadNextAtom;
       if CurPos.Flag=cafEND then begin
         UndoReadNextAtom;
@@ -2292,6 +2307,7 @@ begin
   CurNode.Desc:=ctnTypeSection;
   // read all type definitions  Name = Type;
   repeat
+    DoProgress;
     ReadNextAtom;  // name
     if AtomIsIdentifier(false) then begin
       CreateChildNode;
@@ -2342,6 +2358,7 @@ begin
   CurNode.Desc:=ctnVarSection;
   // read all variable definitions  Name : Type; [cvar;] [public [name '']]
   repeat
+    DoProgress;
     ReadNextAtom;  // name
     if AtomIsIdentifier(false) then begin
       CreateChildNode;
@@ -2390,6 +2407,7 @@ begin
   CurNode.Desc:=ctnConstSection;
   // read all constants  Name = <Const>; or Name : type = <Const>;
   repeat
+    DoProgress;
     ReadNextAtom;  // name
     if AtomIsIdentifier(false) then begin
       CreateChildNode;
@@ -2445,6 +2463,7 @@ begin
   CurNode.Desc:=ctnResStrSection;
   // read all string constants Name = 'abc';
   repeat
+    DoProgress;
     ReadNextAtom;  // name
     if AtomIsIdentifier(false) then begin
       CreateChildNode;
@@ -2567,6 +2586,7 @@ begin
   end else begin
     Level:=1;
     while (CurPos.StartPos<=SrcLen) do begin
+      DoProgress;
       if CurPos.Flag=cafEND then begin
         dec(Level);
         if Level=0 then break;
@@ -3141,6 +3161,14 @@ begin
   SaveRaiseExceptionFmt(ctsIllegalQualifier,[GetAtom]);
 end;
 
+procedure TPascalParserTool.DoProgress;
+begin
+  inc(FProgressCount);
+  if ((FProgressCount and $ff)<>0) then exit;
+  if Assigned(OnParserProgress) then
+    OnParserProgress(Self);
+end;
+
 procedure TPascalParserTool.InitExtraction;
 begin
   if ExtractMemStream=nil then
@@ -3703,6 +3731,13 @@ begin
     end;
     CleanCodePosInFront:=CurPos.EndPos;
   until CurPos.StartPos>=SrcLen;
+end;
+
+procedure TPascalParserTool.BeginParsing(DeleteNodes,
+  OnlyInterfaceNeeded: boolean);
+begin
+  inherited BeginParsing(DeleteNodes, OnlyInterfaceNeeded);
+  FProgressCount:=0;
 end;
 
 procedure TPascalParserTool.BuildTreeAndGetCleanPos(
