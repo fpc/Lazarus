@@ -50,9 +50,9 @@ uses
   SynEditTypes, SynEdit, SynRegExpr, SynEditHighlighter, SynHighlighterPas,
   SynEditAutoComplete, SynEditKeyCmds, SynCompletion,
   // IDE units
-  EditorOptions, CustomFormEditor, KeyMapping, FormEditor, FindReplaceDialog,
-  WordCompletion, FindInFilesDlg, IDEProcs, IDEOptionDefs, MsgView,
-  InputHistory, LazarusIDEStrConsts, BaseDebugManager, Debugger,
+  EditorOptions, CustomFormEditor, KeyMapping, FormEditor, Project,
+  FindReplaceDialog, WordCompletion, FindInFilesDlg, IDEProcs, IDEOptionDefs,
+  MsgView, InputHistory, LazarusIDEStrConsts, BaseDebugManager, Debugger,
   TypInfo, LResources, LazConf, EnvironmentOpts, Compiler,
   SortSelectionDlg, ClipBoardHistory, DiffDialog,
   SourceEditProcs, SourceMarks;
@@ -524,10 +524,10 @@ type
     procedure FindClicked(Sender : TObject);
     procedure FindNextClicked(Sender : TObject);
     procedure FindPreviousClicked(Sender : TObject);
-    procedure FindInFilesClicked(Sender : TObject);
     procedure ReplaceClicked(Sender : TObject);
     procedure IncrementalFindClicked(Sender : TObject);
-    
+    procedure FindInFiles(AProject: TProject);
+
     procedure GotoLineClicked(Sender: TObject);
     
     procedure HistoryJump(Sender: TObject; Action: TJumpHistoryAction);
@@ -638,20 +638,6 @@ type
 
 
 implementation
-
-
-{const OldDebug
-  SrcEditMarkerImgIndex: array[TSrcEditMarkerType] of integer = (
-       10,  // active breakpoint
-       11,  // inactive breakpoint
-       12,  // invalid breakpoint
-       13,  // unknown breakpoint
-       14,  // multi active breakpoint
-       14,  // multi inactive breakpoint
-       14,  // multi invalid breakpoint
-       14,  // multi unknown breakpoint
-       14   // multi mixed breakpoint
-    );}
 
 var
   Highlighters: array[TLazSyntaxHighlighter] of TSynCustomHighlighter;
@@ -3311,15 +3297,110 @@ Begin
   if TempEditor <> nil then TempEditor.FindPrevious;
 End;
 
-Procedure TSourceNotebook.FindInFilesClicked(Sender : TObject);
+Procedure TSourceNotebook.FindInFiles(AProject: TProject);
+var
+  TheFileList:     TStringList; //List of Files to be searched.
+  TheMatchedFiles: TStringList; //List of files that contain a match
+  i:               integer;     //loop counter
+  AnUnitInfo: TUnitInfo;
+  FindText: String;
 Begin
-  if MessageDlg(ueNotImplCap,
-    ueNotImplText, mtInformation,[mbOk,mbCancel],0)=mrCancel then exit;
-  if FindInFilesDialog.ShowModal=mrOk then begin
-    MessageDlg(ueNotImplCapAgain,
-      ueNotImplText, mtInformation,[mbOk,mbCancel],0);
-  end;
-End;
+  if FindInFilesDialog=nil then
+    FindInFilesDialog:=TLazFindInFilesDialog.Create(Application);
+  FindInFilesDialog.TextToFindComboBox.Items.Assign(InputHistories.FindHistory);
+
+  if FindInFilesDialog.ShowModal=mrOk then
+  begin
+    FindText:=FindInFilesDialog.FindText;
+    InputHistories.AddToFindHistory(FindInFilesDialog.FindText);
+    InputHistories.Save;
+    
+    if FindText<>'' then
+    begin
+      try
+        TheFileList:= TStringList.Create;
+        // find in project files
+        if FindInFilesDialog.WhereRadioGroup.ItemIndex = 0 then
+        begin
+          AnUnitInfo:=AProject.FirstPartOfProject;
+          while AnUnitInfo<>nil do begin
+            TheFileList.Add(AnUnitInfo.FileName);
+            AnUnitInfo:=AnUnitInfo.NextPartOfProject;
+          end;
+        end;//if
+        // find in open files
+        if FindInFilesDialog.WhereRadioGroup.ItemIndex = 1 then
+        begin
+          for i:= 0 to self.EditorCount -1 do
+            TheFileList.Add(Editors[i].FileName);
+        end;//if
+        //Find in Directories
+        if FindInFilesDialog.WhereRadioGroup.ItemIndex = 2 then
+        begin
+          FindMatchingTextFiles(TheFileList,
+                            FindInFilesDialog.DirectoryComboBox.Text,
+                            FindInFilesDialog.FileMaskComboBox.Text,
+                            FindInFilesDialog.IncludeSubDirsCheckBox.Checked);
+        end;//if
+        //if the file search returned any files then look for the search
+        //text in each file.
+        if TheFileList.Count > 0 then
+        begin
+          MessagesView.Clear;
+          MessagesView.ShowOnTop;
+          try
+            TheMatchedFiles:= IDEProcs.FindInFiles(TheFileList,
+                      FindText,
+                      FindInFilesDialog.WholeWordsOnlyCheckBox.Checked,
+                      FindInFilesDialog.CaseSensitiveCheckBox.Checked,
+                      FindInFilesDialog.RegularExpressionsCheckBox.Checked);
+            //if we matched any files add them to the message window
+            if (TheMatchedFiles<>nil) and (TheMatchedFiles.Count>0) then
+            begin
+              MessagesView.AddSeparator;
+              for i:= 0 to TheMatchedFiles.Count -1 do
+              begin
+                MessagesView.Add(TheMatchedFiles.Strings[i],
+                                 '',false);
+              end;//for
+              //Hand off the search to the FindAndReplace Function in the
+              //unit editor.
+              with FindReplaceDlg do
+              begin
+                TextToFindComboBox.Text:=FindText;
+                Options:= Options-[ssoReplace];
+                Options:= Options-[ssoReplaceAll];
+                Options:= Options-[ssoBackwards];
+                Options:= Options+[ssoEntireScope];
+                //Whole Words ?
+                if FindInFilesDialog.WholeWordsOnlyCheckBox.Checked then
+                  Options:= Options+[ssoWholeWord]
+                else
+                  Options:= Options-[ssoWholeWord];
+                //Case Sensitive?
+                if FindInFilesDialog.CaseSensitiveCheckBox.Checked then
+                  Options:= Options+[ssoMatchCase]
+                else
+                  Options:= Options-[ssoMatchCase];
+                //Regular Expression?
+                if FindInFilesDialog.RegularExpressionsCheckBox.Checked then
+                  Options:= Options+[ssoRegExpr]
+                else
+                  Options:= Options-[ssoRegExpr];
+                //Multiline RegExpr?
+                  Options:= Options-[ssoRegExprMultiLine];
+              end;//with
+            end;//if
+          finally
+            TheMatchedFiles.Free;
+          end;//try-finally
+        end;//if
+      finally
+        TheFileList.Free;
+      end;//try-finally
+    end;//if
+  end;//if
+End;//FindInFilesClicked
 
 procedure TSourceNotebook.GotoLineClicked(Sender: TObject);
 var SrcEdit: TSourceEditor;
