@@ -25,7 +25,7 @@ unit AllUnits;
 interface
 
 uses
-  InterfaceBase, Interfaces,
+  InterfaceBase, Interfaces,   LCLStrConsts,
 	Buttons,    Extctrls,        Registry,     VCLGlobals,   Calendar,
 	Clipbrd,    Filectrl,        Forms,        LCLLinux,     Spin,
 	Comctrls,   Graphics,        LMessages,    Stdctrls,     Arrow,
@@ -40,6 +40,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.12  2002/07/04 11:46:00  lazarus
+  MG: moved resourcestring to lclstrconsts.pas
+
   Revision 1.11  2002/05/10 06:05:48  lazarus
   MG: changed license to LGPL
 

@@ -248,25 +248,7 @@ implementation
 
 
 uses
-  Buttons, StdCtrls, LCLlinux, SysUtils, FileCtrl;
-
-resourcestring
-   rsMbYes    = 'Yes';
-   rsMbNo     = 'No';
-   rsMbOK     = 'OK';
-   rsMbCancel = 'Cancel';
-   rsMbAbort  = 'Abort';
-   rsMbRetry  = 'Retry';
-   rsMbIgnore = 'Ignore';
-   rsMbAll      = 'All?';
-   rsMbNoToAll  = 'No to all';
-   rsMbYesToAll = 'Yes to all';
-   rsMbHelp     = 'Help';
-   rsMtWarning      = 'Warning';
-   rsMtError        = 'Error';
-   rsMtInformation  = 'Information';
-   rsMtConfirmation = 'Confirmation';
-   rsMtCustom       = 'Custom';
+  Buttons, StdCtrls, LCLlinux, SysUtils, FileCtrl, LCLStrConsts;
 
 const
    cMtCaption : array [TMsgDlgType] of string = 
@@ -331,6 +313,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.15  2002/07/04 11:46:00  lazarus
+  MG: moved resourcestring to lclstrconsts.pas
+
   Revision 1.14  2002/06/04 15:17:21  lazarus
   MG: improved TFont for XLFD font names
 
