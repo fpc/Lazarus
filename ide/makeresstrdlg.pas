@@ -336,17 +336,16 @@ var
 begin
   Index:=ResStrSectionComboBox.ItemIndex;
   if (Index<0) or (Index>=Positions.Count) then begin
-    MessageDlg('Invalid Resourcestring section',
-      'Please choose a resourstring section from the list.',
+    MessageDlg(lisMakeResStrInvalidResourcestringSect,
+      lisMakeResStrPleaseChooseAResourstring,
       mtError,[mbCancel],0);
     exit;
   end;
   if ResStrExistsInAnySection(IdentifierEdit.Text)
   and (not ResStrExistsWithSameValue(IdentifierEdit.Text)) then begin
-    if MessageDlg('Resourcestring already exists',
-      'The resourcestring "'+IdentifierEdit.Text+'" already exists.'#13
-      +'Please choose another name.'#13
-      +'Use Ignore to add it anyway.',
+    if MessageDlg(lisMakeResStrResourcestringAlreadyExis,
+      Format(lisMakeResStrChooseAnotherName, ['"', IdentifierEdit.Text, '"',
+        #13, #13]),
       mtWarning,[mbOk,mbIgnore],0)
       =mrOk
     then
@@ -382,7 +381,7 @@ begin
   with StringConstGroupBox do begin
     Name:='StringConstGroupBox';
     Parent:=Self;
-    Caption:='String Constant in source';
+    Caption:=lisMakeResStrStringConstantInSource;
   end;
   
   StringConstSynEdit:=TSynEdit.Create(Self);
@@ -398,7 +397,7 @@ begin
   with ConversionGroupBox do begin
     Name:='ConversionGroupBox';
     Parent:=Self;
-    Caption:='Conversion Options';
+    Caption:=lisMakeResStrConversionOptions;
     OnResize:=@ConversionGroupBoxResize;
   end;
 
@@ -407,7 +406,7 @@ begin
   with IdentPrefixLabel do begin
     Name:='IdentPrefixLabel';
     Parent:=ConversionGroupBox;
-    Caption:='Identifier Prefix:';
+    Caption:=lisMakeResStrIdentifierPrefix;
   end;
 
   IdentPrefixComboBox:=TComboBox.Create(Self);
@@ -422,7 +421,7 @@ begin
   with IdentLengthLabel do begin
     Name:='IdentLengthLabel';
     Parent:=ConversionGroupBox;
-    Caption:='Identifier Length:';
+    Caption:=lisMakeResStrIdentifierLength;
   end;
 
   IdentLengthComboBox:=TComboBox.Create(Self);
@@ -437,7 +436,7 @@ begin
   with CustomIdentifierCheckBox do begin
     Name:='CustomIdentifierCheckBox';
     Parent:=ConversionGroupBox;
-    Caption:='Custom Identifier';
+    Caption:=lisMakeResStrCustomIdentifier;
     Checked:=false;
     OnClick:=@CustomIdentifierCheckBoxClick;
   end;
@@ -455,7 +454,7 @@ begin
   with ResStrSectionLabel do begin
     Name:='ResStrSectionLabel';
     Parent:=ConversionGroupBox;
-    Caption:='Resourcestring Section:';
+    Caption:=lisMakeResStrResourcestringSection;
   end;
 
   ResStrSectionComboBox:=TComboBox.Create(Self);
@@ -470,7 +469,7 @@ begin
   with ResStrWithSameValueLabel do begin
     Name:='ResStrWithSameValueLabel';
     Parent:=ConversionGroupBox;
-    Caption:='Strings with same value:';
+    Caption:=lisMakeResStrStringsWithSameValue;
   end;
 
   ResStrWithSameValuesCombobox:=TComboBox.Create(Self);
@@ -485,14 +484,14 @@ begin
   with AppendResStrRadioButton do begin
     Name:='AppendResStrRadioButton';
     Parent:=ConversionGroupBox;
-    Caption:='Append to section';
+    Caption:=lisMakeResStrAppendToSection;
   end;
 
   InsertAlphabeticallyResStrRadioButton:=TRadioButton.Create(Self);
   with InsertAlphabeticallyResStrRadioButton do begin
     Name:='InsertAlphabeticallyResStrRadioButton';
     Parent:=ConversionGroupBox;
-    Caption:='Insert alphabetically';
+    Caption:=lisMakeResStrInsertAlphabetically;
   end;
 
   // converted source preview
@@ -500,7 +499,7 @@ begin
   with SrcPreviewGroupBox do begin
     Name:='SrcPreviewGroupBox';
     Parent:=Self;
-    Caption:='Source preview';
+    Caption:=lisMakeResStrSourcePreview;
   end;
 
   SrcPreviewSynEdit:=TSynEdit.Create(Self);
@@ -516,7 +515,7 @@ begin
   with OkButton do begin
     Name:='OkButton';
     Parent:=Self;
-    Caption:='Ok';
+    Caption:=lisLazBuildOk;
     OnClick:=@OkButtonClick;
   end;
   
@@ -524,7 +523,7 @@ begin
   with CancelButton do begin
     Name:='CancelButton';
     Parent:=Self;
-    Caption:='Cancel';
+    Caption:=dlgCancel;
     OnClick:=@CancelButtonClick;
   end;
 end;
@@ -534,7 +533,7 @@ begin
   inherited Create(TheOwner);
   if LazarusResources.Find(Classname)=nil then begin
     Name:='MakeResStrDialog';
-    Caption := 'Make ResourceString';
+    Caption := lisMakeResourceString;
     Width:=550;
     Height:=400;
     Position:=poScreenCenter;

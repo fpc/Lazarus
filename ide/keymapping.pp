@@ -106,6 +106,7 @@ const
   ecGuessMisplacedIFDEF  = ecUserFirst + 105;
   ecConvertDFM2LFM       = ecUserFirst + 106;
   ecMakeResourceString   = ecUserFirst + 107;
+  ecDiff                 = ecUserFirst + 108;
 
   ecNew                  = ecUserFirst + 201;
   ecNewUnit              = ecUserFirst + 202;
@@ -609,13 +610,14 @@ begin
     ecBuildLazarus          : Result:= srkmecBuildLazarus;
     ecExtToolFirst..
     ecExtToolLast           : Result:= Format(srkmecExtTool,[cmd-ecExtToolFirst+1]);
+    ecMakeResourceString    : Result:= srkmecMakeResourceString;
+    ecDiff                  : Result:= srkmecDiff;
 
     // environment menu
     ecEnvironmentOptions    : Result:= srkmecEnvironmentOptions;
     ecEditorOptions         : Result:= lismenueditoroptions;
     ecCodeToolsOptions      : Result:= srkmecCodeToolsOptions;
     ecCodeToolsDefinesEd    : Result:= srkmecCodeToolsDefinesEd;
-    ecMakeResourceString    : Result:= srkmecMakeResourceString;
 
     // help menu
     ecAboutLazarus          : Result:= lisMenuAboutLazarus;
@@ -1437,6 +1439,7 @@ begin
   Add(C,'Build Lazarus',ecBuildLazarus,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Configure "Build Lazarus"',ecConfigBuildLazarus,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Make resource string',ecMakeResourceString,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Diff editor files',ecDiff,VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // environment menu
   C:=Categories[AddCategory('EnvironmentMenu',srkmCatEnvMenu,caAll)];

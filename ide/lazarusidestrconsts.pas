@@ -207,6 +207,7 @@ resourcestring
   lisMenuGuessUnclosedBlock = 'Guess unclosed block';
   lisMenuGuessMisplacedIFDEF = 'Guess misplaced IFDEF/ENDIF';
   lisMenuMakeResourceString = 'Make Resource String';
+  lisMenuDiff = 'Diff';
   lisMenuConvertDFMtoLFM = 'Convert DFM file to LFM';
   lisMenuBuildLazarus = 'Build Lazarus';
   lisMenuConfigureBuildLazarus = 'Configure "Build Lazarus"';
@@ -887,6 +888,7 @@ resourcestring
   srkmecCodeToolsOptions          = 'Codetools options';
   srkmecCodeToolsDefinesEd        = 'Codetools defines editor';
   srkmecMakeResourceString        = 'Make resource string';
+  srkmecDiff                      = 'Diff';
   // help menu
   srkmecunknown                   = 'unknown editor command';
    
@@ -1138,6 +1140,50 @@ resourcestring
     +'child nodes.';
   lisCodeToolsDefsNewNode = 'NewNode';
   lisCodeToolsDefsCodeToolsDefinesEditor = 'CodeTools Defines Editor';
+  
+  // code template dialog
+  lisCodeTemplAddCodeTemplate = 'Add code template';
+  lisCodeTemplAdd = 'Add';
+  lisCodeTemplEditCodeTemplate = 'Edit code template';
+  lisCodeTemplChange = 'Change';
+  lisCodeTemplToken = 'Token:';
+  lisCodeTemplComment = 'Comment:';
+  lisCodeTemplATokenAlreadyExists = ' A token %s%s%s already exists! ';
+  lisCodeTemplError = 'Error';
+  
+  // make resource string dialog
+  lisMakeResourceString = 'Make ResourceString';
+  lisMakeResStrInvalidResourcestringSect = 'Invalid Resourcestring section';
+  lisMakeResStrPleaseChooseAResourstring = 'Please choose a resourstring '
+    +'section from the list.';
+  lisMakeResStrResourcestringAlreadyExis = 'Resourcestring already exists';
+  lisMakeResStrChooseAnotherName = 'The resourcestring %s%s%s already exists.%'
+    +'sPlease choose another name.%sUse Ignore to add it anyway.';
+  lisMakeResStrStringConstantInSource = 'String Constant in source';
+  lisMakeResStrConversionOptions = 'Conversion Options';
+  lisMakeResStrIdentifierPrefix = 'Identifier Prefix:';
+  lisMakeResStrIdentifierLength = 'Identifier Length:';
+  lisMakeResStrCustomIdentifier = 'Custom Identifier';
+  lisMakeResStrResourcestringSection = 'Resourcestring Section:';
+  lisMakeResStrStringsWithSameValue = 'Strings with same value:';
+  lisMakeResStrAppendToSection = 'Append to section';
+  lisMakeResStrInsertAlphabetically = 'Insert alphabetically';
+  lisMakeResStrSourcePreview = 'Source preview';
+  
+  // diff dialog
+  lisDiffDlgText1 = 'Text1';
+  lisDiffDlgOnlySelection = 'Only selection';
+  lisDiffDlgText2 = 'Text2';
+  lisDiffDlgCaseInsensitive = 'Case Insensitive';
+  lisDiffDlgIgnoreIfEmptyLinesWereAdd = 'Ignore if empty lines were added or '
+    +'removed';
+  lisDiffDlgIgnoreSpacesAtStartOfLine = 'Ignore spaces at start of line';
+  lisDiffDlgIgnoreSpacesAtEndOfLine = 'Ignore spaces at end of line';
+  lisDiffDlgIgnoreIfLineEndCharsDiffe = 'Ignore difference in line ends (e.'
+    +'g. #10 = #13#10)';
+  lisDiffDlgIgnoreIfSpaceCharsWereAdd = 'Ignore amount of space chars';
+  lisDiffDlgIgnoreSpaces = 'Ignore spaces (newline chars not included)';
+  lisDiffDlgOpenDiffInEditor = 'Open Diff in editor';
 
 implementation
 end.

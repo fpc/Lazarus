@@ -68,11 +68,12 @@ type
   TNewFlags = set of TNewFlag;
 
   // save file flags
-  TSaveFlag = (sfSaveAs,
-               sfSaveToTestDir,
-               sfProjectSaving,
-               sfCheckAmbigiousFiles
-               );
+  TSaveFlag = (
+    sfSaveAs,
+    sfSaveToTestDir,
+    sfProjectSaving,
+    sfCheckAmbigiousFiles
+    );
   TSaveFlags = set of TSaveFlag;
   
   // open file flags
@@ -257,6 +258,7 @@ type
     itmToolGuessMisplacedIFDEF: TMenuItem;
     itmToolConvertDFMtoLFM: TMenuItem;
     itmToolMakeResourceString: TMenuItem;
+    itmToolDiff: TMenuItem;
     itmToolBuildLazarus: TMenuItem;
     itmToolConfigureBuildLazarus: TMenuItem;
 
@@ -1036,6 +1038,11 @@ begin
   itmToolMakeResourceString.Caption := lisMenuMakeResourceString;
   mnuTools.Add(itmToolMakeResourceString);
 
+  itmToolDiff := TMenuItem.Create(Self);
+  itmToolDiff.Name:='itmToolDiff';
+  itmToolDiff.Caption := lisMenuDiff;
+  mnuTools.Add(itmToolDiff);
+
   mnuTools.Add(CreateMenuSeparator);
 
   itmToolConvertDFMtoLFM := TMenuItem.Create(Self);
@@ -1201,6 +1208,7 @@ begin
     itmToolGuessUnclosedBlock.ShortCut:=CommandToShortCut(ecGuessUnclosedBlock);
     itmToolGuessMisplacedIFDEF.ShortCut:=CommandToShortCut(ecGuessMisplacedIFDEF);
     itmToolMakeResourceString.ShortCut:=CommandToShortCut(ecMakeResourceString);
+    itmToolDiff.ShortCut:=CommandToShortCut(ecDiff);
     itmToolConvertDFMtoLFM.ShortCut:=CommandToShortCut(ecConvertDFM2LFM);
     itmToolBuildLazarus.ShortCut:=CommandToShortCut(ecBuildLazarus);
     itmToolConfigureBuildLazarus.ShortCut:=CommandToShortCut(ecConfigBuildLazarus);

@@ -35,7 +35,7 @@ unit InputHistory;
 interface
 
 uses
-  Classes, SysUtils, IDEProcs, Laz_XMLCfg, LazConf, Dialogs;
+  Classes, SysUtils, DiffPatch, IDEProcs, Laz_XMLCfg, LazConf, Dialogs;
 
 const
   // these are the names of the various history lists in the IDE:
@@ -94,6 +94,9 @@ type
 
   TInputHistories = class
   private
+    FDiffFlags: TTextDiffFlags;
+    FDiffText2: string;
+    FDiffText2OnlySelection: boolean;
     FFileDialogSettings: TFileDialogSettings;
     FFilename: string;
   
@@ -165,6 +168,12 @@ type
       
     // various history lists
     property HistoryLists: THistoryLists read FHistoryLists;
+    
+    // diff dialog
+    property DiffFlags: TTextDiffFlags read FDiffFlags write FDiffFlags;
+    property DiffText2: string read FDiffText2 write FDiffText2;
+    property DiffText2OnlySelection: boolean read FDiffText2OnlySelection
+                                             write FDiffText2OnlySelection;
   end;
 
 var
@@ -177,6 +186,8 @@ implementation
 const
   DefaultHistoryFile = 'inputhistory.xml';
   InputHistoryVersion = 1;
+  DefaultDiffFlags = [tdfIgnoreCase,tdfIgnoreEmptyLineChanges,
+                      tdfIgnoreLineEnds,tdfIgnoreTrailingSpaces];
 
 { TInputHistories }
 
@@ -238,20 +249,28 @@ begin
     InitialDir:='';
   end;
   FLastFPCPath:='';
+  FDiffFlags:=DefaultDiffFlags;
+  FDiffText2:='';
+  FDiffText2OnlySelection:=false;
 end;
 
 procedure TInputHistories.LoadFromXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
+var
+  DiffFlag: TTextDiffFlag;
 begin
   // Find- and replace-history
   fMaxFindHistory:=XMLConfig.GetValue(Path+'Find/History/Max',FMaxFindHistory);
   LoadRecentList(XMLConfig,FFindHistory,Path+'Find/History/Find/');
   LoadRecentList(XMLConfig,FReplaceHistory,Path+'Find/History/Replace/');
+  // unit dependencies
   LoadRecentList(XMLConfig,FUnitDependenciesHistory,Path+'UnitDependencies/History/');
+  // fpc
   FLastFPCAge:=XMLConfig.GetValue(Path+'FPCUnitLinks/FPCAge',-1);
   FLastFPCPath:=XMLConfig.GetValue(Path+'FPCUnitLinks/FPCPath','');
   FLastFPCSearchPath:=XMLConfig.GetValue(Path+'FPCUnitLinks/FPCSearchPath','');
   FLastFPCUnitLinks:=XMLConfig.GetValue(Path+'FPCUnitLinks/UnitLinks','');
+  // file dialog
   with FFileDialogSettings do begin
     Width:=XMLConfig.GetValue(Path+'FileDialog/Width',0);
     Height:=XMLConfig.GetValue(Path+'FileDialog/Height',0);
@@ -259,21 +278,39 @@ begin
     MaxHistory:=XMLConfig.GetValue(Path+'FileDialog/MaxHistory',20);
     LoadRecentList(XMLConfig,HistoryList,Path+'FileDialog/HistoryList/');
   end;
+  // history lists
   FHistoryLists.LoadFromXMLConfig(XMLConfig,Path+'HistoryLists/');
+  // diff dialog
+  FDiffFlags:=[];
+  for DiffFlag:=Low(TTextDiffFlag) to High(TTextDiffFlag) do begin
+    if XMLConfig.GetValue(
+      Path+'DiffDialog/Options/'+TextDiffFlagNames[DiffFlag],
+      DiffFlag in DefaultDiffFlags)
+    then
+      Include(FDiffFlags,DiffFlag);
+  end;
+  FDiffText2:=XMLConfig.GetValue(Path+'DiffDialog/Text2/Name','');
+  FDiffText2OnlySelection:=
+    XMLConfig.GetValue(Path+'DiffDialog/Text2/OnlySelection',false);
 end;
 
 procedure TInputHistories.SaveToXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
+var
+  DiffFlag: TTextDiffFlag;
 begin
   // Find- and replace-history
   XMLConfig.SetDeleteValue(Path+'Find/History/Max',FMaxFindHistory,20);
   SaveRecentList(XMLConfig,FFindHistory,Path+'Find/History/Find/');
   SaveRecentList(XMLConfig,FReplaceHistory,Path+'Find/History/Replace/');
+  // unit dependencies
   SaveRecentList(XMLConfig,FUnitDependenciesHistory,Path+'UnitDependencies/History/');
+  // fpc
   XMLConfig.SetDeleteValue(Path+'FPCUnitLinks/FPCAge',FLastFPCAge,0);
   XMLConfig.SetDeleteValue(Path+'FPCUnitLinks/FPCPath',FLastFPCPath,'');
   XMLConfig.SetDeleteValue(Path+'FPCUnitLinks/FPCSearchPath',FLastFPCSearchPath,'');
   XMLConfig.SetDeleteValue(Path+'FPCUnitLinks/UnitLinks',FLastFPCUnitLinks,'');
+  // file dialog
   with FFileDialogSettings do begin
     XMLConfig.SetDeleteValue(Path+'FileDialog/Width',Width,0);
     XMLConfig.SetDeleteValue(Path+'FileDialog/Height',Height,0);
@@ -281,7 +318,17 @@ begin
     XMLConfig.SetDeleteValue(Path+'FileDialog/MaxHistory',MaxHistory,20);
     SaveRecentList(XMLConfig,HistoryList,Path+'FileDialog/HistoryList/');
   end;
+  // history lists
   FHistoryLists.SaveToXMLConfig(XMLConfig,Path+'HistoryLists/');
+  // diff dialog
+  for DiffFlag:=Low(TTextDiffFlag) to High(TTextDiffFlag) do begin
+    XMLConfig.SetDeleteValue(
+      Path+'DiffDialog/Options/'+TextDiffFlagNames[DiffFlag],
+      DiffFlag in DiffFlags,DiffFlag in DefaultDiffFlags);
+  end;
+  XMLConfig.SetDeleteValue(Path+'DiffDialog/Text2/Name',FDiffText2,'');
+  XMLConfig.SetDeleteValue(Path+'DiffDialog/Text2/OnlySelection',
+                           FDiffText2OnlySelection,false);
 end;
 
 procedure TInputHistories.SetLazarusDefaultFilename;
