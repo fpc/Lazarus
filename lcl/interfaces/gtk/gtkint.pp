@@ -138,6 +138,7 @@ type
     function CreateDefaultFont: PGdiObject;virtual;
     function CreateDefaultPen: PGdiObject;virtual;
     procedure UpdateDCTextMetric(DC: TDeviceContext);
+    function GetDefaultFont(IncreaseReferenceCount: boolean): PGDKFont;
 
     // images
     procedure LoadXPMFromLazResource(const ResourceName: string;
@@ -335,6 +336,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.124  2003/04/03 17:42:13  mattias
+  added exception handling for createpixmapindirect
+
   Revision 1.123  2003/03/17 13:00:35  mattias
   improved but not fixed transient windows
 
