@@ -26,16 +26,16 @@
 
 
   ToDo:
-    - many things, search for 'ToDo'
     - ignore errors behind cursor (implemented, not tested)
     - variants
     - interfaces
     - Get and Set property access parameter lists
-    - predefined funcs Pred, Succ, Val, Low, High
+    - predefined funcs Low, High
     - find declaration in dead code
-    - make @Proc context sensitive (started but not complete)
+    - make @Proc context sensitive (started, but not complete)
     - operator overloading
     - ppu, ppw, dcu files
+    - many things, search for 'ToDo'
 }
 unit FindDeclarationTool;
 
@@ -1557,9 +1557,18 @@ var
   //          false if search should continue
   
     procedure RaiseNotFound;
+    var
+      Identifier: string;
     begin
+      Identifier:=GetIdentifier(Params.Identifier);
+      if (Identifier='') and (Params.Identifier<>nil)
+      and (Params.Identifier[0]<>#0) then begin
+        Identifier:=Params.Identifier[0];
+        if Identifier='[' then
+          Params.IdentifierTool.RaiseException(ctsDefaultPropertyNotFound);
+      end;
       Params.IdentifierTool.RaiseExceptionFmt(ctsIdentifierNotFound,
-                                            [GetIdentifier(Params.Identifier)]);
+                                              [Identifier]);
     end;
   
   var IdentFoundResult: TIdentifierFoundResult;
@@ -3849,7 +3858,7 @@ var
                         +fdfGlobals*Params.Flags
                         +fdfAllClassVisibilities*Params.Flags;
           // special identifier for default property
-          Params.SetIdentifier(ExprType.Context.Tool,'[',nil);
+          Params.SetIdentifier(ExprType.Context.Tool,@Src[CurAtom.StartPos],nil);
           Params.ContextNode:=ExprType.Context.Node;
           ExprType.Context.Tool.FindIdentifierInContext(Params);
           ExprType.Context:=CreateFindContext(Params);

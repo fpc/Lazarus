@@ -115,6 +115,7 @@ ResourceString
   ctsDuplicateIdentifier = 'duplicate identifier: %s';
   ctsQualifierExpectedButAtomFound = 'qualifier expected but %s found';
   ctsIncompatibleTypesGotExpected = 'incompatibles types: expected "%s" but got "%s"';
+  ctsDefaultPropertyNotFound = 'default property not found';
 
   // codecompletion
   ctsPropertySpecifierAlreadyDefined = 'property specifier already defined: %s';
