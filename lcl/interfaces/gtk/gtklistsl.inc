@@ -38,6 +38,24 @@ begin
   Result:= strcomp(AStr, BStr);
 end;
 
+{------------------------------------------------------------------------------
+  function gtkListItemDrawCB(Widget: PGtkWidget; area: PGDKRectangle;
+    data: gPointer) : GBoolean; cdecl;
+
+  Handler for draw events of every item in a TGtkListStringList.
+------------------------------------------------------------------------------}
+function gtkListItemDrawAfterCB(Widget: PGtkWidget; area: PGDKRectangle;
+  data: gPointer) : GBoolean; cdecl;
+//var
+  //Msg: TLM_;
+begin
+  Result:=true;
+  //writeln('gtkListItemDrawCB ');
+  
+  //Result := DeliverMessage(Data, Msg);
+end;
+
+
 {*************************************************************}
 {                      TGtkListStringList methods             }
 {*************************************************************}
@@ -48,12 +66,13 @@ end;
   Returns: 
 
  ------------------------------------------------------------------------------}
-constructor TGtkListStringList.Create(List : PGtkList);
+constructor TGtkListStringList.Create(List : PGtkList; TheOwner: TWinControl);
 begin
   inherited Create;
-  if List = nil then raise Exception.Create(
+  if List = nil then RaiseException(
     'TGtkListStringList.Create Unspecified list widget');
   FGtkList:= List;
+  FOwner:=TheOwner;
 end;
 
 {------------------------------------------------------------------------------
@@ -209,7 +228,7 @@ begin
     Index:=m;
   end;
   if (Index < 0) or (Index > Count) then 
-    raise Exception.Create('TGtkListStringList.Insert: Index '+IntToStr(Index)
+    RaiseException('TGtkListStringList.Insert: Index '+IntToStr(Index)
       +' out of bounds. Count='+IntToStr(Count));
 
   // ToDo:
@@ -218,6 +237,8 @@ begin
   //  - measure item
   
   li:=gtk_list_item_new_with_label(PChar(S));
+  gtk_signal_connect_after(PGtkObject(li), 'draw',
+                           TGTKSignalFunc(@gtkListItemDrawAfterCB),Owner);
   gtk_widget_show(li);
   gtk_list_insert_items(FGtkList, g_list_append(nil, li), Index);
 //writeln('[TGtkListStringList.Insert] END Index=',Index,' Count=',Count,' ',S,',',Count);
@@ -405,6 +426,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.8  2002/10/03 14:47:31  lazarus
+  MG: added TComboBox.OnPopup+OnCloseUp+ItemWidth
+
   Revision 1.7  2002/09/07 20:30:50  lazarus
   Make TComboboxes sort again, including in OI
 
