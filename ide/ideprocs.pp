@@ -74,6 +74,7 @@ const
   EmptyLine: shortstring={$IFDEF win32}#13#10#13#10{$ELSE}#10#10{$ENDIF};
 
 // files
+function TrimSearchPath(const SearchPath, BaseDirectory: string): string;
 function BackupFile(const Filename, BackupFilename: string): boolean;
 function ClearFile(const Filename: string; RaiseOnError: boolean): boolean;
 function CompareFilenames(const Filename1, Filename2: string): integer;
@@ -96,6 +97,9 @@ function FindFilesCaseInsensitive(const Directory,
 function FilenameIsPascalUnit(const Filename: string): boolean;
 function FilenameIsPascalSource(const Filename: string): boolean;
 function FilenameIsFormText(const Filename: string): boolean;
+function MergeSearchPaths(const OldSearchPath, AddSearchPath: string): string;
+function SearchDirectoryInSearchPath(const SearchPath, Directory: string;
+                                     DirStartPos: integer): integer;
 
 // XMLConfig
 procedure LoadRecentList(XMLConfig: TXMLConfig; List: TStringList;
@@ -250,6 +254,79 @@ begin
   Ext:=lowercase(ExtractFileExt(Filename));
   Result:=((Ext='.lfm') or (Ext='.dfm') or (Ext='.xfm'))
           and (ExtractFileNameOnly(Filename)<>'');
+end;
+
+function MergeSearchPaths(const OldSearchPath, AddSearchPath: string): string;
+var
+  l: Integer;
+  EndPos: Integer;
+  StartPos: Integer;
+  NewPath: String;
+begin
+  Result:=OldSearchPath;
+  l:=length(AddSearchPath);
+  EndPos:=1;
+  while EndPos<=l do begin
+    StartPos:=EndPos;
+    while (AddSearchPath[StartPos]=';') do begin
+      inc(StartPos);
+      if StartPos>l then exit;
+    end;
+    EndPos:=StartPos;
+    while (EndPos<=l) and (AddSearchPath[EndPos]<>';') do inc(EndPos);
+    if SearchDirectoryInSearchPath(Result,AddSearchPath,StartPos)<1 then
+    begin
+      // new path found -> add
+      NewPath:=copy(AddSearchPath,StartPos,EndPos-StartPos);
+      if Result<>'' then
+        NewPath:=';'+NewPath;
+      Result:=Result+NewPath;
+    end;
+  end;
+end;
+
+function SearchDirectoryInSearchPath(const SearchPath,
+  Directory: string; DirStartPos: integer): integer;
+var
+  PathLen: Integer;
+  DirLen: Integer;
+  EndPos: Integer;
+  StartPos: Integer;
+  DirEndPos: Integer;
+  CurDirLen: Integer;
+  i: Integer;
+begin
+  Result:=-1;
+  DirLen:=length(Directory);
+  if (SearchPath='')
+  or (Directory='') or (DirStartPos>DirLen) or (Directory[DirStartPos]=';') then
+    exit;
+  DirEndPos:=DirStartPos;
+  while (DirEndPos<=DirLen) and (Directory[DirEndPos]<>';') do inc(DirEndPos);
+  CurDirLen:=DirEndPos-DirStartPos;
+  PathLen:=length(SearchPath);
+  EndPos:=1;
+  while EndPos<=PathLen do begin
+    StartPos:=EndPos;
+    while (SearchPath[StartPos]=';') do begin
+      inc(StartPos);
+      if StartPos>PathLen then exit;
+    end;
+    EndPos:=StartPos;
+    while (EndPos<=PathLen) and (SearchPath[EndPos]<>';') do inc(EndPos);
+    if EndPos-StartPos=CurDirLen then begin
+      i:=CurDirLen-1;
+      while i>=0 do begin
+        if SearchPath[StartPos+i]<>Directory[DirStartPos+i] then break;
+        dec(i);
+      end;
+      if i<0 then begin
+        Result:=StartPos;
+        exit;
+      end;
+    end;
+    StartPos:=EndPos;
+  end;
 end;
 
 procedure LoadRecentList(XMLConfig: TXMLConfig; List: TStringList;
@@ -625,6 +702,40 @@ begin
     Result:=1
   else
     Result:=-1;
+end;
+
+{-------------------------------------------------------------------------------
+  function TrimSearchPath(const SearchPath, BaseDirectory: string): boolean;
+  
+  - Removes empty paths.
+  - Uses TrimFilename on every path.
+  - If BaseDirectory<>'' then every relative Filename will be expanded.
+-------------------------------------------------------------------------------}
+function TrimSearchPath(const SearchPath, BaseDirectory: string): string;
+var
+  CurPath: String;
+  EndPos: Integer;
+  StartPos: Integer;
+  l: Integer;
+begin
+  Result:='';
+  EndPos:=1;
+  l:=length(SearchPath);
+  while EndPos<=l do begin
+    StartPos:=EndPos;
+    while (StartPos<=l) and (SearchPath[StartPos]=';') do inc(StartPos);
+    if StartPos>l then break;
+    EndPos:=StartPos;
+    while (EndPos<=l) and (SearchPath[EndPos]<>';') do inc(EndPos);
+    CurPath:=TrimFilename(copy(SearchPath,StartPos,EndPos-StartPos));
+    if CurPath<>'' then begin
+      if (BaseDirectory<>'') and (not FilenameIsAbsolute(CurPath)) then
+        CurPath:=BaseDirectory+CurPath;
+      if Result<>'' then
+        CurPath:=';'+CurPath;
+      Result:=Result+CurPath;
+    end;
+  end;
 end;
 
 {-------------------------------------------------------------------------------
