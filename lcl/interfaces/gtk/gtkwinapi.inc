@@ -5005,7 +5005,7 @@ Begin
   begin
     if GC = nil
     then begin
-      WriteLn('WARNING: [TgtkObject.Polygon] Uninitialized GC');
+      WriteLn('WARNING: [TgtkObject.PolyBezier] Uninitialized GC');
       Result := False;
     end
     else
@@ -5039,11 +5039,13 @@ var
   Tmp, RGN : hRGN;
   ClipRect : TRect;
   DCOrigin: Tpoint;
+  OldNumPts: integer;
 begin
   Result := IsValidDC(DC);
   if Result
   then with TDeviceContext(DC) do
   begin
+    if NumPts<=0 then exit;
     if GC = nil
     then begin
       WriteLn('WARNING: [TgtkObject.Polygon] Uninitialized GC');
@@ -5051,20 +5053,21 @@ begin
     end
     else begin
       DCOrigin:=GetDCOffset(TDeviceContext(DC));
-      if NumPts<=0 then exit;
-      
+
       GetMem(PointArray,SizeOf(TGdkPoint)*(NumPts+1)); // +1 for return line
       for i:=0 to NumPts-1 do begin
         PointArray[i].x:=Points[i].x+DCOrigin.X;
         PointArray[i].y:=Points[i].y+DCOrigin.Y;
       end;
 
+      OldNumPts:=NumPts;
       If (Points[NumPts-1].X <> Points[0].X) or
         (Points[NumPts-1].Y <> Points[0].Y)
       then begin
+        // add last point to return to first
+        PointArray[NumPts].x:=PointArray[0].x;
+        PointArray[NumPts].y:=PointArray[0].y;
         Inc(NumPts);
-        PointArray[NumPts - 1].x:=PointArray[0].x;
-        PointArray[NumPts - 1].y:=PointArray[0].y;
       end;
 
       // first draw interior in brush color
@@ -5074,7 +5077,7 @@ begin
         if Winding then begin
           Tmp := CreateRectRGN(0,0,0,0);
           GetClipRGN(DC, Tmp);
-          RGN := CreatePolygonRgn(Points, NumPts, True);
+          RGN := CreatePolygonRgn(Points, OldNumPts, True);
           ExtSelectClipRGN(DC, RGN, RGN_AND);
           DeleteObject(RGN);
           GetClipBox(DC, @ClipRect);
@@ -7495,6 +7498,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.179  2002/10/31 17:31:11  lazarus
+  MG: fixed return polygon point
+
   Revision 1.178  2002/10/31 04:27:59  lazarus
   AJ: added TShape
 
