@@ -76,6 +76,7 @@ function OffsetRect(var ARect: TRect; dx,dy: Integer): Boolean;
 procedure FreeThenNil(var AnObject: TObject);
 procedure RaiseGDBException(const Msg: string);
 
+
 implementation
 
 
