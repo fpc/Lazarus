@@ -1589,18 +1589,20 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.WMWindowPosChanged(var Message : TLMWindowPosChanged);
 begin
-  if Message.WindowPos <> nil
-  then with Message.WindowPos^ do
-  begin
-    FLeft := X;
-    FWidth := cX;
-    FTop := Y;
-    FHeight := cY;
-    Assert(False, Format('Trace:[TWinControl.WMWindowPosChanged] %s --> Message.WindowPos(%d, %d)(%d, %d)', [ClassName, X, Y, cx, cy]));
-  end
-  else Assert(False, Format('Trace:[TWinControl.WMWindowPosChanged] %s --> Message.WindowPos = nil', [ClassName]));
+Writeln('[TWINCONTROL].WMWINDOWPOSCHANGED');
+  if Message.WindowPos <> nil then
+  with Message.WindowPos^ do
+   begin
+     Writeln(Format('Sizes are %d,%d,%d,%d',[X,Y,cx,cy]));
+     FLeft := X;
+     FWidth := cX;
+     FTop := Y;
+     FHeight := cY;
+     Assert(False, Format('Trace:[TWinControl.WMWindowPosChanged] %s --> Message.WindowPos(%d, %d)(%d, %d)', [ClassName, X, Y, cx, cy]));
+   end
+   else Assert(False, Format('Trace:[TWinControl.WMWindowPosChanged] %s --> Message.WindowPos = nil', [ClassName]));
 
-  inherited WMWindowPosChanged(Message);
+   inherited WMWindowPosChanged(Message);
 end;
 
 
@@ -1963,6 +1965,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.27  2001/03/27 14:27:43  lazarus
+  Changes from Nagy Zsolt
+  Shane
+
   Revision 1.26  2001/03/26 14:58:31  lazarus
   MG: setwindowpos + bugfixes
 

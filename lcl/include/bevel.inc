@@ -43,6 +43,98 @@ Begin
   End;
 End;
 
+(*Procedure TBevel.Paint;
+Var
+  Colora, Colorb:TColor;
+Begin
+  Case Style Of
+  bsRaised:
+    Begin
+      Colora:=clWhite;
+      Colorb:=clGray;
+    End;
+  bsLowered:
+    Begin
+      Colora:=clGray;
+      Colorb:=clWhite;
+    End;
+  End;
+  Canvas.Pen.Width:=1;
+  Case Shape Of
+  bsBox:
+    With Canvas Do
+    Begin
+      Pen.Color:=Colora;
+      MoveTo(Left, Top + Height - 1);
+      LineTo(Left, Top);
+      LineTo(Left + Width - 2, Top);
+      Pen.Color:=Colorb;
+      LineTo(Left + Width - 2, Top + Height - 1);
+      LIneTo(Left , Top + Height - 1);
+    End;
+  bsFrame:
+    With Canvas Do
+    Begin
+      Pen.Color:=Colora;
+      MoveTo(Left, Top + Height - 1);
+      LineTo(Left, Top);
+      LineTo(Left + Width - 1, Top);
+      MoveTo(Left + Width - 2, Top + 1);
+      LineTo(Left + Width - 2, Top + Height - 2);
+      LineTo(Left + 1, Top + Height - 2);
+      Pen.Color:=Colorb;
+      MoveTo(Left + 1, Top + Height - 2);
+      LineTo(Left + 1, Top + 1);
+      LineTo(Left + Width - 2, Top + 1);
+      MoveTo(Left + Width - 1, Top);
+      LineTo(Left + Width - 1, Top + Height - 1);
+      LineTo(Left, Top + Height - 1);
+    End;
+  bsTopLine:
+    With Canvas Do
+    Begin
+      Pen.Color:=Colora;
+      MoveTo(Left, Top);
+      LineTo(Left + Width - 1, Top);
+      Pen.Color:=Colorb;
+      MoveTo(Left, Top + 1);
+      LineTo(Left + Width - 1, Top + 1);
+    End;
+  bsBottomLine:
+    With Canvas Do
+    Begin
+      Pen.Color:=Colorb;
+      MoveTo(Left, Top + Height - 1);
+      LineTo(Left + Width - 1, Top + Height - 1);
+      Pen.Color:=Colora;
+      MoveTo(Left, Top + Height - 2);
+      LineTo(Left + Width - 1, Top + Height - 2);
+    End;
+  bsLeftLine:
+    With Canvas Do
+    Begin
+      Pen.Color:=Colora;
+      MoveTo(Left, Top);
+      LineTo(Left, Top + Height - 1);
+      Pen.Color:=Colorb;
+      MoveTo(Left + 1, Top);
+      LineTo(Left + 1, Top + Height - 1);
+    End;
+  bsRightLine:
+    With Canvas Do
+    Begin
+      Pen.Color:=Colorb;
+      MoveTo(Left + Width - 1, Top);
+      LineTo(Left + Width - 1, Top + Height - 1);
+      Pen.Color:=Colora;
+      MoveTo(Left + Width - 2, Top);
+      LineTo(Left + Width - 2, Top + Height);
+    End;
+  End;
+End;
+
+  *)
+
 Procedure TBevel.Paint;
 Var
   Colora, Colorb:TColor;
@@ -132,6 +224,10 @@ End;
 
 {
   $Log$
+  Revision 1.2  2001/03/27 14:27:43  lazarus
+  Changes from Nagy Zsolt
+  Shane
+
   Revision 1.1  2000/07/13 10:28:24  michael
   + Initial import
 

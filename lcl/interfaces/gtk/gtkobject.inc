@@ -1824,7 +1824,10 @@ begin
       begin
          Assert(Sender is TForm);
          p := gtk_window_new(FormStyleMap[TForm(Sender).BorderStyle]);
-         gtk_container_set_border_width(GTK_CONTAINER(P), 2);
+// I comment the next line because this causes that when I align something
+// it's right and bottom don't visible.
+//Nagy Zsolt 2001/03/27
+//         gtk_container_set_border_width(GTK_CONTAINER(P), 2);
          TempInt:= FormSizeableMap[TForm(Sender).BorderStyle];
          gtk_window_set_policy (GTK_WINDOW (p), TempInt, TempInt, 0);
          gtk_window_set_title(pGtkWindow(p), strTemp);
@@ -2772,6 +2775,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.41  2001/03/27 14:27:43  lazarus
+  Changes from Nagy Zsolt
+  Shane
+
   Revision 1.40  2001/03/26 14:58:31  lazarus
   MG: setwindowpos + bugfixes
 

@@ -1179,8 +1179,9 @@ begin
 
   //get the control name
   nmControlType := _Control.name;
+  writeln('Calling GetAncestor');
   Ancestor := GetAncestor;
-
+  Writeln('Called');
 //find the place in the code to start looking for it
 
 For I := 0 to TempSource.Count-1 do
@@ -1289,9 +1290,16 @@ Function TSourceEditor.GetAncestor : String;
 var
   PI : PTypeInfo;
 begin
-  PI := FControl.ClassInfo;
-  Result := PI^.Name;
-  Delete(Result,1,1);
+  writeln('In Get Ancewstor');
+  if (FControl <> nil) then
+  Begin
+    PI := FControl.ClassInfo;
+    Writeln('1');
+    Result := PI^.Name;
+    Writeln('2');
+    Delete(Result,1,1);
+    Writeln('3');
+ end;
 end;
 
 

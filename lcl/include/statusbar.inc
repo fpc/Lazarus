@@ -56,70 +56,61 @@ begin
   inherited Destroy;
 end;
 
+{------------------------------------------------------------------------------}
+{   TStatusBar DrawBevel                                                       }
+{------------------------------------------------------------------------------}
 Procedure TStatusBar.DrawBevel(xLeft, PanelNum : Integer );
+var
+  Colora,Colorb:TColor;
 Begin
-//writeln('[TStatusBar.DrawBevel] ',Canvas.Classname);
-  Canvas.Brush.Color := color;
-  Canvas.FillRect(Rect(XLeft,Top,XLeft +Panels[PanelNum].Width,Top+Height));
 
-  if (Panels[PanelNum].Bevel = pbRaised) then
-    with Canvas do begin
-      Pen.Width:=1;
-      Pen.Color := clWhite;
-      Line(XLeft,Top,XLeft+Panels[PanelNum].Width-1,Top);
-      Line(XLeft,Top,XLeft,Top+Height-1);
-      Line(XLeft,Top+1,XLeft+Panels[PanelNum].Width-1,Top+1);
-      Line(XLeft+1,Top,XLeft+1,Top+Height-1);
-      Pen.Color := clBlack;
-      Line(XLeft,Top+Height-5,XLeft+Panels[PanelNum].Width-1,Top+Height-5);
-      Line(XLeft+Panels[PanelNum].Width-2,Top,XLeft+Panels[PanelNum].Width-2,Top+Height-1);
-      Line(XLeft,Top+Height-6,XLeft+Panels[PanelNum].Width-1,Top+Height-6);
-      Line(XLeft+Panels[PanelNum].Width-3,Top,XLeft+Panels[PanelNum].Width-3,Top+Height-2);
-    end
-  else
+  Canvas.Brush.Color := Color;
+  Canvas.FillRect(Rect(XLeft,Top,XLeft+Panels[PanelNum].Width,Top+Height));
+
+  if Panels[PanelNum].Bevel = pbRaised then
+  begin
+   Colora:=clWhite;
+   Colorb:=clGray;
+  end;
   if Panels[PanelNum].Bevel = pbLowered then
-  Begin
-    Canvas.Pen.Color := clBlack;
-    Canvas.Line(XLeft,Top,XLeft+Panels[PanelNum].Width-1,Top);
-    Canvas.Line(XLeft,Top,XLeft,Top+Height-1);
-    Canvas.Line(XLeft,Top+1,XLeft+Panels[PanelNum].Width-1,Top+1);
-    Canvas.Line(XLeft+1,Top,XLeft+1,Top+Height-1);
-    Canvas.Pen.Color := clWhite;
-    Canvas.Line(XLeft,Top+Height-5,XLeft+Panels[PanelNum].Width-1,Top+Height-5);
-    Canvas.Line(XLeft+Panels[PanelNum].Width-1,Top,XLeft+Panels[PanelNum].Width-1,Top+Height-1);
-    Canvas.Line(XLeft,Top+Height-6,XLeft+Panels[PanelNum].Width-1,Top+Height-6);
-    Canvas.Line(XLeft+Panels[PanelNum].Width-2,Top,XLeft+Panels[PanelNum].Width-2,Top+Height-4);
-  end
-  else
-  if Panels[PanelNum].Bevel = pbNone then
-  Begin
-{    Canvas.Pen.Color := clBlack;
-    Canvas.Line(XLeft,Top,XLeft+Panels[PanelNum].Width-1,Top);
-    Canvas.Line(XLeft,Top,XLeft,Top+Height-1);
-    Canvas.Line(XLeft,Top+Height-1,XLeft+Panels[PanelNum].Width-1,Top+Height-1);
-    Canvas.Line(XLeft+Panels[PanelNum].Width-1,Top,XLeft+Panels[PanelNum].Width-1,Top+Height-1);
-}
-  end
+  begin
+   Colora:=clGray;
+   Colorb:=clWhite;
+  end;
 
+  Canvas.Pen.Width:=1;
+  if (Panels[PanelNum].Bevel = pbRaised) or (Panels[PanelNum].Bevel = pbLowered) then
+   With Canvas Do
+   Begin
+      Pen.Color:=Colora;
+      MoveTo(XLeft,Top+Height-1);
+      LineTo(XLeft,Top);
+      LineTo(XLeft+Panels[PanelNum].Width-1,Top);
+      Pen.Color:=Colorb;
+      LineTo(XLeft+Panels[PanelNum].Width-1,Top+Height-1);
+      LIneTo(XLeft,Top+Height-1);
+   End;
 
 End;
 
+
 Procedure TStatusBar.DrawDivider(X : Integer);
 Begin
-  Canvas.Pen.Color := clWhite;
-  Canvas.Line(X,Top,X,Top+Height);
-  Canvas.Pen.Color := clBlack;
-  Canvas.Line(X+1,Top,X+1,Top+Height);
+  Canvas.Pen.Width:=1;
+  Canvas.Pen.Color := clBtnFace;
+  Canvas.Line(X,Top,X,Top+Height-1);
+  Canvas.Pen.Color := clBtnFace;
+  Canvas.Line(X+1,Top,X+1,Top+Height-1);
 End;
 
 
 Procedure TStatusBar.WMPaint(var Msg: TLMPaint);
 var
   I : Integer;
-  X,Y : Integer;
+  X,Y,X2 : Integer;
 Begin
-//Writeln('[TSTATUSBAR].WMPAINT');
   inherited;
+  X2:=(Height-Canvas.TextHeight('L')) div 2;
   if SimplePanel = False then
   Begin
     if Panels.Count = 0 then exit;
@@ -129,22 +120,16 @@ Begin
     For I := 0 to Panels.Count-1 do
       Begin
         if I = Panels.Count-1 then
-          Panels[I].Width := Width-X;  //this sets the last panel to the width of the statusbar
+          Panels[I].Width := ClientWidth-X;  //this sets the last panel to the width of the statusbar
         DrawBevel(X,I);
-        Canvas.TextOut(X+2,Y+2,Panels[i].Text);
+        Canvas.TextOut(X+2,Y+X2,Panels[i].Text);
         //draw divider
         if I < Panels.Count-1 then
           DrawDivider(X+Panels[i].Width);
-        X := X + Panels[i].Width +1;
- //  Writeln('SimplePanel = False');
- //  Writeln('Panels[0].Text = '+Panels[0].Text);
+	inc(X);
+        X := X + Panels[i].Width+1;
       end;
-
-//   ExtTextOut(Handle,1,1,0,nil,pchar(Panels[0].Text),Length(Panels[0].Text),nil);
   end
-  else
-  if SimplePanel = True then
-    Begin
-      Canvas.TextOut(Left+2,Top+2,SimpleText);
-    end;
+  else Canvas.TextOut(Left+2,Top+X2,SimpleText);
+
 End;
