@@ -2526,6 +2526,7 @@ begin
   // select the new form (object inspector, formeditor, control selection)
   PropertyEditorHook1.LookupRoot := AForm;
   TDesigner(AForm.Designer).SelectOnlyThisComponent(AForm);
+  BringWindowToTop(AForm.Handle);
 end;
 
 function TMainIDE.DoLoadResourceFile(AnUnitInfo: TUnitInfo;
@@ -3523,17 +3524,13 @@ begin
   end;
   Project1.AddUnit(NewUnitInfo,(NewUnitType in [nuForm, nuUnit])
                               and NewUnitInfo.IsPartOfProject);
+                              
+  // syntax highlighter type
   if NewUnitType in [nuForm, nuUnit] then begin
     NewUnitInfo.SyntaxHighlighter:=lshFreePascal;
   end else begin
     NewUnitInfo.SyntaxHighlighter:=
       ExtensionToLazSyntaxHighlighter(ExtractFileExt(NewFilename))
-  end;
-
-  if NewUnitType in [nuForm] then begin
-    Result:=CreateNewForm(NewUnitInfo);
-    if Result<>mrOk then exit;
-    Result:=mrCancel;
   end;
 
   // create a new sourceeditor
@@ -3544,6 +3541,13 @@ begin
   NewSrcEdit.SyntaxHighlighterType:=NewUnitInfo.SyntaxHighlighter;
   Project1.InsertEditorIndex(SourceNotebook.NoteBook.PageIndex);
   NewUnitInfo.EditorIndex:=SourceNotebook.NoteBook.PageIndex;
+
+  // create form
+  if NewUnitType in [nuForm] then begin
+    Result:=CreateNewForm(NewUnitInfo);
+    if Result<>mrOk then exit;
+    Result:=mrCancel;
+  end;
 
   // show form and select form
   if NewUnitType in [nuForm] then begin
@@ -6652,6 +6656,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.325  2002/07/20 13:54:13  lazarus
+  MG: fixed show designed form on new project
+
   Revision 1.324  2002/07/06 06:37:04  lazarus
   MG: added Revert
 
