@@ -141,7 +141,14 @@ implementation
 
 // to get more detailed error messages consider the os
 uses
-  Dos{$IFDEF Ver1_0},Linux{$ELSE},Unix{$ENDIF};
+  Dos
+  {$IfNDef Win32}
+     {$IFDEF Ver1_0}
+       ,Linux
+     {$ELSE}
+       ,Unix
+     {$ENDIF}
+  {$EndIf};
 
 function AddToRecentList(const s: string; RecentList: TStringList;
   Max: integer): boolean;
