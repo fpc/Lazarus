@@ -3083,7 +3083,6 @@ begin
   
   // Delay the setting of text until it is completely loaded
   if not (csLoading in ComponentState) 
-  and TWSWinControlClass(WidgetSetClass).HasText(Self)
   then TWSWinControlClass(WidgetSetClass).SetText(Self, FCaption);
 
   SetProp(Handle,'WinControl',TWinControl(Self));
@@ -3130,8 +3129,7 @@ begin
   if HandleAllocated
   then begin              
     // Set cached caption
-    if TWSWinControlClass(WidgetSetClass).HasText(Self) then
-      TWSWinControlClass(WidgetSetClass).SetText(Self, FCaption);
+    TWSWinControlClass(WidgetSetClass).SetText(Self, FCaption);
   
     if [wcfColorChanged,wcfFontChanged]*FFlags<>[] then
     begin
@@ -3154,12 +3152,14 @@ end;
   Destroys the interface object.
  ------------------------------------------------------------------------------}
 procedure TWinControl.DestroyWnd;
+var
+  S: String;
 begin
   if HandleAllocated 
   then begin    
     // make sure our text is saved
-    if TWSWinControlClass(WidgetSetClass).HasText(Self) then
-      FCaption := GetText;
+    if TWSWinControlClass(WidgetSetClass).GetText(Self, S)
+    then FCaption := S;
     DestroyComponent;
     Handle := 0;
   end;
@@ -3334,7 +3334,6 @@ function TWinControl.RealGetText: TCaption;
 begin
   if not HandleAllocated 
   or (csLoading in ComponentState) 
-  or (not TWSWinControlClass(WidgetSetClass).HasText(Self))
   or (not TWSWinControlClass(WidgetSetClass).GetText(Self, Result))
   then Result := inherited RealGetText;
 end;
@@ -3350,7 +3349,6 @@ function TWinControl.GetTextLen: Integer;
 begin
   if not HandleAllocated 
   or (csLoading in ComponentState) 
-  or (not TWSWinControlClass(WidgetSetClass).HasText(Self))
   or not TWSWinControlClass(WidgetSetClass).GetTextLen(Self, Result)
   then Result := inherited GetTextLen;
 end;
@@ -3366,7 +3364,6 @@ procedure TWinControl.RealSetText(const Value: TCaption);
 begin
   if HandleAllocated 
   and (not (csLoading in ComponentState))
-  and TWSWinControlClass(WidgetSetClass).HasText(Self)
   then TWSWinControlClass(WidgetSetClass).SetText(Self, Value);
   inherited;
 end;
@@ -3484,6 +3481,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.224  2004/05/02 17:06:01  marc
+  - Removed TWSWinControl.HasText
+
   Revision 1.223  2004/04/28 06:50:21  micha
   more detailed error message req. by ML
 

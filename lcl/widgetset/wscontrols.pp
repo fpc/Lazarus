@@ -65,7 +65,6 @@ type
   { TWSWinControl }
 
   TWSWinControl = class(TWSControl)
-    class function  HasText(const AWinControl: TWinControl): Boolean; virtual;
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; virtual;
     class function  GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean; virtual;
     class procedure SetCursor(const AControl: TControl; const ACursor: TCursor); override;
@@ -101,11 +100,6 @@ begin
 end;
 
 { TWSWinControl }
-
-function TWSWinControl.HasText(const AWinControl: TWinControl): Boolean;
-begin
-  Result := true;
-end;
 
 function TWSWinControl.GetText(const AWinControl: TWinControl; var AText: String): Boolean; 
 begin
