@@ -32,7 +32,7 @@ interface
 
 uses
   Forms, Classes, SysUtils, ComCtrls, Buttons, StdCtrls, ExtCtrls, LazConf,
-  XMLCfg, FileCtrl;
+  XMLCfg, FileCtrl, Dialogs;
 
 type
   { Compiler Options object used to hold the compiler options }
@@ -48,16 +48,17 @@ type
     fStyle: Integer;
     fD2Ext: Boolean;
     fCStyleOp: Boolean;
+    fIncludeAssertionCode: Boolean;
+    fDelphiCompat: Boolean;
     fAllowLabel: Boolean;
+    fUseAnsiStr: Boolean;
     fCPPInline: Boolean;
     fCMacros: Boolean;
     fTPCompat: Boolean;
-    fInitConst: Boolean;
-    fStaticKwd: Boolean;
-    fDelphiCompat: Boolean;
-    fUseAnsiStr: Boolean;
     fGPCCompat: Boolean;
-    
+    fInitConst: Boolean;
+    fStaticKwd: Boolean;    
+
     fUnitStyle: Integer;
     fIOChecks: Boolean;
     fRangeChecks: Boolean;
@@ -93,10 +94,12 @@ type
     fShowCompProc: Boolean;
     fShowCond: Boolean;
     fShowNothing: Boolean;
+    fShowHintsForUnusedProjectUnits: Boolean;
     fWriteFPCLogo: Boolean;
-    fUseConfigFile: Boolean;
+    fDontUseConfigFile: Boolean;
     fAdditionalConfigFile: Boolean;
     fConfigFilePath: String;
+    fStopAfterErrCount: integer;
     
     fIncludeFiles: String;
     fLibraries: String;
@@ -114,6 +117,7 @@ type
     function MakeOptionsString: String;
     function MakeOptionsString(const MainSourceFileName: string): String;
     function ParseSearchPaths(const switch, paths: String): String;
+    function ParseOptions(const Delim, Switch, OptionStr: string): string;
     function GetXMLConfigPath: String;
     procedure Clear;
     function CreateTargetFilename(const MainSourceFileName: string): string;
@@ -126,16 +130,18 @@ type
     property Style: Integer read fStyle write fStyle;
     property D2Extensions: Boolean read fD2Ext write fD2Ext;
     property CStyleOperators: Boolean read fCStyleOp write fCStyleOp;
+    property IncludeAssertionCode: Boolean 
+      read fIncludeAssertionCode write fIncludeAssertionCode;
+    property DelphiCompat: Boolean read fDelphiCompat write fDelphiCompat;
     property AllowLabel: Boolean read fAllowLabel write fAllowLabel;
+    property UseAnsiStrings: Boolean read fUseAnsiStr write fUseAnsiStr;
     property CPPInline: Boolean read fCPPInline write fCPPInline;
     property CStyleMacros: Boolean read fCMacros write fCMacros;
     property TPCompatible: Boolean read fTPCompat write fTPCompat;
+    property GPCCompat: Boolean read fGPCCompat write fGPCCompat;
     property InitConstructor: Boolean read fInitConst write fInitConst;
     property StaticKeyword: Boolean read fStaticKwd write fStaticKwd;
-    property DelphiCompat: Boolean read fDelphiCompat write fDelphiCompat;
-    property UseAnsiStrings: Boolean read fUseAnsiStr write fUseAnsiStr;
-    property GPCCompat: Boolean read fGPCCompat write fGPCCompat;
-    
+
     property UnitStyle: Integer read fUnitStyle write fUnitStyle;
     property IOChecks: Boolean read fIOChecks write fIOChecks;
     property RangeChecks: Boolean read fRangeChecks write fRangeChecks;
@@ -171,10 +177,14 @@ type
     property ShowCompProc: Boolean read fShowCompProc write fShowCompProc;
     property ShowCond: Boolean read fShowCond write fShowCond;
     property ShowNothing: Boolean read fShowNothing write fShowNothing;
+    property ShowHintsForUnusedProjectUnits: Boolean 
+      read fShowHintsForUnusedProjectUnits write fShowHintsForUnusedProjectUnits;
     property WriteFPCLogo: Boolean read fWriteFPCLogo write fWriteFPCLogo;
-    property UseConfigFile: Boolean read fUseConfigFile write fUseConfigFile;
+    property DontUseConfigFile: Boolean read fDontUseConfigFile write fDontUseConfigFile;
     property AdditionalConfigFile: Boolean read fAdditionalConfigFile write fAdditionalConfigFile;
     property ConfigFilePath: String read fConfigFilePath write fConfigFilePath;
+    property StopAfterErrCount: integer 
+      read fStopAfterErrCount write fStopAfterErrCount;
     
     property IncludeFiles: String read fIncludeFiles write fIncludeFiles;
     property Libraries: String read fLibraries write fLibraries;
@@ -197,20 +207,19 @@ type
     grpSymantecChk: TGroupBox;
     chkSymD2Ext: TCheckBox;
     chkSymCOper: TCheckBox;
+    chkSymIncludeAssertions: TCheckBox;
     chkSymAllowLab: TCheckBox;
+    chkSymUseAnsiStrings: TCheckBox;
     chkSymCPPInline: TCheckBox;
     chkSymCMacros: TCheckBox;
+    chkSymDelphiCompat: TCheckBox;
     chkSymTP7Compat: TCheckBox;
+    chkSymGPCCompat: TCheckBox;
     chkSymConstInit: TCheckBox;
     chkSymStaticKwd: TCheckBox;
-    chkSymDelphiCompat: TCheckBox;
-    chkSymUseAnsiStrings: TCheckBox;
-    chkSymGPCCompat: TCheckBox;
 
     { Code Generation Controls }
-    grpUnitStyle: TGroupBox;
-    radUnitStyleStatic: TRadioButton;
-    radUnitStyleDynamic: TRadioButton;
+    grpUnitStyle: TRadioGroup;
 
     grpChecks: TGroupBox;
     chkChecksIO: TCheckBox;
@@ -270,6 +279,7 @@ type
     chkCompiledProc: TCheckBox;
     chkConditionals: TCheckBox;
     chkNothing: TCheckBox;
+    chkHintsForUnusedProjectUnits: TCheckBox;
 
     chkFPCLogo: TCheckBox;
 
@@ -277,6 +287,9 @@ type
     chkConfigFile: TCheckBox;
     chkAdditionalConfigFile: TCheckBox;
     edtConfigPath: TEdit;
+    
+    grpErrorCnt: TGroupBox;
+    edtErrorCnt: TEdit;
 
     { Search Paths Controls }
     grpIncludeFiles: TGroupBox;
@@ -387,6 +400,7 @@ begin
 
   D2Extensions := XMLConfigFile.GetValue('CompilerOptions/Parsing/SymantecChecking/D2Extensions/Value', true);
   CStyleOperators := XMLConfigFile.GetValue('CompilerOptions/Parsing/SymantecChecking/CStyleOperator/Value', true);
+  IncludeAssertionCode := XMLConfigFile.GetValue('CompilerOptions/Parsing/SymantecChecking/IncludeAssertionCode/Value', true);
   AllowLabel := XMLConfigFile.GetValue('CompilerOptions/Parsing/SymantecChecking/AllowLabel/Value', true);
   CPPInline := XMLConfigFile.GetValue('CompilerOptions/Parsing/SymantecChecking/CPPInline/Value', true);
   CStyleMacros := XMLConfigFile.GetValue('CompilerOptions/Parsing/SymantecChecking/CStyleMacros/Value', false);
@@ -413,7 +427,7 @@ begin
   { Linking }
   GenerateDebugInfo := XMLConfigFile.GetValue('CompilerOptions/Linking/Debugging/GenerateDebugInfo/Value', false);
   GenerateDebugDBX := XMLConfigFile.GetValue('CompilerOptions/Linking/Debugging/GenerateDebugDBX/Value', false);
-  UseLineInfoUnit := XMLConfigFile.GetValue('CompilerOptions/Linking/Debugging/UseLineInfoUnit/Value', false);
+  UseLineInfoUnit := XMLConfigFile.GetValue('CompilerOptions/Linking/Debugging/UseLineInfoUnit/Value', true);
   UseHeaptrc := XMLConfigFile.GetValue('CompilerOptions/Linking/Debugging/UseHeaptrc/Value', false);
   StripSymbols := XMLConfigFile.GetValue('CompilerOptions/Linking/Debugging/StripSymbols/Value', false);
   LinkStyle := XMLConfigFile.GetValue('CompilerOptions/CodeGeneration/LinkStyle/Value', 1);
@@ -435,10 +449,12 @@ begin
   ShowCompProc := XMLConfigFile.GetValue('CompilerOptions/Other/Verbosity/ShowCompProc/Value', false);
   ShowCond := XMLConfigFile.GetValue('CompilerOptions/Other/Verbosity/ShowCond/Value', false);
   ShowNothing := XMLConfigFile.GetValue('CompilerOptions/Other/Verbosity/ShowNothing/Value', false);
+  ShowHintsForUnusedProjectUnits := XMLConfigFile.GetValue('CompilerOptions/Other/Verbosity/ShowHintsForUnusedProjectUnits/Value', false);
   WriteFPCLogo := XMLConfigFile.GetValue('CompilerOptions/Other/WriteFPCLogo/Value', true);
-  UseConfigFile := XMLConfigFile.GetValue('CompilerOptions/Other/ConfigFile/UseConfigFile/Value', false);
+  DontUseConfigFile := XMLConfigFile.GetValue('CompilerOptions/Other/ConfigFile/DontUseConfigFile/Value', false);
   AdditionalConfigFile := XMLConfigFile.GetValue('CompilerOptions/Other/ConfigFile/AdditionalConfigFile/Value', false);
-  ConfigFilePath := XMLConfigFile.GetValue('CompilerOptions/Other/ConfigFile/ConfigFilePath/Value', './ppc386.cfg');
+  ConfigFilePath := XMLConfigFile.GetValue('CompilerOptions/Other/ConfigFile/ConfigFilePath/Value', './fpc.cfg');
+  StopAfterErrCount := XMLConfigFile.GetValue('CompilerOptions/Other/ConfigFile/StopAfterErrCount/Value', 1);
 
   { SearchPaths }
   IncludeFiles := XMLConfigFile.GetValue('CompilerOptions/SearchPaths/IncludeFiles/Value', '');
@@ -476,12 +492,13 @@ begin
   { Save the compiler options to the XML file }
   
   { Target }
-  XMLConfigFile.GetValue('CompilerOptions/Target/Filename/Value', TargetFilename);
+  XMLConfigFile.SetValue('CompilerOptions/Target/Filename/Value', TargetFilename);
 
   { Parsing }
   XMLConfigFile.SetValue('CompilerOptions/Parsing/Style/Value', Style);
   XMLConfigFile.SetValue('CompilerOptions/Parsing/SymantecChecking/D2Extensions/Value', D2Extensions);
   XMLConfigFile.SetValue('CompilerOptions/Parsing/SymantecChecking/CStyleOperator/Value', CStyleOperators);
+  XMLConfigFile.SetValue('CompilerOptions/Parsing/SymantecChecking/IncludeAssertionCode/Value', IncludeAssertionCode);
   XMLConfigFile.SetValue('CompilerOptions/Parsing/SymantecChecking/AllowLabel/Value', AllowLabel);
   XMLConfigFile.SetValue('CompilerOptions/Parsing/SymantecChecking/CPPInline/Value', CPPInline);
   XMLConfigFile.SetValue('CompilerOptions/Parsing/SymantecChecking/CStyleMacros/Value', CStyleMacros);
@@ -530,10 +547,12 @@ begin
   XMLConfigFile.SetValue('CompilerOptions/Other/Verbosity/ShowCompProc/Value', ShowCompProc);
   XMLConfigFile.SetValue('CompilerOptions/Other/Verbosity/ShowCond/Value', ShowCond);
   XMLConfigFile.SetValue('CompilerOptions/Other/Verbosity/ShowNothing/Value', ShowNothing);
+  XMLConfigFile.SetValue('CompilerOptions/Other/Verbosity/ShowHintsForUnusedProjectUnits/Value', ShowHintsForUnusedProjectUnits);
   XMLConfigFile.SetValue('CompilerOptions/Other/WriteFPCLogo/Value', WriteFPCLogo);
-  XMLConfigFile.SetValue('CompilerOptions/Other/ConfigFile/UseConfigFile/Value', UseConfigFile);
+  XMLConfigFile.SetValue('CompilerOptions/Other/ConfigFile/DontUseConfigFile/Value', DontUseConfigFile);
   XMLConfigFile.SetValue('CompilerOptions/Other/ConfigFile/AdditionalConfigFile/Value', AdditionalConfigFile);
   XMLConfigFile.SetValue('CompilerOptions/Other/ConfigFile/ConfigFilePath/Value', ConfigFilePath);
+  XMLConfigFile.SetValue('CompilerOptions/Other/ConfigFile/StopAfterErrCount/Value', StopAfterErrCount);
 
   { SearchPaths }
   XMLConfigFile.SetValue('CompilerOptions/SearchPaths/IncludeFiles/Value', IncludeFiles);
@@ -584,43 +603,201 @@ begin
   switches := '';
 
   { Get all the options and create a string that can be passed to the compiler }
+  
+  { options of ppc386 1.0.5 :
+  
+  put + after a boolean switch option to enable it, - to disable it
+  -a     the compiler doesn't delete the generated assembler file
+      -al        list sourcecode lines in assembler file
+      -ar        list register allocation/release info in assembler file
+      -at        list temp allocation/release info in assembler file
+  -b     generate browser info
+      -bl        generate local symbol info
+  -B     build all modules
+  -C<x>  code generation options:
+      -CD        create also dynamic library (not supported)
+      -Ch<n>     <n> bytes heap (between 1023 and 67107840)
+      -Ci        IO-checking
+      -Cn        omit linking stage
+      -Co        check overflow of integer operations
+      -Cr        range checking
+      -Cs<n>     set stack size to <n>
+      -Ct        stack checking
+      -CX        create also smartlinked library
+  -d<x>  defines the symbol <x>
+  -e<x>  set path to executable
+  -E     same as -Cn
+  -F<x>  set file names and paths:
+      -FD<x>     sets the directory where to search for compiler utilities
+      -Fe<x>     redirect error output to <x>
+      -FE<x>     set exe/unit output path to <x>
+      -Fi<x>     adds <x> to include path
+      -Fl<x>     adds <x> to library path
+      -FL<x>     uses <x> as dynamic linker
+      -Fo<x>     adds <x> to object path
+      -Fr<x>     load error message file <x>
+      -Fu<x>     adds <x> to unit path
+      -FU<x>     set unit output path to <x>, overrides -FE
+  -g     generate debugger information:
+      -gg        use gsym
+      -gd        use dbx
+      -gh        use heap trace unit (for memory leak debugging)
+      -gl        use line info unit to show more info for backtraces
+      -gc        generate checks for pointers
+  -i     information
+      -iD        return compiler date
+      -iV        return compiler version
+      -iSO       return compiler OS
+      -iSP       return compiler processor
+      -iTO       return target OS
+      -iTP       return target processor
+  -I<x>  adds <x> to include path
+  -k<x>  Pass <x> to the linker
+  -l     write logo
+  -n     don't read the default config file
+  -o<x>  change the name of the executable produced to <x>
+  -pg    generate profile code for gprof (defines FPC_PROFILE)
+  -P     use pipes instead of creating temporary assembler files
+  -S<x>  syntax options:
+      -S2        switch some Delphi 2 extensions on
+      -Sc        supports operators like C (*=,+=,/= and -=)
+      -sa        include assertion code.
+      -Sd        tries to be Delphi compatible
+      -Se<x>     compiler stops after the <x> errors (default is 1)
+      -Sg        allow LABEL and GOTO
+      -Sh        Use ansistrings
+      -Si        support C++ styled INLINE
+      -Sm        support macros like C (global)
+      -So        tries to be TP/BP 7.0 compatible
+      -Sp        tries to be gpc compatible
+      -Ss        constructor name must be init (destructor must be done)
+      -St        allow static keyword in objects
+  -s     don't call assembler and linker (only with -a)
+  -u<x>  undefines the symbol <x>
+  -U     unit options:
+      -Un        don't check the unit name
+      -Ur        generate release unit files
+      -Us        compile a system unit
+  -v<x>  Be verbose. <x> is a combination of the following letters:
+      e : Show errors (default)       d : Show debug info
+      w : Show warnings               u : Show unit info
+      n : Show notes                  t : Show tried/used files
+      h : Show hints                  m : Show defined macros
+      i : Show general info           p : Show compiled procedures
+      l : Show linenumbers            c : Show conditionals
+      a : Show everything             0 : Show nothing (except errors)
+      b : Show all procedure          r : Rhide/GCC compatibility mode
+          declarations if an error    x : Executable info (Win32 only)
+          occurs
+  -X     executable options:
+      -Xc        link with the c library
+      -Xs        strip all symbols from executable
+      -XD        try to link dynamic          (defines FPC_LINK_DYNAMIC)
+      -XS        try to link static (default) (defines FPC_LINK_STATIC)
+      -XX        try to link smart            (defines FPC_LINK_SMART)
+
+  Processor specific options:
+  -A<x>  output format:
+      -Aas       assemble using GNU AS
+      -Aasaout   assemble using GNU AS for aout (Go32v1)
+      -Anasmcoff coff (Go32v2) file using Nasm
+      -Anasmelf  elf32 (Linux) file using Nasm
+      -Anasmobj  obj file using Nasm
+      -Amasm     obj file using Masm (Microsoft)
+      -Atasm     obj file using Tasm (Borland)
+      -Acoff     coff (Go32v2) using internal writer
+      -Apecoff   pecoff (Win32) using internal writer
+  -R<x>  assembler reading style:
+      -Ratt      read AT&T style assembler
+      -Rintel    read Intel style assembler
+      -Rdirect   copy assembler text directly to assembler file
+  -O<x>  optimizations:
+      -Og        generate smaller code
+      -OG        generate faster code (default)
+      -Or        keep certain variables in registers
+      -Ou        enable uncertain optimizations (see docs)
+      -O1        level 1 optimizations (quick optimizations)
+      -O2        level 2 optimizations (-O1 + slower optimizations)
+      -O3        level 3 optimizations (same as -O2u)
+      -Op<x>     target processor:
+         -Op1  set target processor to 386/486
+         -Op2  set target processor to Pentium/PentiumMMX (tm)
+         -Op3  set target processor to PPro/PII/c6x86/K6 (tm)
+  -T<x>  Target operating system:
+      -TGO32V1   version 1 of DJ Delorie DOS extender
+      -TGO32V2   version 2 of DJ Delorie DOS extender
+      -TLINUX    Linux
+      -TOS2      OS/2 2.x
+      -TSUNOS    SunOS/Solaris
+      -TWin32    Windows 32 Bit
+      -TBeOS     BeOS
+  -W<x>  Win32 target options
+      -WB<x>     Set Image base to Hexadecimal <x> value
+      -WC        Specify console type application
+      -WD        Use DEFFILE to export functions of DLL or EXE
+      -WF        Specify full-screen type application (OS/2 only)
+      -WG        Specify graphic type application
+      -WN        Do not generate relocation code (necessary for debugging)
+      -WR        Generate relocation code
+  }
+  
+  
 
   { --------------- Parsing Tab ------------------- }
 
   { Style }
-  { Style       -Ratt = AT&T    -Rintel = Intel  -Rdirect = As-is }
-  switches := '-R';
+  { assembler reading style  -Ratt = AT&T    -Rintel = Intel  -Rdirect = As-is }
+  switches := switches + ' -R';
   case (Style) of
     1: switches := switches + 'intel';
     2: switches := switches + 'att';
     3: switches := switches + 'direct';
   end;
   
-  { Symantec Checking }
+  { Symantec Checking
+  
+    -S<x>  syntax options:
+      -S2        switch some Delphi 2 extensions on
+      -Sc        supports operators like C (*=,+=,/= and -=)
+      -sa        include assertion code.
+      -Sd        tries to be Delphi compatible
+      -Se<x>     compiler stops after the <x> errors (default is 1)
+      -Sg        allow LABEL and GOTO
+      -Sh        Use ansistrings
+      -Si        support C++ styled INLINE
+      -Sm        support macros like C (global)
+      -So        tries to be TP/BP 7.0 compatible
+      -Sp        tries to be gpc compatible
+      -Ss        constructor name must be init (destructor must be done)
+      -St        allow static keyword in objects
+
+  }
   tempsw := '';
 
   if (D2Extensions) then
     tempsw := tempsw + '2';
   if (CStyleOperators) then
     tempsw := tempsw + 'c';
+  if (IncludeAssertionCode) then
+    tempsw := tempsw + 'a';
+  if (DelphiCompat) then
+    tempsw := tempsw + 'd';
   if (AllowLabel) then
     tempsw := tempsw + 'g';
+  if (UseAnsiStrings) then
+    tempsw := tempsw + 'h';
   if (CPPInline) then
     tempsw := tempsw + 'i';
   if (CStyleMacros) then
     tempsw := tempsw + 'm';
   if (TPCompatible) then
     tempsw := tempsw + 'o';
+  if (GPCCompat) then
+    tempsw := tempsw + 'p';
   if (InitConstructor) then
     tempsw := tempsw + 's';
   if (StaticKeyword) then
     tempsw := tempsw + 't';
-  if (DelphiCompat) then
-    tempsw := tempsw + 'd';
-  if (UseAnsiStrings) then
-    tempsw := tempsw + 'h';
-  if (GPCCompat) then
-    tempsw := tempsw + 'p';
 
   if (tempsw <> '') then
   begin
@@ -629,7 +806,10 @@ begin
     { Add in Symantec Checking }
     switches := switches + ' ' + tempsw;
   end;
-    
+
+  if (StopAfterErrCount>1) then
+    tempsw := tempsw + ' -Se'+IntToStr(StopAfterErrCount);
+
   { TODO: Implement the following switches. They need to be added
           to the dialog. }
 {
@@ -640,36 +820,29 @@ begin
   { ----------- Code Generation Tab --------------- }
 
   { Unit Style }
-  { UnitStyle   '' = Static     'D' = Dynamic }
-  switches := switches + ' ' + '-C';
-  
+  { UnitStyle   '' = Static     'D' = Dynamic   'X' = smart linked }
   case (UnitStyle) of
-    1: switches := switches + '';
-    2: switches := switches + 'D';
+    1: ;
+    2: switches := switches + ' -CD';
+    3: switches := switches + ' -CX';
   end;
 
-  if ((IOChecks) or (RangeChecks) or
-     (OverflowChecks) or (StackChecks)) then
+  { Checks }
+  tempsw := '';
+
+  if (IOChecks) then
+    tempsw := tempsw + 'i';
+  if (RangeChecks) then
+    tempsw := tempsw + 'r';
+  if (OverflowChecks) then
+    tempsw := tempsw + 'o';
+  if (StackChecks) then
+    tempsw := tempsw + 't';
+
+  if (tempsw <> '') then
   begin
-    switches := switches + ' ' + '-C';
-
-    { Checks }
-    tempsw := '';
-
-    if (IOChecks) then
-      tempsw := tempsw + 'i';
-    if (RangeChecks) then
-      tempsw := tempsw + 'r';
-    if (OverflowChecks) then
-      tempsw := tempsw + 'o';
-    if (StackChecks) then
-      tempsw := tempsw + 't';
-
-    if (tempsw <> '') then
-    begin
-      { Add in Checks }
-      switches := switches + tempsw;
-    end;
+    { Add in Checks }
+    switches := switches + ' -C' + tempsw;
   end;
 
   { Heap Size }
@@ -682,7 +855,6 @@ begin
 {
   n = Omit linking stage
   sxxx = Set stack size to xxx
-  x = Smartlinking
 }
 
   switches := switches + ' ' + '-O';
@@ -750,8 +922,8 @@ begin
   end;
 
 
-  if (PassLinkerOptions) then
-    switches := switches + ' ' + '-k-s' + LinkerOptions;
+  if PassLinkerOptions and (LinkerOptions<>'') then
+    switches := switches + ' ' + ParseOptions(' ','-k', LinkerOptions);
 
   { ---------------- Other Tab -------------------- }
 
@@ -810,11 +982,11 @@ begin
     switches := switches + ' ' + '-l';
 
   { Use Config File }
-  if (UseConfigFile) then
+  if DontUseConfigFile then
     switches := switches + ' ' + '-n';
 
   { Use Additional Config File     @ = yes and path }
-  if (AdditionalConfigFile) then
+  if (AdditionalConfigFile) and (ConfigFilePath<>'') then
     switches := switches + ' ' + '@' + ConfigFilePath;
 
   { ------------- Search Paths Tab ---------------- }
@@ -848,8 +1020,6 @@ begin
   -P = Use pipes instead of files when assembling
       
 
-  -oprogramname   = executable filename
-
   -a = Delete generated assembler files
   -al = Include source code lines in assembler files as comments
   -ar = List register allocation in assembler files
@@ -861,7 +1031,7 @@ begin
        masm = obj file using Microsoft masm assembler
        tasm = obj file using Borland tasm assembler
        
-  -B = Recompile all units even if they didn't change
+  -B = Recompile all units even if they didn't change  ->  implemented by compiler.pp
   -b = Generate browser info
   -bl = Generate browser info, including local variables, types and procedures
 
@@ -876,9 +1046,6 @@ begin
        OS2 = OS/2 (2.x) using the EMX extender.
        WIN32 = Windows 32 bit.
 
-
-
-  The following switches are not really needed in Lazarus
   -Xc = Link with C library (LINUX only)
        
 }
@@ -887,10 +1054,6 @@ begin
     if tempsw <> ChangeFileExt(MainSourceFilename,'') then
       switches := switches + ' -o' + tempsw;
   end;
-
-  { Setting this to a default for now to allow the compiler to compile, until I get 
-    the above completed. }
-  //Result := '-viwnh -n -Sgic -Fu' + OtherUnitFiles + ' -Fl' + Libraries;
 
   fOptionsString := switches;
   Result := fOptionsString;
@@ -943,6 +1106,26 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  TCompilerOptions ParseOptions
+ ------------------------------------------------------------------------------}
+function TCompilerOptions.ParseOptions(const Delim, Switch, 
+  OptionStr: string): string;
+var Startpos, EndPos: integer;
+begin
+  Result:='';
+  StartPos:=1;
+  while StartPos<=length(OptionStr) do begin
+    EndPos:=StartPos;
+    while (EndPos<=length(OptionStr)) and (pos(OptionStr[EndPos],Delim)=0) do
+      inc(EndPos);
+    if EndPos>StartPos then begin
+      Result:=Result+' '+Switch+copy(OptionStr,StartPos,EndPos-StartPos);
+    end;
+    StartPos:=EndPos+1;
+  end;
+end;
+
+{------------------------------------------------------------------------------
   TCompilerOptions GetXMLConfigPath
  ------------------------------------------------------------------------------}
 function TCompilerOptions.GetXMLConfigPath: String;
@@ -971,6 +1154,7 @@ begin
   fStyle := 1;
   fD2Ext := true;
   fCStyleOp := true;
+  fIncludeAssertionCode := false;
   fAllowLabel := true;
   fCPPInline := true;
   fCMacros := false;
@@ -995,7 +1179,7 @@ begin
     
   fGenDebugInfo := false;
   fGenDebugDBX := false;
-  fUseLineInfoUnit := false;
+  fUseLineInfoUnit := true;
   fUseHeaptrc := false;
   fStripSymbols := false;
   fLinkStyle := 1;
@@ -1016,10 +1200,12 @@ begin
   fShowCompProc := false;
   fShowCond := false;
   fShowNothing := false;
+  fShowHintsForUnusedProjectUnits := false;
   fWriteFPCLogo := true;
-  fUseConfigFile := false;
+  fDontUseConfigFile := false;
   fAdditionalConfigFile := false;
-  fConfigFilePath := './ppc386.cfg';
+  fConfigFilePath := './fpc.cfg';
+  fStopAfterErrCount := 1;
     
   fIncludeFiles := '';
   fLibraries := '';
@@ -1028,14 +1214,14 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-{  TfrmCompilerOptions Constructor                                              }
+{  TfrmCompilerOptions Constructor                                             }
 {------------------------------------------------------------------------------}
 constructor TfrmCompilerOptions.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
   Assert(False, 'Trace:Compiler Options Form Created');
-  SetBounds((Screen.Width-390) div 2,(Screen.Height-480) div 2,379,455);
+  SetBounds((Screen.Width-390) div 2,(Screen.Height-500) div 2,379,480);
   Caption := 'Compiler Options';
   OnShow := @CreateForm;
   
@@ -1143,12 +1329,25 @@ end;
 procedure TfrmCompilerOptions.ButtonTestClicked(Sender: TObject);
 var
   teststr: String;
+  i, LineLen: integer;
 begin
   // Test MakeOptionsString function
   Assert(False, 'Trace:Test MakeOptionsString function');
 
   teststr := CompilerOpts.MakeOptionsString;
-  WriteLn('MakeOptionsString: ' + teststr);
+  WriteLn('CompilerOpts.MakeOptionsString: ' + teststr);
+  i:=1;
+  LineLen:=0;
+  while (i<=length(TestStr)) do begin
+    inc(LineLen);
+    if (LineLen>60) and (TestStr[i]=' ') then begin
+      TestStr[i]:=#13;
+      LineLen:=0;
+    end;
+    inc(i);
+  end;
+  MessageDlg('Show compiler options','Options: '#13+TestStr,mtInformation,
+    [mbOk],0);
 end;
 
 {------------------------------------------------------------------------------}
@@ -1165,6 +1364,7 @@ begin
 
   chkSymD2Ext.Checked := CompilerOpts.D2Extensions;
   chkSymCOper.Checked := CompilerOpts.CStyleOperators;
+  chkSymIncludeAssertions.Checked := CompilerOpts.IncludeAssertionCode;
   chkSymAllowLab.Checked := CompilerOpts.AllowLabel;
   chkSymCPPInline.Checked := CompilerOpts.CPPInline;
   chkSymCMacros.Checked := CompilerOpts.CStyleMacros;
@@ -1175,10 +1375,7 @@ begin
   chkSymUseAnsiStrings.Checked := CompilerOpts.UseAnsiStrings;
   chkSymGPCCompat.Checked := CompilerOpts.GPCCompat;
 
-  case CompilerOpts.UnitStyle of
-      1: radUnitStyleStatic.Checked := true;
-      2: radUnitStyleDynamic.Checked := true;
-  end;    
+  grpUnitStyle.ItemIndex:=CompilerOpts.UnitStyle;
 
   chkChecksIO.Checked := CompilerOpts.IOChecks;
   chkChecksRange.Checked := CompilerOpts.RangeChecks;
@@ -1219,10 +1416,6 @@ begin
   end;
 
   chkOptionsLinkOpt.Checked := CompilerOpts.PassLinkerOptions;
-  if chkOptionsLinkOpt.Checked then
-    edtOptionsLinkOpt.Enabled := true
-  else
-    edtOptionsLinkOpt.Enabled := false;
   edtOptionsLinkOpt.Text := CompilerOpts.LinkerOptions;
   
   chkErrors.Checked := CompilerOpts.ShowErrors;
@@ -1239,16 +1432,16 @@ begin
   chkCompiledProc.Checked := CompilerOpts.ShowCompProc;
   chkConditionals.Checked := CompilerOpts.ShowCond;
   chkNothing.Checked := CompilerOpts.ShowNothing;
+  chkHintsForUnusedProjectUnits.Checked := CompilerOpts.ShowHintsForUnusedProjectUnits;
 
   chkFPCLogo.Checked := CompilerOpts.WriteFPCLogo;
 
-  chkConfigFile.Checked := CompilerOpts.UseConfigFile;
+  chkConfigFile.Checked := not CompilerOpts.DontUseConfigFile;
   chkAdditionalConfigFile.Checked := CompilerOpts.AdditionalConfigFile;
-  if chkAdditionalConfigFile.Checked then
-    edtConfigPath.Enabled := true
-  else
-    edtConfigPath.Enabled := false;
+  edtConfigPath.Enabled := chkAdditionalConfigFile.Checked;
   edtConfigPath.Text := CompilerOpts.ConfigFilePath;
+  
+  edtErrorCnt.Text := IntToStr(CompilerOpts.StopAfterErrCount);
     
   edtIncludeFiles.Text := CompilerOpts.IncludeFiles;
   edtLibraries.Text := CompilerOpts.Libraries;
@@ -1277,6 +1470,7 @@ begin
 
   CompilerOpts.D2Extensions := chkSymD2Ext.Checked;
   CompilerOpts.CStyleOperators := chkSymCOper.Checked;
+  CompilerOpts.IncludeAssertionCode := chkSymIncludeAssertions.Checked;
   CompilerOpts.AllowLabel := chkSymAllowLab.Checked;
   CompilerOpts.CPPInline := chkSymCPPInline.Checked;
   CompilerOpts.CStyleMacros := chkSymCMacros.Checked;
@@ -1287,12 +1481,8 @@ begin
   CompilerOpts.UseAnsiStrings := chkSymUseAnsiStrings.Checked;
   CompilerOpts.GPCCompat := chkSymGPCCompat.Checked;
 
-  if (radUnitStyleStatic.Checked) then
-      CompilerOpts.UnitStyle := 1
-  else if (radUnitStyleDynamic.Checked) then
-      CompilerOpts.UnitStyle := 2
-  else
-      CompilerOpts.UnitStyle := 1;
+  
+  CompilerOpts.UnitStyle := grpUnitStyle.ItemIndex;
 
   CompilerOpts.IOChecks := chkChecksIO.Checked;
   CompilerOpts.RangeChecks := chkChecksRange.Checked;
@@ -1363,12 +1553,15 @@ begin
   CompilerOpts.ShowCompProc := chkCompiledProc.Checked;
   CompilerOpts.ShowCond := chkConditionals.Checked;
   CompilerOpts.ShowNothing := chkNothing.Checked;
+  CompilerOpts.ShowHintsForUnusedProjectUnits := chkHintsForUnusedProjectUnits.Checked;
 
   CompilerOpts.WriteFPCLogo := chkFPCLogo.Checked;
 
-  CompilerOpts.UseConfigFile := chkConfigFile.Checked;
+  CompilerOpts.DontUseConfigFile := not chkConfigFile.Checked;
   CompilerOpts.AdditionalConfigFile := chkAdditionalConfigFile.Checked;
   CompilerOpts.ConfigFilePath := edtConfigPath.Text;
+  
+  CompilerOpts.StopAfterErrCount := StrToIntDef(edtErrorCnt.Text,1);
     
   CompilerOpts.IncludeFiles := edtIncludeFiles.Text;
   CompilerOpts.Libraries := edtLibraries.Text;
@@ -1438,7 +1631,7 @@ begin
     Parent := nbMain.Page[0];
     Top := 65;
     Left := 10;
-    Height := 292;
+    Height := 316;
     Width := 350;
     Caption := 'Symantec Checking:';
     Visible := True;
@@ -1468,12 +1661,24 @@ begin
     Visible := True;
   end;
 
+  chkSymIncludeAssertions := TCheckBox.Create(grpSymantecChk);
+  with chkSymIncludeAssertions do
+  begin
+    Parent := grpSymantecChk;
+    Caption := 'Include Assertion Code';
+    Top := 58;
+    Left := 5;
+    Height := 16;
+    Width := 340;
+    Visible := True;
+  end;
+  
   chkSymAllowLab := TCheckBox.Create(grpSymantecChk);
   with chkSymAllowLab do
   begin
     Parent := grpSymantecChk;
     Caption := 'Allow LABEL and GOTO';
-    Top := 58;
+    Top := 82;
     Left := 5;
     Height := 16;
     Width := 340;
@@ -1485,7 +1690,7 @@ begin
   begin
     Parent := grpSymantecChk;
     Caption := 'C++ Styled INLINE';
-    Top := 82;
+    Top := 106;
     Left := 5;
     Height := 16;
     Width := 340;
@@ -1497,7 +1702,7 @@ begin
   begin
     Parent := grpSymantecChk;
     Caption := 'C Style Macros (global)';
-    Top := 106;
+    Top := 130;
     Left := 5;
     Height := 16;
     Width := 340;
@@ -1509,7 +1714,7 @@ begin
   begin
     Parent := grpSymantecChk;
     Caption := 'TP/BP 7.0 Compatible';
-    Top := 130;
+    Top := 154;
     Left := 5;
     Height := 16;
     Width := 340;
@@ -1521,7 +1726,7 @@ begin
   begin
     Parent := grpSymantecChk;
     Caption := 'Constructor name must be ''' + 'init' + ''' (destructor must be ''' + 'done' + ''')';
-    Top := 154;
+    Top := 178;
     Left := 5;
     Height := 16;
     Width := 340;
@@ -1533,7 +1738,7 @@ begin
   begin
     Parent := grpSymantecChk;
     Caption := 'Static Keyword in Objects';
-    Top := 178;
+    Top := 202;
     Left := 5;
     Height := 16;
     Width := 340;
@@ -1545,7 +1750,7 @@ begin
   begin
     Parent := grpSymantecChk;
     Caption := 'Delphi Compatible';
-    Top := 202;
+    Top := 226;
     Left := 5;
     Height := 16;
     Width := 340;
@@ -1557,7 +1762,7 @@ begin
   begin
     Parent := grpSymantecChk;
     Caption := 'Use Ansi Strings';
-    Top := 226;
+    Top := 250;
     Left := 5;
     Height := 16;
     Width := 340;
@@ -1569,7 +1774,7 @@ begin
   begin
     Parent := grpSymantecChk;
     Caption := 'GPC (GNU Pascal Compiler) Compatible';
-    Top := 250;
+    Top := 274;
     Left := 5;
     Height := 16;
     Width := 340;
@@ -1586,7 +1791,7 @@ begin
   // Setup the Code Generation Tab
   Assert(False, 'Trace:Setting up compiler options code generation tab');
 
-  grpUnitStyle := TGroupBox.Create(Self);
+  grpUnitStyle := TRadioGroup.Create(Self);
   with grpUnitStyle do
   begin
     Parent := nbMain.Page[1];
@@ -1595,30 +1800,11 @@ begin
     Height := 70;
     Width := 85;
     Caption := 'Unit Style:';
-    Visible := True;
-  end;
-
-  radUnitStyleStatic := TRadioButton.Create(grpUnitStyle);
-  with radUnitStyleStatic do
-  begin
-    Parent := grpUnitStyle;
-    Top := 8;
-    Left := 5;
-    Height := 16;
-    Width := 70;
-    Caption := 'Static';
-    Visible := True;
-  end;
-
-  radUnitStyleDynamic := TRadioButton.Create(grpUnitStyle);
-  with radUnitStyleDynamic do
-  begin
-    Parent := grpUnitStyle;
-    Top := 29;
-    Left := 5;
-    Height := 16;
-    Width := 70;
-    Caption := 'Dynamic';
+    with Items do begin
+      Add('Static');
+      Add('Dynamic');
+      Add('Smart');
+    end;
     Visible := True;
   end;
 
@@ -2025,7 +2211,7 @@ begin
   with chkOptionsLinkOpt do
   begin
     Parent := grpOptions;
-    Caption := 'Pass An Option To The Linker';
+    Caption := 'Pass Options To The Linker (Delimiter is space)';
     Top := 6;
     Left := 8;
     Height := 16;
@@ -2060,7 +2246,7 @@ begin
     Parent := nbMain.Page[3];
     Top := 10;
     Left := 10;
-    Height := 170;
+    Height := 191;
     Width := 350;
     Caption := 'Verbosity:';
     Visible := True;
@@ -2234,6 +2420,18 @@ begin
     Visible := True;
   end;
 
+  chkHintsForUnusedProjectUnits := TCheckBox.Create(grpVerbosity);
+  with chkHintsForUnusedProjectUnits do
+  begin
+    Parent := grpVerbosity;
+    Caption := 'Show Hints for unused project units';
+    Top := 153;
+    Left := 8;
+    Height := 16;
+    Width := 250;
+    Visible := True;
+  end;
+  
   {------------------------------------------------------------}
 
   chkFPCLogo := TCheckBox.Create(Self);
@@ -2267,7 +2465,7 @@ begin
   with chkConfigFile do
   begin
     Parent := grpConfigFile;
-    Caption := 'Use Compiler Config File (ppc386.cfg)';
+    Caption := 'Use Compiler Config File (fpc.cfg)';
     Top := 6;
     Left := 8;
     Height := 16;
@@ -2295,6 +2493,31 @@ begin
     Left := 8;
     Height := 23;
     Width := 330;
+    Text := '';
+    Visible := True;
+  end;
+  
+  {------------------------------------------------------------}
+  grpErrorCnt := TGroupBox.Create(Self);
+  with grpErrorCnt do
+  begin
+    Parent := nbMain.Page[3];
+    Top := grpConfigFile.Top + grpConfigFile.Height + 10;
+    Left := 10;
+    Height := 50;
+    Width := 200;
+    Caption := 'Stop after number of errors:';
+    Visible := True;
+  end;
+
+  edtErrorCnt := TEdit.Create(grpConfigFile);
+  with edtErrorCnt do
+  begin
+    Parent := grpErrorCnt;
+    Top := 6;
+    Left := 8;
+    Height := 23;
+    Width := grpErrorCnt.ClientWidth-2*Left-4;
     Text := '';
     Visible := True;
   end;
@@ -2466,11 +2689,11 @@ begin
   with btnTest do
   begin
     Parent := Self;
-    Width := 70;
+    Width := 110;
     Height := 23; 
     Top := Self.Height - btnTest.Height - 15;
     Left := btnOK.Left - btnTest.Width - 5;
-    Caption := 'Test';
+    Caption := 'Show Options';
     OnClick := @ButtonTestClicked;
     Visible := True;
   end;

@@ -43,6 +43,8 @@ type
     FOnOutputString : TOnOutputString;
     FOutputList : TStringList;
     FOnCmdLineCreate : TOnCmdLineCreate;
+    function IsHintForUnusedProjectUnit(const OutputLine, 
+       ProgramSrcFile: string): boolean;
   public
     constructor Create;
     destructor Destroy; override;
@@ -121,22 +123,29 @@ writeln('[TCompiler.Compile] Output="',OutputLine,'"');
     FOutputList.Add(OutputLine);
 
     //determine what type of message it is
-    if (pos(') Hint:',OutputLine) <> 0) then
+    if (pos(') Hint:',OutputLine) <> 0) then begin
       WriteMessage := AProject.CompilerOptions.ShowHints
-                   or AProject.CompilerOptions.ShowAll
-    else if (pos(') Note:',OutputLine) <> 0) then
+                   or AProject.CompilerOptions.ShowAll;
+      if (not AProject.CompilerOptions.ShowAll) 
+      and (not AProject.CompilerOptions.ShowHintsForUnusedProjectUnits)
+      and (IsHintForUnusedProjectUnit(OutputLine,ProjectFilename)) then
+        WriteMessage:=false;
+    end else if (pos(') Note:',OutputLine) <> 0) then
       WriteMessage := AProject.CompilerOptions.ShowNotes
                    or AProject.CompilerOptions.ShowAll
-    else if (pos(') Error:',OutputLine) <> 0) then
+    else if (pos(') Error:',OutputLine) <> 0) then begin
       WriteMessage := AProject.CompilerOptions.ShowErrors
-                   or AProject.CompilerOptions.ShowAll
-    else if (pos(') Warning:',OutputLine) <> 0) then
+                   or AProject.CompilerOptions.ShowAll;
+      Result:=mrCancel;
+    end else if (pos(') Warning:',OutputLine) <> 0) then
       WriteMessage := AProject.CompilerOptions.ShowWarn
                    or AProject.CompilerOptions.ShowAll
     else if (copy(OutputLine,1,5)='Panic') or (pos(') Fatal:',OutputLine) <> 0) or (pos('Fatal: ',OutputLine) <> 0)
     then begin
       Result:=mrCancel;
       WriteMessage := true;
+    end else if OutputLine='Closing script ppas.sh' then begin
+      WriteMessage:=true;
     end;
     if (WriteMessage) and Assigned(OnOutputString) then
       OnOutputString(OutputLine);
@@ -258,6 +267,26 @@ begin
 end;
 
 {--------------------------------------------------------------------------
+            TCompiler IsHintForUnusedProjectUnit
+---------------------------------------------------------------------------}
+function TCompiler.IsHintForUnusedProjectUnit(const OutputLine, 
+  ProgramSrcFile: string): boolean;
+{ recognizes hints of the form
+
+  mainprogram.pp(5,35) Hint: Unit UNUSEDUNIT not used in mainprogram
+}
+var Filename: string;
+begin
+  Result:=false;
+  Filename:=ExtractFilename(ProgramSrcFile);
+  if CompareFilenames(Filename,copy(OutputLine,1,length(Filename)))<>0 then
+    exit;
+  if (pos(') Hint: Unit ',OutputLine)<>0)
+  and (pos(' not used in ',OutputLine)<>0) then
+    Result:=true;
+end;
+
+{--------------------------------------------------------------------------
             TCompiler GetSourcePosition
 ---------------------------------------------------------------------------}
 function TCompiler.GetSourcePosition(const Line: string; var Filename:string;
@@ -326,6 +355,9 @@ end.
 
 {
   $Log$
+  Revision 1.26  2002/01/13 12:46:17  lazarus
+  MG: fixed linker options, compiler options dialog
+
   Revision 1.25  2001/12/16 22:24:54  lazarus
   MG: changes for new compiler 20011216
 

@@ -948,7 +948,7 @@ begin
   ConfFileName:=SetDirSeparators(GetPrimaryConfigPath+'/'+EditOptsConfFileName);
   CopySecondaryConfigFile(EditOptsConfFileName);
   if (not FileExists(ConfFileName)) then begin
-    writeln('WARNING: editor options config file not found');
+    writeln('NOTE: editor options config file not found');
   end;
   XMLConfig:=TXMLConfig.Create(ConfFileName);
   
@@ -1881,7 +1881,7 @@ begin
       try
         AutoCompleteList.LoadFromFile(s);
       except
-        writeln('WARNING: unable to read code template file ''',s,'''');
+        writeln('NOTE: unable to read code template file ''',s,'''');
       end;
   end;
   FillCodeTemplateListBox;

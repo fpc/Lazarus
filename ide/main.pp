@@ -4934,17 +4934,17 @@ begin
   
   if (not FileExists(EnvironmentOptions.CompilerFilename)) then begin
     writeln('');
-    writeln('Warning *: Compiler Filename not set! (see Environment Options)');
+    writeln('NOTE: Compiler Filename not set! (see Environment Options)');
   end;
   if (EnvironmentOptions.LazarusDirectory='') then begin
     writeln('');
     writeln(
-      'Warning *: Lazarus Source Directory not set!  (see Environment Options)');
+      'NOTE: Lazarus Source Directory not set!  (see Environment Options)');
   end;
   if (EnvironmentOptions.FPCSourceDirectory='') then begin
     writeln('');
     writeln(
-      'Warning: FPC Source Directory not set!  (see Environment Options)');
+      'NOTE: FPC Source Directory not set!  (see Environment Options)');
   end;
   
   // set global variables
@@ -4963,21 +4963,21 @@ begin
     ADefTempl:=CreateFPCTemplate(EnvironmentOptions.CompilerFilename,
                           CompilerUnitSearchPath);
     AddTemplate(ADefTempl,false,
-      'Warning: Could not create Define Template for Free Pascal Compiler');
+      'NOTE: Could not create Define Template for Free Pascal Compiler');
       
     // create compiler macros to simulate the Makefiles of the FPC sources
     ADefTempl:=CreateFPCSrcTemplate(
             CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'FPCSrcDir'],
             CompilerUnitSearchPath);
     AddTemplate(ADefTempl,false,
-        'Warning: Could not create Define Template for Free Pascal Sources');
+        'NOTE: Could not create Define Template for Free Pascal Sources');
         
     // create compiler macros for the lazarus sources 
     ADefTempl:=CreateLazarusSrcTemplate(
       '$('+ExternalMacroStart+'LazarusSrcDir)',
       '$('+ExternalMacroStart+'LCLWidgetType)');
     AddTemplate(ADefTempl,true,
-        'Warning: Could not create Define Template for Lazarus Sources');
+        'NOTE: Could not create Define Template for Lazarus Sources');
   end;  
   // build define tree
   with CodeToolBoss do begin
@@ -5578,6 +5578,9 @@ end.
 =======
 
   $Log$
+  Revision 1.200  2002/01/13 12:46:17  lazarus
+  MG: fixed linker options, compiler options dialog
+
   Revision 1.199  2002/01/11 20:41:52  lazarus
   MG: added  guess unclosed block
 
@@ -5609,6 +5612,9 @@ end.
 
 <<<<<<< main.pp
   $Log$
+  Revision 1.200  2002/01/13 12:46:17  lazarus
+  MG: fixed linker options, compiler options dialog
+
   Revision 1.199  2002/01/11 20:41:52  lazarus
   MG: added  guess unclosed block
 
