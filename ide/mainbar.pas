@@ -143,6 +143,7 @@ type
     itmViewwatches: TMenuItem;
     itmViewBreakpoints: TMenuItem;
     itmViewLocals: TMenuItem;
+    itmViewCallStack: TMenuItem;
     itmViewDebugOutput: TMenuItem;
 
     itmProjectNew: TMenuItem;

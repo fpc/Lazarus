@@ -1405,6 +1405,11 @@ begin
   itmViewLocals.Name:='itmViewLocals';
   itmViewLocals.Caption := lisMenuViewLocalVariables;
   itmViewDebugWindows.Add(itmViewLocals);
+  
+  itmViewCallStack := TMenuItem.Create(Self);
+  itmViewCallStack.Name:='itmViewCallStack';
+  itmViewCallStack.Caption := lisMenuViewCallStack;
+  itmViewDebugWindows.Add(itmViewCallStack);
 
   itmViewDebugOutput := TMenuItem.Create(Self);
   itmViewDebugOutput.Name:='itmViewDebugOutput';
@@ -6321,6 +6326,10 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.290  2002/04/30 15:01:05  lazarus
+  MWE:
+    + Added view callstack menu item
+
   Revision 1.289  2002/04/28 14:10:27  lazarus
   MG: fixes for saving resource files
 

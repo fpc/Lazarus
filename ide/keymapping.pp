@@ -89,6 +89,7 @@ const
   ecViewUnits            = ecUserFirst + 309;
   ecViewForms            = ecUserFirst + 310;
   ecToggleLocals         = ecUserFirst + 311;
+  ecToggleCallStack      = ecUserFirst + 312;
 
   ecBuild                = ecUserFirst + 400;
   ecRun                  = ecUserFirst + 401;
@@ -468,6 +469,7 @@ begin
     ecToggleBreakPoints: Result:= 'view breakpoints';
     ecToggleDebuggerOut: Result:= 'view debugger output';
     ecToggleLocals: Result := 'view local variables';
+    ecToggleCallStack: Result := 'view call stack';
     ecViewUnits: Result:= 'view units';
     ecViewForms: Result:= 'view forms';
 
@@ -1198,6 +1200,7 @@ begin
   Add(C,'Toggle view Watches',ecToggleWatches,VK_W,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   Add(C,'Toggle view Breakpoints',ecToggleBreakPoints,VK_B,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   Add(C,'Toggle view Local Variables',ecToggleLocals,VK_L,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
+  Add(C,'Toggle view Call Stack',ecToggleCallStack,VK_S,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   Add(C,'Toggle view Debugger Output',ecToggleDebuggerOut,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'View Units',ecViewUnits,VK_F12,[ssCtrl],VK_UNKNOWN,[]);
   Add(C,'View Forms',ecViewForms,VK_F12,[ssShift],VK_UNKNOWN,[]);

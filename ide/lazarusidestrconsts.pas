@@ -106,6 +106,7 @@ ResourceString
   lisMenuViewWatches = 'Watches';
   lisMenuViewBreakPoints = 'BreakPoints';
   lisMenuViewLocalVariables = 'Local Variables';
+  lisMenuViewCallStack = 'Call Stack';
   lisMenuViewDebugOutput = 'Debug output';
   lisMenuNewProject = 'New Project';
   lisMenuOpenProject = 'Open Project';
