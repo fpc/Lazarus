@@ -224,6 +224,12 @@ begin
   Result := False;
 end;
 
+Function TInterfaceBase.InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean) : Boolean;
+begin
+  // Your default here
+  // Result := 
+end;
+
 function TInterfaceBase.LineTo(DC: HDC; X, Y: Integer): Boolean;
 begin
   Result := False;
@@ -402,6 +408,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.8  2001/01/23 18:42:10  lazarus
+  Added InvalidateRect to gtkwinapi.inc
+  Shane
+
   Revision 1.7  2000/12/06 14:54:38  lazarus
   Set some defaults in interfacebase.inc
   Shane

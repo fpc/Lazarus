@@ -231,6 +231,11 @@ begin
   Result := InterfaceObject.HideCaret(hWnd);
 end;
 
+Function InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean) : Boolean;
+begin
+  Result := InterfaceObject.InvalidateRect(aHandle, Rect, bErase);
+end;
+
 function LineTo(DC: HDC; X, Y: Integer): Boolean;
 begin
   Result := InterfaceObject.LineTo(DC, X, Y);
@@ -939,6 +944,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.7  2001/01/23 18:42:10  lazarus
+  Added InvalidateRect to gtkwinapi.inc
+  Shane
+
   Revision 1.6  2000/09/10 23:08:30  lazarus
   MWE:
     + Added CreateCompatibeleBitamp function

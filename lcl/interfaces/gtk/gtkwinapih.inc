@@ -54,6 +54,8 @@ Function GetWindowRect(Handle : hwnd; Rect : PRect): Integer; override;
 
 function HideCaret(hWnd: HWND): Boolean; override;
 
+Function InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean) : Boolean; override;
+
 function LineTo(DC: HDC; X, Y: Integer): Boolean; override;
 
 function MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean; override;
@@ -99,6 +101,10 @@ Function WindowFromPoint(Point : TPoint) : HWND; override;
 { =============================================================================
 
   $Log$
+  Revision 1.7  2001/01/23 18:42:10  lazarus
+  Added InvalidateRect to gtkwinapi.inc
+  Shane
+
   Revision 1.6  2000/09/10 23:08:31  lazarus
   MWE:
     + Added CreateCompatibeleBitamp function

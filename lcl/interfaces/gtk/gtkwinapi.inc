@@ -1996,6 +1996,28 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: InvalidateRect
+  Params: aHandle:
+          Rect:
+          bErase:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+Function TGTKObject.InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean) : Boolean;
+var
+  gdkRect : TGDKRectangle;
+begin
+  Writeln('[InvalidateRect]');
+  Writeln(format('Rect = %d,%d,%d,%d',[rect^.left,rect^.top,rect^.Right,rect^.Bottom]));
+  gdkRect.X := Rect^.Left;
+  gdkRect.Y := Rect^.Top;
+  gdkREct.Width := (Rect^.Right - Rect^.Left);
+  gdkREct.Height := (Rect^.Bottom - Rect^.Top);
+  gtk_widget_draw(PgtkWidget(aHandle),@gdkRect);
+  Writeln('[InvalidateRect]  Exiting....');
+end;
+
+{------------------------------------------------------------------------------
   Function: LineTo
   Params:  none
   Returns: Nothing
@@ -3113,6 +3135,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.13  2001/01/23 18:42:10  lazarus
+  Added InvalidateRect to gtkwinapi.inc
+  Shane
+
   Revision 1.12  2001/01/12 18:46:50  lazarus
   Named the speedbuttons in MAINIDE and took out some writelns.
   Shane

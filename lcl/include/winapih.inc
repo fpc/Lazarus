@@ -77,6 +77,7 @@ function HideCaret(hWnd: HWND): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 //function InflateRect --> independent
 //function IntersectRect --> independent
+Function InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 //function IsCharAlphaNumeric --> independent
 //function IsRectEmpty --> independent
 
@@ -216,6 +217,10 @@ function UnionRect(var lprcDst: TRect; const lprcSrc1, lprcSrc2: TRect): Boolean
 { =============================================================================
 
   $Log$
+  Revision 1.7  2001/01/23 18:42:10  lazarus
+  Added InvalidateRect to gtkwinapi.inc
+  Shane
+
   Revision 1.6  2000/09/10 23:08:30  lazarus
   MWE:
     + Added CreateCompatibeleBitamp function
