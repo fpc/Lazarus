@@ -1,6 +1,6 @@
-{  Ce fichier est automatiquement créé par Lazarus. Ne pas le modifier!
-  Ce code source est utilisé seulement pour compiler et installer
-  le paquet Printer4Lazarus 0.0.0.1.
+{  This file was automatically created by Lazarus. Do not edit!
+  This source is only used to compile and install
+  the package Printer4Lazarus 0.0.0.1.
  }
 
 unit Printer4Lazarus; 

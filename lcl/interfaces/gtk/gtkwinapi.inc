@@ -190,7 +190,7 @@ begin
   if not AForm.HandleAllocated then exit;
   FormWidget:=PGtkWidget(AForm.Handle);
   FormWindow:=PGdkWindowPrivate(FormWidget^.window);
-  if FormWindow<>nil then exit;
+  if FormWindow=nil then exit;
   XWindow := GDK_WINDOW_XWINDOW (FormWindow);
   XDisplay := GDK_WINDOW_XDISPLAY (FormWindow);
   if (XDisplay<>nil) and (XWindow>0) then
@@ -9002,6 +9002,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.411  2005/03/16 17:45:28  mattias
+  published TStringGrid.OnResize/OnChangeBounds and fixed gtk1 intf check in focussing
+
   Revision 1.410  2005/03/16 12:30:15  mattias
   added some checks to avoid crashes
 

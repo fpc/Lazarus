@@ -1135,6 +1135,7 @@ type
 
 
     property OnBeforeSelection;
+    property OnChangeBounds;
     property OnClick;
     property OnColRowDeleted;
     property OnColRowExchanged;
@@ -1158,6 +1159,7 @@ type
     property OnMouseWheelDown;
     property OnMouseWheelUp;
     property OnPrepareCanvas;
+    property OnResize;
     property OnSelectEditor;
     property OnSelection;
     property OnSelectCell;

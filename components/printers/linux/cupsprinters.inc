@@ -151,8 +151,8 @@ end;
 procedure TCUPSPrinter.SetJobState(aJobId : LongInt; aOp : ipp_op_t);
 var Request,R : Pipp_t;                         //IPP Request
     Language  : Pcups_lang_t;                   //Default Language
-    aState    : ipp_pstate_t;                   //Printer state
-    URI	      : Array[0..HTTP_MAX_URI] of Char; //Printer URI
+    //aState    : ipp_pstate_t;                   //Printer state
+    URI       : Array[0..HTTP_MAX_URI] of Char; //Printer URI
 begin
   if not CUPSLibInstalled then Exit;
   if (Printers.Count>0) then
@@ -191,10 +191,10 @@ end;
 
 function TCUPSPrinter.GetCupsRequest : Pipp_t;
 var Request   : Pipp_t; //IPP Request
-    Attribute : Pipp_attribute_t; //Current attribute
+    //Attribute : Pipp_attribute_t; //Current attribute
     Language  : Pcups_lang_t;     //Default Language
-    aState    : ipp_pstate_t;     //Printer state
-    URI	      : Array[0..HTTP_MAX_URI] of Char; //Printer URI
+    //aState    : ipp_pstate_t;     //Printer state
+    URI       : Array[0..HTTP_MAX_URI] of Char; //Printer URI
 begin
   Result:=Nil;
   if not CUPSLibInstalled then Exit;
@@ -265,7 +265,7 @@ function TCUPSPrinter.EnumPPDChoice(Lst : TStrings; aKeyWord : string) : Integer
 var i         : integer;
     Option    : Pppd_option_t;
     Choice    : Pppd_choice_t;
-    Choices   : PPppd_choice_t;
+    //Choices   : PPppd_choice_t;
 begin
   Result:=-1;
   if not CUPSLibInstalled then Exit;
@@ -642,12 +642,12 @@ end;
 
 
 function TCUPSPrinter.DoGetPrinterState: TPrinterState;
-var Request   : Pipp_t; //IPP Request
-    Reponse   : Pipp_t; //IPP Reponse
-    Attribute : Pipp_attribute_t; //Current attribute
-    Language  : Pcups_lang_t;     //Default Language
+var //Request   : Pipp_t; //IPP Request
+    //Reponse   : Pipp_t; //IPP Reponse
+    //Attribute : Pipp_attribute_t; //Current attribute
+    //Language  : Pcups_lang_t;     //Default Language
     aState    : ipp_pstate_t;     //Printer state
-    URI	      : Array[0..HTTP_MAX_URI] of Char; //Printer URI
+    //URI       : Array[0..HTTP_MAX_URI] of Char; //Printer URI
 begin
   Result:=inherited DoGetPrinterState;
 
