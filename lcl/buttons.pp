@@ -200,7 +200,6 @@ type
     FMouseInControl : Boolean;
     FShortcut : Longint;
     FSpacing : integer;
-    FState : TButtonState;
     FTransparent : Boolean;
     function GetGlyph : TBitmap;
     procedure UpdateExclusive;
@@ -214,6 +213,7 @@ type
     procedure CMMouseLeave(var Message: TLMessage); message CM_MouseLeave;
     procedure CMEnabledChanged(var Message: TLMessage); message CM_ENABLEDCHANGED;
   protected
+    FState : TButtonState;
     function GetNumGlyphs : Integer;
     procedure GlyphChanged(Sender : TObject);
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -307,6 +307,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.49  2003/09/13 15:43:05  ajgenius
+  make speed button FState Protected, not private. needed for descendents,
+
   Revision 1.48  2003/06/23 09:42:09  mattias
   fixes for debugging lazarus
 
