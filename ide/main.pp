@@ -1168,6 +1168,7 @@ begin
   itmFileSave := TMenuItem.Create(Self);
   itmFileSave.Name:='itmFileSave';
   itmFileSave.Caption := 'Save';
+  itmFileSave.ShortCut:= VK_S or scCtrl;
   itmFileSave.OnClick := @mnuSaveClicked;
   mnuFile.Add(itmFileSave);
 
@@ -1180,6 +1181,7 @@ begin
   itmFileSaveAll := TMenuItem.Create(Self);
   itmFileSaveAll.Name:='itmFileSaveAll';
   itmFileSaveAll.Caption := 'Save All';
+  itmFileSaveAll.ShortCut:= VK_S or scCtrl or scShift;
   itmFileSaveAll.OnClick := @mnuSaveAllClicked;
   mnuFile.Add(itmFileSaveAll);
 
@@ -1205,11 +1207,13 @@ begin
   itmEditUndo := TMenuItem.Create(nil);
   itmEditUndo.Name:='itmEditUndo';
   itmEditUndo.Caption := 'Undo';
+  itmEditUndo.ShortCut:= VK_Z or scCtrl;
   mnuEdit.Add(itmEditUndo);
 
   itmEditRedo := TMenuItem.Create(nil);
   itmEditRedo.Name:='itmEditRedo';
   itmEditRedo.Caption := 'Redo';
+  itmEditRedo.ShortCut:= VK_Z or scCtrl or scShift;
   mnuEdit.Add(itmEditRedo);
 
   mnuEdit.Add(CreateSeperator);
@@ -1217,16 +1221,19 @@ begin
   itmEditCut  := TMenuItem.Create(nil);
   itmEditCut.Name:='itmEditCut';
   itmEditCut.Caption := 'Cut';
+  itmEditCut.Shortcut:= VK_X or scCtrl;
   mnuEdit.Add(itmEditCut);
 
   itmEditCopy := TMenuItem.Create(nil);
   itmEditCopy.Name:='itmEditCopy';
   itmEditCopy.Caption := 'Copy';
+  itmEditCopy.ShortCut:= VK_C or scCtrl;
   mnuEdit.Add(itmEditCopy);
 
   itmEditPaste := TMenuItem.Create(nil);
   itmEditPaste.Name:='itmEditPaste';
   itmEditPaste.Caption := 'Paste';
+  itmEditPaste.Shortcut:= VK_V or scCtrl;
   mnuEdit.Add(itmEditPaste);
 
 //--------------
@@ -1236,17 +1243,20 @@ begin
   itmSearchFind := TMenuItem.Create(nil);
   itmSearchFind.Name:='itmSearchFind';
   itmSearchFind.Caption := 'Find';
+  itmSearchFind.ShortCut:= VK_F or scCtrl;
   mnuSearch.add(itmSearchFind);
 
   itmSearchFindNext := TMenuItem.Create(nil);
   itmSearchFindNext.Name:='itmSearchFindNext';
   itmSearchFindNext.Caption := 'Find &Next';
+  itmSearchFindNext.ShortCut:= VK_F3;
   itmSearchFindNext.Enabled := False;
   mnuSearch.add(itmSearchFindNext);
 
   itmSearchFindPrevious := TMenuItem.Create(nil);
   itmSearchFindPrevious.Name:='itmSearchFindPrevious';
   itmSearchFindPrevious.Caption := 'Find &Previous';
+  itmSearchFindPrevious.ShortCut:= VK_F3 or scShift;
   itmSearchFindPrevious.Enabled := False;
   mnuSearch.add(itmSearchFindPrevious);
 
@@ -1259,6 +1269,7 @@ begin
   itmSearchReplace := TMenuItem.Create(nil);
   itmSearchReplace.Name:='itmSearchReplace';
   itmSearchReplace.Caption := 'Replace';
+  itmSearchReplace.ShortCut:= VK_R or scCtrl;
   mnuSearch.add(itmSearchReplace);
 
   mnuSearch.Add(CreateSeperator);
@@ -1266,6 +1277,7 @@ begin
   itmGotoLine := TMenuItem.Create(nil);
   itmGotoLine.Name:='itmGotoLine';
   itmGotoLine.Caption := 'Goto line';
+  itmGotoLine.ShortCut:= VK_G or scAlt;
   mnuSearch.add(itmGotoLine);
   
   mnuSearch.Add(CreateSeperator);
@@ -1297,12 +1309,14 @@ begin
   itmViewInspector := TMenuItem.Create(Self);
   itmViewInspector.Name:='itmViewInspector';
   itmViewInspector.Caption := 'Object Inspector';
+  itmViewInspector.ShortCut := VK_F11;
   itmViewInspector.OnClick := @mnuViewInspectorClicked;
   mnuView.Add(itmViewInspector);
 
   itmViewProject  := TMenuItem.Create(Self);
   itmViewProject.Name:='itmViewProject';
   itmViewProject.Caption := 'Project Explorer';
+  itmViewProject.ShortCut:= VK_F11 or scCtrl or scAlt;
   mnuView.Add(itmViewProject);
 
   mnuView.Add(CreateSeperator);
@@ -1318,12 +1332,14 @@ begin
   itmViewUnits := TMenuItem.Create(Self);
   itmViewUnits.Name:='itmViewUnits';
   itmViewUnits.Caption := 'Units...';
+  itmViewUnits.Shortcut:= VK_F12 or scCtrl;
   itmViewUnits.OnClick := @mnuViewUnitsClicked;
   mnuView.Add(itmViewUnits);
 
   itmViewForms := TMenuItem.Create(Self);
   itmViewForms.Name:='itmViewForms';
   itmViewForms.Caption := 'Forms...';
+  itmViewForms.ShortCut:= VK_F12 or scShift;
   itmViewForms.OnClick := @mnuViewFormsClicked;
   mnuView.Add(itmViewForms);
 
@@ -1338,12 +1354,14 @@ begin
   itmViewWatches := TMenuItem.Create(Self);
   itmViewWatches.Name:='itmViewWatches';
   itmViewWatches.Caption := 'Watches';
+  itmViewWatches.ShortCut:= VK_W or scCtrl or scAlt;
   itmViewWatches.OnClick := @mnuViewWatchesClick;
   mnuView.Add(itmViewWatches);
 
   itmViewBreakPoints := TMenuItem.Create(Self);
   itmViewBreakPoints.Name:='itmViewBreakPoints';
   itmViewBreakPoints.Caption := 'BreakPoints';
+  itmViewBreakPoints.Shortcut := VK_B or scCtrl or scAlt;
   itmViewBreakPoints.OnClick := @mnuViewBreakPointsClick;
   mnuView.Add(itmViewBreakPoints);
 //--------------
@@ -1359,6 +1377,7 @@ begin
   itmProjectOpen := TMenuItem.Create(Self);
   itmProjectOpen.Name:='itmProjectOpen';
   itmProjectOpen.Caption := 'Open Project';
+  itmProjectOpen.ShortCut:= VK_F11 or scCtrl;
   itmProjectOpen.OnClick := @mnuOpenProjectClicked;
   mnuProject.Add(itmProjectOpen);
 
@@ -1387,6 +1406,7 @@ begin
   itmProjectAddTo := TMenuItem.Create(Self);
   itmProjectAddTo.Name:='itmProjectAddTo';
   itmProjectAddTo.Caption := 'Add active unit to Project';
+  itmProjectAddTo.ShortCut:= VK_F11 or scShift;
   itmProjectAddTo.OnClick := @mnuAddToProjectClicked;
   mnuProject.Add(itmProjectAddTo);
 
@@ -1409,6 +1429,7 @@ begin
   itmProjectOptions := TMenuItem.Create(Self);
   itmProjectOptions.Name:='itmProjectOptions';
   itmProjectOptions.Caption := 'Project Options...';
+  itmProjectOptions.ShortCut:= VK_F11 or scCtrl or scShift;
   itmProjectOptions.OnClick := @mnuProjectOptionsClicked;
   mnuProject.Add(itmProjectOptions);
 
@@ -1431,6 +1452,7 @@ begin
   itmProjectRun := TMenuItem.Create(Self);
   itmProjectRun.Name:='itmProjectRun';
   itmProjectRun.Caption := 'Run';
+  itmProjectRun.ShortCut:= VK_F9;
   itmProjectRun.OnClick := @mnuRunProjectClicked;
   mnuRun.Add(itmProjectRun);
 
@@ -1444,24 +1466,28 @@ begin
   itmProjectStepInto := TMenuItem.Create(Self);
   itmProjectStepInto.Name:='itmProjectStepInto';
   itmProjectStepInto.Caption := 'Step into';
+  itmProjectStepInto.ShortCut:= VK_F7;
   itmProjectStepInto.OnClick := @mnuStepIntoProjectClicked;
   mnuRun.Add(itmProjectStepInto);
 
   itmProjectStepOver := TMenuItem.Create(Self);
   itmProjectStepOver.Name:='itmProjectStepOver';
   itmProjectStepOver.Caption := 'Step over';
+  itmProjectStepOver.ShortCut:= VK_F8;
   itmProjectStepOver.OnClick := @mnuStepOverProjectClicked;
   mnuRun.Add(itmProjectStepOver);
 
   itmProjectRunToCursor := TMenuItem.Create(Self);
   itmProjectRunToCursor.Name:='itmProjectRunToCursor';
   itmProjectRunToCursor.Caption := 'Run to cursor';
+  itmProjectRunToCursor.ShortCut:= VK_F4;
   itmProjectRunToCursor.OnClick := @mnuRunToCursorProjectClicked;
   mnuRun.Add(itmProjectRunToCursor);
 
   itmProjectStop := TMenuItem.Create(Self);
   itmProjectStop.Name:='itmProjectStop';
   itmProjectStop.Caption := 'Stop';
+  itmProjectStop.ShortCut:= VK_F2 or scCtrl;
   itmProjectStop.OnClick := @mnuStopProjectClicked;
   mnuRun.Add(itmProjectStop);
 
@@ -1492,6 +1518,7 @@ begin
   itmToolSyntaxCheck := TMenuItem.Create(Self);
   itmToolSyntaxCheck.Name:='itmToolSyntaxCheck';
   itmToolSyntaxCheck.Caption := 'Quick syntax check';
+  itmToolSyntaxCheck.ShortCut:= VK_Q or scCtrl;
   itmToolSyntaxCheck.OnClick := @mnuToolSyntaxCheckClicked;
   mnuTools.Add(itmToolSyntaxCheck);
 
@@ -5973,6 +6000,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.225  2002/02/18 22:46:10  lazarus
+  Implented TMenuItem.ShortCut (not much tested).
+
   Revision 1.224  2002/02/17 19:51:10  lazarus
   MG: fixed running project
 
