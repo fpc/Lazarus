@@ -169,6 +169,7 @@ type
 
     function NonVisualComponentLeftTop(AComponent: TComponent): TPoint;
     function NonVisualComponentAtPos(x,y: integer): TComponent;
+    function WinControlAtPos(x,y: integer): TWinControl;
     function GetDesignedComponent(AComponent: TComponent): TComponent;
     function GetComponentEditorForSelection: TBaseComponentEditor;
     procedure AddComponentEditorMenuItems(
@@ -545,6 +546,9 @@ Begin
   if Assigned(FOnGetSelectedComponentClass) then
     FOnGetSelectedComponentClass(Self,SelectedCompClass);
 
+  NonVisualComp:=NonVisualComponentAtPos(MouseDownPos.X,MouseDownPos.Y);
+  if NonVisualComp<>nil then MouseDownComponent:=NonVisualComp;
+
   if (TheMessage.Keys and MK_LButton) > 0 then begin
     // left button
     // -> check if a grabber was activated
@@ -554,9 +558,7 @@ Begin
     if SelectedCompClass = nil then begin
       // selection mode
       if ControlSelection.ActiveGrabber=nil then begin
-        NonVisualComp:=NonVisualComponentAtPos(MouseDownPos.X,MouseDownPos.Y);
-        if NonVisualComp<>nil then MouseDownComponent:=NonVisualComp;
-        
+
         CompIndex:=ControlSelection.IndexOf(MouseDownComponent);
         if (TheMessage.Keys and MK_SHIFT)>0 then begin
 
@@ -650,12 +652,17 @@ var
   
   procedure AddComponent;
   begin
+    if MouseDownComponent=nil then exit;
+
     // add a new component
     ControlSelection.RubberbandActive:=false;
     ControlSelection.Clear;
 
     // find a parent for the new component
-    NewParent:=TWinControl(MouseDownComponent);
+    if MouseDownComponent is TWinControl then
+      NewParent:=TWinControl(MouseDownComponent)
+    else
+      NewParent:=WinControlAtPos(MouseDownPos.X,MouseUpPos.X);
     while (NewParent<>nil)
     and ((not (csAcceptsControls in NewParent.ControlStyle))
       or ((NewParent.Owner<>Form) and (NewParent<>Form)))
@@ -1429,6 +1436,25 @@ begin
   Result:=nil;
 end;
 
+function TDesigner.WinControlAtPos(x, y: integer): TWinControl;
+var i: integer;
+  WinControlBounds: TRect;
+begin
+  for i:=FCustomForm.ComponentCount-1 downto 0 do begin
+    Result:=TWinControl(FCustomForm.Components[i]);
+    if (Result is TWinControl) then begin
+      with Result do begin
+        WinControlBounds:=GetParentFormRelativeBounds(Result);
+        if (WinControlBounds.Left<=x) and (WinControlBounds.Top<=y)
+        and (WinControlBounds.Right>x)
+        and (WinControlBounds.Bottom>y) then
+          exit;
+      end;
+    end;
+  end;
+  Result:=nil;
+end;
+
 procedure TDesigner.BuildPopupMenu;
 
   procedure AddSeparator;
@@ -1525,7 +1551,7 @@ begin
   with FDeleteSelectionMenuItem do begin
     Caption:= 'Delete selection';
     OnClick:=@OnDeleteSelectionMenuClick;
-    Enabled:= ControlSelIsNotEmpty;
+    Enabled:= ControlSelIsNotEmpty and (not FormIsSelected);
   end;
   FPopupMenu.Items.Add(FDeleteSelectionMenuItem);
 end;
