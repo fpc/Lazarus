@@ -2907,10 +2907,26 @@ begin
   if (ClientWidget <> nil) and (GetControlWindow(ClientWidget)<>nil) then begin
     ClientWindow:=GetControlWindow(ClientWidget);
     MainWindow:=GetControlWindow(Widget);
-    gdk_window_get_origin(MainWindow,@MainOrigin.X,@MainOrigin.Y);
+    if MainWindow<>nil then begin
+      gdk_window_get_origin(MainWindow,@MainOrigin.X,@MainOrigin.Y);
+    end else begin
+      {$IFDEF RaiseExceptionOnNilPointers}
+      RaiseException('TGTKObject.GetClientBounds Window=nil');
+      {$ENDIF}
+      MainOrigin.X:=0;
+      MainOrigin.Y:=0;
+    end;
     inc(MainOrigin.X,Widget^.Allocation.X);
     inc(MainOrigin.Y,Widget^.Allocation.Y);
-    gdk_window_get_origin(ClientWindow,@ClientOrigin.X,@ClientOrigin.Y);
+    if ClientWindow<>nil then
+      gdk_window_get_origin(ClientWindow,@ClientOrigin.X,@ClientOrigin.Y)
+    else begin
+      {$IFDEF RaiseExceptionOnNilPointers}
+      RaiseException('TGTKObject.GetClientBounds ClientWindow=nil');
+      {$ENDIF}
+      ClientOrigin.X:=0;
+      ClientOrigin.Y:=0;
+    end;
     ARect.Left:=ClientOrigin.X-MainOrigin.X;
     ARect.Top:=ClientOrigin.Y-MainOrigin.Y;
     ARect.Right:=ARect.Left+ClientWidget^.Allocation.Width;
@@ -4123,6 +4139,9 @@ begin
       inc(P.Y,DCOrigin.Y);
       Result := 1;
     end else begin
+      {$IFDEF RaiseExceptionOnNilPointers}
+      RaiseException('TGTKObject.GetWindowOrgEx Window=nil');
+      {$ENDIF}
       writeln('TgtkObject.GetWindowOrgEx:',
         ' WARNING: DC ',HexStr(Cardinal(DC),8),' without gdkwindow.',
         ' Widget=',HexStr(Cardinal(hwnd),8));
@@ -4146,15 +4165,17 @@ function TgtkObject.GetWindowRect(Handle: hwnd; var ARect: TRect): Integer;
 var
   X, Y, W, H: Integer;
   Widget: PGTKWidget;
+  Window: PGdkWindow;
 begin
   //Writeln('GetWindowRect');
   Result := 0; //default
   if Handle <> 0 then
   begin
     Widget := pgtkwidget(Handle);
-    if GetControlWindow(Widget) <> nil then Begin
-      gdk_window_get_origin(GetControlWindow(Widget), @X, @Y);
-      gdk_window_get_size(GetControlWindow(Widget), @W, @H);
+    Window:=GetControlWindow(Widget);
+    if Window <> nil then Begin
+      gdk_window_get_origin(Window, @X, @Y);
+      gdk_window_get_size(Window, @W, @H);
     end
     else
     Begin
@@ -5482,6 +5503,7 @@ Function TGTKObject.ScreenToClient(Handle : HWND; var P : TPoint) : Integer;
 var
   X, Y: Integer;
   Widget: PGTKWidget;
+  Window: PgdkWindow;
 Begin
 
   if Handle = 0
@@ -5493,15 +5515,22 @@ Begin
    begin
     Widget := GetFixedWidget(pgtkwidget(Handle));
     if Widget = nil then
-       Widget := pgtkwidget(Handle);
+      Widget := pgtkwidget(Handle);
     if Widget = nil then
-      begin
-        X := 0;
-        Y := 0;
-      end
-      else
-        gdk_window_get_origin(GetControlWindow(Widget), @X, @Y);
-   end;
+    begin
+      X := 0;
+      Y := 0;
+    end
+    else begin
+      Window:=GetControlWindow(Widget);
+      if Window<>nil then
+        gdk_window_get_origin(Window, @X, @Y)
+      else begin
+        X:=0;
+        Y:=0;
+      end;
+    end;
+  end;
 
   //writeln('[TGTKObject.ScreenToClient] ',x,',',y,' P=',P.X,',',P.Y);
   dec(P.X, X);
@@ -7128,6 +7157,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.135  2002/09/19 16:45:54  lazarus
+  MG: fixed Menu.Free and gdkwindow=nil bug
+
   Revision 1.134  2002/09/18 17:07:29  lazarus
   MG: added patch from Andrew
 
