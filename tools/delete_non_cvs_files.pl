@@ -112,7 +112,7 @@ sub SearchDir(){
         print "rmdir ".$CurFullFile."\n";
       } else {
         if (!$opt{q}){
-          print "unlink "$CurFullFile."\n";
+          print "unlink ".$CurFullFile."\n";
         }
       }
       if($opt{x}){

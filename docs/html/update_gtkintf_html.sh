@@ -12,9 +12,13 @@ if [ -z $FPDoc ]; then
   FPDoc=fpdoc
 fi
 
+PackageName=gtkinterface
 XMLSrcDir=../xml/lcl/interfaces/gtk/
 PasSrcDir=../../lcl/interfaces/gtk/
 InputFileList=inputfile.txt
+
+# create output directory
+mkdir -p $PackageName
 
 # create unit list
 cd $PasSrcDir
@@ -25,18 +29,21 @@ cd -
 DescrFiles=''
 for unit in $UnitList; do
   ShortFile=`echo $unit | sed -e 's/\.pp\b//g' -e 's/\.pas\b//g'`
-  DescrFiles="$DescrFiles --descr=$XMLSrcDir$ShortFile.xml"
+  DescrFiles="$DescrFiles --descr=../$XMLSrcDir$ShortFile.xml"
 done
 
 # create input file list
-rm -f $InputFileList
+CurInputFileList=$PackageName/$InputFileList
+rm -f $CurInputFileList
 for unit in $UnitList; do
-  echo $PasSrcDir$unit -dGTK1 >> $InputFileList
+  echo ../$PasSrcDir$unit -Fi../$PasSrcDir -dGTK1 >> $CurInputFileList
 done
 
-$FPDoc $DescrFiles --input=@$InputFileList --content=gtkinterface.cnt \
-  --import=lcl.cnt,../lcl/ --package=gtkinterface \
+cd $PackageName
+$FPDoc $DescrFiles --input=@$InputFileList --content=$PackageName.cnt \
+  --import=../lcl/lcl.cnt,../lcl/ --package=$PackageName \
   --format=html
+cd -
   
 # --output=lcl/interfaces/gtk
 
