@@ -1189,8 +1189,8 @@ var
 
 begin
   if (IsVisible or (csDesigning in ComponentState)
-  and not (csNoDesignVisible in ControlStyle)) and (Parent <> nil)
-  and Parent.HandleAllocated then
+  and not (csNoDesignVisible in ControlStyle))
+  and (Parent <> nil) and Parent.HandleAllocated then
   begin
     Rect := BoundsRect;
     // ToDo: don't invalidate non TWinControls. Because some of them do not
@@ -1803,6 +1803,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.79  2002/09/06 11:33:36  lazarus
+  MG: added jitform error messagedlg
+
   Revision 1.78  2002/09/05 13:46:19  lazarus
   MG: activated InvalidateControl for TWinControls
 
