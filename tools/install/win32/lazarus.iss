@@ -68,7 +68,7 @@ Root: HKCR; SubKey: LazarusInclude\shell\open; ValueType: string; ValueName: ; V
 Root: HKCR; SubKey: LazarusInclude\shell\open\command; ValueType: string; ValueData: "Notepad.exe ""%1"""; Flags: uninsdeletevalue
 [Languages]
 Name: default; MessagesFile: compiler:Default.isl
-Name: ca; MessagesFile: compiler:Languages\Catalan.isl
+Name: ca; MessagesFile: compiler:Languages\Catalan.isl; LicenseFile: {#LicenseDir}\GPL-ca.txt
 Name: cs; MessagesFile: compiler:Languages\Czech.isl
 Name: de; MessagesFile: compiler:Languages\German.isl
 Name: fr; MessagesFile: compiler:Languages\French.isl
@@ -78,7 +78,7 @@ Name: pl; MessagesFile: compiler:Languages\Polish.isl
 Name: pt; MessagesFile: compiler:Languages\PortugueseStd.isl; LicenseFile: {#LicenseDir}\GPL-pt.txt
 Name: ru; MessagesFile: compiler:Languages\Russian.isl
 Name: sl; MessagesFile: compiler:Languages\Slovenian.isl
-Name: pt_BR; MessagesFile: C:\lazarus\source\lazarus\tools\install\win32\Portuguese_BR.isl; LicenseFile: {#LicenseDir}\GPL-pt_BR.txt
+Name: pt_BR; MessagesFile: Portuguese_BR.isl; LicenseFile: {#LicenseDir}\GPL-pt_BR.txt
 [Code]
 function NextButtonClick(CurPage: Integer): Boolean;
 var
@@ -107,7 +107,6 @@ end;
 
 function GetDefDir( def: String ) : String;
 begin
-  // if default folder contains spaces, suggest user to install in folderwithnospaces\Myappdir
   if Pos( ' ', def ) > 0 then
   begin
     def := Copy( def, 1, Pos( ' ', def ) - 1 ) + '\NoFolderSpace';
