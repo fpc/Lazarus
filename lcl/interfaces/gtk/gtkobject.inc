@@ -1152,9 +1152,10 @@ begin
          end;
 
          pStr := Ampersands2Underscore(PChar(TBitBtn(Sender).Caption));
-         pLabel := gtk_label_new(pstr);
+         pLabel := gtk_label_new(pStr);
          Accel:= gtk_label_parse_uline(PGtkLabel(pLabel), pStr);
-	 gtk_accel_group_add(gtk_accel_group_get_default, Accel, 0, GTK_ACCEL_VISIBLE, PGtkObject(TBitBtn(Sender).Handle), 'clicked');
+         gtk_accel_group_add(gtk_accel_group_get_default, Accel, 0,
+           GTK_ACCEL_VISIBLE, PGtkObject(TBitBtn(Sender).Handle), 'clicked');
          StrDispose(pStr);
          if (TBitBtn(Sender).Layout = blGlyphLeft)
          or (TBitBtn(Sender).Layout = blGlyphTop) then
@@ -2053,26 +2054,29 @@ begin
   csColorDialog,
   csFontDialog  : gtk_window_set_title(pGtkWindow(p),PLabel);
 
-  csLabel       : begin
-		    AccelKey:= GetAccelKey(p);
-		    if AccelKey <> 0 then gtk_widget_remove_accelerators(p, 'grab_focus', false);
+  csLabel       :
+    begin
+	    AccelKey:= GetAccelKey(p);
+	    if AccelKey <> 0 then
+        gtk_widget_remove_accelerators(p, 'grab_focus', false);
 		    
-                    if TLabel(Sender).ShowAccelChar then begin
-		      aLabel:= Ampersands2Underscore(pLabel);
-		      try
-                        AccelKey:= gtk_label_parse_uline(pGtkLabel(p), aLabel);
-			SetAccelKey(p, AccelKey);
-			if AccelKey <> 0 then
-			  gtk_widget_add_accelerator(p, 'grab_focus', gtk_accel_group_get_default(),
-			    AccelKey, GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
-		      finally
-		        StrDispose(aLabel);
-		      end;
-		    end else begin
-		      gtk_label_set_text(PGtkLabel(p), pLabel);
-		      gtk_label_set_pattern(PGtkLabel(p), nil);
-		    end;  
-		  end;    
+      if TLabel(Sender).ShowAccelChar then begin
+		    aLabel:= Ampersands2Underscore(pLabel);
+		    try
+          AccelKey:= gtk_label_parse_uline(pGtkLabel(p), aLabel);
+			    SetAccelKey(p, AccelKey);
+			    if AccelKey <> 0 then
+			      gtk_widget_add_accelerator(p, 'grab_focus',
+              gtk_accel_group_get_default(),
+			        AccelKey, GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
+        finally
+		      StrDispose(aLabel);
+		    end;
+		  end else begin
+		    gtk_label_set_text(PGtkLabel(p), pLabel);
+		    gtk_label_set_pattern(PGtkLabel(p), nil);
+		  end;
+		end;
 
   csCheckBox    : gtk_label_set_text(
                     pGtkLabel(pgtkCheckButton(p)^.Toggle_Button.Button.Child),
@@ -2233,7 +2237,7 @@ begin
          ConnectSenderSignal(gObject, 'focus-out-event', @gtkfrmdeactivate);
          end
       else
-         ConnectSenderSignal(gObject, 'activate', @gtkactivateCB);
+        ConnectSenderSignal(gObject, 'activate', @gtkactivateCB);
     end;
 
     LM_ACTIVATEITEM :
@@ -2303,6 +2307,11 @@ begin
           ConnectSenderSignal(gObject, 'focus-in-event', @gtkFocusCB);
           ConnectSenderSignal(gObject, 'focus-out-event', @gtkKillFocusCB);
          end;
+    end;
+    
+    LM_GRABFOCUS:
+    begin
+      ConnectSenderSignal(gObject, 'grab_focus', @gtkActivateCB);
     end;
 
     LM_KEYDOWN,
@@ -2805,11 +2814,12 @@ begin
           SetCallback(LM_CLICKED,Sender);
         End;
 
-        csFixed :
+        csCalendar:
         Begin
-          SetCallback(LM_HSCROLL,Sender);
-          SetCallback(LM_VSCROLL,Sender);
-        end;
+          SetCallback(LM_MONTHCHANGED,Sender);
+          SetCallback(LM_YEARCHANGED,Sender);
+          SetCallback(LM_DAYCHANGED,Sender);
+        End;
 
         csComboBox,csNotebook,csTrackBar :
         Begin
@@ -2824,6 +2834,12 @@ begin
           SetCallback(LM_PASTEFROMCLIP,Sender);
         End;
         
+        csFixed :
+        Begin
+          SetCallback(LM_HSCROLL,Sender);
+          SetCallback(LM_VSCROLL,Sender);
+        end;
+
         csForm:
         Begin
           SetCallback(LM_CONFIGUREEVENT,Sender);
@@ -2831,13 +2847,11 @@ begin
           SetCallBack(LM_Activate,Sender);
         end;
         
-        csCalendar:
+        csLabel:
         Begin
-          SetCallback(LM_MONTHCHANGED,Sender);
-          SetCallback(LM_YEARCHANGED,Sender);
-          SetCallback(LM_DAYCHANGED,Sender);
-        End;
-        
+          SetCallback(LM_GRABFOCUS,Sender);
+        end;
+
         csListview:
         begin
           SetCallback(LM_HSCROLL,Sender);
@@ -3717,7 +3731,6 @@ begin
       P := gtk_label_new(StrTemp);
       gtk_label_set_justify(PGtkLabel(P), GTK_JUSTIFY_LEFT);
       gtk_misc_set_alignment(PGTKMISC(P), 0.0 , 0.0);
-      gtk_signal_connect(p, 'grab_focus', gtk_signal_func(@gtkactivateCB), Sender);
     end;
 
   csListBox :
@@ -5672,7 +5685,11 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.196  2002/09/04 09:32:17  lazarus
+  MG: improved streaming error handling
+
   Revision 1.195  2002/09/03 11:32:49  lazarus
+
   Added shortcut keys to labels
   Support for alphabetically sorting the properties
   Standardize message and add shortcuts ala Kylix
