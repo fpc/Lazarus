@@ -1541,6 +1541,11 @@ type
   TTreeViewOptions = set of TTreeViewOption;
 
   TTreeViewExpandSignType = (tvestPlusMinus, tvestArrow);
+  TTreeViewInsertMarkType = (
+    tvimNone,
+    tvimAsFirstChild, // or as root
+    tvimAsNextSibling,
+    tvimAsPrevSibling);
 
   TCustomTreeView = class(TCustomControl)
   private
@@ -1558,6 +1563,8 @@ type
     FIndent: integer;
     FImageChangeLink: TChangeLink;
     FImages: TCustomImageList;
+    FInsertMarkNode: TTreeNode;
+    FInsertMarkType: TTreeViewInsertMarkType;
     FLastDropTarget: TTreeNode;
     FLastHorzScrollInfo: TScrollInfo;
     FLastVertScrollInfo: TScrollInfo;
@@ -1594,6 +1601,7 @@ type
     FSelectedColor: TColor;
     FSelectedNode: TTreeNode;
     FSortType: TSortType;
+    FStartDragNode: TTreeNode;
     FStateChangeLink: TChangeLink;
     FStateImages: TCustomImageList;
     FStates: TTreeViewStates;
@@ -1644,6 +1652,8 @@ type
     //procedure SetImageList(Value: HImageList; Flags: Integer);
     procedure SetIndent(Value: Integer);
     procedure SetImages(Value: TCustomImageList);
+    procedure SetInsertMarkNode(const AValue: TTreeNode);
+    procedure SetInsertMarkType(const AValue: TTreeViewInsertMarkType);
     procedure SetKeepCollapsedNodes(Value: Boolean);
     procedure SetReadOnly(Value: Boolean);
     procedure SetRightClickSelect(Value: Boolean);
@@ -1700,6 +1710,7 @@ type
     function IsCustomDrawn(Target: TCustomDrawTarget;
       Stage: TCustomDrawStage): Boolean;
     function IsNodeVisible(ANode: TTreeNode): Boolean;
+    function IsInsertMarkVisible: boolean; virtual;
     procedure Change(Node: TTreeNode); dynamic;
     procedure Collapse(Node: TTreeNode); dynamic;
     procedure CreateParams(var Params: TCreateParams); override;
@@ -1786,6 +1797,10 @@ type
     function CustomSort(SortProc: TTreeNodeCompare): Boolean;
     function GetHitTestInfoAt(X, Y: Integer): THitTests;
     function GetNodeAt(X, Y: Integer): TTreeNode;
+    procedure GetInsertMarkAt(X, Y: Integer; var AnInsertMarkNode: TTreeNode;
+                              var AnInsertMarkType: TTreeViewInsertMarkType);
+    procedure SetInsertMark(var AnInsertMarkNode: TTreeNode;
+                            var AnInsertMarkType: TTreeViewInsertMarkType);
     function IsEditing: Boolean;
     procedure BeginUpdate;
     procedure EndUpdate;
@@ -1807,6 +1822,8 @@ type
     property DropTarget: TTreeNode read GetDropTarget write SetDropTarget;
     property ExpandSignType: TTreeViewExpandSignType
       read FExpandSignType write SetExpandSignType;
+    property InsertMarkNode: TTreeNode read FInsertMarkNode write SetInsertMarkNode;
+    property InsertMarkType: TTreeViewInsertMarkType read FInsertMarkType write SetInsertMarkType;
     property KeepCollapsedNodes: boolean
       read GetKeepCollapsedNodes write SetKeepCollapsedNodes;
     property Options: TTreeViewOptions read FOptions write SetOptions;
@@ -1818,6 +1835,9 @@ type
     property TopItem: TTreeNode read GetTopItem write SetTopItem;
     property TreeLineColor: TColor read FTreeLineColor write FTreeLineColor;
   end;
+  
+  
+  { TTreeView }
 
   TTreeView = class(TCustomTreeView)
   published
@@ -2007,6 +2027,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.82  2003/08/21 13:04:10  mattias
+  implemented insert marks for TTreeView
+
   Revision 1.81  2003/08/14 15:31:42  mattias
   started TTabSheet and TPageControl
 

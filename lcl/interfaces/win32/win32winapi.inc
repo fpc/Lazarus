@@ -1462,7 +1462,7 @@ begin
         dec(LeftTop.X,2); 
         ReleaseDC(ParentHandle, DC);
       end;
-      end;
+    end;
   end;
   Left:=LeftTop.X;
   Top:=LeftTop.Y;  
@@ -2419,6 +2419,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.55  2003/08/21 13:04:10  mattias
+  implemented insert marks for TTreeView
+
   Revision 1.54  2003/08/21 06:52:47  mattias
   size fixes from Karl
 

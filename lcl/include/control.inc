@@ -43,8 +43,8 @@ end;
           Threshold: default -1, distance to move before dragging starts
   Returns: Nothing
 
-  Starts the dragging of a control. If the Immidiate flag is set, dragging
-  starts immediate.
+  Starts the dragging of a control. If the Immediate flag is set, dragging
+  starts immediately.
  ------------------------------------------------------------------------------}
 procedure TControl.BeginDrag(Immediate: Boolean; Threshold: Integer);
 var
@@ -649,26 +649,22 @@ procedure TControl.DragCanceled;
 begin
 end;
 
+{------------------------------------------------------------------------------
+       TControl.DoStartDrag
 
-{------------------------------------------------------------------------------}
-{       TControl.DoStartDrag
-}
-{------------------------------------------------------------------------------}
+------------------------------------------------------------------------------}
 procedure TControl.DoStartDrag(var DragObject: TDragObject);
 begin
   if Assigned(FOnStartDrag) then FOnStartDrag(Self, DragObject);
 end;
 
-{------------------------------------------------------------------------------}
-{       TControl.DoStartDrag
-}
-{------------------------------------------------------------------------------}
-Procedure TControl.DoEndDrag(Target: TObject; X,Y : Integer);
+{------------------------------------------------------------------------------
+       TControl.DoEndDrag
+------------------------------------------------------------------------------}
+Procedure TControl.DoEndDrag(Target: TObject; X,Y: Integer);
 Begin
-
+  if Assigned(FOnEndDrag) then FOnEndDrag(Self,Target,X,Y);
 end;
-
-
 
 {------------------------------------------------------------------------------
        TControl.Perform
@@ -2472,6 +2468,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.147  2003/08/21 13:04:10  mattias
+  implemented insert marks for TTreeView
+
   Revision 1.146  2003/08/14 15:31:42  mattias
   started TTabSheet and TPageControl
 

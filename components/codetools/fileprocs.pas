@@ -131,7 +131,9 @@ begin
 end;
 
 procedure CheckIfFileIsExecutable(const AFilename: string);
+{$IFNDEF win32}
 var AText: string;
+{$ENDIF}
 begin
   // TProcess does not report, if a program can not be executed
   // to get good error messages consider the OS

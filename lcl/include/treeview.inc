@@ -1001,6 +1001,7 @@ procedure TTreeNode.Unbind;
 // unbind from parent and neighbor siblings
 var OldIndex, i: integer;
   HigherNode: TTreeNode;
+  TheTreeView: TCustomTreeView;
 begin
   {$IFDEF TREEVIEW_DEBUG}
   writeln('[TTreeNode.Unbind] Self=',HexStr(Cardinal(Self),8),' Self.Text=',Text);
@@ -1010,11 +1011,14 @@ begin
     Owner.ClearCache;
     if FParent=nil then
       Owner.MoveTopLvlNode(Owner.IndexOfTopLvlItem(Self),-1,Self);
-    if Owner.Owner<>nil then begin
-      Owner.Owner.FStates:=Owner.Owner.FStates+[tvsMaxRightNeedsUpdate,
+    TheTreeView:=Owner.Owner;
+    if TheTreeView<>nil then begin
+      TheTreeView.FStates:=TheTreeView.FStates+[tvsMaxRightNeedsUpdate,
         tvsTopsNeedsUpdate,tvsTopItemNeedsUpdate,tvsBottomItemNeedsUpdate];
-      if Owner.Owner.FLastDropTarget=Self then
-        Owner.Owner.FLastDropTarget:=nil;
+      if TheTreeView.FLastDropTarget=Self then
+        TheTreeView.FLastDropTarget:=nil;
+      if TheTreeView.FInsertMarkNode=Self then
+        TheTreeView.FInsertMarkNode:=nil;
     end;
   end;
   UnbindFromMultiSelected;
@@ -3260,6 +3264,76 @@ begin
   end;}
 end;
 
+procedure TCustomTreeView.GetInsertMarkAt(X, Y: Integer;
+  var AnInsertMarkNode: TTreeNode; var AnInsertMarkType: TTreeViewInsertMarkType
+  );
+var
+  ANode: TTreeNode;
+  NodeRect: TRect;
+  NodeMidY: integer;
+begin
+  ANode:=GetNodeAtY(Y);
+  if ANode<>nil then begin
+    AnInsertMarkNode:=ANode;
+    if (X>AnInsertMarkNode.DisplayExpandSignRight) then
+      // insert as first child of pointed node
+      AnInsertMarkType:=tvimAsFirstChild
+    else begin
+      NodeRect:=ANode.DisplayRect(false);
+      NodeMidY:=(NodeRect.Top+NodeRect.Bottom) div 2;
+      if Y>=NodeMidY then begin
+        if ANode.Expanded and ANode.HasChildren then begin
+          // insert as first child of pointed node
+          AnInsertMarkType:=tvimAsFirstChild;
+        end else begin
+          // insert as next sibling of pointed node
+          AnInsertMarkType:=tvimAsNextSibling;
+        end;
+      end else begin
+        AnInsertMarkType:=tvimAsPrevSibling;
+      end;
+    end;
+  end else begin
+    // insert behind all nodes
+    ANode:=Items.GetLastExpandedSubNode;
+    if ANode<>nil then begin
+     AnInsertMarkNode:=ANode;
+     if X>AnInsertMarkNode.DisplayExpandSignRight then
+       // insert as first child of last visible node
+       AnInsertMarkType:=tvimAsFirstChild
+     else
+       // insert as next sibling of last visible node
+       AnInsertMarkType:=tvimAsNextSibling;
+    end else begin
+      // insert as new root
+      AnInsertMarkNode:=nil;
+      AnInsertMarkType:=tvimAsFirstChild;
+    end;
+  end;
+  
+  // normalize
+  if (AnInsertMarkType=tvimAsPrevSibling) and (AnInsertMarkNode<>nil) then begin
+    if (AnInsertMarkNode.GetPrevSibling<>nil) then begin
+      if (AnInsertMarkNode.GetPrevSibling.Expanded=false)
+      and (AnInsertMarkNode.GetPrevSibling.IsVisible) then begin
+        AnInsertMarkNode:=AnInsertMarkNode.GetPrevSibling;
+        AnInsertMarkType:=tvimAsNextSibling;
+      end;
+    end else if (AnInsertMarkNode.Parent<>nil)
+    and (AnInsertMarkNode.IsVisible) then begin
+      AnInsertMarkNode:=AnInsertMarkNode.Parent;
+      AnInsertMarkType:=tvimAsFirstChild;
+    end;
+  end;
+end;
+
+procedure TCustomTreeView.SetInsertMark(var AnInsertMarkNode: TTreeNode;
+  var AnInsertMarkType: TTreeViewInsertMarkType);
+begin
+  InsertMarkNode:=AnInsertMarkNode;
+  InsertMarkType:=AnInsertMarkType;
+end;
+
 function TCustomTreeView.GetHitTestInfoAt(X, Y: Integer): THitTests;
 //var HitTest: TTVHitTestInfo;
 var Node: TTreeNode;
@@ -3927,6 +4001,12 @@ begin
     inherited WndProc(Message);
 end;
 
+function TCustomTreeView.IsInsertMarkVisible: boolean;
+begin
+  Result:=(FInsertMarkType<>tvimNone) and (FInsertMarkNode<>nil)
+           and (FInsertMarkNode.IsVisible);
+end;
+
 procedure TCustomTreeView.DoStartDrag(var DragObject: TDragObject);
 {var
   ImageHandle: HImageList;
@@ -4005,6 +4085,7 @@ var
   a,HalfBorderWidth:integer;
   SpaceRect, DrawRect: TRect;
   Node: TTreeNode;
+  InsertMarkRect: TRect;
 begin
   if [tvsUpdating,tvsPainting]*FStates<>[] then exit;
   Include(FStates,tvsPainting);
@@ -4025,6 +4106,14 @@ begin
       Node:=Node.GetNextVisible;
       //write('[TCustomTreeView.DoPaint] B Node=',HexStr(Cardinal(Node),8));
       //if Node<>nil then writeln(' Node.Text=',Node.Text) else writeln('');
+    end;
+    // draw insert mark for new root node
+    if (InsertMarkType=tvimAsFirstChild)
+    and (Items.Count=0) then begin
+      Pen.Color:=FTreeLineColor;
+      Brush.Color:=FSelectedColor;
+      InsertMarkRect:=Rect(0,0,ClientWidth,2);
+      Rectangle(InsertMarkRect);
     end;
     // draw unused space below nodes
     SpaceRect:=Rect(BorderWidth,BorderWidth,
@@ -4098,14 +4187,17 @@ var
           Canvas.MoveTo(CurMid,VertMid);
           Canvas.LineTo(Result+Indent,VertMid);
         end;
-        if CurNode.GetNextSibling<>nil then begin
+        if (CurNode.GetNextSibling<>nil) then begin
           // draw vertical line to next brother
           Canvas.MoveTo(CurMid,NodeRect.Top);
           Canvas.LineTo(CurMid,NodeRect.Bottom);
         end else if CurNode=Node then begin
           // draw vertical line from top to horizontal line
           Canvas.MoveTo(CurMid,NodeRect.Top);
-          Canvas.LineTo(CurMid,VertMid);
+          if ((InsertMarkNode=Node) and (InsertMarkType=tvimAsNextSibling)) then
+            Canvas.LineTo(CurMid,NodeRect.Bottom-1)
+          else
+            Canvas.LineTo(CurMid,VertMid);
         end;
       end;
       inc(Result,Indent);
@@ -4162,7 +4254,84 @@ var
       end;
     end;
   end;
+  
+  procedure DrawInsertMark;
+  var
+    InsertMarkRect: TRect;
+    x: Integer;
+  begin
+    case InsertMarkType of
+    
+    tvimAsFirstChild:
+      if InsertMarkNode=Node then begin
+        // draw insert mark for new first child
+        with Canvas do begin
+          // draw virtual tree line
+          Pen.Color:=TreeLineColor;
+          Pen.Style:=psDot;
+          x:=Node.DisplayExpandSignRight+Indent div 2;
+          MoveTo(x,NodeRect.Bottom-3);
+          LineTo(x,NodeRect.Bottom-2);
+          x:=Node.DisplayExpandSignRight+Indent;
+          LineTo(x,NodeRect.Bottom-2);
+          Pen.Style:=psSolid;
 
+          // draw virtual rectangle
+          Pen.Color:=TreeLineColor;
+          Brush.Color:=FSelectedColor;
+          InsertMarkRect:=Rect(x,NodeRect.Bottom-3,
+                               NodeRect.Right,NodeRect.Bottom-1);
+          Rectangle(InsertMarkRect);
+        end;
+      end;
+      
+    tvimAsPrevSibling:
+      if InsertMarkNode=Node then begin
+        // draw insert mark for new previous sibling
+        with Canvas do begin
+          // draw virtual tree line
+          Pen.Color:=TreeLineColor;
+          Pen.Style:=psDot;
+          x:=Node.DisplayExpandSignLeft+Indent div 2;
+          MoveTo(x,NodeRect.Top+1);
+          x:=Node.DisplayExpandSignRight;
+          LineTo(x,NodeRect.Top+1);
+          Pen.Style:=psSolid;
+
+          // draw virtual rectangle
+          Pen.Color:=TreeLineColor;
+          Brush.Color:=FSelectedColor;
+          InsertMarkRect:=Rect(x,NodeRect.Top,
+                               NodeRect.Right,NodeRect.Top+2);
+          Rectangle(InsertMarkRect);
+        end;
+      end;
+      
+    tvimAsNextSibling:
+      if InsertMarkNode=Node then begin
+        // draw insert mark for new next sibling
+        with Canvas do begin
+          // draw virtual tree line
+          Pen.Color:=TreeLineColor;
+          Pen.Style:=psDot;
+          x:=Node.DisplayExpandSignLeft+Indent div 2;
+          MoveTo(x,NodeRect.Bottom-3);
+          LineTo(x,NodeRect.Bottom-2);
+          x:=Node.DisplayExpandSignRight;
+          LineTo(x,NodeRect.Bottom-2);
+          Pen.Style:=psSolid;
+
+          // draw virtual rectangle
+          Pen.Color:=TreeLineColor;
+          Brush.Color:=FSelectedColor;
+          InsertMarkRect:=Rect(x,NodeRect.Bottom-3,
+                               NodeRect.Right,NodeRect.Bottom-1);
+          Rectangle(InsertMarkRect);
+        end;
+      end;
+      
+    end;
+  end;
 
 var x, ImgIndex: integer;
   CurBackgroundColor, OldFontColor: TColor;
@@ -4248,6 +4417,8 @@ begin
       MoveTo(NodeRect.Left,NodeRect.Bottom-1);
       LineTo(NodeRect.Right,NodeRect.Bottom-1);
     end;
+    // draw insert mark
+    DrawInsertMark;
   end;
   if Assigned(OnCustomDrawItem) or Assigned(FOnAdvancedCustomDrawItem) then
   begin
@@ -4435,8 +4606,10 @@ begin
         bStartDrag := true;
       end;
     end;
-    if (bStartDrag) then
+    if (bStartDrag) then begin
+      FStartDragNode:=CursorNode;
       Include(fStates, tvsWaitForDragging);
+    end;
     if Button=mbMiddle then begin
       // insert primary selection text
 
@@ -4452,6 +4625,9 @@ begin
     if (Abs(fMouseDownX - X) >= GetSystemMetrics(SM_CXDRAG))
     or (Abs(fMouseDownY - Y) >= GetSystemMetrics(SM_CYDRAG))
     then begin
+      {$IFDEF VerboseDrag}
+      writeln('TCustomTreeView.MouseMove A Begindrag ',Name,':',ClassName,' ');
+      {$ENDIF}
       Exclude(fStates, tvsWaitForDragging);
       BeginDrag(false);
     end;
@@ -4500,6 +4676,29 @@ begin
   end;
   //else SetImageList(0, TVSIL_NORMAL);
   Invalidate;
+end;
+
+procedure TCustomTreeView.SetInsertMarkNode(const AValue: TTreeNode);
+var
+  InvalidateNeeded: Boolean;
+begin
+  if FInsertMarkNode=AValue then exit;
+  InvalidateNeeded:=IsInsertMarkVisible;
+  FInsertMarkNode:=AValue;
+  InvalidateNeeded:=InvalidateNeeded or IsInsertMarkVisible;
+  if InvalidateNeeded then Invalidate;
+end;
+
+procedure TCustomTreeView.SetInsertMarkType(
+  const AValue: TTreeViewInsertMarkType);
+var
+  InvalidateNeeded: Boolean;
+begin
+  if FInsertMarkType=AValue then exit;
+  InvalidateNeeded:=IsInsertMarkVisible;
+  FInsertMarkType:=AValue;
+  InvalidateNeeded:=InvalidateNeeded or IsInsertMarkVisible;
+  if InvalidateNeeded then Invalidate;
 end;
 
 procedure TCustomTreeView.SetStateImages(Value: TCustomImageList);

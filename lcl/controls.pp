@@ -1237,7 +1237,7 @@ var
   
   DragCapture : HWND;
   DragControl : TControl;
-  DragFreeObject : Boolean;
+  DragObjectAutoFree : Boolean;
   DragObject : TDragObject;
   //DragSaveCursor : HCURSOR;
   DragStartPos : TPoint;
@@ -1318,11 +1318,11 @@ end;
 
 
 {DragIntit}
-Procedure DragInit(aDragObject : TDragObject; Immediate : Boolean;
-  Threshold : Integer);
+Procedure DragInit(aDragObject: TDragObject; Immediate: Boolean;
+  Threshold: Integer);
 Begin
   DragObject := ADragObject;
-  DragObject.Dragtarget := nil;
+  DragObject.DragTarget := nil;
   GetCursorPos(DragStartPos);
   DragObject.DragPos := DragStartPos;
   DragCapture := DragObject.Capture;
@@ -1341,7 +1341,7 @@ begin
   ok:=false;
   try
     DragObject := nil;
-    DragFreeObject := False;
+    DragObjectAutoFree := False;
     if Control.fDragKind = dkDrag then
     begin
       Control.DoStartDrag(DragObject);
@@ -1349,7 +1349,7 @@ begin
       if DragObject = nil then
       Begin
         DragObject := TDragControlObject.Create(Control);
-        DragFreeObject := True;
+        DragObjectAutoFree := True;
       End;
     end;
     DragInit(DragObject,Immediate,Threshold);
@@ -1359,7 +1359,6 @@ begin
       DragControl := nil;
   end;
 end;
-
 
 Procedure DragTo(P : TPoint);
 Begin
@@ -1424,8 +1423,8 @@ Begin
     DragControl := nil;
   end;
   DragObject := nil;
-  if DragFreeObject then DragSave.Free;
-  DragFreeObject := False;
+  if DragObjectAutoFree then DragSave.Free;
+  DragObjectAutoFree := False;
 end;
 
 {------------------------------------------------------------------------------
@@ -1636,6 +1635,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.141  2003/08/21 13:04:10  mattias
+  implemented insert marks for TTreeView
+
   Revision 1.140  2003/08/14 15:31:42  mattias
   started TTabSheet and TPageControl
 

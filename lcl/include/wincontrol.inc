@@ -776,7 +776,6 @@ function TWinControl.GetClientRect: TRect;
   end;
 
 var
-  //r: TRect;
   InterfaceWidth, InterfaceHeight: integer;
 begin
   if not HandleAllocated then begin
@@ -2948,6 +2947,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.160  2003/08/21 13:04:10  mattias
+  implemented insert marks for TTreeView
+
   Revision 1.159  2003/08/12 16:12:42  mattias
   reduced output
 
