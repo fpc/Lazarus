@@ -282,6 +282,8 @@ type
     function OnCodeToolBossSearchUsedUnit(const SrcFilename: string;
           const TheUnitName, TheUnitInFilename: string): TCodeBuffer;
     function OnCodeToolBossCheckAbort: boolean;
+    procedure CodeToolBossGetVirtualDirectoryAlias(Sender: TObject;
+          var RealDir: string);
 
     // MessagesView events
     procedure MessagesViewSelectionChanged(sender : TObject);
@@ -1810,20 +1812,25 @@ end;
 procedure TMainIDE.OnSrcNoteBookShowUnitInfo(Sender: TObject);
 var ActiveSrcEdit:TSourceEditor;
   ActiveUnitInfo:TUnitInfo;
-  ShortUnitName, AFilename: string;
+  ShortUnitName, AFilename, FileDir: string;
   ClearIncludedByFile: boolean;
 begin
   GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
   if (ActiveSrcEdit=nil) or (ActiveUnitInfo=nil) then exit;
   ShortUnitName:=ActiveSrcEdit.PageName;
   AFilename:=ActiveUnitInfo.Filename;
+  FileDir:=ExtractFilePath(AFilename);
   ShowUnitInfoDlg(ShortUnitName,
     LazSyntaxHighlighterNames[ActiveUnitInfo.SyntaxHighlighter],
     ActiveUnitInfo.IsPartOfProject, length(ActiveSrcEdit.Source.Text),
     ActiveSrcEdit.Source.Count,
     Project1.RemoveProjectPathFromFilename(AFilename),
     Project1.RemoveProjectPathFromFilename(ActiveUnitInfo.Source.LastIncludedByFile),
-    ClearIncludedByFile);
+    ClearIncludedByFile,
+    CodeToolBoss.GetUnitPathForDirectory(FileDir),
+    CodeToolBoss.GetIncludePathForDirectory(FileDir),
+    CodeToolBoss.GetSrcPathForDirectory(FileDir)
+    );
   if ClearIncludedByFile then
     ActiveUnitInfo.Source.LastIncludedByFile:='';
 end;
@@ -6217,6 +6224,9 @@ var CompilerUnitSearchPath, CompilerUnitLinks: string;
 begin
   FOpenEditorsOnCodeToolChange:=false;
   
+  CodeToolBoss.DefineTree.OnGetVirtualDirectoryAlias:=
+    @CodeToolBossGetVirtualDirectoryAlias;
+  
   CodeToolsOpts.AssignTo(CodeToolBoss);
   if (not FileExists(EnvironmentOptions.CompilerFilename)) then begin
     writeln('');
@@ -6370,6 +6380,13 @@ begin
   if ToolStatus<>itCodeTools then exit;
   Application.ProcessMessages;
   Result:=ToolStatus<>itCodeTools;
+end;
+
+procedure TMainIDE.CodeToolBossGetVirtualDirectoryAlias(Sender: TObject;
+  var RealDir: string);
+begin
+  if Project1<>nil then
+    RealDir:=Project1.ProjectDirectory;
 end;
 
 procedure TMainIDE.SaveSourceEditorChangesToCodeCache(PageIndex: integer);
@@ -7598,6 +7615,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.451  2003/01/10 17:22:38  mattias
+  fixed virtual directory
+
   Revision 1.450  2003/01/06 10:51:40  mattias
   freeing stopped external tools
 

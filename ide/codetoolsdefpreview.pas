@@ -137,7 +137,7 @@ begin
   DefListBox.Items.BeginUpdate;
   if DefineTree<>nil then begin
     DefineTree.ClearCache;
-    ExprEval:=DefineTree.GetDefinesForDirectory(DirectoryLabel.Text);
+    ExprEval:=DefineTree.GetDefinesForDirectory(DirectoryLabel.Text,false);
     if ExprEval<>nil then begin
       for i:=0 to ExprEval.Count-1 do begin
         if i<DefListBox.Items.Count then
