@@ -55,7 +55,7 @@ uses
   MsgView, InputHistory, LazarusIDEStrConsts, BaseDebugManager, Debugger,
   TypInfo, LResources, LazConf, EnvironmentOpts, Compiler,
   SortSelectionDlg, EncloseSelectionDlg, ClipBoardHistory, DiffDialog,
-  SourceEditProcs, SourceMarks;
+  SourceEditProcs, SourceMarks, CharacterMapDlg;
 
 type
   TSourceNoteBook = class;
@@ -240,6 +240,7 @@ type
     procedure SelectLine;
     procedure SelectParagraph;
     function CommentText(const Txt: string; CommentType: TCommentType): string;
+    procedure InsertCharacterFromMap;
     procedure InsertGPLNotice(CommentType: TCommentType);
     procedure InsertLGPLNotice(CommentType: TCommentType);
     procedure InsertUsername;
@@ -1082,6 +1083,9 @@ Begin
   ecSelectParagraph:
     SelectParagraph;
     
+  ecInsertCharacter:
+    InsertCharacterFromMap;
+
   ecInsertGPLNotice:
     InsertGPLNotice(comtDefault);
 
@@ -1319,6 +1323,14 @@ begin
       end;
   end;
   Result:=IDEProcs.CommentText(Txt,CommentType);
+end;
+
+procedure TSourceEditor.InsertCharacterFromMap;
+var
+  NewChars: string;
+begin
+  if not ShowCharacterMap(NewChars) then exit;
+  FEditor.SelText:=NewChars;
 end;
 
 procedure TSourceEditor.InsertGPLNotice(CommentType: TCommentType);

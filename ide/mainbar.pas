@@ -225,6 +225,7 @@ type
     itmEditSelectCodeBlock: TMenuItem;
     itmEditSelectLine: TMenuItem;
     itmEditSelectParagraph: TMenuItem;
+    itmEditInsertCharacter: TMenuItem;
     itmEditInsertText: TMenuItem;
     itmEditCompleteCode: TMenuItem;
 
@@ -749,6 +750,11 @@ begin
     itmEditSelectParagraph.Caption := lisMenuSelectParagraph;
     itmEditSelect.Add(itmEditSelectParagraph);
   end;
+
+  itmEditInsertCharacter := TMenuItem.Create(Self);
+  itmEditInsertCharacter.Name:='itmEditInsertCharacter';
+  itmEditInsertCharacter.Caption := lisMenuInsertCharacter;
+  mnuEdit.Add(itmEditInsertCharacter);
 
   itmEditInsertText := TMenuItem.Create(Self);
   itmEditInsertText.Name:='itmEditInsertText';

@@ -137,6 +137,7 @@ resourcestring
   lisMenuSelectCodeBlock = 'Select code block';
   lisMenuSelectLine = 'Select line';
   lisMenuSelectParagraph = 'Select paragraph';
+  lisMenuInsertCharacter = 'Insert from Character Map';
   lisMenuInsertText = 'Insert text';
   lisMenuInsertCVSKeyword = 'CVS keyword';
   lisMenuInsertGeneral = 'General';
@@ -1084,6 +1085,7 @@ resourcestring
 
   // edit menu
   srkmecSelectionTabs2Spaces  = 'Convert tabs to spaces in selection';
+  srkmecInsertCharacter       = 'Insert from Charactermap';
   srkmecInsertGPLNotice       = 'Insert GPL notice';
   srkmecInsertLGPLNotice      = 'Insert LGPL notice';
   srkmecInsertUserName        = 'Insert current username';
@@ -2212,6 +2214,7 @@ resourcestring
   lisMenuTemplateContents = 'Contents';
   lisMenuTemplateTutorial = 'Tutorial';
   lisMenuTemplateAbout = 'About';
+  lisCharacterMap = 'Character Map';
 
 implementation
 end.

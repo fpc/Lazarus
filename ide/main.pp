@@ -131,6 +131,7 @@ type
     procedure mnuEditSelectLineClick(Sender: TObject);
     procedure mnuEditSelectParagraphClick(Sender: TObject);
     procedure mnuEditCompleteCodeClicked(Sender: TObject);
+    procedure mnuEditInsertCharacterClicked(Sender: TObject);
 
     // edit->insert text->CVS keyword
     procedure mnuEditInsertCVSAuthorClick(Sender: TObject);
@@ -1444,6 +1445,7 @@ begin
   itmEditSelectLine.OnClick:=@mnuEditSelectLineClick;
   itmEditSelectParagraph.OnClick:=@mnuEditSelectParagraphClick;
   itmEditCompleteCode.OnClick:=@mnuEditCompleteCodeClicked;
+  itmEditInsertCharacter.OnClick:=@mnuEditInsertCharacterClicked;
 
   // insert text->CVS keyword
   itmEditInsertCVSAuthor.OnClick:=@mnuEditInsertCVSAuthorClick;
@@ -9287,6 +9289,11 @@ begin
   DoCompleteCodeAtCursor;
 end;
 
+procedure TMainIDE.mnuEditInsertCharacterClicked(Sender: TObject);
+begin
+  DoEditMenuCommand(ecInsertCharacter);
+end;
+
 procedure TMainIDE.mnuEditInsertCVSAuthorClick(Sender: TObject);
 begin
   DoEditMenuCommand(ecInsertCVSAuthor);
@@ -9426,6 +9433,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.640  2003/08/18 18:07:53  mattias
+  implemented character map
+
   Revision 1.639  2003/08/18 10:02:36  mattias
   fixed win32 lazconf and improved enclose selection
 

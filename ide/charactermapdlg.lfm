@@ -1,0 +1,761 @@
+object CharacterMapDialog: TCharacterMapDialog
+  CAPTION = 'CharacterMapDialog'
+  CLIENTHEIGHT = 405
+  CLIENTWIDTH = 412
+  KEYPREVIEW = True
+  ONCREATE = CharacterMapDialogCREATE
+  ONDESTROY = CharacterMapDialogDESTROY
+  ONKEYDOWN = CharacterMapDialogKEYDOWN
+  POSITION = poscreencenter
+  HORZSCROLLBAR.PAGE = 413
+  VERTSCROLLBAR.PAGE = 406
+  LEFT = 379
+  HEIGHT = 405
+  TOP = 278
+  WIDTH = 412
+  object OkButton: TBUTTON
+    ANCHORS = [akleft, akbottom]
+    MODALRESULT = 1
+    CAPTION = 'Ok'
+    TABSTOP = True
+    TABORDER = 0
+    LEFT = 112
+    HEIGHT = 25
+    TOP = 374
+    WIDTH = 75
+  end
+  object CancelButton: TBUTTON
+    ANCHORS = [akleft, akbottom]
+    MODALRESULT = 2
+    CAPTION = 'Cancel'
+    TABSTOP = True
+    TABORDER = 1
+    LEFT = 224
+    HEIGHT = 25
+    TOP = 374
+    WIDTH = 75
+  end
+  object CharactersGroupbox: TGROUPBOX
+    ANCHORS = [aktop, akleft, akright, akbottom]
+    CAPTION = 'Characters'
+    CLIENTHEIGHT = 271
+    CLIENTWIDTH = 393
+    PARENTCTL3D = False
+    TABORDER = 2
+    LEFT = 8
+    HEIGHT = 288
+    TOP = 8
+    WIDTH = 397
+    object CharMapSynedit: TSYNEDIT
+      ALIGN = altop
+      ANCHORS = [aktop, akleft, akright, akbottom]
+      COLOR = 16777215
+      FONT.HEIGHT = -15
+      FONT.NAME = 'courier'
+      HEIGHT = 248
+      NAME = 'CharMapSynedit'
+      PARENTCTL3D = False
+      TABORDER = 0
+      WIDTH = 393
+      ONMOUSEDOWN = CharMapSyneditMOUSEDOWN
+      ONMOUSEMOVE = CharMapSyneditMOUSEMOVE
+      BOOKMARKOPTIONS.ONCHANGE = nil
+      GUTTER.VISIBLE = False
+      GUTTER.ONCHANGE = nil
+      KEYSTROKES = <      
+        item
+          COMMAND = 3
+          SHORTCUT = 38
+        end      
+        item
+          COMMAND = 103
+          SHORTCUT = 8230
+        end      
+        item
+          COMMAND = 211
+          SHORTCUT = 16422
+        end      
+        item
+          COMMAND = 4
+          SHORTCUT = 40
+        end      
+        item
+          COMMAND = 104
+          SHORTCUT = 8232
+        end      
+        item
+          COMMAND = 212
+          SHORTCUT = 16424
+        end      
+        item
+          COMMAND = 1
+          SHORTCUT = 37
+        end      
+        item
+          COMMAND = 101
+          SHORTCUT = 8229
+        end      
+        item
+          COMMAND = 5
+          SHORTCUT = 16421
+        end      
+        item
+          COMMAND = 105
+          SHORTCUT = 24613
+        end      
+        item
+          COMMAND = 2
+          SHORTCUT = 39
+        end      
+        item
+          COMMAND = 102
+          SHORTCUT = 8231
+        end      
+        item
+          COMMAND = 6
+          SHORTCUT = 16423
+        end      
+        item
+          COMMAND = 106
+          SHORTCUT = 24615
+        end      
+        item
+          COMMAND = 10
+          SHORTCUT = 34
+        end      
+        item
+          COMMAND = 110
+          SHORTCUT = 8226
+        end      
+        item
+          COMMAND = 14
+          SHORTCUT = 16418
+        end      
+        item
+          COMMAND = 114
+          SHORTCUT = 24610
+        end      
+        item
+          COMMAND = 9
+          SHORTCUT = 33
+        end      
+        item
+          COMMAND = 109
+          SHORTCUT = 8225
+        end      
+        item
+          COMMAND = 13
+          SHORTCUT = 16417
+        end      
+        item
+          COMMAND = 113
+          SHORTCUT = 24609
+        end      
+        item
+          COMMAND = 7
+          SHORTCUT = 36
+        end      
+        item
+          COMMAND = 107
+          SHORTCUT = 8228
+        end      
+        item
+          COMMAND = 15
+          SHORTCUT = 16420
+        end      
+        item
+          COMMAND = 115
+          SHORTCUT = 24612
+        end      
+        item
+          COMMAND = 8
+          SHORTCUT = 35
+        end      
+        item
+          COMMAND = 108
+          SHORTCUT = 8227
+        end      
+        item
+          COMMAND = 16
+          SHORTCUT = 16419
+        end      
+        item
+          COMMAND = 116
+          SHORTCUT = 24611
+        end      
+        item
+          COMMAND = 223
+          SHORTCUT = 45
+        end      
+        item
+          COMMAND = 201
+          SHORTCUT = 16429
+        end      
+        item
+          COMMAND = 604
+          SHORTCUT = 8237
+        end      
+        item
+          COMMAND = 502
+          SHORTCUT = 46
+        end      
+        item
+          COMMAND = 603
+          SHORTCUT = 8238
+        end      
+        item
+          COMMAND = 501
+          SHORTCUT = 8
+        end      
+        item
+          COMMAND = 501
+          SHORTCUT = 8200
+        end      
+        item
+          COMMAND = 504
+          SHORTCUT = 16392
+        end      
+        item
+          COMMAND = 601
+          SHORTCUT = 32776
+        end      
+        item
+          COMMAND = 602
+          SHORTCUT = 40968
+        end      
+        item
+          COMMAND = 509
+          SHORTCUT = 13
+        end      
+        item
+          COMMAND = 199
+          SHORTCUT = 16449
+        end      
+        item
+          COMMAND = 201
+          SHORTCUT = 16451
+        end      
+        item
+          COMMAND = 610
+          SHORTCUT = 24649
+        end      
+        item
+          COMMAND = 509
+          SHORTCUT = 16461
+        end      
+        item
+          COMMAND = 510
+          SHORTCUT = 16462
+        end      
+        item
+          COMMAND = 503
+          SHORTCUT = 16468
+        end      
+        item
+          COMMAND = 611
+          SHORTCUT = 24661
+        end      
+        item
+          COMMAND = 604
+          SHORTCUT = 16470
+        end      
+        item
+          COMMAND = 603
+          SHORTCUT = 16472
+        end      
+        item
+          COMMAND = 507
+          SHORTCUT = 16473
+        end      
+        item
+          COMMAND = 506
+          SHORTCUT = 24665
+        end      
+        item
+          COMMAND = 601
+          SHORTCUT = 16474
+        end      
+        item
+          COMMAND = 602
+          SHORTCUT = 24666
+        end      
+        item
+          COMMAND = 301
+          SHORTCUT = 16432
+        end      
+        item
+          COMMAND = 302
+          SHORTCUT = 16433
+        end      
+        item
+          COMMAND = 303
+          SHORTCUT = 16434
+        end      
+        item
+          COMMAND = 304
+          SHORTCUT = 16435
+        end      
+        item
+          COMMAND = 305
+          SHORTCUT = 16436
+        end      
+        item
+          COMMAND = 306
+          SHORTCUT = 16437
+        end      
+        item
+          COMMAND = 307
+          SHORTCUT = 16438
+        end      
+        item
+          COMMAND = 308
+          SHORTCUT = 16439
+        end      
+        item
+          COMMAND = 309
+          SHORTCUT = 16440
+        end      
+        item
+          COMMAND = 310
+          SHORTCUT = 16441
+        end      
+        item
+          COMMAND = 351
+          SHORTCUT = 24624
+        end      
+        item
+          COMMAND = 352
+          SHORTCUT = 24625
+        end      
+        item
+          COMMAND = 353
+          SHORTCUT = 24626
+        end      
+        item
+          COMMAND = 354
+          SHORTCUT = 24627
+        end      
+        item
+          COMMAND = 355
+          SHORTCUT = 24628
+        end      
+        item
+          COMMAND = 356
+          SHORTCUT = 24629
+        end      
+        item
+          COMMAND = 357
+          SHORTCUT = 24630
+        end      
+        item
+          COMMAND = 358
+          SHORTCUT = 24631
+        end      
+        item
+          COMMAND = 359
+          SHORTCUT = 24632
+        end      
+        item
+          COMMAND = 360
+          SHORTCUT = 24633
+        end      
+        item
+          COMMAND = 231
+          SHORTCUT = 24654
+        end      
+        item
+          COMMAND = 232
+          SHORTCUT = 24643
+        end      
+        item
+          COMMAND = 233
+          SHORTCUT = 24652
+        end      
+        item
+          COMMAND = 612
+          SHORTCUT = 9
+        end      
+        item
+          COMMAND = 613
+          SHORTCUT = 8201
+        end      
+        item
+          COMMAND = 250
+          SHORTCUT = 24642
+        end>
+      LINES.Strings = (
+        'CharMapSynedit'
+      )
+      OPTIONS = [eoautoindent, eonocaret, eonoselection, eoscrollpasteol, eoshowscrollhint, eosmarttabs, eotabstospaces, eotrimtrailingspaces]
+      READONLY = True
+      SELECTEDCOLOR.ONCHANGE = nil
+      CURSOR = 65532
+      HEIGHT = 248
+      WIDTH = 393
+    end
+    object CharInfoLabel: TLABEL
+      ALIGN = albottom
+      ANCHORS = [akleft, akright, akbottom]
+      CAPTION = 'CharInfoLabel'
+      LAYOUT = tltop
+      HEIGHT = 20
+      TOP = 251
+      WIDTH = 393
+    end
+  end
+  object TextGroupbox: TGROUPBOX
+    ANCHORS = [akleft, akright, akbottom]
+    CAPTION = 'Text'
+    CLIENTHEIGHT = 53
+    CLIENTWIDTH = 393
+    PARENTCTL3D = False
+    TABORDER = 3
+    LEFT = 8
+    HEIGHT = 70
+    TOP = 296
+    WIDTH = 397
+    object TextSynedit: TSYNEDIT
+      ALIGN = alclient
+      COLOR = 16777215
+      FONT.HEIGHT = -15
+      FONT.NAME = 'courier'
+      HEIGHT = 53
+      NAME = 'TextSynedit'
+      PARENTCTL3D = False
+      TABORDER = 0
+      WIDTH = 393
+      BOOKMARKOPTIONS.ONCHANGE = nil
+      GUTTER.VISIBLE = False
+      GUTTER.ONCHANGE = nil
+      KEYSTROKES = <      
+        item
+          COMMAND = 3
+          SHORTCUT = 38
+        end      
+        item
+          COMMAND = 103
+          SHORTCUT = 8230
+        end      
+        item
+          COMMAND = 211
+          SHORTCUT = 16422
+        end      
+        item
+          COMMAND = 4
+          SHORTCUT = 40
+        end      
+        item
+          COMMAND = 104
+          SHORTCUT = 8232
+        end      
+        item
+          COMMAND = 212
+          SHORTCUT = 16424
+        end      
+        item
+          COMMAND = 1
+          SHORTCUT = 37
+        end      
+        item
+          COMMAND = 101
+          SHORTCUT = 8229
+        end      
+        item
+          COMMAND = 5
+          SHORTCUT = 16421
+        end      
+        item
+          COMMAND = 105
+          SHORTCUT = 24613
+        end      
+        item
+          COMMAND = 2
+          SHORTCUT = 39
+        end      
+        item
+          COMMAND = 102
+          SHORTCUT = 8231
+        end      
+        item
+          COMMAND = 6
+          SHORTCUT = 16423
+        end      
+        item
+          COMMAND = 106
+          SHORTCUT = 24615
+        end      
+        item
+          COMMAND = 10
+          SHORTCUT = 34
+        end      
+        item
+          COMMAND = 110
+          SHORTCUT = 8226
+        end      
+        item
+          COMMAND = 14
+          SHORTCUT = 16418
+        end      
+        item
+          COMMAND = 114
+          SHORTCUT = 24610
+        end      
+        item
+          COMMAND = 9
+          SHORTCUT = 33
+        end      
+        item
+          COMMAND = 109
+          SHORTCUT = 8225
+        end      
+        item
+          COMMAND = 13
+          SHORTCUT = 16417
+        end      
+        item
+          COMMAND = 113
+          SHORTCUT = 24609
+        end      
+        item
+          COMMAND = 7
+          SHORTCUT = 36
+        end      
+        item
+          COMMAND = 107
+          SHORTCUT = 8228
+        end      
+        item
+          COMMAND = 15
+          SHORTCUT = 16420
+        end      
+        item
+          COMMAND = 115
+          SHORTCUT = 24612
+        end      
+        item
+          COMMAND = 8
+          SHORTCUT = 35
+        end      
+        item
+          COMMAND = 108
+          SHORTCUT = 8227
+        end      
+        item
+          COMMAND = 16
+          SHORTCUT = 16419
+        end      
+        item
+          COMMAND = 116
+          SHORTCUT = 24611
+        end      
+        item
+          COMMAND = 223
+          SHORTCUT = 45
+        end      
+        item
+          COMMAND = 201
+          SHORTCUT = 16429
+        end      
+        item
+          COMMAND = 604
+          SHORTCUT = 8237
+        end      
+        item
+          COMMAND = 502
+          SHORTCUT = 46
+        end      
+        item
+          COMMAND = 603
+          SHORTCUT = 8238
+        end      
+        item
+          COMMAND = 501
+          SHORTCUT = 8
+        end      
+        item
+          COMMAND = 501
+          SHORTCUT = 8200
+        end      
+        item
+          COMMAND = 504
+          SHORTCUT = 16392
+        end      
+        item
+          COMMAND = 601
+          SHORTCUT = 32776
+        end      
+        item
+          COMMAND = 602
+          SHORTCUT = 40968
+        end      
+        item
+          COMMAND = 509
+          SHORTCUT = 13
+        end      
+        item
+          COMMAND = 199
+          SHORTCUT = 16449
+        end      
+        item
+          COMMAND = 201
+          SHORTCUT = 16451
+        end      
+        item
+          COMMAND = 610
+          SHORTCUT = 24649
+        end      
+        item
+          COMMAND = 509
+          SHORTCUT = 16461
+        end      
+        item
+          COMMAND = 510
+          SHORTCUT = 16462
+        end      
+        item
+          COMMAND = 503
+          SHORTCUT = 16468
+        end      
+        item
+          COMMAND = 611
+          SHORTCUT = 24661
+        end      
+        item
+          COMMAND = 604
+          SHORTCUT = 16470
+        end      
+        item
+          COMMAND = 603
+          SHORTCUT = 16472
+        end      
+        item
+          COMMAND = 507
+          SHORTCUT = 16473
+        end      
+        item
+          COMMAND = 506
+          SHORTCUT = 24665
+        end      
+        item
+          COMMAND = 601
+          SHORTCUT = 16474
+        end      
+        item
+          COMMAND = 602
+          SHORTCUT = 24666
+        end      
+        item
+          COMMAND = 301
+          SHORTCUT = 16432
+        end      
+        item
+          COMMAND = 302
+          SHORTCUT = 16433
+        end      
+        item
+          COMMAND = 303
+          SHORTCUT = 16434
+        end      
+        item
+          COMMAND = 304
+          SHORTCUT = 16435
+        end      
+        item
+          COMMAND = 305
+          SHORTCUT = 16436
+        end      
+        item
+          COMMAND = 306
+          SHORTCUT = 16437
+        end      
+        item
+          COMMAND = 307
+          SHORTCUT = 16438
+        end      
+        item
+          COMMAND = 308
+          SHORTCUT = 16439
+        end      
+        item
+          COMMAND = 309
+          SHORTCUT = 16440
+        end      
+        item
+          COMMAND = 310
+          SHORTCUT = 16441
+        end      
+        item
+          COMMAND = 351
+          SHORTCUT = 24624
+        end      
+        item
+          COMMAND = 352
+          SHORTCUT = 24625
+        end      
+        item
+          COMMAND = 353
+          SHORTCUT = 24626
+        end      
+        item
+          COMMAND = 354
+          SHORTCUT = 24627
+        end      
+        item
+          COMMAND = 355
+          SHORTCUT = 24628
+        end      
+        item
+          COMMAND = 356
+          SHORTCUT = 24629
+        end      
+        item
+          COMMAND = 357
+          SHORTCUT = 24630
+        end      
+        item
+          COMMAND = 358
+          SHORTCUT = 24631
+        end      
+        item
+          COMMAND = 359
+          SHORTCUT = 24632
+        end      
+        item
+          COMMAND = 360
+          SHORTCUT = 24633
+        end      
+        item
+          COMMAND = 231
+          SHORTCUT = 24654
+        end      
+        item
+          COMMAND = 232
+          SHORTCUT = 24643
+        end      
+        item
+          COMMAND = 233
+          SHORTCUT = 24652
+        end      
+        item
+          COMMAND = 612
+          SHORTCUT = 9
+        end      
+        item
+          COMMAND = 613
+          SHORTCUT = 8201
+        end      
+        item
+          COMMAND = 250
+          SHORTCUT = 24642
+        end>
+      LINES.Strings = (
+        'TextSynedit'
+      )
+      OPTIONS = [eoautoindent, eobrackethighlight, eodragdropediting, eoscrollpasteol, eoshowscrollhint, eosmarttabs, eotabstospaces, eotrimtrailingspaces]
+      SELECTEDCOLOR.ONCHANGE = nil
+      CURSOR = 65532
+      HEIGHT = 53
+      WIDTH = 393
+    end
+  end
+end

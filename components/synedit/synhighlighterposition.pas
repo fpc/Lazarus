@@ -54,7 +54,7 @@ type
     fTokenEnd: LongInt; // end of current token
     fTextAttri: TSynHighlighterAttributes;
     fTokenPos: Integer;
-    FTokenID: integer;
+    fTokenArrayPos: integer;
     FTokenKind: TtkTokenKind;
     fTokens: TList; // list of PPositionTokens
     function GetTokens(TheLineNumber: integer): PPositionTokens;
@@ -227,13 +227,13 @@ begin
     fTokenKind := tkNone;
     exit;
   end;
-  inc(fTokenID);
+  inc(fTokenArrayPos);
   p:=Tokens[fLineNumber];
-  if (p<>nil) and (p^.Count>fTokenID) then begin
-    fTokenEnd := p^.Tokens[fTokenID].Column+1;
+  if (p<>nil) and (p^.Count>fTokenArrayPos) then begin
+    fTokenKind := p^.Tokens[fTokenArrayPos].Kind;
+    fTokenEnd := p^.Tokens[fTokenArrayPos].Column+1;
     if fTokenEnd>fLineLen+1 then
       fTokenEnd := fLineLen+1;
-    fTokenKind := p^.Tokens[fTokenID].Kind;
     if fTokenEnd=fTokenPos then
       Next;
   end else begin
@@ -255,7 +255,7 @@ begin
   fLine := NewValue;
   fLineLen := length(fLine);
   fLineNumber := LineNumber;
-  FTokenID := 0;
+  fTokenArrayPos := 0;
   fTokenPos := 1;
   p:=Tokens[fLineNumber];
   if p<>nil then begin
@@ -292,6 +292,7 @@ var
   p: PPositionTokens;
   TokenIndex, TokenCount: integer;
 begin
+  if Col<1 then exit;
   // fill up lines
   while (Line>=fTokens.Count) do fTokens.Add(nil);
   // resize Token array

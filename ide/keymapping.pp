@@ -90,19 +90,20 @@ const
   ecSelectParagraph      = ecUserFirst + 60;
   
   // insert text
-  ecInsertGPLNotice      = ecUserFirst + 80;
-  ecInsertLGPLNotice     = ecUserFirst + 81;
-  ecInsertUserName       = ecUserFirst + 82;
-  ecInsertDateTime       = ecUserFirst + 83;
-  ecInsertChangeLogEntry = ecUserFirst + 84;
-  ecInsertCVSAuthor      = ecUserFirst + 85;
-  ecInsertCVSDate        = ecUserFirst + 86;
-  ecInsertCVSHeader      = ecUserFirst + 87;
-  ecInsertCVSID          = ecUserFirst + 88;
-  ecInsertCVSLog         = ecUserFirst + 89;
-  ecInsertCVSName        = ecUserFirst + 90;
-  ecInsertCVSRevision    = ecUserFirst + 91;
-  ecInsertCVSSource      = ecUserFirst + 92;
+  ecInsertCharacter      = ecUserFirst + 80;
+  ecInsertGPLNotice      = ecUserFirst + 81;
+  ecInsertLGPLNotice     = ecUserFirst + 82;
+  ecInsertUserName       = ecUserFirst + 83;
+  ecInsertDateTime       = ecUserFirst + 84;
+  ecInsertChangeLogEntry = ecUserFirst + 85;
+  ecInsertCVSAuthor      = ecUserFirst + 86;
+  ecInsertCVSDate        = ecUserFirst + 87;
+  ecInsertCVSHeader      = ecUserFirst + 88;
+  ecInsertCVSID          = ecUserFirst + 89;
+  ecInsertCVSLog         = ecUserFirst + 90;
+  ecInsertCVSName        = ecUserFirst + 91;
+  ecInsertCVSRevision    = ecUserFirst + 92;
+  ecInsertCVSSource      = ecUserFirst + 93;
 
   // codetools
   ecWordCompletion       = ecUserFirst + 100;
@@ -556,6 +557,7 @@ begin
     ecSelectCodeBlock       : Result:= lismenuselectcodeblock;
     ecSelectLine            : Result:= lismenuselectline;
     ecSelectParagraph       : Result:= lismenuselectparagraph;
+    ecInsertCharacter       : Result:= srkmecInsertCharacter;
     ecInsertGPLNotice       : Result:= srkmecInsertGPLNotice;
     ecInsertLGPLNotice      : Result:= srkmecInsertLGPLNotice;
     ecInsertUserName        : Result:= srkmecInsertUserName;
@@ -1335,6 +1337,7 @@ begin
   Add(C,'Delete whole text',ecClearAll,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Break line and move cursor',ecLineBreak,VK_RETURN,[],VK_UNKNOWN,[]);
   Add(C,'Break line, leave cursor',ecInsertLine,VK_N,[ssCtrl],VK_UNKNOWN,[]);
+  Add(C,'Insert from Character Map',ecInsertCharacter,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Insert GPL notice',ecInsertGPLNotice,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Insert LGPL notice',ecInsertLGPLNotice,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Insert username',ecInsertUserName,VK_UNKNOWN,[],VK_UNKNOWN,[]);
