@@ -34,8 +34,10 @@ begin
   // get the interface based item list
   NewStrings:= TStrings(Pointer(CNSendMessage(LM_GETITEMS, Self, nil)));
   // then delete internal list
-  if FItems<>NewStrings then
+  if (FItems<>NewStrings) and (FItems<>nil) then begin
+    NewStrings.Assign(FItems);
     FItems.Free;
+  end;
   // and use the interface based list
   FItems:= NewStrings;
 
@@ -721,6 +723,9 @@ end;
 
 {
   $Log$
+  Revision 1.21  2002/11/15 23:40:40  mattias
+  added combobox createhandle old list assign
+
   Revision 1.20  2002/10/05 10:37:21  lazarus
   MG: fixed TComboBox.ItemIndex on CreateWnd
 
