@@ -15,6 +15,7 @@ unit editoroptions;
    - Resizing
    - SetSynEditSettings
    - nicer TColorButton
+   - create LFM file
 }
 
 {$mode objfpc}
@@ -33,7 +34,7 @@ uses
 {$else}
   mwcustomedit, mwPasSyn, mwHighlighter,
 {$endif}
-  XMLCfg, CodeTemplateDialog;
+  XMLCfg, CodeTemplateDialog, KeyMapping;
 
 const
   AdditionalHiglightAttributes : array[0..4] of string = (
@@ -79,11 +80,14 @@ type
     fGutterColor:TColor;
     fGutterWidth:integer;
     fRightMargin:integer;
+    fRightMarginColor:TColor;
     fEditorFont:Ansistring;
     fEditorFontHeight:integer;
     fExtraLineSpacing:integer;
 
     // Key Mappings options
+    fKeyMappingScheme:AnsiString;
+    fKeyMap:TKeyCommandRelationList;
 
     // Color options
     fColorScheme:Ansistring;
@@ -119,9 +123,11 @@ type
 
   published
     // general options
-    property SynEditOptions:TSynEditorOptions read fSynEditOptions write fSynEditOptions
-       default SYNEDIT_DEFAULT_OPTIONS;
-    property UndoAfterSave:boolean read fUndoAfterSave write fUndoAfterSave default true;
+    property SynEditOptions:TSynEditorOptions
+        read fSynEditOptions write fSynEditOptions
+        default SYNEDIT_DEFAULT_OPTIONS;
+    property UndoAfterSave:boolean
+        read fUndoAfterSave write fUndoAfterSave default true;
     property DoubleClickLine:boolean
         read fDoubleClickLine write fDoubleClickLine default false;
     property FindTextAtCursor:boolean
@@ -133,23 +139,30 @@ type
     property BlockIndent:integer read fBlockIndent write fBlockIndent default 2;
     property UndoLimit:integer read fUndoLimit write fUndoLimit default 32767;
     property TabWidths:integer read fTabWidths write fTabWidths default 8;
-    property SyntaxExtensions:Ansistring read fSyntaxExtensions write fSyntaxExtensions;
+    property SyntaxExtensions:Ansistring
+        read fSyntaxExtensions write fSyntaxExtensions;
 
     // Display options
     property VisibleRightMargin:boolean
         read fVisibleRightMargin write fVisibleRightMargin default true;
-    property VisibleGutter:boolean read fVisibleGutter write fVisibleGutter default true;
+    property VisibleGutter:boolean
+        read fVisibleGutter write fVisibleGutter default true;
     property ShowLineNumbers:boolean
         read fShowLineNumbers write fShowLineNumbers default false;
     property GutterColor:TColor read fGutterColor write fGutterColor default clBtnFace;
     property GutterWidth:integer read fGutterWidth write fGutterWidth default 30;
     property RightMargin:integer read fRightMargin write fRightMargin default 80;
+    property RightMarginColor:integer 
+        read fRightMarginColor write fRightMarginColor default clBtnFace;
     property EditorFont:Ansistring read fEditorFont write fEditorFont;
     property EditorFontHeight:integer read fEditorFontHeight write FEditorFontHeight;
     property ExtraLineSpacing:integer
         read fExtraLineSpacing write fExtraLineSpacing default 0;
 
     // Key Mappings
+    property KeyMappingScheme:Ansistring
+       read fKeyMappingScheme write fKeyMappingScheme;
+    property KeyMap:TKeyCommandRelationList read fKeyMap;
 
     // Color options
     property ColorScheme:Ansistring read fColorScheme write fColorScheme;
@@ -242,6 +255,8 @@ type
     GutterWidthLabel:TLabel;
     RightMarginComboBox:TComboBox;
     RightMarginLabel:TLabel;
+    RightMarginColorButton:TColorButton;
+    RightMarginColorLabel:TLabel;
     EditorFontGroupBox:TGroupBox;
     EditorFontComboBox:TComboBox;
     EditorFontButton:TButton;
@@ -252,7 +267,11 @@ type
     ExtraLineSpacingComboBox:TComboBox;
     DisplayPreview:TPreviewEditor;
 
-    // Key Mappings options
+    // Key Mappings
+    KeyMappingSchemeLabel:TLabel;
+    KeyMappingSchemeComboBox:TComboBox;
+    KeyMappingHelpLabel:TLabel;
+    KeyMappingListBox:TListBox;
 
     // Color options
     ColorSchemeComboBox:TComboBox;
@@ -308,6 +327,10 @@ type
     // display
     procedure EditorFontButtonClick(Sender:TObject);
 
+    // key mapping
+    procedure KeyMappingListBoxMouseUp(Sender:TObject;
+       Button:TMouseButton;  Shift:TShiftState;  X,Y:integer);
+
     // color
     procedure ColorElementListBoxMouseUp(Sender:TObject;
        Button:TMouseButton;  Shift:TShiftState;  X,Y:integer);
@@ -339,6 +362,8 @@ type
     procedure SetupCodeInsightPage;
     procedure SetComboBoxText(AComboBox:TComboBox;AText:AnsiString);
     procedure FillCodeTemplateListBox;
+    function KeyMappingRelationToString(Index:integer):AnsiString;
+    procedure FillKeyMappingListBox;
 
     procedure ShowCurAttribute;
     procedure FindCurHighlightElement;
@@ -420,13 +445,15 @@ begin
 
   // set defaults
 
-  // general options
+  // General options
   fSyntaxExtensions:='pp;inc;lfm;lrs;pas;dpr;dfm;dpk';
 
   // Display options
   fEditorFont:='courier';
 
-  // Key Mappings options
+  // Key Mappings
+  fKeyMappingScheme:='default';
+  fKeyMap:=TKeyCommandRelationList.Create;
 
   // Color options
   fColorScheme:='Default';
@@ -525,6 +552,9 @@ begin
     XMLConfig.GetValue('EditorOptions/Display/GutterWidth',30);
   fRightMargin:=
     XMLConfig.GetValue('EditorOptions/Display/RightMargin',80);
+  fRightMarginColor:=
+    XMLConfig.GetValue('EditorOptions/Display/VisibleRightMarginColor'
+   ,clBtnFace);
   fEditorFont:=
     XMLConfig.GetValue('EditorOptions/Display/EditorFont','courier');
   fEditorFontHeight:=
@@ -533,6 +563,10 @@ begin
     XMLConfig.GetValue('EditorOptions/Display/ExtraLineSpacing',1);
 
   // Key Mappings options
+  fKeyMappingScheme:=
+    XMLConfig.GetValue('EditorOptions/KeyMapping/Scheme',fKeyMappingScheme);
+  fKeyMap.LoadFromXMLConfig(XMLConfig
+    ,'EditorOptions/KeyMapping/'+fKeyMappingScheme+'/');
 
   // Color options
   fColorScheme:=
@@ -618,6 +652,7 @@ begin
   XMLConfig.GetValue('EditorOptions/Display/GutterColor',fGutterColor);
   XMLConfig.SetValue('EditorOptions/Display/GutterWidth',fGutterWidth);
   XMLConfig.SetValue('EditorOptions/Display/RightMargin',fRightMargin);
+  XMLConfig.SetValue('EditorOptions/Display/RightMarginColor',fRightMarginColor);
   XMLConfig.SetValue('EditorOptions/Display/EditorFont',fEditorFont);
   XMLConfig.GetValue('EditorOptions/Display/EditorFontHeight'
     ,fEditorFontHeight);
@@ -625,6 +660,9 @@ begin
     ,fExtraLineSpacing);
 
   // Key Mappings options
+  XMLConfig.SetValue('EditorOptions/KeyMapping/Scheme',fKeyMappingScheme);
+  fKeyMap.SaveToXMLConfig(
+     XMLConfig,'EditorOptions/KeyMapping/'+fKeyMappingScheme+'/');
 
   // Color options
   XMLConfig.SetValue('EditorOptions/Color/ColorScheme',fColorScheme);
@@ -769,7 +807,7 @@ procedure TEditorOptions.GetSynEditSettings(ASynEdit:TSynEdit);
 begin
   // general options
   ASynEdit.Options:=fSynEditOptions;
-  ASynEdit.TabWidth:=fTabWidths;
+  ASynEdit.TabWidth:=fBlockIndent;
 
   // Display options
   ASynEdit.Gutter.Visible:=fVisibleGutter;
@@ -777,9 +815,14 @@ begin
   ASynEdit.Gutter.Color:=fGutterColor;
   ASynEdit.Gutter.Width:=fGutterWidth;
   ASynEdit.RightEdge:=fRightMargin;
+  ASynEdit.RightEdgeColor:=fRightMarginColor;
   ASynEdit.Font.Name:=fEditorFont;
   ASynEdit.Font.Height:=fEditorFontHeight;
   ASynEdit.ExtraLineSpacing:=fExtraLineSpacing;
+  ASynEdit.MaxUndo:=fUndoLimit;
+  ASynEdit.SelectedColor.ForeGround:=fTextBlockElement.ForeGround;
+  ASynEdit.SelectedColor.BackGround:=fTextBlockElement.BackGround;
+  KeyMap.AssignTo(ASynEdit.KeyStrokes);
 end;
 
 procedure TEditorOptions.SetSynEditSettings(ASynEdit:TSynEdit);
@@ -798,6 +841,11 @@ begin
   fEditorFont:=ASynEdit.Font.Name;
   fEditorFontHeight:=ASynEdit.Font.Height;
   fExtraLineSpacing:=ASynEdit.ExtraLineSpacing;
+  fUndoLimit:=ASynEdit.MaxUndo;
+  fTextBlockElement.ForeGround:=ASynEdit.SelectedColor.ForeGround;
+  fTextBlockElement.BackGround:=ASynEdit.SelectedColor.BackGround;
+
+  // XXX: KeyMap
 
   // XXX:  update all checkboxes, comboboxes...
 end;
@@ -898,7 +946,6 @@ begin
     SetupButtonBar;
   end;
 
-
   for a:=Low(PreviewEdits) to High(PreviewEdits) do
     PreviewEdits[a]:=nil;
   EditorOpts.GetHighlighterSettings(PreviewPasSyn);
@@ -929,15 +976,25 @@ begin
       EditorOpts.GetSynEditSettings(PreviewEdits[a]);
       if EditorOpts.UseSyntaxHighlight then
         Highlighter:=PreviewPasSyn;
+      EditorOpts.KeyMap.AssignTo(PreviewEdits[a].KeyStrokes);
     end;
   end;
   CodeTemplateCodePreview.Gutter.Visible:=false;
 
+  // general options
+  // display options
+  // key mappings
+  // color options
+  // code insight options
+
   FindCurHighlightElement;
   FillCodeTemplateListBox;
+  FillKeyMappingListBox;
 //  with CodeTemplateListBox do
 //    if Items.Count>0 then Selected[0]:=true;
 //  ShowCurCodeTemplate;
+writeln('************************* 7');
+
 end;
 
 // general
@@ -1087,6 +1144,18 @@ begin
         PreviewEdits[a].Invalidate;
         {$ELSE}
         PreviewEdits[a].GutterColor:=GutterColorButton.ButtonColor;
+        {$ENDIF}
+      end;
+    end;
+  end;
+  if Sender=RightMarginColorButton then begin
+    for a:=Low(PreviewEdits) to High(PreviewEdits) do begin
+      if PreviewEdits[a]<>nil then begin
+        {$IFDEF NEW_EDITOR_SYNEDIT}
+        PreviewEdits[a].RightEdgeColor:=RightMarginColorButton.ButtonColor;
+        PreviewEdits[a].Invalidate;
+        {$ELSE}
+
         {$ENDIF}
       end;
     end;
@@ -1282,6 +1351,28 @@ begin
   end;
 end;
 
+procedure TEditorOptionsForm.KeyMappingListBoxMouseUp(Sender:TObject;
+  Button:TMouseButton;  Shift:TShiftState;  X,Y:integer);
+var a:integer;
+begin
+  if Button=mbRight then begin
+    a:=KeyMappingListBox.Items.Count-1;
+    while (a>=0) and (KeyMappingListBox.Selected[a]=false) do
+      dec(a);
+    if a>=0 then begin
+      if ShowKeyMappingEditForm(a,EditorOpts.KeyMap)=mrOk then begin
+        // There is a bug in ListBox
+        //KeyMappingListBox.Items[a]:=KeyMappingRelationToString(a);
+        // workaround:
+        FillKeyMappingListBox;
+        for a:=Low(PreviewEdits) to High(PreviewEdits) do
+          if PreviewEdits[a]<>nil then
+            EditorOpts.KeyMap.AssignTo(PreviewEdits[a].KeyStrokes);
+      end;
+    end;
+  end;
+end;
+
 procedure TEditorOptionsForm.ColorElementListBoxMouseUp(Sender:TObject;
   Button:TMouseButton;  Shift:TShiftState;  X,Y:integer);
 begin
@@ -1344,6 +1435,37 @@ begin
     Special:=true;
     FG:=e.ForeGround;
     BG:=e.BackGround;
+  end;
+end;
+
+function TEditorOptionsForm.KeyMappingRelationToString(
+  Index:integer):AnsiString;
+var s:AnsiString;
+begin
+  with EditorOpts.KeyMap.Relations[Index] do begin
+    Result:=copy(Name,1,37);
+    SetLength(s,(37-length(Result))*2);
+    FillChar(s[1],length(s),'.');
+    Result:=Result+s;
+    if (Key1=VK_UNKNOWN) and (Key2=VK_UNKNOWN) then
+      Result:=Result+'none'
+    else if (Key2=VK_UNKNOWN) then
+      Result:=Result+KeyAndShiftStateToStr(Key1,Shift1)
+    else
+      Result:=Result+KeyAndShiftStateToStr(Key1,Shift1)+'  or  '+
+           KeyAndShiftStateToStr(Key2,Shift2);
+    end;
+end;
+
+procedure TEditorOptionsForm.FillKeyMappingListBox;
+var a:integer;
+begin
+  with KeyMappingListBox.Items do begin
+    BeginUpdate;
+    Clear;
+    for a:=0 to EditorOpts.KeyMap.Count-1 do
+      Add(KeyMappingRelationToString(a));
+    EndUpdate;
   end;
 end;
 
@@ -1698,7 +1820,6 @@ begin
     Caption:='Undo after save';
     Checked:=EditorOpts.UndoAfterSave;
     OnClick:=@GeneralCheckBoxOnClick;
-    Enabled:=false;
     Show;
   end;
 
@@ -1713,7 +1834,6 @@ begin
     Caption:='Double click line';
     Checked:=EditorOpts.DoubleClickLine;
     OnClick:=@GeneralCheckBoxOnClick;
-    Enabled:=false;
     Show;
   end;
 
@@ -1728,7 +1848,6 @@ begin
     Caption:='Find text at cursor';
     Checked:=EditorOpts.FindTextAtCursor;
     OnClick:=@GeneralCheckBoxOnClick;
-    Enabled:=false;
     Show;
   end;
 
@@ -1757,7 +1876,6 @@ begin
     Caption:='Create backup files';
     Checked:=EditorOpts.CreateBackupFiles;
     OnClick:=@GeneralCheckBoxOnClick;
-    Enabled:=false;
     Show;
   end;
 
@@ -1807,7 +1925,6 @@ begin
     Items.Add('512');
     Items.EndUpdate;
     SetComboBoxText(UndoLimitComboBox,IntToStr(EditorOpts.UndoLimit));
-    Enabled:=false;
     OnChange:=@ComboBoxOnChange;
     OnKeyDown:=@ComboBoxOnKeyDown;
     OnExit:=@ComboBoxOnExit;
@@ -1902,7 +2019,7 @@ begin
     Top:=5;
     Left:=5;
     Width:=MaxX-10;
-    Height:=105;
+    Height:=109;
     Caption:='Margin and gutter';
     Show;
   end;
@@ -1954,7 +2071,7 @@ begin
     Name:='RightMarginComboBox';
     Parent:=MarginAndGutterGroupBox;
     Top:=20;
-    Left:=150;
+    Left:=180;
     Width:=70;
     Items.BeginUpdate;
     Items.Add('80');
@@ -1980,12 +2097,37 @@ begin
     Show;
   end;
 
+  RightMarginColorButton:=TColorButton.Create(Self);
+  with RightMarginColorButton do begin
+    Name:='RightMarginColorButton';
+    Parent:=MarginAndGutterGroupBox;
+    Top:=RightMarginComboBox.Top+RightMarginComboBox.Height+20;
+    Left:=RightMarginComboBox.Left;
+    Width:=35;
+    Height:=20;
+    BorderWidth:=2;
+    ButtonColor:=EditorOpts.RightMarginColor;
+    OnColorChanged:=@ColorButtonColorChanged;
+    Show;
+  end;
+
+  RightMarginColorLabel:=TLabel.Create(Self);
+  with RightMarginColorLabel do begin
+    Name:='RightMarginColorLabel';
+    Parent:=MarginAndGutterGroupBox;
+    Top:=RightMarginComboBox.Top+RightMarginComboBox.Height;
+    Left:=RightMarginComboBox.Left+2;
+    Width:=120;
+    Caption:='Right margin color';
+    Show;
+  end;
+
   GutterWidthComboBox:=TComboBox.Create(Self);
   with GutterWidthComboBox do begin
     Name:='GutterWidthComboBox';
     Parent:=MarginAndGutterGroupBox;
     Top:=RightMarginComboBox.Top;
-    Left:=RightMarginComboBox.Left+RightMarginComboBox.Width+50;
+    Left:=RightMarginComboBox.Left+RightMarginComboBox.Width+80;
     Width:=RightMarginComboBox.Width;
     Height:=RightMarginComboBox.Height;
     Items.BeginUpdate;
@@ -2172,8 +2314,59 @@ begin
 end;
 
 procedure TEditorOptionsForm.SetupKeyMappingsPage;
+var MaxX,MaxY:integer;
 begin
+  MaxX:=Width-9;
+  MaxY:=374;
 
+  KeyMappingSchemeComboBox:=TComboBox.Create(Self);
+  with KeyMappingSchemeComboBox do begin
+    Name:='KeyMappingSchemeComboBox';
+    Parent:=MainNoteBook.Page[2];
+    Top:=5;
+    Left:=170;
+    Width:=100;
+    Height:=16;
+    Text:=EditorOpts.KeyMappingScheme;
+    Enabled:=false;
+    Show;
+  end;
+
+  KeyMappingSchemeLabel:=TLabel.Create(Self);
+  with KeyMappingSchemeLabel do begin
+    Name:='KeyMappingSchemeLabel';
+    Parent:=MainNoteBook.Page[2];
+    Top:=5;
+    Left:=5;
+    Width:=KeyMappingSchemeComboBox.Left-Left;
+    Height:=16;
+    Caption:='Key Mapping Scheme';
+    Show;
+  end;
+
+  KeyMappingHelpLabel:=TLabel.Create(Self);
+  with KeyMappingHelpLabel do begin
+    Name:='KeyMappingHelpLabel';
+    Parent:=MainNoteBook.Page[2];
+    Top:=KeyMappingSchemeComboBox.Top+KeepCaretXCheckBox.Height+10;
+    Left:=5;
+    Width:=MaxX-Left-Left;
+    Height:=16;
+    Caption:='Hint: right click on the command you want to edit';
+    Show;
+  end;
+
+  KeyMappingListBox:=TListBox.Create(Self);
+  with KeyMappingListBox do begin
+    Name:='KeyMappingListBox';
+    Parent:=MainNoteBook.Page[2];
+    Top:=KeyMappingHelpLabel.Top+KeyMappingHelpLabel.Height+2;
+    Left:=0;
+    Width:=MaxX-Left-Left;
+    Height:=MaxY-Top;
+    OnMouseUp:=@KeyMappingListBoxMouseUp;
+    Show;
+  end;
 end;
 
 procedure TEditorOptionsForm.SetupColorPage;
@@ -2417,10 +2610,9 @@ begin
     Parent:=AutomaticFeaturesGroupBox;
     Top:=5;
     Left:=5;
-    Width:=170;
+    Width:=200;
     Caption:='Code completion';
     Checked:=EditorOpts.AutoCodeCompletion;
-    Enabled:=false;
     Show;
   end;
 
@@ -2434,7 +2626,6 @@ begin
     Height:=AutoCodeCompletionCheckBox.Height;
     Caption:='Code parameters';
     Checked:=EditorOpts.AutoCodeParameters;
-    Enabled:=false;
     Show;
   end;
 
@@ -2448,7 +2639,6 @@ begin
     Height:=AutoCodeCompletionCheckBox.Height;
     Caption:='Tooltip expression evaluation';
     Checked:=EditorOpts.AutoToolTipExprEval;
-    Enabled:=false;
     Show;
   end;
 
@@ -2462,7 +2652,6 @@ begin
     Height:=AutoCodeCompletionCheckBox.Height;
     Caption:='Tooltip symbol insight';
     Checked:=EditorOpts.AutoToolTipSymbInsight;
-    Enabled:=false;
     Show;
   end;
 

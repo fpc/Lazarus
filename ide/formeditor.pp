@@ -39,6 +39,9 @@ type
   end;
 
 
+var
+  FormEditor1 : TFormEditor;
+
 implementation
 
 

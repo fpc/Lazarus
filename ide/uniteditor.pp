@@ -31,7 +31,7 @@ unit UnitEditor;
 interface
 
 uses
-  classes, Controls, forms,buttons,comctrls,sysutils,Dialogs,FormEditor,Find_Dlg,EditorOPtions,
+  classes, Controls, forms,buttons,comctrls,sysutils,Dialogs,FormEditor,Find_Dlg,EditorOPtions,CustomFormEditor,keymapping,
 {$ifdef NEW_EDITOR_SYNEDIT}
   SynEdit, SynEditHighlighter, SynHighlighterPas,SynEditAutoComplete,
   SynEditKeyCmds,SynCompletion,
@@ -260,7 +260,7 @@ implementation
 uses
   LCLLinux,TypInfo,LResources,Main,LazConf;
 
-const
+{const
   ecFind = ecUserFirst+1;
   ecFindAgain = ecUserFirst+2;
   ecFindProcedureDefinition = ecUserFirst+3;
@@ -275,7 +275,7 @@ const
   ecClose    = ecFirstParent+3;
 
   ecJumpToEditor = ecFirstParent+4;
-
+ }
 var
 Editor_Num : Integer;
 aHighlighter: TSynPasSyn;
@@ -842,12 +842,41 @@ Procedure TSourceEditor.ccExecute(Sender : TObject);
 var
   scompl : TSynBaseCompletion;
   S : TStrings;
+  CompInt : TComponentInterface;
+  CompName : String;
+  I : Integer;
+  propKind : TTypeKind;
 Begin
+  CompInt := nil;
   Writeln('[ccExecute]');
-  sCompl := TSynBaseCOmpletion(Sender);
+  sCompl := TSynBaseCompletion(Sender);
   S := TStringList.Create;
+  CompName := sCompl.CurrentString;
+  if Pos('.',CompName) <> 0 then
+  CompName := Copy(CompName,1,pos('.',Compname)-1);
+  CompInt := TComponentInterface(FormEditor1.FindComponentByName(CompName));
+  if CompInt = nil then Exit;
+
+  //get all methods
+  for I := 0 to CompInt.GetPropCount-1 do
+   Begin
+     Writeln('I = '+Inttostr(i));
+     Writeln('Property Name is '+CompInt.GetPropName(I));
+     PropKind := CompInt.GetPropType(i);
+     case PropKind of
+      tkMethod :  Begin
+                    Writeln('Property type is TKMETHOD');
+//                    Writeln('
+                  end;
+      tkObject :  Writeln('Property type is TKObject');
+      tkInteger :  Writeln('Property type is TKINTEGER');
+      tkBool :  Writeln('Property type is TKBool');
+     end;
+   end;
+{
   S.Add('constructor Create(aOwner : TComponent);');
   S.Add('OnActivate');
+}
   sCompl.ItemList := S;
 End;
 
@@ -873,7 +902,7 @@ Begin
     Align := alClient;
     Gutter.Color:=clBlue;
     AddKey(ecAutoCompletion, word('J'), [ssCtrl], 0, []);
-    AddKey(ecFind, word('F'), [ssCtrl], 0, []);
+{    AddKey(ecFind, word('F'), [ssCtrl], 0, []);
     AddKey(ecFindAgain, VK_F3, [], 0, []);
     AddKey(ecFindProcedureDefinition, VK_UP, [ssShift,ssCtrl], 0, []);
     AddKey(ecFindProcedureMethod, VK_Down, [ssShift,ssCtrl], 0, []);
@@ -883,7 +912,7 @@ Begin
     AddKey(ecSave, word('S'), [ssCtrl], 0, []);
     AddKey(ecOpen, word('O'), [ssCtrl], 0, []);
     AddKey(ecClose, VK_F4, [ssCtrl], 0, []);
-
+ }
     OnStatusChange := @EditorStatusChanged;
     OnProcessUserCommand := @ProcessUserCommand;
     Show;

@@ -74,6 +74,7 @@ ide/idecomp.pp svneol=native#text/pascal
 ide/include/freebsd/lazconf.inc svneol=native#text/pascal
 ide/include/linux/lazconf.inc svneol=native#text/pascal
 ide/include/win32/lazconf.inc svneol=native#text/pascal
+ide/keymapping.pp svneol=native#text/pascal
 ide/lazarus.pp svneol=native#text/pascal
 ide/lazconf.pp svneol=native#text/pascal
 ide/lazres.pp svneol=native#text/pascal

@@ -293,6 +293,7 @@ type
 
    TEdit = class(TCustomEdit)
    published
+      property Align;
       property OnChange;
       property OnClick;
       property CharCase;
@@ -569,6 +570,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.13  2001/02/02 14:23:38  lazarus
+  Start of code completion code.
+  Shane
+
   Revision 1.12  2001/02/01 16:45:19  lazarus
   Started the code completion.
   Shane

@@ -200,8 +200,7 @@ const
 
 var
   MainIDE : TMainIDE;
-  FormEditor1 : TFormEditor;
-  // this should be moved to FormEditor <...
+
   ObjectInspector1 : TObjectInspector;
   PropertyEditorHook1 : TPropertyEditorHook;
   // ...>
@@ -1643,6 +1642,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.55  2001/02/02 14:23:37  lazarus
+  Start of code completion code.
+  Shane
+
   Revision 1.54  2001/02/01 16:45:19  lazarus
   Started the code completion.
   Shane
