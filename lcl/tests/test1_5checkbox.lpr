@@ -14,7 +14,7 @@
  
   LCL Test 1_5
 
-  Showing a form at 0,0,320,240 with a single TCheckBox at 100,80,75x25
+  Showing a form at 0,0,320,240 with a single TCheckBox at 100,50,75x25
 }
 program test1_5checkbox;
 
@@ -22,7 +22,7 @@ program test1_5checkbox;
 
 uses
   Interfaces, FPCAdds, LCLProc, LCLType, Classes, Controls, Forms, TypInfo,
-  LMessages, StdCtrls;
+  LMessages, StdCtrls, Buttons;
 
 type
 
@@ -30,6 +30,12 @@ type
 
   TForm1 = class(TForm)
     CheckBox1: TCheckBox;
+    ButtonSetChecked: TButton;
+    ButtonSetNotChecked: TButton;
+    ButtonSetInBetween: TButton;
+    procedure ButtonSetCheckedClick(Sender: TObject);
+    procedure ButtonSetInBetweenClick(Sender: TObject);
+    procedure ButtonSetNotCheckedClick(Sender: TObject);
     procedure CheckBox1Change(Sender: TObject);
     procedure CheckBox1ChangeBounds(Sender: TObject);
     procedure CheckBox1Click(Sender: TObject);
@@ -96,6 +102,28 @@ end;
 procedure TForm1.CheckBox1Change(Sender: TObject);
 begin
   debugln('TForm1.CheckBox1Change ',DbgSName(Sender),' CheckBox1.Checked=',dbgs(CheckBox1.Checked));
+end;
+
+procedure TForm1.ButtonSetCheckedClick(Sender: TObject);
+begin
+  debugln('TForm1.ButtonSetCheckedClick START ',DbgSName(Sender),' CheckBox1.Checked=',dbgs(CheckBox1.Checked),' CheckBox1.State=',dbgs(ord(CheckBox1.State)));
+  CheckBox1.Checked:=true;
+  debugln('TForm1.ButtonSetCheckedClick END ',DbgSName(Sender),' CheckBox1.Checked=',dbgs(CheckBox1.Checked),' CheckBox1.State=',dbgs(ord(CheckBox1.State)));
+end;
+
+procedure TForm1.ButtonSetInBetweenClick(Sender: TObject);
+begin
+  debugln('TForm1.ButtonSetInBetweenClick START ',DbgSName(Sender),' CheckBox1.Checked=',dbgs(CheckBox1.Checked),' CheckBox1.State=',dbgs(ord(CheckBox1.State)));
+  CheckBox1.AllowGrayed:=true;
+  CheckBox1.State:=cbGrayed;
+  debugln('TForm1.ButtonSetInBetweenClick END ',DbgSName(Sender),' CheckBox1.Checked=',dbgs(CheckBox1.Checked),' CheckBox1.State=',dbgs(ord(CheckBox1.State)));
+end;
+
+procedure TForm1.ButtonSetNotCheckedClick(Sender: TObject);
+begin
+  debugln('TForm1.ButtonSetNotCheckedClick START ',DbgSName(Sender),' CheckBox1.Checked=',dbgs(CheckBox1.Checked),' CheckBox1.State=',dbgs(ord(CheckBox1.State)));
+  CheckBox1.Checked:=false;
+  debugln('TForm1.ButtonSetNotCheckedClick END ',DbgSName(Sender),' CheckBox1.Checked=',dbgs(CheckBox1.Checked),' CheckBox1.State=',dbgs(ord(CheckBox1.State)));
 end;
 
 procedure TForm1.CheckBox1Click(Sender: TObject);
@@ -199,10 +227,11 @@ end;
 procedure TForm1.Form1Create(Sender: TObject);
 begin
   debugln('TForm1.Form1Create ',DbgSName(Sender));
+  
   CheckBox1:=TCheckBox.Create(Self);
   with CheckBox1 do begin
     Name:='CheckBox1';
-    SetBounds(100,80,75,25);
+    SetBounds(100,50,75,25);
     Parent:=Self;
     OnChangeBounds:=@CheckBox1ChangeBounds;
     OnClick:=@CheckBox1Click;
@@ -218,6 +247,33 @@ begin
     OnMouseMove:=@CheckBox1MouseMove;
     OnMouseUp:=@CheckBox1MouseUp;
     OnResize:=@CheckBox1Resize;
+  end;
+  
+  ButtonSetChecked:=TButton.Create(Self);
+  with ButtonSetChecked do begin
+    Name:='ButtonSetChecked';
+    SetBounds(10,100,100,25);
+    Caption:='Check';
+    Parent:=Self;
+    OnClick:=@ButtonSetCheckedClick;
+  end;
+  
+  ButtonSetNotChecked:=TButton.Create(Self);
+  with ButtonSetNotChecked do begin
+    Name:='ButtonSetNotChecked';
+    SetBounds(10,130,100,25);
+    Caption:='Not check';
+    Parent:=Self;
+    OnClick:=@ButtonSetNotCheckedClick;
+  end;
+
+  ButtonSetInBetween:=TButton.Create(Self);
+  with ButtonSetInBetween do begin
+    Name:='ButtonSetInBetween';
+    SetBounds(10,160,100,25);
+    Caption:='In between';
+    Parent:=Self;
+    OnClick:=@ButtonSetInBetweenClick;
   end;
 end;
 

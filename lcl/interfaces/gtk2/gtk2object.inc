@@ -508,34 +508,32 @@ begin
        inherited HookSignals(AGTKObject,ALCLObject);
      End;
 
-  if (ALCLObject is TControl) then
-    Begin
-      case TControl(ALCLObject).FCompStyle of
-        csEdit:
-        begin
-          SetCallback(LM_CHANGED, AGTKObject, ALCLObject);
-          SetCallback(LM_ACTIVATE, AGTKObject,ALCLObject);
-          SetCallback(LM_CUTTOCLIP, AGTKObject,ALCLObject);
-          SetCallback(LM_COPYTOCLIP, AGTKObject,ALCLObject);
-          SetCallback(LM_PASTEFROMCLIP, AGTKObject,ALCLObject);
-        end;
-
- csMemo:
- begin
-         // SetCallback(LM_CHANGED, AGTKObject,ALCLObject);
-          //SetCallback(LM_ACTIVATE, AGTKObject,ALCLObject);
-          SetCallback(LM_CUTTOCLIP, AGTKObject,ALCLObject);
-          SetCallback(LM_COPYTOCLIP, AGTKObject,ALCLObject);
-          SetCallback(LM_PASTEFROMCLIP, AGTKObject,ALCLObject);
-   //SetCallback(LM_INSERTTEXT, AGTKObject,ALCLObject);
- end;
-      end; //case
-    end
-    else
-    If (ALCLObject is TMenuItem) then
-      Begin
-        SetCallback(LM_ACTIVATE,AGTKObject,ALCLObject);
+  if (ALCLObject is TControl) then begin
+    case TControl(ALCLObject).FCompStyle of
+    csEdit:
+      begin
+        SetCallback(LM_CHANGED, AGTKObject, ALCLObject);
+        SetCallback(LM_ACTIVATE, AGTKObject,ALCLObject);
+        SetCallback(LM_CUTTOCLIP, AGTKObject,ALCLObject);
+        SetCallback(LM_COPYTOCLIP, AGTKObject,ALCLObject);
+        SetCallback(LM_PASTEFROMCLIP, AGTKObject,ALCLObject);
       end;
+
+    csMemo:
+      begin
+        // SetCallback(LM_CHANGED, AGTKObject,ALCLObject);
+        //SetCallback(LM_ACTIVATE, AGTKObject,ALCLObject);
+        SetCallback(LM_CUTTOCLIP, AGTKObject,ALCLObject);
+        SetCallback(LM_COPYTOCLIP, AGTKObject,ALCLObject);
+        SetCallback(LM_PASTEFROMCLIP, AGTKObject,ALCLObject);
+       //SetCallback(LM_INSERTTEXT, AGTKObject,ALCLObject);
+      end;
+    end; //case
+  end
+  else
+    If (ALCLObject is TMenuItem) then begin
+      SetCallback(LM_ACTIVATE,AGTKObject,ALCLObject);
+    end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1521,6 +1519,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.28  2005/02/21 20:15:28  mattias
+  fixed componentpalette adding via double click
+
   Revision 1.27  2005/02/19 22:48:23  mattias
   fixed navigation key handling for TButton
 

@@ -832,6 +832,8 @@ type
 
   TCheckBoxState = (cbUnchecked, cbChecked, cbGrayed);
 
+  { TCustomCheckBox }
+
   TCustomCheckBox = class(TButtonControl)
   private
     FAllowGrayed: Boolean;
@@ -849,6 +851,8 @@ type
     procedure RealSetText(const Value: TCaption); override;
     procedure ApplyChanges; virtual;
     procedure Loaded; override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
+                      X, Y: Integer); override;
   public
     constructor Create(TheOwner: TComponent); override;
   public
@@ -887,6 +891,7 @@ type
     property OnClick;
     property OnDragDrop;
     property OnDragOver;
+    property OnEditingDone;
     property OnEndDrag;
     property OnEnter;
     property OnExit;
@@ -1220,6 +1225,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.195  2005/02/21 20:15:27  mattias
+  fixed componentpalette adding via double click
+
   Revision 1.194  2005/02/21 13:54:26  mattias
   added navigation key check for up/down already handled
 

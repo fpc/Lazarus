@@ -175,6 +175,10 @@ type
   private
   protected
   public
+    class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox
+                                  ): TCheckBoxState; override;
+    class procedure SetState(const ACustomCheckBox: TCustomCheckBox;
+                             const NewState: TCheckBoxState); override;
   end;
 
   { TGtk2WSCheckBox }
@@ -435,6 +439,38 @@ begin
 
 end;
 
+{ TGtk2WSCustomCheckBox }
+
+function TGtk2WSCustomCheckBox.RetrieveState(
+  const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;
+var
+  ToggleButton: PGtkToggleButton;
+begin
+  ToggleButton:=PGtkToggleButton(ACustomCheckBox.Handle);
+  if ACustomCheckBox.AllowGrayed
+  and gtk_toggle_button_get_inconsistent(ToggleButton) then
+    Result:=cbGrayed
+  else if gtk_toggle_button_get_active(ToggleButton) then
+    Result := cbChecked
+  else
+    Result := cbUnChecked;
+end;
+
+procedure TGtk2WSCustomCheckBox.SetState(
+  const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState);
+var
+  GtkObject: PGtkObject;
+  ToggleButton: PGtkToggleButton;
+begin
+  //debugln('TGtk2WSCustomCheckBox.SetState A ',DbgSName(ACustomCheckBox),' State=',dbgs(ord(ACustomCheckBox.State)));
+  GtkObject := PGtkObject(ACustomCheckBox.Handle);
+  LockOnChange(GtkObject,1);
+  ToggleButton:=PGtkToggleButton(GtkObject);
+  gtk_toggle_button_set_active(ToggleButton, NewState=cbChecked);
+  gtk_toggle_button_set_inconsistent(ToggleButton, NewState=cbGrayed);
+  LockOnChange(GtkObject,-1);
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -458,8 +494,7 @@ initialization
 //  RegisterWSComponent(TLabel, TGtk2WSLabel);
 //  RegisterWSComponent(TButtonControl, TGtk2WSButtonControl);
 //  RegisterWSComponent(TCustomCheckBox, TGtk2WSCustomCheckBox);
-//  RegisterWSComponent(TCheckBox, TGtk2WSCheckBox);
-//  RegisterWSComponent(TCheckBox, TGtk2WSCheckBox);
+  RegisterWSComponent(TCustomCheckBox, TGtk2WSCustomCheckBox);
 //  RegisterWSComponent(TToggleBox, TGtk2WSToggleBox);
 //  RegisterWSComponent(TRadioButton, TGtk2WSRadioButton);
 //  RegisterWSComponent(TCustomStaticText, TGtk2WSCustomStaticText);

@@ -896,7 +896,7 @@ type
     procedure DoBeforeMouseMessage;
     procedure DoConstrainedResize(var NewWidth, NewHeight: integer);
     procedure DoMouseDown(var Message: TLMMouse; Button: TMouseButton;
-                          Shift:TShiftState);
+                          Shift: TShiftState);
     procedure DoMouseUp(var Message: TLMMouse; Button: TMouseButton);
     procedure SetAnchorSideIndex(Index: integer; const AValue: TAnchorSide);
     procedure SetBorderSpacing(const AValue: TControlBorderSpacing);
@@ -2950,6 +2950,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.284  2005/02/21 20:15:27  mattias
+  fixed componentpalette adding via double click
+
   Revision 1.283  2005/02/19 21:54:08  mattias
   moved LCL navigation key handling to key up, so that interface has the chance to handle keys
 

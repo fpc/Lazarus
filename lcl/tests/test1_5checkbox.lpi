@@ -9,21 +9,21 @@
         <SaveOnlyProjectUnits Value="True"/>
       </Flags>
       <MainUnit Value="0"/>
-      <ActiveEditorIndexAtStart Value="4"/>
+      <ActiveEditorIndexAtStart Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
       <Title Value="test1_5checkbox"/>
     </General>
     <Units Count="1">
       <Unit0>
-        <CursorPos X="21" Y="145"/>
+        <CursorPos X="31" Y="107"/>
         <EditorIndex Value="0"/>
         <Filename Value="test1_5checkbox.lpr"/>
         <IsPartOfProject Value="True"/>
         <Loaded Value="True"/>
-        <TopLine Value="129"/>
+        <TopLine Value="85"/>
         <UnitName Value="test1_5checkbox"/>
-        <UsageCount Value="42"/>
+        <UsageCount Value="48"/>
       </Unit0>
     </Units>
     <PublishOptions>

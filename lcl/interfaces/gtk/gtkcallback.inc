@@ -366,7 +366,8 @@ function gtktoggledCB( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 var
   Mess : TLMessage;
 begin
-  Result:= True;
+  //DebugLn('gtktoggledCB ',DbgSName(TObject(Data)));
+  Result := CallBackDefaultReturn;
   EventTrace('toggled', data);
   if LockOnChange(PgtkObject(Widget),0) > 0 then Exit;
 
@@ -377,9 +378,7 @@ begin
   Mess.Msg := LM_CHANGED;
   Mess.Result := 0;
   DeliverMessage(Data, Mess);
-  //DebugLn('gtktoggledCB ',TWinControl(Data).Name,':',TWinControl(Data).ClassName);
-
-  Result := CallBackDefaultReturn;
+  //DebugLn('gtktoggledCB END ',DbgSName(TObject(Data)));
 end;
 
 {$Ifdef GTK1}
@@ -875,10 +874,10 @@ begin
   {$IFDEF VerboseMouseBugfix}
   DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMouseMotion);
   DebugLn('[GTKMotionNotify] ',
-    TControl(Data).Name,':',TControl(Data).ClassName,
+    DbgSName(TControl(Data)),
     ' Widget=',HexStr(Cardinal(Widget),8),
-    ' DSO=',DesignOnlySignal,
-    ' Event^.X=',TruncToInt(Event^.X),' Event^.Y=',TruncToInt(Event^.Y)
+    ' DSO=',dbgs(DesignOnlySignal),
+    ' Event^.X=',dbgs(TruncToInt(Event^.X)),' Event^.Y=',dbgs(TruncToInt(Event^.Y))
     );
   {$ENDIF}
 
@@ -910,7 +909,7 @@ begin
 
   {$IFDEF VerboseMouseBugfix}
   DebugLn('[GTKMotionNotifyAfter] ',
-    TControl(Data).Name,':',TControl(Data).ClassName);
+    DbgSName(TControl(Data)));
   {$ENDIF}
 
   // stop the signal, so that it is not sent to the parent widgets
@@ -930,13 +929,15 @@ end;
   Returns true, if mouse down event should be sent before the widget istelf
   reacts.
 -------------------------------------------------------------------------------}
-function ControlGetsMouseDownBefore(AControl: TControl): boolean;
+function ControlGetsMouseDownBefore(AControl: TControl;
+  AWidget: PGtkWidget): boolean;
 begin
-  case AControl.fCompStyle of
-  csCheckBox, csToggleBox:
+  Result:=true;
+  if AControl=nil then exit;
+  if GtkWidgetIsA(AWidget,gtk_toggle_button_get_type) then begin
+    {$IFDEF Gtk1}
     Result:=false;
-  else
-    Result:=true;
+    {$ENDIF}
   end;
 end;
 
@@ -957,7 +958,7 @@ var
   MappedXY: TPoint;
   EventXY: TPoint;
 
-{ $DEFINE VerboseMouseBugfix}
+{off $DEFINE VerboseMouseBugfix}
 
   function CheckMouseButtonDown(var LastMouse: TLastMouseClick;
     BtnKey, MsgNormal, MsgDouble, MsgTriple, MsgQuad: longint): boolean;
@@ -994,8 +995,8 @@ var
       (not (gdk_event_get_type(Event) in [gdk_2button_press,gdk_3button_press]))
     then begin
       {$IFDEF VerboseMouseBugfix}
-      DebugLn(' NO CLICK: LastMouse.Down=',LastMouse.Down,
-              ' Event^.theType=',gdk_event_get_type(Event));
+      DebugLn(' NO CLICK: LastMouse.Down=',dbgs(LastMouse.Down),
+              ' Event^.theType=',dbgs(gdk_event_get_type(Event)));
       {$ENDIF}
       Exit;
     end;
@@ -1039,8 +1040,8 @@ var
         then begin
           // multi click
           {$IFDEF VerboseMouseBugfix}
-          DebugLn('  MULTI CLICK: ',now,'-',LastMouse.TheTime,'<= ',
-            ((1/86400)*(DblClickTime/1000)));
+          DebugLn('  MULTI CLICK: ',dbgs(now),'-',dbgs(LastMouse.TheTime),'<= ',
+            dbgs((1/86400)*(DblClickTime/1000)));
           {$ENDIF}
         end else begin
           // normal click
@@ -1049,7 +1050,7 @@ var
       end;
     end;
     {$IFDEF VerboseMouseBugfix}
-    DebugLn('  ClickCount=',LastMouse.ClickCount);
+    DebugLn('  ClickCount=',dbgs(LastMouse.ClickCount));
     {$ENDIF}
 
     LastMouse.TheTime := Now;
@@ -1058,7 +1059,7 @@ var
     LastMouse.Down := True;
     LastMouse.Component:=AWinControl;
 
-    //DebugLn('DeliverMouseDownMessage ',AWinControl.Name,':',AWinControl.ClassName,' Mapped=',dbgs(MappedXY.X),',',dbgs(MappedXY.Y),' Event=',dbgs(EventXY.X),',',dbgs(EventXY.Y),' ',dbgs(LastMouse.ClickCount));
+    //DebugLn('DeliverMouseDownMessage ',DbgSName(AWinControl),' Mapped=',dbgs(MappedXY.X),',',dbgs(MappedXY.Y),' Event=',dbgs(EventXY.X),',',dbgs(EventXY.Y),' ',dbgs(LastMouse.ClickCount));
     case LastMouse.ClickCount of
     1: MessI.Msg := MsgNormal;
     2: MessI.Msg := MsgDouble;
@@ -1077,7 +1078,7 @@ begin
   ShiftState := GTKEventState2ShiftState(Event^.State);
   MappedXY:=TranslateGdkPointToClientArea(Event^.Window,EventXY,
                                          PGtkWidget(AWinControl.Handle));
-  //DebugLn('DeliverMouseDownMessage ',AWinControl.Name,':',AWinControl.ClassName,' Mapped=',dbgs(MappedXY.X),',',dbgs(MappedXY.Y),' Event=',dbgs(EventXY.X),',',dbgs(EventXY.Y));
+  //DebugLn('DeliverMouseDownMessage ',DbgSName(AWinControl),' Mapped=',dbgs(MappedXY.X),',',dbgs(MappedXY.Y),' Event=',dbgs(EventXY.X),',',dbgs(EventXY.Y));
 
   if event^.Button in [4,5] then begin
     // this is a mouse wheel event
@@ -1149,18 +1150,18 @@ var
   DesignOnlySignal: boolean;
   CaptureWidget: PGtkWidget;
 begin
-  Result := true;
+  Result := CallBackDefaultReturn;
 
   {$IFDEF VerboseMouseBugfix}
   DebugLn('');
   DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMousePress);
   WriteLn('[gtkMouseBtnPress] ',
-    TComponent(Data).Name,':',TObject(Data).ClassName,
+    DbgSName(TObject(Data)),
     ' Widget=',HexStr(Cardinal(Widget),8),
-    ' ControlWidget=',HexStr(Cardinal(TWinControl(Data).Handle),8),
-    ' DSO=',DesignOnlySignal,
-    ' ',TruncToInt(Event^.X),',',TruncToInt(Event^.Y),
-    ' Type=',Event^.{$IFDEF GTK2}_type{$ELSE}theType{$ENDIF});
+    ' ControlWidget='+HexStr(Cardinal(TWinControl(Data).Handle),8),
+    ' DSO='+dbgs(DesignOnlySignal),
+    ' '+dbgs(TruncToInt(Event^.X)),',',dbgs(TruncToInt(Event^.Y)),
+    ' Type='+dbgs(gdk_event_get_type(Event)));
   {$ENDIF}
   //DebugLn('DDD1 MousePress Widget=',HexStr(Cardinal(Widget),8),
   //' ClientWidget=',HexStr(Cardinal(GetFixedWidget(Widget)),8),
@@ -1172,29 +1173,28 @@ begin
   //  DebugLn('DDD2 ClientWindow=',HexStr(Cardinal(PGtkWidget(GetFixedWidget(Widget))^.Window),8));
 
   EventTrace('Mouse button Press', data);
-  Assert(False, Format('Trace:[gtkMouseBtnPress] ', []));
 
   UpdateMouseCaptureControl;
 
   if not (csDesigning in TComponent(Data).ComponentState) then begin
     DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMousePress);
     if DesignOnlySignal then exit;
-    if not ControlGetsMouseDownBefore(TControl(Data)) then exit;
+    if not ControlGetsMouseDownBefore(TControl(Data),Widget) then exit;
 
     CaptureWidget:=PGtkWidget(TWinControl(Data).Handle);
     if Event^.button=1 then begin
       CaptureMouseForWidget(CaptureWidget,mctGTKIntf);
-      Result := false;
+      //Result := not CallBackDefaultReturn;
     end;
   end else begin
     // stop the signal, so that the widget does not auto react
     if (not (TControl(Data) is TCustomNoteBook))
     or (event^.Button<>1) then begin
       g_signal_stop_emission_by_name(PGTKObject(Widget),'button-press-event');
-      result := false;
+      Result := not CallBackDefaultReturn;
     end;
   end;
-  //debugln('[gtkMouseBtnPress] calling DeliverMouseDownMessage');
+  //debugln('[gtkMouseBtnPress] calling DeliverMouseDownMessage Result=',dbgs(Result));
   DeliverMouseDownMessage(Widget,Event,TWinControl(Data));
 end;
 
@@ -1212,10 +1212,10 @@ begin
   Result := CallBackDefaultReturn;
 
   {$IFDEF VerboseMouseBugfix}
-  WriteLn('[gtkMouseBtnPressAfter] ',
-    TControl(Data).Name,':',TObject(Data).ClassName,
+  debugln('[gtkMouseBtnPressAfter] ',
+    DbgSName(TObject(Data)),
     ' Widget=',HexStr(Cardinal(Widget),8),
-    ' ',TruncToInt(Event^.X),',',TruncToInt(Event^.Y));
+    ' ',dbgs(TruncToInt(Event^.X)),',',dbgs(TruncToInt(Event^.Y)));
   {$ENDIF}
 
   UpdateMouseCaptureControl;
@@ -1224,8 +1224,9 @@ begin
   g_signal_stop_emission_by_name(PGTKObject(Widget),'button-press-event');
 
   if (csDesigning in TComponent(Data).ComponentState) then exit;
-  if ControlGetsMouseDownBefore(TControl(Data)) then exit;
+  if ControlGetsMouseDownBefore(TControl(Data),Widget) then exit;
 
+  //debugln('[gtkMouseBtnPressAfter] calling DeliverMouseDownMessage');
   DeliverMouseDownMessage(Widget,Event,TWinControl(Data));
 end;
 
@@ -1237,14 +1238,16 @@ end;
 -------------------------------------------------------------------------------}
 function ControlGetsMouseUpBefore(AControl: TControl): boolean;
 begin
+  Result:=true;
+  if AControl=nil then ;
+  {$IFDEF Gtk1}
   case AControl.fCompStyle of
   csCheckBox,
   csRadioButton,
   csToggleBox:
     Result:=false;
-  else
-    Result:=true;
   end;
+  {$ENDIF}
 end;
 
 {-------------------------------------------------------------------------------
@@ -1253,7 +1256,7 @@ end;
 
   Translate a gdk mouse release event into a LCL mouse up message and send it.
 -------------------------------------------------------------------------------}
-procedure DeliverMouseUpMessage(widget: PGtkWidget; event : pgdkEventButton;
+procedure DeliverMouseUpMessage(widget: PGtkWidget; event: pgdkEventButton;
   AWinControl: TWinControl);
 var
   MessI : TLMMouse;
@@ -1353,6 +1356,7 @@ begin
     // stop the signal, so that the widget does not auto react
     if not (TControl(Data) is TCustomNoteBook) then
       g_signal_stop_emission_by_name(PGTKObject(Widget),'button-release-event');
+    Result := not CallBackDefaultReturn;
   end;
 
   DeliverMouseUpMessage(Widget,Event,TWinControl(Data));
@@ -1390,14 +1394,14 @@ end;
 
 function gtkclickedCB(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
-   Mess : TLMessage;
+  Mess: TLMessage;
 begin
   Result := CallBackDefaultReturn;
   //DebugLn('[gtkclickedCB] ',TObject(Data).ClassName);
   EventTrace('clicked', data);
   if (LockOnChange(PgtkObject(Widget),0)>0) then exit;
   Mess.Msg := LM_CLICKED;
-  Result:= DeliverMessage(Data, Mess) = 0;
+  DeliverMessage(Data, Mess);
 end;
 
 function gtkOpenDialogRowSelectCB(widget : PGtkWidget; row : gint;
@@ -2963,6 +2967,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.269  2005/02/21 20:15:28  mattias
+  fixed componentpalette adding via double click
+
   Revision 1.268  2005/02/17 18:32:32  mattias
   fixed TCalendar  from Salvatore
 

@@ -17,23 +17,9 @@
  *                                                                           *
  *****************************************************************************
 
-  current design flaws:
-
-  - To always get the real state of the component we should have a
-    callback in this class. Since the OnClick callback is already assigned
-    in TControl, we can't use it here. (s.a. Bugs section below!)
-
   Delphi compatibility:
 
-   - GTK does not support the cbGrayed state so it's not handled
    - alignment property is missing
-   - lots of unknown issues
-
-  TODO:
-    - check for Delphi compatibility
-    - test if fState / Checked is always set right
-
-  Bugs:
 }
 
 {------------------------------------------------------------------------------
@@ -71,10 +57,11 @@ procedure TCustomCheckBox.DoChange(var Msg);
 var
   NewState: TCheckBoxState;
 begin
+  //debugln('TCustomCheckBox.DoChange START ',dbgsname(Self),' ',dbgs(ord(FState)));
   NewState:=RetrieveState;
   if FState=NewState then exit;
   FState:=RetrieveState;
-  //debugln('TCustomCheckBox.DoChange ',dbgsname(Self),' ',dbgs(ord(FState)));
+  //debugln('TCustomCheckBox.DoChange CHANGED ',dbgsname(Self),' ',dbgs(ord(FState)));
   DoOnChange;
 end;
 
@@ -156,11 +143,8 @@ begin
     and (Action is TCustomAction) then
       TCustomAction(Action).Checked := FState=cbChecked;
     ApplyChanges;
-    if UseOnChange then begin
-      DoOnChange;
-    end else begin
-      if not ClicksDisabled then Click;
-    end;
+    DoOnChange;
+    if (not UseOnChange) and (not ClicksDisabled) then Click;
   end;
 end;
 
@@ -186,7 +170,7 @@ end;
 procedure TCustomCheckBox.ApplyChanges;
 begin
   if HandleAllocated and (not (csLoading in ComponentState)) then begin
-    //debugln('TCustomCheckBox.ApplyChanges ',dbgsname(Self),' ',dbgs(ord(FState)));
+    //debugln('TCustomCheckBox.ApplyChanges ',dbgsname(Self),' ',dbgs(ord(FState)),' ',WidgetSetClass.ClassName);
     TWSCustomCheckBoxClass(WidgetSetClass).SetState(Self, FState);
   end;
 end;
@@ -199,6 +183,13 @@ begin
   if HandleAllocated
   then TWSCustomCheckBoxClass(WidgetSetClass).SetState(Self, FState);
   inherited Loaded;
+end;
+
+procedure TCustomCheckBox.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
+  Y: Integer);
+begin
+  inherited MouseUp(Button, Shift, X, Y);
+  if State=cbGrayed then State:=cbChecked;
 end;
 
 {------------------------------------------------------------------------------
@@ -229,6 +220,9 @@ end;
 
 {
   $Log$
+  Revision 1.32  2005/02/21 20:15:28  mattias
+  fixed componentpalette adding via double click
+
   Revision 1.31  2005/01/24 12:23:11  mattias
   fixed TColorButton.Paint
 

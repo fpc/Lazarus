@@ -42,7 +42,7 @@ begin
   fLastCheckedOnChange:=Checked;
   if [csLoading,csDestroying,csDesigning]*ComponentState<>[] then exit;
   EditingDone;
-  if UseOnChange and Assigned(OnChange) then OnChange(Self);
+  if Assigned(OnChange) then OnChange(Self);
 end;
 
 procedure TButtonControl.Loaded;

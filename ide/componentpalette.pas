@@ -40,7 +40,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, Controls, Dialogs, Graphics, ExtCtrls, Buttons,
   Menus, LResources, {$IFNDEF VER1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF},
-  FormEditingIntf,
+  PropEdits, FormEditingIntf,
   {$IFDEF CustomIDEComps}
   CustomIDEComps,
   {$ENDIF}
@@ -204,6 +204,7 @@ var
   TypeClass: TComponentClass;
   ParentCI: TIComponentInterface;
   X, Y: integer;
+  CompIntf: TIComponentInterface;
 begin
   //debugln('TComponentPalette.ComponentBtnDblClick ',TComponent(Sender).Name);
   if SelectButton(TComponent(Sender)) and (FSelected<>nil) then begin
@@ -214,7 +215,10 @@ begin
       if not FormEditingHook.GetDefaultComponentPosition(TypeClass,ParentCI,X,Y)
       then exit;
       //debugln('TComponentPalette.ComponentBtnDblClick ',dbgsName(Sender),' ',dbgs(X),',',dbgs(Y));
-      FormEditingHook.CreateComponent(ParentCI,TypeClass,X,Y,0,0);
+      CompIntf:=FormEditingHook.CreateComponent(ParentCI,TypeClass,X,Y,0,0);
+      if CompIntf<>nil then begin
+        GlobalDesignHook.PersistentAdded(CompIntf.Component,true);
+      end;
     end;
   end;
   Selected:=nil;

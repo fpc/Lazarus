@@ -222,10 +222,10 @@ type
   public
     class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox
                                   ): TCheckBoxState; override;
-    class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox; 
-      const OldShortCut, NewShortCut: TShortCut); override;
     class procedure SetState(const ACustomCheckBox: TCustomCheckBox;
                              const NewState: TCheckBoxState); override;
+    class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox;
+      const OldShortCut, NewShortCut: TShortCut); override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
                         var PreferredWidth, PreferredHeight: integer); override;
   end;
