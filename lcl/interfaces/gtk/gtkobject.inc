@@ -617,6 +617,7 @@ begin
   DestroyGdkCursor(Cursor_SizeNS);
   DestroyGdkCursor(Cursor_SizeNESW);
   DestroyGdkCursor(Cursor_SizeWE);
+  DestroyGdkCursor(Cursor_Help);
 
   gtk_object_unref(PGTKObject(FGTKToolTips));
   FGTKToolTips := nil;
@@ -679,6 +680,7 @@ begin
   Cursor_SizeNS := gdk_Cursor_New(GDK_SB_V_DOUBLE_ARROW);
   Cursor_SizeNESW := gdk_Cursor_New(GDK_BOTTOM_LEFT_CORNER);
   Cursor_SizeWE := gdk_Cursor_New(GDK_SB_H_DOUBLE_ARROW);
+  Cursor_Help := gdk_Cursor_New(GDK_QUESTION_ARROW);
 
   gtk_key_snooper_install(@GTKKeySnooper, @FKeyStateList);
 
@@ -5661,6 +5663,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.203  2002/09/06 22:32:21  lazarus
+  Enabled cursor property + property editor.
+
   Revision 1.202  2002/09/06 19:45:11  lazarus
   Cleanups plus a fix to TPanel parent/drawing problem.
 
