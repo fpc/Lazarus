@@ -231,8 +231,12 @@ procedure TBreakPointsDlg.UpdateItem(const AItem: TListItem;
 const
   DEBUG_ACTION: array[TDBGBreakPointAction] of string =
     ('Break', 'Enable Group', 'Disable Group');
+    
   //                 enabled  valid
-  DEBUG_STATE: array[Boolean, Boolean] of String = (('?', ''), ('!', '*'));
+  DEBUG_STATE: array[Boolean, TValidState] of String = (
+             {vsUnknown, vsValid, vsInvalid}
+    {Enabled} ('',       '?',     ''),
+    {Disabled}('*',      '!',     '*'));
 var
   Action: TDBGBreakPointAction;
   S: String;
@@ -272,6 +276,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.11  2003/05/23 14:12:51  mattias
+  implemented restoring breakpoints
+
   Revision 1.10  2003/05/22 23:08:19  marc
   MWE: = Moved and renamed debuggerforms so that they can be
          modified by the ide

@@ -741,7 +741,7 @@ begin
   Loaded:=XMLConfig.GetValue(Path+'Loaded/Value',false);
   fUserReadOnly:=XMLConfig.GetValue(Path+'ReadOnly/Value',false);
   AFilename:=XMLConfig.GetValue(Path+'ResourceFilename/Value','');
-  if Assigned(fOnLoadSaveFilename) then
+  if (AFilename<>'') and Assigned(fOnLoadSaveFilename) then
     fOnLoadSaveFilename(AFilename,true);
   FResourceFilename:=AFilename;
   if (FResourceFilename<>'')
@@ -2080,9 +2080,10 @@ begin
     Result:=mrOk;
 end;
 
-procedure TProject.OnLoadSaveFilename(var AFilename:string; Load:boolean);
+procedure TProject.OnLoadSaveFilename(var AFilename: string; Load:boolean);
 var ProjectPath:string;
 begin
+  if AFileName='' then exit;
   ProjectPath:=ProjectDirectory;
   if ProjectPath='' then ProjectPath:=GetCurrentDir;
   DoDirSeparators(AFilename);
@@ -2682,6 +2683,9 @@ end.
 
 {
   $Log$
+  Revision 1.121  2003/05/23 14:12:51  mattias
+  implemented restoring breakpoints
+
   Revision 1.120  2003/05/21 16:19:12  mattias
   implemented saving breakpoints and watches
 

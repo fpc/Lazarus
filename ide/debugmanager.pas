@@ -40,6 +40,7 @@ uses
   MemCheck,
 {$ENDIF}
   Classes, SysUtils, Forms, Controls, Dialogs, Menus, FileCtrl, Laz_XMLCfg,
+  SynEdit,
   CompilerOptions, EditorOptions, EnvironmentOpts, KeyMapping, UnitEditor,
   Project, IDEProcs, Debugger, RunParamsOpts, ExtToolDialog, IDEOptionDefs,
   LazarusIDEStrConsts, ProjectDefs, BaseDebugManager, MainBar, DebuggerDlg,
@@ -59,6 +60,7 @@ type
   TDebugManager = class(TBaseDebugManager)
     // Menu events
     procedure mnuViewDebugDialogClick(Sender: TObject);
+    procedure mnuResetDebuggerClicked(Sender : TObject);
 
     // SrcNotebook events
     procedure OnSrcNotebookAddWatchesAtCursor(Sender: TObject);
@@ -66,20 +68,21 @@ type
     procedure OnSrcNotebookDeleteBreakPoint(Sender: TObject; Line: Integer);
 
     // Debugger events
-    procedure OnDebuggerChangeState(Sender: TObject);
+    procedure OnDebuggerChangeState(ADebugger: TDebugger; OldState: TDBGState);
     procedure OnDebuggerCurrentLine(Sender: TObject;
                                     const ALocation: TDBGLocationRec);
     procedure OnDebuggerOutput(Sender: TObject; const AText: String);
     procedure OnDebuggerException(Sender: TObject; const AExceptionID: Integer;
                                   const AExceptionText: String);
   private
-    FBreakPoints: TDBGBreakPoints; // Points to debugger breakpoints if available
-                                   // Else to own object
-    FWatches: TDBGWatches;         // Points to debugger watches if available
-                                   // Else to own object
-    FDialogs: array[TDebugDialogType] of TDebuggerDlg;
-
     FDebugger: TDebugger;
+    // When no debugger is created the IDE stores all debugger settings in its
+    // own variables. When the debugger object is created these items point
+    // to the corresponding items in the FDebugger object.
+    FBreakPoints: TDBGBreakPoints;
+    FBreakPointGroups: TDBGBreakPointGroups;
+    FWatches: TDBGWatches;
+    FDialogs: array[TDebugDialogType] of TDebuggerDlg;
 
     procedure DebugDialogDestroy(Sender: TObject);
     procedure ViewDebugDialog(const ADialogType: TDebugDialogType);
@@ -94,7 +97,9 @@ type
     procedure ConnectSourceNotebookEvents; override;
     procedure SetupMainBarShortCuts; override;
     
+    procedure LoadProjectSpecificInfo(XMLConfig: TXMLConfig); override;
     procedure SaveProjectSpecificInfo(XMLConfig: TXMLConfig); override;
+    procedure DoRestoreDebuggerMarks(AnUnitInfo: TUnitInfo); override;
 
     function DoInitDebugger: TModalResult; override;
     function DoPauseProject: TModalResult; override;
@@ -128,6 +133,14 @@ begin
   ViewDebugDialog(TDebugDialogType(TMenuItem(Sender).Tag));
 end;
 
+procedure TDebugManager.mnuResetDebuggerClicked(Sender: TObject);
+begin
+  if State = dsNone then Exit;
+
+  EndDebugging;
+  DoInitDebugger;
+end;
+
 //-----------------------------------------------------------------------------
 // ScrNoteBook events
 //-----------------------------------------------------------------------------
@@ -159,20 +172,24 @@ var
 begin
   if SourceNotebook.Notebook = nil then Exit;
 
-  NewBreak := FBreakPoints.Add(
-                  ExtractFilename(TSourceNotebook(Sender).GetActiveSe.FileName),
+  NewBreak := FBreakPoints.Add(TSourceNotebook(Sender).GetActiveSE.FileName,
                   Line);
-  NewBreak.Enabled := True;
   NewBreak.InitialEnabled := True;
+  NewBreak.Enabled := True;
   Project1.Modified:=true;
 end;
 
-procedure TDebugManager.OnSrcNotebookDeleteBreakPoint(Sender: TObject; Line: Integer);
+procedure TDebugManager.OnSrcNotebookDeleteBreakPoint(Sender: TObject;
+  Line: Integer);
+var
+  OldBreakPoint: TDBGBreakPoint;
 begin
   if SourceNotebook.Notebook = nil then Exit;
 
-  FBreakPoints.Find(ExtractFilename(
-                      TSourceNotebook(Sender).GetActiveSe.FileName), Line).Free;
+  OldBreakPoint:=FBreakPoints.Find(TSourceNotebook(Sender).GetActiveSE.FileName,
+                                   Line);
+  if OldBreakPoint=nil then exit;
+  OldBreakPoint.Free;
   Project1.Modified:=true;
 end;
 
@@ -180,10 +197,12 @@ end;
 // Debugger events
 //-----------------------------------------------------------------------------
 
-procedure TDebugManager.OnDebuggerException(Sender: TObject; const AExceptionID: Integer; const AExceptionText: String);
+procedure TDebugManager.OnDebuggerException(Sender: TObject;
+  const AExceptionID: Integer; const AExceptionText: String);
 begin
   MessageDlg('Error',
-    Format('Project %s raised exception class %d with message ''%s''.', [Project1.Title, AExceptionID, AExceptionText]),
+    Format('Project %s raised exception class %d with message ''%s''.',
+           [Project1.Title, AExceptionID, AExceptionText]),
     mtError,[mbOk],0);
 end;
 
@@ -193,7 +212,8 @@ begin
   then TDbgOutputForm(FDialogs[ddtOutput]).AddText(AText);
 end;
 
-procedure TDebugManager.OnDebuggerChangeState(Sender: TObject);
+procedure TDebugManager.OnDebuggerChangeState(ADebugger: TDebugger;
+  OldState: TDBGState);
 const
   // dsNone, dsIdle, dsStop, dsPause, dsRun, dsError
   TOOLSTATEMAP: array[TDBGState] of TIDEToolStatus = (
@@ -205,7 +225,7 @@ const
   );
 begin
   // Is the next line needed ???
-  if (Sender<>FDebugger) or (Sender=nil) then exit;
+  if (ADebugger<>FDebugger) or (ADebugger=nil) then exit;
 
   WriteLN('[TDebugManager.OnDebuggerChangeState] state: ', STATENAME[FDebugger.State]);
 
@@ -215,7 +235,7 @@ begin
   // -------------------
 
   with MainIDE do begin
-    // For run end step bypass idle, so we can set the filename later
+    // For 'run' and 'step' bypass 'idle', so we can set the filename later
     RunSpeedButton.Enabled := (dcRun in FDebugger.Commands) or (FDebugger.State = dsIdle);
     itmProjectRun.Enabled := RunSpeedButton.Enabled;
     PauseSpeedButton.Enabled := dcPause in FDebugger.Commands;
@@ -234,19 +254,25 @@ begin
     ToolStatus := TOOLSTATEMAP[FDebugger.State];
   end;
 
+
   case FDebugger.State of 
-    dsError: begin
+
+  dsError:
+    begin
       WriteLN('Ooops, the debugger entered the error state');
       MessageDlg(lisDebuggerError,
         Format(lisDebuggerErrorOoopsTheDebuggerEnteredTheErrorState, [#13#13,
           #13, #13#13]),
         mtError, [mbOK],0);
     end;
-    dsStop: begin
+
+  dsStop:
+    if (OldState<>dsIdle) then begin
       MessageDlg(lisExecutionStopped,
         Format(lisExecutionStoppedOn, [#13#13]),
         mtInformation, [mbOK],0);
     end;
+
   end;
 end;
 
@@ -353,18 +379,19 @@ const
   DEBUGDIALOGCLASS: array[TDebugDialogType] of TDebuggerDlgClass = (
     TDbgOutputForm, TBreakPointsDlg, TWatchesDlg, TLocalsDlg, TCallStackDlg
   );
+var
+  CurDialog: TDebuggerDlg;
 begin
   if FDialogs[ADialogType] = nil
   then begin
     FDialogs[ADialogType] := DEBUGDIALOGCLASS[ADialogType].Create(Self);
-    FDialogs[ADialogType].Name:=
-      NonModalIDEWindowNames[DebugDlgIDEWindow[ADialogType]];
-    FDialogs[ADialogType].Tag := Integer(ADialogType);
-    FDialogs[ADialogType].OnDestroy := @DebugDialogDestroy;
+    CurDialog:=FDialogs[ADialogType];
+    CurDialog.Name:=NonModalIDEWindowNames[DebugDlgIDEWindow[ADialogType]];
+    CurDialog.Tag := Integer(ADialogType);
+    CurDialog.OnDestroy := @DebugDialogDestroy;
     DoInitDebugger;
-    FDialogs[ADialogType].Debugger := FDebugger;
-    EnvironmentOptions.IDEWindowLayoutList.Apply(
-                              FDialogs[ADialogType],FDialogs[ADialogType].Name);
+    CurDialog.Debugger := FDebugger;
+    EnvironmentOptions.IDEWindowLayoutList.Apply(CurDialog,CurDialog.Name);
   end;
   FDialogs[ADialogType].Show;
   FDialogs[ADialogType].BringToFront;
@@ -388,6 +415,7 @@ begin
 
   FDebugger := nil;
   FBreakPoints := TDBGBreakPoints.Create(nil, TDBGBreakPoint);
+  FBreakPointGroups := TDBGBreakPointGroups.Create;
   FWatches := TDBGWatches.Create(nil, TDBGWatch);
   inherited Create(TheOwner);
 end;
@@ -403,6 +431,8 @@ begin
   then begin
     if FDebugger.BreakPoints = FBreakPoints
     then FBreakPoints := nil;
+    if FDebugger.BreakPointGroups = FBreakPointGroups
+    then FBreakPointGroups := nil;
     if FDebugger.Watches = FWatches
     then FWatches := nil;
   
@@ -410,6 +440,7 @@ begin
   end
   else begin
     FreeThenNil(FBreakPoints);
+    FreeThenNil(FBreakPointGroups);
     FreeThenNil(FWatches);
   end;
 
@@ -429,6 +460,8 @@ begin
     itmViewCallStack.Tag := Ord(ddtCallStack);
     itmViewDebugOutput.OnClick := @mnuViewDebugDialogClick;
     itmViewDebugOutput.Tag := Ord(ddtOutput);
+
+    itmProjectResetDebugger.OnClick := @mnuResetDebuggerClicked;
   end;
 end;
 
@@ -451,9 +484,35 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  procedure TDebugManager.LoadProjectSpecificInfo(XMLConfig: TXMLConfig);
+
+  Called when the main project is loaded from the XMLConfig.
+------------------------------------------------------------------------------}
+procedure TDebugManager.LoadProjectSpecificInfo(XMLConfig: TXMLConfig);
+begin
+  if FDebugger=nil then begin
+    FBreakPointGroups.LoadFromXMLConfig(XMLConfig,
+                                      'Debugging/'+XMLBreakPointGroupsNode+'/');
+    FBreakPoints.LoadFromXMLConfig(XMLConfig,'Debugging/'+XMLBreakPointsNode+'/',
+                                 @Project1.LongenFilename,
+                                 @FBreakPointGroups.GetGroupByName);
+    FWatches.LoadFromXMLConfig(XMLConfig,'Debugging/'+XMLWatchesNode+'/');
+  end else begin
+    FDebugger.LoadFromXMLConfig(XMLConfig,'Debugging/',@Project1.LongenFilename);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  procedure TDebugManager.SaveProjectSpecificInfo(XMLConfig: TXMLConfig);
+
+  Called when the main project is saved to an XMLConfig.
+------------------------------------------------------------------------------}
 procedure TDebugManager.SaveProjectSpecificInfo(XMLConfig: TXMLConfig);
 begin
   if FDebugger=nil then begin
+    FBreakPointGroups.SaveToXMLConfig(XMLConfig,
+                                      'Debugging/'+XMLBreakPointGroupsNode+'/');
     FBreakPoints.SaveToXMLConfig(XMLConfig,'Debugging/'+XMLBreakPointsNode+'/',
                                  @Project1.ShortenFilename);
     FWatches.SaveToXMLConfig(XMLConfig,'Debugging/'+XMLWatchesNode+'/');
@@ -462,11 +521,56 @@ begin
   end;
 end;
 
+procedure TDebugManager.DoRestoreDebuggerMarks(AnUnitInfo: TUnitInfo);
+var
+  ASrcEdit: TSourceEditor;
+  EditorComponent: TSynEdit;
+  Marks: TSynEditMarkList;
+  i: Integer;
+  CurBreakPoint: TDBGBreakPoint;
+  SrcFilename: String;
+  AMark: TSynEditMark;
+  CurType: TSrcEditMarkerType;
+begin
+  if AnUnitInfo.EditorIndex<0 then exit;
+  ASrcEdit:=SourceNotebook.Editors[AnUnitInfo.EditorIndex];
+  EditorComponent:=ASrcEdit.EditorComponent;
+  Marks:=EditorComponent.Marks;
+  // delete old breakpoints
+  for i:=Marks.Count-1 downto 0 do begin
+    AMark:=Marks[i];
+    if ASrcEdit.IsBreakPointMark(Marks[i]) then begin
+      Marks.Delete(i);
+      AMark.Free;
+    end;
+  end;
+  // set breakpoints
+  SrcFilename:=AnUnitInfo.Filename;
+  for i:=0 to FBreakpoints.Count-1 do begin
+    CurBreakPoint:=FBreakpoints[i];
+    if CompareFileNames(CurBreakPoint.Source,SrcFilename)=0 then begin
+      if CurBreakPoint.Enabled then begin
+        if CurBreakPoint.Valid in [vsValid,vsUnknown] then
+          CurType:=semActiveBreakPoint
+        else
+          CurType:=semInvalidBreakPoint;
+      end else
+        CurType:=semInactiveBreakPoint;
+      ASrcEdit.SetBreakPoint(CurBreakPoint.Line,CurType);
+    end;
+  end;
+end;
+
 //-----------------------------------------------------------------------------
 // Debugger routines
 //-----------------------------------------------------------------------------
 
 function TDebugManager.DoInitDebugger: TModalResult;
+var
+  OldBreakpoints: TDBGBreakpoints;
+  OldBreakPointGroups: TDBGBreakPointGroups;
+  OldWatches: TDBGWatches;
+
   procedure ResetDialogs;
   var
     DialogType: TDebugDialogType;
@@ -477,9 +581,55 @@ function TDebugManager.DoInitDebugger: TModalResult;
       then FDialogs[DialogType].Debugger := FDebugger;
     end;
   end;
+  
+  procedure SaveDebuggerItems;
+  begin
+    // copy the break point list without the group references
+    OldBreakpoints := TDBGBreakpoints.Create(nil, TDBGBreakpoint);
+    OldBreakpoints.Assign(FBreakPoints);
+    
+    // copy the groups and all group references
+    OldBreakPointGroups := TDBGBreakPointGroups.Create;
+    OldBreakPointGroups.Regroup(FBreakPointGroups,FBreakPoints,OldBreakPoints);
+
+    // copy the watches
+    OldWatches := TDBGWatches.Create(nil, TDBGWatch);
+    OldWatches.Assign(FWatches);
+
+    FBreakPointGroups := nil;
+    FBreakPoints := nil;
+    FWatches := nil;
+  end;
+  
+  procedure RestoreDebuggerItems;
+  begin
+    // restore the break point list without the group references
+    if (OldBreakpoints<>nil) then
+      FBreakPoints.Assign(OldBreakpoints);
+
+    // restore the groups and all group references
+    if (OldBreakPointGroups<>nil) then begin
+      if (OldBreakpoints<>nil) then
+        FBreakPointGroups.Regroup(OldBreakPointGroups,OldBreakpoints,
+                                  FBreakPoints)
+      else
+        FBreakPointGroups.Assign(OldBreakPointGroups);
+    end;
+
+    // restore the watches
+    if OldWatches<>nil then
+      FWatches.Assign(OldWatches);
+  end;
+  
+  procedure FreeDebugger;
+  begin
+    SaveDebuggerItems;
+    FDebugger.Free;
+    FDebugger := nil;
+    ResetDialogs;
+  end;
+
 var
-  OldBreakpoints: TDBGBreakpoints;
-  OldWatches: TDBGWatches;
   LaunchingCmdLine, LaunchingApplication, LaunchingParams: String;
 begin
   WriteLN('[TDebugManager.DoInitDebugger] A');
@@ -491,62 +641,44 @@ begin
   SplitCmdLine(LaunchingCmdLine,LaunchingApplication,LaunchingParams);
 
   OldBreakpoints := nil;
+  OldBreakPointGroups := nil;
   OldWatches := nil;
+  
+  try
 
-  case EnvironmentOptions.DebuggerType of
-    dtGnuDebugger: begin
-      if (FDebugger <> nil)
-      and ( not(FDebugger is TGDBMIDebugger)
-            or (FDebugger.ExternalDebugger <> EnvironmentOptions.DebuggerFilename)
-          )
-      then begin
-        OldBreakpoints := TDBGBreakpoints.Create(nil, TDBGBreakpoint);
-        OldBreakpoints.Assign(FBreakPoints);
-        FBreakPoints := nil;
-
-        OldWatches := TDBGWatches.Create(nil, TDBGWatch);
-        OldWatches.Assign(FWatches);
-        FWatches := nil;
-
-        FDebugger.Free;
-        FDebugger := nil;
-        ResetDialogs;
-      end;
-      if FDebugger = nil
-      then begin
-        if FBreakPoints <> nil
+    case EnvironmentOptions.DebuggerType of
+      dtGnuDebugger: begin
+        // check if debugger already created with the right type
+        if (FDebugger <> nil)
+        and ( not(FDebugger is TGDBMIDebugger)
+              or (FDebugger.ExternalDebugger <> EnvironmentOptions.DebuggerFilename)
+            )
         then begin
-          OldBreakpoints := TDBGBreakpoints.Create(nil, TDBGBreakpoint);
-          OldBreakpoints.Assign(FBreakPoints);
+          // the current debugger is the wrong type -> free it
+          FreeDebugger;
         end;
-        if FWatches <> nil
+        // create debugger object
+        if FDebugger = nil
         then begin
-          OldWatches := TDBGWatches.Create(nil, TDBGWatch);
-          OldWatches.Assign(FWatches);
+          SaveDebuggerItems;
+          FDebugger := TGDBMIDebugger.Create(EnvironmentOptions.DebuggerFilename);
+          FBreakPointGroups := FDebugger.BreakPointGroups;
+          FBreakPoints := FDebugger.BreakPoints;
+          FWatches := FDebugger.Watches;
+          ResetDialogs;
         end;
-        FDebugger := TGDBMIDebugger.Create(EnvironmentOptions.DebuggerFilename);
-        FBreakPoints := FDebugger.BreakPoints;
-        FWatches := FDebugger.Watches;
-        ResetDialogs;
+        // restore debugger items
+        RestoreDebuggerItems;
       end;
-      if OldBreakpoints <> nil
-      then FBreakPoints.Assign(OldBreakpoints);
-      if OldWatches <> nil
-      then FWatches.Assign(OldWatches);
+    else
+      if FDebugger=nil then
+        FreeDebugger;
+      exit;
     end;
-  else
-    OldBreakpoints := FBreakPoints;
-    FBreakPoints := TDBGBreakpoints.Create(nil, TDBGBreakpoint);
-    FBreakPoints.Assign(OldBreakpoints);
-
-    OldWatches := FWatches;
-    FWatches := TDBGWatches.Create(nil, TDBGWatch);
-    FWatches.Assign(OldWatches);
-
-    FDebugger.Free;
-    FDebugger := nil;
-    ResetDialogs;
-    Exit;
+  finally
+    OldBreakpoints.Free;
+    OldBreakPointGroups.Free;
+    OldWatches.Free;
   end;
   FDebugger.OnState     := @OnDebuggerChangeState;
   FDebugger.OnCurrent   := @OnDebuggerCurrentLine;
@@ -554,7 +686,7 @@ begin
   FDebugger.OnException := @OnDebuggerException;
   if FDebugger.State = dsNone
   then FDebugger.Init;
-  
+
   FDebugger.FileName := LaunchingApplication;
   FDebugger.Arguments := LaunchingParams;
   Project1.RunParameterOptions.AssignEnvironmentTo(FDebugger.Environment);
@@ -563,9 +695,6 @@ begin
   then TDbgOutputForm(FDialogs[ddtOutput]).Clear;
 
   //TODO: Show/hide debug menuitems based on FDebugger.SupportedCommands
-
-  // property BreakPointGroups: TDBGBreakPointGroups read FBreakPointGroups; // list of all breakpoints
-  // property Watches: TDBGWatches read FWatches;   // list of all watches localvars etc
 
   Result := mrOk;
   WriteLN('[TDebugManager.DoInitDebugger] END');
@@ -694,6 +823,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.19  2003/05/23 14:12:50  mattias
+  implemented restoring breakpoints
+
   Revision 1.18  2003/05/22 17:06:49  mattias
   implemented InitialEnabled for breakpoints and watches
 

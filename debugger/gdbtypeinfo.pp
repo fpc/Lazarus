@@ -366,7 +366,7 @@ var
     FKind := skRecord;
     FFields := TGDBFields.Create;
 
-    //concatinate all lines and skip last end
+    //concatenate all lines and skip last end
     S := '';
     for n := 0 to Lines.Count - 2 do
       S := S + Lines[n];
@@ -379,6 +379,7 @@ var
       Field.FGDBType := TGDBType.Create;
       Field.FGDBType.FKind := skSimple; // for now
       Field.FGDBType.FTypeName := GetPart([' : '], [';'], S);
+      FFields.FList.Add(Field);
       Delete(S, 1, 1);
     end;
   end;
@@ -391,7 +392,7 @@ var
     FKind := skEnum;
 
     S := GetPart(['('], [], Line);
-    //concatinate all lines
+    //concatenate all lines
     for n := 0 to Lines.Count - 1 do
       S := S + Lines[n];
 
@@ -428,7 +429,7 @@ var
     FKind := skProcedure;
 
     S := GetPart(['('], [], Line);
-    //concatinate all lines
+    //concatenate all lines
     for n := 0 to Lines.Count - 1 do
       S := S + Lines[n];
 
@@ -444,7 +445,7 @@ var
     FKind := skFunction;
 
     S := GetPart(['('], [], Line);
-    //concatinate all lines
+    //concatenate all lines
     for n := 0 to Lines.Count - 1 do
       S := S + Lines[n];
 
@@ -597,6 +598,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.2  2003/05/23 14:12:51  mattias
+  implemented restoring breakpoints
+
   Revision 1.1  2003/05/22 23:08:19  marc
   MWE: = Moved and renamed debuggerforms so that they can be
          modified by the ide

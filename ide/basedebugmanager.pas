@@ -40,7 +40,7 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, Forms, Laz_XMLCfg, Debugger;
+  Classes, SysUtils, Forms, Laz_XMLCfg, Project, Debugger;
 
 type
   TBaseDebugManager = class(TComponent)
@@ -52,7 +52,9 @@ type
     procedure ConnectSourceNotebookEvents; virtual; abstract;
     procedure SetupMainBarShortCuts; virtual; abstract;
     
+    procedure LoadProjectSpecificInfo(XMLConfig: TXMLConfig); virtual; abstract;
     procedure SaveProjectSpecificInfo(XMLConfig: TXMLConfig); virtual; abstract;
+    procedure DoRestoreDebuggerMarks(AnUnitInfo: TUnitInfo); virtual; abstract;
 
     function DoInitDebugger: TModalResult; virtual; abstract;
     function DoPauseProject: TModalResult; virtual; abstract;

@@ -803,14 +803,9 @@ var XMLConfig: TXMLConfig;
 
   procedure LoadDebuggerType(var ADebuggerType: TDebuggerType; 
     const Path: string);
-  var i:integer;
   begin
-    i:=XMLConfig.GetValue(Path+'DebuggerType/Value',5);
-    case i of
-    1:ADebuggerType:=dtGnuDebugger;
-    else
-      ADebuggerType:=dtNone;
-    end;
+    ADebuggerType:=DebuggerNameToType(
+                                   XMLConfig.GetValue(Path+'Debugger/Type',''));
   end;
   
   procedure LoadPascalFileExt(const Path: string);
@@ -1030,13 +1025,9 @@ var XMLConfig: TXMLConfig;
   end;
 
   procedure SaveDebuggerType(ADebuggerType: TDebuggerType; Path:string);
-  var i:integer;
   begin
-    case ADebuggerType of
-     dtNone: i:=0;
-     dtGnuDebugger: i:=1;
-    end;
-    XMLConfig.SetDeleteValue(Path+'DebuggerType/Value',i,1);
+    XMLConfig.SetDeleteValue(Path+'Debugger/Type',DebuggerName[ADebuggerType],
+                             DebuggerName[dtNone]);
   end;
   
 

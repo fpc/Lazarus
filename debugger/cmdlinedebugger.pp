@@ -39,7 +39,7 @@ unit CmdLineDebugger;
 interface
 
 uses
-  Classes, Process, Debugger{, strmlsnr};
+  Classes, Process, Debugger, Forms, DBGUtils;
 
 type
   TCmdLineDebugger = class(TDebugger)
@@ -48,13 +48,13 @@ type
     FLineEnds: TStringList;  // List of strings considered as lineends
     FOutputBuf: String;
     FReading: Boolean;       // Set if we are in the ReadLine loop
-    FFlushAfterRead: Boolean;// Set if we should flus if we finished reading
-    FPeekOffset: Integer;    // Counst the number of lines we have peeked
+    FFlushAfterRead: Boolean;// Set if we should flush after finished reading
+    FPeekOffset: Integer;    // Count the number of lines we have peeked
     function GetDebugProcessRunning: Boolean;
   protected
     function  CreateDebugProcess(const AOptions: String): Boolean;
     procedure Flush;         // Flushes output buffer
-//    procedure KillTargetProcess;
+    // procedure KillTargetProcess;
     function  ReadLine: String; overload;
     function  ReadLine(const APeek: Boolean): String; overload;
     procedure SendCmdLn(const ACommand: String); overload;
@@ -72,6 +72,11 @@ procedure SendBreak(const AHandle: Integer);
 
 implementation
 
+//////////////////////////////////////////////////
+//       Needs to go to proper include
+//          Platform dependent
+//////////////////////////////////////////////////
+
 uses
 {$IFDEF Linux}
  {$IFDEF Ver1_0}
@@ -80,13 +85,8 @@ uses
    Unix,
  {$ENDIF}     
 {$ENDIF}
-  SysUtils, Forms, DBGUtils;
+  SysUtils;
   
-//////////////////////////////////////////////////
-//       Needs to go to proper include
-//          Platform dependent
-//////////////////////////////////////////////////
-
 {------------------------------------------------------------------------------
   Function: SendBreak
   Params:   AHandle              THe handle of the proces tosend break to
@@ -336,6 +336,7 @@ end;
 
 procedure TCmdLineDebugger.SendCmdLn(const ACommand: String); overload;
 begin
+  writeln('TCmdLineDebugger.SendCmdLn "',ACommand,'"');
   if DebugProcessRunning
   then begin
     DoDbgOutput('<' + ACommand + '>');
@@ -362,6 +363,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.14  2003/05/23 14:12:51  mattias
+  implemented restoring breakpoints
+
   Revision 1.13  2002/08/28 11:41:52  lazarus
   MG: activated environment opts in debugger
 

@@ -215,7 +215,8 @@ type
       SynColorScheme: string; DefaultPascalSyn: TPreviewPasSyn);
     procedure WriteHighlighterSettings(Syn: TCustomSyn; SynColorScheme: string);
     procedure GetSpecialLineColors(Syn: TCustomSyn; 
-      AddHilightAttr: TAdditionalHilightAttribute; var FG, BG: TColor);
+      AddHilightAttr: TAdditionalHilightAttribute; var Special: boolean;
+      var FG, BG: TColor);
   published
     // general options
     property SynEditOptions:TSynEditorOptions
@@ -765,6 +766,7 @@ begin
       '  begin'#13+
       '    Inc(X); { Enabled breakpoint }'#13+
       '    Dec(X); { Disabled breakpoint }'#13+
+      '    // { Invalid breakpoint }'#13+
       '    X := X + 1.0; { Error line }'#13+
       '    ListBox1.Items.Add(IntToStr(X));'#13+
       '  end;'#13+
@@ -772,7 +774,8 @@ begin
       #13;
     AddAttrSampleLines[ahaDisabledBreakpoint]:=18;
     AddAttrSampleLines[ahaEnabledBreakpoint]:=17;
-    AddAttrSampleLines[ahaErrorLine]:=19;
+    AddAttrSampleLines[ahaInvalidBreakpoint]:=19;
+    AddAttrSampleLines[ahaErrorLine]:=20;
     AddAttrSampleLines[ahaExecutionPoint]:=15;
     AddAttrSampleLines[ahaTextBlock]:=14;
   end;
@@ -1688,16 +1691,22 @@ begin
 end;
 
 procedure TEditorOptions.GetSpecialLineColors(Syn: TCustomSyn; 
-  AddHilightAttr: TAdditionalHilightAttribute; var FG, BG: TColor);
-var i: integer;
+  AddHilightAttr: TAdditionalHilightAttribute; var Special: boolean;
+  var FG, BG: TColor);
+var
+  i: integer;
+  NewFG, NewBG: TColor;
 begin
   if Syn<>nil then begin
     for i:=0 to Syn.AttrCount-1 do begin
       if Syn.Attribute[i].Name='' then continue;
       if Syn.Attribute[i].Name=AdditionalHighlightAttributes[AddHilightAttr]
       then begin
-        FG:=Syn.Attribute[i].Foreground;
-        BG:=Syn.Attribute[i].Background;
+        NewFG:=Syn.Attribute[i].Foreground;
+        NewBG:=Syn.Attribute[i].Background;
+        Special:=(NewFG<>clNone) or (NewBG<>clNone);
+        if NewFG<>clNone then FG:=NewFG;
+        if NewBG<>clNone then BG:=NewBG;
         exit;
       end;
     end;
@@ -2787,9 +2796,9 @@ begin
         e:=PreviewSyn.Attribute[i];
         if e.Name='' then continue;
         if e.Name=AdditionalHighlightAttributes[AddAttr] then begin
-          Special:=true;
-          FG:=e.ForeGround;
-          BG:=e.BackGround;
+          Special:=(e.ForeGround<>clNone) or (e.BackGround<>clNone);
+          if e.ForeGround<>clNone then FG:=e.ForeGround;
+          if e.BackGround<>clNone then BG:=e.BackGround;
           exit;
         end;
         dec(i);
