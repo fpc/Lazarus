@@ -75,7 +75,7 @@ begin
         inc(X,DCOrigin.X);
         inc(Y,DCOrigin.Y);
         {$IFDEF DebugGDKTraps}BeginGDKErrorTrap;{$ENDIF}
-        gdk_draw_arc(Drawable, GC, 0, X, Y, Width, Height,
+        gdk_draw_arc(Drawable, GC, 0, X-Width, Y-Height, 2*Width, 2*Height,
                      Angle1 shl 2, Angle2 shl 2);
         {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
       end else
@@ -8862,6 +8862,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.391  2005/02/04 01:04:41  mattias
+  fixed gtk intf Arc
+
   Revision 1.390  2005/01/28 17:55:48  mattias
   fixed mem leak
 

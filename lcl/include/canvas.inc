@@ -390,17 +390,8 @@ begin
 end;
 
 procedure TCanvas.DoEllipseFill(const Bounds: TRect);
-var
-  x: Integer;
-  y: Integer;
-  w: Integer;
-  h: Integer;
 begin
-  x:=(Bounds.Left+Bounds.Right) div 2;
-  y:=(Bounds.Top+Bounds.Bottom) div 2;
-  w:=Abs(Bounds.Right-Bounds.Left) div 2;
-  h:=Abs(Bounds.Bottom-Bounds.Top) div 2;
-  Chord(x,y,w,h,0,360*16);
+  Ellipse(Bounds);
 end;
 
 procedure TCanvas.DoEllipseAndFill(const Bounds: TRect);
@@ -1544,6 +1535,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.90  2005/02/04 01:04:40  mattias
+  fixed gtk intf Arc
+
   Revision 1.89  2005/01/15 11:56:13  mattias
   fixed locking TCanvas
 
