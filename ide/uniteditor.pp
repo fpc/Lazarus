@@ -2094,6 +2094,8 @@ end;
 function TSourceNotebook.OnSynCompletionPaintItem(const AKey: string;
   ACanvas: TCanvas;  X, Y: integer; ItemSelected: boolean;
   Index: integer): boolean;
+var
+  MaxX: Integer;
 begin
   with ACanvas do begin
     if (aCompletion<>nil) and (aCompletion.Editor<>nil) then
@@ -2108,7 +2110,8 @@ begin
     else
       Font.Color:=FActiveEditSelectedFGColor;
   end;
-  PaintCompletionItem(AKey,ACanvas,X,Y,ItemSelected,Index,aCompletion,
+  MaxX:=aCompletion.TheForm.ClientWidth;
+  PaintCompletionItem(AKey,ACanvas,X,Y,MaxX,ItemSelected,Index,aCompletion,
                       CurrentCompletionType);
   Result:=true;
 end;
@@ -2407,9 +2410,9 @@ var
   p1, p2: integer;
   ValueType: TIdentComplValue;
   SrcEdit: TSourceEditor;
-  NewValue: string;
   CaretXY: TPoint;
-  Line: string;
+  CursorToLeft: integer;
+  NewValue: String;
 Begin
   if CurCompletionControl=nil then exit;
   case CurrentCompletionType of
@@ -2419,10 +2422,12 @@ Begin
         // add to history
         CodeToolBoss.IdentifierHistory.Add(
           CodeToolBoss.IdentifierList.FilteredItems[aCompletion.Position]);
+        // get value
+        NewValue:=GetIdentCompletionValue(aCompletion,ValueType,CursorToLeft);
+        // insert value plus special chars like brackets, semicolons, ...
         SrcEdit:=GetActiveSE;
-        Line:=SrcEdit.EditorComponent.LineText;
+        {Line:=SrcEdit.EditorComponent.LineText;
         CaretXY:=SrcEdit.EditorComponent.BlockBegin;
-        NewValue:=GetIdentCompletionValue(aCompletion,ValueType);
         case ValueType of
         icvProcWithParams:
           if (CharBehindIdent(Line,CaretXY.X)<>'(')
@@ -2433,12 +2438,13 @@ Begin
           if (CharBehindIdent(Line,CaretXY.X)<>'[')
           then
             NewValue:=NewValue+'[]';
-        end;
+        end;}
         SrcEdit.EditorComponent.SelText:=NewValue;
-        if (NewValue<>'') and (NewValue[length(NewValue)] in [')',']']) then
+        //if (NewValue<>'') and (NewValue[length(NewValue)] in [')',']']) then
+        if CursorToLeft>0 then
         begin
           CaretXY:=SrcEdit.EditorComponent.BlockEnd;
-          dec(CaretXY.X);
+          dec(CaretXY.X,CursorToLeft);
           SrcEdit.EditorComponent.CaretXY:=CaretXY;
         end;
         ccSelection := '';
