@@ -278,6 +278,7 @@ type
     
     procedure CloseEditorIndex(EditorIndex:integer);
     procedure InsertEditorIndex(EditorIndex:integer);
+    procedure MoveEditorIndex(OldEditorIndex, NewEditorIndex: integer);
     procedure AddToOrRemoveFromEditorWithIndexList(AnUnitInfo: TUnitInfo);
     procedure AddToOrRemoveFromFormList(AnUnitInfo: TUnitInfo);
     procedure AddToOrRemoveFromLoadedList(AnUnitInfo: TUnitInfo);
@@ -1568,19 +1569,69 @@ begin
 end;
 
 procedure TProject.InsertEditorIndex(EditorIndex:integer);
+
+  function MoveIndex(OldIndex: integer): integer;
+  begin
+    Result:=OldIndex;
+    if OldIndex>=EditorIndex then
+      inc(Result);
+  end;
+
 var i:integer;
   AnUnitInfo: TUnitInfo;
 begin
+  // move all editor index of units:
   AnUnitInfo:=fFirstUnitWithEditorIndex;
   while AnUnitInfo<>nil do begin
-    if AnUnitInfo.EditorIndex>=EditorIndex then
-      AnUnitInfo.EditorIndex:=AnUnitInfo.EditorIndex+1;
+    AnUnitInfo.EditorIndex:=MoveIndex(AnUnitInfo.EditorIndex);
     AnUnitInfo:=AnUnitInfo.fNextUnitWithEditorIndex;
   end;
+  // move bookmarks
   i:=Bookmarks.Count-1;
   while (i>=0) do begin
-    if (Bookmarks[i].EditorIndex>=EditorIndex) then
-      Bookmarks[i].EditorIndex:=Bookmarks[i].EditorIndex+1;
+    Bookmarks[i].EditorIndex:=MoveIndex(Bookmarks[i].EditorIndex);
+    dec(i);
+  end;
+  Modified:=true;
+end;
+
+procedure TProject.MoveEditorIndex(OldEditorIndex, NewEditorIndex: integer);
+
+  function MoveIndex(OldIndex: integer): integer;
+  begin
+    Result:=OldIndex;
+    if OldIndex=OldEditorIndex then
+      // this is the moving index
+      Result:=NewEditorIndex
+    else if OldIndex>OldEditorIndex then begin
+      // right of OldPageIndex ...
+      if OldIndex<=NewEditorIndex then
+        // .. and left of NewEditorIndex
+        // -> move left
+        Dec(Result);
+    end else begin
+      // left of OldPageIndex ...
+      if OldIndex>=NewEditorIndex then
+        // .. and right of NewEditorIndex
+        // -> move right
+        Inc(Result);
+    end;
+  end;
+
+var i:integer;
+  AnUnitInfo: TUnitInfo;
+begin
+  if OldEditorIndex=NewEditorIndex then exit;
+  // move all editor index of units:
+  AnUnitInfo:=fFirstUnitWithEditorIndex;
+  while AnUnitInfo<>nil do begin
+    AnUnitInfo.EditorIndex:=MoveIndex(AnUnitInfo.EditorIndex);
+    AnUnitInfo:=AnUnitInfo.fNextUnitWithEditorIndex;
+  end;
+  // move bookmarks
+  i:=Bookmarks.Count-1;
+  while (i>=0) do begin
+    Bookmarks[i].EditorIndex:=MoveIndex(Bookmarks[i].EditorIndex);
     dec(i);
   end;
   Modified:=true;
@@ -1929,6 +1980,9 @@ end.
 
 {
   $Log$
+  Revision 1.76  2002/09/20 11:40:07  lazarus
+  MG: added Move Page Left/Right for sourcenotebook
+
   Revision 1.75  2002/09/13 16:58:26  lazarus
   MG: removed the 1x1 bitmap from TBitBtn
 

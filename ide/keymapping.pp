@@ -56,15 +56,17 @@ const
 
   ecNextEditor           = ecUserFirst + 7;
   ecPrevEditor           = ecUserFirst + 8;
+  ecMoveEditorLeft       = ecUserFirst + 9;
+  ecMoveEditorRight      = ecUserFirst + 10;
 
-  ecPeriod               = ecUserFirst + 10;
+  ecPeriod               = ecUserFirst + 11;
 
-  ecFindPrevious         = ecUserFirst + 11;
-  ecFindInFiles          = ecUserFirst + 12;
-  ecJumpBack             = ecUserFirst + 13;
-  ecJumpForward          = ecUserFirst + 14;
-  ecAddJumpPoint         = ecUserFirst + 15;
-  ecViewJumpHistory      = ecUserFirst + 16;
+  ecFindPrevious         = ecUserFirst + 12;
+  ecFindInFiles          = ecUserFirst + 13;
+  ecJumpBack             = ecUserFirst + 14;
+  ecJumpForward          = ecUserFirst + 15;
+  ecAddJumpPoint         = ecUserFirst + 16;
+  ecViewJumpHistory      = ecUserFirst + 17;
 
   ecFindDeclaration      = ecUserFirst + 20;
   ecFindBlockOtherEnd    = ecUserFirst + 21;
@@ -497,6 +499,8 @@ begin
     ecJumpToEditor: Result:='jump to editor';
     ecNextEditor: Result:= 'next editor';
     ecPrevEditor: Result:= 'previous editor';
+    ecMoveEditorLeft: Result:= 'move editor left';
+    ecMoveEditorRight: Result:= 'move editor right';
     ecGotoEditor1: Result:='goto editor 1';
     ecGotoEditor2: Result:='goto editor 2';
     ecGotoEditor3: Result:='goto editor 3';
@@ -1361,7 +1365,9 @@ begin
   Add(C,'Go to source editor 8',ecGotoEditor0,VK_8,[ssAlt],VK_UNKNOWN,[]);
   Add(C,'Go to source editor 9',ecGotoEditor0,VK_9,[ssAlt],VK_UNKNOWN,[]);
   Add(C,'Go to source editor 10',ecGotoEditor0,VK_0,[ssAlt],VK_UNKNOWN,[]);
-  
+  Add(C,'Move editor left',ecMoveEditorLeft, VK_UNKNOWN, [], VK_UNKNOWN, []);
+  Add(C,'Move editor right',ecMoveEditorLeft, VK_UNKNOWN, [], VK_UNKNOWN, []);
+
   // file menu
   C:=Categories[AddCategory('FileMenu','File menu commands',caAll)];
   Add(C,'New',ecNew,VK_UNKNOWN,[],VK_UNKNOWN,[]);
