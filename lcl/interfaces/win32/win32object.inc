@@ -635,6 +635,7 @@ Procedure TWin32WidgetSet.ShowHide(Sender: TObject);
 Var
   Handle: HWND;
   ParentPanel: HWND;
+  Flags: dword;
 Begin
   If (TControl(Sender).FCompStyle = csPage) or (TControl(Sender).FCompStyle = csToolButton) then exit;
   Handle := ObjectToHWND(Sender);
@@ -648,7 +649,13 @@ Begin
     begin
       Windows.SetWindowPos(Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_SHOWWINDOW or SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_NOOWNERZORDER);
     end else begin
-      Windows.ShowWindow(Handle, SW_SHOW);
+      Flags := SW_SHOW;
+      if TControl(Sender) is TCustomForm then
+        case TCustomForm(Sender).WindowState of
+          wsMaximized: Flags := SW_SHOWMAXIMIZED;
+          wsMinimized: Flags := SW_SHOWMINIMIZED;
+        end;
+      Windows.ShowWindow(Handle, Flags);
     end;
     If (Sender Is TCustomForm) Then
       SetClassLong(Handle, GCL_HICON, LONG(TCustomForm(Sender).GetIconHandle));
@@ -710,6 +717,9 @@ end;
 
 {
   $Log$
+  Revision 1.304  2005/01/03 16:29:48  micha
+  take windowstate into account when showing window
+
   Revision 1.303  2005/01/01 18:56:47  mattias
   implemented TTIProgressBar
 
