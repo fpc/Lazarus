@@ -2749,6 +2749,7 @@ begin
     // create a new devicecontext for this window
     P := NewDC;
     p^.hWnd := hWnd;
+    p^.SpecialOrigin:=GtkWidgetIsA(PGtkWidget(p^.hWnd),GTK_LAYOUT_GET_TYPE);
     if ClientWidget^.Window = nil
     then begin
       Assert(False, 'Trace:[TgtkObject.GetDC] Force widget creation');
@@ -6360,6 +6361,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.123  2002/09/06 16:41:31  lazarus
+  MG: set SpecialOrigin
+
   Revision 1.122  2002/09/06 16:38:25  lazarus
   MG: added GetDCOffset
 
