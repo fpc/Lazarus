@@ -20,17 +20,14 @@
 }
 {$H+}
 //{$DEFINE NEW_EDITOR}
-unit TestForm;
+program TestForm;
 
 {$mode objfpc}
 
-interface
-
 uses
   classes, Controls, forms,buttons,sysutils, stdctrls,
-	mwPasSyn,mwcustomedit, Graphics;
-//  compiler, stdctrls,forms,buttons,menus,comctrls,
-//	Spin, project,sysutils,global,editor, compileroptions,Controls,graphics,extctrls, TabNotBk,
+	mwPasSyn,mwcustomedit, Graphics,
+  LCLLinux;
 
 type
 
@@ -60,9 +57,6 @@ type
 var
   TestForm1 : TTestForm;
 
-implementation
-uses
-  LCLLinux;
 
 constructor TTestForm.Create(AOwner: TComponent);
 begin
@@ -108,6 +102,7 @@ begin
   mwPasSyn1.KeyAttri.Foreground := clRed;
   mwPasSyn1.NumberAttri.Foreground := clGreen;
 
+(*
   mwEdit1 := TmwCustomEdit.Create(Self);
   mwEdit1.Top := 25;
   mwEdit1.Left := 0;
@@ -129,7 +124,7 @@ begin
 //  mwEdit1.Align := alClient;
 
   Assert(False, 'Trace:Created mwCustomEdit ...');
-
+*)
   cmdTest := TButton.Create(Self);
 
   with cmdTest do
@@ -253,8 +248,8 @@ Begin
     Assert(False, 'Trace:[TTestForm.ButtonClick] SetEditText');
 //    mwEdit1.Lines.Text := mwEdit1.Lines.Text + 'Lazarus test code ' + #10 ;
     mwEdit1.Lines.Add('Lazarus test code');
-    Assert(False, 'Trace:[TTestForm.ButtonClick] Text --> ' + mwEdit1.Lines.Text);
-//    mwEdit1.RePaint;
+//    Assert(False, 'Trace:[TTestForm.ButtonClick] Text --> ' + mwEdit1.Lines.Text);
+    mwEdit1.RePaint;
   except
     on E: Exception do WriteLN('Exception: ' + E.Message);
     //on Exception do;
@@ -295,6 +290,11 @@ begin
   mwEdit1.SetFocus;
 end;
 
+
+begin
+  Application.Initialize;
+  Application.CreateForm(TTestForm, TestForm1);
+  Application.Run;
 end.
 
 
@@ -302,6 +302,12 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.2  2001/01/08 23:48:33  lazarus
+  MWE:
+    ~ Changed makefiles
+    ~ Removed testform from lararus and changed it into program
+    * some formatting
+
   Revision 1.1  2000/07/13 10:27:48  michael
   + Initial import
 

@@ -4,7 +4,8 @@
 
 [targets]
 programs=lazarus
-dirs=lcl components
+#dirs=lcl components designer
+dirs=lcl components 
 
 [clean]
 units=$(basename $(wildcard *$(PPUEXT)))
@@ -14,7 +15,7 @@ packages=fcl gtk
 
 [dirs]
 targetdir=.
-unitdir=. lcl/units components/units ./designer
+unitdir=. ./lcl/units ./components/units ./designer
 incdir=. ./include ./include/$(OS_TARGET)
 
 [presettings]
@@ -22,14 +23,7 @@ incdir=. ./include ./include/$(OS_TARGET)
 [rules]
 .PHONY: examples lcl components ide
 
-# temp hack        
-# make 6 times to solve all unit dependencies        
 lcl: lcl_all 
-        $(MAKE) -C lcl
-        $(MAKE) -C lcl
-        $(MAKE) -C lcl
-        $(MAKE) -C lcl
-        $(MAKE) -C lcl
 
 examples: lcl
         $(MAKE) -C examples

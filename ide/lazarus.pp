@@ -31,7 +31,6 @@ uses
   forms,
   splash,
   main,
-  testform,
   compileroptions,
   viewunit_dlg,  //dialog used to list the units in a project
   viewform_dlg;  //dialog to display the forms in the project
@@ -53,7 +52,6 @@ begin
 
    Application.CreateForm(TMainIDE, MainIDE);
    Application.CreateForm(TfrmCompilerOptions, frmCompilerOptions);
-   Application.CreateForm(TTestForm, TestForm1);
    Application.CreateForm(TViewUnits1, ViewUnits1);
    Application.CreateForm(TViewForms1, ViewForms1);
    SplashForm.StartTimer;
@@ -63,6 +61,12 @@ end.
 
 {
   $Log$
+  Revision 1.7  2001/01/08 23:48:33  lazarus
+  MWE:
+    ~ Changed makefiles
+    ~ Removed testform from lararus and changed it into program
+    * some formatting
+
   Revision 1.6  2001/01/04 20:33:53  lazarus
   Moved lresources.
   Moved CreateLFM to Main.pp

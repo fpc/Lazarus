@@ -6,6 +6,7 @@
 programs=allunits
 
 [require]
+options=-Ca
 packages=fcl gtk
 
 [clean]

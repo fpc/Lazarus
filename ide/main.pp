@@ -32,8 +32,9 @@ uses
   Classes, LclLinux, compiler, stdctrls, forms, buttons, menus, comctrls,
   Spin, project,sysutils, global,
   compileroptions, Controls, graphics, extctrls, Dialogs, dlgMEssage,
-   process, idecomp, Find_dlg, FormEditor, AbstractFormEditor,
-  CustomFormEditor,ObjectInspector, ControlSelection, PropEdits, UnitEditor,CompReg;
+  process, idecomp, Find_dlg, FormEditor, AbstractFormEditor,
+  CustomFormEditor,ObjectInspector, ControlSelection, PropEdits, UnitEditor,
+  CompReg;
 
 const
   STANDARDBTNCOUNT = 50;
@@ -217,7 +218,7 @@ var
 implementation
 
 uses
-  TestForm, ViewUnit_dlg,ViewForm_dlg, Math,lresources, Designer;
+  ViewUnit_dlg,ViewForm_dlg, Math,lresources, Designer;
 
 
 { TMainIDE }
@@ -312,43 +313,40 @@ begin
 
 
 
-  For I := 0 to RegCompList.PageCount-1 do
-      Begin
-        RegCompPage := RegCompList.Pages[i];
-          if I = 0 then
-             Notebook1.Pages.Strings[i] := RegCompPage.Name
-          else
-             Notebook1.Pages.Add(RegCompPage.Name);
+  for I := 0 to RegCompList.PageCount-1 do
+  begin
+    RegCompPage := RegCompList.Pages[i];
+    if I = 0 
+    then Notebook1.Pages.Strings[i] := RegCompPage.Name
+    else Notebook1.Pages.Add(RegCompPage.Name);
 
-             GlobalMouseSpeedButton := TSpeedButton.Create(Self);
-             with GlobalMouseSPeedButton do
-             Begin
-                Parent := Notebook1.page[I];
-                Enabled := True;
-                Width := 25;
-                Height := 25;
-                OnClick := @ControlClick;
-                Glyph := Pixmap1;
-                Visible := True;
-                Flat := True;
-                Down := True;
-                Name := 'GlobalMouseSpeedButton'+inttostr(i);
-             end;
+    GlobalMouseSpeedButton := TSpeedButton.Create(Self);
+    with GlobalMouseSPeedButton do
+    Begin
+      Parent := Notebook1.page[I];
+      Enabled := True;
+      Width := 25;
+      Height := 25;
+      OnClick := @ControlClick;
+      Glyph := Pixmap1;
+      Visible := True;
+      Flat := True;
+      Down := True;
+      Name := 'GlobalMouseSpeedButton'+inttostr(i);
+    end;
 
-             for x := 0 to RegCompPage.Count-1 do  //for every component on the page....
-                 begin
-                  writeln('X = '+inttostr(x));
-		  RegComp := RegCompPage.Items[x];
-                  IDEComponent := TIDEComponent.Create;
-                  IdeComponent.RegisteredComponent := RegComp;
-                  IDEComponent._SpeedButton(Self,Notebook1.Page[i]);
-                  IDEComponent.SpeedButton.OnClick := @ControlClick;
-                  IDEComponent.SpeedButton.Hint := RegComp.ComponentClass.ClassName;
-                  IDEComponent.SpeedButton.ShowHint := True;
-                 end;
-           
-
-      end;
+    for x := 0 to RegCompPage.Count-1 do  //for every component on the page....
+    begin
+      writeln('X = '+inttostr(x));
+      RegComp := RegCompPage.Items[x];
+      IDEComponent := TIDEComponent.Create;
+      IdeComponent.RegisteredComponent := RegComp;
+      IDEComponent._SpeedButton(Self,Notebook1.Page[i]);
+      IDEComponent.SpeedButton.OnClick := @ControlClick;
+      IDEComponent.SpeedButton.Hint := RegComp.ComponentClass.ClassName;
+      IDEComponent.SpeedButton.ShowHint := True;
+     end;
+  end;
 
   Notebook1.PageIndex := 0;   // Set it to the first page
   Notebook1.Show;
@@ -1784,8 +1782,8 @@ for I := 0 to Source.Count-1 do
                  if Length(Texts) <> 0 then Break;
               end;
          temp := Texts;
-//	Assert(False, 'Trace:*******************');
-//	Assert(False, 'Trace:Temp := '+Temp);
+//  Assert(False, 'Trace:*******************');
+//  Assert(False, 'Trace:Temp := '+Temp);
          Found := True;
          Break;
        end;
@@ -1892,6 +1890,12 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.36  2001/01/08 23:48:33  lazarus
+  MWE:
+    ~ Changed makefiles
+    ~ Removed testform from lararus and changed it into program
+    * some formatting
+
   Revision 1.35  2001/01/06 06:28:47  lazarus
   Made Designer control the control movement and such.  I am now using ISDesignMsg to move the controls.
   Shane
