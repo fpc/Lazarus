@@ -6363,8 +6363,8 @@ begin
     s:=EnvironmentOptions.FPCSourceDirectory;
   end else if MacroName='comppath' then begin
     Handled:=true;
-writeln('TMainIDE.OnMacroSubstitution A ',s,' ',EnvironmentOptions.CompilerFilename);
     s:=EnvironmentOptions.CompilerFilename;
+writeln('TMainIDE.OnMacroSubstitution "',s,'"');
   end else if MacroName='params' then begin
     Handled:=true;
     if Project1<>nil then
@@ -8605,6 +8605,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.540  2003/04/27 12:53:57  mattias
+  implemented saving auto install packages
+
   Revision 1.539  2003/04/27 09:29:56  mattias
   implemented installing static packages
 
