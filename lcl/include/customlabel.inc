@@ -56,8 +56,8 @@ begin
   //debugln('TCustomLabel.DoAutoSize ',DbgSName(Self),' AutoSizing=',dbgs(AutoSizing),' AutoSize=',dbgs(AutoSize),' Parent=',DbgSName(Parent),' Parent.HandleAllocated=',dbgs(Parent.HandleAllocated),' csLoading=',dbgs(csLoading in ComponentState));
   If AutoSizing or not AutoSize then
     Exit;
-  if (Parent = nil) or (not Parent.HandleAllocated)
-  or ([csLoading,csDestroying]*ComponentState<>[]) then
+  if ([csLoading,csDestroying]*ComponentState<>[])
+  or (Parent = nil) or Parent.AutoSizeDelayed then
     exit;
   AutoSizing := True;
   try
@@ -250,6 +250,9 @@ end;
 
 {
   $Log$
+  Revision 1.25  2005/01/24 11:49:42  mattias
+  added checks for filenames with spaces
+
   Revision 1.24  2005/01/21 14:18:11  micha
   implement TCustomLabel.Layout
 

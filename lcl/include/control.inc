@@ -1454,7 +1454,7 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.ParentFormHandleInitialized;
 begin
-
+  DoAutoSize;
 end;
 
 {------------------------------------------------------------------------------
@@ -3418,6 +3418,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.240  2005/01/24 11:49:42  mattias
+  added checks for filenames with spaces
+
   Revision 1.239  2005/01/21 11:52:01  micha
   cleanup focus; fix tabbing
 

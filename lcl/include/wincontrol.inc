@@ -3786,9 +3786,15 @@ var
   i: Integer;
 begin
   inherited ParentFormHandleInitialized;
+  // tell all wincontrols about the final end of the handle creation phase
   if FWinControls <> nil then begin
     for i := 0 to FWinControls.Count - 1 do
       TWinControl(FWinControls.Items[i]).ParentFormHandleInitialized;
+  end;
+  // tell all controls about the final end of the handle creation phase
+  if FControls<>nil then begin
+    for i:=0 to FControls.Count-1 do
+      TControl(FControls[i]).ParentFormHandleInitialized;
   end;
   //debugln('TWinControl.ParentFormHandleInitialized A ',DbgSName(Self));
   if wcfAutoSizeNeeded in FWinControlFlags then AdjustSize;
@@ -4381,6 +4387,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.306  2005/01/24 11:49:42  mattias
+  added checks for filenames with spaces
+
   Revision 1.305  2005/01/23 15:05:23  mattias
   fixed TabList access
 

@@ -1233,22 +1233,30 @@ var
 begin
   // current path
   CurrentPath:=ParsedOpts.GetParsedValue(Option);
-  //if Option=pcosUnitPath then
-  //  debugln('TBaseCompilerOptions.GetParsedPath GetParsedValue ',dbgsName(Self),' RelativeToBaseDir=',dbgs(RelativeToBaseDir),' CurrentPath="',CurrentPath,'"');
+  {$IFDEF VerbosePkgUnitPath}
+  if Option=pcosUnitPath then
+    debugln('TBaseCompilerOptions.GetParsedPath GetParsedValue ',dbgsName(Self),' RelativeToBaseDir=',dbgs(RelativeToBaseDir),' CurrentPath="',CurrentPath,'"');
+  {$ENDIF}
 
   if (not RelativeToBaseDir) then
     CreateAbsolutePath(CurrentPath,BaseDirectory);
-  //if Option=pcosUnitPath then
-  //  debugln('TBaseCompilerOptions.GetParsedPath CreateAbsolutePath ',dbgsName(Self),' CurrentPath="',CurrentPath,'"');
+  {$IFDEF VerbosePkgUnitPath}
+  if Option=pcosUnitPath then
+    debugln('TBaseCompilerOptions.GetParsedPath CreateAbsolutePath ',dbgsName(Self),' CurrentPath="',CurrentPath,'"');
+  {$ENDIF}
 
   // inherited path
   InheritedPath:=GetInheritedOption(InheritedOption,RelativeToBaseDir);
-  //if Option=pcosUnitPath then
-  //  debugln('TBaseCompilerOptions.GetParsedPath Inherited ',dbgsName(Self),' InheritedPath="',InheritedPath,'"');
+  {$IFDEF VerbosePkgUnitPath}
+  if Option=pcosUnitPath then
+    debugln('TBaseCompilerOptions.GetParsedPath Inherited ',dbgsName(Self),' InheritedPath="',InheritedPath,'"');
+  {$ENDIF}
 
   Result:=MergeSearchPaths(CurrentPath,InheritedPath);
-  //if Option=pcosUnitPath then
-  //  debugln('TBaseCompilerOptions.GetParsedPath Total ',dbgsName(Self),' CurrentPath="',CurrentPath,'"');
+  {$IFDEF VerbosePkgUnitPath}
+  if Option=pcosUnitPath then
+    debugln('TBaseCompilerOptions.GetParsedPath Total ',dbgsName(Self),' CurrentPath="',CurrentPath,'"');
+  {$ENDIF}
 end;
 
 function TBaseCompilerOptions.GetCustomOptions: string;

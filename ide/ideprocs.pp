@@ -1567,6 +1567,7 @@ function PrepareCmdLineOption(const Option: string): string;
 var i: integer;
 begin
   Result:=Option;
+  if (Result='') or (Result[1]='"') then exit;
   for i:=1 to length(Result) do begin
     if Result[i]=' ' then begin
       Result:='"'+Result+'"';
