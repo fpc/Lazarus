@@ -1404,7 +1404,8 @@ begin
       until false;
       
       Result := ModalResult;
-      if GetActiveWindow <> Handle then ActiveWindow := 0;
+      if HandleAllocated and (GetActiveWindow <> Handle) then
+        ActiveWindow := 0;
     finally
       Hide;
     end;
@@ -1429,6 +1430,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.113  2003/09/06 18:38:06  mattias
+  fixed recreating handle after showmodal
+
   Revision 1.112  2003/08/31 17:30:49  mattias
   fixed TControl painting for win32
 
