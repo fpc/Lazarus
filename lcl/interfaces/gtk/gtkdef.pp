@@ -133,14 +133,26 @@ type
     dccGDIPenColor
     );
     
+  TDevContextSelectedColorsType = (
+    dcscCustom,
+    dcscPen,
+    dcscBrush,
+    dcscFont
+    );
+    
   TDeviceContext = class
   public
+    // device handles
     hWnd: HWND; 
     GC: pgdkGC;
     Drawable: PGDKDrawable;
+    
+    // origins
     Origin: TPoint;
     SpecialOrigin: boolean;
     PenPos: TPoint;
+    
+    // drawing settings
     CurrentBitmap: PGdiObject;
     CurrentFont: PGdiObject;
     CurrentPen: PGdiObject;
@@ -149,6 +161,9 @@ type
     CurrentTextColor: TGDIColor;
     CurrentBackColor: TGDIColor;
     ClipRegion : hRGN;
+    
+    // control
+    SelectedColors: TDevContextSelectedColorsType;
     SavedContext: TDeviceContext; // linked list of saved DCs
     DCFlags: TDeviceContextsFlags;
     procedure Clear;
@@ -372,11 +387,13 @@ begin
   hWnd:=0;
   GC:=nil;
   Drawable:=nil;
+  
   Origin.X:=0;
   Origin.Y:=0;
   SpecialOrigin:=false;
   PenPos.X:=0;
   PenPos.Y:=0;
+  
   CurrentBitmap:=nil;
   CurrentFont:=nil;
   CurrentPen:=nil;
@@ -385,6 +402,8 @@ begin
   FillChar(CurrentTextColor,SizeOf(CurrentTextColor),0);
   FillChar(CurrentBackColor,SizeOf(CurrentBackColor),0);
   ClipRegion:=0;
+  
+  SelectedColors:=dcscCustom;
   SavedContext:=nil;
   DCFlags:=[];
 end;
@@ -400,6 +419,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.24  2002/10/08 14:10:02  lazarus
+  MG: added TDeviceContext.SelectedColors
+
   Revision 1.23  2002/10/08 13:42:23  lazarus
   MG: added TDevContextColorType
 
