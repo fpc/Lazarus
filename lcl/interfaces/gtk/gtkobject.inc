@@ -237,7 +237,7 @@ procedure TgtkObject.SendCachedLCLMessages;
         // move widget on the fixed widget of parent control
         ParentWidget:=pgtkWidget(LCLControl.Parent.Handle);
         ParentFixed := GetFixedWidget(ParentWidget);
-        if ParentFixed <> nil then begin
+        if GtkWidgetIsA(ParentFixed,GTK_FIXED_GET_TYPE) then begin
           gtk_fixed_move(PGtkFixed(ParentFixed), Widget,
                          LCLControl.Left, LCLControl.Top);
         end else if not (LCLControl.Parent is TNoteBook) then begin
@@ -4056,7 +4056,7 @@ begin
   LCLControl:=TWinControl(Sender);
   SenderWidget:=PgtkWidget(LCLControl.Handle);
   //if Sender is TForm then
-  //  writeln('[TgtkObject.ShowHide] START ',Sender.ClassName,' Visible=',TControl(Sender).Visible,' Window=',FormWidget^.Window<>nil);
+  //  writeln('[TgtkObject.ShowHide] START ',Sender.ClassName,' Visible=',TControl(Sender).Visible);
   if LCLControl.Visible
   or ((csDesigning in LCLControl.ComponentState)
     and not (csNoDesignVisible in LCLControl.ControlStyle)) then
@@ -5665,6 +5665,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.206  2002/09/08 10:02:00  lazarus
+  MG: fixed streaming visible=false
+
   Revision 1.205  2002/09/07 20:30:50  lazarus
   Make TComboboxes sort again, including in OI
 
