@@ -1773,6 +1773,7 @@ begin
     OpenDialog:=TOpenDialog.Create(Application);
     try
       OpenDialog.Title:='Open Project File (*.lpi)';
+      OPenDialog.Filter := '*.lpi';
       OpenDialog.InitialDir:=EnvironmentOptions.LastOpenDialogDir;
       if OpenDialog.Execute then begin
         AFilename:=ExpandFilename(OpenDialog.Filename);
@@ -4755,6 +4756,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.152  2001/11/20 18:30:30  lazarus
+  Pressing DEL when form is the only thing selected in designer no longer crashes Lazarus.
+  Shane
+
   Revision 1.151  2001/11/20 15:09:21  lazarus
   MG: open project now only opens lpi files
 

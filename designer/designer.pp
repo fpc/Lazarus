@@ -593,8 +593,6 @@ try
         begin
           // move selection
           FHasSized:=true;
-//          TControl(MouseDownComponent).SetBounds(TControl(MouseDownComponent).Left+(MouseX-LastMouseMovePos.X),TControl(MouseDownComponent).Top+(MouseY-LastMouseMovePos.Y),TControl(MouseDownComponent).Width,TControl(MouseDownComponent).Height);
-
           ControlSelection.MoveSelection(MouseX-LastMouseMovePos.X, MouseY-LastMouseMovePos.Y);
           if Assigned(FOnPropertiesChanged) then
              FOnPropertiesChanged(Self);
@@ -653,8 +651,10 @@ Writeln('KEYDOWN');
 
   Shift := KeyDataToShiftState(Message.KeyData);
 
-  if Message.CharCode = 46 then //DEL KEY
+  if (Message.CharCode = 46) then //DEL KEY
   begin
+    if (ControlSelection.Count = 1) and (ControlSelection.Items[0].Component = FCustomForm) then
+       Exit;
     ControlSelection.BeginUpdate;
     for  I := ControlSelection.Count-1 downto 0 do Begin
       Writeln('I = '+inttostr(i));

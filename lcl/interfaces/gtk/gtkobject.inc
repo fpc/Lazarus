@@ -3323,6 +3323,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.74  2001/11/20 18:30:32  lazarus
+  Pressing DEL when form is the only thing selected in designer no longer crashes Lazarus.
+  Shane
+
   Revision 1.73  2001/11/17 09:42:26  lazarus
   MG: fixed range check errors for FG,BG in Init
 
