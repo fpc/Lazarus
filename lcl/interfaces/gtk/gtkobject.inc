@@ -95,7 +95,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure Tgtkobject.PassCmdLineOptions;
 begin
-  gtk_init (@argc, @argv);
+  gtk_init(@argc,@argv);
 end;
 
 {------------------------------------------------------------------------------
@@ -111,6 +111,9 @@ begin
         ReleaseStyle(Styles[I]);
       Styles.Free;
     Except
+      on E: Exception do begin
+        writeln('WARNING: TgtkObject.FreeAllStyles: ',E.Message);
+      end;
     End;
   Styles := Nil;
 end;
@@ -7069,6 +7072,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.342  2003/03/26 00:21:25  mattias
+  implemented build lazarus extra options -d
+
   Revision 1.341  2003/03/25 16:29:53  mattias
   fixed sending TButtonControl.OnClick on every change
 
