@@ -211,6 +211,7 @@ type
     Procedure PrevEditor;
     procedure UpdateStatusBar;
     Bookmarks : TImageList;
+    Procedure ProcessParentCommand(Sender: TObject; var Command: TSynEditorCommand; var AChar: char; Data: pointer);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -262,6 +263,11 @@ const
 
   ecNextEditor = ecUserFirst+5;
   ecPrevEditor = ecUserFirst+6;
+
+  ecFirstParent = ecUserFirst+1000;
+  ecSave    = ecFirstParent+1;
+  ecOpen    = ecFirstParent+2;
+  ecClose    = ecFirstParent+3;
 
 var
 Editor_Num : Integer;
@@ -706,7 +712,12 @@ var
   Texts,Texts2,TheName : String;
 Begin
 Writeln('[ProcessUserCommand]  --------------');
-  case Command of
+if Command >= ecFirstParent then
+   Begin
+     TSourceNotebook(FaOwner).ProcessParentCommand(self,Command,aChar,Data);
+   end
+   else
+   case Command of
     ecFind : Begin
                FindText := '';
                StartFind;
@@ -817,6 +828,9 @@ if assigned(FEditor) then
     AddKey(ecNextEditor, word('S'), [ssShift,ssCtrl], 0, []);
     AddKey(ecPrevEditor, word('A'), [ssShift,ssCtrl], 0, []);
 
+    AddKey(ecSave, word('S'), [ssCtrl], 0, []);
+    AddKey(ecOpen, word('O'), [ssCtrl], 0, []);
+    AddKey(ecClose, VK_F4, [ssCtrl], 0, []);
     OnStatusChange := @EditorStatusChanged;
     OnProcessUserCommand := @ProcessUserCommand;
     Show;
@@ -825,7 +839,7 @@ if assigned(FEditor) then
 {SynEdit}
 
 FEditor.Lines.Assign(FSource);
-FEditor.Setfocus;
+FEditor.Setfocus
 end;
 
 Procedure TSourceEditor.AddControlCode(_Control : TComponent);
@@ -1133,7 +1147,7 @@ Begin
 
   try
     FEditor.Lines.SaveToFile(FileName);
-    FModified := False;
+    FEditor.Modified := False;
   except
     Result := False;
   end;
@@ -1752,6 +1766,23 @@ Begin
     GetActiveSE.FocusEditor;
     UpdateStatusBar;
   end;
+end;
+
+{  This is called when the Command in TSourceEditor.ProcessUserCommand is > ecFirstParent}
+Procedure TSourceNotebook.ProcessParentCommand(Sender: TObject; var Command: TSynEditorCommand; var AChar: char; Data: pointer);
+begin
+  case Command of
+   ecSave : Begin
+              SaveClicked(self);
+            end;
+   ecOpen : Begin
+              OpenClicked(self);
+            end;
+   ecClose : Begin
+              writeln('CloseClicked being called');
+              CloseClicked(self);
+            end;
+   end;  //case
 end;
 
 initialization
