@@ -11,7 +11,7 @@
     Implementation of TXMLConfig class
     Copyright (c) 1999 - 2001 by Sebastian Guenther, sg@freepascal.org
 
-    See the file COPYING.FPC, included in this distribution,
+    See the file COPYING.modifiedLGPL, included in this distribution,
     for details about the copyright.
 
     This program is distributed in the hope that it will be useful,
@@ -355,6 +355,9 @@ end;
 end.
 {
   $Log$
+  Revision 1.11  2004/10/28 09:38:16  mattias
+  fixed COPYING.modifiedLGPL links
+
   Revision 1.10  2004/05/22 14:35:32  mattias
   fixed button return key
 

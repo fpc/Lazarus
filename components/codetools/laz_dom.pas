@@ -11,7 +11,7 @@
     Implementation of DOM interfaces
     Copyright (c) 1999-2000 by Sebastian Guenther, sg@freepascal.org
 
-    See the file COPYING.FPC, included in this distribution,
+    See the file COPYING.modifiedLGPL, included in this distribution,
     for details about the copyright.
 
     This program is distributed in the hope that it will be useful,
@@ -1633,6 +1633,9 @@ end.
 
 {
   $Log$
+  Revision 1.7  2004/10/28 09:38:16  mattias
+  fixed COPYING.modifiedLGPL links
+
   Revision 1.6  2002/08/18 16:50:09  mattias
   fixes for debugging
 
