@@ -12,7 +12,7 @@
  *                                                                           *
  *****************************************************************************
 }
-unit gtkproc;
+unit GTKProc;
 
 {$mode objfpc}{$H+}
 
@@ -24,7 +24,7 @@ uses
   LCLLinux, LCLType, gtkDef, DynHashArray, LazQueue, GraphType,
   GraphicsMath, Graphics, Buttons, Menus, GTKWinApiWindow, StdCtrls, ComCtrls,
   CListBox, KeyMap, Calendar, Arrow, Spin, CommCtrl, ExtCtrls, Dialogs,
-  FileCtrl, LResources, Math, gtkglobals;
+  FileCtrl, LResources, Math, GTKGlobals;
 
 
 (* GTKCallback.inc headers *)
