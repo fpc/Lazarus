@@ -643,7 +643,7 @@ type
       var NewTool: TFindDeclarationTool; var NewNode: TCodeTreeNode;
       var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
     function FindUnitSource(const AnUnitName,
-      AnUnitInFilename: string): TCodeBuffer;
+      AnUnitInFilename: string; ExceptionOnNotFound: boolean): TCodeBuffer;
     function FindSmartHint(const CursorPos: TCodeXYPosition): string;
     function BaseTypeOfNodeHasSubIdents(ANode: TCodeTreeNode): boolean;
     function FindBaseTypeOfNode(Params: TFindDeclarationParams;
@@ -1125,7 +1125,7 @@ begin
                      UnitInFilePos.EndPos-UnitInFilePos.StartPos-2)
       end else
         UnitInFilename:='';
-      NewPos.Code:=FindUnitSource(UnitName,UnitInFilename);
+      NewPos.Code:=FindUnitSource(UnitName,UnitInFilename,true);
       if NewPos.Code=nil then
         RaiseExceptionInstance(
           ECodeToolUnitNotFound.Create(Self,Format(ctsUnitNotFound,[UnitName]),
@@ -1146,7 +1146,7 @@ begin
 end;
 
 function TFindDeclarationTool.FindUnitSource(const AnUnitName,
-  AnUnitInFilename: string): TCodeBuffer;
+  AnUnitInFilename: string; ExceptionOnNotFound: boolean): TCodeBuffer;
 var
   CurDir, CompiledSrcExt: string;
 
@@ -1308,21 +1308,20 @@ var UnitSrcSearchPath: string;
   
 begin
   {$IFDEF ShowTriedFiles}
-  writeln('TFindDeclarationTool.FindUnitSource A AnUnitName=',AnUnitName,' AnUnitInFilename=',AnUnitInFilename);
+  writeln('TFindDeclarationTool.FindUnitSource A AnUnitName=',AnUnitName,' AnUnitInFilename=',AnUnitInFilename,' Self="',MainFilename,'"');
   {$ENDIF}
   Result:=nil;
   if (AnUnitName='') or (Scanner=nil) or (Scanner.MainCode=nil)
   or (not (TObject(Scanner.MainCode) is TCodeBuffer))
   or (Scanner.OnLoadSource=nil) then
-    exit;
+  begin
+    RaiseException('TFindDeclarationTool.FindUnitSource Invalid Data');
+  end;
   SrcPathInitialized:=false;
   UnitSearchPath:='';
   UnitSrcSearchPath:='';
-  {$IFDEF ShowSearchPaths}
-  writeln('TFindDeclarationTool.FindUnitSource ',
-  ' Self="',MainFilename,'"',
-  ' UnitSrcSearchPath=',UnitSrcSearchPath);
-  {$ENDIF}
+  CompiledSrcExt:='.ppu';
+  CompiledResult:=nil;
   //writeln('>>>>>',Scanner.Values.AsString,'<<<<<');
   MainCodeIsVirtual:=TCodeBuffer(Scanner.MainCode).IsVirtual;
   if not MainCodeIsVirtual then begin
@@ -1330,7 +1329,6 @@ begin
   end else begin
     CurDir:='';
   end;
-  CompiledSrcExt:='.ppu';
 
   // search as the compiler would search
   if AnUnitInFilename<>'' then begin
@@ -1366,27 +1364,31 @@ begin
       {$IFDEF ShowTriedFiles}
       writeln('TFindDeclarationTool.FindUnitSource Search Compiled unit in current dir=',CurDir);
       {$ENDIF}
+
       // search compiled unit in current directory
       if Scanner.InitialValues.IsDefined('WIN32')
       and Scanner.InitialValues.IsDefined('VER1_0') then
         CompiledSrcExt:='.ppw';
       CompiledResult:=SearchUnitFileInDir(CurDir,AnUnitName,false);
+
+      // search compiled unit in src path
       if CompiledResult=nil then begin
-        // search compiled unit in src path
         {$IFDEF ShowTriedFiles}
         writeln('TFindDeclarationTool.FindUnitSource Search Compiled unit in src path=',UnitSrcSearchPath);
         {$ENDIF}
         InitSrcPath;
         CompiledResult:=SearchUnitFileInPath(UnitSrcSearchPath,AnUnitName,false);
       end;
+
+      // search compiled unit in unit path
       if CompiledResult=nil then begin
-        // search compiled unit in unit path
         UnitSearchPath:=Scanner.Values[ExternalMacroStart+'UnitPath'];
         {$IFDEF ShowTriedFiles}
         writeln('TFindDeclarationTool.FindUnitSource Search Compiled unit in unit path=',UnitSearchPath);
         {$ENDIF}
         CompiledResult:=SearchUnitFileInPath(UnitSearchPath,AnUnitName,false);
       end;
+      
       if (CompiledResult<>nil) then begin
         // there is a compiled unit
         if Assigned(OnGetSrcPathForCompiledUnit)
@@ -1410,6 +1412,21 @@ begin
   if (Result=nil) and Assigned(OnFindUsedUnit) then begin
     // no unit found
     Result:=OnFindUsedUnit(Self,AnUnitName,AnUnitInFilename);
+  end;
+  
+  if (Result=nil) and ExceptionOnNotFound then begin
+    if CompiledResult<>nil then begin
+      // there is a compiled unit, only the source was not found
+      RaiseExceptionInstance(
+        ECodeToolUnitNotFound.Create(Self,
+          Format(ctsSourceNotFoundUnit, [CompiledResult.Filename]),
+          AnUnitName));
+    end else begin
+      // nothing found
+      RaiseExceptionInstance(
+        ECodeToolUnitNotFound.Create(Self,Format(ctsUnitNotFound,[AnUnitName]),
+          AnUnitName));
+    end;
   end;
 end;
 
@@ -3271,7 +3288,7 @@ begin
         ' UnitName=',GetAtom(UnitNameAtom));
       Params.WriteDebugReport;
       {$ENDIF}
-      NewCodeTool:=OpenCodeToolForUnit(UnitNameAtom,InAtom,false);
+      NewCodeTool:=OpenCodeToolForUnit(UnitNameAtom,InAtom,true);
       // search the identifier in the interface of the used unit
       OldFlags:=Params.Flags;
       Params.Flags:=[fdfIgnoreUsedUnits]+(fdfGlobalsSameIdent*Params.Flags)
@@ -3309,7 +3326,7 @@ begin
                    UnitInFileAtom.EndPos-UnitInFileAtom.StartPos-2);
   end else
     AnUnitInFilename:='';
-  NewCode:=FindUnitSource(AnUnitName,AnUnitInFilename);
+  NewCode:=FindUnitSource(AnUnitName,AnUnitInFilename,ExceptionOnNotFound);
   if (NewCode=nil) then begin
     // no source found
     if ExceptionOnNotFound then
@@ -3480,7 +3497,7 @@ var
 begin
   Result:=false;
   // open the unit and search the identifier in the interface
-  NewCode:=FindUnitSource(AnUnitName,'');
+  NewCode:=FindUnitSource(AnUnitName,'',true);
   if (NewCode=nil) then begin
     // no source found
     CurPos.StartPos:=-1;
@@ -5610,11 +5627,13 @@ begin
   Result:=FindCodeToolForUsedUnit(UnitNameAtom,UnitInFileAtom,
                                   ExceptionOnNotFound);
   if Result=nil then begin
-    MoveCursorToCleanPos(UnitNameAtom.StartPos);
-    RaiseExceptionInstance(
-      ECodeToolUnitNotFound.Create(Self,
-                                   Format(ctsUnitNotFound,[GetAtom(UnitNameAtom)]),
-                                   GetAtom(UnitNameAtom)));
+    if ExceptionOnNotFound then begin
+      MoveCursorToCleanPos(UnitNameAtom.StartPos);
+      RaiseExceptionInstance(
+        ECodeToolUnitNotFound.Create(Self,
+                                     Format(ctsUnitNotFound,[GetAtom(UnitNameAtom)]),
+                                     GetAtom(UnitNameAtom)));
+    end;
   end else if Result=Self then begin
     MoveCursorToCleanPos(UnitNameAtom.StartPos);
     RaiseExceptionFmt(ctsIllegalCircleInUsedUnits,[GetAtom(UnitNameAtom)]);

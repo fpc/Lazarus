@@ -634,7 +634,7 @@ begin
     else
       AnUnitInFilename:='';
     // find unit file
-    NewCode:=FindUnitSource(AnUnitName,AnUnitInFilename);
+    NewCode:=FindUnitSource(AnUnitName,AnUnitInFilename,false);
     if (NewCode=nil) then begin
       // no source found
       UnitFilename:=AnUnitName;

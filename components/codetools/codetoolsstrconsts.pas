@@ -102,6 +102,7 @@ ResourceString
 
   // find declaration
   ctsUnitNotFound = 'unit not found: %s';
+  ctsSourceNotFoundUnit = 'source not found: unit %s';
   ctsIdentifierNotFound = 'identifier not found: %s';
   ctsNoContextNodeFoundAtCursor = 'no context node found at cursor';
   ctsInheritedKeywordOnlyAllowedInMethods =
