@@ -1021,7 +1021,7 @@ type
   TGraphicControl = class(TControl)
   private
     FCanvas: TCanvas;
-    //FOnPaint: TNotifyEvent;
+    FOnPaint: TNotifyEvent;
     procedure WMPaint(var Message: TLMPaint); message LM_PAINT;
   protected
     procedure Paint; virtual;
@@ -1029,6 +1029,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     property Canvas: TCanvas read FCanvas;
+    property OnPaint: TNotifyEvent read FOnPaint write FOnPaint;
   end;
 
 
@@ -1534,6 +1535,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.128  2003/06/13 21:08:53  mattias
+  moved TColorButton to dialogs.pp
+
   Revision 1.127  2003/06/13 14:38:01  mattias
   fixed using streamed clientwith/height for child anchors
 

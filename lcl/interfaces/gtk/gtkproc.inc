@@ -3508,7 +3508,7 @@ begin
     Result := PStyleObject(Styles.Objects[l])^.Style;
 end;
 
-Function GetStyleWidget(WName : String) : PGTKWidget;
+Function GetStyleWidget(const WName : String) : PGTKWidget;
 var
   l : Longint;
 begin
@@ -4152,6 +4152,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.182  2003/06/13 21:08:53  mattias
+  moved TColorButton to dialogs.pp
+
   Revision 1.181  2003/06/13 14:26:17  ajgenius
   some fixes toward gtk2
 

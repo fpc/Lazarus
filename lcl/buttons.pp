@@ -259,6 +259,8 @@ type
     property ParentShowHint;
     property PopupMenu;
   end;
+  
+  
 
 procedure Register;
 
@@ -302,6 +304,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.44  2003/06/13 21:08:53  mattias
+  moved TColorButton to dialogs.pp
+
   Revision 1.43  2003/06/13 12:53:51  mattias
   fixed TUpDown and added handler lists for TControl
 
