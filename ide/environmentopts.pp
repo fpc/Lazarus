@@ -2189,7 +2189,7 @@ begin
   with CompilerPathGroupBox do begin
     Name:='CompilerPathGroupBox';
     Parent:=NoteBook.Page[Page];
-    Caption:=dlgFpcPath;
+    Caption:=Format(dlgFpcPath,[GetDefaultCompilerFilename]);
     OnResize:=@CompilerPathGroupBoxResize;
   end;
 
@@ -2197,12 +2197,9 @@ begin
   with CompilerPathComboBox do begin
     Name:='CompilerPathComboBox';
     Parent:=CompilerPathGroupBox;
-    with Items do begin
-      BeginUpdate;
-      Add('/usr/bin/ppc386');
-      Add('/opt/fpc/ppc386');
-      EndUpdate;
-    end;
+    Items.BeginUpdate;
+    GetDefaultCompilerFilenames(Items);
+    Items.EndUpdate;
   end;
 
   CompilerPathButton:=TButton.Create(Self);
@@ -3159,7 +3156,8 @@ begin
     OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist];
     // set title
     if Sender=CompilerPathButton then
-      OpenDialog.Title:=lisChooseCompilerPath
+      OpenDialog.Title:=
+                      Format(lisChooseCompilerPath,[GetDefaultCompilerFilename])
     else if Sender=MakePathButton then
       OpenDialog.Title:=lisChooseMakePath
     else

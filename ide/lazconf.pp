@@ -85,7 +85,8 @@ uses
   procedure GetDefaultCompilerFilenames(List: TStrings);
   procedure GetDefaultMakeFilenames(List: TStrings);
   procedure GetDefaultTestBuildDirs(List: TStrings);
-  
+  function GetDefaultCompilerFilename: string;
+
   function GetDefaultLCLWidgetType: string;
   function GetDefaultTargetCPU: string;
   function GetDefaultTargetOS: string;
@@ -108,6 +109,20 @@ begin
   {$ENDIF}
   {$IFDEF CPUi386}
   Result:='i386';
+  {$ENDIF}
+end;
+
+function GetDefaultCompilerFilename: string;
+begin
+  {$IFDEF CPUi386}
+    {$IFDEF windows}
+    Result:='ppc386.exe';
+    {$ELSE}
+    Result:='ppc386';
+    {$ENDIF}
+  {$ENDIF}
+  {$IFDEF CPUPowerPC}
+  Result:='ppcppc';
   {$ENDIF}
 end;
 
@@ -157,6 +172,9 @@ end.
 
 {
   $Log$
+  Revision 1.28  2004/08/13 12:28:01  mattias
+  replaced ppc386 with platform independent name
+
   Revision 1.27  2004/08/06 07:06:09  mattias
   changed cpu target ppc to powerpc
 
@@ -218,7 +236,7 @@ end.
   MG: improved default make path for build lazarus
 
   Revision 1.7  2002/07/01 05:11:34  lazarus
-  MG: improved default path to lazarus and ppc386
+  MG: improved default path to lazarus and ppc386/ppcppc
 
   Revision 1.6  2002/05/10 06:57:42  lazarus
   MG: updated licenses

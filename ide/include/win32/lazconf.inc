@@ -109,7 +109,7 @@ end;
 
 function FindDefaultCompilerPath: string;
 begin
-  Result:=SearchFileInPath('ppc386.exe','',GetEnv('PATH'),';',
+  Result:=SearchFileInPath(GetDefaultCompilerFilename,'',GetEnv('PATH'),';',
                            [sffDontSearchInBasePath]);
   if Result<>'' then exit;
   Result:='c:\pp\bin\win32\ppc386.exe';
@@ -192,6 +192,9 @@ end;
 
 {
   $Log$
+  Revision 1.22  2004/08/13 12:28:01  mattias
+  replaced ppc386 with platform independent name
+
   Revision 1.21  2004/07/30 15:34:09  vincents
   make executable location is a environment option now.
 

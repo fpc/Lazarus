@@ -3,7 +3,7 @@
                            MsgView.pp - compiler message view
                            ----------------------------------
                    TMessagesView is responsible for displaying the
-                   PPC386 compiler messages.
+                   fpc/make/codetools messages.
 
 
                    Initial Revision  : Mon Apr 17th 2000

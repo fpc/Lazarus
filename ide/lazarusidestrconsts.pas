@@ -480,7 +480,7 @@ resourcestring
   lisSelectDFMFiles = 'Select Delphi form files (*.dfm)';
   lisChooseDirectory = 'Choose directory';
   lisChooseLazarusSourceDirectory = 'Choose Lazarus Directory';
-  lisChooseCompilerPath = 'Choose compiler filename (ppc386)';
+  lisChooseCompilerPath = 'Choose compiler filename (%s)';
   lisChooseFPCSourceDir = 'Choose FPC source directory';
   lisChooseMakePath = 'Choose make path';
   lisChooseDebuggerPath = 'Choose debugger filename';
@@ -634,7 +634,7 @@ resourcestring
   dlgMaxRecentProjs = 'Max recent project files';
   dlgQOpenLastPrj = 'Open last project at start';
   dlgLazarusDir = 'Lazarus directory (default for all projects)';
-  dlgFpcPath = 'Compiler path (ppc386)';
+  dlgFpcPath = 'Compiler path (%s)';
   dlgFpcSrcPath = 'FPC source directory';
   dlgMakePath = 'Make path';
   dlgDebugType = 'Debugger type and path';
@@ -837,9 +837,19 @@ resourcestring
   dlgCOOther = 'Other';
   dlgCOInherited = 'Inherited';
   dlgCOCompilation = 'Compilation';
+  lisBrowseForCompiler = 'Browse for Compiler (%s)';
+  lisUnitOutputDirectory = 'Unit Output directory';
+  lisSelectANode = 'Select a node';
   dlgShowCompilerOptions = 'Show compiler options';
   dlgCOOpts = 'Options: ';
   dlgCOStyle = 'Style:';
+  lisNoCompilerOptionsInherited = 'No compiler options inherited.';
+  lisunitPath = 'unit path';
+  lisincludePath = 'include path';
+  lisobjectPath = 'object path';
+  lislibraryPath = 'library path';
+  lislinkerOptions = 'linker options';
+  liscustomOptions = 'custom options';
   dlgCOAsIs = 'As-Is';
   dlgSymantecChecking = 'Symantec Checking:';
   dlgDelphi2Ext = 'Delphi 2 Extensions';
@@ -910,6 +920,7 @@ resourcestring
   dlgConfigFiles = 'Config Files:';
   dlgUseFpcCfg = 'Use Compiler Config File (fpc.cfg)';
   dlgUseAdditionalConfig = 'Use Additional Compiler Config File';
+  lisCustomOptions2 = 'Custom options';
   dlgStopAfterNrErr = 'Stop after number of errors:';
   dlgOtherUnitFiles = 'Other Unit Files (Delimiter is semicolon):';
   dlgCOIncFiles = 'Include Files:';
@@ -920,6 +931,8 @@ resourcestring
   lisCOSkipCallingCompiler = 'Skip calling Compiler';
   lisCOExecuteAfter = 'Execute after';
   lisCOExecuteBefore = 'Execute before';
+  lisAdditionalCompilerOptionsInheritedFromPackages = 'Additional compiler '
+    +'options inherited from packages';
   lisCOCommand = 'Command:';
   lisCOScanForFPCMessages = 'Scan for FPC messages';
   lisCOScanForMakeMessages = 'Scan for Make messages';
@@ -1455,8 +1468,8 @@ resourcestring
   lisCodeToolsDefsCreateDefinesForFreePascalCompiler = 'Create Defines for '
     +'Free Pascal Compiler';
   lisCodeToolsDefsThePathToTheFreePascalCompilerForExample = 'The '
-    +'path to the free pascal compiler.%s For example %s/usr/bin/ppc386 -n%s '
-    +'or %s/usr/local/bin/fpc @/etc/11fpc.cfg%s.';
+    +'path to the free pascal compiler.%s For example %s/usr/bin/%s -n%s '
+    +'or %s/usr/local/bin/fpc @/etc/fpc.cfg%s.';
   lisCodeToolsDefsCreateDefinesForFreePascalCVSSources = 'Create Defines for '
     +'Free Pascal CVS Sources';
   lisCodeToolsDefsTheFreePascalCVSSourceDir = 'The Free Pascal CVS source '
@@ -2442,6 +2455,44 @@ resourcestring
   lisProcedureWithInterface = 'Procedure with interface';
   lisSubProcedure = 'Sub Procedure';
   lisSubProcedureOnSameLevel = 'Sub Procedure on same level';
+  lisFreePascalCompilerNotFound = 'Free Pascal Compiler not found';
+  lisTheFreePascalCompilerFilenameWasNotFoundItIsRecomm = 'The Free Pascal '
+    +'compiler (filename: %s) was not found.%sIt is recommended that you '
+    +'install fpc.';
+  lisInvalidCompilerFilename = 'Invalid Compiler Filename';
+  lisTheCurrentCompilerFilenameIsNotAValidExecutablePlz = 'The current '
+    +'compiler filename %s%s%s%sis not a valid executable.%sPlz check '
+    +'Environment -> Environment Options -> Files';
+  lisFreePascalSourcesNotFound = 'Free Pascal Sources not found';
+  lisTheFreePascalSourceDirectoryWasNotFoundSomeCodeFun = 'The Free Pascal '
+    +'source directory was not found.%sSome code functions will not work.%sIt '
+    +'is recommended that you install it and set the path%sEnvironment -> '
+    +'Environment Options -> Files';
+  lisInvalidFreePascalSourceDirectory = 'Invalid Free Pascal source directory';
+  lisTheCurrentFreePascalSourceDirectoryDoesNotLookCorr2 = 'The current Free '
+    +'Pascal source directory %s%s%s%sdoes not look correct.%sCheck '
+    +'Environment -> Environment Options -> Files';
+  lisLazarusDirectoryNotFound = 'Lazarus directory not found';
+  lisTheCurrentLazarusDirectoryDoesNotLookCorrectWithou2 = 'The current '
+    +'Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will '
+    +'not be able to create LCL applications.%sCheck Environment -> '
+    +'Environment Options -> Files';
+  lisTheCurrentLazarusDirectoryDoesNotLookCorrectWithou = 'The current '
+    +'Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will '
+    +'not be able to create LCL applications.%sChoose Ok to choose the '
+    +'default %s%s%s.%sOtherwise check Environment -> Environment Options -> '
+    +'Files';
+  lisTheLazarusDirectoryWasNotFoundYouWillNotBeAbleToCr = 'The Lazarus '
+    +'directory was not found.%sYou will not be able to create LCL '
+    +'applications.%sPlz check Environment -> Environment Options -> Files';
+  lisTheCurrentFreePascalSourceDirectoryDoesNotLookCorr = 'The current Free '
+    +'Pascal source directory %s%s%s%sdoes not look correct.%sChoose Ok to '
+    +'choose the default %s%s%s.%sOtherwise check Environment -> Environment '
+    +'Options -> Files';
+  lisTheCurrentCompilerFilenameIsNotAValidExecutableCho = 'The current '
+    +'compiler filename %s%s%s%sis not a valid executable.%sChoose Ok to '
+    +'choose the default %s%s%s.%sOtherwise check Environment -> Environment '
+    +'Options -> Files';
 
 implementation
 end.

@@ -2,7 +2,7 @@
                       compileroptions.pp  -  Lazarus IDE unit
                       ---------------------------------------
                    Compiler options form sets the switches for the project
-                   file for the PPC386 compiler.
+                   file for the FPC compiler.
 
 
                    Initial Revision  : Sat May 10 23:15:32 CST 1999
@@ -1704,7 +1704,7 @@ begin
 
   { Get all the options and create a string that can be passed to the compiler }
   
-  { options of ppc386 1.1 :
+  { options of fpc 1.1 :
 
   put + after a boolean switch option to enable it, - to disable it
   -a     the compiler doesn't delete the generated assembler file
@@ -2761,11 +2761,12 @@ begin
   OpenDialog:=TOpenDialog.Create(Self);
   try
     if Sender=btnCompiler then begin
-      OpenDialog.Title:='Browse for Compiler (ppc386)';
+      OpenDialog.Title:=Format(lisBrowseForCompiler, [GetDefaultCompilerFilename
+        ]);
       DefaultFilename:=FindDefaultCompilerPath;
       OpenDialog.Options:=OpenDialog.Options+[ofFileMustExist];
     end else if Sender=btnUnitOutputDir then begin
-      OpenDialog.Title:='Unit Output directory';
+      OpenDialog.Title:=lisUnitOutputDirectory;
       DefaultFilename:='';
       OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist];
     end else
@@ -2796,7 +2797,7 @@ var
 begin
   ANode:=InhTreeView.Selected;
   if (ANode=nil) or (ANode.Data=nil) then begin
-    InhItemMemo.Lines.Text:='Select a node';
+    InhItemMemo.Lines.Text:=lisSelectANode;
   end else begin
     ChildData:=PInheritedNodeData(ANode.Data);
     if ChildData^.Option in icoAllSearchPaths then begin
@@ -3233,28 +3234,28 @@ begin
       AncestorNode.ImageIndex:=ImageIndexPackage;
       AncestorNode.SelectedIndex:=AncestorNode.ImageIndex;
       with AncestorOptions.ParsedOpts do begin
-        AddChildNode('unit path',
+        AddChildNode(lisunitPath,
           CreateRelativeSearchPath(GetParsedValue(pcosUnitPath),
           CompilerOpts.BaseDirectory),icoUnitPath);
-        AddChildNode('include path',
+        AddChildNode(lisincludePath,
           CreateRelativeSearchPath(GetParsedValue(pcosIncludePath),
           CompilerOpts.BaseDirectory),icoIncludePath);
-        AddChildNode('object path',
+        AddChildNode(lisobjectPath,
           CreateRelativeSearchPath(GetParsedValue(pcosObjectPath),
           CompilerOpts.BaseDirectory),icoObjectPath);
-        AddChildNode('library path',
+        AddChildNode(lislibraryPath,
           CreateRelativeSearchPath(GetParsedValue(pcosLibraryPath),
           CompilerOpts.BaseDirectory),icoLibraryPath);
-        AddChildNode('linker options',GetParsedValue(pcosLinkerOptions),
+        AddChildNode(lislinkerOptions, GetParsedValue(pcosLinkerOptions),
           icoLinkerOptions);
-        AddChildNode('custom options',GetParsedValue(pcosCustomOptions),
+        AddChildNode(liscustomOptions, GetParsedValue(pcosCustomOptions),
           icoCustomOptions);
       end;
       AncestorNode.Expanded:=true;
     end;
     OptionsList.Free;
   end else begin
-    InhTreeView.Items.Add(nil,'No compiler options inherited.');
+    InhTreeView.Items.Add(nil, lisNoCompilerOptionsInherited);
   end;
   InhTreeView.EndUpdate;
 end;
@@ -3499,7 +3500,6 @@ var
 begin
   // Setup the Code Generation Tab
   CodeGenPage:=nbMain.Page[Page];
-  Assert(False, 'Trace:Setting up compiler options code generation tab');
 
   grpUnitStyle := TRadioGroup.Create(Self);
   with grpUnitStyle do
@@ -3780,7 +3780,6 @@ procedure TfrmCompilerOptions.SetupLinkingTab(Page: integer);
 begin
   // Setup the Linking Tab
   LinkingPage:=nbMain.Page[Page];
-  Assert(False, 'Trace:Setting up compiler options linking tab');
 
   grpDebugging := TGroupBox.Create(Self);
   with grpDebugging do
@@ -4263,7 +4262,7 @@ begin
     Top:=grpConfigFile.Top+grpConfigFile.Height+10;
     Width:=grpConfigFile.Width;
     Height:=200;
-    Caption:='Custom options';
+    Caption:=lisCustomOptions2;
   end;
   
   memCustomOptions := TMemo.Create(Self);
@@ -4286,7 +4285,7 @@ begin
   with InhNoteLabel do begin
     Name:='InhNoteLabel';
     Parent:=InheritedPage;
-    Caption:='Additional compiler options inherited from packages';
+    Caption:=lisAdditionalCompilerOptionsInheritedFromPackages;
   end;
   
   InhTreeView:=TTreeView.Create(Self);
@@ -4306,7 +4305,7 @@ begin
     ReadOnly:=true;
     WordWrap:=true;
     ScrollBars:=ssAutoVertical;
-    Text:='Select a node';
+    Text:=lisSelectANode;
   end;
 end;
 
@@ -4725,8 +4724,6 @@ end;
 procedure TfrmCompilerOptions.SetupButtonBar;
 begin
   // Setup the Button Bar
-  Assert(False, 'Trace:Setting up compiler options button bar');
-
   btnOK := TButton.Create(Self);
   with btnOK do
   begin

@@ -704,7 +704,7 @@ begin
     FileTitles[0]:='compiler path';
     FileDescs[0]:=Format(
       lisCodeToolsDefsThePathToTheFreePascalCompilerForExample, [#13,
-      '"', '"', '"', '"']);
+       '"', GetDefaultCompilerFilename, '"', '"', '"']);
     FileNames[0]:=DefaultCompiler;
     FileFlags[0]:=[iftCmdLine,iftNotEmpty];
 

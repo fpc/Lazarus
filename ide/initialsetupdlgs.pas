@@ -40,8 +40,9 @@ unit InitialSetupDlgs;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Buttons, Dialogs, EnvironmentOpts,
-  FileCtrl, StdCtrls, ComCtrls, LazConf, IDEProcs;
+  Classes, SysUtils, Forms, Controls, Buttons, Dialogs, FileCtrl, StdCtrls,
+  ComCtrls,
+  LazarusIDEStrConsts, LazConf, EnvironmentOpts, IDEProcs;
   
 procedure SetupCompilerFilename(var InteractiveSetup: boolean);
 procedure SetupFPCSourceDirectory(var InteractiveSetup: boolean);
@@ -62,26 +63,24 @@ begin
   if not FileIsExecutable(CurCompilerFilename) then begin
     if not InteractiveSetup then exit;
     if CurCompilerFilename='' then begin
-      MessageDlg('Free Pascal Compiler not found',
-        'The Free Pascal compiler (filename: ppc386) was not found.'#13
-        +'It is recommended that you install fpc.',
+      MessageDlg(lisFreePascalCompilerNotFound,
+        Format(lisTheFreePascalCompilerFilenameWasNotFoundItIsRecomm, [
+          GetDefaultCompilerFilename, #13]),
         mtWarning,[mbIgnore],0);
     end else begin
       DefaultCompPath:=FindDefaultCompilerPath;
       if CompareFilenames(DefaultCompPath,CurCompilerFilename)<>0 then begin
-        r:=MessageDlg('Invalid Compiler Filename',
-           'The current compiler filename "'+CurCompilerFilename+'"'#13
-           +'is not a valid executable.'#13
-           +'Choose Ok to choose the default "'+DefaultCompPath+'".'#13
-           +'Otherwise check Environment -> Environment Options -> Files',
+        r:=MessageDlg(lisInvalidCompilerFilename,
+           Format(lisTheCurrentCompilerFilenameIsNotAValidExecutableCho, ['"',
+             CurCompilerFilename, '"', #13, #13, '"', DefaultCompPath, '"', #13]
+             ),
            mtWarning,[mbOk,mbIgnore],0);
         if r=mrOk then
           CurCompilerFilename:=DefaultCompPath;
       end else begin
-        MessageDlg('Invalid Compiler Filename',
-           'The current compiler filename "'+CurCompilerFilename+'"'#13
-           +'is not a valid executable.'#13
-           +'Plz check Environment -> Environment Options -> Files',
+        MessageDlg(lisInvalidCompilerFilename,
+           Format(lisTheCurrentCompilerFilenameIsNotAValidExecutablePlz, ['"',
+             CurCompilerFilename, '"', #13, #13]),
            mtWarning,[mbIgnore],0);
       end;
     end;
@@ -103,28 +102,23 @@ begin
     or (not FileIsExecutable(EnvironmentOptions.CompilerFilename)) then
       exit;
     if CurFPCSrcDir='' then begin
-      MessageDlg('Free Pascal Sources not found',
-        'The Free Pascal source directory was not found.'#13
-        +'Some code functions will not work.'#13
-        +'It is recommended that you install it and set the path'#13
-        +'Environment -> Environment Options -> Files',
+      MessageDlg(lisFreePascalSourcesNotFound,
+        Format(lisTheFreePascalSourceDirectoryWasNotFoundSomeCodeFun, [#13,
+          #13, #13]),
         mtWarning,[mbIgnore],0);
     end else begin
       DefaultFPCSrcDir:=FindDefaultFPCSrcDirectory;
       if CompareFilenames(DefaultFPCSrcDir,CurFPCSrcDir)<>0 then begin
-        r:=MessageDlg('Invalid Free Pascal source directory',
-           'The current Free Pascal source directory "'+CurFPCSrcDir+'"'#13
-           +'does not look correct.'#13
-           +'Choose Ok to choose the default "'+DefaultFPCSrcDir+'".'#13
-           +'Otherwise check Environment -> Environment Options -> Files',
+        r:=MessageDlg(lisInvalidFreePascalSourceDirectory,
+           Format(lisTheCurrentFreePascalSourceDirectoryDoesNotLookCorr, ['"',
+             CurFPCSrcDir, '"', #13, #13, '"', DefaultFPCSrcDir, '"', #13]),
            mtWarning,[mbOk,mbIgnore],0);
         if r=mrOk then
           CurFPCSrcDir:=DefaultFPCSrcDir;
       end else begin
-        MessageDlg('Invalid Free Pascal source directory',
-           'The current Free Pascal source directory "'+CurFPCSrcDir+'"'#13
-           +'does not look correct.'#13
-           +'Check Environment -> Environment Options -> Files',
+        MessageDlg(lisInvalidFreePascalSourceDirectory,
+           Format(lisTheCurrentFreePascalSourceDirectoryDoesNotLookCorr2, ['"',
+             CurFPCSrcDir, '"', #13, #13]),
            mtWarning,[mbIgnore],0);
       end;
     end;
@@ -144,29 +138,23 @@ begin
   if not CheckLazarusDirectory(CurLazDir) then begin
     if not InteractiveSetup then exit;
     if CurLazDir='' then begin
-      MessageDlg('Lazarus directory not found',
-        'The Lazarus directory was not found.'#13
-        +'You will not be able to create LCL applications.'#13
-        +'Plz check Environment -> Environment Options -> Files',
+      MessageDlg(lisLazarusDirectoryNotFound,
+        Format(lisTheLazarusDirectoryWasNotFoundYouWillNotBeAbleToCr, [#13, #13]
+          ),
         mtWarning,[mbIgnore],0);
     end else begin
       DefaultLazDir:=ProgramDirectory;
       if CompareFilenames(DefaultLazDir,CurLazDir)<>0 then begin
-        r:=MessageDlg('Lazarus directory not found',
-           'The current Lazarus directory "'+CurLazDir+'"'#13
-           +'does not look correct.'#13
-           +'Without it You will not be able to create LCL applications.'#13
-           +'Choose Ok to choose the default "'+DefaultLazDir+'".'#13
-           +'Otherwise check Environment -> Environment Options -> Files',
+        r:=MessageDlg(lisLazarusDirectoryNotFound,
+           Format(lisTheCurrentLazarusDirectoryDoesNotLookCorrectWithou, ['"',
+             CurLazDir, '"', #13, #13, #13, '"', DefaultLazDir, '"', #13]),
            mtWarning,[mbOk,mbIgnore],0);
         if r=mrOk then
           CurLazDir:=DefaultLazDir;
       end else begin
-        MessageDlg('Lazarus directory not found',
-           'The current Lazarus directory "'+CurLazDir+'"'#13
-           +'does not look correct.'#13
-           +'Without it You will not be able to create LCL applications.'#13
-           +'Check Environment -> Environment Options -> Files',
+        MessageDlg(lisLazarusDirectoryNotFound,
+           Format(lisTheCurrentLazarusDirectoryDoesNotLookCorrectWithou2, ['"',
+             CurLazDir, '"', #13, #13, #13]),
            mtWarning,[mbIgnore],0);
       end;
     end;

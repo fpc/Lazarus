@@ -133,8 +133,9 @@ end;
  ---------------------------------------------------------------------------}
 function FindDefaultCompilerPath: string;
 begin
-  Result:=SearchFileInPath('ppc386','',{$IFDEF Ver1_0}GetEnv{$ELSE}FpGetEnv{$ENDIF}('PATH'),':',
-                           [sffDontSearchInBasePath]);
+  Result:=SearchFileInPath(GetDefaultCompilerFilename,'',
+                       {$IFDEF Ver1_0}GetEnv{$ELSE}FpGetEnv{$ENDIF}('PATH'),':',
+                       [sffDontSearchInBasePath]);
 end;
 
 {---------------------------------------------------------------------------
@@ -142,8 +143,9 @@ end;
  ---------------------------------------------------------------------------}
 function FindDefaultMakePath: string;
 begin
-  Result:=SearchFileInPath('make','',{$IFDEF Ver1_0}GetEnv{$ELSE}FpGetEnv{$ENDIF}('PATH'),':',
-                           [sffDontSearchInBasePath]);
+  Result:=SearchFileInPath('make','',
+                       {$IFDEF Ver1_0}GetEnv{$ELSE}FpGetEnv{$ENDIF}('PATH'),':',
+                       [sffDontSearchInBasePath]);
 end;
 
 {---------------------------------------------------------------------------
@@ -170,8 +172,8 @@ end;
 
 procedure GetDefaultCompilerFilenames(List: TStrings);
 begin
-  List.Add('/usr/bin/ppc386');
-  List.Add('/opt/fpc/ppc386');
+  List.Add('/usr/bin/'+GetDefaultCompilerFilename);
+  List.Add('/opt/fpc/'+GetDefaultCompilerFilename);
 end;
 
 procedure GetDefaultMakeFilenames(List: TStrings);
