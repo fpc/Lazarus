@@ -95,9 +95,12 @@ const
   csPanel = 51;
   csScrollBox = 52;
   
-  csNonLCL = 53; // for non LCL controls, that create their own handles
+  csCheckListBox = 53;
+  csPairSplitter = 54;
+  csPairSplitterSide = 55;
 
-  csCheckListBox = 54;
+  csNonLCL = 56; // for non LCL controls, that create their own handles
+
 
 const
   {Mouse message key states}

@@ -192,6 +192,11 @@ type
     procedure Clear;
   end;
   
+  
+  TWinWidgetInfoFlag = (
+    wwiNotOnParentsClientArea
+    );
+  TWinWidgetInfoFlags = set of TWinWidgetInfoFlag;
 
   // Info needed by the API of a HWND (=Widget) 
   PWinWidgetInfo = ^TWinWidgetInfo;
@@ -203,6 +208,7 @@ type
     ExStyle: Integer;
     UserData: Integer;
     EventMask: TGdkEventMask;
+    Flags: TWinWidgetInfoFlags;
   end;
   
 // clipboard
@@ -443,6 +449,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.40  2002/08/19 15:15:24  mattias
+  implemented TPairSplitter
+
   Revision 1.39  2002/08/17 23:41:34  mattias
   many clipping fixes
 

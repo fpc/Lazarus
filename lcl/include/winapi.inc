@@ -647,9 +647,30 @@ begin
   Result := InterfaceObject.MoveWindowOrgEx(DC, dX, dY);
 end;
 
-function PeekMessage(var lpMsg : TMsg; Handle : HWND; wMsgFilterMin, wMsgFilterMax,wRemoveMsg : UINT): Boolean;
+function PairSplitterAddSide(SplitterHandle, SideHandle: hWnd;
+  Side: integer): Boolean;
 begin
-  Result := InterfaceObject.PeekMessage(lpMsg,Handle,wMsgFilterMin,wMsgFilterMax,wRemoveMsg);
+  Result:=InterfaceObject.PairSplitterAddSide(SplitterHandle,SideHandle,Side);
+end;
+
+function PairSplitterRemoveSide(SplitterHandle, SideHandle: hWnd;
+  Side: integer): Boolean;
+begin
+  Result:=InterfaceObject.PairSplitterRemoveSide(SplitterHandle,SideHandle,
+                                                 Side);
+end;
+
+function PairSplitterSetPosition(SplitterHandle: hWnd;
+  var NewPosition: integer): Boolean;
+begin
+  Result:=InterfaceObject.PairSplitterSetPosition(SplitterHandle,NewPosition);
+end;
+
+function PeekMessage(var lpMsg : TMsg; Handle : HWND;
+  wMsgFilterMin, wMsgFilterMax,wRemoveMsg : UINT): Boolean;
+begin
+  Result := InterfaceObject.PeekMessage(lpMsg,Handle,
+                                        wMsgFilterMin,wMsgFilterMax,wRemoveMsg);
 end;
 
 function Pie(DC: HDC; x,y,width,height,angle1,angle2 : Integer): Boolean;
@@ -1594,6 +1615,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.83  2002/08/19 15:15:23  mattias
+  implemented TPairSplitter
+
   Revision 1.82  2002/08/17 23:41:34  mattias
   many clipping fixes
 

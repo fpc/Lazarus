@@ -72,7 +72,6 @@ type
     procedure SetParent(AParent : TWinControl); override;
     property Flags: TPageFlags read FFlags write FFlags;
   public
-    procedure AddControl; override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure AdjustClientRect(var ARect: TRect); override;
@@ -754,6 +753,9 @@ end.
 
  {
   $Log$
+  Revision 1.66  2002/08/19 15:15:23  mattias
+  implemented TPairSplitter
+
   Revision 1.65  2003/06/19 22:38:21  mattias
   fixed update on changing package usage options
 

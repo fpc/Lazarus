@@ -594,6 +594,7 @@ procedure TgtkObject.SendCachedLCLMessages;
     IsTopLevelWidget: boolean;
     TopologicalList: TList; // list of PGtkWidget;
     i, LCLWidth, LCLHeight: integer;
+    WinWidgetInfo: PWinWidgetInfo;
     
     procedure WriteBigWarning;
     begin
@@ -661,8 +662,11 @@ procedure TgtkObject.SendCachedLCLMessages;
         or GtkWidgetIsA(ParentFixed,GTK_LAYOUT_GET_TYPE) then begin
           FixedMoveControl(ParentFixed, Widget,
                          LCLControl.Left, LCLControl.Top);
-        end else if not (LCLControl.Parent is TNoteBook) then begin
-          WriteWarningParentWidgetNotFound;
+        end else begin
+          WinWidgetInfo:=GetWidgetInfo(Widget,false);
+          if (WinWidgetInfo=nil)
+          or (not (wwiNotOnParentsClientArea in WinWidgetInfo^.Flags)) then
+            WriteWarningParentWidgetNotFound;
         end;
       end
       else begin
@@ -4667,6 +4671,48 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function TgtkObject.CreatePairSplitter(PairSplitterObject: TObject
+    ): PGtkWidget;
+
+  Create a TCustomPairSplitter widget set
+ ------------------------------------------------------------------------------}
+function TgtkObject.CreatePairSplitter(PairSplitterObject: TObject
+  ): PGtkWidget;
+var
+  APairSplitter: TCustomPairSplitter;
+  PanedWidget: PGtkWidget;
+begin
+  APairSplitter:=TCustomPairSplitter(PairSplitterObject);
+  // create the paned
+  if APairSplitter.SplitterType=pstHorizontal then
+    PanedWidget:=gtk_hpaned_new
+  else
+    PanedWidget:=gtk_vpaned_new;
+  Result:=PanedWidget;
+end;
+
+{------------------------------------------------------------------------------
+  function TgtkObject.CreateSimpleClientAreaWidget(Sender: TObject): PGtkWidget;
+
+  Create a fixed widget in a horizontal box
+ ------------------------------------------------------------------------------}
+function TgtkObject.CreateSimpleClientAreaWidget(Sender: TObject): PGtkWidget;
+var
+  TempWidget: PGtkWidget;
+  WinWidgetInfo: PWinWidgetInfo;
+begin
+  Result := gtk_hbox_new(false, 0);
+  TempWidget := gtk_fixed_new();
+  gtk_container_add(GTK_CONTAINER(Result), TempWidget);
+  gtk_widget_show(TempWidget);
+  WinWidgetInfo:=GetWidgetInfo(Result,true);
+  Include(WinWidgetInfo^.Flags,wwiNotOnParentsClientArea);
+  SetFixedWidget(Result, TempWidget);
+  SetMainWidget(Result, TempWidget);
+  gtk_widget_show(Result);
+end;
+
+{------------------------------------------------------------------------------
   Function: TGTKObject.CreateComponent
   Params:   sender - object for which to create visual representation
   Returns:  nothing
@@ -4678,7 +4724,7 @@ var
   Caption : ansistring;          // the caption of "Sender"
   StrTemp : PChar;               // same as "caption" but as PChar
   TempWidget,
-  TempWidget2 : PGTKWidget;       // pointer to gtk-widget (local use when neccessary)
+  TempWidget2 : PGTKWidget;      // pointer to gtk-widget (local use when neccessary)
   p          : pointer;          // ptr to the newly created GtkWidget
   CompStyle,                     // componentstyle (type) of GtkWidget which will be created
   TempInt   : Integer;           // local use when neccessary
@@ -4972,16 +5018,13 @@ begin
     end;
 
   csPage:    // TPage - Notebook page
-    begin
-      // create a fixed widget in a horizontal box
-      P := gtk_hbox_new(false, 0);
-      TempWidget := gtk_fixed_new();
-      gtk_container_add(GTK_CONTAINER(P), TempWidget);
-      gtk_widget_show(TempWidget);
-      SetFixedWidget(p, TempWidget);
-      SetMainWidget(p, TempWidget);
-      gtk_widget_show(P);
-    end;
+    P:=CreateSimpleClientAreaWidget(Sender);
+
+  csPairSplitter:
+    p:=CreatePairSplitter(Sender);
+
+  csPairSplitterSide:
+    P:=CreateSimpleClientAreaWidget(Sender);
 
   csPanel:
     begin
@@ -7420,6 +7463,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.381  2002/08/19 15:15:24  mattias
+  implemented TPairSplitter
+
   Revision 1.380  2002/08/18 16:50:09  mattias
   fixes for debugging
 

@@ -109,6 +109,8 @@ type
     function CreateAPIWidget(AWinControl: TWinControl): PGtkWidget;
     function CreateForm(ACustomForm: TCustomForm): PGtkWidget;
     function CreateListView(ListViewObject: TObject): PGtkWidget;
+    function CreatePairSplitter(PairSplitterObject: TObject): PGtkWidget;
+    function CreateSimpleClientAreaWidget(Sender: TObject): PGtkWidget;
     procedure CreateComponent(Sender : TObject);virtual;
     procedure DestroyEmptySubmenu(Sender: TObject);virtual;
     procedure DestroyLCLComponent(Sender: TObject);virtual;
@@ -248,8 +250,8 @@ implementation
 
 uses
   Graphics, Buttons, Menus, GTKWinApiWindow, StdCtrls, ComCtrls, CListBox,
-  KeyMap, Calendar, Arrow, Spin, CommCtrl, ExtCtrls, Dialogs, FileCtrl,
-  LResources, Math, gtkglobals, gtkproc;
+  KeyMap, Calendar, Arrow, Spin, PairSplitter, CommCtrl, ExtCtrls, Dialogs,
+  FileCtrl, LResources, Math, gtkglobals, gtkproc;
 
 {$I gtklistsl.inc}
 
@@ -343,6 +345,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.131  2002/08/19 15:15:24  mattias
+  implemented TPairSplitter
+
   Revision 1.130  2002/08/17 23:41:34  mattias
   many clipping fixes
 

@@ -17,14 +17,6 @@
  *****************************************************************************
 }
 {------------------------------------------------------------------------------
-  TPage AddControl
-------------------------------------------------------------------------------}
-procedure TPage.AddControl;
-begin
-  // nothing yet
-end;
-
-{------------------------------------------------------------------------------
   TPage Constructor
  ------------------------------------------------------------------------------}
 constructor TPage.Create(AOwner: TComponent);
@@ -42,7 +34,6 @@ begin
     SetInitialBounds(0,0,120,100);
   end;
 
-  {create the control}
   fCompStyle := csPage;
 
   Visible := False;
@@ -66,13 +57,6 @@ begin
   if not HandleAllocated or (csLoading in ComponentState) then exit;
   CNSendMessage(LM_NB_UpdateTab, Self, nil);
 end;
-
-{------------------------------------------------------------------------------
-  TPage Paint
- ------------------------------------------------------------------------------}
-{procedure TPage.Paint;
-begin
-end;}
 
 {------------------------------------------------------------------------------
   TPage WMPaint
@@ -157,6 +141,9 @@ end;
 // included by extctrls.pp
 {
   $Log$
+  Revision 1.15  2002/08/19 15:15:23  mattias
+  implemented TPairSplitter
+
   Revision 1.14  2003/06/11 22:29:42  mattias
   fixed realizing bounds after loading form
 

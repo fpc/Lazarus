@@ -132,6 +132,9 @@ function MessageBox(hWnd: HWND; lpText, lpCaption: PChar; uType: Cardinal): inte
 function MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean; override;
 function MoveWindowOrgEx(DC: HDC; dX, dY: Integer): Boolean; override;
 
+function PairSplitterAddSide(SplitterHandle, SideHandle: hWnd; Side: integer): Boolean; override;
+function PairSplitterRemoveSide(SplitterHandle, SideHandle: hWnd; Side: integer): Boolean; override;
+function PairSplitterSetPosition(SplitterHandle: hWnd; var NewPosition: integer): Boolean; override;
 function PeekMessage(var lpMsg : TMsg; Handle : HWND; wMsgFilterMin, wMsgFilterMax,wRemoveMsg : UINT): Boolean; override;
 function Pie(DC: HDC; x,y,width,height,angle1,angle2 : Integer): Boolean; override;
 function PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer; Filled, Continuous: boolean): boolean; override;
@@ -202,6 +205,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.69  2002/08/19 15:15:24  mattias
+  implemented TPairSplitter
+
   Revision 1.68  2002/08/17 23:41:35  mattias
   many clipping fixes
 

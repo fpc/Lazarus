@@ -5563,6 +5563,51 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function TgtkObject.PairSplitterAddSide(SplitterHandle, SideHandle: hWnd;
+    Side: integer): Boolean;
+ ------------------------------------------------------------------------------}
+function TgtkObject.PairSplitterAddSide(SplitterHandle, SideHandle: hWnd;
+  Side: integer): Boolean;
+begin
+  Result:=false;
+  if (SplitterHandle=0) or (SideHandle=0) or (Side<0) or (Side>1) then exit;
+  if Side=0 then
+    gtk_paned_add1(PGtkPaned(SplitterHandle),PGtkWidget(SideHandle))
+  else
+    gtk_paned_add2(PGtkPaned(SplitterHandle),PGtkWidget(SideHandle));
+  Result:=true;
+end;
+
+{------------------------------------------------------------------------------
+  function TgtkObject.PairSplitterRemoveSide(SplitterHandle, SideHandle: hWnd;
+    Side: integer): Boolean;
+ ------------------------------------------------------------------------------}
+function TgtkObject.PairSplitterRemoveSide(SplitterHandle, SideHandle: hWnd;
+  Side: integer): Boolean;
+begin
+  Result:=false;
+  writeln('WARNING: TgtkObject.PairSplitterRemoveSide not implemented');
+end;
+
+{------------------------------------------------------------------------------
+  function TgtkObject.PairSplitterSetPosition(SplitterHandle: hWnd;
+    var NewPosition: integer): Boolean;
+    
+  Negative values for NewPosition will only read the value
+ ------------------------------------------------------------------------------}
+function TgtkObject.PairSplitterSetPosition(SplitterHandle: hWnd;
+  var NewPosition: integer): Boolean;
+begin
+  Result:=false;
+  if (SplitterHandle=0) then exit;
+  if NewPosition>=0 then
+    gtk_paned_set_position(PGtkPaned(SplitterHandle),NewPosition);
+  NewPosition:=PGtkPaned(SplitterHandle)^.child1_size;
+  Result:=true;
+end;
+
+
+{------------------------------------------------------------------------------
   Function: PeekMessage
   Params:  lpMsg        - Where it should put the message
            Handle       - Handle of the window (thread)
@@ -8436,6 +8481,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.250  2002/08/19 15:15:24  mattias
+  implemented TPairSplitter
+
   Revision 1.249  2002/08/18 16:50:09  mattias
   fixes for debugging
 

@@ -1235,6 +1235,24 @@ Begin
   Result:=SetWindowOrgEx(dc, P.x-dX, P.y-dY, @P);
 end;
 
+function TInterfaceBase.PairSplitterAddSide(SplitterHandle, SideHandle: hWnd;
+  Side: integer): Boolean;
+begin
+  Result:=false;
+end;
+
+function TInterfaceBase.PairSplitterRemoveSide(SplitterHandle, SideHandle: hWnd;
+  Side: integer): Boolean;
+begin
+  Result:=false;
+end;
+
+function TInterfaceBase.PairSplitterSetPosition(SplitterHandle: hWnd;
+  var NewPosition: integer): Boolean;
+begin
+  Result:=false;
+end;
+
 function TInterfaceBase.PeekMessage(var lpMsg : TMsg; Handle : HWND;
   wMsgFilterMin, wMsgFilterMax,wRemoveMsg : UINT): Boolean;
 Begin
@@ -1715,6 +1733,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.90  2002/08/19 15:15:23  mattias
+  implemented TPairSplitter
+
   Revision 1.89  2002/08/18 00:03:45  mattias
   fixed bitbtn image for NoToAll
 

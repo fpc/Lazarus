@@ -38,7 +38,7 @@ uses
   Buttons, Extctrls, Registry, Calendar, Clipbrd, Forms, LCLLinux, Spin,
   Comctrls, Graphics, StdCtrls, Arrow, Controls, ImgList, Menus, Toolwin,
   Dialogs, Messages, Clistbox, ActnList, Grids, MaskEdit,
-  Printers, PostScriptPrinter, CheckLst;
+  Printers, PostScriptPrinter, CheckLst, PairSplitter;
 
 implementation
 
@@ -47,6 +47,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.23  2002/08/19 15:15:23  mattias
+  implemented TPairSplitter
+
   Revision 1.22  2003/06/20 01:37:47  marc
   + Added TCheckListBox component
 

@@ -565,7 +565,7 @@ type
     procedure DoDragMsg(var Dragmsg : TCMDrag);
     procedure DoMouseDown(var Message: TLMMouse; Button: TMouseButton; Shift:TShiftState);
     procedure DoMouseUp(var Message: TLMMouse; Button: TMouseButton);
-    procedure SetAlign(Value : TAlign);
+    procedure SetAlign(Value: TAlign);
     procedure SetBoundsRect(const ARect : TRect);
     procedure SetClientHeight(Value: Integer);
     procedure SetClientSize(Value: TPoint);
@@ -1536,6 +1536,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.131  2002/08/19 15:15:23  mattias
+  implemented TPairSplitter
+
   Revision 1.130  2002/08/17 23:41:34  mattias
   many clipping fixes
 

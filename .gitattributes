@@ -730,6 +730,7 @@ lcl/lresources.pp svneol=native#text/pascal
 lcl/maskedit.pp svneol=native#text/pascal
 lcl/menus.pp svneol=native#text/pascal
 lcl/messages.pp svneol=native#text/pascal
+lcl/pairsplitter.pas svneol=native#text/pascal
 lcl/postscriptprinter.pas svneol=native#text/pascal
 lcl/printers.pas svneol=native#text/pascal
 lcl/registry.pp svneol=native#text/pascal
