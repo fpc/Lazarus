@@ -663,7 +663,8 @@ begin
 //writeln('AAA1 [GTKKeyUpDown] ',TControl(Data).Name,':',TControl(Data).ClassName,' Result=',Result);
 
   {$ifdef GTK2}
-  Status := False;
+  if not GtkWidgetIsA(Widget,GTK_APIWIDGETCLIENT_TYPE) then
+    Status := False;//for now only handle custom widgets
   {$endif}
 
   Result := Status;
@@ -992,10 +993,13 @@ function gtkMotionNotify(Widget:PGTKWidget; Event: PGDKEventMotion;
   Data: gPointer): GBoolean; cdecl;
 var
   DesignOnlySignal: boolean;
-  Status : gboolean;
 begin
-  Status := True;
-  
+  {$ifdef GTK2}
+  Result := False;
+  {$Else}
+  Result := True;
+  {$endif}
+
   {$IFDEF VerboseMouseBugfix}
   DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMouseMotion);
   writeln('[GTKMotionNotify] ',
@@ -1018,12 +1022,6 @@ begin
   end;
 
   DeliverMouseMoveMessage(Widget,Event,TWinControl(Data));
-
-  {$ifdef GTK2}
-  Status := False;
-  {$endif}
-
-  Result := Status;
 end;
 
 {-------------------------------------------------------------------------------
@@ -1035,10 +1033,12 @@ end;
 -------------------------------------------------------------------------------}
 function GTKMotionNotifyAfter(widget:PGTKWidget; event: PGDKEventMotion;
   data: gPointer): GBoolean; cdecl;
-var
-  Status : gboolean;
 begin
-  Status := True;
+  {$ifdef GTK2}
+  Result := False;
+  {$Else}
+  Result := True;
+  {$endif}
 
   {$IFDEF VerboseMouseBugfix}
   writeln('[GTKMotionNotifyAfter] ',
@@ -1054,12 +1054,6 @@ begin
   if ControlGetsMouseMoveBefore(TControl(Data)) then exit;
 
   DeliverMouseMoveMessage(Widget,Event,TWinControl(Data));
-
-  {$ifdef GTK2}
-  Status := False;
-  {$endif}
-
-  Result := Status;
 end;
 
 {-------------------------------------------------------------------------------
@@ -1290,9 +1284,12 @@ function gtkMouseBtnPress(widget: PGtkWidget; event : pgdkEventButton;
   data: gPointer) : GBoolean; cdecl;
 var
   DesignOnlySignal: boolean;
-  Status : gboolean;
 begin
-  Status := True;
+  {$ifdef GTK2}
+  Result := False;
+  {$Else}
+  Result := True;
+  {$endif}
 
   {$IFDEF VerboseMouseBugfix}
   writeln('');
@@ -1331,12 +1328,6 @@ begin
   end;
   
   DeliverMouseDownMessage(Widget,Event,TWinControl(Data));
-
-  {$ifdef GTK2}
-  Status := False;
-  {$endif}
-
-  Result := Status;
 end;
 
 {-------------------------------------------------------------------------------
@@ -1349,10 +1340,12 @@ end;
 -------------------------------------------------------------------------------}
 function gtkMouseBtnPressAfter(widget: PGtkWidget; event : pgdkEventButton;
   data: gPointer) : GBoolean; cdecl;
-var  
-  Status : gboolean;
 begin
-  Status := True;
+  {$ifdef GTK2}
+  Result := False;
+  {$Else}
+  Result := True;
+  {$endif}
 
   {$IFDEF VerboseMouseBugfix}
   {writeln('[gtkMouseBtnPressAfter] ',
@@ -1370,12 +1363,6 @@ begin
   if ControlGetsMouseDownBefore(TControl(Data)) then exit;
 
   DeliverMouseDownMessage(Widget,Event,TWinControl(Data));
-
-  {$ifdef GTK2}
-  Status := False;
-  {$endif}
-
-  Result := Status;
 end;
 
 {-------------------------------------------------------------------------------
@@ -1473,9 +1460,12 @@ function gtkMouseBtnRelease(widget: PGtkWidget; event : pgdkEventButton;
   data: gPointer) : GBoolean; cdecl;
 var
   DesignOnlySignal: boolean;
-  Status : gboolean;
 begin
-  Status := True;
+  {$ifdef GTK2}
+  Result := False;
+  {$Else}
+  Result := True;
+  {$endif}
 
   {$IFDEF VerboseMouseBugfix}
   DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMouseRelease);
@@ -1506,12 +1496,6 @@ begin
   end;
   
   DeliverMouseUpMessage(Widget,Event,TWinControl(Data));
-
-  {$ifdef GTK2}
-  Status := False;
-  {$endif}
-
-  Result := Status;
 end;
 
 {-------------------------------------------------------------------------------
@@ -1524,10 +1508,12 @@ end;
 -------------------------------------------------------------------------------}
 function gtkMouseBtnReleaseAfter(widget: PGtkWidget; event : pgdkEventButton;
   data: gPointer) : GBoolean; cdecl;
-var
-  Status : gboolean;
 begin
-  Status := True;
+  {$ifdef GTK2}
+  Result := False;
+  {$Else}
+  Result := True;
+  {$endif}
 
   {$IFDEF VerboseMouseBugfix}
   {writeln('[gtkMouseBtnReleaseAfter] ',
@@ -1544,12 +1530,6 @@ begin
   if ControlGetsMouseUpBefore(TControl(Data)) then exit;
 
   DeliverMouseUpMessage(Widget,Event,TWinControl(Data));
-
-  {$ifdef GTK2}
-  Status := False;
-  {$endif}
-
-  Result := Status;
 end;
 
 function gtkclickedCB(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
@@ -2914,6 +2894,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.197  2003/10/01 15:57:37  ajgenius
+  undo accidental mouse callback changes, partly fix key events for gtk2
+
   Revision 1.196  2003/09/26 00:24:22  ajgenius
   partly cleanup gtk2 $ifdef's
 
