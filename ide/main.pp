@@ -96,6 +96,11 @@ type
     procedure mnuEditTabsToSpacesBlockClicked(Sender: TObject);
     procedure mnuEditCommentBlockClicked(Sender: TObject);
     procedure mnuEditUncommentBlockClicked(Sender: TObject);
+    procedure mnuEditSelectAllClick(Sender: TObject);
+    procedure mnuEditSelectCodeBlockClick(Sender: TObject);
+    procedure mnuEditSelectToBraceClick(Sender: TObject);
+    procedure mnuEditSelectLineClick(Sender: TObject);
+    procedure mnuEditSelectParagraphClick(Sender: TObject);
     procedure mnuEditCompleteCodeClicked(Sender: TObject);
 
     // search menu
@@ -1280,6 +1285,11 @@ begin
   itmEditTabsToSpacesBlock.OnClick:=@mnuEditTabsToSpacesBlockClicked;
   itmEditCommentBlock.OnClick:=@mnuEditCommentBlockClicked;
   itmEditUncommentBlock.OnClick:=@mnuEditUncommentBlockClicked;
+  itmEditSelectAll.OnClick:=@mnuEditSelectAllClick;
+  itmEditSelectToBrace.OnClick:=@mnuEditSelectToBraceClick;
+  itmEditSelectCodeBlock.OnClick:=@mnuEditSelectCodeBlockClick;
+  itmEditSelectLine.OnClick:=@mnuEditSelectLineClick;
+  itmEditSelectParagraph.OnClick:=@mnuEditSelectParagraphClick;
   itmEditCompleteCode.OnClick:=@mnuEditCompleteCodeClicked;
 end;
 
@@ -6837,6 +6847,31 @@ begin
   DoEditMenuCommand(ecSelectionUncomment);
 end;
 
+procedure TMainIDE.mnuEditSelectAllClick(Sender: TObject);
+begin
+  DoEditMenuCommand(ecSelectAll);
+end;
+
+procedure TMainIDE.mnuEditSelectCodeBlockClick(Sender: TObject);
+begin
+  DoEditMenuCommand(ecSelectCodeBlock);
+end;
+
+procedure TMainIDE.mnuEditSelectToBraceClick(Sender: TObject);
+begin
+  DoEditMenuCommand(ecSelectToBrace);
+end;
+
+procedure TMainIDE.mnuEditSelectLineClick(Sender: TObject);
+begin
+  DoEditMenuCommand(ecSelectLine);
+end;
+
+procedure TMainIDE.mnuEditSelectParagraphClick(Sender: TObject);
+begin
+  DoEditMenuCommand(ecSelectParagraph);
+end;
+
 procedure TMainIDE.mnuEditCompleteCodeClicked(Sender: TObject);
 begin
   DoCompleteCodeAtCursor;
@@ -6929,6 +6964,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.372  2002/09/11 08:32:54  lazarus
+  MG: added selection menu items
+
   Revision 1.371  2002/09/10 18:17:30  lazarus
   MG: added  new project from file
 
