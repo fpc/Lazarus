@@ -1097,7 +1097,7 @@ type
     procedure LayoutDialog;
     procedure Paint; override;
     constructor CreateMessageDialog(const ACaption, aMsg: string;
-      DialogType : longint; TheButtons: Array of Longint; DefaultIndex : Longint);
+      DialogType : longint; TheButtons: PLongint; ButtonCount, DefaultIndex : Longint);
   end;
 
 procedure TMessageBox.MessageBoxKeyDown(Sender: TObject; var Key: Word;
@@ -1138,7 +1138,7 @@ const
 
 
 constructor TMessageBox.CreateMessageDialog(const ACaption, aMsg: string;
-  DialogType : longint; TheButtons: Array of Longint; DefaultIndex : Longint);
+  DialogType : longint; TheButtons: PLongint; ButtonCount, DefaultIndex : Longint);
 begin
   inherited Create (Application);
 
@@ -1181,15 +1181,16 @@ begin
         Caption := rsmtInformation;//Should be Application.Title, when we have one
     end
   end;
-  NumButtons := High(TheButtons) - Low(TheButtons) + 1;
-  Buttons := @TheButtons[Low(TheButtons)];
+  NumButtons := ButtonCount;
+  Buttons := TheButtons;
 
-  theDefaultIndex := DefaultIndex - Low(TheButtons);
-  If (TheDefaultIndex >= High(TheButtons) - Low(TheButtons)) or
-    (TheDefaultIndex < 0)
+  If (DefaultIndex >= ButtonCount) or
+    (DefaultIndex < 0)
   then
-    TheDefaultIndex := 0;
-    
+    TheDefaultIndex := 0
+  else
+    theDefaultIndex := DefaultIndex;
+
   LayoutDialog;
 end;
 
@@ -1312,11 +1313,11 @@ begin
 end;
 
 Function TInterfaceBase.PromptUser(const DialogCaption, DialogMessage : String; DialogType : longint;
-  Buttons : Array of Longint; DefaultIndex, EscapeResult : Longint) : Longint;
+  Buttons : PLongint; ButtonCount, DefaultIndex, EscapeResult : Longint) : Longint;
 var
   theModalResult : longint;
 begin
-  with TMessageBox.CreateMessageDialog (DialogCaption, DialogMessage, DialogType, Buttons, DefaultIndex) do
+  with TMessageBox.CreateMessageDialog (DialogCaption, DialogMessage, DialogType, Buttons, ButtonCount, DefaultIndex) do
     try
       theModalResult := ShowModal;
       Case theModalResult of
@@ -1330,12 +1331,12 @@ begin
 end;
 
 Function TInterfaceBase.PromptUserAtXY(const DialogCaption, DialogMessage : String;
-  DialogType : longint; Buttons : Array of Longint; DefaultIndex, EscapeResult : Longint;
+  DialogType : longint; Buttons : PLongint; ButtonCount, DefaultIndex, EscapeResult : Longint;
   X, Y : Longint) : Longint;
 var
   theModalResult : longint;
 begin
-  with TMessageBox.CreateMessageDialog (DialogCaption, DialogMessage, DialogType,Buttons, DefaultIndex)
+  with TMessageBox.CreateMessageDialog (DialogCaption, DialogMessage, DialogType, Buttons, ButtonCount, DefaultIndex)
   do
     try
       Position := poDesigned;
@@ -1770,6 +1771,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.58  2002/10/23 14:36:52  lazarus
+  AJ:Fixes to PromptUser;Switched ShowMessage* to use NotifyUser*;
+     fixed TGraphicPropertyEditor for when Property is nil.
+
   Revision 1.57  2002/10/16 16:58:22  lazarus
   MG: moved SendCachedLCLMessages
 
