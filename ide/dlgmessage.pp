@@ -36,7 +36,7 @@ TMessageDlg = class(TForm)
    private
      Function GetMessage : String;
    public
-     constructor Create(AOwner : TComponent); override;
+     //constructor Create(AOwner : TComponent); override;
      Procedure Add(Texts : String);
      Procedure Clear;
      Function GetSelectedLineIndex : Integer;
@@ -52,9 +52,10 @@ implementation
 {------------------------------------------------------------------------------}
 {  TMessageDlg.Create                                                           }
 {------------------------------------------------------------------------------}
-constructor TMessageDlg.Create(AOwner : TComponent);
+{constructor TMessageDlg.Create(AOwner : TComponent);
 Begin
 inherited Create(AOwner);
+Name := 'MessageDlg';
 
 MessageView := TListBox.Create(Self);
   With MessageView do
@@ -62,8 +63,10 @@ MessageView := TListBox.Create(Self);
     Parent:= Self;
     Align:= alClient;
     Visible:= true;
+    Name := 'MessageView';
    end;
 end;
+ }
 
 {------------------------------------------------------------------------------}
 {  TMessageDlg.Add                                                           }

@@ -38,12 +38,12 @@ type
     ListBox1: TListBox;
     btnOK : TButton;
     btnCancel : TButton;
-protected
-public
-    constructor Create(AOwner: TComponent); override;	
     Procedure btnOKClick(Sender : TOBject);
     Procedure btnCancelClick(Sender : TOBject);
     Procedure Listbox1Click(Sender : TObject);
+protected
+public
+ //   constructor Create(AOwner: TComponent); override;	
 end;
 
 var
@@ -51,6 +51,7 @@ ViewUnits1 : TViewUnits1;
 
 implementation
 
+{
 constructor TViewUnits1.Create(AOwner: TComponent);	
 var
 Pad : Integer;
@@ -64,6 +65,7 @@ begin
   height := 200;
   Pad := 10;
   position := poScreenCenter;
+  Name := 'ViewUnits1';
 
   btnOK := TButton.Create(Self);
   btnOK.Parent := Self;
@@ -74,6 +76,7 @@ begin
   btnOK.Caption := 'OK';
   btnOK.Visible := True;
   btnOK.OnClick := @btnOKClick;
+  btnOK.Name := 'btnOK';
 
   btnCancel := TButton.Create(Self);
   btnCancel.Parent := Self;
@@ -83,6 +86,7 @@ begin
   btnCancel.Height := 25;
   btnCancel.Caption := 'Cancel';
   btnCancel.Visible := True;
+  btnCancel.Name := 'btnCancel';
   btnCancel.OnClick := @btnCancelClick;
 
   Edit1 := TEdit.Create(Self);
@@ -92,6 +96,7 @@ begin
   edit1.Width := ClientWidth - (ClientWidth - btnOK.Left) - (2*pad);
   Edit1.Height := 25;
   Edit1.Visible := True;
+  Edit1.Name := 'Edit1';
 
   Listbox1:= TListBox.Create(Self);
   with Listbox1 do begin
@@ -103,6 +108,7 @@ begin
     Visible:= true;
     BorderStyle:= bsNone;
     MultiSelect:= false;
+    Name := 'Listbox1';
     OnClick := @ListBox1Click;
 //    Selected[1]:= true;
   end;
@@ -110,7 +116,7 @@ begin
 
 
 end;
-
+     }
 
 Procedure TViewUnits1.btnOKClick(Sender : TOBject);
 Begin
@@ -149,6 +155,11 @@ end;
 end.
 {
   $Log$
+  Revision 1.2  2001/01/05 17:44:37  lazarus
+  ViewUnits1, ViewForms1 and MessageDlg are all loaded from their resources and all controls are auto-created on them.
+  There are still a few problems with some controls so I haven't converted all forms.
+  Shane
+
   Revision 1.1  2000/07/13 10:27:48  michael
   + Initial import
 

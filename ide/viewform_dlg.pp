@@ -38,19 +38,20 @@ type
     ListBox1: TListBox;
     btnOK : TButton;
     btnCancel : TButton;
-protected
-public
-    constructor Create(AOwner: TComponent); override;	
     Procedure btnOKClick(Sender : TOBject);
     Procedure btnCancelClick(Sender : TOBject);
     Procedure listbox1Click(Sender : TObject);
-    end;
+protected
+public
+//    constructor Create(AOwner: TComponent); override;	
+end;
 
 var
 ViewForms1 : TViewForms1;
 
 implementation
 
+{
 constructor TViewForms1.Create(AOwner: TComponent);	
 var
 Pad : Integer;
@@ -63,6 +64,7 @@ begin
   height := 200;
   Pad := 10;
   position := poScreenCenter;
+  Name := 'ViewForms1';
 
   btnOK := TButton.Create(Self);
   btnOK.Parent := Self;
@@ -72,6 +74,7 @@ begin
   btnOK.Height := 25;
   btnOK.Caption := 'OK';
   btnOK.Visible := True;
+  btnOK.Name := 'btnOK';
   btnOK.OnClick := @btnOKClick;
 
   btnCancel := TButton.Create(Self);
@@ -82,6 +85,7 @@ begin
   btnCancel.Height := 25;
   btnCancel.Caption := 'Cancel';
   btnCancel.Visible := True;
+  btnCancel.Name := 'btnCancel';
   btnCancel.OnClick := @btnCancelClick;
 
   Edit1 := TEdit.Create(Self);
@@ -92,6 +96,7 @@ begin
   Edit1.Height := 25;
   Edit1.Visible := True;
   Edit1.Text := 'Edit1';
+  Edit1.Name := 'Edit1';
 
 
   Listbox1:= TListBox.Create(Self);
@@ -104,14 +109,15 @@ begin
     Visible:= true;
     BorderStyle:= bsNone;
     MultiSelect:= false;
+    Listbox1.Name := 'Listbox1';
     OnClick :=@listbox1Click;
+
 
 //    Selected[1]:= true;
   end;
 
-
 end;
-
+}
 
 Procedure TViewForms1.btnOKClick(Sender : TOBject);
 Begin
@@ -155,6 +161,11 @@ end;
 end.
 {
   $Log$
+  Revision 1.2  2001/01/05 17:44:37  lazarus
+  ViewUnits1, ViewForms1 and MessageDlg are all loaded from their resources and all controls are auto-created on them.
+  There are still a few problems with some controls so I haven't converted all forms.
+  Shane
+
   Revision 1.1  2000/07/13 10:27:48  michael
   + Initial import
 

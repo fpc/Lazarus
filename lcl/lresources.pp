@@ -140,7 +140,7 @@ begin
   StartPos:=-1;
   c:=' ';
   repeat
-    if (not (c in ['a'..'z','A'..'Z'])) then
+    if (not (c in ['a'..'z','A'..'Z','0'..'9'])) then
       StartPos:=LFMStream.Position;
     LFMStream.Read(c,1);
     if LFMStream.Position>1000 then exit;

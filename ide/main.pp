@@ -358,13 +358,6 @@ begin
 
   Pixmap1:=TPixMap.Create;
   Pixmap1.TransparentColor:=clBtnFace;
-  if not LoadResource('btn_viewforms',Pixmap1) then
-  begin
-    LoadResource('default',Pixmap1);
-  end;
-
-  Pixmap1:=TPixMap.Create;
-  Pixmap1.TransparentColor:=clBtnFace;
   if not LoadResource('btn_viewunits',Pixmap1) then
   begin
     LoadResource('default',Pixmap1);
@@ -382,6 +375,12 @@ begin
     Name := 'Speedbutton1';
    end;
 
+  Pixmap1:=TPixMap.Create;
+  Pixmap1.TransparentColor:=clBtnFace;
+  if not LoadResource('btn_viewforms',Pixmap1) then
+  begin
+    LoadResource('default',Pixmap1);
+  end;
 
   SpeedButton2 := TSpeedButton.Create(Self);
   with Speedbutton2 do
@@ -1543,9 +1542,13 @@ Begin
 writeln('FILESAVEDEVENT');
 If TSourceEditor(Sender).IsControlUnit then
   begin
-   Writeln('*****************CREATRING LFM********************');
+   Writeln('*****************CREATING LFM********************');
    Writeln('Result = '+Inttostr(CreateLFM(TCustomForm(TSourceEditor(Sender).Control))));
- //  writeln('RESULT IS '+inttostr(CreateLFM(Self)));
+//  writeln('RESULT IS '+inttostr(CreateLFM(Self)));
+//   Writeln('Result = '+Inttostr(CreateLFM(ViewUnits1)));
+//   Writeln('Result = '+Inttostr(CreateLFM(ViewForms1)));
+//   Writeln('Result = '+Inttostr(CreateLFM(MessageDlg)));
+//   Writeln('Result = '+Inttostr(CreateLFM(TCustomForm(TSourceEditor(Sender).Control))));
    end;
 end;
 
@@ -1593,7 +1596,9 @@ end;
 
 Procedure TMainIDE.mnuViewUnitsClicked(Sender : TObject);
 Begin
-
+Writeln('View Units Clicked');
+ViewUnits1.ShowModal;
+Writeln('Done with ViewUnits Clicked');
 end;
 
 Procedure TMainIDE.mnuViewFormsClicked(Sender : TObject);
@@ -1850,6 +1855,10 @@ end;
 initialization
 {$I images/laz_images.lrs}
 
+{$I dlgmessage.lrs}
+{$I viewunits1.lrs}
+{$I viewforms1.lrs}
+
 
 end.
 
@@ -1858,6 +1867,11 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.33  2001/01/05 17:44:37  lazarus
+  ViewUnits1, ViewForms1 and MessageDlg are all loaded from their resources and all controls are auto-created on them.
+  There are still a few problems with some controls so I haven't converted all forms.
+  Shane
+
   Revision 1.32  2001/01/04 20:33:53  lazarus
   Moved lresources.
   Moved CreateLFM to Main.pp

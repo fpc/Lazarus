@@ -156,10 +156,12 @@ type
   public
     property ItemIndex;
   published
+    property Align;
     property BorderStyle;
     property ExtendedSelect;
     property Items;
     property MultiSelect;
+    property OnClick;
     property OnDblClick;
     property Sorted;
     property Style;
@@ -491,6 +493,11 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.8  2001/01/05 17:44:37  lazarus
+  ViewUnits1, ViewForms1 and MessageDlg are all loaded from their resources and all controls are auto-created on them.
+  There are still a few problems with some controls so I haven't converted all forms.
+  Shane
+
   Revision 1.7  2001/01/04 15:09:05  lazarus
   Tested TCustomEdit.Readonly, MaxLength and CharCase.
   Shane
