@@ -542,7 +542,7 @@ begin
     List.Free;
   end;
 
-  NFocus := TopLevel.FindNextControl(OFocus,True,True,False);
+  NFocus := TopLevel.FindNextControl(OFocus,True,True,False,false);
   If NFocus = OFocus then begin
     Result := True;
     exit;
@@ -2055,6 +2055,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.112  2002/12/28 12:42:38  mattias
+  focus fixes, reduced lpi size
+
   Revision 1.111  2002/12/27 17:46:04  mattias
   fixed SetColor
 
