@@ -7785,8 +7785,6 @@ end;
 function TMainIDE.FindSourceFile(const AFilename, BaseDirectory: string;
   Flags: TFindSourceFlags): string;
 var
-  SearchFile: String;
-  SearchPath: String;
   CompiledSrcExt: String;
   CompiledFilename: String;
   CurBaseDir: String;
@@ -7810,6 +7808,8 @@ var
     CurIncPath: String;
     PathPos: Integer;
     AllIncPaths: String;
+    SearchPath: String;
+    SearchFile: String;
   begin
     if CompiledSrcExt='' then exit;
     // get unit path for compiled units
@@ -7822,7 +7822,7 @@ var
     PathPos:=1;
     while PathPos<=length(UnitPath) do begin
       CurDir:=GetNextDirectoryInSearchPath(UnitPath,PathPos);
-      // check if directory already tested
+      // check if directory is already tested
       if SearchDirectoryInSearchPath(AlreadySearchedUnitDirs,CurDir,1)>0 then
         continue;
       AlreadySearchedUnitDirs:=MergeSearchPaths(AlreadySearchedUnitDirs,CurDir);
@@ -7846,6 +7846,7 @@ var
     {$IFDEF VerboseFindSourceFile}
     writeln('TMainIDE.SearchIndirectIncludeFile AllSrcPaths="',AllSrcPaths,'"');
     {$ENDIF}
+
     // add fpc src directories
     // ToDo
 
@@ -7870,7 +7871,27 @@ var
     {$ENDIF}
     MarkPathAsSearched(SearchPath);
   end;
+  
+  function SearchInPath(const TheSearchPath, SearchFile: string;
+    var Filename: string): boolean;
+  var
+    SearchPath: String;
+  begin
+    Filename:='';
+    SearchPath:=RemoveSearchPaths(TheSearchPath,AlreadySearchedPaths);
+    if SearchPath<>'' then begin
+      Filename:=SearchFileInPath(SearchFile,BaseDir,SearchPath,';',[]);
+      {$IFDEF VerboseFindSourceFile}
+      writeln('TMainIDE.FindSourceFile trying "',SearchPath,'" Result=',Result);
+      {$ENDIF}
+      MarkPathAsSearched(SearchPath);
+    end;
+    Result:=Filename<>'';
+  end;
 
+var
+  SearchPath: String;
+  SearchFile: String;
 begin
   if FilenameIsAbsolute(AFilename) then begin
     if FileExists(AFilename) then
@@ -7882,14 +7903,6 @@ begin
 
   AlreadySearchedPaths:='';
   BaseDir:=AppendPathDelim(TrimFilename(BaseDirectory));
-  CompiledSrcExt:=CodeToolBoss.GetCompiledSrcExtForDirectory(BaseDir);
-  if (fsfSearchForProject in Flags)
-  and (CompareFilenames(BaseDir,TrimFilename(Project1.ProjectDirectory))=0)
-  then
-    StartUnitPath:=Project1.CompilerOptions.GetUnitPath(false)
-  else
-    StartUnitPath:=CodeToolBoss.GetUnitPathForDirectory(BaseDir);
-  StartUnitPath:=TrimSearchPath(StartUnitPath,BaseDir);
 
   // search file in base directory
   Result:=TrimFilename(BaseDir+AFilename);
@@ -7901,30 +7914,34 @@ begin
 
   // search file in debug path
   if fsfUseDebugPath in Flags then begin
-    SearchFile:=AFilename;
     SearchPath:=TrimSearchPath(Project1.CompilerOptions.DebugPath,
                                Project1.ProjectDirectory);
-    if SearchPath<>'' then begin
-      Result:=SearchFileInPath(SearchFile,BaseDir,SearchPath,';',[]);
-      {$IFDEF VerboseFindSourceFile}
-      writeln('TMainIDE.FindSourceFile trying debug path "',SearchPath,'" Result=',Result);
-      {$ENDIF}
-      if Result<>'' then exit;
-      MarkPathAsSearched(SearchPath);
-    end;
+    if SearchInPath(SearchPath,AFilename,Result) then exit;
   end;
 
-  // if file is pascal unit, search via unit paths
-  if FilenameIsPascalUnit(SearchFile) then begin
+  CompiledSrcExt:=CodeToolBoss.GetCompiledSrcExtForDirectory(BaseDir);
+  if (fsfSearchForProject in Flags)
+  and (CompareFilenames(BaseDir,TrimFilename(Project1.ProjectDirectory))=0)
+  then
+    StartUnitPath:=Project1.CompilerOptions.GetUnitPath(false)
+  else
+    StartUnitPath:=CodeToolBoss.GetUnitPathForDirectory(BaseDir);
+  StartUnitPath:=TrimSearchPath(StartUnitPath,BaseDir);
+
+  // if file is a pascal unit, search via unit and src paths
+  if FilenameIsPascalUnit(AFilename) then begin
     // first search file in unit path
-    SearchFile:=AFilename;
-    SearchPath:=StartUnitPath;
-    Result:=SearchFileInPath(SearchFile,BaseDir,SearchPath,';',[]);
-    {$IFDEF VerboseFindSourceFile}
-    writeln('TMainIDE.FindSourceFile trying start unit path "',SearchPath,'" Result=',Result);
-    {$ENDIF}
-    if Result<>'' then exit;
-    MarkPathAsSearched(SearchPath);
+    if SearchInPath(StartUnitPath,AFilename,Result) then exit;
+
+    // then search file in SrcPath
+    if (fsfSearchForProject in Flags)
+    and (CompareFilenames(BaseDir,TrimFilename(Project1.ProjectDirectory))=0)
+    then
+      SearchPath:=Project1.CompilerOptions.GetSrcPath(false)
+    else
+      SearchPath:=CodeToolBoss.GetSrcPathForDirectory(BaseDir);
+    SearchPath:=TrimSearchPath(SearchPath,BaseDir);
+    if SearchInPath(StartUnitPath,AFilename,Result) then exit;
 
     // search for the compiled version in the
     // unit path and all inherited unit paths
@@ -7960,18 +7977,12 @@ begin
 
   if fsfUseIncludePaths in Flags then begin
     // search in include path
-    SearchFile:=AFilename;
     if (fsfSearchForProject in Flags) then
       SearchPath:=Project1.CompilerOptions.GetIncludePath(false)
     else
       SearchPath:=CodeToolBoss.GetIncludePathForDirectory(BaseDir);
     SearchPath:=TrimSearchPath(SearchPath,BaseDir);
-    Result:=SearchFileInPath(SearchFile,BaseDir,SearchPath,';',[]);
-    {$IFDEF VerboseFindSourceFile}
-    writeln('TMainIDE.FindSourceFile trying include path "',SearchPath,'" Result=',Result);
-    {$ENDIF}
-    if Result<>'' then exit;
-    MarkPathAsSearched(SearchPath);
+    if SearchInPath(StartUnitPath,AFilename,Result) then exit;
 
     // search include file in source directories of all required packages
     SearchFile:=AFilename;
@@ -10281,6 +10292,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.721  2004/04/11 00:02:10  mattias
+  FindSourceFile now searches in SrcPath and searches in every path only once
+
   Revision 1.720  2004/04/08 19:50:06  marc
   patch from Darek Mazur
 
