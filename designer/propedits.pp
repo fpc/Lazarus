@@ -127,6 +127,7 @@ type
         paFullWidthName:Tells the object inspector that the value does not
                         need to be rendered and as such the name should be
                         rendered the full width of the inspector.
+
     GetComponent
       Returns the Index'th component being edited by this property editor.  This
       is used to retrieve the components. A property editor can only refer to
@@ -256,10 +257,11 @@ type
 
   TPropertyEditor=class
   private
-    FPropertyHook:TPropertyEditorHook;
     FComponents:TComponentSelectionList;
-    FPropList:PInstPropList;
+    FOnSubPropertiesChanged: TNotifyEvent;
+    FPropertyHook:TPropertyEditorHook;
     FPropCount:Integer;
+    FPropList:PInstPropList;
     function GetPrivateDirectory:ansistring;
   protected
     function GetPropInfo:PPropInfo;
@@ -318,10 +320,14 @@ type
       AState:TPropEditDrawState); dynamic;
     procedure PropDrawValue(ACanvas:TCanvas; const ARect:TRect;
       AState:TPropEditDrawState); dynamic;
+    procedure UpdateSubProperties; virtual;
+    function SubPropertiesNeedsUpdate: boolean; virtual;
     property PropertyHook:TPropertyEditorHook read FPropertyHook;
     property PrivateDirectory:ansistring read GetPrivateDirectory;
     property PropCount:Integer read FPropCount;
     property FirstValue:ansistring read GetValue write SetValue;
+    property OnSubPropertiesChanged: TNotifyEvent
+      read FOnSubPropertiesChanged write FOnSubPropertiesChanged;
   end;
 
   TPropertyEditorClass=class of TPropertyEditor;
@@ -453,17 +459,30 @@ type
     function GetValue: AnsiString; override;
   end;
   
-{ TCustomListPropertyEditor
-  }
-  TCustomListPropertyEditor = class(TPropertyEditor)
+{ TListPropertyEditor
+  UNDER CONSTRUCTION by Mattias}
+  TListPropertyEditor = class(TPropertyEditor)
+  private
+    FSaveElementLock: integer;
+    FSubPropertiesChanged: boolean;
   protected
-    function GetListName: AnsiString; virtual;
+    OldList: TObject;
+    OldElements: TList;
     function GetElementCount: integer; virtual;
-    function GetElement(Index: integer): TPropertyEditor; virtual;
+    function GetElement(Index: integer): TObject; virtual;
+    function GetElementPropertyEditor(Index: integer): TPropertyEditor; virtual;
+    procedure BeginSaveElement;
+    procedure EndSaveElement;
+    property SaveElementLock: integer read FSaveElementLock;
   public
+    constructor Create(Hook:TPropertyEditorHook;
+      ComponentList: TComponentSelectionList;  APropCount:Integer); override;
+    destructor Destroy; override;
     function GetAttributes: TPropertyAttributes; override;
     procedure GetProperties(Proc: TGetPropEditProc); override;
     function GetValue: AnsiString; override;
+    procedure SaveElements; virtual;
+    function SubPropertiesNeedsUpdate: boolean; override;
   end;
 
 { TClassPropertyEditor
@@ -725,6 +744,11 @@ procedure GetComponentProperties(PropertyEditorHook:TPropertyEditorHook;
 function GetEditorClass(PropInfo:PPropInfo;
   Obj:TPersistent): TPropertyEditorClass;
 
+//==============================================================================
+
+procedure RegisterListPropertyEditor(AnEditor: TListPropertyEditor);
+procedure UnregisterListPropertyEditor(AnEditor: TListPropertyEditor);
+procedure UpdateListPropertyEditors(AnObject: TObject);
 
 //==============================================================================
 {
@@ -959,6 +983,37 @@ implementation
 
 uses Dialogs, ColumnDlg;
 
+const
+  ListPropertyEditors: TList = nil;
+
+procedure RegisterListPropertyEditor(AnEditor: TListPropertyEditor);
+begin
+  if ListPropertyEditors=nil then
+    ListPropertyEditors:=TList.Create;
+  ListPropertyEditors.Add(AnEditor);
+end;
+
+procedure UnregisterListPropertyEditor(AnEditor: TListPropertyEditor);
+begin
+  if ListPropertyEditors=nil then exit;
+  ListPropertyEditors.Remove(AnEditor);
+end;
+
+procedure UpdateListPropertyEditors(AnObject: TObject);
+var
+  i: integer;
+  Editor: TListPropertyEditor;
+begin
+  if ListPropertyEditors=nil then exit;
+  for i:=0 to ListPropertyEditors.Count-1 do begin
+    Editor:=TListPropertyEditor(ListPropertyEditors[i]);
+    if (Editor.GetComponent(0)=AnObject)
+    and (Editor.OnSubPropertiesChanged<>nil) then
+      Editor.UpdateSubProperties;
+  end;
+end;
+
+//------------------------------------------------------------------------------
 
 const
 { TypeKinds  see typinfo.pp
@@ -1689,6 +1744,17 @@ begin
   ACanvas.TextRect(ARect, 3,0,GetVisualValue, Style);
 end;
 
+procedure TPropertyEditor.UpdateSubProperties;
+begin
+  if (OnSubPropertiesChanged<>nil) and SubPropertiesNeedsUpdate then
+    OnSubPropertiesChanged(Self);
+end;
+
+function TPropertyEditor.SubPropertiesNeedsUpdate: boolean;
+begin
+  Result:=false;
+end;
+
 { TOrdinalPropertyEditor }
 
 function TOrdinalPropertyEditor.AllEqual: Boolean;
@@ -2075,38 +2141,127 @@ begin
   Result := Result + ']';
 end;
 
-{ TCustomListPropertyEditor }
+{ TListPropertyEditor }
 
-function TCustomListPropertyEditor.GetListName: AnsiString;
-begin
-  Result:='';
-end;
-
-function TCustomListPropertyEditor.GetElementCount: integer;
+function TListPropertyEditor.GetElementCount: integer;
+var
+  TheList: TList;
 begin
   Result:=0;
+  TheList:=TList(GetComponent(0));
+  if (TheList<>nil) and (TheList is TList) then
+    Result:=TheList.Count
+  else
+    Result:=0;
 end;
 
-function TCustomListPropertyEditor.GetElement(Index: integer): TPropertyEditor;
+function TListPropertyEditor.GetElement(Index: integer): TObject;
+var
+  TheList: TList;
+  ElementCount: integer;
+  TheObject: TObject;
+begin
+  Result:=nil;
+  if (Index<0) then
+    raise Exception('TListPropertyEditor.GetElement Index='+IntToStr(Index));
+  ElementCount:=GetElementCount;
+  if Index>=ElementCount then
+    raise Exception('TListPropertyEditor.GetElement Index='+IntToStr(Index)
+      +' Count='+IntToStr(ElementCount));
+  TheList:=TList(GetComponent(0));
+  if (TheList<>nil) and (TheList is TList) then
+    TheObject:=TObject(TheList[Index])
+  else
+    TheObject:=nil;
+  if TheObject<>nil then begin
+    // create a corresponding TPropertyEditor
+
+  end else begin
+    // create a TNilPropertyEditor
+    
+  end;
+end;
+
+function TListPropertyEditor.GetElementPropertyEditor(Index: integer
+  ): TPropertyEditor;
 begin
   Result:=nil;
 end;
 
-function TCustomListPropertyEditor.GetAttributes: TPropertyAttributes;
+procedure TListPropertyEditor.SaveElements;
+var
+  i, ElementCount: integer;
+begin
+  if SaveElementLock>0 then exit;
+  BeginSaveElement;
+  OldList:=GetComponent(0);
+  ElementCount:=GetElementCount;
+  OldElements.Count:=ElementCount;
+  for i:=0 to ElementCount-1 do
+    OldElements[i]:=GetElement(i);
+  FSubPropertiesChanged:=true;
+  EndSaveElement;
+end;
+
+function TListPropertyEditor.SubPropertiesNeedsUpdate: boolean;
+var i: integer;
+begin
+  Result:=true;
+  if FSubPropertiesChanged then exit;
+  FSubPropertiesChanged:=true;
+  if OldList<>GetComponent(0) then exit;
+  if GetElementCount<>OldElements.Count then exit;
+  for i:=0 to OldElements.Count-1 do
+    if TObject(OldElements[i])<>GetElement(i) then exit;
+  Result:=false;
+  FSubPropertiesChanged:=false;
+end;
+
+procedure TListPropertyEditor.BeginSaveElement;
+begin
+  inc(FSaveElementLock);
+end;
+
+procedure TListPropertyEditor.EndSaveElement;
+begin
+  dec(FSaveElementLock);
+  if FSaveElementLock<0 then
+    writeln('TListPropertyEditor.EndSaveElement ERROR: FSaveElementLock=',FSaveElementLock);
+end;
+
+constructor TListPropertyEditor.Create(Hook: TPropertyEditorHook;
+  ComponentList: TComponentSelectionList; APropCount: Integer);
+begin
+  inherited Create(Hook, ComponentList, APropCount);
+  OldElements:=TList.Create;
+  if (ComponentList<>nil) and (ComponentList.Count=1) then
+    RegisterListPropertyEditor(Self);
+  SaveElements;
+end;
+
+destructor TListPropertyEditor.Destroy;
+begin
+  UnregisterListPropertyEditor(Self);
+  FreeAndNil(OldElements);
+  inherited Destroy;
+end;
+
+function TListPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
   Result:= [paSubProperties, paReadOnly];
 end;
 
-procedure TCustomListPropertyEditor.GetProperties(Proc: TGetPropEditProc);
+procedure TListPropertyEditor.GetProperties(Proc: TGetPropEditProc);
 var
   i, ElementCount: integer;
 begin
+  SaveElements;
   ElementCount:=GetElementCount;
   for i:=0 to ElementCount-1 do
-    Proc(GetElement(i));
+    Proc(GetElementPropertyEditor(i));
 end;
 
-function TCustomListPropertyEditor.GetValue: AnsiString;
+function TListPropertyEditor.GetValue: AnsiString;
 var
   ElementCount: integer;
 begin
@@ -3511,6 +3666,8 @@ begin
   end;
   PropertyClassList.Free;
   PropertyClassList:=nil;
+  
+  FreeAndNil(ListPropertyEditors);
 
   // XXX workaround for missing typeinfo function
   DummyClassForPropTypes.Free;
