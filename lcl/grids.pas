@@ -324,7 +324,7 @@ Type
   
 
   TOnDrawCell =
-    Procedure(Sender: TObject; Col, Row: Integer; Rect: TRect;
+    Procedure(Sender: TObject; Col, Row: Integer; aRect: TRect;
               aState:TGridDrawState) of Object;
   TOnBeforeSelectionEvent =
     Procedure(Sender: TObject; Col, Row: Integer;
@@ -341,6 +341,9 @@ Type
     Procedure(Sender: TObject; IsColumn: Boolean; Index: Integer) of Object;
   TOnCompareCells =
     Function (Sender: TObject; Acol,ARow,Bcol,BRow: Integer): Integer of Object;
+  TSelectEditorEvent=
+    Procedure(Sender: TObject; Var aEditor: TWinControl) of Object;
+
 
   TVirtualGrid=Class
     Private
@@ -412,6 +415,7 @@ Type
     FGridLineWidth: Integer;
     FDefColWidth, FDefRowHeight: Integer;
     FCol,FRow, FFixedCols, FFixedRows: Integer;
+    FOnSelectEditor: TSelectEditorEvent;
     FGridLineColor: TColor;
     
     FFocusColor: TColor;
@@ -429,6 +433,7 @@ Type
     FUpdateCount: Integer;
     FUpdateScrollBarsCount: Integer;
     FFocusing: Boolean;
+    ImFocused: Boolean;
 
     
     // Cached Values
@@ -498,6 +503,7 @@ Type
 
   protected
     fGridState: TGridState;
+    
     Procedure AutoAdjustColumn(aCol: Integer); Virtual;
     function  CellRect(ACol, ARow: Integer): TRect;
     
@@ -535,6 +541,10 @@ Type
     Procedure MouseMove(Shift: TShiftState; X,Y: Integer);Override;
     Procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
     Function  MoveExtend(Relative: Boolean; DCol, DRow: Integer): Boolean;
+    Function  MoveNextSelectable(DCol, DRow: Integer): Boolean;
+    Function  TryMoveSelection(Relative: Boolean; Var DCol, DRow: Integer): Boolean;
+    
+
     Procedure MoveSelection; Virtual;
     Procedure DrawCellGrid(Rect: TRect; aCol,aRow: Integer; astate: TGridDrawState);
     Procedure Paint; override;
@@ -549,6 +559,7 @@ Type
     // Editor support
   Protected
     FEditorHiding: Boolean;
+    FEditorShowing: Boolean;
     FEditorKey: Boolean;
     FEditorOptions: Integer;
     Procedure EditorCancel; Virtual;
@@ -561,9 +572,11 @@ Type
     Procedure EditorSelectAll;
     Procedure doEditorGetValue; Virtual;
     Procedure doEditorSetValue; Virtual;
+    Procedure SelectEditor; Virtual;
   Public
     Procedure EditorExit(Sender: TObject);
     procedure EditorKeyDown(Sender: TObject; var Key:Word; Shift:TShiftState);
+
 
   Protected
     Property AutoAdvance: TAutoAdvance Read FAutoAdvance Write FAutoAdvance default aaRight;
@@ -600,7 +613,8 @@ Type
     Property OnBeforeSelection: TOnBeforeSelectionEvent Read fOnBeforeSelection Write fOnBeforeSelection;
     Property OnSelection: TOnSelectEvent Read fOnSelection Write fOnSelection;
     Property OnTopLeftChange: TNotifyEvent Read FOnTopLeftChange Write FOnTopLeftChange;
-    Property OnCompareCells: TOnCompareItem Read FOnCompareCells Write FOnCompareCells;
+    Property OnCompareCells: TOnCompareCells Read FOnCompareCells Write FOnCompareCells;
+    Property OnSelectEditor: TSelectEditorEvent Read FOnSelectEditor Write FOnSelectEditor;
 
   Public
     Constructor Create(AOwner: TComponent); Override;
@@ -696,6 +710,7 @@ Type
     Property ColAlign[aCol: Integer]: Integer read GetColAlign write SetColAlign;
 
     property FixedColor: TColor read GetFixedColor write SetFixedColor default clBtnFace;
+    Property HorzScrollBar;
 
     Property RowAttr[aRow: Integer]: TCellAttr read GetRowAttr write SetRowAttr;
     Property RowColor[aRow: Integer]: TColor read GetRowColor write SetRowColor;
@@ -754,10 +769,10 @@ Type
     //property ParentFont;
     //property ParentShowHint;
     //property PopupMenu;
-    //property ScrollBars;
+    property ScrollBars;
     //property ShowHint;
-    //property TabOrder;
-    //property TabStop;
+    property TabOrder;
+    property TabStop;
     property Visible;
     property VisibleColCount;
     property VisibleRowCount;
@@ -794,7 +809,7 @@ Type
       Procedure SaveContent(cfg: TXMLConfig); Override;
       Procedure LoadContent(cfg: TXMLConfig); Override;
       Procedure DrawInteriorCells; Override;
-      Procedure MoveSelection; Override;
+      Procedure SelectEditor; Override;
     public
       Constructor Create(AOWner: TComponent); Override;
       Destructor Destroy; Override;
@@ -998,7 +1013,7 @@ procedure TCustomGrid.SetEditor(const AValue: TWinControl);
 Var
   Msg: TGridMessage;
 begin
-  if Not(goEditing in Options) or (FEditor=AValue) then exit;
+  if {Not(goEditing in Options) or }(FEditor=AValue) then exit;
   FEditor:=AValue;
   if FEditor<>nil Then Begin
     Msg.MsgID:=GM_SETGRID;
@@ -2347,6 +2362,7 @@ Var
   R: TRect;
 begin
   inherited MouseDown(Button, Shift, X, Y);
+  {$IfDef dbgFocus}WriteLn('MouseDown INIT');{$Endif}
   If Not FGCache.ValidGrid Then Exit;
   If Not (ssLeft in Shift) Then Exit;
   Gz:=MouseToGridZone(X,Y, False);
@@ -2385,8 +2401,8 @@ begin
         // is user dragging the selection?
         // is user only selecting a new cell range?
         fGridState:=gsSelecting;
+        //WriteLn('GridState = ',Ord(FGridState));
         FSplitter:=MouseToCell(Point(X,Y));
-
         If Not (goEditing in Options) Then begin
           If ssShift in Shift Then begin
             SelectActive:=(goRangeSelect in Options);
@@ -2400,6 +2416,7 @@ begin
         End;
       End;
   End;
+  {$ifDef dbgFocus} WriteLn('MouseDown END'); {$Endif}
 end;
 
 procedure TCustomGrid.MouseMove(Shift: TShiftState; X, Y: Integer);
@@ -2431,13 +2448,22 @@ procedure TCustomGrid.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
   Y: Integer);
 var
    Cur: TPoint;
+   Ok: Boolean;
 begin
   inherited MouseUp(Button, Shift, X, Y);
   If Not FGCache.ValidGrid Then Exit;
+  {$IfDef dbgFocus}WriteLn('MouseUP INIT');{$Endif}
   Cur:=MouseToCell(Point(x,y));
   Case fGridState of
     gsSelecting:
       Begin
+
+        Ok:=TryMoveSelection(False, Cur.x, Cur.y);
+        If Not Ok Then begin
+          Cur:=Point(FCol,FRow);
+          FFocusing:=True;
+        End;
+        
         MoveExtend(False, Cur.x, Cur.y);
         SelectActive:=False;
       End;
@@ -2461,6 +2487,7 @@ begin
       End;
   End;
   fGridState:=gsNormal;
+  {$IfDef dbgFocus}WriteLn('MouseUP  END  RND=',Random);{$Endif}
 end;
 
 procedure TCustomGrid.DblClick;
@@ -2482,22 +2509,40 @@ end;
 
 procedure TCustomGrid.doExit;
 begin
+  {$IfDef dbgFocus}WriteLn('DoExit');{$Endif}
   inherited doExit;
   Invalidate;
+  ImFocused:=False;
 end;
 
 procedure TCustomGrid.doEnter;
 begin
   inherited doEnter;
+  
+  {$IfDef dbgFocus}WriteLn('***---*** DoEnter  INIT ImFocused= ',ImFocused);{$Endif}
   If FEditorHiding Then begin
     // Self generated doEnter
   End Else begin
     // Got the focus for some other reason
-    Invalidate; // redraw the focused cell
+    //Invalidate; // redraw the focused cell
     // Handle click on focused cell, still needs to show the editor
-    // when focusing from other way than mouse clicks
+
+
+    //If Not ImFocused Then
+    {
+    If (goEditing in Options)And(goAlwaysShowEditor In Options) Then begin
+      SelectEditor;
+      EditorShow;
+    End;
+    }
+
     FFocusing:=True;
+    If (goAlwaysShowEditor in Options)And(FGridState=gsNormal) Then Begin
+      FGridState:=gsSelecting;
+    End;
+
   End;
+  //ImFocused:=True;
 end;
 
 procedure TCustomGrid.KeyDown(var Key: Word; Shift: TShiftState);
@@ -2505,11 +2550,18 @@ Var
   Sh: Boolean;
   
   Procedure MoveSel(Rel: Boolean; aCol,aRow: Integer);
+  Var SmallMove: Boolean;
   begin
     // Always reset Offset in kerboard Events
-    FGCache.TLColOff:=0; FGCache.TLRowOff:=0;
+    FGCache.TLColOff:=0;
+    FGCache.TLRowOff:=0;
     SelectActive:=Sh;
-    MoveExtend(Rel,aCol,aRow);
+    SmallMove:= Rel and (Abs(ACol)<2)And(Abs(Arow)<2);
+    //WriteLn('ACol=',ACol,' ARow=',ARow,' Rel=',Rel,' SmallMove=',SmallMove);
+    If SmallMove {And (goNextSelectable in Options)}
+    Then MoveNextSelectable(acol,aRow)
+    Else MoveExtend(Rel,aCol,aRow);
+    
     Key:=0;
   End;
 Var
@@ -2689,31 +2741,10 @@ Function TCustomGrid.MoveExtend(Relative: Boolean; DCol, DRow: Integer): Boolean
 Var
   InvalidateAll: Boolean;
 begin
-  Result:=False;
+  Result:=TryMoveSelection(Relative,DCol,DRow);
+  If Not result Then Exit;
   
-  dCol:=FCol*(1-Byte(Not Relative))+DCol;
-  dRow:=FRow*(1-Byte(Not Relative))+DRow;
-  If dCol<FFixedCols Then dCol:=FFixedCols Else
-  If dCol>ColCount-1 Then dcol:=ColCount-1;
-  If dRow<FFixedRows Then dRow:=FFixedRows Else
-  If dRow>RowCount-1 Then dRow:=RowCount-1;
-
-  // Change on Focused cell?
-  If (Dcol=FCol)And(DRow=FRow) Then begin
-    If FFocusing
-      And(goEditing in Options)
-      And(goAlwaysShowEditor In Options)
-      And(EDitor<>nil) Then Begin
-        EditorShow;
-    End;
-    FFocusing:=False;
-    Exit;
-  End;
-
-  FFocusing:=False;
-  Result:=True;
-  if Assigned(OnBeforeSelection) Then OnBeforeSelection(Self, DCol, DRow, Result);
-  If Not Result Then Exit;
+  {$IfDef dbgFocus}WriteLn('  MoveExtend INIT');{$Endif}
   
   // Going to change selection, get editor value before that
   EditorGetValue;
@@ -2749,11 +2780,73 @@ begin
   
   MoveSelection;
   
-  if //Not SelectActive And
-    (goEditing in Options) And
-    (goAlwaysShowEditor in Options) And
+
+  SelectEditor;
+
+  if (goAlwaysShowEditor in Options) And
     Not(goRowSelect in Options) Then EditorShow;
+
+  {$IfDef dbgFocus}WriteLn('  MoveExtend FIN');{$Endif}
 end;
+
+function TCustomGrid.MoveNextSelectable(DCol, DRow: Integer
+  ): Boolean;
+Var
+  ODCol,ODRow: Integer;
+  CInc,RInc: Integer;
+begin
+
+  If DCol<0 Then CInc:=-1 Else
+  If DCol>0 Then CInc:= 1
+  Else           CInc:= 0;
+  If DRow<0 Then RInc:=-1 Else
+  If DRow>0 Then RInc:= 1
+  Else           RInc:= 0;
+
+  If TryMoveSelection(True,DCol,DRow) Then Result:=MoveExtend(False,DCol,DROW)
+  Else begin
+    Repeat
+      ODCol:=DCol; ODRow:=DRow;
+      Inc(DCol, CInc);
+      Inc(DRow, RInc);
+      If TryMoveSelection(False,DCol,DRow) Then begin
+        Result:=MoveExtend(False,DCol,DRow);
+        Exit;
+      End;
+    Until (ODCol=DCol)And(ODRow=DRow);
+    Result:=False;
+  End;
+end;
+
+function TCustomGrid.TryMoveSelection(Relative: Boolean; Var DCol, DRow: Integer
+  ): Boolean;
+begin
+
+  Result:=False;
+  
+  dCol:=FCol*(1-Byte(Not Relative))+DCol;
+  dRow:=FRow*(1-Byte(Not Relative))+DRow;
+  If dCol<FFixedCols Then dCol:=FFixedCols Else
+  If dCol>ColCount-1 Then dcol:=ColCount-1;
+  If dRow<FFixedRows Then dRow:=FFixedRows Else
+  If dRow>RowCount-1 Then dRow:=RowCount-1;
+
+  // Change on Focused cell?
+  If (Dcol=FCol)And(DRow=FRow) Then begin
+
+    If FFocusing And (goAlwaysShowEditor In Options) Then begin
+      SelectEditor;
+      EditorShow;
+    End;
+
+  End Else begin
+    Result:=True;
+    if Assigned(OnBeforeSelection) Then
+      OnBeforeSelection(Self, DCol, DRow, Result);
+  End;
+  FFocusing:=False;
+end;
+
 
 procedure TCustomGrid.MoveSelection;
 begin
@@ -2831,11 +2924,13 @@ procedure TCustomGrid.EditorHide;
 begin
   if (Editor<>nil) And Editor.HandleAllocated And Editor.Visible Then begin
     If Not FEditorHiding Then begin
+      {$IfDef dbgFocus} WriteLn('EditorHide INIT');{$Endif}
       FEditorHiding:=True;
       Editor.Visible:=False;
       Editor.Parent:=nil;
       LCLLinux.SetFocus(Self.Handle);
       FEDitorHiding:=False;
+      {$IfDef dbgFocus} WriteLn('EditorHide FIN'); {$Endif}
     End;
   End;
 end;
@@ -2844,9 +2939,16 @@ procedure TCustomGrid.EditorShow;
 begin
   If Not (csDesigning in ComponentState)And(goEditing in Options) Then
     If (Editor<>nil) And Not Editor.Visible Then Begin
-      ResetOffset(True, True);
-      EditorReset;
-      LCLLinux.SetFocus(Editor.Handle);
+      If Not FEditorShowing Then Begin
+        {$IfDef dbgFocus} WriteLn('EditorShow INIT');{$Endif}
+        FEditorShowing:=True;
+        ResetOffset(True, True);
+        EditorReset;
+        LCLLinux.SetFocus(Editor.Handle);
+        FEditorShowing:=False;
+        ImFocused:=True;
+        {$IfDef dbgFocus} WriteLn('EditorShow FIN');{$Endif}
+      End;
     End;
 end;
 
@@ -2899,10 +3001,8 @@ end;
 
 procedure TCustomGrid.EditorExit(Sender: TObject);
 begin
-  //WriteLn('Editor is losing the focus..');
   If Not FEditorHiding Then begin
-    // Editor losing focus for any reason
-    //WriteLn('Hey, What is happening here?');
+    {$IfDef dbgFocus} WriteLn('EditorExit INIT');{$Endif}
     FEditorHiding:=True;
     EditorGetValue;
     If Editor<>nil Then Begin
@@ -2910,6 +3010,8 @@ begin
       Editor.Parent:=nil;
     End;
     FEditorHiding:=False;
+    ImFocused:=False;
+    {$IfDef dbgFocus} WriteLn('EditorExit FIN'); {$Endif}
   End;
 end;
 
@@ -2941,6 +3043,16 @@ begin
     End;
   End;
   FEditorKey:=False;
+end;
+
+Procedure TCustomGrid.SelectEditor;
+Var
+  aEditor: TWinControl;
+begin
+  aEditor:= Editor;
+  If (goEditing in Options) And Assigned(OnSelectEditor) Then
+    OnSelectEditor(Self, aEditor);
+  If aEditor<>Editor Then Editor:=aEditor;
 end;
 
 procedure TCustomGrid.EditorCancel;
@@ -4221,10 +4333,10 @@ begin
   End else inherited DrawInteriorCells;
 end;
 
-procedure TStringGrid.MoveSelection;
+procedure TStringGrid.SelectEditor;
 begin
   If goEditing in Options Then Editor:=fDefEditor;
-  inherited MoveSelection;
+  inherited SelectEditor;
 end;
 
 constructor TStringGrid.Create(AOWner: TComponent);
