@@ -182,6 +182,7 @@ type
     procedure RecreateHandle; virtual;
     procedure Remove(Item: TMenuItem);
     function IsInMenuBar: boolean; virtual;
+    procedure Clear;
   public
     property Count: Integer read GetCount;
     property Handle: HMenu read GetHandle write FHandle;
@@ -385,6 +386,9 @@ end.
 
 {
   $Log$
+  Revision 1.58  2004/01/10 18:09:38  mattias
+  implemented TMenuItem.Clear
+
   Revision 1.57  2003/11/27 23:02:30  mattias
   removed menutype.pas
 

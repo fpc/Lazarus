@@ -590,6 +590,19 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  procedure TMenuItem.Clear;
+  
+  Deletes all childs
+ ------------------------------------------------------------------------------}
+procedure TMenuItem.Clear;
+var
+  I: Integer;
+begin
+  for I := Count - 1 downto 0 do
+    Items[I].Free;
+end;
+
+{------------------------------------------------------------------------------
   function TMenuItem.IsCheckItem: boolean;
 
   Results true if 'Checked' or 'RadioItem' or 'AutoCheck'
@@ -984,6 +997,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.44  2004/01/10 18:09:38  mattias
+  implemented TMenuItem.Clear
+
   Revision 1.43  2003/11/26 00:23:47  marc
   * implemented new LCL(check|enable)Menuitem functions
   * introduced the lclintf inc files to win32
@@ -1142,6 +1158,9 @@ end;
 
 
   $Log$
+  Revision 1.44  2004/01/10 18:09:38  mattias
+  implemented TMenuItem.Clear
+
   Revision 1.43  2003/11/26 00:23:47  marc
   * implemented new LCL(check|enable)Menuitem functions
   * introduced the lclintf inc files to win32
