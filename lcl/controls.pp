@@ -951,6 +951,7 @@ Procedure MoveWindowOrg(dc : hdc; X,Y : Integer);
 
 procedure SetCaptureControl(Control : TControl);
 function GetCaptureControl : TControl;
+procedure CancelDrag;
 
 var
   NewStyleControls : Boolean;
@@ -1234,6 +1235,12 @@ begin
   end;
 end;
 
+procedure CancelDrag;
+begin
+  if DragObject <> nil then DragDone(False);
+  DragControl := nil;
+end;
+
 function GetKeyShiftState: TShiftState;
 begin
   Result:=[];
@@ -1344,6 +1351,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.70  2002/09/09 14:01:05  lazarus
+  MG: improved TScreen and ShowModal
+
   Revision 1.69  2002/09/08 10:01:59  lazarus
   MG: fixed streaming visible=false
 
