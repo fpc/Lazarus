@@ -4,7 +4,7 @@
 set -e
 
 cd /tmp
-rm -rf /tmp/gtk2
+rm -rf /tmp/fpc
 export CVSROOT=:pserver:cvs@cvs.freepascal.org:/FPC/CVS
 cvs login
 cvs -z3 export -r FIXES_1_0_0 fpc

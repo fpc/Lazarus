@@ -30,10 +30,10 @@ Creating the fpc rpm:
   compile the RTL and the compiler with 'make rtl' and 'make compiler'.
   Before you create the rpm, you should define a release tag. Open
   <fpc>/install/fpc.spec and change the Release tag to laz.20030220. The number
-  is simple the date, when this README was written. Use the current date.
+  is simply the date, when this README was written. Use the current date.
 
   As root:
-  The fpc and fpcdoc RPMs can be created with 'make rpm'. If you want to only
+  The fpc and fpcdoc RPMs can be created with 'make rpm'. If you only want to
   create the fpc RPM, then use 'make rpm NODOCS=1'.
   The RPMs are normally created under /usr/src/redhat/RPMS/i386/
 
