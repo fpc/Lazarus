@@ -18,8 +18,8 @@ uses
   SynEditSearch, SynEditMiscProcs, SynEditmiscClasses, SynEditTextbuffer,
   SynEdit, SynEditHighlighter, SynhighlighterPas, SynCompletion,
   SynEditAutoComplete, SynhighlighterHTML, SynhighlighterCPP, SynHighlighterXML,
-  SynHighlighterLFM, SynHighlighterPerl;
-	
+  SynHighlighterLFM, SynHighlighterPerl, SynHighlighterMulti, SynRegExpr;
+
 implementation
 
 end.
@@ -27,6 +27,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.10  2002/11/21 20:04:56  mattias
+  added SynRegExpr and SynHighlighterMulti
+
   Revision 1.9  2001/12/10 22:39:37  lazarus
   MG: added perl highlighter
 
