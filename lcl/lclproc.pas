@@ -20,7 +20,7 @@
  *                                                                           *
  *****************************************************************************
 
-  Useful lower level helper functions.
+  Useful lower level helper functions and classes.
 }
 unit LCLProc;
 
@@ -30,6 +30,25 @@ interface
 
 uses
   Classes, SysUtils, LCLType;
+  
+type
+  TMethodList = class
+  private
+    FItems: ^TMethod;
+    FCount: integer;
+    function GetItems(Index: integer): TMethod;
+    procedure SetItems(Index: integer; const AValue: TMethod);
+  public
+    destructor Destroy; override;
+    function Count: integer;
+    function IndexOf(AMethod: TMethod): integer;
+    procedure Delete(Index: integer);
+    procedure Remove(AMethod: TMethod);
+    procedure Add(AMethod: TMethod);
+    procedure Insert(Index: integer; AMethod: TMethod);
+    procedure Move(OldIndex, NewIndex: integer);
+    property Items[Index: integer]: TMethod read GetItems write SetItems; default;
+  end;
 
 Function DeleteAmpersands(var Str : String) : Longint;
 
@@ -55,6 +74,7 @@ function SendApplicationMessage(Msg: Cardinal; WParam, LParam: Longint):Longint;
 procedure OwnerFormDesignerModified(AComponent: TComponent);
 function OffSetRect(var ARect: TRect; dx,dy: Integer): Boolean;
 procedure FreeThenNil(var AnObject: TObject);
+
 
 implementation
 
@@ -250,6 +270,84 @@ begin
     AnObject.Free;
     AnObject:=nil;
   end;
+end;
+
+{ TMethodList }
+
+function TMethodList.GetItems(Index: integer): TMethod;
+begin
+  Result:=FItems[Index];
+end;
+
+procedure TMethodList.SetItems(Index: integer; const AValue: TMethod);
+begin
+  FItems[Index]:=AValue;
+end;
+
+destructor TMethodList.Destroy;
+begin
+  ReAllocMem(FItems,0);
+  inherited Destroy;
+end;
+
+function TMethodList.Count: integer;
+begin
+  Result:=FCount;
+end;
+
+function TMethodList.IndexOf(AMethod: TMethod): integer;
+begin
+  Result:=FCount-1;
+  while Result>=0 do begin
+    if (FItems[Result].Code=AMethod.Code)
+    and (FItems[Result].Data=AMethod.Data) then exit;
+    dec(Result);
+  end;
+end;
+
+procedure TMethodList.Delete(Index: integer);
+begin
+  dec(FCount);
+  if FCount>Index then
+    System.Move(FItems[Index+1],FItems[Index],(FCount-Index)*SizeOf(TMethod));
+  ReAllocMem(FItems,FCount*SizeOf(TMethod));
+end;
+
+procedure TMethodList.Remove(AMethod: TMethod);
+var
+  i: integer;
+begin
+  i:=IndexOf(AMethod);
+  if i>=0 then Delete(i);
+end;
+
+procedure TMethodList.Add(AMethod: TMethod);
+begin
+  inc(FCount);
+  ReAllocMem(FItems,FCount*SizeOf(TMethod));
+  FItems[FCount-1]:=AMethod;
+end;
+
+procedure TMethodList.Insert(Index: integer; AMethod: TMethod);
+begin
+  if Index<FCount then
+    System.Move(FItems[Index],FItems[Index+1],(FCount-Index)*SizeOf(TMethod));
+  FItems[Index]:=AMethod;
+end;
+
+procedure TMethodList.Move(OldIndex, NewIndex: integer);
+var
+  MovingMethod: TMethod;
+begin
+  if OldIndex=NewIndex then exit;
+  MovingMethod:=FItems[OldIndex];
+  if OldIndex>NewIndex then
+    System.Move(FItems[NewIndex],FItems[NewIndex+1],
+                SizeOf(TMethod)*(OldIndex-NewIndex))
+  else
+    System.Move(FItems[NewIndex+1],FItems[NewIndex],
+                SizeOf(TMethod)*(NewIndex-OldIndex));
+  FItems[NewIndex]:=MovingMethod;
 end;
 
 initialization
