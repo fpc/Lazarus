@@ -98,6 +98,7 @@ type
     //procedure FormPaint(Sender : TObject);
     procedure OnApplicationUserInput(Sender: TObject; Msg: Cardinal);
     procedure OnApplicationIdle(Sender: TObject);
+    procedure OnScreenRemoveForm(Sender: TObject; AForm: TCustomForm);
 
     // file menu
     procedure mnuNewUnitClicked(Sender : TObject);
@@ -554,6 +555,7 @@ type
     procedure UpdateCaption; override;
     procedure HideIDE; override;
     procedure HideUnmodifiedDesigners;
+    procedure UnhideIDE; override;
     function DoConvertDFMFileToLFMFile(const DFMFilename: string): TModalResult;
     
     // methods for codetools
@@ -846,6 +848,7 @@ begin
   Name := NonModalIDEWindowNames[nmiwMainIDEName];
   EnvironmentOptions.IDEWindowLayoutList.Apply(TForm(Self),Name);
   OnResize:=@MainIDEResize;
+  HiddenWindowsOnRun:=TList.Create;
 
   {$IFDEF DisablePkgs}
   InitIDEComponents;
@@ -889,6 +892,7 @@ begin
   // set OnIdle handlers
   Application.AddOnUserInputHandler(@OnApplicationUserInput);
   Application.AddOnIdleHandler(@OnApplicationIdle);
+  Screen.AddHandlerRemoveForm(@OnScreenRemoveForm);
   SetupHints;
 end;
 
@@ -919,6 +923,7 @@ begin
   FreeThenNil(EditorOpts);
   FreeThenNil(EnvironmentOptions);
   FreeThenNil(InputHistories);
+  FreeThenNil(HiddenWindowsOnRun);
 
   writeln('[TMainIDE.Destroy] B  -> inherited Destroy...');
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Destroy B ');{$ENDIF}
@@ -6280,27 +6285,25 @@ procedure TMainIDE.HideIDE;
 var
   i: Integer;
   AForm: TCustomForm;
-  WindowsList: TList;
 begin
   HideUnmodifiedDesigners;
 
-  WindowsList:=TList.Create;
   // collect all windows except the main bar
   for i:=0 to Screen.CustomFormCount-1 do begin
     AForm:=Screen.CustomForms[i];
     if (AForm<>Self)
     and (AForm.Designer=nil) and (AForm.Visible)
-    and (WindowsList.IndexOf(AForm)<0)
-    and (not (fsModal in AForm.FormState)) then
-      WindowsList.Add(AForm);
+    and (not (fsModal in AForm.FormState))
+    and (HiddenWindowsOnRun.IndexOf(AForm)<0)
+    then
+      HiddenWindowsOnRun.Add(AForm);
   end;
+  
   // hide all collected windows
-  for i:=0 to WindowsList.Count-1 do begin
-    AForm:=TCustomForm(WindowsList[i]);
+  for i:=0 to HiddenWindowsOnRun.Count-1 do begin
+    AForm:=TCustomForm(HiddenWindowsOnRun[i]);
     AForm.Hide;
   end;
-  // clean up
-  WindowsList.Free;
 end;
 
 procedure TMainIDE.HideUnmodifiedDesigners;
@@ -6314,6 +6317,17 @@ begin
     if not AnUnitInfo.NeedsSaveToDisk then
       CloseDesignerForm(AnUnitInfo);
     AnUnitInfo:=NextUnitInfo;
+  end;
+end;
+
+procedure TMainIDE.UnhideIDE;
+var
+  AForm: TCustomForm;
+begin
+  while HiddenWindowsOnRun.Count>0 do begin
+    AForm:=TCustomForm(HiddenWindowsOnRun[0]);
+    AForm.Show;
+    HiddenWindowsOnRun.Delete(0);
   end;
 end;
 
@@ -8236,6 +8250,11 @@ begin
   if (SplashForm<>nil) then FreeThenNil(SplashForm);
 end;
 
+procedure TMainIDE.OnScreenRemoveForm(Sender: TObject; AForm: TCustomForm);
+begin
+  HiddenWindowsOnRun.Remove(AForm);
+end;
+
 function TMainIDE.ProjInspectorAddUnitToProject(Sender: TObject;
   AnUnitInfo: TUnitInfo): TModalresult;
 var
@@ -8822,6 +8841,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.580  2003/05/25 12:12:36  mattias
+  added TScreen handlers, implemented TMainIDE.UnHideIDE
+
   Revision 1.579  2003/05/24 11:06:43  mattias
   started Hide IDE on run
 
