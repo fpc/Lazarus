@@ -267,6 +267,8 @@ Begin
       CreateComponent(Sender);
     LM_SETPROPERTIES:
       Result := SetProperties(Sender);
+    LM_SETDESIGNING:
+      if Data<>nil then EnableWindow((Sender As TWinControl).Handle, boolean(Data^));
   End; // end of 1st case
 End;
 
@@ -1888,8 +1890,8 @@ End;
 
 {
   $Log$
-  Revision 1.277  2004/09/19 19:22:54  micha
-  remove LM_SETDESIGNING message, as it is not used by LCL
+  Revision 1.278  2004/09/19 19:39:10  micha
+  undo removal of LM_SETDESIGNING; used by lazarus ide (main.pp)
 
   Revision 1.276  2004/09/19 18:50:28  micha
   convert LM_SETVALUE message to interface methods
