@@ -69,9 +69,15 @@ var
     Red:=(AColor shr 16) and $ff;
     Green:=(AColor shr 8) and $ff;
     Blue:=AColor and $ff;
-    Red:=Red+$a0;
-    Green:=Green+$a0;
-    Blue:=Blue+$a0;
+    if Abs($80-Red)+Abs($80-Green)+Abs($80-Blue)<$140 then begin
+      Red:=Red+$a0;
+      Green:=Green+$a0;
+      Blue:=Blue+$a0;
+    end else begin
+      Red:=$ff-Red;
+      Green:=$ff-Green;
+      Blue:=$ff-Blue;
+    end;
     Result:=((Red and $ff) shl 16)+((Green and $ff) shl 8)+(Blue and $ff);
   end;
 
@@ -84,7 +90,7 @@ var
     FGRed:=(NewColor shr 16) and $ff;
     FGGreen:=(NewColor shr 8) and $ff;
     FGBlue:=NewColor and $ff;
-    if Abs(FGRed-BGRed)+Abs(FGGreen-BGGreen)+Abs(FGBlue-BGBlue)<$140 then
+    if Abs(FGRed-BGRed)+Abs(FGGreen-BGGreen)+Abs(FGBlue-BGBlue)<$180 then
       NewColor:=InvertColor(NewColor);
     ACanvas.Font.Color:=NewColor;
   end;
