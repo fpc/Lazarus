@@ -30,7 +30,7 @@ begin
   inherited Create(AOwner);
   fCompStyle := csMemo;
   FWordWrap := True;
-  FFont := TFont.Create;
+  //FFont := TFont.Create;
   FLines := TMemoStrings.Create(Self);
   FVertScrollbar := TMemoScrollBar.Create(Self, sbVertical);
   FHorzScrollbar := TMemoScrollBar.Create(Self, sbHorizontal);
@@ -47,7 +47,7 @@ end;
 destructor TCustomMemo.Destroy;
 begin
   FreeThenNil(FLines);
-  FreeThenNil(FFont);
+  //FreeThenNil(FFont);
   FreeThenNil(FVertScrollbar);
   FreeThenNil(FHorzScrollbar);
   inherited destroy;
@@ -168,6 +168,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.19  2004/02/09 19:52:52  mattias
+  implemented ByteOrder for TLazIntfImage and added call of to LM_SETFONT
+
   Revision 1.18  2004/01/27 17:36:01  mattias
   fixed switching menus in menueditor
 

@@ -539,7 +539,7 @@ type
 
   TCustomMemo = class(TCustomEdit)
   private
-    FFont : TFont;
+    //FFont : TFont;
     FHorzScrollBar: TMemoScrollBar;
     FLines: TStrings;
     FScrollBars: TScrollStyle;
@@ -564,7 +564,7 @@ type
     property Lines: TStrings read FLines write SetLines;
     property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars;
     property WordWrap: Boolean read FWordWrap write SetWordWrap default true;
-    property Font : TFont read FFont write FFont;
+    //property Font : TFont read FFont write FFont;
     property HorzScrollBar: TMemoScrollBar
       read FHorzScrollBar write SetHorzScrollBar stored StoreScrollBars;
     property VertScrollBar: TMemoScrollBar
@@ -1496,6 +1496,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.130  2004/02/09 19:52:52  mattias
+  implemented ByteOrder for TLazIntfImage and added call of to LM_SETFONT
+
   Revision 1.129  2004/02/06 16:58:58  mattias
   updated polish translation
 

@@ -1295,8 +1295,7 @@ procedure TWinControl.FontChanged(Sender: TObject);
 begin
   if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then
   begin
-    // ToDo: replace with correct intf call
-    CNSendMessage(LM_SETCOLOR, Self, nil);
+    CNSendMessage(LM_SETFONT, Self, Pointer(Font.Handle));
     Exclude(FFlags,wcfFontChanged);
     //NotifyControls(CM_ ...);
   end else
@@ -3292,6 +3291,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.199  2004/02/09 19:52:52  mattias
+  implemented ByteOrder for TLazIntfImage and added call of to LM_SETFONT
+
   Revision 1.198  2004/02/04 23:30:18  mattias
   completed TControl actions
 

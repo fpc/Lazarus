@@ -683,6 +683,12 @@ activate_time :	the time at which the activation event occurred.
         If Handle <> 0 Then
           SetFocus(Handle);
       End;
+      LM_SETFONT:
+      begin
+      	if Sender is TControl then begin
+      		Windows.SendMessage(Handle, WM_SETFONT, windows.wParam(integer(data)), 1);
+      	end;
+      end;
       LM_SETSIZE:
       Begin
         If (Sender Is TWinControl) Then // Handle is already tested --> see above
@@ -3008,6 +3014,9 @@ End;
 
 {
   $Log$
+  Revision 1.166  2004/02/09 19:52:52  mattias
+  implemented ByteOrder for TLazIntfImage and added call of to LM_SETFONT
+
   Revision 1.165  2004/02/06 23:58:44  marc
   + patch from Jesus Reyes, it enables TCustomEdit SelStart/Length
 

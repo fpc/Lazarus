@@ -147,7 +147,9 @@ type
                                       TheLineEnd: TRawImageLineEnd); virtual;
     procedure SetDataDescription(const NewDescription: TRawImageDescription); virtual;
     procedure ChooseGetSetColorFunctions; virtual;
-    procedure ChooseRawBitsProc(BitsPerPixel: cardinal; BitOrder: TRawImageBitOrder;
+    procedure ChooseRawBitsProc(BitsPerPixel: cardinal;
+                                ByteOrder: TRawImageByteOrder;
+                                BitOrder: TRawImageBitOrder;
                                 var ProcReadRawImageBits: TOnReadRawImageBits;
                                 var ProcWriteRawImageBits: TOnWriteRawImageBits);
     // get color functions
@@ -638,6 +640,29 @@ begin
   end;
 end;
 
+procedure ReadRawImageBits_ReversedBytes_16(TheData: PByte;
+  const Position: TRawImagePosition;
+  Prec, Shift: cardinal;
+  var Bits: word);
+var
+  P: PByte;
+  PrecMask: Cardinal;
+  TwoBytes: Word;
+begin
+  PrecMask:=(Cardinal(1) shl Prec)-1;
+  P:=@(TheData[Position.Byte]);
+
+  TwoBytes:=PWord(P)^;
+  TwoBytes:=(TwoBytes shr 8) or ((TwoBytes and $ff) shl 8); // switch byte order
+  Bits:=Word(cardinal(TwoBytes shr Shift) and PrecMask);
+
+  if Prec<16 then begin
+    // add missing bits
+    Bits:=(Bits shl (16-Prec));
+    Bits:=Bits or MissingBits[Prec,Bits shr 13];
+  end;
+end;
+
 procedure ReadRawImageBits_32(TheData: PByte;
   const Position: TRawImagePosition;
   Prec, Shift: cardinal;
@@ -651,6 +676,33 @@ begin
   P:=@(TheData[Position.Byte]);
 
   FourBytes:=PDWord(P)^;
+  Bits:=Word(cardinal(FourBytes shr Shift) and PrecMask);
+
+  if Prec<16 then begin
+    // add missing bits
+    Bits:=(Bits shl (16-Prec));
+    Bits:=Bits or MissingBits[Prec,Bits shr 13];
+  end;
+end;
+
+procedure ReadRawImageBits_ReversedBytes_32(TheData: PByte;
+  const Position: TRawImagePosition;
+  Prec, Shift: cardinal;
+  var Bits: word);
+var
+  P: PByte;
+  PrecMask: Cardinal;
+  FourBytes: Cardinal;
+begin
+  PrecMask:=(Cardinal(1) shl Prec)-1;
+  P:=@(TheData[Position.Byte]);
+
+  FourBytes:=PDWord(P)^;
+
+  // switch byte order
+  FourBytes:=(FourBytes shr 24) or ((FourBytes shr 8) and $FF00)
+             or ((FourBytes and $ff00) shl 8) or ((FourBytes and $ff) shl 24);
+
   Bits:=Word(cardinal(FourBytes shr Shift) and PrecMask);
 
   if Prec<16 then begin
@@ -740,6 +792,27 @@ begin
   PWord(P)^:=TwoBytes;
 end;
 
+procedure WriteRawImageBits_ReversedBytes_16(TheData: PByte;
+  const Position: TRawImagePosition;
+  Prec, Shift: cardinal; Bits: word);
+var
+  P: PByte;
+  PrecMask: Cardinal;
+  TwoBytes: Word;
+begin
+  P:=@(TheData[Position.Byte]);
+  PrecMask:=(Cardinal(1) shl Prec)-1;
+  Bits:=Bits shr (16-Prec);
+
+  TwoBytes:=PWord(P)^;
+  TwoBytes:=(TwoBytes shr 8) or ((TwoBytes and $ff) shl 8); // switch byte order
+  PrecMask:=not (PrecMask shl Shift);
+  TwoBytes:=TwoBytes and PrecMask; // clear old
+  TwoBytes:=TwoBytes or (Bits shl Shift); // set new
+  TwoBytes:=(TwoBytes shr 8) or ((TwoBytes and $ff) shl 8); // switch byte order
+  PWord(P)^:=TwoBytes;
+end;
+
 procedure WriteRawImageBits_32(TheData: PByte;
   const Position: TRawImagePosition;
   Prec, Shift: cardinal; Bits: word);
@@ -756,6 +829,34 @@ begin
   PrecMask:=not (PrecMask shl Shift);
   FourBytes:=FourBytes and PrecMask; // clear old
   FourBytes:=FourBytes or cardinal(Bits shl Shift); // set new
+  PDWord(P)^:=FourBytes;
+end;
+
+procedure WriteRawImageBits_ReversedBytes_32(TheData: PByte;
+  const Position: TRawImagePosition;
+  Prec, Shift: cardinal; Bits: word);
+var
+  P: PByte;
+  PrecMask: Cardinal;
+  FourBytes: Cardinal;
+begin
+  P:=@(TheData[Position.Byte]);
+  PrecMask:=(Cardinal(1) shl Prec)-1;
+  Bits:=Bits shr (16-Prec);
+
+  FourBytes:=PDWord(P)^;
+
+  // switch byte order
+  FourBytes:=(FourBytes shr 24) or ((FourBytes shr 8) and $FF00)
+             or ((FourBytes and $ff00) shl 8) or ((FourBytes and $ff) shl 24);
+
+  PrecMask:=not (PrecMask shl Shift);
+  FourBytes:=FourBytes and PrecMask; // clear old
+  FourBytes:=FourBytes or cardinal(Bits shl Shift); // set new
+
+  // switch byte order
+  FourBytes:=(FourBytes shr 24) or ((FourBytes shr 8) and $FF00)
+             or ((FourBytes and $ff00) shl 8) or ((FourBytes and $ff) shl 24);
   PDWord(P)^:=FourBytes;
 end;
 
@@ -801,7 +902,7 @@ begin
 end;
 
 procedure TLazIntfImage.ChooseRawBitsProc(BitsPerPixel: cardinal;
-  BitOrder: TRawImageBitOrder;
+  ByteOrder: TRawImageByteOrder; BitOrder: TRawImageBitOrder;
   var ProcReadRawImageBits: TOnReadRawImageBits;
   var ProcWriteRawImageBits: TOnWriteRawImageBits);
 begin
@@ -827,14 +928,24 @@ begin
 
   16:
   begin
-    ProcReadRawImageBits  := @ReadRawImageBits_16;
-    ProcWriteRawImageBits := @WriteRawImageBits_16;
+    if DefaultByteOrder=ByteOrder then begin
+      ProcReadRawImageBits  := @ReadRawImageBits_16;
+      ProcWriteRawImageBits := @WriteRawImageBits_16;
+    end else begin
+      ProcReadRawImageBits  := @ReadRawImageBits_ReversedBytes_16;
+      ProcWriteRawImageBits := @WriteRawImageBits_ReversedBytes_16;
+    end;
   end;
 
   32:
   begin
-    ProcReadRawImageBits  := @ReadRawImageBits_32;
-    ProcWriteRawImageBits := @WriteRawImageBits_32;
+    if DefaultByteOrder=ByteOrder then begin
+      ProcReadRawImageBits  := @ReadRawImageBits_32;
+      ProcWriteRawImageBits := @WriteRawImageBits_32;
+    end else begin
+      ProcReadRawImageBits  := @ReadRawImageBits_ReversedBytes_32;
+      ProcWriteRawImageBits := @WriteRawImageBits_ReversedBytes_32;
+    end;
   end;
 
   else
@@ -850,6 +961,7 @@ procedure TLazIntfImage.ChooseGetSetColorFunctions;
   begin
     //writeln('ChooseRGBAFunctions ',RawImageDescriptionAsString(@FDataDescription));
     ChooseRawBitsProc(FDataDescription.BitsPerPixel,
+                      FDataDescription.ByteOrder,
                       FDataDescription.BitOrder,
                       FReadRawImageBits, FWriteRawImageBits);
 
@@ -877,13 +989,14 @@ procedure TLazIntfImage.ChooseGetSetColorFunctions;
           OnSetInternalColor:=@SetColor_NoPalette_RGBA_NoAlpha;
         end;
         ChooseRawBitsProc(FDataDescription.AlphaBitsPerPixel,
+                          FDataDescription.AlphaByteOrder,
                           FDataDescription.AlphaBitOrder,
                           FAlphaReadRawImageBits, FAlphaWriteRawImageBits);
       end else begin
         OnGetInternalColor:=@GetColor_NoPalette_RGBA_Alpha_NoSep;
         OnSetInternalColor:=@SetColor_NoPalette_RGBA_Alpha_NoSep;
         ChooseRawBitsProc(FDataDescription.BitsPerPixel,
-          FDataDescription.AlphaBitOrder,
+          FDataDescription.AlphaByteOrder, FDataDescription.AlphaBitOrder,
           FAlphaReadRawImageBits, FAlphaWriteRawImageBits);
       end;
     end else begin

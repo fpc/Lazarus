@@ -155,6 +155,8 @@ const
     'riloTopToBottom',
     'riloBottomToTop'
     );
+    
+  DefaultByteOrder = {$IFDEF Endian_Little}riboLSBFirst{$ELSE}riboMSBFirst{$ENDIF};
 
 
 function RawImageDescriptionAsString(Desc: PRawImageDescription): string;
@@ -209,6 +211,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.24  2004/02/09 19:52:52  mattias
+  implemented ByteOrder for TLazIntfImage and added call of to LM_SETFONT
+
   Revision 1.23  2003/12/06 19:20:46  mattias
   codecompletion: forward proc body position now block sensitive
 
