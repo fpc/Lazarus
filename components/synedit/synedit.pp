@@ -4638,7 +4638,7 @@ var
       sLeftSide := Copy(LineText, 1, LogCaretXY.X - 1);
       if LogCaretXY.X - 1 > Length(sLeftSide) then begin
         PhysicalLineEndPos:=
-                        LogicalToPhysicalPos(Point(Length(sLeftSide),CaretY)).X;
+                    LogicalToPhysicalPos(Point(Length(sLeftSide)+1,CaretY)).X-1;
         sLeftSide := sLeftSide
                      + CreateTabsAndSpaces(CaretX,
                                            CaretX-1-PhysicalLineEndPos,
@@ -9607,7 +9607,8 @@ begin
       break;
     end;
   end;
-  if (ScreenPos>PhysicalPos) and (BytePos>1) then
+  if (ScreenPos>PhysicalPos) and (BytePos<=ByteLen-1)
+  and (Line[BytePos-1]=#9) then
     dec(BytePos);
   Result := BytePos;
 end;
