@@ -737,35 +737,35 @@ begin
   // macros
   MacroList:=TTransferMacroList.Create;
   MacroList.Add(TTransferMacro.Create('Col','',
-                    'Cursor column in current editor',nil));
+                    'Cursor column in current editor',nil,[]));
   MacroList.Add(TTransferMacro.Create('Row','',
-                    'Cursor row in current editor',nil));
+                    'Cursor row in current editor',nil,[]));
   MacroList.Add(TTransferMacro.Create('CompPath','',
-                    'Compiler filename',nil));
+                    'Compiler filename',nil,[]));
   MacroList.Add(TTransferMacro.Create('CurToken','',
-                    'Word at cursor in current editor',nil));
+                    'Word at cursor in current editor',nil,[]));
   MacroList.Add(TTransferMacro.Create('EdFile','',
-                    'Expanded filename of current editor file',nil));
+                    'Expanded filename of current editor file',nil,[]));
   MacroList.Add(TTransferMacro.Create('FPCSrcDir','',
-                    'Freepascal source directory',nil));
+                    'Freepascal source directory',nil,[]));
   MacroList.Add(TTransferMacro.Create('LazarusDir','',
-                    'Lazarus directory',nil));
+                    'Lazarus directory',nil,[]));
   MacroList.Add(TTransferMacro.Create('LCLWidgetType','',
-                    'LCL Widget Type',nil));
+                    'LCL Widget Type',nil,[]));
   MacroList.Add(TTransferMacro.Create('Params','',
-                    'Command line parameters of program',nil));
+                    'Command line parameters of program',nil,[]));
   MacroList.Add(TTransferMacro.Create('Prompt','',
-                    'Prompt for value',@OnMacroPromptFunction));
+                    'Prompt for value',@OnMacroPromptFunction,[tmfInteractive]));
   MacroList.Add(TTransferMacro.Create('ProjFile','',
-                    'Project filename',nil));
+                    'Project filename',nil,[]));
   MacroList.Add(TTransferMacro.Create('ProjPath','',
-                    'Project directory',nil));
+                    'Project directory',nil,[]));
   MacroList.Add(TTransferMacro.Create('Save','',
-                    'save current editor file',nil));
+                    'save current editor file',nil,[tmfInteractive]));
   MacroList.Add(TTransferMacro.Create('SaveAll','',
-                    'save all modified files',nil));
+                    'save all modified files',nil,[tmfInteractive]));
   MacroList.Add(TTransferMacro.Create('TargetFile','',
-                    'Target filename of project',nil));
+                    'Target filename of project',nil,[]));
   MacroList.OnSubstitution:=@OnMacroSubstitution;
   
   //twatcheslgd
@@ -5791,6 +5791,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.215  2002/02/07 18:32:45  lazarus
+  MG: added TTransferMacroFlags
+
   Revision 1.214  2002/02/07 18:18:59  lazarus
   MG: fixed deactivating hints
 

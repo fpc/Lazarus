@@ -47,6 +47,9 @@ type
     var Handled, Abort: boolean) of object;
 
   TMacroFunction = function(const s:string; var Abort: boolean):string of object;
+  
+  TTransferMacroFlag = (tmfInteractive);
+  TTransferMacroFlags = set of TTransferMacroFlag;
 
   TTransferMacro = class
   public
@@ -54,8 +57,9 @@ type
     Value: string;
     Description: string;
     MacroFunction: TMacroFunction;
+    Flags: TTransferMacroFlags;
     constructor Create(AName, AValue, ADescription:string;
-      AMacroFunction: TMacroFunction);
+      AMacroFunction: TMacroFunction; TheFlags: TTransferMacroFlags);
   end;
 
   TTransferMacroList = class
@@ -91,12 +95,13 @@ implementation
 { TTransferMacro }
 
 constructor TTransferMacro.Create(AName, AValue, ADescription:string;
-  AMacroFunction: TMacroFunction);
+  AMacroFunction: TMacroFunction; TheFlags: TTransferMacroFlags);
 begin
   Name:=AName;
   Value:=AValue;
   Description:=ADescription;
   MacroFunction:=AMacroFunction;
+  Flags:=TheFlags;
 end;
 
 { TTransferMacroList }
@@ -105,12 +110,12 @@ constructor TTransferMacroList.Create;
 begin
   inherited Create;
   fItems:=TList.Create;
-  Add(TTransferMacro.Create('Ext','','Function: extract file extension',@MF_Ext));
-  Add(TTransferMacro.Create('Path','','Function: extract file path',@MF_Path));
+  Add(TTransferMacro.Create('Ext','','Function: extract file extension',@MF_Ext,[]));
+  Add(TTransferMacro.Create('Path','','Function: extract file path',@MF_Path,[]));
   Add(TTransferMacro.Create('Name','','Function: extract file name+extension',
-                                    @MF_Name));
+                                    @MF_Name,[]));
   Add(TTransferMacro.Create('NameOnly','','Function: extract file name only',
-                                    @MF_NameOnly));
+                                    @MF_NameOnly,[]));
 end;
 
 destructor TTransferMacroList.Destroy;
