@@ -1,7 +1,9 @@
 object Form1: TForm1
+  ActiveControl = TIEdit1
   Caption = 'RTTI Controls Example'
   ClientHeight = 357
   ClientWidth = 590
+  PixelsPerInch = 90
   HorzScrollBar.Page = 591
   VertScrollBar.Page = 358
   Left = 291
@@ -13,7 +15,6 @@ object Form1: TForm1
     Link.TIPropertyName = 'Caption'
     TabStop = True
     TabOrder = 0
-    TabOrder = 0
     Left = 8
     Height = 23
     Top = 136
@@ -23,8 +24,6 @@ object Form1: TForm1
     AllowGrayed = True
     AutoSize = True
     Caption = 'TICheckBox1'
-    DragCursor = 65524
-    Link.Options = [ploReadOnIdle]
     Link.TIObject = TIEdit1
     Link.TIPropertyName = 'Visible'
     State = cbChecked
@@ -35,7 +34,7 @@ object Form1: TForm1
     Top = 136
     Width = 109
   end
-  object TIListBox1: TTIListBox
+  object TIListBox_Color: TTIListBox
     BorderStyle = bsSingle
     ClickOnSelChange = False
     Link.TIObject = StaticText1
@@ -67,8 +66,7 @@ object Form1: TForm1
     Top = 176
     Width = 194
   end
-  object TIComboBox1: TTIComboBox
-    Link.Options = [ploReadOnIdle]
+  object TIComboBox_Enabled: TTIComboBox
     Link.TIObject = TICheckBox1
     Link.TIPropertyName = 'Enabled'
     MaxLength = 0

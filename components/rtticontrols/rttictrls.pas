@@ -120,6 +120,7 @@ Type
                            Operation: TOperation); virtual;
     procedure GetEditorValues(const NewValue: string); virtual;
   public
+    constructor Create;
     constructor Create(TheOwner: TComponent);
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
@@ -138,7 +139,6 @@ Type
     procedure DoError(Writing: boolean; E: Exception); virtual;
   public
     // alias values
-    constructor create;
     procedure MapValues(Values, AliasStrings: TStrings;
                         var MappedValues: TStrings;
                         UseAllExistingAlias, AddValuesWithoutAlias,
@@ -1292,8 +1292,9 @@ var
 begin
   if FOptions=NewOptions then exit;
   ChangedOptions:=(FOptions-NewOptions)+(NewOptions-FOptions);
-  //writeln('TCustomPropertyLink.SetOptions Old=',ploReadOnIdle in FOptions,
-  //  ' New=',ploReadOnIdle in NewOptions,' Changed=',ploReadOnIdle in ChangedOptions);
+  //debugln('TCustomPropertyLink.SetOptions Old=',dbgs(ploReadOnIdle in FOptions),
+  //  ' New=',dbgs(ploReadOnIdle in NewOptions),' Changed=',dbgs(ploReadOnIdle in ChangedOptions));
+  RaiseGDBException('');
   FOptions:=NewOptions;
   if (ploReadOnIdle in ChangedOptions) then UpdateIdleHandler;
 end;
@@ -1494,6 +1495,7 @@ begin
   FFilter:=AllTypeKinds;
   FAliasValues:=TAliasStrings.Create;
   FLinkNotifier:=TPropertyLinkNotifier.Create(Self);
+  FOptions:=DefaultLinkOptions;
 end;
 
 procedure TCustomPropertyLink.SaveToProperty;
@@ -1566,8 +1568,7 @@ end;
 
 constructor TCustomPropertyLink.create;
 begin
-  Inherited create;
-  FOptions:=DefaultLinkOptions;
+  Create(nil);
 end;
 
 procedure TCustomPropertyLink.MapValues(Values, AliasStrings: TStrings;

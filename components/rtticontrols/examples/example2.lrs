@@ -3,20 +3,19 @@
 LazarusResources.Add('TForm1','FORMDATA',[
   'TPF0'#6'TForm1'#5'Form1'#7'Caption'#6#5'Form1'#12'ClientHeight'#3','#1#11'Cl'
   +'ientWidth'#3#144#1#8'OnCreate'#7#11'Form1Create'#9'OnDestroy'#7#12'Form1Des'
-  +'troy'#18'HorzScrollBar.Page'#3#145#1#18'VertScrollBar.Page'#3'-'#1#4'Left'#3
-  +#17#1#6'Height'#3','#1#3'Top'#3#181#0#5'Width'#3#144#1#0#9'TGroupBox'#9'Grou'
-  +'pBox1'#7'Caption'#6#8'MyString'#12'ClientHeight'#2#31#11'ClientWidth'#3'K'#1
-  +#11'ParentColor'#9#8'TabOrder'#2#0#4'Left'#2#24#6'Height'#2'0'#3'Top'#2#16#5
-  +'Width'#3'O'#1#0#7'TTIEdit'#7'TIEdit1'#7'TabStop'#9#8'TabOrder'#2#0#8'TabOrd'
-  +'er'#2#0#4'Left'#2#23#6'Height'#2#23#3'Top'#2#1#5'Width'#3'#'#1#0#0#0#13'TTI'
-  +'RadioGroup'#13'TIRadioGroup1'#7'Caption'#6#6'MyEnum'#7'Columns'#2#3#11'Pare'
-  +'ntColor'#9#4'Left'#2#25#6'Height'#2'9'#3'Top'#2'H'#5'Width'#3'R'#1#0#0#9'TG'
-  +'roupBox'#9'GroupBox2'#7'Caption'#6#7'MyRange'#12'ClientHeight'#2#24#11'Clie'
-  +'ntWidth'#3'O'#1#11'ParentColor'#9#8'TabOrder'#2#2#4'Left'#2#25#6'Height'#2
-  +')'#3'Top'#3#144#0#5'Width'#3'S'#1#0#11'TTITrackBar'#11'TITrackBar1'#10'Drag'
-  +'Cursor'#4#244#255#0#0#8'ScalePos'#7#5'trTop'#8'TabOrder'#2#0#7'TabStop'#9#13
-  +'UseRTTIMinMax'#9#8'ScalePos'#7#5'trTop'#4'Left'#2#15#6'Height'#2#20#3'Top'#2
-  +#1#5'Width'#3')'#1#0#0#0#5'TMemo'#5'Memo1'#10'ScrollBars'#7#10'ssAutoBoth'#8
-  +'TabOrder'#2#3#4'Left'#2#27#6'Height'#2'W'#3'Top'#3#199#0#5'Width'#3'R'#1#0#0
-  +#0
+  +'troy'#13'PixelsPerInch'#2'Z'#18'HorzScrollBar.Page'#3#145#1#18'VertScrollBa'
+  +'r.Page'#3'-'#1#4'Left'#3#17#1#6'Height'#3','#1#3'Top'#3#181#0#5'Width'#3#144
+  +#1#0#9'TGroupBox'#9'GroupBox1'#7'Caption'#6#8'MyString'#12'ClientHeight'#2#31
+  +#11'ClientWidth'#3'K'#1#11'ParentColor'#9#8'TabOrder'#2#0#4'Left'#2#24#6'Hei'
+  +'ght'#2'0'#3'Top'#2#16#5'Width'#3'O'#1#0#7'TTIEdit'#7'TIEdit1'#7'TabStop'#9#8
+  +'TabOrder'#2#0#4'Left'#2#23#6'Height'#2#23#3'Top'#2#1#5'Width'#3'#'#1#0#0#0
+  +#13'TTIRadioGroup'#13'TIRadioGroup1'#7'Caption'#6#6'MyEnum'#7'Columns'#2#3#11
+  +'ParentColor'#9#4'Left'#2#25#6'Height'#2'9'#3'Top'#2'H'#5'Width'#3'R'#1#0#0#9
+  +'TGroupBox'#9'GroupBox2'#7'Caption'#6#7'MyRange'#12'ClientHeight'#2#24#11'Cl'
+  +'ientWidth'#3'O'#1#11'ParentColor'#9#8'TabOrder'#2#2#4'Left'#2#25#6'Height'#2
+  +')'#3'Top'#3#144#0#5'Width'#3'S'#1#0#11'TTITrackBar'#11'TITrackBar1'#8'Scale'
+  +'Pos'#7#5'trTop'#8'TabOrder'#2#0#7'TabStop'#9#8'ScalePos'#7#5'trTop'#4'Left'
+  +#2#15#6'Height'#2#20#3'Top'#2#1#5'Width'#3')'#1#0#0#0#5'TMemo'#5'Memo1'#10'S'
+  +'crollBars'#7#10'ssAutoBoth'#8'TabOrder'#2#3#4'Left'#2#27#6'Height'#2'W'#3'T'
+  +'op'#3#199#0#5'Width'#3'R'#1#0#0#0
 ]);

@@ -1,40 +1,109 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="3"/>
+    <Version Value="5"/>
     <General>
-      <ProjectType Value="Application"/>
-      <Flags>
-        <SaveClosedFiles Value="False"/>
-        <SaveOnlyProjectUnits Value="True"/>
-      </Flags>
       <MainUnit Value="0"/>
-      <ActiveEditorIndexAtStart Value="2"/>
+      <ActiveEditorIndexAtStart Value="1"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
       <Title Value="exampleproject1"/>
     </General>
-    <Units Count="2">
+    <JumpHistory Count="11" HistoryIndex="10">
+      <Position1>
+        <Filename Value="example1.pas"/>
+        <Caret Line="39" Column="25" TopLine="13"/>
+      </Position1>
+      <Position2>
+        <Filename Value="/home/mattias/pascal/wichtig/lazarus/components/rtticontrols/rttictrls.pas"/>
+        <Caret Line="3130" Column="12" TopLine="3123"/>
+      </Position2>
+      <Position3>
+        <Filename Value="/home/mattias/pascal/wichtig/lazarus/components/rtticontrols/rttictrls.pas"/>
+        <Caret Line="1511" Column="11" TopLine="1508"/>
+      </Position3>
+      <Position4>
+        <Filename Value="/home/mattias/pascal/wichtig/lazarus/components/rtticontrols/rttictrls.pas"/>
+        <Caret Line="3129" Column="1" TopLine="3102"/>
+      </Position4>
+      <Position5>
+        <Filename Value="/home/mattias/pascal/wichtig/lazarus/components/rtticontrols/rttictrls.pas"/>
+        <Caret Line="3130" Column="3" TopLine="3107"/>
+      </Position5>
+      <Position6>
+        <Filename Value="/home/mattias/pascal/wichtig/lazarus/components/rtticontrols/rttictrls.pas"/>
+        <Caret Line="603" Column="15" TopLine="581"/>
+      </Position6>
+      <Position7>
+        <Filename Value="/home/mattias/pascal/wichtig/lazarus/components/rtticontrols/rttictrls.pas"/>
+        <Caret Line="174" Column="64" TopLine="162"/>
+      </Position7>
+      <Position8>
+        <Filename Value="/home/mattias/pascal/wichtig/lazarus/components/rtticontrols/rttictrls.pas"/>
+        <Caret Line="124" Column="17" TopLine="102"/>
+      </Position8>
+      <Position9>
+        <Filename Value="/home/mattias/pascal/wichtig/lazarus/components/rtticontrols/rttictrls.pas"/>
+        <Caret Line="3036" Column="14" TopLine="3020"/>
+      </Position9>
+      <Position10>
+        <Filename Value="/home/mattias/pascal/wichtig/lazarus/components/rtticontrols/rttictrls.pas"/>
+        <Caret Line="2197" Column="1" TopLine="2194"/>
+      </Position10>
+      <Position11>
+        <Filename Value="/home/mattias/pascal/wichtig/lazarus/components/rtticontrols/rttictrls.pas"/>
+        <Caret Line="668" Column="29" TopLine="661"/>
+      </Position11>
+    </JumpHistory>
+    <Units Count="6">
       <Unit0>
         <CursorPos X="10" Y="9"/>
         <Filename Value="exampleproject1.lpr"/>
         <IsPartOfProject Value="True"/>
         <TopLine Value="1"/>
         <UnitName Value="ExampleProject1"/>
-        <UsageCount Value="29"/>
+        <UsageCount Value="30"/>
       </Unit0>
       <Unit1>
-        <CursorPos X="73" Y="26"/>
+        <CursorPos X="25" Y="39"/>
         <EditorIndex Value="0"/>
         <Filename Value="example1.pas"/>
         <ComponentName Value="Form1"/>
         <IsPartOfProject Value="True"/>
         <Loaded Value="True"/>
         <ResourceFilename Value="example1.lrs"/>
-        <TopLine Value="1"/>
+        <TopLine Value="13"/>
         <UnitName Value="Example1"/>
-        <UsageCount Value="29"/>
+        <UsageCount Value="30"/>
       </Unit1>
+      <Unit2>
+        <CursorPos X="1" Y="2197"/>
+        <EditorIndex Value="1"/>
+        <Filename Value="/home/mattias/pascal/wichtig/lazarus/components/rtticontrols/rttictrls.pas"/>
+        <Loaded Value="True"/>
+        <TopLine Value="2194"/>
+        <UnitName Value="RTTICtrls"/>
+        <UsageCount Value="10"/>
+      </Unit2>
+      <Unit3>
+        <CursorPos X="13" Y="792"/>
+        <Filename Value="/home/mattias/pascal/wichtig/lazarus/lcl/stdctrls.pp"/>
+        <TopLine Value="767"/>
+        <UnitName Value="StdCtrls"/>
+        <UsageCount Value="10"/>
+      </Unit3>
+      <Unit4>
+        <CursorPos X="1" Y="74"/>
+        <Filename Value="/home/mattias/pascal/wichtig/lazarus/lcl/include/customcheckbox.inc"/>
+        <TopLine Value="69"/>
+        <UsageCount Value="10"/>
+      </Unit4>
+      <Unit5>
+        <CursorPos X="1" Y="51"/>
+        <Filename Value="/home/mattias/pascal/wichtig/lazarus/lcl/include/buttoncontrol.inc"/>
+        <TopLine Value="32"/>
+        <UsageCount Value="10"/>
+      </Unit5>
     </Units>
     <PublishOptions>
       <Version Value="2"/>
@@ -60,7 +129,7 @@
     </RequiredPackages>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="2"/>
+    <Version Value="3"/>
     <SearchPaths>
       <SrcPath Value="$(LazarusDir)/lcl/;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)/"/>
     </SearchPaths>
