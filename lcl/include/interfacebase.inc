@@ -968,11 +968,6 @@ begin
     Result := false;
 end;
 
-function TInterfaceBase.KillTimer (hWnd : HWND; uIDEvent : cardinal) : boolean;
-begin
-  Result := false; 
-end;
-
 function TInterfaceBase.LineTo(DC: HDC; X, Y: Integer): Boolean;
 begin
   Result := False;
@@ -1395,12 +1390,6 @@ begin
   Result := CLR_INVALID;
 end;
 
-function TInterfaceBase.SetTimer(hWnd: HWND; nIDEvent, uElapse: integer;
-  lpTimerFunc: TFNTimerProc) : integer;
-begin
-  Result := 0; 
-end;
-
 function TInterfacebase.SetWindowLong(Handle: HWND;
   Idx: Integer; NewLong : Longint): LongInt;
 begin
@@ -1471,6 +1460,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.68  2002/11/23 13:48:44  mattias
+  added Timer patch from Vincent Snijders
+
   Revision 1.67  2002/11/12 10:16:16  lazarus
   MG: fixed TMainMenu creation
 

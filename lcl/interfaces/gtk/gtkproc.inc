@@ -205,25 +205,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function IndexOfTimer(Handle: HWnd; uIDEvent: integer): integer;
-------------------------------------------------------------------------------}
-function IndexOfTimer(Handle: HWnd; uIDEvent: integer): integer;
-var
-  PTimerInfo: PGtkITimerinfo;
-begin
-  if (FTimerData<>nil) and (Handle<>0) then begin
-    Result:=FTimerData.Count-1;
-    while Result>=0 do begin
-      PTimerInfo:=PGtkITimerinfo(FTimerData[Result]);
-      if (PTimerInfo^.Handle=Handle) and (PTimerInfo^.IDEvent=uIDEvent) then
-        break;
-    end;
-  end else begin
-    Result:=-1;
-  end;
-end;
-
-{------------------------------------------------------------------------------
   function GtkPaintMessageToPaintMessage(GtkPaintMsg: TLMGtkPaint): TLMPaint;
 
   Converts a LM_GtkPaint message to a LM_PAINT message
@@ -3950,6 +3931,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.150  2002/11/23 13:48:46  mattias
+  added Timer patch from Vincent Snijders
+
   Revision 1.149  2002/11/09 18:13:35  lazarus
   MG: fixed gdkwindow checks
 

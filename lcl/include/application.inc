@@ -603,7 +603,7 @@ end;
 procedure TApplication.HandleMessage;
 begin
   InterfaceObject.HandleEvents; // process all events
-  Idle;
+  if not FTerminate then Idle;
 end;
 
 {------------------------------------------------------------------------------
@@ -647,8 +647,7 @@ procedure TApplication.Run;
 begin
   if FMainForm <> nil
   then FMainForm.Show;
-
-  repeat 
+  repeat
     HandleMessage;
     if Assigned(FMainForm) and (FMainForm.ModalResult = mrCancel) 
     then Terminate; 
@@ -850,6 +849,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.39  2002/11/23 13:48:43  mattias
+  added Timer patch from Vincent Snijders
+
   Revision 1.38  2002/11/21 18:49:52  mattias
   started OnMouseEnter and OnMouseLeave
 

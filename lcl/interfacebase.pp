@@ -63,7 +63,6 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure AppTerminate; virtual; abstract;
-    procedure DoEvents; virtual; abstract;
     procedure HandleEvents; virtual; abstract;
     procedure WaitMessage; virtual; abstract;
     procedure Init; virtual; abstract;
@@ -72,7 +71,9 @@ type
     function UpdateHint(Sender: TObject): Integer; virtual; abstract;
     function RecreateWnd(Sender: TObject): Integer; virtual; abstract;
 
-    
+    function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc) : integer; virtual; abstract;
+    function DestroyTimer(TimerHandle: integer) : boolean; virtual; abstract;
+
     {$DEFINE IF_BASE_MEMBER}
     {$I winapih.inc}
     {$UNDEF IF_BASE_MEMBER}
@@ -115,6 +116,9 @@ end.
 
 {
   $Log$
+  Revision 1.25  2002/11/23 13:48:43  mattias
+  added Timer patch from Vincent Snijders
+
   Revision 1.24  2002/10/26 15:15:46  lazarus
   MG: broke LCL<->interface circles
 
