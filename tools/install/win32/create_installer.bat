@@ -80,7 +80,7 @@ if not exist %BUILDDIR%\startlazarus.exe goto END
 %ISCC% lazarus.iss >> installer.log
 
 :: do not delete build dir, if installer failed.
-if not exist output\lazarus-{#AppVersion}-{#SetupDate}-win32.exe goto END
+if not exist output\lazarus-{%LAZVERSION%}-{%DATESTAMP%}-win32.exe goto END
 
 :: delete build dir
 rd /s /q %BUILDDIR% > NUL
