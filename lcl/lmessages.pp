@@ -65,7 +65,6 @@ const
   LM_GETTEXT        = LM_ComUser+18;
   LM_CANVASCREATE   = LM_ComUser+19;
   LM_ReDraw         = LM_ComUser+26;
-  LM_SetColor       = LM_ComUser+27;
   LM_RemovePage     = LM_ComUser+28;
   LM_ShowTabs       = LM_ComUser+29;
   LM_SetTabPosition = LM_ComUser+30;
@@ -880,7 +879,6 @@ begin
   LM_GETTEXT        :Result:='LM_GETTEXT';
   LM_CANVASCREATE   :Result:='LM_CANVASCREATE';
   LM_ReDraw         :Result:='LM_ReDraw';
-  LM_SetColor       :Result:='LM_SetColor';
   LM_RemovePage     :Result:='LM_RemovePage';
   LM_ShowTabs       :Result:='LM_ShowTabs';
   LM_SetTabPosition :Result:='LM_SetTabPosition';
@@ -1044,6 +1042,9 @@ end.
 
 {
   $Log$
+  Revision 1.75  2004/09/08 19:09:34  micha
+  convert LM_SETCOLOR message to new intf method TWSWinControl.SetColor
+
   Revision 1.74  2004/09/07 10:26:16  micha
   fix logs to get rid of comment level 2 warning
 

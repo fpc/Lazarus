@@ -263,7 +263,6 @@ type
     procedure SetText(Child,Data : Pointer);virtual;
     procedure AppendText(Sender: TObject; Str: PChar); virtual;
     procedure SetLabel(Sender : TObject; Data : Pointer); virtual;
-    procedure SetColor(Sender : TObject);virtual;
     Procedure SetPixel(Sender : TObject; Data : Pointer);virtual;
     Procedure GetPixel(Sender : TObject; Data : Pointer);virtual;
     function  GetValue(Sender : TObject; Data : pointer) : integer;virtual;
@@ -462,6 +461,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.191  2004/09/08 19:09:34  micha
+  convert LM_SETCOLOR message to new intf method TWSWinControl.SetColor
+
   Revision 1.190  2004/09/07 10:26:16  micha
   fix logs to get rid of comment level 2 warning
 

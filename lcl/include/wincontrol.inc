@@ -1436,7 +1436,7 @@ begin
     FBrush.Color := Color;
   if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then
   begin
-    CNSendMessage(LM_SETCOLOR, Self, nil);
+    TWSWinControlClass(WidgetSetClass).SetColor(Self);
     Exclude(FFlags,wcfColorChanged);
     NotifyControls(CM_PARENTCOLORCHANGED);
   end else
@@ -3451,7 +3451,7 @@ begin
   if [wcfColorChanged,wcfFontChanged]*FFLags<>[] 
   then begin
     // replace by update style call
-    CNSendMessage(LM_SETCOLOR, Self, nil);
+    TWSWinControlClass(WidgetSetClass).SetColor(Self);
     FFlags:=FFlags-[wcfColorChanged,wcfFontChanged];
   end;
 
@@ -3506,8 +3506,7 @@ begin
   
     if [wcfColorChanged,wcfFontChanged]*FFlags<>[] then
     begin
-      // ToDo: replace by update style call
-      CNSendMessage(LM_SETCOLOR, Self, nil);
+      TWSWinControlClass(WidgetSetClass).SetColor(Self);
       FFlags:=FFlags-[wcfColorChanged,wcfFontChanged];
     end;
   end;
@@ -3912,6 +3911,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.273  2004/09/08 19:09:34  micha
+  convert LM_SETCOLOR message to new intf method TWSWinControl.SetColor
+
   Revision 1.272  2004/09/04 22:24:16  mattias
   added default values for compiler skip options and improved many parts of synedit for UTF8
 

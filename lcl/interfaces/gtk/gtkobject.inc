@@ -3123,8 +3123,6 @@ begin
   case LM_Message of
   LM_Create   : CreateComponent(Sender);
 
-  LM_SETCOLOR : SetColor(Sender);
-
   LM_SETPixel : SetPixel(Sender,Data);
 
   LM_GETPixel : GetPixel(Sender,Data);
@@ -4234,16 +4232,6 @@ begin
     // DebugLn('WARNING: [TGtkWidgetSet.SetLabel] --> not handled for class ',Sender.ClassName);
   end;
   Assert(False, Format('trace:  [TGtkWidgetSet.SetLabel] %s --> END', [Sender.ClassName]));
-end;
-
-{------------------------------------------------------------------------------}
-{       TGtkWidgetSet SetColor                                                 }
-{       *Note: Changes the form's default background color                                 }
-{------------------------------------------------------------------------------}
-procedure TGtkWidgetSet.SetColor(Sender : TObject);
-begin
-  if Sender is TWinControl then
-    UpdateWidgetStyleOfControl(TWinControl(Sender));
 end;
 
 {------------------------------------------------------------------------------
@@ -9155,6 +9143,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.541  2004/09/08 19:09:34  micha
+  convert LM_SETCOLOR message to new intf method TWSWinControl.SetColor
+
   Revision 1.540  2004/09/07 10:26:16  micha
   fix logs to get rid of comment level 2 warning
 

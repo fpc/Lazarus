@@ -63,6 +63,7 @@ type
   protected
   public
     class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
+    class procedure SetColor(const AWinControl: TWinControl); override;
   end;
 
   { TWin32WSGraphicControl }
@@ -103,6 +104,11 @@ end;
 procedure TWin32WSWinControl.SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle);
 begin
   TWin32WidgetSet(InterfaceObject).RecreateWnd(AWinControl);
+end;
+
+procedure TWin32WSWinControl.SetColor(const AWinControl: TWinControl);
+begin
+  // TODO: to be implemented, had no implementation in LM_SETCOLOR message
 end;
 
 initialization

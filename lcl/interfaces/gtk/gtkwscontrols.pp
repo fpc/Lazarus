@@ -71,6 +71,7 @@ type
     class procedure SetSize(const AWinControl: TWinControl; const AWidth, AHeight: Integer); override;
     class procedure SetPos(const AWinControl: TWinControl; const ALeft, ATop: Integer); override;
     class procedure SetCursor(const AControl: TControl; const ACursor: TCursor); override;
+    class procedure SetColor(const AWinControl: TWinControl); override;
   end;
 
   { TGtkWSGraphicControl }
@@ -189,6 +190,10 @@ begin
   gtk_widget_size_allocate(Widget, @Allocation);
 end;
 
+procedure TGtkWSWinControl.SetColor(const AWinControl: TWinControl);
+begin
+  UpdateWidgetStyleOfControl(AWinControl);
+end;
 
 initialization
 

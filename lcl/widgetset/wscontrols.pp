@@ -73,6 +73,7 @@ type
     class procedure SetPos(const AWinControl: TWinControl; const ALeft, ATop: Integer); virtual;
     class procedure SetSize(const AWinControl: TWinControl; const AWidth, AHeight: Integer); virtual;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); virtual;
+    class procedure SetColor(const AWinControl: TWinControl); virtual;
   end;       
   TWSWinControlClass = class of TWSWinControl;
 
@@ -138,6 +139,10 @@ end;
 procedure TWSWinControl.SetText(const AWinControl: TWinControl; const AText: String); 
 begin
   CNSendMessage(LM_SetLabel, AWinControl, PChar(AText));
+end;
+
+procedure TWSWinControl.SetColor(const AWinControl: TWinControl);
+begin
 end;
 
 initialization

@@ -440,8 +440,6 @@ Begin
   Case LM_Message Of
     LM_CREATE:
       CreateComponent(Sender);
-    LM_SETCOLOR:
-      SetColor(Sender);
     LM_SETPIXEL:
       SetPixel(Sender, Data);
     LM_GETPIXEL:
@@ -1691,18 +1689,6 @@ Begin
       AssertEx('STOPPOK: [TWin32WidgetSet.SetText] Possible superfluous use of SetText, use SetLabel instead!', False, 2);
   End;
 End;
-
-{------------------------------------------------------------------------------
-  Method: TWin32WidgetSet SetColor
-  Params: Sender - The sending object
-  Returns: Nothing
-
-  Changes the form's default background color
- ------------------------------------------------------------------------------}
-Procedure TWin32WidgetSet.SetColor(Sender: TObject);
-Begin
-
-End;              
 
 {------------------------------------------------------------------------------
   Function: TWin32WidgetSet.CreateComponent
@@ -2979,6 +2965,9 @@ End;
 
 {
   $Log$
+  Revision 1.234  2004/09/08 19:09:34  micha
+  convert LM_SETCOLOR message to new intf method TWSWinControl.SetColor
+
   Revision 1.233  2004/09/07 10:26:17  micha
   fix logs to get rid of comment level 2 warning
 

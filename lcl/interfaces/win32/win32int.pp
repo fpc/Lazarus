@@ -145,7 +145,6 @@ Type
     Procedure AddNBPage(Notebook: TCustomNotebook; NewPage: TCustomPage; Index: Integer);
     procedure RemoveNBPage(Notebook: TCustomNotebook; Index: Integer);
     Procedure SetText(Window: HWND; Data: Pointer);
-    Procedure SetColor(Sender : TObject);
     Procedure SetPixel(Sender: TObject; Data: Pointer);
     Procedure GetPixel(Sender: TObject; Data: Pointer);
     Function GetValue (Sender: TObject; Data: Pointer): Integer;
@@ -284,6 +283,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.98  2004/09/08 19:09:34  micha
+  convert LM_SETCOLOR message to new intf method TWSWinControl.SetColor
+
   Revision 1.97  2004/09/07 10:26:17  micha
   fix logs to get rid of comment level 2 warning
 
