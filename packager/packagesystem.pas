@@ -311,6 +311,7 @@ var
   XMLConfig: TXMLConfig;
 begin
   Result:=false;
+  NewPackage:=nil;
   BeginUpdate(false);
   try
     AFilename:=PkgLink.Filename;
