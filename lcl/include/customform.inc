@@ -621,9 +621,9 @@ begin
       Include(FFormState, fsCreating);
       try
         if not InitResourceComponent(Self, TForm) then begin
-          writeln('[TCustomForm.Create] Resource '''+ClassName+''' not found');
-          Writeln('This is for information purposes only.   This is not critical at this time.');
-
+          //writeln('[TCustomForm.Create] Resource '''+ClassName+''' not found');
+          //Writeln('This is for information purposes only.   This is not critical at this time.');
+          // MG:  Ignoring is best at the moment. (Delphi raises an exception.)
         end;
       finally
         Exclude(FFormState, fsCreating);
@@ -898,6 +898,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.19  2001/05/31 13:57:28  lazarus
+  MG: added environment option OpenLastProjectAtStart
+
   Revision 1.18  2001/03/31 13:35:23  lazarus
   MG: added non-visual-component code to IDE and LCL
 

@@ -81,6 +81,7 @@ type
     FRecentProjectFiles: TStringList;
     FMaxRecentProjectFiles: integer;
     FLastOpenDialogDir: string;
+    FOpenLastProjectAtStart: boolean;
 
     // backup
     FBackupInfoProjectFiles: TBackupInfo;
@@ -102,8 +103,6 @@ type
        read FAutoSaveProject write FAutoSaveProject;
     property AutoSaveIntervalInSecs: integer
        read FAutoSaveIntervalInSecs write FAutoSaveIntervalInSecs;
-    property LastSavedProjectFile: string 
-       read FLastSavedProjectFile write FLastSavedProjectFile;
 
     // windows
     property SaveWindowPositions: boolean
@@ -152,6 +151,10 @@ type
        read FMaxRecentProjectFiles write FMaxRecentProjectFiles;
     property LastOpenDialogDir: string
        read FLastOpenDialogDir write FLastOpenDialogDir;
+    property LastSavedProjectFile: string 
+       read FLastSavedProjectFile write FLastSavedProjectFile;
+    property OpenLastProjectAtStart: boolean
+       read FOpenLastProjectAtStart write FOpenLastProjectAtStart;
 
     // backup
     property BackupInfoProjectFiles: TBackupInfo 
@@ -237,6 +240,7 @@ type
     MaxRecentOpenFilesComboBox: TComboBox;
     MaxRecentProjectFilesLabel: TLabel;
     MaxRecentProjectFilesComboBox: TComboBox;
+    OpenLastProjectAtStartCheckBox: TCheckBox;
     LazarusDirLabel: TLabel;
     LazarusDirComboBox: TComboBox;
     CompilerPathLabel: TLabel;
@@ -323,6 +327,7 @@ begin
   FRecentProjectFiles:=TStringList.Create;
   FMaxRecentProjectFiles:=5;
   FLastOpenDialogDir:='';
+  FOpenLastProjectAtStart:=true;
 
   // backup
   with FBackupInfoProjectFiles do begin
@@ -426,6 +431,9 @@ begin
        'EnvironmentOptions/AutoSave/IntervalInSecs',FAutoSaveIntervalInSecs);
     FLastSavedProjectFile:=XMLConfig.GetValue(
        'EnvironmentOptions/AutoSave/LastSavedProjectFile',FLastSavedProjectFile);
+    FOpenLastProjectAtStart:=XMLConfig.GetValue(
+       'EnvironmentOptions/AutoSave/OpenLastProjectAtStart',
+       FOpenLastProjectAtStart);
 
     // windows
     FSaveWindowPositions:=XMLConfig.GetValue(
@@ -550,6 +558,9 @@ begin
        ,FAutoSaveIntervalInSecs);
     XMLConfig.SetValue('EnvironmentOptions/AutoSave/LastSavedProjectFile'
        ,FLastSavedProjectFile);
+    XMLConfig.SetValue(
+       'EnvironmentOptions/AutoSave/OpenLastProjectAtStart',
+       FOpenLastProjectAtStart);
 
     // windows
     XMLConfig.SetValue('EnvironmentOptions/Desktop/SaveWindowPositions'
@@ -1347,13 +1358,26 @@ begin
     end;
     Show;
   end;
+  
+  OpenLastProjectAtStartCheckBox:=TCheckBox.Create(Self);
+  with OpenLastProjectAtStartCheckBox do begin
+    Name:='OpenLastProjectAtStartCheckBox';
+    Parent:=NoteBook.Page[1];
+    Left:=4;
+    Top:=MaxRecentProjectFilesLabel.Top+MaxRecentProjectFilesLabel.Height+5;
+    Width:=MaxX-10;
+    Height:=23;
+    Caption:='Open last project at start';
+    Show;
+  end;
 
   LazarusDirLabel:=TLabel.Create(Self);
   with LazarusDirLabel do begin
     Name:='LazarusDirLabel';
     Parent:=NoteBook.Page[1];
     Left:=4;
-    Top:=MaxRecentProjectFilesLabel.Top+MaxRecentProjectFilesLabel.Height+5;
+    Top:=OpenLastProjectAtStartCheckBox.Top
+        +OpenLastProjectAtStartCheckBox.Height+5;
     Width:=MaxX-10;
     Height:=23;
     Caption:='Lazarus directory (default for all projects)';
@@ -1454,7 +1478,6 @@ end;
 
 procedure TEnvironmentOptionsDialog.OkButtonClick(Sender: TObject);
 begin
-  // ToDo: save options
   ModalResult:=mrOk;
 end;
 
@@ -1561,6 +1584,7 @@ begin
     // recent files and directories
     SetComboBoxText(MaxRecentOpenFilesComboBox,IntToStr(MaxRecentOpenFiles));
     SetComboBoxText(MaxRecentProjectFilesComboBox,IntToStr(MaxRecentProjectFiles));
+    OpenLastProjectAtStartCheckBox.Checked:=OpenLastProjectAtStart;
 
     // backup
     with BackupInfoProjectFiles do begin
@@ -1642,6 +1666,7 @@ begin
         MaxRecentOpenFilesComboBox.Text,MaxRecentOpenFiles);
     MaxRecentProjectFiles:=StrToIntDef(
         MaxRecentProjectFilesComboBox.Text,MaxRecentProjectFiles);
+    OpenLastProjectAtStart:=OpenLastProjectAtStartCheckBox.Checked;
 
     // backup
     with BackupInfoProjectFiles do begin

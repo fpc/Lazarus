@@ -536,12 +536,13 @@ begin
   and (ExtractFileExt(ParamStr(ParamCount))='.lpi')
   and (DoOpenProjectFile(ParamStr(ParamCount))=mrOk) then
     // command line project loaded
-  else if (FileExists(EnvironmentOptions.LastSavedProjectFile)) 
+  else if (EnvironmentOptions.OpenLastprojectAtStart)
+  and (FileExists(EnvironmentOptions.LastSavedProjectFile)) 
   and (DoOpenProjectFile(EnvironmentOptions.LastSavedProjectFile)=mrOk) then
     // last project loaded
   else
     // create new project
-    DoNewProject(ptProgram);
+    DoNewProject(ptApplication);
 end;
 
 destructor TMainIDE.Destroy;
@@ -3389,6 +3390,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.99  2001/05/31 13:57:27  lazarus
+  MG: added environment option OpenLastProjectAtStart
+
   Revision 1.98  2001/05/29 08:16:26  lazarus
   MG: bugfixes + starting programs
 
