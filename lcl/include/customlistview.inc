@@ -141,13 +141,12 @@ begin
   if FUpdateCount>0 then exit;
   if not (lvUpdateNeeded in FStates) then exit;
   if csDestroying in Componentstate Then Exit;
-  //TODO: Optimize implementation by invoking individual upadates instead of
+  //TODO: Optimize implementation by invoking individual updates instead of
   //      recreating window
   //notify the interface....
   if (not HandleAllocated) or (csLoading in ComponentState) then exit;
   Exclude(FStates,lvUpdateNeeded);
   RecreateWnd;
-  CNSendMessage(LM_SETPROPERTIES,self,nil);
 end;
 
 procedure TCustomListView.InitializeWnd;
@@ -156,6 +155,12 @@ begin
   CNSendMessage(LM_SETPROPERTIES,self,nil);
   if FSelected<>nil then
     CNSendMessage(LM_LV_SELECTITEM,self,FSelected);
+end;
+
+procedure TCustomListView.Loaded;
+begin
+  inherited Loaded;
+  DoUpdate;
 end;
 
 {------------------------------------------------------------------------------}
@@ -540,6 +545,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.23  2002/10/09 11:46:04  lazarus
+  MG: fixed loading TListView from stream
+
   Revision 1.22  2002/09/14 14:47:41  lazarus
   MG: fixed icons
 

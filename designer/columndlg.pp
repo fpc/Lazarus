@@ -413,8 +413,10 @@ var
 begin
   //clear the listbox and display the items if any...
   Listbox1.Items.Clear;
-  for I := 0 to FColumns.Count-1 do
+  for I := 0 to FColumns.Count-1 do begin
+    writeln('TColumnDlg.FormOnShow ',i,' "',FColumns[i].Caption,'"');
     Listbox1.Items.Add(FColumns[i].Caption);
+  end;
 
   if Listbox1.Items.Count > 0 then
   begin

@@ -631,6 +631,7 @@ begin
   FTop:=FRealTop;
   FWidth:=FRealWidth;
   FHeight:=FRealHeight;
+  InvalidGuideLinesCache;
   Exclude(FStates,cssBoundsNeedsUpdate);
 end;
 

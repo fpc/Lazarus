@@ -32,7 +32,7 @@ begin
     FMinWidth := Col.MinWidth;
     FVisible := Col.Visible;
     FWidth := Col.Width;
-    Changed(False);  
+    Changed(False);
   end
   else inherited Assign(ASource);
 end;
@@ -74,7 +74,6 @@ end;
 procedure TListColumn.SetCaption(const AValue: String);
 begin
   if AValue = FCaption then Exit;
-  
   FCaption := AValue;
   Changed(False);  
 end;
@@ -122,6 +121,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.4  2002/10/09 11:46:04  lazarus
+  MG: fixed loading TListView from stream
+
   Revision 1.3  2002/05/10 06:05:53  lazarus
   MG: changed license to LGPL
 

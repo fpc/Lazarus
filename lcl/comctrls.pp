@@ -240,7 +240,7 @@ type
     function GetItem(const AIndex: Integer): TListColumn;
     procedure SetItem(const AIndex: Integer; const AValue: TListColumn);
   protected
-    procedure Update(AItem: TCollectionItem); override;
+    procedure Update(AnItem: TCollectionItem); override;
   public
     constructor Create(AOwner: TCustomListView);
     function Add: TListColumn;
@@ -304,6 +304,7 @@ type
   protected
     ParentWindow : TScrolledWindow;
     procedure InitializeWnd; override;
+    procedure Loaded; override;
     procedure Change(AItem: TListItem; AChange: Integer); dynamic;
     procedure ColClick(AColumn: TListColumn); dynamic;
     procedure Delete(Item : TListItem);
@@ -1706,6 +1707,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.50  2002/10/09 11:46:04  lazarus
+  MG: fixed loading TListView from stream
+
   Revision 1.49  2002/10/01 18:00:02  lazarus
   AJ: Initial TUpDown, minor property additions to improve reading Delphi created forms.
 

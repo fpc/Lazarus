@@ -38,7 +38,7 @@ begin
   inherited SetItem(AIndex, AValue);
 end;
 
-procedure TListColumns.Update(AItem: TCollectionItem);
+procedure TListColumns.Update(AnItem: TCollectionItem);
 begin
 //TODO: Optimize implementation by invoking individual upadates instead of 
 //      recreating window
@@ -49,6 +49,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.4  2002/10/09 11:46:05  lazarus
+  MG: fixed loading TListView from stream
+
   Revision 1.3  2002/05/10 06:05:53  lazarus
   MG: changed license to LGPL
 
