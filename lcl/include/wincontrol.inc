@@ -528,9 +528,9 @@ var
   AControl: TControl;
 begin
   If AutoSize and not AutoSizing then
-    If csAcceptsControls in ControlStyle then
-      If ControlCount > 0 then begin
-        AutoSizing := True;
+    If ControlCount > 0 then begin
+      AutoSizing := True;
+      try
         NewBounds := Rect(High(Integer),High(Integer),0,0);
         For I := 0 to ControlCount - 1 do begin
           AControl:=Controls[I];
@@ -554,8 +554,10 @@ begin
         NewClientWidth := NewBounds.Right - NewBounds.Left;
         NewClientHeight := NewBounds.Bottom - NewBounds.Top;
         SetClientSize(Point(NewClientWidth, NewClientHeight));
+      finally
         AutoSizing := False;
       end;
+    end;
 end;
 
 {------------------------------------------------------------------------------}
@@ -1137,6 +1139,49 @@ begin
         Result := TControl(FWinControls[I]);
         Exit;
       end;
+end;
+
+procedure TWinControl.FlipChildren(AllLevels: Boolean);
+var
+  i: Integer;
+  FlipControls: TList;
+  CurControl: TControl;
+begin
+  if ControlCount = 0 then exit;
+  FlipControls := TList.Create;
+  
+  DisableAlign;
+  try
+    // Collect all controls with Align Right and Left
+    for i := 0 to ControlCount - 1 do begin
+      CurControl:=Controls[i];
+      if CurControl.Align in [alLeft,alRight] then
+        FlipControls.Add(CurControl);
+    end;
+    // flip the rest
+    DoFlipChildren;
+    // reverse Right and Left alignments
+    while FlipControls.Count > 0 do begin
+      CurControl:=TControl(FlipControls[FlipControls.Count-1]);
+      if CurControl.Align=alLeft then
+        CurControl.Align:=alRight
+      else if CurControl.Align=alRight then
+        CurControl.Align:=alLeft;
+      FlipControls.Delete(FlipControls.Count - 1);
+    end;
+  finally
+    FlipControls.Free;
+    EnableAlign;
+  end;
+  
+  // flip recursively
+  if AllLevels then begin
+    for i := 0 to ControlCount - 1 do begin
+      CurControl:=Controls[i];
+      if CurControl is TWinControl then
+        TWinControl(CurControl).FlipChildren(true);
+    end;
+  end;
 end;
 
 {------------------------------------------------------------------------------}
@@ -2460,6 +2505,24 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  procedure TWinControl.DoFlipChildren;
+  
+  Flip children horizontally. That means mirroring the left position.
+ ------------------------------------------------------------------------------}
+procedure TWinControl.DoFlipChildren;
+var
+  i: Integer;
+  CurControl: TControl;
+  AWidth: Integer;
+begin
+  AWidth:=ClientWidth;
+  for i:=0 to ControlCount-1 do begin
+    CurControl:=Controls[i];
+    CurControl.Left:=AWidth-CurControl.Left-CurControl.Width;
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Method: TWinControl.CMEnabledChanged
   Params: Message
   Returns: Nothing
@@ -3291,6 +3354,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.200  2004/02/12 18:09:10  mattias
+  removed win32 specific TToolBar code in new TToolBar, implemented TWinControl.FlipChildren
+
   Revision 1.199  2004/02/09 19:52:52  mattias
   implemented ByteOrder for TLazIntfImage and added call of to LM_SETFONT
 

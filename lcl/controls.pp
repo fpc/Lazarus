@@ -1102,6 +1102,7 @@ type
     procedure DestroyHandle; virtual;
     procedure DoEnter; dynamic;
     procedure DoExit; dynamic;
+    procedure DoFlipChildren; dynamic;
     procedure KeyDown(var Key : Word; Shift : TShiftState); dynamic;
     procedure KeyPress(var Key : Char); dynamic;
     procedure KeyUp(var Key : Word; Shift : TShiftState); dynamic;
@@ -1215,6 +1216,7 @@ type
     procedure Repaint; override;
     Procedure SetFocus; override;
     Function FindChildControl(ControlName : String) : TControl;
+    procedure FlipChildren(AllLevels: Boolean); dynamic;
     Procedure GetTabOrderList(List : TList);
     function HandleAllocated: Boolean;
     procedure HandleNeeded;
@@ -1902,6 +1904,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.174  2004/02/12 18:09:10  mattias
+  removed win32 specific TToolBar code in new TToolBar, implemented TWinControl.FlipChildren
+
   Revision 1.173  2004/02/04 23:30:18  mattias
   completed TControl actions
 

@@ -53,9 +53,9 @@ constructor TToolButton.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   fCompStyle := csToolButton;
-  ControlStyle := [csCaptureMouse, csSetCaption];
   FImageIndex := -1;
   FStyle := tbsButton;
+  ControlStyle := [csCaptureMouse, csSetCaption];
   SetInitialBounds(0,0,23,22);
 end;
 
@@ -169,10 +169,6 @@ begin
 end;
 
 procedure TToolButton.ChangeBounds(NewLeft, NewTop, NewWidth, NewHeight: Integer);
-var
-  CurIndex: Integer;
-  Reordered, NeedsUpdate: Boolean;
-  ResizeWidth, ResizeHeight: Boolean;
 begin
   if ((NewLeft=Left) and (NewTop=Top) and (NewWidth=Width) and (NewHeight=Height))
   or (FUpdateCount>0) or ([csLoading,csDestroying]*ComponentState<>[])
@@ -181,40 +177,8 @@ begin
     inherited ChangeBounds(NewLeft, NewTop, NewWidth, NewHeight);
     exit;
   end;
-
-  CurIndex := Index;
-  Reordered := FToolBar.ReorderButton(CurIndex, NewLeft, NewTop) <> CurIndex;
-  if Reordered then begin
-    NeedsUpdate := False;
-    if Index < CurIndex then CurIndex := Index;
-  end else begin
-    NeedsUpdate := (Style in [tbsSeparator, tbsDivider]) and (NewWidth <> Width);
-    Reordered := NeedsUpdate;
-  end;
-  if (Style = tbsDropDown) and (not FToolBar.Flat) then
-    NewWidth := FToolBar.ButtonWidth + NewWidth - Width;
-  ResizeWidth := not (Style in [tbsSeparator, tbsDivider]) and
-                 (NewWidth <> FToolBar.ButtonWidth);
-  ResizeHeight := NewHeight <> FToolBar.ButtonHeight;
-  if NeedsUpdate then
-    inherited ChangeBounds(NewLeft, NewTop, NewWidth, NewHeight);
-  if csDesigning in ComponentState then
-  begin
-    if ResizeWidth then FToolBar.ButtonWidth := NewWidth;
-    if ResizeHeight then FToolBar.ButtonHeight := NewHeight;
-  end;
-  if Reordered and not ResizeWidth and not ResizeHeight then
-  begin
-    if NeedsUpdate then
-      if Style in [tbsSeparator, tbsDivider] then
-        FToolBar.RefreshButton(CurIndex)
-      else
-        FToolBar.UpdateButton(CurIndex);
-    FToolBar.ResizeButtons;
-    FToolBar.RepositionButtons(0);
-  end
-  else
-    FToolBar.RepositionButton(CurIndex);
+  
+  // ToDo
 end;
 
 function TToolButton.CalculateButtonState: Word;
@@ -238,14 +202,7 @@ procedure TToolButton.SetAutoSize(const Value: Boolean);
 begin
   if Value = AutoSize then exit;
   Inherited SetAutoSize(Value);
-  UpdateControl;
-  if ([csLoading,csDestroying]*ComponentState=[]) and (FToolBar <> nil)
-  and FToolBar.ShowCaptions
-  then begin
-    FToolBar.FButtonWidth := 0;
-    FToolBar.FButtonHeight := 0;
-    FToolBar.RecreateButtons;
-  end;
+  RequestAlign;
 end;
 
 procedure TToolButton.SetButtonState(State: Word);
@@ -262,19 +219,7 @@ end;
 procedure TToolButton.SetToolBar(NewToolBar: TToolBar);
 begin
   if FToolBar = NewToolBar then exit;
-  if FToolBar <> nil then FToolBar.RemoveButton(Self);
   Parent := NewToolBar;
-  if NewToolBar <> nil then NewToolBar.InsertButton(Self);
-end;
-
-procedure TToolButton.CMVisibleChanged(var Message: TLMessage);
-begin
-  if not (csDesigning in ComponentState) and (FToolBar <> nil) then
-  begin
-    if FToolBar.AutoSize then FToolBar.AdjustSize;
-    UpdateControl;
-    FToolBar.RepositionButtons(Index);
-  end;
 end;
 
 procedure TToolButton.ActionChange(Sender: TObject; CheckDefaults: Boolean);
@@ -307,7 +252,6 @@ begin
   FDown := Value;
   if FToolBar <> nil then begin
     FToolBar.ToolButtonDown(Self,FDown);
-    FToolBar.UpdateButtonStates;
   end;
 end;
 
@@ -374,26 +318,8 @@ procedure TToolButton.SetStyle(Value: TToolButtonStyle);
 begin
   if FStyle = Value then exit;
   FStyle := Value;
-  if ([csLoading,csDestroying]*ComponentState=[]) and (FToolBar <> nil) then
-  begin
-    Invalidate;
-    if FToolBar.ShowCaptions then
-    begin
-      FToolBar.FButtonWidth := 0;
-      FToolBar.FButtonHeight := 0;
-      FToolBar.RecreateButtons
-    end
-    else
-    begin
-      if Style in [tbsDivider, tbsSeparator] then
-        RefreshControl
-      else
-        UpdateControl;
-      FToolBar.ResizeButtons;
-      FToolbar.RepositionButtons(Index);
-    end;
-    FToolBar.AdjustSize;
-  end;
+  if Visible then
+    UpdateVisibleToolbar;
 end;
 
 procedure TToolButton.SetWrap(Value: Boolean);
@@ -430,14 +356,12 @@ end;
 
 procedure TToolButton.RefreshControl;
 begin
-  if (FToolBar <> nil) and FToolBar.RefreshButton(Index) then begin
-    //TODO: Finish me!
-  end;
+  UpdateVisibleToolbar;
 end;
 
 procedure TToolButton.UpdateControl;
 begin
-  if FToolBar <> nil then FToolBar.UpdateButton(Index);
+  UpdateVisibleToolbar;
 end;
 
 function TToolButton.CheckMenuDropdown: Boolean;
@@ -469,21 +393,6 @@ begin
   end;
 end;
 
-procedure TToolButton.ValidateContainer(AComponent: TComponent);
-var
-  W: Integer;
-begin
-  inherited ValidateContainer(AComponent);
-  if ([csLoading,csDestroying]*ComponentState=[]) and (AComponent is TToolBar)
-  then begin
-    if Style in [tbsDivider, tbsSeparator] then
-      W := Width
-    else
-      W := TToolBar(AComponent).ButtonWidth;
-    SetBounds(Left, Top, W, TToolBar(AComponent).ButtonHeight);
-  end;
-end;
-
 function TToolButton.GetButtonDrawFlags: integer;
 begin
   Result:=DFCS_BUTTONPUSH;
@@ -491,6 +400,40 @@ begin
   if not Enabled then inc(Result,DFCS_INACTIVE);
   if Down and (not (csDesigning in ComponentState)) then
     inc(Result,DFCS_FLAT);
+end;
+
+procedure TToolButton.SetParent(AParent: TWinControl);
+var
+  i: Integer;
+begin
+  if AParent=Parent then exit;
+  
+  // remove from old button list
+  i:=Index;
+  if i>=0 then
+    FToolBar.FButtons.Delete(i);
+  FToolBar:=nil;
+  
+  // inherited
+  inherited SetParent(AParent);
+  
+  // add to new button list
+  if Parent is TToolBar then begin
+    FToolBar:=TToolBar(Parent);
+    i:=Index;
+    if i<0 then
+      FToolBar.FButtons.Add(Self);
+  end;
+end;
+
+procedure TToolButton.UpdateVisibleToolbar;
+var
+  AToolBar: TToolBar;
+begin
+  if Parent is TToolBar then begin
+    AToolBar:=TToolBar(Parent);
+    AToolBar.UpdateVisibleBar;
+  end;
 end;
 
 {$ELSE NewToolBar}
@@ -959,6 +902,9 @@ end;
 
 {
   $Log$
+  Revision 1.7  2004/02/12 18:09:10  mattias
+  removed win32 specific TToolBar code in new TToolBar, implemented TWinControl.FlipChildren
+
   Revision 1.6  2004/02/11 11:34:15  mattias
   started new TToolBar
 

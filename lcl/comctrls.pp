@@ -819,7 +819,6 @@ type
     procedure SetStyle(Value: TToolButtonStyle);
     procedure SetWrap(Value: Boolean);
     procedure CMHitTest(var Message: TCMHitTest); message CM_HITTEST;
-    procedure CMVisibleChanged(var Message: TLMessage); message CM_VISIBLECHANGED;
   protected
     FToolBar: TToolBar;
     function GetActionLinkClass: TControlActionLinkClass; override;
@@ -835,8 +834,9 @@ type
     procedure RefreshControl; virtual;
     procedure SetToolBar(NewToolBar: TToolBar);
     procedure UpdateControl; virtual;
-    procedure ValidateContainer(AComponent: TComponent); override;
     function GetButtonDrawFlags: integer; virtual;
+    procedure SetParent(AParent: TWinControl); override;
+    procedure UpdateVisibleToolbar;
   public
     constructor Create(TheOwner: TComponent); override;
     function CheckMenuDropdown: Boolean; dynamic;
@@ -881,117 +881,78 @@ type
 
 
   { TToolBar }
+  
+  TToolBarFlag = (
+    tbfUpdateVisibleBarNeeded
+    );
+  
+  TToolBarFlags = set of TToolBarFlag;
 
   TToolBar = class(TToolWindow)
   private
-    FButtonWidth: Integer;
     FButtonHeight: Integer;
     FButtons: TList;
-    FCaption: string;
-    FShowCaptions: Boolean;
-    FList: Boolean;
-    FFlat: Boolean;
-    FTransparent: Boolean;
-    FWrapable: Boolean;
-    FImages: TCustomImageList;
+    FButtonWidth: Integer;
+    FDisabledImageChangeLink: TChangeLink;
     FDisabledImages: TCustomImageList;
+    FDropDownWidth: integer;
+    FFlat: Boolean;
+    FHotImageChangeLink: TChangeLink;
     FHotImages: TCustomImageList;
+    FImageChangeLink: TChangeLink;
+    FImages: TCustomImageList;
     FIndent: Integer;
+    FList: Boolean;
     FNewStyle: Boolean;
-    FOldHandle: HBitmap;
-    FUpdateCount: Integer;
-    FHeightMargin: Integer;
-    FCaptureChangeCancels: Boolean;
-    FInMenuLoop: Boolean;
-    FTempMenu: TPopupMenu;
-    FButtonMenu: TMenuItem;
-    FMenuButton: TToolButton;
     FRowCount: integer;
-    FMenuResult: Boolean;
-    function ButtonIndex(OldIndex, ALeft, ATop: Integer): Integer;
-    procedure LoadImages(AImages: TCustomImageList);
+    FShowCaptions: Boolean;
+    FCurrentMenu: TPopupMenu;
+    FToolBarFlags: TToolBarFlags;
+    FTransparent: Boolean;
+    FUpdateCount: Integer;
+    FWrapable: Boolean;
     function GetButton(Index: Integer): TToolButton;
     function GetButtonCount: Integer;
-    procedure SetList(Value: Boolean);
-    procedure SetShowCaptions(Value: Boolean);
-    procedure SetFlat(Value: Boolean);
-    procedure SetTransparent(Value: Boolean);
-    procedure SetWrapable(Value: Boolean);
-    procedure InsertButton(Control: TControl);
-    procedure RemoveButton(Control: TControl);
-    function RefreshButton(Index: Integer): Boolean;
-    procedure UpdateButton(Index: Integer);
-    procedure UpdateButtons;
+    procedure SetButtonHeight(const AValue: Integer);
+    procedure SetButtonWidth(const AValue: Integer);
+    procedure SetDisabledImages(const AValue: TCustomImageList);
+    procedure SetFlat(const AValue: Boolean);
+    procedure SetHotImages(const AValue: TCustomImageList);
+    procedure SetImages(const AValue: TCustomImageList);
+    procedure SetIndent(const AValue: Integer);
+    procedure SetList(const AValue: Boolean);
+    procedure SetShowCaptions(const AValue: Boolean);
+    procedure SetTransparent(const AValue: Boolean);
+    procedure SetWrapable(const AValue: Boolean);
     procedure ToolButtonDown(AButton: TToolButton; NewDown: Boolean);
-    function UpdateItem(Message, FromIndex, ToIndex: Integer): Boolean;
-    function UpdateItem2(Message, FromIndex, ToIndex: Integer): Boolean;
-    procedure ClearTempMenu;
-    procedure CreateButtons(NewWidth, NewHeight: Integer);
-    procedure SetButtonWidth(Value: Integer);
-    procedure SetButtonHeight(Value: Integer);
-    procedure UpdateImages;
     procedure ImageListChange(Sender: TObject);
-    //procedure SetImageList(Value: HImageList);
-    procedure SetImages(Value: TCustomImageList);
     procedure DisabledImageListChange(Sender: TObject);
-    //procedure SetDisabledImageList(Value: HImageList);
-    procedure SetDisabledImages(Value: TCustomImageList);
     procedure HotImageListChange(Sender: TObject);
-    //procedure SetHotImageList(Value: HImageList);
-    procedure SetHotImages(Value: TCustomImageList);
-    procedure SetIndent(Value: Integer);
-    procedure AdjustControl(Control: TControl);
-    procedure RecreateButtons;
-    procedure BeginUpdate;
-    procedure EndUpdate;
-    procedure ResizeButtons;
-    function InternalButtonCount: Integer;
-    function ReorderButton(OldIndex, ALeft, ATop: Integer): Integer;
-    procedure WMEraseBkgnd(var Message: TLMEraseBkgnd); message LM_ERASEBKGND;
-    procedure WMGetDlgCode(var Message: TLMessage); message LM_GETDLGCODE;
-    procedure WMGetText(var Message: TLMGetText); message LM_GETTEXT;
-    procedure WMGetTextLength(var Message: TLMGetTextLength); message LM_GETTEXTLENGTH;
-    procedure WMKeyDown(var Message: TLMKeyDown); message LM_KEYDOWN;
-    procedure WMNotifyFormat(var Message: TLMessage); message LM_NOTIFYFORMAT;
-    procedure WMSetText(var Message: TLMSetText); message LM_SETTEXT;
-    procedure WMSize(var Message: TLMSize); message LM_SIZE;
-    procedure WMSysChar(var Message: TLMSysChar); message LM_SYSCHAR;
-    procedure WMSysCommand(var Message: TLMSysCommand); message LM_SYSCOMMAND;
-    procedure WMWindowPosChanged(var Message: TLMWindowPosChanged); message LM_WINDOWPOSCHANGED;
-    procedure WMWindowPosChanging(var Message: TLMWindowPosChanging); message LM_WINDOWPOSCHANGING;
-    procedure CMColorChanged(var Message: TLMessage); message CM_COLORCHANGED;
-    procedure CMControlChange(var Message: TCMControlChange); message CM_CONTROLCHANGE;
-    procedure CMDialogChar(var Message: TCMDialogChar); message CM_DIALOGCHAR;
-    procedure CMEnabledChanged(var Message: TLMessage); message CM_ENABLEDCHANGED;
-    procedure CMParentColorChanged(var Message: TLMessage); message CM_PARENTCOLORCHANGED;
-    procedure CNChar(var Message: TLMChar); message CN_CHAR;
-    procedure CNSysKeyDown(var Message: TLMSysKeyDown); message CN_SYSKEYDOWN;
-    procedure CMSysFontChanged(var Message: TLMessage); message CM_SYSFONTCHANGED;
-    procedure CNDropDownClosed(var Message: TLMessage); message CN_DROPDOWNCLOSED;
-    procedure CNNotify(var Message: TLMNotify); message CN_NOTIFY;
+    procedure UpdateVisibleBar;
   protected
     procedure AlignControls(AControl: TControl; var Rect: TRect); override;
     function CanAutoSize(var NewWidth, NewHeight: Integer): Boolean; override;
     procedure CancelMenu; dynamic;
-    procedure ChangeScale(M, D: Integer); override;
+    //procedure ChangeScale(M, D: Integer); override;
     function CheckMenuDropdown(Button: TToolButton): Boolean; dynamic;
     procedure ClickButton(Button: TToolButton); dynamic;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
     function FindButtonFromAccel(Accel: Word): TToolButton;
-    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     procedure InitMenu(Button: TToolButton); dynamic;
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure RepositionButton(Index: Integer);
     procedure RepositionButtons(Index: Integer);
-    procedure WndProc(var Message: TLMessage); override;
     function WrapButtons(var NewWidth, NewHeight: Integer): Boolean;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure FlipChildren(AllLevels: Boolean); override;
     function TrackMenu(Button: TToolButton): Boolean; dynamic;
+    procedure BeginUpdate; virtual;
+    procedure EndUpdate; virtual;
+  public
     property ButtonCount: Integer read GetButtonCount;
     property Buttons[Index: Integer]: TToolButton read GetButton;
     property ButtonList: TList read FButtons;
@@ -1049,7 +1010,7 @@ type
     property OnStartDrag;
   end;
   
-  {$ELSE}
+  {$ELSE NewToolBar}
 
   { TToolBar }
 
@@ -2233,10 +2194,6 @@ const
 
 { Toolbar menu support }
 
-var
-  StillModal: Boolean;
-
-
 function InitCommonControl(CC: Integer): Boolean;
 begin
   Result := True;
@@ -2278,6 +2235,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.108  2004/02/12 18:09:10  mattias
+  removed win32 specific TToolBar code in new TToolBar, implemented TWinControl.FlipChildren
+
   Revision 1.107  2004/02/11 11:34:15  mattias
   started new TToolBar
 

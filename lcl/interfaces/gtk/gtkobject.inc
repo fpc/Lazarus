@@ -2964,7 +2964,9 @@ var
   pixmapwid   : pGtkWidget;            // currently only used for TBitBtn, possibly replace with pixmap!!!!
   pLabel      : PgtkWidget;            // currently only used as extra label-widget for TBitBtn
   Num         : Integer;               // currently only used for LM_INSERTTOOLBUTTON and LM_ADDITEM
+  {$IFNDEF NewToolBar}
   pStr2       : PChar;                 // currently only used for LM_INSERTTOOLBUTTON
+  {$ENDIF}
   GList       : pGList;                // Only used for listboxes, replace with widget!!!!!
   ListItem    : PGtkListItem;          // currently only used for listboxes
   Rect        : TRect;
@@ -6263,7 +6265,9 @@ var
   AccelKey  : guint;
   SetupProps : boolean;
   AWindow: PGdkWindow;
+  {$IFNDEF NewToolBar}
   WidgetInfo: PWinWidgetInfo;
+  {$ENDIF}
 begin
   p := nil;
   SetupProps:= false;
@@ -6693,7 +6697,6 @@ begin
   csToolButton:
     begin
       {$IFDEF NewToolBar}
-      writeln('ToDo TGTKObject.CreateComponent csToolButton');
       p := gtk_button_new_with_label(StrTemp);
       {$ELSE}
       AccelText := Ampersands2Underscore(StrTemp);
@@ -6708,8 +6711,8 @@ begin
       StrDispose(AccelText);
       WidgetInfo:=GetWidgetInfo(P,true);
       Include(WidgetInfo^.Flags,wwiNotOnParentsClientArea);
-      {$ENDIF}
       gtk_widget_show (P);
+      {$ENDIF}
     end;
 
   csTrackBar:
@@ -9198,6 +9201,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.467  2004/02/12 18:09:10  mattias
+  removed win32 specific TToolBar code in new TToolBar, implemented TWinControl.FlipChildren
+
   Revision 1.466  2004/02/11 11:34:16  mattias
   started new TToolBar
 
