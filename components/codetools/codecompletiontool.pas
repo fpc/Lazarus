@@ -2072,15 +2072,13 @@ var CleanCursorPos, Indent, insertPos: integer;
       FullTopLvlName:='';
       Params.OnTopLvlIdentifierFound:=@OnTopLvlIdentifierFound;
       Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,
-                     fdfTopLvlResolving,fdfFindVariable]
-                    +fdfAllClassVisibilities;
+                     fdfTopLvlResolving,fdfFindVariable];
       if (not FindDeclarationOfIdentAtCursor(Params))
       or (Params.NewNode.Desc<>ctnProperty) then exit;
       PropertyContext:=CreateFindContext(Params);
       // identifier is property
       // -> check type of property
-      Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors]
-                    +fdfAllClassVisibilities;
+      Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors];
       ProcContext:=PropertyContext.Tool.FindBaseTypeOfNode(
                                                  Params,PropertyContext.Node);
       if (ProcContext.Node=nil) or (ProcContext.Node.Desc<>ctnProcedureType)
