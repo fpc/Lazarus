@@ -77,7 +77,8 @@ begin
   Result:=-1;
   if not (ListBox is TCustomListbox) then exit;
 
-  if TCustomListbox(ListBox).FCompStyle in [csListBox, csCheckListBox] then begin
+  if TCustomListbox(ListBox).FCompStyle in [csListBox, csCheckListBox] then
+  begin
     AWidget:=PGtkWidget(TCustomListbox(ListBox).Handle);
     ListWidget:=PGtkList(GetWidgetInfo(AWidget, True)^.ImplementationWidget);
     ScrolledWindow:=PGtkScrolledWindow(AWidget);
@@ -97,6 +98,72 @@ begin
     Result:=-1;
   end;
 
+end;
+{$EndIf}
+
+{------------------------------------------------------------------------------
+  function TGTKObject.GetListBoxItemRect(ListBox: TComponent; Index: integer;
+    var ARect: TRect): boolean;
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.GetListBoxItemRect(ListBox: TComponent; Index: integer;
+  var ARect: TRect): boolean;
+{$IFdef GTK2}
+var
+  AWinControl: TWinControl;
+begin
+  Result:=false;
+  FillChar(ARect,SizeOf(ARect),0);
+  if not (ListBox is TWinControl) then exit;
+  AWinControl:=TWinControl(ListBox);
+  case AWinControl.fCompStyle of
+
+  csListBox, csCheckListBox:
+    begin
+      // ToDo
+    end;
+  end;
+end;
+{$Else}
+var
+  ScrolledWindow: PGtkScrolledWindow;
+  VertAdj: PGTKAdjustment;
+  AdjValue: integer;
+  ListWidget: PGtkList;
+  AWidget: PGtkWidget;
+  GListItem: PGList;
+  ListItemWidget: PGtkWidget;
+begin
+  Result:=false;
+  FillChar(ARect,SizeOf(ARect),0);
+  if not (ListBox is TCustomListbox) then exit;
+
+  if TCustomListbox(ListBox).FCompStyle in [csListBox, csCheckListBox] then
+  begin
+    AWidget:=PGtkWidget(TCustomListbox(ListBox).Handle);
+    ListWidget:=PGtkList(GetWidgetInfo(AWidget, True)^.ImplementationWidget);
+    ScrolledWindow:=PGtkScrolledWindow(AWidget);
+    VertAdj:=gtk_scrolled_window_get_vadjustment(ScrolledWindow);
+    if VertAdj=nil then
+      AdjValue:=0
+    else
+      AdjValue:= (-round(VertAdj^.value));
+    GListItem:=ListWidget^.children;
+    while GListItem<>nil do begin
+      ListItemWidget:=PGtkWidget(GListItem^.data);
+      if Index=0 then begin
+        ARect.Left:=0;
+        ARect.Top:=AdjValue;
+        ARect.Right:=ListItemWidget^.Allocation.Width;
+        ARect.Bottom:=ARect.Top+ListItemWidget^.Allocation.Height;
+        Result:=true;
+        exit;
+      end;
+      inc(AdjValue,ListItemWidget^.Allocation.Height);
+      dec(Index);
+      GListItem:=GListItem^.next;
+    end;
+  end;
 end;
 {$EndIf}
 
@@ -231,6 +298,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.8  2004/01/11 11:57:54  mattias
+  implemented TCustomListBox.ItemRect for gtk1 intf
+
   Revision 1.7  2004/01/09 20:03:13  mattias
   implemented new statusbar methods in gtk intf
 

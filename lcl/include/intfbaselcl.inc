@@ -172,6 +172,13 @@ begin
   Result := -1;
 end;
 
+function TInterfaceBase.GetListBoxItemRect(ListBox: TComponent; Index: integer;
+  var ARect: TRect): boolean;
+begin
+  FillChar(ARect,SizeOf(ARect),0);
+  Result:=false;
+end;
+
 function TInterfaceBase.GetNotebookTabIndexAtPos(Handle: HWND;
   const ClientPos: TPoint): integer;
 begin
@@ -502,6 +509,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.10  2004/01/11 11:57:54  mattias
+  implemented TCustomListBox.ItemRect for gtk1 intf
+
   Revision 1.9  2004/01/10 18:00:42  mattias
   fixed GetWindowOrgEx, added GetDCOriginRelativeToWindow
 

@@ -437,17 +437,42 @@ end;
 
 {------------------------------------------------------------------------------
   procedure TCustomListBox.Clear
+  
+  Delete all items.
 ------------------------------------------------------------------------------}
 procedure TCustomListBox.Clear;
 begin
   FItems.Clear;
 end;
 
+{------------------------------------------------------------------------------
+  function TCustomListBox.GetIndexAtY(Y: integer): integer;
+  
+  Returns item index at y coordinate (including scrolling)
+------------------------------------------------------------------------------}
 function TCustomListBox.GetIndexAtY(Y: integer): integer;
 begin
   Result:=-1;
   if (not HandleAllocated) then exit;
   Result:=GetListBoxIndexAtY(Self, Y);
+end;
+
+{------------------------------------------------------------------------------
+  function TCustomListBox.ItemRect(Index: Integer): TRect;
+  
+  Returns coordinates of an item (including scrolling)
+  Special: If Index=Count the rectangle is guessed (like VCL).
+------------------------------------------------------------------------------}
+function TCustomListBox.ItemRect(Index: Integer): TRect;
+begin
+  if (Index>=0) and (Index<Items.Count) then begin
+    GetListBoxItemRect(Self,Index,Result);
+  end else if (Index=Items.Count) and (Index>0) then begin
+    GetListBoxItemRect(Self,Index-1,Result);
+    OffsetRect(Result,0,Result.Bottom-Result.Top);
+  end else begin
+    FillChar(Result,SizeOf(Result),0);
+  end;
 end;
 
 

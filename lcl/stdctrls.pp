@@ -383,6 +383,7 @@ type
     constructor Create(AOwner : TComponent); override;
     destructor Destroy; override;
     function GetIndexAtY(Y: integer): integer;
+    function ItemRect(Index: Integer): TRect;
     procedure Clear;
   public
     property BorderStyle : TBorderStyle read FBorderStyle write SetBorderStyle default bsSingle;
@@ -1466,6 +1467,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.115  2004/01/11 11:57:54  mattias
+  implemented TCustomListBox.ItemRect for gtk1 intf
+
   Revision 1.114  2004/01/06 17:58:06  mattias
   fixed setting TRadioButton.Caption for gtk
 

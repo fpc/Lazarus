@@ -31,6 +31,7 @@
 
 //##apiwiz##sps##   // Do not remove
 function GetListBoxIndexAtY(ListBox: TComponent; y: integer): integer; override;
+function GetListBoxItemRect(ListBox: TComponent; Index: integer; var ARect: TRect): boolean; override;
 
 function LCLCheckMenuItem(BaseMenuItem: TComponent): Boolean; override;
 function LCLEnableMenuItem(BaseMenuItem: TComponent): Boolean; override;
@@ -46,6 +47,9 @@ procedure StatusBarSetStyle(StatusBar: TObject); override;
 { =============================================================================
 
   $Log$
+  Revision 1.7  2004/01/11 11:57:54  mattias
+  implemented TCustomListBox.ItemRect for gtk1 intf
+
   Revision 1.6  2004/01/09 20:03:13  mattias
   implemented new statusbar methods in gtk intf
 
