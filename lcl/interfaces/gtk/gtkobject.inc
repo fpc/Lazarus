@@ -2701,6 +2701,14 @@ begin
       QueueItem:=QueueItem^.Next;
     end;
   end;
+
+  // mouse click messages
+  if LastLeft.Component=Sender then
+    LastLeft:=EmptyLastMouseClick;
+  if LastMiddle.Component=Sender then
+    LastMiddle:=EmptyLastMouseClick;
+  if LastRight.Component=Sender then
+    LastRight:=EmptyLastMouseClick;
 end;
 
 {-------------------------------------------------------------------------------
@@ -5506,6 +5514,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.192  2002/09/01 16:11:22  lazarus
+  MG: double, triple and quad clicks now works
+
   Revision 1.191  2002/08/31 11:37:10  lazarus
   MG: fixed destroying combobox
 
