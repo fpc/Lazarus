@@ -492,11 +492,18 @@ end;//UpdateMatches
 procedure TSearchForm.UpdateProgress(FileName: string);
 var
   DisplayFileName: string;
+  OldDisplayFileNameLength:Integer;
 begin
-  DisplayFileName:= FileName;
+  DisplayFileName := FileName;
+  OldDisplayFileNameLength := Length(DisplayFileName) + Length(fPad);
   While ((Length(DisplayFileName) * fCharWidth) >= lblProgress.Width) do
   begin
     DisplayFileName:= PadAndShorten(DisplayFileName);
+    if Length(DisplayFileName) < OldDisplayFileNameLength
+    then
+      OldDisplayFileNameLength := Length(DisplayFileName)
+    else
+      Break;
   end;//while
   lblProgress.Caption:= DisplayFileName;
 end;//UpdateProgress
