@@ -535,8 +535,8 @@ function GTKKeyUpDown(Widget: PGtkWidget; Event: PGdkEventKey;
 var
   Msg: TLMKey;
   EventStopped: Boolean;
-  EventString: ^TByteArray; // GTK1 and GTK2 workaround
-                            // (and easy access to bytes)
+  EventString: PChar; // GTK1 and GTK2 workaround
+                      // (and easy access to bytes)
 
   procedure StopKeyEvent(const AnEventName: PChar);
   begin
@@ -553,8 +553,8 @@ var
     {MWE:.$IfNDef Win32}
     if EventString <> nil
     then begin
-      EventString^[0] := 0;
-      EventString^[1] := 0;
+      EventString^ := #0;
+      EventString^ := #0;
     end;
     {MWE:.$EndIf}
     
@@ -582,7 +582,7 @@ var
       // check if we send the ^Char subset
       if (Event^.Length = 1) and (EventString <> nil)
       then begin
-        Result := (EventString^[0] > 0) and (EventString^[0] < $20);
+        Result := (EventString^ > #0) and (EventString^ < ' ');
       end;
       Exit;
     end;
@@ -740,15 +740,19 @@ begin
 
         if Event^.Length = 0
         then Msg.CharCode := 0 // ^@ was pressed
-        else Msg.CharCode := EventString^[0];
+        else Msg.CharCode := ord(EventString^);
         Msg.Result:=0;
         // send the message directly (not queued) to the LCL
         Result := DeliverMessage(TargetData, Msg) = 0;
 
-        if (Event^.Length > 0) and (Msg.CharCode <> EventString^[0])
+        if (EventString<>nil) and (Msg.CharCode <> ord(EventString^))
         then begin
-          // key was handled by lcl
-          StopKeyEvent('key_press_event');
+          // key was changed by lcl
+          if Msg.CharCode=0 then
+            StopKeyEvent('key_press_event')
+          else begin
+            EventString^:=chr(Msg.CharCode);
+          end;
         end;
       end;
       
@@ -3066,6 +3070,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.225  2004/04/09 11:25:20  mattias
+  changed OnKeyPress keys are not delegated back to the gtk
+
   Revision 1.224  2004/04/02 14:28:44  vincents
   Fixed compilation with -dVerboseFocus
 
