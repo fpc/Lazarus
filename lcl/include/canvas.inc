@@ -521,7 +521,6 @@ end;
 {------------------------------------------------------------------------------
   Method:   TCanvas.Frame3d
   Params:   Rect
-, AWidth, AHeight
   Returns:  Nothing
 
  ------------------------------------------------------------------------------}
@@ -1065,6 +1064,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.28  2002/09/19 19:56:14  lazarus
+  MG: accelerated designer drawings
+
   Revision 1.27  2002/09/18 17:07:24  lazarus
   MG: added patch from Andrew
 
