@@ -2828,6 +2828,13 @@ begin
                        gtkCalendarDisplayOptions := TgtkCalendarDisplayOPtions(num);
                        
                        gtk_Calendar_Display_options(PgtkCalendar(handle),gtkCalendarDisplayOptions);
+                       
+                       //readonly
+                       if TLMCalendar(data^).ReadOnly then
+                          gtk_calendar_freeze(PgtkCalendar(handle))
+                          else
+                          gtk_calendar_thaw(PgtkCalendar(handle));
+
                      end;
                      
    else
@@ -3408,8 +3415,8 @@ end;
  { =============================================================================
 
   $Log$
-  Revision 1.78  2001/12/05 17:23:45  lazarus
-  Added Calendar component
+  Revision 1.79  2001/12/05 17:40:00  lazarus
+  Added READONLY to Calendar.
   Shane
 
   Revision 1.77  2001/11/26 14:19:34  lazarus

@@ -40,15 +40,19 @@ Type
   TLMCalendar = record
     Date : TDateTime;
     DisplaySettings : TDisplaySettings;
+    Readonly : Boolean;
   end;
   
-
+  EInvalidDate = class(Exception);
+  
   TCalendar = class(TCustomControl)
   private
     FDate : String;
     FDisplaySettings : TDisplaySettings;
+    FReadOnly: Boolean;
+    procedure SetReadOnly(const AValue: Boolean);
     Procedure GetProps;
-    Procedure SetProps( aDate: String; aDisplaySettings : TDisplaySettings);
+    Procedure SetProps;
     function GetDisplaySettings: TDisplaySettings;
     procedure SetDisplaySettings(const AValue: TDisplaySettings);
 
@@ -63,6 +67,7 @@ Type
     Property Date : String read GetDate write SetDate;
     property DisplaySettings : TDisplaySettings read GetDisplaySettings write SetDisplaySettings;
 //    Property Date : TDate read GetDate write SetDate;
+    property ReadOnly : Boolean read FReadOnly write SetReadOnly;
     property Visible;
   end;
   
@@ -96,7 +101,16 @@ procedure TCalendar.SetDate(const AValue: String);
 var
   Temp : TDateTime;
 begin
-   SetProps(AValue,FDisplaySettings);
+   try
+     Temp := StrtoDate(AValue);  //test to see if valid date....
+
+     FDate := AValue;
+     SetProps;
+   except
+     raise EInvalidDate.CreateFmt('Invalid Date :%s',[AValue]);
+   //raise an error
+   end;
+   
 end;
 
 function TCalendar.GetDisplaySettings: TDisplaySettings;
@@ -107,7 +121,16 @@ end;
 procedure TCalendar.SetDisplaySettings(const AValue: TDisplaySettings);
 begin
    FDisplaySettings := AValue;
-   SetProps(FDate,FDisplaySettings);
+   SetProps;
+end;
+
+procedure TCalendar.SetReadOnly(const AValue: Boolean);
+begin
+  if (FReadOnly <> aValue) then
+    Begin
+      FReadOnly := aValue;
+      SetProps;
+    end;
 end;
 
 Procedure TCalendar.GetProps;
@@ -122,18 +145,20 @@ begin
       end;
 end;
 
-Procedure TCalendar.SetProps( aDate: String; aDisplaySettings : TDisplaySettings);
+Procedure TCalendar.SetProps;
 var
   Temp : TLMCalendar;
 begin
    if HandleAllocated then
       begin
-        Temp.Date := StrtoDate(aDate);
-        Temp.DisplaySettings := aDisplaySettings;
+        Temp.Date := StrtoDate(FDate);
+        Temp.DisplaySettings := FDisplaySettings;
+        Temp.ReadOnly := fReadOnly;
         CNSendMessage(LM_SETVALUE, Self, @temp);	// Get the info
       End;
 
 end;
+
 
 end.
 
