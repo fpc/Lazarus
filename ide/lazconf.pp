@@ -96,7 +96,6 @@ var
 begin
   for i:=Low(DefaultFPCSrcDirs) to High(DefaultFPCSrcDirs) do begin
     Result:=DefaultFPCSrcDirs[i];
-writeln('FindDefaultFPCSrcDirectory A ',Result,' ',CheckFPCSourceDir(Result));
     if CheckFPCSourceDir(Result) then exit;
   end;
   Result:='';
@@ -109,6 +108,9 @@ end.
 
 {
   $Log$
+  Revision 1.12  2003/02/07 18:46:35  mattias
+  resolving lazarus directory even if started with search path
+
   Revision 1.11  2003/02/06 20:46:51  mattias
   default fpc src dirs and clean ups
 

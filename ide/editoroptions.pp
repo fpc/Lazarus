@@ -1048,7 +1048,7 @@ begin
   ConfFileName:=SetDirSeparators(GetPrimaryConfigPath+'/'+EditOptsConfFileName);
   CopySecondaryConfigFile(EditOptsConfFileName);
   if (not FileExists(ConfFileName)) then begin
-    writeln('NOTE: editor options config file not found');
+    writeln('NOTE: editor options config file not found - using defaults');
   end;
   XMLConfig:=TXMLConfig.Create(ConfFileName);
   

@@ -331,7 +331,7 @@ begin
     XMLConfig:=TXMLConfig.Create(FFileName);
     FileVersion:=XMLConfig.GetValue('CodeToolsOptions/Version/Value',0);
     if (FileVersion<>0) and (FileVersion<CodeToolsOptionsVersion) then
-      writeln('Note: loading old codetools options file: ',FFileName);
+      writeln('NOTE: loading old codetools options file: ',FFileName);
 
     // General
     FSrcPath:=XMLConfig.GetValue('CodeToolsOptions/SrcPath/Value','');
@@ -457,8 +457,7 @@ begin
     XMLConfig.Flush;
     XMLConfig.Free;
   except
-    // ToDo
-    writeln('[TEnvironmentOptions.Save]  error writing "',FFilename,'"');
+    writeln('ERROR: error while writing codetools options "',FFilename,'"');
   end;
 end;
 
@@ -475,7 +474,7 @@ begin
                              GetPrimaryConfigPath+'/'+DefaultCodeToolsOptsFile);
   CopySecondaryConfigFile(DefaultCodeToolsOptsFile);
   if (not FileExists(ConfFileName)) then begin
-    writeln('Note: codetools config file not found - using defaults');
+    writeln('NOTE: codetools config file not found - using defaults');
   end;
   FFilename:=ConfFilename;
 end;
