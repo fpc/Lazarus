@@ -619,6 +619,7 @@ begin
   DestroyGdkCursor(Cursor_SizeNESW);
   DestroyGdkCursor(Cursor_SizeWE);
   DestroyGdkCursor(Cursor_Help);
+  DestroyGdkCursor(Cursor_SizeAll);
 
   gtk_object_unref(PGTKObject(FGTKToolTips));
   FGTKToolTips := nil;
@@ -669,19 +670,20 @@ begin
   Styles := TStringlist.Create;
   
   // Create default cursor types
-  Cursor_Watch := gdk_Cursor_New(gdk_Watch);
-  Cursor_Arrow := gdk_Cursor_New(gdk_Arrow);
-  Cursor_Cross := gdk_Cursor_New(gdk_Cross);
-  Cursor_Hand1 := gdk_Cursor_New(gdk_Hand1);
-  Cursor_XTerm := gdk_Cursor_New(gdk_XTerm);
-  Cursor_StdArrow := gdk_Cursor_New(GDK_LEft_Ptr);
-  Cursor_HSplit := gdk_Cursor_New(GDK_SB_H_DOUBLE_ARROW);
-  Cursor_VSplit := gdk_Cursor_New(GDK_SB_V_DOUBLE_ARROW);
-  Cursor_SizeNWSE := gdk_Cursor_New(GDK_TOP_LEFT_CORNER);
-  Cursor_SizeNS := gdk_Cursor_New(GDK_SB_V_DOUBLE_ARROW);
-  Cursor_SizeNESW := gdk_Cursor_New(GDK_BOTTOM_LEFT_CORNER);
-  Cursor_SizeWE := gdk_Cursor_New(GDK_SB_H_DOUBLE_ARROW);
-  Cursor_Help := gdk_Cursor_New(GDK_QUESTION_ARROW);
+  Cursor_Watch := gdk_cursor_new(gdk_Watch);
+  Cursor_Arrow := gdk_cursor_new(gdk_Arrow);
+  Cursor_Cross := gdk_cursor_new(gdk_Cross);
+  Cursor_Hand1 := gdk_cursor_new(gdk_Hand1);
+  Cursor_XTerm := gdk_cursor_new(gdk_XTerm);
+  Cursor_StdArrow := gdk_cursor_new(GDK_LEFT_PTR);
+  Cursor_HSplit := gdk_cursor_new(GDK_SB_H_DOUBLE_ARROW);
+  Cursor_VSplit := gdk_cursor_new(GDK_SB_V_DOUBLE_ARROW);
+  Cursor_SizeNWSE := gdk_cursor_new(GDK_TOP_LEFT_CORNER);
+  Cursor_SizeNS := gdk_cursor_new(GDK_SB_V_DOUBLE_ARROW);
+  Cursor_SizeNESW := gdk_cursor_new(GDK_BOTTOM_LEFT_CORNER);
+  Cursor_SizeWE := gdk_cursor_new(GDK_SB_H_DOUBLE_ARROW);
+  Cursor_SizeAll:= gdk_cursor_new(GDK_FLEUR);
+  Cursor_Help := gdk_cursor_new(GDK_QUESTION_ARROW);
 
   gtk_key_snooper_install(@GTKKeySnooper, @FKeyStateList);
 
@@ -1033,7 +1035,7 @@ begin
 
     LM_ShowHide : ShowHide(Sender);
 
-    LM_SetCursor : SetCursor(TWinControl(Sender));
+    LM_SetCursor : SetCursor(TWinControl(Sender), Data);
 
     LM_SetLabel  : SetLabel(Sender,Data);
 
@@ -1046,13 +1048,10 @@ begin
     LM_SETDESIGNING :
       // Used by the form editor to set anything specifically needed
       // when setting controls to Designing.
-      Begin
-        // prevent a combobox from showing its subwindow
-        if (Sender is TCustomComboBox) then
-          gtk_combo_disable_activate(PGTKCombo(TWinControl(Sender).handle));
+      begin
         // change cursor
         if Sender is TWinControl then
-          SetCursor(TWinControl(Sender));
+          SetCursor(TWinControl(Sender), Data);
       end;
 
     LM_RECREATEWND : Result := RecreateWnd(sender);
@@ -5835,6 +5834,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.215  2002/09/16 15:56:01  lazarus
+  Resize cursors in designer.
+
   Revision 1.214  2002/09/16 15:42:17  lazarus
   MG: fixed calling DestroyHandle if not HandleAllocated
 
