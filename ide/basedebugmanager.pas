@@ -109,7 +109,7 @@ var
 
 procedure RegisterDebugger(const ADebuggerClass: TDebuggerClass);
 begin
-  MDebuggerClasses.AddObject(ADebuggerClass.ClassName, TObject(ADebuggerClass));
+  MDebuggerClasses.AddObject(ADebuggerClass.ClassName, TObject(Pointer(ADebuggerClass)));
 end;
 
 
@@ -148,6 +148,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.17  2003/07/31 00:42:20  marc
+  * Fixed classof to object cast
+
   Revision 1.16  2003/07/30 23:15:38  marc
   * Added RegisterDebugger
 
