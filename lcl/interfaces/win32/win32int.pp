@@ -75,6 +75,7 @@ Type
     FStockWhiteBrush: HBRUSH;
 
     Procedure CreateComponent(Sender: TObject);
+    Function RecreateWnd(Sender: TObject): Integer; Override;
     Procedure AddChild(Parent, Child: HWND);
     Procedure ResizeChild(Sender: TObject; Left, Top, Width, Height: Integer);
     Procedure AssignSelf(Window: HWnd; Data: Pointer);
@@ -102,7 +103,15 @@ Type
     Procedure NormalizeIconName(Var IconName: String);
     Procedure NormalizeIconName(Var IconName: PChar);
     Procedure CreateCommonDialog(Sender: TCommonDialog);
-    
+
+  Public
+    { for win32 specific components }
+
+    { Creates a callback of Lazarus message Msg for Sender }
+    Procedure SetCallback(Msg: LongInt; Sender: TObject); Override;
+    { Removes all callbacks for Sender }
+    Procedure RemoveCallbacks(Sender: TObject); Override;
+
   Public
     { Constructor of the class }
     Constructor Create;
@@ -116,10 +125,6 @@ Type
     Procedure SetLabel(Sender: TObject; Data: Pointer);
     { Process Lazarus message LM_Message and return an integer result }
     Function IntSendMessage3(LM_Message: Integer; Sender: TObject; Data: Pointer) : Integer; Override;
-    { Creates a callback of Lazarus message Msg for Sender }
-    Procedure SetCallback(Msg: LongInt; Sender: TObject); Override;
-    { Removes all callbacks for Sender }
-    Procedure RemoveCallbacks(Sender: TObject); Override;
     { Processes all events (Window messages) in the queue }
     Procedure HandleEvents; Override;
     { Wait until a message is received }
@@ -128,8 +133,6 @@ Type
     Procedure AppTerminate; Override;
     { Update a hint (tool tip) }
     Function UpdateHint(Sender: TObject): Integer; Override;
-    { Create a window again }
-    Function RecreateWnd(Sender: TObject): Integer; Override;
 
     function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc) : integer; override;
     function DestroyTimer(TimerHandle: integer) : boolean; override;
@@ -195,6 +198,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.22  2002/12/03 09:15:15  mattias
+  cleaned up
+
   Revision 1.21  2002/11/26 20:51:05  mattias
   applied clipbrd patch from Vincent
 

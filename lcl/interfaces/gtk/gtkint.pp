@@ -151,7 +151,9 @@ type
     procedure ListViewAddItem(TheListView: TObject);
     procedure BringFormToFront(Sender: TObject);
 
+    function  GetText(Sender: TComponent; var Text: String): Boolean; override;
     procedure SetText(Child,Data : Pointer);virtual;
+    procedure SetLabel(Sender : TObject; Data : Pointer); virtual;
     procedure SetColor(Sender : TObject);virtual;
     Procedure SetPixel(Sender : TObject; Data : Pointer);virtual;
     Procedure GetPixel(Sender : TObject; Data : Pointer);virtual;
@@ -186,8 +188,6 @@ type
   public
     constructor Create; 
     destructor Destroy; override;
-    function  GetText(Sender: TComponent; var Text: String): Boolean; override;
-    procedure SetLabel(Sender : TObject; Data : Pointer); virtual;
     function  IntSendMessage3(LM_Message : Integer; Sender : TObject;
                               data : pointer) : integer; override;
     procedure HandleEvents; override;
@@ -306,6 +306,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.109  2002/12/03 09:20:53  mattias
+  cleaned up
+
   Revision 1.108  2002/12/03 09:11:36  mattias
   cleaned up
 
