@@ -2422,199 +2422,204 @@ begin
   DeliverMessage(Data, MessI);
 end;
 
-{$IFNDEF GTK2}
+{$IFDEF gtk1}
 function gtk_range_get_update_policy(range: PGTKRange): TGtkUpdateType;
 begin
   result := policy(Range^)
 end;
 {$ENDIF}
 
-{$IFDEF VerboseGtkScrollbars}
-procedure DebugScrollEvent(Range: PgtkRange);
+function get_gtk_scroll_type(range: PGTKRange): TGtkScrollType;
+{$IFNDEF gtk1}
+type
+  TUnOpaqueTimer=record
+    timeout_id: guint;
+    ScrollType: TGTkScrollType;
+  end;
+  PUnOpaqueTimer=^TUnopaqueTimer;
+{$ENDIF}
 begin
-  DbgOut('BUTTON=');
-  case Range^.Button of
-    1: DbgOut('LEFT ');
-    2: DbgOut('CENTER ');
-    3: DbgOut('RIGHT ');
-    else  DbgOut(IntToStr(Range^.Button), ' -> ? ');
-  end;
-  DbgOut('CLICK_CHILD=');
-  case click_child(Range^) of
-    1: DbgOut('TROUGH ');
-    2: DbgOut('SLIDER ');
-    3: DbgOut('STEP_FORW ');
-    4: DbgOut('STEP_BACK ');
-    else DbgOut(IntToStr(click_child(range^)), ' -> ? ');
-  end;
-  DbgOut('IN_CHILD=');
-  case in_child(range^) of
-    1: DbgOut('TROUGH ');
-    2: DbgOut('SLIDER ');
-    3: DbgOut('STEP_FORW ');
-    4: DbgOut('STEP_BACK ');
-    else DbgOut(IntToStr(in_child(Range^)), ' -> ? ');
-  end;
+{$IFDEF gtk1}
+  Result :=Scroll_type(Range^);
+{$ELSE}
+  if (gtk_major_version=2) and (gtk_minor_version<6) and
+     (Range^.Timer<>nil) then
+    {$warning gtk2 pre gtk2.6 ONLY, tested gtk2.0}
+    Result := PUnOpaqueTimer(Range^.Timer)^.ScrollType
+  else
+    Result := GTK_SCROLL_NONE;
+{$ENDIF}
+end;
+
+{$IFDEF VerboseGtkScrollbars}
+procedure DebugScrollStyle(Scroll: LongInt);
+begin
   DbgOut('TYPE=');
-  case Scroll_Type(Range^) of
+  case Scroll of
     GTK_SCROLL_NONE: DbgOut('GTK_SCROLL_NONE ');
     GTK_SCROLL_STEP_BACKWARD: DbgOut('GTK_SCROLL_STEP_BACKWARD ');
     GTK_SCROLL_STEP_FORWARD: DbgOut('GTK_SCROLL_STEP_FORWARD ');
     GTK_SCROLL_PAGE_BACKWARD: DbgOut('GTK_SCROLL_PAGE_BACKWARD ');
     GTK_SCROLL_PAGE_FORWARD: DbgOut('GTK_SCROLL_PAGE_FORWARD ');
     GTK_SCROLL_JUMP: DbgOut('GTK_SCROLL_JUMP ');
-    else DbgOut(IntToStr(Scroll_Type(Range^)), '->?');
+    {$ifdef gtk2}
+    GTK_SCROLL_STEP_UP: DbgOut('GTK_SCROLL_STEP_UP');
+    GTK_SCROLL_STEP_DOWN: DbgOut('GTK_SCROLL_STEP_DOWN');
+    GTK_SCROLL_PAGE_UP: DbgOut('GTK_SCROLL_PAGE_UP');
+    GTK_SCROLL_PAGE_DOWN: DbgOut('GTK_SCROLL_PAGE_DOWN');
+    GTK_SCROLL_STEP_LEFT: DbgOut('GTK_SCROLL_STEP_LEFT');
+    GTK_SCROLL_STEP_RIGHT: DbgOut('GTK_SCROLL_STEP_RIGHT');
+    GTK_SCROLL_PAGE_LEFT: DbgOut('GTK_SCROLL_PAGE_LEFT');
+    GTK_SCROLL_PAGE_RIGHT: DbgOut('GTK_SCROLL_PAGE_RIGHT');
+    GTK_SCROLL_START: DbgOut('GTK_SCROLL_START');
+    GTK_SCROLL_END: DbgOut('GTK_SCROLL_END');
+    {$endif}
+    else
+      DbgOut(IntToStr(Scroll), '->?');
   end;
-  DbgOut('OLD_VALUE=', IntToStr(Round(Range^.old_value)),' ');
-  Debugln;
-end;
-
-procedure DebugPolicy(Policy: TGtkUpdateType);
-begin
-  DbgOut('POLICY=');
-  case policy of
-    GTK_UPDATE_CONTINUOUS: DbgOut('GTK_UPDATE_CONTINUOUS');
-    GTK_UPDATE_DISCONTINUOUS: DbgOut('GTK_UPDATE_DISCONTINUOUS');
-    GTK_UPDATE_DELAYED: DbgOut('GTK_UPDATE_DELAYED');
-  end;
-  DebugLn;
 end;
 {$ENDIF VerboseGtkScrollbars}
+
+function ScrollTypeToSbCode(IsVertSB: boolean; ScrollType:TGtkScrollType;
+                            UpdatePolicy:TGtkUpdateType): Integer;
+begin
+  case ScrollType of
+    GTK_SCROLL_STEP_BACKWARD:
+      if IsVertSB then
+        Result := SB_LINEUP
+      else
+        Result := SB_LINELEFT;
+    GTK_SCROLL_STEP_FORWARD:
+      if IsVertSB then
+        Result := SB_LINEDOWN
+      else
+        Result := SB_LINERIGHT;
+    GTK_SCROLL_PAGE_BACKWARD:
+      if IsVertSB then
+        Result := SB_PAGEUP
+      else
+        Result := SB_PAGELEFT;
+    GTK_SCROLL_PAGE_FORWARD:
+      if IsVertSB then
+        Result := SB_PAGEDOWN
+      else
+       Result := SB_PAGERIGHT;
+    {$ifdef GTK2}
+    GTK_SCROLL_STEP_UP:
+      Result := SB_LINEUP;
+    GTK_SCROLL_STEP_DOWN:
+      Result := SB_LINEDOWN;
+    GTK_SCROLL_PAGE_UP:
+      Result := SB_PAGEUP;
+    GTK_SCROLL_PAGE_DOWN:
+      Result := SB_PAGEDOWN;
+    GTK_SCROLL_STEP_LEFT:
+      Result := SB_LINELEFT;
+    GTK_SCROLL_STEP_RIGHT:
+      Result := SB_LINERIGHT;
+    GTK_SCROLL_PAGE_LEFT:
+      Result := SB_PAGELEFT;
+    GTK_SCROLL_PAGE_RIGHT:
+      Result := SB_PAGERIGHT;
+    GTK_SCROLL_START:
+      if IsVertSB then
+        Result := SB_TOP
+      else
+        Result := SB_LEFT;
+    GTK_SCROLL_END:
+      if IsVertSB then
+        Result := SB_BOTTOM
+      else
+        Result := SB_RIGHT;
+    {$endif}
+    else
+      begin
+        {$IFDEF VerboseGtkScrollbars}
+        debugln('ScrollTypeToSbCode: Scroll_type=', IntToStr(ScrollType));
+        {$Endif}
+        if UpdatePolicy=GTK_UPDATE_CONTINUOUS then
+          Result := SB_THUMBTRACK
+        else
+          Result := SB_THUMBPOSITION;
+      end;
+  end;
+end;
+
+function GTK26HScrollCB(Range:PGTKRAnge; Scroll: PGtkScrollType; Value: gdouble;
+  data: gpointer): gboolean; cdecl;
+var
+  Msg: TLMHScroll;
+begin
+  Result := CallBackDefaultReturn;
+  Msg.Msg := LM_HSCROLL;
+  with Msg do begin
+    pos := Round(Range^.Adjustment^.Value);
+    ScrollBar := HWND(Range);
+    ScrollCode := ScrollTypeToSbCode(False, Scroll^,
+      gtk_range_get_update_policy(Range));
+  end;
+  DeliverMessage(Data, Msg);
+end;
+
+function GTK26VScrollCB(Range:PGTKRAnge; Scroll: PGtkScrollType; Value: gdouble;
+  data: gpointer): gboolean; cdecl;
+var
+  Msg: TLMVScroll;
+begin
+  Result := CallBackDefaultReturn;
+  Msg.Msg := LM_VSCROLL;
+  with Msg do begin
+    pos := Round(Range^.Adjustment^.Value);
+    ScrollBar := HWND(Range);
+    ScrollCode := ScrollTypeToSbCode(True, Scroll^,
+      gtk_range_get_update_policy(Range));
+  end;
+  DeliverMessage(Data, Msg);
+end;
 
 function GTKHScrollCB(Adjustment: PGTKAdjustment; data: GPointer): GBoolean; cdecl;
 var
   Msg: TLMHScroll;
   Scroll: PGtkRange;
-  UpdatePolicy: TGtkUpdateType;
-  RangeClass: PgtkRangeClass;
+  ScrollType: TGtkScrollType;
 begin
   Result := CallBackDefaultReturn;
   Assert(False, Format('Trace:[GTKHScrollCB] Value: %d', [RoundToInt(Adjustment^.Value)]));
   Scroll := PgtkRange(gtk_object_get_data(PGTKObject(Adjustment), 'ScrollBar'));
-  if Scroll=nil then exit;
-{$ifdef gtk1}  
-  RangeClass := PgtkRangeClass(PgtkObject(Scroll)^.klass);
-{$else}  
-  RangeClass := GTK_OBJECT_GET_CLASS(Scroll);
-{$endif}  
-  UpdatePolicy := gtk_range_get_update_policy(Scroll);
-  //X := integer(gtk_object_get_data(PGtkObject(Scroll), 'FinalEvent'));
-  //WriteLn('FINAL EVENT: ', X);
-  //BeginGDKErrorTrap;
-  //gdk_window_get_pointer(GetControlWindow(Scroll), @X, @Y, @Mask);
-  //EndGDKErrorTrap;
-  {$IFDEF VerboseGtkScrollbars}
-  DebugScrollEvent(Scroll);
-  DebugPolicy(UpdatePolicy);
-  {$ENDIF}
-  Msg.Msg := LM_HSCROLL;
-  with Msg do begin
-    pos := Round(Adjustment^.Value);
-    ScrollBar := HWND(Scroll);
-{$ifdef gtk1}
-    case Scroll_type(Scroll^) of
-      GTK_SCROLL_NONE:
-        begin
-          ScrollCode := SB_THUMBTRACK;
-          if click_child(scroll^) = RangeClass^.Slider then
-            if UpdatePolicy <> GTK_UPDATE_CONTINUOUS then
-              ScrollCode := SB_THUMBPOSITION;
-        end;
-      GTK_SCROLL_STEP_BACKWARD:
-        ScrollCode := SB_LINELEFT;
-      GTK_SCROLL_STEP_FORWARD:
-        ScrollCode := SB_LINERIGHT;
-      GTK_SCROLL_PAGE_BACKWARD:
-        ScrollCode := SB_PAGELEFT;
-      GTK_SCROLL_PAGE_FORWARD:
-        ScrollCode := SB_PAGERIGHT;
-      else
-        begin
-          // GTK_SCROLL_JUMP and others not known?
-          {$IFDEF VerboseGtkScrollbars}
-          debugln('GTKVScrollCB: Scroll_type=', IntToStr(Scroll_type(Scroll^)));
-          {$Endif}
-          if UpdatePolicy=GTK_UPDATE_CONTINUOUS then
-            ScrollCode := SB_THUMBTRACK
-          else
-            ScrollCode := SB_THUMBPOSITION;
-        end;
+  if Scroll<>nil then begin
+    Msg.Msg := LM_HSCROLL;
+    with Msg do begin
+      pos := Round(Adjustment^.Value);
+      ScrollBar := HWND(Scroll);
+      ScrollType := get_gtk_scroll_type(Scroll);
+      ScrollCode := ScrollTypeToSbCode(False, ScrollType,
+        gtk_range_get_update_policy(Scroll));
     end;
-{$else}
-  {$warning gtk2 TODO}
-{$endif}      
+    DeliverMessage(Data, Msg);
   end;
-  DeliverMessage(Data, Msg);
 end;
 
-
-function GTKVScrollCB(Adjustment: PGTKAdjustment;
-  data: GPointer): GBoolean; cdecl;
+function GTKVScrollCB(Adjustment: PGTKAdjustment; data: GPointer): GBoolean; cdecl;
 var
   Msg: TLMVScroll;
   Scroll: PGtkRange;
-  UpdatePolicy: TGtkUpdateType;
-  RangeClass: PgtkRangeClass;
+  ScrollType: TGtkScrollType;
 begin
   Result := CallBackDefaultReturn;
   Assert(False, Format('Trace:[GTKVScrollCB] Value: %d', [RoundToInt(Adjustment^.Value)]));
   Scroll := PgtkRange(gtk_object_get_data(PGTKObject(Adjustment), 'ScrollBar'));
-  if (Scroll=nil) then exit;
-{$ifdef gtk1}  
-  RangeClass := PgtkRangeClass(PgtkObject(Scroll)^.klass);
-{$else}  
-  RangeClass := GTK_OBJECT_GET_CLASS(Scroll);
-{$endif}  
-  UpdatePolicy := gtk_range_get_update_policy(Scroll);
-  //UpdatePolicy := TGtkUpdateType( gtk_object_get_data(PgtkObject(Scroll), 'UpdatePolicy'));
-  //WriteLn('FINAL EVENT: ', integer(gtk_object_get_data(PGtkObject(Scroll), 'FinalEvent')));
-  //BeginGDKErrorTrap;
-  //gdk_window_get_pointer(GetControlWindow(Scroll), @X, @Y, @Mask);
-  //EndGDKErrorTrap;
-  {$IFDEF VerboseGtkScrollbars}
-  DebugScrollEvent(Scroll);
-  DebugPolicy(UpdatePolicy);
-  {$ENDIF}
-  Msg.Msg := LM_VSCROLL;
-  with Msg do begin
-    pos := Round(Adjustment^.Value);
-    ScrollBar := HWND(Scroll);
-{$ifdef gtk1}    
-    case Scroll_type(Scroll^) of
-      GTK_SCROLL_NONE:
-        begin
-          ScrollCode := SB_THUMBTRACK;
-          if click_child(scroll^) = RangeClass^.Slider then
-            if UpdatePolicy <> GTK_UPDATE_CONTINUOUS then
-              ScrollCode := SB_THUMBPOSITION;
-        end;
-      GTK_SCROLL_STEP_BACKWARD:
-        ScrollCode := SB_LINEUP;
-      GTK_SCROLL_STEP_FORWARD:
-        ScrollCode := SB_LINEDOWN;
-      GTK_SCROLL_PAGE_BACKWARD:
-        ScrollCode := SB_PAGEUP;
-      GTK_SCROLL_PAGE_FORWARD:
-        ScrollCode := SB_PAGEDOWN;
-      else
-        begin
-          // GTK_SCROLL_JUMP and others not known?
-          {$IFDEF VerboseGtkScrollbars}
-          debugln('GTKVScrollCB: Scroll_type=', IntToStr(Scroll_type(Scroll^)));
-          {$ENDIF}
-          if UpdatePolicy=GTK_UPDATE_CONTINUOUS then
-            ScrollCode := SB_THUMBTRACK
-          else
-            ScrollCode := SB_THUMBPOSITION;
-        end;
+  if Scroll<>nil then begin
+    Msg.Msg := LM_VSCROLL;
+    with Msg do begin
+      pos := Round(Adjustment^.Value);
+      ScrollBar := HWND(Scroll);
+      ScrollType := get_gtk_scroll_type(Scroll);
+      ScrollCode := ScrollTypeToSbCode(True, ScrollType,
+        gtk_range_get_update_policy(Scroll));
     end;
-{$else}
-  {$warning gtk2 TODO}
-{$endif}    
+    DeliverMessage(Data, Msg);
   end;
-  DeliverMessage(Data, Msg);
 end;
-
 {------------------------------------------------------------------------------
   Function: GTKKeySnooper
   Params:  Widget: The widget for which this event is fired
@@ -2986,6 +2991,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.262  2005/02/15 10:33:31  mattias
+  fix gtk2 scrollbars  from Jesus
+
   Revision 1.261  2005/02/05 16:09:52  marc
   * first 64bit changes
 

@@ -3110,7 +3110,7 @@ procedure TGtkWidgetSet.SetCallback(const AMsg: LongInt; const AGTKObject: PGTKO
   end;
 
 var
-  gObject, gFixed, gCore, Scroll: PGTKObject;
+  gObject, gFixed, gCore, Scroll, Adjustment: PGTKObject;
 begin
   if AGTKObject = nil
   then gObject := ObjectToGTKObject(ALCLObject)
@@ -3469,46 +3469,54 @@ begin
 
     LM_HSCROLL:
     begin
-      //if ALCLObject is TCustomListView
-      //then begin
-      //  ConnectSenderSignal(gObject, 'scroll-horizontal', @gtkLVHScroll);
-      //end
-      //else begin
-      If ALCLObject is TScrollBar then
-        ConnectSenderSignal(
-                PGTKObject(PgtkhScrollBar(gObject)^.Scrollbar.Range.Adjustment),
-                           'value-changed', @GTKHScrollCB)
-      else If ALCLObject is TScrollBox then begin
-        Scroll := gtk_object_get_data(gObject, odnScrollArea);
-        ConnectSenderSignal(PGTKObject(gtk_scrolled_window_get_hadjustment(
-          PGTKScrolledWindow(Scroll))), 'value-changed', @GTKHScrollCB);
-      end
-      else
-        ConnectSenderSignal(PGTKObject(gtk_scrolled_window_get_hadjustment(
-          PGTKScrolledWindow(gObject))), 'value-changed', @GTKHScrollCB);
-      //end;
+      if (gtk_major_version>=2)and(gtk_minor_version>=6) then begin
+        if ALCLObject is TScrollBar then
+          Scroll := PGtkObject(@PgtkhScrollBar(gObject)^.Scrollbar.Range)
+        else begin
+          if ALCLObject is TScrollBox then
+            gObject := gtk_object_get_data(gObject, odnScrollArea);
+          Scroll := PgtkObject(PGtkScrolledWindow(gObject)^.HScrollBar);
+        end;
+        ConnectSenderSignal(Scroll,'changed-value', @GTK26HScrollCB);
+      end else begin
+        if ALCLObject is TScrollBar then
+          Adjustment := PgtkObject(PgtkhScrollBar(gObject)^.Scrollbar.Range.Adjustment)
+        else if ALCLObject is TScrollBox then begin
+          Scroll := gtk_object_get_data(gObject, odnScrollArea);
+          Adjustment := PgtkObject(gtk_scrolled_window_get_hadjustment(
+            PGTKScrolledWindow(Scroll)));
+        end
+        else
+          Adjustment := PgtkObject(gtk_scrolled_window_get_hadjustment(
+            PGTKScrolledWindow(gObject)));
+        ConnectSenderSignal(Adjustment, 'value-changed', @GTKHScrollCB);
+      end;
     end;
 
     LM_VSCROLL:
     begin
-      //if ALCLObject is TCustomListView
-      //then begin
-      //  ConnectSenderSignal(gObject, 'scroll-vertical', @gtkLVVScroll);
-      //end
-      //else begin
-      If ALCLObject is TScrollBar then
-        ConnectSenderSignal(
-                PGTKObject(PgtkhScrollBar(gObject)^.Scrollbar.Range.Adjustment),
-                           'value-changed', @GTKVScrollCB)
-      else If ALCLObject is TScrollBox then begin
-        Scroll := gtk_object_get_data(gObject, odnScrollArea);
-        ConnectSenderSignal(PGTKObject(gtk_scrolled_window_get_vadjustment(
-          PGTKScrolledWindow(Scroll))), 'value-changed', @GTKVScrollCB);
-      end
-      else
-        ConnectSenderSignal(PGTKObject(gtk_scrolled_window_get_vadjustment(
-          PGTKScrolledWindow(gObject))), 'value-changed', @GTKVScrollCB);
-      //end;
+      if (gtk_major_version>=2)and(gtk_minor_version>=6) then begin
+        if ALCLObject is TScrollBar then
+          Scroll := PGtkObject(@PgtkhScrollBar(gObject)^.Scrollbar.Range)
+        else begin
+          if ALCLObject is TScrollBox then
+            gObject := gtk_object_get_data(gObject, odnScrollArea);
+          Scroll := PGtkObject(PGtkScrolledWindow(gObject)^.VScrollBar);
+        end;
+        connectSenderSignal(Scroll,'changed-value', @GTK26VScrollCB);
+      end else begin
+        if ALCLObject is TScrollBar then
+          Adjustment := PGtkObject(PgtkhScrollBar(gObject)^.Scrollbar.Range.Adjustment)
+        else if ALCLObject is TScrollBox then begin
+          Scroll := gtk_object_get_data(gObject, odnScrollArea);
+          Adjustment := PGtkObject(gtk_scrolled_window_get_vadjustment(
+            PGTKScrolledWindow(Scroll)));
+        end
+        else
+          Adjustment := PGtkObject(gtk_scrolled_window_get_vadjustment(
+            PGTKScrolledWindow(gObject)));
+        ConnectSenderSignal(Adjustment, 'value-changed', @GTKVScrollCB);
+      end;
     end;
 
     LM_YEARCHANGED :  //calendar
@@ -7000,6 +7008,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.625  2005/02/15 10:33:31  mattias
+  fix gtk2 scrollbars  from Jesus
+
   Revision 1.624  2005/02/05 16:09:52  marc
   * first 64bit changes
 
