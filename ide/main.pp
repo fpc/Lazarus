@@ -206,6 +206,8 @@ type
       Button : TMouseButton; Shift: TShiftstate; X, Y: Integer);
     procedure OnSrcNotebookDeleteLastJumPoint(Sender: TObject);
     procedure OnSrcNotebookEditorVisibleChanged(Sender : TObject);
+    procedure OnSrcNotebookShowHintForSource(SrcEdit: TSourceEditor;
+          ClientPos: TPoint; CaretPos: TPoint);
 
     // this is fired when the editor is focused, changed, ?.
     //   Anything that causes the status change
@@ -471,9 +473,9 @@ type
     // methods for codetools
     procedure InitCodeToolBoss;
     function BeginCodeTool(var ActiveSrcEdit: TSourceEditor;
-      var ActiveUnitInfo: TUnitInfo; SwitchToFormSrc: boolean): boolean;
+      var ActiveUnitInfo: TUnitInfo; Flags: TCodeToolsFlags): boolean;
     function BeginCodeTool(ADesigner: TDesigner; var ActiveSrcEdit: TSourceEditor;
-      var ActiveUnitInfo: TUnitInfo; SwitchToFormSrc: boolean): boolean;
+      var ActiveUnitInfo: TUnitInfo; Flags: TCodeToolsFlags): boolean;
     function DoJumpToCodePos(ActiveSrcEdit: TSourceEditor;
       ActiveUnitInfo: TUnitInfo;
       NewSource: TCodeBuffer; NewX, NewY, NewTopLine: integer;
@@ -802,7 +804,8 @@ procedure TMainIDE.OnPropHookGetMethods(TypeData:PTypeData;
 var ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
 begin
-  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,true) then exit;
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource])
+  then exit;
   {$IFDEF IDE_DEBUG}
   writeln('');
   writeln('[TMainIDE.OnPropHookGetMethods] ************');
@@ -1096,6 +1099,7 @@ begin
   SourceNotebook.OnSaveClicked := @OnSrcNotebookFileSave;
   SourceNotebook.OnSaveAsClicked := @OnSrcNotebookFileSaveAs;
   SourceNotebook.OnSaveAllClicked := @OnSrcNotebookSaveAll;
+  SourceNotebook.OnShowHintForSource :=@OnSrcNotebookShowHintForSource;
   SourceNotebook.OnShowUnitInfo := @OnSrcNoteBookShowUnitInfo;
   SourceNotebook.OnToggleFormUnitClicked := @OnSrcNotebookToggleFormUnit;
   SourceNotebook.OnToggleObjectInspClicked:= @OnSrcNotebookToggleObjectInsp;
@@ -2087,7 +2091,7 @@ var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
 begin
-  BeginCodeTool(ActiveSrcEdit, ActiveUnitInfo, false);
+  BeginCodeTool(ActiveSrcEdit, ActiveUnitInfo, []);
   if ShowProjectOptionsDialog(Project1)=mrOk then begin
     
   end;
@@ -6002,7 +6006,8 @@ begin
             Sender.ClassName);
     exit;
   end;
-  BeginCodeTool(TDesigner(Sender),ActiveSrcEdit,ActiveUnitInfo,true);
+  BeginCodeTool(TDesigner(Sender),ActiveSrcEdit,ActiveUnitInfo,
+                [ctfSwitchToFormSource]);
 
   // add needed unit to source
   CodeToolBoss.AddUnitToMainUsesSection(ActiveUnitInfo.Source,
@@ -6043,7 +6048,8 @@ begin
   CurDesigner:=TDesigner(Sender);
   if dfDestroyingForm in CurDesigner.Flags then exit;
   
-  BeginCodeTool(CurDesigner,ActiveSrcEdit,ActiveUnitInfo,true);
+  BeginCodeTool(CurDesigner,ActiveSrcEdit,ActiveUnitInfo,
+                [ctfSwitchToFormSource]);
   ActiveForm:=CurDesigner.Form;
   if ActiveForm=nil then begin
     RaiseException('[TMainIDE.OnDesignerAddComponent] Error: TDesigner without a form');
@@ -6312,18 +6318,18 @@ begin
 end;
 
 function TMainIDE.BeginCodeTool(var ActiveSrcEdit: TSourceEditor;
-  var ActiveUnitInfo: TUnitInfo; SwitchToFormSrc: boolean): boolean;
+  var ActiveUnitInfo: TUnitInfo; Flags: TCodeToolsFlags): boolean;
 begin
-  Result:=BeginCodeTool(nil,ActiveSrcEdit,ActiveUnitInfo,SwitchToFormSrc);
+  Result:=BeginCodeTool(nil,ActiveSrcEdit,ActiveUnitInfo,Flags);
 end;
 
 function TMainIDE.BeginCodeTool(ADesigner: TDesigner;
   var ActiveSrcEdit: TSourceEditor; var ActiveUnitInfo: TUnitInfo;
-  SwitchToFormSrc: boolean): boolean;
+  Flags: TCodeToolsFlags): boolean;
 begin
   Result:=false;
   if SourceNoteBook.NoteBook=nil then exit;
-  if SwitchToFormSrc then
+  if ctfSwitchToFormSource in Flags then
     DoSwitchToFormSrc(ADesigner,ActiveSrcEdit,ActiveUnitInfo)
   else if Designer<>nil then
     GetDesignerUnit(ADesigner,ActiveSrcEdit,ActiveUnitInfo)
@@ -6332,6 +6338,8 @@ begin
   if (ActiveSrcEdit=nil) or (ActiveUnitInfo=nil) then exit;
   SaveSourceEditorChangesToCodeCache(-1);
   CodeToolBoss.VisibleEditorLines:=ActiveSrcEdit.EditorComponent.LinesInWindow;
+  
+
   Result:=true;
 end;
 
@@ -6414,7 +6422,7 @@ var ActiveSrcEdit: TSourceEditor;
   NewX, NewY, NewTopLine: integer;
   RevertableJump: boolean;
 begin
-  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,false) then exit;
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
   {$IFDEF IDE_DEBUG}
   writeln('');
   writeln('[TMainIDE.DoJumpToProcedureSection] ************');
@@ -6493,7 +6501,7 @@ var
   NewSource: TCodeBuffer;
   NewX, NewY, NewTopLine: integer;
 begin
-  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,false) then exit;
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
   {$IFDEF IDE_DEBUG}
   writeln('');
   writeln('[TMainIDE.DoFindDeclarationAtCaret] ************');
@@ -6516,7 +6524,7 @@ var ActiveSrcEdit: TSourceEditor;
   NewSource: TCodeBuffer;
   NewX, NewY, NewTopLine: integer;
 begin
-  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,false) then exit;
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
   {$IFDEF IDE_DEBUG}
   writeln('');
   writeln('[TMainIDE.DoGoToPascalBlockOtherEnd] ************');
@@ -6538,7 +6546,7 @@ var ActiveSrcEdit: TSourceEditor;
   NewSource: TCodeBuffer;
   NewX, NewY, NewTopLine: integer;
 begin
-  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,false) then exit;
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
   {$IFDEF IDE_DEBUG}
   writeln('');
   writeln('[TMainIDE.DoGoToPascalBlockStart] ************');
@@ -6560,7 +6568,7 @@ var ActiveSrcEdit: TSourceEditor;
   NewSource: TCodeBuffer;
   StartX, StartY, NewX, NewY, NewTopLine: integer;
 begin
-  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,false) then exit;
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
   {$IFDEF IDE_DEBUG}
   writeln('');
   writeln('[TMainIDE.DoJumpToGuessedUnclosedBlock] ************');
@@ -6587,7 +6595,7 @@ var ActiveSrcEdit: TSourceEditor;
   NewSource: TCodeBuffer;
   StartX, StartY, NewX, NewY, NewTopLine: integer;
 begin
-  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,false) then exit;
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
   {$IFDEF IDE_DEBUG}
   writeln('');
   writeln('[TMainIDE.DoJumpToGuessedMisplacedIFDEF] ************');
@@ -6614,7 +6622,7 @@ var ActiveSrcEdit: TSourceEditor;
   NewSource: TCodeBuffer;
   NewX, NewY, NewTopLine: integer;
 begin
-  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,false) then exit;
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
   { $IFDEF IDE_DEBUG}
   writeln('');
   writeln('[TMainIDE.DoGotoIncludeDirective] ************');
@@ -6646,7 +6654,7 @@ var ActiveSrcEdit: TSourceEditor;
 begin
   FOpenEditorsOnCodeToolChange:=true;
   try
-    if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,false) then exit;
+    if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
     {$IFDEF IDE_DEBUG}
     writeln('');
     writeln('[TMainIDE.DoCompleteCodeAtCursor] ************');
@@ -6693,6 +6701,13 @@ begin
   ToggleFormSpeedBtn.Enabled := Assigned(ActiveUnitInfo.Form);
 end;
 
+procedure TMainIDE.OnSrcNotebookShowHintForSource(SrcEdit: TSourceEditor;
+  ClientPos: TPoint; CaretPos: TPoint);
+begin
+  InitCodeToolBoss
+  // do a find declaration
+end;
+
 procedure TMainIDE.OnSrcNoteBookActivated(Sender : TObject);
 begin
   FDisplayState:= dsSource;
@@ -6726,7 +6741,7 @@ var
 begin
   if (not IsValidIdent(NewName)) or (NewName='') then
     raise Exception.Create('Component name "'+Newname+'" is not a valid identifier');
-  BeginCodeTool(ADesigner,ActiveSrcEdit,ActiveUnitInfo,true);
+  BeginCodeTool(ADesigner,ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource]);
   ActiveUnitInfo:=Project1.UnitWithForm(ADesigner.Form);
   if CodeToolBoss.IsKeyWord(ActiveUnitInfo.Source,NewName) then
     raise Exception.Create('Component name "'+Newname+'" is keyword');
@@ -7015,7 +7030,8 @@ function TMainIDE.OnPropHookMethodExists(const AMethodName: ShortString;
 var ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
 begin
-  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,true) then exit;
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource])
+  then exit;
   {$IFDEF IDE_DEBUG}
   writeln('');
   writeln('[TMainIDE.OnPropHookMethodExists] ************ ',AMethodName);
@@ -7038,7 +7054,8 @@ var ActiveSrcEdit: TSourceEditor;
 begin
   Result.Code:=nil;
   Result.Data:=nil;
-  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,true) then exit;
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource])
+  then exit;
   {$IFDEF IDE_DEBUG}
   writeln('');
   writeln('[TMainIDE.OnPropHookCreateMethod] ************ ',AMethodName);
@@ -7072,7 +7089,8 @@ var ActiveSrcEdit: TSourceEditor;
   NewSource: TCodeBuffer;
   NewX, NewY, NewTopLine: integer;
 begin
-  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,true) then exit;
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource])
+  then exit;
   {$IFDEF IDE_DEBUG}
   writeln('');
   writeln('[TMainIDE.OnPropHookShowMethod] ************ "',AMethodName,'" ',ActiveUnitInfo.Filename);
@@ -7095,7 +7113,8 @@ var ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
   r: boolean;
 begin
-  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,true) then exit;
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource])
+  then exit;
   { $IFDEF IDE_DEBUG}
   writeln('');
   writeln('[TMainIDE.OnPropHookRenameMethod] ************');
@@ -7418,6 +7437,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.427  2002/11/09 18:13:30  lazarus
+  MG: fixed gdkwindow checks
+
   Revision 1.426  2002/11/05 20:09:36  lazarus
   MG: reduced output
 
