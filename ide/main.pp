@@ -387,7 +387,7 @@ type
 
     // files/units
     function DoNewEditorFile(NewUnitType:TNewUnitType;
-        NewFilename: string):TModalResult;
+        NewFilename: string; NewFlags: TNewFlags):TModalResult;
     function DoSaveEditorFile(PageIndex:integer;
         Flags: TSaveFlags): TModalResult;
     function DoCloseEditorFile(PageIndex:integer;
@@ -1497,12 +1497,12 @@ end;
 
 procedure TMainIDE.mnuNewUnitClicked(Sender : TObject);
 begin
-  DoNewEditorFile(nuUnit,'');
+  DoNewEditorFile(nuUnit,'',[]);
 end;
 
 procedure TMainIDE.mnuNewFormClicked(Sender : TObject);
 begin
-  DoNewEditorFile(nuForm,'');
+  DoNewEditorFile(nuForm,'',[]);
 end;
 
 procedure TMainIDE.mnuOpenClicked(Sender : TObject);
@@ -2989,9 +2989,9 @@ begin
   begin
     // create new file
     if FilenameIsPascalSource(AFilename) then
-      Result:=DoNewEditorFile(nuUnit,AFilename)
+      Result:=DoNewEditorFile(nuUnit,AFilename,[])
     else
-      Result:=DoNewEditorFile(nuEmpty,AFilename);
+      Result:=DoNewEditorFile(nuEmpty,AFilename,[]);
   end;
 end;
 
@@ -3532,7 +3532,7 @@ begin
 end;
   
 function TMainIDE.DoNewEditorFile(NewUnitType:TNewUnitType;
-  NewFilename: string):TModalResult;
+  NewFilename: string; NewFlags: TNewFlags):TModalResult;
 var NewUnitInfo:TUnitInfo;
   NewSrcEdit: TSourceEditor;
   NewUnitName: string;
@@ -3558,7 +3558,8 @@ begin
   // add to project
   with NewUnitInfo do begin
     Loaded:=true;
-    IsPartOfProject:=Project1.FileIsInProjectDir(NewFilename);
+    IsPartOfProject:=(nfIsPartOfProject in NewFlags)
+                     or Project1.FileIsInProjectDir(NewFilename);
   end;
   Project1.AddUnit(NewUnitInfo,(NewUnitType in [nuForm, nuUnit])
                               and NewUnitInfo.IsPartOfProject);
@@ -4263,7 +4264,7 @@ writeln('TMainIDE.DoNewProject A');
        +';'+
         '$(LazarusDir)'+ds+'lcl'+ds+'interfaces'+ds+'$(LCLWidgetType)';
       // create a first form unit
-      DoNewEditorFile(nuForm,'');
+      DoNewEditorFile(nuForm,'',[nfIsPartOfProject]);
     end;
     
   ptProgram,ptCustomProgram:
@@ -7439,6 +7440,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.421  2002/10/31 17:31:08  lazarus
+  MG: fixed return polygon point
+
   Revision 1.420  2002/10/30 22:28:47  lazarus
   MG: fixed used virtual files and IsPartOfProject Bug
 
