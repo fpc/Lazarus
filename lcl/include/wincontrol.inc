@@ -466,6 +466,7 @@ procedure TWinControl.UpdateShowing;
 var
   bShow: Boolean;
   n: Integer;
+  ok: boolean;
 begin
   bShow := (FVisible or (csDesigning in ComponentState) 
     and not (csNoDesignVisible in ControlStyle))
@@ -486,11 +487,13 @@ begin
     if FShowing <> bShow 
     then begin
       FShowing := bShow;
+      ok:=false;
       try
         Perform(CM_SHOWINGCHANGED, 0, 0);
-      except
-        FShowing := not bShow;
-        raise;
+        ok:=true;
+      finally
+        if not ok then
+          FShowing := not bShow;
       end;
     end;
   end;
@@ -2015,6 +2018,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.56  2002/04/04 12:25:01  lazarus
+  MG: changed except statements to more verbosity
+
   Revision 1.55  2002/03/31 23:20:38  lazarus
   MG: fixed initial size of TPage
 
