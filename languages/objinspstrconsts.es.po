@@ -1,0 +1,35 @@
+msgid ""
+msgstr ""
+""
+"Last-Translator: Luis R. Hilario B. <luisdigital@BonBon.net>\n"
+"PO-Revision-Date: 2002-12-29 20:40-0400\n"
+"Language-Team: Español\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 0.9.6\n"
+
+#: objinspstrconsts:oisobjectinspector
+msgid "Object Inspector"
+msgstr "Inspector de Objetos"
+
+#: objinspstrconsts:oisitemsselected
+msgid " items selected"
+msgstr " elementos seleccionados"
+
+#: objinspstrconsts:oiscadd
+msgid "&Add"
+msgstr "&Añadir"
+
+#: objinspstrconsts:oiscdelete
+msgid "&Delete"
+msgstr "&Suprimir"
+
+#: objinspstrconsts:oisproperties
+msgid "Properties"
+msgstr "Propiedades"
+
+#: objinspstrconsts:oisevents
+msgid "Events"
+msgstr "Eventos"
+
+

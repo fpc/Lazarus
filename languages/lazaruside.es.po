@@ -1,9 +1,9 @@
 msgid ""
 msgstr ""
 "Last-Translator: Luis R. Hilario B. <luisdigital@BonBon.net>\n"
-"PO-Revision-Date: 2002-12-14 17:53-0400\n"
-"Language-Team: EspaÃ±ol\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"PO-Revision-Date: 2002-12-29 19:34-0400\n"
+"Language-Team: Español\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 0.9.6\n"
 
@@ -13,11 +13,11 @@ msgstr "lazarus [opciones] <nombrearchivo-proyecto>\n\nOpciones del IDE:\n\n--he
 
 #: lazarusidestrconsts:liscmdlineprimaryconfigpathdesc
 msgid "--primary-config-path <path>\n                         primary config directory, where Lazarus\n                         stores its config files. Default is \n                         %s\n\n"
-msgstr "--primary-config-path <ruta>\n                         directorio primario de configuraciÃ³n, donde Lazarus\n                         guarda sus archivos de configuraciones. Por defecto es \n                         %s\n\n"
+msgstr "--primary-config-path <ruta>\n                         directorio primario de configuración, donde Lazarus\n                         guarda sus archivos de configuraciones. Por defecto es \n                         %s\n\n"
 
 #: lazarusidestrconsts:liscmdlinesecondaryconfigpathdesc
 msgid "--secondary-config-path <path>\n                         secondary config directory, where Lazarus\n                         searches for config template files.\n                         Default is %s\n\n"
-msgstr "--secondary-config-path <ruta>\n                         directorio secundario de conficuraciÃ³n, donde Lazarus\n                         busca los archivos de plantilla de configuraciÃ³n.\n                         Por defecto es %s\n\n"
+msgstr "--secondary-config-path <ruta>\n                         directorio secundario de conficuración, donde Lazarus\n                         busca los archivos de plantilla de configuración.\n                         Por defecto es %s\n\n"
 
 #: lazarusidestrconsts:liscmdlinelclinterfacespecificoptions
 msgid "LCL Interface specific options:"
@@ -25,7 +25,7 @@ msgstr "Opciones especificas de la interfase LCL:"
 
 #: lazarusidestrconsts:lisselectiontool
 msgid "Selection tool"
-msgstr ""
+msgstr "Herramienta de selección"
 
 #: lazarusidestrconsts:liscursorcolumnincurrenteditor
 msgid "Cursor column in current editor"
@@ -49,39 +49,39 @@ msgstr ""
 
 #: lazarusidestrconsts:lisfreepascalsourcedirectory
 msgid "Freepascal source directory"
-msgstr ""
+msgstr "Directorio de las fuentes de FreePascal"
 
 #: lazarusidestrconsts:lislazarusdirectory
 msgid "Lazarus directory"
-msgstr ""
+msgstr "Directorio de Lazarus"
 
 #: lazarusidestrconsts:lislclwidgettype
 msgid "LCL Widget Type"
-msgstr ""
+msgstr "Tipo de Widget LCL"
 
 #: lazarusidestrconsts:liscommandlineparamsofprogram
 msgid "Command line parameters of program"
-msgstr ""
+msgstr "Parametros de la línea de comandos del programa"
 
 #: lazarusidestrconsts:lispromptforvalue
 msgid "Prompt for value"
-msgstr ""
+msgstr "Preguntar por valor"
 
 #: lazarusidestrconsts:lisprojectfilename
 msgid "Project filename"
-msgstr ""
+msgstr "Nombre de archivo del Proyecto"
 
 #: lazarusidestrconsts:lisprojectdirectory
 msgid "Project directory"
-msgstr ""
+msgstr "Directorio del Proyecto"
 
 #: lazarusidestrconsts:lissavecurrenteditorfile
 msgid "save current editor file"
-msgstr ""
+msgstr "Guardar el archivo actual del editor"
 
 #: lazarusidestrconsts:lissaveallmodified
 msgid "save all modified files"
-msgstr ""
+msgstr "Guardar todos los archivos modificados"
 
 #: lazarusidestrconsts:listargetfilenameofproject
 msgid "Target filename of project"
@@ -93,7 +93,7 @@ msgstr ""
 
 #: lazarusidestrconsts:listestdirectory
 msgid "Test directory"
-msgstr ""
+msgstr "Directorio de prueba"
 
 #: lazarusidestrconsts:lislaunchingcmdline
 msgid "Launching target command line"
@@ -101,7 +101,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lispublishprojdir
 msgid "Publish project directory"
-msgstr ""
+msgstr "Directorio para publicar el proyecto"
 
 #: lazarusidestrconsts:lismenufile
 msgid "&File"
@@ -125,7 +125,7 @@ msgstr "&Proyecto"
 
 #: lazarusidestrconsts:lismenurun
 msgid "&Run"
-msgstr "&Correr"
+msgstr "&Ejecutar"
 
 #: lazarusidestrconsts:lismenutools
 msgid "&Tools"
@@ -205,295 +205,295 @@ msgstr "Pegar"
 
 #: lazarusidestrconsts:lismenuindentselection
 msgid "Indent selection"
-msgstr ""
+msgstr "Sangrar selección"
 
 #: lazarusidestrconsts:lismenuunindentselection
 msgid "Unindent selection"
-msgstr ""
+msgstr "Desangrar selección"
 
 #: lazarusidestrconsts:lismenuuppercaseselection
 msgid "Uppercase selection"
-msgstr ""
+msgstr "Selección en mayúsculas"
 
 #: lazarusidestrconsts:lismenulowercaseselection
 msgid "Lowercase selection"
-msgstr ""
+msgstr "Selección en minúsculas"
 
 #: lazarusidestrconsts:lismenutabstospacesselection
 msgid "Tabs to spaces in selection"
-msgstr ""
+msgstr "Tabulaciones a espacios en selección"
 
 #: lazarusidestrconsts:lismenucommentselection
 msgid "Comment selection"
-msgstr ""
+msgstr "Comente selección"
 
 #: lazarusidestrconsts:lismenuuncommentselection
 msgid "Uncomment selection"
-msgstr ""
+msgstr "Descomente selección"
 
 #: lazarusidestrconsts:lismenuselect
 msgid "Select"
-msgstr ""
+msgstr "Seleccionar"
 
 #: lazarusidestrconsts:lismenuselectall
 msgid "Select all"
-msgstr ""
+msgstr "Seleccionar todo"
 
 #: lazarusidestrconsts:lismenuselecttobrace
 msgid "Select to brace"
-msgstr ""
+msgstr "Selecionar tira"
 
 #: lazarusidestrconsts:lismenuselectcodeblock
 msgid "Select code block"
-msgstr ""
+msgstr "Seleccionar bloque de código"
 
 #: lazarusidestrconsts:lismenuselectline
 msgid "Select line"
-msgstr ""
+msgstr "Seleccionar línea"
 
 #: lazarusidestrconsts:lismenuselectparagraph
 msgid "Select paragraph"
-msgstr ""
+msgstr "Seleccionar párrafo"
 
 #: lazarusidestrconsts:lismenuinserttext
 msgid "Insert text"
-msgstr ""
+msgstr "Insertar texto"
 
 #: lazarusidestrconsts:lismenuinsertcvskeyword
 msgid "CVS keyword"
-msgstr ""
+msgstr "Palabra clave de CVS"
 
 #: lazarusidestrconsts:lismenuinsertgeneral
 msgid "General"
-msgstr ""
+msgstr "General"
 
 #: lazarusidestrconsts:lismenucompletecode
 msgid "Complete Code"
-msgstr ""
+msgstr "Completar código"
 
 #: lazarusidestrconsts:lismenuinsertgplnotice
 msgid "GPL notice"
-msgstr ""
+msgstr "Aviso GPL"
 
 #: lazarusidestrconsts:lismenuinsertusername
 msgid "Current username"
-msgstr ""
+msgstr "Nombre de usuario actual"
 
 #: lazarusidestrconsts:lismenuinsertdatetime
 msgid "Current date and time"
-msgstr ""
+msgstr "Fecha y hora actual"
 
 #: lazarusidestrconsts:lismenuinsertchangelogentry
 msgid "ChangeLog entry"
-msgstr ""
+msgstr "Entrada de registro de cambios"
 
 #: lazarusidestrconsts:lismenufind
 msgid "Find"
-msgstr ""
+msgstr "Buscar"
 
 #: lazarusidestrconsts:lismenufindnext
 msgid "Find &Next"
-msgstr ""
+msgstr "Buscar &Siguiente"
 
 #: lazarusidestrconsts:lismenufindprevious
 msgid "Find &Previous"
-msgstr ""
+msgstr "Buscar &Anterior"
 
 #: lazarusidestrconsts:lismenufindinfiles
 msgid "Find &in files"
-msgstr ""
+msgstr "Buscar &en archivos"
 
 #: lazarusidestrconsts:lismenureplace
 msgid "Replace"
-msgstr ""
+msgstr "Reemplazar"
 
 #: lazarusidestrconsts:lismenugotoline
 msgid "Goto line"
-msgstr ""
+msgstr "Ir a línea"
 
 #: lazarusidestrconsts:lismenujumpback
 msgid "Jump back"
-msgstr ""
+msgstr "Saltar atrás"
 
 #: lazarusidestrconsts:lismenujumpforward
 msgid "Jump forward"
-msgstr ""
+msgstr "Saltar adelante"
 
 #: lazarusidestrconsts:lismenuaddjumppointtohistory
 msgid "Add jump point to history"
-msgstr ""
+msgstr "Añadir punto de salto al historial"
 
 #: lazarusidestrconsts:lismenuviewjumphistory
 msgid "View Jump-History"
-msgstr ""
+msgstr "Ver historial de salto"
 
 #: lazarusidestrconsts:lismenufindblockotherendofcodeblock
 msgid "Find other end of code block"
-msgstr ""
+msgstr "Buscar otro final del bloque de código"
 
 #: lazarusidestrconsts:lismenufindcodeblockstart
 msgid "Find code block start"
-msgstr ""
+msgstr "Buscar inicio del bloque de código"
 
 #: lazarusidestrconsts:lismenufinddeclarationatcursor
 msgid "Find Declaration at cursor"
-msgstr ""
+msgstr "Buscar Declaración desde cursor"
 
 #: lazarusidestrconsts:lismenuopenfilenameatcursor
 msgid "Open filename at cursor"
-msgstr ""
+msgstr "Abrir nombre de archivo a cursor"
 
 #: lazarusidestrconsts:lismenugotoincludedirective
 msgid "Goto include directive"
-msgstr ""
+msgstr "Ir a directiva de inclusión"
 
 #: lazarusidestrconsts:lismenuviewobjectinspector
 msgid "Object Inspector"
-msgstr ""
+msgstr "Inspector de Objetos"
 
 #: lazarusidestrconsts:lismenuviewprojectexplorer
 msgid "Project Explorer"
-msgstr ""
+msgstr "Explorador del Proyecto"
 
 #: lazarusidestrconsts:lismenuviewcodeexplorer
 msgid "Code Explorer"
-msgstr ""
+msgstr "Explorador de Código"
 
 #: lazarusidestrconsts:lismenuviewunits
 msgid "Units..."
-msgstr ""
+msgstr "Unidades..."
 
 #: lazarusidestrconsts:lismenuviewforms
 msgid "Forms..."
-msgstr ""
+msgstr "Formas..."
 
 #: lazarusidestrconsts:lismenuviewunitdependencies
 msgid "View Unit Dependencies"
-msgstr ""
+msgstr "Ver dependencias de la unidad"
 
 #: lazarusidestrconsts:lismenuviewtoggleformunit
 msgid "Toggle form/unit view"
-msgstr ""
+msgstr "Conmutar ver Forma/Unidad"
 
 #: lazarusidestrconsts:lismenuviewmessages
 msgid "Messages"
-msgstr ""
+msgstr "Mensajes"
 
 #: lazarusidestrconsts:lismenudebugwindows
 msgid "Debug windows"
-msgstr ""
+msgstr "Depurar ventanas"
 
 #: lazarusidestrconsts:lismenuviewwatches
 msgid "Watches"
-msgstr ""
+msgstr "Vigilantes"
 
 #: lazarusidestrconsts:lismenuviewbreakpoints
 msgid "BreakPoints"
-msgstr ""
+msgstr "Puntos de Rotura"
 
 #: lazarusidestrconsts:lismenuviewlocalvariables
 msgid "Local Variables"
-msgstr ""
+msgstr "Variables locales"
 
 #: lazarusidestrconsts:lismenuviewcallstack
 msgid "Call Stack"
-msgstr ""
+msgstr "Llamar Pila"
 
 #: lazarusidestrconsts:lismenuviewdebugoutput
 msgid "Debug output"
-msgstr ""
+msgstr "Depurar salida"
 
 #: lazarusidestrconsts:lismenunewproject
 msgid "New Project"
-msgstr ""
+msgstr "Nuevo Proyecto"
 
 #: lazarusidestrconsts:lismenunewprojectfromfile
 msgid "New Project from file"
-msgstr ""
+msgstr "Nuevo proyecto desde archivo"
 
 #: lazarusidestrconsts:lismenuopenproject
 msgid "Open Project"
-msgstr ""
+msgstr "Abrir Proyecto"
 
 #: lazarusidestrconsts:lismenuopenrecentproject
 msgid "Open Recent Project"
-msgstr ""
+msgstr "Abrir proyecto reciente"
 
 #: lazarusidestrconsts:lismenusaveproject
 msgid "Save Project"
-msgstr ""
+msgstr "Guardar Proyecto"
 
 #: lazarusidestrconsts:lismenusaveprojectas
 msgid "Save Project As..."
-msgstr ""
+msgstr "Guardar proyecto como..."
 
 #: lazarusidestrconsts:lismenupublishproject
 msgid "Publish Project"
-msgstr ""
+msgstr "Publicar proyecto"
 
 #: lazarusidestrconsts:lismenuaddunittoproject
 msgid "Add active unit to Project"
-msgstr ""
+msgstr "Añadir unidad activa al Proyecto"
 
 #: lazarusidestrconsts:lismenuremoveunitfromproject
 msgid "Remove from Project"
-msgstr ""
+msgstr "Remover desde Proyecto"
 
 #: lazarusidestrconsts:lismenuviewsource
 msgid "View Source"
-msgstr ""
+msgstr "Ver Fuente"
 
 #: lazarusidestrconsts:lismenuprojectoptions
 msgid "Project Options..."
-msgstr ""
+msgstr "Opciones del proyecto..."
 
 #: lazarusidestrconsts:lismenubuild
 msgid "Build"
-msgstr ""
+msgstr "Construir"
 
 #: lazarusidestrconsts:lismenubuildall
 msgid "Build all"
-msgstr ""
+msgstr "Construir todo"
 
 #: lazarusidestrconsts:lismenuprojectrun
 msgid "Run"
-msgstr ""
+msgstr "Ejecutar"
 
 #: lazarusidestrconsts:lismenupause
 msgid "Pause"
-msgstr ""
+msgstr "Pausar"
 
 #: lazarusidestrconsts:lismenustepinto
 msgid "Step into"
-msgstr ""
+msgstr "Paso a paso por instrucciones"
 
 #: lazarusidestrconsts:lismenustepover
 msgid "Step over"
-msgstr ""
+msgstr "Paso a paso por funciones"
 
 #: lazarusidestrconsts:lismenuruntocursor
 msgid "Run to cursor"
-msgstr ""
+msgstr "Ejecutar desde cursor"
 
 #: lazarusidestrconsts:lismenustop
 msgid "Stop"
-msgstr ""
+msgstr "Detener"
 
 #: lazarusidestrconsts:lismenucompileroptions
 msgid "Compiler Options..."
-msgstr ""
+msgstr "Opciones del compilador..."
 
 #: lazarusidestrconsts:lismenurunparameters
 msgid "Run Parameters ..."
-msgstr ""
+msgstr "Parametros de Ejecución ..."
 
 #: lazarusidestrconsts:lismenusettings
 msgid "Configure custom tools ..."
-msgstr ""
+msgstr "Configurar herramientas personalizadas ..."
 
 #: lazarusidestrconsts:lismenuquicksyntaxcheck
 msgid "Quick syntax check"
-msgstr ""
+msgstr "Chequeo rápido de la sintaxis"
 
 #: lazarusidestrconsts:lismenuguessunclosedblock
 msgid "Guess unclosed block"
@@ -505,27 +505,27 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuconvertdfmtolfm
 msgid "Convert DFM file to LFM"
-msgstr ""
+msgstr "Convertir archivo DFM a LFM"
 
 #: lazarusidestrconsts:lismenubuildlazarus
 msgid "Build Lazarus"
-msgstr ""
+msgstr "Construir Lazarus"
 
 #: lazarusidestrconsts:lismenuconfigurebuildlazarus
 msgid "Configure \"Build Lazarus\""
-msgstr ""
+msgstr "Configurar \"Construir Lazarus\""
 
 #: lazarusidestrconsts:lismenugeneraloptions
 msgid "Environment options"
-msgstr ""
+msgstr "Opciones del Entorno"
 
 #: lazarusidestrconsts:lismenueditoroptions
 msgid "Editor options"
-msgstr ""
+msgstr "Opciones del Editor"
 
 #: lazarusidestrconsts:lismenucodetoolsoptions
 msgid "CodeTools options"
-msgstr ""
+msgstr "Opciones de Herramientas de Código"
 
 #: lazarusidestrconsts:lismenucodetoolsdefineseditor
 msgid "CodeTools defines editor"
@@ -533,503 +533,503 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuaboutlazarus
 msgid "About Lazarus"
-msgstr ""
+msgstr "Acerca de Lazarus"
 
 #: lazarusidestrconsts:lisresourcefilecomment
 msgid "This is an automatically generated lazarus resource file"
-msgstr ""
+msgstr "Este es un archivo de recurso de Lazarus generado automáticamente"
 
 #: lazarusidestrconsts:lisopenfile
 msgid "Open file"
-msgstr ""
+msgstr "Abrir archivo"
 
 #: lazarusidestrconsts:lisopenprojectfile
 msgid "Open Project File"
-msgstr ""
+msgstr "Abrir archivo de Proyecto"
 
 #: lazarusidestrconsts:lissavespace
 msgid "Save "
-msgstr ""
+msgstr "Guardar"
 
 #: lazarusidestrconsts:lisselectdfmfiles
 msgid "Select Delphi form files (*.dfm)"
-msgstr ""
+msgstr "Seleccionar desde archivos Delphi (*.dfm)"
 
 #: lazarusidestrconsts:lissavechangestoproject
 msgid "Save changes to project %s?"
-msgstr ""
+msgstr "¿Guardar cambios a proyecto %s?"
 
 #: lazarusidestrconsts:lisprojectchanged
 msgid "Project changed"
-msgstr ""
+msgstr "Proyecto cambiado"
 
 #: lazarusidestrconsts:lisfpcsourcedirectoryerror
 msgid "FPC Source Directory error"
-msgstr ""
+msgstr "Error del directorio de las fuentes de FPC"
 
 #: lazarusidestrconsts:lisplzcheckthefpcsourcedirectory
 msgid "Please check the freepascal source directory"
-msgstr ""
+msgstr "Por favor, verifique el directorio de las fuentes de FreePascal"
 
 #: lazarusidestrconsts:liscompilererror
 msgid "Compiler error"
-msgstr ""
+msgstr "Error del compilador"
 
 #: lazarusidestrconsts:lisplzcheckthecompilername
 msgid "Please check the compiler name"
-msgstr ""
+msgstr "Por favor, verifique el nombre del compilador"
 
 #: lazarusidestrconsts:lisaboutlazarusmsg
 msgid "License: GPL/LGPL\nLazarus are the class libraries for Free Pascal that emulate Delphi.\nFree Pascal is a (L)GPL'ed compiler that runs on Linux,\nWin32, OS/2, 68K and more. Free Pascal is designed to be able to\nunderstand and compile Delphi syntax, which is of course OOP.\nLazarus is the missing part of the puzzle that will allow you to\ndevelop Delphi like programs in all of the above platforms.\nThe IDE will eventually become a RAD tool like Delphi.\n\nAs Lazarus is growing we need more developers."
-msgstr ""
+msgstr "Licencia: GPL/LGPL\nLazarus es un conjunto de clases para Free Pascal que emulan a Delphi.\nFree Pascal es un compilador (con licencia L/GPL) que corre en Linux,\nWin32, OS/2, 68K y algunos más. Free Pascal fue diseñado para poder \nentender y compilar código de Delphi, el cual es por supuesto OO.\nLazarus es la parte del rompecabezas que le permitirá\ndesarrollar programas como Delphi en todas las plataformas mencionadas.\nEl IDE se convertira eventualmente en una herramienta RAD como Delphi.\n\nAs Lazarus está creciendo nosotros necesitamos más desarrolladores."
 
 #: lazarusidestrconsts:lisunitnamealreadyexistscap
 msgid "Unitname already in project"
-msgstr ""
+msgstr "Nombre de unidad ya está en el proyecto"
 
 #: lazarusidestrconsts:lisunitnamealreadyexiststext
 msgid "The unit \"%s\" already exists.\nIgnore will force the renaming,\nCancel will cancel the saving of this source and\nAbort will abort the whole saving."
-msgstr ""
+msgstr "La unidad \"%s\" ya existe.\nIgnorar forzará el renombramiento,\nCancelar cancelará guardar el código y\nAbortar abortará el guardar totalmente."
 
 #: lazarusidestrconsts:lisinvalidpascalidentifiercap
 msgid "Invalid Pascal Identifier"
-msgstr ""
+msgstr "Identificador inválido de Pascal"
 
 #: lazarusidestrconsts:lisinvalidpascalidentifiertext
 msgid "The name \"%s\" is not a valid pascal identifier."
-msgstr ""
+msgstr "El nombre \"%s\" no es un identificador valido de Pascal."
 
 #: lazarusidestrconsts:liscopyerror
 msgid "Copy Error"
-msgstr ""
+msgstr "Error de Copia"
 
 #: lazarusidestrconsts:lishintsaveall
 msgid "Save all"
-msgstr ""
+msgstr "Guardar todo"
 
 #: lazarusidestrconsts:lishinttoggleformunit
 msgid "Toggle Form/Unit"
-msgstr ""
+msgstr "Conmutar Forma/Unidad"
 
 #: lazarusidestrconsts:lishintviewunits
 msgid "View Units"
-msgstr ""
+msgstr "Ver Unidades"
 
 #: lazarusidestrconsts:lishintviewforms
 msgid "View Forms"
-msgstr ""
+msgstr "Ver Formas"
 
 #: lazarusidestrconsts:lishintstepinto
 msgid "Step Into"
-msgstr ""
+msgstr "Paso a paso por instrucciones"
 
 #: lazarusidestrconsts:lishintstepover
 msgid "Step Over"
-msgstr ""
+msgstr "Paso a paso por funciones"
 
 #: lazarusidestrconsts:lisgplnotice
 msgid "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. "
-msgstr ""
+msgstr "Este programa está distribuido bajo los términos de GPL. %sThis program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. "
 
 #: lazarusidestrconsts:idestandard
 msgid "Standard"
-msgstr ""
+msgstr "Estándar"
 
 #: lazarusidestrconsts:ideadditional
 msgid "Additional"
-msgstr ""
+msgstr "Adicional"
 
 #: lazarusidestrconsts:idemisc
 msgid "Misc"
-msgstr ""
+msgstr "Misc"
 
 #: lazarusidestrconsts:idesystem
 msgid "System"
-msgstr ""
+msgstr "Sistema"
 
 #: lazarusidestrconsts:idedialogs
 msgid "Dialogs"
-msgstr ""
+msgstr "Diálogos"
 
 #: lazarusidestrconsts:idedataaccess
 msgid "Data Access"
-msgstr ""
+msgstr "Acceso de datos"
 
 #: lazarusidestrconsts:ideinterbase
 msgid "Interbase Data Access"
-msgstr ""
+msgstr "Acceso de datos Interbase"
 
 #: lazarusidestrconsts:dlgenvopts
 msgid "Environment Options"
-msgstr ""
+msgstr "Opciones del Entorno"
 
 #: lazarusidestrconsts:dlgdesktop
 msgid "Desktop"
-msgstr ""
+msgstr "Escritorio"
 
 #: lazarusidestrconsts:dlgfrmeditor
 msgid "Form Editor"
-msgstr ""
+msgstr "Editor de Forma"
 
 #: lazarusidestrconsts:dlgenvfiles
 msgid "Files"
-msgstr ""
+msgstr "Archivos"
 
 #: lazarusidestrconsts:dlgenvbckup
 msgid "Backup"
-msgstr ""
+msgstr "Respaldar"
 
 #: lazarusidestrconsts:dlgnaming
 msgid "Naming"
-msgstr ""
+msgstr "Nombrando"
 
 #: lazarusidestrconsts:dlgcancel
 msgid "Cancel"
-msgstr ""
+msgstr "Cancelar"
 
 #: lazarusidestrconsts:dlgenvlanguage
 msgid "Language"
-msgstr ""
+msgstr "Idioma"
 
 #: lazarusidestrconsts:dlgautosave
 msgid "Auto save"
-msgstr ""
+msgstr "Guardar automáticamente"
 
 #: lazarusidestrconsts:dlgedfiles
 msgid "Editor files"
-msgstr ""
+msgstr "Archivos del Editor"
 
 #: lazarusidestrconsts:dlgenvproject
 msgid "Project"
-msgstr ""
+msgstr "Proyecto"
 
 #: lazarusidestrconsts:dlgintvinsec
 msgid "Interval in secs"
-msgstr ""
+msgstr "Intervalos en segundos"
 
 #: lazarusidestrconsts:dlgdesktopfiles
 msgid "Desktop files"
-msgstr ""
+msgstr "Archivos del escritorio"
 
 #: lazarusidestrconsts:dlgsavedfile
 msgid "Save desktop settings to file"
-msgstr ""
+msgstr "Guardar configuraciones del escritorio a un archivo"
 
 #: lazarusidestrconsts:dlgloaddfile
 msgid "Load desktop settings from file"
-msgstr ""
+msgstr "Cargar configuraciones del escritorio desde archivo"
 
 #: lazarusidestrconsts:dlgpalhints
 msgid "Hints for component palette"
-msgstr ""
+msgstr "Sugerencias para la paleta de componentes"
 
 #: lazarusidestrconsts:dlgspbhints
 msgid "Hints for main speed buttons (open, save, ...)"
-msgstr ""
+msgstr "Sugerencias para los botones rápidos principales (abrir, guardar, ...)"
 
 #: lazarusidestrconsts:dlgwinpos
 msgid "Window Positions"
-msgstr ""
+msgstr "Posiciones de las ventanas"
 
 #: lazarusidestrconsts:dlgmainmenu
 msgid "Main Menu"
-msgstr ""
+msgstr "Menú principal"
 
 #: lazarusidestrconsts:dlgsrcedit
 msgid "Source Editor"
-msgstr ""
+msgstr "Editor del código fuente"
 
 #: lazarusidestrconsts:dlgprojfiles
 msgid "Project files"
-msgstr ""
+msgstr "Archivos del proyecto"
 
 #: lazarusidestrconsts:dlgenvtype
 msgid "Type"
-msgstr ""
+msgstr "Tipo"
 
 #: lazarusidestrconsts:dlgenvnone
 msgid "None"
-msgstr ""
+msgstr "Nada"
 
 #: lazarusidestrconsts:dlgsmbfront
 msgid "Symbol in front (.~pp)"
-msgstr ""
+msgstr "Símbolo delante (.~pp)"
 
 #: lazarusidestrconsts:dlgsmbbehind
 msgid "Symbol behind (.pp~)"
-msgstr ""
+msgstr "Símbolo atrás (.pp~)"
 
 #: lazarusidestrconsts:dlgsmbcounter
 msgid "Counter (.pp;1)"
-msgstr ""
+msgstr "Contador (.pp;1)"
 
 #: lazarusidestrconsts:dlgcustomext
 msgid "User defined extension (.pp.xxx)"
-msgstr ""
+msgstr "Extensión definida por usuario"
 
 #: lazarusidestrconsts:dlgbckupsubdir
 msgid "Same name (in subdirectory)"
-msgstr ""
+msgstr "Mismo nombre (en subdirectorio)"
 
 #: lazarusidestrconsts:dlgedcustomext
 msgid "User defined extension"
-msgstr ""
+msgstr "Extensión definida por usuario"
 
 #: lazarusidestrconsts:dlgmaxcntr
 msgid "Maximum counter"
-msgstr ""
+msgstr "Contador máximo"
 
 #: lazarusidestrconsts:dlgedbsubdir
 msgid "Sub directory"
-msgstr ""
+msgstr "Subdirectorio"
 
 #: lazarusidestrconsts:dlgenvotherfiles
 msgid "Other files"
-msgstr ""
+msgstr "Otros archivos"
 
 #: lazarusidestrconsts:dlgmaxrecentfiles
 msgid "Max recent files"
-msgstr ""
+msgstr "Archivos recientes Máxs."
 
 #: lazarusidestrconsts:dlgmaxrecentprojs
 msgid "Max recent project files"
-msgstr ""
+msgstr "Archivos de proyectos recientes máxs."
 
 #: lazarusidestrconsts:dlgqopenlastprj
 msgid "Open last project at start"
-msgstr ""
+msgstr "Abrir último proyecto al iniciar"
 
 #: lazarusidestrconsts:dlglazarusdir
 msgid "Lazarus directory (default for all projects)"
-msgstr ""
+msgstr "Directorio de Lazarus (por defecto para todos los proyectos)"
 
 #: lazarusidestrconsts:dlgfpcpath
 msgid "Compiler path (ppc386)"
-msgstr ""
+msgstr "Ruta del compilador (ppc386)"
 
 #: lazarusidestrconsts:dlgfpcsrcpath
 msgid "FPC source directory"
-msgstr ""
+msgstr "Directorio de las fuentes de FPC"
 
 #: lazarusidestrconsts:dlgdebugtype
 msgid "Debugger type and path"
-msgstr ""
+msgstr "Tipo de depurador y ruta"
 
 #: lazarusidestrconsts:dlgtestprjdir
 msgid "Directory for building test projects"
-msgstr ""
+msgstr "Directorio para construir proyectos de pruebas"
 
 #: lazarusidestrconsts:dlgqshowgrid
 msgid "Show grid"
-msgstr ""
+msgstr "Mostrar cuadrícula"
 
 #: lazarusidestrconsts:dlggridcolor
 msgid "Grid color"
-msgstr ""
+msgstr "Color de cuadrícula"
 
 #: lazarusidestrconsts:dlgqsnaptogrid
 msgid "Snap to grid"
-msgstr ""
+msgstr "Ajustar a cuadrícula"
 
 #: lazarusidestrconsts:dlggridx
 msgid "Grid size X"
-msgstr ""
+msgstr "Tamaño X"
 
 #: lazarusidestrconsts:dlggridy
 msgid "Grid size Y"
-msgstr ""
+msgstr "Tamaño Y"
 
 #: lazarusidestrconsts:dlgguidelines
 msgid "Show Guide Lines"
-msgstr ""
+msgstr "Muestra líneas guías"
 
 #: lazarusidestrconsts:dlgsnapguidelines
 msgid "Snap to Guide Lines"
-msgstr ""
+msgstr "Ajustar a líneas guías"
 
 #: lazarusidestrconsts:dlglefttopclr
 msgid "color for left, top"
-msgstr ""
+msgstr "color para izquierda, arriba"
 
 #: lazarusidestrconsts:dlgrightbottomclr
 msgid "color for right, bottom"
-msgstr ""
+msgstr "color para derecha, abajo"
 
 #: lazarusidestrconsts:dlgshowcaps
 msgid "Show component captions"
-msgstr ""
+msgstr "Muestra títulos de componentes"
 
 #: lazarusidestrconsts:dlgshowedrhints
 msgid "Show editor hints"
-msgstr ""
+msgstr "Mostrar sugerencias del editor"
 
 #: lazarusidestrconsts:dlgautoform
 msgid "Auto create forms"
-msgstr ""
+msgstr "Crear formas automáticamente"
 
 #: lazarusidestrconsts:dlgenvgrid
 msgid "Grid"
-msgstr ""
+msgstr "Cuadrícula"
 
 #: lazarusidestrconsts:dlgenvlguidelines
 msgid "Guide lines"
-msgstr ""
+msgstr "Líneas guías"
 
 #: lazarusidestrconsts:dlgenvmisc
 msgid "Miscellaneous"
-msgstr ""
+msgstr "Miscelanios"
 
 #: lazarusidestrconsts:dlgpasext
 msgid "Default pascal extension"
-msgstr ""
+msgstr "Extensión Pascal por defecto"
 
 #: lazarusidestrconsts:dlgpaslower
 msgid "Save pascal files lowercase"
-msgstr ""
+msgstr "Guardar archivos Pascal en minúsculas"
 
 #: lazarusidestrconsts:dlgambigfileact
 msgid "Ambigious file action:"
-msgstr ""
+msgstr "Acción de archivo ambigua:"
 
 #: lazarusidestrconsts:dlgenvask
 msgid "Ask"
-msgstr ""
+msgstr "Preguntar"
 
 #: lazarusidestrconsts:dlgautodel
 msgid "Auto delete file"
-msgstr ""
+msgstr "Suprimir archivo automáticamente"
 
 #: lazarusidestrconsts:dlgautoren
 msgid "Auto rename file"
-msgstr ""
+msgstr "Renombrar archivo automáticamente"
 
 #: lazarusidestrconsts:dlgambigwarn
 msgid "Warn on compile"
-msgstr ""
+msgstr "Advertir sobre compilar"
 
 #: lazarusidestrconsts:dlgignoreverb
 msgid "Ignore"
-msgstr ""
+msgstr "Ignorar"
 
 #: lazarusidestrconsts:dlgbackcolor
 msgid "Background color"
-msgstr ""
+msgstr "Color de fondo"
 
 #: lazarusidestrconsts:dlgenvcolors
 msgid "Colors"
-msgstr ""
+msgstr "Colores"
 
 #: lazarusidestrconsts:dlgenvbackuphelpnote
 msgid "Notes: Project files are all files in the project directory"
-msgstr ""
+msgstr "Notas: Archivos del proyecto son todos los archivos en el directorio del proyecto"
 
 #: lazarusidestrconsts:lisenvoptdlginvalidcompilerfilename
 msgid "Invalid compiler filename"
-msgstr ""
+msgstr "Nombre de archivo inválido"
 
 #: lazarusidestrconsts:lisenvoptdlginvalidcompilerfilenamemsg
 msgid "The compiler file \"%s\" is not an executable."
-msgstr ""
+msgstr "El archivo del compilador \"%s\" no es un ejecutable."
 
 #: lazarusidestrconsts:lisenvoptdlginvaliddebuggerfilename
 msgid "Invalid debugger filename"
-msgstr ""
+msgstr "Nombre de archivo del depurador inválido"
 
 #: lazarusidestrconsts:lisenvoptdlginvaliddebuggerfilenamemsg
 msgid "The debugger file \"%s\" is not an executable."
-msgstr ""
+msgstr "El archivo depurador \"%s\" no es un ejecutable."
 
 #: lazarusidestrconsts:lisenvoptdlgdirectorynotfound
 msgid "Directory not found"
-msgstr ""
+msgstr "Directorio no encontrado"
 
 #: lazarusidestrconsts:lisenvoptdlglazarusdirnotfoundmsg
 msgid "Lazarus directory \"%s\" not found."
-msgstr ""
+msgstr "Directorio de Lazarus \"%s\" no encontrado."
 
 #: lazarusidestrconsts:lisenvoptdlginvalidlazarusdir
 msgid "The lazarus directory \"%s\" does not look correct. Normally it contains directories like lcl, debugger, designer, components, ... ."
-msgstr ""
+msgstr "El directorio de lazarus \"%s\" no luce correcto. Normalmente contiene directorios, como lcl, debugger, designer, components, ... ."
 
 #: lazarusidestrconsts:lisenvoptdlgfpcsrcdirnotfoundmsg
 msgid "FPC source directory \"%s\" not found."
-msgstr ""
+msgstr "Directorio de las fuentes de FPC \"%s\" no encontrado."
 
 #: lazarusidestrconsts:lisenvoptdlginvalidfpcsrcdir
 msgid "The FPC source directory \"%s\" does not look correct. Normally it contains directories like rtl, fcl, packages, compiler, ... ."
-msgstr ""
+msgstr "El directorio de las fuentes de FPC \"%s\" no luce correcto. Normalmente contiene directorios, como rtl, fcl, packages, compiler, ... ."
 
 #: lazarusidestrconsts:lisenvoptdlgtestdirnotfoundmsg
 msgid "Test directory \"%s\" not found."
-msgstr ""
+msgstr "Directorio de prueba \"%s\" no encontrado."
 
 #: lazarusidestrconsts:dlgedoptscap
 msgid "Editor Options"
-msgstr ""
+msgstr "Opciones del Editor"
 
 #: lazarusidestrconsts:dlgeddisplay
 msgid "Display"
-msgstr ""
+msgstr "Visualizar"
 
 #: lazarusidestrconsts:dlgkeymapping
 msgid "Key Mappings"
-msgstr ""
+msgstr "Accesos rápidos"
 
 #: lazarusidestrconsts:dlgedcolor
 msgid "Color"
-msgstr ""
+msgstr "Color"
 
 #: lazarusidestrconsts:dlgkeymappingerrors
 msgid "Key mapping errors"
-msgstr ""
+msgstr "Errores de acceso rápido"
 
 #: lazarusidestrconsts:dlgedback
 msgid "Back"
-msgstr ""
+msgstr "Atrás"
 
 #: lazarusidestrconsts:dlgreport
 msgid "Report"
-msgstr ""
+msgstr "Reporte"
 
 #: lazarusidestrconsts:dlgednoerr
 msgid "No errors in key mapping found."
-msgstr ""
+msgstr "No se encontraron errores en accesos rápidos"
 
 #: lazarusidestrconsts:dlgdeltemplate
 msgid "Delete template "
-msgstr ""
+msgstr "Suprimir plantilla"
 
 #: lazarusidestrconsts:dlgchscodetempl
 msgid "Choose code template file (*.dci)"
-msgstr ""
+msgstr "Escoja archivo plantilla de código (*.dci)"
 
 #: lazarusidestrconsts:dlgallfiles
 msgid "All files"
-msgstr ""
+msgstr "Todos los archivos"
 
 #: lazarusidestrconsts:dlgaltsetclmode
 msgid "Alt Sets Column Mode"
-msgstr ""
+msgstr "Alt selecciona modo de columnas"
 
 #: lazarusidestrconsts:dlgautoident
 msgid "Auto Indent"
-msgstr ""
+msgstr "Sangría automática"
 
 #: lazarusidestrconsts:dlgbrachighlight
 msgid "Bracket Highlight"
-msgstr ""
+msgstr "Resaltar paréntesis"
 
 #: lazarusidestrconsts:dlgdragdroped
 msgid "Drag Drop Editing"
-msgstr ""
+msgstr "Editando Arrastrar y Soltar"
 
 #: lazarusidestrconsts:dlgdropfiles
 msgid "Drop Files"
-msgstr ""
+msgstr "Soltar Archivos"
 
 #: lazarusidestrconsts:dlghalfpagescroll
 msgid "Half Page Scroll"
-msgstr ""
+msgstr "Desplazar media página"
 
 #: lazarusidestrconsts:dlgkeepcaretx
 msgid "Keep Caret X"
@@ -1041,1062 +1041,1063 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgscrollbyoneless
 msgid "Scroll By One Less"
-msgstr ""
+msgstr "Desplazar por uno menos"
 
 #: lazarusidestrconsts:dlgscrollpastendfile
 msgid "Scroll Past End of File"
-msgstr ""
+msgstr "Desplazar pasado el Fin del archivo"
 
 #: lazarusidestrconsts:dlgscrollpastendline
 msgid "Scroll Past End of Line"
-msgstr ""
+msgstr "Desplazar pasado el Fin de la línea"
 
 #: lazarusidestrconsts:dlgclosebuttonsnotebook
 msgid "Close buttons in notebook"
-msgstr ""
+msgstr "Cerrar botones en notebook"
 
 #: lazarusidestrconsts:dlgshowscrollhint
 msgid "Show Scroll Hint"
-msgstr ""
+msgstr "Mostrar desplazar sugerencia"
 
 #: lazarusidestrconsts:dlgmouselinks
 msgid "Mouse links"
-msgstr ""
+msgstr "Enlaces del Ratón"
 
 #: lazarusidestrconsts:dlgsmarttabs
 msgid "Smart Tabs"
-msgstr ""
+msgstr "Tabulaciones pequeñas"
 
 #: lazarusidestrconsts:dlgtabstospaces
 msgid "Tabs To Spaces"
-msgstr ""
+msgstr "Tabulaciones a espacios"
 
 #: lazarusidestrconsts:dlgtrimtrailingspaces
 msgid "Trim Trailing Spaces"
-msgstr ""
+msgstr "Ajustar los espacios finales"
 
 #: lazarusidestrconsts:dlgundoaftersave
 msgid "Undo after save"
-msgstr ""
+msgstr "Deshacer después de guardar"
 
 #: lazarusidestrconsts:dlgdoubleclickline
 msgid "Double click line"
-msgstr ""
+msgstr "Línea de doble clic"
 
 #: lazarusidestrconsts:dlgfindtextatcursor
 msgid "Find text at cursor"
-msgstr ""
+msgstr "Buscar texto a cursor"
 
 #: lazarusidestrconsts:dlgusesyntaxhighlight
 msgid "Use syntax highlight"
-msgstr ""
+msgstr "Usar resaltado de sintaxis"
 
 #: lazarusidestrconsts:dlgblockindent
 msgid "Block indent:"
-msgstr ""
+msgstr "Sangrar bloque:"
 
 #: lazarusidestrconsts:dlgundolimit
 msgid "Undo limit:"
-msgstr ""
+msgstr "Limite de deshacer:"
 
 #: lazarusidestrconsts:dlgtabwidths
 msgid "Tab widths:"
-msgstr ""
+msgstr "Anchos de tabulación:"
 
 #: lazarusidestrconsts:dlgmargingutter
 msgid "Margin and gutter"
-msgstr ""
+msgstr "Margen y canal"
 
 #: lazarusidestrconsts:dlgvisiblerightmargin
 msgid "Visible right margin"
-msgstr ""
+msgstr "Ver margen derecho"
 
 #: lazarusidestrconsts:dlgvisiblegutter
 msgid "Visible gutter"
-msgstr ""
+msgstr "Canal visible"
 
 #: lazarusidestrconsts:dlgshowlinenumbers
 msgid "Show line numbers"
-msgstr ""
+msgstr "Ver Núms. de líneas"
 
 #: lazarusidestrconsts:dlgrightmargin
 msgid "Right margin"
-msgstr ""
+msgstr "Margen derecho"
 
 #: lazarusidestrconsts:dlgrightmargincolor
 msgid "Right margin color"
-msgstr ""
+msgstr "Color del margen derecho"
 
 #: lazarusidestrconsts:dlggutterwidth
 msgid "Gutter width"
-msgstr ""
+msgstr "Ancho del canal"
 
 #: lazarusidestrconsts:dlgguttercolor
 msgid "Gutter color"
-msgstr ""
+msgstr "Color del canal"
 
 #: lazarusidestrconsts:dlgeditorfont
 msgid "Editor font"
-msgstr ""
+msgstr "Fuente del Editor"
 
 #: lazarusidestrconsts:dlgeditorfontheight
 msgid "Editor font height"
-msgstr ""
+msgstr "Altura de la fuente del Editor"
 
 #: lazarusidestrconsts:dlgextralinespacing
 msgid "Extra line spacing"
-msgstr ""
+msgstr "Espaciando línea extra"
 
 #: lazarusidestrconsts:dlgkeymappingscheme
 msgid "Key Mapping Scheme"
-msgstr ""
+msgstr "Esquema de acceso rápido"
 
 #: lazarusidestrconsts:dlgcheckconsistency
 msgid "Check consistency"
-msgstr ""
+msgstr "Verificar consistencia"
 
 #: lazarusidestrconsts:dlgedhintcommand
 msgid "Hint: click on the command you want to edit"
-msgstr ""
+msgstr "Sugerencia: haga clic sobre el comando que desea editar"
 
 #: lazarusidestrconsts:dlglang
 msgid "Language:"
-msgstr ""
+msgstr "Lenguaje:"
 
 #: lazarusidestrconsts:dlgclrscheme
 msgid "Color Scheme:"
-msgstr ""
+msgstr "Esquema color:"
 
 #: lazarusidestrconsts:dlgfileexts
 msgid "File extensions:"
-msgstr ""
+msgstr "Exts. de archivos:"
 
 #: lazarusidestrconsts:dlgedelement
 msgid "Element"
-msgstr ""
+msgstr "Elemento"
 
 #: lazarusidestrconsts:dlgsetelementdefault
 msgid "Set element to default"
-msgstr ""
+msgstr "Seleccionar elemento por defecto"
 
 #: lazarusidestrconsts:dlgsetallelementdefault
 msgid "Set all elements to default"
-msgstr ""
+msgstr "Seleccionar todos los elementos por defecto"
 
 #: lazarusidestrconsts:dlgforecolor
 msgid "Foreground color"
-msgstr ""
+msgstr "Color de texto"
 
 #: lazarusidestrconsts:dlgedusedefcolor
 msgid "Use default color"
-msgstr ""
+msgstr "Usar color por defecto"
 
 #: lazarusidestrconsts:dlgtextattributes
 msgid "Text attributes"
-msgstr ""
+msgstr "Atributos del texto"
 
 #: lazarusidestrconsts:dlgedbold
 msgid "Bold"
-msgstr ""
+msgstr "Negrita"
 
 #: lazarusidestrconsts:dlgedital
 msgid "Italic"
-msgstr ""
+msgstr "Cursiva"
 
 #: lazarusidestrconsts:dlgedunder
 msgid "Underline"
-msgstr ""
+msgstr "Subrayado"
 
 #: lazarusidestrconsts:dlgedidcomlet
 msgid "Identfier completion"
-msgstr ""
+msgstr "Completado de Identificador"
 
 #: lazarusidestrconsts:dlgedcodeparams
 msgid "Code parameters"
-msgstr ""
+msgstr "Parametros del código"
 
 #: lazarusidestrconsts:dlgtooltipeval
 msgid "Tooltip expression evaluation"
-msgstr ""
+msgstr "Evaluación de expresión de Información de Herramienta"
 
 #: lazarusidestrconsts:dlgtooltiptools
 msgid "Tooltip symbol Tools"
-msgstr ""
+msgstr "Herramientas de símbolo de Información de Herramienta"
 
 #: lazarusidestrconsts:dlgeddelay
 msgid "Delay"
-msgstr ""
+msgstr "Demora"
 
 #: lazarusidestrconsts:dlgtimesecondunit
 msgid "sec"
-msgstr ""
+msgstr "seg"
 
 #: lazarusidestrconsts:dlgedcodetempl
 msgid "Code templates"
-msgstr ""
+msgstr "Plantillas de Código"
 
 #: lazarusidestrconsts:dlgtplfname
 msgid "Template file name"
-msgstr ""
+msgstr "Nombre de archivo de la plantilla"
 
 #: lazarusidestrconsts:dlgedadd
 msgid "Add..."
-msgstr ""
+msgstr "Añadir..."
 
 #: lazarusidestrconsts:dlgededit
 msgid "Edit..."
-msgstr ""
+msgstr "Editar..."
 
 #: lazarusidestrconsts:dlgeddelete
 msgid "Delete"
-msgstr ""
+msgstr "Borrar"
 
 #: lazarusidestrconsts:dlgindentcodeto
 msgid "Indent code to"
-msgstr ""
+msgstr "Sangrar código a"
 
 #: lazarusidestrconsts:dlgcodetoolsopts
 msgid "CodeTools Options"
-msgstr ""
+msgstr "Opciones de Herramientas del Código"
 
 #: lazarusidestrconsts:dlgcodecreation
 msgid "Code Creation"
-msgstr ""
+msgstr "Creación de Código"
 
 #: lazarusidestrconsts:dlgwordspolicies
 msgid "Words"
-msgstr ""
+msgstr "Palabras"
 
 #: lazarusidestrconsts:dlglinesplitting
 msgid "Line Splitting"
-msgstr ""
+msgstr "Separando línea"
 
 #: lazarusidestrconsts:dlgspacenotcosmos
 msgid "Space"
-msgstr ""
+msgstr "Espacio"
 
 #: lazarusidestrconsts:dlgadditionalsrcpath
 msgid "Additional Source search path for all projects (.pp;.pas)"
-msgstr ""
+msgstr "Ruta adicional de código fuente para todos los proyectos (.pp;.pas)"
 
 #: lazarusidestrconsts:dlgjumpingetc
 msgid "Jumping (e.g. Method Jumping)"
-msgstr ""
+msgstr "Saltando (por ejemplo, Saltando Métodos)"
 
 #: lazarusidestrconsts:dlgadjusttopline
 msgid "Adjust top line due to comment in front"
-msgstr ""
+msgstr "Ajustar línea de arriba debido al comentario delante"
 
 #: lazarusidestrconsts:dlgcentercursorline
 msgid "Center Cursor Line"
-msgstr ""
+msgstr "Centrar Línea de Cursor"
 
 #: lazarusidestrconsts:dlgcursorbeyondeol
 msgid "Cursor beyond EOL"
-msgstr ""
+msgstr "Cursor más allá de EOL"
 
 #: lazarusidestrconsts:dlgclassinsertpolicy
 msgid "Class part insert policy"
-msgstr ""
+msgstr "Política de insertar parte de Clases"
 
 #: lazarusidestrconsts:dlgalphabetically
 msgid "Alphabetically"
-msgstr ""
+msgstr "Alfabéticamente"
 
 #: lazarusidestrconsts:dlgcdtlast
 msgid "Last"
-msgstr ""
+msgstr "Ultimo"
 
 #: lazarusidestrconsts:dlgmixmethodsandproperties
 msgid "Mix methods and properties"
-msgstr ""
+msgstr "Mezclar métodos y propiedades"
 
 #: lazarusidestrconsts:dlgforwardprocsinsertpolicy
 msgid "Procedure insert policy"
-msgstr ""
+msgstr "Política de insertar Procedimientos"
 
 #: lazarusidestrconsts:dlglast
 msgid "Last (i.e. at end of source)"
-msgstr ""
+msgstr "Ultimo (es decir en el final de la fuente)"
 
 #: lazarusidestrconsts:dlginfrontofmethods
 msgid "In front of methods"
-msgstr ""
+msgstr "Delante de métodos"
 
 #: lazarusidestrconsts:dlgbehindmethods
 msgid "Behind methods"
-msgstr ""
+msgstr "Atrás de métodos"
 
 #: lazarusidestrconsts:dlgforwardprocskeeporder
 msgid "Keep order of procedures"
-msgstr ""
+msgstr "Mantener orden de los procedimientos"
 
 #: lazarusidestrconsts:dlgmethodinspolicy
 msgid "Method insert policy"
-msgstr ""
+msgstr "Política de insertar Métodos"
 
 #: lazarusidestrconsts:dlgcdtclassorder
 msgid "Class order"
-msgstr ""
+msgstr "Orden de la clase"
 
 #: lazarusidestrconsts:dlgkeywordpolicy
 msgid "Keyword policy"
-msgstr ""
+msgstr "Política de Palabras Claves"
 
 #: lazarusidestrconsts:dlgcdtlower
 msgid "lowercase"
-msgstr ""
+msgstr "minúsculas"
 
 #: lazarusidestrconsts:dlgcdtuppercase
 msgid "UPPERCASE"
-msgstr ""
+msgstr "MAYUSCULAS"
 
 #: lazarusidestrconsts:dlg1up2low
 msgid "Lowercase, first letter up"
-msgstr ""
+msgstr "Minúsculas, primera letra mayúscula"
 
 #: lazarusidestrconsts:dlgidentifierpolicy
 msgid "Identifier policy"
-msgstr ""
+msgstr "Política de Identificador"
 
 #: lazarusidestrconsts:dlgpropertycompletion
 msgid "Property completion"
-msgstr ""
+msgstr "Completado de Propiedad"
 
 #: lazarusidestrconsts:dlgcompleteproperties
 msgid "Complete properties"
-msgstr ""
+msgstr "Completar Propiedades"
 
 #: lazarusidestrconsts:dlgcdtreadprefix
 msgid "Read prefix"
-msgstr ""
+msgstr "Prefijo de leer"
 
 #: lazarusidestrconsts:dlgcdtwriteprefix
 msgid "Write prefix"
-msgstr ""
+msgstr "Prefijo de escribir"
 
 #: lazarusidestrconsts:dlgcdtstoredpostfix
 msgid "Stored postfix"
-msgstr ""
+msgstr "Postfijo Almacenado"
 
 #: lazarusidestrconsts:dlgcdtvariableprefix
 msgid "Variable prefix"
-msgstr ""
+msgstr "Prefijo de variable"
 
 #: lazarusidestrconsts:dlgsetpropertyvariable
 msgid "Set property Variable"
-msgstr ""
+msgstr "Fijar propiedad Variable"
 
 #: lazarusidestrconsts:dlgmaxlinelength
 msgid "Max line length:"
-msgstr ""
+msgstr "Máx. largo de línea:"
 
 #: lazarusidestrconsts:dlgnotsplitlinefront
 msgid "Do not split line In front of:"
-msgstr ""
+msgstr "No separar línea delante de:"
 
 #: lazarusidestrconsts:dlgnotsplitlineafter
 msgid "Do not split line after:"
-msgstr ""
+msgstr "No separar línea después de:"
 
 #: lazarusidestrconsts:dlgcdtpreview
 msgid "Preview (Max line length = 1)"
-msgstr ""
+msgstr "Vista previa (Máx. largo de línea = 1)"
 
 #: lazarusidestrconsts:dlginsspacefront
 msgid "Insert space in front of"
-msgstr ""
+msgstr "Insertar espacio delante de"
 
 #: lazarusidestrconsts:dlginsspaceafter
 msgid "Insert space after"
-msgstr ""
+msgstr "Insertar espacio después de"
 
 #: lazarusidestrconsts:dlgwrdpreview
 msgid "Preview"
-msgstr ""
+msgstr "Vista previa"
 
 #: lazarusidestrconsts:locwndsrceditor
 msgid "Lazarus Source Editor"
-msgstr ""
+msgstr "Editor Lazarus del código fuente"
 
 #: lazarusidestrconsts:dlgcompileroptions
 msgid "Compiler Options"
-msgstr ""
+msgstr "Opciones del Compilador"
 
 #: lazarusidestrconsts:dlgsearchpaths
 msgid "Search Paths"
-msgstr ""
+msgstr "Rutas de búsquedas"
 
 #: lazarusidestrconsts:dlgcoparsing
 msgid "Parsing"
-msgstr ""
+msgstr "Procesando"
 
 #: lazarusidestrconsts:dlgcodegeneration
 msgid "Code Generation"
-msgstr ""
+msgstr "Generación de Código"
 
 #: lazarusidestrconsts:dlgcolinking
 msgid "Linking"
-msgstr ""
+msgstr "Enlazando"
 
 #: lazarusidestrconsts:dlgcoother
 msgid "Other"
-msgstr ""
+msgstr "Otro"
 
 #: lazarusidestrconsts:dlgshowcompileroptions
 msgid "Show compiler options"
-msgstr ""
+msgstr "Mostrar opciones del compilador"
 
 #: lazarusidestrconsts:dlgcoopts
 msgid "Options: "
-msgstr ""
+msgstr "Opciones:"
 
 #: lazarusidestrconsts:dlgcostyle
 msgid "Style:"
-msgstr ""
+msgstr "Estilo:"
 
 #: lazarusidestrconsts:dlgcoasis
 msgid "As-Is"
-msgstr ""
+msgstr "Como es"
 
 #: lazarusidestrconsts:dlgsymantecchecking
 msgid "Symantec Checking:"
-msgstr ""
+msgstr "Verificación Semántica:"
 
 #: lazarusidestrconsts:dlgdelphi2ext
 msgid "Delphi 2 Extensions"
-msgstr ""
+msgstr "Extensiones de Delphi 2"
 
 #: lazarusidestrconsts:dlgcocops
 msgid "C Style Operators (*=, +=, /= and -=)"
-msgstr ""
+msgstr "Estilo de Operadores C (*=, +=, /= y -=)"
 
 #: lazarusidestrconsts:dlgassertcode
 msgid "Include Assertion Code"
-msgstr ""
+msgstr "Incluir código de Aserción"
 
 #: lazarusidestrconsts:dlglabelgoto
 msgid "Allow LABEL and GOTO"
-msgstr ""
+msgstr "Permitir LABEL y GOTO"
 
 #: lazarusidestrconsts:dlgcppinline
 msgid "C++ Styled INLINE"
-msgstr ""
+msgstr "INLINE Estilizado C++"
 
 #: lazarusidestrconsts:dlgcmacro
 msgid "C Style Macros (global)"
-msgstr ""
+msgstr "Estilo de Macros C (global)"
 
 #: lazarusidestrconsts:dlgbp7cptb
 msgid "TP/BP 7.0 Compatible"
-msgstr ""
+msgstr "TP/BP 7.0 Compatible"
 
 #: lazarusidestrconsts:dlginitdoneonly
 msgid "Constructor name must be 'init' (destructor must be 'done')"
-msgstr ""
+msgstr "Nombre constructor debe de ser 'init' (destructor 'done')"
 
 #: lazarusidestrconsts:dlgstatickeyword
 msgid "Static Keyword in Objects"
-msgstr ""
+msgstr "Palabra clave Estática en los Objetos"
 
 #: lazarusidestrconsts:dlgdeplhicomp
 msgid "Delphi Compatible"
-msgstr ""
+msgstr "Delphi Compatible"
 
 #: lazarusidestrconsts:dlgcoansistr
 msgid "Use Ansi Strings"
-msgstr ""
+msgstr "Usar Ansi Strings"
 
 #: lazarusidestrconsts:dlggpccomp
 msgid "GPC (GNU Pascal Compiler) Compatible"
-msgstr ""
+msgstr "GPC (Compilador GNU Pascal) Compatible"
 
 #: lazarusidestrconsts:dlgcounitstyle
 msgid "Unit Style:"
-msgstr ""
+msgstr "Estilo de unidad:"
 
 #: lazarusidestrconsts:dlgstatic
 msgid "Static"
-msgstr ""
+msgstr "Estática"
 
 #: lazarusidestrconsts:dlgdynamic
 msgid "Dynamic"
-msgstr ""
+msgstr "Dinámica"
 
 #: lazarusidestrconsts:dlgcosmart
 msgid "Smart"
-msgstr ""
+msgstr "Pequeña"
 
 #: lazarusidestrconsts:dlgcochecks
 msgid "Checks:"
-msgstr ""
+msgstr "Verificar:"
 
 #: lazarusidestrconsts:dlgcorange
 msgid "Range"
-msgstr ""
+msgstr "Rango"
 
 #: lazarusidestrconsts:dlgcooverflow
 msgid "Overflow"
-msgstr ""
+msgstr "Desbordamiento"
 
 #: lazarusidestrconsts:dlgcostack
 msgid "Stack"
-msgstr ""
+msgstr "Pila"
 
 #: lazarusidestrconsts:dlgheapsize
 msgid "Heap Size"
-msgstr ""
+msgstr "Tam. montón"
 
 #: lazarusidestrconsts:dlgcogenerate
 msgid "Generate:"
-msgstr ""
+msgstr "Generar:"
 
 #: lazarusidestrconsts:dlgcofast
 msgid "Faster Code"
-msgstr ""
+msgstr "Código rápido"
 
 #: lazarusidestrconsts:dlgcosmaller
 msgid "Smaller Code"
-msgstr ""
+msgstr "Código pequeño"
 
 #: lazarusidestrconsts:dlgtargetproc
 msgid "Target Processor:"
-msgstr ""
+msgstr "Especificar Procesador:"
 
 #: lazarusidestrconsts:dlgoptimiz
 msgid "Optimizations:"
-msgstr ""
+msgstr "Optimizaciones:"
 
 #: lazarusidestrconsts:dlgcokeepvarsreg
 msgid "Keep certain variables in registers"
-msgstr ""
+msgstr "Mantener algunas variables en los registros"
 
 #: lazarusidestrconsts:dlguncertopt
 msgid "Uncertain Optimizations"
-msgstr ""
+msgstr "Optimizaciones inciertas"
 
 #: lazarusidestrconsts:dlglevel1opt
 msgid "Level 1 (Quick Optimizations)"
-msgstr ""
+msgstr "Nivel 1 (optimizaciones rápidas)"
 
 #: lazarusidestrconsts:dlglevel2opt
 msgid "Level 2 (Level 1 + Slower Optimizations)"
-msgstr ""
+msgstr "Nivel 2 (Nivel 1 + optimizaciones más lentas)"
 
 #: lazarusidestrconsts:dlglevel3opt
 msgid "Level 3 (Level 2 + Uncertain)"
-msgstr ""
+msgstr "Nivel 3 (Nivel 2 + Inciertas)"
 
 #: lazarusidestrconsts:dlgtargetos
 msgid "Target OS"
-msgstr ""
+msgstr "Especificar OS:"
 
 #: lazarusidestrconsts:dlgcodebugging
 msgid "Debugging:"
-msgstr ""
+msgstr "Depurando:"
 
 #: lazarusidestrconsts:dlgcogdb
 msgid "Generate Debugging Info For GDB (Slows Compiling)"
-msgstr ""
+msgstr "Generar información de depuración para GDB (Lento Compilando)"
 
 #: lazarusidestrconsts:dlgcodbx
 msgid "Generate Debugging Info For DBX (Slows Compiling)"
-msgstr ""
+msgstr "Generar información de depuración para DBX (Lento Compilando)"
 
 #: lazarusidestrconsts:dlglnumsbct
 msgid "Display Line Numbers in Run-time Error Backtraces"
-msgstr ""
+msgstr "Visualizar números de líneas en los errores de tiempo de ejecucion en trazados inversos"
 
 #: lazarusidestrconsts:dlgcoheaptrc
 msgid "Use Heaptrc Unit"
-msgstr ""
+msgstr "Usar la unidad Heaptrc"
 
 #: lazarusidestrconsts:dlggprof
 msgid "Generate code for gprof"
-msgstr ""
+msgstr "Generar código para gprof"
 
 #: lazarusidestrconsts:dlgcostrip
 msgid "Strip Symbols From Executable"
-msgstr ""
+msgstr "Remover los símbolos en el ejecutable"
 
 #: lazarusidestrconsts:dlglinklibraries
 msgid "Link Libraries:"
-msgstr ""
+msgstr "Enlazando Librerías:"
 
 #: lazarusidestrconsts:dlglinkdinlibs
 msgid "Link With Dynamic Libraries"
-msgstr ""
+msgstr "Enlazar con Librerías Dinámicas"
 
 #: lazarusidestrconsts:dlglinkstatlibs
 msgid "Link With Static Libraries"
-msgstr ""
+msgstr "Enlazar con Librerías Estáticas"
 
 #: lazarusidestrconsts:dlglinksmart
 msgid "Link Smart"
-msgstr ""
+msgstr "Enlazar Pequeño"
 
 #: lazarusidestrconsts:dlgpassoptslinker
 msgid "Pass Options To The Linker (Delimiter is space)"
-msgstr ""
+msgstr "Pasar opciones al enlazador (espacio como delimitador)"
 
 #: lazarusidestrconsts:dlgverbosity
 msgid "Verbosity:"
-msgstr ""
+msgstr "Detallando:"
 
 #: lazarusidestrconsts:dlgcoshowerr
 msgid "Show Errors"
-msgstr ""
+msgstr "Mostrar errores"
 
 #: lazarusidestrconsts:dlgshowwarnings
 msgid "Show Warnings"
-msgstr ""
+msgstr "Mostrar advertencias"
 
 #: lazarusidestrconsts:dlgshownotes
 msgid "Show Notes"
-msgstr ""
+msgstr "Mostrar notas"
 
 #: lazarusidestrconsts:dlgshowhint
 msgid "Show Hints"
-msgstr ""
+msgstr "Mostrar sugerencias"
 
 #: lazarusidestrconsts:dlgshowgeneralinfo
 msgid "Show General Info"
-msgstr ""
+msgstr "Mostrar información general"
 
 #: lazarusidestrconsts:dlgshowprocserror
 msgid "Show all procs on error"
-msgstr ""
+msgstr "Mostrar todos los procs sobre error"
 
 #: lazarusidestrconsts:dlgshoweverything
 msgid "Show Everything"
-msgstr ""
+msgstr "Mostrar Todo"
 
 #: lazarusidestrconsts:dlgshowdebuginfo
 msgid "Show Debug Info"
-msgstr ""
+msgstr "Mostrar información de depuración"
 
 #: lazarusidestrconsts:dlgshowusedfiles
 msgid "Show Used Files"
-msgstr ""
+msgstr "Mostrar archivos usados"
 
 #: lazarusidestrconsts:dlgshowtriedfiles
 msgid "Show Tried Files"
-msgstr ""
+msgstr "Mostrar archivos Intentados"
 
 #: lazarusidestrconsts:dlgshowdefinedmacros
 msgid "Show Defined Macros"
-msgstr ""
+msgstr "Mostrar Macros definidos"
 
 #: lazarusidestrconsts:dlgshowcompiledprocedures
 msgid "Show Compiled Procedures"
-msgstr ""
+msgstr "Mostrar Procedimientos Compilados"
 
 #: lazarusidestrconsts:dlgshowconditionals
 msgid "Show Conditionals"
-msgstr ""
+msgstr "Mostrar Condicionales"
 
 #: lazarusidestrconsts:dlgshownothing
 msgid "Show Nothing (only errors)"
-msgstr ""
+msgstr "Mostrar nada (sólo errores)"
 
 #: lazarusidestrconsts:dlgwritefpclogo
 msgid "Write an FPC Logo"
-msgstr ""
+msgstr "Escribir un logo de FPC"
 
 #: lazarusidestrconsts:dlghintsunused
 msgid "Show Hints for unused project units"
-msgstr ""
+msgstr "Mostrar sugerencias para unidades de proyecto sin uso"
 
 #: lazarusidestrconsts:dlgconfigfiles
 msgid "Config Files:"
-msgstr ""
+msgstr "Archivos de configuración:"
 
 #: lazarusidestrconsts:dlgusefpccfg
 msgid "Use Compiler Config File (fpc.cfg)"
-msgstr ""
+msgstr "Usar el archivo del compilador (fpc.cfg)"
 
 #: lazarusidestrconsts:dlguseadditionalconfig
 msgid "Use Additional Compiler Config File"
-msgstr ""
+msgstr "Usar archivo de configuración adicional del compilador"
 
 #: lazarusidestrconsts:dlgstopafternrerr
 msgid "Stop after number of errors:"
-msgstr ""
+msgstr "Parar después de número de errores:"
 
 #: lazarusidestrconsts:dlgotherunitfiles
 msgid "Other Unit Files (Delimiter is semicolon):"
-msgstr ""
+msgstr "Otros archivos de unidad (Delimitador es punto y coma)"
 
 #: lazarusidestrconsts:dlgcoincfiles
 msgid "Include Files:"
-msgstr ""
+msgstr "Archivos de Inclusión:"
 
 #: lazarusidestrconsts:dlgcosources
 msgid "Other Sources:  (.pp/.pas files)"
-msgstr ""
+msgstr "Otras fuentes:  (archivos .pp/.pas)"
 
 #: lazarusidestrconsts:dlgcolibraries
 msgid "Libraries:"
-msgstr ""
+msgstr "Librerías:"
 
 #: lazarusidestrconsts:dlgtofpcpath
 msgid "Path To Compiler:"
-msgstr ""
+msgstr "Ruta al compilador:"
 
 #: lazarusidestrconsts:dlgunitoutp
 msgid "Unit output directory:"
-msgstr ""
+msgstr "Directorio de salida de Unidad:"
 
 #: lazarusidestrconsts:dlgbutapply
 msgid "Apply"
-msgstr ""
+msgstr "Aplicar"
 
 #: lazarusidestrconsts:dlgcoshowoptions
 msgid "Show Options"
-msgstr ""
+msgstr "Mostrar Opciones"
 
 #: lazarusidestrconsts:dlgmainviewunits
 msgid "View project units"
-msgstr ""
+msgstr "Ver unidades del proyecto"
 
 #: lazarusidestrconsts:dlgmulti
 msgid "Multi"
-msgstr ""
+msgstr "Multi"
 
 #: lazarusidestrconsts:dlgprojectoptions
 msgid "Project Options"
-msgstr ""
+msgstr "Opciones del Proyecto"
 
 #: lazarusidestrconsts:dlgpoapplication
 msgid "Application"
-msgstr ""
+msgstr "Aplicación"
 
 #: lazarusidestrconsts:dlgpofroms
 msgid "Forms"
-msgstr ""
+msgstr "Formas"
 
 #: lazarusidestrconsts:dlgpoinfo
 msgid "Info"
-msgstr ""
+msgstr "Información"
 
 #: lazarusidestrconsts:dlgapplicationsettings
 msgid "Application Settings"
-msgstr ""
+msgstr "Configuraciones de la aplicación"
 
 #: lazarusidestrconsts:dlgpotitle
 msgid "Title:"
-msgstr ""
+msgstr "Título:"
 
 #: lazarusidestrconsts:dlgpooutputsettings
 msgid "Output Settings"
-msgstr ""
+msgstr "Configuraciones de Salida"
 
 #: lazarusidestrconsts:dlgpotargetfilename
 msgid "Target file name:"
-msgstr ""
+msgstr "Especificar nombre de archivo:"
 
 #: lazarusidestrconsts:dlgautocreateforms
 msgid "Auto-create forms:"
-msgstr ""
+msgstr "Crear formas automáticamente:"
 
 #: lazarusidestrconsts:dlgavailableforms
 msgid "Available forms:"
-msgstr ""
+msgstr "Formas disponibles:"
 
 #: lazarusidestrconsts:dlgautocreatenewforms
 msgid "Auto create new forms"
-msgstr ""
+msgstr "Automáticamente crear nuevas formas"
 
 #: lazarusidestrconsts:dlgsaveeditorinfo
 msgid "Save editor info for closed files"
-msgstr ""
+msgstr "Guardar información del Editor para archivos cerrados"
 
 #: lazarusidestrconsts:dlgsaveeditorinfoproject
 msgid "Save editor info only for project files"
-msgstr ""
+msgstr "Guardar información del Editor sólo para archivos del proyecto"
 
 #: lazarusidestrconsts:dlgrunparameters
 msgid "Run parameters"
-msgstr ""
+msgstr "Parametros de ejecución"
 
 #: lazarusidestrconsts:dlgrunolocal
 msgid "Local"
-msgstr ""
+msgstr "Local"
 
 #: lazarusidestrconsts:dlgrunoenvironment
 msgid "Environment"
-msgstr ""
+msgstr "Entorno"
 
 #: lazarusidestrconsts:dlghostapplication
 msgid "Host application"
-msgstr ""
+msgstr "Aplicación anfitriona"
 
 #: lazarusidestrconsts:dlgcommandlineparams
 msgid "Command line parameters (without application name)"
-msgstr ""
+msgstr "Parametros de la línea de comandos (sin el nombre de la aplicación)"
 
 #: lazarusidestrconsts:dlguselaunchingapp
 msgid "Use launching application"
-msgstr ""
+msgstr "Usar lanzando aplicación"
 
 #: lazarusidestrconsts:dlgroworkingdirectory
 msgid "Working directory"
-msgstr ""
+msgstr "Directorio de trabajo"
 
 #: lazarusidestrconsts:dlgrunodisplay
 msgid "Display (not for win32, e.g. 198.112.45.11:0, x.org:1, hydra:0.1)"
-msgstr ""
+msgstr "Pantalla (no para win32, e.g. 198.112.45.11:0, x.org:1, hydra:0.1)"
 
 #: lazarusidestrconsts:dlgrunousedisplay
 msgid "Use display"
-msgstr ""
+msgstr "Usar pantalla"
 
 #: lazarusidestrconsts:dlgrunosystemvariables
 msgid "System variables"
-msgstr ""
+msgstr "Variables del sistema"
 
 #: lazarusidestrconsts:dlgrunovariable
 msgid "Variable"
-msgstr ""
+msgstr "Variable"
 
 #: lazarusidestrconsts:dlgrunovalue
 msgid "Value"
-msgstr ""
+msgstr "Valor"
 
 #: lazarusidestrconsts:dlgrunouseroverrides
 msgid "User overrides"
-msgstr ""
+msgstr "Usar reemplazos"
 
 #: lazarusidestrconsts:dlgincludesystemvariables
 msgid "Include system variables"
-msgstr ""
+msgstr "Incluir variables del sistema"
 
 #: lazarusidestrconsts:dlgdirectorydoesnotexist
 msgid "Directory does not exist"
-msgstr ""
+msgstr "Directorio no existe"
 
 #: lazarusidestrconsts:dlgthedirectory
 msgid "The directory \""
-msgstr ""
+msgstr "El directorio \""
 
 #: lazarusidestrconsts:dlgdoesnotexist
 msgid "\" does not exist."
-msgstr ""
+msgstr "\" no existe."
 
 #: lazarusidestrconsts:dlgtexttofing
 msgid "&Text to Find"
-msgstr ""
+msgstr "&Texto a Buscar"
 
 #: lazarusidestrconsts:dlgreplacewith
 msgid "&Replace With"
-msgstr ""
+msgstr "&Reemplazar con"
 
 #: lazarusidestrconsts:dlgfropts
 msgid "Options"
-msgstr ""
+msgstr "Opciones"
 
 #: lazarusidestrconsts:dlgcasesensitive
 msgid "Case Sensitive"
-msgstr ""
+msgstr "Sensible a mayús/minús"
 
 #: lazarusidestrconsts:dlgwholewordsonly
 msgid "Whole Words Only"
-msgstr ""
+msgstr "Sólo palabras completas"
 
 #: lazarusidestrconsts:dlgregularexpressions
 msgid "Regular Expressions"
-msgstr ""
+msgstr "Expresiones Regulares"
 
 #: lazarusidestrconsts:dlgpromptonreplace
 msgid "Prompt On Replace"
-msgstr ""
+msgstr "Preguntar al Reemplazar"
 
 #: lazarusidestrconsts:dlgsrorigin
 msgid "Origin"
-msgstr ""
+msgstr "Origen"
 
 #: lazarusidestrconsts:dlgfromcursor
 msgid "From Cursor"
-msgstr ""
+msgstr "Desde el cursor"
 
 #: lazarusidestrconsts:dlgentirescope
 msgid "Entire Scope"
-msgstr ""
+msgstr "Alcance entero"
 
 #: lazarusidestrconsts:dlgscope
 msgid "Scope"
-msgstr ""
+msgstr "Alcance"
 
 #: lazarusidestrconsts:dlgglobal
 msgid "Global"
-msgstr ""
+msgstr "Global"
 
 #: lazarusidestrconsts:dlgselectedtext
 msgid "Selected Text"
-msgstr ""
+msgstr "Texto seleccionado"
 
 #: lazarusidestrconsts:dlgdirection
 msgid "Direction"
-msgstr ""
+msgstr "Dirección"
 
 #: lazarusidestrconsts:dlgupword
 msgid "Up"
-msgstr ""
+msgstr "Arriba"
 
 #: lazarusidestrconsts:dlgdownword
 msgid "Down"
-msgstr ""
+msgstr "Abajo"
 
 #: lazarusidestrconsts:dlgreplaceall
 msgid "Replace All"
-msgstr ""
+msgstr "Reemplazar todo"
 
 #: lazarusidestrconsts:uemfinddeclaration
 msgid "&Find Declaration"
-msgstr ""
+msgstr "&Buscar Declaración"
 
 #: lazarusidestrconsts:uemopenfileatcursor
 msgid "&Open file at cursor"
-msgstr ""
+msgstr "&Abrir archivo a cursor"
 
 #: lazarusidestrconsts:uemclosepage
 msgid "&Close Page"
-msgstr ""
+msgstr "&Cerrar Página"
 
 #: lazarusidestrconsts:uemgotobookmark
 msgid "&Goto Bookmark"
-msgstr ""
+msgstr "&Ir a Marcador"
 
 #: lazarusidestrconsts:uembookmarkn
 msgid "Bookmark "
-msgstr ""
+msgstr "Marcador "
 
 #: lazarusidestrconsts:uemsetbookmark
 msgid "&Set Bookmark"
-msgstr ""
+msgstr "&Seleccionar Marcador"
 
 #: lazarusidestrconsts:uemreadonly
 msgid "Read Only"
-msgstr ""
+msgstr "Lectura Solamente"
 
 #: lazarusidestrconsts:uemunitinfo
 msgid "Unit Info"
-msgstr ""
+msgstr "Información de la unidad"
 
 #: lazarusidestrconsts:uemdebugword
 msgid "Debug"
-msgstr ""
+msgstr "Depurar"
 
 #: lazarusidestrconsts:uemtogglebreakpoint
 msgid "&Toggle Breakpoint"
-msgstr ""
+msgstr "&Conmutar Punto de rotura"
 
 #: lazarusidestrconsts:uemaddwatchatcursor
 msgid "&Add Watch At Cursor"
-msgstr ""
+msgstr "&Añadir vigilante desde Cursor"
 
 #: lazarusidestrconsts:uemruntocursor
 msgid "&Run to Cursor"
-msgstr ""
+msgstr "&Ejecutar desde Cursor"
 
 #: lazarusidestrconsts:uemmoveeditorleft
 msgid "Move Editor Left"
-msgstr ""
+msgstr "Mover Editor a la izquierda"
 
 #: lazarusidestrconsts:uemmoveeditorright
 msgid "Move Editor Right"
-msgstr ""
+msgstr "Mover Editor a la derecha"
 
 #: lazarusidestrconsts:uemeditorproperties
 msgid "Editor properties"
-msgstr ""
+msgstr "Propiedades del Editor"
 
 #: lazarusidestrconsts:uenotimplcap
 msgid "Not implemented yet"
-msgstr ""
+msgstr "No implementado todavía"
 
 #: lazarusidestrconsts:uenotimpltext
 msgid "If You can help us to implement this feature, mail to\015lazarus@miraclec.com"
-msgstr ""
+msgstr "Si usted puede ayudarnos a implementar esta caracteristica, escriba a\015lazarus@miraclec.com"
 
 #: lazarusidestrconsts:uenotimplcapagain
 msgid "I told You: Not implemented yet"
-msgstr ""
+msgstr "Yo le dije: No implementado todavía"
 
 #: lazarusidestrconsts:uefilerocap
 msgid "File is readonly"
-msgstr ""
+msgstr "El archivo es de sólo lectura"
 
 #: lazarusidestrconsts:uefilerotext1
 msgid "The file \""
-msgstr ""
+msgstr "El archivo \""
 
 #: lazarusidestrconsts:uefilerotext2
 msgid "\" is not writable."
-msgstr ""
+msgstr "\" no es escribible."
 
 #: lazarusidestrconsts:uemodified
 msgid "Modified"
-msgstr ""
+msgstr "Modificado"
 
 #: lazarusidestrconsts:uepreadonly
 msgid "Readonly"
-msgstr ""
+msgstr "Sólo lectura"
 
 #: lazarusidestrconsts:uepins
 msgid "INS"
-msgstr ""
+msgstr "INS"
 
 #: lazarusidestrconsts:uepovr
 msgid "OVR"
-msgstr ""
+msgstr "SOB"
 
 #: lazarusidestrconsts:fdinvalidmutliselectioncap
 msgid "Invalid mutliselection"
-msgstr ""
+msgstr "Multiselección invalida"
 
 #: lazarusidestrconsts:fdinvalidmutliselectiontext
 msgid "Multiselected components must be of a single form."
-msgstr ""
+msgstr "Los componentes multiseleccionados deben ser de una sola forma."
 
 #: lazarusidestrconsts:fdmalignword
 msgid "Align"
-msgstr ""
+msgstr "Alinear"
 
 #: lazarusidestrconsts:fdmmirrorhorizontal
 msgid "Mirror horizontal"
-msgstr ""
+msgstr "Reflejar horizontal"
 
 #: lazarusidestrconsts:fdmmirrorvertical
 msgid "Mirror vertical"
-msgstr ""
+msgstr "Reflejar vertical"
 
 #: lazarusidestrconsts:fdmscaleword
 msgid "Scale"
-msgstr ""
+msgstr "Escala"
 
 #: lazarusidestrconsts:fdmsizeword
 msgid "Size"
-msgstr ""
+msgstr "Tamaño"
 
 #: lazarusidestrconsts:fdmbringtofront
 msgid "Bring to front"
-msgstr ""
+msgstr "Traer al frente"
 
 #: lazarusidestrconsts:fdmsendtoback
 msgid "Send to back"
-msgstr ""
+msgstr "Enviar atrás"
 
 #: lazarusidestrconsts:fdmdeleteselection
 msgid "Delete selection"
-msgstr ""
+msgstr "Suprimir selección"
 
 #: lazarusidestrconsts:lisoiproperties
 msgid "Properties"
-msgstr ""
+msgstr "Propiedades"
 
 #: lazarusidestrconsts:lisoievents
 msgid "Events"
-msgstr ""
+msgstr "Eventos"
+
 
 
