@@ -165,8 +165,29 @@ begin
     CNSendMessage(LM_SetValue,Self,@fState);
 end;
 
+procedure TCustomCheckBox.SetText(const Value: TCaption);
+var
+  ParseStr : String;
+  AccelIndex : Longint;
+begin
+  Inherited SetText(Value);
+  If (not HandleAllocated) or (csDesigning in ComponentState) then exit;
+  ParseStr := Value;
+  AccelIndex := DeleteAmpersands(ParseStr);
+  If AccelIndex > -1 then begin
+    With FShortcut do begin
+      Handle := Self.Handle;
+      OldKey := NewKey;
+      NewKey := Char2VK(ParseStr[AccelIndex]);
+    end;
+    CNSendMessage(LM_SETSHORTCUT, Self, @FShortcut);
+  end;
+end;
 {
   $Log$
+  Revision 1.8  2002/10/03 00:08:50  lazarus
+  AJ: TCustomLabel Autosize, TCustomCheckbox '&' shortcuts started
+
   Revision 1.7  2002/09/10 07:33:37  lazarus
   MG: fixed TCheckBox.DoAutoSize on loading
 

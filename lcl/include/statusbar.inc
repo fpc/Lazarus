@@ -171,8 +171,13 @@ Begin
         R.Left := R.Right;
       end;
   end
-  else
+  else begin
+    Style.Clipping := False;
+    InflateRect(R, -2, -2);
+    Canvas.FillRect(R);
+    InflateRect(R, 2, 2);
     Canvas.TextRect(R, 2, 0, SimpleText, Style);
+  end;
 End;
 // included by comctrls.pp
 

@@ -137,8 +137,22 @@ type
     property Align;
     property Anchors;
     property Caption;
+    property Color;
+    property Constraints;
+    property Ctl3D;
+    property Enabled;
+    property Font;
+    property ParentColor;
+    property ParentCtl3D;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property TabOrder;
+    property TabStop;
     property Visible;
     property OnClick;
+    property OnDblClick;
     property OnEnter;
     property OnExit;
     property OnKeyDown;
@@ -149,8 +163,7 @@ type
     property OnMouseUp;
     property OnResize;
   end;
-  
-  
+
   { TCustomComboBox }
 
   TComboBoxStyle = (csDropDown, csSimple, csDropDownList, csOwnerDrawFixed,
@@ -491,6 +504,7 @@ type
     procedure WMActivate(var Message: TLMActivate); message LM_ACTIVATE;
   protected
     function GetLabelText: String ; virtual;
+    procedure DoAutoSize; Override;
     procedure Notification(AComponent : TComponent; Operation : TOperation); override;
     procedure SetFocusControl(Val : TWinControl); virtual;
     procedure SetShowAccelChar(Val : boolean); virtual;
@@ -510,6 +524,7 @@ type
   published
     property Align;
     property Alignment;
+    property AutoSize;
     property Anchors;
     property Caption;
     property Color;
@@ -550,6 +565,7 @@ type
     // FAlignment: TLeftRight;
     FAllowGrayed: Boolean;
     FState: TCheckBoxState;
+    FShortCut : TLMShortcut;
     procedure SetState(Value: TCheckBoxState);
     function GetState : TCheckBoxState;
   protected
@@ -557,6 +573,7 @@ type
     procedure Toggle; virtual;
     function GetChecked: Boolean; override;
     procedure SetChecked(Value: Boolean); override;
+    procedure SetText(const Value: TCaption); override;
     procedure ApplyChanges; virtual;
     property AllowGrayed: Boolean read FAllowGrayed write FAllowGrayed;
     property State: TCheckBoxState read GetState write SetState;
@@ -1282,6 +1299,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.50  2002/10/03 00:08:50  lazarus
+  AJ: TCustomLabel Autosize, TCustomCheckbox '&' shortcuts started
+
   Revision 1.49  2002/10/02 16:16:40  lazarus
   MG: accelerated unitdependencies
 

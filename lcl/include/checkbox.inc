@@ -55,7 +55,7 @@ begin
   Try
     R := Rect(0,0, Width, Height);
     DrawText(DC, PChar(Caption), Length(Caption), R,
-      DT_CalcRect or DT_NOPrefix);
+      DT_CalcRect);
     If R.Right > Width then
       Width := R.Right + 25;
     If R.Bottom > Height then
@@ -70,6 +70,9 @@ end;
 
 {
   $Log$
+  Revision 1.8  2002/10/03 00:08:50  lazarus
+  AJ: TCustomLabel Autosize, TCustomCheckbox '&' shortcuts started
+
   Revision 1.7  2002/09/10 07:33:37  lazarus
   MG: fixed TCheckBox.DoAutoSize on loading
 

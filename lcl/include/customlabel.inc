@@ -68,6 +68,28 @@ begin
   end;
 end;
 
+Procedure TCustomLabel.DoAutoSize;
+var
+  R : TRect;
+  DC : hDC;
+begin
+  If AutoSizing or not AutoSize then
+    Exit;
+  if (not HandleAllocated) or (csLoading in ComponentState) then exit;
+  AutoSizing := True;
+  DC := GetDC(Handle);
+  Try
+    R := Rect(0,0, Width, Height);
+    DrawText(DC, PChar(Caption + 'W'), Length(Caption) + 1, R,
+      DT_CalcRect or DT_NoPrefix or DT_Internal);
+    Width := R.Right;
+    Height := R.Bottom;
+  Finally
+    ReleaseDC(Handle, DC);
+    AutoSizing := False;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Method: TCustomLabel.SetFocusControl
   Params: Val - new property value
@@ -144,6 +166,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.7  2002/10/03 00:08:50  lazarus
+  AJ: TCustomLabel Autosize, TCustomCheckbox '&' shortcuts started
+
   Revision 1.6  2002/09/03 20:02:01  lazarus
   Intermediate UI patch to show a bug.
 
