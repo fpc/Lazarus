@@ -397,7 +397,8 @@ var
   Toggle, Extended, SysKey: Boolean;
 begin
   Result:=true;
-
+  
+  {$DEFINE KeyBugFix}
   //writeln('[GTKKeyUpDown] ',TControl(Data).Name,':',TControl(Data).ClassName,' ',Event^.theType);
 
   FillChar(Msg,SizeOf(Msg),0);
@@ -433,7 +434,7 @@ begin
       Msg.Result:=0;
       Code := Msg.CharCode;
       {$IFDEF KeyBugFix}
-      Result := DeliverMessage(Data, Msg);
+      Result := DeliverMessage(Data, Msg)=0;
       {$ELSE}
       TObject(Data).Dispatch(Msg);
       Result := (Msg.Result=0);
@@ -458,8 +459,8 @@ begin
     begin
     
       {writeln('[GTKKeyUpDown] PRESS ',TControl(Data).Name,':',TControl(Data).ClassName,
-        ' Widget=',HexStr(Cardinal(Widget),8));
-      writeln('  Event^.KeyVal=',Event^.KeyVal,
+        ' Widget=',HexStr(Cardinal(Widget),8));}
+      {writeln('  Event^.KeyVal=',Event^.KeyVal,
         ' State=',HexStr(Cardinal(Event^.State),8),
         ' KeyCode=',KeyCode,
         ' VK=',Msg.CharCode,
@@ -480,7 +481,7 @@ begin
       Code := Msg.CharCode;
       // send the message directly to the LCL
       {$IFDEF KeyBugFix}
-      Result := DeliverMessage(Data, Msg);
+      Result := DeliverMessage(Data, Msg)=0;
       {$ELSE}
       TObject(Data).Dispatch(Msg);
       Result := (Msg.Result=0);
@@ -517,7 +518,7 @@ begin
         Msg.Result:=0;
         // send the message directly to the LCL
         {$IFDEF KeyBugFix}
-        Result := DeliverMessage(Data, Msg);
+        Result := DeliverMessage(Data, Msg)=0;
         {$ELSE}
         TObject(Data).Dispatch(Msg);
         Result := (Msg.Result=0);
@@ -2464,6 +2465,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.145  2002/10/11 07:28:03  lazarus
+  MG: gtk interface now sends keyboard events via DeliverMessage
+
   Revision 1.144  2002/10/10 08:51:13  lazarus
   MG: added paint messages for some gtk internal widgets
 
