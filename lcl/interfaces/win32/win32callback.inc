@@ -1094,6 +1094,7 @@ Begin
     WM_RBUTTONUP:
     Begin
       NotifyUserInput := True;
+      WinProcess := false;
       PLMsg:=@LMMouse;
       With LMMouse Do
       Begin
@@ -1317,9 +1318,9 @@ Begin
 
   // respond to result of LCL handling the message
   case PLMsg^.Msg of
-    LM_ERASEBKGND, LM_SETCURSOR:
+    LM_ERASEBKGND, LM_SETCURSOR, LM_RBUTTONUP:
     begin
-      if LMessage.Result = 0 then
+      if PLMsg^.Result = 0 then
         WinProcess := true;
     end;
 
@@ -1336,7 +1337,7 @@ Begin
       WinProcess := LMKey.CharCode <> VK_UNKNOWN;
       WParam := LMKey.CharCode;
     end;
-    
+
   else
     case Msg of
       WM_NCDESTROY:
@@ -1520,6 +1521,9 @@ end;
 
 {
   $Log$
+  Revision 1.196  2005/03/30 18:34:42  micha
+  fix bug 659 and 660: LM_RBUTTONUP message returns true whenever popupmenu was invoked
+
   Revision 1.195  2005/03/14 22:11:03  micha
   return value too inconsistent to be used, fixes 775 (by uberto)
 

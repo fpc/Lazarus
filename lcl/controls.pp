@@ -793,7 +793,7 @@ type
     function IsOnClickStored: Boolean;
     function IsShowHintStored: Boolean;
     function IsVisibleStored: Boolean;
-    procedure CheckMenuPopup(const P: TSmallPoint);
+    function CheckMenuPopup(const P: TSmallPoint): boolean;
     procedure DoBeforeMouseMessage;
     procedure DoConstrainedResize(var NewLeft, NewTop, NewWidth, NewHeight: integer);
     procedure DoMouseDown(var Message: TLMMouse; Button: TMouseButton;
@@ -2890,6 +2890,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.291  2005/03/30 18:34:42  micha
+  fix bug 659 and 660: LM_RBUTTONUP message returns true whenever popupmenu was invoked
+
   Revision 1.290  2005/03/25 16:41:00  micha
   make DestroyHandle method protected again, use global RecreateWnd procedure
 

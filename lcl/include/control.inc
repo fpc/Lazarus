@@ -443,20 +443,21 @@ end;
 
 {------------------------------------------------------------------------------
        TControl.CheckMenuPopup
+
+       returns whether was handled
 ------------------------------------------------------------------------------}
-Procedure TControl.CheckMenuPopup(const P: TSmallPoint);
+function TControl.CheckMenuPopup(const P: TSmallPoint): boolean;
 var
   Control: TControl;
   TempPopupMenu: TPopupMenu;
   P2: TPoint;
-  Handled: Boolean;
 begin
+  Result:=false;
   if csDesigning in ComponentState then Exit;
 
   P2 := SmallPointToPoint(P);
-  Handled:=false;
-  DoContextPopup(P2,Handled);
-  if Handled then exit;
+  DoContextPopup(P2,Result);
+  if Result then exit;
 
   Control := Self;
   while Control <> nil do
@@ -469,6 +470,7 @@ begin
       TempPopupMenu.PopupComponent := Control;
       P2 := ClientToScreen(P2);
       TempPopupMenu.Popup(P2.X, P2.Y);
+      Result := true;
       Exit;
     end;
     Control := Control.Parent;
@@ -1772,7 +1774,9 @@ procedure TControl.WMRButtonUp(var Message: TLMRButtonUp);
 begin
   DoBeforeMouseMessage;
   DoMouseUp(Message, mbRight);
-  if Message.Result = 0 then CheckMenuPopup(Message.pos);
+  if Message.Result = 0 then 
+    if CheckMenuPopup(Message.pos) then
+      Message.Result := 1;
 end;
 
 {------------------------------------------------------------------------------
@@ -3500,6 +3504,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.253  2005/03/30 18:34:42  micha
+  fix bug 659 and 660: LM_RBUTTONUP message returns true whenever popupmenu was invoked
+
   Revision 1.252  2005/03/19 08:55:32  mattias
   updated french translation  from Robert Calmas
 
