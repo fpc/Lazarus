@@ -67,6 +67,11 @@ end.
 
 {
   $Log$
+  Revision 1.23  2001/10/26 20:36:48  lazarus
+  Added an OnSelectionChanged event in Main.pp fired by MSgView dialog.  This fires when the ListBox gets clicked on.
+  This allows the editor to highlight different lines when you click on different error messages.
+  Shane
+
   Revision 1.22  2001/10/15 17:41:30  lazarus
   MG: fixed splashform showing
 

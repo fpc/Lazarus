@@ -35,12 +35,18 @@ type
     MessageView : TListBox;
   private
     Function GetMessage : String;
+    Procedure MessageViewClicked(sender : TObject);
+    FOnSelectionChanged : TNotifyEvent;
+    LastSelectedIndex : Integer;
+  protected
+    Function GetSelectedLineIndex : Integer;
   public
     constructor Create(AOwner : TComponent); override;
     Procedure Add(const Texts : String);
     Procedure Clear;
-    Function GetSelectedLineIndex : Integer;
     property Message : String read GetMessage;
+    property SelectedMessageIndex : Integer read GetSelectedLineIndex;
+    property OnSelectionChanged : TNotifyEvent read FOnSelectionChanged write FOnSelectionChanged;
   end;
 
 var
@@ -66,8 +72,10 @@ Begin
       Align:= alClient;
       Visible:= true;
       Name := 'MessageView';
+
     end;
   end;
+  LastSelectedIndex := -1;
 end;
 
 
@@ -77,6 +85,9 @@ end;
 Procedure  TMessagesView.Add(const Texts : String);
 Begin
   MessageView.Items.Add(Texts);
+  
+
+
 end;
 
 {------------------------------------------------------------------------------}
@@ -85,6 +96,9 @@ end;
 Procedure  TMessagesView.Clear;
 Begin
   MessageView.Clear;
+
+  if not Assigned(MessagesView.MessageView.OnCLick) then //:= @MessagesView.MessageViewClicked;
+     MessageView.OnClick := @MessageViewClicked;
 end;
 
 {------------------------------------------------------------------------------}
@@ -95,15 +109,8 @@ var
   I : Integer;
 Begin
   Result := '';
-  if (MessageView.Items.Count > 0) and (MessageView.SelCount > 0) then Begin
-    for i := 0 to MessageView.Items.Count-1 do
-    Begin
-      if MessageView.Selected[I] then Begin
-        Result := MessageView.Items.Strings[i];
-        Break;
-      end;
-    end;
-  end;
+  if (MessageView.Items.Count > 0) and (MessageView.SelCount > 0) then
+      Result := MessageView.Items.Strings[GetSelectedLineIndex];
 end;
 
 Function TMessagesView.GetSelectedLineIndex : Integer;
@@ -121,6 +128,24 @@ Begin
         end;
     end;
   end;
+end;
+
+Procedure TMessagesView.MessageViewClicked(sender : TObject);
+var
+  Temp : Integer;  //this temporarily holds the line # of the selection
+begin
+  if (MessageView.Items.Count > 0) and (MessageView.SelCount > 0) then
+      Begin
+         Temp := GetSelectedLineIndex;
+         if Temp <> LastSelectedIndex then
+            Begin
+               LastSelectedIndex := Temp;
+               If Assigned(OnSelectionChanged) then
+                  OnSelectionChanged(self);
+             end;
+
+      end;
+      
 end;
 
 initialization
