@@ -17,15 +17,15 @@ Creating the fpcsrc tgz:
   The download and pack script:
   The script create_fpc_export_tgz.sh makes a cvs export of the fpc.
   
-  For 1.0.11: ./create_fpc_export_tgz.sh stable 05/01/04
+  For 1.0.11: ./create_fpc_export_tgz.sh stable 05/20/04
 
-  For 1.9: ./create_fpc_export_tgz.sh devel 05/01/04
+  For 1.9: ./create_fpc_export_tgz.sh devel 05/20/04
 
-  The 05/01/04 means may 1 2004.
+  The 05/20/04 means may 20th 2004.
   
   The copy and pack script:
   The script create_fpc_tgz_from_local_dir.sh needs as parameter the fpc cvs
-  directory and compress it to a tgz. For example
+  directory and compresses it to a tgz. For example
   ./create_fpc_tgz_from_local_dir.sh ~/pascal/fpc fpc-1.0.10.tgz
 
 
@@ -54,23 +54,25 @@ Creating the fpc and the fpcsrc rpm:
   There are two versions of the compiler: the stable 1.0.11 and the unstable
   developer version 1.9. To build them, you must install fpc first. Install the
   stable fpc release (1.0.10). Note: The 1.0.11 can not be built with a 1.9
-  compiler.
+  compiler and the recommended startup compiler for the 1.9.x is the released
+  fpc 1.0.10.
+
+  If you have your own fpc sources you can build the rpm with:
+    Become root and do:
+    cd <lazarus_directory>/tools/install
+    ./build_fpc_rpm.sh nodocs /path/to/your/fpc/sources/new19/fpc 040501
+
+  The 040501 stands for: 2004 may 1st
+
   The create_fpc_rpm.sh works nearly automatically. Become root and execute it.
-  For 1.0.11: ./create_fpc_rpm.sh stable
-  For 1.9:   ./create_fpc_rpm.sh devel
+    For 1.0.11: ./create_fpc_rpm.sh stable
+    For 1.9:    ./create_fpc_rpm.sh devel
 
   What it does: First it checks if the fpc source tgz is already created and
   if not, it automatically downloads it. The script does not use the current
   version, but the latest known to work with lazarus. Then it unpacks the
   source, compiles it and builds the rpm. Normally you can find the rpms under
   /usr/src/redhat/RPMS/i386/ and /usr/src/redhat/SRPMS/.
-
-  If you have your own fpc sources you can build the rpm with:
-  Become root and do:
-  cd <lazarus_directory>/tools/install
-  ./build_fpc_rpm.sh nodocs /home/mattias/pascal/fpc_sources/new19/fpc 040501
-  
-  The 040501 stands for: 2004 may 1
 
 
 Creating the lazarus rpm:
@@ -101,7 +103,7 @@ Creating the debian fpc and fpcsrc packages:
   compiler.
   The create_fpc_deb.sh works nearly automatically. Become root and execute it.
   For 1.0.11: ./create_fpc_deb.sh stable
-  For 1.9:   ./create_fpc_deb.sh devel
+  For 1.9:    ./create_fpc_deb.sh devel
 
   What it does: First it checks if the fpc source tgz is already created and
   if not, it automatically downloads it. The script does not use the current
@@ -120,4 +122,36 @@ Creating the debian lazarus package:
   As root:
   Execute create_lazarus_deb.sh.
 
+--------------------------------------------------------------------------------
+
+Mac OS X:
+
+Creating the DMG packages for FPC and Lazarus:
+
+1. create a temp directory with a usr/local hierarchy under it, owned
+   by root (e.g. sudo mkdir -p ~/pascal/fpcinst/usr/local)
+2. cd fpc   (your fpc source directory)
+3. make all
+4. sudo make install INSTALL_PREFIX=~/pascal/fpcinst/usr/local
+   (it's very important that you use sudo, because the ownership info will be
+   the same when it's installed on the user's computer and you don't want
+   those files to belong to the user that happens to have the same uid as
+   you have)
+5. cd compiler
+   sudo make installsymlink INSTALL_PREFIX=~/pascal/fpcinst/usr/local
+6. unzip the <lazarus>/tools/install/macosx/fpc_installer_info.zip somewhere,
+   open "fpc 1.9.5.pmsp" (it will open in PackageMaker) change the "resources"
+   path so it points to the unzipped fpc_resources directory and the "files"
+   path so it points to ~/pascal/fpcinst and then choose File->Create Package
+7. Put the package in a directory called "Free Pascal Compiler 1.9.5",
+   add in the "Introduction.txt" and "ReadMe.txt" files from the dmg you
+   already downloaded and create a (compressed or not doesn't really
+   matter, the package is already compressed) disk image from the folder
+   with Disk Copy (if you're under 10.1/10.2), Disk Utility (10.3) or
+   hdiutil (command line, see manpage for how to do it).
+
+Unfortunaly, there does not seem to be a command line program that can
+create an installer package starting from a .pmsp file and PackageMaker
+is not AppleScriptable... It could still be automated using GUI
+scripting of course).
 
