@@ -120,7 +120,9 @@ end;
 
 function TDBRadioGroup.GetButtonValue(Index: Integer): string;
 begin
-  if (Index<FValues.Count) and (FValues[Index]<>'') then
+  if Index<0 then
+    Result:=''
+  else if (Index<FValues.Count) and (FValues[Index]<>'') then
     Result:=FValues[Index]
   else if Index<Items.Count then
     Result:=Items[Index]

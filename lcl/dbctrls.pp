@@ -344,6 +344,68 @@ Type
     property ValueUnchecked: string read FValueUncheck write SetValueUncheck;
     property Visible;
   end;
+  
+  
+  { TDBComboBox }
+
+  TDBComboBox = class(TCustomComboBox)
+  private
+    FDataLink: TFieldDataLink;
+    function GetDataField: string;
+    function GetDataSource: TDataSource;
+    function GetField: TField;
+    function GetReadOnly: Boolean;
+    procedure SetDataField(const AValue: string);
+    procedure SetDataSource(const AValue: TDataSource);
+    procedure SetReadOnly(const AValue: Boolean);
+  protected
+    function GetComboText: string; virtual;
+    procedure SetComboText(const NewText: string); virtual;
+    procedure DataChange(Sender: TObject); virtual;
+    procedure EditingChange(Sender: TObject); virtual;
+    procedure UpdateData(Sender: TObject); virtual;
+  public
+    constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
+    property Field: TField read GetField;
+    property Text;
+    property ItemIndex;
+  published
+    property Anchors;
+    property ArrowKeysTraverseList;
+    property AutoDropDown;
+    property Ctl3D;
+    property DataField: string read GetDataField write SetDataField;
+    property DataSource: TDataSource read GetDataSource write SetDataSource;
+    property DropDownCount;
+    property Enabled;
+    property Font;
+    property ItemHeight;
+    property Items write SetItems;
+    property ItemWidth;
+    property MaxLength default -1;
+    property OnChange;
+    property OnClick;
+    property OnCloseUp;
+    property OnDrawItem;
+    property OnDropDown;
+    property OnEnter;
+    property OnExit;
+    Property OnKeyDown;
+    property OnKeyPress;
+    Property OnKeyUp;
+    property ParentCtl3D;
+    property ParentFont;
+    property ParentShowHint;
+    property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
+    property ShowHint;
+    property Sorted;
+    property Style;
+    property TabOrder;
+    property TabStop;
+    property Visible;
+  end;
+  
 
 // ToDo: Move this to db.pp
 function ExtractFieldName(const Fields: string; var StartPos: Integer): string;
@@ -675,12 +737,16 @@ end;
 {$Include dblistbox.inc}
 {$Include dbradiogroup.inc}
 {$Include dbcheckbox.inc}
+{$Include dbcombobox.inc}
 
 end.
 
 { =============================================================================
 
   $Log$
+  Revision 1.5  2003/09/18 10:50:05  mattias
+  started TDBComboBox
+
   Revision 1.4  2003/09/16 11:35:14  mattias
   started TDBCheckBox
 
