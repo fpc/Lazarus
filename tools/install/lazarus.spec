@@ -8,8 +8,8 @@ Summary: Lazarus Component Library and IDE
 Packager: Mattias Gaertner (mattias@freepascal.org)
 URL: http://www.lazarus.freepascal.org/
 BuildRoot: %{_tmppath}/lazarus-build
-BuildRequires: fpc >= 1.0.10
-Requires: fpcsrc >= 1.0.10
+BuildRequires: fpc >= FPCBUILDVERSION
+Requires: fpcsrc >= FPCSRCVERSION, fpc >= FPCBUILDVERSION
 Requires: gdk-pixbuf-devel >= 0.18.0
 
 %define lazdir %{_datadir}/lazarus
@@ -35,9 +35,11 @@ The LCL is licensed under LGPL2, the IDE is licensed under GPL2.
   mkdir -p %{buildroot}%{_bindir}
   mkdir -p %{buildroot}%{_datadir}/pixmaps
   mkdir -p %{buildroot}%{_datadir}/gnome/apps/Development
+  mkdir -p %{buildroot}%{_datadir}/applications
   cp -a lazarus/* %{buildroot}%{_datadir}/lazarus/
   install -m 644 lazarus/images/ide_icon48x48.png %{buildroot}%{_datadir}/pixmaps/lazarus.png
   install -m 644 lazarus/gnome.ide.desktop %{buildroot}%{_datadir}/gnome/apps/Development/lazarus.desktop
+  install -m 644 lazarus/gnome.ide.desktop %{buildroot}%{_datadir}/applications/lazarus.desktop
   ln -sf %{lazdir}/lazarus %{buildroot}%{_bindir}/lazarus
 
 %clean
@@ -51,6 +53,7 @@ The LCL is licensed under LGPL2, the IDE is licensed under GPL2.
 %{_bindir}/lazarus
 %{_datadir}/pixmaps/lazarus.png
 %{_datadir}/gnome/apps/Development/lazarus.desktop
+%{_datadir}/applications/lazarus.desktop
 
 %changelog
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#set -x
+set -x
 set -e
 
 # get date of day
@@ -14,9 +14,10 @@ if [ "x$FPCRPM" = "x" ]; then
   echo ERROR: fpc rpm not installed
   exit
 fi
+FPCRPMVersion=`echo $FPCRPM | sed -e 's/fpc-//g'`
 
 Date=$Year$Month$Day
-LazVersion=0.9.2.2
+LazVersion=0.9.2.3
 LazRelease=`echo $FPCRPM | sed -e 's/-/_/g'`
 SrcTGZ=lazarus-$Date.tgz
 TmpDir=/tmp/lazarus$LazVersion
@@ -35,6 +36,8 @@ cat lazarus.spec | \
   sed -e "s/LAZVERSION/$LazVersion/g" \
       -e "s/LAZRELEASE/$LazRelease/" \
       -e "s/LAZSOURCE/$SrcTGZ/" \
+      -e "s/FPCBUILDVERSION/1.0.10/" \
+      -e "s/FPCSRCVERSION/$FPCRPMVersion/" \
   > $SpecFile
 
 # build rpm
