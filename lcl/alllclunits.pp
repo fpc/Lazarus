@@ -45,10 +45,7 @@ uses
   Dialogs, Messages, Clistbox, ActnList, Grids, MaskEdit,
   Printers, PostScriptPrinter, CheckLst, PairSplitter, ExtDlgs,
   DBCtrls, DBGrids, EditBtn, ExtGraphics,
-  {$IFDEF EnableSessionProps}
-  // Remember: add units to Makefile.fpc when they became default
   PropertyStorage, IniPropStorage, XMLPropStorage,
-  {$ENDIF}
   // widgetset skeleton
   WSActnList, WSArrow, WSButtons, WSCalendar,
   WSCheckLst, WSCListBox, WSComCtrls, WSControls,
@@ -66,6 +63,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.16  2004/07/25 15:39:55  mattias
+  added rx components  from Michal Van Canneyt
+
   Revision 1.15  2004/07/23 22:06:56  mattias
   started propertystorage enable with -dEnableSessionProps
 

@@ -71,7 +71,9 @@ implementation
 
 procedure Register;
 begin
+  {$IFDEF EnableSessionProps}
   RegisterComponents('Misc',[TXMLPropStorage]);
+  {$ENDIF}
 end;
 
 { TCustomXMLPropStorage }

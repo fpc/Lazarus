@@ -42,8 +42,7 @@ interface
 uses
   Classes, SysUtils, DynHashArray, LCLStrConsts, vclglobals, LCLType, LCLProc,
   GraphType, Graphics, LMessages, LCLIntf, InterfaceBase, ImgList, UTrace,
-  {$IFDEF EnableSessionProps}PropertyStorage, RTTIUtils,{$ENDIF}
-  Menus, ActnList, LCLClasses;
+  PropertyStorage, Menus, ActnList, LCLClasses;
 
 
 const
@@ -1609,14 +1608,12 @@ type
   end;
 
 
-{$IFDEF EnableSessionProps}
   { TControlPropertyStorage }
 
   TControlPropertyStorage = class(TCustomPropertyStorage)
   protected
     procedure GetPropertyList(List : TStrings); override;
   end;
-{$ENDIF EnableSessionProps}
 
 
   { TDockZone }
@@ -2338,7 +2335,6 @@ begin
   if Assigned(FOnChange) then FOnChange(Self);
 end;
 
-{$IFDEF EnableSessionProps}
 { TControlPropertyStorage }
 
 procedure TControlPropertyStorage.GetPropertyList(List: TStrings);
@@ -2367,7 +2363,6 @@ begin
     end;
   end;
 end;
-{$ENDIF EnableSessionProps}
 
 initialization
 
@@ -2389,6 +2384,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.229  2004/07/25 15:39:55  mattias
+  added rx components  from Michal Van Canneyt
+
   Revision 1.228  2004/07/25 01:04:45  mattias
   TXMLPropStorage basically working
 

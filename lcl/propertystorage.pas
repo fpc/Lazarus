@@ -20,7 +20,8 @@ unit PropertyStorage;
 interface
 
 uses
-  Classes, SysUtils, RTTIUtils;
+  Classes, SysUtils, RTLConst
+  {$IFDEF EnableSessionProps}, RTTIUtils{$ENDIF};
 
 Type
   TPlacementOperation = (poSave, poRestore);
@@ -163,9 +164,6 @@ Type
 implementation
 
 
-ResourceString
-  SDuplicateString = 'Duplicate strings are not allowed';
-  
 function XorEncode(const Key, Source: string): string;
 var
   I: Integer;
@@ -552,6 +550,7 @@ begin
     FinishPropertyList(AStoredList);
     StorageNeeded(False);
     Try
+      {$IFDEF EnableSessionProps}
       with TPropsStorage.Create do
         try
           Section := RootSection;
@@ -566,6 +565,7 @@ begin
         finally
           Free;
         end;
+      {$ENDIF}
     Finally
       FreeStorage;
     end;
@@ -582,38 +582,30 @@ Var
 begin
   L:=TStringList.Create;
   Try
-  writeln('TCustomPropertyStorage.RestoreProperties A');
     GetPropertyList(L);
-  writeln('TCustomPropertyStorage.RestoreProperties B ',L.Text);
     FinishPropertyList(L);
-  writeln('TCustomPropertyStorage.RestoreProperties C ',L.Text);
     StorageNeeded(True);
-  writeln('TCustomPropertyStorage.RestoreProperties D ');
     Try
+      {$IFDEF EnableSessionProps}
       with TPropsStorage.Create do
         try
           Section := RootSection;
           OnReadString := @DoReadString;
           try
-  writeln('TCustomPropertyStorage.RestoreProperties E ');
             LoadObjectsProps(Owner,L);
-  writeln('TCustomPropertyStorage.RestoreProperties F ');
           except
             { ignore any exceptions }
           end;
         finally
-  writeln('TCustomPropertyStorage.RestoreProperties G ');
           Free;
         end;
+      {$ENDIF}
     Finally
-  writeln('TCustomPropertyStorage.RestoreProperties H ');
       FreeStorage;
     end;
   finally
-  writeln('TCustomPropertyStorage.RestoreProperties I ');
     L.Free;
   end;
-  writeln('TCustomPropertyStorage.RestoreProperties END ');
 end;
 
 procedure TCustomPropertyStorage.FinishPropertyList(List: TStrings);
@@ -627,6 +619,7 @@ begin
   // set Objects (i.e. the component of each property)
   ARoot:=Root;
   for i:=List.Count-1 downto 0 do begin
+    {$IFDEF EnableSessionProps}
     if ParseStoredItem(List[I], CompName, PropName) then begin
       if CompareText(ARoot.Name,CompName)=0 then
         List.Objects[i]:=ARoot
@@ -640,6 +633,7 @@ begin
     end else begin
       List.Delete(i);
     end;
+    {$ENDIF}
   end;
 end;
 

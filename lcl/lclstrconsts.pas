@@ -34,6 +34,9 @@ unit LCLStrConsts;
 interface
 
 ResourceString
+  // common Delphi strings
+  SNoMDIForm = 'No MDI form present.';
+
   // message/input dialog buttons
   rsMbYes          = '&Yes';
   rsMbNo           = '&No';

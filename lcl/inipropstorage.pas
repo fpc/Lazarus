@@ -23,29 +23,39 @@ uses
   Classes, SysUtils, Forms, IniFiles, PropertyStorage;
 
 Type
+  { TCustomIniPropStorage }
+
   TIniFileClass = Class of TCustomIniFile;
   
-  TIniPropStorage = Class(TFormPropertyStorage)
+  TCustomIniPropStorage = Class(TFormPropertyStorage)
   private
     FCount : Integer;
     FReadOnly : Boolean;
     FIniFile: TCustomIniFile;
     FIniFileName: String;
     FIniSection: String;
-  Protected
+  protected
     Function IniFileClass : TIniFileClass; virtual;
     procedure StorageNeeded(ReadOnly: Boolean);override;
     procedure FreeStorage; override;
     Function GetIniFileName : string; virtual;
     Function RootSection : String; Override;
     Property IniFile : TCustomIniFile Read FIniFile;
-  Public
+  public
     function  DoReadString(const Section, Ident, Default: string): string; override;
     procedure DoWriteString(const Section, Ident, Value: string); override;
-    Procedure DoEraseSections(const ARootSection : String);override;
-  Published
+    procedure DoEraseSections(const ARootSection : String);override;
+  public
     property IniFileName : String Read FIniFileName Write FIniFileName;
     property IniSection : String Read FIniSection Write FIniSection;
+  end;
+  
+  { TIniPropStorage }
+  
+  TIniPropStorage = class(TCustomIniPropStorage)
+  Published
+    property IniFileName;
+    property IniSection;
     property Active;
     property StoredValues;
     property OnSaveProperties;
@@ -60,7 +70,9 @@ implementation
 
 Procedure Register;
 begin
+  {$IFDEF EnableSessionProps}
   RegisterComponents('Misc',[TIniPropStorage]);
+  {$ENDIF}
 end;
 
 { Should move to strutils when 1.9.6 is out. }
@@ -195,14 +207,14 @@ end;
 
 
 
-{ TIniPropStorage }
+{ TCustomIniPropStorage }
 
-function TIniPropStorage.IniFileClass: TIniFileClass;
+function TCustomIniPropStorage.IniFileClass: TIniFileClass;
 begin
   Result:=TIniFile;
 end;
 
-procedure TIniPropStorage.StorageNeeded(ReadOnly: Boolean);
+procedure TCustomIniPropStorage.StorageNeeded(ReadOnly: Boolean);
 begin
   If (FIniFile=Nil) or (ReadOnly<>FReadOnly) then
     begin
@@ -218,7 +230,7 @@ begin
   Inc(FCount);
 end;
 
-procedure TIniPropStorage.FreeStorage;
+procedure TCustomIniPropStorage.FreeStorage;
 begin
   Dec(FCount);
   If FCount<=0 then
@@ -228,7 +240,7 @@ begin
     end;
 end;
 
-function TIniPropStorage.GetIniFileName: string;
+function TCustomIniPropStorage.GetIniFileName: string;
 begin
   If (FIniFileName<>'') then
     Result:=FIniFileName
@@ -242,7 +254,7 @@ begin
 {$endif}
 end;
 
-function TIniPropStorage.RootSection: String;
+function TCustomIniPropStorage.RootSection: String;
 begin
   if (FIniSection='') then
     Result:=inherited RootSection
@@ -250,17 +262,17 @@ begin
     Result:=FIniSection;
 end;
 
-function TIniPropStorage.DoReadString(const Section, Ident, Default: string): string;
+function TCustomIniPropStorage.DoReadString(const Section, Ident, Default: string): string;
 begin
   Result:=FIniFile.ReadString(Section, Ident, Default);
 end;
 
-procedure TIniPropStorage.DoWriteString(const Section, Ident, Value: string);
+procedure TCustomIniPropStorage.DoWriteString(const Section, Ident, Value: string);
 begin
   FIniFile.WriteString(Section, Ident, Value);
 end;
 
-procedure TIniPropStorage.DoEraseSections(const ARootSection: String);
+procedure TCustomIniPropStorage.DoEraseSections(const ARootSection: String);
 
 var
   Lines: TStrings;

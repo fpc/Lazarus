@@ -667,7 +667,6 @@ type
                                               write SetAutoInstall;
     property AutoUpdate: TPackageUpdatePolicy read FAutoUpdate
                                               write SetAutoUpdate;
-    property Missing: boolean read FMissing write FMissing;
     property CompilerOptions: TPkgCompilerOptions read FCompilerOptions;
     property ComponentCount: integer read GetComponentCount;
     property Components[Index: integer]: TPkgComponent read GetComponents;
@@ -679,6 +678,7 @@ type
                                         write SetPackageEditor;
     property FileCount: integer read GetFileCount;
     property Filename: string read FFilename write SetFilename;//the .lpk filename
+    property FileReadOnly: boolean read FFileReadOnly write SetFileReadOnly;
     property Files[Index: integer]: TPkgFile read GetFiles;
     property FirstRemovedDependency: TPkgDependency
                                                    read FFirstRemovedDependency;
@@ -689,20 +689,19 @@ type
     property HoldPackageCount: integer read FHoldPackageCount;
     property IconFile: string read FIconFile write SetIconFile;
     property Installed: TPackageInstallType read FInstalled write SetInstalled;
-    property LastCompilerFilename: string read FLastCompilerFilename
-                                          write FLastCompilerFilename;
     property LastCompilerFileDate: integer read FLastCompilerFileDate
                                           write FLastCompilerFileDate;
+    property LastCompilerFilename: string read FLastCompilerFilename
+                                          write FLastCompilerFilename;
     property LastCompilerParams: string read FLastCompilerParams
                                         write FLastCompilerParams;
     property License: string read FLicense write SetLicense;
     property Macros: TTransferMacroList read FMacros;
+    property Missing: boolean read FMissing write FMissing;
     property Modified: boolean read GetModified write SetModified;
     property OutputStateFile: string read FOutputStateFile write SetOutputStateFile;
     property PackageType: TLazPackageType read FPackageType
                                           write SetPackageType;
-    property UserReadOnly: boolean read FUserReadOnly write SetUserReadOnly;
-    property FileReadOnly: boolean read FFileReadOnly write SetFileReadOnly;
     property PublishOptions: TPublishPackageOptions
                                      read fPublishOptions write fPublishOptions;
     property Registered: boolean read FRegistered write SetRegistered;
@@ -711,6 +710,7 @@ type
     property SourceDirectories: TFileReferenceList read FSourceDirectories;
     property StateFileDate: longint read FStateFileDate write FStateFileDate;
     property UsageOptions: TPkgAdditionalCompilerOptions read FUsageOptions;
+    property UserReadOnly: boolean read FUserReadOnly write SetUserReadOnly;
   end;
   
   PLazPackage = ^TLazPackage;

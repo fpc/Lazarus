@@ -1452,6 +1452,22 @@ LazarusResources.Add('timage','XPM',[
   +'cccccccccccccbbbbbb",'#10'"cccccccccccccbbbbbbb",'#10'"ccccccccccccbbbbbbbb'
   +'",'#10'"cccccccccccbbbbbbbbb"};'#10
 ]);
+LazarusResources.Add('tinipropstorage','XPM',[
+  '/* XPM */'#10'static char *tinistorage[] = {'#10'/* columns rows colors char'
+  +'s-per-pixel */'#10'"24 24 8 1",'#10'"  c black",'#10'". c navy",'#10'"X c c'
+  +'yan",'#10'"o c red",'#10'"O c transparent",'#10'"+ c #808080",'#10'"@ c #C0'
+  +'C0C0",'#10'"# c gray100",'#10'/* pixels */'#10'"OOOOOOOOOOOOOOOOOOOOOOOO",'
+  +#10'"OOOOOOOOOOOOOOOOOOOOOOOO",'#10'"O+++++++++++++++++++++ O",'#10'"O+@@@@@'
+  +'@@@@@@@@@@@@@@@ O",'#10'"O+@............# # # @ O",'#10'"O+@............   '
+  +'   @ O",'#10'"O+@@@@@@@@@@@@@@@@@@@@ O",'#10'"O+@##################@ O",'#10
+  +'"O+@#######+  +#######@ O",'#10'"O+@###  #+ ## +#  ###@ O",'#10'"O+@##     '
+  +'         ##@ O",'#10'"O+@## ###      ### ##@ O",'#10'"O+@## ##  ++++  ## ##'
+  +'@ O",'#10'"O+@## ++ +X#+++ ++ ##@ O",'#10'"O+@## ++ +#++++ ++ ##@ O",'#10'"'
+  +'O+@## ++ ++++++ ++ ##@ O",'#10'"O+@ooo+ooo++ooo ooo##@ O",'#10'"O+@#o+  oo '
+  +'  o   o+##@ O",'#10'"O+@#o###oo+  o###o###@ O",'#10'"O+@#o###o#o##o###o###@'
+  +' O",'#10'"O+@@o@@@o@@o@o@@@o@@@@ O",'#10'"O   o   o   oo   o     O",'#10'"O'
+  +'OOOoOOOoOOOooOOOoOOOOOO",'#10'"OOOoooOoooOOoooOoooOOOOO"'#10'};'#10
+]);
 LazarusResources.Add('tlabelededit','XPM',[
   '/* XPM */'#10'static char * tlabelededit_xpm[] = {'#10'"23 23 143 2",'#10'" '
   +' '#9'c None",'#10'". '#9'c #000000",'#10'"+ '#9'c #929292",'#10'"@ '#9'c #7'
@@ -2655,6 +2671,22 @@ LazarusResources.Add('tupdown','XPM',[
   +'thE  ",'#10'"  IxH###aaaaa##xLfE  ",'#10'"  IxH####aaa###xLfE  ",'#10'"  Ix'
   +'H#####a####xLfE  ",'#10'"  IxKxxxxxxxxxxRNSE  ",'#10'"  IGX1..........Cna  '
   +'",'#10'"  PzMwwwwwwwwwwwMiU  ",'#10'"                     "};'
+]);
+LazarusResources.Add('txmlpropstorage','XPM',[
+  '/* XPM */'#10'static char *txmlstorage[] = {'#10'/* columns rows colors char'
+  +'s-per-pixel */'#10'"24 24 8 1",'#10'"  c black",'#10'". c navy",'#10'"X c c'
+  +'yan",'#10'"o c red",'#10'"O c transparent",'#10'"+ c #808080",'#10'"@ c #C0'
+  +'C0C0",'#10'"# c gray100",'#10'/* pixels */'#10'"OOOOOOOOOOOOOOOOOOOOOOOO",'
+  +#10'"OOOOOOOOOOOOOOOOOOOOOOOO",'#10'"O+++++++++++++++++++++ O",'#10'"O+@@@@@'
+  +'@@@@@@@@@@@@@@@ O",'#10'"O+@............# # # @ O",'#10'"O+@............   '
+  +'   @ O",'#10'"O+@@@@@@@@@@@@@@@@@@@@ O",'#10'"O+@##################@ O",'#10
+  +'"O+@#######+  +#######@ O",'#10'"O+@###  #+ ## +#  ###@ O",'#10'"O+@##     '
+  +'         ##@ O",'#10'"O+@## ###      ### ##@ O",'#10'"O+@## ##  ++++  ## ##'
+  +'@ O",'#10'"O+@## ++ +X#+++ ++ ##@ O",'#10'"O+@## ++ +#++++ ++ ##@ O",'#10'"'
+  +'O+@## ++ ++++++ ++ ##@ O",'#10'"O+@ooo+ooo++ooo ooo##@ O",'#10'"O+@#o+  oo '
+  +'  o   o+##@ O",'#10'"O+@#o###oo+  o###o###@ O",'#10'"O+@#o###o#o##o###o###@'
+  +' O",'#10'"O+@@o@@@o@@o@o@@@o@@@@ O",'#10'"O   o   o   oo   o     O",'#10'"O'
+  +'OOOoOOOoOOOooOOOoOOOOOO",'#10'"OOOoooOoooOOoooOoooOOOOO"'#10'};'#10
 ]);
 LazarusResources.Add('unregisteredcomponent','XPM',[
   '/* XPM */'#10'static char * unregisteredcomponent_xpm[] = {'#10'"13 17 18 1"'

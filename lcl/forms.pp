@@ -994,7 +994,6 @@ type
   end;
   
   
-{$IFDEF EnableSessionProps}
   { TFormPropertyStorage }
   
   TFormPropertyStorage = class(TControlPropertyStorage)
@@ -1005,8 +1004,7 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
   end;
-{$ENDIF}
-  
+
 
 {$IFNDEF UseFCLDataModule}
 type
@@ -1548,7 +1546,6 @@ end;
 {$I applicationproperties.inc}
 
 //==============================================================================
-{$IFDEF EnableSessionProps}
 { TFormPropertyStorage }
 
 procedure TFormPropertyStorage.FormFirstShow(Sender: TObject);
@@ -1579,7 +1576,6 @@ begin
     TControl(Owner).RemoveAllHandlersOfObject(Self);
   inherited Destroy;
 end;
-{$ENDIF EnableSessionProps}
 
 //==============================================================================
 

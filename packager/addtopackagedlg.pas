@@ -1826,13 +1826,18 @@ procedure TAddToPackageDlg.UpdateAvailableDependencyNames;
 var
   ANode: TAVLTreeNode;
   sl: TStringList;
+  PkgName: String;
+  Pkg: TLazPackage;
 begin
   fPackages.Clear;
   PackageGraph.IteratePackages(fpfSearchAllExisting,@OnIteratePackages);
   sl:=TStringList.Create;
   ANode:=fPackages.FindLowest;
   while ANode<>nil do begin
-    sl.Add(TLazPackageID(ANode.Data).Name);
+    Pkg:=TLazPackage(ANode.Data);
+    PkgName:=Pkg.Name;
+    if (sl.IndexOf(PkgName)<0) then
+      sl.Add(PkgName);
     ANode:=fPackages.FindSuccessor(ANode);
   end;
   DependPkgNameComboBox.Items.Assign(sl);
