@@ -48,7 +48,6 @@ type
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure UpdateProperties(const ACustomPage: TCustomPage); override;
-    class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
   end;
 
@@ -274,20 +273,6 @@ end;
 
 { TWin32WSCustomPage }
 
-procedure CustomPageCalcBounds(const AWinControl: TWinControl; 
-  var Left, Top, Width, Height: integer);
-var
-  Rect, OffsetRect: TRect;
-begin
-  // Adjust page size to fit in tabcontrol, need bounds of notebook in client of parent
-  Windows.GetClientRect(TCustomPage(AWinControl).Parent.Handle, @Rect);
-  GetLCLClientBoundsOffset(AWinControl.Parent, OffsetRect);
-  Left := OffsetRect.Left;
-  Top := OffsetRect.Top;
-  Width := Rect.Right + OffsetRect.Right - OffsetRect.Left - Rect.Left;
-  Height := Rect.Bottom + OffsetRect.Bottom - OffsetRect.Top - Rect.Top;
-end;
-
 function TWin32WSCustomPage.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
@@ -301,7 +286,6 @@ begin
     pClassName := @ClsName;
     Flags := Flags and not WS_VISIBLE;
     SubClassWndProc := nil;
-    CustomPageCalcBounds(AWinControl, Left, Top, Width, Height);
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);
@@ -312,41 +296,6 @@ begin
   begin
     hasTabParent := true;
     isTabPage := true;
-  end;
-end;
-
-procedure TWin32WSCustomPage.SetBounds(const AWinControl: TWinControl; 
-  const ALeft, ATop, AWidth, AHeight: Integer);
-var
-  lLeft, lTop, lWidth, lHeight: integer;
-  wLeft, wTop, wWidth, wHeight: integer;
-  PageRect, ParentRect: Windows.RECT;
-  WinHandle: HWND;
-begin
-  // calculate bounds as we think it should be
-  CustomPageCalcBounds(AWinControl, wLeft, wTop, wWidth, wHeight);
-  // calculate current bounds of page
-  WinHandle := AWinControl.Handle;
-  GetWindowRect(WinHandle, @PageRect);
-  GetWindowRect(GetParent(WinHandle), @ParentRect);
-  OffsetRect(@PageRect, -ParentRect.Left, -ParentRect.Top);
-  // if differ, then update page to new bounds
-  if (wLeft <> PageRect.Left) or (wTop <> PageRect.Top)
-      or (wWidth <> (PageRect.Right - PageRect.Left))
-      or (wHeight <> (PageRect.Bottom - PageRect.Top)) then
-  begin
-    SetWindowPos(WinHandle, 0, wLeft, wTop, wWidth, wHeight, SWP_NOACTIVATE or SWP_NOZORDER);
-  end else begin
-    // calculate bounds as LCL thinks it should be
-    lLeft := ALeft; lTop := ATop;
-    lWidth := AWidth; lHeight := AHeight;
-    LCLBoundsToWin32Bounds(AWinControl, lLeft, lTop, lWidth, lHeight);
-    // if differ, then update LCL
-    if (lLeft <> wLeft) or (lTop <> wTop) 
-        or (lWidth <> wWidth) or (lHeight <> wHeight) then
-    begin
-      LCLControlSizeNeedsUpdate(AWinControl, true);
-    end;
   end;
 end;
 
@@ -415,6 +364,10 @@ begin
     // store object as extra, so we can verify we got the right page later
     TCI.lParam := dword(AChild);
     Windows.SendMessage(Handle, TCM_INSERTITEM, AIndex, LPARAM(@TCI));
+    // clientrect possible changed, adding first tab, or deleting last
+    // windows should send a WM_SIZE message because of this, but it doesn't
+    // send it ourselves
+    LCLControlSizeNeedsUpdate(ANotebook, true);
   end;
 end;
 
