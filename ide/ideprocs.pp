@@ -140,6 +140,7 @@ procedure FreeThenNil(var Obj: TObject);
 function CompareCaret(const FirstCaret, SecondCaret: TPoint): integer;
 procedure CheckList(List: TList; TestListNil, TestDoubles, TestNils: boolean);
 procedure CheckEmptyListCut(List1, List2: TList);
+function CompareBoolean(b1, b2: boolean): integer;
 
 const
   {$IFDEF Win32}
@@ -611,6 +612,19 @@ begin
     if List2.IndexOf(List1[i])>=0 then
       RaiseException('CheckEmptyListCut');
   end;
+end;
+
+{-------------------------------------------------------------------------------
+  function CompareBoolean(b1, b2: boolean): integer;
+-------------------------------------------------------------------------------}
+function CompareBoolean(b1, b2: boolean): integer;
+begin
+  if b1=b2 then
+    Result:=0
+  else if b1 then
+    Result:=1
+  else
+    Result:=-1;
 end;
 
 {-------------------------------------------------------------------------------

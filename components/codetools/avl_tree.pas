@@ -63,6 +63,9 @@ type
     function FindKey(Key: Pointer;
       OnCompareKeyWithData: TListSortCompare): TAVLTreeNode;
     function FindNearest(Data: Pointer): TAVLTreeNode;
+    function FindPointer(Data: Pointer): TAVLTreeNode;
+    function FindLeftMost(Data: Pointer): TAVLTreeNode;
+    function FindRightMost(Data: Pointer): TAVLTreeNode;
     function FindSuccessor(ANode: TAVLTreeNode): TAVLTreeNode;
     function FindPrecessor(ANode: TAVLTreeNode): TAVLTreeNode;
     function FindLowest: TAVLTreeNode;
@@ -71,6 +74,7 @@ type
     function Add(Data: Pointer): TAVLTreeNode;
     procedure Delete(ANode: TAVLTreeNode);
     procedure Remove(Data: Pointer);
+    procedure RemovePointer(Data: Pointer);
     procedure MoveDataLeftMost(var ANode: TAVLTreeNode);
     procedure MoveDataRightMost(var ANode: TAVLTreeNode);
     property OnCompare: TListSortCompare read FOnCompare write SetOnCompare;
@@ -617,6 +621,15 @@ begin
     Delete(ANode);
 end;
 
+procedure TAVLTree.RemovePointer(Data: Pointer);
+var
+  ANode: TAVLTreeNode;
+begin
+  ANode:=FindPointer(Data);
+  if ANode<>nil then
+    Delete(ANode);
+end;
+
 destructor TAVLTree.Destroy;
 begin
   Clear;
@@ -672,6 +685,40 @@ begin
       else
         exit;
     end;
+  end;
+end;
+
+function TAVLTree.FindPointer(Data: Pointer): TAVLTreeNode;
+begin
+  Result:=FindLeftMost(Data);
+  while (Result<>nil) do begin
+    if Result.Data=Data then break;
+    Result:=FindSuccessor(Result);
+    if OnCompare(Data,Result.Data)<>0 then Result:=nil;
+  end;
+end;
+
+function TAVLTree.FindLeftMost(Data: Pointer): TAVLTreeNode;
+var
+  Left: TAVLTreeNode;
+begin
+  Result:=Find(Data);
+  while (Result<>nil) do begin
+    Left:=FindPrecessor(Result);
+    if (Left=nil) or (OnCompare(Data,Left.Data)<>0) then break;
+    Result:=Left;
+  end;
+end;
+
+function TAVLTree.FindRightMost(Data: Pointer): TAVLTreeNode;
+var
+  Right: TAVLTreeNode;
+begin
+  Result:=Find(Data);
+  while (Result<>nil) do begin
+    Right:=FindSuccessor(Result);
+    if (Right=nil) or (OnCompare(Data,Right.Data)<>0) then break;
+    Result:=Right;
   end;
 end;
 
