@@ -201,6 +201,7 @@ type
     procedure AddSubEditor(PropEditor:TPropertyEditor);
 
     procedure SetRowValue;
+    procedure RefreshValueEdit;
     procedure ValueEditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ValueEditExit(Sender: TObject);
     procedure ValueEditChange(Sender: TObject);
@@ -631,6 +632,29 @@ begin
       Exclude(FStates,pgsApplyingValue);
       DoPaint(true);
       if Assigned(FOnModified) then FOnModified(Self);
+    end;
+  end;
+end;
+
+procedure TOIPropertyGrid.RefreshValueEdit;
+var
+  CurRow: TOIPropertyGridRow;
+  NewValue, OldValue: string;
+begin
+  if (FStates*[pgsChangingItemIndex,pgsApplyingValue]=[])
+  and (FCurrentEdit<>nil)
+  and (FItemIndex>=0) and (FItemIndex<FRows.Count) then begin
+    CurRow:=Rows[FItemIndex];
+    if FCurrentEdit=ValueEdit then
+      OldValue:=ValueEdit.Text
+    else
+      OldValue:=ValueComboBox.Text;
+    NewValue:=CurRow.Editor.GetVisualValue;
+    if OldValue<>NewValue then begin
+      if FCurrentEdit=ValueEdit then
+        ValueEdit.Text:=NewValue
+      else
+        ValueComboBox.Text:=NewValue;
     end;
   end;
 end;
@@ -1263,6 +1287,7 @@ end;
 
 procedure TOIPropertyGrid.RefreshPropertyValues;
 begin
+  RefreshValueEdit;
   DoPaint(true);
 end;
 
