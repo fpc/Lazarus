@@ -25,6 +25,7 @@ Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:Ad
 [Files]
 Source: {#BuildDir}\*.*; DestDir: {app}; Flags: recursesubdirs
 Source: environmentoptions.xml; DestDir: {app}; Flags: onlyifdoesntexist; AfterInstall: UpdateEnvironmentOptions
+Source: editoroptions.xml; DestDir: {app}; Flags: onlyifdoesntexist
 Source: samplefpc.cfg; DestDir: {app}\pp\bin\win32; Flags: onlyifdoesntexist; AfterInstall: UpdateFpcCfg; DestName: fpc.cfg
 
 [Icons]
