@@ -199,10 +199,8 @@ procedure TgtkObject.SendCachedLCLMessages;
     {$ENDIF}
     
     TopologicalList:=CreateTopologicalSortedWidgets(FWidgetsWithResizeRequest);
-    writeln('GGG2');
     for i:=0 to TopologicalList.Count-1 do begin
       Widget:=TopologicalList[i];
-      writeln('GGG2 i=',i,' Widget=',HexStr(Cardinal(Widget),8));
 
       // resize widget
       LCLControl:=TControl(GetLCLObject(Widget));
@@ -211,8 +209,10 @@ procedure TgtkObject.SendCachedLCLMessages;
           HexStr(Cardinal(Widget),8),' without LCL control');
         Halt;
       end;
+      {$IFDEF VerboseSizeMsg}
       writeln('SendCachedLCLMessages ',LCLControl.Name,':',LCLControl.ClassName,
         ' ',LCLControl.Left,',',LCLControl.Top,',',LCLControl.Width,',',LCLControl.Height);
+      {$ENDIF}
       
       IsTopLevelWidget:= (LCLControl is TCustomForm)
                          and (LCLControl.Parent = nil);
@@ -294,7 +294,9 @@ procedure TGtkObject.SendCachedGtkMessages;
     
   begin
     LCLControl:=TWinControl(GetLCLObject(MainWidget));
+    {$IFDEF VerboseSizeMsg}
     writeln('JJJ1 SendSizeNotificationToLCL ',LCLControl.Name,':',LCLControl.ClassName);
+    {$ENDIF}
 
     GtkLeft:=MainWidget^.Allocation.X;
     GtkTop:=MainWidget^.Allocation.Y;
@@ -314,10 +316,12 @@ procedure TGtkObject.SendCachedGtkMessages;
     
     UpdateLCLRect;
 
+    {$IFDEF VerboseSizeMsg}
     writeln('JJJ2 ',
       ' GTK=',GtkLeft,',',GtkTop,',',GtkWidth,',',GtkHeight,
       ' LCL=',LCLLeft,',',LCLTop,',',LCLWidth,',',LCLHeight
       );
+    {$ENDIF}
     // first send a LM_WINDOWPOSCHANGED message
     if TopLeftChanged or WidthHeightChanged then begin
       PosMsg.Msg := LM_WINDOWPOSCHANGED; //LM_SIZEALLOCATE;
@@ -342,7 +346,9 @@ procedure TGtkObject.SendCachedGtkMessages;
         
     // then send a LM_SIZE message
     if WidthHeightChanged then begin
+      {$IFDEF VerboseSizeMsg}
       writeln('JJJ3 Send LM_SIZE To LCL ',LCLControl.Name,':',LCLControl.ClassName);
+      {$ENDIF}
       with SizeMsg do
       begin
         Result := -1;
@@ -359,7 +365,9 @@ procedure TGtkObject.SendCachedGtkMessages;
     
     // then send a LM_MOVE message
     if TopLeftChanged then begin
+      {$IFDEF VerboseSizeMsg}
       writeln('JJJ4 Send LM_MOVE To LCL ',LCLControl.Name,':',LCLControl.ClassName);
+      {$ENDIF}
       with MoveMsg do
       begin
         Result := -1;
@@ -399,7 +407,9 @@ procedure TGtkObject.SendCachedGtkMessages;
       resized
       -> invalidate client rectangles
     }
+    {$IFDEF VerboseSizeMsg}
     writeln('HHH1 SendCachedGtkClientResizeNotifications Invalidating ClientRects ... FixSizeMsgCount=',FFixWidgetsResized.Count);
+    {$ENDIF}
     FFixWidgetsResized.AssignTo(List);
     for i:=0 to List.Count-1 do begin
       FixWidget:=List[i];
@@ -418,7 +428,9 @@ procedure TGtkObject.SendCachedGtkMessages;
       then a LCL control was resized
       -> send WMSize, WMMove, and WMWindowPosChanged messages
     }
+    {$IFDEF VerboseSizeMsg}
     writeln('HHH2 SendCachedGtkClientResizeNotifications SizeMsgCount=',FWidgetsResized.Count);
+    {$ENDIF}
     FWidgetsResized.AssignTo(List);
     for i:=0 to List.Count-1 do begin
       MainWidget:=List[i];
@@ -432,7 +444,9 @@ procedure TGtkObject.SendCachedGtkMessages;
       sync with the LCL, no message was send. So, tell each changed client area
       to check its size.
     }
+    {$IFDEF VerboseSizeMsg}
     writeln('HHH3 SendCachedGtkClientResizeNotifications Updating ClientRects ...');
+    {$ENDIF}
     FFixWidgetsResized.AssignTo(List);
     for i:=0 to List.Count-1 do begin
       FixWidget:=List[i];
@@ -627,26 +641,28 @@ begin
   ClipboardTypeAtoms[ctClipboard]:=gdk_atom_intern('CLIPBOARD',0);
 end;
 
+
+{------------------------------------------------------------------------------
+  Method: TGtkObject.RecreateWnd
+  Params:  Sender: TObject - the lcl wincontrol, that is to recreated
+  Returns: none
+  
+  Destroys Handle and child Handles and recreates them.
+-------------------------------------------------------------------------------}
 function TgtkObject.RecreateWnd(Sender: TObject): Integer;
 var
-  aParent : TWinControl;
+  aWinControl, aParent : TWinControl;
 Begin
-  //could we just call IntSendMessage??
-
-  //destroy old widget
-  if TWinControl(Sender).HandleAllocated then begin
-    DestroyLCLControl(Sender);
+  aWinControl:=TWinControl(Sender);
+  aParent := aWinControl.Parent;
+  if aParent<>nil then begin
+    // remove and insert the control
+    // this will destroy all child handles
+    aWinControl.Parent := nil;
+    aWinControl.Parent := aParent;
   end;
-
-  aParent := TWinControl(Sender).Parent;
-  aParent.RemoveControl(TControl(Sender));
-
-  TWincontrol(Sender).Parent := nil;
-  TWincontrol(Sender).Parent := aParent;
-
-//writeln('[TgtkObject.RecreateWnd] ',Sender.ClassName);
-  ResizeChild(Sender,TWinControl(Sender).Left,TWinControl(Sender).Top,
-     TWinControl(Sender).Width,TWinControl(Sender).Height);
+  ResizeChild(Sender,aWinControl.Left,aWinControl.Top,
+                     aWinControl.Width,aWinControl.Height);
   ShowHide(Sender);
   Result:=0;
 End;
@@ -2392,9 +2408,13 @@ begin
 
   {$IFDEF ClientRectBugFix}
   // remove pending size messages
+  {$IFDEF VerboseClientRectBugFix}
   writeln('QQQ1 REMOVE Widget=',HexStr(Cardinal(Widget),8),' FixWidget=',HexStr(Cardinal(FixWidget),8));
+  {$ENDIF}
   FWidgetsWithResizeRequest.Remove(Widget);
+  {$IFDEF VerboseClientRectBugFix}
   writeln('QQQ2 ',FWidgetsWithResizeRequest.ConsistencyCheck);
+  {$ENDIF}
   FWidgetsResized.Remove(Widget);
   FFixWidgetsResized.Remove(FixWidget);
   {$ENDIF}
@@ -3016,7 +3036,9 @@ begin
        end
        else
        begin
-          P := gtk_radio_button_new_with_label(gtk_radio_button_group (GTk_Radio_Button(group)),StrTemp);
+          P := gtk_radio_button_new_with_label(
+                               gtk_radio_button_group (GTk_Radio_Button(group)),
+                               StrTemp);
        end;
     end;
 
@@ -3390,7 +3412,7 @@ var
    Handle    : Pointer;
    Year,Month,Day : Integer;  //used for csCalendar
 begin
-   result := 0;     // default if nobody sets it
+   Result := 0;     // default if nobody sets it
 
    if Sender is TWinControl 
      then Assert(False, Format('Trace:  [TgtkObject.GetValue] %s', [Sender.ClassName]))
@@ -3412,6 +3434,7 @@ begin
       csCheckbox   : if gtk_toggle_button_get_active (PGtkToggleButton (handle))
                         then TCheckBoxState (data^) := cbChecked
                         else TCheckBoxState (data^) := cbUnChecked;
+                        
       csCalendar :Begin
                     gtk_calendar_get_date(PgtkCalendar(handle),@Year, @Month, @Day);
                     //TODO:  account for local settings like date format
@@ -3468,54 +3491,59 @@ begin
    case TControl(Sender).fCompStyle of
       csProgressBar: gtk_progress_set_value (GTK_PROGRESS (handle), integer (data^));
    
-      csTrackbar   : begin
-                        if Handle = nil then Exit;
-                        gtk_range_get_adjustment (GTK_RANGE (handle))^.value := integer (data^);
-                        gtk_signal_emit_by_name (PGtkObject
-                           (gtk_range_get_adjustment (
-                               GTK_RANGE (handle))), 'value_changed');
-                     end;
+      csTrackbar   :
+        begin
+          if Handle = nil then Exit;
+          gtk_range_get_adjustment (GTK_RANGE (handle))^.value := integer (data^);
+          gtk_signal_emit_by_name (PGtkObject
+             (gtk_range_get_adjustment (
+                 GTK_RANGE (handle))), 'value_changed');
+        end;
 
       csRadiobutton,
-      csCheckbox   : if TCheckBoxState (data^) = cbChecked
-                        then gtk_toggle_button_set_active( PGtkToggleButton (handle), TRUE)
-                        else gtk_toggle_button_set_active( PGtkToggleButton (handle), FALSE);
-      csCalendar   : Begin
-                       Date := TLMCalendar(data^).Date;
-                       Year := FormatDateTime('yyyy',Date);
-                       Month := FormatDateTime('mm',Date);
-                       Day := FormatDateTime('dd',Date);
-                       gtk_calendar_select_month(PgtkCalendar(handle),StrtoInt(Month)-1,StrToInt(Year));
-                       gtk_calendar_select_day(PgtkCalendar(handle),StrToInt(Day));
-                       
-                       //set display options
-                       Num := 0;
-                       if (dsShowHeadings in TLMCalendar(data^).DisplaySettings) then
-                          num := Num + (1 shl 0);
-                                
-                       if (dsShowDayNames in TLMCalendar(data^).DisplaySettings) then
-                          num := Num  + (1 shl 1);
+      csCheckbox   :
+        if TCheckBoxState (data^) = cbChecked
+        then gtk_toggle_button_set_active( PGtkToggleButton (handle), TRUE)
+        else gtk_toggle_button_set_active( PGtkToggleButton (handle), FALSE);
+                        
+      csCalendar   :
+        Begin
+           Date := TLMCalendar(data^).Date;
+           Year := FormatDateTime('yyyy',Date);
+           Month := FormatDateTime('mm',Date);
+           Day := FormatDateTime('dd',Date);
+           gtk_calendar_select_month(PgtkCalendar(handle),StrtoInt(Month)-1,StrToInt(Year));
+           gtk_calendar_select_day(PgtkCalendar(handle),StrToInt(Day));
+           
+           //set display options
+           Num := 0;
+           if (dsShowHeadings in TLMCalendar(data^).DisplaySettings) then
+              num := Num + (1 shl 0);
+                    
+           if (dsShowDayNames in TLMCalendar(data^).DisplaySettings) then
+              num := Num  + (1 shl 1);
 
-                       if (dsNoMonthChange in TLMCalendar(data^).DisplaySettings) then
-                          num := Num  + (1 shl 2);
-                          
-                       if (dsShowWeekNumbers in TLMCalendar(data^).DisplaySettings) then
-                           num := Num  + (1 shl 3);
+           if (dsNoMonthChange in TLMCalendar(data^).DisplaySettings) then
+              num := Num  + (1 shl 2);
+              
+           if (dsShowWeekNumbers in TLMCalendar(data^).DisplaySettings) then
+               num := Num  + (1 shl 3);
 
-                       if (dsStartMonday in TLMCalendar(data^).DisplaySettings) then
-                           num := Num  + (1 shl 4);
+           if (dsStartMonday in TLMCalendar(data^).DisplaySettings) then
+               num := Num  + (1 shl 4);
 
-                       gtkCalendarDisplayOptions := TgtkCalendarDisplayOPtions(num);
-                       
-                       gtk_Calendar_Display_options(PgtkCalendar(handle),gtkCalendarDisplayOptions);
-                       
-                       //readonly
-                       if TLMCalendar(data^).ReadOnly then
-                          gtk_calendar_freeze(PgtkCalendar(handle))
-                          else
-                          gtk_calendar_thaw(PgtkCalendar(handle));
+           gtkCalendarDisplayOptions := TgtkCalendarDisplayOPtions(num);
+           
+           gtk_Calendar_Display_options(PgtkCalendar(handle),gtkCalendarDisplayOptions);
+           
+           //readonly
+           if TLMCalendar(data^).ReadOnly then
+              gtk_calendar_freeze(PgtkCalendar(handle))
+              else
+              gtk_calendar_thaw(PgtkCalendar(handle));
 
-                     end;
+         end;
+         
      csArrow : Begin
                if TLmArrow(data^).ArrowType = atUp then
                       ArrowType := GTK_ARROW_UP
@@ -4262,6 +4290,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.122  2002/05/13 14:47:01  lazarus
+  MG: fixed client rectangles, TRadioGroup, RecreateWnd
+
   Revision 1.121  2002/05/12 04:56:20  lazarus
   MG: client rect bugs nearly completed
 
