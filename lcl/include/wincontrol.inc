@@ -783,13 +783,13 @@ procedure TWinControl.SetFocus;
 var
   Form : TCustomForm;
 begin
-   Form := GetParentForm(self);
-
+//if ClassName='TSYNEDIT' then writeln('[TWinControl.SetFocus] ',Name,' Visible=',Visible,' HandleAllocated=',HandleAllocated);
+  Form := GetParentForm(self);
   if Form <> nil then
-     Form.FocusControl(self)
+    Form.FocusControl(self)
   else
   if Visible and HandleAllocated then
-     LCLLinux.SetFocus(Handle);
+    LCLLinux.SetFocus(Handle);
 end;
 
 {------------------------------------------------------------------------------}
@@ -1995,6 +1995,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.49  2002/01/21 14:17:47  lazarus
+  MG: added find-block-start and renamed find-block-other-end
+
   Revision 1.48  2002/01/01 15:50:15  lazarus
   MG: fixed initial component aligning
 

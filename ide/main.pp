@@ -1,4 +1,3 @@
-
 {  $Id$  }
 {
  /***************************************************************************
@@ -387,7 +386,8 @@ type
     procedure DoCompleteCodeAtCursor;
     procedure DoJumpToCodeToolBossError;
     function DoCheckSyntax: TModalResult;
-    procedure DoGoToPascalBlockEnd;
+    procedure DoGoToPascalBlockOtherEnd;
+    procedure DoGoToPascalBlockStart;
     procedure DoJumpToGuessedUnclosedBlock(FindNext: boolean);
     
     // methods for debugging, compiling and external tools
@@ -1774,8 +1774,11 @@ begin
    ecFindDeclaration:
      DoFindDeclarationAtCursor;
      
-   ecFindBlockEnd:
-     DoGoToPascalBlockEnd;
+   ecFindBlockOtherEnd:
+     DoGoToPascalBlockOtherEnd;
+     
+   ecFindBlockStart:
+     DoGoToPascalBlockStart;
     
    ecCompleteCode:
      DoCompleteCodeAtCursor;
@@ -5088,6 +5091,7 @@ begin
     BlockBegin:=CaretXY;
     BlockEnd:=CaretXY;
     TopLine:=NewTopLine;
+    SetFocus;
   end;
   Result:=mrOk;
 end;
@@ -5179,7 +5183,7 @@ writeln('[TMainIDE.DoFindDeclarationAtCursor] ************');
     DoJumpToCodeToolBossError;
 end;
 
-procedure TMainIDE.DoGoToPascalBlockEnd;
+procedure TMainIDE.DoGoToPascalBlockOtherEnd;
 var ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
   NewSource: TCodeBuffer;
@@ -5188,7 +5192,7 @@ begin
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo) then exit;
 {$IFDEF IDE_DEBUG}
 writeln('');
-writeln('[TMainIDE.DoGoToPascalBlockEnd] ************');
+writeln('[TMainIDE.DoGoToPascalBlockOtherEnd] ************');
 {$ENDIF}
   if CodeToolBoss.FindBlockCounterPart(ActiveUnitInfo.Source,
     ActiveSrcEdit.EditorComponent.CaretX,
@@ -5198,6 +5202,29 @@ writeln('[TMainIDE.DoGoToPascalBlockEnd] ************');
     DoJumpToCodePos(ActiveSrcEdit, ActiveUnitInfo, 
       NewSource, NewX, NewY, NewTopLine, false);
   end else 
+    DoJumpToCodeToolBossError;
+end;
+
+procedure TMainIDE.DoGoToPascalBlockStart;
+var ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+  NewSource: TCodeBuffer;
+  NewX, NewY, NewTopLine: integer;
+begin
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo) then exit;
+{$IFDEF IDE_DEBUG}
+writeln('');
+writeln('[TMainIDE.DoGoToPascalBlockStart] ************');
+{$ENDIF}
+writeln('[TMainIDE.DoGoToPascalBlockStart] ************');
+  if CodeToolBoss.FindBlockStart(ActiveUnitInfo.Source,
+    ActiveSrcEdit.EditorComponent.CaretX,
+    ActiveSrcEdit.EditorComponent.CaretY,
+    NewSource,NewX,NewY,NewTopLine) then
+  begin
+    DoJumpToCodePos(ActiveSrcEdit, ActiveUnitInfo,
+      NewSource, NewX, NewY, NewTopLine, false);
+  end else
     DoJumpToCodeToolBossError;
 end;
 
@@ -5586,6 +5613,9 @@ end.
 =======
 
   $Log$
+  Revision 1.203  2002/01/21 14:17:44  lazarus
+  MG: added find-block-start and renamed find-block-other-end
+
   Revision 1.202  2002/01/17 11:00:00  lazarus
   MG: increased IDE version to 0.8.2 alpha
 
@@ -5626,6 +5656,9 @@ end.
 
 <<<<<<< main.pp
   $Log$
+  Revision 1.203  2002/01/21 14:17:44  lazarus
+  MG: added find-block-start and renamed find-block-other-end
+
   Revision 1.202  2002/01/17 11:00:00  lazarus
   MG: increased IDE version to 0.8.2 alpha
 

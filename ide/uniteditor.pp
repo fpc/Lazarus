@@ -1053,8 +1053,6 @@ Begin
 End;
 
 Procedure TSourceEditor.CreateEditor(AOwner : TComponent; AParent: TWinControl);
-type
-  bytearray = array[0..10000] of byte;
 var
   NewName: string;
   i: integer;
@@ -1083,7 +1081,7 @@ writeln('TSourceEditor.CreateEditor  A ');
       OnMouseMove := @EditorMouseMoved;
       OnMouseDown := @EditorMouseDown;
       OnKeyDown := @EditorKeyDown;
-      Show;
+      Visible:=true;
     end;
     if FCodeTemplates<>nil then
       FCodeTemplates.AddEditor(FEditor);
@@ -2101,12 +2099,6 @@ Begin
   SrcPopupMenu.AutoPopup := True;
 
   MenuItem := TMenuItem.Create(Self);
-  MenuItem.Name:='ClosePageMenuItem';
-  MenuItem.Caption := '&Close Page';
-  MenuItem.OnClick := @CloseClicked;
-  SrcPopupMenu.Items.Add(MenuItem);
-
-  MenuItem := TMenuItem.Create(Self);
   MenuItem.Name:='FindDeclarationMenuItem';
   MenuItem.Caption := '&Find Declaration';
   MenuItem.OnClick := @FindDeclarationClicked;
@@ -2116,6 +2108,12 @@ Begin
   MenuItem.Name:='OpenFileAtCursorMenuItem';
   MenuItem.Caption := '&Open file at cursor';
   MenuItem.OnClick := @OpenAtCursorClicked;
+  SrcPopupMenu.Items.Add(MenuItem);
+
+  MenuItem := TMenuItem.Create(Self);
+  MenuItem.Name:='ClosePageMenuItem';
+  MenuItem.Caption := '&Close Page';
+  MenuItem.OnClick := @CloseClicked;
   SrcPopupMenu.Items.Add(MenuItem);
 
   SrcPopupMenu.Items.Add(Seperator);

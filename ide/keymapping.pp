@@ -51,7 +51,8 @@ const
   ecViewJumpHistory     = ecUserFirst + 15;
 
   ecFindDeclaration     = ecUserFirst + 20;
-  ecFindBlockEnd        = ecUserFirst + 21;
+  ecFindBlockOtherEnd   = ecUserFirst + 21;
+  ecFindBlockStart      = ecUserFirst + 22;
 
   ecWordCompletion     = ecUserFirst + 100;
   ecCompleteCode       = ecUserFirst + 101;
@@ -346,7 +347,8 @@ begin
     ecAddJumpPoint: Result:='add jump point';
     ecViewJumpHistory: Result:='view jump history';
     ecFindDeclaration: Result:='find declaration';
-    ecFindBlockEnd: Result:='find block end';
+    ecFindBlockOtherEnd: Result:='find block other end';
+    ecFindBlockStart: Result:='find block start';
     ecNextEditor: Result:= 'next editor';
     ecPrevEditor: Result:= 'previous editor';
     ecPeriod: Result:= 'period';
@@ -937,7 +939,8 @@ begin
   Add('Find procedure method',ecFindProcedureMethod,
                                  VK_DOWN,[ssShift,SSCtrl],VK_UNKNOWN,[]);
   Add('Find declaration',ecFindDeclaration,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add('Find block end',ecFindBlockEnd,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add('Find block other end',ecFindBlockOtherEnd,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add('Find block start',ecFindBlockStart,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add('Go to line number',ecGotoLineNumber,VK_G,[ssCtrl],VK_UNKNOWN,[]);
   Add('Jump back',ecJumpBack,VK_H,[ssCtrl],VK_UNKNOWN,[]);
   Add('Jump forward',ecJumpForward,VK_H,[ssCtrl,ssShift],VK_UNKNOWN,[]);

@@ -3777,37 +3777,46 @@ function TgtkObject.SetFocus(hWnd: HWND): HWND;
 var
   TopLevel: PGTKWidget;
 begin
-  if hwnd = 0
-  then
+//writeln('[TgtkObject.SetFocus] A hWnd=',HexStr(Cardinal(hWnd),8));
+  if hwnd = 0 then
     Result := 0
   else begin
+    // return the old focus handle
     Result := GetFocus;
     TopLevel := gtk_widget_get_toplevel(PGTKWidget(hWND));
+//writeln('[TgtkObject.SetFocus] B hWnd=',HexStr(Cardinal(hWnd),8),' Result=',HexStr(Cardinal(Result),8),' TopLevel=',HexStr(Cardinal(TopLevel),8));
     if gtk_type_is_a(gtk_object_type(PGTKObject(TopLevel)), gtk_window_get_type)
     then begin
-      if GTK_WIDGET_CAN_FOCUS(TOPLEVEL) then
-         gtk_window_set_focus(PGTKWindow(TopLevel), PGTKWidget(hWND))
-         else
-         begin
-         if gtk_type_is_a(gtk_object_type(PGTKObject(hwnd)), gtk_combo_get_type) then
-            Begin
-               gtk_widget_grab_focus(PgtkWidget(PGtkCombo(hwnd)^.entry));
-            end
-            else
-         if GetCoreChildWidget(PGtkWidget(Hwnd)) <> nil then
-            gtk_widget_grab_focus(GetCoreChildWidget(PGtkWidget(Hwnd)))
-          else
-            gtk_widget_grab_focus(PgtkWidget(hwnd));
-         
-         
-         end;
-   end
-   else
-     begin
-       if GTK_WIDGET_CAN_FOCUS(PgtkWidget(hwnd)) then
-       gtk_widget_grab_focus(PgtkWidget(hwnd));
-     end;
+//writeln('[TgtkObject.SetFocus] C  TopLevel is a gtkwindow');
+      // TopLevel is a gtkwindow
+      if GTK_WIDGET_CAN_FOCUS(TOPLEVEL) then begin
+        // TopLevel window can focus
+//writeln('[TgtkObject.SetFocus] D  TopLevel window can focus');
+        gtk_window_set_focus(PGTKWindow(TopLevel), PGTKWidget(hWND))
+      end
+      else begin
+        // TopLevel window can not focus
+//writeln('[TgtkObject.SetFocus] E  TopLevel window can not focus');
+        if gtk_type_is_a(gtk_object_type(PGTKObject(hwnd)), gtk_combo_get_type)
+        then begin
+          // handle is a gtk combo
+          gtk_widget_grab_focus(PgtkWidget(PGtkCombo(hwnd)^.entry));
+        end
+        else if (GetCoreChildWidget(PGtkWidget(Hwnd)) <> nil) then begin
+          gtk_widget_grab_focus(GetCoreChildWidget(PGtkWidget(Hwnd)))
+        end
+        else begin
+          gtk_widget_grab_focus(PgtkWidget(hwnd));
+        end;
+      end;
+    end
+    else begin
+      if GTK_WIDGET_CAN_FOCUS(PgtkWidget(hwnd)) then begin
+        gtk_widget_grab_focus(PgtkWidget(hwnd));
+      end;
+    end;
   end;
+//writeln('[TgtkObject.SetFocus] END hWnd=',HexStr(Cardinal(hWnd),8),' Result=',HexStr(Cardinal(Result),8),' TopLevel=',HexStr(Cardinal(TopLevel),8),' NewFocus=',HexStr(Cardinal(GetFocus),8));
 end;
 
 Function TgtkObject.SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean;
@@ -4328,6 +4337,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.58  2002/01/21 14:17:47  lazarus
+  MG: added find-block-start and renamed find-block-other-end
+
   Revision 1.57  2002/01/08 16:02:45  lazarus
   Minor changes to TListView.
   Added TImageList to the IDE

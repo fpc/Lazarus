@@ -397,17 +397,24 @@ begin
       );
 
       // draw caret
-      if (PGTKStyle(PGTKWidget(Client)^.theStyle)<>nil) 
+{writeln('GTKAPIWidgetClient_DrawCaret B Client=',HexStr(Cardinal(Client),8)
+,' ',cardinal(PGTKWidget(Client)^.theStyle)
+,' ',cardinal(PGTKWidget(Client)^.Window)
+,' ',Width
+,' ',Height
+);}
+      if (PGTKWidget(Client)^.theStyle<>nil) 
       and (PGTKWidget(Client)^.Window<>nil)
-      and (Width>0) and (Height>0)
-      and (PGTKWidget(Client)^.theStyle<>nil) then begin
+      and (Width>0) and (Height>0) then begin
         // set draw function to xor
         ForeGroundGC:=PGTKStyle(
            PGTKWidget(Client)^.theStyle)^.fg_gc[GC_STATE[Integer(Pixmap) <> 1]];
         //gdk_gc_get_values(ForeGroundGC,@ForeGroundGCValues);
         //OldGdkFunction:=ForeGroundGCValues.thefunction;
         //gdk_gc_set_function(ForeGroundGC,GDK_XOR);
+        
         // draw the caret
+//writeln('DRAWING');
         gdk_draw_rectangle(
           PGTKWidget(Client)^.Window, 
           ForeGroundGC,
@@ -418,10 +425,9 @@ begin
       end else
         writeln('***: Draw Caret failed: Client=',HexStr(Cardinal(Client),8),' X=',X,' Y=',Y,' W=',Width,' H=',Height,' ',Pixmap<>nil,',',PGTKWidget(Client)^.Window<>nil,',',PGTKWidget(Client)^.theStyle<>nil);
       IsDrawn := True;
-
     end;
     
-//writeln('GTKAPIWidgetClient_DrawCaret A Client=',HexStr(Cardinal(Client),8),' Timer=',Timer,' Blink=',Blinking,' Visible=',Visible,' ShowHideOnFocus=',ShowHideOnFocus,' Focus=',gtk_widget_has_focus(Widget),' W=',Width,' H=',Height);
+//writeln('GTKAPIWidgetClient_DrawCaret A Client=',HexStr(Cardinal(Client),8),' Timer=',Timer,' Blink=',Blinking,' Visible=',Visible,' ShowHideOnFocus=',ShowHideOnFocus,' Focus=',gtk_widget_has_focus(Widget),' IsDrawn=',IsDrawn,' W=',Width,' H=',Height);
     if Visible and Blinking and (Timer = 0) 
     and (not ShowHideOnFocus or HasFocus)
     then
@@ -712,6 +718,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.20  2002/01/21 14:17:47  lazarus
+  MG: added find-block-start and renamed find-block-other-end
+
   Revision 1.19  2001/12/17 12:14:40  lazarus
   MG: tried to xor caret, but failed :(
 

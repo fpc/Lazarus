@@ -1746,7 +1746,7 @@ begin
     Include(fStateFlags, sfPossibleGutterClick);
   {$IFDEF SYN_LAZARUS}
   LCLLinux.SetFocus(Handle);
-  ShowCaret;
+  UpdateCaret;
   {$ELSE}
   Windows.SetFocus(Handle);
   {$ENDIF}
@@ -3445,7 +3445,10 @@ procedure TCustomSynEdit.ShowCaret;
 begin
   if not (eoNoCaret in Options) and not (sfCaretVisible in fStateFlags) then
     if {$IFDEF SYN_LAZARUS}LCLLinux{$ELSE}Windows{$ENDIF}.ShowCaret(Handle) then
+    begin
+//writeln('[TCustomSynEdit.ShowCaret] A ',Name);
       Include(fStateFlags, sfCaretVisible)
+    end;
 end;
 
 procedure TCustomSynEdit.UpdateCaret;
@@ -3471,8 +3474,10 @@ begin
       {$ELSE}
       SetCaretPos(CX, CY);
       {$ENDIF}
+//writeln('[TCustomSynEdit.UpdateCaret] ShowCaret ',Name);
       ShowCaret;
     end else begin
+//writeln('[TCustomSynEdit.UpdateCaret] HideCaret ',Name);
       HideCaret;
       {$IFDEF SYN_LAZARUS}
       SetCaretPosEx(Handle,CX, CY);
@@ -3615,7 +3620,7 @@ end;
 procedure TCustomSynEdit.WMKillFocus(var Msg: TWMKillFocus);
 begin
   inherited;
-//writeln('[TCustomSynEdit.WMKillFocus] A');
+writeln('[TCustomSynEdit.WMKillFocus] A ',Name);
   HideCaret;
   {$IFDEF SYN_LAZARUS}
   LCLLinux.DestroyCaret(Handle);
@@ -3624,7 +3629,7 @@ begin
   {$ENDIF}
   if FHideSelection and SelAvail then
     Invalidate;
-//writeln('[TCustomSynEdit.WMKillFocus] END');
+writeln('[TCustomSynEdit.WMKillFocus] END ',Name);
 end;
 
 procedure TCustomSynEdit.WMSetFocus(var Msg: TWMSetFocus);
@@ -4803,6 +4808,7 @@ begin
   IncPaintLock;
   try
     // Make sure X is visible
+//writeln('[TCustomSynEdit.EnsureCursorPosVisible] A CaretX=',CaretX,' LeftChar=',LeftChar,' CharsInWindow=',CharsInWindow,' ClientWidth=',ClientWidth);
     if CaretX < LeftChar then
       LeftChar := CaretX
     else if CaretX > CharsInWindow + LeftChar then
