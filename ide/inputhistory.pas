@@ -32,7 +32,14 @@ type
     FFindHistory: TStringList;
     FReplaceHistory: TStringList;
     FMaxFindHistory: Integer;
+    
+    // FPC unitlinks
+    FLastFPCUnitLinks: string;
+    FLastFPCPath: string;
+    FLastFPCAge: longint;
+    
     procedure SetFilename(const AValue: string);
+    procedure SetLastFPCPath(const AValue: string);
   public
     constructor Create;
     destructor Destroy;  override;
@@ -47,12 +54,20 @@ type
     procedure AddToFindHistory(const AFindStr: string);
     procedure AddToReplaceHistory(const AReplaceStr: String);
     
+    function LastFPCUnitLinksValid: boolean;
+    function LastFPCUnitLinksNeedsUpdate: boolean;
+    procedure SetLastFPCUnitLinks(const FPCPath, UnitLinks: string);
   public
     // Find- and replace-history
     property FindHistory: TStringList read FFindHistory write FFindHistory;
     property ReplaceHistory: TStringList read FReplaceHistory write FReplaceHistory;
     property MaxFindHistory: Integer read FMaxFindHistory write FMaxFindHistory;
     property Filename: string read FFilename write SetFilename;
+    
+    // FPC unitlinks
+    property LastFPCUnitLinks: string read FLastFPCUnitLinks;
+    property LastFPCPath: string read FLastFPCPath write SetLastFPCPath;
+    property LastFPCAge: longint read FLastFPCAge;
   end;
 
 var InputHistories: TInputHistories;
@@ -70,6 +85,14 @@ const
 procedure TInputHistories.SetFilename(const AValue: string);
 begin
   FFilename:=AValue;
+end;
+
+procedure TInputHistories.SetLastFPCPath(const AValue: string);
+begin
+  if FLastFPCPath=AValue then exit;
+  FLastFPCPath:=AValue;
+  FLastFPCAge:=-1;
+  FLastFPCUnitLinks:='';
 end;
 
 constructor TInputHistories.Create;
@@ -95,6 +118,7 @@ procedure TInputHistories.Clear;
 begin
   FFindHistory.Clear;
   FReplaceHistory.Clear;
+  FLastFPCPath:='';
 end;
 
 procedure TInputHistories.LoadFromXMLConfig(XMLConfig: TXMLConfig;
@@ -104,6 +128,9 @@ begin
   fMaxFindHistory:=XMLConfig.GetValue(Path+'Find/History/Max',FMaxFindHistory);
   LoadRecentList(XMLConfig,FFindHistory,Path+'Find/History/Find/');
   LoadRecentList(XMLConfig,FReplaceHistory,Path+'Find/History/Replace/');
+  FLastFPCAge:=XMLConfig.GetValue(Path+'FPCUnitLinks/FPCAge',-1);
+  FLastFPCPath:=XMLConfig.GetValue(Path+'FPCUnitLinks/FPCPath','');
+  FLastFPCUnitLinks:=XMLConfig.GetValue(Path+'FPCUnitLinks/UnitLinks','');
 end;
 
 procedure TInputHistories.SaveToXMLConfig(XMLConfig: TXMLConfig;
@@ -113,6 +140,9 @@ begin
   XMLConfig.SetValue(Path+'Find/History/Max',FMaxFindHistory);
   SaveRecentList(XMLConfig,FFindHistory,Path+'Find/History/Find/');
   SaveRecentList(XMLConfig,FReplaceHistory,Path+'Find/History/Replace/');
+  XMLConfig.SetValue(Path+'FPCUnitLinks/FPCAge',FLastFPCAge);
+  XMLConfig.SetValue(Path+'FPCUnitLinks/FPCPath',FLastFPCPath);
+  XMLConfig.SetValue(Path+'FPCUnitLinks/UnitLinks',FLastFPCUnitLinks);
 end;
 
 procedure TInputHistories.SetLazarusDefaultFilename;
@@ -166,6 +196,24 @@ end;
 procedure TInputHistories.AddToReplaceHistory(const AReplaceStr: String);
 begin
   AddToRecentList(AReplaceStr,FReplaceHistory,FMaxFindHistory);
+end;
+
+function TInputHistories.LastFPCUnitLinksValid: boolean;
+begin
+  Result:=(LastFPCPath<>'') and (FLastFPCAge>=0);
+end;
+
+function TInputHistories.LastFPCUnitLinksNeedsUpdate: boolean;
+begin
+  Result:=(not LastFPCUnitLinksValid)
+           or (FileAge(LastFPCPath)<>LastFPCAge);
+end;
+
+procedure TInputHistories.SetLastFPCUnitLinks(const FPCPath, UnitLinks: string);
+begin
+  FLastFPCPath:=FPCPath;
+  FLastFPCUnitLinks:=UnitLinks;
+  FLastFPCAge:=FileAge(FPCPath);
 end;
 
 end.

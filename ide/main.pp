@@ -2242,7 +2242,7 @@ Begin
           // create compiler macros to simulate the Makefiles of the FPC sources
           FPCSrcTemplate:=CodeToolBoss.DefinePool.CreateFPCSrcTemplate(
             CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'FPCSrcDir'],
-            CompilerUnitSearchPath, CompilerUnitLinks);
+            CompilerUnitSearchPath, false, CompilerUnitLinks);
           if FPCSrcTemplate<>nil then begin
             CodeToolBoss.DefineTree.RemoveRootDefineTemplateByName(
                                                            FPCSrcTemplate.Name);
@@ -5221,6 +5221,7 @@ var CompilerUnitSearchPath, CompilerUnitLinks: string;
   ADefTempl: TDefineTemplate;
   c: integer;
   AFilename: string;
+  UnitLinksChanged: boolean;
 begin
   FOpenEditorsOnCodeToolChange:=false;
   
@@ -5229,6 +5230,8 @@ begin
     writeln('');
     writeln('NOTE: Compiler Filename not set! (see Environment Options)');
   end;
+  InputHistories.LastFPCPath:=EnvironmentOptions.CompilerFilename;
+  
   if (EnvironmentOptions.LazarusDirectory='') then begin
     writeln('');
     writeln(
@@ -5259,18 +5262,30 @@ begin
       'NOTE: Could not create Define Template for Free Pascal Compiler');
       
     // create compiler macros to simulate the Makefiles of the FPC sources
+    CompilerUnitLinks:=InputHistories.LastFPCUnitLinks;
+    UnitLinksChanged:=InputHistories.LastFPCUnitLinksNeedsUpdate;
     ADefTempl:=CreateFPCSrcTemplate(
             CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'FPCSrcDir'],
-            CompilerUnitSearchPath,CompilerUnitLinks);
+            CompilerUnitSearchPath,
+            not UnitLinksChanged,
+            CompilerUnitLinks);
+    // save unitlinks
+    if UnitLinksChanged
+    or (InputHistories.LastFPCUnitLinks<>InputHistories.LastFPCUnitLinks)
+    then begin
+      InputHistories.SetLastFPCUnitLinks(EnvironmentOptions.CompilerFilename,
+            CompilerUnitLinks);
+      InputHistories.Save;
+    end;
     AddTemplate(ADefTempl,false,
-        'NOTE: Could not create Define Template for Free Pascal Sources');
+      'NOTE: Could not create Define Template for Free Pascal Sources');
         
     // create compiler macros for the lazarus sources
     ADefTempl:=CreateLazarusSrcTemplate(
       '$('+ExternalMacroStart+'LazarusDir)',
       '$('+ExternalMacroStart+'LCLWidgetType)');
     AddTemplate(ADefTempl,true,
-        'NOTE: Could not create Define Template for Lazarus Sources');
+      'NOTE: Could not create Define Template for Lazarus Sources');
   end;
 
   // load include file relationships
@@ -6203,6 +6218,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.277  2002/04/12 16:36:07  lazarus
+  MG: FPC unitlinks are now saved
+
   Revision 1.276  2002/04/12 10:21:53  lazarus
   MG: added Event Assignment completion
 

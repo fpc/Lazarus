@@ -270,7 +270,8 @@ type
     function CreateFPCTemplate(const PPC386Path: string;
         var UnitSearchPath: string): TDefineTemplate;
     function CreateFPCSrcTemplate(const FPCSrcDir,
-        UnitSearchPath: string; var UnitLinkList: string): TDefineTemplate;
+        UnitSearchPath: string;
+        UnitLinkListValid: boolean; var UnitLinkList: string): TDefineTemplate;
     function CreateLazarusSrcTemplate(
         const LazarusSrcDir, WidgetType: string): TDefineTemplate;
     function CreateLCLProjectTemplate(const LazarusSrcDir, WidgetType,
@@ -2046,7 +2047,7 @@ end;
 
 function TDefinePool.CreateFPCSrcTemplate(
   const FPCSrcDir, UnitSearchPath: string;
-  var UnitLinkList: string): TDefineTemplate;
+  UnitLinkListValid: boolean; var UnitLinkList: string): TDefineTemplate;
 var
   Dir, TargetOS, SrcOS, TargetProcessor, UnitLinks,
   IncPathMacro: string;
@@ -2159,7 +2160,6 @@ var
           '.', '..', 'CVS', 'examples', 'example', 'tests', 'fake', 'ide',
           'demo', 'docs', 'template', 'fakertl'
         );
-    
     var
       AFilename, Ext, UnitName, MakroFileName: string;
       FileInfo: TSearchRec;
@@ -2263,6 +2263,7 @@ var
     FileInfo: TSearchRec;
   begin
     // try every ppu file in every reachable directory (CompUnitPath)
+    if UnitLinkListValid then exit;
     UnitLinkList:='';
     PathStart:=1;
     while PathStart<=length(UnitSearchPath) do begin
@@ -2290,6 +2291,7 @@ var
       end;
       PathStart:=PathEnd;
     end;
+    UnitLinkListValid:=true;
   end;
 
 // function TDefinePool.CreateFPCSrcTemplate(

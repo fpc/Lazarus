@@ -781,7 +781,7 @@ begin
     if (FPCSrcDir<>'') and (FPCSrcDir<>DefaultFPCSrcDir)
     and (UnitSearchPath<>'') then
       FPCSrcTemplate:=Boss.DefinePool.CreateFPCSrcTemplate(FPCSrcDir,
-                                                  UnitSearchPath, UnitLinkList)
+                                            UnitSearchPath, false, UnitLinkList)
     else
       FPCSrcTemplate:=nil;
 
@@ -895,7 +895,7 @@ begin
     writeln('  FPCSrcDir="',FPCSrcDir,'"');
     UnitSearchPath:='';
     FPCSrcTemplate:=Boss.DefinePool.CreateFPCSrcTemplate(FPCSrcDir,
-                                           UnitSearchPath, UnitLinks);
+                                           UnitSearchPath, false, UnitLinks);
     if FPCSrcTemplate=nil then begin
       writeln('ERROR: unable to create FPC CVS Src defines for "',FPCSrcDir,'"');
       FPCTemplate.Free;
