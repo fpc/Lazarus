@@ -7053,8 +7053,10 @@ end;
     SW_SHOWNORMAL, SW_MINIMIZE, SW_SHOWMAXIMIZED
 ------------------------------------------------------------------------------}
 function TgtkObject.ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
+{$IFNDEF Gtk1}
 var
   GtkWindow: PGtkWindow;
+{$ENDIF}
 begin
   Result:=false;
   {$IFDEF Gtk1}
@@ -7126,49 +7128,74 @@ var
   End;
   {$EndIf}
 
-  Procedure SetClipping(DestGC : PGDKGC; GDIBitmap : PGdiObject);
+  Procedure SetClipping(DestGC : PGDKGC; ClipMergeMask: PGdiObject);
+  // merge ClipMergeMask into the destination clipping mask at the
+  // destination rectangle
   var
     temp_gc : PGDKGC;
     temp_color : TGDKColor;
     Region: PGdiObject;
     RGNType : Longint;
+    DCOrigin: TPoint;
+    OffsetXY: TPoint;
   begin
+    // activate clipping region of destination
     SelectGDIRegion(DestDC);
     temp_mask := nil;
-    if ((GDIBitmap <> NIL) {and (GDIBitmap^.UseMask)} and (GDIBitmap^.GDIBitmapMaskObject <> nil))
-    then
+    if ((ClipMergeMask <> NIL) {and (ClipMergeMask^.UseMask)}
+    and (ClipMergeMask^.GDIBitmapMaskObject <> nil)) then
     begin
+      // create temporary mask with the size of the destination rectangle
       temp_mask := PGdkBitmap(gdk_pixmap_new(NIL, width, height, 1));
+      // create temporary GC for mask with no clipping
       temp_gc := gdk_gc_new(temp_mask);
+      gdk_gc_set_clip_region(temp_gc, nil);
+      gdk_gc_set_clip_rectangle(temp_gc, nil);
 
-      gdk_gc_set_clip_region(temp_gc,  nil);
-      gdk_gc_set_clip_rectangle (temp_gc,  nil);
-
+      // clear mask
       temp_color.pixel := 0;
       gdk_gc_set_foreground(temp_gc, @temp_color);
 
       gdk_draw_rectangle(temp_mask, temp_gc, 1, 0, 0, width, height);
       gdk_draw_rectangle(temp_mask, temp_gc, 0, 0, 0, width, height);
 
+      // copy the destination clipping mask into the temporary mask
+      DCOrigin:=GetDCOffset(TDeviceContext(DestDC));
       with TDeviceContext(DestDC) do
       begin
         If (ClipRegion <> 0) then begin
           Region:=PGDIObject(ClipRegion);
           RGNType := RegionType(Region^.GDIRegionObject);
           If (RGNType <> ERROR) and (RGNType <> NULLREGION) then begin
-            gdk_region_offset(Region^.GDIRegionObject,0,0);
-            gdk_gc_set_clip_region(temp_gc,  PGDIObject(ClipRegion)^.GDIRegionObject);
+            // destination has a clipping mask
+            // -> copy the destination clipping mask to the temporary mask
+            //    The X,Y coordinate in the destination relates to
+            //    0,0 in the temporary mask.
+            //    The region is already relative to the DCOrigin, so don't apply
+            //    it twice.
+            OffsetXY:=Point(-X+DCOrigin.X,-Y+DCOrigin.Y);
+            // 1. Move the region
+            gdk_region_offset(Region^.GDIRegionObject,OffsetXY.X,OffsetXY.Y);
+            // 2. Apply region to temporary mask
+            gdk_gc_set_clip_region(temp_gc, Region^.GDIRegionObject);
+            // 3. Undo moving the region
+            gdk_region_offset(Region^.GDIRegionObject,-OffsetXY.X,-OffsetXY.Y);
           end;
         end;
       end;
 
-      gdk_draw_pixmap(temp_mask, temp_gc, GDIBitmap^.GDIBitmapMaskObject,
+      // merge the source clipping mask into the temporary mask
+      gdk_draw_pixmap(temp_mask, temp_gc, ClipMergeMask^.GDIBitmapMaskObject,
                       0, 0, 0, 0, width, height);
 
+      // free the temporary GC
       gdk_gc_destroy(temp_gc);
 
+      // apply the new mask to the destination GC
+      // The new mask has only the size of the destination rectangle, not of
+      // the whole destination. Apply it to destination and move it to the right
+      // position
       gdk_gc_set_clip_mask(DestGC, temp_mask);
-
       gdk_gc_set_clip_origin(DestGC, x, y);
     end;
   end;
@@ -7181,31 +7208,31 @@ var
     SelectGDIRegion(DestDC);
   end;
 
-  Procedure SetRasterOperation(ScaleROPGC : PGDKGC);
+  Procedure SetRasterOperation(TheGC : PGDKGC);
   begin
     Case ROP of
       WHITENESS,
       BLACKNESS,
       SRCCOPY :
-        GDK_GC_Set_Function(ScaleROPGC, GDK_Copy);
+        GDK_GC_Set_Function(TheGC, GDK_Copy);
       SRCPAINT :
-        GDK_GC_Set_Function(ScaleROPGC, GDK_NOOP);
+        GDK_GC_Set_Function(TheGC, GDK_NOOP);
       SRCAND :
-        GDK_GC_Set_Function(ScaleROPGC, GDK_Clear);
+        GDK_GC_Set_Function(TheGC, GDK_Clear);
       SRCINVERT :
-        GDK_GC_Set_Function(ScaleROPGC, GDK_XOR);
+        GDK_GC_Set_Function(TheGC, GDK_XOR);
       SRCERASE :
-        GDK_GC_Set_Function(ScaleROPGC, GDK_AND);
+        GDK_GC_Set_Function(TheGC, GDK_AND);
       NOTSRCCOPY :
-        GDK_GC_Set_Function(ScaleROPGC, GDK_OR_REVERSE);
+        GDK_GC_Set_Function(TheGC, GDK_OR_REVERSE);
       NOTSRCERASE :
-        GDK_GC_Set_Function(ScaleROPGC, GDK_AND);
+        GDK_GC_Set_Function(TheGC, GDK_AND);
       MERGEPAINT :
-        GDK_GC_Set_Function(ScaleROPGC, GDK_Copy_Invert);
+        GDK_GC_Set_Function(TheGC, GDK_Copy_Invert);
       DSTINVERT :
-        GDK_GC_Set_Function(ScaleROPGC, GDK_INVERT);
+        GDK_GC_Set_Function(TheGC, GDK_INVERT);
       else begin
-        gdk_gc_set_function(ScaleROPGC, GDK_COPY);
+        gdk_gc_set_function(TheGC, GDK_COPY);
         WriteLn('WARNING: [TgtkObject.StretchBlt] Got unknown/unsupported CopyMode!!');
       end;
     end;
@@ -7259,23 +7286,27 @@ var
   {$EndIf}
   end;
 
-  Function ScaleAndROP(ScaleROPGC : PGDKGC; SRC : PGDKDrawable;
-    SRCBit : PGDIObject) : Boolean;
+  Function ScaleAndROP(DestGC: PGDKGC;
+    SRC: PGDKDrawable; SRCBitmap: PGDIObject): Boolean;
   var
     SRCClip : PGDKPixmap;
   begin
     Result := False;
-    SRCClip := nil;
-    If SRCBit <> nil then
-      If SRCBit^.GDIBitmapMaskObject <> nil then
-        SRCClip := SRCBit^.GDIBitmapMaskObject;
-    if ScaleROPGC = nil
+
+    if DestGC = nil
     then begin
-      WriteLn('WARNING: [TgtkObject.StretchBlt] Uninitialized GC');
+      WriteLn('WARNING: [TgtkObject.StretchBlt] Uninitialized DestGC');
       exit;
     end;
 
-    // create a buffer for raster operations and scaling
+    // get source mask for clipping
+    If (SRCBitmap <> nil)
+    and (SRCBitmap^.GDIBitmapMaskObject <> nil) then
+      SRCClip := SRCBitmap^.GDIBitmapMaskObject
+    else
+      SRCClip := nil;
+      
+    // create a temporary buffer for raster operations and scaling
     Case ROP of
       WHITENESS,
       BLACKNESS,
@@ -7284,45 +7315,51 @@ var
           ScaleBMP := CreateCompatibleBitmap(0, Width, Height);
           Scale := PGdiObject(ScaleBMP);
           Scale^.GDIBitmapMaskObject := SRCClip;
-          SetRasterOperation(ScaleROPGC);
+          SetRasterOperation(DestGC);
           Result := True;
           exit; //skip scaling
         end;
         else begin
-           ScaleBMP := CreateCompatibleBitmap(0, SRCWidth, SRCHeight);
-           Scale := PGdiObject(ScaleBMP);
-           Scale^.GDIBitmapMaskObject := SRCClip;
+          // create a temporary compatible bitmap with the size
+          // of the source and the source mask
+          ScaleBMP := CreateCompatibleBitmap(0, SRCWidth, SRCHeight);
+          Scale := PGdiObject(ScaleBMP);
+          Scale^.GDIBitmapMaskObject := SRCClip;
         end;
     end;
 
-    // set raster operation to SRCCOPY, or NOTSRCCOPY
-    If ROP = NOTSRCERASE then
-      GDK_GC_Set_Function(ScaleROPGC, GDK_OR_REVERSE)
+    // set raster operation for SrcCopy or NotSrcCopy
+    If ROP = NotSrcErase then
+      GDK_GC_Set_Function(DestGC, GDK_OR_REVERSE)
     else
-      GDK_GC_Set_Function(ScaleROPGC, GDK_Copy);
+      GDK_GC_Set_Function(DestGC, GDK_Copy);
 
-    GDK_GC_COPY(fGC, ScaleROPGC);
-    gdk_gc_set_clip_region(fgc,  nil);
-    gdk_gc_set_clip_rectangle (fgc,  nil);
+    // copy the destination GC values into the temporary GC (fGC)
+    GDK_GC_COPY(fGC, DestGC);
+    
+    // clear any previous clipping in the temporary GC (fGC)
+    gdk_gc_set_clip_region(fGC,  nil);
+    gdk_gc_set_clip_rectangle (fGC,  nil);
 
-    //copy source into scale buffer
-    gdk_window_copy_area(Scale^.GDIPixmapObject, fGC,0, 0,
+    // copy source into scale buffer
+    gdk_window_copy_area(Scale^.GDIPixmapObject, fGC, 0, 0,
        SRC, XSRC, YSRC, SRCWidth, SRCHeight);
-    // Set raster operation to SRCCOPY
-    GDK_GC_Set_Function(ScaleROPGC, GDK_Copy);
+       
+    // restore the raster operation back to SRCCOPY in the destination GC
+    GDK_GC_Set_Function(DestGC, GDK_Copy);
 
     // Scale Buffer if needed
     If (Width <> SrcWidth) or (Height <> SrcHeight) then
-      Result := ScaleBuffer(ScaleROPGC)
+      Result := ScaleBuffer(DestGC)
     else
       Result := True;
 
-    //set raster operation
+    // set raster operation in the destination GC
     If Result then
-      SetRasterOperation(ScaleROPGC);
+      SetRasterOperation(DestGC);
   end;
 
-  Procedure ROPFILLBUFFER(DC : hDC);
+  Procedure ROPFillBuffer(DC : hDC);
   var
     OldCurrentBrush: PGdiObject;
     Brush : hBrush;
@@ -7353,12 +7390,12 @@ var
     DestDevContext:=TDeviceContext(DestDC);
     SrcGDIBitmap:=SrcDevContext.CurrentBitmap;
 
+    // create a temporary graphic context for the scale and raster operations
     fGC := GDK_GC_New(DestDevContext.Drawable);
 
-    // perform raster operation and scaling in a buffer
+    // perform raster operation and scaling into Scale and fGC
     DestDevContext.SelectedColors := dcscCustom;
-    If not ScaleAndROP(DestDevContext.GC,
-      SrcDevContext.Drawable, SrcGDIBitmap)
+    If not ScaleAndROP(DestDevContext.GC, SrcDevContext.Drawable, SrcGDIBitmap)
     then
       exit;
 
@@ -7366,7 +7403,7 @@ var
 
     Case ROP of
       WHITENESS, BLACKNESS :
-        ROPFILLBUFFER(DestDC);
+        ROPFillBuffer(DestDC);
     end;
 
     // set clipping mask for transparency
@@ -7374,7 +7411,7 @@ var
 
     // draw image
     gdk_window_copy_area(DestDevContext.Drawable,
-      DestDevContext.GC,X, Y, Scale^.GDIPixmapObject,
+      DestDevContext.GC, X, Y, Scale^.GDIPixmapObject,
       0, 0, Width, Height);
 
     // unset clipping mask for transparency
@@ -7552,7 +7589,9 @@ begin
     end;
 
     //writeln('TgtkObject.StretchBlt X=',X,' Y=',Y,' Width=',Width,' Height=',Height,
-    //  ' XSrc=',XSrc,' YSrc=',YSrc,' SrcWidth=',SrcWidth,' SrcHeight=',SrcHeight);
+    //  ' XSrc=',XSrc,' YSrc=',YSrc,' SrcWidth=',SrcWidth,' SrcHeight=',SrcHeight,
+    //  ' SrcDrawable=',HexStr(Cardinal(TDeviceContext(SrcDC).Drawable),8),
+    //  ' DestDrawable=',HexStr(Cardinal(TDeviceContext(DestDC).Drawable),8));
 
     If TDeviceContext(SrcDC).Drawable = nil then begin
       If TDeviceContext(DestDC).Drawable = nil then
@@ -7880,6 +7919,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.216  2003/03/12 14:39:29  mattias
+  fixed clipping origin in stretchblt
+
   Revision 1.215  2003/03/11 08:14:22  mattias
   implemented ShowWindow for gtk2
 
