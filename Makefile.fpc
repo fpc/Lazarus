@@ -42,6 +42,7 @@ destdir=$(BASEDIR)/dist
 
 [prerules]
 RCPP?=$(strip $(firstword $(wildcard $(addsuffix /cpp$(SRCEXEEXT), $(SEARCHPATH)))))
+#
 # LCL Platform
 ifndef LCL_PLATFORM
 ifeq ($(OS_TARGET),win32)
@@ -52,10 +53,12 @@ override COMPILER_UNITDIR+=lcl/nonwin32
 endif
 endif
 export LCL_PLATFORM
+#
 # LibPaths
 ifeq ($(OS_TARGET),darwin)
 LAZARUS_LIBPATHS=-Fl/usr/X11R6/lib -Fl/sw/lib
 endif
+#
 # user config
 ifndef LAZARUS_CONFIG_DIR
 ifeq ($(OS_TARGET),win32)
@@ -65,10 +68,12 @@ LAZARUS_CONFIG_DIR=$(HOME)/.lazarus
 endif
 endif
 export LAZARUS_CONFIG_DIR
+#
 # idemake.cfg
 LAZARUS_IDE_CONFIG=$(LAZARUS_CONFIG_DIR)/idemake.cfg
 LAZARUS_OPT=$(LAZARUS_LIBPATHS)
 
+#-----------------------------------------------------------------------------
 [rules]
 .PHONY: lcl components packager/registration ideintf packager ide idepkg starter tools all clean cleanide purge
 .SUFFIXES: .rc .res
@@ -76,6 +81,7 @@ LAZARUS_OPT=$(LAZARUS_LIBPATHS)
 %.res: %.rc
         windres -i $< -o $@ --preprocessor $(RCPP)
 
+#-----------------------------------------------------------------------------
 ide:
 ifeq ($(OS_TARGET), win32)
         $(MAKE) lazarus.res
@@ -86,17 +92,26 @@ else
         $(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(OPT) $(LAZARUS_OPT)'
 endif
 
+#-----------------------------------------------------------------------------
 idepkg:
         $(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(OPT) $(LAZARUS_OPT) @$(LAZARUS_IDE_CONFIG)'
 
+#-----------------------------------------------------------------------------
 starter: lcl
-	$(MAKE) startlazarus$(EXEEXT)
+ifeq ($(LAZARUS_OPT),)
+        $(MAKE) --assume-new=startlazarus.pp startlazarus$(EXEEXT)
+else
+        $(MAKE) --assume-new=startlazarus.pp startlazarus$(EXEEXT) OPT='$(OPT) $(LAZARUS_OPT)'
+endif
 
+#-----------------------------------------------------------------------------
 tools: lcl components
         $(MAKE) -C tools
 
+#-----------------------------------------------------------------------------
 all: lcl components packager/registration ideintf designer packager ide starter
 
+#-----------------------------------------------------------------------------
 cleanide:
         $(DEL) $(wildcard *$(OEXT))
         $(DEL) $(wildcard *$(PPUEXT))
@@ -119,6 +134,7 @@ clean: cleanall cleanide
 purge: cleanall cleanide
         $(MAKE) -C examples clean
         $(MAKE) -C tools clean
+        $(DEL) startlazarus$(EXEEXT)
 
 #install: $(INSTALLTARGET) $(addsuffix _install,$(TARGET_DIRS))
 # end.
