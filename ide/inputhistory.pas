@@ -149,6 +149,8 @@ type
     // Find- and replace-history
     FFindHistory: TStringList;
     FReplaceHistory: TStringList;
+    FFindInFilesPathHistory: TStringList;
+    FFindInFilesMaskHistory: TStringList;
     FMaxFindHistory: Integer;
     
     // Unit dependencies
@@ -175,7 +177,8 @@ type
     // Find- and replace-history
     function AddToFindHistory(const AFindStr: string): boolean;
     function AddToReplaceHistory(const AReplaceStr: String): boolean;
-    
+    function AddToFindInFilesPathHistory(const APathStr: String): boolean;
+    function AddToFindInFilesMaskHistory(const AMaskStr: String): boolean;
     // Unit dependencies
     function AddToUnitDependenciesHistory(const ARootFilename: String): boolean;
 
@@ -192,6 +195,10 @@ type
     // Find- and replace-history
     property FindHistory: TStringList read FFindHistory write FFindHistory;
     property ReplaceHistory: TStringList read FReplaceHistory write FReplaceHistory;
+    property FindInFilesPathHistory: TStringList read FFindInFilesPathHistory
+                                                 write FFindInFilesPathHistory;
+    property FindInFilesMaskHistory: TStringList read FFindInFilesMaskHistory
+                                                 write FFindInFilesMaskHistory;
     property MaxFindHistory: Integer read FMaxFindHistory write FMaxFindHistory;
     property Filename: string read FFilename write SetFilename;
 
@@ -243,6 +250,8 @@ begin
   // Find- and replace-history
   FFindHistory:=TStringList.Create;
   FReplaceHistory:=TStringList.Create;
+  FFindInFilesPathHistory:=TStringList.Create;
+  FFindInFilesMaskHistory:=TStringList.Create;
   FMaxFindHistory:=20;
   
   // unit dependencies
@@ -269,6 +278,8 @@ begin
   FUnitDependenciesHistory.Free;
   FFindHistory.Free;
   FReplaceHistory.Free;
+  FFindInFilesPathHistory.Free;
+  FFindInFilesMaskHistory.Free;
   FFPCConfigCache.Free;
   inherited Destroy;
 end;
@@ -278,6 +289,8 @@ begin
   FHistoryLists.Clear;
   FFindHistory.Clear;
   FReplaceHistory.Clear;
+  FFindInFilesPathHistory.Clear;
+  FFindInFilesMaskHistory.Clear;
   with FFileDialogSettings do begin
     HistoryList.Clear;
     Width:=0;
@@ -299,6 +312,10 @@ begin
   fMaxFindHistory:=XMLConfig.GetValue(Path+'Find/History/Max',FMaxFindHistory);
   LoadRecentList(XMLConfig,FFindHistory,Path+'Find/History/Find/');
   LoadRecentList(XMLConfig,FReplaceHistory,Path+'Find/History/Replace/');
+  LoadRecentList(XMLConfig,FFindInFilesPathHistory,Path+
+                                            'FindInFiles/History/Paths/');
+  LoadRecentList(XMLConfig,FFindInFilesMaskHistory,Path+
+                                            'FindInFiles/History/Masks/');
   // unit dependencies
   LoadRecentList(XMLConfig,FUnitDependenciesHistory,Path+'UnitDependencies/History/');
   // fpc config cache
@@ -336,6 +353,10 @@ begin
   XMLConfig.SetDeleteValue(Path+'Find/History/Max',FMaxFindHistory,20);
   SaveRecentList(XMLConfig,FFindHistory,Path+'Find/History/Find/');
   SaveRecentList(XMLConfig,FReplaceHistory,Path+'Find/History/Replace/');
+  SaveRecentList(XMLConfig,FFindInFilesPathHistory,Path+
+                                            'FindInFiles/History/Paths/');
+  SaveRecentList(XMLConfig,FFindInFilesMaskHistory,Path+
+                                            'FindInFiles/History/Masks/');
   // unit dependencies
   SaveRecentList(XMLConfig,FUnitDependenciesHistory,Path+'UnitDependencies/History/');
   // fpc config cache
@@ -415,6 +436,15 @@ begin
   Result:=AddToRecentList(AReplaceStr,FReplaceHistory,FMaxFindHistory);
 end;
 
+function TInputHistories.AddToFindInFilesPathHistory(const APathStr: String): boolean;
+begin
+  Result:= AddToRecentList(APathStr,FFindInFilesPathHistory,FMaxFindHistory);
+end;
+
+function TInputHistories.AddToFindInFilesMaskHistory(const AMaskStr: String): boolean;
+begin
+  Result:= AddToRecentList(AMaskStr,FFindInFilesMaskHistory,FMaxFindHistory);
+end;
 function TInputHistories.AddToUnitDependenciesHistory(
   const ARootFilename: String): boolean;
 begin

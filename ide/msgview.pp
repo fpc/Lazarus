@@ -59,6 +59,7 @@ type
     procedure SetMsgDirectory(Index: integer; const CurDir: string);
   public
     constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
     procedure Add(const Msg, CurDir: String; ProgressLine: boolean);
     procedure AddMsg(const Msg, CurDir: String);
     procedure AddProgress(const Msg, CurDir: String);
@@ -110,6 +111,12 @@ Begin
                                                ItemByEnum(nmiwMessagesViewName);
   ALayout.Form:=TForm(Self);
   ALayout.Apply;
+end;
+
+destructor TMessagesView.Destroy;
+begin
+  FreeAndNil(FDirectories);
+  inherited Destroy;
 end;
 
 {------------------------------------------------------------------------------
