@@ -1170,7 +1170,7 @@ const
   COLOR_GRADIENTACTIVECAPTION = 27;
   COLOR_GRADIENTINACTIVECAPTION = 28;
   COLOR_ENDCOLORS = COLOR_GRADIENTINACTIVECAPTION;
-  
+
   COLOR_DESKTOP = COLOR_BACKGROUND;
   COLOR_3DFACE = COLOR_BTNFACE;
   COLOR_3DSHADOW = COLOR_BTNSHADOW;
@@ -1811,6 +1811,9 @@ end.
 
 {
   $Log$
+  Revision 1.37  2003/05/19 08:16:33  mattias
+  fixed allocation of dc backcolor
+
   Revision 1.36  2003/04/12 09:26:58  mattias
   fixes for current fpc 1.1
 
