@@ -445,6 +445,7 @@ type
     function SetFocusedControl(Control: TWinControl): Boolean ; Virtual;
     procedure FocusControl(WinControl: TWinControl);
     function ShowModal : Integer;
+    function GetRolesForControl(AControl: TControl): TControlRolesForForm;
   public
     property Active: Boolean read FActive;
     property ActiveControl: TWinControl read FActiveControl write SetActiveControl;

@@ -521,20 +521,20 @@ type
     property AutoSize;
     property Center;
     property Constraints;
-    property Picture;
-    property Visible;
     property OnChangeBounds;
     property OnClick;
     property OnMouseDown;
-    property OnMouseMove;
-    property OnMouseUp;
     property OnMouseEnter;
     property OnMouseLeave;
+    property OnMouseMove;
+    property OnMouseUp;
     property OnPaint;
     property OnResize;
+    property Picture;
+    property Proportional;
     property Stretch;
     property Transparent;
-    property Proportional;
+    property Visible;
   end;
 
 
@@ -945,6 +945,9 @@ end.
 
  {
   $Log$
+  Revision 1.109  2004/07/11 13:03:53  mattias
+  extended RolesForForm to manage multiple roles for on control
+
   Revision 1.108  2004/07/10 18:17:30  mattias
   added Delphi ToDo support, Application.WndProc, small bugfixes  from Colin
 

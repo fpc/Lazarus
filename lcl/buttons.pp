@@ -77,17 +77,16 @@ type
     procedure RealSetText(const Value: TCaption); override;
     function ChildClassAllowed(ChildClass: TClass): boolean; override;
   public
-    constructor Create(AOwner: TComponent); override;
-
+    constructor Create(TheOwner: TComponent); override;
     procedure ExecuteDefaultAction; override;
     procedure ExecuteCancelAction; override;
-    procedure SetRoleForForm(NewRole: TControlRoleForForm); override;
+    procedure UpdateRolesForForm; override;
   published
     property Action;
     property Anchors;
     property Align;
     property Constraints;
-    property Default : Boolean read FDefault write SetDefault default false;
+    property Default: Boolean read FDefault write SetDefault default false;
     property Enabled;
     property ModalResult: TModalResult read FModalResult write FModalResult default mrNone;
     property Cancel: Boolean read FCancel write SetCancel default false;
@@ -334,6 +333,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.71  2004/07/11 13:03:53  mattias
+  extended RolesForForm to manage multiple roles for on control
+
   Revision 1.70  2004/07/04 20:07:08  micha
   form notifies control of new role
 

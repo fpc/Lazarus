@@ -194,35 +194,35 @@ end;
 
 procedure TCustomForm.SetCancelControl(NewControl: TControl);
 var
-  lControl: TControl;
+  OldCancelControl: TControl;
 begin
   if NewControl <> FCancelControl then
   begin
-    // prevent inf. recursion problems
-    lControl := FCancelControl;
-    FCancelControl := nil;
-    if lControl <> nil then
-      lControl.SetRoleForForm(crffNormal);
+    OldCancelControl:=FCancelControl;
     FCancelControl := NewControl;
-    if NewControl <> nil then
-      NewControl.SetRoleForForm(crffCancel);
+    // notify old control
+    if OldCancelControl<>nil then
+      OldCancelControl.UpdateRolesForForm;
+    // notify new control
+    if FCancelControl<>nil then
+      FCancelControl.UpdateRolesForForm;
   end;
 end;
 
 procedure TCustomForm.SetDefaultControl(NewControl: TControl);
 var
-  lControl: TControl;
+  OldDefaultControl: TControl;
 begin
   if NewControl <> FDefaultControl then
   begin
-    // prevent inf. recursion problems
-    lControl := FDefaultControl;
-    FDefaultControl := nil;
-    if lControl <> nil then
-      lControl.SetRoleForForm(crffNormal);
+    OldDefaultControl:=FDefaultControl;
     FDefaultControl := NewControl;
-    if NewControl <> nil then
-      NewControl.SetRoleForForm(crffDefault);
+    // notify old control
+    if OldDefaultControl<>nil then
+      OldDefaultControl.UpdateRolesForForm;
+    // notify new control
+    if FDefaultControl<>nil then
+      FDefaultControl.UpdateRolesForForm;
   end;
 end;
 
@@ -1637,9 +1637,20 @@ begin
   end;
 end;
 
+function TCustomForm.GetRolesForControl(AControl: TControl
+  ): TControlRolesForForm;
+begin
+  Result:=[];
+  if DefaultControl=AControl then Include(Result,crffDefault);
+  if CancelControl=AControl then Include(Result,crffCancel);
+end;
+
 { =============================================================================
 
   $Log$
+  Revision 1.145  2004/07/11 13:03:54  mattias
+  extended RolesForForm to manage multiple roles for on control
+
   Revision 1.144  2004/07/07 15:31:47  micha
   fix code editor restoring when maximized upon ctrl+shift+up
 

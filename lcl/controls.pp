@@ -206,7 +206,11 @@ type
   TBorderStyle = bsNone..bsSingle;
   TControlBorderStyle = TBorderStyle;
 
-  TControlRoleForForm = (crffNormal, crffDefault, crffCancel);
+  TControlRoleForForm = (
+    crffDefault,// this control is notified when user presses Return
+    crffCancel  // this control is notified when user presses Escape
+    );
+  TControlRolesForForm = set of TControlRoleForForm;
 
   TBevelCut = TGraphicsBevelCut;
 
@@ -1026,7 +1030,7 @@ type
     procedure CheckNewParent(AParent: TWinControl); virtual;
     procedure SendToBack;
     procedure SetTempCursor(Value: TCursor);
-    procedure SetRoleForForm(NewRole: TControlRoleForForm); virtual;
+    procedure UpdateRolesForForm; virtual;
     procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); virtual;
     procedure SetInitialBounds(aLeft, aTop, aWidth, aHeight: integer); virtual;
     procedure SetBoundsKeepBase(aLeft, aTop, aWidth, aHeight: integer;
@@ -2337,6 +2341,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.225  2004/07/11 13:03:53  mattias
+  extended RolesForForm to manage multiple roles for on control
+
   Revision 1.224  2004/07/07 22:26:57  mattias
   fixed showing grabers for boundless components
 

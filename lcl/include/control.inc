@@ -247,10 +247,6 @@ begin
   Invalidate;
 end;
 
-procedure TControl.SetRoleForForm(NewRole: TControlRoleForForm);
-begin
-end;
-
 procedure TControl.SetAction(Value: TBasicAction);
 begin
   if (Value=Action) then exit;
@@ -1934,6 +1930,12 @@ begin
   TWSControlClass(WidgetSetClass).SetCursor(Self, Value);
 end;
 
+procedure TControl.UpdateRolesForForm;
+begin
+  // called by the form when the "role" controls DefaultControl or CancelControl
+  // has changed
+end;
+
 {------------------------------------------------------------------------------}
 {  TControl SetCursor                                                          }
 {------------------------------------------------------------------------------}
@@ -3217,6 +3219,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.204  2004/07/11 13:03:54  mattias
+  extended RolesForForm to manage multiple roles for on control
+
   Revision 1.203  2004/07/07 22:26:58  mattias
   fixed showing grabers for boundless components
 

@@ -21,23 +21,23 @@
 {       TButton Constructor                                                    }
 {------------------------------------------------------------------------------}
 
-constructor TButton.Create(AOwner: TComponent);
+constructor TButton.Create(TheOwner: TComponent);
 begin
-  Inherited Create(AOwner);
+  Inherited Create(TheOwner);
   With FShortcut do begin
     OldKey := 0;
     OldModifier := [ssCtrl];
     NewModifier := [ssCtrl];
     NewKey := 0;
   end;
-  {set the component style to csButton}
+  // set the component style to csButton
   fCompStyle := csButton;
   ControlStyle:=ControlStyle-[csClickEvents]+[csHasDefaultAction,csHasCancelAction];
   TabStop := true;
-  {set default alignment}
+  // set default alignment
   Align := alNone;
-  {setup default sizes}
-  SetInitialBounds(1, 1, 75, 25);
+  // setup default sizes
+  SetInitialBounds(0,0,75,25);
 end;
 
 {------------------------------------------------------------------------------
@@ -96,10 +96,21 @@ begin
   DoSendBtnDefault;
 end;
 
-procedure TButton.SetRoleForForm(NewRole: TControlRoleForForm);
+procedure TButton.UpdateRolesForForm;
+var
+  AForm: TCustomForm;
+  NewRoles: TControlRolesForForm;
 begin
-  Default := NewRole = crffDefault;
-  Cancel := NewRole = crffCancel;
+  AForm:=GetParentForm(Self);
+  if AForm=nil then begin
+    // not on a form => keep settings
+    exit;
+  end else begin
+    // on a form => use settings of parent form
+    NewRoles:=AForm.GetRolesForControl(Self);
+    Default := crffDefault in NewRoles;
+    Cancel := crffCancel in NewRoles;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -216,6 +227,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.31  2004/07/11 13:03:54  mattias
+  extended RolesForForm to manage multiple roles for on control
+
   Revision 1.30  2004/07/04 20:07:08  micha
   form notifies control of new role
 

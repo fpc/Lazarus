@@ -1322,14 +1322,14 @@ type
   {$ENDIF}
 
 
-  { TTrackBar }
+  { TCustomTrackBar }
 
   TTrackBarOrientation = (trHorizontal, trVertical);
   TTickMark = (tmBottomRight, tmTopLeft, tmBoth);
   TTickStyle = (tsNone, tsAuto, tsManual);
   TTrackBarScalePos = (trLeft, trRight, trTop, trBottom);
 
-  TTrackBar = class(TWinControl)
+  TCustomTrackBar = class(TWinControl)
   private
     FOrientation: TTrackBarOrientation;
     FTickMarks: TTickMark;
@@ -1340,75 +1340,99 @@ type
     FMax: Integer;
     FFrequency: Integer;
     FPosition: Integer;
-    FSelStart: Integer;
-    FSelEnd: Integer;
     FShowScale : boolean;
     FScalePos : TTrackBarScalePos;
     FScaleDigits : integer;
     FOnChange: TNotifyEvent;
+    procedure SetFrequency(Value: Integer);
+    procedure SetLineSize(Value: Integer);
+    procedure SetMax(Value: Integer);
+    procedure SetMin(Value: Integer);
     procedure SetOrientation(Value: TTrackBarOrientation);
+    procedure SetPageSize(Value: Integer);
     procedure SetParams(APosition, AMin, AMax: Integer);
     procedure SetPosition(Value: Integer);
-    procedure SetMin(Value: Integer);
-    procedure SetMax(Value: Integer);
-    procedure SetFrequency(Value: Integer);
-    procedure SetTickStyle(Value: TTickStyle);
-    procedure SetTickMarks(Value: TTickMark);
-    procedure SetLineSize(Value: Integer);
-    procedure SetPageSize(Value: Integer);
-    procedure SetSelStart(Value: Integer);
-    procedure SetSelEnd(Value: Integer);
-    procedure UpdateSelection;
-  private { additional functionality }
-    procedure SetShowScale(Value: boolean);
     procedure SetScalePos(Value: TTrackBarScalePos);
+    procedure SetShowScale(Value: boolean);
+    procedure SetTickMarks(Value: TTickMark);
+    procedure SetTickStyle(Value: TTickStyle);
+    procedure UpdateSelection;
   protected
     procedure ApplyChanges;
     procedure DoChange(var msg); message LM_CHANGED;
     procedure InitializeWnd; override;
+    procedure Loaded; override;
   public
     constructor Create(AOwner: TComponent); override;
     procedure SetTick(Value: Integer);
   published
-    property Ctl3D;
-    property DragCursor;
-    property Enabled;
     property Frequency: Integer read FFrequency write SetFrequency;
-    property Hint;
     property LineSize: Integer read FLineSize write SetLineSize default 1;
     property Max: Integer read FMax write SetMax default 10;
     property Min: Integer read FMin write SetMin default 0;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property Orientation: TTrackBarOrientation read FOrientation write SetOrientation;
+    property PageSize: Integer read FPageSize write SetPageSize default 2;
+    property Position: Integer read FPosition write SetPosition;
+    property ScalePos: TTrackBarScalePos read FScalePos write SetScalePos;
+    property ShowScale: boolean read FShowScale write SetShowScale;
+    property TabStop default True;
+    property TickMarks: TTickMark read FTickMarks write SetTickMarks default tmBottomRight;
+    property TickStyle: TTickStyle read FTickStyle write SetTickStyle default tsAuto;
+  end;
+  
+  
+  { TTrackBar }
+  
+  TTrackBar = class(TCustomTrackBar)
+  published
+    property Align;
+    property Anchors;
+    property Constraints;
+    property Ctl3D;
+    property DragCursor;
+    property DragMode;
+    property Enabled;
+    property Frequency;
+    property Hint;
+    property LineSize;
+    property Max;
+    property Min;
+    property OnChange;
     property OnChangeBounds;
+    property OnClick;
     property OnDragDrop;
     property OnDragOver;
     property OnEndDrag;
     property OnEnter;
     property OnExit;
+    property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
+    property OnMouseMove;
+    property OnMouseUp;
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
     property OnResize;
     property OnStartDrag;
-    property Orientation: TTrackBarOrientation read FOrientation write SetOrientation;
-    property PageSize: Integer read FPageSize write SetPageSize default 2;
+    property Orientation;
+    property PageSize;
     property ParentCtl3D;
     property ParentShowHint;
     property PopupMenu;
-    property Position: Integer read FPosition write SetPosition;
-    property SelEnd: Integer read FSelEnd write SetSelEnd;
-    property SelStart: Integer read FSelStart write SetSelStart;
+    property Position;
+    property ScalePos;
     property ShowHint;
+    property ShowScale;
     property TabOrder;
-    property TabStop default True;
-    property TickMarks: TTickMark read FTickMarks write SetTickMarks;
-    property TickStyle: TTickStyle read FTickStyle write SetTickStyle;
+    property TabStop;
+    property TickMarks;
+    property TickStyle;
     property Visible;
-  published { additional functionality }
-    property ShowScale : boolean read FShowScale write SetShowScale;
-    property ScalePos : TTrackBarScalePos read FScalePos write SetScalePos;
-    property DragMode;
   end;
+  
+  
 
 
 { TTreeNode }
@@ -2258,6 +2282,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.135  2004/07/11 13:03:53  mattias
+  extended RolesForForm to manage multiple roles for on control
+
   Revision 1.134  2004/06/28 23:16:24  mattias
   added TListView.AddItems  from Andrew Haines
 
@@ -2438,7 +2465,7 @@ end.
   fixed taborder=0, implemented TabOrder Editor
 
   Revision 1.77  2003/06/13 21:13:20  mattias
-  fixed TTrackBar initial size
+  fixed TCustomTrackBar initial size
 
   Revision 1.76  2003/06/13 12:53:51  mattias
   fixed TUpDown and added handler lists for TControl

@@ -1,7 +1,7 @@
 {%MainUnit ../comctrls.pp}
 
 {******************************************************************************
-                                  TTrackBar
+                                  TCustomTrackBar
  ******************************************************************************
 
  *****************************************************************************
@@ -53,13 +53,13 @@
 }
 {ASSERTIONS ON}
 {------------------------------------------------------------------------------
-  Method: TTrackBar.Create
+  Method: TCustomTrackBar.Create
   Params:  AOwner: the owner of the class
   Returns: Nothing
 
   Constructor for the trackbar.
  ------------------------------------------------------------------------------}
-constructor TTrackBar.Create (AOwner : TComponent);
+constructor TCustomTrackBar.Create (AOwner : TComponent);
 begin
   inherited Create (aOwner);
   fCompStyle := csTrackbar;
@@ -68,70 +68,69 @@ begin
   FMax       := 10;
   FMin       := 0;
   FPosition  := 0;
-  FLineSize  := 1;
   FPageSize  := 2;
   FOrientation := trHorizontal;
   FShowScale := false;
   FScalePos  := trTop;
   FScaleDigits := 0;
+  FTickMarks:=tmBottomRight;
+  FTickStyle:=tsAuto;
   TabStop := true;
   SetInitialBounds(0,0,100,20);
 end;
 
 {------------------------------------------------------------------------------
-  Method: TTrackBar.InitializeWnd
+  Method: TCustomTrackBar.InitializeWnd
   Params: none
   Returns: Nothing
 
   Set all properties after visual component has been created. Will be called
   from TWinControl.
  ------------------------------------------------------------------------------}
-procedure TTrackBar.InitializeWnd;
+procedure TCustomTrackBar.InitializeWnd;
 begin
   inherited InitializeWnd;
   ApplyChanges;
 end;
 
+procedure TCustomTrackBar.Loaded;
+begin
+  inherited Loaded;
+  ApplyChanges;
+end;
+
 {------------------------------------------------------------------------------
-  Method: TTrackBar.SetTick
+  Method: TCustomTrackBar.SetTick
   Params: Value : new tick
   Returns: Nothing
 
  ------------------------------------------------------------------------------}
-procedure TTrackBar.SetTick(Value: Integer);
+procedure TCustomTrackBar.SetTick(Value: Integer);
 begin
 {   := Value; }
 end;
 
-
 {------------------------------------------------------------------------------
-  Method: TTrackBar.SetOrientation
+  Method: TCustomTrackBar.SetOrientation
   Params: Value : new orientation
   Returns: Nothing
 
   Change the orientation of the trackbar.
 ------------------------------------------------------------------------------}
-procedure TTrackBar.SetOrientation(Value: TTrackBarOrientation);
+procedure TCustomTrackBar.SetOrientation(Value: TTrackBarOrientation);
 begin
-   if FOrientation <> Value then
-   begin
-      FOrientation := Value;
-      if HandleAllocated then
-      begin
-        RecreateWnd;
-//TODO: Use "RecreateWnd;" instead of the calls below!
-//	 CNSendMessage (LM_Destroy, Self, nil);
-//         CreateComponent (Owner);
-//TODO: MWE: check if th next lines are stil needed while we're usin RecreateWnd
-         SetBounds (Left, Top, Width, Height);
-	 ApplyChanges;	{ update min, max and current position }
-	 Show;
-      end;
-   end;
+  if FOrientation <> Value then
+  begin
+    FOrientation := Value;
+    if HandleAllocated then
+    begin
+      RecreateWnd;
+    end;
+  end;
 end;
 
 {------------------------------------------------------------------------------
-  Method: TTrackBar.SetParams
+  Method: TCustomTrackBar.SetParams
   Params:  APosition : new position
            AMin      : new minimum
 	   AMax	     : new maximum
@@ -139,250 +138,204 @@ end;
 
   Set new parameters for the trackbar.
  ------------------------------------------------------------------------------}
-procedure TTrackBar.SetParams(APosition, AMin, AMax: Integer);
+procedure TCustomTrackBar.SetParams(APosition, AMin, AMax: Integer);
 begin
-   FPosition := APosition;
-   FMax := AMax;
-   FMin := AMin;
-   if FMax > FMin
-      then ApplyChanges
-      else ;
+  if (not (csLoading in ComponentState)) then begin
+    if AMin>AMax then AMin:=AMax;
+    if APosition<AMin then APosition:=AMin;
+    if APosition>AMax then APosition:=AMax;
+  end;
+  if (FPosition=APosition) and (FMin=AMin) and (AMax=AMin) then exit;
+  FPosition := APosition;
+  FMax := AMax;
+  FMin := AMin;
+  ApplyChanges;
 end;
 
 {------------------------------------------------------------------------------
-  Method: TTrackBar.SetPosition
+  Method: TCustomTrackBar.SetPosition
   Params: Value : new position
   Returns: Nothing
 
   Set actual position of the trackbar.
  ------------------------------------------------------------------------------}
-procedure TTrackBar.SetPosition(Value: Integer);
+procedure TCustomTrackBar.SetPosition(Value: Integer);
 begin
-   if FPosition <> Value then
-   begin
-      FPosition := Value;
-      if HandleAllocated
-         then CNSendMessage (LM_SetValue, self, @FPosition);
-   end;
+  if FPosition <> Value then
+  begin
+    FPosition := Value;
+    if HandleAllocated
+    then CNSendMessage(LM_SetValue, Self, @FPosition);
+  end;
 end;
 
 {------------------------------------------------------------------------------
-  Method: TTrackBar.SetMin
+  Method: TCustomTrackBar.SetMin
   Params: Value : new minimum
   Returns: Nothing
 
   Set minimum value of the trackbar.
  ------------------------------------------------------------------------------}
-procedure TTrackBar.SetMin(Value: Integer);
+procedure TCustomTrackBar.SetMin(Value: Integer);
 begin
-   if FMin <> Value then SetParams (FPosition, Value, FMax);
+  if FMin <> Value then SetParams(FPosition,Value,FMax);
 end;
 
 {------------------------------------------------------------------------------
-  Method: TTrackBar.SetMax
+  Method: TCustomTrackBar.SetMax
   Params: Value : new maximum
   Returns: Nothing
 
   Set maximum value of the trackbar.
  ------------------------------------------------------------------------------}
-procedure TTrackBar.SetMax(Value: Integer);
+procedure TCustomTrackBar.SetMax(Value: Integer);
 begin
-   if FMax <> Value then SetParams (FPosition, FMin, Value);
+  if FMax<>Value then SetParams(FPosition,FMin,Value);
 end;
 
 {------------------------------------------------------------------------------
-  Method: TTrackBar.SetFrequency
+  Method: TCustomTrackBar.SetFrequency
   Params: Value : new frequency
   Returns: Nothing
 
  ------------------------------------------------------------------------------}
-procedure TTrackBar.SetFrequency(Value: Integer);
+procedure TCustomTrackBar.SetFrequency(Value: Integer);
 begin
-   FFrequency := Value;
+  FFrequency := Value;
 end;
 
 {------------------------------------------------------------------------------
-  Method: TTrackBar.SetTickStyle
+  Method: TCustomTrackBar.SetTickStyle
   Params: Value : new tickstyle
   Returns: Nothing
 
  ------------------------------------------------------------------------------}
-procedure TTrackBar.SetTickStyle(Value: TTickStyle);
+procedure TCustomTrackBar.SetTickStyle(Value: TTickStyle);
 begin
-   FTickStyle := Value;
+  FTickStyle := Value;
 end;
 
 {------------------------------------------------------------------------------
-  Method: TTrackBar.SetTickMarks
+  Method: TCustomTrackBar.SetTickMarks
   Params: Value : new tickmarks
   Returns: Nothing
 
  ------------------------------------------------------------------------------}
-procedure TTrackBar.SetTickMarks(Value: TTickMark);
+procedure TCustomTrackBar.SetTickMarks(Value: TTickMark);
 begin
-   FTickMarks := Value;
+  FTickMarks := Value;
 end;
 
 {------------------------------------------------------------------------------
-  Method: TTrackBar.SetLineSize
+  Method: TCustomTrackBar.SetLineSize
   Params: Value : new linesize
   Returns: Nothing
 
   Set the increment which is used when one of the arrow-keys is pressed.
  ------------------------------------------------------------------------------}
-procedure TTrackBar.SetLineSize(Value: Integer);
+procedure TCustomTrackBar.SetLineSize(Value: Integer);
 begin
-   if FLineSize <> Value then
-   begin
-      FLineSize := Value;
-      ApplyChanges
-   end
+  if FLineSize <> Value then
+  begin
+    FLineSize := Value;
+    ApplyChanges;
+  end
 end;
 
 {------------------------------------------------------------------------------
-  Method: TTrackBar.SetPageSize
+  Method: TCustomTrackBar.SetPageSize
   Params:  Value : new pagesize
   Returns: Nothing
 
   Set the increment which is used when one of the arrow-keys is pressed together
   with a modifier or when PgUp/PgDwn are pressed.
  ------------------------------------------------------------------------------}
-procedure TTrackBar.SetPageSize(Value: Integer);
+procedure TCustomTrackBar.SetPageSize(Value: Integer);
 begin
-   if FPageSize <> Value then
-   begin
-      FPageSize := Value;
-      ApplyChanges
-   end
+  if FPageSize <> Value then
+  begin
+    FPageSize := Value;
+    ApplyChanges;
+  end;
 end;
 
 {------------------------------------------------------------------------------
-  Method: TTrackBar.SetSelStart
+  Method: TCustomTrackBar.UpdateSelection
   Params:
   Returns: Nothing
 
  ------------------------------------------------------------------------------}
-procedure TTrackBar.SetSelStart(Value: Integer);
-begin
-{   := Value; }
-end;
-
-{------------------------------------------------------------------------------
-  Method: TTrackBar.SetSelEnd
-  Params:
-  Returns: Nothing
-
- ------------------------------------------------------------------------------}
-procedure TTrackBar.SetSelEnd(Value: Integer);
-begin
-{   := Value; }
-end;
-
-{------------------------------------------------------------------------------
-  Method: TTrackBar.UpdateSelection
-  Params:
-  Returns: Nothing
-
- ------------------------------------------------------------------------------}
-procedure TTrackBar.UpdateSelection;
+procedure TCustomTrackBar.UpdateSelection;
 begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TTrackBar.ApplyChanges
+  Method: TCustomTrackBar.ApplyChanges
   Params: none
   Returns: Nothing
 
   Sends message to update the visual apperance of the object.
  ------------------------------------------------------------------------------}
-procedure TTrackBar.ApplyChanges;
+procedure TCustomTrackBar.ApplyChanges;
 begin
-   if HandleAllocated
-      then CNSendMessage (LM_SETPROPERTIES, Self, nil);
+  if HandleAllocated and (not (csLoading in ComponentState))
+  then CNSendMessage (LM_SETPROPERTIES, Self, nil);
 end;
 
 {------------------------------------------------------------------------------
-  Method: TTrackBar.DoChange
+  Method: TCustomTrackBar.DoChange
   Params:  Msg  (longint = LM_CHANGE)
   Returns: Nothing
 
   Update position and call user's callback for Change event.
  ------------------------------------------------------------------------------}
-procedure TTrackBar.DoChange(var msg);
+procedure TCustomTrackBar.DoChange(var msg);
 var
-   tmpPosition : longint;
+  tmpPosition : longint;
 begin
-   CNSendMessage (LM_GetValue, Self, @tmpPosition);
-   Assert(True, 'Trace:Trackbar received a message -CHANGE');
-   FPosition := TmpPosition;
-   if Assigned (FOnChange)
-      then FOnChange (Self);
+  CNSendMessage (LM_GetValue, Self, @tmpPosition);
+  Assert(True, 'Trace:Trackbar received a message -CHANGE');
+  FPosition := TmpPosition;
+  if Assigned (FOnChange)
+  then FOnChange(Self);
 end;
 
 {------------------------------------------------------------------------------
-  Method: TTrackBar.SetShowScale
+  Method: TCustomTrackBar.SetShowScale
   Params:  value : true = show scaling text
   Returns: Nothing
 
  ------------------------------------------------------------------------------}
-procedure TTrackBar.SetShowScale(Value: boolean);
+procedure TCustomTrackBar.SetShowScale(Value: boolean);
 begin
   if FShowScale <> Value then
   begin
-     FShowScale := Value;
-     ApplyChanges;
+    FShowScale := Value;
+    ApplyChanges;
   end;
 end;
 
 {------------------------------------------------------------------------------
-  Method: TTrackBar.SetScalePos
+  Method: TCustomTrackBar.SetScalePos
   Params:  value : position of the scaling text
   Returns: Nothing
 
  ------------------------------------------------------------------------------}
-procedure TTrackBar.SetScalePos(Value: TTrackBarScalePos);
+procedure TCustomTrackBar.SetScalePos(Value: TTrackBarScalePos);
 begin
   if FScalePos <> Value then
   begin
-     FScalePos := Value;
-     ApplyChanges;
+    FScalePos := Value;
+    ApplyChanges;
   end;
 end;
 
 { -------------------- unimplemented stuff below ------------------------------}
-{------------------------------------------------------------------------------
-  Method: TTrackBar.CreateParams
-  Params:  Params : ?
-  Returns: Nothing
-
- ------------------------------------------------------------------------------
-procedure CreateParams(var Params: TCreateParams);
-begin
-end;
-}
-{------------------------------------------------------------------------------
-  Method: TTrackBar.CreateWnd
-  Params: Nothing
-  Returns: Nothing
-
- ------------------------------------------------------------------------------
-procedure CreateWnd;
-begin
-end;
-}
-{------------------------------------------------------------------------------
-  Method: TTrackBar.DestroyWnd
-  Params:  Nothing
-  Returns: Nothing
-
- ------------------------------------------------------------------------------
-procedure DestroyWnd;
-begin
-end;
-}
-
 {
   $Log$
+  Revision 1.12  2004/07/11 13:03:54  mattias
+  extended RolesForForm to manage multiple roles for on control
+
   Revision 1.11  2004/04/10 17:58:57  mattias
   implemented mainunit hints for include files
 
@@ -399,7 +352,7 @@ end;
   enable tabstops for controls; implement tabstops in win32 intf
 
   Revision 1.6  2003/06/13 21:13:20  mattias
-  fixed TTrackBar initial size
+  fixed TCustomTrackBar initial size
 
   Revision 1.5  2002/05/10 06:05:56  lazarus
   MG: changed license to LGPL
@@ -453,14 +406,14 @@ end;
 
   Revision 1.4  1999/09/26 13:30:15  lazarus
 
-     Implemented OnEnter & OnExit events for TTrackbar. These properties
+     Implemented OnEnter & OnExit events for TCustomTrackBar. These properties
      and handler functions have been added to TWincontrol, two new
      callbacks have been added to gtkcallback.
       stoppok
 
   Revision 1.3  1999/09/23 20:33:32  lazarus
-    reintroduced changes to TTrackbar from v1.46 which where lost in 1.48.
-    Some addtional changes to TTrackbar also applied.
+    reintroduced changes to TCustomTrackBar from v1.46 which where lost in 1.48.
+    Some addtional changes to TCustomTrackBar also applied.
       stoppok
 
   Revision 1.2  1999/09/17 20:49:03  lazarus
@@ -470,7 +423,7 @@ end;
       stoppok
 
   Revision 1.1  1999/09/03 22:01:01  lazarus
-  Added TTrackBar
+  Added TCustomTrackBar
     stoppok
 
 }
