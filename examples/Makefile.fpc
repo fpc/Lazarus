@@ -11,6 +11,7 @@ units=$(notdir $(basename $(wildcard *$(PPUEXT))))
 
 [require]
 rtl=1
+options=-gl
 packages=fcl gtk
 
 [dirs]

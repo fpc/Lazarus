@@ -8,6 +8,7 @@
 
 [require]
 rtl=1
+options=-Ca -gl
 packages=fcl gtk
 
 [clean]

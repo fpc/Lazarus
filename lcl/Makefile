@@ -207,7 +207,7 @@ ZIPTARGET=install
 
 # Defaults
 
-override NEEDOPT=-Ca
+override NEEDOPT=-Ca -gl
 
 # Directories
 

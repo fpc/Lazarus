@@ -198,6 +198,7 @@ ZIPTARGET=install
 
 # Defaults
 
+override NEEDOPT=-Ca -gl
 
 # Directories
 
@@ -798,6 +799,10 @@ endif
 # Verbose settings (warning,note,info)
 ifdef VERBOSE
 override FPCOPT+=-vwni
+endif
+
+ifdef NEEDOPT
+override FPCOPT+=$(NEEDOPT)
 endif
 
 ifdef NEEDUNITDIR

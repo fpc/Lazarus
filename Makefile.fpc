@@ -13,6 +13,7 @@ files=$(wildcard ./designer/*$(OEXT))
 
 [require]
 rtl=1
+options=-gl
 packages=fcl gtk
 
 [dirs]
