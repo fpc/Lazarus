@@ -1,0 +1,40 @@
+diff -rc old_11_rpm/fpc/install/fpc.spec 11_rpm/fpc/install/fpc.spec
+*** old_11_rpm/fpc/install/fpc.spec	2003-05-29 18:55:30.000000000 +0200
+--- 11_rpm/fpc/install/fpc.spec	2003-06-07 17:50:21.000000000 +0200
+***************
+*** 72,77 ****
+--- 72,88 ----
+  	# create link
+  	ln -sf %{fpcdir}/ppc386 %{buildroot}%{_bindir}/ppc386
+  
++         # Workaround:
++         # fpcmake creates a Makefile, that always creates things in /usr/doc
++         # Save the real doc directory, delete /usr/doc and restore
++         mv %{buildroot}%{_docdir} %{buildroot}/tmpdoc
++         rm -rf %{buildroot}/usr/doc
++         mv %{buildroot}/tmpdoc %{buildroot}%{_docdir}
++         
++         # Workaround:
++         # delete lexyacc
++         rm -rf %{buildroot}/usr/lib/fpc/lexyacc
++ 
+  
+  %clean
+  	make compiler_clean
+***************
+*** 87,93 ****
+  
+  %post
+  # Create config
+! %{fpcdir}/samplecfg %{fpcdir}
+  
+  %files
+  %defattr(-, root, root)
+--- 98,104 ----
+  
+  %post
+  # Create config
+! %{fpcdir}/samplecfg %{_libdir}/fpc/\$version
+  
+  %files
+  %defattr(-, root, root)

@@ -37,6 +37,7 @@ fi
 Date=20$Year$Month$Day
 LazRelease=laz.$Date
 SrcTGZ=fpcsrc-$LazVersion-$LazRelease.tgz
+SrcPatch=fpcsrc-patch
 TmpDir=/tmp/fpc$LazVersion
 SpecFile=$TmpDir/fpc/install/fpc.spec
 
@@ -48,18 +49,21 @@ fi
 # unpack source into temporary directory
 rm -rf $TmpDir
 mkdir -p $TmpDir
-cp $SrcTGZ $TmpDir/
+cp $SrcTGZ $SrcPatch $TmpDir/
 cd $TmpDir
 tar xzf $SrcTGZ
 cd -
 
+# patch sources
+patch -p2 -d $TmpDir/fpc/ < $SrcPatch
+ 
 # change spec file
 cat $SpecFile | \
   sed -e 's/^Version: .*/Version: '"$LazVersion/" \
       -e 's/^Release: .*/Release: '"$LazRelease/" \
-      -e 's/^\%{fpcdir}\/samplecfg .*/%{fpcdir}\/samplecfg %{_libdir}\/fpc\/\\\$version/' \
-      -e 's/^\%doc \(\%{exampledir}\/\)\*/\1/' \
-  > $SpecFile
+  > $SpecFile.New
+#      -e 's/^\%{fpcdir}\/samplecfg .*/%{fpcdir}\/samplecfg %{_libdir}\/fpc\/\\\$version/' \
+mv $SpecFile.New $SpecFile
 
 # change Makefile for new rpmbuild
 cd $TmpDir/fpc
