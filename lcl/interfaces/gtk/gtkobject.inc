@@ -703,6 +703,36 @@ Begin
   Result:=0;
 End;
 
+procedure TGtkObject.LoadFromXPMFile(Bitmap: TObject; Filename: PChar);
+var
+  GdiObject: PGdiObject;
+  GDKColor: TGDKColor;
+  Window: PGdkWindow;
+  ColorMap: PGdkColormap;
+  P: Pointer;
+  TheBitmap: TBitmap;
+begin
+  if not (Bitmap is TBitmap) then
+    raise Exception.Create('TGtkObject.LoadFromXPMFile Bitmap is not TBitmap: '
+                           +Bitmap.ClassName);
+  TheBitmap:=TBitmap(Bitmap);
+  GdiObject := NewGDIObject(gdiBitmap);
+  if TheBitmap.TransparentColor<>clNone then begin
+    GDKColor := AllocGDKColor(ColorToRGB(TheBitmap.TransparentColor));
+    p := @GDKColor;
+  end else
+    p:=nil; // automatically create transparency mask
+  Window:=nil; // use the X root window for colormap
+  if Window<>nil then
+    ColorMap:=gdk_window_get_colormap(Window)
+  else
+    ColorMap:=gdk_colormap_get_system;
+  GdiObject^.GDIPixmapObject :=
+    gdk_pixmap_colormap_create_from_xpm(Window,Colormap,
+           @(GdiObject^.GDIBitmapMaskObject), p, Filename);
+  GdiObject^.GDIBitmapType:=gbPixmap;
+  TheBitmap.Handle := HBITMAP(GdiObject);
+end;
 
 {------------------------------------------------------------------------------
   Method: TGtkObject.IntSendMessage3
@@ -1043,15 +1073,7 @@ begin
          Begin
             if (sender is TBitmap) then
             Begin
-               Assert(False, 'Trace:pixmap name '+strpas(data));
-               pixmap := gdk_pixmap_create_from_xpm(
-                 PdeviceContext(TBitmap(sender).handle)^.drawable,
-                 nil,nil,pchar(data));
-               Assert(False, 'Trace:1');
-               if Pixmap = nil
-                  then Assert(False, 'Trace:PIXMAP NOT LOADED!');
-               PdeviceContext(TBitmap(sender).handle)^.CurrentBitmap :=
-                 pgdiObject(pixmap);
+              LoadFromXPMFile(TBitmap(Sender),PChar(data));
             end;
          end;
 
@@ -1611,8 +1633,8 @@ begin
       	      min_aspect:= 0;
       	      max_aspect:= 1;
       	    end;
-           if Sender is TCustomForm then
-             writeln('LM_SETGEOMETRY ',Sender.ClassName);
+            if Sender is TCustomForm then
+              writeln('LM_SETGEOMETRY ',Sender.ClassName);
             gtk_window_set_geometry_hints(PGtkWindow(Widget), nil, @Geometry,
                                         GDK_HINT_MIN_SIZE or GDK_HINT_MAX_SIZE);
           end;
@@ -1786,29 +1808,12 @@ procedure TgtkObject.SetLabel(Sender : TObject; Data : Pointer);
   procedure SetMenuItemCaption;
   var
     MenuItemWidget: PGtkWidget;
-    LabelWidget: PGtkLabel;
     MenuItem: TMenuItem;
-    AmpPos: integer;
-    NewCaption: string;
   begin
     MenuItem:=TMenuItem(Sender);
     if not MenuItem.HandleAllocated then exit;
     MenuItemWidget:=PGtkWidget(MenuItem.Handle);
-    if MenuItemWidget=nil then exit;
-    LabelWidget:=gtk_object_get_data(PGtkObject(MenuItemWidget), 'LCLLabel');
-    if LabelWidget=nil then exit;
-
-    NewCaption:=MenuItem.Caption;
-    
-    //Check for a shortcut key
-    AmpPos := pos('&', NewCaption);
-    if AmpPos <> 0 then begin
-      NewCaption[AmpPos] := '_';
-      SetAccelKey(MenuItemWidget,gtk_label_parse_uline(LabelWidget,
-                  PChar(NewCaption)));
-    end
-    else
-      gtk_label_set_text(LabelWidget,PChar(NewCaption));
+    SetMenuItemLabelText(MenuItem,MenuItemWidget);
   end;
   
 
@@ -3138,139 +3143,6 @@ begin
   InitializeCommonDialog(TCommonDialog(FileDialog),SelWidget);
 end;
 
-procedure GetGdkPixmapFromGraphic(LCLGraphic: TGraphic;
-  var IconImg, IconMask: PGdkPixmap);
-var
-  GDIObject: PGdiObject;
-begin
-  IconImg:=nil;
-  IconMask:=nil;
-  if (LCLGraphic=nil) then exit;
-  if LCLGraphic is TPixmap then
-    GDIObject:=PgdiObject(TPixmap(LCLGraphic).Handle)
-  else
-    GDIObject:=nil;
-  if GDIObject<>nil then begin
-    IconImg:=GDIObject^.GDIBitmapObject;
-    IconMask:=GDIObject^.GDIBitmapMaskObject;
-  end;
-end;
-
-procedure GetGdkPixmapFromMenuItem(LCLMenuItem: TMenuItem;
-  var IconImg, IconMask: PGdkPixmap);
-begin
-  IconImg:=nil;
-  IconMask:=nil;
-  if LCLMenuItem=nil then exit;
-  if LCLMenuItem.Graphic<>nil then begin
-    GetGdkPixmapFromGraphic(LCLMenuItem.Graphic,IconImg,IconMask);
-  end;
-end;
-
-procedure CreateInnerMenuItem(LCLMenuItem: TMenuItem; MenuItemWidget: PGtkWidget);
-var
-  HBoxWidget: PGtkWidget;
-  LabelWidget: PGtkLabel;
-
-  procedure CreateIcon;
-  var
-    PixmapWidget: PGtkWidget;
-    IconImg, IconMask: PGdkPixmap;
-  begin
-    // create a pixmap for the icon
-    IconImg:=nil;
-    IconMask:=nil;
-    if LCLMenuItem.HasIcon then
-      GetGdkPixmapFromMenuItem(LCLMenuItem,IconImg,IconMask);
-    if IconImg<>nil then begin
-      PixmapWidget:=gtk_pixmap_new(IconImg,IconMask);
-      gtk_widget_show(PixmapWidget);
-      gtk_box_pack_start(GTK_BOX(HBoxWidget),PixmapWidget,false,false,0);
-    end else
-      PixmapWidget:=nil;
-    gtk_object_set_data(PGtkObject(MenuItemWidget), 'LCLIcon', PixmapWidget);
-  end;
-  
-  procedure SetLabelText;
-  var
-    ShortCutPos: integer;
-    s: string;
-  begin
-    LabelWidget:=gtk_object_get_data(PGtkObject(MenuItemWidget), 'LCLLabel');
-    if LabelWidget=nil then exit;
-    //Check for a shortcut key
-    s:=LCLMenuItem.Caption;
-    ShortCutPos := pos('&', s);
-    if ShortCutPos <> 0 then begin
-      s[ShortCutPos] := '_';
-      SetAccelKey(MenuItemWidget,gtk_label_parse_uline(LabelWidget,PChar(s)));
-    end
-    else begin
-      gtk_label_set_text(LabelWidget,PChar(s));
-    end;
-  end;
-
-  procedure CreateLabel;
-  begin
-    // create a label for the Caption
-    LabelWidget:=PGtkLabel(gtk_label_new(''));
-    gtk_object_set_data(PGtkObject(MenuItemWidget), 'LCLLabel', LabelWidget);
-    SetLabelText;
-    gtk_widget_show(PGtkWidget(LabelWidget));
-    gtk_box_pack_start(GTK_BOX(HBoxWidget),PGtkWidget(LabelWidget),false,false,0);
-  end;
-
-begin
-  HBoxWidget:=gtk_object_get_data(PGtkObject(MenuItemWidget), 'LCLHBox');
-  if HBoxWidget=nil then begin
-    // create inner widgets
-    if LCLMenuItem.Caption='-' then begin
-      // a separator is an empty gtkmenuitem
-      exit;
-    end;
-    HBoxWidget:=gtk_hbox_new(false,2); // default padding is 2
-    gtk_object_set_data(PGtkObject(MenuItemWidget), 'LCLHBox', HBoxWidget);
-    gtk_widget_show(HBoxWidget);
-    gtk_container_add(GTK_CONTAINER(MenuItemWidget),HBoxWidget);
-    CreateIcon;
-    CreateLabel;
-  end else begin
-    // there are already inner widgets
-    if LCLMenuItem.Caption='-' then begin
-      // a separator is an empty gtkmenuitem -> delete the inner widgets
-      gtk_widget_destroy(HBoxWidget);
-      gtk_object_set_data(PGtkObject(MenuItemWidget), 'LCLHBox', nil);
-    end else begin
-      // just update the content
-      SetLabelText;
-    end;
-  end;
-end;
-
-function CreateMenuItem(LCLMenuItem: TMenuItem): Pointer;
-var
-  MenuItemWidget: PGtkWidget;
-begin
-  // create the menitem widget (normal, check or radio)
-  if not LCLMenuItem.IsCheckItem then
-    MenuItemWidget:=gtk_menu_item_new
-  else if not LCLMenuItem.RadioItem then
-    MenuItemWidget:=gtk_radio_menu_item_new(nil)
-  else
-    MenuItemWidget:=gtk_check_menu_item_new;
-
-  // set attributes (enabled and rightjustify)
-  gtk_widget_set_sensitive(MenuItemWidget, LCLMenuItem.Enabled);
-  if LCLMenuItem.RightJustify then
-    gtk_menu_item_right_justify(PGtkMenuItem(MenuItemWidget));
-    
-  // create the hbox containing the icon, the label and the control
-  CreateInnerMenuItem(LCLMenuItem,MenuItemWidget);
-
-  gtk_widget_show(MenuItemWidget);
-  Result:=MenuItemWidget;
-end;
-
 {------------------------------------------------------------------------------
   Function: InitializeFontDialog
   Params: FontDialog: TFontialog; var SelWidget: PGtkWidget
@@ -3420,18 +3292,18 @@ begin
   StrPCopy(strTemp, Caption);
 
   case CompStyle of
-    csAlignment :
+  csAlignment :
     begin
       p := gtk_alignment_new(0.5,0.5,0,0);
       gtk_widget_show(p);
     end;
 
-    csArrow :
+  csArrow :
     begin
       p := gtk_arrow_new(gtk_arrow_left,gtk_shadow_etched_in);
     end;
 
-    csBitBtn :
+  csBitBtn :
     begin
       p := gtk_button_new;
       if ((Sender as TBitBtn).Layout in [blGlyphLeft, blGlyphRight]) then
@@ -3455,22 +3327,22 @@ begin
 
     end;
 
-    csButton :
+  csButton :
     begin
        p := gtk_button_new_with_label(StrTemp);
     end;
 
-    csCalendar :
+  csCalendar :
     begin
       p := gtk_calendar_new();
     end;
 
-    csCheckbox :
+  csCheckbox :
     begin
       p := gtk_check_button_new_with_label(strTemp);
     end;
 
-    csClistBox :
+  csClistBox :
     begin
       p:= gtk_scrolled_window_new(nil, nil);
       GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.hscrollbar, GTK_CAN_FOCUS);
@@ -3479,7 +3351,7 @@ begin
                                      GTK_POLICY_AUTOMATIC,
                                      GTK_POLICY_AUTOMATIC);
       gtk_widget_show(p);
-
+      
       with TCListBox(Sender)
       do begin
         TempWidget:= gtk_clist_new(ListColumns);
@@ -3503,7 +3375,7 @@ begin
       SetMainWidget(p, TempWidget);
     end;
 
-    csColorDialog :
+  csColorDialog :
     begin
       P := gtk_color_selection_dialog_new(StrTemp);
       // We will only add this line if we see problem in the future with the
@@ -3517,24 +3389,24 @@ begin
       InitializeCommonDialog(TCommonDialog(Sender),p);
     end;
 
-    csComboBox :
+  csComboBox :
     begin
        p := gtk_combo_new();
        gtk_entry_set_text(PGtkEntry(PGtkCombo(p)^.entry), StrTemp);
     end;
 
-    csEdit :
+  csEdit :
     begin
        p :=  gtk_entry_new();
     end;
 
-    csFileDialog :
-      InitializeFileDialog(TFileDialog(Sender),p,StrTemp);
+  csFileDialog :
+    InitializeFileDialog(TFileDialog(Sender),p,StrTemp);
 
-    csFontDialog :
-      InitializeFontDialog(TFontDialog(Sender),p,StrTemp);
+  csFontDialog :
+    InitializeFontDialog(TFontDialog(Sender),p,StrTemp);
 
-    csFixed: //used for TWinControl, maybe change this to csWinControl
+  csFixed: //used for TWinControl, maybe change this to csWinControl
     begin
       p := GTKAPIWidget_New;
       gtk_scrolled_window_set_policy(PGTKScrolledWindow(p),
@@ -3558,7 +3430,7 @@ begin
       end;
     end;
 
-    csForm :
+  csForm :
     begin
       Assert(Sender is TForm);
       p := gtk_window_new(FormStyleMap[TForm(Sender).BorderStyle]);
@@ -3590,13 +3462,13 @@ begin
                              nil, @IMGDrag_Icon);
     end;
 
-    csFrame :
+  csFrame :
     begin
       P := gtk_frame_new(' ');
       gtk_frame_set_shadow_type(pGtkFrame(P),GTK_SHADOW_NONE);
     end;
 
-    csGroupBox:
+  csGroupBox:
     begin
       P := gtk_frame_new (StrTemp);
       TempWidget := gtk_fixed_new();
@@ -3607,12 +3479,12 @@ begin
       gtk_widget_show (P);
     end;
 
-    csGTKTable  :
+  csGTKTable  :
     begin
        P := gtk_table_new(2,2,False);
     end;
 
-    csHintWindow :
+  csHintWindow :
     Begin
        p := gtk_window_new(FormStyleMap[bsToolWindow]{gtk_window_Popup});
        gtk_window_set_policy (GTK_WINDOW (p), 0, 0, 0);
@@ -3626,18 +3498,18 @@ begin
        gtk_widget_show(p);
     end;
 
-    csImage :
+  csImage :
     Begin
       p := gtk_image_new(nil,nil);
     end;
 
-    csLabel :
+  csLabel :
     begin
       P := gtk_label_new(StrTemp);
       gtk_misc_set_alignment(PGTKMISC(P), 0.0 , 1.0);
     end;
 
-    csListBox :
+  csListBox :
     begin
       p:= gtk_scrolled_window_new(nil, nil);
       GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.hscrollbar, GTK_CAN_FOCUS);
@@ -3661,8 +3533,7 @@ begin
       SetMainWidget(p, TempWidget);
     end;
 
-
-    csListView :
+  csListView :
     Begin
       p:= gtk_scrolled_window_new(nil, nil);
 
@@ -3728,7 +3599,7 @@ begin
     end;
 
 
-    csMainMenu:
+  csMainMenu:
     begin
       p := gtk_menu_bar_new();
       // get the VBox, the form has one child, a VBox
@@ -3741,7 +3612,7 @@ begin
       gtk_widget_show(p);
     end;
 
-    csMemo :
+  csMemo :
     begin
       P := gtk_scrolled_window_new(nil, nil);
       TempWidget := gtk_text_new(nil, nil);
@@ -3766,7 +3637,7 @@ begin
       gtk_widget_show(P);
     end;
 
-    csMenuBar :
+  csMenuBar :
     begin
        P := gtk_menu_bar_new();
        gtk_container_add(
@@ -3776,10 +3647,10 @@ begin
        gtk_widget_show(p);
     end;
 
-    csMenuItem :
-      p:=CreateMenuItem(TMenuItem(Sender));
+  csMenuItem :
+    p:=CreateMenuItem(TMenuItem(Sender));
 
-    csNotebook :
+  csNotebook :
     begin
       P := gtk_notebook_new();
       gtk_notebook_set_scrollable(P, true);
@@ -3787,7 +3658,7 @@ begin
       gtk_notebook_set_show_tabs(P, false);   // Turn tabs off
     end;
 
-    csPage:    // TPage - Notebook page
+  csPage:    // TPage - Notebook page
     begin
       // create a fixed widget in a horizontal box
       P := gtk_hbox_new(false, 0);
@@ -3799,7 +3670,7 @@ begin
       gtk_widget_show(P);
     end;
 
-    csPanel:
+  csPanel:
     with (TPanel(Sender)) do
     begin
       p := gtk_fixed_new();
@@ -3808,11 +3679,11 @@ begin
       SetMainWidget(nil, p);
     end;
 
-    csPopupMenu :
+  csPopupMenu :
     with (TPopupMenu(Sender)) do
       P := gtk_menu_new();
 
-    csProgressBar:
+  csProgressBar:
     with (TProgressBar (Sender)) do
     begin
        { Create a GtkAdjustment object to hold the range of the progress bar }
@@ -3821,7 +3692,7 @@ begin
        P := gtk_progress_bar_new_with_adjustment (PGtkAdjustment (TempWidget));
     end;
 
-    csRadioButton :
+  csRadioButton :
     with TRadioButton(Sender) do
     begin
        if group = 0 then
@@ -4956,25 +4827,39 @@ procedure TGtkObject.AttachMenu(Sender: TObject);
 var
   AccelKey: Integer;
   AccelGroup: PGTKAccelGroup;
-  MenuItem, ParentMenuItem, ContainerMenu: PGtkWidget;
+  MenuItem, ParentMenuWidget, ContainerMenu: PGtkWidget;
   LCLMenuItem: TMenuItem;
+  
+  procedure SetContainerMenuToggleSize;
+  var MenuClass: PGtkWidgetClass;
+  begin
+    if GTK_IS_MENU(ContainerMenu) then begin
+      MenuClass:=GTK_WIDGET_CLASS(PGtkObject(ContainerMenu)^.klass);
+      if OldMenuSizeRequestProc=nil then begin
+        OldMenuSizeRequestProc:=MenuClass^.size_request;
+      end;
+      MenuClass^.size_request:=@MenuSizeRequest;
+    end;
+  end;
+  
 begin
   LCLMenuItem:=TMenuItem(Sender);
   with LCLMenuItem do
   begin
     MenuItem := PGtkWidget(Handle);
-    ParentMenuItem := PGtkWidget(Parent.Handle);
+    ParentMenuWidget := PGtkWidget(Parent.Handle);
 
-    if GTK_IS_MENU_BAR(ParentMenuItem) then begin
+    if GTK_IS_MENU_BAR(ParentMenuWidget) then begin
       // mainmenu
-      ContainerMenu:=ParentMenuItem;
-      gtk_menu_bar_insert(PGtkMenuBar(ParentMenuItem),MenuItem,
+      ContainerMenu:=ParentMenuWidget;
+      gtk_menu_bar_insert(PGtkMenuBar(ParentMenuWidget),MenuItem,
                           LCLMenuItem.MenuIndex);
     end
     else begin
       // find the menu container
-      ContainerMenu := PGtkWidget(gtk_object_get_data(PGtkObject(Parent.Handle),
-                                                      'ContainerMenu'));
+      ContainerMenu := PGtkWidget(gtk_object_get_data(
+                                                   PGtkObject(ParentMenuWidget),
+                                                   'ContainerMenu'));
       if ContainerMenu = nil then begin
         if (GetParentMenu is TPopupMenu) and (Parent.Parent=nil) then begin
           ContainerMenu:=PGtkWidget(GetParentMenu.Handle);
@@ -4982,9 +4867,9 @@ begin
                               ContainerMenu);
         end else begin
           ContainerMenu := gtk_menu_new;
-          gtk_object_set_data(PGtkObject(Parent.Handle), 'ContainerMenu',
+          gtk_object_set_data(PGtkObject(ParentMenuWidget), 'ContainerMenu',
                               ContainerMenu);
-          gtk_menu_item_set_submenu(PGTKMenuItem(ParentMenuItem), ContainerMenu);
+          gtk_menu_item_set_submenu(PGTKMenuItem(ParentMenuWidget),ContainerMenu);
 
           AccelGroup := gtk_accel_group_new;
           gtk_menu_set_accel_group(PGtkMenu(ContainerMenu), AccelGroup);
@@ -4993,14 +4878,19 @@ begin
       end;
       gtk_menu_insert(PGtkMenu(ContainerMenu), MenuItem, LCLMenuItem.MenuIndex);
     end;
+    
+    SetContainerMenuToggleSize;
+    
+    if GTK_IS_RADIO_MENU_ITEM(MenuItem) then
+      RegroupMenuItem(HMENU(MenuItem),GroupIndex);
 
     // Add accelerators
     AccelGroup := GetAccelGroup(ContainerMenu);
     AccelKey := GetAccelKey(MenuItem);
     if (AccelGroup <> nil) and (AccelKey <> 0) then
       gtk_accel_group_add(AccelGroup, AccelKey, GDK_MOD1_MASK,
-                               GTK_ACCEL_LOCKED, PGtkObject(MenuItem),
-                               'activate_item');
+                          GTK_ACCEL_LOCKED, PGtkObject(MenuItem),
+                          'activate_item');
   end;
 end;
 
@@ -5442,6 +5332,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.162  2002/08/15 13:37:57  lazarus
+  MG: started menuitem icon, checked, radio and groupindex
+
   Revision 1.161  2002/08/12 15:32:29  lazarus
   MG: started enhanced menuitem
 
