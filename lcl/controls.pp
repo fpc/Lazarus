@@ -409,6 +409,9 @@ type
   TConstrainedResizeEvent = procedure(Sender : TObject;
       var MinWidth, MinHeight, MaxWidth, MaxHeight : TConstraintSize) of object;
 
+
+  { TControl }
+
   TControl = class(TComponent)
   private
     FAnchors : TAnchors;
@@ -644,6 +647,7 @@ type
     property Width: Integer read FWidth write SetWidth;
   end;
 
+
   TLMEnter = TLMNoPara;
   TLMExit  = TLMNoPara;
 
@@ -663,6 +667,9 @@ type
 
   TGetChildProc = procedure(Child: TComponent) of Object;
   TTabOrder = -1..32767;
+
+
+  { TWinControl }
 
   TWinControlFlag = (wcfClientRectNeedsUpdate);
   TWinControlFlags = set of TWinControlFlag;
@@ -830,11 +837,17 @@ type
     property TabOrder : TTabOrder read GetTabOrder write SetTaborder default -1;
   end;
 
+
+  { TScrolledWindow }
+
   TScrolledWindow = Class(TWinControl)
   public
     constructor Create(AOwner: TComponent);override;
     destructor Destroy; override;
   end;
+  
+  
+  { TGraphicControl }
 
   TGraphicControl = class(TControl)
   private
@@ -850,6 +863,8 @@ type
   end;
 
 
+  { TCustomControl }
+
   TCustomControl = class(TWinControl)
   private
 //   FOnPaint : TNotifyEvent;
@@ -864,16 +879,17 @@ type
   end;
  
 
-
-
-
- {TImageList}
+  { TImageList }
+ 
   TImageList = class(TDragImageList)
 //  published
 //  Property Height;
 //  Property Width;
 //    property Count : Integer read FCount;
   end;
+
+
+  { TMouse }
 
   TMouse = class
     FCapture : HWND;
@@ -932,6 +948,7 @@ function GetKeyShiftState: TShiftState;
 
 implementation
 
+
 //uses clause
 //Needs dialogs for the SetVisible procedure.
 uses Forms, Dialogs, Interfaces;
@@ -947,18 +964,6 @@ var
   DragStartPos : TPoint;
   //DragThreshold : Integer;
   
-{------------------------------------------------------------------------------}
-{  MoveWindowOrg                                                                 }
-{------------------------------------------------------------------------------}
-Procedure MoveWindowOrg(dc : hdc; X,Y : Integer);
-var
-P : TPoint;
-Begin
-  //writeln('[MoveWindowOrg] ',x,' ',y);
-  GetWindowOrgEx(dc, P);
-  SetWindowOrgEx(dc,P.x - x, P.y - y, P);
-end;
-
 {------------------------------------------------------------------------------}
 {  CNSendMessage                                                               }
 {------------------------------------------------------------------------------}
@@ -978,6 +983,10 @@ begin
   else Result := nil;
 end;
 
+Procedure MoveWindowOrg(dc : hdc; X,Y : Integer);
+begin
+  MoveWindowOrgEx(dc,X,Y);
+end;
 
 function DoControlMsg(handle:hwnd; var Message) : Boolean;
 var
@@ -1144,11 +1153,11 @@ end;
 function FindDragTarget(const Pos : TPoint; AllowDisabled: Boolean): TControl;
 var
   Window : TWinControl;
-  Control : TCOntrol;
+  Control : TControl;
 begin
   Result := nil;
   Window := FindLCLWindow(Pos);
-  if Window <> nil 
+  if Window <> nil
   then begin
     Result := Window;
     Assert(False, Format('Trace:[FindDragTarget] Found VCL window: %s Handle: 0x%x', [Window.ClassName, Window.Handle]));
@@ -1316,7 +1325,11 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.62  2002/08/30 12:32:20  lazarus
+  MG: MoveWindowOrgEx, Splitted FWinControls/FControls, TControl drawing, Better DesignerDrawing, ...
+
   Revision 1.61  2002/08/30 06:46:03  lazarus
+
   Use comboboxes. Use history. Prettify the dialog. Preselect text on show.
   Make the findreplace a dialog. Thus removing resiying code (handled by Anchors now anyway).
   Make Anchors work again and publish them for various controls.
