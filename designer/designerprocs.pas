@@ -33,8 +33,7 @@ unit DesignerProcs;
 interface
 
 uses
-  Classes, SysUtils, LCLIntf, Forms, Controls, LCLType, Graphics, VCLGlobals,
-  Menus;
+  Classes, SysUtils, LCLIntf, Forms, Controls, LCLType, Graphics, VCLGlobals;
 
 type
   TDesignerDCFlag = (ddcDCOriginValid, ddcFormOriginValid,
@@ -80,6 +79,12 @@ const
   NonVisualCompBorder = 2;
   NonVisualCompWidth = NonVisualCompIconWidth+2*NonVisualCompBorder;
 
+
+type
+  TOnComponentIsInvisible = procedure(AComponent: TComponent;
+                                      var Invisible: boolean) of object;
+var
+  OnComponentIsInvisible: TOnComponentIsInvisible;
 
 function GetParentLevel(AControl: TControl): integer;
 function ControlIsInDesignerVisible(AControl: TControl): boolean;
@@ -281,7 +286,10 @@ end;
 
 function ComponentIsInvisible(AComponent: TComponent): boolean;
 begin
-  Result:=(AComponent is TMenuItem);
+  if Assigned(OnComponentIsInvisible) then
+    OnComponentIsInvisible(AComponent,Result)
+  else
+    Result:=false;
 end;
 
 { TDesignerDeviceContext }

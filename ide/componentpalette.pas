@@ -39,7 +39,8 @@ interface
 
 uses
   Classes, SysUtils, Dialogs, Graphics, ExtCtrls, Buttons, Menus, LResources,
-  AVL_Tree, ComponentReg, IDEProcs, PackageDefs, LazarusIDEStrConsts;
+  AVL_Tree, LazarusIDEStrConsts, ComponentReg, DesignerProcs, IDEProcs,
+  PackageDefs;
 
 const
   ComponentPaletteBtnWidth  = 25;
@@ -75,6 +76,8 @@ type
     procedure OnPageRemovedComponent(Page: TBaseComponentPage;
                                      Component: TRegisteredComponent); override;
     procedure Update; override;
+    procedure CheckComponentHasIcon(AComponent: TComponent;
+                                    var Invisible: boolean);
   public
     constructor Create;
     destructor Destroy; override;
@@ -270,14 +273,26 @@ begin
   UpdateNoteBookButtons;
 end;
 
+procedure TComponentPalette.CheckComponentHasIcon(AComponent: TComponent;
+  var Invisible: boolean);
+var
+  RegComp: TRegisteredComponent;
+begin
+  RegComp:=FindComponent(AComponent.ClassName);
+  Invisible:=(RegComp<>nil) and (RegComp.PageName='');
+end;
+
 constructor TComponentPalette.Create;
 begin
   inherited Create;
   fComponents:=TAVLTree.Create(@CompareRegisteredComponents);
+  OnComponentIsInvisible:=@CheckComponentHasIcon;
 end;
 
 destructor TComponentPalette.Destroy;
 begin
+  if OnComponentIsInvisible=@CheckComponentHasIcon then
+    OnComponentIsInvisible:=nil;
   NoteBook:=nil;
   fComponents.Free;
   fComponents:=nil;

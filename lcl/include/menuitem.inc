@@ -946,9 +946,6 @@ end;
   Set the shortcut
  ------------------------------------------------------------------------------}
 Procedure TMenuItem.SetShortCut(const AValue : TShortCut);
-var
-  NewKey: Word;
-  NewShift: TShiftState;
 Begin
   if FShortCut <> AValue then begin
     ShortCutChanged(FShortCut, AValue);
@@ -1081,6 +1078,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.48  2004/02/04 13:55:08  mattias
+  implemented generic function to hide TComponents without page in designer
+
   Revision 1.47  2004/02/04 13:40:19  mattias
   ShortCutToText now deletes any modifier
 
@@ -1253,6 +1253,9 @@ end;
 
 
   $Log$
+  Revision 1.48  2004/02/04 13:55:08  mattias
+  implemented generic function to hide TComponents without page in designer
+
   Revision 1.47  2004/02/04 13:40:19  mattias
   ShortCutToText now deletes any modifier
 
