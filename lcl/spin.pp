@@ -42,9 +42,13 @@ type
     fValue    : Single;
     fClimbRate : Single;
     fValueNeedsUpdate: boolean;
+    function Climb_RateIsStored: boolean;
+    function MaxValueIsStored: boolean;
+    function MinValueIsStored: boolean;
     procedure SetMaxValue(const AValue: single);
     procedure SetMinValue(const AValue: single);
     Procedure UpdateControl;
+    function ValueIsStored: boolean;
   protected
     procedure SetDecimals(num : Integer);
     Function GetValue : Single;
@@ -56,16 +60,16 @@ type
     destructor Destroy; override;
   published
     property Align;
-    property Decimal_Places: Integer read fDecimals write SetDecimals;
+    property Decimal_Places: Integer read fDecimals write SetDecimals default 2;
     property Enabled;
-    property Climb_Rate : Single read fClimbRate write SetClimbRate;
-    property MinValue: single read FMinValue write SetMinValue;
-    property MaxValue: single read FMaxValue write SetMaxValue;
+    property Climb_Rate : Single read fClimbRate write SetClimbRate stored Climb_RateIsStored;
+    property MinValue: single read FMinValue write SetMinValue stored MinValueIsStored;
+    property MaxValue: single read FMaxValue write SetMaxValue stored MaxValueIsStored;
     property OnEnter;
     property OnExit;
     property PopupMenu;
     property ShowHint;
-    property Value: Single read GetValue write SetValue;
+    property Value: Single read GetValue write SetValue stored ValueIsStored;
     property Visible;
   end;
 

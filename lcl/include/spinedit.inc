@@ -27,11 +27,31 @@ begin
   fValueNeedsUpdate:=false;
 end;
 
+function TSpinEdit.ValueIsStored: boolean;
+begin
+  Result:=Value<>1;
+end;
+
 procedure TSpinEdit.SetMaxValue(const AValue: single);
 begin
   if FMaxValue=AValue then exit;
   FMaxValue:=AValue;
   UpdateControl;
+end;
+
+function TSpinEdit.Climb_RateIsStored: boolean;
+begin
+  Result:=fClimbRate<>1;
+end;
+
+function TSpinEdit.MaxValueIsStored: boolean;
+begin
+  Result:=fMaxValue<>100;
+end;
+
+function TSpinEdit.MinValueIsStored: boolean;
+begin
+  Result:=fMinValue<>1;
 end;
 
 
