@@ -2315,7 +2315,7 @@ CheckHeap(IntToStr(GetMem_Cnt));
     ActiveSrcEdit.UpdateCodeBuffer;
     ActiveUnitInfo.Modified:=true;
   end;
-writeln('TMainIDE.DoSaveEditorUnit A4 ');
+//writeln('TMainIDE.DoSaveEditorUnit A4 ');
   if (not SaveToTestDir) and (not ActiveUnitInfo.Modified) and (not SaveAs) then
   begin
     Result:=mrOk;
@@ -3012,7 +3012,7 @@ var SE: TSourceEditor;
   //  If FName is not found, we'll check extensions pp and pas too
   //  Returns true if found. FName contains the full file+path in that case
   var TempFile,TempPath,CurPath,Ext: String;
-      i,p: Integer;
+      i,p,c: Integer;
   begin
     if SPath='' then SPath:='.';
     Result:=true;
@@ -3028,24 +3028,45 @@ var SE: TSourceEditor;
         if p=0 then p:=length(TempPath)+1;
         CurPath:=copy(TempPath,1,p-1)+'/';
         Delete(TempPath,1,p);
-        TempFile:=ExpandFileName(CurPath+FName+Ext);
-        if FileExists(TempFile) then begin
-          FName:=TempFile;
-          exit;
-        end;
-        TempFile:=ExpandFileName(CurPath+lowercase(FName)+Ext);
-        if FileExists(TempFile) then begin
-          FName:=TempFile;
-          exit;
-        end;
-        TempFile:=ExpandFileName(CurPath+uppercase(FName)+Ext);
-        if FileExists(TempFile) then begin
-          FName:=TempFile;
-          exit;
+        for c:=0 to 2 do begin
+          case c of
+            0: TempFile:=FName;
+            1: TempFile:=LowerCase(FName);
+            2: TempFile:=UpperCase(FName);
+          end;
+          TempFile:=ExpandFileName(CurPath+TempFile+Ext);
+          if FileExists(TempFile) then begin
+            FName:=TempFile;
+            exit;
+          end;
         end;
       end;
     end;
     result:=false;
+  end;
+
+  function GetFilenameAtRowCol(XY: TPoint): string;
+  var
+    Line: string;
+    Len, Stop: integer;
+    StopChars: set of char;
+  begin
+    Result := '';
+    if (XY.Y >= 1) and (XY.Y <= SE.EditorComponent.Lines.Count) then begin
+      Line := SE.EditorComponent.Lines.Strings[XY.Y - 1];
+      Len := Length(Line);
+      if (XY.X >= 1) and (XY.X <= Len + 1) then begin
+        StopChars := [',',';',':','[',']','{','}','(',')',' ','''','"','`'
+                     ,'#','%'];
+        Stop := XY.X;
+        while (Stop <= Len) and (not (Line[Stop] in StopChars)) do
+          Inc(Stop);
+        while (XY.X > 1) and (not (Line[XY.X - 1] in StopChars)) do
+          Dec(XY.X);
+        if Stop > XY.X then
+          Result := Copy(Line, XY.X, Stop - XY.X);
+      end;
+    end;
   end;
 
 begin
@@ -3053,7 +3074,7 @@ begin
   Result:=mrCancel;
   SE:=SourceNoteBook.GetActiveSE;
   if SE=nil then exit;
-  FName:=SE.EditorComponent.GetWordAtRowCol(SE.EditorComponent.CaretXY);
+  FName:=GetFilenameAtRowCol(SE.EditorComponent.CaretXY);
   if FName='' then exit;
   SPath:=ExtractFilePath(Project.ProjectFile)+';'
         +EnvironmentOptions.LazarusDirectory+'/lcl;'
@@ -5151,6 +5172,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.170  2001/12/10 23:03:18  lazarus
+  MG: enhanced open file at cursor to read more than one word
+
   Revision 1.169  2001/12/10 22:39:36  lazarus
   MG: added perl highlighter
 

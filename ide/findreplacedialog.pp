@@ -16,7 +16,7 @@
   ToDo:
   
 }
-unit findreplacedialog;
+unit FindReplaceDialog;
 
 {$mode objfpc}{$H+}
 
@@ -77,7 +77,7 @@ begin
   inherited Create(AOwner);
   if LazarusResources.Find(ClassName)=nil then begin
     Caption:='';
-    Width:=319;
+    Width:=317;
     Height:=285;
     
     TextToFindLabel:=TLabel.Create(Self);
@@ -302,23 +302,28 @@ begin
   if Key=VK_TAB then begin
     if Sender=TextToFindEdit then
       ReplaceTextEdit.SetFocus;
+    if Sender=ReplaceTextEdit then
+      TextToFindEdit.SetFocus;
   end;
 end;
 
 procedure TLazFindReplaceDialog.OkButtonClick(Sender:TObject);
 begin
   fReplaceAllClickedLast:=false;
+  TextToFindedit.SetFocus;
   ModalResult:=mrOk;
 end;
 
 procedure TLazFindReplaceDialog.ReplaceAllButtonClick(Sender:TObject);
 begin
   fReplaceAllClickedLast:=true;
+  TextToFindedit.SetFocus;
   ModalResult:=mrAll;
 end;
 
 procedure TLazFindReplaceDialog.CancelButtonClick(Sender:TObject);
 begin
+  TextToFindedit.SetFocus;
   ModalResult:=mrCancel;
 end;
 
