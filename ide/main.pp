@@ -1670,13 +1670,8 @@ end;
 procedure TMainIDE.OnSrcNotebookInitIdentCompletion(Sender: TObject;
   var Handled, Abort: boolean);
 begin
-  {$IFDEF IdentComp}
   Handled:=true;
-  {$ELSE}
-  Handled:=false;
-  {$ENDIF}
-  if Handled then
-    Abort:=not DoInitIdentCompletion;
+  Abort:=not DoInitIdentCompletion;
 end;
 
 Procedure TMainIDE.OnSrcNotebookSaveAll(Sender : TObject);
@@ -6601,8 +6596,6 @@ begin
     DoJumpToCodeToolBossError;
     exit;
   end;
-  
-  
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoInitIdentCompletion B');{$ENDIF}
 end;
 
@@ -7562,6 +7555,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.446  2002/12/29 22:43:46  mattias
+  activated identifier completion
+
   Revision 1.445  2002/12/29 18:13:38  mattias
   identifier completion: basically working, still hidden
 
