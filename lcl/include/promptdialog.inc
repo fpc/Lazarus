@@ -39,9 +39,59 @@ type
 
 procedure TPromptDialog.PromptDialogKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
+var
+  OldFocusControl, NewFocusControl: TWinControl;
+  i: integer;
 begin
   if (Key=VK_Escape) then
     ModalResult := -1;
+  if (Key=VK_LEFT) or (Key=VK_RIGHT) then begin
+    // focus the next button to the left or right
+    
+    // search old focused button
+    OldFocusControl:=FindControl(LCLLinux.GetFocus);
+    if (OldFocusControl=nil) or (GetParentForm(OldFocusControl)<>Self)
+    or (not (OldFocusControl is TButton)) then
+    begin
+      OldFocusControl:=nil;
+      for i:=0 to ComponentCount-1 do
+        if (Components[i] is TButton) and (TButton(Components[i]).Default) then
+        begin
+          OldFocusControl:=TButton(Components[i]);
+          break;
+        end;
+    end;
+    
+    // find next focused button
+    if (OldFocusControl<>nil) then begin
+      i:=ComponentCount-1;
+      while i>=0 do begin
+        if Components[i]=OldFocusControl then
+          break
+        else
+          dec(i);
+      end;
+      if i<0 then exit;
+      NewFocusControl:=nil;
+      repeat
+        if Key=VK_LEFT then begin
+          dec(i);
+          if i<0 then i:=ComponentCount-1;
+        end else begin
+          inc(i);
+          if i>=ComponentCount then i:=0;
+        end;
+        if Components[i] is TButton then begin
+          NewFocusControl:=TWinControl(Components[i]);
+          break;
+        end;
+      until false;
+      if NewFocusControl.HandleAllocated then begin
+        LCLLinux.SetFocus(NewFocusControl.Handle);
+        Key:=VK_UNKNOWN;
+      end;
+    end;
+  end;
 end;
 
 const
@@ -224,6 +274,7 @@ begin
         SetBounds (ButtonLeft, 2 * cLabelSpacing + reqHeight, cBtnWidth, cBtnHeight);
         inc(ButtonLeft, cBtnDist);
         Layout  := blGlyphLeft;
+        OnKeyDown := @PromptDialogKeyDown;
         Case Buttons[curBtn] of
           idButtonYesToAll,
           idButtonNoToAll :
@@ -289,6 +340,9 @@ end;
 
 {
    $Log$
+   Revision 1.2  2002/11/05 21:21:36  lazarus
+   MG: fixed moving button with LEFT and RIGHT in messagedlgs
+
    Revision 1.1  2002/10/25 10:06:34  lazarus
    MG: broke interfacebase uses circles
 

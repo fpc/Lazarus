@@ -266,6 +266,7 @@ begin
       Width:=150;
       Caption:='Revert All';
       ModalResult:=mrYesToAll;
+      Default:=true;
       Visible:=true;
     end;
     
