@@ -91,13 +91,13 @@ type
     function FindLiteralChar (MaskOffset: Integer; InChar: Char): Integer;
     function GetEditText: string;
     function GetMasked: Boolean;
-    function GetText: string;
+    function GetText: string; override;
     function GetMaxLength: Integer;
     function CharKeys(var CharCode: Char): Boolean;
     procedure SetEditText(const Value: string);
     procedure SetEditMask(const Value: string);
     procedure SetMaxLength(Value: Integer);
-    procedure SetText(const Value: string);
+    procedure SetText(const Value: string); override;
     procedure DeleteKeys(CharCode: Word);
     procedure HomeEndKeys(CharCode: Word; Shift: TShiftState);
     procedure CursorInc(CursorPos: Integer; Incr: Integer);
@@ -376,7 +376,6 @@ begin
     if Sep2 <> Length(EditMask)+1 then
       begin
         try
-          writeln(EditMask[Sep2]);
           Result := not (EditMask [Sep2] = MaskNoSave);
         except
           Result := False;
@@ -771,10 +770,6 @@ begin
 end;
 
 procedure TCustomMaskEdit.SetCursor(Pos: Integer);
-var
-  //KeyState: TKeyboardState;
-  //NewKeyState: TKeyboardState;
-  I: Integer;
 begin
   if (Pos >= 1) and (ByteType(EditText, Pos) = mbLeadByte) then Dec(Pos);
   SelStart := Pos;
@@ -834,7 +829,6 @@ end;
 function TCustomMaskEdit.CharKeys(var CharCode: Char): Boolean;
 var
   Txt: string;
-  CharMsg: TMsg;
   OldPos: Integer;
 begin
   Result := False;
@@ -1022,7 +1016,7 @@ end;
 
 procedure TCustomMaskEdit.DeleteKeys(CharCode: Word);
 var
-  NuSelStart, TmpStart: Integer;
+  NuSelStart: Integer;
   CType: TMaskCharType;
   Str: string;
 begin
