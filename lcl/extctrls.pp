@@ -322,6 +322,7 @@ type
 //    property DragMode;
 //    property Enabled;
     property Font;
+    property Hint;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
@@ -329,7 +330,7 @@ type
     property ShowHint;
     property Visible;
     property OnClick;
-//    property OnDblClick;
+    property OnDblClick;
 //    property OnDragDrop;
 //    property OnDragOver;
 //    property OnEndDock;
@@ -743,6 +744,9 @@ end.
 
  {
   $Log$
+  Revision 1.61  2003/06/13 10:09:04  mattias
+  fixed Set/GetPixel
+
   Revision 1.60  2003/06/12 15:56:42  mattias
   published TNoteBook.Anchors and started context diff
 
