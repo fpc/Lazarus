@@ -1579,37 +1579,22 @@ begin
   Result := Integer(gtk_object_get_data(Widget, 'AccelKey'));
 end;
 
-procedure Accelerate(const Widget : Pointer; const Msg : TLMShortCut);
+procedure Accelerate(const Widget : Pointer; const Msg : TLMShortCut; const Signal : string);
 var GDKModifier : integer;
     GDKKey : word;
 begin
   if Msg.OldKey <> 0 then
-    gtk_widget_remove_accelerators(Widget, 'activate_item', false);
-  { Map the shift states }
-  GDKModifier:= 0;
-  if ssShift in Msg.NewModifier then GDKModifier:= GDK_SHIFT_MASK;
-  if ssAlt in Msg.NewModifier then GDKModifier:= GDKModifier + GDK_MOD1_MASK;
-  if ssCtrl in Msg.NewModifier then GDKModifier:= GDKModifier + GDK_CONTROL_MASK;
-  GDKKey:= VK2GDK(Msg.NewKey);
-  { Set the accelerator }
-  gtk_widget_add_accelerator(Widget, 'activate_item',
-    gtk_accel_group_get_default(), GDKKey, GDKModifier, GTK_ACCEL_VISIBLE);
-end;
+    gtk_widget_remove_accelerators(Widget, PChar(Signal), false);
 
-procedure AccelerateButton(const Widget : Pointer; const Msg : TLMShortCut);
-var GDKModifier : integer;
-    GDKKey : word;
-begin
-  if Msg.OldKey <> 0 then
-    gtk_widget_remove_accelerators(Widget, 'clicked', false);
   { Map the shift states }
   GDKModifier:= 0;
   if ssShift in Msg.NewModifier then GDKModifier:= GDK_SHIFT_MASK;
   if ssAlt in Msg.NewModifier then GDKModifier:= GDKModifier + GDK_MOD1_MASK;
   if ssCtrl in Msg.NewModifier then GDKModifier:= GDKModifier + GDK_CONTROL_MASK;
   GDKKey:= VK2GDK(Msg.NewKey);
+
   { Set the accelerator }
-  gtk_widget_add_accelerator(Widget, 'clicked',
+  gtk_widget_add_accelerator(Widget, PChar(Signal),
     gtk_accel_group_get_default(), GDKKey, GDKModifier, GTK_ACCEL_VISIBLE);
 end;
 
@@ -2706,42 +2691,56 @@ end;
 Function Ampersands2Underscore(Src: PChar) : PChar;
 var
   i, j: Longint;
-  AmpersandCount, FirstAmpersand, NewLength: integer;
+  ShortenChars, FirstAmpersand, NewLength, SrcLength: integer;
 begin
   // count ampersands and find first ampersand
-  AmpersandCount:=0;
-  FirstAmpersand:=-1;
-  NewLength:=StrLen(Src);
-  for i:=0 to NewLength-1 do begin
-    if Src[i]='&' then begin
-      inc(AmpersandCount);
-      if FirstAmpersand<0 then FirstAmpersand:=i;
+  ShortenChars:= 0;
+  FirstAmpersand:= -1;
+  SrcLength:= StrLen(Src);
+
+  { Look for amperands. If found, check if it is an escaped ampersand.
+    If it is, don't count it in. }
+
+  for i:= 0 to SrcLength - 1 do begin
+    if Src[i] = '&' then begin
+
+      if (i < SrcLength - 1) and (Src[i+1] = '&') then Continue;
+      
+      Inc(ShortenChars);
+      if (FirstAmpersand < 0) and not ((i > 0) and (Src[i-1] = '&')) then begin
+        FirstAmpersand:= i;
+	Dec(ShortenChars);
+      end;	
     end;
   end;
   // create new PChar
-  if AmpersandCount>1 then
-    dec(NewLength,AmpersandCount-1);
+  NewLength:= SrcLength - ShortenChars;
+
   Result:=StrAlloc(NewLength+1); // +1 for #0 char at end
+
   // copy string without ampersands
   i:=0;
   j:=0;
-  while (j<NewLength) do begin
-    if Src[i]<>'&' then begin
+  while (j < NewLength) do begin
+    if Src[i] <> '&' then begin
       // copy normal char
-      Result[j]:=Src[i];
-      inc(i);
-      inc(j);
+      Result[j]:= Src[i];
     end else begin
-      if i=FirstAmpersand then begin
+      if i = FirstAmpersand then begin
         // replace  first ampersand with underscore
         Result[j]:='_';
-        inc(i);
-        inc(j);
       end else begin
-        // skip ampersand
-        inc(i);
+        if (i < (SrcLength - 1)) and (Src[i+1] = '&') then begin
+	  Result[j]:= '&';
+	end else begin
+          // skip ampersand
+          inc(i);
+	  continue;
+	end;  
       end;
     end;
+    Inc(i);
+    Inc(j);
   end;
   Result[NewLength]:=#0;
 end;
@@ -2753,6 +2752,14 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.86  2002/09/03 11:32:51  lazarus
+  Added shortcut keys to labels
+  Support for alphabetically sorting the properties
+  Standardize message and add shortcuts ala Kylix
+  Published BorderStyle, unpublished BorderWidth
+  ShowAccelChar and FocusControl
+  ShowAccelChar and FocusControl for TLabel, escaped ampersands now work.
+
   Revision 1.85  2002/09/03 08:07:21  lazarus
   MG: image support, TScrollBox, and many other things from Andrew
 
