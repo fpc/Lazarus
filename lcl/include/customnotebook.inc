@@ -217,8 +217,6 @@ begin
 
   fAccess := TNBPages.Create(fPageList, Self);
   fPageIndex := -1;
-  { Create the first notebook page }
-  fPageIndex := -1;
 
   TabPosition := tpTop;
   ShowTabs := True;
@@ -288,7 +286,10 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomNotebook.GetActivePage: String;
 begin
-  Result := TPage(fPageList[PageIndex]).Caption;
+  if (PageIndex>=0) and (PageIndex<PageCount) then
+    Result := TPage(fPageList[PageIndex]).Caption
+  else
+    Result:='';
 end;
 
 {------------------------------------------------------------------------------
@@ -361,7 +362,6 @@ function TCustomNotebook.GetPageCount: Integer;
 begin
   Result := fPageList.Count;
 end;
-
 
 {------------------------------------------------------------------------------
   TCustomNotebook SetPages
@@ -586,6 +586,9 @@ end;}
 { =============================================================================
 
   $Log$
+  Revision 1.20  2002/09/02 20:05:44  lazarus
+  MG: fixed GetActivePage
+
   Revision 1.19  2002/09/02 19:10:28  lazarus
   MG: TNoteBook now starts with no Page and TPage has no auto names
 
