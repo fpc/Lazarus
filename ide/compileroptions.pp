@@ -42,7 +42,8 @@ interface
 
 uses
   Forms, Classes, SysUtils, ComCtrls, Buttons, StdCtrls, ExtCtrls, LazConf,
-  Laz_XMLCfg, FileCtrl, Dialogs, Controls, PathEditorDlg, IDEProcs, LazarusIDEStrConsts;
+  Laz_XMLCfg, FileCtrl, Dialogs, Controls, PathEditorDlg, IDEProcs,
+  LazarusIDEStrConsts;
 
 type
   { Compiler Options object used to hold the compiler options }
@@ -3079,8 +3080,10 @@ var AButton: TPathEditorButton;
 begin
   if Sender is TPathEditorButton then begin
     AButton:=TPathEditorButton(Sender);
+writeln('TfrmCompilerOptions.PathEditBtnExecuted ',TComponent(Sender).Name,':',Sender.ClassName,' ',AButton.CurrentPathEditor.ModalResult);
     if AButton.CurrentPathEditor.ModalResult<>mrOk then exit;
     NewPath:=AButton.CurrentPathEditor.Path;
+writeln('TfrmCompilerOptions.PathEditBtnExecuted ',TComponent(Sender).Name,':',Sender.ClassName,' ',NewPath);
     if AButton=OtherUnitsPathEditBtn then begin
       edtOtherUnits.Text:=NewPath;
     end else

@@ -874,7 +874,8 @@ end;
 {------------------------------------------------------------------------------}
 procedure TCustomForm.Hide;
 begin
-  If fsModal in FormState then
+  If (fsModal in FormState)
+  and (ModalResult=0) then
     ModalResult := mrCancel;
   Visible := False;
 end;
@@ -892,8 +893,8 @@ end;
 {------------------------------------------------------------------------------}
 function TCustomForm.IsForm: Boolean;
 begin
-//TODO:
-Result := True;
+  //TODO:
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------}
@@ -1103,11 +1104,12 @@ begin
         InterfaceObject.HandleEvents; // process all events
         if Application.FTerminate then
           ModalResult := mrCancel
-        else if ModalResult <> 0 then
+        else if ModalResult <> 0 then begin
           CloseModal;
-        if ModalResult<>0 then break;
+          if ModalResult<>0 then break;
+        end;
         Application.Idle;
-      until ModalResult <> 0;
+      until false;
       
       Result := ModalResult;
       if GetActiveWindow <> Handle then ActiveWindow := 0;
@@ -1135,6 +1137,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.62  2002/10/22 13:01:20  lazarus
+  MG: fixed setting modalresult on hide
+
   Revision 1.61  2002/10/06 17:55:45  lazarus
   MG: JITForms now sets csDesigning before creation
 
