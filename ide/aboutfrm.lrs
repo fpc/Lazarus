@@ -5,10 +5,11 @@ LazarusResources.Add('TAboutForm','FORMDATA',[
   +'ight'#3#245#0#11'ClientWidth'#3'A'#2#8'Position'#7#14'poscreencenter'#18'Ho'
   +'rzScrollBar.Page'#3'B'#2#18'VertScrollBar.Page'#3#246#0#4'Left'#3'_'#1#6'He'
   +'ight'#3#245#0#3'Top'#3#133#1#5'Width'#3'A'#2#0#5'TMemo'#5'Memo1'#5'Color'#4
-  +#5#0#0#128#8'WordWrap'#9#4'Left'#3#225#0#6'Height'#3#219#0#3'Top'#2#14#5'Wid'
-  +'th'#3'S'#1#0#0#7'TButton'#7'Button1'#11'ModalResult'#2#1#7'Caption'#6#5'Clo'
-  +'se'#8'TabOrder'#2#1#4'Left'#2'N'#6'Height'#2#25#3'Top'#3#184#0#5'Width'#2'K'
-  +#0#0#6'TLabel'#6'Label1'#9'Alignment'#7#8'tacenter'#7'Caption'#6#10'Version '
-  +'#:'#5'Color'#4#5#0#0#128#6'Layout'#7#5'tltop'#4'Left'#2#14#6'Height'#2#17#3
-  +'Top'#2#6#5'Width'#3#200#0#0#0#0
+  +#5#0#0#128#8'ReadOnly'#9#10'ScrollBars'#7#10'ssautoboth'#8'WordWrap'#9#4'Lef'
+  +'t'#3#225#0#6'Height'#3#219#0#3'Top'#2#14#5'Width'#3'S'#1#0#0#7'TButton'#7'B'
+  +'utton1'#11'ModalResult'#2#1#7'Caption'#6#5'Close'#8'TabOrder'#2#1#4'Left'#2
+  +'N'#6'Height'#2#25#3'Top'#3#184#0#5'Width'#2'K'#0#0#6'TLabel'#6'Label1'#9'Al'
+  +'ignment'#7#8'tacenter'#7'Caption'#6#10'Version #:'#5'Color'#4#5#0#0#128#6'L'
+  +'ayout'#7#5'tltop'#4'Left'#2#14#6'Height'#2#17#3'Top'#2#6#5'Width'#3#200#0#0
+  +#0#0
 ]);

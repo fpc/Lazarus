@@ -104,6 +104,7 @@ const
   ecGuessUnclosedBlock   = ecUserFirst + 104;
   ecGuessMisplacedIFDEF  = ecUserFirst + 105;
   ecConvertDFM2LFM       = ecUserFirst + 106;
+  ecMakeResourceString   = ecUserFirst + 107;
 
   ecNew                  = ecUserFirst + 201;
   ecNewUnit              = ecUserFirst + 202;
@@ -630,6 +631,7 @@ begin
     ecEditorOptions: Result:= 'editor options';
     ecCodeToolsOptions: Result:= 'codetools options';
     ecCodeToolsDefinesEd: Result:= 'codetools defines editor';
+    ecMakeResourceString: Result:='make resource string';
 
     // help menu
     ecAboutLazarus: Result:= 'about lazarus';
@@ -1436,6 +1438,7 @@ begin
   Add(C,'External Tools settings',ecExtToolSettings,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Build Lazarus',ecBuildLazarus,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Configure "Build Lazarus"',ecConfigBuildLazarus,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Make resource string',ecMakeResourceString,VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // environment menu
   C:=Categories[AddCategory('EnvironmentMenu','Environment menu commands',caAll)];

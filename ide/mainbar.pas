@@ -257,6 +257,7 @@ type
     itmToolGuessUnclosedBlock: TMenuItem;
     itmToolGuessMisplacedIFDEF: TMenuItem;
     itmToolConvertDFMtoLFM: TMenuItem;
+    itmToolMakeResourceString: TMenuItem;
     itmToolBuildLazarus: TMenuItem;
     itmToolConfigureBuildLazarus: TMenuItem;
 
@@ -1015,6 +1016,12 @@ begin
   itmToolGuessMisplacedIFDEF.Caption := lisMenuGuessMisplacedIFDEF;
   mnuTools.Add(itmToolGuessMisplacedIFDEF);
 
+  itmToolMakeResourceString := TMenuItem.Create(Self);
+  itmToolMakeResourceString.Name:='itmToolMakeResourceString';
+  itmToolMakeResourceString.Caption := lisMenuMakeResourceString;
+  itmToolMakeResourceString.Enabled:=false;
+  mnuTools.Add(itmToolMakeResourceString);
+
   mnuTools.Add(CreateMenuSeparator);
 
   itmToolConvertDFMtoLFM := TMenuItem.Create(Self);
@@ -1173,6 +1180,7 @@ begin
     itmToolSyntaxCheck.ShortCut:=CommandToShortCut(ecSyntaxCheck);
     itmToolGuessUnclosedBlock.ShortCut:=CommandToShortCut(ecGuessUnclosedBlock);
     itmToolGuessMisplacedIFDEF.ShortCut:=CommandToShortCut(ecGuessMisplacedIFDEF);
+    itmToolMakeResourceString.ShortCut:=CommandToShortCut(ecMakeResourceString);
     itmToolConvertDFMtoLFM.ShortCut:=CommandToShortCut(ecConvertDFM2LFM);
     itmToolBuildLazarus.ShortCut:=CommandToShortCut(ecBuildLazarus);
     itmToolConfigureBuildLazarus.ShortCut:=CommandToShortCut(ecConfigBuildLazarus);

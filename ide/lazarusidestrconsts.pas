@@ -202,6 +202,7 @@ resourcestring
   lisMenuQuickSyntaxCheck = 'Quick syntax check';
   lisMenuGuessUnclosedBlock = 'Guess unclosed block';
   lisMenuGuessMisplacedIFDEF = 'Guess misplaced IFDEF/ENDIF';
+  lisMenuMakeResourceString = 'Make Resource String';
   lisMenuConvertDFMtoLFM = 'Convert DFM file to LFM';
   lisMenuBuildLazarus = 'Build Lazarus';
   lisMenuConfigureBuildLazarus = 'Configure "Build Lazarus"';

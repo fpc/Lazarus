@@ -11,6 +11,8 @@ object AboutForm: TAboutForm
   Width = 577
   object Memo1: TMemo
     Color = -2147483643
+    ReadOnly = True
+    ScrollBars = ssautoboth
     WordWrap = True
     Left = 225
     Height = 219
