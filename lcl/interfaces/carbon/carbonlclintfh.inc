@@ -1,4 +1,4 @@
-// included by carbonint.pas
+{%MainUnit carbonint.pas}
 
 {******************************************************************************
   All Carbon interface communication implementations.
@@ -57,6 +57,10 @@ procedure StatusBarUpdate(StatusBar: TObject); override;
 { =============================================================================
 
   $Log$
+  Revision 1.2  2005/02/23 01:12:46  marc
+  + Added RemoveProp winapi call
+  * Some maintenace on winapi/lclintf files
+
   Revision 1.1  2004/09/06 22:24:52  mattias
   started the carbon LCL interface
 

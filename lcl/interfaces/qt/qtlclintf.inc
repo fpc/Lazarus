@@ -1,6 +1,5 @@
+{%MainUnit qtint.pp}
 { $Id$ }
-
-// included by qtint.pp
 
 {******************************************************************************
                   All QT interface communication implementations.
@@ -37,6 +36,10 @@
 { =============================================================================
 
   $Log$
+  Revision 1.4  2005/02/23 01:12:47  marc
+  + Added RemoveProp winapi call
+  * Some maintenace on winapi/lclintf files
+
   Revision 1.3  2004/03/19 00:53:34  marc
   * Removed all ComponentCreateHandle routines
 

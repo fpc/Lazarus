@@ -1,4 +1,5 @@
-
+{%MainUnit win32int.pp}
+{ $Id$ }
 
 {******************************************************************************
                          All Windows API implementations.
@@ -2418,6 +2419,18 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: RemoveProp
+  Params: Handle: Handle of the object
+          Str: Name of the property to remove
+  Returns: The handle of the property (0=failure)
+
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.RemoveProp(Handle: hwnd; Str: PChar): THandle;
+begin
+  Result := Windows.RemoveProp(Handle, Str);
+end;
+
+{------------------------------------------------------------------------------
   Method:  ReleaseCapture
   Params:  none
   Returns: True if succesful
@@ -2715,9 +2728,11 @@ End;
   NOTE: LCLLinux has no RemoveProp function but Windows API requires all set
   properties to be removed, so I'm keeping a list of windows with properties
   for a properties-enumeration function that's called when the program is quit.
+  
+  MWE: that is not really needed anymore since the RemoveProp is now implemented
  ------------------------------------------------------------------------------}
-Function TWin32WidgetSet.SetProp(Handle: HWND; Str: PChar; Data: Pointer): Boolean;
-Begin
+function TWin32WidgetSet.SetProp(Handle: HWND; Str: PChar; Data: Pointer): Boolean;
+begin
   Assert(False, 'Trace:TWin32WidgetSet.SetProp - Start');
   Result := Boolean(Windows.SetProp(Handle, Str, Windows.HANDLE(Data)));
   Assert(False, Format('Trace:TWin32WidgetSet.SetProp --> Window handle: 0x%X, Propery to set: %S, Data to set: 0x%P, Property was successfully set: %S', [Handle, String(Str), Data, BOOL_RESULT[Result]]));
@@ -3078,6 +3093,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.137  2005/02/23 01:12:47  marc
+  + Added RemoveProp winapi call
+  * Some maintenace on winapi/lclintf files
+
   Revision 1.136  2005/02/07 10:21:45  micha
   properly initialize maskbitmap to 0, not always assigned
 

@@ -1,17 +1,14 @@
-{%MainUnit gtk2int.pp}
-{ $Id$ }
+{%MainUnit qtint.pas}
 
 {******************************************************************************
-                 All GTK2 interface communication implementations.
-                   Initial Revision  : Sat Jan 17 19:00:00 2004
+  All QT Winapi related stuff goes here.
+  This are the overrides of the QT Interface for the methods defined in the
+  lcl/include/winapih.inc
 
-
-  !! Keep alphabetical !!
-
-  Support routines go to gtk2proc.pp
+  !! Keep this alphabetical !!
 
  ******************************************************************************
- Implementation
+ Interface
  ******************************************************************************
 
  *****************************************************************************
@@ -28,19 +25,17 @@
  *****************************************************************************
 }
 
-//##apiwiz##sps##   // Do not remove
-
+//##apiwiz##sps##   // Do not remove, no wizard declaration before this line
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
 
 { =============================================================================
 
   $Log$
-  Revision 1.4  2005/02/23 01:12:47  marc
+  Revision 1.1  2005/02/23 01:12:47  marc
   + Added RemoveProp winapi call
   * Some maintenace on winapi/lclintf files
 
-  Revision 1.3  2004/03/19 00:53:34  marc
-  * Removed all ComponentCreateHandle routines
 
 }
+

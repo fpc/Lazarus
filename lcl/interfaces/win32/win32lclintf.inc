@@ -1,3 +1,4 @@
+{%MainUnit win32int.pp}
 { $Id$ }
 {******************************************************************************
                  All GTK interface communication implementations.
@@ -187,6 +188,10 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.21  2005/02/23 01:12:47  marc
+  + Added RemoveProp winapi call
+  * Some maintenace on winapi/lclintf files
+
   Revision 1.20  2005/02/07 18:53:35  micha
   implement size constraints for calendar (it is not resizeable)
 

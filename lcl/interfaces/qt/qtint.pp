@@ -1,3 +1,4 @@
+{ $Id$ }
 { 
  /*************************************************************************** 
                          QTINT.pp  -  QTInterface Object
@@ -35,30 +36,28 @@ interface
 uses 
   InterfaceBase, sysutils, LCLType, LMessages, Classes, Controls,
   ExtCtrls, Forms, Dialogs, StdCtrls, Comctrls, LCLIntf, qt;
- 
-
 
 type
 
-   TQtWidgetSet = Class(TWidgetSet)
-    private
-      procedure CreateComponent(Sender : TObject);
-      procedure ShowHide(Sender : TObject);
+  TQtWidgetSet = Class(TWidgetSet)
+  private
+    procedure CreateComponent(Sender : TObject);
+    procedure ShowHide(Sender : TObject);
 
-   public
-      function GetText(Sender: TControl; var Text: String): Boolean; override;
-      procedure SetLabel(Sender : TObject; Data : Pointer);
-      function  IntSendMessage3(LM_Message : Integer; Sender : TObject; data : pointer) : integer; override;
-      procedure SetCallback(Msg : LongInt; Sender : TObject); override;
-      procedure RemoveCallbacks(Sender : TObject); override;
-      procedure DoEvents; override;
-      procedure HandleEvents; override;
-      procedure AppTerminate; override;
-      procedure Init; override;
-      
-
-
-   end;
+  public
+    {$I qtwinapih.inc}
+    {$I qtlclintfh.inc}
+  public
+    function GetText(Sender: TControl; var Text: String): Boolean; override;
+    procedure SetLabel(Sender : TObject; Data : Pointer);
+    function  IntSendMessage3(LM_Message : Integer; Sender : TObject; data : pointer) : integer; override;
+    procedure SetCallback(Msg : LongInt; Sender : TObject); override;
+    procedure RemoveCallbacks(Sender : TObject); override;
+    procedure DoEvents; override;
+    procedure HandleEvents; override;
+    procedure AppTerminate; override;
+    procedure Init; override;
+  end;
 
 
 type
@@ -194,10 +193,12 @@ var
   KeyStateList: TList; // Keeps track of which keys are pressed
 
 const
-TARGET_STRING = 1;
-TARGET_ROOTWIN = 2;
+  TARGET_STRING = 1;
+  TARGET_ROOTWIN = 2;
 
 
+{$I qtobject.inc}
+{$I qtwinapi.inc}
 {$I qtcallback.inc}
 {$I qtobject.inc}
 

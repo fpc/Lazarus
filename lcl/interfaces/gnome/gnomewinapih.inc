@@ -1,3 +1,5 @@
+{%MainUnit gnomeint.pas}
+{ $Id$ }
 (******************************************************************************
   All GNOME Winapi related stuff goes here.
 
@@ -18,17 +20,24 @@
  *****************************************************************************
 }
 
+//##apiwiz##sps##   // Do not remove
+
+Function LoadStockPixmap(StockID: longint) : HBitmap; override;
+
 Function PromptUser(const DialogCaption, DialogMessage : String; DialogType : longint;
   Buttons : PLongint; ButtonCount, DefaultIndex, EscapeResult : Longint) : Longint; override;
 Function PromptUserAtXY(const DialogCaption, DialogMessage : String; DialogType : longint;
   Buttons : PLongint; ButtonCount, DefaultIndex, EscapeResult : Longint; X, Y : Longint) : Longint; override;
 
-Function LoadStockPixmap(StockID: longint) : HBitmap; override;
-
 Function RequestInput(const InputCaption, InputPrompt : String; MaskInput : Boolean; var Value : String) : Boolean; override;
 
-{
+//##apiwiz##eps##   // Do not remove
+{ =============================================================================
   $Log$
+  Revision 1.9  2005/02/23 01:12:46  marc
+  + Added RemoveProp winapi call
+  * Some maintenace on winapi/lclintf files
+
   Revision 1.8  2002/10/23 14:36:53  lazarus
   AJ:Fixes to PromptUser;Switched ShowMessage* to use NotifyUser*;
      fixed TGraphicPropertyEditor for when Property is nil.

@@ -1,6 +1,5 @@
+{%MainUnit gtkint.pp}
 { $Id$ }
-
-// included by gtkint.pp
 
 {******************************************************************************
                  All GTK interface communication implementations.
@@ -56,6 +55,10 @@ function ReplaceBitmapMask(var Image, Mask: HBitmap; NewMask: HBitmap): boolean;
 { =============================================================================
 
   $Log$
+  Revision 1.22  2005/02/23 01:12:47  marc
+  + Added RemoveProp winapi call
+  * Some maintenace on winapi/lclintf files
+
   Revision 1.21  2004/10/23 14:47:44  micha
   remove old code: statusbar methods in twidgetset
 

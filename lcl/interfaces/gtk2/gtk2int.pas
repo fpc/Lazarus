@@ -1,3 +1,4 @@
+{ $Id$ }
 {
  /***************************************************************************
                        gtk2int.pas  -  GTK2 Interface Object
@@ -67,15 +68,11 @@ type
       MultiSelect, ExtendedSelect: boolean); override;
     //function SetTopIndex(Sender: TObject; NewTopIndex: integer): integer; override;
     procedure UpdateDCTextMetric(DC: TDeviceContext); override;
-  public
-    function BeginPaint(Handle: hWnd; Var PS : TPaintStruct) : hdc; override;
-    function CreateFontIndirectEx(const LogFont: TLogFont; const LongFontName: string): HFONT; override;
+  public    
+    {$I gtk2winapih.inc}
+    {$I gtk2lclintfh.inc}
+  
     function PangoDrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer; //override;
-    Function EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer; override;
-    function ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean; override;
-    function GetCursorPos(var lpPoint: TPoint ): Boolean; override;
-    function GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean; override;
-    function TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean; override;
   end;
 
   TGtkListStoreStringList = class(TStrings)
@@ -602,6 +599,10 @@ end.
 
 {
   $Log$
+  Revision 1.42  2005/02/23 01:12:47  marc
+  + Added RemoveProp winapi call
+  * Some maintenace on winapi/lclintf files
+
   Revision 1.41  2005/02/16 23:56:51  mattias
   fixed some gtk2 intf mem leaks, clean ups
 

@@ -1,4 +1,5 @@
-// included by win32int.pp
+{%MainUnit win32int.pp}
+{ $Id$ }
 
 {******************************************************************************
   All Windows API related stuff goes here.
@@ -148,6 +149,7 @@ function RectVisible(dc : hdc; const ARect: TRect) : Boolean; Override;
 Function ReleaseCapture: Boolean; Override;
 Function ReleaseDC(Window: HWND; DC: HDC): Integer; Override;
 Function ReleaseDesignerDC(Window: HWND; DC: HDC): Integer; Override;
+function RemoveProp(Handle: hwnd; Str: PChar): THandle; override;
 Function RestoreDC(DC: HDC; SavedDC: Integer): Boolean; Override;
 
 Function SaveDC(DC: HDC): Integer; Override;
@@ -194,6 +196,10 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.54  2005/02/23 01:12:47  marc
+  + Added RemoveProp winapi call
+  * Some maintenace on winapi/lclintf files
+
   Revision 1.53  2005/02/05 20:40:17  vincents
   SetCapture uses HWND as parameter and result type
 

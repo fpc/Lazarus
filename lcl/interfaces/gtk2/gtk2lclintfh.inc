@@ -1,6 +1,5 @@
+{%MainUnit gtk2int.pp}
 { $Id$ }
-
-// included by gtk2int.pp
 
 {******************************************************************************
                  All GTK2 interface communication implementations.
@@ -36,6 +35,10 @@
 { =============================================================================
 
   $Log$
+  Revision 1.3  2005/02/23 01:12:47  marc
+  + Added RemoveProp winapi call
+  * Some maintenace on winapi/lclintf files
+
   Revision 1.2  2004/03/19 00:53:34  marc
   * Removed all ComponentCreateHandle routines
 

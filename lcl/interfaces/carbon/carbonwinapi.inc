@@ -1,4 +1,4 @@
-// included by carbonint.pas
+{%MainUnit carbonint.pas}
 
 {******************************************************************************
   All Carbon Winapi implementations.
@@ -923,10 +923,13 @@ end;
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
 
-// included by carbonint.pas
 { =============================================================================
 
   $Log$
+  Revision 1.2  2005/02/23 01:12:46  marc
+  + Added RemoveProp winapi call
+  * Some maintenace on winapi/lclintf files
+
   Revision 1.1  2004/09/06 22:24:52  mattias
   started the carbon LCL interface
 

@@ -1,3 +1,4 @@
+{%MainUnit win32int.pp}
 { $Id$ }
 {******************************************************************************
                  All GTK interface communication implementations.
@@ -42,6 +43,10 @@ function MenuItemSetEnable(BaseMenuItem: TComponent): Boolean; override;
 { =============================================================================
 
   $Log$
+  Revision 1.16  2005/02/23 01:12:47  marc
+  + Added RemoveProp winapi call
+  * Some maintenace on winapi/lclintf files
+
   Revision 1.15  2004/10/16 10:15:45  micha
   cleanup statusbar methods in lcl interfaceobject
   fix statusbar recursive call issue

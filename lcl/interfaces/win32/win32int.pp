@@ -1,3 +1,4 @@
+{ $Id$ }
 {
  /***************************************************************************
                          WIN32INT.pp  -  Win32Interface Object
@@ -284,6 +285,10 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.134  2005/02/23 01:12:47  marc
+  + Added RemoveProp winapi call
+  * Some maintenace on winapi/lclintf files
+
   Revision 1.133  2005/02/10 21:07:29  micha
   let general WindowProc also handle childedit of combobox, reduces code duplication, implements doubleclick for combobox
 

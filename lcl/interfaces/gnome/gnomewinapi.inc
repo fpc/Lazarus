@@ -1,3 +1,5 @@
+{%MainUnit gnomeint.pas}
+{ $Id$ }
 {******************************************************************************
                          All GNOME Winapi implementations.
                    Initial Revision  : Thu Oct 3 1:35:53 2002
@@ -27,6 +29,8 @@
 //  {$C+}
 //  {$DEFINE ASSERT_IS_ON}
 {$EndIf}
+
+//##apiwiz##sps##   // Do not remove
 
 Function TGnomeWidgetSet.LoadStockPixmap(StockID: longint) : HBitmap;
 var
@@ -270,13 +274,19 @@ begin
     end;
 end;
 
+//##apiwiz##eps##   // Do not remove
+
 {$IfDef ASSERT_IS_ON}
   {$UNDEF ASSERT_IS_ON}
   {$C-}
 {$EndIf}
 
-{
+{ =============================================================================
   $Log$
+  Revision 1.14  2005/02/23 01:12:46  marc
+  + Added RemoveProp winapi call
+  * Some maintenace on winapi/lclintf files
+
   Revision 1.13  2004/03/05 00:46:08  marc
   * Renamed TGnomeObject to TGnomeWidgetSet
 

@@ -946,6 +946,166 @@ begin
 end;*)
 
 {------------------------------------------------------------------------------
+  Method:  PangoDrawText
+  Params:  DC, Str, Count, Rect, Flags
+  Returns: If the string was drawn, or CalcRect run
+
+  inherited routine apears to work fine so, turned off for now. Doesn't work
+  properly, and needs to take & into account before its fully useable....
+ ------------------------------------------------------------------------------}
+function TGtk2WidgetSet.PangoDrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer;
+
+  Function Alignment : TPangoAlignment;
+  begin
+    If (Flags and DT_Right) = DT_Right then
+      Result := PANGO_ALIGN_RIGHT
+    else
+      If (Flags and DT_CENTER) = DT_CENTER then
+        Result := PANGO_ALIGN_CENTER
+    else
+      Result := PANGO_ALIGN_LEFT;
+  end;
+
+  Function TopOffset : Longint;
+  begin
+    If (Flags and DT_BOTTOM) = DT_BOTTOM then
+      Result := DT_BOTTOM
+    else
+      If (Flags and DT_VCENTER) = DT_VCENTER then
+        Result := DT_VCENTER
+    else
+      Result := DT_Top;
+  end;
+
+var
+  Layout : PPangoLayout;
+  UseFontDesc : PPangoFontDescription;
+  AttrList : PPangoAttrList;
+  Attr : PPangoAttribute;
+  RGBColor : TColor;
+  Foreground : PGDKColor;
+  X, Y, Width, Height : Integer;
+  DCOrigin: TPoint;
+begin
+  result :=  inherited DrawText(DC, Str, Count, Rect, Flags);
+
+  exit;
+
+  if (Str=nil) or (Str[0]=#0) then exit;
+  Assert(False, Format('trace:> [TGtk2WidgetSet.DrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
+    [DC, Str, Count, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, Flags]));
+
+  Result := Longint(IsValidDC(DC));
+  if Boolean(Result)
+  then with TDeviceContext(DC) do
+  begin
+    if GC = nil
+    then begin
+      DebugLn('WARNING: [TGtk2WidgetSet.DrawText] Uninitialized GC');
+      Result := 0;
+    end
+    else begin
+      if (Str<>nil) and (Count>0) then begin
+        if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil) or
+          ((Flags and DT_INTERNAL) = DT_INTERNAL)
+        then
+          UseFontDesc := GetDefaultFontDesc(false)
+        else
+          UseFontDesc := CurrentFont^.GDIFontObject;
+
+        DCOrigin:=GetDCOffset(TDeviceContext(DC));
+
+        GetStyle(lgsdefault);
+        Layout := gtk_widget_create_pango_layout (GetStyleWidget(lgsdefault), nil);
+        pango_layout_set_font_description(Layout, UseFontDesc);
+        AttrList := pango_layout_get_attributes(Layout);
+
+        If (AttrList = nil) then
+          AttrList := pango_attr_list_new();
+
+        //fix me... what about &&, can we strip and do do markup substitution?
+        If CurrentFont^.Underline then
+          Attr := pango_attr_underline_new(PANGO_UNDERLINE_SINGLE)
+        else
+          Attr := pango_attr_underline_new(PANGO_UNDERLINE_NONE);
+
+        pango_attr_list_change(AttrList,Attr);
+
+        Attr := pango_attr_strikethrough_new(CurrentFont^.StrikeOut);
+        pango_attr_list_change(AttrList,Attr);
+
+        SelectedColors := dcscCustom;
+        EnsureGCColor(DC, dccCurrentTextColor, True, False);
+
+        RGBColor := ColorToRGB(CurrentTextColor.ColorRef);
+
+        Attr := pango_attr_foreground_new(gushort(GetRValue(RGBColor)) shl 8,
+                                        gushort(GetGValue(RGBColor)) shl 8,
+                                        gushort(GetBValue(RGBColor)) shl 8);
+
+        pango_attr_list_change(AttrList,Attr);
+
+        Foreground := StyleForegroundColor(CurrentTextColor.ColorRef, nil);
+
+        //fix me... then generate markup for all this?
+        //the same routine could then be used for both
+        //DrawText and ExtTextOut
+
+        pango_layout_set_attributes(Layout, AttrList);
+
+        pango_layout_set_single_paragraph_mode(Layout, (Flags and DT_SingleLine) = DT_SingleLine);
+        pango_layout_set_wrap(Layout, PANGO_WRAP_WORD);
+
+        If ((Flags and DT_WordBreak) = DT_WordBreak)and not
+          Pango_layout_get_single_paragraph_mode(Layout)
+        then
+          pango_layout_set_width(Layout, (Rect.Right - Rect.Left)*PANGO_SCALE)
+        else
+          pango_layout_set_width(Layout, -1);
+
+        pango_layout_set_alignment(Layout, Alignment);
+
+        //fix me... and what about UTF-8 conversion?
+        //this could be a massive problem since we
+        //will need to know before hand what the current
+        //locale is, and if we stored UTF-8 string this would break
+        //cross-compatibility with GTK1.2 and win32 interfaces.....
+
+        pango_layout_set_text(Layout, Str, Count);
+        pango_layout_get_pixel_size(Layout, @Width, @Height);
+        Case TopOffset of
+          DT_Top : Y := Rect.Top;
+          DT_Bottom : Y := Rect.Bottom - Height;
+          DT_Center : Y := Rect.Top + (Rect.Bottom - Rect.Top) div 2 - Height div 2;
+        end;
+
+        Case Alignment of
+          PANGO_ALIGN_LEFT : X := Rect.Left;
+          PANGO_ALIGN_RIGHT : X := Rect.Right - Width;
+          PANGO_ALIGN_CENTER : X := Rect.Left + (Rect.Right - Rect.Left) div 2 - Width div 2;
+        end;
+
+        if ((Flags and DT_CalcRect) = DT_CalcRect) then begin
+          g_object_unref(Layout);
+          Rect.Left := X;
+          Rect.Top := Y;
+          Rect.Right := X + Width;
+          Rect.Bottom := Y + Height;
+          result := 0;
+          exit;
+        end;
+
+        gdk_draw_layout_with_colors(drawable, gc, X+DCOrigin.X, Y+DCOrigin.Y, Layout, Foreground, nil);
+        g_object_unref(Layout);
+        Result := 0;
+      end;
+    end;
+  end;
+  Assert(False, Format('trace:> [TGtk2WidgetSet.PangoDrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
+    [DC, Str, Count, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, Flags]));
+end;
+
+{------------------------------------------------------------------------------
   Function: TGtk2WidgetSet.SetCallback
   Params: Msg - message for which to set a callback
           sender - object to which callback will be send
@@ -1519,6 +1679,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.29  2005/02/23 01:12:47  marc
+  + Added RemoveProp winapi call
+  * Some maintenace on winapi/lclintf files
+
   Revision 1.28  2005/02/21 20:15:28  mattias
   fixed componentpalette adding via double click
 

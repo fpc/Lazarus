@@ -1,3 +1,4 @@
+{%MainUnit gtkint.pp}
 { $Id$ }
 {******************************************************************************
                  All GTK interface communication implementations.
@@ -511,6 +512,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.36  2005/02/23 01:12:46  marc
+  + Added RemoveProp winapi call
+  * Some maintenace on winapi/lclintf files
+
   Revision 1.35  2005/01/12 23:18:07  mattias
   limited widget sizes to 10000x10000
 

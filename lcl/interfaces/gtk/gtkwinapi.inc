@@ -1,4 +1,5 @@
-// included by gtkint.pp
+{%MainUnit gtkint.pp}
+{ $Id$ }
 
 {******************************************************************************
                          All GTK Winapi implementations.
@@ -1742,8 +1743,24 @@ var
   GObject: PGdiObject;
 begin
   Assert(False, 'trace:[TGtkWidgetSet.CreatePalette]');
+  
   GObject := NewGDIObject(gdiPalette);
+  GObject^.SystemPalette := False;
+  GObject^.PaletteRealized := False;
+  GObject^.VisualType := GDK_VISUAL_PSEUDO_COLOR;
+  GObject^.PaletteVisual := nil;
 
+  {$IFDEF DebugGDKTraps}
+  BeginGDKErrorTrap;
+  {$ENDIF}
+
+  GObject^.PaletteVisual := gdk_visual_get_best_with_type(GObject^.VisualType);
+  if GObject^.PaletteVisual = nil 
+  then begin
+    GObject^.PaletteVisual := GDK_Visual_Get_System;
+    GDK_Visual_Ref(GObject^.PaletteVisual);
+  end;
+  GObject^.PaletteColormap := GDK_Colormap_new(GObject^.PaletteVisual, GdkTrue);
   GObject^.SystemPalette := False;
   GObject^.PaletteRealized := False;
   GObject^.VisualType := GDK_VISUAL_PSEUDO_COLOR;
@@ -1762,7 +1779,7 @@ begin
   GObject^.PaletteColormap := GDK_Colormap_new(GObject^.PaletteVisual, GdkTrue);
 
   {$IFDEF DebugGDKTraps}
-  EndGDKErrorTrap;                                    e
+  EndGDKErrorTrap;
   {$ENDIF}
 
   GObject^.RGBTable := TDynHashArray.Create(-1);
@@ -7044,6 +7061,19 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: RemoveProp
+  Params: Handle: Handle of the object
+          Str: Name of the property to remove
+  Returns: The handle of the property (0=failure)
+
+ ------------------------------------------------------------------------------}
+function TGtkWidgetSet.RemoveProp(Handle: hwnd; Str: PChar): THandle;
+begin
+  gtk_object_remove_data(pGTKObject(handle), Str);
+  Result := 1;
+end;
+
+{------------------------------------------------------------------------------
   Function: RestoreDC
   Params:  none
   Returns: Nothing
@@ -7949,8 +7979,8 @@ end;
   Function TGtkWidgetSet.SetProp(Handle: hwnd; Str : PChar;
                               Data : Pointer) : Boolean;
  ------------------------------------------------------------------------------}
-Function TGtkWidgetSet.SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean;
-Begin
+function TGtkWidgetSet.SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean;
+begin
   gtk_object_set_data(pGTKObject(handle),Str,data);
   Result:=true;
 end;
@@ -8910,6 +8940,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.400  2005/02/23 01:12:47  marc
+  + Added RemoveProp winapi call
+  * Some maintenace on winapi/lclintf files
+
   Revision 1.399  2005/02/19 20:36:56  mattias
   xinerama hack is now only enabled when compiled with -dUseXinerama
 

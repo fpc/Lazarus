@@ -1,4 +1,5 @@
-// included by gtkint.pp
+{%MainUnit gtkint.pp}
+{ $Id$ }
 
 (******************************************************************************
   All GTK Winapi related stuff goes here.
@@ -165,6 +166,7 @@ function RectVisible(dc : hdc; const ARect: TRect) : Boolean; override;
 function RegroupMenuItem(hndMenu: HMENU; GroupIndex: integer): Boolean; override;
 Function ReleaseCapture : Boolean; override;
 function ReleaseDC(hWnd: HWND; DC: HDC): Integer; override;
+function RemoveProp(Handle: hwnd; Str: PChar): THandle; override;
 function RestoreDC(DC: HDC; SavedDC: Integer): Boolean; override;
 function RightJustifyMenuItem(HndMenu: HMenu; bRightJustify: boolean): Boolean; override;
 Function RoundRect(DC : hDC; X1, Y1, X2, Y2: Integer; RX,RY : Integer): Boolean;  override;
@@ -215,6 +217,10 @@ Function WindowFromPoint(Point : TPoint) : HWND; override;
 { =============================================================================
 
   $Log$
+  Revision 1.95  2005/02/23 01:12:47  marc
+  + Added RemoveProp winapi call
+  * Some maintenace on winapi/lclintf files
+
   Revision 1.94  2005/02/05 16:09:52  marc
   * first 64bit changes
 
