@@ -2894,7 +2894,7 @@ var
     nAntiBracketY:=0;
     if not (eoBracketHighlight in fOptions) then exit;
     if (fCaretY >= FirstLine) and (fCaretY <= LastLine) then begin
-      sLine := Lines[fCaretY - 1];
+      sLine := TSynEditStringList(Lines).ExpandedStrings[fCaretY - 1];
       Len := Length(sLine);
       if (fCaretX >= 1) and (fCaretX <= Len) then begin
         if (sLine[fCaretX] in ['(',')','[',']','{','}']) then begin
