@@ -5678,7 +5678,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGTKObject.SelectGDKBrushProps(DC: HDC);
 begin
-  if TDeviceContext(DC).SelectedColors=dcscBrush then exit;
+  if (TDeviceContext(DC).SelectedColors=dcscBrush) or
+     TDeviceContext(DC).CurrentBrush^.IsNullBrush
+  then 
+    exit;
   
   with TDeviceContext(DC), CurrentBrush^ do
   begin
@@ -6524,6 +6527,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.274  2002/10/30 17:43:35  lazarus
+  AJ: added IsNullBrush checks to reduce pointless color allocations & GDK function calls
+
   Revision 1.273  2002/10/30 13:50:26  lazarus
   MG: fixed message without handle
 
