@@ -415,9 +415,9 @@ end;
 
 Destructor TScrollingWinControl.Destroy;
 begin
-  FHorzScrollBar.Free;
-  FVertScrollBar.Free;
-  FCanvas.Free;
+  FreeThenNil(FHorzScrollBar);
+  FreeThenNil(FVertScrollBar);
+  FreeThenNil(FCanvas);
   inherited Destroy;
 end;
 

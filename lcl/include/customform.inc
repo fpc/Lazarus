@@ -802,8 +802,6 @@ Begin
   FIcon := TIcon.Create;
 //  FInCMParentBiDiModeChanged := False;
   {apply a drawing surface}
-  FCanvas := TControlCanvas.Create;
-  FCanvas.Control := Self;
   FKeyPreview :=  False;
   Color := clBtnface;
 //  FPixelsPerInch := Screen.PixelsPerInch;
@@ -1167,6 +1165,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.66  2002/10/27 11:51:35  lazarus
+  MG: fixed memleaks
+
   Revision 1.65  2002/10/24 09:37:39  lazarus
   MG: broke menus.pp <-> controls.pp circle
 
