@@ -101,6 +101,7 @@ begin
 
   
   DesignerMainMenu:=TDesignerMainMenu.Create(Self, fMenu, fEditor);
+  PopupMenu:=DesignerMainMenu.MainPopupMenu;
   
   Cmp2:=TScrollBox.Create(self);
   with Cmp2 do
