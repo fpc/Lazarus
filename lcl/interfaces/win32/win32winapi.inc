@@ -2037,12 +2037,9 @@ End;
   Sets the window origin of the device context by using the specified coordinates.
  ------------------------------------------------------------------------------}
 Function TWin32Object.SetWindowOrgEx(DC: HDC; NewX, NewY: Integer;
-  Var OldPoint: TPoint): Boolean;
+  OldPoint: PPoint): Boolean;
 Begin
-//writeln('[TWin32Object.SetWindowOrgEx] ', NewX, ' ', NewY);
-// ToDo: move origin
-
-  Result := Windows.SetWindowOrgEx(DC, NewX, NewY, @OldPoint);
+  Result := Windows.SetWindowOrgEx(DC, NewX, NewY, OldPoint);
 End;
 
 {------------------------------------------------------------------------------
@@ -2269,6 +2266,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.26  2002/12/26 11:00:15  mattias
+  added included by to unitinfo and a few win32 functions
+
   Revision 1.25  2002/12/25 13:30:37  mattias
   added more windows funcs and fixed jump to compiler error end of file
 

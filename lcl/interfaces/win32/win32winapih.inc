@@ -149,7 +149,7 @@ Function SetSysColors(CElements: Integer; Const LPAElements; Const LPARgbValues)
 Function SetTextCharacterExtra(_HDC: HDC; NCharExtra: Integer): Integer; Override;
 Function SetTextColor(DC: HDC; Color: TColorRef): TColorRef; Override;
 Function SetWindowLong(Handle: HWND; Idx: Integer; NewLong: LongInt): LongInt; Override;
-Function SetWindowOrgEx(DC: HDC; NewX, NewY: Integer; Var OldPoint: TPoint): Boolean; Override;
+Function SetWindowOrgEx(DC: HDC; NewX, NewY: Integer; OldPoint: PPoint): Boolean; Override;
 Function SetWindowPos(HWnd: HWND; HWndInsertAfter: HWND; X, Y, CX, CY: Integer; UFlags: UINT): Boolean; Override;
 Function ShowCaret(HWnd: HWND): Boolean; Override;
 Function ShowScrollBar(Handle: HWND; WBar: Integer; BShow: Boolean): Boolean; Override;
@@ -170,6 +170,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.18  2002/12/26 11:00:15  mattias
+  added included by to unitinfo and a few win32 functions
+
   Revision 1.17  2002/12/25 13:30:37  mattias
   added more windows funcs and fixed jump to compiler error end of file
 

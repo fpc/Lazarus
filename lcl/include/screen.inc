@@ -54,17 +54,85 @@ begin
   FreeThenNil(FFonts);
   inherited Destroy;
 end;
-{
 
-     FUNCTIONS
-
-
-
-}
-
+{------------------------------------------------------------------------------
+  function TScreen.GetFonts : TStrings;
+ ------------------------------------------------------------------------------}
 function TScreen.GetFonts : TStrings;
 begin
   Result := FFonts;
+end;
+
+{------------------------------------------------------------------------------
+  procedure TScreen.CreateCursors;
+ ------------------------------------------------------------------------------}
+procedure TScreen.CreateCursors;
+begin
+
+end;
+
+{------------------------------------------------------------------------------
+  procedure TScreen.DeleteCursor(Index: Integer);
+ ------------------------------------------------------------------------------}
+procedure TScreen.DeleteCursor(Index: Integer);
+var
+  P, Q: PCursorRec;
+begin
+  P := FCursorList;
+  Q := nil;
+  while (P <> nil) and (P^.Index <> Index) do begin
+    Q := P;
+    P := P^.Next;
+  end;
+  if P <> nil then begin
+    writeln('ToDo: TScreen.DeleteCursor');
+    //DestroyCursor(P^.Handle);
+    if Q = nil then
+      FCursorList := P^.Next
+    else
+      Q^.Next := P^.Next;
+    Dispose(P);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  procedure TScreen.DestroyCursors;
+ ------------------------------------------------------------------------------}
+procedure TScreen.DestroyCursors;
+var
+  P, Next: PCursorRec;
+  //Hdl: THandle;
+begin
+  P := FCursorList;
+  while P <> nil do begin
+    writeln('ToDo: TScreen.DeleteCursor');
+    //DestroyCursor(P^.Handle);
+    Next := P^.Next;
+    Dispose(P);
+    P := Next;
+  end;
+  {Hdl := LoadCursor(0, IDC_ARROW);
+  if Hdl <> FDefaultCursor then
+    DestroyCursor(FDefaultCursor);}
+end;
+
+{------------------------------------------------------------------------------
+  function TScreen.GetCursors(Index: Integer): HCURSOR;
+ ------------------------------------------------------------------------------}
+function TScreen.GetCursors(Index: Integer): HCURSOR;
+var
+  P: PCursorRec;
+begin
+  Result := 0;
+  if Index <> crNone then
+  begin
+    P := FCursorList;
+    while (P <> nil) and (P^.Index <> Index) do P := P^.Next;
+    if P = nil then
+      Result := FDefaultCursor
+    else
+      Result := P^.Handle;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -144,6 +212,51 @@ begin
   FFormList.Remove(FForm);
 end;
 
+{------------------------------------------------------------------------------
+  procedure TScreen.SetCursor(const AValue: TCursor);
+ ------------------------------------------------------------------------------}
+procedure TScreen.SetCursor(const AValue: TCursor);
+//var
+  //MousePos: TPoint;
+  //Handle: HWND;
+  //Code: Longint;
+begin
+  if AValue <> Cursor then begin
+    FCursor := AValue;
+    {if AValue = crDefault then begin
+      // Reset the cursor to the default by sending a WM_SETCURSOR to the
+      //  window under the cursor
+      GetCursorPos(MousePos);
+      Handle := WindowFromPoint(MousePos);
+      if (Handle <> 0) and
+        (GetWindowThreadProcessId(Handle, nil) = GetCurrentThreadId) then
+      begin
+        Code := SendMessage(Handle, WM_NCHITTEST, 0, LongInt(PointToSmallPoint(P)));
+        SendMessage(Handle, WM_SETCURSOR, Handle, MakeLong(Code, WM_MOUSEMOVE));
+        Exit;
+      end;
+    end;}
+    LCLLinux.SetCursor(Cursors[FCursor]);
+  end;
+  Inc(FCursorCount);
+end;
+
+{------------------------------------------------------------------------------
+  procedure TScreen.SetCursors(Index: Integer; const AValue: HCURSOR);
+ ------------------------------------------------------------------------------}
+procedure TScreen.SetCursors(Index: Integer; const AValue: HCURSOR);
+begin
+  {if Index = crDefault then
+    if Handle = 0 then
+      FDefaultCursor := LoadCursor(0, IDC_ARROW)
+    else
+      FDefaultCursor := Handle
+  else if Index <> crNone then
+  begin
+    DeleteCursor(Index);
+    if Handle <> 0 then InsertCursor(Index, Handle);
+  end;}
+end;
 
 {------------------------------------------------------------------------------
   Function: TScreen.MyFunction

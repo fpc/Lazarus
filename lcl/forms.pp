@@ -433,15 +433,30 @@ type
 
   { TScreen }
 
+  PCursorRec = ^TCursorRec;
+  TCursorRec = record
+    Next: PCursorRec;
+    Index: Integer;
+    Handle: HCURSOR;
+  end;
+
   TScreen = class(TComponent)
   private
+    FCursor: TCursor;
+    FCursorCount: integer;
+    FCursorList: PCursorRec;
+    FDefaultCursor: HCURSOR;
     FFocusedForm: TCustomForm;
+    FFonts : TStrings;
     FFormList: TList;
     FHintFont : TFont;
     FPixelsPerInch : integer;
     FSaveFocusedList: TList;
-    FFonts : TStrings;
 
+    procedure CreateCursors;
+    procedure DeleteCursor(Index: Integer);
+    procedure DestroyCursors;
+    function GetCursors(Index: Integer): HCURSOR;
     function GetFonts : TStrings;
     function GetFormCount: Integer;
     function GetForms(IIndex: Integer): TForm;
@@ -449,9 +464,14 @@ type
     function GetWidth : Integer;
     procedure AddForm(FForm: TCustomForm);
     procedure RemoveForm(FForm: TCustomForm);
+    procedure SetCursor(const AValue: TCursor);
+    procedure SetCursors(Index: Integer; const AValue: HCURSOR);
   public
     constructor Create(AOwner : TComponent); override;
     destructor Destroy; Override;
+  public
+    property Cursor: TCursor read FCursor write SetCursor;
+    property Cursors[Index: Integer]: HCURSOR read GetCursors write SetCursors;
     property FormCount: Integer read GetFormCount;
     property Forms[Index: Integer]: TForm read GetForms;
     property Fonts : TStrings read GetFonts;
