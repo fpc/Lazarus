@@ -1189,18 +1189,18 @@ var
   DesignOnlySignal: boolean;
   CaptureWidget: PGtkWidget;
 begin
-  Result := CallBackDefaultReturn;
+  Result := true;
 
   {$IFDEF VerboseMouseBugfix}
   DebugLn('');
   DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMousePress);
-  DebugLn('[gtkMouseBtnPress] ',
+  WriteLn('[gtkMouseBtnPress] ',
     TComponent(Data).Name,':',TObject(Data).ClassName,
     ' Widget=',HexStr(Cardinal(Widget),8),
     ' ControlWidget=',HexStr(Cardinal(TWinControl(Data).Handle),8),
     ' DSO=',DesignOnlySignal,
     ' ',TruncToInt(Event^.X),',',TruncToInt(Event^.Y),
-    ' Type=',Event^.theType);
+    ' Type=',Event^.{$IFDEF GTK2}_type{$ELSE}theType{$ENDIF});
   {$ENDIF}
   //DebugLn('DDD1 MousePress Widget=',HexStr(Cardinal(Widget),8),
   //' ClientWidget=',HexStr(Cardinal(GetFixedWidget(Widget)),8),
@@ -1229,10 +1229,13 @@ begin
   end else begin
     // stop the signal, so that the widget does not auto react
     if (TControl(Data).FCompStyle<>csNotebook)
-    or (event^.Button<>1) then
+    or (event^.Button<>1) then begin
       g_signal_stop_emission_by_name(PGTKObject(Widget),'button-press-event');
+{$IFDEF GTK2}
+      result := false;
+{$ENDIF GTK2}
+    end;
   end;
-  
   DeliverMouseDownMessage(Widget,Event,TWinControl(Data));
 end;
 
@@ -1250,10 +1253,10 @@ begin
   Result := CallBackDefaultReturn;
 
   {$IFDEF VerboseMouseBugfix}
-  {DebugLn('[gtkMouseBtnPressAfter] ',
+  WriteLn('[gtkMouseBtnPressAfter] ',
     TControl(Data).Name,':',TObject(Data).ClassName,
     ' Widget=',HexStr(Cardinal(Widget),8),
-    ' ',TruncToInt(Event^.X),',',TruncToInt(Event^.Y));}
+    ' ',TruncToInt(Event^.X),',',TruncToInt(Event^.Y));
   {$ENDIF}
 
   UpdateMouseCaptureControl;
@@ -2871,6 +2874,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.242  2004/08/03 17:18:15  mazen
+  * fix right mouse button down event
+
   Revision 1.241  2004/07/30 14:26:11  mazen
   * move HandleGtkKeyUpDown to gtkProc.inc make it visible to gtk2
     this allow saving a call in a hevely called callback
