@@ -250,6 +250,7 @@ End;
  ------------------------------------------------------------------------------}
 Function TWin32Object.IntSendMessage3(LM_Message: Integer; Sender: TObject; Data: Pointer): Integer;
 Var
+  XPMFIle : TFileStream;
   Bitmap: HBITMAP; // Pixel map type image
   CBI: COMBOBOXINFO;
   DC: HDC;
@@ -271,9 +272,9 @@ Begin
     LM_SETCOLOR:
       SetColor(Sender);
     LM_SETPIXEL:
-      SetPixel(Sender, Data); 
+      SetPixel(Sender, Data);
     LM_GETPIXEL:
-      GetPixel(Sender, Data); 
+      GetPixel(Sender, Data);
     LM_SHOWHIDE:
     Begin
       Assert(False, Format('Trace:  [TWin32Object.IntSendMessage3] %s --> Show/Hide', [Sender.ClassName]));
@@ -295,6 +296,30 @@ Begin
       Result := RecreateWnd(Sender);
     LM_ATTACHMENU:
       AttachMenu(Sender);
+        //SH: think of TBitmap.handle!!!!
+    LM_LOADXPM:
+      Begin
+        If (Sender is TBitmap) Then
+        Begin
+         //Until CreateBitmap supports setting Data
+         //GTK requires the Bitmap loading to be done
+         //by the interface, aka here, so a hack...
+          XPMFile := TFileStream.Create(String(Data), fmOpenRead);
+          Try
+            (Sender as TBitmap).LoadFromStream(XPMFile);
+          Finally
+            XPMFile.Free;
+          end;
+          {Assert(False, Format('Trace:Bitmap name: %S', [StrPas(Data)]));
+          //SData := String(Data);
+          NormalizeIconName(Data);
+          //Data := PChar(SData);
+          Bitmap := LoadImage(0, LPCTSTR(Data), IMAGE_ICON, 0, 0, LR_DefaultSize Or LR_LoadFromFile);
+          Assert(False, 'Trace:1');
+          If Bitmap = HBITMAP(Nil) Then
+            Assert(False, 'Trace:BITMAP NOT LOADED!');}
+        End;
+      End;
   Else
   Begin
     Handle := ObjectToHWND(Sender);
@@ -414,23 +439,7 @@ Begin
           Assert(False, 'Trace:5');
           Assert(False, 'Trace:********************');
         End;
-        //SH: think of TBitmap.handle!!!!
-        LM_LOADXPM:
-        Begin
-          If (Sender is TBitmap) Then
-          Begin
-            Assert(False, Format('Trace:Bitmap name: %S', [StrPas(Data)]));
-            //SData := String(Data);
-            NormalizeIconName(Data);
-            //Data := PChar(SData);
-            Bitmap := LoadImage(0, LPCTSTR(Data), IMAGE_ICON, 0, 0, LR_DefaultSize Or LR_LoadFromFile);
-            Assert(False, 'Trace:1');
-            If Bitmap = HBITMAP(Nil) Then
-              Assert(False, 'Trace:BITMAP NOT LOADED!');
-            // PdeviceContext(TBitmap(sender).handle)^.CurrentBitmap :=pgdiObject(pixmap);
-          End;
-        End;
-{Displays a menu and makes it available for selection. Applications can use this function to display context-sensitive menus, 
+{Displays a menu and makes it available for selection. Applications can use this function to display context-sensitive menus,
 and will typically supply NULL for the parent_menu_shell, parent_menu_item, func and data parameters. 
 The default menu positioning function will position the menu at the current pointer position.
 menu :	a GtkMenu.	
@@ -2496,6 +2505,9 @@ End;
 
 {
   $Log$
+  Revision 1.25  2002/09/10 06:49:24  lazarus
+  MG: scrollingwincontrol from Andrew
+
   Revision 1.24  2002/08/29 17:55:04  lazarus
   Keith: Removed form sizing hack.
 
