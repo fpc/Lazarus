@@ -26,7 +26,7 @@
  *                                                                         *
  ***************************************************************************
 }
-unit DGBOutputForm;
+unit DBGOutputForm;
 
 {$mode objfpc}
 {$H+}
@@ -104,6 +104,9 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.7  2002/05/10 07:00:08  lazarus
+  MG: fixed typo
+
   Revision 1.6  2002/05/10 06:57:47  lazarus
   MG: updated licenses
 
