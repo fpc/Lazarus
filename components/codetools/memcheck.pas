@@ -691,11 +691,8 @@ var
   stack_top : cardinal;
   data_end : cardinal;
   {$endif}
-label
-  _exit;
 begin
-  if p=nil then
-    goto _exit;
+  if p=nil then exit;
 
   i:=0;
 
@@ -709,28 +706,23 @@ begin
   end;
   stack_top:=__stkbottom+__stklen;
   { allow all between start of code and end of data }
-  if cardinal(p)<=data_end then
-    goto _exit;
+  if cardinal(p)<=data_end then exit;
   { .bss section }
-  if cardinal(p)<=cardinal(heap_at_init) then
-    goto _exit;
+  if cardinal(p)<=cardinal(heap_at_init) then exit;
   { stack can be above heap !! }
 
-  if (cardinal(p)>=get_ebp) and (cardinal(p)<=stack_top) then
-    goto _exit;
+  if (cardinal(p)>=get_ebp) and (cardinal(p)<=stack_top) then exit;
 {$endif go32v2}
 
   { I don't know where the stack is in other OS !! }
 {$ifdef win32}
-  if (cardinal(p)>=$40000) and (p<=HeapOrg) then
-    goto _exit;
+  if (cardinal(p)>=$40000) and (p<=HeapOrg) then exit;
   { inside stack ? }
   asm
      movl %ebp,get_ebp
   end;
   if (cardinal(p)>get_ebp) and
-     (cardinal(p)<Win32StackTop) then
-    goto _exit;
+     (cardinal(p)<Win32StackTop) then exit;
 {$endif win32}
 
   if p>=heapptr then
@@ -752,8 +744,7 @@ begin
              ((pp^.sig=calculate_sig(pp)) and usecrc) or
           { special case of the fill_extra_info call }
              ((pp=heap_valid_last) and usecrc and (pp^.sig=$DEADBEEF)
-              and inside_trace_getmem) then
-            goto _exit
+              and inside_trace_getmem) then exit
           else
             begin
               writeln(ptext^,'corrupted heap_mem_info');
@@ -781,7 +772,7 @@ begin
         { allocated block }
        if ((pp^.sig=$DEADBEEF) and not usecrc) or
           ((pp^.sig=calculate_sig(pp)) and usecrc) then
-          goto _exit
+         exit
        else
          begin
             writeln(ptext^,'pointer $',hexstr(longint(p),8),' points into invalid memory block');
@@ -798,7 +789,6 @@ begin
    end;
   writeln(ptext^,'pointer $',hexstr(longint(p),8),' does not point to valid memory block');
   runerror(204);
-_exit:
 end;
 
 {*****************************************************************************
