@@ -1772,7 +1772,11 @@ end;
 
 function TFloatPropertyEditor.GetValue: ansistring;
 const
-  Precisions: array[TFloatType] of Integer = (7, 15, 19, 19, 19, 15, 31);
+  Precisions: array[TFloatType] of Integer = (7, 15, 19, 19, 19
+{$ifdef VER1_0}
+  , 15, 31
+{$endif VER1_0}
+  );
 begin
   Result := FloatToStrF(GetFloatValue, ffGeneral,
     Precisions[GetTypeData(GetPropType)^.FloatType], 0);
