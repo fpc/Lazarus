@@ -163,7 +163,6 @@ type
     Procedure CreateEditor(AOwner: TComponent; AParent: TWinControl);
     procedure SetVisible(Value: boolean);
   protected
-    FindText: String;
     ErrorMsgs: TStrings;
     Procedure ReParent(AParent: TWinControl);
 
@@ -531,6 +530,7 @@ type
 
     // FindInFiles
     procedure FindInFiles(AProject: TProject);
+    procedure FindInFiles(AProject: TProject; const FindText: string);
     procedure ShowSearchResultsView;
     function CreateFindInFilesDialog: TLazFindInFilesDialog;
     procedure LoadFindInFilesHistory(ADialog: TLazFindInFilesDialog);
@@ -3556,10 +3556,9 @@ end;//FIFCreateSearchForm
 Procedure TSourceNotebook.FindInFiles(AProject: TProject);
 var 
   TempEditor: TSourceEditor;
+  FindText: string;
 Begin
-  if FindInFilesDialog = nil 
-  then FindInFilesDialog := CreateFindInFilesDialog;
-  
+  FindText:='';
   TempEditor := GetActiveSE;
   if TempEditor <> nil 
   then with TempEditor, EditorComponent do 
@@ -3567,14 +3566,21 @@ Begin
     if EditorOpts.FindTextAtCursor 
     then begin
       if SelAvail and (BlockBegin.Y = BlockEnd.Y) 
-      then FindInFilesDialog.FindText := SelText
-      else FindInFilesDialog.FindText := GetWordAtRowCol(CaretXY);
+      then FindText := SelText
+      else FindText := GetWordAtRowCol(CaretXY);
     end 
-    else begin
-      FindInFilesDialog.FindText:='';
-    end;
   end;
   
+  FindInFiles(AProject, FindText);
+End;
+
+procedure TSourceNotebook.FindInFiles(AProject: TProject;
+  const FindText: string);
+begin
+  if FindInFilesDialog = nil
+  then FindInFilesDialog := CreateFindInFilesDialog;
+
+  FindInFilesDialog.FindText:= FindText;
   IDEDialogLayoutList.ApplyLayout(FindInFilesDialog,320,430);
   if FindInFilesDialog.ShowModal=mrOk then
   begin
@@ -3590,7 +3596,7 @@ Begin
     end;//if
   end;//if
   IDEDialogLayoutList.SaveLayout(FindInFilesDialog);
-End;
+end;
 
 procedure TSourceNotebook.ShowSearchResultsView;
 begin

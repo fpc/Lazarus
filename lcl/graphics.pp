@@ -897,7 +897,7 @@ type
   { TBitmapImage }
 
   { Descendent of TSharedImage for TBitmap. If a TBitmap is assigned to another
-    TBitmap, only the reference count wl be increased and both will share the
+    TBitmap, only the reference count will be increased and both will share the
     same TBitmapImage }
 
   TBitmapNativeType = (
@@ -1636,6 +1636,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.133  2004/04/10 14:20:20  mattias
+  fixed saving findtext  from vincent
+
   Revision 1.132  2004/04/10 00:11:16  mattias
   added basic TIcon reading  from Colin
 

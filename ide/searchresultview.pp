@@ -330,11 +330,10 @@ begin
     with FindInFilesDialog do
     begin
       DirectoryComboBox.Text:= SearchObj.SearchDirectory;
-      FindText:= SearchObj.SearchString;
       Options:= SearchObj.SearchOptions;
       FileMaskComboBox.Text:= SearchObj.SearchMask;
     end;//with
-    SourceNotebook.FindInFiles(Project1);
+    SourceNotebook.FindInFiles(Project1, SearchObj.SearchString);
   end;//if
 end;
 
