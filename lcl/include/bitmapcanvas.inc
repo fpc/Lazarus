@@ -41,29 +41,25 @@ procedure TBitMapCanvas.CreateHandle;
 var
   DC: HDC;
 begin
-  if FBitmap <> nil then
-  begin
-    FBitmap.HandleNeeded;
-    FreeDC;
-    FBitmap.PaletteNeeded;
-    DC := CreateCompatibleDC(0);
+  FreeDC;
+  if FBitmap = nil then exit;
+  FBitmap.HandleNeeded;
+  FBitmap.PaletteNeeded;
+  DC := CreateCompatibleDC(0);
 
-    Assert(False, Format('trace:[TBitmapCanvas.CreateHandle] Got Handle 0x%x', [FBitmap.Handle]));
+  if not FBitmap.HandleAllocated then
+    FOldBitmap := 0
+  else
+    FOldBitmap := SelectObject(DC, FBitmap.Handle);
 
-    if not FBitmap.HandleAllocated then
-      FOldBitmap := 0
-    else
-      FOldBitmap := SelectObject(DC, FBitmap.Handle);
-
-    if FBitmap.FPalette = 0 then
-      FOldPalette := 0
-    else begin
-      FOldPalette := SelectPalette(DC, FBitmap.FPalette, True);
-      RealizePalette(DC);
-    end;
-
-    Handle := DC;
+  if FBitmap.FPalette = 0 then
+    FOldPalette := 0
+  else begin
+    FOldPalette := SelectPalette(DC, FBitmap.FPalette, True);
+    RealizePalette(DC);
   end;
+
+  Handle := DC;
 end;
 
 {------------------------------------------------------------------------------
@@ -79,7 +75,6 @@ begin
   inherited Destroy;
 end;
 
-
 {------------------------------------------------------------------------------
   Method:  TControlCanvas.FreeDC
   Params:  None
@@ -91,8 +86,8 @@ procedure TBitmapCanvas.FreeDC;
 var
   OldHandle: HBITMAP;
 begin
-  if FHandle <> 0 then
-  begin
+  if not HandleAllocated then exit;
+  if FBitmap<>nil then begin
     if FOldBitmap <> 0 then begin
       SelectObject(FHandle, FOldBitmap);
       FOldBitmap:=0;
@@ -104,6 +99,8 @@ begin
     OldHandle := FHandle;
     Handle := 0;
     DeleteDC(OldHandle);
+  end else begin
+    Handle:=0;
   end;
 end;
 
@@ -112,6 +109,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.9  2004/03/02 22:37:36  mattias
+  clean up for TBitmapImage sharing
+
   Revision 1.8  2004/02/05 16:28:38  mattias
   fixed unsharing TBitmap
 

@@ -744,7 +744,7 @@ type
   private
     FAutoReDraw : Boolean;
     FState: TCanvasState;
-    FFont : TFont;
+    FFont: TFont;
     FSavedFontHandle: HFont;
     FPen: TPen;
     FSavedPenHandle: HPen;
@@ -752,9 +752,9 @@ type
     FSavedBrushHandle: HBrush;
     FRegion: TRegion;
     FSavedRegionHandle: HRGN;
-    FPenPos : TPoint;
-    FCopyMode : TCopyMode;
-    FHandle : HDC;
+    FPenPos: TPoint;
+    FCopyMode: TCopyMode;
+    FHandle: HDC;
     FOnChange: TNotifyEvent;
     FOnChanging: TNotifyEvent;
     FTextStyle: TTextStyle;
@@ -775,7 +775,6 @@ type
     Procedure SetColor(c: TColor);
     Procedure SetBrush(value : TBrush);
     Procedure SetFont(value : TFont);
-    procedure SetHandle(NewHandle: HDC);
     Procedure SetPen(value : TPen);
     Procedure SetPenPos(Value : TPoint);
     Procedure SetPixel(X,Y : Integer; Value : TColor);
@@ -789,6 +788,7 @@ type
     procedure RequiredState(ReqState: TCanvasState);
     procedure Changed; virtual;
     procedure Changing; virtual;
+    procedure SetHandle(NewHandle: HDC); virtual;
   public
     constructor Create;
     destructor Destroy; override;
@@ -1222,16 +1222,15 @@ const
 type
   TBitmapCanvas = class(TCanvas)
   private
-    FBitmap : TBitmap;
-    FOldBitmap : HBitmap;
-    FOldPalette : HPALETTE;
+    FBitmap: TBitmap;
+    FOldBitmap: HBitmap;
+    FOldPalette: HPALETTE;
     procedure FreeDC;
   protected
     procedure CreateHandle; override;
   public
     constructor Create(ABitmap : TBitmap);
     destructor Destroy; override;
-    // TODO: replace this by property BitmapHandle;
   end;
 
 
@@ -1599,6 +1598,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.125  2004/03/02 22:37:36  mattias
+  clean up for TBitmapImage sharing
+
   Revision 1.124  2004/03/01 18:02:00  mattias
   fixed IsFileExtensionSupported
 

@@ -469,6 +469,7 @@ end;
 procedure TCustomImageList.GetBitmap(Index: Integer; Image: TBitmap);
 begin
   if (FCount = 0) or (Image = nil) then Exit; 
+  //writeln('TCustomImageList.GetBitmap Index=',Index,' Image=',HexStr(Cardinal(Image),8),' Bitmap=',HexStr(Cardinal(FImageList.Items[Index]),8));
   Image.Assign(TBitMap(FImageList.Items[Index]));
 end;
 
@@ -1165,6 +1166,9 @@ end;
 {
 
   $Log$
+  Revision 1.29  2004/03/02 22:37:36  mattias
+  clean up for TBitmapImage sharing
+
   Revision 1.28  2004/03/01 23:45:33  marc
   * Patch from olivier GUILBAUD and Colin Western
   * fixed addcopy
