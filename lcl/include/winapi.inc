@@ -619,6 +619,26 @@ begin
   Result := InterfaceObject.RequestInput(InputCaption, InputPrompt, MaskInput, Value);
 end;
 
+Procedure NotifyUser(const DialogCaption, DialogMessage : String; DialogType : longint);
+begin
+  InterfaceObject.NotifyUser(DialogCaption, DialogMessage, DialogType);
+end;
+
+Procedure NotifyUserAtXY(const DialogCaption, DialogMessage : String; DialogType : longint; X, Y : Longint);
+begin
+  InterfaceObject.NotifyUserAtXY(DialogCaption, DialogMessage, DialogType, X,Y);
+end;
+
+Function PromptUser(const DialogCaption, DialogMessage : String; DialogType : longint; Buttons : Array of Longint) : Longint;
+begin
+  Result := InterfaceObject.PromptUser(DialogCaption, DialogMessage, DialogType, Buttons);
+end;
+
+Function PromptUserAtXY(const DialogCaption, DialogMessage : String; DialogType : longint; Buttons : Array of Longint; X, Y : Longint) : Longint;
+begin
+  Result := InterfaceObject.PromptUserAtXY(DialogCaption, DialogMessage, DialogType, Buttons, X, Y);
+end;
+
 function RightJustifyMenuItem(HndMenu: HMenu;
   bRightJustify: boolean): boolean;
 begin
@@ -1309,6 +1329,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.55  2002/10/12 16:36:40  lazarus
+  AJ: added new QueryUser/NotifyUser
+
   Revision 1.54  2002/10/11 16:00:39  lazarus
   AJ: made InputQuery Interface Dependant
 

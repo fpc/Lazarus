@@ -212,6 +212,12 @@ function ShowScrollBar(Handle: HWND; wBar: Integer; bShow: Boolean): Boolean; {$
 function StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Rop: Cardinal): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
+Procedure NotifyUser(const DialogCaption, DialogMessage : String; DialogType : longint);{$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+Procedure NotifyUserAtXY(const DialogCaption, DialogMessage : String; DialogType : longint; X, Y : Longint);{$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+
+Function PromptUser(const DialogCaption, DialogMessage : String; DialogType : longint; Buttons : Array of Longint) : Longint;{$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+Function PromptUserAtXY(const DialogCaption, DialogMessage : String; DialogType : longint; Buttons : Array of Longint; X, Y : Longint) : Longint;{$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+
 Function RequestInput(const InputCaption, InputPrompt : String; MaskInput : Boolean; var Value : String) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 Function TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -313,6 +319,9 @@ Function RGB(R, G, B : Byte) : TColorRef;
 { =============================================================================
 
   $Log$
+  Revision 1.49  2002/10/12 16:36:40  lazarus
+  AJ: added new QueryUser/NotifyUser
+
   Revision 1.48  2002/10/11 16:00:39  lazarus
   AJ: made InputQuery Interface Dependant
 
