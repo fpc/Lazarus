@@ -2218,13 +2218,7 @@ Begin
         With LPLogFont(@Sender)^ Do
           Window := CreateFont(LFHeight, LFWidth, LFEscapement, LFOrientation, LFWeight, LFItalic, LFUnderLine, LFStrikeOut, LFCharSet, LFOutPrecision, LFClipPrecision, LFQuality, LFPitchAndFamily, LFFaceName);
       End;
-      csMainMenu, csMenuBar:
-      Begin
-        Window := CreateMenu;
-        FMenu := Window;
-        Assert(False, Format('Trace:Main menu owner --> %S', [(TComponent(Sender).Owner As TWinControl).ClassName]));
-      End;
-      csMenuItem:
+      csMainMenu, csMenuBar, csMenuItem:
       Begin
         Window := CreateMenu;
       End;
@@ -2243,7 +2237,6 @@ Begin
       csPopupMenu:
       Begin
         Window := CreatePopupMenu;
-        FSubMenu := Window;
       End;
     end;
   End; {Case}
@@ -2870,6 +2863,9 @@ End;
 
 {
   $Log$
+  Revision 1.134  2003/11/25 14:21:28  micha
+  new api lclenable,checkmenuitem according to list
+
   Revision 1.133  2003/11/22 23:56:33  mattias
   fixed win32 intf menu height from Wojciech
 

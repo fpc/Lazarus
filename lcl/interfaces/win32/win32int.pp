@@ -57,8 +57,6 @@ Type
     FAccelGroup: HACCEL;
     FAppHandle: HWND;    // The parent of all windows, represents the button of the taskbar
                          // Assoc. windowproc also acts as handler for popup menus
-    FMenu: HMENU;        // Main menu/menu bar
-    FSubMenu: HMENU;     // current sub menu
     FWin32MenuHeight: Integer;
     FNextControlId: Cardinal;
 
@@ -187,6 +185,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.53  2003/11/25 14:21:28  micha
+  new api lclenable,checkmenuitem according to list
+
   Revision 1.52  2003/11/21 20:32:01  micha
   cleanups; wm_hscroll/wm_vscroll fix
 

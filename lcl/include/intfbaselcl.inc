@@ -4,7 +4,7 @@
 
                            interface communication  stuff
 
-  !! In this file only interface related code as defined in lclintfh.inc 
+  !! In this file only interface related code as defined in lclintfh.inc
      Most routines implement only the default
 
   !! Keep this alphabetical !!
@@ -31,11 +31,6 @@ end;
 
 procedure TInterfaceBase.CallDefaultWndHandler(Sender: TObject; var Message);
 begin
-end;
-
-function TInterfaceBase.CheckMenuItem(hndMenu: HMENU; uIDEnableItem: Integer; bChecked: Boolean): Boolean;
-begin
-  Result := False;
 end;
 
 // the clipboard functions are internally used by TClipboard
@@ -110,11 +105,6 @@ begin
   Clip:=CreateEmptyRegion;
   Result:=GetClipRGN(DC,Clip)>=0;
   DeleteObject(Clip);
-end;
-
-function TInterfaceBase.EnableMenuItem(hndMenu: HMENU; uIDEnableItem: Integer; bEnable: Boolean): Boolean;
-begin
-  Result := False;
 end;
 
 function TInterfaceBase.Frame(DC: HDC; const ARect: TRect) : integer;
@@ -230,7 +220,7 @@ function TInterfaceBase.GetWindowSize(Handle : hwnd;
 // Returns the current Width and Height
 begin
   Result:=false;
-end;                               
+end;
 
 Function TInterfaceBase.InvalidateFrame(aHandle : HWND; ARect : pRect;
   bErase : Boolean; BorderWidth: integer) : Boolean;
@@ -268,6 +258,15 @@ begin
   Result:=true;
 end;
 
+function TInterfaceBase.LclCheckMenuItem(AMenuItem: TMenuItem; bChecked: Boolean): Boolean;
+begin
+  Result := False;
+end;
+
+function TInterfaceBase.LclEnableMenuItem(AMenuItem: TMenuItem; bEnable: Boolean): Boolean;
+begin
+  Result := False;
+end;
 
 Function TInterfaceBase.LoadStockPixmap(StockID: longint) : HBitmap;
 begin
@@ -469,6 +468,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.2  2003/11/25 14:21:28  micha
+  new api lclenable,checkmenuitem according to list
+
   Revision 1.1  2003/11/24 11:03:07  marc
   * Splitted winapi*.inc into a winapi and a lcl interface communication part
 

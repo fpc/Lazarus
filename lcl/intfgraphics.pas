@@ -31,7 +31,7 @@ unit IntfGraphics;
 interface
 
 uses
-  Classes, SysUtils, fpImage, AvgLvlTree, LCLIntf, LCLType, LCLProc, GraphType;
+  Classes, SysUtils, fpImage, AvgLvlTree, LCLType, LCLProc, GraphType;
 
 type
   { TLazIntfImage }
@@ -274,6 +274,9 @@ procedure WriteRawImageBits(TheData: PByte; const Position: TRawImagePosition;
                        BitsPerPixel, Prec, Shift: cardinal; Bits: word);
 
 implementation
+
+uses
+  LCLIntf;
 
 var
   IsSpaceChar, IsNumberChar, IsHexNumberChar: array[char] of Boolean;

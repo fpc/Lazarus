@@ -42,7 +42,7 @@ interface
 
 uses
   Classes, SysUtils, LCLType, LCLProc, VCLGlobals, GraphType, InterfaceBase,
-  LResources;
+  LResources, Menus;
 
 {$ifdef Trace}
   {$ASSERTIONS ON}
@@ -146,11 +146,14 @@ end;
 initialization
   {$I lclicons.lrs}
   InternalInit;
-  
+
 end.
 
 {
   $Log$
+  Revision 1.4  2003/11/25 14:21:28  micha
+  new api lclenable,checkmenuitem according to list
+
   Revision 1.3  2003/11/24 11:03:07  marc
   * Splitted winapi*.inc into a winapi and a lcl interface communication part
 

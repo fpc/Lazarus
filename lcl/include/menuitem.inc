@@ -20,7 +20,7 @@
 
 {------------------------------------------------------------------------------
   Method:  TMenuItem.Add
-  Params:  Item: 
+  Params:  Item:
   Returns: Nothing
 
   Description of the procedure for the class.
@@ -81,7 +81,7 @@ constructor TMenuItem.Create(TheOwner: TComponent);
 begin
   //writeln('TMenuItem.Create START TheOwner=',TheOwner.Name,':',TheOwner.ClassName);
   if not assigned (TheOwner) then writeln ('**SH: Warn: creating MenuItem with Owner = nil');
-  
+
   Inherited Create(TheOwner);
 
   FCompStyle := csMenuItem;
@@ -124,14 +124,14 @@ begin
   begin
     if HandleAllocated then begin
       if ShortCut <> 0 then ShortCutChanged(0, Shortcut);
-    end;  
+    end;
   end;
   //writeln('TMenuItem.CreateHandle END ',Name,':',ClassName);
 end;
 
 {------------------------------------------------------------------------------
   Method:  TMenuItem.Delete
-  Params:  Index: 
+  Params:  Index:
   Returns: Nothing
 
   Description of the procedure for the class.
@@ -221,7 +221,7 @@ end;
 {------------------------------------------------------------------------------
   Method:  TMenuItem.DoClicked
  ------------------------------------------------------------------------------}
-procedure TMenuItem.DoClicked(var msg); 
+procedure TMenuItem.DoClicked(var msg);
 begin
   if not (csDesigning in ComponentState) then
     Click
@@ -464,7 +464,7 @@ end;
 
 {------------------------------------------------------------------------------
   Method:  TMenuItem.HasParent
-  Params:  
+  Params:
   Returns: True - the item has a parent responsible for streaming
 
  ------------------------------------------------------------------------------}
@@ -486,7 +486,7 @@ begin
   if (Item = nil) then exit;
   if Item.Parent <> nil then
     RaiseGDBException('Menu inserted twice');
-  
+
   // create Items if needed
   if FItems = nil then FItems := TList.Create;
 
@@ -496,17 +496,17 @@ begin
    *  suppose a menu with items grouped like : G=2, G=2, ---, G=1, G=1
    *  where --- is separator with G=0
    *  Inserting G=1 after --- is OK according to the next check
-      
+
   if (Index>0) and (Index < FItems.Count) then
     if Item.GroupIndex < TMenuItem(FItems[Index - 1]).GroupIndex then
       Item.GroupIndex := TMenuItem(FItems[Index - 1]).GroupIndex;
   VerifyGroupIndex(Index, Item.GroupIndex);
   *)
-  
+
   Item.FParent := Self;
   Item.FOnChange := @SubItemChanged;
   FItems.Insert(Index, Item);
-  
+
   if HandleAllocated then begin
     Item.HandleNeeded;
   end;
@@ -522,7 +522,7 @@ end;
  ------------------------------------------------------------------------------}
 function TMenuItem.IndexOf(Item: TMenuItem): Integer;
 begin
-  if FItems = nil 
+  if FItems = nil
   then Result := -1
   else Result := FItems.IndexOf(Item);
 end;
@@ -632,7 +632,7 @@ begin
     if (FParent <> nil)
     and not (csReading in ComponentState)
     and HandleAllocated
-    then CheckMenuItem(Handle, FCommand, FChecked);
+    then LclCheckMenuItem(Self, FChecked);
   end;
 end;
 
@@ -661,7 +661,7 @@ begin
   if FEnabled <> AValue then begin
     FEnabled := AValue;
     if HandleAllocated and (Parent <> nil)
-    then EnableMenuItem(Handle, FCommand, FEnabled);
+    then LclEnableMenuItem(Self, FEnabled);
     MenuChanged(False);
   end;
 end;
@@ -929,7 +929,7 @@ end;
   Unchecks all siblings.
   In contrary to Delphi this will not use SetChecked, because this is up to the
   interface. This procedure just sets the private variables.
-  
+
   //todo
   MWE: ??? shouln'd we get checked from the interface in that case ???
  ------------------------------------------------------------------------------}
@@ -984,6 +984,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.42  2003/11/25 14:21:28  micha
+  new api lclenable,checkmenuitem according to list
+
   Revision 1.41  2003/11/24 11:03:07  marc
   * Splitted winapi*.inc into a winapi and a lcl interface communication part
 
@@ -1135,6 +1138,9 @@ end;
 
 
   $Log$
+  Revision 1.42  2003/11/25 14:21:28  micha
+  new api lclenable,checkmenuitem according to list
+
   Revision 1.41  2003/11/24 11:03:07  marc
   * Splitted winapi*.inc into a winapi and a lcl interface communication part
 

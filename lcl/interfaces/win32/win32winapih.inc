@@ -31,7 +31,6 @@ Function BringWindowToTop(HWnd: HWND): Boolean; Override;
 procedure CallDefaultWndHandler(Sender: TObject; var Message); Override;
 Function CallNextHookEx(HHk: HHOOK; NCode: Integer; WParam, LParam: LongInt): Integer; Override;
 Function CallWindowProc(LPPrevWndFunc: TFarProc; Handle: HWND; Msg: UINT; WParam, LParam: LongInt): Integer; Override;
-Function CheckMenuItem(HndMenu: HMENU; uIDEnableItem: Integer; bChecked: Boolean): Boolean; Override;
 Function ClientToScreen(Handle: HWND; Var P: TPoint): Boolean; Override;
 
 // clipboard
@@ -69,7 +68,6 @@ function DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: C
 
 Function Ellipse(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean; Override;
 Function EmptyClipBoard: Boolean;
-Function EnableMenuItem(HndMenu: HMENU; UIDEnableItem: Integer; BEnable: Boolean): Boolean; Override;
 Function EnableScrollBar(Wnd: HWND; WSBFlags, WArrows: Cardinal): Boolean; Override;
 Function EnableWindow(HWnd: HWND; BEnable: Boolean): Boolean; Override;
 Function EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer; Override;
@@ -125,6 +123,10 @@ Function HideCaret(HWnd: HWND): Boolean; Override;
 function IntersectClipRect(dc: hdc; Left, Top, Right, Bottom: Integer): Integer; override;
 Function InvalidateRect(AHandle: HWND; Rect: PRect; BErase: Boolean): Boolean; Override;
 function IsWindowVisible(handle: HWND): boolean; override;
+
+Function LclCheckMenuItem(AMenuItem: TMenuItem; bChecked: Boolean): Boolean; Override;
+Function LclEnableMenuItem(AMenuItem: TMenuItem; BEnable: Boolean): Boolean; Override;
+
 Function LineTo(DC: HDC; X, Y: Integer): Boolean; Override;
 
 Function MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean; Override;
@@ -191,6 +193,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.41  2003/11/25 14:21:28  micha
+  new api lclenable,checkmenuitem according to list
+
   Revision 1.40  2003/11/18 07:20:40  micha
   added "included by" notice at top of file
 

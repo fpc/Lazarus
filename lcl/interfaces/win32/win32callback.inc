@@ -98,7 +98,6 @@ Var
   WinProcess: Boolean;
   NotifyUserInput: Boolean;
   PrevWndProc: Pointer;
-  NewPos: Integer; //Used by TScrollingWindow
 
   LMInsertText: TLMInsertText; // used by CB_INSERTSTRING, LB_INSERTSTRING
   LMScroll: TLMScroll; // used by WM_HSCROLL
@@ -843,6 +842,9 @@ end;
 
 {
   $Log$
+  Revision 1.71  2003/11/25 14:21:28  micha
+  new api lclenable,checkmenuitem according to list
+
   Revision 1.70  2003/11/21 20:32:01  micha
   cleanups; wm_hscroll/wm_vscroll fix
 

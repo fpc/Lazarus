@@ -28,8 +28,8 @@
  ******************************************************************************)
 
 {******************************************************************************
-  Platform specific stuff 
-                                                                             
+  Platform specific stuff
+
   Note:
     the IFNDEF IF_BASE_MEMBER section is at the end
  ******************************************************************************}
@@ -38,7 +38,6 @@
 procedure AttachMenuToWindow(AMenuObject: TComponent); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 procedure CallDefaultWndHandler(Sender: TObject; var Message); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function CheckMenuItem(hndMenu: HMENU; uIDEnableItem: Integer; bChecked: Boolean): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function ClipboardFormatToMimeType(FormatID: TClipboardFormat): string; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function ClipboardGetData(ClipboardType: TClipboardType;
   FormatID: TClipboardFormat; Stream: TStream): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -56,8 +55,6 @@ function CreatePixmapIndirect(const Data: Pointer; const TransColor: Longint): H
 function CreateRegionCopy(SrcRGN: hRGN): hRGN; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 function DCClipRegionValid(DC: HDC): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-
-function EnableMenuItem(hndMenu: HMENU; uIDEnableItem: Integer; bEnable: Boolean): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 function GetBitmapRawImageDescription(Bitmap: HBITMAP; Desc: PRawImageDescription): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetCaretRespondToFocus(handle: HWND; var ShowHideOnFocus: boolean): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -81,6 +78,10 @@ function Frame3d(DC: HDC; var ARect: TRect; const FrameWidth : integer;
 function InvalidateFrame(aHandle : HWND; ARect : pRect; bErase : Boolean; BorderWidth: integer) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 function LoadStockPixmap(StockID: longint) : HBitmap; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+
+function LclCheckMenuItem(AMenuItem: TMenuItem; bChecked: Boolean): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function LclEnableMenuItem(AMenuItem: TMenuItem; bEnable: Boolean): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+
 function MoveWindowOrgEx(dc : hdc; dX,dY : Integer): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 function PairSplitterAddSide(SplitterHandle, SideHandle: hWnd; Side: integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -140,6 +141,9 @@ procedure RaiseLastOSError;
 { =============================================================================
 
   $Log$
+  Revision 1.2  2003/11/25 14:21:28  micha
+  new api lclenable,checkmenuitem according to list
+
   Revision 1.1  2003/11/24 11:03:07  marc
   * Splitted winapi*.inc into a winapi and a lcl interface communication part
 

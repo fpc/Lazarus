@@ -26,13 +26,13 @@
 
 {******************************************************************************
   These functions redirect to the platform specific interface object.
-                                                                             
+
   Note:
     the section for not referring InterfaceObject is at the end
  ******************************************************************************}
 //##apiwiz##sps##   // Do not remove
 
-procedure AttachMenuToWindow(AMenuObject: TComponent); 
+procedure AttachMenuToWindow(AMenuObject: TComponent);
 begin
   InterfaceObject.AttachMenuToWindow(AMenuObject);
 end;
@@ -40,11 +40,6 @@ end;
 procedure CallDefaultWndHandler(Sender: TObject; var Message);
 begin
   InterfaceObject.CallDefaultWndHandler(Sender,Message);
-end;
-
-function CheckMenuItem(hndMenu: HMENU; uIDEnableItem: Integer; bChecked: Boolean): Boolean;
-begin
-  Result := InterfaceObject.CheckMenuItem(hndMenu,uIDEnableItem,bChecked);
 end;
 
 // the clipboard functions are internally used by TClipboard
@@ -90,7 +85,7 @@ begin
   Result := InterfaceObject.CreateBitmapFromRawImage(RawImage,Bitmap,MaskBitmap);
 end;
 
-function CreateEmptyRegion: hRGN; 
+function CreateEmptyRegion: hRGN;
 begin
   Result := InterfaceObject.CreateEmptyRegion;
 end;
@@ -105,14 +100,9 @@ begin
   Result := InterfaceObject.CreateRegionCopy(SrcRGN);
 end;
 
-function DCClipRegionValid(DC: HDC): boolean; 
+function DCClipRegionValid(DC: HDC): boolean;
 begin
   Result := InterfaceObject.DCClipRegionValid(DC);
-end;
-
-function EnableMenuItem(hndMenu: HMENU; uIDEnableItem: Integer; bEnable: Boolean): Boolean;
-begin
-  Result := InterfaceObject.EnableMenuItem(hndMenu, uIDEnableItem, bEnable);
 end;
 
 function Frame(DC: HDC; const ARect: TRect): Integer;
@@ -232,6 +222,16 @@ end;
 function InvalidateFrame(aHandle : HWND; ARect : pRect; bErase : Boolean; BorderWidth: integer) : Boolean;
 begin
   Result := InterfaceObject.InvalidateFrame(aHandle,ARect,bErase,BorderWidth);
+end;
+
+function LclCheckMenuItem(AMenuItem: TMenuItem; bChecked: Boolean): Boolean;
+begin
+  Result := InterfaceObject.LclCheckMenuItem(AMenuItem, bChecked);
+end;
+
+function LclEnableMenuItem(AMenuItem: TMenuItem; bEnable: Boolean): Boolean;
+begin
+  Result := InterfaceObject.LclEnableMenuItem(AMenuItem, bEnable);
 end;
 
 function LoadStockPixmap(StockID: longint) : HBitmap;
@@ -448,6 +448,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.2  2003/11/25 14:21:28  micha
+  new api lclenable,checkmenuitem according to list
+
   Revision 1.1  2003/11/24 11:03:07  marc
   * Splitted winapi*.inc into a winapi and a lcl interface communication part
 

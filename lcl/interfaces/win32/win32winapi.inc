@@ -215,24 +215,6 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
-  Function: CheckMenuItem
-  Params:  hndMenu: HMENU         - menu handle
-           uIDEnableItem: Integer - menu item to check/uncheck
-           bChecked: Boolean      - new state of the menu item
-  Returns: The previous state of the menu item.
-
-  Checks or unchecks the specified menu item.
- ------------------------------------------------------------------------------}
-Function TWin32Object.CheckMenuItem(HndMenu: HMENU; uIDEnableItem: Integer; BChecked: Boolean): Boolean;
-var CheckFlag: integer;
-Begin
-  if BChecked then CheckFlag := MF_CHECKED
-  else CheckFlag := MF_UNCHECKED;
-  CheckFlag := CheckFlag or MF_BYCOMMAND;
-  Result := Windows.CheckMenuItem(FMenu, UIDEnableItem, CheckFlag)=MF_ENABLED;
-End;
-
-{------------------------------------------------------------------------------
   Method:  ClientToScreen
   Params:  Handle - Handle of window
            P      - container that contains coordinates
@@ -885,24 +867,6 @@ Function TWin32Object.EmptyClipBoard: Boolean;
 Begin
   // Your code here
   Result := Windows.EmptyClipboard;
-End;
-
-{------------------------------------------------------------------------------
-  Method:  EnableMenuItem
-  Params: HndMenu       - handle to menu
-          UIDEnableItem - menu item to enable/disable
-          BEnable       - new state of the menu item
-  Returns: The previous state of the menu item.
-
-  Enables, disables, or grays the specified menu item.
- ------------------------------------------------------------------------------}
-Function TWin32Object.EnableMenuItem(HndMenu: HMENU; UIDEnableItem: Integer; BEnable: Boolean): Boolean;
-var EnableFlag: integer;
-Begin
-  if BEnable then EnableFlag := MF_ENABLED
-  else EnableFlag := MF_GRAYED;
-  EnableFlag := EnableFlag or MF_BYCOMMAND;
-  Result := Windows.EnableMenuItem(FMenu, UIDEnableItem, EnableFlag);
 End;
 
 {------------------------------------------------------------------------------
@@ -1905,6 +1869,44 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: CheckMenuItem
+  Params:  hndMenu: HMENU         - menu handle
+           uIDEnableItem: Integer - menu item to check/uncheck
+           bChecked: Boolean      - new state of the menu item
+  Returns: The previous state of the menu item.
+
+  Checks or unchecks the specified menu item.
+ ------------------------------------------------------------------------------}
+Function TWin32Object.LclCheckMenuItem(AMenuItem: TMenuItem; bChecked: Boolean): Boolean;
+var
+  CheckFlag: Integer;
+Begin
+  if BChecked then CheckFlag := MF_CHECKED
+  else CheckFlag := MF_UNCHECKED;
+  CheckFlag := CheckFlag or MF_BYCOMMAND;
+  Result := Windows.CheckMenuItem(AMenuItem.Parent.Handle, AMenuItem.Command, CheckFlag) <> $FFFFFFFF;
+End;
+
+{------------------------------------------------------------------------------
+  Method:  EnableMenuItem
+  Params: HndMenu       - handle to menu
+          UIDEnableItem - menu item to enable/disable
+          BEnable       - new state of the menu item
+  Returns: The previous state of the menu item.
+
+  Enables, disables, or grays the specified menu item.
+ ------------------------------------------------------------------------------}
+Function TWin32Object.LclEnableMenuItem(AMenuItem: TMenuItem; BEnable: Boolean): Boolean;
+Var
+  EnableFlag: Integer;
+Begin
+  if BEnable then EnableFlag := MF_ENABLED
+  else EnableFlag := MF_GRAYED;
+  EnableFlag := EnableFlag or MF_BYCOMMAND;
+  Result := Windows.EnableMenuItem(AMenuItem.Parent.Handle, AMenuItem.Command, EnableFlag);
+End;
+
+{------------------------------------------------------------------------------
   Method:  LineTo
   Params:  DC - device context handle
            X  - x-coordinate of line's ending point
@@ -2790,6 +2792,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.75  2003/11/25 14:21:28  micha
+  new api lclenable,checkmenuitem according to list
+
   Revision 1.74  2003/11/18 07:20:40  micha
   added "included by" notice at top of file
 

@@ -34,7 +34,7 @@ interface
 
 uses
   Classes, SysUtils, LCLStrConsts, LCLType, LCLProc, VCLGlobals, LMessages,
-  GraphType, GraphMath;
+  GraphType, GraphMath, Menus;
 
 type
 
@@ -108,6 +108,9 @@ end.
 
 {
   $Log$
+  Revision 1.36  2003/11/25 14:21:28  micha
+  new api lclenable,checkmenuitem according to list
+
   Revision 1.35  2003/11/24 11:03:07  marc
   * Splitted winapi*.inc into a winapi and a lcl interface communication part
 
