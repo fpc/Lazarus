@@ -806,7 +806,7 @@ begin
         if (Sender is TListView) then
         begin
           Num := Integer(data^);
-          Widget := PgtkWidget(Handle);//GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
+          Widget := GetCoreChildWidget(PgtkWidget(Handle));//GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
           gtk_clist_remove(PgtkCList(Widget),Num);
         end;
       end;
@@ -815,7 +815,7 @@ begin
       begin
         if (Sender is TListView) then
         begin
-          Widget := PgtkWidget(Handle);//GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
+          Widget := GetCoreChildWidget(PgtkWidget(Handle));//GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
 
           Num := Integer(data^);
 
@@ -823,14 +823,18 @@ begin
           pStr := StrAlloc(length(AddItemListItem.Caption) + 1);
           StrPCopy(pStr, AddItemListItem.Caption);
           gtk_clist_set_text(PgtkCList(Widget),num,0,pStr);
-          if (TListview(sender).SmallImages <> nil) and (TListItem(TListview(sender).Items[Num]).ImageIndex > -1) 
+          if (TListview(sender).SmallImages <> nil)
+          and (TListItem(TListview(sender).Items[Num]).ImageIndex > -1) 
           then begin
-            if (TListItem(TListview(sender).Items[Num]).ImageIndex < TListview(sender).SmallImages.Count) 
+            if (TListItem(TListview(sender).Items[Num]).ImageIndex
+              < TListview(sender).SmallImages.Count)
             then begin
               //draw image
               BitImage := TBitmap.Create;
-              TListview(sender).SmallImages.GetBitmap(TListItem(TListview(sender).Items[Num]).ImageIndex,BitImage);
-              gtk_clist_set_pixtext(Pgtkclist(Widget),Num,0,pStr,3,pgdkPixmap(PgdiObject(BitImage.handle)^.GDIBitmapObject),nil);
+              TListview(sender).SmallImages.GetBitmap(
+                TListItem(TListview(sender).Items[Num]).ImageIndex,BitImage);
+              gtk_clist_set_pixtext(Pgtkclist(Widget),Num,0,pStr,3,
+                pgdkPixmap(PgdiObject(BitImage.handle)^.GDIBitmapObject),nil);
             end;
           end;
           StrDispose(pStr);
@@ -849,11 +853,14 @@ begin
       begin
         if (Sender is TListView) then
         begin
-          Widget := PgtkWidget(Handle);//GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
+          Widget := GetCoreChildWidget(PgtkWidget(Handle));//GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
 
           //get last item and add it..
           pStr := StrAlloc(length('Test') + 1);
           StrPCopy(pStr, 'Test');
+          
+          // ToDo: make this dynamic
+          
           Titles[0] := pStr;
           for Count := 1 to 255 do
             Titles[Count] := nil;
@@ -1421,8 +1428,10 @@ begin
       LM_GETSELCOUNT :
       begin
          case (Sender as TControl).fCompStyle of
-            csListBox : Result:= g_list_length(PGtkList(GetCoreChildWidget(PGtkWidget(Handle)))^.selection);
-            csCListBox: Result:= g_list_length(PGtkCList(GetCoreChildWidget(PGtkWidget(Handle)))^.selection);
+            csListBox : Result:= g_list_length(PGtkList(GetCoreChildWidget(
+                                               PGtkWidget(Handle)))^.selection);
+            csCListBox: Result:= g_list_length(PGtkCList(GetCoreChildWidget(
+                                               PGtkWidget(Handle)))^.selection);
          end;
       end;
   
@@ -1460,8 +1469,10 @@ begin
          begin
             case TControl(Sender).fCompStyle of
                csComboBox, 
-               csListBox   : TGtkListStringList(TLMSort(Data^).List).Sorted:= TLMSort(Data^).IsSorted;
-               csCListBox  : TGtkCListStringList(TLMSort(Data^).List).Sorted := TLMSort(Data^).IsSorted;
+               csListBox   : TGtkListStringList(TLMSort(Data^).List).Sorted:=
+                                  TLMSort(Data^).IsSorted;
+               csCListBox  : TGtkCListStringList(TLMSort(Data^).List).Sorted :=
+                                  TLMSort(Data^).IsSorted;
             end
          end
       end;
@@ -1516,21 +1527,23 @@ begin
         begin
           if (TControl(Sender).fCompStyle = csListBox) then
             begin
-               { In TempWidget, a viewport is stored }
-               Widget:= PGtkWidget(PGtkBin(Handle)^.child);
-               if TListBox(Sender).BorderStyle = TBorderStyle(bsSingle) 
-                  then gtk_viewport_set_shadow_type(PGtkViewPort(Widget), GTK_SHADOW_IN)
-                  else gtk_viewport_set_shadow_type(PGtkViewPort(Widget), GTK_SHADOW_NONE);
+              { In TempWidget, a viewport is stored }
+              Widget:= PGtkWidget(PGtkBin(Handle)^.child);
+              if TListBox(Sender).BorderStyle = TBorderStyle(bsSingle)
+              then
+                gtk_viewport_set_shadow_type(PGtkViewPort(Widget), GTK_SHADOW_IN)
+              else
+                gtk_viewport_set_shadow_type(PGtkViewPort(Widget), GTK_SHADOW_NONE);
             end
             else if TControl(Sender).fCompStyle = csCListBox then
             begin
-               if TListBox(Sender).BorderStyle = TBorderStyle(bsSingle)
-                  then gtk_clist_set_shadow_type(
-                         PGtkCList(GetCoreChildWidget(PGtkWidget(Handle))),
-                         GTK_SHADOW_IN)
-                  else gtk_clist_set_shadow_type(
-                         PGtkCList(GetCoreChildWidget(PGtkWidget(Handle))),
-                         GTK_SHADOW_NONE);
+              if TListBox(Sender).BorderStyle = TBorderStyle(bsSingle)
+              then
+                gtk_viewport_set_shadow_type(
+                  PGtkViewPort(PGtkBin(Handle)^.Child), GTK_SHADOW_NONE)
+              else
+                gtk_viewport_set_shadow_type(
+                  PGtkViewPort(PGtkBin(Handle)^.Child), GTK_SHADOW_IN);
             end;
          end;
       end;
@@ -1860,7 +1873,8 @@ begin
       csColorDialog,
       csFontDialog  : gtk_window_set_title(pGtkWindow(p),PLabel);
 
-      csLabel       : gtk_label_set_text(pGtkLabel(p), pLabel);
+      csLabel       : //gtk_label_set_text(pGtkLabel(p), pLabel);
+                      gtk_label_parse_uline(pGtkLabel(p),pLabel);
 
       csCheckBox    : gtk_label_set_text(pGtkLabel( pgtkCheckButton(p)^.Toggle_Button.Button.Child),pLabel);
 
@@ -1949,37 +1963,37 @@ procedure TGTKObject.SetCallback(Msg : LongInt; Sender : TObject);
       RealizeHandler := nil;
 
       while (Handler <> nil) do
-      with Handler^ do
-      begin
-        //look for realize handler
-        if  (Id > 0) and
-            (Signal_ID = RealizeID) and
-            (Func = TGTKSignalFunc(@GTKRealizeCB))
-           then RealizeHandler := Handler;
+        with Handler^ do
+        begin
+          //look for realize handler
+          if  (Id > 0) and
+              (Signal_ID = RealizeID) and
+              (Func = TGTKSignalFunc(@GTKRealizeCB))
+             then RealizeHandler := Handler;
 
-        if  (Id > 0) and
-            (Signal_ID = SignalID) and
-            (Func = TGTKSignalFunc(ACallBackProc)) and
-            (func_data = Pointer(Sender))
-        then begin
-          Assert(False, Format('Trace:WARNING: [TGTKObject.SetCallback] %s signal <%s> set twice', [Sender.ClassName, ASignal]));
-          Exit;
+          if  (Id > 0) and
+              (Signal_ID = SignalID) and
+              (Func = TGTKSignalFunc(ACallBackProc)) and
+              (func_data = Pointer(Sender))
+          then begin
+            Assert(False, Format('Trace:WARNING: [TGTKObject.SetCallback] %s signal <%s> set twice', [Sender.ClassName, ASignal]));
+            Exit;
+          end;
+          Handler := Next;
         end;
-        Handler := Next;
-      end;
       // if we are here no handler was defined yet
       Assert(False, Format('trace:  [TGTKObject.SetCallback] %s signal <%s>', [Sender.ClassName, ASignal]));
       gtk_signal_connect(AObject, ASignal, TGTKSignalFunc(ACallBackProc), Sender);
       
       if ReqSignalMask <> 0 then
       begin
-        if RealizeHandler = nil 
-           then
-             gtk_signal_connect(AObject, 'realize', 
-               TGTKSignalFunc(@GTKRealizeCB), Pointer(ReqSignalMask))
-           else
-             TGdkEventMask(RealizeHandler^.func_data) := 
-               TGdkEventMask(RealizeHandler^.func_data) or ReqSignalMask;
+        if RealizeHandler = nil then begin
+          gtk_signal_connect(AObject, 'realize',
+            TGTKSignalFunc(@GTKRealizeCB), Pointer(ReqSignalMask));
+        end else begin
+          TGdkEventMask(RealizeHandler^.func_data) :=
+            TGdkEventMask(RealizeHandler^.func_data) or ReqSignalMask;
+        end;
       end;
     end;
   end;
@@ -1992,12 +2006,13 @@ procedure TGTKObject.SetCallback(Msg : LongInt; Sender : TObject);
   
 
 var
-  gObject, gFixed: PGTKObject;
+  gObject, gFixed, gCore: PGTKObject;
 begin
   gObject := ObjectToGTKObject(Sender);
   if gObject = nil then Exit;
   
   gFixed := PGTKObject(GetFixedWidget(gObject));
+  gCore := GetCoreChildWidget(gObject);
 
   if gFixed = nil then gFixed := gObject;
 
@@ -2096,22 +2111,31 @@ begin
     LM_SYSCHAR,
     LM_SYSKEYUP:
     begin
-      if (sender is TComboBox) then Begin
-        ConnectSignal(PgtkObject(PgtkCombo(TComboBox(sender).handle)^.entry), 'key-press-event', @GTKKeyUpDown, GDK_KEY_PRESS_MASK);
-        ConnectSignal(PgtkObject(PgtkCombo(TComboBox(sender).handle)^.entry), 'key-release-event', @GTKKeyUpDown, GDK_KEY_RELEASE_MASK);
+      if (Sender is TComboBox) then Begin
+        ConnectSignal(PgtkObject(PgtkCombo(TComboBox(sender).handle)^.entry),
+          'key-press-event', @GTKKeyUpDown, GDK_KEY_PRESS_MASK);
+        ConnectSignal(PgtkObject(PgtkCombo(TComboBox(sender).handle)^.entry),
+          'key-release-event', @GTKKeyUpDown, GDK_KEY_RELEASE_MASK);
       end
       else
-      if (sender is TCustomForm) then Begin
-        ConnectSignal(PgtkObject(TCustomForm(sender).handle), 'key-press-event', @GTKKeyUpDown, GDK_KEY_PRESS_MASK);
-        ConnectSignal(PgtkObject(TCustomForm(sender).handle), 'key-release-event', @GTKKeyUpDown, GDK_KEY_RELEASE_MASK);
+      if (Sender is TCustomForm) then Begin
+        ConnectSignal(PgtkObject(TCustomForm(sender).handle),
+          'key-press-event', @GTKKeyUpDown, GDK_KEY_PRESS_MASK);
+        ConnectSignal(PgtkObject(TCustomForm(sender).handle),
+          'key-release-event', @GTKKeyUpDown, GDK_KEY_RELEASE_MASK);
       end
       else
-      if (sender is TCustomListBox) then
-        Begin
-        //TODO:listbox is STILL not sendig keypress events even wtih these lines.
-        ConnectSignal(PgtkObject(GetCoreChildWidget(PgtkWidget(TCustomListBox(sender).handle))), 'key-press-event', @GTKKeyUpDown, GDK_KEY_PRESS_MASK);
-        ConnectSignal(PgtkObject(GetCoreChildWidget(PgtkWidget(TCustomListBox(sender).handle))), 'key-release-event', @GTKKeyUpDown, GDK_KEY_RELEASE_MASK);
-        end;
+      if (Sender is TCustomListBox) then Begin
+      
+        //TODO:listbox is STILL not sendig keypress events even with these lines.
+        
+        ConnectSignal(PgtkObject(GetCoreChildWidget(PgtkWidget(
+           TCustomListBox(Sender).Handle))), 'key-press-event', @GTKKeyUpDown,
+           GDK_KEY_PRESS_MASK);
+        ConnectSignal(PgtkObject(GetCoreChildWidget(PgtkWidget(
+           TCustomListBox(Sender).Handle))), 'key-release-event', @GTKKeyUpDown,
+           GDK_KEY_RELEASE_MASK);
+      end;
       ConnectSignal(gFixed, 'key-press-event', @GTKKeyUpDown, GDK_KEY_PRESS_MASK);
       ConnectSignal(gFixed, 'key-release-event', @GTKKeyUpDown, GDK_KEY_RELEASE_MASK);
     end;
@@ -2306,24 +2330,24 @@ begin
 
     LM_HSCROLL:
     begin
-      if Sender is TCustomListView
-      then begin
-        ConnectSignal(gObject, 'scroll-horizontal', @gtkLVHScroll);
-      end
-      else begin
+      //if Sender is TCustomListView
+      //then begin
+      //  ConnectSignal(gObject, 'scroll-horizontal', @gtkLVHScroll);
+      //end
+      //else begin
         ConnectSignal(PGTKObject(gtk_scrolled_window_get_hadjustment(PGTKScrolledWindow(gObject))), 'value-changed', @GTKHScrollCB);
-      end;
+      //end;
     end;
 
     LM_VSCROLL:
     begin
-      if Sender is TCustomListView
-      then begin
-        ConnectSignal(gObject, 'scroll-vertical', @gtkLVVScroll);
-      end
-      else begin
+      //if Sender is TCustomListView
+      //then begin
+      //  ConnectSignal(gObject, 'scroll-vertical', @gtkLVVScroll);
+      //end
+      //else begin
         ConnectSignal(PGTKObject(gtk_scrolled_window_get_vadjustment(PGTKScrolledWindow(gObject))), 'value-changed', @GTKVScrollCB);
-      end;
+      //end;
     end;
     
     LM_YEARCHANGED :  //calendar
@@ -2354,25 +2378,25 @@ begin
     HDN_ITEMCLICK,
     LVN_COLUMNCLICK: 
     begin
-      ConnectSignal(gObject, 'click-column', @gtkLVClickColumn);
+      ConnectSignal(gCore, 'click-column', @gtkLVClickColumn);
     end;
 
 //    LVN_DELETEALLITEMS,
     LVN_DELETEITEM, 
     LVN_INSERTITEM:
     begin
-      ConnectSignal(gObject, 'row-move', @gtkLVRowMove);
+      ConnectSignal(gCore, 'row-move', @gtkLVRowMove);
     end;
 
     LVN_ITEMCHANGED,
     LVN_ITEMCHANGING: 
     begin
-      ConnectSignal(gObject, 'select-row', @gtkLVSelectRow);
-      ConnectSignal(gObject, 'unselect-row', @gtkLVUnSelectRow);
-      ConnectSignal(gObject, 'toggle-focus-row', @gtkLVToggleFocusRow);
-      ConnectSignal(gObject, 'select-all', @gtkLVSelectAll);
-      ConnectSignal(gObject, 'unselect-all', @gtkLVUnSelectAll);
-      ConnectSignal(gObject, 'end-selection', @gtkLVEndSelection);
+      ConnectSignal(gCore, 'select-row', @gtkLVSelectRow);
+      ConnectSignal(gCore, 'unselect-row', @gtkLVUnSelectRow);
+      ConnectSignal(gCore, 'toggle-focus-row', @gtkLVToggleFocusRow);
+      ConnectSignal(gCore, 'select-all', @gtkLVSelectAll);
+      ConnectSignal(gCore, 'unselect-all', @gtkLVUnSelectAll);
+      ConnectSignal(gCore, 'end-selection', @gtkLVEndSelection);
     end;
     
 (*
@@ -2615,7 +2639,6 @@ var
    Caption : ansistring;          // the caption of "Sender"
    StrTemp : PChar;               // same as "caption" but as PChar
    TempWidget : PGTKWidget;       // pointer to gtk-widget (local use when neccessary)
-   TempWidget2: PgtkWidget;       //used by TListView
    p          : pointer;          // ptr to the newly created GtkWidget
    CompStyle,                     // componentstyle (type) of GtkWidget which will be created
    TempInt   : Integer;           // local use when neccessary
@@ -2716,10 +2739,8 @@ begin
     csClistBox :
     begin
       p:= gtk_scrolled_window_new(nil, nil);
-      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.hscrollbar,
-                             GTK_CAN_FOCUS);
-      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.vscrollbar,
-                             GTK_CAN_FOCUS);
+      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.hscrollbar, GTK_CAN_FOCUS);
+      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.vscrollbar, GTK_CAN_FOCUS);
       gtk_scrolled_window_set_policy(PGtkScrolledWindow(p),
                                      GTK_POLICY_AUTOMATIC,
                                      GTK_POLICY_AUTOMATIC);
@@ -2728,10 +2749,16 @@ begin
       with TCListBox(Sender)
       do begin
         TempWidget:= gtk_clist_new(ListColumns);
-        gtk_container_add(PGtkContainer(p), TempWidget);
+        //gtk_container_add(PGtkContainer(p), TempWidget);
         for TempInt := 0 to ListColumns - 1 do
-          gtk_clist_set_column_width(PGtkCList(TempWidget), TempInt, (Width-50) div ListColumns);
+          gtk_clist_set_column_width(PGtkCList(TempWidget), TempInt,
+                                                    (Width-10) div ListColumns);
       end;
+      gtk_scrolled_window_add_with_viewport(PGtkScrolledWindow(p), TempWidget);
+      gtk_container_set_focus_vadjustment(PGtkContainer(TempWidget),
+                    gtk_scrolled_window_get_vadjustment(PGtkScrolledWindow(p)));
+      gtk_container_set_focus_hadjustment(PGtkContainer(TempWidget),
+                    gtk_scrolled_window_get_hadjustment(PGtkScrolledWindow(p)));
       gtk_widget_show(TempWidget);
 
       //--------------------------
@@ -2905,36 +2932,95 @@ begin
 
     csLabel :
     begin
-       P := gtk_label_new(StrTemp);
-       gtk_misc_set_alignment(PGTKMISC(P), 0.0 , 1.0);
+      P := gtk_label_new(StrTemp);
+      gtk_misc_set_alignment(PGTKMISC(P), 0.0 , 1.0);
     end;
 
     csListBox :
     begin
-       p:= gtk_scrolled_window_new(nil, nil);
+      p:= gtk_scrolled_window_new(nil, nil);
        GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.hscrollbar, GTK_CAN_FOCUS);
-       GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.vscrollbar, GTK_CAN_FOCUS);
-       gtk_scrolled_window_set_policy(PGtkScrolledWindow(p), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-       gtk_widget_show(p);
-       TempWidget:= gtk_list_new;
-       gtk_scrolled_window_add_with_viewport(PGtkScrolledWindow(p), TempWidget);
-             gtk_container_set_focus_vadjustment(PGtkContainer(TempWidget),
-       gtk_scrolled_window_get_vadjustment(PGtkScrolledWindow(p)));
-       gtk_container_set_focus_hadjustment(PGtkContainer(TempWidget),
-       gtk_scrolled_window_get_hadjustment(PGtkScrolledWindow(p)));
-       gtk_widget_show(TempWidget);
+      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.vscrollbar, GTK_CAN_FOCUS);
+      gtk_scrolled_window_set_policy(PGtkScrolledWindow(p),
+                                    GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+      gtk_widget_show(p);
+      TempWidget:= gtk_list_new;
+      gtk_scrolled_window_add_with_viewport(PGtkScrolledWindow(p), TempWidget);
+      gtk_container_set_focus_vadjustment(PGtkContainer(TempWidget),
+                   gtk_scrolled_window_get_vadjustment(PGtkScrolledWindow(p)));
+      gtk_container_set_focus_hadjustment(PGtkContainer(TempWidget),
+                   gtk_scrolled_window_get_hadjustment(PGtkScrolledWindow(p)));
+      gtk_widget_show(TempWidget);
 
-       //--------------------------
-       // MWE: will be obsoleted
-       SetCoreChildWidget(p, TempWidget);
-       //--------------------------
-       GetWidgetInfo(p, True)^.ImplementationWidget := TempWidget;
-       SetMainWidget(p, TempWidget);
+      //--------------------------
+      // MWE: will be obsoleted
+      SetCoreChildWidget(p, TempWidget);
+      //--------------------------
+      GetWidgetInfo(p, True)^.ImplementationWidget := TempWidget;
+      SetMainWidget(p, TempWidget);
     end;
 
 
     csListView :
     Begin
+      p:= gtk_scrolled_window_new(nil, nil);
+      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.hscrollbar, GTK_CAN_FOCUS);
+      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.vscrollbar, GTK_CAN_FOCUS);
+      gtk_scrolled_window_set_policy(PGtkScrolledWindow(p),
+                                     GTK_POLICY_AUTOMATIC,
+                                     GTK_POLICY_AUTOMATIC);
+      gtk_widget_show(p);
+      
+      with TListView(Sender)
+      do begin
+        TempInt:=Columns.Count;
+        if TempInt<1 then TempInt:=1;
+        TempWidget:= gtk_clist_new(TempInt);
+        gtk_clist_set_shadow_type(PGtkCList(TempWidget),GTK_SHADOW_NONE);
+
+        //gtk_container_add(PGtkContainer(p), TempWidget);
+        for TempInt := 0 to Columns.Count - 1 do begin
+          with Columns[TempInt] do begin
+            // set title
+            gtk_clist_set_column_title(PgtkCList(TempWidget),TempInt,
+              PChar(Caption));
+            //set column alignment
+            gtk_clist_set_column_justification(PgtkCList(TempWidget),TempInt,
+                     aGTKJUSTIFICATION[Alignment]);
+            //set width
+            gtk_clist_set_column_width(PgtkCList(TempWidget),TempInt,Width);
+            //set auto sizing
+            gtk_clist_set_column_auto_resize(PgtkCList(TempWidget),TempInt,
+                     AutoSize);
+            //set Visible
+            gtk_clist_set_column_visibility(PgtkCList(TempWidget),TempInt,
+                     Visible);
+            // set MinWidth
+            if MinWidth>0 then
+              gtk_clist_set_column_min_width(PGtkCList(TempWidget), TempInt,
+                                             MinWidth);
+            // set MaxWidth
+            if (MaxWidth>=MinWidth) and (MaxWidth>0) then
+              gtk_clist_set_column_max_width(PGtkCList(TempWidget), TempInt,
+                                             MaxWidth);
+          end;
+        end;
+      end;
+      gtk_scrolled_window_add_with_viewport(PGtkScrolledWindow(p), TempWidget);
+      gtk_container_set_focus_vadjustment(PGtkContainer(TempWidget),
+                    gtk_scrolled_window_get_vadjustment(PGtkScrolledWindow(p)));
+      gtk_container_set_focus_hadjustment(PGtkContainer(TempWidget),
+                    gtk_scrolled_window_get_hadjustment(PGtkScrolledWindow(p)));
+      gtk_widget_show(TempWidget);
+
+      //--------------------------
+      // MWE: will be obsoleted
+      SetCoreChildWidget(p, TempWidget);
+      //--------------------------
+      GetWidgetInfo(p, True)^.ImplementationWidget := TempWidget;
+      SetMainWidget(p, TempWidget);
+
+       {
        if TListview(sender).Columns.Count > 0 then
           p := PgtkWidget(gtk_clist_new(TListview(sender).Columns.Count))
           else
@@ -2951,7 +3037,7 @@ begin
          gtk_clist_set_vadjustment(PgtkCList(P),PgtkAdjustment(gtk_adjustment_new(1,1,100,1,10,10)));
          TempWidget2 := gtk_hscrollbar_new(gtk_clist_get_hadjustment(PgtkCList(p)));
          gtk_widget_show(tempwidget2);
-       end;
+       end;}
 
        gtk_widget_show(P);
     end;
@@ -3508,7 +3594,7 @@ end;
 
 {------------------------------------------------------------------------------
   Method: TGtkObject.SetValue
-  Params:  Sender : the lcl object which called this func via SenMessage
+  Params:  Sender : the lcl object which called this func via SendMessage
            Data   : pointer to component specific variable
   Returns: currently always 0
 
@@ -3636,17 +3722,12 @@ end;
   the calling object to the corresponding GTK object.
  ------------------------------------------------------------------------------}
 function TgtkObject.SetProperties (Sender : TObject) : integer;
-const
-  aGTKJustification: array[TAlignment] of TGTKJustification = (GTK_JUSTIFY_LEFT,GTK_JUSTIFY_RIGHT,GTK_JUSTIFY_CENTER);
-  aGTkSelectionMode: Array[Boolean] of TGtkSelectionMode = (GTK_SELECTION_SINGLE,GTk_SELECTION_EXTENDED);
 var
    Handle    : Pointer;
    Widget    : PGtkWidget;
    xAlign    : gfloat;
    yAlign    : gfloat;
    I,X         : Integer;
-   ColName   : String;
-   pColName : PChar;
    pRowText : PChar;
    Image : PgdkImage;
    BitImage : TBitMap;
@@ -3760,24 +3841,35 @@ begin
         begin
           //set up columns..
           //
-          Widget := PgtkWidget(Handle);//GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
+          Widget := GetCoreChildWidget(PgtkWidget(Handle));//GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
           gtk_clist_freeze(PgtkCList(Widget));
           for I := 0 to TListview(sender).Columns.Count-1 do
           begin
-            ColName := TListview(sender).Columns[i].Caption;
-            GetMem(pColName, Length(colname)+1);
-            StrPcopy(pColName, ColName);
-            gtk_clist_set_column_title(Pgtkclist(Widget),I,pColName);
-            Dispose(pColName);
-            
+            gtk_clist_set_column_title(Pgtkclist(Widget),I,
+                                    PChar(TListview(sender).Columns[i].Caption));
+
             //set column alignment
-            gtk_clist_set_column_justification(PgtkCList(Widget),I,aGTKJUSTIFICATION[TListview(sender).Columns[i].Alignment]);
-            //set width
-            gtk_clist_set_column_width(PgtkCList(Widget),I, TListview(sender).Columns[i].Width);
+            gtk_clist_set_column_justification(PgtkCList(Widget),I,
+                     aGTKJUSTIFICATION[TListview(sender).Columns[i].Alignment]);
             //set auto sizing
-            gtk_clist_set_column_auto_resize(PgtkCList(Widget),I, TListview(sender).Columns[i].AutoSize);
+            gtk_clist_set_column_auto_resize(PgtkCList(Widget),I,
+                     TListview(sender).Columns[i].AutoSize);
+            //set width
+            gtk_clist_set_column_width(PgtkCList(Widget),I,
+                     TListview(sender).Columns[i].Width);
             //set Visible
-            gtk_clist_set_column_visibility(PgtkCList(Widget),I, TListview(sender).Columns[i].Visible);
+            gtk_clist_set_column_visibility(PgtkCList(Widget),I,
+                     TListview(sender).Columns[i].Visible);
+            // set MinWidth
+            if TListview(sender).Columns[i].MinWidth>0 then
+              gtk_clist_set_column_min_width(PGtkCList(Widget), I,
+                                         TListview(sender).Columns[i].MinWidth);
+            // set MaxWidth
+            if (TListview(sender).Columns[i].MaxWidth>=
+              TListview(sender).Columns[i].MinWidth)
+            and (TListview(sender).Columns[i].MaxWidth>0) then
+              gtk_clist_set_column_max_width(PGtkCList(Widget), I,
+                                         TListview(sender).Columns[i].MaxWidth);
           end;
 
           //sorting
@@ -3785,10 +3877,12 @@ begin
           then gtk_clist_column_titles_show(PgtkCList(Widget))
           else gtk_clist_column_titles_Hide(PgtkCList(Widget));
 
-          gtk_clist_set_sort_column(PgtkCList(Widget), TListview(sender).SortColumn);
+          gtk_clist_set_sort_column(PgtkCList(Widget),
+            TListview(sender).SortColumn);
                 
           //multiselect
-          gtk_clist_set_selection_mode(PgtkCList(Widget),aGTkSelectionMode[TListview(sender).MultiSelect]);
+          gtk_clist_set_selection_mode(PgtkCList(Widget),
+            aGTkSelectionMode[TListview(sender).MultiSelect]);
 
 //TODO:This doesn't work right now
 //                gtk_clist_set_auto_sort(PgtkCList(handle),TListview(sender).Sorted);
@@ -3809,17 +3903,23 @@ begin
               and (TListItem(TListview(sender).Items[i]).ImageIndex > -1) 
               then begin
                 Writeln('Checking images');
-                if (TListItem(TListview(sender).Items[i]).ImageIndex < TListview(sender).SmallImages.Count) 
+                if (TListItem(TListview(sender).Items[i]).ImageIndex
+                  < TListview(sender).SmallImages.Count)
                 then begin
                   //draw image
                   Writeln('drawing image');
                   Writeln('TListItem(TListview(sender).Items[i]).ImageIndex is ',TListItem(TListview(sender).Items[i]).ImageIndex);
                         
                   BitImage := TBitmap.Create;
-                  TListview(sender).SmallImages.GetBitmap(TListItem(TListview(sender).Items[i]).ImageIndex,BitImage);
+                  TListview(sender).SmallImages.GetBitmap(
+                     TListItem(TListview(sender).Items[i]).ImageIndex,BitImage);
                   
-                  gtk_clist_set_pixmap(Pgtkclist(Widget),I,0,pgdkPixmap(PgdiObject(BitImage.handle)^.GDIBitmapObject),nil);
-                  gtk_clist_set_pixtext(Pgtkclist(Widget),I,0,pRowText,3,pgdkPixmap(PgdiObject(BitImage.handle)^.GDIBitmapObject),nil);
+                  gtk_clist_set_pixmap(Pgtkclist(Widget),I,0,
+                    pgdkPixmap(PgdiObject(BitImage.handle)^.GDIBitmapObject),
+                    nil);
+                  gtk_clist_set_pixtext(Pgtkclist(Widget),I,0,pRowText,3,
+                    pgdkPixmap(PgdiObject(BitImage.handle)^.GDIBitmapObject),
+                    nil);
 //                      bitimage.Free;
                 end;
               end;
@@ -3833,9 +3933,11 @@ begin
               begin
                 if ( X <= TListItem(TListview(sender).Items[i]).SubItems.Count) 
                 then begin
-                  GetMem(pRowText,Length(TListItem(TListview(sender).Items[i]).SubItems.Strings[X-1])+1);
+                  GetMem(pRowText,Length(TListItem(
+                    TListview(sender).Items[i]).SubItems.Strings[X-1])+1);
                   try
-                    pRowText := StrPcopy(pRowText,TListItem(TListview(sender).Items[i]).SubItems.Strings[X-1]);
+                    pRowText := StrPcopy(pRowText,TListItem(
+                      TListview(sender).Items[i]).SubItems.Strings[X-1]);
                     gtk_clist_set_text(Pgtkclist(Widget),X,I+1,pRowText);
                   finally
                     freemem(pRowText);
@@ -4343,6 +4445,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.127  2002/05/28 14:58:31  lazarus
+  MG: added scrollbars for TListView
+
   Revision 1.126  2002/05/24 07:16:32  lazarus
   MG: started mouse bugfix and completed Makefile.fpc
 
