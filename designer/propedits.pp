@@ -2583,7 +2583,7 @@ begin
   With CollectionList do begin
     Parent:= Self;
     Align:= alclient;
-    MultiSelect:= true;
+//  MultiSelect:= true;
     OnClick:= @ListClick;
   end;
 end;
