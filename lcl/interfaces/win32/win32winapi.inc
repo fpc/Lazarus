@@ -1682,14 +1682,17 @@ begin
   Size := (SrcRect.Bottom-SrcRect.Top)*BitmapInfo.bmWidthBytes;
   GetMem(Data, Size);
   // copy lines
-  SrcLine := BitmapInfo.bmBits + SrcRect.Top*BitmapInfo.bmWidthBytes + SrcRect.Left*BitmapInfo.bmBitsPixel;
-  DestLine := Data;
-  LineLen := (SrcRect.Right-SrcRect.Left)*BitmapInfo.bmBitsPixel;
-  for I := SrcRect.Top to SrcRect.Bottom - 1 do
+  if BitmapInfo.bmBits <> nil then
   begin
-    Move(SrcLine^, DestLine^, LineLen);
-    Inc(SrcLine, BitmapInfo.bmWidthBytes);
-    Inc(DestLine, LineLen);
+    SrcLine := BitmapInfo.bmBits + SrcRect.Top*BitmapInfo.bmWidthBytes + SrcRect.Left*BitmapInfo.bmBitsPixel;
+    DestLine := Data;
+    LineLen := (SrcRect.Right-SrcRect.Left)*BitmapInfo.bmBitsPixel;
+    for I := SrcRect.Top to SrcRect.Bottom - 1 do
+    begin
+      Move(SrcLine^, DestLine^, LineLen);
+      Inc(SrcLine, BitmapInfo.bmWidthBytes);
+      Inc(DestLine, LineLen);
+    end;
   end;
 end;
 
@@ -3093,6 +3096,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.139  2005/03/14 21:49:41  micha
+  check nil pointer to avoid AV (by jesusrmx)
+
   Revision 1.138  2005/03/04 13:50:09  mattias
   fixed Arc and changed x,y to Left,Top to make meaning more clear
 
