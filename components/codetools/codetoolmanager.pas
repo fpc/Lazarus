@@ -34,6 +34,7 @@ interface
 {$I codetools.inc}
 
 { $DEFINE CTDEBUG}
+{ $DEFINE DoNotHandleFindDeclException}
 
 uses
   {$IFDEF MEM_CHECK}
@@ -799,15 +800,25 @@ begin
   writeln('TCodeToolManager.FindDeclaration B ',FCurCodeTool.Scanner<>nil);
   {$ENDIF}
   try
+    {$IFDEF DoNotHandleFindDeclException}
+    writeln('TCodeToolManager.FindDeclaration NOT HANDLING EXCEPTIONS');
+    RaiseUnhandableExceptions:=true;
+    {$ENDIF}
     Result:=FCurCodeTool.FindDeclaration(CursorPos,NewPos,NewTopLine);
     if Result then begin
       NewX:=NewPos.X;
       NewY:=NewPos.Y;
       NewCode:=NewPos.Code;
     end;
+  {$IFDEF DoNotHandleFindDeclException}
+  finally
+    RaiseUnhandableExceptions:=false;
+  end;
+  {$ELSE}
   except
     on e: Exception do Result:=HandleException(e);
   end;
+  {$ENDIF}
   {$IFDEF CTDEBUG}
   writeln('TCodeToolManager.FindDeclaration END ');
   {$ENDIF}

@@ -107,7 +107,7 @@ type
     LastErrorBehindIgnorePosition: boolean;
     LastErrorCheckedForIgnored: boolean;
     CurrentPhase: integer;
-    procedure RaiseExceptionInstance(Exception: ECodeToolError); virtual;
+    procedure RaiseExceptionInstance(TheException: ECodeToolError); virtual;
     procedure RaiseExceptionClass(const AMessage: string;
       ExceptionClass: ECodeToolErrors); virtual;
     procedure RaiseException(const AMessage: string); virtual;
@@ -249,6 +249,9 @@ type
     constructor Create;
     destructor Destroy; override;
   end;
+  
+var
+  RaiseUnhandableExceptions: boolean;
 
 implementation
 
@@ -1709,7 +1712,7 @@ begin
     Scanner.SetIgnoreErrorAfter(IgnoreErrorAfter.P,IgnoreErrorAfter.Code);
 end;
 
-procedure TCustomCodeTool.RaiseExceptionInstance(Exception: ECodeToolError);
+procedure TCustomCodeTool.RaiseExceptionInstance(TheException: ECodeToolError);
 var CaretXY: TCodeXYPosition;
   CursorPos: integer;
   Node: TCodeTreeNode;
@@ -1735,7 +1738,10 @@ begin
   end;
   // raise the exception
   CurrentPhase:=CodeToolPhaseNone;
-  raise Exception;
+  if not RaiseUnhandableExceptions then
+    raise TheException
+  else
+    RaiseCatchableException(TheException.Message);
 end;
 
 procedure TCustomCodeTool.RaiseExceptionClass(const AMessage: string;
@@ -2197,5 +2203,8 @@ begin
   inherited Create(ASender,AMessage);
   Filename:=AFilename;
 end;
+
+initialization
+  RaiseUnhandableExceptions:=false;
 
 end.

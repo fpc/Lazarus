@@ -19,7 +19,7 @@ implicitunits=codetoolsstrconsts avl_tree basiccodetools codecache sourcelog \
    identcompletiontool stdcodetools resourcecodetool methodjumptool \
    eventcodetool codecompletiontool codeatom codetree definetemplates expreval \
    keywordfunclists linkscanner sourcechanger fileprocs codetoolsstructs \
-   memcheck
+   codetoolmanager memcheck
 
 [clean]
 files=$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
