@@ -1903,6 +1903,7 @@ Begin
     ShowEditorHints:=EnvironmentOptions.ShowEditorHints;
     ShowComponentCaptionHints:=EnvironmentOptions.ShowComponentCaptions;
   end;
+  SetDesigning(AForm,True);
 end;
 
 {-------------------------------------------------------------------------------
@@ -2548,7 +2549,6 @@ procedure TMainIDE.ShowDesignForm(AForm: TCustomForm);
 begin
   // show form
   AForm.Show;
-  SetDesigning(AForm,True);
   FDisplayState:= dsForm;
 
   // select the new form (object inspector, formeditor, control selection)
@@ -7504,6 +7504,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.432  2002/11/16 14:38:47  mattias
+  fixed TControl.Show and Visible of designer forms
+
   Revision 1.431  2002/11/13 13:40:12  lazarus
   MG: codetools can now work with localized fpc output
 
