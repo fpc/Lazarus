@@ -50,6 +50,7 @@ Function EnableWindow(HWnd: HWND; BEnable: Boolean): Boolean; Override;
 Function ExtTextOut(DC: HDC; X, Y: Integer; Options: LongInt; Rect: PRect; Str: PChar; Count: LongInt; Dx: PInteger): Boolean; Override;
 
 Function FillRect(DC: HDC; Const Rect: TRect; Brush: HBRUSH): Boolean; Override;
+Function Frame3D(DC: HDC; Var Rect: TRect; Const FrameWidth: Integer; Const Style: TBevelCut): Boolean; Override;
 
 Function GetActiveWindow: HWND; Override;
 Function GetCapture: HWND; Override;
@@ -131,6 +132,9 @@ Function WindowFromPoint(Point: TPoint): HWND; Override;
 { =============================================================================
 
   $Log$
+  Revision 1.4  2002/02/03 06:06:26  lazarus
+  Keith: Fixed Win32 compilation problems
+
   Revision 1.3  2002/01/18 09:07:44  lazarus
   Keith: Fixed menu creation
 

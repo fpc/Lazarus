@@ -756,6 +756,24 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
+  Method: Frame3D
+  Params: DC         - handle to device context
+          Rect       - bounding rectangle
+          FrameWidth - width of the frame (ignored on win32)
+          Style      - frame style
+  Returns: Whether the function was successful
+
+  Draws a 3D border in GTK native style.
+  NOTE: This function is mapped to DrawEdge on Windows.
+------------------------------------------------------------------------------}
+Function TWin32Object.Frame3D(DC: HDC; Var Rect: TRect; Const FrameWidth: Integer; Const Style: TBevelCut): Boolean;
+Const
+  Edge: Array[TBevelCut] Of Integer = (0, EDGE_ETCHED, EDGE_RAISED);
+Begin
+  Result := DrawEdge(DC, Rect, Edge[Style], BF_RECT);
+End;
+
+{------------------------------------------------------------------------------
   Method:  GetActiveWindow
   Params: none
   Returns: The handle to the active window
@@ -1832,6 +1850,9 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.6  2002/02/03 06:06:26  lazarus
+  Keith: Fixed Win32 compilation problems
+
   Revision 1.5  2002/01/29 18:55:27  lazarus
   Keith: Fixed duplicate compiler options on Win32
 

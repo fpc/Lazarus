@@ -65,6 +65,7 @@ Var
   ObjCached: Boolean;
   OwnerObject: TObject;
   PS: PaintStruct;
+  Pt: TPoint;
   R: TRect;
   Rec: PLazObject;
   WinProcess: Boolean;
@@ -137,7 +138,7 @@ Begin
     End;
     WM_COMMAND:
     Begin
-      OwnerObject := TObject(GetProp(LParam, 'Lazarus'));
+      OwnerObject := TObject(GetProp(LParam, 'Lazarus')); 
       Case Hi(WParam) Of
         0:
         Begin
@@ -1484,6 +1485,9 @@ end;}
 
 {
   $Log$
+  Revision 1.8  2002/02/03 06:06:25  lazarus
+  Keith: Fixed Win32 compilation problems
+
   Revision 1.7  2002/01/31 09:32:07  lazarus
   Keith:
     * Open and save dialogs can now coexist in apps (however, only one of each type of common dialog can be used per app :( )

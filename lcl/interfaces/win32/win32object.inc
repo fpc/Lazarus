@@ -1320,7 +1320,6 @@ Begin
     Begin
       LStructSize := SizeOf(TChooseColor);
       HWndOwner := ((Sender As TComponent).Owner As TWinControl).Handle;
-      HInstance := System.HInstance;
       RGBResult := (Sender As TColorDialog).Color;
       LPCustColors := @CustomColors;
       Flags := CC_FullOpen Or CC_RGBInit;
@@ -1377,7 +1376,7 @@ Begin
       LStructSize := SizeOf(TChooseFont);
       HWndOwner := ((Sender As TComponent).Owner As TWinControl).Handle;
       LPLogFont := @LF;
-      Flags := CF_EFFECTS Or CF_FORCEFONTEXIST Or CF_SCREENFONTS;
+      Flags := CF_EFFECTS Or CF_FORCEFONTEXIST Or CF_INITTOLOGFONTSTRUCT Or CF_SCREENFONTS;
       //RGBColors := (Sender As TFontDialog).Color;
     End;
     Ret := ChooseFont(@CF);
@@ -1428,15 +1427,20 @@ End;
  ------------------------------------------------------------------------------}
 Procedure TWin32Object.ResizeChild(Sender: TObject; Left, Top, Width, Height: Integer);
 Var
+  DC: HDC;
   Handle: HWND;
   R: TRect;
+  TM: TEXTMETRICA;
 Begin
   Handle := (Sender As TWinControl).Handle;
-  If (Sender Is TButton) Then
-    Height := Height - 4;
-  If TControl(Sender).Parent Is TCustomGroupBox Then
-    Top := Top + 14;
-  //If Handle <> HWND(Nil) Then
+  If (TControl(Sender).Parent Is TCustomGroupBox) Or (TControl(Sender).Parent Is TPage) Then
+  Begin
+    DC := GetDC(Handle);
+    GetTextMetrics(DC, TM);
+    Top := Top + TM.TMHeight;
+    ReleaseDC(Handle, DC);
+  End;
+  If Handle <> HWND(Nil) Then
     MoveWindow(Handle, Left, Top, Width, Height, True)
   {Else
   Begin
@@ -1919,6 +1923,12 @@ Begin
       SetProp(Window, 'Lazarus', Sender);
       SetName(Window, StrTemp);
     End;
+    csPanel:
+    Begin
+      Assert(False, 'Trace:TODO: TWin32Object.CreateComponent - code TPanel');
+      TControl(Sender).FCompStyle := csGroupBox;
+      CNSendMessage(LM_CREATE, Sender, Nil);
+    End;
     csRadioButton:
     Begin
       Window := CreateWindow('BUTTON', StrTemp, Flags Or BS_AUTORADIOBUTTON, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
@@ -1947,6 +1957,9 @@ Begin
     csSpeedButton:
     Begin
       Assert(False, 'Trace:TODO: Code the speed button control');
+      Window := CreateWindow('Button', StrTemp, Flags Or BS_PUSHBUTTON, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
+      SetProp(Window, 'Lazarus', Sender);
+      SetName(Window, StrTemp);
     End;
     csSpinEdit:
     Begin
@@ -3037,6 +3050,9 @@ End;
 
 {
   $Log$
+  Revision 1.14  2002/02/03 06:06:25  lazarus
+  Keith: Fixed Win32 compilation problems
+
   Revision 1.13  2002/02/01 10:13:09  lazarus
   Keith: Fixes for Win32
 

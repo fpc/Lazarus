@@ -36,7 +36,8 @@ Interface
 }
 Uses
   Windows, Classes, ComCtrls, Controls, Dialogs, DynHashArray, ExtCtrls, Forms,
-  InterfaceBase, LCLLinux, LMessages, StdCtrls, SysUtils, VCLGlobals, Win32Def;
+  GraphType, InterfaceBase, LCLLinux, LCLType, LMessages, StdCtrls, SysUtils,
+  VCLGlobals, Win32Def;
 
 Var
   AppName: PChar;
@@ -332,6 +333,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.10  2002/02/03 06:06:25  lazarus
+  Keith: Fixed Win32 compilation problems
+
   Revision 1.9  2002/02/01 10:13:09  lazarus
   Keith: Fixes for Win32
 
