@@ -465,7 +465,7 @@ begin
   CurFocusWidget:=PGtkWidget(GetFocus);
   if CurFocusWidget<>nil then begin
     write(' GetFocus=',HexStr(Cardinal(CurFocusWidget),8));
-    LCLObject:=GetParentLCLObject(CurFocusWidget);
+    LCLObject:=GetNearestLCLObject(CurFocusWidget);
     if LCLObject<>nil then begin
       if LCLObject is TComponent then begin
         write(' ParentLCLFocus=',TComponent(LCLObject).Name,':',LCLObject.ClassName)
@@ -795,7 +795,7 @@ begin
   CurFocusWidget:=PGtkWidget(GetFocus);
   if CurFocusWidget<>nil then begin
     write(' GetFocus=',HexStr(Cardinal(CurFocusWidget),8));
-    LCLObject:=GetParentLCLObject(CurFocusWidget);
+    LCLObject:=GetNearestLCLObject(CurFocusWidget);
     if LCLObject<>nil then begin
       if LCLObject is TComponent then begin
         write(' ParentLCLFocus=',TComponent(LCLObject).Name,':',LCLObject.ClassName)
@@ -839,7 +839,7 @@ begin
   CurFocusWidget:=PGtkWidget(GetFocus);
   if CurFocusWidget<>nil then begin
     write(' GetFocus=',HexStr(Cardinal(CurFocusWidget),8));
-    LCLObject:=GetParentLCLObject(CurFocusWidget);
+    LCLObject:=GetNearestLCLObject(CurFocusWidget);
     if LCLObject<>nil then begin
       if LCLObject is TComponent then begin
         write(' ParentLCLFocus=',TComponent(LCLObject).Name,':',LCLObject.ClassName)
@@ -890,7 +890,7 @@ begin
   CurFocusWidget:=PGtkWidget(GetFocus);
   if CurFocusWidget<>nil then begin
     write(' GetFocus=',HexStr(Cardinal(CurFocusWidget),8));
-    LCLObject:=GetParentLCLObject(CurFocusWidget);
+    LCLObject:=GetNearestLCLObject(CurFocusWidget);
     if LCLObject<>nil then begin
       if LCLObject is TComponent then begin
         write(' ParentLCLFocus=',TComponent(LCLObject).Name,':',LCLObject.ClassName)
@@ -934,7 +934,7 @@ begin
   CurFocusWidget:=PGtkWidget(GetFocus);
   if CurFocusWidget<>nil then begin
     write(' GetFocus=',HexStr(Cardinal(CurFocusWidget),8));
-    LCLObject:=GetParentLCLObject(CurFocusWidget);
+    LCLObject:=GetNearestLCLObject(CurFocusWidget);
     if LCLObject<>nil then begin
       if LCLObject is TComponent then begin
         write(' ParentLCLFocus=',TComponent(LCLObject).Name,':',LCLObject.ClassName)
@@ -3066,6 +3066,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.224  2004/04/02 14:28:44  vincents
+  Fixed compilation with -dVerboseFocus
+
   Revision 1.223  2004/03/22 19:10:04  mattias
   implemented icons for TPage in gtk, mask for TCustomImageList
 

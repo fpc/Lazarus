@@ -7760,7 +7760,7 @@ begin
   writeln(''); write('   ');
   write(' TopLevel=',HexStr(Cardinal(TopLevel),8));
   write(' OldFocus=',HexStr(Cardinal(Result),8));
-  AWinControl:=TWinControl(GetParentLCLObject(PGtkWidget(Result)));
+  AWinControl:=TWinControl(GetNearestLCLObject(PGtkWidget(Result)));
   if AWinControl<>nil then
     write(' OldLCLParent=',AWinControl.Name,':',AWinControl.ClassName)
   else
@@ -7774,7 +7774,7 @@ begin
   then begin
     // TopLevel is a gtkwindow
     {$IfDef VerboseFocus}
-    AWinControl:=TWinControl(GetParentLCLObject(PGtkWindow(TopLevel)^.focus_widget));
+    AWinControl:=TWinControl(GetNearestLCLObject(PGtkWindow(TopLevel)^.focus_widget));
     write('  C  TopLevel is a gtkwindow ');
     write(' focus_widget=',HexStr(Cardinal(PGtkWindow(TopLevel)^.focus_widget),8));
     if AWinControl<>nil then
@@ -7858,7 +7858,7 @@ begin
   write('[TGtkWidgetSet.SetFocus] END hWnd=',HexStr(Cardinal(hWnd),8));
   NewFocusWidget:=PGtkWidget(GetFocus);
   write(' NewFocus=',HexStr(Cardinal(NewFocusWidget),8));
-  AWinControl:=TWinControl(GetParentLCLObject(NewFocusWidget));
+  AWinControl:=TWinControl(GetNearestLCLObject(NewFocusWidget));
   if AWinControl<>nil then
     write(' NewLCLParent=',AWinControl.Name,':',AWinControl.ClassName)
   else
@@ -8746,6 +8746,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.344  2004/04/02 14:28:44  vincents
+  Fixed compilation with -dVerboseFocus
+
   Revision 1.343  2004/03/30 20:38:14  mattias
   fixed interface constraints, fixed syncompletion colors
 
