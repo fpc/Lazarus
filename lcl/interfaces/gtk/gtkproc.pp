@@ -176,7 +176,8 @@ procedure ClipboardSelectionRequestHandler(TargetWidget: PGtkWidget;
   Data: Pointer); cdecl;
 function ClipboardSelectionLostOwnershipHandler(TargetWidget: PGtkWidget;
   EventSelection: PGdkEventSelection;  Data: Pointer): cardinal; cdecl;
-Procedure GTKStyleChanged(Widget: PGtkWidget; previous_style : PGTKStyle; Data: Pointer); cdecl;
+Procedure GTKStyleChanged(Widget: PGtkWidget; previous_style :
+  PGTKStyle; Data: Pointer); cdecl;
 
 function DeliverPostMessage(const Target: Pointer; var TheMessage): GBoolean;
 function DeliverMessage(const Target: Pointer; var AMessage): Integer;
