@@ -25,14 +25,35 @@
 
 function TInterfaceBase.Arc(DC: HDC; 
   x,y,width,height,angle1,angle2 : Integer): Boolean;
+var
+  Points : PPoint;
+  Count : Longint;
 begin
-  Result := false;
+  Result := False;
+  Points := nil;
+  Count := 0;
+  PolyBezierArcPoints(X,Y,Width,Height,Angle1, Angle2, 0, Points, Count);
+  Polygon(DC, Points, Count, False);
+  ReallocMem(Points, 0);
+  Result := True;
 end;
 
 function TInterfaceBase.AngleChord(DC: HDC;
   x,y,width,height,angle1,angle2 : Integer): Boolean;
+var
+  Points : PPoint;
+  Count : Longint;
 begin
-  Result:=false;
+  Result := False;
+  Points := nil;
+  Count := 0;
+  PolyBezierArcPoints(X,Y,Width,Height,Angle1, Angle2, 0, Points, Count);
+  Inc(Count);
+  ReallocMem(Points, Count*SizeOf(TPoint));
+  Points[Count - 1] := Points[0];
+  Polygon(DC, Points, Count, True);
+  ReallocMem(Points, 0);
+  Result := True;
 end;
 
 function TInterfaceBase.BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean; 
@@ -194,6 +215,415 @@ Begin
   Result := False;
 end;
 
+function TInterfaceBase.DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer;
+var
+  AP : TSize;
+  TM : TTextmetric;
+  theRect     : TRect;
+  aLeft,aTop,
+  I       : Integer;
+  Lines : TStrings;
+  TDC : hDC;
+  pStr : PChar;
+  tmpString,
+  AStr : String;
+  pIndex,
+  pX1, pX2, pY : Longint;
+  B, P : Longint;
+  LogP : TLogPen;
+  MaxLength : Integer;
+  Pt : TPoint;
+
+  Function LeftOffset : Longint;
+  begin
+    If (Flags and DT_Right) = DT_Right then
+      Result := DT_Right
+    else
+      If (Flags and DT_CENTER) = DT_CENTER then
+        Result := DT_CENTER
+    else
+      Result := DT_LEFT;
+  end;
+
+  Function TopOffset : Longint;
+  begin
+    If (Flags and DT_BOTTOM) = DT_BOTTOM then
+      Result := DT_BOTTOM
+    else
+      If (Flags and DT_VCENTER) = DT_VCENTER then
+        Result := DT_VCENTER
+    else
+      Result := DT_Top;
+  end;
+
+  Function SingleLine : Boolean;
+  begin
+    Result := (Flags and DT_SingleLine) = DT_SingleLine;
+  end;
+
+  Function WordWrap : Boolean;
+  begin
+    Result := (Flags and DT_WordBreak) = DT_WordBreak;
+  end;
+
+  Function CalcRect : Boolean;
+  begin
+    Result := (Flags and DT_CalcRect) = DT_CalcRect;
+  end;
+
+  Function NOCLIP : Boolean;
+  begin
+    Result := (Flags and DT_NOCLIP) = DT_NOCLIP;
+  end;
+
+  Function NoPrefix : Boolean;
+  begin
+    Result := (Flags and DT_NoPrefix) = DT_NoPrefix;
+  end;
+
+  Function Breakable(Breaks : TList; Index : Integer) : Boolean;
+  begin
+    If not Assigned(Breaks) then
+      exit;
+    Result := Breaks.IndexOf(Pointer(Index)) <> -1;
+  end;
+
+  Function NextBreakable(Breaks : TList; Index : Integer) : Integer;
+  begin
+    Result := -1;
+    If (not Assigned(Breaks)) or
+      (not Breakable(Breaks,Index))
+    then
+      exit;
+    If Breaks.IndexOf(Pointer(Index)) >= Breaks.Count - 1 then
+      exit;
+    Result := Longint(Breaks[Breaks.IndexOf(Pointer(Index)) + 1]);
+  end;
+
+  Function GetBreakablePoints(Source : String) : TList;
+  var
+    I : Integer;
+  begin
+    Result := TList.Create;
+    If Length(Source) < 1 then
+      exit;
+    For I := 1 to Length(Source) do
+      If Source[I] = ' ' then
+        If not Breakable(Result, I) then
+          Result.Add(Pointer(I));
+    If not Breakable(Result, Length(Source)) then
+      Result.Add(Pointer(Length(Source)));
+    If not Breakable(Result, 0) then
+      Result.Insert(0,nil);
+  end;
+
+  Function TextExtent(Handle : hDC; Source : String) : TSize;
+  var
+    pStr : PChar;
+  begin
+    pStr := StrAlloc(Length(Source)+1);
+    try
+      StrPCopy(pStr, Source);
+      GetTextExtentPoint(Handle, pStr, Length(Source), Result);
+    finally
+      StrDispose(PStr);
+    end;
+  end;
+
+  Function GetStringLength(Handle : hDC; Source : String;
+    FromPos, ToPos : Integer) : Integer;
+  var
+    Tmp : String;
+  begin
+    Tmp := Copy(Source,FromPos,ToPos - FromPos);
+    Result := TextExtent(Handle, Tmp).cX;
+    SetLength(Tmp,0);
+  end;
+
+  Function GetStringHeight(Handle : hDC; Source : String;
+    FromPos, ToPos : Integer) : Integer;
+  var
+    Tmp : String;
+  begin
+    Tmp := Copy(Source,FromPos,ToPos - FromPos);
+    Result := TextExtent(Handle,Tmp).cY;
+    SetLength(Tmp,0);
+  end;
+
+  Function BreakString(Source : String) : TStrings;
+  var
+    I, FromPos, ToPos : Integer;
+    Breaks : TList;
+  begin
+    Result := TStringList.Create;
+    Breaks := GetBreakablePoints(Source);
+    If Breaks.Count <= 0 then begin
+      Result.Append(Source);
+      Breaks.Free;
+      exit;
+    end;
+    FromPos := 1;
+    ToPos := 0;
+    I := 1;
+    Repeat
+      If Breakable(Breaks,I) then begin
+        If NextBreakable(Breaks,I) <> -1 then begin
+          TmpString := Copy(Source, FromPos, NextBreakable(Breaks,I));
+          If not NoPrefix then
+            DeleteAmpersands(tmpString);
+          If TextExtent(DC, TmpString).cX > MaxLength
+          then begin
+            ToPos := I;
+            Result.Append(Copy(Source,FromPos,ToPos - FromPos + 1));
+            FromPos := ToPos + 1;
+            I := FromPos;
+          end
+          Else
+            I := NextBreakable(Breaks,I);
+        end
+        else begin
+          ToPos := I;
+          Result.Append(Copy(Source,FromPos,ToPos - FromPos + 1));
+          FromPos := ToPos + 1;
+          I := FromPos;
+        end;
+      end else
+        I := I + 1;
+    until I > Length(Source);
+    SetLength(TmpString,0);
+    Breaks.Free;
+  end;
+
+  Function DoBreakString(AStr : String) : TStrings;
+  var
+    TS : TStrings;
+    Num : Longint;
+    OldText, NewText : String;
+  begin
+    Result := TStringList.Create;
+    If not SingleLine then begin
+      OldText := AStr;
+      Num := pos(#10,OldText);
+      while Num > 0 do begin
+        NewText := Copy(OldText,1,Num);
+        Case OldText[Num] of
+          #13,#10 : Delete(NewText,Num,1);
+        end;
+        If Num -1 > 0 then
+          Case OldText[Num-1] of
+            #13,#10 : Delete(NewText,Num-1,1);
+          end;
+        If WordWrap then begin
+          TS := BreakString(Copy(NewText,1,Length(NewText)));
+          Result.AddStrings(TS);
+          TS.Free;
+        end
+        else
+          Result.Append(Copy(NewText,1,Length(NewText)));
+        Delete(OldText,1,Num);
+        Num := pos(#10,OldText);
+        SetLength(NewText,0);
+      end;
+      if OldText <> '' then
+        If WordWrap then begin
+          TS := BreakString(Copy(OldText,1,Length(OldText)));
+          Result.AddStrings(TS);
+          TS.Free;
+        end
+        else
+          Result.Append(Copy(OldText,1,Length(OldText)));
+    end
+    else
+      Result.Append(AStr);
+  end;
+
+  Procedure CalcTextRect;
+  var
+    J, wT,hT : Integer;
+  begin
+    CopyRect(theRect, Rect);
+    {Initialize text width/height}
+    wT := Tm.tmAveCharWidth*StrLen(Str);
+    hT := TM.tmHeight;
+
+    If Lines.Count = 1 then begin
+      {Get text width/height if only one line}
+      AStr := Lines[0];
+      If not NoPrefix then
+        DeleteAmpersands(aStr);
+      hT := TM.tmHeight;
+      wT := GetStringLength(DC, AStr,1, Length(AStr) + 1);
+    end
+    else begin
+      {Get text width/height if more than one line}
+      hT := hT* (Lines.Count);
+      wT := 0;
+      For J := 0 to Lines.Count - 1 do begin
+        AStr := Lines[J];
+        If not NoPrefix then
+          DeleteAmpersands(aStr);
+        If wT < GetStringLength(DC, AStr,1, Length(AStr) + 1)
+        then
+          wT := GetStringLength(DC, AStr,1, Length(AStr) + 1);
+      end;
+    end;
+
+    theRect.Right := theRect.Left + wT;
+    If not CalcRect then
+      Case LeftOffset of
+        DT_CENTER :
+          OffsetRect(theRect, (Rect.Right - theRect.Right) div 2, 0);
+        DT_Right :
+          OffsetRect(theRect, Rect.Right - theRect.Right, 0);
+      end;
+
+    theRect.Bottom := theRect.Top + hT;
+
+    {If SingleLine allow vertical offset}
+    If not CalcRect then
+      If SingleLine then
+        Case TopOffset of
+          DT_VCENTER :
+            OffsetRect(theRect, 0, (Rect.Bottom - theRect.Bottom) div 2);
+          DT_Bottom :
+            OffsetRect(theRect, 0, Rect.Bottom - theRect.Bottom);
+        end;
+  end;
+
+begin
+  Result := 0;
+  Lines := nil;
+
+  {Get accurate string length, if none was given}
+  If Count < 0 then
+    Count := StrLen(Str);
+
+  {Calculate # Lines, etc.}
+  pStr := StrAlloc(Count + 1);
+  try
+    StrLCopy(pStr, Str, Count);
+    pStr[Count] := #0;
+    AStr := String(pStr);
+
+    tmpString := Copy(AStr, 1, Length(ASTR));
+
+    {Get font & string metrics}
+    GetTextMetrics(DC, TM);
+    If not NoPrefix then
+      DeleteAmpersands(tmpString);
+
+    If Str > '' then begin
+      TextExtent(DC, tmpString);
+      AP.cX := AP.cX div Length(tmpString);
+    end
+    else begin
+      AP.cY := TM.tmHeight;
+      AP.cX := TM.tmAveCharWidth;
+    end;
+
+    {Break string into individual lines}
+    MaxLength := (Rect.Right - Rect.Left);
+    Lines := DoBreakString(AStr);
+  finally
+    StrDispose(pStr);
+  end;
+
+  {Error occcured...}
+  If Lines = nil then
+    exit;
+
+  {Calculate the text's bounding rect}
+  CalcTextRect;
+
+  {If just calculating rect, finish up here}
+  If CalcRect then begin
+    CopyRect(Rect,theRect);
+    Lines.Free;
+    exit;
+  end;
+
+  {Backup device-context}
+  TDC := SaveDC(DC);
+
+  {Set clipping area if enabled}
+  If not NOCLIP then begin
+    If theRect.Right > Rect.Right then
+      theRect.Right := Rect.Right;
+    If theRect.Bottom > Rect.Bottom then
+      theRect.Bottom := Rect.Bottom;
+    IntersectClipRect(DC, theRect.Left, theRect.Top,
+      theRect.Right, theRect.Bottom);
+  end;
+
+  {Select NULL brush}
+  B := SelectObject(DC, GetStockObject(NULL_BRUSH));
+
+  {Create & select pen of font color}
+  LogP.lopnStyle := PS_SOLID;
+  LogP.lopnWidth.X := 1;
+  LogP.lopnColor := GetTextColor(DC);
+  P := SelectObject(DC, CreatePenIndirect(LogP));
+
+  For I := 0 to Lines.Count - 1 do begin
+    {Set vertical position for line}
+    aTop := theRect.Top + I*TM.tmHeight;
+
+    If (aTop >= Rect.Top) and (aTop <= Rect.Bottom - TM.tmHeight)
+    then begin
+      AStr := Lines[I];
+
+      {Remove ampersands & get index of prefix}
+      If not NoPrefix then
+        pIndex := DeleteAmpersands(aStr)
+      else
+        pIndex := -1;
+
+      {Offset line according to orientation}
+      Case LeftOffset of
+        DT_Left:
+          aLeft := theRect.Left;
+        DT_Center:
+          aLeft := theRect.Left + (theRect.Right - theRect.Left) div 2
+                   - TextExtent(DC, aStr).cX div 2;
+        DT_Right:
+          aLeft := theRect.Right - TextExtent(DC, AStr).cX;
+      end;
+
+      {Draw line of Text}
+      TextOut(DC, aLeft, aTop, PChar(AStr), Length(AStr));
+
+      {Prefix drawing}
+      If pIndex > 0 then begin
+        {Get prefix line position}
+        pX1 := aLeft + GetStringLength(DC, AStr, 1, pIndex);
+        pX2 := pX1 + GetStringLength(DC, AStr, pIndex, pIndex + 1);
+        pY := aTop + tm.tmHeight - TM.tmDescent + 1;
+
+        {Draw prefix line}
+        MoveToEx(DC, pX1, PY, @Pt);
+        LineTo(DC, pX2, pY);
+
+        {Reset pen position}
+        MoveToEx(DC, Pt.X, Pt.Y, nil);
+      end;
+    end;
+  end;
+
+  {Reset brush}
+  SelectObject(DC, B);
+
+  {Reset pen}
+  DeleteObject(SelectObject(DC, P));
+
+  {Finalize Lines}
+  Lines.Free;
+
+  {Restore device-context}
+  RestoreDC(DC, TDC);
+
+  Result := 1;
+end;
+
 function TInterfaceBase.EnableMenuItem(hndMenu: HMENU; uIDEnableItem: Integer; bEnable: Boolean): Boolean;
 begin
   Result := False;
@@ -210,14 +640,51 @@ begin
 end;
 
 function TInterfaceBase.Ellipse(DC: HDC; x1, y1, x2, y2: Integer): Boolean;
+var
+  Points : PPoint;
+  Count : Longint;
+  X, Y : Longint;
 begin
-  Result:=false;
+  Result := False;
+  Points := nil;
+  Count := 0;
+  If X2 < X1 then begin
+    X := X2;
+    X2 := X1;
+    X1 := X;
+  end;
+  If Y2 < Y1 then begin
+    Y := Y2;
+    Y2 := Y1;
+    Y1 := Y;
+  end;
+  If (ABS(Y2 - Y1) > 0) and (ABS(X2 - X1) > 0) then begin
+    PolyBezierArcPoints(x1, y1, x2 - x1, y2 - y1,0,360*16,0,Points,Count);
+    Polygon(DC, Points, Count, True);
+    ReallocMem(Points, 0);
+  end;
+  Result := True;
 end;
 
 function TInterfaceBase.ExcludeClipRect(dc: hdc;
   Left, Top, Right, Bottom : Integer) : Integer;
+var
+  Clip, RRGN : hRGN;
+  R : TRect;
 begin
-  Result:=SimpleRegion;
+  Clip := CreateRectRGN(0,0,0,0);
+  If GetClipRGN(DC, Clip) < 0 then begin
+    GetWindowRect(DC, R);
+    RRGN := CreateRectRgn(R.Left,R.Top,R.Right, R.Bottom);
+    Result := SelectClipRGN(DC, RRGN);
+    DeleteObject(RRGN);
+  end;
+  DeleteObject(Clip);
+  If Result <> ERROR then begin
+    RRGN := CreateRectRgn(Left, Top, Right, Bottom);
+    Result := ExtSelectClipRGN(DC, RRGN, RGN_DIFF);
+    DeleteObject(RRGN);
+  end;
 end;
 
 function TInterfaceBase.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
@@ -226,8 +693,17 @@ begin
 end;
 
 function TInterfaceBase.ExtSelectClipRGN(dc: hdc; rgn : hrgn; Mode : Longint) : Integer;
+var
+  OldC, Clip : hRGN;
 begin
-  Result := SimpleRegion;
+  OldC := CreateRectRGN(0,0,1,1);
+  GetClipRGN(DC, OldC);
+  Clip := CreateRectRGN(0,0,1,1);
+  Result := CombineRGN(Clip, OldC, RGN, Mode);
+  If Result <> ERROR then
+    Result := SelectClipRGN(DC, Clip);
+  DeleteObject(Clip);
+  DeleteObject(oldC);
 end;
 
 function TInterfaceBase.FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean;
@@ -349,6 +825,11 @@ begin
   Result := 0;
 end;
 
+function TInterfaceBase.GetTextColor(DC: HDC) : TColorRef;
+begin
+  Result := 0;
+end;
+
 function TInterfaceBase.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean;
 begin
   Result := False;
@@ -387,8 +868,17 @@ end;
 
 function TInterfaceBase.IntersectClipRect(dc: hdc;
   Left, Top, Right, Bottom: Integer): Integer;
+var
+  Clip, RRGN : hRGN;
 begin
-  Result:=SimpleRegion;
+  RRGN := CreateRectRgn(Left, Top, Right, Bottom);
+  Clip := CreateRectRGN(0,0,0,0);
+  If GetClipRGN(DC, Clip) < 0 then
+    Result := ExtSelectClipRGN(DC, RRGN, RGN_COPY)
+  else
+    Result := ExtSelectClipRGN(DC, RRGN, RGN_AND);
+  DeleteObject(RRGN);
+  DeleteObject(Clip);
 end;
 
 Function TInterfaceBase.InvalidateRect(aHandle : HWND; Rect : pRect;
@@ -434,15 +924,40 @@ End;
 
 function TInterfaceBase.Pie(DC: HDC; 
   x,y,width,height,angle1,angle2 : Integer): Boolean;
+var
+  Points : PPoint;
+  Count : Longint;
 begin
-  Result := false;
+  Result := False;
+  Points := nil;
+  Count := 0;
+  PolyBezierArcPoints(X,Y,Width,Height,Angle1, Angle2, 0, Points, Count);
+  Count += 2;
+  ReallocMem(Points, Count*SizeOf(TPoint));
+  Points[Count - 2] := CenterPoint(Rect(X,Y,X+Width,Y+Height));
+  Points[Count - 1] := Points[0];
+  ReallocMem(Points, Count*SizeOf(TPoint));
+  Points[Count - 1] := Points[0];
+  Polygon(DC, Points, Count, True);
+  ReallocMem(Points, 0);
+  Result := True;
 end;
 
-function TInterfaceBase.PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer; 
-  Filled,Continuous: boolean): boolean; 
-begin
-  Result := false;
-end;
+function TInterfaceBase.PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer;
+  Filled,Continuous: boolean): boolean;
+var
+  APoints : PPoint;
+  ACount : Longint;
+Begin
+  APoints := nil;
+  ACount := 0;
+  PolyBezier2Polyline(Points,NumPts,APoints,ACount,Continuous);
+  If Filled then
+    Result := Polygon(DC,APoints,ACount, False)
+  else
+    Result := Polyline(DC,APoints,ACount);
+  ReallocMem(APoints,0);
+End;
 
 function TInterfaceBase.Polygon(DC: HDC; Points: PPoint; NumPts: Integer; 
   Winding: boolean): boolean; 
@@ -463,19 +978,28 @@ begin
 end;
 
 function TInterfaceBase.RadialArc(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean;
-begin
-  Result := False;
-end;
+var
+  A1, A2 : Extended;
+Begin
+  Coords2Angles(x,y,width,height,sx,sy,ex,ey,A1,A2);
+  Result := Arc(DC, X, Y, Width, Height, Round(A1), Round(A2));
+End;
 
 function TInterfaceBase.RadialChord(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean;
-begin
-  Result := False;
-end;
+var
+  A1, A2 : Extended;
+Begin
+  Coords2Angles(x,y,width,height,sx,sy,ex,ey,A1,A2);
+  Result := AngleChord(DC, X, Y, Width, Height, Round(A1), Round(A2));
+End;
 
 function TInterfaceBase.RadialPie(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean;
-begin
-  Result := False;
-end;
+var
+  A1, A2 : Extended;
+Begin
+  Coords2Angles(x,y,width,height,sx,sy,ex,ey,A1,A2);
+  Result := Pie(DC, X, Y, Width, Height, Round(A1), Round(A2));
+End;
 
 function TInterfaceBase.RadioMenuItemGroup(hndMenu: HMENU; bRadio: Boolean): Boolean;
 begin
@@ -675,10 +1199,29 @@ begin
   Result := 0;
 end;
 
+Procedure TInterfaceBase.InitializeCriticalSection(var CritSection: TCriticalSection);
+begin
+end;
+
+Procedure TInterfaceBase.EnterCriticalSection(var CritSection: TCriticalSection);
+begin
+end;
+
+Procedure TInterfaceBase.LeaveCriticalSection(var CritSection: TCriticalSection);
+begin
+end;
+
+Procedure TInterfaceBase.DeleteCriticalSection(var CritSection: TCriticalSection);
+begin
+end;
+
 //##apiwiz##eps##   // Do not remove
 { =============================================================================
 
   $Log$
+  Revision 1.40  2002/08/19 20:34:47  lazarus
+  MG: improved Clipping, TextOut, Polygon functions
+
   Revision 1.39  2002/08/15 15:46:48  lazarus
   MG: added changes from Andrew (Clipping)
 
