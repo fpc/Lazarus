@@ -548,7 +548,6 @@ end;
 
 procedure TControlSelection.UpdateBounds;
 begin
-  if IsResizing then exit;
   if FUpdateLock>0 then begin
     Include(FStates,cssBoundsNeedsUpdate);
     exit;
@@ -1118,10 +1117,10 @@ begin
   Result:=FControls.Add(NewSelectedControl);
   FStates:=FStates+[cssOnlyNonVisualNeedsUpdate,cssOnlyVisualNeedsUpdate];
   if Count=1 then SetCustomForm;
+  DoChange;
   UpdateBounds;
   SaveBounds;
   EndUpdate;
-  DoChange;
 end;
 
 function TControlSelection.AssignComponent(AComponent: TComponent): boolean;
@@ -1145,6 +1144,7 @@ end;
 procedure TControlSelection.Delete(Index:integer);
 begin
   if Index<0 then exit;
+  BeginUpdate;
   Items[Index].Free;
   FControls.Delete(Index);
   FStates:=FStates+[cssOnlyNonVisualNeedsUpdate,cssOnlyVisualNeedsUpdate];
@@ -1152,6 +1152,7 @@ begin
   UpdateBounds;
   SaveBounds;
   DoChange;
+  EndUpdate;
 end;
 
 procedure TControlSelection.Clear;
@@ -1450,6 +1451,10 @@ var i:integer;
 begin
   SelectionChanged:=false;
   if ClearBefore then begin
+    if IsSelected(ACustomForm) then begin
+      Remove(ACustomForm);
+      SelectionChanged:=true;
+    end;
     for i:=0 to ACustomForm.ComponentCount-1 do
       if not ControlInRubberBand(ACustomForm.Components[i]) then begin
         if IsSelected(ACustomForm.Components[i]) then begin

@@ -463,6 +463,8 @@ begin
   NewPageIndex:=AMenuItem.MenuIndex;
   if (NewPageIndex<0) or (NewPageIndex>=Notebook.PageCount) then exit;
   NoteBook.PageIndex:=NewPageIndex;
+  GetDesigner.SelectOnlyThisComponent(
+    TPage(NoteBook.PageList[NoteBook.PageIndex]));
 end;
 
 procedure TNotebookComponentEditor.AddNewPageToDesigner(Index: integer);
