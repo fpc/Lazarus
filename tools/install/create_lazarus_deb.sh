@@ -1,14 +1,37 @@
 #!/bin/bash
-#set -x
+
+set -x
 set -e
 
+# get installed fpc version
+FPCDeb=`dpkg -l | grep fp-compiler`
+if [ "x$FPCDeb" = "x" ]; then
+  echo ERROR: fp-compiler deb not installed
+  exit
+fi
+
+# get date of day
+Year=`date +%y`
+Month=`date +%m`
+Day=`date +%d`
+
+Date=20$Year$Month$Day
+LazVersion=0.8.5.2
+LazRelease=`dpkg -s fp-compiler | grep '^Version' | sed -e 's/Version: //'`
+LazRelease=`echo $LazRelease | sed -e 's/-/_/g'`
+SrcTGZ=lazarus-$Date.tgz
 CurDir=`pwd`
-TempDir=/tmp/lazarus_temp
-LazBuildDir=$TempDir/lazarus_build
-LazTGZ=$CurDir/lazarus-0.8.5.tgz
-LazDeb=lazarus-0.8.5-2.deb
+TmpDir=/tmp/lazarus$LazVersion
+LazBuildDir=$TmpDir/lazarus_build
+LazDeb=$CurDir/lazarus-$LazVersion-fpc_$LazRelease.deb
 DebianSrcDir=$CurDir/debian_lazarus
 LazDestDir=$LazBuildDir/usr/share/lazarus
+FPCVersion=`echo $LazRelease | sed -e 's/_.*//'`
+
+# download lazarus cvs if necessary
+if [ ! -f $SrcTGZ ]; then
+  ./create_lazarus_export_tgz.sh $SrcTGZ
+fi
 
 echo "Build directory is $LazBuildDir"
 if [ x$LazBuildDir = x/ ]; then
@@ -18,10 +41,10 @@ fi
 rm -rf $LazBuildDir
 
 # Unpack lazarus source
-echo "unpacking $LazTGZ ..."
+echo "unpacking $SrcTGZ ..."
 mkdir -p $LazBuildDir/usr/share/
 cd $LazBuildDir/usr/share/
-tar xzf $LazTGZ
+tar xzf $CurDir/$SrcTGZ
 find . -name '.cvsignore' -exec rm {} \;
 cd -
 
@@ -34,7 +57,10 @@ cd -
 # create control file
 echo "copying control file"
 mkdir -p $LazBuildDir/DEBIAN
-cp $DebianSrcDir/control $LazBuildDir/DEBIAN/
+cat $DebianSrcDir/control | \
+  sed -e "s/FPCVERSION/$FPCVersion/g" \
+      -e "s/LAZVERSION/$LazVersion/g" \
+  > $LazBuildDir/DEBIAN/control
 
 # copyright and changelog files
 echo "copying copyright and changelog files"
@@ -58,10 +84,10 @@ find $LazBuildDir -name '*.sh' -exec chmod a+x {} \;
 
 # creating deb
 echo "creating deb ..."
-cd $TempDir
+cd $TmpDir
 fakeroot dpkg-deb --build $LazBuildDir
 mv $LazBuildDir.deb $LazDeb
-echo "`pwd`/$LazDeb created."
+echo "$LazDeb created."
 cd -
 
 # end.
