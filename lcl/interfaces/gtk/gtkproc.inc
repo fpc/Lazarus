@@ -831,7 +831,7 @@ end;
   UpdateNoteBookClientWidget
   Params: ANoteBook: TObject
 
-  The client widget of a notebook is fixed widget of the current page.
+  The client widget of a notebook is the fixed widget of the current page.
   This procedure updates the 'Fixed' object data.
 ------------------------------------------------------------------------------}
 procedure UpdateNoteBookClientWidget(ANoteBook: TObject);
@@ -2526,6 +2526,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.74  2002/08/24 07:09:04  lazarus
+  MG: fixed bracket hilighting
+
   Revision 1.73  2002/08/24 06:51:23  lazarus
   MG: from Andrew: style list fixes, autosize for radio/checkbtns
 
