@@ -289,13 +289,21 @@ end;
 
 Function TInterfaceBase.GetWindowOrgEx(dc : hdc; var P : TPoint): Integer;
 Begin
-   Result := 0;
+  Result := 0;
 end;
 
 function TInterfaceBase.GetWindowRect(Handle : hwnd; var Rect : TRect): Integer;
 begin
   Result := 0;
 end;
+
+{$IFDEF ClientRectBugFix}
+Function TInterfaceBase.GetWindowSize(Handle : hwnd;
+  var Width, Height: integer): boolean;
+begin
+  Result:=false;
+end;
+{$ENDIF}
 
 function TInterfaceBase.HideCaret(hWnd: HWND): Boolean;
 begin
@@ -543,6 +551,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.27  2002/05/09 12:41:28  lazarus
+  MG: further clientrect bugfixes
+
   Revision 1.26  2002/03/08 16:16:55  lazarus
   MG: fixed parser of end blocks in initialization section added label sections
 
