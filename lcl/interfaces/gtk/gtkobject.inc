@@ -2650,7 +2650,6 @@ var
   RCStyle : PGtkRCStyle;
   Widget, FixWidget : PGTKWidget;
 begin
-  {$IfNdef Win32}
   if Sender is TWinControl
   then with TWinControl(Sender) do
   begin
@@ -2660,6 +2659,7 @@ begin
       FixWidget:=GetFixedWidget(Widget);
       If FixWidget <> Widget then Widget := FixWidget;
 
+      {$IfNdef Win32}
       // set default background
       if (Color=clNone) and (FixWidget^.Window<>nil) then
         gdk_window_set_back_pixmap(FixWidget^.Window,nil,0)
@@ -2670,7 +2670,7 @@ begin
         if GtkWidgetIsA(PGtkWidget(Handle),GTKAPIWidget_GetType) then exit;
 
         RCStyle:=gtk_rc_style_new;
-        RCStyle^.bg[GTK_STATE_NORMAL]:=TColortoTGDKColor(Color);
+        RCStyle^.bg[GTK_STATE_NORMAL]:=TColorToTGDKColor(Color);
 
         // Indicate which colors the GtkRcStyle will affect;
         // unflagged colors will follow the theme
@@ -2682,11 +2682,12 @@ begin
 
         //SetBKColor(Handle, ColorToRGB(Color));
       end;
+      {$Else}
+      if ColorIsStored then
+        Writeln('WARNING: [TgtkObject.SetColor] NOT supported under Win32 GTK')
+      {$EndIf}
     end;
   end;
-  {$Else}
-    Writeln('WARNING: [TgtkObject.SetColor] NOT supported under Win32 GTK')
-  {$EndIf}
 end;
 
 {------------------------------------------------------------------------------
@@ -6838,6 +6839,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.321  2003/01/18 21:31:43  mattias
+  fixed scrolling offset of TScrollingWinControl
+
   Revision 1.320  2003/01/18 19:03:38  mattias
   fixed TSpinEdit.Value
 
