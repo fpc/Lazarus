@@ -335,6 +335,7 @@ begin
       Value:=UserOverrides.Values[Variable];
       EnvList.Values[Variable]:=Value;
     end;
+    EnvList.Values['DISPLAY']:=Display;
     Strings.Assign(EnvList);
   finally
     EnvList.Free;
