@@ -60,6 +60,7 @@ type
   
   TXMLPropStorage = class(TCustomXMLPropStorage)
   Published
+    property StoredValues;
     property FileName;
     property RootNodePath;
     property Active;

@@ -358,6 +358,8 @@ end;
 constructor TStoredValues.Create(AOwner: TPersistent);
 begin
   inherited Create(AOwner, TStoredValue);
+  If AOwner is TCustomPropertyStorage then
+    FStorage:=TCustomPropertyStorage(AOwner);
 end;
 
 function TStoredValues.IndexOf(const AName: string): Integer;
@@ -448,11 +450,14 @@ begin
   inherited Create(AOwner);
   FActive := True;
   FLinks := TList.Create;
+  FStoredValues:=TStoredValues.Create(Self);
+  FStoredValues.Storage:=Self;
 end;
 
 destructor TCustomPropertyStorage.Destroy;
 begin
   FreeStorage;
+  FStoredValues.Free;
   while FLinks.Count > 0 do
     RemoveLink(TPropertyStorageLink(FLinks.Last));
   FreeAndNil(FLinks);
@@ -521,6 +526,7 @@ begin
     StorageNeeded(False);
     Try
       SaveProperties;
+      FStoredValues.SaveVAlues;
       NotifyLinks(poSave);
       if Assigned(FOnSaveProperties) then
         FOnSaveProperties(Self);
@@ -536,6 +542,7 @@ begin
   if Active then begin
     FSaved := False;
     StorageNeeded(True);
+    FStoredValues.RestoreValues;
     RestoreProperties;
     NotifyLinks(poRestore);
     FRestored:=True;

@@ -59,6 +59,7 @@ Type
   
   TIniPropStorage = class(TCustomIniPropStorage)
   Published
+    Property StoredValues;
     property IniFileName;
     property IniSection;
     property Active;
