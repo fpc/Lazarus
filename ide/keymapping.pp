@@ -1648,6 +1648,8 @@ begin
   NewKey2:=VK_UNKNOWN;
   NewShiftState2:=[];
   
+  //debugln('TKeyMappingEditForm.OkButtonClick A KeyA=',KeyAndShiftStateToEditorKeyString(NewKey1,NewShiftState1),' KeyB=',KeyAndShiftStateToEditorKeyString(NewKey2,NewShiftState2));
+
   // get old relation
   CurRelation:=KeyCommandRelationList.Relations[KeyIndex];
 
@@ -1661,21 +1663,32 @@ begin
   end;
 
   if not ResolveConflicts(NewKey1,NewShiftState1,CurRelation.Category.Areas)
-  then exit;
+  then begin
+    debugln('TKeyMappingEditForm.OkButtonClick ResolveConflicts failed for key1');
+    exit;
+  end;
   
+  //debugln('TKeyMappingEditForm.OkButtonClick B KeyA=',KeyAndShiftStateToEditorKeyString(NewKey1,NewShiftState1),' KeyB=',KeyAndShiftStateToEditorKeyString(NewKey2,NewShiftState2));
+
   // get settings for key2
   NewKey2:=EditorKeyStringToVKCode(Key2KeyComboBox.Text);
-  if (NewKey1=NewKey2) and (NewShiftState1=NewShiftState2) then
-    NewKey2:=VK_UNKNOWN;
+  //debugln('TKeyMappingEditForm.OkButtonClick B2 KeyA=',KeyAndShiftStateToEditorKeyString(NewKey1,NewShiftState1),' KeyB=',KeyAndShiftStateToEditorKeyString(NewKey2,NewShiftState2),' ',Key2KeyComboBox.Text);
   if NewKey2<>VK_UNKNOWN then
   begin
     if Key2CtrlCheckBox.Checked then include(NewShiftState2,ssCtrl);
     if Key2AltCheckBox.Checked then include(NewShiftState2,ssAlt);
     if Key2ShiftCheckBox.Checked then include(NewShiftState2,ssShift);
   end;
-  
+  if (NewKey1=NewKey2) and (NewShiftState1=NewShiftState2) then
+    NewKey2:=VK_UNKNOWN;
+
   if not ResolveConflicts(NewKey2,NewShiftState2,CurRelation.Category.Areas)
-  then exit;
+  then begin
+    debugln('TKeyMappingEditForm.OkButtonClick ResolveConflicts failed for key1');
+    exit;
+  end;
+
+  //debugln('TKeyMappingEditForm.OkButtonClick C KeyA=',KeyAndShiftStateToEditorKeyString(NewKey1,NewShiftState1),' KeyB=',KeyAndShiftStateToEditorKeyString(NewKey2,NewShiftState2));
 
   if NewKey1=VK_UNKNOWN then
   begin
@@ -1684,8 +1697,12 @@ begin
     NewKey2:=VK_UNKNOWN;
   end;
 
+  //debugln('TKeyMappingEditForm.OkButtonClick D KeyA=',KeyAndShiftStateToEditorKeyString(NewKey1,NewShiftState1),' KeyB=',KeyAndShiftStateToEditorKeyString(NewKey2,NewShiftState2));
+
   CurRelation.KeyA:=IDEShortCut(NewKey1,NewShiftState1,VK_UNKNOWN,[]);
   CurRelation.KeyB:=IDEShortCut(NewKey2,NewShiftState2,VK_UNKNOWN,[]);
+
+  //debugln('TKeyMappingEditForm.OkButtonClick B KeyA=',KeyAndShiftStateToEditorKeyString(NewKey1,NewShiftState1),' KeyB=',KeyAndShiftStateToEditorKeyString(NewKey2,NewShiftState2));
   ModalResult:=mrOk;
 end;
 

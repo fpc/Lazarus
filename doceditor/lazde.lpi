@@ -8,7 +8,7 @@
         <SaveOnlyProjectUnits Value="True"/>
       </Flags>
       <MainUnit Value="0"/>
-      <ActiveEditorIndexAtStart Value="11"/>
+      <ActiveEditorIndexAtStart Value="8"/>
       <AutoCreateForms Value="False"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
@@ -65,7 +65,7 @@
         <IsPartOfProject Value="True"/>
         <Loaded Value="True"/>
         <ResourceFilename Value="frmmakeskel.lrs"/>
-        <TopLine Value="8"/>
+        <TopLine Value="5"/>
         <UnitName Value="frmmakeskel"/>
         <UsageCount Value="67"/>
       </Unit4>
@@ -104,13 +104,13 @@
         <UsageCount Value="51"/>
       </Unit7>
       <Unit8>
-        <CursorPos X="1" Y="23"/>
-        <EditorIndex Value="9"/>
+        <CursorPos X="22" Y="27"/>
+        <EditorIndex Value="8"/>
         <Filename Value="pkeditor.pp"/>
         <IsPartOfProject Value="True"/>
         <Loaded Value="True"/>
         <TopLine Value="1"/>
-        <UnitName Value="pkeditor"/>
+        <UnitName Value="PkEditor"/>
         <UsageCount Value="45"/>
       </Unit8>
       <Unit9>
@@ -125,17 +125,17 @@
       </Unit9>
       <Unit10>
         <CursorPos X="1" Y="23"/>
-        <EditorIndex Value="8"/>
+        <EditorIndex Value="7"/>
         <Filename Value="fpdeutil.pp"/>
         <IsPartOfProject Value="True"/>
         <Loaded Value="True"/>
         <TopLine Value="1"/>
-        <UnitName Value="fpdeutil"/>
+        <UnitName Value="FPDEUtil"/>
         <UsageCount Value="45"/>
       </Unit10>
       <Unit11>
         <CursorPos X="1" Y="23"/>
-        <EditorIndex Value="7"/>
+        <EditorIndex Value="6"/>
         <Filename Value="frmexample.pp"/>
         <ComponentName Value="ExampleForm"/>
         <IsPartOfProject Value="True"/>
