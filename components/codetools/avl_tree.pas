@@ -1,23 +1,4 @@
 {
- ***************************************************************************
- *                                                                         *
- *   This source is free software; you can redistribute it and/or modify   *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This code is distributed in the hope that it will be useful, but      *
- *   WITHOUT ANY WARRANTY; without even the implied warranty of            *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU     *
- *   General Public License for more details.                              *
- *                                                                         *
- *   A copy of the GNU General Public License is available on the World    *
- *   Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also      *
- *   obtain it by writing to the Free Software Foundation,                 *
- *   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.        *
- *                                                                         *
- ***************************************************************************
-
   Author: Mattias Gaertner
   
   Abstract:
@@ -87,6 +68,7 @@ type
     FMaxFreeRatio: integer;
     procedure SetMaxFreeRatio(NewValue: integer);
     procedure SetMinFree(NewValue: integer);
+    procedure DisposeFirstFreeNode;
   public
     procedure DisposeNode(ANode: TAVLTreeNode);
     function NewNode: TAVLTreeNode;
@@ -954,6 +936,10 @@ begin
     ANode.Right:=FFirstFree;
     FFirstFree:=ANode;
     inc(FFreeCount);
+    if (FFreeCount>(((8+FMaxFreeRatio)*FCount) shr 3)) then begin
+      DisposeFirstFreeNode;
+      DisposeFirstFreeNode;
+    end;
   end else begin
     // free list full -> free the ANode
     ANode.Free;
@@ -999,6 +985,17 @@ begin
   if NewValue<0 then NewValue:=0;
   if NewValue=FMinFree then exit;
   FMinFree:=NewValue;
+end;
+
+procedure TAVLTreeNodeMemManager.DisposeFirstFreeNode;
+var OldNode: TAVLTreeNode;
+begin
+  if FFirstFree=nil then exit;
+  OldNode:=FFirstFree;
+  FFirstFree:=FFirstFree.Right;
+  dec(FFreeCount);
+  OldNode.Right:=nil;
+  OldNode.Free;
 end;
 
 

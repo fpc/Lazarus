@@ -19,10 +19,7 @@
            flag is set to false.
         2. The items beginning with FFirstItem is a 2-way-connected list of
            TDynHashArrayItem. This list contains all used items.
-        3. The free items beginning with FFirstFreeItems is a
-           2-way-connected list of TDynHashArrayItem. This list constains the
-           freed items. They are disposed when this list grows bigger than
-           the Capacity. They are stored to reduce the usage of New and Dispose.
+        3. To reduce GetMem/FreeMem calls, free items are cached.
 
   Issues:
     The maximum capacity is the PrimeNumber. You can store more items, but the
@@ -65,9 +62,7 @@ type
     FCapacity: integer;
     FMinCapacity: integer;
     FMaxCapacity: integer;
-    FFreeCount: integer;
     FFirstItem: PDynHashArrayItem;
-    FFirstFreeItem: PDynHashArrayItem;
     FHashCacheItem: Pointer;
     FHashCacheIndex: integer;
     FLowWaterMark: integer;
@@ -79,7 +74,6 @@ type
     FOwnerHashFunction: TOwnerHashFunction;
     function NewHashItem: PDynHashArrayItem;
     procedure DisposeHashItem(ADynHashArrayItem: PDynHashArrayItem);
-    procedure DisposeFirstFreeItem;
     procedure ComputeWaterMarks;
     procedure SetCapacity(NewCapacity: integer);
     procedure SetCustomHashFunction(const AValue: THashFunction);
@@ -126,8 +120,41 @@ type
     procedure WriteDebugReport;
   end;
 
+  TDynHashArrayItemMemManager = class
+  private
+    FFirstFree: PDynHashArrayItem;
+    FFreeCount: integer;
+    FCount: integer;
+    FMinFree: integer;
+    FMaxFreeRatio: integer;
+    procedure SetMaxFreeRatio(NewValue: integer);
+    procedure SetMinFree(NewValue: integer);
+    procedure DisposeFirstFreeItem;
+  public
+    procedure DisposeItem(ADynHashArrayItem: PDynHashArrayItem);
+    function NewItem: PDynHashArrayItem;
+    property MinimumFreeCount: integer read FMinFree write SetMinFree;
+    property MaximumFreeRatio: integer
+        read FMaxFreeRatio write SetMaxFreeRatio; // in one eighth steps
+    property Count: integer read FCount;
+    procedure Clear;
+    constructor Create;
+    destructor Destroy; override;
+    function ConsistencyCheck: integer;
+    procedure WriteDebugReport;
+  end;
+  
+const
+  ItemMemManager: TDynHashArrayItemMemManager = nil;
 
 implementation
+
+function GetItemMemManager: TDynHashArrayItemMemManager;
+begin
+  if ItemMemManager=nil then
+    ItemMemManager:=TDynHashArrayItemMemManager.Create;
+  Result:=ItemMemManager;
+end;
 
 const
   PrimeNumber: integer = 5364329;
@@ -139,7 +166,7 @@ var i, RealHashIndex: integer;
   HashItem: PDynHashArrayItem;
 begin
   writeln('TDynHashArray.WriteDebugReport: Consistency=',ConsistencyCheck);
-  writeln('  Count=',FCount,'  FreeCount=',FFreeCount,'  Capacity=',FCapacity);
+  writeln('  Count=',FCount,'  Capacity=',FCapacity);
   for i:=0 to FCapacity-1 do begin
     HashItem:=FItems[i];
     if HashItem<>nil then begin
@@ -176,9 +203,7 @@ begin
   GetMem(FItems,Size);
   FillChar(FItems^,Size,0);
   FCount:=0;
-  FFreeCount:=0;
   FFirstItem:=nil;
-  FFirstFreeItem:=nil;
   ComputeWaterMarks;
   FHashCacheIndex:=-1;
 end;
@@ -186,13 +211,12 @@ end;
 destructor TDynHashArray.Destroy;
 begin
   Clear;
-  while FFirstFreeItem<>nil do DisposeFirstFreeItem;
   FreeMem(FItems);
   inherited Destroy;
 end;
 
 function TDynHashArray.ConsistencyCheck: integer;
-var RealCount, RealFreeCount, i: integer;
+var RealCount, i: integer;
   HashItem, HashItem2: PDynHashArrayItem;
   OldCacheItem: pointer;
   OldCacheIndex: integer;
@@ -214,12 +238,6 @@ begin
         exit(-4); // double item
       HashItem2:=HashItem2^.Prior;
     end;
-    HashItem2:=FFirstFreeItem;
-    while HashItem2<>nil do begin
-      if HashItem=HashItem2 then
-        exit(-5); // freed and used at the same time
-      HashItem2:=HashItem2^.Next;
-    end;
     HashItem:=HashItem^.Next;
   end;
   // check chain
@@ -237,19 +255,6 @@ begin
   end;
   // check count
   if RealCount<>FCount then exit(-9);
-  RealFreeCount:=0;
-  // check freed items
-  HashItem:=FFirstFreeItem;
-  while HashItem<>nil do begin
-    inc(RealFreeCount);
-    if (HashItem^.Next<>nil) and (HashItem^.Next^.Prior<>HashItem) then
-      exit(-10);
-    if (HashItem^.Prior<>nil) and (HashItem^.Prior^.Next<>HashItem) then
-      exit(-11);
-    HashItem:=HashItem^.Next;
-  end;
-  if RealFreeCount<>FFreeCount then exit(-12);
-  if FCount+FFreeCount>FCapacity then exit(-13);
   // check FItems
   RealCount:=0;
   for i:=0 to FCapacity-1 do begin
@@ -422,52 +427,12 @@ end;
 
 function TDynHashArray.NewHashItem: PDynHashArrayItem;
 begin
-  if FFirstFreeItem<>nil then begin
-    Result:=FFirstFreeItem;
-    FFirstFreeItem:=FFirstFreeItem^.Next;
-    if FFirstFreeItem<>nil then
-      FFirstFreeItem^.Prior:=nil;
-    dec(FFreeCount);
-  end else begin
-    New(Result);
-  end;
-  with Result^ do begin
-    Item:=nil;
-    Next:=nil;
-    Prior:=nil;
-    IsOverflow:=false;
-  end;
+  Result:=GetItemMemManager.NewItem;
 end;
 
 procedure TDynHashArray.DisposeHashItem(ADynHashArrayItem: PDynHashArrayItem);
 begin
-  if ADynHashArrayItem=nil then exit;
-  if ADynHashArrayItem^.Next<>nil then
-    ADynHashArrayItem^.Next^.Prior:=ADynHashArrayItem^.Prior;
-  if ADynHashArrayItem^.Prior<>nil then
-    ADynHashArrayItem^.Prior^.Next:=ADynHashArrayItem^.Next;
-  ADynHashArrayItem^.Next:=FFirstFreeItem;
-  FFirstFreeItem:=ADynHashArrayItem;
-  if ADynHashArrayItem^.Next<>nil then
-    ADynHashArrayItem^.Next^.Prior:=ADynHashArrayItem;
-  ADynHashArrayItem^.Prior:=nil;
-  inc(FFreeCount);
-  if (FFreeCount>2*FCount) and (FFreeCount>10) then begin
-    DisposeFirstFreeItem;
-    DisposeFirstFreeItem;
-  end;
-end;
-
-procedure TDynHashArray.DisposeFirstFreeItem;
-var OldItem: PDynHashArrayItem;
-begin
-  if FFirstFreeItem=nil then exit;
-  OldItem:=FFirstFreeItem;
-  FFirstFreeItem:=OldItem^.Next;
-  if FFirstFreeItem<>nil then
-    FFirstFreeItem^.Prior:=nil;
-  Dispose(OldItem);
-  dec(FFreeCount);
+  GetItemMemManager.DisposeItem(ADynHashArrayItem);
 end;
 
 function TDynHashArray.Contains(Item: Pointer): boolean;
@@ -623,6 +588,127 @@ begin
   FOwnerHashFunction:=AValue;
   RebuildItems;
 end;
+
+{ TDynHashArrayItemMemManager }
+
+procedure TDynHashArrayItemMemManager.SetMaxFreeRatio(NewValue: integer);
+begin
+  if NewValue<0 then NewValue:=0;
+  if NewValue=FMaxFreeRatio then exit;
+  FMaxFreeRatio:=NewValue;
+end;
+
+procedure TDynHashArrayItemMemManager.SetMinFree(NewValue: integer);
+begin
+  if NewValue<0 then NewValue:=0;
+  if NewValue=FMinFree then exit;
+  FMinFree:=NewValue;
+end;
+
+procedure TDynHashArrayItemMemManager.DisposeFirstFreeItem;
+var OldItem: PDynHashArrayItem;
+begin
+  if FFirstFree=nil then exit;
+  OldItem:=FFirstFree;
+  FFirstFree:=OldItem^.Next;
+  if FFirstFree<>nil then
+    FFirstFree^.Prior:=nil;
+  Dispose(OldItem);
+  dec(FFreeCount);
+end;
+
+procedure TDynHashArrayItemMemManager.DisposeItem(
+  ADynHashArrayItem: PDynHashArrayItem);
+begin
+  if ADynHashArrayItem=nil then exit;
+  // unbind item
+  if ADynHashArrayItem^.Next<>nil then
+    ADynHashArrayItem^.Next^.Prior:=ADynHashArrayItem^.Prior;
+  if ADynHashArrayItem^.Prior<>nil then
+    ADynHashArrayItem^.Prior^.Next:=ADynHashArrayItem^.Next;
+  // add to free list
+  ADynHashArrayItem^.Next:=FFirstFree;
+  FFirstFree:=ADynHashArrayItem;
+  if ADynHashArrayItem^.Next<>nil then
+    ADynHashArrayItem^.Next^.Prior:=ADynHashArrayItem;
+  ADynHashArrayItem^.Prior:=nil;
+  inc(FFreeCount);
+  // reduce free list
+  if (FFreeCount>(((8+FMaxFreeRatio)*FCount) shr 3)) and (FFreeCount>10) then
+  begin
+    DisposeFirstFreeItem;
+    DisposeFirstFreeItem;
+  end;
+end;
+
+function TDynHashArrayItemMemManager.NewItem: PDynHashArrayItem;
+begin
+  if FFirstFree<>nil then begin
+    Result:=FFirstFree;
+    FFirstFree:=FFirstFree^.Next;
+    if FFirstFree<>nil then
+      FFirstFree^.Prior:=nil;
+    dec(FFreeCount);
+  end else begin
+    New(Result);
+  end;
+  with Result^ do begin
+    Item:=nil;
+    Next:=nil;
+    Prior:=nil;
+    IsOverflow:=false;
+  end;
+end;
+
+procedure TDynHashArrayItemMemManager.Clear;
+begin
+  while FFreeCount>0 do DisposeFirstFreeItem;
+end;
+
+constructor TDynHashArrayItemMemManager.Create;
+begin
+  inherited Create;
+  FFirstFree:=nil;
+  FFreeCount:=0;
+  FCount:=0;
+  FMinFree:=100;
+  FMaxFreeRatio:=8; // 1:1
+end;
+
+destructor TDynHashArrayItemMemManager.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+function TDynHashArrayItemMemManager.ConsistencyCheck: integer;
+var RealFreeCount: integer;
+  HashItem: PDynHashArrayItem;
+begin
+  RealFreeCount:=0;
+  HashItem:=FFirstFree;
+  while HashItem<>nil do begin
+    inc(RealFreeCount);
+    if (HashItem^.Next<>nil) and (HashItem^.Next^.Prior<>HashItem) then
+      exit(-1);
+    if (HashItem^.Prior<>nil) and (HashItem^.Prior^.Next<>HashItem) then
+      exit(-2);
+    HashItem:=HashItem^.Next;
+  end;
+  if RealFreeCount<>FFreeCount then exit(-3);
+  Result:=0;
+end;
+
+procedure TDynHashArrayItemMemManager.WriteDebugReport;
+begin
+  writeln('TDynHashArrayItemMemManager.WriteDebugReport:'
+    ,' Consistency=',ConsistencyCheck,', FreeCount=',FFreeCount);
+end;
+
+//==============================================================================
+
+finalization
+  FreeAndNil(ItemMemManager);
 
 end.
 
