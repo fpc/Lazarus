@@ -3172,7 +3172,10 @@ end;
 function TPascalParserTool.KeyWordFuncEnd: boolean;
 // end  (parse end of block, e.g. begin..end)
 begin
-  CurNode.EndPos:=CurPos.EndPos;
+  if CurNode.Desc in [ctnImplementation,ctnInterface] then
+    CurNode.EndPos:=CurPos.StartPos
+  else
+    CurNode.EndPos:=CurPos.EndPos;
   EndChildNode;
   ReadNextAtom;
   if AtomIsChar('.') then
@@ -6957,8 +6960,7 @@ writeln('TCodeCompletionCodeTool.CreateMissingProcBodies Gather existing method 
         // -> insert at the end of the implementation section
         ImplementationNode:=FindImplementationNode;
         if ImplementationNode=nil then exit;
-        Indent:=GetLineIndent(Src,ImplementationNode.StartPos)
-                   +ASourceChangeCache.BeautifyCodeOptions.Indent;
+        Indent:=GetLineIndent(Src,ImplementationNode.StartPos);
         InsertPos:=ImplementationNode.EndPos;
       end else begin
         // class is not in interface section
