@@ -1301,6 +1301,7 @@ procedure TPkgFile.LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
   FileVersion: integer; AdjustPathDelims: boolean);
 var
   AFilename: String;
+  CaseInsensitiveUnitName: String;
 begin
   if FileVersion=1 then ;
   Clear;
@@ -1311,6 +1312,12 @@ begin
   FileType:=PkgFileTypeIdentToType(XMLConfig.GetValue(Path+'Type/Value',''));
   HasRegisterProc:=XMLConfig.GetValue(Path+'HasRegisterProc/Value',false);
   fUnitName:=XMLConfig.GetValue(Path+'UnitName/Value','');
+  if FileType in PkgFileUnitTypes then begin
+    // make sure the unitname makes sense
+    CaseInsensitiveUnitName:=ExtractFileNameOnly(Filename);
+    if CompareText(fUnitName,CaseInsensitiveUnitName)<>0 then
+      fUnitName:=CaseInsensitiveUnitName;
+  end;
 end;
 
 procedure TPkgFile.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);

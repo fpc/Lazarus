@@ -2293,6 +2293,7 @@ var
   HeaderSrc: String;
   OutputDir: String;
   OldSrc: String;
+  CaseInsensitiveUnitName: String;
 begin
   {$IFDEF VerbosePkgCompile}
   writeln('TPkgManager.DoSavePackageMainSource A');
@@ -2324,7 +2325,7 @@ begin
     CurFile:=APackage.Files[i];
     // update unitname
     if FilenameIsPascalUnit(CurFile.Filename)
-    and (CurFile.FileType in [pftUnit,pftVirtualUnit]) then begin
+    and (CurFile.FileType in PkgFileUnitTypes) then begin
       CodeBuffer:=CodeToolBoss.LoadFile(CurFile.Filename,false,false);
       if CodeBuffer<>nil then begin
         // if the unit is edited, the unitname is probably already cached
@@ -2337,6 +2338,10 @@ begin
           CurFile.UnitName:=CurUnitName;
       end;
       CurUnitName:=CurFile.UnitName;
+      // make sure the unitname makes sense
+      CaseInsensitiveUnitName:=ExtractFileNameOnly(CurFile.Filename);
+      if SysUtils.CompareText(CurUnitName,CaseInsensitiveUnitName)<>0 then
+        CurUnitName:=CaseInsensitiveUnitName;
       if (CurUnitName<>'') and IsValidIdent(CurUnitName) then begin
         if UsedUnits<>'' then
           UsedUnits:=UsedUnits+', ';
@@ -2346,6 +2351,10 @@ begin
           RegistrationCode:=RegistrationCode+
             '  RegisterUnit('''+CurUnitName+''',@'+CurUnitName+'.Register);'+e;
         end;
+      end else begin
+        MessagesView.AddMsg('WARNING: unit name invalid '+CurFile.Filename
+           +', package='+APackage.IDAsString,
+           APackage.Directory);
       end;
     end;
   end;
