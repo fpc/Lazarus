@@ -458,8 +458,36 @@ var
   Flags: Integer;
   Toggle, Extended, SysKey: Boolean;
   ShiftState: TShiftState;
+  EventStopped: Boolean;
+  TopLevel: PGtkWidget;
+  
+  procedure StopKeyEvent(const EventName: PChar);
+  begin
+    if not EventStopped then begin
+      gtk_signal_emit_stop_by_name (GTK_OBJECT (Widget), EventName);
+      EventStopped:=true;
+    end;
+    If (Msg.CharCode >= 31) or (Msg.CharCode = 0) then begin
+      {$IfNDef Win32}
+      If Event^.theString <> nil then begin
+        Event^.theString[0] := Char(Msg.CharCode);
+        Event^.theString[1] := #0;
+      end;
+      {$EndIf}
+      Event^.KeyVal := Msg.CharCode;
+      If Msg.CharCode <> VK_UNKNOWN then
+        KeyCode := Msg.CharCode
+      else
+        KeyCode := $FFFF;
+    end else begin
+      Event^.KeyVal := 0;
+      KeyCode := $FFFF;
+    end;
+  end;
+  
 begin
   Result:=true;
+  EventStopped:=false;
   
   //writeln('[GTKKeyUpDown] ',TControl(Data).Name,':',TControl(Data).ClassName,' ',Event^.theType);
   FillChar(Msg,SizeOf(Msg),0);
@@ -496,16 +524,7 @@ begin
 
       If Msg.CharCode <> Code then begin
         // key was handled by LCL
-        gtk_signal_emit_stop_by_name (GTK_OBJECT (Widget), 'key_release_event');
-        If (Msg.CharCode >= 31) or (Msg.CharCode = 0) then begin
-          {$IfNDef Win32}
-          If Event^.theString <> nil then
-            Event^.theString[0] := Char(Msg.CharCode);
-          {$EndIf}
-          Event^.KeyVal := Msg.CharCode;
-        end else begin
-          Event^.KeyVal := 0;
-        end;
+        StopKeyEvent('key_release_event');
       end;
     end;
     
@@ -535,65 +554,52 @@ begin
       Code := Msg.CharCode;
       // send the message directly to the LCL
       NotifyApplicationUserInput(Msg.Msg);
+      //writeln('GTKKeyUpDown Key Send to ',TControl(Data).Name,':',TControl(Data).ClassName,' ',Code=VK_TAB);
       Result := DeliverMessage(Data, Msg)=0;
 
       If Msg.CharCode <> Code then begin
-        // key was handled by LCL
-        gtk_signal_emit_stop_by_name (GTK_OBJECT (Widget), 'key_press_event');
-        //writeln('  KEY PRESS WAS HANDLED');
-        If ((Msg.CharCode >= 31) and (Msg.CharCode <= 255))
-        or (Msg.CharCode = 0) then begin
-          {$IfNDef Win32}
-          Event^.theString[0] := Char(Msg.CharCode);
-          {$EndIf}
-          Event^.KeyVal := Msg.CharCode;
-          If Msg.CharCode <> VK_UNKNOWN then
-            KeyCode := Msg.CharCode
-          else
-            KeyCode := $FFFF;
-        end else begin
-          Event^.KeyVal := 0;
-          KeyCode := $FFFF;
-        end;
+        // key was changed by LCL
+        //writeln('GTKKeyUpDown Key CHANGED 1 ',TControl(Data).Name,':',TControl(Data).ClassName);
+        StopKeyEvent('key_press_event');
       end;
 
       if (KeyCode <> $FFFF)
       then begin
         EventTrace('char', data);
+        FillChar(Msg,SizeOf(Msg),0);
+        Msg.KeyData := $00000000; //TODO: OEM char
         if SysKey then
           Msg.msg := LM_SYSCHAR
         else
           Msg.msg := LM_CHAR;
         Msg.CharCode := KeyCode;
         Msg.Result:=0;
-        // send the message directly to the LCL
+        // send the message directly (not queued) to the LCL
         Result := DeliverMessage(Data, Msg)=0;
         If Msg.CharCode <> KeyCode then begin
           // key was handled by lcl
-          gtk_signal_emit_stop_by_name (GTK_OBJECT (Widget), 'key_press_event');
-          If ((Msg.CharCode >= 31) and (Msg.CharCode <= 255))
-          or (Msg.CharCode = 0) then
-          begin
-            {$IfNDef Win32}
-            Event^.theString[0] := Char(Msg.CharCode);
-            {$EndIf}
-            Event^.KeyVal := Msg.CharCode;
-          end;
+          //writeln('GTKKeyUpDown Key CHANGED 2 ',TControl(Data).Name,':',TControl(Data).ClassName);
+          StopKeyEvent('key_press_event');
         end;
       end;
       //This is disabled on account of the
       //strange behaviour in TSynEdit
-      (*If Msg.CharCode = VK_TAB then
+      If Msg.CharCode = VK_TAB then
         If TObject(Data) is TControl then begin
-          Control := TControl(Data);
-          Result := Control.PerformTab;
-          If Result then begin
-            {$IfNDef Win32}
-            Event^.theString[0] := #0;
-            {$EndIf}
-            Event^.KeyVal := 0;
+          TopLevel := gtk_widget_get_toplevel(Widget);
+          if GtkWidgetIsA(TopLevel, gtk_window_get_type)
+          and (PGtkWindow(TopLevel)^.focus_widget=Widget) then begin
+            StopKeyEvent('key_press_event');
+            //writeln('GTKKeyUpDown ',TControl(Data).Name,':',TControl(Data).ClassName);
+            Result := TControl(Data).PerformTab(ssShift in ShiftState);
+            If Result then begin
+              {$IfNDef Win32}
+              Event^.theString[0] := #0;
+              {$EndIf}
+              Event^.KeyVal := 0;
+            end;
           end;
-        end; *)
+        end;
     end;
   end;
 //writeln('AAA1 [GTKKeyUpDown] ',TControl(Data).Name,':',TControl(Data).ClassName,' Result=',Result);
@@ -2705,6 +2711,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.180  2003/06/10 17:23:35  mattias
+  implemented tabstop
+
   Revision 1.179  2003/06/09 14:39:52  mattias
   implemented setting working directory for debugger
 
