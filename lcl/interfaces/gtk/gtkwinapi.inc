@@ -6495,7 +6495,7 @@ begin
       {$IfDef VerboseFocus}
       writeln('  H NewTopLevel FocusWidget=',HexStr(Cardinal(PGtkWindow(TopLevel)^.Focus_Widget),8));
       {$EndIf}
-      gtk_window_activate_focus(PGtkWindow(TopLevel));
+      //gtk_window_activate_focus(PGtkWindow(TopLevel));
       {$IfDef VerboseFocus}
       writeln('  I NewTopLevel FocusWidget=',HexStr(Cardinal(PGtkWindow(TopLevel)^.Focus_Widget),8));
       {$EndIf}
@@ -7645,6 +7645,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.206  2003/01/06 14:41:24  mattias
+  fixed synedit mouse pos to logical column
+
   Revision 1.205  2003/01/06 13:59:45  mattias
   fixed synedit ensure cursor pos visible with tab chars
 
