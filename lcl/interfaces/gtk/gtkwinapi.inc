@@ -8697,6 +8697,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.349  2004/05/07 08:07:57  mattias
+  ifdefd UseSimpleJpeg
+
   Revision 1.348  2004/04/18 23:55:39  marc
   * Applied patch from Ladislav Michl
   * Changed the way TControl.Text is resolved

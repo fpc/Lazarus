@@ -41,6 +41,8 @@ uses
   SysUtils, Classes, Contnrs, FPCAdds,
   {$IFNDEF DisableFPImage}
   FPImage, FPReadPNG, FPWritePNG, FPReadBMP, FPWriteBMP, IntfGraphics,
+  {$ENDIF}
+  {$IFDEF UseSimpleJpeg}
   FPReadJpeg,FPWriteJpeg,
   {$ENDIF}
   LCLStrConsts, vclGlobals, LMessages, LCLType, LCLProc, LCLIntf, LResources,
@@ -368,7 +370,9 @@ type
   TPixmap = class;                  // xpm
   TIcon = class;                    // ico
   TPortableNetworkGraphic = class;  // png
+  {$IFDEF UseSimpleJpeg}
   TJpegImage = class;               // jpg
+  {$ENDIF}
 
 
   { TGraphicsObject }
@@ -1109,16 +1113,16 @@ type
   end;
 
 
+  {$IFDEF UseSimpleJpeg}
   { TJpegImage }
 
   TJpegImage = class(TFPImageBitmap)
   public
     class function GetFileExtensions: string; override;
-    {$IFNDEF DisableFPImage}
     class function GetDefaultFPReader: TFPCustomImageReaderClass; override;
     class function GetDefaultFPWriter: TFPCustomImageWriterClass; override;
-    {$ENDIF}
   end;
+  {$ENDIF}
 
 
   { TIcon }
@@ -1695,6 +1699,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.137  2004/05/07 08:07:57  mattias
+  ifdefd UseSimpleJpeg
+
   Revision 1.136  2004/05/06 16:25:22  mazen
   + jpeg loading support
 

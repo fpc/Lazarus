@@ -51,7 +51,9 @@ begin
   Add('png', 'Portable Network Graphic', TPortableNetworkGraphic);
   {$ENDIF}
   Add('ico', 'Icon', TIcon);
+  {$IFDEF UseSimpleJpeg}
   Add('jpg', 'Joint Picture Expert Group',TJpegImage);
+  {$ENDIF}
 end;
 
 procedure TPicFileFormatsList.Clear;

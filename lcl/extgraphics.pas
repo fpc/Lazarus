@@ -175,12 +175,20 @@ begin
     P[0].y:=Top;
     Case AArrowType of
       AtUp:    begin
-          P[2].y:= Top;
-          P[5].y:= Bottom;
+          P[0].x:= Left+(Right - Left) div 2;
+          P[1].x:= Right;
+          P[2].y:= Bottom;
+          P[3].x:= P[0].x;
+          P[4].x:= Left;
+          P[5].y:= Top+(Bottom-Top) div 3;
         end;
       AtDown:    begin
-          P[2].y:= Bottom;
-          P[5].y:= Top;
+          P[0].x:= Left;
+          P[1].x:= Left+(Right - Left) div 2;
+          P[2].y:= Top;
+          P[3].x:= Right;
+          P[4].x:= P[1].x;
+          P[5].y:= Bottom-(Bottom-Top) div 3;
         end;
       AtRight: begin
           P[0].x:= Left;
@@ -197,13 +205,11 @@ begin
     end;
     Case AArrowType of
       AtUp, AtDown: begin
-          P[0].x:=Left + (Right - Left) div 4; P[0].y:=Top + (Bottom - Top) div 2;
-          P[1].x:=Left; P[1].y:=P[0].y;
-          P[2].x:=Left + (Right - Left) div 2;
-          P[3].x:=Right; P[3].y:=P[0].y;
-          P[4].x:=Right - (Right - Left) div 4; P[4].y:= P[0].y;
-          P[5].x:=P[4].x;
-          P[6].x:=P[0].x; P[6].y:=P[5].y;
+          P[1].y:= Top+(Bottom-Top) div 3;
+          P[2].x:= Right;
+          P[3].y:= Bottom-(Bottom-Top) div 3;
+          P[4].y:= Bottom;
+          P[5].x:= Left;
         end;
       AtRight, AtLeft: begin
           P[1].y:=P[0].y;

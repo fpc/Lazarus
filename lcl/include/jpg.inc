@@ -1,7 +1,7 @@
 {%MainUnit ../graphics.pp}
 
 {******************************************************************************
-                         TPortableNetworkGraphic
+                         TJpegImage
  ******************************************************************************
 
  *****************************************************************************
@@ -18,14 +18,14 @@
  *****************************************************************************
 }
 
-{ TPortableNetworkGraphic }
+{$IFDEF UseSimpleJpeg}
+{ TJpegImage }
 
 function TJpegImage.GetFileExtensions: string;
 begin
   Result:='jpg';
 end;
 
-{$IFNDEF DisableFPImage}
 function TJpegImage.GetDefaultFPReader: TFPCustomImageReaderClass;
 begin
   Result:=TFPReaderJpeg;
