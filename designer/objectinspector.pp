@@ -1217,7 +1217,7 @@ var
   BW       : Integer;
   IconX,Index:integer;
   PointedRow:TOIpropertyGridRow;
-
+  TypeKind : TTypeKind;
 begin
   BW := 0;
   FHintTimer.Enabled := False;
@@ -1234,14 +1234,30 @@ begin
             PointedRow:=Rows[Index];
             if Assigned(PointedRow) then
               Begin
-                 if position.X <= FSplitterX then
-                      Begin
-                        if Assigned(PointedRow.Editor) then
-                           AHint := PointedRow.Editor.GetName
-                      end
-                    else
-                      AHint := PointedRow.LastPaintedValue;
-                 
+               if Assigned(PointedRow.Editor) then
+                  AHint := PointedRow.Editor.GetName;
+
+               AHint := AHint + #10'Value:'+PointedRow.LastPaintedValue;
+               TypeKind := PointedRow.Editor.GetPropType^.kind;
+               case TypeKind of
+                 tkInteger,tkInt64 : AHint := AHInt + #10'Integer';
+                 tkBool : AHint := AHInt + #10'Boolean';
+                 tkEnumeration : AHint := AHInt + #10'Enumeration';
+                 tkChar,tkWChar : AHint := AHInt + #10'Char';
+                 tkUnknown : AHint := AHInt + #10'Unknown';
+                 tkObject : AHint := AHInt + #10'Object';
+                 tkClass : AHint := AHInt + #10'Class';
+                 tkQWord : AHint := AHInt + #10'Word';
+                 tkString,tkLString,tkAString,tkWString : AHint := AHInt + #10'String';
+                 tkFloat : AHint := AHInt + #10'Float';
+                 tkSet : AHint := AHInt + #10'Set';
+                 tkMethod : AHint := AHInt + #10'Method';
+                 tkVariant : AHint := AHInt + #10'Variant';
+                 tkArray : AHint := AHInt + #10'Array';
+                 tkRecord : AHint := AHInt + #10'Record';
+                 tkInterface : AHint := AHInt + #10'Interface';
+                 end;
+
               end;
      end;
   if AHint = '' then Exit;
