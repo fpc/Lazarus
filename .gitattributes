@@ -450,6 +450,7 @@ images/sourceeditor/InactiveBreakPoint.ico -text svneol=unset#image/x-icon
 images/sourceeditor/InactiveBreakPoint.xpm -text svneol=native#image/x-xpixmap
 images/sourceeditor/InvalidBreakPoint.ico -text svneol=unset#image/x-icon
 images/sourceeditor/InvalidBreakPoint.xpm -text svneol=native#image/x-xpixmap
+images/sourceeditor/MultiBreakPoint.xpm -text svneol=native#image/x-xpixmap
 images/sourceeditor/bookmark0.ico -text svneol=unset#image/x-icon
 images/sourceeditor/bookmark0.xpm -text svneol=native#image/x-xpixmap
 images/sourceeditor/bookmark1.ico -text svneol=unset#image/x-icon

@@ -64,9 +64,9 @@ type
   TGDIColorFlags = set of TGDIColorFlag;
   
   TGDIColor = record
-    ColorRef : TColor;    //Color passed - can be a SYSCOLOR or RGB
+    ColorRef : TColorRef;    //Color passed - can be a SYSCOLOR or RGB
     ColorFlags: TGDIColorFlags;
-    Color : TGDKColor;       //Actual GDK Color(If any) for use with GC's
+    Color: TGDKColor;       //Actual GDK Color(If any) for use with GC's
     Colormap : PGDKColormap; //Colormap GDKColor was allocated with
   end;
   PGDIColor = ^TGDIColor;
@@ -436,6 +436,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.37  2003/05/27 15:04:00  mattias
+  small fixes for debugger without file
+
   Revision 1.36  2003/05/19 08:16:33  mattias
   fixed allocation of dc backcolor
 
