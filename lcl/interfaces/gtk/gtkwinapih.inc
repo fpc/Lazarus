@@ -121,6 +121,7 @@ function HideCaret(hWnd: HWND): Boolean; override;
 
 function IntersectClipRect(dc: hdc; Left, Top, Right, Bottom: Integer): Integer; override;
 function InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean) : Boolean; override;
+function IsWindowVisible(handle: HWND): boolean; override;
 
 function LineTo(DC: HDC; X, Y: Integer): Boolean; override;
 
@@ -199,6 +200,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.63  2003/03/17 08:51:10  mattias
+  added IsWindowVisible
+
   Revision 1.62  2003/03/09 21:13:32  mattias
   localized gtk interface
 
