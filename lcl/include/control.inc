@@ -3259,6 +3259,25 @@ begin
   Anchors:=Anchors+[Side];
 end;
 
+procedure TControl.AnchorParallel(Side: TAnchorKind; Space: integer;
+  Sibling: TControl);
+begin
+  case Side of
+  akLeft: BorderSpacing.Left:=Space;
+  akTop: BorderSpacing.Top:=Space;
+  akRight: BorderSpacing.Right:=Space;
+  akBottom: BorderSpacing.Bottom:=Space;
+  end;
+  case Side of
+  akLeft: AnchorSide[Side].Side:=asrLeft;
+  akTop: AnchorSide[Side].Side:=asrTop;
+  akRight: AnchorSide[Side].Side:=asrRight;
+  akBottom: AnchorSide[Side].Side:=asrBottom;
+  end;
+  AnchorSide[Side].Control:=Sibling;
+  Anchors:=Anchors+[Side];
+end;
+
 {------------------------------------------------------------------------------
   procedure TControl.AnchorHorizontalCenterTo(Sibling: TControl);
 
@@ -3430,6 +3449,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.242  2005/01/26 15:45:08  mattias
+  implemented adding files from directory in project inspector, fixed extrac proc checking overlapping blocks
+
   Revision 1.241  2005/01/24 12:23:11  mattias
   fixed TColorButton.Paint
 

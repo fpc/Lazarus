@@ -168,10 +168,11 @@ var
       end;
       Result:=DefaultPosition;
       CurAnchorSide:=Control.AnchorSide[Kind];
-      //debugln('GetAnchorSidePosition Self=',DbgSName(Self),' Control=',DbgSName(Control),' ',dbgs(CurAnchorSide.Control<>nil));
+      //debugln('GetAnchorSidePosition A Self=',DbgSName(Self),' Control=',DbgSName(Control),' ',DbgSName(CurAnchorSide.Control));
       CurAnchorSide.GetSidePosition(ReferenceControl,ReferenceSide,Position);
       if ReferenceControl<>nil then
         Result:=Position;
+      //debugln('GetAnchorSidePosition B Self=',DbgSName(Self),' Control=',DbgSName(Control),' ',dbgs(Result));
       AnchorSideCacheValid[Kind]:=true;
       AnchorSideCache[Kind]:=Result;
     end;
@@ -4386,6 +4387,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.308  2005/01/26 15:45:08  mattias
+  implemented adding files from directory in project inspector, fixed extrac proc checking overlapping blocks
+
   Revision 1.307  2005/01/25 09:58:16  mattias
   fixed fpc 1.0.10 compilation
 

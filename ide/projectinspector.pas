@@ -216,8 +216,9 @@ end;
 procedure TProjectInspectorForm.AddBitBtnClick(Sender: TObject);
 var
   AddResult: TAddToProjectResult;
-  NewFile: TUnitInfo;
   i: Integer;
+  NewFilename: string;
+  NewFile: TUnitInfo;
 begin
   if ShowAddToProjectDlg(LazProject,AddResult)<>mrOk then exit;
   
@@ -225,8 +226,16 @@ begin
   a2pFiles:
     begin
       BeginUpdate;
-      for i:=0 to AddResult.Files.Count-1 do begin
-        NewFile:=TUnitInfo(AddResult.Files[i]);
+      for i:=0 to AddResult.FileNames.Count-1 do begin
+        NewFilename:=AddResult.FileNames[i];
+        NewFile:=LazProject.UnitInfoWithFilename(NewFilename);
+        if NewFile<>nil then begin
+          if NewFile.IsPartOfProject then continue;
+        end else begin
+          NewFile:=TUnitInfo.Create(nil);
+          NewFile.Filename:=NewFilename;
+          LazProject.AddFile(NewFile,false);
+        end;
         NewFile.IsPartOfProject:=true;
         if Assigned(OnAddUnitToProject) then begin
           if OnAddUnitToProject(Self,NewFile)<>mrOk then break;

@@ -807,6 +807,7 @@ function PkgFileTypeIdentToType(const s: string): TPkgFileType;
 function LazPackageTypeIdentToType(const s: string): TLazPackageType;
 function GetPkgFileTypeLocalizedName(FileType: TPkgFileType): string;
 function NameToAutoUpdatePolicy(const s: string): TPackageUpdatePolicy;
+function FileNameToPkgFileType(const AFilename: string): TPkgFileType;
 
 procedure SortDependencyList(Dependencies: TList);
 procedure LoadPkgDependencyList(XMLConfig: TXMLConfig; const ThePath: string;
@@ -870,6 +871,24 @@ begin
   for Result:=Low(TPackageUpdatePolicy) to High(TPackageUpdatePolicy) do
     if AnsiCompareText(AutoUpdateNames[Result],s)=0 then exit;
   Result:=pupAsNeeded;
+end;
+
+function FileNameToPkgFileType(const AFilename: string): TPkgFileType;
+begin
+  if CompareFileExt(AFilename,'.lfm',true)=0 then
+    Result:=pftLFM
+  else if CompareFileExt(AFilename,'.lrs',true)=0 then
+    Result:=pftLRS
+  else if CompareFileExt(AFilename,'.inc',true)=0 then
+    Result:=pftInclude
+  else if CompareFileExt(AFilename,'.pas',true)=0 then
+    Result:=pftUnit
+  else if CompareFileExt(AFilename,'.pp',true)=0 then
+    Result:=pftUnit
+  else if FileIsText(AFilename) then
+    Result:=pftText
+  else
+    Result:=pftBinary;
 end;
 
 procedure LoadPkgDependencyList(XMLConfig: TXMLConfig; const ThePath: string;

@@ -1783,7 +1783,7 @@ Processor specific options:
 
   // unit path
   CurUnitPath:=GetUnitPath(true);
-  debugln('TBaseCompilerOptions.MakeOptionsString A ',dbgsName(Self),' CurUnitPath="',CurUnitPath,'"');
+  //debugln('TBaseCompilerOptions.MakeOptionsString A ',dbgsName(Self),' CurUnitPath="',CurUnitPath,'"');
   // always add the current directory to the unit path, so that the compiler
   // checks for changed files in the directory
   CurUnitPath:=CurUnitPath+';.';

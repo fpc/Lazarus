@@ -39,7 +39,7 @@ uses
   ComCtrls, StdCtrls, ExtCtrls, Menus, Dialogs, Graphics, FileUtil,
   {$IFNDEF VER1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF},
   LazarusIDEStrConsts, IDEProcs, IDEOptionDefs, EnvironmentOpts,
-  Project, PackageDefs, PackageSystem;
+  Project, PackageDefs, PackageSystem, InputHistory;
   
 type
   TAddToProjectType = (
@@ -51,15 +51,18 @@ type
   public
     AddType: TAddToProjectType;
     Dependency: TPkgDependency;
-    Files: TList; // list of TUnitInfo
+    FileNames: TStrings;
     destructor Destroy; override;
   end;
+
+  { TAddToProjectDialog }
 
   TAddToProjectDialog = class(TForm)
     // notebook
     NoteBook: TNoteBook;
-    AddFilePage: TPage;
+    AddEditorFilePage: TPage;
     NewDependPage: TPage;
+    AddFilesPage: TPage;
     // add file page
     AddFileLabel: TLabel;
     AddFileListBox: TListBox;
@@ -74,14 +77,29 @@ type
     DependMaxVersionEdit: TEdit;
     NewDependButton: TButton;
     CancelDependButton: TButton;
+    // add files page
+    FilesListView: TListView;
+    FilesBrowseButton: TButton;
+    FilesShortenButton: TButton;
+    FilesDeleteButton: TButton;
+    FilesAddButton: TButton;
     procedure AddFileButtonClick(Sender: TObject);
     procedure AddFilePageResize(Sender: TObject);
     procedure AddToProjectDialogClose(Sender: TObject;
                                       var CloseAction: TCloseAction);
     procedure NewDependButtonClick(Sender: TObject);
     procedure NewDependPageResize(Sender: TObject);
+    procedure FilesAddButtonClick(Sender: TObject);
+    procedure FilesBrowseButtonClick(Sender: TObject);
+    procedure FilesDeleteButtonClick(Sender: TObject);
+    procedure FilesShortenButtonClick(Sender: TObject);
   private
     fPackages: TAVLTree;// tree of  TLazPackage or TPackageLink
+    function CheckAddingFile(NewFiles: TStringList; var NewFilename: string
+      ): TModalResult;
+    procedure SetupAddEditorFilePage;
+    procedure SetupAddRequirementPage;
+    procedure SetupAddFilesPage;
     procedure SetupComponents;
     procedure OnIteratePackages(APackageID: TLazPackageID);
   public
@@ -253,66 +271,25 @@ procedure TAddToProjectDialog.AddFileButtonClick(Sender: TObject);
 var
   i: Integer;
   NewFilename: string;
-  NewUnitName: String;
-  NewFiles: TList;
-  NewFile: TUnitInfo;
-  j: Integer;
-  OtherFile: TUnitInfo;
-  OtherUnitName: String;
-  ConflictFile: TUnitInfo;
+  NewFiles: TStringList;
 begin
   try
-    NewFiles:=TList.Create;
+    NewFiles:=TStringList.Create;
     for i:=0 to AddFileListBox.Items.Count-1 do begin
       if not AddFileListBox.Selected[i] then continue;
       NewFilename:=AddFileListBox.Items[i];
-      // expand filename
-      if not FilenameIsAbsolute(NewFilename) then
-        NewFilename:=
-          TrimFilename(TheProject.ProjectDirectory+PathDelim+NewFilename);
-      NewFile:=TheProject.UnitInfoWithFilename(NewFilename);
-      if NewFile=nil then continue;
-      // check unit name
-      if FilenameIsPascalUnit(NewFilename) then begin
-        // check unitname is valid pascal identifier
-        NewUnitName:=ExtractFileNameOnly(NewFilename);
-        if (NewUnitName='') or not (IsValidIdent(NewUnitName)) then begin
-          MessageDlg(lisProjAddInvalidPascalUnitName,
-            Format(lisProjAddTheUnitNameIsNotAValidPascalIdentifier, ['"',
-              NewUnitName, '"']),
-            mtWarning,[mbIgnore,mbCancel],0);
-          exit;
-        end;
-        // check if unitname already exists in project
-        ConflictFile:=TheProject.UnitWithUnitname(NewUnitName);
-        if ConflictFile<>nil then begin
-          MessageDlg(lisProjAddUnitNameAlreadyExists,
-            Format(lisProjAddTheUnitNameAlreadyExistsInTheProject, ['"',
-              NewUnitName, '"', #13, '"', ConflictFile.Filename, '"']),
-            mtWarning,[mbCancel],0);
-          exit;
-        end;
-        // check if unitname already exists in selection
-        for j:=0 to NewFiles.Count-1 do begin
-          OtherFile:=TUnitInfo(NewFiles[j]);
-          if FilenameIsPascalUnit(OtherFile.Filename) then begin
-            OtherUnitName:=ExtractFileNameOnly(OtherFile.Filename);
-            if AnsiCompareText(OtherUnitName,NewUnitName)=0 then begin
-              MessageDlg(lisProjAddUnitNameAlreadyExists,
-                Format(lisProjAddTheUnitNameAlreadyExistsInTheSelection, ['"',
-                  NewUnitName, '"', #13, '"', OtherFile.Filename, '"']),
-                mtWarning,[mbCancel],0);
-              exit;
-            end;
-          end;
-        end;
+      case CheckAddingFile(NewFiles, NewFilename) of
+        mrOk: ;
+        mrIgnore: continue;
+      else
+        exit;
       end;
-      NewFiles.Add(NewFile);
+      NewFiles.Add(NewFilename);
     end;
     // everything ok
     AddResult:=TAddToProjectResult.Create;
     AddResult.AddType:=a2pFiles;
-    AddResult.Files:=NewFiles;
+    AddResult.FileNames:=NewFiles;
     NewFiles:=nil;
   finally
     NewFiles.Free;
@@ -357,56 +334,130 @@ begin
     SetBounds(x+NewDependButton.Width+10,y,80,Height);
 end;
 
+procedure TAddToProjectDialog.FilesAddButtonClick(Sender: TObject);
+var
+  i: Integer;
+  NewFilename: string;
+  NewFiles: TStringList;
+begin
+  try
+    NewFiles:=TStringList.Create;
+    for i:=0 to FilesListView.Items.Count-1 do begin
+      NewFilename:=FilesListView.Items[i].Caption;
+      case CheckAddingFile(NewFiles, NewFilename) of
+        mrOk: ;
+        mrIgnore: continue;
+      else
+        exit;
+      end;
+      NewFiles.Add(NewFilename);
+    end;
+    // everything ok
+    AddResult:=TAddToProjectResult.Create;
+    AddResult.AddType:=a2pFiles;
+    AddResult.FileNames:=NewFiles;
+    NewFiles:=nil;
+  finally
+    NewFiles.Free;
+  end;
+  ModalResult:=mrOk;
+end;
+
+procedure TAddToProjectDialog.FilesBrowseButtonClick(Sender: TObject);
+var
+  OpenDialog: TOpenDialog;
+  AFilename: string;
+  i: Integer;
+  NewListItem: TListItem;
+  NewPgkFileType: TPkgFileType;
+  ADirectory: String;
+begin
+  OpenDialog:=TOpenDialog.Create(nil);
+  try
+    InputHistories.ApplyFileDialogSettings(OpenDialog);
+    ADirectory:=TheProject.ProjectDirectory;
+    if not FilenameIsAbsolute(ADirectory) then ADirectory:='';
+    if ADirectory<>'' then
+      OpenDialog.InitialDir:=ADirectory;
+    OpenDialog.Title:=lisOpenFile;
+    OpenDialog.Options:=OpenDialog.Options
+                          +[ofFileMustExist,ofPathMustExist,ofAllowMultiSelect];
+    if OpenDialog.Execute then begin
+      for i:=0 to OpenDialog.Files.Count-1 do begin
+        AFilename:=CleanAndExpandFilename(OpenDialog.Files[i]);
+        if FileExists(AFilename) then begin
+          if ADirectory<>'' then
+            AFilename:=CreateRelativePath(AFilename,ADirectory);
+          NewListItem:=FilesListView.Items.Add;
+          NewListItem.Caption:=AFilename;
+          NewPgkFileType:=FileNameToPkgFileType(AFilename);
+          NewListItem.SubItems.Add(GetPkgFileTypeLocalizedName(NewPgkFileType));
+        end;
+      end;
+    end;
+    InputHistories.StoreFileDialogSettings(OpenDialog);
+  finally
+    OpenDialog.Free;
+  end;
+end;
+
+procedure TAddToProjectDialog.FilesDeleteButtonClick(Sender: TObject);
+var
+  i: Integer;
+begin
+  for i:=FilesListView.Items.Count-1 downto 0 do
+    if FilesListView.Items[i].Selected then
+      FilesListView.Items.Delete(i);
+end;
+
+procedure TAddToProjectDialog.FilesShortenButtonClick(Sender: TObject);
+var
+  SwitchToAbsolute: Boolean;
+  i: Integer;
+  Filename: String;
+  ADirectory: String;
+begin
+  if FilesListView.Items.Count=0 then exit;
+  if (TheProject=nil)
+  or (not FilenameIsAbsolute(TheProject.ProjectDirectory)) then exit;
+  ADirectory:=TheProject.ProjectDirectory;
+  SwitchToAbsolute:=not FilenameIsAbsolute(FilesListView.Items[0].Caption);
+  for i:=0 to FilesListView.Items.Count-1 do begin
+    Filename:=FilesListView.Items[i].Caption;
+    if SwitchToAbsolute then
+      Filename:=CreateAbsolutePath(Filename,ADirectory)
+    else
+      Filename:=CreateRelativePath(Filename,ADirectory);
+    FilesListView.Items[i].Caption:=Filename;
+  end;
+end;
+
 procedure TAddToProjectDialog.SetupComponents;
 begin
   NoteBook:=TNoteBook.Create(Self);
   with NoteBook do begin
     Name:='NoteBook';
     Parent:=Self;
-    Pages.Add('Add File');
-    AddFilePage:=Page[0];
+    Pages.Add(lisProjAddEditorFile);
+    AddEditorFilePage:=Page[0];
     Pages.Add(lisProjAddNewRequirement);
     NewDependPage:=Page[1];
+    Pages.Add(lisProjAddFiles);
+    AddFilesPage:=Page[2];
     PageIndex:=0;
     Align:=alClient;
   end;
 
-  AddFilePage.OnResize:=@AddFilePageResize;
+  AddEditorFilePage.OnResize:=@AddFilePageResize;
   NewDependPage.OnResize:=@NewDependPageResize;
   
-  AddFileLabel:=TLabel.Create(Self);
-  with AddFileLabel do begin
-    Name:='AddFileLabel';
-    Parent:=AddFilePage;
-    Caption:=lisProjAddAddFileToProject;
-  end;
+  SetupAddEditorFilePage;
+  SetupAddRequirementPage;
+  SetupAddFilesPage;
+end;
 
-  AddFileListBox:=TListBox.Create(Self);
-  with AddFileListBox do begin
-    Name:='AddFileListBox';
-    Parent:=AddFilePage;
-    MultiSelect:=true;
-  end;
-
-  AddFileButton:=TButton.Create(Self);
-  with AddFileButton do begin
-    Name:='AddFileButton';
-    Parent:=AddFilePage;
-    Caption:=lisLazBuildOk;
-    OnClick:=@AddFileButtonClick;
-  end;
-
-  CancelAddFileButton:=TButton.Create(Self);
-  with CancelAddFileButton do begin
-    Name:='CancelAddFileButton';
-    Parent:=AddFilePage;
-    Caption:=dlgCancel;
-    ModalResult:=mrCancel;
-  end;
-
-
-  // add required package
-
+procedure TAddToProjectDialog.SetupAddRequirementPage;
+begin
   DependPkgNameLabel:=TLabel.Create(Self);
   with DependPkgNameLabel do begin
     Name:='DependPkgNameLabel';
@@ -466,10 +517,167 @@ begin
   end;
 end;
 
+procedure TAddToProjectDialog.SetupAddFilesPage;
+var
+  CurColumn: TListColumn;
+begin
+  FilesListView:=TListView.Create(Self);
+  with FilesListView do begin
+    Name:='FilesListView';
+    Parent:=AddFilesPage;
+    MultiSelect:=true;
+    ViewStyle:=vsReport;
+    CurColumn:=Columns.Add;
+    CurColumn.Width:=200;
+    CurColumn.Caption:=lisA2PFilename2;
+    CurColumn:=Columns.Add;
+    CurColumn.Caption:=dlgEnvType;
+    Align:=alTop;
+  end;
+
+  FilesBrowseButton:=TButton.Create(Self);
+  with FilesBrowseButton do begin
+    Name:='FilesBrowseButton';
+    Parent:=AddFilesPage;
+    Caption:=lisPathEditBrowse;
+    AutoSize:=true;
+    Anchors:=[akLeft,akBottom];
+    Left:=5;
+    AnchorParallel(akBottom,5,Parent);
+    OnClick:=@FilesBrowseButtonClick;
+  end;
+  FilesListView.AnchorToNeighbour(akBottom,5,FilesBrowseButton);
+
+  FilesShortenButton:=TButton.Create(Self);
+  with FilesShortenButton do begin
+    Name:='FilesShortenButton';
+    Parent:=AddFilesPage;
+    Caption:=lisA2PSwitchPaths;
+    AutoSize:=true;
+    AnchorToNeighbour(akLeft,5,FilesBrowseButton);
+    AnchorVerticalCenterTo(FilesBrowseButton);
+    OnClick:=@FilesShortenButtonClick;
+  end;
+
+  FilesDeleteButton:=TButton.Create(Self);
+  with FilesDeleteButton do begin
+    Name:='FilesDeleteButton';
+    Parent:=AddFilesPage;
+    Caption:=dlgEdDelete;
+    AutoSize:=true;
+    AnchorToNeighbour(akLeft,5,FilesShortenButton);
+    AnchorVerticalCenterTo(FilesBrowseButton);
+    OnClick:=@FilesDeleteButtonClick;
+  end;
+
+  FilesAddButton:=TButton.Create(Self);
+  with FilesAddButton do begin
+    Name:='FilesAddButton';
+    Parent:=AddFilesPage;
+    Caption:=lisA2PAddFilesToPackage;
+    AutoSize:=true;
+    AnchorToNeighbour(akLeft,5,FilesDeleteButton);
+    AnchorVerticalCenterTo(FilesBrowseButton);
+    OnClick:=@FilesAddButtonClick;
+  end;
+end;
+
 procedure TAddToProjectDialog.OnIteratePackages(APackageID: TLazPackageID);
 begin
   if (fPackages.Find(APackageID)=nil) then
     fPackages.Add(APackageID);
+end;
+
+procedure TAddToProjectDialog.SetupAddEditorFilePage;
+begin
+  AddFileLabel:=TLabel.Create(Self);
+  with AddFileLabel do begin
+    Name:='AddFileLabel';
+    Parent:=AddEditorFilePage;
+    Caption:=lisProjAddAddFileToProject;
+  end;
+
+  AddFileListBox:=TListBox.Create(Self);
+  with AddFileListBox do begin
+    Name:='AddFileListBox';
+    Parent:=AddEditorFilePage;
+    MultiSelect:=true;
+  end;
+
+  AddFileButton:=TButton.Create(Self);
+  with AddFileButton do begin
+    Name:='AddFileButton';
+    Parent:=AddEditorFilePage;
+    Caption:=lisLazBuildOk;
+    OnClick:=@AddFileButtonClick;
+  end;
+
+  CancelAddFileButton:=TButton.Create(Self);
+  with CancelAddFileButton do begin
+    Name:='CancelAddFileButton';
+    Parent:=AddEditorFilePage;
+    Caption:=dlgCancel;
+    ModalResult:=mrCancel;
+  end;
+end;
+
+function TAddToProjectDialog.CheckAddingFile(NewFiles: TStringList;
+  var NewFilename: string): TModalResult;
+var
+  ConflictFile: TUnitInfo;
+  OtherUnitName: String;
+  OtherFile: string;
+  j: Integer;
+  NewFile: TUnitInfo;
+  NewUnitName: String;
+begin
+  Result:=mrCancel;
+  // expand filename
+  if not FilenameIsAbsolute(NewFilename) then
+    NewFilename:=
+                TrimFilename(TheProject.ProjectDirectory+PathDelim+NewFilename);
+  // check if file is already part of project
+  NewFile:=TheProject.UnitInfoWithFilename(NewFilename);
+  if (NewFile<>nil) and NewFile.IsPartOfProject then begin
+    Result:=mrIgnore;
+    exit;
+  end;
+  // check unit name
+  if FilenameIsPascalUnit(NewFilename) then begin
+    // check unitname is valid pascal identifier
+    NewUnitName:=ExtractFileNameOnly(NewFilename);
+    if (NewUnitName='') or not (IsValidIdent(NewUnitName)) then begin
+      MessageDlg(lisProjAddInvalidPascalUnitName,
+        Format(lisProjAddTheUnitNameIsNotAValidPascalIdentifier, ['"',
+          NewUnitName, '"']),
+        mtWarning, [mbIgnore, mbCancel], 0);
+      exit;
+    end;
+    // check if unitname already exists in project
+    ConflictFile:=TheProject.UnitWithUnitname(NewUnitName);
+    if ConflictFile<>nil then begin
+      MessageDlg(lisProjAddUnitNameAlreadyExists,
+        Format(lisProjAddTheUnitNameAlreadyExistsInTheProject, ['"',
+          NewUnitName, '"', #13, '"', ConflictFile.Filename, '"']),
+        mtWarning, [mbCancel, mbIgnore], 0);
+      exit;
+    end;
+    // check if unitname already exists in selection
+    for j:=0 to NewFiles.Count-1 do begin
+      OtherFile:=NewFiles[j];
+      if FilenameIsPascalUnit(OtherFile) then begin
+        OtherUnitName:=ExtractFileNameOnly(OtherFile);
+        if CompareText(OtherUnitName, NewUnitName)=0 then begin
+          MessageDlg(lisProjAddUnitNameAlreadyExists,
+            Format(lisProjAddTheUnitNameAlreadyExistsInTheSelection, ['"',
+              NewUnitName, '"', #13, '"', OtherFile, '"']),
+            mtWarning, [mbCancel], 0);
+          exit;
+        end;
+      end;
+    end;
+  end;
+  Result:=mrOk;
 end;
 
 constructor TAddToProjectDialog.Create(TheOwner: TComponent);
@@ -540,7 +748,7 @@ end;
 
 destructor TAddToProjectResult.Destroy;
 begin
-  Files.Free;
+  FileNames.Free;
   inherited Destroy;
 end;
 

@@ -149,6 +149,7 @@ var
   CursorNode: TCodeTreeNode;
   BeginBlockNode: TCodeTreeNode;
   BlockCleanEnd: Integer;
+  BlockCleanStart: LongInt;
   ANode: TCodeTreeNode;
   ProcLvl: Integer;
 begin
@@ -163,6 +164,7 @@ begin
   if CaretToCleanPos(EndPos,CleanEndPos)<>0 then exit;
   if CleanStartPos>=CleanEndPos then exit;
   {$IFDEF CTDebug}
+  debugln('TExtractProcTool.CheckExtractProc Selection="',copy(Src,CleanStartPos,CleanEndPos-CleanStartPos),'"');
   DebugLn('TExtractProcTool.CheckExtractProc node check ..');
   {$ENDIF}
   // check if in a Begin..End block
@@ -178,24 +180,52 @@ begin
   // check every block in selection
   while true do begin
     ReadNextAtom;
-    if (CurPos.StartPos>SrcLen) or (CurPos.StartPos>CursorNode.EndPos)
-    or (CurPos.StartPos>CleanStartPos) then
+    if (CurPos.EndPos>CleanEndPos) or (CurPos.StartPos>SrcLen)
+    or (CurPos.StartPos>CursorNode.EndPos) then
       break;
-    if WordIsLogicalBlockStart.DoItUpperCase(UpperSrc,
+    //debugln('TExtractProcTool.CheckExtractProc A "',GetAtom,'"');
+    if WordIsBlockStatementStart.DoItUpperCase(UpperSrc,
       CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
     then begin
-      if not ReadTilBlockEnd(true,false) then exit;
+      //debugln('TExtractProcTool.CheckExtractProc WordIsBlockStatementStart "',GetAtom,'"');
+      BlockCleanStart:=CurPos.StartPos;
+      if not ReadTilBlockStatementEnd(true) then exit;
       BlockCleanEnd:=CurPos.EndPos;
-      if BlockCleanEnd<CleanEndPos then exit;
+      debugln(copy(Src,BlockCleanStart,BlockCleanEnd-BlockCleanStart));
+      //debugln('TExtractProcTool.CheckExtractProc BlockEnd "',GetAtom,'" BlockCleanEnd=',dbgs(BlockCleanEnd),' CleanEndPos=',dbgs(CleanEndPos),' Result=',dbgs(Result),' BlockStartedInside=',dbgs(BlockCleanStart>=CleanStartPos));
+      if BlockCleanStart<CleanStartPos then begin
+        // this block started outside the selection
+        // -> it should end outside
+        if (BlockCleanEnd>=CleanStartPos) and (BlockCleanEnd<CleanEndPos) then
+        begin
+          // block overlaps selection
+          exit;
+        end;
+        if BlockCleanEnd>=CleanEndPos then begin
+          // set cursor back to block start
+          MoveCursorToCleanPos(BlockCleanStart);
+          ReadNextAtom;
+        end;
+      end else begin
+        // this block started inside the selection
+        // -> it should end inside
+        if (BlockCleanEnd>CleanEndPos) then begin
+          // block overlaps selection
+          exit;
+        end;
+      end;
+      //debugln('TExtractProcTool.CheckExtractProc Block ok');
     end
-    else if WordIsLogicalBlockEnd.DoItUpperCase(UpperSrc,
+    else if WordIsBlockStatementEnd.DoItUpperCase(UpperSrc,
       CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
     then begin
+      // a block ended inside, that started outside
       exit;
     end
-    else if WordIsLogicalBlockMiddle.DoItUpperCase(UpperSrc,
+    else if WordIsBlockStatementMiddle.DoItUpperCase(UpperSrc,
       CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
     then begin
+      // a block ended inside, that started outside
       exit;
     end;
   end;

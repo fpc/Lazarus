@@ -184,6 +184,7 @@ type
     function ReadSubRange(ExceptionOnError: boolean): boolean;
     function ReadTilBlockEnd(StopOnBlockMiddlePart,
         CreateNodes: boolean): boolean;
+    function ReadTilBlockStatementEnd(ExceptionOnNotFound: boolean): boolean;
     function ReadBackTilBlockEnd(StopOnBlockMiddlePart: boolean): boolean;
     function ReadTilVariableEnd(ExceptionOnError: boolean): boolean;
     function ReadTilStatementEnd(ExceptionOnError,
@@ -1945,6 +1946,19 @@ begin
       end;
     end;
   until false;
+end;
+
+function TPascalParserTool.ReadTilBlockStatementEnd(
+  ExceptionOnNotFound: boolean): boolean;
+begin
+  if CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen] then
+    Result:=ReadTilBracketClose(ExceptionOnNotFound)
+  else if WordIsBlockStatementStart.DoItUpperCase(UpperSrc,
+    CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
+  then
+    Result:=ReadTilBlockEnd(false,false)
+  else
+    Result:=false;
 end;
 
 function TPascalParserTool.ReadBackTilBlockEnd(

@@ -3448,7 +3448,7 @@ begin
         // jump backward to matching bracket
         if not ReadBackwardTilAnyBracketClose then exit;
       end
-      else if WordIsLogicalBlockStart.DoItUpperCase(UpperSrc,
+      else if WordIsBlockStatementStart.DoItUpperCase(UpperSrc,
         CurPos.StartPos,CurPos.EndPos-CurPos.StartPos) then
       begin
         // block start found
@@ -3545,7 +3545,7 @@ begin
       // jump backward to matching bracket
       if not ReadBackwardTilAnyBracketClose then exit;
     end
-    else if WordIsLogicalBlockStart.DoItUpperCase(UpperSrc,
+    else if WordIsBlockStatementStart.DoItUpperCase(UpperSrc,
       CurPos.StartPos,CurPos.EndPos-CurPos.StartPos) then
     begin
       // block start found

@@ -184,7 +184,6 @@ type
     procedure AutoCompleteNewComponentUnitName;
     procedure UpdateAddUnitInfo;
     procedure UpdateAddFileInfo;
-    function FileNameToPkgFileType(const AFilename: string): TPkgFileType;
     function SwitchRelativeAbsoluteFilename(const Filename: string): string;
   public
     Params: TAddToPkgResult;
@@ -872,7 +871,7 @@ begin
     OpenDialog.Options:=OpenDialog.Options
                           +[ofFileMustExist,ofPathMustExist,ofAllowMultiSelect];
     if OpenDialog.Execute then begin
-      for i:=0 to OpenDialog.Files.COunt-1 do begin
+      for i:=0 to OpenDialog.Files.Count-1 do begin
         AFilename:=CleanAndExpandFilename(OpenDialog.Files[i]);
         if FileExists(AFilename) then begin
           LazPackage.ShortenFilename(AFilename,true);
@@ -1722,25 +1721,6 @@ begin
     inc(i);
   end;
   AddFileTypeRadioGroup.ItemIndex:=i;
-end;
-
-function TAddToPackageDlg.FileNameToPkgFileType(const AFilename: string
-  ): TPkgFileType;
-begin
-  if CompareFileExt(AFilename,'.lfm',true)=0 then
-    Result:=pftLFM
-  else if CompareFileExt(AFilename,'.lrs',true)=0 then
-    Result:=pftLRS
-  else if CompareFileExt(AFilename,'.inc',true)=0 then
-    Result:=pftInclude
-  else if CompareFileExt(AFilename,'.pas',true)=0 then
-    Result:=pftUnit
-  else if CompareFileExt(AFilename,'.pp',true)=0 then
-    Result:=pftUnit
-  else if FileIsText(AFilename) then
-    Result:=pftText
-  else
-    Result:=pftBinary;
 end;
 
 function TAddToPackageDlg.SwitchRelativeAbsoluteFilename(const Filename: string

@@ -110,6 +110,9 @@ var
   WordIsLogicalBlockStart,
   WordIsLogicalBlockEnd,
   WordIsLogicalBlockMiddle,
+  WordIsBlockStatementStart,
+  WordIsBlockStatementEnd,
+  WordIsBlockStatementMiddle,
   WordIsBinaryOperator,
   WordIsLvl1Operator, WordIsLvl2Operator, WordIsLvl3Operator, WordIsLvl4Operator,
   WordIsBooleanOperator,
@@ -1071,11 +1074,45 @@ begin
     Add('}',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('END',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('UNTIL',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('IMPLEMENTATION',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('INITIALIZATION',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('FINALIZATION',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
 
   WordIsLogicalBlockMiddle:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(WordIsLogicalBlockMiddle);
   with WordIsLogicalBlockMiddle do begin
+    Add('FINALLY',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('EXCEPT',{$ifdef FPC}@{$endif}AllwaysTrue);
+  end;
+
+  WordIsBlockStatementStart:=TKeyWordFunctionList.Create;
+  KeyWordLists.Add(WordIsBlockStatementStart);
+  with WordIsBlockStatementStart do begin
+    Add('(',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('[',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('{',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('ASM',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('BEGIN',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('CASE',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('REPEAT',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('TRY',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('UNIT',{$ifdef FPC}@{$endif}AllwaysTrue);
+  end;
+
+  WordIsBlockStatementEnd:=TKeyWordFunctionList.Create;
+  KeyWordLists.Add(WordIsBlockStatementEnd);
+  with WordIsBlockStatementEnd do begin
+    Add(')',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add(']',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('}',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('END',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('UNTIL',{$ifdef FPC}@{$endif}AllwaysTrue);
+  end;
+
+  WordIsBlockStatementMiddle:=TKeyWordFunctionList.Create;
+  KeyWordLists.Add(WordIsBlockStatementMiddle);
+  with WordIsBlockStatementMiddle do begin
     Add('FINALLY',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('EXCEPT',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;

@@ -1907,6 +1907,8 @@ resourcestring
   lisProjAddTheUnitNameAlreadyExistsInTheSelection = 'The unit name %s%s%s '
     +'already exists in the selection%swith file: %s%s%s.';
   lisProjAddNewRequirement = 'New Requirement';
+  lisProjAddFiles = 'Add files';
+  lisProjAddEditorFile = 'Add editor files';
   lisProjAddAddFileToProject = 'Add file to project:';
   lisProjAddPackageName = 'Package Name:';
   lisProjAddMinimumVersionOptional = 'Minimum Version (optional):';

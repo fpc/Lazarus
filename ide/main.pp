@@ -10710,7 +10710,7 @@ begin
     ShortUnitName:=AnUnitInfo.UnitName;
     if (ShortUnitName<>'') then begin
       Dummy:=CodeToolBoss.AddUnitToMainUsesSection(
-         Project1.MainUnitInfo.Source,ShortUnitName,'');
+                                 Project1.MainUnitInfo.Source,ShortUnitName,'');
       ApplyCodeToolChanges;
       if Dummy then begin
         Project1.MainUnitInfo.Modified:=true;
@@ -11380,6 +11380,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.839  2005/01/26 15:45:07  mattias
+  implemented adding files from directory in project inspector, fixed extrac proc checking overlapping blocks
+
   Revision 1.838  2005/01/25 01:14:19  mattias
   implemented automatic redirecting of package output directory and filestate cache
 
