@@ -732,9 +732,9 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
         AccessParam:=copy(Src,Parts[ppName].StartPos,
           Parts[ppName].EndPos-Parts[ppName].StartPos)
           +BeautifyCodeOpts.PropertyStoredIdentPostfix;
-      CleanAccessFunc:=UpperCaseStr(AccessParam)+';';
+      CleanAccessFunc:=UpperCaseStr(AccessParam);
       // check if procedure exists
-      if (not ProcExistsInCodeCompleteClass(CleanAccessFunc))
+      if (not ProcExistsInCodeCompleteClass(CleanAccessFunc+';'))
       and (not VarExistsInCodeCompleteClass(CleanAccessFunc))
       then begin
         // add insert demand for function
