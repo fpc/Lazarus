@@ -38,7 +38,14 @@ var AStr, BStr : PChar;
 begin
   gtk_label_get(PGtkLabel(PGtkBin(a)^.child), @AStr);
   gtk_label_get(PGtkLabel(PGtkBin(b)^.child), @BStr);
-//writeln('DefaultCompareFunc "',AStr,'" "',BStr,'"');
+  Result:= strcomp(AStr, BStr);
+end;
+
+function DefaultCheckCompareFunc(a, b : gpointer) : gint; cdecl;
+var AStr, BStr : PChar;
+begin
+  gtk_label_get(PGtkLabel(PGTKBox(a)^.Children^.Next^.Data), @AStr);
+  gtk_label_get(PGtkLabel(PGTKBox(b)^.Children^.Next^.Data), @BStr);
   Result:= strcomp(AStr, BStr);
 end;
 
@@ -119,7 +126,7 @@ end;
   Returns: 
 
  ------------------------------------------------------------------------------}
-constructor TGtkListStringList.Create(List : PGtkList; TheOwner: TWinControl);
+constructor TGtkListStringList.Create(List : PGtkList; TheOwner: TWinControl; const AWithCheckBox: Boolean);
 begin
   inherited Create;
   if List = nil then RaiseException(
@@ -128,6 +135,7 @@ begin
   if TheOwner = nil then RaiseException(
     'TGtkListStringList.Create Unspecified owner');
   FOwner:=TheOwner;
+  FWithCheckBox := AWithCheckBox;
   //writeln('TGtkListStringList.Create Self=',HexStr(Cardinal(Self),8),' List=',HexStr(Cardinal(List),8),' Owner=',HexStr(Cardinal(Owner),8));
   Include(FStates,glsItemCacheNeedsUpdate);
   ConnectAllCallbacks;
@@ -394,7 +402,11 @@ begin
   else begin
     UpdateItemCache;
     ListItem:=FCachedItems[Index];
-    ALabel:= PGtkBin(ListItem)^.child;
+
+    if FWithCheckBox
+    then ALabel:= PGTKBox(ListItem)^.Children^.Next^.Data
+    else ALabel:= PGtkBin(ListItem)^.child;
+
     if ALabel = nil then
       Result:= ''
     else begin
@@ -501,7 +513,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGtkListStringList.Insert(Index : integer; const S : string);
 var
-  li : PGtkWidget;
+  li, cb, box: PGtkWidget;
   l, m, r, cmp: integer;
   item_requisition: TGtkRequisition;
 begin
@@ -535,7 +547,18 @@ begin
     //  - Icons
     //  - measure item
 
-    li:=gtk_list_item_new_with_label(PChar(S));
+    if FWithCheckBox
+    then begin
+      li := gtk_list_item_new;
+      box := gtk_hbox_new(False, 0);
+      gtk_container_add(PGTKContainer(li), box);
+      cb := gtk_check_button_new;
+      gtk_box_pack_start(PGTKBox(box), cb, False, False, 0);
+      gtk_box_pack_start(PGTKBox(box), gtk_label_new(PChar(S)), False, False, 0);
+    end
+    else begin
+      li:=gtk_list_item_new_with_label(PChar(S));
+    end;
     ConnectItemCallbacks(PGtkListItem(li));
     Include(FStates,glsItemCacheNeedsUpdate);
     gtk_widget_show_all(li);
@@ -737,6 +760,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.18  2003/06/20 01:37:47  marc
+  + Added TCheckListBox component
+
   Revision 1.17  2003/05/15 13:00:21  mattias
   fixed find declaration intf cache
 
