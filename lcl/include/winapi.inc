@@ -354,6 +354,7 @@ end;
 {------------------------------------------------------------------------------
   Function: GetClientBounds
   Params: handle:
+          ARect:
           Result:
   Returns: true on success
 
@@ -361,9 +362,9 @@ end;
   the inner area of a control, where the child controls are visible. The
   coordinates are relative to the control's left and top.
  ------------------------------------------------------------------------------}
-Function GetClientBounds(handle : HWND; var Rect : TRect) : Boolean;
+Function GetClientBounds(Handle: HWND; var ARect: TRect): Boolean;
 begin
-  Result := InterfaceObject.GetClientBounds(handle, Rect);
+  Result := InterfaceObject.GetClientBounds(Handle, ARect);
 end;
 
 {------------------------------------------------------------------------------
@@ -1676,6 +1677,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.98  2003/09/01 07:27:41  mattias
+  fixed typo
+
   Revision 1.97  2003/08/26 08:12:33  mattias
   applied listbox/combobox patch from Karl
 
