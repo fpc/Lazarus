@@ -2319,7 +2319,7 @@ Begin
     End;
     {csFrame,} csGroupBox:
     Begin
-      if (Sender is TWinControl) and (TWinControl(Sender).Parent <> nil) and 
+      if FThemesActive and (Sender is TWinControl) and (TWinControl(Sender).Parent <> nil) and 
         (TWinControl(Sender).Parent.FCompStyle = csGroupBox) then
       begin
         // the parent of this groupbox is another groupbox: there is a bug in 
@@ -2330,6 +2330,7 @@ Begin
         // do not use 'ParentPanel' property for other controls!
         Parent := CreateWindowEx(0, @ClsName, nil, WS_CHILD or WS_CLIPSIBLINGS or (Flags and WS_VISIBLE), 
           Left, Top, Width, Height, Parent, 0, HInstance, nil);
+        Buddy := Parent;
         Left := 0;
         Top := 0;
         Flags := Flags or WS_VISIBLE;
@@ -2588,10 +2589,11 @@ Begin
 
       csGroupBox:
       begin
-        // use exact same condition as above
-        if (TWinControl(Sender).Parent <> nil) and (TWinControl(Sender).Parent.FCompStyle = csGroupBox) then
+        if Buddy <> 0 then
         begin
           Windows.SetProp(Window, 'ParentPanel', Parent);
+          // no need to subclass this parentpanel
+          Buddy := 0;
         end;
       end;
 
@@ -3279,6 +3281,9 @@ End;
 
 {
   $Log$
+  Revision 1.211  2004/06/20 13:00:04  micha
+  fix groupbox-parent bug condition, use buddy
+
   Revision 1.210  2004/06/19 15:10:04  micha
   fix spinedit not firing onchange event
 
