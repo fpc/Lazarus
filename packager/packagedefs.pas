@@ -2856,7 +2856,7 @@ begin
   Result:=false;
   IdentEndPos:=1;
   while (IdentEndPos<=length(s))
-  and (s[IdentEndPos] in ['a'..'z','A'..'Z','0'..'9'])
+  and (s[IdentEndPos] in ['a'..'z','A'..'Z','0'..'9','_'])
   do
     inc(IdentEndPos);
   if IdentEndPos=1 then exit;

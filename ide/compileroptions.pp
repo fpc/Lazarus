@@ -2920,6 +2920,7 @@ begin
   chkOptionsLinkOpt.Checked := Options.PassLinkerOptions;
   edtOptionsLinkOpt.Text := Options.LinkerOptions;
   chkWin32GraphicApp.Checked := Options.Win32GraphicApp;
+  chkWin32GraphicApp.Enabled:=EnabledLinkerOpts;
   grpOptions.Enabled:=EnabledLinkerOpts;
 
   // messages

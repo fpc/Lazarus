@@ -4741,8 +4741,10 @@ begin
   // read form data
   if FilenameIsPascalUnit(AFilename) then begin
     // this could be a unit with a form
-    if EnvironmentOptions.AutoCreateFormsOnOpen
-    or (NewUnitInfo.Component<>nil) then begin
+    if (not Project1.AutoOpenDesignerFormsDisabled)
+    and (EnvironmentOptions.AutoCreateFormsOnOpen
+         or (NewUnitInfo.Component<>nil))
+    then begin
       // -> try to (re)load the lfm file
       Result:=DoLoadLFM(NewUnitInfo,Flags);
       if Result<>mrOk then exit;
@@ -7460,7 +7462,7 @@ begin
   ExeExt:=LazConf.GetDefaultExecutableExt;
   if OldExt<>ExeExt then
     Result:=copy(Result,1,length(Result)-length(OldExt))+ExeExt;
-writeln('TMainIDE.OnMacroFuncMakeExe A ',Filename,' ',Result);
+  writeln('TMainIDE.OnMacroFuncMakeExe A ',Filename,' ',Result);
 end;
 
 procedure TMainIDE.OnCmdLineCreate(var CmdLine: string; var Abort:boolean);
@@ -10337,6 +10339,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.716  2004/03/15 15:56:24  mattias
+  fixed package ID string to ID conversion
+
   Revision 1.715  2004/03/13 16:37:00  mattias
   implemented: showing broken project dependencies on open project
 

@@ -181,6 +181,7 @@ type
     function OpenProjectDependencies(AProject: TProject;
                                 ReportMissing: boolean): TModalResult; override;
     function CheckProjectHasInstalledPackages(AProject: TProject): TModalResult; override;
+    function CanOpenDesignerForm(AnUnitInfo: TUnitInfo): TModalResult; override;
     procedure AddDefaultDependencies(AProject: TProject); override;
     procedure AddProjectDependency(AProject: TProject; APackage: TLazPackage); override;
     procedure AddProjectRegCompDependency(AProject: TProject;
@@ -1214,7 +1215,11 @@ begin
     if APackage<>nil then begin
       FuncData^.Result:=APackage.SourceDirectories.CreateSearchPathFromAllFiles;
       Result:=true;
+    end else begin
+      writeln('WARNING: TPkgManager.MacroFunctionPkgSrcPath unknown package id: ',FuncData^.Param);
     end;
+  end else begin
+    writeln('WARNING: TPkgManager.MacroFunctionPkgSrcPath invalid package id: ',FuncData^.Param);
   end;
   PkgID.Free;
 end;
@@ -1233,7 +1238,11 @@ begin
     if APackage<>nil then begin
       FuncData^.Result:=APackage.GetUnitPath(false);
       Result:=true;
+    end else begin
+      writeln('WARNING: TPkgManager.MacroFunctionPkgUnitPath unknown package id: ',FuncData^.Param);
     end;
+  end else begin
+    writeln('WARNING: TPkgManager.MacroFunctionPkgUnitPath invalid package id: ',FuncData^.Param);
   end;
   PkgID.Free;
 end;
@@ -1763,6 +1772,8 @@ begin
     end;
     Result:=MessageDlg('Package needs installation',
       Msg,mtWarning,[mbIgnore,mbCancel],0);
+    if Result<>mrIgnore then
+      AProject.AutoOpenDesignerFormsDisabled:=true;
     MissingUnits.Free;
   end;
 end;
@@ -2840,6 +2851,17 @@ begin
   if PackageGraph.OpenDependency(Dependency)<>lprSuccess then
     exit;
   DoOpenPackage(Dependency.RequiredPackage);
+end;
+
+function TPkgManager.CanOpenDesignerForm(AnUnitInfo: TUnitInfo): TModalResult;
+var
+  AProject: TProject;
+begin
+  Result:=mrCancel;
+  if AnUnitInfo=nil then exit;
+  AProject:=AnUnitInfo.Project;
+  if AProject=nil then exit;
+  Result:=CheckProjectHasInstalledPackages(AProject);
 end;
 
 function TPkgManager.DoClosePackageEditor(APackage: TLazPackage): TModalResult;

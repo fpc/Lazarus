@@ -304,6 +304,7 @@ type
   private
     fActiveEditorIndexAtStart: integer;
     FAutoCreateForms: boolean;
+    FAutoOpenDesignerFormsDisabled: boolean;
     fBookmarks: TProjectBookmarkList;
     fChanged: boolean;
     fCompilerOptions: TProjectCompilerOptions;
@@ -355,6 +356,7 @@ type
     procedure OnUnitNameChange(AnUnitInfo: TUnitInfo;
                                const OldUnitName, NewUnitName: string;
                                CheckIfAllowed: boolean; var Allowed: boolean);
+    procedure SetAutoOpenDesignerFormsDisabled(const AValue: boolean);
     procedure SetFlags(const AValue: TProjectFlags);
     procedure SetMainUnitID(const AValue: Integer);
     procedure SetModified(const AValue: boolean);
@@ -465,6 +467,7 @@ type
                                                write fActiveEditorIndexAtStart;
     property AutoCreateForms: boolean
                                    read FAutoCreateForms write FAutoCreateForms;
+    property AutoOpenDesignerFormsDisabled: boolean read FAutoOpenDesignerFormsDisabled write SetAutoOpenDesignerFormsDisabled;
     property Bookmarks: TProjectBookmarkList read fBookmarks write fBookmarks;
     property CompilerOptions: TProjectCompilerOptions
                                    read fCompilerOptions write fCompilerOptions;
@@ -1726,6 +1729,7 @@ begin
   fRunParameterOptions.Clear;
 
   fActiveEditorIndexAtStart := -1;
+  FAutoOpenDesignerFormsDisabled := false;
   fBookmarks.Clear;
   fCompilerOptions.Clear;
   FDefineTemplates.Clear;
@@ -2499,6 +2503,12 @@ begin
   end;
 end;
 
+procedure TProject.SetAutoOpenDesignerFormsDisabled(const AValue: boolean);
+begin
+  if FAutoOpenDesignerFormsDisabled=AValue then exit;
+  FAutoOpenDesignerFormsDisabled:=AValue;
+end;
+
 function TProject.JumpHistoryCheckPosition(
   APosition:TProjectJumpHistoryPosition): boolean;
 var i: integer;
@@ -2823,6 +2833,9 @@ end.
 
 {
   $Log$
+  Revision 1.150  2004/03/15 15:56:24  mattias
+  fixed package ID string to ID conversion
+
   Revision 1.149  2004/02/22 15:39:43  mattias
   fixed error handling on saving lpi file
 
