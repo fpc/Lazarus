@@ -86,32 +86,27 @@ Procedure TCustomEdit.CMTextChanged(var Message : TLMessage);
 var
   Temp : String;
 Begin
-
-//check to see if the charcase should effect the text.
-if FCharCase = ecUppercase then
-   Begin
+  //check to see if the charcase should effect the text.
+  if FCharCase = ecUppercase then
+  Begin
     Temp := Uppercase(text);
     if Temp <> Text then Text := Temp;
-   end
-else
-if FCharCase = ecLowercase then
-   Begin
+  end
+  else
+  if FCharCase = ecLowercase then
+  Begin
     Temp := Lowercase(text);
     if Temp <> Text then Text := Temp;
-   end;
+  end;
 
-
-
-Writeln('CMTEXTCHANGED');
-Modified := True;
-if HandleAllocated then Change;
+  Modified := True;
+  if HandleAllocated then Change;
 End;
 
 Procedure TCustomEdit.Change;
 Begin
-//inherited Change;
-Writeln('CHANGED');
-if Assigned(FOnChange) then FOnChange(Self);
+  //inherited Change;
+  if Assigned(FOnChange) then FOnChange(Self);
 end;
 
 
@@ -136,6 +131,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.4  2001/06/04 09:32:17  lazarus
+  MG: fixed bugs and cleaned up messages
+
   Revision 1.3  2001/01/04 15:09:05  lazarus
   Tested TCustomEdit.Readonly, MaxLength and CharCase.
   Shane

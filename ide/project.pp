@@ -927,12 +927,10 @@ var
   NewUnitInfo: TUnitInfo;
   NewUnitCount,i: integer;
 begin
-writeln('TProject.ReadProject 1');
   Result := mrCancel;
   Clear;
 
   ProjectInfoFile:=LPIFilename;
-writeln('TProject.ReadProject 2 ',LPIFilename);
   try
     xmlcfg := TXMLConfig.Create(ProjectInfoFile);
   except
@@ -964,7 +962,6 @@ writeln('TProject.ReadProject 2 ',LPIFilename);
       AddUnit(NewUnitInfo,false);
       NewUnitInfo.LoadFromXMLConfig(
          xmlcfg,'ProjectOptions/Units/Unit'+IntToStr(i)+'/');
-//writeln('NewUnitInfo: ',NewUnitInfo.Filename,', ',NewUnitInfo.EditorIndex);
     end;
 
     // Load the compiler options
@@ -978,7 +975,6 @@ writeln('TProject.ReadProject 2 ',LPIFilename);
   end;
 
   Result := mrOk;
-writeln('TProject.ReadProject end');
 end;
 
 {------------------------------------------------------------------------------
@@ -1402,6 +1398,9 @@ end.
 
 {
   $Log$
+  Revision 1.24  2001/06/04 09:32:17  lazarus
+  MG: fixed bugs and cleaned up messages
+
   Revision 1.23  2001/05/27 11:52:00  lazarus
   MG: added --primary-config-path=<filename> cmd line option
 

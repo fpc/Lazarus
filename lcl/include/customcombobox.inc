@@ -52,11 +52,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomComboBox.AttachSignals; 
 begin
-   Writeln('[TCustomComboBox] AttachSignals');
    inherited AttachSignals;
    Assert(False, Format('Trace:[TCustomComboBox.AttachSignals] %s', [ClassName]));
    SetCallback (LM_CHANGED);
-   Writeln('[TCustomComboBox] Exiting AttachSignals');
 end;
 
 {------------------------------------------------------------------------------
@@ -134,7 +132,6 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomComboBox.DoChange(var Msg);
 begin
-  Writeln('[TCustomComboBox] DoChange');
   if Assigned(FOnChange) then FOnChange(Self);
 end;
 
@@ -162,7 +159,8 @@ procedure TCustomComboBox.SetSelText(Val : string);
 begin
   if FStyle <> csDropDownList then begin
     { First delete the actual selection }
-    Text:= Concat(Copy(Text, 1, SelStart), Val, Copy(Text, SelStart + SelLength + 1, Length(Text)));
+    Text:= Concat(Copy(Text, 1, SelStart), Val,
+                  Copy(Text, SelStart + SelLength + 1, Length(Text)));
   end;
 end;
 
@@ -311,7 +309,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomComboBox.SetItemIndex(Val : integer);
 begin
-  if (Val < 0) or (Val > FItems.Count) then raise Exception.Create('Out of bounds in TCustomComboBox.SetItemIndex');
+  if (Val < 0) or (Val > FItems.Count) then
+    raise Exception.Create('Out of bounds in TCustomComboBox.SetItemIndex');
   HandleNeeded;
   CNSendMessage(LM_SETITEMINDEX, Self, Pointer(Val));
 end;
@@ -324,6 +323,9 @@ end;
 
 {
   $Log$
+  Revision 1.5  2001/06/04 09:32:17  lazarus
+  MG: fixed bugs and cleaned up messages
+
   Revision 1.4  2001/01/28 03:51:42  lazarus
   Fixed the problem with Changed for ComboBoxs
   Shane

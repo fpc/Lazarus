@@ -97,7 +97,7 @@ end;
 {------------------------------------------------------------------------------}
 {       TApplication HintMouseMEssage     }
 {------------------------------------------------------------------------------}
-procedure TApplication.HintMOuseMEssage(Control : TControl; var Message : TLMessage);
+procedure TApplication.HintMouseMessage(Control : TControl; var Message : TLMessage);
 begin
 //TODO: Needs to be finished
 end;
@@ -110,7 +110,8 @@ end;
 {------------------------------------------------------------------------------}
 procedure TApplication.Initialize;
 begin
-   InterfaceObject.Init;
+  InterfaceObject.Init;
+  CNSendMessage(LM_SCREENINIT, nil, @ScreenInfo);
 end;
 
 {------------------------------------------------------------------------------
@@ -240,6 +241,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.4  2001/06/04 09:32:17  lazarus
+  MG: fixed bugs and cleaned up messages
+
   Revision 1.3  2001/01/24 23:26:40  lazarus
   MWE:
     = moved some types to gtkdef

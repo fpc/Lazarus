@@ -149,7 +149,6 @@ begin
   gtk_style_set_background (Widget^.theStyle, Widget^.Window, GTK_STATE_NORMAL);
 //  gdk_window_set_background(Widget^.Window, @PGTKStyle(Widget^.theStyle)^.Base[gtk_widget_state(Widget)]);
 //  gdk_window_set_background (Client^.OtherWindow, @PGTKStyle(Widget^.theStyle)^.Base[gtk_widget_state(Widget)]);
-
 end;
 
 procedure GTKAPIWidgetClient_UnRealize(Widget: PGTKWidget); cdecl;
@@ -239,7 +238,6 @@ begin
     BackPixmap := nil;
     Timer := 0;
   end;
-  
 end;
 
 function GTKAPIWidgetClient_GetType: Guint;
@@ -282,7 +280,6 @@ const
 var
   Widget: PGTKWidget;
 begin
-
   Widget := PGTKWidget(Client);
   
   with Client^.Caret do
@@ -396,7 +393,7 @@ begin
     X := AX;
     Y := AY;
     if IsVisible then GTKAPIWidgetClient_ShowCaret(Client);
-  end
+  end;
 end;
 
 procedure GTKAPIWidgetClient_GetCaretPos(Client: PGTKAPIWidgetClient; var X, Y: Integer); 
@@ -437,19 +434,20 @@ end;
 
 procedure GTKAPIWidget_ClassInit(wawClass: PGTKAPIWidgetClass); cdecl;
 var 
-  ObjectClass: PGTKObjectClass;
+//  ObjectClass: PGTKObjectClass;
   WidgetClass: PGTKWidgetClass;
 begin
-  ObjectClass := PGTKObjectClass(wawClass);
+//  ObjectClass := PGTKObjectClass(wawClass);
   WidgetClass := PGTKWidgetClass(wawClass);
   
   WidgetClass^.focus_in_event := @GTKAPIWidget_FocusIn;
   WidgetClass^.focus_out_event := @GTKAPIWidget_FocusOut;
 end;
 
-procedure GTKAPIWidget_Init(waw: PGTKAPIWidget; theClass: PGTKAPIWidgetClass); cdecl;
+procedure GTKAPIWidget_Init(waw: PGTKAPIWidget;
+  theClass: PGTKAPIWidgetClass); cdecl;
 var
- Widget: PGTKWidget;
+  Widget: PGTKWidget;
 begin
   Widget := PGTKWidget(waw);
   
@@ -460,7 +458,12 @@ begin
   gtk_object_set_data(PGTKObject(waw^.Client), 'Main', Widget);
   gtk_widget_show(waw^.Client);
   
+writeln('(gtkwinapiwindow.pp) GTKAPIWidget_Init B  check this:');
+// MG: range check GTK-Critical warnings results possibly from
+// function GTKAPIwidget_new.
+// ToDo: check nil parameters
   gtk_container_add(PGTKContainer(Widget), waw^.Client);
+writeln('GTKAPIWidget_Init END');
 end;
 
 function GTKAPIWidget_GetType: Guint;
@@ -476,29 +479,32 @@ const
 begin
   if (wawType = 0) 
   then wawType := gtk_type_unique(gtk_scrolled_window_get_type, @wawInfo);
-
   Result := wawType;
 end;
 
 function GTKAPIWidget_new: PGTKWidget;
 begin
+writeln('(gtkwinapiwindow.pp) GTKAPIWidget_new, ToDo: check parameters, gtk-Critical');
+// ToDo: check these nil parameters
   Result := gtk_widget_new(
     GTKAPIWidget_GetType,
-    'hadjustment', [nil,
+    'hadjustment', [nil,  // what are these nils?
     'vadjustment', nil,
     nil]
   );
-  
+writeln('GTKAPIWidget_new END');
 end;
 
-procedure GTKAPIWidget_CreateCaret(APIWidget: PGTKAPIWidget; AWidth, AHeight: Integer; ABitmap: PGDKPixmap); 
+procedure GTKAPIWidget_CreateCaret(APIWidget: PGTKAPIWidget;
+  AWidth, AHeight: Integer; ABitmap: PGDKPixmap); 
 begin
   if APIWidget = nil 
   then begin
     WriteLn('WARNING: [GTKAPIWidget_CreateCaret] Got nil client');
     Exit;
   end;
-  GTKAPIWidgetClient_CreateCaret(PGTKAPIWidgetClient(APIWidget^.Client), AWidth, AHeight, ABitmap);
+  GTKAPIWidgetClient_CreateCaret(PGTKAPIWidgetClient(APIWidget^.Client),
+    AWidth, AHeight, ABitmap);
 end;
 
 procedure GTKAPIWidget_HideCaret(APIWidget: PGTKAPIWidget); 
@@ -546,6 +552,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.7  2001/06/04 09:32:17  lazarus
+  MG: fixed bugs and cleaned up messages
+
   Revision 1.6  2001/03/27 11:11:13  lazarus
   MG: fixed mouse msg, added filedialog initialdir
 

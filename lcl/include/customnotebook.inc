@@ -41,12 +41,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TNBPages.Put(Index: Integer; const S: String);
 var
-  //Msg: TLMTabSetText;
   Msg: TLMNotebookEvent;
 begin
   TPage(fPageList[Index]).Caption := S;
   TPage(fPageList[Index]).Name := S;
-
 
   if FNoteBook.HandleAllocated 
   then begin
@@ -54,7 +52,7 @@ begin
     Msg.Child := TPage(fPageList[Index]);
     Msg.fCompStyle := fNotebook.fCompStyle;
     Msg.Str := S;
-    CNSendMessage(LM_SETTEXT, fNotebook, @Msg);
+    //CNSendMessage(LM_SETTEXT, fNotebook, @Msg);
   end;
 end;
 
@@ -66,10 +64,7 @@ var
   i: Integer;
 begin
   for i := 0 to fPageList.Count - 1 do
-  begin
     TPage(fPageList[I]).Free;
-  end;
-
   fPageList.Clear;
 end;
 
@@ -81,15 +76,17 @@ var
   Msg: TLMNotebookEvent;
 begin
   { Make sure Index is in the range of valid pages to delete }
-  if (Index > -1) and
+  if (Index >= 0) and
      (Index < fPageList.Count) then
   begin
     { Make sure there are pages to delete }
-    if (fPageList.Count > 0) then
-      { If that page is showing, then show the previous page before deleting it }
-      if (Index = fNoteBook.PageIndex) then
-        fNoteBook.PageIndex := fNoteBook.PageIndex - 1;
-
+    { If that page is showing, then show the previous page before deleting it }
+    if (fPageList.Count > 0) and (Index = fNoteBook.PageIndex) then begin
+      if fNoteBook.PageIndex>0 then
+        fNoteBook.PageIndex := fNoteBook.PageIndex - 1
+      else
+        fNoteBook.PageIndex := 1;
+    end;
 
     if FNoteBook.HandleAllocated
     then begin
@@ -100,7 +97,6 @@ begin
     end;
     TPage(fPageList[Index]).Free;
     fPageList.Delete(Index);
-
   end;
 end;
 
@@ -151,10 +147,11 @@ end;
   TNBPages Move
  ------------------------------------------------------------------------------}
 procedure TNBPages.Move(CurIndex, NewIndex: Integer);
+// ToDo
 //var
 // theObject: TObject;
 begin
-  fPageList.Move(CurIndex, NewIndex);
+  //fPageList.Move(CurIndex, NewIndex);
   //theObject := fPageList[CurIndex];
   //fPageList[CurIndex] := fPageList[NewIndex];
   //fPageList[NewIndex] := theObject;
@@ -220,7 +217,6 @@ begin
   SetPageIndex(FPageIndex);
 
   SetCallback(LM_CHANGED);
-
 end;
 
 {------------------------------------------------------------------------------
@@ -375,9 +371,7 @@ var
   i: LongInt;
 begin
   for i := 0 to fPageList.Count - 1 do
-  begin
     Proc(TControl(fPageList[i]));
-  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -400,10 +394,8 @@ begin
   { Find a child control that matches the one passed in and display
     the page that contains that control. This method is necessary
     for compatibility with Delphi }
-  for i := 0 to fPageList.Count - 1 do
-  begin
-    if TControl(fPageList[i]) = AControl then
-    begin
+  for i := 0 to fPageList.Count - 1 do begin
+    if TControl(fPageList[i]) = AControl then begin
       PageIndex := i;
       Exit;
     end;
@@ -415,30 +407,34 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomNotebook.Change;
 Begin
-if Assigned(fOnPageChanged) then fOnPageChanged(self);
+  if Assigned(fOnPageChanged) then fOnPageChanged(self);
 end;
-
 
 {------------------------------------------------------------------------------
   TCustomNotebook CNNotify
  ------------------------------------------------------------------------------}
 procedure TCustomNotebook.CNNotify(var Message : TLMNotify);
 Begin
-with Message do
+  with Message do
     Case NMHdr^.code of
-       TCN_SELCHANGE:  Begin
-                       //set the page from the NMHDR^.idfrom
-                       FPageIndex := NMHDR^.idfrom;
-                       change;
-                       end;
-       end;
-
+      TCN_SELCHANGE:
+        Begin
+          //set the page from the NMHDR^.idfrom
+          FPageIndex := NMHDR^.idfrom;
+          Change;
+        end;
+    else
+      writeln('[TCustomNotebook.CNNotify]');
+    end;
 end;
 
 
 { =============================================================================
 
   $Log$
+  Revision 1.5  2001/06/04 09:32:17  lazarus
+  MG: fixed bugs and cleaned up messages
+
   Revision 1.4  2001/03/21 00:20:29  lazarus
   MG: fixed memory leaks
 

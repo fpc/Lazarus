@@ -70,6 +70,8 @@ begin
       pf32bit : n:= 32;
       else raise EInvalidOperation.Create('Unsupported bitmap format.');
     end;
+    if Width<1 then Width:=1;
+    if Height<1 then Height:=1;
     FImage.FHandle:= CreateBitmap(Width, Height, 1, n, nil);
   end;
 end;
@@ -316,6 +318,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.7  2001/06/04 09:32:17  lazarus
+  MG: fixed bugs and cleaned up messages
+
   Revision 1.6  2001/03/21 00:20:29  lazarus
   MG: fixed memory leaks
 

@@ -642,14 +642,15 @@ end;
 {$I canvas.inc}
 {$I pixmap.inc}
 
-initialization
-  CNSendMessage(LM_SCREENINIT, nil, @ScreenInfo);
 
 end.
 
 { =============================================================================
 
   $Log$
+  Revision 1.10  2001/06/04 09:32:17  lazarus
+  MG: fixed bugs and cleaned up messages
+
   Revision 1.9  2001/03/21 00:20:29  lazarus
   MG: fixed memory leaks
 

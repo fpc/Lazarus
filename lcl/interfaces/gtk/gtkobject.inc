@@ -273,10 +273,9 @@ begin
    FStockDkGrayBrush := CreateBrushIndirect(LogBrush);
    LogBrush.lbColor := $FFFFFF;
    FStockWhiteBrush := CreateBrushIndirect(LogBrush);
-   
 end;
 
-function  TgtkObject.RecreateWnd(Sender: TObject): Integer;
+function TgtkObject.RecreateWnd(Sender: TObject): Integer;
 var
   aParent : TWinControl;
 Begin
@@ -311,7 +310,8 @@ End;
   WARNING: the result of this function sometimes is not always really an
            integer!!!!!
  ------------------------------------------------------------------------------}
-function TgtkObject.IntSendMessage3(LM_Message : Integer; Sender : TObject; data : pointer) : integer;
+function TgtkObject.IntSendMessage3(LM_Message : Integer; Sender : TObject;
+  data : pointer) : integer;
 var
    handle    : hwnd;                    // handle of sender        
    pStr      : PChar;                   // temporary string pointer, must be allocated/disposed when used!
@@ -471,34 +471,43 @@ begin
       //TBitBtn
       LM_IMAGECHANGED, LM_LAYOUTCHANGED :
       Begin
-              Assert(False, 'Trace:********************');
+         Assert(False, 'Trace:********************');
          Assert(False, 'Trace:1');
          box1 := gtk_object_get_data(pgtkObject(handle),'HBox');
          if box1 <> nil then
          begin
             Assert(False, 'Trace:REMOVING THE HBOX');
             gtk_container_remove(PgtkContainer(box1),gtk_object_get_data(pgtkObject(handle),'Label'));
-            gtk_container_remove(PgtkContainer(box1),gtk_object_get_data(pgtkObject(handle),'Pixmap'));
+            PixMapWid:=gtk_object_get_data(pgtkObject(handle),'Pixmap');
+            if PixMapWid<>nil then
+              gtk_container_remove(PgtkContainer(box1),PixMapWid);
             gtk_container_remove(PgtkContainer(handle),box1);
-            gtk_widget_destroy(box1);
+            // gtk_container_remove automatically destroys box1 if ref count=0
+            //  so we dont need gtk_widget_destroy(box1);
          end;
 
-         if (TBitBtn(Sender).Layout = blGlyphLeft) or (TBitBtn(Sender).Layout = blGlyphRight) then
+         if (TBitBtn(Sender).Layout = blGlyphLeft)
+         or (TBitBtn(Sender).Layout = blGlyphRight) then
          Begin
-            Assert(False, 'Trace:GLYPHLEFT or GLYPHRIGHT');
-            box1 := gtk_hbox_new(False,0);
+           Assert(False, 'Trace:GLYPHLEFT or GLYPHRIGHT');
+           box1 := gtk_hbox_new(False,0);
          end
          else Begin
-            Assert(False, 'Trace:GLYPHTOP or GLYPHBOTTOM');
-            box1 := gtk_vbox_new(False,0);
+           Assert(False, 'Trace:GLYPHTOP or GLYPHBOTTOM');
+           box1 := gtk_vbox_new(False,0);
          end;
 
          Assert(False, 'Trace:2');
-         pixmap := pgdkPixmap(PgdiObject(TBitBtn(Sender).Glyph.handle)^.GDIBitmapObject);
+         pixmap := pgdkPixmap(
+                     PgdiObject(TBitBtn(Sender).Glyph.handle)^.GDIBitmapObject);
          Assert(False, 'Trace:3');
          if PgdiObject(TBitBtn(Sender).Glyph.handle)^.GDIBitmapMaskObject <> nil 
-            then pixmapwid := gtk_pixmap_new(pixmap,PgdiObject(TBitBtn(Sender).Glyph.handle)^.GDIBitmapMAskObject)
-            else pixmapwid := gtk_pixmap_new(pixmap,nil);
+         then begin
+           PixMapWid := gtk_pixmap_new(pixmap,
+             PgdiObject(TBitBtn(Sender).Glyph.handle)^.GDIBitmapMaskObject)
+         end else begin
+           PixMapWid := gtk_pixmap_new(pixmap,nil);
+         end;
 
          Assert(False, 'Trace:4');
          pStr := StrAlloc(length(TBitBtn(Sender).Caption) + 1);
@@ -506,21 +515,26 @@ begin
          pLabel := gtk_label_new(pstr);
          StrDispose(pStr);
          Assert(False, 'Trace:5');
-         if (TBitBtn(Sender).Layout = blGlyphLeft) or (TBitBtn(Sender).Layout = blGlyphTop) then
+         if (TBitBtn(Sender).Layout = blGlyphLeft)
+         or (TBitBtn(Sender).Layout = blGlyphTop) then
          begin
             Assert(False, 'Trace:GLYPHLEFT or GLYPHTOP');
-            gtk_box_pack_start(pGTKBox(Box1),pixmapwid,False,False,TBitBtn(Sender).Spacing);
-            gtk_box_pack_start(pGTKBox(Box1),pLabel,False,False,TBitBtn(Sender).Spacing);
+            gtk_box_pack_start(pGTKBox(Box1),PixMapWid,False,False,
+              TBitBtn(Sender).Spacing);
+            gtk_box_pack_start(pGTKBox(Box1),pLabel,False,False,
+              TBitBtn(Sender).Spacing);
          end
          else begin
             Assert(False, 'Trace:GLYPHRIGHT or GLYPHBOTTOM');
-            gtk_box_pack_start(pGTKBox(Box1),pLabel,False,False,TBitBtn(Sender).Spacing);
-            gtk_box_pack_start(pGTKBox(Box1),pixmapwid,False,False,TBitBtn(Sender).Spacing);
+            gtk_box_pack_start(pGTKBox(Box1),pLabel,False,False,
+              TBitBtn(Sender).Spacing);
+            gtk_box_pack_start(pGTKBox(Box1),PixMapWid,False,False,
+              TBitBtn(Sender).Spacing);
          end;
          Assert(False, 'Trace:6');
-         gtk_object_set_data(pgtkObject(handle),'Label',pLabel);
          gtk_object_set_data(pgtkObject(handle),'HBox',Box1);
-         gtk_object_set_data(pgtkObject(handle),'Pixmap',pixmapwid);
+         gtk_object_set_data(pgtkObject(handle),'Label',pLabel);
+         gtk_object_set_data(pgtkObject(handle),'Pixmap',PixMapWid);
          Assert(False, 'Trace:7');
          gtk_widget_show(pixmapwid);
          gtk_widget_show(pLabel);
@@ -535,11 +549,14 @@ begin
             if (sender is TBitmap) then
             Begin
                Assert(False, 'Trace:pixmap name '+strpas(data));
-               pixmap := gdk_pixmap_create_from_xpm(PdeviceContext(TBitmap(sender).handle)^.drawable,nil,nil,pchar(data));
+               pixmap := gdk_pixmap_create_from_xpm(
+                 PdeviceContext(TBitmap(sender).handle)^.drawable,
+                 nil,nil,pchar(data));
                Assert(False, 'Trace:1');
                if Pixmap = nil
                   then Assert(False, 'Trace:PIXMAP NOT LOADED!');
-               PdeviceContext(TBitmap(sender).handle)^.CurrentBitmap :=pgdiObject(pixmap);
+               PdeviceContext(TBitmap(sender).handle)^.CurrentBitmap :=
+                 pgdiObject(pixmap);
             end;
          end;
 
@@ -553,9 +570,11 @@ begin
                                               nil,
                                               0,
                                               0);	
-{Displays a menu and makes it available for selection. Applications can use this function to display context-sensitive menus, 
-and will typically supply NULL for the parent_menu_shell, parent_menu_item, func and data parameters. 
-The default menu positioning function will position the menu at the current pointer position.
+{Displays a menu and makes it available for selection. Applications can use this
+function to display context-sensitive menus, and will typically supply NULL for
+the parent_menu_shell, parent_menu_item, func and data parameters.
+The default menu positioning function will position the menu at the current
+pointer position.
 menu :	a GtkMenu.	
 parent_menu_shell :	the menu shell containing the triggering menu item.	
 parent_menu_item :	the menu item whose activation triggered the popup.	
@@ -633,13 +652,13 @@ activate_time :	the time at which the activation event occurred.
             ReDraw(PgtkWidget(Handle))
          else
           if (sender is TSpeedButton) then
-            If TSpeedbutton(sender).Visible then (Sender as TSpeedButton).perform(LM_PAINT,0,0)
-              else
-              Begin
+            If TSpeedbutton(sender).Visible then
+              (Sender as TSpeedButton).perform(LM_PAINT,0,0)
+            else
+            Begin
               Rect := TSpeedButton(sender).BoundsRect;
               InvalidateRect(TSpeedButton(sender).Parent.Handle,@Rect,True);
-
-              end;
+            end;
       end;
 
       LM_AddPage :
@@ -676,10 +695,10 @@ activate_time :	the time at which the activation event occurred.
       Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!!!!!!!!');
          If (SENDER is TWINCONTROL) Then
          Begin
-            pStr := StrAlloc(Length(ttoolbutton(SENDER).Caption)+1);
-            StrPCopy(pStr,ttoolbutton(SENDER).Caption);
-            pStr2 := StrAlloc(Length(tcontrol(Sender).Hint)+1);
-            StrPCopy(pStr2,tcontrol(Sender).Hint);
+            pStr := StrAlloc(Length(TToolbutton(SENDER).Caption)+1);
+            StrPCopy(pStr,TToolbutton(SENDER).Caption);
+            pStr2 := StrAlloc(Length(TControl(Sender).Hint)+1);
+            StrPCopy(pStr2,TControl(Sender).Hint);
          end 
          else Begin
             raise Exception.Create('Can not assign this control to the toolbar');
@@ -731,13 +750,6 @@ activate_time :	the time at which the activation event occurred.
 
       LM_SCREENINIT :
       begin
-        WriteLN('LM_SCREENINIT called --> should go to GTKObject.Init');
-        WriteLN('TODO: check this');
-        { Initialize gdk }
-        //??? shouldn't this go to init ????
-        // MWE: Move this to init !!!!!
-        gdk_init(@argc, @argv);
-        //???--????
         { Compute pixels per inch variable }
         PLMScreenInit(Data)^.PixelsPerInchX:= Round(gdk_screen_width / (gdk_screen_width_mm / 25.4));
         PLMScreenInit(Data)^.PixelsPerInchY:= Round(gdk_screen_height / (gdk_screen_height_mm / 25.4));
@@ -1103,7 +1115,6 @@ begin
       writeln ('STOPPOK: [TGtkObject.SetText] Possible superfluous use of SetText, use SetLabel instead!');
    end;
 {STOPPOK: Code seems superfluous, see SetLabel instead}
-
 end;
 
 {------------------------------------------------------------------------------
@@ -1163,9 +1174,9 @@ begin
    Assert(p = nil, 'Trace:WARNING: [TgtkObject.SetLabel] --> got nil pointer');
    Assert(False, 'Trace:Setting Str1 in SetLabel');
    pLabel := pchar(Data);
-   
+
    case TControl(Sender).fCompStyle of
-      csBitBtn      : IntSendMessage3(LM_IMAGECHANGED,SENDER,nil);
+      csBitBtn      : IntSendMessage3(LM_IMAGECHANGED,Sender,nil);
 
       csButton,
       csToolButton  : with PgtkButton(P)^ do
@@ -1623,7 +1634,7 @@ const
 //unused:   Tpixdata = Array[1..20] of String;
 
 var
-   caption : string;              // the caption of "Sender"
+   caption : ansistring;          // the caption of "Sender"
    StrTemp : PChar;               // same as "caption" but as PChar
    TempWidget : PGTKWidget;       // pointer to gtk-widget (local use when neccessary)
    p          : pointer;          // ptr to the newly created GtkWidget
@@ -1685,37 +1696,46 @@ begin
 
       csBitBtn :
       begin
-         Assert(False, 'Trace:CSBITBTN CREATE*************************');
-         p := gtk_button_new;
-         Box := gtk_hbox_new(False,0);
-         gtk_container_set_border_width(PgtkContainer(Box),2);
-         style := gtk_widget_get_style(pGTKWidget(p));
-
+        Assert(False, 'Trace:CSBITBTN CREATE*************************');
+        p := gtk_button_new;
+        if (TBitBtn(Sender).Layout = blGlyphLeft)
+        or (TBitBtn(Sender).Layout = blGlyphRight) then begin
+          Assert(False, 'Trace:GLYPHLEFT or GLYPHRIGHT');
+          Box := gtk_hbox_new(False,0);
+        end
+        else Begin
+          Assert(False, 'Trace:GLYPHTOP or GLYPHBOTTOM');
+          Box := gtk_vbox_new(False,0);
+        end;
+        gtk_container_set_border_width(PgtkContainer(Box),2);
+        style := gtk_widget_get_style(pGTKWidget(p));
+        {
              // is this neccessary?
-             // MWE: nope, if needeid, it should be done static
+             // MWE: nope, if needed, it should be done static
              TempStr := './images/menu.xpm';
              pStr := StrAlloc(length(TempStr) + 1);
              StrPCopy(pStr, TempStr);
              pixmap := gdk_pixmap_create_from_xpm(pgtkWidget(p)^.window, @Mask,
                                    @style^.bg[GTK_STATE_NORMAL],pStr);
              StrDispose(pStr);
-             
-         pixmapwid := gtk_pixmap_new(pixmap,mask);
-         label1 := gtk_label_new(StrTemp);
+        }
+      
+        //pixmapwid := gtk_pixmap_new(pixmap,mask);
+        PixMapWid := nil;
+        Label1 := gtk_label_new(StrTemp);
 
-         gtk_box_pack_start(pGTkBox(Box),pixmapwid,False,False,3);
-         gtk_box_pack_start(pGTkBox(Box), label1, FALSE, FALSE, 3);
-         gtk_widget_show(pixmapwid);
-         gtk_widget_show(label1);
-         gtk_Container_add(PgtkContainer(p),Box);
-         gtk_widget_show(Box);
+        //gtk_box_pack_start(pGTkBox(Box),pixmapwid,False,False,3);
+        gtk_box_pack_start(pGTkBox(Box), Label1, FALSE, FALSE, 3);
+        //gtk_widget_show(pixmapwid);
+        gtk_widget_show(Label1);
+        gtk_Container_add(PgtkContainer(p),Box);
+        gtk_widget_show(Box);
 
-         gtk_object_set_data(pgtkObject(p),'HBox',Box);
-         gtk_object_set_data(pgtkObject(p),'Pixmap',PixMapwid);
-         gtk_object_set_data(pgtkObject(p),'Label',Label1);
+        gtk_object_set_data(pgtkObject(p),'HBox',Box);
+        gtk_object_set_data(pgtkObject(p),'Pixmap',PixMapwid);
+        gtk_object_set_data(pgtkObject(p),'Label',Label1);
 
-         Assert(False, 'Trace:CSBITBTN CREATE EXITING*************************');
-
+        Assert(False, 'Trace:CSBITBTN CREATE EXITING*************************');
       end;
 
       csButton :
@@ -1832,7 +1852,9 @@ begin
 
       csFixed: //used for TWinControl, maybe change this to csWinControl 
       begin
+      writeln('[TgtkObject.CreateComponent] csFixed A');
         p := GTKAPIWidget_New;
+      writeln('[TgtkObject.CreateComponent] csFixed B');
         gtk_scrolled_window_set_policy(PGTKScrolledWindow(p), GTK_POLICY_NEVER, GTK_POLICY_NEVER);
 
         Adjustment := gtk_scrolled_window_get_vadjustment(PGTKScrolledWindow(p));
@@ -2846,6 +2868,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.46  2001/06/04 09:32:17  lazarus
+  MG: fixed bugs and cleaned up messages
+
   Revision 1.45  2001/05/13 22:07:09  lazarus
   Implemented BringToFront / SendToBack.
 

@@ -2123,7 +2123,6 @@ Var
   TempEditor : TSourceEditor;
 Begin
   //create a new page
-writeln('[TSourceNotebook.NewFile] 1');
   TempEditor := NewSE(-1);
   TempEditor.Unitname := Unitname;
   TempEditor.Source := Source;
