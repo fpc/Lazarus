@@ -2205,10 +2205,8 @@ begin
 
   CreateParams(Params);
   with Params do begin
-    if (WndParent = 0) and (Style and WS_CHILD <> 0) then begin
-      // raise EInvalidOperation.CreateFmt('Control ''%s'' has no parent', [Name]);
-      exit;
-    end;
+    if (WndParent = 0) and (Style and WS_CHILD <> 0) then
+      RaiseGDBException('TWinControl.CreateWnd: no parent');
     Assert((parent <> nil) or (WndParent = 0), 'TODO: find parent if parent=nil and WndParent <> 0');
   end;
   
@@ -2230,6 +2228,26 @@ begin
   end;
   //writeln('[TWinControl.CreateWnd] END ',Name,':',Classname);
   //WriteClientRect('D');
+end;
+
+{------------------------------------------------------------------------------
+  TWinControl Create Component
+------------------------------------------------------------------------------}
+procedure TWinControl.CreateComponent(AOwner : TComponent);
+begin
+  if HandleAllocated then
+    RaiseGDBException('TWinControl.CreateComponent: Handle already created');
+  CNSendMessage(LM_CREATE, Self, nil);
+  if not HandleAllocated then
+    RaiseGDBException('TWinControl.CreateComponent: Handle creation failed');
+end;
+
+{------------------------------------------------------------------------------
+  TWinControl Destroy Component
+------------------------------------------------------------------------------}
+procedure TWinControl.DestroyComponent;
+begin
+  CNSendMessage(LM_DESTROY, Self, nil);
 end;
 
 {------------------------------------------------------------------------------
@@ -2300,8 +2318,7 @@ begin
       if (Parent <> nil) then
         Parent.HandleNeeded;
     end;
-    if not HandleAllocated then
-      CreateHandle;
+    CreateHandle;
   end;
 end;
 
@@ -2525,6 +2542,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.108  2002/12/27 17:12:38  mattias
+  added more Delphi win32 compatibility functions
+
   Revision 1.107  2002/02/09 01:48:23  mattias
   renamed TinterfaceObject.Init to AppInit and TWinControls can now contain childs in gtk
 
