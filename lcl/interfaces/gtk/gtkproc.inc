@@ -429,7 +429,7 @@ var
       gdk_gc_set_fill(GC, fill);
       AllocFG := Foreground.Pixel = 0;
       If AllocFG then
-        gdk_colormap_alloc_color(GDK_Colormap_get_system, @Foreground,True,True);
+        gdk_colormap_alloc_color(GDK_Colormap_get_system,@Foreground,True,True);
       gdk_gc_set_foreground(GC, @foreground);
       Case Fill of
         GDK_TILED :
@@ -3948,6 +3948,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.153  2002/12/22 22:42:55  mattias
+  custom controls now support child wincontrols
+
   Revision 1.152  2002/02/09 01:48:23  mattias
   renamed TinterfaceObject.Init to AppInit and TWinControls can now contain childs in gtk
 
