@@ -180,7 +180,7 @@ type
     eoShowSpecialChars,        //TODO Shows the special Characters
     eoSmartTabDelete,          //TODO similar to Smart Tabs, but when you delete characters
     eoSmartTabs,               // When tabbing, the cursor will go to the next non-white space character of the previous line
-    eoSpecialLineDefaultFg,    //TODO disables the foreground text color override when using the OnSpecialLineColor event
+    //eoSpecialLineDefaultFg,    //TODO disables the foreground text color override when using the OnSpecialLineColor event
     eoTabIndent,               // When active <Tab> and <Shift><Tab> act as block indent, unindent when text is selected
     eoTabsToSpaces,            // Converts a tab character to a specified number of space characters
     eoTrimTrailingSpaces,      // Spaces at the end of lines will be trimmed and not saved
@@ -190,7 +190,8 @@ type
     eoHideRightMargin,         // hides the right margin line
     eoPersistentCaret,         // do not hide caret when focus lost
     eoShowCtrlMouseLinks,      // pressing Ctrl will highlight the word under the mouse cursor
-    eoAutoIndentOnPaste        // indent text inserted from clipboard
+    eoAutoIndentOnPaste,       // indent text inserted from clipboard
+    eoSpacesToTabs             // Converts space characters to tabs and spaces
     {$ENDIF}
     );
   TSynEditorOptions = set of TSynEditorOption;
@@ -369,7 +370,7 @@ type
 {$ifndef SYN_LAZARUS}
     fBorderStyle: TBorderStyle;
     fMouseWheelAccumulator: integer;
-{$endif}    
+{$endif}
     fHideSelection: boolean;
     fOverwriteCaret: TSynEditCaretType;
     fInsertCaret: TSynEditCaretType;
@@ -447,7 +448,8 @@ type
     procedure GutterChanged(Sender: TObject);
     procedure InsertBlock(BB, BE: TPoint; ChangeStr: PChar);
     function IsPointInSelection(Value: TPoint): boolean;
-    function LeftSpaces(const Line: string): Integer;
+    function LeftSpaces(const Line: string
+      {$IFDEF SYN_LAZARUS}; Physical: boolean = false{$ENDIF}): Integer;
     procedure LinesChanging(Sender: TObject);
     procedure LinesChanged(Sender: TObject);
     procedure LockUndo;
@@ -508,7 +510,7 @@ type
     procedure SetSelText(const Value: string);
     procedure SetSelTextExternal(const Value: string);
     procedure SetTabWidth(Value: integer);
-    procedure SynSetText(const Value: string); 
+    procedure SynSetText(const Value: string);
     {$IFDEF SYN_LAZARUS}
     procedure RealSetText(const Value: TCaption); override;
     {$ENDIF}
@@ -1687,7 +1689,7 @@ begin
     Result := Lines.Text
   else
     Result := '';
-end;                                                    
+end;
 {$ENDIF}
 
 procedure TCustomSynEdit.HideCaret;
@@ -1960,7 +1962,8 @@ begin
 end;
 
 
-function TCustomSynEdit.LeftSpaces(const Line: string): Integer;
+function TCustomSynEdit.LeftSpaces(const Line: string
+  {$IFDEF SYN_LAZARUS}; Physical: boolean = false{$ENDIF}): Integer;
 var
   p: PChar;
 begin
@@ -1971,6 +1974,10 @@ begin
       Inc(p);
       Inc(Result);
     end;
+    {$IFDEF SYN_LAZARUS}
+    if Physical and (Result>0) then
+      Result:=LogicalToPhysicalCol(Line,Result+1)-1;
+    {$ENDIF}
   end else
     Result := 0;
 end;
@@ -2585,7 +2592,7 @@ var
     Style: TFontStyles;
   end;
   dc: HDC;
-  
+
   ExpandedPaintToken: string; // used to create the string sent to TextDrawer
 
   // logical (byte) positions of highlight brackets, the X are zero based
@@ -2593,7 +2600,7 @@ var
   nBracketY: integer; // one based
   nAntiBracketX: integer; // zero based (logical)
   nAntiBracketY: integer; // one based
-  
+
   LinkFGCol: TColor;
 
 { local procedures }
@@ -2669,7 +2676,7 @@ var
   begin
     Result := fTextOffset + Pred(Col) * fCharWidth;
   end;
-  
+
   procedure ExpandSpecialChars(var p: PChar; var Count: integer;
     PhysicalStartPos: integer);
   // if there are no tabs: keep p and Count untouched
@@ -2715,7 +2722,7 @@ var
           end;
           inc(ScreenPos);
         end;
-        
+
       #9:
         begin
           // tab char
@@ -2727,7 +2734,7 @@ var
           end;
           inc(SrcPos);
         end;
-      
+
       else
         begin
           // normal char
@@ -2871,7 +2878,7 @@ var
         with TokenAccu do PaintToken(s, Len, CharsBefore, C1Phys, nC1, nC2);
       end;
     end;
-    
+
     // Fill the background to the end of this line if necessary.
     if bFillToEOL and (rcToken.Left < rcLine.Right) then begin
       if not bSpecialLine then colBG := colEditorBG;
@@ -3188,7 +3195,7 @@ var
           end;
       end;
       //debugln('PaintLines A nSelStart=',dbgs(nSelStart),' nSelEnd=',dbgs(nSelEnd));
-      
+
       // Update the rcLine rect to this line.
       rcLine.Top := rcLine.Bottom;
       Inc(rcLine.Bottom, fTextHeight);
@@ -4676,7 +4683,7 @@ var
         sLeftSide := sLeftSide
                      + CreateTabsAndSpaces(CaretX,
                                            CaretX-1-PhysicalLineEndPos,
-                                           TabWidth, eoTabsToSpaces in Options);
+                                           TabWidth, eoSpacesToTabs in Options);
       end;
       sRightSide := Copy(LineText, LogCaretXY.X,
                          Length(LineText) - (LogCaretXY.X - 1));
@@ -5074,7 +5081,7 @@ begin
           ScrollInfo.nPos := MulDiv(MAX_SCROLL, TopLine, nMaxScroll);
         end;
         {$IFDEF SYN_LAZARUS}
-	{ for win32 target, need to call showscrollbar before setscrollinfo }
+        { for win32 target, need to call showscrollbar before setscrollinfo }
         ShowScrollBar(Handle, SB_VERT, True);
         {$ENDIF}
         SetScrollInfo(Handle, SB_VERT, ScrollInfo, True);
@@ -6795,6 +6802,7 @@ var
   InsDelta: integer;
   {$IFDEF SYN_LAZARUS}
   LogCaretXY: TPoint;
+  LogSpacePos: integer;
   {$ENDIF}
 
 {begin}                                                                         //mh 2000-10-30
@@ -6988,8 +6996,13 @@ begin
           else begin
             Temp := LineText;
             Len := Length(Temp);
+            {$IFDEF SYN_LAZARUS}
+            LogCaretXY:=PhysicalToLogicalPos(CaretXY);
+            {$ELSE}
             Caret := CaretXY;
-            if CaretX > Len + 1 then begin
+            {$ENDIF}
+            if {$IFDEF SYN_LAZARUS}LogCaretXY.X{$ELSE}CaretX{$ENDIF} > Len +1
+            then begin
               // only move caret one column
               Helper := '';
               CaretX := CaretX - 1;
@@ -6997,7 +7010,12 @@ begin
               // join this line with the last line if possible
               if CaretY > 1 then begin
                 CaretY := CaretY - 1;
+                {$IFDEF SYN_LAZARUS}
+                CaretX := LogicalToPhysicalCol(Lines[CaretY - 1],
+                                               Length(Lines[CaretY - 1]) + 1);
+                {$ELSE}
                 CaretX := Length(Lines[CaretY - 1]) + 1;
+                {$ENDIF}
                 Lines.Delete(CaretY);
                 DoLinesDeleted(CaretY, 1);
                 if eoTrimTrailingSpaces in Options then
@@ -7007,7 +7025,7 @@ begin
               end;
             end else begin
               // delete text before the caret
-              SpaceCount1 := LeftSpaces(Temp);
+              SpaceCount1 := LeftSpaces(Temp{$IFDEF SYN_LAZARUS},true{$ENDIF});
               SpaceCount2 := 0;
               if (Temp[CaretX - 1] <= #32) and (SpaceCount1 = CaretX - 1) then
               begin
@@ -7015,7 +7033,8 @@ begin
                 if SpaceCount1 > 0 then begin
                   BackCounter := CaretY - 2;
                   while BackCounter >= 0 do begin
-                    SpaceCount2 := LeftSpaces(Lines[BackCounter]);
+                    SpaceCount2 :=LeftSpaces(Lines[BackCounter]
+                                             {$IFDEF SYN_LAZARUS},true{$ENDIF});
                     if SpaceCount2 < SpaceCount1 then
                       break;
                     Dec(BackCounter);
@@ -7023,10 +7042,17 @@ begin
                 end;
                 if SpaceCount2 = SpaceCount1 then
                   SpaceCount2 := 0;
+                {$IFDEF SYN_LAZARUS}
+                LogSpacePos:=PhysicalToLogicalCol(Temp,SpaceCount2+1);
+                Temp:=copy(Temp,1,LogSpacePos-1)+copy(Temp,LogCaretXY.X,MaxInt);
+                TrimmedSetLine(CaretY - 1, Temp);
+                fCaretX := LogicalToPhysicalCol(Temp,LogSpacePos);
+                {$ELSE}
                 Helper := Copy(Temp, 1, SpaceCount1 - SpaceCount2);
                 Delete(Temp, 1, SpaceCount1 - SpaceCount2);
                 TrimmedSetLine(CaretY - 1, Temp);
                 fCaretX := fCaretX - (SpaceCount1 - SpaceCount2);
+                {$ENDIF}
                 fLastCaretX := fCaretX;
                 StatusChanged([scCaretX]);
               end else begin
@@ -7038,11 +7064,14 @@ begin
 {$ENDIF}
                 CaretX := CaretX - counter;
                 Helper := Copy(Temp, CaretX, counter);
-{$IFDEF USE_UTF8BIDI_LCL}
+                {$IFDEF USE_UTF8BIDI_LCL}
                 VDelete(Temp, CaretX, counter, drLTR);
-{$ELSE USE_UTF8BIDI_LCL}
+                {$ELSE USE_UTF8BIDI_LCL}
+                {$IFDEF SYN_LAZARUS}
+                counter:=LogCaretXY.X-PhysicalToLogicalCol(Temp,CaretX);
+                {$ENDIF}
                 Delete(Temp, CaretX, counter);
-{$ENDIF USE_UTF8BIDI_LCL}
+                {$ENDIF USE_UTF8BIDI_LCL}
                 TrimmedSetLine(CaretY - 1, Temp);
               end;
             end;
@@ -7067,7 +7096,7 @@ begin
             {$IFDEF SYN_LAZARUS}
             LogCaretXY:=PhysicalToLogicalPos(CaretXY);
             {$ENDIF}
-            if {$IFDEF SynEdit}LogCaretXY.XP{$ELSE}CaretX{$ENDIF} <= Len then
+            if {$IFDEF SYN_LAZARUS}LogCaretXY.X{$ELSE}CaretX{$ENDIF} <= Len then
             begin
               // delete char
               {$IFDEF SYN_LAZARUS}
@@ -8712,7 +8741,7 @@ begin
   end;
   {$IFDEF SYN_LAZARUS}
   // i now contains the needed spaces
-  Spaces := CreateTabsAndSpaces(CaretX,i,TabWidth,eoTabsToSpaces in Options);
+  Spaces := CreateTabsAndSpaces(CaretX,i,TabWidth,eoSpacesToTabs in Options);
   {$ELSE}
   Spaces := StringOfChar(' ', i);
   {$ENDIF}
