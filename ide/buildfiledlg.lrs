@@ -1,0 +1,67 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TBuildFileDialog','FORMDATA',[
+  'TPF0'#16'TBuildFileDialog'#15'BuildFileDialog'#7'CAPTION'#6#15'BuildFileDial'
+  +'og'#12'CLIENTHEIGHT'#3'6'#1#11'CLIENTWIDTH'#3#158#1#10'KEYPREVIEW'#9#9'ONKE'
+  +'YDOWN'#7#22'BuildFileDialogKEYDOWN'#8'POSITION'#7#14'poscreencenter'#18'HOR'
+  +'ZSCROLLBAR.PAGE'#3#159#1#18'VERTSCROLLBAR.PAGE'#3'7'#1#4'LEFT'#3'P'#1#6'HEI'
+  +'GHT'#3'6'#1#3'TOP'#3#221#0#5'WIDTH'#3#158#1#0#7'TBUTTON'#8'OkButton'#7'ANCH'
+  +'ORS'#11#6'akleft'#8'akbottom'#0#11'MODALRESULT'#2#1#7'CAPTION'#6#2'Ok'#7'TA'
+  +'BSTOP'#9#8'TABORDER'#2#0#4'LEFT'#2'j'#6'HEIGHT'#2#25#3'TOP'#3#20#1#5'WIDTH'
+  +#2'K'#0#0#7'TBUTTON'#12'CancelButton'#7'ANCHORS'#11#6'akleft'#8'akbottom'#0
+  +#11'MODALRESULT'#2#2#7'CAPTION'#6#6'Cancel'#7'TABSTOP'#9#8'TABORDER'#2#1#4'L'
+  +'EFT'#3#234#0#6'HEIGHT'#2#25#3'TOP'#3#20#1#5'WIDTH'#2'K'#0#0#9'TNOTEBOOK'#9
+  +'Notebook1'#5'ALIGN'#7#5'altop'#7'ANCHORS'#11#5'aktop'#6'akleft'#7'akright'#8
+  +'akbottom'#0#9'PAGEINDEX'#2#0#6'HEIGHT'#3#12#1#5'WIDTH'#3#158#1#0#5'TPAGE'#11
+  +'GeneralPage'#7'CAPTION'#6#7'Options'#11'CLIENTWIDTH'#3#154#1#12'CLIENTHEIGH'
+  +'T'#3#238#0#4'LEFT'#2#2#6'HEIGHT'#3#238#0#3'TOP'#2#28#5'WIDTH'#3#154#1#0#9'T'
+  +'CHECKBOX'#28'OverrideBuildProjectCheckbox'#11'ALLOWGRAYED'#9#8'AUTOSIZE'#9#7
+  +'CAPTION'#6'4On build project execute the Compile command instead'#10'DRAGCU'
+  +'RSOR'#2#0#8'TABORDER'#2#0#7'TABSTOP'#9#4'LEFT'#2#14#6'HEIGHT'#2#20#3'TOP'#2
+  +#12#5'WIDTH'#3#128#1#0#0#9'TCHECKBOX'#26'OverrideRunProjectCheckbox'#11'ALLO'
+  +'WGRAYED'#9#8'AUTOSIZE'#9#7'CAPTION'#6'.On run project execute the Run comma'
+  +'nd instead'#10'DRAGCURSOR'#2#0#8'TABORDER'#2#1#7'TABSTOP'#9#4'LEFT'#2#14#6
+  +'HEIGHT'#2#20#3'TOP'#2','#5'WIDTH'#3#128#1#0#0#0#5'TPAGE'#11'CompilePage'#7
+  +'CAPTION'#6#7'Compile'#11'CLIENTWIDTH'#3#154#1#12'CLIENTHEIGHT'#3#238#0#4'LE'
+  +'FT'#2#2#6'HEIGHT'#3#238#0#3'TOP'#2#28#5'WIDTH'#3#154#1#0#9'TGROUPBOX'#22'Co'
+  +'mpileCommandGroupbox'#7'CAPTION'#6#15'Compile Command'#12'CLIENTHEIGHT'#2'5'
+  +#11'CLIENTWIDTH'#3#142#1#11'PARENTCTL3D'#8#8'TABORDER'#2#0#4'LEFT'#2#4#6'HEI'
+  +'GHT'#2'F'#3'TOP'#2#6#5'WIDTH'#3#146#1#0#5'TMEMO'#18'CompileCommandMemo'#5'A'
+  +'LIGN'#7#8'alclient'#13'LINES.Strings'#1#6#18'CompileCommandMemo'#0#7'TABSTO'
+  +'P'#9#7'TABSTOP'#9#8'TABORDER'#2#0#6'HEIGHT'#2'5'#5'WIDTH'#3#142#1#0#0#0#9'T'
+  +'CHECKBOX'#28'CompileScanForFPCMsgCheckbox'#11'ALLOWGRAYED'#9#8'AUTOSIZE'#9#7
+  +'CAPTION'#6#21'Scan for FPC messages'#10'DRAGCURSOR'#2#0#8'TABORDER'#2#1#7'T'
+  +'ABSTOP'#9#4'LEFT'#2#10#6'HEIGHT'#2#20#3'TOP'#2'T'#5'WIDTH'#3#211#0#0#0#9'TC'
+  +'HECKBOX'#26'CompScanForMakeMsgCheckbox'#11'ALLOWGRAYED'#9#8'AUTOSIZE'#9#7'C'
+  +'APTION'#6#22'Scan for Make messages'#10'DRAGCURSOR'#2#0#8'TABORDER'#2#2#7'T'
+  +'ABSTOP'#9#4'LEFT'#2#10#6'HEIGHT'#2#20#3'TOP'#2'l'#5'WIDTH'#3#217#0#0#0#9'TG'
+  +'ROUPBOX'#21'CompileMacrosGroupbox'#7'CAPTION'#6#6'Macros'#12'CLIENTHEIGHT'#2
+  +'Q'#11'CLIENTWIDTH'#3#143#1#11'PARENTCTL3D'#8#8'TABORDER'#2#3#4'LEFT'#2#4#6
+  +'HEIGHT'#2'b'#3'TOP'#3#132#0#5'WIDTH'#3#147#1#0#8'TLISTBOX'#20'CompileMacros'
+  +'Listbox'#5'ALIGN'#7#6'alleft'#8'TABORDER'#2#0#7'TABSTOP'#9#8'TOPINDEX'#2#255
+  +#6'HEIGHT'#2'Q'#5'WIDTH'#3'('#1#0#0#7'TBUTTON'#21'CompileAddMacroButton'#7'C'
+  +'APTION'#6#3'Add'#7'TABSTOP'#9#8'TABORDER'#2#1#4'LEFT'#3'8'#1#6'HEIGHT'#2#25
+  +#3'TOP'#2#9#5'WIDTH'#2'K'#0#0#0#0#5'TPAGE'#7'RunPage'#7'CAPTION'#6#3'Run'#11
+  +'CLIENTWIDTH'#3#154#1#12'CLIENTHEIGHT'#3#238#0#4'LEFT'#2#2#6'HEIGHT'#3#238#0
+  +#3'TOP'#2#28#5'WIDTH'#3#154#1#0#9'TCHECKBOX'#26'AlwaysCompileFirstCheckbox'
+  +#11'ALLOWGRAYED'#9#8'AUTOSIZE'#9#7'CAPTION'#6'%Always run the Compile comman'
+  +'d before'#10'DRAGCURSOR'#2#0#8'TABORDER'#2#0#7'TABSTOP'#9#4'LEFT'#2#10#6'HE'
+  +'IGHT'#2#20#3'TOP'#2#4#5'WIDTH'#3#136#1#0#0#9'TGROUPBOX'#18'RunCommandGroupb'
+  +'ox'#7'CAPTION'#6#11'Run Command'#12'CLIENTHEIGHT'#2'5'#11'CLIENTWIDTH'#3#142
+  +#1#11'PARENTCTL3D'#8#8'TABORDER'#2#1#4'LEFT'#2#4#6'HEIGHT'#2'F'#3'TOP'#2#28#5
+  +'WIDTH'#3#146#1#0#5'TMEMO'#14'RunCommandMemo'#5'ALIGN'#7#8'alclient'#13'LINE'
+  +'S.Strings'#1#6#18'CompileCommandMemo'#0#7'TABSTOP'#9#7'TABSTOP'#9#8'TABORDE'
+  +'R'#2#0#6'HEIGHT'#2'5'#5'WIDTH'#3#142#1#0#0#0#9'TCHECKBOX'#24'RunScanForFPCM'
+  +'sgCheckbox'#11'ALLOWGRAYED'#9#8'AUTOSIZE'#9#7'CAPTION'#6#21'Scan for FPC me'
+  +'ssages'#10'DRAGCURSOR'#2#0#8'TABORDER'#2#2#7'TABSTOP'#9#4'LEFT'#2#10#6'HEIG'
+  +'HT'#2#20#3'TOP'#2'd'#5'WIDTH'#3#211#0#0#0#9'TCHECKBOX'#25'RunScanForMakeMsg'
+  +'Checkbox'#11'ALLOWGRAYED'#9#8'AUTOSIZE'#9#7'CAPTION'#6#22'Scan for Make mes'
+  +'sages'#10'DRAGCURSOR'#2#0#8'TABORDER'#2#3#7'TABSTOP'#9#4'LEFT'#2#10#6'HEIGH'
+  +'T'#2#20#3'TOP'#2'|'#5'WIDTH'#3#217#0#0#0#9'TGROUPBOX'#17'RunMacrosGroupbox'
+  +#7'CAPTION'#6#6'Macros'#12'CLIENTHEIGHT'#2'A'#11'CLIENTWIDTH'#3#143#1#11'PAR'
+  +'ENTCTL3D'#8#8'TABORDER'#2#4#4'LEFT'#2#4#6'HEIGHT'#2'R'#3'TOP'#3#148#0#5'WID'
+  +'TH'#3#147#1#0#8'TLISTBOX'#16'RunMacrosListbox'#5'ALIGN'#7#6'alleft'#8'TABOR'
+  +'DER'#2#0#7'TABSTOP'#9#8'TOPINDEX'#2#255#6'HEIGHT'#2'A'#5'WIDTH'#3'('#1#0#0#7
+  +'TBUTTON'#17'RunAddMacroButton'#7'CAPTION'#6#3'Add'#7'TABSTOP'#9#8'TABORDER'
+  +#2#1#4'LEFT'#3'8'#1#6'HEIGHT'#2#25#3'TOP'#2#9#5'WIDTH'#2'K'#0#0#0#0#0#0
+]);

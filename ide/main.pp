@@ -1285,26 +1285,38 @@ begin
 end;
 
 procedure TMainIDE.SetupStartProject;
+var
+  LastParam: String;
+  ProjectLoaded: Boolean;
+  AProjectFilename: String;
 begin
   {$IFDEF IDE_DEBUG}
   writeln('TMainIDE.Create A ***********');
   {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.SetupStartProject A');{$ENDIF}
   // load command line project or last project or create a new project
-  if (ParamCount>0) and (ParamStr(ParamCount)[1]<>'-')
-  and (ExtractFileExt(ParamStr(ParamCount))='.lpi')
-  and (DoOpenProjectFile(ParamStr(ParamCount),[])=mrOk) then
-    // command line project loaded
-  else if (EnvironmentOptions.OpenLastprojectAtStart)
-  and (FileExists(EnvironmentOptions.LastSavedProjectFile))
-  and (DoOpenProjectFile(EnvironmentOptions.LastSavedProjectFile,[])=mrOk) then
-  begin
-    // last project loaded
-  {$IFDEF IDE_DEBUG}
-  writeln('TMainIDE.Create last project loaded successfully');
-  {$ENDIF}
+  LastParam:=ParamStr(ParamCount);
+  ProjectLoaded:=false;
+
+  // try command line project
+  if (ParamCount>0) and (LastParam[1]<>'-') then begin
+    AProjectFilename:=LastParam;
+    if (CompareFileExt(AProjectFilename,'.lpi',false)<>0) then begin
+      AProjectFilename:=ChangeFileExt(AProjectFilename,'.lpi');
+    end;
+    ProjectLoaded:=(DoOpenProjectFile(LastParam,[])=mrOk);
+  end;
+
+  // try loading last project
+  if (not ProjectLoaded)
+  and (EnvironmentOptions.OpenLastProjectAtStart)
+  and (FileExists(EnvironmentOptions.LastSavedProjectFile)) then begin
+    ProjectLoaded:=
+      (DoOpenProjectFile(EnvironmentOptions.LastSavedProjectFile,[])=mrOk);
+  end;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.SetupStartProject B');{$ENDIF}
-  end else
+
+  if not ProjectLoaded then
     // create new project
     DoNewProject(ptApplication);
 
@@ -9433,6 +9445,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.641  2003/08/18 21:17:41  mattias
+  implemented loading lpr command line projects
+
   Revision 1.640  2003/08/18 18:07:53  mattias
   implemented character map
 

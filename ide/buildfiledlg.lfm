@@ -1,0 +1,254 @@
+object BuildFileDialog: TBuildFileDialog
+  CAPTION = 'BuildFileDialog'
+  CLIENTHEIGHT = 310
+  CLIENTWIDTH = 414
+  KEYPREVIEW = True
+  ONKEYDOWN = BuildFileDialogKEYDOWN
+  POSITION = poscreencenter
+  HORZSCROLLBAR.PAGE = 415
+  VERTSCROLLBAR.PAGE = 311
+  LEFT = 336
+  HEIGHT = 310
+  TOP = 221
+  WIDTH = 414
+  object OkButton: TBUTTON
+    ANCHORS = [akleft, akbottom]
+    MODALRESULT = 1
+    CAPTION = 'Ok'
+    TABSTOP = True
+    TABORDER = 0
+    LEFT = 106
+    HEIGHT = 25
+    TOP = 276
+    WIDTH = 75
+  end
+  object CancelButton: TBUTTON
+    ANCHORS = [akleft, akbottom]
+    MODALRESULT = 2
+    CAPTION = 'Cancel'
+    TABSTOP = True
+    TABORDER = 1
+    LEFT = 234
+    HEIGHT = 25
+    TOP = 276
+    WIDTH = 75
+  end
+  object Notebook1: TNOTEBOOK
+    ALIGN = altop
+    ANCHORS = [aktop, akleft, akright, akbottom]
+    PAGEINDEX = 0
+    HEIGHT = 268
+    WIDTH = 414
+    object GeneralPage: TPAGE
+      CAPTION = 'Options'
+      CLIENTWIDTH = 410
+      CLIENTHEIGHT = 238
+      LEFT = 2
+      HEIGHT = 238
+      TOP = 28
+      WIDTH = 410
+      object OverrideBuildProjectCheckbox: TCHECKBOX
+        ALLOWGRAYED = True
+        AUTOSIZE = True
+        CAPTION = 'On build project execute the Compile command instead'
+        DRAGCURSOR = 0
+        TABORDER = 0
+        TABSTOP = True
+        LEFT = 14
+        HEIGHT = 20
+        TOP = 12
+        WIDTH = 384
+      end
+      object OverrideRunProjectCheckbox: TCHECKBOX
+        ALLOWGRAYED = True
+        AUTOSIZE = True
+        CAPTION = 'On run project execute the Run command instead'
+        DRAGCURSOR = 0
+        TABORDER = 1
+        TABSTOP = True
+        LEFT = 14
+        HEIGHT = 20
+        TOP = 44
+        WIDTH = 384
+      end
+    end
+    object CompilePage: TPAGE
+      CAPTION = 'Compile'
+      CLIENTWIDTH = 410
+      CLIENTHEIGHT = 238
+      LEFT = 2
+      HEIGHT = 238
+      TOP = 28
+      WIDTH = 410
+      object CompileCommandGroupbox: TGROUPBOX
+        CAPTION = 'Compile Command'
+        CLIENTHEIGHT = 53
+        CLIENTWIDTH = 398
+        PARENTCTL3D = False
+        TABORDER = 0
+        LEFT = 4
+        HEIGHT = 70
+        TOP = 6
+        WIDTH = 402
+        object CompileCommandMemo: TMEMO
+          ALIGN = alclient
+          LINES.Strings = (
+            'CompileCommandMemo'
+          )
+          TABSTOP = True
+          TABSTOP = True
+          TABORDER = 0
+          HEIGHT = 53
+          WIDTH = 398
+        end
+      end
+      object CompileScanForFPCMsgCheckbox: TCHECKBOX
+        ALLOWGRAYED = True
+        AUTOSIZE = True
+        CAPTION = 'Scan for FPC messages'
+        DRAGCURSOR = 0
+        TABORDER = 1
+        TABSTOP = True
+        LEFT = 10
+        HEIGHT = 20
+        TOP = 84
+        WIDTH = 211
+      end
+      object CompScanForMakeMsgCheckbox: TCHECKBOX
+        ALLOWGRAYED = True
+        AUTOSIZE = True
+        CAPTION = 'Scan for Make messages'
+        DRAGCURSOR = 0
+        TABORDER = 2
+        TABSTOP = True
+        LEFT = 10
+        HEIGHT = 20
+        TOP = 108
+        WIDTH = 217
+      end
+      object CompileMacrosGroupbox: TGROUPBOX
+        CAPTION = 'Macros'
+        CLIENTHEIGHT = 81
+        CLIENTWIDTH = 399
+        PARENTCTL3D = False
+        TABORDER = 3
+        LEFT = 4
+        HEIGHT = 98
+        TOP = 132
+        WIDTH = 403
+        object CompileMacrosListbox: TLISTBOX
+          ALIGN = alleft
+          TABORDER = 0
+          TABSTOP = True
+          TOPINDEX = -1
+          HEIGHT = 81
+          WIDTH = 296
+        end
+        object CompileAddMacroButton: TBUTTON
+          CAPTION = 'Add'
+          TABSTOP = True
+          TABORDER = 1
+          LEFT = 312
+          HEIGHT = 25
+          TOP = 9
+          WIDTH = 75
+        end
+      end
+    end
+    object RunPage: TPAGE
+      CAPTION = 'Run'
+      CLIENTWIDTH = 410
+      CLIENTHEIGHT = 238
+      LEFT = 2
+      HEIGHT = 238
+      TOP = 28
+      WIDTH = 410
+      object AlwaysCompileFirstCheckbox: TCHECKBOX
+        ALLOWGRAYED = True
+        AUTOSIZE = True
+        CAPTION = 'Always run the Compile command before'
+        DRAGCURSOR = 0
+        TABORDER = 0
+        TABSTOP = True
+        LEFT = 10
+        HEIGHT = 20
+        TOP = 4
+        WIDTH = 392
+      end
+      object RunCommandGroupbox: TGROUPBOX
+        CAPTION = 'Run Command'
+        CLIENTHEIGHT = 53
+        CLIENTWIDTH = 398
+        PARENTCTL3D = False
+        TABORDER = 1
+        LEFT = 4
+        HEIGHT = 70
+        TOP = 28
+        WIDTH = 402
+        object RunCommandMemo: TMEMO
+          ALIGN = alclient
+          LINES.Strings = (
+            'CompileCommandMemo'
+          )
+          TABSTOP = True
+          TABSTOP = True
+          TABORDER = 0
+          HEIGHT = 53
+          WIDTH = 398
+        end
+      end
+      object RunScanForFPCMsgCheckbox: TCHECKBOX
+        ALLOWGRAYED = True
+        AUTOSIZE = True
+        CAPTION = 'Scan for FPC messages'
+        DRAGCURSOR = 0
+        TABORDER = 2
+        TABSTOP = True
+        LEFT = 10
+        HEIGHT = 20
+        TOP = 100
+        WIDTH = 211
+      end
+      object RunScanForMakeMsgCheckbox: TCHECKBOX
+        ALLOWGRAYED = True
+        AUTOSIZE = True
+        CAPTION = 'Scan for Make messages'
+        DRAGCURSOR = 0
+        TABORDER = 3
+        TABSTOP = True
+        LEFT = 10
+        HEIGHT = 20
+        TOP = 124
+        WIDTH = 217
+      end
+      object RunMacrosGroupbox: TGROUPBOX
+        CAPTION = 'Macros'
+        CLIENTHEIGHT = 65
+        CLIENTWIDTH = 399
+        PARENTCTL3D = False
+        TABORDER = 4
+        LEFT = 4
+        HEIGHT = 82
+        TOP = 148
+        WIDTH = 403
+        object RunMacrosListbox: TLISTBOX
+          ALIGN = alleft
+          TABORDER = 0
+          TABSTOP = True
+          TOPINDEX = -1
+          HEIGHT = 65
+          WIDTH = 296
+        end
+        object RunAddMacroButton: TBUTTON
+          CAPTION = 'Add'
+          TABSTOP = True
+          TABORDER = 1
+          LEFT = 312
+          HEIGHT = 25
+          TOP = 9
+          WIDTH = 75
+        end
+      end
+    end
+  end
+end
