@@ -151,6 +151,32 @@ end;
   has initialized the gdkwindow. This function is used for the second part of
   the initialization of a widget.
 -------------------------------------------------------------------------------}
+  {$IFDEF CustomFonts}
+  procedure ModifyWidgetStyle(AWinControl: TWinControl; AWidget: PGtkWidget);
+  {$IFDEF Win32}
+  begin
+    // not supported under win32
+  end;
+  {$ELSE not win32}
+  var
+    RCStyle: PGtkRcStyle;
+  begin
+    if not (AWinControl is TButton) then exit;
+    writeln('ModifyWidgetStyle A ',AWinControl.Name,':',AWinControl.ClassName,' AWidget=',HexStr(Cardinal(AWidget),8));
+    RCStyle:=gtk_rc_style_new;
+    g_free(RCStyle^.font_name);
+    RCStyle^.font_name:=g_strdup('-urw-chancery l-medium-i-normal-*-*-140-*-*-p-*-iso8859-2');
+
+    // MG: somehow I only got access violations
+    gtk_widget_modify_style(AWidget,@RCStyle);
+    
+    g_free(RCStyle^.font_name);
+    RCStyle^.font_name:=nil;
+    gtk_rc_style_unref(RCStyle);
+  end;
+  {$ENDIF not win32}
+  {$ENDIF CustomFonts}
+
 function gtkRealizeAfterCB(Widget: PGtkWidget; Data: Pointer): GBoolean; cdecl;
 var
   WinWidgetInfo: PWinWidgetInfo;
@@ -200,6 +226,9 @@ begin
       if TheWinControl<>nil then begin
         SetCursor(TheWinControl, nil);
         ConnectInternalWidgetsSignals(MainWidget,TheWinControl);
+        {$IFDEF CustomFonts}
+        ModifyWidgetStyle(TheWinControl,Widget);
+        {$ENDIF}
       end;
       
     end;
@@ -2676,6 +2705,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.179  2003/06/09 14:39:52  mattias
+  implemented setting working directory for debugger
+
   Revision 1.178  2003/04/26 10:45:34  mattias
   fixed right control release
 
