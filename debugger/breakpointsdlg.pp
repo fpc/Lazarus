@@ -83,8 +83,8 @@ type
                                const ABreakpoint: TDBGBreakPoint);
     procedure SetBaseDirectory(const AValue: string);
 
-    procedure UpdateItem(const AItem: TListItem;
-      const ABreakpoint: TDBGBreakPoint);
+    procedure UpdateItem(const AnItem: TListItem;
+                         const ABreakpoint: TDBGBreakPoint);
     procedure UpdateAll;
   protected
     procedure SetDebugger(const ADebugger: TDebugger); override;
@@ -92,6 +92,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure BreakPointsUpdate(const ASender: TDBGBreakPoints);
   public
     property BaseDirectory: string read FBaseDirectory write SetBaseDirectory;
   end;
@@ -168,6 +169,14 @@ begin
   FBreakpointsNotification.OnRemove := nil;
   FBreakpointsNotification.ReleaseReference;
   inherited;
+end;
+
+procedure TBreakPointsDlg.BreakPointsUpdate(const ASender: TDBGBreakPoints);
+var
+  i: Integer;
+begin
+  for i:=0 to ASender.Count-1 do
+    BreakPointUpdate(ASender,ASender.Items[i]);
 end;
 
 procedure TBreakPointsDlg.lvBreakPointsClick(Sender: TObject);
@@ -293,7 +302,7 @@ begin
   if bpdsItemsNeedUpdate in FStates then UpdateAll;
 end;
 
-procedure TBreakPointsDlg.UpdateItem(const AItem: TListItem;
+procedure TBreakPointsDlg.UpdateItem(const AnItem: TListItem;
   const ABreakpoint: TDBGBreakPoint);
 const
   DEBUG_ACTION: array[TDBGBreakPointAction] of string =
@@ -317,21 +326,21 @@ begin
   // Group
 
   // state
-  AItem.Caption := DEBUG_STATE[ABreakpoint.Enabled, ABreakpoint.Valid];
+  AnItem.Caption := DEBUG_STATE[ABreakpoint.Enabled, ABreakpoint.Valid];
   
   // filename
   Filename:=ABreakpoint.Source;
   if BaseDirectory<>'' then
     Filename:=CreateRelativePath(Filename,BaseDirectory);
-  AItem.SubItems[0] := Filename;
+  AnItem.SubItems[0] := Filename;
   
   // line
   if ABreakpoint.Line > 0
-  then AItem.SubItems[1] := IntToStr(ABreakpoint.Line)
-  else AItem.SubItems[1] := '';
+  then AnItem.SubItems[1] := IntToStr(ABreakpoint.Line)
+  else AnItem.SubItems[1] := '';
   
   // expression
-  AItem.SubItems[2] := ABreakpoint.Expression;
+  AnItem.SubItems[2] := ABreakpoint.Expression;
   
   // actions
   S := '';
@@ -341,15 +350,15 @@ begin
       if S <> '' then s := S + ', ';
       S := S + DEBUG_ACTION[Action]
     end;
-  AItem.SubItems[3]  := S;
+  AnItem.SubItems[3]  := S;
   
   // hitcount
-  AItem.SubItems[4] := IntToStr(ABreakpoint.HitCount);
+  AnItem.SubItems[4] := IntToStr(ABreakpoint.HitCount);
   
   // group
   if ABreakpoint.Group = nil
-  then AItem.SubItems[5] := ''
-  else AItem.SubItems[5] := ABreakpoint.Group.Name;
+  then AnItem.SubItems[5] := ''
+  else AnItem.SubItems[5] := ABreakpoint.Group.Name;
 end;
 
 procedure TBreakPointsDlg.UpdateAll;
@@ -376,6 +385,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.14  2003/05/28 08:46:24  mattias
+  break;points dialog now gets the items without debugger
+
   Revision 1.13  2003/05/27 20:58:12  mattias
   implemented enable and deleting breakpoint in breakpoint dlg
 

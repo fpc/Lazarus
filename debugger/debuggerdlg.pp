@@ -72,15 +72,12 @@ end;
 procedure TDebuggerDlg.BeginUpdate;
 begin
   inc(FUpdateCount);
-  writeln('TDebuggerDlg.BeginUpdate ',ClassName,' ',FUpdateCount);
 end;
 
 procedure TDebuggerDlg.EndUpdate;
 begin
   if FUpdateCount<1 then RaiseException('TDebuggerDlg.EndUpdate');
   dec(FUpdateCount);
-  
-  writeln('TDebuggerDlg.EndUpdate ',ClassName,' ',FUpdateCount);
   if FUpdateCount=0 then DoEndUpdate;
 end;
 
@@ -112,6 +109,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.5  2003/05/28 08:46:24  mattias
+  break;points dialog now gets the items without debugger
+
   Revision 1.4  2003/05/27 20:58:12  mattias
   implemented enable and deleting breakpoint in breakpoint dlg
 

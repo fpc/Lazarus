@@ -75,7 +75,8 @@ type
   private
     FDebugger: TDebugger;
     FDebuggerUpdateLock: integer;
-    FBreakpointsNotification: TDBGBreakPointsNotification;         // Notification for our BreakPoints
+    FBreakpointsNotification: TDBGBreakPointsNotification;// Notification for
+      // our BreakPoints
 
     // When no debugger is created the IDE stores all debugger settings in its
     // own variables. When the debugger object is created these items point
@@ -89,13 +90,16 @@ type
     FUserSourceFiles: TStringList;
 
     // Breakpoint routines
-    procedure BreakpointAdded(const ASender: TDBGBreakPoints; const ABreakpoint: TDBGBreakPoint);
-    procedure BreakpointRemoved(const ASender: TDBGBreakPoints; const ABreakpoint: TDBGBreakPoint);
+    procedure BreakpointAdded(const ASender: TDBGBreakPoints;
+                              const ABreakpoint: TDBGBreakPoint);
+    procedure BreakpointRemoved(const ASender: TDBGBreakPoints;
+                                const ABreakpoint: TDBGBreakPoint);
 
     // Dialog routines
     procedure DebugDialogDestroy(Sender: TObject);
     procedure ViewDebugDialog(const ADialogType: TDebugDialogType);
     procedure DestroyDebugDialog(const ADialogType: TDebugDialogType);
+    procedure InitBreakPointDlg;
   protected
     function  GetState: TDBGState; override;
     function  GetCommands: TDBGCommands; override;
@@ -163,7 +167,8 @@ type
     FMaster: TDBGBreakPoints;
     FMasterNotification: TDBGBreakPointsNotification;
     procedure SetMaster(const AValue: TDBGBreakPoints);
-    procedure MasterUpdate(const ASender: TDBGBreakPoints; const ABreakpoint: TDBGBreakPoint);
+    procedure MasterUpdate(const ASender: TDBGBreakPoints;
+                           const ABreakpoint: TDBGBreakPoint);
   public
     constructor Create;
     destructor Destroy; override;
@@ -187,7 +192,9 @@ begin
   inherited Destroy;
 end;
 
-procedure TManagedBreakPoints.MasterUpdate(const ASender: TDBGBreakPoints; const ABreakpoint: TDBGBreakPoint);
+procedure TManagedBreakPoints.MasterUpdate(const ASender: TDBGBreakPoints;
+  const ABreakpoint: TDBGBreakPoint);
+
   function FindItem: TManagedBreakPoint;
   var
     n: Integer;
@@ -557,16 +564,14 @@ begin
   then begin
     FDialogs[ADialogType] := DEBUGDIALOGCLASS[ADialogType].Create(Self);
     CurDialog:=FDialogs[ADialogType];
-    if (CurDialog is TBreakPointsDlg) then begin
-      if (Project1<>nil) then
-        TBreakPointsDlg(CurDialog).BaseDirectory:=Project1.ProjectDirectory;
-    end;
     CurDialog.Name:=NonModalIDEWindowNames[DebugDlgIDEWindow[ADialogType]];
     CurDialog.Tag := Integer(ADialogType);
     CurDialog.OnDestroy := @DebugDialogDestroy;
-    DoInitDebugger;
-    CurDialog.Debugger := FDebugger;
     EnvironmentOptions.IDEWindowLayoutList.Apply(CurDialog,CurDialog.Name);
+    if (CurDialog is TBreakPointsDlg) then
+      InitBreakPointDlg;
+    //DoInitDebugger;
+    //CurDialog.Debugger := FDebugger;
   end else begin
     CurDialog:=FDialogs[ADialogType];
     if (CurDialog is TBreakPointsDlg) then begin
@@ -585,6 +590,16 @@ begin
   FDialogs[ADialogType].Debugger := nil;
   FDialogs[ADialogType].Free;
   FDialogs[ADialogType] := nil;
+end;
+
+procedure TDebugManager.InitBreakPointDlg;
+var
+  TheDialog: TBreakPointsDlg;
+begin
+  TheDialog:=TBreakPointsDlg(FDialogs[ddtBreakpoints]);
+  if (Project1<>nil) then
+    TheDialog.BaseDirectory:=Project1.ProjectDirectory;
+  TheDialog.BreakPointsUpdate(FBreakPoints);
 end;
 
 constructor TDebugManager.Create(TheOwner: TComponent);
@@ -765,14 +780,16 @@ begin
   end;
 end;
 
-procedure TDebugManager.BreakpointAdded(const ASender: TDBGBreakPoints; const ABreakpoint: TDBGBreakPoint );
+procedure TDebugManager.BreakpointAdded(const ASender: TDBGBreakPoints;
+  const ABreakpoint: TDBGBreakPoint);
 begin
   ABreakpoint.InitialEnabled := True;
   ABreakpoint.Enabled := True;
   Project1.Modified := True;
 end;
 
-procedure TDebugManager.BreakpointRemoved (const ASender: TDBGBreakPoints; const ABreakpoint: TDBGBreakPoint );
+procedure TDebugManager.BreakpointRemoved(const ASender: TDBGBreakPoints;
+  const ABreakpoint: TDBGBreakPoint);
 begin
   Project1.Modified := True;
 end;
@@ -878,7 +895,7 @@ begin
     try
       case EnvironmentOptions.DebuggerType of
         dtGnuDebugger: begin
-          // check if debugger already created with the right type
+          // check if debugger is already created with the right type
           if (FDebugger <> nil)
           and ( not(FDebugger is TGDBMIDebugger)
                 or (FDebugger.ExternalDebugger <> EnvironmentOptions.DebuggerFilename)
@@ -1003,7 +1020,7 @@ begin
         Result:=mrCancel;
         MessageDlg('Program is running',
           'You can not change any debugger item while the program is running.'#13
-          +'Stop it first.',mtError,[mbCancel],0);
+          +'Pause or Stop it first.',mtError,[mbCancel],0);
       end else
         Result:=mrOk;
       if Result<>mrOk then begin
@@ -1050,10 +1067,8 @@ begin
         and FDebugger.Evaluate(AExpression, AResult);
 end;
 
-function TDebugManager.DoCreateBreakPoint(const AFilename: string; ALine: integer
-  ): TModalResult;
-var
-  NewBreak: TDBGBreakPoint;
+function TDebugManager.DoCreateBreakPoint(const AFilename: string;
+  ALine: integer): TModalResult;
 begin
   if FBreakPoints.Find(AFilename, ALine)<>nil then begin
     Result:=mrOk;
@@ -1061,16 +1076,12 @@ begin
   end;
   Result:=DoBeginChangeDebugger;
   if Result<>mrOk then exit;
-  NewBreak := FBreakPoints.Add(AFilename, ALine);
-  // Set by notification
-  //  NewBreak.InitialEnabled := True;
-  //  NewBreak.Enabled := True;
-  //  Project1.Modified:=true;
+  FBreakPoints.Add(AFilename, ALine);
   Result:=DoEndChangeDebugger;
 end;
 
-function TDebugManager.DoDeleteBreakPoint(const AFilename: string; ALine: integer
-  ): TModalResult;
+function TDebugManager.DoDeleteBreakPoint(const AFilename: string;
+  ALine: integer): TModalResult;
 var
   OldBreakPoint: TDBGBreakPoint;
 begin
@@ -1124,7 +1135,8 @@ begin
   then UnitFilename:=ActiveUnitInfo.Filename
   else UnitFilename:=MainIDE.GetTestUnitFilename(ActiveUnitInfo);
 
-  FDebugger.RunTo(ExtractFilename(UnitFilename), ActiveSrcEdit.EditorComponent.CaretY);
+  FDebugger.RunTo(ExtractFilename(UnitFilename),
+                  ActiveSrcEdit.EditorComponent.CaretY);
 
   Result := mrOK;
 end;
@@ -1147,6 +1159,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.32  2003/05/28 08:46:23  mattias
+  break;points dialog now gets the items without debugger
+
   Revision 1.31  2003/05/28 00:58:50  marc
   MWE: * Reworked breakpoint handling
 

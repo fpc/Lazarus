@@ -65,6 +65,7 @@ object BreakpointsDlg: TBreakpointsDlg
       Caption = 'Add...'
       object popAddSourceBP: TMenuItem
         Caption = '&Source breakpoint'
+        Enabled = False
         OnClick = popAddSourceBPClick
       end
     end
