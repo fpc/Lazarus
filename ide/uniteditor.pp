@@ -522,9 +522,9 @@ type
     procedure FindNextClicked(Sender: TObject);
     procedure FindPreviousClicked(Sender: TObject);
     procedure ReplaceClicked(Sender: TObject);
-    procedure IncrementalFindClicked(Sender: TObject);
 
     // incremental find
+    procedure IncrementalFindClicked(Sender: TObject);
     procedure EndIncrementalFind;
     property IncrementalSearchStr: string
       read FIncrementalSearchStr write SetIncrementalSearchStr;
@@ -3286,6 +3286,8 @@ procedure TSourceNotebook.EndIncrementalFind;
 begin
   if not (snIncrementalFind in States) then exit;
   Exclude(States,snIncrementalFind);
+  FindReplaceDlg.FindText:=fIncrementalSearchStr;
+  FindReplaceDlg.Options:=[];
   UpdateStatusBar;
 end;
 
