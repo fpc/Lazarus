@@ -383,9 +383,6 @@ End;
 -------------------------------------------------------------------------------}
 procedure TWinControl.DoAdjustClientRectChange;
 var r: TRect;
-  {$IFDEF ClientRectBugFix}
-  //SizeMsg: TLMSize;
-  {$ENDIF}
 begin
   if (csLoading in ComponentState) then exit;
   r:=GetClientRect;
@@ -401,15 +398,6 @@ begin
     writeln('UUU TWinControl.DoAdjustClientRectChange ClientRect changed ',Name,':',ClassName,
       ' Old=',FAdjustClientRectRealized.Right,'x',FAdjustClientRectRealized.Bottom,
       ' New=',r.RIght,'x',r.Bottom);
-    {// delphi components expect to get a size message, everytime the clientrect
-    // is resized
-    with SizeMsg do begin
-      Msg := LM_SIZE;
-      SizeType := Size_Restored;
-      Width := Self.Width;
-      Height := Self.Height;
-    end;
-    WindowProc(TLMessage(SizeMsg));}
     {$ENDIF}
     AlignControl(nil);
     {$IFDEF ClientRectBugFix}
@@ -462,7 +450,8 @@ begin
   if wcfClientRectNeedsUpdate in FFlags then begin
     GetClientRect;
   end;
-  write('[TWinControl.DoSetBounds] ',Name,':',ClassName,' OldClient=',FClientWidth,',',FClientHeight);
+  write('[TWinControl.DoSetBounds] ',Name,':',ClassName,' OldClient=',FClientWidth,',',FClientHeight,
+  ' OldHeight=',FHeight,' NewHeight=',AHeight);
   inc(FClientWidth,AWidth-FWidth);
   if (FClientWidth<0) then FClientWidth:=0;
   inc(FClientHeight,AHeight-FHeight);
@@ -534,6 +523,7 @@ function TWinControl.GetClientRect: TRect;
   end;
 
 var r: TRect;
+  InterfaceWidth, InterfaceHeight: integer;
 begin
   if not HandleAllocated then begin
     Result:=inherited GetClientRect;
@@ -541,6 +531,11 @@ begin
   end else if wcfClientRectNeedsUpdate in FFlags then begin
     // update clientrect from interface
     LCLLinux.GetClientRect(Handle, Result);
+    // the LCL is not always in sync with the interface
+    // -> adjust client rect based on LCL bounds
+    LCLLinux.GetWindowSize(Handle, InterfaceWidth, InterfaceHeight);
+    Result.Right:=Width-(InterfaceWidth-Result.Right);
+    Result.Bottom:=Height-(InterfaceHeight-Result.Bottom);
     StoreClientRect(Result);
 
     r:=inherited GetClientRect;
@@ -2188,6 +2183,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.66  2002/05/12 04:56:20  lazarus
+  MG: client rect bugs nearly completed
+
   Revision 1.65  2002/05/10 06:05:56  lazarus
   MG: changed license to LGPL
 
