@@ -1387,6 +1387,7 @@ begin
              begin
                TLMNotebookEvent(Data^).Page := 
                  gtk_notebook_get_current_page(PGtkNotebook(Handle));
+               UpdateNoteBookClientWidget(Sender);
              end;
         end;
       end;
@@ -1411,8 +1412,11 @@ begin
               Integer(Data), 1);    // column
               
           csNotebook:
-            gtk_notebook_set_page(PGtkNotebook(Handle),
-                                  TLMNotebookEvent(Data^).Page);
+            begin
+              gtk_notebook_set_page(PGtkNotebook(Handle),
+                                    TLMNotebookEvent(Data^).Page);
+              UpdateNoteBookClientWidget(Sender);
+            end;
           end;
         end;
           
@@ -1965,11 +1969,11 @@ end;
 procedure TGTKObject.SetCallback(Msg : LongInt; Sender : TObject);
 
   procedure ConnectSignal(const AnObject:gtk_Object; const ASignal: PChar;
-    const ACallBackProc: Pointer; const ReqSignalMask: TGdkEventMask);
+    const ACallBackProc: Pointer; const ReqSignalMask: TGdkEventMask;
+    ConnectBefore: boolean);
   var
     RealizeHandler, Handler: PGTKHandler;
     RealizeID, SignalID: guint;
-    //OldReqSignalMask: PGdkEventMask;
     WinWidgetInfo: PWinWidgetInfo;
   begin
     if ACallBackProc <> nil then
@@ -1982,29 +1986,41 @@ procedure TGTKObject.SetCallback(Msg : LongInt; Sender : TObject);
       RealizeID := gtk_signal_lookup('realize', GTK_OBJECT_TYPE(AnObject));
       RealizeHandler := nil;
 
-      while (Handler <> nil) do
+      while (Handler <> nil) do begin
         with Handler^ do
         begin
-          //look for realize handler
-          if  (Id > 0) and
-              (Signal_ID = RealizeID) and
-              (Func = TGTKSignalFunc(@GTKRealizeCB))
-             then RealizeHandler := Handler;
-
-          if  (Id > 0) and
-              (Signal_ID = SignalID) and
-              (Func = TGTKSignalFunc(ACallBackProc)) and
-              (func_data = Pointer(Sender))
+          // check if signal is already connected
+          if  (Id > 0)
+          and (Signal_ID = SignalID)
+          and (Func = TGTKSignalFunc(ACallBackProc))
+          and (func_data = Pointer(Sender))
+          and (((flags and $00200000)=0)=ConnectBefore)
           then begin
             Assert(False, Format('Trace:WARNING: [TGTKObject.SetCallback] %s signal <%s> set twice', [Sender.ClassName, ASignal]));
             Exit;
           end;
+          
+          // look for realize handler
+          if  (Id > 0)
+          and (Signal_ID = RealizeID)
+          and (Func = TGTKSignalFunc(@GTKRealizeCB))
+          and (func_data = Pointer(Sender))
+          and ((flags and $00200000)=0) // test if after = false
+          then RealizeHandler := Handler;
+
           Handler := Next;
         end;
+      end;
+      
       // if we are here no handler was defined yet
       // -> register handler
       Assert(False, Format('trace:  [TGTKObject.SetCallback] %s signal <%s>', [Sender.ClassName, ASignal]));
-      gtk_signal_connect(AnObject, ASignal, TGTKSignalFunc(ACallBackProc), Sender);
+      if ConnectBefore then
+        gtk_signal_connect      (AnObject, ASignal,
+                                 TGTKSignalFunc(ACallBackProc),Sender)
+      else
+        gtk_signal_connect_after(AnObject, ASignal,
+                                 TGTKSignalFunc(ACallBackProc),Sender);
       
       // -> register realize handler
       if ReqSignalMask <> 0 then begin
@@ -2018,12 +2034,29 @@ procedure TGTKObject.SetCallback(Msg : LongInt; Sender : TObject);
     end;
   end;
 
-  procedure ConnectSignal(const AObject:gtk_Object; const ASignal: PChar; 
-    const ACallBackProc: Pointer);
+  procedure ConnectSignal(const AnObject:gtk_Object; const ASignal: PChar;
+    const ACallBackProc: Pointer; const ReqSignalMask: TGdkEventMask);
   begin
-    ConnectSignal(AObject, ASignal, ACallBackProc, 0);
+    ConnectSignal(AnObject,ASignal,ACallBackProc,ReqSignalMask,true);
+  end;
+    
+  procedure ConnectSignalAfter(const AnObject:gtk_Object; const ASignal: PChar;
+    const ACallBackProc: Pointer; const ReqSignalMask: TGdkEventMask);
+  begin
+    ConnectSignal(AnObject,ASignal,ACallBackProc,ReqSignalMask,false);
   end;
   
+  procedure ConnectSignal(const AnObject:gtk_Object; const ASignal: PChar;
+    const ACallBackProc: Pointer);
+  begin
+    ConnectSignal(AnObject,ASignal,ACallBackProc,0);
+  end;
+  
+  procedure ConnectSignalAfter(const AnObject:gtk_Object; const ASignal: PChar;
+    const ACallBackProc: Pointer);
+  begin
+    ConnectSignalAfter(AnObject,ASignal,ACallBackProc,0);
+  end;
 
 var
   gObject, gFixed, gCore: PGTKObject;
@@ -2190,12 +2223,22 @@ begin
       Begin
         ConnectSignal(PgtkObject(PgtkCombo(TComboBox(sender).handle)^.entry),
               'motion-notify-event', @GTKMotionNotify, GDK_POINTER_MOTION_MASK);
+        ConnectSignalAfter(
+              PgtkObject(PgtkCombo(TComboBox(sender).handle)^.entry),
+              'motion-notify-event', @GTKMotionNotifyAfter,
+              GDK_POINTER_MOTION_MASK);
         ConnectSignal(PgtkObject(PgtkCombo(TComboBox(sender).handle)^.button),
               'motion-notify-event', @GTKMotionNotify, GDK_POINTER_MOTION_MASK);
+        ConnectSignalAfter(
+              PgtkObject(PgtkCombo(TComboBox(sender).handle)^.button),
+              'motion-notify-event', @GTKMotionNotifyAfter,
+              GDK_POINTER_MOTION_MASK);
       end
       else begin
         ConnectSignal(gFixed, 'motion-notify-event', @GTKMotionNotify,
-                      GDK_POINTER_MOTION_MASK)
+                      GDK_POINTER_MOTION_MASK);
+        ConnectSignalAfter(gFixed, 'motion-notify-event', @GTKMotionNotifyAfter,
+                      GDK_POINTER_MOTION_MASK);
       end;
     end;
 
@@ -2207,15 +2250,24 @@ begin
       if (sender is TCustomComboBox) then
       Begin
         ConnectSignal(PgtkObject(PgtkCombo(gObject)^.entry),
-              'button-press-event',  @gtkmousebtnpress, GDK_BUTTON_PRESS_MASK);
+              'button-press-event',  @gtkMouseBtnPress, GDK_BUTTON_PRESS_MASK);
+        ConnectSignalAfter(PgtkObject(PgtkCombo(gObject)^.entry),
+              'button-press-event',  @gtkMouseBtnPressAfter,
+              GDK_BUTTON_PRESS_MASK);
         ConnectSignal(PgtkObject(PgtkCombo(gObject)^.button) ,
-              'button-press-event', @gtkmousebtnpress, GDK_BUTTON_PRESS_MASK);
-//         Connecting the list seems to cause errors. Maybe we are returning the wrong boolean in the callback func
-//           ConnectSignal(PgtkObject(PgtkCOmbo(gObject)^.list), 'button-press-event',  @gtkmousebtnpress, GDK_BUTTON_PRESS_MASK);
-
+              'button-press-event', @gtkMouseBtnPress, GDK_BUTTON_PRESS_MASK);
+        ConnectSignalAfter(PgtkObject(PgtkCombo(gObject)^.button) ,
+              'button-press-event', @gtkMouseBtnPressAfter,
+              GDK_BUTTON_PRESS_MASK);
+        // Connecting the list seems to cause errors. Maybe we are returning the
+        // wrong boolean in the callback func
+        // ConnectSignal(PgtkObject(PgtkCOmbo(gObject)^.list),
+        //    'button-press-event',  @gtkMouseBtnPress, GDK_BUTTON_PRESS_MASK);
       end
       else begin
-        ConnectSignal(gFixed,'button-press-event', @gtkmousebtnpress,
+        ConnectSignal(gFixed,'button-press-event', @gtkMouseBtnPress,
+                      GDK_BUTTON_PRESS_MASK);
+        ConnectSignalAfter(gFixed,'button-press-event', @gtkMouseBtnPressAfter,
                       GDK_BUTTON_PRESS_MASK);
       end;
     end;
@@ -2227,15 +2279,27 @@ begin
       if (sender is TCustomComboBox) then
       Begin
         ConnectSignal(PgtkObject(PgtkCombo(gObject)^.entry),
-         'button-release-event',  @gtkmousebtnrelease, GDK_BUTTON_RELEASE_MASK);
+          'button-release-event',  @gtkMouseBtnRelease, GDK_BUTTON_RELEASE_MASK);
+        ConnectSignalAfter(PgtkObject(PgtkCombo(gObject)^.entry),
+          'button-release-event',  @gtkMouseBtnReleaseAfter,
+          GDK_BUTTON_RELEASE_MASK);
         ConnectSignal(PgtkObject(PgtkCombo(gObject)^.button) ,
-         'button-release-event', @gtkmousebtnrelease, GDK_BUTTON_RELEASE_MASK);
-//         Connecting the list seems to cause errors. Maybe we are returning the wrong boolean in the callback func
-//           ConnectSignal(PgtkObject(PgtkCOmbo(gObject)^.list), 'button-release-event',  @gtkmousebtnrelease, GDK_BUTTON_RELEASE_MASK);
+          'button-release-event', @gtkMouseBtnRelease, GDK_BUTTON_RELEASE_MASK);
+        ConnectSignalAfter(PgtkObject(PgtkCombo(gObject)^.button) ,
+          'button-release-event', @gtkMouseBtnReleaseAfter,
+          GDK_BUTTON_RELEASE_MASK);
+        // Connecting the list seems to cause errors. Maybe we are returning the
+        // wrong boolean in the callback func
+        //  ConnectSignal(PgtkObject(PgtkCombo(gObject)^.list),
+        //                'button-release-event',  @gtkMouseBtnRelease,
+        //                GDK_BUTTON_RELEASE_MASK);
       end
-      else
-        ConnectSignal(gFixed, 'button-release-event', @gtkmousebtnrelease,
+      else begin
+        ConnectSignal(gFixed, 'button-release-event', @gtkMouseBtnRelease,
                       GDK_BUTTON_RELEASE_MASK);
+        ConnectSignalAfter(gFixed, 'button-release-event',
+                           @gtkMouseBtnReleaseAfter,GDK_BUTTON_RELEASE_MASK);
+      end;
     end;
 
     LM_ENTER :
@@ -2355,7 +2419,9 @@ begin
       //  ConnectSignal(gObject, 'scroll-horizontal', @gtkLVHScroll);
       //end
       //else begin
-        ConnectSignal(PGTKObject(gtk_scrolled_window_get_hadjustment(PGTKScrolledWindow(gObject))), 'value-changed', @GTKHScrollCB);
+        ConnectSignal(PGTKObject(gtk_scrolled_window_get_hadjustment(
+                        PGTKScrolledWindow(gObject))),
+                      'value-changed', @GTKHScrollCB);
       //end;
     end;
 
@@ -2366,7 +2432,9 @@ begin
       //  ConnectSignal(gObject, 'scroll-vertical', @gtkLVVScroll);
       //end
       //else begin
-        ConnectSignal(PGTKObject(gtk_scrolled_window_get_vadjustment(PGTKScrolledWindow(gObject))), 'value-changed', @GTKVScrollCB);
+        ConnectSignal(PGTKObject(gtk_scrolled_window_get_vadjustment(
+                        PGTKScrolledWindow(gObject))),
+                      'value-changed', @GTKVScrollCB);
       //end;
     end;
     
@@ -3365,14 +3433,16 @@ begin
       if Adjustment <> nil
       then with Adjustment^ do
       begin
-        gtk_object_set_data(PGTKObject(Adjustment), 'ScrollBar', PGTKScrolledWindow(p)^.VScrollBar);
+        gtk_object_set_data(PGTKObject(Adjustment), 'ScrollBar',
+                            PGTKScrolledWindow(p)^.VScrollBar);
         Step_Increment := 1;
       end;
       Adjustment := gtk_scrolled_window_get_hadjustment(PGTKScrolledWindow(p));
       if Adjustment <> nil
       then with Adjustment^ do
       begin
-        gtk_object_set_data(PGTKObject(Adjustment), 'ScrollBar', PGTKScrolledWindow(p)^.HScrollBar);
+        gtk_object_set_data(PGTKObject(Adjustment), 'ScrollBar',
+                            PGTKScrolledWindow(p)^.HScrollBar);
         Step_Increment := 1;
       end;
     end;
@@ -3459,7 +3529,7 @@ begin
     csListBox :
     begin
       p:= gtk_scrolled_window_new(nil, nil);
-       GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.hscrollbar, GTK_CAN_FOCUS);
+      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.hscrollbar, GTK_CAN_FOCUS);
       GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.vscrollbar, GTK_CAN_FOCUS);
       gtk_scrolled_window_set_policy(PGtkScrolledWindow(p),
                                     GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
@@ -3543,26 +3613,7 @@ begin
       GetWidgetInfo(p, True)^.ImplementationWidget := TempWidget;
       SetMainWidget(p, TempWidget);
 
-       {
-       if TListview(sender).Columns.Count > 0 then
-          p := PgtkWidget(gtk_clist_new(TListview(sender).Columns.Count))
-          else
-          p := PgtkWidget(gtk_clist_new(1));
-
-       if TListview(sender).ScrollBars in [ssBoth, ssHorizontal] then
-       begin
-         tempWidget2 := gtk_hscrollbar_new(gtk_clist_get_hadjustment(PgtkCList(p)));
-         gtk_widget_show(tempwidget2);
-       end;
-
-       if TListview(sender).ScrollBars in [ssBoth, ssVertical] then
-       begin
-         gtk_clist_set_vadjustment(PgtkCList(P),PgtkAdjustment(gtk_adjustment_new(1,1,100,1,10,10)));
-         TempWidget2 := gtk_hscrollbar_new(gtk_clist_get_hadjustment(PgtkCList(p)));
-         gtk_widget_show(tempwidget2);
-       end;}
-
-       gtk_widget_show(P);
+      gtk_widget_show(P);
     end;
 
 
@@ -3635,10 +3686,10 @@ begin
 
     csNotebook :
     begin
-       P := gtk_notebook_new();
-       gtk_notebook_set_scrollable(P, true);
-       gtk_notebook_popup_enable(P);
-       gtk_notebook_set_show_tabs(P, false);   // Turn tabs off
+      P := gtk_notebook_new();
+      gtk_notebook_set_scrollable(P, true);
+      gtk_notebook_popup_enable(P);
+      gtk_notebook_set_show_tabs(P, false);   // Turn tabs off
     end;
 
     csPage:    // TPage - Notebook page
@@ -3695,15 +3746,19 @@ begin
     begin
       if (TScrollBar(sender).kind = sbHorizontal) then
       begin
-        P := gtk_hscrollbar_new(PgtkAdjustment(gtk_adjustment_new(1,TScrollBar(sender).min, TScrollBar(sender).max,
-             TScrollBar(sender).SmallChange, TScrollBar(sender).LargeChange,
-             TScrollBar(sender).Pagesize)));
+        P := gtk_hscrollbar_new(PgtkAdjustment(
+                 gtk_adjustment_new(1,TScrollBar(sender).min,
+                 TScrollBar(sender).max,
+                 TScrollBar(sender).SmallChange, TScrollBar(sender).LargeChange,
+                 TScrollBar(sender).Pagesize)));
       end
       else
       Begin
-        P := gtk_vscrollbar_new(PgtkAdjustment(gtk_adjustment_new(1,TScrollBar(sender).min, TScrollBar(sender).max,
-        TScrollBar(sender).SmallChange, TScrollBar(sender).LargeChange,
-        TScrollBar(sender).Pagesize)));
+        P := gtk_vscrollbar_new(PgtkAdjustment(
+                 gtk_adjustment_new(1,TScrollBar(sender).min,
+                 TScrollBar(sender).max,
+                 TScrollBar(sender).SmallChange, TScrollBar(sender).LargeChange,
+                 TScrollBar(sender).Pagesize)));
       end;
     end;
 
@@ -3864,7 +3919,7 @@ end;
           var PixmapImg, PixmapMask: PGdkPixmap
   Result: none
 
-  Loads the pixmap for the close button in the tabs of the TNoteBook(s).
+  Loads a pixmap from a lazarus resource. The resource must be a XPM file.
 -------------------------------------------------------------------------------}
 procedure TGtkObject.LoadXPMFromLazResource(const ResourceName: string;
   Window: PGdkWindow; var PixmapImg, PixmapMask: PGdkPixmap);
@@ -4143,16 +4198,18 @@ begin
     TabWidget,MenuWidget,Index);
 
   UpdateNotebookPageTab(TNoteBook(ANoteBook),TPage(APage));
+  UpdateNoteBookClientWidget(ANoteBook);
 end;
 
-{------------------------------------------------------------------------------}
-{       TGtkObject RemoveNBPage                                                }
-{       *Note: Remove Notebook Page                                            }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TGtkObject RemoveNBPage
+       *Note: Remove Notebook Page
+------------------------------------------------------------------------------}
 procedure TgtkObject.RemoveNBPage(ANoteBook: TObject; Index: Integer);
 begin
   Assert(false, 'Trace:Removing a notebook page');
   gtk_notebook_remove_page(PGtkNotebook(TWinControl(ANoteBook).Handle), Index);
+  UpdateNoteBookClientWidget(ANoteBook);
 end;
 
 
@@ -5252,6 +5309,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.141  2002/06/11 13:41:10  lazarus
+  MG: fixed mouse coords and fixed mouse clicked thru bug
+
   Revision 1.140  2002/06/09 14:00:41  lazarus
   MG: fixed persistent caret and implemented Form.BorderStyle=bsNone
 
