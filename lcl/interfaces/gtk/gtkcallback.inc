@@ -193,8 +193,9 @@ var
   Mess : TLMessage;
   LCLMenuItem: TMenuItem;
 begin
-  Result := True;
+  Result:= True;
   EventTrace('activate', data);
+  
   if GTK_IS_CHECK_MENU_ITEM(widget) then begin
     LCLMenuItem:=TMenuItem(GetLCLObject(Widget));
     if LCLMenuItem<>nil then begin
@@ -437,31 +438,27 @@ end;
 
 function GTKFocusCB( widget: PGtkWidget; event:PGdkEventFocus; data: gPointer) : GBoolean; cdecl;
 var
-   Mess : TLMessage;
+  Mess : TLMessage;
 begin
-   EventTrace('focus', data);
-//Writeln('Getting Focus... ',TObject(Data).ClassName,' widget=',HexStr(Cardinal(widget),8));
-//writeln('  Focus=',HexStr(Cardinal(GetFocus),8));
-   //TODO: fill in old focus
-   Mess.msg := LM_SETFOCUS;
-   Assert(False, Format('Trace:TODO: [gtkfocusCB] %s  finish', [TObject(Data).ClassName]));
-   Result := DeliverMessage(Data,  Mess) = 0;
-//Writeln('Getting Focus...  END ',TObject(Data).ClassName,' ',Result);
+  EventTrace('focus', data);
+  
+  //TODO: fill in old focus
+  Mess.msg := LM_SETFOCUS;
+  Assert(False, Format('Trace:TODO: [gtkfocusCB] %s  finish', [TObject(Data).ClassName]));
+  Result := DeliverMessage(Data,  Mess) = 0;
 end;
 
 function GTKKillFocusCB(widget: PGtkWidget; event:PGdkEventFocus; data: gPointer) : GBoolean; cdecl;
 var
-   Mess : TLMessage;
+  Mess : TLMessage;
 begin
-   EventTrace('killfocus', data);
-//Writeln('Killing Focus... ',TObject(Data).ClassName,' widget=',HexStr(Cardinal(widget),8));
-//writeln('  Focus=',HexStr(Cardinal(GetFocus),8));
-   Mess.msg := LM_KILLFOCUS;
-   //TODO: fill in new focus
-   Assert(False, Format('Trace:TODO: [gtkkillfocusCB] %s  finish', [TObject(Data).ClassName]));
-   if GetFocus<>0 then
-     Result := DeliverMessage(Data,  Mess) = 0;
-//Writeln('Killing Focus... END ',TObject(Data).ClassName,' ',Result);
+  EventTrace('killfocus', data);
+  Mess.msg := LM_KILLFOCUS;
+
+  //TODO: fill in new focus
+  Assert(False, Format('Trace:TODO: [gtkkillfocusCB] %s  finish', [TObject(Data).ClassName]));
+  if GetFocus<>0 then
+    Result := DeliverMessage(Data,  Mess) = 0;
 end;
 
 function gtkdestroyCB(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
@@ -2256,6 +2253,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.125  2002/09/07 12:14:50  lazarus
+  EchoMode for TCustomEdit. emNone not implemented for GTK+, falls back to emPassword
+  behaviour.
+
   Revision 1.124  2002/09/06 19:45:10  lazarus
   Cleanups plus a fix to TPanel parent/drawing problem.
 
