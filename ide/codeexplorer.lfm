@@ -29,18 +29,18 @@ object CodeExplorerView: TCodeExplorerView
     Width = 96
   end
   object CodeTreeview: TTreeView
-    Align = albottom
+    Align = ALBOTTOM
     DefaultItemHeight = 17
+    DragCursor = 65524
     HideSelection = False
     Images = Imagelist1
-    Indent = 15
     ParentCtl3D = False
     PopupMenu = TreePopupmenu
     RightClickSelect = True
     TabOrder = 2
     OnDblClick = CodeTreeviewDBLCLICK
     OnDeletion = CodeTreeviewDELETION
-    Options = [tvoautoitemheight, tvokeepcollapsednodes, tvorightclickselect, tvoshowbuttons, tvoshowlines, tvoshowroot, tvotooltips]
+    Options = [TVOAUTOITEMHEIGHT, TVOKEEPCOLLAPSEDNODES, TVORIGHTCLICKSELECT, TVOSHOWBUTTONS, TVOSHOWLINES, TVOSHOWROOT, TVOTOOLTIPS]
     Height = 480
     Top = 25
     Width = 206

@@ -10,16 +10,16 @@ LazarusResources.Add('TCodeExplorerView','FORMDATA',[
   +'Order'#2#0#7'OnClick'#7#18'RefreshButtonCLICK'#6'Height'#2#25#5'Width'#2'`'
   +#0#0#7'TButton'#13'OptionsButton'#7'Enabled'#8#7'Caption'#6#7'Options'#7'Tab'
   +'Stop'#9#8'TabOrder'#2#1#4'Left'#2'n'#6'Height'#2#25#5'Width'#2'`'#0#0#9'TTr'
-  +'eeView'#12'CodeTreeview'#5'Align'#7#8'albottom'#17'DefaultItemHeight'#2#17
-  +#10'DragCursor'#7#9'crDefault'#13'HideSelection'#8#6'Images'#7#10'Imagelist1'
-  +#6'Indent'#2#15#11'ParentCtl3D'#8#9'PopupMenu'#7#13'TreePopupmenu'#16'RightC'
-  +'lickSelect'#9#8'TabOrder'#2#2#10'OnDblClick'#7#20'CodeTreeviewDBLCLICK'#10
-  +'OnDeletion'#7#20'CodeTreeviewDELETION'#7'Options'#11#17'tvoautoitemheight'
-  +#21'tvokeepcollapsednodes'#19'tvorightclickselect'#14'tvoshowbuttons'#12'tvo'
-  +'showlines'#11'tvoshowroot'#11'tvotooltips'#0#6'Height'#3#224#1#3'Top'#2#25#5
-  +'Width'#3#206#0#0#0#10'TImageList'#10'Imagelist1'#4'left'#2'@'#3'top'#2' '#0
-  +#0#10'TPopupMenu'#13'TreePopupmenu'#4'left'#2'@'#3'top'#2'H'#0#9'TMenuItem'
-  +#14'JumpToMenuitem'#7'Caption'#6#14'Jump to source'#7'OnClick'#7#19'JumpToMe'
-  +'nuitemCLICK'#0#0#9'TMenuItem'#15'RefreshMenuitem'#7'Caption'#6#7'Refresh'#7
-  +'OnClick'#7#20'RefreshMenuitemCLICK'#0#0#0#0
+  +'eeView'#12'CodeTreeview'#5'Align'#7#8'ALBOTTOM'#17'DefaultItemHeight'#2#17
+  +#10'DragCursor'#4#244#255#0#0#13'HideSelection'#8#6'Images'#7#10'Imagelist1'
+  +#11'ParentCtl3D'#8#9'PopupMenu'#7#13'TreePopupmenu'#16'RightClickSelect'#9#8
+  +'TabOrder'#2#2#10'OnDblClick'#7#20'CodeTreeviewDBLCLICK'#10'OnDeletion'#7#20
+  +'CodeTreeviewDELETION'#7'Options'#11#17'TVOAUTOITEMHEIGHT'#21'TVOKEEPCOLLAPS'
+  +'EDNODES'#19'TVORIGHTCLICKSELECT'#14'TVOSHOWBUTTONS'#12'TVOSHOWLINES'#11'TVO'
+  +'SHOWROOT'#11'TVOTOOLTIPS'#0#6'Height'#3#224#1#3'Top'#2#25#5'Width'#3#206#0#0
+  +#0#10'TImageList'#10'Imagelist1'#4'left'#2'@'#3'top'#2' '#0#0#10'TPopupMenu'
+  +#13'TreePopupmenu'#4'left'#2'@'#3'top'#2'H'#0#9'TMenuItem'#14'JumpToMenuitem'
+  +#7'Caption'#6#14'Jump to source'#7'OnClick'#7#19'JumpToMenuitemCLICK'#0#0#9
+  +'TMenuItem'#15'RefreshMenuitem'#7'Caption'#6#7'Refresh'#7'OnClick'#7#20'Refr'
+  +'eshMenuitemCLICK'#0#0#0#0
 ]);
