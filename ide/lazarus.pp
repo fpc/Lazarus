@@ -52,9 +52,9 @@ begin
    end;
 
    Application.CreateForm(TMainIDE, MainIDE);
-   Application.CreateForm(TViewUnits1, ViewUnits1);
-   Application.CreateForm(TViewForms1, ViewForms1);
    Application.CreateForm(TMessageDlg, MessageDlg);
+   Application.CreateForm(TViewForms1, ViewForms1);
+   Application.CreateForm(TViewUnits1, ViewUnits1);
    Application.CreateForm(TfrmCompilerOptions, frmCompilerOptions);
    SplashForm.StartTimer;
    Application.Run;
@@ -63,6 +63,11 @@ end.
 
 {
   $Log$
+  Revision 1.10  2001/01/16 22:04:26  lazarus
+  Removes the resource for TViewUnits and it compiles and runs now.
+
+  Shane
+
   Revision 1.9  2001/01/15 18:25:51  lazarus
   Fixed a stupid error I caused by using a variable as an index in main.pp and this variable sometimes caused an exception because the index was out of range.
   Shane

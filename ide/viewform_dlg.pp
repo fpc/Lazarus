@@ -43,7 +43,7 @@ type
     Procedure listbox1Click(Sender : TObject);
 protected
 public
-//    constructor Create(AOwner: TComponent); override;	
+ //   constructor Create(AOwner: TComponent); override;	
 end;
 
 var
@@ -51,11 +51,12 @@ ViewForms1 : TViewForms1;
 
 implementation
 
-{
+ {
 constructor TViewForms1.Create(AOwner: TComponent);	
 var
 Pad : Integer;
 begin
+
   inherited Create(AOwner);
   Caption := 'View Project Forms';
   Left := 0;
@@ -95,7 +96,6 @@ begin
   edit1.Width := ClientWidth - (ClientWidth - btnOK.Left) - (2*pad);
   Edit1.Height := 25;
   Edit1.Visible := True;
-  Edit1.Text := 'Edit1';
   Edit1.Name := 'Edit1';
 
 
@@ -107,7 +107,6 @@ begin
     Width:= ClientWidth - (ClientWidth - btnOK.Left) - (2*pad);
     Height:= Self.Height - Top - pad;
     Visible:= true;
-    BorderStyle:= bsNone;
     MultiSelect:= false;
     Listbox1.Name := 'Listbox1';
     OnClick :=@listbox1Click;
@@ -117,7 +116,7 @@ begin
   end;
 
 end;
-}
+           }
 
 Procedure TViewForms1.btnOKClick(Sender : TOBject);
 Begin
@@ -169,6 +168,11 @@ initialization
 end.
 {
   $Log$
+  Revision 1.5  2001/01/16 22:04:26  lazarus
+  Removes the resource for TViewUnits and it compiles and runs now.
+
+  Shane
+
   Revision 1.4  2001/01/14 03:56:57  lazarus
   Shane
 

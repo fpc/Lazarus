@@ -161,6 +161,7 @@ type
     Function CreateSeperator : TMenuItem;
     Function ReturnActiveUnitList : TUnitInfo;
     Procedure UpdateViewDialogs;
+    Procedure SetDefaultsForForm(aForm : TCustomForm);
  protected
     procedure DoFind(Sender : TObject);
 
@@ -1437,7 +1438,7 @@ var
   TempName : String;
   TempFormName : String;
   Found : Boolean;
-  TempForm : TForm;
+  TempForm : TCustomForm;
   CInterface : TComponentInterface;
 begin
   //TempForm := TForm.Create(Self);
@@ -1452,21 +1453,8 @@ begin
        400,300));
 
   TempForm:=TForm(CInterface.Control);
-
-  TempForm.Designer :=
-    TDesigner.Create(TCustomForm(CInterface.Control));
-
-  TDesigner(TempForm.Designer).MainIDE := Self;
-
-  TDesigner(TempForm.Designer).FormEditor := FormEditor1;
-
-  TDesigner(tempForm.Designer).SourceEditor := SourceNotebook.CreateUnitFromForm(TempForm);
-
-//  TempForm.OnMouseDown := @TDesigner(TempForm.Designer).MouseDownOnForm;
-//  TempForm.OnMouseUp := @TDesigner(TempForm.Designer).MouseUpOnForm;
-//  TempForm.OnMouseMove := @TDesigner(TempForm.Designer).MouseMoveOnForm;
-
-  TempForm.OnActivate := @CodeOrFormActivated;
+  SetDefaultsForForm(TempForm);
+  TDesigner(tempForm.Designer).SourceEditor := SourceNotebook.CreateUnitFromForm(TForm(TempForm));
   TempForm.Show;
 
   SetDesigning(TempForm,True);
@@ -1558,6 +1546,14 @@ Begin
 
 end;
 
+Procedure TMainIDE.SetDefaultsforForm(aForm : TCustomForm);
+Begin
+     aForm.Designer := TDesigner.Create(aForm);
+     TDesigner(aForm.Designer).MainIDE := Self;
+     TDesigner(aForm.Designer).FormEditor := FormEditor1;
+     aForm.OnActivate := @CodeOrFormActivated;
+end;
+
 Procedure TMainIDE.FileOpenedEvent(Sender : TObject; Filename : String);
 var
   MenuItem : TMenuItem;
@@ -1583,12 +1579,10 @@ Begin
      TempForm := FormEditor1.NewFormFromLFM(Texts);
 
      CInterface := TComponentInterface(FormEditor1.CreateControlComponentInterface(tempForm));
-     TempForm.Designer := TDesigner.Create(TempForm);
-     TDesigner(TempForm.Designer).MainIDE := Self;
-     TDesigner(TempForm.Designer).FormEditor := FormEditor1;
-     TDesigner(tempForm.Designer).SourceEditor := TSourceEditor(sender);
+     SetDefaultsForForm(TempForm);
      TSourceEditor(sender).control := TempForm;
-     TempForm.OnActivate := @CodeOrFormActivated;
+     TDesigner(TempForm.Designer).SourceEditor := TSourceEditor(sender);
+
      for I := 0 to TempForm.ComponentCount -1 do
          FormEditor1.CreateControlComponentInterface(TempForm.Components[i]);
      TempForm.Show;
@@ -1621,7 +1615,7 @@ If TSourceEditor(Sender).IsControlUnit then
 //   Writeln('Result = '+Inttostr(CreateLFM(ViewForms1)));
 //   Writeln('Result = '+Inttostr(CreateLFM(MessageDlg)));
 //   Writeln('Result = '+Inttostr(CreateLFM(FindDialog1)));
-   Writeln('Result = '+Inttostr(CreateLFM(MainIDE)));
+//   Writeln('Result = '+Inttostr(CreateLFM(MainIDE)));
    end;
 end;
 
@@ -1933,8 +1927,9 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.46  2001/01/16 16:21:29  lazarus
-  Changed LResources to TLResources
+  Revision 1.47  2001/01/16 22:04:26  lazarus
+  Removes the resource for TViewUnits and it compiles and runs now.
+
   Shane
 
   Revision 1.45  2001/01/15 20:55:44  lazarus
