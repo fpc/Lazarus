@@ -26,7 +26,7 @@ var
 begin
   dirExist := false;
 
-  F := FileGetAttr(FileName);
+  F := FileGetAttr(ChompPathDelim(FileName));
   if F <> -1 then
     if (F and faDirectory) <> 0 then
       dirExist := true;
@@ -896,6 +896,9 @@ end;
 
 {
   $Log$
+  Revision 1.37  2003/12/20 11:10:36  mattias
+  fixed a few directory exists checks
+
   Revision 1.36  2003/11/13 12:47:20  marco
    * 3 of the four linuxerror occurances fixed
 

@@ -8273,13 +8273,13 @@ begin
   end;
 
   if (EnvironmentOptions.LazarusDirectory='')
-  or not FileExists(EnvironmentOptions.LazarusDirectory) then begin
+  or not DirectoryExists(EnvironmentOptions.LazarusDirectory) then begin
     writeln('');
     writeln(
       'NOTE: Lazarus Source Directory not set!  (see Environment Options)');
   end;
   if (EnvironmentOptions.FPCSourceDirectory='')
-  or not FileExists(EnvironmentOptions.FPCSourceDirectory) then begin
+  or not DirectoryExists(EnvironmentOptions.FPCSourceDirectory) then begin
     writeln('');
     writeln('NOTE: FPC Source Directory not set! (see Environment Options)');
   end;
@@ -10247,6 +10247,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.681  2003/12/20 11:10:35  mattias
+  fixed a few directory exists checks
+
   Revision 1.680  2003/12/20 01:20:52  mattias
   splitted output directories for cross compilation
 

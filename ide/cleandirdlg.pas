@@ -271,7 +271,7 @@ var
     FullFilename: String;
   begin
     Result:=false;
-    if (not FileExists(MainDirectory)) or (Lvl>20) then exit;
+    if (not DirectoryExists(MainDirectory)) or (Lvl>20) then exit;
     if SysUtils.FindFirst(MainDirectory+FindMask,
                           faAnyFile,FileInfo)=0
     then begin
@@ -383,7 +383,7 @@ begin
   // delete them all
   for i:=0 to List.Count-1 do begin
     Filename:=List[i];
-    writeln('Deleting file ',Filename);
+    writeln('TCleanDirectoryDialog: Deleting file ',Filename);
     if FileExists(Filename) then begin
       repeat
         if DeleteFile(Filename) then begin
