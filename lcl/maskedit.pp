@@ -61,13 +61,14 @@ type
 
   TMbcsByteType = (mbSingleByte, mbLeadByte, mbTrailByte);
   
+
+  { TCustomMaskEdit }
+
   TMaskCharType = (mcNone, mcLiteral, mcIntlLiteral, mcDirective, mcMask,
     mcMaskOpt, mcFieldSeparator, mcField);
   TMaskDirectives = set of (mdReverseDir, mdUpperCase, mdLowerCase,
     mdLiteralChar);
   TMaskedState = set of (msMasked, msReEnter, msDBSetText);
-  
-  { TCustomMaskEdit }
   
   TCustomMaskEdit = class(TCustomEdit)
   private
@@ -104,11 +105,6 @@ type
     procedure CursorInc(CursorPos: Integer; Incr: Integer);
     procedure CursorDec(CursorPos: Integer);
     procedure ArrowKeys(CharCode: Word; Shift: TShiftState);
-    procedure WMLButtonDown(var Message: TLMLButtonDown); message LM_LBUTTONDOWN;
-    procedure WMLButtonUp(var Message: TLMLButtonUp); message LM_LBUTTONUP;
-    procedure WMSetFocus(var Message: TLMSetFocus); message LM_SETFOCUS;
-    procedure CMEnter(var Message: TLMEnter); message LM_ENTER;
-    procedure CMExit(var Message: TLMExit);   message LM_EXIT;
     procedure CMTextChanged(var Message: TLMessage); message CM_TEXTCHANGED;
   protected
     procedure ReformatText(const NewMask: string);
@@ -117,6 +113,10 @@ type
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
     function EditCanModify: Boolean; virtual;
+    procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
+    procedure DoEnter; override;
+    procedure DoExit; override;
     procedure Reset; virtual;
     function GetFirstEditChar: Integer;
     function GetLastEditChar: Integer;
@@ -137,6 +137,7 @@ type
     property EditText: string read GetEditText write SetEditText;
     property Text: string read GetMaskText write SetMaskText;
   end;
+  
   
   { TMaskEdit }
 
@@ -631,31 +632,6 @@ begin
   end;
 end;
 
-procedure TCustomMaskEdit.WMLButtonDown(var Message: TLMLButtonDown);
-begin
-  inherited;
-  FBtnDownX := Message.XPos;
-end;
-
-procedure TCustomMaskEdit.WMLButtonUp(var Message: TLMLButtonUp);
-begin
-  inherited;
-  if (IsMasked) then
-  begin
-    FCaretPos := SelStart;
-    if (SelLength < 1) and (Message.XPos > FBtnDownX) then
-      FCaretPos := SelStart;
-    CheckCursor;
-  end;
-end;
-
-procedure TCustomMaskEdit.WMSetFocus(var Message: TLMSetFocus);
-begin
-  inherited;
-  if (IsMasked) then
-    CheckCursor;
-end;
-
 procedure TCustomMaskEdit.SetEditText(const Value: string);
 begin
   if GetEditText <> Value then begin
@@ -812,6 +788,50 @@ end;
 function TCustomMaskEdit.EditCanModify: Boolean;
 begin
   Result := True;
+end;
+
+procedure TCustomMaskEdit.MouseDown(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
+begin
+  inherited MouseDown(Button, Shift, X, Y);
+  if (Button=mbLeft) then
+    FBtnDownX := X;
+end;
+
+procedure TCustomMaskEdit.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
+  Y: Integer);
+begin
+  inherited MouseUp(Button, Shift, X, Y);
+  if IsMasked and (Button=mbLeft) then begin
+    FCaretPos := SelStart;
+    if (SelLength < 1) and (X > FBtnDownX) then
+      FCaretPos := SelStart;
+    CheckCursor;
+  end;
+end;
+
+procedure TCustomMaskEdit.DoEnter;
+begin
+  inherited DoEnter;
+  if IsMasked and not (csDesigning in ComponentState) then
+  begin
+    if not (msReEnter in FMaskState) then
+    begin
+      FOldValue := EditText;
+    end;
+    Exclude(FMaskState, msReEnter);
+    CheckCursor;
+  end;
+end;
+
+procedure TCustomMaskEdit.DoExit;
+begin
+  inherited DoExit;
+  if IsMasked and not (csDesigning in ComponentState) then
+  begin
+    ValidateEdit;
+    CheckCursor;
+  end;
 end;
 
 procedure TCustomMaskEdit.Reset;
@@ -1059,19 +1079,6 @@ begin
   end;
 end;
 
-procedure TCustomMaskEdit.CMEnter(var Message: TLMEnter);
-begin
-  if IsMasked and not (csDesigning in ComponentState) then
-  begin
-    if not (msReEnter in FMaskState) then
-    begin
-      FOldValue := EditText;
-    end;
-    Exclude(FMaskState, msReEnter);
-    CheckCursor;
-  end;
-end;
-
 procedure TCustomMaskEdit.CMTextChanged(var Message: TLMessage);
 var
   Temp: Integer;
@@ -1086,15 +1093,6 @@ begin
   end;
 end;
 
-
-procedure TCustomMaskEdit.CMExit(var Message: TLMExit);
-begin
-  if IsMasked and not (csDesigning in ComponentState) then
-  begin
-    ValidateEdit;
-    CheckCursor;
-  end;
-end;
 
 procedure TCustomMaskEdit.ValidateEdit;
 var

@@ -3053,6 +3053,21 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method: TWinControl.CNChar
+  Params:   Msg: The message
+  Returns:  nothing
+
+  event handler.
+  WMChar is sent by the interface befor it has handled the keypress by itself.
+ ------------------------------------------------------------------------------}
+procedure TWinControl.CNChar(var Message: TLMKeyUp);
+begin
+  {$IFNDEF Win32}
+  if not DoKeyPress(Message) then {inherited}; // there is nothing to inherit
+  {$ENDIF}
+end;
+
+{------------------------------------------------------------------------------
   Method: TWinControl.WMNofity
   Params:   Msg: The message
   Returns:  nothing
@@ -3145,11 +3160,14 @@ end;
   Returns:  nothing
 
   event handler.
+  WMChar is sent by the interface it has handled the keypress by itself.
  ------------------------------------------------------------------------------}
 procedure TWinControl.WMChar(var Message: TLMChar);
 begin
   Assert(False, Format('Trace:[TWinControl.WMChar] %s', [ClassName]));
+  {$IFDEF Win32}
   if not DoKeyPress(Message) then {inherited}; // there is nothing to inherit
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -3778,6 +3796,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.258  2004/08/03 09:01:54  mattias
+  LCL now handles for non win32 CN_CHAR
+
   Revision 1.257  2004/07/17 15:08:36  mattias
   fixed tab for TPanel and TPage
 

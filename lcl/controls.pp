@@ -1395,6 +1395,7 @@ type
     procedure WMSize(var Message: TLMSize); message LM_SIZE;
     procedure CNKeyDown(var Message: TLMKeyDown); message CN_KEYDOWN;
     procedure CNKeyUp(var Message: TLMKeyUp); message CN_KEYUP;
+    procedure CNChar(var Message: TLMKeyUp); message CN_CHAR;
   protected
     // drag and drop
     procedure DoAddDockClient(Client: TControl; const ARect: TRect); dynamic;
@@ -2388,6 +2389,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.231  2004/08/03 09:01:54  mattias
+  LCL now handles for non win32 CN_CHAR
+
   Revision 1.230  2004/07/25 22:54:38  mattias
   fixed fpc 1.0.10 compilation
 

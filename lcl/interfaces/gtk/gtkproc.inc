@@ -83,11 +83,13 @@ begin
   {$Else}
   OldString := Pointer(Event^.TheString);
   {$EndIF}
-  if (OldString<>nil) then
+  // MG: should we set Event^.length := 0; or is this used for mem allocation?
+  if (OldString<>nil) then begin
     if (NewString<>nil) then
       OldString[0]:=NewString[0]
     else
       OldString[0]:=#0;
+  end;
 end;
 
 function gdk_event_get_type(Event : Pointer) : guint;
@@ -1831,7 +1833,7 @@ var
   procedure StopKeyEvent(const AnEventName: PChar);
   begin
     {$IFDEF VerboseKeyboard}
-    DebugLn('StopKeyEvent AnEventName="',AnEventName,'"');
+    DebugLn('StopKeyEvent AnEventName="',AnEventName,'" BeforeEvent=',dbgs(BeforeEvent));
     {$ENDIF}
     if not EventStopped
     then begin
@@ -1843,9 +1845,8 @@ var
     {MWE:.$IfNDef Win32}
     if EventString <> nil
     then begin
-      EventString^ := #0;
-      // MG: should we set Event^.length := 0; or is this used for mem allocation?
-      gdk_event_key_set_string(Event,EventString);
+      gdk_event_key_set_string(Event,#0);
+      Event^.length:=0;
     end;
     {MWE:.$EndIf}
 
@@ -1886,7 +1887,6 @@ var
   CommonKeyData: Integer;
   Flags: Integer;
   SysKey: Boolean;
-  //TopLevel: PGtkWidget;
   FocusedWidget: PGtkWidget;
   LCLObject: TObject;
   FocusedWinControl: TWinControl;
@@ -2042,7 +2042,7 @@ begin
         if BeforeEvent then begin
           if SysKey
           then Msg.msg := CN_SYSCHAR
-          else Msg.msg := CN_CHAR;
+          else Msg.msg := CN_CHAR
         end else begin
           if SysKey
           then Msg.msg := LM_SYSCHAR
@@ -7102,6 +7102,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.290  2004/08/03 09:01:54  mattias
+  LCL now handles for non win32 CN_CHAR
+
   Revision 1.289  2004/07/30 14:26:11  mazen
   * move HandleGtkKeyUpDown to gtkProc.inc make it visible to gtk2
     this allow saving a call in a hevely called callback
