@@ -397,6 +397,9 @@ var
   Toggle, Extended, SysKey: Boolean;
 begin
   Result:=true;
+
+  //writeln('[GTKKeyUpDown] ',TControl(Data).Name,':',TControl(Data).ClassName,' ',Event^.theType);
+
   FillChar(Msg,SizeOf(Msg),0);
   GetGTKKeyInfo(Event, KeyCode, Msg.CharCode, SysKey, Extended, Toggle);
   // Assert(False, Format('Trace:[GTKKeyUpDown] Type: %3:d, GTK: 0x%0:x(%0:d) LCL: 0x%1:x(%1:d) VK: 0x%2:x(%2:d)', [Event^.keyval, KeyCode, Msg.CharCode, Event^.theType]));
@@ -2464,6 +2467,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.142  2002/10/07 07:00:03  lazarus
+  MG: fixed stopping keypress event if handled by LCL
+
   Revision 1.141  2002/10/06 20:24:27  lazarus
   MG: fixed stopping keypress event if handled by LCL
 
