@@ -42,6 +42,9 @@ uses
 
 
 type
+
+  { TScrollBar }
+
   TEditCharCase = (ecNormal, ecUppercase, ecLowerCase);
   TScrollStyle = (ssNone, ssHorizontal, ssVertical, ssBoth);
 
@@ -118,12 +121,16 @@ type
   end;
 
 
+  { TCustomGroupBox }
 
   TCustomGroupBox = class (TWinControl) {class(TCustomControl) }
   protected
   public
     constructor Create(AOwner : TComponent); Override;
   end;
+  
+  
+  { TGroupBox }
                                                                                                    
   TGroupBox = class(TCustomGroupBox)
   published
@@ -131,23 +138,58 @@ type
     property Visible;
   end;
   
+  
+  { TCustomComboBox }
 
   TComboBoxStyle = (csDropDown, csSimple, csDropDownList, csOwnerDrawFixed,
                     csOwnerDrawVariable);
-
+  TCustomDrawItemState = (
+    cdiSelected, cdiGrayed, cdiDisabled, cdiChecked,
+    cdiFocused, cdiDefault, cdiHotLight, cdiInactive, cdiNoAccel,
+    cdiNoFocusRect, cdiComboBoxEdit);
+  
+  TCustomDrawItemEvent = procedure(Control: TWinControl; Index: Integer;
+    Rect: TRect; State: TCustomDrawItemState) of object;
+  TMeasureItemEvent = procedure(Control: TWinControl; Index: Integer;
+    var Height: Integer) of object;
 
   TCustomComboBox = class(TWinControl)
   private
+    FAutoDropDown: Boolean;
+    FDropDownCount: Integer;
+    FItemHeight: integer;
+    FItemIndex: integer;
     FItems: TStrings;
-    FStyle : TComboBoxStyle;
+    fMaxLength: integer;
     FOnChange : TNotifyEvent;
+    FOnCloseUp: TNotifyEvent;
+    FOnDrawItem: TCustomDrawItemEvent;
+    FOnDropDown: TNotifyEvent;
+    FOnMeasureItem: TMeasureItemEvent;
+    FOnSelect: TNotifyEvent;
+    fSelLength: integer;
+    fSelStart: integer;
     FSorted : boolean;
+    FStyle : TComboBoxStyle;
     procedure SetItems(Value : TStrings);
-    procedure CNDrawItems(var Message : TLMDrawItems) ; message CN_DrawItem;
+    procedure CNDrawItems(var Message : TLMDrawItems); message CN_DrawItem;
   protected
     procedure CreateHandle; override;
     procedure DestroyHandle; override;
+    procedure DrawItem(Index: Integer; Rect: TRect;
+      State: TCustomDrawItemState); virtual;
     procedure DoChange(var msg); message LM_CHANGED;
+    procedure Change; dynamic;
+    procedure Loaded; override;
+    procedure Select; dynamic;
+    procedure DropDown; dynamic;
+    procedure CloseUp; dynamic;
+    function SelectItem(const AnItem: String): Boolean;
+    function GetItemCount: Integer; //override;
+
+    function GetItemHeight: Integer; virtual;
+    procedure SetDropDownCount(const AValue: Integer); virtual;
+    procedure SetItemHeight(const AValue: Integer); virtual;
     function GetSelLength : integer;
     function GetSelStart : integer;
     function GetSelText : string;
@@ -157,22 +199,41 @@ type
     procedure SetMaxLength(Val : integer); virtual;
     procedure SetSelLength(Val : integer);
     procedure SetSelStart(Val : integer);
-    procedure SetSelText(Val : string);
+    procedure SetSelText(const Val : string);
     procedure SetSorted(Val : boolean); virtual;
     procedure SetStyle(Val : TComboBoxStyle); virtual;
-    property Items : TStrings read FItems write SetItems;
-    property ItemIndex : integer read GetItemIndex write SetItemIndex;
-    property MaxLength : integer read GetMaxLength write SetMaxLength;
-    property Sorted : boolean read FSorted write SetSorted;
-    property Style : TComboBoxStyle read FStyle write SetStyle;
-    property OnChange : TNotifyEvent read FOnChange write FOnChange;
+
+    property DropDownCount: Integer read
+      FDropDownCount write SetDropDownCount default 8;
+    property Items: TStrings read FItems write SetItems;
+    property ItemHeight: Integer read GetItemHeight write SetItemHeight;
+    property ItemIndex: integer read GetItemIndex write SetItemIndex;
+    property MaxLength: integer read GetMaxLength write SetMaxLength default 0;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property OnCloseUp: TNotifyEvent read FOnCloseUp write FOnCloseUp;
+    property OnDrawItem: TCustomDrawItemEvent read FOnDrawItem write FOnDrawItem;
+    property OnDropDown: TNotifyEvent read FOnDropDown write FOnDropDown;
+    property OnMeasureItem: TMeasureItemEvent
+      read FOnMeasureItem write FOnMeasureItem;
+    property OnSelect: TNotifyEvent read FOnSelect write FOnSelect;
+    property Sorted: boolean read FSorted write SetSorted;
+    property Style: TComboBoxStyle read FStyle write SetStyle;
   public
     constructor Create(AOwner : TComponent); Override;
     destructor Destroy; override;
-    property SelLength : integer read GetSelLength write SetSelLength;
-    property SelStart : integer read GetSelStart write SetSelStart;
-    property SelText : String read GetSelText write SetSelText;
+    procedure AddItem(const Item: String; AObject: TObject); //override;
+    procedure Clear; //override;
+    procedure ClearSelection; //override;
+    procedure MeasureItem(Index: Integer; var TheHeight: Integer); virtual;
+    property AutoDropDown: Boolean
+      read FAutoDropDown write FAutoDropDown default False;
+    property SelLength: integer read GetSelLength write SetSelLength;
+    property SelStart: integer read GetSelStart write SetSelStart;
+    property SelText: String read GetSelText write SetSelText;
   end;
+  
+  
+  { TComboBox }
 
   TComboBox = class(TCustomComboBox)
   public
@@ -192,8 +253,10 @@ type
     property OnKeyPress;
   end;
     
-  TListBoxStyle = (lbStandard, lbOwnerDrawFixed, lbOwnerDrawVariable);
 
+  { TCustomListBox }
+    
+  TListBoxStyle = (lbStandard, lbOwnerDrawFixed, lbOwnerDrawVariable);
 
   TCustomListBox = class(TWinControl)
   private
@@ -632,6 +695,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.37  2002/08/27 18:45:13  lazarus
+  MG: propedits text improvements from Andrew, uncapturing, improved comobobox
+
   Revision 1.36  2002/08/27 14:33:37  lazarus
   MG: fixed designer component deletion
 

@@ -17,25 +17,6 @@
  *                                                                           *
  *****************************************************************************
 
-  current design flaws:
-
-   - unknown
-
-  Delphi compatability:
-
-   - GTK: does not support the different "styles"
-   - GTK: Behaviour of OnClick event differs
-   - lots of unknown issues
-
-  TODO:
-
-    - check for Delphi compatibility
-    - lot's of testing
-    - lot's of properties missing (OnClick....!!!!)
-    
-  Bugs:
-
-    - unknwon
 }
 
 {------------------------------------------------------------------------------
@@ -49,10 +30,14 @@ procedure TCustomComboBox.CreateHandle;
 var NewStrings : TStrings;
 begin
   inherited CreateHandle;
+  
+  // create an interface based item list
   NewStrings:= TStrings(Pointer(CNSendMessage(LM_GETITEMS, Self, nil)));
+  // copy the values
   NewStrings.Assign(FItems);
-
-  FItems.free;
+  // delete internal list
+  FItems.Free;
+  // and use the interface based list
   FItems:= NewStrings;
 end;
 
@@ -67,11 +52,36 @@ end;
 procedure TCustomComboBox.DestroyHandle;
 var NewStrings : TStrings;
 begin
+  // create an internal list for storing items internally
   NewStrings:= TStringList.Create;
-  NewStrings.Assign(FItems);
-  FItems.Free;
+  // copy from interface based list
+  if FItems<>nil then begin
+    NewStrings.Assign(FItems);
+    // delete interface based list
+    FItems.Free;
+  end;
+  // and use the internal list
   FItems:= NewStrings;
+  
   inherited DestroyHandle;
+end;
+
+{------------------------------------------------------------------------------
+  procedure TCustomComboBox.DrawItem(Index: Integer; Rect: TRect;
+    State: TCustomDrawItemState);
+
+
+ ------------------------------------------------------------------------------}
+procedure TCustomComboBox.DrawItem(Index: Integer; Rect: TRect;
+  State: TCustomDrawItemState);
+begin
+  //TControlCanvas(FCanvas).UpdateTextFlags;
+  if Assigned(FOnDrawItem) then FOnDrawItem(Self, Index, Rect, State);
+  {else
+  begin
+    FCanvas.FillRect(Rect);
+    FCanvas.TextOut(Rect.Left + 2, Rect.Top, Items[Index]);
+  end;}
 end;
 
 {------------------------------------------------------------------------------
@@ -85,13 +95,15 @@ procedure TCustomComboBox.SetSorted(Val : boolean);
 var AMessage : TLMSort;
 begin
   if (Val <> FSorted) then begin
-    with AMessage do begin
-      Msg:= LM_SORT;
-      List:= Items;
-      IsSorted:= Val;
-    end;
+    if HandleAllocated then begin
+      with AMessage do begin
+        Msg:= LM_SORT;
+        List:= Items;
+        IsSorted:= Val;
+      end;
 
-    CNSendMessage(LM_SORT, Self, @AMessage);
+      CNSendMessage(LM_SORT, Self, @AMessage);
+    end;
     FSorted:= Val;
   end;
 end;
@@ -106,8 +118,11 @@ end;
 procedure TCustomComboBox.SetMaxLength(Val : integer);
 begin
   if Val < 0 then Val:= 0;
-  HandleNeeded;
-  CNSendMessage(LM_SETLIMITTEXT, Self, @Val);
+  if Val<>MaxLength then begin
+    fMaxlength:=Val;
+    if HandleAllocated then
+      CNSendMessage(LM_SETLIMITTEXT, Self, @Val);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -119,8 +134,9 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomComboBox.GetMaxLength : integer;
 begin
-  HandleNeeded;
-  Result:= CNSendMessage(LM_GETLIMITTEXT, Self, nil);
+  if HandleAllocated then
+    fMaxLength := CNSendMessage(LM_GETLIMITTEXT, Self, nil);
+  Result:=fMaxLength;
 end;
 
 {------------------------------------------------------------------------------
@@ -136,6 +152,62 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  procedure TCustomComboBox.Change;
+
+  Called on change
+ ------------------------------------------------------------------------------}
+procedure TCustomComboBox.Change;
+begin
+  inherited Changed;
+  if Assigned(FOnChange) then FOnChange(Self);
+end;
+
+{------------------------------------------------------------------------------
+  procedure TCustomComboBox.Loaded;
+
+  Called after stream reading.
+ ------------------------------------------------------------------------------}
+procedure TCustomComboBox.Loaded;
+begin
+  inherited Loaded;
+  if FItemIndex>=0 then
+    SetItemIndex(FItemIndex);
+end;
+
+{------------------------------------------------------------------------------
+  procedure TCustomComboBox.Select;
+
+  Returns the selected part of text-field.
+ ------------------------------------------------------------------------------}
+procedure TCustomComboBox.Select;
+begin
+  if Assigned(FOnSelect) then
+    FOnSelect(Self)
+  else
+    Change;
+end;
+
+{------------------------------------------------------------------------------
+  procedure TCustomComboBox.DropDown;
+
+  Returns the selected part of text-field.
+ ------------------------------------------------------------------------------}
+procedure TCustomComboBox.DropDown;
+begin
+  if Assigned(FOnDropDown) then FOnDropDown(Self);
+end;
+
+{------------------------------------------------------------------------------
+  procedure TCustomComboBox.CloseUp;
+
+  Returns the selected part of text-field.
+ ------------------------------------------------------------------------------}
+procedure TCustomComboBox.CloseUp;
+begin
+  if Assigned(FOnCloseUp) then FOnCloseUp(Self);
+end;
+
+{------------------------------------------------------------------------------
   Method: TCustomComboBox.GetSelText
   Params: ---
   Returns: selected text
@@ -144,8 +216,10 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomComboBox.GetSelText : string;
 begin
-  if FStyle < csDropDownList then Result:= Copy(Text, SelStart + 1, SelLength)
-  else Result:= '';
+  if FStyle < csDropDownList then
+    Result:= Copy(Text, SelStart, SelLength)
+  else
+    Result:= '';
 end;
 
 {------------------------------------------------------------------------------
@@ -155,12 +229,15 @@ end;
 
   Replace the selected part of text-field with "val".
  ------------------------------------------------------------------------------}
-procedure TCustomComboBox.SetSelText(Val : string);
+procedure TCustomComboBox.SetSelText(const Val : string);
+var
+  OldText, NewText: string;
 begin
   if FStyle <> csDropDownList then begin
-    { First delete the actual selection }
-    Text:= Concat(Copy(Text, 1, SelStart), Val,
-                  Copy(Text, SelStart + SelLength + 1, Length(Text)));
+    OldText:=Text;
+    NewText:=LeftStr(OldText,SelStart-1)+Val
+               +RightStr(OldText,length(OldText)-SelStart-SelLength+1);
+    Text:=NewText;
   end;
 end;
 
@@ -173,8 +250,9 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomComboBox.GetSelStart : integer;
 begin
-  HandleNeeded;
-  Result:= CNSendMessage(LM_GETSELSTART, Self, nil);
+  if HandleAllocated then
+    fSelStart:=CNSendMessage(LM_GETSELSTART, Self, nil);
+  Result:=fSelStart;
 end;
 
 {------------------------------------------------------------------------------
@@ -186,8 +264,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomComboBox.SetSelStart(Val : integer);
 begin
-  HandleNeeded;
-  CNSendMessage(LM_SETSELSTART, Self, Pointer(Val));
+  fSelStart:=Val;
+  if HandleAllocated then
+    CNSendMessage(LM_SETSELSTART, Self, Pointer(Val));
 end;
 
 {------------------------------------------------------------------------------
@@ -199,8 +278,9 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomComboBox.GetSelLength : integer;
 begin
-  HandleNeeded;
-  Result:= CNSendMessage(LM_GETSELLEN, Self, nil);
+  if HandleAllocated then
+    fSelLength := CNSendMessage(LM_GETSELLEN, Self, nil);
+  Result:=fSelLength;
 end;
 
 {------------------------------------------------------------------------------
@@ -212,8 +292,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomComboBox.SetSelLength(Val : integer);
 begin
-  HandleNeeded;
-  CNSendMessage(LM_SETSELLEN, Self, Pointer(Val));
+  fSelLength:=Val;
+  if HandleAllocated then
+    CNSendMessage(LM_SETSELLEN, Self, Pointer(Val));
 end;
 
 {------------------------------------------------------------------------------
@@ -227,7 +308,75 @@ procedure TCustomComboBox.SetStyle(Val : TComboBoxStyle);
 begin
   if Val <> FStyle then begin
     FStyle:= Val;
+    // ToDo
   end;
+end;
+
+{------------------------------------------------------------------------------
+  function TCustomComboBox.SelectItem(const AnItem: String): Boolean;
+
+  Selects the item with the Text of AnItem
+ ------------------------------------------------------------------------------}
+function TCustomComboBox.SelectItem(const AnItem: String): Boolean;
+var
+  i: integer;
+  ValueChanged: boolean;
+begin
+  i:=Items.IndexOf(AnItem);
+  if i>=0 then begin
+    Result:=true;
+    ValueChanged:=ItemIndex<>i;
+    ItemIndex:=i;
+    Text:=Items[i];
+    if ValueChanged then begin
+      Click;
+      Select;
+    end;
+  end else
+    Result:=false;
+end;
+
+{------------------------------------------------------------------------------
+  function TCustomComboBox.GetItemCount: Integer;
+
+  Returns the number of items
+ ------------------------------------------------------------------------------}
+function TCustomComboBox.GetItemCount: Integer;
+begin
+  Result:=Items.Count;
+end;
+
+{------------------------------------------------------------------------------
+  function TCustomComboBox.GetItemHeight: Integer;
+
+  Gets default ItemHeight.
+ ------------------------------------------------------------------------------}
+function TCustomComboBox.GetItemHeight: Integer;
+begin
+  Result:=FItemHeight;
+end;
+
+{------------------------------------------------------------------------------
+  procedure TCustomComboBox.SetDropDownCount(const AValue: Integer);
+
+  Sets the number of items that fits into the drop down list.
+ ------------------------------------------------------------------------------}
+procedure TCustomComboBox.SetDropDownCount(const AValue: Integer);
+begin
+  FDropDownCount:=AValue;
+  // ToDo
+end;
+
+{------------------------------------------------------------------------------
+  procedure TCustomComboBox.SetItemHeight(const AValue: Integer);
+
+  Sets default ItemHeight. 0 or negative values are ignored.
+ ------------------------------------------------------------------------------}
+procedure TCustomComboBox.SetItemHeight(const AValue: Integer);
+begin
+  if AValue=FItemHeight then exit;
+  FItemHeight:=AValue;
+  // ToDo
 end;
 
 {------------------------------------------------------------------------------
@@ -239,7 +388,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomComboBox.SetItems(Value : TStrings);
 begin
-  if Value <> FItems then begin
+  if (Value <> FItems) then begin
     FItems.Assign(Value);
   end;
 end;
@@ -253,14 +402,13 @@ end;
  ------------------------------------------------------------------------------}
 constructor TCustomComboBox.Create(AOwner : TComponent);
 begin
-   inherited Create(AOwner);
+  inherited Create(AOwner);
 
-   fCompStyle := csComboBox;
-   SetBounds(1,1,100,25);
-   FItems := TStringlist.create;
+  fCompStyle := csComboBox;
+  SetBounds(1,1,100,25);
+  FItems := TStringlist.Create;
 //   FItems:= TComboBoxStrings.Create;
 //   TComboBoxStrings(FItems).ComboBox := Self;
-
 end;
 
 {------------------------------------------------------------------------------
@@ -273,7 +421,48 @@ end;
 destructor TCustomComboBox.Destroy;
 begin
   FItems.Free;
+  FItems:=nil;
   inherited Destroy;
+end;
+
+{------------------------------------------------------------------------------
+  procedure TCustomComboBox.AddItem(const Item: String; AObject: TObject);
+
+  Adds an Item with an associated object to Items
+ ------------------------------------------------------------------------------}
+procedure TCustomComboBox.AddItem(const Item: String; AObject: TObject);
+begin
+  Items.AddObject(Item,AObject);
+end;
+
+{------------------------------------------------------------------------------
+  procedure TCustomComboBox.Clear;
+
+  Removes all Items
+ ------------------------------------------------------------------------------}
+procedure TCustomComboBox.Clear;
+begin
+  Items.Clear;
+end;
+
+{------------------------------------------------------------------------------
+  procedure TCustomComboBox.ClearSelection;
+
+  Unselects all items.
+ ------------------------------------------------------------------------------}
+procedure TCustomComboBox.ClearSelection;
+begin
+  ItemIndex := -1;
+end;
+
+{------------------------------------------------------------------------------
+  procedure TCustomComboBox.MeasureItem(Index: Integer; var TheHeight: Integer);
+
+ ------------------------------------------------------------------------------}
+procedure TCustomComboBox.MeasureItem(Index: Integer; var TheHeight: Integer);
+begin
+  if Assigned(OnMeasureItem) then
+    OnMeasureItem(Self,Index,TheHeight);
 end;
 
 {------------------------------------------------------------------------------
@@ -285,19 +474,16 @@ end;
   if no item is currently selected.
  ------------------------------------------------------------------------------}
 function TCustomComboBox.GetItemIndex : integer;
-var Counter : integer;
-    CacheText : string;
+var
+  CacheText : string;
 begin
+  // ToDo: ask the interface
+  
   { I am not sure whether the item remains selected after the user pressed the item }
   {  Result:= CNSendMessage(LM_GETITEMINDEX, Self, nil);}
-  CacheText:= Text;
-  Result:= -1;
-  for Counter:= 0 to Items.Count - 1 do begin
-    if Items.Strings[Counter] = CacheText then begin
-      Result:= Counter;
-      Break;
-    end;
-  end;
+  CacheText := Text;
+  Result:= Items.Count-1;
+  while (Result>=0) and (Items[Result]<>CacheText) do dec(Result);
 end;
 
 {------------------------------------------------------------------------------
@@ -309,21 +495,29 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomComboBox.SetItemIndex(Val : integer);
 begin
-  if (Val < 0) or (Val > FItems.Count) then
-    raise Exception.Create('Out of bounds in TCustomComboBox.SetItemIndex');
-  HandleNeeded;
-  CNSendMessage(LM_SETITEMINDEX, Self, Pointer(Val));
+  if FItemIndex=Val then exit;
+  FItemIndex:=Val;
+  if HandleAllocated then
+    CNSendMessage(LM_SETITEMINDEX, Self, Pointer(FItemIndex));
 end;
 
+{------------------------------------------------------------------------------
+  Procedure TCustomComboBox.CNDrawItems(var Message : TLMDrawItems);
+
+  Handler for custom drawing items.
+ ------------------------------------------------------------------------------}
 Procedure TCustomComboBox.CNDrawItems(var Message : TLMDrawItems);
 Begin
-
+  // ToDo
 end;
 
 // included by stdctrls.pp
 
 {
   $Log$
+  Revision 1.9  2002/08/27 18:45:13  lazarus
+  MG: propedits text improvements from Andrew, uncapturing, improved comobobox
+
   Revision 1.8  2002/05/10 06:05:51  lazarus
   MG: changed license to LGPL
 
