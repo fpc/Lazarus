@@ -222,6 +222,7 @@ type
       ACommand: word;
       AKey1:Word; AShift1:TShiftState; AKey2:Word; AShift2:TShiftState);
     function AsShortCut: TShortCut;
+    function LocalizedName: string;
   end;
 
   //---------------------------------------------------------------------------
@@ -325,7 +326,7 @@ const
 function EditorCommandLocalizedName(cmd: word;
   const DefaultName: string): string;
 begin
-  Result:=DefaultName;
+  Result:=DefaultName+'i';
 end;
 
 function StrToVKCode(const s: string): integer;
@@ -381,7 +382,7 @@ begin
       KeyIndex:=Index;
       Caption:='Edit Keys';
       with KeyCommandRelationList.Relations[Index] do begin
-        CommandLabel.Caption:='Command: '+Name;
+        CommandLabel.Caption:='Command: '+LocalizedName;
         if Key1<>VK_UNKNOWN then begin
           Key1CtrlCheckBox.Checked:=ssCtrl in Shift1;
           Key1AltCheckBox.Checked:=ssAlt in Shift1;
@@ -829,7 +830,6 @@ begin
       Top:=Self.ClientHeight-Height-15;
       Width:=80;
       OnClick:=@OkButtonClick;
-      Show;
     end;
 
     CancelButton:=TButton.Create(Self);
@@ -841,7 +841,6 @@ begin
       Top:=OkButton.Top;
       Width:=OkButton.Width;
       OnClick:=@CancelButtonClick;
-      Show;
     end;
 
     CommandLabel:=TLabel.Create(Self);
@@ -853,7 +852,6 @@ begin
       Top:=5;
       Width:=Self.ClientWidth-Left-Left;
       Height:=20;
-      Show;
     end;
 
     Key1GroupBox:=TGroupBox.Create(Self);
@@ -865,7 +863,6 @@ begin
       Top:=CommandLabel.Top+CommandLabel.Height+8;
       Width:=Self.ClientWidth-Left-Left;
       Height:=110;
-      Show;
     end;
 
     Key1CtrlCheckBox:=TCheckBox.Create(Self);
@@ -877,7 +874,6 @@ begin
       Top:=2;
       Width:=55;
       Height:=20;
-      Show;
     end;
 
     Key1AltCheckBox:=TCheckBox.Create(Self);
@@ -889,7 +885,6 @@ begin
       Top:=Key1CtrlCheckBox.Top;
       Height:=20;
       Width:=Key1CtrlCheckBox.Width;
-      Show;
     end;
 
     Key1ShiftCheckBox:=TCheckBox.Create(Self);
@@ -901,7 +896,6 @@ begin
       Top:=Key1CtrlCheckBox.Top;
       Height:=20;
       Width:=Key1CtrlCheckBox.Width;
-      Show;
     end;
 
     Key1KeyComboBox:=TComboBox.Create(Self);
@@ -920,7 +914,6 @@ begin
       end;
       Items.EndUpdate;
       ItemIndex:=0;
-      Show;
     end;
     
     Key1GrabButton:=TButton.Create(Self);
@@ -933,7 +926,6 @@ begin
       Caption:='Grab Key';
       Name:='Key1GrabButton';
       OnClick:=@Key1GrabButtonClick;
-      Show;
     end;
 
     Key2GroupBox:=TGroupBox.Create(Self);
@@ -945,7 +937,6 @@ begin
       Top:=Key1GroupBox.Top+Key1GroupBox.Height+8;
       Width:=Key1GroupBox.Width;
       Height:=110;
-      Show;
     end;
 
     Key2CtrlCheckBox:=TCheckBox.Create(Self);
@@ -957,7 +948,6 @@ begin
       Top:=2;
       Width:=55;
       Height:=20;
-      Show;
     end;
 
     Key2AltCheckBox:=TCheckBox.Create(Self);
@@ -969,7 +959,6 @@ begin
       Top:=Key2CtrlCheckBox.Top;
       Height:=20;
       Width:=Key2CtrlCheckBox.Width;
-      Show;
     end;
 
     Key2ShiftCheckBox:=TCheckBox.Create(Self);
@@ -981,7 +970,6 @@ begin
       Top:=Key2CtrlCheckBox.Top;
       Height:=20;
       Width:=Key2CtrlCheckBox.Width;
-      Show;
     end;
 
     Key2KeyComboBox:=TComboBox.Create(Self);
@@ -1000,7 +988,6 @@ begin
       end;
       Items.EndUpdate;
       ItemIndex:=0;
-      Show;
     end;
     
     Key2GrabButton:=TButton.Create(Self);
@@ -1013,7 +1000,6 @@ begin
       Caption:='Grab Key';
       Name:='Key2GrabButton';
       OnClick:=@Key2GrabButtonClick;
-      Show;
     end;
 
   end;
@@ -1210,6 +1196,11 @@ begin
     Result:=Result+scShift;
   if ssAlt in Shift1 then
     Result:=Result+scAlt;
+end;
+
+function TKeyCommandRelation.LocalizedName: string;
+begin
+  Result:=EditorCommandLocalizedName(Command,Name);
 end;
 
 { TKeyCommandRelationList }
