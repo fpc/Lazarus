@@ -2758,27 +2758,44 @@ function TgtkObject.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
 var
   LineStart, LineEnd, StrEnd: PChar;
   Width, Height: Integer;
-  AY, Num : Integer;
+  TopY, LineLen, LineHeight : Integer;
   TXTPt : TPoint;
-  //ADC : hDC;
   UseFont : PGDKFont;
   UnRef : Boolean;
   DCOrigin: TPoint;
+  UnderLine: boolean;
+
+  procedure DrawTextLine;
+  var
+    UnderLineLen, Y: integer;
+  begin
+    with TDeviceContext(DC) do begin
+      gdk_draw_text(Drawable, UseFont, GC, TxtPt.X, TxtPt.Y,
+                    LineStart, LineLen);
+      if UnderLine then begin
+        UnderLineLen := Rect^.Right-Rect^.Left;
+        Y := TxtPt.Y + 1;
+        gdk_draw_line(Drawable, GC, TxtPt.X, Y, TxtPt.X+UnderLineLen, Y);
+      end;
+    end;
+  end;
+  
 begin
   Assert(False, Format('trace:> [TgtkObject.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
   Result := IsValidDC(DC);
   if Result
   then with TDeviceContext(DC) do
   begin
-    if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
-      then begin
-        UseFont := GetDefaultFont;
-        UnRef := True;
-      end
-      else begin
-        UseFont := CurrentFont^.GDIFontObject;
-        UnRef := False;
-      end;
+    if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil) then begin
+      UseFont := GetDefaultFont;
+      UnRef := True;
+      UnderLine := false;
+    end else begin
+      UseFont := CurrentFont^.GDIFontObject;
+      UnRef := False;
+      UnderLine := (CurrentFont^.LogFont.lfUnderline<>0);
+    end;
+
     if GC = nil
     then begin
       WriteLn('WARNING: [TgtkObject.ExtTextOut] Uninitialized GC');
@@ -2794,7 +2811,6 @@ begin
       Result := False;
     end else begin
       // TODO: implement other parameters.
-      //ADC := SaveDC(DC);
       DCOrigin:=GetDCOffset(TDeviceContext(DC));
       if ((Options and ETO_OPAQUE) <> 0) then
       begin
@@ -2813,45 +2829,37 @@ begin
         IntersectClipRect(DC, Rect^.Left, Rect^.Top,
                           Rect^.Right, Rect^.Bottom);
       end;
-      Num := FindChar(#10,Str,Count);
-      AY := Y;
+      LineLen := FindChar(#10,Str,Count);
+      TopY := Y;
       UpdateDCTextMetric(TDeviceContext(DC));
-      TxtPt.X := X;
+      TxtPt.X := X + DCOrigin.X;
       {$IfDef Win32}
-      TxtPt.Y := AY + DCTextMetric.TextMetric.tmHeight div 2;
+      LineHeight := DCTextMetric.TextMetric.tmHeight div 2;
       {$Else}
-      TxtPt.Y := AY + DCTextMetric.TextMetric.tmAscent;
+      LineHeight := DCTextMetric.TextMetric.tmAscent;
       {$EndIf}
+      TxtPt.Y := TopY + LineHeight + DCOrigin.Y;
       SelectGDKTextProps(DC);
-      if Num < 0 then begin
-        if Count> 0 then
-          gdk_draw_text(Drawable, UseFont, GC,
-                        TxtPt.X+DCOrigin.X, TxtPt.Y+DCOrigin.Y, Str, Count);
+      LineStart:=Str;
+      if LineLen < 0 then begin
+        LineLen:=Count;
+        if Count> 0 then DrawTextLine;
       end else
       Begin  //write multiple lines
-        LineStart:=Str;
         StrEnd:=Str+Count;
         while LineStart < StrEnd do begin
-          LineEnd:=LineStart+Num;
-          if Num>0 then
-            gdk_draw_text(Drawable, UseFont, GC,
-                          TxtPt.X+DCOrigin.X, TxtPt.Y+DCOrigin.Y, LineStart, Num);
-          AY := TxtPt.Y;
-          {$IfDef Win32}
-            TxtPt.Y := AY + DCTextMetric.TextMetric.tmHeight div 2;
-          {$Else}
-            TxtPt.Y := AY + DCTextMetric.TextMetric.tmAscent;
-          {$EndIf}
+          LineEnd:=LineStart+LineLen;
+          if LineLen>0 then DrawTextLine;
+          inc(TxtPt.Y,LineHeight);
           LineStart:=LineEnd+1; // skip #10
           if (LineStart<StrEnd) and (LineStart^=#13) then
             inc(LineStart); // skip #10
           Count:=StrEnd-LineStart;
-          Num:=FindChar(#10,LineStart,Count);
-          if Num<0 then
-            Num:=Count;
+          LineLen:=FindChar(#10,LineStart,Count);
+          if LineLen<0 then
+            LineLen:=Count;
         end;
       end;
-      //RestoreDC(DC, ADC);
       If UnRef then
         GDK_Font_UnRef(UseFont);
     end;
@@ -7512,6 +7520,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.191  2002/12/05 17:26:02  mattias
+  implemented fsUnderLine for ExtTextOut for gtk
+
   Revision 1.190  2002/11/23 13:48:46  mattias
   added Timer patch from Vincent Snijders
 
