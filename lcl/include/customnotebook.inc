@@ -410,10 +410,11 @@ end;
 procedure TCustomNotebook.SetPageIndex(AValue: Integer);
 begin
   if (csLoading in ComponentState) then FLoadedPageIndex:=AValue;
-  //debugln('TCustomNotebook.SetPageIndex A AValue=',dbgs(AValue),' fPageIndex=',dbgs(fPageIndex),' PageCount=',dbgs(PageCount),' HandleAllocated=',dbgs(HandleAllocated));
+  //debugln('TCustomNotebook.SetPageIndex A ',dbgsName(Self),' AValue=',dbgs(AValue),' fPageIndex=',dbgs(fPageIndex),' PageCount=',dbgs(PageCount),' HandleAllocated=',dbgs(HandleAllocated));
   if (AValue < 0) or (AValue >= PageCount) then exit;
   if fPageIndex = AValue then exit;
   if not CanChangePageIndex then exit;
+  //debugln('TCustomNotebook.SetPageIndex B ',dbgsName(Self),' AValue=',dbgs(AValue),' fPageIndex=',dbgs(fPageIndex),' PageCount=',dbgs(PageCount),' HandleAllocated=',dbgs(HandleAllocated));
   fPageIndex := AValue;
   UpdateAllDesignerFlags;
   DoSendPageIndex;
@@ -740,12 +741,12 @@ begin
   //DebugLn('[TCustomNotebook.DoSendPageIndex] A ',Name,' PageIndex=',dbgs(fPageIndex),' ',dbgs(csLoading in ComponentState),' ',dbgs(HandleAllocated));
   if not HandleAllocated or (csLoading in ComponentState) then exit;
   {$IFDEF NOTEBOOK_DEBUG}
-  DebugLn('[TCustomNotebook.DoSendPageIndex] A ',Name,' PageIndex=',dbgs(fPageIndex));
+  //DebugLn('[TCustomNotebook.DoSendPageIndex] B ',Name,' PageIndex=',dbgs(fPageIndex));
   {$ENDIF}
   ShowCurrentPage;
   TWSCustomNotebookClass(WidgetSetClass).SetPageIndex(Self, FPageIndex);
   {$IFDEF NOTEBOOK_DEBUG}
-  DebugLn('[TCustomNotebook.DoSendPageIndex] B');
+  //DebugLn('[TCustomNotebook.DoSendPageIndex] END ',dbgs(FPageIndex));
   {$ENDIF}
 end;
 
@@ -777,6 +778,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.67  2005/01/01 11:59:58  mattias
+  fixed collecting values
+
   Revision 1.66  2004/10/23 14:49:38  micha
   optimize: only create tabpage contents when accessed, not immediately upon creation
 

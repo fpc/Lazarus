@@ -1579,8 +1579,8 @@ begin
     raise Exception.Create('Unable to create property editor for '
                            +FTIObject.ClassName+':'+FTIPropertyName);
   end;}
-  if FTIElementName<>'' then
-  
+
+  //debugln('TCustomPropertyLink.CreateEditor C ',FTIObject.ClassName+':'+FTIPropertyName,' ',dbgs(FCollectValues));
   if CollectValues then FetchValues;
   if ((FEditor<>nil) or OldEditorExisted) and Assigned(OnEditorChanged) then
     OnEditorChanged(Self);
@@ -1589,6 +1589,7 @@ end;
 procedure TCustomPropertyLink.FetchValues;
 begin
   FreeThenNil(FCollectedValues);
+  //debugln('TCustomPropertyLink.FetchValues A ',dbgsName(Editor));
   if Editor<>nil then
     Editor.GetValues(@GetEditorValues);
 end;
