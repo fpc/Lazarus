@@ -34,23 +34,23 @@ uses
 type
   TCmdLineDebugger = class(TDebugger)
   private
-    FTargetProcess: TProcess;         // The target process to be debugged
-    FDbgProcess: TProcess;            // The process used to call the debugger
-
-    FTargetOutputBuf: String;         // Tempbuffer for process output
-    FOutputLines: TStringList;        // Debugger output
-
-    procedure GetOutput;
+    FDbgProcess: TProcess;   // The process used to call the debugger
+    FLineEnds: TStringList;  // List of strings considered as lineends
+    FOutputBuf: String;
+    FReading: Boolean;       // Set if we are in the ReadLine loop
+    FFlushAfterRead: Boolean;// Set if we should flus if we finished reading
+    function GetDebugProcessRunning: Boolean;
   protected
-    WaitPrompt: String;               // Prompt to wait for
-    procedure CreateDebugProcess(const AName: String);
-    procedure CreateTargetProcess(const AName: String);
-    procedure KillTargetProcess;
-    procedure SendCmdLn(const ACommand: String; const AGetOutput: Boolean); overload;
-    procedure SendCmdLn(const ACommand: String; Values: array of const; const AGetOutput: Boolean); overload;
-    property  TargetProcess: TProcess read FTargetProcess;         
+    function  CreateDebugProcess(const AName: String): Boolean;
+    procedure Flush;         // Flushes output buffer
+//    procedure KillTargetProcess;
+    function  ReadLine: String; overload;
+    function  ReadLine(const APeek: Boolean): String; overload;
+    procedure SendCmdLn(const ACommand: String); overload;
+    procedure SendCmdLn(const ACommand: String; Values: array of const); overload;
     property  DebugProcess: TProcess read FDbgProcess;         
-    property  OutputLines: TStringList read FOutputLines;
+    property  DebugProcessRunning: Boolean read GetDebugProcessRunning;         
+    property  LineEnds: TStringList read FLineEnds;
   public
     constructor Create; {override; }
     destructor Destroy; override;
@@ -62,6 +62,13 @@ procedure SendBreak(const AHandle: Integer);
 function GetLine(var ABuffer: String): String;
 function StripLN(const ALine: String): String;
 function GetPart(const ASkipTo, AnEnd: String; var ASource: String): String;
+
+const
+{$IFDEF WIN32}
+  LINE_END = #13#10;
+{$ELSE}
+  LINE_END = #10;
+{$ENDIF}
 
 implementation
 
@@ -219,13 +226,14 @@ end;
 constructor TCmdLineDebugger.Create;
 begin
   FDbgProcess := nil;
-  FTargetProcess := nil;
-  FOutputLines := TStringList.Create;
-  FTargetOutputBuf := '';
+  FLineEnds := TStringList.Create;
+  FLineEnds.Add(LINE_END);
+  FReading := False;
+  FFlushAfterRead := False;
   inherited Create;
 end;
 
-procedure TCmdLineDebugger.CreateDebugProcess(const AName:String);
+function TCmdLineDebugger.CreateDebugProcess(const AName:String): Boolean;
 begin
   if FDbgProcess = nil 
   then begin
@@ -233,13 +241,17 @@ begin
     FDbgProcess.CommandLine := AName;
     FDbgProcess.Options:= [poUsePipes, poNoConsole, poStdErrToOutPut];
     FDbgProcess.ShowWindow := swoNone;
+  end;
+  if not FDbgProcess.Running 
+  then begin
     FDbgProcess.Execute;
     WriteLn('[TCmdLineDebugger] Debug PID: ', FDbgProcess.Handle);
-    GetOutput;
   end;
+  Result := FDbgProcess.Running;
 end;
 
-procedure TCmdLineDebugger.CreateTargetProcess(const AName:String);
+(*
+function TCmdLineDebugger.CreateTargetProcess(const AName:String): Boolean;
 begin
   // TODO: Better cleanup
   FTargetProcess.Free;
@@ -249,16 +261,13 @@ begin
   FTargetProcess.ShowWindow := swoNone;
   FTargetProcess.Execute;
   WriteLN('[TCmdLineDebugger] Target PID = ', FTargetProcess.Handle);
+  Result := FTargetProcess.Running;  
 end;
+*)
 
 destructor TCmdLineDebugger.Destroy;
 begin
   inherited;
-  try
-    FTargetProcess.Free;
-  except
-    on E: Exception do WriteLN('Exeption while freeing target: ', E.Message);
-  end;
   try
     FDbgProcess.Free;
   except
@@ -266,7 +275,40 @@ begin
   end;
 end;
 
-procedure TCmdLineDebugger.GetOutput;
+procedure TCmdLineDebugger.Flush;
+begin
+  if FReading
+  then FFlushAfterRead := True
+  else FOutputBuf := '';
+end;
+
+function TCmdLineDebugger.GetDebugProcessRunning: Boolean;
+begin
+  Result := (FDbgProcess <> nil) and FDbgProcess.Running;
+end;
+
+(*
+procedure TCmdLineDebugger.KillTargetProcess;
+begin           
+  if FTargetProcess = nil then Exit;
+  
+  FTargetProcess.Terminate(0);
+  FTargetProcess.WaitOnExit;
+  try
+    FTargetProcess.Free;
+  except
+    on E: Exception do WriteLN('Exeption while freeing target: ', E.Message);
+  end;
+  FTargetProcess:= nil;
+end;
+*)
+  
+function TCmdLineDebugger.ReadLine: String;
+begin
+  Result := ReadLine(False);
+end;
+
+function TCmdLineDebugger.ReadLine(const APeek: Boolean): String;
   function ReadData(const AStream: TStream; var ABuffer: String): Integer;
   var
     S: String;
@@ -281,23 +323,40 @@ procedure TCmdLineDebugger.GetOutput;
   end;
 
 var   
-  OutputBuf: String;
-  Line: String;
-  OutHandle: Integer;
   WaitSet: Integer;
-  Idx, Count: Integer;
+  LineEndMatch: String;
+  n, Idx, MinIdx: Integer;
 begin                
 //  WriteLN('[TCmdLineDebugger.GetOutput] Enter');
 
-  if (FTargetProcess = nil)
-  then OutHandle := 0
-  else OutHandle := FTargetProcess.Output.Handle;
+// TODO: get extra handles to wait for
   
-  OutputBuf := '';
-  Line := '';
-  OutputLines.Clear;
-  repeat 
-    WaitSet := WaitForHandles([FDbgProcess.Output.Handle, OutHandle]);
+  FReading := True;
+  repeat                       
+    if FOutputBuf <> ''
+    then begin
+      MinIdx := MaxInt;
+      for n := 0 to FLineEnds.Count - 1 do
+      begin
+        LineEndMatch := FLineEnds[n];
+        Idx := Pos(LineEndMatch, FOutputBuf);
+        if (idx > 0) and (idx < MinIdx) 
+        then MinIdx := idx;
+      end;
+    
+      if MinIdx < MaxInt 
+      then begin
+        n := MinIdx + Length(LineEndMatch) - 1;
+        Result := Copy(FOutputBuf, 1, n);
+        if not APeek 
+        then Delete(FOutputBuf, 1, n);
+      
+        DoDbgOutput(Result);
+        Break;
+      end;
+    end;
+
+    WaitSet := WaitForHandles([FDbgProcess.Output.Handle]);
     if WaitSet = 0
     then begin
       WriteLN('[TCmdLineDebugger.Getoutput] Error waiting ');
@@ -305,31 +364,12 @@ begin
       Break;
     end;
     
-    if ((WaitSet and 1) <> 0) and (FDbgProcess <> nil)
-    then begin
-      Count := ReadData(FDbgProcess.Output, OutputBuf);
-      if Count > 0 
-      then while True do
-      begin
-        Line := GetLine(OutputBuf);
-        if Line = '' 
-        then begin
-          Idx := Pos(WaitPrompt, OutputBuf) - 1;
-          if  (Idx > 0) 
-          and (Idx = Length(OutputBuf) - Length(WaitPrompt))
-          then begin 
-            // Waitpropmt at end of line, no newline found
-            Line := Copy(OutputBuf, 1, idx);
-            Delete(OutputBuf, 1, idx);
-          end
-          else Break;
-        end;
-        Line := StripLN(Line);
-        if Line <> '' then FOutputLines.Add(Line);
-        DoDbgOutput(Line);
-      end;
-    end;
+    if  ((WaitSet and 1) <> 0) 
+    and (FDbgProcess <> nil)
+    and (ReadData(FDbgProcess.Output, FOutputBuf) > 0) 
+    then Continue; // start lineend search
 
+(*
     if ((WaitSet and 2) <> 0) and (FTargetProcess <> nil)
     then begin
       Count := ReadData(FTargetProcess.Output, FTargetOutputBuf);
@@ -341,54 +381,45 @@ begin
         DoOutput(Line); 
       end;
     end;
-  until OutputBuf = WaitPrompt; 
-  
-//  WriteLN('[TCmdLineDebugger.GetOutput] Leave');
+*)
+  until not DebugProcessRunning; 
+
+  FReading := False;
+  if FFlushAfterRead 
+  then FOutputBuf := '';
+  FFlushAfterRead := False;
 end;
 
-procedure TCmdLineDebugger.KillTargetProcess;
-begin           
-  if FTargetProcess = nil then Exit;
-  
-  FTargetProcess.Terminate(0);
-  FTargetProcess.WaitOnExit;
-  try
-    FTargetProcess.Free;
-  except
-    on E: Exception do WriteLN('Exeption while freeing target: ', E.Message);
-  end;
-  FTargetProcess:= nil;
-end;
-
-procedure TCmdLineDebugger.SendCmdLn(const ACommand: String; const AGetOutput: Boolean); overload;
-const 
-  LF = #10;
+procedure TCmdLineDebugger.SendCmdLn(const ACommand: String); overload;
 begin
-  if FDbgProcess <> nil 
+  if DebugProcessRunning
   then begin
-//    WriteLN(Format('[TCmdLineDebugger.SendCmd] CMD: <%s>', [ACommand]));
     DoDbgOutput('<' + ACommand + '>');
     if ACommand <> ''
     then FDbgProcess.Input.Write(ACommand[1], Length(ACommand));
-    FDbgProcess.Input.Write(LF, 1);
-    if AGetOutput
-    then GetOutput;
+    FDbgProcess.Input.Write(LINE_END, 1);
   end;
 end;
 
-procedure TCmdLineDebugger.SendCmdLn(const ACommand: String; Values: array of const; const AGetOutput: Boolean);
+procedure TCmdLineDebugger.SendCmdLn(const ACommand: String; Values: array of const);
 begin
-  SendCmdLn(Format(ACommand, Values), AGetOutput);
+  SendCmdLn(Format(ACommand, Values));
 end;
 
 procedure TCmdLineDebugger.TestCmd(const ACommand: String);
 begin
-  SendCmdLn(ACommand, True);
+  SendCmdLn(ACommand);
 end;
 
 end.
 { =============================================================================
   $Log$
+  Revision 1.7  2002/03/09 02:03:58  lazarus
+  MWE:
+    * Upgraded gdb debugger to gdb/mi debugger
+    * Set default value for autpopoup
+    * Added Clear popup to debugger output window
+
   Revision 1.6  2002/02/20 23:33:23  lazarus
   MWE:
     + Published OnClick for TMenuItem

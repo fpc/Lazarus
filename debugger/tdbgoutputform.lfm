@@ -3,8 +3,6 @@ object DbgOutputForm1: TDbgOutputForm
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  TOP = 10
-  LEFT = 10
   HEIGHT = 200
   WIDTH = 400
   object txtOutput: TMemo
@@ -20,7 +18,7 @@ object DbgOutputForm1: TDbgOutputForm
     Top = 96
     object popClear: TMenuItem
       Caption = '&Clear'
-      OnClick = popClearClick
+      OnClick = popClearClick 
     end
   end
 end

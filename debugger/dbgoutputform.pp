@@ -75,7 +75,14 @@ begin
   inherited Loaded;
   
   // Not yet through resources
-  txtOutput.Scrollbars := ssBoth;
+  txtOutput.Scrollbars := ssBoth;  
+  
+  // Not yet through resources
+  mnuPopUp.Items.Add(popClear);
+//    popClear.Caption := '&Clear';
+//    popClear.OnClick := @popClearClick; 
+WriteLn('Popupcount: ', mnuPopUp.Items.Count);
+WriteLn('Itemvisible ', popClear.Visible);
 end;
 
 procedure TDbgOutputForm.popClearClick(Sender: TObject);
@@ -89,6 +96,12 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.3  2002/03/09 02:03:59  lazarus
+  MWE:
+    * Upgraded gdb debugger to gdb/mi debugger
+    * Set default value for autpopoup
+    * Added Clear popup to debugger output window
+
   Revision 1.2  2002/02/20 23:33:24  lazarus
   MWE:
     + Published OnClick for TMenuItem

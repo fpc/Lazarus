@@ -39,7 +39,7 @@ uses
   CustomFormEditor, ObjectInspector, PropEdits, ControlSelection, UnitEditor,
   CompilerOptions, EditorOptions, EnvironmentOpts, TransferMacros,
   SynEditKeyCmds, KeyMapping, ProjectOpts, IDEProcs, Process, UnitInfoDlg,
-  Debugger, DBGOutputForm, GDBDebugger, RunParamsOpts, ExtToolDialog,
+  Debugger, DBGOutputForm, GDBMIDebugger, RunParamsOpts, ExtToolDialog,
   MacroPromptDlg, LMessages, ProjectDefs, Watchesdlg, BreakPointsdlg, ColumnDlg,
   OutputFilter, BuildLazDialog, MiscOptions, EditDefineTree, CodeToolsOptions,
   TypInfo, IDEOptionDefs, CodeToolsDefines;
@@ -425,6 +425,7 @@ type
       var ActiveUnitInfo:TUnitInfo);
     procedure GetUnitWithPageIndex(PageIndex:integer; 
       var ActiveSourceEditor:TSourceEditor; var ActiveUnitInfo:TUnitInfo);
+    function FindUnitFile(const AFilename: string): string;
     function DoSaveStreamToFile(AStream:TStream; const Filename:string; 
       IsPartOfProject:boolean): TModalResult;
     function DoLoadMemoryStreamFromFile(MemStream: TMemoryStream; 
@@ -4239,7 +4240,7 @@ begin
   then UnitFilename:=ActiveUnitInfo.Filename
   else UnitFilename:=GetTestUnitFilename(ActiveUnitInfo);
 
-  FDebugger.RunTo(UnitFilename, ActiveSrcEdit.EditorComponent.CaretY);
+  FDebugger.RunTo(ExtractFilename(UnitFilename), ActiveSrcEdit.EditorComponent.CaretY);
 
   Result := mrOK;
 end;
@@ -4258,7 +4259,7 @@ begin
   case EnvironmentOptions.DebuggerType of
     dtGnuDebugger: begin  
       if (FDebugger <> nil) 
-      and not (FDebugger is TGDBDebugger) 
+      and not (FDebugger is TGDBMIDebugger) 
       then begin
         OldBreakpoints := TDBGBreakpoints.Create(nil, TDBGBreakpoint);
         OldBreakpoints.Assign(FBreakPoints);
@@ -4274,7 +4275,7 @@ begin
           OldBreakpoints := TDBGBreakpoints.Create(nil, TDBGBreakpoint);
           OldBreakpoints.Assign(FBreakPoints);
         end;
-        FDebugger := TGDBDebugger.Create;
+        FDebugger := TGDBMIDebugger.Create;
         FBreakPoints := FDebugger.BreakPoints;
       end;
       if OldBreakpoints <> nil
@@ -4357,14 +4358,23 @@ procedure TMainIDE.OnDebuggerCurrentLine(Sender: TObject;
 // if SrcLine = -1 then no source is available
 var 
   ActiveSrcEdit: TSourceEditor;
+  UnitFile: String;
 begin
   if (Sender<>FDebugger) or (Sender=nil) then exit;
+
   //TODO: Show assembler window if no source can be found.
-  if ALocation.SrcLine = -1 then Exit;
-  if DoOpenEditorFile(ALocation.SrcFile,false,true) <> mrOk then exit;
-  ActiveSrcEdit:=SourceNoteBook.GetActiveSE;
+  if ALocation.SrcLine = -1 then Exit; 
+  
+  UnitFile := FindUnitFile(ALocation.SrcFile);
+  if UnitFile = '' 
+  then UnitFile := ALocation.SrcFile;
+  if DoOpenEditorFile(UnitFile, False, True) <> mrOk then exit;
+  
+  ActiveSrcEdit := SourceNoteBook.GetActiveSE;
   if ActiveSrcEdit=nil then exit;
-  with ActiveSrcEdit.EditorComponent do begin
+  
+  with ActiveSrcEdit.EditorComponent do 
+  begin
     CaretXY:=Point(1, ALocation.SrcLine);
     BlockBegin:=CaretXY;
     BlockEnd:=CaretXY;
@@ -4804,54 +4814,8 @@ end;
 function TMainIDE.DoJumpToCompilerMessage(Index:integer;
   FocusEditor: boolean): boolean;
   
-  function SearchFile(const AFilename: string): string;
-  var OldCurrDir, SearchPath, Delimiter, ProjectDir: string;
-    PathStart, PathEnd: integer;
-  begin
-    if FilenameIsAbsolute(AFilename) then begin
-      Result:=AFileName;
-      exit;
-    end;
-    // search file in project directory
-    if (Project.MainUnit>=0) and Project.Units[Project.MainUnit].IsVirtual then
-    begin
-      Result:=AFilename;
-      exit;
-    end;
-    ProjectDir:=ExtractFilePath(Project.ProjectFile);
-    Result:=ProjectDir+AFilename;
-    if FileExists(Result) then exit;
-    // search file with unit search path
-    OldCurrDir:=GetCurrentDir;
-    try
-      SetCurrentDir(ProjectDir);
-      Delimiter:=';';
-      SearchPath:=Project.CompilerOptions.OtherUnitFiles+';'+Project.SrcPath;
-      PathStart:=1;
-      while (PathStart<=length(SearchPath)) do begin
-        while (PathStart<=length(SearchPath)) 
-        and (Pos(SearchPath[PathStart],Delimiter)>0) do
-          inc(PathStart);
-        PathEnd:=PathStart;
-        while (PathEnd<=length(SearchPath)) 
-        and (Pos(SearchPath[PathEnd],Delimiter)<1) do
-          inc(PathEnd);
-        if PathEnd>PathStart then begin
-          Result:=ExpandFileName(copy(SearchPath,PathStart,PathEnd-PathStart));
-          if Result<>'' then begin
-            if Result[length(Result)]<>PathDelim then
-              Result:=Result+PathDelim;
-            Result:=Result+AFileName;
-            if FileExists(Result) then exit;
-          end;
-        end;
-        PathStart:=PathEnd;
-      end;
-    finally
-      SetCurrentDir(OldCurrDir);
-    end;
-    Result:='';
-  end;
+//  function SearchFile(const AFilename: string): string;
+//  Moved to  FindUnitFile  method
   
 var MaxMessages: integer;
   Filename, Ext, SearchedFilename: string;
@@ -4880,7 +4844,7 @@ begin
   end;
   if TheOutputFilter.GetSourcePosition(MessagesView.MessageView.Items[Index],
         Filename,CaretXY,MsgType) then begin
-    SearchedFilename:=SearchFile(Filename);
+    SearchedFilename := FindUnitFile(Filename);
     if SearchedFilename<>'' then begin
       // open the file in the source editor
       Ext:=lowercase(ExtractFileExt(SearchedFilename));
@@ -4998,6 +4962,63 @@ begin
   Result:=ExtractFilename(AnUnitInfo.Filename);
   if Result='' then exit;
   Result:=TestDir+Result;
+end;                                       
+
+function TMainIDE.FindUnitFile(const AFilename: string): string;
+var 
+  OldCurrDir, SearchPath, Delimiter, ProjectDir: string;
+  PathStart, PathEnd: integer;
+begin
+  if FilenameIsAbsolute(AFilename) 
+  then begin
+    Result:=AFileName;
+    exit;
+  end;
+  
+  // search file in project directory
+  if (Project.MainUnit>=0) and Project.Units[Project.MainUnit].IsVirtual 
+  then begin
+    Result:=AFilename;
+    exit;
+  end;
+  
+  ProjectDir:=ExtractFilePath(Project.ProjectFile);
+  Result:=ProjectDir+AFilename;
+  if FileExists(Result) then exit;
+  
+  // search file with unit search path
+  OldCurrDir:=GetCurrentDir;
+  try
+    SetCurrentDir(ProjectDir);
+    Delimiter:=';';
+    SearchPath:=Project.CompilerOptions.OtherUnitFiles+';'+Project.SrcPath;
+    PathStart:=1;
+    while (PathStart<=length(SearchPath)) do 
+    begin
+      while (PathStart<=length(SearchPath)) 
+      and (Pos(SearchPath[PathStart],Delimiter)>0) do
+        inc(PathStart);
+      PathEnd:=PathStart;
+      while (PathEnd<=length(SearchPath)) 
+      and (Pos(SearchPath[PathEnd],Delimiter)<1) do
+        inc(PathEnd);
+      if PathEnd>PathStart 
+      then begin
+        Result:=ExpandFileName(copy(SearchPath,PathStart,PathEnd-PathStart));
+        if Result<>'' 
+        then begin
+          if Result[length(Result)]<>PathDelim 
+          then Result:=Result+PathDelim;
+          Result:=Result+AFileName;
+          if FileExists(Result) then exit;
+        end;
+      end;
+      PathStart:=PathEnd;
+    end;
+  finally
+    SetCurrentDir(OldCurrDir);
+  end;
+  Result:='';
 end;
 
 //------------------------------------------------------------------------------
@@ -5852,7 +5873,7 @@ begin
 
   Breakpoints_Dlg.AddBreakPoint(TSourceNotebook(sender).GetActiveSe.FileName,Line);
 
-  NewBreak := FBreakPoints.Add(TSourceNotebook(sender).GetActiveSe.FileName, Line);
+  NewBreak := FBreakPoints.Add(ExtractFilename(TSourceNotebook(sender).GetActiveSe.FileName), Line);
   NewBreak.Enabled := True;
 end;
 
@@ -5862,7 +5883,7 @@ begin
   if SourceNotebook.Notebook = nil then Exit;
 
   Breakpoints_Dlg.DeleteBreakPoint(TSourceNotebook(sender).GetActiveSe.FileName,Line);
-  FBreakPoints.Find(TSourceNotebook(sender).GetActiveSe.FileName, Line).Free;
+  FBreakPoints.Find(ExtractFilename(TSourceNotebook(sender).GetActiveSe.FileName), Line).Free;
 end;
 
 procedure TMainIDE.OnExtToolNeedsOutputFilter(var OutputFilter: TOutputFilter;
@@ -6224,6 +6245,12 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.243  2002/03/09 02:03:57  lazarus
+  MWE:
+    * Upgraded gdb debugger to gdb/mi debugger
+    * Set default value for autpopoup
+    * Added Clear popup to debugger output window
+
   Revision 1.242  2002/03/08 11:37:40  lazarus
   MG: outputfilter can now find include files
 

@@ -582,6 +582,12 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.8  2002/03/09 02:03:59  lazarus
+  MWE:
+    * Upgraded gdb debugger to gdb/mi debugger
+    * Set default value for autpopoup
+    * Added Clear popup to debugger output window
+
   Revision 1.7  2002/02/22 13:37:19  lazarus
   MG: fixed saving undo limit
 

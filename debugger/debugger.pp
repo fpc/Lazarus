@@ -213,6 +213,7 @@ type
     FArguments: String;
     FBreakPoints: TDBGBreakPoints;
     FBreakPointGroups: TDBGBreakPointGroups;
+    FExitCode: Integer;
     FFileName: String;                              
     FState: TDBGState;
     FWatches: TDBGWatches;
@@ -223,6 +224,7 @@ type
     FOnState: TNotifyEvent;
     function  GetState: TDBGState;              
     function  ReqCmd(const ACommand: TDBGCommand; const AParams: array of const): Boolean; 
+    procedure SetFileName(const AValue: String); 
   protected  
     function  CreateBreakPoints: TDBGBreakPoints; virtual;
     function  CreateWatches: TDBGWatches; virtual;
@@ -231,10 +233,11 @@ type
     procedure DoException(const AExceptionID: Integer; const AExceptionText: String);
     procedure DoOutput(const AText: String);
     procedure DoState;
+    function  ChangeFileName: Boolean; virtual;
     function  GetCommands: TDBGCommands; 
     function  GetSupportedCommands: TDBGCommands; virtual;
     function  RequestCommand(const ACommand: TDBGCommand; const AParams: array of const): Boolean; virtual; abstract; // True if succesful
-    procedure SetFileName(const AValue: String); virtual;
+    procedure SetExitCode(const AValue: Integer); 
     procedure SetState(const AValue: TDBGState); 
   public
     constructor Create; {virtual; Virtual constructor makes no sense}
@@ -256,6 +259,7 @@ type
     property BreakPointGroups: TDBGBreakPointGroups read FBreakPointGroups;      // list of all breakpointgroups
     property Commands: TDBGCommands read GetCommands;                            // All current available commands of the debugger
     property FileName: String read FFileName write SetFileName;                  // The name of the exe to be debugged
+    property ExitCode: Integer read FExitCode;
     property State: TDBGState read FState;                                       // The current state of the debugger    
     property Watches: TDBGWatches read FWatches;                                 // list of all watches localvars etc
     property OnCurrent: TDBGCurrentLineEvent read FOnCurrent write FOnCurrent;   // Passes info about the current line being debugged
@@ -283,7 +287,12 @@ const
 { =========================================================================== }
 { TDebugger }
 { =========================================================================== }
-
+              
+function TDebugger.ChangeFileName: Boolean;              
+begin
+  Result := True;
+end;
+              
 constructor TDebugger.Create;
 begin
   inherited Create;
@@ -297,6 +306,7 @@ begin
   FBreakPoints := CreateBreakPoints;
   FWatches := CreateWatches;
   FBreakPointGroups := TDBGBreakPointGroups.Create;
+  FExitCode := 0;
 end;
 
 function TDebugger.CreateBreakPoints: TDBGBreakPoints; 
@@ -371,7 +381,8 @@ begin
 end;
 
 procedure TDebugger.Init;
-begin
+begin    
+  FExitCode := 0;
   SetState(dsIdle);
 end;
 
@@ -403,18 +414,32 @@ begin
   ReqCmd(dcRunTo, [ASource, ALine]);
 end;
 
+procedure TDebugger.SetExitCode(const AValue: Integer); 
+begin
+  FExitCode := AValue;
+end;
+
 procedure TDebugger.SetFileName(const AValue: String);
 begin
   if FFileName <> AValue
   then begin 
     if FState in [dsRun, dsPause]
-    then Stop;        
-    // Reset state
-    FFileName := '';
-    SetState(dsIdle); 
+    then begin
+      Stop;    
+      // check if stopped
+      if FState <> dsStop
+      then SetState(dsError);
+    end;
+       
+    if FState = dsStop
+    then begin
+      // Reset state
+      FFileName := '';
+      SetState(dsIdle); 
+    end;
     
     FFileName := AValue;
-    if FFilename <> ''
+    if (FFilename <> '') and (FState = dsIdle) and ChangeFileName
     then SetState(dsStop); 
   end;
 end;
@@ -796,6 +821,12 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.9  2002/03/09 02:03:59  lazarus
+  MWE:
+    * Upgraded gdb debugger to gdb/mi debugger
+    * Set default value for autpopoup
+    * Added Clear popup to debugger output window
+
   Revision 1.8  2002/02/20 23:33:24  lazarus
   MWE:
     + Published OnClick for TMenuItem
