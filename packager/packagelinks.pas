@@ -43,7 +43,23 @@ uses
   
 type
 
-  { TPackageLink }
+  { TPackageLink
+    There are several types of package links.
+    
+    Global: These are collected from the lazarus source directory.
+            EnvironmentOptions.LazarusDirectory+'packager/globallinks/*.lpl'
+            This way packages can install/uninstal themselves to one lazarus
+            source directory, and this lazarus directory can then be shared
+            by several users/configs.
+            
+    User:   These are collected from the user config directory, from the file
+            packagelinks.xml.
+            These links are maintained by the IDE. Everytime the user opens a
+            package a user link is created, so that the next time the package
+            can be automatically opened. The list is checked by the IDE from
+            time to time and missing packages are first marked and after several
+            months deleted from the list.
+  }
 
   TPkgLinkOrigin = (
     ploGlobal,
@@ -53,7 +69,11 @@ type
 
   TPackageLink = class(TLazPackageID)
   private
+    FAutoCheckExists: boolean;
     FFilename: string;
+    FLastCheck: TDateTime;
+    FLastCheckValid: boolean;
+    FNotFoundCount: integer;
     FOrigin: TPkgLinkOrigin;
     procedure SetFilename(const AValue: string);
     procedure SetOrigin(const AValue: TPkgLinkOrigin);
@@ -64,6 +84,10 @@ type
   public
     property Origin: TPkgLinkOrigin read FOrigin write SetOrigin;
     property Filename: string read FFilename write SetFilename;
+    property AutoCheckExists: boolean read FAutoCheckExists write FAutoCheckExists;
+    property NotFoundCount: integer read FNotFoundCount write FNotFoundCount;
+    property LastCheckValid: boolean read FLastCheckValid write FLastCheckValid;
+    property LastCheck: TDateTime read FLastCheck write FLastCheck;
   end;
 
 
@@ -79,7 +103,7 @@ type
   private
     FGlobalLinks: TAVLTree; // tree of TPackageLink sorted for ID
     FModified: boolean;
-    FUserLinks: TAVLTree; // tree of TPackageLink
+    FUserLinks: TAVLTree; // tree of TPackageLink sorted for ID
     fUpdateLock: integer;
     FStates: TPkgLinksStates;
     function FindLeftMostNode(LinkTree: TAVLTree;
@@ -178,6 +202,7 @@ end;
 constructor TPackageLink.Create;
 begin
   inherited Create;
+  FAutoCheckExists:=true;
 end;
 
 destructor TPackageLink.Destroy;
@@ -387,7 +412,18 @@ begin
       NewPkgLink.Version.LoadFromXMLConfig(XMLConfig,ItemPath+'Version/',
                                                           LazPkgXMLFileVersion);
       NewPkgLink.Filename:=XMLConfig.GetValue(ItemPath+'Filename/Value','');
-      
+      NewPkgLink.AutoCheckExists:=
+                      XMLConfig.GetValue(ItemPath+'AutoCheckExists/Value',true);
+      NewPkgLink.LastCheckValid:=
+                       XMLConfig.GetValue(ItemPath+'LastCheckValid/Value',false);
+      if NewPkgLink.LastCheckValid then begin
+        NewPkgLink.LastCheckValid:=
+          CfgStrToDate(XMLConfig.GetValue(ItemPath+'LastCheck/Value',''),
+          NewPkgLink.FLastCheck);
+      end;
+      NewPkgLink.NotFoundCount:=
+                           XMLConfig.GetValue(ItemPath+'NotFoundCount/Value',0);
+
       if NewPkgLink.MakeSense then
         FUserLinks.Add(NewPkgLink)
       else
@@ -457,6 +493,14 @@ begin
       XMLConfig.SetDeleteValue(ItemPath+'Name/Value',CurPkgLink.Name,'');
       CurPkgLink.Version.SaveToXMLConfig(XMLConfig,ItemPath+'Version/');
       XMLConfig.SetDeleteValue(ItemPath+'Filename/Value',CurPkgLink.Filename,'');
+      XMLConfig.SetDeleteValue(ItemPath+'LastCheckValid/Value',
+                               CurPkgLink.LastCheckValid,false);
+      if CurPkgLink.LastCheckValid then
+        XMLConfig.SetDeleteValue(ItemPath+'LastCheck/Value',
+                                 DateToCfgStr(CurPkgLink.LastCheck),'');
+      XMLConfig.SetDeleteValue(ItemPath+'NotFoundCount/Value',
+                               CurPkgLink.NotFoundCount,0);
+
       ANode:=FUserLinks.FindSuccessor(ANode);
     end;
     XMLConfig.SetDeleteValue(Path+'Count',FUserLinks.Count,0);

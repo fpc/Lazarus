@@ -134,6 +134,11 @@ procedure SaveStringList(XMLConfig: TXMLConfig; List: TStrings;
 function FindProgram(const Programname, BaseDirectory: string;
   WithBaseDirectory: boolean): string;
 
+const DateAsCfgStrFormat='YYYYMMDD';
+
+function DateToCfgStr(const Date: TDateTime): string;
+function CfgStrToDate(const s: string; var Date: TDateTime): boolean;
+
 // text conversion
 function TabsToSpaces(const s: string; TabWidth: integer): string;
 function CommentLines(const s: string): string;
@@ -1209,6 +1214,44 @@ begin
   GetProgramSearchPath(SearchPath,Delim);
   Result:=FileCtrl.SearchFileInPath(Programname,BaseDirectory,SearchPath,
                                     Delim,Flags);
+end;
+
+function DateToCfgStr(const Date: TDateTime): string;
+begin
+  try
+    Result:=FormatDateTime(DateAsCfgStrFormat,Date);
+  except
+    Result:='';
+  end;
+  //debugln('DateToCfgStr "',Result,'"');
+end;
+
+function CfgStrToDate(const s: string; var Date: TDateTime): boolean;
+var
+  i: Integer;
+  Year, Month, Day: word;
+begin
+  //debugln('CfgStrToDate "',s,'"');
+  Result:=true;
+  if length(s)<>length(DateAsCfgStrFormat) then begin
+    Result:=false;
+    exit;
+  end;
+  try
+    Year:=0;
+    Month:=0;
+    Day:=0;
+    for i:=1 to length(DateAsCfgStrFormat) do begin
+      case DateAsCfgStrFormat[i] of
+      'Y': Year:=Year*10+ord(s[i])-ord('0');
+      'M': Month:=Month*10+ord(s[i])-ord('0');
+      'D': Day:=Day*10+ord(s[i])-ord('0');
+      end;
+    end;
+    Date:=EncodeDate(Year,Month,Day);
+  except
+    Result:=false;
+  end;
 end;
 
 {-------------------------------------------------------------------------------

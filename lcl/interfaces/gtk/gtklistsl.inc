@@ -59,7 +59,7 @@ var
   LCLList: TGtkListStringList;
 begin
   Result:=true;
-  
+
   //DebugLn('gtkListItemDrawCB ');
 
   // get context
@@ -70,6 +70,7 @@ begin
                               GtkListItemLCLListTag));
   if LCLList=nil then
     RaiseException('gtkListItemDrawAfterCB LCLList=nil');
+  if [csDestroying,csLoading]*LCLList.Owner.ComponentState<>[] then exit;
 
   // get itemindex and area
   ItemIndex:=g_list_index(GtkList^.children,Data);
@@ -961,6 +962,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.27  2004/07/17 14:24:31  mattias
+  fixed freeing synedit PrimarySelection and sending gtklist DrawItem msg for destroing controls
+
   Revision 1.26  2004/07/03 11:11:08  mattias
   TGTKListStringList now keeps selection on Put and Move
 

@@ -7453,6 +7453,10 @@ begin
   {$IFNDEF DisableDoubleBuf}
   FreeAndNil(BufferBitmap);
   {$ENDIF}
+  {$IFDEF SYN_LAZARUS}
+  if PrimarySelection.OnRequest=@PrimarySelectionRequest then
+    PrimarySelection.OnRequest:=nil;
+  {$ENDIF}
   inherited DestroyWnd;
 end;
 
