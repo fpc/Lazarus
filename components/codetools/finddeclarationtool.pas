@@ -236,17 +236,45 @@ type
     xtConstBoolean,// true, false
     xtLongint,   // longint
     xtWord,      // word
+    xtCompilerFunc,// SUCC, PREC, LOW, HIGH
     xtNil        // nil  = pointer, class, procedure, method, ...
     );
   TExpressionTypeDescs = set of TExpressionTypeDesc;
   
 const
   ExpressionTypeDescNames: array[TExpressionTypeDesc] of string = (
-    'None', 'Context', 'Char', 'Real', 'Single', 'Double',
-    'Extended', 'Currency', 'Comp', 'Int64', 'Cardinal', 'QWord', 'Boolean',
-    'ByteBool', 'LongBool', 'String', 'AnsiString', 'ShortString', 'WideString',
-    'PChar', 'Pointer', 'File', 'TextFile', 'ConstOrdInt', 'ConstString',
-    'ConstReal', 'ConstSet', 'ConstBoolean', 'LongInt', 'Word', 'Nil'
+    'None',
+    'Context',
+    'Char',
+    'Real',
+    'Single',
+    'Double',
+    'Extended',
+    'Currency',
+    'Comp',
+    'Int64',
+    'Cardinal',
+    'QWord',
+    'Boolean',
+    'ByteBool',
+    'LongBool',
+    'String',
+    'AnsiString',
+    'ShortString',
+    'WideString',
+    'PChar',
+    'Pointer',
+    'File',
+    'TextFile',
+    'ConstOrdInt',
+    'ConstString',
+    'ConstReal',
+    'ConstSet',
+    'ConstBoolean',
+    'LongInt',
+    'Word',
+    'CompilerFunc',
+    'Nil'
   );
 
   xtAllTypes = [Low(TExpressionTypeDesc)..High(TExpressionTypeDesc)]-[xtNone];
@@ -472,6 +500,8 @@ type
       Params: TFindDeclarationParams): TExpressionType;
     function ReadOperandTypeAtCursor(
       Params: TFindDeclarationParams): TExpressionType;
+    function FindExpressionTypeOfPredefinedIdentifier(StartPos: integer;
+      Params: TFindDeclarationParams): TExpressionType;
     function CalculateBinaryOperator(LeftOperand, RightOperand: TExpressionType;
       BinaryOperator: TAtomPosition;
       Params: TFindDeclarationParams): TExpressionType;
@@ -586,57 +616,70 @@ end;
 function PredefinedIdentToExprTypeDesc(Identifier: PChar): TExpressionTypeDesc;
 begin
   // predefined identifiers
-  if CompareIdentifiers(Identifier,'NIL'#0)=0 then
+  if CompareIdentifiers(Identifier,'NIL')=0 then
     Result:=xtNil
-  else if CompareIdentifiers(Identifier,'POINTER'#0)=0 then
+  else if CompareIdentifiers(Identifier,'POINTER')=0 then
     Result:=xtPointer
-  else if (CompareIdentifiers(Identifier,'TRUE'#0)=0)
-  or (CompareIdentifiers(Identifier,'FALSE'#0)=0) then
+  else if (CompareIdentifiers(Identifier,'TRUE')=0)
+  or (CompareIdentifiers(Identifier,'FALSE')=0) then
     Result:=xtConstBoolean
-  else if CompareIdentifiers(Identifier,'STRING'#0)=0 then
+  else if CompareIdentifiers(Identifier,'STRING')=0 then
     Result:=xtString
-  else if CompareIdentifiers(Identifier,'SHORTSTRING'#0)=0 then
+  else if CompareIdentifiers(Identifier,'SHORTSTRING')=0 then
     Result:=xtShortString
-  else if CompareIdentifiers(Identifier,'ANSISTRING'#0)=0 then
+  else if CompareIdentifiers(Identifier,'ANSISTRING')=0 then
     Result:=xtAnsiString
-  else if CompareIdentifiers(Identifier,'WIDESTRING'#0)=0 then
+  else if CompareIdentifiers(Identifier,'WIDESTRING')=0 then
     Result:=xtWideString
-  else if CompareIdentifiers(Identifier,'INT64'#0)=0 then
+  else if CompareIdentifiers(Identifier,'INT64')=0 then
     Result:=xtInt64
-  else if CompareIdentifiers(Identifier,'CARDINAL'#0)=0 then
+  else if CompareIdentifiers(Identifier,'CARDINAL')=0 then
     Result:=xtCardinal
-  else if CompareIdentifiers(Identifier,'QWORD'#0)=0 then
+  else if CompareIdentifiers(Identifier,'QWORD')=0 then
     Result:=xtQWord
-  else if CompareIdentifiers(Identifier,'BOOLEAN'#0)=0 then
+  else if CompareIdentifiers(Identifier,'BOOLEAN')=0 then
     Result:=xtBoolean
-  else if CompareIdentifiers(Identifier,'BYTEBOOL'#0)=0 then
+  else if CompareIdentifiers(Identifier,'BYTEBOOL')=0 then
     Result:=xtByteBool
-  else if CompareIdentifiers(Identifier,'LONGBOOL'#0)=0 then
+  else if CompareIdentifiers(Identifier,'LONGBOOL')=0 then
     Result:=xtLongBool
-  else if CompareIdentifiers(Identifier,'CHAR'#0)=0 then
+  else if CompareIdentifiers(Identifier,'CHAR')=0 then
     Result:=xtChar
-  else if CompareIdentifiers(Identifier,'REAL'#0)=0 then
+  else if CompareIdentifiers(Identifier,'REAL')=0 then
     Result:=xtReal
-  else if CompareIdentifiers(Identifier,'SINGLE'#0)=0 then
+  else if CompareIdentifiers(Identifier,'SINGLE')=0 then
     Result:=xtSingle
-  else if CompareIdentifiers(Identifier,'DOUBLE'#0)=0 then
+  else if CompareIdentifiers(Identifier,'DOUBLE')=0 then
     Result:=xtDouble
-  else if CompareIdentifiers(Identifier,'EXTENDED'#0)=0 then
+  else if CompareIdentifiers(Identifier,'EXTENDED')=0 then
     Result:=xtExtended
-  else if CompareIdentifiers(Identifier,'COMP'#0)=0 then
+  else if CompareIdentifiers(Identifier,'COMP')=0 then
     Result:=xtComp
-  else if CompareIdentifiers(Identifier,'FILE'#0)=0 then
+  else if CompareIdentifiers(Identifier,'FILE')=0 then
     Result:=xtFile
-  else if CompareIdentifiers(Identifier,'TEXT'#0)=0 then
+  else if CompareIdentifiers(Identifier,'TEXT')=0 then
     Result:=xtText
+  else if CompareIdentifiers(Identifier,'SIZEOF')=0 then
+    Result:=xtConstOrdInteger
+  else if CompareIdentifiers(Identifier,'ORD')=0 then
+    Result:=xtConstOrdInteger
+  else if CompareIdentifiers(Identifier,'SUCC')=0 then
+    Result:=xtCompilerFunc
+  else if CompareIdentifiers(Identifier,'PREC')=0 then
+    Result:=xtCompilerFunc
+  else if CompareIdentifiers(Identifier,'LOW')=0 then
+    Result:=xtCompilerFunc
+  else if CompareIdentifiers(Identifier,'HIGH')=0 then
+    Result:=xtCompilerFunc
+
   // the delphi compiler special types
-  else if CompareIdentifiers(Identifier,'CURRENCY'#0)=0 then
+  else if CompareIdentifiers(Identifier,'CURRENCY')=0 then
     Result:=xtCurrency
-  else if CompareIdentifiers(Identifier,'LONGINT'#0)=0 then
+  else if CompareIdentifiers(Identifier,'LONGINT')=0 then
     Result:=xtLongInt
-  else if CompareIdentifiers(Identifier,'WORD'#0)=0 then
+  else if CompareIdentifiers(Identifier,'WORD')=0 then
     Result:=xtWord
-  else if CompareIdentifiers(Identifier,'LONGWORD'#0)=0 then
+  else if CompareIdentifiers(Identifier,'LONGWORD')=0 then
     Result:=xtCardinal
   else
     Result:=xtNone;
@@ -3219,11 +3262,11 @@ type
 var
   CurAtomType, NextAtomType: TVariableAtomType;
   CurAtom, NextAtom: TAtomPosition;
-  CurContext, StartContext: TFindContext;
+  StartContext: TFindContext;
   OldInput: TFindDeclarationInput;
   StartFlags: TFindDeclarationFlags;
-  CurExprDesc: TExpressionTypeDesc;
   IsIdentEndOfVar: TIsIdentEndOfVar;
+  ExprType: TExpressionType;
 
   procedure RaiseIdentExpected;
   begin
@@ -3330,9 +3373,8 @@ var
   }
   var
     FuncResultNode: TCodeTreeNode;
-    ExprType: TExpressionType;
   begin
-    if (CurContext.Node<>nil) then begin
+    if (ExprType.Context.Node<>nil) then begin
       // check if at the end of the variable
       if IsIdentifierEndOfVariable and (fdfFindVariable in StartFlags) then
         // the variable is wanted, not its type
@@ -3340,14 +3382,13 @@ var
 
       // find base type
       Exclude(Params.Flags,fdfFunctionResult);
-      ExprType:=CurContext.Tool.ConvertNodeToExpressionType(CurContext.Node,
-                                                            Params);
-      CurExprDesc:=ExprType.Desc;
-      CurContext:=ExprType.Context;
-      if (CurExprDesc=xtContext)
-      and (CurContext.Node.Desc in [ctnProcedure,ctnProcedureHead]) then begin
+      ExprType:=ExprType.Context.Tool.ConvertNodeToExpressionType(
+                        ExprType.Context.Node,Params);
+      if (ExprType.Desc=xtContext)
+      and (ExprType.Context.Node.Desc in [ctnProcedure,ctnProcedureHead]) then
+      begin
         // check if this is a function
-        CurContext.Tool.BuildSubTreeForProcHead(CurContext.Node,
+        ExprType.Context.Tool.BuildSubTreeForProcHead(ExprType.Context.Node,
                                                 FuncResultNode);
         if (FuncResultNode<>nil) then begin
           // it is function -> use the result type instead of the function
@@ -3357,10 +3398,8 @@ var
               exit;
           end;
           Include(Params.Flags,fdfFunctionResult);
-          ExprType:=CurContext.Tool.ConvertNodeToExpressionType(CurContext.Node,
-                                                                Params);
-          CurExprDesc:=ExprType.Desc;
-          CurContext:=ExprType.Context;
+          ExprType:=ExprType.Context.Tool.ConvertNodeToExpressionType(
+                             ExprType.Context.Node,Params);
         end;
       end;
     end;
@@ -3374,31 +3413,34 @@ var
     // for example  'AnObject[3]'
     // check special identifiers 'Result' and 'Self'
     IdentFound:=false;
-    if (CurContext.Node<>nil)
-    and (CurContext.Node.Desc in AllPascalStatements) then begin
+    if (ExprType.Context.Node<>nil)
+    and (ExprType.Context.Node.Desc in AllPascalStatements) then begin
       if CompareSrcIdentifier(CurAtom.StartPos,'SELF') then begin
         // SELF in a method is the object itself
         // -> check if in a proc
-        ProcNode:=CurContext.Node.GetNodeOfType(ctnProcedure);
+        ProcNode:=ExprType.Context.Node.GetNodeOfType(ctnProcedure);
         if (ProcNode<>nil)
         and FindClassOfMethod(ProcNode,Params,not IsIdentifierEndOfVariable)
         then begin
-          CurContext:=CreateFindContext(Params);
+          ExprType.Desc:=xtContext;
+          ExprType.Context:=CreateFindContext(Params);
           IdentFound:=true;
         end;
       end else if CompareSrcIdentifier(CurAtom.StartPos,'RESULT') then begin
         // RESULT has a special meaning in a function
         // -> check if in a function
-        ProcNode:=CurContext.Node.GetNodeOfType(ctnProcedure);
+        ProcNode:=ExprType.Context.Node.GetNodeOfType(ctnProcedure);
         if (ProcNode<>nil) then begin
           if IsIdentifierEndOfVariable
           and (fdfFindVariable in StartFlags) then begin
-            CurContext:=CreateFindContext(CurContext.Tool,ProcNode.FirstChild);
+            ExprType.Desc:=xtContext;
+            ExprType.Context.Node:=ProcNode.FirstChild;
           end else begin
             Params.Save(OldInput);
             try
               Include(Params.Flags,fdfFunctionResult);
-              CurContext:=FindBaseTypeOfNode(Params,ProcNode);
+              ExprType.Desc:=xtContext;
+              ExprType.Context:=FindBaseTypeOfNode(Params,ProcNode);
             finally
               Params.Load(OldInput);
             end;
@@ -3416,13 +3458,13 @@ var
       Params.Flags:=[fdfSearchInAncestors,fdfExceptionOnNotFound]
                     +fdfAllClassVisibilities
                     +(fdfGlobals*Params.Flags);
-      if CurContext.Node=StartContext.Node then begin
+      if ExprType.Context.Node=StartContext.Node then begin
         // there is no special context -> also search in parent contexts
         Params.Flags:=Params.Flags
                      +[fdfSearchInParentNodes,fdfIgnoreCurContextNode];
       end else begin
         // only search in special context
-        Params.ContextNode:=CurContext.Node;
+        Params.ContextNode:=ExprType.Context.Node;
       end;
 
       // check identifier for overloaded procs
@@ -3436,12 +3478,13 @@ var
 
       // search ...
       Params.SetIdentifier(Self,@Src[CurAtom.StartPos],@CheckSrcIdentifier);
-      if CurContext.Tool.FindIdentifierInContext(Params) then begin
-        CurContext:=CreateFindContext(Params);
+      if ExprType.Context.Tool.FindIdentifierInContext(Params) then begin
+        ExprType.Desc:=xtContext;
+        ExprType.Context:=CreateFindContext(Params);
       end else begin
-        // predefined identifier not redefined
-        CurExprDesc:=PredefinedIdentToExprTypeDesc(@Src[CurAtom.StartPos]);
-        CurContext:=CreateFindContext(Self,nil);
+        // predefined identifier
+        ExprType:=FindExpressionTypeOfPredefinedIdentifier(CurAtom.StartPos,
+                                                           Params);
       end;
 
       // ToDo: check if identifier in 'Protected' section
@@ -3460,27 +3503,28 @@ var
       ReadNextAtom;
       RaiseIdentExpected;
     end;
-    if (CurContext.Node=nil) then begin
+    if (ExprType.Context.Node=nil) then begin
       MoveCursorToCleanPos(CurAtom.StartPos);
       RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsIllegalQualifier,'.']);
     end;
-    if (CurContext.Node.Desc in AllUsableSourceTypes) then begin
+    if (ExprType.Context.Node.Desc in AllUsableSourceTypes) then begin
       // identifier in front of the point is a unit name
-      if CurContext.Tool<>Self then begin
-        CurContext.Node:=CurContext.Tool.GetInterfaceNode;
+      if ExprType.Context.Tool<>Self then begin
+        ExprType.Context.Node:=ExprType.Context.Tool.GetInterfaceNode;
       end;
     end;
     // point changes the context to the base type
     // this is already done, so there is not much left to do.
     // Delphi knows . as shortcut for ^.
     // -> check for pointer type
-    if (Scanner.CompilerMode=cmDELPHI) and (CurExprDesc=xtContext)
-    and (CurContext.Node.Desc=ctnPointerType)
-    and (CurContext.Node<>StartContext.Node) then begin
+    if (Scanner.CompilerMode=cmDELPHI) and (ExprType.Desc=xtContext)
+    and (ExprType.Context.Node.Desc=ctnPointerType)
+    and (ExprType.Context.Node<>StartContext.Node) then begin
       // left side of expression has defined a special context
       // => this '.' is a dereference
-      CurContext:=CurContext.Tool.FindBaseTypeOfNode(Params,
-                                                    CurContext.Node.FirstChild);
+      ExprType.Desc:=xtContext;
+      ExprType.Context:=ExprType.Context.Tool.FindBaseTypeOfNode(Params,
+                                              ExprType.Context.Node.FirstChild);
     end;
   end;
 
@@ -3495,7 +3539,8 @@ var
     end;
     // 'as' is a type cast, so the left side is irrelevant
     // -> context is default context
-    CurContext:=StartContext;
+    ExprType.Desc:=xtContext;
+    ExprType.Context:=StartContext;
   end;
   
   procedure ResolveUp;
@@ -3504,14 +3549,14 @@ var
     //   1. 'PInt = ^integer'  pointer type
     //   2. a^  dereferencing
     if (not (NextAtomType in [vatSpace,vatPoint,vatUp,vatAS,vatEdgedBracketOpen]))
-    or ((CurContext.Node=nil) and (CurExprDesc<>xtPointer))
+    or ((ExprType.Context.Node=nil) and (ExprType.Desc<>xtPointer))
     then begin
       MoveCursorToCleanPos(NextAtom.StartPos);
       ReadNextAtom;
       RaiseIllegalQualifierFound;
     end;
-    if (CurExprDesc=xtPointer) then exit;
-    if (CurContext.Node<>StartContext.Node) then begin
+    if (ExprType.Desc=xtPointer) then exit;
+    if (ExprType.Context.Node<>StartContext.Node) then begin
       // left side of expression has defined a special context
       // => this '^' is a dereference
       if (not
@@ -3521,13 +3566,15 @@ var
         ReadNextAtom;
         RaisePointNotFound;
       end;
-      if CurContext.Node.Desc<>ctnPointerType then begin
+      if ExprType.Context.Node.Desc<>ctnPointerType then begin
         MoveCursorToCleanPos(CurAtom.StartPos);
         RaiseExceptionFmt(ctsIllegalQualifier,['^']);
       end;
-      CurContext:=CurContext.Tool.FindBaseTypeOfNode(Params,
-                                                    CurContext.Node.FirstChild);
-    end else if NodeHasParentOfType(CurContext.Node,ctnPointerType) then begin
+      ExprType.Desc:=xtContext;
+      ExprType.Context:=ExprType.Context.Tool.FindBaseTypeOfNode(Params,
+                                              ExprType.Context.Node.FirstChild);
+    end else if NodeHasParentOfType(ExprType.Context.Node,ctnPointerType) then
+    begin
       // this is a pointer type definition
       // -> the default context is ok
     end;
@@ -3546,74 +3593,77 @@ var
 
     procedure RaiseTypeIdentNotFound;
     begin
-      CurContext.Tool.RaiseExceptionFmt(ctsStrExpectedButAtomFound,
-                                   [ctsTypeIdentifier,CurContext.Tool.GetAtom]);
+      ExprType.Context.Tool.RaiseExceptionFmt(ctsStrExpectedButAtomFound,
+                             [ctsTypeIdentifier,ExprType.Context.Tool.GetAtom]);
     end;
     
     procedure RaiseIdentInCurContextNotFound;
     begin
-      CurContext.Tool.RaiseExceptionFmt(ctsStrExpectedButAtomFound,
-                                        [ctsIdentifier,GetAtom]);
+      ExprType.Context.Tool.RaiseExceptionFmt(ctsStrExpectedButAtomFound,
+                                              [ctsIdentifier,GetAtom]);
     end;
   
   begin
     if not (NextAtomType in [vatSpace,vatPoint,vatAs,vatUp,vatRoundBracketClose,
       vatRoundBracketOpen,vatEdgedBracketClose,vatEdgedBracketOpen])
-    or ((CurContext.Node=nil) and (not (CurExprDesc in xtAllStringTypes))) then
+    or ((ExprType.Context.Node=nil)
+        and (not (ExprType.Desc in xtAllStringTypes))) then
     begin
       MoveCursorToCleanPos(NextAtom.StartPos);
       ReadNextAtom;
       RaiseIllegalQualifierFound;
     end;
-    if CurExprDesc in xtAllStringTypes then begin
-      CurExprDesc:=xtChar;
-      CurContext.Node:=nil;
+    if ExprType.Desc in xtAllStringTypes then begin
+      ExprType.Desc:=xtChar;
+      ExprType.Context.Node:=nil;
       exit;
     end;
-    case CurContext.Node.Desc of
+    case ExprType.Context.Node.Desc of
 
     ctnArrayType:
       // the array type is the last child node
-      CurContext:=CurContext.Tool.FindBaseTypeOfNode(Params,
-                                                     CurContext.Node.LastChild);
+      ExprType.Context:=ExprType.Context.Tool.FindBaseTypeOfNode(Params,
+                                               ExprType.Context.Node.LastChild);
 
     ctnPointerType:
       // the pointer type is the only child node
-      CurContext:=CurContext.Tool.FindBaseTypeOfNode(Params,
-                                                    CurContext.Node.FirstChild);
+      ExprType.Context:=ExprType.Context.Tool.FindBaseTypeOfNode(Params,
+                                              ExprType.Context.Node.FirstChild);
 
     ctnClass, ctnProperty:
       begin
-        if CurContext.Node.Desc=ctnClass then begin
+        if ExprType.Context.Node.Desc=ctnClass then begin
           // search default property in class
           Params.Save(OldInput);
           Params.Flags:=[fdfSearchInAncestors,fdfExceptionOnNotFound]
                         +fdfGlobals*Params.Flags
                         +fdfAllClassVisibilities*Params.Flags;
           // special identifier for default property
-          Params.SetIdentifier(CurContext.Tool,'[',nil);
-          Params.ContextNode:=CurContext.Node;
-          CurContext.Tool.FindIdentifierInContext(Params);
-          CurContext:=CreateFindContext(Params);
+          Params.SetIdentifier(ExprType.Context.Tool,'[',nil);
+          Params.ContextNode:=ExprType.Context.Node;
+          ExprType.Context.Tool.FindIdentifierInContext(Params);
+          ExprType.Context:=CreateFindContext(Params);
           Params.Load(OldInput);
         end;
         // find base type of property
-        if CurContext.Tool.ReadTilTypeOfProperty(CurContext.Node) then begin
+        if ExprType.Context.Tool.ReadTilTypeOfProperty(ExprType.Context.Node)
+        then begin
           // property has type
           Params.Save(OldInput);
-          with CurContext.Tool do
-            Params.SetIdentifier(CurContext.Tool,@Src[CurPos.StartPos],nil);
+          with ExprType.Context.Tool do
+            Params.SetIdentifier(ExprType.Context.Tool,
+                                 @Src[CurPos.StartPos],nil);
           Params.Flags:=[fdfSearchInParentNodes,fdfExceptionOnNotFound]
                         +(fdfGlobals*Params.Flags)
                         -[fdfIgnoreUsedUnits];
-          Params.ContextNode:=CurContext.Node.Parent;
-          if CurContext.Tool.FindIdentifierInContext(Params) then begin
+          Params.ContextNode:=ExprType.Context.Node.Parent;
+          if ExprType.Context.Tool.FindIdentifierInContext(Params) then begin
             if Params.NewNode.Desc in [ctnTypeDefinition] then begin
-              CurContext:=Params.NewCodeTool.FindBaseTypeOfNode(Params,
+              ExprType.Context:=Params.NewCodeTool.FindBaseTypeOfNode(Params,
                                                                 Params.NewNode)
             end else begin
               // not a type
-              CurContext.Tool.ReadTilTypeOfProperty(CurContext.Node);
+              ExprType.Context.Tool.ReadTilTypeOfProperty(ExprType.Context.Node);
               RaiseTypeIdentNotFound;
             end;
           end else begin
@@ -3626,12 +3676,12 @@ var
       
     ctnIdentifier:
       begin
-        MoveCursorToNodeStart(CurContext.Node);
+        MoveCursorToNodeStart(ExprType.Context.Node);
         ReadNextAtom;
         if UpAtomIs('STRING') or UpAtomIs('ANSISTRING')
         or UpAtomIs('SHORTSTRING') then begin
-          CurExprDesc:=xtChar;
-          CurContext.Node:=nil;
+          ExprType.Desc:=xtChar;
+          ExprType.Context.Node:=nil;
           exit;
         end else begin
           MoveCursorToCleanPos(CurAtom.StartPos);
@@ -3648,7 +3698,6 @@ var
   end;
 
   procedure ResolveRoundBracketOpen;
-  var ExprType: TExpressionType;
   begin
     { for example:
         (a+b)   expression bracket: the type is the result type of the
@@ -3662,14 +3711,12 @@ var
       ReadNextAtom;
       RaiseIllegalQualifierFound;
     end;
-    if CurContext.Node<>StartContext.Node then begin
+    if ExprType.Context.Node<>StartContext.Node then begin
       // typecast or function
     end else begin
       // expression
       ExprType:=FindExpressionResultType(Params,CurAtom.StartPos+1,
-                                       CurAtom.EndPos-1);
-      CurExprDesc:=ExprType.Desc;
-      CurContext:=ExprType.Context;
+                                         CurAtom.EndPos-1);
     end;
   end;
 
@@ -3680,12 +3727,12 @@ var
   begin
     // for example: inherited A;
     // inherited skips the class and begins to search in the ancestor class
-    if (CurContext.Node<>StartContext.Node) or (CurContext.Node=nil)
+    if (ExprType.Context.Node<>StartContext.Node) or (ExprType.Context.Node=nil)
     then begin
       MoveCursorToCleanPos(CurAtom.StartPos);
       RaiseIllegalQualifierFound;
     end;
-    if (not NodeIsInAMethod(CurContext.Node)) then begin
+    if (not NodeIsInAMethod(ExprType.Context.Node)) then begin
       MoveCursorToCleanPos(CurAtom.StartPos);
       RaiseException(ctsInheritedKeywordOnlyAllowedInMethods);
     end;
@@ -3704,12 +3751,12 @@ var
     {$ENDIF}
 
     // find ancestor of class of method
-    ProcNode:=CurContext.Node.GetNodeOfType(ctnProcedure);
+    ProcNode:=ExprType.Context.Node.GetNodeOfType(ctnProcedure);
     Params.Save(OldInput);
     try
       Params.Flags:=[fdfExceptionOnNotFound]
                     +fdfGlobals*Params.Flags;
-      CurContext.Tool.FindClassOfMethod(ProcNode,Params,true);
+      ExprType.Context.Tool.FindClassOfMethod(ProcNode,Params,true);
       ClassOfMethodContext:=CreateFindContext(Params);
 
       // find class ancestor
@@ -3731,7 +3778,7 @@ var
         ReadNextAtom;
         RaiseIdentNotFound;
       end;
-      CurContext:=CreateFindContext(Params);
+      ExprType.Context:=CreateFindContext(Params);
     finally
       Params.Load(OldInput);
     end;
@@ -3744,8 +3791,8 @@ begin
   StartFlags:=Params.Flags;
   StartContext.Node:=Params.ContextNode;
   StartContext.Tool:=Self;
-  CurExprDesc:=xtContext;
-  CurContext:=StartContext;
+  ExprType.Desc:=xtContext;
+  ExprType.Context:=StartContext;
   {$IFDEF ShowExprEval}
   writeln('[TFindDeclarationTool.FindExpressionTypeOfVariable]',
     ' Flags=[',FindDeclarationFlagsAsString(Params.Flags),']',
@@ -3772,8 +3819,7 @@ begin
     ReadNextExpressionAtom;
   until CurAtom.EndPos>EndPos;
   
-  Result.Desc:=CurExprDesc;
-  Result.Context:=CurContext;
+  Result:=ExprType;
   if (Result.Desc=xtContext) and (not (fdfFindVariable in StartFlags)) then
     Result:=Result.Context.Tool.ConvertNodeToExpressionType(Result.Context.Node,
                                                             Params);
@@ -3813,13 +3859,8 @@ function TFindDeclarationTool.ConvertNodeToExpressionType(Node: TCodeTreeNode;
       CurPos.EndPos-CurPos.StartPos) then
     begin
       // predefined identifiers
-      ConvertNodeToExpressionType.Desc:=
-        PredefinedIdentToExprTypeDesc(@Src[CurPos.StartPos]);
-      if ConvertNodeToExpressionType.Desc=xtString then begin
-
-        // ToDo: ask scanner, if AnsiString or ShortString
-
-      end;
+      ConvertNodeToExpressionType:=FindExpressionTypeOfPredefinedIdentifier(
+                                                        CurPos.StartPos,Params);
     end;
   end;
   
@@ -3988,6 +4029,48 @@ begin
     write(' Context.Node=nil');
   writeln('');
   {$ENDIF}
+end;
+
+function TFindDeclarationTool.FindExpressionTypeOfPredefinedIdentifier(
+  StartPos: integer; Params: TFindDeclarationParams): TExpressionType;
+var
+  IdentPos: PChar;
+  ParamList: TExprTypeList;
+begin
+  Result:=CleanExpressionType;
+  IdentPos:=@Src[StartPos];
+  Result.Desc:=PredefinedIdentToExprTypeDesc(IdentPos);
+  case Result.Desc of
+  xtCompilerFunc:
+    begin
+      MoveCursorToCleanPos(StartPos);
+      ReadNextAtom;
+      ReadNextAtom;
+      if not AtomIsChar('(') then
+        exit;
+      ParamList:=CreateParamExprList(CurPos.StartPos,Params);
+      if (CompareIdentifiers(IdentPos,'PREC')=0)
+      or (CompareIdentifiers(IdentPos,'SUCC')=0) then begin
+        // the PREC and SUCC of a expression has the same type as the expression
+        if ParamList.Count<>1 then exit;
+        Result:=ParamList.Items[0];
+      end
+      else if (CompareIdentifiers(IdentPos,'LOW')=0)
+           or (CompareIdentifiers(IdentPos,'HIGH')=0) then
+      begin
+        { examles:
+           Low(array)  has type of the array items
+           Low(enum)   has the same type as the enum
+           Low(set)    has type of the enums
+        }
+
+      end;
+    end;
+  xtString:
+    begin
+      // ToDo: ask scanner for shortstring, ansistring, widestring
+    end;
+  end;
 end;
 
 function TFindDeclarationTool.CalculateBinaryOperator(LeftOperand,

@@ -929,6 +929,13 @@ begin
     Add('TRUE'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('FALSE'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('NIL'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SIZEOF'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('ORD'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('ORD'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SUCC'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('PREC'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('LOW'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('HIGH'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   WordIsPredefinedDelphiIdentifier:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(WordIsPredefinedDelphiIdentifier);
@@ -957,6 +964,12 @@ begin
     Add('TRUE'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('FALSE'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('NIL'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SIZEOF'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('ORD'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SUCC'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('PREC'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('LOW'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('HIGH'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
 end;
 
