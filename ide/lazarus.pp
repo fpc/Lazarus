@@ -56,7 +56,7 @@ uses
   {$I staticpackages.inc}
   {$ENDIF}
   MainBar;
-
+  
 begin
   Application.Initialize;
   TMainIDE.ParseCmdLineOptions;
@@ -90,6 +90,9 @@ end.
 
 {
   $Log$
+  Revision 1.44  2003/05/30 08:10:51  mattias
+  added try except to Application.Run, message on changing debugger items during compile
+
   Revision 1.43  2003/04/26 07:34:54  mattias
   implemented custom package initialization
 

@@ -1221,6 +1221,13 @@ end;
 
 function TDebugManager.DoBeginChangeDebugger: TModalResult;
 begin
+  Result:=mrCancel;
+  if MainIDE.ToolStatus=itBuilder then begin
+    MessageDlg('Compiling',
+      'You can not change any debugger item while the IDE is compiling.',
+      mtError,[mbCancel],0);
+    exit;
+  end;
   inc(FDebuggerUpdateLock);
   if FDebuggerUpdateLock=1 then begin
     // the update has begun
@@ -1389,6 +1396,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.40  2003/05/30 08:10:51  mattias
+  added try except to Application.Run, message on changing debugger items during compile
+
   Revision 1.39  2003/05/29 23:14:17  mattias
   implemented jump to code on double click for breakpoints and callstack dlg
 

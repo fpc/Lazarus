@@ -648,6 +648,7 @@ procedure TApplication.HandleException(Sender: TObject);
 begin
   if GetCapture <> 0 then SendMessage(GetCapture, LM_CANCELMODE, 0, 0);
   if ExceptObject is Exception then begin
+    writeln('TApplication.HandleException ',Exception(ExceptObject).Message);
     if not (ExceptObject is EAbort) then
       if Assigned(FOnException) then
         FOnException(Sender, Exception(ExceptObject))
@@ -755,11 +756,16 @@ procedure TApplication.Run;
 begin
   if FMainForm <> nil
   then FMainForm.Show;
-  repeat
-    HandleMessage;
-    if Assigned(FMainForm) and (FMainForm.ModalResult = mrCancel) 
-    then Terminate; 
-  until Terminated;
+  try
+    repeat
+      HandleMessage;
+      if Assigned(FMainForm) and (FMainForm.ModalResult = mrCancel)
+      then Terminate;
+    until Terminated;
+  except
+    on E: Exception do
+      HandleException(E);
+  end;
 end;
 
 {------------------------------------------------------------------------------}
@@ -1005,6 +1011,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.54  2003/05/30 08:10:52  mattias
+  added try except to Application.Run, message on changing debugger items during compile
+
   Revision 1.53  2003/05/18 10:42:58  mattias
   implemented deleting empty submenus
 
