@@ -9,6 +9,7 @@ Installation tools
   
 2. creating the fpcsrc rpm:
 
+  As root:
   Put the fpcsrc-1.0.7.tgz of step 1. into /usr/src/redhat/SOURCES/ and
   run 'rpm -ba fpcsrc-1.0.7-1.spec'. This will create the src rpm and the
   rpm for the current system (e.g. redhat 7.3). The src rpm can be used to
@@ -27,11 +28,13 @@ Installation tools
 
 4. creating the lazarus rpm:
 
+  As root:
   Put the lazarus-0.8.5.tgz of step 3. into /usr/src/redhat/SOURCES/ and
   run 'rpm -ba lazarus-0.8.5-1.spec'. This will create the src rpm and the
   rpm for the current system (e.g. redhat 7.3). The src rpm can be used to
-  create rpms for any system by building it on the destination system.
+  create rpms for any system by building it on the destination system (see 5.).
   The package depends on 'fpc >= 1.0.7' and 'fpcsrc >= 1.0.7'.
+
 
 5. To create other system specific rpms:
   rpm --rebuild lazarus-0.8.5-1.src.rpm
