@@ -162,8 +162,7 @@ end;
 
 procedure TForm1.FormKill(Sender : TObject);
 Begin
-//   Free;
-  Application.terminate;
+
 End;
 
 {------------------------------------------------------------------------------}
@@ -414,6 +413,9 @@ end.
 
 {
   $Log$
+  Revision 1.6  2002/10/30 13:44:29  lazarus
+  MG: fixed examples
+
   Revision 1.5  2002/10/29 08:22:32  lazarus
   MG: added interfaces unit
 

@@ -289,7 +289,7 @@ end;
 {------------------------------------------------------------------------------}
 procedure TForm1.mnuQuitClicked(Sender : TObject);
 begin
-   Application.Terminate;
+  Close;
 end;
 {------------------------------------------------------------------------------}
 
@@ -300,6 +300,9 @@ begin
 end.
 {
   $Log$
+  Revision 1.7  2002/10/30 13:44:29  lazarus
+  MG: fixed examples
+
   Revision 1.6  2002/10/30 12:37:25  lazarus
   MG: mouse cursors are now allocated on demand
 

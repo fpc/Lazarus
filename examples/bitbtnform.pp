@@ -162,7 +162,7 @@ end;
 
 procedure TForm1.FormDestroy(Sender : TObject);
 begin
-//   Application.Terminate;
+
 end;
 
 procedure TForm1.button1MouseDown(Sender: TObject; Button: TMouseButton;

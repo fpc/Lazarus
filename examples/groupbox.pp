@@ -1,9 +1,6 @@
 {  $Id$  }
 {
  /***************************************************************************
-                          main.pp  -  Toolbar
-                             -------------------
-                   TMain is the application toolbar window.
 
 
                    Initial Revision  : Sun Mar 28 23:15:32 CST 1999
@@ -39,33 +36,31 @@ uses
   SysUtils;
 
 type
-	TForm1 = class(TFORM)
-	public
-	  
-	  Button1: TButton;
-    	  Button2: TButton;
-	  Button3: TButton;
-	  Button4: TButton;
+        TForm1 = class(TFORM)
+        public
+
+          Button1: TButton;
+              Button2: TButton;
+          Button3: TButton;
+          Button4: TButton;
           grpTst   : TGroupBox;
-          mnuBarMain: TMenuBar;
-          mnuFile: TMenu;
+          mnuFile: TMainMenu;
           itmFileQuit: TMenuItem;
           CheckBox1 : TCheckBox;
-          constructor Create(AOwner: TComponent); override;	
+          constructor Create(AOwner: TComponent); override;
           procedure LoadMainMenu;
-	  Procedure FormKill(Sender : TObject);
-	  procedure mnuQuitClicked(Sender : TObject);
-	protected
-	  procedure Button1CLick(Sender : TObject);
-	  procedure Button2CLick(Sender : TObject);
-	  procedure Button3CLick(Sender : TObject);
-	  procedure Button4CLick(Sender : TObject);
-	end;
+          procedure mnuQuitClicked(Sender : TObject);
+        protected
+          procedure Button1CLick(Sender : TObject);
+          procedure Button2CLick(Sender : TObject);
+          procedure Button3CLick(Sender : TObject);
+          procedure Button4CLick(Sender : TObject);
+        end;
 
 var
 Form1 : TForm1;
 
-constructor TForm1.Create(AOwner: TComponent);	
+constructor TForm1.Create(AOwner: TComponent);
 begin
    inherited Create(AOwner);
    Caption := 'Groubox Demo v0.1';
@@ -80,8 +75,8 @@ End;
 procedure TForm1.Button2Click(Sender : TObject);
 Begin
    if assigned (grpTst) then begin
-   	grpTst.Width := grpTst.Width + 10;
-	grpTst.Show;
+           grpTst.Width := grpTst.Width + 10;
+        grpTst.Show;
    end;
 End;
 
@@ -95,23 +90,16 @@ End;
 procedure TForm1.Button4Click(Sender : TObject);
 Begin
    if assigned (grpTst) then begin
-   	grpTst.Hide;
+           grpTst.Hide;
    end;
 End;
 
 {------------------------------------------------------------------------------}
 
-procedure TForm1.FormKill(Sender : TObject);
-Begin
-  Application.terminate;
-End;
-
 {------------------------------------------------------------------------------}
 procedure TForm1.LoadMainMenu;
 
 begin
-OnDestroy := @FormKill;
-
 { set the height and width }
 Height := 350;
 Width := 700;
@@ -122,12 +110,12 @@ grpTst.Parent := self;
 grpTst.top := 70;
 grpTst.left := 10;
 grpTst.Height :=200;
-grpTst.Width := 300; 
+grpTst.Width := 300;
 grpTst.Show;
 grpTst.Caption := 'Groupbox with 2 Buttons';
 
 { Create 2 buttons inside the groupbox }
-if assigned (grpTst) then 
+if assigned (grpTst) then
 begin
    Button2 := TButton.Create(grpTst);
    Button2.Parent := grpTst;
@@ -145,7 +133,7 @@ Button2.Caption := 'Width ++';
 Button2.OnClick := @Button2Click;
 
 
-if assigned (grpTst) then 
+if assigned (grpTst) then
 begin
    Button1 := TButton.Create(grpTst);
    Button1.Parent := grpTst;
@@ -183,31 +171,19 @@ Button4.Show;
 Button4.Caption := 'Hide';
 Button4.OnClick := @Button4Click;
 
-mnuFile := TMenu.Create(nil);
+mnuFile := TMainMenu.Create(Self);
 
-itmFileQuit := TMenuItem.Create(nil);
+itmFileQuit := TMenuItem.Create(Self);
 itmFileQuit.Caption := 'Quit';
 itmFileQuit.OnClick := @mnuQuitClicked;
-// itmFileQuit.Show;
+mnuFile.Items.Add(itmFileQuit);
 
-mnuFile.Items.Add (itmFileQuit);
-
-mnuBarMain := TMenuBar.Create(self);
-{
-mnuBarMain.Height := 25;
-mnuBarMain.Width := Width;
-mnuBarMain.Top := 0;
-mnuBarMain.Left := 0;
-}
-mnuBarMain.Show;
-
-mnuBarMain.AddMenu('File',mnuFile);
 end;
 
 {------------------------------------------------------------------------------}
 procedure TForm1.mnuQuitClicked(Sender : TObject);
 begin
-   Application.Terminate;
+   Close;
 end;
 {------------------------------------------------------------------------------}
 

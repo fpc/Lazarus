@@ -166,7 +166,7 @@ end;
 
 procedure TForm1.FormKill(Sender : TObject);
 Begin
-//  Application.terminate;
+
 End;
 
 {------------------------------------------------------------------------------}
@@ -377,7 +377,7 @@ end;
 {------------------------------------------------------------------------------}
 procedure TForm1.mnuQuitClicked(Sender : TObject);
 begin
-   Application.Terminate;
+  Close;
 end;
 {------------------------------------------------------------------------------}
 
@@ -389,6 +389,9 @@ end.
 
 {
   $Log$
+  Revision 1.8  2002/10/30 13:44:29  lazarus
+  MG: fixed examples
+
   Revision 1.7  2002/10/29 08:22:32  lazarus
   MG: added interfaces unit
 

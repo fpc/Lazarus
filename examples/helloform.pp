@@ -25,7 +25,7 @@ unit HelloForm;
 
 interface
 
-uses SysUtils, Classes, Forms, Buttons, Controls, Graphics;
+uses SysUtils, Classes, Forms, Buttons;
 
 type
    THello = class(TForm)
@@ -63,24 +63,7 @@ begin
 end;
 
 procedure THello.button1Click(Sender : TObject);
-var
-  Bitmap : TBitmap;
-  S : TFileStream;
-  Dir : String;
 begin
-  Dir := '..' + PathDelim + 'Images' + PathDelim;
-  With TPixmap.Create do begin
-    LoadFromFile(Dir + 'splash_logo.xpm');
-    S := TFileStream.Create(Dir + 'splash_logo.bmp', fmCreate or fmOpenWrite);
-    SaveToStream(S);
-    S.Free;
-  end;
-  Bitmap := TBitmap.Create;
-  Bitmap.LoadFromFile(Dir + 'splash_logo.bmp');
-  S := TFileStream.Create(Dir + 'splash_logo.bmp', fmCreate or fmOpenWrite);
-  Bitmap.SaveToStream(S);
-  S.Free;
-  Bitmap.Free;
   close;
 end;
 
@@ -89,6 +72,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.7  2002/10/30 13:44:29  lazarus
+  MG: fixed examples
+
   Revision 1.6  2002/10/29 19:33:42  lazarus
   MG: removed interfaces
 

@@ -2870,7 +2870,7 @@ end;
 
 procedure TForm1.QuitClick(Sender : TObject);
 begin
-  Application.Terminate;
+  Close;
 end;
 
 Destructor TForm1.Destroy;
@@ -2879,6 +2879,9 @@ begin
 end;
 {
   $Log$
+  Revision 1.10  2002/10/30 13:44:29  lazarus
+  MG: fixed examples
+
   Revision 1.9  2002/10/29 08:22:33  lazarus
   MG: added interfaces unit
 

@@ -114,14 +114,14 @@ end;
 
 procedure TSampleDialogs.FormDestroy(Sender : TObject);
 begin
-   Application.Terminate;
+
 end;
 
 procedure TSampleDialogs.buttonClick(Sender : TObject);
 begin
 
   case TButton(Sender).Tag of
-    1 : Application.Terminate;
+    1 : Close;
     2 : with TOpenDialog.Create(Self) do
         begin
           Filter := '*.pp';
