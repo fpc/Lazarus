@@ -84,7 +84,7 @@ type
       phpWithOfObject,       // extract 'of object'
       phpWithComments,       // extract comments
       phpInUpperCase,        // turn to uppercase
-      phpTrimSpace,          // skip unneeded spaces
+      phpCommentsToSpace,    // replace comments with a single space
       phpWithoutBrackets,    // skip start- and end-bracket of parameter list
       phpIgnoreForwards,     // skip forward procs
       phpIgnoreProcsWithBody,// skip procs with begin..end
@@ -2878,7 +2878,7 @@ begin
     end else if (CurPos.StartPos>LastAtomEndPos) 
     and (ExtractMemStream.Position>0) then begin
       // some code was skipped
-      if (not (phpTrimSpace in Attr))
+      if (phpCommentsToSpace in Attr)
       or ((CurPos.StartPos<=SrcLen) and (IsIdentStartChar[Src[CurPos.StartPos]])
         and (IsIdentChar[Src[LastAtomEndPos-1]]))
       then begin

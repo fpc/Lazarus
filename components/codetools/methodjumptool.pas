@@ -80,8 +80,8 @@ function TMethodJumpingCodeTool.FindJumpPoint(CursorPos: TCodeXYPosition;
   var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
 
 const
-  JumpToProcAttr = [phpInUpperCase,phpTrimSpace,phpWithoutClassName,
-      phpWithVarModifiers,phpWithParameterNames,phpWithResultType];
+  JumpToProcAttr = [phpInUpperCase,phpWithoutClassName,phpWithVarModifiers,
+                    phpWithParameterNames,phpWithResultType];
 
   function JumpToProc(
     FromProcNode: TCodeTreeNode; FromProcAttr: TProcHeadAttributes;
@@ -254,7 +254,7 @@ writeln('TMethodJumpingCodeTool.FindJumpPoint D ',CleanCursorPos,', |',copy(Src,
     if (CursorNode=nil)
     or (not (CursorNode.Desc in [ctnProcedureHead,ctnProcedure])) then
       exit;
-    // build the method name + parameter list (without default values)
+    // search corresponding proc node
     Result:=FindBestProcNode(CursorNode,[phpAddClassName,phpInUpperCase],
                              TypeSectionNode,[phpIgnoreForwards,phpInUpperCase]);
 {$IFDEF CTDEBUG}
@@ -538,6 +538,7 @@ end;
 function TMethodJumpingCodeTool.FindFirstDifferenceNode(
   SearchForNodes, SearchInNodes: TAVLTree;
   var DiffTxtPos: integer): TAVLTreeNode;
+// search the first AVL node in SearchForNodes, that is not in SearchInNodes
 var SearchInNode: TAVLTreeNode;
   cmp: integer;
   NodeTxt1, NodeTxt2: string;
@@ -553,9 +554,9 @@ begin
 //writeln('[TMethodJumpingCodeTool.FindFirstDifferenceNode] B ',SearchInNode<>nil);
     cmp:=CompareCodeTreeNodeExt(Result.Data,SearchInNode.Data);
     
-//NodeTxt1:=TCodeTreeNodeExtension(Result.Data).Txt;
-//NodeTxt2:=TCodeTreeNodeExtension(SearchInNode.Data).Txt;
-//writeln('[TMethodJumpingCodeTool.FindFirstDifferenceNode] ',NodeTxt1,' ?',cmp,'= ',NodeTxt2);
+NodeTxt1:=TCodeTreeNodeExtension(Result.Data).Txt;
+NodeTxt2:=TCodeTreeNodeExtension(SearchInNode.Data).Txt;
+writeln('[TMethodJumpingCodeTool.FindFirstDifferenceNode] ',NodeTxt1,' ?',cmp,'= ',NodeTxt2);
 
     if cmp<0 then begin
       // result node not found in SearchInNodes
@@ -592,11 +593,11 @@ begin
       SearchInNode:=SearchInNodes.FindSuccessor(SearchInNode);
       if (Result=nil) or (SearchInNode=nil) then exit;
     end else begin
-      // search in successor
+      // node in SearchInNodes does not exists in SearchForNodes
+      // -> ignore and search next
       SearchInNode:=SearchInNodes.FindSuccessor(SearchInNode);
     end;
   end;
-  Result:=nil;
 end;
 
 function TMethodJumpingCodeTool.JumpToNode(ANode: TCodeTreeNode;

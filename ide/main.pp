@@ -42,7 +42,7 @@ uses
   Debugger, DBGOutputForm, GDBDebugger, RunParamsOpts, ExtToolDialog,
   MacroPromptDlg, LMessages, ProjectDefs, Watchesdlg, BreakPointsdlg, ColumnDlg,
   OutputFilter, BuildLazDialog, MiscOptions, EditDefineTree, CodeToolsOptions,
-  TypInfo, IDEOptionDefs{, CodeToolsDefines};
+  TypInfo, IDEOptionDefs, CodeToolsDefines;
 
 const
   Version_String = '0.8.2 alpha';
@@ -166,6 +166,7 @@ type
     itmEnvGeneralOptions: TMenuItem; 
     itmEnvEditorOptions: TMenuItem; 
     itmEnvCodeToolsOptions: TMenuItem;
+    itmEnvCodeToolsDefinesEditor: TMenuItem;
 
     itmHelpAboutLazarus: TMenuItem;
     
@@ -175,10 +176,10 @@ type
     HintWindow1 : THintWindow;
     
     // event handlers
-    procedure FormShow(Sender : TObject);
+    //procedure FormShow(Sender : TObject);
     procedure FormClose(Sender : TObject; var Action: TCloseAction);
     procedure FormCloseQuery(Sender : TObject; var CanClose: boolean);
-    procedure FormPaint(Sender : TObject);
+    //procedure FormPaint(Sender : TObject);
     procedure MainMouseMoved(Sender: TObject; Shift: TShiftState; X,Y: Integer);
     procedure MainMouseDown(Sender: TObject; Button: TMouseButton; 
         Shift: TShiftState; X,Y: Integer);
@@ -257,6 +258,7 @@ type
     procedure mnuEnvGeneralOptionsClicked(Sender : TObject);
     procedure mnuEnvEditorOptionsClicked(Sender : TObject);
     procedure mnuEnvCodeToolsOptionsClicked(Sender : TObject);
+    procedure mnuEnvCodeToolsDefinesEditorClicked(Sender : TObject);
 
     // help menu
     procedure mnuHelpAboutLazarusClicked(Sender : TObject);
@@ -715,7 +717,7 @@ begin
   HintWindow1.AutoHide := False;
 
   // MainIDE form events
-  OnShow := @FormShow;
+  //OnShow := @FormShow;
   OnClose := @FormClose;
   OnCloseQuery := @FormCloseQuery;
   
@@ -952,17 +954,7 @@ Begin
 
 end;
 
-Procedure TMainIDE.FormPaint(Sender : TObject);
-begin
-
-end;
-
 {------------------------------------------------------------------------------}
-procedure TMainIDE.FormShow(Sender : TObject);
-Begin
-
-end;
-
 procedure TMainIDE.FormClose(Sender : TObject; var Action: TCloseAction);
 begin
   SaveEnvironment;
@@ -1624,6 +1616,12 @@ begin
   itmEnvCodeToolsOptions.Caption := 'CodeTools options';
   itmEnvCodeToolsOptions.OnCLick := @mnuEnvCodeToolsOptionsClicked;
   mnuEnvironment.Add(itmEnvCodeToolsOptions);
+
+  itmEnvCodeToolsDefinesEditor := TMenuItem.Create(nil);
+  itmEnvCodeToolsDefinesEditor.Name:='itmEnvCodeToolsDefinesEditor';
+  itmEnvCodeToolsDefinesEditor.Caption := 'CodeTools defines editor';
+  itmEnvCodeToolsDefinesEditor.OnCLick := @mnuEnvCodeToolsDefinesEditorClicked;
+  mnuEnvironment.Add(itmEnvCodeToolsDefinesEditor);
 
 //--------------
 // Help
@@ -2355,6 +2353,11 @@ End;
 procedure TMainIDE.mnuEnvCodeToolsOptionsClicked(Sender : TObject);
 begin
   ShowCodeToolsOptions(CodeToolsOpts,@SourceNoteBook.GetSynEditPreviewSettings);
+end;
+
+procedure TMainIDE.mnuEnvCodeToolsDefinesEditorClicked(Sender : TObject);
+begin
+  ShowCodeToolsDefinesEditor(CodeToolBoss,CodeToolsOpts);
 end;
 
 procedure TMainIDE.SaveEnvironment;
@@ -4425,7 +4428,7 @@ begin
   end;
 end;
 
-procedure TMainIDE.GetUnitWithPageIndex(PageIndex:integer; 
+procedure TMainIDE.GetUnitWithPageIndex(PageIndex:integer;
   var ActiveSourceEditor:TSourceEditor; var ActiveUnitInfo:TUnitInfo);
 begin
   if SourceNoteBook.NoteBook=nil then begin
@@ -5143,7 +5146,7 @@ begin
   FOpenEditorsOnCodeToolChange:=false;
   
   CodeToolsOpts.AssignTo(CodeToolBoss);
-  
+
   if (not FileExists(EnvironmentOptions.CompilerFilename)) then begin
     writeln('');
     writeln('NOTE: Compiler Filename not set! (see Environment Options)');
@@ -5184,13 +5187,13 @@ begin
     AddTemplate(ADefTempl,false,
         'NOTE: Could not create Define Template for Free Pascal Sources');
         
-    // create compiler macros for the lazarus sources 
+    // create compiler macros for the lazarus sources
     ADefTempl:=CreateLazarusSrcTemplate(
       '$('+ExternalMacroStart+'LazarusDir)',
       '$('+ExternalMacroStart+'LCLWidgetType)');
     AddTemplate(ADefTempl,true,
         'NOTE: Could not create Define Template for Lazarus Sources');
-  end;  
+  end;
   // build define tree
   c:=CodeToolBoss.ConsistencyCheck;
   if c<>0 then begin
@@ -6173,6 +6176,7 @@ begin
     itmEnvGeneralOptions.ShortCut:=CommandToShortCut(ecEnvironmentOptions);
     itmEnvEditorOptions.ShortCut:=CommandToShortCut(ecEditorOptions);
     itmEnvCodeToolsOptions.ShortCut:=CommandToShortCut(ecCodeToolsOptions);
+    itmEnvCodeToolsDefinesEditor.ShortCut:=CommandToShortCut(ecCodeToolsDefinesEd);
 
     itmHelpAboutLazarus.ShortCut:=CommandToShortCut(ecAboutLazarus);
   end;
@@ -6212,6 +6216,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.238  2002/03/02 11:08:36  lazarus
+  MG: fixed method search diff proc, fixed synedit insert in empty line, small fixes, started define editor
+
   Revision 1.237  2002/03/01 15:51:06  lazarus
   MG: added selection keys and nil operand
 

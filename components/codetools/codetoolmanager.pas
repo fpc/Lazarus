@@ -1421,32 +1421,32 @@ begin
     if FCurCodeTool<>nil then begin
       Result:=FCurCodeTool.ConsistencyCheck;
       if Result<>0 then begin
-        dec(Result,1000);  exit;
+        dec(Result,10000);  exit;
       end;
     end;
     Result:=DefinePool.ConsistencyCheck;
     if Result<>0 then begin
-      dec(Result,2000);  exit;
+      dec(Result,20000);  exit;
     end;
     Result:=DefineTree.ConsistencyCheck;
     if Result<>0 then begin
-      dec(Result,3000);  exit;
+      dec(Result,30000);  exit;
     end;
     Result:=SourceCache.ConsistencyCheck;
     if Result<>0 then begin
-      dec(Result,4000);  exit;
+      dec(Result,40000);  exit;
     end;
     Result:=GlobalValues.ConsistencyCheck;
     if Result<>0 then begin
-      dec(Result,5000);  exit;
+      dec(Result,50000);  exit;
     end;
     Result:=SourceChangeCache.ConsistencyCheck;
     if Result<>0 then begin
-      dec(Result,6000);  exit;
+      dec(Result,60000);  exit;
     end;
     Result:=FSourceTools.ConsistencyCheck;
     if Result<>0 then begin
-      dec(Result,7000);  exit;
+      dec(Result,70000);  exit;
     end;
   finally
     if (Result<>0) and (FCatchExceptions=false) then

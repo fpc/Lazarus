@@ -117,6 +117,7 @@ const
   ecEnvironmentOptions = ecUserFirst + 804;
   ecEditorOptions      = ecUserFirst + 805;
   ecCodeToolsOptions   = ecUserFirst + 806;
+  ecCodeToolsDefinesEd = ecUserFirst + 807;
 
   ecAboutLazarus       = ecUserFirst + 900;
   
@@ -473,6 +474,7 @@ begin
     ecFindBlockOtherEnd: Result:='find block other end';
     ecFindBlockStart: Result:='find block start';
 
+    // run menu
     ecBuild: Result:= 'build program/project';
     ecBuildAll: Result:= 'build all files of program/project';
     ecRun: Result:= 'run program';
@@ -481,22 +483,25 @@ begin
     ecStepOver: Result:= 'step over';
     ecRunToCursor: Result:= 'run to cursor';
     ecStopProgram: Result:= 'stop program';
-    
     ecRunParameters: Result:= 'run parameters';
     ecCompilerOptions: Result:= 'compiler options';
+    
+    // tools menu
     ecExtToolSettings: Result:= 'external tools settings';
     ecConfigBuildLazarus: Result:= 'configure build-lazarus';
+    ecBuildLazarus: Result:= 'build lazarus';
+    ecExtToolFirst..ecExtToolLast:
+              Result:='external tool '+IntToStr(cmd-ecExtToolFirst+1);
+
+    // environment menu
     ecEnvironmentOptions: Result:= 'environment options';
     ecEditorOptions: Result:= 'editor options';
     ecCodeToolsOptions: Result:= 'codetools options';
+    ecCodeToolsDefinesEd: Result:= 'codetools defines editor';
 
     // help menu
     ecAboutLazarus: Result:= 'about lazarus';
 
-    ecBuildLazarus: Result:= 'build lazarus';
-    ecExtToolFirst..ecExtToolLast:
-              Result:='external tool '+IntToStr(cmd-ecExtToolFirst+1);
-    
     else
       Result:='unknown editor command';
   end;
@@ -1196,6 +1201,7 @@ begin
   Add(C,'General environment options',ecEnvironmentOptions,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Editor options',ecEditorOptions,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'CodeTools options',ecCodeToolsOptions,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'CodeTools defines editor',ecCodeToolsDefinesEd,VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // help menu
   C:=Categories[AddCategory('HelpMenu','Help menu commands')];

@@ -2840,7 +2840,6 @@ begin
             else
               fUndoList.AddChange(crPaste, Point(1, StartOfBlock.y),
                 EndOfBlock, SelText, smNormal);
-
           if PasteMode = smColumn then
             CaretXY := Point(Min(StartOfBlock.X, EndOfBlock.X),
               Max(StartOfBlock.Y, EndOfBlock.Y) + 1);
@@ -3264,6 +3263,8 @@ var
           CaretX - 1 - Length(sLeftSide));
       end;
       sRightSide := Copy(LineText, CaretX, Length(LineText) - (CaretX - 1));
+      if eoTrimTrailingSpaces in Options then
+        sRightSide := TrimRight(sRightSide);
       // step1: insert the first line of Value into current line
       Start := PChar(Value);
       P := GetEOL(Start);
