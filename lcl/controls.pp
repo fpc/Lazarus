@@ -472,6 +472,7 @@ type
     procedure SetConstraints(const Value : TSizeConstraints);
     procedure SetColor(Value : TColor);
     procedure SetCursor(Value : TCursor);
+    procedure SetFont(Value: TFont);
     procedure SetHeight(Value: Integer);
     procedure SetLeft(Value: Integer);
     procedure SetMouseCapture(Value : Boolean);
@@ -628,7 +629,7 @@ type
     property Ctl3D : Boolean read FCtl3D write FCtl3D;  //Is this needed for anything other than compatability?
     property Cursor: TCursor read FCursor write SetCursor default crDefault;
     property Enabled: Boolean read GetEnabled write SetEnabled default True;
-    property Font : TFont read FFont write FFont;
+    property Font : TFont read FFont write SetFont;
     property HostDockSite : TWincontrol read FHostDockSite write FHostDockSite;
     property Parent : TWinControl read FParent write SetParent;
     property ShowHint : Boolean read FShowHint write SetShowHint;
@@ -1235,7 +1236,11 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.51  2002/06/04 15:17:21  lazarus
+  MG: improved TFont for XLFD font names
+
   Revision 1.50  2002/05/30 21:19:26  lazarus
+
   + implemented HasParent for TControl & changed TCustomForm.GetChildren
     accordingly (sorry, control.inc & customform.inc got wrong comment:-( )
     stoppok
