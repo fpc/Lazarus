@@ -1175,26 +1175,7 @@ Begin
       Windows.SetProp(Buddy, 'DefWndProc', Windows.SetWindowLong(Buddy, GWL_WNDPROC, LongInt(SubClassWndProc)));
       Windows.SendMessage(Buddy, WM_SETFONT, WParam(FMessageFont), 0);
     end;
-  End
-  Else
-  Begin
-    If (Sender Is TControl) Then
-    Begin
-      Assert(False, 'Trace:CreateComponent - Assigning window to TControl');
-      //(Sender As TControl).Handle := Window;
-    End
-    Else
-      If (Sender Is TControlCanvas) Then
-      Begin
-        Assert(False, 'Trace:CreateComponent - Assigning window to TControlCanvas');
-        TControlCanvas(Sender).Handle := Window;
-      End
-      Else If (Sender Is TFont) Then
-      Begin
-        Assert(False, 'Trace:CreateComponent - Assigning P to TFont');
-        TFont(Sender).Handle := Window;
-      End;
-  End;
+  end;
 
   case CompStyle of
     csCListBox:
@@ -1329,6 +1310,9 @@ End;
 
 {
   $Log$
+  Revision 1.289  2004/10/06 12:50:38  micha
+  remove obsolete code
+
   Revision 1.288  2004/10/06 10:52:46  micha
   split up common dialogs code
 
