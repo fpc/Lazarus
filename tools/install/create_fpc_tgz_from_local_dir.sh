@@ -36,7 +36,7 @@ echo "cleaning up (CVS, ppu, o) ..."
 cd $TmpDir
 make distclean
 
-for Ext in ppu ppw ppl o ow rst; do
+for Ext in ppu ppw ppl o ow rst cvsignore; do
   find . -name "*.$Ext" -exec rm -f {} \;
 done
 rm -f *.tar.gz
