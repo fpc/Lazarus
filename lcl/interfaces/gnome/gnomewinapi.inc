@@ -132,7 +132,6 @@ begin
   NewMessage := ForceLineBreaks(ScreenDC, PgChar(DialogMessage), Screen.Width div 3, False);
   ReleaseDC(0,ScreenDC);
   Result := gnome_message_box_newv(NewMessage, BoxType, BTNArray);
-  FreeMem(NewMessage);
   If (DefaultIndex >= ButtonCount) or (DefaultIndex < 0)
   then
     DefaultIndex := 0;
@@ -278,6 +277,9 @@ end;
 
 {
   $Log$
+  Revision 1.12  2002/10/23 21:01:28  lazarus
+  AJ:removed FreeMem(NewMessage), caused dialog freezes
+
   Revision 1.11  2002/10/23 20:47:27  lazarus
   AJ: Started Form Scrolling
       Started StaticText FocusControl
