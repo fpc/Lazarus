@@ -850,7 +850,8 @@ procedure TJITComponentList.ReaderPropertyNotFound(Reader: TReader;
   Instance: TPersistent; var PropName: string; IsPath: Boolean;
   var Handled, Skip: Boolean);
 begin
-  writeln('TJITComponentList.ReaderPropertyNotFound ',Instance.ClassName,'.',PropName);
+  // this is pretty normal for extra properties in DefineProperties
+  //writeln('TJITComponentList.ReaderPropertyNotFound ',Instance.ClassName,'.',PropName);
 end;
 
 procedure TJITComponentList.ReaderSetMethodProperty(Reader: TReader;
