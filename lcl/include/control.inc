@@ -595,7 +595,7 @@ end;
 {------------------------------------------------------------------------------}
 {       TControl WndPRoc                                 }
 {------------------------------------------------------------------------------}
-procedure TControl.WndPRoc(var TheMessage : TLMessage);
+procedure TControl.WndProc(var TheMessage : TLMessage);
 Var
   Form : TCustomForm;
 begin
@@ -614,8 +614,9 @@ begin
       if (Form <> nil) and (Form.WantChildKey(Self,TheMessage)) then exit;
     end
     else
-      begin
-      if (TheMessage.Msg >= LM_MOUSEFIRST) and (TheMessage.Msg <= LM_MOUSELAST)
+    begin
+      if ((TheMessage.Msg>=LM_MOUSEFIRST) and (TheMessage.Msg<=LM_MOUSELAST))
+      or ((TheMessage.Msg>=LM_MOUSEFIRST2) and (TheMessage.Msg<=LM_MOUSELAST2))
       then
       begin
         // map double clicks for controls, that do not want doubleclicks
@@ -646,7 +647,7 @@ begin
             LM_RBUTTONQUADCLK: TheMessage.Msg:=LM_RBUTTONDOWN;
           end;
         end;
-        
+
         case TheMessage.Msg of
         
           LM_MOUSEMOVE:
@@ -1782,6 +1783,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.72  2002/09/01 16:11:21  lazarus
+  MG: double, triple and quad clicks now works
+
   Revision 1.71  2002/08/31 11:37:09  lazarus
   MG: fixed destroying combobox
 
