@@ -206,38 +206,38 @@ type
     The Freepascal compiler can automatically convert them
   }
   TExpressionTypeDesc = (
-    xtNone,      // undefined
-    xtContext,   // a node
-    xtChar,      // char
-    xtReal,      // real
-    xtSingle,    // single
-    xtDouble,    // double
-    xtExtended,  // extended
-    xtCurrency,  // currency
-    xtComp,      // comp
-    xtInt64,     // int64
-    xtCardinal,  // cardinal
-    xtQWord,     // qword
-    xtBoolean,   // boolean
-    xtByteBool,  // bytebool
-    xtLongBool,  // longbool
-    xtString,    // string
-    xtAnsiString,// ansistring
-    xtShortString,// shortstring
-    xtWideString,// widestring
-    xtPChar,     // pchar
-    xtPointer,   // pointer
-    xtFile,      // file
-    xtText,      // text
+    xtNone,        // undefined
+    xtContext,     // a node
+    xtChar,        // char
+    xtReal,        // real
+    xtSingle,      // single
+    xtDouble,      // double
+    xtExtended,    // extended
+    xtCurrency,    // currency
+    xtComp,        // comp
+    xtInt64,       // int64
+    xtCardinal,    // cardinal
+    xtQWord,       // qword
+    xtBoolean,     // boolean
+    xtByteBool,    // bytebool
+    xtLongBool,    // longbool
+    xtString,      // string
+    xtAnsiString,  // ansistring
+    xtShortString, // shortstring
+    xtWideString,  // widestring
+    xtPChar,       // pchar
+    xtPointer,     // pointer
+    xtFile,        // file
+    xtText,        // text
     xtConstOrdInteger,// enums, number, integer
-    xtConstString,// string, string constant, char constant
-    xtConstReal, // real number
-    xtConstSet,  // [] set
+    xtConstString, // string, string constant, char constant
+    xtConstReal,   // real number
+    xtConstSet,    // [] set
     xtConstBoolean,// true, false
-    xtLongint,   // longint
-    xtWord,      // word
-    xtCompilerFunc,// SUCC, PREC, LOW, HIGH
-    xtNil        // nil  = pointer, class, procedure, method, ...
+    xtLongint,     // longint
+    xtWord,        // word
+    xtCompilerFunc,// SUCC, PREC, LOW, HIGH, ORD
+    xtNil          // nil  = pointer, class, procedure, method, ...
     );
   TExpressionTypeDescs = set of TExpressionTypeDesc;
   
@@ -420,6 +420,23 @@ type
   end;
   
   
+  // TFindDeclarationTool is source based and can therefore search for more
+  // than declarations:
+  TFindSmartFlag = (
+    fsfIncludeDirective // search for include file
+    );
+  TFindSmartFlags = set of TFindSmartFlag;
+  
+  TFindSrcStartType = (
+    fsstIdentifier
+    );
+  
+const
+  AllFindSmartFlags = [fsfIncludeDirective];
+
+
+type
+
   { TFindDeclarationTool }
 
   TFindDeclarationTool = class(TPascalParserTool)
@@ -561,10 +578,17 @@ type
   public
     procedure BuildTree(OnlyInterfaceNeeded: boolean); override;
     destructor Destroy; override;
-    function FindDeclaration(CursorPos: TCodeXYPosition;
+    
+    function FindDeclaration(const CursorPos: TCodeXYPosition;
+      var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+    function FindDeclaration(const CursorPos: TCodeXYPosition;
+      SearchSmartFlags: TFindSmartFlags;
+      var NewTool: TFindDeclarationTool; var NewNode: TCodeTreeNode;
       var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
     function FindUnitSource(const AnUnitName,
       AnUnitInFilename: string): TCodeBuffer;
+    function FindSmartHint(const CursorPos: TCodeXYPosition): string;
+      
     property InterfaceIdentifierCache: TInterfaceIdentifierCache
       read FInterfaceIdentifierCache;
     property OnGetCodeToolForBuffer: TOnGetCodeToolForBuffer
@@ -725,13 +749,25 @@ end;
 
 { TFindDeclarationTool }
 
-function TFindDeclarationTool.FindDeclaration(CursorPos: TCodeXYPosition;
+function TFindDeclarationTool.FindDeclaration(const CursorPos: TCodeXYPosition;
+  var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+var
+  NewTool: TFindDeclarationTool;
+  NewNode: TCodeTreeNode;
+begin
+  Result:=FindDeclaration(CursorPos,AllFindSmartFlags,NewTool,NewNode,
+                          NewPos,NewTopLine);
+end;
+
+function TFindDeclarationTool.FindDeclaration(const CursorPos: TCodeXYPosition;
+  SearchSmartFlags: TFindSmartFlags;
+  var NewTool: TFindDeclarationTool; var NewNode: TCodeTreeNode;
   var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
 var CleanCursorPos: integer;
   CursorNode, ClassNode: TCodeTreeNode;
   Params: TFindDeclarationParams;
   DirectSearch, SkipChecks, SearchForward: boolean;
-  
+
   procedure CheckIfCursorOnAForwardDefinedClass;
   begin
     if SkipChecks then exit;
@@ -745,7 +781,7 @@ var CleanCursorPos: integer;
       end;
     end;
   end;
-  
+
   procedure CheckIfCursorInClassNode;
   begin
     if SkipChecks then exit;
@@ -765,7 +801,7 @@ var CleanCursorPos: integer;
       end;
     end;
   end;
-  
+
   procedure CheckIfCursorInBeginNode;
   begin
     if SkipChecks then exit;
@@ -774,7 +810,7 @@ var CleanCursorPos: integer;
       CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
     end;
   end;
-  
+
   procedure CheckIfCursorInProcNode;
   var IsMethod: boolean;
   begin
@@ -823,14 +859,13 @@ var CleanCursorPos: integer;
       end;
     end;
   end;
-  
+
 begin
   Result:=false;
   SkipChecks:=false;
   ActivateGlobalWriteLock;
   try
     // build code tree
-    
     {$IFDEF CTDEBUG}
     writeln(DebugPrefix,'TFindDeclarationTool.FindDeclaration A CursorPos=',CursorPos.X,',',CursorPos.Y);
     {$ENDIF}
@@ -843,72 +878,74 @@ begin
     CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
     if IsIncludeDirectiveAtPos(CleanCursorPos,CursorNode.StartPos,NewPos.Code)
     then begin
+      // include directive
       NewPos.X:=1;
       NewPos.Y:=1;
       NewTopLine:=1;
-      Result:=true;
+      NewNode:=nil;
+      NewTool:=Self;
+      Result:=(fsfIncludeDirective in SearchSmartFlags);
       exit;
     end;
     {$IFDEF CTDEBUG}
     writeln('TFindDeclarationTool.FindDeclaration D CursorNode=',NodeDescriptionAsString(CursorNode.Desc));
     {$ENDIF}
     if CursorNode.Desc=ctnUsesSection then begin
-      // find used unit
+      // in uses section
       Result:=FindDeclarationInUsesSection(CursorNode,CleanCursorPos,
                                            NewPos,NewTopLine);
-    end else begin
-      DirectSearch:=false;
-      SearchForward:=false;
-      CheckIfCursorOnAForwardDefinedClass;
-      CheckIfCursorInClassNode;
-      CheckIfCursorInBeginNode;
-      CheckIfCursorInProcNode;
-      CheckIfCursorInPropertyNode;
-      // set cursor
-      MoveCursorToCleanPos(CleanCursorPos);
-      while (CurPos.StartPos>1) and (IsIdentChar[Src[CurPos.StartPos-1]]) do
-        dec(CurPos.StartPos);
-      if (CurPos.StartPos>=1) and (IsIdentStartChar[Src[CurPos.StartPos]]) then
-      begin
-        // search identifier
-        CurPos.EndPos:=CurPos.StartPos;
-        while (CurPos.EndPos<=SrcLen) and IsIdentChar[Src[CurPos.EndPos]] do
-          inc(CurPos.EndPos);
-        // find declaration of identifier
-        Params:=TFindDeclarationParams.Create;
-        try
-          Params.ContextNode:=CursorNode;
-          Params.SetIdentifier(Self,@Src[CurPos.StartPos],@CheckSrcIdentifier);
-          Params.Flags:=[fdfSearchInParentNodes,fdfExceptionOnNotFound,
-                         fdfExceptionOnPredefinedIdent,
-                         fdfTopLvlResolving,fdfSearchInAncestors]
-                        +fdfAllClassVisibilities;
-          if not DirectSearch then begin
-            Result:=FindDeclarationOfIdentAtCursor(Params);
-          end else begin
-            Include(Params.Flags,fdfIgnoreCurContextNode);
-            if SearchForward then
-              Include(Params.Flags,fdfSearchForward);
-            Result:=FindIdentifierInContext(Params);
-          end;
-          if Result then begin
-            Params.ConvertResultCleanPosToCaretPos;
-            NewPos:=Params.NewPos;
-            NewTopLine:=Params.NewTopLine;
-            if NewPos.Code=nil then begin
-              if Params.IdentifierTool.IsPCharInSrc(Params.Identifier) then
-                Params.IdentifierTool.MoveCursorToCleanPos(Params.Identifier);
-              Params.IdentifierTool.RaiseExceptionFmt(ctsIdentifierNotFound,
-                                            [GetIdentifier(Params.Identifier)]);
-            end;
-          end;
-        finally
-          Params.Free;
+      NewNode:=nil;
+      NewTool:=nil;
+      exit;
+    end;
+    DirectSearch:=false;
+    SearchForward:=false;
+    CheckIfCursorOnAForwardDefinedClass;
+    CheckIfCursorInClassNode;
+    CheckIfCursorInBeginNode;
+    CheckIfCursorInProcNode;
+    CheckIfCursorInPropertyNode;
+    // set cursor
+    MoveCursorToCleanPos(CleanCursorPos);
+    GetIdentStartEndAtPosition(Src,CleanCursorPos,
+                               CurPos.StartPos,CurPos.EndPos);
+    if (CurPos.StartPos<CurPos.EndPos) then begin
+      // find declaration of identifier
+      Params:=TFindDeclarationParams.Create;
+      try
+        Params.ContextNode:=CursorNode;
+        Params.SetIdentifier(Self,@Src[CurPos.StartPos],@CheckSrcIdentifier);
+        Params.Flags:=[fdfSearchInParentNodes,fdfExceptionOnNotFound,
+                       fdfExceptionOnPredefinedIdent,
+                       fdfTopLvlResolving,fdfSearchInAncestors]
+                      +fdfAllClassVisibilities;
+        if not DirectSearch then begin
+          Result:=FindDeclarationOfIdentAtCursor(Params);
+        end else begin
+          Include(Params.Flags,fdfIgnoreCurContextNode);
+          if SearchForward then
+            Include(Params.Flags,fdfSearchForward);
+          Result:=FindIdentifierInContext(Params);
         end;
-      end else begin
-        // find declaration of not identifier, e.g. numeric label
-
+        if Result then begin
+          Params.ConvertResultCleanPosToCaretPos;
+          NewNode:=Params.NewNode;
+          NewTool:=Params.NewCodeTool;
+          NewPos:=Params.NewPos;
+          NewTopLine:=Params.NewTopLine;
+          if NewPos.Code=nil then begin
+            if Params.IdentifierTool.IsPCharInSrc(Params.Identifier) then
+              Params.IdentifierTool.MoveCursorToCleanPos(Params.Identifier);
+            Params.IdentifierTool.RaiseExceptionFmt(ctsIdentifierNotFound,
+                                          [GetIdentifier(Params.Identifier)]);
+          end;
+        end;
+      finally
+        Params.Free;
       end;
+    end else begin
+      // find declaration of not identifier, e.g. numeric label
+
     end;
   finally
     ClearIgnoreErrorAfter;
@@ -1174,6 +1211,128 @@ begin
   if (Result=nil) and Assigned(OnFindUsedUnit) then begin
     // no unit found
     Result:=OnFindUsedUnit(Self,AnUnitName,AnUnitInFilename);
+  end;
+end;
+
+function TFindDeclarationTool.FindSmartHint(const CursorPos: TCodeXYPosition
+  ): string;
+var
+  NewTool: TFindDeclarationTool;
+  NewNode, IdentNode, TypeNode: TCodeTreeNode;
+  NewPos: TCodeXYPosition;
+  NewTopLine: integer;
+  AbsCursorPos: integer;
+  IdentStartPos, IdentEndPos: integer;
+  IdentAdded: boolean;
+begin
+  Result:='';
+  if FindDeclaration(CursorPos,AllFindSmartFlags,
+    NewTool,NewNode,NewPos,NewTopLine) then
+  begin
+    { Examples:
+        var i: integer
+        /home/.../codetools/finddeclarationtools.pas(1224,7)
+    }
+    IdentAdded:=false;
+    // identifier category and identifier
+    if NewNode<>nil then begin
+      case NewNode.Desc of
+      ctnVarDefinition, ctnTypeDefinition, ctnConstDefinition:
+        begin
+          case NewNode.Desc of
+          ctnVarDefinition: Result:=Result+'var ';
+          ctnTypeDefinition: Result:=Result+'type ';
+          ctnConstDefinition: Result:=Result+'const ';
+          end;
+          NewTool.MoveCursorToNodeStart(NewNode);
+          NewTool.ReadNextAtom;
+          Result:=Result+NewTool.GetAtom;
+          IdentAdded:=true;
+          TypeNode:=FindTypeNodeOfDefinition(NewNode);
+          if TypeNode<>nil then begin
+            case TypeNode.Desc of
+            ctnIdentifier:
+              begin
+                NewTool.MoveCursorToNodeStart(TypeNode);
+                NewTool.ReadNextAtom;
+                Result:=Result+': '+NewTool.GetAtom;
+              end;
+              
+            ctnClass:
+              begin
+                NewTool.MoveCursorToNodeStart(TypeNode);
+                NewTool.ReadNextAtom;
+                Result:=Result+' = '+NewTool.GetAtom;
+              end;
+
+            end;
+          end;
+          if NewNode.Desc=ctnConstDefinition then begin
+
+            // ToDo: write value
+
+          end;
+        end;
+        
+      ctnProcedure,ctnProcedureHead,
+      ctnProperty,
+      ctnProgram,ctnUnit,ctnPackage,ctnLibrary:
+        begin
+          IdentNode:=NewNode;
+          if IdentNode.Desc=ctnProcedureHead then
+            IdentNode:=IdentNode.Parent;
+
+          // ToDo: ppu, ppw, dcu files
+        
+          NewTool.MoveCursorToNodeStart(IdentNode);
+          NewTool.ReadNextAtom;
+          Result:=Result+NewTool.GetAtom+' ';
+          if (IdentNode.Desc=ctnProcedure) and (NewTool.UpAtomIs('CLASS')) then
+          begin
+            NewTool.ReadNextAtom;
+            Result:=Result+NewTool.GetAtom+' ';
+          end;
+          NewTool.ReadNextAtom;
+          Result:=Result+NewTool.GetAtom;
+          if (IdentNode.Desc=ctnProcedure) then begin
+            NewTool.ReadNextAtom;
+            if NewTool.AtomIsChar('.') then begin
+              NewTool.ReadNextAtom;
+              Result:=Result+'.'+NewTool.GetAtom+' ';
+            end;
+          end;
+          Result:=Result+' ';
+          IdentAdded:=true;
+        end;
+      else
+        writeln('ToDo: TFindDeclarationTool.FindSmartHint ',NewNode.DescAsString);
+      end;
+    end;
+    // read the identifier if not already done
+    if not IdentAdded then begin
+      CursorPos.Code.LineColToPosition(CursorPos.Y,CursorPos.X,AbsCursorPos);
+      GetIdentStartEndAtPosition(CursorPos.Code.Source,
+        AbsCursorPos,IdentStartPos,IdentEndPos);
+      if IdentStartPos<IdentEndPos then begin
+        Result:=Result+copy(CursorPos.Code.Source,IdentStartPos,IdentEndPos-IdentStartPos);
+        // type
+
+        // ToDo
+
+        Result:=Result+' ';
+      end;
+    end;
+    // filename
+    if Result<>'' then Result:=Result+#13#10;
+    Result:=Result+NewPos.Code.Filename;
+    // file position
+    if NewPos.Y>=1 then begin
+      Result:=Result+'('+IntToStr(NewPos.Y);
+      if NewPos.X>=1 then begin
+        Result:=Result+','+IntToStr(NewPos.X);
+      end;
+      Result:=Result+')';
+    end;
   end;
 end;
 

@@ -184,7 +184,7 @@ type
         
     procedure BuildTree(OnlyInterfaceNeeded: boolean); virtual;
     procedure BuildTreeAndGetCleanPos(TreeRange: TTreeRange;
-        CursorPos: TCodeXYPosition; var CleanCursorPos: integer;
+        const CursorPos: TCodeXYPosition; var CleanCursorPos: integer;
         BuildTreeFlags: TBuildTreeFlags);
     procedure BuildSubTreeForClass(ClassNode: TCodeTreeNode); virtual;
     procedure BuildSubTreeForBeginBlock(BeginNode: TCodeTreeNode); virtual;
@@ -3717,7 +3717,7 @@ begin
 end;
 
 procedure TPascalParserTool.BuildTreeAndGetCleanPos(
-  TreeRange: TTreeRange; CursorPos: TCodeXYPosition;
+  TreeRange: TTreeRange; const CursorPos: TCodeXYPosition;
   var CleanCursorPos: integer; BuildTreeFlags: TBuildTreeFlags);
 var
   Dummy: integer;

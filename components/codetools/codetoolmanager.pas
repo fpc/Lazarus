@@ -227,6 +227,7 @@ type
     function FindDeclaration(Code: TCodeBuffer; X,Y: integer;
           var NewCode: TCodeBuffer;
           var NewX, NewY, NewTopLine: integer): boolean;
+    function FindSmartHint(Code: TCodeBuffer; X,Y: integer): string;
 
     // functions for events in the object inspector
     function GetCompatiblePublishedMethods(Code: TCodeBuffer;
@@ -712,6 +713,32 @@ begin
   end;
   {$IFDEF CTDEBUG}
   writeln('TCodeToolManager.FindDeclaration END ');
+  {$ENDIF}
+end;
+
+function TCodeToolManager.FindSmartHint(Code: TCodeBuffer; X, Y: integer
+  ): string;
+var
+  CursorPos: TCodeXYPosition;
+begin
+  Result:='';
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.FindSmartHint A ',Code.Filename,' x=',x,' y=',y);
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  CursorPos.X:=X;
+  CursorPos.Y:=Y;
+  CursorPos.Code:=Code;
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.FindSmartHint B ',FCurCodeTool.Scanner<>nil);
+  {$ENDIF}
+  try
+    Result:=FCurCodeTool.FindSmartHint(CursorPos);
+  except
+    on e: Exception do HandleException(e);
+  end;
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.FindSmartHint END ');
   {$ENDIF}
 end;
 

@@ -1056,6 +1056,7 @@ procedure GetIdentStartEndAtPosition(const Source: string; Position: integer;
 begin
   IdentStart:=Position;
   IdentEnd:=Position;
+  if (Position<1) or (Position>length(Source)) then exit;
   while (IdentStart>1)
   and (IsIdChar[Source[IdentStart-1]]) do
     dec(IdentStart);

@@ -59,10 +59,11 @@ type
     itDebugger,  // debugging the project.
                  //    Loading/Saving/Compiling is not allowed.
     itCodeTools, // the CodeToolBoss is working and has called the progress
-                 //    event. This mode can be deactivated at any time.
+                 //    event.
+    itCodeToolAborting,// the CodeToolBoss is working and is about to abort
     itCustom     // this state is not used yet.
     );
-
+    
   // new file flags
   TNewFlag = (nfIsPartOfProject // force IsPartOfProject,
                                 //   default is to use a heuristic
