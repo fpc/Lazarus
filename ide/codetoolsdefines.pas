@@ -399,7 +399,6 @@ begin
     Left:=DefineTreeView.Left;
     Top:=SelGrpBoxTop;
     Width:=MaxX-2*Left;
-writeln('AAA1 SelectedItemGroupBox=',Left,',',Top,',',Width,'  MaxX=',MaxX,' MaxY=',MaxY);
     Height:=MaxY-Top-Left;
   end;
   SelItemMaxX:=SelectedItemGroupBox.ClientWidth-6;

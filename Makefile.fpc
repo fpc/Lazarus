@@ -59,7 +59,7 @@ tools: lcl components tools_all
 
 all: lcl components ide
 
-clean: cleanall
+cleanide:
         $(DEL) $(wildcard ./designer/*$(OEXT))
         $(DEL) $(wildcard ./designer/*$(PPUEXT))
         $(DEL) $(wildcard ./debugger/*$(OEXT))
@@ -68,3 +68,9 @@ ifeq ($(OS_TARGET), win32)
         $(DEL) $(wildcard *.res)
         $(DEL) lazarus.owr
 endif
+
+clean: cleanall cleanide
+
+
+
+
