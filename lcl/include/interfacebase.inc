@@ -1025,9 +1025,6 @@ begin
   Result := False;
 end;
 
-{$I defaultbitbtnimages.inc}
-{$I messagedialogpixmaps.inc}
-
 Function TInterfaceBase.LoadStockPixmap(StockID: longint) : HBitmap;
 begin
   Case StockID of
@@ -1042,6 +1039,10 @@ begin
     idButtonHelp :
       Result := CreatePixmapIndirect(@IMGHELP[0], GetSysColor(COLOR_BTNFACE));
     idButtonAll : 
+      Result := CreatePixmapIndirect(@IMGAll_Check[0], GetSysColor(COLOR_BTNFACE));
+    idButtonYesToAll :
+      Result := CreatePixmapIndirect(@IMGAll_Check[0], GetSysColor(COLOR_BTNFACE));
+    idButtonNoToAll :
       Result := CreatePixmapIndirect(@IMGAll_Check[0], GetSysColor(COLOR_BTNFACE));
     idButtonAbort :
       Result := CreatePixmapIndirect(@IMGCancel_X[0], GetSysColor(COLOR_BTNFACE));
@@ -1075,6 +1076,250 @@ function TInterfaceBase.MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer;
   Rop: DWORD): Boolean; 
 begin
   Result := False;
+end;
+
+type
+  TMessageBox = class(TForm)
+  public
+    FImage : TImage;
+    FLabel : TLabel;
+    MSG : AnsiString;
+    NumButtons : Longint;
+    Buttons : PLongint;
+
+    TextBox : TRect;
+    TextStyle : TTextStyle;
+
+    procedure LayoutDialog;
+    procedure Paint; override;
+    constructor CreateMessageDialog(const ACaption, aMsg: string;
+      DialogType : longint; TheButtons: Array of Longint);
+  end;
+
+procedure TMessageBox.Paint;
+begin
+  Inherited Paint;
+  Canvas.TextRect(TextBox, 0, 0, MSG, TextStyle);
+end;
+
+const
+  cBitmapX  = 10;      // x-position for bitmap in messagedialog
+  cBitmapY  = 10;      // y-position for bitmap in messagedialog
+  cBitmapWidth = 32;   // width of the dialogs icon
+  cBitmapHeight= 32;   // height of the dialogs icon
+  cLabelSpacing= 10;   // distance between icon & label
+
+  DialogResult : Array[mrNone..mrYesToAll] of Longint = (
+    -1, idButtonOK, idButtonCancel, idButtonAbort, idButtonRetry,
+    idButtonIgnore, idButtonYes,idButtonNo, idButtonAll, idButtonNoToAll,
+    idButtonYesToAll);
+
+  DialogButtonKind : Array[idButtonOK..idButtonNoToAll] of TBitBtnKind = (
+    bkOk, bkCancel, bkHelp, bkYes, bkNo, bkClose, bkAbort, bkRetry,
+    bkIgnore, bkAll, bkCustom, bkCustom);
+
+  DialogButtonText : Array[idButtonOK..idButtonNoToAll] of String = (
+    rsmbOk, rsmbCancel, rsmbHelp, rsmbYes, rsmbNo, rsmbClose, rsmbAbort, 
+    rsmbRetry, rsmbIgnore, rsmbAll, rsmbYesToAll, rsmbNoToAll);
+
+  DialogCaption : Array[idDialogWarning..idDialogConfirm] of String = (
+    rsMtWarning, rsMtError, rsMtInformation, rsMtConfirmation);
+
+
+constructor TMessageBox.CreateMessageDialog(const ACaption, aMsg: string;
+  DialogType : longint; TheButtons: Array of Longint);
+begin
+  inherited Create (Application);
+
+  ControlStyle:= ControlStyle-[csSetCaption];
+  BorderStyle := bsDialog;
+  Position    := poScreenCenter;
+  Width       := 200;
+  Height      := 100;
+  MSG         := AMSG;
+  Buttons     := nil;
+  FImage := TImage.Create(self);
+  FImage.Parent := Self;
+  FImage.SetBounds(cBitmapX, cBitmapY,cBitmapWidth,cBitmapHeight);
+
+  FLabel := TLabel.Create(Self);
+  FLabel.Parent := Self;
+  FLabel.Caption := '';
+  
+  Case DialogType of
+    idDialogConfirm,
+    idDialogInfo,
+    idDialogWarning,
+    idDialogError :
+      begin
+        FImage.Picture.Bitmap.Handle := LoadStockPixmap(DialogType);
+        FImage.Show;
+        Caption := DialogCaption[DialogType];
+      end;
+    else begin
+      FImage.Picture.Bitmap.Handle := LoadStockPixmap(idDialogInfo);
+      FImage.Show;
+      If ACaption <> '' then
+        Caption := ACaption
+      else
+        Caption := rsmtInformation;//Should be Application.Title, when we have one
+    end
+  end;
+  NumButtons := High(TheButtons) - Low(TheButtons) + 1;
+  Buttons := @TheButtons[Low(TheButtons)];
+  LayoutDialog;
+end;
+
+procedure TMessageBox.LayoutDialog;
+Const
+  AVGBuffer : PChar = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890()|_ ';
+  cBtnCalcWidth  = 50;
+  cBtnCalcHeight = 13;
+  cBtnCalcSpace   = 4;
+  cMinLeft   = cBitmapX + cBitmapWidth + cLabelSpacing;
+var
+  aBitmap     : TBitmap;    // temp. variable to create bitmaps for buttons
+  curBtn      : Longint; // variable to loop through TMsgDlgButtons
+  cBtnWidth,
+  cBtnHeight,
+  curBtnWidth,
+  cBtnDist,
+  ButtonLeft  : integer;    // left position of button(s)
+  reqBtnWidth : integer;    // width neccessary to display buttons
+  reqWidth, reqHeight : integer;    // width and height neccessary to display all
+  i        : integer;
+  ButtonIndex : integer;
+  Avg : TPoint;
+begin
+  FillChar(TextStyle, SizeOf(TextStyle), 0);
+
+  With TextStyle do begin
+    Clipping   := True;
+    Wordbreak  := True;
+    SystemFont := True;
+  end;
+
+  // calculate the width & height we need to display the Message
+  TextBox := Rect(0,0, Screen.Width div 2,Screen.Height - 100);
+  SelectObject(Canvas.Handle, GetStockObject(SYSTEM_FONT));
+  DrawText(Canvas.Handle, PChar(MSG), Length(MSG),
+    TextBox, DT_WORDBREAK or DT_INTERNAL or DT_CALCRECT);
+
+  // calculate the width we need to display the buttons
+  SelectObject(Canvas.Handle, GetStockObject(SYSTEM_FONT));
+  GetTextExtentPoint(Canvas.Handle,AVGBuffer,StrLen(AVGBuffer),TSize(AVG));
+  AVG.X := AVG.X div 52;
+  reqBtnWidth := 0;
+  cBtnWidth := (cBtnCalcWidth*Avg.X) div 5;
+  cBtnHeight := (cBtnCalcHeight*AVG.Y) div 8;
+  cBtnDist := (cBtnCalcSpace * Avg.X) div 4;
+  for curBtn := 0 to NumButtons - 1 do
+  begin
+    If (Buttons[curBtn] >= Low(DialogButtonKind)) and
+      (Buttons[curBtn] <= High(DialogButtonKind))
+    then begin
+      curBtnWidth := Canvas.TextWidth(DialogButtonText[Buttons[curBtn]]);
+      if curBtnWidth > cBtnWidth then
+        cBtnWidth := curBtnWidth;
+      Inc(reqBtnWidth, cBtnWidth + cBtnDist)
+    end;
+  end;
+  if reqBtnWidth > 0 then Dec(reqBtnWidth, cBtnDist);
+  Inc(cBtnDist, cBtnWidth);
+
+  // patch positions to center label and buttons
+  reqWidth:= reqBtnWidth;
+  if reqWidth < (TextBox.Right + cMinLeft) then reqWidth:= TextBox.Right + cMinLeft;
+
+  ButtonLeft := ((reqWidth - reqBtnWidth) div 2) + cLabelSpacing;
+
+  reqHeight:= TextBox.Bottom;
+  if reqHeight < cBitmapHeight then reqHeight:= cBitmapHeight;
+
+  OffsetRect(TextBox, ((reqWidth - cMinLeft - TextBox.Right) div 2) + cMinLeft, cLabelSpacing);
+
+  // set size of form
+  SetBounds(Left, Top, reqWidth + 2 * cLabelSpacing,
+        3 * cLabelSpacing + reqHeight + cBtnHeight);
+
+  // create the buttons
+  ButtonIndex := -1;
+  for curBtn := 0 to NumButtons - 1 do begin
+    If (Buttons[curBtn] >= Low(DialogButtonKind)) and
+      (Buttons[curBtn] <= High(DialogButtonKind))
+    then begin
+      inc(ButtonIndex);
+
+      with TBitBtn.Create(Self) do begin
+        Parent:= Self;
+        SetBounds (ButtonLeft, 2 * cLabelSpacing + reqHeight, cBtnWidth, cBtnHeight);
+        inc(ButtonLeft, cBtnDist);
+        Layout  := blGlyphLeft;
+        Case Buttons[curBtn] of
+          idButtonYesToAll,
+          idButtonNoToAll :
+            begin
+              aBitmap := TBitmap.Create;
+              aBitmap.Handle := LoadStockPixmap(Buttons[curBtn]);
+              Glyph   := aBitmap;
+              If Buttons[curBtn] = idButtonYesToAll then begin
+                ModalResult := mrYesToAll;
+                Caption := rsmbYesToAll;
+              end
+              else begin
+                ModalResult := mrNoToAll;
+                Caption := rsmbNoToAll;
+              end;
+            end;
+          else
+            Kind := DialogButtonKind[Buttons[curBtn]];
+        end;
+        if ButtonIndex=0 then Default := true;
+        if Kind in [bkOk, bkYes] then Default := true;
+        Visible:=true;
+      end;
+    end;
+  end;
+
+  for i:=0 to ComponentCount-1 do begin
+    if (Components[i] is TBitBtn) and (TBitBtn(Components[i]).Default) then begin
+      TBitBtn(Components[i]).SetFocus;
+      break;
+    end;
+  end;
+end;
+
+Procedure TInterfaceBase.NotifyUser(const DialogCaption, DialogMessage : String; DialogType : longint);
+begin
+  PromptUser(DialogCaption, DialogMessage, DialogType, [idButtonOK]);
+end;
+
+Procedure TInterfaceBase.NotifyUserAtXY(const DialogCaption, DialogMessage : String; DialogType : longint; X, Y : Longint);
+begin
+  PromptUserAtXY(DialogCaption, DialogMessage, DialogType, [idButtonOK], X, Y);
+end;
+
+Function TInterfaceBase.PromptUser(const DialogCaption, DialogMessage : String; DialogType : longint; Buttons : Array of Longint) : Longint;
+begin
+  with TMessageBox.CreateMessageDialog (DialogCaption, DialogMessage, DialogType, Buttons) do
+    try
+      Result := DialogResult[ShowModal];
+    finally
+      Close;
+    end;
+end;
+
+Function TInterfaceBase.PromptUserAtXY(const DialogCaption, DialogMessage : String; DialogType : longint; Buttons : Array of Longint; X, Y : Longint) : Longint;
+begin
+  with TMessageBox.CreateMessageDialog (DialogCaption, DialogMessage, DialogType, Buttons) do
+    try
+      Position := poDesigned;
+      Left := X;
+      Top := Y;
+      Result := DialogResult[ShowModal];
+    finally
+      Close;
+    end;
 end;
 
 function TInterfaceBase.MoveToEx(DC: HDC; X, Y: Integer; 
@@ -1490,6 +1735,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.55  2002/10/12 16:36:39  lazarus
+  AJ: added new QueryUser/NotifyUser
+
   Revision 1.54  2002/10/11 16:00:39  lazarus
   AJ: made InputQuery Interface Dependant
 
