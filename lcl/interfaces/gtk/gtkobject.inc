@@ -162,27 +162,18 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.IntSendMessage3(LM_Message : Integer; Sender : TObject; data : pointer) : integer;
 var
-   pStr : PChar;
-   pStr2 : PChar;
-   TempStr : string;
-   GList : pGList;
-   Widget : PGtkWidget;
-   SelectionMode : TGtkSelectionMode;
-   AOwner : TControl;
-   AParent: TWinControl;
-   Pixmap : pgdkPixMap;
-   PenColor : TColor;
-   TheStyle : pgtkStyle;
-   fWindow :pGdkWindow;
-   gc : pgdkGC;
-   p: Pointer;
-   Num : Integer;
-   ListItem : PGtkListItem;
-   box1      : pgtkWidget;
-   pixmapwid : pGtkWidget;
-   mask      : pGDKBitmap;
-   style    : pgtkStyle;
-   pLabel   : PgtkWidget;
+   pStr      : PChar;			// temporary string pointer, must be allocated/disposed when used!
+   Widget    : PGtkWidget;		// pointer to gtk-widget (local use when neccessary)
+   AParent   : TWinControl;		// only used twice, replace with typecasts!
+   Pixmap    : pgdkPixMap;
+   box1      : pgtkWidget;		// currently only used for TBitBtn
+   pixmapwid : pGtkWidget;		// currently only used for TBitBtn, possibly replace with pixmap!!!!
+   pLabel    : PgtkWidget;		// currently only used as extra label-widget for TBitBtn
+   Num       : Integer;			// currently only used for LM_INSERTTOOLBUTTON
+   pStr2     : PChar;			// currently only used for LM_INSERTTOOLBUTTON
+   GList     : pGList;			// Only used for listboxes, replace with widget!!!!!
+   SelectionMode : TGtkSelectionMode;	// currently only used for listboxes
+   ListItem  : PGtkListItem;		// currently only used for listboxes
 
 begin
    result := 0;   //default value just in case nothing sets it
@@ -207,11 +198,10 @@ begin
 //          Assert(False, Format('Trace:[TgtkObject.IntSendMessage3] %s --> %s   ---calling INSERTBUTTON from Add Child', [AParent.ClassName, Sender.ClassNAme]));
            exit;
           end
-         else
-         Begin
-         AParent := (Sender as TWinControl).Parent;
-         Assert(False, Format('Trace:[TgtkObject.IntSendMessage3] %s --> Calling Add Child: %s', [AParent.ClassName, Sender.ClassNAme]));
-         AddChild(Pgtkwidget(AParent.Handle), PgtkWidget((Sender as TWinControl).Handle), AParent.Left, AParent.Top);
+         else Begin
+            AParent := (Sender as TWinControl).Parent;
+            Assert(False, Format('Trace:[TgtkObject.IntSendMessage3] %s --> Calling Add Child: %s', [AParent.ClassName, Sender.ClassNAme]));
+            AddChild(Pgtkwidget(AParent.Handle), PgtkWidget((Sender as TWinControl).Handle), AParent.Left, AParent.Top);
          end;
       end;
 
@@ -235,14 +225,12 @@ begin
             Assert(False, 'Trace:removing timer!!!');
             gtk_timeout_remove((Sender as TTimer).TimerID);
          end
-         else begin
-            if Sender is TWinControl 
+         else if Sender is TWinControl 
             then gtk_widget_destroy( PGtkWidget(TWinControl(Sender).Handle))
-            else begin
-               if (Sender is TCustomDialog) 
-               then gtk_widget_destroy( PGtkWidget(TCustomDialog(Sender).Handle));
-            end;
-         end;    
+         else if (Sender is TCustomDialog) 
+            then gtk_widget_destroy( PGtkWidget(TCustomDialog(Sender).Handle))
+         else
+	    Assert (False, Format ('Trace:Dont know how to destroy component %s', [sender.classname]));
       end;
 
       LM_DRAGINFOCHANGED :
@@ -327,9 +315,8 @@ begin
             else pixmapwid := gtk_pixmap_new(pixmap,nil);
 
          Assert(False, 'Trace:4');
-         TempStr := TBitBtn(Sender).Caption;
-         pStr := StrAlloc(length(TempStr) + 1);
-         StrPCopy(pStr, TempStr);
+         pStr := StrAlloc(length(TBitBtn(Sender).Caption) + 1);
+         StrPCopy(pStr, TBitBtn(Sender).Caption);
          pLabel := gtk_label_new(pstr);
          StrDispose(pStr);
          Assert(False, 'Trace:5');
@@ -563,13 +550,16 @@ begin
          PixMap := gtk_object_get_data(PgtkObject((Sender as TWinControl).Handle),'Pixmap'); 
          if Assigned(PixMap) then
 	 begin
-            PenColor := TCustomForm(Sender).Color; 
-            gdk_draw_rectangle(pixmap,GetPen(pixmap,TColortoTgdkColor(PenColor)),1,TREct(data^).Left,TRect(data^).Top,TRect(Data^).Right-TRect(Data^).Left,TRect(Data^).Bottom-TRect(Data^).Top); 
+            gdk_draw_rectangle(pixmap,GetPen(pixmap,TColortoTgdkColor(TCustomForm(Sender).Color)),1,TREct(data^).Left,TRect(data^).Top,TRect(Data^).Right-TRect(Data^).Left,TRect(Data^).Bottom-TRect(Data^).Top); 
             gtk_widget_queue_draw(PGtkWidget((Sender as TWinControl).Handle));
             //The following should eventually be implemented.  It's supposed
             // to allow the component to ONLY draw the invalidated rectangle, not the entire widget.
 
-{        widget := gtk_Object_get_data(pgtkobject((Sender as TWinControl).Handle),'Fixed');
+{var  TheStyle : pgtkStyle;
+     fWindow :pGdkWindow;
+   gc : pgdkGC;
+
+	widget := gtk_Object_get_data(pgtkobject((Sender as TWinControl).Handle),'Fixed');
          fWindow := pGtkWidget(widget)^.window;
          gc := gdk_gc_new(PgdkWindow(fWindow));
 
@@ -2654,6 +2644,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.2  2000/07/16 20:59:03  lazarus
+  - some more cleanups (removal of unused variables), stoppok
+
   Revision 1.1  2000/07/13 10:28:29  michael
   + Initial import
 
