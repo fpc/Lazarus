@@ -54,7 +54,7 @@ uses
   LMessages, ProjectDefs, Watchesdlg, BreakPointsdlg, ColumnDlg, OutputFilter,
   BuildLazDialog, MiscOptions, EditDefineTree, CodeToolsOptions, TypInfo,
   IDEOptionDefs, CodeToolsDefines, LocalsDlg, DebuggerDlg, InputHistory,
-  DiskDiffsDialog, UnitDependencies,
+  DiskDiffsDialog, UnitDependencies, PublishProjectDlg,
   // main ide
   BaseDebugManager, DebugManager, MainBar;
 
@@ -143,6 +143,7 @@ type
     procedure mnuOpenProjectClicked(Sender : TObject);
     procedure mnuSaveProjectClicked(Sender : TObject);
     procedure mnuSaveProjectAsClicked(Sender : TObject);
+    procedure mnuPublishProjectClicked(Sender : TObject);
     procedure mnuAddToProjectClicked(Sender : TObject);
     procedure mnuRemoveFromProjectClicked(Sender : TObject);
     procedure mnuViewProjectSourceClicked(Sender : TObject);
@@ -394,6 +395,7 @@ type
     function DoSaveProject(Flags: TSaveFlags):TModalResult;
     function DoCloseProject:TModalResult;
     function DoOpenProjectFile(AFileName:string):TModalResult;
+    function DoPublishProject(Flags: TSaveFlags):TModalResult;
     function DoAddActiveUnitToProject: TModalResult;
     function DoRemoveFromProjectDialog: TModalResult;
     procedure DoWarnAmbigiousFiles;
@@ -770,12 +772,7 @@ end;
 
 procedure TMainIDE.OIOnSelectComponent(AComponent:TComponent);
 begin
-  with TheControlSelection do begin
-    BeginUpdate;
-    Clear;
-    Add(AComponent);
-    EndUpdate;
-  end;
+  TheControlSelection.AssignComponent(AComponent);
   if AComponent.Owner is TControl then
     TControl(AComponent.Owner).Invalidate;
 end;
@@ -1365,6 +1362,7 @@ begin
   SetRecentProjectFilesMenu;
   itmProjectSave.OnClick := @mnuSaveProjectClicked;
   itmProjectSaveAs.OnClick := @mnuSaveProjectAsClicked;
+  itmProjectPublish.OnClick := @mnuPublishProjectClicked;
   itmProjectAddTo.OnClick := @mnuAddToProjectClicked;
   itmProjectRemoveFrom.OnClick := @mnuRemoveFromProjectClicked;
   itmProjectViewSource.OnClick := @mnuViewProjectSourceClicked;
@@ -2021,6 +2019,11 @@ end;
 procedure TMainIDE.mnuSaveProjectAsClicked(Sender : TObject);
 begin
   DoSaveProject([sfSaveAs]);
+end;
+
+procedure TMainIDE.mnuPublishProjectClicked(Sender: TObject);
+begin
+  DoPublishProject([]);
 end;
 
 procedure TMainIDE.mnuAddToProjectClicked(Sender : TObject);
@@ -4532,6 +4535,11 @@ begin
   writeln('TMainIDE.DoOpenProjectFile end  CodeToolBoss.ConsistencyCheck=',CodeToolBoss.ConsistencyCheck);
   {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoOpenProjectFile end');{$ENDIF}
+end;
+
+function TMainIDE.DoPublishProject(Flags: TSaveFlags): TModalResult;
+begin
+  Result:=mrCancel;
 end;
 
 function TMainIDE.DoCreateProjectForProgram(
@@ -7200,6 +7208,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.397  2002/10/02 07:56:19  lazarus
+  MG: fixed frozen selection in designer on sizing
+
   Revision 1.396  2002/10/02 00:17:03  lazarus
   MWE:
     + Honoured the ofQuiet flag in DoOpenNotExistingFile, so custom messages

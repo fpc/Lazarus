@@ -214,6 +214,7 @@ ide/projectdefs.pas svneol=native#text/pascal
 ide/projectinspector.pas svneol=native#text/pascal
 ide/projectopts.lrs svneol=native#text/pascal
 ide/projectopts.pp svneol=native#text/pascal
+ide/publishprojectdlg.pas svneol=native#text/pascal
 ide/runparamsopts.pas svneol=native#text/pascal
 ide/sourceeditprocs.pas svneol=native#text/pascal
 ide/sourcemarks.pas svneol=native#text/pascal
