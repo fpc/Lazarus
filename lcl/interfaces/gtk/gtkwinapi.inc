@@ -8605,8 +8605,15 @@ begin
       {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
     end;
 
-  SW_MINIMIZE, SW_SHOWMAXIMIZED:
-    DebugLn('TGtkWidgetSet.ShowWindow:  not implemented yet');
+  SW_MINIMIZE:
+    begin
+      GDK_WINDOW_MINIMIZE(PGdkWindowPrivate(PgtkWidget(GtkWindow)^.Window));
+    end;
+  SW_SHOWMAXIMIZED:
+    begin
+      GDK_WINDOW_MAXIMIZE(PGdkWindowPrivate(PgtkWidget(GtkWindow)^.Window));
+    end;
+
 
   end;
 
@@ -8978,6 +8985,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.414  2005/03/19 09:17:20  mattias
+  gtk1: minimizing windows, missing: window state events  from Andrew Haines
+
   Revision 1.413  2005/03/18 15:32:13  mattias
   next try to fix the crashing when switching focus  from Andrew Haines
 
