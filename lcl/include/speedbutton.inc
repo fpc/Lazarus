@@ -291,6 +291,7 @@ begin
     end;
   end;
 
+  Canvas.Font.Assign(Self.Font);
   Canvas.Font := Self.Font;
   PaintRect := Bounds(Left, Top, Width, Height);
 //  PaintRect := Rect(0, 0, Width, Height);
@@ -673,6 +674,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.20  2002/08/27 06:34:26  lazarus
+  MG: fixed codetools proc collection
+
   Revision 1.19  2002/08/26 17:28:21  lazarus
   MG: fixed speedbutton in designmode
 
