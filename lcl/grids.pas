@@ -2814,16 +2814,16 @@ end;
 procedure TCustomGrid.EditorGetValue;
 begin
   If Not (csDesigning in ComponentState) Then begin
-    EditorHide;
     doEditorGetValue;
+    EditorHide;
   End;
 end;
 
 procedure TCustomGrid.EditorSetValue;
 begin
   If Not (csDesigning in ComponentState) Then begin
-    EditorPos;
     doEditorSetValue;
+    EditorPos;
   End;
 end;
 
