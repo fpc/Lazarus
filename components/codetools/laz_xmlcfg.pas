@@ -278,18 +278,20 @@ begin
   end;
 
   doc:=nil;
-  MemStream:=TMemoryStream.Create;
-  try
+  if FileExists(AFilename) then begin
+    MemStream:=TMemoryStream.Create;
     try
-      ok:=false;
-      MemStream.LoadFromFile(AFilename);
-      ok:=true;
-    except
+      try
+        ok:=false;
+        MemStream.LoadFromFile(AFilename);
+        ok:=true;
+      except
+      end;
+      if ok then
+        ReadXMLFile(doc,MemStream);
+    finally
+      MemStream.Free;
     end;
-    if ok then
-      ReadXMLFile(doc,MemStream);
-  finally
-    MemStream.Free;
   end;
 
   if not Assigned(doc) then
@@ -307,6 +309,9 @@ end;
 end.
 {
   $Log$
+  Revision 1.6  2002/10/09 12:40:25  lazarus
+  MG: reduced exceptions on file not found
+
   Revision 1.5  2002/10/01 09:09:07  lazarus
   MG: added clear and deletepath
 
