@@ -794,6 +794,8 @@ begin
     
     LM_ATTACHMENU: AttachMenu(Sender);
     
+    LM_NB_UpdateTab: UpdateNotebookPageTab(nil,TPage(Sender));
+    
   else begin
     handle := hwnd(ObjectToGtkObject(Sender));
     //???   if handle = nil then assert (false, Format ('Trace:  [TgtkObject.IntSendMessage3] %s --> got handle=nil',[Sender.ClassName]));
@@ -983,12 +985,9 @@ begin
       //TBitBtn
       LM_IMAGECHANGED, LM_LAYOUTCHANGED :
       Begin
-         Assert(False, 'Trace:********************');
-         Assert(False, 'Trace:1');
          box1 := gtk_object_get_data(pgtkObject(handle),'HBox');
          if box1 <> nil then
          begin
-            Assert(False, 'Trace:REMOVING THE HBOX');
             gtk_container_remove(PgtkContainer(box1),gtk_object_get_data(pgtkObject(handle),'Label'));
             PixMapWid:=gtk_object_get_data(pgtkObject(handle),'Pixmap');
             if PixMapWid<>nil then
@@ -1001,19 +1000,15 @@ begin
          if (TBitBtn(Sender).Layout = blGlyphLeft)
          or (TBitBtn(Sender).Layout = blGlyphRight) then
          Begin
-           Assert(False, 'Trace:GLYPHLEFT or GLYPHRIGHT');
            box1 := gtk_hbox_new(False,0);
          end
          else Begin
-           Assert(False, 'Trace:GLYPHTOP or GLYPHBOTTOM');
            box1 := gtk_vbox_new(False,0);
          end;
 
-         Assert(False, 'Trace:2');
          pixmap := pgdkPixmap(
                      PgdiObject(TBitBtn(Sender).Glyph.handle)^.GDIBitmapObject);
-         Assert(False, 'Trace:3');
-         if PgdiObject(TBitBtn(Sender).Glyph.handle)^.GDIBitmapMaskObject <> nil 
+         if PgdiObject(TBitBtn(Sender).Glyph.handle)^.GDIBitmapMaskObject <> nil
          then begin
            PixMapWid := gtk_pixmap_new(pixmap,
              PgdiObject(TBitBtn(Sender).Glyph.handle)^.GDIBitmapMaskObject)
@@ -1021,38 +1016,32 @@ begin
            PixMapWid := gtk_pixmap_new(pixmap,nil);
          end;
 
-         Assert(False, 'Trace:4');
          pStr := StrAlloc(length(TBitBtn(Sender).Caption) + 1);
          StrPCopy(pStr, TBitBtn(Sender).Caption);
          pLabel := gtk_label_new(pstr);
          StrDispose(pStr);
-         Assert(False, 'Trace:5');
          if (TBitBtn(Sender).Layout = blGlyphLeft)
          or (TBitBtn(Sender).Layout = blGlyphTop) then
          begin
-            Assert(False, 'Trace:GLYPHLEFT or GLYPHTOP');
             gtk_box_pack_start(pGTKBox(Box1),PixMapWid,False,False,
               TBitBtn(Sender).Spacing);
             gtk_box_pack_start(pGTKBox(Box1),pLabel,False,False,
               TBitBtn(Sender).Spacing);
          end
          else begin
-            Assert(False, 'Trace:GLYPHRIGHT or GLYPHBOTTOM');
             gtk_box_pack_start(pGTKBox(Box1),pLabel,False,False,
               TBitBtn(Sender).Spacing);
             gtk_box_pack_start(pGTKBox(Box1),PixMapWid,False,False,
               TBitBtn(Sender).Spacing);
          end;
-         Assert(False, 'Trace:6');
          gtk_object_set_data(pgtkObject(handle),'HBox',Box1);
          gtk_object_set_data(pgtkObject(handle),'Label',pLabel);
          gtk_object_set_data(pgtkObject(handle),'Pixmap',PixMapWid);
-         Assert(False, 'Trace:7');
+
          gtk_widget_show(pixmapwid);
          gtk_widget_show(pLabel);
          gtk_container_add(PgtkContainer(handle),box1);
          gtk_widget_show(box1);
-              Assert(False, 'Trace:********************');
       end;
 
 //SH: think of TBitmap.handle!!!!
@@ -1164,7 +1153,6 @@ begin
           
         {$IFDEF ClientRectBugFix}
         if (Sender is TCustomForm) then begin
-          //writeln('CCC1 LM_ShowModal ',Sender.ClassName,' ',TControl(Sender).Left,',',TControl(Sender).Top);
           gtk_window_set_default_size(PgtkWindow(handle),
                                 TControl(Sender).Width,TControl(Sender).Height);
           gtk_widget_set_uposition(PgtkWidget(handle),
@@ -1812,9 +1800,48 @@ end;
   Sets the label text on a widget
  ------------------------------------------------------------------------------}
 procedure TgtkObject.SetLabel(Sender : TObject; Data : Pointer);
+
+  procedure SetNotebookPageTabLabel;
+  var
+    NoteBookWidget: PGtkWidget; // the notebook
+    PageWidget: PGtkWidget;     // the page (content widget)
+    TabWidget: PGtkWidget;      // the tab (hbox containing a pixmap, a label
+                                //          and a close button)
+    TabLabelWidget: PGtkWidget; // the label in the tab
+    MenuWidget: PGtkWidget;  // the popup menu (hbox containing a pixmap and
+                                // a label)
+    MenuLabelWidget: PGtkWidget; // the label in the popup menu item
+    NewText: PChar;
+  begin
+    // dig through the hierachy to get the labels
+    NoteBookWidget:=PGtkWidget((TControl(Sender).Parent).Handle);
+    PageWidget:=PGtkWidget(TWinControl(Sender).Handle);
+    TabWidget:=gtk_notebook_get_tab_label(PGtkNoteBook(NotebookWidget),
+                                          PageWidget);
+    if TabWidget<>nil then
+      TabLabelWidget:=gtk_object_get_data(PGtkObject(TabWidget), 'TabLabel')
+    else
+      TabLabelWidget:=nil;
+    MenuWidget:=gtk_notebook_get_menu_label(PGtkNoteBook(NotebookWidget),
+                                            PageWidget);
+    if MenuWidget<>nil then
+      MenuLabelWidget:=gtk_object_get_data(PGtkObject(MenuWidget), 'TabLabel')
+    else
+      MenuLabelWidget:=nil;
+    // set new text
+    NewText:=PChar(Data);
+    if TabLabelWidget<>nil then
+      gtk_label_set_text(pGtkLabel(TabLabelWidget), NewText);
+    if MenuLabelWidget<>nil then
+      gtk_label_set_text(pGtkLabel(MenuLabelWidget), NewText);
+    //      gtk_notebook_set_tab_label_text(
+    //        PGtkNotebook((TWinControl(Sender).Parent).Handle),
+    //        PGtkWidget(P), PGChar(data));
+  end;
+
 var
-   P : Pointer;
-   pLabel: pchar;
+  P : Pointer;
+  pLabel: pchar;
 begin
   if Sender is TWinControl
     then Assert(False, Format('Trace:  [TgtkObject.SetLabel] %s --> label %s', [Sender.ClassName, TControl(Sender).Caption]))
@@ -1852,8 +1879,8 @@ begin
       csColorDialog,
       csFontDialog  : gtk_window_set_title(pGtkWindow(p),PLabel);
 
-      csLabel       : //gtk_label_set_text(pGtkLabel(p), pLabel);
-                      gtk_label_parse_uline(pGtkLabel(p),pLabel);
+      csLabel       : gtk_label_set_text(pGtkLabel(p), pLabel);
+                      //gtk_label_parse_uline(pGtkLabel(p),pLabel);
 
       csCheckBox    : gtk_label_set_text(
                         pGtkLabel(pgtkCheckButton(p)^.Toggle_Button.Button.Child),
@@ -1875,12 +1902,8 @@ begin
                       end;      
 
       csPage:
-        begin
-          gtk_notebook_set_tab_label_text(
-            PGtkNotebook((TWinControl(Sender).Parent).Handle),
-            PGtkWidget(P), PGChar(data));
-        end;
-        
+        SetNotebookPageTabLabel;
+
       csComboBox    : gtk_entry_set_text(PGtkEntry(PGtkCombo(P)^.entry), PLabel);
    else
       Assert(True, Format ('WARNING: [TgtkObject.SetLabel] --> not handled for class %s ', [Sender.ClassName]));
@@ -3774,36 +3797,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-{       TGtkObject GetLabel                                                    }
-{       *Note: Returns a widgets lable value                                   }
-{------------------------------------------------------------------------------}
-function TgtkObject.GetLabel(CompStyle: Integer; P : Pointer) : String;
-var
-  pLabel: Pointer; 
-  aPChar: PChar;
-begin
-   Result := 'Label';
-   case CompStyle of
-     csLabel: begin
-                gtk_label_get(PGTKLabel(p),@aPChar);
-                Result:=StrPas(aPChar);
-              end;
-
-     csForm : Result := StrPas(PgtkWindow(p)^.Title);
-
-     csPage : begin
-                 pLabel := gtk_notebook_get_tab_label(
-                    PGTKNoteBook(TWinControl(P).Parent.Handle),
-                    PGTKWidget(TWinControl(P).Handle));
-                 if pLabel <> nil then begin
-                   gtk_label_get(pLabel, @aPChar);
-                   Result:=StrPas(aPChar);
-                 end;
-              end;
-   end;
-end;
-
-{------------------------------------------------------------------------------}
 {       TGtkObject AssignSelf                                                  }
 {       *Note: Assigns a pointer to self on a widget                           }
 {------------------------------------------------------------------------------}
@@ -3811,7 +3804,6 @@ procedure TgtkObject.AssignSelf(Child,Data : Pointer);
 begin
    gtk_Object_Set_Data(Pgtkobject(Child),'Self',Data);
 end;
-
 
 {------------------------------------------------------------------------------}
 {       TGtkObject ShowHide                                                    }
@@ -3865,38 +3857,302 @@ begin
   //  writeln('[TgtkObject.ShowHide] END ',Sender.ClassName,' Window=',FormWidget^.Window<>nil);
 end;
 
-{------------------------------------------------------------------------------}
-{       TGtkObject AddNBPage                                                   }
-{       *Note: Add Notebook Page                                               }
-{------------------------------------------------------------------------------}
-procedure TgtkObject.AddNBPage(Parent, Child: TObject; Index: Integer);
+{-------------------------------------------------------------------------------
+  method TGtkObject LoadXPMFromLazResource
+  Params: const ResourceName: string;
+          Window: PGdkWindow;
+          var PixmapImg, PixmapMask: PGdkPixmap
+  Result: none
+
+  Loads the pixmap for the close button in the tabs of the TNoteBook(s).
+-------------------------------------------------------------------------------}
+procedure TGtkObject.LoadXPMFromLazResource(const ResourceName: string;
+  Window: PGdkWindow; var PixmapImg, PixmapMask: PGdkPixmap);
 var
-  pStr: PCHar;
+  ImgData: PPGChar;
 begin
-  Assert(false, 'Trace:Adding a notebook page');
-
-  pStr := StrAlloc(Length(TWinControl(Child).Caption) + 1);
+  PixmapImg:=nil;
+  PixmapMask:=nil;
   try
-    StrPCopy(pStr, TWinControl(Child).Caption);
-
-    gtk_notebook_insert_page(PGtkNotebook(TWinControl(Parent).Handle),
-                             PGtkWidget(TWinControl(Child).Handle),
-                             gtk_label_new(pStr),
-                             Index);
-  finally
-    strDispose(pStr);
+    ImgData:=PPGChar(LazResourceXPMToPPChar(ResourceName));
+  except
+    on e: Exception do
+      writeln('WARNING: TGtkObject.LoadXPMFromLazResource: '+e.Message);
   end;
-//   gtk_object_set_data(PGtkObject(TPage(Child).Handle), '1', pgtkwidget(TWinControl(Parent).handle));
+  PixmapImg:=gdk_pixmap_create_from_xpm_d(Window,@PixmapMask,nil,ImgData);
+  FreeMem(ImgData);
+end;
+
+{-------------------------------------------------------------------------------
+  method TGtkObject GetNoteBookCloseBtnPixmap
+  Params: ANoteBook: TCustomNotebook; APage: TPage
+  Result: none
+
+  Loads the pixmap for the close button in the tabs of the TNoteBook(s).
+-------------------------------------------------------------------------------}
+procedure TgtkObject.GetNoteBookCloseBtnPixmap(Window: PGdkWindow;
+  var Img, Mask: PGdkPixmap);
+begin
+  if (FNoteBookCloseBtnPixmapImg=nil)
+  and (Window<>nil) then begin
+    LoadXPMFromLazResource('tnotebook_close_tab',Window,
+                        FNoteBookCloseBtnPixmapImg,FNoteBookCloseBtnPixmapMask);
+  end;
+  Img:=FNoteBookCloseBtnPixmapImg;
+  Mask:=FNoteBookCloseBtnPixmapMask;
+end;
+
+{-------------------------------------------------------------------------------
+  method TGtkObject UpdateNotebookPageTab
+  Params: ANoteBook: TCustomNotebook; APage: TPage
+  Result: none
+
+  Updates the tab of a page of a notebook. This contains the image to the left
+  side, the label, the close button, the menu image and the menu label.
+-------------------------------------------------------------------------------}
+procedure TgtkObject.UpdateNotebookPageTab(ANoteBook, APage: TObject);
+var
+  TheNoteBook: TCustomNotebook;
+  ThePage: TPage;
+
+  NoteBookWidget: PGtkWidget;  // the notebook
+  PageWidget: PGtkWidget;      // the page (content widget)
+  TabWidget: PGtkWidget;       // the tab (hbox containing a pixmap, a label
+                               //          and a close button)
+  TabPixmapWidget: PGtkWidget; // the pixmap in the tab
+  TabLabelWidget: PGtkWidget;  // the label in the tab
+  TabCloseBtnWidget: PGtkWidget;// the close button in the tab
+  TabCloseBtnPixmapWidget: PGtkWidget; // the pixmap in the close button
+  MenuWidget: PGtkWidget;      // the popup menu (hbox containing a pixmap and
+                               // a label)
+  MenuPixmapWidget: PGtkWidget;// the pixmap in the popup menu item
+  MenuLabelWidget: PGtkWidget; // the label in the popup menu item
+
+  procedure UpdateTabPixmap;
+  var
+    Img: PGdkPixmap;
+    Mask: PGdkBitmap;
+  begin
+    Img:=nil;
+    Mask:=nil;
+    if (TheNoteBook.Images<>nil)
+    and (ThePage.ImageIndex>=0)
+    and (ThePage.ImageIndex<TheNoteBook.Images.Count) then begin
+      // page has valid image
+
+      // ToDo: get Img and Mask
+
+    end;
+
+    if Img<>nil then begin
+      // page has an image
+      if TabPixmapWidget<>nil then begin
+        // there is already a pixmap for the image in the tab
+        // -> replace the image
+        gtk_pixmap_set(PGtkPixmap(TabPixmapWidget),Img,Mask);
+      end else begin
+        // there is no pixmap for the image in the tab
+        // -> insert one ot the left side of the label
+        TabPixmapWidget:=gtk_pixmap_new(Img,Mask);
+        gtk_object_set_data(PGtkObject(TabWidget),'TabPixmap',TabPixmapWidget);
+        gtk_widget_show(TabPixmapWidget);
+        gtk_box_pack_start_defaults(PGtkBox(TabWidget),TabPixmapWidget);
+        gtk_box_reorder_child(PGtkBox(TabWidget),TabPixmapWidget,0);
+      end;
+      if MenuPixmapWidget<>nil then begin
+        // there is already a pixmap for the image in the menu
+        // -> replace the image
+        gtk_pixmap_set(PGtkPixmap(MenuPixmapWidget),Img,Mask);
+      end else begin
+        // there is no pixmap for the image in the menu
+        // -> insert one ot the left side of the label
+        MenuPixmapWidget:=gtk_pixmap_new(Img,Mask);
+        gtk_object_set_data(PGtkObject(MenuWidget),'TabPixmap',MenuPixmapWidget);
+        gtk_widget_show(MenuPixmapWidget);
+        gtk_box_pack_start_defaults(PGtkBox(MenuWidget),MenuPixmapWidget);
+        gtk_box_reorder_child(PGtkBox(MenuWidget),MenuPixmapWidget,0);
+      end;
+    end else begin
+      // page does not have an image
+      if TabPixmapWidget<>nil then begin
+        // there is a pixmap for an old image in the tab
+        // -> remove the pixmap widget
+        gtk_widget_destroy(TabPixmapWidget);
+        gtk_object_set_data(PGtkObject(TabWidget), 'TabPixmap', nil);
+        TabPixmapWidget:=nil;
+      end;
+      if MenuPixmapWidget<>nil then begin
+        // there is a pixmap for an old image in the menu
+        // -> remove the pixmap widget
+        gtk_widget_destroy(MenuPixmapWidget);
+        gtk_object_set_data(PGtkObject(MenuWidget), 'TabPixmap', nil);
+        MenuPixmapWidget:=nil;
+      end;
+    end;
+  end;
+  
+  procedure UpdateTabLabel;
+  var TheCaption: PChar;
+  begin
+    TheCaption := StrAlloc(Length(ThePage.Caption) + 1);
+    try
+      StrPCopy(TheCaption, ThePage.Caption);
+      
+      gtk_label_set_text(PGtkLabel(TabLabelWidget),TheCaption);
+      if MenuLabelWidget<>nil then
+        gtk_label_set_text(PGtkLabel(MenuLabelWidget),TheCaption);
+    finally
+      StrDispose(TheCaption);
+    end;
+  end;
+  
+  procedure UpdateTabCloseBtn;
+  var
+    Img, Mask: PGdkPixmap;
+  begin
+    GetNoteBookCloseBtnPixmap(NoteBookWidget^.Window,Img,Mask);
+    if (nboShowCloseButtons in TheNotebook.Options) and (Img<>nil) then begin
+      // close buttons enabled
+      if TabCloseBtnWidget=nil then begin
+        // there is no close button yet
+        // -> add on to the right side of the label in the tab
+        TabCloseBtnWidget:=gtk_button_new;
+        gtk_object_set_data(PGtkObject(TabWidget), 'TabCloseBtn',
+                            TabCloseBtnWidget);
+        begin
+          // put a pixmap into the button
+          TabCloseBtnPixmapWidget:=gtk_pixmap_new(Img,Mask);
+          gtk_object_set_data(PGtkObject(TabCloseBtnWidget),'TabCloseBtnPixmap',
+                              TabCloseBtnPixmapWidget);
+          gtk_widget_show(TabCloseBtnPixmapWidget);
+          gtk_container_add(PGtkContainer(TabCloseBtnWidget),
+                            TabCloseBtnPixmapWidget);
+        end;
+        gtk_widget_show(TabCloseBtnWidget);
+        gtk_signal_connect(PGtkObject(TabCloseBtnWidget), 'clicked',
+          TGTKSignalFunc(@gtkNoteBookCloseBtnClicked), APage);
+        gtk_box_pack_start_defaults(PGtkBox(TabWidget),TabCloseBtnWidget);
+      end;
+    end else begin
+      // close buttons disabled
+      if TabCloseBtnWidget<>nil then begin
+        // there is a close button
+        // -> remove it
+        gtk_object_set_data(PGtkObject(TabWidget), 'TabCloseBtn',
+                            nil);
+        gtk_widget_destroy(TabCloseBtnWidget);
+        TabCloseBtnWidget:=nil;
+      end;
+    end;
+  end;
+  
+begin
+  ThePage:=TPage(APage);
+  TheNoteBook:=TCustomNotebook(ANoteBook);
+  if (APage=nil) or (not ThePage.HandleAllocated) then exit;
+  if TheNoteBook=nil then begin
+    TheNoteBook:=TCustomNotebook(ThePage.Parent);
+    if TheNoteBook=nil then exit;
+  end;
+  NoteBookWidget:=PGtkWidget(TWinControl(TheNoteBook).Handle);
+  PageWidget:=PGtkWidget(TWinControl(ThePage).Handle);
+
+  // get the tab container and the tab components: pixmap, label and closebtn
+  TabWidget:=gtk_notebook_get_tab_label(PGtkNoteBook(NotebookWidget),
+                                        PageWidget);
+  if TabWidget<>nil then begin
+    TabPixmapWidget:=gtk_object_get_data(PGtkObject(TabWidget), 'TabPixmap');
+    TabLabelWidget:=gtk_object_get_data(PGtkObject(TabWidget), 'TabLabel');
+    TabCloseBtnWidget:=gtk_object_get_data(PGtkObject(TabWidget),'TabCloseBtn');
+  end else begin
+    TabPixmapWidget:=nil;
+    TabLabelWidget:=nil;
+    TabCloseBtnWidget:=nil;
+  end;
+  
+  // get the menu container and its components: pixmap and label
+  MenuWidget:=gtk_notebook_get_menu_label(PGtkNoteBook(NotebookWidget),
+                                             PageWidget);
+  if MenuWidget<>nil then begin
+    MenuPixmapWidget:=gtk_object_get_data(PGtkObject(MenuWidget), 'TabPixmap');
+    MenuLabelWidget:=gtk_object_get_data(PGtkObject(MenuWidget), 'TabLabel');
+  end else begin
+    MenuPixmapWidget:=nil;
+    MenuLabelWidget:=nil;
+  end;
+
+  UpdateTabPixmap;
+  UpdateTabLabel;
+  UpdateTabCloseBtn;
+end;
+
+{-------------------------------------------------------------------------------
+  method TGtkObject AddNBPage
+  Params: ANoteBook, APage: TObject; Index: Integer
+  Result: none
+  
+  Inserts a new page to a notebook at position Index. The ANotebook is a
+  TNoteBook, the APage one of its TPage. Both handles must already be created.
+  ANoteBook Handle is a PGtkNoteBook and APage handle is a PGtkFixed.
+  This procedure creates a new tab with an optional image, the page caption and
+  an optional close button. The image and the caption will also be added to the
+  tab popup menu.
+-------------------------------------------------------------------------------}
+procedure TgtkObject.AddNBPage(ANoteBook, APage: TObject; Index: Integer);
+var
+  NoteBookWidget: PGtkWidget;  // the notebook
+  PageWidget: PGtkWidget;      // the page (content widget)
+  TabWidget: PGtkWidget;       // the tab (hbox containing a pixmap, a label
+                               //          and a close button)
+  TabLabelWidget: PGtkWidget;  // the label in the tab
+  MenuWidget: PGtkWidget;      // the popup menu (hbox containing a pixmap and
+                               // a label)
+  MenuLabelWidget: PGtkWidget; // the label in the popup menu item
+begin
+  NoteBookWidget:=PGtkWidget(TWinControl(ANoteBook).Handle);
+  PageWidget:=PGtkWidget(TWinControl(APage).Handle);
+
+  // create the tab (hbox container)
+  TabWidget:=gtk_hbox_new(false,1);
+  begin
+    gtk_object_set_data(PGtkObject(TabWidget), 'TabPixmap', nil);
+    gtk_object_set_data(PGtkObject(TabWidget), 'TabCloseBtn', nil);
+    // put a label into the tab
+    TabLabelWidget:=gtk_label_new('Unset Value');
+    gtk_object_set_data(PGtkObject(TabWidget), 'TabLabel', TabLabelWidget);
+    gtk_widget_show(TabLabelWidget);
+    gtk_box_pack_start_defaults(PGtkBox(TabWidget),TabLabelWidget);
+  end;
+  gtk_widget_show(TabWidget);
+
+  // create popup menu
+  MenuWidget:=gtk_hbox_new(false,2);
+  begin
+    // put a pixmap into the menu
+    gtk_object_set_data(PGtkObject(MenuWidget), 'TabPixmap', nil);
+    // put a label into the menu
+    MenuLabelWidget:=gtk_label_new('Unset Value');
+    gtk_object_set_data(PGtkObject(MenuWidget), 'TabLabel', MenuLabelWidget);
+    gtk_widget_show(MenuLabelWidget);
+    gtk_box_pack_start_defaults(PGtkBox(MenuWidget),MenuLabelWidget);
+  end;
+
+  gtk_widget_show(MenuWidget);
+  
+  gtk_notebook_insert_page_menu(GTK_NOTEBOOK(NotebookWidget),PageWidget,
+    TabWidget,MenuWidget,Index);
+
+  UpdateNotebookPageTab(TNoteBook(ANoteBook),TPage(APage));
 end;
 
 {------------------------------------------------------------------------------}
 {       TGtkObject RemoveNBPage                                                }
 {       *Note: Remove Notebook Page                                            }
 {------------------------------------------------------------------------------}
-procedure TgtkObject.RemoveNBPage(Parent: TObject; Index: Integer);
+procedure TgtkObject.RemoveNBPage(ANoteBook: TObject; Index: Integer);
 begin
   Assert(false, 'Trace:Removing a notebook page');
-  gtk_notebook_remove_page(PGtkNotebook(TWinControl(Parent).Handle), Index);
+  gtk_notebook_remove_page(PGtkNotebook(TWinControl(ANoteBook).Handle), Index);
 end;
 
 
@@ -4996,6 +5252,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.138  2002/06/08 17:16:04  lazarus
+  MG: added close buttons and images to TNoteBook and close buttons to source editor
+
   Revision 1.137  2002/06/07 07:40:45  lazarus
   MG: goto bookmark now centers the cursor line
 
