@@ -137,6 +137,7 @@ components/synedit/design/tsynmultisyn.xpm -text svneol=native#image/x-xpixmap
 components/synedit/design/tsynpassyn.xpm -text svneol=native#image/x-xpixmap
 components/synedit/design/tsynperlsyn.xpm -text svneol=native#image/x-xpixmap
 components/synedit/design/tsynphpsyn.xpm -text svneol=native#image/x-xpixmap
+components/synedit/design/tsynpythonsyn.xpm -text svneol=native#image/x-xpixmap
 components/synedit/design/tsynsqlsyn.xpm -text svneol=native#image/x-xpixmap
 components/synedit/design/tsyntexsyn.xpm -text svneol=native#image/x-xpixmap
 components/synedit/design/tsynunixshellscriptsyn.xpm -text svneol=native#image/x-xpixmap
