@@ -8,7 +8,7 @@ dirs=lcl components
 exampledirs=examples
 
 [clean]
-units=$(basename $(wildcard *$(PPUEXT))) $(basename $(wildcard ./designer/*$(PPUEXT)))
+units=$(basename $(wildcard *$(PPUEXT))) $(basename $(wildcard ./designer/*$(PPUEXT))) $(basename $(wildcard ./debugger/*$(PPUEXT)))
 files=$(wildcard ./designer/*$(OEXT))
 
 [require]
@@ -18,7 +18,7 @@ packages=fcl gtk
 [dirs]
 # not with the lazarusmake.ini
 # targetdir=.
-unitdir=. ./lcl/units ./components/units ./designer
+unitdir=. ./lcl/units ./components/units ./designer ./debugger
 incdir=. ./include ./include/$(OS_TARGET)
 
 [install]

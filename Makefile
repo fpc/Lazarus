@@ -193,7 +193,7 @@ override EXAMPLEDIROBJECTS+=examples
 
 # Clean
 
-override EXTRACLEANUNITS+=$(basename $(wildcard *$(PPUEXT))) $(basename $(wildcard ./designer/*$(PPUEXT)))
+override EXTRACLEANUNITS+=$(basename $(wildcard *$(PPUEXT))) $(basename $(wildcard ./designer/*$(PPUEXT))) $(basename $(wildcard ./debugger/*$(PPUEXT)))
 override EXTRACLEANFILES+=$(wildcard ./designer/*$(OEXT))
 
 # Install
@@ -206,7 +206,7 @@ ZIPTARGET=install
 
 # Directories
 
-override NEEDUNITDIR=. ./lcl/units ./components/units ./designer
+override NEEDUNITDIR=. ./lcl/units ./components/units ./designer ./debugger
 override NEEDINCDIR=. ./include ./include/$(OS_TARGET)
 
 # Packages

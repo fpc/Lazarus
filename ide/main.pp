@@ -32,7 +32,8 @@ uses
   Project, Sysutils,  Controls, Graphics, ExtCtrls, Dialogs, CompReg,
   DlgMessage, Process, IDEComp, AbstractFormEditor, FormEditor,
   CustomFormEditor, ObjectInspector, ControlSelection, PropEdits, UnitEditor,
-  CompilerOptions, EditorOptions, {CodeTemplateDialog,} EnvironmentOpts;
+  CompilerOptions, EditorOptions, {CodeTemplateDialog,} EnvironmentOpts,
+  DBGDebugger;
 
 const
   Version_String = '0.7';
@@ -1782,6 +1783,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.65  2001/02/25 16:32:48  lazarus
+  MWE:
+    + Added new debugger classes
+
   Revision 1.64  2001/02/23 19:22:20  lazarus
   Added code to create the LFM when saving the file.
   Shane
