@@ -101,11 +101,23 @@ type
     procedure mnuEditSelectToBraceClick(Sender: TObject);
     procedure mnuEditSelectLineClick(Sender: TObject);
     procedure mnuEditSelectParagraphClick(Sender: TObject);
+    procedure mnuEditCompleteCodeClicked(Sender: TObject);
+
+    // edit->insert text->CVS keyword
+    procedure mnuEditInsertCVSAuthorClick(Sender: TObject);
+    procedure mnuEditInsertCVSDateClick(Sender: TObject);
+    procedure mnuEditInsertCVSHeaderClick(Sender: TObject);
+    procedure mnuEditInsertCVSIDClick(Sender: TObject);
+    procedure mnuEditInsertCVSLogClick(Sender: TObject);
+    procedure mnuEditInsertCVSNameClick(Sender: TObject);
+    procedure mnuEditInsertCVSRevisionClick(Sender: TObject);
+    procedure mnuEditInsertCVSSourceClick(Sender: TObject);
+
+    // edit->insert text->general
     procedure mnuEditInsertGPLNoticeClick(Sender: TObject);
     procedure mnuEditInsertUsernameClick(Sender: TObject);
     procedure mnuEditInsertDateTimeClick(Sender: TObject);
     procedure mnuEditInsertChangeLogEntryClick(Sender: TObject);
-    procedure mnuEditCompleteCodeClicked(Sender: TObject);
 
     // search menu
     procedure mnuSearchFindBlockOtherEnd(Sender: TObject);
@@ -1294,11 +1306,23 @@ begin
   itmEditSelectCodeBlock.OnClick:=@mnuEditSelectCodeBlockClick;
   itmEditSelectLine.OnClick:=@mnuEditSelectLineClick;
   itmEditSelectParagraph.OnClick:=@mnuEditSelectParagraphClick;
+  itmEditCompleteCode.OnClick:=@mnuEditCompleteCodeClicked;
+
+  // insert text->CVS keyword
+  itmEditInsertCVSAuthor.OnClick:=@mnuEditInsertCVSAuthorClick;
+  itmEditInsertCVSDate.OnClick:=@mnuEditInsertCVSDateClick;
+  itmEditInsertCVSHeader.OnClick:=@mnuEditInsertCVSHeaderClick;
+  itmEditInsertCVSID.OnClick:=@mnuEditInsertCVSIDClick;
+  itmEditInsertCVSLog.OnClick:=@mnuEditInsertCVSLogClick;
+  itmEditInsertCVSName.OnClick:=@mnuEditInsertCVSNameClick;
+  itmEditInsertCVSRevision.OnClick:=@mnuEditInsertCVSRevisionClick;
+  itmEditInsertCVSSource.OnClick:=@mnuEditInsertCVSSourceClick;
+
+  // insert text->general
   itmEditInsertGPLNotice.OnClick:=@mnuEditInsertGPLNoticeClick;
   itmEditInsertUsername.OnClick:=@mnuEditInsertUsernameClick;
   itmEditInsertDateTime.OnClick:=@mnuEditInsertDateTimeClick;
   itmEditInsertChangeLogEntry.OnClick:=@mnuEditInsertChangeLogEntryClick;
-  itmEditCompleteCode.OnClick:=@mnuEditCompleteCodeClicked;
 end;
 
 procedure TMainIDE.SetupSearchMenu;
@@ -6905,6 +6929,46 @@ begin
   DoCompleteCodeAtCursor;
 end;
 
+procedure TMainIDE.mnuEditInsertCVSAuthorClick(Sender: TObject);
+begin
+  DoEditMenuCommand(ecInsertCVSAuthor);
+end;
+
+procedure TMainIDE.mnuEditInsertCVSDateClick(Sender: TObject);
+begin
+  DoEditMenuCommand(ecInsertCVSDate);
+end;
+
+procedure TMainIDE.mnuEditInsertCVSHeaderClick(Sender: TObject);
+begin
+  DoEditMenuCommand(ecInsertCVSHeader);
+end;
+
+procedure TMainIDE.mnuEditInsertCVSIDClick(Sender: TObject);
+begin
+  DoEditMenuCommand(ecInsertCVSID);
+end;
+
+procedure TMainIDE.mnuEditInsertCVSLogClick(Sender: TObject);
+begin
+  DoEditMenuCommand(ecInsertCVSLog);
+end;
+
+procedure TMainIDE.mnuEditInsertCVSNameClick(Sender: TObject);
+begin
+  DoEditMenuCommand(ecInsertCVSName);
+end;
+
+procedure TMainIDE.mnuEditInsertCVSRevisionClick(Sender: TObject);
+begin
+  DoEditMenuCommand(ecInsertCVSRevision);
+end;
+
+procedure TMainIDE.mnuEditInsertCVSSourceClick(Sender: TObject);
+begin
+  DoEditMenuCommand(ecInsertCVSSource);
+end;
+
 procedure TMainIDE.DoEditMenuCommand(EditorCommand: integer);
 var
   ActiveSourceEditor: TSourceEditor;
@@ -6992,6 +7056,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.376  2002/09/11 13:19:54  lazarus
+  MG: added  CVS keywords
+
   Revision 1.375  2002/09/11 12:18:18  lazarus
   MG: added  insert ChangeLog Entry
 
