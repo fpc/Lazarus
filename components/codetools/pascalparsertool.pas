@@ -538,30 +538,27 @@ begin
     UndoReadNextAtom;
   // clear the last atoms
   LastAtoms.Clear;
-  // start the first class section
+  // start the first class section (always published)
   CreateChildNode;
-  CurNode.StartPos:=CurPos.EndPos;
-  if UpAtomIs('PUBLIC') then
-    CurNode.Desc:=ctnClassPublic
-  else if UpAtomIs('PRIVATE') then
-    CurNode.Desc:=ctnClassPrivate
-  else if UpAtomIs('PROTECTED') then
-    CurNode.Desc:=ctnClassProtected
-  else begin
-    CurNode.Desc:=ctnClassPublished;
-    if AtomIsChar('[') then begin
-      // read GUID
-      ReadNextAtom;
-      if not AtomIsStringConstant then
-        RaiseException('string constant expected, but '+GetAtom+' found');
-      if not ReadNextAtomIsChar(']') then
-        RaiseException('] expected, but '+GetAtom+' found');
-      ReadNextAtom;
-      if (not (AtomIsChar(';') or UpAtomIs('END'))) then
-        RaiseException('; expected, but '+GetAtom+' found');
-      ReadNextAtom;
-    end;
-  end;
+  CurNode.Desc:=ctnClassPublished;
+  CurNode.StartPos:=CurPos.EndPos; // behind 'class'
+  ReadNextAtom;
+  if AtomIsChar('[') then begin
+    CreateChildNode;
+    CurNode.Desc:=ctnClassGUID;
+    // read GUID
+    ReadNextAtom;
+    if not AtomIsStringConstant then
+      RaiseException('string constant expected, but '+GetAtom+' found');
+    if not ReadNextAtomIsChar(']') then
+      RaiseException('] expected, but '+GetAtom+' found');
+    ReadNextAtom;
+    if (not (AtomIsChar(';') or UpAtomIs('END'))) then
+      RaiseException('; expected, but '+GetAtom+' found');
+    CurNode.EndPos:=CurPos.EndPos;
+    EndChildNode;
+  end else
+    UndoReadNextAtom;
   // parse till "end" of class/object
   CurKeyWordFuncList:=InnerClassKeyWordFuncList;
   try

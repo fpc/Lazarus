@@ -416,7 +416,7 @@ function TSourceChangeCache.Apply: boolean;
 var CurNode, PrecNode: TAVLTreeNode;
   CurEntry, PrecEntry, FirstEntry: TSourceChangeCacheEntry;
   InsertText: string;
-  i, j, NeededLineEnds, NeededIndent: integer;
+  i, j, NeededLineEnds, NeededIndent, FromPosAdjustment: integer;
   BetweenGap: TGapTyp;
   Abort: boolean;
 begin
@@ -470,6 +470,8 @@ writeln('TSourceChangeCache.Apply Pos=',FirstEntry.FromPos,'-',FirstEntry.ToPos,
           end;
       end;
       if FirstEntry.AfterGap in [gtNewLine,gtEmptyLine] then begin
+        // move the rest of the line behind the insert position to the next line
+        // with auto indent
         NeededIndent:=GetLineIndent(MainScanner.Src,FirstEntry.ToPos);
         j:=FirstEntry.ToPos;
         while (j<=MainScanner.SrcLen) and (IsSpaceChar[MainScanner.Src[j]]) do
@@ -504,6 +506,7 @@ writeln('TSourceChangeCache.Apply Pos=',FirstEntry.FromPos,'-',FirstEntry.ToPos,
         PrecNode:=FEntries.FindPrecessor(CurNode);
       end;
       // add front gap
+      NeededLineEnds:=0;
       case CurEntry.FrontGap of
         gtSpace:
           begin
@@ -526,10 +529,21 @@ writeln('TSourceChangeCache.Apply Pos=',FirstEntry.FromPos,'-',FirstEntry.ToPos,
               InsertText:=BeautifyCodeOptions.LineEnd+InsertText;
           end;
       end;
+      FromPosAdjustment:=0;
+      if (CurEntry.FrontGap in [gtNewLine,gtEmptyLine]) and (NeededLineEnds=0)
+      then begin
+        // no line end was inserted in front
+        // -> adjust the FromPos to replace the space in the existing line
+        while (FirstEntry.FromPos+FromPosAdjustment>1)
+        and (not (MainScanner.Src[FirstEntry.FromPos+FromPosAdjustment-1]
+          in [#10,#13]))
+        do dec(FromPosAdjustment);
+      end;
       // delete old text in code buffers
-      DeleteOldText(FirstEntry.FromPos,FirstEntry.ToPos);
+      DeleteOldText(FirstEntry.FromPos+FromPosAdjustment,FirstEntry.ToPos);
       // insert new text
-      InsertNewText(FirstEntry.FromCode,FirstEntry.FromDirectPos,InsertText);
+      InsertNewText(FirstEntry.FromCode,
+                    FirstEntry.FromDirectPos+FromPosAdjustment,InsertText);
       CurNode:=PrecNode;
     end;
   finally

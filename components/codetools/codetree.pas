@@ -77,6 +77,7 @@ const
   ctnClassPrivate    = 32;
   ctnClassProtected  = 33;
   ctnClassPublic     = 34;
+  ctnClassGUID       = 35;
 
   ctnProperty        = 40;
   

@@ -598,6 +598,7 @@ var ANodeExt: TCodeTreeNodeExtension;
   IsVariable: boolean;
 begin
   ANodeExt:=FirstInsert;
+  // insert all nodes of specific type
   while ANodeExt<>nil do begin
     IsVariable:=NodeExtIsVariable(ANodeExt);
     if ((PartType=ncpVars)=IsVariable) then begin
@@ -607,23 +608,7 @@ begin
         PrivatNode:=PrivatNode.PriorBrother;
       if PrivatNode=nil then begin
         // there is no privat section node in front of the property
-        if NewPrivatSectionInsertPos<1 then begin
-          // -> insert one at the end of the first published node
-          // Note: the first node is a fake published section, so the first
-          //       real section is the second
-          ANode:=ClassNode.FirstChild.NextBrother;
-          if ANode=nil then ANode:=ClassNode;
-          NewPrivatSectionIndent:=GetLineIndent(Src,ANode.StartPos);
-          ANode:=ClassNode.FirstChild;
-          if (ANode.FirstChild=nil) and (ANode.NextBrother<>nil)
-          and (ANode.NextBrother.Desc=ctnClassPublished) then
-            ANode:=ANode.NextBrother;
-          NewPrivatSectionInsertPos:=ANode.EndPos;
-          ASourceChangeCache.Replace(gtNewLine,gtNewLine,
-            NewPrivatSectionInsertPos,NewPrivatSectionInsertPos,
-            ASourceChangeCache.BeautifyCodeOptions.BeautifyKeyWord(
-              'private'));
-        end;
+        // -> insert in the new one
         Indent:=NewPrivatSectionIndent
                     +ASourceChangeCache.BeautifyCodeOptions.Indent;
         InsertPos:=NewPrivatSectionInsertPos;
@@ -711,14 +696,65 @@ begin
 end;
   
 function TCodeCompletionCodeTool.InsertAllNewClassParts: boolean;
+var ANodeExt: TCodeTreeNodeExtension;
+  PrivatNode, ANode, TopMostNode: TCodeTreeNode;
+  PublishedNeeded: boolean;
 begin
   if FirstInsert=nil then begin
     Result:=true;
     exit;
   end;
   NewPrivatSectionInsertPos:=-1;
+  // search topmost node
+  TopMostNode:=nil;
+  ANodeExt:=FirstInsert;
+  while ANodeExt<>nil do begin
+    if (TopMostNode=nil) or (TopMostNode.StartPos>ANodeExt.Node.StartPos) then
+      TopMostNode:=ANodeExt.Node;
+    ANodeExt:=ANodeExt.Next;
+  end;
+  // search privat section in front of topmost node
+  PrivatNode:=TopMostNode.Parent.PriorBrother;
+  while (PrivatNode<>nil) and (PrivatNode.Desc<>ctnClassPrivate) do
+    PrivatNode:=PrivatNode.PriorBrother;
+  PublishedNeeded:=false;
+  if PrivatNode=nil then begin
+    { Insert a new private section in front of topmost node
+      normally the best place for a new private section is at the end of
+      the first published section. But if a privat variable is already
+      needed in the first published section, then the new private section
+      must be inserted in front of all }
+    if (ClassNode.FirstChild.EndPos>TopMostNode.StartPos) then begin
+      // topmost node is in the first section
+      // -> insert as the first section
+      ANode:=ClassNode.FirstChild;
+      NewPrivatSectionIndent:=GetLineIndent(Src,ANode.StartPos);
+      if (ANode.FirstChild<>nil) and (ANode.FirstChild.Desc<>ctnClassGUID) then
+        NewPrivatSectionInsertPos:=ANode.StartPos
+      else
+        NewPrivatSectionInsertPos:=ANode.FirstChild.EndPos;
+      PublishedNeeded:=CompareNodeIdentChars(ANode,'PUBLISHED')<>0;
+    end else begin
+      // default: insert new privat section behind first published section
+      ANode:=ClassNode.FirstChild;
+      NewPrivatSectionIndent:=GetLineIndent(Src,ANode.StartPos);
+      NewPrivatSectionInsertPos:=ANode.EndPos;
+    end;
+    ASourceChangeCache.Replace(gtNewLine,gtNewLine,
+      NewPrivatSectionInsertPos,NewPrivatSectionInsertPos,
+      GetIndentStr(NewPrivatSectionIndent)+
+        ASourceChangeCache.BeautifyCodeOptions.BeautifyKeyWord('private'));
+  end;
+
   InsertNewClassParts(ncpVars);
   InsertNewClassParts(ncpProcs);
+  
+  if PublishedNeeded then begin
+    ASourceChangeCache.Replace(gtNewLine,gtNewLine,
+      NewPrivatSectionInsertPos,NewPrivatSectionInsertPos,
+      GetIndentStr(NewPrivatSectionIndent)+
+        ASourceChangeCache.BeautifyCodeOptions.BeautifyKeyWord('published'));
+  end;
   Result:=true;
 end;
 
