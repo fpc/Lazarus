@@ -466,11 +466,6 @@ begin
       VirtualKey := VK_IRREGULAR;
   end;
 
-//writeln('GetGTKKeyInfo Event^.KeyVal=',Event^.KeyVal,' KeyCode=',KeyCode
-//,' VirtualKey=',VirtualKey
-//,' SysKey=',SysKey,' Extended=',Extended,' Toggle=',Toggle);
-
-//  Assert(False, Format('Trace:[GetGTKKeyInfo] Event^.KeyVal %d, Event^.State %d, KeyCode %d, VirtualKey %d, SysKey %d, Extended %d, CtrlDown %d', [Integer(Event^.KeyVal), Integer(Event^.State), Integer(KeyCode), Integer(VirtualKey), Integer(SysKey), Integer(Extended), Integer(CtrlDown)]));
 end;
 
 {------------------------------------------------------------------------------
@@ -483,21 +478,14 @@ end;
  ------------------------------------------------------------------------------}
 function DeliverMessage(const Target: Pointer; var Message): Integer;
 begin
-(*
-  // Logging
-  if Target = nil 
-  then Assert(False, 'Trace:[DeliverMessage] nil')
-  else Assert(False, Format('Trace:[DeliverMessage] %s --> %d'
-     , [TObject(Target).ClassName, TLMessage(Message).msg]));
-*)  
-//  Assert(False, 'Trace:Delivering message');
-if Target=nil then writeln('[DeliverMessage] nil');
-  if TObject(Target) is TControl 
-  then begin
-//    Assert(False, 'Trace:Calling TControl');
+
+if Target=nil then writeln('[DeliverMessage] Target = nil');
+  if TObject(Target) is TControl then
+  begin
     TControl(Target).WindowProc(TLMessage(Message));
-  end else begin
-//    Assert(False, 'Trace:Calling TObject');
+  end
+  else
+  begin
     TObject(Target).Dispatch(TLMessage(Message));
   end;
   
@@ -911,6 +899,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.30  2002/03/25 17:59:23  lazarus
+  GTK Cleanup
+  Shane
+
   Revision 1.29  2002/02/18 22:46:11  lazarus
   Implented TMenuItem.ShortCut (not much tested).
 
