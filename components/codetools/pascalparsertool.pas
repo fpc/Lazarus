@@ -846,7 +846,6 @@ function TPascalParserTool.KeyWordFuncClassVarTypeRecord: boolean;
 var Level: integer;
 begin
   Level:=1;
-  DoProgress;
   while (CurPos.StartPos<=SrcLen) and (Level>0) do begin
     ReadNextAtom;
     if CurPos.Flag=cafRECORD then inc(Level)
@@ -1687,7 +1686,6 @@ end;
 function TPascalParserTool.DoAtom: boolean;
 begin
 //writeln('[TPascalParserTool.DoAtom] A ',HexStr(Cardinal(CurKeyWordFuncList),8));
-  DoProgress;
   if (CurPos.StartPos<=SrcLen) and (CurPos.EndPos>CurPos.StartPos) then begin
     if IsIdentStartChar[Src[CurPos.StartPos]] then
       Result:=CurKeyWordFuncList.DoItUpperCase(UpperSrc,CurPos.StartPos,
@@ -1776,7 +1774,6 @@ begin
         CurNode.Desc:=ctnFinalization;
       CurSection:=CurNode.Desc;
       repeat
-        DoProgress;
         ReadNextAtom;
         if (CurSection=ctnInitialization) and UpAtomIs('FINALIZATION') then
         begin
@@ -1974,7 +1971,6 @@ begin
     RaiseUnknownBlockType;
   BlockStartPos:=CurPos.StartPos;
   repeat
-    DoProgress;
     ReadNextAtom;
     if (CurPos.StartPos>SrcLen) then
       SaveRaiseExceptionWithBlockStartHint(ctsUnexpectedEndOfSource);
@@ -2207,7 +2203,6 @@ begin
   end else begin
     // read till semicolon or 'end'
     while (CurPos.Flag<>cafSemicolon) do begin
-      DoProgress;
       ReadNextAtom;
       if CurPos.Flag=cafEND then begin
         UndoReadNextAtom;
@@ -2415,7 +2410,6 @@ begin
   CurNode.Desc:=ctnTypeSection;
   // read all type definitions  Name = Type;
   repeat
-    DoProgress;
     ReadNextAtom;  // name
     if AtomIsIdentifier(false) then begin
       CreateChildNode;
@@ -2466,7 +2460,6 @@ begin
   CurNode.Desc:=ctnVarSection;
   // read all variable definitions  Name : Type; [cvar;] [public [name '']]
   repeat
-    DoProgress;
     ReadNextAtom;  // name
     if AtomIsIdentifier(false) then begin
       CreateChildNode;
@@ -2516,7 +2509,6 @@ begin
   CurNode.Desc:=ctnConstSection;
   // read all constants  Name = <Const>; or Name : type = <Const>;
   repeat
-    DoProgress;
     ReadNextAtom;  // name
     if AtomIsIdentifier(false) then begin
       CreateChildNode;
@@ -2572,7 +2564,6 @@ begin
   CurNode.Desc:=ctnResStrSection;
   // read all string constants Name = 'abc';
   repeat
-    DoProgress;
     ReadNextAtom;  // name
     if AtomIsIdentifier(false) then begin
       CreateChildNode;
@@ -2703,7 +2694,6 @@ begin
         inc(Level);
       ReadNextAtom;
     end;
-    DoProgress;
     if (CurPos.StartPos>SrcLen) then
       SaveRaiseException(ctsEndForClassNotFound);
   end;

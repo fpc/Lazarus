@@ -40,11 +40,10 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, LCLType, LCLLinux, Compiler, StdCtrls, Forms,
-  Buttons, Menus, ComCtrls, Spin, SysUtils, FileCtrl,
-  Controls, Graphics, ExtCtrls, Dialogs, CodeToolManager, CodeCache,
-  SynEditKeyCmds, LazConf, LazarusIDEStrConsts, ProjectDefs, Project,
-  BuildLazDialog,
+  Classes, LCLType, LCLLinux, StdCtrls, Buttons, Menus, ComCtrls, SysUtils,
+  Controls, Graphics, ExtCtrls, Dialogs, FileCtrl, Forms, CodeToolManager,
+  CodeCache, SynEditKeyCmds, LazConf, LazarusIDEStrConsts, ProjectDefs, Project,
+  BuildLazDialog, Compiler,
   {$IFDEF EnablePkgs}
   ComponentReg,
   {$ELSE}

@@ -56,6 +56,7 @@ interface
 { $DEFINE ShowTriedContexts}
 { $DEFINE ShowTriedParentContexts}
 { $DEFINE ShowTriedIdentifiers}
+{ $DEFINE ShowTriedUnits}
 { $DEFINE ShowExprEval}
 { $DEFINE ShowFoundIdentifier}
 { $DEFINE ShowInterfaceCache}
@@ -188,9 +189,14 @@ type
       fdfDoNotCache
     );
   TFoundDeclarationFlags = set of TFoundDeclarationFlag;
-
+  
+const
+  FoundDeclarationFlagNames: array[TFoundDeclarationFlag] of string = (
+      'fdfDoNotCache'
+    );
 
   //----------------------------------------------------------------------------
+type
   TFindDeclarationParams = class;
   
   TFindContext = record
@@ -425,6 +431,7 @@ type
     procedure ClearResult;
     procedure ClearInput;
     procedure ClearFoundProc;
+    procedure WriteDebugReport;
   end;
   
   
@@ -639,6 +646,8 @@ function FindContextAreEqual(const Context1, Context2: TFindContext): boolean;
 function PredefinedIdentToExprTypeDesc(Identifier: PChar): TExpressionTypeDesc;
 function FindDeclarationFlagsAsString(
   const Flags: TFindDeclarationFlags): string;
+function FoundDeclarationFlagsAsString(
+  const Flags: TFoundDeclarationFlags): string;
 
 
 implementation
@@ -654,6 +663,20 @@ begin
       if Result<>'' then
         Result:=Result+', ';
       Result:=Result+FindDeclarationFlagNames[Flag];
+    end;
+  end;
+end;
+
+function FoundDeclarationFlagsAsString(
+  const Flags: TFoundDeclarationFlags): string;
+var Flag: TFoundDeclarationFlag;
+begin
+  Result:='';
+  for Flag:=Low(TFoundDeclarationFlag) to High(TFoundDeclarationFlag) do begin
+    if Flag in Flags then begin
+      if Result<>'' then
+        Result:=Result+', ';
+      Result:=Result+FoundDeclarationFlagNames[Flag];
     end;
   end;
 end;
@@ -3049,7 +3072,7 @@ function TFindDeclarationTool.FindIdentifierInUsesSection(
 var
   InAtom, UnitNameAtom: TAtomPosition;
   NewCodeTool: TFindDeclarationTool;
-  OldInput: TFindDeclarationInput;
+  OldFlags: TFindDeclarationFlags;
 begin
   Result:=false;
   MoveCursorToUsesEnd(UsesNode);
@@ -3069,13 +3092,18 @@ begin
       end;
     end else begin
       // open the unit
+      {$IFDEF ShowTriedUnits}
+      writeln('TFindDeclarationTool.FindIdentifierInUsesSection Self=',MainFilename,
+        ' UnitName=',GetAtom(UnitNameAtom));
+      Params.WriteDebugReport;
+      {$ENDIF}
       NewCodeTool:=OpenCodeToolForUnit(UnitNameAtom,InAtom,false);
       // search the identifier in the interface of the used unit
-      Params.Save(OldInput);
+      OldFlags:=Params.Flags;
       Params.Flags:=[fdfIgnoreUsedUnits]+(fdfGlobalsSameIdent*Params.Flags)
                    -[fdfExceptionOnNotFound];
       Result:=NewCodeTool.FindIdentifierInInterface(Self,Params);
-      Params.Load(OldInput);
+      Params.Flags:=OldFlags;
       if Result then exit;
       // restore the cursor
       MoveCursorToCleanPos(UnitNameAtom.StartPos);
@@ -3132,6 +3160,15 @@ var InterfaceNode: TCodeTreeNode;
   SrcIsUsable: boolean;
   OldInput: TFindDeclarationInput;
   CacheEntry: PInterfaceIdentCacheEntry;
+  
+  procedure RaiseWrongContext;
+  begin
+    writeln('TFindDeclarationTool.FindIdentifierInInterface.RaiseWrongContext');
+    Params.WriteDebugReport;
+    SaveRaiseException('TFindDeclarationTool.FindIdentifierInInterface '
+                      +'Internal Error: Wrong CodeTool');
+  end;
+  
 begin
   Result:=false;
   // build code tree
@@ -3191,7 +3228,8 @@ begin
     RaiseException(ctsInterfaceSectionNotFound);
   Params.Save(OldInput);
   Params.Flags:=(fdfGlobalsSameIdent*Params.Flags)
-                -[fdfExceptionOnNotFound,fdfSearchInParentNodes];
+                -[fdfExceptionOnNotFound,fdfSearchInParentNodes]
+                +[fdfIgnoreUsedUnits];
   Params.ContextNode:=InterfaceNode;
   Result:=FindIdentifierInContext(Params);
   Params.Load(OldInput);
@@ -3199,13 +3237,15 @@ begin
   // save result in cache
   if FInterfaceIdentifierCache=nil then
     FInterfaceIdentifierCache:=TInterfaceIdentifierCache.Create(Self);
-  if Result and (not (fdfCollect in Params.Flags)) then begin
+  if Result then begin
     // identifier exists in interface
-    if (Params.NewNode.Desc<>ctnProcedure) then begin
+    if Params.NewCodeTool<>Self then RaiseWrongContext;
+    if (not (fdfDoNotCache in Params.NewFlags))
+    and (not (fdfCollect in Params.Flags)) then begin
       FInterfaceIdentifierCache.Add(OldInput.Identifier,Params.NewNode,
         Params.NewCleanPos);
     end else begin
-      // do not save proc identifiers
+      // do not save proc identifiers or collect results
     end;
   end else
     // identifier does not exist in interface
@@ -5856,6 +5896,49 @@ begin
   end;
   Dispose(FoundProc);
   FoundProc:=nil;
+end;
+
+procedure TFindDeclarationParams.WriteDebugReport;
+begin
+  writeln('TFindDeclarationParams.WriteDebugReport Self=',HexStr(Cardinal(Self),8));
+
+  // input parameters:
+  writeln(' Flags=',FindDeclarationFlagsAsString(Flags));
+  writeln(' Identifier=',GetIdentifier(Identifier));
+  if ContextNode<>nil then
+    writeln(' ContextNode=',ContextNode.DescAsString)
+  else
+    writeln(' ContextNode=nil');
+  if OnIdentifierFound<>nil then
+    writeln(' OnIdentifierFound=',TFindDeclarationTool(TMethod(OnIdentifierFound).Data).MainFilename);
+  if IdentifierTool<>nil then
+    writeln(' IdentifierTool=',IdentifierTool.MainFilename)
+  else
+    writeln(' IdentifierTool=nil');
+  if FoundProc<>nil then begin
+    writeln(' FoundProc<>nil');
+  end;
+
+  // global params
+  if OnTopLvlIdentifierFound<>nil then
+    writeln(' OnTopLvlIdentifierFound=',TFindDeclarationTool(TMethod(OnTopLvlIdentifierFound).Code).MainFilename);
+
+  // results:
+  if NewNode<>nil then
+    writeln(' NewNode=',NewNode.DescAsString)
+  else
+    writeln(' NewNode=nil');
+  writeln(' NewCleanPos=',NewCleanPos);
+  if NewCodeTool<>nil then
+    writeln(' NewCodeTool=',NewCodeTool.MainFilename)
+  else
+    writeln(' NewCodeTool=nil');
+  if NewPos.Code<>nil then
+    writeln(' NewPos=',NewPos.Code.Filename,' x=',NewPos.X,' y=',NewPos.Y,' topline=',NewTopLine)
+  else
+    writeln(' NewPos=nil');
+  writeln(' NewFlags=',FoundDeclarationFlagsAsString(NewFlags));
+  writeln('');
 end;
 
 procedure TFindDeclarationParams.SetIdentifier(
