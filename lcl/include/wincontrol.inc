@@ -1011,7 +1011,7 @@ Begin
         then  Message.Result := HTCLIENT;
         Exit;
       end;
-    LM_MOUSEFIRST..LM_MOUSELAST:
+    LM_MOUSEFIRST..LM_MOUSELAST,LM_MOUSEFIRST2..LM_MOUSELAST2:
        begin
          {$IFDEF VerboseMouseBugfix}
          writeln('TWinControl.WndPRoc A ',Name,':',ClassName);
@@ -2299,6 +2299,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.83  2002/09/01 16:11:22  lazarus
+  MG: double, triple and quad clicks now works
+
   Revision 1.82  2002/08/31 11:37:09  lazarus
   MG: fixed destroying combobox
 
