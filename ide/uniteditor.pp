@@ -49,7 +49,7 @@ uses
   Extctrls, Menus, FindInFilesDlg, LMessages, IDEProcs, IDEOptionDefs,
   InputHistory, LazarusIDEStrConsts, BaseDebugManager, Debugger, FileCtrl,
   LCLType, LCLLinux, TypInfo, LResources, LazConf, EnvironmentOpts,
-  SourceEditProcs, SortSelectionDlg, ClipBoardHistory;
+  SourceEditProcs, SortSelectionDlg, ClipBoardHistory, DiffDialog;
 
 type
   TSourceNoteBook = class;
@@ -228,6 +228,8 @@ type
     procedure RemoveBreakPoint(const ALine: Integer); overload;
     
     // selections
+    function SelectionAvailable: boolean;
+    function GetText(OnlySelection: boolean): string;
     Procedure SelectText(LineNum,CharStart,LineNum2,CharEnd : Integer);
     procedure ReplaceLines(StartLine, EndLine: integer; const NewText: string);
     procedure UpperCaseSelection;
@@ -250,15 +252,18 @@ type
     // editor commands
     procedure DoEditorExecuteCommand(EditorCommand: integer);
 
-    //used to get the word at the mouse cursor
+    // used to get the word at the mouse cursor
     Function GetWordAtPosition(Position : TPoint) : String;
     function GetWordFromCaret(const ACaretPos: TPoint) : String;
     Function GetWordAtCurrentCaret: String;
 
+    // cursor
     Function GetCaretPosFromCursorPos(CursorPos : TPoint) : TPoint;
     procedure CenterCursor;
     
+    // notebook
     procedure Activate;
+    function PageIndex: integer;
   public
     // properties
     property CodeBuffer: TCodeBuffer read FCodeBuffer write SetCodeBuffer;
@@ -461,6 +466,9 @@ type
     procedure SetActiveSE(SrcEdit: TSourceEditor);
     procedure LockAllEditorsInSourceChangeCache;
     procedure UnlockAllEditorsInSourceChangeCache;
+    function GetDiffFiles: TDiffFiles;
+    procedure GetText(PageIndex: integer; OnlySelection: boolean;
+                      var Source: string);
 
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -488,13 +496,16 @@ type
     procedure FindInFilesClicked(Sender : TObject);
     procedure ReplaceClicked(Sender : TObject);
     procedure IncrementalFindClicked(Sender : TObject);
+    
     procedure GotoLineClicked(Sender: TObject);
+    
     procedure HistoryJump(Sender: TObject; Action: TJumpHistoryAction);
     procedure JumpBackClicked(Sender: TObject);
     procedure JumpForwardClicked(Sender: TObject);
     procedure AddJumpPointClicked(Sender: TObject);
     procedure DeleteLastJumpPointClicked(Sender: TObject);
     procedure ViewJumpHistoryClicked(Sender: TObject);
+    
     procedure ActivateHint(const ScreenPos: TPoint; const TheHint: string);
     
     Procedure NewFile(const NewShortName: String; ASource : TCodeBuffer);
@@ -1161,6 +1172,19 @@ end;
 procedure TSourceEditor.RemoveBreakPoint(const ALine: Integer);
 begin
   RemoveBreakPoint(GetBreakPointMark(ALine));
+end;
+
+function TSourceEditor.SelectionAvailable: boolean;
+begin
+  Result:=CompareCaret(EditorComponent.BlockBegin,EditorComponent.BlockEnd)<>0;
+end;
+
+function TSourceEditor.GetText(OnlySelection: boolean): string;
+begin
+  if OnlySelection then
+    Result:=EditorComponent.SelText
+  else
+    Result:=EditorComponent.Lines.Text;
 end;
 
 {-------------------------------------------------------------------------------
@@ -1859,6 +1883,11 @@ procedure TSourceEditor.Activate;
 begin
   if (FSourceNoteBook=nil) then exit;
   FSourceNoteBook.SetActiveSE(Self);
+end;
+
+function TSourceEditor.PageIndex: integer;
+begin
+  Result:=FSourceNoteBook.FindPageWithEditor(Self);
 end;
 
 Function TSourceEditor.GetWordAtCurrentCaret: String;
@@ -2957,6 +2986,31 @@ begin
       end;
     end;
   end;
+end;
+
+function TSourceNotebook.GetDiffFiles: TDiffFiles;
+var
+  i: Integer;
+  SrcEdit: TSourceEditor;
+begin
+  Result:=TDiffFiles.Create;
+  if Notebook=nil then exit;
+  for i:=0 to NoteBook.PageCount-1 do begin
+    SrcEdit:=FindSourceEditorWithPageIndex(i);
+    Result.Add(TDiffFile.Create(NoteBook.Pages[i],i,SrcEdit.SelectionAvailable));
+  end;
+end;
+
+procedure TSourceNotebook.GetText(PageIndex: integer; OnlySelection: boolean;
+  var Source: string);
+var
+  SrcEdit: TSourceEditor;
+begin
+  SrcEdit:=FindSourceEditorWithPageIndex(PageIndex);
+  if SrcEdit=nil then
+    Source:=''
+  else
+    Source:=SrcEdit.GetText(OnlySelection);
 end;
 
 Function TSourceNotebook.Empty : Boolean;
