@@ -109,7 +109,7 @@ type
     FListObject: TObject;
     FOnHeaderClick: THdrEvent;
     FOnHeaderSized: THdrEvent;
-    FPropertyEditorHook: TPropertyEditorHook;
+    FHeaderPropHook: TPropertyEditorHook;
     FSaveOnChangeTIObject: boolean;
     FTIStates: TTIGridStates;
     FTIObjectCount: integer;
@@ -154,7 +154,7 @@ type
                                            write FSaveOnChangeTIObject
                                            default true;
     property Filter: TTypeKinds read FFilter write SetFilter default AllTypeKinds;
-    property PropertyEditorHook: TPropertyEditorHook read FPropertyEditorHook;
+    property PropertyEditorHook: TPropertyEditorHook read FHeaderPropHook;
     property TIObjectCount: integer read FTIObjectCount;
     property PropertyCount: integer read GetPropertyCount;
     property Properties[Index: integer]: TTIGridProperty read GetProperties;
@@ -291,9 +291,9 @@ begin
     exit;
   end;
   // get header properties
-  FPropertyEditorHook.LookupRoot:=CurItem;
+  FHeaderPropHook.LookupRoot:=CurItem;
   ClearProperties;
-  GetPersistentProperties(CurItem, FFilter, FPropertyEditorHook,
+  GetPersistentProperties(CurItem, FFilter, FHeaderPropHook,
     @AddHeaderPropertyEditor,nil);
   PropCount:=PropertyCount;
   if ListDirection=tldObjectsAsRows then begin
@@ -355,7 +355,7 @@ end;
 constructor TTICustomGrid.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  FPropertyEditorHook:=TPropertyEditorHook.Create;
+  FHeaderPropHook:=TPropertyEditorHook.Create;
   FFilter:=[{tkUnknown,}tkInteger,tkChar,tkEnumeration,
             tkFloat,{tkSet,tkMethod,}tkSString,tkLString,tkAString,
             tkWString,tkVariant,{tkArray,tkRecord,tkInterface,}
@@ -369,7 +369,7 @@ destructor TTICustomGrid.Destroy;
 begin
   ClearProperties;
   FreeThenNil(FProperties);
-  FreeThenNil(FPropertyEditorHook);
+  FreeThenNil(FHeaderPropHook);
   inherited Destroy;
 end;
 
@@ -438,47 +438,55 @@ var
   PersistentList: TPersistentSelectionList;
   ok: Boolean;
   CurObject: TPersistent;
+  IsHeader: Boolean;
 begin
   PropEditor:=nil;
   IndependentEditor:=true;
   if ListDirection=tldObjectsAsRows then begin
     ObjectIndex:=aRow-FixedRows;
     PropertyIndex:=aCol-FixedCols;
+    IsHeader:=(aRow>=0) and (aRow<FixedRows);
   end else begin
     ObjectIndex:=aCol-FixedCols;
     PropertyIndex:=aRow-FixedRows;
+    IsHeader:=(aCol>=0) and (aCol<FixedCols);
   end;
-  if (PropertyIndex>=0) and (PropertyIndex<PropertyCount)
-  and (ObjectIndex>=0) and (ObjectIndex<TIObjectCount) then begin
-    CurObject:=GetTIObject(ObjectIndex);
-    if CurObject<>nil then begin
-      ok:=false;
-      Hook:=nil;
-      PersistentList:=nil;
-      try
-        Hook:=TPropertyEditorHook.Create;
-        Hook.LookupRoot:=CurObject;
-        PersistentList:=TPersistentSelectionList.Create;
-        PersistentList.Add(CurObject);
-        GridProperty:=Properties[PropertyIndex];
-        EditorClass:=TPropertyEditorClass(GridProperty.Editor.ClassType);
-        PropEditor:=EditorClass.Create(Hook,PersistentList,1);
-        PropEditor.SetPropEntry(0,CurObject,GridProperty.PropInfo);
-        PropEditor.Initialize;
-        ok:=true;
-      finally
-        if not ok then begin
-          try
-            PropEditor.free;
-          except
-          end;
-          try
-            PersistentList.free;
-          except
-          end;
-          try
-            Hook.free;
-          except
+  if (PropertyIndex>=0) and (PropertyIndex<PropertyCount) then begin
+    GridProperty:=Properties[PropertyIndex];
+    if IsHeader then begin
+      IndependentEditor:=false;
+      PropEditor:=GridProperty.Editor;
+    end
+    else if (ObjectIndex>=0) and (ObjectIndex<TIObjectCount) then begin
+      CurObject:=GetTIObject(ObjectIndex);
+      if CurObject<>nil then begin
+        ok:=false;
+        Hook:=nil;
+        PersistentList:=nil;
+        try
+          Hook:=TPropertyEditorHook.Create;
+          Hook.LookupRoot:=CurObject;
+          PersistentList:=TPersistentSelectionList.Create;
+          PersistentList.Add(CurObject);
+          EditorClass:=TPropertyEditorClass(GridProperty.Editor.ClassType);
+          PropEditor:=EditorClass.Create(Hook,PersistentList,1);
+          PropEditor.SetPropEntry(0,CurObject,GridProperty.PropInfo);
+          PropEditor.Initialize;
+          ok:=true;
+        finally
+          if not ok then begin
+            try
+              PropEditor.free;
+            except
+            end;
+            try
+              PersistentList.free;
+            except
+            end;
+            try
+              Hook.free;
+            except
+            end;
           end;
         end;
       end;
