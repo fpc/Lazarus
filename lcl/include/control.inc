@@ -929,7 +929,6 @@ end;
 procedure TControl.WMRButtonUp(var Message: TLMRButtonUp);
 begin
   DoMouseUp(Message, mbRight);
-writeln('TControl.WMRButtonUp ',Name,':',ClassName,' ',Message.Result);
   if Message.Result = 0 then CheckMenuPopup(Message.pos);
 end;
 
@@ -1749,6 +1748,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.64  2002/08/24 12:57:32  lazarus
+  MG: reduced output
+
   Revision 1.63  2002/08/24 12:54:59  lazarus
   MG: fixed mouse capturing, OI edit focus
 
