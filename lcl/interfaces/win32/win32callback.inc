@@ -552,8 +552,6 @@ Begin
     BM_SETCHECK:
     Begin
       LMessage.Msg := LM_CHANGED;
-      if (WParam=BST_CHECKED) and (lWinControl is TRadioButton) then
-        ClearSiblingRadioButtons(TRadioButton(lWinControl));
     End;
     WM_CAPTURECHANGED:
     Begin
@@ -1289,6 +1287,11 @@ Begin
           Windows.SetWindowPos(OverlayWindow, HWND_TOP, 0, 0, NewWidth, NewHeight, SWP_NOMOVE);
       End;
     End;
+    BM_SETCHECK:
+    begin
+      if (WParam=BST_CHECKED) and (lWinControl is TRadioButton) then
+        ClearSiblingRadioButtons(TRadioButton(lWinControl));
+    end;
   end;
 
   // convert from win32 client to lcl client pos
@@ -1521,6 +1524,10 @@ end;
 
 {
   $Log$
+  Revision 1.197  2005/04/06 10:43:40  micha
+  customcheckbox: do not unnecessarily ask state twice
+  first let widget process BM_SETCHECK, so we do not see itemindex=-1 in between
+
   Revision 1.196  2005/03/30 18:34:42  micha
   fix bug 659 and 660: LM_RBUTTONUP message returns true whenever popupmenu was invoked
 

@@ -60,7 +60,7 @@ begin
   //debugln('TCustomCheckBox.DoChange START ',dbgsname(Self),' ',dbgs(ord(FState)));
   NewState:=RetrieveState;
   if FState=NewState then exit;
-  FState:=RetrieveState;
+  FState:=NewState;
   //debugln('TCustomCheckBox.DoChange CHANGED ',dbgsname(Self),' ',dbgs(ord(FState)));
   DoOnChange;
 end;
@@ -220,6 +220,10 @@ end;
 
 {
   $Log$
+  Revision 1.33  2005/04/06 10:43:40  micha
+  customcheckbox: do not unnecessarily ask state twice
+  first let widget process BM_SETCHECK, so we do not see itemindex=-1 in between
+
   Revision 1.32  2005/02/21 20:15:28  mattias
   fixed componentpalette adding via double click
 
