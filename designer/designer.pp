@@ -880,6 +880,7 @@ var
   OldMouseMovePos: TPoint;
   Grabber: TGrabber;
   ACursor: TCursor;
+  SelectedCompClass: TRegisteredComponent;
 begin
   SetCaptureControl(nil);
   if [dfShowEditorHints,dfShowComponentCaptionHints]*FFlags<>[] then begin
@@ -944,11 +945,12 @@ begin
         if Assigned(OnModified) then OnModified(Self);
       end else begin
         // no grabber resizing
+        SelectedCompClass:=GetSelectedComponentClass;
         if (not ControlSelection.RubberBandActive)
         and (Shift=[])
         and (ControlSelection.Count>=1)
         and not (ControlSelection.IsSelected(Form))
-        and (GetSelectedComponentClass=nil)
+        and (SelectedCompClass=nil)
         then begin
           // move selection
           if not (dfHasSized in FFlags) then begin
@@ -969,6 +971,10 @@ begin
           ControlSelection.RubberBandBounds:=Rect(MouseDownPos.X,MouseDownPos.Y,
                                                   LastMouseMovePos.X,
                                                   LastMouseMovePos.Y);
+          if SelectedCompClass=nil then
+            ControlSelection.RubberbandType:=rbtSelection
+          else
+            ControlSelection.RubberbandType:=rbtCreating;
           ControlSelection.RubberBandActive:=true;
           FCustomForm.Invalidate;
         end;
