@@ -1570,7 +1570,6 @@ var
   AWindow: PGdkWindow;
   NewCursor: PGdkCursor;
 begin
-
   if not ((AWinControl is TWinControl) and AWinControl.HandleAllocated)
   then exit;
   
@@ -1589,7 +1588,7 @@ begin
     
   end else begin
 
-    FixWidget:= GetMainWidget(AWidget);
+    FixWidget:= GetFixedWidget(AWidget);
     AWindow:= GetControlWindow(FixWidget);
     if AWindow = nil then exit;
     
@@ -3466,6 +3465,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.107  2002/09/30 22:39:22  lazarus
+  MG: fixed setcursor
+
   Revision 1.106  2002/09/30 20:19:13  lazarus
   MG: fixed flickering of modal forms
 
