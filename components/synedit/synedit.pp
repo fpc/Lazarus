@@ -7342,10 +7342,12 @@ begin
               if fInserting then begin
                 // insert mode
                 {$IFDEF USE_UTF8BIDI_LCL}
-                CaretNew.X := CaretX;
                 // TODO: improve utf8bidi for tabs
-                utf8bidi.Insert(Temp, AChar, CaretNew.X);
-                CaretX := CaretNew.X;
+                Len := VLength(Temp);
+                if Len < CaretX then begin
+                  Temp := Temp + StringOfChar(' ', CaretX - Len);
+                end;
+                CaretX := InsertChar(aChar, Temp, CaretX, drLTR);
                 {$ELSE}
                 Len := Length(Temp);
                 if Len < LogCaretXY.X then
@@ -7363,7 +7365,7 @@ begin
                 {$IFDEF USE_UTF8BIDI_LCL}
                 CaretNew.X := CaretX;
                 // TODO: improve utf8bidi for tabs
-                utf8bidi.insert(AChar,Temp,CaretNew.X);
+                //utf8bidi.insert(Temp,AChar,CaretNew.X);
                 CaretX := CaretNew.X;
                 {$ELSE}
                 Temp:=copy(Temp,1,LogCaretXY.X-1)+AChar
