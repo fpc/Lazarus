@@ -182,6 +182,9 @@ type
 
   TFindItemKind = (fkCommand, fkHandle, fkShortCut);
 
+
+  { TMenu }
+
   TMenu = class(TComponent) //TWinControl)
   private
     FItems: TMenuItem;
@@ -205,6 +208,9 @@ type
     property Items: TMenuItem read FItems;
   end;
 
+
+  { TMainMenu }
+
   TMainMenu = class(TMenu)
   protected
     procedure ItemChanged;
@@ -213,6 +219,9 @@ type
   published
     property Items;
   end;
+  
+  
+  { TPopupMenu }
 
   TPopupMenu = class(TMenu)
   private
@@ -221,7 +230,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     procedure PopUp(X, Y : Integer);
-    property PopupComponent : TComponent read FPopupComponent write FPopupComponent;
+    property PopupComponent : TComponent
+      read FPopupComponent write FPopupComponent;
   published
     property AutoPopup : Boolean read FAutoPopup write FAutoPopup default True;
   end;
@@ -238,8 +248,11 @@ type
     procedure AddMenu(Title: TCaption; Menu: TMenu);
   end;
 
+
+
 function ShortCut(const Key: Word; const Shift : TShiftState) : TShortCut;
-procedure ShortCuttoKey(const ShortCut : TShortCut; var Key: Word; var Shift : TShiftState);
+procedure ShortCuttoKey(const ShortCut : TShortCut; var Key: Word;
+                        var Shift : TShiftState);
 
 function TextToShortCut(Text: string): TShortCut;
 function ShortCutToText(ShortCut: TShortCut): string;
@@ -411,6 +424,9 @@ end.
 
 {
   $Log$
+  Revision 1.19  2002/08/08 09:07:06  lazarus
+  MG: TMenuItem can now be created/destroyed/moved at any time
+
   Revision 1.18  2002/08/07 09:55:30  lazarus
   MG: codecompletion now checks for filebreaks, savefile now checks for filedate
 

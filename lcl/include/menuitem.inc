@@ -72,11 +72,11 @@ begin
   if Parent <> nil then
   begin
     Parent.HandleNeeded;
-    if Parent.HandleAllocated then
+    if Parent.HandleAllocated and (not HandleAllocated) then
       InterfaceObject.IntSendMessage3(LM_CREATE, Self, nil);
-    if FHandle <> 0 then
+    if HandleAllocated then
     begin
-      if ShortCut <> 0 then ShortcutChanged(0, Shortcut);
+      if ShortCut <> 0 then ShortCutChanged(0, Shortcut);
     end;  
   end;
   if (FItems <> nil) and ((Parent = nil) or Parent.HandleAllocated) 
@@ -104,10 +104,10 @@ begin
   Cur := TMenuItem(FItems[Index]);
   if Cur=nil then
     raise EMenuError.Create(SMenuItemIsNil);
+  Cur.DestroyHandle;
   FItems.Delete(Index);
   Cur.FParent := nil;
   Cur.FOnChange := nil;
-  DestroyHandle;
   MenuChanged(Count = 0);
 end;
 
@@ -340,8 +340,9 @@ begin
       TMenuItem(FItems[i]).DestroyHandle;
       dec(i);
     end;
-    InterfaceObject.IntSendMessage3(LM_DESTROY, Self, nil);
   end;
+  InterfaceObject.IntSendMessage3(LM_DESTROY, Self, nil);
+  FHandle:=0;
 end;
 
 {------------------------------------------------------------------------------
@@ -352,7 +353,7 @@ end;
  ------------------------------------------------------------------------------}
 function TMenuItem.HasParent : Boolean;
 begin
-   Result := assigned (FParent);
+  Result := assigned (FParent);
 end;
 
 {------------------------------------------------------------------------------
@@ -382,7 +383,10 @@ begin
   Item.FOnChange := @SubItemChanged;
   FItems.Insert(Index, Item);
   
-  if HandleAllocated then Item.HandleNeeded;
+  if HandleAllocated then begin
+    Item.HandleNeeded;
+    InterfaceObject.IntSendMessage3(LM_ATTACHMENU, Item, nil);
+  end;
   MenuChanged(FItems.Count = 1);
 end;
 
@@ -402,7 +406,7 @@ end;
 
 {------------------------------------------------------------------------------
   Method:  TMenuItem.MenuChanged
-  Params:  AOwner: the owner of the class
+  Params:  Rebuild : Boolean
   Returns: Nothing
 
  ------------------------------------------------------------------------------}
@@ -518,10 +522,11 @@ begin
   if FParent <> nil then
   begin
     ParentCount := FParent.Count;
-    if AValue < 0 then AValue := 0;
-    if AValue >= ParentCount then AValue := ParentCount - 1;
-    if AValue <> MenuIndex then
-    begin
+    if AValue < 0 then
+      AValue := 0;
+    if AValue >= ParentCount then
+      AValue := ParentCount - 1;
+    if AValue <> MenuIndex then begin
       OldParent := FParent;
       OldParent.Remove(Self);
       OldParent.Insert(AValue, Self);
@@ -616,7 +621,7 @@ begin
       TurnSiblingsOff;
     // tell the interface to regroup this menuitem
     if HandleAllocated then
-      ; // ToDo: RegroupMenuItem(Self);
+      RegroupMenuItem(Handle,GroupIndex);
   end;
 end;
 
@@ -631,8 +636,7 @@ Procedure TMenuItem.SetShortCut(AValue : TShortCut);
 Begin
   if FShortCut <> AValue then
   begin
-    //MenuChanged(True);
-    ShortcutChanged(FShortcut, AValue);
+    ShortCutChanged(FShortcut, AValue);
     FShortCut := AValue;
   end;
 end;
@@ -747,6 +751,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.20  2002/08/08 09:07:06  lazarus
+  MG: TMenuItem can now be created/destroyed/moved at any time
+
   Revision 1.19  2002/08/07 09:55:30  lazarus
   MG: codecompletion now checks for filebreaks, savefile now checks for filedate
 
@@ -832,6 +839,9 @@ end;
 
 
   $Log$
+  Revision 1.20  2002/08/08 09:07:06  lazarus
+  MG: TMenuItem can now be created/destroyed/moved at any time
+
   Revision 1.19  2002/08/07 09:55:30  lazarus
   MG: codecompletion now checks for filebreaks, savefile now checks for filedate
 

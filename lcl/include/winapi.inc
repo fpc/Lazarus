@@ -54,7 +54,7 @@ begin
   Result := InterfaceObject.CallWindowProc(lpPrevWndFunc, Handle, Msg, wParam, lParam);
 end;
 
-function CheckMenuItem(hMenu: HMENU; uIDEnableItem: Integer;
+function CheckMenuItem(hndMenu: HMENU; uIDEnableItem: Integer;
   bChecked: Boolean): Boolean;
 begin
   Result:=false;
@@ -175,9 +175,9 @@ Begin
   Result := InterfaceObject.DrawEdge(DC, Rect, edge, grfFlags);
 end;
 
-function EnableMenuItem(hMenu: HMENU; uIDEnableItem: Integer; bEnable: Boolean): Boolean;
+function EnableMenuItem(hndMenu: HMENU; uIDEnableItem: Integer; bEnable: Boolean): Boolean;
 begin
-  Result := InterfaceObject.EnableMenuItem(hMenu, uIDEnableItem, bEnable);
+  Result := InterfaceObject.EnableMenuItem(hndMenu, uIDEnableItem, bEnable);
 end;
 
 function EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal): Boolean;
@@ -453,9 +453,9 @@ begin
   Result := InterfaceObject.PostMessage(hWnd, Msg, wParam, lParam);
 end;
 
-function RadioMenuItemGroup(hMenu: HMENU; bRadio: Boolean): Boolean;
+function RadioMenuItemGroup(hndMenu: HMENU; bRadio: Boolean): Boolean;
 begin
-  Result := InterfaceObject.RadioMenuItemGroup(hMenu,bRadio);
+  Result := InterfaceObject.RadioMenuItemGroup(hndMenu,bRadio);
 end;
 
 function RealizePalette(DC: HDC): Cardinal;
@@ -471,6 +471,11 @@ end;
 function RectVisible(dc : hdc; ARect: TRect) : Boolean;
 begin
   Result := InterfaceObject.RectVisible(dc,ARect);
+end;
+
+function RegroupMenuItem(hndMenu: HMENU; GroupIndex: integer) : Boolean;
+begin
+  Result := InterfaceObject.RegroupMenuItem(hndMenu,GroupIndex);
 end;
 
 function ReleaseCapture:  Boolean;
@@ -1104,6 +1109,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.36  2002/08/08 09:07:06  lazarus
+  MG: TMenuItem can now be created/destroyed/moved at any time
+
   Revision 1.35  2002/08/07 09:55:30  lazarus
   MG: codecompletion now checks for filebreaks, savefile now checks for filedate
 

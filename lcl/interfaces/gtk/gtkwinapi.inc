@@ -296,10 +296,12 @@ end;
 
 {------------------------------------------------------------------------------
   Function: CheckMenuItem
-  Params:  none
+  Params:  hndMenu: HMENU; uIDEnableItem: Integer; bChecked: Boolean
   Returns: Nothing
+  
+  
  ------------------------------------------------------------------------------}
-function TgtkObject.CheckMenuItem(hMenu: HMENU; uIDEnableItem: Integer;
+function TgtkObject.CheckMenuItem(hndMenu: HMENU; uIDEnableItem: Integer;
   bChecked: Boolean): Boolean;
 begin
   // ToDo
@@ -308,7 +310,7 @@ end;
 
 {------------------------------------------------------------------------------
   Function: ClientToScreen
-  Params:  none
+  Params:  Handle : HWND; var P : TPoint
   Returns: Nothing
  ------------------------------------------------------------------------------}
 Function TgtkObject.ClientToScreen(Handle : HWND; var P : TPoint) : Boolean;
@@ -1835,16 +1837,16 @@ end;
 
 {------------------------------------------------------------------------------
   Function: EnableMenuItem
-  Params: hMenu:
+  Params: hndMenu:
           uIDEnableItem:
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGTKObject.EnableMenuItem(hMenu: HMENU; uIDEnableItem: Integer;
+function TGTKObject.EnableMenuItem(hndMenu: HMENU; uIDEnableItem: Integer;
   bEnable: Boolean): Boolean;
 begin
-  if hMenu <> 0
-  then gtk_widget_set_sensitive(pgtkwidget(hMenu), bEnable);
+  if hndMenu <> 0
+  then gtk_widget_set_sensitive(pgtkwidget(hndMenu), bEnable);
   Result:=true;
 end;
 
@@ -3666,12 +3668,12 @@ end;
 
 {------------------------------------------------------------------------------
   Function: RadioMenuItemGroup
-  Params:  hMenu: HMENU; bRadio: Boolean
+  Params:  hndMenu: HMENU; bRadio: Boolean
   Returns: Nothing
 
   Change the group of menuitems to 'radio' or to checked.
  ------------------------------------------------------------------------------}
-function TgtkObject.RadioMenuItemGroup(hMenu: HMENU; bRadio: Boolean): Boolean;
+function TgtkObject.RadioMenuItemGroup(hndMenu: HMENU; bRadio: Boolean): Boolean;
 begin
   // ToDo
   Result := false;
@@ -3737,6 +3739,20 @@ end;
 function TgtkObject.RectVisible(dc : hdc; ARect: TRect) : Boolean;
 begin
   Result:=true;
+end;
+
+{------------------------------------------------------------------------------
+  Function: RegroupMenuItem
+  Params:  hndMenu: HMENU; GroupIndex: integer
+  Returns: Nothing
+
+  Move a menuitem into another group
+ ------------------------------------------------------------------------------}
+function TgtkObject.RegroupMenuItem(hndMenu: HMENU;
+  GroupIndex: Integer): Boolean;
+begin
+  // ToDo
+  Result := false;
 end;
 
 {------------------------------------------------------------------------------
@@ -4851,6 +4867,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.88  2002/08/08 09:07:07  lazarus
+  MG: TMenuItem can now be created/destroyed/moved at any time
+
   Revision 1.87  2002/08/07 09:55:30  lazarus
   MG: codecompletion now checks for filebreaks, savefile now checks for filedate
 
