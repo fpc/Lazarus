@@ -35,7 +35,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  {$IFNDEF VER1_0}XMLCfg{$ELSE}Laz_XMLCfg{$ENDIF}, Buttons, ExtCtrls, FileUtil,
+  Laz_XMLCfg, Buttons, ExtCtrls, FileUtil,
   LazConf, IDEProcs;
 
 type

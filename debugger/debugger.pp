@@ -37,7 +37,7 @@ unit Debugger;
 interface
 
 uses
-  Classes, SysUtils, {$IFNDEF VER1_0}XMLCfg{$ELSE}Laz_XMLCfg{$ENDIF},
+  Classes, SysUtils, Laz_XMLCfg,
   LCLProc, IDEProcs, DBGUtils;
 
 type
@@ -3576,6 +3576,9 @@ finalization
 end.
 { =============================================================================
   $Log$
+  Revision 1.68  2005/01/29 14:36:04  mattias
+  reactivated fast xml units without widestrings
+
   Revision 1.67  2005/01/15 13:44:03  vincents
   use xml units from fpc, if not compiling with fpc 1.0
 

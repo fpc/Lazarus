@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, BuildLazDialog, CodeToolsStructs, TextTools,
-  {$IFNDEF VER1_0}XMLCfg{$ELSE}Laz_XMLCfg{$ENDIF}, LazConf, LazarusIDEStrConsts,
+  Laz_XMLCfg, LazConf, LazarusIDEStrConsts,
   IDEProcs;
 
 type

@@ -48,7 +48,7 @@ uses
   MemCheck,
 {$ENDIF}
   Classes, SysUtils, FPCAdds, LCLProc, LCLIntf, LCLType, Forms, Controls,
-  Dialogs, {$IFNDEF VER1_0}XMLCfg{$ELSE}Laz_XMLCfg{$ENDIF}, LazConf, FileUtil,
+  Dialogs, Laz_XMLCfg, LazConf, FileUtil,
   LazarusIDEStrConsts, CompilerOptions, CodeToolManager, CodeCache,
   EditorOptions, IDEProcs, RunParamsOpts, ProjectIntf, ProjectDefs,
   EditDefineTree, DefineTemplates, PackageDefs, LazIDEIntf;
@@ -3171,6 +3171,9 @@ end.
 
 {
   $Log$
+  Revision 1.181  2005/01/29 14:36:04  mattias
+  reactivated fast xml units without widestrings
+
   Revision 1.180  2005/01/25 01:14:19  mattias
   implemented automatic redirecting of package output directory and filestate cache
 

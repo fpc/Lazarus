@@ -38,7 +38,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Menus, Graphics, GraphType,
   Buttons, StdCtrls, ExtCtrls, ComponentEditors, LazConf,  ComCtrls, Arrow, 
-  {$IFNDEF VER1_0}XMLCfg{$ELSE}Laz_XMLCfg{$ENDIF},LazarusIDEStrConsts,
+  Laz_XMLCfg, LazarusIDEStrConsts,
   PropEdits, IDEProcs;
 
 type

@@ -64,10 +64,10 @@ uses
   // lcl
   LCLProc, LCLMemManager, LCLType, LCLIntf, LMessages, LResources, StdCtrls,
   Forms, Buttons, Menus, FileUtil, Controls, GraphType, Graphics, ExtCtrls,
-  Dialogs, InterfaceBase, {SetDesigning}
+  Dialogs, InterfaceBase,
   // codetools
-  {$IFNDEF VER1_0}AVL_Tree, XMLCfg{$ELSE}OldAvLTree, Laz_XMLCfg{$ENDIF}, CodeToolsStructs, CodeToolManager, CodeCache,
-  DefineTemplates,
+  {$IFNDEF VER1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF}, Laz_XMLCfg,
+  CodeToolsStructs, CodeToolManager, CodeCache, DefineTemplates,
   // IDE interface
   AllIDEIntf, ObjectInspector, PropEdits, MacroIntf, IDECommands, SrcEditorIntf,
   NewItemIntf, PackageIntf, ProjectIntf, LazIDEIntf,
@@ -11383,6 +11383,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.842  2005/01/29 14:36:03  mattias
+  reactivated fast xml units without widestrings
+
   Revision 1.841  2005/01/28 16:42:30  mattias
   implemented for delphi unit conversion: auto fixing in filenames
 

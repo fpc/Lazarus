@@ -48,7 +48,7 @@ uses
   Classes, SysUtils, LCLProc, Forms, Controls, FileUtil, Dialogs, Menus,
   // codetools
   CodeToolManager, CodeCache, BasicCodeTools,
-  {$IFNDEF VER1_0}AVL_Tree, XMLCfg{$ELSE}OldAvLTree, Laz_XMLCfg{$ENDIF},
+  {$IFNDEF VER1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF}, Laz_XMLCfg,
   // IDE Interface
   NewItemIntf, ProjectIntf, PackageIntf, LazIDEIntf,
   // IDE

@@ -46,7 +46,7 @@ uses
   MemCheck,
 {$ENDIF}
   Classes, SysUtils, FileUtil,
-  {$IFNDEF VER1_0}AVL_Tree, XMLCfg{$ELSE}OldAvLTree, Laz_XMLCfg{$ENDIF},
+  {$IFNDEF VER1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF}, Laz_XMLCfg,
   LCLProc, Forms, Controls, Dialogs, LazarusIDEStrConsts, IDEProcs, LazConf,
   CompilerOptions, PackageLinks, PackageDefs, LazarusPackageIntf, ComponentReg,
   RegisterFCL, RegisterLCL, RegisterSynEdit, RegisterIDEIntf;

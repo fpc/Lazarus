@@ -42,7 +42,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LCLProc,
-  {$IFNDEF VER1_0}XMLCfg{$ELSE}Laz_XMLCfg{$ENDIF}, ProjectIntf,
+  Laz_XMLCfg, ProjectIntf,
   IDEProcs, LazConf, TransferMacros;
 
 type

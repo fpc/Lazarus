@@ -55,7 +55,7 @@ interface
 
 uses
   Classes, SysUtils, CodeToolsStrConsts, ExprEval,
-  {$IFNDEF VER1_0}XMLCfg, AVL_Tree{$ELSE}Laz_XMLCfg, OldAvLTree{$ENDIF},
+  Laz_XMLCfg, {$IFNDEF VER1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF},
   Process, KeywordFuncLists, FileProcs;
 
 const

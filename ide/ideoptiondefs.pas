@@ -33,7 +33,7 @@ unit IDEOptionDefs;
 interface
 
 uses
-  Classes, SysUtils, {$IFNDEF VER1_0}XMLCfg{$ELSE}Laz_XMLCfg{$ENDIF}, LCLProc,
+  Classes, SysUtils, Laz_XMLCfg, LCLProc,
   Forms, Controls, StdCtrls, Buttons, ConfigStorage, LazarusIDEStrConsts;
 
 type

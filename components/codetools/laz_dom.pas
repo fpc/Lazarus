@@ -74,13 +74,15 @@ type
 //   DOMString
 // -------------------------------------------------------
 
-{ $IFDEF ver1_0}
+{$IFDEF ver1_0}
   DOMString = String;
   DOMPChar = PChar;
-{ $ELSE}
+{$ELSE}
+  DOMString = String;
+  DOMPChar = PChar;
 //  DOMString = WideString;
 //  DOMPChar = PWideChar;
-{ $ENDIF}
+{$ENDIF}
 
 
 // -------------------------------------------------------
@@ -244,10 +246,10 @@ type
     function RemoveChild(OldChild: TDOMNode): TDOMNode; virtual;
     function AppendChild(NewChild: TDOMNode): TDOMNode; virtual;
     function HasChildNodes: Boolean; virtual;
-    function CloneNode(deep: Boolean): TDOMNode;
+    function CloneNode(deep: Boolean): TDOMNode; overload;
 
     // Extensions to DOM interface:
-    function CloneNode(deep: Boolean; ACloneOwner: TDOMDocument): TDOMNode; virtual;
+    function CloneNode(deep: Boolean; ACloneOwner: TDOMDocument): TDOMNode; overload; virtual;
     function FindNode(const ANodeName: DOMString): TDOMNode; virtual;
   end;
 
@@ -395,13 +397,13 @@ type
 
   TXMLDocument = class(TDOMDocument)
   public
+    // These fields are extensions to the DOM interface:
+    XMLVersion, Encoding, StylesheetType, StylesheetHRef: DOMString;
+
     function CreateCDATASection(const data: DOMString): TDOMCDATASection; override;
     function CreateProcessingInstruction(const target, data: DOMString):
       TDOMProcessingInstruction; override;
     function CreateEntityReference(const name: DOMString): TDOMEntityReference; override;
-
-    // Extensions to DOM interface:
-    XMLVersion, Encoding, StylesheetType, StylesheetHRef: DOMString;
   end;
 
 
@@ -418,7 +420,7 @@ type
   public
     constructor Create(AOwner: TDOMDocument);
 
-    function CloneNode(deep: Boolean; ACloneOwner: TDOMDocument): TDOMNode; override;
+    function CloneNode(deep: Boolean; ACloneOwner: TDOMDocument): TDOMNode; overload; override;
     property Name: DOMString read FNodeName;
     property Specified: Boolean read FSpecified;
     property Value: DOMString read GetNodeValue write SetNodeValue;
@@ -437,7 +439,7 @@ type
   public
     constructor Create(AOwner: TDOMDocument);
     destructor Destroy; override;
-    function  CloneNode(deep: Boolean; ACloneOwner: TDOMDocument): TDOMNode; override;
+    function  CloneNode(deep: Boolean; ACloneOwner: TDOMDocument): TDOMNode; overload; override;
     property  TagName: DOMString read FNodeName;
     function  GetAttribute(const name: DOMString): DOMString;
     procedure SetAttribute(const name, value: DOMString);
@@ -461,7 +463,7 @@ type
   TDOMText = class(TDOMCharacterData)
   public
     constructor Create(AOwner: TDOMDocument);
-    function  CloneNode(deep: Boolean; ACloneOwner: TDOMDocument): TDOMNode; override;
+    function  CloneNode(deep: Boolean; ACloneOwner: TDOMDocument): TDOMNode; overload; override;
     function SplitText(offset: LongWord): TDOMText;
   end;
 
@@ -473,7 +475,7 @@ type
   TDOMComment = class(TDOMCharacterData)
   public
     constructor Create(AOwner: TDOMDocument);
-    function CloneNode(deep: Boolean; ACloneOwner: TDOMDocument): TDOMNode; override;
+    function CloneNode(deep: Boolean; ACloneOwner: TDOMDocument): TDOMNode; overload; override;
   end;
 
 
@@ -484,7 +486,7 @@ type
   TDOMCDATASection = class(TDOMText)
   public
     constructor Create(AOwner: TDOMDocument);
-    function CloneNode(deep: Boolean; ACloneOwner: TDOMDocument): TDOMNode; override;
+    function CloneNode(deep: Boolean; ACloneOwner: TDOMDocument): TDOMNode; overload; override;
   end;
 
 
@@ -497,7 +499,7 @@ type
     FEntities, FNotations: TDOMNamedNodeMap;
   public
     constructor Create(AOwner: TDOMDocument);
-    function CloneNode(deep: Boolean; ACloneOwner: TDOMDocument): TDOMNode; override;
+    function CloneNode(deep: Boolean; ACloneOwner: TDOMDocument): TDOMNode; overload; override;
     property Name: DOMString read FNodeName;
     property Entities: TDOMNamedNodeMap read FEntities;
     property Notations: TDOMNamedNodeMap read FEntities;
@@ -513,7 +515,7 @@ type
     FPublicID, FSystemID: DOMString;
   public
     constructor Create(AOwner: TDOMDocument);
-    function CloneNode(deep: Boolean; ACloneOwner: TDOMDocument): TDOMNode; override;
+    function CloneNode(deep: Boolean; ACloneOwner: TDOMDocument): TDOMNode; overload; override;
     property PublicID: DOMString read FPublicID;
     property SystemID: DOMString read FSystemID;
   end;
@@ -725,9 +727,8 @@ end;
 
 function TDOMNode.CloneNode(deep: Boolean): TDOMNode;
 begin
-  CloneNode(deep, FOwnerDocument);
   if deep then ;
-  Result:=nil;
+  Result:=CloneNode(deep, FOwnerDocument);
 end;
 
 function TDOMNode.CloneNode(deep: Boolean; ACloneOwner: TDOMDocument): TDOMNode;
@@ -1042,8 +1043,11 @@ var
   i: Integer;
 begin
   for i := 0 to Count - 1 do
-    if Item[i].NodeName = name then
-      exit(Item[i]);
+  begin
+    Result := Item[i];
+    if Result.NodeName = name then
+      exit;
+  end;
   Result := nil;
 end;
 
@@ -1639,6 +1643,9 @@ end.
 
 {
   $Log$
+  Revision 1.10  2005/01/29 14:36:04  mattias
+  reactivated fast xml units without widestrings
+
   Revision 1.9  2004/11/10 15:25:32  mattias
   updated memcheck.pas from heaptrc.pp
 

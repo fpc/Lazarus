@@ -1,17 +1,11 @@
 {
-  BEWARE !!!
-  This is a TEMPORARY file.
-  As soon as it is moved to the fcl, it will be removed.
-}
-
-{
     $Id$
     This file is part of the Free Component Library
 
     XML reading routines.
     Copyright (c) 1999-2000 by Sebastian Guenther, sg@freepascal.org
 
-    See the file COPYING.modifiedLGPL, included in this distribution,
+    See the file COPYING.FPC, included in this distribution,
     for details about the copyright.
 
     This program is distributed in the hope that it will be useful,
@@ -31,24 +25,27 @@ interface
 
 uses
   {$IFDEF MEM_CHECK}MemCheck,{$ENDIF}
-  SysUtils, Classes, FileProcs, Laz_DOM;
+  SysUtils, Classes, Laz_DOM;
 
 type
 
   EXMLReadError = class(Exception);
 
 
-procedure ReadXMLFile(var ADoc: TXMLDocument; const AFilename: String);
-procedure ReadXMLFile(var ADoc: TXMLDocument; var f: File);
-procedure ReadXMLFile(var ADoc: TXMLDocument; var f: TStream);
-procedure ReadXMLFile(var ADoc: TXMLDocument; var f: TStream;
-  const AFilename: String);
+procedure ReadXMLFile(var ADoc: TXMLDocument; const AFilename: String); overload;
+procedure ReadXMLFile(var ADoc: TXMLDocument; var f: File); overload;
+procedure ReadXMLFile(var ADoc: TXMLDocument; var f: TStream); overload;
+procedure ReadXMLFile(var ADoc: TXMLDocument; var f: TStream; const AFilename: String); overload;
 
-procedure ReadDTDFile(var ADoc: TXMLDocument; const AFilename: String);
-procedure ReadDTDFile(var ADoc: TXMLDocument; var f: File);
-procedure ReadDTDFile(var ADoc: TXMLDocument; var f: TStream);
-procedure ReadDTDFile(var ADoc: TXMLDocument; var f: TStream;
-  const AFilename: String);
+procedure ReadXMLFragment(AParentNode: TDOMNode; const AFilename: String); overload;
+procedure ReadXMLFragment(AParentNode: TDOMNode; var f: File); overload;
+procedure ReadXMLFragment(AParentNode: TDOMNode; var f: TStream); overload;
+procedure ReadXMLFragment(AParentNode: TDOMNode; var f: TStream; const AFilename: String); overload;
+
+procedure ReadDTDFile(var ADoc: TXMLDocument; const AFilename: String);  overload;
+procedure ReadDTDFile(var ADoc: TXMLDocument; var f: File); overload;
+procedure ReadDTDFile(var ADoc: TXMLDocument; var f: TStream); overload;
+procedure ReadDTDFile(var ADoc: TXMLDocument; var f: TStream; const AFilename: String); overload;
 
 
 // =======================================================
@@ -221,6 +218,8 @@ type
     procedure ExpectEq;
     procedure ParseMisc(AOwner: TDOMNode);                              // [27]
     function  ParseMarkupDecl: Boolean;                                 // [29]
+    function  ParseCharData(AOwner: TDOMNode): Boolean;                 // [14]
+    function  ParseCDSect(AOwner: TDOMNode): Boolean;                   // [18]
     function  ParseElement(AOwner: TDOMNode): Boolean;                  // [39]
     procedure ExpectElement(AOwner: TDOMNode);
     function  ParseReference(AOwner: TDOMNode): Boolean;                // [67]
@@ -233,8 +232,9 @@ type
 
     procedure ResolveEntities(RootNode: TDOMNode);
   public
-    doc: TXMLReaderDocument;
+    doc: TDOMDocument;
     procedure ProcessXML(ABuf: PChar; const AFilename: String);  // [1]
+    procedure ProcessFragment(AOwner: TDOMNode; ABuf: PChar; const AFilename: String);
     procedure ProcessDTD(ABuf: PChar; const AFilename: String);  // ([29])
   end;
 
@@ -301,7 +301,7 @@ procedure TXMLReader.ExpectString(const s: String);
     GetMem(s2, Length(s) + 1);
     StrLCopy(s2, buf, Length(s));
     s3 := StrPas(s2);
-    FreeMem(s2, Length(s) + 1);
+    FreeMem(s2);
     RaiseExc('Expected "' + s + '", found "' + s3 + '"');
   end;
 
@@ -372,21 +372,104 @@ begin
   end;
 end;
 
+{$IFDEF FPC}
+  {$IFNDEF VER1_0}
+  // widestrings ansistring conversion is slow and we only use ansistring anyway
+    {off $DEFINE UsesFPCWidestrings}
+  {$ENDIF}
+{$ENDIF}
+
+{$IFDEF UsesFPCWidestrings}
+
+procedure SimpleWide2AnsiMove(source:pwidechar;dest:pchar;len:sizeint);
+var
+  i : sizeint;
+begin
+  for i:=1 to len do
+   begin
+     if word(source^)<256 then
+      dest^:=char(word(source^))
+     else
+      dest^:='?';
+     inc(dest);
+     inc(source);
+   end;
+end;
+
+procedure SimpleAnsi2WideMove(source:pchar;dest:pwidechar;len:sizeint);
+var
+  i : sizeint;
+begin
+  for i:=1 to len do
+   begin
+     dest^:=widechar(byte(source^));
+     inc(dest);
+     inc(source);
+   end;
+end;
+
+const
+  WideStringManager: TWideStringManager = (
+    Wide2AnsiMove: @SimpleWide2AnsiMove;
+    Ansi2WideMove: @SimpleAnsi2WideMove
+  );
+
+{$ENDIF}
+
 procedure TXMLReader.ProcessXML(ABuf: PChar; const AFilename: String);    // [1]
+{$IFDEF UsesFPCWidestrings}
+var
+  OldWideStringManager: TWideStringManager;
+{$ENDIF}
 begin
   buf := ABuf;
   BufStart := ABuf;
   Filename := AFilename;
 
+  {$IFDEF UsesFPCWidestrings}
+  SetWideStringManager(WideStringManager, OldWideStringManager);
+  try
+  {$ENDIF}
   doc := TXMLReaderDocument.Create;
   ExpectProlog;
   {$IFDEF MEM_CHECK}CheckHeapWrtMemCnt('TXMLReader.ProcessXML A');{$ENDIF}
   ExpectElement(doc);
   {$IFDEF MEM_CHECK}CheckHeapWrtMemCnt('TXMLReader.ProcessXML B');{$ENDIF}
   ParseMisc(doc);
+  {$IFDEF UsesFPCWidestrings}
+  finally
+    SetWideStringManager(OldWideStringManager);
+  end;
+  {$ENDIF}
 
   if buf[0] <> #0 then
     RaiseExc('Text after end of document element found');
+end;
+
+procedure TXMLReader.ProcessFragment(AOwner: TDOMNode; ABuf: PChar; const AFilename: String);
+{$IFDEF UsesFPCWidestrings}
+var
+  OldWideStringManager: TWideStringManager;
+{$ENDIF}
+begin
+  buf := ABuf;
+  BufStart := ABuf;
+  Filename := AFilename;
+
+  {$IFDEF UsesFPCWidestrings}
+  SetWideStringManager(WideStringManager, OldWideStringManager);
+  try
+  {$ENDIF}
+    SkipWhitespace;
+    while ParseCharData(AOwner) or ParseCDSect(AOwner) or ParsePI or
+      ParseComment(AOwner) or ParseElement(AOwner) or
+      ParseReference(AOwner) do
+      SkipWhitespace;
+  {$IFDEF UsesFPCWidestrings}
+  finally
+    SetWideStringManager(OldWideStringManager);
+  end;
+  {$ENDIF}
 end;
 
 function TXMLReader.CheckName: Boolean;
@@ -539,7 +622,7 @@ end;
 function TXMLReader.ParsePI: Boolean;    // [16]
 begin
   if CheckFor('<?') then begin
-    if CompareLIPChar(buf,'XML',3) then
+    if CompareLIPChar(buf,'XML ',4) then
       RaiseExc('"<?xml" processing instruction not allowed here');
     SkipName;
     if SkipWhitespace then
@@ -555,7 +638,8 @@ procedure TXMLReader.ExpectProlog;    // [22]
 
   procedure ParseVersionNum;
   begin
-    doc.XMLVersion :=
+    if doc.InheritsFrom(TXMLDocument) then
+      TXMLDocument(doc).XMLVersion :=
       GetString(['a'..'z', 'A'..'Z', '0'..'9', '_', '.', ':', '-']);
   end;
 
@@ -624,8 +708,9 @@ begin
   // Check for "(doctypedecl Misc*)?"    [28]
   if CheckFor('<!DOCTYPE') then
   begin
-    DocType := TXMLReaderDocumentType.Create(doc);
-    doc.SetDocType(DocType);
+    DocType := TXMLReaderDocumentType.Create(doc as TXMLReaderDocument);
+    if doc.InheritsFrom(TXMLReaderDocument) then
+      TXMLReaderDocument(doc).SetDocType(DocType);
     SkipWhitespace;
     DocType.Name := ExpectName;
     SkipWhitespace;
@@ -925,63 +1010,53 @@ begin
   }
 end;
 
-function TXMLReader.ParseElement(AOwner: TDOMNode): Boolean;    // [39] [40] [44]
+function TXMLReader.ParseCharData(AOwner: TDOMNode): Boolean;    // [14]
 var
-  NewElem: TDOMElement;
-
-  procedure CreateTextNode(BufStart: PChar; BufLen: integer);
-  // Note: this proc exists, to reduce creating temporary strings
-  begin
-    NewElem.AppendChild(doc.CreateTextNode(GetString(BufStart,BufLen)));
-  end;
-
-  function ParseCharData: Boolean;    // [14]
-  var
-    p: PChar;
-    DataLen: integer;
-    OldBuf: PChar;
-  begin
-    OldBuf := buf;
-    while not (buf[0] in [#0, '<', '&']) do
+  p: PChar;
+  DataLen: integer;
+  OldBuf: PChar;
+begin
+  OldBuf := buf;
+  while not (buf[0] in [#0, '<', '&']) do
     begin
       Inc(buf);
     end;
-    DataLen:=buf-OldBuf;
-    if DataLen > 0 then
+  DataLen:=buf-OldBuf;
+  if DataLen > 0 then
     begin
       // Check if chardata has non-whitespace content
       p:=OldBuf;
       while (p<buf) and (p[0] in WhitespaceChars) do
         inc(p);
       if p<buf then
-        CreateTextNode(OldBuf,DataLen);
+        AOwner.AppendChild(doc.CreateTextNode(GetString(OldBuf,DataLen)));
       Result := True;
-    end else
-      Result := False;
-  end;
+    end
+  else
+    Result := False;
+end;
 
-  procedure CreateCDATASectionChild(BufStart: PChar; BufLen: integer);
-  // Note: this proc exists, to reduce creating temporary strings
-  begin
-    NewElem.AppendChild(doc.CreateCDATASection(GetString(BufStart,BufLen)));
-  end;
-
-  function ParseCDSect: Boolean;    // [18]
-  var
-    OldBuf: PChar;
-  begin
-    if CheckFor('<![CDATA[') then
+function TXMLReader.ParseCDSect(AOwner: TDOMNode): Boolean;    // [18]
+var
+  OldBuf: PChar;
+begin
+  if CheckFor('<![CDATA[') then
     begin
       OldBuf := buf;
       while not CheckFor(']]>') do
       begin
         Inc(buf);
       end;
-      CreateCDATASectionChild(OldBuf,buf-OldBuf);
+      AOwner.AppendChild(doc.CreateCDATASection(GetString(OldBuf,buf-OldBuf-3))); { Copy CDATA, discarding terminator }
       Result := True;
-    end else
-      Result := False;
-  end;
+    end
+  else
+    Result := False;
+end;
+
+function TXMLReader.ParseElement(AOwner: TDOMNode): Boolean;    // [39] [40] [44]
+var
+  NewElem: TDOMElement;
 
   procedure CreateNameElement;
   var
@@ -1020,7 +1095,7 @@ var
     begin
       // Get content
       SkipWhitespace;
-      while ParseCharData or ParseCDSect or ParsePI or
+      while ParseCharData(NewElem) or ParseCDSect(NewElem) or ParsePI or
         ParseComment(NewElem) or ParseElement(NewElem) or
         ParseReference(NewElem) do;
 
@@ -1281,20 +1356,26 @@ var
 begin
   ADoc := nil;
   BufSize := FileSize(f) + 1;
-  if BufSize <= 1 then exit;
+  if BufSize <= 1 then
+    exit;
 
   GetMem(buf, BufSize);
-  BlockRead(f, buf^, BufSize - 1);
-  buf[BufSize - 1] := #0;
-  reader := TXMLReader.Create;
-  reader.ProcessXML(buf, Filerec(f).name);
-  FreeMem(buf, BufSize);
-  ADoc := reader.doc;
-  reader.Free;
+  try
+    BlockRead(f, buf^, BufSize - 1);
+    buf[BufSize - 1] := #0;
+    Reader := TXMLReader.Create;
+    try
+      Reader.ProcessXML(buf, TFileRec(f).name);
+      ADoc := TXMLDocument(Reader.doc);
+    finally
+      Reader.Free;
+    end;
+  finally
+    FreeMem(buf);
+  end;
 end;
 
-procedure ReadXMLFile(var ADoc: TXMLDocument; var f: TStream;
-  const AFilename: String);
+procedure ReadXMLFile(var ADoc: TXMLDocument; var f: TStream; const AFilename: String);
 var
   reader: TXMLReader;
   buf: PChar;
@@ -1303,16 +1384,18 @@ begin
   if f.Size = 0 then exit;
 
   GetMem(buf, f.Size + 1);
-  f.Read(buf^, TFPCMemStreamSeekType(f.Size));
-  buf[f.Size] := #0;
-  
-  reader := TXMLReader.Create;
   try
-    reader.ProcessXML(buf, AFilename);
+    f.Read(buf^, f.Size);
+    buf[f.Size] := #0;
+    Reader := TXMLReader.Create;
+    try
+      Reader.ProcessXML(buf, AFilename);
+      ADoc := TXMLDocument(Reader.doc);
+    finally
+      Reader.Free;
+    end;
   finally
-    FreeMem(buf, f.Size + 1);
-    ADoc := reader.doc;
-    reader.Free;
+    FreeMem(buf);
   end;
 end;
 
@@ -1331,14 +1414,7 @@ begin
   if FileStream=nil then exit;
   MemStream := TMemoryStream.Create;
   try
-    try
-      MemStream.LoadFromStream(FileStream);
-    except
-      on E: Exception do begin
-        DebugLn('ERROR reading file "',AFilename,'": ',E.Message);
-        exit;
-      end;
-    end;
+    MemStream.LoadFromStream(FileStream);
     ReadXMLFile(ADoc, MemStream, AFilename);
   finally
     FileStream.Free;
@@ -1346,44 +1422,124 @@ begin
   end;
 end;
 
+procedure ReadXMLFragment(AParentNode: TDOMNode; var f: File);
+var
+  Reader: TXMLReader;
+  buf: PChar;
+  BufSize: LongInt;
+begin
+  BufSize := FileSize(f) + 1;
+  if BufSize <= 1 then
+    exit;
+
+  GetMem(buf, BufSize);
+  try
+    BlockRead(f, buf^, BufSize - 1);
+    buf[BufSize - 1] := #0;
+    Reader := TXMLReader.Create;
+    try
+      Reader.Doc := AParentNode.OwnerDocument;
+      Reader.ProcessFragment(AParentNode, buf, TFileRec(f).name);
+    finally
+      Reader.Free;
+    end;
+  finally
+    FreeMem(buf);
+  end;
+end;
+
+procedure ReadXMLFragment(AParentNode: TDOMNode; var f: TStream; const AFilename: String);
+var
+  Reader: TXMLReader;
+  buf: PChar;
+begin
+  if f.Size = 0 then
+    exit;
+
+  GetMem(buf, f.Size + 1);
+  try
+    f.Read(buf^, f.Size);
+    buf[f.Size] := #0;
+    Reader := TXMLReader.Create;
+    Reader.Doc := AParentNode.OwnerDocument;
+    try
+      Reader.ProcessFragment(AParentNode, buf, AFilename);
+    finally
+      Reader.Free;
+    end;
+  finally
+    FreeMem(buf);
+  end;
+end;
+
+procedure ReadXMLFragment(AParentNode: TDOMNode; var f: TStream);
+begin
+  ReadXMLFragment(AParentNode, f, '<Stream>');
+end;
+
+procedure ReadXMLFragment(AParentNode: TDOMNode; const AFilename: String);
+var
+  Stream: TStream;
+begin
+  Stream := TFileStream.Create(AFilename, fmOpenRead);
+  try
+    ReadXMLFragment(AParentNode, Stream, AFilename);
+  finally
+    Stream.Free;
+  end;
+end;
+
 
 procedure ReadDTDFile(var ADoc: TXMLDocument; var f: File);
 var
-  reader: TXMLReader;
+  Reader: TXMLReader;
   buf: PChar;
   BufSize: LongInt;
 begin
   ADoc := nil;
   BufSize := FileSize(f) + 1;
-  if BufSize <= 1 then exit;
+  if BufSize <= 1 then
+    exit;
 
-  GetMem(buf, BufSize + 1);
-  BlockRead(f, buf^, BufSize - 1);
-  buf[BufSize - 1] := #0;
-  reader := TXMLReader.Create;
-  reader.ProcessDTD(buf, Filerec(f).name);
-  FreeMem(buf, BufSize);
-  ADoc := reader.doc;
-  reader.Free;
+  GetMem(buf, BufSize);
+  try
+    BlockRead(f, buf^, BufSize - 1);
+    buf[BufSize - 1] := #0;
+    Reader := TXMLReader.Create;
+    try
+      Reader.ProcessDTD(buf, TFileRec(f).name);
+      ADoc := TXMLDocument(Reader.doc);
+    finally
+      Reader.Free;
+    end;
+  finally
+    FreeMem(buf);
+  end;
 end;
 
-procedure ReadDTDFile(var ADoc: TXMLDocument; var f: TStream;
-  const AFilename: String);
+procedure ReadDTDFile(var ADoc: TXMLDocument; var f: TStream; const AFilename: String);
 var
-  reader: TXMLReader;
+  Reader: TXMLReader;
   buf: PChar;
 begin
   ADoc := nil;
-  if f.Size = 0 then exit;
+  if f.Size = 0 then
+    exit;
 
   GetMem(buf, f.Size + 1);
-  f.Read(buf^, TFPCMemStreamSeekType(f.Size));
-  buf[f.Size] := #0;
-  reader := TXMLReader.Create;
-  reader.ProcessDTD(buf, AFilename);
-  FreeMem(buf, f.Size + 1);
-  ADoc := reader.doc;
-  reader.Free;
+  try
+    f.Read(buf^, f.Size);
+    buf[f.Size] := #0;
+    Reader := TXMLReader.Create;
+    try
+      Reader.ProcessDTD(buf, AFilename);
+      ADoc := TXMLDocument(Reader.doc);
+    finally
+      Reader.Free;
+    end;
+  finally
+    FreeMem(buf);
+  end;
 end;
 
 procedure ReadDTDFile(var ADoc: TXMLDocument; var f: TStream);
@@ -1393,76 +1549,28 @@ end;
 
 procedure ReadDTDFile(var ADoc: TXMLDocument; const AFilename: String);
 var
-  stream: TFileStream;
+  Stream: TStream;
 begin
   ADoc := nil;
-  stream := TFileStream.Create(AFilename, fmOpenRead);
+  Stream := TFileStream.Create(AFilename, fmOpenRead);
   try
-    ReadDTDFile(ADoc, stream, AFilename);
+    ReadDTDFile(ADoc, Stream, AFilename);
   finally
-    stream.Free;
+    Stream.Free;
   end;
 end;
 
 
 end.
-
-
 {
   $Log$
-  Revision 1.14  2004/12/17 14:41:41  vincents
-  fixed memleak after parsing error.
+  Revision 1.15  2005/01/29 14:36:04  mattias
+  reactivated fast xml units without widestrings
 
-  Revision 1.13  2004/10/28 09:38:16  mattias
-  fixed COPYING.modifiedLGPL links
+  Revision 1.13  2005/01/22 20:54:51  michael
+  * Patch from Colin Western to correctly read CDATA
 
-  Revision 1.12  2004/05/22 14:35:32  mattias
-  fixed button return key
+  Revision 1.12  2004/11/05 22:32:28  peter
+    * merged xml updates from lazarus
 
-  Revision 1.11  2003/12/25 14:17:06  mattias
-  fixed many range check warnings
-
-  Revision 1.10  2003/12/19 09:06:07  mattias
-  replaced StrLComp by CompareLPChar
-
-  Revision 1.9  2003/12/18 23:47:03  mattias
-  added classes incpath
-
-  Revision 1.8  2002/12/16 12:12:50  mattias
-  fixes for fpc 1.1
-
-  Revision 1.7  2002/10/22 08:48:04  lazarus
-  MG: fixed segfault on loading xmlfile
-
-  Revision 1.6  2002/10/05 14:03:58  lazarus
-  MG: accelerated calculating guidelines
-
-  Revision 1.5  2002/10/01 08:27:35  lazarus
-  MG: fixed parsing textnodes
-
-  Revision 1.4  2002/09/13 16:58:27  lazarus
-  MG: removed the 1x1 bitmap from TBitBtn
-
-  Revision 1.3  2002/08/04 07:44:44  lazarus
-  MG: fixed xml reading writing of special chars
-
-  Revision 1.2  2002/07/30 14:36:28  lazarus
-  MG: accelerated xmlread and xmlwrite
-
-  Revision 1.1  2002/07/30 06:24:06  lazarus
-  MG: added a faster version of TXMLConfig
-
-  Revision 1.5  2000/10/14 09:41:45  sg
-  * Fixed typo in previous fix. (forgot closing bracket. Oops.)
-
-  Revision 1.4  2000/10/14 09:40:44  sg
-  * Extended the "Unmatching element end tag" exception, now the expected
-    tag name is included in the message string.
-
-  Revision 1.3  2000/07/29 14:52:25  sg
-  * Modified the copyright notice to remove ambiguities
-
-  Revision 1.2  2000/07/13 11:33:07  michael
-  + removed logs
- 
 }

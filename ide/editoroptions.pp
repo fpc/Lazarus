@@ -41,7 +41,7 @@ uses
   SynHighlighterPas, SynHighlighterHTML, SynHighlighterCPP, SynHighlighterXML,
   SynHighlighterLFM, SynHighlighterPerl, SynHighlighterJava,
   SynHighlighterPython, SynHighlighterUNIXShellScript,
-  {$IFNDEF VER1_0}XMLCfg{$ELSE}Laz_XMLCfg{$ENDIF},
+  Laz_XMLCfg,
   IDECommands, CodeTemplateDialog, KeyMapping, InputHistory, IDEOptionDefs,
   LazarusIDEStrConsts, KeymapSchemeDlg;
 

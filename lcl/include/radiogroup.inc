@@ -266,6 +266,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomRadioGroup.GetItemIndex : integer;
 begin
+  //debugln('TCustomRadioGroup.GetItemIndex ',dbgsName(Self),' FItemIndex=',dbgs(FItemIndex));
   Result := FItemIndex;
 end;
 
@@ -395,6 +396,9 @@ end;
 
 {
   $Log$
+  Revision 1.6  2005/01/29 14:36:04  mattias
+  reactivated fast xml units without widestrings
+
   Revision 1.5  2004/09/09 09:35:44  mattias
   renamed customradiogroup.inc to radiogroup.inc
 

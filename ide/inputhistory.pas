@@ -36,7 +36,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, DiffPatch, IDEProcs,
-  {$IFNDEF VER1_0}XMLCfg{$ELSE}Laz_XMLCfg{$ENDIF}, LazConf, Dialogs, LCLProc;
+  Laz_XMLCfg, LazConf, Dialogs, LCLProc;
 
 const
   // these are the names of the various history lists in the IDE:

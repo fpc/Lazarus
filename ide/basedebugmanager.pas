@@ -41,7 +41,7 @@ uses
   MemCheck,
 {$ENDIF}
   Classes, SysUtils, Forms, Project, SourceMarks, Debugger,
-  {$IFNDEF VER1_0}XMLCfg{$ELSE}Laz_XMLCfg{$ENDIF};
+  Laz_XMLCfg;
 
 type
   { TBaseDebugManager }
@@ -171,6 +171,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.25  2005/01/29 14:36:02  mattias
+  reactivated fast xml units without widestrings
+
   Revision 1.24  2005/01/15 13:44:03  vincents
   use xml units from fpc, if not compiling with fpc 1.0
 

@@ -35,7 +35,7 @@ unit PublishModule;
 interface
 
 uses
-  Classes, SysUtils, {$IFNDEF VER1_0}XMLCfg{$ELSE}Laz_XMLCfg{$ENDIF},
+  Classes, SysUtils, Laz_XMLCfg,
   IDEProcs, SynRegExpr, FileUtil, LCLProc;
 
 type

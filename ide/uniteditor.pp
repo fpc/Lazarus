@@ -42,7 +42,7 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, Controls, LCLProc, LCLType, LResources, LCLIntf, FileUtil,
-  Forms, Buttons, ComCtrls, Dialogs, StdCtrls, GraphType, Graphics,
+  Forms, Buttons, ComCtrls, Dialogs, StdCtrls, GraphType, Graphics, TypInfo,
   Extctrls, Menus,
   // codetools
   CodeToolManager, CodeCache, SourceLog,
@@ -773,6 +773,7 @@ var ALeft,ATop:integer;
 begin
   if SourceNotebook<>nil then
     SourceNotebook.InitFindDialog;
+  //debugln('TSourceEditor.StartFindAndReplace A FindReplaceDlg.FindText="',dbgstr(FindReplaceDlg.FindText),'"');
   if Replace then
     FindReplaceDlg.Options :=
       FindReplaceDlg.Options + [ssoReplace, ssoReplaceAll, ssoPrompt]
@@ -804,6 +805,7 @@ begin
   if (FindReplaceDlg.ShowModal = mrCancel) then begin
     exit;
   end;
+  //debugln('TSourceEditor.StartFindAndReplace B FindReplaceDlg.FindText="',dbgstr(FindReplaceDlg.FindText),'"');
 
   if Replace then
     InputHistories.AddToReplaceHistory(FindReplaceDlg.ReplaceText);
@@ -837,7 +839,8 @@ Begin
 End;
 
 procedure TSourceEditor.DoFindAndReplace;
-var OldCaretXY:TPoint;
+var
+  OldCaretXY:TPoint;
   AText,ACaption:AnsiString;
   TopLine: integer;
 begin
@@ -850,6 +853,7 @@ begin
     else
       EditorComponent.LogicalCaretXY:=EditorComponent.BlockEnd
   end;
+  //debugln('TSourceEditor.DoFindAndReplace A FindReplaceDlg.FindText="',dbgstr(FindReplaceDlg.FindText),'" ssoEntireScope=',dbgs(ssoEntireScope in FindReplaceDlg.Options),' ssoBackwards=',dbgs(ssoBackwards in FindReplaceDlg.Options));
   try
     EditorComponent.SearchReplace(
       FindReplaceDlg.FindText,FindReplaceDlg.ReplaceText,FindReplaceDlg.Options);

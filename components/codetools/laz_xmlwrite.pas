@@ -1,10 +1,4 @@
 {
-  BEWARE !!!
-  This is a TEMPORARY file.
-  As soon as it is moved to the fcl, it will be removed.
-}
-
-{
     $Id$
     This file is part of the Free Component Library
 
@@ -28,15 +22,15 @@ unit Laz_XMLWrite;
 
 interface
 
-uses Classes, Laz_DOM, FileProcs;
+uses Classes, Laz_DOM;
 
-procedure WriteXMLFile(doc: TXMLDocument; const AFileName: String);
-procedure WriteXMLFile(doc: TXMLDocument; var AFile: Text);
-procedure WriteXMLFile(doc: TXMLDocument; var AStream: TStream);
+procedure WriteXMLFile(doc: TXMLDocument; const AFileName: String); overload;
+procedure WriteXMLFile(doc: TXMLDocument; var AFile: Text); overload;
+procedure WriteXMLFile(doc: TXMLDocument; AStream: TStream); overload;
 
-procedure WriteXML(Element: TDOMElement; const AFileName: String);
-procedure WriteXML(Element: TDOMElement; var AFile: Text);
-procedure WriteXML(Element: TDOMElement; var AStream: TStream);
+procedure WriteXML(Element: TDOMNode; const AFileName: String); overload;
+procedure WriteXML(Element: TDOMNode; var AFile: Text); overload;
+procedure WriteXML(Element: TDOMNode; AStream: TStream); overload;
 
 
 // ===================================================================
@@ -78,14 +72,6 @@ begin
 end;
 
 
-procedure RaiseException(const Msg: string);
-begin
-  DebugLn('ERROR in XMLWrite: ',Msg);
-  // creates an exception, that gdb catches:
-  DebugLn('Creating gdb catchable error:');
-  if (length(Msg) div (length(Msg) div 10000))=0 then ;
-end;
-
 // -------------------------------------------------------------------
 //   Text file and TStream support
 // -------------------------------------------------------------------
@@ -93,7 +79,7 @@ end;
 type
   TOutputProc = procedure(const Buffer; Count: Longint);
 
-var
+threadvar
   f: ^Text;
   stream: TStream;
   wrt, wrtln: TOutputProc;
@@ -160,7 +146,7 @@ end;
 //   Indent handling
 // -------------------------------------------------------------------
 
-var
+threadvar
   Indent: String;
   IndentCount: integer;
 
@@ -191,7 +177,7 @@ type
   TSpecialCharCallback = procedure(c: Char);
 
 const
-  AttrSpecialChars = ['"', '&'];
+  AttrSpecialChars = ['<', '>', '"', '&'];
   TextSpecialChars = ['<', '>', '&'];
 
 
@@ -306,7 +292,6 @@ end;
 
 procedure WriteAttribute(node: TDOMNode);
 begin
-  DebugLn('WriteAttribute');
   if node=nil then ;
 end;
 
@@ -335,7 +320,6 @@ end;
 
 procedure WriteEntity(node: TDOMNode);
 begin
-  DebugLn('WriteEntity');
   if node=nil then ;
 end;
 
@@ -361,25 +345,21 @@ end;
 
 procedure WriteDocument(node: TDOMNode);
 begin
-  DebugLn('WriteDocument');
   if node=nil then ;
 end;
 
 procedure WriteDocumentType(node: TDOMNode);
 begin
-  DebugLn('WriteDocumentType');
   if node=nil then ;
 end;
 
 procedure WriteDocumentFragment(node: TDOMNode);
 begin
-  DebugLn('WriteDocumentFragment');
   if node=nil then ;
 end;
 
 procedure WriteNotation(node: TDOMNode);
 begin
-  DebugLn('WriteNotation');
   if node=nil then ;
 end;
 
@@ -387,6 +367,7 @@ end;
 procedure InitWriter;
 begin
   InsideTextNode := False;
+  SetLength(Indent, 0);
 end;
 
 procedure RootWriter(doc: TXMLDocument);
@@ -396,18 +377,26 @@ begin
   InitWriter;
   wrtStr('<?xml version="');
   if Length(doc.XMLVersion) > 0 then
-    wrtStr(doc.XMLVersion)
+    ConvWrite(doc.XMLVersion, AttrSpecialChars, @AttrSpecialCharCallback)
   else
     wrtStr('1.0');
   wrtChr('"');
   if Length(doc.Encoding) > 0 then
-    wrtStr(' encoding="' + doc.Encoding + '"');
+  begin
+    wrtStr(' encoding="');
+    ConvWrite(doc.Encoding, AttrSpecialChars, @AttrSpecialCharCallback);
+    wrtStr('"');
+  end;
   wrtStrln('?>');
 
   if Length(doc.StylesheetType) > 0 then
-    // !!!: Can't handle with HRefs which contain special chars (" and so on)
-    wrtStrln(Format('<?xml-stylesheet type="%s" href="%s"?>',
-      [doc.StylesheetType, doc.StylesheetHRef]));
+  begin
+    wrtStr('<?xml-stylesheet type="');
+    ConvWrite(doc.StylesheetType, AttrSpecialChars, @AttrSpecialCharCallback);
+    wrtStr('" href="');
+    ConvWrite(doc.StylesheetHRef, AttrSpecialChars, @AttrSpecialCharCallback);
+    wrtStrln('"?>');
+  end;
 
   Indent := '  ';
   IndentCount := 0;
@@ -433,8 +422,53 @@ end;
 //   Interface implementation
 // -------------------------------------------------------------------
 
+{$IFDEF FPC}
+  {$IFNDEF VER1_0}
+  // widestrings ansistring conversion is slow and we only use ansistring anyway
+    {off $DEFINE UsesFPCWidestrings}
+  {$ENDIF}
+{$ENDIF}
+
+{$IFDEF UsesFPCWidestrings}
+
+procedure SimpleWide2AnsiMove(source:pwidechar;dest:pchar;len:sizeint);
+var
+  i : sizeint;
+begin
+  for i:=1 to len do
+   begin
+     if word(source^)<256 then
+      dest^:=char(word(source^))
+     else
+      dest^:='?';
+     inc(dest);
+     inc(source);
+   end;
+end;
+
+procedure SimpleAnsi2WideMove(source:pchar;dest:pwidechar;len:sizeint);
+var
+  i : sizeint;
+begin
+  for i:=1 to len do
+   begin
+     dest^:=widechar(byte(source^));
+     inc(dest);
+     inc(source);
+   end;
+end;
+
+const
+  WideStringManager: TWideStringManager = (
+    Wide2AnsiMove: @SimpleWide2AnsiMove;
+    Ansi2WideMove: @SimpleAnsi2WideMove
+  );
+
+{$ENDIF}
+
 procedure WriteXMLFile(doc: TXMLDocument; const AFileName: String);
-var fs: TFileStream;
+var
+  fs: TFileStream;
 begin
   // write first to memory buffer and then as one whole block to file
   WriteXMLMemStream(doc);
@@ -448,93 +482,125 @@ begin
 end;
 
 procedure WriteXMLFile(doc: TXMLDocument; var AFile: Text);
+{$IFDEF UsesFPCWidestrings}
+var
+  OldWideStringManager: TWideStringManager;
+{$ENDIF}
 begin
-  f := @AFile;
-  wrt := @Text_Write;
-  wrtln := @Text_WriteLn;
-  RootWriter(doc);
+  {$IFDEF UsesFPCWidestrings}
+  SetWideStringManager(WideStringManager, OldWideStringManager);
+  try
+  {$ENDIF}
+    f := @AFile;
+    wrt := @Text_Write;
+    wrtln := @Text_WriteLn;
+    RootWriter(doc);
+  {$IFDEF UsesFPCWidestrings}
+  finally
+    SetWideStringManager(OldWideStringManager);
+  end;
+  {$ENDIF}
 end;
 
-procedure WriteXMLFile(doc: TXMLDocument; var AStream: TStream);
+procedure WriteXMLFile(doc: TXMLDocument; AStream: TStream);
+{$IFDEF UsesFPCWidestrings}
+var
+  OldWideStringManager: TWideStringManager;
+{$ENDIF}
 begin
-  Stream := AStream;
-  wrt := @Stream_Write;
-  wrtln := @Stream_WriteLn;
-  RootWriter(doc);
+  {$IFDEF UsesFPCWidestrings}
+  SetWideStringManager(WideStringManager, OldWideStringManager);
+  try
+  {$ENDIF}
+    Stream := AStream;
+    wrt := @Stream_Write;
+    wrtln := @Stream_WriteLn;
+    RootWriter(doc);
+  {$IFDEF UsesFPCWidestrings}
+  finally
+    SetWideStringManager(OldWideStringManager);
+  end;
+  {$ENDIF}
 end;
 
 
-procedure WriteXML(Element: TDOMElement; const AFileName: String);
+procedure WriteXML(Element: TDOMNode; const AFileName: String);
+{$IFDEF UsesFPCWidestrings}
+var
+  OldWideStringManager: TWideStringManager;
+{$ENDIF}
 begin
-  Stream := TFileStream.Create(AFileName, fmCreate);
-  wrt := @Stream_Write;
-  wrtln := @Stream_WriteLn;
-  InitWriter;
-  WriteNode(Element);
-  Stream.Free;
+  {$IFDEF UsesFPCWidestrings}
+  SetWideStringManager(WideStringManager, OldWideStringManager);
+  try
+  {$ENDIF}
+    Stream := TFileStream.Create(AFileName, fmCreate);
+    wrt := @Stream_Write;
+    wrtln := @Stream_WriteLn;
+    InitWriter;
+    WriteNode(Element);
+    Stream.Free;
+  {$IFDEF UsesFPCWidestrings}
+  finally
+    SetWideStringManager(OldWideStringManager);
+  end;
+  {$ENDIF}
 end;
 
-procedure WriteXML(Element: TDOMElement; var AFile: Text);
+procedure WriteXML(Element: TDOMNode; var AFile: Text);
+{$IFDEF UsesFPCWidestrings}
+var
+  OldWideStringManager: TWideStringManager;
+{$ENDIF}
 begin
-  f := @AFile;
-  wrt := @Text_Write;
-  wrtln := @Text_WriteLn;
-  InitWriter;
-  WriteNode(Element);
+  {$IFDEF UsesFPCWidestrings}
+  SetWideStringManager(WideStringManager, OldWideStringManager);
+  try
+  {$ENDIF}
+    f := @AFile;
+    wrt := @Text_Write;
+    wrtln := @Text_WriteLn;
+    InitWriter;
+    WriteNode(Element);
+  {$IFDEF UsesFPCWidestrings}
+  finally
+    SetWideStringManager(OldWideStringManager);
+  end;
+  {$ENDIF}
 end;
 
-procedure WriteXML(Element: TDOMElement; var AStream: TStream);
+procedure WriteXML(Element: TDOMNode; AStream: TStream);
+{$IFDEF UsesFPCWidestrings}
+var
+  OldWideStringManager: TWideStringManager;
+{$ENDIF}
 begin
-  stream := AStream;
-  wrt := @Stream_Write;
-  wrtln := @Stream_WriteLn;
-  InitWriter;
-  WriteNode(Element);
+  {$IFDEF UsesFPCWidestrings}
+  SetWideStringManager(WideStringManager, OldWideStringManager);
+  try
+  {$ENDIF}
+    stream := AStream;
+    wrt := @Stream_Write;
+    wrtln := @Stream_WriteLn;
+    InitWriter;
+    WriteNode(Element);
+  {$IFDEF UsesFPCWidestrings}
+  finally
+    SetWideStringManager(OldWideStringManager);
+  end;
+  {$ENDIF}
 end;
-
 
 end.
-
-
 {
   $Log$
-  Revision 1.7  2004/10/28 09:38:16  mattias
-  fixed COPYING.modifiedLGPL links
+  Revision 1.8  2005/01/29 14:36:04  mattias
+  reactivated fast xml units without widestrings
 
-  Revision 1.6  2004/05/22 14:35:32  mattias
-  fixed button return key
+  Revision 1.16  2005/01/08 01:32:06  michael
+  + Fixed writing of fragments
 
-  Revision 1.5  2002/09/30 11:01:43  lazarus
-  MG: accelerated xmlwriter
+  Revision 1.15  2004/11/05 22:32:28  peter
+    * merged xml updates from lazarus
 
-  Revision 1.4  2002/09/20 09:27:47  lazarus
-  MG: accelerated xml
-
-  Revision 1.3  2002/08/04 07:44:44  lazarus
-  MG: fixed xml reading writing of special chars
-
-  Revision 1.2  2002/07/30 14:36:28  lazarus
-  MG: accelerated xmlread and xmlwrite
-
-  Revision 1.1  2002/07/30 06:24:06  lazarus
-  MG: added a faster version of TXMLConfig
-
-  Revision 1.6  2001/06/07 14:38:44  jonas
-    * fixed wrong procvar syntax (patches from Peter)
-
-  Revision 1.5  2000/10/03 20:16:31  sg
-  * Now writes Processing Instructions and a stylesheet link, if set
-
-  Revision 1.4  2000/07/29 14:52:25  sg
-  * Modified the copyright notice to remove ambiguities
-
-  Revision 1.3  2000/07/25 09:20:08  sg
-  * Fixed some small bugs
-    - some methods where 'virtual' instead of 'override' in dom.pp
-    - corrections regaring wether NodeName or NodeValue is used, for
-      some node types (Entity, EntityReference)
-
-  Revision 1.2  2000/07/13 11:33:08  michael
-  + removed logs
- 
 }

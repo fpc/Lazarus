@@ -40,7 +40,7 @@ uses
   MemCheck,
 {$ENDIF}
   Classes, SysUtils, Forms, Controls, Dialogs, Menus, FileUtil, LCLProc,
-  {$IFNDEF VER1_0}XMLCfg{$ELSE}Laz_XMLCfg{$ENDIF},
+  Laz_XMLCfg,
   SynEdit, CodeCache, CodeToolManager, LazConf, DebugOptionsFrm,
   CompilerOptions, EditorOptions, EnvironmentOpts, KeyMapping, UnitEditor,
   Project, IDEProcs, InputHistory, Debugger,
@@ -1946,6 +1946,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.84  2005/01/29 14:36:02  mattias
+  reactivated fast xml units without widestrings
+
   Revision 1.83  2005/01/22 20:48:13  mattias
   added option to omit debugged program stopped  from Andrew Haines
 

@@ -53,7 +53,7 @@ interface
 
 uses
   Messages, Graphics, Controls, Forms, LCLProc, Dialogs, StdCtrls, Buttons,
-  IDEProcs, {$IFNDEF VER1_0}XMLCfg{$ELSE}Laz_XMLCfg{$ENDIF}, SysUtils, Classes;
+  IDEProcs, Laz_XMLCfg, SysUtils, Classes;
 
 type
 

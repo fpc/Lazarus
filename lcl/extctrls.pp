@@ -601,6 +601,8 @@ type
     clVerticalThenHorizontal
     );
 
+  { TCustomRadioGroup }
+
   TCustomRadioGroup = class(TCustomGroupBox)
   private
     FButtonList: TList; // list of TRadioButton
@@ -990,6 +992,9 @@ end.
 
  {
   $Log$
+  Revision 1.132  2005/01/29 14:36:04  mattias
+  reactivated fast xml units without widestrings
+
   Revision 1.131  2005/01/28 18:48:35  micha
   implement assign for tbevel
 
