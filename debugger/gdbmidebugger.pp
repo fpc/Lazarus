@@ -259,7 +259,11 @@ type
 { Some win32 stuff }
 { =========================================================================== }
 {$IFDEF WIN32}
+{$IFNDEF VER1_0}
 var
+{$ELSE}
+const
+{$ENDIF}
   DebugBreakAddr: Pointer = nil;
   // use our own version. Win9x doesn't support this, so it is a nice check
   _CreateRemoteThread: function(hProcess: THandle; lpThreadAttributes: Pointer; dwStackSize: DWORD; lpStartAddress: TFNThreadStartRoutine; lpParameter: Pointer; dwCreationFlags: DWORD; var lpThreadId: DWORD): THandle; stdcall = nil;
@@ -2650,6 +2654,9 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.56  2004/11/22 08:08:36  vincents
+  fixed fpc 1.0.x compilation
+
   Revision 1.55  2004/11/21 18:52:47  marc
   * fixed resetting internal breakpoints
 
