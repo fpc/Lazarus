@@ -1857,8 +1857,7 @@ begin
 
       LM_GETTEXT :
       begin
-        Assert (true, 'WARNING:[TgtkObject.IntSendMessage3] usage of LM_GETTEXT superfluous, use interface-function GetText instead'); 
-        Result := integer (nil);
+        Result := Integer(GetText(Sender As TComponent,PString(Data)^));
       end;
 
       LM_GETITEMINDEX :
@@ -5682,37 +5681,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TGtkObject.UpdateHint
-  Params:  Sender : the lcl object which called this func 
-  Returns: currently always 0
-
-  Sets the tooltip text of the sending control.
- ------------------------------------------------------------------------------}
-function TGtkObject.UpdateHint(Sender: TObject) : integer;
-var
-  StrTemp : PChar;
-begin
-  Result := 0;     // default if nobody sets it
-  if Sender is TWinControl then
-  with Sender as TWinControl do
-  begin
-    if not HandleAllocated then exit;
-    if (Length(Hint) > 0) and (ShowHint or (csDesigning in ComponentState))
-    then begin
-      strTemp := StrAlloc(Length(Hint) + 1);
-      try
-        StrPCopy(strTemp, Hint);
-        // ?? TODO something with short and long hints ??
-        gtk_ToolTips_Set_Tip(FGTKToolTips, PgtkWidget(Handle), StrTemp, StrTemp);
-      finally
-        StrDispose(strTemp);
-      end;
-    end 
-    else gtk_ToolTips_Set_Tip(FGTKToolTips, PgtkWidget(Handle), nil, nil);
-  end;
-end;
-
-{------------------------------------------------------------------------------
   Method: TGtkObject.AttachMenu
   Params:  Sender : the lcl object which called this func 
   Returns: nothing
@@ -6721,6 +6689,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.294  2002/12/04 20:39:15  mattias
+  patch from Vincent: clean ups and fixed crash on destroying window
+
   Revision 1.293  2002/11/27 15:40:36  mattias
   fixed resize request
 
