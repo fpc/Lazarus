@@ -518,8 +518,13 @@ begin
     Cur1:=Max1;
     Cur2:=Max2;
   finally
-    EqualLine1:=Cur1;
-    EqualLine2:=Cur2;
+    repeat
+      EqualLine1:=Cur1;
+      EqualLine2:=Cur2;
+      // chomp empty lines at end
+      GetPrevLineExtends(Text1,Cur1);
+      GetPrevLineExtends(Text2,Cur2);
+    until not LinesAreEqual(Text1,Cur1,Text2,Cur2,Flags);
   end;
 end;
 
@@ -624,13 +629,11 @@ end;
 
 procedure TDiffOutput.SaveToString(var s: string);
 begin
-writeln('TDiffOutput.SaveToString A');
   FinishDiff;
   SetLength(s,DiffStream.Size);
   DiffStream.Position:=0;
   if s<>'' then
     DiffStream.Read(s[1],length(s));
-writeln('TDiffOutput.SaveToString END');
 end;
 
 procedure TDiffOutput.WriteLinesOfText(Stream: TStream;
@@ -689,7 +692,7 @@ procedure TDiffOutput.FinishOldContextBlock;
     // check if part contains any changed lines
     if Part.Position.LineNumber>Part.StartLine then begin
       // part contains changed lines -> append end context
-      while (Part.Position.LineNumber<Part.EndLine)
+      while (Part.Position.LineNumber<=Part.EndLine)
       and (Part.Position.LineStart<length(Source)) do begin
         WriteLinesOfText(Part.Stream,Source,'  ',Part.Position,
                          Part.Position.NextLineStart);
@@ -706,18 +709,16 @@ procedure TDiffOutput.FinishOldContextBlock;
     WriteStrToStream(DiffStream,
             HeaderPrefix
             +IntToStr(Part.StartLine)+','+IntToStr(Part.EndLine)
-            +HeaderSuffix);
+            +HeaderSuffix+LineBreak);
     if Part.Stream.Size<>0 then
       DiffStream.CopyFrom(Part.Stream,Part.Stream.Size);
   end;
 
 begin
-writeln('TDiffOutput.FinishOldContextBlock A');
   if Part1.Stream<>nil then begin
     WritePart(Part1,Text1,'*** ',' ****');
     WritePart(Part2,Text2,'--- ',' ----');
   end;
-writeln('TDiffOutput.FinishOldContextBlock END');
 end;
 
 procedure TDiffOutput.FinishDiff;
@@ -835,7 +836,8 @@ procedure TDiffOutput.AddContextDiff(
 }
 
   procedure WritePart(Part: TDiffPart; const Source: string;
-    const StartExt, EndExt: TLineExtends);
+    const StartExt, EndExt: TLineExtends; OtherPartHasChangedLines: boolean;
+    CharForInsertDeletion: char);
   begin
     // check if there are changed lines
     if StartExt.LineStart<EndExt.LineStart then begin
@@ -844,9 +846,13 @@ procedure TDiffOutput.AddContextDiff(
         if Part.Position.LineStart<StartExt.LineStart then
           // this is an unchanged line in front of the changed lines
           WriteStrToStream(Part.Stream,'  ')
-        else
+        else begin
           // this is a changed line
-          WriteStrToStream(Part.Stream,'! ');
+          if OtherPartHasChangedLines then
+            WriteStrToStream(Part.Stream,'! ')
+          else
+            WriteStrToStream(Part.Stream,CharForInsertDeletion+' ');
+        end;
         WriteLineToStream(Part.Stream,Source,Part.Position);
         if not GotoNextLine(Part.Position) then break;
         GetLineExtends(Source,Part.Position);
@@ -854,26 +860,24 @@ procedure TDiffOutput.AddContextDiff(
     end;
   end;
 
+var
+  Part1HasChangedLines: boolean;
+  Part2HasChangedLines: boolean;
 begin
-writeln('TDiffOutput.AddContextDiff A');
-  if Part1.Stream<>nil then begin
-    // there was already a difference
-    // check if the new difference can be appended or if a new block should
-    // be started
-    if (Start1.LineNumber-ContextLineCount<=Part1.EndLine-1)
-    and (Start2.LineNumber-ContextLineCount<=Part2.EndLine-1) then begin
-      // append the new difference
-      Part1.EndLine:=End1.LineNumber+ContextLineCount;
-      Part2.EndLine:=End2.LineNumber+ContextLineCount;
-    end else begin
-      // start a new block
-      StartContextBlock(Start1,Start2);
-    end;
+  if (Part1.Stream<>nil)
+  and (Start1.LineNumber-ContextLineCount<=Part1.EndLine-1)
+  and (Start2.LineNumber-ContextLineCount<=Part2.EndLine-1) then begin
+    // append the new difference
+  end else begin
+    // start a new block
+    StartContextBlock(Start1,Start2);
   end;
-writeln('TDiffOutput.AddContextDiff B');
-  WritePart(Part1,Text1,Start1,End1);
-  WritePart(Part2,Text2,Start2,End2);
-writeln('TDiffOutput.AddContextDiff C');
+  Part1.EndLine:=End1.LineNumber+ContextLineCount-1;
+  Part2.EndLine:=End2.LineNumber+ContextLineCount-1;
+  Part1HasChangedLines:=End1.LineStart>Start1.LineStart;
+  Part2HasChangedLines:=End2.LineStart>Start2.LineStart;
+  WritePart(Part1,Text1,Start1,End1,Part2HasChangedLines,'-');
+  WritePart(Part2,Text2,Start2,End2,Part1HasChangedLines,'+');
 end;
 
 constructor TDiffOutput.Create(TheOutputType: TTextDiffOutputType);
@@ -886,12 +890,10 @@ end;
 
 destructor TDiffOutput.Destroy;
 begin
-writeln('TDiffOutput.Destroy A');
   DiffStream.Free;
   Part1.Free;
   Part2.Free;
   inherited Destroy;
-writeln('TDiffOutput.Destroy B');
 end;
 
 

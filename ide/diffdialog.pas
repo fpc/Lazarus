@@ -480,7 +480,7 @@ begin
     OnGetDiffFile(Text2.ID,
       Text2.SelectionAvailable and Text2OnlySelectionCheckBox.Checked,
       Text2Src);
-    DiffTxt:=CreateTextDiff(Text1Src,Text2Src,GetDiffOptions,tdoRCS);
+    DiffTxt:=CreateTextDiff(Text1Src,Text2Src,GetDiffOptions,tdoContext);
     DiffSynEdit.Lines.Text:=DiffTxt;
   end;
 end;

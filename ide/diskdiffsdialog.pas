@@ -185,7 +185,7 @@ begin
       fs.Read(Result^.TxtOnDisk[1],length(Result^.TxtOnDisk));
     fs.Free;
     Result^.Diff:=CreateTextDiff(AnUnitInfo.Source.Source,Result^.TxtOnDisk,[],
-                                 tdoRCS);
+                                 tdoContext);
   except
     On E: Exception do
       Result^.Diff:='\ '+Format(lisDiskDiffErrorReadingFile, [E.Message]);
