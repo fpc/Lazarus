@@ -1093,6 +1093,7 @@ begin
     ' NewMaskHandle=',HexStr(Cardinal(NewMaskHandle),8));
   {$ENDIF}
   ReplaceBitmapMask(FImage.FHandle,FImage.FMaskHandle,NewMaskHandle);
+  FTransparent := FImage.FMaskHandle <> 0;
   {$IFDEF VerboseImgMasks}
   DebugLn('TBitmap.SetMaskHandle After Replace FImage.FHandle=',HexStr(Cardinal(FImage.FHandle),8),
     ' FImage.FMaskHandle=',HexStr(Cardinal(FImage.FMaskHandle),8),
@@ -1246,6 +1247,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.92  2004/12/27 17:42:01  micha
+  fix transparency while drawing (bug 462)
+
   Revision 1.91  2004/09/27 10:01:18  mattias
   added TLazIntfImage.TColors property
 

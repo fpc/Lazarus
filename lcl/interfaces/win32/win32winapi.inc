@@ -2936,13 +2936,14 @@ End;
   the destination device context.
  ------------------------------------------------------------------------------}
 Function TWin32WidgetSet.StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean;
-var MaskBltResult: boolean;
-    StretchBltResult: boolean;
 Begin
-  MaskBltResult := MaskBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Mask, XMask, YMask, Rop);
-  StretchBltResult := StretchBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, Rop);
-  Result := MaskBltResult and StretchBltResult;
-
+  if (Width = SrcWidth) and (Height = SrcHeight) then
+  begin
+    Result := MaskBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Mask, XMask, YMask);
+  end else begin
+    { TODO: does not use the mask }
+    Result := StretchBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, Rop);
+  end;
   //Result := False; //Windows.StretchMaskBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, Mask, XMask, YMask, Rop);
 End;
 
@@ -3031,6 +3032,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.130  2004/12/27 17:42:01  micha
+  fix transparency while drawing (bug 462)
+
   Revision 1.129  2004/12/11 01:28:58  mattias
   implemented bvSpace of TBevelCut
 
