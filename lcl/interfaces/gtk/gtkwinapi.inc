@@ -224,7 +224,9 @@ begin
       FormWidget:=PGtkWidget(AForm.Handle);
       FormWindow:=PGdkWindowPrivate(FormWidget^.window);
       if FormWindow<>nil then begin
+        { $IFDEF EnableGtkWindowFocus}
         GDK_WINDOW_ACTIVATE(FormWindow);
+        { $ENDIF}
       end;
       {$ENDIF}
 {$ifdef gtk2}
@@ -8985,6 +8987,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.415  2005/03/20 09:35:47  mattias
+  next try to fix the gtk1 crashing on focussing a window  from Andrew Haines
+
   Revision 1.414  2005/03/19 09:17:20  mattias
   gtk1: minimizing windows, missing: window state events  from Andrew Haines
 

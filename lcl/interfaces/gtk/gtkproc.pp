@@ -1159,15 +1159,21 @@ procedure GDK_WINDOW_ACTIVATE(Window: PGdkWindowPrivate);
 var
   XDisplay: PDisplay;
   XScreen: PScreen;
-  XRootWindow,
-  XWindow: TWindow;
-  XEvent: TXClientMessageEvent;
+  aXRootWindow,
+  XWindow: x.TWindow;
+  XEvent: xlib.TXClientMessageEvent;
   _NET_ACTIVE_WINDOW: Integer;
 begin
+  if (Window=nil) or (gdk.destroyed(Window^)<>0) then exit;
+
   XDisplay := GDK_WINDOW_XDISPLAY (Window);
+  if XDisplay=nil then exit;
   XScreen := XDefaultScreenOfDisplay(xdisplay);
-  XRootWindow := XRootWindowOfScreen(xscreen);
+  if XScreen=nil then exit;
+  aXRootWindow := XRootWindowOfScreen(xscreen);
+  if aXRootWindow=0 then exit;
   XWindow := GDK_WINDOW_XWINDOW (Window);
+  if XWindow=0 then exit;
 
   _NET_ACTIVE_WINDOW := XInternAtom(xdisplay, '_NET_ACTIVE_WINDOW', false);
 
@@ -1179,7 +1185,7 @@ begin
   XEvent.data.l[1] := CurrentTime;
   XEvent.data.l[1] := 0; // Applications current active window
 
-  XSendEvent(XDisplay, XRootWindow, False, SubstructureNotifyMask, @XEvent);
+  XSendEvent(XDisplay, aXRootWindow, False, SubstructureNotifyMask, @XEvent);
 end;
 
 procedure GDK_WINDOW_MAXIMIZE(Window: PGdkWindowPrivate);

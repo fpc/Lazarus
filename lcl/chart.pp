@@ -323,10 +323,6 @@ end;
 
 procedure TCustomBarChart.BeginUpdate;
 begin
-  if FUpdateCount=0 then begin
-    Canvas.Brush.Color:=Color;
-    Canvas.FillRect(GetClientRect);
-  end;
   Inc(FUpdateCount);
 end;
 
