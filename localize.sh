@@ -42,7 +42,7 @@ CodeTools_RST=`find components/units -name codetoolsstrconsts.rst | xargs ls -1t
 rstconv -i $CodeTools_RST \
   -o components/codetools/languages/codetools.po
 ./tools/updatepofiles components/codetools/languages/codetools.po
-for lang in de fr pl pliso plwin it ca ru ruwin fi; do
+for lang in de fr pl pliso plwin it ca ru ruwin fi es; do
   msgfmt components/codetools/languages/codetools.$lang.po \
     -o components/codetools/languages/codetools.$lang.mo
 done

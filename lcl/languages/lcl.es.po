@@ -1,12 +1,12 @@
 msgid ""
 msgstr ""
-"Last-Translator: Raul Moratalla <raul.moratalla@ono.com>\n"
-"PO-Revision-Date: 2003-12-01 11:07+0100\n"
-"Language-Team: Castellano UTF-8\n"
+"Last-Translator: Luis R. Hilario B. <l_hilario@yahoo.com>\n"
+"PO-Revision-Date: 2004-02-27 21:43-0400\n"
+"Language-Team: Español\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.3\n"
-"Project-Id-Version: lcl.es\n"
+"X-Generator: KBabel 1.0.2\n"
+"Project-Id-Version: lcl\n"
 
 #: lclstrconsts:rswarningunreleasedmessagesinqueue
 msgid " WARNING: There are %d messages left in the queue! I'll free them"
@@ -134,7 +134,7 @@ msgstr "Vacío"
 
 #: lclstrconsts:rscalculator
 msgid "Calculator"
-msgstr ""
+msgstr "Calculadora"
 
 #: lclstrconsts:rscannotfocus
 msgid "Can not focus"
@@ -166,7 +166,7 @@ msgstr "Personalizado"
 
 #: lclstrconsts:rsfddirectorymustexist
 msgid "Directory must exist"
-msgstr ""
+msgstr "Directorio debe de existir"
 
 #: lclstrconsts:sduplicatemenus
 msgid "Duplicate menus"
@@ -346,7 +346,7 @@ msgstr "Propiedad ScrollBar fuera de rango"
 
 #: lclstrconsts:rspickdate
 msgid "Select a date"
-msgstr ""
+msgstr "Escoja una fecha"
 
 #: lclstrconsts:rsselectfonttitle
 msgid "Select a font"
@@ -366,7 +366,7 @@ msgstr "Sub-menu no está en el menú"
 
 #: lclstrconsts:rsfddirectorynotexist
 msgid "The directory \"%s\" does not exist."
-msgstr ""
+msgstr "El directorio \"%s\" no existe."
 
 #: lclstrconsts:rsfdfilealreadyexists
 msgid "The file \"%s\" already exists.\015Overwrite ?"
@@ -406,7 +406,7 @@ msgstr "Advertencia"
 
 #: lclstrconsts:rswin32warning
 msgid "Warning:"
-msgstr ""
+msgstr "Advertencia:"
 
 #: lclstrconsts:rsmbyestoall
 msgid "Yes to all"

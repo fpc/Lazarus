@@ -1,13 +1,13 @@
 msgid ""
 msgstr ""
 "              No mostrar ventana de bienvenida"
-"Last-Translator: Raul Moratalla <raul.moratalla@ono.com>\n"
-"PO-Revision-Date: 2003-12-01 11:10+0100\n"
-"Project-Id-Version: lazaruside.es\n"
-"Language-Team: Castellano \n"
-"Content-Type: text/plain; charset=iso8859-15\n"
+"Last-Translator: Luis R. Hilario B. <l_hilario@yahoo.com>\n"
+"PO-Revision-Date: 2004-02-27 21:19-0400\n"
+"Project-Id-Version: lazaruside\n"
+"Language-Team: Español\n"
+"Content-Type: text/plain; charset=ISO-8859-15\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.3\n"
+"X-Generator: KBabel 1.0.2\n"
 
 #: lazarusidestrconsts:lisdonotshowsplashscreen
 msgid "                      Do not show splash screen"
@@ -223,7 +223,7 @@ msgstr "(macro desconocida: %s)"
 
 #: lazarusidestrconsts:lislazarusversionstring
 msgid "0.9.1 beta"
-msgstr ""
+msgstr "0.9.1 beta"
 
 #: lazarusidestrconsts:lisa2pchooseanexistingfile
 msgid "<choose an existing file>"
@@ -671,7 +671,7 @@ msgstr "Construir IDE"
 
 #: lazarusidestrconsts:lisbuildideintf
 msgid "Build IDE Interface"
-msgstr ""
+msgstr "Construir Interfaz del IDE"
 
 #: lazarusidestrconsts:lisbuildjitform
 msgid "Build JIT Form"
@@ -1315,7 +1315,7 @@ msgstr "Personalizado"
 
 #: lazarusidestrconsts:liskeycatcustom
 msgid "Custom commands"
-msgstr ""
+msgstr "Comandos personalizados"
 
 #: lazarusidestrconsts:lismakeresstrcustomidentifier
 msgid "Custom Identifier"
@@ -1327,7 +1327,7 @@ msgstr "Posición personalizada"
 
 #: lazarusidestrconsts:srkmeccustomtool
 msgid "Custom tool %d"
-msgstr ""
+msgstr "Herramienta %d personalizada"
 
 #: lazarusidestrconsts:lismenucut
 msgid "Cut"
@@ -1555,7 +1555,7 @@ msgstr "Comandos del diseñador"
 
 #: lazarusidestrconsts:lispckoptsdesigntimeandruntime
 msgid "Designtime and Runtime"
-msgstr "DiseÃ±o y Ejecución"
+msgstr "Diseño y Ejecución"
 
 #: lazarusidestrconsts:lispckoptsdesigntimeonly
 msgid "Designtime only"
@@ -1759,7 +1759,7 @@ msgstr "Introducir datos"
 
 #: lazarusidestrconsts:lismacropromptenterrunparameters
 msgid "Enter run parameters"
-msgstr "Introducir parÃ¡metros de ejecución"
+msgstr "Introducir parámetros de ejecución"
 
 #: lazarusidestrconsts:dlgentirescope
 msgid "Entire Scope"
@@ -1787,7 +1787,7 @@ msgstr "Error creando archivo"
 
 #: lazarusidestrconsts:liserrorcreatinglrs
 msgid "Error creating lrs"
-msgstr ""
+msgstr "Error creando lrs"
 
 #: lazarusidestrconsts:liserrordeletingfile
 msgid "Error deleting file"
@@ -1843,7 +1843,7 @@ msgstr "Error Escribiendo Paquete"
 
 #: lazarusidestrconsts:liserror
 msgid "Error: "
-msgstr ""
+msgstr "Error: "
 
 #: lazarusidestrconsts:liscompilererrorinvalidcompiler
 msgid "Error: invalid compiler: %s"
@@ -1851,7 +1851,7 @@ msgstr "Error: compilador invÃ¡lido: %s"
 
 #: lazarusidestrconsts:liserrors
 msgid "Errors"
-msgstr ""
+msgstr "Errores"
 
 #: lazarusidestrconsts:srvk_escape
 msgid "Escape"
@@ -2127,7 +2127,7 @@ msgstr "Buscar texto desde cursor"
 
 #: lazarusidestrconsts:rslanguagefinnish
 msgid "Finnish"
-msgstr ""
+msgstr "Finlandés"
 
 #: lazarusidestrconsts:srkmecjumptoeditor
 msgid "Focus to source editor"
@@ -2419,7 +2419,7 @@ msgstr "Inicio"
 
 #: lazarusidestrconsts:dlggridxhint
 msgid "Horizontal grid step size"
-msgstr ""
+msgstr "Tamaño de paso de la rejilla Horizontal"
 
 #: lazarusidestrconsts:dlghostapplication
 msgid "Host application"
@@ -3087,7 +3087,7 @@ msgstr "Opciones específicas de la interfaz LCL:"
 
 #: lazarusidestrconsts:lislclunitpathmissing
 msgid "LCL unit path missing"
-msgstr ""
+msgstr "Falta ruta a la unidad LCL"
 
 #: lazarusidestrconsts:lislclwidgettype
 msgid "LCL Widget Type"
@@ -3123,7 +3123,7 @@ msgstr "LFM - Lazarus desde texto"
 
 #: lazarusidestrconsts:lislfmfile
 msgid "LFM file"
-msgstr ""
+msgstr "archivo LFM"
 
 #: lazarusidestrconsts:lismenuinsertlgplnotice
 msgid "LGPL notice"
@@ -3687,7 +3687,7 @@ msgstr "Sólo selección"
 
 #: lazarusidestrconsts:lisfindfileonlytextfiles
 msgid "Only text files"
-msgstr ""
+msgstr "Sólo archivos de texto"
 
 #: lazarusidestrconsts:lismenuopen
 msgid "Open"
@@ -4311,7 +4311,7 @@ msgstr "Eliminar"
 
 #: lazarusidestrconsts:lisremoveallinvalidproperties
 msgid "Remove all invalid properties"
-msgstr ""
+msgstr "Eliminar todas las propiedades inválidas"
 
 #: lazarusidestrconsts:lispckeditremovedependency
 msgid "Remove dependency"
@@ -4711,7 +4711,7 @@ msgstr "seg"
 
 #: lazarusidestrconsts:lisseemessages
 msgid "See messages."
-msgstr ""
+msgstr "Ver mensajes."
 
 #: lazarusidestrconsts:lismenuselect
 msgid "Select"
@@ -4919,7 +4919,7 @@ msgstr "Mostrar Todo"
 
 #: lazarusidestrconsts:liscoshowallmessages
 msgid "Show all messages"
-msgstr ""
+msgstr "Mostrar todos los mensajes"
 
 #: lazarusidestrconsts:dlgshowprocserror
 msgid "Show all procs on error"
@@ -4991,7 +4991,7 @@ msgstr "Mostrar sugerencias"
 
 #: lazarusidestrconsts:dlghintsunused
 msgid "Show Hints for unused units in main source"
-msgstr ""
+msgstr "Ver sugerencias para unidades sin uso en el código fuente principal"
 
 #: lazarusidestrconsts:dlgshowlinenumbers
 msgid "Show line numbers"
@@ -5179,7 +5179,7 @@ msgstr "Parar después de número de errores:"
 
 #: lazarusidestrconsts:lisstopdebugging
 msgid "Stop Debugging?"
-msgstr ""
+msgstr "¿Parar Depurando?"
 
 #: lazarusidestrconsts:srkmecstopprogram
 msgid "stop program"
@@ -5187,7 +5187,7 @@ msgstr "Parar programa"
 
 #: lazarusidestrconsts:lisstopthedebugging
 msgid "Stop the debugging?"
-msgstr ""
+msgstr "¿Parar la depuración?"
 
 #: lazarusidestrconsts:dlgcdtstoredpostfix
 msgid "Stored postfix"
@@ -5279,7 +5279,7 @@ msgstr "Tabulaciones a espacios en selección"
 
 #: lazarusidestrconsts:listargetcpu
 msgid "Target CPU"
-msgstr ""
+msgstr "CPU objetivo"
 
 #: lazarusidestrconsts:lislazbuildtargetdirectory
 msgid "Target Directory:"
@@ -5427,7 +5427,7 @@ msgstr "El archivo de compilador para el paquete %s no es un ejecutable válido:%
 
 #: lazarusidestrconsts:listhecurrentunitpathforthefileisthepathtothelclunits
 msgid "The current unit path for the file%s%s%s%s is%s%s%s%s.%s%sThe path to the LCL units %s%s%s is missing.%s%sHint for newbies:%sCreate a lazarus application and put the file into the project directory."
-msgstr ""
+msgstr "La ruta de la unidad actual para el archivo%s%s%s%s es%s%s%s%s.%s%sLa ruta a las unidades LCL %s%s%s está faltando.%s%sSugerencia para los principiantes:%sCrear una aplicación de Lazarus y poner el archivo dentro del directorio del proyecto."
 
 #: lazarusidestrconsts:listhedebuggerdoesnotexistsorisnotexecutableseeenviro
 msgid "The debugger %s%s%s%sdoes not exists or is not executable.%s%sSee Environment -> Debugger Options"
@@ -5547,7 +5547,7 @@ msgstr "La LCL - Biblioteca de Componente de Lazarus contiene todos los componen
 
 #: lazarusidestrconsts:listhelfmlazarusformfilecontainsinvalidpropertiesthis
 msgid "The LFM (Lazarus form) file contains invalid properties. This means for example it contains some properties/classes, which do not exist in the current LCL. The normal fix is to remove these properties from the lfm and fix the pascal code manually."
-msgstr ""
+msgstr "El archivo LFM (formulario Lazarus) contiene propiedades inválidas. Esto significa por ejemplo que contiene algunas propiedades/clases, que no existen en el LCL actual. El arreglo normal es remover estas propiedades desde el lfm y arreglar el código pascal manualmente."
 
 #: lazarusidestrconsts:lisprojaddthemaximumversionisinvalid
 msgid "The Maximum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
@@ -5739,7 +5739,7 @@ msgstr "Hay una unidad FPC con el mismo nombre que el paquete:%s%s%s%s%s%s"
 
 #: lazarusidestrconsts:lispkgmangthereisafpcunitwiththesamenamefrom
 msgid "There is a FPC unit with the same name as:%s%s%s%s%s from %s%s%s"
-msgstr ""
+msgstr "Hay una unidad de FPC con el mismo nombre como:%s%s%s%s%s desde %s%s%s"
 
 #: lazarusidestrconsts:lisexttoolthereisamaximumoftools
 msgid "There is a maximum of %s tools."
@@ -5895,7 +5895,7 @@ msgstr "No se ha podido convertir el archivo %s%s%s%s Error: %s"
 
 #: lazarusidestrconsts:lisunabletoconvertlfmtolrsandwritelrsfile
 msgid "Unable to convert lfm to lrs and write lrs file."
-msgstr ""
+msgstr "No se ha podido convertir lfm a lrs y escribir el archivo lrs."
 
 #: lazarusidestrconsts:lisunabletoconverttextformdataoffileintobinarystream
 msgid "Unable to convert text form data of file %s%s%s%s%sinto binary stream. (%s)"
@@ -6039,7 +6039,7 @@ msgstr "¡No se ha podido renombrar el archivo %s%s%s a %s%s%s!"
 
 #: lazarusidestrconsts:lisunabletorenameforminsource
 msgid "Unable to rename form in source."
-msgstr ""
+msgstr "No se ha podido renombrar el formulario en la fuente."
 
 #: lazarusidestrconsts:lisunabletorenamemethodplzfixtheerrorshowninthemessag
 msgid "Unable to rename method. Plz fix the error shown in the message window."
@@ -6047,7 +6047,7 @@ msgstr "No se ha podido renombrar método. Por favor corrija el error mostrado en
 
 #: lazarusidestrconsts:lisunabletorenamevariableinsource
 msgid "Unable to rename variable in source."
-msgstr ""
+msgstr "No se ha podido renombrar la variable en la fuente."
 
 #: lazarusidestrconsts:lisexttoolunabletorunthetool
 msgid "Unable to run the tool %s%s%s:%s%s"
@@ -6071,7 +6071,7 @@ msgstr "No se ha podido transformar un flujo de componente binario de %s:T%s en 
 
 #: lazarusidestrconsts:lisunabletoupdatecreateformstatementinprojectsource
 msgid "Unable to update CreateForm statement in project source"
-msgstr ""
+msgstr "No se ha podido actualizar la declaración CreateForm en la fuente del proyecto"
 
 #: lazarusidestrconsts:lisunabletowrite
 msgid "Unable to write %s%s%s%s%s."
@@ -6363,7 +6363,7 @@ msgstr "Versión"
 
 #: lazarusidestrconsts:dlggridyhint
 msgid "Vertical grid step size"
-msgstr ""
+msgstr "Tamaño de paso de la rejilla Vertical"
 
 #: lazarusidestrconsts:srkmectogglebreakpoints
 msgid "View breakpoints"
