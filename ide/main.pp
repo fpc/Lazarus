@@ -57,11 +57,7 @@ uses
   Project, ProjectDefs, NewProjectDlg, ProjectOpts, PublishProjectDlg,
   ProjectInspector,
   // designer
-  {$IFNDEF DisablePkgs}
   ComponentPalette, ComponentReg,
-  {$ELSE}
-  CompReg, IDEComp,
-  {$ENDIF}
   AbstractFormEditor, Designer, FormEditor, CustomFormEditor,
   ObjectInspector, PropEdits, ControlSelection, ColumnDlg,
   {$DEFINE UseNewMenuEditor}
@@ -92,8 +88,8 @@ type
     // event handlers
     
     //procedure FormShow(Sender : TObject);
-    procedure FormClose(Sender : TObject; var Action: TCloseAction);
-    procedure FormCloseQuery(Sender : TObject; var CanClose: boolean);
+    procedure MainIDEFormClose(Sender : TObject; var Action: TCloseAction);
+    procedure MainIDEFormCloseQuery(Sender : TObject; var CanClose: boolean);
     procedure MainIDEResize(Sender: TObject);
     //procedure FormPaint(Sender : TObject);
     procedure OnApplicationUserInput(Sender: TObject; Msg: Cardinal);
@@ -223,9 +219,6 @@ type
 
     procedure OpenFileDownArrowClicked(Sender : TObject);
     procedure mnuOpenFilePopupClick(Sender : TObject);
-    {$IFDEF DisablePkgs}
-    procedure ControlClick(Sender : TObject);
-    {$ENDIF}
 
   published
     // Global IDE events
@@ -275,12 +268,14 @@ type
     procedure OIOnShowOptions(AComponent:TComponent);
     procedure OnPropHookGetMethods(TypeData:PTypeData; Proc:TGetStringProc);
     function OnPropHookMethodExists(const AMethodName:ShortString;
-      TypeData: PTypeData;
-      var MethodIsCompatible,MethodIsPublished,IdentIsMethod: boolean):boolean;
+       TypeData: PTypeData;
+       var MethodIsCompatible,MethodIsPublished,IdentIsMethod: boolean):boolean;
     function OnPropHookCreateMethod(const AMethodName:ShortString;
-      ATypeInfo:PTypeInfo): TMethod;
+                                    ATypeInfo:PTypeInfo): TMethod;
     procedure OnPropHookShowMethod(const AMethodName:ShortString);
     procedure OnPropHookRenameMethod(const CurName, NewName:ShortString);
+    function OnPropHookBeforeAddComponent(Sender: TObject;
+                AComponentClass: TComponentClass; AParent: TComponent): boolean;
     procedure OnPropHookComponentRenamed(AComponent: TComponent);
     procedure OnPropHookComponentAdded(AComponent: TComponent; Select: boolean);
     procedure OnPropHookDeleteComponent(AComponent: TComponent);
@@ -354,15 +349,10 @@ type
     FDisplayState : TDisplayState;
     FLastFormActivated : TCustomForm;// used to find the last form so you can
                                      // display the correct tab
-    {$IFDEF DisablePkgs}
-    FSelectedComponent : TRegisteredComponent;
-    {$ENDIF}
     FOpenEditorsOnCodeToolChange: boolean;
 
     FRunProcess: TProcess; // temp solution, will be replaced by dummydebugger
 
-    procedure SetDefaultsForForm(aForm : TCustomForm);
-    procedure InvalidateAllDesignerForms;
   protected
     procedure SetToolStatus(const AValue: TIDEToolStatus); override;
 
@@ -390,9 +380,6 @@ type
     procedure ConnectMainBarEvents;
     procedure SetupSpeedButtons;
     procedure SetupComponentNoteBook;
-    {$IFDEF DisablePkgs}
-    procedure SetupComponentTabs;
-    {$ENDIF}
     procedure SetupHints;
     procedure SetupOutputFilter;
     procedure SetupObjectInspector;
@@ -625,15 +612,14 @@ type
       NeededFlags: TIDEFileStateFlags; var ResultFlags: TIDEFileStateFlags); override;
 
     // form editor and designer
-    {$IFDEF DisablePkgs}
-    property SelectedComponent : TRegisteredComponent
-      read FSelectedComponent write FSelectedComponent;
-    {$ENDIF}
     procedure DoBringToFrontFormOrUnit;
     procedure DoBringToFrontFormOrInspector;
     procedure DoShowDesignerFormOfCurrentSrc;
     procedure DoShowSourceOfActiveDesignerForm;
     procedure SetDesigning(AComponent: TComponent; Value : Boolean);
+    procedure CreateDesignerForComponent(AComponent: TComponent);
+    procedure InvalidateAllDesignerForms;
+    procedure UpdateIDEComponentPalette;
 
     // editor and environment options
     procedure SaveEnvironment; override;
@@ -652,61 +638,6 @@ uses
   Math;
 
 //==============================================================================
-{
-  This function creates a LFM file from any form.
-  To create the resource file use the program lazres or the
-  LFMtoLFCfile function.
-}
-function CreateLFM(AForm:TCustomForm):integer;
-// 0 = ok
-// -1 = error while streaming AForm to binary stream
-// -2 = error while streaming binary stream to text file
-var BinStream,TxtMemStream:TMemoryStream;
-  Driver: TAbstractObjectWriter;
-  Writer:TWriter;
-  TxtFileStream:TFileStream;
-begin
-  Result:=0;
-  BinStream:=TMemoryStream.Create;
-  try
-    try
-      Driver:=TBinaryObjectWriter.Create(BinStream,4096);
-      try
-        Writer:=TWriter.Create(Driver);
-        try
-          Writer.WriteDescendent(AForm,nil);
-        finally
-          Writer.Free;
-        end;
-      finally
-        Driver.Free;
-      end;
-    except
-      Result:=-1;
-      exit;
-    end;
-    try
-      // transform binary to text and save LFM file
-      TxtMemStream:=TMemoryStream.Create;
-      TxtFileStream:=TFileStream.Create(lowercase(AForm.ClassName)+'.lfm'
-                           ,fmCreate);
-      try
-        BinStream.Position:=0;
-        ObjectBinaryToText(BinStream,TxtMemStream);
-        TxtMemStream.Position:=0;
-        TxtFileStream.CopyFrom(TxtMemStream,TxtMemStream.Size);
-      finally
-        TxtMemStream.Free;
-        TxtFileStream.Free;
-      end;
-    except
-      Result:=-2;
-      exit;
-    end;
-  finally
-    BinStream.Free;
-  end;
-end;
 
 function LoadPixmapRes(const ResourceName:string; PixMap:TPixMap):boolean;
 var
@@ -856,13 +787,10 @@ begin
 
   // build and position the MainIDE form
   Name := NonModalIDEWindowNames[nmiwMainIDEName];
-  EnvironmentOptions.IDEWindowLayoutList.Apply(TForm(Self),Name);
+  EnvironmentOptions.IDEWindowLayoutList.Apply(Self,Name);
   OnResize:=@MainIDEResize;
   HiddenWindowsOnRun:=TList.Create;
 
-  {$IFDEF DisablePkgs}
-  InitIDEComponents;
-  {$ENDIF}
   if LazarusResources.Find(ClassName)=nil then begin
     SetupMainMenu;
     SetupSpeedButtons;
@@ -884,9 +812,6 @@ begin
   SetupSourceNotebook;
   SetupTransferMacros;
   SetupControlSelection;
-  {$IFDEF DisablePkgs}
-  SetupComponentTabs;
-  {$ENDIF}
 
   // Main IDE bar created and setup completed -> Show it
   Show;
@@ -913,7 +838,7 @@ begin
   FreeThenNil(ProjInspector);
   
   if DebugBoss<>nil then DebugBoss.EndDebugging;
-
+  
   // free control selection
   if TheControlSelection<>nil then begin
     TheControlSelection.OnChange:=nil;
@@ -992,7 +917,7 @@ Begin
 end;
 
 {------------------------------------------------------------------------------}
-procedure TMainIDE.FormClose(Sender : TObject; var Action: TCloseAction);
+procedure TMainIDE.MainIDEFormClose(Sender : TObject; var Action: TCloseAction);
 begin
   SaveEnvironment;
   SaveIncludeLinks;
@@ -1002,7 +927,8 @@ begin
   if SourceNoteBook<>nil then SourceNoteBook.ClearUnUsedEditorComponents(true);
 end;
 
-procedure TMainIDE.FormCloseQuery(Sender : TObject; var CanClose: boolean);
+procedure TMainIDE.MainIDEFormCloseQuery(Sender : TObject;
+  var CanClose: boolean);
 var
   MsgResult: integer;
 begin
@@ -1144,61 +1070,6 @@ begin
   end;
 end;
 
-{$IFDEF DisablePkgs}
-procedure TMainIDE.SetupComponentTabs;
-var
-  PageCount, I, X: integer;
-  RegComp     : TRegisteredComponent;
-  RegCompPage : TRegisteredComponentPage;
-  IDEComponent: TIDEComponent;
-  SelectionPointerPixmap: TPixmap;
-begin
-  PageCount := 0;
-  for I := 0 to RegCompList.PageCount-1 do begin
-    // Component Notebook Pages
-    RegCompPage := RegCompList.Pages[i];
-    if RegCompPage.Name <> '' then
-    Begin
-      if (PageCount = 0) and (ComponentNotebook.PageCount>0) then
-        ComponentNotebook.Pages.Strings[PageCount] := RegCompPage.Name
-      else
-        ComponentNotebook.Pages.Add(RegCompPage.Name);
-      GlobalMouseSpeedButton := TSpeedButton.Create(Self);
-      SelectionPointerPixmap:=LoadSpeedBtnPixMap('tmouse');
-      with GlobalMouseSpeedButton do
-      begin
-        Parent := ComponentNotebook.Page[PageCount];
-        Width := ComponentPaletteBtnWidth;
-        Height := ComponentPaletteBtnHeight;
-        OnClick := @ControlClick;
-        Glyph := SelectionPointerPixmap;
-        Flat := True;
-        GroupIndex:= 1;
-        Down := True;
-        Name := 'GlobalMouseSpeedButton'+IntToStr(PageCount);
-        Hint := lisSelectionTool;
-      end;
-      for x := 0 to RegCompPage.Count-1 do //for every component on the page....
-      begin
-        RegComp := RegCompPage.Items[x];
-        IDEComponent := TIDEComponent.Create;
-        IDEComponent.RegisteredComponent := RegComp;
-        IDEComponent._SpeedButton(Self,ComponentNotebook.Page[PageCount]);
-        IDEComponent.SpeedButton.OnClick := @ControlClick;
-        IDEComponent.SpeedButton.Hint := RegComp.ComponentClass.ClassName;
-        IDEComponent.SpeedButton.Name := IDEComponent.SpeedButton.Hint;
-        IDEComponent.SpeedButton.GroupIndex := 1;
-        IDECompList.Add(IDEComponent);
-      end;
-      inc(PageCount);
-    end;
-  end;
-  ComponentNotebook.PageIndex := 0;   // Set it to the first page
-  ComponentNotebook.OnPageChanged := @ControlClick;
-  ComponentNotebook.Show;
-end;
-{$ENDIF}
-
 procedure TMainIDE.SetupHints;
 var
   CurShowHint: boolean;
@@ -1242,10 +1113,11 @@ begin
   GlobalDesignHook.AddHandlerCreateMethod(@OnPropHookCreateMethod);
   GlobalDesignHook.AddHandlerShowMethod(@OnPropHookShowMethod);
   GlobalDesignHook.AddHandlerRenameMethod(@OnPropHookRenameMethod);
+  GlobalDesignHook.AddHandlerBeforeAddComponent(@OnPropHookBeforeAddComponent);
   GlobalDesignHook.AddHandlerComponentRenamed(@OnPropHookComponentRenamed);
   GlobalDesignHook.AddHandlerComponentAdded(@OnPropHookComponentAdded);
   ObjectInspector1.PropertyEditorHook:=GlobalDesignHook;
-  EnvironmentOptions.IDEWindowLayoutList.Apply(TForm(ObjectInspector1),
+  EnvironmentOptions.IDEWindowLayoutList.Apply(ObjectInspector1,
                                                DefaultObjectInspectorName);
   with EnvironmentOptions do begin
     ObjectInspectorOptions.AssignTo(ObjectInspector1);
@@ -1658,8 +1530,8 @@ end;
 
 procedure TMainIDE.ConnectMainBarEvents;
 begin
-  OnClose := @FormClose;
-  OnCloseQuery := @FormCloseQuery;
+  OnClose := @MainIDEFormClose;
+  OnCloseQuery := @MainIDEFormCloseQuery;
 end;
 
 {------------------------------------------------------------------------------}
@@ -1674,36 +1546,6 @@ Begin
   AComponent.SetDesigning(Value);
   if Value then CNSendMessage(LM_SETDESIGNING, AComponent, nil);
 end;
-
-{------------------------------------------------------------------------------}
-{$IFDEF DisablePkgs}
-procedure TMainIDE.ControlClick(Sender : TObject);
-var
-  IDECOmp : TIDEComponent;
-  Speedbutton : TSpeedbutton;
-  i : integer;
-begin
-  if Sender is TSpeedButton then
-  begin
-    SpeedButton := TSpeedButton(Sender);
-    // find the IDEComponent that belongs to this speedbutton
-    IDEComp := IDECompList.FindCompBySpeedButton(SpeedButton);
-    if IDEComp <> nil then begin
-      SelectedComponent := IDEComp.RegisteredComponent;
-    end else begin
-      SelectedComponent := nil;
-    end;
-  end
-  else
-  begin
-    // select the selection tool
-    SelectedComponent := nil;
-    for i:= 0 to ComponentNotebook.PageCount - 1 do begin
-      TSpeedButton(ComponentNotebook.Page[i].Controls[0]).Down:= true;
-    end;
-  end;
-end;
-{$ENDIF}
 
 {------------------------------------------------------------------------------}
 procedure TMainIDE.mnuFindDeclarationClicked(Sender : TObject);
@@ -2117,27 +1959,31 @@ begin
   end;
 end;
 
-Procedure TMainIDE.SetDefaultsforForm(aForm : TCustomForm);
+Procedure TMainIDE.CreateDesignerForComponent(AComponent: TComponent);
+var
+  DesignerForm: TCustomForm;
 Begin
   {$IFDEF IDE_DEBUG}
-  writeln('[TMainIDE.SetDefaultsforForm] A');
+  writeln('[TMainIDE.CreateDesignerForComponent] A ',AComponent.Name,':',AComponent.ClassName);
   {$ENDIF}
-  aForm.Designer := TDesigner.Create(aForm, TheControlSelection);
+  // create designer form
+  if (AComponent is TCustomForm) then
+    DesignerForm:=TCustomForm(AComponent)
+  else
+    DesignerForm:=FormEditor1.CreateNonControlForm(AComponent);
+  // create designer
+  DesignerForm.Designer := TDesigner.Create(DesignerForm, TheControlSelection);
   {$IFDEF IDE_DEBUG}
-  writeln('[TMainIDE.SetDefaultsforForm] B');
+  writeln('[TMainIDE.CreateDesignerForComponent] B');
   {$ENDIF}
-  with TDesigner(aForm.Designer) do begin
+  with TDesigner(DesignerForm.Designer) do begin
     TheFormEditor := FormEditor1;
     OnActivated:=@OnDesignerActivated;
     OnCloseQuery:=@OnDesignerCloseQuery;
     OnComponentAdded:=@OnDesignerComponentAdded;
     OnComponentDeleted:=@OnDesignerComponentDeleted;
-    {$IFDEF DisablePkgs}
-    OnGetNonVisualCompIconCanvas:=@IDECompList.OnGetNonVisualCompIconCanvas;
-    {$ELSE}
     OnGetNonVisualCompIconCanvas:=
       @TComponentPalette(IDEComponentPalette).OnGetNonVisualCompIconCanvas;
-    {$ENDIF}
     OnGetSelectedComponentClass:=@OnDesignerGetSelectedComponentClass;
     OnModified:=@OnDesignerModified;
     OnProcessCommand:=@OnProcessIDECommand;
@@ -2150,7 +1996,10 @@ Begin
     ShowEditorHints:=EnvironmentOptions.ShowEditorHints;
     ShowComponentCaptionHints:=EnvironmentOptions.ShowComponentCaptions;
   end;
-  SetDesigning(AForm,True);
+  // set component and designer form into design mode (csDesigning)
+  SetDesigning(AComponent,True);
+  if AComponent<>DesignerForm then
+    SetDesigning(DesignerForm,True);
 end;
 
 {-------------------------------------------------------------------------------
@@ -2163,15 +2012,26 @@ end;
 procedure TMainIDE.InvalidateAllDesignerForms;
 var
   AnUnitInfo: TUnitInfo;
+  CurDesignerForm: TCustomForm;
 begin
-  AnUnitInfo:=Project1.FirstUnitWithForm;
+  AnUnitInfo:=Project1.FirstUnitWithComponent;
   while AnUnitInfo<>nil do begin
     if AnUnitInfo.Component<>nil then begin
-      if AnUnitInfo.Component is TControl then
-        TControl(AnUnitInfo.Component).Invalidate;
+      CurDesignerForm:=FormEditor1.GetDesignerForm(AnUnitInfo.Component);
+      if CurDesignerForm<>nil then
+        CurDesignerForm.Invalidate;
     end;
     AnUnitInfo:=AnUnitInfo.NextUnitWithComponent;
   end;
+end;
+
+procedure TMainIDE.UpdateIDEComponentPalette;
+var
+  ShowControlsInComponentalette: Boolean;
+begin
+  ShowControlsInComponentalette:=(FLastFormActivated<>nil)
+    and (TDesigner(FLastFormActivated.Designer).LookupRoot is TControl);
+  IDEComponentPalette.ShowHideControls(ShowControlsInComponentalette);
 end;
 
 procedure TMainIDE.SetToolStatus(const AValue: TIDEToolStatus);
@@ -2690,11 +2550,11 @@ var EnvironmentOptionsDialog: TEnvironmentOptionsDialog;
     AnUnitInfo: TUnitInfo;
     ADesigner: TDesigner;
   begin
-    AnUnitInfo:=Project1.FirstUnitWithForm;
+    AnUnitInfo:=Project1.FirstUnitWithComponent;
     while AnUnitInfo<>nil do begin
-      if (AnUnitInfo.Component<>nil) and (AnUnitInfo.Component is TCustomForm)
+      if (AnUnitInfo.Component<>nil)
       then begin
-        AForm:=TCustomForm(AnUnitInfo.Component);
+        AForm:=FormEditor1.GetDesignerForm(AnUnitInfo.Component);
         ADesigner:=TDesigner(AForm.Designer);
         if ADesigner<>nil then begin
           ADesigner.ShowEditorHints:=EnvironmentOptions.ShowEditorHints;
@@ -2835,8 +2695,8 @@ end;
 function TMainIDE.CreateNewForm(NewUnitInfo: TUnitInfo;
   AncestorType: TComponentClass; ResourceCode: TCodeBuffer): TModalResult;
 var
-  NewForm: TCustomForm;
   CInterface : TComponentInterface;
+  NewComponent: TComponent;
 begin
   // create a buffer for the new resource file and for the LFM file
   if ResourceCode=nil then begin
@@ -2852,20 +2712,21 @@ begin
     FormEditor1 := TFormEditor.Create;
   FormEditor1.ClearSelected;
 
-  // create jitform
+  // create jit component
   CInterface := TComponentInterface(
     FormEditor1.CreateComponent(nil,AncestorType,
       ObjectInspector1.Left+ObjectInspector1.Width+60,Top+Height+80,400,300));
   FormEditor1.SetComponentNameAndClass(CInterface,
     NewUnitInfo.ComponentName,'T'+NewUnitInfo.ComponentName);
-  NewForm:=TForm(CInterface.Component);
-  NewUnitInfo.Component:=NewForm;
-  SetDefaultsForForm(NewForm);
+  NewComponent:=CInterface.Component;
+  NewUnitInfo.Component:=NewComponent;
+  CreateDesignerForComponent(NewComponent);
 
-  NewUnitInfo.ComponentName:=NewForm.Name;
+  NewUnitInfo.ComponentName:=NewComponent.Name;
   NewUnitInfo.ComponentResourceName:=NewUnitInfo.ComponentName;
   if NewUnitInfo.IsPartOfProject and Project1.AutoCreateForms then
-    Project1.AddCreateFormToProjectFile(NewForm.ClassName,NewForm.Name);
+    Project1.AddCreateFormToProjectFile(NewComponent.ClassName,
+                                        NewComponent.Name);
     
   Result:=mrOk;
 end;
@@ -3091,7 +2952,7 @@ begin
   
   // check new resource file
   if AnUnitInfo.ComponentName='' then begin
-    // unit has no form
+    // unit has no component
     // -> remove lfm file, so that it will not be auto loaded on next open
     NewLFMFilename:=ChangeFileExt(NewFilename,'.lfm');
     if (FileExists(NewLFMFilename))
@@ -3200,7 +3061,7 @@ end;
 function TMainIDE.DoSaveFileResources(AnUnitInfo: TUnitInfo;
   ResourceCode, LFMCode: TCodeBuffer; Flags: TSaveFlags): TModalResult;
 var
-  FormSavingOk: boolean;
+  ComponentSavingOk: boolean;
   MemStream,BinCompStream,TxtCompStream:TMemoryStream;
   Driver: TAbstractObjectWriter;
   Writer:TWriter;
@@ -3210,11 +3071,20 @@ begin
   Result:=mrCancel;
   
   // save lrs - lazarus resource file and lfm - lazarus form text file
-  // Note: When there is a bug in the source, no resource code can be found,
-  //       but the LFM file should always be saved
+  // Note: When there is a bug in the source, the include directive of the
+  //       resource code can not be found, but the LFM file should always
+  //       be saved. Therefore each TUnitInfo stores the resource filename.
+  
+  // the lfm file is saved before the lrs file, because the IDE only needs the
+  // lfm file to recreate the lrs file.
+  
+  
   if (AnUnitInfo.Component<>nil) then begin
     // stream component to resource code and to lfm file
-    FormSavingOk:=true;
+    ComponentSavingOk:=true;
+    
+    // save designer form properties to the component
+    FormEditor1.SaveHiddenDesignerFormProperties(AnUnitInfo.Component);
 
     // stream component to binary stream
     BinCompStream:=TMemoryStream.Create;
@@ -3237,17 +3107,17 @@ begin
         except
           ACaption:=lisStreamingError;
           AText:=Format(lisUnableToStreamT, [AnUnitInfo.ComponentName,
-            AnUnitInfo.ComponentName]);
+                        AnUnitInfo.ComponentName]);
           Result:=MessageDlg(ACaption, AText, mtError,
                      [mbAbort, mbRetry, mbIgnore], 0);
           if Result=mrAbort then exit;
           if Result=mrIgnore then Result:=mrOk;
-          FormSavingOk:=false;
+          ComponentSavingOk:=false;
         end;
       until Result<>mrRetry;
 
       // create lazarus form resource code
-      if FormSavingOk then begin
+      if ComponentSavingOk then begin
         if ResourceCode=nil then begin
           if (sfSaveToTestDir in Flags) then
             ResTestFilename:=ChangeFileExt(GetTestUnitFilename(AnUnitInfo),
@@ -3256,9 +3126,9 @@ begin
             ResTestFilename:=ChangeFileExt(AnUnitInfo.Filename,
                                            ResourceFileExt);
           ResourceCode:=CodeToolBoss.CreateFile(ResTestFilename);
-          FormSavingOk:=(ResourceCode<>nil);
+          ComponentSavingOk:=(ResourceCode<>nil);
         end;
-        if FormSavingOk then begin
+        if ComponentSavingOk then begin
           // there is no bug in the source, so the resource code should be
           // changed too
           MemStream:=TMemoryStream.Create;
@@ -3273,17 +3143,19 @@ begin
             MemStream.Free;
           end;
         end;
-        if FormSavingOk then begin
+        if ComponentSavingOk then begin
           {$IFDEF IDE_DEBUG}
           writeln('TMainIDE.SaveFileResources E ',CompResourceCode);
           {$ENDIF}
           // replace lazarus form resource code
           if not (sfSaveToTestDir in Flags) then begin
+            // if resource name has chanegd, delete old resource
             if (AnUnitInfo.ComponentName<>AnUnitInfo.ComponentResourceName)
             and (AnUnitInfo.ComponentResourceName<>'') then begin
               CodeToolBoss.RemoveLazarusResource(ResourceCode,
                                           'T'+AnUnitInfo.ComponentResourceName);
             end;
+            // add comment to resource file (if not already exists)
             if (not CodeToolBoss.AddLazarusResourceHeaderComment(ResourceCode,
                lisResourceFileComment)) then
             begin
@@ -3293,6 +3165,7 @@ begin
               Result:=MessageDlg(ACaption,AText,mtError,[mbIgnore,mbAbort],0);
               if Result=mrAbort then exit;
             end;
+            // add resource to resource file
             if (not CodeToolBoss.AddLazarusResource(ResourceCode,
                'T'+AnUnitInfo.ComponentName,CompResourceCode)) then
             begin
@@ -3335,6 +3208,7 @@ begin
                 try
                   BinCompStream.Position:=0;
                   ObjectBinaryToText(BinCompStream,TxtCompStream);
+                  // stream text to file
                   TxtCompStream.Position:=0;
                   LFMCode.LoadFromStream(TxtCompStream);
                   Result:=DoSaveCodeBufferToFile(LFMCode,LFMCode.Filename,
@@ -3366,6 +3240,7 @@ begin
   if ResourceCode<>nil then
     writeln('TMainIDE.SaveFileResources F ',ResourceCode.Modified);
   {$ENDIF}
+  // save binary stream
   if ResourceCode<>nil then begin
     if not (sfSaveToTestDir in Flags) then begin
       if (ResourceCode.Modified) then begin
@@ -3515,92 +3390,119 @@ function TMainIDE.DoLoadLFM(AnUnitInfo: TUnitInfo;
 var
   LFMFilename, ACaption, AText: string;
   LFMBuf: TCodeBuffer;
-  FormLoadingOk: boolean;
+  ComponentLoadingOk: boolean;
   TxtLFMStream, BinLFMStream:TMemoryStream;
   CInterface: TComponentInterface;
-  TempForm: TCustomForm;
+  NewComponent: TComponent;
+  AncestorType: TComponentClass;
+  DesignerForm: TCustomForm;
+  NewClassName: String;
+  NewAncestorName: String;
 begin
   CloseDesignerForm(AnUnitInfo);
 
   LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,'.lfm');
   LFMBuf:=nil;
-  if FileExists(LFMFilename) then begin
-    Result:=DoLoadCodeBuffer(LFMBuf,LFMFilename,[lbfUpdateFromDisk]);
-    if Result<>mrOk then exit;
+  if not FileExists(LFMFilename) then begin
+    // there is no LFM file -> ok
+    Result:=mrOk;
+    exit;
   end;
-  FormLoadingOk:=(LFMBuf<>nil);
+  
+  // there is a lazarus form text file -> load it
+  Result:=DoLoadCodeBuffer(LFMBuf,LFMFilename,[lbfUpdateFromDisk]);
+  if Result<>mrOk then exit;
+  
+  ComponentLoadingOk:=true;
 
-  if FormLoadingOk then begin
-    // there is a lazarus form text file -> load it
-    BinLFMStream:=TMemoryStream.Create;
+  BinLFMStream:=TMemoryStream.Create;
+  try
+    TxtLFMStream:=TMemoryStream.Create;
     try
-      TxtLFMStream:=TMemoryStream.Create;
-      try
-        LFMBuf.SaveToStream(TxtLFMStream);
-        TxtLFMStream.Position:=0;
-        // convert text to binary format
-        try
-          ObjectTextToBinary(TxtLFMStream,BinLFMStream);
-          BinLFMStream.Position:=0;
-          Result:=mrOk;
-        except
-          on E: Exception do begin
-            ACaption:=lisFormatError;
-            AText:=Format(lisUnableToConvertTextFormDataOfFileIntoBinaryStream,
-              [#13, '"', LFMBuf.Filename, '"', #13, E.Message]);
-            Result:=MessageDlg(ACaption, AText, mtError, [mbOk, mbCancel], 0);
-            if Result=mrCancel then Result:=mrAbort;
-            if Result<>mrOk then exit;
-            FormLoadingOk:=false;
-          end;
-        end;
-      finally
-        TxtLFMStream.Free;
+      LFMBuf.SaveToStream(TxtLFMStream);
+      TxtLFMStream.Position:=0;
+      
+      // find the classname of the LFM
+      NewClassName:=FindLFMClassName(TxtLFMStream);
+      if NewClassName='' then begin
+        Result:=MessageDlg('LFM file corrupt',
+          'Unable to find a valid classname in "'+LFMFilename+'"',
+          mtError,[mbIgnore,mbCancel,mbAbort],0);
+        exit;
       end;
-      if FormLoadingOk then begin
-        if not Assigned(FormEditor1) then
-          FormEditor1 := TFormEditor.Create;
-        if not (ofProjectLoading in Flags) then FormEditor1.ClearSelected;
 
-        // create jitform
-        CInterface := TComponentInterface(
-                            FormEditor1.CreateComponentFromStream(BinLFMStream,
-                                                                  TForm));
-        if CInterface=nil then begin
-          ACaption:=lisFormLoadError;
-          AText:=Format(lisUnableToBuildFormFromFile, [#13, '"',
-            LFMBuf.Filename, '"']);
-          Result:=MessageDlg(ACaption, AText, mterror, [mbok, mbcancel], 0);
+      // find the ancestor type in the source
+      NewAncestorName:='';
+      CodeToolBoss.FindFormAncestor(AnUnitInfo.Source,NewClassName,
+                                    NewAncestorName,true);
+      if AnsiCompareText(NewAncestorName,'TDataModule')=0 then
+        AncestorType:=TDataModule
+      else
+        AncestorType:=TForm;
+      writeln('TMainIDE.DoLoadLFM AncestorClassName=',NewAncestorName,' AncestorType=',AncestorType.ClassName);
+
+      // convert text to binary format
+      try
+        ObjectTextToBinary(TxtLFMStream,BinLFMStream);
+        BinLFMStream.Position:=0;
+        Result:=mrOk;
+      except
+        on E: Exception do begin
+          ACaption:=lisFormatError;
+          AText:=Format(lisUnableToConvertTextFormDataOfFileIntoBinaryStream,
+            [#13, '"', LFMBuf.Filename, '"', #13, E.Message]);
+          Result:=MessageDlg(ACaption, AText, mtError, [mbOk, mbCancel], 0);
           if Result=mrCancel then Result:=mrAbort;
           if Result<>mrOk then exit;
-          TempForm:=nil;
-          AnUnitInfo.Component:=TempForm;
-        end else begin
-          TempForm:=TForm(CInterface.Component);
-          AnUnitInfo.Component:=TempForm;
-          SetDefaultsForForm(TempForm);
-          AnUnitInfo.ComponentName:=TempForm.Name;
-          AnUnitInfo.ComponentResourceName:=AnUnitInfo.ComponentName;
-          // show form
-
-          if not (ofProjectLoading in Flags) then begin
-            FDisplayState:= dsForm;
-          end;
-
-          // select the new form (object inspector, formeditor, control selection)
-          if not (ofProjectLoading in Flags) then begin
-            GlobalDesignHook.LookupRoot := TempForm;
-            TDesigner(TempForm.Designer).SelectOnlyThisComponent(TempForm);
-          end;
-          FLastFormActivated:=TempForm;
+          ComponentLoadingOk:=false;
         end;
       end;
-      {$IFDEF IDE_DEBUG}
-      writeln('[TMainIDE.DoLoadLFM] LFM end');
-      {$ENDIF}
     finally
-      BinLFMStream.Free;
+      TxtLFMStream.Free;
     end;
+    if ComponentLoadingOk then begin
+      if not Assigned(FormEditor1) then
+        FormEditor1 := TFormEditor.Create;
+      if not (ofProjectLoading in Flags) then FormEditor1.ClearSelected;
+
+      // create JIT component
+      CInterface := TComponentInterface(
+                          FormEditor1.CreateComponentFromStream(BinLFMStream,
+                                                                AncestorType));
+      if CInterface=nil then begin
+        ACaption:=lisFormLoadError;
+        AText:=Format(lisUnableToBuildFormFromFile, [#13, '"',
+          LFMBuf.Filename, '"']);
+        Result:=MessageDlg(ACaption, AText, mterror, [mbok, mbcancel], 0);
+        if Result=mrCancel then Result:=mrAbort;
+        if Result<>mrOk then exit;
+        NewComponent:=nil;
+        AnUnitInfo.Component:=NewComponent;
+      end else begin
+        NewComponent:=CInterface.Component;
+        AnUnitInfo.Component:=NewComponent;
+        CreateDesignerForComponent(NewComponent);
+        AnUnitInfo.ComponentName:=NewComponent.Name;
+        AnUnitInfo.ComponentResourceName:=AnUnitInfo.ComponentName;
+
+        if not (ofProjectLoading in Flags) then begin
+          FDisplayState:= dsForm;
+        end;
+
+        // select the new form (object inspector, formeditor, control selection)
+        DesignerForm:=FormEditor1.GetDesignerForm(NewComponent);
+        if not (ofProjectLoading in Flags) then begin
+          GlobalDesignHook.LookupRoot := NewComponent;
+          TheControlSelection.AssignComponent(NewComponent);
+        end;
+        FLastFormActivated:=DesignerForm;
+      end;
+    end;
+    {$IFDEF IDE_DEBUG}
+    writeln('[TMainIDE.DoLoadLFM] LFM end');
+    {$ENDIF}
+  finally
+    BinLFMStream.Free;
   end;
   Result:=mrOk;
 end;
@@ -3618,21 +3520,26 @@ var
   AForm: TCustomForm;
   i: integer;
   OldDesigner: TDesigner;
+  LookupRoot: TComponent;
 begin
-  AForm:=TCustomForm(AnUnitInfo.Component);
-  if (AForm<>nil) and (AForm is TCustomForm) then begin
-    if FLastFormActivated=AForm then
-      FLastFormActivated:=nil;
-    // unselect controls
-    for i:=AForm.ComponentCount-1 downto 0 do
-      TheControlSelection.Remove(
-        AForm.Components[i]);
-    TheControlSelection.Remove(AForm);
-    // free designer and design form
-    OldDesigner:=TDesigner(AForm.Designer);
-    OldDesigner.DeleteFormAndFree;
-    AnUnitInfo.Component:=nil;
-  end;
+  Result:=mrOk;
+  LookupRoot:=AnUnitInfo.Component;
+  if LookupRoot=nil then exit;
+  AForm:=FormEditor1.GetDesignerForm(LookupRoot);
+  if AForm=nil then
+    RaiseException('TMainIDE.CloseDesignerForm '+AnUnitInfo.Filename);
+  if (AForm=nil) then exit;
+  if FLastFormActivated=AForm then
+    FLastFormActivated:=nil;
+  // unselect controls
+  for i:=LookupRoot.ComponentCount-1 downto 0 do
+    TheControlSelection.Remove(LookupRoot.Components[i]);
+  TheControlSelection.Remove(LookupRoot);
+  // free designer and design form
+  OldDesigner:=TDesigner(AForm.Designer);
+  OldDesigner.DeleteFormAndFree;
+  AnUnitInfo.Component:=nil;
+
   Result:=mrOk;
 end;
 
@@ -4012,6 +3919,7 @@ var NewUnitInfo:TUnitInfo;
   NewUnitName: string;
   NewBuffer: TCodeBuffer;
   OldUnitIndex: Integer;
+  AncestorType: TComponentClass;
 begin
   writeln('TMainIDE.DoNewEditorFile A NewFilename=',NewFilename);
   SaveSourceEditorChangesToCodeCache(-1);
@@ -4088,14 +3996,19 @@ begin
     Project1.InsertEditorIndex(SourceNotebook.NoteBook.PageIndex);
     NewUnitInfo.EditorIndex:=SourceNotebook.NoteBook.PageIndex;
 
-    // create form
-    if NewUnitType in [nuForm] then begin
-      Result:=CreateNewForm(NewUnitInfo,TForm,nil);
+    // create component
+    case NewUnitType of
+    nuForm:       AncestorType:=TForm;
+    nuDataModule: AncestorType:=TDataModule;
+    else          AncestorType:=nil;
+    end;
+    if AncestorType<>nil then begin
+      Result:=CreateNewForm(NewUnitInfo,AncestorType,nil);
       if Result<>mrOk then exit;
     end;
 
     // show form and select form
-    if NewUnitType in [nuForm] then begin
+    if NewUnitInfo.Component<>nil then begin
       // show form
       DoShowDesignerFormOfCurrentSrc;
     end else begin
@@ -4398,7 +4311,6 @@ begin
         exit;
       end;
     end;
-    {$IFNDEF DisablePkgs}
     if (CompareFileExt(AFilename,'.lpk',false)=0) then begin
       if MessageDlg(lisOpenPackage,
         Format(lisOpenThePackageAnswerNoToLoadItAsXmlFile, [AFilename, #13]),
@@ -4408,7 +4320,6 @@ begin
         exit;
       end;
     end;
-    {$ENDIF}
   end;
   
   // check if the project knows this file
@@ -4579,7 +4490,7 @@ var UnitList: TList;
   MainUnitInfo, AnUnitInfo: TUnitInfo;
   ActiveSourceEditor: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
-  AForm: TForm;
+  AForm: TCustomForm;
 Begin
   GetCurrentUnit(ActiveSourceEditor,ActiveUnitInfo);
   UnitList:=TList.Create;
@@ -4633,9 +4544,8 @@ Begin
       end;
       if (AnUnitInfo<>nil) then begin
         AForm:=SourceNotebook;
-        if OnlyForms and (AnUnitInfo.Component<>nil)
-        and (AForm is TCustomForm) then begin
-          AForm:=TForm(AnUnitInfo.Component);
+        if OnlyForms and (AnUnitInfo.Component<>nil) then begin
+          AForm:=FormEditor1.GetDesignerForm(AnUnitInfo.Component);
         end;
         AForm.ShowOnTop;
       end;
@@ -4905,7 +4815,7 @@ writeln('TMainIDE.DoNewProject A');
     ptApplication:
       // create a first form unit
       DoNewEditorFile(nuForm,'','',
-                        [nfIsPartOfProject,nfOpenInEditor,nfCreateDefaultSrc]);
+                      [nfIsPartOfProject,nfOpenInEditor,nfCreateDefaultSrc]);
 
     ptProgram,ptCustomProgram:
       // show program unit
@@ -5067,6 +4977,7 @@ function TMainIDE.DoOpenProjectFile(AFileName:string;
 var Ext,AText,ACaption: string;
   LowestEditorIndex,LowestUnitIndex,LastEditorIndex,i: integer;
   NewBuf: TCodeBuffer;
+  LastDesigner: TDesigner;
 begin
   {$IFDEF IDE_VERBOSE}
   writeln('TMainIDE.DoOpenProjectFile A "'+AFileName+'"');
@@ -5215,9 +5126,8 @@ begin
     
   // select a form (object inspector, formeditor, control selection)
   if FLastFormActivated<>nil then begin
-    GlobalDesignHook.LookupRoot := FLastFormActivated;
-    TDesigner(FLastFormActivated.Designer).SelectOnlyThisComponent(
-                                                            FLastFormActivated);
+    LastDesigner:=TDesigner(FLastFormActivated.Designer);
+    LastDesigner.SelectOnlyThisComponent(LastDesigner.LookupRoot);
   end;
 
   // set all modified to false
@@ -5514,10 +5424,8 @@ begin
   if Result<>mrOk then exit;
 
   // compile required packages
-  {$IFNDEF DisablePkgs}
   Result:=PkgBoss.DoCompileProjectDependencies(Project1,[pcfDoNotSaveEditorFiles]);
   if Result<>mrOk then exit;
-  {$ENDIF}
 
   // get main source filename
   if not Project1.IsVirtual then
@@ -5732,7 +5640,6 @@ begin
 
     // prepare static auto install packages
     PkgOptions:='';
-    {$IFNDEF DisablePkgs}
     if (blfWithStaticPackages in Flags)
     or MiscellaneousOptions.BuildLazOpts.WithStaticPackages then begin
       // compile auto install static packages
@@ -5746,7 +5653,6 @@ begin
       // create inherited compiler options
       PkgOptions:=PkgBoss.DoGetIDEInstallPackageOptions;
     end;
-    {$ENDIF}
 
     // save extra options
     IDEBuildFlags:=Flags+[blfOnlyIDE];
@@ -5966,15 +5872,22 @@ end;
 procedure TMainIDE.GetUnitWithForm(AForm: TCustomForm;
   var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo);
 var
-  i: integer;
+  AComponent: TComponent;
 begin
   if AForm<>nil then begin
-    i:=Project1.IndexOfUnitWithComponent(AForm,false,nil);
-    if i>=0 then begin
-      ActiveUnitInfo:=Project1.Units[i];
-      ActiveSourceEditor:=SourceNoteBook.FindSourceEditorWithPageIndex(
-        ActiveUnitInfo.EditorIndex);
-      exit;
+    if (AForm.Designer=nil) then
+      RaiseException('TMainIDE.GetUnitWithForm AForm.Designer');
+    AComponent:=TDesigner(AForm.Designer).LookupRoot;
+    if AComponent=nil then
+      RaiseException('TMainIDE.GetUnitWithForm AComponent=nil');
+    ActiveUnitInfo:=Project1.FirstUnitWithComponent;
+    while ActiveUnitInfo<>nil do begin
+      if ActiveUnitInfo.Component=AComponent then begin
+        ActiveSourceEditor:=SourceNoteBook.FindSourceEditorWithPageIndex(
+                                                    ActiveUnitInfo.EditorIndex);
+        exit;
+      end;
+      ActiveUnitInfo:=ActiveUnitInfo.NextUnitWithComponent;
     end;
   end;
   ActiveSourceEditor:=nil;
@@ -6388,10 +6301,11 @@ begin
   // collect all windows except the main bar
   for i:=0 to Screen.CustomFormCount-1 do begin
     AForm:=Screen.CustomForms[i];
-    if (AForm<>Self)
-    and (AForm.Designer=nil) and (AForm.Visible)
-    and (not (fsModal in AForm.FormState))
-    and (HiddenWindowsOnRun.IndexOf(AForm)<0)
+    if (AForm<>Self)                          // ignore the main bar
+    and (AForm.Designer=nil)                  // ignore designer forms
+    and (AForm.Visible)                       // ignore hidden forms
+    and (not (fsModal in AForm.FormState))    // ignore modal forms
+    and (HiddenWindowsOnRun.IndexOf(AForm)<0) // ignore already collected forms
     then
       HiddenWindowsOnRun.Add(AForm);
   end;
@@ -6408,7 +6322,7 @@ var
   AnUnitInfo: TUnitInfo;
   NextUnitInfo: TUnitInfo;
 begin
-  AnUnitInfo:=Project1.FirstUnitWithForm;
+  AnUnitInfo:=Project1.FirstUnitWithComponent;
   while AnUnitInfo<>nil do begin
     NextUnitInfo:=AnUnitInfo.NextUnitWithComponent;
     if not AnUnitInfo.NeedsSaveToDisk then
@@ -6471,8 +6385,7 @@ begin
   AForm.ShowOnTop;
   if TheControlSelection.SelectionForm<>AForm then begin
     // select the new form (object inspector, formeditor, control selection)
-    GlobalDesignHook.LookupRoot := AForm;
-    TDesigner(AForm.Designer).SelectOnlyThisComponent(AForm);
+    TheControlSelection.AssignComponent(ActiveUnitInfo.Component);
   end;
 end;
 
@@ -7137,20 +7050,12 @@ end;
 procedure TMainIDE.OnDesignerGetSelectedComponentClass(Sender: TObject; 
   var RegisteredComponent: TRegisteredComponent);
 begin
-  {$IFDEF DisablePkgs}
-  RegisteredComponent:=SelectedComponent;
-  {$ELSE}
   RegisteredComponent:=TComponentPalette(IDEComponentPalette).Selected;
-  {$ENDIF}
 end;
 
 procedure TMainIDE.OnDesignerUnselectComponentClass(Sender: TObject);
 begin
-  {$IFDEF DisablePkgs}
-  ControlClick(ComponentNoteBook);
-  {$ELSE}
   TComponentPalette(IDEComponentPalette).Selected:=nil;
-  {$ENDIF}
 end;
 
 procedure TMainIDE.OnDesignerSetDesigning(Sender: TObject; 
@@ -7174,7 +7079,7 @@ procedure TMainIDE.OnDesignerComponentAdded(Sender: TObject;
 var
   ActiveUnitInfo: TUnitInfo;
   ActiveSrcEdit: TSourceEditor;
-  FormClassName: string;
+  OwnerClassName: string;
 begin
   if not (Sender is TDesigner) then begin
     writeln('TMainIDE.OnDesignerComponentAdded ERROR: Sender.ClassName=',
@@ -7185,20 +7090,18 @@ begin
                 [ctfSwitchToFormSource]);
 
   // add needed package to required packages
-  {$IFNDEF DisablePkgs}
   PkgBoss.AddProjectRegCompDependency(Project1,AComponentClass);
-  {$ENDIF}
   // add needed unit to source
   CodeToolBoss.AddUnitToMainUsesSection(ActiveUnitInfo.Source,
-      AComponentClass.{$IFNDEF DisablePkgs}GetUnitName{$ELSE}UnitName{$ENDIF},'');
+                                        AComponentClass.GetUnitName,'');
   ActiveUnitInfo.Modified:=true;
   // add component definition to form source
-  FormClassName:=TDesigner(Sender).Form.ClassName;
+  OwnerClassName:=AComponent.Owner.ClassName;
   if not CodeToolBoss.PublishedVariableExists(ActiveUnitInfo.Source,
-    FormClassName,AComponent.Name) then begin
+    OwnerClassName,AComponent.Name) then begin
     // ! AddPublishedVariable does not rebuild the CodeTree, so we need
     // PublishedVariableExists before !
-    CodeToolBoss.AddPublishedVariable(ActiveUnitInfo.Source,FormClassName,
+    CodeToolBoss.AddPublishedVariable(ActiveUnitInfo.Source,OwnerClassName,
       AComponent.Name, AComponent.ClassName);
   end;
 
@@ -7217,11 +7120,11 @@ end;
 
 procedure TMainIDE.OnDesignerRemoveComponent(Sender: TObject;
   AComponent: TComponent);
-var i: integer;
+var
   ActiveForm: TCustomForm;
   ActiveUnitInfo: TUnitInfo;
   ActiveSrcEdit: TSourceEditor;
-  FormClassName: string;
+  OwnerClassName: string;
   CurDesigner: TDesigner;
 begin
   CurDesigner:=TDesigner(Sender);
@@ -7230,31 +7133,33 @@ begin
   BeginCodeTool(CurDesigner,ActiveSrcEdit,ActiveUnitInfo,
                 [ctfSwitchToFormSource]);
   ActiveForm:=CurDesigner.Form;
-  if ActiveForm=nil then begin
+  if ActiveForm=nil then
     RaiseException('[TMainIDE.OnDesignerAddComponent] Error: TDesigner without a form');
-  end;
   // find source for form
-  i:=Project1.IndexOfUnitWithComponent(ActiveForm,false,nil);
-  if i<0 then begin
+  ActiveUnitInfo:=Project1.UnitWithComponent(CurDesigner.LookupRoot);
+  if ActiveUnitInfo=nil then begin
     RaiseException('[TMainIDE.OnDesignerAddComponent] Error: form without source');
   end;
-  ActiveUnitInfo:=Project1.Units[i];
-  // remove component definition to form source
-  FormClassName:=ActiveForm.ClassName;
-  CodeToolBoss.RemovePublishedVariable(ActiveUnitInfo.Source,FormClassName,
-    AComponent.Name);
+  // remove component definition from owner source
+  OwnerClassName:=CurDesigner.LookupRoot.ClassName;
+  CodeToolBoss.RemovePublishedVariable(ActiveUnitInfo.Source,OwnerClassName,
+                                       AComponent.Name);
 end;
 
 procedure TMainIDE.OnDesignerModified(Sender: TObject);
-var i: integer;
+var
   SrcEdit: TSourceEditor;
+  CurDesigner: TDesigner;
+  AnUnitInfo: TUnitInfo;
 begin
-  i:=Project1.IndexOfUnitWithComponent(TDesigner(Sender).Form,false,nil);
-  if i>=0 then begin
-    Project1.Units[i].Modified:=true;
-    if Project1.Units[i].Loaded then
+  CurDesigner:=TDesigner(Sender);
+  if dfDestroyingForm in CurDesigner.Flags then exit;
+  AnUnitInfo:=Project1.UnitWithComponent(CurDesigner.LookupRoot);
+  if AnUnitInfo<>nil then begin
+    AnUnitInfo.Modified:=true;
+    if AnUnitInfo.Loaded then
       SrcEdit:=SourceNotebook.FindSourceEditorWithPageIndex(
-        Project1.Units[i].EditorIndex);
+                                                        AnUnitInfo.EditorIndex);
     if SrcEdit<>nil then begin
       SrcEdit.Modified:=true;
       SourceNotebook.UpdateStatusBar;
@@ -7295,6 +7200,7 @@ begin
     OldForm.Invalidate;
   if NewForm<>nil then
     NewForm.Invalidate;
+  UpdateIDEComponentPalette;
 end;
 
 
@@ -8223,6 +8129,7 @@ Procedure TMainIDE.OnDesignerActivated(Sender : TObject);
 begin
   FDisplayState:= dsForm;
   FLastFormActivated := TDesigner(Sender).Form;
+  UpdateIDEComponentPalette;
 end;
 
 procedure TMainIDE.OnDesignerCloseQuery(Sender: TObject);
@@ -8236,7 +8143,7 @@ begin
   if AnUnitInfo.NeedsSaveToDisk then begin
     if MessageDlg('Save changes?',
       'Save file "'+AnUnitInfo.Filename+'"'#13
-      +'before closing form "'+ADesigner.Form.Name+'"?',
+      +'before closing form "'+ADesigner.LookupRoot.Name+'"?',
       mtConfirmation,[mbYes,mbCancel,mbAbort],0)<>mrYes
     then
       exit;
@@ -8270,25 +8177,25 @@ begin
     raise Exception.Create(Format(lisComponentNameIsNotAValidIdentifier, ['"',
       Newname, '"']));
   BeginCodeTool(ADesigner,ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource]);
-  ActiveUnitInfo:=Project1.UnitWithComponent(ADesigner.Form);
+  ActiveUnitInfo:=Project1.UnitWithComponent(ADesigner.LookupRoot);
   if CodeToolBoss.IsKeyWord(ActiveUnitInfo.Source,NewName) then
     raise Exception.Create(Format(lisComponentNameIsKeyword, ['"', Newname, '"']
       ));
   if AComponent.Owner<>nil then begin
     // rename published variable in form source
     BossResult:=CodeToolBoss.RenamePublishedVariable(ActiveUnitInfo.Source,
-      ADesigner.Form.ClassName,
+      ADesigner.LookupRoot.ClassName,
       AComponent.Name,NewName,AComponent.ClassName);
     ApplyBossResult(Format(lisUnableToRenameVariableInSourceSeeMessages, [#13])
       );
-  end else if AComponent=ADesigner.Form then begin
-    // rename form
+  end else if AComponent=ADesigner.LookupRoot then begin
+    // rename owner component (e.g. the form)
     // ToDo:
     //   rename form in source
     //   rename formclass
     //   replace createform statement
 
-    // check if formname already exists
+    // check if component name already exists
     i:=Project1.IndexOfUnitWithComponentName(NewName,true,ActiveUnitInfo);
     if i>=0 then
       raise Exception.Create(
@@ -8296,15 +8203,15 @@ begin
                            Newname, '"']));
     NewClassName:='T'+NewName;
 
-    // rename form in source
+    // rename form component in source
     BossResult:=CodeToolBoss.RenameForm(ActiveUnitInfo.Source,
       AComponent.Name,AComponent.ClassName,
       NewName,NewClassName);
     ApplyBossResult(Format(lisUnableToRenameFormInSourceSeeMessages, [#13]));
     ActiveUnitInfo.ComponentName:=NewName;
 
-    // rename form class
-    FormEditor1.JITFormList.RenameComponentClass(AComponent,NewClassName);
+    // rename form component class
+    FormEditor1.RenameJITComponent(AComponent,NewClassName);
 
     // change createform statement
     if ActiveUnitInfo.IsPartOfProject and (Project1.MainUnitID>=0)
@@ -8317,16 +8224,11 @@ begin
       ApplyCodeToolChanges;
       if not BossResult then begin
         DoJumpToCodeToolBossError;
-        // don't raise an exception
       end;
     end;
     
   end else begin
-    if (aComponent is TMenuItem) or (aComponent is TMenu)
-    then
-      writeln ('**SH: Warn: TMainIDE.OnDesignerRenameComponent MenuItem / TMenu with Owner = nil'+self.Name)
-    else
-      RaiseException('TMainIDE.OnDesignerRenameComponent internal error:'+AComponent.Name);
+    RaiseException('TMainIDE.OnDesignerRenameComponent internal error:'+AComponent.Name+':'+AComponent.ClassName);
   end;
 end;
 
@@ -8637,33 +8539,35 @@ procedure TMainIDE.DoSwitchToFormSrc(ADesigner: TDesigner;
   var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo);
 var i: integer;
 begin
+  ActiveSourceEditor:=nil;
+  ActiveUnitInfo:=nil;
   if (ADesigner<>nil) then
-    i:=Project1.IndexOfUnitWithComponent(ADesigner.Form,false,nil)
+    ActiveUnitInfo:=Project1.UnitWithComponent(ADesigner.LookupRoot)
   else if GlobalDesignHook.LookupRoot<>nil then
-    i:=Project1.IndexOfUnitWithComponent(GlobalDesignHook.LookupRoot,false,nil)
+    ActiveUnitInfo:=
+      Project1.UnitWithComponent(GlobalDesignHook.LookupRoot)
   else
-    i:=-1;
-  if (i>=0) then begin
-    i:=Project1.Units[i].EditorIndex;
+    ActiveUnitInfo:=nil;
+  if (ActiveUnitInfo<>nil) then begin
+    i:=ActiveUnitInfo.EditorIndex;
     if (i>=0) then begin
       SourceNoteBook.NoteBook.PageIndex:=i;
       GetCurrentUnit(ActiveSourceEditor,ActiveUnitInfo);
       exit;
     end;
   end;
-  ActiveSourceEditor:=nil;
-  ActiveUnitInfo:=nil;
 end;
 
 function TMainIDE.GetFormOfSource(AnUnitInfo: TUnitInfo; LoadForm: boolean
   ): TCustomForm;
 begin
-  Result:=TCustomForm(AnUnitInfo.Component);
-  if (Result=nil) and LoadForm and (not AnUnitInfo.IsVirtual)
+  Result:=nil;
+  if (AnUnitInfo.Component=nil) and LoadForm and (not AnUnitInfo.IsVirtual)
   and FilenameIsPascalSource(AnUnitInfo.Filename) then begin
     DoLoadLFM(AnUnitInfo,[]);
-    Result:=TCustomForm(AnUnitInfo.Component);
   end;
+  if AnUnitInfo.Component<>nil then
+    Result:=FormEditor1.GetDesignerForm(AnUnitInfo.Component);
 end;
 
 function TMainIDE.OnPropHookMethodExists(const AMethodName: ShortString;
@@ -8713,8 +8617,8 @@ begin
     {$ENDIF}
     ApplyCodeToolChanges;
     if r then begin
-      Result:=FormEditor1.JITFormList.CreateNewMethod(
-                                   TForm(ActiveUnitInfo.Component),AMethodName);
+      Result:=FormEditor1.CreateNewJITMethod(ActiveUnitInfo.Component,
+                                             AMethodName);
     end else begin
       DoJumpToCodeToolBossError;
       raise Exception.Create(lisUnableToCreateNewMethodPlzFixTheErrorShownIn);
@@ -8765,15 +8669,14 @@ begin
   try
     // create published method
     r:=CodeToolBoss.RenamePublishedMethod(ActiveUnitInfo.Source,
-                ActiveUnitInfo.Component.ClassName,CurName,NewName);
+                            ActiveUnitInfo.Component.ClassName,CurName,NewName);
     {$IFDEF IDE_DEBUG}
     writeln('');
     writeln('[TMainIDE.OnPropHookRenameMethod] ************2 ',r);
     {$ENDIF}
     ApplyCodeToolChanges;
     if r then begin
-      FormEditor1.JITFormList.RenameMethod(TForm(ActiveUnitInfo.Component),
-                                           CurName,NewName);
+      FormEditor1.RenameJITMethod(ActiveUnitInfo.Component,CurName,NewName);
     end else begin
       DoJumpToCodeToolBossError;
       raise Exception.Create(
@@ -8784,8 +8687,26 @@ begin
   end;
 end;
 
+function TMainIDE.OnPropHookBeforeAddComponent(Sender: TObject;
+  AComponentClass: TComponentClass; AParent: TComponent): boolean;
+begin
+  Result:=false;
+  if (not (AParent is TControl))
+  and (AComponentClass.InheritsFrom(TControl)) then begin
+    MessageDlg('Invalid parent',
+      'A '+Parent.ClassName+' can not hold TControls.'#13
+      +'You can only put non visual components on it.',
+      mtError,[mbCancel],0);
+    UpdateIDEComponentPalette;
+    exit;
+  end;
+  Result:=true;
+end;
+
 procedure TMainIDE.OnPropHookComponentRenamed(AComponent: TComponent);
 begin
+  if (AComponent.Owner=nil) then
+    FormEditor1.UpdateDesignerFormName(AComponent);
   ObjectInspector1.FillComponentComboBox;
 end;
 
@@ -8802,19 +8723,16 @@ var
   ComponentClass: TRegisteredComponent;
   ADesigner: TIDesigner;
 begin
-writeln('TMainIDE.OnPropHookComponentAdded A ',AComponent.Name,':',AComponent.ClassName);
-  {$IFDEF DisablePkgs}
-  ComponentClass:=FindRegsiteredComponentClass(AComponent.ClassName);
-  {$ELSE}
+  writeln('TMainIDE.OnPropHookComponentAdded A ',AComponent.Name,':',AComponent.ClassName);
   ComponentClass:=IDEComponentPalette.FindComponent(AComponent.ClassName);
-  {$ENDIF}
   if ComponentClass=nil then begin
     writeln('TMainIDE.OnPropHookComponentAdded ',AComponent.ClassName,
             ' not registered');
     exit;
   end;
   // create unique name
-  AComponent.Name:=FormEditor1.CreateUniqueComponentName(AComponent);
+  if AComponent.Name='' then
+    AComponent.Name:=FormEditor1.CreateUniqueComponentName(AComponent);
   //writeln('TMainIDE.OnPropHookComponentAdded B ',AComponent.Name,':',AComponent.ClassName);
   // create component interface
   if FormEditor1.FindComponent(AComponent)=nil then
@@ -9102,6 +9020,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.593  2003/06/01 21:09:09  mattias
+  implemented datamodules
+
   Revision 1.592  2003/06/01 13:00:34  mattias
   new menueditor from Martin Patik
 
