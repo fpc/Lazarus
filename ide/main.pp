@@ -386,12 +386,14 @@ type
                                     var Abort: boolean);
     procedure OnAfterCodeToolBossApplyChanges(Manager: TCodeToolManager);
     function OnCodeToolBossSearchUsedUnit(const SrcFilename: string;
-          const TheUnitName, TheUnitInFilename: string): TCodeBuffer;
+                     const TheUnitName, TheUnitInFilename: string): TCodeBuffer;
     function OnCodeToolBossCheckAbort: boolean;
     procedure CodeToolBossGetVirtualDirectoryAlias(Sender: TObject;
-          var RealDir: string);
+                                                   var RealDir: string);
     procedure CodeToolBossGetVirtualDirectoryDefines(DefTree: TDefineTree;
-          DirDef: TDirectoryDefines);
+                                                     DirDef: TDirectoryDefines);
+    procedure OnCodeToolBossGetDefineProperties(Sender: TObject;
+                          const ComponentClassName: string; var List: TStrings);
     function MacroFunctionProject(Data: Pointer): boolean;
     procedure OnCompilerGraphStampIncreased;
 
@@ -6550,8 +6552,8 @@ begin
   DoArrangeSourceEditorAndMessageView(false);
 
   // parse the LFM file and the pascal unit
-  if not CheckLFMBuffer(PascalBuf,LFMUnitInfo.Source,@MessagesView.AddMsg,
-                        true,true)
+  if CheckLFMBuffer(PascalBuf,LFMUnitInfo.Source,@MessagesView.AddMsg,
+                        true,true)<>mrOk
   then begin
     DoJumpToCompilerMessage(-1,true);
   end;
@@ -6638,7 +6640,7 @@ begin
     if HasDFMFile and (LFMCode=nil) then
       writeln('WARNING: TMainIDE.DoConvertDelphiUnit unable to load LFMCode');
     if (LFMCode<>nil)
-    and (not CheckLFMBuffer(UnitCode,LFMCode,@MessagesView.AddMsg,true,true))
+    and (CheckLFMBuffer(UnitCode,LFMCode,@MessagesView.AddMsg,true,true)<>mrOk)
     then begin
       DoJumpToCompilerMessage(-1,true);
       exit;
@@ -8575,6 +8577,7 @@ begin
     OnBeforeApplyChanges:=@OnBeforeCodeToolBossApplyChanges;
     OnAfterApplyChanges:=@OnAfterCodeToolBossApplyChanges;
     OnSearchUsedUnit:=@OnCodeToolBossSearchUsedUnit;
+    OnGetDefinePropertiesForClass:=@OnCodeToolBossGetDefineProperties;
   end;
 
   CodeToolsOpts.AssignGlobalDefineTemplatesToTree(CodeToolBoss.DefineTree);
@@ -8774,6 +8777,13 @@ procedure TMainIDE.CodeToolBossGetVirtualDirectoryDefines(DefTree: TDefineTree;
 begin
   if (Project1<>nil) and Project1.IsVirtual then
     Project1.GetVirtualDefines(DefTree,DirDef);
+end;
+
+procedure TMainIDE.OnCodeToolBossGetDefineProperties(Sender: TObject;
+  const ComponentClassName: string; var List: TStrings);
+begin
+  List:=TStringList.Create;
+  FormEditor1.GetDefineProperties(ComponentClassName,List);
 end;
 
 function TMainIDE.MacroFunctionProject(Data: Pointer): boolean;
@@ -10533,6 +10543,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.749  2004/08/09 15:46:34  mattias
+  implemented getting define properties for Repair broken LFM wizard
+
   Revision 1.748  2004/08/08 21:52:01  mattias
   change component class dlg now works with child controls
 

@@ -4,7 +4,6 @@
 #
 
 [target]
-dirs=registration
 
 [clean]
 files=$(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT))

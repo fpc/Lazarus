@@ -207,7 +207,7 @@ var
 
   function CheckProperties: boolean;
   begin
-    Result:=CheckLFMBuffer(UnitCode,LFMBuffer,nil,false,false);
+    Result:=CheckLFMBuffer(UnitCode,LFMBuffer,nil,false,false)=mrOk;
     if not Result and (CodeToolBoss.ErrorMessage<>'') then
       MainIDEInterface.DoJumpToCodeToolBossError;
   end;

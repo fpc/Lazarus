@@ -80,12 +80,12 @@ type
   
 function CheckLFMBuffer(PascalBuffer, LFMBuffer: TCodeBuffer;
   const OnOutput: TOnOutputString;
-  RootMustBeClassInIntf, ObjectsMustExists: boolean): boolean;
+  RootMustBeClassInIntf, ObjectsMustExists: boolean): TModalResult;
 function CheckLFMText(PascalBuffer: TCodeBuffer; var LFMText: string;
   const OnOutput: TOnOutputString;
-  RootMustBeClassInIntf, ObjectsMustExists: boolean): boolean;
+  RootMustBeClassInIntf, ObjectsMustExists: boolean): TModalResult;
 function ShowRepairLFMWizard(LFMBuffer: TCodeBuffer;
-  LFMTree: TLFMTree): boolean;
+  LFMTree: TLFMTree): TModalResult;
 
 
 implementation
@@ -99,7 +99,7 @@ type
 
 function CheckLFMBuffer(PascalBuffer, LFMBuffer: TCodeBuffer;
   const OnOutput: TOnOutputString;
-  RootMustBeClassInIntf, ObjectsMustExists: boolean): boolean;
+  RootMustBeClassInIntf, ObjectsMustExists: boolean): TModalResult;
 var
   LFMTree: TLFMTree;
   
@@ -125,7 +125,7 @@ var
     end;
   end;
   
-  function FixMissingComponentClasses: boolean;
+  function FixMissingComponentClasses: TModalResult;
   // returns true, if after adding units to uses section all errors are fixed
   var
     CurError: TLFMError;
@@ -134,7 +134,7 @@ var
     RegComp: TRegisteredComponent;
     i: Integer;
   begin
-    Result:=false;
+    Result:=mrCancel;
     MissingObjectTypes:=TStringList.Create;
     try
       // collect all missing object types
@@ -157,29 +157,34 @@ var
       if MissingObjectTypes.Count=0 then exit;
       
       // there are missing object types with registered component classes
-      if PackageEditingInterface.AddUnitDependenciesForComponentClasses(
-           PascalBuffer.Filename,MissingObjectTypes)<>mrOk
-      then
-        exit;
-      
+      Result:=PackageEditingInterface.AddUnitDependenciesForComponentClasses(
+           PascalBuffer.Filename,MissingObjectTypes);
+      if Result<>mrOk then exit;
+
       // check LFM again
       LFMTree.Free;
       LFMTree:=nil;
-      Result:=CodeToolBoss.CheckLFM(PascalBuffer,LFMBuffer,LFMTree,
-                                    RootMustBeClassInIntf,ObjectsMustExists);
+      if CodeToolBoss.CheckLFM(PascalBuffer,LFMBuffer,LFMTree,
+                                    RootMustBeClassInIntf,ObjectsMustExists)
+      then
+        Result:=mrOk;
     finally
       MissingObjectTypes.Free;
     end;
   end;
   
 begin
+  Result:=mrCancel;
   LFMTree:=nil;
   try
-    Result:=CodeToolBoss.CheckLFM(PascalBuffer,LFMBuffer,LFMTree,
-                                  RootMustBeClassInIntf,ObjectsMustExists);
-    if Result then exit;
+    if CodeToolBoss.CheckLFM(PascalBuffer,LFMBuffer,LFMTree,
+                                  RootMustBeClassInIntf,ObjectsMustExists)
+    then begin
+      Result:=mrOk;
+      exit;
+    end;
     Result:=FixMissingComponentClasses;
-    if Result then exit;
+    if Result in [mrAbort,mrOk] then exit;
     WriteLFMErrors;
     Result:=ShowRepairLFMWizard(LFMBuffer,LFMTree);
   finally
@@ -189,11 +194,11 @@ end;
 
 function CheckLFMText(PascalBuffer: TCodeBuffer; var LFMText: string;
   const OnOutput: TOnOutputString;
-  RootMustBeClassInIntf, ObjectsMustExists: boolean): boolean;
+  RootMustBeClassInIntf, ObjectsMustExists: boolean): TModalResult;
 var
   LFMBuf: TCodeBuffer;
 begin
-  Result:=false;
+  Result:=mrCancel;
   LFMBuf:=CodeToolBoss.CreateTempFile('temp.lfm');
   try
     LFMBuf.Source:=LFMText;
@@ -206,17 +211,16 @@ begin
 end;
 
 function ShowRepairLFMWizard(LFMBuffer: TCodeBuffer;
-  LFMTree: TLFMTree): boolean;
+  LFMTree: TLFMTree): TModalResult;
 var
   CheckLFMDialog: TCheckLFMDialog;
 begin
-  Result:=false;
+  Result:=mrCancel;
   CheckLFMDialog:=TCheckLFMDialog.Create(Application);
   CheckLFMDialog.LFMTree:=LFMTree;
   CheckLFMDialog.LFMSource:=LFMBuffer;
   CheckLFMDialog.LoadLFM;
-  if CheckLFMDialog.ShowModal=mrOk then
-    Result:=true;
+  Result:=CheckLFMDialog.ShowModal;
   CheckLFMDialog.Free;
 end;
 

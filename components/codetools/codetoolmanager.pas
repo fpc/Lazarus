@@ -60,6 +60,8 @@ type
                                const TheUnitName, TheUnitInFilename: string
                                ): TCodeBuffer of object;
   TOnCodeToolCheckAbort = function: boolean of object;
+  TOnGetDefinePropertiesForClass = procedure(Sender: TObject;
+    const ComponentClassName: string; var List: TStrings) of object;
 
   TCodeToolManager = class
   private
@@ -83,6 +85,7 @@ type
     FOnCheckAbort: TOnCodeToolCheckAbort;
     FOnGatherExternalChanges: TOnGatherExternalChanges;
     FOnGetDefineProperties: TOnGetDefineProperties;
+    FOnGetDefinePropertiesForClass: TOnGetDefinePropertiesForClass;
     FOnSearchUsedUnit: TOnSearchUsedUnit;
     FResourceTool: TResourceCodeTool;
     FSetPropertyVariablename: string;
@@ -353,6 +356,9 @@ type
     // resources
     property OnGetDefineProperties: TOnGetDefineProperties
                        read FOnGetDefineProperties write FOnGetDefineProperties;
+    property OnGetDefinePropertiesForClass: TOnGetDefinePropertiesForClass
+                                           read FOnGetDefinePropertiesForClass
+                                           write FOnGetDefinePropertiesForClass;
     function FindLFMFileName(Code: TCodeBuffer): string;
     function CheckLFM(UnitCode, LFMBuf: TCodeBuffer;
           var LFMTree: TLFMTree;
@@ -371,6 +377,9 @@ type
           KeepPath: boolean): boolean;
     function RenameIncludeDirective(Code: TCodeBuffer; LinkIndex: integer;
           const NewFilename: string; KeepPath: boolean): boolean;
+    procedure DefaultGetDefineProperties(Sender: TObject;
+                       const ClassContext: TFindContext; LFMNode: TLFMTreeNode;
+                       const IdentName: string; var DefineProperties: TStrings);
 
     // register proc
     function HasInterfaceRegisterProc(Code: TCodeBuffer;
@@ -489,6 +498,7 @@ constructor TCodeToolManager.Create;
 begin
   inherited Create;
   FCheckFilesOnDisk:=true;
+  FOnGetDefineProperties:=@DefaultGetDefineProperties;
   DefineTree:=TDefineTree.Create;
   DefineTree.OnReadValue:=@OnDefineTreeReadValue;
   DefinePool:=TDefinePool.Create;
@@ -2186,6 +2196,20 @@ begin
                                        SourceChangeCache);
   except
     on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+procedure TCodeToolManager.DefaultGetDefineProperties(Sender: TObject;
+  const ClassContext: TFindContext; LFMNode: TLFMTreeNode;
+  const IdentName: string; var DefineProperties: TStrings);
+var
+  ComponentClassName: String;
+begin
+  if Assigned(OnGetDefinePropertiesForClass) then begin
+    ComponentClassName:=ClassContext.Tool.ExtractClassName(
+                                                       ClassContext.Node,false);
+    OnGetDefinePropertiesForClass(ClassContext.Tool,ComponentClassName,
+                                  DefineProperties);
   end;
 end;
 

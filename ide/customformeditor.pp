@@ -39,7 +39,7 @@ uses
   MemCheck,
 {$ENDIF}
   // LCL+FCL
-  Classes, SysUtils, TypInfo, Math, Controls, Forms, Menus, Dialogs,
+  Classes, SysUtils, TypInfo, Math, LCLProc, Controls, Forms, Menus, Dialogs,
   // components
   AVL_Tree, PropEdits, ObjectInspector, IDECommands,
   // IDE
@@ -119,6 +119,7 @@ each control that's dropped onto the form
                                     // component
     FSelection: TPersistentSelectionList;
     FObj_Inspector: TObjectInspector;
+    FDefineProperties: TAVLTree;
     function GetPropertyEditorHook: TPropertyEditorHook;
   protected
     FNonControlForms: TAVLTree; // tree of TNonControlForm sorted for LookupRoot
@@ -198,6 +199,10 @@ each control that's dropped onto the form
                        ParentControl: TWinControl): TIComponentInterface; override;
     Procedure SetComponentNameAndClass(CI: TIComponentInterface;
       const NewName, NewClassName: shortstring);
+      
+    // define properties
+    procedure GetDefineProperties(const AComponentClassname: string;
+                                  List: TStrings);
 
     // keys
     function TranslateKeyToDesignerCommand(Key: word; Shift: TShiftState): word;
@@ -210,8 +215,50 @@ each control that's dropped onto the form
   end;
   
   
+  { TDefinePropertiesCacheItem }
+  
+  TDefinePropertiesCacheItem = class
+  public
+    ComponentClassname: string;
+    RegisteredComponent: TRegisteredComponent;
+    DefineProperties: TStrings;
+    destructor Destroy; override;
+  end;
+  
+  
+  { TDefinePropertiesReader }
+  
+  TDefinePropertiesReader = class(TFiler)
+  private
+    FDefinePropertyNames: TStrings;
+  protected
+    procedure AddPropertyName(const Name: string);
+  public
+    destructor Destroy; override;
+    procedure DefineProperty(const Name: string;
+      ReadData: TReaderProc; WriteData: TWriterProc;
+      HasData: Boolean); override;
+    procedure DefineBinaryProperty(const Name: string;
+      ReadData, WriteData: TStreamProc;
+      HasData: Boolean); override;
+    property DefinePropertyNames: TStrings read FDefinePropertyNames;
+  end;
+  
+  
+  { TDefinePropertiesComponent( }
+  
+  TDefinePropertiesComponent = class(TComponent)
+  public
+    procedure PublicDefineProperties(Filer: TFiler);
+  end;
+  
+  
+  
 function CompareComponentInterfaces(Data1, Data2: Pointer): integer;
 function CompareComponentAndInterface(Key, Data: Pointer): integer;
+function CompareDefPropCacheItems(Item1, Item2: TDefinePropertiesCacheItem): integer;
+function CompareCompClassNameAndDefPropCacheItem(Key: Pointer;
+                                     Item: TDefinePropertiesCacheItem): integer;
 
 implementation
 
@@ -236,7 +283,19 @@ begin
   Result:=integer(AComponent)-integer(CompIntf.Component);
 end;
 
-{TComponentInterface}
+function CompareDefPropCacheItems(Item1, Item2: TDefinePropertiesCacheItem
+  ): integer;
+begin
+  Result:=CompareText(Item1.ComponentClassname,Item2.ComponentClassname);
+end;
+
+function CompareCompClassNameAndDefPropCacheItem(Key: Pointer;
+                                     Item: TDefinePropertiesCacheItem): integer;
+begin
+  Result:=CompareText(AnsiString(Key),Item.ComponentClassname);
+end;
+
+{ TComponentInterface }
 
 constructor TComponentInterface.Create;
 begin
@@ -691,6 +750,8 @@ destructor TCustomFormEditor.Destroy;
 begin
   FormEditingHook:=nil;
   DesignerMenuItemClick:=nil;
+  FDefineProperties.FreeAndClear;
+  FreeAndNil(FDefineProperties);
   FreeAndNil(JITFormList);
   FreeAndNil(JITDataModuleList);
   FreeAndNil(FComponentInterfaces);
@@ -1341,6 +1402,73 @@ begin
   AComponent.Name:=NewName;
 end;
 
+procedure TCustomFormEditor.GetDefineProperties(
+  const AComponentClassname: string; List: TStrings);
+var
+  CacheItem: TDefinePropertiesCacheItem;
+  AComponent: TComponent;
+  DefinePropertiesReader: TDefinePropertiesReader;
+  ANode: TAVLTreeNode;
+begin
+  List.Clear;
+  if FDefineProperties=nil then
+    FDefineProperties:=TAVLTree.Create(@CompareDefPropCacheItems);
+  ANode:=FDefineProperties.FindKey(PChar(AComponentClassname),
+                                      @CompareCompClassNameAndDefPropCacheItem);
+  if ANode=nil then begin
+    // cache component class, try to retrieve the define properties
+    CacheItem:=TDefinePropertiesCacheItem.Create;
+    CacheItem.ComponentClassname:=AComponentClassname;
+    FDefineProperties.Add(CacheItem);
+    CacheItem.RegisteredComponent:=IDEComponentPalette.FindComponent(
+                                                           AComponentClassname);
+    if (CacheItem.RegisteredComponent<>nil)
+    and (CacheItem.RegisteredComponent.ComponentClass<>nil) then begin
+      // try creating a component class and call DefineProperties
+      AComponent:=nil;
+      DefinePropertiesReader:=nil;
+      try
+        try
+          AComponent:=CacheItem.RegisteredComponent.ComponentClass.Create(nil);
+          DefinePropertiesReader:=TDefinePropertiesReader.Create;
+          TDefinePropertiesComponent(AComponent).PublicDefineProperties(
+                                                        DefinePropertiesReader);
+        except
+          on E: Exception do begin
+            debugln('TCustomFormEditor.GetDefineProperties Error creating ',
+              CacheItem.RegisteredComponent.ComponentClass.Classname,
+              ': ',E.Message);
+          end;
+        end;
+        try
+          AComponent.Free;
+        except
+          on E: Exception do begin
+            debugln('TCustomFormEditor.GetDefineProperties Error freeing ',
+              CacheItem.RegisteredComponent.ComponentClass.Classname,
+              ': ',E.Message);
+          end;
+        end;
+      finally
+        // cache defined properties
+        if (DefinePropertiesReader<>nil)
+        and (DefinePropertiesReader.DefinePropertyNames<>nil) then begin
+          CacheItem.DefineProperties:=TStringList.Create;
+          CacheItem.DefineProperties.Assign(
+                                    DefinePropertiesReader.DefinePropertyNames);
+          debugln('TCustomFormEditor.GetDefineProperties CompClass=',AComponentClassname,
+            ' DefineProps=',CacheItem.DefineProperties.Text);
+          DefinePropertiesReader.Free;
+        end;
+      end;
+    end;
+  end else begin
+    CacheItem:=TDefinePropertiesCacheItem(ANode.Data);
+  end;
+  if CacheItem.DefineProperties<>nil then
+    List.Assign(CacheItem.DefineProperties);
+end;
+
 procedure TCustomFormEditor.JITListReaderError(Sender: TObject;
   ErrorType: TJITFormError; var Action: TModalResult);
 var
@@ -1525,6 +1653,48 @@ begin
   end;
 end;
 
+
+{ TDefinePropertiesCacheItem }
+
+destructor TDefinePropertiesCacheItem.Destroy;
+begin
+  DefineProperties.Free;
+  inherited Destroy;
+end;
+
+{ TDefinePropertiesReader }
+
+procedure TDefinePropertiesReader.AddPropertyName(const Name: string);
+begin
+  if FDefinePropertyNames=nil then FDefinePropertyNames:=TStringList.Create;
+  if FDefinePropertyNames.IndexOf(Name)<=0 then
+    FDefinePropertyNames.Add(Name);
+end;
+
+destructor TDefinePropertiesReader.Destroy;
+begin
+  FDefinePropertyNames.Free;
+  inherited Destroy;
+end;
+
+procedure TDefinePropertiesReader.DefineProperty(const Name: string;
+  ReadData: TReaderProc; WriteData: TWriterProc; HasData: Boolean);
+begin
+  AddPropertyName(Name);
+end;
+
+procedure TDefinePropertiesReader.DefineBinaryProperty(const Name: string;
+  ReadData, WriteData: TStreamProc; HasData: Boolean);
+begin
+  AddPropertyName(Name);
+end;
+
+{ TDefinePropertiesComponent }
+
+procedure TDefinePropertiesComponent.PublicDefineProperties(Filer: TFiler);
+begin
+  DefineProperties(Filer);
+end;
 
 end.
 

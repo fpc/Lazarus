@@ -971,7 +971,8 @@ var
         ObjectNode.DefineProperties.Add('TOP');
       end;
     end;
-    Result:=ObjectNode.DefineProperties.IndexOf(IdentName)>=0;
+    Result:=(ObjectNode.DefineProperties<>nil)
+        and (ObjectNode.DefineProperties.IndexOf(IdentName)>=0);
   end;
 
   function FindLFMIdentifier(LFMNode: TLFMTreeNode;
