@@ -70,7 +70,7 @@ type
 
     Clipping   : boolean;     // TextRect Only : Clip Text to passed Rectangle
 
-    ExpandTabs : boolean;     // ignored
+    ExpandTabs : boolean;     // currently ignored
 
     ShowPrefix : boolean;     // TextRect Only : Process first single '&' per
                               //    line as an underscore and draw '&&' as '&'
@@ -165,6 +165,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.9  2003/01/27 13:49:16  mattias
+  reduced speedbutton invalidates, added TCanvas.Frame
+
   Revision 1.8  2002/12/12 17:47:45  mattias
   new constants for compatibility
 
