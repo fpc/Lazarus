@@ -122,6 +122,7 @@ type
     LastMouseMovePos: TPoint;
     PopupMenuComponentEditor: TBaseComponentEditor;
     LastFormCursor: TCursor;
+    DeletingComponents: TList;
 
     function PaintControl(Sender: TControl; TheMessage: TLMPaint):boolean;
     function SizeControl(Sender: TControl; TheMessage: TLMSize):boolean;
@@ -133,6 +134,8 @@ type
     Procedure KeyUp(Sender: TControl; TheMessage:TLMKEY);
 
     procedure DoDeleteSelectedComponents;
+    procedure MarkComponentForDeletion(AComponent: TComponent);
+    function ComponentIsMarkedForDeletion(AComponent: TComponent): boolean;
     //procedure DoCreateComponent(AComponent);
     function GetSelectedComponentClass: TRegisteredComponent;
     Procedure NudgeControl(DiffX, DiffY: Integer);
@@ -258,6 +261,7 @@ begin
   
   DDC:=TDesignerDeviceContext.Create;
   LastFormCursor:=crDefault;
+  DeletingComponents:=TList.Create;
 end;
 
 destructor TDesigner.Destroy;
@@ -268,6 +272,7 @@ Begin
   FHintWIndow.Free;
   FHintTimer.Free;
   DDC.Free;
+  DeletingComponents.Free;
   Inherited Destroy;
 end;
 
@@ -305,6 +310,7 @@ Begin
   Form.Invalidate;
   // this sends a message to notification and removes it from the controlselection
   TheFormEditor.DeleteControl(AComponent);
+  DeletingComponents.Remove(AComponent);
 end;
 
 Procedure TDesigner.NudgeControl(DiffX, DiffY : Integer);
@@ -957,7 +963,7 @@ end;
 
 procedure TDesigner.DoDeleteSelectedComponents;
 var
-  AComponent: TComponent;
+  i: integer;
 begin
   if (ControlSelection.IsSelected(FCustomForm)) then begin
     if ControlSelection.Count>1 then
@@ -966,17 +972,26 @@ begin
        [mbOk],0);
     exit;
   end;
-  ControlSelection.BeginUpdate;
-  while ControlSelection.Count>0 do Begin
-    AComponent:=ControlSelection[ControlSelection.Count-1].Component;
-    {$IFDEF VerboseDesigner}
-    Writeln('TDesigner: Removing control: ',
-      AComponent.Name,':',AComponent.ClassName);
-    {$ENDIF}
-    RemoveComponent(AComponent);
-  End;
+  // mark selected components for deletion
+  for i:=0 to ControlSelection.Count-1 do
+    MarkComponentForDeletion(ControlSelection[i].Component);
+  // clear selection by selecting the form
   SelectOnlythisComponent(FCustomForm);
-  ControlSelection.EndUpdate;
+  // delete marked components
+  while DeletingComponents.Count>0 do
+    RemoveComponent(TComponent(DeletingComponents[DeletingComponents.Count-1]));
+end;
+
+procedure TDesigner.MarkComponentForDeletion(AComponent: TComponent);
+begin
+  if not ComponentIsMarkedForDeletion(AComponent) then
+    DeletingComponents.Add(AComponent);
+end;
+
+function TDesigner.ComponentIsMarkedForDeletion(AComponent: TComponent
+  ): boolean;
+begin
+  Result:=(DeletingComponents.IndexOf(AComponent)>=0);
 end;
 
 function TDesigner.GetSelectedComponentClass: TRegisteredComponent;
@@ -1034,6 +1049,7 @@ Begin
     PopupMenuComponentEditor:=nil;
     ControlSelection.Remove(AComponent);
     TheFormEditor.DeleteControl(AComponent);
+    DeletingComponents.Remove(AComponent);
   end;
 end;
 
