@@ -1428,20 +1428,18 @@ end;
 procedure TCustomGrid.Paint;
 begin
   Inherited Paint;
-  If Not (csDesigning in ComponentState) Then begin
-    If FUpdateCount=0 Then begin
-      //WriteLn('Paint: FGCache.ValidGrid=',FGCache.ValidGrid );
-      DrawEdges;
-      DrawBackGround;
-      If FGCache.ValidGrid Then begin
-        {
-        DrawFixedCells;
-        DrawInteriorCells;
-        DrawFocused;
-        }
-        DrawByRows;
-        DrawColRowMoving;
-      End;
+  If FUpdateCount=0 Then begin
+    //WriteLn('Paint: FGCache.ValidGrid=',FGCache.ValidGrid );
+    DrawEdges;
+    DrawBackGround;
+    If FGCache.ValidGrid Then begin
+      {
+      DrawFixedCells;
+      DrawInteriorCells;
+      DrawFocused;
+      }
+      DrawByRows;
+      DrawColRowMoving;
     End;
   End;
 End;
@@ -2321,7 +2319,6 @@ begin
   inherited MouseDown(Button, Shift, X, Y);
   If Not FGCache.ValidGrid Then Exit;
   If Not (ssLeft in Shift) Then Exit;
-
   Gz:=MouseToGridZone(X,Y, False);
   Case Gz of
     gzFixedCols:
