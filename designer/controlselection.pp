@@ -1916,8 +1916,9 @@ var
   
 begin
   if (Count=0) or (FCustomForm=nil)
-  or IsSelected(FCustomForm) then exit;
-  
+  or IsSelected(FCustomForm)
+  or (Items[0].Component is TMenuItem) then exit;
+
   Diff:=DC.FormOrigin;
 
   {writeln('[DrawGrabbers] '
@@ -1976,7 +1977,8 @@ begin
   if (Count<2)
   or (FCustomForm=nil)
   or (AComponent.Owner<>DC.Form)
-  or (not IsSelected(AComponent)) then exit;
+  or (not IsSelected(AComponent))
+  or (AComponent is TMenuItem) then exit;
   
   GetComponentBounds(AComponent,CompLeft,CompTop,CompWidth,CompHeight);
   CompOrigin:=GetParentFormRelativeParentClientOrigin(AComponent);

@@ -399,6 +399,7 @@ var
   end;
 
 begin
+  Continue:=false;
   if not Assigned(FFirst)
   and (Prop is TMethodPropertyEditor) then
     FFirst := Prop;
