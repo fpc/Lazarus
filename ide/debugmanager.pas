@@ -139,6 +139,7 @@ type
     function DoRunToCursor: TModalResult; override;
     function DoStopProject: TModalResult; override;
     procedure DoToggleCallStack; override;
+    procedure ProcessCommand(Command: word; var Handled: boolean); override;
 
     function RunDebugger: TModalResult; override;
     procedure EndDebugging; override;
@@ -1750,6 +1751,26 @@ begin
   ViewDebugDialog(ddtCallStack);
 end;
 
+procedure TDebugManager.ProcessCommand(Command: word; var Handled: boolean);
+begin
+  debugln('TDebugManager.ProcessCommand ',dbgs(Command));
+  Handled:=true;
+  case Command of
+  ecPause:       DoPauseProject;
+  ecStepInto:    DoStepIntoProject;
+  ecStepOver:    DoStepOverProject;
+  ecRunToCursor: DoRunToCursor;
+  ecStopProgram: DoStopProject;
+  ecToggleCallStack:   DoToggleCallStack;
+  ecToggleWatches:     ViewDebugDialog(ddtWatches);
+  ecToggleBreakPoints: ViewDebugDialog(ddtBreakpoints);
+  ecToggleDebuggerOut: ViewDebugDialog(ddtOutput);
+  ecToggleLocals:      ViewDebugDialog(ddtLocals);
+  else
+    Handled:=false;
+  end;
+end;
+
 function TDebugManager.RunDebugger: TModalResult;
 begin
   //writeln('TDebugManager.RunDebugger A ',FDebugger<>nil,' Destroying=',Destroying);
@@ -1920,6 +1941,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.78  2004/11/23 11:01:10  mattias
+  added key handling for debug manager
+
   Revision 1.77  2004/11/23 00:54:55  marc
   + Added Evaluate/Modify dialog
 

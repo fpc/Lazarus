@@ -88,6 +88,7 @@ type
     function DoRunToCursor: TModalResult; virtual; abstract;
     function DoStopProject: TModalResult; virtual; abstract;
     procedure DoToggleCallStack; virtual; abstract;
+    procedure ProcessCommand(Command: word; var Handled: boolean); virtual; abstract;
 
     function RunDebugger: TModalResult; virtual; abstract;
     procedure EndDebugging; virtual; abstract;
@@ -169,6 +170,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.23  2004/11/23 11:01:10  mattias
+  added key handling for debug manager
+
   Revision 1.22  2004/09/23 07:45:53  vincents
   moved FDebugger field from BaseDebugManager to DebugManager
 

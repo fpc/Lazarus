@@ -2010,8 +2010,10 @@ var
   ASrcEdit: TSourceEditor;
   AnUnitInfo: TUnitInfo;
 begin
+  debugln('TDebugManager.OnProcessIDECommand ',dbgs(Command));
+
   Handled:=true;
-  
+
   case Command of
   
   ecContextHelp:
@@ -2058,13 +2060,6 @@ begin
       else
         DoRunProject;
     end;
-
-  ecPause:       DebugBoss.DoPauseProject;
-  ecStepInto:    DebugBoss.DoStepIntoProject;
-  ecStepOver:    DebugBoss.DoStepOverProject;
-  ecRunToCursor: DebugBoss.DoRunToCursor;
-  ecStopProgram: DebugBoss.DoStopProject;
-  ecToggleCallStack: DebugBoss.DoToggleCallStack;
 
   ecJumpToPrevError:
     DoJumpToNextError(true);
@@ -2147,6 +2142,8 @@ begin
 
   else
     Handled:=false;
+    
+    DebugBoss.ProcessCommand(Command,Handled);
   end;
 end;
 
@@ -10965,6 +10962,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.797  2004/11/23 11:01:10  mattias
+  added key handling for debug manager
+
   Revision 1.796  2004/11/22 21:39:39  mattias
   implemented registration functions for project, file and package types, added cgilazide package
 
