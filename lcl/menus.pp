@@ -186,7 +186,7 @@ type
     function GetParentMenu: TMenu; virtual;
     function HandleAllocated : Boolean;
     function HasIcon: boolean; virtual;
-    function HasParent : Boolean; override;
+    function HasParent: Boolean; override;
     procedure InitiateAction; virtual;
     function IndexOf(Item: TMenuItem): Integer;
     function IndexOfCaption(const ACaption: string): Integer; virtual;
@@ -202,6 +202,7 @@ type
     function IsInMenuBar: boolean; virtual;
     procedure Clear;
     function HasBitmap: boolean;
+    function GetIconSize: TPoint; virtual;
   public
     property Count: Integer read GetCount;
     property Handle: HMenu read GetHandle write FHandle;
@@ -408,6 +409,9 @@ end.
 
 {
   $Log$
+  Revision 1.68  2004/06/17 21:24:19  mattias
+  implemented painting menuitem icons from ImageList
+
   Revision 1.67  2004/06/17 20:52:18  mattias
   fixed setting ImageIndex when TMenuItem.ActionChange
 

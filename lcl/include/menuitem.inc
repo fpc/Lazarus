@@ -739,6 +739,22 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function TMenuItem.GetIconSize: TPoint;
+ ------------------------------------------------------------------------------}
+function TMenuItem.GetIconSize: TPoint;
+var
+  TheImgList: TCustomImageList;
+begin
+  if FBitmap<>nil then
+    Result:=Point(FBitmap.Width,FBitmap.Height)
+  else if (FImageIndex>=0) then begin
+    TheImgList:=GetImageList;
+    if (TheImgList<>nil) and (FImageIndex<TheImgList.Count) then
+      Result:=Point(TheImgList.Width,TheImgList.Height);
+  end;
+end;
+
+{------------------------------------------------------------------------------
   function TMenuItem.IsCheckItem: boolean;
 
   Results true if 'Checked' or 'RadioItem' or 'AutoCheck'
@@ -1145,6 +1161,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.57  2004/06/17 21:24:19  mattias
+  implemented painting menuitem icons from ImageList
+
   Revision 1.56  2004/06/17 20:52:19  mattias
   fixed setting ImageIndex when TMenuItem.ActionChange
 
@@ -1341,6 +1360,9 @@ end;
 
 
   $Log$
+  Revision 1.57  2004/06/17 21:24:19  mattias
+  implemented painting menuitem icons from ImageList
+
   Revision 1.56  2004/06/17 20:52:19  mattias
   fixed setting ImageIndex when TMenuItem.ActionChange
 

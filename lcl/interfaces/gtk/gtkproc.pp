@@ -578,6 +578,10 @@ function ScalePixmap(ScaleGC: PGDKGC;
   var NewPixmap: PGdkPixmap): Boolean;
 procedure DrawImageListIconOnWidget(ImgList: TCustomImageList;
   Index: integer; DestWidget: PGTKWidget);
+procedure DrawImageListIconOnWidget(ImgList: TCustomImageList;
+  Index: integer; DestWidget: PGTKWidget;
+  CenterHorizontally, CenterVertically: boolean;
+  DestLeft, DestTop: integer);
 {$IfDef Win32}
 Procedure gdk_window_copy_area(Dest: PGDKWindow; GC: PGDKGC;
   DestX, DestY: Longint; SRC: PGDKWindow; XSRC, YSRC, Width, Height: Longint);

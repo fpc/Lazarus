@@ -1172,6 +1172,14 @@ end;
 
 procedure DrawImageListIconOnWidget(ImgList: TCustomImageList;
   Index: integer; DestWidget: PGTKWidget);
+begin
+  DrawImageListIconOnWidget(ImgList,Index,DestWidget,true,true,0,0);
+end;
+
+procedure DrawImageListIconOnWidget(ImgList: TCustomImageList;
+  Index: integer; DestWidget: PGTKWidget;
+  CenterHorizontally, CenterVertically: boolean;
+  DestLeft, DestTop: integer);
 // draw icon of imagelist centered on gdkwindow
 var
   Bitmap, MaskBitmap: TBitmap;
@@ -1179,7 +1187,6 @@ var
   ImageWidth: Integer;
   ImageHeight: Integer;
   WindowWidth, WindowHeight: integer;
-  DestLeft, DestTop: integer;
   DestDC: HDC;
 begin
   //DebugLn('DrawImageListIconOnWidget A ',ImgList.Name,':',ImgList.ClassName,
@@ -1195,8 +1202,10 @@ begin
   
   WindowWidth:=DestWidget^.allocation.width;
   WindowHeight:=DestWidget^.allocation.height;
-  DestLeft:=DestWidget^.allocation.x+((WindowWidth-ImageWidth) div 2);
-  DestTop:=DestWidget^.allocation.y+((WindowHeight-ImageHeight) div 2);
+  if CenterHorizontally then
+    DestLeft:=DestWidget^.allocation.x+((WindowWidth-ImageWidth) div 2);
+  if CenterVertically then
+    DestTop:=DestWidget^.allocation.y+((WindowHeight-ImageHeight) div 2);
   DestDC:=GetDC(HDC(DestWidget));
 
   //DebugLn('DrawImageListIconOnWidget B DestXY=',DestLeft,',',DestTop,
@@ -4391,23 +4400,26 @@ var
   ALeft, ATop, BorderWidth: gint;
   LCLMenuItem: TMenuItem;
   IconImg, IconMask: PGdkPixmap;
-  IconWidth, IconHeight: integer;
   AWindow: PGdkWindow;
+  IconWidth, IconHeight: integer;
+  IconSize: TPoint;
 begin
   if (MenuItem=nil) then exit;
   if not (GTK_WIDGET_DRAWABLE (PGtkWidget(MenuItem))) then exit;
 
   // get icon
   LCLMenuItem:=TMenuItem(GetLCLObject(MenuItem));
-  GetGdkPixmapFromMenuItem(LCLMenuItem,IconImg,IconMask,IconWidth,IconHeight);
-  if IconImg=nil then begin
+  if not LCLMenuItem.HasIcon then begin
     // call default draw function
     OldCheckMenuItemDrawProc(MenuItem,Area);
     exit;
   end;
+  IconSize:=LCLMenuItem.GetIconSize;
+  IconWidth:=IconSize.X;
+  IconHeight:=IconSize.Y;
 
   // calculate left and top
-  Widget := PGtkWidget (MenuItem);
+  Widget := PGtkWidget(MenuItem);
   AWindow:=GetControlWindow(Widget);
   if AWindow=nil then exit;
   Container := GTK_CONTAINER (MenuItem);
@@ -4419,13 +4431,17 @@ begin
           (Widget^.Allocation.Height - IconHeight) div 2;
 
   // draw icon
-  BeginGDKErrorTrap;
-  gdk_gc_set_clip_mask(gtk_widget_get_style(Widget)^.Black_gc, IconMask);
-  gdk_gc_set_clip_origin(gtk_widget_get_style(Widget)^.Black_gc,ALeft,ATop);
-  gdk_draw_pixmap(AWindow,gtk_widget_get_style(Widget)^.Black_gc,
-     IconImg,0,0,ALeft,ATop,-1,-1);
-  gdk_gc_set_clip_mask(gtk_widget_get_style(Widget)^.Black_gc, nil);
-  EndGDKErrorTrap;
+  if (LCLMenuItem.HasBitmap) then begin
+    GetGdkPixmapFromMenuItem(LCLMenuItem,IconImg,IconMask,IconWidth,IconHeight);
+    gdk_gc_set_clip_mask(gtk_widget_get_style(Widget)^.Black_gc, IconMask);
+    gdk_gc_set_clip_origin(gtk_widget_get_style(Widget)^.Black_gc,ALeft,ATop);
+    gdk_draw_pixmap(AWindow,gtk_widget_get_style(Widget)^.Black_gc,
+       IconImg,0,0,ALeft,ATop,-1,-1);
+    gdk_gc_set_clip_mask(gtk_widget_get_style(Widget)^.Black_gc, nil);
+  end else begin
+    DrawImageListIconOnWidget(LCLMenuItem.GetImageList,LCLMenuItem.ImageIndex,
+      Widget,false,false,ALeft,ATop);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -4442,8 +4458,7 @@ var
   MenuItem: PGtkMenuItem;
   CheckMenuItem: PGtkMenuItem;
   LCLMenuItem: TMenuItem;
-  IconImg, IconMask: PGdkPixmap;
-  Width, Height: integer;
+  IconSize: TPoint;
 begin
   MaxToggleSize:=0;
   MenuShell:=GTK_MENU_SHELL(widget);
@@ -4456,11 +4471,9 @@ begin
       CurToggleSize:=OldCheckMenuItemToggleSize;
       LCLMenuItem:=TMenuItem(GetLCLObject(MenuItem));
       if LCLMenuItem<>nil then begin
-        GetGdkPixmapFromMenuItem(LCLMenuItem,IconImg,IconMask,Width,Height);
-        if IconImg<>nil then begin
-          if CurToggleSize<Width then
-            CurToggleSize:=Width;
-        end;
+        IconSize:=LCLMenuItem.GetIconSize;
+        if CurToggleSize<IconSize.X then
+          CurToggleSize:=IconSize.X;
       end;
       if MaxToggleSize<CurToggleSize then
         MaxToggleSize:=CurToggleSize;
@@ -4537,16 +4550,19 @@ var
 
   procedure CreateIcon;
   var
-    IconImg, IconMask: PGdkPixmap;
     IconWidth, IconHeight: integer;
     MinHeightWidget: PGtkWidget;
+    IconSize: TPoint;
   begin
     // the icon will be painted instead of the toggle
     // of a normal gtkcheckmenuitem
 
     // get the icon
-    GetGdkPixmapFromMenuItem(LCLMenuItem,IconImg,IconMask,IconWidth,IconHeight);
-    if IconImg<>nil then begin
+    //GetGdkPixmapFromMenuItem(LCLMenuItem,IconImg,IconMask,IconWidth,IconHeight);
+    if LCLMenuItem.HasIcon then begin
+      IconSize:=LCLMenuItem.GetIconSize;
+      IconWidth:=IconSize.X;
+      IconHeight:=IconSize.Y;
       // set the toggle width
       GTK_MENU_ITEM(MenuItemWidget)^.toggle_size:=guint16(IconWidth);
       
@@ -6783,6 +6799,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.282  2004/06/17 21:24:19  mattias
+  implemented painting menuitem icons from ImageList
+
   Revision 1.281  2004/06/11 12:53:50  vincents
   fixed memleak in WidgetInfo.UserData used by BitBtn
 
