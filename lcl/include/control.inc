@@ -2479,7 +2479,7 @@ begin
   then raise EInvalidOperation.CreateFmt('Control ''%s'' has no parent window', [Name]);
 
   Result := Parent.GetDeviceContext(WindowHandle);
-  SetWindowOrgEx(Result, Left, Top, nil);
+  MoveWindowOrgEx(Result, Left, Top);
   IntersectClipRect(Result, 0, 0, Width, Height);
 end;
 
@@ -2613,6 +2613,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.164  2004/01/10 18:00:42  mattias
+  fixed GetWindowOrgEx, added GetDCOriginRelativeToWindow
+
   Revision 1.163  2004/01/06 17:58:06  mattias
   fixed setting TRadioButton.Caption for gtk
 

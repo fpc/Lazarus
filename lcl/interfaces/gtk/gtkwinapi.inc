@@ -4158,6 +4158,57 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function TgtkObject.GetDCOriginRelativeToWindow(PaintDC: HDC;
+    WindowHandle: HWND; var OriginDiff: TPoint): boolean;
+    
+  Returns the origin of PaintDC relative to the window handle.
+  Example:
+    A PaintDC of a TButton at 20,10 with a DC Offset of 0,0 on a form and the
+    WindowHandle is the form.
+    Then OriginDiff will be the the difference between the Forms client origin
+    and the PaintDC will be 20,10.
+ ------------------------------------------------------------------------------}
+function TgtkObject.GetDCOriginRelativeToWindow(PaintDC: HDC;
+  WindowHandle: HWND; var OriginDiff: TPoint): boolean;
+
+  procedure InvalidDrawable;
+  begin
+    {$IFDEF RaiseExceptionOnNilPointers}
+    RaiseException('TGTKObject.GetDCOriginRelativeToWindow Window=nil');
+    {$ENDIF}
+    writeln('TgtkObject.GetDCOriginRelativeToWindow:',
+      ' WARNING: PaintDC ',HexStr(Cardinal(PaintDC),8),' without gdkwindow.',
+      ' Widget=',HexStr(Cardinal(TDeviceContext(PaintDC).wnd),8));
+  end;
+
+var
+  DCOrigin: TPoint;
+  DCScreenOrigin: TPoint;
+  WindowScreenOrigin: TPoint;
+  Widget: PGtkWidget;
+begin
+  Result := false;
+  OriginDiff := Point(0,0);
+  If not IsValidDC(PaintDC) then exit;
+  with TDeviceContext(PaintDC) do begin
+    DCOrigin:=GetDCOffset(TDeviceContext(PaintDC));
+    if Drawable=nil then
+      InvalidDrawable;
+    gdk_window_get_origin(PGdkWindow(Drawable),
+                          @(DCScreenOrigin.X), @(DCScreenOrigin.Y));
+    inc(DCScreenOrigin.X,DCOrigin.X);
+    inc(DCScreenOrigin.Y,DCOrigin.Y);
+    Widget:=GetFixedWidget(PGtkWidget(WindowHandle));
+    if Widget=nil then Widget:=PGtkWidget(WindowHandle);
+    gdk_window_get_origin(PGdkWindow(Widget^.window),
+                          @(WindowScreenOrigin.X), @(WindowScreenOrigin.Y));
+    OriginDiff.X:=DCScreenOrigin.X-WindowScreenOrigin.X;
+    OriginDiff.Y:=DCScreenOrigin.Y-WindowScreenOrigin.Y;
+    Result := true;
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Function: GetDesignerDC
   Params:  none
   Returns: Nothing
@@ -5352,48 +5403,19 @@ end;
   Params:  none
   Returns: Nothing
 
-  Returns the x- and y-coordinates of the window origin for the
-  specified device context.
+  Returns the current offset of the DC.
  ------------------------------------------------------------------------------}
 function TgtkObject.GetWindowOrgEx(dc : hdc; P : PPoint): Integer;
-
-  procedure InvalidDrawable;
-  begin
-    {$IFDEF RaiseExceptionOnNilPointers}
-    RaiseException('TGTKObject.GetWindowOrgEx Window=nil');
-    {$ENDIF}
-    writeln('TgtkObject.GetWindowOrgEx:',
-      ' WARNING: DC ',HexStr(Cardinal(DC),8),' without gdkwindow.',
-      ' Widget=',HexStr(Cardinal(TDeviceContext(DC).wnd),8));
-  end;
-
-var
-  DCOrigin: TPoint;
 begin
-//  gdk_window_get_deskrelative_origin(pgtkwidget(TDeviceContext(DC).hwnd)^.window, @P.X, @P.Y);
-//write('[TgtkObject.GetWindowOrgEx] ',p.x,' ',p.y);
-//  gdk_window_get_root_origin(pgtkwidget(TDeviceContext(DC).hwnd)^.window, @P.X, @P.Y);
-//write(' / ',p.x,' ',p.y);
   Result := 0;
   if P=nil then exit;
   P^ := Point(0,0);
-  If IsValidDC(DC) then
+  If not IsValidDC(DC) then exit;
   with TDeviceContext(DC) do begin
-    DCOrigin:=GetDCOffset(TDeviceContext(DC));
-    if Drawable<>nil then begin
-      BeginGDKErrorTrap;
-      gdk_window_get_origin(PGdkWindow(Drawable), @(P^.X), @(P^.Y));
-      EndGDKErrorTrap;
-      inc(P^.X,DCOrigin.X);
-      inc(P^.Y,DCOrigin.Y);
-      Result := 1;
-    end else begin
-      InvalidDrawable;
-    end;
+    P^:=GetDCOffset(TDeviceContext(DC));
+    Result:=1;
   end;
-//writeln(' / ',p.x,' ',p.y);
 end;
-
 
 {------------------------------------------------------------------------------
   Function: GetWindowRect
@@ -8009,8 +8031,7 @@ end;
   Function TgtkObject.SetWindowOrgEx(DC : HDC; NewX, NewY : Integer;
     OldPoint: PPoint) : Boolean;
 
-  Sets the x-coordinates and y-coordinates of the window origin for the
-  specified device context.
+  Sets the DC offset for the specified device context.
  ------------------------------------------------------------------------------}
 Function TgtkObject.SetWindowOrgEx(DC : HDC; NewX, NewY : Integer;
   OldPoint: PPoint) : Boolean;
@@ -9100,6 +9121,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.313  2004/01/10 18:00:42  mattias
+  fixed GetWindowOrgEx, added GetDCOriginRelativeToWindow
+
   Revision 1.312  2004/01/10 00:46:46  mattias
   fixed DestroyComponent
 

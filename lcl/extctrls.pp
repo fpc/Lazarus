@@ -732,7 +732,6 @@ type
     procedure SetBevelWidth(const Value: TBevelWidth);
     procedure SetBorderWidth(const Value: TBorderWidth);
     procedure SetBorderStyle(const Value: TControlBorderStyle);
-    //procedure WMWindowPosChanged(var Message: TLMWindowPosChanged); message LM_WINDOWPOSCHANGED;
   protected
     procedure AdjustClientRect(var Rect: TRect); override;
     function GetText: TCaption; override;
@@ -837,6 +836,9 @@ end.
 
  {
   $Log$
+  Revision 1.88  2004/01/10 18:00:42  mattias
+  fixed GetWindowOrgEx, added GetDCOriginRelativeToWindow
+
   Revision 1.87  2004/01/03 23:14:59  mattias
   default font can now change height and fixed gtk crash
 

@@ -288,9 +288,15 @@ end;
 
 function TDesignerDeviceContext.GetDCOrigin: TPoint;
 // returns the DC origin in screen coordinates
+var
+  CurFormClientOrigin: TPoint;
+  CurFormOrigin: TPoint;
 begin
   if not (ddcDCOriginValid in FFlags) then begin
-    GetWindowOrgEx(FDC,@FDCOrigin);
+    CurFormClientOrigin:=FormClientOrigin;
+    CurFormOrigin:=FormOrigin;
+    FDCOrigin.X:=CurFormOrigin.X-CurFormClientOrigin.X;
+    FDCOrigin.Y:=CurFormOrigin.Y-CurFormClientOrigin.Y;
     Include(FFlags,ddcDCOriginValid);
   end;
   Result:=FDCOrigin;
@@ -323,10 +329,7 @@ var
   FormClientOrig, DCOrig: TPoint;
 begin
   if not (ddcFormOriginValid in FFlags) then begin
-    FormClientOrig:=FormClientOrigin;
-    DCOrig:=DCOrigin;
-    FFormOrigin.X:=DCOrig.X-FormClientOrig.X;
-    FFormOrigin.Y:=DCOrig.Y-FormClientOrig.Y;
+    GetDCOriginRelativeToWindow(FDC,FForm.Handle,FFormOrigin);
     Include(FFlags,ddcFormOriginValid);
   end;
   Result:=FFormOrigin;

@@ -97,10 +97,11 @@ Function GetClipRGN(DC : hDC; RGN : hRGN) : Longint; override;
 Function GetCmdLineParamDescForInterface: string; override;
 function GetCursorPos(var lpPoint: TPoint): Boolean; override;
 function GetDC(hWnd: HWND): HDC;  override;
+function GetDCOriginRelativeToWindow(PaintDC: HDC; WindowHandle: HWND; var OriginDiff: TPoint): boolean; override;
+function GetDesignerDC(WindowHandle: HWND): HDC; override;
 function GetDeviceCaps(DC: HDC; Index: Integer): Integer; Override;
 function GetDeviceRawImageDescription(DC: HDC; Desc: PRawImageDescription): boolean; override;
 function GetDeviceSize(DC: HDC; var p: TPoint): boolean; override;
-function GetDesignerDC(WindowHandle: HWND): HDC; override;
 function GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer; Override;
 function GetFocus: HWND; override;
 function GetFontLanguageInfo(DC: HDC): DWord; override;
@@ -213,6 +214,9 @@ Function WindowFromPoint(Point : TPoint) : HWND; override;
 { =============================================================================
 
   $Log$
+  Revision 1.83  2004/01/10 18:00:42  mattias
+  fixed GetWindowOrgEx, added GetDCOriginRelativeToWindow
+
   Revision 1.82  2003/12/30 21:05:13  micha
   fix gtk interface due to lcl interface change (from vincent
 

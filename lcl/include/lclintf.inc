@@ -156,6 +156,13 @@ begin
   Result := InterfaceObject.GetCmdLineParamDescForInterface;
 end;
 
+function GetDCOriginRelativeToWindow(PaintDC: HDC; WindowHandle: HWND;
+  var OriginDiff: TPoint): boolean;
+begin
+  Result := InterfaceObject.GetDCOriginRelativeToWindow(PaintDC,WindowHandle,
+                                                        OriginDiff);
+end;
+
 function GetDesignerDC(WindowHandle: HWND): HDC;
 begin
   Result := InterfaceObject.GetDesignerDC(WindowHandle);
@@ -478,6 +485,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.8  2004/01/10 18:00:42  mattias
+  fixed GetWindowOrgEx, added GetDCOriginRelativeToWindow
+
   Revision 1.7  2004/01/09 20:03:13  mattias
   implemented new statusbar methods in gtk intf
 
