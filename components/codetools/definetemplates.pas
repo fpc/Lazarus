@@ -1093,8 +1093,14 @@ begin
     i:=1;
     while FileExists(BogusFilename+IntToStr(i)) do inc(i);
     CmdLine:=CmdLine+BogusFilename;
+    { Old
     TheProcess:=TProcess.Create(CmdLine,[poUsePipes,poNoConsole
          ,poStdErrToOutput]);
+    }
+    TheProcess := TProcess.Create(nil);
+    TheProcess.CommandLine := CmdLine;
+    TheProcess.Options:= [poUsePipes, poNoConsole, poStdErrToOutPut];
+    TheProcess.ShowWindow := swoNone;
     try
       TheProcess.Execute;
       OutputLine:='';
@@ -1125,8 +1131,14 @@ begin
 
     // ask for target operating system -> ask compiler with switch -iTO
     CmdLine:=PPC386Path+' -iTO';
+    { Old
     TheProcess:=TProcess.Create(CmdLine,[poUsePipes,poNoConsole
          ,poStdErrToOutput]);
+    }
+    TheProcess := TProcess.Create(nil);
+    TheProcess.CommandLine := CmdLine;
+    TheProcess.Options:= [poUsePipes, poNoConsole, poStdErrToOutPut];
+    TheProcess.ShowWindow := swoNone;
     try
       TheProcess.Execute;
       if TheProcess.Output<>nil then
@@ -1162,8 +1174,14 @@ begin
     end;
     
     // ask for target processor -> ask compiler with switch -iTP
+    { Old
     TheProcess:=TProcess.Create(PPC386Path+' -iTP',[poUsePipes,poNoConsole
          ,poStdErrToOutput]);
+    }
+    TheProcess := TProcess.Create(nil);
+    TheProcess.CommandLine := PPC386Path+' -iTP';
+    TheProcess.Options:= [poUsePipes, poNoConsole, poStdErrToOutPut];
+    TheProcess.ShowWindow := swoNone;
     try
       TheProcess.Execute;
       if TheProcess.Output<>nil then

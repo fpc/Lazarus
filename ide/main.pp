@@ -3030,9 +3030,11 @@ CheckHeap(IntToStr(GetMem_Cnt));
   LPIFilename:=ChangeFileExt(AFilename,'.lpi');
   Project:=TProject.Create(ptProgram);
   Project.ReadProject(LPIFilename);
+writeln('TMainIDE.DoOpenProjectFile B2');
   if Project.MainUnit>=0 then begin
     // read MainUnit Source
     Result:=DoLoadCodeBuffer(NewBuf,Project.Units[Project.MainUnit].Filename);
+writeln('TMainIDE.DoOpenProjectFile B3');
     if Result in [mrAbort,mrIgnore] then exit;
     Project.Units[Project.MainUnit].Source:=NewBuf;
   end;
@@ -3364,8 +3366,15 @@ writeln('[TMainIDE.DoRunProject] A');
   else
       begin
         try
+        
+          { Old
           TheProcess:=TProcess.Create(ProgramFilename,
              [poRunSuspended,poUsePipes,poNoConsole]);
+        }
+          TheProcess := TProcess.Create(nil);
+          TheProcess.CommandLine := ProgramFilename;
+          TheProcess.Options:= [poRunSuspended, poUsePipes, poNoConsole];
+          TheProcess.ShowWindow := swoNone;
           TheProcess.Execute;
         except
           on e: Exception do begin
@@ -3666,6 +3675,7 @@ var
   ACaption,AText:string;
 begin
   repeat
+writeln('[TMainIDE.DoLoadCodeBuffer] A ',AFilename);
     ACodeBuffer:=CodeToolBoss.LoadFile(AFilename);
     if ACodeBuffer<>nil then begin
       Result:=mrOk;
@@ -4442,6 +4452,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.138  2001/11/07 16:14:11  lazarus
+  MG: fixes for the new compiler
+
   Revision 1.137  2001/11/06 15:47:31  lazarus
   MG: added build all
 

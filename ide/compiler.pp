@@ -212,8 +212,14 @@ begin
     Writeln('[TCompiler.Compile] CmdLine="',CmdLine,'"');
 
     try
+      { Old
       TheProcess:=TProcess.Create(CmdLine,[poUsePipes,poNoConsole
            ,poStdErrToOutput]);
+      }
+      TheProcess := TProcess.Create(nil);
+      TheProcess.CommandLine := CmdLine;
+      TheProcess.Options:= [poUsePipes, poNoConsole, poStdErrToOutPut];
+      TheProcess.ShowWindow := swoNone;
       Result:=mrOk;
       try
         TheProcess.CurrentDirectory:=ProjectDir;
@@ -330,6 +336,9 @@ end.
 
 {
   $Log$
+  Revision 1.18  2001/11/07 16:14:11  lazarus
+  MG: fixes for the new compiler
+
   Revision 1.17  2001/11/06 15:47:31  lazarus
   MG: added build all
 
