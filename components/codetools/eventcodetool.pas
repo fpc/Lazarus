@@ -548,56 +548,60 @@ var
   CleanMethodDefinition, MethodDefinition: string;
   FindContext: TFindContext;
 begin
-  Result:=false;
-  if (ClassNode=nil) or (ClassNode.Desc<>ctnClass) or (AMethodName='')
-  or (ATypeInfo=nil) or (SourceChangeCache=nil) or (Scanner=nil) then exit;
-  {$IFDEF CTDEBUG}
-  writeln('[TEventsCodeTool.CreatePublishedMethod] A AMethodName="',AMethodName,'" in "',MainFilename,'"');
-  {$ENDIF}
-  // search typeinfo in source
-  FindContext:=FindMethodTypeInfo(ATypeInfo);
-  // initialize class for code completion
-  CodeCompleteClassNode:=ClassNode;
-  CodeCompleteSrcChgCache:=SourceChangeCache;
-  // check if method definition already exists in class
-  CleanMethodDefinition:=UpperCaseStr(AMethodName)
-         +FindContext.Tool.ExtractProcHead(FindContext.Node,
-                         [phpWithoutClassName, phpWithoutName, phpInUpperCase]);
-  if not ProcExistsInCodeCompleteClass(CleanMethodDefinition) then begin
+  try
+    Result:=false;
+    if (ClassNode=nil) or (ClassNode.Desc<>ctnClass) or (AMethodName='')
+    or (ATypeInfo=nil) or (SourceChangeCache=nil) or (Scanner=nil) then exit;
     {$IFDEF CTDEBUG}
-    writeln('[TEventsCodeTool.CreatePublishedMethod] insert method definition to class');
+    writeln('[TEventsCodeTool.CreatePublishedMethod] A AMethodName="',AMethodName,'" in "',MainFilename,'"');
     {$ENDIF}
-    // insert method definition into class
-    MethodDefinition:=TrimCodeSpace(FindContext.Tool.ExtractProcHead(
-                 FindContext.Node,
-                [phpWithStart, phpWithoutClassKeyword, phpWithoutClassName,
-                 phpWithoutName, phpWithVarModifiers, phpWithParameterNames,
-                 phpWithDefaultValues, phpWithResultType]));
-    MethodDefinition:=SourceChangeCache.BeautifyCodeOptions.
-                       AddClassAndNameToProc(MethodDefinition, '', AMethodName);
+    // search typeinfo in source
+    FindContext:=FindMethodTypeInfo(ATypeInfo);
+    // initialize class for code completion
+    CodeCompleteClassNode:=ClassNode;
+    CodeCompleteSrcChgCache:=SourceChangeCache;
+    // check if method definition already exists in class
+    CleanMethodDefinition:=UpperCaseStr(AMethodName)
+           +FindContext.Tool.ExtractProcHead(FindContext.Node,
+                           [phpWithoutClassName, phpWithoutName, phpInUpperCase]);
+    if not ProcExistsInCodeCompleteClass(CleanMethodDefinition) then begin
+      {$IFDEF CTDEBUG}
+      writeln('[TEventsCodeTool.CreatePublishedMethod] insert method definition to class');
+      {$ENDIF}
+      // insert method definition into class
+      MethodDefinition:=TrimCodeSpace(FindContext.Tool.ExtractProcHead(
+                   FindContext.Node,
+                  [phpWithStart, phpWithoutClassKeyword, phpWithoutClassName,
+                   phpWithoutName, phpWithVarModifiers, phpWithParameterNames,
+                   phpWithDefaultValues, phpWithResultType]));
+      MethodDefinition:=SourceChangeCache.BeautifyCodeOptions.
+                         AddClassAndNameToProc(MethodDefinition, '', AMethodName);
+      {$IFDEF CTDEBUG}
+      writeln('[TEventsCodeTool.CreatePublishedMethod] MethodDefinition="',MethodDefinition,'"');
+      {$ENDIF}
+      AddClassInsertion(nil, CleanMethodDefinition, MethodDefinition, AMethodName,
+                        '', ncpPublishedProcs);
+    end;
     {$IFDEF CTDEBUG}
-    writeln('[TEventsCodeTool.CreatePublishedMethod] MethodDefinition="',MethodDefinition,'"');
+    writeln('[TEventsCodeTool.CreatePublishedMethod] invoke class completion');
     {$ENDIF}
-    AddClassInsertion(nil, CleanMethodDefinition, MethodDefinition, AMethodName,
-                      '', ncpPublishedProcs);
+    if not InsertAllNewClassParts then
+      RaiseException(ctsErrorDuringInsertingNewClassParts);
+
+    // insert all missing proc bodies
+    if not CreateMissingProcBodies then
+      RaiseException(ctsErrorDuringCreationOfNewProcBodies);
+
+    // apply the changes
+    if not SourceChangeCache.Apply then
+      RaiseException(ctsUnableToApplyChanges);
+    {$IFDEF CTDEBUG}
+    writeln('[TEventsCodeTool.CreatePublishedMethod] END');
+    {$ENDIF}
+    Result:=true;
+  finally
+    FreeClassInsertionList;
   end;
-  {$IFDEF CTDEBUG}
-  writeln('[TEventsCodeTool.CreatePublishedMethod] invoke class completion');
-  {$ENDIF}
-  if not InsertAllNewClassParts then
-    RaiseException(ctsErrorDuringInsertingNewClassParts);
-
-  // insert all missing proc bodies
-  if not CreateMissingProcBodies then
-    RaiseException(ctsErrorDuringCreationOfNewProcBodies);
-
-  // apply the changes
-  if not SourceChangeCache.Apply then
-    RaiseException(ctsUnableToApplyChanges);
-  {$IFDEF CTDEBUG}
-  writeln('[TEventsCodeTool.CreatePublishedMethod] END');
-  {$ENDIF}
-  Result:=true;
 end;
 
 function TEventsCodeTool.CreateExprListFromMethodTypeData(
@@ -720,53 +724,57 @@ var
   UpperCurComponentName: String;
   VarType: String;
 begin
-  Result:=false;
-  BuildTree(false);
-  if not EndOfSourceFound then exit;
-  UpperClassName:=UpperCaseStr(AComponent.ClassName);
-  { $IFDEF CTDEBUG}
-  writeln('[TEventsCodeTool.CompleteComponent] A Component="',AComponent.Name,':',AComponent.ClassName);
-  { $ENDIF}
-  // initialize class for code completion
-  CodeCompleteClassNode:=FindClassNodeInInterface(UpperClassName,true,false,true);
-  CodeCompleteSrcChgCache:=SourceChangeCache;
-  // complete all child components
-  for i:=0 to AComponent.ComponentCount-1 do begin
-    CurComponent:=AComponent.Components[i];
-    writeln('[TEventsCodeTool.CompleteComponent]  CurComponent=',CurComponent.Name,':',CurComponent.ClassName);
-    VarName:=CurComponent.Name;
-    if VarName='' then continue;
-    UpperCurComponentName:=UpperCaseStr(VarName);
-    VarType:=CurComponent.ClassName;
-    // add missing published variable
-    if VarExistsInCodeCompleteClass(UpperCurComponentName) then begin
-    end else begin
-      writeln('[TEventsCodeTool.CompleteComponent] ADDING variable ',CurComponent.Name,':',CurComponent.ClassName);
-      AddClassInsertion(nil,UpperCurComponentName,
-              VarName+':'+VarType+';',VarName,'',ncpPublishedVars);
+  try
+    Result:=false;
+    BuildTree(false);
+    if not EndOfSourceFound then exit;
+    UpperClassName:=UpperCaseStr(AComponent.ClassName);
+    { $IFDEF CTDEBUG}
+    writeln('[TEventsCodeTool.CompleteComponent] A Component="',AComponent.Name,':',AComponent.ClassName);
+    { $ENDIF}
+    // initialize class for code completion
+    CodeCompleteClassNode:=FindClassNodeInInterface(UpperClassName,true,false,true);
+    CodeCompleteSrcChgCache:=SourceChangeCache;
+    // complete all child components
+    for i:=0 to AComponent.ComponentCount-1 do begin
+      CurComponent:=AComponent.Components[i];
+      writeln('[TEventsCodeTool.CompleteComponent]  CurComponent=',CurComponent.Name,':',CurComponent.ClassName);
+      VarName:=CurComponent.Name;
+      if VarName='' then continue;
+      UpperCurComponentName:=UpperCaseStr(VarName);
+      VarType:=CurComponent.ClassName;
+      // add missing published variable
+      if VarExistsInCodeCompleteClass(UpperCurComponentName) then begin
+      end else begin
+        writeln('[TEventsCodeTool.CompleteComponent] ADDING variable ',CurComponent.Name,':',CurComponent.ClassName);
+        AddClassInsertion(nil,UpperCurComponentName,
+                VarName+':'+VarType+';',VarName,'',ncpPublishedVars);
+      end;
+      // remove missing published events
+
+      // ToDo
+
     end;
-    // remove missing published events
-    
-    // ToDo
-    
+    { $IFDEF CTDEBUG}
+    writeln('[TEventsCodeTool.CompleteComponent] invoke class completion');
+    { $ENDIF}
+    if not InsertAllNewClassParts then
+      RaiseException(ctsErrorDuringInsertingNewClassParts);
+
+    // insert all missing proc bodies
+    if not CreateMissingProcBodies then
+      RaiseException(ctsErrorDuringCreationOfNewProcBodies);
+
+    // apply the changes
+    if not SourceChangeCache.Apply then
+      RaiseException(ctsUnableToApplyChanges);
+    { $IFDEF CTDEBUG}
+    writeln('[TEventsCodeTool.CompleteComponent] END');
+    { $ENDIF}
+    Result:=true;
+  finally
+    FreeClassInsertionList;
   end;
-  { $IFDEF CTDEBUG}
-  writeln('[TEventsCodeTool.CompleteComponent] invoke class completion');
-  { $ENDIF}
-  if not InsertAllNewClassParts then
-    RaiseException(ctsErrorDuringInsertingNewClassParts);
-
-  // insert all missing proc bodies
-  if not CreateMissingProcBodies then
-    RaiseException(ctsErrorDuringCreationOfNewProcBodies);
-
-  // apply the changes
-  if not SourceChangeCache.Apply then
-    RaiseException(ctsUnableToApplyChanges);
-  { $IFDEF CTDEBUG}
-  writeln('[TEventsCodeTool.CompleteComponent] END');
-  { $ENDIF}
-  Result:=true;
 end;
 
 function TEventsCodeTool.FindIdentifierNodeInClass(ClassNode: TCodeTreeNode;
