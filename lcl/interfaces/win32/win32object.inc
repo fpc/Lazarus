@@ -2744,6 +2744,44 @@ var MenuInfo: MENUITEMINFO;
     Style: integer;
     Mask: integer;
     Msg: TLMShortCut;
+
+  function GetCheckBitmap(checked: boolean): HBitmap;
+  {TODO: create "checked" icon}
+  var hbmpCheck: HBitmap;
+      OldCheckMark: HBitmap;
+      OldOrigBitmap: HBitmap;
+      hdcNewBitmap: HDC;
+      hdcOrigBitmap: HDC;
+      hdcScreen: HDC;
+      maxWidth: integer;
+      maxHeight: integer;
+      newWidth: integer;
+      newHeight: integer;
+  begin
+    maxWidth:=GetSystemMetrics(SM_CXMENUCHECK);
+    maxHeight:=GetSystemMetrics(SM_CYMENUCHECK);
+    if (maxWidth>=TMenuItem(Sender).Bitmap.Width) and (maxHeight>=TMenuItem(Sender).Bitmap.Height) then Result:=TMenuItem(Sender).Bitmap.Handle
+    else
+    begin
+      newWidth:=min(maxWidth, TMenuItem(Sender).Bitmap.Width);
+      newHeight:=min(maxHeight, TMenuItem(Sender).Bitmap.Height);
+      hdcScreen:=GetDC(GetDesktopWindow);
+      hdcOrigBitmap:=CreateCompatibleDC(hdcScreen);
+      hdcNewBitmap:=CreateCompatibleDC(hdcScreen);
+      ReleaseDC(GetDesktopWindow, hdcScreen);
+      hbmpCheck:=CreateCompatibleBitmap(hdcScreen, newWidth, newHeight);
+      OldOrigBitmap:=SelectObject(hdcOrigBitmap, TMenuItem(Sender).Bitmap.Handle);
+      OldCheckmark:=SelectObject(hdcNewBitmap, hbmpCheck);
+      StretchBlt(hdcNewBitmap, 0, 0, newWidth, newHeight, hdcOrigBitmap, 0, 0, TMenuItem(Sender).Bitmap.Width, TMenuItem(Sender).Bitmap.Height, SRCCOPY);
+      SelectObject(hdcOrigBitmap, OldOrigBitmap);
+      hbmpCheck:=SelectObject(hdcNewBitmap, OldCheckmark);
+      DeleteDC(hdcNewBitmap);
+      DeleteDC(hdcOrigBitmap);
+      {TODO: Add hbmpCheck into a list of object they must be deleted}
+      Result:=hbmpCheck;
+    end;
+  end;
+   
 Begin
   ParentMenuHandle := (Sender as TMenuItem).Parent.Handle;
 
@@ -2781,7 +2819,7 @@ Begin
     if TmenuItem(Sender).HasIcon then {adds the menuitem icon}
     begin
       fMask:=fMask or MIIM_CHECKMARKS;
-      hbmpUnchecked:=TMenuItem(Sender).Bitmap.Handle;
+      hbmpUnchecked:=GetCheckBitmap(false);
       hbmpChecked:=0;
       {TODO: add support for getting icon from SubmenuImages as it will be
        implemented in LCL}
@@ -2819,6 +2857,9 @@ End;
 
 {
   $Log$
+  Revision 1.137  2003/12/07 22:40:09  mattias
+  fixed resizing larger menu icons   from Martin Smat
+
   Revision 1.136  2003/11/28 19:54:42  micha
   fpc 1.0.10 compatibility
 

@@ -791,7 +791,6 @@ Begin
     CreateColorMap;
     DoDrawBitmap;
     DestroyColorMap;
-    SelectObject(hdcBitmap, OldObject);
     ReleaseDC(GetDesktopWindow, hdcScreen);
     SelectObject(hdcBitmap, OldObject);
     DeleteDC(hdcBitmap);
@@ -2848,6 +2847,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.80  2003/12/07 22:40:09  mattias
+  fixed resizing larger menu icons   from Martin Smat
+
   Revision 1.79  2003/11/28 19:54:42  micha
   fpc 1.0.10 compatibility
 
