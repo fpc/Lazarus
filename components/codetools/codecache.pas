@@ -280,7 +280,7 @@ begin
     end;
   end else begin
     // virtual file
-    if Result.IsDeleted then begin
+    if (Result <> nil) and Result.IsDeleted then begin
       // file in cache, but marked as deleted -> no virtual file
       Result:=nil;
     end;
