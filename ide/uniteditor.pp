@@ -192,6 +192,9 @@ type
     procedure FindPrevious;
     procedure ShowGotoLineDialog;
     procedure GetDialogPosition(Width, Height:integer; var Left,Top:integer);
+    
+    // editor commands
+    procedure DoEditorBasicAction(EditorCommand: integer);
 
     //used to get the word at the mouse cursor
     Function GetWordAtPosition(Position : TPoint) : String;
@@ -349,8 +352,6 @@ type
     destructor Destroy; override;
     Function ActiveUnitName : String;
     Function ActiveFileName : AnsiString;
-    Function GetSourceForUnit(UnitName : String) : TStrings;
-    Function SetSourceForUnit(UnitName : String; NewSource : TStrings) : Boolean;
     Function FindUniquePageName(FileName:string; IgnorePageIndex:integer):string;
     function SomethingModified: boolean;
     procedure UpdateStatusBar;
@@ -378,7 +379,7 @@ type
     procedure AddJumpPointClicked(Sender: TObject);
     procedure DeleteLastJumpPointClicked(Sender: TObject);
     procedure ViewJumpHistoryClicked(Sender: TObject);
-
+    
     Procedure NewFile(const NewShortName: String; ASource : TCodeBuffer);
     Procedure CloseFile(PageIndex:integer);
 
@@ -1491,6 +1492,11 @@ begin
   if FVisible=Value then exit;
   if FEditor<>nil then FEditor.Visible:=Value;
   FVisible:=Value;
+end;
+
+procedure TSourceEditor.DoEditorBasicAction(EditorCommand: integer);
+begin
+  EditorComponent.ExecuteCommand(EditorCommand,' ',nil);
 end;
 
 {------------------------------------------------------------------------}
@@ -2783,46 +2789,6 @@ procedure TSourceNotebook.ToggleFormUnitClicked(Sender: TObject);
 begin
   if Assigned(FOnToggleFormUnitClicked) then FOnToggleFormUnitClicked(Sender);
 end;
-
-Function TSourceNotebook.GetSourceForUnit(UnitName : String) : TStrings;
-Var
-  I : Integer;
-  TempEditor : TSourceEditor;
-begin
-   For I := 0 to  FSourceEditorList.Count-1 do
-       Begin
-        TempEditor := TSourceEditor(FSourceEditorList.Items[i]);
-        if Uppercase(TempEditor.ShortName) = Uppercase(Unitname) then
-           Break;
-       End;
-
-        if Uppercase(TempEditor.ShortName) = Uppercase(Unitname) then
-        Result := TempEditor.Source
-          else
-        Result := nil;
-
-End;
-
-Function TSourceNotebook.SetSourceForUnit(UnitName : String;
-  NewSource : TStrings) : Boolean;
-Var
-  I : Integer;
-  TempEditor : TSourceEditor;
-begin
-   Result := False;
-   For I := 0 to  FSourceEditorList.Count-1 do
-       Begin
-        TempEditor := TSourceEditor(FSourceEditorList.Items[i]);
-        if Uppercase(TempEditor.ShortName) = Uppercase(Unitname) then
-           Break;
-       End;
-
-        if Uppercase(TempEditor.ShortName) = Uppercase(Unitname) then
-        Begin
-          TempEditor.Source := NewSource;
-          Result := True;
-        end;
-End;
 
 Procedure TSourceNotebook.UpdateStatusBar;
 var

@@ -37,11 +37,12 @@ uses
   Dialogs, LazConf, CompReg, CodeToolManager, CodeCache, DefineTemplates,
   MsgView, NewProjectDlg, IDEComp, AbstractFormEditor, FormEditor,
   CustomFormEditor, ObjectInspector, PropEdits, ControlSelection, UnitEditor,
-  CompilerOptions, EditorOptions, EnvironmentOpts, TransferMacros, KeyMapping,
-  ProjectOpts, IDEProcs, Process, UnitInfoDlg, Debugger, DBGOutputForm,
-  GDBDebugger, RunParamsOpts, ExtToolDialog, MacroPromptDlg,
-  LMessages, ProjectDefs, Watchesdlg, BreakPointsdlg, ColumnDlg, OutputFilter,
-  BuildLazDialog, MiscOptions, EditDefineTree, CodeToolsOptions, TypInfo;
+  CompilerOptions, EditorOptions, EnvironmentOpts, TransferMacros,
+  SynEditKeyCmds, KeyMapping, ProjectOpts, IDEProcs, Process, UnitInfoDlg,
+  Debugger, DBGOutputForm, GDBDebugger, RunParamsOpts, ExtToolDialog,
+  MacroPromptDlg, LMessages, ProjectDefs, Watchesdlg, BreakPointsdlg, ColumnDlg,
+  OutputFilter, BuildLazDialog, MiscOptions, EditDefineTree, CodeToolsOptions,
+  TypInfo;
 
 const
   Version_String = '0.8.2 alpha';
@@ -186,6 +187,13 @@ type
     procedure mnuSaveAllClicked(Sender : TObject);
     procedure mnuCloseClicked(Sender : TObject);
     procedure mnuQuitClicked(Sender : TObject);
+
+    // edit menu
+    procedure mnuEditUndoClicked(Sender: TObject);
+    procedure mnuEditRedoClicked(Sender: TObject);
+    procedure mnuEditCutClicked(Sender: TObject);
+    procedure mnuEditCopyClicked(Sender: TObject);
+    procedure mnuEditPasteClicked(Sender: TObject);
 
     // view menu
     procedure mnuViewInspectorClicked(Sender : TObject);
@@ -383,6 +391,9 @@ type
     function SomethingOfProjectIsModified: boolean;
     function DoCreateProjectForProgram(ProgramBuf: TCodeBuffer): TModalResult;
     function DoSaveProjectToTestDirectory: TModalResult;
+    
+    // edit menu
+    procedure DoEditMenuCommand(EditorCommand: integer);
     
     // external tools
     function DoRunExternalTool(Index: integer): TModalResult;
@@ -1213,12 +1224,14 @@ begin
   itmEditUndo.Name:='itmEditUndo';
   itmEditUndo.Caption := 'Undo';
   itmEditUndo.ShortCut:= VK_Z or scCtrl;
+  itmEditUndo.OnClick:=@mnuEditUndoClicked;
   mnuEdit.Add(itmEditUndo);
 
   itmEditRedo := TMenuItem.Create(nil);
   itmEditRedo.Name:='itmEditRedo';
   itmEditRedo.Caption := 'Redo';
   itmEditRedo.ShortCut:= VK_Z or scCtrl or scShift;
+  itmEditRedo.OnClick:=@mnuEditRedoClicked;
   mnuEdit.Add(itmEditRedo);
 
   mnuEdit.Add(CreateSeperator);
@@ -1227,18 +1240,21 @@ begin
   itmEditCut.Name:='itmEditCut';
   itmEditCut.Caption := 'Cut';
   itmEditCut.Shortcut:= VK_X or scCtrl;
+  itmEditCut.OnClick:=@mnuEditCutClicked;
   mnuEdit.Add(itmEditCut);
 
   itmEditCopy := TMenuItem.Create(nil);
   itmEditCopy.Name:='itmEditCopy';
   itmEditCopy.Caption := 'Copy';
   itmEditCopy.ShortCut:= VK_C or scCtrl;
+  itmEditCopy.OnClick:=@mnuEditCopyClicked;
   mnuEdit.Add(itmEditCopy);
 
   itmEditPaste := TMenuItem.Create(nil);
   itmEditPaste.Name:='itmEditPaste';
   itmEditPaste.Caption := 'Paste';
   itmEditPaste.Shortcut:= VK_V or scCtrl;
+  itmEditPaste.OnClick:=@mnuEditPasteClicked;
   mnuEdit.Add(itmEditPaste);
 
 //--------------
@@ -2529,13 +2545,14 @@ CheckHeap('TMainIDE.DoNewEditorUnit L '+IntToStr(GetMem_Cnt));
 
     TempForm.Show;
     SetDesigning(TempForm,True);
+    FCodeLastActivated:=false;
 
     // select the new form (object inspector, formeditor, control selection)
     PropertyEditorHook1.LookupRoot := TForm(CInterface.Control);
     TDesigner(TempForm.Designer).SelectOnlyThisComponent(TempForm);
+  end else begin
+    FCodeLastActivated:=true;
   end;
-
-  FCodeLastActivated:=not (NewUnitType in [nuForm]);
 writeln('TMainIDE.DoNewUnit end');
 {$IFDEF IDE_MEM_CHECK}
 CheckHeap(IntToStr(GetMem_Cnt));
@@ -6034,6 +6051,48 @@ writeln('[TMainIDE.OnPropHookRenameMethod] ************2 ',r);
   end;
 end;
 
+procedure TMainIDE.mnuEditCopyClicked(Sender: TObject);
+begin
+  DoEditMenuCommand(ecCopy);
+end;
+
+procedure TMainIDE.mnuEditCutClicked(Sender: TObject);
+begin
+  DoEditMenuCommand(ecCut);
+end;
+
+procedure TMainIDE.mnuEditPasteClicked(Sender: TObject);
+begin
+  DoEditMenuCommand(ecPaste);
+end;
+
+procedure TMainIDE.mnuEditRedoClicked(Sender: TObject);
+begin
+  DoEditMenuCommand(ecRedo);
+end;
+
+procedure TMainIDE.mnuEditUndoClicked(Sender: TObject);
+begin
+  DoEditMenuCommand(ecUndo);
+end;
+
+procedure TMainIDE.DoEditMenuCommand(EditorCommand: integer);
+var
+  ActiveSourceEditor: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+begin
+  GetCurrentUnit(ActiveSourceEditor,ActiveUnitInfo);
+  if FCodeLastActivated then begin
+    // send command to source editor
+    if ActiveSourceEditor=nil then exit;
+    ActiveSourceEditor.DoEditorBasicAction(EditorCommand);
+  end else begin
+    // send command to form editor
+    if ActiveUnitInfo=nil then exit;
+    
+  end;
+end;
+
 
 //-----------------------------------------------------------------------------
 
@@ -6048,6 +6107,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.228  2002/02/22 14:05:55  lazarus
+  MG: edit menu reconnected to source editor
+
   Revision 1.227  2002/02/20 23:33:23  lazarus
   MWE:
     + Published OnClick for TMenuItem

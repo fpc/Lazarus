@@ -17,15 +17,14 @@
 
   ToDo:
 }
-unit keymapping;
+unit KeyMapping;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  LCLLinux,
- LCLType,
+  LCLLinux, LCLType,
   Forms, Classes, SysUtils, Buttons, LResources, StdCtrls, Controls,
   SynEdit, SynEditKeyCmds, XMLCfg, Dialogs;
 
