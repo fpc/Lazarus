@@ -42,8 +42,10 @@ type
     ListBox: TListBox;
     btnOK : TButton;
     btnCancel : TButton;
-    Procedure btnOKClick(Sender : TOBject);
-    Procedure btnCancelClick(Sender : TOBject);
+    MultiselectCheckBox: TCheckBox;
+    Procedure btnOKClick(Sender :TObject);
+    Procedure btnCancelClick(Sender :TObject);
+    procedure MultiselectCheckBoxClick(Sender :TObject);
   public
     constructor Create(AOwner: TComponent); override;	
   end;
@@ -66,7 +68,7 @@ begin
   try
     ViewUnits.Caption:=Caption;
     ViewUnits.ListBox.Visible:=false;
-    ViewUnits.ListBox.MultiSelect:=MultiSelect;
+    ViewUnits.MultiselectCheckBox.Enabled:=MultiSelect;
     with ViewUnits.ListBox.Items do begin
       BeginUpdate;
       Clear;
@@ -79,8 +81,9 @@ begin
     ViewUnits.ListBox.Visible:=true;
     Result:=ViewUnits.ShowModal;
     if Result=mrOk then begin
-      for i:=0 to Entries.Count-1 do
+      for i:=0 to Entries.Count-1 do begin
         TViewUnitsEntry(Entries[i]).Selected:=ViewUnits.ListBox.Selected[i];
+      end;
     end;
   finally
     ViewUnits.Free;
@@ -144,9 +147,23 @@ begin
       Left:= Pad;
       Width:= Self.Width - (Self.Width - btnOK.Left) - (2*pad);
       Height:= Self.Height - Top - Pad;
-      Visible:= true;
       MultiSelect:= false;
       Name := 'Listbox';
+      Visible:= true;
+    end;
+    
+    MultiselectCheckBox:=TCheckBox.Create(Self);
+    with MultiselectCheckBox do begin
+      Parent:=Self;
+      Name:='MultiselectCheckBox';
+      Left:=btnOK.Left;
+      Top:=btnCancel.Top+btnCancel.Height+2*pad;
+      Width:=btnOk.Width;
+      Height:=25;
+      Caption:='Multi';
+      Checked:=false;
+      OnClick:=@MultiselectCheckBoxClick;
+      Visible:=true;
     end;
   end;
 end;
@@ -163,6 +180,11 @@ Begin
   ModalResult := mrCancel;
 end;
 
+procedure TViewUnits.MultiselectCheckBoxClick(Sender :TObject);
+begin
+  ListBox.Multiselect:=MultiselectCheckBox.Checked;
+end;
+
 
 initialization
 { $I viewunits1.lrs}
@@ -171,6 +193,9 @@ initialization
 end.
 {
   $Log$
+  Revision 1.9  2002/02/17 19:34:45  lazarus
+  MG: fixed view units/forms
+
   Revision 1.8  2001/04/04 12:20:34  lazarus
   MG: added  add to/remove from project, small bugfixes
 

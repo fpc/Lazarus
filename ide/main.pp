@@ -3194,7 +3194,11 @@ var UnitList: TList;
   MainUnitName, Ext, DlgCaption: string;
   MainUnitInfo, AnUnitInfo: TUnitInfo;
   MainUnitIndex: integer;
+  ActiveSourceEditor: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+  AForm: TForm;
 Begin
+  GetCurrentUnit(ActiveSourceEditor,ActiveUnitInfo);
   UnitList:=TList.Create;
   try
     MainUnitIndex:=-1;
@@ -3204,12 +3208,12 @@ Begin
           if Project.MainUnit=i then MainUnitIndex:=i;
           if Project.Units[i].FormName<>'' then
             UnitList.Add(TViewUnitsEntry.Create(
-              Project.Units[i].FormName,i,false));
+              Project.Units[i].FormName,i,Project.Units[i]=ActiveUnitInfo));
         end else begin
           if Project.Units[i].UnitName<>'' then begin
             if Project.MainUnit=i then MainUnitIndex:=i;
             UnitList.Add(TViewUnitsEntry.Create(
-              Project.Units[i].UnitName,i,false));
+              Project.Units[i].UnitName,i,Project.Units[i]=ActiveUnitInfo));
           end else if Project.MainUnit=i then begin
             MainUnitInfo:=Project.Units[Project.MainUnit];
             if Project.ProjectType in [ptProgram,ptApplication,ptCustomProgram]
@@ -3228,7 +3232,7 @@ Begin
               if MainUnitName<>'' then begin
                 MainUnitIndex:=UnitList.Count;
                 UnitList.Add(TViewUnitsEntry.Create(
-                  MainUnitName,i,false));
+                  MainUnitName,i,MainUnitInfo=ActiveUnitInfo));
               end;
             end;
           end;
@@ -3240,12 +3244,13 @@ Begin
     else
       DlgCaption:='View units';
     if ShowViewUnitsDlg(UnitList,true,DlgCaption)=mrOk then begin
+      AnUnitInfo:=nil;
       for i:=0 to UnitList.Count-1 do begin
         if TViewUnitsEntry(UnitList[i]).Selected then begin
           AnUnitInfo:=Project.Units[TViewUnitsEntry(UnitList[i]).ID];
-          if AnUnitInfo.Loaded then
-            SourceNoteBook.NoteBook.PageIndex:=AnUnitInfo.EditorIndex
-          else begin
+          if AnUnitInfo.Loaded then begin
+            SourceNoteBook.NoteBook.PageIndex:=AnUnitInfo.EditorIndex;
+          end else begin
             if MainUnitIndex=i then
               Result:=DoOpenMainUnit(false)
             else
@@ -3254,8 +3259,13 @@ Begin
           end;
         end;
       end;
-      FCodeLastActivated:=not OnlyForms;
-      DoBringToFrontFormOrUnit;
+      if (AnUnitInfo<>nil) then begin
+        AForm:=SourceNotebook;
+        if OnlyForms and (AnUnitInfo.Form<>nil) then begin
+          AForm:=TForm(AnUnitInfo.Form);
+        end;
+        BringWindowToTop(AForm.Handle)
+      end;
     end;
   finally
     UnitList.Free;
@@ -5962,6 +5972,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.223  2002/02/17 19:34:44  lazarus
+  MG: fixed view units/forms
+
   Revision 1.222  2002/02/11 15:12:00  lazarus
   MG: started OI events
 
