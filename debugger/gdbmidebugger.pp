@@ -518,6 +518,7 @@ var
   S: String;
   ResultState: TDBGState;
   ResultList, BkptList: TStringList;
+  TargetPIDPart: String;
 begin
   if State in [dsStop]
   then begin
@@ -553,7 +554,11 @@ begin
       // try to find PID
       if ExecuteCommand('info program', [], True, ResultState, S, True)
       then begin
-         FTargetPID := StrToIntDef(GetPart('child process ', '.', S), 0);
+         TargetPIDPart:=GetPart('child process ', '.', S);
+         if TargetPIDPart='' then
+           TargetPIDPart:=GetPart('child Thread ', ' ', S);
+         FTargetPID := StrToIntDef(TargetPIDPart, 0);
+
          WriteLN('Target PID: ', FTargetPID);
       end
       else begin
@@ -1663,6 +1668,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.12  2003/05/27 17:53:44  mattias
+  fixed getting target PID for fpc1.1 programs
+
   Revision 1.11  2003/05/27 08:01:31  marc
   MWE: + Added exception break
        * Reworked adding/removing breakpoints
