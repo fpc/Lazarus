@@ -690,7 +690,7 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TControl.DragDrop(Source: TObject; X,Y : Integer);
 begin
-If Assigned(FOnDragDrop) then FOnDragDrop(Self, Source,X,Y);
+  If Assigned(FOnDragDrop) then FOnDragDrop(Self, Source,X,Y);
 end;
 
 {------------------------------------------------------------------------------}
@@ -2055,6 +2055,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.113  2002/12/29 18:13:38  mattias
+  identifier completion: basically working, still hidden
+
   Revision 1.112  2002/12/28 12:42:38  mattias
   focus fixes, reduced lpi size
 
