@@ -423,24 +423,43 @@ begin
       break;
     end;
     // split line
-    // search a word boundary
-    APos:=CurMaxLineLength;
-    if APos>SrcLen then APos:=SrcLen;
     SplitPos:=0;
-    while APos>1 do begin
-      if (Src[APos] in ['A'..'Z','a'..'z'])
-      and (not (Src[APos-1] in ['A'..'Z','a'..'z'])) then begin
+    // search new line chars
+    APos:=1;
+    while (APos<=CurMaxLineLength) do begin
+      if Src[APos] in [#13,#10] then begin
         SplitPos:=APos;
         break;
       end;
-      dec(APos);
+      inc(APos);
+    end;
+    // search a word boundary
+    if SplitPos=0 then begin
+      APos:=CurMaxLineLength;
+      while APos>1 do begin
+        if (Src[APos] in ['A'..'Z','a'..'z'])
+        and (not (Src[APos-1] in ['A'..'Z','a'..'z'])) then begin
+          SplitPos:=APos;
+          break;
+        end;
+        dec(APos);
+      end;
     end;
     if SplitPos=0 then begin
       // no word boundary found -> split chars
       SplitPos:=CurMaxLineLength;
     end;
     // append part and newline
-    Result:=Result+copy(Src,1,SplitPos-1)+NewLine;
+    if (SplitPos<=SrcLen) and (Src[SplitPos] in [#10,#13]) then begin
+      // there is already a new line char at position
+      inc(SplitPos);
+      if (SplitPos<=SrcLen) and (Src[SplitPos] in [#10,#13])
+      and (Src[SplitPos]<>Src[SplitPos-1]) then
+        inc(SplitPos);
+      Result:=Result+copy(Src,1,SplitPos-1);
+    end else begin
+      Result:=Result+copy(Src,1,SplitPos-1)+NewLine;
+    end;
     // append indent
     if Indent>0 then
       Result:=Result+StringOfChar(' ',Indent);
