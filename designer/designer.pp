@@ -150,6 +150,7 @@ type
     function GetSelectedComponentClass: TRegisteredComponent;
     Procedure NudgeControl(DiffX, DiffY: Integer);
     Procedure NudgeSize(DiffX, DiffY: Integer);
+    procedure SelectParentOfSelection;
 
     procedure BuildPopupMenu;
     procedure OnAlignPopupMenuClick(Sender: TObject);
@@ -320,6 +321,23 @@ Begin
   if (ControlSelection.SelectionForm<>Form)
   or (ControlSelection.IsSelected(Form)) then exit;
   ControlSelection.SizeSelection(DiffX, DiffY);
+end;
+
+procedure TDesigner.SelectParentOfSelection;
+var
+  i: Integer;
+begin
+  if ControlSelection.IsSelected(Form) then begin
+    SelectOnlyThisComponent(Form);
+    exit;
+  end;
+  i:=ControlSelection.Count-1;
+  while (i>=0)
+  and ((ControlSelection[i].ParentInSelection)
+    or (not (ControlSelection[i].Component is TControl))
+    or (TControl(ControlSelection[i].Component).Parent=nil)) do dec(i);
+  if i>=0 then
+    SelectOnlyThisComponent(TControl(ControlSelection[i].Component).Parent);
 end;
 
 procedure TDesigner.SelectOnlyThisComponent(AComponent:TComponent);
@@ -1037,6 +1055,10 @@ Begin
         NudgeControl(-1,0)
       else if (ssShift in Shift) then
         NudgeSize(-1,0);
+        
+    VK_ESCAPE:
+      SelectParentOfSelection;
+      
     else
       Handled:=false;
     end;
