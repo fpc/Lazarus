@@ -734,7 +734,6 @@ function TgtkObject.CreateBitmap(Width, Height: Integer;
 var
   GdiObject: PGdiObject;
   //RawImage: PGDIRawImage;
-  P: TPoint;
   DefGdkWindow: PGdkWindow;
 begin
   Assert(False, Format('Trace:> [TgtkObject.CreateBitmap] Width: %d, Height: %d, Planes: %d, BitCount: %d, BitmapBits: 0x%x', [Width, Height, Planes, BitCount, Longint(BitmapBits)]));
@@ -7617,6 +7616,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.199  2002/12/27 17:58:47  mattias
+  cleanup
+
   Revision 1.198  2002/12/27 17:12:38  mattias
   added more Delphi win32 compatibility functions
 
