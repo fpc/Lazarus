@@ -186,6 +186,10 @@ begin
   AGDIObject:=PGDIObject(FFirstFree);
   PGDIObject(FFirstFree):=AGDIObject^.Next;
   Dispose(AGDIObject);
+  //writeln('TGDIObjectMemManager.DisposeGDIObject A FFreedCount=',FFreedCount);
+  {$R-}
+  inc(FFreedCount);
+  {$IfDef RangeChecksOn}{$R+}{$Endif}
 end;
 
 procedure TGDIObjectMemManager.DisposeGDIObject(AGDIObject: PGDIObject);
@@ -199,6 +203,7 @@ begin
   end else begin
     // free list full -> free the ANode
     Dispose(AGDIObject);
+    //writeln('TGDIObjectMemManager.DisposeGDIObject B FFreedCount=',FFreedCount);
     {$R-}
     inc(FFreedCount);
     {$IfDef RangeChecksOn}{$R+}{$Endif}
@@ -216,6 +221,7 @@ begin
   end else begin
     // free list empty -> create new node
     New(Result);
+    // writeln('TGDIObjectMemManager.NewGDIObject FAllocatedCount=',FAllocatedCount);
     {$R-}
     inc(FAllocatedCount);
     {$IfDef RangeChecksOn}{$R+}{$Endif}
@@ -259,7 +265,11 @@ var ADeviceContext: PDeviceContext;
 begin
   ADeviceContext:=PDeviceContext(FFirstFree);
   PDeviceContext(FFirstFree):=ADeviceContext^.SavedContext;
+  //writeln('TDeviceContextMemManager.FreeFirstItem FFreedCount=',FFreedCount);
   Dispose(ADeviceContext);
+  {$R-}
+  inc(FFreedCount);
+  {$IfDef RangeChecksOn}{$R+}{$Endif}
 end;
 
 procedure TDeviceContextMemManager.DisposeDeviceContext(
@@ -273,6 +283,7 @@ begin
     inc(FFreeCount);
   end else begin
     // free list full -> free the ANode
+    //writeln('TDeviceContextMemManager.DisposeDeviceContext FFreedCount=',FFreedCount);
     Dispose(ADeviceContext);
     {$R-}
     inc(FFreedCount);
@@ -291,6 +302,7 @@ begin
   end else begin
     // free list empty -> create new node
     New(Result);
+    //writeln('TDeviceContextMemManager.NewDeviceContext FAllocatedCount=',FAllocatedCount);
     {$R-}
     inc(FAllocatedCount);
     {$IfDef RangeChecksOn}{$R+}{$Endif}
@@ -312,6 +324,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.14  2002/08/21 14:44:18  lazarus
+  MG: accelerated synedit
+
   Revision 1.13  2002/08/21 14:06:40  lazarus
   MG: added TDeviceContextMemManager
 
