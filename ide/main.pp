@@ -774,14 +774,17 @@ begin
 end;
 
 procedure TMainIDE.FormCloseQuery(Sender : TObject; var CanClose: boolean);
+var
+  MsgResult: integer;
 begin
   if SomethingOfProjectIsModified then begin
-    case MessageDlg(lisProjectChanged, Format(lisSaveChangesToProject, [Project1.Title]),
-      mtConfirmation, [mbYes, mbNo, mbCancel], 0) of
+    MsgResult:=MessageDlg(lisProjectChanged, Format(lisSaveChangesToProject,
+      [Project1.Title]), mtConfirmation, [mbYes, mbNo, mbCancel], 0);
+    case MsgResult of
 
     mrYes:
       begin
-        CanClose:= DoSaveProject([]) <> mrAbort;
+        CanClose := DoSaveProject([]) <> mrAbort;
         if not CanClose then exit;
       end;
 
@@ -6737,6 +6740,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.360  2002/09/04 09:32:15  lazarus
+  MG: improved streaming error handling
+
   Revision 1.359  2002/09/03 20:01:59  lazarus
   Intermediate UI patch to show a bug.
 
