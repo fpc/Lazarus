@@ -27,6 +27,7 @@ Function BringWindowToTop(HWnd: HWND): Boolean; Override;
 
 Function CallNextHookEx(HHk: HHOOK; NCode: Integer; WParam, LParam: LongInt): Integer; Override;
 Function CallWindowProc(LPPrevWndFunc: TFarProc; Handle: HWND; Msg: UINT; WParam, LParam: LongInt): Integer; Override;
+Function CheckMenuItem(HndMenu: HMENU; uIDEnableItem: Integer; bChecked: Boolean): Boolean; Override;
 Function ClientToScreen(Handle: HWND; Var P: TPoint): Boolean; Override;
 
 // clipboard
@@ -64,7 +65,7 @@ function DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: C
 
 Function Ellipse(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean; Override;
 Function EmptyClipBoard: Boolean;
-Function EnableMenuItem(HMenu: HMENU; UIDEnableItem: Integer; BEnable: Boolean): Boolean; Override;
+Function EnableMenuItem(HndMenu: HMENU; UIDEnableItem: Integer; BEnable: Boolean): Boolean; Override;
 Function EnableScrollBar(Wnd: HWND; WSBFlags, WArrows: Cardinal): Boolean; Override;
 Function EnableWindow(HWnd: HWND; BEnable: Boolean): Boolean; Override;
 Function ExcludeClipRect(dc: hdc; Left, Top, Right, Bottom : Integer) : Integer; override;
@@ -170,6 +171,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.20  2003/01/12 19:09:19  mattias
+  patch from Martin Smat for dis/enabling menuitems
+
   Revision 1.19  2002/12/27 17:12:38  mattias
   added more Delphi win32 compatibility functions
 

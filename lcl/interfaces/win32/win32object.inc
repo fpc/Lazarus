@@ -217,6 +217,28 @@ End;
   Sets the label text on a window
  ------------------------------------------------------------------------------}
 Procedure TWin32Object.SetLabel(Sender: TObject; Data: Pointer);
+
+  Procedure SetMenuItemCaption;
+  var MenuInfo: MENUITEMINFO;
+      MenuHandle: HMenu;
+  Begin
+    MenuHandle := (Sender as TMenuItem).Handle;
+    with MenuInfo do
+    begin
+      cbsize:=sizeof(MENUITEMINFO);
+      fMask:=MIIM_TYPE;
+      fType:=MFT_STRING;
+    end;
+    GetMenuItemInfo(FMenu, integer(MenuHandle), false, @MenuInfo);
+    with MenuInfo do
+    begin
+      dwTypeData:=Data;
+      cch:=lstrlen(Data);
+    end;
+    SetMenuItemInfo(FMenu, integer(MenuHandle), false, @MenuInfo);
+    DrawMenuBar(((Sender as TMenuItem).Owner as TWinControl).Handle);
+  End;
+  
 Var
   Handle, HOwner: HWnd;
   R: TRect;
@@ -224,6 +246,11 @@ Var
 Const
   TermChar: PChar = #0#0;
 Begin
+  If Sender is TMenuItem then
+  begin
+    SetMenuItemCaption;
+    exit;
+  end;
   If Sender Is TWinControl Then
     Assert(False, Format('Trace:[TWin32Object.SetLabel] %S --> label %S', [Sender.ClassName, TControl(Sender).Caption]))
   Else
@@ -1832,8 +1859,8 @@ Begin
       FMenu := Window;
       Assert(False, Format('Trace:Main menu owner --> %S', [((Sender As TComponent).Owner As TWinControl).ClassName]));
       Windows.SetMenu(((Sender As TComponent).Owner As TWinControl).Handle, Window);
-      Self.SetProp(Window, 'Lazarus', Sender);
-      Self.SetName(Window, StrTemp);
+      {Self.SetProp(Window, 'Lazarus', Sender);
+      Self.SetName(Window, StrTemp);}
     End;
     csMenuItem:
     Begin
@@ -1842,8 +1869,8 @@ Begin
       AccelIndex := Pos('&', Caption);
       If AccelIndex <> 0 Then
         SetAccelKey(Window, Nil);
-      SetProp(Window, 'Lazarus', Sender);
-      SetName(Window, StrTemp);
+      {SetProp(Window, 'Lazarus', Sender);
+      SetName(Window, StrTemp);}
     End;
     csNotebook:
     Begin
@@ -2531,7 +2558,7 @@ Begin
     fMask:=Mask;
     fType:=Style;
     fState:=MFS_ENABLED;
-    wID:=MenuHandle;
+    wID:=integer(MenuHandle);
     hSubmenu:=MenuHandle;
     hbmpChecked:=0;
     hbmpUnchecked:=0;
@@ -2578,6 +2605,9 @@ End;
 
 {
   $Log$
+  Revision 1.42  2003/01/12 19:09:19  mattias
+  patch from Martin Smat for dis/enabling menuitems
+
   Revision 1.41  2003/01/08 18:04:21  mattias
   patch from Martin Smat fixing submenus and menu underscores
 

@@ -147,6 +147,27 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
+  Function: CheckMenuItem
+  Params:  hndMenu: HMENU         - menu handle
+           uIDEnableItem: Integer - menu item to check/uncheck 
+           bChecked: Boolean      - new state of the menu item
+  Returns: The previous state of the menu item.
+
+  Checks or unchecks the specified menu item.
+ ------------------------------------------------------------------------------}
+Function TWin32Object.CheckMenuItem(HndMenu: HMENU; uIDEnableItem: Integer; BChecked: Boolean): Boolean;
+var CheckFlag: integer;
+    PrevState: integer;
+Begin
+  if BChecked then CheckFlag := MF_CHECKED 
+  else CheckFlag := MF_UNCHECKED;
+  CheckFlag := CheckFlag or MF_BYCOMMAND;
+  PrevState := Windows.CheckMenuItem(FMenu, HndMenu, CheckFlag);
+  if PrevState = MF_ENABLED then Result := True
+  else Result := False;
+End;
+
+{------------------------------------------------------------------------------
   Method:  ClientToScreen
   Params:  Handle - Handle of window
            P      - container that contains coordinates
@@ -789,17 +810,20 @@ End;
 
 {------------------------------------------------------------------------------
   Method:  EnableMenuItem
-  Params: HMenu         - handle to menu
-          UIDEnableItem - menu item to enable
-          BEnable       - by position and grayed?
+  Params: HndMenu       - handle to menu
+          UIDEnableItem - menu item to enable/disable
+          BEnable       - new state of the menu item
   Returns: The previous state of the menu item.
 
   Enables, disables, or grays the specified menu item.
  ------------------------------------------------------------------------------}
-Function TWin32Object.EnableMenuItem(HMenu: HMENU; UIDEnableItem: Integer; BEnable: Boolean): Boolean;
+Function TWin32Object.EnableMenuItem(HndMenu: HMENU; UIDEnableItem: Integer; BEnable: Boolean): Boolean;
+var EnableFlag: integer;
 Begin
-  // Your code here
-  Result := Windows.EnableMenuItem(HMenu, UIDEnableItem, DWORD(BEnable));
+  if BEnable then EnableFlag := MF_ENABLED 
+  else EnableFlag := MF_GRAYED;
+  EnableFlag := EnableFlag or MF_BYCOMMAND;
+  Result := Windows.EnableMenuItem(FMenu, HndMenu, EnableFlag);
 End;
 
 {------------------------------------------------------------------------------
@@ -2266,6 +2290,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.29  2003/01/12 19:09:19  mattias
+  patch from Martin Smat for dis/enabling menuitems
+
   Revision 1.28  2002/12/28 09:42:12  mattias
   toolbutton patch from Martin Smat
 
