@@ -411,6 +411,7 @@ type
     property Items;
     property ItemHeight;
     property MultiSelect;
+    property OnChangeBounds;
     property OnClick;
     property OnDblClick;
     property OnDrawItem;
@@ -424,6 +425,7 @@ type
     property OnMouseUp;
     property OnResize;
     property ParentShowHint;
+    property PopupMenu;
     property ShowHint;
     property Sorted;
     property Style;
@@ -1460,6 +1462,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.111  2003/11/27 19:40:34  mattias
+  added TListBox.PopupMenu
+
   Revision 1.110  2003/11/08 14:12:48  mattias
   fixed scrollbar events under gtk from Colin
 
