@@ -274,22 +274,23 @@ begin
   ItemCnt:=0;
   CurFile:=GetSelectedFile;
   if CurFile<>nil then begin
-    AddPopupMenuItem('Open file',@OpenBitBtnClick,true);
-    AddPopupMenuItem('Remove file',@RemoveBitBtnClick,RemoveBitBtn.Enabled);
+    AddPopupMenuItem(lisOpenFile, @OpenBitBtnClick, true);
+    AddPopupMenuItem(lisPckEditRemoveFile, @RemoveBitBtnClick,
+      RemoveBitBtn.Enabled);
   end;
   CurDependency:=GetSelectedDependency;
   if CurDependency<>nil then begin
     if CurDependency.Removed then begin
-      AddPopupMenuItem('Open package',@OpenBitBtnClick,true);
-      AddPopupMenuItem('Re-Add dependency',@ReAddMenuItemClick,
+      AddPopupMenuItem(lisMenuOpenPackage, @OpenBitBtnClick, true);
+      AddPopupMenuItem(lisPckEditReAddDependency, @ReAddMenuItemClick,
                        AddBitBtn.Enabled);
     end else begin
-      AddPopupMenuItem('Open package',@OpenBitBtnClick,true);
-      AddPopupMenuItem('Remove dependency',@RemoveBitBtnClick,
+      AddPopupMenuItem(lisMenuOpenPackage, @OpenBitBtnClick, true);
+      AddPopupMenuItem(lisPckEditRemoveDependency, @RemoveBitBtnClick,
                        RemoveBitBtn.Enabled);
-      AddPopupMenuItem('Move dependency up',@MoveDependencyUpClick,
+      AddPopupMenuItem(lisPckEditMoveDependencyUp, @MoveDependencyUpClick,
                        (CurDependency.PrevRequiresDependency<>nil));
-      AddPopupMenuItem('Move dependency down',@MoveDependencyDownClick,
+      AddPopupMenuItem(lisPckEditMoveDependencyDown, @MoveDependencyDownClick,
                        (CurDependency.NextRequiresDependency<>nil));
     end;
   end;
@@ -333,8 +334,8 @@ var
 begin
   CurDependency:=GetSelectedDependency;
   if (CurDependency<>nil) and (not CurDependency.Removed) then begin
-    if MessageDlg('Confirm deleting dependency',
-      'Delete dependency for '+CurDependency.AsString+'?',
+    if MessageDlg(lisProjInspConfirmDeletingDependency,
+      Format(lisProjInspDeleteDependencyFor, [CurDependency.AsString]),
       mtConfirmation,[mbYes,mbNo],0)<>mrYes
     then exit;
     LazProject.RemoveRequiredDependency(CurDependency);
@@ -345,8 +346,8 @@ begin
   if CurFile<>nil then begin
     if (not CurFile.IsPartOfProject) or (CurFile=LazProject.MainUnitInfo)
     then exit;
-    if MessageDlg('Confirm removing file',
-      'Remove file '+CurFile.Filename+' from project?',
+    if MessageDlg(lisProjInspConfirmRemovingFile,
+      Format(lisProjInspRemoveFileFromProject, [CurFile.Filename]),
       mtConfirmation,[mbYes,mbNo],0)<>mrYes
     then exit;
     if Assigned(OnRemoveFile) then OnRemoveFile(Self,CurFile);
@@ -416,7 +417,7 @@ begin
   with OpenBitBtn do begin
     Name:='OpenBitBtn';
     Parent:=Self;
-    Caption:='Open';
+    Caption:=lisMenuOpen;
     OnClick:=@OpenBitBtnClick;
   end;
 
@@ -424,7 +425,7 @@ begin
   with AddBitBtn do begin
     Name:='AddBitBtn';
     Parent:=Self;
-    Caption:='Add';
+    Caption:=lisCodeTemplAdd;
     OnClick:=@AddBitBtnClick;
   end;
 
@@ -432,7 +433,7 @@ begin
   with OptionsBitBtn do begin
     Name:='OptionsBitBtn';
     Parent:=Self;
-    Caption:='Options';
+    Caption:=dlgFROpts;
     OnClick:=@OptionsBitBtnClick;
   end;
 
@@ -440,7 +441,7 @@ begin
   with RemoveBitBtn do begin
     Name:='RemoveBitBtn';
     Parent:=Self;
-    Caption:='Remove';
+    Caption:=lisExtToolRemove;
     OnClick:=@RemoveBitBtnClick;
   end;
 
@@ -452,10 +453,10 @@ begin
     Options:=Options+[tvoRightClickSelect];
     OnSelectionChanged:=@ItemsTreeViewSelectionChanged;
     OnDblClick:=@ItemsTreeViewDblClick;
-    FilesNode:=Items.Add(nil,'Files');
+    FilesNode:=Items.Add(nil, dlgEnvFiles);
     FilesNode.ImageIndex:=ImageIndexFiles;
     FilesNode.SelectedIndex:=FilesNode.ImageIndex;
-    DependenciesNode:=Items.Add(nil,'Required Packages');
+    DependenciesNode:=Items.Add(nil, lisPckEditRequiredPackages);
     DependenciesNode.ImageIndex:=ImageIndexRequired;
     DependenciesNode.SelectedIndex:=DependenciesNode.ImageIndex;
     PopupMenu:=ItemsPopupMenu;
@@ -548,7 +549,8 @@ begin
     Dependency:=LazProject.FirstRemovedDependency;
     if RemovedDependenciesNode=nil then begin
       RemovedDependenciesNode:=
-        ItemsTreeView.Items.Add(DependenciesNode,'Removed required packages');
+        ItemsTreeView.Items.Add(DependenciesNode,
+          lisProjInspRemovedRequiredPackages);
       RemovedDependenciesNode.ImageIndex:=ImageIndexRemovedRequired;
       RemovedDependenciesNode.SelectedIndex:=RemovedDependenciesNode.ImageIndex;
     end;
@@ -676,7 +678,7 @@ var
 begin
   inherited Create(TheOwner);
   Name:=NonModalIDEWindowNames[nmiwProjectInspector];
-  Caption:='Project Inspector';
+  Caption:=lisMenuProjectInspector;
 
   ALayout:=EnvironmentOptions.IDEWindowLayoutList.ItemByFormID(Name);
   ALayout.Form:=TForm(Self);
@@ -733,12 +735,12 @@ begin
   end;
   Exclude(FFlags,pifTitleChanged);
   if LazProject=nil then
-    Caption:='Project Inspector'
+    Caption:=lisMenuProjectInspector
   else begin
     NewCaption:=LazProject.Title;
     if NewCaption='' then
       NewCaption:=ExtractFilenameOnly(LazProject.ProjectInfoFile);
-    Caption:='Project Inspector - '+NewCaption;
+    Caption:=Format(lisProjInspProjectInspector, [NewCaption]);
   end;
 end;
 

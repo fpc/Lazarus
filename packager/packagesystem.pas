@@ -661,7 +661,7 @@ function TLazPackageGraph.CreateNewPackage(const Prefix: string): TLazPackage;
 begin
   BeginUpdate(true);
   Result:=TLazPackage.Create;
-  Result.Name:=CreateUniquePkgName('NewPackage',nil);
+  Result.Name:=CreateUniquePkgName(lisPkgMangNewPackage, nil);
   AddPackage(Result);
   EndUpdate;
 end;
@@ -689,7 +689,8 @@ begin
     // check unitname
     FRegistrationUnitName:=TheUnitName;
     if not IsValidIdent(FRegistrationUnitName) then begin
-      RegistrationError('Invalid Unitname: '+FRegistrationUnitName);
+      RegistrationError(Format(lisPkgSysInvalidUnitname, [FRegistrationUnitName]
+        ));
       exit;
     end;
     // check unit file
@@ -698,11 +699,13 @@ begin
       FRegistrationFile:=
         FRegistrationPackage.FindUnit(FRegistrationUnitName,false);
       if FRegistrationFile=nil then begin
-        RegistrationError('Unit not found: "'+FRegistrationUnitName+'"');
+        RegistrationError(Format(lisPkgSysUnitNotFound, ['"',
+          FRegistrationUnitName, '"']));
       end else begin
         if not (pffReportedAsRemoved in FRegistrationFile.Flags) then begin
           RegistrationError(
-            'Unit "'+FRegistrationUnitName+'" was removed from package');
+            Format(lisPkgSysUnitWasRemovedFromPackage, ['"',
+              FRegistrationUnitName, '"']));
           FRegistrationFile.Flags:=
                                  FRegistrationFile.Flags+[pffReportedAsRemoved];
         end;
@@ -740,7 +743,7 @@ begin
   end;
   // check unit file
   if FRegistrationFile=nil then begin
-    RegistrationError('Can not register components without unit');
+    RegistrationError(lisPkgSysCanNotRegisterComponentsWithoutUnit);
     exit;
   end;
   // register components
@@ -752,7 +755,7 @@ begin
     {$ENDIF}
       CurClassname:=CurComponent.Classname;
       if not IsValidIdent(CurClassname) then begin
-        RegistrationError('Invalid component class');
+        RegistrationError(lisPkgSysInvalidComponentClass);
         continue;
       end;
     {$IFNDEF StopOnRegError}
@@ -765,7 +768,8 @@ begin
     {$ENDIF}
     if IDEComponentPalette.FindComponent(CurClassname)<>nil then begin
       RegistrationError(
-        'Component Class "'+CurComponent.ClassName+'" already defined');
+        Format(lisPkgSysComponentClassAlreadyDefined, ['"',
+          CurComponent.ClassName, '"']));
     end;
     if AbortRegistration then exit;
     NewPkgComponent:=
@@ -782,21 +786,23 @@ begin
 
   // current registration package
   if FRegistrationPackage=nil then begin
-    ErrorMsg:='RegisterUnit was called, but no package is registering.';
+    ErrorMsg:=lisPkgSysRegisterUnitWasCalledButNoPackageIsRegistering;
   end else begin
     ErrorMsg:='Package: "'+FRegistrationPackage.IDAsString+'"';
     // current unitname
     if FRegistrationUnitName<>'' then
-      ErrorMsg:=ErrorMsg+#13+'Unit Name: "'+FRegistrationUnitName+'"';
+      ErrorMsg:=Format(lisPkgSysUnitName, [ErrorMsg, #13, '"',
+        FRegistrationUnitName, '"']);
     // current file
     if FRegistrationFile<>nil then
-      ErrorMsg:=ErrorMsg+#13+'File Name: "'+FRegistrationFile.Filename+'"';
+      ErrorMsg:=Format(lisPkgSysFileName, [ErrorMsg, #13, '"',
+        FRegistrationFile.Filename, '"']);
   end;
   // append message
   if Msg<>'' then
     ErrorMsg:=ErrorMsg+#13#13+Msg;
   // tell user
-  DlgResult:=MessageDlg('Registration Error',
+  DlgResult:=MessageDlg(lisPkgSysRegistrationError,
                         ErrorMsg,mtError,[mbIgnore,mbAbort],0);
   if DlgResult=mrAbort then
     AbortRegistration:=true;
@@ -814,8 +820,7 @@ begin
     License:='LGPL-2';
     AutoInstall:=pitStatic;
     AutoUpdate:=pupManually;
-    Description:='The FCL - FreePascal Component Library '
-                 +'provides the base classes for object pascal.';
+    Description:=lisPkgSysTheFCLFreePascalComponentLibraryProvidesTheBase;
     PackageType:=lptDesignTime;
     Installed:=pitStatic;
     CompilerOptions.UnitOutputDirectory:='';
@@ -849,8 +854,7 @@ begin
     License:='LGPL-2';
     AutoInstall:=pitStatic;
     AutoUpdate:=pupManually;
-    Description:='The LCL - Lazarus Component Library '
-                 +'contains all base components for form editing.';
+    Description:=lisPkgSysTheLCLLazarusComponentLibraryContainsAllBase;
     PackageType:=lptDesignTime;
     Installed:=pitStatic;
     CompilerOptions.UnitOutputDirectory:='';
@@ -901,8 +905,7 @@ begin
     License:='LGPL-2';
     AutoInstall:=pitStatic;
     AutoUpdate:=pupManually;
-    Description:='SynEdit - the editor component used by Lazarus. '
-                +'http://sourceforge.net/projects/synedit/';
+    Description:=lisPkgSysSynEditTheEditorComponentUsedByLazarus;
     PackageType:=lptDesignTime;
     Installed:=pitStatic;
     CompilerOptions.UnitOutputDirectory:='';
@@ -948,9 +951,7 @@ begin
     Author:='Anonymous';
     AutoInstall:=pitStatic;
     AutoUpdate:=pupManually;
-    Description:='This is the default package. '
-                +'Used only for components without a package. '
-                +'These components are outdated.';
+    Description:=lisPkgSysThisIsTheDefaultPackageUsedOnlyForComponents;
     PackageType:=lptDesignTime;
     Installed:=pitStatic;
     CompilerOptions.UnitOutputDirectory:='';
@@ -1525,7 +1526,7 @@ begin
 
   // check registration procedure
   if RegisterProc=nil then begin
-    RegistrationError('Register procedure is nil');
+    RegistrationError(lisPkgSysRegisterProcedureIsNil);
     exit;
   end;
   {$IFNDEF StopOnRegError}
@@ -1632,8 +1633,7 @@ begin
       Author:='?';
       License:='?';
       AutoUpdate:=pupManually;
-      Description:='This package is installed, but the lpk file was not found.'
-                  +'All its components are deactivated. Please fix this.';
+      Description:=lisPkgSysThisPackageIsInstalledButTheLpkFileWasNotFound;
       PackageType:=lptDesignTime;
       Installed:=pitStatic;
       CompilerOptions.UnitOutputDirectory:='';
@@ -1647,10 +1647,9 @@ begin
     AddPackage(BrokenPackage);
 
     // tell the user
-    MessageDlg('Package file not found',
-      'The package "'+BrokenPackage.Name+'" is installed, '
-      +'but no valid package file was found.'#13
-      +'A broken dummy package was created.',
+    MessageDlg(lisPkgSysPackageFileNotFound,
+      Format(lisPkgSysThePackageIsInstalledButNoValidPackageFileWasFound, ['"',
+        BrokenPackage.Name, '"', #13]),
       mtError,[mbOk],0);
 
     // open it

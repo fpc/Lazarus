@@ -357,7 +357,7 @@ begin
   with PkgTreeLabel do begin
     Name:='PkgTreeLabel';
     Parent:=Self;
-    Caption:='Loaded Packages:';
+    Caption:=lisPckExplLoadedPackages;
   end;
   
   PkgTreeView:=TTreeView.Create(Self);
@@ -375,7 +375,7 @@ begin
   with PkgListLabel do begin
     Name:='PkgListLabel';
     Parent:=Self;
-    Caption:='Is required by:';
+    Caption:=lisPckExplIsRequiredBy;
   end;
 
   PkgListBox:=TListBox.Create(Self);
@@ -477,7 +477,7 @@ begin
   FUpdateLock:=PackageGraph.UpdateLock;
   fSortedPackages:=TAVLTree.Create(@CompareLazPackageID);
   Name:=NonModalIDEWindowNames[nmiwPkgGraphExplorer];
-  Caption:='Package Graph';
+  Caption:=lisMenuPackageGraph;
 
   ALayout:=EnvironmentOptions.IDEWindowLayoutList.ItemByFormID(Name);
   ALayout.Form:=TForm(Self);
@@ -617,22 +617,22 @@ begin
   InfoStr:='';
   GetDependency(PkgTreeView.Selected,Pkg,Dependency);
   if Dependency<>nil then begin
-    InfoStr:='Package '+Dependency.AsString+' not found';
+    InfoStr:=Format(lisPckExplPackageNotFound, [Dependency.AsString]);
   end else if Pkg<>nil then begin
     // filename and title
-    InfoStr:='Filename:  '+Pkg.Filename;
+    InfoStr:=Format(lisOIPFilename, [Pkg.Filename]);
     // state
-    InfoStr:=InfoStr+EndOfLine+'State: ';
+    InfoStr:=Format(lisPckExplState, [InfoStr+EndOfLine]);
     if Pkg.AutoCreated then
-      AddState('AutoCreated');
+      AddState(lisPckExplAutoCreated);
     if Pkg.Installed<>pitNope then
-      AddState('Installed');
+      AddState(lisPckExplInstalled);
     if (Pkg.AutoInstall<>pitNope) and (Pkg.Installed=pitNope) then
-      AddState('Install on next start');
+      AddState(lisPckExplInstallOnNextStart);
     if (Pkg.AutoInstall=pitNope) and (Pkg.Installed<>pitNope) then
-      AddState('Uninstall on next start');
-    InfoStr:=InfoStr+EndOfLine+'Description:  '
-                    +BreakString(Pkg.Description,60,length('Description:  '));
+      AddState(lisPckExplUninstallOnNextStart);
+    InfoStr:=Format(lisOIPDescriptionDescription, [InfoStr+EndOfLine,
+      BreakString(Pkg.Description, 60, length(lisOIPDescription))]);
   end;
   InfoMemo.Text:=InfoStr;
 end;

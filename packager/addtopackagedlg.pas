@@ -214,9 +214,9 @@ begin
     if LazPackage.HasDirectory then
       AFilename:=LazPackage.Directory+AFilename
     else begin
-      MessageDlg('Invalid filename',
-        'The filename "'+AFilename+'" is ambigious.'#13
-        +'Please specifiy a filename with full path.',
+      MessageDlg(lisA2PInvalidFilename,
+        Format(lisA2PTheFilenameIsAmbigiousPleaseSpecifiyAFilename, ['"',
+          AFilename, '"', #13]),
         mtError,[mbCancel],0);
       exit;
     end;
@@ -225,8 +225,9 @@ begin
   // check if file exists
   if not FileExists(AFilename) then begin
     if AddFileType=d2ptUnit then begin
-      MessageDlg('File not found',
-        'File "'+AFilename+'" not found.',mtError,[mbCancel],0);
+      MessageDlg(lisFileNotFound,
+        Format(lisPkgMangFileNotFound, ['"', AFilename, '"']), mtError, [
+          mbCancel], 0);
       exit;
     end;
   end;
@@ -234,8 +235,8 @@ begin
   // check file extension
   if AddFileType in [d2ptUnit,d2ptNewComponent] then begin
     if not FilenameIsPascalUnit(AFilename) then begin
-      MessageDlg('File not unit',
-        'Pascal units must have the extension .pp or .pas',
+      MessageDlg(lisA2PFileNotUnit,
+        lisA2PPascalUnitsMustHaveTheExtensionPPOrPas,
         mtWarning,[mbCancel],0);
       exit;
     end;
@@ -245,8 +246,8 @@ begin
   if AddFileType in [d2ptUnit,d2ptNewComponent] then begin
     AnUnitName:=ExtractFileNameOnly(AFilename);
     if not IsValidIdent(AnUnitName) then begin
-      MessageDlg('File not unit',
-        +'"'+AnUnitName+'" is not a valid unit name.',
+      MessageDlg(lisA2PFileNotUnit,
+        Format(lisA2PisNotAValidUnitName, ['"', AnUnitName, '"']),
         mtWarning,[mbCancel],0);
       exit;
     end;
@@ -255,23 +256,24 @@ begin
     PkgFile:=PackageGraph.FindUnit(LazPackage,AnUnitName,true,true);
     if PkgFile<>nil then begin
       if PkgFile.LazPackage=LazPackage then begin
-        MessageDlg('Unitname already exists',
-          'The unitname "'+AnUnitName+'" already exists in this package.',
+        MessageDlg(lisA2PUnitnameAlreadyExists,
+          Format(lisA2PTheUnitnameAlreadyExistsInThisPackage, ['"', AnUnitName,
+            '"']),
           mtError,[mbCancel],0);
         exit;
       end else begin
-        if MessageDlg('Unitname already exists',
-          'The unitname "'+AnUnitName+'" already exists in the package:'#13
-          +PkgFile.LazPackage.IDAsString,
+        if MessageDlg(lisA2PUnitnameAlreadyExists,
+          Format(lisA2PTheUnitnameAlreadyExistsInThePackage, ['"', AnUnitName,
+            '"', #13, PkgFile.LazPackage.IDAsString]),
           mtWarning,[mbCancel,mbIgnore],0)<>mrIgnore then exit;
       end;
     end;
 
     // check if unitname is a componentclass
     if IDEComponentPalette.FindComponent(AnUnitName)<>nil then begin
-      if MessageDlg('Ambigious Unit Name',
-        'The unit name "'+AnUnitName+'" is the same as an registered component.'#13
-        +'Using this can cause strange error messages.',
+      if MessageDlg(lisA2PAmbigiousUnitName,
+        Format(lisA2PTheUnitNameIsTheSameAsAnRegisteredComponent, ['"',
+          AnUnitName, '"', #13]),
         mtWarning,[mbCancel,mbIgnore],0)<>mrIgnore
       then
         exit;
@@ -283,10 +285,10 @@ begin
   // check if file already exists in package
   PkgFile:=LazPackage.FindPkgFile(AFilename,true,true);
   if PkgFile<>nil then begin
-    Msg:='File "'+AFilename+'" already exists in the project.';
+    Msg:=Format(lisA2PFileAlreadyExistsInTheProject, ['"', AFilename, '"']);
     if PkgFile.Filename<>AFilename then
-      Msg:=#13+'Existing file: "'+PkgFile.Filename+'"';
-    MessageDlg('File already exists',Msg,mtError,[mbCancel],0);
+      Msg:=Format(lisA2PExistingFile, [#13, '"', PkgFile.Filename, '"']);
+    MessageDlg(lisA2PFileAlreadyExists, Msg, mtError, [mbCancel], 0);
     exit;
   end;
 
@@ -296,9 +298,9 @@ begin
     OnGetIDEFileInfo(nil,AFilename,[ifsPartOfProject{,ifsReadOnly}],
                      IDEFileFlags);
     if (ifsPartOfProject in IDEFileFlags) then begin
-      MessageDlg('File is used',
-        'The file "'+AFilename+'" is part of the current project.'#13
-        +'It is a bad idea to share files between projects and packages.',
+      MessageDlg(lisA2PFileIsUsed,
+        Format(lisA2PTheFileIsPartOfTheCurrentProjectItIsABadIdea, ['"',
+          AFilename, '"', #13]),
         mtError,[mbCancel],0);
       exit;
     end;
@@ -328,25 +330,26 @@ begin
   and (pdfMaxVersion in NewDependency.Flags)
   and (NewDependency.MaxVersion.Compare(NewDependency.MinVersion)<0) then
   begin
-    MessageDlg('Invalid Min-Max version',
-      'The Maximum Version is lower than the Minimim Version.',
+    MessageDlg(lisProjAddInvalidMinMaxVersion,
+      lisA2PTheMaximumVersionIsLowerThanTheMinimimVersion,
       mtError,[mbCancel],0);
     exit;
   end;
 
   // check packagename
   if (NewPkgName='') or (not IsValidIdent(NewPkgName)) then begin
-    MessageDlg('Invalid packagename',
-      'The package name "'+NewPkgName+'" is invalid.'#13
-      +'Plase choose an existing package.',
+    MessageDlg(lisProjAddInvalidPackagename,
+      Format(lisA2PThePackageNameIsInvalidPlaseChooseAnExisting, ['"',
+        NewPkgName, '"', #13]),
       mtError,[mbCancel],0);
     exit;
   end;
 
   // check if package is already required
   if LazPackage.FindDependencyByName(NewPkgName)<>nil then begin
-    MessageDlg('Dependency already exists',
-      'The package has already a dependency for the package "'+NewPkgName+'".',
+    MessageDlg(lisProjAddDependencyAlreadyExists,
+      Format(lisA2PThePackageHasAlreadyADependencyForThe, ['"', NewPkgName, '"']
+        ),
       mtError,[mbCancel],0);
     exit;
   end;
@@ -354,9 +357,9 @@ begin
   // check if required package exists
   if not PackageGraph.DependencyExists(NewDependency,fpfSearchPackageEverywhere)
   then begin
-    MessageDlg('Package not found',
-      'No package found for dependency "'+NewDependency.AsString+'".'#13
-      +'Please choose an existing package.',
+    MessageDlg(lisProjAddPackageNotFound,
+      Format(lisA2PNoPackageFoundForDependencyPleaseChooseAnExisting, ['"',
+        NewDependency.AsString, '"', #13]),
       mtError,[mbCancel],0);
     exit;
   end;
@@ -388,8 +391,8 @@ begin
   // check unitname
   if AnsiCompareText(Params.UnitName,ExtractFileNameOnly(Params.UnitFilename))<>0
   then begin
-    MessageDlg('Invalid Unit Name',
-      'The unit name "'+Params.UnitName+'" and filename differ.',
+    MessageDlg(lisA2PInvalidUnitName,
+      Format(lisA2PTheUnitNameAndFilenameDiffer, ['"', Params.UnitName, '"']),
       mtError,[mbCancel],0);
     exit;
   end;
@@ -480,14 +483,15 @@ begin
   Params.PkgFileFlags:=[];
 
   if not FileExists(Params.UnitFilename) then begin
-    MessageDlg('File not found',
-      'File "'+Params.UnitFilename+'" not found.',
+    MessageDlg(lisFileNotFound,
+      Format(lisPkgMangFileNotFound, ['"', Params.UnitFilename, '"']),
       mtError,[mbCancel],0);
     exit;
   end;
   if LazPackage.FindPkgFile(Params.UnitFilename,true,true)<>nil then begin
-    MessageDlg('File already in package',
-      'The file "'+Params.UnitFilename+'" is already in the package.',
+    MessageDlg(lisA2PFileAlreadyInPackage,
+      Format(lisA2PTheFileIsAlreadyInThePackage, ['"', Params.UnitFilename, '"']
+        ),
       mtError,[mbCancel],0);
     exit;
   end;
@@ -633,8 +637,8 @@ begin
         LazPackage.ShortenFilename(AFilename);
         ComponentUnitFileEdit.Text:=AFilename;
       end else begin
-        MessageDlg('Invalid file',
-         'A pascal unit must have the extension .pp or .pas',
+        MessageDlg(lisA2PInvalidFile,
+         lisA2PAPascalUnitMustHaveTheExtensionPPOrPas,
          mtError,[mbCancel],0);
       end;
     end;
@@ -663,17 +667,18 @@ begin
 
   // check Ancestor Type
   if not IsValidIdent(Params.AncestorType) then begin
-    MessageDlg('Invalid Ancestor Type',
-      'The ancestor type "'+Params.AncestorType+'"'
-      +' is not a valid pascal identifier.',
+    MessageDlg(lisA2PInvalidAncestorType,
+      Format(lisA2PTheAncestorTypeIsNotAValidPascalIdentifier, ['"',
+        Params.AncestorType, '"']),
       mtError,[mbCancel],0);
     exit;
   end;
 
   // check pagename
   if length(Params.PageName)>100 then begin
-    MessageDlg('Page Name too long',
-      'The page name "'+Params.PageName+'" is too long (max 100 chars).',
+    MessageDlg(lisA2PPageNameTooLong,
+      Format(lisA2PThePageNameIsTooLongMax100Chars, ['"', Params.PageName, '"']
+        ),
       mtError,[mbCancel],0);
     exit;
   end;
@@ -681,25 +686,27 @@ begin
   // check unitname - filename redundancy
   if AnsiCompareText(Params.Unitname,ExtractFileNameOnly(Params.UnitFilename))<>0
   then begin
-    MessageDlg('Unit Name Invalid',
-      'The unit name "'+Params.UnitName+'" does not correspond to the filename.',
+    MessageDlg(lisA2PUnitNameInvalid,
+      Format(lisA2PTheUnitNameDoesNotCorrespondToTheFilename, ['"',
+        Params.UnitName, '"']),
       mtError,[mbCancel],0);
     exit;
   end;
 
   // check classname
   if not IsValidIdent(Params.ClassName) then begin
-    MessageDlg('Invalid Class Name',
-      'The class name "'+Params.ClassName+'" is not a valid pascal identifier.',
+    MessageDlg(lisA2PInvalidClassName,
+      Format(lisA2PTheClassNameIsNotAValidPascalIdentifier, ['"',
+        Params.ClassName, '"']),
       mtError,[mbCancel],0);
     exit;
   end;
 
   // check classname<>ancestortype
   if AnsiCompareText(Params.ClassName,Params.AncestorType)=0 then begin
-    MessageDlg('Invalid Circle',
-      'The class name "'+Params.ClassName+'" and ancestor type "'
-      +Params.AncestorType+'" are the same.',
+    MessageDlg(lisA2PInvalidCircle,
+      Format(lisA2PTheClassNameAndAncestorTypeAreTheSame, ['"',
+        Params.ClassName, '"', '"', Params.AncestorType, '"']),
       mtError,[mbCancel],0);
     exit;
   end;
@@ -707,9 +714,9 @@ begin
   // check ancestor type is not unitname
   PkgFile:=PackageGraph.FindUnit(LazPackage,Params.AncestorType,true,true);
   if PkgFile<>nil then begin
-    if MessageDlg('Ambigious Ancestor Type',
-      'The ancestor type "'+Params.AncestorType+'" has the same name as'#13
-      +'the unit "'+PkgFile.Filename+'".',
+    if MessageDlg(lisA2PAmbigiousAncestorType,
+      Format(lisA2PTheAncestorTypeHasTheSameNameAsTheUnit, ['"',
+        Params.AncestorType, '"', #13, '"', PkgFile.Filename, '"']),
       mtError,[mbCancel,mbIgnore],0)<>mrIgnore
     then
       exit;
@@ -718,9 +725,9 @@ begin
   // check classname does not interfere with an existing unitname
   PkgFile:=PackageGraph.FindUnit(LazPackage,Params.ClassName,true,true);
   if PkgFile<>nil then begin
-    if MessageDlg('Ambigious Class Name',
-      'The class name "'+Params.AncestorType+'" has the same name as'#13
-      +'the unit "'+PkgFile.Filename+'".',
+    if MessageDlg(lisA2PAmbigiousClassName,
+      Format(lisA2PTheClassNameHasTheSameNameAsTheUnit, ['"',
+        Params.AncestorType, '"', #13, '"', PkgFile.Filename, '"']),
       mtError,[mbCancel,mbIgnore],0)<>mrIgnore
     then
       exit;
@@ -730,10 +737,10 @@ begin
   PkgComponent:=
     TPkgComponent(IDEComponentPalette.FindComponent(Params.Classname));
   if PkgComponent<>nil then begin
-    if MessageDlg('Class Name already exists',
-      'The class name "'+Params.ClassName+'" exists already in'#13
-      +'Package '+PkgComponent.PkgFile.LazPackage.IDAsString+#13
-      +'File: "'+PkgComponent.PkgFile.Filename+'"',
+    if MessageDlg(lisA2PClassNameAlreadyExists,
+      Format(lisA2PTheClassNameExistsAlreadyInPackageFile, ['"',
+        Params.ClassName, '"', #13, PkgComponent.PkgFile.LazPackage.IDAsString,
+        #13, '"', PkgComponent.PkgFile.Filename, '"']),
       mtError,[mbCancel,mbIgnore],0)<>mrIgnore
     then
       exit;
@@ -840,10 +847,9 @@ begin
     if DependMinVersionEdit.Text<>'' then begin
       if not NewDependency.MinVersion.ReadString(DependMinVersionEdit.Text) then
       begin
-        MessageDlg('Invalid version',
-          'The Minimum Version "'+DependMinVersionEdit.Text+'" is invalid.'#13
-          +'Please use the format major.minor.release.build'#13
-          +'For exmaple: 1.0.20.10',
+        MessageDlg(lisProjAddInvalidVersion,
+          Format(lisA2PTheMinimumVersionIsInvalidPleaseUseTheFormatMajor, ['"',
+            DependMinVersionEdit.Text, '"', #13, #13]),
           mtError,[mbCancel],0);
         exit;
       end;
@@ -853,10 +859,9 @@ begin
     if DependMaxVersionEdit.Text<>'' then begin
       if not NewDependency.MaxVersion.ReadString(DependMaxVersionEdit.Text) then
       begin
-        MessageDlg('Invalid version',
-          'The Maximum Version "'+DependMaxVersionEdit.Text+'" is invalid.'#13
-          +'Please use the format major.minor.release.build'#13
-          +'For exmaple: 1.0.20.10',
+        MessageDlg(lisProjAddInvalidVersion,
+          Format(lisA2PTheMaximumVersionIsInvalidPleaseUseTheFormatMajor, ['"',
+            DependMaxVersionEdit.Text, '"', #13, #13]),
           mtError,[mbCancel],0);
         exit;
       end;
@@ -930,13 +935,13 @@ begin
   with NoteBook do begin
     Name:='NoteBook';
     Parent:=Self;
-    Pages.Add('Add Unit');
+    Pages.Add(lisA2PAddUnit);
     AddUnitPage:=Page[0];
-    Pages.Add('New Component');
+    Pages.Add(lisA2PNewComponent);
     NewComponentPage:=Page[1];
-    Pages.Add('New Requirement');
+    Pages.Add(lisProjAddNewRequirement);
     NewDependPage:=Page[2];
-    Pages.Add('Add File');
+    Pages.Add(lisA2PAddFile);
     AddFilePage:=Page[3];
     PageIndex:=0;
     Align:=alClient;
@@ -953,14 +958,14 @@ begin
   with AddUnitFilenameLabel do begin
     Name:='AddUnitFilenameLabel';
     Parent:=AddUnitPage;
-    Caption:='Unit file name:';
+    Caption:=lisA2PUnitFileName;
   end;
   
   AddUnitFilenameEdit:=TEdit.Create(Self);
   with AddUnitFilenameEdit do begin
     Name:='AddUnitFilenameEdit';
     Parent:=AddUnitPage;
-    Text:='<choose an existing file>';
+    Text:=lisA2PchooseAnExistingFile;
   end;
 
   AddUnitFileBrowseButton:=TButton.Create(Self);
@@ -975,7 +980,7 @@ begin
   with AddUnitSrcNameLabel do begin
     Name:='AddUnitSrcNameLabel';
     Parent:=AddUnitPage;
-    Caption:='Unit Name: ';
+    Caption:=lisAF2PUnitName;
   end;
   
   AddUnitSrcNameEdit:=TEdit.Create(Self);
@@ -989,14 +994,14 @@ begin
   with AddUnitHasRegisterCheckBox do begin
     Name:='AddUnitHasRegisterCheckBox';
     Parent:=AddUnitPage;
-    Caption:='Has Register procedure';
+    Caption:=lisAF2PHasRegisterProcedure;
   end;
 
   AddSecondaryFilesCheckBox:=TCheckBox.Create(Self);
   with AddSecondaryFilesCheckBox do begin
     Name:='AddSecondaryFilesCheckBox';
     Parent:=AddUnitPage;
-    Caption:='Add LFM, LRS files, if they exist';
+    Caption:=lisA2PAddLFMLRSFilesIfTheyExist;
     Checked:=true;
   end;
 
@@ -1004,7 +1009,7 @@ begin
   with AddUnitUpdateButton do begin
     Name:='AddUnitUpdateButton';
     Parent:=AddUnitPage;
-    Caption:='Update Unit Name and Has Register procedure';
+    Caption:=lisA2PUpdateUnitNameAndHasRegisterProcedure;
     OnClick:=@AddUnitUpdateButtonClick;
   end;
 
@@ -1012,7 +1017,7 @@ begin
   with AddUnitButton do begin
     Name:='AddUnitButton';
     Parent:=AddUnitPage;
-    Caption:='Ok';
+    Caption:=lisLazBuildOk;
     OnClick:=@AddUnitButtonClick;
   end;
 
@@ -1020,7 +1025,7 @@ begin
   with CancelAddUnitButton do begin
     Name:='CancelAddUnitButton';
     Parent:=AddUnitPage;
-    Caption:='Cancel';
+    Caption:=dlgCancel;
     OnClick:=@CancelAddUnitButtonClick;
   end;
   
@@ -1031,7 +1036,7 @@ begin
   with AncestorTypeLabel do begin
     Name:='AncestorTypeLabel';
     Parent:=NewComponentPage;
-    Caption:='Ancestor Type';
+    Caption:=lisA2PAncestorType;
   end;
 
   AncestorComboBox:=TComboBox.Create(Self);
@@ -1046,7 +1051,7 @@ begin
   with AncestorShowAllCheckBox do begin
     Name:='AncestorShowAllCheckBox';
     Parent:=NewComponentPage;
-    Text:='Show all';
+    Text:=lisA2PShowAll;
     Checked:=true;
     OnClick:=@AncestorShowAllCheckBoxClick;
   end;
@@ -1055,7 +1060,7 @@ begin
   with ClassNameLabel do begin
     Name:='ClassNameLabel';
     Parent:=NewComponentPage;
-    Caption:='New class name:';
+    Caption:=lisA2PNewClassName;
   end;
 
   ClassNameEdit:=TEdit.Create(Self);
@@ -1070,7 +1075,7 @@ begin
   with PalettePageLabel do begin
     Name:='PalettePageLabel';
     Parent:=NewComponentPage;
-    Caption:='Palette Page:';
+    Caption:=lisA2PPalettePage;
   end;
 
   PalettePageCombobox:=TCombobox.Create(Self);
@@ -1084,7 +1089,7 @@ begin
   with ComponentUnitFileLabel do begin
     Name:='ComponentUnitFileLabel';
     Parent:=NewComponentPage;
-    Caption:='Unit File Name:';
+    Caption:=lisA2PUnitFileName2;
   end;
 
   ComponentUnitFileEdit:=TEdit.Create(Self);
@@ -1106,7 +1111,7 @@ begin
   with ComponentUnitNameLabel do begin
     Name:='ComponentUnitNameLabel';
     Parent:=NewComponentPage;
-    Caption:='Unit Name:';
+    Caption:=lisA2PUnitName;
   end;
 
   ComponentUnitNameEdit:=TEdit.Create(Self);
@@ -1120,7 +1125,7 @@ begin
   with NewComponentButton do begin
     Name:='NewComponentButton';
     Parent:=NewComponentPage;
-    Caption:='Ok';
+    Caption:=lisLazBuildOk;
     OnClick:=@NewComponentButtonClick;
   end;
 
@@ -1128,7 +1133,7 @@ begin
   with CancelNewComponentButton do begin
     Name:='CancelNewComponentButton';
     Parent:=NewComponentPage;
-    Caption:='Cancel';
+    Caption:=dlgCancel;
     OnClick:=@CancelNewComponentButtonClick;
   end;
 
@@ -1139,7 +1144,7 @@ begin
   with DependPkgNameLabel do begin
     Name:='DependPkgNameLabel';
     Parent:=NewDependPage;
-    Caption:='Package Name:';
+    Caption:=lisProjAddPackageName;
   end;
   
   DependPkgNameComboBox:=TComboBox.Create(Self);
@@ -1153,7 +1158,7 @@ begin
   with DependMinVersionLabel do begin
     Name:='DependMinVersionLabel';
     Parent:=NewDependPage;
-    Caption:='Minimum Version (optional):';
+    Caption:=lisProjAddMinimumVersionOptional;
   end;
 
   DependMinVersionEdit:=TEdit.Create(Self);
@@ -1167,7 +1172,7 @@ begin
   with DependMaxVersionLabel do begin
     Name:='DependMaxVersionLabel';
     Parent:=NewDependPage;
-    Caption:='Maximum Version (optional):';
+    Caption:=lisProjAddMaximumVersionOptional;
   end;
 
   DependMaxVersionEdit:=TEdit.Create(Self);
@@ -1181,7 +1186,7 @@ begin
   with NewDependButton do begin
     Name:='NewDependButton';
     Parent:=NewDependPage;
-    Caption:='Ok';
+    Caption:=lisLazBuildOk;
     OnClick:=@NewDependButtonClick;
   end;
 
@@ -1189,7 +1194,7 @@ begin
   with CancelDependButton do begin
     Name:='CancelDependButton';
     Parent:=NewDependPage;
-    Caption:='Cancel';
+    Caption:=dlgCancel;
     ModalResult:=mrCancel;
   end;
 
@@ -1199,14 +1204,14 @@ begin
   with AddFilenameLabel do begin
     Name:='AddFilenameLabel';
     Parent:=AddFilePage;
-    Caption:='File name:';
+    Caption:=lisA2PFileName;
   end;
 
   AddFilenameEdit:=TEdit.Create(Self);
   with AddFilenameEdit do begin
     Name:='AddFilenameEdit';
     Parent:=AddFilePage;
-    Text:='<choose an existing file>';
+    Text:=lisA2PchooseAnExistingFile;
   end;
 
   AddFileBrowseButton:=TButton.Create(Self);
@@ -1221,7 +1226,7 @@ begin
   with AddFileTypeRadioGroup do begin
     Name:='AddFileTypeRadioGroup';
     Parent:=AddFilePage;
-    Caption:='File Type';
+    Caption:=lisAF2PFileType;
     with Items do begin
       BeginUpdate;
       for pft:=Low(TPkgFileType) to High(TPkgFileType) do begin
@@ -1236,7 +1241,7 @@ begin
   with AddFileButton do begin
     Name:='AddFileButton';
     Parent:=AddFilePage;
-    Caption:='Ok';
+    Caption:=lisLazBuildOk;
     OnClick:=@AddFileButtonClick;
   end;
 
@@ -1244,7 +1249,7 @@ begin
   with CancelAddFileButton do begin
     Name:='CancelAddFileButton';
     Parent:=AddFilePage;
-    Caption:='Cancel';
+    Caption:=dlgCancel;
     OnClick:=@CancelAddFileButtonClick;
   end;
 end;

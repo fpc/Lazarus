@@ -254,17 +254,19 @@ begin
   DepOwner:=Dependency.Owner;
   if (DepOwner<>nil) then begin
     if DepOwner is TLazPackage then begin
-      Description:='Package: '+TLazPackage(DepOwner).IDAsString;
+      Description:=Format(lisPkgMangPackage, [TLazPackage(DepOwner).IDAsString]
+        );
     end else if DepOwner is TProject then begin
-      Description:='Project: '
-                       +ExtractFileNameOnly(TProject(DepOwner).ProjectInfoFile);
+      Description:=Format(lisPkgMangProject, [ExtractFileNameOnly(TProject(
+        DepOwner).ProjectInfoFile)]);
     end else if DepOwner=Self then begin
-      Description:='Lazarus';
+      Description:=lisPkgMangLazarus;
     end else begin
       Description:=DepOwner.ClassName
     end;
   end else begin
-    Description:='Dependency without Owner: '+Dependency.AsString;
+    Description:=Format(lisPkgMangDependencyWithoutOwner, [Dependency.AsString]
+      );
   end;
 end;
 
@@ -502,7 +504,7 @@ begin
   SaveDialog:=TSaveDialog.Create(Application);
   try
     InputHistories.ApplyFileDialogSettings(SaveDialog);
-    SaveDialog.Title:='Save Package '+APackage.IDAsString+' (*.lpk)';
+    SaveDialog.Title:=Format(lisPkgMangSavePackageLpk, [APackage.IDAsString]);
     if APackage.HasDirectory then
       SaveDialog.InitialDir:=APackage.Directory;
 
@@ -526,8 +528,8 @@ begin
         // append extension
         NewFileName:=NewFileName+'.lpk';
       end else if ExtractFileExt(NewFilename)<>'.lpk' then begin
-        Result:=MessageDlg('Invalid package file extension',
-          'Packages must have the extension .lpk',
+        Result:=MessageDlg(lisPkgMangInvalidPackageFileExtension,
+          lisPkgMangPackagesMustHaveTheExtensionLpk,
           mtInformation,[mbRetry,mbAbort],0);
         if Result=mrAbort then exit;
         continue; // try again
@@ -535,9 +537,9 @@ begin
 
       // check filename
       if (NewPkgName='') or (not IsValidIdent(NewPkgName)) then begin
-        Result:=MessageDlg('Invalid package name',
-          'The package name "'+NewPkgName+'" is not a valid package name'#13
-          +'Please choose another name (e.g. package1.lpk)',
+        Result:=MessageDlg(lisPkgMangInvalidPackageName,
+          Format(lisPkgMangThePackageNameIsNotAValidPackageNamePleaseChooseAn, [
+            '"', NewPkgName, '"', #13]),
           mtInformation,[mbRetry,mbAbort],0);
         if Result=mrAbort then exit;
         continue; // try again
@@ -548,9 +550,9 @@ begin
         LowerFilename:=ExtractFilePath(NewFilename)
                       +lowercase(ExtractFileName(NewFilename));
         if EnvironmentOptions.PascalFileAskLowerCase then begin
-          if MessageDlg('Rename File lowercase?',
-            'Should the file renamed lowercase to'#13
-            +'"'+LowerFilename+'"?',
+          if MessageDlg(lisPkgMangRenameFileLowercase,
+            Format(lisPkgMangShouldTheFileRenamedLowercaseTo, [#13, '"',
+              LowerFilename, '"']),
             mtConfirmation,[mbYes,mbNo],0)=mrYes
           then
             NewFileName:=LowerFilename;
@@ -563,10 +565,10 @@ begin
       // check package name conflict
       ConflictPkg:=PackageGraph.FindAPackageWithName(NewPkgName,APackage);
       if ConflictPkg<>nil then begin
-        Result:=MessageDlg('Package name already exists',
-          'There is already another package with the name "'+NewPkgName+'".'#13
-          +'Conflict package: "'+ConflictPkg.IDAsString+'"'#13
-          +'File: "'+ConflictPkg.Filename+'"',
+        Result:=MessageDlg(lisPkgMangPackageNameAlreadyExists,
+          Format(lisPkgMangThereIsAlreadyAnotherPackageWithTheName, ['"',
+            NewPkgName, '"', #13, '"', ConflictPkg.IDAsString, '"', #13, '"',
+            ConflictPkg.Filename, '"']),
           mtInformation,[mbRetry,mbAbort,mbIgnore],0);
         if Result=mrAbort then exit;
         if Result<>mrIgnore then continue; // try again
@@ -574,9 +576,9 @@ begin
       
       // check file name conflict with project
       if Project1.ProjectUnitWithFilename(NewFilename)<>nil then begin
-        Result:=MessageDlg('Filename is used by project',
-          'The file name "'+NewFilename+'" is part of the current project.'#13
-          +'Projects and Packages should not share files.',
+        Result:=MessageDlg(lisPkgMangFilenameIsUsedByProject,
+          Format(lisPkgMangTheFileNameIsPartOfTheCurrentProject, ['"',
+            NewFilename, '"', #13]),
           mtInformation,[mbRetry,mbAbort],0);
         if Result=mrAbort then exit;
         continue; // try again
@@ -585,10 +587,10 @@ begin
       // check file name conflicts with other packages
       PkgFile:=PackageGraph.FindFileInAllPackages(NewFilename,true,true);
       if PkgFile<>nil then begin
-        Result:=MessageDlg('Filename is used by other package',
-          'The file name "'+NewFilename+'" is used by'#13
-          +'the package "'+PkgFile.LazPackage.IDAsString+'"'#13
-          +'in file "'+PkgFile.LazPackage.Filename+'".',
+        Result:=MessageDlg(lisPkgMangFilenameIsUsedByOtherPackage,
+          Format(lisPkgMangTheFileNameIsUsedByThePackageInFile, ['"',
+            NewFilename, '"', #13, '"', PkgFile.LazPackage.IDAsString, '"',
+            #13, '"', PkgFile.LazPackage.Filename, '"']),
           mtWarning,[mbRetry,mbAbort],0);
         if Result=mrAbort then exit;
         continue; // try again
@@ -613,8 +615,8 @@ begin
       // check existing file
       if (CompareFilenames(NewFileName,OldPkgFilename)<>0)
       and FileExists(NewFileName) then begin
-        Result:=MessageDlg('Replace File',
-          'Replace existing file "'+NewFilename+'"?',
+        Result:=MessageDlg(lisPkgMangReplaceFile,
+          Format(lisPkgMangReplaceExistingFile, ['"', NewFilename, '"']),
           mtConfirmation,[mbOk,mbCancel],0);
         if Result<>mrOk then exit;
       end;
@@ -639,16 +641,17 @@ begin
   // clean up old package file to reduce ambigiousities
   if FileExists(OldPkgFilename)
   and (CompareFilenames(OldPkgFilename,NewFilename)<>0) then begin
-    if MessageDlg('Delete Old Package File?',
-      'Delete old package file "'+OldPkgFilename+'"?',
+    if MessageDlg(lisPkgMangDeleteOldPackageFile,
+      Format(lisPkgMangDeleteOldPackageFile2, ['"', OldPkgFilename, '"']),
       mtConfirmation,[mbOk,mbCancel],0)=mrOk
     then begin
       if DeleteFile(OldPkgFilename) then begin
         RemoveFromRecentList(OldPkgFilename,
                              EnvironmentOptions.RecentPackageFiles);
       end else begin
-        MessageDlg('Delete failed',
-          'Unable to delete file "'+OldPkgFilename+'".',mtError,[mbOk],0);
+        MessageDlg(lisPkgMangDeleteFailed,
+          Format(lisPkgMangUnableToDeleteFile, ['"', OldPkgFilename, '"']),
+            mtError, [mbOk], 0);
       end;
     end;
   end;
@@ -698,8 +701,8 @@ begin
   PathList:=PackageGraph.FindUnsavedDependencyPath(APackage,FirstDependency);
   if PathList<>nil then begin
     DoShowPackageGraphPathList(PathList);
-    Result:=MessageDlg('Unsaved package',
-      'There is an unsaved package in the required packages. See package graph.',
+    Result:=MessageDlg(lisPkgMangUnsavedPackage,
+      lisPkgMangThereIsAnUnsavedPackageInTheRequiredPackages,
       mtError,[mbCancel,mbAbort],0);
     exit;
   end;
@@ -713,17 +716,17 @@ begin
         // check if project
         if Dependency.Owner is TProject then begin
           MainIDE.DoShowProjectInspector;
-          Result:=MessageDlg('Broken dependency',
-            'The project requires the package "'+Dependency.AsString+'".'#13
-            +'But it was not found. See Project -> Project Inspector.',
+          Result:=MessageDlg(lisPkgMangBrokenDependency,
+            Format(lisPkgMangTheProjectRequiresThePackageButItWasNotFound, [
+              '"', Dependency.AsString, '"', #13]),
             mtError,[mbCancel,mbAbort],0);
           exit;
         end;
       end;
     end;
     DoShowPackageGraphPathList(PathList);
-    Result:=MessageDlg('Broken dependency',
-      'A required packages was not found. See package graph.',
+    Result:=MessageDlg(lisPkgMangBrokenDependency,
+      lisPkgMangARequiredPackagesWasNotFound,
       mtError,[mbCancel,mbAbort],0);
     exit;
   end;
@@ -732,8 +735,8 @@ begin
   PathList:=PackageGraph.FindCircleDependencyPath(APackage,FirstDependency);
   if PathList<>nil then begin
     DoShowPackageGraphPathList(PathList);
-    Result:=MessageDlg('Circle in package dependencies',
-      'There is a circle in the required packages. See package graph.',
+    Result:=MessageDlg(lisPkgMangCircleInPackageDependencies,
+      lisPkgMangThereIsACircleInTheRequiredPackages,
       mtError,[mbCancel,mbAbort],0);
     exit;
   end;
@@ -768,10 +771,9 @@ begin
     APackage.Flags:=APackage.Flags+[lpfStateFileLoaded];
   except
     on E: Exception do begin
-      Result:=MessageDlg('Error writing file',
-        'Unable to write state file "'+StateFile+'"'#13
-        +'of package '+APackage.IDAsString+'.'#13
-        +'Error: '+E.Message,
+      Result:=MessageDlg(lisPkgMangErrorWritingFile,
+        Format(lisPkgMangUnableToWriteStateFileOfPackageError, ['"', StateFile,
+          '"', #13, APackage.IDAsString, #13, E.Message]),
         mtError,[mbAbort,mbCancel],0);
       exit;
     end;
@@ -819,10 +821,9 @@ begin
         if IgnoreErrors then begin
           Result:=mrOk;
         end else begin
-          Result:=MessageDlg('Error reading file',
-            'Unable to read state file "'+StateFile+'"'#13
-            +'of package '+APackage.IDAsString+'.'#13
-            +'Error: '+E.Message,
+          Result:=MessageDlg(lisPkgMangErrorReadingFile,
+            Format(lisPkgMangUnableToReadStateFileOfPackageError, ['"',
+              StateFile, '"', #13, APackage.IDAsString, #13, E.Message]),
             mtError,[mbCancel,mbAbort],0);
         end;
         exit;
@@ -847,18 +848,18 @@ begin
 
   // create the output directory
   if not ForceDirectory(OutputDir) then begin
-    Result:=MessageDlg('Unable to create directory',
-      'Unable to create output directory "'+OutputDir+'"'#13
-      +'for package '+APackage.IDAsString+'.',
+    Result:=MessageDlg(lisPkgMangUnableToCreateDirectory,
+      Format(lisPkgMangUnableToCreateOutputDirectoryForPackage, ['"',
+        OutputDir, '"', #13, APackage.IDAsString]),
       mtError,[mbCancel,mbAbort],0);
     exit;
   end;
 
   // delete old Compile State file
   if FileExists(StateFile) and not DeleteFile(StateFile) then begin
-    Result:=MessageDlg('Unable to delete file',
-      'Unable to delete old state file "'+StateFile+'"'#13
-      +'for package '+APackage.IDAsString+'.',
+    Result:=MessageDlg(lisPkgMangUnableToDeleteFilename,
+      Format(lisPkgMangUnableToDeleteOldStateFileForPackage, ['"', StateFile,
+        '"', #13, APackage.IDAsString]),
       mtError,[mbCancel,mbAbort],0);
     exit;
   end;
@@ -866,9 +867,9 @@ begin
   
   // create the package src directory
   if not ForceDirectory(PkgSrcDir) then begin
-    Result:=MessageDlg('Unable to create directory',
-      'Unable to create package source directory "'+PkgSrcDir+'"'#13
-      +'for package '+APackage.IDAsString+'.',
+    Result:=MessageDlg(lisPkgMangUnableToCreateDirectory,
+      Format(lisPkgMangUnableToCreatePackageSourceDirectoryForPackage, ['"',
+        PkgSrcDir, '"', #13, APackage.IDAsString]),
       mtError,[mbCancel,mbAbort],0);
     exit;
   end;
@@ -987,7 +988,7 @@ begin
     end;
   end;
 
-writeln('TPkgManager.CheckIfPackageNeedsCompilation END ',APackage.IDAsString);
+  writeln('TPkgManager.CheckIfPackageNeedsCompilation END ',APackage.IDAsString);
   Result:=mrNo;
 end;
 
@@ -1197,9 +1198,8 @@ begin
     Dependency.PackageName:=PackageName;
     Dependency.AddToList(FirstAutoInstallDependency,pdlRequires);
     if PackageGraph.OpenDependency(Dependency)<>lprSuccess then begin
-      MessageDlg('Unable to load package',
-        'Unable to open the package "'+PackageName+'".'#13
-        +'This package was marked for for installation.',
+      MessageDlg(lisPkgMangUnableToLoadPackage,
+        Format(lisPkgMangUnableToOpenThePackage, ['"', PackageName, '"', #13]),
         mtWarning,[mbOk],0);
       continue;
     end;
@@ -1369,9 +1369,9 @@ var
 begin
   // check Package Name
   if (APackage.Name='') or (not IsValidIdent(APackage.Name)) then begin
-    Result:=MessageDlg('Invalid Package Name',
-      'The package name "'+APackage.Name+'" of'#13
-      +'the file "'+APackage.Filename+'" is invalid.',
+    Result:=MessageDlg(lisPkgMangInvalidPackageName2,
+      Format(lisPkgMangThePackageNameOfTheFileIsInvalid, ['"', APackage.Name,
+        '"', #13, '"', APackage.Filename, '"']),
       mtError,[mbCancel,mbAbort],0);
     exit;
   end;
@@ -1380,23 +1380,19 @@ begin
   ConflictPkg:=PackageGraph.FindAPackageWithName(APackage.Name,nil);
   if ConflictPkg<>nil then begin
     if not PackageGraph.PackageCanBeReplaced(ConflictPkg,APackage) then begin
-      Result:=MessageDlg('Package conflicts',
-        'There is already a package "'+ConflictPkg.IDAsString+'" loaded'#13
-        +'from file "'+ConflictPkg.Filename+'".'#13
-        +'See Components -> Package Graph.'#13
-        +'Replace is impossible.',
+      Result:=MessageDlg(lisPkgMangPackageConflicts,
+        Format(lisPkgMangThereIsAlreadyAPackageLoadedFromFile, ['"',
+          ConflictPkg.IDAsString, '"', #13, '"', ConflictPkg.Filename, '"',
+          #13, #13]),
         mtError,[mbCancel,mbAbort],0);
       exit;
     end;
     
     if ConflictPkg.Modified and (not ConflictPkg.ReadOnly) then begin
-      Result:=MessageDlg('Save Package?',
-        'Loading package '+APackage.IDAsString
-        +' will replace package '+ConflictPkg.IDAsString+#13
-        +'from file '+ConflictPkg.Filename+'.'#13
-        +'The old package is modified.'#13
-        +#13
-        +'Save old package '+ConflictPkg.Filename+'?',
+      Result:=MessageDlg(lisPkgMangSavePackage,
+        Format(lisPkgMangLoadingPackageWillReplacePackage, [
+          APackage.IDAsString, ConflictPkg.IDAsString, #13,
+          ConflictPkg.Filename, #13, #13, #13, ConflictPkg.Filename]),
         mtConfirmation,[mbYes,mbNo,mbCancel,mbAbort],0);
       if Result=mrNo then Result:=mrOk;
       if Result=mrYes then begin
@@ -1502,7 +1498,7 @@ var
   CurEditor: TPackageEditorForm;
 begin
   // create a new package with standard dependencies
-  NewPackage:=PackageGraph.CreateNewPackage('NewPackage');
+  NewPackage:=PackageGraph.CreateNewPackage(lisPkgMangNewPackage);
   PackageGraph.AddDependencyToPackage(NewPackage,
                 PackageGraph.FCLPackage.CreateDependencyForThisPkg(NewPackage));
   NewPackage.Modified:=false;
@@ -1543,8 +1539,8 @@ begin
   
   // check file extension
   if CompareFileExt(AFilename,'.lpk',false)<>0 then begin
-    Result:=MessageDlg('Invalid file extension',
-      'The file "'+AFilename+'" is not a lazarus package.',
+    Result:=MessageDlg(lisPkgMangInvalidFileExtension,
+      Format(lisPkgMangTheFileIsNotALazarusPackage, ['"', AFilename, '"']),
       mtError,[mbCancel,mbAbort],0);
     RemoveFromRecentList(AFilename,EnvironmentOptions.RecentPackageFiles);
     SetRecentPackagesMenu;
@@ -1555,9 +1551,9 @@ begin
   AlternativePkgName:=ExtractFileNameOnly(AFilename);
   if (AlternativePkgName='') or (not IsValidIdent(AlternativePkgName)) then
   begin
-    Result:=MessageDlg('Invalid package filename',
-      'The package file name "'+AlternativePkgName+'" in'#13
-      +'"'+AFilename+'" is not a valid lazarus package name.',
+    Result:=MessageDlg(lisPkgMangInvalidPackageFilename,
+      Format(lisPkgMangThePackageFileNameInIsNotAValidLazarusPackageName, ['"',
+        AlternativePkgName, '"', #13, '"', AFilename, '"']),
       mtError,[mbCancel,mbAbort],0);
     RemoveFromRecentList(AFilename,EnvironmentOptions.RecentPackageFiles);
     SetRecentPackagesMenu;
@@ -1577,8 +1573,8 @@ begin
     // package not yet loaded
     
     if not FileExists(AFilename) then begin
-      MessageDlg('File not found',
-        'File "'+AFilename+'" not found.',
+      MessageDlg(lisFileNotFound,
+        Format(lisPkgMangFileNotFound, ['"', AFilename, '"']),
         mtError,[mbCancel],0);
       RemoveFromRecentList(AFilename,EnvironmentOptions.RecentPackageFiles);
       SetRecentPackagesMenu;
@@ -1602,8 +1598,9 @@ begin
         end;
       except
         on E: Exception do begin
-          Result:=MessageDlg('Error Reading Package',
-            'Unable to read package file "'+APackage.Filename+'".',
+          Result:=MessageDlg(lisPkgMangErrorReadingPackage,
+            Format(lisPkgMangUnableToReadPackageFile, ['"', APackage.Filename,
+              '"']),
             mtError,[mbAbort,mbCancel],0);
           exit;
         end;
@@ -1614,10 +1611,10 @@ begin
 
       // check if package name and file name correspond
       if (AnsiCompareText(AlternativePkgName,APackage.Name)<>0) then begin
-        Result:=MessageDlg('Filename differs from Packagename',
-          'The filename "'+ExtractFileName(AFilename)+'" does not correspond '
-          +'to the package name "'+APackage.Name+'" in the file.'#13
-          +'Change package name to "'+AlternativePkgName+'"?',
+        Result:=MessageDlg(lisPkgMangFilenameDiffersFromPackagename,
+          Format(lisPkgMangTheFilenameDoesNotCorrespondToThePackage, ['"',
+            ExtractFileName(AFilename), '"', '"', APackage.Name, '"', #13, '"',
+            AlternativePkgName, '"']),
           mtConfirmation,[mbYes,mbCancel,mbAbort],0);
         if Result<>mrYes then exit;
         APackage.Name:=AlternativePkgName;
@@ -1656,8 +1653,9 @@ begin
 
   // ask user if package should be saved
   if psfAskBeforeSaving in Flags then begin
-    Result:=MessageDlg('Save package?',
-               'Package "'+APackage.IDAsString+'" changed. Save?',
+    Result:=MessageDlg(lisPkgMangSavePackage2,
+               Format(lisPkgMangPackageChangedSave, ['"', APackage.IDAsString,
+                 '"']),
                mtConfirmation,[mbYes,mbNo,mbAbort],0);
     if (Result=mrNo) then Result:=mrIgnore;
     if Result<>mrYes then exit;
@@ -1694,10 +1692,10 @@ begin
     end;
   except
     on E: Exception do begin
-      Result:=MessageDlg('Error Writing Package',
-        'Unable to write package "'+APackage.IDAsString+'"'#13
-        +'to file "'+APackage.Filename+'".'#13
-        +'Error: '+E.Message,
+      Result:=MessageDlg(lisPkgMangErrorWritingPackage,
+        Format(lisPkgMangUnableToWritePackageToFileError, ['"',
+          APackage.IDAsString, '"', #13, '"', APackage.Filename, '"', #13,
+          E.Message]),
         mtError,[mbAbort,mbCancel],0);
       exit;
     end;
@@ -1850,9 +1848,9 @@ begin
       CheckIfFileIsExecutable(CompilerFilename);
     except
       on e: Exception do begin
-        Result:=MessageDlg('invalid Compiler filename',
-          'The compiler file for package '+APackage.IDAsString+' is not a valid executable:'#13
-          +E.Message,
+        Result:=MessageDlg(lisPkgManginvalidCompilerFilename,
+          Format(lisPkgMangTheCompilerFileForPackageIsNotAValidExecutable, [
+            APackage.IDAsString, #13, E.Message]),
           mtError,[mbCancel,mbAbort],0);
         exit;
       end;
@@ -1922,9 +1920,9 @@ begin
   // check if package is ready for saving
   OutputDir:=APackage.GetOutputDirectory;
   if not DirectoryExists(OutputDir) then begin
-    Result:=MessageDlg('Directory not found',
-      'Package "'+APackage.IDAsString+'" has no valid output directory:'#13
-      +'"'+OutputDir+'"',
+    Result:=MessageDlg(lisEnvOptDlgDirectoryNotFound,
+      Format(lisPkgMangPackageHasNoValidOutputDirectory, ['"',
+        APackage.IDAsString, '"', #13, '"', OutputDir, '"']),
       mtError,[mbCancel,mbAbort],0);
     exit;
   end;
@@ -1985,11 +1983,9 @@ begin
 
   // create source
   HeaderSrc:=
-       '{ This file was automatically created by Lazarus. Do not edit!'+e
-      +'  This source is only used to compile and install'+e
-      +'  the package '+APackage.IDAsString+'.'+e
-      +'}'+e
-      +e;
+       Format(lisPkgMangThisFileWasAutomaticallyCreatedByLazarusDoNotEdit, [e,
+         e, APackage.IDAsString, e, e
+      +e]);
   Src:='unit '+APackage.Name+';'+e
       +e
       +'interface'+e
@@ -2018,7 +2014,8 @@ begin
   end;
 
   // save source
-  Result:=MainIDE.DoSaveStringToFile(SrcFilename,Src,'package main source file');
+  Result:=MainIDE.DoSaveStringToFile(SrcFilename, Src,
+    lisPkgMangpackageMainSourceFile);
   if Result<>mrOk then exit;
 
   Result:=mrOk;
@@ -2041,10 +2038,9 @@ begin
   NewPkgFile:=PackageGraph.FindFileInAllPackages(NewFilename,false,true);
   if (NewPkgFile<>nil) and (OldPackage<>NewPkgFile.LazPackage) then exit;
 
-  Result:=MessageDlg('Rename file in package?',
-    'The package '+OldPackage.IDAsString+' owns the file'#13
-    +'"'+OldFilename+'".'#13
-    +'Should the file be renamed in the package as well?',
+  Result:=MessageDlg(lisPkgMangRenameFileInPackage,
+    Format(lisPkgMangThePackageOwnsTheFileShouldTheFileBeRenamed, [
+      OldPackage.IDAsString, #13, '"', OldFilename, '"', #13]),
     mtConfirmation,[mbYes,mbNo,mbAbort],0);
   if Result=mrNo then begin
     Result:=mrOk;
@@ -2075,17 +2071,17 @@ begin
   
   // check if filename is absolute
   if ActiveUnitInfo.IsVirtual or (not FileExists(Filename)) then begin
-    Result:=MessageDlg('File not saved',
-      'Please save the file before adding it to a package.',
+    Result:=MessageDlg(lisPkgMangFileNotSaved,
+      lisPkgMangPleaseSaveTheFileBeforeAddingItToAPackage,
       mtWarning,[mbCancel],0);
     exit;
   end;
   
   // check if file is part of project
   if ActiveUnitInfo.IsPartOfProject then begin
-    Result:=MessageDlg('File is in Project',
-      'Warning: The file "'+Filename+'"'#13
-      +'belongs to the current project.'
+    Result:=MessageDlg(lisPkgMangFileIsInProject,
+      Format(lisPkgMangWarningTheFileBelongsToTheCurrentProject, ['"',
+        Filename, '"', #13])
       ,mtWarning,[mbIgnore,mbCancel,mbAbort],0);
     if Result<>mrIgnore then exit;
   end;
@@ -2093,9 +2089,9 @@ begin
   // check if file is already in a package
   PkgFile:=PackageGraph.FindFileInAllPackages(Filename,false,true);
   if PkgFile<>nil then begin
-    Result:=MessageDlg('File is already in package',
-      'The file "'+Filename+'"'#13
-      +'is already in the package '+PkgFile.LazPackage.IDAsString+'.',
+    Result:=MessageDlg(lisPkgMangFileIsAlreadyInPackage,
+      Format(lisPkgMangTheFileIsAlreadyInThePackage, ['"', Filename, '"', #13,
+        PkgFile.LazPackage.IDAsString]),
       mtWarning,[mbIgnore,mbCancel,mbAbort],0);
     if Result<>mrIgnore then exit;
   end;
@@ -2124,9 +2120,9 @@ begin
   try
     // check if package is designtime package
     if APackage.PackageType=lptRunTime then begin
-      Result:=MessageDlg('Package is no designtime package',
-        'The package '+APackage.IDAsString+' is a runtime only package.'#13
-        +'Runtime only packages can not be installed in the IDE.',
+      Result:=MessageDlg(lisPkgMangPackageIsNoDesigntimePackage,
+        Format(lisPkgMangThePackageIsARuntimeOnlyPackageRuntimeOnlyPackages, [
+          APackage.IDAsString, #13]),
         mtError,[mbCancel,mbAbort],0);
       exit;
     end;
@@ -2156,10 +2152,9 @@ begin
         RequiredPackage:=TLazPackage(PkgList[i]);
         s:=s+RequiredPackage.IDAsString+#13;
       end;
-      Result:=MessageDlg('Automatically installed packages',
-        'Installing the package '+APackage.IDAsString+' will automatically '
-        +'install the package(s):'#13
-        +s,
+      Result:=MessageDlg(lisPkgMangAutomaticallyInstalledPackages,
+        Format(lisPkgMangInstallingThePackageWillAutomaticallyInstall, [
+          APackage.IDAsString, #13, s]),
         mtConfirmation,[mbOk,mbCancel,mbAbort],0);
       if Result<>mrOk then exit;
     end;
@@ -2181,12 +2176,9 @@ begin
       SaveAutoInstallDependencies(true);
 
     // ask user to rebuilt Lazarus now
-    Result:=MessageDlg('Rebuild Lazarus?',
-      'The package "'+APackage.IDAsString+'" was marked for installation.'#13
-      +'Currently lazarus only supports static linked packages. The real '
-      +'installation needs rebuilding and restarting of lazarus.'#13
-      +#13
-      +'Should lazarus now be rebuilt?',
+    Result:=MessageDlg(lisPkgMangRebuildLazarus,
+      Format(lisPkgMangThePackageWasMarkedForInstallationCurrentlyLazarus, [
+        '"', APackage.IDAsString, '"', #13, #13, #13]),
       mtConfirmation,[mbYes,mbNo],0);
     if Result=mrNo then begin
       Result:=mrOk;
@@ -2217,17 +2209,16 @@ begin
   if DependencyPath<>nil then begin
     DoShowPackageGraphPathList(DependencyPath);
     ParentPackage:=TLazPackage(DependencyPath[0]);
-    Result:=MessageDlg('Package is required',
-      'The package '+APackage.IDAsString+' is required by '
-      +ParentPackage.IDAsString+', which is marked for installation.'#13
-      +'See package graph.',
+    Result:=MessageDlg(lisPkgMangPackageIsRequired,
+      Format(lisPkgMangThePackageIsRequiredByWhichIsMarkedForInstallation, [
+        APackage.IDAsString, ParentPackage.IDAsString, #13]),
       mtError,[mbCancel,mbAbort],0);
     exit;
   end;
 
   // confirm uninstall package
-  Result:=MessageDlg('Uninstall package?',
-    'Uninstall package '+APackage.IDAsString+'?',
+  Result:=MessageDlg(lisPkgMangUninstallPackage,
+    Format(lisPkgMangUninstallPackage2, [APackage.IDAsString]),
     mtConfirmation,[mbYes,mbCancel,mbAbort],0);
   if Result<>mrYes then exit;
   
@@ -2252,12 +2243,9 @@ begin
     end;
 
     // ask user to rebuilt Lazarus now
-    Result:=MessageDlg('Rebuild Lazarus?',
-      'The package "'+APackage.IDAsString+'" was marked.'#13
-      +'Currently lazarus only supports static linked packages. The real '
-      +'un-installation needs rebuilding and restarting of lazarus.'#13
-      +#13
-      +'Should lazarus now be rebuilt?',
+    Result:=MessageDlg(lisPkgMangRebuildLazarus,
+      Format(lisPkgMangThePackageWasMarkedCurrentlyLazarus, ['"',
+        APackage.IDAsString, '"', #13, #13, #13]),
       mtConfirmation,[mbYes,mbNo],0);
     if Result=mrNo then begin
       Result:=mrOk;
@@ -2287,10 +2275,9 @@ begin
       OldDependency:=Dependency;
       Dependency:=Dependency.NextRequiresDependency;
       if OldDependency.LoadPackageResult<>lprSuccess then begin
-        Result:=MessageDlg('Package not found',
-          'The package "'+OldDependency.AsString+'" is marked for installation,'
-          +' but can not be found.'#13
-          +'Remove dependency from the installation list of packages?',
+        Result:=MessageDlg(lisProjAddPackageNotFound,
+          Format(lisPkgMangThePackageIsMarkedForInstallationButCanNotBeFound, [
+            '"', OldDependency.AsString, '"', #13]),
           mtError,[mbYes,mbNo,mbAbort],0);
         if Result=mrNo then Result:=mrCancel;
         if Result<>mrYes then exit;
@@ -2339,17 +2326,15 @@ begin
   end;
   StaticPckIncludeFile:=ConfigDir+'staticpackages.inc';
   Result:=MainIDE.DoSaveStringToFile(StaticPckIncludeFile,StaticPackagesInc,
-                                     'static packages config file');
+                                     lisPkgMangstaticPackagesConfigFile);
   if Result<>mrOk then exit;
 
   TargetDir:=MiscellaneousOptions.BuildLazOpts.TargetDirectory;
   MainIDE.MacroList.SubstituteStr(TargetDir);
   if not ForceDirectory(TargetDir) then begin
-    Result:=MessageDlg('Unable to create directory',
-      'Unable to create target directory for lazarus:'#13
-      +'"'+TargetDir+'".'#13
-      +'This directory is needed for the new changed lazarus IDE '
-      +'with your custom packages.',
+    Result:=MessageDlg(lisPkgMangUnableToCreateDirectory,
+      Format(lisPkgMangUnableToCreateTargetDirectoryForLazarus, [#13, '"',
+        TargetDir, '"', #13]),
       mtError,[mbCancel,mbAbort],0);
     exit;
   end;

@@ -1318,6 +1318,7 @@ begin
   {$ENDIF}
   if (SameArea.EndPos=SameArea.StartPos) or (SameArea.StartPos>SrcLen) then
     exit;
+
   // read til end of string constant
   MoveCursorToCleanPos(SameArea.StartPos);
   ReadNextAtom;
@@ -1364,7 +1365,8 @@ begin
       if not (LastToken in [scatPlus, scatPoint]) then exit;
 
     scatPoint:
-      if not (LastToken in [scatIdent, scatUp]) then exit;
+      if not (LastToken in [scatIdent, scatUp, scatRoundBracketClose]) then
+        exit;
 
     scatEdgedBracketOpen,scatRoundBracketOpen:
       if not (LastToken in [scatIdent, scatUp]) then

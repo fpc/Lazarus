@@ -2,6 +2,14 @@
 msgid "0.8.5 alpha"
 msgstr ""
 
+#: lazarusidestrconsts:lisnostringconstantfound
+msgid "No String Constant Found"
+msgstr ""
+
+#: lazarusidestrconsts:lishintthemakeresourcestringfunctionexpectsastringcon
+msgid "Hint: The Make Resourcestring Function expects a string constant.%sPlease select the expression and try again."
+msgstr ""
+
 #: lazarusidestrconsts:liscmdlinehlpheader
 msgid "lazarus [options] <project-filename>\n\nIDE Options:\n\n--help or -?             this help message\n\n"
 msgstr ""
@@ -608,6 +616,486 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuaboutlazarus
 msgid "About Lazarus"
+msgstr ""
+
+#: lazarusidestrconsts:lischooseprogramsourcepppaslpr
+msgid "Choose program source (*.pp,*.pas,*.lpr)"
+msgstr ""
+
+#: lazarusidestrconsts:lisprogramsourcemusthaveapascalextensionlikepaspporlp
+msgid "Program source must have a pascal extension like .pas, .pp or .lpr"
+msgstr ""
+
+#: lazarusidestrconsts:lislazarusprojectinfolpilpiallfiles
+msgid "Lazarus Project Info (*.lpi)|*.lpi|All Files|*.*"
+msgstr ""
+
+#: lazarusidestrconsts:liscompileroptionsforproject
+msgid "Compiler Options for Project: %s"
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletoreadfileerror
+msgid "Unable to read file %s%s%s%sError: %s"
+msgstr ""
+
+#: lazarusidestrconsts:lisformaterror
+msgid "Format error"
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletoconvertfileerror
+msgid "Unable to convert file %s%s%s%sError: %s"
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletowritefileerror
+msgid "Unable to write file %s%s%s%sError: %s"
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletoloadoldresourcefiletheresourcefileis
+msgid "Unable to load old resource file.%sThe resource file is the first include file in the%sinitialization section.%sFor example {$I %s.lrs}.%sProbably a syntax error."
+msgstr ""
+
+#: lazarusidestrconsts:lisresourceloaderror
+msgid "Resource load error"
+msgstr ""
+
+#: lazarusidestrconsts:lisnoname
+msgid "noname"
+msgstr ""
+
+#: lazarusidestrconsts:listhedestinationdirectorydoesnotexist
+msgid "The destination directory%s%s%s%s does not exist."
+msgstr ""
+
+#: lazarusidestrconsts:lisrenamefile
+msgid "Rename file?"
+msgstr ""
+
+#: lazarusidestrconsts:listhislookslikeapascalfilefpc10xexpectspascalfiles
+msgid "This looks like a pascal file.%sfpc 1.0.x expects pascal files lowercase.%sRename it to lowercase?"
+msgstr ""
+
+#: lazarusidestrconsts:lisoverwritefile
+msgid "Overwrite file?"
+msgstr ""
+
+#: lazarusidestrconsts:lisafilealreadyexistsreplaceit
+msgid "A file %s%s%s already exists.%sReplace it?"
+msgstr ""
+
+#: lazarusidestrconsts:lisambigiousfilesfound
+msgid "Ambigious files found"
+msgstr ""
+
+#: lazarusidestrconsts:listhereareotherfilesinthedirectorywiththesamename
+msgid "There are other files in the directory with the same name,%swhich only differ in case:%s%s%sDelete them?"
+msgstr ""
+
+#: lazarusidestrconsts:lisdeletingoffilefailed
+msgid "Deleting of file %s%s%s failed."
+msgstr ""
+
+#: lazarusidestrconsts:lisstreamingerror
+msgid "Streaming error"
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletostreamt
+msgid "Unable to stream %s:T%s."
+msgstr ""
+
+#: lazarusidestrconsts:lisresourcesaveerror
+msgid "Resource save error"
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletoaddresourceheadercommenttoresourcefile
+msgid "Unable to add resource header comment to resource file %s%s%s%s.%sProbably a syntax error."
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletoaddresourcetformdatatoresourcefileprobably
+msgid "Unable to add resource T%s:FORMDATA to resource file %s%s%s%s.%sProbably a syntax error."
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletocreatefile2
+msgid "Unable to create file %s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletotransformbinarycomponentstreamoftintotext
+msgid "Unable to transform binary component stream of %s:T%s into text."
+msgstr ""
+
+#: lazarusidestrconsts:listhefilewasnotfoundignorewillgoonloadingtheproject
+msgid "The file %s%s%s%swas not found.%sIgnore will go on loading the project,%sAbort  will stop the loading."
+msgstr ""
+
+#: lazarusidestrconsts:lisfilenotfound2
+msgid "File %s%s%s not found.%s"
+msgstr ""
+
+#: lazarusidestrconsts:lisfilenotfounddoyouwanttocreateit
+msgid "File %s%s%s not found.%sDo you want to create it?%s"
+msgstr ""
+
+#: lazarusidestrconsts:listhefileseemstobetheprogramfileofanexistinglazarus
+msgid "The file %s%s%s%sseems to be the program file of an existing lazarus Project1.%sOpen project?%sCancel will load the file as normal source."
+msgstr ""
+
+#: lazarusidestrconsts:lisprojectinfofiledetected
+msgid "Project info file detected"
+msgstr ""
+
+#: lazarusidestrconsts:listhefileseemstobeaprogramclosecurrentproject
+msgid "The file %s%s%s%sseems to be a program. Close current project and create a new lazarus project for this program?%sCancel will load the file as normal source."
+msgstr ""
+
+#: lazarusidestrconsts:lisprogramdetected
+msgid "Program detected"
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletoconverttextformdataoffileintobinarystream
+msgid "Unable to convert text form data of file %s%s%s%s%sinto binary stream. (%s)"
+msgstr ""
+
+#: lazarusidestrconsts:lisformloaderror
+msgid "Form load error"
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletobuildformfromfile
+msgid "Unable to build form from file %s%s%s%s."
+msgstr ""
+
+#: lazarusidestrconsts:lissaveprojectlpi
+msgid "Save Project %s (*.lpi)"
+msgstr ""
+
+#: lazarusidestrconsts:lisinvalidprojectfilename
+msgid "Invalid project filename"
+msgstr ""
+
+#: lazarusidestrconsts:lisisaninvalidprojectnamepleasechooseanotheregproject
+msgid "%s%s%s is an invalid project name.%sPlease choose another (e.g. project1.lpi)"
+msgstr ""
+
+#: lazarusidestrconsts:listhenameisnotavalidpascalidentifier
+msgid "The name %s%s%s is not a valid pascal identifier."
+msgstr ""
+
+#: lazarusidestrconsts:lischooseadifferentname
+msgid "Choose a different name"
+msgstr ""
+
+#: lazarusidestrconsts:listheprojectinfofileisequaltotheprojectmainsource
+msgid "The project info file %s%s%s%sis equal to the project main source file!"
+msgstr ""
+
+#: lazarusidestrconsts:lisunitidentifierexists
+msgid "Unit identifier exists"
+msgstr ""
+
+#: lazarusidestrconsts:listhereisaunitwiththenameintheprojectplzchoose
+msgid "There is a unit with the name %s%s%s in the project.%sPlz choose a different name"
+msgstr ""
+
+#: lazarusidestrconsts:liserrorcreatingfile
+msgid "Error creating file"
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletocreatefile3
+msgid "Unable to create file%s%s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:liscopyerror2
+msgid "Copy error"
+msgstr ""
+
+#: lazarusidestrconsts:lissourcedirectorydoesnotexists
+msgid "Source directory %s%s%s does not exists."
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletocreatedirectory
+msgid "Unable to create directory %s%s%s."
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletocopyfileto
+msgid "Unable to copy file %s%s%s%sto %s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:lissorrythistypeisnotyetimplemented
+msgid "Sorry, this type is not yet implemented"
+msgstr ""
+
+#: lazarusidestrconsts:lisfilehaschangedsave
+msgid "File %s%s%s has changed. Save?"
+msgstr ""
+
+#: lazarusidestrconsts:lisunithaschangedsave
+msgid "Unit %s%s%s has changed. Save?"
+msgstr ""
+
+#: lazarusidestrconsts:lissourceofpagehaschangedsave
+msgid "Source of page %s%s%s has changed. Save?"
+msgstr ""
+
+#: lazarusidestrconsts:lissourcemodified
+msgid "Source modified"
+msgstr ""
+
+#: lazarusidestrconsts:lisopenproject
+msgid "Open Project?"
+msgstr ""
+
+#: lazarusidestrconsts:lisopentheprojectanswernotoloaditasxmlfile
+msgid "Open the project %s?%sAnswer No to load it as xml file."
+msgstr ""
+
+#: lazarusidestrconsts:lisopenpackage
+msgid "Open Package?"
+msgstr ""
+
+#: lazarusidestrconsts:lisopenthepackageanswernotoloaditasxmlfile
+msgid "Open the package %s?%sAnswer No to load it as xml file."
+msgstr ""
+
+#: lazarusidestrconsts:lisrevertfailed
+msgid "Revert failed"
+msgstr ""
+
+#: lazarusidestrconsts:lisfileisvirtual
+msgid "File %s%s%s is virtual."
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletowrite
+msgid "Unable to write %s%s%s%s%s."
+msgstr ""
+
+#: lazarusidestrconsts:lisfilenottext
+msgid "File not text"
+msgstr ""
+
+#: lazarusidestrconsts:lisfiledoesnotlooklikeatextfileopenitanyway
+msgid "File %s%s%s%sdoes not look like a text file.%sOpen it anyway?"
+msgstr ""
+
+#: lazarusidestrconsts:lisinvalidcommand
+msgid "Invalid command"
+msgstr ""
+
+#: lazarusidestrconsts:listhecommandafterisnotexecutable
+msgid "The command after %s%s%s is not executable."
+msgstr ""
+
+#: lazarusidestrconsts:lisinvaliddestinationdirectory
+msgid "Invalid destination directory"
+msgstr ""
+
+#: lazarusidestrconsts:lisdestinationdirectoryisinvalidpleasechooseacomplete
+msgid "Destination directory %s%s%s is invalid.%sPlease choose a complete path."
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletocleanupdestinationdirectory
+msgid "Unable to clean up destination directory"
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletocleanuppleasecheckpermissions
+msgid "Unable to clean up %s%s%s.%sPlease check permissions."
+msgstr ""
+
+#: lazarusidestrconsts:liscommandafterpublishingproject
+msgid "Command after publishing project"
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletoaddtoprojectbecausethereisalreadyaunitwith
+msgid "Unable to add %s to project, because there is already a unit with the same name in the Project1."
+msgstr ""
+
+#: lazarusidestrconsts:lisaddtoproject
+msgid "Add %s to project?"
+msgstr ""
+
+#: lazarusidestrconsts:listhefile
+msgid "The file %s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:lisisalreadypartoftheproject1
+msgid "%s is already part of the Project1."
+msgstr ""
+
+#: lazarusidestrconsts:lisremovefromproject
+msgid "Remove from project"
+msgstr ""
+
+#: lazarusidestrconsts:liscreateaprojectfirst
+msgid "Create a project first!"
+msgstr ""
+
+#: lazarusidestrconsts:listhetestdirectorycouldnotbefoundseeenvironmentopt
+msgid "The Test Directory could not be found:%s%s%s%s%s(see environment options)"
+msgstr ""
+
+#: lazarusidestrconsts:lisbuildnewproject
+msgid "Build new project"
+msgstr ""
+
+#: lazarusidestrconsts:listheprojectmustbesavedbeforebuildingifyousetthetest
+msgid "The project must be saved before building%sIf you set the Test Directory in the environment options,%syou can create new projects and build them at once.%sSave project?"
+msgstr ""
+
+#: lazarusidestrconsts:lisprojectsuccessfullybuilt
+msgid "Project %s%s%s successfully built. :)"
+msgstr ""
+
+#: lazarusidestrconsts:lisnoprogramfilesfound
+msgid "No program file %s%s%s found."
+msgstr ""
+
+#: lazarusidestrconsts:liserrorinitializingprogramserrors
+msgid "Error initializing program%s%s%s%s%sError: %s"
+msgstr ""
+
+#: lazarusidestrconsts:liserrorinitializingprogramserrors2
+msgid "Error initializing program%s%s%s%s%sError: %s"
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletosavefile
+msgid "Unable to save file %s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:lisreaderror
+msgid "Read Error"
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletoreadfile2
+msgid "Unable to read file %s%s%s!"
+msgstr ""
+
+#: lazarusidestrconsts:liswriteerror
+msgid "Write Error"
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletowritetofile
+msgid "Unable to write to file %s%s%s!"
+msgstr ""
+
+#: lazarusidestrconsts:lisfiledoesnotlooklikeatextfileopenitanyway2
+msgid "File %s%s%s%sdoes not look like a text file.%sOpen it anyway?"
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletocreatebackupdirectory
+msgid "Unable to create backup directory %s%s%s."
+msgstr ""
+
+#: lazarusidestrconsts:lisdeletefilefailed
+msgid "Delete file failed"
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletoremoveoldbackupfile
+msgid "Unable to remove old backup file %s%s%s!"
+msgstr ""
+
+#: lazarusidestrconsts:lisrenamefilefailed
+msgid "Rename file failed"
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletorenamefileto
+msgid "Unable to rename file %s%s%s to %s%s%s!"
+msgstr ""
+
+#: lazarusidestrconsts:lisbackupfilefailed
+msgid "Backup file failed"
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletobackupfileto
+msgid "Unable to backup file %s%s%s to %s%s%s!"
+msgstr ""
+
+#: lazarusidestrconsts:lisdeleteambigiousfile
+msgid "Delete ambigious file?"
+msgstr ""
+
+#: lazarusidestrconsts:lisdeleteambigiousfile2
+msgid "Delete ambigious file %s%s%s?"
+msgstr ""
+
+#: lazarusidestrconsts:lislazaruseditorv
+msgid "Lazarus Editor v%s"
+msgstr ""
+
+#: lazarusidestrconsts:lisnewproject
+msgid "%s - (new project)"
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletofindfile
+msgid "Unable to find file %s%s%s."
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletofindfilechecksearchpathinruncompileroption
+msgid "Unable to find file %s%s%s.%sCheck search path in%sRun->Compiler Options...->Search Paths->Other Unit Files"
+msgstr ""
+
+#: lazarusidestrconsts:lisnotecouldnotcreatedefinetemplateforfreepascal
+msgid "NOTE: Could not create Define Template for Free Pascal Sources"
+msgstr ""
+
+#: lazarusidestrconsts:lisnotecouldnotcreatedefinetemplateforlazarussources
+msgid "NOTE: Could not create Define Template for Lazarus Sources"
+msgstr ""
+
+#: lazarusidestrconsts:lisinvalidexpressionhintthemakeresourcestringfunction
+msgid "Invalid expression.%sHint: The Make Resourcestring Function expects a string constant in a single file. Please select the expression and try again."
+msgstr ""
+
+#: lazarusidestrconsts:lisselectionexceedsstringconstant
+msgid "Selection exceeds string constant"
+msgstr ""
+
+#: lazarusidestrconsts:lishintthemakeresourcestringfunctionexpectsastringcon2
+msgid "Hint: The Make Resourcestring Function expects a string constant.%sPlease select only a string expression and try again."
+msgstr ""
+
+#: lazarusidestrconsts:lisnoresourcestringsectionfound
+msgid "No ResourceString Section found"
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletofindaresourcestringsectioninthisoranyofthe
+msgid "Unable to find a ResourceString section in this or any of the used units."
+msgstr ""
+
+#: lazarusidestrconsts:liscomponentnameisnotavalididentifier
+msgid "Component name %s%s%s is not a valid identifier"
+msgstr ""
+
+#: lazarusidestrconsts:liscomponentnameiskeyword
+msgid "Component name %s%s%s is keyword"
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletorenamevariableinsourceseemessages
+msgid "Unable to rename variable in source.%sSee messages."
+msgstr ""
+
+#: lazarusidestrconsts:listhereisalreadyaformwiththename
+msgid "There is already a form with the name %s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletorenameforminsourceseemessages
+msgid "Unable to rename form in source.%sSee messages."
+msgstr ""
+
+#: lazarusidestrconsts:lissorrynotimplementedyet
+msgid "Sorry, not implemented yet"
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletofindmethodplzfixtheerrorshowninthemessage
+msgid "Unable to find method. Plz fix the error shown in the message window."
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletocreatenewmethodplzfixtheerrorshownin
+msgid "Unable to create new method. Plz fix the error shown in the message window."
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletoshowmethodplzfixtheerrorshowninthemessage
+msgid "Unable to show method. Plz fix the error shown in the message window."
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletorenamemethodplzfixtheerrorshowninthemessag
+msgid "Unable to rename method. Plz fix the error shown in the message window."
 msgstr ""
 
 #: lazarusidestrconsts:lisresourcefilecomment
@@ -4616,5 +5104,1161 @@ msgstr ""
 
 #: lazarusidestrconsts:lisfindfileincludesubdirectories
 msgid "Include sub directories"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangpackage
+msgid "Package: %s"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangproject
+msgid "Project: %s"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmanglazarus
+msgid "Lazarus"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangdependencywithoutowner
+msgid "Dependency without Owner: %s"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangsavepackagelpk
+msgid "Save Package %s (*.lpk)"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmanginvalidpackagefileextension
+msgid "Invalid package file extension"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangpackagesmusthavetheextensionlpk
+msgid "Packages must have the extension .lpk"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmanginvalidpackagename
+msgid "Invalid package name"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangthepackagenameisnotavalidpackagenamepleasechoosean
+msgid "The package name %s%s%s is not a valid package name%sPlease choose another name (e.g. package1.lpk)"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangrenamefilelowercase
+msgid "Rename File lowercase?"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangshouldthefilerenamedlowercaseto
+msgid "Should the file renamed lowercase to%s%s%s%s?"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangpackagenamealreadyexists
+msgid "Package name already exists"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangthereisalreadyanotherpackagewiththename
+msgid "There is already another package with the name %s%s%s.%sConflict package: %s%s%s%sFile: %s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangfilenameisusedbyproject
+msgid "Filename is used by project"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangthefilenameispartofthecurrentproject
+msgid "The file name %s%s%s is part of the current project.%sProjects and Packages should not share files."
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangfilenameisusedbyotherpackage
+msgid "Filename is used by other package"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangthefilenameisusedbythepackageinfile
+msgid "The file name %s%s%s is used by%sthe package %s%s%s%sin file %s%s%s."
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangreplacefile
+msgid "Replace File"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangreplaceexistingfile
+msgid "Replace existing file %s%s%s?"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangdeleteoldpackagefile
+msgid "Delete Old Package File?"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangdeleteoldpackagefile2
+msgid "Delete old package file %s%s%s?"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangdeletefailed
+msgid "Delete failed"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangunabletodeletefile
+msgid "Unable to delete file %s%s%s."
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangunsavedpackage
+msgid "Unsaved package"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangthereisanunsavedpackageintherequiredpackages
+msgid "There is an unsaved package in the required packages. See package graph."
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangbrokendependency
+msgid "Broken dependency"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangtheprojectrequiresthepackagebutitwasnotfound
+msgid "The project requires the package %s%s%s.%sBut it was not found. See Project -> Project Inspector."
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangarequiredpackageswasnotfound
+msgid "A required packages was not found. See package graph."
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangcircleinpackagedependencies
+msgid "Circle in package dependencies"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangthereisacircleintherequiredpackages
+msgid "There is a circle in the required packages. See package graph."
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangerrorwritingfile
+msgid "Error writing file"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangunabletowritestatefileofpackageerror
+msgid "Unable to write state file %s%s%s%sof package %s.%sError: %s"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangerrorreadingfile
+msgid "Error reading file"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangunabletoreadstatefileofpackageerror
+msgid "Unable to read state file %s%s%s%sof package %s.%sError: %s"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangunabletocreatedirectory
+msgid "Unable to create directory"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangunabletocreateoutputdirectoryforpackage
+msgid "Unable to create output directory %s%s%s%sfor package %s."
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangunabletodeletefilename
+msgid "Unable to delete file"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangunabletodeleteoldstatefileforpackage
+msgid "Unable to delete old state file %s%s%s%sfor package %s."
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangunabletocreatepackagesourcedirectoryforpackage
+msgid "Unable to create package source directory %s%s%s%sfor package %s."
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangunabletoloadpackage
+msgid "Unable to load package"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangunabletoopenthepackage
+msgid "Unable to open the package %s%s%s.%sThis package was marked for for installation."
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmanginvalidpackagename2
+msgid "Invalid Package Name"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangthepackagenameofthefileisinvalid
+msgid "The package name %s%s%s of%sthe file %s%s%s is invalid."
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangpackageconflicts
+msgid "Package conflicts"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangthereisalreadyapackageloadedfromfile
+msgid "There is already a package %s%s%s loaded%sfrom file %s%s%s.%sSee Components -> Package Graph.%sReplace is impossible."
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangsavepackage
+msgid "Save Package?"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangloadingpackagewillreplacepackage
+msgid "Loading package %s will replace package %s%sfrom file %s.%sThe old package is modified.%s%sSave old package %s?"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangnewpackage
+msgid "NewPackage"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmanginvalidfileextension
+msgid "Invalid file extension"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangthefileisnotalazaruspackage
+msgid "The file %s%s%s is not a lazarus package."
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmanginvalidpackagefilename
+msgid "Invalid package filename"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangthepackagefilenameinisnotavalidlazaruspackagename
+msgid "The package file name %s%s%s in%s%s%s%s is not a valid lazarus package name."
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangfilenotfound
+msgid "File %s%s%s not found."
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangerrorreadingpackage
+msgid "Error Reading Package"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangunabletoreadpackagefile
+msgid "Unable to read package file %s%s%s."
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangfilenamediffersfrompackagename
+msgid "Filename differs from Packagename"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangthefilenamedoesnotcorrespondtothepackage
+msgid "The filename %s%s%s does not correspond to the package name %s%s%s in the file.%sChange package name to %s%s%s?"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangsavepackage2
+msgid "Save package?"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangpackagechangedsave
+msgid "Package %s%s%s changed. Save?"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangerrorwritingpackage
+msgid "Error Writing Package"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangunabletowritepackagetofileerror
+msgid "Unable to write package %s%s%s%sto file %s%s%s.%sError: %s"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmanginvalidcompilerfilename
+msgid "invalid Compiler filename"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangthecompilerfileforpackageisnotavalidexecutable
+msgid "The compiler file for package %s is not a valid executable:%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangpackagehasnovalidoutputdirectory
+msgid "Package %s%s%s has no valid output directory:%s%s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangthisfilewasautomaticallycreatedbylazarusdonotedit
+msgid "{ This file was automatically created by Lazarus. Do not edit!%s  This source is only used to compile and install%s  the package %s.%s}%s"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangpackagemainsourcefile
+msgid "package main source file"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangrenamefileinpackage
+msgid "Rename file in package?"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangthepackageownsthefileshouldthefileberenamed
+msgid "The package %s owns the file%s%s%s%s.%sShould the file be renamed in the package as well?"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangfilenotsaved
+msgid "File not saved"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangpleasesavethefilebeforeaddingittoapackage
+msgid "Please save the file before adding it to a package."
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangfileisinproject
+msgid "File is in Project"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangwarningthefilebelongstothecurrentproject
+msgid "Warning: The file %s%s%s%sbelongs to the current project."
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangfileisalreadyinpackage
+msgid "File is already in package"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangthefileisalreadyinthepackage
+msgid "The file %s%s%s%sis already in the package %s."
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangpackageisnodesigntimepackage
+msgid "Package is no designtime package"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangthepackageisaruntimeonlypackageruntimeonlypackages
+msgid "The package %s is a runtime only package.%sRuntime only packages can not be installed in the IDE."
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangautomaticallyinstalledpackages
+msgid "Automatically installed packages"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmanginstallingthepackagewillautomaticallyinstall
+msgid "Installing the package %s will automatically install the package(s):%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangrebuildlazarus
+msgid "Rebuild Lazarus?"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangthepackagewasmarkedforinstallationcurrentlylazarus
+msgid "The package %s%s%s was marked for installation.%sCurrently lazarus only supports static linked packages. The real installation needs rebuilding and restarting of lazarus.%s%sShould lazarus now be rebuilt?"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangpackageisrequired
+msgid "Package is required"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangthepackageisrequiredbywhichismarkedforinstallation
+msgid "The package %s is required by %s, which is marked for installation.%sSee package graph."
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmanguninstallpackage
+msgid "Uninstall package?"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmanguninstallpackage2
+msgid "Uninstall package %s?"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangthepackagewasmarkedcurrentlylazarus
+msgid "The package %s%s%s was marked.%sCurrently lazarus only supports static linked packages. The real un-installation needs rebuilding and restarting of lazarus.%s%sShould lazarus now be rebuilt?"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangthepackageismarkedforinstallationbutcannotbefound
+msgid "The package %s%s%s is marked for installation, but can not be found.%sRemove dependency from the installation list of packages?"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangstaticpackagesconfigfile
+msgid "static packages config file"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangunabletocreatetargetdirectoryforlazarus
+msgid "Unable to create target directory for lazarus:%s%s%s%s.%sThis directory is needed for the new changed lazarus IDE with your custom packages."
+msgstr ""
+
+#: lazarusidestrconsts:lispkgsysinvalidunitname
+msgid "Invalid Unitname: %s"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgsysunitnotfound
+msgid "Unit not found: %s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgsysunitwasremovedfrompackage
+msgid "Unit %s%s%s was removed from package"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgsyscannotregistercomponentswithoutunit
+msgid "Can not register components without unit"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgsysinvalidcomponentclass
+msgid "Invalid component class"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgsyscomponentclassalreadydefined
+msgid "Component Class %s%s%s already defined"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgsysregisterunitwascalledbutnopackageisregistering
+msgid "RegisterUnit was called, but no package is registering."
+msgstr ""
+
+#: lazarusidestrconsts:lispkgsysunitname
+msgid "%s%sUnit Name: %s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgsysfilename
+msgid "%s%sFile Name: %s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgsysregistrationerror
+msgid "Registration Error"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgsysthefclfreepascalcomponentlibraryprovidesthebase
+msgid "The FCL - FreePascal Component Library provides the base classes for object pascal."
+msgstr ""
+
+#: lazarusidestrconsts:lispkgsysthelcllazaruscomponentlibrarycontainsallbase
+msgid "The LCL - Lazarus Component Library contains all base components for form editing."
+msgstr ""
+
+#: lazarusidestrconsts:lispkgsyssynedittheeditorcomponentusedbylazarus
+msgid "SynEdit - the editor component used by Lazarus. http://sourceforge.net/projects/synedit/"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgsysthisisthedefaultpackageusedonlyforcomponents
+msgid "This is the default package. Used only for components without a package. These components are outdated."
+msgstr ""
+
+#: lazarusidestrconsts:lispkgsysregisterprocedureisnil
+msgid "Register procedure is nil"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgsysthispackageisinstalledbutthelpkfilewasnotfound
+msgid "This package is installed, but the lpk file was not found.All its components are deactivated. Please fix this."
+msgstr ""
+
+#: lazarusidestrconsts:lispkgsyspackagefilenotfound
+msgid "Package file not found"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgsysthepackageisinstalledbutnovalidpackagefilewasfound
+msgid "The package %s%s%s is installed, but no valid package file was found.%sA broken dummy package was created."
+msgstr ""
+
+#: lazarusidestrconsts:lispkgdefsoutputdirectory
+msgid "Output directory"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgdefscompiledsrcpathaddition
+msgid "CompiledSrcPath addition"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgdefsunitpath
+msgid "Unit Path"
+msgstr ""
+
+#: lazarusidestrconsts:lisaf2pinvalidpackage
+msgid "Invalid Package"
+msgstr ""
+
+#: lazarusidestrconsts:lisaf2pinvalidpackageid
+msgid "Invalid package ID: %s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:lisaf2ppackagenotfound
+msgid "Package %s%s%s not found."
+msgstr ""
+
+#: lazarusidestrconsts:lisaf2ppackageisreadonly
+msgid "Package is read only"
+msgstr ""
+
+#: lazarusidestrconsts:lisaf2pthepackageisreadonly
+msgid "The package %s is read only."
+msgstr ""
+
+#: lazarusidestrconsts:lisaf2pthefileisalreadyinthepackage
+msgid "The file %s%s%s%sis already in the package %s."
+msgstr ""
+
+#: lazarusidestrconsts:lisaf2punitname
+msgid "Unit Name: "
+msgstr ""
+
+#: lazarusidestrconsts:lisaf2phasregisterprocedure
+msgid "Has Register procedure"
+msgstr ""
+
+#: lazarusidestrconsts:lisaf2pfiletype
+msgid "File Type"
+msgstr ""
+
+#: lazarusidestrconsts:lisaf2pdestinationpackage
+msgid "Destination Package"
+msgstr ""
+
+#: lazarusidestrconsts:lisaf2pshowall
+msgid "Show All"
+msgstr ""
+
+#: lazarusidestrconsts:lisaf2paddfiletoapackage
+msgid "Add file to a package"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2pinvalidfilename
+msgid "Invalid filename"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2pthefilenameisambigiouspleasespecifiyafilename
+msgid "The filename %s%s%s is ambigious.%sPlease specifiy a filename with full path."
+msgstr ""
+
+#: lazarusidestrconsts:lisa2pfilenotunit
+msgid "File not unit"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2ppascalunitsmusthavetheextensionpporpas
+msgid "Pascal units must have the extension .pp or .pas"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2pisnotavalidunitname
+msgid "%s%s%s is not a valid unit name."
+msgstr ""
+
+#: lazarusidestrconsts:lisa2punitnamealreadyexists
+msgid "Unitname already exists"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2ptheunitnamealreadyexistsinthispackage
+msgid "The unitname %s%s%s already exists in this package."
+msgstr ""
+
+#: lazarusidestrconsts:lisa2ptheunitnamealreadyexistsinthepackage
+msgid "The unitname %s%s%s already exists in the package:%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2pambigiousunitname
+msgid "Ambigious Unit Name"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2ptheunitnameisthesameasanregisteredcomponent
+msgid "The unit name %s%s%s is the same as an registered component.%sUsing this can cause strange error messages."
+msgstr ""
+
+#: lazarusidestrconsts:lisa2pfilealreadyexistsintheproject
+msgid "File %s%s%s already exists in the project."
+msgstr ""
+
+#: lazarusidestrconsts:lisa2pexistingfile
+msgid "%sExisting file: %s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2pfilealreadyexists
+msgid "File already exists"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2pfileisused
+msgid "File is used"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2pthefileispartofthecurrentprojectitisabadidea
+msgid "The file %s%s%s is part of the current project.%sIt is a bad idea to share files between projects and packages."
+msgstr ""
+
+#: lazarusidestrconsts:lisa2pthemaximumversionislowerthantheminimimversion
+msgid "The Maximum Version is lower than the Minimim Version."
+msgstr ""
+
+#: lazarusidestrconsts:lisa2pthepackagenameisinvalidplasechooseanexisting
+msgid "The package name %s%s%s is invalid.%sPlase choose an existing package."
+msgstr ""
+
+#: lazarusidestrconsts:lisa2pthepackagehasalreadyadependencyforthe
+msgid "The package has already a dependency for the package %s%s%s."
+msgstr ""
+
+#: lazarusidestrconsts:lisa2pnopackagefoundfordependencypleasechooseanexisting
+msgid "No package found for dependency %s%s%s.%sPlease choose an existing package."
+msgstr ""
+
+#: lazarusidestrconsts:lisa2pinvalidunitname
+msgid "Invalid Unit Name"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2ptheunitnameandfilenamediffer
+msgid "The unit name %s%s%s and filename differ."
+msgstr ""
+
+#: lazarusidestrconsts:lisa2pfilealreadyinpackage
+msgid "File already in package"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2pthefileisalreadyinthepackage
+msgid "The file %s%s%s is already in the package."
+msgstr ""
+
+#: lazarusidestrconsts:lisa2pinvalidfile
+msgid "Invalid file"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2papascalunitmusthavetheextensionpporpas
+msgid "A pascal unit must have the extension .pp or .pas"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2pinvalidancestortype
+msgid "Invalid Ancestor Type"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2ptheancestortypeisnotavalidpascalidentifier
+msgid "The ancestor type %s%s%s is not a valid pascal identifier."
+msgstr ""
+
+#: lazarusidestrconsts:lisa2ppagenametoolong
+msgid "Page Name too long"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2pthepagenameistoolongmax100chars
+msgid "The page name %s%s%s is too long (max 100 chars)."
+msgstr ""
+
+#: lazarusidestrconsts:lisa2punitnameinvalid
+msgid "Unit Name Invalid"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2ptheunitnamedoesnotcorrespondtothefilename
+msgid "The unit name %s%s%s does not correspond to the filename."
+msgstr ""
+
+#: lazarusidestrconsts:lisa2pinvalidclassname
+msgid "Invalid Class Name"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2ptheclassnameisnotavalidpascalidentifier
+msgid "The class name %s%s%s is not a valid pascal identifier."
+msgstr ""
+
+#: lazarusidestrconsts:lisa2pinvalidcircle
+msgid "Invalid Circle"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2ptheclassnameandancestortypearethesame
+msgid "The class name %s%s%s and ancestor type %s%s%s are the same."
+msgstr ""
+
+#: lazarusidestrconsts:lisa2pambigiousancestortype
+msgid "Ambigious Ancestor Type"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2ptheancestortypehasthesamenameastheunit
+msgid "The ancestor type %s%s%s has the same name as%sthe unit %s%s%s."
+msgstr ""
+
+#: lazarusidestrconsts:lisa2pambigiousclassname
+msgid "Ambigious Class Name"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2ptheclassnamehasthesamenameastheunit
+msgid "The class name %s%s%s has the same name as%sthe unit %s%s%s."
+msgstr ""
+
+#: lazarusidestrconsts:lisa2pclassnamealreadyexists
+msgid "Class Name already exists"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2ptheclassnameexistsalreadyinpackagefile
+msgid "The class name %s%s%s exists already in%sPackage %s%sFile: %s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2ptheminimumversionisinvalidpleaseusetheformatmajor
+msgid "The Minimum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2pthemaximumversionisinvalidpleaseusetheformatmajor
+msgid "The Maximum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2paddunit
+msgid "Add Unit"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2pnewcomponent
+msgid "New Component"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2paddfile
+msgid "Add File"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2punitfilename
+msgid "Unit file name:"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2pchooseanexistingfile
+msgid "<choose an existing file>"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2paddlfmlrsfilesiftheyexist
+msgid "Add LFM, LRS files, if they exist"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2pupdateunitnameandhasregisterprocedure
+msgid "Update Unit Name and Has Register procedure"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2pancestortype
+msgid "Ancestor Type"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2pshowall
+msgid "Show all"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2pnewclassname
+msgid "New class name:"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2ppalettepage
+msgid "Palette Page:"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2punitfilename2
+msgid "Unit File Name:"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2punitname
+msgid "Unit Name:"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2pfilename
+msgid "File name:"
+msgstr ""
+
+#: lazarusidestrconsts:lisbddchangingthepackagenameorversionbreaksdependencies
+msgid "Changing the package name or version breaks dependencies. Should these dependencies be changed as well?%sSelect Yes to change all listed dependencies.%sSelect Ignore to break the dependencies and continue."
+msgstr ""
+
+#: lazarusidestrconsts:lisa2pdependency
+msgid "Dependency"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2pbrokendependencies
+msgid "Broken Dependencies"
+msgstr ""
+
+#: lazarusidestrconsts:lisoipfilename
+msgid "Filename:  %s"
+msgstr ""
+
+#: lazarusidestrconsts:lisoipthispackagewasautomaticallycreated
+msgid "%sThis package was automatically created"
+msgstr ""
+
+#: lazarusidestrconsts:lisoipthispackageisinstalledbutthelpkfilewasnotfound
+msgid "%sThis package is installed, but the lpk file was not found"
+msgstr ""
+
+#: lazarusidestrconsts:lisoipdescriptiondescription
+msgid "%sDescription:  %s"
+msgstr ""
+
+#: lazarusidestrconsts:lisoipdescription
+msgid "Description:  "
+msgstr ""
+
+#: lazarusidestrconsts:lisoippleaseselectapackage
+msgid "Please select a package"
+msgstr ""
+
+#: lazarusidestrconsts:lisoipnopackageselected
+msgid "No package selected"
+msgstr ""
+
+#: lazarusidestrconsts:lisoippleaseselectapackagetoopen
+msgid "Please select a package to open"
+msgstr ""
+
+#: lazarusidestrconsts:lisoippackagename
+msgid "Package Name"
+msgstr ""
+
+#: lazarusidestrconsts:lisoipstate
+msgid "State"
+msgstr ""
+
+#: lazarusidestrconsts:lisoipmodified
+msgid "modified"
+msgstr ""
+
+#: lazarusidestrconsts:lisoipmissing
+msgid "missing"
+msgstr ""
+
+#: lazarusidestrconsts:lisoipinstalledstatic
+msgid "installed static"
+msgstr ""
+
+#: lazarusidestrconsts:lisoipinstalleddynamic
+msgid "installed dynamic"
+msgstr ""
+
+#: lazarusidestrconsts:lisoipautoinstallstatic
+msgid "auto install static"
+msgstr ""
+
+#: lazarusidestrconsts:lisoipautoinstalldynamic
+msgid "auto install dynamic"
+msgstr ""
+
+#: lazarusidestrconsts:lisoipreadonly
+msgid "readonly"
+msgstr ""
+
+#: lazarusidestrconsts:lisoipopenloadedpackage
+msgid "Open loaded package"
+msgstr ""
+
+#: lazarusidestrconsts:lispckeditremovefile
+msgid "Remove file"
+msgstr ""
+
+#: lazarusidestrconsts:lispckeditreaddfile
+msgid "Re-Add file"
+msgstr ""
+
+#: lazarusidestrconsts:lispckeditremovedependency
+msgid "Remove dependency"
+msgstr ""
+
+#: lazarusidestrconsts:lispckeditmovedependencyup
+msgid "Move dependency up"
+msgstr ""
+
+#: lazarusidestrconsts:lispckeditmovedependencydown
+msgid "Move dependency down"
+msgstr ""
+
+#: lazarusidestrconsts:lispckeditreadddependency
+msgid "Re-Add dependency"
+msgstr ""
+
+#: lazarusidestrconsts:lispckeditcompile
+msgid "Compile"
+msgstr ""
+
+#: lazarusidestrconsts:lispckeditrecompileclean
+msgid "Recompile clean"
+msgstr ""
+
+#: lazarusidestrconsts:lispckeditrecompileallrequired
+msgid "Recompile all required"
+msgstr ""
+
+#: lazarusidestrconsts:lispckeditinstall
+msgid "Install"
+msgstr ""
+
+#: lazarusidestrconsts:lispckedituninstall
+msgid "Uninstall"
+msgstr ""
+
+#: lazarusidestrconsts:lispckeditgeneraloptions
+msgid "General Options"
+msgstr ""
+
+#: lazarusidestrconsts:lispckeditsavechanges
+msgid "Save Changes?"
+msgstr ""
+
+#: lazarusidestrconsts:lispckeditpackagehaschangedsavepackage
+msgid "Package %s%s%s has changed.%sSave package?"
+msgstr ""
+
+#: lazarusidestrconsts:lispckeditpage
+msgid "%s, Page: %s"
+msgstr ""
+
+#: lazarusidestrconsts:lispckeditremovefile2
+msgid "Remove file?"
+msgstr ""
+
+#: lazarusidestrconsts:lispckeditremovefilefrompackage
+msgid "Remove file %s%s%s%sfrom package %s%s%s?"
+msgstr ""
+
+#: lazarusidestrconsts:lispckeditremovedependency2
+msgid "Remove Dependency?"
+msgstr ""
+
+#: lazarusidestrconsts:lispckeditremovedependencyfrompackage
+msgid "Remove dependency %s%s%s%sfrom package %s%s%s?"
+msgstr ""
+
+#: lazarusidestrconsts:lispckeditinvalidminimumversion
+msgid "Invalid minimum version"
+msgstr ""
+
+#: lazarusidestrconsts:lispckedittheminimumversionisnotavalidpackageversion
+msgid "The minimum version %s%s%s is not a valid package version.%s(good example 1.2.3.4)"
+msgstr ""
+
+#: lazarusidestrconsts:lispckeditinvalidmaximumversion
+msgid "Invalid maximum version"
+msgstr ""
+
+#: lazarusidestrconsts:lispckeditthemaximumversionisnotavalidpackageversion
+msgid "The maximum version %s%s%s is not a valid package version.%s(good example 1.2.3.4)"
+msgstr ""
+
+#: lazarusidestrconsts:lispckeditcompileeverything
+msgid "Compile everything?"
+msgstr ""
+
+#: lazarusidestrconsts:lispckeditrecompilethisandallrequiredpackages
+msgid "Re-Compile this and all required packages?"
+msgstr ""
+
+#: lazarusidestrconsts:lispckeditcompileroptionsforpackage
+msgid "Compiler Options for Package %s"
+msgstr ""
+
+#: lazarusidestrconsts:lispckeditsavepackage
+msgid "Save package"
+msgstr ""
+
+#: lazarusidestrconsts:lispckeditcompilepackage
+msgid "Compile package"
+msgstr ""
+
+#: lazarusidestrconsts:lispckeditaddanitem
+msgid "Add an item"
+msgstr ""
+
+#: lazarusidestrconsts:lispckeditremoveselecteditem
+msgid "Remove selected item"
+msgstr ""
+
+#: lazarusidestrconsts:lispckeditinstallpackageintheide
+msgid "Install package in the IDE"
+msgstr ""
+
+#: lazarusidestrconsts:lispckediteditgeneraloptions
+msgid "Edit General Options"
+msgstr ""
+
+#: lazarusidestrconsts:lispckeditcompopts
+msgid "Comp. Opts."
+msgstr ""
+
+#: lazarusidestrconsts:lispckediteditoptionstocompilepackage
+msgid "Edit Options to compile package"
+msgstr ""
+
+#: lazarusidestrconsts:lispckeditrequiredpackages
+msgid "Required Packages"
+msgstr ""
+
+#: lazarusidestrconsts:lispckeditfileproperties
+msgid "File Properties"
+msgstr ""
+
+#: lazarusidestrconsts:lispckeditregisterunit
+msgid "Register unit"
+msgstr ""
+
+#: lazarusidestrconsts:lispckeditcallregisterprocedureofselectedunit
+msgid "Call %sRegister%s procedure of selected unit"
+msgstr ""
+
+#: lazarusidestrconsts:lispckeditregisteredplugins
+msgid "Registered plugins"
+msgstr ""
+
+#: lazarusidestrconsts:lispckeditminimumversion
+msgid "Minimum Version:"
+msgstr ""
+
+#: lazarusidestrconsts:lispckeditmaximumversion
+msgid "Maximum Version:"
+msgstr ""
+
+#: lazarusidestrconsts:lispckeditapplychanges
+msgid "Apply changes"
+msgstr ""
+
+#: lazarusidestrconsts:lispckeditpackage
+msgid "Package %s"
+msgstr ""
+
+#: lazarusidestrconsts:lispckeditremovedfilestheseentriesarenotsavedtothelpkfile
+msgid "Removed Files (these entries are not saved to the lpk file)"
+msgstr ""
+
+#: lazarusidestrconsts:lispckeditremovedrequiredpackagestheseentriesarenotsaved
+msgid "Removed required packages (these entries are not saved to the lpk file)"
+msgstr ""
+
+#: lazarusidestrconsts:lispckeditdependencyproperties
+msgid "Dependency Properties"
+msgstr ""
+
+#: lazarusidestrconsts:lispckeditpackagenotsaved
+msgid "package %s not saved"
+msgstr ""
+
+#: lazarusidestrconsts:lispckeditreadonly
+msgid "Read Only: %s"
+msgstr ""
+
+#: lazarusidestrconsts:lispckeditmodified
+msgid "Modified: %s"
+msgstr ""
+
+#: lazarusidestrconsts:lispckoptsusage
+msgid "Usage"
+msgstr ""
+
+#: lazarusidestrconsts:lispckoptsideintegration
+msgid "IDE Integration"
+msgstr ""
+
+#: lazarusidestrconsts:lispckoptsdescriptionabstract
+msgid "Description/Abstract"
+msgstr ""
+
+#: lazarusidestrconsts:lispckoptsauthor
+msgid "Author:"
+msgstr ""
+
+#: lazarusidestrconsts:lispckoptslicense
+msgid "License:"
+msgstr ""
+
+#: lazarusidestrconsts:lispckoptsmajor
+msgid "Major"
+msgstr ""
+
+#: lazarusidestrconsts:lispckoptsminor
+msgid "Minor"
+msgstr ""
+
+#: lazarusidestrconsts:lispckoptsrelease
+msgid "Release"
+msgstr ""
+
+#: lazarusidestrconsts:lispckoptsautomaticallyincrementversiononbuild
+msgid "Automatically increment version on build"
+msgstr ""
+
+#: lazarusidestrconsts:lispckoptspackagetype
+msgid "PackageType"
+msgstr ""
+
+#: lazarusidestrconsts:lispckoptsdesigntimeonly
+msgid "Designtime only"
+msgstr ""
+
+#: lazarusidestrconsts:lispckoptsruntimeonly
+msgid "Runtime only"
+msgstr ""
+
+#: lazarusidestrconsts:lispckoptsdesigntimeandruntime
+msgid "Designtime and Runtime"
+msgstr ""
+
+#: lazarusidestrconsts:lispckoptsupdaterebuild
+msgid "Update/Rebuild"
+msgstr ""
+
+#: lazarusidestrconsts:lispckoptsautomaticallyrebuildasneeded
+msgid "Automatically rebuild as needed"
+msgstr ""
+
+#: lazarusidestrconsts:lispckoptsautorebuildwhenrebuildingall
+msgid "Auto rebuild when rebuilding all"
+msgstr ""
+
+#: lazarusidestrconsts:lispckoptsmanualcompilationneverautomatically
+msgid "Manual compilation (never automatically)"
+msgstr ""
+
+#: lazarusidestrconsts:lispckoptsaddpathstodependentpackagesprojects
+msgid "Add paths to dependent packages/projects"
+msgstr ""
+
+#: lazarusidestrconsts:lispckoptsinclude
+msgid "Include"
+msgstr ""
+
+#: lazarusidestrconsts:lispckoptsobject
+msgid "Object"
+msgstr ""
+
+#: lazarusidestrconsts:lispckoptslibrary
+msgid "Library"
+msgstr ""
+
+#: lazarusidestrconsts:lispckoptsaddoptionstodependentpackagesandprojects
+msgid "Add options to dependent packages and projects"
+msgstr ""
+
+#: lazarusidestrconsts:lispckoptslinker
+msgid "Linker"
+msgstr ""
+
+#: lazarusidestrconsts:lispckoptscustom
+msgid "Custom"
+msgstr ""
+
+#: lazarusidestrconsts:lispckoptsinvalidpackagetype
+msgid "Invalid package type"
+msgstr ""
+
+#: lazarusidestrconsts:lispckoptsthepackagehastheautoinstallflagthismeans
+msgid "The package %s%s%s has the auto install flag.%sThis means it will be installed in the IDE. Installation packages%smust be designtime Packages."
+msgstr ""
+
+#: lazarusidestrconsts:lispckoptspackageoptions
+msgid "Package Options"
+msgstr ""
+
+#: lazarusidestrconsts:lispckexplloadedpackages
+msgid "Loaded Packages:"
+msgstr ""
+
+#: lazarusidestrconsts:lispckexplisrequiredby
+msgid "Is required by:"
+msgstr ""
+
+#: lazarusidestrconsts:lispckexplpackagenotfound
+msgid "Package %s not found"
+msgstr ""
+
+#: lazarusidestrconsts:lispckexplstate
+msgid "%sState: "
+msgstr ""
+
+#: lazarusidestrconsts:lispckexplautocreated
+msgid "AutoCreated"
+msgstr ""
+
+#: lazarusidestrconsts:lispckexplinstalled
+msgid "Installed"
+msgstr ""
+
+#: lazarusidestrconsts:lispckexplinstallonnextstart
+msgid "Install on next start"
+msgstr ""
+
+#: lazarusidestrconsts:lispckexpluninstallonnextstart
+msgid "Uninstall on next start"
+msgstr ""
+
+#: lazarusidestrconsts:lisprojinspconfirmdeletingdependency
+msgid "Confirm deleting dependency"
+msgstr ""
+
+#: lazarusidestrconsts:lisprojinspconfirmremovingfile
+msgid "Confirm removing file"
+msgstr ""
+
+#: lazarusidestrconsts:lisprojinspdeletedependencyfor
+msgid "Delete dependency for %s?"
+msgstr ""
+
+#: lazarusidestrconsts:lisprojinspremovefilefromproject
+msgid "Remove file %s from project?"
+msgstr ""
+
+#: lazarusidestrconsts:lisprojinspremovedrequiredpackages
+msgid "Removed required packages"
+msgstr ""
+
+#: lazarusidestrconsts:lisprojinspprojectinspector
+msgid "Project Inspector - %s"
 msgstr ""
 

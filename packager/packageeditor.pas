@@ -394,7 +394,7 @@ var
     CurPFT: TPkgFileType;
     NewMenuItem: TMenuItem;
   begin
-    FileTypeMenuItem:=AddPopupMenuItem('File Type',nil,true);
+    FileTypeMenuItem:=AddPopupMenuItem(lisAF2PFileType, nil, true);
     for CurPFT:=Low(TPkgFileType) to High(TPkgFileType) do begin
       NewMenuItem:=TMenuItem.Create(Self);
       NewMenuItem.Caption:=GetPkgFileTypeLocalizedName(CurPFT);
@@ -415,31 +415,31 @@ begin
 
   if CurFile<>nil then begin
     if not Removed then begin
-      AddPopupMenuItem('Open file',@OpenFileMenuItemClick,true);
-      AddPopupMenuItem('Remove file',@RemoveBitBtnClick,
+      AddPopupMenuItem(lisOpenFile, @OpenFileMenuItemClick, true);
+      AddPopupMenuItem(lisPckEditRemoveFile, @RemoveBitBtnClick,
                        RemoveBitBtn.Enabled);
       AddFileTypeMenuItem;
     end else begin
-      AddPopupMenuItem('Open file',@OpenFileMenuItemClick,true);
-      AddPopupMenuItem('Re-Add file',@ReAddMenuItemClick,
+      AddPopupMenuItem(lisOpenFile, @OpenFileMenuItemClick, true);
+      AddPopupMenuItem(lisPckEditReAddFile, @ReAddMenuItemClick,
                        AddBitBtn.Enabled);
     end;
   end;
 
   if CurDependency<>nil then begin
     if (not Removed) then begin
-      AddPopupMenuItem('Open package',@OpenFileMenuItemClick,true);
-      AddPopupMenuItem('Remove dependency',@RemoveBitBtnClick,
+      AddPopupMenuItem(lisMenuOpenPackage, @OpenFileMenuItemClick, true);
+      AddPopupMenuItem(lisPckEditRemoveDependency, @RemoveBitBtnClick,
                        RemoveBitBtn.Enabled);
-      AddPopupMenuItem('Move dependency up',@MoveDependencyUpClick,
+      AddPopupMenuItem(lisPckEditMoveDependencyUp, @MoveDependencyUpClick,
                        (CurDependency.PrevRequiresDependency<>nil)
                        and (not LazPackage.ReadOnly));
-      AddPopupMenuItem('Move dependency down',@MoveDependencyDownClick,
+      AddPopupMenuItem(lisPckEditMoveDependencyDown, @MoveDependencyDownClick,
                        (CurDependency.NextRequiresDependency<>nil)
                        and (not LazPackage.ReadOnly));
     end else begin
-      AddPopupMenuItem('Open package',@OpenFileMenuItemClick,true);
-      AddPopupMenuItem('Re-Add dependency',@ReAddMenuItemClick,
+      AddPopupMenuItem(lisMenuOpenPackage, @OpenFileMenuItemClick, true);
+      AddPopupMenuItem(lisPckEditReAddDependency, @ReAddMenuItemClick,
                        AddBitBtn.Enabled);
     end;
   end;
@@ -447,23 +447,29 @@ begin
   if ItemCnt>0 then
     AddPopupMenuItem('-',nil,true);
 
-  AddPopupMenuItem('Save',@SaveBitBtnClick,SaveBitBtn.Enabled);
-  AddPopupMenuItem('Save As',@SaveAsClick,not LazPackage.AutoCreated);
-  AddPopupMenuItem('Revert',@RevertClick,not LazPackage.AutoCreated);
+  AddPopupMenuItem(lisMenuSave, @SaveBitBtnClick, SaveBitBtn.Enabled);
+  AddPopupMenuItem(lisMenuSaveAs, @SaveAsClick, not LazPackage.AutoCreated);
+  AddPopupMenuItem(lisMenuRevert, @RevertClick, not LazPackage.AutoCreated);
   AddPopupMenuItem('-',nil,true);
-  AddPopupMenuItem('Compile',@CompileBitBtnClick,CompileBitBtn.Enabled);
-  AddPopupMenuItem('Recompile clean',@CompileCleanClick,CompileBitBtn.Enabled);
-  AddPopupMenuItem('Recompile all required',@CompileAllCleanClick,CompileBitBtn.Enabled);
+  AddPopupMenuItem(lisPckEditCompile, @CompileBitBtnClick, CompileBitBtn.Enabled
+    );
+  AddPopupMenuItem(lisPckEditRecompileClean, @CompileCleanClick,
+    CompileBitBtn.Enabled);
+  AddPopupMenuItem(lisPckEditRecompileAllRequired, @CompileAllCleanClick,
+    CompileBitBtn.Enabled);
   AddPopupMenuItem('-',nil,true);
-  AddPopupMenuItem('Add',@AddBitBtnClick,AddBitBtn.Enabled);
-  AddPopupMenuItem('Remove',@RemoveBitBtnClick,RemoveBitBtn.Enabled);
+  AddPopupMenuItem(lisCodeTemplAdd, @AddBitBtnClick, AddBitBtn.Enabled);
+  AddPopupMenuItem(lisExtToolRemove, @RemoveBitBtnClick, RemoveBitBtn.Enabled);
   AddPopupMenuItem('-',nil,true);
-  AddPopupMenuItem('Install',@InstallBitBtnClick,InstallBitBtn.Enabled);
-  AddPopupMenuItem('Uninstall',@UninstallClick,
+  AddPopupMenuItem(lisPckEditInstall, @InstallBitBtnClick, InstallBitBtn.Enabled
+    );
+  AddPopupMenuItem(lisPckEditUninstall, @UninstallClick,
           (LazPackage.Installed<>pitNope) or (LazPackage.AutoInstall<>pitNope));
   AddPopupMenuItem('-',nil,true);
-  AddPopupMenuItem('General Options',@OptionsBitBtnClick,OptionsBitBtn.Enabled);
-  AddPopupMenuItem('Compiler Options',@CompilerOptionsBitBtnClick,CompilerOptionsBitBtn.Enabled);
+  AddPopupMenuItem(lisPckEditGeneralOptions, @OptionsBitBtnClick,
+    OptionsBitBtn.Enabled);
+  AddPopupMenuItem(dlgCompilerOptions, @CompilerOptionsBitBtnClick,
+    CompilerOptionsBitBtn.Enabled);
 
   while FilesPopupMenu.Items.Count>ItemCnt do
     FilesPopupMenu.Items.Delete(FilesPopupMenu.Items.Count-1);
@@ -575,9 +581,9 @@ begin
   if (LazPackage=nil) or (lpfDestroying in LazPackage.Flags)
   or (LazPackage.ReadOnly) or (not LazPackage.Modified) then exit;
 
-  MsgResult:=MessageDlg('Save Changes?',
-    'Package "'+LazPackage.IDAsString+'" has changed.'#13
-    +'Save package?',
+  MsgResult:=MessageDlg(lisPckEditSaveChanges,
+    Format(lisPckEditPackageHasChangedSavePackage, ['"', LazPackage.IDAsString,
+      '"', #13]),
     mtConfirmation,[mbYes,mbNo,mbAbort],0);
   if MsgResult=mrYes then begin
     MsgResult:=PackageEditors.SavePackage(LazPackage,false);
@@ -604,8 +610,8 @@ begin
     // draw registered component
     CurComponent:=TPkgComponent(CurObject);
     with RegisteredListBox.Canvas do begin
-      CurStr:=CurComponent.ComponentClass.ClassName
-              +', Page: '+CurComponent.Page.PageName;
+      CurStr:=Format(lisPckEditPage, [CurComponent.ComponentClass.ClassName,
+        CurComponent.Page.PageName]);
       TxtH:=TextHeight(CurStr);
       CurRect:=ARect;
       inc(CurRect.Left,25);
@@ -647,9 +653,9 @@ begin
     CurFile:=LazPackage.Files[NodeIndex];
     if CurFile<>nil then begin
       // confirm deletion
-      if MessageDlg('Remove file?',
-        'Remove file "'+CurFile.Filename+'"'#13
-        +'from package "'+LazPackage.IDAsString+'"?',
+      if MessageDlg(lisPckEditRemoveFile2,
+        Format(lisPckEditRemoveFileFromPackage, ['"', CurFile.Filename, '"',
+          #13, '"', LazPackage.IDAsString, '"']),
         mtConfirmation,[mbYes,mbNo],0)=mrNo
       then
         exit;
@@ -661,9 +667,9 @@ begin
     CurDependency:=LazPackage.RequiredDepByIndex(NodeIndex);
     if CurDependency<>nil then begin
       // confirm deletion
-      if MessageDlg('Remove Dependency?',
-        'Remove dependency "'+CurDependency.AsString+'"'#13
-        +'from package "'+LazPackage.IDAsString+'"?',
+      if MessageDlg(lisPckEditRemoveDependency2,
+        Format(lisPckEditRemoveDependencyFromPackage, ['"',
+          CurDependency.AsString, '"', #13, '"', LazPackage.IDAsString, '"']),
         mtConfirmation,[mbYes,mbNo],0)=mrNo
       then
         exit;
@@ -833,10 +839,9 @@ begin
     if UseMinVersionCheckBox.Checked then begin
       NewDependency.Flags:=NewDependency.Flags+[pdfMinVersion];
       if not NewDependency.MinVersion.ReadString(MinVersionEdit.Text) then begin
-        MessageDlg('Invalid minimum version',
-          'The minimum version "'+MinVersionEdit.Text+'" '
-          +'is not a valid package version.'#13
-          +'(good example 1.2.3.4)',
+        MessageDlg(lisPckEditInvalidMinimumVersion,
+          Format(lisPckEditTheMinimumVersionIsNotAValidPackageVersion, ['"',
+            MinVersionEdit.Text, '"', #13]),
           mtError,[mbCancel],0);
         exit;
       end;
@@ -848,10 +853,9 @@ begin
     if UseMaxVersionCheckBox.Checked then begin
       NewDependency.Flags:=NewDependency.Flags+[pdfMaxVersion];
       if not NewDependency.MaxVersion.ReadString(MaxVersionEdit.Text) then begin
-        MessageDlg('Invalid maximum version',
-          'The maximum version "'+MaxVersionEdit.Text+'" '
-          +'is not a valid package version.'#13
-          +'(good example 1.2.3.4)',
+        MessageDlg(lisPckEditInvalidMaximumVersion,
+          Format(lisPckEditTheMaximumVersionIsNotAValidPackageVersion, ['"',
+            MaxVersionEdit.Text, '"', #13]),
           mtError,[mbCancel],0);
         exit;
       end;
@@ -917,8 +921,8 @@ end;
 
 procedure TPackageEditorForm.CompileAllCleanClick(Sender: TObject);
 begin
-  if MessageDlg('Compile everything?',
-    'Re-Compile this and all required packages?',
+  if MessageDlg(lisPckEditCompileEverything,
+    lisPckEditReCompileThisAndAllRequiredPackages,
     mtConfirmation,[mbYes,mbNo],0)<>mrYes then exit;
   DoCompile(true,true);
 end;
@@ -941,7 +945,8 @@ begin
   CompilerOptsDlg.CompilerOpts:=LazPackage.CompilerOptions;
   with CompilerOptsDlg do begin
     GetCompilerOptions;
-    Caption:='Compiler Options for Package '+LazPackage.IDAsString;
+    Caption:=Format(lisPckEditCompilerOptionsForPackage, [LazPackage.IDAsString]
+      );
     ReadOnly:=LazPackage.ReadOnly;
     ShowModal;
     Free;
@@ -1020,9 +1025,9 @@ begin
   with SaveBitBtn do begin
     Name:='SaveBitBtn';
     Parent:=Self;
-    Caption:='Save';
+    Caption:=lisMenuSave;
     OnClick:=@SaveBitBtnClick;
-    Hint:='Save package';
+    Hint:=lisPckEditSavePackage;
     ShowHint:=true;
   end;
 
@@ -1030,9 +1035,9 @@ begin
   with CompileBitBtn do begin
     Name:='CompileBitBtn';
     Parent:=Self;
-    Caption:='Compile';
+    Caption:=lisPckEditCompile;
     OnClick:=@CompileBitBtnClick;
-    Hint:='Compile package';
+    Hint:=lisPckEditCompilePackage;
     ShowHint:=true;
   end;
   
@@ -1040,9 +1045,9 @@ begin
   with AddBitBtn do begin
     Name:='AddBitBtn';
     Parent:=Self;
-    Caption:='Add';
+    Caption:=lisCodeTemplAdd;
     OnClick:=@AddBitBtnClick;
-    Hint:='Add an item';
+    Hint:=lisPckEditAddAnItem;
     ShowHint:=true;
   end;
 
@@ -1050,9 +1055,9 @@ begin
   with RemoveBitBtn do begin
     Name:='RemoveBitBtn';
     Parent:=Self;
-    Caption:='Remove';
+    Caption:=lisExtToolRemove;
     OnClick:=@RemoveBitBtnClick;
-    Hint:='Remove selected item';
+    Hint:=lisPckEditRemoveSelectedItem;
     ShowHint:=true;
   end;
 
@@ -1060,9 +1065,9 @@ begin
   with InstallBitBtn do begin
     Name:='InstallBitBtn';
     Parent:=Self;
-    Caption:='Install';
+    Caption:=lisPckEditInstall;
     OnClick:=@InstallBitBtnClick;
-    Hint:='Install package in the IDE';
+    Hint:=lisPckEditInstallPackageInTheIDE;
     ShowHint:=true;
   end;
 
@@ -1070,9 +1075,9 @@ begin
   with OptionsBitBtn do begin
     Name:='OptionsBitBtn';
     Parent:=Self;
-    Caption:='Options';
+    Caption:=dlgFROpts;
     OnClick:=@OptionsBitBtnClick;
-    Hint:='Edit General Options';
+    Hint:=lisPckEditEditGeneralOptions;
     ShowHint:=true;
   end;
 
@@ -1080,9 +1085,9 @@ begin
   with CompilerOptionsBitBtn do begin
     Name:='CompilerOptionsBitBtn';
     Parent:=Self;
-    Caption:='Comp. Opts.';
+    Caption:=lisPckEditCompOpts;
     OnClick:=@CompilerOptionsBitBtnClick;
-    Hint:='Edit Options to compile package';
+    Hint:=lisPckEditEditOptionsToCompilePackage;
     ShowHint:=true;
   end;
 
@@ -1097,10 +1102,10 @@ begin
     Parent:=Self;
     BeginUpdate;
     Images:=ImageList;
-    FilesNode:=Items.Add(nil,'Files');
+    FilesNode:=Items.Add(nil, dlgEnvFiles);
     FilesNode.ImageIndex:=ImageIndexFiles;
     FilesNode.SelectedIndex:=FilesNode.ImageIndex;
-    RequiredPackagesNode:=Items.Add(nil,'Required Packages');
+    RequiredPackagesNode:=Items.Add(nil, lisPckEditRequiredPackages);
     RequiredPackagesNode.ImageIndex:=ImageIndexRequired;
     RequiredPackagesNode.SelectedIndex:=RequiredPackagesNode.ImageIndex;
     EndUpdate;
@@ -1114,7 +1119,7 @@ begin
   with FilePropsGroupBox do begin
     Name:='FilePropsGroupBox';
     Parent:=Self;
-    Caption:='File Properties';
+    Caption:=lisPckEditFileProperties;
     OnResize:=@FilePropsGroupBoxResize;
   end;
 
@@ -1122,10 +1127,10 @@ begin
   with CallRegisterProcCheckBox do begin
     Name:='CallRegisterProcCheckBox';
     Parent:=FilePropsGroupBox;
-    Caption:='Register unit';
+    Caption:=lisPckEditRegisterUnit;
     UseOnChange:=true;
     OnClick:=@CallRegisterProcCheckBoxClick;
-    Hint:='Call "Register" procedure of selected unit';
+    Hint:=Format(lisPckEditCallRegisterProcedureOfSelectedUnit, ['"', '"']);
     ShowHint:=true;
   end;
 
@@ -1133,7 +1138,7 @@ begin
   with RegisteredPluginsGroupBox do begin
     Name:='RegisteredPluginsGroupBox';
     Parent:=FilePropsGroupBox;
-    Caption:='Registered plugins';
+    Caption:=lisPckEditRegisteredPlugins;
   end;
 
   RegisteredListBox:=TListBox.Create(Self);
@@ -1149,7 +1154,7 @@ begin
   with UseMinVersionCheckBox do begin
     Name:='UseMinVersionCheckBox';
     Parent:=FilePropsGroupBox;
-    Caption:='Minimum Version:';
+    Caption:=lisPckEditMinimumVersion;
     UseOnChange:=true;
     OnClick:=@UseMinVersionCheckBoxClick;
   end;
@@ -1166,7 +1171,7 @@ begin
   with UseMaxVersionCheckBox do begin
     Name:='UseMaxVersionCheckBox';
     Parent:=FilePropsGroupBox;
-    Caption:='Maximum Version:';
+    Caption:=lisPckEditMaximumVersion;
     UseOnChange:=true;
     OnClick:=@UseMaxVersionCheckBoxClick;
   end;
@@ -1183,7 +1188,7 @@ begin
   with ApplyDependencyButton do begin
     Name:='ApplyDependencyButton';
     Parent:=FilePropsGroupBox;
-    Caption:='Apply changes';
+    Caption:=lisPckEditApplyChanges;
     OnClick:=@ApplyDependencyButtonClick;
   end;
 
@@ -1213,7 +1218,7 @@ var
   NewCaption: String;
 begin
   if LazPackage=nil then exit;
-  NewCaption:='Package '+FLazPackage.Name;
+  NewCaption:=Format(lisPckEditPackage, [FLazPackage.Name]);
   if LazPackage.Modified then
     NewCaption:=NewCaption+'*';
   Caption:=NewCaption;
@@ -1289,7 +1294,7 @@ begin
     if RemovedFilesNode=nil then begin
       RemovedFilesNode:=
         FilesTreeView.Items.Add(RequiredPackagesNode,
-                'Removed Files (these entries are not saved to the lpk file)');
+                lisPckEditRemovedFilesTheseEntriesAreNotSavedToTheLpkFile);
       RemovedFilesNode.ImageIndex:=ImageIndexRemovedFiles;
       RemovedFilesNode.SelectedIndex:=RemovedFilesNode.ImageIndex;
     end;
@@ -1353,7 +1358,7 @@ begin
     if RemovedRequiredNode=nil then begin
       RemovedRequiredNode:=
         FilesTreeView.Items.Add(nil,
-          'Removed required packages (these entries are not saved to the lpk file)');
+          lisPckEditRemovedRequiredPackagesTheseEntriesAreNotSaved);
       RemovedRequiredNode.ImageIndex:=ImageIndexRemovedRequired;
       RemovedRequiredNode.SelectedIndex:=RemovedRequiredNode.ImageIndex;
     end;
@@ -1411,7 +1416,7 @@ begin
 
   if CurFile<>nil then begin
     FilePropsGroupBox.Enabled:=true;
-    FilePropsGroupBox.Caption:='File Properties';
+    FilePropsGroupBox.Caption:=lisPckEditFileProperties;
     // set Register Unit checkbox
     CallRegisterProcCheckBox.Enabled:=(not LazPackage.ReadOnly)
                                       and (CurFile.FileType=pftUnit);
@@ -1429,7 +1434,7 @@ begin
     RegisteredListBox.Items.Assign(FPlugins);
   end else if Dependency<>nil then begin
     FilePropsGroupBox.Enabled:=not Removed;
-    FilePropsGroupBox.Caption:='Dependency Properties';
+    FilePropsGroupBox.Caption:=lisPckEditDependencyProperties;
     UseMinVersionCheckBox.Checked:=pdfMinVersion in Dependency.Flags;
     MinVersionEdit.Text:=Dependency.MinVersion.AsString;
     MinVersionEdit.Enabled:=pdfMinVersion in Dependency.Flags;
@@ -1491,14 +1496,14 @@ var
 begin
   if LazPackage=nil then exit;
   if LazPackage.IsVirtual and (not LazPackage.ReadOnly) then begin
-    StatusText:='package '+LazPackage.Name+' not saved';
+    StatusText:=Format(lisPckEditpackageNotSaved, [LazPackage.Name]);
   end else begin
     StatusText:=LazPackage.Filename;
   end;
   if LazPackage.ReadOnly then
-    StatusText:='Read Only: '+StatusText;
+    StatusText:=Format(lisPckEditReadOnly, [StatusText]);
   if LazPackage.Modified then
-    StatusText:='Modified: '+StatusText;
+    StatusText:=Format(lisPckEditModified, [StatusText]);
   StatusBar.SimpleText:=StatusText;
 end;
 

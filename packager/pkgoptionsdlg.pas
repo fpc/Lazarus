@@ -480,9 +480,9 @@ begin
   with Notebook do begin
     Name:='Notebook';
     Parent:=Self;
-    Pages.Add('Usage');
-    Pages.Add('Description');
-    Pages.Add('IDE Integration');
+    Pages.Add(lisPckOptsUsage);
+    Pages.Add(lisToDoLDescription);
+    Pages.Add(lisPckOptsIDEIntegration);
     PageIndex:=0;
   end;
   
@@ -493,7 +493,7 @@ begin
   OkButton:=TButton.Create(Self);
   with OkButton do begin
     Name:='OkButton';
-    Caption:='Ok';
+    Caption:=lisLazBuildOk;
     Parent:=Self;
     OnClick:=@OkButtonClick;
   end;
@@ -502,7 +502,7 @@ begin
   with CancelButton do begin
     Name:='CancelButton';
     Parent:=Self;
-    Caption:='Cancel';
+    Caption:=dlgCancel;
     ModalResult:=mrCancel;
   end;
 end;
@@ -517,7 +517,7 @@ begin
   with DescriptionGroupBox do begin
     Name:='DescriptionGroupBox';
     Parent:=DescriptionPage;
-    Caption:='Description/Abstract';
+    Caption:=lisPckOptsDescriptionAbstract;
   end;
   
   DescriptionMemo:=TMemo.Create(Self);
@@ -531,7 +531,7 @@ begin
   with AuthorGroupBox do begin
     Name:='AuthorGroupBox';
     Parent:=DescriptionPage;
-    Caption:='Author:';
+    Caption:=lisPckOptsAuthor;
   end;
 
   AuthorEdit:=TEdit.Create(Self);
@@ -546,7 +546,7 @@ begin
   with LicenseGroupBox do begin
     Name:='LicenseGroupBox';
     Parent:=DescriptionPage;
-    Caption:='License:';
+    Caption:=lisPckOptsLicense;
   end;
 
   LicenseMemo:=TMemo.Create(Self);
@@ -562,7 +562,7 @@ begin
   with VersionGroupBox do begin
     Name:='VersionGroupBox';
     Parent:=DescriptionPage;
-    Caption:='Version';
+    Caption:=lisVersion;
     OnResize:=@VersionGroupBoxResize;
   end;
 
@@ -570,7 +570,7 @@ begin
   with VersionMajorLabel do begin
     Name:='VersionMajorLabel';
     Parent:=VersionGroupBox;
-    Caption:='Major';
+    Caption:=lisPckOptsMajor;
   end;
 
   VersionMajorSpinEdit:=TSpinEdit.Create(Self);
@@ -586,7 +586,7 @@ begin
   with VersionMinorLabel do begin
     Name:='VersionMinorLabel';
     Parent:=VersionGroupBox;
-    Caption:='Minor';
+    Caption:=lisPckOptsMinor;
   end;
 
   VersionMinorSpinEdit:=TSpinEdit.Create(Self);
@@ -602,7 +602,7 @@ begin
   with VersionReleaseLabel do begin
     Name:='VersionReleaseLabel';
     Parent:=VersionGroupBox;
-    Caption:='Release';
+    Caption:=lisPckOptsRelease;
   end;
 
   VersionReleaseSpinEdit:=TSpinEdit.Create(Self);
@@ -618,14 +618,14 @@ begin
   with VersionBuildLabel do begin
     Name:='VersionBuildLabel';
     Parent:=VersionGroupBox;
-    Caption:='Build';
+    Caption:=lisMenuBuild;
   end;
 
   VersionBuildSpinEdit:=TSpinEdit.Create(Self);
   with VersionBuildSpinEdit do begin
     Name:='VersionBuildSpinEdit';
     Parent:=VersionGroupBox;
-    Caption:='Build';
+    Caption:=lisMenuBuild;
     Decimal_Places:=0;
     MinValue:=0;
     MaxValue:=9999;
@@ -635,7 +635,7 @@ begin
   with AutoIncrementOnBuildCheckBox do begin
     Name:='AutoIncrementOnBuildCheckBox';
     Parent:=VersionGroupBox;
-    Caption:='Automatically increment version on build';
+    Caption:=lisPckOptsAutomaticallyIncrementVersionOnBuild;
     Enabled:=false;
   end;
 end;
@@ -650,12 +650,12 @@ begin
   with PkgTypeRadioGroup do begin
     Name:='UsageRadioGroup';
     Parent:=IDEPage;
-    Caption:='PackageType';
+    Caption:=lisPckOptsPackageType;
     with Items do begin
       BeginUpdate;
-      Add('Designtime only');
-      Add('Runtime only');
-      Add('Designtime and Runtime');
+      Add(lisPckOptsDesigntimeOnly);
+      Add(lisPckOptsRuntimeOnly);
+      Add(lisPckOptsDesigntimeAndRuntime);
       EndUpdate;
     end;
     ItemIndex:=2;
@@ -666,12 +666,12 @@ begin
   with UpdateRadioGroup do begin
     Name:='UpdateRadioGroup';
     Parent:=IDEPage;
-    Caption:='Update/Rebuild';
+    Caption:=lisPckOptsUpdateRebuild;
     with Items do begin
       BeginUpdate;
-      Add('Automatically rebuild as needed');
-      Add('Auto rebuild when rebuilding all');
-      Add('Manual compilation (never automatically)');
+      Add(lisPckOptsAutomaticallyRebuildAsNeeded);
+      Add(lisPckOptsAutoRebuildWhenRebuildingAll);
+      Add(lisPckOptsManualCompilationNeverAutomatically);
       EndUpdate;
     end;
     ItemIndex:=0;
@@ -688,7 +688,7 @@ begin
   with AddPathsGroupBox do begin
     Name:='AddPathsGroupBox';
     Parent:=UsagePage;
-    Caption:='Add paths to dependent packages/projects';
+    Caption:=lisPckOptsAddPathsToDependentPackagesProjects;
     OnResize:=@AddPathsGroupBoxResize;
   end;
 
@@ -696,7 +696,7 @@ begin
   with UnitPathLabel do begin
     Name:='UnitPathLabel';
     Parent:=AddPathsGroupBox;
-    Caption:='Unit';
+    Caption:=lisPkgFileTypeUnit;
   end;
 
   UnitPathEdit:=TEdit.Create(Self);
@@ -719,7 +719,7 @@ begin
   with IncludePathLabel do begin
     Name:='IncludePathLabel';
     Parent:=AddPathsGroupBox;
-    Caption:='Include';
+    Caption:=lisPckOptsInclude;
   end;
 
   IncludePathEdit:=TEdit.Create(Self);
@@ -742,7 +742,7 @@ begin
   with ObjectPathLabel do begin
     Name:='ObjectPathLabel';
     Parent:=AddPathsGroupBox;
-    Caption:='Object';
+    Caption:=lisPckOptsObject;
   end;
 
   ObjectPathEdit:=TEdit.Create(Self);
@@ -765,7 +765,7 @@ begin
   with LibraryPathLabel do begin
     Name:='LibraryPathLabel';
     Parent:=AddPathsGroupBox;
-    Caption:='Library';
+    Caption:=lisPckOptsLibrary;
   end;
 
   LibraryPathEdit:=TEdit.Create(Self);
@@ -788,7 +788,7 @@ begin
   with AddOptionsGroupBox do begin
     Name:='AddOptionsGroupBox';
     Parent:=UsagePage;
-    Caption:='Add options to dependent packages and projects';
+    Caption:=lisPckOptsAddOptionsToDependentPackagesAndProjects;
     OnResize:=@AddOptionsGroupBoxResize;
   end;
 
@@ -796,7 +796,7 @@ begin
   with LinkerOptionsLabel do begin
     Name:='LinkerOptionsLabel';
     Parent:=AddOptionsGroupBox;
-    Caption:='Linker';
+    Caption:=lisPckOptsLinker;
   end;
 
   LinkerOptionsMemo:=TMemo.Create(Self);
@@ -810,7 +810,7 @@ begin
   with CustomOptionsLabel do begin
     Name:='CustomOptionsLabel';
     Parent:=AddOptionsGroupBox;
-    Caption:='Custom';
+    Caption:=lisPckOptsCustom;
   end;
 
   CustomOptionsMemo:=TMemo.Create(Self);
@@ -883,10 +883,9 @@ end;
 
 procedure TPackageOptionsDialog.ShowMsgPackageTypeMustBeDesign;
 begin
-  MessageDlg('Invalid package type',
-    'The package "'+LazPackage.IDAsString+'" has the auto install flag.'#13
-    +'This means it will be installed in the IDE. Installation packages'#13
-    +'must be designtime Packages.',
+  MessageDlg(lisPckOptsInvalidPackageType,
+    Format(lisPckOptsThePackageHasTheAutoInstallFlagThisMeans, ['"',
+      LazPackage.IDAsString, '"', #13, #13]),
     mtError,[mbCancel],0);
   ReadPkgTypeFromPackage;
 end;
@@ -895,7 +894,7 @@ constructor TPackageOptionsDialog.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   Name:='PackageOptionsDialog';
-  Caption:='Package Options';
+  Caption:=lisPckOptsPackageOptions;
   SetupComponents;
   OnResize:=@PackageOptionsDialogResize;
   Position:=poScreenCenter;

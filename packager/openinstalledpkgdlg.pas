@@ -122,25 +122,26 @@ begin
   if LI<>nil then begin
     CurPkg:=TLazPackage(LI.Data);
     HintStr:=
-       'Filename:  '+CurPkg.Filename;
+       Format(lisOIPFilename, [CurPkg.Filename]);
     if CurPkg.AutoCreated then
-      HintStr:=HintStr+EndOfLine+'This package was automatically created';
+      HintStr:=Format(lisOIPThisPackageWasAutomaticallyCreated, [HintStr+
+        EndOfLine]);
     if CurPkg.Missing then
-      HintStr:=HintStr+EndOfLine+'This package is installed, '
-                                +'but the lpk file was not found';
-    HintStr:=HintStr+EndOfLine+'Description:  '
-                    +BreakString(CurPkg.Description,60,length('Description:  '));
+      HintStr:=Format(lisOIPThisPackageIsInstalledButTheLpkFileWasNotFound, [
+        HintStr+EndOfLine]);
+    HintStr:=Format(lisOIPDescriptionDescription, [HintStr+EndOfLine,
+      BreakString(CurPkg.Description, 60, length(lisOIPDescription))]);
     HintMemo.Text:=HintStr;
   end else begin
-    HintMemo.Text:='Please select a package';
+    HintMemo.Text:=lisOIPPleaseSelectAPackage;
   end;
 end;
 
 procedure TOpenInstalledPackagesDlg.OpenButtonClick(Sender: TObject);
 begin
   if PkgListView.Selected=nil then begin
-    MessageDlg('No package selected',
-      'Please select a package to open',
+    MessageDlg(lisOIPNoPackageSelected,
+      lisOIPPleaseSelectAPackageToOpen,
       mtInformation,[mbCancel],0);
     exit;
   end;
@@ -157,13 +158,13 @@ begin
     Parent:=Self;
     ViewStyle:=vsReport;
     NewColumn:=Columns.Add;
-    NewColumn.Caption:='Package Name';
+    NewColumn.Caption:=lisOIPPackageName;
     NewColumn.Width:=150;
     NewColumn:=Columns.Add;
-    NewColumn.Caption:='Version';
+    NewColumn.Caption:=lisVersion;
     NewColumn.Width:=80;
     NewColumn:=Columns.Add;
-    NewColumn.Caption:='State';
+    NewColumn.Caption:=lisOIPState;
     NewColumn.Width:=300;
     OnSelectItem:=@PkgListViewSelectItem;
   end;
@@ -181,7 +182,7 @@ begin
   with OpenButton do begin
     Name:='OpenButton';
     Parent:=Self;
-    Caption:='Open';
+    Caption:=lisMenuOpen;
     OnClick:=@OpenButtonClick;
   end;
   
@@ -189,7 +190,7 @@ begin
   with CancelButton do begin
     Name:='CancelButton';
     Parent:=Self;
-    Caption:='Cancel';
+    Caption:=dlgCancel;
     ModalResult:=mrCancel;
   end;
 end;
@@ -207,24 +208,24 @@ function TOpenInstalledPackagesDlg.PkgStateToString(APackage: TLazPackage
   
 begin
   Result:='';
-  if APackage.Modified then AddState('modified');
-  if APackage.Missing then AddState('missing');
+  if APackage.Modified then AddState(lisOIPmodified);
+  if APackage.Missing then AddState(lisOIPmissing);
   case APackage.Installed of
-  pitStatic: AddState('installed static');
-  pitDynamic: AddState('installed dynamic');
+  pitStatic: AddState(lisOIPinstalledStatic);
+  pitDynamic: AddState(lisOIPinstalledDynamic);
   end;
   case APackage.AutoInstall of
-  pitStatic: AddState('auto install static');
-  pitDynamic: AddState('auto install dynamic');
+  pitStatic: AddState(lisOIPautoInstallStatic);
+  pitDynamic: AddState(lisOIPautoInstallDynamic);
   end;
-  if APackage.ReadOnly then AddState('readonly');
+  if APackage.ReadOnly then AddState(lisOIPreadonly);
 end;
 
 constructor TOpenInstalledPackagesDlg.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   Name:='OpenInstalledPackagesDlg';
-  Caption:='Open loaded package';
+  Caption:=lisOIPOpenLoadedPackage;
   SetupComponents;
   OnResize:=@OpenInstalledPackagesDlgResize;
   Position:=poScreenCenter;

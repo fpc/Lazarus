@@ -148,24 +148,24 @@ begin
   try
     // check package ID
     if not PkgID.StringToID(PackagesComboBox.Text) then begin
-      MessageDlg('Invalid Package',
-        'Invalid package ID: "'+PackagesComboBox.Text+'"',
+      MessageDlg(lisAF2PInvalidPackage,
+        Format(lisAF2PInvalidPackageID, ['"', PackagesComboBox.Text, '"']),
         mtError,[mbCancel],0);
       exit;
     end;
     // search package
     APackage:=PackageGraph.FindPackageWithID(PkgID);
     if APackage=nil then begin
-      MessageDlg('Package not found',
-        'Package "'+PkgID.IDAsString+'" not found.',
+      MessageDlg(lisProjAddPackageNotFound,
+        Format(lisAF2PPackageNotFound, ['"', PkgID.IDAsString, '"']),
         mtError,[mbCancel],0);
       exit;
     end;
     
     // check if package is readonly
     if APackage.ReadOnly then begin
-      MessageDlg('Package is read only',
-        'The package '+APackage.IDAsString+' is read only.',
+      MessageDlg(lisAF2PPackageIsReadOnly,
+        Format(lisAF2PThePackageIsReadOnly, [APackage.IDAsString]),
         mtError,[mbCancel],0);
       exit;
     end;
@@ -173,9 +173,9 @@ begin
     // check if file is already in the package
     PkgFile:=APackage.FindPkgFile(Filename,false,true);
     if PkgFile<>nil then begin
-      MessageDlg('File is already in package',
-        'The file "'+Filename+'"'#13
-        +'is already in the package '+APackage.IDAsString+'.',
+      MessageDlg(lisPkgMangFileIsAlreadyInPackage,
+        Format(lisAF2PTheFileIsAlreadyInThePackage, ['"', Filename, '"', #13,
+          APackage.IDAsString]),
         mtError,[mbCancel],0);
       exit;
     end;
@@ -211,7 +211,7 @@ begin
   with FileGroupBox do begin
     Name:='FileGroupBox';
     Parent:=Self;
-    Caption:='File';
+    Caption:=lisToDoLFile;
     OnResize:=@FileGroupBoxResize;
   end;
 
@@ -228,7 +228,7 @@ begin
   with UnitNameLabel do begin
     Name:='UnitNameLabel';
     Parent:=FileGroupBox;
-    Caption:='Unit Name: ';
+    Caption:=lisAF2PUnitName;
   end;
   
   UnitNameEdit:=TEdit.Create(Self);
@@ -242,14 +242,14 @@ begin
   with HasRegisterProcCheckBox do begin
     Name:='HasRegisterProcCheckBox';
     Parent:=FileGroupBox;
-    Caption:='Has Register procedure';
+    Caption:=lisAF2PHasRegisterProcedure;
   end;
   
   FileTypeRadioGroup:=TRadioGroup.Create(Self);
   with FileTypeRadioGroup do begin
     Name:='FileTypeRadioGroup';
     Parent:=FileGroupBox;
-    Caption:='File Type';
+    Caption:=lisAF2PFileType;
     with Items do begin
       BeginUpdate;
       for pft:=Low(TPkgFileType) to High(TPkgFileType) do begin
@@ -266,7 +266,7 @@ begin
   with PackagesGroupBox do begin
     Name:='PackagesGroupBox';
     Parent:=Self;
-    Caption:='Destination Package';
+    Caption:=lisAF2PDestinationPackage;
     OnResize:=@PackagesGroupBoxResize;
   end;
   
@@ -281,7 +281,7 @@ begin
   with ShowAllCheckBox do begin
     Name:='ShowAllCheckBox';
     Parent:=PackagesGroupBox;
-    Caption:='Show All';
+    Caption:=lisAF2PShowAll;
     Checked:=false;
     OnClick:=@ShowAllCheckBoxClick;
   end;
@@ -290,7 +290,7 @@ begin
   with OkButton do begin
     Name:='OkButton';
     Parent:=Self;
-    Caption:='Ok';
+    Caption:=lisLazBuildOk;
     OnClick:=@OkButtonClick;
   end;
   
@@ -298,7 +298,7 @@ begin
   with CancelButton do begin
     Name:='CancelButton';
     Parent:=Self;
-    Caption:='Cancel';
+    Caption:=dlgCancel;
     ModalResult:=mrCancel;
   end;
 end;
@@ -401,7 +401,7 @@ constructor TAddFileToAPackageDlg.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   Name:='AddFileToAPackageDlg';
-  Caption:='Add file to a package';
+  Caption:=lisAF2PAddFileToAPackage;
   fPackages:=TAVLTree.Create(@CompareLazPackageID);
   Position:=poScreenCenter;
   IDEDialogLayoutList.ApplyLayout(Self,320,170);

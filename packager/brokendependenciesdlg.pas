@@ -147,10 +147,8 @@ begin
     Name:='NoteLabel';
     Parent:=Self;
     WordWrap:=true;
-    Caption:='Changing the package name or version breaks dependencies. '
-      +'Should these dependencies be changed as well?'#13
-      +'Select Yes to change all listed dependencies.'#13
-      +'Select Ignore to break the dependencies and continue.';
+    Caption:=Format(lisBDDChangingThePackageNameOrVersionBreaksDependencies, [
+      #13, #13]);
   end;
 
   DependencyListView:=TListView.Create(Self);
@@ -162,7 +160,7 @@ begin
     NewColumn.Width:=200;
     NewColumn.Caption:='Package/Project';
     NewColumn:=Columns.Add;
-    NewColumn.Caption:='Dependency';
+    NewColumn.Caption:=lisA2PDependency;
   end;
 end;
 
@@ -178,7 +176,7 @@ constructor TBrokenDependenciesDialog.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   Name:='BrokenDependenciesDialog';
-  Caption:='Broken Dependencies';
+  Caption:=lisA2PBrokenDependencies;
   fButtons:=TList.Create;
   SetupComponents;
   OnResize:=@BrokenDependenciesDialogResize;
