@@ -6210,6 +6210,7 @@ var ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
   NewSource: TCodeBuffer;
   NewX, NewY, NewTopLine: integer;
+  RevertableJump: boolean;
 begin
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,false) then exit;
   {$IFDEF IDE_DEBUG}
@@ -6219,10 +6220,10 @@ begin
   if CodeToolBoss.JumpToMethod(ActiveUnitInfo.Source,
     ActiveSrcEdit.EditorComponent.CaretX,
     ActiveSrcEdit.EditorComponent.CaretY,
-    NewSource,NewX,NewY,NewTopLine) then
+    NewSource,NewX,NewY,NewTopLine,RevertableJump) then
   begin
     DoJumpToCodePos(ActiveSrcEdit, ActiveUnitInfo, 
-      NewSource, NewX, NewY, NewTopLine, false);
+      NewSource, NewX, NewY, NewTopLine, not RevertableJump);
   end else
     DoJumpToCodeToolBossError;
 end;
@@ -7287,6 +7288,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.404  2002/10/05 14:17:50  lazarus
+  MG: jump point is now added if method jumping not revertable
+
   Revision 1.403  2002/10/05 09:31:09  lazarus
   MG: added consistency checks and fixed selection drawing on wrong forms
 
