@@ -33,7 +33,7 @@ type
     LineEnds: integer;
     LengthOfLastLine: integer;
     Operation: TSourceLogEntryOperation;
-    constructor Create(APos, ALength, AMoveTo: integer; Txt: string;
+    constructor Create(APos, ALength, AMoveTo: integer; const Txt: string;
       AnOperation: TSourceLogEntryOperation);
   end;
 
@@ -52,8 +52,8 @@ type
 
   TSourceLog = class;
 
-  TOnSourceLogInsert = procedure(Sender: TSourceLog; Pos: integer; Txt: string)
-                        of object;
+  TOnSourceLogInsert = procedure(Sender: TSourceLog; Pos: integer;
+                        const Txt: string) of object;
   TOnSourceLogDelete = procedure(Sender: TSourceLog; Pos, Len: integer)
                         of object;
   TOnSourceLogMove = procedure(Sender: TSourceLog; Pos, Len, MoveTo: integer)
@@ -70,13 +70,14 @@ type
     FOnInsert: TOnSourceLogInsert;
     FOnDelete: TOnSourceLogDelete;
     FOnMove: TOnSourceLogMove;
-    procedure SetSource(NewSrc: string);
+    procedure SetSource(const NewSrc: string);
     function GetItems(Index: integer): TSourceLogEntry;
     procedure SetItems(Index: integer; AnItem: TSourceLogEntry);
     function GetMarkers(Index: integer): TSourceLogMarker;
     procedure BuildLineRanges;
   public
-    property Items[Index: integer]: TSourceLogEntry read GetItems write SetItems; default;
+    property Items[Index: integer]: TSourceLogEntry
+        read GetItems write SetItems; default;
     function Count: integer;
     property Markers[Index: integer]: TSourceLogMarker read GetMarkers;
     function MarkerCount: integer;
@@ -86,15 +87,15 @@ type
     property Modified: boolean read FModified write FModified;
     procedure LineColToPosition(Line, Column: integer; var Position: integer);
     procedure AbsoluteToLineCol(Position: integer; var Line, Column: integer);
-    procedure Insert(Pos: integer; Txt: string);
+    procedure Insert(Pos: integer; const Txt: string);
     procedure Delete(Pos, Len: integer);
-    procedure Replace(Pos, Len: integer; Txt: string);
+    procedure Replace(Pos, Len: integer; const Txt: string);
     procedure Move(Pos, Len, MoveTo: integer);
     property OnInsert: TOnSourceLogInsert read FOnInsert write FOnInsert;
     property OnDelete: TOnSourceLogDelete read FOnDelete write FOnDelete;
     property OnMove: TOnSourceLogMove read FOnMove write FOnMove;
     procedure Clear;
-    constructor Create(ASource: string);
+    constructor Create(const ASource: string);
     destructor Destroy; override;
   end;
 
@@ -174,7 +175,8 @@ type
       ctnProcedureName:=7, ctnParameterList:=8,
       ctnFunctionType:=9, ctnProcedureModifier:=10,
       ctnBeginBlock:=11, ctnAsmBlock:=12,
-      ctnInterface:=20, ctnImplementation:=21, ctnInitialization:=22, ctnFinalization:=23
+      ctnInterface:=20, ctnImplementation:=21, ctnInitialization:=22,
+      ctnFinalization:=23
     );
   TCodeTreeNodeDescs = set of TCodeTreeNodeDesc;
 
@@ -321,83 +323,85 @@ type
 
 // program name
 function RenameProgramInSource(Source:TSourceLog;
-   NewProgramName:string):boolean;
-function FindProgramNameInSource(Source:string;
+   const NewProgramName:string):boolean;
+function FindProgramNameInSource(const Source:string;
    var ProgramNameStart,ProgramNameEnd:integer):string;
 
 // unit name
-function RenameUnitInSource(Source:TSourceLog; NewUnitName:string):boolean;
-function FindUnitNameInSource(Source:string;
+function RenameUnitInSource(Source:TSourceLog;
+   const NewUnitName:string):boolean;
+function FindUnitNameInSource(const Source:string;
    var UnitNameStart,UnitNameEnd:integer):string;
 
 // uses sections
-function UnitIsUsedInSource(Source,UnitName:string):boolean;
+function UnitIsUsedInSource(const Source,UnitName:string):boolean;
 function RenameUnitInProgramUsesSection(Source:TSourceLog; 
-   OldUnitName, NewUnitName, NewInFile:string): boolean;
+   const OldUnitName, NewUnitName, NewInFile:string): boolean;
 function AddToProgramUsesSection(Source:TSourceLog; 
-   AUnitName,InFileName:string):boolean;
+   const AUnitName,InFileName:string):boolean;
 function RemoveFromProgramUsesSection(Source:TSourceLog; 
-   AUnitName:string):boolean;
+   const AUnitName:string):boolean;
 function RenameUnitInInterfaceUsesSection(Source:TSourceLog; 
-   OldUnitName, NewUnitName, NewInFile:string): boolean;
+   const OldUnitName, NewUnitName, NewInFile:string): boolean;
 function AddToInterfaceUsesSection(Source:TSourceLog; 
-   AUnitName,InFileName:string):boolean;
+   const AUnitName,InFileName:string):boolean;
 function RemoveFromInterfaceUsesSection(Source:TSourceLog; 
-   AUnitName:string):boolean;
+   const AUnitName:string):boolean;
 
 // single uses section
-function IsUnitUsedInUsesSection(Source,UnitName:string; 
+function IsUnitUsedInUsesSection(const Source,UnitName:string;
    UsesStart:integer):boolean;
 function RenameUnitInUsesSection(Source:TSourceLog; UsesStart: integer;
-   OldUnitName, NewUnitName, NewInFile:string): boolean;
-function AddUnitToUsesSection(Source:TSourceLog; UnitName,InFilename:string;
-   UsesStart:integer):boolean;
-function RemoveUnitFromUsesSection(Source:TSourceLog; UnitName:string;
+   const OldUnitName, NewUnitName, NewInFile:string): boolean;
+function AddUnitToUsesSection(Source:TSourceLog;
+   const UnitName,InFilename:string; UsesStart:integer):boolean;
+function RemoveUnitFromUsesSection(Source:TSourceLog; const UnitName:string;
    UsesStart:integer):boolean;
 
 // compiler directives
-function FindIncludeDirective(Source,Section:string; Index:integer;
+function FindIncludeDirective(const Source,Section:string; Index:integer;
    var IncludeStart,IncludeEnd:integer):boolean;
-function SplitCompilerDirective(Directive:string; 
+function SplitCompilerDirective(const Directive:string;
    var DirectiveName,Parameters:string):boolean;
 
 // createform
 function AddCreateFormToProgram(Source:TSourceLog;
-   AClassName,AName:string):boolean;
+   const AClassName,AName:string):boolean;
 function RemoveCreateFormFromProgram(Source:TSourceLog;
-   AClassName,AName:string):boolean;
-function CreateFormExistsInProgram(Source:string;
-   AClassName,AName:string):boolean;
-function ListAllCreateFormsInProgram(Source:string):TStrings;
+   const AClassName,AName:string):boolean;
+function CreateFormExistsInProgram(const Source, AClassName,
+   AName:string):boolean;
+function ListAllCreateFormsInProgram(const Source:string):TStrings;
 
 // resource code
-function FindResourceInCode(Source:string; AddCode:string;
+function FindResourceInCode(const Source, AddCode:string;
    var Position,EndPosition:integer):boolean;
-function AddResourceCode(Source:TSourceLog; AddCode:string):boolean;
+function AddResourceCode(Source:TSourceLog; const AddCode:string):boolean;
 
 // form components
-function FindFormClassDefinitionInSource(Source:string; FormClassName:string;
-   var FormClassNameStartPos, FormBodyStartPos: integer
-   ):boolean;
-function FindFormComponentInSource(Source: string; FormBodyStartPos: integer;
+function FindFormClassDefinitionInSource(const Source, FormClassName:string;
+   var FormClassNameStartPos, FormBodyStartPos: integer):boolean;
+function FindFormComponentInSource(const Source: string;
+  FormBodyStartPos: integer;
   ComponentName, ComponentClassName: string): integer;
 function AddFormComponentToSource(Source:TSourceLog; FormBodyStartPos: integer;
-  ComponentName, ComponentClassName: string): boolean;
+  const ComponentName, ComponentClassName: string): boolean;
 function RemoveFormComponentFromSource(Source:TSourceLog; FormBodyStartPos: integer;
   ComponentName, ComponentClassName: string): boolean;
 
 // code search
-function SearchCodeInSource(Source,Find:string; StartPos:integer;
+function SearchCodeInSource(const Source,Find:string; StartPos:integer;
    var EndFoundPosition:integer;  CaseSensitive:boolean):integer;
-procedure GetLineStartEndAtPosition(Source:string; Position:integer; 
+procedure GetLineStartEndAtPosition(const Source:string; Position:integer;
    var LineStart,LineEnd:integer);
-function ReadNextPascalAtom(Source:string; 
+function ReadNextPascalAtom(const Source:string;
    var Position,AtomStart:integer):string;
-function ReadRawNextPascalAtom(Source:string;
+function ReadRawNextPascalAtom(const Source:string;
    var Position,AtomStart:integer):string;
 
 // utilities
-function LineEndCount(Txt: string; var LengthOfLastLine: integer): integer;
+function LineEndCount(const Txt: string;
+   var LengthOfLastLine: integer): integer;
 
 const
   MaxLineLength:integer=80;
@@ -430,7 +434,7 @@ type
 var
   NodeMemManager: TCodeTreeNodeMemManager; 
 
-function FindIncludeDirective(Source,Section:string; Index:integer;
+function FindIncludeDirective(const Source,Section:string; Index:integer;
    var IncludeStart,IncludeEnd:integer):boolean;
 var Atom,DirectiveName:string;
   Position,EndPos,AtomStart:integer;
@@ -460,7 +464,7 @@ begin
   until Atom='';
 end;
 
-function SplitCompilerDirective(Directive:string; 
+function SplitCompilerDirective(const Directive:string;
    var DirectiveName,Parameters:string):boolean;
 var EndPos,DirStart,DirEnd:integer;
 begin
@@ -482,7 +486,8 @@ begin
     Result:=false;
 end;
 
-function RenameUnitInSource(Source:TSourceLog; NewUnitName:string):boolean;
+function RenameUnitInSource(Source:TSourceLog;
+  const NewUnitName:string):boolean;
 var UnitNameStart,UnitNameEnd:integer;
 begin
   UnitNameStart:=0;
@@ -492,7 +497,7 @@ begin
     Source.Replace(UnitNameStart,UnitNameEnd-UnitNameStart,NewUnitName);
 end;
 
-function FindUnitNameInSource(Source:string;
+function FindUnitNameInSource(const Source:string;
   var UnitNameStart,UnitNameEnd:integer):string;
 begin
   UnitNameStart:=SearchCodeInSource(Source,'unit',1,UnitNameEnd,false);
@@ -503,7 +508,7 @@ begin
 end;
 
 function RenameProgramInSource(Source: TSourceLog;
-   NewProgramName:string):boolean;
+  const NewProgramName:string):boolean;
 var ProgramNameStart,ProgramNameEnd:integer;
 begin
   Result:=(FindProgramNameInSource(Source.Source,ProgramNameStart,ProgramNameEnd)<>'');
@@ -511,7 +516,7 @@ begin
     Source.Replace(ProgramNameStart,ProgramNameEnd-ProgramNameStart,NewProgramName)
 end;
 
-function FindProgramNameInSource(Source:string;
+function FindProgramNameInSource(const Source:string;
    var ProgramNameStart,ProgramNameEnd:integer):string;
 begin
   ProgramNameStart:=SearchCodeInSource(Source,'program',1,ProgramNameEnd,false);
@@ -521,7 +526,7 @@ begin
     Result:='';
 end;
 
-function UnitIsUsedInSource(Source,UnitName:string):boolean;
+function UnitIsUsedInSource(const Source,UnitName:string):boolean;
 // search in all uses sections
 var UsesStart,UsesEnd:integer;
 begin
@@ -538,7 +543,7 @@ begin
 end;
 
 function RenameUnitInProgramUsesSection(Source:TSourceLog; 
-   OldUnitName, NewUnitName, NewInFile:string): boolean;
+  const OldUnitName, NewUnitName, NewInFile:string): boolean;
 var
   ProgramTermStart,ProgramTermEnd, 
   UsesStart,UsesEnd:integer;
@@ -570,7 +575,7 @@ begin
 end;
 
 function AddToProgramUsesSection(Source:TSourceLog; 
-  AUnitName,InFileName:string):boolean;
+  const AUnitName,InFileName:string):boolean;
 var
   ProgramTermStart,ProgramTermEnd, 
   UsesStart,UsesEnd:integer;
@@ -603,7 +608,7 @@ begin
 end;
 
 function RenameUnitInInterfaceUsesSection(Source:TSourceLog; 
-   OldUnitName, NewUnitName, NewInFile:string): boolean;
+  const OldUnitName, NewUnitName, NewInFile:string): boolean;
 var
   InterfaceStart,InterfaceWordEnd, 
   UsesStart,UsesEnd:integer;
@@ -630,7 +635,7 @@ begin
 end;
 
 function AddToInterfaceUsesSection(Source:TSourceLog; 
-  AUnitName,InFileName:string):boolean;
+  const AUnitName,InFileName:string):boolean;
 var
   InterfaceStart,InterfaceWordEnd, 
   UsesStart,UsesEnd:integer;
@@ -657,7 +662,7 @@ begin
 end;
 
 function RemoveFromProgramUsesSection(Source:TSourceLog; 
-   AUnitName:string):boolean;
+  const AUnitName:string):boolean;
 var
   ProgramTermStart,ProgramTermEnd, 
   UsesStart,UsesEnd:integer;
@@ -682,7 +687,7 @@ begin
 end;
 
 function RemoveFromInterfaceUsesSection(Source:TSourceLog; 
-   AUnitName:string):boolean;
+  const AUnitName:string):boolean;
 var
   InterfaceStart,InterfaceWordEnd, 
   UsesStart,UsesEnd:integer;
@@ -701,7 +706,7 @@ begin
   Result:=RemoveUnitFromUsesSection(Source,AUnitName,UsesStart);
 end;
 
-function IsUnitUsedInUsesSection(Source,UnitName:string; 
+function IsUnitUsedInUsesSection(const Source,UnitName:string;
    UsesStart:integer):boolean;
 var UsesEnd:integer;
   Atom:string;
@@ -729,10 +734,10 @@ begin
 end;
 
 function RenameUnitInUsesSection(Source:TSourceLog; UsesStart: integer;
-   OldUnitName, NewUnitName, NewInFile:string): boolean;
+  const OldUnitName, NewUnitName, NewInFile:string): boolean;
 var UsesEnd:integer;
   LineStart,LineEnd,OldUsesStart:integer;
-  s,Atom:string;
+  s,Atom,InFilePhrase:string;
 begin
   Result:=false;
   if (OldUnitName='') then begin
@@ -745,7 +750,9 @@ begin
   if not (lowercase(copy(Source.Source,UsesStart,4))='uses') then exit;
   // parse through all used units and see if it is already there
   if NewInFile<>'' then
-    NewInFile:=' in '''+NewInFile+'''';
+    InFilePhrase:=' in '''+NewInFile+''''
+  else
+    InFilePhrase:='';
   s:=', ';
   repeat
     Atom:=ReadNextPascalAtom(Source.Source,UsesEnd,UsesStart);
@@ -769,18 +776,18 @@ begin
       Atom:=ReadNextPascalAtom(Source.Source,UsesEnd,UsesStart);
   until Atom<>',';
   // unit not used yet -> add it
-  Source.Insert(UsesStart,s+NewUnitName+NewInFile);
+  Source.Insert(UsesStart,s+NewUnitName+InFilePhrase);
   GetLineStartEndAtPosition(Source.Source,UsesStart,LineStart,LineEnd);
-  if (LineEnd-LineStart>MaxLineLength) or (NewInFile<>'') then
+  if (LineEnd-LineStart>MaxLineLength) or (InFilePhrase<>'') then
     Source.Insert(UsesStart,EndOfLine+'  ');
   Result:=true;
 end;
 
-function AddUnitToUsesSection(Source:TSourceLog; UnitName,InFilename:string;
-   UsesStart:integer):boolean;
+function AddUnitToUsesSection(Source:TSourceLog;
+  const UnitName,InFilename:string; UsesStart:integer):boolean;
 var UsesEnd:integer;
   LineStart,LineEnd:integer;
-  s,Atom:string;
+  s,Atom,InFilenamePhrase:string;
 begin
   Result:=false;
   if (UnitName='') or (UnitName=';') or (UsesStart<1) then exit;
@@ -804,15 +811,17 @@ begin
   until Atom<>',';
   // unit not used yet -> add it
   if InFilename<>'' then 
-    InFileName:=' in '''+InFileName+'''';
-  Source.Insert(UsesStart,s+UnitName+InFileName);
+    InFileNamePhrase:=' in '''+InFileName+''''
+  else
+    InFilenamePhrase:='';
+  Source.Insert(UsesStart,s+UnitName+InFileNamePhrase);
   GetLineStartEndAtPosition(Source.Source,UsesStart,LineStart,LineEnd);
-  if (LineEnd-LineStart>MaxLineLength) or (InFileName<>'') then
+  if (LineEnd-LineStart>MaxLineLength) or (InFileNamePhrase<>'') then
     Source.Insert(UsesStart,EndOfLine+'  ');
   Result:=true;
 end;
 
-function RemoveUnitFromUsesSection(Source:TSourceLog; UnitName:string;
+function RemoveUnitFromUsesSection(Source:TSourceLog; const  UnitName:string;
    UsesStart:integer):boolean;
 var UsesEnd,OldUsesStart,OldUsesEnd:integer;
   Atom:string;
@@ -853,7 +862,7 @@ begin
 end;
 
 function AddCreateFormToProgram(Source:TSourceLog;
-  AClassName,AName:string):boolean;
+  const AClassName,AName:string):boolean;
 // insert 'Application.CreateForm(<AClassName>,<AName>);'
 // in front of 'Application.Run;'
 var Position,EndPosition:integer;
@@ -868,7 +877,7 @@ begin
 end;
 
 function RemoveCreateFormFromProgram(Source:TSourceLog;
-   AClassName,AName:string):boolean;
+  const AClassName,AName:string):boolean;
 // remove 'Application.CreateForm(<AClassName>,<AName>);'
 var Position,EndPosition,AtomStart:integer;
 begin
@@ -883,8 +892,8 @@ begin
   Result:=true;
 end;
 
-function CreateFormExistsInProgram(Source:string;
-   AClassName,AName:string):boolean;
+function CreateFormExistsInProgram(const Source,
+  AClassName,AName:string):boolean;
 var Position,EndPosition:integer;
 begin
   Position:=SearchCodeInSource(Source,
@@ -892,7 +901,7 @@ begin
   Result:=Position>0;
 end;
 
-function ListAllCreateFormsInProgram(Source:string):TStrings;
+function ListAllCreateFormsInProgram(const Source:string):TStrings;
 // list format: <formname>:<formclassname>
 var Position,EndPosition:integer;
   s:string;
@@ -906,13 +915,12 @@ begin
       s:=ReadNextPascalAtom(Source,EndPosition,Position);
       ReadNextPascalAtom(Source,EndPosition,Position);
       s:=ReadNextPascalAtom(Source,EndPosition,Position)+':'+s;
-writeln('ListAllCreateFormsInProgram ',s);
       Result.Add(s);
     end;
   until Position<1;
 end;
 
-function FindResourceInCode(Source:string; AddCode:string;
+function FindResourceInCode(const Source, AddCode:string;
    var Position,EndPosition:integer):boolean;
 var Find,Atom:string;
   FindPosition,FindAtomStart,SemicolonPos:integer;
@@ -939,7 +947,7 @@ begin
   Result:=true;
 end;
 
-function AddResourceCode(Source:TSourceLog; AddCode:string):boolean;
+function AddResourceCode(Source:TSourceLog; const AddCode:string):boolean;
 var StartPos,EndPos:integer;
 begin
   if FindResourceInCode(Source.Source,AddCode,StartPos,EndPos) then begin
@@ -952,9 +960,8 @@ begin
   Result:=true;
 end;
 
-function FindFormClassDefinitionInSource(Source:string; FormClassName:string;
-  var FormClassNameStartPos, FormBodyStartPos: integer
-  ):boolean;
+function FindFormClassDefinitionInSource(const Source, FormClassName:string;
+  var FormClassNameStartPos, FormBodyStartPos: integer):boolean;
 var AtomEnd,AtomStart: integer;
 begin
   Result:=false;
@@ -968,7 +975,8 @@ begin
   Result:=true;
 end;
 
-function FindFormComponentInSource(Source: string; FormBodyStartPos: integer;
+function FindFormComponentInSource(const Source: string;
+  FormBodyStartPos: integer;
   ComponentName, ComponentClassName: string): integer;
 var AtomStart, OldPos: integer;
   Atom: string;
@@ -996,7 +1004,7 @@ begin
 end;
 
 function AddFormComponentToSource(Source:TSourceLog; FormBodyStartPos: integer;
-  ComponentName, ComponentClassName: string): boolean;
+  const ComponentName, ComponentClassName: string): boolean;
 var Position, AtomStart: integer;
   Atom: string;
   PriorSpaces, NextSpaces: string;
@@ -1035,12 +1043,12 @@ begin
   Result:=false;
 end;
 
-function RemoveFormComponentFromSource(Source:TSourceLog; FormBodyStartPos: integer;
+function RemoveFormComponentFromSource(Source:TSourceLog;
+  FormBodyStartPos: integer;
   ComponentName, ComponentClassName: string): boolean;
 var AtomStart, Position, ComponentStart, LineStart, LineEnd: integer;
   Atom: string;
 begin
-writeln('[RemoveFormComponentFromSource] A ',FormBodyStartPos);
   ComponentName:=lowercase(ComponentName);
   ComponentClassName:=lowercase(ComponentClassName);
   Position:=FormBodyStartPos;
@@ -1075,7 +1083,7 @@ writeln('[RemoveFormComponentFromSource] A ',FormBodyStartPos);
   Result:=true;
 end;
 
-function SearchCodeInSource(Source,Find:string; StartPos:integer;
+function SearchCodeInSource(const Source,Find:string; StartPos:integer;
    var EndFoundPosition:integer;  CaseSensitive:boolean):integer;
 // search pascal atoms of Find in Source
 var FindAtomStart,FindPos,Position,AtomStart
@@ -1128,7 +1136,7 @@ begin
   until false;
 end;
 
-procedure GetLineStartEndAtPosition(Source:string; Position:integer; 
+procedure GetLineStartEndAtPosition(const Source:string; Position:integer;
    var LineStart,LineEnd:integer);
 begin
   LineStart:=Position;
@@ -1140,7 +1148,8 @@ begin
     inc(LineEnd);
 end;
 
-function ReadNextPascalAtom(Source:string; var Position,AtomStart:integer):string;
+function ReadNextPascalAtom(const Source:string;
+  var Position,AtomStart:integer):string;
 var DirectiveName:string;
   DirStart,DirEnd,EndPos:integer;
 begin
@@ -1170,7 +1179,7 @@ begin
   until false;
 end;
 
-function ReadRawNextPascalAtom(Source:string; 
+function ReadRawNextPascalAtom(const Source:string;
   var Position,AtomStart:integer):string;
 var Len:integer;
   c1,c2:char;
@@ -1307,7 +1316,8 @@ begin
   Result:=copy(Source,AtomStart,Position-AtomStart);
 end;
 
-function LineEndCount(Txt: string; var LengthOfLastLine: integer): integer;
+function LineEndCount(const Txt: string;
+  var LengthOfLastLine: integer): integer;
 var i, LastLineEndPos: integer;
 begin
   i:=1;
@@ -1329,7 +1339,8 @@ end;
 
 { TSourceLogEntry }
 
-constructor TSourceLogEntry.Create(APos, ALength, AMoveTo: integer; Txt: string;
+constructor TSourceLogEntry.Create(APos, ALength, AMoveTo: integer;
+  const Txt: string;
   AnOperation: TSourceLogEntryOperation);
 begin
   Position:=APos;
@@ -1343,7 +1354,7 @@ end;
 
 { TSourceLog }
 
-constructor TSourceLog.Create(ASource: string);
+constructor TSourceLog.Create(const ASource: string);
 begin
   inherited Create;
   FModified:=false;
@@ -1403,13 +1414,13 @@ begin
   Result:=fMarkers.Count;
 end;
 
-procedure TSourceLog.SetSource(NewSrc: string);
+procedure TSourceLog.SetSource(const NewSrc: string);
 begin
   Clear;
   FSource:=NewSrc;
 end;
 
-procedure TSourceLog.Insert(Pos: integer; Txt: string);
+procedure TSourceLog.Insert(Pos: integer; const Txt: string);
 var i: integer;
 begin
   if Assigned(FOnInsert) then FOnInsert(Self,Pos,Txt);
@@ -1444,7 +1455,7 @@ begin
   FModified:=true;
 end;
 
-procedure TSourceLog.Replace(Pos, Len: integer; Txt: string);
+procedure TSourceLog.Replace(Pos, Len: integer; const Txt: string);
 var i: integer;
 begin
   if Assigned(FOnDelete) then FOnDelete(Self,Pos,Len);
@@ -2266,3 +2277,4 @@ finalization
   CodeToolFinal;
 
 end.
+
