@@ -34,8 +34,9 @@ uses
   FileCtrl, FileProcs;
 
 type
+  // comments
   TCommentType = (
-    comtDefault,    // automatically decide
+    comtDefault,    // decide automatically
     comtNone,       // no comment
     comtPascal,     // {}
     comtDelphi,     // //
@@ -45,12 +46,12 @@ type
     comtHtml        // <!-- -->
     );
   TCommentTypes = set of TCommentType;
-  
+
+  // copy
   TOnCopyFileMethod =
     procedure(const Filename: string; var Copy: boolean;
       Data: TObject) of object;
-    
-    
+
   TCopyErrorType = (
     ceSrcDirDoesNotExists,
     ceCreatingDirectory,
