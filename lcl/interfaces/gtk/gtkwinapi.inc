@@ -858,8 +858,7 @@ begin
   else begin
     Assert(False, 'Trace:' + sError);
     Result := 0;
-    FGDIObjects.Remove(GObject);
-    Dispose(GObject);
+    DisposeGDIObject(GObject)
   end;
   Assert(False, Format('Trace:< [TgtkObject.CreateBrushIndirect] Got --> %x', [Result]));
 end;
@@ -1008,8 +1007,7 @@ var
 
   procedure LoadDefaultFont;
   begin
-    FGDIObjects.Remove(GdiObject);
-    Dispose(GdiObject);
+    DisposeGDIObject(GdiObject);
     GdiObject:=CreateDefaultFont;
   end;
 
@@ -1268,8 +1266,7 @@ begin
     if GdiObject^.GDIFontObject = nil
     then begin
   //writeln('[TgtkObject.CreateFontIndirect] ',HexStr(Cardinal(GdiObject),8),'  ',FGDIObjects.Count);
-      FGDIObjects.Remove(GdiObject);
-      Dispose(GdiObject);
+      DisposeGDIObject(GdiObject);
       Result := 0;
     end
     else begin
@@ -1665,8 +1662,7 @@ begin
   { Dispose of the GDI object }
 //writeln('[TgtkObject.DeleteObject] ',Result,'  ',HexStr(GDIObject,8),'  ',FGDIObjects.Count);
   if GDIObjectExists then begin
-    FGDIObjects.Remove(PGDIObject(GDIObject));
-    Dispose(PGDIObject(GDIObject));
+    DisposeGDIObject(PGDIObject(GDIObject));
   end;
 end;
 
@@ -5964,6 +5960,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.97  2002/08/21 08:13:38  lazarus
+  MG: accelerated new/dispose of gdiobjects
+
   Revision 1.96  2002/08/21 07:16:59  lazarus
   MG: reduced mem leak of clipping stuff, still not fixed
 
