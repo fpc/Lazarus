@@ -7,8 +7,13 @@
 name=codetools
 version=0.8a
 
+[compiler]
+unitdir=.
+unittargetdir=../units
+options=-gl
+
 [target]
-units=codetoolmanager memcheck
+units=allcodetoolunits
 implicitunits=avl_tree basiccodetools codecache sourcelog \
    customcodetool pascalparsertool finddeclarationtool stdcodetools \
    methodjumptool eventcodetool codecompletiontool codeatom codetree \
@@ -19,7 +24,11 @@ implicitunits=avl_tree basiccodetools codecache sourcelog \
 packages=fcl
 
 [default]
-lcldir=../../lcl
 
-[compiler]
-options=-gl
+[rules]
+.PHONY: cleartarget all
+
+cleartarget:
+        -$(DEL) $(COMPILER_UNITTARGETDIR)/allcodetoolunits$(PPUEXT)
+
+all: cleartarget allcodetoolunits$(PPUEXT)

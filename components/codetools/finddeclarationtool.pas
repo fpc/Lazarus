@@ -28,23 +28,41 @@
   ToDo:
     - many things, search for 'ToDo'
 
-    - Difficulties:
-       1. SOLVED. Searching recursively
-            - ParentNodes
-            - Ancestor Classes/Objects/Interfaces
-            - with statements
-            - operators: '.', '()', 'A()', '^', 'inherited'
-       2. SOLVED. Searching enums must be searched in sub nodes
-            -> all classes node trees must be built
-       3. SOLVED. Searching in used units (interface USES and implementation USES)
-       4. SOLVED. Searching forward for pointer types e.g. ^Tralala
-       5. Mass Search: searching a compatible proc will result
-          in searching every parameter type of every reachable proc
-            (implementation section + interface section
+    - Mass Search: searching a compatible proc will result in searching every
+      parameter type of every reachable proc
+          (implementation section + interface section
     	    + used interface sections + class and ancestor methods)
-          How can this be achieved in good time?
-            -> Caching
+      How can this be achieved in good time?
+         -> Caching
     - Caching:
+        1. interface cache:
+          Every FindIdentifierInInterface call should be cached
+            - stores: Identifier -> Node+CleanPos
+            - cache must be deleted, everytime the codetree is rebuild
+               this is enough update, because it does only store internals
+           -> This will improve access time to all precompiled packages
+           
+        2. dynamic cache:
+            searching a compatible proc not by name, but by parameter type list
+            results in the following:
+              given a library with 500 procs with 2 integer parameters, will
+              result in 1.000.000 checks for 'integer', before the interface
+              cache of objpas points to longint. Then longint will be searched
+              in objpas (>100 checks), before the system.pp interface cache is
+              asked. Total: 100.000.000 checks.
+           Hence, the result of a search should be saved:
+             every 'cache' node get a list of
+               Identifier+CleanBackwardPos+CleanForwardPos -> TFindContext
+               This information means: if an identifier is searched at a
+               child node (not sub child node!) within the bounds, the cached
+               FindContext is valid.
+             'cache' nodes are:
+               - section nodes e.g. interface, program, ...
+               - class nodes
+             this cache must be deleted, every time the code tree changes, or
+             one of the used units changes.
+             
+           
        Where:
          For each section node (Interface, Implementation, ...)
          For each BeginBlock
@@ -2786,7 +2804,7 @@ writeln('[TFindDeclarationTool.CalculateBinaryOperator] A',
   then begin
     // + - *
     if (Src[BinaryOperator.StartPos]='+')
-    and (LeftOperand.Desc in [xtAnsiString,xtShortString,xtString,xtWideString])
+    and (LeftOperand.Desc in [xtAnsiString,xtShortString,xtString])
     then begin
       Result.Desc:=xtConstString;
     end else begin

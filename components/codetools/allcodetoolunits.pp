@@ -7,7 +7,7 @@
 
  /***************************************************************************
 }
-unit allcodetoolunits;
+unit AllCodeToolUnits;
 
 {$mode objfpc}{$H+}
 
@@ -28,6 +28,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.7  2002/01/28 12:14:56  lazarus
+  MG: fixed Makefile
+
   Revision 1.6  2002/01/23 22:12:54  lazarus
   MG: external tool output parsing for fpc and make messages
 
