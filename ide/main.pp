@@ -3181,7 +3181,7 @@ writeln('TMainIDE.DoSaveProject A SaveAs=',SaveAs,' SaveToTestDir=',SaveToTestDi
   for i:=0 to Project.UnitCount-1 do begin
     if (Project.Units[i].Loaded) and (Project.Units[i].IsVirtual)
     and (Project.MainUnit<>i) then begin
-      Result:=DoSaveEditorUnit(Project.Units[i].EditorIndex,false,
+      Result:=DoSaveEditorUnit(Project.Units[i].EditorIndex,true,
                                SaveToTestDir);
       if (Result=mrAbort) or (Result=mrCancel) then exit;
     end;
@@ -3205,7 +3205,7 @@ writeln('TMainIDE.DoSaveProject A SaveAs=',SaveAs,' SaveToTestDir=',SaveToTestDi
   end else
     MainUnitInfo:=nil;
 
-  // save some information of the loaded files
+  // save some information of the loaded files to the project
   Project.Bookmarks.Clear;
   for i:=0 to Project.UnitCount-1 do begin
     AnUnitInfo:=Project.Units[i];
@@ -3228,7 +3228,7 @@ writeln('AnUnitInfo.Filename=',AnUnitInfo.Filename);
     end;
   end;
 
-  SaveAs:=SaveAs or (Project.ProjectFile='');
+  SaveAs:=SaveAs or (Project.IsVirtual);
   if SaveAs and (not SaveToTestDir) then begin
     // let user choose a filename
     SaveDialog:=TSaveDialog.Create(Application);
@@ -3364,7 +3364,7 @@ writeln('AnUnitInfo.Filename=',AnUnitInfo.Filename);
     for i:=0 to SourceNoteBook.Notebook.Pages.Count-1 do begin
       if (Project.MainUnit<0)
       or (Project.Units[Project.MainUnit].EditorIndex<>i) then begin
-        Result:=DoSaveEditorUnit(i,SaveAs,SaveToTestDir);
+        Result:=DoSaveEditorUnit(i,false,SaveToTestDir);
         if Result=mrAbort then exit;
       end;
     end;
@@ -5185,6 +5185,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.172  2001/12/11 11:14:10  lazarus
+  MG: fixed save project, saving units twice
+
   Revision 1.171  2001/12/11 09:34:32  lazarus
   MG: fixed open file at cursor
 
