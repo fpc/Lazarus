@@ -9520,6 +9520,29 @@ var
                              +#13#13+lisSeeMessages);
     end;
   end;
+  
+  procedure CheckInterfaceName(const AName: string);
+  begin
+    if CompareText(ActiveUnitInfo.UnitName,AName)=0 then
+      raise Exception.Create(Format(
+        lisTheUnitItselfHasAlreadyTheNamePascalIdentifiersMus, ['"', AName, '"']
+        ));
+    if ActiveUnitInfo.IsPartOfProject then begin
+      // check if component name already exists in project
+      i:=Project1.IndexOfUnitWithComponentName(AName,true,ActiveUnitInfo);
+      if i>=0 then
+        raise Exception.Create(
+                           Format(lisThereIsAlreadyAFormWithTheName, ['"',
+                             AName, '"']));
+      // check if pascal identifier already exists in the units
+      i:=Project1.IndexOfUnitWithName(AName,true,nil);
+      if i>=0 then
+        raise Exception.Create(Format(
+          lisThereIsAlreadyAUnitWithTheNamePascalIdentifiersMus, ['"', AName,
+          '"']));
+    end;
+
+  end;
 
 begin
   writeln('TMainIDE.OnDesignerRenameComponent Old=',AComponent.Name,':',AComponent.ClassName,' New=',NewName);
@@ -9538,14 +9561,10 @@ begin
 
   if AComponent=ADesigner.LookupRoot then begin
     // rename owner component (e.g. the form)
-
-    // check if component name already exists
-    i:=Project1.IndexOfUnitWithComponentName(NewName,true,ActiveUnitInfo);
-    if i>=0 then
-      raise Exception.Create(
-                         Format(lisThereIsAlreadyAFormWithTheName, ['"',
-                           Newname, '"']));
+    
+    CheckInterfaceName(NewName);
     NewClassName:='T'+NewName;
+    CheckInterfaceName(NewClassName);
 
     // rename form component in source
     BossResult:=CodeToolBoss.RenameForm(ActiveUnitInfo.Source,
@@ -10418,6 +10437,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.730  2004/06/19 10:06:26  mattias
+  added check for form name not a unit name
+
   Revision 1.729  2004/05/30 08:53:26  mattias
   TComboBox.Clear now clears Text as well
 

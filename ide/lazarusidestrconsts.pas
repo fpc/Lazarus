@@ -429,11 +429,15 @@ resourcestring
   lisComponentNameIsNotAValidIdentifier = 'Component name %s%s%s is not a '
     +'valid identifier';
   lisComponentNameIsKeyword = 'Component name %s%s%s is keyword';
+  lisTheUnitItselfHasAlreadyTheNamePascalIdentifiersMus = 'The unit itself '
+    +'has already the name %s%s%s. Pascal identifiers must be unique.';
   lisUnableToRenameVariableInSource = 'Unable to rename variable in source.';
   lisUnableToUpdateCreateFormStatementInProjectSource = 'Unable to update '
     +'CreateForm statement in project source';
   lisThereIsAlreadyAFormWithTheName = 'There is already a form with the name %'
     +'s%s%s';
+  lisThereIsAlreadyAUnitWithTheNamePascalIdentifiersMus = 'There is already a '
+    +'unit with the name %s%s%s. Pascal identifiers must be unique.';
   lisSeeMessages = 'See messages.';
   lisError = 'Error: ';
   lisUnableToRenameFormInSource = 'Unable to rename form in source.';
