@@ -1286,6 +1286,7 @@ end;
 procedure TControlSelection.Clear;
 var i:integer;
 begin
+  if FControls.Count=0 then exit;
   for i:=0 to FControls.Count-1 do Items[i].Free;
   FControls.Clear;
   FStates:=FStates+[cssOnlyNonVisualNeedsUpdate,cssOnlyVisualNeedsUpdate];
