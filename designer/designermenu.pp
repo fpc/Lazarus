@@ -484,7 +484,7 @@ begin
         Width:=ParentCanvas.TextWidth(MenuItem^.Caption) + DESIGNER_MENU_ITEM_SPACE;
       end;
     end;
-    if (MenuItem^.Selected) or (MenuItem^.Active) or ((MenuItem^.Level = 1) and (fMenu is TMainMenu)) then
+    if (MenuItem^.Selected) or ((MenuItem^.Level = 1) and (fMenu is TMainMenu)) then
     begin
       Bevelouter:=bvraised;
     end else
@@ -498,7 +498,9 @@ begin
   if (MenuItem^.NextItem <> nil) then Draw(MenuItem^.NextItem, FormPanel, SubMenuPanel);
   with MenuItem^.SelfPanel do
   begin
-    if (((MenuItem^.Selected) or (MenuItem^.Active)) and (MenuItem^.SubMenu <> nil)) then
+    if ((MenuItem^.SubMenu <> nil) and
+      (((MenuItem^.Selected) and ((MenuItem^.Submenu^.Selected = False) or (MenuItem^.SubMenu^.Active = False))) or
+      ((MenuItem^.SubMenu^.Selected) or (MenuItem^.SubMenu^.Active)))) then
     begin
       if (fMenu is TpopupMenu) and (MenuItem^.Level = 1) then
         SubMenuDimensions:=GetSubMenuHeight(GetDesignerMenuItem(Root, MenuItem^.SubMenu^.ID), MenuItem^.coord.right + 1, 0, MenuItem^.SubMenu^.ID)
@@ -543,8 +545,12 @@ begin
   end;
 
   MenuItem^.CaptionLabel.Width:=MenuItem^.SelfPanel.Width - 10;
-
-  if ((MenuItem^.SubMenu <> nil) and ((MenuItem^.Selected) or (MenuItem^.Active))) then Draw(MenuItem^.SubMenu, MenuItem^.SubMenuPanel,SubMenuPanel);
+  if ((MenuItem^.SubMenu <> nil) and ((MenuItem^.Selected) or (MenuItem^.Active))) then
+  begin
+    if ((((MenuItem^.Submenu^.Active=False) or (MenuItem^.SubMenu^.Selected=False)) and (MenuItem^.Selected)) or
+      ((MenuItem^.Submenu^.Active) or (MenuItem^.SubMenu^.Selected))) then
+      Draw(MenuItem^.SubMenu, MenuItem^.SubMenuPanel,SubMenuPanel);
+  end;
 end;
 
 
@@ -673,8 +679,10 @@ begin
          MenuItem^.Selected:=true;
          MenuItem^.Active:=false;
          completed:=true;
-       end else
+       end else begin
          MenuItem^.Selected:=false;
+       end;
+         
        if (MenuItem^.SubMenu <> nil) then
        begin
          if (ChangeMenuItem(MenuItem^.SubMenu,TheAction,Ident) = true) then
@@ -685,27 +693,36 @@ begin
        end;
        if (MenuItem^.NextItem <> nil) then
        begin
-         if (ChangeMenuItem(MenuItem^.NextItem,TheAction,Ident) = true) then
-           completed:=true;
+        if (ChangeMenuItem(MenuItem^.NextItem,TheAction,Ident)= true) then
+        begin
+          if MenuItem^.Level > 1 then
+          begin
+            MenuItem^.Active := True;
+            completed := true;
+          end;
+        end;
        end;
      end;
   // Destroy all created panels of this MenuItem
   2: begin
-       if (((MenuItem^.Selected) and (MenuItem^.SubMenu <> nil)) or (MenuItem^.Active)) then
+       MenuItem^.Active := False;
+       MenuItem^.Selected := False;
+
+       
+       if (MenuItem^.SubMenu<> nil) then
        begin
-         if (MenuItem^.SubMenu <> nil) and (MenuItem^.Active) then
-           ChangeMenuItem(MenuItem^.SubMenu,TheAction,MenuItem^.SubMenu^.ID)
-         else
-           MenuItem^.Selected:=true;
+         ChangeMenuItem(MenuItem^.SubMenu,TheAction,MenuItem^.SubMenu^.ID);
          MenuItem^.SubMenuPanel.visible:=false;
        end;
+       
+       
        if (MenuItem^.NextItem <> nil) then
          ChangeMenuItem(MenuItem^.NextItem,TheAction,MenuItem^.NextItem^.ID);
-         MenuItem^.SelfPanel.visible:=false;
-       ChangeMenuItem:=true;
+         
+       MenuItem^.SelfPanel.visible:=false;
      end;
- end;
- if (completed) then ChangeMenuItem:=true;
+  end;
+  ChangeMenuItem := completed;
 end;
 
 // -------------------------------------------------------------------------------------------------------------------//
@@ -714,8 +731,6 @@ end;
 procedure TDesignerMainMenu.MenuItemMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  writeln ('<<-- CLICK -->>');
-
   ChangeMenuItem(Root,2,Root^.ID);
   InitIndexSequence;
   if (Sender is TPanel) then
