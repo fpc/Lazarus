@@ -5029,6 +5029,7 @@ begin
   GDIObj^.GDIFontObject:= GetDefaultFont(true);
   {$EndIf}
   Result := hFont(GDIObj);
+  ;
 end;
 
 {------------------------------------------------------------------------------
@@ -7918,10 +7919,22 @@ begin
         ImplWidget:= WinWidgetInfo^.CoreWidget;
         if ImplWidget <> nil then begin
           // handle has a ImplementationWidget
-          {$IfDef VerboseFocus}
-          DebugLn('  E taking ImplementationWidget');
-          {$EndIf}
-          NewFocusWidget:=ImplWidget;
+          if GtkWidgetIsA(ImplWidget, gtk_list_get_type) then begin
+            {$IfDef VerboseFocus}
+            DebugLn('  E using list');
+            {$EndIf}
+            if selection_mode(PGtkList(ImplWidget)^) > GTK_SELECTION_BROWSE then
+              NewFocusWidget:=PGtkList(ImplWidget)^.last_focus_child;
+            if (NewFocusWidget = nil) and (PGtkList(ImplWidget)^.selection <> nil) then
+              NewFocusWidget := (PGtkList(ImplWidget)^.selection)^.data;
+            if (NewFocusWidget = nil) and (gtk_container_children(PGtkContainer(ImplWidget)) <> nil) then
+              NewFocusWidget := g_list_first(gtk_container_children(PGtkContainer(ImplWidget)))^.data;
+          end else begin
+            {$IfDef VerboseFocus}
+            DebugLn('  E taking ImplementationWidget');
+            {$EndIf}
+            NewFocusWidget:=ImplWidget;
+          end;
         end;
       end;
     end;
@@ -8953,6 +8966,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.408  2005/03/13 22:35:17  mattias
+  fixed deleting selected TListBox item under gtk1  from Collin
+
   Revision 1.407  2005/03/08 00:28:03  mattias
   implemented gtk2 AppMinimize
 

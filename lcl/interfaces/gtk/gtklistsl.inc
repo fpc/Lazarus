@@ -592,6 +592,8 @@ end;
 
  ------------------------------------------------------------------------------}
 procedure TGtkListStringList.Delete(Index: integer);
+var
+  Next: PGList;
 begin
   UpdateItemCache;
   RemoveItemCallbacks(Index);
@@ -607,6 +609,16 @@ begin
     ReAllocMem(FCachedItems,SizeOf(PGtkListItem)*FCachedCapacity);
   end;
   // remove item from gtk list
+  {$IFDEF Gtk1}
+  { Work round gtk bug - crashes if deleting first item in list
+    and item has focus and there are remaining items }
+  if (Index = 0) and (PGTKContainer(FGtkList)^.focus_child <> nil)
+     and (gtk_list_child_position(FGtkList,PGTKContainer(FGtkList)^.focus_child) = 0) then begin
+    Next := FGtkList^.children^.next;
+    if Next <> nil then
+     gtk_widget_grab_focus(Next^.data);
+  end;
+  {$ENDIF}
   gtk_list_clear_items(FGtkList, Index, Index + 1);
   {$IFDEF CheckGtkList}
   ConsistencyCheck;
@@ -964,6 +976,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.30  2005/03/13 22:35:17  mattias
+  fixed deleting selected TListBox item under gtk1  from Collin
+
   Revision 1.29  2005/03/07 21:59:45  vincents
   changed hexstr(cardinal()) for pointers to dbgs() and other 64-bits fixes   from Peter Vreman
 
