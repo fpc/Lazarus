@@ -744,7 +744,7 @@ begin
       AddClassInsertion(nil,UpperCurComponentName,
               VarName+':'+VarType+';',VarName,'',ncpPublishedVars);
     end;
-    // add missing published events
+    // remove missing published events
     
     // ToDo
     
