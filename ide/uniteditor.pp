@@ -206,6 +206,9 @@ type
     Function DisplayPage(SE : TSourceEditor) : Boolean;
     Function NewSE(Pagenum : Integer) : TSourceEditor;
     Procedure EditorChanged(sender : TObject);
+
+    Procedure NextEditor;
+    Procedure PrevEditor;
     procedure UpdateStatusBar;
     Bookmarks : TImageList;
   public
@@ -256,6 +259,9 @@ const
   ecFindAgain = ecUserFirst+2;
   ecFindProcedureDefinition = ecUserFirst+3;
   ecFindProcedureMethod = ecUserFirst+4;
+
+  ecNextEditor = ecUserFirst+5;
+  ecPrevEditor = ecUserFirst+6;
 
 var
 Editor_Num : Integer;
@@ -753,7 +759,15 @@ Writeln('[ProcessUserCommand]  --------------');
        end;
 
 
-                              end;
+      end;
+   ecNextEditor:  Begin
+                    //tell the SourceNotebook
+                    TSourceNotebook(FaOwner).NextEditor;
+                  end;
+
+   ecPrevEditor : Begin
+                    TSourceNotebook(FaOwner).PrevEditor;
+                  End;
 
    end;  //case
 
@@ -800,6 +814,8 @@ if assigned(FEditor) then
     AddKey(ecFindAgain, VK_F3, [], 0, []);
     AddKey(ecFindProcedureDefinition, VK_UP, [ssShift,ssCtrl], 0, []);
     AddKey(ecFindProcedureMethod, VK_Down, [ssShift,ssCtrl], 0, []);
+    AddKey(ecNextEditor, word('S'), [ssShift,ssCtrl], 0, []);
+    AddKey(ecPrevEditor, word('A'), [ssShift,ssCtrl], 0, []);
 
     OnStatusChange := @EditorStatusChanged;
     OnProcessUserCommand := @ProcessUserCommand;
@@ -809,7 +825,7 @@ if assigned(FEditor) then
 {SynEdit}
 
 FEditor.Lines.Assign(FSource);
-
+FEditor.Setfocus;
 end;
 
 Procedure TSourceEditor.AddControlCode(_Control : TComponent);
@@ -1217,8 +1233,8 @@ begin
        SimpleText := 'This is a test';
        Panels.Add;       //x,y coord
        Panels.Add;       //Readonly/Modified
-       Panels.Add;       //Unitname
        Panels.Add;       //OVR/INS
+       Panels.Add;       //Unitname
        Panels[0].Text := '';
        Panels[0].Width := 100;
        Panels[0].Bevel := pbLowered;
@@ -1227,7 +1243,7 @@ begin
        Panels[1].Width := 150;
        Panels[2].Text := '';
        Panels[2].Bevel := pbLowered;
-       Panels[2].Width := 100;
+       Panels[2].Width := 50;
        Panels[3].Text := 'INS';
        Panels[3].Bevel := pbLowered;
        Panels[3].Width := 50;
@@ -1452,6 +1468,21 @@ Function TSourceNotebook.GetEmpty : Boolean;
 Begin
 Result := (not assigned(Notebook1)) or (Notebook1.Pages.Count = 0);
 end;
+
+Procedure TSourceNotebook.NextEditor;
+Begin
+  if Notebook1.PageIndex < Notebook1.PAges.Count-1 then
+     Notebook1.PAgeindex := Notebook1.Pageindex+1;
+End;
+
+
+Procedure TSourceNotebook.PrevEditor;
+Begin
+  if Notebook1.PageIndex > 0 then
+     Notebook1.PAgeindex := Notebook1.Pageindex-1;
+
+End;
+
 
 Procedure TSourceNotebook.OpenClicked(Sender: TObject);
 Var
@@ -1695,7 +1726,7 @@ begin
    if TempEditor = nil then Exit;
    Writeln('Updating status bar...');
 
-   Statusbar.Panels[2].Text := GetActiveSE.Unitname;
+   Statusbar.Panels[3].Text := GetActiveSE.Unitname;
 
    If GetActiveSE.Modified then StatusBar.Panels[1].Text := 'Modified'
    else
@@ -1707,11 +1738,11 @@ begin
          StatusBar.Panels[1].Text := 'Readonly';
 
 
-   Statusbar.Panels[0].Text := Inttostr(GetActiveSE.CurrentCursorXLine) + ','+ Inttostr(GetActiveSE.CurrentCursorYLine);
+   Statusbar.Panels[0].Text := Inttostr(GetActiveSE.CurrentCursorYLine) + ':'+ Inttostr(GetActiveSE.CurrentCursorXLine);
 
    if GetActiveSE.InsertMode then
-     Statusbar.Panels[3].Text := 'INS' else
-     Statusbar.Panels[3].Text := 'OVR';
+     Statusbar.Panels[2].Text := 'INS' else
+     Statusbar.Panels[2].Text := 'OVR';
 End;
 
 Procedure TSourceNotebook.NoteBookPageChanged(Sender : TObject);
