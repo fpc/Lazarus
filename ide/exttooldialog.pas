@@ -221,7 +221,7 @@ end;
 
 function TExternalToolList.Run(Index: integer;
   Macros: TTransferMacroList): TModalResult;
-var WorkingDir, Filename, Params: string;
+var WorkingDir, Filename, Params, CmdLine: string;
   TheProcess: TProcess;
 begin
   Result:=mrCancel;
@@ -232,10 +232,13 @@ begin
   if Macros.SubstituteStr(Filename) 
   and Macros.SubstituteStr(WorkingDir)
   and Macros.SubstituteStr(Params) then begin
-writeln('[TExternalToolList.Run] ',Filename,' ',Params);
+    CmdLine:=Filename;
+    if Params<>'' then 
+      CmdLine:=CmdLine+' '+Params;
+writeln('[TExternalToolList.Run] ',CmdLine);
     try
       CheckIfFileIsExecutable(Filename);
-      TheProcess:=TProcess.Create(Filename+' '+Params,[poRunSuspended,
+      TheProcess:=TProcess.Create(CmdLine,[poRunSuspended,
         poUsePipes, poNoConsole]);
       TheProcess.CurrentDirectory:=WorkingDir;
       {TheProcess := TProcess.Create(nil);
