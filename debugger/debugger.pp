@@ -589,11 +589,13 @@ type
     FOnOutput: TDBGOutputEvent;
     FOnDbgOutput: TDBGOutputEvent;
     FOnState: TDebuggerStateChangedEvent;
+    FWorkingDir: String;
     function  GetState: TDBGState;
     function  ReqCmd(const ACommand: TDBGCommand;
                      const AParams: array of const): Boolean;
     procedure SetEnvironment(const AValue: TStrings);
     procedure SetFileName(const AValue: String);
+    procedure SetWorkingDir (const AValue: String );
   protected
     function  CreateBreakPoints: TDBGBreakPoints; virtual;
     function  CreateLocals: TDBGLocals; virtual;
@@ -605,6 +607,7 @@ type
     procedure DoOutput(const AText: String);
     procedure DoState(const OldState: TDBGState); virtual;
     function  ChangeFileName: Boolean; virtual;
+    function  ChangeWorkingDir: Boolean; virtual;
     function  GetCommands: TDBGCommands;
     function  GetSupportedCommands: TDBGCommands; virtual;
     function  RequestCommand(const ACommand: TDBGCommand;
@@ -642,7 +645,7 @@ type
 *)
   public
     property Arguments: String read FArguments write FArguments;                 // Arguments feed to the program
-    property BreakPoints: TDBGBreakPoints read FBreakPoints;                  // list of all breakpoints
+    property BreakPoints: TDBGBreakPoints read FBreakPoints;                     // list of all breakpoints
     property CallStack: TDBGCallStack read FCallStack;
     property Commands: TDBGCommands read GetCommands;                            // All current available commands of the debugger
     property Environment: TStrings read FEnvironment write SetEnvironment;
@@ -654,10 +657,11 @@ type
     property OnDbgOutput: TDBGOutputEvent read FOnDbgOutput write FOnDbgOutput;  // Passes all debuggeroutput
     property OnException: TDBGExceptionEvent read FOnException write FOnException;  // Fires when the debugger received an exeption
     property OnOutput: TDBGOutputEvent read FOnOutput write FOnOutput;           // Passes all output of the debugged target
-    property OnState: TDebuggerStateChangedEvent read FOnState write FOnState;                 // Fires when the current state of the debugger changes
+    property OnState: TDebuggerStateChangedEvent read FOnState write FOnState;   // Fires when the current state of the debugger changes
     property State: TDBGState read FState;                                       // The current state of the debugger
     property SupportedCommands: TDBGCommands read GetSupportedCommands;          // All available commands of the debugger
     property Watches: TDBGWatches read FWatches;                                 // list of all watches localvars etc
+    property WorkingDir: String read FWorkingDir write SetWorkingDir;            // The wirking dir of the exe being debugged
   end;
   
 const
@@ -735,6 +739,11 @@ end;
 { =========================================================================== }
 
 function TDebugger.ChangeFileName: Boolean;
+begin
+  Result := True;
+end;
+
+function TDebugger.ChangeWorkingDir: Boolean;
 begin
   Result := True;
 end;
@@ -979,6 +988,13 @@ begin
     FWatches.DoStateChange;
     DoState(OldState);
   end;
+end;
+
+procedure TDebugger.SetWorkingDir (const AValue: String );
+begin
+  if FWorkingDir = AValue then exit;
+  FWorkingDir := AValue;
+  ChangeWorkingDir;
 end;
 
 procedure TDebugger.InitTargetStart;
@@ -2454,6 +2470,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.40  2003/06/09 14:16:52  marc
+  MWE: + Added working dir
+
   Revision 1.39  2003/06/03 16:12:14  mattias
   fixed loading bookmarks for editor index 0
 
