@@ -268,6 +268,10 @@ var
   NewPath: String;
 begin
   Result:=OldSearchPath;
+  if Result='' then begin
+    Result:=AddSearchPath;
+    exit;
+  end;
   l:=length(AddSearchPath);
   EndPos:=1;
   while EndPos<=l do begin
