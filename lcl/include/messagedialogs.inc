@@ -170,7 +170,7 @@ end;
  ------------------------------------------------------------------------------}
 function TMessageBox.LineHeight: integer;
 begin
-  Result:=Canvas.TextHeight('ABCDEFGHIJKLMNOPQRSTUVWXYZ')+8;
+  Result:=Canvas.TextHeight('ABCDEFGHIJKLMNOPQRSTUVWXYZgp09')+8;
 end;
 
 {------------------------------------------------------------------------------
@@ -475,6 +475,9 @@ end;
 
 {
    $Log$
+   Revision 1.10  2002/06/06 07:23:24  lazarus
+   MG: small fixes to reduce form repositioing
+
    Revision 1.9  2002/05/10 06:05:53  lazarus
    MG: changed license to LGPL
 
