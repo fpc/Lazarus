@@ -1922,7 +1922,9 @@ begin
         case TControl(Sender).fCompStyle of
           csBitBtn,
           csButton,
-          csToolButton:
+          csToolButton,
+          csRadioButton,
+          csCheckBox:
             Accelerate(Widget, TLMShortcut(data^), 'clicked');
           else
             Accelerate(Widget, TLMShortcut(data^), 'activate_item');
@@ -2218,9 +2220,19 @@ begin
       end;
     end;
 
-  csCheckBox    : gtk_label_set_text(
+  csCheckBox    :
+    begin
+      aLabel := Ampersands2Underscore(PLabel);
+      Try
+        gtk_label_set_text(
                     pGtkLabel(pgtkCheckButton(p)^.Toggle_Button.Button.Child),
-                    pLabel);
+                    aLabel);
+        gtk_label_parse_uline(pGtkLabel(pgtkCheckButton(p)^.Toggle_Button.Button.Child),
+          aLabel);
+      Finally
+        StrDispose(aLabel);
+      end;
+    end;
 
   csGroupBox    : gtk_frame_set_label(pgtkFrame(P),pLabel);
 
@@ -4081,11 +4093,15 @@ begin
           end;  
         end;
       end;
+      Accel := Ampersands2Underscore(StrTemp);
       if TempWidget <> nil then
-        P:= gtk_radio_button_new_with_label(PGtkRadioButton(TempWidget)^.group, StrTemp)
+        P:= gtk_radio_button_new_with_label(PGtkRadioButton(TempWidget)^.group, Accel)
       else  
-        P:= gtk_radio_button_new_with_label(nil, StrTemp);
-    end;  
+        P:= gtk_radio_button_new_with_label(nil, Accel);
+      With PGTKToggleButton(P)^ do
+        gtk_label_parse_uline(pGtkLabel(Button.Child), Accel);
+      StrDispose(Accel);
+    end;
 
   csScrollBar :
     begin
@@ -5879,6 +5895,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.227  2002/10/03 00:08:50  lazarus
+  AJ: TCustomLabel Autosize, TCustomCheckbox '&' shortcuts started
+
   Revision 1.226  2002/10/01 10:12:34  lazarus
   MG: added SendCachedLCLMessages to interfacebase for wysiwyg
 
