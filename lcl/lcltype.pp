@@ -112,6 +112,10 @@ type
   HBRUSH = Windows.HBrush;
 {$endif}
 
+// from Delphis sysutils.pas
+  PByteArray = ^TByteArray;
+  TByteArray = array[0..32767] of Byte;
+
 var
   hInstance :HINST;
 
@@ -1877,6 +1881,9 @@ end.
 
 {
   $Log$
+  Revision 1.46  2003/10/23 19:03:13  ajgenius
+  re-add TByteArray
+
   Revision 1.45  2003/10/23 16:15:30  micha
   compatibility with new 1.1
 
