@@ -103,7 +103,9 @@ type
 
     Function GetCompStyle(Sender : TObject) : Longint; Virtual;
     Procedure HookSignals(Sender : TObject); virtual;  //hooks all signals for controls
+    function CreateComboBox(ComboBoxObject: TObject): Pointer;
     function CreateAPIWidget(AWinControl: TWinControl): PGtkWidget;
+    function CreateForm(ACustomForm: TCustomForm): PGtkWidget;
     procedure CreateComponent(Sender : TObject);virtual;
     Procedure FinishComponentCreate(Sender : TObject; Handle : Pointer;
       SetupProps : Boolean); Virtual;
@@ -322,6 +324,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.117  2003/01/06 12:00:16  mattias
+  implemented fsStayOnTop+bsNone for forms under gtk (useful for splash)
+
   Revision 1.116  2002/12/27 17:12:38  mattias
   added more Delphi win32 compatibility functions
 
