@@ -759,7 +759,7 @@ type
 
     // form editor and designer
     procedure DoBringToFrontFormOrUnit;
-    procedure DoBringToFrontFormOrInspector;
+    procedure DoBringToFrontFormOrInspector(ForceInspector: boolean);
     procedure DoShowDesignerFormOfCurrentSrc;
     procedure DoShowSourceOfActiveDesignerForm;
     procedure SetDesigning(AComponent: TComponent; Value: Boolean);
@@ -2521,7 +2521,7 @@ end;
 {------------------------------------------------------------------------------}
 procedure TMainIDE.mnuViewInspectorClicked(Sender: TObject);
 begin
-  DoBringToFrontFormOrInspector;
+  DoBringToFrontFormOrInspector(true);
 end;
 
 procedure TMainIDE.mnuViewSourceEditorClicked(Sender: TObject);
@@ -8027,8 +8027,20 @@ begin
   end;
 end;
 
-procedure TMainIDE.DoBringToFrontFormOrInspector;
+procedure TMainIDE.DoBringToFrontFormOrInspector(ForceInspector: boolean);
+
+  procedure ShowInspector;
+  begin
+    if ObjectInspector1=nil then exit;
+    ObjectInspector1.ShowOnTop;
+    FDisplayState:= Succ(FDisplayState);
+  end;
+
 begin
+  if ForceInspector then begin
+    ShowInspector;
+    exit;
+  end;
   case FDisplayState of
 
     dsInspector:
@@ -8037,11 +8049,8 @@ begin
     dsInspector2:
       DoShowSourceOfActiveDesignerForm;
 
-    else begin
-      if ObjectInspector1=nil then exit;
-      ObjectInspector1.ShowOnTop;
-      FDisplayState:= Succ(FDisplayState);
-    end;
+    else
+      ShowInspector;
   end;
 end;
 
@@ -11483,6 +11492,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.858  2005/03/16 11:41:33  mattias
+  fixed view OI menu item to always show OI, instead of showing next
+
   Revision 1.857  2005/03/08 00:30:37  mattias
   removed debugging
 
