@@ -5806,7 +5806,7 @@ const
   
   {$IFNDEF WIN32}
   procedure ClearTargetLists(Widget: PGtkWidget);
-  // MG: Reading in gtk internas is dirty, but there seems to be no other way
+  // MG: Reading in gtk internals is dirty, but there seems to be no other way
   //     to clear the old target lists
   var
     SelectionLists, CurSelList: PGList;
@@ -5879,6 +5879,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.226  2002/10/01 10:12:34  lazarus
+  MG: added SendCachedLCLMessages to interfacebase for wysiwyg
+
   Revision 1.225  2002/10/01 10:05:48  lazarus
   MG: changed PDeviceContext into class TDeviceContext
 
