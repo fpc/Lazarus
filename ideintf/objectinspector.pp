@@ -197,7 +197,6 @@ type
     Procedure HintTimer(Sender: TObject);
     Procedure ResetHintTimer;
     procedure OnUserInput(Sender: TObject; Msg: Cardinal);
-    procedure OnIdle(Sender: TObject);
 
     procedure IncreaseChangeStep;
 
@@ -365,6 +364,7 @@ type
     FUpdateLock: integer;
     FUpdatingAvailComboBox: boolean;
     FUsePairSplitter: boolean;
+  protected
     function PersistentToString(APersistent: TPersistent): string;
     procedure SetComponentTreeHeight(const AValue: integer);
     procedure SetDefaultItemHeight(const AValue: integer);
@@ -381,6 +381,7 @@ type
     procedure CreatePairSplitter;
     procedure DestroyNoteBook;
     procedure CreateNoteBook;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
   public
     constructor Create(AnOwner: TComponent); override;
     destructor Destroy; override;
@@ -527,7 +528,6 @@ begin
   FHintWindow.AutoHide := True;
   
   Application.AddOnUserInputHandler(@OnUserInput);
-  Application.AddOnIdleHandler(@OnIdle);
 end;
 
 procedure TOIPropertyGrid.UpdateScrollBar;
@@ -605,7 +605,6 @@ destructor TOIPropertyGrid.Destroy;
 var a:integer;
 begin
   Application.RemoveOnUserInputHandler(@OnUserInput);
-  Application.RemoveOnIdleHandler(@OnIdle);
   FItemIndex:=-1;
   for a:=0 to FRows.Count-1 do Rows[a].Free;
   FreeAndNil(FRows);
@@ -902,6 +901,7 @@ begin
   if (FItemIndex>=0) and (FItemIndex<FRows.Count) then
     Rows[FItemIndex].Editor.Deactivate;
   SetCaptureControl(nil);
+  
   FItemIndex:=NewIndex;
   if FCurrentEdit<>nil then begin
     FCurrentEdit.Visible:=false;
@@ -916,6 +916,10 @@ begin
   FCurrentEditorLookupRoot:=nil;
   if (NewIndex>=0) and (NewIndex<FRows.Count) then begin
     NewRow:=Rows[NewIndex];
+    if NewRow.Bottom>=TopY+(ClientHeight-2*BorderWidth) then
+      TopY:=NewRow.Bottom-(ClientHeight-2*BorderWidth)+1
+    else if NewRow.Top<TopY then
+      TopY:=NewRow.Top;
     NewRow.Editor.Activate;
     if paDialog in NewRow.Editor.GetAttributes then begin
       FCurrentButton:=ValueButton;
@@ -1261,14 +1265,20 @@ begin
   case Key of
   
   VK_UP:
-    if (FItemIndex>0) then ItemIndex:=ItemIndex-1;
+    if (ItemIndex>0) then ItemIndex:=ItemIndex-1;
 
   VK_Down:
-    if (FItemIndex<FRows.Count-1) then ItemIndex:=ItemIndex+1;
+    if (ItemIndex<FRows.Count-1) then ItemIndex:=ItemIndex+1;
     
   VK_TAB:
     // ToDo: implement completion
-    if (FItemIndex<FRows.Count-1) then ItemIndex:=ItemIndex+1;
+    if (ItemIndex<FRows.Count-1) then ItemIndex:=ItemIndex+1;
+    
+  VK_LEFT:
+    if (ItemIndex>=0) then (ShrinkRow(ItemIndex));
+    
+  VK_RIGHT:
+    if (ItemIndex>=0) then (ExpandRow(ItemIndex));
 
   VK_RETURN:
     SetRowValue;
@@ -1282,11 +1292,6 @@ end;
 procedure TOIPropertyGrid.OnUserInput(Sender: TObject; Msg: Cardinal);
 begin
   ResetHintTimer;
-end;
-
-procedure TOIPropertyGrid.OnIdle(Sender: TObject);
-begin
-
 end;
 
 procedure TOIPropertyGrid.EndDragSplitter;
@@ -2784,6 +2789,18 @@ begin
     PopupMenu:=MainPopupMenu;
     OnModified:=@OnGridModified;
   end;
+end;
+
+procedure TObjectInspector.KeyDown(var Key: Word; Shift: TShiftState);
+var
+  CurGrid: TOIPropertyGrid;
+begin
+  CurGrid:=GetActivePropertyGrid;
+  if CurGrid<>nil then begin
+    CurGrid.HandleStandardKeys(Key,Shift);
+    if Key=VK_UNKNOWN then exit;
+  end;
+  inherited KeyDown(Key, Shift);
 end;
 
 procedure TObjectInspector.OnShowHintPopupMenuItemClick(Sender : TObject);

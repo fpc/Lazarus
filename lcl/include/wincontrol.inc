@@ -1826,7 +1826,6 @@ var
   F: TCustomForm;
   ShiftState: TShiftState;
 begin
-//  Writeln('name is ',self.name);
   Result := True;
   F := GetParentForm(Self);
   if  (F <> nil)
@@ -3179,6 +3178,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.188  2004/01/09 13:49:43  mattias
+  improved gtk intf key fetching and OI keyboard navigation
+
   Revision 1.187  2004/01/06 17:58:06  mattias
   fixed setting TRadioButton.Caption for gtk
 

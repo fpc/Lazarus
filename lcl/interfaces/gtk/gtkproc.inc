@@ -82,6 +82,38 @@ begin
   {$EndIF}
 end;
 
+procedure RememberKeyEventWasHandledByLCL(Event: PGdkEventKey);
+var
+  HandledEvent: TLCLHandledKeyEvent;
+begin
+  if KeyEventWasHandledByLCL(Event) then exit;
+  if LCLHandledKeyEvents=nil then
+    LCLHandledKeyEvents:=TList.Create;
+  HandledEvent:=TLCLHandledKeyEvent.Create(Event);
+  LCLHandledKeyEvents.Add(HandledEvent);
+  while LCLHandledKeyEvents.Count>10 do begin
+    HandledEvent:=TLCLHandledKeyEvent(LCLHandledKeyEvents[0]);
+    HandledEvent.Free;
+    LCLHandledKeyEvents.Delete(0);
+  end;
+end;
+
+function KeyEventWasHandledByLCL(Event: PGdkEventKey): boolean;
+var
+  i: Integer;
+  HandledEvent: TLCLHandledKeyEvent;
+begin
+  Result:=false;
+  if LCLHandledKeyEvents=nil then exit;
+  for i:=0 to LCLHandledKeyEvents.Count-1 do begin
+    HandledEvent:=TLCLHandledKeyEvent(LCLHandledKeyEvents[i]);
+    if HandledEvent.IsEqual(Event) then begin
+      Result:=true;
+      exit;
+    end;
+  end;
+end;
+
 {$IfNdef GTK2}
 function gtk_class_get_type(aclass : Pointer) : TGtkType;
 begin
@@ -1990,6 +2022,7 @@ var
   K1: PVKeyArray1;
   K2: PVKeyArray2;
   K3: PVKeyArray3;
+  i: Integer;
 begin
   for n3 := 0 to 255 do
   begin
@@ -2008,6 +2041,13 @@ begin
       Dispose(K2);
     end;
     Dispose(K3);
+  end;
+  
+  if LCLHandledKeyEvents<>nil then begin
+    for i:=0 to LCLHandledKeyEvents.Count-1 do
+      TObject(LCLHandledKeyEvents[i]).Free;
+    LCLHandledKeyEvents.Free;
+    LCLHandledKeyEvents:=nil;
   end;
 end;
 
@@ -2911,10 +2951,10 @@ begin
   //if (Msg=LM_LBUTTONUP) then writeln('CONNECT ',ReqSignalMask,' Widget=',HexStr(Cardinal(AnObject),8));
   if csfAfter in SFlags then
     g_signal_connect_after(AnObject, ASignal,
-                             TGTKSignalFunc(ACallBackProc),LCLComponent)
+                           TGTKSignalFunc(ACallBackProc),LCLComponent)
   else
     g_signal_connect      (AnObject, ASignal,
-                             TGTKSignalFunc(ACallBackProc),LCLComponent);
+                           TGTKSignalFunc(ACallBackProc),LCLComponent);
 
   // update signal mask which will be set in the realize handler
   if (csfUpdateSignalMask in SFlags) and (ReqSignalMask <> 0) then begin
@@ -5664,6 +5704,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.240  2004/01/09 13:49:43  mattias
+  improved gtk intf key fetching and OI keyboard navigation
+
   Revision 1.239  2004/01/05 01:18:15  mattias
   implemented Double Buffering for synedit and deactivated multi buffering in TGTKObject.ExtTextOut
 

@@ -563,7 +563,7 @@ begin
   EventTrace('map', data);
 end;
 
-function GTKKeyUpDown(Widget: PGtkWidget; Event : pgdkeventkey;
+function GTKKeyUpDown(Widget: PGtkWidget; Event: PGdkEventKey;
   Data: gPointer) : GBoolean; cdecl;
 var
   Msg: TLMKey;
@@ -571,33 +571,27 @@ var
   EventString: ^TByteArray; // GTK1 and GTK2 workaround
                             // (and easy access to bytes)
 
-  procedure StopKeyEvent(const AEventName: PChar);
+  procedure StopKeyEvent(const AnEventName: PChar);
   begin
+    {$IFDEF VerboseKeyboard}
+    writeln('StopKeyEvent AnEventName="',AnEventName,'"');
+    {$ENDIF}
     if not EventStopped
     then begin
-      g_signal_stop_emission_by_name(PGtkObject(Widget), AEventName);
+      g_signal_stop_emission_by_name(PGtkObject(Widget), AnEventName);
       EventStopped := True;
     end;
-    if (Msg.CharCode >= 31)
-    or (Msg.CharCode = 0)
+
+    //MWE: still need to skip on win32 ?
+    {MWE:.$IfNDef Win32}
+    if EventString <> nil
     then begin
-      //MWE: Why is the string set if we stop the event ?
-      //MWE: still need to skip on win32 ?
-      {MWE:.$IfNDef Win32}
-
-      if EventString <> nil
-      then begin
-        EventString^[0] := Msg.CharCode;
-        EventString^[1] := 0;
-      end;
-
-      {MWE:.$EndIf}
-      
-      Event^.KeyVal := Msg.CharCode;
-    end
-    else begin
-      Event^.KeyVal := 0;
+      EventString^[0] := 0;
+      EventString^[1] := 0;
     end;
+    {MWE:.$EndIf}
+    
+    Event^.KeyVal := 0;
   end;
   
   function CanSendChar: Boolean;
@@ -635,13 +629,58 @@ var
   Flags: Integer;
   SysKey: Boolean;
   TopLevel: PGtkWidget;
+  FocusedWidget: PGtkWidget;
+  LCLObject: TObject;
+  FocusedWinControl: TWinControl;
+  HandledByLCL: Boolean;
+  TargetWidget: PGtkWidget;
+  TargetData: gPointer;
 begin
   Result := True;
   EventStopped := False;
+  HandledByLCL:=KeyEventWasHandledByLCL(Event);
+
+  {$IFDEF VerboseKeyboard}
+  writeln('[GTKKeyUpDown] ',TControl(Data).Name,':',TControl(Data).ClassName,
+    ' ',Event^.theType,' Widget=',GetWidgetClassName(Widget),
+    ' HandledByLCL=',HandledByLCL);
+  {$ENDIF}
+
+  // handle every key event only once
+  if HandledByLCL then exit;
+  
+  TargetWidget:=Widget;
+  TargetData:=Data;
+
+  // The gtk sends keys first to the gtkwindow and then to the focused control.
+  // The LCL expects only once to the focused control.
+  // And some gtk widgets (combo) eats keys, so that the LCL has no chance to
+  // handle it. Therefore keys to the form are immediately redirected to the
+  // focused control without changing the normal gtk event path.
+  if GtkWidgetIsA(Widget,gtk_window_get_type) then begin
+    FocusedWidget:=PGtkWindow(Widget)^.focus_widget;
+    if FocusedWidget<>nil then begin
+      LCLObject:=GetParentLCLObject(FocusedWidget);
+      if LCLObject is TWinControl then begin
+        FocusedWinControl:=TWinControl(LCLObject);
+        if FocusedWidget<>Widget then begin
+          {$IFDEF VerboseKeyboard}
+          writeln('[GTKKeyUpDown] REDIRECTING ',
+            ' FocusedWidget=',GetWidgetClassName(FocusedWidget),
+            ' Control=',FocusedWinControl.Name,':',FocusedWinControl.ClassName);
+          {$ENDIF}
+          // redirect key to lcl control
+          TargetWidget:=FocusedWidget;
+          TargetData:=FocusedWinControl;
+        end;
+      end;
+    end;
+  end;
+
+  // remember this event
+  RememberKeyEventWasHandledByLCL(Event);
 
   gdk_event_key_get_string(Event, EventString);
-
-  //writeln('[GTKKeyUpDown] ',TControl(Data).Name,':',TControl(Data).ClassName,' ',Event^.theType);
   FillChar(Msg,SizeOf(Msg),0);
 
   VKey := KeySymToVKey(Event^.keyval);
@@ -657,8 +696,9 @@ begin
     SysKey := (Event^.State and GDK_MOD1_MASK) <> 0;
   end
   else begin
-    // VKey is with ALT so SHFT Alt is syskey
-    SysKey := (Event^.State and (GDK_MOD1_MASK or GDK_SHIFT_MASK)) = (GDK_MOD1_MASK or GDK_SHIFT_MASK);
+    // VKey is with ALT so SHIFT Alt is syskey
+    SysKey := (Event^.State and (GDK_MOD1_MASK or GDK_SHIFT_MASK))
+               = (GDK_MOD1_MASK or GDK_SHIFT_MASK);
   end;
 
   if SysKey
@@ -668,7 +708,9 @@ begin
   case gdk_event_get_type(Event) of
   GDK_KEY_RELEASE:
     begin
-      EventTrace('key up', data);
+      {$IFDEF VerboseKeyboard}
+      writeln('[GTKKeyUpDown] GDK_KEY_RELEASE VKey=',VKey.VKey);
+      {$ENDIF}
 
       Msg.CharCode := VKey.VKey;
       if SysKey
@@ -682,7 +724,7 @@ begin
       // send the message directly to the LCL
       Msg.Result:=0;
       NotifyApplicationUserInput(Msg.Msg);
-      Result := DeliverMessage(Data, Msg) = 0;
+      Result := DeliverMessage(TargetData, Msg) = 0;
 
       if Msg.CharCode <> VKey.VKey
       then begin
@@ -693,7 +735,9 @@ begin
     
   GDK_KEY_PRESS:
     begin
-      EventTrace('key down', data);
+      {$IFDEF VerboseKeyboard}
+      writeln('[GTKKeyUpDown] GDK_KEY_PRESS VKey=',VKey.VKey);
+      {$ENDIF}
 
       Msg.CharCode := VKey.VKey;
 
@@ -708,7 +752,7 @@ begin
       
       // send the message directly to the LCL
       NotifyApplicationUserInput(Msg.Msg);
-      Result := DeliverMessage(Data, Msg) = 0;
+      Result := DeliverMessage(TargetData, Msg) = 0;
 
       if Msg.CharCode <> Vkey.Vkey
       then begin
@@ -732,7 +776,7 @@ begin
         else Msg.CharCode := EventString^[0];
         Msg.Result:=0;
         // send the message directly (not queued) to the LCL
-        Result := DeliverMessage(Data, Msg) = 0;
+        Result := DeliverMessage(TargetData, Msg) = 0;
 
         if (Event^.Length > 0) and (Msg.CharCode <> EventString^[0])
         then begin
@@ -741,36 +785,22 @@ begin
         end;
       end;
       
-      //This is disabled on account of the
-      //strange behaviour in TSynEdit
       if  (Msg.CharCode = VK_TAB)
       and (TObject(Data) is TControl)
       then begin
-        TopLevel := gtk_widget_get_toplevel(Widget);
+        TopLevel := gtk_widget_get_toplevel(TargetWidget);
         if GtkWidgetIsA(TopLevel, gtk_window_get_type)
-        and (PGtkWindow(TopLevel)^.focus_widget = Widget)
+        and (PGtkWindow(TopLevel)^.focus_widget = TargetWidget)
         then begin
           StopKeyEvent('key_press_event');
-          // ??? Forward was true when shift was pressed
-          //     to me that is backward
-          Result := TControl(Data).PerformTab((Event^.State and GDK_SHIFT_MASK) = 0);
-          if Result
-          then begin
-            //MWE: still need to skip on win32 ?
-            {MWE:.$IfNDef Win32}
-
-            if (EventString <> nil)
-            and (Event^.Length > 0)
-            then EventString^[0] := 0;
-
-            {MWE:.$EndIf}
-            Event^.KeyVal := 0;
-          end;
+          // Perform a forward tab, or when Shift is pressed a backward tab
+          Result := TControl(TargetData).PerformTab(
+                      (Event^.State and GDK_SHIFT_MASK) = 0);
         end;
       end;
     end;
   end;
-//writeln('AAA1 [GTKKeyUpDown] ',TControl(Data).Name,':',TControl(Data).ClassName,' Result=',Result);
+//writeln('[GTKKeyUpDown] ',TControl(Data).Name,':',TControl(Data).ClassName,' Result=',Result);
 end;
 
 function GTKFocusCB( widget: PGtkWidget; event:PGdkEventFocus;
@@ -3194,6 +3224,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.210  2004/01/09 13:49:43  mattias
+  improved gtk intf key fetching and OI keyboard navigation
+
   Revision 1.209  2003/12/25 14:17:07  mattias
   fixed many range check warnings
 

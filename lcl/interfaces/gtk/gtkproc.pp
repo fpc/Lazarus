@@ -539,8 +539,11 @@ function gtk_widget_get_ythickness(Style : PGTKStyle) : gint; overload;
 function gtk_widget_get_xthickness(Style : PGTKWidget) : gint; overload;
 function gtk_widget_get_ythickness(Style : PGTKWidget) : gint; overload;
 
+// keyboard
 procedure gdk_event_key_get_string(Event : PGDKEventKey; var theString : Pointer);
 function gdk_event_get_type(Event : Pointer) : guint;
+procedure RememberKeyEventWasHandledByLCL(Event: PGdkEventKey);
+function KeyEventWasHandledByLCL(Event: PGdkEventKey): boolean;
 
 procedure BeginGDKErrorTrap;
 procedure EndGDKErrorTrap;
@@ -654,6 +657,43 @@ var
   MKeyCodeToVK: array[Byte] of Byte;
   MVKeyInfo: array[Byte] of TVKeyInfo;
   MKeySymToVK: array[Byte] of PVKeyArray3;
+  
+type
+  // TLCLHandledKeyEvent is used to remember, if an gdk key event was already
+  // handled.
+  TLCLHandledKeyEvent = class
+  public
+    thetype: TGdkEventType;
+    window: PGdkWindow;
+    send_event: gint8;
+    time: guint32;
+    constructor Create(Event: PGdkEventKey);
+    function IsEqual(Event: PGdkEventKey): boolean;
+  end;
+
+{ TLCLHandledKeyEvent }
+
+constructor TLCLHandledKeyEvent.Create(Event: PGdkEventKey);
+begin
+  thetype:=Event^.theType;
+  window:=Event^.window;
+  send_event:=Event^.send_event;
+  time:=Event^.time;
+end;
+
+function TLCLHandledKeyEvent.IsEqual(Event: PGdkEventKey): boolean;
+begin
+  Result:=(thetype=Event^.theType)
+      and (window=Event^.window)
+      and (send_event=Event^.send_event)
+      and (time=Event^.time);
+end;
+  
+var
+  // LCLHandledKeyEvents stores the last handled key event (handled by the LCL)
+  // Why: The gtk sends the same key event to several widgets. The gtk intf
+  // only wants to send them once to the LCL.
+  LCLHandledKeyEvents: TList; // list of TLCLHandledKeyEvent
 
 {$IFDEF UNIX}
 {$IFNDEF GTK2_2}
@@ -730,6 +770,7 @@ initialization
 
   GdkTrapIsSet := False;
   GdkTrapCalls := 0;
+  LCLHandledKeyEvents:=nil;
 
 finalization
   {$IFDEF UNIX}
@@ -745,5 +786,6 @@ finalization
   EndGDKErrorTrap;
   
   DoneKeyboardTables;
+  
 end.
 
