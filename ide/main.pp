@@ -6249,9 +6249,9 @@ begin
     BlockEnd:=CaretXY;
     TopLine:=NewTopLine;
     LeftChar:=Max(NewX-CharsInWindow,1);
+    BringWindowToTop(SourceNoteBook.Handle);
     SetFocus;
   end;
-  BringWindowToTop(SourceNoteBook.Handle);
   UpdateSourceNames;
   Result:=mrOk;
 end;
@@ -6344,17 +6344,17 @@ begin
     if DoOpenEditorFile(CodeToolBoss.ErrorCode.Filename,-1,[ofOnlyIfExists])=mrOk
     then begin
       ActiveSrcEdit:=SourceNoteBook.GetActiveSE;
+      BringWindowToTop(SourceNoteBook.Handle);
       with ActiveSrcEdit.EditorComponent do begin
-        SetFocus;
         CaretXY:=ErrorCaret;
         BlockBegin:=CaretXY;
         BlockEnd:=CaretXY;
         if CodeToolBoss.ErrorTopLine>0 then
           TopLine:=CodeToolBoss.ErrorTopLine;
+        SetFocus;
       end;
       SourceNotebook.ClearErrorLines;
       ActiveSrcEdit.ErrorLine:=ErrorCaret.Y;
-      BringWindowToTop(SourceNoteBook.Handle);
     end;
   end;
   UpdateSourceNames;
@@ -7399,6 +7399,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.415  2002/10/21 22:12:46  lazarus
+  MG: fixed frmactivate
+
   Revision 1.414  2002/10/14 11:43:05  lazarus
   MG: fixed double jumping in history
 
