@@ -666,6 +666,8 @@ type
       var ListOfPCodeXYPosition: TList): boolean;
     function FindReferences(const CursorPos: TCodeXYPosition;
       SkipComments: boolean; var ListOfPCodeXYPosition: TList): boolean;
+    function CleanPosIsDeclaration(CleanPos: integer;
+                                 Node: TCodeTreeNode): boolean;
 
     function JumpToNode(ANode: TCodeTreeNode;
         var NewPos: TCodeXYPosition; var NewTopLine: integer;
@@ -991,32 +993,6 @@ var CleanCursorPos: integer;
     end;
   end;
   
-  function CursorOnDeclaration: boolean;
-  
-    function InNodeIdentifier: boolean;
-    var
-      IdentStartPos, IdentEndPos: integer;
-    begin
-      GetIdentStartEndAtPosition(Src,CleanCursorPos,IdentStartPos,IdentEndPos);
-      if (IdentEndPos>IdentStartPos) and (IdentStartPos=CursorNode.StartPos)
-      then begin
-        NewTool:=Self;
-        NewNode:=CursorNode;
-        Result:=JumpToNode(CursorNode,NewPos,NewTopLine,false);
-      end;
-    end;
-  
-  begin
-    Result:=false;
-    if CursorNode=nil then exit;
-    if (CursorNode.Desc in AllIdentifierDefinitions) then begin
-      if NodeIsForwardDeclaration(CursorNode) then exit;
-      Result:=InNodeIdentifier;
-    end else if (CursorNode.Desc=ctnProcedureHead) then begin
-      Result:=InNodeIdentifier;
-    end;
-  end;
-
 var
   CleanPosInFront: integer;
   CursorAtIdentifier: boolean;
@@ -1039,10 +1015,14 @@ begin
     {$ENDIF}
     // find CodeTreeNode at cursor
     if (Tree.Root<>nil) and (Tree.Root.StartPos<=CleanCursorPos) then begin
-      CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
-      if (fsfFindMainDeclaration in SearchSmartFlags) and CursorOnDeclaration
+      CursorNode:=BuildSubTreeAndFindDeepestNodeAtPos(Tree.Root,CleanCursorPos,
+                                                      true);
+      if (fsfFindMainDeclaration in SearchSmartFlags)
+      and CleanPosIsDeclaration(CleanCursorPos,CursorNode)
       then begin
-        Result:=true;
+        NewTool:=Self;
+        NewNode:=CursorNode;
+        Result:=JumpToNode(CursorNode,NewPos,NewTopLine,false);
         exit;
       end;
       CleanPosInFront:=CursorNode.StartPos;
@@ -2981,31 +2961,6 @@ var
     //debugln('TFindDeclarationTool.FindReferences.AddCodePosition line=',dbgs(NewCodePos.Y),' col=',dbgs(NewCodePos.X));
   end;
   
-  function CursorOnDeclaration: boolean;
-
-    function InNodeIdentifier: boolean;
-    var
-      IdentStartPos, IdentEndPos: integer;
-    begin
-      GetIdentStartEndAtPosition(Src,StartPos,IdentStartPos,IdentEndPos);
-      //debugln('InNodeIdentifier ',dbgs(StartPos),' ',dbgs(IdentStartPos),' ',dbgs(IdentEndPos),' ',dbgs(CursorNode.StartPos));
-      if (IdentEndPos>IdentStartPos) and (IdentStartPos=CursorNode.StartPos)
-      then begin
-        Result:=true;
-      end;
-    end;
-
-  begin
-    Result:=false;
-    if CursorNode=nil then exit;
-    if (CursorNode.Desc in AllIdentifierDefinitions) then begin
-      if NodeIsForwardDeclaration(CursorNode) then exit;
-      Result:=InNodeIdentifier;
-    end else if (CursorNode.Desc=ctnProcedureHead) then begin
-      Result:=InNodeIdentifier;
-    end;
-  end;
-
 begin
   Result:=false;
   ListOfPCodeXYPosition:=nil;
@@ -3047,7 +3002,7 @@ begin
       if (DeclarationTool=Self) and (StartPos=CleanDeclCursorPos) then
         // declaration itself found
         AddReference
-      else if CursorOnDeclaration then
+      else if CleanPosIsDeclaration(StartPos,CursorNode) then
         // this identifier is another declaration with the same name
       else begin
         // find declaration
@@ -3096,6 +3051,54 @@ begin
     DeactivateGlobalWriteLock;
   end;
   Result:=true;
+end;
+
+{-------------------------------------------------------------------------------
+  function TFindDeclarationTool.CleanPosIsDeclaration(CleanPos: integer;
+    Node: TCodeTreeNode): boolean;
+
+  Node should be the deepest node at CleanPos, and all sub trees built.
+  See BuildSubTree
+-------------------------------------------------------------------------------}
+function TFindDeclarationTool.CleanPosIsDeclaration(CleanPos: integer;
+  Node: TCodeTreeNode): boolean;
+
+  function InNodeIdentifier: boolean;
+  var
+    IdentStartPos, IdentEndPos: integer;
+    NodeIdentStartPos: Integer;
+  begin
+    NodeIdentStartPos:=Node.StartPos;
+    if Node.Desc in [ctnProperty,ctnGlobalProperty] then begin
+      if not MoveCursorToPropName(Node) then exit;
+      NodeIdentStartPos:=CurPos.StartPos;
+    end;
+    GetIdentStartEndAtPosition(Src,CleanPos,IdentStartPos,IdentEndPos);
+    if (IdentEndPos>IdentStartPos) and (IdentStartPos=NodeIdentStartPos)
+    then begin
+      Result:=true;
+    end;
+  end;
+
+begin
+  Result:=false;
+  if Node=nil then exit;
+  case Node.Desc of
+
+  ctnTypeDefinition,ctnVarDefinition,ctnConstDefinition:
+    begin
+      if NodeIsForwardDeclaration(Node) then exit;
+      Result:=InNodeIdentifier;
+    end;
+    
+  ctnProcedureHead, ctnProperty, ctnGlobalProperty:
+    Result:=InNodeIdentifier;
+
+  ctnBeginBlock,ctnClass,ctnProcedure:
+    if (Node.SubDesc and ctnsForwardDeclaration)>0 then
+      RaiseException('TFindDeclarationTool.CleanPosIsDeclaration Node not expanded');
+    
+  end;
 end;
 
 function TFindDeclarationTool.JumpToNode(ANode: TCodeTreeNode;

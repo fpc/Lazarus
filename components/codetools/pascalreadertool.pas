@@ -63,6 +63,7 @@ type
     function ExtractPropType(PropNode: TCodeTreeNode;
         InUpperCase, EmptyIfIndexed: boolean): string;
     function MoveCursorToPropType(PropNode: TCodeTreeNode): boolean;
+    function MoveCursorToPropName(PropNode: TCodeTreeNode): boolean;
     function ExtractPropName(PropNode: TCodeTreeNode;
         InUpperCase: boolean): string;
     function ExtractProperty(PropNode: TCodeTreeNode;
@@ -642,6 +643,22 @@ begin
   AtomIsIdentifier(true);
 end;
 
+function TPascalReaderTool.MoveCursorToPropName(PropNode: TCodeTreeNode
+  ): boolean;
+begin
+  Result:=false;
+  if (PropNode=nil)
+  or ((PropNode.Desc<>ctnProperty) and (PropNode.Desc<>ctnGlobalProperty)) then
+    exit;
+  MoveCursorToNodeStart(PropNode);
+  ReadNextAtom;
+  if (PropNode.Desc=ctnProperty) then begin
+    if (not UpAtomIs('PROPERTY')) then exit;
+    ReadNextAtom;
+  end;
+  AtomIsIdentifier(true);
+end;
+
 function TPascalReaderTool.ProcNodeHasSpecifier(ProcNode: TCodeTreeNode;
   ProcSpec: TProcedureSpecifier): boolean;
 begin
@@ -709,16 +726,7 @@ function TPascalReaderTool.ExtractPropName(PropNode: TCodeTreeNode;
   InUpperCase: boolean): string;
 begin
   Result:='';
-  if (PropNode=nil)
-  or ((PropNode.Desc<>ctnProperty) and (PropNode.Desc<>ctnGlobalProperty)) then
-    exit;
-  MoveCursorToNodeStart(PropNode);
-  ReadNextAtom;
-  if (PropNode.Desc=ctnProperty) then begin
-    if (not UpAtomIs('PROPERTY')) then exit;
-    ReadNextAtom;
-  end;
-  AtomIsIdentifier(true);
+  if not MoveCursorToPropName(PropNode) then exit;
   if InUpperCase then
     Result:=GetUpAtom
   else
