@@ -20,6 +20,7 @@
 
 { TPortableNetworkGraphic }
 
+{$IFDEF UseFPImage}
 function TPortableNetworkGraphic.GetFPReaderForFileExt(
   const FileExtension: string): TFPCustomImageReaderClass;
 begin
@@ -31,6 +32,7 @@ function TPortableNetworkGraphic.GetFPWriterForFileExt(
 begin
   Result:=TFPWriterPNG;
 end;
+{$ENDIF}
 
 function TPortableNetworkGraphic.LazarusResourceTypeValid(
   const ResourceType: string): boolean;
