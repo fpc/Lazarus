@@ -71,6 +71,12 @@ type
       AState:TPropEditDrawState); override;
   end;
 
+  TFontNamePropertyEditor = class(TStringPropertyEditor)
+  public
+    function GetAttributes: TPropertyAttributes; override;
+    procedure GetValues(Proc: TGetStringProc); override;
+  end;
+
 { TBrushStylePropertyEditor
   PropertyEditor editor for TBrush's Style. Simply provides for custom render. }
 
@@ -619,6 +625,19 @@ begin
     inherited SetValue(NewValue);
 end;
 
+function TFontNamePropertyEditor.GetAttributes: TPropertyAttributes;
+begin
+  Result := [paMultiSelect, paValueList, paRevertable];
+end;
+
+procedure TFontNamePropertyEditor.GetValues(Proc: TGetStringProc);
+var
+  I: Integer;
+begin
+  for I := 0 to Screen.Fonts.Count -1 do
+    Proc(Screen.Fonts[I]);
+end;
+
 { TBrushStylePropertyEditor }
 
 procedure TBrushStylePropertyEditor.PropDrawValue(ACanvas: TCanvas;
@@ -783,7 +802,7 @@ initialization
   RegisterPropertyEditor(ClassTypeInfo(TFont), nil,'',TFontPropertyEditor);
   RegisterPropertyEditor(ClassTypeInfo(TGraphic), nil,'',TGraphicPropertyEditor);
   RegisterPropertyEditor(ClassTypeInfo(TPicture), nil,'',TPicturePropertyEditor);
-
+  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('AnsiString'), TFont,'Name', TFontNamePropertyEditor);
   RegisterPropertyEditor(ClassTypeInfo(TBitmap), TSpeedButton,'Glyph',
     TButtonGlyphPropEditor);
   RegisterPropertyEditor(ClassTypeInfo(TBitmap), TBitBtn,'Glyph',
