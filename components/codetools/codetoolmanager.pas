@@ -78,7 +78,8 @@ type
     FWriteExceptions: boolean;
     FWriteLockCount: integer;// Set/Unset counter
     FWriteLockStep: integer; // current write lock ID
-    function OnScannerGetInitValues(Code: Pointer): TExpressionEvaluator;
+    function OnScannerGetInitValues(Code: Pointer;
+      var AChangeStep: integer): TExpressionEvaluator;
     procedure OnDefineTreeReadValue(Sender: TObject; const VariableName: string;
                                     var Value: string);
     procedure OnGlobalValuesChanged;
@@ -1294,10 +1295,11 @@ writeln('TCodeToolManager.RemovePublishedVariable A ',Code.Filename,' ',AClassNa
   end;
 end;
 
-function TCodeToolManager.OnScannerGetInitValues(
-  Code: Pointer): TExpressionEvaluator;
+function TCodeToolManager.OnScannerGetInitValues(Code: Pointer;
+  var AChangeStep: integer): TExpressionEvaluator;
 begin
   Result:=nil;
+  AChangeStep:=DefineTree.ChangeStep;
   if Code=nil then exit;
 //DefineTree.WriteDebugReport;
   if not TCodeBuffer(Code).IsVirtual then

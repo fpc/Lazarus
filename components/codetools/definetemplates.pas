@@ -207,11 +207,13 @@ type
   private
     FFirstDefineTemplate: TDefineTemplate;
     FCache: TAVLTree; // tree of TDirectoryDefines
+    FChangeStep: integer;
     FVirtualDirCache: TDirectoryDefines;
     FOnReadValue: TOnReadValue;
     FErrorTemplate: TDefineTemplate;
     FErrorDescription: string;
     function Calculate(DirDef: TDirectoryDefines): boolean;
+    procedure IncreaseChangeStep;
   protected
     function FindDirectoryInCache(const Path: string): TDirectoryDefines;
   public
@@ -220,6 +222,8 @@ type
     property OnReadValue: TOnReadValue read FOnReadValue write FOnReadValue;
     property ErrorTemplate: TDefineTemplate read FErrorTemplate;
     property ErrorDescription: string read FErrorDescription;
+    property ChangeStep: integer read FChangeStep;
+  public
     function  GetDefinesForDirectory(const Path: string): TExpressionEvaluator;
     function  GetDefinesForVirtualDirectory: TExpressionEvaluator;
     procedure AddFirst(ADefineTemplate: TDefineTemplate);
@@ -1247,9 +1251,11 @@ end;
 
 procedure TDefineTree.ClearCache;
 begin
+  if (FCache.Count=0) or (FVirtualDirCache=nil) then exit;
   FCache.FreeAndClear;
   FVirtualDirCache.Free;
   FVirtualDirCache:=nil;
+  IncreaseChangeStep;
 end;
 
 constructor TDefineTree.Create;
@@ -1296,6 +1302,7 @@ begin
     NewFirstNode:=NewFirstNode.Next;
   FFirstDefineTemplate.RemoveMarked;
   FFirstDefineTemplate:=NewFirstNode;
+  ClearCache;
 end;
 
 procedure TDefineTree.RemoveGlobals;
@@ -1614,6 +1621,14 @@ begin
   Result:=(ErrorTemplate=nil);
 end;
 
+procedure TDefineTree.IncreaseChangeStep;
+begin
+  if FChangeStep<>$7fffffff then
+    inc(FChangeStep)
+  else
+    FChangeStep:=-$7fffffff;
+end;
+
 function TDefineTree.LoadFromXMLConfig(XMLConfig: TXMLConfig;
   const Path: string; Policy: TDefineTreeLoadPolicy;
   const NewNamePrefix: string): boolean;
@@ -1640,6 +1655,7 @@ begin
     end;
   end;
   // import new defines
+  ClearCache;
   LastDefTempl:=FFirstDefineTemplate;
   if LastDefTempl<>nil then begin
     while LastDefTempl.Next<>nil do
@@ -1689,6 +1705,7 @@ begin
       LastDefTempl:=LastDefTempl.Next;
     ADefineTemplate.InsertBehind(LastDefTempl);
   end;
+  ClearCache;
 end;
 
 procedure TDefineTree.AddFirst(ADefineTemplate: TDefineTemplate);
@@ -1701,6 +1718,7 @@ begin
     RootTemplate.InsertBehind(ADefineTemplate);
     RootTemplate:=ADefineTemplate;
   end;
+  ClearCache;
 end;
 
 function TDefineTree.FindDefineTemplateByName(

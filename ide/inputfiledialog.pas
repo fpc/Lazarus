@@ -22,7 +22,8 @@ uses
   LResources, TransferMacros;
 
 type
-  TInputFileFlag = (iftDirectory, iftFilename, iftNotEmpty, iftMustExist);
+  TInputFileFlag = (iftDirectory, iftFilename, iftCmdLine,
+                    iftNotEmpty, iftMustExist);
   TInputFileFlags = set of TInputFileFlag;
 
   TInputFileDialog = class(TForm)
@@ -259,7 +260,8 @@ begin
   Result:=false;
   CurFileFlags:=FileFlags[Index];
   if (iftNotEmpty in CurFileFlags) and (Filename='') then exit;
-  if (iftMustExist in CurFileFlags) and (Filename<>'') then begin
+  if ([iftMustExist,iftCmdLine]*CurFileFlags=[iftMustExist])
+  and (Filename<>'') then begin
     if FTransferMacros<>nil then
       Macros.SubstituteStr(Filename);
     Filename:=ExpandFileName(Filename);

@@ -208,6 +208,27 @@ type
     nbMain: TNotebook;
     //bvlButtonBar: TBevel;
 
+    { Search Paths Controls }
+    grpOtherUnits: TGroupBox;
+    edtOtherUnits: TEdit;
+
+    grpIncludeFiles: TGroupBox;
+    edtIncludeFiles: TEdit;
+
+    grpOtherSources: TGroupBox;
+    edtOtherSources: TEdit;
+
+    grpLibraries: TGroupBox;
+    edtLibraries: TEdit;
+
+    grpCompiler: TGroupBox;
+    edtCompiler: TEdit;
+
+    grpUnitOutputDir: TGroupBox;
+    edtUnitOutputDir: TEdit;
+
+    LCLWidgetTypeRadioGroup: TRadioGroup;
+
     { Parsing Controls }
     grpStyle: TGroupBox;
     radStyleIntel: TRadioButton;
@@ -303,35 +324,12 @@ type
     grpErrorCnt: TGroupBox;
     edtErrorCnt: TEdit;
 
-    { Search Paths Controls }
-    grpOtherUnits: TGroupBox;
-    edtOtherUnits: TEdit;
-
-    grpIncludeFiles: TGroupBox;
-    edtIncludeFiles: TEdit;
-
-    grpOtherSources: TGroupBox;
-    edtOtherSources: TEdit;
-
-    grpLibraries: TGroupBox;
-    edtLibraries: TEdit;
-
-    grpCompiler: TGroupBox;
-    edtCompiler: TEdit;
-    
-    grpUnitOutputDir: TGroupBox;
-    edtUnitOutputDir: TEdit;
-    
-    LCLWidgetTypeRadioGroup: TRadioGroup;
-
     { Buttons }
     btnTest: TButton;
     btnOK: TButton;
     btnCancel: TButton;
     btnApply: TButton;
-    function GetOtherSourcePath: string;
-    procedure SetOtherSourcePath(const AValue: string);
-    
+
     { Other variables }
 //    fPath: String;
 
@@ -343,6 +341,10 @@ type
     procedure SetupOtherTab(Sender: TObject; Page: integer);
     procedure SetupSearchPathsTab(Sender: TObject; Page: integer);
     procedure SetupButtonBar(Sender: TObject);
+    procedure chkAdditionalConfigFileClick(Sender: TObject);
+  private
+    function GetOtherSourcePath: string;
+    procedure SetOtherSourcePath(const AValue: string);
   public
     CompilerOpts: TCompilerOptions;
 
@@ -1553,7 +1555,8 @@ begin
   chkCompiledProc.Checked := CompilerOpts.ShowCompProc;
   chkConditionals.Checked := CompilerOpts.ShowCond;
   chkNothing.Checked := CompilerOpts.ShowNothing;
-  chkHintsForUnusedProjectUnits.Checked := CompilerOpts.ShowHintsForUnusedProjectUnits;
+  chkHintsForUnusedProjectUnits.Checked :=
+    CompilerOpts.ShowHintsForUnusedProjectUnits;
 
   chkFPCLogo.Checked := CompilerOpts.WriteFPCLogo;
 
@@ -2638,6 +2641,7 @@ begin
     Left := 8;
     Height := 16;
     Width := 330;
+    OnClick:=@chkAdditionalConfigFileClick;
     Visible := True;
   end;
 
@@ -2922,6 +2926,11 @@ begin
     OnClick := @ButtonTestClicked;
     Visible := True;
   end;
+end;
+
+procedure TfrmCompilerOptions.chkAdditionalConfigFileClick(Sender: TObject);
+begin
+  edtConfigPath.Enabled:=chkAdditionalConfigFile.Checked;
 end;
 
 function TfrmCompilerOptions.GetOtherSourcePath: string;

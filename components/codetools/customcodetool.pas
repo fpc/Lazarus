@@ -1234,7 +1234,7 @@ begin
   // find the CursorPos in cleaned source
   Dummy:=CaretToCleanPos(CursorPos, CleanCursorPos);
   if (Dummy<>0) and (Dummy<>-1) then
-    SaveRaiseException(ctsCursorPosOutsideOfCode);
+    RaiseException(ctsCursorPosOutsideOfCode);
 end;
 
 procedure TCustomCodeTool.MoveCursorToNodeStart(ANode: TCodeTreeNode);

@@ -177,7 +177,7 @@ begin
       da_DefineRecurse));
   end;
   // source path (unitpath + sources for the CodeTools, hidden to the compiler)
-  if s<>'' then begin
+  if (SrcPath<>'') or (s<>'') then begin
     // add compiled unit path
     ProjTempl.AddChild(TDefineTemplate.Create('SrcPath',
       'source path addition',ExternalMacroStart+'SrcPath',

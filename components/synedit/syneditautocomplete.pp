@@ -233,7 +233,7 @@ end;
 procedure TCustomSynAutoComplete.ExecuteCompletion(AToken: string;
   AEditor: TCustomSynEdit);
 var
-  i, j, Len, IndentLen: integer;
+  i, j, Len, IndentLen, TokenStartX: integer;
   s: string;
   IdxMaybe, NumMaybe: integer;
   p: TPoint;
@@ -289,14 +289,17 @@ begin
 {begin}                                                                         //mh 2000-11-08
       AEditor.BeginUpdate;
       try
-        AEditor.BlockBegin := Point(p.x - Len, p.y);
+        {$IFDEF SYN_LAZARUS}
+        TokenStartX:=p.x;
+        s:=AEditor.Lines[p.y-1];
+        while (TokenStartX > 1) and (s[TokenStartX-1] > ' ')
+        and (Pos(s[TokenStartX-1], fEOTokenChars) = 0) do
+          Dec(TokenStartX);
+        AEditor.BlockBegin := Point(TokenStartX, p.y);
         AEditor.BlockEnd := p;
         // indent the completion string if necessary, determine the caret pos
-        {$IFDEF SYN_LAZARUS}
         if IndentToTokenStart then begin
-        {$ENDIF}
           IndentLen := p.x - Len - 1;
-        {$IFDEF SYN_LAZARUS}
         end else begin
           // indent as line of token
           IndentLen:=1;
@@ -306,6 +309,11 @@ begin
           end;
           dec(IndentLen);
         end;
+        {$ELSE}
+        AEditor.BlockBegin := Point(p.x - Len, p.y);
+        AEditor.BlockEnd := p;
+        // indent the completion string if necessary, determine the caret pos
+        IndentLen := p.x - Len - 1;
         {$ENDIF}
         p := AEditor.BlockBegin;
         NewCaretPos := FALSE;

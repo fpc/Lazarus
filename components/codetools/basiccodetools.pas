@@ -121,6 +121,8 @@ function ReadRawNextPascalAtom(const Source:string;
 //----------------------------------------------------------------------------
 procedure GetLineStartEndAtPosition(const Source:string; Position:integer;
     var LineStart,LineEnd:integer);
+procedure GetIdentStartEndAtPosition(const Source:string; Position:integer;
+    var IdentStart,IdentEnd:integer);
 function LineEndCount(const Txt: string; var LengthOfLastLine:integer): integer;
 function FindFirstNonSpaceCharInLine(const Source: string;
     Position: integer): integer;
@@ -896,6 +898,19 @@ begin
     inc(LineEnd);
 end;
 
+procedure GetIdentStartEndAtPosition(const Source: string; Position: integer;
+    var IdentStart, IdentEnd: integer);
+begin
+  IdentStart:=Position;
+  IdentEnd:=Position;
+  while (IdentStart>1)
+  and (IsIdChar[Source[IdentStart-1]]) do
+    dec(IdentStart);
+  while (IdentEnd<=length(Source))
+  and (IsIdChar[Source[IdentEnd]]) do
+    inc(IdentEnd);
+end;
+
 function ReadNextPascalAtom(const Source:string;
   var Position,AtomStart:integer):string;
 var DirectiveName:string;
@@ -1465,7 +1480,7 @@ var LineStart, LineEnd: integer;
 begin
   GetLineStartEndAtPosition(Source,FromPos,LineStart,LineEnd);
   Result:=((LineEnd>=FromPos) and (LineEnd<ToPos))
-       or ((LineEnd-(ToPos-FromPos)+NewLength)>MaxLineLength);
+       or ((LineEnd-LineStart-(ToPos-FromPos)+NewLength)>MaxLineLength);
 end;
 
 function CompareTextIgnoringSpace(const Txt1, Txt2: string;
@@ -1772,7 +1787,6 @@ begin
     IsIDStartChar[c]:=(c in ['a'..'z','A'..'Z','_']);
   end;
 end;
-
 
 initialization
   BasicCodeToolInit;

@@ -1644,7 +1644,7 @@ begin
         AutoCompleteList.LoadFromFile('lazarus.dci');
     IndentToTokenStart:=EditorOpts.CodeTemplateIndentToTokenStart;
     OnTokenNotFound:=@OnCodeTemplateTokenNotFound;
-    EndOfTokenChr:='[]{},.;:"+-*^@$\<>=''';
+    EndOfTokenChr:='()[]{},.;:"+-*^@$\<>=''';
   end;
   if aWordCompletion=nil then begin
     aWordCompletion:=TWordCompletion.Create;

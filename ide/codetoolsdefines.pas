@@ -829,9 +829,9 @@ begin
 
     FileTitles[0]:='compiler path';
     FileDescs[0]:='The path to the free pascal compiler.'#13
-           +'For example /usr/bin/ppc386 or /usr/local/bin/fpc.';
+           +'For example "/usr/bin/ppc386 -n" or "/usr/local/bin/fpc @/etc/11fpc.cfg".';
     FileNames[0]:=DefaultCompiler;
-    FileFlags[0]:=[iftFilename,iftNotEmpty,iftMustExist];
+    FileFlags[0]:=[iftCmdLine,iftNotEmpty];
 
     EndUpdate;
     if ShowModal=mrCancel then exit;
@@ -1826,7 +1826,7 @@ end;
 procedure TCodeToolsDefinesEditor.SetValuesEditable(AValue: boolean);
 begin
   SelectedItemGroupBox.Enabled:=true;
-  TypeLabel.Enabled:=AValue;
+  TypeLabel.Enabled:=true;
   ProjectSpecificCheckBox.Enabled:=AValue;
   NameLabel.Enabled:=AValue;
   NameEdit.Enabled:=AValue;

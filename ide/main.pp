@@ -5405,10 +5405,10 @@ var ActiveSrcEdit: TSourceEditor;
   NewX, NewY, NewTopLine: integer;
 begin
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,false) then exit;
-{$IFDEF IDE_DEBUG}
-writeln('');
-writeln('[TMainIDE.DoJumpToProcedureSection] ************');
-{$ENDIF}
+  {$IFDEF IDE_DEBUG}
+  writeln('');
+  writeln('[TMainIDE.DoJumpToProcedureSection] ************');
+  {$ENDIF}
   if CodeToolBoss.JumpToMethod(ActiveUnitInfo.Source,
     ActiveSrcEdit.EditorComponent.CaretX,
     ActiveSrcEdit.EditorComponent.CaretY,
@@ -5468,10 +5468,10 @@ var ActiveSrcEdit: TSourceEditor;
   NewX, NewY, NewTopLine: integer;
 begin
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,false) then exit;
-{$IFDEF IDE_DEBUG}
-writeln('');
-writeln('[TMainIDE.DoFindDeclarationAtCursor] ************');
-{$ENDIF}
+  {$IFDEF IDE_DEBUG}
+  writeln('');
+  writeln('[TMainIDE.DoFindDeclarationAtCursor] ************');
+  {$ENDIF}
   if CodeToolBoss.FindDeclaration(ActiveUnitInfo.Source,
     ActiveSrcEdit.EditorComponent.CaretX,
     ActiveSrcEdit.EditorComponent.CaretY,
@@ -5490,10 +5490,10 @@ var ActiveSrcEdit: TSourceEditor;
   NewX, NewY, NewTopLine: integer;
 begin
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,false) then exit;
-{$IFDEF IDE_DEBUG}
-writeln('');
-writeln('[TMainIDE.DoGoToPascalBlockOtherEnd] ************');
-{$ENDIF}
+  {$IFDEF IDE_DEBUG}
+  writeln('');
+  writeln('[TMainIDE.DoGoToPascalBlockOtherEnd] ************');
+  {$ENDIF}
   if CodeToolBoss.FindBlockCounterPart(ActiveUnitInfo.Source,
     ActiveSrcEdit.EditorComponent.CaretX,
     ActiveSrcEdit.EditorComponent.CaretY,
@@ -5512,10 +5512,10 @@ var ActiveSrcEdit: TSourceEditor;
   NewX, NewY, NewTopLine: integer;
 begin
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,false) then exit;
-{$IFDEF IDE_DEBUG}
-writeln('');
-writeln('[TMainIDE.DoGoToPascalBlockStart] ************');
-{$ENDIF}
+  {$IFDEF IDE_DEBUG}
+  writeln('');
+  writeln('[TMainIDE.DoGoToPascalBlockStart] ************');
+  {$ENDIF}
   if CodeToolBoss.FindBlockStart(ActiveUnitInfo.Source,
     ActiveSrcEdit.EditorComponent.CaretX,
     ActiveSrcEdit.EditorComponent.CaretY,
@@ -5534,10 +5534,10 @@ var ActiveSrcEdit: TSourceEditor;
   StartX, StartY, NewX, NewY, NewTopLine: integer;
 begin
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,false) then exit;
-{$IFDEF IDE_DEBUG}
-writeln('');
-writeln('[TMainIDE.DoGoToPascalBlockEnd] ************');
-{$ENDIF}
+  {$IFDEF IDE_DEBUG}
+  writeln('');
+  writeln('[TMainIDE.DoGoToPascalBlockEnd] ************');
+  {$ENDIF}
   if FindNext then begin
     StartX:=ActiveSrcEdit.EditorComponent.CaretX;
     StartY:=ActiveSrcEdit.EditorComponent.CaretY;
@@ -6203,6 +6203,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.275  2002/04/11 08:08:47  lazarus
+  MG: small fixes, cleanups and started event assignment completion
+
   Revision 1.274  2002/04/06 11:20:41  lazarus
   MG: added fpc define templates
 

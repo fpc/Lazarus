@@ -62,7 +62,8 @@ type
                     of object;
   TOnGetFileName = function(Sender: TObject; Code: Pointer): string of object;
   TOnCheckFileOnDisk = function(Code: Pointer): boolean of object;
-  TOnGetInitValues = function(Code: Pointer): TExpressionEvaluator of object;
+  TOnGetInitValues = function(Code: Pointer;
+                       var ChangeStep: integer): TExpressionEvaluator of object;
   TOnIncludeCode = procedure(ParentCode, IncludeCode: Pointer) of object;
   TOnSetWriteLock = procedure(Lock: boolean) of object;
   TOnGetWriteLockInfo = procedure(var WriteLockIsSet: boolean;
@@ -124,6 +125,7 @@ type
     FOnGetInitValues: TOnGetInitValues;
     FOnIncludeCode: TOnIncludeCode;
     FInitValues: TExpressionEvaluator;
+    FInitValuesChangeStep: integer;
     FSourceChangeSteps: TList; // list of PSourceChangeStep sorted with Code
     FChangeStep: integer;
     FMainSourceFilename: string;
@@ -785,7 +787,7 @@ begin
   IfLevel:=0;
   FSkippingTillEndif:=false;
   if Assigned(FOnGetInitValues) then
-    FInitValues.Assign(FOnGetInitValues(FMainCode));
+    FInitValues.Assign(FOnGetInitValues(FMainCode,FInitValuesChangeStep));
   //writeln('TLinkScanner.Scan C --------');
   Values.Assign(FInitValues);
   for cm:=Low(TCompilerMode) to High(TCompilerMode) do
@@ -1051,6 +1053,7 @@ var i: integer;
   NewInitValues: TExpressionEvaluator;
   GlobalWriteLockIsSet: boolean;
   GlobalWriteLockStep: integer;
+  NewInitValuesChangeStep: integer;
 begin
   Result:=true;
   if FForceUpdateNeeded then exit;
@@ -1104,8 +1107,10 @@ begin
   // check initvalues
   if Assigned(FOnGetInitValues) then begin
     if FInitValues=nil then exit;
-    NewInitValues:=FOnGetInitValues(Code);
-    if (NewInitValues<>nil) and (not FInitValues.Equals(NewInitValues)) then
+    NewInitValues:=FOnGetInitValues(Code,NewInitValuesChangeStep);
+    if (NewInitValues<>nil)
+    and (NewInitValuesChangeStep<>FInitValuesChangeStep)
+    and (not FInitValues.Equals(NewInitValues)) then
       exit;
   end;
   

@@ -223,6 +223,7 @@ begin
     writeln('[TEventsCodeTool.GetCompatiblePublishedMethods]');
     {$ENDIF}
     // 1. convert the TypeData to an expression type list
+    CheckDependsOnNodeCaches;
     Params:=TFindDeclarationParams.Create;
     try
       Params.ContextNode:=ClassNode.Parent;
@@ -267,6 +268,7 @@ begin
   or (Scanner=nil) then exit;
   ActivateGlobalWriteLock;
   try
+    CheckDependsOnNodeCaches;
     Params:=TFindDeclarationParams.Create;
     try
       Params.ContextNode:=ClassNode;
@@ -329,6 +331,7 @@ begin
   try
     // find method type declaration
     TypeName:=ATypeInfo^.Name;
+    CheckDependsOnNodeCaches;
     Params:=TFindDeclarationParams.Create;
     try
       // find method type in used units
@@ -396,6 +399,7 @@ begin
   MethodIsPublished:=false;
   ActivateGlobalWriteLock;
   try
+    CheckDependsOnNodeCaches;
     Params:=TFindDeclarationParams.Create;
     try
       // first search a published method definition with same name
@@ -608,9 +612,7 @@ begin
   if TypeData=nil then exit;
   ParamCount:=TypeData^.ParamCount;
   if ParamCount>0 then begin
-
-    //Result:=Result+'(';
-    //ParamString:='';
+    CheckDependsOnNodeCaches;
     Offset:=0;
     
     for i:=0 to ParamCount-1 do begin
@@ -659,29 +661,8 @@ begin
       Result.AddFirst(CurExprType);
       Params.Load(OldInput);
 
-      {// build string
-      if phpWithVarModifiers in Attr then begin
-        if pfVar in ParamType.Flags then
-          s:='var '
-        else if pfConst in ParamType.Flags then
-          s:='const '
-        else if pfOut in ParamType.Flags then
-          s:='out '
-        else
-          s:='';
-      end else
-        s:='';
-      if phpWithParameterNames in Attr then
-        s:=s+ParamType.ParamName;
-      s:=s+':'+ParamType.TypeName;
-      if i>0 then s:=s+';';
-      ParamString:=s+ParamString;}
     end;
-    //Result:=Result+ParamString+')';
   end;
-  {if phpInUpperCase in Attr then Result:=UpperCaseStr(Result);
-  Result:=Result+';';}
-
 end;
 
 function TEventsCodeTool.CollectPublishedMethods(

@@ -287,25 +287,28 @@ function TStandardCodeTool.RenameUsedUnit(const OldUpperUnitName,
   NewUnitName, NewUnitInFile: string;
   SourceChangeCache: TSourceChangeCache): boolean;
 var UnitPos, InPos: TAtomPosition;
-  NewUnitTerm: string;
+  NewUsesTerm: string;
 begin
   Result:=false;
   if (OldUpperUnitName='') or (length(OldUpperUnitName)>255) or (NewUnitName='')
   or (length(NewUnitName)>255) then exit;
   if not FindUnitInAllUsesSections(OldUpperUnitName,UnitPos,InPos) then exit;
   SourceChangeCache.MainScanner:=Scanner;
-  if InPos.StartPos>0 then UnitPos.EndPos:=InPos.EndPos;
-  NewUnitTerm:=NewUnitName;
+  if InPos.StartPos>0 then
+    UnitPos.EndPos:=InPos.EndPos;
+  // build use unit term
+  NewUsesTerm:=NewUnitName;
   if NewUnitInFile<>'' then
-    NewUnitTerm:=NewUnitTerm+' in '''+NewUnitInFile+'''';
+    NewUsesTerm:=NewUsesTerm+' in '''+NewUnitInFile+'''';
+  //
   if ReplacementNeedsLineEnd(Src,UnitPos.StartPos,UnitPos.EndPos,
-    length(NewUnitTerm),SourceChangeCache.BeautifyCodeOptions.LineLength) then
+    length(NewUsesTerm),SourceChangeCache.BeautifyCodeOptions.LineLength) then
   begin
     if not SourceChangeCache.Replace(gtNewLine,gtNone,
-      UnitPos.StartPos,UnitPos.EndPos,NewUnitTerm) then exit;
+      UnitPos.StartPos,UnitPos.EndPos,NewUsesTerm) then exit;
   end else begin
     if not SourceChangeCache.Replace(gtSpace,gtNone,
-      UnitPos.StartPos,UnitPos.EndPos,NewUnitTerm) then exit;
+      UnitPos.StartPos,UnitPos.EndPos,NewUsesTerm) then exit;
   end;
   if not SourceChangeCache.Apply then exit;
   Result:=true;
@@ -315,31 +318,33 @@ function TStandardCodeTool.AddUnitToUsesSection(UsesNode: TCodeTreeNode;
   const NewUnitName, NewUnitInFile: string;
   SourceChangeCache: TSourceChangeCache): boolean;
 var LineStart, LineEnd, Indent, InsertPos: integer;
-  NewUnitTerm: string;
+  NewUsesTerm: string;
 begin
   Result:=false;
   if (UsesNode=nil) or (UsesNode.Desc<>ctnUsesSection) or (NewUnitName='')
   or (length(NewUnitName)>255) or (UsesNode.StartPos<1)
   or (UsesNode.EndPos<1) then exit;
   SourceChangeCache.MainScanner:=Scanner;
-  MoveCursorToNodeStart(UsesNode);
-  ReadNextAtom; // read first name
-  Indent:=GetLineIndent(Src,CurPos.StartPos);
-  if Indent<SourceChangeCache.BeautifyCodeOptions.Indent then
-    Indent:=SourceChangeCache.BeautifyCodeOptions.Indent;
-  InsertPos:=UsesNode.EndPos-1;
-  NewUnitTerm:=NewUnitName;
+  MoveCursorToNodeStart(UsesNode); // for nice error position
+  InsertPos:=UsesNode.EndPos-1; // position of semicolon
+  NewUsesTerm:=NewUnitName;
   if NewUnitInFile<>'' then
-    NewUnitTerm:=NewUnitTerm+' in '''+NewUnitInFile+'''';
+    NewUsesTerm:=NewUsesTerm+' in '''+NewUnitInFile+'''';
   GetLineStartEndAtPosition(Src,InsertPos,LineStart,LineEnd);
-  if InsertPos-LineStart+length(NewUnitTerm)+2>=
-    SourceChangeCache.BeautifyCodeOptions.LineLength then begin
-    NewUnitTerm:=','+SourceChangeCache.BeautifyCodeOptions.LineEnd+
-      GetIndentStr(Indent)+NewUnitTerm;
+  if InsertPos-LineStart+length(NewUsesTerm)+2>=
+    SourceChangeCache.BeautifyCodeOptions.LineLength then
+  begin
+    // split line
+    Indent:=GetLineIndent(Src,CurPos.StartPos);
+    if UsesNode.StartPos=LineStart then
+      inc(Indent,SourceChangeCache.BeautifyCodeOptions.Indent);
+    NewUsesTerm:=','+SourceChangeCache.BeautifyCodeOptions.LineEnd+
+      GetIndentStr(Indent)+NewUsesTerm;
   end else
-    NewUnitTerm:=', '+NewUnitTerm;
+    // simply insert
+    NewUsesTerm:=', '+NewUsesTerm;
   if not SourceChangeCache.Replace(gtNone,gtNone,InsertPos,InsertPos,
-                                    NewUnitTerm) then exit;
+                                   NewUsesTerm) then exit;
   if not SourceChangeCache.Apply then exit;
   Result:=true;
 end;
@@ -347,7 +352,7 @@ end;
 function TStandardCodeTool.AddUnitToMainUsesSection(const NewUnitName,
   NewUnitInFile: string; SourceChangeCache: TSourceChangeCache): boolean;
 var UsesNode, SectionNode: TCodeTreeNode;
-  NewUnitTerm: string;
+  NewUsesTerm: string;
   InsertPos: integer;
   Junk     : TAtomPosition;
 begin
@@ -375,15 +380,15 @@ begin
       MoveCursorToNodeStart(SectionNode);
       ReadNextAtom;
     end;
-    NewUnitTerm:=SourceChangeCache.BeautifyCodeOptions.BeautifyKeyWord('uses')
+    NewUsesTerm:=SourceChangeCache.BeautifyCodeOptions.BeautifyKeyWord('uses')
          +' '+NewUnitName;
     if NewUnitInFile<>'' then
-      NewUnitTerm:=NewUnitTerm+' in '''+NewUnitInFile+''';'
+      NewUsesTerm:=NewUsesTerm+' in '''+NewUnitInFile+''';'
     else
-      NewUnitTerm:=NewUnitTerm+';';
+      NewUsesTerm:=NewUsesTerm+';';
     InsertPos:=CurPos.EndPos;
     if not SourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,
-      NewUnitTerm) then exit;
+      NewUsesTerm) then exit;
     if not SourceChangeCache.Apply then exit;
     Result:=true;
   end;
