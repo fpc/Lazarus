@@ -20,6 +20,7 @@
 
 const
   sDuplicateMenus = 'TCustomForm.SetMenu Duplicate menus';
+  SCannotFocus = 'Cannot focus a disabled or invisible window';
 
 { $DEFINE CHECK_POSITION}
 
@@ -129,10 +130,12 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 Procedure TCustomForm.FocusControl(WinControl : TWinControl);
-Begin
-  FActiveControl := WinControl;
-  if HandleAllocated and Visible then
-    LCLLinux.SetFocus(WinControl.Handle);
+var
+  WasActive: Boolean;
+begin
+  WasActive := FActive;
+  SetActiveControl(WinControl);
+  if not WasActive then SetFocus;
 End;
 
 
@@ -246,6 +249,23 @@ Begin
 end;
 
 {------------------------------------------------------------------------------
+  procedure TCustomForm.SetWindowFocus;
+ ------------------------------------------------------------------------------}
+procedure TCustomForm.SetWindowFocus;
+var
+  NewFocusControl: TWinControl;
+begin
+  if (FActiveControl <> nil) and (FDesigner = nil) then
+    NewFocusControl := FActiveControl
+  else
+    NewFocusControl := Self;
+  if not NewFocusControl.HandleAllocated then exit;
+  LCLLinux.SetFocus(NewFocusControl.Handle);
+  if GetFocus = NewFocusControl.Handle then
+    NewFocusControl.Perform(CM_UIACTIVATE, 0, 0);
+end;
+
+{------------------------------------------------------------------------------
   Method: TCustomForm.WMShowWindow
   Params:   Msg: The showwindow message
   Returns:  nothing
@@ -261,7 +281,7 @@ begin
   Include(FFormState, fsShowing);
   try
     if Message.Show then begin
-      if FActiveControl<>nil then begin
+      if (FActiveControl<>nil) and FActiveControl.HandleAllocated then begin
         //writeln('TCustomForm.WMShowWindow ',FActiveControl.Name,':',FActiveControl.ClassName);
         LCLLinux.SetFocus(FActiveControl.Handle);
       end;
@@ -308,6 +328,14 @@ end;
 procedure TCustomForm.Activate;
 begin
   if Assigned(FOnActivate) then FOnActivate(Self);
+end;
+
+{------------------------------------------------------------------------------
+  procedure TCustomForm.ActiveChanged;
+ ------------------------------------------------------------------------------}
+procedure TCustomForm.ActiveChanged;
+begin
+
 end;
 
 {------------------------------------------------------------------------------
@@ -728,11 +756,24 @@ end;
 {------------------------------------------------------------------------------}
 {       TCustomForm SetActiveControl                                                      }
 {------------------------------------------------------------------------------}
-Procedure TCustomForm.SetActiveControl(Value : TWinControl);
+Procedure TCustomForm.SetActiveControl(AWinControl: TWinControl);
 Begin
-//TODO: Finish SETACTIVECONTROL
-  FActiveControl := Value;
-  Assert(False, 'Trace:TODO: [TCustomForm.SetActiveCOntrol]');
+  if FActiveControl <> AWinControl then
+  begin
+    if not ((AWinControl = nil)
+    or (AWinControl <> Self)
+      and (GetParentForm(AWinControl) = Self) and ((csLoading in ComponentState)
+      or AWinControl.CanFocus))
+    then
+      RaiseGDBException(SCannotFocus);
+      // EInvalidOperation.Create(SCannotFocus);
+    FActiveControl := AWinControl;
+    if not (csLoading in ComponentState) then
+    begin
+      if FActive then SetWindowFocus;
+      ActiveChanged;
+    end;
+  end;
 end;
 
 {------------------------------------------------------------------------------}
@@ -1184,6 +1225,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.79  2002/12/28 11:29:47  mattias
+  xmlcfg deletion, focus fixes
+
   Revision 1.78  2002/12/25 14:21:28  mattias
   fixed setting activecontrol to nil when removing component
 

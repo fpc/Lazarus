@@ -265,7 +265,7 @@ type
     procedure CloseModal;
     procedure DoCreate;
     procedure DoDestroy;
-    procedure SetActiveControl(Value : TWinControl);
+    procedure SetActiveControl(AWinControl: TWinControl);
     procedure SetBorderStyle(Value : TFORMBorderStyle);
     procedure SetDesigner(Value : TIDesigner);
     procedure SetMenu(Value : TMainMenu);
@@ -273,6 +273,7 @@ type
     procedure SetIcon(AValue: TIcon);
     procedure SetPosition(Value : TPosition);
     procedure SetVisible(Value: boolean);
+    procedure SetWindowFocus;
     procedure SetWindowState(Value : TWIndowState);
     function IsForm : Boolean;
     procedure IconChanged(Sender: TObject);
@@ -286,6 +287,7 @@ type
     procedure WMCloseQuery(var message: TLMessage); message LM_CLOSEQUERY;
   protected
     procedure Activate; dynamic;
+    procedure ActiveChanged; dynamic;
     function CloseQuery : boolean; virtual;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;

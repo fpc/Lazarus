@@ -442,7 +442,7 @@ type
 
   TNestedPropertyEditor = class(TPropertyEditor)
   public
-    constructor Create(Parent: TPropertyEditor);
+    constructor Create(Parent: TPropertyEditor); overload;
     destructor Destroy; override;
   end;
 
@@ -456,7 +456,7 @@ type
   private
     FElement: Integer;
   public
-    constructor Create(Parent: TPropertyEditor; AElement: Integer);
+    constructor Create(Parent: TPropertyEditor; AElement: Integer); overload;
     function AllEqual: Boolean; override;
     function GetAttributes: TPropertyAttributes; override;
     function GetName: shortstring; override;
@@ -687,7 +687,7 @@ type
     FIndex: integer;
     FList: TListPropertyEditor;
   public
-    constructor Create(Parent: TListPropertyEditor; AnIndex: integer);
+    constructor Create(Parent: TListPropertyEditor; AnIndex: integer); overload;
     destructor Destroy; override;
     function GetAttributes: TPropertyAttributes; override;
     function GetName:shortstring; override;

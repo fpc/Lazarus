@@ -53,9 +53,9 @@ type
     doc: TXMLDocument;
     FModified: Boolean;
     procedure Loaded; override;
-    function FindNode(const APath: String): TDomNode;
+    function FindNode(const APath: String; PathHasValue: boolean): TDomNode;
   public
-    constructor Create(const AFilename: String);
+    constructor Create(const AFilename: String); overload;
     destructor Destroy; override;
     procedure Clear;
     procedure Flush;    // Writes the XML file
@@ -63,9 +63,13 @@ type
     function  GetValue(const APath: String; ADefault: Integer): Integer;
     function  GetValue(const APath: String; ADefault: Boolean): Boolean;
     procedure SetValue(const APath, AValue: String);
+    procedure SetDeleteValue(const APath, AValue, DefValue: String);
     procedure SetValue(const APath: String; AValue: Integer);
+    procedure SetDeleteValue(const APath: String; AValue, DefValue: Integer);
     procedure SetValue(const APath: String; AValue: Boolean);
+    procedure SetDeleteValue(const APath: String; AValue, DefValue: Boolean);
     procedure DeletePath(const APath: string);
+    procedure DeleteValue(const APath: string);
     property Modified: Boolean read FModified;
   published
     property Filename: String read FFilename write SetFilename;
@@ -123,35 +127,36 @@ end;
 function TXMLConfig.GetValue(const APath, ADefault: String): String;
 var
   Node, Child, Attr: TDOMNode;
-  i: Integer;
-  NodePath: String;
+  NodeName: String;
+  PathLen: integer;
+  StartPos, EndPos: integer;
 begin
+  Result:=ADefault;
+  PathLen:=length(APath);
   Node := doc.DocumentElement;
-  NodePath := APath;
-  while True do
-  begin
-    i := Pos('/', NodePath);
-    if i = 0 then
-      break;
-    Child := Node.FindNode(Copy(NodePath, 1, i - 1));
-    NodePath := Copy(NodePath, i + 1, Length(NodePath));
-    if not Assigned(Child) then
-    begin
-      Result := ADefault;
-      exit;
-    end;
+  StartPos:=1;
+  while True do begin
+    EndPos:=StartPos;
+    while (EndPos<=PathLen) and (APath[EndPos]<>'/') do inc(EndPos);
+    if EndPos>PathLen then break;
+    SetLength(NodeName,EndPos-StartPos);
+    Move(APath[StartPos],NodeName[1],EndPos-StartPos);
+    StartPos:=EndPos+1;
+    Child := Node.FindNode(NodeName);
+    if not Assigned(Child) then exit;
     Node := Child;
   end;
-  Attr := Node.Attributes.GetNamedItem(NodePath);
+  if StartPos>PathLen then exit;
+  SetLength(NodeName,PathLen-StartPos+1);
+  Move(APath[StartPos],NodeName[1],length(NodeName));
+  Attr := Node.Attributes.GetNamedItem(NodeName);
   if Assigned(Attr) then
-    Result := Attr.NodeValue
-  else
-    Result := ADefault;
+    Result := Attr.NodeValue;
 end;
 
 function TXMLConfig.GetValue(const APath: String; ADefault: Integer): Integer;
 begin
-  Result := StrToInt(GetValue(APath, IntToStr(ADefault)));
+  Result := StrToIntDef(GetValue(APath, IntToStr(ADefault)),ADefault);
 end;
 
 function TXMLConfig.GetValue(const APath: String; ADefault: Boolean): Boolean;
@@ -165,9 +170,9 @@ begin
 
   s := GetValue(APath, s);
 
-  if UpperCase(s) = 'TRUE' then
+  if AnsiCompareText(s,'TRUE')=0 then
     Result := True
-  else if UpperCase(s) = 'FALSE' then
+  else if AnsiCompareText(s,'FALSE')=0 then
     Result := False
   else
     Result := ADefault;
@@ -176,18 +181,20 @@ end;
 procedure TXMLConfig.SetValue(const APath, AValue: String);
 var
   Node, Child: TDOMNode;
-  i: Integer;
-  NodeName, NodePath: String;
+  NodeName: String;
+  PathLen: integer;
+  StartPos, EndPos: integer;
 begin
   Node := Doc.DocumentElement;
-  NodePath := APath;
-  while True do
-  begin
-    i := Pos('/', NodePath);
-    if i = 0 then
-      break;
-    NodeName := Copy(NodePath, 1, i - 1);
-    NodePath := Copy(NodePath, i + 1, Length(NodePath));
+  PathLen:=length(APath);
+  StartPos:=1;
+  while True do begin
+    EndPos:=StartPos;
+    while (EndPos<=PathLen) and (APath[EndPos]<>'/') do inc(EndPos);
+    if EndPos>PathLen then break;
+    SetLength(NodeName,EndPos-StartPos);
+    Move(APath[StartPos],NodeName[1],EndPos-StartPos);
+    StartPos:=EndPos+1;
     Child := Node.FindNode(NodeName);
     if not Assigned(Child) then
     begin
@@ -197,17 +204,37 @@ begin
     Node := Child;
   end;
 
-  if (not Assigned(TDOMElement(Node).GetAttributeNode(NodePath))) or
-    (TDOMElement(Node)[NodePath] <> AValue) then
+  if StartPos>PathLen then exit;
+  SetLength(NodeName,PathLen-StartPos+1);
+  Move(APath[StartPos],NodeName[1],length(NodeName));
+  if (not Assigned(TDOMElement(Node).GetAttributeNode(NodeName))) or
+    (TDOMElement(Node)[NodeName] <> AValue) then
   begin
-    TDOMElement(Node)[NodePath] := AValue;
+    TDOMElement(Node)[NodeName] := AValue;
     FModified := True;
   end;
+end;
+
+procedure TXMLConfig.SetDeleteValue(const APath, AValue, DefValue: String);
+begin
+  if AValue=DefValue then
+    DeleteValue(APath)
+  else
+    SetValue(APath,AValue);
 end;
 
 procedure TXMLConfig.SetValue(const APath: String; AValue: Integer);
 begin
   SetValue(APath, IntToStr(AValue));
+end;
+
+procedure TXMLConfig.SetDeleteValue(const APath: String; AValue,
+  DefValue: Integer);
+begin
+  if AValue=DefValue then
+    DeleteValue(APath)
+  else
+    SetValue(APath,AValue);
 end;
 
 procedure TXMLConfig.SetValue(const APath: String; AValue: Boolean);
@@ -218,13 +245,39 @@ begin
     SetValue(APath, 'False');
 end;
 
+procedure TXMLConfig.SetDeleteValue(const APath: String; AValue,
+  DefValue: Boolean);
+begin
+  if AValue=DefValue then
+    DeleteValue(APath)
+  else
+    SetValue(APath,AValue);
+end;
+
 procedure TXMLConfig.DeletePath(const APath: string);
 var
   Node: TDomNode;
 begin
-  Node:=FindNode(APath);
+  Node:=FindNode(APath,false);
   if (Node=nil) or (Node.ParentNode=nil) then exit;
   Node.ParentNode.RemoveChild(Node);
+  FModified := True;
+end;
+
+procedure TXMLConfig.DeleteValue(const APath: string);
+var
+  Node: TDomNode;
+  StartPos: integer;
+  NodeName: string;
+begin
+  Node:=FindNode(APath,true);
+  if (Node=nil) then exit;
+  StartPos:=length(APath);
+  while (StartPos>0) and (APath[StartPos]<>'/') do dec(StartPos);
+  NodeName:=copy(APath,StartPos+1,length(APath)-StartPos);
+  if (not Assigned(TDOMElement(Node).GetAttributeNode(NodeName))) then exit;
+  TDOMElement(Node).RemoveAttribute(NodeName);
+  FModified := True;
 end;
 
 procedure TXMLConfig.Loaded;
@@ -234,28 +287,28 @@ begin
     SetFilename(Filename);              // Load the XML config file
 end;
 
-function TXMLConfig.FindNode(const APath: String): TDomNode;
+function TXMLConfig.FindNode(const APath: String;
+  PathHasValue: boolean): TDomNode;
 var
-  Child: TDOMNode;
-  i: Integer;
   NodePath: String;
+  StartPos, EndPos: integer;
+  PathLen: integer;
 begin
-  if APath='' then begin
-    Result:=nil;
-    exit;
-  end;
   Result := doc.DocumentElement;
-  NodePath := APath;
-  while Result<>nil do
-  begin
-    i := Pos('/', NodePath);
-    if i = 0 then
-      i:=length(NodePath)+1;
-    Child := Result.FindNode(Copy(NodePath, 1, i - 1));
-    NodePath := Copy(NodePath, i + 1, Length(NodePath));
-    Result := Child;
-    if NodePath='' then exit;
+  PathLen:=length(APath);
+  StartPos:=1;
+  while (Result<>nil) do begin
+    EndPos:=StartPos;
+    while (EndPos<=PathLen) and (APath[EndPos]<>'/') do inc(EndPos);
+    if (EndPos>PathLen) and PathHasValue then exit;
+    if EndPos=StartPos then break;
+    SetLength(NodePath,EndPos-StartPos);
+    Move(APath[StartPos],NodePath[1],length(NodePath));
+    Result := Result.FindNode(NodePath);
+    StartPos:=EndPos+1;
+    if StartPos>PathLen then exit;
   end;
+  Result:=nil;
 end;
 
 procedure TXMLConfig.SetFilename(const AFilename: String);
@@ -294,6 +347,9 @@ end;
 end.
 {
   $Log$
+  Revision 1.8  2002/12/28 11:29:47  mattias
+  xmlcfg deletion, focus fixes
+
   Revision 1.7  2002/10/22 08:48:04  lazarus
   MG: fixed segfault on loading xmlfile
 

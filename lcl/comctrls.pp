@@ -524,7 +524,7 @@ type
     procedure ChangeBounds(ALeft, ATop, AWidth, AHeight: Integer); Override;
     function CanChange: Boolean; dynamic;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    procedure Click(Button: TUDBtnType); dynamic;
+    procedure Click(Button: TUDBtnType); dynamic; overload;
     property AlignButton: TUDAlignButton read FAlignButton write SetAlignButton default udRight;
     property ArrowKeys: Boolean read FArrowKeys write SetArrowKeys default True;
     property Associate: TWinControl read FAssociate write SetAssociate;
@@ -1713,6 +1713,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.62  2002/12/28 11:29:47  mattias
+  xmlcfg deletion, focus fixes
+
   Revision 1.61  2002/11/30 11:22:53  mattias
   statusbar now uses invalidaterect
 
