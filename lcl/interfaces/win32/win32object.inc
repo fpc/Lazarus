@@ -2537,6 +2537,7 @@ Begin
     TWinControl(Sender).Handle := Window;
     If Window <> HWND(Nil) Then
     begin
+      Windows.SetProp(Window, 'Wincontrol', dword(Sender));
       if SubClassWndProc <> nil then
         Windows.SetProp(Window, 'DefWndProc', Windows.SetWindowLong(Window, GWL_WNDPROC, LongInt(SubClassWndProc)));
       // subclass edit control of combobox too
@@ -2568,8 +2569,8 @@ Begin
     end;
     If Buddy <> HWND(Nil) Then
     begin
-      Windows.SetProp(Buddy, 'DefWndProc', Windows.SetWindowLong(Buddy, GWL_WNDPROC, LongInt(SubClassWndProc)));
       Windows.SetProp(Buddy, 'AWincontrol', dword(Sender));
+      Windows.SetProp(Buddy, 'DefWndProc', Windows.SetWindowLong(Buddy, GWL_WNDPROC, LongInt(SubClassWndProc)));
       Windows.SendMessage(Buddy, WM_SETFONT, WParam(FMessageFont), 0);
     end;
   End
@@ -3321,6 +3322,9 @@ End;
 
 {
   $Log$
+  Revision 1.219  2004/07/04 20:05:44  micha
+  set properties before setting subclassed window proc
+
   Revision 1.218  2004/06/30 20:59:11  micha
   initialize common controls: date picker
 
