@@ -3799,7 +3799,7 @@ begin
   if tvsUpdating in FStates then exit;
   UpdateScrollbars;
   with Canvas do begin
-    if Assigned(FOnCustomDraw) then begin
+    if Assigned(FOnCustomDraw) or Assigned(FOnAdvancedCustomDraw) then begin
       DrawRect:=ClientRect;
       if not CustomDraw(DrawRect,cdPrePaint) then exit;
     end;
@@ -3846,7 +3846,7 @@ begin
       LineTo((ClientWidth-ScrollBarWidth)-1-a,(ClientHeight-ScrollBarWidth)-1-a);
       LineTo(a,(ClientHeight-ScrollBarWidth)-1-a);
     end;
-    if Assigned(FOnCustomDraw) then begin
+    if Assigned(FOnCustomDraw) or Assigned(FOnAdvancedCustomDraw) then begin
       DrawRect:=ClientRect;
       if not CustomDraw(DrawRect,cdPostPaint) then exit;
     end;
@@ -3960,7 +3960,7 @@ begin
   if (NodeRect.Bottom<0) or (NodeRect.Top>=(ClientHeight-ScrollBarWidth)) then
     exit;
   NodeSelected:=(Node.Selected) or (Node.MultiSelected);
-  if Assigned(OnCustomDrawItem) then begin
+  if Assigned(OnCustomDrawItem) or Assigned(FOnAdvancedCustomDrawItem) then begin
     DrawState:=[];
     if NodeSelected then
       Include(DrawState,cdsSelected);
@@ -4030,7 +4030,8 @@ begin
       LineTo(NodeRect.Right,NodeRect.Bottom-1);
     end;
   end;
-  if Assigned(OnCustomDrawItem) then begin
+  if Assigned(OnCustomDrawItem) or Assigned(FOnAdvancedCustomDrawItem) then
+  begin
     DrawState:=[];
     if Node.Selected then
       Include(DrawState,cdsSelected);

@@ -86,6 +86,8 @@ begin
 //    LVN_BEGINDRAG: 
     LVN_DELETEITEM: begin
       //don'tcall delete yet, there is no sulution available when we have deleted the item first
+      Item := Items[nm^.iItem];
+      DoDeletion(Item)
     end;
     LVN_DELETEALLITEMS: begin
     end;
@@ -157,6 +159,14 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
+{   TCustomListView DoDeletion                                               }
+{------------------------------------------------------------------------------}
+procedure TCustomListView.DoDeletion(AItem: TListItem);
+begin
+  if Assigned(FOnDeletion) then FOnDeletion(Self, AItem);
+end;
+
+{------------------------------------------------------------------------------}
 {   TCustomListView DoSelectItem                                               }
 {------------------------------------------------------------------------------}
 procedure TCustomListView.DoSelectItem(AItem: TListItem; ASelected: Boolean); 
@@ -180,11 +190,13 @@ Begin
 End;
 
 {------------------------------------------------------------------------------}
-{   TCustomListView ItemChanged                                                }
+{   TCustomListView ItemDeleted                                                }
 {------------------------------------------------------------------------------}
 Procedure TCustomListView.ItemDeleted(Index : Integer);  //called by TListItems
 Begin
   if csDestroying in Componentstate Then Exit;
+  if FSelected= FListItems[Index] then FSelected:=nil;
+  DoDeletion(FListItems[Index]);
   if FUpdateCount>0 then
     Include(FStates,lvUpdateNeeded)
   else begin
@@ -528,6 +540,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.22  2002/09/14 14:47:41  lazarus
+  MG: fixed icons
+
   Revision 1.21  2002/09/10 10:00:27  lazarus
   MG: TListView now works handleless and SetSelection implemented
 

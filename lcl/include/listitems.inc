@@ -78,12 +78,10 @@ procedure TListItems.ItemDeleted(const AItem: TListItem);
 var
   idx: Integer;
 begin
-  idx := FItems.Remove(AItem);
-  if (idx >= 0) and (FOwner <> nil)
-  then begin
-    if FOwner.FSelected=AItem then FOwner.FSelected:=nil;
-    FOwner.ItemDeleted(idx);
-  end;
+  idx := FItems.IndexOf(AItem);
+  if assigned(FOwner)
+    then FOwner.ItemDeleted(idx);
+  FItems.Remove(AItem);
 end;
 
 {------------------------------------------------------------------------------}
@@ -100,6 +98,8 @@ end;
 {------------------------------------------------------------------------------}
 destructor TListItems.Destroy;
 begin
+  while FItems.Count>0 do
+    TListItem(FItems[0]).Free;
   FItems.Free;
   inherited Destroy;
 end;
@@ -137,6 +137,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.13  2002/09/14 14:47:41  lazarus
+  MG: fixed icons
+
   Revision 1.12  2002/09/14 08:38:06  lazarus
   MG: added TListView notification from Vincent
 

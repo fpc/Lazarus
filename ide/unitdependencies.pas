@@ -115,8 +115,8 @@ type
     function FindParentWithCodeBuffer(ACodeBuffer: TCodeBuffer): TUnitNode;
     function HasChildren: boolean;
     function ImageIndex: integer;
+    function IsFirstImplementationNode: boolean;
     function IsImplementationNode: boolean;
-    function StateImageIndex: integer;
     property ChildCount: integer read FChildCount;
     property CodeBuffer: TCodeBuffer read FCodeBuffer write SetCodeBuffer;
     property Filename: string read FFilename write SetFilename;
@@ -136,12 +136,14 @@ type
 
   TUnitDependenciesView = class(TForm)
     SrcTypeImageList: TImageList;
-    FlagImageList: TImageList;
     UnitHistoryList: TComboBox;
     SelectUnitButton: TBitBtn;
     UnitTreeView: TTreeView;
     RefreshButton: TBitBtn;
     procedure UnitDependenciesViewResize(Sender: TObject);
+    procedure UnitTreeViewAdvancedCustomDrawItem(Sender: TCustomTreeView;
+          Node: TTreeNode; State: TCustomDrawState; Stage: TCustomDrawStage;
+          var PaintImages, DefaultDraw: Boolean);
     procedure UnitTreeViewCollapsing(Sender: TObject; Node: TTreeNode;
           var AllowCollapse: Boolean);
     procedure UnitTreeViewExpanding(Sender: TObject; Node: TTreeNode;
@@ -161,7 +163,6 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     function RootValid: boolean;
-    procedure UpdateUnitTree;
     property RootFilename: string read FRootFilename write SetRootFilename;
     property RootShortFilename: string read FRootShortFilename write SetRootShortFilename;
   end;
@@ -177,6 +178,26 @@ implementation
 procedure TUnitDependenciesView.UnitDependenciesViewResize(Sender: TObject);
 begin
   DoResize;
+end;
+
+procedure TUnitDependenciesView.UnitTreeViewAdvancedCustomDrawItem(
+  Sender: TCustomTreeView; Node: TTreeNode; State: TCustomDrawState;
+  Stage: TCustomDrawStage; var PaintImages, DefaultDraw: Boolean);
+var
+  UnitNode: TUnitNode;
+  NodeRect: TRect;
+begin
+  if Stage<>cdPostPaint then exit;
+  UnitNode:=TUnitNode(Node.Data);
+  if UnitNode.IsFirstImplementationNode then begin
+    NodeRect:=Node.DisplayRect(false);
+    NodeRect.Left:=Node.DisplayStateIconLeft;
+    with Node.TreeView.Canvas do begin
+      Pen.Color:=clRed;
+      MoveTo(NodeRect.Left,NodeRect.Top);
+      LineTo(NodeRect.Right,NodeRect.Top);
+    end;
+  end;
 end;
 
 procedure TUnitDependenciesView.UnitTreeViewCollapsing(Sender: TObject;
@@ -250,7 +271,6 @@ begin
   FRootCodeBuffer:=CodeToolBoss.FindFile(FRootFilename);
   FRootShortFilename:=FRootFilename;
   RebuildTree;
-  UpdateUnitTree;
 end;
 
 procedure TUnitDependenciesView.SetRootShortFilename(const AValue: string);
@@ -266,22 +286,19 @@ begin
   Result:=FRootValid;
 end;
 
-procedure TUnitDependenciesView.UpdateUnitTree;
-begin
-
-end;
-
 constructor TUnitDependenciesView.Create(TheOwner: TComponent);
 
   procedure AddResImg(ImgList: TImageList; const ResName: string);
   var Pixmap: TPixmap;
   begin
     Pixmap:=TPixmap.Create;
-    Pixmap.TransparentColor:=clWhite;
+    //Pixmap.TransparentColor:=clWhite;
+    if LazarusResources.Find(ResName)=nil then
+      writeln('TUnitDependenciesView.Create: WARNING: icon not found: "',ResName,'"');
     Pixmap.LoadFromLazarusResource(ResName);
     ImgList.Add(Pixmap,nil)
   end;
-
+  
 var
   ALayout: TIDEWindowLayout;
 begin
@@ -298,26 +315,17 @@ begin
       Name:='SrcTypeImageList';
       Width:=22;
       Height:=22;
-      AddResImg(SrcTypeImageList,'srctype_unknown_22x22');
-      AddResImg(SrcTypeImageList,'srctype_unit_22x22');
-      AddResImg(SrcTypeImageList,'srctype_program_22x22');
-      AddResImg(SrcTypeImageList,'srctype_library_22x22');
-      AddResImg(SrcTypeImageList,'srctype_package_22x22');
-      AddResImg(SrcTypeImageList,'srctype_filenotfound_22x22');
-      AddResImg(SrcTypeImageList,'srctype_parseerror_22x22');
+      AddResImg(SrcTypeImageList,'srctype_unknown_22x22');            // 0
+      AddResImg(SrcTypeImageList,'srctype_unit_22x22');               // 1
+      AddResImg(SrcTypeImageList,'srctype_program_22x22');            // 2
+      AddResImg(SrcTypeImageList,'srctype_library_22x22');            // 3
+      AddResImg(SrcTypeImageList,'srctype_package_22x22');            // 4
+      AddResImg(SrcTypeImageList,'srctype_filenotfound_22x22');       // 5
+      AddResImg(SrcTypeImageList,'srctype_parseerror_22x22');         // 6
+      AddResImg(SrcTypeImageList,'srctype_forbiddencircle_22x22');    // 7
+      AddResImg(SrcTypeImageList,'srctype_circle_22x22');             // 8
     end;
 
-    FlagImageList:=TImageList.Create(Self);
-    with FlagImageList do begin
-      Name:='FlagImageList';
-      Width:=22;
-      Height:=22;
-      AddResImg(SrcTypeImageList,'interface_unit_22x22.xpm');
-      AddResImg(SrcTypeImageList,'implementation_unit_22x22.xpm');
-      AddResImg(SrcTypeImageList,'forbidden_unit_circle_22x22.xpm');
-      AddResImg(SrcTypeImageList,'allowed_unit_circle_22x22.xpm');
-    end;
-    
     UnitHistoryList:=TComboBox.Create(Self);
     with UnitHistoryList do begin
       Name:='UnitHistoryList';
@@ -365,7 +373,8 @@ begin
       OnExpanding:=@UnitTreeViewExpanding;
       OnCollapsing:=@UnitTreeViewCollapsing;
       Images:=SrcTypeImageList;
-      StateImages:=FlagImageList;
+      //StateImages:=SrcTypeImageList;
+      OnAdvancedCustomDrawItem:=@UnitTreeViewAdvancedCustomDrawItem;
       Visible:=true;
     end;
     
@@ -422,7 +431,6 @@ begin
     TreeNode.Data:=Self;
     TreeNode.HasChildren:=HasChildren;
     TreeNode.ImageIndex:=ImageIndex;
-    TreeNode.StateIndex:=StateImageIndex;
   end;
 end;
 
@@ -465,7 +473,13 @@ begin
   if PrevSibling<>nil then PrevSibling.FNextSibling:=Self;
   Inc(Parent.FChildCount);
   CreateShortFilename;
-  
+
+  if FindParentWithCodeBuffer(CodeBuffer)<>nil then begin
+    Include(FFlags,unfCircle);
+    if ForbiddenCircle then
+      Include(FFlags,unfForbiddenCircle);
+  end;
+
   if Parent.TreeNode<>nil then begin
     Parent.TreeNode.HasChildren:=true;
     TreeNode:=Parent.TreeNode.TreeNodes.AddChild(Parent.TreeNode,'');
@@ -483,17 +497,11 @@ begin
   NewNode:=TUnitNode.Create;
   NewNode.CodeBuffer:=ACodeBuffer;
   NewNode.Filename:=AFilename;
-  if ACodeBuffer<>nil then begin
-    if FindParentWithCodeBuffer(ACodeBuffer)<>nil then begin
-      Include(NewNode.FFlags,unfCircle);
-      if ForbiddenCircle then
-        Include(NewNode.FFlags,unfForbiddenCircle);
-    end;
-  end else begin
-    Include(NewNode.FFlags,unfFileNotFound);
-  end;
   if InImplementation then
     Include(NewNode.FFlags,unfImplementation);
+  if ACodeBuffer=nil then begin
+    Include(NewNode.FFlags,unfFileNotFound);
+  end;
   NewNode.Parent:=Self;
 end;
 
@@ -511,7 +519,6 @@ begin
       FSourceType:=ASrcType;
   if TreeNode<>nil then begin
     TreeNode.ImageIndex:=ImageIndex;
-    TreeNode.StateIndex:=StateImageIndex;
   end;
 end;
 
@@ -519,12 +526,14 @@ function TUnitNode.ForbiddenCircle: boolean;
 var
   ParentNode, CurNode: TUnitNode;
 begin
+  Result:=false;
+  if unfImplementation in Flags then exit;
   CurNode:=Self;
   ParentNode:=Parent;
   while ParentNode<>nil do begin
     if ParentNode.CodeBuffer=CodeBuffer then begin
       // circle detected
-      if unfImplementation in CurNode.Flags then begin
+      if not (unfImplementation in CurNode.Flags) then begin
         Result:=true;
         exit;
       end;
@@ -605,8 +614,9 @@ function TUnitNode.FindParentWithCodeBuffer(ACodeBuffer: TCodeBuffer
   ): TUnitNode;
 begin
   Result:=Parent;
-  while (Result<>nil) and (Result.CodeBuffer<>ACodeBuffer) do
+  while (Result<>nil) and (Result.CodeBuffer<>ACodeBuffer) do begin
     Result:=Result.Parent;
+  end;
 end;
 
 function TUnitNode.HasChildren: boolean;
@@ -616,43 +626,40 @@ end;
 
 function TUnitNode.ImageIndex: integer;
 begin
-  case SourceType of
-  unstUnit:    Result:=1;
-  unstProgram: Result:=2;
-  unstLibrary: Result:=3;
-  unstPackage: Result:=4;
-  else
-    begin
-      if unfFileNotFound in Flags then
-        Result:=5
-      else if unfParseError in Flags then
-        Result:=6
-      else
-        Result:=0;
+  if not (unfCircle in FFlags) then begin
+    case SourceType of
+    unstUnit:    Result:=1;
+    unstProgram: Result:=2;
+    unstLibrary: Result:=3;
+    unstPackage: Result:=4;
+    else
+      begin
+        if unfFileNotFound in Flags then
+          Result:=5
+        else if unfParseError in Flags then
+          Result:=6
+        else
+          Result:=0;
+      end;
+    end;
+  end else begin
+    if unfForbiddenCircle in Flags then begin
+      Result:=7;
+    end else begin
+      Result:=8;
     end;
   end;
+end;
+
+function TUnitNode.IsFirstImplementationNode: boolean;
+begin
+  Result:=IsImplementationNode
+    and ((PrevSibling=nil) or (not PrevSibling.IsImplementationNode));
 end;
 
 function TUnitNode.IsImplementationNode: boolean;
 begin
   Result:=unfImplementation in FFlags;
-end;
-
-function TUnitNode.StateImageIndex: integer;
-begin
-  if not (unfCircle in Flags) then begin
-    if not (unfImplementation in Flags) then begin
-      Result:=0; // normal used unit
-    end else begin
-      Result:=1; // unit used in implementation section
-    end;
-  end else begin
-    if not (unfForbiddenCircle in Flags) then begin
-      Result:=2; // allowed unit circle
-    end else begin
-      Result:=3; // forbidden unit circle
-    end;
-  end;
 end;
 
 //-----------------------------------------------------------------------------

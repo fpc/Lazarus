@@ -254,6 +254,7 @@ type
   TLVChangeEvent = procedure(Sender: TObject; Item: TListItem; Change: TItemChange) of object;
   TLVColumnClickEvent = procedure(Sender: TObject; Column: TListColumn) of object;
   TLVColumnRClickEvent = procedure(Sender: TObject; Column: TListColumn; Point: TPoint) of object;
+  TLVDeletedEvent = procedure(Sender: TObject; Item: TListItem) of object;
   TLVSelectItemEvent = procedure(Sender: TObject; Item: TListItem; Selected: Boolean) of object;
   
   TListViewState = (lvMultiSelect, lvUpdateNeeded);
@@ -280,6 +281,7 @@ type
     FUpdateCount: integer;
     FOnChange: TLVChangeEvent;
     FOnColumnClick: TLVColumnClickEvent;
+    FOnDeletion: TLVDeletedEvent;
     FOnSelectItem: TLVSelectItemEvent;
     FStates: TListViewStates;
     function GetMultiSelect: Boolean;
@@ -305,6 +307,7 @@ type
     procedure Change(AItem: TListItem; AChange: Integer); dynamic;
     procedure ColClick(AColumn: TListColumn); dynamic;
     procedure Delete(Item : TListItem);
+    procedure DoDeletion(AItem: TListItem); dynamic;
     procedure DoSelectItem(AItem: TListItem; ASelected: Boolean); dynamic;
     procedure InsertItem(Item : TListItem);
     function GetMaxScrolledLeft : Integer;
@@ -334,6 +337,7 @@ type
     property ViewStyle: TViewStyle read FViewStyle write SetViewStyle;
     property OnChange: TLVChangeEvent read FOnChange write FOnChange;
     property OnColumnClick: TLVColumnClickEvent read FOnColumnClick write FOnColumnClick;
+    property OnDeletion: TLVDeletedEvent read FOnDeletion write FOnDeletion;
     property OnSelectItem: TLVSelectItemEvent read FOnSelectItem write FOnSelectItem;
   public
     constructor Create(Aowner: TComponent); override;
@@ -376,6 +380,7 @@ type
     property OnKeyPress;
     property OnKeyUp;
     property OnKeyDown;
+    property OnDeletion;
     property OnSelectItem;
   end;
 
@@ -1600,6 +1605,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.48  2002/09/14 14:47:41  lazarus
+  MG: fixed icons
+
   Revision 1.47  2002/09/14 10:39:40  lazarus
   MG: added expanding to unit dependencies
 
