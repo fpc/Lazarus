@@ -425,7 +425,6 @@ begin
 //writeln('[gtkMouseBtnPress] ',ToBject(Data).ClassName,' ',Trunc(Event^.X),',',Trunc(Event^.Y));
   EventTrace('Mouse button Press', data);
   Assert(False, Format('Trace:[gtkMouseBtnPress] ', []));
-   
   ShiftState := GTKEventState2ShiftState(Event^.State);
   if event^.Button in [4,5]
   then begin
@@ -483,7 +482,7 @@ begin
     if ssMiddle in ShiftState then MessI.Keys := MessI.Keys or MK_MBUTTON;
     if MessI.Msg <> LM_NULL then Result := DeliverPostMessage(Data, MessI);
   end;
-  
+  Result := not(Result);
 end;
 
 function gtkMouseBtnRelease( widget: PGtkWidget; event : pgdkEventButton; data: gPointer) : GBoolean; cdecl;
@@ -533,6 +532,8 @@ begin
   if MessI.Msg <> LM_NULL 
   then Result := DeliverPostMessage(Data, MessI)
   else Result := True;
+
+  Result := not(Result);
 
 end;
 
@@ -1414,6 +1415,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.47  2001/11/21 19:32:32  lazarus
+  TComboBox can now be moved in FormEditor
+  Shane
+
   Revision 1.46  2001/11/21 14:55:31  lazarus
   Changes for combobox to receive butondown and up events
   DblClick events now working.

@@ -226,6 +226,7 @@ end;
 
 procedure TDesigner.InvalidateWithParent(AComponent: TComponent);
 begin
+writeln('INVALIDATEWITHPARENT');
   if AComponent is TControl then begin
     if TControl(AComponent).Parent<>nil then
       TControl(AComponent).Parent.Invalidate
@@ -240,10 +241,13 @@ function TDesigner.PaintControl(Sender: TControl; Message: TLMPaint):boolean;
 var OldDuringPaintControl: boolean;
 begin
   Result:=true;
+
 //writeln('***  LM_PAINT A ',Sender.Name,':',Sender.ClassName,' DC=',HexStr(Message.DC,8));
   OldDuringPaintControl:=FDuringPaintControl;
   FDuringPaintControl:=true;
   Sender.Dispatch(Message);
+  
+
 //writeln('***  LM_PAINT B ',Sender.Name,':',Sender.ClassName,' DC=',HexStr(Message.DC,8));
   if (ControlSelection.IsSelected(Sender)) then begin
     // writeln('***  LM_PAINT ',Sender.Name,':',Sender.ClassName,' DC=',HexStr(Message.DC,8));
@@ -278,7 +282,7 @@ begin
   Result:=true;
   Sender.Dispatch(Message);
   if (ControlSelection.IsSelected(Sender)) then begin
-//    writeln('***  LM_Move ',Sender.Name,':',Sender.ClassName);
+    writeln('***  LM_Move ',Sender.Name,':',Sender.ClassName);
     ControlSelection.AdjustSize;
     if Assigned(FOnPropertiesChanged) then
       FOnPropertiesChanged(Self);
@@ -583,8 +587,9 @@ try
       begin
         FHasSized:=true;
         ControlSelection.SizeSelection(MouseX-LastMouseMovePos.X, MouseY-LastMouseMovePos.Y);
-        if Assigned(FOnPropertiesChanged) then
-           FOnPropertiesChanged(Self);
+       //commented out by sxm 2001-11-21
+       // if Assigned(FOnPropertiesChanged) then
+       //    FOnPropertiesChanged(Self);
       end
       else
       begin
@@ -593,9 +598,13 @@ try
         begin
           // move selection
           FHasSized:=true;
+          //TODO:create a rubberband looking control to move instead of the components
+          //that will speed up to updates.
+          
           ControlSelection.MoveSelection(MouseX-LastMouseMovePos.X, MouseY-LastMouseMovePos.Y);
-          if Assigned(FOnPropertiesChanged) then
-             FOnPropertiesChanged(Self);
+       //commented out by sxm 2001-11-21
+        //  if Assigned(FOnPropertiesChanged) then
+        //     FOnPropertiesChanged(Self);
         end
         else
         begin
@@ -730,7 +739,7 @@ Begin
       LM_PAINT:   Result:=PaintControl(Sender,TLMPaint(Message));
       LM_KEYDOWN: KeyDown(Sender,TLMKey(Message));
       LM_KEYUP:   KeyUP(Sender,TLMKey(Message));
-      LM_LBUTTONDOWN,LM_RBUTTONDOWN:  MouseDownOnControl(Sender,TLMMouse(Message));
+      LM_LBUTTONDOWN,LM_RBUTTONDOWN: MouseDownOnControl(Sender,TLMMouse(Message));
       LM_LBUTTONUP:    MouseLeftUpOnControl(Sender,TLMMouse(Message));
       LM_RBUTTONUP:    MouseRightUpOnControl(sender,TLMMouse(Message));
       LM_MOUSEMOVE:    MouseMoveOnControl(Sender, TLMMouse(Message));
@@ -775,9 +784,11 @@ begin
     while x <= FCustomForm.Width do begin
       y := 0;
       while y <= FCustomForm.Height do begin
-        //if Controlatpos(Point(x,y),True) = nil then
-         MoveTo(x,y);
-         LineTo(x+1,y);
+
+//         MoveTo(x,y);
+//         LineTo(x+1,y);
+         SetPixel(X,Y,FGridColor);
+
          Inc(y, GridSizeY);
       end;
       Inc(x, GridSizeX);

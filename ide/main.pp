@@ -39,7 +39,7 @@ uses
   IDEComp, AbstractFormEditor, FormEditor, CustomFormEditor, ObjectInspector,
   PropEdits, ControlSelection, UnitEditor, CompilerOptions, EditorOptions,
   EnvironmentOpts, TransferMacros, KeyMapping, ProjectOpts, IDEProcs, Process,
-  UnitInfoDlg, Debugger, RunParamsOpts, ExtToolDialog, MacroPromptDlg;
+  UnitInfoDlg, Debugger, RunParamsOpts, ExtToolDialog, MacroPromptDlg, lMessages;
 
 const
   Version_String = '0.8 alpha';
@@ -1289,6 +1289,8 @@ end;
 Procedure TMainIDE.SetDesigning(Control : TComponent; Value : Boolean);
 Begin
   Control.SetDesigning(Value);
+  if Value then CNSendMessage(LM_SETDESIGNING, Control, nil);
+
 end;
 
 
@@ -4757,6 +4759,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.156  2001/11/21 19:32:31  lazarus
+  TComboBox can now be moved in FormEditor
+  Shane
+
   Revision 1.155  2001/11/21 13:09:50  lazarus
   MG: moved executable check to ideprocs.pp
 

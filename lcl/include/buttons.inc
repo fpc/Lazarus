@@ -125,6 +125,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.6  2001/11/21 19:32:32  lazarus
+  TComboBox can now be moved in FormEditor
+  Shane
+
   Revision 1.5  2001/10/16 14:19:13  lazarus
   MG: added nvidia opengl support and a new opengl example from satan
 

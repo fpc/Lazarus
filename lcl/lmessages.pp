@@ -89,6 +89,8 @@ LM_SETFORMICON = LM_COMUSER+58;
 
 LM_MINIMIZE = LM_COMUSER+59;
 
+LM_SETDESIGNING = LM_COMUSER+60;
+
 //end of messages that are sent to the interface
 
 
@@ -771,6 +773,10 @@ end.
 
 {
   $Log$
+  Revision 1.13  2001/11/21 19:32:32  lazarus
+  TComboBox can now be moved in FormEditor
+  Shane
+
   Revision 1.12  2001/11/14 17:46:58  lazarus
   Changes to make toggling between form and unit work.
   Added BringWindowToTop

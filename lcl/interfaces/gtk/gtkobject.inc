@@ -415,6 +415,21 @@ begin
       LM_SETVALUE  : Result := SetValue (Sender, data);
      
       LM_SETPROPERTIES: Result := SetProperties(Sender);
+      
+      {
+      LM_SETDESIGNING
+      Used in Main.pp. Used to set anything specifically needed when setting controls to Designing.
+      }
+      LM_SETDESIGNING : Begin  //Result := SetDesigning(sender);
+                          //trying to prevent some key actions....
+                          //this didn't work....
+                          //if not (csAcceptsControls in TControl(Sender).ControlStyle) then gtk_widget_set_sensitive(PgtkWidget(TWinControl(sender).Handle),False);
+                          
+                          if (Sender is TCustomComboBox) then
+                                begin
+                                gtk_combo_disable_activate(PGTKCombo(TWinControl(sender).handle));
+                                end;
+                        end;
 
       LM_RECREATEWND : Result := RecreateWnd(sender);
       
@@ -1624,6 +1639,11 @@ begin
     
     LM_MOUSEMOVE:
     begin
+      if (sender is TComboBox) then Begin
+        ConnectSignal(PgtkObject(PgtkCombo(TComboBox(sender).handle)^.entry), 'motion-notify-event', @GTKMotionNotify, GDK_POINTER_MOTION_MASK);
+        ConnectSignal(PgtkObject(PgtkCombo(TComboBox(sender).handle)^.button), 'motion-notify-event', @GTKMotionNotify, GDK_POINTER_MOTION_MASK);
+      end
+       else
        ConnectSignal(gFixed, 'motion-notify-event', @GTKMotionNotify, GDK_POINTER_MOTION_MASK)
     end;
     
@@ -3339,6 +3359,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.76  2001/11/21 19:32:33  lazarus
+  TComboBox can now be moved in FormEditor
+  Shane
+
   Revision 1.75  2001/11/21 14:55:33  lazarus
   Changes for combobox to receive butondown and up events
   DblClick events now working.
