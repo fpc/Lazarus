@@ -645,6 +645,7 @@ end;
 procedure TCustomComboBox.Clear;
 begin
   Items.Clear;
+  Text:='';
 end;
 
 {------------------------------------------------------------------------------
@@ -789,6 +790,9 @@ end;
 
 {
   $Log$
+  Revision 1.39  2004/05/30 08:53:27  mattias
+  TComboBox.Clear now clears Text as well
+
   Revision 1.38  2004/04/10 17:58:57  mattias
   implemented mainunit hints for include files
 

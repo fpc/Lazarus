@@ -2039,11 +2039,9 @@ var
   CommandRelation: TKeyCommandRelation;
   Handled: Boolean;
 begin
-writeln('TMainIDE.OnExecuteIDECommand A ',Key);
   CommandRelation:=EditorOpts.KeyMap.Find(Key,Shift,Areas);
   if (CommandRelation=nil) or (CommandRelation.Command=ecNone) then exit;
   Handled:=false;
-writeln('TMainIDE.OnExecuteIDECommand B ',CommandRelation.Command,' ',ecSave);
   OnProcessIDECommand(Sender,CommandRelation.Command,Handled);
   if Handled then Key:=VK_UNKNOWN;
 end;
@@ -10420,6 +10418,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.729  2004/05/30 08:53:26  mattias
+  TComboBox.Clear now clears Text as well
+
   Revision 1.728  2004/05/29 18:56:05  mattias
   added keys for adding/deleting breakpoints
 
