@@ -431,6 +431,7 @@ type
     FHint : String;
     FIsControl : Boolean;
     FLastHeight : Integer;
+    FLastResize : TPoint;
     FLastResizeHeight: integer;
     FLastResizeWidth: integer;
     FLastResizeClientHeight: integer;
@@ -680,7 +681,6 @@ type
     FClientWidth : Integer;
     FClientHeight : Integer;
     FFlags: TWinControlFlags;
-    FLastResize : TPoint;
     //FUseDockManager : Boolean;
     FOnKeyDown : TKeyEvent;
     FOnKeyPress: TKeyPressEvent;
@@ -762,7 +762,7 @@ type
     procedure InitializeWnd; virtual; //gets called after the window is created
     procedure DestroyWnd; virtual;
     procedure UpdateShowing; virtual;
-    Procedure SetZOrder(Topmost: Boolean); override;
+    procedure SetZOrder(Topmost: Boolean); override;
     procedure ShowControl(AControl: TControl); virtual;
     procedure WndProc(var Message : TLMessage); override;
     function  DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean; dynamic;
@@ -774,7 +774,7 @@ type
     function  GetClientOrigin: TPoint; override;
     function  GetClientRect: TRect; override;
     function  GetDeviceContext(var WindowHandle: HWnd): HDC; override;
-    Function  IsControlMouseMsg(var TheMessage : TLMMouse): Boolean;
+    function  IsControlMouseMsg(var TheMessage : TLMMouse): Boolean;
     property  BorderWidth : TBorderWidth read FBorderWidth write SetBorderWidth default 0;
     property  DefWndProc: Pointer read FDefWndProc write FDefWndPRoc;
     property  IsResizing : Boolean read GetIsResizing;
@@ -1316,6 +1316,13 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.61  2002/08/30 06:46:03  lazarus
+  Use comboboxes. Use history. Prettify the dialog. Preselect text on show.
+  Make the findreplace a dialog. Thus removing resiying code (handled by Anchors now anyway).
+  Make Anchors work again and publish them for various controls.
+  SelStart and Co. for TEdit, SelectAll procedure for TComboBox and TEdit.
+  Clean up and fix some bugs for TComboBox, plus selection stuff.
+
   Revision 1.60  2002/08/24 12:54:59  lazarus
   MG: fixed mouse capturing, OI edit focus
 
