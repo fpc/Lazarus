@@ -50,7 +50,7 @@ begin
   Result := 0;
 end;
 
-function TInterfaceBase.CheckMenuItem(hMenu: HMENU; uIDEnableItem: Integer;
+function TInterfaceBase.CheckMenuItem(hndMenu: HMENU; uIDEnableItem: Integer;
   bChecked: Boolean): Boolean;
 begin
   Result := false;
@@ -178,7 +178,7 @@ Begin
   Result := False;
 end;
 
-function TInterfaceBase.EnableMenuItem(hMenu: HMENU; uIDEnableItem: Integer; bEnable: Boolean): Boolean;
+function TInterfaceBase.EnableMenuItem(hndMenu: HMENU; uIDEnableItem: Integer; bEnable: Boolean): Boolean;
 begin
   Result := False;
 end;
@@ -424,7 +424,7 @@ begin
   Result := False;
 end;
 
-function TInterfaceBase.RadioMenuItemGroup(hMenu: HMENU; bRadio: Boolean): Boolean;
+function TInterfaceBase.RadioMenuItemGroup(hndMenu: HMENU; bRadio: Boolean): Boolean;
 begin
   Result := false;
 end;
@@ -442,6 +442,11 @@ end;
 function TInterfaceBase.RectVisible(dc : hdc; ARect: TRect) : Boolean;
 begin
   Result := true;
+end;
+
+function TInterfaceBase.RegroupMenuItem(hndMenu: HMENU; GroupIndex: Integer) : Boolean;
+begin
+  Result := false;
 end;
 
 Function TInterfaceBase.ReleaseCapture : Boolean;
@@ -610,6 +615,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.35  2002/08/08 09:07:06  lazarus
+  MG: TMenuItem can now be created/destroyed/moved at any time
+
   Revision 1.34  2002/08/07 09:55:30  lazarus
   MG: codecompletion now checks for filebreaks, savefile now checks for filedate
 
