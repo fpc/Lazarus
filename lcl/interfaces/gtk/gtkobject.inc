@@ -1510,21 +1510,27 @@ begin
           
       LM_GETSELSTART :
       begin
-        if (Sender is TControl)
-         and (TControl(Sender).fCompStyle = csComboBox) then
-        begin
-          Result:= gtk_editable_get_position(PGtkEditable(
-                                                 PGtkCombo(Handle)^.entry))+1;
+        if (Sender is TControl) then begin
+	  case TControl(Sender).fCompStyle of
+	  csComboBox:
+            Result:= gtk_editable_get_position(PGtkEditable(PGtkCombo(Handle)^.entry)) + 1;
+	  csEdit:
+            Result:= gtk_editable_get_position(PGtkEditable(Handle)) + 1;
+	  end;    
         end;
       end;
           
       LM_GETSELLEN :
       begin
-        if (Sender is TControl)
-         and (TControl(Sender).fCompStyle = csComboBox) then
-        begin
-          Result:= PGtkEditable(PGtkCombo(Handle)^.entry)^.selection_end_pos
-                   - PGtkEditable(PGtkCombo(Handle)^.entry)^.selection_start_pos;
+        if (Sender is TControl) then begin
+          case TControl(Sender).fCompStyle of
+	  csComboBox: 
+            Result:= PGtkEditable(PGtkCombo(Handle)^.entry)^.selection_end_pos
+                     - PGtkEditable(PGtkCombo(Handle)^.entry)^.selection_start_pos;
+	  csEdit:
+            Result:= PGtkEditable(Handle)^.selection_end_pos
+                     - PGtkEditable(Handle)^.selection_start_pos;
+          end;
         end;
       end;
   
@@ -1539,24 +1545,34 @@ begin
   
       LM_SETSELSTART : 
       begin
-        if (Sender is TControl)
-        and (TControl(Sender).fCompStyle = csComboBox) then
-        begin
-          gtk_editable_set_position(PGtkEditable(
-                                      PGtkCombo(Handle)^.entry), Integer(Data));
+        if (Sender is TControl) then begin
+	  case TControl(Sender).fCompStyle of
+	  csComboBox:
+            gtk_editable_set_position(PGtkEditable(PGtkCombo(Handle)^.entry), Integer(Data));
+	  csEdit:
+            gtk_editable_set_position(PGtkEditable(Handle), Integer(Data));
+	  end;    
         end;
       end;
           
       LM_SETSELLEN :
       begin
-        if (Sender is TControl)
-        and (TControl(Sender).fCompStyle = csComboBox) then
-        begin
-          gtk_editable_select_region(PGtkEditable(PGtkCombo(Handle)^.entry),
-            gtk_editable_get_position(PGtkEditable(PGtkCombo(Handle)^.entry)),
-            gtk_editable_get_position(PGtkEditable(PGtkCombo(Handle)^.entry))
-                                      + Integer(Data));
-        end;
+        if (Sender is TControl) then begin
+	  case TControl(Sender).fCompStyle of
+  	  csComboBox:
+            begin
+              gtk_editable_select_region(PGtkEditable(PGtkCombo(Handle)^.entry),
+                gtk_editable_get_position(PGtkEditable(PGtkCombo(Handle)^.entry)),
+                gtk_editable_get_position(PGtkEditable(PGtkCombo(Handle)^.entry)) + Integer(Data));
+            end;
+	  csEdit:
+            begin
+              gtk_editable_select_region(PGtkEditable(Handle),
+              gtk_editable_get_position(PGtkEditable(Handle)),
+              gtk_editable_get_position(PGtkEditable(Handle)) + Integer(Data));
+            end;
+	  end;    
+	end;  
       end;  
  
       LM_GetLineCount :
@@ -3272,28 +3288,23 @@ var
 begin
   Result:=gtk_combo_new();
   ComboWidget:=PGTKCombo(Result);
+  
   SetMainWidget(Result,PGtkCombo(Result)^.entry);
-  SetMainWidget(Result,PGtkCombo(Result)^.button);
-  if csDesigning in Combobox.ComponentState then begin
-    // prevent a combobox from showing its subwindow
-    gtk_combo_disable_activate(ComboWidget);
-  end;
+  
+  gtk_combo_disable_activate(ComboWidget);
+    
   // Items
   ItemList:=TGtkListStringList.Create(PGtkList(ComboWidget^.List));
   gtk_object_set_data(PGtkObject(ComboWidget),'LCLList',ItemList);
   ItemList.Assign(ComboBox.Items);
+
   // ItemIndex
   if ComboBox.ItemIndex>=0 then
     gtk_list_select_item(PGTKLIST(ComboWidget^.list),ComboBox.ItemIndex);
-  // SelStart
-  gtk_editable_set_position(PGtkEditable(
-                              ComboWidget^.entry), ComboBox.SelStart-1);
-  // SelLength
-  if ComboBox.SelLength>=0 then
-    gtk_editable_select_region(PGtkEditable(ComboWidget^.entry),
-      ComboBox.SelStart-1,ComboBox.SelStart-1+ComboBox.SelLength);
+
   // MaxLength
   gtk_entry_set_max_length(PGtkEntry(ComboWidget^.entry),ComboBox.MaxLength);
+
   // Text
   SetComboBoxText(ComboWidget,PChar(ComboBox.Text));
 end;
@@ -3311,18 +3322,18 @@ const
     GTK_WINDOW_DIALOG,  // bsNone
     GTK_WINDOW_TOPLEVEL,// bsSingle
     GTK_WINDOW_TOPLEVEL,// bsSizeable
-    GTK_WINDOW_TOPLEVEL,// bsDialog
+    GTK_WINDOW_DIALOG,  // bsDialog
     GTK_WINDOW_POPUP,   // bsToolWindow
     GTK_WINDOW_POPUP    // bsSizeToolWin
   );
-  FormSizeableMap : array[TFormBorderStyle] of gint = (
+  FormResizableMap : array[TFormBorderStyle] of gint = (
     0, // bsNone
     0, // bsSingle
     1, // bsSizeable
     0, // bsDialog
     0, // bsToolWindow
     1  // bsSizeToolWin
-    );
+  );
 //unused:  FormBorderWidth : array[TFormBorderStyle] of gint = (0, 1, 2, 1, 1, 2);  
 
 //unused:type
@@ -3552,7 +3563,8 @@ begin
       Assert(Sender is TForm);
       p := gtk_window_new(FormStyleMap[TForm(Sender).BorderStyle]);
 
-      gtk_window_set_policy (GTK_WINDOW (p), 1, 1, 0);
+      gtk_window_set_policy (GTK_WINDOW (p), FormResizableMap[TForm(Sender).BorderStyle],
+        FormResizableMap[TForm(Sender).BorderStyle], 0);
       gtk_window_set_title(pGtkWindow(p), strTemp);
 
       // the clipboard needs a widget
@@ -5490,6 +5502,13 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.185  2002/08/30 06:46:04  lazarus
+  Use comboboxes. Use history. Prettify the dialog. Preselect text on show.
+  Make the findreplace a dialog. Thus removing resiying code (handled by Anchors now anyway).
+  Make Anchors work again and publish them for various controls.
+  SelStart and Co. for TEdit, SelectAll procedure for TComboBox and TEdit.
+  Clean up and fix some bugs for TComboBox, plus selection stuff.
+
   Revision 1.184  2002/08/29 00:07:02  lazarus
   MG: fixed TComboBox and InvalidateControl
 
