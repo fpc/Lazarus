@@ -204,7 +204,7 @@ type
   
   TSaveDialog = class(TOpenDialog)
   public
-    constructor Create(AOwner : TComponent); override;
+    constructor Create(AOwner: TComponent); override;
   end;
   
   
@@ -214,7 +214,7 @@ type
   protected
     function CheckFile(var AFilename: string): boolean; override;
   public
-    constructor Create(AOwner : TComponent); override;
+    constructor Create(AOwner: TComponent); override;
   end;
 
 
@@ -420,6 +420,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.56  2004/12/21 11:14:29  mattias
+  implemented im/export of install package list
+
   Revision 1.55  2004/12/13 21:30:21  mattias
   implemented TMultiPropertyLink
 

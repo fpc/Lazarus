@@ -39,8 +39,9 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, Buttons, OldAvLTree,
-  LazarusIDEStrConsts, PackageDefs, PackageSystem;
+  StdCtrls, Buttons, OldAvLTree, FileUtil, Laz_XMLCfg,
+  LazarusIDEStrConsts, EnvironmentOpts, InputHistory, LazConf,
+  PackageDefs, PackageSystem;
 
 type
   TInstallPkgSetDialog = class(TForm)
@@ -69,7 +70,7 @@ type
   private
     FNewInstalledPackages: TList;
     FOldInstalledPackages: TPkgDependency;
-    fPackages: TAVLTree;// tree of TLazPackage or TPackageLink (all available)
+    fPackages: TAVLTree;// tree of TLazPackageID (all available packages and links)
     FRebuildIDE: boolean;
     procedure SetOldInstalledPackages(const AValue: TPkgDependency);
     procedure AssignOldInstalledPackagesToList;
@@ -83,6 +84,8 @@ type
     function NewInstalledPackagesContains(APackageID: TLazPackageID): boolean;
     function IndexOfNewInstalledPackageID(APackageID: TLazPackageID): integer;
     function IndexOfNewInstalledPkgByName(const APackageName: string): integer;
+    procedure SavePackageListToFile(const AFilename: string);
+    procedure LoadPackageListFromFile(const AFilename: string);
   public
     function GetNewInstalledPackages: TList;
     property OldInstalledPackages: TPkgDependency read FOldInstalledPackages
@@ -119,18 +122,18 @@ end;
 
 procedure TInstallPkgSetDialog.InstallPkgSetDialogCreate(Sender: TObject);
 begin
-  Caption:='Installed Packages';
-  AvailablePkgGroupBox.Caption:='Available packages';
-  ExportButton.Caption:='Export list';
-  ImportButton.Caption:='Import list';
-  UninstallButton.Caption:='Uninstall selection';
-  InstallPkgGroupBox.Caption:='Packages to install in the IDE';
-  AddToInstallButton.Caption:='Install selection';
-  SaveAndRebuildButton.Caption:='Save and rebuild IDE';
-  SaveAndExitButton.Caption:='Save and exit dialog';
-  CancelButton.Caption:='Cancel';
+  Caption:=lisInstalledPackages;
+  AvailablePkgGroupBox.Caption:=lisAvailablePackages;
+  ExportButton.Caption:=lisExportList;
+  ImportButton.Caption:=lisImportList;
+  UninstallButton.Caption:=lisUninstallSelection;
+  InstallPkgGroupBox.Caption:=lisPackagesToInstallInTheIDE;
+  AddToInstallButton.Caption:=lisInstallSelection;
+  SaveAndRebuildButton.Caption:=lisSaveAndRebuildIDE;
+  SaveAndExitButton.Caption:=lisSaveAndExitDialog;
+  CancelButton.Caption:=dlgCancel;
 
-  fPackages:=TAVLTree.Create(@CompareLazPackageID);
+  fPackages:=TAVLTree.Create(@CompareLazPackageIDNames);
   FNewInstalledPackages:=TList.Create;
 end;
 
@@ -148,13 +151,47 @@ begin
 end;
 
 procedure TInstallPkgSetDialog.ExportButtonClick(Sender: TObject);
+var
+  SaveDialog: TSaveDialog;
+  AFilename: string;
 begin
-  // TODO
+  SaveDialog:=TSaveDialog.Create(nil);
+  try
+    InputHistories.ApplyFileDialogSettings(SaveDialog);
+    SaveDialog.InitialDir:=GetPrimaryConfigPath;
+    SaveDialog.Title:='Export package list (*.xml)';
+    SaveDialog.Options:=SaveDialog.Options+[ofPathMustExist];
+    if SaveDialog.Execute then begin
+      AFilename:=CleanAndExpandFilename(SaveDialog.Filename);
+      if ExtractFileExt(AFilename)='' then
+        AFilename:=AFilename+'.xml';
+      SavePackageListToFile(AFilename);
+    end;
+    InputHistories.StoreFileDialogSettings(SaveDialog);
+  finally
+    SaveDialog.Free;
+  end;
 end;
 
 procedure TInstallPkgSetDialog.ImportButtonClick(Sender: TObject);
+var
+  OpenDialog: TOpenDialog;
+  AFilename: string;
 begin
-  // TODO
+  OpenDialog:=TSaveDialog.Create(nil);
+  try
+    InputHistories.ApplyFileDialogSettings(OpenDialog);
+    OpenDialog.InitialDir:=GetPrimaryConfigPath;
+    OpenDialog.Title:='Import package list (*.xml)';
+    OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist,ofFileMustExist];
+    if OpenDialog.Execute then begin
+      AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
+      LoadPackageListFromFile(AFilename);
+    end;
+    InputHistories.StoreFileDialogSettings(OpenDialog);
+  finally
+    OpenDialog.Free;
+  end;
 end;
 
 procedure TInstallPkgSetDialog.AddToInstallButtonClick(Sender: TObject);
@@ -458,6 +495,104 @@ begin
        APackageName)<>0)
   do
     dec(Result);
+end;
+
+procedure TInstallPkgSetDialog.SavePackageListToFile(const AFilename: string);
+var
+  XMLConfig: TXMLConfig;
+  i: Integer;
+  LazPackageID: TLazPackageID;
+begin
+  try
+    XMLConfig:=TXMLConfig.CreateClean(AFilename);
+    try
+      XMLConfig.SetDeleteValue('Packages/Count',FNewInstalledPackages.Count,0);
+      for i:=0 to FNewInstalledPackages.Count-1 do begin
+        LazPackageID:=TLazPackageID(FNewInstalledPackages[i]);
+        XMLConfig.SetDeleteValue('Packages/Item'+IntToStr(i)+'/ID',
+                                 LazPackageID.IDAsString,'');
+      end;
+      XMLConfig.Flush;
+    finally
+      XMLConfig.Free;
+    end;
+  except
+    on E: Exception do begin
+      MessageDlg(lisCodeToolsDefsWriteError,
+        Format(lisErrorWritingPackageListToFile, [#13, AFilename, #13, E.Message
+          ]), mtError, [mbCancel], 0);
+    end;
+  end;
+end;
+
+procedure TInstallPkgSetDialog.LoadPackageListFromFile(const AFilename: string
+  );
+  
+  function PkgNameExists(List: TList; ID: TLazPackageID): boolean;
+  var
+    i: Integer;
+    LazPackageID: TLazPackageID;
+  begin
+    for i:=0 to List.Count-1 do begin
+      LazPackageID:=TLazPackageID(List[i]);
+      if CompareText(LazPackageID.Name,ID.Name)=0 then begin
+        Result:=true;
+        exit;
+      end;
+    end;
+    Result:=false;
+  end;
+  
+var
+  XMLConfig: TXMLConfig;
+  i: Integer;
+  LazPackageID: TLazPackageID;
+  NewCount: LongInt;
+  NewList: TList;
+  ID: String;
+begin
+  NewList:=nil;
+  LazPackageID:=nil;
+  try
+    XMLConfig:=TXMLConfig.Create(AFilename);
+    try
+      NewCount:=XMLConfig.GetValue('Packages/Count',0);
+      LazPackageID:=TLazPackageID.Create;
+      for i:=0 to NewCount-1 do begin
+        // get ID
+        ID:=XMLConfig.GetValue('Packages/Item'+IntToStr(i)+'/ID','');
+        if ID='' then continue;
+        // parse ID
+        if not LazPackageID.StringToID(ID) then continue;
+        // ignore doubles
+        if PkgNameExists(NewList,LazPackageID) then continue;
+        // add
+        if NewList=nil then NewList:=TList.Create;
+        NewList.Add(LazPackageID);
+        LazPackageID:=TLazPackageID.Create;
+      end;
+      // clean up old list
+      for i:=0 to FNewInstalledPackages.Count-1 do
+        TObject(FNewInstalledPackages[i]).Free;
+      FNewInstalledPackages.Clear;
+      // assign new list
+      FNewInstalledPackages:=NewList;
+      NewList:=nil;
+    finally
+      XMLConfig.Free;
+      LazPackageID.Free;
+      if NewList<>nil then begin
+        for i:=0 to NewList.Count-1 do TObject(NewList[i]).Free;
+        NewList.Free;
+      end;
+    end;
+  except
+    on E: Exception do begin
+      MessageDlg(lisCodeToolsDefsReadError,
+        Format(lisErrorReadingPackageListFromFile, [#13, AFilename, #13,
+          E.Message]), mtError, [mbCancel], 0);
+    end;
+  end;
 end;
 
 function TInstallPkgSetDialog.GetNewInstalledPackages: TList;

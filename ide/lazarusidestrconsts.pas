@@ -1501,10 +1501,14 @@ resourcestring
   // codetools defines
   lisCodeToolsDefsCodeToolsDefinesPreview = 'CodeTools Defines Preview';
   lisCodeToolsDefsWriteError = 'Write error';
+  lisErrorWritingPackageListToFile = 'Error writing package list to file%s%s%'
+    +'s%s';
   lisCodeToolsDefsErrorWhileWriting = 'Error while writing %s%s%s%s%s';
   lisCodeToolsDefsErrorWhileWritingProjectInfoFile = 'Error while writing '
     +'project info file %s%s%s%s%s';
   lisCodeToolsDefsReadError = 'Read error';
+  lisErrorReadingPackageListFromFile = 'Error reading package list from file%'
+    +'s%s%s%s';
   lisTheCurrentUnitPathForTheFileIsThePathToTheLCLUnits = 'The current unit '
     +'path for the file%s%s%s%s is%s%s%s%s.%s%sThe path to the LCL units %s%s%'
     +'s is missing.%s%sHint for newbies:%sCreate a lazarus application and '
@@ -2610,6 +2614,15 @@ resourcestring
   lisSelectAHelpItem = 'Select a help item:';
   lisErrorMovingComponent = 'Error moving component';
   lisErrorMovingComponent2 = 'Error moving component %s:%s';
+  lisInstalledPackages = 'Installed Packages';
+  lisAvailablePackages = 'Available packages';
+  lisExportList = 'Export list';
+  lisImportList = 'Import list';
+  lisUninstallSelection = 'Uninstall selection';
+  lisPackagesToInstallInTheIDE = 'Packages to install in the IDE';
+  lisInstallSelection = 'Install selection';
+  lisSaveAndRebuildIDE = 'Save and rebuild IDE';
+  lisSaveAndExitDialog = 'Save and exit dialog';
 
 implementation
 end.

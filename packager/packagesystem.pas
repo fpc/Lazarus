@@ -57,7 +57,7 @@ type
     fpfSearchInPckgsWithEditor,
     fpfSearchInLoadedPkgs,
     fpfSearchInPkgLinks,
-    fpfPkgLinkMustExist,  // check if .pkg file exists
+    fpfPkgLinkMustExist,  // check if .lpk file exists
     fpfIgnoreVersion
     );
   TFindPackageFlags = set of TFindPackageFlag;
