@@ -52,6 +52,7 @@ type
   TGtk2Object = class(TGtkObject)
   public
     function GetCursorPos(var lpPoint: TPoint ): Boolean; override;
+    function LoadStockPixmap(StockID: longint) : HBitmap; override;
   end;
 
 
@@ -64,7 +65,6 @@ function gdk_display_get_default:PGdkDisplay; cdecl; external gdklib;
   Function gdk_x11_drawable_get_xid(drawable : PGdkDrawable) :  Integer; cdecl; external gdklib;
   {$EndIf}
 {$EndIf}
-
 
 implementation
 
@@ -117,10 +117,71 @@ begin
 {$EndIf}
 end;
 
+Function TGtk2Object.LoadStockPixmap(StockID: longint) : HBitmap;
+var
+  Pixmap : PGDIObject;
+  StockName : PChar;
+  IconSet : PGtkIconSet;
+  Pixbuf : PGDKPixbuf;
+begin
+  Case StockID Of
+    idButtonOk : StockName := GTK_STOCK_OK;
+    idButtonCancel : StockName := GTK_STOCK_CANCEL;
+    idButtonYes : StockName := GTK_STOCK_YES;
+    idButtonNo : StockName := GTK_STOCK_NO;
+    idButtonHelp : StockName := GTK_STOCK_HELP;
+    idButtonAbort : StockName := GTK_STOCK_CANCEL;
+    idButtonClose : StockName := GTK_STOCK_QUIT;
+    
+    idDialogWarning : StockName := GTK_STOCK_DIALOG_WARNING;
+    idDialogError : StockName := GTK_STOCK_DIALOG_ERROR;
+    idDialogInfo : StockName := GTK_STOCK_DIALOG_INFO;
+    idDialogConfirm : StockName := GTK_STOCK_DIALOG_QUESTION;
+   else begin
+      Result := inherited LoadStockPixmap(StockID);
+      exit;
+    end;
+  end;
+
+  if (StockID >= idButtonBase) and (StockID <= idDialogBase) then
+    IconSet := gtk_style_lookup_icon_set(GetStyle('button'), StockName)
+  else
+    IconSet := gtk_style_lookup_icon_set(GetStyle('window'), StockName);
+
+  If (IconSet = nil) then begin
+    Result := inherited LoadStockPixmap(StockID);
+    exit;
+  end;
+
+  if (StockID >= idButtonBase) and (StockID <= idDialogBase) then
+    pixbuf := gtk_icon_set_render_icon(IconSet, GetStyle('button'), GTK_TEXT_DIR_NONE, GTK_STATE_NORMAL, GTK_ICON_SIZE_BUTTON, GetStyleWidget('button'), nil)
+  else
+    pixbuf := gtk_icon_set_render_icon(IconSet, GetStyle('window'), GTK_TEXT_DIR_NONE, GTK_STATE_NORMAL, GTK_ICON_SIZE_DIALOG, GetStyleWidget('window'), nil);
+
+  gtk_icon_set_unref(IconSet);
+
+  Pixmap := NewGDIObject(gdiBitmap);
+  With Pixmap^ do begin
+    GDIBitmapType := gbPixmap;
+    visual := gdk_visual_get_system();
+    gdk_visual_ref(visual);
+    colormap := gdk_colormap_get_system();
+    gdk_colormap_ref(colormap);
+    gdk_pixbuf_render_pixmap_and_mask(pixbuf, GDIPixmapObject, GDIBitmapMaskObject, 128);
+  end;
+
+  gdk_pixbuf_unref(pixbuf);
+  Result := HBitmap(Pixmap);
+end;
+
 end.
 
 {
   $Log$
+  Revision 1.5  2003/09/06 22:56:03  ajgenius
+  started gtk2 stock icon overrides
+  partial/temp(?) workaround for dc paint offsets
+
   Revision 1.4  2003/09/06 20:23:53  ajgenius
   fixes for gtk2
   added more wrappers for gtk1/gtk2 converstion and sanity

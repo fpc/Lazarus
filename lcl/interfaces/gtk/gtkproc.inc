@@ -1646,6 +1646,12 @@ var
 begin
   if (DC<>nil) then begin
     Result:=DC.Origin;
+    {$Ifdef GTK2}
+      if (DC.Wnd<>0) and not GtkWidgetIsA(PGTKWidget(DC.Wnd),GTK_TYPE_WINDOW) then begin
+        Inc(Result.X, PGTKWidget(DC.Wnd)^.Allocation.x);
+        Inc(Result.y, PGTKWidget(DC.Wnd)^.Allocation.y);
+      end;
+    {$EndIf}
     if (DC.SpecialOrigin) and (DC.Wnd<>0) then begin
       Fixed := GetFixedWidget(PGTKWidget(DC.Wnd));
       if GtkWidgetIsA(Fixed,GTK_LAYOUT_GET_TYPE) then begin
@@ -2858,9 +2864,11 @@ begin
   if AWindow=nil then exit;
   Container := GTK_CONTAINER (MenuItem);
   BorderWidth := Container^.flag0 and bm_TGtkContainer_border_width;
-  ALeft := (BorderWidth + gtk_widget_get_xthickness(gtk_widget_get_style(Widget)) + 2)
+  ALeft := {$Ifdef GTK2}Widget^.Allocation.x + {$EndIf}
+           (BorderWidth + gtk_widget_get_xthickness(gtk_widget_get_style(Widget)) + 2)
            +((PGtkMenuItem(MenuItem)^.toggle_size-IconWidth) div 2);
-  ATop := (Widget^.Allocation.Height - IconHeight) div 2;
+  ATop := {$Ifdef GTK2} Widget^.Allocation.y + {$EndIf}
+          (Widget^.Allocation.Height - IconHeight) div 2;
 
   // draw icon
   gdk_gc_set_clip_mask(gtk_widget_get_style(Widget)^.Black_gc, IconMask);
@@ -4530,6 +4538,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.199  2003/09/06 22:56:03  ajgenius
+  started gtk2 stock icon overrides
+  partial/temp(?) workaround for dc paint offsets
+
   Revision 1.198  2003/09/06 20:23:53  ajgenius
   fixes for gtk2
   added more wrappers for gtk1/gtk2 converstion and sanity
