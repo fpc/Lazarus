@@ -3713,6 +3713,7 @@ begin
     AnUnitInfo.SyntaxHighlighter:=
       ExtensionToLazSyntaxHighlighter(ExtractFileExt(AFilename));
       
+  NewSrcEditorCreated:=false;
   if (not (ofRevert in Flags)) or (PageIndex<0) then begin
     // create a new source editor
 
@@ -3731,7 +3732,6 @@ begin
     NewSrcEdit.CodeBuffer:=AnUnitInfo.Source;
     NewSrcEdit.Modified:=false;
     AnUnitInfo.Modified:=false;
-    NewSrcEditorCreated:=false;
   end;
 
   // update editor indices in project
@@ -3750,7 +3750,9 @@ begin
   // mark unit as loaded
   AnUnitInfo.Loaded:=true;
   
-  // update statusbar
+  // update statusbar and focus editor
+  if (not (ofProjectLoading in Flags)) then
+    SourceNotebook.FocusEditor;
   SourceNoteBook.UpdateStatusBar;
     
   Result:=mrOk;
@@ -6049,7 +6051,7 @@ begin
           if FocusEditor then begin
             //SourceNotebook.BringToFront;
             BringWindowToTop(SourceNoteBook.Handle);
-            SrcEdit.EditorComponent.SetFocus;
+            SourceNotebook.FocusEditor;
           end;
           SrcEdit.EditorComponent.CaretXY:=CaretXY;
           SrcEdit.EditorComponent.TopLine:=TopLine;
@@ -6679,9 +6681,9 @@ begin
     BlockEnd:=CaretXY;
     TopLine:=NewTopLine;
     LeftChar:=Max(NewX-CharsInWindow,1);
-    BringWindowToTop(SourceNoteBook.Handle);
-    SetFocus;
   end;
+  BringWindowToTop(SourceNoteBook.Handle);
+  SourceNotebook.FocusEditor;
   UpdateSourceNames;
   Result:=mrOk;
 end;
@@ -6782,8 +6784,8 @@ begin
         BlockEnd:=CaretXY;
         if CodeToolBoss.ErrorTopLine>0 then
           TopLine:=CodeToolBoss.ErrorTopLine;
-        SetFocus;
       end;
+      SourceNotebook.FocusEditor;
       SourceNotebook.ClearErrorLines;
       ActiveSrcEdit.ErrorLine:=ErrorCaret.Y;
     end;
@@ -8002,6 +8004,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.494  2003/03/25 10:45:40  mattias
+  reduced focus handling and improved focus setting
+
   Revision 1.493  2003/03/17 13:00:35  mattias
   improved but not fixed transient windows
 
