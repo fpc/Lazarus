@@ -74,7 +74,7 @@ type
     function  GDBGetData(const AExpression: String; AValues: array of const): Pointer; overload;
     function  GDBRun: Boolean;
     function  GDBPause: Boolean;
-    function  GDBStart(const AContinueRunning: Boolean): Boolean;
+    function  GDBStart(const AContinueCommand: String): Boolean;
     function  GDBStop: Boolean;
     function  GDBStop2: Boolean;
     function  GDBStepOver: Boolean;
@@ -579,7 +579,7 @@ begin
   Result := False;
   case State of
     dsStop: begin
-      Result := GDBStart(True);
+      Result := GDBStart('-exec-continue');
     end;
     dsPause: begin
       Result := ExecuteCommand('-exec-continue', False);
@@ -593,13 +593,20 @@ end;
 function TGDBMIDebugger.GDBRunTo(const ASource: String;
   const ALine: Integer): Boolean;
 begin
-  Result := False;
-  if State in [dsRun, dsError] then Exit;
+  case State of
+    dsIdle, dsStop: begin
+      Result := GDBStart(Format('-exec-until %s:%d', [ASource, ALine]));
+    end;
+    dsPause: begin
+      Result := ExecuteCommand('-exec-until %s:%d', [ASource, ALine], False);
+    end;
+  else
+    Result := False;
+  end;
 
-  Result := ExecuteCommand('-exec-until %s:%d', [ASource, ALine], False);
 end;
 
-function TGDBMIDebugger.GDBStart(const AContinueRunning: Boolean): Boolean;
+function TGDBMIDebugger.GDBStart(const AContinueCommand: String): Boolean;
 var
   S: String;
   ResultState: TDBGState;
@@ -667,8 +674,8 @@ begin
 
       if ResultState = dsNone
       then begin
-        if AContinueRunning
-        then Result := ExecuteCommand('-exec-continue', False)
+        if AContinueCommand <> ''
+        then Result := ExecuteCommand(AContinueCommand, False)
         else SetState(dsPause);
       end
       else SetState(ResultState);
@@ -681,7 +688,7 @@ function TGDBMIDebugger.GDBStepInto: Boolean;
 begin
   case State of
     dsIdle, dsStop: begin
-      Result := GDBStart(False);
+      Result := GDBStart('');
     end;
     dsPause: begin
       Result := ExecuteCommand('-exec-step', False);
@@ -695,7 +702,7 @@ function TGDBMIDebugger.GDBStepOver: Boolean;
 begin
   case State of
     dsIdle, dsStop: begin
-      Result := GDBStart(False);
+      Result := GDBStart('');
     end;
     dsPause: begin
       Result := ExecuteCommand('-exec-next', False);
@@ -1872,6 +1879,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.25  2003/06/05 00:20:26  marc
+  MWE: * Fixed initial run to cursor
+
   Revision 1.24  2003/06/03 10:29:22  mattias
   implemented updates between source marks and breakpoints
 
