@@ -99,29 +99,30 @@ type
     function CheckLocalVarAssignmentSyntax(CleanCursorPos: integer;
       var VarNameAtom,AssignmentOperator,TermAtom: TAtomPosition): boolean;
     function AddLocalVariable(CleanCursorPos: integer; OldTopLine: integer;
-      VariableName, VariableType: string;
-      var NewPos: TCodeXYPosition; var NewTopLine: integer;
-      SourceChangeCache: TSourceChangeCache): boolean;
+                          VariableName, VariableType: string;
+                          var NewPos: TCodeXYPosition; var NewTopLine: integer;
+                          SourceChangeCache: TSourceChangeCache): boolean;
     procedure AdjustCursor(OldCodePos: TCodePosition; OldTopLine: integer;
-      var NewPos: TCodeXYPosition; var NewTopLine: integer);
+                          var NewPos: TCodeXYPosition; var NewTopLine: integer);
   protected
     property CodeCompleteClassNode: TCodeTreeNode
-      read ClassNode write SetCodeCompleteClassNode;
+                                  read ClassNode write SetCodeCompleteClassNode;
     property CodeCompleteSrcChgCache: TSourceChangeCache
-      read ASourceChangeCache write SetCodeCompleteSrcChgCache;
+                       read ASourceChangeCache write SetCodeCompleteSrcChgCache;
   public
     function AddPublishedVariable(const UpperClassName,VarName, VarType: string;
-        SourceChangeCache: TSourceChangeCache): boolean; override;
+                      SourceChangeCache: TSourceChangeCache): boolean; override;
     function CompleteCode(CursorPos: TCodeXYPosition; OldTopLine: integer;
-        var NewPos: TCodeXYPosition; var NewTopLine: integer;
-        SourceChangeCache: TSourceChangeCache): boolean;
+                          var NewPos: TCodeXYPosition; var NewTopLine: integer;
+                          SourceChangeCache: TSourceChangeCache): boolean;
     constructor Create;
-    property SetPropertyVariablename: string
-      read FSetPropertyVariablename write FSetPropertyVariablename;
-    property CompleteProperties: boolean
-      read FCompleteProperties write FCompleteProperties;
+    property SetPropertyVariablename: string read FSetPropertyVariablename
+                                             write FSetPropertyVariablename;
+    property CompleteProperties: boolean read FCompleteProperties
+                                         write FCompleteProperties;
     property AddInheritedCodeToOverrideMethod: boolean
-      read FAddInheritedCodeToOverrideMethod write FAddInheritedCodeToOverrideMethod;
+                                        read FAddInheritedCodeToOverrideMethod
+                                        write FAddInheritedCodeToOverrideMethod;
   end;
 
   
@@ -2336,7 +2337,7 @@ var CleanCursorPos, Indent, insertPos: integer;
     {$IFDEF CTDEBUG}
     writeln('  IsLocalVariableAssignment: B CheckLocalVarAssignmentSyntax ...');
     {$ENDIF}
-    // check assigment syntax
+    // check assignment syntax
     if not CheckLocalVarAssignmentSyntax(CleanCursorPos,
       VarNameAtom,AssignmentOperator,TermAtom)
     then
