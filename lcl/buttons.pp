@@ -276,8 +276,8 @@ const
 
 procedure Register;
 begin
-  RegisterComponentsProc('Standard',[TButton]);
-  RegisterComponentsProc('Additional',[TBitBtn,TSpeedButton]);
+  RegisterComponents('Standard',[TButton]);
+  RegisterComponents('Additional',[TBitBtn,TSpeedButton]);
 end;
 
 {$I buttons.inc}
@@ -295,6 +295,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.40  2003/04/08 09:04:07  mattias
+  fixed registration for fpc 1.0.x
+
   Revision 1.39  2003/04/04 16:35:24  mattias
   started package registration
 
