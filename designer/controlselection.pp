@@ -251,8 +251,6 @@ end;
 
 procedure TGrabber.PaintWindow(DC: HDC);
 begin
-//  WriteLn(Format('[TGrabber.PaintWindow] 0x%x', [DC]));
-//  if Visible then
   FillRect(DC, Rect(0, 0, Width, Height), GetStockObject(BLACK_BRUSH));
 end;
 
@@ -578,8 +576,8 @@ begin
   begin
     Grabber := FGrabbers[GrabPos]; 
 
-    if FVisible
-    then begin
+    //if FVisible then
+     begin
       //Write('[TControlSelection.SetGrabbers] Setting grabber ',Ord(GrabPos),' --> ');
       if gpLeft in Grabber.Positions
       then begin
@@ -612,7 +610,7 @@ begin
         else begin
           //Write('Center ');
           GrabTop := FTop + (FHeight - GRAB_SIZE) div 2;
-        end
+        end;
       end;
       
       Grabber.SetBounds(GrabLeft,GrabTop,GRAB_SIZE,GRAB_SIZE);

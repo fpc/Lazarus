@@ -94,19 +94,6 @@ begin
 //   Result := DeliverMessage(Data, MSG) = 0;
 end;
 
-function GTKDrawDefault(Widget: PGTKWidget; Data: gPointer): GBoolean; cdecl;
-var
-   MSG : TLMPaint;
-begin
-   Result := True;
-   EventTrace('draw', data);
-   MSG.Msg := LM_PAINT;
-   MSG.DC := GetDC(THandle(Widget));
-   MSG.Unused := 0;
-
-   Result := DeliverPostMessage(Data, MSG);
-end;
-
 
 function gtkfrmactivate( widget: PGtkWidget; Event : TgdkEventFocus; data: gPointer) : GBoolean; cdecl;
 var
@@ -1105,6 +1092,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.17  2001/01/24 03:21:03  lazarus
+  Removed gtkDrawDefualt signal function from gtkcallback.inc
+  It was no longer used.
+  Shane
+
   Revision 1.16  2001/01/23 23:33:55  lazarus
   MWE:
     - Removed old LM_InvalidateRect

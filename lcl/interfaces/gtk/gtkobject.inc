@@ -1228,7 +1228,6 @@ begin
 
     LM_PAINT :
     begin
-//      ConnectSignal(gFixed, 'show', @GTKDrawDefault);
       ConnectSignal(gFixed, 'expose-event', @GTKExposeEvent);
       ConnectSignal(gFixed, 'draw', @GTKDraw);
     end;
@@ -2572,6 +2571,11 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.20  2001/01/24 03:21:03  lazarus
+  Removed gtkDrawDefualt signal function from gtkcallback.inc
+  It was no longer used.
+  Shane
+
   Revision 1.19  2001/01/23 23:33:55  lazarus
   MWE:
     - Removed old LM_InvalidateRect
