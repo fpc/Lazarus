@@ -5497,7 +5497,49 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Procedure: TGTKObject.SelectGDKPenProps
+  Procedure: TGTKObject.SelectGDKBrushProps
+  Params:  DC: a (LCL)devicecontext
+  Returns: Nothing
+
+  Sets the forecolor and fill according to the brush
+ ------------------------------------------------------------------------------}
+procedure TGTKObject.SelectGDKBrushProps(DC: HDC);
+begin
+  with TDeviceContext(DC), CurrentBrush^ do
+  begin
+    Assert(False, Format('Trace:  [SelectGDKBrushProps] Fill: %d | Color: 0x%x', [Integer(GDIBrushFill), GDIBrushColor.ColorRef]));
+
+    EnsureGCColor(DC, dccCurrentBackColor, True, True);//BKColor
+    EnsureGCColor(DC, dccGDIBrushColor, GDIBrushFill = GDK_Solid, False);//Brush Color
+
+    If GDIBrushFill <> GDK_Solid then
+      If GDIBrushPixmap <> nil then begin
+        gdk_gc_set_fill(GC, GDIBrushFill);
+        gdk_error_trap_push;//Image errors can kill us
+        gdk_gc_set_Stipple(GC,GDIBrushPixmap);
+      end
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Procedure: TGTKObject.SelectGDKTextProps
+  Params:  DC: a (LCL)devicecontext
+  Returns: Nothing
+
+  Sets the forecolor and fill according to the Textcolor
+ ------------------------------------------------------------------------------}
+procedure TGTKObject.SelectGDKTextProps(DC: HDC);
+begin
+  with TDeviceContext(DC) do
+  begin
+    EnsureGCColor(DC, dccCurrentBackColor, True, True);//BKColor
+    EnsureGCColor(DC, dccCurrentTextColor, False, False);//Font Color
+    Assert(False, Format('trace:  [SelectGDKTextProps] Color --> pixel: %d, red: 0x%x, green: 0x%x, blue: 0x%x', [CurrentTextColor.Color.Pixel, CurrentTextColor.Color.Red, CurrentTextColor.Color.Green, CurrentTextColor.Color.Blue]));
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Procedure: TGTKObject.TGTKObject.SelectGDKPenProps
   Params:  DC: a (LCL)devicecontext
   Returns: Nothing
 
@@ -5507,8 +5549,8 @@ procedure TGTKObject.SelectGDKPenProps(DC: HDC);
 begin
   if IsValidGDIObject(HGDIOBJ(TDeviceContext(DC).CurrentPen)) then begin
     with TDeviceContext(DC), CurrentPen^ do begin
-      EnsureGCColor(DC, GC, CurrentBackColor, True, True);//BKColor
-      EnsureGCColor(DC, GC, GDIPenColor, False, False);//Pen Color
+      EnsureGCColor(DC, dccCurrentBackColor, True, True);//BKColor
+      EnsureGCColor(DC, dccGDIPenColor, False, False);//Pen Color
     end;
   
     if (not (dcfPenSelected in TDeviceContext(DC).DCFlags)) then begin
@@ -5946,6 +5988,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.237  2002/10/08 13:42:23  lazarus
+  MG: added TDevContextColorType
+
   Revision 1.236  2002/10/08 10:08:46  lazarus
   MG: accelerated GDIColor allocating
 
