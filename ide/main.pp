@@ -258,6 +258,7 @@ type
     procedure OnDesignerUnselectComponentClass(Sender: TObject);
     procedure OnDesignerSetDesigning(Sender: TObject; Component: TComponent;
       Value: boolean);
+    procedure OnDesignerShowOptions(Sender: TObject);
     procedure OnDesignerPropertiesChanged(Sender: TObject);
     procedure OnDesignerComponentAdded(Sender: TObject; AComponent: TComponent;
       AComponentClass: TRegisteredComponent);
@@ -1963,18 +1964,19 @@ Begin
   {$ENDIF}
   with TDesigner(aForm.Designer) do begin
     TheFormEditor := FormEditor1;
-    OnGetSelectedComponentClass:=@OnDesignerGetSelectedComponentClass;
-    OnUnselectComponentClass:=@OnDesignerUnselectComponentClass;
-    OnSetDesigning:=@OnDesignerSetDesigning;
-    OnPropertiesChanged:=@OnDesignerPropertiesChanged;
+    OnActivated:=@OnDesignerActivated;
     OnComponentAdded:=@OnDesignerComponentAdded;
     OnComponentDeleted:=@OnDesignerComponentDeleted;
-    OnRemoveComponent:=@OnDesignerRemoveComponent;
     OnGetNonVisualCompIconCanvas:=@IDECompList.OnGetNonVisualCompIconCanvas;
+    OnGetSelectedComponentClass:=@OnDesignerGetSelectedComponentClass;
     OnModified:=@OnDesignerModified;
-    OnActivated:=@OnDesignerActivated;
-    OnRenameComponent:=@OnDesignerRenameComponent;
     OnProcessCommand:=@OnProcessIDECommand;
+    OnPropertiesChanged:=@OnDesignerPropertiesChanged;
+    OnRemoveComponent:=@OnDesignerRemoveComponent;
+    OnRenameComponent:=@OnDesignerRenameComponent;
+    OnSetDesigning:=@OnDesignerSetDesigning;
+    OnShowOptions:=@OnDesignerShowOptions;
+    OnUnselectComponentClass:=@OnDesignerUnselectComponentClass;
     ShowEditorHints:=EnvironmentOptions.ShowEditorHints;
     ShowComponentCaptionHints:=EnvironmentOptions.ShowComponentCaptions;
   end;
@@ -2634,7 +2636,7 @@ begin
 
   NewUnitInfo.FormName:=NewForm.Name;
   NewUnitInfo.FormResourceName:=NewUnitInfo.FormName;
-  if NewUnitInfo.IsPartOfProject then
+  if NewUnitInfo.IsPartOfProject and Project1.AutoCreateForms then
     Project1.AddCreateFormToProjectFile(NewForm.ClassName,NewForm.Name);
     
   Result:=mrOk;
@@ -3359,7 +3361,7 @@ procedure TMainIDE.GetMainUnit(var MainUnitInfo: TUnitInfo;
   var MainUnitSrcEdit: TSourceEditor; UpdateModified: boolean);
 begin
   MainUnitSrcEdit:=nil;
-  if Project1.MainUnit>=0 then begin
+  if Project1.MainUnitID>=0 then begin
     MainUnitInfo:=Project1.MainUnitInfo;
     if MainUnitInfo.Loaded then begin
       MainUnitSrcEdit:=SourceNoteBook.FindSourceEditorWithPageIndex(
@@ -3426,7 +3428,7 @@ begin
     
     // build a nice project info filename suggestion
     NewFilename:='';
-    if (Project1.MainUnit>=0) then
+    if (Project1.MainUnitID>=0) then
       NewFileName:=Project1.MainUnitInfo.UnitName;
     if NewFilename='' then
       NewFilename:=ExtractFileName(Project1.ProjectInfoFile);
@@ -3488,7 +3490,7 @@ begin
         NewFileName:=ExtractFilePath(NewFilename)
                     +lowercase(ExtractFileName(NewFilename));
 
-      if Project1.MainUnit>=0 then begin
+      if Project1.MainUnitID>=0 then begin
         // check mainunit filename
         Ext:=ExtractFileExt(Project1.MainUnitInfo.Filename);
         if Ext='' then Ext:=ProjectDefaultExt[Project1.ProjectType];
@@ -3554,7 +3556,7 @@ begin
   end;
   
   // change main source
-  if (Project1.MainUnit>=0) then begin
+  if (Project1.MainUnitID>=0) then begin
     GetMainUnit(MainUnitInfo,MainUnitSrcEdit,true);
     
     // switch MainUnitInfo.Source to new code
@@ -3950,7 +3952,7 @@ begin
   Project1.CloseEditorIndex(ActiveUnitInfo.EditorIndex);
   ActiveUnitInfo.Loaded:=false;
   i:=Project1.IndexOf(ActiveUnitInfo);
-  if (i<>Project1.MainUnit) and (ActiveUnitInfo.IsVirtual) then begin
+  if (i<>Project1.MainUnitID) and (ActiveUnitInfo.IsVirtual) then begin
     Project1.RemoveUnit(i);
   end;
   
@@ -4087,7 +4089,9 @@ begin
 
   // read form data
   if FilenameIsPascalUnit(AFilename) then begin
-    // this could be a unit -> try to load the lfm file
+    // this could be a unit with a form
+    //if (Project1.AutoCreateForms)
+    // -> try to load the lfm file
     Result:=DoLoadLFM(NewUnitInfo,Flags);
     if Result<>mrOk then exit;
   end else if NewUnitInfo.Form<>nil then begin
@@ -4106,7 +4110,7 @@ var MainUnitInfo: TUnitInfo;
 begin
   writeln('[TMainIDE.DoOpenMainUnit] A');
   Result:=mrCancel;
-  if Project1.MainUnit<0 then exit;
+  if Project1.MainUnitID<0 then exit;
   MainUnitInfo:=Project1.MainUnitInfo;
   
   // check if main unit is already loaded in source editor
@@ -4133,7 +4137,7 @@ end;
 function TMainIDE.DoRevertMainUnit: TModalResult;
 begin
   Result:=mrOk;
-  if Project1.MainUnit<0 then exit;
+  if Project1.MainUnitID<0 then exit;
   if Project1.MainUnitInfo.EditorIndex>=0 then
     // main unit is loaded, so we can just revert
     Result:=DoOpenEditorFile('',Project1.MainUnitInfo.EditorIndex,[ofRevert])
@@ -4169,7 +4173,7 @@ Begin
         if (Project1.Units[i].UnitName<>'') then begin
           UnitList.Add(TViewUnitsEntry.Create(
             Project1.Units[i].UnitName,i,Project1.Units[i]=ActiveUnitInfo));
-        end else if Project1.MainUnit=i then begin
+        end else if Project1.MainUnitID=i then begin
           MainUnitInfo:=Project1.MainUnitInfo;
           if Project1.ProjectType in [ptProgram,ptApplication,ptCustomProgram]
           then begin
@@ -4234,7 +4238,7 @@ begin
     WasVisible:=UnitDependenciesView.Visible;
 
   if not UnitDependenciesView.RootValid then begin
-    if Project1.MainUnit>=0 then begin
+    if Project1.MainUnitID>=0 then begin
       UnitDependenciesView.RootFilename:=Project1.MainUnitInfo.Filename;
       UnitDependenciesView.RootShortFilename:=
         ExtractFilename(Project1.MainUnitInfo.Filename);
@@ -4496,7 +4500,7 @@ begin
   // (this can alter the mainunit: e.g. used unit names)
   for i:=0 to Project1.UnitCount-1 do begin
     if (Project1.Units[i].Loaded) and (Project1.Units[i].IsVirtual)
-    and (Project1.MainUnit<>i) then begin
+    and (Project1.MainUnitID<>i) then begin
       Result:=DoSaveEditorFile(Project1.Units[i].EditorIndex,
            [sfSaveAs,sfProjectSaving]
            +[sfSaveToTestDir,sfCheckAmbigiousFiles]*Flags);
@@ -4568,7 +4572,7 @@ begin
   if (SourceNoteBook.Notebook<>nil) and (not (sfSaveToTestDir in Flags)) then
   begin
     for i:=0 to SourceNoteBook.Notebook.PageCount-1 do begin
-      if (Project1.MainUnit<0)
+      if (Project1.MainUnitID<0)
       or (Project1.MainUnitInfo.EditorIndex<>i) then begin
         Result:=DoSaveEditorFile(i,[sfProjectSaving]
                                 +[sfSaveToTestDir,sfCheckAmbigiousFiles]*Flags);
@@ -4678,7 +4682,7 @@ begin
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoOpenProjectFile B5');{$ENDIF}
   if Result<>mrOk then exit;
 
-  if Project1.MainUnit>=0 then begin
+  if Project1.MainUnitID>=0 then begin
     // read MainUnit Source
     Result:=DoLoadCodeBuffer(NewBuf,Project1.MainFilename,
                              [lbfUpdateFromDisk,lbfRevert,lbfCheckIfText]);
@@ -5007,7 +5011,7 @@ Begin
   try
     for i:=0 to Project1.UnitCount-1 do begin
       AnUnitInfo:=Project1.Units[i];
-      if (AnUnitInfo.IsPartOfProject) and (i<>Project1.MainUnit) then begin
+      if (AnUnitInfo.IsPartOfProject) and (i<>Project1.MainUnitID) then begin
         AName:=Project1.RemoveProjectPathFromFilename(AnUnitInfo.FileName);
         UnitList.Add(TViewUnitsEntry.Create(AName,i,false));
       end;
@@ -5017,7 +5021,7 @@ Begin
         if TViewUnitsEntry(UnitList[i]).Selected then begin
           AnUnitInfo:=Project1.Units[TViewUnitsEntry(UnitList[i]).ID];
           AnUnitInfo.IsPartOfProject:=false;
-          if (Project1.MainUnit>=0)
+          if (Project1.MainUnitID>=0)
           and (Project1.ProjectType in [ptProgram, ptApplication]) then begin
             if (AnUnitInfo.UnitName<>'') then
               CodeToolBoss.RemoveUnitFromAllUsesSections(
@@ -5148,7 +5152,7 @@ begin
 
   // Check if we can run this project
   if not (Project1.ProjectType in [ptProgram, ptApplication, ptCustomProgram])
-  or (Project1.MainUnit < 0)
+  or (Project1.MainUnitID < 0)
   or (ToolStatus <> itNone)
   then Exit;
 
@@ -6048,7 +6052,7 @@ begin
     if Project1.IsVirtual then
       Result:=GetTestProjectFilename
     else begin
-      if Project1.MainUnit>=0 then begin
+      if Project1.MainUnitID>=0 then begin
         Result:=
           Project1.CompilerOptions.CreateTargetFilename(Project1.MainFilename)
       end;
@@ -6059,7 +6063,7 @@ end;
 function TMainIDE.GetTestProjectFilename: string;
 begin
   Result:='';
-  if (Project1.MainUnit<0) then exit;
+  if (Project1.MainUnitID<0) then exit;
   Result:=GetTestUnitFilename(Project1.MainUnitInfo);
   if Result='' then exit;
   Result:=Project1.CompilerOptions.CreateTargetFilename(Result);
@@ -6158,6 +6162,11 @@ procedure TMainIDE.OnDesignerSetDesigning(Sender: TObject;
   Component: TComponent;  Value: boolean);
 begin
   SetDesigning(Component,Value);
+end;
+
+procedure TMainIDE.OnDesignerShowOptions(Sender: TObject);
+begin
+  DoShowEnvGeneralOptions(eodpFormEditor);
 end;
 
 procedure TMainIDE.OnDesignerPropertiesChanged(Sender: TObject);
@@ -6300,7 +6309,7 @@ end;
 function TMainIDE.UnitDependenciesViewGetProjectMainFilename(Sender: TObject
   ): string;
 begin
-  if Project1.MainUnit>=0 then
+  if Project1.MainUnitID>=0 then
     Result:=Project1.MainUnitInfo.Filename;
 end;
 
@@ -7178,7 +7187,7 @@ begin
     FormEditor1.JITFormList.RenameFormClass(TForm(AComponent),NewClassName);
 
     // change createform statement
-    if ActiveUnitInfo.IsPartOfProject and (Project1.MainUnit>=0)
+    if ActiveUnitInfo.IsPartOfProject and (Project1.MainUnitID>=0)
     then begin
       BossResult:=CodeToolBoss.ChangeCreateFormStatement(
         Project1.MainUnitInfo.Source,
@@ -7861,6 +7870,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.480  2003/03/11 09:57:51  mattias
+  implemented ProjectOpt: AutoCreateNewForms, added designer Show Options
+
   Revision 1.479  2003/03/09 21:13:32  mattias
   localized gtk interface
 
