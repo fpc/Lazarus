@@ -22,7 +22,7 @@ unittargetdir=../units
 unitdir=$(COMPILER_UNITTARGETDIR) ../../lcl/units ../../lcl/units/$(LCLPLATFORM)
 
 [require]
-packages=rtl fcl
+packages=rtl fcl regexpr
 
 [clean]
 

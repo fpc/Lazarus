@@ -9,7 +9,7 @@ version=0.7a
 [require]
 #rtl=1
 #options=-gl
-packages=rtl fcl gtk 
+packages=fcl gtk regexpr
 
 [target]
 programs=lazarus
@@ -21,18 +21,19 @@ exampledirs=examples
 options=-gl
 unitdir=. ./lcl/units ./lcl/units/$(LCLPLATFORM) ./components/units ./designer ./debugger
 includedir=. ./include ./include/$(OS_TARGET)
-       
+
 [clean]
 #units=$(basename $(wildcard *$(PPUEXT))) $(basename $(wildcard ./designer/*$(PPUEXT))) $(basename $(wildcard ./debugger/*$(PPUEXT)))
 #files=$(wildcard ./designer/*$(OEXT))
 
 [install]
 basedir=lib/lazarus
-#prefixdir=/usr
+#prefix=/usr
+
+[dist]
+destdir=$(BASEDIR)/dist
 
 [prerules]
-DIST_DESTDIR=$(BASEDIR)/dist
-
 ifndef LCLPLATFORM
 LCLPLATFORM=gtk
 export LCLPLATFORM
@@ -41,18 +42,18 @@ endif
 [rules]
 .SUFFIXES: .rc .res
 %.res: %.rc
-        windres -i $< -o $@ 
+        windres -i $< -o $@
 
 
 .PHONY: examples lcl components ide tools all win32
 
-lcl: lcl_all 
+lcl: lcl_all
 
 examples: lcl examples_all
 
 components: lcl components_all
 
-ide: 
+ide:
         $(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT)
 
 tools: lcl components tools_all
@@ -65,7 +66,7 @@ win32:
 
 # MWE: moved to a more generic rule
 #lazarus.res: lazarus.rc
-#	windres -i lazarus.rc -o lazarus.res
+#       windres -i lazarus.rc -o lazarus.res
 
 makefile: Makefile.fpc
         -$(FPCMAKE) -w
