@@ -351,6 +351,16 @@ begin
   Result := InterfaceObject.SetCaretPos(X, Y);
 end;
 
+function SetCaretPosEx(Handle: HWnd; X, Y: Integer): Boolean;
+begin
+  Result := InterfaceObject.SetCaretPosEx(Handle, X, Y);
+end;
+
+function SetCaretRespondToFocus(Handle: hWnd; ShowHideOnFocus: boolean):Boolean;
+begin
+  Result := InterfaceObject.SetCaretRespondToFocus(Handle,ShowHideOnFocus);
+end;
+ 
 Function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean;
 Begin
   Result := InterfaceObject.SetProp(Handle,Str,Data);
@@ -368,10 +378,13 @@ end;
 
 function SetFocus(hWnd: HWND): HWND;
 begin
+//writeln('[winapi.inc SetFocus] A');
   Result := InterfaceObject.SetFocus(hWnd);
+//writeln('[winapi.inc SetFocus] END');
 end;
 
-function SetScrollInfo(Handle : HWND; SBStyle : Integer; ScrollInfo: TScrollInfo; Redraw : Boolean): Integer;
+function SetScrollInfo(Handle : HWND; SBStyle : Integer;
+  ScrollInfo: TScrollInfo; Redraw : Boolean): Integer;
 begin
   Result := InterfaceObject.SetSCrollInfo(Handle, SBStyle, ScrollInfo, Redraw)
 end;
@@ -980,6 +993,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.17  2001/10/10 17:55:04  lazarus
+  MG: fixed caret lost, gtk cleanup, bracket lvls, bookmark saving
+
   Revision 1.16  2001/09/30 08:34:50  lazarus
   MG: fixed mem leaks and fixed range check errors
 

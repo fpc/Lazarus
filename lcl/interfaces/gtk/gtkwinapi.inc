@@ -430,7 +430,8 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.CreateCaret(Handle: HWND; Bitmap: hBitmap; Width, Height: Integer): Boolean;
+function TgtkObject.CreateCaret(Handle: HWND; Bitmap: hBitmap;
+  Width, Height: Integer): Boolean;
 var
   GTKObject: PGTKObject;
   BMP: PGDKPixmap;
@@ -2168,6 +2169,7 @@ function TgtkObject.HideCaret(hWnd: HWND): Boolean;
 var
   GTKObject: PGTKObject;
 begin
+//writeln('[TgtkObject.HideCaret] A');
   Assert(False, Format('Trace:  [TgtkObject.HideCaret] HWND: 0x%x', [hWnd]));
 //TODO: [TgtkObject.HideCaret] Finish (in gtkwinapi.inc)
 
@@ -3017,9 +3019,8 @@ end;
 
 {------------------------------------------------------------------------------
   Function: SetCaretPos
-  Params:  none
-  Returns: Nothing
-
+  Params:  new position x, y 
+  Returns: true on success
 
  ------------------------------------------------------------------------------}
 function TgtkObject.SetCaretPos(X, Y: Integer): Boolean;
@@ -3027,21 +3028,57 @@ var
   FocusObject: PGTKObject;
 begin
   FocusObject := PGTKObject(GetFocus);
-  Result := FocusObject <> nil;
-  
-  if Result
-  then begin
-//    Assert(False, Format('Trace:[TgtkObject.SetCaretPos] got focusObject 0x%x --> %s', [Integer(FocusObject), gtk_type_name(FocusObject^.Klass^.theType)]));
+  Result:=SetCaretPosEx(LongInt(FocusObject),X,Y);  
+end;
 
-    if gtk_type_is_a(gtk_object_type(FocusObject), GTKAPIWidget_GetType)
+{------------------------------------------------------------------------------
+  Function: SetCaretPos
+  Params:  new position x, y 
+  Returns: true on success
+
+ ------------------------------------------------------------------------------}
+function TgtkObject.SetCaretPosEx(Handle: HWNd; X, Y: Integer): Boolean;
+var
+  GtkObject: PGTKObject;
+begin
+  GtkObject := PGTKObject(Handle);
+  Result := GtkObject <> nil;
+  
+  if Result then begin
+    if gtk_type_is_a(gtk_object_type(GtkObject), GTKAPIWidget_GetType)
     then begin
-      GTKAPIWidget_SetCaretPos(PGTKAPIWidget(FocusObject), X, Y);
+      GTKAPIWidget_SetCaretPos(PGTKAPIWidget(GtkObject), X, Y);
     end
 //    else if // TODO: other widgettypes
     else begin
       Result := False;
     end;
   end;
+end;
+
+{------------------------------------------------------------------------------
+  Function: SetCaretRespondToFocus
+  Params:  handle : Handle of a TWinControl
+           ShowHideOnFocus: true = caret is hidden on focus lost
+  Returns: true on success
+
+ ------------------------------------------------------------------------------}
+function TgtkObject.SetCaretRespondToFocus(handle: HWND;
+  ShowHideOnFocus: boolean): Boolean;
+begin
+  if handle<>0 then begin
+    if gtk_type_is_a(gtk_object_type(PGTKObject(handle)), GTKAPIWidget_GetType)
+    then begin
+      GTKAPIWidget_SetCaretRespondToFocus(PGTKAPIWidget(handle),
+        ShowHideOnFocus);
+      Result:=true;
+    end
+//    else if // TODO: other widgettypes
+    else begin
+      Result := False;
+    end;
+  end else
+    Result:=false;
 end;
 
 {------------------------------------------------------------------------------
@@ -3055,21 +3092,23 @@ function TgtkObject.SetFocus(hWnd: HWND): HWND;
 var
   TopLevel: PGTKWidget;
 begin
-//writeln('TgtkObject.SetFocus A ',hWnd);
+//writeln('> TgtkObject.SetFocus A ',hWnd);
   if hwnd = 0
   then
     Result := 0
   else begin
-//writeln('TgtkObject.SetFocus B');
+//writeln('> TgtkObject.SetFocus B');
     Result := GetFocus;
-//writeln('TgtkObject.SetFocus C');
+//writeln('> TgtkObject.SetFocus C');
     TopLevel := gtk_widget_get_toplevel(PGTKWidget(hWND));
-//writeln('TgtkObject.SetFocus D');
+//writeln('> TgtkObject.SetFocus D');
     if gtk_type_is_a(gtk_object_type(PGTKObject(TopLevel)), gtk_window_get_type)
-    then gtk_window_set_focus(PGTKWindow(TopLevel), PGTKWidget(hWND));
+    then begin
+//writeln('> TgtkObject.SetFocus E');
+      gtk_window_set_focus(PGTKWindow(TopLevel), PGTKWidget(hWND));
+    end;
   end;
-
-//writeln('TgtkObject.SetFocus End');
+//writeln('>  TgtkObject.SetFocus End');
 end;
 
 Function TgtkObject.SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean;
@@ -3371,6 +3410,7 @@ function TgtkObject.ShowCaret(hWnd: HWND): Boolean;
 var
   GTKObject: PGTKObject;
 begin
+//writeln('[TgtkObject.ShowCaret] A');
 //TODO: [TgtkObject.ShowCaret] Finish (in gtkwinapi.inc)
   Assert(False, Format('Trace:> [TgtkObject.ShowCaret] HWND: 0x%x', [hWnd]));
 
@@ -3558,6 +3598,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.42  2001/10/10 17:55:06  lazarus
+  MG: fixed caret lost, gtk cleanup, bracket lvls, bookmark saving
+
   Revision 1.41  2001/09/30 08:34:52  lazarus
   MG: fixed mem leaks and fixed range check errors
 

@@ -206,17 +206,21 @@ begin
     ReadSize:=Stream.Read(BmpHead, sizeof(BmpHead));
     if (BmpHead.bfType <> Word($4D42)) or (BmpHead.bfOffBits<DWORD(ReadSize))
     then
-      raise EInOutError.Create('Invalid windows bitmap (header)');
+      raise EInOutError.Create(
+        'TBitmap.ReadStream: Invalid windows bitmap (header)');
     InfoSize:=BmpHead.bfOffBits-SizeOf(BmpHead);
     GetMem(BmpInfo,InfoSize);
     try
       ReadSize:=Stream.Read(BmpInfo^,InfoSize);
       if ReadSize<>InfoSize then
-        raise EInOutError.Create('Invalid windows bitmap (info)');
+        raise EInOutError.Create(
+          'TBitmap.ReadStream: Invalid windows bitmap (info)');
       if BmpInfo^.bmiHeader.biSize<>sizeof(BitmapInfoHeader) then
-        raise EInOutError.Create('OS2 bitmaps are not supported yet');
+        raise EInOutError.Create(
+          'TBitmap.ReadStream: OS2 bitmaps are not supported yet');
       if BmpInfo^.bmiHeader.biCompression<>bi_RGB then
-        raise EInOutError.Create('RLE compression is not supported yet');
+        raise EInOutError.Create(
+          'TBitmap.ReadStream: RLE compression is not supported yet');
 
       // Let's now support only 24bit bmps! Then we can use the palette. Not yet.
       BitsPerPixel:=BmpInfo^.bmiHeader.biBitCount;
@@ -341,6 +345,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.11  2001/10/10 17:55:04  lazarus
+  MG: fixed caret lost, gtk cleanup, bracket lvls, bookmark saving
+
   Revision 1.10  2001/09/30 08:34:49  lazarus
   MG: fixed mem leaks and fixed range check errors
 

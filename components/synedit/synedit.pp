@@ -1377,6 +1377,7 @@ end;
 
 procedure TCustomSynEdit.HideCaret;
 begin
+//writeln('[TCustomSynEdit.HideCaret]');
   if sfCaretVisible in fStateFlags then begin
     if {$IFDEF SYN_LAZARUS}LCLLinux{$ELSE}Windows{$ENDIF}.HideCaret(Handle) then
       Exclude(fStateFlags, sfCaretVisible);
@@ -3343,11 +3344,19 @@ begin
       and (CY >= 0) 
       and (CY < ClientHeight{$IFDEF SYN_LAZARUS}-ScrollBarWidth{$ENDIF})
     then begin
+      {$IFDEF SYN_LAZARUS}
+      SetCaretPosEx(Handle,CX, CY);
+      {$ELSE}
       SetCaretPos(CX, CY);
+      {$ENDIF}
       ShowCaret;
     end else begin
       HideCaret;
+      {$IFDEF SYN_LAZARUS}
+      SetCaretPosEx(Handle,CX, CY);
+      {$ELSE}
       SetCaretPos(CX, CY);
+      {$ENDIF}
     end;
 {$IFDEF SYN_MBCSSUPPORT}
     cf.dwStyle := CFS_POINT;
@@ -3484,6 +3493,7 @@ end;
 procedure TCustomSynEdit.WMKillFocus(var Msg: TWMKillFocus);
 begin
   inherited;
+//writeln('[TCustomSynEdit.WMKillFocus] A');
   HideCaret;
   {$IFDEF SYN_LAZARUS}
   LCLLinux.DestroyCaret;
@@ -3492,13 +3502,16 @@ begin
   {$ENDIF}
   if FHideSelection and SelAvail then
     Invalidate;
+//writeln('[TCustomSynEdit.WMKillFocus] END');
 end;
 
 procedure TCustomSynEdit.WMSetFocus(var Msg: TWMSetFocus);
 begin
-  InitializeCaret;
-  if FHideSelection and SelAvail then
-    Invalidate;
+//writeln('[TCustomSynEdit.WMSetFocus] A');
+  //InitializeCaret;
+  //if FHideSelection and SelAvail then
+  //  Invalidate;
+//writeln('[TCustomSynEdit.WMSetFocus] END');
 end;
 
 procedure TCustomSynEdit.WMSize(var Msg: TWMSize);

@@ -2577,7 +2577,7 @@ writeln('TMainIDE.DoSaveProject A');
         if (ASrcEdit.EditorComponent.GetBookMark(
              BookmarkID,BookmarkX,BookmarkY))
         and (Project.Bookmarks.IndexOfID(BookmarkID)<0) then begin
-          Project.Bookmarks.Add(TProjectBookmark.Create(BookmarkX,BookmarkX,
+          Project.Bookmarks.Add(TProjectBookmark.Create(BookmarkX,BookmarkY,
               AnUnitInfo.EditorIndex,BookmarkID));
         end;
       end;
@@ -3879,6 +3879,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.116  2001/10/10 17:55:01  lazarus
+  MG: fixed caret lost, gtk cleanup, bracket lvls, bookmark saving
+
   Revision 1.115  2001/10/09 09:46:49  lazarus
   MG: added codetools, fixed synedit unindent, fixed MCatureHandle
 

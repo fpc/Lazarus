@@ -86,6 +86,8 @@ function SetBkColor(DC: HDC; Color: TColorRef): TColorRef; override;
 Function SetBkMode(DC: HDC; bkMode : Integer) : Integer; override;
 Function SetCapture(Value : Longint): Longint; override;
 function SetCaretPos(X, Y: Integer): Boolean; override;
+function SetCaretPosEx(Handle: HWnd; X, Y: Integer): Boolean; override;
+function SetCaretRespondToFocus(handle: HWND; ShowHideOnFocus: boolean): Boolean; override;
 function SetFocus(hWnd: HWND): HWND; override;
 Function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean; override;
 function SetScrollInfo(Handle : HWND; SBStyle : Integer; ScrollInfo: TScrollInfo; bRedraw : Boolean): Integer; override;
@@ -111,6 +113,9 @@ Function WindowFromPoint(Point : TPoint) : HWND; override;
 { =============================================================================
 
   $Log$
+  Revision 1.17  2001/10/10 17:55:06  lazarus
+  MG: fixed caret lost, gtk cleanup, bracket lvls, bookmark saving
+
   Revision 1.16  2001/06/26 21:44:33  lazarus
   MG: reduced paint messages
 

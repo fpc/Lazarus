@@ -26,6 +26,9 @@ DIST_DESTDIR=$(BASEDIR)/../../../dist
 [rules]
 .PHONY: all makefile makefiles
 
+clean:
+        $(DEL) $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)
+
 all: 
         $(MAKE) --assume-new=interfaces.pp interfaces$(PPUEXT)
 

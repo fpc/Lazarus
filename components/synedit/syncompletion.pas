@@ -98,7 +98,7 @@ type
     fCurrentEditor: TComponent;
   public
     constructor Create(AOwner: Tcomponent); override;
-    destructor destroy; override;
+    destructor Destroy; override;
   published
     property CurrentString: string read FCurrentString write SetCurrentString;
     property OnKeyPress: TKeyPressEvent read FOnKeyPress write FOnKeyPress;
@@ -113,7 +113,7 @@ type
       write SetNbLinesInWindow;
     property ClSelect: TColor read FClSelect write FClSelect;
     property ffAnsi: boolean read fansi write fansi;
-    property CurrentEditor: tComponent read fCurrentEditor write fCurrentEditor;
+    property CurrentEditor: TComponent read fCurrentEditor write fCurrentEditor;
     {$IFDEF SYN_LAZARUS}
     property FontHeight:integer read FFontHeight write SetFontHeight;
     property OnSearchPosition:TSynBaseCompletionSearchPosition
@@ -300,9 +300,10 @@ end;
 procedure TSynBaseCompletionForm.Deactivate;
 begin
   Visible := False;
+  SetCaretRespondToFocus(TCustomSynEdit(FCurrentEditor).Handle,true);
 end;
 
-destructor TSynBaseCompletionForm.destroy;
+destructor TSynBaseCompletionForm.Destroy;
 begin
   bitmap.free;
   Scroll.Free;
@@ -441,7 +442,7 @@ begin
     end;
   {$IFNDEF SYN_LAZARUS}
   end;
-  canvas.Draw(1, 1, bitmap);
+  Canvas.Draw(1, 1, bitmap);
   {$ENDIF}
 end;
 
@@ -562,7 +563,7 @@ end;
 
 { TSynBaseCompletion }
 
-constructor TSynBaseCompletion.Create(Aowner: TComponent);
+constructor TSynBaseCompletion.Create(AOwner: TComponent);
 begin
   FWidth := 262;
   inherited Create(AOwner);
@@ -600,8 +601,7 @@ end;
 
 procedure TSynBaseCompletion.Execute(s: string; x, y: integer);
 begin
-  form.top := y;
-  form.left := x;
+  SetCaretRespondToFocus(TCustomSynEdit(Form.CurrentEditor).Handle,false);
   CurrentString := s;
   if assigned(OnExecute) then
     OnExecute(Self);
@@ -611,6 +611,8 @@ begin
     exit;
   end;
   {$ENDIF}
+  form.top := y;
+  form.left := x;
   form.Show;
 end;
 
@@ -846,7 +848,9 @@ procedure TSynCompletion.Validate(Senter: TObject; Shift: TShiftState);
 var
   F: TSynBaseCompletionForm;
   Value: string;
+  {$IFNDEF SYN_LAZARUS}
   Pos: TPoint;
+  {$ENDIF}
 begin
   F := Senter as TSynBaseCompletionForm;
   if F.CurrentEditor <> nil then
@@ -859,6 +863,7 @@ begin
         SelText := Value;
       end else
         SelText := ItemList[position];
+      {$IFNDEF SYN_LAZARUS}
       with Editor do begin
         Pos.x := CaretX;
         Pos.y := CaretY;
@@ -868,6 +873,7 @@ begin
         CaretY := Pos.y;
       end;
       SetFocus;
+      {$ENDIF}
     end;
 end;
 
@@ -877,8 +883,12 @@ var
 begin
   F := Sender as TSynBaseCompletionForm;
   if F.CurrentEditor <> nil then begin
-    with F.CurrentEditor as TCustomSynEdit do
+    with F.CurrentEditor as TCustomSynEdit do begin
       CommandProcessor(ecChar, Key, nil);
+      {$IFDEF SYN_LAZARUS}
+      
+      {$ENDIF}
+    end;
   end;
 end;
 

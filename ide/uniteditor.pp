@@ -746,6 +746,7 @@ Begin
         P := ClientToScreen(Point(CaretXPix - length(TextS2)*CharWidth
                 , CaretYPix + LineHeight));
       aCompletion.Editor:=TCustomSynEdit(Sender);
+  writeln('');
       aCompletion.Execute(TextS2,P.X,P.Y);
     end;
 
@@ -1459,6 +1460,7 @@ begin
 end;
 
 procedure TSourceNotebook.OnSynCompletionSearchPosition(var APosition:integer);
+// word changed
 var i,x:integer;
   CurStr,s:Ansistring;
   SL:TStringList;
@@ -1504,6 +1506,7 @@ begin
 end;
 
 procedure TSourceNotebook.ccComplete(var Value: ansistring; Shift: TShiftState);
+// completion selected -> deactivate completion form
 var
   p1,p2:integer;
 Begin
@@ -1546,6 +1549,7 @@ Begin
 End;
 
 Procedure TSourceNotebook.ccCancel(Sender : TObject);
+// user cancels completion form
 var ActSE: TSourceEditor;
 begin
   if sCompl=nil then exit;
@@ -1557,6 +1561,7 @@ begin
 end;
 
 Procedure TSourceNotebook.ccExecute(Sender : TObject);
+// init completion form
 type
    TMethodRec = record
     Flags : TParamFlags;
@@ -1862,6 +1867,7 @@ Function TSourceNotebook.NewSE(PageNum : Integer) : TSourceEditor;
 Begin
 writeln('TSourceNotebook.NewSE A ');
   if CreateNotebook then Pagenum := 0;
+writeln('TSourceNotebook.NewSE A2 ');
   if Pagenum < 0 then begin
     // add a new page right to the current
     Pagenum := Notebook.PageIndex+1;

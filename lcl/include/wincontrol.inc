@@ -687,11 +687,13 @@ Begin
         Assert(False, Format('Trace:[TWinControl.WndPRoc] %s --> LM_SETFOCUS', [ClassName]));
         Form := GetPArentForm(Self);
         if (Form <> nil) and not Form.SetFocusedControl(Self) then Exit;
+        Message.Result:=0;
       end;
     LM_KILLFOCUS: 
       begin
         Assert(False, Format('Trace:[TWinControl.WndPRoc] %s --> _KILLFOCUS', [ClassName]));
         if csFocusing in ControlState then Exit;
+        Message.Result:=0;
       end;
     LM_NCHITTEST:
       begin
@@ -750,7 +752,7 @@ procedure TWinControl.SetFocus;
 var
   Form : TCustomForm;
 begin
-// Writeln('[TWINCONTROL.SETFOCUS] ',Name,':',ClassName);
+//Writeln('[TWINCONTROL.SETFOCUS] ',Name,':',ClassName);
    Form := GetParentForm(self);
 //   if Assigned(form) then
 //     Writeln('Form is assigned') else Writeln('Form is NOT assigned');
@@ -760,11 +762,6 @@ begin
   if Visible and HandleAllocated then
      LCLLinux.SetFocus(Handle);
 //  Writeln('[TWINCONTROL.SETFOCUS] done');
-
-
-{  if Visible and HandleAllocated then
-     LCLLinux.SetFocus(Handle);
- }
 end;
 
 {------------------------------------------------------------------------------}
@@ -1951,6 +1948,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.39  2001/10/10 17:55:04  lazarus
+  MG: fixed caret lost, gtk cleanup, bracket lvls, bookmark saving
+
   Revision 1.38  2001/10/07 07:28:33  lazarus
   MG: fixed setpixel and TCustomForm.OnResize event
 

@@ -53,6 +53,8 @@ procedure GTKAPIWidget_HideCaret(APIWidget: PGTKAPIWidget);
 procedure GTKAPIWidget_ShowCaret(APIWidget: PGTKAPIWidget); 
 procedure GTKAPIWidget_SetCaretPos(APIWidget: PGTKAPIWidget; X, Y: Integer); 
 procedure GTKAPIWidget_GetCaretPos(APIWidget: PGTKAPIWidget; var X, Y: Integer); 
+procedure GTKAPIWidget_SetCaretRespondToFocus(APIWidget: PGTKAPIWidget;
+  ShowHideOnFocus: boolean); 
 
 implementation
 
@@ -74,6 +76,7 @@ type
     Pixmap: PGDKPixMap;
     BackPixmap: PGDKPixMap;
     Timer: guint;
+    ShowHideOnFocus: boolean; // true = hide on loose focus, show on get focus
   end;
 
   PGTKAPIWidgetClient = ^TGTKAPIWidgetClient;
@@ -258,6 +261,7 @@ begin
     Pixmap := nil;
     BackPixmap := nil;
     Timer := 0;
+    ShowHideOnFocus := true;
   end;
 end;
 
@@ -285,6 +289,7 @@ end;
 
 procedure GTKAPIWidgetClient_HideCaret(Client: PGTKAPIWidgetClient); 
 begin
+//writeln('[GTKAPIWidgetClient_HideCaret] A');
   if Client = nil
   then begin
     WriteLn('WARNING: [GTKAPIWidgetClient_HideCaret] Got nil client');
@@ -325,7 +330,7 @@ begin
     end
     else
     if Visible
-    and gtk_widget_has_focus(Widget)
+    and (gtk_widget_has_focus(Widget) or not ShowHideOnFocus)
     and (not IsDrawn)
     then begin
       if Pixmap <> nil then
@@ -352,7 +357,8 @@ begin
       IsDrawn := True;
     end;
     
-    if Visible and Blinking and (Timer = 0) and gtk_widget_has_focus(Widget)
+    if Visible and Blinking and (Timer = 0) 
+    and (gtk_widget_has_focus(Widget) or not ShowHideOnFocus)
     then
       Timer := gtk_timeout_add(500, @GTKAPIWidgetClient_Timer, Client);
   end;
@@ -360,6 +366,7 @@ end;
 
 procedure GTKAPIWidgetClient_ShowCaret(Client: PGTKAPIWidgetClient); 
 begin
+//writeln('[GTKAPIWidgetClient_ShowCaret] A');
   if Client = nil 
   then begin
     WriteLn('WARNING: [GTKAPIWidgetClient_ShowCaret] Got nil client');
@@ -375,6 +382,7 @@ procedure GTKAPIWidgetClient_CreateCaret(Client: PGTKAPIWidgetClient;
 var
   IsVisible: Boolean;
 begin
+//writeln('[GTKAPIWidgetClient_CreateCaret] A');
   if Client = nil 
   then begin
     WriteLn('WARNING: [GTKAPIWidgetClient_HideCaret] Got nil client');
@@ -434,6 +442,19 @@ begin
   
   X := Client^.Caret.X;
   Y := Client^.Caret.Y;
+end;
+
+procedure GTKAPIWidgetClient_SetCaretRespondToFocus(Client: PGTKAPIWidgetClient;
+  ShowHideOnFocus: boolean);
+begin
+  if Client = nil 
+  then begin
+    WriteLn(
+      'WARNING: [GTKAPIWidgetClient_SetCaretRespondToFocus] Got nil client');
+    Exit;
+  end;
+  
+  Client^.Caret.ShowHideOnFocus:=ShowHideOnFocus;
 end;
 
 //---------------------------------------------------------------------------
@@ -539,6 +560,7 @@ end;
 
 procedure GTKAPIWidget_HideCaret(APIWidget: PGTKAPIWidget); 
 begin
+//writeln('[GTKAPIWidget_HideCaret] A');
   if APIWidget = nil 
   then begin
     WriteLn('WARNING: [GTKAPIWidget_HideCaret] Got nil client');
@@ -577,11 +599,26 @@ begin
   GTKAPIWidgetClient_GetCaretPos(PGTKAPIWidgetClient(APIWidget^.Client), X, Y);
 end;
 
+procedure GTKAPIWidget_SetCaretRespondToFocus(APIWidget: PGTKAPIWidget;
+  ShowHideOnFocus: boolean); 
+begin
+  if APIWidget = nil 
+  then begin
+    WriteLn('WARNING: [GTKAPIWidget_SetCaretRespondToFocus] Got nil client');
+    Exit;
+  end;
+  GTKAPIWidgetClient_SetCaretRespondToFocus(
+    PGTKAPIWidgetClient(APIWidget^.Client), ShowHideOnFocus);
+end;
+
 end.
 
 { =============================================================================
 
   $Log$
+  Revision 1.12  2001/10/10 17:55:06  lazarus
+  MG: fixed caret lost, gtk cleanup, bracket lvls, bookmark saving
+
   Revision 1.11  2001/08/07 11:05:51  lazarus
   MG: small bugfixes
 

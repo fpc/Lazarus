@@ -669,10 +669,13 @@ activate_time :	the time at which the activation event occurred.
       end; 
 
       LM_SETFOCUS:
+      begin
+writeln('[TgtkObject.IntSendMessage3] ',TObject(Sender).ClassName);
         if GTK_WIDGET_CAN_FOCUS(PgtkWidget(Handle)) then
           gtk_widget_grab_focus(PgtkWidget(handle))
         else
           Writeln('The control '+TControl(Sender).name+' can not get focus');
+      end;
 
       LM_SetSize :
       begin
@@ -3091,6 +3094,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.61  2001/10/10 17:55:05  lazarus
+  MG: fixed caret lost, gtk cleanup, bracket lvls, bookmark saving
+
   Revision 1.60  2001/10/09 09:46:59  lazarus
   MG: added codetools, fixed synedit unindent, fixed MCatureHandle
 

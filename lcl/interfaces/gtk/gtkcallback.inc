@@ -11,7 +11,8 @@ begin
 //writeln('delivermessage');
   if TObject(Target) is TWinControl 
   then begin
-    Result := PostMessage(TWinControl(Target).Handle, TLMessage(Message).Msg, TLMessage(Message).WParam, TLMessage(Message).LParam);
+    Result := PostMessage(TWinControl(Target).Handle, TLMessage(Message).Msg,
+      TLMessage(Message).WParam, TLMessage(Message).LParam);
   end 
   else begin
     Result := DeliverMessage(Target, Message) = 0;
@@ -258,11 +259,13 @@ var
    Mess : TLMessage;
 begin
    EventTrace('focus', data);
-//   Writeln('Getting Focus...');
+//Writeln('Getting Focus... ',TObject(Data).ClassName,' widget=',HexStr(Cardinal(widget),8));
+//writeln('  Focus=',HexStr(Cardinal(GetFocus),8));
    //TODO: fill in old focus
    Mess.msg := LM_SETFOCUS;
    Assert(False, Format('Trace:TODO: [gtkfocusCB] %s  finish', [TObject(Data).ClassName]));
    Result := DeliverMessage(Data,  Mess) = 0;
+//Writeln('Getting Focus...  END ',TObject(Data).ClassName,' ',Result);
 end;
 
 function GTKKillFocusCB(widget: PGtkWidget; event:PGdkEventFocus; data: gPointer) : GBoolean; cdecl;
@@ -270,11 +273,14 @@ var
    Mess : TLMessage;
 begin
    EventTrace('killfocus', data);
-//   Writeln('Killing Focus...');
+//Writeln('Killing Focus... ',TObject(Data).ClassName,' widget=',HexStr(Cardinal(widget),8));
+//writeln('  Focus=',HexStr(Cardinal(GetFocus),8));
    Mess.msg := LM_KILLFOCUS;
    //TODO: fill in new focus
    Assert(False, Format('Trace:TODO: [gtkkillfocusCB] %s  finish', [TObject(Data).ClassName]));
-   Result := DeliverMessage(Data,  Mess) = 0;
+   if GetFocus<>0 then
+     Result := DeliverMessage(Data,  Mess) = 0;
+//Writeln('Killing Focus... END ',TObject(Data).ClassName,' ',Result);
 end;
 
 function gtkdestroyCB(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
@@ -357,10 +363,11 @@ begin
   
   if (Pointer(MCaptureHandle) <> widget)
   and (MCaptureHandle <> 0)
-  then  WriteLN(Format('[GTKMotionNotify] Capture differs -->  cap:0x%x gtk:0x%p', [MCaptureHandle, gtk_grab_get_current]));
+  then  WriteLN(Format('[GTKMotionNotify] Capture differs -->  cap:0x%x gtk:0x%p', [MCaptureHandle, widget]));
 end;
 
-function gtkMouseBtnPress( widget: PGtkWidget; event : pgdkEventButton; data: gPointer) : GBoolean; cdecl;
+function gtkMouseBtnPress(widget: PGtkWidget; event : pgdkEventButton;
+  data: gPointer) : GBoolean; cdecl;
 const
   WHEEL_DELTA : array[Boolean] of Integer = (-1, 1);
 var
@@ -368,6 +375,7 @@ var
   MessE : TLMMouseEvent;
   ShiftState: TShiftState;
 begin
+//writeln('[gtkMouseBtnPress] ',ToBject(Data).ClassName,' ',Trunc(Event^.X),',',Trunc(Event^.Y));
   EventTrace('Mouse button Press', data);
 
   Assert(False, Format('Trace:[gtkMouseBtnPress] ', []));
@@ -947,6 +955,7 @@ function gtkFocusInNotifyCB (widget : PGtkWidget; event : PGdkEvent; data : gpoi
 var
   MessI : TLMEnter;
 begin
+//writeln('[gtkFocusInNotifyCB] ',TObject(data).ClassName);
   EventTrace ('FocusInNotify (alias Enter)', data);
   MessI.msg := LM_Enter;
   Result:= DeliverMessage(Data, MessI) = 0;
@@ -956,6 +965,7 @@ function gtkFocusOutNotifyCB (widget : PGtkWidget; event : PGdkEvent; data : gpo
 var
   MessI : TLMExit;
 begin
+//writeln('[gtkFocusOutNotifyCB] ',TObject(data).ClassName);
   EventTrace ('FocusOutNotify (alias Exit)', data);
   MessI.msg := LM_Exit;
   Result:= DeliverMessage(Data, MessI) = 0;
@@ -1147,6 +1157,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.36  2001/10/10 17:55:04  lazarus
+  MG: fixed caret lost, gtk cleanup, bracket lvls, bookmark saving
+
   Revision 1.35  2001/10/09 09:46:58  lazarus
   MG: added codetools, fixed synedit unindent, fixed MCatureHandle
 

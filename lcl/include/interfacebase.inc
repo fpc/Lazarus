@@ -360,6 +360,17 @@ begin
   Result := False;
 end;
 
+function TInterfaceBase.SetCaretPosEx(Handle: HWnd; X, Y: Integer): Boolean;
+begin
+  Result := False;
+end;
+
+function TInterfaceBase.SetCaretRespondToFocus(Handle: HWnd;
+  ShowHideOnFocus: Boolean): Boolean;
+begin
+  Result := False;
+end;
+
 function TInterfaceBase.SetFocus(hWnd: HWND): HWND;
 begin
   Result := 0;
@@ -448,6 +459,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.17  2001/10/10 17:55:04  lazarus
+  MG: fixed caret lost, gtk cleanup, bracket lvls, bookmark saving
+
   Revision 1.16  2001/06/26 21:44:32  lazarus
   MG: reduced paint messages
 

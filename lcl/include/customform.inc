@@ -97,10 +97,10 @@ end;
  ------------------------------------------------------------------------------}
 Procedure TCustomForm.FocusControl(Control : TWinControl);
 Begin
-//   Writeln('[FOCUSCONTROL]');
-   FActiveControl := Control;
-   LCLLinux.SetFocus(Control.Handle);
-//   Writeln('[FOCUSCONTROL] DONE');
+//Writeln('[TCustomForm.FocusControl] A ',ClassName,' ',Control.ClassName);
+  FActiveControl := Control;
+  LCLLinux.SetFocus(Control.Handle);
+//Writeln('[TCustomForm.FocusControl] END ',ClassName,' ',Control.ClassName);
 End;
 
 
@@ -162,10 +162,10 @@ end;
  ------------------------------------------------------------------------------}
 Procedure TCustomForm.SetFocus;
 Begin
-Assert(False, 'Trace:SETFOCUS');
+writeln('[TCustomForm.SetFocus] A ',Classname);
 //if not(Visible and Enabled) then Exit;
-Assert(False, 'Trace:SETFOCUS2');
   CNSendMessage(LM_SETFOCUS,Self,nil);
+writeln('[TCustomForm.SetFocus] END ',Classname);
 end;
 
 {------------------------------------------------------------------------------}
@@ -460,7 +460,7 @@ end;
 {------------------------------------------------------------------------------}
 {       TCustomForm WndProc                                          }
 {------------------------------------------------------------------------------}
-procedure TCustomForm.WndPRoc(Var Message : TLMessage);
+procedure TCustomForm.WndProc(Var Message : TLMessage);
 var
   FocusHandle : HWND;
 //  SaveIndex : Integer;
@@ -487,9 +487,11 @@ begin
           end;
           if FocusHandle <> 0 
           then begin
+          //writeln('[TCustomForm.WndPRoc] A ',FActiveControl.ClassName);
             LCLLinux.SetFocus(FocusHandle);
             Exit;
           end;
+          Message.Result:=0;
         end;
       end;
     CM_EXIT:  
@@ -941,6 +943,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.28  2001/10/10 17:55:04  lazarus
+  MG: fixed caret lost, gtk cleanup, bracket lvls, bookmark saving
+
   Revision 1.27  2001/10/07 07:28:33  lazarus
   MG: fixed setpixel and TCustomForm.OnResize event
 
