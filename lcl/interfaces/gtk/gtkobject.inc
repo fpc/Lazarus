@@ -792,7 +792,7 @@ procedure TgtkObject.SendCachedLCLMessages;
           if GtkWidgetIsA(ParentFixed,GTK_FIXED_GET_TYPE)
           or GtkWidgetIsA(ParentFixed,GTK_LAYOUT_GET_TYPE) then begin
             FixedMoveControl(ParentFixed, Widget,
-                           LCLControl.Left, LCLControl.Top);
+                             LCLControl.Left,LCLControl.Top);
           end else begin
             WinWidgetInfo:=GetWidgetInfo(Widget,false);
             if (WinWidgetInfo=nil)
@@ -6841,8 +6841,6 @@ begin
         SetWindowSizeAndPosition(PgtkWindow(SenderWidget),LCLControl);
       end else if (LCLControl.Parent<>nil) then begin
         // resize widget
-        //if AnsiCompareText(Sender.ClassName,'TScrollBar')=0 then
-        //  writeln('TgtkObject.ShowHide Size ',LCLControl.Left,',',LCLControl.Top,',',LCLControl.Width,',',LCLControl.Height);
         RealizeWidgetSize(SenderWidget,LCLControl.Width,LCLControl.Height);
         // move widget on the fixed widget of parent control
         ParentWidget:=pgtkWidget(LCLControl.Parent.Handle);
@@ -9186,6 +9184,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.458  2004/02/02 00:41:06  mattias
+  TScrollBar now automatically checks Align and Anchors for useful values
+
   Revision 1.457  2004/01/27 21:32:11  mattias
   improved changing style of controls
 

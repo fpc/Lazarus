@@ -91,7 +91,7 @@ var
     NewBottom: Integer;
   begin
     {$IFDEF CHECK_POSITION}
-    if AnsiCompareText(ClassName,'TSynBaseCompletionForm')=0 then
+    if AnsiCompareText(Control.ClassName,'TScrollBar')=0 then
     with Control do
       writeln('[TWinControl.AlignControls.DoPosition] A Control=',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height,' recalculate the anchors=',(Control.Anchors <> AnchorAlign[AAlign]),' Align=',AlignNames[AAlign]);
     {$ENDIF}
@@ -141,7 +141,7 @@ var
 
         {$IFDEF CHECK_POSITION}
         //if csDesigning in ComponentState then
-        if AnsiCompareText(Self.ClassName,'TSynBaseCompletionForm')=0 then
+        if AnsiCompareText(Control.ClassName,'TScrollBar')=0 then
         writeln('[TWinControl.AlignControls.DoPosition] Before Anchoring ',
           ' ',Name,':',ClassName,
           ' CurBaseBounds=',CurBaseBounds.Left,',',CurBaseBounds.Top,',',CurBaseBounds.Right-CurBaseBounds.Left,',',CurBaseBounds.Bottom-CurBaseBounds.Top,
@@ -216,7 +216,7 @@ var
       end;
       {$IFDEF CHECK_POSITION}
       //if csDesigning in ComponentState then
-      if AnsiCompareText(ClassName,'TSynBaseCompletionForm')=0 then
+      if AnsiCompareText(Control.ClassName,'TScrollBar')=0 then
       with Control do
         writeln('[TWinControl.AlignControls.DoPosition] After Anchoring',
           ' ',Name,':',ClassName,
@@ -243,11 +243,13 @@ var
       }
       NewRight:=NewLeft+NewWidth;
       NewBottom:=NewTop+NewHeight;
-      {if AnsiCompareText(ClassName,'TSynBaseCompletionForm')=0 then
+      {$IFDEF CHECK_POSITION}
+      if AnsiCompareText(Control.ClassName,'TScrollBar')=0 then
         writeln(' AAA1 akRight in AnchorAlign[AAlign]=',akRight in AnchorAlign[AAlign],
                 ' akLeft in Control.Anchors=',akLeft in Control.Anchors,
                 ' ARect=',ARect.Left,',',ARect.Top,',',ARect.Right,',',ARect.Bottom,
-                ' New=',NewLeft,',',NewTop,',',NewRight,',',NewBottom);}
+                ' New=',NewLeft,',',NewTop,',',NewRight,',',NewBottom);
+      {$ENDIF}
       if akLeft in AnchorAlign[AAlign] then begin
         if not (akRight in Control.Anchors) then
           dec(NewRight,NewLeft-ARect.Left);
@@ -274,7 +276,7 @@ var
       NewHeight:=Max(0,NewBottom-NewTop);
       {$IFDEF CHECK_POSITION}
       //if csDesigning in Control.ComponentState then
-      if AnsiCompareText(ClassName,'TSynBaseCompletionForm')=0 then
+      if AnsiCompareText(Control.ClassName,'TScrollBar')=0 then
       with Control do
         writeln('[TWinControl.AlignControls.DoPosition] After Aligning',
           ' ',Name,':',ClassName,
@@ -292,7 +294,7 @@ var
     or (Control.Width <> NewWidth) or (Control.Height <> NewHeight) then begin
       {$IFDEF CHECK_POSITION}
       //if csDesigning in Control.ComponentState then
-      if AnsiCompareText(ClassName,'TSynBaseCompletionForm')=0 then
+      if AnsiCompareText(Control.ClassName,'TScrollBar')=0 then
       with Control do
         writeln('[TWinControl.AlignControls.DoPosition] NEW BOUNDS Control=',Name,':',ClassName,' NewBounds=',NewLeft,',',NewTop,',',NewWidth,',',NewHeight,' Align=',AlignNames[AAlign]);
       {$ENDIF}
@@ -310,7 +312,7 @@ var
       end;
       {$IFDEF CHECK_POSITION}
       //if csDesigning in Control.ComponentState then
-      if AnsiCompareText(ClassName,'TSynBaseCompletionForm')=0 then
+      if AnsiCompareText(Control.ClassName,'TScrollBar')=0 then
       with Control do
         writeln('[TWinControl.AlignControls.DoPosition] AFTER SETBOUND Control=',Name,':',ClassName,' Bounds=',Left,',',Top,',',Width,',',Height);
       {$ENDIF}
@@ -339,7 +341,7 @@ var
     end;
 
     {$IFDEF CHECK_POSITION}
-    if AnsiCompareText(ClassName,'TSynBaseCompletionForm')=0 then
+    if AnsiCompareText(Control.ClassName,'TScrollBar')=0 then
     with Control do
       writeln('[TWinControl.AlignControls.DoPosition] END Control=',
         Name,':',ClassName,
@@ -370,6 +372,8 @@ var
     Control: TControl;
   begin
     AlignList.Clear;
+    
+    // first add the current control
     if (AControl <> nil)
       and (AControl.Align = AAlign)
       and ((AAlign = alNone)
@@ -379,6 +383,7 @@ var
     then
       AlignList.Add(AControl);
 
+    // then add all other
     for I := 0 to ControlCount - 1 do
     begin
       Control := Controls[I];
@@ -386,10 +391,10 @@ var
       if (Control.Align = AAlign)
         and ((AAlign = alNone)
           or (Control.Visible
-            or (Control.ControlStyle * [csAcceptsControls, csNoDesignVisible] =
-            [csAcceptsControls, csNoDesignVisible]))
+          or (Control.ControlStyle * [csAcceptsControls, csNoDesignVisible] =
+               [csAcceptsControls, csNoDesignVisible]))
           or ((csDesigning in Control.ComponentState)
-          and not (csNoDesignVisible in Control.ControlStyle))) then
+              and not (csNoDesignVisible in Control.ControlStyle))) then
       begin
         if Control = AControl then Continue;
 
@@ -934,7 +939,7 @@ begin
       Width:= FWidth;
       Height:= FHeight;
       {$IFDEF CHECK_POSITION}
-      if AnsiCompareText(ClassName,'TSynBaseCompletionForm')=0 then
+      if AnsiCompareText(ClassName,'TScrollBar')=0 then
       writeln(' [TControl.SendMoveSizeMessages] ',Name,':',ClassName,' SizeMsg Width=',Width,' Height=',Height);
       {$ENDIF}
     end;
@@ -948,7 +953,7 @@ begin
       XPos:= FLeft;
       YPos:= FTop;
       {$IFDEF CHECK_POSITION}
-      if AnsiCompareText(ClassName,'TSynBaseCompletionForm')=0 then
+      if AnsiCompareText(ClassName,'TScrollBar')=0 then
       writeln(' [TControl.SendMoveSizeMessages] ',Name,':',ClassName,' MoveMsg XPos=',XPos,' YPos=',YPos);
       {$ENDIF}
     end;
@@ -3200,6 +3205,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.193  2004/02/02 00:41:06  mattias
+  TScrollBar now automatically checks Align and Anchors for useful values
+
   Revision 1.192  2004/01/27 21:32:11  mattias
   improved changing style of controls
 

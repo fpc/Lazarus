@@ -86,6 +86,9 @@ type
     procedure CreateWnd; override;
     procedure Change; dynamic;
     procedure Scroll(ScrollCode: TScrollCode; var ScrollPos: Integer); dynamic;
+    procedure SetAlign(Value: TAlign); override;
+    procedure SetAnchors(const AValue: TAnchors); override;
+    procedure CheckAutoAlignment;
   public
     constructor Create(AOwner: TComponent); override;
     procedure SetParams(APosition, AMin, AMax: Integer);
@@ -1475,6 +1478,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.119  2004/02/02 00:41:06  mattias
+  TScrollBar now automatically checks Align and Anchors for useful values
+
   Revision 1.118  2004/01/27 21:32:11  mattias
   improved changing style of controls
 

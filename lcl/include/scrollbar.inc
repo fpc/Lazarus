@@ -50,7 +50,7 @@ begin
   Params.Style := Params.Style or Kinds[FKind];
   if FKind = sbVertical then
       Params.Style := Params.Style or SBS_LEFTALIGN;
-    FRTLFactor := 1
+  FRTLFactor := 1
 end;
 
 procedure TScrollBar.CreateWnd;
@@ -80,8 +80,9 @@ begin
   if FKind <> Value then
   begin
     FKind := Value;
-    if not (csLoading in ComponentState) then SetBounds(Left, Top, Height, Width);
-    RecreateWnd;
+    if HandleAllocated then
+      RecreateWnd;
+    CheckAutoAlignment;
   end;
 end;
 
@@ -110,7 +111,7 @@ begin
   end;
 
   if HandleAllocated then
-    CNSendMEssage(LM_SetProperties,self,nil);
+    CNSendMEssage(LM_SetProperties,Self,nil);
 end;
 
 procedure TScrollBar.SetPosition(Value: Integer);
@@ -124,11 +125,12 @@ var
 begin
   if (FPageSize = Value) or (FPageSize > FMax) then exit;
   FPageSize := Value;
-  ScrollInfo.cbSize := SizeOf(ScrollInfo);
-  ScrollInfo.nPage := Value;
-  ScrollInfo.fMask := SIF_PAGE;
-  if HandleAllocated then
+  if HandleAllocated then begin
+    ScrollInfo.cbSize := SizeOf(ScrollInfo);
+    ScrollInfo.nPage := Value;
+    ScrollInfo.fMask := SIF_PAGE;
     SetScrollInfo(Handle, SB_CTL, ScrollInfo, True);
+  end;
 end;
 
 procedure TScrollBar.SetMin(Value: Integer);
@@ -150,6 +152,36 @@ end;
 procedure TScrollBar.Scroll(ScrollCode: TScrollCode; var ScrollPos: Integer);
 begin
   if Assigned(FOnScroll) then FOnScroll(Self, ScrollCode, ScrollPos);
+end;
+
+procedure TScrollBar.SetAlign(Value: TAlign);
+begin
+  if Align=Value then exit;
+  inherited SetAlign(Value);
+  CheckAutoAlignment;
+end;
+
+procedure TScrollBar.SetAnchors(const AValue: TAnchors);
+begin
+  if Anchors=AValue then exit;
+  inherited SetAnchors(AValue);
+  CheckAutoAlignment;
+end;
+
+procedure TScrollBar.CheckAutoAlignment;
+begin
+  // scrollbars are fixed in width
+  if Kind=sbHorizontal then begin
+    if Align=alBottom then
+      Anchors:=Anchors-[akTop]+[akBottom]
+    else if Align=alTop then
+      Anchors:=Anchors+[akTop]-[akBottom];
+  end else begin
+    if Align=alRight then
+      Anchors:=Anchors-[akLeft]+[akRight]
+    else if Align=alLeft then
+      Anchors:=Anchors+[akLeft]-[akRight];
+  end;
 end;
 
 procedure TScrollBar.DoScroll(var Message: TLMScroll);

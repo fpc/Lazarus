@@ -670,8 +670,6 @@ type
     procedure DoDragMsg(var Dragmsg : TCMDrag);
     procedure DoMouseDown(var Message: TLMMouse; Button: TMouseButton; Shift:TShiftState);
     procedure DoMouseUp(var Message: TLMMouse; Button: TMouseButton);
-    procedure SetAlign(Value: TAlign);
-    procedure SetAnchors(const AValue: TAnchors);
     procedure SetBoundsRect(const ARect : TRect);
     procedure SetClientHeight(Value: Integer);
     procedure SetClientSize(Value: TPoint);
@@ -701,6 +699,8 @@ type
     FControlState: TControlState;
     procedure AdjustSize; dynamic;
     procedure DoAutoSize; Virtual;
+    procedure SetAlign(Value: TAlign); virtual;
+    procedure SetAnchors(const AValue: TAnchors); virtual;
     procedure SetAutoSize(const Value : Boolean); virtual;
     procedure BoundsChanged; dynamic;
     procedure DoConstraintsChange(Sender : TObject); virtual;
@@ -1862,6 +1862,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.169  2004/02/02 00:41:06  mattias
+  TScrollBar now automatically checks Align and Anchors for useful values
+
   Revision 1.168  2004/01/27 21:32:11  mattias
   improved changing style of controls
 

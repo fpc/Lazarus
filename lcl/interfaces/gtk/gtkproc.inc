@@ -2688,11 +2688,13 @@ end;
 Procedure FixedMoveControl(Parent, Child : PGTKWIdget; Left, Top : Longint);
 begin
   If GTKWidgetIsA(Parent, GTK_Layout_Get_Type) then
+    // parent is layout
     gtk_Layout_move(PGtkLayout(Parent), Child, Left, Top)
-  else
-    If GTKWidgetIsA(Parent, GTK_Fixed_Get_Type) then
-      gtk_fixed_move(PGtkFixed(Parent), Child, gint16(Left), gint16(Top))
-  else
+  else If GTKWidgetIsA(Parent, GTK_Fixed_Get_Type) then begin
+    // parent is fixed
+    gtk_fixed_move(PGtkFixed(Parent), Child, gint16(Left), gint16(Top))
+  end else
+    // parent is invalid
     WriteLn('[FixedMoveControl] WARNING: Invalid Fixed Widget');
 end;
 
@@ -6300,6 +6302,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.252  2004/02/02 00:41:06  mattias
+  TScrollBar now automatically checks Align and Anchors for useful values
+
   Revision 1.251  2004/01/27 21:32:11  mattias
   improved changing style of controls
 
