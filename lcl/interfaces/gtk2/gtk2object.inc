@@ -436,7 +436,7 @@ begin
   else}
     begin
       handle := hwnd(ObjectToGtkObject(Sender));
-      Case LM_Message of
+      {Case LM_Message of}
 
 (*      LM_CLB_GETCHECKED :
       begin
@@ -476,7 +476,7 @@ begin
         end;
       end;*)
 
-      LM_GETITEMINDEX :
+      (*LM_GETITEMINDEX :
       begin
         case TControl(Sender).fCompStyle of
            csListBox, csCheckListBox:
@@ -514,9 +514,9 @@ begin
               exit;
             end;
         end;
-      end;
+      end;*)
 
-      LM_GETITEMS :
+      (*LM_GETITEMS :
       begin
         case TControl(Sender).fCompStyle of
           csComboBox:
@@ -539,9 +539,9 @@ begin
         else
           raise Exception.Create('Message LM_GETITEMS - Not implemented');
         end;
-      end;
+      end;*)
 
-      LM_GETSEL :
+      (*LM_GETSEL :
       begin
         Result := 0;      { assume: nothing found }
         if (Sender is TControl)
@@ -565,7 +565,7 @@ begin
               exit;
             end;
           end;
-      end;
+      end;*)
 {
       LM_GETSELSTART :
       begin
@@ -594,7 +594,7 @@ begin
           Result:= 0;
       end;
 }
-      LM_GETSELCOUNT :
+      (*LM_GETSELCOUNT :
       begin
         case (Sender as TControl).fCompStyle of
           csListBox, csCheckListBox :
@@ -613,7 +613,7 @@ begin
             exit;
           end;
         end;
-      end;
+      end;*)
 {
       LM_GETSELLEN :
       begin
@@ -642,7 +642,7 @@ begin
           end;
       end;
 }
-      LM_SETBORDER:
+      (*LM_SETBORDER:
       begin
         if (Sender is TWinControl) then
         begin
@@ -656,9 +656,9 @@ begin
                 gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(Widget), GTK_SHADOW_NONE);
             end
          end;
-      end;
+      end;*)
 
-      LM_SETITEMINDEX:
+      (*LM_SETITEMINDEX:
         if Handle<>0 then begin
           case TControl(Sender).fCompStyle of
 
@@ -683,9 +683,9 @@ begin
               exit;
             end;
           end;
-        end;
+        end;*)
 
-      LM_SETSEL:
+      (*LM_SETSEL:
       begin
         if (Sender is TControl)
         and Assigned (data)
@@ -710,7 +710,7 @@ begin
               exit;
             end;
         end;
-      end;
+      end;*)
 (*
       LM_SETSELSTART:
       begin
@@ -774,7 +774,7 @@ begin
         end;
       end;
 *)
-      LM_SORT:
+      (*LM_SORT:
       begin
         if  (Sender is TControl) and assigned (data) then
         begin
@@ -789,13 +789,13 @@ begin
             end;
           end
         end
-      end;
+      end;*)
       
-      else begin
+      {else} begin
         result := inherited  IntSendMessage3(LM_Message, Sender, data);
         exit;
       end; // end of else-part of 2nd case
-      end; // end of 2nd case
+      {end;} // end of 2nd case
     end;   // end of else-part of 1st case
 //  end;   // end of 1st case
 end;
@@ -1375,6 +1375,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.18  2004/09/28 16:41:54  mazen
+  * Fix GTK2 compilation problem
+
   Revision 1.17  2004/09/12 19:09:08  mazen
   * Fix compilation problem with GTK2
 

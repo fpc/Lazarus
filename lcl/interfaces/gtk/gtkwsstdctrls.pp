@@ -323,7 +323,7 @@ var
   Handle: HWND;
 begin
   Handle := ACustomListBox.Handle;
-  {$IFdef GTK1}
+  {!$IFdef GTK1}
   case ACustomListBox.fCompStyle of
      csListBox, csCheckListBox:
        begin
@@ -358,11 +358,7 @@ begin
            Result := integer(GList^.Data);
        end;
   end;
-  {$EndIf}
-
-  {$IFdef GTK2}
-  DebugLn('TODO: TGtkWSCustomListBox.GetItemIndex');
-  {$EndIf}
+  {!$EndIf}
 end;
 
 function  TGtkWSCustomListBox.GetSelCount(const ACustomListBox: TCustomListBox
@@ -370,9 +366,6 @@ function  TGtkWSCustomListBox.GetSelCount(const ACustomListBox: TCustomListBox
 var
   Handle: HWND;
 begin
-  {$IFdef GTK2}
-  DebugLn('TODO: TGtkWidgetSet.IntSendMessage3 LM_GETSELCOUNT');
-  {$Else}
   Handle := ACustomListBox.Handle;
   case ACustomListBox.fCompStyle of
     csListBox, csCheckListBox :
@@ -382,7 +375,6 @@ begin
       Result:= g_list_length(PGtkCList(GetWidgetInfo(Pointer(Handle),
                          True)^.CoreWidget)^.selection);
   end;
-  {$EndIf}
 end;
 
 function TGtkWSCustomListBox.GetSelected(const ACustomListBox: TCustomListBox;
@@ -393,9 +385,6 @@ var
   GList       : pGList;     // Only used for listboxes, replace with widget!!!!!
   ListItem    : PGtkListItem;// currently only used for listboxes
 begin
-  {$IFdef GTK2}
-  DebugLn('TODO: TGtkWidgetSet.IntSendMessage3 LM_GETSEL');
-  {$Else}
   Result := false;      { assume: nothing found }
   Handle := ACustomListBox.Handle;
   case ACustomListBox.fCompStyle of
@@ -422,8 +411,6 @@ begin
         end;
       end;
   end;
-  {$EndIf}
-
 end;
 
 function  TGtkWSCustomListBox.GetStrings(const ACustomListBox: TCustomListBox
@@ -432,9 +419,6 @@ var
   Widget: PGtkWidget;// pointer to gtk-widget
   Handle: HWND;
 begin
-  {$ifdef GTK2}
-  DebugLn('TODO: TGtkWSCustomListBox.GetStrings');
-  {$else}
   Handle := ACustomListBox.Handle;
   case ACustomListBox.fCompStyle of
     csCListBox:
@@ -458,7 +442,6 @@ begin
   else
     raise Exception.Create('TGtkWSCustomListBox.GetStrings');
   end;
-  {$endif}
 end;
 
 function  TGtkWSCustomListBox.GetTopIndex(const ACustomListBox: TCustomListBox
@@ -473,9 +456,6 @@ var
   Widget: PGtkWidget;// pointer to gtk-widget (local use when neccessary)
   Handle: HWND;
 begin
-  {$IFdef GTK2}
-  DebugLn('TODO: TGtkWidgetSet.IntSendMessage3 LM_SETSEL');
-  {$Else}
   Handle := ACustomListBox.Handle;
   case ACustomListBox.fCompStyle of
     csListBox, csCheckListBox:
@@ -493,7 +473,6 @@ begin
         else gtk_clist_unselect_row(PGtkCList(Widget), AIndex, 0);
       end;
   end;
-  {$Endif}
 end;
 
 procedure TGtkWSCustomListBox.SetBorder(const ACustomListBox: TCustomListBox);
@@ -501,9 +480,6 @@ var
   Handle: HWND;
   Widget: PGtkWidget;// pointer to gtk-widget
 begin
-  {$IFdef GTK2}
-  DebugLn('TODO: TGtkWidgetSet.IntSendMessage3 LM_SETBORDER');
-  {$Else}
   Handle := ACustomListBox.Handle;
   if (ACustomListBox.fCompStyle in [csListBox, csCheckListBox]) then
   begin
@@ -525,7 +501,6 @@ begin
       gtk_viewport_set_shadow_type(
         PGtkViewPort(PGtkBin(Handle)^.Child), GTK_SHADOW_IN);
   end;
-  {$Endif}
 end;
 
 procedure TGtkWSCustomListBox.SetItemIndex(const ACustomListBox: TCustomListBox;
@@ -536,7 +511,6 @@ begin
   Handle := ACustomListBox.Handle;
   if Handle<>0 then 
   begin
-    {$IFdef GTK1}
     case ACustomListBox.fCompStyle of
 
     csListBox, csCheckListBox:
@@ -554,11 +528,6 @@ begin
       gtk_clist_select_row(PGtkCList(GetWidgetInfo(
         Pointer(Handle), True)^.CoreWidget), AIndex, 1);    // column
     end;
-    {$EndIf}
-
-    {$IFdef GTK2}
-    DebugLn('TODO: TGtkWSCustomListBox.SetItemIndex');
-    {$EndIf}
   end;
 end;
 
@@ -577,12 +546,7 @@ begin
   csListBox,
   csCheckListBox:
                  TGtkListStringList(AList).Sorted := ASorted;
-  {$IfDef GTK1}
   csCListBox: TGtkCListStringList(AList).Sorted := ASorted;
-  {$Else}
-  else
-     DebugLn('TODO: TGtkWidgetSet.IntSendMessage3 LM_SORT');
-  {$Endif}
   end
 end;
 
@@ -656,9 +620,9 @@ procedure TGtkWSCustomComboBox.SetArrowKeysTraverseList(
   const ACustomComboBox: TCustomComboBox;
   NewTraverseList: boolean);
 var
-  GtkCombo: GTK_COMBO;
+  GtkCombo: PGtkCombo;
 begin
-  GtkCombo := GTK_COMBO(ACustomComboBox.Handle);
+  GtkCombo := GTK_COMBO(Pointer(ACustomComboBox.Handle));
   if ACustomComboBox.ArrowKeysTraverseList then
   begin
     gtk_combo_set_use_arrows(GtkCombo,GdkTrue);
@@ -697,9 +661,9 @@ end;
 procedure TGtkWSCustomComboBox.SetStyle(
   const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle);
 var
-  GtkCombo: GTK_COMBO;
+  GtkCombo: PGtkCombo;
 begin
-  GtkCombo := GTK_COMBO(ACustomComboBox.Handle);
+  GtkCombo := GTK_COMBO(Pointer(ACustomComboBox.Handle));
   case ACustomComboBox.Style of
     csDropDownList :
       begin
@@ -768,7 +732,7 @@ var
   Widget: PGtkWidget;
 begin
   Widget:=PGtkWidget(ACustomEdit.Handle);
-  if GtkWidgetIsA(Widget,GTK_ENTRY_TYPE) then
+  if GtkWidgetIsA(Widget,{$ifdef GTK1}GTK_ENTRY_TYPE{$else}GTK_TYPE_ENTRY{$endif}) then
     gtk_entry_set_max_length(GTK_ENTRY(Widget), guint16(NewLength));
 end;
 
@@ -778,7 +742,7 @@ var
   Widget: PGtkWidget;
 begin
   Widget:=PGtkWidget(ACustomEdit.Handle);
-  if GtkWidgetIsA(Widget,GTK_ENTRY_TYPE) then
+  if GtkWidgetIsA(Widget,{$ifdef GTK1}GTK_ENTRY_TYPE{$else}GTK_TYPE_ENTRY{$endif}) then
     gtk_entry_set_visibility(GTK_ENTRY(Widget),
       (ACustomEdit.EchoMode = emNormal) and (NewChar = #0));
 end;
@@ -789,7 +753,7 @@ var
   Widget: PGtkWidget;
 begin
   Widget:=PGtkWidget(ACustomEdit.Handle);
-  if GtkWidgetIsA(Widget,GTK_ENTRY_TYPE) then
+  if GtkWidgetIsA(Widget,{$ifdef GTK1}GTK_ENTRY_TYPE{$else}GTK_TYPE_ENTRY{$endif}) then
     gtk_entry_set_editable(GTK_ENTRY(Widget), not ACustomEdit.ReadOnly);
 end;
 
