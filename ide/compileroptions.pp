@@ -195,8 +195,8 @@ type
     fLCLWidgetType: string;
 
     // Parsing:
-    // style
-    fStyle: Integer;
+    // assembler style
+    fAssemblerStyle: Integer;
     // symantec checking
     fD2Ext: Boolean;
     fCStyleOp: Boolean;
@@ -357,7 +357,7 @@ type
     property LCLWidgetType: string read fLCLWidgetType write fLCLWidgetType;
 
     // parsing:
-    property Style: Integer read fStyle write fStyle;
+    property AssemblerStyle: Integer read fAssemblerStyle write fAssemblerStyle;
     property D2Extensions: Boolean read fD2Ext write fD2Ext;
     property CStyleOperators: Boolean read fCStyleOp write fCStyleOp;
     property IncludeAssertionCode: Boolean 
@@ -533,10 +533,7 @@ type
 
     { Parsing Controls }
     ParsingPage: TPage;
-    grpStyle: TGroupBox;
-    radStyleIntel: TRadioButton;
-    radStyleATT: TRadioButton;
-    radStyleAsIs: TRadioButton;
+    grpStyle: TRadioGroup;
 
     grpSymantecChk: TGroupBox;
     chkSymD2Ext: TCheckBox;
@@ -1241,7 +1238,7 @@ begin
 
   { Parsing }
   p:=Path+'Parsing/';
-  Style := XMLConfigFile.GetValue(p+'Style/Value', 1);
+  AssemblerStyle := XMLConfigFile.GetValue(p+'Style/Value', 0);
   D2Extensions := XMLConfigFile.GetValue(p+'SymantecChecking/D2Extensions/Value', true);
   CStyleOperators := XMLConfigFile.GetValue(p+'SymantecChecking/CStyleOperator/Value', true);
   IncludeAssertionCode := XMLConfigFile.GetValue(p+'SymantecChecking/IncludeAssertionCode/Value', false);
@@ -1378,7 +1375,7 @@ begin
 
   { Parsing }
   p:=Path+'Parsing/';
-  XMLConfigFile.SetDeleteValue(p+'Style/Value', Style,1);
+  XMLConfigFile.SetDeleteValue(p+'Style/Value', AssemblerStyle,0);
   XMLConfigFile.SetDeleteValue(p+'SymantecChecking/D2Extensions/Value', D2Extensions,true);
   XMLConfigFile.SetDeleteValue(p+'SymantecChecking/CStyleOperator/Value', CStyleOperators,true);
   XMLConfigFile.SetDeleteValue(p+'SymantecChecking/IncludeAssertionCode/Value', IncludeAssertionCode,false);
@@ -1849,13 +1846,11 @@ Processor specific options:
 
   { --------------- Parsing Tab ------------------- }
 
-  { Style }
-  { assembler reading style  -Ratt = AT&T    -Rintel = Intel  -Rdirect = As-is }
-  switches := switches + ' -R';
-  case (Style) of
-    1: switches := switches + 'intel';
-    2: switches := switches + 'att';
-    3: switches := switches + 'direct';
+  { Assembler reading style  -Ratt = AT&T    -Rintel = Intel  -Rdirect = direct }
+  case AssemblerStyle of
+    1: switches := switches + '-Rintel';
+    2: switches := switches + '-Ratt';
+    3: switches := switches + '-Rdirect';
   end;
   
   { Symantec Checking
@@ -2265,7 +2260,7 @@ begin
   fLCLWidgetType := '';
   
   // parsing
-  fStyle := 1;
+  fAssemblerStyle := 0;
   fD2Ext := true;
   fCStyleOp := true;
   fIncludeAssertionCode := false;
@@ -2359,7 +2354,7 @@ begin
   DebugPath := CompOpts.DebugPath;
 
   // Parsing
-  fStyle := CompOpts.fStyle;
+  fAssemblerStyle := CompOpts.fAssemblerStyle;
   fD2Ext := CompOpts.fD2Ext;
   fCStyleOp := CompOpts.fCStyleOp;
   fIncludeAssertionCode := CompOpts.fIncludeAssertionCode;
@@ -2451,7 +2446,7 @@ begin
     and (fLCLWidgetType = CompOpts.fLCLWidgetType)
 
     // parsing
-    and (fStyle = CompOpts.fStyle)
+    and (fAssemblerStyle = CompOpts.fAssemblerStyle)
     and (fD2Ext = CompOpts.fD2Ext)
     and (fCStyleOp = CompOpts.fCStyleOp)
     and (fIncludeAssertionCode = CompOpts.fIncludeAssertionCode)
@@ -2867,11 +2862,10 @@ begin
   TargetOSComboBox.Text:=Options.TargetOS;
 
   // parsing
-  case Options.Style of
-    1: radStyleIntel.Checked := true;
-    2: radStyleATT.Checked := true;
-    3: radStyleATT.Checked := true;
-  end;
+  if (Options.AssemblerStyle in [1,2,3])  then
+    grpStyle.ItemIndex:=Options.AssemblerStyle
+  else
+    grpStyle.ItemIndex:=0;
 
   chkSymD2Ext.Checked := Options.D2Extensions;
   chkSymCOper.Checked := Options.CStyleOperators;
@@ -3027,16 +3021,8 @@ begin
   else
     Options.LCLWidgetType:= LCLWidgetTypeRadioGroup.Items[i];
 
-  // parsing
-  if (radStyleIntel.Checked) then
-    Options.Style := 1
-  else if (radStyleATT.Checked) then
-    Options.Style := 2
-  else if (radStyleAsIs.Checked) then
-    Options.Style := 3
-  else
-    Options.Style := 1;
-
+  // parsing;
+  Options.AssemblerStyle := grpStyle.ItemIndex;
   Options.D2Extensions := chkSymD2Ext.Checked;
   Options.CStyleOperators := chkSymCOper.Checked;
   Options.IncludeAssertionCode := chkSymIncludeAssertions.Checked;
@@ -3290,45 +3276,24 @@ begin
   // Setup the Parsing Tab
   ParsingPage:=nbMain.Page[Page];
 
-  grpStyle := TGroupBox.Create(Self);
+  grpStyle := TRadioGroup.Create(Self);
   with grpStyle do
   begin
     Parent := ParsingPage;
     Top := 5;
     Left := 5;
     Height := 42;
-    Width := 300;
+    Width := 400;
     Caption := dlgCOStyle;
-  end;
-
-  radStyleIntel := TRadioButton.Create(grpStyle);
-  with radStyleIntel do
-  begin
-    Parent := grpStyle;
-    Top := 0;
-    Left := 5;
-    Width := 50;
-    Caption := 'Intel';//Really we should localize this? :)
-  end;
-
-  radStyleATT := TRadioButton.Create(grpStyle);
-  with radStyleATT do
-  begin
-    Parent := grpStyle;
-    Top := 0;
-    Left := 80;
-    Width := 70;
-    Caption := 'AT&T';
-  end;
-
-  radStyleAsIs := TRadioButton.Create(grpStyle);
-  with radStyleAsIs do
-  begin
-    Parent := grpStyle;
-    Top := 0;
-    Left := 170;
-    Width := 100;
-    Caption := dlgCOAsIs ;
+    with Items do begin
+      BeginUpdate;
+      Items.Add('Default');
+      Items.Add('Intel');
+      Items.Add('AT&T');
+      Items.Add('direct');
+      EndUpdate;
+    end;
+    Columns:=4;
   end;
 
   yDiff:=22;

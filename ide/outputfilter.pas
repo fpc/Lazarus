@@ -296,6 +296,7 @@ var i, j, FilenameEndPos: integer;
     Result:=false;
     if ('Fatal: '=copy(s,1,length('Fatal: ')))
     or ('Panic'=copy(s,1,length('Panic')))
+    or ('Error: '=copy(s,1,length('Error: ')))
     or ('Closing script ppas.sh'=s)
     then begin
       // always show fatal, panic and linker errors
@@ -304,6 +305,8 @@ var i, j, FilenameEndPos: integer;
         fLastErrorType:=etPanic
       else if ('Fatal: '=copy(s,1,length('Fatal: '))) then
         fLastErrorType:=etFatal
+      else if ('Error: '=copy(s,1,length('Error: '))) then
+        fLastErrorType:=etError
       else if ('Closing script ppas.sh'=s) then begin
         // linker error
         fLastMessageType:=omtLinker;
@@ -375,13 +378,13 @@ begin
   // check for 'Assembling <filename>'
   Result:=CheckForAssemblingState;
   if Result then exit;
-  // check for 'Fatal: ', 'Panic: ', 'Closing script ppas.sh'
+  // check for 'Fatal: ', 'Panic: ', 'Error: ', 'Closing script ppas.sh'
   Result:=CheckForUrgentMessages;
   if Result then exit;
   // check for '<line> <kb>/<kb> Kb Free'
   Result:=CheckForLineProgress;
   if Result then exit;
-  
+
   // search for round bracket open
   i:=1;
   while (i<=length(s)) and (s[i]<>'(') do inc(i);

@@ -2246,7 +2246,6 @@ begin
   then with Message do
   begin
     C := TCharacter(CharCode);
-    writeLn('[TWinControl.DoKeyPress] ',HexStr(ord(C),4));
     KeyPress(C);
     CharCode := Ord(C);
     if Char(CharCode) = #0 then Exit;
@@ -3792,6 +3791,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.261  2004/08/13 19:48:53  mattias
+  added default assembler style for compiler options
+
   Revision 1.260  2004/08/13 16:40:47  mazen
   + TCharater type used to allow UTF8 keyboard with gtk2
 
