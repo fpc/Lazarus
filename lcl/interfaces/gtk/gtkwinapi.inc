@@ -5929,6 +5929,7 @@ begin
   Result := IsValidDC(DestDC) and IsValidDC(SrcDC);
   if Result
   then begin
+
     with PDeviceContext(DestDC)^ do begin
       Inc(X,Origin.X);
       Inc(Y,Origin.Y);
@@ -5937,6 +5938,9 @@ begin
       Inc(XSrc,Origin.X);
       Inc(YSrc,Origin.Y);
     end;
+
+    //writeln('TgtkObject.StretchBlt X=',X,' Y=',Y,' Width=',Width,' Height=',Height,
+    //  ' XSrc=',XSrc,' YSrc=',YSrc,' SrcWidth=',SrcWidth,' SrcHeight=',SrcHeight);
 
     (*
 
@@ -5948,28 +5952,29 @@ begin
     *)
 
     // To Supress GDK Errors/Warnings
-    If (XSrc < 0 ) then begin
-      SrcWidth := SrcWidth + XSrc;
-      XSrc := 0; 
+    {If (XSrc < 0 ) then begin
+      inc(SrcWidth,XSrc);
+      XSrc := 0;
     end;
 
     // To Supress GDK Errors/Warnings
     If (YSrc < 0 ) then begin
-      SrcHeight := SrcHeight + YSrc;
-      YSrc := 0; 
+      inc(SrcHeight,YSrc);
+      YSrc := 0;
     end;
+    if (SrcWidth<=0) or (SrcHeight<=0) then exit;
 
     // To Supress GDK Errors/Warnings
     If (X < 0 ) then begin
-      Width := Width + X;
+      Width := Width - X;
       X := 0; 
     end;
 
     // To Supress GDK Errors/Warnings
     If (Y < 0 ) then begin
-      Height := Height + Y;
+      Height := Height - Y;
       Y := 0; 
-    end;
+    end;}
 
     If PDeviceContext(SrcDC)^.Drawable = nil then begin
       If PDeviceContext(DestDC)^.Drawable = nil then
@@ -6256,6 +6261,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.117  2002/08/30 13:43:38  lazarus
+  MG: fixed drawing of non visual components in designer
+
   Revision 1.116  2002/08/30 12:32:24  lazarus
   MG: MoveWindowOrgEx, Splitted FWinControls/FControls, TControl drawing, Better DesignerDrawing, ...
 
