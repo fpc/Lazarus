@@ -174,7 +174,8 @@ type
 
   TSynEditorOption = (eoAltSetsColumnMode, eoAutoIndent,
     {$IFDEF SYN_LAZARUS}
-    eoBracketHighlight, eoHideRightMargin, eoDoubleClickSelectsLine,
+    eoBracketHighlight, eoDoubleClickSelectsLine, eoHideRightMargin,
+    eoPersistentCaret,
     {$ENDIF}
     eoDragDropEditing,     //mh 2000-11-20
     eoDropFiles, eoHalfPageScroll, eoKeepCaretX, eoNoCaret, eoNoSelection,
@@ -3787,10 +3788,12 @@ procedure TCustomSynEdit.WMKillFocus(var Msg: TWMKillFocus);
 begin
   inherited;
 writeln('[TCustomSynEdit.WMKillFocus] A ',Name);
-  HideCaret;
   {$IFDEF SYN_LAZARUS}
+  if not (eoPersistentCaret in fOptions) then
+    HideCaret;
   LCLLinux.DestroyCaret(Handle);
   {$ELSE}
+  HideCaret;
   Windows.DestroyCaret;
   {$ENDIF}
   if FHideSelection and SelAvail then
@@ -6332,8 +6335,12 @@ end;
 procedure TCustomSynEdit.SetOptions(Value: TSynEditorOptions);
 var
   bSetDrag: boolean;
+  {$IFDEF SYN_LAZARUS}
+  OldOptions: TSynEditorOptions;
+  {$ENDIF}
 begin
   if (Value <> fOptions) then begin
+    OldOptions := fOptions;
     bSetDrag := (eoDropFiles in fOptions) <> (eoDropFiles in Value);
     fOptions := Value;
     // Reset column position in case Cursor is past EOL.
@@ -6347,6 +6354,11 @@ begin
       {$ELSE}
       DragAcceptFiles(Handle, (eoDropFiles in fOptions));
       {$ENDIF}
+    {$IFDEF SYN_LAZARUS}
+    if ((eoPersistentCaret in fOptions) xor (eoPersistentCaret in OldOptions))
+    and HandleAllocated then
+      SetCaretRespondToFocus(Handle,not (eoPersistentCaret in fOptions));
+    {$ENDIF}
   end;
 end;
 
@@ -6371,6 +6383,10 @@ begin
         DragAcceptFiles(Handle, Value);
         {$ENDIF}
     end;
+    {$IFDEF SYN_LAZARUS}
+    if (Flag = eoPersistentCaret) and HandleAllocated then
+      SetCaretRespondToFocus(Handle,not (eoPersistentCaret in fOptions));
+    {$ENDIF}
     EnsureCursorPosVisible;
   end;
 end;

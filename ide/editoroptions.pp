@@ -294,8 +294,8 @@ type
     DropFilesCheckBox:TCheckBox;
     HalfPageScrollCheckBox:TCheckBox;
     KeepCaretXCheckBox:TCheckBox;
-    NoCaretCheckBox:TCheckBox;
     NoSelectionCheckBox:TCheckBox;
+    PersistentCaretCheckBox:TCheckBox;
     ScrollByOneLessCheckBox:TCheckBox;
     ScrollPastEofCheckBox:TCheckBox;
     ScrollPastEolCheckBox:TCheckBox;
@@ -1034,8 +1034,8 @@ begin
         eoDropFiles:SynEditOptName:='DropFiles';
         eoHalfPageScroll:SynEditOptName:='HalfPageScroll';
         eoKeepCaretX:SynEditOptName:='KeepCaretX';
-        eoNoCaret:SynEditOptName:='NoCaret';
         eoNoSelection:SynEditOptName:='NoSelection';
+        eoPersistentCaret:SynEditOptName:='PersistentCaret';
         eoScrollByOneLess:SynEditOptName:='ScrollByOneLess';
         eoScrollPastEof:SynEditOptName:='ScrollPastEof';
         eoScrollPastEol:SynEditOptName:='ScrollPastEol';
@@ -1151,7 +1151,7 @@ begin
         eoDropFiles:SynEditOptName:='DropFiles';
         eoHalfPageScroll:SynEditOptName:='HalfPageScroll';
         eoKeepCaretX:SynEditOptName:='KeepCaretX';
-        eoNoCaret:SynEditOptName:='NoCaret';
+        eoPersistentCaret:SynEditOptName:='PersistentCaret';
         eoNoSelection:SynEditOptName:='NoSelection';
         eoScrollByOneLess:SynEditOptName:='ScrollByOneLess';
         eoScrollPastEof:SynEditOptName:='ScrollPastEof';
@@ -2089,7 +2089,7 @@ begin
   SetOption(DropFilesCheckBox,eoDropFiles);
   SetOption(HalfPageScrollCheckBox,eoHalfPageScroll);
   SetOption(KeepCaretXCheckBox,eoKeepCaretX);
-  //SetOption(NoCaretCheckBox,eoNoCaret);
+  SetOption(PersistentCaretCheckBox,eoPersistentCaret);
   //SetOption(NoSelectionCheckBox,eoNoSelection);
   SetOption(ScrollByOneLessCheckBox,eoScrollByOneLess);
   SetOption(ScrollPastEoFCheckBox,eoScrollPastEoF);
@@ -3167,25 +3167,11 @@ begin
     Show;
   end;
 
-  NoCaretCheckBox:=TCheckBox.Create(Self);
-  with NoCaretCheckBox do begin
-    Name:='NoCaretCheckBox';
-    Parent:=EditorOptionsGroupBox;
-    Top:=KeepCaretXCheckBox.Top+KeepCaretXCheckBox.Height+5;
-    Left:=AltSetsColumnModeCheckBox.Left;
-    Width:=ChkBoxW;
-    Height:=AltSetsColumnModeCheckBox.Height;
-    Caption:='No Caret';
-    Checked:=eoNoCaret in EditorOpts.SynEditOptions;
-    OnClick:=@GeneralCheckBoxOnClick;
-    Show;
-  end;
-
   NoSelectionCheckBox:=TCheckBox.Create(Self);
   with NoSelectionCheckBox do begin
     Name:='NoSelectionCheckBox';
     Parent:=EditorOptionsGroupBox;
-    Top:=NoCaretCheckBox.Top+NoCaretCheckBox.Height+5;
+    Top:=KeepCaretXCheckBox.Top+KeepCaretXCheckBox.Height+5;
     Left:=AltSetsColumnModeCheckBox.Left;
     Width:=ChkBoxW;
     Height:=AltSetsColumnModeCheckBox.Height;
@@ -3195,11 +3181,25 @@ begin
     Show;
   end;
 
+  PersistentCaretCheckBox:=TCheckBox.Create(Self);
+  with PersistentCaretCheckBox do begin
+    Name:='PersistentCaretCheckBox';
+    Parent:=EditorOptionsGroupBox;
+    Top:=NoSelectionCheckBox.Top+NoSelectionCheckBox.Height+5;
+    Left:=AltSetsColumnModeCheckBox.Left;
+    Width:=ChkBoxW;
+    Height:=AltSetsColumnModeCheckBox.Height;
+    Caption:='Persistent Caret';
+    Checked:=eoPersistentCaret in EditorOpts.SynEditOptions;
+    OnClick:=@GeneralCheckBoxOnClick;
+    Show;
+  end;
+
   ScrollByOneLessCheckBox:=TCheckBox.Create(Self);
   with ScrollByOneLessCheckBox do begin
     Name:='ScrollByOneLessCheckBox';
     Parent:=EditorOptionsGroupBox;
-    Top:=NoSelectionCheckBox.Top+NoSelectionCheckBox.Height+5;
+    Top:=PersistentCaretCheckBox.Top+PersistentCaretCheckBox.Height+5;
     Left:=AltSetsColumnModeCheckBox.Left;
     Width:=ChkBoxW;
     Height:=AltSetsColumnModeCheckBox.Height;
@@ -3509,22 +3509,22 @@ begin
     Height:=AltSetsColumnModeCheckBox.Height;
   end;
 
-  with NoCaretCheckBox do begin
+  with NoSelectionCheckBox do begin
     Top:=KeepCaretXCheckBox.Top+KeepCaretXCheckBox.Height+5;
     Left:=AltSetsColumnModeCheckBox.Left;
     Width:=ChkBoxW;
     Height:=AltSetsColumnModeCheckBox.Height;
   end;
 
-  with NoSelectionCheckBox do begin
-    Top:=NoCaretCheckBox.Top+NoCaretCheckBox.Height+5;
+  with PersistentCaretCheckBox do begin
     Left:=AltSetsColumnModeCheckBox.Left;
+    Top:=NoSelectionCheckBox.Top+NoSelectionCheckBox.Height+5;
     Width:=ChkBoxW;
     Height:=AltSetsColumnModeCheckBox.Height;
   end;
 
   with ScrollByOneLessCheckBox do begin
-    Top:=NoSelectionCheckBox.Top+NoSelectionCheckBox.Height+5;
+    Top:=PersistentCaretCheckBox.Top+PersistentCaretCheckBox.Height+5;
     Left:=AltSetsColumnModeCheckBox.Left;
     Width:=ChkBoxW;
     Height:=AltSetsColumnModeCheckBox.Height;
@@ -5077,10 +5077,6 @@ begin
     Include(SynOptions,eoBracketHighlight)
   else
     Exclude(SynOptions,eoBracketHighlight);
-  if NoCaretCheckBox.Checked then
-    Include(SynOptions,eoNoCaret)
-  else
-    Exclude(SynOptions,eoNoCaret);
   if NoSelectionCheckBox.Checked then
     Include(SynOptions,eoNoSelection)
   else
