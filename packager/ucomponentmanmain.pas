@@ -118,11 +118,11 @@ end;
 
 procedure TFrmComponentMan.Button1CLICK(Sender: TObject);
 var
-  I, J: Integer;
+  I, J, NewCompCnt: Integer;
   Found: Boolean;
   MyObj: TRComponent;
 begin
-  DlgLoad.InitialDir := FLazPath+'components/custom';
+  DlgLoad.InitialDir := AppendPathDelim(FLazPath)+'components/custom';
   if DlgLoad.Execute then begin
     // load in and parse the source
     try
@@ -133,17 +133,23 @@ begin
       exit;
     end;
     
-    //MessageDlg('Found '+inttostr(CountComponents), mtInformation,[mbOk],0);
-    if CountComponents > 30 then begin
+    NewCompCnt:=CountComponents;
+    //MessageDlg('Found '+inttostr(NewCompCnt), mtInformation,[mbOk],0);
+    if NewCompCnt > 30 then begin
       // just to save face if something goes wrong...
       MessageDlg('More than 30 components is not supported.', mtError, [mbCancel],0);
       exit;
     end;
 
+    if NewCompCnt<1 then begin
+       MessageDlg('No components found.', mtError, [mbCancel],0);
+       exit;
+    end;
+    
     if FrmAddComponent=nil then
       FrmAddComponent := TFrmAddComponent.Create(Self);
     FrmAddComponent.ListCompAdd.Clear;
-    for I := 1 to CountComponents do begin
+    for I := 1 to NewCompCnt do begin
       //MessageDlg(GetComponent(I),mtInformation,[mbOk],0);
       // only add if not already in the list
       Found := False;
@@ -470,8 +476,7 @@ begin
           // found one!
           Count := Count + 1;
           if Count = I then begin
-            TempStr := copy(MyFile[J],1,pos('=',MyFile[j])-1);
-            trim(TempStr);
+            TempStr := Trim(copy(MyFile[J],1,pos('=',MyFile[j])-1));
             Result := TempStr;
             exit;
           end;
