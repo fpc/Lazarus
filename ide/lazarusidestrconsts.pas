@@ -1804,7 +1804,7 @@ resourcestring
   lisPkgMangThePackageWasMarkedForInstallationCurrentlyLazarus = 'The package %'
     +'s%s%s was marked for installation.%sCurrently lazarus only supports '
     +'static linked packages. The real installation needs rebuilding and '
-    +'restarting of lazarus.%s%sShould lazarus now be rebuilt?';
+    +'restarting of lazarus.%s%sDo you want to rebuild Lazarus now?';
   lisPkgMangPackageIsRequired = 'Package is required';
   lisPkgMangThePackageIsRequiredByWhichIsMarkedForInstallation = 'The package %'
     +'s is required by %s, which is marked for installation.%sSee package '
@@ -1814,7 +1814,7 @@ resourcestring
   lisPkgMangThePackageWasMarkedCurrentlyLazarus = 'The package %s%s%s was '
     +'marked.%sCurrently lazarus only supports static linked packages. The '
     +'real un-installation needs rebuilding and restarting of lazarus.%s%'
-    +'sShould lazarus now be rebuilt?';
+    +'sDo you want to rebuild Lazarus now?';
   lisPkgMangThePackageIsMarkedForInstallationButCanNotBeFound = 'The package %'
     +'s%s%s is marked for installation, but can not be found.%sRemove '
     +'dependency from the installation list of packages?';
