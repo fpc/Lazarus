@@ -1868,6 +1868,7 @@ end;
  ------------------------------------------------------------------------------}
 Procedure TWinControl.WMKeyDown(Var Message : TLMKeyDown);
 Begin
+writeln('EEE1 ',Name,':',ClassName);
   Assert(False, Format('Trace:[TWinControl.WMKeyDown] %s', [ClassName]));
   if not DoKeyDown(Message) then {inherited} ;  // there is nothing to inherit
 end;
@@ -1890,7 +1891,7 @@ end;
   Params:   None
   Returns:  True is handle is allocated
 
-  Checks if a handle is allocated. I.E. if the control is created
+  Checks if a handle is allocated. I.E. if the control is mapped
  ------------------------------------------------------------------------------}
 function TWinControl.HandleAllocated : Boolean;
 begin
@@ -2288,6 +2289,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.70  2002/05/28 14:58:30  lazarus
+  MG: added scrollbars for TListView
+
   Revision 1.69  2002/05/27 14:38:34  lazarus
   MG; fixed find declaration of overloaded procs and expression input types
 
