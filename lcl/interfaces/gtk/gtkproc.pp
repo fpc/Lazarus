@@ -42,10 +42,23 @@ uses
   FileCtrl, LResources, Math, GTKGlobals;
 
 
+  {$IFDEF gtk2}
+    const 
+      gdkdll = gdklib;
+  {$ENDIF}
+  
 procedure laz_gdk_gc_set_dashes(gc:PGdkGC; dash_offset:gint;
   dashlist:Pgint8; n:gint); cdecl; external gdkdll name 'gdk_gc_set_dashes';
 
 
+{$IFNDEF GTK2}
+  GTK_TYPE_CONTAINER = GTK_CONTAINER_TYPE;
+  GTK_TYPE_BIN = GTK_BIN_TYPE;
+  GTK_TYPE_SCROLLED_WINDOW = GTK_SCROLLED_WINDOW_TYPE;
+  GTK_TYPE_COMBO = GTK_COMBO_TYPE;
+  GTK_TYPE_WINDOW = GTK_WINDOW_TYPE;
+  GTK_TYPE_MENU = GTK_MENU_TYPE;
+{$ENDIF}
 
 (* GTKCallback.inc headers *)
 procedure EventTrace(const TheMessage : string; data : pointer);
@@ -336,19 +349,21 @@ function GetDesignSignalMask(Widget: PGtkWidget): TDesignSignalMask;
 procedure SetDesignSignalMask(Widget: PGtkWidget; NewMask: TDesignSignalMask);
 function GetDesignOnlySignalFlag(Widget: PGtkWidget;
   DesignSignalType: TDesignSignalType): boolean;
-procedure ConnectSignal(const AnObject:gtk_Object; const ASignal: PChar;
+
+procedure ConnectSignal(const AnObject:PGTKObject; const ASignal: PChar;
   const ACallBackProc: Pointer; LCLComponent: TComponent;
   const ReqSignalMask: TGdkEventMask; SFlags: TConnectSignalFlags);
-procedure ConnectSignal(const AnObject:gtk_Object; const ASignal: PChar;
+procedure ConnectSignal(const AnObject:PGTKObject; const ASignal: PChar;
   const ACallBackProc: Pointer; LCLComponent: TComponent;
   const ReqSignalMask: TGdkEventMask);
-procedure ConnectSignalAfter(const AnObject:gtk_Object; const ASignal: PChar;
+procedure ConnectSignalAfter(const AnObject:PGTKObject; const ASignal: PChar;
   const ACallBackProc: Pointer; LCLComponent: TComponent;
   const ReqSignalMask: TGdkEventMask);
-procedure ConnectSignal(const AnObject:gtk_Object; const ASignal: PChar;
+procedure ConnectSignal(const AnObject:PGTKObject; const ASignal: PChar;
   const ACallBackProc: Pointer; LCLComponent: TComponent);
-procedure ConnectSignalAfter(const AnObject:gtk_Object; const ASignal: PChar;
+procedure ConnectSignalAfter(const AnObject:PGTKObject; const ASignal: PChar;
   const ACallBackProc: Pointer; LCLComponent: TComponent);
+
 procedure ConnectInternalWidgetsSignals(AWidget: PGtkWidget;
   AWinControl: TWinControl);
 function GetAccelGroup(const Widget: PGtkWidget;
@@ -422,6 +437,9 @@ Procedure FillScreenFonts(ScreenFonts : TStrings);
 
 function GetGDKMouseCursor(Cursor: TCursor): PGdkCursor;
 Procedure FreeGDKCursors;
+
+function gtk_widget_get_xthickness(Style : PGTKStyle) : gint;
+function gtk_widget_get_ythickness(Style : PGTKStyle) : gint;
 
 var
   X11Display : Pointer;
