@@ -2794,10 +2794,10 @@ var
             {$IFDEF SYN_LAZARUS}
             if (fLastCtrlMouseLinkY<>nLine) or (nTokenPos<>fLastCtrlMouseLinkX1)
             then begin
-              if ((nBracketY<>nLine) or (nTokenPos<nBracketX)
-                or (nTokenPos+nTokenLen>=nBracketX))
-              and ((nAntiBracketY<>nLine) or (nTokenPos<nAntiBracketX)
-                or (nTokenPos+nTokenLen>=nAntiBracketX)) then
+              if ((nBracketY<>nLine) or (nTokenPos+nTokenLen<=nBracketX)
+                or (nTokenPos>nBracketX))
+              and ((nAntiBracketY<>nLine) or (nTokenPos+nTokenLen<=nAntiBracketX)
+                or (nTokenPos>nAntiBracketX)) then
               begin
                 // normal token
                 if Assigned(attr) then
