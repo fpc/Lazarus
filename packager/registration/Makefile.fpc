@@ -1,0 +1,36 @@
+#   $Id$
+#
+#   Makefile.fpc for Lazarus for Free Pascal
+#
+
+[package]
+name=lazpkgreg
+version=0.8a
+
+[compiler]
+unitdir=.
+unittargetdir=../units
+options=-gl
+
+[target]
+units=lazaruspackageintf
+
+[clean]
+files=$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+
+[require]
+packages=fcl
+
+[rules]
+cleanall: clean
+
+[rules]
+.PHONY: cleartarget all
+
+cleartarget:
+        -$(DEL) $(COMPILER_UNITTARGETDIR)/lazaruspackageintf$(PPUEXT)
+
+all: cleartarget lazaruspackageintf$(PPUEXT)
+
+# end.
+

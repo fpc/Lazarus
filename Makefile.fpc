@@ -12,14 +12,14 @@ packages=fcl regexpr
 
 [target]
 programs=lazarus
-dirs=lcl components designer
+dirs=lcl components designer packager
 exampledirs=examples
 
 [compiler]
 options=-gl
 unitdir=lcl/units lcl/units/$(LCL_PLATFORM) \
         components/units components/custom components/mpaslex \
-        designer designer/units debugger packager .
+        designer designer/units debugger packager packager/units .
 includedir=include include/$(OS_TARGET)
 targetdir=.
 
@@ -62,7 +62,7 @@ endif
 tools: lcl components
         $(MAKE) -C tools
 
-all: lcl components designer ide
+all: lcl components designer packager ide
 
 cleanide:
         $(DEL) $(wildcard *$(OEXT))

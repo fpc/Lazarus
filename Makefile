@@ -222,7 +222,7 @@ LCL_PLATFORM=gtk
 endif
 endif
 export LCL_PLATFORM
-override TARGET_DIRS+=lcl components designer
+override TARGET_DIRS+=lcl components designer packager
 override TARGET_PROGRAMS+=lazarus
 override TARGET_EXAMPLEDIRS+=examples
 override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT))
@@ -230,7 +230,7 @@ override INSTALL_BASEDIR=share/lazarus
 override DIST_DESTDIR=$(BASEDIR)/dist
 override COMPILER_OPTIONS+=-gl
 override COMPILER_INCLUDEDIR+=include include/$(OS_TARGET)
-override COMPILER_UNITDIR+=lcl/units lcl/units/$(LCL_PLATFORM) components/units components/custom components/mpaslex designer designer/units debugger packager .
+override COMPILER_UNITDIR+=lcl/units lcl/units/$(LCL_PLATFORM) components/units components/custom components/mpaslex designer designer/units debugger packager packager/units .
 override COMPILER_TARGETDIR+=.
 ifdef REQUIRE_UNITSDIR
 override UNITSDIR+=$(REQUIRE_UNITSDIR)
@@ -1581,6 +1581,7 @@ fpc_makefiles: fpc_makefile fpc_makefile_dirs
 TARGET_DIRS_LCL=1
 TARGET_DIRS_COMPONENTS=1
 TARGET_DIRS_DESIGNER=1
+TARGET_DIRS_PACKAGER=1
 ifdef TARGET_DIRS_LCL
 lcl_all:
 	$(MAKE) -C lcl all
@@ -1710,6 +1711,49 @@ designer:
 	$(MAKE) -C designer all
 .PHONY: designer_all designer_debug designer_smart designer_release designer_examples designer_shared designer_install designer_sourceinstall designer_exampleinstall designer_distinstall designer_zipinstall designer_zipsourceinstall designer_zipexampleinstall designer_zipdistinstall designer_clean designer_distclean designer_cleanall designer_info designer_makefiles designer
 endif
+ifdef TARGET_DIRS_PACKAGER
+packager_all:
+	$(MAKE) -C packager all
+packager_debug:
+	$(MAKE) -C packager debug
+packager_smart:
+	$(MAKE) -C packager smart
+packager_release:
+	$(MAKE) -C packager release
+packager_examples:
+	$(MAKE) -C packager examples
+packager_shared:
+	$(MAKE) -C packager shared
+packager_install:
+	$(MAKE) -C packager install
+packager_sourceinstall:
+	$(MAKE) -C packager sourceinstall
+packager_exampleinstall:
+	$(MAKE) -C packager exampleinstall
+packager_distinstall:
+	$(MAKE) -C packager distinstall
+packager_zipinstall:
+	$(MAKE) -C packager zipinstall
+packager_zipsourceinstall:
+	$(MAKE) -C packager zipsourceinstall
+packager_zipexampleinstall:
+	$(MAKE) -C packager zipexampleinstall
+packager_zipdistinstall:
+	$(MAKE) -C packager zipdistinstall
+packager_clean:
+	$(MAKE) -C packager clean
+packager_distclean:
+	$(MAKE) -C packager distclean
+packager_cleanall:
+	$(MAKE) -C packager cleanall
+packager_info:
+	$(MAKE) -C packager info
+packager_makefiles:
+	$(MAKE) -C packager makefiles
+packager:
+	$(MAKE) -C packager all
+.PHONY: packager_all packager_debug packager_smart packager_release packager_examples packager_shared packager_install packager_sourceinstall packager_exampleinstall packager_distinstall packager_zipinstall packager_zipsourceinstall packager_zipexampleinstall packager_zipdistinstall packager_clean packager_distclean packager_cleanall packager_info packager_makefiles packager
+endif
 TARGET_EXAMPLEDIRS_EXAMPLES=1
 ifdef TARGET_EXAMPLEDIRS_EXAMPLES
 examples_all:
@@ -1786,7 +1830,7 @@ endif
 	$(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT)
 tools: lcl components
 	$(MAKE) -C tools
-all: lcl components designer ide
+all: lcl components designer packager ide
 cleanide:
 	$(DEL) $(wildcard *$(OEXT))
 	$(DEL) $(wildcard *$(PPUEXT))

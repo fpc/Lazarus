@@ -999,7 +999,8 @@ begin
   // create source
   e:=EndOfLine;
   Src:='{ This is an automatically created source file. Do not edit!'+e
-      +'  This source is only used to compile the package '+APackage.IDAsString+e
+      +'  This source is only used to compile and install'+e
+      +'  the package '+APackage.IDAsString+'.'+e
       +'}'+e
       +e
       +'interface'+e

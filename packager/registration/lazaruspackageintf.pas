@@ -38,7 +38,7 @@ unit LazarusPackageIntf;
 interface
 
 uses
-  Classes, SysUtils;
+  Classes;
 
 type
   TRegisterProc = procedure;
