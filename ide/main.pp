@@ -1536,11 +1536,7 @@ begin
     
    ecRun:
     begin
-      if ToolStatus=itNone then
-        if DoBuildProject(false)<>mrOk then begin
-          Handled:=false;
-          exit;
-        end;
+      if DoBuildProject(false)<>mrOk then exit;
       DoRunProject;
     end;
     
@@ -1842,6 +1838,7 @@ end;
 
 Procedure TMainIDE.mnuRunProjectClicked(Sender : TObject);
 begin
+  if DoBuildProject(false)<>mrOk then exit;
   DoRunProject;
 end;
 
@@ -4754,8 +4751,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.149  2001/11/19 21:48:51  lazarus
-  MG: fixed splash timer AV, incomplete project loading, application save as
+  Revision 1.150  2001/11/19 22:01:25  lazarus
+  MG: run button and menu run  now builds+runs
 
   Revision 1.148  2001/11/19 15:23:17  lazarus
   MG: added quick syntax check via codetools
