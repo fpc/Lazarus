@@ -150,12 +150,26 @@ type
   
   TGuideLineType = (glLeft, glTop, glRight, glBottom);
   
-  TControlSelState = (cssOnlyNonVisualNeedsUpdate,
-                      cssOnlyVisualNeedsUpdate,
-                      cssBoundsNeedsUpdate,
-                      cssBoundsNeedsSaving,
-                      cssParentLevelNeedsUpdate
-                      );
+  TRubberbandType = (
+    rbtSelection,
+    rbtCreating
+    );
+  
+  TControlSelState = (
+    cssOnlyNonVisualNeedsUpdate,
+    cssOnlyNonVisualSelected,
+    cssOnlyVisualNeedsUpdate,
+    cssOnlyVisualNeedsSelected,
+    cssBoundsNeedsUpdate,
+    cssBoundsNeedsSaving,
+    cssParentLevelNeedsUpdate,
+    cssNotSavingBounds,
+    cssSnapping,
+    cssChangedDuringLock,
+    cssRubberbandActive,
+    cssCacheGuideLines,
+    cssVisible
+    );
   TControlSelStates = set of TControlSelState;
 
   TControlSelection = class(TObject)
@@ -167,11 +181,12 @@ type
     // But due to snapping and lcl aligning the components can have other bounds
     FLeft: Integer;
     FOnSelectionFormChanged: TOnSelectionFormChanged;
+    FRubberbandCreationColor: TColor;
+    FRubberbandSelectionColor: TColor;
     FSavedHeight: integer;
     FSavedLeft: integer;
     FSavedTop: integer;
     FSavedWidth: integer;
-    FSnapping: boolean;
     FTop: Integer;
     FWidth: Integer;
     FHeight: Integer;
@@ -186,7 +201,6 @@ type
     FOldWidth: integer;
     FOldHeight: integer;
     // caches
-    FCacheGuideLines: boolean;
     FGuideLinesCache: array[TGuideLineType] of TGuideLineCache;
     FParentLevel: integer;
 
@@ -196,28 +210,31 @@ type
     FGrabberColor: TColor;
     FMarkerSize: integer;
     FMarkerColor: integer;
-    FActiveGrabber:TGrabber;
-    FRubberBandBounds:TRect;
-    FRubberbandActive: boolean;
-    FVisible:boolean;
+    FActiveGrabber: TGrabber;
+    FRubberBandBounds: TRect;
+    FRubberbandType: TRubberbandType;
     FUpdateLock: integer;
-    FChangedDuringLock: boolean;
     FResizeLockCount: integer;
-    FNotSaveBounds: boolean;
     FStates: TControlSelStates;
-    FOnlyNonVisualComponentsSelected: boolean;
-    FOnlyVisualComponentsSelected: boolean;
 
     FOnChange: TNotifyEvent;
 
+    function GetCacheGuideLines: boolean;
+    function GetRubberbandActive: boolean;
+    function GetSnapping: boolean;
+    function GetVisible: boolean;
     procedure SetCacheGuideLines(const AValue: boolean);
     procedure SetCustomForm;
     function GetGrabbers(AGrabIndex:TGrabIndex): TGrabber;
     procedure SetGrabbers(AGrabIndex:TGrabIndex; const AGrabber: TGrabber);
     procedure SetGrabberSize(const NewSize: integer);
     procedure DoChange;
+    procedure SetRubberbandActive(const AValue: boolean);
+    procedure SetRubberbandCreationColor(const AValue: TColor);
+    procedure SetRubberbandSelectionColor(const AValue: TColor);
+    procedure SetRubberbandType(const AValue: TRubberbandType);
     procedure SetSnapping(const AValue: boolean);
-    procedure SetVisible(const Value: Boolean);
+    procedure SetVisible(const AValue: Boolean);
     function GetItems(Index:integer):TSelectedControl;
     procedure SetItems(Index:integer; ASelectedControl:TSelectedControl);
     procedure SetActiveGrabber(AGrabber:TGrabber);
@@ -260,7 +277,8 @@ type
   public
     constructor Create; 
     destructor Destroy; override;
-    property Items[Index:integer]:TSelectedControl read GetItems write SetItems; default;
+    property Items[Index:integer]:TSelectedControl
+      read GetItems write SetItems; default;
     function Count:integer;
     
     procedure BeginUpdate;
@@ -294,24 +312,26 @@ type
     procedure SizeComponents(HorizSizing: TComponentSizing; AWidth: integer;
           VertSizing: TComponentSizing; AHeight: integer);
     procedure ScaleComponents(Percent: integer);
-    property Snapping: boolean read FSnapping write SetSnapping;
+    property Snapping: boolean read GetSnapping write SetSnapping;
     procedure DrawGuideLines(DC: TDesignerDeviceContext);
-    property CacheGuideLines: boolean read FCacheGuideLines write SetCacheGuideLines;
+    property CacheGuideLines: boolean
+      read GetCacheGuideLines write SetCacheGuideLines;
     procedure InvalidGuideLinesCache;
     function ParentLevel: integer;
 
     property GrabberSize:integer read FGrabberSize write SetGrabberSize;
     property GrabberColor: TColor read FGrabberColor write FGrabberColor;
     procedure DrawGrabbers(DC: TDesignerDeviceContext);
-    function GrabberAtPos(X,Y:integer):TGrabber;
-    property Grabbers[AGrabIndex:TGrabIndex]:TGrabber read GetGrabbers write SetGrabbers;
+    function GrabberAtPos(X,Y: integer):TGrabber;
+    property Grabbers[AGrabIndex: TGrabIndex]:TGrabber
+      read GetGrabbers write SetGrabbers;
     property MarkerSize:integer read FMarkerSize write FMarkerSize;
     property MarkerColor: TColor read FMarkerColor write FMarkerColor;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
-    procedure DrawMarker(AComponent:TComponent; DC: TDesignerDeviceContext);
+    procedure DrawMarker(AComponent: TComponent; DC: TDesignerDeviceContext);
     procedure DrawMarkerAt(DC: TDesignerDeviceContext;
       ALeft, ATop, AWidth, AHeight: integer);
-    property ActiveGrabber:TGrabber read FActiveGrabber write SetActiveGrabber;
+    property ActiveGrabber: TGrabber read FActiveGrabber write SetActiveGrabber;
     
     property Left:integer read FLeft;
     property Top:integer read FTop;
@@ -328,15 +348,23 @@ type
     property SavedWidth:integer read FSavedWidth;
     property SavedHeight:integer read FSavedHeight;
 
-    property RubberbandBounds:TRect read FRubberbandBounds write SetRubberbandBounds;
-    property RubberbandActive: boolean read FRubberbandActive write FRubberbandActive;
+    property RubberbandBounds:TRect
+      read FRubberbandBounds write SetRubberbandBounds;
+    property RubberbandActive: boolean
+      read GetRubberbandActive write SetRubberbandActive;
+    property RubberbandType: TRubberbandType
+      read FRubberbandType write SetRubberbandType;
+    property RubberbandSelectionColor: TColor
+      read FRubberbandSelectionColor write SetRubberbandSelectionColor;
+    property RubberbandCreationColor: TColor
+      read FRubberbandCreationColor write SetRubberbandCreationColor;
     procedure DrawRubberband(DC: TDesignerDeviceContext);
     procedure SelectWithRubberBand(ACustomForm:TCustomForm;
       ClearBefore, ExclusiveOr: boolean; var SelectionChanged: boolean;
       MaxParentControl: TControl);
 
     procedure Sort(SortProc: TSelectionSortCompare);
-    property Visible:boolean read FVisible write SetVisible;
+    property Visible:boolean read GetVisible write SetVisible;
     function OnlyNonVisualComponentsSelected: boolean;
     function OnlyVisualComponentsSelected: boolean;
     
@@ -542,12 +570,11 @@ begin
   FCustomForm:=nil;
   FActiveGrabber:=nil;
   FUpdateLock:=0;
-  FChangedDuringLock:=false;
-  FRubberbandActive:=false;
-  FNotSaveBounds:=false;
   FStates:=[cssOnlyNonVisualNeedsUpdate,cssOnlyVisualNeedsUpdate,
-            cssParentLevelNeedsUpdate];
-  fCacheGuideLines:=true;
+            cssParentLevelNeedsUpdate,cssCacheGuideLines];
+  FRubberbandType:=rbtSelection;
+  FRubberbandCreationColor:=clMaroon;
+  FRubberbandSelectionColor:=clNavy;
 end;
 
 destructor TControlSelection.Destroy;
@@ -571,7 +598,7 @@ begin
   if FUpdateLock=0 then begin
     if cssBoundsNeedsUpdate in FStates then UpdateBounds;
     if cssBoundsNeedsSaving in FStates then SaveBounds;
-    if FChangedDuringLock then DoChange;
+    if cssChangedDuringLock in FStates then DoChange;
   end;
 end;
 
@@ -593,9 +620,32 @@ end;
 
 procedure TControlSelection.SetCacheGuideLines(const AValue: boolean);
 begin
-  if FCacheGuideLines=AValue then exit;
-  FCacheGuideLines:=AValue;
+  if CacheGuideLines=AValue then exit;
+  if AValue then
+    Include(FStates,cssCacheGuideLines)
+  else
+    Exclude(FStates,cssCacheGuideLines);
   InvalidGuideLinesCache;
+end;
+
+function TControlSelection.GetSnapping: boolean;
+begin
+  Result:=cssSnapping in FStates;
+end;
+
+function TControlSelection.GetVisible: boolean;
+begin
+  Result:=cssVisible in FStates;
+end;
+
+function TControlSelection.GetRubberbandActive: boolean;
+begin
+  Result:=cssRubberbandActive in FStates;
+end;
+
+function TControlSelection.GetCacheGuideLines: boolean;
+begin
+  Result:=cssCacheGuideLines in FStates;
 end;
 
 procedure TControlSelection.SetCustomForm;
@@ -1221,23 +1271,57 @@ end;
 procedure TControlSelection.DoChange;
 begin
   if (FUpdateLock>0) then
-    FChangedDuringLock:=true
+    Include(FStates,cssChangedDuringLock)
   else
   begin
-    FChangedDuringLock:=false;
+    Exclude(FStates,cssChangedDuringLock);
     if Assigned(fOnChange) then fOnChange(Self);
   end;
 end;
 
-procedure TControlSelection.SetSnapping(const AValue: boolean);
+procedure TControlSelection.SetRubberbandActive(const AValue: boolean);
 begin
-  FSnapping:=AValue;
+  if RubberbandActive=AValue then exit;
+  if AValue then
+    Include(FStates,cssRubberbandActive)
+  else
+    Exclude(FStates,cssRubberbandActive);
 end;
 
-procedure TControlSelection.SetVisible(const Value: Boolean);
+procedure TControlSelection.SetRubberbandCreationColor(const AValue: TColor);
 begin
-  if FVisible=Value then exit;
-  FVisible:=Value;
+  if FRubberbandCreationColor=AValue then exit;
+  FRubberbandCreationColor:=AValue;
+end;
+
+procedure TControlSelection.SetRubberbandSelectionColor(const AValue: TColor);
+begin
+  if FRubberbandSelectionColor=AValue then exit;
+  FRubberbandSelectionColor:=AValue;
+end;
+
+procedure TControlSelection.SetRubberbandType(const AValue: TRubberbandType);
+begin
+  if FRubberbandType=AValue then exit;
+  FRubberbandType:=AValue;
+end;
+
+procedure TControlSelection.SetSnapping(const AValue: boolean);
+begin
+  if Snapping=AValue then exit;
+  if AValue then
+    Include(FStates,cssSnapping)
+  else
+    Exclude(FStates,cssSnapping);
+end;
+
+procedure TControlSelection.SetVisible(const AValue: Boolean);
+begin
+  if Visible=AValue then exit;
+  if AValue then
+    Include(FStates,cssVisible)
+  else
+    Exclude(FStates,cssVisible);
 end;
 
 function TControlSelection.GetItems(Index:integer):TSelectedControl;
@@ -1255,7 +1339,7 @@ procedure TControlSelection.SaveBounds;
 var i:integer;
   g:TGrabIndex;
 begin
-  if FNotSaveBounds then exit;
+  if cssNotSavingBounds in FStates then exit;
   if FUpdateLock>0 then begin
     Include(FStates,cssBoundsNeedsSaving);
     exit;
@@ -1357,8 +1441,8 @@ end;
 procedure TControlSelection.Assign(AControlSelection:TControlSelection);
 var i:integer;
 begin
-  if AControlSelection=Self then exit;
-  FNotSaveBounds:=true;
+  if (AControlSelection=Self) or (cssNotSavingBounds in FStates) then exit;
+  Include(FStates,cssNotSavingBounds);
   BeginUpdate;
   Clear;
   FControls.Capacity:=AControlSelection.Count;
@@ -1366,7 +1450,7 @@ begin
     Add(AControlSelection[i].Component);
   SetCustomForm;
   UpdateBounds;
-  FNotSaveBounds:=false;
+  Exclude(FStates,cssNotSavingBounds);
   SaveBounds;
   EndUpdate;
   DoChange;
@@ -1613,7 +1697,10 @@ var
         DC.Save;
         with DC.Canvas do begin
           OldPenColor:=Pen.Color;
-          Pen.Color:=clBlack;
+          if RubberbandType=rbtSelection then
+            Pen.Color:=RubberbandSelectionColor
+          else
+            Pen.Color:=RubberbandCreationColor;
         end;
         RestorePen:=true;
       end;
@@ -1736,10 +1823,13 @@ begin
     Result:=true;
     for i:=0 to FControls.Count-1 do
       Result:=Result and (not (Items[i].Component is TControl));
-    FOnlyNonVisualComponentsSelected:=Result;
+    if Result then
+      Include(FStates,cssOnlyNonVisualSelected)
+    else
+      Exclude(FStates,cssOnlyNonVisualSelected);
     Exclude(FStates,cssOnlyNonVisualNeedsUpdate);
   end else
-    Result:=FOnlyNonVisualComponentsSelected;
+    Result:=cssOnlyNonVisualSelected in FStates;
 end;
 
 function TControlSelection.OnlyVisualComponentsSelected: boolean;
@@ -1749,10 +1839,13 @@ begin
     Result:=true;
     for i:=0 to FControls.Count-1 do
       Result:=Result and (Items[i].Component is TControl);
-    FOnlyVisualComponentsSelected:=Result;
+    if Result then
+      Include(FStates,cssOnlyVisualNeedsSelected)
+    else
+      Exclude(FStates,cssOnlyVisualNeedsSelected);
     Exclude(FStates,cssOnlyVisualNeedsUpdate);
   end else
-    Result:=FOnlyVisualComponentsSelected;
+    Result:=cssOnlyVisualNeedsSelected in FStates;
 end;
 
 function TControlSelection.CompareInts(i1, i2: integer): integer;
