@@ -89,6 +89,9 @@ end;
 
 procedure TScreen.MoveFormToFocusFront(ACustomForm: TCustomForm);
 begin
+  if (Self=nil) or (ACustomForm=nil)
+  or (csDestroying in ACustomForm.ComponentState) then
+    RaiseGDBException('TScreen.MoveFormToFocusFront');
   FCustomForms.Remove(ACustomForm);
   FCustomForms.Insert(0, ACustomForm);
   if ACustomForm is TForm then

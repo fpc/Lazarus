@@ -1271,9 +1271,11 @@ end;
 {------------------------------------------------------------------------------
   TCustomForm Method SetFocusedControl
 ------------------------------------------------------------------------------}
-function TCustomForm.SetFocusedControl(Control : TWinControl): Boolean;
+function TCustomForm.SetFocusedControl(Control: TWinControl): Boolean;
 begin
   Result := False;
+  
+  if (csDestroying in Control.ComponentState) then exit;
 
   // update FActiveControl
   if FDesigner = nil then
@@ -1599,6 +1601,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.132  2004/03/30 19:08:29  mattias
+  test for destroying controls, so they do not get focus
+
   Revision 1.131  2004/03/08 22:36:01  mattias
   added TWinControl.ParentFormInitializeWnd
 
