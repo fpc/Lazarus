@@ -159,6 +159,10 @@ const
 
 
 type
+
+  {$IFNDEF TRANSLATESTRING}
+  TTranslateString = string;//for backward compatibility
+  {$ENDIF}
   TWinControl = class;
   TControl = class;
   TWinControlClass = class of TWinControl;
@@ -197,7 +201,7 @@ type
   TAlignSet = set of TAlign;
   TAnchorKind = (akTop, akLeft, akRight, akBottom);
   TAnchors = set of TAnchorKind;
-  TCaption = String;
+  TCaption = TTranslateString;
   TCursor = -32768..32767;
 
   TFormStyle = (fsNormal, fsMDIChild, fsMDIFORM, fsStayOnTop, fsSplash);
@@ -721,7 +725,7 @@ type
     FHelpContext: THelpContext;
     FHelpKeyword: String;
     FHelpType: THelpType;
-    FHint: String;
+    FHint: TTranslateString;
     FHostDockSite: TWinControl;
     FIsControl: Boolean;
     fLastAlignedBounds: TRect;
@@ -945,7 +949,7 @@ type
     procedure SetAction(Value: TBasicAction); virtual;
     procedure SetColor(Value: TColor); virtual;
     procedure SetEnabled(Value: Boolean); virtual;
-    procedure SetHint(const Value: String); virtual;
+    procedure SetHint(const Value: TTranslateString); virtual;
     procedure SetName(const Value: TComponentName); override;
     procedure SetParent(NewParent: TWinControl); virtual;
     Procedure SetParentComponent(NewParentComponent: TComponent); override;
@@ -1113,7 +1117,7 @@ type
     property Cursor: TCursor read FCursor write SetCursor default crDefault;
     property Left: Integer read FLeft write SetLeft;
     property Height: Integer read FHeight write SetHeight;
-    property Hint: String read FHint write SetHint;
+    property Hint: TTranslateString read FHint write SetHint;
     property Top: Integer read FTop write SetTop;
     property Width: Integer read FWidth write SetWidth;
     property HelpType: THelpType read FHelpType write FHelpType default htContext;
@@ -2387,6 +2391,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.250  2004/10/12 08:23:20  mattias
+  fixed compiler options interface double variables
+
   Revision 1.249  2004/09/25 15:05:38  mattias
   implemented Rename Identifier
 

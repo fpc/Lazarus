@@ -265,6 +265,8 @@ type
   public
   end;
 
+function  WidgetGetSelStart(const Widget: PGtkWidget): integer;
+procedure WidgetSetSelLength(const Widget: PGtkWidget; NewLength: integer);
 
 implementation
 

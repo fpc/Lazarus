@@ -179,7 +179,7 @@ begin
   if HandleAllocated and (not fValueNeedsUpdate) then begin
     FValue := TWSCustomSpinEditClass(WidgetSetClass).GetValue(Self);
   end;
-  GetValue := fValue;
+  Result := fValue;
 end;
 
 {-----------------------------------------------------------------------------}
@@ -203,13 +203,18 @@ begin
   fMinValue := 0;
   fMaxValue := 100;
 
-  SetInitialBounds(1,1,50,20);
+  SetInitialBounds(0,0,50,20);
 end;
 
 {-----------------------------------------------------------------------------}
 destructor TCustomSpinEdit.Destroy;
 begin
   inherited Destroy;
+end;
+
+procedure TCustomSpinEdit.DestroyComponent;
+begin
+  GetValue;
 end;
 
 procedure TCustomSpinEdit.SelectAll;

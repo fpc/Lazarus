@@ -45,77 +45,93 @@ type
 
   TLazCompilerOptions = class(TPersistent)
   private
-    fAdditionalConfigFile: Boolean;
-    fAllowLabel: Boolean;
-    fAssemblerStyle: Integer;
-    fCMacros: Boolean;
-    fConfigFilePath: String;
-    fCPPInline: Boolean;
-    fCStyleOp: Boolean;
-    fCustomOptions: string;
-    fD2Ext: Boolean;
-    FDebugPath: string;
-    fDelphiCompat: Boolean;
-    fDontUseConfigFile: Boolean;
-    FEmulatedFloatOpcodes: boolean;
-    fGenDebugDBX: Boolean;
-    fGenDebugInfo: Boolean;
-    fGenerate: TCompilationGenerateCode;
-    fGenGProfCode: Boolean;
-    fGPCCompat: Boolean;
-    fHeapSize: Integer;
-    fIncludeAssertionCode: Boolean;
-    fIncludeFiles: String;
-    fInitConst: Boolean;
-    fIOChecks: Boolean;
-    fLCLWidgetType: string;
-    fLibraries: String;
-    fLinkerOptions: String;
-    fLinkStyle: Integer;
-    FModified: boolean;
-    FObjectPath: string;
     FOnModified: TNotifyEvent;
-    fOptLevel: Integer;
-    fOtherUnitFiles: String;
-    fOverflowChecks: Boolean;
     fOwner: TObject;
-    fPassLinkerOpt: Boolean;
+  protected
+    FModified: boolean;
+
+    // Paths:
+    fIncludeFiles: String;
+    fLibraries: String;
+    fOtherUnitFiles: String;
+    FObjectPath: string;
+    FSrcPath: string;
+    fUnitOutputDir: string;
+    fDebugPath: string;
+    fLCLWidgetType: string;
+
+    // Parsing:
+    // assembler style
+    fAssemblerStyle: Integer;
+    // symantec checking
+    fD2Ext: Boolean;
+    fCStyleOp: Boolean;
+    fIncludeAssertionCode: Boolean;
+    fDelphiCompat: Boolean;
+    fAllowLabel: Boolean;
+    fUseAnsiStr: Boolean;
+    fCPPInline: Boolean;
+    fCMacros: Boolean;
+    fTPCompat: Boolean;
+    fGPCCompat: Boolean;
+    fInitConst: Boolean;
+    fStaticKwd: Boolean;
+
+    // Code generation:
+    fUnitStyle: Integer;
+    fIOChecks: Boolean;
     fRangeChecks: Boolean;
+    fOverflowChecks: Boolean;
+    fStackChecks: Boolean;
+    FEmulatedFloatOpcodes: boolean;
+    fHeapSize: LongInt;
+    fVerifyObjMethodCall: boolean;
+    fGenerate: TCompilationGenerateCode;
+    fTargetProc: Integer;
+    fTargetCPU: string;
+    fVarsInReg: Boolean;
+    fUncertainOpt: Boolean;
+    fOptLevel: Integer;
+    fTargetOS: String;
+
+    // Linking:
+    fGenDebugInfo: Boolean;
+    fGenDebugDBX: Boolean;
+    fUseLineInfoUnit: Boolean;
+    fUseHeaptrc: Boolean;
+    fUseValgrind: Boolean;
+    fGenGProfCode: Boolean;
+    fStripSymbols: Boolean;
+    fLinkStyle: Integer;
+    fPassLinkerOpt: Boolean;
+    fLinkerOptions: String;
+    FWin32GraphicApp: boolean;
+
+    // Messages:
+    fShowErrors: Boolean;
+    fShowWarn: Boolean;
+    fShowNotes: Boolean;
+    fShowHints: Boolean;
+    fShowGenInfo: Boolean;
+    fShowLineNum: Boolean;
     fShowAll: Boolean;
     fShowAllProcsOnError: Boolean;
+    fShowDebugInfo: Boolean;
+    fShowUsedFiles: Boolean;
+    fShowTriedFiles: Boolean;
+    fShowDefMacros: Boolean;
     fShowCompProc: Boolean;
     fShowCond: Boolean;
-    fShowDebugInfo: Boolean;
-    fShowDefMacros: Boolean;
-    fShowErrors: Boolean;
-    fShowGenInfo: Boolean;
-    fShowHints: Boolean;
-    fShowHintsForUnusedUnitsInMainSrc: Boolean;
-    fShowLineNum: Boolean;
-    fShowNotes: Boolean;
     fShowNothing: Boolean;
-    fShowTriedFiles: Boolean;
-    fShowUsedFiles: Boolean;
-    fShowWarn: Boolean;
-    FSrcPath: string;
-    fStackChecks: Boolean;
-    fStaticKwd: Boolean;
-    fStopAfterErrCount: integer;
-    fStripSymbols: Boolean;
-    fTargetCPU: string;
-    fTargetOS: string;
-    fTargetProc: Integer;
-    fTPCompat: Boolean;
-    fUncertainOpt: Boolean;
-    fUnitOutputDir: string;
-    fUnitStyle: Integer;
-    fUseAnsiStr: Boolean;
-    fUseHeaptrc: Boolean;
-    fUseLineInfoUnit: Boolean;
-    fUseValgrind: Boolean;
-    fVarsInReg: Boolean;
-    FWin32GraphicApp: boolean;
+    fShowHintsForUnusedUnitsInMainSrc: Boolean;
     fWriteFPCLogo: Boolean;
+    fStopAfterErrCount: integer;
+
+    // Other:
+    fDontUseConfigFile: Boolean;
+    fAdditionalConfigFile: Boolean;
+    fConfigFilePath: String;
+    fCustomOptions: string;
   protected
     procedure SetBaseDirectory(const AValue: string); virtual; abstract;
     procedure SetCompilerPath(const AValue: String); virtual; abstract;

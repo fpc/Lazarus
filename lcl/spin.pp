@@ -75,6 +75,7 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    procedure DestroyComponent; override;
     procedure SelectAll;
     procedure ClearSelection; virtual;
     procedure CopyToClipboard; virtual;

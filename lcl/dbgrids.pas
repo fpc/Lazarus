@@ -307,7 +307,6 @@ type
     FTempText : string;
     FDrawingActiveRecord: Boolean;
     FEditingColumn: Integer;
-    FEditingField: TField;
     function GetCurrentField: TField;
     function GetDataSource: TDataSource;
     procedure OnRecordChanged(Field:TField);
@@ -1469,6 +1468,7 @@ begin
   inherited PrepareCanvas(aCol, aRow, aState);
   // we get the default canvas values
   // now, modify canvas according to column values
+  ForTitle:=false;
   TheAlignment := GetColumnAlignment(ACol, ForTitle);
   case TheAlignment of
     taRightJustify: Canvas.TextStyle.Alignment := Classes.taRightJustify;
@@ -2703,6 +2703,9 @@ end.
 
 {
   $Log$
+  Revision 1.21  2004/10/12 08:23:20  mattias
+  fixed compiler options interface double variables
+
   Revision 1.20  2004/10/09 18:08:52  vincents
   Fix fpc 1.0.x compilation.
 

@@ -2514,6 +2514,7 @@ end;
 
 procedure TProject.SetCompilerOptions(const AValue: TProjectCompilerOptions);
 begin
+  if fCompilerOptions=AValue then exit;
   fCompilerOptions:=AValue;
   inherited SetLazCompilerOptions(AValue);
 end;
@@ -3129,6 +3130,9 @@ end.
 
 {
   $Log$
+  Revision 1.169  2004/10/12 08:23:20  mattias
+  fixed compiler options interface double variables
+
   Revision 1.168  2004/10/09 13:24:18  mattias
   added compiler options to IDEIntf and made Win32GraphicApp default for application projects
 

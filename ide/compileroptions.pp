@@ -175,96 +175,12 @@ type
     fInheritedOptParseStamps: integer;
     fInheritedOptGraphStamps: integer;
     fLoaded: Boolean;
-    FModified: boolean;
     fOptionsString: String;
     FParsedOpts: TParsedCompilerOptions;
     fTargetFilename: string;
-    FWin32GraphicApp: boolean;
     fXMLFile: String;
     FXMLConfig: TXMLConfig;
 
-    // Paths:
-    fIncludeFiles: String;
-    fLibraries: String;
-    fOtherUnitFiles: String;
-    FObjectPath: string;
-    FSrcPath: string;
-    fUnitOutputDir: string;
-    fDebugPath: string;
-    fLCLWidgetType: string;
-
-    // Parsing:
-    // assembler style
-    fAssemblerStyle: Integer;
-    // symantec checking
-    fD2Ext: Boolean;
-    fCStyleOp: Boolean;
-    fIncludeAssertionCode: Boolean;
-    fDelphiCompat: Boolean;
-    fAllowLabel: Boolean;
-    fUseAnsiStr: Boolean;
-    fCPPInline: Boolean;
-    fCMacros: Boolean;
-    fTPCompat: Boolean;
-    fGPCCompat: Boolean;
-    fInitConst: Boolean;
-    fStaticKwd: Boolean;    
-
-    // Code generation:
-    fUnitStyle: Integer;
-    fIOChecks: Boolean;
-    fRangeChecks: Boolean;
-    fOverflowChecks: Boolean;
-    fStackChecks: Boolean;
-    FEmulatedFloatOpcodes: boolean;
-    fHeapSize: LongInt;
-    fVerifyObjMethodCall: boolean;
-    fGenerate: TCompilationGenerateCode;
-    fTargetProc: Integer;
-    fTargetCPU: string;
-    fVarsInReg: Boolean;
-    fUncertainOpt: Boolean;
-    fOptLevel: Integer;
-    fTargetOS: String;
-    
-    // Linking:
-    fGenDebugInfo: Boolean;
-    fGenDebugDBX: Boolean;
-    fUseLineInfoUnit: Boolean;
-    fUseHeaptrc: Boolean;
-    fUseValgrind: Boolean;
-    fGenGProfCode: Boolean;
-    fStripSymbols: Boolean;
-    fLinkStyle: Integer;
-    fPassLinkerOpt: Boolean;
-    fLinkerOptions: String;
-    
-    // Messages:
-    fShowErrors: Boolean;
-    fShowWarn: Boolean;
-    fShowNotes: Boolean;
-    fShowHints: Boolean;
-    fShowGenInfo: Boolean;
-    fShowLineNum: Boolean;
-    fShowAll: Boolean;
-    fShowAllProcsOnError: Boolean;
-    fShowDebugInfo: Boolean;
-    fShowUsedFiles: Boolean;
-    fShowTriedFiles: Boolean;
-    fShowDefMacros: Boolean;
-    fShowCompProc: Boolean;
-    fShowCond: Boolean;
-    fShowNothing: Boolean;
-    fShowHintsForUnusedUnitsInMainSrc: Boolean;
-    fWriteFPCLogo: Boolean;
-    fStopAfterErrCount: integer;
-
-    // Other:
-    fDontUseConfigFile: Boolean;
-    fAdditionalConfigFile: Boolean;
-    fConfigFilePath: String;
-    fCustomOptions: string;
-    
     // Compilation
     fCompilerPath: String;
     fExecuteBefore: TCompilationTool;
@@ -341,7 +257,7 @@ type
     property XMLConfigFile: TXMLConfig read FXMLConfig write FXMLConfig;
     property Loaded: Boolean read fLoaded write fLoaded;
 
-    // search paths:
+   { // search paths:
     property IncludeFiles: String read fIncludeFiles write SetIncludeFiles;
     property Libraries: String read fLibraries write SetLibraries;
     property OtherUnitFiles: String read fOtherUnitFiles write SetOtherUnitFiles;
@@ -428,7 +344,7 @@ type
     property AdditionalConfigFile: Boolean read fAdditionalConfigFile
                                            write fAdditionalConfigFile;
     property ConfigFilePath: String read fConfigFilePath write fConfigFilePath;
-    property CustomOptions: string read fCustomOptions write SetCustomOptions;
+    property CustomOptions: string read fCustomOptions write SetCustomOptions;}
 
     // compilation
     property CompilerPath: String read fCompilerPath write SetCompilerPath;
@@ -2174,7 +2090,7 @@ begin
   fStackChecks := CompOpts.fStackChecks;
   FEmulatedFloatOpcodes := CompOpts.fEmulatedFloatOpcodes;
   fHeapSize := CompOpts.fHeapSize;
-  fVerifyObjMethodCall := CompOpts.fVerifyObjMethodCall;
+  fEmulatedFloatOpcodes := CompOpts.fEmulatedFloatOpcodes;
   fGenerate := CompOpts.fGenerate;
   fTargetProc := CompOpts.fTargetProc;
   fTargetCPU := CompOpts.fTargetCPU;
@@ -2265,7 +2181,7 @@ begin
     and (fStackChecks = CompOpts.fStackChecks)
     and (FEmulatedFloatOpcodes = CompOpts.FEmulatedFloatOpcodes)
     and (fHeapSize = CompOpts.fHeapSize)
-    and (fVerifyObjMethodCall = CompOpts.fVerifyObjMethodCall)
+    and (fEmulatedFloatOpcodes = CompOpts.fEmulatedFloatOpcodes)
     and (fGenerate = CompOpts.fGenerate)
     and (fTargetProc = CompOpts.fTargetProc)
     and (fTargetCPU = CompOpts.fTargetCPU)
