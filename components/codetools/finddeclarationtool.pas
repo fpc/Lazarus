@@ -1237,12 +1237,14 @@ begin
     // identifier category and identifier
     if NewNode<>nil then begin
       case NewNode.Desc of
-      ctnVarDefinition, ctnTypeDefinition, ctnConstDefinition:
+      ctnVarDefinition, ctnTypeDefinition, ctnConstDefinition,
+      ctnEnumIdentifier:
         begin
           case NewNode.Desc of
           ctnVarDefinition: Result:=Result+'var ';
           ctnTypeDefinition: Result:=Result+'type ';
           ctnConstDefinition: Result:=Result+'const ';
+          ctnEnumIdentifier: Result:=Result+'enum ';
           end;
           NewTool.MoveCursorToNodeStart(NewNode);
           NewTool.ReadNextAtom;
