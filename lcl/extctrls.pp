@@ -51,7 +51,7 @@ uses
 type
   { workaround problem with fcl }
   TAbstractReader = TReader;
-  
+
   { TTabPosition - Move to TTabbedNotebook when it is created }
   TTabPosition = (tpTop, tpBottom, tpLeft, tpRight);
 
@@ -92,7 +92,7 @@ type
     property Height stored False;
     property TabOrder stored False;
   end;
-  
+
   TCustomPageClass = class of TCustomPage;
 
 
@@ -125,8 +125,8 @@ type
 
   TNoteBookOption = (nboShowCloseButtons, nboMultiLine);
   TNoteBookOptions = set of TNoteBookOption;
-  
-  TCustomNotebook = class(TCustomControl)
+
+  TCustomNotebook = class(TWinControl)
   private
     fAccess: TStrings; // TNBPages
     FImages: TImageList;
@@ -269,10 +269,10 @@ type
 
   TTimer = class (TCustomTimer)
   end;
-  
-  
+
+
   { TIdleTimer }
-  
+
   TIdleTimerAutoEvent = (
     itaOnIdle,
     itaOnIdleEnd,
@@ -304,10 +304,10 @@ type
     property AutoStartEvent: TIdleTimerAutoEvent
       read FAutoStartEvent write SetAutoStartEvent default itaOnUserInput;
   end;
-  
+
 
   { TShape }
-  
+
   TShapeType = (stRectangle, stSquare, stRoundRect, stRoundSquare,
     stEllipse, stCircle);
 
@@ -435,7 +435,7 @@ type
 
 
   { TImage }
-  
+
   TImage = class(TCustomImage)
   published
     property Align;
@@ -455,10 +455,10 @@ type
 
 
   { TBevel }
-  
+
   TBevelStyle = (bsLowered, bsRaised);
   TBevelShape=(bsBox, bsFrame, bsTopLine, bsBottomLine, bsLeftLine, bsRightLine);
-  
+
   TBevel = Class(TGraphicControl)
   private
     FStyle:TBevelStyle;
@@ -489,7 +489,7 @@ type
 
 
   { TCustomRadioGroup }
-  
+
   TColumnLayout = (
     clHorizontalThenVertical,
     clVerticalThenHorizontal
@@ -555,12 +555,12 @@ type
     property OnResize;
     property Visible;
   end;
-  
-  
+
+
   { TCustomCheckGroup }
-  
+
   TCheckGroupClicked = procedure(Sender: TObject; Index: integer) of object;
-  
+
   TCustomCheckGroup = class(TCustomGroupBox)
   private
     FButtonList : TList; // list of TCheckBox
@@ -672,7 +672,7 @@ type
     property LabelSpacing: Integer read FLabelSpacing write SetLabelSpacing
                                                                       default 3;
   end;
-  
+
 
   { TLabeledEdit }
 
@@ -711,7 +711,7 @@ type
     property OnMouseMove;
     property OnMouseUp;
   end;
-  
+
 
   { TCustomPanel }
 
@@ -732,6 +732,7 @@ type
     procedure SetBevelWidth(const Value: TBevelWidth);
     procedure SetBorderWidth(const Value: TBorderWidth);
     procedure SetBorderStyle(const Value: TControlBorderStyle);
+    procedure WMWindowPosChanged(var Message: TLMWindowPosChanged); message LM_WINDOWPOSCHANGED;
   protected
     procedure AdjustClientRect(var Rect: TRect); override;
     function GetText: TCaption; override;
@@ -750,8 +751,8 @@ type
     property Caption read GetText write SetText;
     property ParentColor stored ParentColorIsStored;
   end;
-  
-  
+
+
   { TPanel }
 
   TPanel = class(TCustomPanel)
@@ -793,13 +794,13 @@ type
     property OnResize;
     property OnStartDrag;
   end;
-    
-    
+
+
 
 const
   TCN_First = 0-550;
   TCN_SELCHANGE = TCN_FIRST - 1;
-  
+
 procedure Register;
 
 implementation
@@ -836,6 +837,12 @@ end.
 
  {
   $Log$
+  Revision 1.86  2004/01/03 21:06:05  micha
+  - fix win32/checklistbox
+  - implement proper lcl to interface move/size notify via setwindowpos
+  - fix treeview to use inherited canvas from customcontrol
+  - implement double buffering in win32
+
   Revision 1.85  2003/12/28 12:49:18  mattias
   published TPaintBox.Enabled
 

@@ -914,6 +914,7 @@ procedure TWinControl.SendMoveSizeMessages(SizeChanged, PosChanged: boolean);
 var
   SizeMsg : TLMSize;
   MoveMsg : TLMMove;
+  Flags: UINT;
 begin
   if (not HandleAllocated)
   or ((not SizeChanged) and (not PosChanged)) then exit;
@@ -923,35 +924,16 @@ begin
       descendents incorrectly depend on it, so force it
       down their throat }
 
-  Perform(LM_WindowposChanged, 0, 0);
-
-  if SizeChanged then begin
-    with SizeMsg do begin
-      Msg:= LM_SIZE;
-      SizeType:= 6; // force realign
-      Width:= FWidth;
-      Height:= FHeight;
-      {$IFDEF CHECK_POSITION}
-      if AnsiCompareText(ClassName,'TSynBaseCompletionForm')=0 then
-      writeln(' [TControl.SendMoveSizeMessages] ',Name,':',ClassName,' SizeMsg Width=',Width,' Height=',Height);
-      {$ENDIF}
-    end;
-    WindowProc(TLMessage(SizeMsg));
-  end;
-
-  if PosChanged then begin
-    with MoveMsg do begin
-      Msg:= LM_MOVE;
-      MoveType:= 1;
-      XPos:= FLeft;
-      YPos:= FTop;
-      {$IFDEF CHECK_POSITION}
-      if AnsiCompareText(ClassName,'TSynBaseCompletionForm')=0 then
-      writeln(' [TControl.SendMoveSizeMessages] ',Name,':',ClassName,' MoveMsg XPos=',XPos,' YPos=',YPos);
-      {$ENDIF}
-    end;
-    WindowProc(TLMessage(MoveMsg));
-  end;
+//  Flags := SWP_NOZORDER or SWP_NOACTIVATE;
+  Flags := $14;
+  if not SizeChanged then
+//    Flags := Flags or SWP_NOSIZE
+    Flags := Flags or $1
+  else
+  { if not PosChanged then }
+//    Flags := Flags or SWP_NOMOVE;
+    Flags := Flags or $2;
+  SetWindowPos(Handle, 0, FLeft, FTop, FWidth, FHeight, Flags);
 end;
 
 {------------------------------------------------------------------------------}
@@ -3166,6 +3148,12 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.185  2004/01/03 21:06:06  micha
+  - fix win32/checklistbox
+  - implement proper lcl to interface move/size notify via setwindowpos
+  - fix treeview to use inherited canvas from customcontrol
+  - implement double buffering in win32
+
   Revision 1.184  2003/12/29 14:22:22  micha
   fix a lot of range check errors win32
 

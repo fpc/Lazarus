@@ -859,7 +859,7 @@ type
 
   PDrawListItemStruct = ^TDrawListItemStruct;
   TDrawListItemStruct = record
-    ItemID: longint;
+    ItemID: UINT;
     Area: TRect;
     DC: HDC;
     ItemState: TOwnerDrawState;
@@ -1916,6 +1916,12 @@ end.
 
 {
   $Log$
+  Revision 1.54  2004/01/03 21:06:05  micha
+  - fix win32/checklistbox
+  - implement proper lcl to interface move/size notify via setwindowpos
+  - fix treeview to use inherited canvas from customcontrol
+  - implement double buffering in win32
+
   Revision 1.53  2003/12/29 14:22:22  micha
   fix a lot of range check errors win32
 

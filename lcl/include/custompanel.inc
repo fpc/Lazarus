@@ -15,7 +15,7 @@
  *                                                                           *
  *****************************************************************************
 }
-{ 
+{
 
   Delphi compatibility:
 
@@ -144,8 +144,15 @@ end;
 procedure TCustomPanel.SetText(const Value: TCaption);
 begin
   if Caption <> Value then begin
-    FCaption := Value; 
+    FCaption := Value;
 //    TextChanged;
     Invalidate;
   end;
+end;
+
+procedure TCustomPanel.WMWindowPosChanged(var Message: TLMWindowPosChanged);
+begin
+  // size changed?
+  if (Message.WindowPos^.Flags and $1{SWP_NOSIZE}) = 0 then
+    Invalidate;
 end;

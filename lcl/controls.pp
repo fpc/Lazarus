@@ -1225,11 +1225,14 @@ type
     FCanvas: TCanvas;
   protected
     procedure WMPaint(var Message: TLMPaint); message LM_PAINT;
+    procedure PaintWindow(DC: HDC); override;
   public
-    Procedure Paint; virtual;
-    property Canvas: TCanvas read FCanvas write FCanvas;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
+    procedure Paint; virtual;
+
+    property Canvas: TCanvas read FCanvas write FCanvas;
   end;
 
 
@@ -1854,6 +1857,12 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.165  2004/01/03 21:06:05  micha
+  - fix win32/checklistbox
+  - implement proper lcl to interface move/size notify via setwindowpos
+  - fix treeview to use inherited canvas from customcontrol
+  - implement double buffering in win32
+
   Revision 1.164  2004/01/03 18:16:25  mattias
   set DragCursor props to default
 

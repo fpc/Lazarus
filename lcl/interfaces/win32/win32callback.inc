@@ -160,53 +160,49 @@ Var
     OwnerObject := TObject(Windows.GetProp(Windows.GetDlgItem(Window, ChildId), 'WinControl'));
   end;
 
-  function SendPaintMessage: boolean;
+  procedure SendPaintMessage;
   var
-    DC,MemDC : HDC;
+    DC, MemDC: HDC;
     MemBitmap, OldBitmap : HBITMAP;
     PS : TPaintStruct;
     MemWidth: Integer;
     MemHeight: Integer;
+    LeftOffset: Integer;
+    TopOffset: Integer;
     AWinControl: TWinControl;
+    PaintMsg: TLMPaint;
   begin
-    Result:=false;
-
-    // try using the received DC
-    With TLMPaint(LMessage) Do
-    Begin
-      Msg := LM_PAINT;
-      DC := WParam;
-    end;
-    // not completed, therefore deactivated
-    exit;
-
-    if (TLMPaint(LMessage).DC<>0)
-    or (OwnerObject=nil) or (not (OwnerObject is TWinControl)) then
+    // note: ignores the received DC
+    // do not use default deliver message
+    if (OwnerObject=nil) or (not (OwnerObject is TWinControl)) then
       exit;
 
     // create a paint message
-    AWinControl:=TWinControl(OwnerObject);
-    Result:=true;
-    DC := GetDC(0);
-    MemWidth:=AWinControl.Width;
-    MemHeight:=AWinControl.Height;
-
-
-    MemBitmap := CreateCompatibleBitmap(DC, MemWidth, MemHeight);
-    ReleaseDC(0, DC);
-    MemDC := CreateCompatibleDC(0);
-    OldBitmap := SelectObject(MemDC, MemBitmap);
+    AWinControl := TWinControl(OwnerObject);
+    DC := Windows.GetDC(0);
+    GetWindowSize(Window, MemWidth, MemHeight);
+    MemBitmap := Windows.CreateCompatibleBitmap(DC, MemWidth, MemHeight);
+    Windows.ReleaseDC(0, DC);
+    MemDC := Windows.CreateCompatibleDC(0);
+    OldBitmap := Windows.SelectObject(MemDC, MemBitmap);
+    GetLclClientOriginOffset(AWinControl.Handle, LeftOffset, TopOffset);
     try
-      DC := BeginPaint(AWinControl.Handle, PS);
+      DC := Windows.BeginPaint(Window, @PS);
       AWinControl.EraseBackground(MemDC);
-      TLMPaint(LMessage).DC := MemDC;
-      DeliverMessage(OwnerObject, PLMsg^);
-      TLMPaint(LMessage).DC := 0;
-      //TODO:bitblt
-      BitBlt(DC, 0, 0, MemWidth, MemHeight, MemDC, 0, 0, SRCCOPY);
-      EndPaint(AWinControl.Handle, PS);
+      PaintMsg.Msg := LM_PAINT;
+      PaintMsg.DC := MemDC;
+      PaintMsg.PaintStruct := @PS;
+      MoveWindowOrgEx(MemDC, LeftOffset, TopOffset);
+      DeliverMessage(OwnerObject, PaintMsg);
+      MoveWindowOrgEx(MemDC, -LeftOffset, -TopOffset);
+      Windows.BitBlt(DC, 0, 0, MemWidth, MemHeight, MemDC, 0, 0, SRCCOPY);
+      Windows.EndPaint(Window, @PS);
     finally
       SelectObject(MemDC, OldBitmap);
+      Windows.OpenClipboard(0);
+      Windows.EmptyClipboard;
+      Windows.SetClipboardData(CF_BITMAP, MemBitmap);
+      Windows.CloseClipboard;
       DeleteDC(MemDC);
       DeleteObject(MemBitmap);
     end;
@@ -382,7 +378,9 @@ Begin
     WM_DRAWITEM:
     Begin
       GetChildOwnerObject(WParam);
-      if OwnerObject is TCustomListbox then begin
+      if (OwnerObject is TCustomListbox) and
+            (TCustomListBox(OwnerObject).Style <> lbStandard) then
+      begin
         LMessage.Msg := LM_DRAWLISTITEM;
         TLMDrawListItem(LMessage).DrawListItemStruct := @DrawListItemStruct;
         with DrawListItemStruct do begin
@@ -391,8 +389,7 @@ Begin
           ItemState := TOwnerDrawState(PDrawItemStruct(LParam)^.itemState);
           DC := PDrawItemStruct(LParam)^._hDC;
         end;
-      end
-      else begin
+      end else begin
         with TLMDrawItems(LMessage) do
         begin
           Msg := LM_DRAWITEM;
@@ -616,8 +613,8 @@ Begin
     End;
     WM_PAINT:
     Begin
-      if SendPaintMessage then exit;
-      WinProcess:=false;
+      SendPaintMessage;
+      WinProcess := false;
     End;
     WM_PASTE:
     Begin
@@ -931,6 +928,12 @@ end;
 
 {
   $Log$
+  Revision 1.85  2004/01/03 21:06:06  micha
+  - fix win32/checklistbox
+  - implement proper lcl to interface move/size notify via setwindowpos
+  - fix treeview to use inherited canvas from customcontrol
+  - implement double buffering in win32
+
   Revision 1.84  2004/01/03 11:57:48  mattias
   applied implementation for LM_LB_GETINDEXAT  from Vincent
 

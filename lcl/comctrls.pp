@@ -97,8 +97,8 @@ type
     property Items[Index: Integer]: TStatusPanel read GetItem write SetItem; default;
     property StatusBar: TStatusBar read FStatusBar;
   end;
-  
-  
+
+
   { TStatusBar }
 
   TStatusBar = Class(TWinControl)
@@ -126,8 +126,8 @@ type
     property SimplePanel: Boolean read FSimplePanel write SetSimplePanel default True;
     property Visible;
   end;
-  
-  
+
+
   { TTabSheet }
 
   TPageControl = class;
@@ -182,8 +182,8 @@ type
     property Visible stored False;
     property Width stored False;
   end;
-  
-  
+
+
   { TPageControl }
 
   TPageControl = class(TCustomNotebook)
@@ -259,7 +259,7 @@ type
     //property OnStartDrag;
     //property OnUnDock;
   end;
-  
+
 
   { Custom draw }
 
@@ -271,7 +271,7 @@ type
 
 
   { TListView }
-  
+
   TListItems = class;  //forward declaration!
   TCustomListView = class;  //forward declaration!
   TSortType = (stNone, stData, stText, stBoth);
@@ -317,10 +317,10 @@ type
     property SubItemImages[AnIndex: Integer]: Integer
       read GetSubItemImages write SetSubItemImages;
   end;
-  
-  
+
+
   { TListItems }
-  
+
   TListItems = class(TPersistent)
   private
     FOwner: TCustomListView;
@@ -348,8 +348,8 @@ type
     property Item[const AIndex: Integer]: TListItem read GetItem write SetItem; default;
     property Owner : TCustomListView read FOwner;
   end;
-  
-  
+
+
   { TListColumn }
 
   TWidth = 0..MaxInt;
@@ -390,8 +390,8 @@ type
     property Visible : Boolean read FVisible write SetVisible;
     property Width: TWidth read GetWidth write SetWidth;
   end;
-  
-  
+
+
   { TListColumns }
 
   TListColumns = class(TCollection)
@@ -415,8 +415,8 @@ type
                                             read GetItem write SetItem; default;
     procedure Assign(Source: TPersistent); override;
   end;
-  
-  
+
+
   { TCustomListView }
 
   TItemChange = (ctText, ctImage, ctState);
@@ -431,7 +431,7 @@ type
   TLVDeletedEvent = procedure(Sender: TObject; Item: TListItem) of object;
   TLVSelectItemEvent = procedure(Sender: TObject; Item: TListItem;
                                  Selected: Boolean) of object;
-  
+
   TListViewState = (lvMultiSelect, lvUpdateNeeded);
   TListViewStates = set of TListViewState;
 
@@ -522,8 +522,8 @@ type
     procedure EndUpdate;
     property Selected: TListItem read GetSelection write SetSelection;
   end;
-  
-  
+
+
   { TListView }
 
   TListView = class(TCustomListView)
@@ -1468,7 +1468,7 @@ type
     tvoToolTips
     );
   TTreeViewOptions = set of TTreeViewOption;
-  
+
 const
   DefaultTreeViewOptions = [tvoShowRoot, tvoShowLines, tvoShowButtons,
                             tvoHideSelection, tvoToolTips,
@@ -1487,7 +1487,6 @@ type
     FBackgroundColor: TColor;
     FBorderStyle: TBorderStyle;
     FBottomItem: TTreeNode;
-    FCanvas: TCanvas;
     FExpandSignType: TTreeViewExpandSignType;
     FExpandSignSize: integer;
     FDefEditProc: Pointer;
@@ -1747,7 +1746,6 @@ type
       read FBackgroundColor write SetBackgroundColor default clWhite;
     property BorderWidth default 2;
     property BottomItem: TTreeNode read GetBottomItem write SetBottomItem;
-    property Canvas: TCanvas read FCanvas;
     property DefaultItemHeight: integer
       read FDefItemHeight write SetDefaultItemHeight default 20;
     property DropTarget: TTreeNode read GetDropTarget write SetDropTarget;
@@ -1766,8 +1764,8 @@ type
     property TopItem: TTreeNode read GetTopItem write SetTopItem;
     property TreeLineColor: TColor read FTreeLineColor write FTreeLineColor default clWindowFrame;
   end;
-  
-  
+
+
   { TTreeView }
 
   TTreeView = class(TCustomTreeView)
@@ -1852,12 +1850,12 @@ type
     property OnStartDrag;
     property Items;
   end;
-  
+
 
   { TTreeNodeExpandedState }
   { class to store and restore the expanded state of a TTreeView
     The nodes are identified by their Text property.
-    
+
     Usage example:
       // save old expanded state
       OldExpanded:=TTreeNodeExpandedState.Create(ATreeView);
@@ -1946,6 +1944,12 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.98  2004/01/03 21:06:05  micha
+  - fix win32/checklistbox
+  - implement proper lcl to interface move/size notify via setwindowpos
+  - fix treeview to use inherited canvas from customcontrol
+  - implement double buffering in win32
+
   Revision 1.97  2003/12/28 02:40:50  mattias
   set colors to default values
 

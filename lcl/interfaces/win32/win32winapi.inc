@@ -141,36 +141,33 @@ End;
   functions for the message.
  ------------------------------------------------------------------------------}
 Procedure TWin32Object.CallDefaultWndHandler(Sender: TObject; var Message);
+var
+  PrevWndProc: pointer;
+  Handle: HWND;
 
   procedure CallWin32PaintHandler;
   var
-    PaintMsg: TLMPaint;
-    Handle: HWND;
-    PrevWndProc: pointer;
     ClientBoundRect: TRect;
+    PaintMsg: TLMPaint absolute Message;
   begin
     // the LCL creates paint messages, with a DC origin set to the client
     // origin of the emitting control. The paint handler of win32 expects the
     // DC origin at the origin of the control.
     // -> move the windoworigin
-    Handle := ObjectToHwnd(Sender);
     ClientBoundRect:=Rect(0,0,0,0);
     if Sender is TWinControl then
       if not GetClientBounds(Handle,ClientBoundRect) then exit;
-    PaintMsg:=TLMPaint(Message);
     MoveWindowOrgEx(PaintMsg.DC,-ClientBoundRect.Left,-ClientBoundRect.Top);
     try
       // call win32 paint handler
-      PrevWndProc := GetProp(Handle, 'DefWndProc');
+      PrevWndProc := Pointer(Windows.GetProp(Handle, 'DefWndProc'));
       if PrevWndProc = nil then
-        Windows.DefWindowProc(Handle, WM_PAINT, TLMessage(Message).WParam,
-          TLMessage(Message).LParam)
+        Windows.DefWindowProc(Handle, WM_PAINT, PaintMsg.DC, 0)
       else
-        Windows.CallWindowProc(WNDPROC(PrevWndProc), Handle, WM_PAINT,
-          TLMessage(Message).WParam, TLMessage(Message).LParam);
+        Windows.CallWindowProc(WNDPROC(PrevWndProc), Handle, WM_PAINT, PaintMsg.DC, 0);
     finally
       // restore DC origin
-      MoveWindowOrgEx(PaintMsg.DC,ClientBoundRect.Left,ClientBoundRect.Top);
+      MoveWindowOrgEx(PaintMsg.DC, ClientBoundRect.Left, ClientBoundRect.Top);
     end;
   end;
 
@@ -282,6 +279,7 @@ Procedure TWin32Object.CallDefaultWndHandler(Sender: TObject; var Message);
   end;
 
 begin
+  Handle := ObjectToHwnd(Sender);
   case TLMessage(Message).Msg of
 
     LM_PAINT:
@@ -1253,7 +1251,7 @@ var
 Begin
   Result := Boolean(Windows.GetClientRect(Handle, @Rect));
   if not Result then exit;
-  OwnerObject := TObject(GetProp(Handle, 'Wincontrol'));
+  OwnerObject := TObject(Windows.GetProp(Handle, 'Wincontrol'));
   if OwnerObject is TWinControl then begin
     TheWinControl:=TWinControl(OwnerObject);
     if TheWinControl is TCustomGroupBox then begin
@@ -1910,25 +1908,29 @@ Function TWin32Object.GetWindowSize(Handle : hwnd;
   var Width, Height: integer): boolean;
 var
   R: TRect;
-  OwnerObject: TObject;
+  Style, ExStyle: LongInt;
 begin
   Result := Boolean(Windows.GetWindowRect(Handle,@R));
-  If (Windows.GetParent(Handle) = 0) then begin
-    OwnerObject := TObject(GetProp(Handle, 'Wincontrol'));
-    if OwnerObject is TCustomForm then begin
-      // the LCL defines the size of a form without the borders.
-      // That means for the win32: The client area + menu
-      Result:=GetClientRect(Handle,R);
-      // add menu
-      If TCustomForm(OwnerObject).Menu <> nil then
-        Inc(R.Bottom, FMetrics.iMenuHeight);
-    end;
-  end;
   with R Do
   begin
     Width := Right - Left;
     Height := Bottom - Top;
   end;
+
+  Style := Windows.GetWindowLong(Handle, GWL_STYLE);
+  ExStyle := Windows.GetWindowLong(Handle, GWL_EXSTYLE);
+  if (Style and WS_BORDER) <> 0 then
+  begin
+    // convert top level lcl window coordinaties to win32 coord
+    // add twice, top+bottom border
+    Dec(Width, 2*Windows.GetSystemMetrics(SM_CXSIZEFRAME));
+    Dec(Height, 2*Windows.GetSystemMetrics(SM_CYSIZEFRAME));
+  end;
+  if (Style and WS_CAPTION) <> 0 then
+    if (ExStyle and WS_EX_TOOLWINDOW) <> 0 then
+      Dec(Height, Windows.GetSystemMetrics(SM_CYSMCAPTION))
+    else
+      Dec(Height, Windows.GetSystemMetrics(SM_CYCAPTION));
 end;
 
 {------------------------------------------------------------------------------
@@ -2690,8 +2692,27 @@ End;
   window.
  ------------------------------------------------------------------------------}
 Function TWin32Object.SetWindowPos(HWnd: HWND; HWndInsertAfter: HWND; X, Y, CX, CY: Integer; UFlags: UINT): Boolean;
+var
+  Style, ExStyle: Integer;
+  OldRect, OldClientRect: Windows.RECT;
 Begin
 //writeln('[TWin32Object.SetWindowPos] Top=',HWndInsertAfter=HWND_TOP);
+  Style := Windows.GetWindowLong(HWnd, GWL_STYLE);
+  ExStyle := Windows.GetWindowLong(HWnd, GWL_EXSTYLE);
+  Windows.GetWindowRect(HWnd, @OldRect);
+  Windows.GetClientRect(HWnd, @OldClientRect);
+  if (Style and WS_BORDER) <> 0 then
+  begin
+    // convert top level lcl window coordinaties to win32 coord
+    // add twice, top+bottom border
+    Inc(CX, 2*Windows.GetSystemMetrics(SM_CXSIZEFRAME));
+    Inc(CY, 2*Windows.GetSystemMetrics(SM_CYSIZEFRAME));
+  end;
+  if (Style and WS_CAPTION) <> 0 then
+    if (ExStyle and WS_EX_TOOLWINDOW) <> 0 then
+      Inc(CY, Windows.GetSystemMetrics(SM_CYSMCAPTION))
+    else
+      Inc(CY, Windows.GetSystemMetrics(SM_CYCAPTION));
   Result := Boolean(Windows.SetWindowPos(HWnd, HWndInsertAfter, X, Y, CX, CY, UFlags));
 End;
 
@@ -2866,6 +2887,12 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.91  2004/01/03 21:06:06  micha
+  - fix win32/checklistbox
+  - implement proper lcl to interface move/size notify via setwindowpos
+  - fix treeview to use inherited canvas from customcontrol
+  - implement double buffering in win32
+
   Revision 1.90  2003/12/31 18:10:56  micha
   fix sizeof bitmap structure (from martin)
 

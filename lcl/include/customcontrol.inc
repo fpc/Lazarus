@@ -23,13 +23,13 @@
 
   Constructor for the class.
  ------------------------------------------------------------------------------}
-constructor TCustomControl.Create(AOwner: TComponent);                                            
-begin                                                                                             
+constructor TCustomControl.Create(AOwner: TComponent);
+begin
   inherited Create(AOwner);
-  
+
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
-end;                                                                                              
+end;
 
 {------------------------------------------------------------------------------
   Method: TCustomControl.Destroy
@@ -38,22 +38,22 @@ end;
 
   Destructor for the class.
  ------------------------------------------------------------------------------}
-Destructor TCustomControl.Destroy;                                            
-begin                                                                                             
+Destructor TCustomControl.Destroy;
+begin
   FCanvas.Free;
-  inherited Destroy;         
-end;                                                                                              
+  inherited Destroy;
+end;
 
 {------------------------------------------------------------------------------
   Method: TCustomControl.Paint
   Params:   none
   Returns:  nothing
 
-  Default paint handler. Derived classed should paint themselves 
+  Default paint handler. Derived classed should paint themselves
  ------------------------------------------------------------------------------}
-Procedure TCustomControl.Paint;                                            
-begin                                                                                             
-end;                                                                                              
+Procedure TCustomControl.Paint;
+begin
+end;
 
 {------------------------------------------------------------------------------
   Method: TCustomControl.LMPaint
@@ -67,15 +67,38 @@ begin
   if (csDestroying in ComponentState) or (not HandleAllocated) then exit;
   Include(FControlState, csCustomPaint);
   inherited WMPaint(Message);
-  Paint; // TODO move this to the PaintWindow function;
   Exclude(FControlState, csCustomPaint);
-end;                          
- 
-                                                                    
+end;
+
+{------------------------------------------------------------------------------
+  Method: TCustomControl.PaintWindow
+  Params:   DC: The device context to paint on
+  Returns:  nothing
+
+  This is a plug-in in TWinControl to get the DC, assign it to our canvas and
+  call the paint method for descendents to do the actual painting
+ ------------------------------------------------------------------------------}
+procedure TCustomControl.PaintWindow(DC: HDC);
+begin
+  FCanvas.Handle := DC;
+  try
+    Paint;
+  finally
+    FCanvas.Handle := 0;
+  end;
+end;
+
+
 
 { =============================================================================
 
   $Log$
+  Revision 1.7  2004/01/03 21:06:05  micha
+  - fix win32/checklistbox
+  - implement proper lcl to interface move/size notify via setwindowpos
+  - fix treeview to use inherited canvas from customcontrol
+  - implement double buffering in win32
+
   Revision 1.6  2003/06/20 12:56:53  mattias
   reduced paint messages on destroy
 

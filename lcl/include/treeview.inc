@@ -2587,8 +2587,6 @@ begin
   TabStop := True;
   ParentColor := False;
   FBackgroundColor := clWhite;
-  FCanvas := TControlCanvas.Create;
-  TControlCanvas(FCanvas).Control := Self;
   FDefItemHeight:=20;
   FExpandSignType:=tvestPlusMinus;
   FExpandSignSize:=9;
@@ -2626,7 +2624,6 @@ begin
   //FreeObjectInstance(FEditInstance);
   FreeThenNil(FImageChangeLink);
   FreeThenNil(FStateChangeLink);
-  FreeThenNil(FCanvas);
   inherited Destroy;
 end;
 
@@ -5003,7 +5000,7 @@ function TCustomTreeView.ConsistencyCheck: integer;
 var OldMaxRight, OldLastTop, OldMaxLvl: integer;
   OldTopItem, OldBottomItem: TTreeNode;
 begin
-  if FCanvas=nil then exit(-1);
+  if Canvas=nil then exit(-1);
   if (fExpandSignSize<0) then exit(-2);
   if FDefItemHeight<0 then exit(-3);
   if FIndent<0 then exit(-4);

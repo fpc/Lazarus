@@ -749,7 +749,7 @@ end;
 
 function SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND; X, Y, cx, cy: Integer; uFlags: UINT): Boolean;
 begin
-  Result:=false;
+  Result := InterfaceObject.SetWindowPos(hWnd, hWndInsertAfter, X, Y, cx, cy, uFlags);
 end;
 
 function ShowCaret(hWnd: HWND): Boolean;
@@ -1296,6 +1296,12 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.107  2004/01/03 21:06:06  micha
+  - fix win32/checklistbox
+  - implement proper lcl to interface move/size notify via setwindowpos
+  - fix treeview to use inherited canvas from customcontrol
+  - implement double buffering in win32
+
   Revision 1.106  2003/12/29 14:22:22  micha
   fix a lot of range check errors win32
 
