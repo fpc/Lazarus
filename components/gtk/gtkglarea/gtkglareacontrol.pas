@@ -51,6 +51,7 @@ type
     procedure DoOnPaint; virtual;
     procedure SwapBuffers; virtual;
     function MakeCurrent: integer; virtual;
+    function RestoreOldGtkGLAreaControl: boolean;
   public
     property Widget: PGtkGLArea read GetWidget;
     property OnPaint: TNotifyEvent read FOnPaint write FOnPaint;
@@ -91,8 +92,10 @@ type
     property Visible;
   end;
   
-procedure Register;
 
+function GetCurrentGtkGLAreaControl: TGTKGLAreaControl;
+
+procedure Register;
 
 implementation
 
@@ -106,6 +109,18 @@ const
     GDK_GL_DOUBLEBUFFER,
     GDK_GL_None
     );
+
+var
+  GtkGLAreaControlStack: TList;
+
+function GetCurrentGtkGLAreaControl: TGTKGLAreaControl;
+begin
+  if (GtkGLAreaControlStack<>nil)
+  and (GtkGLAreaControlStack.Count>0) then
+    Result:=TGTKGLAreaControl(GtkGLAreaControlStack[GtkGLAreaControlStack.Count-1])
+  else
+    Result:=nil;
+end;
 
 procedure Register;
 begin
@@ -123,7 +138,7 @@ begin
     TControlCanvas(FCanvas).Control := Self;
   end else
     FCompStyle:=csNonLCL;
-  SetBounds(1, 1, 160, 90);
+  SetInitialBounds(0, 0, 160, 90);
 end;
 
 destructor TCustomGTKGLAreaControl.Destroy;
@@ -138,18 +153,32 @@ begin
   if (not (csDesigning in ComponentState))
   and Enabled and Visible and HandleAllocated
   and (gint(True) = MakeCurrent) then begin
-    UpdateFrameTimeDiff;
-    DoOnPaint;
+    try
+      UpdateFrameTimeDiff;
+      DoOnPaint;
+    finally
+      RestoreOldGtkGLAreaControl;
+    end;
   end;
 end;
 
 procedure TCustomGTKGLAreaControl.DoOnResize;
+var
+  RestoreNeeded: Boolean;
 begin
+  RestoreNeeded:=false;
   if (not (csDesigning in ComponentState))
   and Enabled and Visible and HandleAllocated
-  and (gint(True) = MakeCurrent) then
+  and (gint(True) = MakeCurrent) then begin
+    RestoreNeeded:=true;
     glViewport (0, 0, Width, Height);
-  inherited DoOnResize;
+  end;
+  try
+    inherited DoOnResize;
+  finally
+    if RestoreNeeded then
+      RestoreOldGtkGLAreaControl;
+  end;
 end;
 
 procedure TCustomGTKGLAreaControl.DoOnPaint;
@@ -175,6 +204,31 @@ begin
     end;
   end;
   Result:=gtk_gl_area_make_current(Widget);
+  if Result=gint(True) then begin
+    // on success push on stack
+    if GtkGLAreaControlStack=nil then
+      GtkGLAreaControlStack:=TList.Create;
+    GtkGLAreaControlStack.Add(Self);
+  end;
+end;
+
+function TCustomGTKGLAreaControl.RestoreOldGtkGLAreaControl: boolean;
+var
+  RestoredControl: TGTKGLAreaControl;
+begin
+  Result:=false;
+  // check if the current context is on stack
+  if (GtkGLAreaControlStack=nil) or (GtkGLAreaControlStack.Count=0) then exit;
+  // pop
+  GtkGLAreaControlStack.Delete(GtkGLAreaControlStack.Count-1);
+  // make old control the current control
+  if GtkGLAreaControlStack.Count>0 then begin
+    RestoredControl:=
+      TGTKGLAreaControl(GtkGLAreaControlStack[GtkGLAreaControlStack.Count-1]);
+    if gtk_gl_area_make_current(RestoredControl.Widget)<>gint(true) then
+      exit;
+  end;
+  Result:=true;
 end;
 
 procedure TCustomGTKGLAreaControl.WMPaint(var Message: TLMPaint);
@@ -236,5 +290,9 @@ end;
 
 initialization
   {$i gtkglarea.lrs}
+  GtkGLAreaControlStack:=nil;
+  
+finalization
+  FreeAndNil(GtkGLAreaControlStack);
 
 end.
