@@ -103,6 +103,10 @@ msgstr "%s, projet spécifique"
 msgid "%s/ReadOnly"
 msgstr "%s/Lecture seule"
 
+#: lazarusidestrconsts:lispkgmangbothpackagesareconnectedthismeanseitheronepackageu
+msgid "%sBoth packages are connected. This means, either one package uses the other, or they are both used by a third package."
+msgstr ""
+
 #: lazarusidestrconsts:lisoipdescriptiondescription
 msgid "%sDescription:  %s"
 msgstr "%sDescription: %s"
@@ -422,6 +426,10 @@ msgstr "Ambiguïtés des fichiers trouvé"
 #: lazarusidestrconsts:lisa2pambigiousunitname
 msgid "Ambigious Unit Name"
 msgstr "Ambiguïté de nom d'unité"
+
+#: lazarusidestrconsts:lispkgmangambigiousunitsfound
+msgid "Ambigious units found"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pancestortype
 msgid "Ancestor Type"
@@ -5619,6 +5627,10 @@ msgstr ""
 msgid "There are other files in the directory with the same name,%swhich only differ in case:%s%s%sDelete them?"
 msgstr ""
 
+#: lazarusidestrconsts:lispkgmangtherearetwounitswiththesamename1from2from
+msgid "There are two units with the same name:%s%s1. %s%s%s from %s%s2. %s%s%s from %s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangthereisacircleintherequiredpackages
 msgid "There is a circle in the required packages. See package graph."
 msgstr ""
@@ -5627,12 +5639,24 @@ msgstr ""
 msgid "There is a file with the same name and a similar extension ond disk%sFile: %s%sAmbigious File: %s%s%sDelete ambigious file?"
 msgstr ""
 
+#: lazarusidestrconsts:lispkgmangthereisafpcunitwiththesamenameasapackage
+msgid "There is a FPC unit with the same name as a package:%s%s%s%s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangthereisafpcunitwiththesamenamefrom
+msgid "There is a FPC unit with the same name:%s%s%s%s%s from %s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:lisexttoolthereisamaximumoftools
 msgid "There is a maximum of %s tools."
 msgstr ""
 
 #: lazarusidestrconsts:listhereisaunitwiththenameintheprojectplzchoose
 msgid "There is a unit with the name %s%s%s in the project.%sPlz choose a different name"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangthereisaunitwiththesamenameasapackage1from2
+msgid "There is a unit with the same name as a package:%s%s1. %s%s%s from %s%s2. %s%s%s%s"
 msgstr ""
 
 #: lazarusidestrconsts:listhereisalreadyaformwiththename

@@ -1827,6 +1827,18 @@ resourcestring
   lisPkgMangCircleInPackageDependencies = 'Circle in package dependencies';
   lisPkgMangThereIsACircleInTheRequiredPackages = 'There is a circle in the '
     +'required packages. See package graph.';
+  lisPkgMangThereAreTwoUnitsWithTheSameName1From2From = 'There are two units '
+    +'with the same name:%s%s1. %s%s%s from %s%s2. %s%s%s from %s%s%s';
+  lisPkgMangThereIsAUnitWithTheSameNameAsAPackage1From2 = 'There is a unit '
+    +'with the same name as a package:%s%s1. %s%s%s from %s%s2. %s%s%s%s';
+  lisPkgMangAmbigiousUnitsFound = 'Ambigious units found';
+  lisPkgMangBothPackagesAreConnectedThisMeansEitherOnePackageU = '%sBoth '
+    +'packages are connected. This means, either one package uses the other, '
+    +'or they are both used by a third package.';
+  lisPkgMangThereIsAFPCUnitWithTheSameNameFrom = 'There is a FPC unit with '
+    +'the same name:%s%s%s%s%s from %s%s%s';
+  lisPkgMangThereIsAFPCUnitWithTheSameNameAsAPackage = 'There is a FPC unit '
+    +'with the same name as a package:%s%s%s%s%s%s';
   lisPkgMangErrorWritingFile = 'Error writing file';
   lisPkgMangUnableToWriteStateFileOfPackageError = 'Unable to write state '
     +'file %s%s%s%sof package %s.%sError: %s';

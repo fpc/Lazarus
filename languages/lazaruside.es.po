@@ -105,6 +105,10 @@ msgstr "%s, específico de proyecto"
 msgid "%s/ReadOnly"
 msgstr "%s/Sólo de lectura"
 
+#: lazarusidestrconsts:lispkgmangbothpackagesareconnectedthismeanseitheronepackageu
+msgid "%sBoth packages are connected. This means, either one package uses the other, or they are both used by a third package."
+msgstr ""
+
 #: lazarusidestrconsts:lisoipdescriptiondescription
 msgid "%sDescription:  %s"
 msgstr "%s Descripción: %s"
@@ -424,6 +428,10 @@ msgstr "Encontrados archivos ambiguos"
 #: lazarusidestrconsts:lisa2pambigiousunitname
 msgid "Ambigious Unit Name"
 msgstr "Nombre de Unidad ambiguo"
+
+#: lazarusidestrconsts:lispkgmangambigiousunitsfound
+msgid "Ambigious units found"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pancestortype
 msgid "Ancestor Type"
@@ -5621,6 +5629,10 @@ msgstr "Hay másfunciones en el menú contextual"
 msgid "There are other files in the directory with the same name,%swhich only differ in case:%s%s%sDelete them?"
 msgstr "Hay otros archivos en el directorio con el mismo nombre,%s difieren sólo en may/min:%s%s%s¿Borrarlos?"
 
+#: lazarusidestrconsts:lispkgmangtherearetwounitswiththesamename1from2from
+msgid "There are two units with the same name:%s%s1. %s%s%s from %s%s2. %s%s%s from %s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangthereisacircleintherequiredpackages
 msgid "There is a circle in the required packages. See package graph."
 msgstr "Hay un círculo en los paquetes requeridos. Mire el gráfico de paquete"
@@ -5629,6 +5641,14 @@ msgstr "Hay un círculo en los paquetes requeridos. Mire el gráfico de paquete"
 msgid "There is a file with the same name and a similar extension ond disk%sFile: %s%sAmbigious File: %s%s%sDelete ambigious file?"
 msgstr "Hay un archivo con el mismo nombre y extensión similar en disco%sArchivo: %s%sArchivo Ambiguo: %s%s%s¿Borrar archivo ambiguo?"
 
+#: lazarusidestrconsts:lispkgmangthereisafpcunitwiththesamenameasapackage
+msgid "There is a FPC unit with the same name as a package:%s%s%s%s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangthereisafpcunitwiththesamenamefrom
+msgid "There is a FPC unit with the same name:%s%s%s%s%s from %s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:lisexttoolthereisamaximumoftools
 msgid "There is a maximum of %s tools."
 msgstr "Hay un máximo de %s herramientas"
@@ -5636,6 +5656,10 @@ msgstr "Hay un máximo de %s herramientas"
 #: lazarusidestrconsts:listhereisaunitwiththenameintheprojectplzchoose
 msgid "There is a unit with the name %s%s%s in the project.%sPlz choose a different name"
 msgstr "Hay una unidad con el nombre %s%s%s en el proyecto.%sPor favor escoja un nombre diferente"
+
+#: lazarusidestrconsts:lispkgmangthereisaunitwiththesamenameasapackage1from2
+msgid "There is a unit with the same name as a package:%s%s1. %s%s%s from %s%s2. %s%s%s%s"
+msgstr ""
 
 #: lazarusidestrconsts:listhereisalreadyaformwiththename
 msgid "There is already a form with the name %s%s%s"

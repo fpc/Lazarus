@@ -5594,6 +5594,30 @@ msgstr ""
 msgid "There is a circle in the required packages. See package graph."
 msgstr ""
 
+#: lazarusidestrconsts:lispkgmangtherearetwounitswiththesamename1from2from
+msgid "There are two units with the same name:%s%s1. %s%s%s from %s%s2. %s%s%s from %s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangthereisaunitwiththesamenameasapackage1from2
+msgid "There is a unit with the same name as a package:%s%s1. %s%s%s from %s%s2. %s%s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangambigiousunitsfound
+msgid "Ambigious units found"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangbothpackagesareconnectedthismeanseitheronepackageu
+msgid "%sBoth packages are connected. This means, either one package uses the other, or they are both used by a third package."
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangthereisafpcunitwiththesamenamefrom
+msgid "There is a FPC unit with the same name:%s%s%s%s%s from %s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangthereisafpcunitwiththesamenameasapackage
+msgid "There is a FPC unit with the same name as a package:%s%s%s%s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangerrorwritingfile
 msgid "Error writing file"
 msgstr ""

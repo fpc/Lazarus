@@ -94,6 +94,8 @@ type
     procedure PackageGraphDeletePackage(APackage: TLazPackage);
     procedure PackageGraphDependencyModified(ADependency: TPkgDependency);
     procedure PackageGraphEndUpdate(Sender: TObject; GraphChanged: boolean);
+    procedure PackageGraphFindFPCUnit(const UnitName, Directory: string;
+                                      var Filename: string);
 
     // menu
     procedure MainIDEitmPkgOpenPackageFileClick(Sender: TObject);
@@ -121,7 +123,8 @@ type
                                  FirstDependency: TPkgDependency;
                                  Policies: TPackageUpdatePolicies): TModalResult;
     function CheckPackageGraphForCompilation(APackage: TLazPackage;
-                                 FirstDependency: TPkgDependency): TModalResult;
+                                 FirstDependency: TPkgDependency;
+                                 const Directory: string): TModalResult;
     function DoPreparePackageOutputDirectory(APackage: TLazPackage): TModalResult;
     function DoSavePackageCompiledState(APackage: TLazPackage;
                   const CompilerFilename, CompilerParams: string): TModalResult;
@@ -486,6 +489,12 @@ begin
   end;
 end;
 
+procedure TPkgManager.PackageGraphFindFPCUnit(const UnitName,
+  Directory: string; var Filename: string);
+begin
+  Filename:=CodeToolBoss.DefineTree.FindUnitInUnitLinks(UnitName,Directory,true);
+end;
+
 procedure TPkgManager.mnuConfigCustomCompsClicked(Sender: TObject);
 begin
   ShowConfigureCustomComponents;
@@ -736,7 +745,7 @@ begin
 end;
 
 function TPkgManager.CheckPackageGraphForCompilation(APackage: TLazPackage;
-  FirstDependency: TPkgDependency): TModalResult;
+  FirstDependency: TPkgDependency; const Directory: string): TModalResult;
 var
   PathList: TList;
   Dependency: TPkgDependency;
@@ -793,26 +802,42 @@ begin
       exit;
     end;
 
-    // check for ambigious units
+    // check for ambigious units between packages
     if PackageGraph.FindAmbigiousUnits(APackage,FirstDependency,
       PkgFile1,PkgFile2,ConflictPkg)
     then begin
-      if PkgFile2<>nil then begin
-        s:='There are two units with the same name:'#13
-          +#13
-          +'1. "'+PkgFile1.Filename+'" from '+PkgFile1.LazPackage.IDAsString+#13
-          +'2. "'+PkgFile2.Filename+'" from '+PkgFile2.LazPackage.IDAsString+#13
-          +#13;
-      end else begin
-        s:='There is a unit with the same name as a package:'#13
-          +#13
-          +'1. "'+PkgFile1.Filename+'" from '+PkgFile1.LazPackage.IDAsString+#13
-          +'2. "'+ConflictPkg.IDAsString+#13
-          +#13;
-      end;
-      Result:=MessageDlg('Ambigious units found',s
-          +'Both packages are connected. This means, either one package uses '
-          +'the other, or they are both used by a third package.',
+      if (PkgFile1<>nil) and (PkgFile2<>nil) then begin
+        s:=Format(lisPkgMangThereAreTwoUnitsWithTheSameName1From2From, [#13,
+          #13, '"', PkgFile1.Filename, '"', PkgFile1.LazPackage.IDAsString,
+          #13, '"', PkgFile2.Filename, '"', PkgFile2.LazPackage.IDAsString,
+          #13, #13]);
+      end else if (PkgFile1<>nil) and (ConflictPkg<>nil) then begin
+        s:=Format(lisPkgMangThereIsAUnitWithTheSameNameAsAPackage1From2, [#13,
+          #13, '"', PkgFile1.Filename, '"', PkgFile1.LazPackage.IDAsString,
+          #13, '"', ConflictPkg.IDAsString, #13, #13]);
+      end else
+        s:='Internal inconsistency FindAmbigiousUnits: '
+          +'Please report this bug and how you get here.'#13;
+      Result:=MessageDlg(lisPkgMangAmbigiousUnitsFound, Format(
+        lisPkgMangBothPackagesAreConnectedThisMeansEitherOnePackageU, [s]),
+          mtError,[mbCancel,mbAbort],0);
+      exit;
+    end;
+
+    // check for ambigious units between packages
+    if PackageGraph.FindFPCConflictUnit(APackage,FirstDependency,Directory,
+      @PackageGraphFindFPCUnit,PkgFile1,ConflictPkg)
+    then begin
+      if (PkgFile1<>nil) then begin
+        s:=Format(lisPkgMangThereIsAFPCUnitWithTheSameNameFrom, [#13, #13, '"',
+          PkgFile1.Filename, '"', PkgFile1.LazPackage.IDAsString, #13, #13]);
+      end else if (PkgFile1<>nil) and (ConflictPkg<>nil) then begin
+        s:=Format(lisPkgMangThereIsAFPCUnitWithTheSameNameAsAPackage, [#13,
+          #13, '"', ConflictPkg.IDAsString, #13, #13]);
+      end else
+        s:='Internal inconsistency FindFPCConflictUnits: '
+          +'Please report this bug and how you get here.'#13;
+      Result:=MessageDlg(lisPkgMangAmbigiousUnitsFound, s,
           mtError,[mbCancel,mbAbort],0);
       exit;
     end;
@@ -1929,7 +1954,8 @@ begin
   // check graph for circles and broken dependencies
   if not (pcfDoNotCompileDependencies in Flags) then begin
     Result:=CheckPackageGraphForCompilation(nil,
-                                            AProject.FirstRequiredDependency);
+                                            AProject.FirstRequiredDependency,
+                                            AProject.ProjectDirectory);
     if Result<>mrOk then exit;
   end;
   
@@ -1975,7 +2001,7 @@ begin
 
   // check graph for circles and broken dependencies
   if not (pcfDoNotCompileDependencies in Flags) then begin
-    Result:=CheckPackageGraphForCompilation(APackage,nil);
+    Result:=CheckPackageGraphForCompilation(APackage,nil,APackage.Directory);
     if Result<>mrOk then exit;
   end;
   
@@ -2390,7 +2416,8 @@ begin
     end;
 
     // check consistency
-    Result:=CheckPackageGraphForCompilation(APackage,nil);
+    Result:=CheckPackageGraphForCompilation(APackage,nil,
+                                           EnvironmentOptions.LazarusDirectory);
     if Result<>mrOk then exit;
     
     // get all required packages, which will also be auto installed
@@ -2546,7 +2573,8 @@ begin
     end;
     
     // check consistency
-    Result:=CheckPackageGraphForCompilation(nil,FirstAutoInstallDependency);
+    Result:=CheckPackageGraphForCompilation(nil,FirstAutoInstallDependency,
+                                           EnvironmentOptions.LazarusDirectory);
     if Result<>mrOk then exit;
 
     // save all open files

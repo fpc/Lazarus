@@ -70,6 +70,8 @@ type
   TPkgDeleteEvent = procedure(APackage: TLazPackage) of object;
   TDependencyModifiedEvent = procedure(ADependency: TPkgDependency) of object;
   TEndUpdateEvent = procedure(Sender: TObject; GraphChanged: boolean) of object;
+  TFindFPCUnitEvent = procedure(const UnitName, Directory: string;
+                                var Filename: string) of object;
 
   TLazPackageGraph = class
   private
@@ -133,6 +135,12 @@ type
     function FindAmbigiousUnits(APackage: TLazPackage;
                                 FirstDependency: TPkgDependency;
                                 var File1, File2: TPkgFile;
+                                var ConflictPkg: TLazPackage): boolean;
+    function FindFPCConflictUnit(APackage: TLazPackage;
+                                FirstDependency: TPkgDependency;
+                                const Directory: string;
+                                OnFindFPCUnit: TFindFPCUnitEvent;
+                                var File1: TPkgFile;
                                 var ConflictPkg: TLazPackage): boolean;
     function FindFileInAllPackages(const TheFilename: string;
                                 ResolveLinks, IgnoreDeleted: boolean): TPkgFile;
@@ -1273,17 +1281,10 @@ function TLazPackageGraph.FindUnsavedDependencyPath(APackage: TLazPackage;
     end;
   end;
 
-var
-  i: Integer;
-  Pkg: TLazPackage;
 begin
   Result:=nil;
   if (Count=0) or (APackage=nil) then exit;
-  // mark all packages as not visited
-  for i:=FItems.Count-1 downto 0 do begin
-    Pkg:=TLazPackage(FItems[i]);
-    Pkg.Flags:=Pkg.Flags-[lpfVisited];
-  end;
+  MarkAllPackagesAsNotVisited;
   if APackage<>nil then begin
     APackage.Flags:=APackage.Flags+[lpfVisited];
     FirstDependency:=APackage.FirstRequiredDependency;
@@ -1447,6 +1448,68 @@ begin
     PkgList.Free;
   end;
   Result:=false;
+end;
+
+function TLazPackageGraph.FindFPCConflictUnit(APackage: TLazPackage;
+  FirstDependency: TPkgDependency; const Directory: string;
+  OnFindFPCUnit: TFindFPCUnitEvent;
+  var File1: TPkgFile; var ConflictPkg: TLazPackage): boolean;
+  
+  function CheckUnitName(const AnUnitName: string): boolean;
+  var Filename: string;
+  begin
+    Result:=false;
+    if AnUnitName='' then exit;
+    OnFindFPCUnit(AnUnitName,Directory,Filename);
+    Result:=Filename<>'';
+  end;
+  
+  function CheckDependencyList(ADependency: TPkgDependency): boolean; forward;
+
+  function CheckPackage(Pkg1: TLazPackage): boolean;
+  var
+    Cnt: Integer;
+    i: Integer;
+  begin
+    Result:=false;
+    if (Pkg1=nil) or (lpfVisited in Pkg1.Flags)
+    or (Pkg1=FFCLPackage) then exit;
+    Pkg1.Flags:=Pkg1.Flags+[lpfVisited];
+    Result:=CheckUnitName(Pkg1.Name);
+    if Result then begin
+      ConflictPkg:=Pkg1;
+      exit;
+    end;
+    Cnt:=Pkg1.FileCount;
+    for i:=0 to Cnt-1 do begin
+      Result:=CheckUnitName(Pkg1.Files[i].UnitName);
+      if Result then begin
+        File1:=Pkg1.Files[i];
+        exit;
+      end;
+    end;
+    Result:=CheckDependencyList(Pkg1.FirstRequiredDependency);
+  end;
+  
+  function CheckDependencyList(ADependency: TPkgDependency): boolean;
+  begin
+    Result:=false;
+    while ADependency<>nil do begin
+      Result:=CheckPackage(ADependency.RequiredPackage);
+      if Result then exit;
+      ADependency:=ADependency.NextDependency[pdlRequires];
+    end;
+  end;
+
+begin
+  Result:=false;
+  File1:=nil;
+  ConflictPkg:=nil;
+  MarkAllPackagesAsNotVisited;
+  if APackage<>nil then
+    Result:=CheckPackage(APackage)
+  else
+    Result:=CheckDependencyList(FirstDependency);
 end;
 
 function TLazPackageGraph.GetAutoCompilationOrder(APackage: TLazPackage;
@@ -2020,4 +2083,5 @@ initialization
   PackageGraph:=nil;
 
 end.
+
 

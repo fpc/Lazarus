@@ -231,6 +231,7 @@ type
   public
     Path: string;
     Values: TExpressionEvaluator;
+    UnitLinksTree: TAVLTree;
     constructor Create;
     destructor Destroy; override;
   end;
@@ -269,6 +270,9 @@ type
     procedure IncreaseChangeStep;
   protected
     function FindDirectoryInCache(const Path: string): TDirectoryDefines;
+    function GetDirDefinesForDirectory(const Path: string;
+                                    WithVirtualDir: boolean): TDirectoryDefines;
+    function GetDirDefinesForVirtualDirectory: TDirectoryDefines;
     function MacroFuncExtractFileExt(Data: Pointer): boolean;
     function MacroFuncExtractFilePath(Data: Pointer): boolean;
     function MacroFuncExtractFileName(Data: Pointer): boolean;
@@ -307,6 +311,8 @@ type
     function  GetPPWSrcPathForDirectory(const Directory: string): string;
     function  GetSrcPathForDirectory(const Directory: string): string;
     function  GetUnitPathForDirectory(const Directory: string): string;
+    function  FindUnitInUnitLinks(const AnUnitName, Directory: string;
+                                  WithVirtualDir: boolean): string;
     function  IsEqual(SrcDefineTree: TDefineTree): boolean;
     procedure Add(ADefineTemplate: TDefineTemplate);
     procedure AddChild(ParentTemplate, NewDefineTemplate: TDefineTemplate);
@@ -409,6 +415,7 @@ function DefineActionNameToAction(const s: string): TDefineAction;
 function DefineTemplateFlagsToString(Flags: TDefineTemplateFlags): string;
 function SearchUnitInUnitLinks(const UnitLinks, TheUnitName: string;
   var UnitLinkStart, UnitLinkEnd: integer; var Filename: string): boolean;
+function CreateUnitLinksTree(const UnitLinks: string): TAVLTree;
 function GetDefaultSrcOSForTargetOS(const TargetOS: string): string;
 
 
@@ -450,6 +457,12 @@ begin
   Link1:=TUnitNameLink(NodeData1);
   Link2:=TUnitNameLink(NodeData2);
   Result:=AnsiCompareText(Link1.UnitName,Link2.UnitName);
+end;
+
+function CompareUnitNameWithUnitLinkNode(UnitName: Pointer;
+  NodeData: pointer): integer;
+begin
+  Result:=AnsiCompareText(String(UnitName),TUnitNameLink(NodeData).UnitName);
 end;
 
 function CompareDirectoryDefines(NodeData1, NodeData2: pointer): integer;
@@ -513,6 +526,7 @@ begin
             exit;
           end;
         end;
+        UnitLinkStart:=UnitLinkEnd;
       end else begin
         UnitLinkStart:=UnitLinkEnd+1;
         while (UnitLinkStart<=length(UnitLinks))
@@ -522,6 +536,55 @@ begin
     end else
       break;
   end;
+end;
+
+function CreateUnitLinksTree(const UnitLinks: string): TAVLTree;
+var
+  UnitLinksTree: TAVLTree;
+  UnitLinkLen: integer;
+  UnitLinkStart: Integer;
+  UnitLinkEnd: Integer;
+  TheUnitName: String;
+  Filename: String;
+  NewNode: TUnitNameLink;
+begin
+  UnitLinksTree:=TAVLTree.Create(@CompareUnitLinkNodes);
+  UnitLinkStart:=1;
+  while UnitLinkStart<=length(UnitLinks) do begin
+    while (UnitLinkStart<=length(UnitLinks))
+    and (UnitLinks[UnitLinkStart] in [#10,#13]) do
+      inc(UnitLinkStart);
+    UnitLinkEnd:=UnitLinkStart;
+    while (UnitLinkEnd<=length(UnitLinks)) and (UnitLinks[UnitLinkEnd]<>' ')
+    do
+      inc(UnitLinkEnd);
+    UnitLinkLen:=UnitLinkEnd-UnitLinkStart;
+    if UnitLinkLen>0 then begin
+      TheUnitName:=copy(UnitLinks,UnitLinkStart,UnitLinkLen);
+      if IsValidIdent(TheUnitName) then begin
+        UnitLinkStart:=UnitLinkEnd+1;
+        UnitLinkEnd:=UnitLinkStart;
+        while (UnitLinkEnd<=length(UnitLinks))
+        and (not (UnitLinks[UnitLinkEnd] in [#10,#13])) do
+          inc(UnitLinkEnd);
+        if UnitLinkEnd>UnitLinkStart then begin
+          Filename:=copy(UnitLinks,UnitLinkStart,UnitLinkEnd-UnitLinkStart);
+          NewNode:=TUnitNameLink.Create;
+          NewNode.UnitName:=TheUnitName;
+          NewNode.Filename:=Filename;
+          UnitLinksTree.Add(NewNode);
+        end;
+        UnitLinkStart:=UnitLinkEnd;
+      end else begin
+        UnitLinkStart:=UnitLinkEnd+1;
+        while (UnitLinkStart<=length(UnitLinks))
+        and (not (UnitLinks[UnitLinkStart] in [#10,#13])) do
+          inc(UnitLinkStart);
+      end;
+    end else
+      break;
+  end;
+  Result:=UnitLinksTree;
 end;
 
 function GetDefaultSrcOSForTargetOS(const TargetOS: string): string;
@@ -1496,6 +1559,7 @@ end;
 destructor TDirectoryDefines.Destroy;
 begin
   Values.Free;
+  UnitLinksTree.Free;
   inherited Destroy;
 end;
 
@@ -1610,6 +1674,51 @@ begin
     Result:=nil;
 end;
 
+function TDefineTree.GetDirDefinesForDirectory(const Path: string;
+  WithVirtualDir: boolean): TDirectoryDefines;
+var
+  ExpPath: String;
+begin
+  //writeln('[TDefineTree.GetDirDefinesForDirectory] "',Path,'"');
+  if (Path<>'') or (not WithVirtualDir) then begin
+    ExpPath:=TrimFilename(Path);
+    if (ExpPath<>'') and (ExpPath[length(ExpPath)]<>PathDelim) then
+      ExpPath:=ExpPath+PathDelim;
+    Result:=FindDirectoryInCache(ExpPath);
+    if Result=nil then begin
+      Result:=TDirectoryDefines.Create;
+      Result.Path:=ExpPath;
+      //writeln('[TDefineTree.GetDirDefinesForDirectory] B ',ExpPath,' ');
+      if Calculate(Result) then begin
+        //writeln('[TDefineTree.GetDirDefinesForDirectory] C success');
+        FCache.Add(Result);
+      end else begin
+        //writeln('[TDefineTree.GetDirDefinesForDirectory] D failed');
+        Result.Free;
+        Result:=nil;
+      end;
+    end;
+  end else begin
+    Result:=GetDirDefinesForVirtualDirectory;
+  end;
+end;
+
+function TDefineTree.GetDirDefinesForVirtualDirectory: TDirectoryDefines;
+begin
+  if FVirtualDirCache=nil then begin
+    //writeln('################ TDefineTree.GetDirDefinesForVirtualDirectory');
+    FVirtualDirCache:=TDirectoryDefines.Create;
+    FVirtualDirCache.Path:=VirtualDirectory;
+    if Calculate(FVirtualDirCache) then begin
+      //writeln('TDefineTree.GetDirDefinesForVirtualDirectory ');
+    end else begin
+      FVirtualDirCache.Free;
+      FVirtualDirCache:=nil;
+    end;
+  end;
+  Result:=FVirtualDirCache;
+end;
+
 function TDefineTree.MacroFuncExtractFileExt(Data: Pointer): boolean;
 var
   FuncData: PReadFunctionData;
@@ -1690,6 +1799,32 @@ begin
   end;
 end;
 
+function TDefineTree.FindUnitInUnitLinks(const AnUnitName, Directory: string;
+  WithVirtualDir: boolean): string;
+var
+  DirDef: TDirectoryDefines;
+  UnitLinks: string;
+  AVLNode: TAVLTreeNode;
+begin
+  Result:='';
+  if AnUnitName='' then exit;
+  DirDef:=GetDirDefinesForDirectory(Directory,WithVirtualDir);
+  if (DirDef=nil) or (DirDef.Values=nil) then exit;
+  if DirDef.UnitLinksTree=nil then begin
+    // create tree
+    UnitLinks:=DirDef.Values[ExternalMacroStart+'UnitLinks'];
+    // cache tree
+    DirDef.UnitLinksTree:=CreateUnitLinksTree(UnitLinks);
+  end;
+  // search in tree
+  if DirDef.UnitLinksTree<>nil then begin
+    AVLNode:=DirDef.UnitLinksTree.FindKey(PChar(AnUnitName),
+                                              @CompareUnitNameWithUnitLinkNode);
+    if AVLNode<>nil then
+      Result:=TUnitNameLink(AVLNode.Data).Filename;
+  end;
+end;
+
 function TDefineTree.GetIncludePathForDirectory(const Directory: string
   ): string;
 var Evaluator: TExpressionEvaluator;
@@ -1764,53 +1899,25 @@ end;
 
 function TDefineTree.GetDefinesForDirectory(
   const Path: string; WithVirtualDir: boolean): TExpressionEvaluator;
-var ExpPath: string;
+var
   DirDef: TDirectoryDefines;
 begin
-  //writeln('[TDefineTree.GetDefinesForDirectory] "',Path,'"');
-  if (Path<>'') or (not WithVirtualDir) then begin
-    ExpPath:=TrimFilename(Path);
-    if (ExpPath<>'') and (ExpPath[length(ExpPath)]<>PathDelim) then
-      ExpPath:=ExpPath+PathDelim;
-    DirDef:=FindDirectoryInCache(ExpPath);
-    if DirDef<>nil then begin
-      Result:=DirDef.Values;
-    end else begin
-      DirDef:=TDirectoryDefines.Create;
-      DirDef.Path:=ExpPath;
-      //writeln('[TDefineTree.GetDefinesForDirectory] B ',ExpPath,' ');
-      if Calculate(DirDef) then begin
-        //writeln('[TDefineTree.GetDefinesForDirectory] C success');
-        FCache.Add(DirDef);
-        Result:=DirDef.Values;
-      end else begin
-        //writeln('[TDefineTree.GetDefinesForDirectory] D failed');
-        DirDef.Free;
-        Result:=nil;
-      end;
-    end;
-  end else begin
-    Result:=GetDefinesForVirtualDirectory;
-  end;
+  DirDef:=GetDirDefinesForDirectory(Path,WithVirtualDir);
+  if DirDef<>nil then
+    Result:=DirDef.Values
+  else
+    Result:=nil;
 end;
 
 function TDefineTree.GetDefinesForVirtualDirectory: TExpressionEvaluator;
+var
+  DirDef: TDirectoryDefines;
 begin
-  if FVirtualDirCache<>nil then
-    Result:=FVirtualDirCache.Values
-  else begin
-    //writeln('################ TDefineTree.GetDefinesForVirtualDirectory');
-    FVirtualDirCache:=TDirectoryDefines.Create;
-    FVirtualDirCache.Path:=VirtualDirectory;
-    if Calculate(FVirtualDirCache) then begin
-      Result:=FVirtualDirCache.Values;
-      //writeln('TDefineTree.GetDefinesForVirtualDirectory ',Result.AsString);
-    end else begin
-      FVirtualDirCache.Free;
-      FVirtualDirCache:=nil;
-      Result:=nil;
-    end;
-  end;
+  DirDef:=GetDirDefinesForVirtualDirectory;
+  if DirDef<>nil then
+    Result:=DirDef.Values
+  else
+    Result:=nil;
 end;
 
 procedure TDefineTree.ReadValue(const DirDef: TDirectoryDefines;
