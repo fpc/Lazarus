@@ -770,7 +770,7 @@ begin
     LM_BRINGTOFRONT     : Result :='LM_BRINGTOFRONT     ';   
     LM_CB_GETCOUNT         : Result :='LM_CB_GETCOUNT         ';
   else
-    Result := Format('Unkown message 0x%x (%d)', [AMessage, AMessage]);
+    Result := Format('Unknown message 0x%x (%d)', [AMessage, AMessage]);
   end;
   Result  := Trim(Result);  
   
@@ -781,6 +781,9 @@ end.
 
 {
   $Log$
+  Revision 1.15  2001/12/10 07:47:58  lazarus
+  MG: fixed typo
+
   Revision 1.14  2001/12/05 18:23:47  lazarus
   Added events to Calendar
   Shane
