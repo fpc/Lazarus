@@ -2534,7 +2534,7 @@ procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
     DesignerPaintLazyCheckBox:=TCheckBox.Create(Self);
     with DesignerPaintLazyCheckBox do begin
       Name:='DesignerPaintLazyCheckBox';
-      SetBounds(x,y,Width,Height);
+      SetBounds(x,y,w,Height);
       Parent:=FormEditMiscGroupBox;
       Caption:=lisFEPaintDesignerItemsOnIdle;
       Hint:=lisFEPaintDesignerItemsOnIdleReduceOverheadForSlowCompu;
