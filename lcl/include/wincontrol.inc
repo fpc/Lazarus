@@ -420,7 +420,6 @@ Begin
   if FHandle <> 0 then
   Begin
     CNSendMessage(LM_RECREATEWND,Self,Nil);
-    AttachSignals;
   end;
 end;
 
@@ -1681,7 +1680,6 @@ begin
   CreateComponent(nil);
   if Parent <> nil then AddControl;
   
-  AttachSignals;
   InitializeWnd;
 
 //writeln('[TWinControl.CreateWnd] ',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height);
@@ -1730,64 +1728,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TWinControl.AttachSignals
-  Params:  none
-  Returns: Nothing
-
-  Gets called after the window is created but before the controls are created 
-  and the cached propeties are set. 
-  This is the only place where a call to SetCallBack is made.
- ------------------------------------------------------------------------------}
-procedure TWinControl.AttachSignals; 
-begin
-  Assert(False, Format('trace:[TWinControl.AttachSignals] %s', [ClassName]));
-  // Attach callbacks
-  SetCallback(LM_DESTROY);
-  SetCallback(LM_SHOWWINDOW); //This does the SHOW and HIDE
-  SetCallback(LM_FOCUS);
-//Obsolete ??  SetCallback(LM_SIZEALLOCATE); 
-  SetCallback(LM_WINDOWPOSCHANGED);
-  SetCallback(LM_PAINT);
-  SetCallback(LM_EXPOSEEVENT);
-//SetCallback(LM_CONFIGUREEVENT); // In TCustomForm
-  SetCallback(LM_KEYDOWN);
-  SetCallback(LM_KEYUP);
-  SetCallback(LM_CHAR);
-  SetCallback(LM_MOUSEMOVE);
-  SetCallback(LM_LBUTTONDOWN); 
-  SetCallback(LM_LBUTTONUP); 
-  SetCallback(LM_RBUTTONDOWN);
-  SetCallback(LM_RBUTTONUP);
-  SetCallback(LM_MBUTTONDOWN);
-  SetCallback(LM_MBUTTONUP); 
-  SetCallback(LM_MOUSEWHEEL);
-
-  if FCompStyle = csFixed 
-  then begin
-    SetCallback(LM_HSCROLL); 
-    SetCallback(LM_VSCROLL); 
-  end;
-  
-
-{  *** These need to be implemented yet
-   state-changed
-}
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TWinControl.DetachSignals
-  Params:  none
-  Returns: Nothing
-
-  Gets called the moment the window is about to be destroyed. All callbacks 
-  should be removed here.
- ------------------------------------------------------------------------------}
-procedure TWinControl.DetachSignals; 
-begin
-  RemoveCallbacks;
-end;
-
-{------------------------------------------------------------------------------
   Method:  TWinControl.DestroyWnd
   Params:  None
   Returns: Nothing
@@ -1796,9 +1736,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.DestroyWnd; 
 begin
-  if FHandle <> 0 
-  then begin
-    DetachSignals;
+  if FHandle <> 0 then
+  begin
     DestroyComponent;
     FHandle := 0;
   end;
@@ -2078,6 +2017,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.53  2002/03/25 17:59:20  lazarus
+  GTK Cleanup
+  Shane
+
   Revision 1.52  2002/03/16 21:40:55  lazarus
   MG: reduced size+move messages between lcl and interface
 
