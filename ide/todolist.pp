@@ -284,7 +284,8 @@ begin
   Btn.Top   :=0;
   Bmp:=TBitMap.Create;
   Bmp.Handle:=CreatePixmapIndirect(@cImg_ToDoRefresh[0], GetSysColor(COLOR_BTNFACE));
-  Btn.Glyph:=Bmp;
+  Btn.Glyph.Assign(Bmp);
+  Bmp.Free;
   Btn.ShowHint:=True;
   Btn.Hint  := lisTodolistRefresh;
   Btn.OnClick:=@actFileRefresh;
@@ -300,7 +301,8 @@ begin
   Btn.ShowHint:=True;
   Bmp:=TBitMap.Create;
   Bmp.Handle:=CreatePixmapIndirect(@cImg_ToDoGotoLine[0], GetSysColor(COLOR_BTNFACE));
-  Btn.Glyph:=Bmp;
+  Btn.Glyph.Assign(Bmp);
+  Bmp.Free;
   Btn.Hint  := listodoListGotoLine;
   Btn.OnClick:=@actEditGoto;
 
@@ -316,7 +318,8 @@ begin
   Btn.Hint   :=listodoListPrintList;
   Bmp:=TBitMap.Create;
   Bmp.Handle:=CreatePixmapIndirect(@cImg_ToDoPrint[0], GetSysColor(COLOR_BTNFACE));
-  Btn.Glyph:=Bmp;
+  Btn.Glyph.Assign(Bmp);
+  Bmp.Free;
   Btn.OnClick:=@actFilePrint;
 
   //button Options
@@ -330,7 +333,8 @@ begin
   Btn.ShowHint:=True;
   Bmp:=TBitMap.Create;
   Bmp.Handle:=CreatePixmapIndirect(@cImg_ToDoOptions[0], GetSysColor(COLOR_BTNFACE));
-  Btn.Glyph:=Bmp;
+  Btn.Glyph.Assign(Bmp);
+  Bmp.Free;
   Btn.Hint  :=  lisToDoListOptions;
   Btn.OnClick:=@actOptionsCfg;
 
