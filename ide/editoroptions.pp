@@ -146,7 +146,7 @@ type
     fUseSyntaxHighlight:boolean;
     fBlockIndent:integer;
     fUndoLimit:integer;
-    fTabWidths:integer;
+    fTabWidth:integer;
 
     // Display options
     fVisibleRightMargin:boolean;
@@ -216,7 +216,7 @@ type
         read fUseSyntaxHighlight write fUseSyntaxHighlight default true;
     property BlockIndent:integer read fBlockIndent write fBlockIndent default 2;
     property UndoLimit:integer read fUndoLimit write fUndoLimit default 32767;
-    property TabWidths:integer read fTabWidths write fTabWidths default 8;
+    property TabWidth:integer read fTabWidth write fTabWidth default 8;
 
     // Display options
     property VisibleRightMargin:boolean
@@ -978,7 +978,7 @@ begin
   fShowTabCloseButtons:=true;
   fBlockIndent:=2;
   fUndoLimit:=32767;
-  fTabWidths:=8;
+  fTabWidth:=8;
 
   // Display options
   fEditorFont:='courier';
@@ -1070,8 +1070,8 @@ begin
       XMLConfig.GetValue('EditorOptions/General/Editor/BlockIndent',fBlockIndent);
     fUndoLimit:=
       XMLConfig.GetValue('EditorOptions/General/Editor/UndoLimit',fUndoLimit);
-    fTabWidths:=
-      XMLConfig.GetValue('EditorOptions/General/Editor/TabWidths',fTabWidths);
+    fTabWidth:=
+      XMLConfig.GetValue('EditorOptions/General/Editor/TabWidth',fTabWidth);
 
     // Display options
     fVisibleRightMargin:=
@@ -1185,8 +1185,8 @@ begin
       ,fBlockIndent);
     XMLConfig.SetValue('EditorOptions/General/Editor/UndoLimit'
       ,fUndoLimit);
-    XMLConfig.SetValue('EditorOptions/General/Editor/TabWidths'
-      ,fTabWidths);
+    XMLConfig.SetValue('EditorOptions/General/Editor/TabWidth'
+      ,fTabWidth);
 
     // Display options
     XMLConfig.SetValue('EditorOptions/Display/VisibleRightMargin'
@@ -1662,7 +1662,8 @@ procedure TEditorOptions.GetSynEditSettings(ASynEdit:TSynEdit);
 begin
   // general options
   ASynEdit.Options:=fSynEditOptions;
-  ASynEdit.TabWidth:=fBlockIndent;
+  ASynEdit.BlockIndent:=fBlockIndent;
+  ASynEdit.TabWidth:=fTabWidth;
 
   // Display options
   ASynEdit.Gutter.Visible:=fVisibleGutter;
@@ -1685,7 +1686,8 @@ procedure TEditorOptions.SetSynEditSettings(ASynEdit:TSynEdit);
 begin
   // general options
   fSynEditOptions:=ASynEdit.Options;
-  fTabWidths:=ASynEdit.TabWidth;
+  fBlockIndent:=ASynEdit.BlockIndent;
+  fTabWidth:=ASynEdit.TabWidth;
 
   // Display options
   fVisibleGutter:=ASynEdit.Gutter.Visible;
@@ -1742,7 +1744,8 @@ begin
   // general options
   ASynEdit.Options:=fSynEditOptions-[eoDragDropEditing, eoDropFiles,
     eoScrollPastEof]+[eoNoCaret, eoNoSelection];
-  ASynEdit.TabWidth:=fBlockIndent;
+  ASynEdit.BlockIndent:=fBlockIndent;
+  ASynEdit.TabWidth:=fTabWidth;
 
   // Display options
   ASynEdit.Gutter.Visible:=false;
@@ -2313,8 +2316,16 @@ begin
     // general
     if Sender=BlockIndentComboBox then begin
       NewVal:=StrToIntDef(BlockIndentComboBox.Text
-        ,PreviewEdits[1].TabWidth);
+        ,PreviewEdits[1].BlockIndent);
       SetComboBoxText(BlockIndentComboBox,IntToStr(NewVal));
+      for a:=Low(PreviewEdits) to High(PreviewEdits) do
+        if PreviewEdits[a]<>nil then
+          PreviewEdits[a].BlockIndent:=NewVal;
+    end
+    else if Sender=TabWidthsComboBox then begin
+      NewVal:=StrToIntDef(TabWidthsComboBox.Text
+        ,PreviewEdits[1].TabWidth);
+      SetComboBoxText(TabWidthsComboBox,IntToStr(NewVal));
       for a:=Low(PreviewEdits) to High(PreviewEdits) do
         if PreviewEdits[a]<>nil then
           PreviewEdits[a].TabWidth:=NewVal;
@@ -3436,8 +3447,7 @@ begin
     Items.Add('4');
     Items.Add('8');
     Items.EndUpdate;
-    SetComboBoxText(TabWidthsComboBox,IntToStr(EditorOpts.TabWidths));
-    Enabled:=false;
+    SetComboBoxText(TabWidthsComboBox,IntToStr(EditorOpts.TabWidth));
     OnChange:=@ComboBoxOnChange;
     OnKeyDown:=@ComboBoxOnKeyDown;
     OnExit:=@ComboBoxOnExit;
@@ -5107,7 +5117,7 @@ begin
   i:=StrToIntDef(TabWidthsComboBox.Text,2);
   if i<1 then i:=1;
   if i>20 then i:=20;
-  EditorOpts.TabWidths:=i;
+  EditorOpts.TabWidth:=i;
   i:=StrToIntDef(BlockIndentComboBox.Text,2);
   if i<1 then i:=1;
   if i>20 then i:=20;
