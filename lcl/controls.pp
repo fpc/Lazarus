@@ -358,6 +358,36 @@ TCMDialogKey = TLMKEY;
   TDragControlObject = class(TBaseDragControlObject)
    end;
 
+  TConstraintSize = 0..MaxInt;
+  
+  TSizeConstraints = class(TPersistent)
+  private
+    FControl: TControl;
+    FMaxHeight: TConstraintSize;
+    FMaxWidth: TConstraintSize;
+    FMinHeight: TConstraintSize;
+    FMinWidth: TConstraintSize;
+    FOnChange: TNotifyEvent;
+  protected
+    procedure Change; dynamic;
+    procedure AssignTo(Dest: TPersistent); override;
+    property Control: TControl read FControl;
+    procedure SetMaxHeight(Value : TConstraintSize); virtual;
+    procedure SetMaxWidth(Value : TConstraintSize); virtual;
+    procedure SetMinHeight(Value : TConstraintSize); virtual;
+    procedure SetMinWidth(Value : TConstraintSize); virtual;
+  public
+    constructor Create(AControl: TControl); virtual;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+  published
+    property MaxHeight: TConstraintSize read FMaxHeight write SetMaxHeight default 0;
+    property MaxWidth: TConstraintSize read FMaxWidth write SetMaxWidth default 0;
+    property MinHeight: TConstraintSize read FMinHeight write SetMinHeight default 0;
+    property MinWidth: TConstraintSize read FMinWidth write SetMinWidth default 0;
+  end;
+									      
+  TConstrainedResizeEvent = procedure(Sender : TObject; var MinWidth, MinHeight, MaxWidth, MaxHeight : TConstraintSize) of object;
+
   TControl = class(TComponent)
   private
     FAnchors : TAnchors;
@@ -365,6 +395,7 @@ TCMDialogKey = TLMKEY;
     FAutoSize : Boolean;
     FCaption : TCaption;
     FColor : TColor;
+    FConstraints : TSizeConstraints;
     FControlStyle: TControlStyle;
     FCtl3D : Boolean;
     FCursor : TCursor;
@@ -386,6 +417,7 @@ TCMDialogKey = TLMKEY;
     FOnActivate : TNotifyEvent;
     FOnResize: TNotifyEvent;
     FOnClick: TNotifyEvent;
+    FOnConstrainedResize : TConstrainedResizeEvent;
     FOnDblClick : TNotifyEvent;
     FOnDragDrop : TDragDropEvent;
     FOnDragOver : TDragOverEvent;
@@ -405,34 +437,38 @@ TCMDialogKey = TLMKEY;
     FWidth: Integer;
     FWindowProc: TWndMethod;
     FVisible: Boolean;
-    Procedure CheckMenuPopup(const P : TSmallPoint);
-    Procedure SetAlign(Value : TAlign);
-    Procedure SetAutoSize(value : Boolean);
-    Procedure SetBoundsRect(const Rect : TRect);
-    Procedure SetColor(Value : TColor);
-    Procedure SetCursor(Value : TCursor);
+    procedure DoConstrainedResize(var NewWidth, NewHeight : integer);
+    procedure CheckMenuPopup(const P : TSmallPoint);
+    procedure SetAlign(Value : TAlign);
+    procedure SetAutoSize(value : Boolean);
+    procedure SetBoundsRect(const Rect : TRect);
+    procedure SetConstraints(const Value : TSizeConstraints);
+    procedure SetColor(Value : TColor);
+    procedure SetCursor(Value : TCursor);
     procedure SetHeight(Value: Integer);
     procedure SetLeft(Value: Integer);
-    Procedure SetMOuseCapture(Value : Boolean);
-    Procedure SetParentShowHint(Value : Boolean);
-    Procedure SetPopupMenu(Value : TPopupMenu);
-    Procedure SetShowHint(Value : Boolean);
+    procedure SetMOuseCapture(Value : Boolean);
+    procedure SetParentShowHint(Value : Boolean);
+    procedure SetPopupMenu(Value : TPopupMenu);
+    procedure SetShowHint(Value : Boolean);
     procedure SetTop(Value: Integer);
     procedure SetVisible(Value: Boolean);
     procedure SetWidth(Value: Integer);
-    Procedure SetZOrderPosition(Position : Integer);
-    Function GetBoundsRect : TRect;
-    Function GetMouseCapture : Boolean;
-    Function IsCaptionStored : Boolean;
-    Procedure DoDragMsg(var Dragmsg : TCMDrag);
-    Procedure DoMouseDown(var Message: TLMMouse; Button: TMOuseButton; Shift:TShiftState);
-    Procedure DoMouseUp(var Message: TLMMouse; Button: TMouseButton);
+    procedure SetZOrderPosition(Position : Integer);
+    function GetBoundsRect : TRect;
+    function GetMouseCapture : Boolean;
+    function IsCaptionStored : Boolean;
+    procedure DoDragMsg(var Dragmsg : TCMDrag);
+    procedure DoMouseDown(var Message: TLMMouse; Button: TMOuseButton; Shift:TShiftState);
+    procedure DoMouseUp(var Message: TLMMouse; Button: TMouseButton);
 
   protected
     FControlState: TControlState;
-    Procedure AdjustSize; dynamic;
+    procedure AdjustSize; dynamic;
+    procedure BoundsChanged; dynamic;
+    procedure DoConstraintsChange(Sender : TObject); virtual;
     { events need to be protected otherwise they can't be overridden ??}
-    Procedure Changed;
+    procedure Changed;
     procedure WMLButtonDown(Var Message: TLMLButtonDown); message LM_LBUTTONDOWN;
     procedure WMRButtonDown(Var Message: TLMRButtonDown); message LM_RBUTTONDOWN;
     procedure WMMButtonDown(Var Message: TLMMButtonDown); message LM_MBUTTONDOWN;
@@ -443,29 +479,33 @@ TCMDialogKey = TLMKEY;
     procedure WMLButtonUp(var Message: TLMLButtonUp); message LM_LBUTTONUP;
     procedure WMRButtonUp(var Message: TLMRButtonUp); message LM_RBUTTONUP;
     procedure WMMButtonUp(var Message: TLMMButtonUp); message LM_MBUTTONUP;
-    procedure WMWindowPosChanged(var Message: TLMWindowPosChanged); message LM_WINDOWPOSCHANGED;
     procedure WMDragStart(Var Message: TLMessage); message LM_DRAGSTART;  //not in delphi
+    procedure WMMove(var Message: TLMMove); message LM_MOVE;
+    procedure WMSize(var Message: TLMSize); message LM_SIZE;
+    procedure WMWindowPosChanged(var Message: TLMWindowPosChanged); message LM_WINDOWPOSCHANGED;
     procedure LMCaptureChanged(Var Message: TLMessage); message LM_CaptureChanged;
     procedure CMEnabledChanged(var Message: TLMEssage); message CM_ENABLEDCHANGED;
     procedure CMHitTest(Var Message: TCMHittest) ; Message CM_HITTEST;
-    Procedure CMMouseEnter(var Message :TLMessage); message CM_MouseEnter;
-    Procedure CMMouseLeave(var Message :TLMessage); message CM_MouseLeave;
+    procedure CMMouseEnter(var Message :TLMessage); message CM_MouseEnter;
+    procedure CMMouseLeave(var Message :TLMessage); message CM_MouseLeave;
     procedure CMVisibleChanged(var Message : TLMessage); message CM_VISIBLECHANGED;
+    procedure ConstrainedResize(var MinWidth, MinHeight, MaxWidth, MaxHeight : TConstraintSize); virtual;
     procedure Resize;
     procedure RequestAlign; dynamic;
-    Procedure BeginAutoDrag; dynamic;
-    Procedure ChangeScale(M,D : Integer); dynamic;
-    Procedure Click; dynamic;
-    Procedure DblClick; dynamic;
+    procedure BeginAutoDrag; dynamic;
+    procedure ChangeBounds(ALeft, ATop, AWidth, AHeight : integer); virtual;
+    procedure ChangeScale(M,D : Integer); dynamic;
+    procedure Click; dynamic;
+    procedure DblClick; dynamic;
     procedure DoStartDrag(var DragObject: TDragObject); dynamic;
-    Procedure DragOver(Source: TObject; X,Y : Integer; State : TDragState; var Accept:Boolean); dynamic;
+    procedure DragOver(Source: TObject; X,Y : Integer; State : TDragState; var Accept:Boolean); dynamic;
     procedure DragCanceled; dynamic;
     procedure CreateComponent(AOwner : TComponent);
     procedure DestroyComponent;
     procedure DoEvents;
-    Procedure DoEndDrag(Target: TObject; X,Y : Integer); dynamic;
-    Procedure InvalidateControl(IsVisible, IsOpaque : Boolean);
-    Procedure SendDockNotification(Msg: Cardinal; WParam, LParam : Integer);
+    procedure DoEndDrag(Target: TObject; X,Y : Integer); dynamic;
+    procedure InvalidateControl(IsVisible, IsOpaque : Boolean);
+    procedure SendDockNotification(Msg: Cardinal; WParam, LParam : Integer);
     procedure SetDragMode (Value: TDragMode); virtual;
     procedure SetEnabled(Value: Boolean); virtual;
     procedure SetHint(const Value: String); virtual;
@@ -499,8 +539,7 @@ TCMDialogKey = TLMKEY;
     property ParentShowHint : Boolean read FParentShowHint write SetPArentShowHint default True;
     property PopupMenu : TPopupmenu read GetPopupmenu write SetPopupMenu;
     property Text: TCaption read GetText write SetText;
-//    property Name: TComponentName read FName write SetName;
-   {events}
+    property OnConstrainedResize : TConstrainedResizeEvent read FOnConstrainedResize write FOnConstrainedResize;
     property OnDblClick: TNotifyEvent read FOnDblClick write FOnDblClick;
     property OnDragDrop: TDragDropEvent read FOnDragDrop write FOnDragDrop;
     property OnDragOver: TDragOverEvent read FOnDragOver write FOnDragOver;
@@ -512,7 +551,6 @@ TCMDialogKey = TLMKEY;
 
   public
     FCompStyle : LongInt;
-    IsResizing : Boolean;
     // use overload to simulate default
     procedure BeginDrag(Immediate: Boolean; Threshold: Integer); //overload;
     procedure BeginDrag(Immediate: Boolean); //overload;
@@ -532,6 +570,7 @@ TCMDialogKey = TLMKEY;
     Function ScreenToClient(const Point : TPoint) : TPoint;
     Function ClientToScreen(const Point : TPoint) : TPoint;
     Function Dragging : Boolean;
+    procedure Show;
     procedure Update; //override;   //pbd
     property Anchors : TAnchors read FAnchors write FAnchors default [akLeft,akTop];
     property Align : TAlign read FAlign write SetAlign;
@@ -539,6 +578,7 @@ TCMDialogKey = TLMKEY;
     property Caption: TCaption read GetText write SetText stored IsCaptionStored;
     property Cursor: TCursor read FCursor write SetCursor default crDefault;
     property Color : TColor read FCOlor write SetColor;  {should change the WRITE to do something eventually}
+    property Constraints : TSizeConstraints read FConstraints write SetConstraints;
     property ControlState: TControlState read FControlState write FControlState;
     property ClientOrigin: TPoint read GetClientOrigin;
     property ClientRect: TRect read GetClientRect;
@@ -606,6 +646,7 @@ TCMDialogKey = TLMKEY;
     FOnExit  : TNotifyEvent;
     FParentWindow : hwnd;
     FParentCtl3D : Boolean;
+    FResizeLock : boolean;
     FHandle: Hwnd;
     FShowing : Boolean;
     FTabList : TList;
@@ -628,23 +669,23 @@ TCMDialogKey = TLMKEY;
     procedure AdjustSize; override;
     procedure AdjustClientRect(var Rect: TRect); virtual;
     procedure AlignControls(AControl : TControl; var Rect: TRect); virtual;
+    procedure BoundsChanged; override;
     procedure CMShowHintChanged(var Message: TLMessage); message CM_SHOWHINTCHANGED;
     procedure CMShowingChanged(var Message: TLMessage); message CM_SHOWINGCHANGED;
     procedure CMVisibleChanged(var Message: TLMessage); message CM_VISIBLECHANGED;
     procedure CreateSubClass(var Params: TCreateParams;ControlClassName: PChar);
-    Procedure GetChildren(Proc : TGetChildProc; Root : TComponent); override;
+    procedure DoConstraintsChange(Sender : TObject); override;
+    procedure GetChildren(Proc : TGetChildProc; Root : TComponent); override;
     procedure PaintControls(DC: HDC; First: TControl);
     procedure PaintHandler(var Message: TLMPaint);
     procedure PaintWindow(DC: HDC); virtual;
     { events need to be protected otherwise they can't be overridden ??}
     procedure CMEnabledChanged(var Message: TLMEssage); message CM_ENABLEDCHANGED;
     procedure WMEraseBkgnd(var Message : TLMEraseBkgnd); message LM_ERASEBKGND;
-    procedure WMMove(var Message: TLMMove); message LM_MOVE;
     procedure WMNotify(var Message: TLMNotify); message LM_NOTIFY;
     procedure WMSetFocus(var Message: TLMSetFocus); message LM_SETFOCUS;
     procedure WMKillFocus(var Message: TLMKillFocus); message LM_KILLFOCUS;
     procedure WMShowWindow(var Message: TLMShowWindow); message LM_SHOWWINDOW;
-    procedure WMWindowPosChanged(var Message: TLMWindowPosChanged); message LM_WINDOWPOSCHANGED;
     //move to CM
     procedure WMEnter(var Message: TLMEnter); message LM_ENTER;
     procedure WMExit(var Message: TLMExit); message LM_EXIT;
@@ -652,7 +693,6 @@ TCMDialogKey = TLMKEY;
     procedure WMKeyDown(var Message: TLMKeyDown); message LM_KEYDOWN;
     procedure WMKeyUp(var Message: TLMKeyUp); message LM_KEYUP;
     procedure WMChar(var Message: TLMChar); message LM_CHAR;
-    procedure WMSize(var Message: TLMSize); message LM_SIZE;
     procedure WMPaint(var Msg: TLMPaint); message LM_PAINT;
     procedure WMDestroy(var Message: TLMDestroy); message LM_DESTROY;
 
@@ -691,6 +731,8 @@ TCMDialogKey = TLMKEY;
     Function  IsControlMouseMsg(var Message : TLMMOuse): Boolean;
     property BorderWidth : TBorderWidth read FBorderWidth write SetBorderWidth default 0;
     property  DefWndProc: Pointer read FDefWndProc write FDefWndPRoc;
+    property IsResizing : Boolean read FResizeLock;
+
     property  ParentCtl3D : Boolean read FParentCtl3D write SetParentCtl3d default True;
     { events }
     property  OnEnter : TNotifyEvent read FOnEnter write FOnEnter;
@@ -721,7 +763,6 @@ TCMDialogKey = TLMKEY;
     procedure Hide;
     procedure Repaint; override;
     Procedure SetFocus; virtual;
-    procedure Show; virtual;
     Function FindChildControl(ControlName : String) : TControl;
     function HandleAllocated : Boolean;
     procedure HandleNeeded;
@@ -1128,6 +1169,7 @@ end;
   {$C-}
 {$ENDIF}
 
+{$I sizeconstraints.inc}
 {$I BaseDragControlObject.inc}
 {$I controlsproc.inc}
 {$I controlcanvas.inc}
@@ -1153,6 +1195,11 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.32  2002/03/13 22:48:16  lazarus
+  Constraints implementation (first cut) and sizig - moving system rework to
+  better match Delphi/Kylix way of doing things (the existing implementation
+  worked by acident IMHO :-)
+
   Revision 1.31  2002/02/03 00:24:00  lazarus
   TPanel implemented.
   Basic graphic primitives split into GraphType package, so that we can
