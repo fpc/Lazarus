@@ -56,7 +56,7 @@ type
   
   PGDIObject = ^TGDIObject;
   TGDIObject = record
-    Next: PGDIObject;
+    Next: PGDIObject; // 'Next' is used by the internal mem manager
     case GDIType: TGDIType of
       gdiBitmap: (
         GDIBitmapMaskObject: PGdkPixmap;
@@ -232,6 +232,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.12  2002/08/21 10:46:37  lazarus
+  MG: fixed unreleased gdiRegions
+
   Revision 1.11  2002/08/21 08:13:37  lazarus
   MG: accelerated new/dispose of gdiobjects
 
