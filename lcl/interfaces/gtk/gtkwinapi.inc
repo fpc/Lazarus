@@ -2124,18 +2124,31 @@ var
     aDC:=TDeviceContext(DC);
     DCOrigin:=GetDCOffset(aDC);
 
-    Style := gtk_style_attach(GetStyle('checkbox'),aDC.Drawable);
+    Style := GetStyle('checkbox');
+    
+    If Style = nil then
+      Style := GetStyle('gtk_default');
+
+    If Style <> nil then
+      Style := gtk_style_attach(gtk_style_ref(Style),aDC.Drawable);
+
     Widget := GetStyleWidget('checkbox');
-
-    // Do we really need to set this?
-    GTK_WIDGET_SET_FLAGS (widget, GTK_REALIZED);
-
-    Widget^.Window := aDC.Drawable;
-    gtk_paint_check(Style,aDC.Drawable, State,
-      Shadow, nil, Widget, 'checkbutton',
-      Rect.Left+DCOrigin.X,Rect.Top+DCOrigin.Y,
-      Rect.Right-Rect.Left, Rect.Bottom-Rect.Top);
-    Result := True;
+    If Widget = nil then
+      Widget := GetStyleWidget('default');
+    If (Widget <> nil) and (Style <> nil) then begin
+      Widget^.Window := aDC.Drawable;
+      gtk_paint_check(Style,aDC.Drawable, State,
+        Shadow, nil, Widget, 'checkbutton',
+        Rect.Left+DCOrigin.X,Rect.Top+DCOrigin.Y,
+        Rect.Right-Rect.Left, Rect.Bottom-Rect.Top);
+      Result := True;
+    end
+    else begin
+      gtk_draw_check(Style,aDC.Drawable, State,
+        Shadow, Rect.Left+DCOrigin.X,Rect.Top+DCOrigin.Y,
+        Rect.Right-Rect.Left, Rect.Bottom-Rect.Top);
+      Result := True;
+    end;
   end;
 
 var ClientWidget: PGtkWidget;
@@ -7400,6 +7413,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.167  2002/10/21 18:21:39  lazarus
+  AJ:minor styles improvement; fixed drawing checks under all(?) themes
+
   Revision 1.166  2002/10/21 14:40:53  lazarus
   MG: fixes for 1.1
 
