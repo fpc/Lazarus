@@ -834,16 +834,19 @@ begin
   itmViewDebugWindows := TMenuItem.Create(Self);
   itmViewDebugWindows.Name := 'itmViewDebugWindows';
   itmViewDebugWindows.Caption := lisMenuDebugWindows;
+  itmViewDebugWindows.Graphic:=LoadPixmap('menu_debugger');
   mnuView.Add(itmViewDebugWindows);
 
   itmViewWatches := TMenuItem.Create(Self);
   itmViewWatches.Name:='itmViewWatches';
   itmViewWatches.Caption := lisMenuViewWatches;
+  itmViewWatches.Graphic:=LoadPixmap('menu_watches');
   itmViewDebugWindows.Add(itmViewWatches);
 
   itmViewBreakPoints := TMenuItem.Create(Self);
   itmViewBreakPoints.Name:='itmViewBreakPoints';
   itmViewBreakPoints.Caption := lisMenuViewBreakPoints;
+  itmViewBreakPoints.Graphic:=LoadPixmap('menu_breakpoints');
   itmViewDebugWindows.Add(itmViewBreakPoints);
 
   itmViewLocals := TMenuItem.Create(Self);
@@ -854,11 +857,13 @@ begin
   itmViewCallStack := TMenuItem.Create(Self);
   itmViewCallStack.Name:='itmViewCallStack';
   itmViewCallStack.Caption := lisMenuViewCallStack;
+  itmViewCallStack.Graphic:=LoadPixmap('menu_callstack');
   itmViewDebugWindows.Add(itmViewCallStack);
 
   itmViewDebugOutput := TMenuItem.Create(Self);
   itmViewDebugOutput.Name:='itmViewDebugOutput';
   itmViewDebugOutput.Caption := lisMenuViewDebugOutput;
+  itmViewDebugOutput.Graphic:=LoadPixmap('menu_debugoutput');
   itmViewDebugWindows.Add(itmViewDebugOutput);
 end;
 
@@ -879,6 +884,7 @@ begin
   itmProjectOpen := TMenuItem.Create(Self);
   itmProjectOpen.Name:='itmProjectOpen';
   itmProjectOpen.Caption := lisMenuOpenProject;
+  itmProjectOpen.Graphic:=LoadPixmap('menu_openproject');
   mnuProject.Add(itmProjectOpen);
 
   itmProjectRecentOpen := TMenuItem.Create(Self);
@@ -927,6 +933,7 @@ begin
   itmProjectOptions := TMenuItem.Create(Self);
   itmProjectOptions.Name:='itmProjectOptions';
   itmProjectOptions.Caption := lisMenuProjectOptions;
+  itmProjectOptions.Graphic:=LoadPixmap('menu_projectoptions');
   mnuProject.Add(itmProjectOptions);
 end;
 
@@ -935,11 +942,13 @@ begin
   itmProjectBuild := TMenuItem.Create(Self);
   itmProjectBuild.Name:='itmProjectBuild';
   itmProjectBuild.Caption := lisMenuBuild;
+  itmProjectBuild.Graphic:=LoadPixmap('menu_build');
   mnuRun.Add(itmProjectBuild);
 
   itmProjectBuildAll := TMenuItem.Create(Self);
   itmProjectBuildAll.Name:='itmProjectBuildAll';
   itmProjectBuildAll.Caption := lisMenuBuildAll;
+  itmProjectBuildAll.Graphic:=LoadPixmap('menu_buildall');
   mnuRun.Add(itmProjectBuildAll);
 
   mnuRun.Add(CreateMenuSeparator);
@@ -1034,6 +1043,7 @@ begin
   itmToolBuildLazarus := TMenuItem.Create(Self);
   itmToolBuildLazarus.Name:='itmToolBuildLazarus';
   itmToolBuildLazarus.Caption := lisMenuBuildLazarus;
+  itmToolBuildLazarus.Graphic:=LoadPixmap('menu_buildlazarus');
   mnuTools.Add(itmToolBuildLazarus);
 
   itmToolConfigureBuildLazarus := TMenuItem.Create(Self);
@@ -1047,21 +1057,25 @@ begin
   itmEnvGeneralOptions := TMenuItem.Create(Self);
   itmEnvGeneralOptions.Name:='itmEnvGeneralOptions';
   itmEnvGeneralOptions.Caption := lisMenuGeneralOptions;
+  itmEnvGeneralOptions.Graphic:=LoadPixmap('menu_environmentoptions');
   mnuEnvironment.Add(itmEnvGeneralOptions);
 
   itmEnvEditorOptions := TMenuItem.Create(Self);
   itmEnvEditorOptions.Name:='itmEnvEditorOptions';
   itmEnvEditorOptions.Caption := lisMenuEditorOptions;
+  itmEnvEditorOptions.Graphic:=LoadPixmap('menu_editoroptions');
   mnuEnvironment.Add(itmEnvEditorOptions);
 
   itmEnvCodeToolsOptions := TMenuItem.Create(Self);
   itmEnvCodeToolsOptions.Name:='itmEnvCodeToolsOptions';
   itmEnvCodeToolsOptions.Caption := lisMenuCodeToolsOptions;
+  itmEnvCodeToolsOptions.Graphic:=LoadPixmap('menu_codetoolsoptions');
   mnuEnvironment.Add(itmEnvCodeToolsOptions);
 
   itmEnvCodeToolsDefinesEditor := TMenuItem.Create(Self);
   itmEnvCodeToolsDefinesEditor.Name:='itmEnvCodeToolsDefinesEditor';
   itmEnvCodeToolsDefinesEditor.Caption := lisMenuCodeToolsDefinesEditor;
+  itmEnvCodeToolsDefinesEditor.Graphic:=LoadPixmap('menu_codetoolsdefineseditor');
   mnuEnvironment.Add(itmEnvCodeToolsDefinesEditor);
 end;
 
