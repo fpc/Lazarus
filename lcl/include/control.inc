@@ -185,10 +185,9 @@ Begin
   Assert(False, 'Trace:TODO: [TControl.ChangeScale]');
 end;
 
-{------------------------------------------------------------------------------}
-{       TControl.CheckMenuPopup
-}
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TControl.CheckMenuPopup
+------------------------------------------------------------------------------}
 Procedure TControl.CheckMenuPopup(const P : TSmallPoint);
 var
   Control: TControl;
@@ -214,9 +213,9 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------}
-{       TControl.Focused                                                       }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TControl.Focused
+------------------------------------------------------------------------------}
 Function TControl.Focused : Boolean;
 Begin
   Result := False;
@@ -1695,7 +1694,7 @@ end;
 {------------------------------------------------------------------------------}
 {  TControl SetPopupMenu                                                                 }
 {------------------------------------------------------------------------------}
-procedure TControl.SetPopupMenu(Value : TPopupMenu);
+procedure TControl.SetPopupMenu(Value: TPopupMenu);
 begin
   FPopupMenu :=  Value;
 {    If Value <> nil then
@@ -1950,7 +1949,8 @@ end;
  ------------------------------------------------------------------------------}
 constructor TControl.Create(AOwner : TComponent);
 begin
-  //writeln('TControl.Create START ',Name,':',ClassName);
+  //if AnsiCompareText(ClassName,'TSpeedButton')=0 then
+  //  writeln('TControl.Create START ',Name,':',ClassName);
   inherited Create(AOwner);
 
   FControlStyle := [csCaptureMouse, csClickEvents, csSetCaption, csDoubleClicks,
@@ -2106,6 +2106,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.123  2003/05/03 09:53:33  mattias
+  fixed popupmenu for component palette
+
   Revision 1.122  2003/04/11 08:09:26  mattias
   published TControl help properties
 
