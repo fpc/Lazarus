@@ -437,6 +437,8 @@ Begin
       Begin
         Msg := LM_SIZE;
         SizeType := WParam or Size_SourceIsInterface;
+        if OwnerObject is TWinControl then
+          TWinControl(OwnerObject).InvalidateClientRectCache;
         Width := LoWord(LParam);
         Height := HiWord(LParam);
       End;
@@ -559,6 +561,9 @@ end;
 
 {
   $Log$
+  Revision 1.40  2003/07/07 08:31:54  mattias
+  added an InvalidateClientRectCache to WM_SIZE
+
   Revision 1.39  2003/07/07 07:59:34  mattias
   made Size_SourceIsInterface a flag
 
