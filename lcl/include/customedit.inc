@@ -136,7 +136,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomEdit.SetSelLength(Val : integer);
 begin
-  FSelLength:= Val;
+  if Val<0 then Val:=0;
+  FSelLength := Val;
   if HandleAllocated then
     TWSCustomEditClass(WidgetSetClass).SetSelLength(Self, Val);
 end;
@@ -367,6 +368,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.37  2005/01/26 23:39:16  mattias
+  added TMemo.SelLength negative check
+
   Revision 1.36  2004/12/27 16:51:19  mattias
   implemented dialog to edit basic help db settings
 
