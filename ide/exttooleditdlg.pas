@@ -105,6 +105,7 @@ type
     OkButton: TButton;
     CancelButton: TButton;
     procedure CancelButtonClick(Sender: TObject);
+    procedure ExternalToolOptionDlgResize(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
     procedure FormKeyUp(Sender: TObject; var Key: Word; Shift:TShiftState);
     procedure KeyGrabButtonClick(Sender: TObject);
@@ -251,9 +252,11 @@ begin
   inherited Create(AnOwner);
   GrabbingKey:=0;
   if LazarusResources.Find(ClassName)=nil then begin
-  
+    Width:=560;
+    Height:=450;
     Caption:='Edit Tool';
-    SetBounds((Screen.Width-560) div 2,(Screen.Height-450) div 2,560,450);
+    Position:=poScreenCenter;
+    OnResize:=@ExternalToolOptionDlgResize;
     OnKeyUp:=@FormKeyUp;
   
     TitleLabel:=TLabel.Create(Self);
@@ -499,6 +502,7 @@ begin
     end;
   end;
   fOptions:=TExternalToolOptions.Create;
+  ExternalToolOptionDlgResize(nil);
 end;
 
 destructor TExternalToolOptionDlg.Destroy;
@@ -557,6 +561,132 @@ end;
 procedure TExternalToolOptionDlg.CancelButtonClick(Sender: TObject);
 begin
   ModalResult:=mrCancel;
+end;
+
+procedure TExternalToolOptionDlg.ExternalToolOptionDlgResize(Sender: TObject);
+begin
+  with TitleLabel do begin
+    SetBounds(5,5,110,22);
+  end;
+
+  with TitleEdit do begin
+    Left:=TitleLabel.Left+TitleLabel.Width+5;
+    Top:=TitleLabel.Top+2;
+    Width:=Self.ClientWidth-Left-10;
+    Height:=25;
+  end;
+
+  with FilenameLabel do begin
+    SetBounds(TitleLabel.Left,TitleLabel.Top+TitleLabel.Height+10,
+      TitleLabel.Width,TitleLabel.Height);
+  end;
+
+  with FilenameEdit do begin
+    SetBounds(TitleEdit.Left,FilenameLabel.Top+2,TitleEdit.Width,
+      TitleEdit.Height);
+  end;
+
+  with ParametersLabel do begin
+    SetBounds(FilenameLabel.Left,FilenameLabel.Top+FilenameLabel.Height+10,
+      FilenameLabel.Width,FilenameLabel.Height);
+  end;
+
+  with ParametersEdit do begin
+    SetBounds(FilenameEdit.Left,ParametersLabel.Top+2,FilenameEdit.Width,
+      FilenameEdit.Height);
+  end;
+
+  with WorkingDirLabel do begin
+    SetBounds(ParametersLabel.Left,
+      ParametersLabel.Top+ParametersLabel.Height+10,ParametersLabel.Width,
+      ParametersLabel.Height);
+  end;
+
+  with WorkingDirEdit do begin
+    SetBounds(ParametersEdit.Left,WorkingDirLabel.Top+2,ParametersEdit.Width,
+      ParametersEdit.Height);
+  end;
+
+  with OptionsGroupBox do begin
+    Left:=5;
+    Top:=WorkingDirLabel.Top+WorkingDirLabel.Height+12;
+    Width:=Self.ClientWidth-Left-Left;
+    Height:=66;
+  end;
+
+  with OptionScanOutputForFPCMessagesCheckBox do begin
+    SetBounds(5,2,400,20);
+  end;
+
+  with OptionScanOutputForMakeMessagesCheckBox do begin
+    SetBounds(5,OptionScanOutputForFPCMessagesCheckBox.Top
+              +OptionScanOutputForFPCMessagesCheckBox.Height+4,400,20);
+  end;
+
+  with KeyGroupBox do begin
+    Left:=5;
+    Top:=OptionsGroupBox.Top+OptionsGroupBox.Height+12;
+    Width:=Self.ClientWidth-Left-Left;
+    Height:=50;
+  end;
+
+  with KeyCtrlCheckBox do begin
+    Left:=5;
+    Top:=2;
+    Width:=45;
+    Height:=20;
+  end;
+
+  with KeyAltCheckBox do begin
+    Left:=KeyCtrlCheckBox.Left+KeyCtrlCheckBox.Width+5;
+    Top:=KeyCtrlCheckBox.Top;
+    Height:=20;
+    Width:=KeyCtrlCheckBox.Width;
+  end;
+
+  with KeyShiftCheckBox do begin
+    Left:=KeyAltCheckBox.Left+KeyAltCheckBox.Width+5;
+    Top:=KeyCtrlCheckBox.Top;
+    Height:=20;
+    Width:=KeyCtrlCheckBox.Width;
+  end;
+
+  with KeyComboBox do begin
+    Left:=KeyShiftCheckBox.Left+KeyShiftCheckBox.Width+5;
+    Top:=KeyCtrlCheckBox.Top;
+    Width:=190;
+  end;
+
+  with KeyGrabButton do begin
+    Left:=KeyComboBox.Left+KeyComboBox.Width+5;
+    Top:=KeyCtrlCheckBox.Top;
+    Width:=100;
+    Height:=25;
+  end;
+
+  with MacrosGroupbox do begin
+    Left:=KeyGroupBox.Left;
+    Top:=KeyGroupBox.Top+KeyGroupBox.Height+10;
+    Width:=KeyGroupBox.Width;
+    Height:=Self.ClientHeight-50-Top;
+  end;
+
+  with MacrosListbox do begin
+    SetBounds(5,5,MacrosGroupbox.ClientWidth-120,
+                 MacrosGroupbox.ClientHeight-30);
+  end;
+
+  with MacrosInsertButton do begin
+    SetBounds(MacrosGroupbox.ClientWidth-90,5,70,25);
+  end;
+
+  with OkButton do begin
+    SetBounds(270,Self.ClientHeight-40,100,25);
+  end;
+
+  with CancelButton do begin
+    SetBounds(390,OkButton.Top,100,25);
+  end;
 end;
 
 procedure TExternalToolOptionDlg.KeyGrabButtonClick(Sender: TObject);

@@ -12,6 +12,7 @@ type
   TWatchAddedEvent = procedure (sender : TObject; Expression : String) of Object;
   TWatchesdlg = class(TForm)
     Listbox1: TLISTBOX;
+    procedure WatchesdlgResize(Sender: TObject);
   private
     { private declarations }
     FOnWatchAddedEvent : TWatchAddedEvent;
@@ -55,26 +56,27 @@ implementation
 constructor TWatchesdlg.Create(AOwner : TComponent);
 Begin
   inherited;
-  if LazarusResources.Find(Classname)=nil then
-  begin
-  Listbox1 := TListbox.Create(self);
-  with Listbox1 do
-    Begin
-      Parent := self;
-      Align := alClient;
-      Visible := True;
-      Name := 'ListBox1';
-      OnKeyDown := @Listbox1KeyDown;
-      
-    end;
-  Caption := 'Watches';
-  Name := 'WatchesDlg';
-  Width := 250;
-  Height := 100;
+  if LazarusResources.Find(Classname)=nil then begin
+    Caption := 'Watches';
+    Name := 'WatchesDlg';
+    Width := 250;
+    Height := 100;
 
-  //TListBox currently does NOT fire keypress, keyDown, KeyUp events.  This is a fix for now.
-  OnKeyDown := @ListBox1KeyDown;
-  Position := poScreenCenter;
+    //TListBox currently does NOT fire keypress, keyDown, KeyUp events.  This is a fix for now.
+    OnKeyDown := @ListBox1KeyDown;
+    Position := poScreenCenter;
+    OnResize:=@WatchesdlgResize;
+
+    Listbox1 := TListbox.Create(self);
+    with Listbox1 do
+      Begin
+        Parent := self;
+        Align := alClient;
+        Visible := True;
+        Name := 'ListBox1';
+        OnKeyDown := @Listbox1KeyDown;
+
+      end;
   end;
   
   //unitl events are saved in the lfm
@@ -82,6 +84,7 @@ Begin
   //until the listbox events actually fire...
   OnKeyDown := @ListBox1KeyDown;
 
+  WatchesdlgResize(nil);
   InsertWatch := TInsertWatch.Create(nil);
 End;
 
@@ -91,6 +94,10 @@ Begin
   inherited;
 end;
 
+procedure TWatchesdlg.WatchesdlgResize(Sender: TObject);
+begin
+
+end;
 
 Procedure TWatchesDlg.Listbox1KeyDown(Sender : TObject; var Key : Word; Shift : TShiftState);
 var

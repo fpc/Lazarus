@@ -25,6 +25,7 @@ type
     CommentEdit:TEdit;
     OkButton:TButton;
     CancelButton:TButton;
+    procedure CodeTemplateEditFormResize(Sender: TObject);
     procedure OkButtonClick(Sender:TObject);
   public
     constructor Create(AOwner:TComponent); override;
@@ -100,6 +101,7 @@ begin
     Width:=300;
     Height:=150;
     Position:=poScreenCenter;
+    OnResize:=@CodeTemplateEditFormResize;
 
     TokenLabel:=TLabel.Create(Self);
     with TokenLabel do begin
@@ -168,6 +170,46 @@ begin
       Top:=Self.ClientHeight-Height-12;
       Show;
     end;
+  end;
+  CodeTemplateEditFormResize(nil);
+end;
+
+procedure TCodeTemplateEditForm.CodeTemplateEditFormResize(Sender: TObject);
+begin
+  with TokenLabel do begin
+    Left:=12;
+    Top:=6;
+    Width:=Self.ClientWidth-Left-Left;
+  end;
+
+  with TokenEdit do begin
+    Left:=10;
+    Top:=TokenLabel.Top+TokenLabel.Height+2;
+    Width:=Self.ClientWidth-Left-Left-4;
+  end;
+
+  with CommentLabel do begin
+    Left:=12;
+    Top:=TokenEdit.Top+TokenEdit.Height+10;
+    Width:=Self.ClientWidth-Left-Left;
+  end;
+
+  with CommentEdit do begin
+    Left:=10;
+    Top:=CommentLabel.Top+CommentLabel.Height+2;
+    Width:=Self.ClientWidth-Left-Left-4;
+  end;
+
+  with OkButton do begin
+    Left:=50;
+    Top:=Self.ClientHeight-Height-12;
+    Width:=80;
+  end;
+
+  with CancelButton do begin
+    Width:=80;
+    Left:=Self.ClientWidth-50-Width;
+    Top:=Self.ClientHeight-Height-12;
   end;
 end;
 

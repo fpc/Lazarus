@@ -90,6 +90,7 @@ type
     MoveDownButton: TButton;
     OkButton: TButton;
     CancelButton: TButton;
+    procedure ExternalToolDialogResize(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
     procedure CancelButtonClick(Sender: TObject);
     procedure AddButtonClick(Sender: TObject);
@@ -394,10 +395,12 @@ constructor TExternalToolDialog.Create(AnOwner: TComponent);
 begin
   inherited Create(AnOwner);
   if LazarusResources.Find(ClassName)=nil then begin
-  
+    Width:=400;
+    Height:=400;
+    Position:=poScreenCenter;
     Caption:='External Tools';
-    SetBounds((Screen.Width-400) div 2,(Screen.Height-400) div 2,400,400);
-  
+    OnResize:=@ExternalToolDialogResize;
+
     Listbox:=TListbox.Create(Self);
     with Listbox do begin
       Name:='Listbox';
@@ -481,12 +484,51 @@ begin
     end;
   end;    
   fExtToolList:=TExternalToolList.Create;
+  ExternalToolDialogResize(nil);
 end;
 
 destructor TExternalToolDialog.Destroy;
 begin
   fExtToolList.Free;
   inherited Destroy;
+end;
+
+procedure TExternalToolDialog.ExternalToolDialogResize(Sender: TObject);
+begin
+  with Listbox do begin
+    SetBounds(5,5,Self.ClientWidth-120,Self.Clientheight-60);
+  end;
+
+  with AddButton do begin
+    SetBounds(Self.ClientWidth-100,5,80,25);
+  end;
+
+  with RemoveButton do begin
+    SetBounds(Self.ClientWidth-100,AddButton.Top+AddButton.Height+10,80,25);
+  end;
+
+  with EditButton do begin
+    SetBounds(Self.ClientWidth-100,RemoveButton.Top+RemoveButton.Height+10,
+                 80,25);
+  end;
+
+  with MoveUpButton do begin
+    SetBounds(Self.ClientWidth-100,EditButton.Top+EditButton.Height+50,
+                 80,25);
+  end;
+
+  with MoveDownButton do begin
+    SetBounds(Self.ClientWidth-100,MoveUpButton.Top+MoveUpButton.Height+10,
+                 80,25);
+  end;
+
+  with OkButton do begin
+    SetBounds(Self.ClientWidth-200, Self.ClientHeight-40,80,25);
+  end;
+
+  with CancelButton do begin
+    SetBounds(Self.ClientWidth-100, Self.ClientHeight-40,80,25);
+  end;
 end;
 
 procedure TExternalToolDialog.OkButtonClick(Sender: TObject);

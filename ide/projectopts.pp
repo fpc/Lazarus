@@ -67,12 +67,16 @@ type
     procedure FormsRemoveFromAutoCreatedFormsBtnClick(Sender: TObject);
     procedure FormsMoveAutoCreatedFormUpBtnClick(Sender: TObject);
     procedure FormsMoveAutoCreatedFormDownBtnClick(Sender: TObject);
+    procedure ProjectOptionsDialogResize(Sender: TObject);
   private
     FProject: TProject;
     procedure SetProject(AProject: TProject);
     procedure SetupApplicationPage;
     procedure SetupFormsPage;
     procedure SetupInfoPage;
+    procedure ResizeApplicationPage;
+    procedure ResizeFormsPage;
+    procedure ResizeInfoPage;
     procedure FillAutoCreateFormsListbox;
     procedure FillAvailFormsListBox;
     function IndexOfAutoCreateForm(FormName: string): integer;
@@ -113,7 +117,10 @@ constructor TProjectOptionsDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   if LazarusResources.Find(ClassName)=nil then begin
-    SetBounds((Screen.Width-440) div 2,(Screen.Height-385) div 2,430,375);
+    Width:=430;
+    Height:=375;
+    Position:=poScreenCenter;
+    OnResize:=@ProjectOptionsDialogResize;
     Caption:='Project Options';
     
     NoteBook:=TNoteBook.Create(Self);
@@ -157,6 +164,7 @@ begin
       Show;
     end;
   end;
+  ProjectOptionsDialogResize(nil);
 end;
 
 procedure TProjectOptionsDialog.SetupApplicationPage;
@@ -380,6 +388,140 @@ begin
   end;
 end;
 
+procedure TProjectOptionsDialog.ResizeApplicationPage;
+var MaxX:integer;
+begin
+  MaxX:=ClientWidth-5;
+
+  with AppSettingsGroupBox do begin
+    Left:=5;
+    Top:=5;
+    Width:=MaxX-2*Left;
+    Height:=60;
+  end;
+
+  with TitleLabel do begin
+    Left:=5;
+    Top:=1;
+    Width:=50;
+    Height:=23;
+  end;
+
+  with TitleEdit do begin
+    Left:=TitleLabel.Left+TitleLabel.Width+2;
+    Top:=TitleLabel.Top+4;
+    Width:=AppSettingsGroupBox.ClientWidth-Left-10;
+  end;
+
+  with OutputSettingsGroupBox do begin
+    Left:=AppSettingsGroupBox.Left;
+    Top:=AppSettingsGroupBox.Top+AppSettingsGroupBox.Height+5;
+    Width:=AppSettingsGroupBox.Width;
+    Height:=60;
+  end;
+
+  with TargetFileLabel do begin
+    Left:=5;
+    Top:=1;
+    Width:=100;
+    Height:=23;
+  end;
+
+  with TargetFileEdit do begin
+    Left:=TargetFileLabel.Left+TargetFileLabel.Width+5;
+    Top:=TargetFileLabel.Top+4;
+    Width:=OutputSettingsGroupBox.Width-Left-10;
+  end;
+end;
+
+procedure TProjectOptionsDialog.ResizeFormsPage;
+var MaxX, MaxY, ListBoxWidth, ListBoxHeight: integer;
+begin
+  MaxX:=ClientWidth-8;
+  MaxY:=ClientHeight-75;
+  ListBoxWidth:=(MaxX-95) div 2;
+  ListBoxHeight:=MaxY-70;
+
+  with FormsAutoCreatedLabel do begin
+    Left:=40;
+    Top:=1;
+    Width:=190;
+  end;
+
+  with FormsAutoCreatedListBox do begin
+    Left:=FormsAutoCreatedLabel.Left;
+    Top:=FormsAutoCreatedLabel.Top+FormsAutoCreatedLabel.Height+3;
+    Width:=ListBoxWidth;
+    Height:=ListBoxHeight;
+  end;
+
+  with FormsAvailFormsLabel do begin
+    Left:=FormsAutoCreatedListBox.Left+FormsAutoCreatedListBox.Width+45;
+    Top:=FormsAutoCreatedLabel.Top;
+    Width:=FormsAutoCreatedLabel.Width;
+    Height:=FormsAutoCreatedLabel.Height;
+  end;
+
+  with FormsAvailFormsListBox do begin
+    Left:=FormsAvailFormsLabel.Left;
+    Top:=FormsAutoCreatedListBox.Top;
+    Width:=FormsAutoCreatedListBox.Width;
+    Height:=FormsAutoCreatedListBox.Height;
+  end;
+
+  with FormsAddToAutoCreatedFormsBtn do begin
+    Left:=FormsAutoCreatedListBox.Left+FormsAutoCreatedListBox.Width+10;
+    Top:=FormsAutoCreatedListBox.Top+80;
+    Width:=25;
+    Height:=25;
+  end;
+
+  with FormsRemoveFromAutoCreatedFormsBtn do begin
+    Left:=FormsAddToAutoCreatedFormsBtn.Left;
+    Top:=FormsAddToAutoCreatedFormsBtn.Top
+        +FormsAddToAutoCreatedFormsBtn.Height+10;
+    Width:=25;
+    Height:=25;
+  end;
+
+  with FormsMoveAutoCreatedFormUpBtn do begin
+    Left:=FormsAutoCreatedListBox.Left-35;
+    Top:=FormsAutoCreatedListBox.Top+80;
+    Width:=25;
+    Height:=25;
+  end;
+
+  with FormsMoveAutoCreatedFormDownBtn do begin
+    Left:=FormsMoveAutoCreatedFormUpBtn.Left;
+    Top:=FormsMoveAutoCreatedFormUpBtn.Top
+        +FormsMoveAutoCreatedFormUpBtn.Height+10;
+    Width:=25;
+    Height:=25;
+  end;
+
+  with FormsAutoCreateNewFormsCheckBox do begin
+    Left:=FormsMoveAutoCreatedFormUpBtn.Left;
+    Top:=FormsAutoCreatedListBox.Top+FormsAutoCreatedListBox.Height+5;
+    Width:=200;
+    Height:=25;
+  end;
+end;
+
+procedure TProjectOptionsDialog.ResizeInfoPage;
+begin
+  with SaveClosedUnitInfoCheckBox do begin
+    Left:=10;
+    Top:=10;
+    Width:=250;
+  end;
+
+  with SaveOnlyProjectUnitInfoCheckBox do begin
+    Left:=SaveClosedUnitInfoCheckBox.Left;
+    Top:=SaveClosedUnitInfoCheckBox.Top+SaveClosedUnitInfoCheckBox.Height+10;
+    Width:=SaveClosedUnitInfoCheckBox.Width;
+  end;
+end;
+
 procedure TProjectOptionsDialog.SetProject(AProject: TProject);
 begin
   FProject:=AProject;
@@ -598,6 +740,31 @@ begin
     Items.EndUpdate;
   end;
   SelectOnlyThisAutoCreateForm(i+1);
+end;
+
+procedure TProjectOptionsDialog.ProjectOptionsDialogResize(Sender: TObject);
+begin
+  with NoteBook do begin
+    SetBounds(0,0,Self.ClientWidth,Self.ClientHeight-50);
+  end;
+
+  ResizeFormsPage;
+  ResizeApplicationPage;
+  ResizeInfoPage;
+
+  with CancelButton do begin
+    Width:=70;
+    Height:=23;
+    Left:=Self.ClientWidth-Width-15;
+    Top:=Self.ClientHeight-Height-15;
+  end;
+
+  with OkButton do begin
+    Width:=CancelButton.Width;
+    Height:=CancelButton.Height;
+    Left:=CancelButton.Left-15-Width;
+    Top:=CancelButton.Top;
+  end;
 end;
 
 procedure TProjectOptionsDialog.SelectOnlyThisAutoCreateForm(

@@ -37,6 +37,7 @@ type
     DataEdit: TEdit;
     OkButton: TButton;
     CancelButton: TButton;
+    procedure MacroPrompDialogResize(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
     procedure CancelButtonClick(Sender: TObject);
     procedure DataEditKeyDown(Sender: TObject; var Key:Word; Shift:TShiftState);
@@ -72,10 +73,12 @@ constructor TMacroPrompDialog.Create(AnOwner: TComponent);
 begin
   inherited Create(AnOwner);
   if LazarusResources.Find(ClassName)=nil then begin
-  
+    Width:=300;
+    Height:=150;
+    Position:=poScreenCenter;
     Caption:='Enter data';
-    SetBounds((Screen.Width-300) div 2,(Screen.Height-150) div 2,300,150);
-    
+    OnResize:=@MacroPrompDialogResize;
+
     NoteLabel:=TLabel.Create(Self);
     with NoteLabel do begin
       Name:='NoteLabel';
@@ -115,7 +118,27 @@ begin
     end;
     
   end;
+  MacroPrompDialogResize(nil);
   DataEdit.SetFocus;
+end;
+
+procedure TMacroPrompDialog.MacroPrompDialogResize(Sender: TObject);
+begin
+  with NoteLabel do begin
+    SetBounds(8,8,200,25);
+  end;
+
+  with DataEdit do begin
+    SetBounds(8,NoteLabel.Top+NoteLabel.Height+5,Self.ClientWidth-20,25);
+  end;
+
+  with OkButton do begin
+    SetBounds(Self.ClientWidth-200,Self.ClientHeight-40,80,25);
+  end;
+
+  with CancelButton do begin
+    SetBounds(Self.ClientWidth-100,Self.ClientHeight-40,80,25);
+  end;
 end;
 
 procedure TMacroPrompDialog.OkButtonClick(Sender: TObject);

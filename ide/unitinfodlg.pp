@@ -15,8 +15,6 @@ uses
 
 type
   TUnitInfoDlg = class(TFORM)
-  private
-  published
     OkButton:TButton;
     uname: TLabel;
     utype: TLabel;
@@ -30,7 +28,9 @@ type
     outsize: TLabel;
     outlines: TLabel;
     outpath: TLabel;
+    procedure UnitInfoDlgResize(Sender: TObject);
     procedure OkButtonClick(Sender:TObject);
+  private
     procedure setShortName(const str:string);
     procedure setType(const str:string);
     procedure setInProject(const str:string);
@@ -48,6 +48,7 @@ function ShowUnitInfoDlg(const AnUnitName, AType: string;
 
 implementation
 
+uses LResources;
 
 function ShowUnitInfoDlg(const AnUnitName, AType: string;
   IsPartOfProject: boolean; SizeInBytes, LineCount: integer;
@@ -78,12 +79,14 @@ end;
 
 constructor TUnitInfoDlg.Create(AOwner:TComponent);
 begin
-    inherited Create(AOwner);
+  inherited Create(AOwner);
+  if LazarusResources.Find(ClassName)=nil then begin
 
     Caption:='Unit Info for unit ???';
     Width:=400;
     Height:=164;
     position:=poScreenCenter;
+    OnResize:=@UnitInfoDlgResize;
 
     OkButton:=TButton.Create(Self);
     with OkButton do begin
@@ -225,6 +228,8 @@ begin
         autosize:=true;
         Show;
     end;
+  end;
+  UnitInfoDlgResize(nil);
 end;
 
 procedure TUnitInfoDlg.setShortName(const str:string);
@@ -255,6 +260,82 @@ end;
 procedure TUnitInfoDlg.setPath(const str:string);
 begin
     outpath.caption:=str;
+end;
+
+procedure TUnitInfoDlg.UnitInfoDlgResize(Sender: TObject);
+begin
+  with OkButton do begin
+    Top:=132;
+    Width:=75;
+    Height:=25;
+    Left:=(Self.ClientWidth-Width) div 2;
+  end;
+
+  with uname do begin
+    Left:=4;
+    Top:=4;
+  end;
+
+  with utype do begin
+    Left:=4;
+    Top:=24;
+  end;
+
+  with uinproject do begin
+    Left:=4;
+    Top:=44;
+  end;
+
+  with usize do begin
+    Left:=4;
+    top:=64;
+  end;
+
+  with ulines do begin
+    Left:=4;
+    top:=84;
+  end;
+
+  with upath do begin
+    Left:=4;
+    top:=104;
+  end;
+
+  with outname do begin
+    Left:=68;
+    top:=4;
+    Width:=Self.ClientWidth-Left-5;
+  end;
+
+  with outtype do begin
+    Left:=68;
+    top:=24;
+    Width:=Self.ClientWidth-Left-5;
+  end;
+
+  with outinproject do begin
+    Left:=68;
+    top:=44;
+    Width:=Self.ClientWidth-Left-5;
+  end;
+
+  with outsize do begin
+    Left:=68;
+    top:=64;
+    Width:=Self.ClientWidth-Left-5;
+  end;
+
+  with outlines do begin
+    Left:=68;
+    top:=84;
+    Width:=Self.ClientWidth-Left-5;
+  end;
+
+  with outpath do begin
+    Left:=68;
+    top:=104;
+    Width:=Self.ClientWidth-Left-5;
+  end;
 end;
 
 procedure TUnitInfoDlg.OkButtonClick(Sender:TObject);

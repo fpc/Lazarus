@@ -39,6 +39,7 @@ type
     CancelButton: TButton;
     procedure OkButtonClick(Sender: TObject);
     procedure CancelButtonClick(Sender: TObject);
+    procedure SysVarUserOverrideDialogResize(Sender: TObject);
   private
   public
     constructor Create(TheOwner: TComponent); override;
@@ -86,6 +87,37 @@ begin
   ModalResult:=mrCancel;
 end;
 
+procedure TSysVarUserOverrideDialog.SysVarUserOverrideDialogResize(
+  Sender: TObject);
+begin
+  with VariableLabel do begin
+    SetBounds(10,10,150,Height);
+  end;
+
+  with VariableEdit do begin
+    SetBounds(VariableLabel.Left,VariableLabel.Top+VariableLabel.Height+2,
+      Self.ClientWidth-2*VariableLabel.Left,Height);
+  end;
+
+  with ValueLabel do begin
+    SetBounds(VariableEdit.Left,VariableEdit.Top+VariableEdit.Height+10,
+      150,Height);
+  end;
+
+  with ValueEdit do begin
+    SetBounds(ValueLabel.Left,ValueLabel.Top+ValueLabel.Height+2,
+      Self.ClientWidth-2*ValueLabel.Left,Height);
+  end;
+
+  with OkButton do begin
+    SetBounds(Self.ClientWidth-220,Self.ClientHeight-40,100,25);
+  end;
+
+  with CancelButton do begin
+    SetBounds(OkButton.Left+OkButton.Width+10,OkButton.Top,100,25);
+  end;
+end;
+
 constructor TSysVarUserOverrideDialog.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
@@ -95,6 +127,7 @@ begin
     Width:=400;
     Height:=170;
     Position:=poScreenCenter;
+    OnResize:=@SysVarUserOverrideDialogResize;
 
     VariableLabel:=TLabel.Create(Self);
     with VariableLabel do begin
@@ -153,6 +186,7 @@ begin
       Visible:=true;
     end;
   end;
+  SysVarUserOverrideDialogResize(nil);
 end;
 
 end.

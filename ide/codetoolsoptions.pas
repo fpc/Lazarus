@@ -160,8 +160,8 @@ type
     // buttons at bottom
     OkButton: TButton;
     CancelButton: TButton;
-
-    procedure FormResize(Sender: TObject);
+    
+    procedure CodeToolsOptsDlgResize(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
     procedure CancelButtonClick(Sender: TObject);
     procedure UpdateExamples(Sender: TObject);
@@ -172,6 +172,10 @@ type
     procedure SetupCodeCreationPage;
     procedure SetupLineSplittingPage;
     procedure SetupSpacePage;
+    procedure ResizeGeneralPage;
+    procedure ResizeCodeCreationPage;
+    procedure ResizeLineSplittingPage;
+    procedure ResizeSpacePage;
     procedure CreateAtomCheckBoxes(ParentGroupBox: TGroupBox;
       AtomTypes: TAtomTypes; Columns: integer);
     procedure SetAtomCheckBoxes(AtomTypes: TAtomTypes;
@@ -566,8 +570,11 @@ constructor TCodeToolsOptsDlg.Create(AnOwner: TComponent);
 begin
   inherited Create(AnOwner);
   if LazarusResources.Find(ClassName)=nil then begin
-    SetBounds((Screen.Width-480) div 2,(Screen.Height-430) div 2, 485, 435);
+    Width:=485;
+    Height:=435;
+    Position:=poScreenCenter;
     Caption:='CodeTools Options';
+    OnResize:=@CodeToolsOptsDlgResize;
 
     NoteBook:=TNoteBook.Create(Self);
     with NoteBook do begin
@@ -614,6 +621,7 @@ begin
     end;
   end;
   BeautifyCodeOptions:=TBeautifyCodeOptions.Create;
+  CodeToolsOptsDlgResize(nil);
   UpdateExamples(Self);
 end;
 
@@ -1004,9 +1012,220 @@ begin
   end;
 end;
 
-procedure TCodeToolsOptsDlg.FormResize(Sender: TObject);
+procedure TCodeToolsOptsDlg.ResizeGeneralPage;
 begin
-  // ToDo
+  with SrcPathGroupBox do begin
+    SetBounds(8,7,Self.ClientWidth-20,51);
+  end;
+
+  with SrcPathEdit do begin
+    SetBounds(5,6,Parent.ClientWidth-14,Height);
+  end;
+
+  with JumpingGroupBox do begin
+    SetBounds(8,SrcPathGroupBox.Top+SrcPathGroupBox.Height+7,
+      SrcPathGroupBox.Width,95);
+  end;
+
+  with AdjustTopLineDueToCommentCheckBox do begin
+    SetBounds(5,6,Parent.ClientWidth-10,Height);
+  end;
+
+  with JumpCenteredCheckBox do begin
+    SetBounds(AdjustTopLineDueToCommentCheckBox.Left,
+      AdjustTopLineDueToCommentCheckBox.Top+2
+      +AdjustTopLineDueToCommentCheckBox.Height,
+      AdjustTopLineDueToCommentCheckBox.Width,Height);
+  end;
+
+  with CursorBeyondEOLCheckBox do begin
+    SetBounds(JumpCenteredCheckBox.Left,
+      JumpCenteredCheckBox.Top+JumpCenteredCheckBox.Height+2,
+      JumpCenteredCheckBox.Width,Height);
+  end;
+end;
+
+procedure TCodeToolsOptsDlg.ResizeCodeCreationPage;
+begin
+  with ClassPartInsertPolicyRadioGroup do begin
+    SetBounds(8,6,
+      (Self.ClientWidth div 2)-12,80);
+  end;
+
+  with MethodInsertPolicyRadioGroup do begin
+    SetBounds(ClassPartInsertPolicyRadioGroup.Left
+      +ClassPartInsertPolicyRadioGroup.Width+8,
+      ClassPartInsertPolicyRadioGroup.Top,
+      ClassPartInsertPolicyRadioGroup.Width,
+      ClassPartInsertPolicyRadioGroup.Height);
+  end;
+
+  with KeyWordPolicyRadioGroup do begin
+    SetBounds(ClassPartInsertPolicyRadioGroup.Left,
+      ClassPartInsertPolicyRadioGroup.Top
+       +ClassPartInsertPolicyRadioGroup.Height+7,
+      (Self.ClientWidth div 2)-12,100);
+  end;
+
+  with IdentifierPolicyRadioGroup do begin
+    SetBounds(KeyWordPolicyRadioGroup.Left+KeyWordPolicyRadioGroup.Width+8,
+      KeyWordPolicyRadioGroup.Top,
+      KeyWordPolicyRadioGroup.Width,KeyWordPolicyRadioGroup.Height);
+  end;
+
+  with PropertyCompletionGroupBox do begin
+    SetBounds(KeyWordPolicyRadioGroup.Left,
+      KeyWordPolicyRadioGroup.Top+KeyWordPolicyRadioGroup.Height+7,
+      Self.ClientWidth-20,125);
+  end;
+
+  with PropertyCompletionCheckBox do begin
+    SetBounds(6,5,200,Height);
+  end;
+
+  with PropertyReadIdentPrefixLabel do begin
+    SetBounds(PropertyCompletionCheckBox.Left,
+      PropertyCompletionCheckBox.Top+PropertyCompletionCheckBox.Height+5,
+      100,Height);
+  end;
+
+  with PropertyReadIdentPrefixEdit do begin
+    SetBounds(110,PropertyReadIdentPrefixLabel.Top,80,Height);
+  end;
+
+  with PropertyWriteIdentPrefixLabel do begin
+    SetBounds(6,PropertyReadIdentPrefixLabel.Top
+      +PropertyReadIdentPrefixLabel.Height+5,
+      PropertyReadIdentPrefixLabel.Width,Height);
+  end;
+
+  with PropertyWriteIdentPrefixEdit do begin
+    SetBounds(PropertyReadIdentPrefixEdit.Left,
+      PropertyWriteIdentPrefixLabel.Top,80,Height);
+  end;
+
+  with PropertyStoredIdentPostfixLabel do begin
+    SetBounds(6,PropertyWriteIdentPrefixLabel.Top
+      +PropertyWriteIdentPrefixLabel.Height+5,
+      PropertyReadIdentPrefixLabel.Width,Height);
+  end;
+
+  with PropertyStoredIdentPostfixEdit do begin
+    SetBounds(PropertyReadIdentPrefixEdit.Left,
+      PropertyStoredIdentPostfixLabel.Top,80,Height);
+  end;
+
+  with PrivatVariablePrefixLabel do begin
+    SetBounds((PropertyCompletionGroupBox.ClientWidth-20) div 2,
+      PropertyReadIdentPrefixLabel.Top,120,Height);
+  end;
+
+  with PrivatVariablePrefixEdit do begin
+    SetBounds(PrivatVariablePrefixLabel.Left+150,PrivatVariablePrefixLabel.Top,
+      80,Height);
+  end;
+
+  with SetPropertyVariablenameLabel do begin
+    SetBounds(PrivatVariablePrefixLabel.Left,
+      PrivatVariablePrefixLabel.Top+PrivatVariablePrefixLabel.Height+5,
+      120,Height);
+  end;
+
+  with SetPropertyVariablenameEdit do begin
+    SetBounds(PrivatVariablePrefixEdit.Left,
+      PrivatVariablePrefixLabel.Top+PrivatVariablePrefixLabel.Height+5,
+      80,Height);
+  end;
+end;
+
+procedure TCodeToolsOptsDlg.ResizeLineSplittingPage;
+begin
+  with LineLengthLabel do begin
+    SetBounds(8,7,Canvas.TextWidth('Max line length: '),Height);
+  end;
+
+  with LineLengthEdit do begin
+    Left:=LineLengthLabel.Left+LineLengthLabel.Width+5;
+    Top:=LineLengthLabel.Top-2;
+    Width:=50;
+  end;
+
+  with DoNotSplitLineInFrontGroupBox do begin
+    SetBounds(6,LineLengthLabel.Top+LineLengthLabel.Height+7,
+      (Self.ClientWidth-24) div 2,150);
+  end;
+
+  with DoNotSplitLineAfterGroupBox do begin
+    SetBounds(DoNotSplitLineInFrontGroupBox.Left,
+      DoNotSplitLineInFrontGroupBox.Top+DoNotSplitLineInFrontGroupBox.Height+7,
+      DoNotSplitLineInFrontGroupBox.Width,
+      DoNotSplitLineInFrontGroupBox.Height);
+  end;
+
+  with SplitPreviewGroupBox do begin
+    Left:=DoNotSplitLineInFrontGroupBox.Left
+          +DoNotSplitLineInFrontGroupBox.Width+8;
+    Top:=LineLengthLabel.Top;
+    Width:=Self.ClientWidth-10-Left;
+    Height:=Self.ClientHeight-92-Top;
+  end;
+
+  with SplitPreviewSynEdit do begin
+    SetBounds(2,2,Parent.ClientWidth-8,Parent.ClientHeight-25);
+  end;
+end;
+
+procedure TCodeToolsOptsDlg.ResizeSpacePage;
+begin
+  with DoInsertSpaceInFrontGroupBox do begin
+    SetBounds(6,6,
+      (Self.ClientWidth-24) div 2,150);
+  end;
+
+  with DoInsertSpaceAfterGroupBox do begin
+    SetBounds(DoInsertSpaceInFrontGroupBox.Left
+      +DoInsertSpaceInFrontGroupBox.Width+8,
+      DoInsertSpaceInFrontGroupBox.Top,
+      DoInsertSpaceInFrontGroupBox.Width,
+      DoInsertSpaceInFrontGroupBox.Height);
+  end;
+
+  with SpacePreviewGroupBox do begin
+    Left:=DoInsertSpaceInFrontGroupBox.Left;
+    Top:=DoInsertSpaceInFrontGroupBox.Top+DoInsertSpaceInFrontGroupBox.Height+7;
+    Width:=Self.ClientWidth-10-Left;
+    Height:=Self.ClientHeight-92-Top;
+  end;
+
+  with SpacePreviewSynEdit do begin
+    SetBounds(2,2,Parent.ClientWidth-8,Parent.ClientHeight-25);
+  end;
+end;
+
+procedure TCodeToolsOptsDlg.CodeToolsOptsDlgResize(Sender: TObject);
+begin
+  with NoteBook do begin
+    SetBounds(0,0,Self.ClientWidth,Self.ClientHeight-50);
+  end;
+
+  ResizeGeneralPage;
+  ResizeCodeCreationPage;
+  ResizeLineSplittingPage;
+  ResizeSpacePage;
+
+  with CancelButton do begin
+    Width:=70;
+    Height:=23;
+    Left:=Self.ClientWidth-Width-15;
+    Top:=Self.ClientHeight-Height-15;
+  end;
+
+  with OkButton do begin
+    Width:=CancelButton.Width;
+    Height:=CancelButton.Height;
+    Left:=CancelButton.Left-15-Width;
+    Top:=CancelButton.Top;
+  end;
 end;
 
 procedure TCodeToolsOptsDlg.CreateAtomCheckBoxes(ParentGroupBox: TGroupBox;

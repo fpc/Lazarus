@@ -61,6 +61,7 @@ type
     BuildExamplesRadioGroup: TRadioGroup;
     OkButton: TButton;
     CancelButton: TButton;
+    procedure ConfigureBuildLazarusDlgResize(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
     procedure CancelButtonClick(Sender: TObject);
   private
@@ -199,8 +200,11 @@ var MakeMode: TMakeMode;
 begin
   inherited Create(AnOwner);
   if LazarusResources.Find(Classname)=nil then begin
-    SetBounds((Screen.Width-350) div 2,(Screen.Height-320) div 2,350,320);
+    Width:=350;
+    Height:=320;
+    Position:=poScreenCenter;
     Caption:='Configure "Build Lazarus"';
+    OnResize:=@ConfigureBuildLazarusDlgResize;
     
     CleanAllCheckBox:=TCheckBox.Create(Self);
     with CleanAllCheckBox do begin
@@ -297,6 +301,31 @@ begin
     end;
 
   end;
+  ConfigureBuildLazarusDlgResize(nil);
+end;
+
+procedure TConfigureBuildLazarusDlg.ConfigureBuildLazarusDlgResize(
+  Sender: TObject);
+begin
+  CleanAllCheckBox.SetBounds(10,10,Self.ClientWidth-24,20);
+  BuildLCLRadioGroup.SetBounds(10,
+              CleanAllCheckBox.Top+CleanAllCheckBox.Height+5,
+              CleanAllCheckBox.Width,40);
+  BuildSynEditRadioGroup.SetBounds(10,
+              BuildLCLRadioGroup.Top+BuildLCLRadioGroup.Height+5,
+              BuildLCLRadioGroup.Width,BuildLCLRadioGroup.Height);
+  BuildCodeToolsRadioGroup.SetBounds(10,
+              BuildSynEditRadioGroup.Top+BuildSynEditRadioGroup.Height+5,
+              BuildLCLRadioGroup.Width,BuildLCLRadioGroup.Height);
+  BuildIDERadioGroup.SetBounds(10,
+              BuildCodeToolsRadioGroup.Top+BuildCodeToolsRadioGroup.Height+5,
+              BuildLCLRadioGroup.Width,BuildLCLRadioGroup.Height);
+  BuildExamplesRadioGroup.SetBounds(10,
+              BuildIDERadioGroup.Top+BuildIDERadioGroup.Height+5,
+              BuildLCLRadioGroup.Width,BuildLCLRadioGroup.Height);
+  OkButton.SetBounds(Self.ClientWidth-180,Self.ClientHeight-38,80,25);
+  CancelButton.SetBounds(Self.ClientWidth-90,OkButton.Top,
+              OkButton.Width,OkButton.Height);
 end;
 
 procedure TConfigureBuildLazarusDlg.OkButtonClick(Sender: TObject);

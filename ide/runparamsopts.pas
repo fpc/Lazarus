@@ -120,6 +120,7 @@ type
     procedure OkButtonClick(Sender: TObject);
     procedure CancelButtonClick(Sender: TObject);
     procedure HostApplicationBrowseBtnClick(Sender: TObject);
+    procedure RunParamsOptsDlgResize(Sender: TObject);
     procedure WorkingDirectoryBtnClick(Sender: TObject);
     procedure UserOverridesAddButtonClick(Sender: TObject);
     procedure UserOverridesEditButtonClick(Sender: TObject);
@@ -129,6 +130,9 @@ type
     procedure SetupNotebook;
     procedure SetupLocalPage;
     procedure SetupEnvironmentPage;
+    procedure ResizeNotebook;
+    procedure ResizeLocalPage;
+    procedure ResizeEnvironmentPage;
     procedure SetOptions(NewOptions: TRunParamsOptions);
     procedure FillSystemVariablesListView;
     procedure FillUserOverridesListView;
@@ -293,10 +297,12 @@ constructor TRunParamsOptsDlg.Create(AnOwner: TComponent);
 begin
   inherited Create(AnOwner);
   if LazarusResources.Find(ClassName)=nil then begin
-
+    Width:=500;
+    Height:=450;
+    Position:=poScreenCenter;
     Caption:='Run parameters';
-    SetBounds((Screen.Width-500) div 2,(Screen.Height-450) div 2,500,450);
-  
+    OnResize:=@RunParamsOptsDlgResize;
+
     SetupNotebook;
 
     OkButton:=TButton.Create(Self);
@@ -319,6 +325,7 @@ begin
       Visible:=true;
     end;
   end;
+  RunParamsOptsDlgResize(nil);
 end;
 
 procedure TRunParamsOptsDlg.SetupNotebook;
@@ -582,6 +589,132 @@ begin
   end;
 end;
 
+procedure TRunParamsOptsDlg.ResizeNotebook;
+begin
+  with Notebook do begin
+    SetBounds(0,0,Self.ClientWidth,Self.ClientHeight-50);
+  end;
+
+  ResizeLocalPage;
+  ResizeEnvironmentPage;
+end;
+
+procedure TRunParamsOptsDlg.ResizeLocalPage;
+var w: integer;
+begin
+  w:=Self.ClientWidth-15;
+  
+  with HostApplicationGroupBox do begin
+    SetBounds(5,5,w,60);
+  end;
+
+  with HostApplicationEdit do begin
+    SetBounds(5,5,w-10-35,25);
+  end;
+
+  with HostApplicationBrowseBtn do begin
+    SetBounds(HostApplicationEdit.Left+HostApplicationEdit.Width+2,5,25,25);
+  end;
+
+  with CmdLineParametersGroupBox do begin
+    SetBounds(5,HostApplicationGroupBox.Top+HostApplicationGroupBox.Height+5,
+                 w,60);
+  end;
+
+  with CmdLineParametersEdit do begin
+    SetBounds(5,5,w-15,25);
+  end;
+
+  with UseLaunchingApplicationBevel do begin
+    SetBounds(
+      5,CmdLineParametersGroupBox.Top+CmdLineParametersGroupBox.Height+10,w,60);
+  end;
+
+  with UseLaunchingApplicationCheckBox do begin
+    SetBounds(15,
+      CmdLineParametersGroupBox.Top+CmdLineParametersGroupBox.Height+10,250,25);
+  end;
+
+  with UseLaunchingApplicationEdit do begin
+    SetBounds(UseLaunchingApplicationCheckBox.Left,
+                 UseLaunchingApplicationCheckBox.Top
+                 +UseLaunchingApplicationCheckBox.Height+2,w-15,25);
+  end;
+
+  with WorkingDirectoryGroupBox do begin
+    SetBounds(5,UseLaunchingApplicationEdit.Top
+                   +UseLaunchingApplicationEdit.Height+15,w,60);
+  end;
+
+  with WorkingDirectoryEdit do begin
+    SetBounds(5,5,w-10-35,25);
+  end;
+
+  with WorkingDirectoryBtn do begin
+    SetBounds(WorkingDirectoryEdit.Left+WorkingDirectoryEdit.Width+2,5,25,25);
+  end;
+
+  with DisplayGroupBox do begin
+    SetBounds(5,WorkingDirectoryGroupBox.Top+WorkingDirectoryGroupBox.Height+10,
+                 w,60);
+  end;
+
+  with DisplayEdit do begin
+    SetBounds(5,5,w-15,25);
+  end;
+end;
+
+procedure TRunParamsOptsDlg.ResizeEnvironmentPage;
+var w: integer;
+begin
+  w:=Self.ClientWidth-15;
+
+  with SystemVariablesGroupBox do begin
+    SetBounds(5,5,w,150);
+  end;
+
+  with SystemVariablesListView do begin
+    Left:=5;
+    Top:=5;
+    Width:=Parent.ClientWidth-17;
+    Height:=Parent.ClientHeight-28;
+  end;
+
+  with UserOverridesGroupBox do begin
+    SetBounds(5,SystemVariablesGroupBox.Top+SystemVariablesGroupBox.Height+10,
+                 w,150);
+  end;
+
+  with UserOverridesListView do begin
+    Left:=5;
+    Top:=5;
+    Width:=Parent.ClientWidth-17;
+    Height:=Parent.ClientHeight-68;
+  end;
+
+  with UserOverridesAddButton do begin
+    Left:=5;
+    Top:=Parent.ClientHeight-Height-28;
+    Width:=100;
+  end;
+
+  with UserOverridesEditButton do begin
+    Left:=UserOverridesAddButton.Left+UserOverridesAddButton.Width+10;
+    Top:=UserOverridesAddButton.Top;
+    Width:=100;
+  end;
+
+  with UserOverridesDeleteButton do begin
+    Left:=UserOverridesEditButton.Left+UserOverridesEditButton.Width+10;
+    Top:=UserOverridesEditButton.Top;
+    Width:=100;
+  end;
+
+  with IncludeSystemVariablesCheckBox do begin
+    SetBounds(5,UserOverridesGroupBox.Top+UserOverridesGroupBox.Height+10,w,25);
+  end;
+end;
+
 procedure TRunParamsOptsDlg.OkButtonClick(Sender: TObject);
 begin
   SaveToOptions;
@@ -610,6 +743,19 @@ begin
         HostApplicationEdit.Text:=OpenDialog.Filename;
       end;
     end;
+  end;
+end;
+
+procedure TRunParamsOptsDlg.RunParamsOptsDlgResize(Sender: TObject);
+begin
+  ResizeNotebook;
+
+  with OkButton do begin
+    SetBounds(270,Self.ClientHeight-40,100,25);
+  end;
+
+  with CancelButton do begin
+    SetBounds(390,OkButton.Top,100,25);
   end;
 end;
 

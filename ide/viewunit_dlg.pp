@@ -35,7 +35,7 @@ type
     Name: string;
     ID: integer;
     Selected: boolean;
-    constructor Create(AName: string; AnID: integer; ASelected: boolean);
+    constructor Create(const AName: string; AnID: integer; ASelected: boolean);
   end;
 
   TViewUnits = class(TForm)
@@ -43,6 +43,7 @@ type
     btnOK : TButton;
     btnCancel : TButton;
     MultiselectCheckBox: TCheckBox;
+    procedure ViewUnitsResize(Sender: TObject);
     Procedure btnOKClick(Sender :TObject);
     Procedure btnCancelClick(Sender :TObject);
     procedure MultiselectCheckBoxClick(Sender :TObject);
@@ -92,7 +93,7 @@ end;
 
 { TViewUnitsEntry }
 
-constructor TViewUnitsEntry.Create(AName: string; AnID: integer;
+constructor TViewUnitsEntry.Create(const AName: string; AnID: integer;
   ASelected: boolean);
 begin
   inherited Create;
@@ -110,9 +111,11 @@ begin
 
   if LazarusResources.Find(Classname)=nil then begin
     Caption := 'View Project Units';
-    SetBounds((Screen.Width-345) div 2, (Screen.Height-220) div 2, 325, 200);
+    Width:=325;
+    Height:=200;
+    Position:=poScreenCenter;
     Pad := 10;
-    Position := poScreenCenter;
+    OnResize:=@ViewUnitsResize;
 
     btnOK := TButton.Create(Self);
     with btnOk do begin
@@ -166,8 +169,42 @@ begin
       Visible:=true;
     end;
   end;
+  ViewUnitsResize(nil);
 end;
 
+procedure TViewUnits.ViewUnitsResize(Sender: TObject);
+var Pad: integer;
+begin
+  Pad:=10;
+  
+  with btnOk do begin
+    Left := Self.Width - 90;
+    Top := pad;
+    Width := 75;
+    Height := 25;
+  end;
+
+  with btnCancel do begin
+    Left := Self.Width - 90;
+    Top := btnOK.Top + btnOK.Height + pad;
+    Width := 75;
+    Height := 25;
+  end;
+
+  with Listbox do begin
+    Top:= Pad;
+    Left:= Pad;
+    Width:= Self.Width - (Self.Width - btnOK.Left) - (2*pad);
+    Height:= Self.Height - Top - Pad;
+  end;
+
+  with MultiselectCheckBox do begin
+    Left:=btnOK.Left;
+    Top:=btnCancel.Top+btnCancel.Height+2*pad;
+    Width:=btnOk.Width;
+    Height:=25;
+  end;
+end;
 
 Procedure TViewUnits.btnOKClick(Sender : TOBject);
 Begin
@@ -193,6 +230,9 @@ initialization
 end.
 {
   $Log$
+  Revision 1.10  2002/04/16 15:22:50  lazarus
+  MG: added form resizes
+
   Revision 1.9  2002/02/17 19:34:45  lazarus
   MG: fixed view units/forms
 

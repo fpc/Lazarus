@@ -25,6 +25,7 @@ type
     procedure CancelButtonClick(Sender:TObject);
     procedure ListBoxMouseUp(Sender:TObject;
        Button:TMouseButton;  Shift:TShiftState;  X,Y:integer);
+    procedure NewProjectDialogResize(Sender: TObject);
   private
     procedure FillHelpLabel;
   public
@@ -64,8 +65,11 @@ var pt:TProjectType;
 begin
   inherited Create(AOwner);
   if LazarusResources.Find(ClassName)=nil then begin
-    SetBounds((Screen.Width-300) div 2,(Screen.Height-250) div 2,390,240);
+    Width:=390;
+    Height:=240;
+    Position:=poScreenCenter;
     Caption:='Create a new project';
+    OnResize:=@NewProjectDialogResize;
     MaxX:=386;
     MaxY:=238;
 
@@ -128,6 +132,7 @@ begin
     end;
 
   end;
+  NewProjectDialogResize(nil);
   FillHelpLabel;
 end;
 
@@ -159,6 +164,42 @@ procedure TNewProjectDialog.ListBoxMouseUp(Sender:TObject;
   Button:TMouseButton;  Shift:TShiftState;  X,Y:integer);
 begin
   FillHelpLabel;
+end;
+
+procedure TNewProjectDialog.NewProjectDialogResize(Sender: TObject);
+var
+  MaxX, MaxY:integer;
+begin
+  MaxX:=ClientWidth;
+  MaxY:=ClientHeight;
+
+  with ListBox do begin
+    Left:=5;
+    Top:=5;
+    Width:=MaxX-200;
+    Height:=MaxY-50;
+  end;
+
+  with HelpLabel do begin
+    Left:=ListBox.Left+ListBox.Width+10;
+    Top:=ListBox.Top+2;
+    Width:=MaxX-5-Left;
+    Height:=ListBox.Height-2;
+  end;
+
+  with CreateButton do begin
+    Width:=80;
+    Height:=23;
+    Left:=Self.ClientWidth-Width*2-2*15;
+    Top:=Self.ClientHeight-40;
+  end;
+
+  with CancelButton do begin
+    Width:=80;
+    Height:=23;
+    Left:=Self.ClientWidth-Width-15;
+    Top:=CreateButton.Top;
+  end;
 end;
 
 end.

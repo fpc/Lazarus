@@ -4,10 +4,13 @@ object ViewUnits1: TVIEWUNITS1
   CLIENTHEIGHT = 200
   CLIENTWIDTH = 325
   POSITION = poscreencenter
+  LEFT = 477
   HEIGHT = 200
+  TOP = 412
   WIDTH = 325
   object btnOK: TBUTTON
     CAPTION = 'OK'
+    FONT.COLOR = -2147483640
     ONCLICK = BTNOKCLICK
     LEFT = 235
     HEIGHT = 25
@@ -16,6 +19,7 @@ object ViewUnits1: TVIEWUNITS1
   end
   object btnCancel: TBUTTON
     CAPTION = 'Cancel'
+    FONT.COLOR = -2147483640
     ONCLICK = BTNCANCELCLICK
     LEFT = 235
     HEIGHT = 25
@@ -30,6 +34,7 @@ object ViewUnits1: TVIEWUNITS1
     WIDTH = 215
   end
   object Listbox1: TLISTBOX
+    BORDERSTYLE = bssingle
     ONCLICK = LISTBOX1CLICK
     LEFT = 10
     HEIGHT = 145
