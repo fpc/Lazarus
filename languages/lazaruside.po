@@ -1646,8 +1646,16 @@ msgstr ""
 msgid "Grid size X"
 msgstr ""
 
+#: lazarusidestrconsts:dlggridxhint
+msgid "Horizontal grid step size"
+msgstr ""
+
 #: lazarusidestrconsts:dlggridy
 msgid "Grid size Y"
+msgstr ""
+
+#: lazarusidestrconsts:dlggridyhint
+msgid "Vertical grid step size"
 msgstr ""
 
 #: lazarusidestrconsts:dlgguidelines

@@ -2396,6 +2396,10 @@ msgstr "Podpowiedzi dla g³ównych przycisków (otwórz, zapisz, ...)"
 msgid "Home"
 msgstr "Home"
 
+#: lazarusidestrconsts:dlggridxhint
+msgid "Horizontal grid step size"
+msgstr ""
+
 #: lazarusidestrconsts:dlghostapplication
 msgid "Host application"
 msgstr "G³ówna aplikacja"
@@ -6291,6 +6295,10 @@ msgstr "Pokazuj:"
 #: lazarusidestrconsts:lisversion
 msgid "Version"
 msgstr "Wersja"
+
+#: lazarusidestrconsts:dlggridyhint
+msgid "Vertical grid step size"
+msgstr ""
 
 #: lazarusidestrconsts:srkmectogglebreakpoints
 msgid "View breakpoints"

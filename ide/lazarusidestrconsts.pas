@@ -617,7 +617,9 @@ resourcestring
   dlgGridColor = 'Grid color';
   dlgQSnapToGrid = 'Snap to grid';
   dlgGridX = 'Grid size X';
+  dlgGridXHint = 'Horizontal grid step size';
   dlgGridY = 'Grid size Y';
+  dlgGridYHint = 'Vertical grid step size';
   dlgGuideLines = 'Show Guide Lines';
   dlgSnapGuideLines = 'Snap to Guide Lines';
   dlgLeftTopClr = 'color for left, top';

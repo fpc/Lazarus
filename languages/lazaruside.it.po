@@ -2395,6 +2395,10 @@ msgstr "Dritte per i principali bottoni veloci (apri, salva, ...)"
 msgid "Home"
 msgstr "Inizio"
 
+#: lazarusidestrconsts:dlggridxhint
+msgid "Horizontal grid step size"
+msgstr ""
+
 #: lazarusidestrconsts:dlghostapplication
 msgid "Host application"
 msgstr "Applicazione host"
@@ -6290,6 +6294,10 @@ msgstr "Prolissità:"
 #: lazarusidestrconsts:lisversion
 msgid "Version"
 msgstr "Versione"
+
+#: lazarusidestrconsts:dlggridyhint
+msgid "Vertical grid step size"
+msgstr ""
 
 #: lazarusidestrconsts:srkmectogglebreakpoints
 msgid "View breakpoints"

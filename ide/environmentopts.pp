@@ -2268,22 +2268,12 @@ procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
       Caption:=dlgQSnapToGrid;
     end;
 
-    GridSizeXLabel:=TLabel.Create(Self);
-    with GridSizeXLabel do begin
-      Name:='GridSizeXLabel';
-      Parent:=GridGroupBox;
-      Left:=ShowGridCheckBox.Left;
-      Top:=SnapToGridCheckBox.Top+SnapToGridCheckBox.Height+5;
-      Width:=150;
-      Caption:=dlgGridX;
-    end;
-
     GridSizeXComboBox:=TComboBox.Create(Self);
     with GridSizeXComboBox do begin
       Name:='GridSizeXComboBox';
       Parent:=GridGroupBox;
-      Left:=GridSizeXLabel.Left+GridSizeXLabel.Width+5;
-      Top:=GridSizeXLabel.Top-2;
+      Left:=ShowGridCheckBox.Left;
+      Top:=SnapToGridCheckBox.Top+SnapToGridCheckBox.Height+5;
       Width:=60;
       with Items do begin
         BeginUpdate;
@@ -2298,6 +2288,34 @@ procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
         Add('30');
         EndUpdate;
       end;
+      Hint:=dlgGridXHint;
+      ShowHint:=true;
+    end;
+
+    GridSizeXLabel:=TLabel.Create(Self);
+    with GridSizeXLabel do begin
+      Name:='GridSizeXLabel';
+      Parent:=GridGroupBox;
+      Left:=GridSizeXComboBox.Left+GridSizeXComboBox.Width+5;
+      Top:=GridSizeXComboBox.Top-2;
+      Width:=150;
+      Caption:=dlgGridX;
+    end;
+
+    GridSizeYComboBox:=TComboBox.Create(Self);
+    with GridSizeYComboBox do begin
+      Name:='GridSizeYComboBox';
+      Parent:=GridGroupBox;
+      Left:=GridSizeXComboBox.Left;
+      Top:=GridSizeXComboBox.Top+GridSizeXComboBox.Height+4;
+      Width:=GridSizeXComboBox.Width;
+      with Items do begin
+        BeginUpdate;
+        Assign(GridSizeXComboBox.Items);
+        EndUpdate;
+      end;
+      Hint:=dlgGridYHint;
+      ShowHint:=true;
     end;
 
     GridSizeYLabel:=TLabel.Create(Self);
@@ -2305,31 +2323,9 @@ procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
       Name:='GridSizeYLabel';
       Parent:=GridGroupBox;
       Left:=GridSizeXLabel.Left;
-      Top:=GridSizeXComboBox.Top+GridSizeXComboBox.Height+5;
+      Top:=GridSizeYComboBox.Top-1;
       Width:=GridSizeXLabel.Width;
       Caption:=dlgGridY;
-    end;
-
-    GridSizeYComboBox:=TComboBox.Create(Self);
-    with GridSizeYComboBox do begin
-      Name:='GridSizeYComboBox';
-      Parent:=GridGroupBox;
-      Left:=GridSizeYLabel.Left+GridSizeYLabel.Width+5;
-      Top:=GridSizeYLabel.Top-2;
-      Width:=GridSizeXComboBox.Width;
-      with Items do begin
-        BeginUpdate;
-        Add('2');
-        Add('5');
-        Add('8');
-        Add('10');
-        Add('12');
-        Add('15');
-        Add('20');
-        Add('25');
-        Add('30');
-        EndUpdate;
-      end;
     end;
   end;
 
@@ -3223,26 +3219,25 @@ begin
               ShowGridCheckBox.Height);
   end;
 
-  with GridSizeXLabel do begin
-    SetBounds(ShowGridCheckBox.Left,
-              SnapToGridCheckBox.Top+SnapToGridCheckBox.Height+5,150,Height);
-  end;
-
   with GridSizeXComboBox do begin
-    SetBounds(GridSizeXLabel.Left+GridSizeXLabel.Width+5,
-              GridSizeXLabel.Top-2,60,Height);
+    SetBounds(ShowGridCheckBox.Left,
+              SnapToGridCheckBox.Top+SnapToGridCheckBox.Height+5,60,Height);
   end;
 
-  with GridSizeYLabel do begin
-    SetBounds(GridSizeXLabel.Left,
-              GridSizeXComboBox.Top+GridSizeXComboBox.Height+5,
-              GridSizeXLabel.Width,Height);
+  with GridSizeXLabel do begin
+    SetBounds(GridSizeXComboBox.Left+GridSizeXComboBox.Width+5,
+              GridSizeXComboBox.Top+2,150,Height);
   end;
 
   with GridSizeYComboBox do begin
-    SetBounds(GridSizeYLabel.Left+GridSizeYLabel.Width+5,
-              GridSizeYLabel.Top-2,
+    SetBounds(GridSizeXComboBox.Left,
+              GridSizeXComboBox.Top+GridSizeXComboBox.Height+4,
               GridSizeXComboBox.Width,Height);
+  end;
+
+  with GridSizeYLabel do begin
+    SetBounds(GridSizeXLabel.Left,GridSizeYComboBox.Top+2,
+              GridSizeXLabel.Width,Height);
   end;
 end;
 

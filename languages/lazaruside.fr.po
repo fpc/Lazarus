@@ -2395,6 +2395,10 @@ msgstr "Aide pour les principaux boutons rapide (Ouvrir,Enregistrer,...) "
 msgid "Home"
 msgstr "Debut"
 
+#: lazarusidestrconsts:dlggridxhint
+msgid "Horizontal grid step size"
+msgstr ""
+
 #: lazarusidestrconsts:dlghostapplication
 msgid "Host application"
 msgstr "Application hote"
@@ -6289,6 +6293,10 @@ msgstr "Verbocité"
 
 #: lazarusidestrconsts:lisversion
 msgid "Version"
+msgstr ""
+
+#: lazarusidestrconsts:dlggridyhint
+msgid "Vertical grid step size"
 msgstr ""
 
 #: lazarusidestrconsts:srkmectogglebreakpoints

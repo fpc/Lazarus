@@ -2386,6 +2386,10 @@ msgstr "Подсказки командных кнопок (открыть, сохранить и т.д.)"
 msgid "Home"
 msgstr "Home"
 
+#: lazarusidestrconsts:dlggridxhint
+msgid "Horizontal grid step size"
+msgstr ""
+
 #: lazarusidestrconsts:dlghostapplication
 msgid "Host application"
 msgstr "Главное приложение"
@@ -6281,6 +6285,10 @@ msgstr "Подробность:"
 #: lazarusidestrconsts:lisversion
 msgid "Version"
 msgstr "Версия"
+
+#: lazarusidestrconsts:dlggridyhint
+msgid "Vertical grid step size"
+msgstr ""
 
 #: lazarusidestrconsts:srkmectogglebreakpoints
 msgid "View breakpoints"

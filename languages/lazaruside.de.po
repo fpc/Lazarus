@@ -2396,6 +2396,10 @@ msgstr ""
 msgid "Home"
 msgstr ""
 
+#: lazarusidestrconsts:dlggridxhint
+msgid "Horizontal grid step size"
+msgstr ""
+
 #: lazarusidestrconsts:dlghostapplication
 msgid "Host application"
 msgstr ""
@@ -6290,6 +6294,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisversion
 msgid "Version"
+msgstr ""
+
+#: lazarusidestrconsts:dlggridyhint
+msgid "Vertical grid step size"
 msgstr ""
 
 #: lazarusidestrconsts:srkmectogglebreakpoints

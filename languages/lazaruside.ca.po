@@ -2386,6 +2386,10 @@ msgstr "Suggeriments pels botons ràpids principals (obrir, guardar, ...)"
 msgid "Home"
 msgstr "Inici"
 
+#: lazarusidestrconsts:dlggridxhint
+msgid "Horizontal grid step size"
+msgstr ""
+
 #: lazarusidestrconsts:dlghostapplication
 msgid "Host application"
 msgstr "Aplicació de l'amfitrió"
@@ -6281,6 +6285,10 @@ msgstr "Detall"
 #: lazarusidestrconsts:lisversion
 msgid "Version"
 msgstr "Versió"
+
+#: lazarusidestrconsts:dlggridyhint
+msgid "Vertical grid step size"
+msgstr ""
 
 #: lazarusidestrconsts:srkmectogglebreakpoints
 msgid "View breakpoints"
