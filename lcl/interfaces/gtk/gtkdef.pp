@@ -36,7 +36,7 @@ uses
   gtk, gdk, LCLLinux, LCLType, VclGlobals, Classes, LCLMemManager;
 
 type
-  TGDIType = (gdiBitmap, gdiBrush, gdiFont, gdiPen, gdiRegion);
+  TGDIType = (gdiBitmap, gdiBrush, gdiFont, gdiPen, gdiRegion, gdiPalette);
   TGDIBitmapType = (gbBitmap, gbPixmap, gbImage);
   
   PGDIRGB = ^TGDIRGB;
@@ -84,6 +84,25 @@ type
       ); 
       gdiRegion: (
         GDIRegionObject: PGdkRegion;
+      );
+      gdiPalette: (
+        //Has it been added to the system palette?
+        Realized : Boolean;
+
+        //Type of visual expected
+        VisualType  : TGdkVisualType;
+
+        //Actual visual created
+        PalleteVisual : PGDKVisual;
+
+        //Colormap for mapping colors
+        PalleteColormap : PGDKColormap;
+
+        //For use when VisualType <> PalleteVisual^.Type
+        RGBEntries : Array[0..0] of Longint;
+        
+        //For mapping from Index to Colormap Pixel
+        PixelEntries : Array[0..0] of Longint;
       );
   end;
 
@@ -328,6 +347,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.18  2002/09/12 05:56:15  lazarus
+  MG: gradient fill, minor issues from Andrew
+
   Revision 1.17  2002/09/10 06:49:20  lazarus
   MG: scrollingwincontrol from Andrew
 

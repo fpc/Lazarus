@@ -84,6 +84,7 @@ Function GetClipBox(DC : hDC; lpRect : PRect) : Longint; override;
 Function GetClipRGN(DC : hDC; RGN : hRGN) : Longint; override;
 Function GetCmdLineParamDescForInterface: string; override;
 function GetDC(hWnd: HWND): HDC;  override;
+function GetDeviceCaps(DC: HDC; Index: Integer): Integer; Override;
 function GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer; Override;
 function GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint; Override;
 function GetFocus: HWND; override;
@@ -102,6 +103,9 @@ Function GetWindowLong(Handle : hwnd; int: Integer): Longint; override;
 Function GetWindowOrgEx(dc : hdc; var P: TPoint): Integer;  override;
 Function GetWindowRect(Handle : hwnd; var ARect: TRect): Integer; override;
 Function GetWindowSize(Handle : hwnd; var Width, Height: integer): boolean; override;
+
+function GradientFill(DC: HDC; Vertices: PTriVertex; NumVertices : Longint;
+  Meshes: Pointer; NumMeshes : Longint; Mode : Longint): Boolean; Override;
 
 function HideCaret(hWnd: HWND): Boolean; override;
 
@@ -182,6 +186,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.46  2002/09/12 05:56:17  lazarus
+  MG: gradient fill, minor issues from Andrew
+
   Revision 1.45  2002/09/10 06:49:24  lazarus
   MG: scrollingwincontrol from Andrew
 
