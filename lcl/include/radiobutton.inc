@@ -53,7 +53,6 @@ constructor TRadioButton.Create(TheOwner : TComponent);
 begin
   inherited Create(TheOwner);
   fCompStyle := csRadioButton;
-  AutoSize := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -103,6 +102,9 @@ end;
 
 {
   $Log$
+  Revision 1.20  2005/01/01 19:36:40  mattias
+  fixed loading TRadioButton.Checked
+
   Revision 1.19  2004/11/03 14:18:35  mattias
   implemented preferred size for controls for theme depending AutoSizing
 

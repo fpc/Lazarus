@@ -48,6 +48,7 @@ begin
   if FState <> Value then
   begin
     FState := Value;
+    //debugln('TCustomCheckBox.SetState ',dbgsname(Self),' ',dbgs(ord(FState)));
     ApplyChanges;
   end;
 end;
@@ -73,6 +74,7 @@ begin
   NewState:=RetrieveState;
   if FState=NewState then exit;
   FState:=RetrieveState;
+  //debugln('TCustomCheckBox.DoChange ',dbgsname(Self),' ',dbgs(ord(FState)));
   DoOnChange;
 end;
 
@@ -80,8 +82,11 @@ function TCustomCheckBox.RetrieveState: TCheckBoxState;
 begin
   Result:=FState;
   // get the actual state of the component
-  if HandleAllocated then 
+  // don't read from interface during loading
+  if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then begin
     Result := TWSCustomCheckBoxClass(WidgetSetClass).RetrieveState(Self);
+    //debugln('TCustomCheckBox.RetrieveState ',dbgsname(Self),' ',dbgs(ord(Result)));
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -144,6 +149,7 @@ begin
     FState := cbChecked
   else
     FState := cbUnChecked;
+  //debugln('TCustomCheckBox.DoChange ',dbgsname(Self),' ',dbgs(ord(FState)));
   if FState <> OldState then
   begin
     if Assigned(Action)
@@ -180,8 +186,17 @@ end;
 procedure TCustomCheckBox.ApplyChanges;
 begin
   if HandleAllocated and (not (csLoading in ComponentState)) then begin
+    //debugln('TCustomCheckBox.ApplyChanges ',dbgsname(Self),' ',dbgs(ord(FState)));
     TWSCustomCheckBoxClass(WidgetSetClass).SetState(Self, FState);
   end;
+end;
+
+procedure TCustomCheckBox.Loaded;
+begin
+  // set first the loaded FState, otherwise the inherited Loaded will load the
+  // the interface state
+  TWSCustomCheckBoxClass(WidgetSetClass).SetState(Self, FState);
+  inherited Loaded;
 end;
 
 {------------------------------------------------------------------------------
@@ -212,6 +227,9 @@ end;
 
 {
   $Log$
+  Revision 1.28  2005/01/01 19:36:40  mattias
+  fixed loading TRadioButton.Checked
+
   Revision 1.27  2004/11/03 14:18:35  mattias
   implemented preferred size for controls for theme depending AutoSizing
 

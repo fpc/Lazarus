@@ -834,7 +834,6 @@ type
 
   TCustomCheckBox = class(TButtonControl)
   private
-    // FAlignment: TLeftRight;
     FAllowGrayed: Boolean;
     FState: TCheckBoxState;
     FShortCut: TShortcut;
@@ -849,10 +848,12 @@ type
     procedure SetChecked(Value: Boolean); override;
     procedure RealSetText(const Value: TCaption); override;
     procedure ApplyChanges; virtual;
+    procedure Loaded; override;
   public
     constructor Create(TheOwner: TComponent); override;
   public
-    property AllowGrayed: Boolean read FAllowGrayed write FAllowGrayed;
+    property AutoSize default true;
+    property AllowGrayed: Boolean read FAllowGrayed write FAllowGrayed default True;
     property State: TCheckBoxState read GetState write SetState;
     property TabStop default true;
     property UseOnChange;
@@ -1212,6 +1213,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.177  2005/01/01 19:36:40  mattias
+  fixed loading TRadioButton.Checked
+
   Revision 1.176  2004/12/31 11:59:47  mattias
   published TEdit.Color - only useful under windows, gtk1 ignores it
 
