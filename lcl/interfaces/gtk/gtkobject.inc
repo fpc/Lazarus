@@ -1887,9 +1887,6 @@ begin
   csPage:
     SetNotebookPageTabLabel;
     
-  csMenuItem:
-    SetMenuItemCaption;
-
   csComboBox    : gtk_entry_set_text(PGtkEntry(PGtkCombo(P)^.entry), PLabel);
   else
     Assert(True, Format ('WARNING: [TgtkObject.SetLabel] --> not handled for class %s ', [Sender.ClassName]));
@@ -2520,7 +2517,8 @@ begin
       gtk_object_set_data(Widget, 'widgetinfo', nil);
     end;
   end;
-  gtk_signal_handlers_destroy(gObject);
+  if not (Sender is TMenuItem) then
+    gtk_signal_handlers_destroy(gObject);
 end;
 
 {-------------------------------------------------------------------------------
@@ -2540,47 +2538,45 @@ begin
   RemoveCallbacks(Sender);
   Handle := hwnd(ObjectToGtkObject(Sender));
   if Handle=0 then exit;
-  
+
   Widget:=PGtkWidget(Handle);
   FixWidget:=GetFixedWidget(Widget);
 
   // remove pending size messages
-  {$IFDEF VerboseClientRectBugFix}
-  writeln('QQQ1 REMOVE Widget=',HexStr(Cardinal(Widget),8),' FixWidget=',HexStr(Cardinal(FixWidget),8));
-  {$ENDIF}
   FWidgetsWithResizeRequest.Remove(Widget);
-  {$IFDEF VerboseClientRectBugFix}
-  writeln('QQQ2 ',FWidgetsWithResizeRequest.ConsistencyCheck);
-  {$ENDIF}
   FWidgetsResized.Remove(Widget);
   FFixWidgetsResized.Remove(FixWidget);
 
-  if (Sender is TWinControl) or (Sender is TCommonDialog) then
+  //writeln('>>> LM_DESTROY ',Sender.Classname,' Sender=',HexStr(Cardinal(Sender),8),' Handle=',HexStr(Cardinal(Handle),8));
+  // update mouse caturing
+  if MCaptureHandle=Handle then MCaptureHandle:=0;
+  
+  // update clipboard widget
+  if ClipboardWidget=Widget then
   begin
-    //writeln('>>> LM_DESTROY ',Sender.Classname,' Sender=',HexStr(Cardinal(Sender),8),' Handle=',HexStr(Cardinal(Handle),8));
-    if MCaptureHandle=Handle then MCaptureHandle:=0;
-    if ClipboardWidget=Widget then
-    begin
-      // clipboard widget destroyed
-      if (Application<>nil) and (Application.MainForm<>nil)
-      and (Application.MainForm.HandleAllocated)
-      and (Application.MainForm.Handle<>Handle) then
-        // there is still the main form left -> use it for clipboard
-        SetClipboardWidget(PGtkWidget(Application.MainForm.Handle))
-      else
-        // program closed -> close clipboard
-        SetClipboardWidget(nil);
-    end;
-    if gtk_type_is_a(gtk_object_type(PGtkObject(Handle)),GTKAPIWidget_GetType)
-    then
-      DestroyCaret(Handle);
-    if Sender is TCommonDialog then
-      DestroyCommonDialogAddOns(TCommonDialog(Sender));
-    gtk_widget_destroy(Widget);
-    //writeln('>>> LM_DESTROY END ',Sender.Classname,' Sender=',HexStr(Cardinal(Sender),8),' Handle=',HexStr(Cardinal(Handle),8));
-  end
-  else
-    Assert (False, Format ('Trace:Dont know how to destroy component %s', [sender.classname]));
+    // clipboard widget destroyed
+    if (Application<>nil) and (Application.MainForm<>nil)
+    and (Application.MainForm.HandleAllocated)
+    and (Application.MainForm.Handle<>Handle) then
+      // there is still the main form left -> use it for clipboard
+      SetClipboardWidget(PGtkWidget(Application.MainForm.Handle))
+    else
+      // program closed -> close clipboard
+      SetClipboardWidget(nil);
+  end;
+  
+  // update caret
+  if gtk_type_is_a(gtk_object_type(PGtkObject(Handle)),GTKAPIWidget_GetType)
+  then
+    DestroyCaret(Handle);
+    
+  // update common dialog
+  if Sender is TCommonDialog then
+    DestroyCommonDialogAddOns(TCommonDialog(Sender));
+    
+  // destroy the widget
+  gtk_widget_destroy(Widget);
+  //writeln('>>> LM_DESTROY END ',Sender.Classname,' Sender=',HexStr(Cardinal(Sender),8),' Handle=',HexStr(Cardinal(Handle),8));
 
   // remove all remaining messages to this component
   QueueItem:=FMessageQueue.First;
@@ -3448,7 +3444,7 @@ begin
         SetClipboardWidget(p);
 
       // Create the VBox, we need that to place controls outside
-      // the client area (like menu)
+      // the client area (like menu and the statusbar)
       Box := gtk_vbox_new(False, 0);
       gtk_container_add(p, Box);
       gtk_widget_show(Box);
@@ -4846,40 +4842,46 @@ procedure TGtkObject.AttachMenu(Sender: TObject);
 var
   AccelKey: Integer;
   AccelGroup: PGTKAccelGroup;
-  MenuParent, MenuItem: Pointer;
+  MenuItem, ParentMenuItem, ContainerMenu: PGtkWidget;
+  LCLMenuItem: TMenuItem;
 begin
-  with (Sender as TMenuItem) do
+  LCLMenuItem:=TMenuItem(Sender);
+  with LCLMenuItem do
   begin
-    MenuItem := Pointer(Handle);
-    
-    if (Parent.GetParentMenu <> nil) and
-       (Parent.GetParentMenu.Items.IndexOf(TMenuItem(Sender)) <> -1) then //mainmenu
-    begin
-      MenuParent := Pointer(Parent.Handle);
-      gtk_menu_bar_append(MenuParent, MenuItem);
+    MenuItem := PGtkWidget(Handle);
+    ParentMenuItem := PGtkWidget(Parent.Handle);
+
+    if GTK_IS_MENU_BAR(ParentMenuItem) then begin
+      // mainmenu
+      ContainerMenu:=ParentMenuItem;
+      gtk_menu_bar_insert(PGtkMenuBar(ParentMenuItem),MenuItem,
+                          LCLMenuItem.MenuIndex);
     end
     else begin
       // find the menu container
-      MenuParent := gtk_object_get_data(PGtkObject(Parent.Handle), 'ContainerMenu');
-      if MenuParent = nil then
+      ContainerMenu := PGtkWidget(gtk_object_get_data(PGtkObject(Parent.Handle),
+                                                      'ContainerMenu'));
+      if ContainerMenu = nil then
       begin
-        MenuParent := gtk_menu_new;
-        gtk_object_set_data(PGtkObject(Parent.Handle), 'ContainerMenu', MenuParent);
-        gtk_menu_item_set_submenu(PGTKMenuItem(Parent.Handle), MenuParent);
+        ContainerMenu := gtk_menu_new;
+        gtk_object_set_data(PGtkObject(Parent.Handle), 'ContainerMenu',
+                            ContainerMenu);
+        gtk_menu_item_set_submenu(PGTKMenuItem(ParentMenuItem), ContainerMenu);
         
         AccelGroup := gtk_accel_group_new;
-        gtk_menu_set_accel_group(MenuParent, AccelGroup);
-        SetAccelGroup(MenuParent, AccelGroup);
+        gtk_menu_set_accel_group(PGtkMenu(ContainerMenu), AccelGroup);
+        SetAccelGroup(ContainerMenu, AccelGroup);
       end;
-      gtk_menu_append(MenuParent, MenuItem);
+      gtk_menu_insert(PGtkMenu(ContainerMenu), MenuItem, LCLMenuItem.MenuIndex);
     end;
 
     // Add accelerators
-    AccelGroup := GetAccelGroup(MenuParent);
+    AccelGroup := GetAccelGroup(ContainerMenu);
     AccelKey := GetAccelKey(MenuItem);
-    if (AccelGroup <> nil) and (AccelKey <> 0)
-      then gtk_accel_group_add(AccelGroup, AccelKey, GDK_MOD1_MASK,
-                               GTK_ACCEL_LOCKED, MenuItem, 'activate_item');
+    if (AccelGroup <> nil) and (AccelKey <> 0) then
+      gtk_accel_group_add(AccelGroup, AccelKey, GDK_MOD1_MASK,
+                               GTK_ACCEL_LOCKED, PGtkObject(MenuItem),
+                               'activate_item');
   end;
 end;
 
@@ -5321,6 +5323,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.155  2002/08/08 09:07:07  lazarus
+  MG: TMenuItem can now be created/destroyed/moved at any time
+
   Revision 1.154  2002/08/05 10:45:04  lazarus
   MG: TMenuItem.Caption can now be set after creation
 
