@@ -46,6 +46,7 @@ components/synedit/synhighlightercpp.pp svneol=native#text/pascal
 components/synedit/synhighlighterhtml.pp svneol=native#text/pascal
 components/synedit/synhighlighterlfm.pas svneol=native#text/pascal
 components/synedit/synhighlighterpas.pp svneol=native#text/pascal
+components/synedit/synhighlighterperl.pas svneol=native#text/pascal
 components/synedit/synhighlighterxml.pas svneol=native#text/pascal
 components/synedit/syntextdrawer.pp svneol=native#text/pascal
 debugger/cmdlinedebugger.pp svneol=native#text/pascal
