@@ -691,7 +691,7 @@ begin
       );
       {$ENDIF}
 
-      Result.AddFirst(CurExprType);
+      Result.Add(CurExprType);
       Params.Load(OldInput);
 
     end;

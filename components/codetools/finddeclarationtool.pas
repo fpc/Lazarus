@@ -786,12 +786,23 @@ begin
 end;
 
 function ExprTypeToString(const ExprType: TExpressionType): string;
+var
+  IdentNode: TCodeTreeNode;
 begin
   Result:='Desc='+ExpressionTypeDescNames[ExprType.Desc]
          +' SubDesc='+ExpressionTypeDescNames[ExprType.SubDesc];
   if ExprType.Context.Node<>nil then begin
-    Result:=Result+' Node='+ExprType.Context.Node.DescAsString
-      +' File="'+ExprType.Context.Tool.MainFilename+'"';
+    Result:=Result+' Node='+ExprType.Context.Node.DescAsString;
+    IdentNode:=ExprType.Context.Node;
+    while (IdentNode<>nil) do begin
+      if IdentNode.Desc in AllIdentifierDefinitions then begin
+        Result:=Result+' Ident="'+
+          ExprType.Context.Tool.ExtractIdentifier(IdentNode.StartPos)+'"';
+        break;
+      end;
+      IdentNode:=IdentNode.Parent;
+    end;
+    Result:=Result+' File="'+ExprType.Context.Tool.MainFilename+'"';
   end;
 end;
 
@@ -4880,7 +4891,8 @@ function TFindDeclarationTool.IsParamNodeListCompatibleToExprList(
   TargetExprParamList: TExprTypeList; FirstSourceParameterNode: TCodeTreeNode;
   Params: TFindDeclarationParams;
   CompatibilityList: TTypeCompatibilityList): TTypeCompatibility;
-// tests if FirstSourceParameterNode fits into the TargetExprParamList
+// tests if FirstSourceParameterNode fits (i.e. can be assigned) into
+// the TargetExprParamList
 var
   ParamNode: TCodeTreeNode;
   i, MinParamCnt, MaxParamCnt: integer;
@@ -4899,7 +4911,7 @@ begin
 
   {$IFDEF ShowExprEval}
   writeln('[TFindDeclarationTool.IsParamNodeListCompatibleToExprList] ',
-  ' ExprParamList.Count=',TargetExprParamList.Count,
+  ' ExprParamList.Count=',TargetExprParamList.Count,' ',
   ' MinParamCnt=',MinParamCnt,' MaxParamCnt=',MaxParamCnt
   );
     try
@@ -4912,6 +4924,11 @@ begin
   end;
 
   // check each parameter for compatibility
+  
+  {$IFDEF ShowExprEval}
+  writeln('[TFindDeclarationTool.IsParamNodeListCompatibleToExprList] ',
+    ' ExprParamList=[',TargetExprParamList.AsString,']');
+  {$ENDIF}
   ParamNode:=FirstSourceParameterNode;
   i:=0;
   while (ParamNode<>nil) and (i<TargetExprParamList.Count) do begin
