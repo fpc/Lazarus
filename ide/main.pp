@@ -79,7 +79,7 @@ uses
   ExtToolEditDlg, MacroPromptDlg, OutputFilter, BuildLazDialog, MiscOptions,
   InputHistory, UnitDependencies, ClipBoardHistory, ProcessList,
   InitialSetupDlgs, NewDialog, MakeResStrDlg, ToDoList, AboutFrm,
-  FindReplaceDialog, FindInFilesDlg,
+  FindReplaceDialog, FindInFilesDlg, CodeExplorer,
   // main ide
   MainBar;
 
@@ -320,6 +320,10 @@ type
       Sender: TObject): string;
     procedure UnitDependenciesViewOpenFile(Sender: TObject;
       const Filename: string);
+      
+    // code explorer events
+    procedure OnCodeExplorerGetCodeTree(Sender: TObject;
+                                        var ACodeTool: TCodeTool);
 
     // view project ToDo list events
     procedure ViewProjectTodosOpenFile(Sender: TObject;
@@ -473,6 +477,7 @@ type
     function DoRevertMainUnit: TModalResult;
     function DoViewUnitsAndForms(OnlyForms: boolean): TModalResult;
     procedure DoViewUnitDependencies;
+    procedure DoShowCodeExplorer;
 
     // project(s)
     function DoNewProject(NewProjectType: TProjectType): TModalResult;
@@ -2107,7 +2112,7 @@ end;
 
 Procedure TMainIDE.mnuViewCodeExplorerClick(Sender : TObject);
 begin
-  SourceNotebook.ShowOnTop;
+  DoShowCodeExplorer;
 end;
 
 Procedure TMainIDE.mnuViewMessagesClick(Sender : TObject);
@@ -4669,6 +4674,18 @@ begin
   ALayout.Apply;
   if not WasVisible then
     UnitDependenciesView.ShowOnTop;
+end;
+
+procedure TMainIDE.DoShowCodeExplorer;
+begin
+  if CodeExplorerView=nil then begin
+    CodeExplorerView:=TCodeExplorerView.Create(Self);
+    CodeExplorerView.OnGetCodeTree:=@OnCodeExplorerGetCodeTree;
+  end;
+
+  EnvironmentOptions.IDEWindowLayoutList.ItemByEnum(nmiwCodeExplorerName).Apply;
+  CodeExplorerView.ShowOnTop;
+  CodeExplorerView.Refresh;
 end;
 
 function TMainIDE.DoSaveStringToFile(const Filename, Src,
@@ -7433,6 +7450,17 @@ begin
   DoOpenEditorFile(Filename,-1,[]);
 end;
 
+procedure TMainIDE.OnCodeExplorerGetCodeTree(Sender: TObject;
+  var ACodeTool: TCodeTool);
+var
+  ActiveUnitInfo: TUnitInfo;
+  ActiveSrcEdit: TSourceEditor;
+begin
+  ACodeTool:=nil;
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
+  CodeToolBoss.Explore(ActiveUnitInfo.Source,ACodeTool,false);
+end;
+
 procedure TMainIDE.ViewProjectTodosOpenFile(Sender: TObject;
   const Filename: string);
 begin
@@ -9164,8 +9192,8 @@ begin
     // explicit position
     ALayout.Form.SetBounds(
       ALayout.Left,ALayout.Top,ALayout.Width,ALayout.Height)
-  end else
-  if (not (ALayout.WindowPlacement in [iwpDocked,iwpUseWindowManagerSetting]))
+  end
+  else if (not (ALayout.WindowPlacement in [iwpDocked,iwpUseWindowManagerSetting]))
   then begin
     // default position
     l:=NonModalIDEFormIDToEnum(ALayout.FormID);
@@ -9233,6 +9261,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.610  2003/06/19 16:36:34  mattias
+  started codeexplorer
+
   Revision 1.609  2003/06/19 09:26:58  mattias
   fixed changing unitname during update
 
