@@ -6558,17 +6558,7 @@ end;
 function TgtkObject.CreateDefaultFont: PGdiObject;
 begin
   Result := NewGDIObject(gdiFont);
-  if FDefaultFont = nil then begin
-    FDefaultFont:=GetDefaultFont;
-    //  gdk_font_load('-adobe-helvetica-medium-r-normal--*-120-*-*-*-*-iso8859-1');
-    if FDefaultFont = nil then begin
-      FDefaultFont:= gdk_font_load ('fixed');
-      if FDefaultFont = nil then
-        raise EOutOfResources.Create(rsUnableToLoadDefaultFont);
-    end;
-  end;    
-  Result^.GDIFontObject:= FDefaultFont;
-  gdk_font_ref(Result^.GDIFontObject);
+  Result^.GDIFontObject:= GetDefaultFont(true);
 end;
 
 {------------------------------------------------------------------------------
@@ -6615,7 +6605,7 @@ begin
     end else begin
       if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
       then begin
-        UseFont := GetDefaultFont;
+        UseFont := GetDefaultFont(true);
         UnRef := True;
       end
       else begin
@@ -6623,7 +6613,7 @@ begin
         UnRef := False;
       end;
       If UseFont = nil then
-        WriteLn('WARNING: [TgtkObject.GetTGextMetrics] Missing font')
+        WriteLn('WARNING: [TgtkObject.GetTextMetrics] Missing font')
       else begin
         FillChar(DCTextMetric, SizeOf(DCTextMetric), 0);
         with DCTextMetric do begin
@@ -6650,13 +6640,32 @@ begin
                 gdk_char_width(UseFont, 'M')); // temp hack
           if TextMetric.tmMaxCharWidth<1 then
             TextMetric.tmMaxCharWidth:=1;
-          If UnRef then
-            GDK_Font_UnRef(UseFont);
         end;
+        If UnRef then
+          GDK_Font_UnRef(UseFont);
       end;
       Include(DCFlags,dcfTextMetricsValid);
     end;
   end;
+end;
+
+{------------------------------------------------------------------------------
+  function TgtkObject.GetDefaultFont(IncreaseReferenceCount: boolean): PGDKFont;
+ ------------------------------------------------------------------------------}
+function TgtkObject.GetDefaultFont(IncreaseReferenceCount: boolean): PGDKFont;
+begin
+  if FDefaultFont = nil then begin
+    FDefaultFont:=LoadDefaultFont;
+    //  gdk_font_load('-adobe-helvetica-medium-r-normal--*-120-*-*-*-*-iso8859-1');
+    if FDefaultFont = nil then begin
+      FDefaultFont:= gdk_font_load ('fixed');
+      if FDefaultFont = nil then
+        raise EOutOfResources.Create(rsUnableToLoadDefaultFont);
+    end;
+  end;
+  Result:=FDefaultFont;
+  if IncreaseReferenceCount then
+    gdk_font_ref(Result);
 end;
 
 {------------------------------------------------------------------------------
@@ -7024,7 +7033,7 @@ var
     with TDeviceContext(DC) do begin
       if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
       then begin
-        UseFont := GetDefaultFont;
+        UseFont := GetDefaultFont(true);
         UnRef := True;
       end
       else begin
@@ -7164,6 +7173,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.347  2003/04/03 17:42:13  mattias
+  added exception handling for createpixmapindirect
+
   Revision 1.346  2003/04/02 13:23:24  mattias
   fixed default font
 
