@@ -1429,7 +1429,7 @@ begin
     // create 'overlay' window
     Windows.GetClientRect(WindowHandle, @ARect);
     OverlayWindow := Windows.CreateWindowEx(WS_EX_TRANSPARENT,
-        'STATIC', '', WS_CHILD or WS_VISIBLE,
+        'BUTTON', '', WS_CHILD or WS_VISIBLE or BS_OWNERDRAW,
         ARect.Left, ARect.Top, ARect.Right, ARect.Bottom,
         WindowHandle, HMENU(nil), HInstance, nil);
     Windows.SetProp(OverlayWindow, 'DefWndProc', Windows.SetWindowLong(
@@ -1437,6 +1437,8 @@ begin
     Windows.SetProp(OverlayWindow, 'Wincontrol', Windows.GetProp(WindowHandle, 'Wincontrol'));
     Windows.SetProp(WindowHandle, 'Overlay', OverlayWindow);
   end;
+  // bring overlay window to front
+  Windows.SetWindowPos(OverlayWindow, HWND_TOP, 0, 0, 0, 0, SWP_NOSIZE or SWP_NOMOVE);
   Result := Windows.GetDC(OverlayWindow);
 end;
 
@@ -2985,6 +2987,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.110  2004/05/13 12:17:00  micha
+  fixes to designer window mouse/key handling:
+  - capture all events
+  - resizing window on which the overlay is, resizes the overlay too
+
   Revision 1.109  2004/05/13 08:05:57  micha
   fix translation from lcl to win32 coordinates
 

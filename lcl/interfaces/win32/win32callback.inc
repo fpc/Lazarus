@@ -131,6 +131,7 @@ Var
   TheWinControl: TWinControl;
   WinProcess: Boolean;
   NotifyUserInput: Boolean;
+  OverlayWindow: HWND;
 
   LMInsertText: TLMInsertText; // used by CB_INSERTSTRING, LB_INSERTSTRING
   LMScroll: TLMScroll; // used by WM_HSCROLL
@@ -907,6 +908,9 @@ Begin
             exit;
           TheWinControl.InvalidateClientRectCache(true);
         end;
+	OverlayWindow := Windows.GetProp(Window, 'Overlay');
+	if OverlayWindow <> 0 then
+	  Windows.SetWindowPos(OverlayWindow, HWND_TOP, 0, 0, NewWidth, NewHeight, SWP_NOMOVE);
       End;
     End;
   end;
@@ -980,6 +984,10 @@ begin
     WM_ERASEBKGND:
     begin
       Result := 1;
+    end;
+    WM_KEYFIRST..WM_KEYLAST, WM_MOUSEFIRST..WM_MOUSELAST:
+    begin
+      Windows.PostMessage(TWinControl(Windows.GetProp(Window, 'Wincontrol')).Handle, Msg, WParam, LParam);
     end;
   else
     Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
@@ -1147,6 +1155,11 @@ end;
 
 {
   $Log$
+  Revision 1.103  2004/05/13 12:17:00  micha
+  fixes to designer window mouse/key handling:
+  - capture all events
+  - resizing window on which the overlay is, resizes the overlay too
+
   Revision 1.102  2004/05/12 15:43:48  micha
   fix key handling to fire CN_KEYxxx
 
