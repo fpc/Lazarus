@@ -7305,17 +7305,38 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;
   X, Y, cx, cy: Integer; uFlags: UINT): Boolean;
-//var Widget: PGTKWidget;
+var Widget: PGTKWidget;
+ { FixedWidget: PGtkWidget;
+  OldListItem: PGList;
+  AfterWidget: PGtkWidget;
+  AfterListItem: PGList;}
 begin
-//writeln('[TgtkObject.SetWindowPos] Top=',hWndInsertAfter=HWND_TOP);
-{  Widget := GetFixedWidget(pgtkwidget(hWnd));
-  if Widget = nil then Widget := pgtkwidget(hWnd); 
-  case hWndInsertAfter of
-    HWND_BOTTOM: ;  //gdk_window_lower(Widget^.Window);
-    HWND_TOP:    gtk_window_set_position(PGtkWindow(hWnd),GTK_WIN_POS_CENTER);
-                //gdk_window_raise(Widget^.Window);
+  writeln('[TgtkObject.SetWindowPos] Top=',hWndInsertAfter=HWND_TOP);
+  Widget:=PGtkWidget(hWnd);
+  if GtkWidgetIsA(Widget,GTK_WINDOW_TYPE) then begin
+    { case hWndInsertAfter of
+        HWND_BOTTOM: ;  //gdk_window_lower(Widget^.Window);
+        HWND_TOP:    gtk_window_set_position(PGtkWindow(hWnd),GTK_WIN_POS_CENTER);
+                    //gdk_window_raise(Widget^.Window);
+      end;
+    }
+  end else begin
+    {AfterWidget:=PGtkWidget(hWndInsertAfter);
+    FixedWidget:=GetParentFixedWidget(Widget);
+    if FixedWidget=nil then exit;
+    OldListItem:=FindFixedChild(FixedWidget,Widget);
+    if OldListItem=nil then begin
+      writeln('TgtkObject.SetWindowPos WARNING: Widget not on parents fixed widget');
+      exit;
+    end;
+    AfterListItem:=FindFixedChild(FixedWidget,AfterWidget);
+    if (AfterListItem=nil) and (AfterWidget<>nil) then begin
+      writeln('TgtkObject.SetWindowPos WARNING: AfterWidget not on parents fixed widget');
+      exit;
+    end;
+    MoveGListLinkBehind(PGtkFixed(FixedWidget)^.children,
+                        OldListItem,AfterListItem);}
   end;
-}
   Result:=true;
 end;
 
@@ -8270,6 +8291,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.245  2003/06/19 09:26:58  mattias
+  fixed changing unitname during update
+
   Revision 1.244  2003/06/18 11:21:07  mattias
   fixed taborder=0, implemented TabOrder Editor
 

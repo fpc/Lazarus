@@ -1325,6 +1325,54 @@ begin
     RaiseInvalidFixedWidget;
 end;
 
+function GetParentWidget(Child: PGtkWidget): PGtkWidget;
+var
+  LCLParent: TObject;
+begin
+  Result:=nil;
+  LCLParent:=GetParentLCLObject(Child);
+  if (LCLParent=nil) or (not (LCLParent is TWinControl))
+  or (not TWinControl(LCLParent).HandleAllocated)
+  then exit;
+  Result:=PGtkWidget(TWinControl(LCLParent).Handle);
+end;
+
+function GetParentFixedWidget(Child: PGtkWidget): PGtkWidget;
+begin
+  Result:=GetParentWidget(Child);
+  if Result=nil then exit;
+  Result:=GetFixedWidget(Result);
+end;
+
+function FindFixedChild(ParentFixed: PGtkFixed; Child: PGtkWidget): PGList;
+begin
+  Result:=ParentFixed^.children;
+  while (Result<>nil) do begin
+    if (Result^.Data<>nil) and (PGtkFixedChild(Result^.Data)^.Widget=Child) then
+      exit;
+    Result:=Result^.Next;
+  end;
+end;
+
+procedure MoveGListLinkBehind(First, Item, After: PGList);
+var
+  Data: Pointer;
+  NewPos: Integer;
+begin
+  if (g_list_position(First,Item)<0) then
+    RaiseException('MoveGListLinkBehind Item not found');
+  if (After<>nil) and (g_list_position(First,After)<0) then
+    RaiseException('MoveGListLinkBehind After not found');
+  Data:=Item^.Data;
+  g_list_remove_link(First,Item);
+  if After<>nil then begin
+    NewPos:=g_list_position(First,After)+1;
+  end else begin
+    NewPos:=0;
+  end;
+  g_list_insert(First,Data,NewPos);
+end;
+
 {------------------------------------------------------------------------------
   Function GetControlWindow(Widget: Pointer) : PGDKWindow;
 
@@ -4151,6 +4199,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.184  2003/06/19 09:26:58  mattias
+  fixed changing unitname during update
+
   Revision 1.183  2003/06/18 00:10:38  marc
   + Added exceptionhandler while delivering messages
 

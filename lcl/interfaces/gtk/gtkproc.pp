@@ -256,6 +256,10 @@ procedure SetHiddenLCLObject(const Widget: Pointer; const AnObject: TObject);
 function GetHiddenLCLObject(const Widget: Pointer): TObject;
 Procedure FixedMoveControl(Parent, Child : PGTKWIdget; Left, Top : Longint);
 Procedure FixedPutControl(Parent, Child : PGTKWidget; Left, Top : Longint);
+function GetParentWidget(Child: PGtkWidget): PGtkWidget;
+function GetParentFixedWidget(Child: PGtkWidget): PGtkWidget;
+function FindFixedChild(ParentFixed: PGtkFixed; Child: PGtkWidget): PGList;
+procedure MoveGListLinkBehind(First, Item, After: PGList);
 
 procedure SetComboBoxText(ComboWidget: PGtkCombo; NewText: PChar);
 function GetComboBoxItemIndex(ComboBox: TComboBox): integer;
