@@ -192,16 +192,32 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------}
+{       TControl.GetClientHeight                                               }
+{------------------------------------------------------------------------------}
+function TControl.GetClientHeight: Integer;
+begin
+  Result := ClientRect.Bottom;
+end;
 
+{------------------------------------------------------------------------------}
+{       TControl.GetClientWidth                                                }
+{------------------------------------------------------------------------------}
+function TControl.GetClientWidth: Integer;
+begin
+  Result := ClientRect.Right;
+end;
+
+{------------------------------------------------------------------------------}
+{       TControl.LMCaptureChanged                                              }
+{------------------------------------------------------------------------------}
 Procedure TControl.LMCaptureChanged(Var Message: TLMessage);
 Begin
   //Writeln('[LMCaptureChanged for '+classname+']');
 End;
 
-
 {------------------------------------------------------------------------------}
-{       TControl.CMENABLEDCHANGED
-}
+{       TControl.CMENABLEDCHANGED                                              }
 {------------------------------------------------------------------------------}
 procedure TControl.CMEnabledChanged(var Message: TLMEssage);
 begin
@@ -209,8 +225,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-{       TControl.CMHITTEST
-}
+{       TControl.CMHITTEST                                                     }
 {------------------------------------------------------------------------------}
 procedure TControl.CMHITTEST(var MEssage : TCMHitTest);
 begin
@@ -218,8 +233,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-{       TControl.CMMouseEnter
-}
+{       TControl.CMMouseEnter                                                  }
 {------------------------------------------------------------------------------}
 Procedure TControl.CMMouseEnter(var Message :TLMessage);
 Begin
@@ -228,8 +242,7 @@ if FParent <> nil then
 end;
 
 {------------------------------------------------------------------------------}
-{       TControl.CMMouseLEave
-}
+{       TControl.CMMouseLEave                                                  }
 {------------------------------------------------------------------------------}
 Procedure TControl.CMMouseLeave(var Message :TLMessage);
 Begin
@@ -239,8 +252,7 @@ if FParent <> nil then
 end;
 
 {------------------------------------------------------------------------------}
-{       TControl.CMVisibleChanged
-}
+{       TControl.CMVisibleChanged                                              }
 {------------------------------------------------------------------------------}
 procedure TControl.CMVisibleChanged(var MEssage : TLMessage);
 begin
@@ -250,8 +262,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-{       TControl.ConstrainedResize
-}
+{       TControl.ConstrainedResize                                             }
 {------------------------------------------------------------------------------}
 procedure TControl.ConstrainedResize(var MinWidth, MinHeight, MaxWidth, MaxHeight : TConstraintSize);
 begin
@@ -260,8 +271,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-{       TControl.DoConstrainedResize
-}
+{       TControl.DoConstrainedResize                                           }
 {------------------------------------------------------------------------------}
 procedure TControl.DoConstrainedResize(var NewWidth, NewHeight : integer);
 var MinWidth, MinHeight, MaxWidth, MaxHeight : TConstraintSize;
@@ -924,6 +934,34 @@ Begin
   {$ENDIF}
   with Rect do
     SetBounds(Left,Top,Right - Left, Bottom - Top);
+end;
+
+{------------------------------------------------------------------------------}
+{  TControl SetClientHeight                                                    }
+{------------------------------------------------------------------------------}
+procedure TControl.SetClientHeight(Value: Integer);
+begin
+  SetClientSize(Point(ClientWidth, Value));
+end;
+
+{------------------------------------------------------------------------------}
+{  TControl SetClientSize                                                      }
+{------------------------------------------------------------------------------}
+procedure TControl.SetClientSize(Value: TPoint);
+var
+  Client: TRect;
+begin
+  Client := GetClientRect;
+  SetBounds(FLeft, FTop, Width - Client.Right + Value.X, Height -
+    Client.Bottom + Value.Y);
+end;
+
+{------------------------------------------------------------------------------}
+{  TControl SetClientWidth                                                     }
+{------------------------------------------------------------------------------}
+procedure TControl.SetClientWidth(Value: Integer);
+begin
+  SetClientSize(Point(Value, ClientHeight));
 end;
 
 {------------------------------------------------------------------------------}
@@ -1635,6 +1673,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.46  2002/04/24 16:11:17  lazarus
+  MG: started new client rectangle
+
   Revision 1.45  2002/04/24 09:29:07  lazarus
   MG: fixed typos
 
