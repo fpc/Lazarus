@@ -287,7 +287,6 @@ begin
   Result := IChar;
   case IChar of
     mMskTimeSeparator: Result := TimeSeparator;
-    mMskDateSeparator: Result := DateSeparator;
   end;
 end;
 

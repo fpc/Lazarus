@@ -124,6 +124,7 @@ begin
     Width:=400;
     Height:=Parent.Height;
     Autoscroll:=true;
+    Anchors := [aktop, akleft, akright,akbottom];
   end;
   
   Cmp:=TPanel.Create(self);
@@ -146,6 +147,7 @@ begin
     Width:=180;
     Height:=20;
     Text:=lisMenuEditorSelectMenu;
+    Anchors := [aktop, akright];
   end;
   
   List_menus:=TListBox.Create(self);
@@ -157,6 +159,7 @@ begin
     Width:=180;
     Height:=180;
     OnClick:=@SelectMenuClick;
+    Anchors := [akright, aktop, akbottom];
   end;
   
   for i:=0 to aDesigner.Form.ComponentCount - 1 do
