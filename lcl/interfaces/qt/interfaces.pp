@@ -25,9 +25,9 @@ unit interfaces;
 
 interface
 { $DEFINE WIN}
-{ $DEFINE QT}
+{$DEFINE QT}
 
-{$DEFINE GTK}
+{ $DEFINE GTK}
 
 {$ifdef WIN}
 
