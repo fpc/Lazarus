@@ -441,6 +441,8 @@ Begin
     WM_CTLCOLORMSGBOX..WM_CTLCOLORSTATIC:
     Begin
       MsgObject := TObject(GetProp(LParam, 'Wincontrol'));
+      if MsgObject = nil then
+        MsgObject := TObject(GetProp(LParam, 'AWincontrol'));
       if MsgObject is TWinControl then
       begin
         Windows.SetTextColor(HDC(WParam), Windows.COLORREF(ColorToRGB(TWinControl(MsgObject).Font.Color)));
@@ -1276,6 +1278,9 @@ end;
 
 {
   $Log$
+  Revision 1.144  2004/10/17 14:53:48  micha
+  use font/brush of "parent", if this is a buddy window
+
   Revision 1.143  2004/10/15 09:51:09  micha
   splitup of CreateComponent to widgetset CreateHandle methods
 
