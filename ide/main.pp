@@ -5227,7 +5227,7 @@ begin
     Result:=mrOk;
   for i:=0 to AnUnitList.Count-1 do begin
     CurUnit:=TUnitInfo(AnUnitList[i]);
-    if Result in [mrYesToAll] then begin
+    if Result=mrOk then begin
       if CurUnit.EditorIndex>=0 then begin
         Result:=DoOpenEditorFile('',CurUnit.EditorIndex,[ofRevert]);
       end else if CurUnit.IsMainUnit then begin
@@ -6892,6 +6892,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.368  2002/09/10 07:43:19  lazarus
+  MG: fixed auto revert
+
   Revision 1.367  2002/09/09 12:36:34  lazarus
   MG: added keymapping to designer
 
