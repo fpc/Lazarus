@@ -799,15 +799,30 @@ end;
   procedure TCustomComboBox.UpdateSorted;
  ------------------------------------------------------------------------------}
 procedure TCustomComboBox.UpdateSorted;
+var
+  lText: string;
 begin
-  if not HandleAllocated then exit;
-  TWSCustomComboBoxClass(WidgetSetClass).Sort(Self, Items, FSorted);
+  if HandleAllocated then
+    TWSCustomComboBoxClass(WidgetSetClass).Sort(Self, Items, FSorted)
+  else if FItems is TStringList then
+  begin
+    if FSorted then
+    begin
+      // remember text
+      lText := Text;
+      TStringList(FItems).Sorted := FSorted;
+      ItemIndex := FItems.IndexOf(lText);
+    end;
+  end;
 end;
 
 // included by stdctrls.pp
 
 {
   $Log$
+  Revision 1.59  2005/03/19 12:40:42  micha
+  sort combobox items in own stringlist when no handle allocated yet
+
   Revision 1.58  2005/03/10 09:02:11  mattias
   handle tab key in ControlKeyDown in TCustomEdit and TCustomComboBox
 
