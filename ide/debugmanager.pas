@@ -46,7 +46,7 @@ uses
   IDEOptionDefs, LazarusIDEStrConsts, ProjectDefs, BaseDebugManager, MainBar,
   SourceMarks,
   DebuggerDlg, Watchesdlg, BreakPointsdlg, LocalsDlg, DBGOutputForm,
-  GDBMIDebugger, CallStackDlg;
+  GDBMIDebugger, CallStackDlg, SSHGDBMIDebugger;
 
 
 type
@@ -1272,7 +1272,9 @@ var
     FreeAndNil(FDebugger);
     ResetDialogs;
   end;
-
+  
+const
+  DEBUGGERCLASS: array[TDebuggerType] of TDebuggerClass = (nil, TGDBMIDebugger, TSSHGDBMIDebugger);
 var
   LaunchingCmdLine, LaunchingApplication, LaunchingParams: String;
   NewWorkingDir: String;
@@ -1291,45 +1293,48 @@ begin
   BeginUpdateDialogs;
   try
     try
-      case EnvironmentOptions.DebuggerType of
-        dtGnuDebugger: begin
-          // check if debugger is already created with the right type
-          if (FDebugger <> nil)
-          and ( not(FDebugger is TGDBMIDebugger)
-                or (FDebugger.ExternalDebugger <> EnvironmentOptions.DebuggerFilename)
-              )
-          then begin
-            // the current debugger is the wrong type -> free it
-            FreeDebugger;
-          end;
-          // create debugger object
-          if FDebugger = nil
-          then begin
-            SaveDebuggerItems;
-            FDebugger := TGDBMIDebugger.Create(EnvironmentOptions.DebuggerFilename);
+      if DEBUGGERCLASS[EnvironmentOptions.DebuggerType] = nil
+      then begin
+        if FDebugger <> nil
+        then FreeDebugger;
+        Exit;
+      end;
+      
+      // check if debugger is already created with the right type
+      if (FDebugger <> nil)
+      and ( not (FDebugger is DEBUGGERCLASS[EnvironmentOptions.DebuggerType])
+             or (FDebugger.ExternalDebugger <> EnvironmentOptions.DebuggerFilename)
+          )
+      then begin
+        // the current debugger is the wrong type -> free it
+        FreeDebugger;
+      end;
 
-            TManagedBreakPoints(FBreakPoints).Master := FDebugger.BreakPoints;
-            TManagedSignals(FSignals).Master := FDebugger.Signals;
-            TManagedExceptions(FExceptions).Master := FDebugger.Exceptions;
+      // create debugger object
+      if FDebugger = nil
+      then begin
+        SaveDebuggerItems;
+        FDebugger := DEBUGGERCLASS[EnvironmentOptions.DebuggerType].Create(EnvironmentOptions.DebuggerFilename);
 
-            FWatches := FDebugger.Watches;
-            ResetDialogs;
-          end;
-          // restore debugger items
-          RestoreDebuggerItems;
-        end;
-      else
-        if FDebugger=nil then
-          FreeDebugger;
-        exit;
+        TManagedBreakPoints(FBreakPoints).Master := FDebugger.BreakPoints;
+        TManagedSignals(FSignals).Master := FDebugger.Signals;
+        TManagedExceptions(FExceptions).Master := FDebugger.Exceptions;
+
+        FWatches := FDebugger.Watches;
+        ResetDialogs;
+
+        // restore debugger items
+        RestoreDebuggerItems;
       end;
     finally
       OldWatches.Free;
     end;
+    
     FDebugger.OnState     := @OnDebuggerChangeState;
     FDebugger.OnCurrent   := @OnDebuggerCurrentLine;
     FDebugger.OnDbgOutput := @OnDebuggerOutput;
     FDebugger.OnException := @OnDebuggerException;
+    Project1.RunParameterOptions.AssignEnvironmentTo(FDebugger.Environment);
     if FDebugger.State = dsNone
     then FDebugger.Init;
 
@@ -1340,7 +1345,7 @@ begin
       NewWorkingDir:=Project1.ProjectDirectory;
     FDebugger.WorkingDir:=NewWorkingDir;
     
-    Project1.RunParameterOptions.AssignEnvironmentTo(FDebugger.Environment);
+//    Project1.RunParameterOptions.AssignEnvironmentTo(FDebugger.Environment);
 
     if FDialogs[ddtOutput] <> nil
     then TDbgOutputForm(FDialogs[ddtOutput]).Clear;
@@ -1541,6 +1546,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.55  2003/07/24 08:47:36  marc
+  + Added SSHGDB debugger
+
   Revision 1.54  2003/06/16 00:07:28  marc
   MWE:
     + Implemented DebuggerOptions-ExceptonAdd

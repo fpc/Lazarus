@@ -835,10 +835,11 @@ type
     procedure SetState(const AValue: TDBGState);
     procedure InitTargetStart; virtual;
   public
-    constructor Create(const AExternalDebugger: String); {virtual; Virtual constructor makes no sense}
+    constructor Create(const AExternalDebugger: String); virtual; {Virtual constructor makes no sense}
                         //MWE: there will be a day that they do make sense :-)
                         // MG: there will be a day that they do make troubles :)
                         //MWE: do they ?
+                        //MWE: Now they do make sense !
     destructor Destroy; override;
 
     procedure Init; virtual;                         // Initializes the debugger
@@ -878,6 +879,7 @@ type
     property OnOutput: TDBGOutputEvent read FOnOutput write FOnOutput;           // Passes all output of the debugged target
     property OnState: TDebuggerStateChangedEvent read FOnState write FOnState;   // Fires when the current state of the debugger changes
   end;
+  TDebuggerClass = class of TDebugger;
   
 const
   DBGCommandNames: array[TDBGCommand] of string = (
@@ -2988,6 +2990,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.45  2003/07/24 08:47:37  marc
+  + Added SSHGDB debugger
+
   Revision 1.44  2003/06/13 19:21:31  marc
   MWE: + Added initial signal and exception handling
 

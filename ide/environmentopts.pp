@@ -69,11 +69,11 @@ type
   { Debugging }
 
 type
-  TDebuggerType = (dtNone, dtGnuDebugger);
+  TDebuggerType = (dtNone, dtGnuDebugger, dtSSHGNUDebugger);
 
 const
   DebuggerName : array[TDebuggerType] of string = (
-    '(None)','GNU debugger (gdb)'
+    '(None)','GNU debugger (gdb)', 'GNU debugger through SSH (gdb)'
   );
 
 
@@ -951,6 +951,7 @@ begin
         FDebuggerFileHistory.Add(DebuggerName[dtNone]);
         FDebuggerFileHistory.Add('/usr/bin/gdb');
         FDebuggerFileHistory.Add('/opt/fpc/gdb');
+        FDebuggerFileHistory.Add('/usr/bin/ssh user@hostname /usr/bin/gdb');
       end;
       LoadDebuggerType(FDebuggerType,'EnvironmentOptions/');
       TestBuildDirectory:=XMLConfig.GetValue(

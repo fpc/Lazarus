@@ -100,9 +100,10 @@ type
     function  CreateCallStack: TDBGCallStack; override;
     function  CreateWatches: TDBGWatches; override;
     function  GetSupportedCommands: TDBGCommands; override;
+    function  ParseInitialization: Boolean; virtual;
     function  RequestCommand(const ACommand: TDBGCommand; const AParams: array of const): Boolean; override;
   public
-    constructor Create(const AExternalDebugger: String); {override;}
+    constructor Create(const AExternalDebugger: String); override;
     destructor Destroy; override;
 
     procedure Init; override;         // Initializes external debugger
@@ -794,25 +795,18 @@ procedure TGDBMIDebugger.Init;
     FVersion := GetPart(['gdb '], [#10, #13], S, True, False);
     if FVersion <> '' then Exit;
   end;
-var
-  Line, S: String;
 begin
   FPauseWaitState := pwsNone;
   FInExecuteCount := 0;
   
   if CreateDebugProcess('-silent -i mi')
   then begin
-    // Get initial debugger lines
-    S := '';
-    Line := StripLN(ReadLine);
-    while DebugProcessRunning and (Line <> '(gdb) ') do
-    begin
-      S := S + Line + LINE_END;
-      Line := StripLN(ReadLine);
+    if not ParseInitialization
+    then begin
+      SetState(dsError);
+      Exit;
     end;
-    if S <> ''
-    then MessageDlg('Debugger', 'Initialization output: ' + LINE_END + S, mtInformation, [mbOK], 0);
-
+    
     ExecuteCommand('-gdb-set confirm off', []);
     
     // try to find the debugger version
@@ -834,6 +828,24 @@ begin
     else MessageDlg('Debugger', Format('Failed to create debug process: %s', [ReadLine]), mtError, [mbOK], 0);
     SetState(dsError);
   end;
+end;
+
+function TGDBMIDebugger.ParseInitialization: Boolean;
+var
+  Line, S: String;
+begin
+  Result := True;
+
+  // Get initial debugger lines
+  S := '';
+  Line := StripLN(ReadLine);
+  while DebugProcessRunning and (Line <> '(gdb) ') do
+  begin
+    S := S + Line + LINE_END;
+    Line := StripLN(ReadLine);
+  end;
+  if S <> ''
+  then MessageDlg('Debugger', 'Initialization output: ' + LINE_END + S, mtInformation, [mbOK], 0);
 end;
 
 function TGDBMIDebugger.ProcessResult(var ANewState: TDBGState;
@@ -1998,6 +2010,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.33  2003/07/24 08:47:37  marc
+  + Added SSHGDB debugger
+
   Revision 1.32  2003/06/24 23:56:33  marc
   * Fixed version detection of gdb
 

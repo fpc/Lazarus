@@ -60,7 +60,7 @@ type
     procedure SendCmdLn(const ACommand: String); overload;
     procedure SendCmdLn(const ACommand: String; Values: array of const); overload;
   public
-    constructor Create(const AExternalDebugger: String); {override; }
+    constructor Create(const AExternalDebugger: String); override;
     destructor Destroy; override;
     procedure TestCmd(const ACommand: String); virtual;// For internal debugging purposes
   public
@@ -171,11 +171,11 @@ end;
 
 function TCmdLineDebugger.CreateDebugProcess(const AOptions: String): Boolean;
 begin
-  if FDbgProcess = nil 
+  if FDbgProcess = nil
   then begin
     FDbgProcess := TProcess.Create(nil);
     FDbgProcess.CommandLine := ExternalDebugger + ' ' + AOptions;
-    FDbgProcess.Options:= [poUsePipes, poNoConsole, poStdErrToOutPut];
+    FDbgProcess.Options:= [poUsePipes, {poNoConsole,} poStdErrToOutPut];
     FDbgProcess.ShowWindow := swoNone;
     FDbgProcess.Environment:=Environment;
   end;
@@ -369,6 +369,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.17  2003/07/24 08:47:37  marc
+  + Added SSHGDB debugger
+
   Revision 1.16  2003/06/17 23:13:06  marc
   * Canged Linux derective to unit, so it will work on xxxbsd?
 

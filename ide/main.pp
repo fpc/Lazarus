@@ -5625,13 +5625,13 @@ begin
   end;
 
   // Setup debugger
-  case EnvironmentOptions.DebuggerType of
-    dtGnuDebugger: begin
-      if (DebugBoss.DoInitDebugger <> mrOk)
-      then Exit;
-      // ToDo: set working directory
-    end;
-  else 
+  if EnvironmentOptions.DebuggerType <> dtNone
+  then begin
+    if (DebugBoss.DoInitDebugger <> mrOk)
+    then Exit;
+    // ToDo: set working directory
+  end
+  else begin
     // Temp solution, in future it will be run by dummy debugger
     try
       CheckIfFileIsExecutable(ProgramFilename);
@@ -9354,6 +9354,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.625  2003/07/24 08:47:36  marc
+  + Added SSHGDB debugger
+
   Revision 1.624  2003/07/14 09:03:39  mattias
   deactivated FCL TDataModule
 
