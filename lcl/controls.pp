@@ -1362,6 +1362,8 @@ type
     procedure RemoveFocus(Removing: Boolean);
     function  RealGetText: TCaption; override;
     procedure RealSetText(const Value: TCaption); override;
+    function GetBorderStyle: TBorderStyle;
+    procedure SetBorderStyle(NewStyle: TBorderStyle); virtual;
     procedure UpdateControlState;
     procedure CreateHandle; virtual;
     procedure CreateWnd; virtual; //creates the window
@@ -1408,10 +1410,8 @@ type
     procedure SetZOrderPosition(NewPosition: Integer); override;
     procedure SetZOrder(Topmost: Boolean); override;
     procedure SendMoveSizeMessages(SizeChanged, PosChanged: boolean); override;
-    
-    function GetBorderStyle: TBorderStyle;
-    procedure SetBorderStyle(NewStyle: TBorderStyle); virtual;
-    //property BorderStyle: TBorderStyle read GetBorderStyle write SetBorderStyle default bsNone;
+  protected
+    property BorderStyle: TBorderStyle read GetBorderStyle write SetBorderStyle default bsNone;
   public
     property BorderWidth: TBorderWidth read FBorderWidth write SetBorderWidth default 0;
     property ChildSizing: TControlChildSizing read FChildSizing write SetChildSizing;
@@ -1527,7 +1527,7 @@ type
     procedure Paint; virtual;
 
     property Canvas: TCanvas read FCanvas write FCanvas;
-    property BorderStyle: TBorderStyle read GetBorderStyle write SetBorderStyle default bsNone;
+    property BorderStyle;
   end;
 
 
@@ -2268,6 +2268,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.203  2004/05/21 18:34:44  mattias
+  readded protected TWinControl.BorderStyle
+
   Revision 1.202  2004/05/21 18:12:17  mattias
   quick fixed crashing property overloading BorderStyle
 

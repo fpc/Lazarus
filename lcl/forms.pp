@@ -191,8 +191,7 @@ type
     property AutoSize default True;
     //property AutoScroll;
     //property BiDiMode;
-    //property BorderStyle: TBorderStyle
-    //  read FBorderStyle write SetBorderStyle default bsSingle;
+    property BorderStyle default bsSingle;
     property Constraints;
     //property DockSite;
     property DragCursor;
@@ -371,7 +370,7 @@ type
     function IsKeyPreviewStored: boolean;
     procedure SetActive(AValue: Boolean);
     procedure SetActiveControl(AWinControl: TWinControl);
-    procedure SetFormBorderStyle(Value: TFormBorderStyle);
+    procedure SetFormBorderStyle(NewStyle: TFormBorderStyle);
     procedure SetDesigner(Value : TIDesigner);
     procedure SetFormStyle(Value : TFormStyle);
     procedure SetIcon(AValue: TIcon);
@@ -1052,7 +1051,7 @@ implementation
 
 
 uses
-  WSControls, // Widgetset uses circle is allowed
+  WSForms, // Widgetset uses circle is allowed
   
   Math;
 

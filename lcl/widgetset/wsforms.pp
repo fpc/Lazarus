@@ -46,7 +46,7 @@ uses
 ////////////////////////////////////////////////////
 //  Forms,
 ////////////////////////////////////////////////////
-  WSLCLClasses, WSControls;
+  WSLCLClasses, WSControls, Forms, Controls;
 
 type
   { TWSScrollingWinControl }
@@ -72,7 +72,10 @@ type
   { TWSCustomForm }
 
   TWSCustomForm = class(TWSScrollingWinControl)
+    class procedure SetFormBorderStyle(const AForm: TCustomForm;
+                             const AFormBorderStyle: TFormBorderStyle); virtual;
   end;
+  TWSCustomFormClass = class of TWSCustomForm;
 
   { TWSForm }
 
@@ -97,6 +100,14 @@ type
 
 implementation
 
+{ TWSCustomForm }
+
+procedure TWSCustomForm.SetFormBorderStyle(const AForm: TCustomForm;
+  const AFormBorderStyle: TFormBorderStyle);
+begin
+  // will be done in interface override
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -107,7 +118,7 @@ initialization
 //  RegisterWSComponent(TScrollBox, TWSScrollBox);
 //  RegisterWSComponent(TCustomFrame, TWSCustomFrame);
 //  RegisterWSComponent(TFrame, TWSFrame);
-//  RegisterWSComponent(TCustomForm, TWSCustomForm);
+  RegisterWSComponent(TCustomForm, TWSCustomForm);
 //  RegisterWSComponent(TForm, TWSForm);
 //  RegisterWSComponent(THintWindow, TWSHintWindow);
 //  RegisterWSComponent(TScreen, TWSScreen);

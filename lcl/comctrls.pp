@@ -527,7 +527,7 @@ type
     property OnCompare: TLVCompareEvent read FOnCompare write FOnCompare;
     property OnDeletion: TLVDeletedEvent read FOnDeletion write FOnDeletion;
     property OnSelectItem: TLVSelectItemEvent read FOnSelectItem write FOnSelectItem;
-    property BorderStyle: TBorderStyle read GetBorderStyle write SetBorderStyle default bsSingle;
+    property BorderStyle default bsSingle;
   public
     constructor Create(Aowner: TComponent); override;
     destructor Destroy; override;
@@ -2254,6 +2254,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.129  2004/05/21 18:34:44  mattias
+  readded protected TWinControl.BorderStyle
+
   Revision 1.128  2004/05/21 18:12:17  mattias
   quick fixed crashing property overloading BorderStyle
 

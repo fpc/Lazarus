@@ -974,15 +974,16 @@ end;
 {------------------------------------------------------------------------------}
 {       TCustomForm SetFormBorderStyle                                         }
 {------------------------------------------------------------------------------}
-procedure TCustomForm.SetFormBorderStyle(Value: TFormBorderStyle);
+procedure TCustomForm.SetFormBorderStyle(NewStyle: TFormBorderStyle);
 begin
-  if FFormBorderStyle = Value then exit;
+  if FFormBorderStyle = NewStyle then exit;
   //TODO: Finish SETBORDERSTYLE
-  FFormBorderStyle := Value;
+  FFormBorderStyle := NewStyle;
   Include(FFormState,fsBorderStyleChanged);
   // ToDo: implement it.
-  // We can not use inherited SetBorderStyle(Value),
+  // We can not use inherited SetBorderStyle(NewStyle),
   // because TBorderSTyle <> TFormBorderSTyle;
+  TWSCustomFormClass(WidgetSetClass).SetFormBorderStyle(Self, NewStyle);
 end;
 
 {------------------------------------------------------------------------------}
@@ -1605,6 +1606,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.139  2004/05/21 18:34:44  mattias
+  readded protected TWinControl.BorderStyle
+
   Revision 1.138  2004/05/21 18:20:11  mattias
   quick fixed crashing property overloading BorderStyle
 

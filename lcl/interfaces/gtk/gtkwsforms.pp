@@ -77,6 +77,8 @@ type
   private
   protected
   public
+    class procedure SetFormBorderStyle(const AWinControl: TWinControl;
+                             const AFormBorderStyle: TFormBorderStyle); override;
   end;
 
   { TGtkWSForm }
@@ -113,6 +115,16 @@ type
 
 
 implementation
+
+{ TGtkWSCustomForm }
+
+procedure TGtkWSCustomForm.SetFormBorderStyle(const AWinControl: TWinControl;
+  const AFormBorderStyle: TFormBorderStyle);
+begin
+  inherited SetFormBorderStyle(AWinControl, AFormBorderStyle);
+  // the form border style can only be set at creation time.
+  // This is Delphi compatible, so no Recreatewnd needed.
+end;
 
 initialization
 
