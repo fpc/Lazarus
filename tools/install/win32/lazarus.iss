@@ -12,12 +12,15 @@ AppVerName={#AppName} {#AppVersion}
 AppPublisherURL=http://www.lazarus.freepascal.org/
 AppSupportURL=http://www.lazarus.freepascal.org/
 AppUpdatesURL=http://www.lazarus.freepascal.org/
-LicenseFile={#BuildDir}\COPYING
+LicenseFile={#BuildDir}\COPYING.GPL
 DefaultDirName={code:GetDefDir|c:\lazarus}
 DefaultGroupName={#AppName}
-OutputBaseFilename={#AppName}-{#AppVersion}-{#SetupDate}
+OutputBaseFilename={#AppName}-{#AppVersion}-{#SetupDate}-win32
 InternalCompressLevel=ultra
 SolidCompression=true
+VersionInfoVersion={#AppVersion}
+VersionInfoTextVersion={#AppVersion}-{#SetupDate}
+ShowLanguageDialog=yes
 
 [Tasks]
 Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:AdditionalIcons}; Flags: unchecked
@@ -26,7 +29,7 @@ Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:Ad
 Source: {#BuildDir}\*.*; DestDir: {app}; Flags: recursesubdirs
 Source: environmentoptions.xml; DestDir: {app}; Flags: onlyifdoesntexist; AfterInstall: UpdateEnvironmentOptions
 Source: editoroptions.xml; DestDir: {app}; Flags: onlyifdoesntexist
-Source: samplefpc.cfg; DestDir: {app}\pp\bin\win32; Flags: onlyifdoesntexist; AfterInstall: UpdateFpcCfg; DestName: fpc.cfg
+Source: samplefpc.cfg; DestDir: {app}\pp\bin\win32; AfterInstall: UpdateFpcCfg; DestName: fpc.cfg
 
 [Icons]
 Name: {group}\{#AppName}; Filename: {app}\startlazarus.exe
@@ -93,3 +96,5 @@ begin
   StringChange(Content, '$1', ExpandConstant('{app}\pp'));
   SaveStringToFile(FileName, Content, False);
 end;
+[UninstallDelete]
+Name: {app}\compilertest.pas; Type: files

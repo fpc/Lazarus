@@ -65,5 +65,5 @@ rd /s /q %BUILDDIR% > NUL
 
 SET PATH=%OLDPATH%
 
-ECHO Finished at:
+ECHO Finished at: >> %LOGFILE%
 %FPCBINDIR%\gdate >> %LOGFILE%
