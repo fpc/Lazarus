@@ -888,6 +888,8 @@ procedure TProjectJumpHistory.InsertSmart(Index: integer;
   APosition: TProjectJumpHistoryPosition);
 // insert if item after or in front of Index is not similar to APosition
 // else replace the similar with the new updated version
+var
+  NewIndex: integer;
 begin
   if Index<0 then Index:=Count;
   if (Index<=Count) then begin
@@ -897,6 +899,7 @@ begin
       //  ' New=',APosition.CaretXY.X,',',APosition.CaretXY.Y,' ',APosition.Filename,
       //  ' ');
       Items[Index-1]:=APosition;
+      NewIndex:=Index-1;
       APosition.Free;
     end else if (Index<Count) and Items[Index].IsSimilar(APosition) then begin
       //writeln('TProjectJumpHistory.InsertSmart Replacing next: Index=',Index,
@@ -904,15 +907,17 @@ begin
       //  ' New=',APosition.CaretXY.X,',',APosition.CaretXY.Y,' ',APosition.Filename,
       //  ' ');
       Items[Index]:=APosition;
+      NewIndex:=Index;
       APosition.Free;
     end else begin
       //writeln('TProjectJumpHistory.InsertSmart Adding: Index=',Index,
       //  ' New=',APosition.CaretXY.X,',',APosition.CaretXY.Y,' ',APosition.Filename,
       //  ' ');
       Insert(Index,APosition);
-      if (HistoryIndex<0) or (HistoryIndex=IndexOf(APosition)-1) then
-        inc(FHistoryIndex);
+      NewIndex:=IndexOf(APosition);
     end;
+    if (HistoryIndex<0) or (HistoryIndex=NewIndex-1) then
+      HistoryIndex:=NewIndex;
     //writeln('  HistoryIndex=',HistoryIndex);
   end else begin
     APosition.Free;
