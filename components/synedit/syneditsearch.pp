@@ -115,8 +115,15 @@ begin
   if CompTableSensitive <> Sensitive then
   begin
     CompTableSensitive := Sensitive;
+    {$IFDEF FPC}
+    if Sensitive then
+      for I := #0 to #255 do CompTable[I] := ord(I)
+    else
+      for I := #0 to #255 do CompTable[I] := ord(lowercase(I)[1]);
+    {$ELSE}
     for I := #0 to #255 do CompTable[I] := ord(I);
     if not Sensitive then CharLowerBuff(PChar(@CompTable[#0]), 256);
+    {$ENDIF}
   end;
 end;
 
@@ -245,6 +252,7 @@ end;
 procedure TSynEditSearch.SetSensitive(const Value: Boolean);
 begin
   if fSensitive <> Value then begin
+writeln('A');
     fSensitive := Value;
     MakeCompTable(Value);
     fShiftInitialized := FALSE;

@@ -51,7 +51,6 @@ type
 
   TNotifyFileEvent = procedure(Sender: Tobject; Filename : AnsiString) of Object;
 
-
 {---- TSource Editor ---
   TSourceEditor is the class that controls access the the Editor and the source
   code. It creates the PopupMenu that appears when you right-click on the
@@ -76,13 +75,11 @@ type
     //Set during OPEN and Save
     FFileName : AnsiString;
 
-    // Used GetModified like this -> Result := FEditor.Modified
-    FModified : Boolean;
-
     FPopUpMenu : TPopupMenu;
 
     //pulled out of the editor by getting it's TStrings
     FSource : TStringList;
+    FSyntaxHighlighterType: TLazSyntaxHighlighter;
 
     //set on OPEN/SAVE
     FUnitName : String;
@@ -106,6 +103,7 @@ type
     Procedure SetCurrentCursorYLine(num : Integer);
     Function GetAncestor : String;
     Function GetModified : Boolean;
+    procedure SetModified(NewValue:boolean);
     Function GetInsertMode : Boolean;
     Function GetReadonly : Boolean;
     Function TextUnderCursor : String;
@@ -119,6 +117,8 @@ type
     Procedure CreateEditor(AOwner : TComponent; AParent: TWinControl);
     Procedure CreateFormFromUnit;
   protected
+    FindText : String;
+    ErrorMsgs : TStrings;
     Procedure DisplayControl;
     Procedure ReParent(AParent : TWinControl);
 
@@ -128,21 +128,17 @@ type
        var AChar: char; Data: pointer);
     Procedure CommandProcessed(Sender: TObject; var Command: TSynEditorCommand; 
        var AChar: char; Data: pointer);
-
-    Procedure FocusEditor;  // called by TSourceNotebook whne the Notebook page
-                            // changes so the editor is focused
-
-    Procedure EditorStatusChanged(Sender: TObject; Changes: TSynStatusChanges);
-
     Procedure ccOnTimer(sender : TObject);
     Procedure ccAddMessage(Texts : String);
     Function  ccParse(Texts : String) : TStrings;
 
+    Procedure FocusEditor;  // called by TSourceNotebook whne the Notebook page
+                            // changes so the editor is focused
+    Procedure EditorStatusChanged(Sender: TObject; Changes: TSynStatusChanges);
     Function RefreshEditorSettings : Boolean;
+    procedure SetSyntaxHighlighterType(ASyntaxHighlighterType: TLazSyntaxHighlighter);
 
     property Visible : Boolean read FVisible write FVisible default False;
-    FindText : String;
-    ErrorMsgs : TStrings;
   public
     constructor Create(AOwner : TComponent; AParent : TWinControl);
     destructor Destroy; override;
@@ -170,15 +166,17 @@ type
        read GetCurrentCursorYLine write SetCurrentCursorYLine;
     property Owner : TComponent read FAOwner;
     property Source : TStrings read GetSource write SetSource;
-    property UnitName : String read FUnitName write FUnitname;
+    property UnitName : String read FUnitName write fUnitname;
     property FileName : AnsiString read FFileName write FFilename;
-    property Modified : Boolean read GetModified;
+    property Modified : Boolean read GetModified write SetModified;
     property ReadOnly : Boolean read GetReadOnly;
     property InsertMode : Boolean read GetInsertmode;
     property CodeTemplates: SynEditAutoComplete.TSynAutoComplete
        read FCodeTemplates write SetCodeTemplates;
     property PopupMenu:TPopupMenu read FPopUpMenu write SetPopUpMenu;
     property EditorComponent:TSynEdit read FEditor;
+    property SyntaxHighlighterType: TLazSyntaxHighlighter 
+       read fSyntaxHighlighterType write SetSyntaxHighlighterType;
 
     property OnAfterClose : TNotifyEvent read FOnAfterClose write FOnAfterClose;
     property OnBeforeClose : TNotifyEvent read FOnBeforeClose write FOnBeforeClose;
@@ -192,16 +190,21 @@ type
 
   TSourceNotebook = class(TFORM)
   private
+    FMainIDE : TComponent;
     FFormEditor : TFormEditor;
+    FCodeTemplateModul : SynEditAutoComplete.TSynAutoComplete;
+
     FSourceEditorList : TList; // list of TSourceEditor
     FSaveDialog : TSaveDialog;
     FOpenDialog : TOpenDialog;
-    FOnOpenFile : TNotifyFileEvent;
-    FOnCloseFile : TNotifyFileEvent;
-    FOnSaveFile : TNotifyFileEvent;
-    FMainIDE : TComponent;
-    FCodeTemplateModul : SynEditAutoComplete.TSynAutoComplete;
-    Function GetEmpty : Boolean;  //look at the # of pages
+
+    FOnNewClicked : TNotifyEvent;
+    FOnOpenClicked : TNotifyEvent;
+    FOnOpenFileAtCursorClicked : TNotifyEvent;
+    FOnCloseClicked : TNotifyEvent;
+    FOnSaveClicked : TNotifyEvent;
+    FOnSaveAsClicked : TNotifyEvent;
+    FOnSaveAllClicked : TNotifyEvent;
 
     // PopupMenu
     Procedure BuildPopupMenu;
@@ -218,7 +221,6 @@ type
     ccSelection : String;
  
     Function CreateNotebook : Boolean;
-    Function GetActiveSE : TSourceEditor;
     Function DisplayPage(SE : TSourceEditor) : Boolean;
     Function NewSE(Pagenum : Integer) : TSourceEditor;
     Procedure EditorChanged(sender : TObject);
@@ -244,6 +246,8 @@ type
 
     property Editors[Index:integer]:TSourceEditor read GetEditors;
     function EditorCount:integer;
+    function FindSourceEditorWithPageIndex(PageIndex:integer):TSourceEditor;
+    Function GetActiveSE : TSourceEditor;
 
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -269,7 +273,8 @@ type
     procedure ReplaceClicked(Sender : TObject);
     procedure FindAgainClicked(Sender : TObject);
 
-    Procedure NewFile(UnitName: String; Source : TStrings; aVisible : Boolean);
+    Procedure NewFile(UnitName: String; Source : TStrings);
+    Procedure CloseFile(PageIndex:integer);
     Procedure OpenFile(FileName: String; aVisible : Boolean);
 
     Procedure ToggleBookmark(Value : Integer);
@@ -282,18 +287,25 @@ type
                                 AnEditor: TCustomSynEdit; var Index:integer);
     procedure OnWordCompletionGetSource(var Source:TStrings; SourceIndex:integer);
 
-    property Empty : Boolean read GetEmpty;
+    function Empty: boolean;
     property FormEditor : TFormEditor read FFormEditor write FFormEditor;
     property MainIDE : TComponent read FMainIDE;
   published
-    Notebook1 : TNotebook;
+    Notebook : TNotebook;
     SrcPopUpMenu : TPopupMenu;
     StatusBar : TStatusBar;
     ToggleMenuItem : TMenuItem;
-    Procedure NoteBookPageChanged(Sender : TObject);
-    property OnCloseFile : TNotifyFileEvent read FOnCloseFile write FOnCloseFile;
-    property OnOpenFile : TNotifyFileEvent read FOnOPenFile write FOnOpenFile;
-    property OnSaveFile : TNotifyFileEvent read FOnSaveFile write FOnSaveFile;
+    Procedure NotebookPageChanged(Sender : TObject);
+    property OnNewClicked : TNotifyEvent read FOnNewClicked write FOnNewClicked;
+    property OnOpenClicked : TNotifyEvent read FOnOPenClicked write FOnOpenClicked;
+    property OnOpenFileAtCursorClicked : TNotifyEvent 
+       read FOnOpenFileAtCursorClicked write FOnOpenFileAtCursorClicked;
+    property OnCloseClicked : TNotifyEvent read FOnCloseClicked write FOnCloseClicked;
+    property OnSaveClicked : TNotifyEvent read FOnSaveClicked write FOnSaveClicked;
+    property OnSaveAsClicked : TNotifyEvent 
+       read FOnSaveAsClicked write FOnSaveAsClicked;
+    property OnSaveAllClicked : TNotifyEvent 
+       read FOnSaveAllClicked write FOnSaveAllClicked;
   end;
 
 {Goto dialog}
@@ -333,15 +345,19 @@ var
  and the AParent is usually a page of a @link(TNotebook)
 }
 
-constructor TSourceEditor.create(AOwner : TComponent; AParent : TWinControl);
+constructor TSourceEditor.Create(AOwner : TComponent; AParent : TWinControl);
 Begin
+writeln('TSourceEditor.create 1');
   inherited Create;
   FAOwner := AOwner;
 
-  FSource := TStringList.create;
+  FSource := TStringList.Create;
+  FSyntaxHighlighterType:=lshNone;
 
   FControl := nil;
+writeln('TSourceEditor.create 2');
   CreateEditor(AOwner,AParent);
+writeln('TSourceEditor.create end');
 end;
 
 destructor TSourceEditor.destroy;
@@ -458,16 +474,16 @@ Begin
 end;
 
 Procedure TSourceEditor.OpenAtCursorClicked(Sender : TObject);
-var
+{var
   Texts : String;
   Found : Boolean;
   SearchDir : String;
   AppDIr : String;
   TempDir : String;
   Num : Integer;
-  DirDelimiter : Char;
+  DirDelimiter : Char;}
 Begin
-  Texts := TextunderCursor;
+{  Texts := TextunderCursor;
   if Length(Texts) <= 1 then Exit;
 
   Found := False;
@@ -536,6 +552,7 @@ Begin
 
   If not Found then
     Application.MessageBox('File not found','Error',MB_OK);
+}
 end;
 
 procedure TSourceEditor.GetDialogPosition(Width, Height:integer; 
@@ -767,17 +784,29 @@ Begin
      OnEditorChange(sender);
 end;
 
+procedure TSourceEditor.SetSyntaxHighlighterType(
+  ASyntaxHighlighterType: TLazSyntaxHighlighter);
+begin
+  if EditorOPts.UseSyntaxHighlight then begin
+    case ASyntaxHighlighterType of
+      lshFreePascal,lshDelphi:
+        FEditor.Highlighter:=aHighlighter;
+    else  
+      FEditor.Highlighter:=nil;
+    end;
+  end else FEditor.Highlighter:=nil;
+  if ASyntaxHighlighterType<>fSyntaxHighlighterType then begin
+
+    fSyntaxHighlighterType:=ASyntaxHighlighterType;
+  end;
+end;
+
 Function TSourceEditor.RefreshEditorSettings : Boolean;
 Begin
   Result := False;
 
-  if EditorOPts.UseSyntaxHighlight then
-  Begin
-     EditorOPts.GetHighlighterSettings(aHighlighter);
-     FEditor.Highlighter:=aHighlighter;
-  end
-  else
-     FEditor.Highlighter:=nil;
+  EditorOpts.GetHighlighterSettings(aHighlighter);
+  SetSyntaxHighlighterType(fSyntaxHighlighterType);
 
   EditorOpts.GetSynEditSettings(FEditor);
 end;
@@ -793,7 +822,7 @@ Begin
   Result := '';
   Found := False;
   DirDelimiter := '/';
-  SearchDir := TSourceNoteBook(Owner).SearchPaths;
+  SearchDir := TSourceNotebook(Owner).SearchPaths;
   Writeln('Searcvhdir is '+Searchdir);
   Num := pos(';',SearchDir);
   While (not Found) and (SearchDir <> '') do
@@ -925,8 +954,10 @@ End;
 Procedure TSourceEditor.CreateEditor(AOwner : TComponent; AParent: TWinControl);
 Begin
   if assigned(FEditor) then Begin
+writeln('TSourceEditor.CreateEditor  freeing old FEditor');
     FSource.Assign(FEditor.Lines);
     FEditor.Free;
+    FEditor:=nil;
     dec(Editor_num);
   end;
 
@@ -946,7 +977,9 @@ Begin
   RefreshEditorSettings;
   aCompletion.AddEditor(FEditor);
   FEditor.Lines.Assign(FSource);
+writeln('TSourceEditor.CreateEditor  focusing');
   FEditor.SetFocus;
+writeln('TSourceEditor.CreateEditor  end');
 end;
 
 Procedure TSourceEditor.AddControlCode(_Control : TComponent);
@@ -958,14 +991,12 @@ var
   TempSource : TStringList;
   Ancestor : String;
 begin
-Writeln('**********************************************************');
   TempSource := TStringList.Create;
   TempSource.Assign(Source);
 
   //get the control name
   PI := _Control.ClassInfo;
   nmControlType := PI^.Name;
-  nmControlType := Uppercase(nmControlType[1]+nmControlType[2])+Lowercase(Copy(nmControlType,3,length(nmControlType)));
   Ancestor := GetAncestor;
   Ancestor := 'TFORM';
 
@@ -979,7 +1010,7 @@ For I := 0 to TempSource.Count-1 do
     Writeln('Ancestor is '+Ancestor);
     Writeln('TWinControl(_Control.Owner).Name is '+TWinControl(_Control.Owner).Name);
     Writeln('Line is '+TempSource.Strings[i]);
-    if (pos(uppercase(Ancestor),uppercase(TempSource.Strings[i])) <> 0)
+    if (pos(Ancestor,TempSource.Strings[i]) <> 0)
     and (pos(lowercase(TWinControl(_Control.Owner).Name),
           lowercase(TempSource.Strings[i])) <> 0)
     and (pos('CLASS',Uppercase(TempSource.Strings[i])) <> 0) then
@@ -992,7 +1023,7 @@ For I := 0 to TempSource.Count-1 do
      Begin
        //alphabetical
        inc(i);
-       NewSource := uppercase(_Control.Name[1])+lowercase(Copy(_Control.Name,2,length(_Control.Name)))+' : '+nmControlType+';';
+       NewSource := _Control.Name+' : '+nmControlType+';';
 
        //  Here I decide if I need to try and insert the control's text code in any certain order.
        //if there's no controls then I just insert it, otherwise...
@@ -1000,7 +1031,7 @@ For I := 0 to TempSource.Count-1 do
        while NewSource > (trim(TempSource.Strings[i])) do
          inc(i);
 
-          TempSource.Insert(i,'    '+NewSource);
+          TempSource.Insert(i,'       '+NewSource);
      end;
 
 
@@ -1068,7 +1099,7 @@ end;
 
 Function TSourceEditor.GetSource : TStrings;
 Begin
-  //return mwedit's source.
+  //return synedit's source.
   Result := FEditor.Lines;
 end;
 
@@ -1112,7 +1143,12 @@ end;
 
 Function TSourceEditor.GetModified : Boolean;
 Begin
-Result := FEditor.Modified;
+  Result := FEditor.Modified;
+end;
+
+procedure TSourceEditor.SetModified(NewValue:boolean);
+begin
+  FEditor.Modified:=NewValue;
 end;
 
 Function TSourceEditor.GetInsertMode : Boolean;
@@ -1147,8 +1183,7 @@ Begin
     try
       Add('unit '+FUnitName+';');
       Add('');
-      Add('{$mode objfpc}');
-      Add('{$H+}');
+      Add('{$mode objfpc}{$H+}');
       Add('');
       Add('interface');
       Add('');
@@ -1236,7 +1271,6 @@ Writeln('[TSourceEditor] Open');
 
   try
     FEditor.Lines.LoadFromFile(FileName);
-    FModified := False;
     FUnitName := ExtractFileName(Filename);
     //remove extension
     if pos('.',FUnitname) <> 0 then
@@ -1254,65 +1288,13 @@ end;
 
 
 Function TSourceEditor.Save : Boolean;
-var
-  s   : TStringList;
-  I,X : Integer;
-  Texts : String;
-  NewUnitName : String;
-  Found : Boolean;
 Begin
   Result := True;
   If Assigned(FOnBeforeSave) then FOnBeforeSave(Self);
 
   try
-    //change the unitname
-     Found := False;
-     S := TStringList.Create;
-     S.Assign(FEditor.Lines);
-     I := 0;
-     NewUnitName := ExtractFileName(FileName);  //in case there is a path
-     If ExtractFileExt(FileName) <> '' then
-     NewUnitName := Copy(NewUnitName,1,length(NewUnitName)-length(ExtractFileExt(Filename)));
-     While I < S.Count do
-       Begin
-         Texts := S.Strings[i];
-         Writeln('Texts = '+Texts);
-         if (pos('unit',lowercase(texts)) <> 0) and
-            (pos(lowercase(unitname)+';',Lowercase(texts)) <> 0) then
-            Begin
-              X := pos(lowercase(unitname)+';',Lowercase(texts));
-              delete(Texts,x,length(unitname));
-              insert(NewUnitName,Texts,x);
-              S.Strings[i] := Texts;
-              Found := True;
-              Break;
-            end;
-         inc(i);
-         
-       end;
-
-    if Found then
-      Begin
-       I := 0;
-     While I < S.Count do
-       Begin
-         Texts := S.Strings[i];
-         if pos(lowercase(format('{$I %s.lrc}',[UnitName])),lowercase(Texts)) <> 0 then
-            Begin
-              X := pos(lowercase(format('{$I %s.lrc}',[UnitName])),Lowercase(Texts));
-              delete(Texts,x,length(format('{$I %s.lrc}',[UnitName])));
-              insert(format('{$I %s.lrc}',[NewUnitName]),Texts,x);
-              S.Strings[i] := Texts;
-              break;
-            end;
-        inc(i);
-       end;
-        FEditor.Lines.Assign(s);
-      end;
-
     FEditor.Lines.SaveToFile(FileName);
     FEditor.Modified := False;
-    UnitName := NewUnitName;
   except
     Result := False;
   end;
@@ -1826,21 +1808,21 @@ End;
 Function TSourceNotebook.CreateNotebook : Boolean;
 Begin
   Result := False;
-  if not assigned(Notebook1) then
+  if not assigned(Notebook) then
     Begin
       Result := True;
-      Notebook1 := TNotebook.Create(self);
-      with Notebook1 do
+      Notebook := TNotebook.Create(self);
+      with Notebook do
         Begin
           Parent := Self;
           Align := alClient;
           Left := 0;
           Top :=2;
           Width := ClientWidth;
-          Height := ClientHeight-Notebook1.top;
+          Height := ClientHeight-Notebook.top;
           Pages.Strings[0] := 'unit1';
           PageIndex := 0;   // Set it to the first page
-          OnPageChanged := @NoteBookPageChanged;
+          OnPageChanged := @NotebookPageChanged;
           Show;
         end; //with
       Show;  //used to display the code form
@@ -1848,7 +1830,7 @@ Begin
     end;
 End;
 
-Procedure TSourceNoteBook.BuildPopupMenu;
+Procedure TSourceNotebook.BuildPopupMenu;
 
   Function Seperator : TMenuItem;
   Begin
@@ -1950,8 +1932,8 @@ Var
   Notebook_Just_Created : Boolean;
 begin
 
-  Notebook_Just_Created := (not assigned(Notebook1)) or
-                           (Notebook1.Pages.Count = 0);
+  Notebook_Just_Created := (not assigned(Notebook)) or
+                           (Notebook.Pages.Count = 0);
 
   if Notebook_Just_Created then
     TempSourceEditor := NewSe(0)
@@ -1960,7 +1942,7 @@ begin
 
   TempSourceEditor.CreateFormUnit(AForm);
 
-  Notebook1.Pages.Strings[Notebook1.PageIndex] := TempSourceEditor.Unitname;
+  Notebook.Pages.Strings[Notebook.PageIndex] := TempSourceEditor.Unitname;
 
   Result := TempSourceEditor;
   Show;
@@ -1972,35 +1954,26 @@ Begin
 End;
 
 Function TSourceNotebook.NewSe(PageNum : Integer) : TSourceEditor;
-var
-  UnitIndex,I:integer;
 Begin
-  UnitIndex := 0;
+writeln('TSourceNotebook.NewSe 1');
   if CreateNotebook then Pagenum := 0;
 
-  if Pagenum = -1 then begin //add a new page
-    repeat
-      inc(UnitIndex);
-      I:=FSourceEditorList.Count-1;
-      while (I>=0)
-      and (lowercase(TSourceEditor(FSourceEditorList[I]).UnitName)
-          <>'unit'+IntToStr(UnitIndex)) do begin
- writeln('[TSourceNotebook.NewSe] I=',I,' unitname='
-   ,lowercase(TSourceEditor(FSourceEditorList[I]).UnitName));
-        dec(I);
-      end;
-    until I<0;
-    Pagenum := Notebook1.Pages.Add('unit'+IntToStr(UnitIndex));
+writeln('TSourceNotebook.NewSe 2');
+  if Pagenum < 0 then begin //add a new page right to the current
+    Pagenum := Notebook.PageIndex+1;
+    Notebook.Pages.Insert(PageNum,FindUniquePageName('',-1));
   end;
-  Result := TSourceEditor.Create(Self,Notebook1.Page[PageNum]);
-  Result.FUnitName:=Notebook1.Pages[PageNum];
+writeln('TSourceNotebook.NewSe 3');
+  Result := TSourceEditor.Create(Self,Notebook.Page[PageNum]);
+writeln('TSourceNotebook.NewSe 4');
+  Result.FUnitName:=Notebook.Pages[PageNum];
   Result.CodeTemplates:=CodeTemplateModul;
-  Notebook1.PageIndex := Pagenum;
+  Notebook.PageIndex := Pagenum;
   FSourceEditorList.Add(Result);
   Result.EditorComponent.BookMarkOptions.BookmarkImages := Bookmarks;
   Result.PopupMenu:=SrcPopupMenu;
   Result.OnEditorChange := @EditorChanged;
-writeln('TSourceNotebook.NewSe END');
+writeln('TSourceNotebook.NewSe end');
 end;
 
 Procedure TSourceNotebook.DisplayCodeforControl(Control : TObject);
@@ -2052,9 +2025,9 @@ Var
 Begin
    Result := False;
 
-    for X := 0 to Notebook1.Pages.Count-1 do
+    for X := 0 to Notebook.Pages.Count-1 do
         Begin
-          With Notebook1.Page[X] do
+          With Notebook.Page[X] do
           for I := 0 to ControlCount-1 do
                if Controls[I] is TmwCustomEdit then
                   Begin
@@ -2070,9 +2043,9 @@ Begin
 
   if SE.EditorComponent = TempEditor then
   Begin
-    Notebook1.PageIndex := X;
+    Notebook.PageIndex := X;
     //Bringtofront does not work yet.
-    //Notebook1.BringToFront;
+    //Notebook.BringToFront;
     //so I hide it and unhide it.
     Visible := False;
     Visible := True;
@@ -2080,25 +2053,22 @@ Begin
   end
   else
   Begin  //the SE isn't on a page so we need to create a page for it.
-    Notebook1.PageIndex := Notebook1.Pages.Add(SE.UnitName);
-    SE.ReParent(Notebook1.Page[Notebook1.Pageindex]);
+    Notebook.PageIndex := Notebook.Pages.Add(SE.UnitName);
+    SE.ReParent(Notebook.Page[Notebook.Pageindex]);
   end;
 end;
 
-
-Function TSourceNotebook.GetActiveSE : TSourceEditor;
-Var
-  I,X : Integer;
+function TSourceNotebook.FindSourceEditorWithPageIndex(
+  PageIndex:integer):TSourceEditor;
+var I:integer;
   TempEditor : TControl;
-Begin
+begin
   Result := nil;
   if (FSourceEditorList=nil)
-    or (NoteBook1=nil) or (NoteBook1.PageIndex<0) then exit;
-  X := FSourceEditorList.Count;
-  if X = 0 then Exit;
-
+    or (Notebook=nil) 
+    or (PageIndex<0) or (PageIndex>Notebook.Pages.Count) then exit;
   TempEditor:=nil;
-  with Notebook1.Page[Notebook1.PageIndex] do
+  with Notebook.Page[PageIndex] do
     for I := 0 to ControlCount-1 do
       if Controls[I] is TmwCustomEdit then
         Begin
@@ -2106,62 +2076,45 @@ Begin
           Break;
         end;
   if TempEditor=nil then exit;
-
-  // TempEditor now is the editor on the active page
-  // Compare it to the editor help by the SourceEditors
   I := FSourceEditorList.Count-1;
   while (I>=0) 
   and (TSourceEditor(FSourceEditorList[I]).EditorComponent <> TempEditor) do
     dec(i);
   if i<0 then exit;
-
   Result := TSourceEditor(FSourceEditorList[i]);
 end;
 
-
-Function TSourceNotebook.GetEmpty : Boolean;
+Function TSourceNotebook.GetActiveSE : TSourceEditor;
 Begin
-  Result := (not assigned(Notebook1)) or (Notebook1.Pages.Count = 0);
+  Result := nil;
+  if (FSourceEditorList=nil) or (FSourceEditorList.Count=0)
+    or (Notebook=nil) or (Notebook.PageIndex<0) then exit;
+  Result:= FindSourceEditorWithPageIndex(Notebook.PageIndex);
+end;
+
+
+Function TSourceNotebook.Empty : Boolean;
+Begin
+  Result := (not assigned(Notebook)) or (Notebook.Pages.Count = 0);
 end;
 
 Procedure TSourceNotebook.NextEditor;
 Begin
-  if Notebook1.PageIndex < Notebook1.PAges.Count-1 then
-     Notebook1.PAgeindex := Notebook1.Pageindex+1;
+  if Notebook.PageIndex < Notebook.Pages.Count-1 then
+     Notebook.Pageindex := Notebook.Pageindex+1;
 End;
 
 
 Procedure TSourceNotebook.PrevEditor;
 Begin
-  if Notebook1.PageIndex > 0 then
-     Notebook1.PAgeindex := Notebook1.Pageindex-1;
+  if Notebook.PageIndex > 0 then
+     Notebook.Pageindex := Notebook.Pageindex-1;
 End;
 
 
 Procedure TSourceNotebook.OpenClicked(Sender: TObject);
-Var
-  TempEditor : TSourceEditor;
 Begin
-    FOpenDialog.Title := 'Open';
-    if FOpenDialog.Execute then  Begin
-      //create a new page
-      Writeln('create a new editor');
-      TempEditor := NewSE(-1);
-      Writeln('Done create a new editor');
-      TempEditor.Filename := FOpenDialog.Filename;
-      if (TempEditor.Open) then
-      Begin
-        Writeln('1');
-        if assigned(FOnOpenFile) then
-          FOnOpenFile(TObject(TempEditor),FOpenDialog.Filename);
-        Writeln('2');
-        Notebook1.Pages.Strings[Notebook1.Pageindex] :=
-          TempEditor.UnitName;
-        Writeln('3');
-      end;
-      TempEditor.Visible := True;
-      UpdateStatusBar;
-    end;
+  if Assigned(FOnOpenClicked) then FOnOpenClicked(Sender);
 end;
 
 Procedure TSourceNotebook.FindClicked(Sender : TObject);
@@ -2228,11 +2181,9 @@ begin
 end;
 
 Procedure TSourceNotebook.OpenAtCursorClicked(Sender : TObject);
-var
-  ActEdit:TSourceEditor;
 begin
-  ActEdit:=GetActiveSE;
-  ActEdit.OpenAtCursorClicked(Sender);
+  if Assigned(FOnOpenFileAtCursorClicked) then
+    FOnOpenFileAtCursorClicked(Sender);
 end;
 
 Procedure TSourceNotebook.BookMarkToggle(Value : Integer);
@@ -2267,11 +2218,11 @@ End;
 Procedure TSourceNotebook.BookMarkGoto(Value : Integer);
 var AnEditor:TSourceEditor;
 begin
-  if NoteBook1=nil then exit;
+  if Notebook=nil then exit;
   AnEditor:=FindBookmark(Value);
   if AnEditor<>nil then begin
     AnEditor.EditorComponent.GotoBookMark(Value);
-    NoteBook1.PageIndex:=FindPageWithEditor(AnEditor);
+    Notebook.PageIndex:=FindPageWithEditor(AnEditor);
   end;
 end;
 
@@ -2281,23 +2232,46 @@ begin
   BookMarkGoTo(Value);
 End;
 
-Procedure TSourceNotebook.NewFile(UnitName: String; Source : TStrings;
-  aVisible : Boolean);
+Procedure TSourceNotebook.NewFile(UnitName: String; Source : TStrings);
 Var
   TempEditor : TSourceEditor;
 Begin
   //create a new page
+writeln('[TSourceNotebook.NewFile] 1');
   TempEditor := NewSE(-1);
+writeln('[TSourceNotebook.NewFile] 2');
   TempEditor.Unitname := Unitname;
   TempEditor.Source := Source;
-  if Visible then
-    Notebook1.Pages.Strings[Notebook1.Pageindex] := TempEditor.UnitName;
-  TempEditor.Visible := aVisible;
+writeln('[TSourceNotebook.NewFile] 3');
+  Notebook.Pages[Notebook.PageIndex] :=
+    FindUniquePageName(UnitName,Notebook.PageIndex);
+writeln('[TSourceNotebook.NewFile] end');
+end;
+
+Procedure TSourceNotebook.CloseFile(PageIndex:integer);
+var TempEditor: TSourceEditor;
+Begin
+writeln('TSourceNotebook.CloseFile 1  PageIndex=',PageIndex);
+  TempEditor:= FindSourceEditorWithPageIndex(PageIndex);
+  if TempEditor=nil then exit;
+  TempEditor.Close;
+  FSourceEditorList.Remove(TempEditor);
+  TempEditor.Free;
+writeln('TSourceNotebook.CloseFile 2  PageCount=',Notebook.Pages.Count);
+  if Notebook.Pages.Count>1 then begin
+    Notebook.Pages.Delete(PageIndex);
+    UpdateStatusBar;
+  end else begin
+    Notebook.Free;
+    Notebook:=nil;
+    Hide;
+  end;
+writeln('TSourceNotebook.CloseFile end');
 end;
 
 Procedure TSourceNotebook.OpenFile(FileName: String; aVisible : Boolean);
 Var
-    TempEditor : TSourceEditor;
+  TempEditor : TSourceEditor;
 Begin
   if FileExists(Filename) then
   begin
@@ -2305,12 +2279,10 @@ Begin
   TempEditor := NewSE(-1);
   TempEditor.Filename := Filename;
 
-  if (TempEditor.OPen) then
+  if (TempEditor.Open) then
     Begin
-       if assigned(FOnOPenFile) then
-         FOnOpenFile(TObject(TempEditor),FOpenDialog.Filename);
        if Visible then
-         Notebook1.Pages.Strings[Notebook1.Pageindex] := 
+         Notebook.Pages.Strings[Notebook.Pageindex] := 
            ExtractFileName(TempEditor.UnitName);
        TempEditor.Visible := aVisible;
     end;
@@ -2319,29 +2291,13 @@ Begin
 end;
 
 Procedure TSourceNotebook.NewClicked(Sender: TObject);
-Var
-    TempEditor : TSourceEditor;
 Begin
-  //create a new page
-  TempEditor := NewSE(-1);
-  TempEditor.CreateNewUnit;
-  TempEditor.Visible := True;
-  UpdateStatusBar;
-  Show;
+  if Assigned(FOnNewClicked) then FOnNewClicked(Sender);
 End;
 
 Procedure TSourceNotebook.SaveClicked(Sender: TObject);
 Begin
-  if ActiveFileName <> '' then
-    begin
-      if (GetActiveSE.Save) then
-      if assigned(FOnSaveFile) then
-        FOnSaveFile(TObject(GetActiveSE),ActiveFilename)
-    end
-  else
-    SaveAsClicked(Sender);
-  UpdateStatusBar;
-
+  if Assigned(FOnSaveClicked) then FOnSaveClicked(Sender);
 end;
 
 Function TSourceNotebook.ActiveUnitName : String;
@@ -2366,29 +2322,8 @@ begin
 end;
 
 Procedure TSourceNotebook.CloseClicked(Sender : TObject);
-var TempEditor: TSourceEditor;
 Begin
-  TempEditor:=GetActiveSE;
-  if TempEditor=nil then exit;
-  if (TempEditor.Modified) then
-    If Application.MessageBox('Source has changed.  Save now?'
-      ,'Warning',mb_YesNo) = mrYes then
-      SaveClicked(Sender);
-
-  if (TempEditor.Close) then
-    if assigned(FOnCloseFile) then begin
-      FOnCloseFile(Self,ActiveFilename);
-    end;
-  if NoteBook1.Pages.Count>1 then begin
-    Notebook1.Pages.Delete(Notebook1.PageIndex);
-    UpdateStatusBar;
-  end else begin
-    Notebook1.Free;
-    NoteBook1:=nil;
-    Hide;
-  end;
-  FSourceEditorList.Delete(FSourceEditorList.IndexOf(TempEditor));
-  TempEditor.Free;
+  if Assigned(FOnCloseClicked) then FOnCloseClicked(Sender);
 end;
 
 Function TSourceNotebook.FindUniquePageName(FileName:string; 
@@ -2400,10 +2335,10 @@ var I:integer;
   var a:integer;
   begin
     Result:=false;
-    if NoteBook1=nil then exit;
-    for a:=0 to NoteBook1.Pages.Count-1 do begin
+    if Notebook=nil then exit;
+    for a:=0 to Notebook.Pages.Count-1 do begin
       if (a<>IgnorePageIndex) 
-      and (lowercase(NoteBook1.Pages[a])=lowercase(AName)) then begin
+      and (lowercase(Notebook.Pages[a])=lowercase(AName)) then begin
         Result:=true;
         exit;
       end;
@@ -2411,7 +2346,14 @@ var I:integer;
   end;
 
 begin
-  if FileName='' then FileName:='unit';
+  if FileName='' then begin
+    FileName:='unit1';
+    if not PageNameExists(FileName) then begin
+      Result:=Filename;
+      exit;
+    end;
+    FileName:='unit1';
+  end;
   ShortName:=ExtractFileName(FileName);
   Ext:=ExtractFileExt(ShortName);
   if (Ext='.pp') or (Ext='.pas') then
@@ -2427,63 +2369,13 @@ begin
 end;
 
 Procedure TSourceNotebook.SaveAsClicked(Sender : TObject);
-var TempEditor: TSourceEditor;
-  AText,ACaption:AnsiString;
 Begin
-  TempEditor:=GetActiveSE;
-  if TempEditor=nil then exit;
-  FSaveDialog.Title := 'Save '+ActiveUnitName+' as :';
-  if ActiveFileName <> '' then
-    FSaveDialog.Filename := ActiveFileName
-  else
-    FSaveDialog.Filename := ActiveUnitName+'.pp';
-
-  if FSaveDialog.Execute then
-  begin
-    if FileExists(FSaveDialog.Filename) then begin
-      ACaption:='Overwrite?';
-      AText:='File "'+FSaveDialog.Filename+'" exists. Overwrite?';
-      if Application.MessageBox(PChar(AText),PChar(ACaption),mb_YesNo)=mrNo then
-        exit;
-    end;
-    TempEditor.FileName := FSaveDialog.Filename;
-    NoteBook1.Pages[NoteBook1.PageIndex]:=
-      FindUniquePageName(TempEditor.FileName,NoteBook1.PageIndex);
-    if (TempEditor.Save) then
-      if assigned(FOnSaveFile) then
-        FOnSaveFile(TObject(TempEditor),ActiveFilename);
-  end
-  else
-    Exit;
+  if Assigned(FOnSaveAsClicked) then FOnSaveAsClicked(Sender);
 end;
 
 Procedure TSourceNotebook.SaveAllClicked(Sender : TObject);
-Var
-   I : Integer;
-   TempEditor : TSourceEditor;
 Begin
-   For I := 0 to  FSourceEditorList.Count-1 do
-       Begin
-        TempEditor := TSourceEditor(FSourceEditorList.Items[i]);
-        if TempEditor.Visible then
-        Begin
-        FSaveDialog.Title := 'Save '+TempEditor.UnitName+' as :';
-        if TempEditor.FileName <> '' then
-           FSaveDialog.Filename := TempEditor.FileName
-           else
-           FSaveDialog.Filename := TempEditor.UnitName+'.pp';
-
-        if FSaveDialog.Execute then
-           begin
-           TempEditor.FileName := FSaveDialog.Filename;
-           if (TempEditor.Save) then
-             if assigned(FOnSaveFile) then
-               FOnSaveFile(TObject(TempEditor),TempEditor.FileName);
-           end
-           else
-           Break;
-        end;
-        end;
+  if Assigned(FOnSaveAllClicked) then FOnSaveAllClicked(Sender);
 end;
 
 Function TSourceNotebook.GetSourceForUnit(UnitName : String) : TStrings;
@@ -2567,15 +2459,15 @@ begin
   Result:=nil;
 end;
 
-function TSourceNoteBook.FindPageWithEditor(ASourceEditor: TSourceEditor):integer;
+function TSourceNotebook.FindPageWithEditor(ASourceEditor: TSourceEditor):integer;
 var i:integer;
 begin
-  if NoteBook1=nil then begin
+  if Notebook=nil then begin
     Result:=-1;
   end else begin
-    Result:=NoteBook1.Pages.Count-1;
+    Result:=Notebook.Pages.Count-1;
     while (Result>=0) do begin
-      with Notebook1.Page[Result] do
+      with Notebook.Page[Result] do
         for I := 0 to ControlCount-1 do
           if Controls[I]=TControl(ASourceEditor) then exit;
       dec(Result);
@@ -2583,7 +2475,7 @@ begin
   end;
 end;
 
-Procedure TSourceNotebook.NoteBookPageChanged(Sender : TObject);
+Procedure TSourceNotebook.NotebookPageChanged(Sender : TObject);
 var TempEditor:TSourceEditor;
 Begin
   TempEditor:=GetActiveSE;
@@ -2620,8 +2512,8 @@ begin
     end;
 
   ecGotoEditor1..ecGotoEditor9,ecGotoEditor0:
-    if NoteBook1.Pages.Count>Command-ecGotoEditor1 then
-      NoteBook1.PageIndex:=Command-ecGotoEditor1;
+    if Notebook.Pages.Count>Command-ecGotoEditor1 then
+      Notebook.PageIndex:=Command-ecGotoEditor1;
 
   end;  //case
 end;

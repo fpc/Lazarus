@@ -381,11 +381,28 @@ type
     constructor Create(AOwner: TComponent); override;
   end;
 
+
+  TLazSyntaxHighlighter =
+    (lshNone, lshText, lshFreePascal, lshDelphi, lshLFM, lshXML);
+
+const
+  LazSyntaxHighlighterNames : array[TLazSyntaxHighlighter] of string = (
+     'None',
+     'Text',
+     'FreePascal',
+     'Delphi',
+     'LFM',
+     'XML'
+   );
+
+
 var
   EditorOptionsForm: TEditorOptionsForm;
   EditorOpts: TEditorOptions;
 
 function ShowEditorOptionsDialog:TModalResult;
+function StrToLazSyntaxHighlighter(s: string): TLazSyntaxHighlighter;
+function ExtensionToLazSyntaxHighlighter(Ext:string): TLazSyntaxHighlighter;
 
 implementation
 
@@ -404,6 +421,44 @@ begin
   end;
 end;
 
+function StrToLazSyntaxHighlighter(s: string): TLazSyntaxHighlighter;
+begin
+  for Result:=Low(TLazSyntaxHighlighter) to High(TLazSyntaxHighlighter) do
+    if (lowercase(s)=lowercase(LazSyntaxHighlighterNames[Result])) then exit;
+  Result:=lshFreePascal;
+end;
+
+function ExtensionToLazSyntaxHighlighter(Ext:string): TLazSyntaxHighlighter;
+var s,CurExt:string;
+  StartPos,EndPos:integer;
+begin
+  if (Ext='') then begin
+    Result:=lshNone;
+    exit;
+  end;
+  Ext:=lowercase(Ext);
+  if (Ext[1]='.') then Ext:=copy(Ext,2,length(Ext)-1);
+  s:=EditorOpts.SyntaxExtensions;
+  StartPos:=1;
+  while StartPos<=length(s) do begin
+    Endpos:=StartPos;
+    while (EndPos<=length(s)) and (s[EndPos]<>';') do inc(EndPos);
+    CurExt:=copy(s,Startpos,EndPos-StartPos);
+    if (CurExt<>'') and (CurExt[1]='.') then begin
+      CurExt:=copy(CurExt,2,length(CurExt)-1);
+    end;
+    if lowercase(CurExt)=Ext then begin
+      Result:=lshFreePascal;
+      if (Ext='.dpr') or (Ext='.dpk') or (Ext='.dfm') then Result:=lshDelphi;
+      exit;
+    end;
+    Startpos:=EndPos+1;
+  end;
+  if Ext='.xml' then Result:=lshXML
+  else if Ext='.lfm' then Result:=lshLFM
+  else if Ext='.txt' then Result:=lshText
+  else Result:=lshNone;
+end;
 
 const
   EditOptsConfFileName = 'editoroptions.xml';
@@ -663,9 +718,9 @@ begin
   XMLConfig.SetValue('EditorOptions/Display/RightMargin',fRightMargin);
   XMLConfig.SetValue('EditorOptions/Display/RightMarginColor',fRightMarginColor);
   XMLConfig.SetValue('EditorOptions/Display/EditorFont',fEditorFont);
-  XMLConfig.GetValue('EditorOptions/Display/EditorFontHeight'
+  XMLConfig.SetValue('EditorOptions/Display/EditorFontHeight'
     ,fEditorFontHeight);
-  XMLConfig.GetValue('EditorOptions/Display/ExtraLineSpacing'
+  XMLConfig.SetValue('EditorOptions/Display/ExtraLineSpacing'
     ,fExtraLineSpacing);
 
   // Key Mappings options

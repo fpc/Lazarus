@@ -1097,6 +1097,7 @@ destructor TCustomSynEdit.Destroy;
 var
   i: integer;
 begin
+writeln('[TCustomSynEdit.Destroy]');
   Highlighter := nil;
   // free listeners while other fields are still valid
   if Assigned(fHookedCommandHandlers) then begin
@@ -1487,7 +1488,8 @@ var
   C: char;
   Cmd: TSynEditorCommand;
 begin
-//writeln('[TCustomSynEdit.KeyDown]');
+//writeln('[TCustomSynEdit.KeyDown] ',Key
+//  ,' Shift=',ssShift in Shift,' Ctrl=',ssCtrl in Shift,' Alt=',ssAlt in Shift);
   inherited;
   Data := nil;
   C := #0;
@@ -1727,9 +1729,7 @@ end;
 procedure TCustomSynEdit.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
-writeln('TCustomSynEdit.MouseUp 1');
   inherited MouseUp(Button, Shift, X, Y);
-writeln('TCustomSynEdit.MouseUp 2');
   {$IFDEF SYN_LAZARUS}
   if (X>=ClientWidth-ScrollBarWidth) or (Y>=ClientHeight-ScrollBarWidth) then
   begin
@@ -4572,13 +4572,15 @@ const
 {$ENDIF}
 begin
   i := KeyStrokes.FindKeycode2(fLastKey, fLastShiftState, Code, Shift);
-  if i >= 0 then
+  if i >= 0 then begin
+//writeln('FindKeyCode2 success');
     Result := KeyStrokes[i].Command
-  else begin
+  end else begin
     i := Keystrokes.FindKeycode(Code, Shift);
-    if i >= 0 then
+    if i >= 0 then begin
+//writeln('FindKeyCode success');
       Result := Keystrokes[i].Command
-    else
+    end else
       Result := ecNone;
   end;
   if (Result = ecNone) and (Code >= VK_ACCEPT) and (Code <= VK_SCROLL) then

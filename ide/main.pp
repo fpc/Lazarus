@@ -29,37 +29,34 @@ interface
 
 uses
   Classes, LclLinux, Compiler, StdCtrls, Forms, Buttons, Menus, ComCtrls, Spin,
-  Project, Sysutils,  Controls, Graphics, ExtCtrls, Dialogs, CompReg,
-  DlgMessage, Process, IDEComp, AbstractFormEditor, FormEditor,
+  Project, Sysutils,  Controls, Graphics, ExtCtrls, Dialogs, CompReg, CodeTools,
+  DlgMessage, NewProjectDlg, Process, IDEComp, AbstractFormEditor, FormEditor,
   CustomFormEditor, ObjectInspector, ControlSelection, PropEdits, UnitEditor,
-  CompilerOptions, EditorOptions, {CodeTemplateDialog,} EnvironmentOpts,
-  Debugger;
+  CompilerOptions, EditorOptions, EnvironmentOpts;
 
 const
   Version_String = '0.7';
 
 type
 
-  TMainIDE = class(TFORM)
-    ToolBar1     : TToolBar;
+  TMainIDE = class(TForm)
+    ViewUnitsSpeedBtn  : TSpeedButton;
+    ViewFormsSpeedBtn  : TSpeedButton;
+    NewUnitSpeedBtn    : TSpeedButton;
+    OpenFileSpeedBtn   : TSpeedButton;
+    OpenFileArrowSpeedBtn : TSpeedButton;
+    SaveSpeedBtn       : TSpeedButton;
+    SaveAllSpeedBtn    : TSpeedButton;
+    ToggleFormSpeedBtn : TSpeedButton;
+    NewFormSpeedBtn    : TSpeedButton;
+    RunSpeedButton     : TSpeedButton;
+    OpenFilePopUpMenu : TPopupMenu;
     Toolbutton1  : TToolButton;
     Toolbutton2  : TToolButton;
     Toolbutton3  : TToolButton;
     Toolbutton4  : TToolButton;
     GlobalMouseSpeedButton : TSpeedButton;
-    Pixmap1      : TPixmap;//used to assign the tspeedbutton its image
     Bitmap1      : TBitmap;
-    SpeedButton1 : TSpeedButton;
-    SpeedButton2 : TSpeedButton;
-    SpeedButton3 : TSpeedButton;
-    SpeedButton4 : TSpeedButton;
-    SpeedButton4_2 : TSpeedButton;
-    SpeedButton5 : TSpeedButton;
-    SpeedButton6 : TSpeedButton;
-    SpeedButton7 : TSpeedButton;
-    SpeedButton8 : TSpeedButton;
-    RunSpeedButton : TSpeedButton;
-    OpenFilePopUpMenu : TPopupMenu;
 
     ComboBox1 : TComboBox;
     Edit1: TEdit;
@@ -102,7 +99,7 @@ type
 
     itmSearchFind: TMenuItem;
     itmSearchFindAgain: TMenuItem;
-    itmReplace: TMenuItem;
+    itmSearchReplace: TMenuItem;
     itmGotoLineNumber: TMenuItem;
 
     itmViewInspector: TMenuItem;
@@ -120,11 +117,19 @@ type
     Notebook1 : TNotebook;
     cmdTest: TButton;
     cmdTest2: TButton;
-    LAbel2 : TLabel;
+    Label2 : TLabel;
 
-{ event handlers }
+    // event handlers
+    procedure mnuNewUnitClicked(Sender : TObject);
     procedure mnuNewFormClicked(Sender : TObject);
+    procedure mnuSaveClicked(Sender : TObject);
+    procedure mnuSaveAsClicked(Sender : TObject);
+    procedure mnuSaveAllClicked(Sender : TObject);
+    procedure mnuOpenClicked(Sender : TObject);
+    procedure mnuOpenFileAtCursorClicked(Sender : TObject);
+    procedure mnuCloseClicked(Sender : TObject);
     procedure mnuQuitClicked(Sender : TObject);
+
     procedure mnuViewInspectorClicked(Sender : TObject);
     Procedure mnuViewUnitsClicked(Sender : TObject);
     Procedure mnuViewFormsClicked(Sender : TObject);
@@ -143,22 +148,28 @@ type
 
     procedure mnuViewCodeExplorerClick(Sender : TObject);
     procedure mnuViewMessagesClick(Sender : TObject);
+    procedure MessageViewDblClick(Sender : TObject);
 
     procedure mnuEnvGeneralOptionsClicked(Sender : TObject);
     procedure mnuEnvEditorOptionsClicked(Sender : TObject);
 
     Procedure OpenFileDownArrowClicked(Sender : TObject);
-    Procedure OpenRecentFile(Sender : TObject);
-    Procedure FileClosedEvent(Sender : TObject; Filename : String);
-    Procedure FileOpenedEvent(Sender : TObject; Filename : String);
-    Procedure FileSavedEvent(Sender : TObject; Filename : String);
-
     Procedure ControlClick(Sender : TObject);
-    procedure MessageViewDblClick(Sender : TObject);
 
+    // SourceNotebook events
+    Procedure OnSrcNotebookFileNew(Sender : TObject);
+    Procedure OnSrcNotebookFileOpen(Sender : TObject);
+    Procedure OnSrcNotebookFileOpenAtCursor(Sender : TObject);
+    Procedure OnSrcNotebookFileSave(Sender : TObject);
+    Procedure OnSrcNotebookFileSaveAs(Sender : TObject);
+    Procedure OnSrcNotebookFileClose(Sender : TObject);
+    Procedure OnSrcNotebookSaveAll(Sender : TObject);
+
+    // ObjectInspector events
     procedure OIOnAddAvailableComponent(AComponent:TComponent; var Allowed:boolean);
     procedure OIOnSelectComponent(AComponent:TComponent);
 
+    // Environment options dialog events
     procedure OnLoadEnvironmentSettings(Sender: TObject; 
        TheEnvironmentOptions: TEnvironmentOptions);
     procedure OnSaveEnvironmentSettings(Sender: TObject; 
@@ -173,22 +184,45 @@ type
     Function CreateSeperator : TMenuItem;
     Procedure UpdateViewDialogs;
     Procedure SetDefaultsForForm(aForm : TCustomForm);
-  protected
-    procedure DoFind(Sender : TObject);
 
+  protected
     procedure FormShow(Sender : TObject);
     procedure ToolButtonClick(Sender : TObject);
 //    Procedure Paint; override;
 
   public
-    //these numbers are used to determine where the mouse was when the button was pressed
-    MouseDownPos, MouseUpPos, LastMouseMovePos : TPoint;
-    MouseDownControl: TObject;
-
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
     Function SearchPaths : String;
+
+    // files/units
+    function DoNewEditorUnit(NewUnitType:TNewUnitType):TModalResult;
+    function DoSaveEditorUnit(PageIndex:integer; SaveAs:boolean):TModalResult;
+    function DoCloseEditorUnit(PageIndex:integer; SaveFirst: boolean):TModalResult;
+    function DoOpenEditorFile(AFileName:string; ProjectLoading:boolean):TModalResult;
+    function DoOpenFileAtCursor(Sender: TObject):TModalResult;
+    function DoSaveAll: TModalResult;
+    
+    // project(s)
+    function DoNewProject(NewProjectType:TProjectType):TModalResult;
+    function DoSaveProject(SaveAs:boolean):TModalResult;
+    function DoCloseProject:TModalResult;
+    function DoOpenProjectFile(AFileName:string):TModalResult;
+
+    // helpful methods
+    procedure GetCurrentUnit(var ActiveSourceEditor:TSourceEditor; 
+      var ActiveUnitInfo:TUnitInfo);
+    procedure GetUnitWithPageIndex(PageIndex:integer; 
+      var ActiveSourceEditor:TSourceEditor; var ActiveUnitInfo:TUnitInfo);
+    function DoSaveStreamToFile(AStream:TStream; Filename:string; 
+      IsPartOfProject:boolean): TModalResult;
+    function DoLoadMemoryStreamFromFile(MemStream: TMemoryStream; 
+      AFilename:string): TModalResult;
+    function DoBackupFile(Filename:string; 
+      IsPartOfProject:boolean): TModalResult;
+    procedure UpdateCaption;
+    procedure UpdateMainUnitSrcEdit;
 
     procedure LoadMainMenu;
     Procedure FormKill(Sender : TObject);
@@ -196,7 +230,8 @@ type
     procedure FormPaint(Sender : TObject);
     procedure LoadFormFromFile(Value : String);
 
-    property SelectedComponent : TRegisteredComponent read FSelectedComponent write FSelectedComponent;
+    property SelectedComponent : TRegisteredComponent 
+      read FSelectedComponent write FSelectedComponent;
     property Project: TProject read fProject write fProject;
 
     procedure SaveDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
@@ -225,7 +260,7 @@ var
 implementation
 
 uses
-  ViewUnit_dlg,ViewForm_dlg, Math,lresources, Designer;
+  ViewUnit_dlg,ViewForm_dlg, Math,LResources, Designer;
 
 
 { TMainIDE }
@@ -240,19 +275,25 @@ constructor TMainIDE.Create(AOwner: TComponent);
   begin
     Result:=false;
     res:=LazarusResources.Find(ResourceName);
-    if (res = nil) or (res.Value<>'') then begin
-      if res.ValueType='XPM' then begin
-        ms:=TMemoryStream.Create;
-        try
-          ms.Write(res.Value[1],length(res.Value));
-          ms.Position:=0;
-          PixMap.LoadFromStream(ms);
-          Result:=true;
-        finally
-          ms.Free;
-        end;
+    if (res<>nil) and (res.Value<>'') and (res.ValueType='XPM') then begin
+      ms:=TMemoryStream.Create;
+      try
+        ms.Write(res.Value[1],length(res.Value));
+        ms.Position:=0;
+        Pixmap.LoadFromStream(ms);
+        Result:=true;
+      finally
+        ms.Free;
       end;
     end;
+  end;
+
+  function LoadSpeedBtnPixMap(ResourceName:string):TPixmap;
+  begin
+    Result:=TPixmap.Create;
+    Result.TransparentColor:=clBtnFace;
+    if not LoadPixmapRes(ResourceName,Result) then
+      LoadPixmapRes('default',Result);
   end;
 
 var
@@ -261,6 +302,7 @@ var
   RegComp     : TRegisteredComponent;
   RegCompPage : TRegisteredComponentPage;
   IDeComponent : TIdeComponent;
+  SelectionPointerPixmap: TPixmap;
 begin
   inherited Create(AOwner);
 
@@ -293,23 +335,8 @@ begin
 
   LoadMainMenu;
 
-  MouseDownControl:=nil;
   Bitmap1 := TBitmap.Create;
   Bitmap1.Handle := CreatePixmapIndirect(@IMGOK_Check, ColorToRGB(clBtnFace));
-
-{ ToolBar1 := TToolbar.Create(Self);
-  with Toolbar1 do
-  begin
-    Parent := Self;
-    Align := alTop;
-    ShowCaptions := True;
-    Height := 25;
-    Left := 1;
-    Top := 25;
-    Width := ClientWidth;
-    Show;
-  end;
-}
 
   Notebook1 := TNotebook.Create(Self);
   Notebook1.Parent := Self;
@@ -321,14 +348,7 @@ begin
   Notebook1.Height := 100; //ClientHeight - Notebook1.Top;
 
 
-  Pixmap1:=TPixMap.Create;
-  Pixmap1.TransparentColor:=clBtnFace;
-  if not LoadPixmapRes('tmouse',Pixmap1) then
-  begin
-    LoadPixmapRes('default',Pixmap1);
-  end;
-
-
+  SelectionPointerPixmap:=LoadSpeedBtnPixMap('tmouse');
   PageCount := 0;
   for I := 0 to RegCompList.PageCount-1 do
   begin
@@ -339,14 +359,14 @@ begin
          Notebook1.Pages.Strings[pagecount] := RegCompPage.Name
       else Notebook1.Pages.Add(RegCompPage.Name);
       GlobalMouseSpeedButton := TSpeedButton.Create(Self);
-      with GlobalMouseSPeedButton do
+      with GlobalMouseSpeedButton do
       Begin
-        Parent := Notebook1.page[PageCount];
+        Parent := Notebook1.Page[PageCount];
         Enabled := True;
         Width := 25;
         Height := 25;
         OnClick := @ControlClick;
-        Glyph := Pixmap1;
+        Glyph := SelectionPointerPixmap;
         Visible := True;
         Flat := True;
         Down := True;
@@ -373,109 +393,75 @@ begin
   Notebook1.OnPageChanged := @ControlClick;
   Notebook1.Name := 'Notebook1';
 
-  Pixmap1:=TPixMap.Create;
-  Pixmap1.TransparentColor:=clBtnFace;
-  if not LoadPixmapRes('btn_viewunits',Pixmap1) then
-  begin
-    LoadPixmapRes('default',Pixmap1);
-  end;
-  SpeedButton1 := TSpeedButton.Create(Self);
-  with Speedbutton1 do
+  ViewUnitsSpeedBtn := TSpeedButton.Create(Self);
+  with ViewUnitsSpeedBtn do
    Begin
     Parent := self;
     Enabled := True;
     Top := 28;
-    OnClick := @mnuViewUnitsCLicked;
-    Glyph := Pixmap1;
+    OnClick := @mnuViewUnitsClicked;
+    Glyph := LoadSpeedBtnPixMap('btn_viewunits');
     Visible := True;
     Flat := true;
-    Name := 'Speedbutton1';
+    Name := 'ViewUnitsSpeedBtn';
    end;
 
-  Pixmap1:=TPixMap.Create;
-  Pixmap1.TransparentColor:=clBtnFace;
-  if not LoadPixmapRes('btn_viewforms',Pixmap1) then
-  begin
-    LoadPixmapRes('default',Pixmap1);
-  end;
-
-  SpeedButton2 := TSpeedButton.Create(Self);
-  with Speedbutton2 do
+  ViewFormsSpeedBtn := TSpeedButton.Create(Self);
+  with ViewFormsSpeedBtn do
    Begin
     Parent := self;
     Enabled := True;
     Top := 28;
-    Left := SpeedButton1.Left +26;
-    OnClick := @mnuViewFormsCLicked;
-    Glyph := Pixmap1;
+    Left := ViewUnitsSpeedBtn.Left +26;
+    OnClick := @mnuViewFormsClicked;
+    Glyph := LoadSpeedBtnPixMap('btn_viewforms');
     Visible := True;
     Flat := true;
-    Name := 'Speedbutton2';
+    Name := 'ViewFormsSpeedBtn';
    end;
 
-  Pixmap1:=TPixMap.Create;
-  Pixmap1.TransparentColor:=clBtnFace;
-  if not LoadPixmapRes('btn_newunit',Pixmap1) then
-  begin
-    LoadPixmapRes('default',Pixmap1);
-  end;
-
-  SpeedButton3 := TSpeedButton.Create(Self);
-  with Speedbutton3 do
+  NewUnitSpeedBtn := TSpeedButton.Create(Self);
+  with NewUnitSpeedBtn do
    Begin
     Parent := self;
     Enabled := True;
     Top := 28;
-    Left := Speedbutton2.Left + 26;
-//    OnClick := @mnuNewCLicked;
-    Glyph := Pixmap1;
+    Left := ViewFormsSpeedBtn.Left + 26;
+    OnClick := @mnuNewUnitClicked;
+    Glyph := LoadSpeedBtnPixMap('btn_newunit');
     Visible := True;
     Flat := true;
-    Name := 'Speedbutton3';
+    Name := 'NewUnitSpeedBtn';
    end;
 
-
-  Pixmap1:=TPixMap.Create;
-  Pixmap1.TransparentColor:=clBtnFace;
-  if not LoadPixmapRes('btn_openfile',Pixmap1) then
-  begin
-    LoadPixmapRes('default',Pixmap1);
-  end;
-
-  SpeedButton4 := TSpeedButton.Create(Self);
-  with Speedbutton4 do
+  OpenFileSpeedBtn := TSpeedButton.Create(Self);
+  with OpenFileSpeedBtn do
    Begin
     Parent := self;
     Enabled := True;
     Top := 28;
-    Left := Speedbutton3.Left + 26;
-    Glyph := Pixmap1;
+    Left := NewUnitSpeedBtn.Left + 26;
+    Glyph := LoadSpeedBtnPixMap('btn_openfile');
     Visible := True;
     Flat := true;
-    Name := 'Speedbutton4';
+    Name := 'OpenFileSpeedBtn';
+    OnClick:=@mnuOpenClicked;
    end;
 
-  //display the down arrow
-  Pixmap1:=TPixMap.Create;
-  Pixmap1.TransparentColor:=clBtnFace;
-  if not LoadPixmapRes('btn_downarrow',Pixmap1) then
-  begin
-    LoadPixmapRes('default',Pixmap1);
-  end;
-
-  SpeedButton4_2 := TSpeedButton.Create(Self);
-  with Speedbutton4_2 do
+  //display the down arrow right to the openfile speedbutton
+  OpenFileArrowSpeedBtn := TSpeedButton.Create(Self);
+  with OpenFileArrowSpeedBtn do
    Begin
     Parent := self;
     Enabled := True;
     Top := 28;
-    Left := Speedbutton3.Left + 26+26;
-    OnClick := @OPenFileDownArrowClicked;
-    Glyph := Pixmap1;
+    Left := OpenFileSpeedBtn.Left + 26;
+    OnClick := @OpenFileDownArrowClicked;
+    Glyph := LoadSpeedBtnPixMap('btn_downarrow');
     Visible := True;
     Flat := true;
-    Name := 'Speedbutton4_2';
-    width := 12;
+    Name := 'OpenFileArrowSpeedBtn';
+    Width := 12;
    end;
 
 //create the popupmenu for this speedbutton
@@ -488,96 +474,63 @@ begin
  OpenFilePopupMenu.Items.Add(MenuItem);
 }
 
-  Pixmap1:=TPixMap.Create;
-  Pixmap1.TransparentColor:=clBtnFace;
-  if not LoadPixmapRes('btn_save',Pixmap1) then
-  begin
-    LoadPixmapRes('default',Pixmap1);
-  end;
-
-  SpeedButton5 := TSpeedButton.Create(Self);
-  with Speedbutton5 do
+  SaveSpeedBtn := TSpeedButton.Create(Self);
+  with SaveSpeedBtn do
    Begin
     Parent := self;
     Enabled := False;
     Top := 28;
-    Left := Speedbutton4_2.Left + 13;
-    Glyph := Pixmap1;
+    Left := OpenFileArrowSpeedBtn.Left + 15;
+    Glyph := LoadSpeedBtnPixMap('btn_save');
     NumGlyphs := 2;
     Visible := True;
     Flat := true;
-    Name := 'Speedbutton5';
+    Name := 'SaveSpeedBtn';
+    OnClick:=@mnuSaveClicked;
    end;
 
-  Pixmap1:=TPixMap.Create;
-  Pixmap1.TransparentColor:=clBtnFace;
-  if not LoadPixmapRes('btn_saveall',Pixmap1) then
-  begin
-    LoadPixmapRes('default',Pixmap1);
-  end;
-
-  SpeedButton6 := TSpeedButton.Create(Self);
-  with Speedbutton6 do
+  SaveAllSpeedBtn := TSpeedButton.Create(Self);
+  with SaveAllSpeedBtn do
    Begin
     Parent := self;
     Enabled := False;
     Top := 28;
-    Left := Speedbutton5.left + 26;
-    Glyph := Pixmap1;
+    Left := SaveSpeedBtn.left + 26;
+    Glyph := LoadSpeedBtnPixMap('btn_saveall');
     NumGlyphs := 2;
     Visible := True;
     Flat := true;
-    Name := 'Speedbutton6';
+    Name := 'SaveAllSpeedBtn';
+    OnClick:=@mnuSaveAllClicked;
    end;
 
-  Pixmap1:=TPixMap.Create;
-  Pixmap1.TransparentColor:=clBtnFace;
-  if not LoadPixmapRes('btn_toggleform',Pixmap1) then
-  begin
-    LoadPixmapRes('default',Pixmap1);
-  end;
-
-  SpeedButton7 := TSpeedButton.Create(Self);
-  with Speedbutton7 do
+  ToggleFormSpeedBtn := TSpeedButton.Create(Self);
+  with ToggleFormSpeedBtn do
    Begin
     Parent := self;
     Enabled := True;
     Top := 28;
-    Left := Speedbutton6.Left + 26;
+    Left := SaveAllSpeedBtn.Left + 26;
     OnClick := @mnuToggleFormCLicked;
-    Glyph := Pixmap1;
+    Glyph := LoadSpeedBtnPixMap('btn_toggleform');
     Visible := True;
     Flat := true;
-    Name := 'Speedbutton7';
+    Name := 'ToggleFormSpeedBtn';
    end;
 
-  Pixmap1:=TPixMap.Create;
-  Pixmap1.TransparentColor:=clBtnFace;
-  if not LoadPixmapRes('btn_newform',Pixmap1) then
-  begin
-    LoadPixmapRes('default',Pixmap1);
-  end;
-
-  SpeedButton8 := TSpeedButton.Create(Self);
-  with Speedbutton8 do
+  NewFormSpeedBtn := TSpeedButton.Create(Self);
+  with NewFormSpeedBtn do
    Begin
     Parent := self;
     Enabled := True;
     Top := 28;
-    Left := Speedbutton7.Left + 26;
+    Left := ToggleFormSpeedBtn.Left + 26;
     OnClick := @mnuNewFormCLicked;
-    Glyph := Pixmap1;
+    Glyph := LoadSpeedBtnPixMap('btn_newform');
     Visible := True;
     Flat := true;
-    Name := 'Speedbutton8';
+    Name := 'NewFormSpeedBtn';
    end;
-
-  Pixmap1:=TPixMap.Create;
-  Pixmap1.TransparentColor:=clBtnFace;
-  if not LoadPixmapRes('btn_run',Pixmap1) then
-  begin
-    LoadPixmapRes('default',Pixmap1);
-  end;
 
   RunSpeedButton := TSpeedButton.Create(Self);
   with RunSpeedbutton do
@@ -585,102 +538,21 @@ begin
     Parent := self;
     Enabled := False;
     Top := 28;
-    Left := Speedbutton8.Left + 26;
-    //OnClick := @mnuNewFormCLicked;
-    Glyph := Pixmap1;
+    Left := NewFormSpeedBtn.Left + 26;
+    //OnClick := @mnuRunClicked;
+    Glyph := LoadSpeedBtnPixMap('btn_run');
     NumGlyphs := 2;
     Visible := True;
     Flat := true;
-    Name := 'RunSpeedbutton';
+    Name := 'RunSpeedBtn';
    end;
 
-  if Assigned(Toolbar1) then
-  begin
-    Assert(False, 'Trace:*1*');
-    Toolbutton1 := TToolButton.Create(Toolbar1);
-    with ToolButton1 do
-    begin
-     Assert(False, 'Trace:SETTING PARENT');
-      Parent := Toolbar1;
-      Caption := '1';   
-      Style := tbsButton;
-      Top := 1;
-      Left := 1;
-      OnClick := @Toolbuttonclick;
-      Show;
-    end;
-  
-    Assert(False, 'Trace:*2*');
-    Toolbutton2 := TToolButton.Create(Toolbar1);
-    with ToolButton2 do
-    begin
-      Assert(False, 'Trace:SETTING PARENT');
-      Parent := Toolbar1;
-      Caption := '2';   
-      Style := tbsButton;
-  //    Top := 1;
-      Left := Toolbutton1.Left+1;
-      Show;
-    end;
-  
-    Assert(False, 'Trace:*3*');
-    Toolbutton3 := TToolButton.Create(Toolbar1);
-    with ToolButton3 do
-    begin
-      Assert(False, 'Trace:SETTING PARENT');
-      Parent := Toolbar1;
-      Caption := '3';   
-      Style := tbsButton;
-  //    Top := 1;
-      Left := 1;
-      Show;
-    end;
-  
-    Assert(False, 'Trace:*4*');
-    Toolbutton4 := TToolButton.Create(Toolbar1);
-    with ToolButton4 do 
-    begin
-      Assert(False, 'Trace:SETTING PARENT');
-      Parent := Toolbar1;
-      Caption := '4';   
-      Style := tbsButton;
-  //    Top := 1;
-  //    Left := 1;
-      Show;
-    end;
-  
-    ComboBox1 := TComboBox.Create(Self);
-    with ComboBox1 do
-    begin
-      Assert(False, 'Trace:SETTING PARENT');
-      Parent := Toolbar1;
-      Items.BeginUpdate;
-      Items.Add('Item1');
-      Items.Add('Item2');
-      Items.Add('Item3');
-      Items.Add('Item4');
-      Items.Add('Item5');
-      Items.Add('Item6');
-      Items.EndUpdate;
-      ItemIndex := 0;
-  //    Top := 1;
-  //    Left := 1;
-      Show;
-    end;
-  end;  //If toolbar1 assigned
-  
-  //?? dont need these handlers.
-  // Form will kill itself
-  //OnDestroy := @FormKill;
-  //Onpaint := @FormPaint;
-
-
-  Project := TProject.Create;
   Self.OnShow := @FormShow;
 
+  // create compiler interface
   Compiler1 := TCompiler.Create;
 
-{ Create other forms }
+  // create object inspector
   ObjectInspector1 := TObjectInspector.Create(Self);
   if (EnvironmentOptions.SaveWindowPositions) 
   and (EnvironmentOptions.WindowPositionsValid) then begin
@@ -696,34 +568,36 @@ begin
   ObjectInspector1.PropertyEditorHook:=PropertyEditorHook1;
   ObjectInspector1.Show;
 
+  // create formeditor
   FormEditor1 := TFormEditor.Create;
   FormEditor1.Obj_Inspector := ObjectInspector1;
 
+  // connect events
   SourceNotebook := TSourceNotebook.Create(Self);
-  SourceNoteBook.SearchPaths:=SearchPaths;
   SourceNotebook.OnActivate := @CodeOrFormActivated;
-  SourceNotebook.OnCloseFile := @FileClosedEvent;
-  SourceNotebook.OnOpenFile := @FileOpenedEvent;
-  SourceNotebook.OnSaveFile := @FileSavedEvent;
+  SourceNotebook.OnNewClicked := @OnSrcNotebookFileNew;
+  SourceNotebook.OnOpenClicked := @ OnSrcNotebookFileOpen;
+  SourceNotebook.OnOpenFileAtCursorClicked := @OnSrcNotebookFileOpenAtCursor;
+  SourceNotebook.OnSaveClicked := @OnSrcNotebookFileSave;
+  SourceNotebook.OnSaveAsClicked := @OnSrcNotebookFileSaveAs;
+  SourceNotebook.OnCloseClicked := @OnSrcNotebookFileClose;
+  SourceNotebook.OnSaveAllClicked := @OnSrcNotebookSaveAll;
 
-  itmFileSave.OnClick := @SourceNotebook.SaveClicked;
-  itmFileSaveAs.OnClick := @SourceNotebook.SaveAsClicked;
-  itmFileSaveAll.OnClick := @SourceNotebook.SaveAllClicked;
-  itmFileClose.OnClick := @SourceNotebook.CloseClicked;
-  itmFileNew.OnClick := @SourceNotebook.NewClicked;
-  itmFileOpen.OnClick := @SourceNotebook.OpenClicked;
-
-  itmSearchFind.onClick := @SourceNotebook.FindClicked;
+  itmSearchFind.OnClick := @SourceNotebook.FindClicked;
   itmSearchFindAgain.OnClick := @SourceNotebook.FindAgainClicked;
+  itmSearchReplace.OnClick := @SourceNotebook.ReplaceClicked;
 
-  SpeedButton4.OnClick := @SourceNotebook.OpenClicked;
-  SpeedButton5.OnClick := @SourceNotebook.SaveClicked;
-  SpeedButton6.OnClick := @SourceNotebook.SaveAllClicked;
-
+  // create a new project
+  // ToDo: open last project
+  DoNewProject(ptProgram);
 end;
 
 destructor TMainIDE.Destroy;
 begin
+  if Project<>nil then begin
+    Project.Free;
+    Project:=nil;
+  end;
   EnvironmentOptions.Free;
   EnvironmentOptions:=nil;
   inherited Destroy;
@@ -830,7 +704,7 @@ begin
   itmFileNew := TMenuItem.Create(Self);
   itmFileNew.Name:='itmFileNew';
   itmFileNew.Caption := 'New Unit';
-//  itmFileNew.OnClick := @mnuNewClicked;
+  itmFileNew.OnClick := @mnuNewUnitClicked; // ToDo:  new dialog
   mnuFile.Add(itmFileNew);
 
   itmFileNewForm := TMenuItem.Create(Self);
@@ -842,27 +716,32 @@ begin
   itmFileOpen := TMenuItem.Create(Self);
   itmFileOpen.Name:='itmFileOpen';
   itmFileOpen.Caption := 'Open';
+  itmFileOpen.OnClick := @mnuOpenClicked;
   mnuFile.Add(itmFileOpen);
 
   itmFileSave := TMenuItem.Create(Self);
   itmFileSave.Name:='itmFileSave';
   itmFileSave.Caption := 'Save';
+  itmFileSave.OnClick := @mnuSaveClicked;
   mnuFile.Add(itmFileSave);
 
   itmFileSaveAs := TMenuItem.Create(Self);
   itmFileSaveAs.Name:='itmFileSaveAs';
   itmFileSaveAs.Caption := 'Save As';
+  itmFileSaveAs.OnClick := @mnuSaveAsClicked;
   mnuFile.Add(itmFileSaveAs);
 
   itmFileSaveAll := TMenuItem.Create(Self);
   itmFileSaveAll.Name:='itmFileSaveAll';
   itmFileSaveAll.Caption := 'Save All';
+  itmFileSaveAll.OnClick := @mnuSaveAllClicked;
   mnuFile.Add(itmFileSaveAll);
 
   itmFileClose := TMenuItem.Create(Self);
   itmFileClose.Name:='itmFileClose';
   itmFileClose.Caption := 'Close';
   itmFileClose.Enabled := False;
+  itmFileClose.OnClick := @mnuCloseClicked;
   mnuFile.Add(itmFileClose);
 
   mnuFile.Add(CreateSeperator);
@@ -919,10 +798,10 @@ begin
   itmSearchFindAgain.Enabled := False;
   mnuSearch.add(itmSearchFindAgain);
 
-  itmReplace := TMenuItem.Create(nil);
-  itmReplace.Name:='itmReplace';
-  itmReplace.Caption := 'Replace';
-  mnuSearch.add(itmReplace);
+  itmSearchReplace := TMenuItem.Create(nil);
+  itmSearchReplace.Name:='itmSearchReplace';
+  itmSearchReplace.Caption := 'Replace';
+  mnuSearch.add(itmSearchReplace);
 
 //--------------
 // View
@@ -1101,10 +980,18 @@ end;
 {------------------------------------------------------------------------------}
 
 Procedure TMainIDE.UpdateViewDialogs;
+var a:integer;
 Begin
-ViewUnits1.Listbox1.Items.Clear;
-ViewForms1.Listbox1.Items.Clear;
-
+  ViewUnits1.Listbox1.Items.BeginUpdate;
+  ViewUnits1.Listbox1.Items.Clear;
+  ViewForms1.Listbox1.Items.BeginUpdate;
+  ViewForms1.Listbox1.Items.Clear;
+  for a:=0 to Project.UnitCount-1 do begin
+    ViewUnits1.Listbox1.Items.Add(Project.Units[a].Unitname);
+    // ToDo: forms
+  end;
+  ViewUnits1.Listbox1.Items.EndUpdate;
+  ViewForms1.Listbox1.Items.EndUpdate;
 End;
 
 {------------------------------------------------------------------------------}
@@ -1160,108 +1047,178 @@ var
   Temp : TControl;
 begin
   if Sender is TSpeedButton then
-     Begin
-       Writeln('sender is a speedbutton');
-       Writeln('The name is '+TSpeedbutton(sender).name);
-       SpeedButton := TSPeedButton(Sender);
-       Writeln('Speedbutton s Name is '+SpeedButton.name);
-       //find the IDECOmponent that has this speedbutton
-       IDEComp := IDECompList.FindCompbySpeedButton(SpeedButton);
-       if SelectedComponent <> nil then
-          TIDeComponent(IdeCompList.FindCompByRegComponent(SelectedComponent)).SpeedButton.Down := False
-          else
-          begin
-             Temp := nil;
-             for i := 0 to Notebook1.Page[Notebook1.Pageindex].ControlCount-1 do
-                 begin
-                 if CompareText(TControl(Notebook1.Page[Notebook1.Pageindex].Controls[I]).Name, 'GlobalMouseSpeedButton'+inttostr(Notebook1.Pageindex)) = 0 then
-                    begin
-                      temp := TControl(Notebook1.Page[Notebook1.Pageindex].Controls[i]);
-                      Break;
-                    end;
-                 end;
-            if temp <> nil then
-               TSpeedButton(Temp).down := False
-               else
-               Writeln('*****************ERROR - Control '+'GlobalMouseSpeedButton'+inttostr(Notebook1.Pageindex)+' not found');
-          end;
-            if IDECOmp <> nil then
-             Begin
-              //draw this button down
-              SpeedButton.Down := True;
-              SelectedComponent := IDEComp.RegisteredComponent;
-             end
-             else
-             begin
-              SelectedComponent := nil;
-             Temp := nil;
-             for i := 0 to Notebook1.Page[Notebook1.Pageindex].ControlCount-1 do
-                 begin
-                 if CompareText(TControl(Notebook1.Page[Notebook1.Pageindex].Controls[I]).Name, 'GlobalMouseSpeedButton'+inttostr(Notebook1.Pageindex)) = 0 then
-                    begin
-                      temp := TControl(Notebook1.Page[Notebook1.Pageindex].Controls[i]);
-                      Break;
-                    end;
-                 end;
-            if temp <> nil then
-               TSpeedButton(Temp).down := True
-               else
-               Writeln('*****************ERROR - Control '+'GlobalMouseSpeedButton'+inttostr(Notebook1.Pageindex)+' not found');
-             end;
-     end
-     else
-     Begin
-     Writeln('must be nil');
-        //draw old speedbutton up
-       if SelectedComponent <> nil then
-          TIDeComponent(IdeCompList.FindCompByRegComponent(SelectedComponent)).SpeedButton.Down := False;
-       SelectedComponent := nil;
-             Temp := nil;
-             for i := 0 to Notebook1.Page[Notebook1.Pageindex].ControlCount-1 do
-                 begin
-                 if CompareText(TControl(Notebook1.Page[Notebook1.Pageindex].Controls[I]).Name, 'GlobalMouseSpeedButton'+inttostr(Notebook1.Pageindex)) = 0 then
-                    begin
-                      temp := TControl(Notebook1.Page[Notebook1.Pageindex].Controls[i]);
-                      Break;
-                    end;
-                 end;
-            if temp <> nil then
-               TSpeedButton(Temp).down := True
-               else
-               Writeln('*****************ERROR - Control '+'GlobalMouseSpeedButton'+inttostr(Notebook1.Pageindex)+' not found');
-
-     end;
+  Begin
+    Writeln('sender is a speedbutton');
+    Writeln('The name is '+TSpeedbutton(sender).name);
+    SpeedButton := TSpeedButton(Sender);
+    Writeln('Speedbutton s Name is '+SpeedButton.name);
+    //find the IDECOmponent that has this speedbutton
+    IDEComp := IDECompList.FindCompbySpeedButton(SpeedButton);
+    if SelectedComponent <> nil then
+      TIDeComponent(
+       IdeCompList.FindCompByRegComponent(SelectedComponent)).SpeedButton.Down
+         := False
+    else begin
+      Temp := nil;
+      for i := 0 to Notebook1.Page[Notebook1.Pageindex].ControlCount-1 do
+      begin
+        if CompareText(
+            TControl(Notebook1.Page[Notebook1.Pageindex].Controls[I]).Name
+            ,'GlobalMouseSpeedButton'+inttostr(Notebook1.Pageindex)) = 0 then
+        begin
+          temp := TControl(Notebook1.Page[Notebook1.Pageindex].Controls[i]);
+          Break;
+        end;
+      end;
+      if temp <> nil then
+        TSpeedButton(Temp).down := False
+      else
+        Writeln('*****************ERROR - Control ',
+           'GlobalMouseSpeedButton',inttostr(Notebook1.Pageindex),' not found');
+    end;
+    if IDECOmp <> nil then Begin
+      //draw this button down
+      SpeedButton.Down := True;
+      SelectedComponent := IDEComp.RegisteredComponent;
+    end else begin
+      SelectedComponent := nil;
+      Temp := nil;
+      for i := 0 to Notebook1.Page[Notebook1.Pageindex].ControlCount-1 do
+      begin
+        if CompareText(
+          TControl(Notebook1.Page[Notebook1.Pageindex].Controls[I]).Name
+           ,'GlobalMouseSpeedButton'+inttostr(Notebook1.Pageindex)) = 0 then
+        begin
+          temp := TControl(Notebook1.Page[Notebook1.Pageindex].Controls[i]);
+          Break;
+        end;
+      end;
+      if temp <> nil then
+        TSpeedButton(Temp).down := True
+      else
+        Writeln('*****************ERROR - Control '
+           +'GlobalMouseSpeedButton'+inttostr(Notebook1.Pageindex)+' not found');
+    end;
+  end
+  else
+  Begin
+    Writeln('must be nil');
+    //draw old speedbutton up
+    if SelectedComponent <> nil then
+      TIDeComponent(
+        IdeCompList.FindCompByRegComponent(SelectedComponent)).SpeedButton.Down
+           := False;
+    SelectedComponent := nil;
+    Temp := nil;
+    for i := 0 to Notebook1.Page[Notebook1.Pageindex].ControlCount-1 do
+    begin
+      if CompareText(
+         TControl(Notebook1.Page[Notebook1.Pageindex].Controls[I]).Name
+         ,'GlobalMouseSpeedButton'+inttostr(Notebook1.Pageindex)) = 0 then
+      begin
+        temp := TControl(Notebook1.Page[Notebook1.Pageindex].Controls[i]);
+        Break;
+      end;
+    end;
+    if temp <> nil then
+      TSpeedButton(Temp).down := True
+    else
+      Writeln('*****************ERROR - Control '
+        +'GlobalMouseSpeedButton'+inttostr(Notebook1.Pageindex)+' not found');
+  end;
   Writeln('Exiting ControlClick');
 end;
 
 
 
 {------------------------------------------------------------------------------}
-procedure TMainIDE.mnuNewFormClicked(Sender : TObject);
-var
-  TempForm : TCustomForm;
-  CInterface : TComponentInterface;
+procedure TMainIDE.mnuNewUnitClicked(Sender : TObject);
 begin
-  //TempForm := TForm.Create(Self);
-  //TempForm.Parent := Self;
-  if not Assigned(FormEditor1) then
-  FormEditor1 := TFormEditor.Create;
-  FormEditor1.SelectedComponents.Clear;
+  DoNewEditorUnit(nuUnit);
+end;
 
-  CInterface := TComponentInterface(
-    FormEditor1.CreateComponent(nil,TForm,
-       ObjectInspector1.Left+ObjectInspector1.Width+5,ObjectInspector1.Top,
-       400,300));
+procedure TMainIDE.mnuNewFormClicked(Sender : TObject);
+begin
+  DoNewEditorUnit(nuForm);
+end;
 
-  TempForm:=TForm(CInterface.Control);
-  SetDefaultsForForm(TempForm);
-  TDesigner(tempForm.Designer).SourceEditor := SourceNotebook.CreateUnitFromForm(TForm(TempForm));
-  TempForm.Show;
-  SetDesigning(TempForm,True);
+procedure TMainIDE.mnuOpenClicked(Sender : TObject);
+var OpenDialog:TOpenDialog;
+begin
+  OpenDialog:=TOpenDialog.Create(Application);
+  try
+    OpenDialog.Title:='Open file';
+    if OpenDialog.Execute then begin
+      DoOpenEditorFile(ExpandFilename(OpenDialog.Filename),false);
+    end;
+  finally
+    OpenDialog.Free;
+  end;
+end;
 
-  PropertyEditorHook1.LookupRoot := TForm(CInterface.Control);
-  FormEditor1.ClearSelected;
-  FormEditor1.AddSelected(TComponent(CInterface.Control));
+procedure TMainIDE.mnuOpenFileAtCursorClicked(Sender : TObject);
+begin
+  if SourceNoteBook.NoteBook=nil then exit;
+  DoOpenFileAtCursor(Sender);  
+end;
+
+procedure TMainIDE.mnuSaveClicked(Sender : TObject);
+begin
+  if SourceNoteBook.NoteBook=nil then exit;
+  DoSaveEditorUnit(SourceNoteBook.NoteBook.PageIndex,false);
+end;
+
+procedure TMainIDE.mnuSaveAsClicked(Sender : TObject);
+begin
+  if SourceNoteBook.NoteBook=nil then exit;
+  DoSaveEditorUnit(SourceNoteBook.NoteBook.PageIndex,true);
+end;
+
+procedure TMainIDE.mnuSaveAllClicked(Sender : TObject);
+begin
+  if SourceNoteBook.NoteBook=nil then exit;
+  DoSaveAll;  
+end;
+
+procedure TMainIDE.mnuCloseClicked(Sender : TObject);
+begin
+  if SourceNoteBook.NoteBook=nil then exit;
+  DoCloseEditorUnit(SourceNoteBook.NoteBook.PageIndex,true);
+end;
+
+Procedure TMainIDE.OnSrcNotebookFileNew(Sender : TObject);
+begin
+  mnuNewFormClicked(Sender);
+end;
+
+Procedure TMainIDE.OnSrcNotebookFileClose(Sender : TObject);
+begin
+  mnuCloseClicked(Sender);
+end;
+
+Procedure TMainIDE.OnSrcNotebookFileOpen(Sender : TObject);
+begin
+  mnuOpenClicked(Sender);
+end;
+
+Procedure TMainIDE.OnSrcNoteBookFileOpenAtCursor(Sender : TObject);
+begin
+  mnuOpenFileAtCursorClicked(Sender);  
+end;
+
+Procedure TMainIDE.OnSrcNotebookFileSave(Sender : TObject);
+begin
+  mnuSaveClicked(Sender);
+end;
+
+Procedure TMainIDE.OnSrcNotebookFileSaveAs(Sender : TObject);
+begin
+  mnuSaveAsClicked(Sender);
+end;
+
+Procedure TMainIDE.OnSrcNotebookSaveAll(Sender : TObject);
+begin
+  mnuSaveAllClicked(Sender);
 end;
 
 
@@ -1279,21 +1236,13 @@ Begin
   OpenFilePopupMenu.Popup(0,0);
 end;
 
-Procedure TMainIDE.OpenRecentFile(Sender : TObject);
-Begin
-//  SourceNotebook.OpenFile(TMenuItem(sender).Caption,True);
-Application.MEssagebox('Not yet implemented','Error',MB_OK);
-End;
-
-
-
 //==============================================================================
 {
   This function creates a LFM file from any form.
   To create the LFC file use the program lazres or the
   LFMtoLFCfile function.
 }
-function CreateLFM(AForm:TCustomForm; Path : String):integer;
+function CreateLFM(AForm:TCustomForm):integer;
 // 0 = ok
 // -1 = error while streaming AForm to binary stream
 // -2 = error while streaming binary stream to text file
@@ -1302,6 +1251,7 @@ var BinStream,TxtMemStream:TMemoryStream;
   Writer:TWriter;
   TxtFileStream:TFileStream;
 begin
+  Result:=0;
   BinStream:=TMemoryStream.Create;
   try
     try
@@ -1323,7 +1273,7 @@ begin
     try
       // transform binary to text and save LFM file
       TxtMemStream:=TMemoryStream.Create;
-      TxtFileStream:=TFileStream.Create(Path+lowercase(AForm.ClassName)+'.lfm',fmCreate);
+      TxtFileStream:=TFileStream.Create(lowercase(AForm.ClassName)+'.lfm',fmCreate);
       try
         BinStream.Position:=0;
         ObjectBinaryToText(BinStream,TxtMemStream);
@@ -1344,95 +1294,31 @@ end;
 
 //==============================================================================
 
-Procedure TMainIDE.FileClosedEvent(Sender : TObject; Filename : String);
-Begin
-
-end;
-
 Procedure TMainIDE.SetDefaultsforForm(aForm : TCustomForm);
 Begin
-     aForm.Designer := TDesigner.Create(aForm);
-     TDesigner(aForm.Designer).MainIDE := Self;
-     TDesigner(aForm.Designer).FormEditor := FormEditor1;
-     aForm.OnActivate := @CodeOrFormActivated;
+  aForm.Designer := TDesigner.Create(aForm);
+  TDesigner(aForm.Designer).MainIDE := Self;
+  TDesigner(aForm.Designer).FormEditor := FormEditor1;
+  aForm.OnActivate := @CodeOrFormActivated;
 end;
 
-Procedure TMainIDE.FileOpenedEvent(Sender : TObject; Filename : String);
-var
-  MenuItem : TMenuItem;
-  CInterface : TComponentInterface;
-  TempForm : TCustomForm;
-  Texts : String;
-  I : Integer;
-Begin
-//Add a new menuitem to the popup that displays the filename.
-  MenuItem := TMenuItem.Create(Self);
-  MenuItem.Caption := Filename;
-  MenuItem.OnClick := @OpenRecentFile;
-  OpenFilePopupMenu.Items.Add(MenuItem);
-
-  Texts := Filename;
-  //chop off the extension.
-  delete(Texts,pos('.',Texts),length(texts));
-  Texts := Texts + '.lfm';
-  Writeln('the filename is '+texts);
-  if FileExists(Texts) then
-    begin
-     FormEditor1.SelectedComponents.Clear;
-     TempForm := FormEditor1.NewFormFromLFM(Texts);
-
-     CInterface := TComponentInterface(FormEditor1.CreateControlComponentInterface(tempForm));
-     SetDefaultsForForm(TempForm);
-     TSourceEditor(sender).control := TempForm;
-     TDesigner(TempForm.Designer).SourceEditor := TSourceEditor(sender);
-
-     for I := 0 to TempForm.ComponentCount -1 do
-         FormEditor1.CreateControlComponentInterface(TempForm.Components[i]);
-     TempForm.Show;
-     SetDesigning(TempForm,True);
-     PropertyEditorHook1.LookupRoot := TForm(CInterface.Control);
-     FormEditor1.ClearSelected;
-     FormEditor1.AddSelected(TComponent(CInterface.Control));
-
-    end;
-
-  //enable save buttons here
-  SpeedButton5.Enabled := True;
-  SpeedButton6.Enabled := True;
-  RunSpeedButton.Enabled := True;
-end;
-
-Procedure TMainIDE.FileSavedEvent(Sender : TObject; Filename : String);
-Begin
-  If TSourceEditor(Sender).IsControlUnit then
-  begin
-   Writeln('result'+Inttostr(CreateLFM(TCustomForm(TSourceEditor(Sender).Control), ExtractFilePath(Filename))));
-   end;
-end;
 
 {------------------------------------------------------------------------------}
 
 procedure TMainIDE.mnuQuitClicked(Sender : TObject);
-var
-  I : Integer;
 begin
-//if there is a project loaded, check if it should be saved
-
-//free the unitlist objects
-if Project.UnitList.Count > 0 then
-  For I := 0 to Project.UnitList.Count -1 do
-            Begin
-
-            end;
-  //if there is a project loaded, check if it should be saved
+  if Project.Modified then begin
+    if DoSaveProject(false)=mrAbort then exit;
+  end;
   Project.Free;
+  Project:=nil;
   Close;
 end;
 
 {------------------------------------------------------------------------------}
 procedure TMainIDE.mnuViewInspectorClicked(Sender : TObject);
 begin
- ObjectInspector1.Show;
+  ObjectInspector1.Show;
 end;
 
 {------------------------------------------------------------------------------}
@@ -1459,181 +1345,49 @@ Begin
   Messagedlg.Show;
 End;
 
-Procedure TMainIDE.DoFind(Sender : TObject);
-Begin
-
-end;
-
 
 {------------------------------------------------------------}
 
 Procedure TMainIDE.mnuNewProjectClicked(Sender : TObject);
 var
-  Proj_Info : TUnitInfo;
-  tempSource : TStrings;
+  NewProjectType: TProjectType;
 Begin
-  Assert(False, 'Trace:New Project Clicked');
-  //See if a project is loaded
-  If Project.ProjectFile <> '' then
-     Begin
-       //save and close the project
-     end;
-
-
-  {TODO:
-     Display new project dialog to allow the type of project to be selected
-     Create the new project from a template for that project type
-  }
-
-
-  // This is temporary code until the project dialog and templates is created
-
-  Project.ProjectFile := 'Project1.lpr';
-  Project.MainUnit := 'Unit1';
-  Project.Title := 'Project1';
-  TempSource := TStringList.Create;
-  TempSource.Add('Program Project1;');
-  TempSource.Add('');
-  tempSource.Add('{$mode objfpc}');
-  TempSource.Add('');
-  TempSource.Add('uses forms,');
-  TempSource.Add('     Unit1 in ''Unit1.pp'' {Form1}');
-  TempSource.Add('');
-  TempSource.Add('begin');
-  TempSource.Add('   Application.Initialize;');
-  TempSource.Add('   Application.CreateForm(TForm1, Form1);');
-  TempSource.Add('   Application.Run;');
-  TempSource.Add('end.');
-  SourceNotebook.NewFile('Project1',TempSource,True);
-
-  Proj_Info := TUnitInfo.Create;
-  with Proj_Info do
-      Begin
-         UnitName := 'Project1';
-         //??
-      end;
-
-  Project.AddUnit(Proj_Info);
-
-//create first form file
-
-(*  TempSource.Clear;
-  TempSource.Add('unit Unit1;');
-  TempSource.Add('');
-  tempSource.Add('{$mode objfpc}');
-  TempSource.Add('interface');
-  TempSource.Add('uses Classes, Graphics, Controls, Forms, Dialogs;');
-  TempSource.Add('');
-  TempSource.Add('type');
-  TempSource.Add('     TForm1 = class(TFORM)');
-  TempSource.Add('     private');
-  TempSource.Add('     { private declarations }');
-  TempSource.Add('     public');
-  TempSource.Add('     { public declarations }');
-  TempSource.Add('     end;');
-  TempSource.Add('');
-  TempSource.Add('var');
-  TempSource.Add('      Form1 : TForm1;');
-  TempSource.Add('');
-  TempSource.Add('implementation');
-  TempSource.Add('');
-  TempSource.Add('end.');
-
-  SourceNotebook.NewFile('Unit1',TempSource,True);
-*)
-  mnuNewFormClicked(sender);
-  
-  Proj_Info := TUnitInfo.Create;
-  with Proj_Info do
-      Begin
-         UnitName := 'Unit1';
-         //??
-      end;
-
-  Project.AddUnit(Proj_Info);
-  Project.ProjectInfoFile := 'Project1.cfg';
-
+  if ChooseNewProject(NewProjectType)=mrCancel then exit;
+  DoNewProject(NewprojectType);
 end;
 
 Procedure TMainIDE.mnuOpenProjectClicked(Sender : TObject);
-Begin
-  Assert(False, 'Trace:Open Project Clicked');
-Writeln('[OPEN PROJECT CLICKED]');
-Writeln('Object Inspector rect');
-Writeln(Format('%d,%d,%d,%d',[ObjectInspector1.Left,ObjectInspector1.Top,ObjectInspector1.Width,ObjectInspector1.Height]));
-Writeln('Object Inspector.Notebook1 rect');
-Writeln(Format('%d,%d,%d,%d',[ObjectInspector1.Notebook.Left,ObjectInspector1.Notebook.Top,ObjectInspector1.Notebook.Width,ObjectInspector1.Notebook.Height]));
-Writeln('Object Inspector.PropertyGrid rect');
-Writeln(Format('%d,%d,%d,%d',[ObjectInspector1.PropertyGrid.Left,ObjectInspector1.PropertyGrid.Top,ObjectInspector1.PropertyGrid.Width,ObjectInspector1.PropertyGrid.Height]));
-  {TODO:
-     Display File Open dialog with .lpr as the filter
-     Put the selected file into a TProject
-     Open the project file and all unit files in the SourceNotebook
-  }
+var OpenDialog:TOpenDialog;
+begin
+  OpenDialog:=TOpenDialog.Create(Application);
+  try
+    OpenDialog.Title:='Open Project File (*.lpi)';
+    if OpenDialog.Execute then begin
+      DoOpenProjectFile(ExpandFilename(OpenDialog.Filename));
+    end;
+  finally
+    OpenDialog.Free;
+  end;
 end;
 
 Procedure TMainIDE.mnuSaveProjectClicked(Sender : TObject);
 Begin
-  Assert(False, 'Trace:Save Project Clicked');
-  Project.WriteProject;
+  DoSaveProject(false);
 end;
 
 procedure TMainIDE.mnuSaveProjectAsClicked(Sender : TObject);
-var
-  savdlg: TSaveDialog;
 begin
-  Assert(False, 'Trace:Save Project As Clicked');
-try
-  {TODO:
-     Display File Save dialog with .lpr as the filter
-     Put the selected filename into the TProject
-     Save the project file and all unit files
-  }
-
-  savdlg := TSaveDialog.Create(Self);
-  try
-    savdlg.Title := 'Save Project ' + Project.Title + ' as: ';
-    if (Project.ProjectFile <> '') then
-    begin
-      savdlg.Filename := Project.ProjectFile;
-    end
-    else
-    begin
-      if (SourceNotebook.ActiveFileName <> '') then
-        savdlg.Filename := SourceNotebook.ActiveFileName
-      else
-        savdlg.Filename := SourceNotebook.ActiveUnitName + '.lpr';
-    end;
-
-    if (savdlg.Execute) then
-    begin
-      Project.ProjectFile := savdlg.Filename;
-      Project.WriteProject;
-      {TODO:
-         Add code to fire OnSaveFile event somewhere????
-              if assigned(FOnSaveFile) then FOnSaveFile(TObject(SourceNotebook.GetActiveSE), Project.ProjectFile);
-      }
-    end
-    else
-      Exit;
-  finally
-    savdlg.Free;
-  end;
-except
-  on E: Exception do WriteLN('Exception: ' + E.Message);
-end;
+  DoSaveProject(true);
 end;
 
 Procedure TMainIDE.mnuBuildProjectClicked(Sender : TObject);
 Begin
+  DoSaveAll;
   Assert(False, 'Trace:Build Project Clicked');
-if SourceNotebook.Empty then Begin
-   Application.MessageBox('No units loaded.  Load a program first!','Error',mb_OK);
-   Exit;
-   end;
-
-  //for now just compile the active unit;
-  SourceNotebook.SaveClicked(Sender);
+  if SourceNotebook.Empty then Begin
+    Application.MessageBox('No units loaded.  Load a program first!','Error',mb_OK);
+    Exit;
+  end;
 
   if not(MessageDlg.Visible) then
    Begin  //display the dialog under the TSourceNotebook
@@ -1641,7 +1395,8 @@ if SourceNotebook.Empty then Begin
       MessageDlg.Top := Screen.Height - 150;
       MessageDlg.Height := 150;
 {      if (SourceNotebook.Top+SourceNotebook.Height) > MEssageDlg.Top then
-          SourceNotebook.Height := SourceNotebook.Height - (ABS(MessageDlg.Top - (SourceNotebook.Top+SourceNotebook.Height)));
+          SourceNotebook.Height := SourceNotebook.Height
+            - (ABS(MessageDlg.Top - (SourceNotebook.Top+SourceNotebook.Height)));
  }
      MessageDlg.Left := SourceNotebook.Left;
       MessageDlg.Width := SourceNotebook.Width;
@@ -1677,7 +1432,6 @@ begin
   TheProcess:=TProcess.Create(TheProgram,[poRunSuspended,poUsePipes,poNoConsole]);
 
   TheProcess.Execute;
-
 end;
 
 procedure TMainIDE.mnuProjectCompilerSettingsClicked(Sender : TObject);
@@ -1766,17 +1520,898 @@ Begin
   end;
 End;
 
-
 Procedure TMainIDE.MessageViewDblClick(Sender : TObject);
 Begin
 
 end;
 
-initialization
-{$I images/laz_images.lrs}
+//=============================================================================
 
-{ $I mainide.lrs}
-{ $I finddialog1.lrs}
+function TMainIDE.DoNewEditorUnit(NewUnitType:TNewUnitType):TModalResult;
+var NewUnitInfo:TUnitInfo;
+  TempForm : TCustomForm;
+  CInterface : TComponentInterface;
+  NewSrcEdit: TSourceEditor;
+begin
+writeln('TMainIDE.DoNewEditorUnit 1');
+  Result:=mrCancel;
+  NewUnitInfo:=TUnitInfo.Create;
+  with NewUnitInfo do begin
+    Loaded:=true;
+    IsPartOfProject:=true;
+  end;
+  if NewUnitType in [nuForm, nuUnit] then begin
+    NewUnitInfo.UnitName:=Project.NewUniqueUnitName;
+  end;
+  Project.AddUnit(NewUnitInfo,true);
+  if NewUnitType in [nuForm, nuUnit] then begin
+    NewUnitInfo.SyntaxHighlighter:=lshFreePascal;
+  end;
+writeln('TMainIDE.DoNewEditorUnit 2');
+
+  if NewUnitType in [nuForm] then begin
+    // clear formeditor
+    if not Assigned(FormEditor1) then
+      FormEditor1 := TFormEditor.Create;
+    FormEditor1.ClearSelected;
+
+    // create jitform
+    CInterface := TComponentInterface(
+      FormEditor1.CreateComponent(nil,TForm,
+        ObjectInspector1.Left+ObjectInspector1.Width+15,ObjectInspector1.Top+15,
+        400,300));
+    TempForm:=TForm(CInterface.Control);
+    NewUnitInfo.Form:=TempForm;
+    SetDefaultsForForm(TempForm);
+
+    NewUnitInfo.FormName:=TempForm.Name;
+  end;
+writeln('TMainIDE.DoNewEditorUnit 3');
+
+  // create source code
+  NewUnitInfo.CreateStartCode(NewUnitType);
+
+  // create a new sourceeditor
+writeln('TMainIDE.DoNewEditorUnit 4');
+  SourceNotebook.NewFile(NewUnitInfo.UnitName,NewUnitInfo.Source);
+writeln('TMainIDE.DoNewEditorUnit 5');
+  NewSrcEdit:=SourceNotebook.GetActiveSE;
+  NewSrcEdit.SyntaxHighlighterType:=NewUnitInfo.SyntaxHighlighter;
+  Project.InsertEditorIndex(SourceNotebook.NoteBook.PageIndex);
+  NewUnitInfo.EditorIndex:=SourceNotebook.NoteBook.PageIndex;
+writeln('TMainIDE.DoNewEditorUnit 6');
+
+  if NewUnitType in [nuForm] then begin
+    // show form
+    TDesigner(TempForm.Designer).SourceEditor := SourceNoteBook.GetActiveSE;
+
+    TempForm.Show;
+    SetDesigning(TempForm,True);
+
+    // select the new form (object inspector, formeditor, control selection)
+    PropertyEditorHook1.LookupRoot := TForm(CInterface.Control);
+    FormEditor1.AddSelected(TComponent(CInterface.Control));
+  end;
+
+writeln('TMainIDE.DoNewUnit end');
+
+end;
+
+function TMainIDE.DoSaveEditorUnit(PageIndex:integer; 
+  SaveAs:boolean):TModalResult;
+var ActiveSrcEdit:TSourceEditor;
+  ActiveUnitInfo:TUnitInfo;
+  SaveDialog:TSaveDialog;
+  NewUnitName,NewFilename,NewPageName,ResourceFileName,LFMFilename:string;
+  SaveAllParts:boolean;
+  MemStream,BinCompStream,TxtCompStream:TMemoryStream;
+  Driver: TAbstractObjectWriter;
+  Writer:TWriter;
+  AText,ACaption,ResourceCode,CompResourceCode: string;
+  FileStream:TFileStream;
+begin
+writeln('TMainIDE.DoSaveCurUnit 1');
+  Result:=mrCancel;
+  GetUnitWithPageIndex(PageIndex,ActiveSrcEdit,ActiveUnitInfo);
+  if ActiveUnitInfo=nil then exit;
+  ActiveUnitInfo.ReadOnly:=ActiveSrcEdit.ReadOnly;
+  if ActiveUnitInfo.ReadOnly then begin
+    Result:=mrOk;
+    exit;
+  end;
+  if ActiveSrcEdit.Modified then begin
+    ActiveUnitInfo.Source.Assign(ActiveSrcEdit.Source);
+    ActiveUnitInfo.Modified:=true;
+  end;
+
+  // load old resource file
+  ResourceFileName:=Project.SearchResourceFilename(ActiveUnitInfo);
+  if (ActiveUnitInfo.Filename<>'') and (FileExists(ResourceFileName)) then begin
+    repeat
+      try
+        FileStream:=TFileStream.Create(ResourceFileName,fmOpenRead);
+        try
+          SetLength(ResourceCode,FileStream.Size);
+          FileStream.Read(ResourceCode[1],length(ResourceCode));
+        finally
+          FileStream.Free;
+        end;
+      except
+        ACaption:='File read error';
+        AText:='Unable to read file "'+ResourceFilename+'".';
+        Result:=Application.MessageBox(PChar(AText),PChar(ACaption)
+          ,MB_ABORTRETRYIGNORE);
+        if Result=mrAbort then exit;
+        if Result=mrIgnore then Result:=mrOk;
+      end;
+    until Result<>mrRetry;
+  end else
+    ResourceCode:='';
+
+
+writeln('TMainIDE.DoSaveCurUnit 2');
+  // ToDo: only save if modified
+  SaveAllParts:=false;
+  if ActiveUnitInfo.Filename='' then SaveAs:=true;
+  if SaveAs then begin
+writeln('TMainIDE.DoSaveCurUnit 2.1');
+    // let user choose a filename
+    SaveDialog:=TSaveDialog.Create(Application);
+    try
+      SaveDialog.Title:='Save '+ActiveUnitInfo.UnitName;
+      SaveDialog.FileName:=lowercase(ActiveUnitInfo.UnitName)+'.pp';
+      if SaveDialog.Execute then begin
+        NewFilename:=ExpandFilename(SaveDialog.Filename);
+        if ExtractFileExt(NewFilename)='' then
+          NewFilename:=NewFilename+'.pp';
+        if FileExists(NewFilename) then begin
+          ACaption:='Overwrite file?';
+          AText:='A file "'+NewFilename+'" already exists. Replace it?';
+          Result:=Application.MessageBox(PChar(AText),PChar(ACaption)
+            ,MB_OKCANCEL);
+          if Result=mrCancel then exit;
+        end;
+        ActiveUnitInfo.Filename:=NewFilename;
+        ActiveSrcEdit.Filename:=ActiveUnitInfo.Filename;
+        NewUnitName:=ExtractFileName(ActiveUnitInfo.Filename);
+        NewUnitName:=ChangeFileExt(NewUnitName,'');
+        // change unitname in source
+        if ActiveUnitInfo.UnitName<>NewUnitName then begin
+          ActiveUnitInfo.UnitName:=NewUnitName;
+          ActiveSrcEdit.Source.Assign(ActiveUnitInfo.Source);
+        end;
+        // change unitname on SourceNotebook
+        ActiveSrcEdit.UnitName:=NewUnitName;
+        NewPageName:=SourceNoteBook.FindUniquePageName(
+          ActiveUnitInfo.Filename,SourceNoteBook.NoteBook.PageIndex);
+        SourceNoteBook.NoteBook.Pages[SourceNoteBook.NoteBook.PageIndex]:=
+          NewPageName;
+        SaveAllParts:=true;
+      end else begin
+        // user cancels
+        Result:=mrCancel;
+        exit;
+      end;
+    finally
+      SaveDialog.Free;
+    end;
+  end;
+writeln('TMainIDE.DoSaveCurUnit 3');
+  if ActiveUnitInfo.Modified or SaveAllParts then begin
+    // save source
+    Result:=ActiveUnitInfo.WriteUnitSource;
+    if Result=mrAbort then exit;
+  end;
+writeln('TMainIDE.DoSaveCurUnit 4');
+
+  // ToDo: save resources only if modified
+
+  if ActiveUnitInfo.HasResources then begin
+writeln('TMainIDE.DoSaveCurUnit 4.1');
+    LFMFilename:=ChangeFileExt(ActiveUnitInfo.Filename,'.lfm');
+    ResourceFileName:=Project.SearchResourceFilename(ActiveUnitInfo);
+
+writeln('TMainIDE.DoSaveCurUnit 4.2 ResourceFileName="',ResourceFileName,'"');
+
+    // save lrs - lazarus resource file and lfm - lazarus form text file
+
+    // stream component to binary stream
+    BinCompStream:=TMemoryStream.Create;
+    try
+      repeat
+        try
+          Driver:=TBinaryObjectWriter.Create(BinCompStream,4096);
+          try
+            Writer:=TWriter.Create(Driver);
+            try
+              Writer.WriteDescendent(ActiveUnitInfo.Form,nil);
+            finally
+              Writer.Free;
+            end;
+          finally
+            Driver.Free;
+          end;
+        except
+          ACaption:='Streaming error';
+          AText:='Unable to stream '
+            +ActiveUnitInfo.FormName+':T'+ActiveUnitInfo.FormName+'.';
+          Result:=Application.MessageBox(PChar(AText),PChar(ACaption)
+            ,MB_ABORTRETRYIGNORE);
+          if Result=mrAbort then exit;
+          if Result=mrIgnore then Result:=mrOk;
+        end;
+      until Result<>mrRetry;
+writeln('TMainIDE.DoSaveCurUnit 4.3');
+      // create lazarus form resource code
+      MemStream:=TMemoryStream.Create;
+      try
+        BinCompStream.Position:=0;
+        BinaryToLazarusResourceCode(BinCompStream,MemStream
+          ,'T'+ActiveUnitInfo.FormName,'FORMDATA');
+        MemStream.Position:=0;
+        SetLength(CompResourceCode,MemStream.Size);
+        MemStream.Read(CompResourceCode[1],length(CompResourceCode));
+      finally
+        MemStream.Free;
+      end;
+writeln('TMainIDE.DoSaveCurUnit 4.4  ',length(CompResourceCode));
+      // replace lazarus form resource code
+      if not AddResourceCode(ResourceCode,CompResourceCode) then begin
+        ACaption:='Resource error';
+        AText:='Unable to add resource '
+          +'T'+ActiveUnitInfo.FormName+':FORMDATA to internal file. '
+          +'Please report this error.';
+        Result:=Application.MessageBox(PChar(AText),PChar(ACaption),MB_OKCANCEL);
+        if Result=mrCancel then Result:=mrAbort;
+        exit;
+      end;
+writeln('TMainIDE.DoSaveCurUnit 4.5  ',length(ResourceCode));
+      repeat
+        try
+          // transform binary to text
+          TxtCompStream:=TMemoryStream.Create;
+          try
+            BinCompStream.Position:=0;
+            ObjectBinaryToText(BinCompStream,TxtCompStream);
+            TxtCompStream.Position:=0;
+            Result:=DoSaveStreamToFile(TxtCompStream,LFMFilename
+              ,ActiveUnitInfo.IsPartOfProject);
+            if Result<>mrOk then exit;
+          finally
+            TxtCompStream.Free;
+          end;
+        except
+          ACaption:='Streaming error';
+          AText:='Unable to transform binary component stream of '
+             +ActiveUnitInfo.FormName+':T'+ActiveUnitInfo.FormName+' into text.';
+          Result:=Application.MessageBox(PChar(AText),PChar(ACaption)
+            ,MB_ABORTRETRYIGNORE);
+          if Result=mrAbort then exit;
+          if Result=mrIgnore then Result:=mrOk;
+        end;
+      until Result<>mrRetry;
+    finally
+      BinCompStream.Free;
+    end;
+writeln('TMainIDE.DoSaveCurUnit 4.6');
+
+    // save resource file
+    DoBackupFile(ResourceFileName,ActiveUnitInfo.IsPartOfProject);
+writeln('TMainIDE.DoSaveCurUnit 4.7 ResourceFileName=',ResourceFileName);
+    repeat
+      try
+        FileStream:=TFileStream.Create(ResourceFileName,fmCreate);
+        try
+          FileStream.Write(ResourceCode[1],length(ResourceCode));
+        finally
+          FileStream.Free;
+        end;
+      except
+        ACaption:='File write error';
+        AText:='Unable to write to file "'+ResourceFilename+'".';
+        Result:=Application.MessageBox(PChar(AText),PChar(ACaption)
+          ,MB_ABORTRETRYIGNORE);
+        if Result=mrAbort then exit;
+        if Result=mrIgnore then Result:=mrOk;
+      end;
+    until Result<>mrRetry;
+writeln('TMainIDE.DoSaveCurUnit 4.8');
+  end;
+  ActiveUnitInfo.Modified:=false;
+  ActiveSrcEdit.Modified:=false;
+writeln('TMainIDE.DoSaveCurUnit END');
+  Result:=mrOk;
+end;
+
+function TMainIDE.DoCloseEditorUnit(PageIndex:integer; 
+  SaveFirst: boolean):TModalResult;
+var ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+  ACaption,AText:string;
+  i:integer;
+begin
+writeln('TMainIDE.DoCloseEditorUnit 1');
+  Result:=mrCancel;
+  GetUnitWithPageIndex(PageIndex,ActiveSrcEdit,ActiveUnitInfo);
+  if ActiveUnitInfo=nil then exit;
+  ActiveUnitInfo.ReadOnly:=ActiveSrcEdit.ReadOnly;
+  ActiveUnitInfo.TopLine:=ActiveSrcEdit.EditorComponent.TopLine;
+  ActiveUnitInfo.CursorPos:=ActiveSrcEdit.EditorComponent.CaretXY;
+  if SaveFirst and (not ActiveUnitInfo.ReadOnly) 
+  and ((ActiveSrcEdit.Modified) or (ActiveUnitInfo.Modified)) then begin
+    if ActiveUnitInfo.Filename<>'' then
+      AText:='File "'+ActiveUnitInfo.Filename+'" has changed. Save?'
+    else if ActiveUnitInfo.UnitName<>'' then
+      AText:='Unit "'+ActiveUnitInfo.Unitname+'" has changed. Save?'
+    else
+      AText:='Source of page "'+
+        SourceNotebook.NoteBook.Pages[SourceNotebook.NoteBook.PageIndex]
+        +'" has changed. Save?';
+    ACaption:='Source mofified';
+    if Application.MessageBox(PChar(AText),PChar(ACaption),MB_YESNO)=mrYes then
+    begin
+      Result:=DoSaveEditorUnit(PageIndex,false);
+      if Result=mrAbort then exit;
+    end;
+    Result:=mrOk;
+  end;
+writeln('TMainIDE.DoCloseEditorUnit 2');
+  // close form
+  if ActiveUnitInfo.Form<>nil then begin
+    FormEditor1.DeleteControl(ActiveUnitInfo.Form);
+    ActiveUnitInfo.Form:=nil;
+  end;
+writeln('TMainIDE.DoCloseEditorUnit 3');
+  // close source editor
+  SourceNoteBook.CloseFile(SourceNoteBook.NoteBook.PageIndex);
+writeln('TMainIDE.DoCloseEditorUnit 4');
+  // close project file (not remove)
+  Project.CloseEditorIndex(ActiveUnitInfo.EditorIndex);
+  ActiveUnitInfo.Loaded:=false;
+  i:=Project.IndexOf(ActiveUnitInfo);
+  if (i<>Project.MainUnit) and (ActiveUnitInfo.Filename='') then begin
+    Project.RemoveUnit(i);
+    UpdateMainUnitSrcEdit;
+  end;
+writeln('TMainIDE.DoCloseEditorUnit end');
+  Result:=mrOk;
+end;
+
+function TMainIDE.DoOpenEditorFile(AFileName:string; 
+  ProjectLoading:boolean):TModalResult;
+var Ext,ACaption,AText:string;
+  i:integer;
+  ReOpen:boolean;
+  NewUnitInfo:TUnitInfo;
+  NewPageName, NewLFMFilename: string;
+  NewSrcEdit: TSourceEditor;
+  TxtLFMStream,BinLFMStream:TMemoryStream;
+begin
+writeln('TMainIDE.DoOpenEditorFile');
+  Result:=mrCancel;
+  if AFileName='' then exit;
+  Ext:=lowercase(ExtractFileExt(AFilename));
+  if (not ProjectLoading) and (Ext='.lpi') then begin
+    // load program file and project info file
+    Result:=DoOpenProjectFile(AFilename);
+    exit;
+  end;
+  // check if the project knows this file
+  i:=Project.UnitCount-1;
+  while (i>=0) and (Project.Units[i].Filename<>AFileName) do dec(i);
+  Reopen:=(i>=0);
+  if ReOpen then begin
+    NewUnitInfo:=Project.Units[i];
+    if (not ProjectLoading) and NewUnitInfo.Loaded then begin
+      // file already open -> change to page
+      SourceNoteBook.NoteBook.PageIndex:=NewUnitInfo.EditorIndex;
+      Result:=mrOk;
+      exit;
+    end;
+  end else begin
+    NewUnitInfo:=TUnitInfo.Create;
+    NewUnitInfo.Filename:=AFilename;
+    Project.AddUnit(NewUnitInfo,false);
+  end;
+  NewUnitInfo.Loaded:=true;
+  Result:=NewUnitInfo.ReadUnitSource((Ext='.pp') or (Ext='.pas'));
+  if Result<>mrOk then begin
+    if not ReOpen then begin
+      // this was a new file -> remove the NewUnitInfo
+      Project.RemoveUnit(Project.IndexOf(NewUnitInfo));
+      exit;
+    end;
+  end;
+  // create a new source editor
+  NewUnitInfo.SyntaxHighlighter:=ExtensionToLazSyntaxHighlighter(Ext);
+  NewPageName:=NewUnitInfo.UnitName;
+  if NewPageName='' then begin
+    NewPageName:=ExtractFileName(AFilename);
+    NewPageName:=copy(NewPageName,1,length(NewPageName)-length(Ext));
+    if NewpageName='' then NewPageName:='file';
+  end;
+  SourceNotebook.NewFile(NewPageName,NewUnitInfo.Source);
+  if not ProjectLoading then
+    Project.InsertEditorIndex(SourceNotebook.NoteBook.PageIndex);
+  NewUnitInfo.EditorIndex:=SourceNotebook.NoteBook.PageIndex;
+  NewSrcEdit:=SourceNotebook.GetActiveSE;
+  NewSrcEdit.SyntaxHighlighterType:=NewUnitInfo.SyntaxHighlighter;
+  NewSrcEdit.EditorComponent.CaretXY:=NewUnitInfo.CursorPos;
+  NewSrcEdit.EditorComponent.TopLine:=NewUnitInfo.TopLine;
+  // read form data
+  if (NewUnitInfo.Unitname<>'') then begin
+    // this is a unit -> try to find the lfm file
+    NewLFMFilename:=ChangeFileExt(NewUnitInfo.Filename,'.lfm');
+    if FileExists(NewLFMFilename) then begin
+      // there is a lazarus form text file -> load it
+      BinLFMStream:=TMemoryStream.Create;
+      try
+        TxtLFMStream:=TMemoryStream.Create;
+        try
+          Result:= DoLoadMemoryStreamFromFile(TxtLFMStream,NewLFMFileName);
+          if Result<>mrOk then exit;
+          // convert text to binary format
+          try
+            ObjectTextToBinary(TxtLFMStream,BinLFMStream);
+            Result:=mrOk;
+          except
+            ACaption:='Format error';
+            AText:='Unable to convert text form data of file "'
+               +NewLFMFilename+'" into binary stream.';
+            Result:=Application.MessageBox(PChar(AText),PChar(ACaption)
+               ,MB_OKCANCEL);
+            if Result=mrCancel then begin
+              Result:=mrAbort;
+              exit;
+            end;
+          end;
+        finally
+          TxtLFMStream.Free;
+        end;
+        // ToDo: write a function TCustomFormEditor.CreateFormFromStream
+        //  set NewUnitInfo.Formname and NewUnitInfo.Form
+
+      finally
+        BinLFMStream.Free;
+      end;
+    end;
+  end;
+  Result:=mrOk;
+end;
+
+function TMainIDE.DoOpenFileAtCursor(Sender: TObject):TModalResult;
+begin
+writeln('TMainIDE.DoOpenFileAtCursor');
+  Result:=mrCancel;
+  // ToDo
+  // check if include, unit, or simply a filename
+end;
+
+function TMainIDE.DoNewProject(NewProjectType:TProjectType):TModalResult;
+Begin
+writeln('TMainIDE.DoNewProject 1');
+  Result:=mrCancel;
+
+  If Project<>nil then begin
+    //save and close the project
+    if DoSaveProject(false)=mrAbort then begin
+      Result:=mrAbort;
+      exit;
+    end;
+writeln('TMainIDE.DoNewProject 2');
+    if DoCloseProject=mrAbort then begin
+      Result:=mrAbort;
+      exit;
+    end;
+  end;
+writeln('TMainIDE.DoNewProject 3');
+
+  Project:=TProject.Create(NewProjectType);
+  Project.OnFileBackup:=@DoBackupFile;
+  Project.Title := 'Project1';
+  SourceNotebook.SearchPaths:=Project.CompilerOptions.OtherUnitFiles;
+
+writeln('TMainIDE.DoNewProject 4');
+  case NewProjectType of
+   ptApplication:
+    begin
+      // create a first form unit
+      DoNewEditorUnit(nuForm);
+    end;
+  else
+   // ptProgram
+    begin
+      // create a first unit
+      DoNewEditorUnit(nuUnit);
+    end;
+  end;
+ 
+writeln('TMainIDE.DoNewProject end');
+  UpdateCaption;
+  Result:=mrOk;
+end;
+
+function TMainIDE.DoSaveProject(SaveAs:boolean):TModalResult;
+var MainUnitSrcEdit, ASrcEdit: TSourceEditor;
+  MainUnitInfo, AnUnitInfo: TUnitInfo;
+  SaveDialog: TSaveDialog;
+  NewFilename, NewProgramFilename, NewPageName, AText, ACaption, Ext: string;
+  i:integer;
+begin
+  Result:=mrCancel;
+writeln('TMainIDE.DoSaveProject 1');
+  // check that all new units are saved first
+  for i:=0 to Project.UnitCount-1 do begin
+    if (Project.Units[i].Loaded) and (Project.Units[i].Filename='') then begin
+      Result:=DoSaveEditorUnit(Project.Units[i].EditorIndex,false);
+      if (Result=mrAbort) or (Result=mrCancel) then exit;
+    end;
+  end;
+
+  if SourceNotebook.Notebook=nil then
+    Project.ActiveEditorIndexAtStart:=-1
+  else
+    Project.ActiveEditorIndexAtStart:=SourceNotebook.Notebook.PageIndex;
+  MainUnitSrcEdit:=nil;
+  if Project.MainUnit>=0 then begin
+    MainUnitInfo:=Project.Units[Project.MainUnit];
+    if MainUnitInfo.Loaded then begin
+      MainUnitSrcEdit:=SourceNoteBook.FindSourceEditorWithPageIndex(
+        MainUnitInfo.EditorIndex);
+      if MainUnitSrcEdit.Modified then begin
+        MainUnitInfo.Source.Assign(MainUnitSrcEdit.Source);
+        MainUnitInfo.Modified:=true;
+      end;
+    end;
+  end else
+    MainUnitInfo:=nil;
+writeln('TMainIDE.DoSaveProject 2');
+  // save some information of the loaded files
+  for i:=0 to Project.UnitCount-1 do begin
+    AnUnitInfo:=Project.Units[i];
+    if AnUnitInfo.Loaded then begin
+      ASrcEdit:=SourceNoteBook.FindSourceEditorWithPageIndex(
+         AnUnitInfo.EditorIndex);
+      AnUnitInfo.TopLine:=ASrcEdit.EditorComponent.TopLine;
+      AnUnitInfo.CursorPos:=ASrcEdit.EditorComponent.CaretXY;
+    end;
+  end;
+writeln('TMainIDE.DoSaveProject 3');
+  SaveAs:=SaveAs or (Project.ProjectFile='');
+  if SaveAs then begin
+    // let user choose a filename
+    SaveDialog:=TSaveDialog.Create(Application);
+    try
+      SaveDialog.Title:='Save Project '+Project.Title;
+      if ExtractFileName(Project.ProjectFile)<>'' then
+        SaveDialog.FileName:=ExtractFileName(Project.ProjectFile)
+      else if Project.Title<>'' then
+        SaveDialog.Filename:=ChangeFileExt(Project.Title,'.lpi')
+      else if SaveDialog.Filename='' then
+        SaveDialog.Filename:='Project1.lpi';
+      repeat
+        if SaveDialog.Execute then begin
+writeln('TMainIDE.DoSaveProject 3.1');
+          NewFilename:=ExpandFilename(SaveDialog.Filename);
+          if ExtractFileExt(NewFilename)='' then
+            NewFilename:=NewFilename+'.lpi';
+          NewProgramFilename:=ChangeFileExt(
+            NewFilename,ProjectDefaultExt[Project.ProjectType]);
+          if NewFilename=NewProgramFilename then begin
+            ACaption:='Choose a different name';
+            AText:='The project info file is "'+NewFilename+'" equal '
+               +'to the project source file!';
+            Result:=Application.MessageBox(PChar(AText),PChar(ACaption)
+              ,MB_ABORTRETRYIGNORE);
+            if Result=mrAbort then exit;
+            if Result=mrIgnore then Result:=mrRetry;
+          end else
+            Result:=mrOk;
+        end else begin
+          // user cancels
+          Result:=mrCancel;
+          exit;
+        end;
+      until Result<>mrRetry;
+
+      if FileExists(NewFilename) then begin
+        ACaption:='Overwrite file?';
+        AText:='A file "'+NewFilename+'" already exists. Replace it?';
+        Result:=Application.MessageBox(PChar(AText),PChar(ACaption)
+          ,MB_OKCANCEL);
+        if Result=mrCancel then exit;
+      end else if Project.ProjectType in [ptProgram, ptApplication] then begin
+        if FileExists(NewProgramFilename) then begin
+          ACaption:='Overwrite file?';
+          AText:='A file "'+NewProgramFilename+'" already exists. Replace it?';
+          Result:=Application.MessageBox(PChar(AText),PChar(ACaption)
+            ,MB_OKCANCEL);
+          if Result=mrCancel then exit;
+        end;
+      end;
+writeln('TMainIDE.DoSaveProject 4');
+      Project.ProjectFile:=NewFilename;
+      if (MainUnitInfo<>nil) and (MainUnitInfo.Loaded) then begin
+writeln('TMainIDE.DoSaveProject 5');
+        // update source editor of main unit
+        MainUnitSrcEdit.Source.Assign(MainUnitInfo.Source);
+        MainUnitSrcEdit.Filename:=MainUnitInfo.Filename;
+        NewPageName:=ExtractFileName(MainUnitInfo.Filename);
+        Ext:=ExtractFilename(NewPagename);
+        NewPageName:=copy(NewpageName,1,length(NewPageName)-length(Ext));
+        NewPageName:=SourceNoteBook.FindUniquePageName(
+          NewPageName,MainUnitInfo.EditorIndex);
+        SourceNoteBook.NoteBook.Pages[MainUnitInfo.EditorIndex]:=
+          NewPageName;
+      end;
+writeln('TMainIDE.DoSaveProject 6');
+    finally
+      SaveDialog.Free;
+    end;
+  end;
+  Result:=Project.WriteProject;
+writeln('TMainIDE.DoSaveProject 7');
+  // save source
+  if MainUnitInfo<>nil then begin
+    if MainUnitInfo.Loaded then begin
+      Result:=DoSaveEditorUnit(MainUnitInfo.EditorIndex,false);
+      if Result=mrAbort then exit;
+    end else begin
+      Result:=MainUnitInfo.WriteUnitSource;
+      if Result=mrAbort then exit;
+    end;
+  end;
+writeln('TMainIDE.DoSaveProject 8');
+  if Result=mrOk then begin
+    if MainUnitInfo<>nil then MainUnitInfo.Modified:=false;
+    if MainUnitSrcEdit<>nil then MainUnitSrcEdit.Modified:=false;
+  end;
+  UpdateMainUnitSrcEdit;
+  UpdateCaption;
+end;
+
+function TMainIDE.DoCloseProject:TModalResult;
+begin
+writeln('TMainIDE.DoCloseProject');
+  // close all loaded files
+  while SourceNotebook.NoteBook<>nil do begin
+    Result:=DoCloseEditorUnit(SourceNotebook.Notebook.Pages.Count-1,false);
+    if Result=mrAbort then exit;
+  end;
+  // close Project
+  Project.Free;
+  Project:=nil;
+  Result:=mrOk;
+end;
+
+function TMainIDE.DoOpenProjectFile(AFileName:string):TModalResult;
+var Ext,AText,ACaption,LPIFilename:string;
+  LowestEditorIndex,LowestUnitIndex,LastEditorIndex,i:integer;
+begin
+writeln('TMainIDE.DoOpenProjectFile');
+  Result:=mrCancel;
+  if AFileName='' then exit;
+  AFilename:=ExpandFileName(AFilename);
+  Ext:=lowercase(ExtractFileExt(AFilename));
+  if (Ext='.lpr') and (FileExists(ChangeFileExt(AFileName,'.lpi'))) then begin
+    // load instead of lazarus program file the project info file
+    AFileName:=ChangeFileExt(AFileName,'.lpi');
+    Ext:='.lpi';
+  end;
+  repeat
+    if not FileExists(AFilename) then begin
+      ACaption:='File not found';
+      AText:='File "'+AFilename+'" not found.';
+      Result:=Application.MessageBox(PChar(AText),PChar(ACaption)
+         ,MB_ABORTRETRYIGNORE);
+      if Result=mrAbort then exit;
+      if Result=mrIgnore then Result:=mrOk;
+    end;
+  until Result<>mrRetry;
+  // close the old project
+  Result:=DoCloseProject;
+  if Result=mrAbort then exit;
+  // create a new one
+  LPIFilename:=ChangeFileExt(AFilename,'.lpi');
+  Project:=TProject.Create(ptProgram);
+  Project.ReadProject(LPIFilename);
+  UpdateCaption;
+  // restore files
+  LastEditorIndex:=-1;
+  repeat
+    LowestUnitIndex:=-1;
+    LowestEditorIndex:=-1;
+    for i:=0 to Project.UnitCount-1 do begin
+      if (Project.Units[i].Loaded) then begin
+        if (LastEditorIndex<0) or
+          ((Project.Units[i].EditorIndex>LastEditorIndex)
+            and (Project.Units[i].EditorIndex<LowestEditorIndex)) then
+        begin
+          LowestEditorIndex:=Project.Units[i].EditorIndex;
+          LowestUnitIndex:=i;
+        end;
+      end;
+    end;
+    if LowestEditorIndex>=0 then begin
+      // reopen file
+      Result:=DoOpenEditorFile(Project.Units[LowestUnitIndex].Filename,true);
+      if Result=mrAbort then exit;
+      if Project.ActiveEditorIndexAtStart=LowestEditorIndex then
+        Project.ActiveEditorIndexAtStart:=SourceNoteBook.NoteBook.PageIndex;
+      LastEditorIndex:=LowestEditorIndex;
+    end;
+  until LowestEditorIndex<0;
+  // set active editor source editor
+  if (SourceNoteBook.NoteBook<>nil) and (Project.ActiveEditorIndexAtStart>=0)
+  and (Project.ActiveEditorIndexAtStart<SourceNoteBook.NoteBook.Pages.Count) then
+    SourceNoteBook.Notebook.PageIndex:=Project.ActiveEditorIndexAtStart;
+end;
+
+function TMainIDE.DoSaveAll: TModalResult;
+var i:integer;
+begin
+writeln('TMainIDE.DoSaveAll');
+  Result:=DoSaveProject(false);
+  if Result=mrAbort then exit;
+  if (SourceNoteBook.Notebook<>nil) then begin
+    for i:=0 to SourceNoteBook.Notebook.Pages.Count-1 do begin
+      Result:=DoSaveEditorUnit(i,false);
+      if Result=mrAbort then exit;
+    end;
+  end;
+end;
+
+procedure TMainIDE.GetCurrentUnit(var ActiveSourceEditor:TSourceEditor;
+      var ActiveUnitInfo:TUnitInfo);
+begin
+  if SourceNoteBook.NoteBook=nil then begin
+    ActiveSourceEditor:=nil;
+    ActiveUnitInfo:=nil;
+  end else begin
+    GetUnitWithPageIndex(SourceNotebook.NoteBook.PageIndex,ActiveSourceEditor,
+       ActiveUnitInfo);
+  end;
+end;
+
+procedure TMainIDE.GetUnitWithPageIndex(PageIndex:integer; 
+  var ActiveSourceEditor:TSourceEditor; var ActiveUnitInfo:TUnitInfo);
+begin
+  if SourceNoteBook.NoteBook=nil then begin
+    ActiveSourceEditor:=nil;
+    ActiveUnitInfo:=nil;
+  end else begin
+    ActiveSourceEditor:=SourceNoteBook.FindSourceEditorWithPageIndex(PageIndex);
+    if ActiveSourceEditor=nil then
+      ActiveUnitInfo:=nil
+    else 
+      ActiveUnitInfo:=Project.UnitWithEditorIndex(
+         SourceNoteBook.NoteBook.PageIndex);
+  end;
+end;
+
+function TMainIDE.DoSaveStreamToFile(AStream:TStream; 
+  Filename:string; IsPartOfProject:boolean):TModalResult;
+// save to file with backup and user interaction
+var fs:TFileStream;
+  AText,ACaption:string;
+begin
+  Result:=DoBackupFile(Filename,IsPartOfProject);
+  if Result<>mrOk then exit;
+  repeat
+    try
+      fs:=TFileStream.Create(Filename,fmCreate);
+      try
+        fs.CopyFrom(AStream,AStream.Size-AStream.Position);
+      finally
+        fs.Free;
+      end;
+    except
+      on e:Exception do begin
+        ACaption:='Write error';
+        AText:=e.Message;
+        Result:=Application.MessageBox(PChar(AText),PChar(ACaption)
+          ,MB_ABORTRETRYIGNORE);
+        if Result=mrIgnore then Result:=mrOk;
+        if Result=mrAbort then exit;
+      end;
+    end;
+  until Result<>mrRetry;
+end;
+
+function TMainIDE.DoLoadMemoryStreamFromFile(MemStream: TMemoryStream; 
+  AFilename:string): TModalResult;
+var FileStream: TFileStream;
+  ACaption,AText:string;
+begin
+  repeat
+    try
+      FileStream:=TFileStream.Create(AFilename,fmOpenRead);
+      try
+        MemStream.CopyFrom(FileStream,FileStream.Size);
+      finally
+        FileStream.Free;
+      end;
+      Result:=mrOk;
+    except
+      ACaption:='Read Error';
+      AText:='Unable to read file "'+AFilename+'"!';
+      Result:=Application.MessageBox(PChar(AText),PChar(ACaption)
+        ,MB_ABORTRETRYIGNORE);
+      if Result=mrAbort then exit;
+      if Result=mrIgnore then Result:=mrOk;
+    end;
+  until Result<>mrRetry;
+end;
+
+function TMainIDE.DoBackupFile(Filename:string; 
+  IsPartOfProject:boolean): TModalResult;
+var BackupFilename:string;
+  AText,ACaption:string;
+begin
+  // ToDo: implement the other backup methods
+  Result:=mrOk;
+  BackupFilename:=FileName+'.bak';
+  // remove old backup file
+  repeat
+    if FileExists(BackupFilename) then begin
+      if not DeleteFile(BackupFilename) then begin
+        ACaption:='Delete file failed';
+        AText:='Unable to remove old backup file "'+BackupFilename+'"!';
+        Result:=Application.MessageBox(PChar(AText),PChar(ACaption)
+          ,MB_ABORTRETRYIGNORE);
+        if Result=mrAbort then exit;
+        if Result=mrIgnore then Result:=mrOk;
+      end;
+    end;
+  until Result<>mrRetry;
+  // backup file
+  if FileExists(Filename) then begin
+    repeat
+      if not RenameFile(Filename,BackupFilename) then begin
+        ACaption:='Rename file failed';
+        AText:='Unable to rename file "'+Filename+'" to "'+BackupFilename+'"!';
+        Result:=Application.MessageBox(PChar(AText),PChar(ACaption)
+          ,MB_ABORTRETRYIGNORE);
+        if Result=mrAbort then exit;
+        if Result=mrIgnore then Result:=mrOk;
+      end;
+    until Result<>mrRetry;
+  end;
+end;
+
+procedure TMainIDE.UpdateCaption;
+var NewCaption:string;
+begin
+  NewCaption := 'Lazarus Editor v'+Version_String;
+  if Project<>nil then begin
+    if Project.Title<>'' then
+      NewCaption:=NewCaption +' - '+Project.Title
+    else if Project.ProjectFile<>'' then
+      NewCaption:=NewCaption+' - '+ExtractFileName(Project.ProjectFile)
+    else
+      NewCaption:=NewCaption+' - (new project)'
+  end;
+  Caption:=NewCaption;
+end;
+
+procedure TMainIDE.UpdateMainUnitSrcEdit;
+var MainUnitSrcEdit: TSourceEditor;
+  MainUnitInfo: TUnitInfo;
+begin
+  if Project.MainUnit>=0 then begin
+    MainUnitInfo:=Project.Units[Project.MainUnit];
+    if MainUnitInfo.Loaded then begin
+      MainUnitSrcEdit:=SourceNoteBook.FindSourceEditorWithPageIndex(
+        MainUnitInfo.EditorIndex);
+      MainUnitSrcEdit.Source.Assign(MainUnitInfo.Source);
+    end;
+  end;
+end;
+
+initialization
+  {$I images/laz_images.lrs}
+
+  { $I mainide.lrs}
 
 
 end.
@@ -1785,21 +2420,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.67  2001/02/28 22:09:15  lazarus
-  MWE:
-    * Renamed DBGDebugger to Debugger
-
-  Revision 1.66  2001/02/27 18:39:22  lazarus
-  Changed NEWPROJECT to call NEWFORMCLICKED to create the first unit.
-  Shane
-
-  Revision 1.65  2001/02/25 16:32:48  lazarus
-  MWE:
-    + Added new debugger classes
-
-  Revision 1.64  2001/02/23 19:22:20  lazarus
-  Added code to create the LFM when saving the file.
-  Shane
+  Revision 1.68  2001/03/03 11:06:15  lazarus
+  added project support, codetools
 
   Revision 1.62  2001/02/22 17:04:57  lazarus
   added environment options + killed ide unit circles

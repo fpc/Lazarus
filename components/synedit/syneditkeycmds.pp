@@ -708,6 +708,10 @@ begin
   for x := 0 to Count-1 do
     if (Items[x].Key = Code) and (Items[x].Shift = SS) and (Items[x].Key2 = 0)
     then begin
+writeln('TSynEditKeyStrokes.FindKeycode ',Items[x].Key,'=',Code
+  ,'  Shift ',ssShift in Items[x].Shift,'=',ssShift in SS
+  ,'  Ctrl ',ssCtrl in Items[x].Shift,'=',ssCtrl in SS
+);
       Result := x;
       break;
     end;
@@ -902,3 +906,4 @@ initialization
      EditorCommandToIdent);
 {$ENDIF}
 end.
+

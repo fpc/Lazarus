@@ -20,6 +20,22 @@ uses
 
 type
   //----------------------------------------------------------------------------
+  TBackupType = (
+     bakNone,             // no backup files
+     bakSymbolInFront,    // .~pp
+     bakSymbolBehind,     // .pp~
+     bakCounter,          // .pp;1
+     bakSameName,         // .pp  only available if backuping into subdirectory
+     bakUserDefinedAddExt // .pp.xxx
+   );
+
+  TBackupInfo = record
+    BackupType: TBackupType;
+    AdditionalExtension:string;  // for bakUserDefinedAddExt
+    MaxCounter: integer;         // for bakCounter
+    SubDirectory: string;
+  end;
+
   { class for storing environment options }
   TEnvironmentOptions = class
   private
@@ -48,6 +64,13 @@ type
     // object inspector
     FObjectInspectorOptions: TOIOptions;
     
+    // backup
+    FBackupInfoRepositoryFiles: TBackupInfo;
+    FBackupInfoOtherFiles: TBackupInfo;
+
+    // recent files and directories
+    // ToDo
+
     procedure SetFileName(NewFilename: string);
   public
     constructor Create;
@@ -88,6 +111,12 @@ type
     // object inspector
     property ObjectInspectorOptions: TOIOptions
        read FObjectInspectorOptions write FObjectInspectorOptions;
+
+    // backup
+    property BackupInfoRepositoryFiles: TBackupInfo 
+       read FBackupInfoRepositoryFiles write FBackupInfoRepositoryFiles;
+    property BackupInfoOtherFiles: TBackupInfo
+       read FBackupInfoOtherFiles write FBackupInfoOtherFiles;
   end;
 
   //----------------------------------------------------------------------------
@@ -199,6 +228,20 @@ begin
 
   // object inspector
   FObjectInspectorOptions:=TOIOptions.Create;
+
+  // backup
+  with FBackupInfoRepositoryFiles do begin
+    BackupType:=bakSameName;
+    AdditionalExtension:='bak';  // for bakUserDefinedAddExt
+    MaxCounter:=9;               // for bakCounter
+    SubDirectory:='backup';    
+  end;
+  with FBackupInfoOtherFiles do begin
+    BackupType:=bakUserDefinedAddExt;
+    AdditionalExtension:='bak';  // for bakUserDefinedAddExt
+    MaxCounter:=9;               // for bakCounter
+    SubDirectory:='backup';    
+  end;
 end;
 
 destructor TEnvironmentOptions.Destroy;
@@ -242,6 +285,26 @@ var XMLConfig: TXMLConfig;
     ARect.Bottom:=XMLConfig.GetValue(AKey+'/Bottom',ARect.Bottom);
   end;
 
+  procedure LoadBackupInfo(var BackupInfo: TBackupInfo; Path:string);
+  var i:integer;
+  begin
+    with BackupInfo do begin
+      i:=XMLConfig.GetValue(Path+'Type',5);
+      case i of
+       0:BackupType:=bakNone;
+       1:BackupType:=bakSymbolInFront;
+       2:BackupType:=bakSymbolBehind;
+       3:BackupType:=bakCounter;
+       4:BackupType:=bakSameName;
+      else
+        BackupType:=bakUserDefinedAddExt;
+      end;
+      AdditionalExtension:=XMLConfig.GetValue(Path+'AdditionalExtension','bak');
+      MaxCounter:=XMLConfig.GetValue(Path+'MaxCounter',9);
+      SubDirectory:=XMLConfig.GetValue(Path+'SubDirectory','backup');
+    end;
+  end;
+
 begin
   try
     XMLConfig:=TXMLConfig.Create(FFileName);
@@ -281,9 +344,12 @@ begin
     FGridSizeY:=XMLConfig.GetValue(
        'EnvironmentOptions/FormEditor/GridSizeY',FGridSizeY);
 
-
     if not OnlyDesktop then begin
-
+      // backup
+      LoadBackupInfo(FBackupInfoRepositoryFiles
+        ,'EnvironmentOptions/BackupRepositoryFiles/');
+      LoadBackupInfo(FBackupInfoOtherFiles
+        ,'EnvironmentOptions/BackupOtherFiles/');
     end;
 
     XMLConfig.Free;
@@ -306,6 +372,26 @@ var XMLConfig: TXMLConfig;
     XMLConfig.SetValue(AKey+'/Top',ARect.Top);
     XMLConfig.SetValue(AKey+'/Right',ARect.Right);
     XMLConfig.SetValue(AKey+'/Bottom',ARect.Bottom);
+  end;
+
+  procedure SaveBackupInfo(var BackupInfo: TBackupInfo; Path:string);
+  var i:integer;
+  begin
+    with BackupInfo do begin
+      case BackupType of
+       bakNone: i:=0;
+       bakSymbolInFront: i:=1;
+       bakSymbolBehind: i:=2;
+       bakCounter: i:=3;
+       bakSameName: i:=4;
+      else
+        i:=5; // bakUserDefinedAddExt;
+      end;
+      XMLConfig.SetValue(Path+'Type',i);
+      XMLConfig.SetValue(Path+'AdditionalExtension',AdditionalExtension);
+      XMLConfig.SetValue(Path+'MaxCounter',MaxCounter);
+      XMLConfig.SetValue(Path+'SubDirectory',SubDirectory);
+    end;
   end;
 
 begin
@@ -343,7 +429,11 @@ begin
     XMLConfig.SetValue('EnvironmentOptions/FormEditor/GridSizeY',FGridSizeY);
 
     if not OnlyDesktop then begin
-
+      // backup
+      SaveBackupInfo(FBackupInfoRepositoryFiles
+        ,'EnvironmentOptions/BackupRepositoryFiles/');
+      SaveBackupInfo(FBackupInfoOtherFiles
+        ,'EnvironmentOptions/BackupOtherFiles/');
     end;
 
     XMLConfig.Flush;
