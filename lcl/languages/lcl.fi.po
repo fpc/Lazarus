@@ -40,7 +40,7 @@ msgstr "&Ohje"
 
 #: lclstrconsts:rsmbignore
 msgid "&Ignore"
-msgstr ""
+msgstr "Ohita"
 
 #: lclstrconsts:rsmbno
 msgid "&No"
@@ -228,7 +228,7 @@ msgstr ""
 
 #: lclstrconsts:rsmtinformation
 msgid "Information"
-msgstr ""
+msgstr "Informaatio"
 
 #: lclstrconsts:sinvalidactioncreation
 msgid "Invalid action creation"
@@ -308,7 +308,7 @@ msgstr "Avaa tiedosto"
 
 #: lclstrconsts:rsfdoverwritefile
 msgid "Overwrite file ?"
-msgstr ""
+msgstr "Tallennetaanko vanhan päälle ?"
 
 #: lclstrconsts:rsfdpathmustexist
 msgid "Path must exist"

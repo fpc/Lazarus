@@ -419,13 +419,29 @@ const
 const
   CallBackDefaultReturn = {$IFDEF GTK2}false{$ELSE}true{$ENDIF};
 
+
+// font
+var
+  AvgFontCharsBuffer: array[#32..#126] of char;
+  AvgFontCharsBufLen: integer;
+
 implementation
 
-initialization
+procedure InternalInit;
+var
+  c: char;
+begin
+  for c:=Low(AvgFontCharsBuffer) to High(AvgFontCharsBuffer) do
+    AvgFontCharsBuffer[c]:=c;
+  AvgFontCharsBufLen:=ord(High(AvgFontCharsBuffer))-ord(Low(AvgFontCharsBuffer))+1;
   ModalWindows:=nil;
   UseTransientForModalWindows:=true;
   UpdatingTransientWindows:=false;
   CurrentSentPaintMessageTarget:=nil;
+end;
+
+initialization
+  InternalInit;
 
 end.
 

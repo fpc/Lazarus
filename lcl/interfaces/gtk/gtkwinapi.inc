@@ -5368,6 +5368,7 @@ begin
     If UseFont = nil then
       DebugLn('WARNING: [TGtkWidgetSet.GetTextExtentPoint] Missing font')
     else begin
+      descent:=0;
       gdk_text_extents(UseFont, Str, Count,
                        @lbearing, @rBearing, @width, @ascent, @descent);
       Size.cX := Width;
@@ -8700,6 +8701,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.354  2004/06/28 17:03:37  mattias
+  clean up
+
   Revision 1.353  2004/06/28 15:45:48  mattias
   fixed a mem violation in gtk intf paint msg conversion
 

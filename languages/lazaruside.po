@@ -2566,6 +2566,10 @@ msgstr ""
 msgid "Use Heaptrc Unit"
 msgstr ""
 
+#: lazarusidestrconsts:dlgcovalgrind
+msgid "Generate code for valgrind"
+msgstr ""
+
 #: lazarusidestrconsts:dlggprof
 msgid "Generate code for gprof"
 msgstr ""

@@ -1312,6 +1312,8 @@ begin
   fFontDummy.Free;
   Lines.Free;
   {$ELSE}
+  fHookedCommandHandlers:=nil;
+  fPlugins:=nil;
   FreeAndNil(fScrollTimer);
   FreeAndNil(fTSearch);
   FreeAndNil(fMarkList);

@@ -2233,6 +2233,10 @@ msgstr "Opcje ogólne"
 msgid "Generate code for gprof"
 msgstr "Twórz kod dla gprof"
 
+#: lazarusidestrconsts:dlgcovalgrind
+msgid "Generate code for valgrind"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcodbx
 msgid "Generate Debugging Info For DBX (Slows Compiling)"
 msgstr "Twórz informacjê odpluskwiacza dla DBX (zwalnia kompilacjê)"

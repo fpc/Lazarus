@@ -128,7 +128,7 @@ msgstr "Sivu: %d"
 
 #: syneditstrconst:syns_filterpascal
 msgid "Pascal Files (*.pas,*.dpr,*.dpk,*.inc)|*.pas;*.dpr;*.dpk;*.inc"
-msgstr ""
+msgstr "Pascal tiedostot (*.pas,*.dpr,*.dpk,*.inc)|*.pas;*.dpr;*.dpk;*.inc"
 
 #: syneditstrconst:syns_filterperl
 msgid "Perl Files (*.pl,*.pm,*.cgi)|*.pl;*.pm;*.cgi"

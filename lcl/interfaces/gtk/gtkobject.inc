@@ -8605,9 +8605,7 @@ var
   dummy: LongInt;
   UseFont : PGDKFont;
   UnRef : Boolean;
-  AVGBuffer: array[#32..#126] of char;
-  AvgLen: integer;
-  c: char;
+  AvgTxtLen: Integer;
 begin
   with TDeviceContext(DC) do begin
     if dcfTextMetricsValid in DCFlags then begin
@@ -8631,16 +8629,18 @@ begin
           gdk_text_extents(UseFont, TestString,
             length(TestString), @lbearing, @rBearing, @dummy,
             @TextMetric.tmAscent, @TextMetric.tmDescent);
-          for c:=Low(AVGBuffer) to High(AVGBuffer) do
-            AVGBuffer[c]:=c;
-          AvgLen:=ord(High(AVGBuffer))-ord(Low(AVGBuffer))+1;
-          GetTextExtentPoint(HDC(DC), @AVGBuffer[Low(AVGBuffer)],
-                             AvgLen, XT);
-          if not IsDoubleByteChar then
-            XT.cX := XT.cX div AvgLen
-          else
+          if IsDoubleByteChar then
             // Quick hack for double byte char fonts
-            XT.cX := XT.cX div (AvgLen div 2);
+            AvgTxtLen:=AvgFontCharsBufLen div 2
+          else
+            AvgTxtLen:=AvgFontCharsBufLen;
+          GetTextExtentPoint(HDC(DC),
+                             @AvgFontCharsBuffer[Low(AvgFontCharsBuffer)],
+                             AvgTxtLen, XT);
+          if not IsDoubleByteChar then
+            XT.cX := XT.cX div AvgTxtLen
+          else
+            XT.cX := XT.cX div AvgTxtLen;
           TextMetric.tmHeight := XT.cY;
           TextMetric.tmAscent := TextMetric.tmHeight - TextMetric.tmDescent;
           TextMetric.tmAveCharWidth :=  XT.cX;
@@ -9197,6 +9197,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.511  2004/06/28 17:03:37  mattias
+  clean up
+
   Revision 1.510  2004/06/28 08:54:20  mattias
   fixed ord ptr conversion hints
 

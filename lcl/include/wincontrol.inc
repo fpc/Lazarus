@@ -1675,7 +1675,7 @@ var
                     (Enabled or AllowDisabled)
                     and
                     (Perform(CM_HITTEST, 0,
-                             LParam(PointtoSmallPoint(ControlPos))) <> 0)
+                             LParam(PointToSmallPoint(ControlPos))) <> 0)
                    )
                   );
       {$IFDEF VerboseMouseBugfix}
@@ -3659,6 +3659,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.239  2004/06/28 17:03:37  mattias
+  clean up
+
   Revision 1.238  2004/06/20 21:21:49  micha
   fix GetVisible to return this control's visibility, instead introduce IsVisible to check for recursive visibility
 

@@ -52,7 +52,7 @@ SynEdit_RST=`find components/units -name syneditstrconst.rst | xargs ls -1t | he
 rstconv -i $SynEdit_RST \
   -o components/synedit/languages/synedit.po
 ./tools/updatepofiles components/synedit/languages/synedit.po
-for lang in ca de fr it itiso pl pliso plwin ru ruwin ; do
+for lang in ca de fi fr it itiso pl pliso plwin ru ruwin ; do
   msgfmt components/synedit/languages/synedit.$lang.po \
     -o components/synedit/languages/synedit.$lang.mo
 done

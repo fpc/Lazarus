@@ -3001,11 +3001,11 @@ var
         repeat
           AFilename:=FileInfo.Name;
           if (AFilename='.') or (AFilename='..') then continue;
-          writeln('Browse Filename=',AFilename,' IsDir=',(FileInfo.Attr and faDirectory)>0);
+          //writeln('Browse Filename=',AFilename,' IsDir=',(FileInfo.Attr and faDirectory)>0);
           i:=High(IgnoreDirs);
           while (i>=Low(IgnoreDirs)) and (AFilename<>IgnoreDirs[i]) do dec(i);
-          if CompareText(AFilename,'fcl')=0 then
-            writeln('Browse ',AFilename,' IsDir=',(FileInfo.Attr and faDirectory)>0,' Ignore=',i>=Low(IgnoreDirs));
+          //if CompareText(AFilename,'fcl')=0 then
+          //  writeln('Browse ',AFilename,' IsDir=',(FileInfo.Attr and faDirectory)>0,' Ignore=',i>=Low(IgnoreDirs));
           if i>=Low(IgnoreDirs) then continue;
           AFilename:=ADirPath+AFilename;
           if (FileInfo.Attr and faDirectory)>0 then begin

@@ -378,6 +378,10 @@ begin
   RawImage^.PaletteSize:=0;
 end;
 
+{-------------------------------------------------------------------------------
+  Beware: Data is used in ReallocMem
+
+-------------------------------------------------------------------------------}
 procedure CreateRawImageData(Width, Height, BitsPerPixel: cardinal;
   LineEnd: TRawImageLineEnd; var Data: Pointer; var DataSize: cardinal);
 var
@@ -465,6 +469,10 @@ begin
   end;
 end;
 
+{-------------------------------------------------------------------------------
+  Beware: DestData is used in ReallocMem
+
+-------------------------------------------------------------------------------}
 procedure ExtractRawImageDataRect(SrcRawImageDesc: PRawImageDescription;
   const SrcRect: TRect; SrcData: Pointer;
   DestRawImageDesc: PRawImageDescription;
@@ -767,6 +775,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.32  2004/06/28 17:03:37  mattias
+  clean up
+
   Revision 1.31  2004/05/11 11:42:26  mattias
   replaced writeln by debugln
 
