@@ -241,7 +241,7 @@ type
   TExpressionTypeDescs = set of TExpressionTypeDesc;
   
 const
-  ExpressionTypeDescNames : array[TExpressionTypeDesc] of string = (
+  ExpressionTypeDescNames: array[TExpressionTypeDesc] of string = (
     'None', 'Context', 'Char', 'Real', 'Single', 'Double',
     'Extended', 'Currency', 'Comp', 'Int64', 'Cardinal', 'QWord', 'Boolean',
     'ByteBool', 'LongBool', 'String', 'AnsiString', 'ShortString', 'WideString',
@@ -464,6 +464,7 @@ type
     function FindStartOfVariable(EndPos: integer): integer;
     function FindExpressionTypeOfVariable(StartPos, EndPos: integer;
       Params: TFindDeclarationParams): TExpressionType;
+    function FindEndOfExpression(StartPos: integer): integer;
     function ConvertNodeToExpressionType(Node: TCodeTreeNode;
       Params: TFindDeclarationParams): TExpressionType;
     function ReadOperandTypeAtCursor(
@@ -475,9 +476,13 @@ type
     function GetFirstParameterNode(Node: TCodeTreeNode): TCodeTreeNode;
     function GetExpressionTypeOfTypeIdentifier(
       Params: TFindDeclarationParams): TExpressionType;
+    function FindTermTypeAsString(TermAtom: TAtomPosition;
+      CursorNode: TCodeTreeNode; Params: TFindDeclarationParams): string;
   protected
     function FindDeclarationOfIdentAtCursor(
       Params: TFindDeclarationParams): boolean;
+    function IdentifierIsDefined(IdentAtom: TAtomPosition;
+      ContextNode: TCodeTreeNode; Params: TFindDeclarationParams): boolean;
     function FindContextNodeAtCursor(
       Params: TFindDeclarationParams): TFindContext;
     function FindIdentifierInContext(Params: TFindDeclarationParams): boolean;
@@ -1180,6 +1185,18 @@ begin
     writeln('NOT FOUND');
   {$ENDIF}
   Result:=true;
+end;
+
+function TFindDeclarationTool.IdentifierIsDefined(IdentAtom: TAtomPosition;
+  ContextNode: TCodeTreeNode; Params: TFindDeclarationParams): boolean;
+begin
+  // find declaration of identifier
+  Params.ContextNode:=ContextNode;
+  Params.SetIdentifier(Self,@Src[IdentAtom.StartPos],nil);
+  Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,
+                 fdfTopLvlResolving,fdfFindVariable,fdfIgnoreCurContextNode]
+                +fdfAllClassVisibilities;
+  Result:=FindIdentifierInContext(Params);
 end;
 
 function TFindDeclarationTool.FindIdentifierInContext(
@@ -3746,6 +3763,28 @@ begin
   {$ENDIF}
 end;
 
+function TFindDeclarationTool.FindEndOfExpression(StartPos: integer): integer;
+begin
+  MoveCursorToCleanPos(StartPos);
+  Result:=CurPos.StartPos;
+  repeat
+    ReadNextAtom;
+    // read till statement end
+    if (CurPos.Flag in [cafSemicolon,cafComma,cafEnd,cafNone,
+      cafRoundBracketClose,cafEdgedBracketClose])
+    or (AtomIsKeyWord
+      and not IsKeyWordInConstAllowed.DoItUpperCase(UpperSrc,
+                                 CurPos.StartPos,CurPos.EndPos-CurPos.StartPos))
+    then begin
+      break;
+    end
+    else if CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen] then begin
+      ReadTilBracketClose(true);
+    end;
+    Result:=CurPos.EndPos;
+  until false;
+end;
+
 function TFindDeclarationTool.ConvertNodeToExpressionType(Node: TCodeTreeNode;
   Params: TFindDeclarationParams): TExpressionType;
   
@@ -5113,6 +5152,107 @@ begin
     Params.Flags:=OldFlags;
     Result:=CleanExpressionType;
     Result.Desc:=PredefinedIdentToExprTypeDesc(Params.Identifier);
+  end;
+end;
+
+function TFindDeclarationTool.FindTermTypeAsString(TermAtom: TAtomPosition;
+  CursorNode: TCodeTreeNode; Params: TFindDeclarationParams): string;
+
+  procedure RaiseTermNotSimple;
+  begin
+    MoveCursorToCleanPos(TermAtom.StartPos);
+    RaiseException(ctsTermNotSimple);
+  end;
+
+var
+  ExprType: TExpressionType;
+  FindContext: TFindContext;
+  ANode: TCodeTreeNode;
+begin
+  Result:='';
+  Params.ContextNode:=CursorNode;
+  Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,
+                 fdfTopLvlResolving,fdfFindVariable]
+                +fdfAllClassVisibilities;
+  ExprType:=FindExpressionResultType(Params,TermAtom.StartPos,TermAtom.EndPos);
+  {$IFDEF CTDEBUG}
+  writeln('TCodeCompletionCodeTool.FindTermTypeAsString ExprTypeToString=',
+    ExprTypeToString(ExprType));
+  {$ENDIF}
+  case ExprType.Desc of
+    xtNone:
+      RaiseTermNotSimple;
+
+    xtContext:
+      begin
+        FindContext:=ExprType.Context;
+        
+        // ToDo: PPU, PPW, DCU
+      
+        case FindContext.Node.Desc of
+        
+        ctnTypeDefinition:
+          Result:=GetIdentifier(
+                              @FindContext.Tool.Src[FindContext.Node.StartPos]);
+                              
+        ctnVarDefinition,ctnConstDefinition:
+          begin
+            ANode:=FindContext.Tool.FindTypeNodeOfDefinition(FindContext.Node);
+            if (ANode=nil) or (ANode.Desc<>ctnIdentifier) then
+              RaiseTermNotSimple;
+            Result:=GetIdentifier(@FindContext.Tool.Src[ANode.StartPos]);
+          end;
+          
+        else
+          RaiseTermNotSimple;
+        end;
+      end;
+
+    xtChar,
+    xtReal,
+    xtSingle,
+    xtDouble,
+    xtExtended,
+    xtCurrency,
+    xtComp,
+    xtInt64,
+    xtCardinal,
+    xtQWord,
+    xtPChar,
+    xtPointer,
+    xtFile,
+    xtText,
+    xtLongint,
+    xtWord:
+      Result:=ExpressionTypeDescNames[ExprType.Desc];
+
+    xtBoolean,
+    xtByteBool,
+    xtLongBool:
+      Result:=ExpressionTypeDescNames[xtBoolean];
+
+    xtString,
+    xtAnsiString,
+    xtShortString:
+      Result:=ExpressionTypeDescNames[xtString];
+
+    xtWideString:
+      Result:=ExpressionTypeDescNames[ExprType.Desc];
+
+    xtConstOrdInteger:
+      Result:='Integer';
+    xtConstString:
+      Result:=ExpressionTypeDescNames[xtString];
+    xtConstReal:
+      Result:=ExpressionTypeDescNames[xtExtended];
+    xtConstSet:
+      RaiseTermNotSimple;
+    xtConstBoolean:
+      Result:=ExpressionTypeDescNames[xtBoolean];
+    xtNil:
+      RaiseTermNotSimple;
+  else
+    RaiseTermNotSimple;
   end;
 end;
 

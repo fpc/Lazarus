@@ -118,6 +118,8 @@ type
               //-1=CursorPos was skipped, CleanPos between two links
               // 1=CursorPos beyond scanned code
               //-2=X,Y beyond source
+    function CleanPosToCodePos(CleanPos: integer;
+        var CodePos:TCodePosition): boolean; // true=ok, false=invalid CleanPos
     function CleanPosToCaret(CleanPos: integer;
         var Caret:TCodeXYPosition): boolean; // true=ok, false=invalid CleanPos
     function CleanPosToCaretAndTopLine(CleanPos: integer;
@@ -1722,6 +1724,15 @@ begin
   else
     Result:=-2; // x,y beyond source
 //writeln('TCustomCodeTool.CaretToCleanPos C CleanPos=',CleanPos,' Result=',Result);
+end;
+
+function TCustomCodeTool.CleanPosToCodePos(CleanPos: integer;
+  var CodePos: TCodePosition): boolean;
+var
+  ACode: pointer;
+begin
+  Result:=Scanner.CleanedPosToCursor(CleanPos,CodePos.p,ACode);
+  CodePos.Code:=TCodeBuffer(ACode);
 end;
 
 function TCustomCodeTool.CleanPosToCaret(CleanPos: integer;

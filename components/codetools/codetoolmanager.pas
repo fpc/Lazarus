@@ -229,7 +229,7 @@ type
           NewMethodName: string; ATypeInfo: PTypeInfo): boolean;
           
     // code completion = auto class completion, auto forward proc completion
-    function CompleteCode(Code: TCodeBuffer; X,Y: integer;
+    function CompleteCode(Code: TCodeBuffer; X,Y,TopLine: integer;
           var NewCode: TCodeBuffer;
           var NewX, NewY, NewTopLine: integer): boolean;
 
@@ -946,7 +946,7 @@ begin
   end;
 end;
 
-function TCodeToolManager.CompleteCode(Code: TCodeBuffer; X,Y: integer;
+function TCodeToolManager.CompleteCode(Code: TCodeBuffer; X,Y,TopLine: integer;
   var NewCode: TCodeBuffer; var NewX, NewY, NewTopLine: integer): boolean;
 var
   CursorPos: TCodeXYPosition;
@@ -961,7 +961,8 @@ begin
   CursorPos.Y:=Y;
   CursorPos.Code:=Code;
   try
-    Result:=FCurCodeTool.CompleteCode(CursorPos,NewPos,NewTopLine,SourceChangeCache);
+    Result:=FCurCodeTool.CompleteCode(CursorPos,TopLine,
+                                           NewPos,NewTopLine,SourceChangeCache);
     if Result then begin
       NewX:=NewPos.X;
       NewY:=NewPos.Y;

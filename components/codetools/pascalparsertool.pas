@@ -2233,6 +2233,9 @@ function TPascalParserTool.KeyWordFuncBeginEnd: boolean;
 var
   ChildNodeCreated: boolean;
 begin
+  if (CurNode<>nil)
+  and (not (CurNode.Desc in [ctnProcedure,ctnProgram,ctnImplementation])) then
+    RaiseStringExpectedButAtomFound('end');
   ChildNodeCreated:=(CurPos.Flag=cafBEGIN) or UpAtomIs('ASM');
   if ChildNodeCreated then begin
     CreateChildNode;

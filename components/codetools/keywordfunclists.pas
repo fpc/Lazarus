@@ -610,6 +610,7 @@ begin
     Add('LOW',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('HIGH',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('ORD',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('AS',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   WordIsKeyWord:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(WordIsKeyWord);

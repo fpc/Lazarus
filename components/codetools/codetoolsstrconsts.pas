@@ -135,6 +135,8 @@ ResourceString
   ctsEndOfSourceNotFound = 'End of source not found';
   ctsCursorPosOutsideOfCode = 'cursor pos outside of code';
   ctsNewProcBodyNotFound = 'new proc body not found';
+  ctsIdentifierAlreadyDefined = 'Identifier %s already defined';
+  ctsTermNotSimple = 'Term has no simple type';
   
   // codetoolsmanager
   ctsNoScannerFound = 'No scanner found for "%s".'
