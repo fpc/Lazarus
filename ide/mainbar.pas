@@ -357,8 +357,14 @@ type
     TheOutputFilter: TOutputFilter;
     
     function CreateMenuSeparator : TMenuItem;
-    procedure CreateMenuItem(MenuItemParent,MenuItem:TMenuItem;MenuItemName,MenuItemCaption:String;bmpName:String='';mnuEnabled:Boolean=true);
-    procedure CreateMenuItemPkg(MenuItemParent,MenuItem:TMenuItem;MenuItemName,MenuItemCaption:String;bmpName:String='');
+    procedure CreateMenuItem(MenuItemParent, MenuItem: TMenuItem;
+                             MenuItemName, MenuItemCaption: String);
+    procedure CreateMenuItem(MenuItemParent, MenuItem: TMenuItem;
+                             MenuItemName, MenuItemCaption: String;
+                             bmpName: String);
+    procedure CreateMenuItem(MenuItemParent, MenuItem: TMenuItem;
+                             MenuItemName, MenuItemCaption: String;
+                             bmpName: String; mnuEnabled: Boolean);
     procedure SetupFileMenu; virtual;
     procedure SetupEditMenu; virtual;
     procedure SetupSearchMenu; virtual;
@@ -565,7 +571,21 @@ begin
   Result.Caption := '-';
 end;
 
-procedure TMainIDEBar.CreateMenuItem(MenuItemParent,MenuItem:TMenuItem;MenuItemName,MenuItemCaption:String;bmpName:String='';mnuEnabled:Boolean=true);
+procedure TMainIDEBar.CreateMenuItem(MenuItemParent, MenuItem: TMenuItem;
+  MenuItemName, MenuItemCaption: String);
+begin
+  CreateMenuItem(MenuItemParent,MenuItem,MenuItemName,MenuItemCaption,'');
+end;
+
+procedure TMainIDEBar.CreateMenuItem(MenuItemParent, MenuItem: TMenuItem;
+  MenuItemName, MenuItemCaption: String; bmpName: String);
+begin
+  CreateMenuItem(MenuItemParent,MenuItem,MenuItemName,MenuItemCaption,bmpName,
+                 true);
+end;
+
+procedure TMainIDEBar.CreateMenuItem(MenuItemParent, MenuItem: TMenuItem;
+  MenuItemName, MenuItemCaption: String; bmpName: String; mnuEnabled: Boolean);
 begin
   MenuItem:=TMenuItem.Create(Self);
   MenuItem.Name:=MenuItemName;
@@ -575,17 +595,6 @@ begin
   if bmpName<>'' then
    MenuItem.Bitmap.LoadFromLazarusResource(bmpName);
   MenuItemParent.Add(MenuItem);
-end;
-procedure TMainIDEBar.CreateMenuItemPkg(MenuItemParent,MenuItem:TMenuItem;MenuItemName,MenuItemCaption:String;bmpName:String='');
-begin
-  MenuItem := TMenuItem.Create(Self);
-  MenuItem.Name:=MenuItemName;
-  MenuItem.Caption := MenuItemCaption;
-  if bmpName<>'' then
-   MenuItem.Bitmap.LoadFromLazarusResource(bmpName);
-  {$IFNDEF DisablePkgs}
-  MenuItemParent.Add(MenuItem);
-  {$ENDIF}  
 end;
 
 procedure TMainIDEBar.SetupFileMenu;
@@ -809,24 +818,18 @@ end;
 
 procedure TMainIDEBar.SetupComponentsMenu;
 begin
-  CreateMenuItemPkg(mnuComponents,itmPkgOpenPackage,'itmPkgOpenPackage',lisMenuOpenPackage,'pkg_package'); 
-  CreateMenuItemPkg(mnuComponents,itmPkgOpenPackageFile,'itmPkgOpenPackageFile',lisMenuOpenPackageFile,'pkg_package'); 
-  CreateMenuItemPkg(mnuComponents,itmPkgOpenRecent,'itmPkgOpenRecent',lisMenuOpenRecentPkg,'pkg_package'); 
-  {$IFNDEF DisablePkgs}
+  CreateMenuItem(mnuComponents,itmPkgOpenPackage,'itmPkgOpenPackage',lisMenuOpenPackage,'pkg_package');
+  CreateMenuItem(mnuComponents,itmPkgOpenPackageFile,'itmPkgOpenPackageFile',lisMenuOpenPackageFile,'pkg_package');
+  CreateMenuItem(mnuComponents,itmPkgOpenRecent,'itmPkgOpenRecent',lisMenuOpenRecentPkg,'pkg_package');
   mnuComponents.Add(CreateMenuSeparator);
-  {$ENDIF}
-  
-  CreateMenuItemPkg(mnuComponents,itmPkgAddCurUnitToPkg,'itmPkgAddCurUnitToPkg',lisMenuAddCurUnitToPkg,'pkg_addunittopackage'); 
-  {$IFNDEF DisablePkgs}
-  mnuComponents.Add(CreateMenuSeparator);
-  {$ENDIF}
 
-  CreateMenuItemPkg(mnuComponents,itmPkgPkgGraph,'itmPkgPkgGraph',lisMenuPackageGraph,'pkg_packagegraph'); 
-
-  {$IFNDEF DisablePkgs}
+  CreateMenuItem(mnuComponents,itmPkgAddCurUnitToPkg,'itmPkgAddCurUnitToPkg',lisMenuAddCurUnitToPkg,'pkg_addunittopackage');
   mnuComponents.Add(CreateMenuSeparator);
-  {$ENDIF}
-  
+
+  CreateMenuItem(mnuComponents,itmPkgPkgGraph,'itmPkgPkgGraph',lisMenuPackageGraph,'pkg_packagegraph');
+
+  mnuComponents.Add(CreateMenuSeparator);
+
   CreateMenuItem(mnuComponents,itmCompsConfigCustomComps,'itmCompsConfigCustomComps',lisMenuConfigCustomComps); 
    
 end;

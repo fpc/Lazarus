@@ -1132,13 +1132,16 @@ begin
 end;
 
 initialization
-  MParentClass := nil;
-  
+  MParentClass:=nil;
+
 end.
 
 { =============================================================================
 
   $Log$
+  Revision 1.56  2004/04/05 07:43:14  mattias
+  fixed 1.0.10 compilation
+
   Revision 1.55  2004/04/04 01:42:31  vincents
   Fixed 1.0.x compilation
 
