@@ -46,6 +46,7 @@ type
     Function GetValue : Single;
     procedure SetValue(Num : Single);
     procedure SetClimbRate(num : Single);
+    procedure InitializeWnd; override;
   public
     constructor Create(AOwner : TComponent); override;
     destructor Destroy; override;
@@ -53,14 +54,14 @@ type
     property Align;
     property Decimal_Places : Integer read fDecimals write SetDecimals;
     property Enabled;
-    property Value : Single read GetValue write SetValue;
+    property Value: Single read GetValue write SetValue;
     property Climb_Rate : Single read fClimbRate write SetClimbRate;
     property Visible;
     property OnEnter;
     property OnExit;
     property PopupMenu;
     property ShowHint;
-	end;
+  end;
 
 Implementation
 

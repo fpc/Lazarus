@@ -32,6 +32,12 @@ begin
   UpdateControl;
 end;
 
+procedure TSpinEdit.InitializeWnd;
+begin
+  inherited InitializeWnd;
+  UpdateControl;
+end;
+
 {-----------------------------------------------------------------------------}
 Procedure TSpinEdit.SetValue(num : Single);
 begin
@@ -44,7 +50,7 @@ end;
 {-----------------------------------------------------------------------------}
 Function TSpinEdit.GetValue : Single;
 Var
-  Temp : Real;
+  Temp : Single;
 begin
   if HandleAllocated and (not fValueNeedsUpdate) then begin
     CNSendMessage(LM_GETVALUE,Self,@Temp);
