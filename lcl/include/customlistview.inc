@@ -31,7 +31,7 @@ begin
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := @ImageChanged;
   FSelected := nil;
-  Setbounds(2,2,300,300);
+  Setbounds(2,2,100,90);
 end;
 
 
@@ -557,6 +557,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.26  2003/02/28 15:49:43  mattias
+  fixed initial size
+
   Revision 1.25  2002/11/25 11:37:18  mattias
   applied patch from Vasily
 

@@ -380,7 +380,7 @@ type
     property Items : TStrings read FItems write SetItems;
     property MultiSelect : boolean read FMultiSelect write SetMultiSelect;
     property SelCount : integer read GetSelCount;
-    property Selected[Index : integer] : boolean read GetSelected write SetSelected;
+    property Selected[Index: integer]: boolean read GetSelected write SetSelected;
     property TopIndex: Integer read GetTopIndex write SetTopIndex;
   end;
   
@@ -1393,6 +1393,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.76  2003/02/28 15:49:43  mattias
+  fixed initial size
+
   Revision 1.75  2003/01/24 13:07:33  mattias
   fixed TListBox.BorderStyle=bsNone
 

@@ -3712,8 +3712,10 @@ begin
   TheDialog:= TStringsPropEditorDlg.Create(Application);
   try
     TheDialog.Memo.Text:= Strings.Text;
-    if (TheDialog.ShowModal = mrOK) then
+    if (TheDialog.ShowModal = mrOK) then begin
       Strings.Text:=TheDialog.Memo.Text;
+      Modified;
+    end;
   finally
     TheDialog.Free;
   end;
