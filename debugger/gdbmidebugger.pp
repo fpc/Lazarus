@@ -63,6 +63,7 @@ type
     FExceptionBreakID: Integer;
     FVersion: String;
     FPauseWaitState: TGDBMIPauseWaitState;
+    FInExecuteCount: Integer;
     // Implementation of external functions
     function  GDBEvaluate(const AExpression: String; var AResult: String): Boolean;
     function  GDBRun: Boolean;
@@ -469,50 +470,57 @@ begin
   // If we are here we can process the command directly
   Result := True;
   FirstCmd := True;
-  FPauseWaitState := pwsNone;
   repeat
-    ResultValues := '';
-    ResultState := dsNone;
+    Inc(FInExecuteCount);
+    try
+      ResultValues := '';
+      ResultState := dsNone;
 
-    Cmd := FCommandQueue[0];
-    CmdInfo := PGDBMICmdInfo(FCommandQueue.Objects[0]);
-    SendCmdLn(Cmd);
-    R := ProcessResult(ResultState, ResultValues, cfNoMICommand in CmdInfo^.Flags);
-    if not R
-    then begin
-      Writeln('[WARNING] TGDBMIDebugger:  ExecuteCommand "',Cmd,'" failed.');
-      SetState(dsError);
-      Break;
+      Cmd := FCommandQueue[0];
+      CmdInfo := PGDBMICmdInfo(FCommandQueue.Objects[0]);
+      SendCmdLn(Cmd);
+      R := ProcessResult(ResultState, ResultValues, cfNoMICommand in CmdInfo^.Flags);
+      if not R
+      then begin
+        Writeln('[WARNING] TGDBMIDebugger:  ExecuteCommand "',Cmd,'" failed.');
+        SetState(dsError);
+        Break;
+      end;
+
+      if (ResultState <> dsNone)
+      and not (cfIgnoreState in CmdInfo^.Flags)
+      and ((ResultState <> dsError) or not (cfIgnoreError in CmdInfo^.Flags))
+      then SetState(ResultState);
+
+      StoppedParams := '';
+      if ResultState = dsRun
+      then R := ProcessRunning(StoppedParams);
+
+      // Delete command first to allow GDB access while processing stopped
+      FCommandQueue.Delete(0);
+
+      if StoppedParams <> ''
+      then ProcessStopped(StoppedParams, FPauseWaitState = pwsInternal);
+
+      if Assigned(CmdInfo^.Callback)
+      then CmdInfo^.Callback(ResultState, ResultValues, 0);
+
+      Dispose(CmdInfo);
+
+      if FirstCmd
+      then begin
+        FirstCmd := False;
+        AResultValues := ResultValues;
+        AResultState := ResultState;
+      end;
+    finally
+      Dec(FInExecuteCount);
     end;
     
-    if (ResultState <> dsNone)
-    and not (cfIgnoreState in CmdInfo^.Flags)
-    and ((ResultState <> dsError) or not (cfIgnoreError in CmdInfo^.Flags))
-    then SetState(ResultState);
-
-    StoppedParams := '';
-    if ResultState = dsRun
-    then R := ProcessRunning(StoppedParams);
-
-    if StoppedParams <> ''
-    then ProcessStopped(StoppedParams, FPauseWaitState = pwsInternal);
-
-    if Assigned(CmdInfo^.Callback)
-    then CmdInfo^.Callback(ResultState, ResultValues, 0);
-
-    Dispose(CmdInfo);
-    FCommandQueue.Delete(0);
-
-    if FirstCmd
+    if  FCommandQueue.Count = 0
     then begin
-      FirstCmd := False;
-      AResultValues := ResultValues;
-      AResultState := ResultState;
-    end;
-    
-    if FCommandQueue.Count = 0
-    then begin
-      if (FPauseWaitState = pwsInternal)
+      if  (FInExecuteCount = 0)
+      and (FPauseWaitState = pwsInternal)
       and (State = dsRun)
       then begin
         // reset state
@@ -749,6 +757,9 @@ procedure TGDBMIDebugger.Init;
 var
   Line, S: String;
 begin
+  FPauseWaitState := pwsNone;
+  FInExecuteCount := 0;
+  
   if CreateDebugProcess('-silent -i mi')
   then begin
     // Get initial debugger lines
@@ -990,6 +1001,13 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String; const AIgnoreSigIn
       ExceptionName := ResultList.Values['value'];
       ExceptionName := GetPart('''', '''', ExceptionName);
       ResultList.Free;
+    end;
+    
+    // check if we should ignore this exception
+    if Exceptions.Find(ExceptionName) <> nil
+    then begin
+      ExecuteCommand('-exec-continue', []);
+      Exit;
     end;
 
     if CompactMode
@@ -1942,6 +1960,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.30  2003/06/13 19:21:31  marc
+  MWE: + Added initial signal and exception handling
+
   Revision 1.29  2003/06/10 23:48:26  marc
   MWE: * Enabled modification of breakpoints while running
 
