@@ -833,6 +833,7 @@ packager/pkgmanager.pas svneol=native#text/pascal
 packager/pkgoptionsdlg.pas svneol=native#text/pascal
 packager/registerfcl.pas svneol=native#text/pascal
 packager/registerlcl.pas svneol=native#text/pascal
+packager/registersynedit.pas svneol=native#text/pascal
 packager/registration/lazaruspackageintf.pas svneol=native#text/pascal
 packager/ucomponentmanmain.lfm svneol=native#text/plain
 packager/ucomponentmanmain.lrs svneol=native#text/pascal
