@@ -322,8 +322,9 @@ begin
   if I >= 0 then
   begin
     if Control is TToolButton then TToolButton(Control).FToolBar := nil;
-    Pos := FButtons.Remove(Control);
+    Pos := FButtons.IndexOf(Control);
     Perform(TB_DELETEBUTTON, Pos, 0);
+    FButtons.Remove(Control);
     ResizeButtons;
     if Wrapable then
       RepositionButtons(0)
@@ -1245,9 +1246,7 @@ end;
 
 procedure TToolBar.WndProc(var Message: TLMessage);
 Begin
-//TODO: TToolbar.WndProc
-
-case Message.msg of
+  case Message.msg of
   TB_INSERTBUTTON : Assert(False, 'Trace:!!!!!!!!!!!!!!!!!TB_INSERTBUTTON!!!!!!!!!!!!!!');
   LM_NOTIFYFORMAT : Assert(False, 'Trace:!!!!!!!!!!!!!!!!!LM_NOTIFYFORMAT!!!!!!!!!!!!!!');
   LM_EXPOSEEVENT : Assert(False, 'Trace:!!!!!!!!!!!!!!!!!ExposeEvent!!!!!!!!!!!!!!');
@@ -1257,7 +1256,8 @@ case Message.msg of
   LM_KILLWORD : Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!!!LM_KILLWORD!!!!!!!!!!!!!!!!!!!!');
   LM_SETSELMODE : Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!!!LM_SETSELMODE!!!!!!!!!!!!!!!!');
   LM_SHOWMODAL : Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!!!!!LM_SHOWMODAL!!!!!!!!!!!!!!!!!!!');
-   end;
+  end;
+  
   case Message.msg of
     TB_INSERTBUTTON :
       if HandleAllocated then
@@ -1494,6 +1494,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.16  2004/02/04 14:00:45  mattias
+  quick fixed removing TToolButton
+
   Revision 1.15  2004/01/20 21:40:51  marc
   * forgot a line
 
