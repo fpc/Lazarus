@@ -84,7 +84,7 @@ var Notebook: TNoteBook;
 begin
   if (Parent is TNoteBook) then begin
     NoteBook:=TNoteBook(Parent);
-    if NoteBook.Page[NoteBook.PageIndex]=Self then
+    if (NoteBook.PageIndex>=0) and (NoteBook.Page[NoteBook.PageIndex]=Self) then
       inherited WMPaint(Msg);
   end else
     inherited WMPaint(Msg);
@@ -99,14 +99,16 @@ procedure TPage.SetParent(AParent: TWinControl);
 var
   OldParent: TWinControl;
   ParentNotebook: TCustomNotebook;
+  i: integer;
 begin
   OldParent:=Parent;
   if (OldParent<>AParent) and (OldParent<>nil)
   and (OldParent is TCustomNotebook) then begin
     // remove from old pagelist
     ParentNotebook:=TCustomNotebook(OldParent);
-    if ParentNotebook.PageList.IndexOf(Self)>=0 then
-      TNBPages(ParentNotebook.fAccess).RemovePage(PageIndex);
+    i:=PageIndex;
+    if i>=0 then
+      TNBPages(ParentNotebook.fAccess).RemovePage(i);
   end;
 
   inherited SetParent(AParent);
@@ -151,6 +153,9 @@ end;
 // included by extctrls.pp
 {
   $Log$
+  Revision 1.12  2002/12/22 22:42:55  mattias
+  custom controls now support child wincontrols
+
   Revision 1.11  2002/09/05 12:11:43  lazarus
   MG: TNotebook is now streamable
 
