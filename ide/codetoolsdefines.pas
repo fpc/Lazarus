@@ -104,6 +104,7 @@ type
 
     // templates
     InsertTemplateMenuItem: TMenuItem;
+    InsertDelphi5TemlateMenuItem: TMenuItem;
 
     // define tree
     DefineTreeView: TTreeView;
@@ -158,9 +159,13 @@ type
     
     // tools menu
     procedure OpenPreviewMenuItemClick(Sender: TObject);
+    
+    // template menu
+    procedure InsertDelphi5TemlateMenuItemClick(Sender: TObject);
   private
     FDefineTree: TDefineTree;
     FLastSelectedNode: TTreeNode;
+    FBoss: TCodeToolManager;
     procedure CreateComponents;
     function CreateSeperator : TMenuItem;
     procedure RebuildDefineTreeView;
@@ -173,6 +178,7 @@ type
     procedure SetTypeLabel;
     function ValueToFilePathText(const AValue: string): string;
     procedure InsertNewNode(Behind: boolean; Action: TDefineAction);
+    procedure InsertTemplate(NewTemplate: TDefineTemplate);
     function FindUniqueName: string;
     function ConsistencyCheck: integer;
     procedure SetValuesEditable(AValue: boolean);
@@ -182,6 +188,7 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     property DefineTree: TDefineTree read FDefineTree;
+    property Boss: TCodeToolManager read FBoss write FBoss;
   end;
 
 function ShowCodeToolsDefinesEditor(ACodeToolBoss: TCodeToolManager;
@@ -696,6 +703,13 @@ begin
   BringWindowToTop(DefinePreview.Handle);
 end;
 
+procedure TCodeToolsDefinesEditor.InsertDelphi5TemlateMenuItemClick(
+  Sender: TObject);
+begin
+  InsertTemplate(Boss.DefinePool.CreateDelphi5Template(
+                   SetDirSeparators('/Borland')));
+end;
+
 procedure TCodeToolsDefinesEditor.ProjectSpecificCheckBoxClick(Sender: TObject);
 var
   SelTreeNode: TTreeNode;
@@ -961,6 +975,9 @@ begin
   // templates
   AddMenuItem(InsertTemplateMenuItem,'InsertTemplateMenuItem',
               'Insert Template',nil);
+  AddMenuItem(InsertDelphi5TemlateMenuItem,'InsertDelphi5TemlateMenuItem',
+              'Insert Delphi 5 Template',InsertTemplateMenuItem);
+  InsertDelphi5TemlateMenuItem.OnClick:=@InsertDelphi5TemlateMenuItemClick;
 
 
   // define tree----------------------------------------------------------------
@@ -1324,6 +1341,54 @@ begin
   ShowSelectedValues;
 end;
 
+procedure TCodeToolsDefinesEditor.InsertTemplate(NewTemplate: TDefineTemplate);
+
+  procedure AddChilds(ATreeNode: TTreeNode);
+  var ADefNode, ChildDefNode: TDefineTemplate;
+    ChildTreeNode: TTreeNode;
+  begin
+    if ATreeNode=nil then exit;
+    ADefNode:=TDefineTemplate(ATreeNode.Data);
+    ChildDefNode:=ADefNode.FirstChild;
+    while ChildDefNode<>nil do begin
+      ChildTreeNode:=DefineTreeView.Items.AddChildObject(ATreeNode,
+                                                ChildDefNode.Name,ChildDefNode);
+      AddChilds(ChildTreeNode);
+      ChildDefNode:=ChildDefNode.Next;
+    end;
+  end;
+
+var
+  SelTreeNode, NewTreeNode: TTreeNode;
+  SelDefNode: TDefineTemplate;
+begin
+  SaveSelectedValues;
+  if NewTemplate=nil then exit;
+  FLastSelectedNode:=nil;
+  SelTreeNode:=DefineTreeView.Selected;
+  if SelTreeNode<>nil then begin
+    // insert behind selected node
+    SelDefNode:=TDefineTemplate(SelTreeNode.Data);
+    // insert in TreeView
+    NewTreeNode:=DefineTreeView.Items.InsertObjectBehind(SelTreeNode,
+                           NewTemplate.Name,NewTemplate);
+    // insert in DefineTree
+    NewTemplate.InsertBehind(SelDefNode);
+  end else begin
+    // add as last root node
+    // add in TreeView
+    NewTreeNode:=DefineTreeView.Items.AddObject(nil,NewTemplate.Name,NewTemplate);
+    // add in DefineTree
+    DefineTree.Add(NewTemplate);
+  end;
+  // add childs to TreeView
+  AddChilds(NewTreeNode);
+  // show and select
+  SetNodeImages(NewTreeNode,true);
+  NewTreeNode.Selected:=true;
+  ShowSelectedValues;
+end;
+
 function TCodeToolsDefinesEditor.FindUniqueName: string;
 var i: integer;
 begin
@@ -1420,6 +1485,7 @@ procedure TCodeToolsDefinesEditor.Assign(ACodeToolBoss: TCodeToolManager;
   Options: TCodeToolsOptions);
 begin
   FLastSelectedNode:=nil;
+  FBoss:=ACodeToolBoss;
   FDefineTree.Assign(ACodeToolBoss.DefineTree);
   RebuildDefineTreeView;
   ShowSelectedValues;
