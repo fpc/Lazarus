@@ -427,15 +427,18 @@ begin
     and (csAcceptsControls in Sender.ControlStyle) then begin
       PaintClientGrid(TWinControl(Sender),DDC);
     end;
-    if (ControlSelection.IsSelected(Sender)) then begin
+    if (ControlSelection.SelectionForm=Form)
+    and (ControlSelection.IsSelected(Sender)) then begin
       // writeln('***  LM_PAINT ',Sender.Name,':',Sender.ClassName,' DC=',HexStr(Message.DC,8));
       ControlSelection.DrawMarker(Sender,DDC);
     end;
     DrawNonVisualComponents(DDC);
-    ControlSelection.DrawGuideLines(DDC);
-    ControlSelection.DrawGrabbers(DDC);
-    if ControlSelection.RubberBandActive then
-      ControlSelection.DrawRubberBand(DDC);
+    if (ControlSelection.SelectionForm=Form) then begin
+      ControlSelection.DrawGuideLines(DDC);
+      ControlSelection.DrawGrabbers(DDC);
+      if ControlSelection.RubberBandActive then
+        ControlSelection.DrawRubberBand(DDC);
+    end;
     DDC.Clear;
   end;
 //writeln('TDesigner.PaintControl END ',Sender.Name);
@@ -478,11 +481,13 @@ var i,
   CompIndex:integer;
   SelectedCompClass: TRegisteredComponent;
   NonVisualComp: TComponent;
+  ParentForm: TCustomForm;
 Begin
   FHintTimer.Enabled := False;
   Exclude(FFLags,dfHasSized);
   SetCaptureControl(nil);
-  if (getParentForm(Sender)=nil) then exit;
+  ParentForm:=getParentForm(Sender);
+  if (ParentForm=nil) then exit;
 
   if MouseDownComponent=nil then begin
     MouseDownComponent:=GetDesignedComponent(Sender);
@@ -545,13 +550,18 @@ Begin
         
         CompIndex:=ControlSelection.IndexOf(MouseDownComponent);
         if (TheMessage.Keys and MK_SHIFT)>0 then begin
-        
+
           // shift key pressed (multiselection)
           if CompIndex<0 then begin
             // not selected
             // add component to selection
-            if (ControlSelection.Count=0)
-            or (not (Sender is TCustomForm)) then begin
+            if (ControlSelection.SelectionForm<>nil)
+            and (ControlSelection.SelectionForm<>Form)
+            then begin
+              MessageDlg('Invalid mutliselection',
+                'Multiselected components must be of a single form.',
+                mtInformation,[mbOk],0);
+            end else begin
               ControlSelection.Add(MouseDownComponent);
               InvalidateWithParent(MouseDownComponent);
             end;
@@ -686,6 +696,16 @@ var
   procedure RubberbandSelect;
   begin
     ControlSelection.BeginUpdate;
+    if (ssShift in Shift)
+    and (ControlSelection.SelectionForm<>nil)
+    and (ControlSelection.SelectionForm<>Form)
+    then begin
+      MessageDlg('Invalid mutliselection',
+        'Multiselected components must be of a single form.',
+        mtInformation,[mbOk],0);
+      exit;
+    end;
+
     NewRubberbandSelection:=(not (ssShift in Shift))
                             and ControlSelection.IsOnlySelected(Form);
     SelectionChanged:=false;
@@ -734,7 +754,10 @@ Begin
   // check if the message is for the designed form
   SenderParentForm:=GetParentForm(Sender);
   if (MouseDownComponent=nil) or (SenderParentForm=nil)
-  or (SenderParentForm<>Form) then begin
+  or (SenderParentForm<>Form)
+  or ((ControlSelection.SelectionForm<>nil)
+    and (ControlSelection.SelectionForm<>Form)) then
+  begin
     MouseDownComponent:=nil;
     MouseDownSender:=nil;
     exit;
