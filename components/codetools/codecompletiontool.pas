@@ -2269,7 +2269,7 @@ var CleanCursorPos, Indent, insertPos: integer;
         // due to insertions in fron of the class, the cursor position could
         // have changed
         while (CursorNode<>nil) do begin
-          if (CursorNode.Desc in [ctnTypeSection,ctnTypeDefinition,ctnClass])
+          if (CursorNode.Desc in [ctnTypeSection,ctnTypeDefinition])
           then break;
           CursorNode:=CursorNode.Parent;
         end;

@@ -94,6 +94,8 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure Loaded; override;
+    procedure SaveChanges; virtual;
+  public
     property ListObject: TObject read FListObject write SetListObject;
     property ListDirection: TTIListDirection read FListDirection write SetListDirection;
     property DefaultRowHeight default 20;
@@ -177,6 +179,8 @@ procedure TTICustomGrid.SetListObject(const AValue: TObject);
 begin
   if FListObject=AValue then exit;
   FListObject:=AValue;
+  if SaveOnChangeTIObject then
+    SaveChanges;
   ReloadTIList;
 end;
 
@@ -235,6 +239,11 @@ procedure TTICustomGrid.Loaded;
 begin
   inherited Loaded;
   ReloadTIList;
+end;
+
+procedure TTICustomGrid.SaveChanges;
+begin
+
 end;
 
 initialization
