@@ -4547,10 +4547,12 @@ Begin
         end;
       end;
       if (AnUnitInfo<>nil) then begin
-        AForm:=SourceNotebook;
-        if OnlyForms and (AnUnitInfo.Component<>nil) then begin
-          AForm:=FormEditor1.GetDesignerForm(AnUnitInfo.Component);
+        AForm:=nil;
+        if OnlyForms and (AnUnitInfo.ComponentName<>'') then begin
+          AForm:=GetFormOfSource(AnUnitInfo,true);
         end;
+        if AForm=nil then
+          AForm:=SourceNotebook;
         AForm.ShowOnTop;
       end;
     end;
@@ -9028,6 +9030,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.598  2003/06/04 16:40:57  mattias
+  fixed view forms
+
   Revision 1.597  2003/06/04 16:34:11  mattias
   implemented popupmenu items in source editor for breakpoints
 
