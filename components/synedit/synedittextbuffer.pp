@@ -44,8 +44,7 @@ interface
 uses
   Classes, SysUtils,
   {$IFDEF SYN_LAZARUS}
-  LCLLinux,
- LCLType,
+  LCLLinux, LCLType,
   {$ELSE}
   Windows,
   {$ENDIF}

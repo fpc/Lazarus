@@ -14,7 +14,7 @@ unit AllCodeToolUnits;
 interface
 
 uses
-  {$IFDEF VER1_0}MemCheck,{$ENDIF}
+  MemCheck,
   CodeToolManager, CustomCodeTool, PascalParserTool, FindDeclarationTool,
   StdCodeTools, MethodJumpTool, EventCodeTool, CodeCompletionTool, LinkScanner,
   FindDeclarationCache, BasicCodeTools, CodeTree, CodeAtom, SourceChanger,
@@ -30,6 +30,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.12  2002/12/24 12:52:53  mattias
+  fixed ReAllocmem of memcheck and added memcheck for fpc 1.1
+
   Revision 1.11  2002/10/20 21:54:02  lazarus
   MG: fixes for 1.1
 
