@@ -499,8 +499,8 @@ const
  REBracesArgSz = SizeOf (TREBracesArg) div SizeOf (REChar); // size of BRACES arguments -"-
 
 type
- TRegExprInvertCaseFunction = function (const Ch : REChar) : REChar
-                               of object;
+  TRegExprInvertCaseFunction = function (const Ch : REChar) : REChar
+                               {$IFNDEF FPC}of object{$ENDIF};
 
 const
   RegExprModifierI : boolean = False;    // default value for ModifierI
@@ -985,9 +985,14 @@ function RegExprSubExpressions (const ARegExpr : string;
 
 implementation
 
+{$IFDEF SYN_LAZARUS}
+uses
+  LCLLinux;
+{$ELSE}
 {$IFNDEF LINUX} //js 07-04-2002 only use windows in non-CLX-envirolment -- SYN_CLX doesn't work, why?
 uses
  Windows; // CharUpper/Lower
+{$ENDIF}
 {$ENDIF}
 
 const
@@ -1274,6 +1279,31 @@ function RegExprSubExpressions (const ARegExpr : string;
 --------------------------------------------------------------}
 
 
+function InvertCharCase(const Ch : REChar) : REChar;
+begin
+  {$IFDEF UniCode}
+  if Ch >= #128
+   then Result := Ch
+  else
+  {$ENDIF}
+   begin
+    {$IFDEF SYN_LAZARUS}
+    Result := REChar (CharUpper (Ch));
+    if Result = Ch
+     then Result := REChar (CharLower (Ch));
+    {$ELSE}
+    {$IFNDEF LINUX} //js 07-04-2002 no use of windows api in clx-version!
+    Result := REChar (CharUpper (pointer (Ch)));
+    if Result = Ch
+     then Result := REChar (CharLower (pointer (Ch)));
+    {$ELSE}
+    Result:=Ch;
+    {$ENDIF}
+    {$ENDIF}
+   end;
+end; { of function InvertCaseFunction
+--------------------------------------------------------------}
+
 
 const
  MAGIC       = TREOp (216);// programm signature
@@ -1521,21 +1551,8 @@ destructor TRegExpr.Destroy;
 --------------------------------------------------------------}
 
 class function TRegExpr.InvertCaseFunction (const Ch : REChar) : REChar;
- begin
-  {$IFDEF UniCode}
-  if Ch >= #128
-   then Result := Ch
-  else
-  {$ENDIF}
-   begin
-    {$IFNDEF LINUX} //js 07-04-2002 no use of windows api in clx-version!
-    Result := REChar (CharUpper (pointer (Ch)));
-    if Result = Ch
-     then Result := REChar (CharLower (pointer (Ch)));
-    {$ELSE}
-    Result:=Ch;
-    {$ENDIF}
-   end;
+begin
+  Result:=InvertCharCase(Ch);
 end; { of function TRegExpr.InvertCaseFunction
 --------------------------------------------------------------}
 
@@ -4241,6 +4258,17 @@ function TRegExpr.Dump : RegExprString;
 --------------------------------------------------------------}
 {$ENDIF}
 
+procedure InternalInit;
+begin
+  RegExprInvertCaseFunction:=
+    {$IFDEF FPC}
+    @InvertCharCase;
+    {$ELSE}
+    @TRegExpr.InvertCaseFunction;
+    {$ENDIF}
+end; { InternalInit
+--------------------------------------------------------------}
+
 {$IFDEF reRealExceptionAddr}
 {$OPTIMIZATION ON}
 // ReturnAddr works correctly only if compiler optimization is ON
@@ -4275,7 +4303,7 @@ procedure TRegExpr.Error (AErrorID : integer);
 // compiler optimization flag
 
 initialization
-  RegExprInvertCaseFunction:=@TRegExpr.InvertCaseFunction;
+  InternalInit;
 
 end.
 
