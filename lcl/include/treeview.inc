@@ -2833,9 +2833,12 @@ begin
   if HandleAllocated and (tvoAutoItemHeight in FOptions) then begin
     FDefItemHeight:=
       Canvas.TextHeight('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789|\()^')
-      +2 // margin
       +2 // border
       ;
+    if (Images<>nil) and (Images.Height>FDefItemHeight) then
+      FDefItemHeight:=Images.Height;
+    if (StateImages<>nil) and (StateImages.Height>FDefItemHeight) then
+      FDefItemHeight:=StateImages.Height;
   end;
 end;
 
