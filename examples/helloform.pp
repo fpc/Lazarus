@@ -25,7 +25,7 @@ unit HelloForm;
 
 interface
 
-uses Interfaces, SysUtils, Classes, Forms, Buttons, Controls, Graphics;
+uses SysUtils, Classes, Forms, Buttons, Controls, Graphics;
 
 type
    THello = class(TForm)
@@ -89,6 +89,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.6  2002/10/29 19:33:42  lazarus
+  MG: removed interfaces
+
   Revision 1.5  2002/10/29 08:22:32  lazarus
   MG: added interfaces unit
 
