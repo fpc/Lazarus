@@ -71,7 +71,7 @@ function GTKMap(Widget: PGTKWidget; Data: gPointer): GBoolean; cdecl;
 function GTKKeyUpDown(Widget: PGtkWidget; Event : pgdkeventkey;
   Data: gPointer) : GBoolean; cdecl;
 function GTKFocusCB( widget: PGtkWidget; event:PGdkEventFocus; data: gPointer) : GBoolean; cdecl;
-function GTKKillFocusCB(widget: PGtkWidget; event:PGdkEventFocus; data: gPointer) : GBoolean; cdecl;
+function GTKKillFocusCBAfter(widget: PGtkWidget; event:PGdkEventFocus; data: gPointer) : GBoolean; cdecl;
 function gtkdestroyCB(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 function gtkdeleteCB( widget : PGtkWidget; event : PGdkEvent; data : gPointer) : GBoolean; cdecl;
 function gtkresizeCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
