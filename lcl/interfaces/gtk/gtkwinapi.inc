@@ -4422,25 +4422,29 @@ end;
   WARNING: There seems to be a bug in gtk-1.2.x which breaks gtk_timeout_remove
            thus we can't dispose PGtkITimerinfo here (s.a. gtkTimerCB). 
  ------------------------------------------------------------------------------}
-function TGTKObject.KillTimer (hWnd : HWND; uIDEvent : cardinal) : boolean;
+function TGTKObject.KillTimer(hWnd : HWND; uIDEvent : cardinal) : boolean;
 var
   n : integer;
-  p : PGtkITimerinfo;
+  TimerInfo : PGtkITimerinfo;
 begin
   Assert(False, 'Trace:removing timer!!!');
   n := FTimerData.Count;
   while (n > 0) do begin
     dec (n);
-    p := PGtkITimerinfo (FTimerData.Items[n]);
-    if ((pointer (hWnd) <> nil) and (hWnd = p^.Handle)) or
-      ((pointer(hWnd) = nil) and (uIDEvent = p^.IDEvent)) then
+    TimerInfo := PGtkITimerinfo (FTimerData.Items[n]);
+    if ((pointer (hWnd) <> nil) and (hWnd = TimerInfo^.Handle))
+    and (uIDEvent = TimerInfo^.IDEvent) then
     begin
-      gtk_timeout_remove (uIDEvent);
-      pointer (p^.Handle) := nil;     // mark as invalid
-      p^.TimerFunc        := nil;
-      FTimerData.Delete (n);
-      FOldTimerData.Add(p);
-//      Dispose (p);                  // this will be done in gtkTimerCB!
+      {$IFDEF VerboseTimer}
+      writeln('TGTKObject.KillTimer TimerInfo=',HexStr(Cardinal(TimerInfo),8),' ID=',uIDEvent,' CurTimerCount=',FTimerData.Count,' OldTimerCount=',FOldTimerData.Count);
+      {$ENDIF}
+      gtk_timeout_remove (TimerInfo^.TimerHandle);
+      // mark as invalid
+      TimerInfo^.TimerHandle:=-1;
+      TimerInfo^.TimerFunc := nil;
+      FTimerData.Delete(n);
+      //FOldTimerData.Add(TimerInfo);
+      Dispose (TimerInfo);
     end;
   end;
   Result:=true;
@@ -6288,16 +6292,26 @@ function TGTKObject.SetTimer(hWnd: HWND; nIDEvent, uElapse: integer;
 var
   PTimerInfo: PGtkITimerinfo;
 begin
-  if ((hWnd = 0) or (lpTimerFunc = nil) or (nIDEvent=0) or (uElapse<1))
+  KillTimer(hWnd,nIDEvent);
+  
+  if ((hWnd = 0) or (lpTimerFunc = nil) or (uElapse<1))
   then
     Result := 0
   else begin
     New (PTimerInfo);
+    Fillchar(PTimerInfo^,SizeOf(TGtkITimerinfo),0);
     PTimerInfo^.Handle    := hWND;
     PTimerInfo^.IDEvent   := nIDEvent;
     PTimerInfo^.TimerFunc := lpTimerFunc;
     FTimerData.Add (PTimerInfo);
+    {$IFDEF VerboseTimer}
+    writeln('TGTKObject.SetTimer ',HexStr(Cardinal(PTimerInfo),8),' ',nIDEvent,' CurTimerCount=',FTimerData.Count,' OldTimerCount=',FOldTimerData.Count);
+    {$ENDIF}
     Result:= gtk_timeout_add(uElapse, @gtkTimerCB, PTimerInfo);
+    PTimerInfo^.TimerHandle:=Result;
+    if Result=0 then begin
+      KillTimer(hWnd,nIDEvent);
+    end;
   end;
 end;
 
@@ -7164,6 +7178,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.157  2002/10/15 16:01:38  lazarus
+  MG: fixed timers
+
   Revision 1.156  2002/10/15 07:01:31  lazarus
   MG: fixed timer checking
 
