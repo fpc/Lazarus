@@ -542,9 +542,9 @@ Begin
       With LMMouseEvent Do
       Begin
         Msg := LM_MOUSEWHEEL;
-        WheelDelta := Hi(WParam);
-        X := Lo(LParam);
-        Y := Hi(LParam);
+        WheelDelta := ShortInt(Hi(WParam));
+        X := ShortInt(Lo(LParam));
+        Y := ShortInt(Hi(LParam));
         State := GetShiftState;
         UserData := Pointer(GetWindowLong(Window, GWL_USERDATA));
       End;
@@ -906,6 +906,9 @@ end;
 
 {
   $Log$
+  Revision 1.79  2003/12/23 16:49:48  micha
+  fix mousewheel message, short signed int params
+
   Revision 1.78  2003/12/19 21:34:53  micha
   fix compiler problem; wrong code for constants
 
