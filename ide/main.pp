@@ -1543,6 +1543,7 @@ end;
 procedure TMainIDE.mnuOpenClicked(Sender : TObject);
 var OpenDialog:TOpenDialog;
   AFilename: string;
+  I  : Integer;
 begin
   if (Sender=itmFileOpen) or (Sender=OpenFileSpeedBtn) then begin
     OpenDialog:=TOpenDialog.Create(Application);
@@ -1551,11 +1552,14 @@ begin
       OpenDialog.InitialDir:=EnvironmentOptions.LastOpenDialogDir;
       OpenDialog.Options:=[ofAllowMultiSelect];
       if OpenDialog.Execute then begin
-        AFilename:=ExpandFilename(OpenDialog.Filename);
-        EnvironmentOptions.LastOpenDialogDir:=ExtractFilePath(AFilename);
-        if DoOpenEditorFile(AFilename,false)=mrOk then begin
-          EnvironmentOptions.AddToRecentOpenFiles(AFilename);
-          SaveEnvironment;
+        For I := 0 to OPenDialog.Files.Count-1 do
+          Begin
+            AFilename:=ExpandFilename(OpenDialog.Files.Strings[i]);
+            EnvironmentOptions.LastOpenDialogDir:=ExtractFilePath(AFilename);
+            if DoOpenEditorFile(AFilename,false)=mrOk then begin
+               EnvironmentOptions.AddToRecentOpenFiles(AFilename);
+            SaveEnvironment;
+          end;
         end;
       end;
     finally
@@ -5251,6 +5255,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.176  2001/12/12 14:25:03  lazarus
+  Changes to allow multiple files being opened in main.pp
+  Shane
+
   Revision 1.175  2001/12/11 16:51:36  lazarus
   Modified the Watches dialog
   Shane
