@@ -1386,7 +1386,7 @@ var
       TextFlags := TextFlags or DSS_DISABLED;
     end;
     OldBitmapHandle := SelectObject(hdcNewBitmap, NewBitmap);
-    FillRect(hdcNewBitmap, BitmapRect, BitBtn.Brush.Handle);
+    Windows.FillRect(hdcNewBitmap, BitmapRect, BitBtn.Brush.Handle);
     SetBkMode(hdcNewBitmap, TRANSPARENT);
     if BitmapHandle <> 0 then
       DrawState(hdcNewBitmap, 0, nil, BitmapHandle, 0, XDestBitmap, YDestBitmap, 0, 0, BitmapFlags);
@@ -3315,6 +3315,9 @@ End;
 
 {
   $Log$
+  Revision 1.217  2004/06/29 21:38:43  vincents
+  fix fpc 1.0.x compilation
+
   Revision 1.216  2004/06/29 14:38:28  micha
   fix default button notification win32 intf
 
