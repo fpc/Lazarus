@@ -355,6 +355,20 @@ type
     property Visible;
   end;
   
+  { TCustomPropertiesGrid }
+
+  TCustomPropertiesGrid = class(TOICustomPropertyGrid)
+  private
+    FAutoFreeHook: boolean;
+    function GetTIObject: TPersistent;
+    procedure SetAutoFreeHook(const AValue: boolean);
+    procedure SetTIObject(const AValue: TPersistent);
+  public
+    constructor Create(TheOwner: TComponent); override;
+    property TIObject: TPersistent read GetTIObject write SetTIObject;
+    property AutoFreeHook: boolean read FAutoFreeHook write SetAutoFreeHook;
+  end;
+
 
   //============================================================================
   
@@ -2987,6 +3001,53 @@ end;
 procedure TObjectInspector.HookRefreshPropertyValues;
 begin
   RefreshPropertyValues;
+end;
+
+{ TCustomPropertiesGrid }
+
+function TCustomPropertiesGrid.GetTIObject: TPersistent;
+begin
+  if PropertyEditorHook<>nil then Result:=PropertyEditorHook.LookupRoot;
+end;
+
+procedure TCustomPropertiesGrid.SetAutoFreeHook(const AValue: boolean);
+begin
+  if FAutoFreeHook=AValue then exit;
+  FAutoFreeHook:=AValue;
+end;
+
+procedure TCustomPropertiesGrid.SetTIObject(const AValue: TPersistent);
+var
+  NewSelection: TPersistentSelectionList;
+begin
+  if (TIObject=AValue) then begin
+    if ((AValue<>nil) and (Selection.Count=1) and (Selection[0]=AValue))
+    or (AValue=nil) then
+      exit;
+  end;
+  if PropertyEditorHook=nil then
+    PropertyEditorHook:=TPropertyEditorHook.Create;
+  PropertyEditorHook.LookupRoot:=AValue;
+  if (AValue<>nil) and ((Selection.Count<>1) or (Selection[0]<>AValue)) then
+  begin
+    NewSelection:=TPersistentSelectionList.Create;
+    try
+      if AValue<>nil then
+        NewSelection.Add(AValue);
+      Selection:=NewSelection;
+    finally
+      NewSelection.Free;
+    end;
+  end;
+end;
+
+constructor TCustomPropertiesGrid.Create(TheOwner: TComponent);
+var
+  Hook: TPropertyEditorHook;
+begin
+  Hook:=TPropertyEditorHook.Create;
+  AutoFreeHook:=true;
+  CreateWithParams(TheOwner,Hook,AllTypeKinds,25);
 end;
 
 end.

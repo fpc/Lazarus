@@ -21,6 +21,7 @@ implicitunits=actionseditor \
   columndlg \
   componenteditors \
   componenttreeview \
+  configstorage \
   graphpropedits \
   idecommands \
   imagelisteditor \

@@ -98,7 +98,7 @@ uses
   PublishModule, EnvironmentOpts, TransferMacros, KeyMapping, IDEProcs,
   ExtToolDialog, ExtToolEditDlg, MacroPromptDlg, OutputFilter, BuildLazDialog,
   MiscOptions, InputHistory, UnitDependencies, ClipBoardHistory, ProcessList,
-  InitialSetupDlgs, NewDialog, MakeResStrDlg, ToDoList, AboutFrm, DialogProcs,
+  InitialSetupDlgs, NewDialog, MakeResStrDlg, ToDoList, DialogProcs,
   FindReplaceDialog, FindInFilesDlg, CodeExplorer, BuildFileDlg, ExtractProcDlg,
   DelphiUnit2Laz, CleanDirDlg,
   // main ide
@@ -250,8 +250,8 @@ type
     // windows menu
 
     // help menu
-    procedure mnuHelpAboutLazarusClicked(Sender : TObject);
-
+    // see HelpManager.pas
+    
     procedure OpenFileDownArrowClicked(Sender : TObject);
     procedure mnuOpenFilePopupClick(Sender : TObject);
 
@@ -950,6 +950,9 @@ begin
 
   // load installed packages
   PkgBoss.LoadInstalledPackages;
+  
+  // load package configs
+  HelpBoss.LoadHelpOptions;
 
   UpdateWindowsMenu;
 
@@ -1700,9 +1703,6 @@ end;
 procedure TMainIDE.SetupHelpMenu;
 begin
   inherited SetupHelpMenu;
-  with MainIDEBar do begin
-    itmHelpAboutLazarus.OnClick := @mnuHelpAboutLazarusClicked;
-  end;
 end;
 
 procedure TMainIDE.LoadMenuShortCuts;
@@ -2059,7 +2059,7 @@ begin
     mnuViewInspectorClicked(Self);
 
   ecAboutLazarus:
-    mnuHelpAboutLazarusClicked(Self);
+    MainIDEBar.itmHelpAboutLazarus.Click;
     
   ecAddBreakPoint:
     SourceNotebook.AddBreakpointClicked(Self);
@@ -2918,15 +2918,6 @@ procedure TMainIDE.SaveEnvironment;
 begin
   SaveDesktopSettings(EnvironmentOptions);
   EnvironmentOptions.Save(false);
-end;
-
-//------------------------------------------------------------------------------
-
-//------------------------------------------------------------------------------
-
-procedure TMainIDE.mnuHelpAboutLazarusClicked(Sender : TObject);
-begin
-  ShowAboutForm;
 end;
 
 //==============================================================================
@@ -10585,6 +10576,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.756  2004/08/21 23:16:11  mattias
+  implemented simple HTML help viewer
+
   Revision 1.755  2004/08/19 18:50:53  mattias
   splitted IDE component owner hierachy to reduce notification time
 

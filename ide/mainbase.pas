@@ -695,13 +695,20 @@ begin
   ParentMI:=MainIDEBar.mnuEnvironment;
 
   with MainIDEBar do begin
-    CreateMenuItem(ParentMI,itmEnvGeneralOptions,'itmEnvGeneralOptions',lisMenuGeneralOptions,'menu_environmentoptions');
-    CreateMenuItem(ParentMI,itmEnvEditorOptions,'itmEnvEditorOptions',lisMenuEditorOptions,'menu_editoroptions');
-    CreateMenuItem(ParentMI,itmEnvDebuggerOptions,'itmEnvDebuggerOptions',lisMenDebuggerOptions,'');
-    CreateMenuItem(ParentMI,itmEnvCodeToolsOptions,'itmEnvCodeToolsOptions',lisMenuCodeToolsOptions,'menu_codetoolsoptions');
-    CreateMenuItem(ParentMI,itmEnvCodeToolsDefinesEditor,'itmEnvCodeToolsDefinesEditor',lisMenuCodeToolsDefinesEditor,'menu_codetoolsdefineseditor');
+    CreateMenuItem(ParentMI,itmEnvGeneralOptions,'itmEnvGeneralOptions',
+                   lisMenuGeneralOptions,'menu_environmentoptions');
+    CreateMenuItem(ParentMI,itmEnvEditorOptions,'itmEnvEditorOptions',
+                   lisMenuEditorOptions,'menu_editoroptions');
+    CreateMenuItem(ParentMI,itmEnvDebuggerOptions,'itmEnvDebuggerOptions',
+                   lisMenDebuggerOptions,'');
+    CreateMenuItem(ParentMI,itmEnvCodeToolsOptions,'itmEnvCodeToolsOptions',
+                   lisMenuCodeToolsOptions,'menu_codetoolsoptions');
+    CreateMenuItem(ParentMI,itmEnvCodeToolsDefinesEditor,
+                   'itmEnvCodeToolsDefinesEditor',lisMenuCodeToolsDefinesEditor,
+                   'menu_codetoolsdefineseditor');
     ParentMI.Add(CreateMenuSeparator);
-    CreateMenuItem(ParentMI,itmEnvRescanFPCSrcDir,'itmEnvRescanFPCSrcDir',lisMenuRescanFPCSourceDirectory);
+    CreateMenuItem(ParentMI,itmEnvRescanFPCSrcDir,'itmEnvRescanFPCSrcDir',
+                   lisMenuRescanFPCSourceDirectory);
   end;
 end;
 
@@ -711,13 +718,15 @@ begin
 end;
 
 procedure TMainIDEBase.SetupHelpMenu;
-var
-  ParentMI: TMenuItem;
 begin
-  ParentMI:=MainIDEBar.mnuHelp;
-
   with MainIDEBar do begin
-    CreateMenuItem(ParentMI,itmHelpAboutLazarus,'itmHelpAboutLazarus',lisMenuAboutLazarus);
+    CreateMenuItem(mnuHelp,itmHelpAboutLazarus,'itmHelpAboutLazarus',
+                   lisMenuAboutLazarus);
+    CreateMenuItem(mnuHelp,itmHelpOnlineHelp,'itmHelpOnlineHelp',
+                   lisMenuOnlineHelp);
+    mnuHelp.Add(CreateMenuSeparator);
+    CreateMenuItem(mnuHelp,itmHelpConfigureHelp,'itmHelpConfigureHelp',
+                   lisMenuConfigureHelp);
   end;
 end;
 
@@ -870,6 +879,8 @@ begin
 
     // help menu
     itmHelpAboutLazarus.ShortCut:=CommandToShortCut(ecAboutLazarus);
+    itmHelpOnlineHelp.ShortCut:=CommandToShortCut(ecOnlineHelp);
+    itmHelpConfigureHelp.ShortCut:=CommandToShortCut(ecConfigureHelp);
   end;
 end;
 

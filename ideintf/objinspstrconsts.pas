@@ -93,6 +93,15 @@ resourcestring
   // property editors
   oisSort = 'Sort';
   oisStringsEditorDialog = 'Strings Editor Dialog';
+  oisHelpTheHelpDatabaseWasUnableToFindFile = 'The help database %s%s%s was '
+    +'unable to find file %s%s%s.';
+  oisHelpTheMacroSInBrowserParamsWillBeReplacedByTheURL = 'The macro %s in '
+    +'BrowserParams will be replaced by the URL.';
+  oisHelpNoHTMLBrowserFoundPleaseDefineOneInHelpConfigureHe = 'No HTML '
+    +'Browser found.%sPlease define one in Help -> Configure Help -> Viewers';
+  oisHelpBrowserNotFound = 'Browser %s%s%s not found.';
+  oisHelpBrowserNotExecutable = 'Browser %s%s%s not executable.';
+  oisHelpErrorWhileExecuting = 'Error while executing %s%s%s:%s%s';
 
 implementation
 

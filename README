@@ -14,10 +14,17 @@ and many more).
 The LCL currently supports linux (gtk, gnome and little bit gtk2) and windows.
 
 --------------------------------------------------------------------------------
-Installation:
+Compilation:
+You don't need ./configure, just do
+
+  []$ make clean all
+  
+This will create the lazarus executable. Start it and enjoy.
+
+--------------------------------------------------------------------------------
+Installation and Requirements:
 
 See the file docs/INSTALL.
-
 
 --------------------------------------------------------------------------------
 Usage:

@@ -33,8 +33,10 @@ unit HelpManager;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Buttons, StdCtrls, LCLProc, HelpIntf,
-  IDEOptionDefs;
+  Classes, SysUtils, LCLProc, Forms, Controls, Buttons, StdCtrls, Dialogs,
+  HelpIntf, HelpHTML,
+  IDEOptionDefs, EnvironmentOpts, AboutFrm, Project, PackageDefs, MainBar,
+  HelpOptions, MainIntf;
 
 type
   { TBaseHelpManager }
@@ -44,7 +46,9 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
   public
-    procedure ConnectMainBarEvents;
+    procedure ConnectMainBarEvents; virtual;
+    procedure LoadHelpOptions; virtual; abstract;
+    procedure SaveHelpOptions; virtual; abstract;
   end;
 
 
@@ -54,16 +58,40 @@ type
   public
     function ShowHelpSelector(Nodes: TList; var ErrMsg: string;
                               var Selection: THelpNode): TShowHelpResult; override;
+    procedure ShowError(ShowResult: TShowHelpResult; const ErrMsg: string); override;
+    function GetBaseURLForBasePathObject(BasePathObject: TObject): string; override;
   end;
   
   
   { THelpManager }
 
   THelpManager = class(TBaseHelpManager)
+    // help menu of the IDE menu bar
+    procedure mnuHelpAboutLazarusClicked(Sender: TObject);
+    procedure mnuHelpConfigureHelpClicked(Sender: TObject);
+    procedure mnuHelpOnlineHelpClicked(Sender: TObject);
+  private
+    FMainHelpDB: THelpDatabase;
+    procedure RegisterIDEHelpDatabases;
+    procedure RegisterDefaultIDEHelpViewers;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+
+    procedure ConnectMainBarEvents; override;
+    procedure LoadHelpOptions; override;
+    procedure SaveHelpOptions; override;
+
+    procedure ShowLazarusHelpStartPage;
+    procedure ShowIDEHelpForContext(HelpContext: THelpContext);
+    procedure ShowIDEHelpForKeyword(const Keyword: string);
+
+    property MainHelpDB: THelpDatabase read FMainHelpDB;
   end;
+
+  { Help Contexts for IDE help }
+const
+  lihcStartPage = 'StartPage';
   
 var
   HelpBoss: TBaseHelpManager;
@@ -214,20 +242,128 @@ begin
   end;
 end;
 
+procedure TIDEHelpDatabases.ShowError(ShowResult: TShowHelpResult;
+  const ErrMsg: string);
+var
+  ErrorCaption: String;
+begin
+  case ShowResult of
+  shrNone: ErrorCaption:='Error';
+  shrSuccess: exit;
+  shrDatabaseNotFound: ErrorCaption:='Help Database not found';
+  shrContextNotFound: ErrorCaption:='Help Context not found';
+  shrViewerNotFound: ErrorCaption:='Help Viewer not found';
+  shrHelpNotFound: ErrorCaption:='Help not found';
+  shrViewerError: ErrorCaption:='Help Viewer Error';
+  shrSelectorError: ErrorCaption:='Help Selector Error';
+  else ErrorCaption:='Unknown Error, please report this bug';
+  end;
+  MessageDlg(ErrorCaption,ErrMsg,mtError,[mbCancel],0);
+end;
+
+function TIDEHelpDatabases.GetBaseURLForBasePathObject(BasePathObject: TObject
+  ): string;
+begin
+  Result:='';
+  if (BasePathObject=HelpBoss) or (BasePathObject=MainIDEInterface) then
+    Result:=EnvironmentOptions.LazarusDirectory
+  else if BasePathObject is TProject then
+    Result:=TProject(BasePathObject).ProjectDirectory
+  else if BasePathObject is TLazPackage then
+    Result:=TLazPackage(BasePathObject).Directory;
+  Result:=FilenameToURL(Result);
+end;
+
 { THelpManager }
+
+procedure THelpManager.mnuHelpAboutLazarusClicked(Sender: TObject);
+begin
+  ShowAboutForm;
+end;
+
+procedure THelpManager.mnuHelpConfigureHelpClicked(Sender: TObject);
+begin
+  if ShowHelpOptionsDialog=mrOk then
+    SaveHelpOptions;
+end;
+
+procedure THelpManager.mnuHelpOnlineHelpClicked(Sender: TObject);
+begin
+  ShowLazarusHelpStartPage;
+end;
+
+procedure THelpManager.RegisterIDEHelpDatabases;
+var
+  HTMLHelp: THTMLHelpDatabase;
+  StartNode: THelpNode;
+begin
+  FMainHelpDB:=HelpDatabases.CreateHelpDatabase('Lazarus IDE',THTMLHelpDatabase,
+                                                true);
+  HTMLHelp:=FMainHelpDB as THTMLHelpDatabase;
+  HTMLHelp.BasePathObject:=Self;
+  // nodes
+  StartNode:=THelpNode.CreateURLID(HTMLHelp,'Lazarus',
+                                   'file://docs/index.html',lihcStartPage);
+  HTMLHelp.TOCNode:=THelpNode.Create(HTMLHelp,StartNode);
+  HTMLHelp.RegisterItemWithNode(StartNode);
+end;
+
+procedure THelpManager.RegisterDefaultIDEHelpViewers;
+begin
+  HelpViewers.RegisterViewer(THTMLBrowserHelpViewer.Create);
+end;
 
 constructor THelpManager.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
+  HelpOpts:=THelpOptions.Create;
+  HelpOpts.SetDefaultFilename;
   HelpDatabases:=TIDEHelpDatabases.Create;
   HelpViewers:=THelpViewers.Create;
+  RegisterIDEHelpDatabases;
+  RegisterDefaultIDEHelpViewers;
 end;
 
 destructor THelpManager.Destroy;
 begin
   FreeThenNil(HelpDatabases);
   FreeThenNil(HelpViewers);
+  FreeThenNil(HelpOpts);
   inherited Destroy;
+end;
+
+procedure THelpManager.ConnectMainBarEvents;
+begin
+  with MainIDEBar do begin
+    itmHelpAboutLazarus.OnClick := @mnuHelpAboutLazarusClicked;
+    itmHelpOnlineHelp.OnClick :=@mnuHelpOnlineHelpClicked;
+    itmHelpConfigureHelp.OnClick :=@mnuHelpConfigureHelpClicked;
+  end;
+end;
+
+procedure THelpManager.LoadHelpOptions;
+begin
+  HelpOpts.Load;
+end;
+
+procedure THelpManager.SaveHelpOptions;
+begin
+  HelpOpts.Save;
+end;
+
+procedure THelpManager.ShowLazarusHelpStartPage;
+begin
+  ShowIDEHelpForKeyword(lihcStartPage);
+end;
+
+procedure THelpManager.ShowIDEHelpForContext(HelpContext: THelpContext);
+begin
+  ShowHelpOrErrorForContext(MainHelpDB.ID,HelpContext);
+end;
+
+procedure THelpManager.ShowIDEHelpForKeyword(const Keyword: string);
+begin
+  ShowHelpOrErrorForKeyword(MainHelpDB.ID,Keyword);
 end;
 
 end.

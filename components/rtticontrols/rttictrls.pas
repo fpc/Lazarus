@@ -1152,16 +1152,7 @@ type
 
   { TTICustomPropertyGrid }
 
-  TTICustomPropertyGrid = class(TOICustomPropertyGrid)
-  private
-    FAutoFreeHook: boolean;
-    function GetTIObject: TPersistent;
-    procedure SetAutoFreeHook(const AValue: boolean);
-    procedure SetTIObject(const AValue: TPersistent);
-  public
-    constructor Create(TheOwner: TComponent); override;
-    property TIObject: TPersistent read GetTIObject write SetTIObject;
-    property AutoFreeHook: boolean read FAutoFreeHook write SetAutoFreeHook;
+  TTICustomPropertyGrid = class(TCustomPropertiesGrid)
   end;
 
 
@@ -2527,53 +2518,6 @@ procedure TTICustomCalendar.EditingDone;
 begin
   inherited EditingDone;
   FLink.SaveToProperty;
-end;
-
-{ TTICustomPropertyGrid }
-
-procedure TTICustomPropertyGrid.SetTIObject(const AValue: TPersistent);
-var
-  NewSelection: TPersistentSelectionList;
-begin
-  if (TIObject=AValue) then begin
-    if ((AValue<>nil) and (Selection.Count=1) and (Selection[0]=AValue))
-    or (AValue=nil) then
-      exit;
-  end;
-  if PropertyEditorHook=nil then
-    PropertyEditorHook:=TPropertyEditorHook.Create;
-  PropertyEditorHook.LookupRoot:=AValue;
-  if (AValue<>nil) and ((Selection.Count<>1) or (Selection[0]<>AValue)) then
-  begin
-    NewSelection:=TPersistentSelectionList.Create;
-    try
-      if AValue<>nil then
-        NewSelection.Add(AValue);
-      Selection:=NewSelection;
-    finally
-      NewSelection.Free;
-    end;
-  end;
-end;
-
-function TTICustomPropertyGrid.GetTIObject: TPersistent;
-begin
-  if PropertyEditorHook<>nil then Result:=PropertyEditorHook.LookupRoot;
-end;
-
-procedure TTICustomPropertyGrid.SetAutoFreeHook(const AValue: boolean);
-begin
-  if FAutoFreeHook=AValue then exit;
-  FAutoFreeHook:=AValue;
-end;
-
-constructor TTICustomPropertyGrid.Create(TheOwner: TComponent);
-var
-  Hook: TPropertyEditorHook;
-begin
-  Hook:=TPropertyEditorHook.Create;
-  AutoFreeHook:=true;
-  CreateWithParams(TheOwner,Hook,AllTypeKinds,25);
 end;
 
 { TTICustomSpinEdit }

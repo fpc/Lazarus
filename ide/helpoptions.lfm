@@ -1,0 +1,81 @@
+object HelpOptionsDialog: THelpOptionsDialog
+  Caption = 'HelpOptionsDialog'
+  ClientHeight = 300
+  ClientWidth = 500
+  OnClose = HelpOptionsDialogClose
+  OnCreate = HelpOptionsDialogCreate
+  PixelsPerInch = 90
+  Position = poScreenCenter
+  HorzScrollBar.Page = 501
+  VertScrollBar.Page = 301
+  Left = 291
+  Height = 300
+  Top = 163
+  Width = 500
+  object OkButton: TButton
+    Anchors = [akRight, akBottom]
+    Caption = 'OkButton'
+    OnClick = OkButtonClick
+    TabOrder = 0
+    Left = 292
+    Height = 25
+    Top = 264
+    Width = 75
+  end
+  object CancelButton: TButton
+    Anchors = [akRight, akBottom]
+    Caption = 'CancelButton'
+    OnClick = CancelButtonClick
+    TabOrder = 1
+    Left = 388
+    Height = 25
+    Top = 264
+    Width = 75
+  end
+  object MainNotebook: TNotebook
+    Align = alTop
+    Anchors = [akTop, akLeft, akBottom]
+    PageIndex = 0
+    Height = 256
+    Width = 500
+    object ViewersPage: TPage
+      Caption = 'ViewersPage'
+      ClientWidth = 496
+      ClientHeight = 226
+      Left = 2
+      Height = 226
+      Top = 28
+      Width = 496
+      object ViewersListBox: TListBox
+        Anchors = [akTop, akLeft, akBottom]
+        ClickOnSelChange = False
+        OnSelectionChange = ViewersListBoxSelectionChange
+        TabOrder = 0
+        TopIndex = 18446744073709551615
+        Left = 8
+        Height = 180
+        Top = 36
+        Width = 149
+      end
+      object ViewersLabel: TLabel
+        Caption = 'ViewersLabel'
+        Left = 8
+        Height = 23
+        Top = 4
+        Width = 149
+      end
+      object ViewerPropsGroupBox: TGroupBox
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        Caption = 'ViewerPropsGroupBox'
+        ClientHeight = 192
+        ClientWidth = 316
+        ParentColor = True
+        TabOrder = 2
+        Left = 168
+        Height = 209
+        Top = 7
+        Width = 320
+      end
+    end
+  end
+end

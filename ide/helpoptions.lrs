@@ -1,0 +1,28 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('THelpOptionsDialog','FORMDATA',[
+  'TPF0'#18'THelpOptionsDialog'#17'HelpOptionsDialog'#7'Caption'#6#17'HelpOptio'
+  +'nsDialog'#12'ClientHeight'#3','#1#11'ClientWidth'#3#244#1#7'OnClose'#7#22'H'
+  +'elpOptionsDialogClose'#8'OnCreate'#7#23'HelpOptionsDialogCreate'#13'PixelsP'
+  +'erInch'#2'Z'#8'Position'#7#14'poScreenCenter'#18'HorzScrollBar.Page'#3#245#1
+  +#18'VertScrollBar.Page'#3'-'#1#4'Left'#3'#'#1#6'Height'#3','#1#3'Top'#3#163#0
+  +#5'Width'#3#244#1#0#7'TButton'#8'OkButton'#7'Anchors'#11#7'akRight'#8'akBott'
+  +'om'#0#7'Caption'#6#8'OkButton'#7'OnClick'#7#13'OkButtonClick'#8'TabOrder'#2
+  +#0#4'Left'#3'$'#1#6'Height'#2#25#3'Top'#3#8#1#5'Width'#2'K'#0#0#7'TButton'#12
+  +'CancelButton'#7'Anchors'#11#7'akRight'#8'akBottom'#0#7'Caption'#6#12'Cancel'
+  +'Button'#7'OnClick'#7#17'CancelButtonClick'#8'TabOrder'#2#1#4'Left'#3#132#1#6
+  +'Height'#2#25#3'Top'#3#8#1#5'Width'#2'K'#0#0#9'TNotebook'#12'MainNotebook'#5
+  +'Align'#7#5'alTop'#7'Anchors'#11#5'akTop'#6'akLeft'#8'akBottom'#0#9'PageInde'
+  +'x'#2#0#6'Height'#3#0#1#5'Width'#3#244#1#0#5'TPage'#11'ViewersPage'#7'Captio'
+  +'n'#6#11'ViewersPage'#11'ClientWidth'#3#240#1#12'ClientHeight'#3#226#0#4'Lef'
+  +'t'#2#2#6'Height'#3#226#0#3'Top'#2#28#5'Width'#3#240#1#0#8'TListBox'#14'View'
+  +'ersListBox'#7'Anchors'#11#5'akTop'#6'akLeft'#8'akBottom'#0#16'ClickOnSelCha'
+  +'nge'#8#17'OnSelectionChange'#7#29'ViewersListBoxSelectionChange'#8'TabOrder'
+  +#2#0#8'TopIndex'#2#255#4'Left'#2#8#6'Height'#3#180#0#3'Top'#2'$'#5'Width'#3
+  +#149#0#0#0#6'TLabel'#12'ViewersLabel'#7'Caption'#6#12'ViewersLabel'#4'Left'#2
+  +#8#6'Height'#2#23#3'Top'#2#4#5'Width'#3#149#0#0#0#9'TGroupBox'#19'ViewerProp'
+  +'sGroupBox'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#8'akBottom'#0#7'Capt'
+  +'ion'#6#19'ViewerPropsGroupBox'#12'ClientHeight'#3#192#0#11'ClientWidth'#3'<'
+  +#1#11'ParentColor'#9#8'TabOrder'#2#2#4'Left'#3#168#0#6'Height'#3#209#0#3'Top'
+  +#2#7#5'Width'#3'@'#1#0#0#0#0#0
+]);

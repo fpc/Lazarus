@@ -1634,7 +1634,7 @@ type
   TDockTree = class;
 
   { TDockZone is a node in the TDockTree and encapsulates a region into which
-    other zones are contained. }
+    other zones or a single control are contained. }
 
   TDockZone = class
   private
@@ -1647,7 +1647,6 @@ type
     FOrientation: TDockOrientation;
     FNextSibling: TDockZone;
     FPrevSibling: TDockZone;
-    //FPrevSibling: TDockZone;
     function GetHeight: Integer;
     function GetLeft: Integer;
     function GetLimitBegin: Integer;
@@ -2409,6 +2408,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.239  2004/08/21 23:16:11  mattias
+  implemented simple HTML help viewer
+
   Revision 1.238  2004/08/18 22:56:11  mattias
   implemented basic manual docking
 

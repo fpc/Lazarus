@@ -242,6 +242,8 @@ type
 
     // help menu
     itmHelpAboutLazarus: TMenuItem;
+    itmHelpOnlineHelp: TMenuItem;
+    itmHelpConfigureHelp: TMenuItem;
 
     // component palette
     ComponentNotebook : TNotebook;

@@ -227,13 +227,15 @@ const
 
   // help menu
   ecAboutLazarus         = ecUserFirst + 900;
-  
+  ecOnlineHelp           = ecUserFirst + 901;
+  ecConfigureHelp        = ecUserFirst + 902;
+
   // designer
   ecCopyComponents       = ecUserFirst + 1000;
   ecCutComponents        = ecUserFirst + 1001;
   ecPasteComponents      = ecUserFirst + 1002;
   ecSelectParentComponent= ecUserFirst + 1003;
-
+  
   // custom tools
   ecCustomToolFirst      = ecUserFirst + 2000;
   ecCustomToolLast       = ecUserFirst + 2999;
@@ -674,6 +676,8 @@ begin
 
   // help menu
   ecAboutLazarus: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecOnlineHelp: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecConfigureHelp: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // designer
   ecCopyComponents: SetResult(VK_C,[ssCtrl],VK_Insert,[ssCtrl]);
@@ -1218,7 +1222,9 @@ begin
 
     // help menu
     ecAboutLazarus          : Result:= lisMenuAboutLazarus;
-    
+    ecOnlineHelp            : Result:= lisMenuOnlineHelp;
+    ecConfigureHelp         : Result:= lisMenuConfigureHelp;
+
     // desginer
     ecCopyComponents        : Result:= lisDsgCopyComponents;
     ecCutComponents         : Result:= lisDsgCutComponents;
@@ -2080,6 +2086,8 @@ begin
   // help menu
   C:=Categories[AddCategory('HelpMenu',srkmCarHelpMenu,caAll)];
   AddDefault(C,'About Lazarus',ecAboutLazarus);
+  AddDefault(C,'Online Help',ecOnlineHelp);
+  AddDefault(C,'Configure Help',ecConfigureHelp);
 
   // designer
   C:=Categories[AddCategory('Designer',lisKeyCatDesigner,caDesign)];

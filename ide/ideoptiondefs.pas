@@ -34,8 +34,34 @@ interface
 
 uses
   Classes, SysUtils, Laz_XMLCfg, LCLProc, Forms, Controls, StdCtrls, Buttons,
-  LazarusIDEStrConsts;
+  ConfigStorage, LazarusIDEStrConsts;
 
+type
+  { TXMLOptionsStorage }
+
+  TXMLOptionsStorage = class(TConfigStorage)
+  private
+    FXMLConfig: TXMLConfig;
+  protected
+    function  GetFullPathValue(const APath, ADefault: String): String; override;
+    function  GetFullPathValue(const APath: String; ADefault: Integer): Integer; override;
+    function  GetFullPathValue(const APath: String; ADefault: Boolean): Boolean; override;
+    procedure SetFullPathValue(const APath, AValue: String); override;
+    procedure SetDeleteFullPathValue(const APath, AValue, DefValue: String); override;
+    procedure SetFullPathValue(const APath: String; AValue: Integer); override;
+    procedure SetDeleteFullPathValue(const APath: String; AValue, DefValue: Integer); override;
+    procedure SetFullPathValue(const APath: String; AValue: Boolean); override;
+    procedure SetDeleteFullPathValue(const APath: String; AValue, DefValue: Boolean); override;
+    procedure DeleteFullPath(const APath: string); override;
+    procedure DeleteFullPathValue(const APath: string); override;
+  public
+    constructor Create(TheXMLConfig: TXMLConfig);
+    constructor Create(TheXMLConfig: TXMLConfig; const StartPath: string);
+    property XMLConfig: TXMLConfig read FXMLConfig;
+  end;
+
+
+  { non modal IDE windows }
 type
   TNonModalIDEWindow = (
     nmiwNone, // empty/none/undefined
@@ -1211,6 +1237,85 @@ begin
   XMLConfig.SetDeleteValue(Path+'/Count',Count,0);
   for i:=0 to Count-1 do
     Items[i].SaveToXMLConfig(XMLConfig,Path+'/Dialog'+IntToStr(i+1));
+end;
+
+{ TXMLOptionsStorage }
+
+function TXMLOptionsStorage.GetFullPathValue(const APath, ADefault: String
+  ): String;
+begin
+  Result:=XMLConfig.GetValue(APath, ADefault);
+end;
+
+function TXMLOptionsStorage.GetFullPathValue(const APath: String;
+  ADefault: Integer): Integer;
+begin
+  Result:=XMLConfig.GetValue(APath, ADefault);
+end;
+
+function TXMLOptionsStorage.GetFullPathValue(const APath: String;
+  ADefault: Boolean): Boolean;
+begin
+  Result:=XMLConfig.GetValue(APath, ADefault);
+end;
+
+procedure TXMLOptionsStorage.SetFullPathValue(const APath, AValue: String);
+begin
+  XMLConfig.SetValue(APath, AValue);
+end;
+
+procedure TXMLOptionsStorage.SetDeleteFullPathValue(const APath, AValue,
+  DefValue: String);
+begin
+  XMLConfig.SetDeleteValue(APath, AValue, DefValue);
+end;
+
+procedure TXMLOptionsStorage.SetFullPathValue(const APath: String;
+  AValue: Integer);
+begin
+  XMLConfig.SetValue(APath, AValue);
+end;
+
+procedure TXMLOptionsStorage.SetDeleteFullPathValue(const APath: String;
+  AValue, DefValue: Integer);
+begin
+  XMLConfig.SetDeleteValue(APath, AValue, DefValue);
+end;
+
+procedure TXMLOptionsStorage.SetFullPathValue(const APath: String;
+  AValue: Boolean);
+begin
+  XMLConfig.SetValue(APath, AValue);
+end;
+
+procedure TXMLOptionsStorage.SetDeleteFullPathValue(const APath: String;
+  AValue, DefValue: Boolean);
+begin
+  XMLConfig.SetDeleteValue(APath, AValue, DefValue);
+end;
+
+procedure TXMLOptionsStorage.DeleteFullPath(const APath: string);
+begin
+  XMLConfig.DeletePath(APath);
+end;
+
+procedure TXMLOptionsStorage.DeleteFullPathValue(const APath: string);
+begin
+  XMLConfig.DeleteValue(APath);
+end;
+
+constructor TXMLOptionsStorage.Create(TheXMLConfig: TXMLConfig);
+begin
+  FXMLConfig:=TheXMLConfig;
+  if FXMLConfig=nil then
+    raise Exception.Create('');
+end;
+
+constructor TXMLOptionsStorage.Create(TheXMLConfig: TXMLConfig;
+  const StartPath: string);
+begin
+  Create(TheXMLConfig);
+  AppendBasePath(StartPath);
 end;
 
 initialization

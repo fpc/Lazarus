@@ -61,7 +61,6 @@ properly:
   2. Apple X11: On a fresh system: choose "Customize" in the install-dialogue,
   check "X11". On an already installed system: download at
   http://www.apple.com/downloads/macosx/apple/x11formacosx.html
-
   The X11-Application is in /Applications/Utilities/X11.
 
   3. gtk1.2: The gtk is installed easily with a package manager like fink.

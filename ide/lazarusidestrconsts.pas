@@ -244,7 +244,9 @@ resourcestring
   lisMenuCodeToolsDefinesEditor = 'CodeTools defines editor';
   
   lisMenuAboutLazarus = 'About Lazarus';
-  
+  lisMenuOnlineHelp = 'Online Help';
+  lisMenuConfigureHelp = 'Configure Help';
+
   lisDsgCopyComponents = 'Copy selected components to clipboard';
   lisDsgCutComponents = 'Cut selected components to clipboard';
   lisDsgPasteComponents = 'Paste selected components from clipboard';
@@ -2496,6 +2498,11 @@ resourcestring
     +'compiler filename %s%s%s%sis not a valid executable.%sChoose Ok to '
     +'choose the default %s%s%s.%sOtherwise check Environment -> Environment '
     +'Options -> Files';
+    
+  // Help Options
+  lisHlpOptsHelpOptions = 'Help Options';
+  lisHlpOptsViewers = 'Viewers';
+  lisHlpOptsProperties = 'Properties:';
 
 implementation
 end.
