@@ -81,6 +81,9 @@ uses
 
 type
   TFindDeclarationTool = class;
+  
+  //----------------------------------------------------------------------------
+  // variable atoms
 
   TVariableAtomType = (
     vatNone,             // undefined
@@ -117,12 +120,14 @@ const
      );
      
 type
+  //----------------------------------------------------------------------------
   // searchpath delimiter is semicolon
   TOnGetSearchPath = function(Sender: TObject): string of object;
   
   TOnGetCodeToolForBuffer = function(Sender: TObject;
     Code: TCodeBuffer): TFindDeclarationTool of object;
 
+  //----------------------------------------------------------------------------
   // flags/states for searching
   TFindDeclarationFlag = (
     fdfSearchInAncestors,   // if context is a class, search also in
@@ -191,6 +196,7 @@ type
   TFoundDeclarationFlags = set of TFoundDeclarationFlag;
 
 
+  //----------------------------------------------------------------------------
   TFindDeclarationParams = class;
   
   TFindContext = record
@@ -202,6 +208,7 @@ const
   CleanFindContext: TFindContext = (Node:nil; Tool:nil);
   
 type
+  //----------------------------------------------------------------------------
   { TExpressionTypeDesc describes predefined types
     The Freepascal compiler can automatically convert them
   }
@@ -313,6 +320,7 @@ const
     (Desc:xtNone; SubDesc:xtNone; Context:(Node:nil; Tool:nil));
 
 type
+  //----------------------------------------------------------------------------
   // TTypeCompatibility is the result of a compatibility check
   TTypeCompatibility = (
     tcExact,        // exactly same type
@@ -329,6 +337,7 @@ const
      );
 
 type
+  //----------------------------------------------------------------------------
   // TExprTypeList is used for compatibility checks of whole parameter lists
   TExprTypeList = class
   private
@@ -346,6 +355,7 @@ type
     function AsString: string;
   end;
   
+  //----------------------------------------------------------------------------
   // TFoundProc is used for comparing overloaded procs
   TFoundProc = record
     // the expression input list, which should fit into the searched proc
@@ -424,6 +434,7 @@ type
   end;
   
   
+  //----------------------------------------------------------------------------
   // TFindDeclarationTool is source based and can therefore search for more
   // than declarations:
   TFindSmartFlag = (
@@ -440,6 +451,11 @@ const
 
 
 type
+  //----------------------------------------------------------------------------
+  ECodeToolUnitNotFound = class(ECodeToolFileNotFound)
+  end;
+
+  //----------------------------------------------------------------------------
 
   { TFindDeclarationTool }
 
@@ -1044,7 +1060,8 @@ begin
         UnitInFilename:='';
       NewPos.Code:=FindUnitSource(UnitName,UnitInFilename);
       if NewPos.Code=nil then
-        RaiseExceptionFmt(ctsUnitNotFound,[UnitName]);
+        RaiseExceptionInstance(
+          ECodeToolUnitNotFound.Create(Self,ctsUnitNotFound,UnitName));
       NewPos.X:=1;
       NewPos.Y:=1;
       NewTopLine:=1;
@@ -3042,7 +3059,9 @@ begin
       NewCodeTool:=FindCodeToolForUsedUnit(UnitNameAtom,InAtom,false);
       if NewCodeTool=nil then begin
         MoveCursorToCleanPos(UnitNameAtom.StartPos);
-        RaiseExceptionFmt(ctsUnitNotFound,[GetAtom(UnitNameAtom)]);
+        RaiseExceptionInstance(
+          ECodeToolUnitNotFound.Create(Self,ctsUnitNotFound,
+                                       GetAtom(UnitNameAtom)));
       end else if NewCodeTool=Self then begin
         MoveCursorToCleanPos(UnitNameAtom.StartPos);
         RaiseExceptionFmt(ctsIllegalCircleInUsedUnits,[GetAtom(UnitNameAtom)]);
@@ -3239,7 +3258,8 @@ begin
   if (NewCode=nil) then begin
     // no source found
     CurPos.StartPos:=-1;
-    RaiseExceptionFmt(ctsUnitNotFound,[AnUnitName]);
+    RaiseExceptionInstance(
+      ECodeToolUnitNotFound.Create(Self,ctsUnitNotFound,AnUnitName));
   end else if NewCode=TCodeBuffer(Scanner.MainCode) then begin
     // Searching again in hidden unit
     writeln('WARNING: Searching again in hidden unit: "',NewCode.Filename,'"');
@@ -3254,7 +3274,8 @@ begin
       NewCodeTool:=FOnGetCodeToolForBuffer(Self,NewCode);
       if NewCodeTool=nil then begin
         CurPos.StartPos:=-1;
-        RaiseExceptionFmt(ctsUnitNotFound,[AnUnitName]);
+        RaiseExceptionInstance(
+          ECodeToolUnitNotFound.Create(Self,ctsUnitNotFound,AnUnitName));
       end;
     end else if NewCode=TCodeBuffer(Scanner.MainCode) then begin
       NewCodeTool:=Self;

@@ -237,9 +237,10 @@ type
     function GatherIdentifiers(Code: TCodeBuffer; X,Y: integer): boolean;
     
     // expressions
-    function GetExpressionBounds(Code: TCodeBuffer; X,Y: integer;
+    function GetStringConstBounds(Code: TCodeBuffer; X,Y: integer;
           var StartCode: TCodeBuffer; var StartX, StartY: integer;
-          var EndCode: TCodeBuffer; var EndX, EndY: integer): boolean;
+          var EndCode: TCodeBuffer; var EndX, EndY: integer;
+          ResolveComments: boolean): boolean;
 
     // functions for events in the object inspector
     function GetCompatiblePublishedMethods(Code: TCodeBuffer;
@@ -798,22 +799,24 @@ begin
   {$ENDIF}
 end;
 
-function TCodeToolManager.GetExpressionBounds(Code: TCodeBuffer; X, Y: integer;
+function TCodeToolManager.GetStringConstBounds(Code: TCodeBuffer; X, Y: integer;
   var StartCode: TCodeBuffer; var StartX, StartY: integer;
-  var EndCode: TCodeBuffer; var EndX, EndY: integer): boolean;
+  var EndCode: TCodeBuffer; var EndX, EndY: integer;
+  ResolveComments: boolean): boolean;
 var
   CursorPos, StartPos, EndPos: TCodeXYPosition;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.GetExpressionBounds A ',Code.Filename,' x=',x,' y=',y);
+  writeln('TCodeToolManager.GetStringConstBounds A ',Code.Filename,' x=',x,' y=',y);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   CursorPos.X:=X;
   CursorPos.Y:=Y;
   CursorPos.Code:=Code;
   try
-    Result:=FCurCodeTool.GetExpressionBounds(CursorPos,StartPos,EndPos);
+    Result:=FCurCodeTool.GetStringConstBounds(CursorPos,StartPos,EndPos,
+                                              ResolveComments);
     if Result then begin
       StartCode:=StartPos.Code;
       StartX:=StartPos.X;

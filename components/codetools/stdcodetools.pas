@@ -157,8 +157,9 @@ type
           SourceChangeCache: TSourceChangeCache): boolean;
 
     // expressions
-    function GetExpressionBounds(CursorPos: TCodeXYPosition;
-          var StartPos, EndPos: TCodeXYPosition): boolean;
+    function GetStringConstBounds(CursorPos: TCodeXYPosition;
+          var StartPos, EndPos: TCodeXYPosition;
+          ResolveComments: boolean): boolean;
   end;
 
 
@@ -1184,18 +1185,142 @@ begin
   Result:=true;
 end;
 
-function TStandardCodeTool.GetExpressionBounds(CursorPos: TCodeXYPosition;
-  var StartPos, EndPos: TCodeXYPosition): boolean;
+function TStandardCodeTool.GetStringConstBounds(CursorPos: TCodeXYPosition;
+  var StartPos, EndPos: TCodeXYPosition; ResolveComments: boolean): boolean;
+// examples:
+//   's1'+'s2'#13+AFunction(...)+inherited AMethod
+type
+  TStrConstTokenType = (scatNone, scatStrConst, scatPlus, scatIdent,
+    scatInherited, scatPoint, scatUp,
+    scatEdgedBracketOpen, scatEdgedBracketClose,
+    scatRoundBracketOpen, scatRoundBracketClose);
+    
+  function GetCurrentTokenType: TStrConstTokenType;
+  begin
+    if AtomIsStringConstant then
+      Result:=scatStrConst
+    else if AtomIsChar('+') then
+      Result:=scatPlus
+    else if UpAtomIs('INHERITED') then
+      Result:=scatInherited
+    else if AtomIsIdentifier(false) then
+      Result:=scatIdent
+    else if CurPos.Flag=cafPoint then
+      Result:=scatPoint
+    else if AtomIsChar('^') then
+      Result:=scatUp
+    else
+      Result:=scatNone;
+  end;
+  
 var
   CleanCursorPos: integer;
-  CursorNode: TCodeTreeNode;
+  SameArea: TAtomPosition;
+  LastToken, CurrentToken: TStrConstTokenType;
+  StartCleanPos, EndCleanPos: integer;
 begin
-  Result:=false;
+  StartPos:=CursorPos;
+  EndPos:=CursorPos;
+  Result:=true;
   BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos,[]);
-  CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
-  MoveCursorToNodeStart(CursorNode);
+  GetCleanPosInfo(-1,CleanCursorPos,ResolveComments,SameArea);
+  if (SameArea.EndPos=SameArea.StartPos) or (SameArea.StartPos>SrcLen) then
+    exit;
+  // read til end of string constant
+  MoveCursorToCleanPos(SameArea.StartPos);
   ReadNextAtom;
+  CurrentToken:=GetCurrentTokenType;
+  if (CurrentToken=scatNone) then exit;
+  repeat
+    EndCleanPos:=CurPos.EndPos;
+    ReadNextAtom;
+    LastToken:=CurrentToken;
+    CurrentToken:=GetCurrentTokenType;
+    case CurrentToken of
+    scatNone, scatEdgedBracketClose, scatRoundBracketClose:
+      if not (LastToken in [scatStrConst,scatIdent,scatUp,
+         scatEdgedBracketClose, scatRoundBracketClose])
+      then
+        exit
+      else
+        break;
+
+    scatStrConst:
+      if not (LastToken in [scatPlus]) then exit;
+      
+    scatPlus:
+      if not (LastToken in [scatStrConst, scatIdent, scatUp,
+        scatEdgedBracketClose, scatRoundBracketClose]) then exit;
+
+    scatIdent:
+      if not (LastToken in [scatPlus, scatPoint, scatInherited]) then exit;
+
+    scatInherited:
+      if not (LastToken in [scatPlus, scatPoint]) then exit;
+
+    scatPoint:
+      if not (LastToken in [scatIdent, scatUp]) then exit;
+
+    scatEdgedBracketOpen,scatRoundBracketOpen:
+      if not (LastToken in [scatIdent, scatUp]) then
+        exit
+      else begin
+        ReadTilBracketClose(true);
+        CurrentToken:=GetCurrentTokenType;
+      end;
+      
+    end;
+  until false;
+
+  // read til end of string constant
+  MoveCursorToCleanPos(SameArea.StartPos);
+  ReadNextAtom;
+  CurrentToken:=GetCurrentTokenType;
+  repeat
+    StartCleanPos:=CurPos.EndPos;
+    ReadPriorAtom;
+    LastToken:=CurrentToken;
+    CurrentToken:=GetCurrentTokenType;
+    case CurrentToken of
+    scatNone, scatEdgedBracketOpen, scatRoundBracketOpen:
+      if not (LastToken in [scatStrConst,scatIdent]) then
+        exit
+      else
+        break;
+
+    scatStrConst:
+      if not (LastToken in [scatPlus]) then exit;
+
+    scatPlus:
+      if not (LastToken in [scatStrConst, scatIdent, scatRoundBracketOpen]) then
+        exit;
+
+    scatIdent:
+      if not (LastToken in [scatPlus, scatPoint, scatUp, scatRoundBracketOpen,
+        scatEdgedBracketOpen]) then exit;
+
+    scatInherited:
+      if not (LastToken in [scatIdent]) then exit;
+
+    scatPoint:
+      if not (LastToken in [scatIdent]) then exit;
+
+    scatEdgedBracketClose,scatRoundBracketClose:
+      if not (LastToken in [scatPlus, scatUp, scatPoint]) then
+        exit
+      else begin
+        ReadBackTilBracketOpen(true);
+        CurrentToken:=GetCurrentTokenType;
+      end;
+
+    end;
+  until false;
   
+  // convert start and end position
+  if not CleanPosToCaret(StartCleanPos,StartPos) then exit;
+  if not CleanPosToCaret(EndCleanPos,EndPos) then exit;
+
+  Result:=true;
 end;
 
 function TStandardCodeTool.FindPublishedVariable(const UpperClassName,

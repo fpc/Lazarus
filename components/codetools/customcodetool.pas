@@ -54,6 +54,7 @@ const
 type
   TCustomCodeTool = class;
 
+
   // types for errors
   ECodeToolError = class(Exception)
     Sender: TCustomCodeTool;
@@ -61,7 +62,14 @@ type
   end;
   
   ECodeToolErrors = class of ECodeToolError;
-
+  
+  ECodeToolFileNotFound = class(ECodeToolError)
+    Filename: string;
+    constructor Create(ASender: TCustomCodeTool;
+      const AMessage, AFilename: string);
+  end;
+  
+  
   // types for user aborts
   TOnParserProgress = function(Tool: TCustomCodeTool): boolean of object;
 
@@ -99,6 +107,7 @@ type
     LastErrorBehindIgnorePosition: boolean;
     LastErrorCheckedForIgnored: boolean;
     CurrentPhase: integer;
+    procedure RaiseExceptionInstance(Exception: ECodeToolError); virtual;
     procedure RaiseExceptionClass(const AMessage: string;
       ExceptionClass: ECodeToolErrors); virtual;
     procedure RaiseException(const AMessage: string); virtual;
@@ -1681,8 +1690,7 @@ begin
     Scanner.SetIgnoreErrorAfter(IgnoreErrorAfter.P,IgnoreErrorAfter.Code);
 end;
 
-procedure TCustomCodeTool.RaiseExceptionClass(const AMessage: string;
-  ExceptionClass: ECodeToolErrors);
+procedure TCustomCodeTool.RaiseExceptionInstance(Exception: ECodeToolError);
 var CaretXY: TCodeXYPosition;
   CursorPos: integer;
   Node: TCodeTreeNode;
@@ -1708,7 +1716,13 @@ begin
   end;
   // raise the exception
   CurrentPhase:=CodeToolPhaseNone;
-  raise ExceptionClass.Create(Self,AMessage);
+  raise Exception;
+end;
+
+procedure TCustomCodeTool.RaiseExceptionClass(const AMessage: string;
+  ExceptionClass: ECodeToolErrors);
+begin
+  RaiseExceptionInstance(ExceptionClass.Create(Self,AMessage));
 end;
 
 function TCustomCodeTool.DefaultKeyWordFunc: boolean;
@@ -2152,6 +2166,15 @@ constructor ECodeToolError.Create(ASender: TCustomCodeTool;
 begin
   inherited Create(AMessage);
   Sender:=ASender;
+end;
+
+{ ECodeToolFileNotFound }
+
+constructor ECodeToolFileNotFound.Create(ASender: TCustomCodeTool;
+  const AMessage, AFilename: string);
+begin
+  inherited Create(ASender,AMessage);
+  Filename:=AFilename;
 end;
 
 end.

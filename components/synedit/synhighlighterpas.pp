@@ -477,17 +477,23 @@ end;
 
 {$IFDEF SYN_LAZARUS}
 function TSynPasSyn.KeyHash: Integer;
-var ToHash: integer;
+var
+  Start, ToHash: PChar;
 begin
   Result := 0;
-  ToHash := fToIdent;
-  while (ToHash<=fLineLen) and (IsLetterChar[fLine[ToHash]]) do begin
-    inc(Result, mHashTable[fLine[ToHash]]);
-    inc(ToHash);
+  if (fToIdent<=fLineLen) and (fLine<>'') then begin
+    Start := PChar(fLine) + fToIdent - 1;
+    ToHash := Start;
+    while (IsLetterChar[ToHash^]) do begin
+      inc(Result, mHashTable[ToHash^]);
+      inc(ToHash);
+    end;
+    if IsUnderScoreOrNumberChar[ToHash^] then
+      inc(ToHash);
+    fStringLen := integer(ToHash) - integer(Start);
+  end else begin
+    fStringLen := 0;
   end;
-  if (ToHash<=fLineLen) and IsUnderScoreOrNumberChar[fLine[ToHash]] then
-    inc(ToHash);
-  fStringLen := ToHash - fToIdent;
 end; { KeyHash }
 {$ELSE}
 function TSynPasSyn.KeyHash(ToHash: PChar): Integer;
@@ -506,23 +512,19 @@ end; { KeyHash }
 function TSynPasSyn.KeyComp(const aKey: string): Boolean;
 var
   I: Integer;
-  {$IFDEF SYN_LAZARUS}
-  Temp: Integer;
-  {$ELSE}
   Temp: PChar;
-  {$ENDIF}
 begin
-  Temp := fToIdent;
   if Length(aKey) = fStringLen then
   begin
+    {$IFDEF SYN_LAZARUS}
+    Temp := PChar(fLine) + fToIdent - 1;
+    {$ELSE}
+    Temp := fToIdent;
+    {$ENDIF}
     Result := True;
     for i := 1 to fStringLen do
     begin
-      {$IFDEF SYN_LAZARUS}
-      if mHashTable[fLine[Temp]] <> mHashTable[aKey[i]] then
-      {$ELSE}
       if mHashTable[Temp^] <> mHashTable[aKey[i]] then
-      {$ENDIF}
       begin
         Result := False;
         break;
