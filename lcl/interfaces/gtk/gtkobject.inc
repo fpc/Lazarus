@@ -3063,7 +3063,8 @@ end;
   Applies a Message to the sender
  ------------------------------------------------------------------------------}
 //TODO: remove ALCLObject when creation splitup is finished
-procedure TGtkWidgetSet.SetCallback(const AMsg: LongInt; const AGTKObject: PGTKObject; const ALCLObject: TObject);
+procedure TGtkWidgetSet.SetCallback(const AMsg: LongInt;
+  const AGTKObject: PGTKObject; const ALCLObject: TObject);
 
   procedure ConnectSenderSignal(const AnObject:PGTKObject; const ASignal: PChar;
     const ACallBackProc: Pointer);
@@ -3101,6 +3102,7 @@ procedure TGtkWidgetSet.SetCallback(const AMsg: LongInt; const AGTKObject: PGTKO
   
   procedure ConnectKeyPressReleaseEvents(const AnObject: PGTKObject);
   begin
+    //debugln('ConnectKeyPressReleaseEvents A ALCLObject=',DbgSName(ALCLObject));
     ConnectSenderSignal(AnObject,
       'key-press-event', @GTKKeyUpDown, GDK_KEY_PRESS_MASK);
     ConnectSenderSignalAfter(AnObject,
@@ -3114,6 +3116,7 @@ procedure TGtkWidgetSet.SetCallback(const AMsg: LongInt; const AGTKObject: PGTKO
 var
   gObject, gFixed, gCore, Scroll, Adjustment: PGTKObject;
 begin
+  //debugln('TGtkWidgetSet.SetCallback A ALCLObject=',DbgSName(ALCLObject),' AMsg=',dbgs(AMsg));
   if AGTKObject = nil
   then gObject := ObjectToGTKObject(ALCLObject)
   else gObject := AGTKObject;
@@ -3231,6 +3234,7 @@ begin
     LM_SYSCHAR,
     LM_SYSKEYUP:
     begin
+      //debugln('TGtkWidgetSet.SetCallback A KEY ALCLObject=',DbgSName(ALCLObject),' AMsg=',dbgs(AMsg));
       if (ALCLObject is TCustomComboBox) then begin
         ConnectKeyPressReleaseEvents(PgtkObject(PgtkCombo(gObject)^.entry));
       end
@@ -7010,6 +7014,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.630  2005/02/19 20:33:09  mattias
+  fixed gtk2 key handle result
+
   Revision 1.629  2005/02/19 16:30:46  mattias
   fixed 1.0.10 compilation
 

@@ -60,12 +60,32 @@ begin
     Result := False;
 end;
 
-function GTK2KeyUpDown(Widget: PGtkWidget; Event : pgdkeventkey;
+function GTK2KeyDown(Widget: PGtkWidget; Event : pgdkeventkey;
   Data: gPointer) : GBoolean; cdecl;
 begin
-  Result := GtkWidgetIsA(Widget,GTK_APIWIDGETCLIENT_TYPE) and
-            (HandleGtkKeyUpDown(Widget, Event, Data, True) or
-            HandleGtkKeyUpDown(Widget, Event, Data, False));
+  debugln('GTK2KeyDown ',DbgSName(TObject(Data)));
+  Result := HandleGtkKeyUpDown(Widget, Event, Data, True);
+end;
+
+function GTK2KeyDownAfter(Widget: PGtkWidget; Event : pgdkeventkey;
+  Data: gPointer) : GBoolean; cdecl;
+begin
+  debugln('GTK2KeyDownAfter ',DbgSName(TObject(Data)));
+  Result := HandleGtkKeyUpDown(Widget, Event, Data, False);
+end;
+
+function GTK2KeyUp(Widget: PGtkWidget; Event : pgdkeventkey;
+  Data: gPointer) : GBoolean; cdecl;
+begin
+  debugln('GTK2KeyUp ',DbgSName(TObject(Data)));
+  Result := HandleGtkKeyUpDown(Widget, Event, Data, True);
+end;
+
+function GTK2KeyUpAfter(Widget: PGtkWidget; Event : pgdkeventkey;
+  Data: gPointer) : GBoolean; cdecl;
+begin
+  debugln('GTK2KeyUpAfter ',DbgSName(TObject(Data)));
+  Result := HandleGtkKeyUpDown(Widget, Event, Data, False);
 end;
 
 function GTK2KillFocusCB(widget: PGtkWidget; event:PGdkEventFocus;
@@ -974,19 +994,21 @@ procedure TGTK2WidgetSet.SetCallback(const AMsg: LongInt; const AGTKObject: PGTK
 
   procedure ConnectKeyPressReleaseEvents(const AnObject: PGTKObject);
   begin
+    //debugln('gtk2object ConnectKeyPressReleaseEvents A ALCLObject=',DbgSName(ALCLObject));
     ConnectSenderSignal(AnObject,
-      'key-press-event', @GTK2KeyUpDown, GDK_KEY_PRESS_MASK);
+      'key-press-event', @GTK2KeyDown, GDK_KEY_PRESS_MASK);
     //ConnectSenderSignalAfter(AnObject,
-    //  'key-press-event', @GTK2KeyUpDownAfter, GDK_KEY_PRESS_MASK);
-    ConnectSenderSignal(AnObject,
-      'key-release-event', @GTK2KeyUpDown, GDK_KEY_RELEASE_MASK);
+    //  'key-press-event', @GTK2KeyDownAfter, GDK_KEY_PRESS_MASK);
+    //ConnectSenderSignal(AnObject,
+    //  'key-release-event', @GTK2KeyUp, GDK_KEY_RELEASE_MASK);
     //ConnectSenderSignalAfter(AnObject,
-    //  'key-release-event', @GTK2KeyUpDownAfter, GDK_KEY_RELEASE_MASK);
+    //  'key-release-event', @GTK2KeyUpAfter, GDK_KEY_RELEASE_MASK);
   end;
 
 var
   gObject, gFixed, gCore: PGTKObject;
 begin
+  //debugln('gtk2object.inc TGtkWidgetSet.SetCallback A ALCLObject=',DbgSName(ALCLObject),' AMsg=',dbgs(AMsg));
   gObject := AGTKObject;
   if gObject = nil then Exit;
 
@@ -1011,7 +1033,7 @@ begin
     LM_CHAR,
     LM_KEYDOWN,
     LM_KEYUP,
-
+    
     LM_SYSCHAR,
     LM_SYSKEYDOWN,
     LM_SYSKEYUP:
@@ -1499,6 +1521,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.25  2005/02/19 20:33:10  mattias
+  fixed gtk2 key handle result
+
   Revision 1.24  2005/02/16 23:56:51  mattias
   fixed some gtk2 intf mem leaks, clean ups
 

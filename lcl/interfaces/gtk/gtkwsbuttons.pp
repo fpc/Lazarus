@@ -157,7 +157,8 @@ begin
   Result := False;
 end;
 
-procedure TGtkWSButton.SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo);
+procedure TGtkWSButton.SetCallbacks(const AGtkWidget: PGtkWidget;
+  const AWidgetInfo: PWidgetInfo);
 begin        
   TGtkWSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
 

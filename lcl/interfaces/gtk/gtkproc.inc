@@ -2040,7 +2040,8 @@ var
   TargetData: gPointer;
   KeyPressesChar: char;
 begin
-  Result := True;
+  Result := CallBackDefaultReturn;
+
   EventStopped := False;
   HandledByLCL:=KeyEventWasHandledByLCL(Event,BeforeEvent);
 
@@ -4463,7 +4464,7 @@ begin
 end;
 {$ELSE}
 begin
-  Result:= g_signal_handler_find(AnObject,
+  Result:=g_signal_handler_find(AnObject,
     G_SIGNAL_MATCH_FUNC or G_SIGNAL_MATCH_DATA,
     0,0,nil,ACallBackProc,ALCLObject)<>0;
 end;
@@ -4480,7 +4481,8 @@ var
   RealizeConnected: Boolean;
   HasRealizeSignal: Boolean;
 begin
-  if ACallBackProc = nil then exit;
+  if ACallBackProc = nil then
+    RaiseGDBException('ConnectSignal');
 
   // first loop through the handlers to:
   // - check if a handler already exists
@@ -8057,6 +8059,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.338  2005/02/19 20:33:09  mattias
+  fixed gtk2 key handle result
+
   Revision 1.337  2005/02/19 16:30:47  mattias
   fixed 1.0.10 compilation
 

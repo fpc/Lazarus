@@ -581,16 +581,18 @@ function GetDesignOnlySignalFlag(Widget: PGtkWidget;
 
 // signals
 // new signal procs, these will obsolete the old ones
+// MG: Say who?
 procedure SignalConnect(const AWidget: PGTKWidget; const ASignal: PChar;
   const AProc: Pointer; const AInfo: PWidgetInfo);
 procedure SignalConnectAfter(const AWidget: PGTKWidget; const ASignal: PChar;
   const AProc: Pointer; const AInfo: PWidgetInfo);
 
 // old signal procs
-procedure ConnectSignal(const AnObject:PGTKObject; const ASignal: PChar;
+// MG: why old?
+procedure ConnectSignal(const AnObject: PGTKObject; const ASignal: PChar;
   const ACallBackProc: Pointer; const ALCLObject: TObject;
   const AReqSignalMask: TGdkEventMask; const ASFlags: TConnectSignalFlags);
-procedure ConnectSignal(const AnObject:PGTKObject; const ASignal: PChar;
+procedure ConnectSignal(const AnObject: PGTKObject; const ASignal: PChar;
   const ACallBackProc: Pointer; const ALCLObject: TObject;
   const AReqSignalMask: TGdkEventMask);
 procedure ConnectSignalAfter(const AnObject:PGTKObject; const ASignal: PChar;
