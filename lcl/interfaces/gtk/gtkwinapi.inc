@@ -5185,7 +5185,7 @@ end;
 function TgtkObject.SetFocus(hWnd: HWND): HWND;
 var
   TopLevel: PGTKWidget;
-  Widget: PGtkWidget;
+  Widget, ImplWidget: PGtkWidget;
   {$IfDef VerboseFocus}
   LCLObject: TWinControl;
   {$EndIf}
@@ -5239,17 +5239,19 @@ begin
           ' has focus=',gtk_widget_has_focus(PgtkWidget(PGtkCombo(hwnd)^.entry)));
           {$EndIf}
         end
-        else if (GetCoreChildWidget(Widget) <> nil) then begin
-          {$IfDef VerboseFocus}
-          writeln('[TgtkObject.SetFocus] I CoreChild=',HexStr(Cardinal(GetCoreChildWidget(Widget)),8));
-          {$EndIf}
-          gtk_widget_grab_focus(GetCoreChildWidget(Widget))
-        end
         else begin
-          gtk_widget_grab_focus(Widget);
-          {$IfDef VerboseFocus}
-          writeln('[TgtkObject.SetFocus] J has focus=',gtk_widget_has_focus(Widget));
-          {$EndIf}
+          ImplWidget:= GetWidgetInfo(Widget, true)^.ImplementationWidget;
+          if ImplWidget <> nil then begin
+            {$IfDef VerboseFocus}
+            writeln('[TgtkObject.SetFocus] I CoreChild=',HexStr(Cardinal(ImplWidget),8));
+            {$EndIf}
+            gtk_widget_grab_focus(ImplWidget)
+          end else begin
+            gtk_widget_grab_focus(Widget);
+            {$IfDef VerboseFocus}
+            writeln('[TgtkObject.SetFocus] J has focus=',gtk_widget_has_focus(Widget));
+            {$EndIf}
+          end;  
         end;
       end;
     end
@@ -6378,6 +6380,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.125  2002/09/06 19:45:11  lazarus
+  Cleanups plus a fix to TPanel parent/drawing problem.
+
   Revision 1.124  2002/09/06 19:11:48  lazarus
   MG: fixed scrollbars of TTreeView
 
