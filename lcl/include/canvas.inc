@@ -571,7 +571,8 @@ end;
   Returns:  Nothing
 
  ------------------------------------------------------------------------------}
-procedure TCanvas.TextRect(Rect: TRect; X, Y : Integer; const Text : String; const Style : TTextStyle);
+procedure TCanvas.TextRect(Rect: TRect; X, Y : Integer; const Text : String;
+  const Style : TTextStyle);
 var
   Options : Longint;
   fRect : TRect;
@@ -627,7 +628,7 @@ begin
   end
   else
     RequiredState([csHandleValid, csFontValid]);
-  DrawText(Self.Handle, pChar(Text), Length(Text), fRect, Options)
+  DrawText(Self.Handle, pChar(Text), Length(Text), fRect, Options);
 end;
 
 
@@ -1040,6 +1041,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.26  2002/09/12 15:35:57  lazarus
+  MG: small bugfixes
+
   Revision 1.25  2002/09/03 08:07:19  lazarus
   MG: image support, TScrollBox, and many other things from Andrew
 
