@@ -579,7 +579,7 @@ type
     property PenPos: TPoint read GetPenPos write SetPenPos;
     property OnChange : TNotifyEvent read FOnChange write FOnChange;
     property OnChanging: TNotifyEvent read FOnChanging write FOnChanging;
-    property Pixels[X, Y: Integer]: TCOlor read GetPixel write SetPixel;
+    property Pixels[X, Y: Integer]: TColor read GetPixel write SetPixel;
     property Handle: HDC read GetHandle write SetHandle;
     property TextStyle : TTextStyle read FTextStyle write FTextStyle;
     property LockCount:Integer read FLockCount;
@@ -906,6 +906,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.49  2002/10/08 16:15:43  lazarus
+  MG: fixed small typos and accelerated TDynHashArray.Contains
+
   Revision 1.48  2002/10/01 18:00:03  lazarus
   AJ: Initial TUpDown, minor property additions to improve reading Delphi created forms.
 
