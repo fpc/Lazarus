@@ -6740,8 +6740,8 @@ var
   ActiveSrcEdit:TSourceEditor;
   ErrorCaret: TPoint;
 begin
-  UpdateSourceNames;
   if CodeToolBoss.ErrorMessage='' then begin
+    UpdateSourceNames;
     exit;
   end;
   // syntax error -> show error and jump
@@ -6779,6 +6779,7 @@ begin
       ActiveSrcEdit.ErrorLine:=ErrorCaret.Y;
     end;
   end;
+  UpdateSourceNames;
 end;
 
 procedure TMainIDE.DoFindDeclarationAtCursor;
@@ -6810,8 +6811,9 @@ begin
   begin
     DoJumpToCodePos(ActiveSrcEdit, ActiveUnitInfo,
       NewSource, NewX, NewY, NewTopLine, true);
-  end else
+  end else begin
     DoJumpToCodeToolBossError;
+  end;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoFindDeclarationAtCaret B');{$ENDIF}
 end;
 
@@ -7986,6 +7988,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.490  2003/03/15 15:50:10  mattias
+  fixed DoJumpToError
+
   Revision 1.489  2003/03/15 13:26:07  mattias
   fixes for fpc 1.1
 
