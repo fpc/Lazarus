@@ -19,7 +19,7 @@ uses
   SynEdit, SynEditHighlighter, SynhighlighterPas, SynCompletion,
   SynEditAutoComplete, SynhighlighterHTML, SynhighlighterCPP, SynHighlighterXML,
   SynHighlighterLFM, SynHighlighterPerl, SynHighlighterMulti, SynRegExpr,
-  SynEditExport, SynExportHTML;
+  SynEditExport, SynExportHTML, SynMemo, SynMacroRecorder, SynEditPlugins;
 
 implementation
 
@@ -28,6 +28,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.12  2002/11/21 21:39:49  mattias
+  add synmemo.pas syneditplugins.pas synmacrorecorder.pas
+
   Revision 1.11  2002/11/21 20:28:26  mattias
   added SynEditExport and SynExportHTML
 

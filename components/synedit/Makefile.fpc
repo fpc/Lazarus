@@ -17,7 +17,7 @@ units=allunits
 implicitunits=syntextdrawer syneditkeycmds synedittypes syneditstrconst \
   syneditsearch syneditmiscprocs syneditmiscclasses synedittextbuffer \
   synedit synedithighlighter synhighlightermulti synregexpr synexporthtml \
-  syneditexport
+  syneditexport synmemo synmacrorecorder syneditplugins
 
 [require]
 packages=fcl regexpr
