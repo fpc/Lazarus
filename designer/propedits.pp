@@ -751,7 +751,7 @@ type
   end;
 
 { TCollectionPropertyEditor
-  A property editor for TCollection lists.
+  Default property editor for all TCollections
   UNDER CONSTRUCTION by Mattias}
 
   TCollectionPropertyEditor = class(TListPropertyEditor)
@@ -772,6 +772,8 @@ type
     procedure SetElementValue(Element: TListElementPropertyEditor;
       NewValue: ansistring); override;
   public
+    function GetAttributes: TPropertyAttributes; override;
+    procedure Edit; override;
   end;
 
 //==============================================================================
@@ -2520,16 +2522,151 @@ end;
 
 { TCollectionPropertyEditor }
 
-function TCollectionPropertyEditor.ReadElementCount: integer;
-var
-  Collection: TCollection;
+Type
+  TCollectionPropertyEditorForm = Class(TForm)
+  protected
+    ButtonBevel: TBEVEL;
+    CollectionList : TLISTBOX;
+    ButtonPanel: TPANEL;
+    AddButton: TSPEEDBUTTON;
+    DeleteButton: TSPEEDBUTTON;
+    procedure ListCLICK(Sender: TObject);
+    procedure AddCLICK(Sender: TObject);
+    procedure DeleteCLICK(Sender: TObject);
+    procedure UpdateCaption;
+  public
+    Collection : TCollection;
+    ComponentName,
+    PropertyName : String;
+    Procedure PropagateList;
+    Constructor Create(AOwner : TComponent); Override;
+  end;
+
+const
+  CollectionForm : TCollectionPropertyEditorForm = nil;
+
+Constructor TCollectionPropertyEditorForm.Create(AOwner : TComponent);
 begin
-  Collection:=TCollection(GetOrdValue);
-  if (Collection<>nil) and (Collection is TCollection) then
-    Result:=Collection.Count
-  else
-    Result:=0;
+  Inherited Create(AOwner);
+
+  Position := poDefault;
+
+  HEIGHT := 216;
+  WIDTH := 166;
+
+  ButtonPanel := TPANEL.Create(Self);
+  With ButtonPanel do begin
+    Parent := Self;
+    ALIGN := altop;
+    BEVELOUTER := bvnone;
+    HEIGHT := 41;
+    Show;
+  end;
+
+  ButtonBevel := TBEVEL.Create(Self);
+  With ButtonBevel do begin
+    Parent := ButtonPanel;
+    HEIGHT := 41;
+    LEFT := 1;
+    SHAPE := bsframe;
+    STYLE := bsraised;
+    WIDTH := 165;
+    LEFT := 1;
+    HEIGHT := 41;
+    WIDTH := 165;
+    Show;
+  end;
+
+  AddButton := TSPEEDBUTTON.Create(Self);
+  With AddButton do begin
+    Parent := ButtonPanel;
+    CAPTION := '&Add';
+    ONCLICK := @AddCLICK;
+    LEFT := 6;
+    HEIGHT := 27;
+    TOP := 6;
+    WIDTH := 43;
+    Show;
+  end;
+
+  DeleteButton := TSPEEDBUTTON.Create(Self);
+  With DeleteButton do begin
+    Parent := ButtonPanel;
+    CAPTION := '&Delete';
+    ONCLICK := @DeleteCLICK;
+    LEFT := 56;
+    HEIGHT := 27;
+    TOP := 6;
+    WIDTH := 43;
+    Show;
+  end;
+
+  CollectionList := TLISTBOX.Create(Self);
+  With CollectionList do begin
+    Parent := Self;
+    ALIGN := alclient;
+    ONCLICK := @ListCLICK;
+    Show;
+  end;
 end;
+
+Procedure TCollectionPropertyEditorForm.UpdateCaption;
+begin
+  //I think to match Delphi this should be formated like
+  //"Editing ComponentName.PropertyName[Index]"
+  Caption := 'Editing ' + ComponentName + '.' + PropertyName;
+  If CollectionList.ItemIndex > -1 then
+    Caption := Caption + '[' +
+      IntToStr(CollectionList.ItemIndex) + ']';
+end;
+
+Procedure TCollectionPropertyEditorForm.PropagateList;
+var
+  I : Longint;
+begin
+  CollectionList.Items.Clear;
+  For I := 0 to Collection.Count - 1 do
+    CollectionList.Items.Add(Collection.Items[I].DisplayName);
+  DeleteButton.Enabled := CollectionList.ItemIndex > -1;
+  UpdateCaption;
+end;
+
+procedure TCollectionPropertyEditorForm.ListCLICK(Sender: TObject);
+begin
+  DeleteButton.Enabled := CollectionList.ItemIndex > -1;
+  UpdateCaption;
+  //Select Collection.Items[CollectionList.ItemIndex]
+  //in OI
+end;
+
+procedure TCollectionPropertyEditorForm.AddCLICK(Sender: TObject);
+var
+  I : Integer;
+begin
+  Collection.Add;
+  I := CollectionList.ItemIndex;
+  PropagateList;
+  If I > -1 then
+    CollectionList.ItemIndex := I;
+  DeleteButton.Enabled := CollectionList.ItemIndex > -1;
+  UpdateCaption;
+end;
+
+procedure TCollectionPropertyEditorForm.DeleteCLICK(Sender: TObject);
+var
+  I : Integer;
+begin
+  Collection.Items[CollectionList.ItemIndex].Free;
+  I := CollectionList.ItemIndex;
+  PropagateList;
+  If I >= CollectionList.Items.Count then
+    I := I - 1;
+  If I > -1 then
+    CollectionList.ItemIndex := I;
+  DeleteButton.Enabled := CollectionList.ItemIndex > -1;
+end;
+
+//  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 
 function TCollectionPropertyEditor.ReadElement(Index: integer): TObject;
 var
@@ -2578,6 +2715,35 @@ procedure TCollectionPropertyEditor.SetElementValue(
   Element: TListElementPropertyEditor; NewValue: ansistring);
 begin
   inherited SetElementValue(Element, NewValue);
+end;
+
+function TCollectionPropertyEditor.ReadElementCount: integer;
+var
+  Collection: TCollection;
+begin
+  Collection:=TCollection(GetOrdValue);
+  if (Collection<>nil) and (Collection is TCollection) then
+    Result:=Collection.Count
+  else
+    Result:=0;
+end;
+
+function TCollectionPropertyEditor.GetAttributes: TPropertyAttributes;
+begin
+  Result := [paDialog, paReadOnly];
+end;
+
+Procedure TCollectionPropertyEditor.Edit;
+begin
+  If Assigned(CollectionForm) then
+    CollectionForm.Free;
+  CollectionForm := TCollectionPropertyEditorForm.Create(Application);
+  CollectionForm.Collection := TCollection(GetOrdValue);
+  CollectionForm.PropertyName := GetPropInfo^.Name;
+  CollectionForm.ComponentName := '';//What if its in a Persistent child?
+  CollectionForm.Caption := 'Editing ' + GetPropInfo^.Name;
+  CollectionForm.PropagateList;
+  CollectionForm.Show;
 end;
 
 { TClassPropertyEditor }
@@ -3768,7 +3934,7 @@ begin
 end;
 
 function TPropertyEditorHook.GetComponentName(
-AComponent:TComponent):Shortstring;
+  AComponent:TComponent):Shortstring;
 begin
   if Assigned(FOnGetComponentName) then
     Result:=FOnGetComponentName(AComponent)
@@ -3781,7 +3947,7 @@ begin
 end;
 
 procedure TPropertyEditorHook.GetComponentNames(TypeData:PTypeData;
-Proc:TGetStringProc);
+  Proc:TGetStringProc);
 var i: integer;
 begin
   if Assigned(FOnGetComponentNames) then
@@ -3951,6 +4117,9 @@ begin
     ,'',TComponentPropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TListColumns'),
     nil,'',TListColumnsPropertyEditor);
+
+  RegisterPropertyEditor(ClassTypeInfo(TCollection),
+    nil,'',TCollectionPropertyEditor);
 end;
 
 procedure FinalPropEdits;
