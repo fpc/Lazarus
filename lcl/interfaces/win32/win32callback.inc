@@ -390,7 +390,7 @@ Begin
       PLMsg:=@LMChar;
       With LMChar Do
       Begin
-        Msg := LM_CHAR;
+        Msg := CN_CHAR;
         KeyData := LParam;
         CharCode := Word(WParam);
         Assert(False,Format('WM_CHAR KeyData= %d CharCode= %d ',[KeyData,CharCode]));
@@ -555,7 +555,7 @@ Begin
     End;
     WM_GETDLGCODE:
     Begin
-      LMessage.Msg := LM_GETDLGCODE;
+      Result := DLGC_WANTALLKEYS;
       WinProcess := false;
     End;
     WM_KEYDOWN:
@@ -1073,8 +1073,21 @@ Begin
       WM_CHAR, WM_KEYDOWN, WM_KEYUP:
       begin
         case Msg of
-          WM_CHAR: CharCode := LMChar.CharCode;
-          WM_KEYDOWN, WM_KEYUP: CharCode := LMKey.CharCode;
+          WM_CHAR: 
+          begin
+            CharCode := LMChar.CharCode;
+            LMChar.Msg := LM_CHAR;
+          end;
+          WM_KEYDOWN:
+          begin
+            CharCode := LMKey.CharCode;
+            LMKey.Msg := LM_KEYDOWN;
+          end;
+          WM_KEYUP: 
+          begin
+            CharCode := LMKey.CharCode;
+            LMKey.Msg := LM_KEYUP;
+          end;
         end;
         case CharCode of
           VK_RETURN:
@@ -1087,7 +1100,6 @@ Begin
         if (DlgCode = 0) or ((DlgCode and CallDefaultWindowProc(Window, WM_GETDLGCODE, 0, 0)) = 0) then
         begin
           // windows didn't want the key
-          PLMsg^.Msg := LM_CHAR;
           DeliverMessage(OwnerObject, PLMsg^);
         end;
       end;
@@ -1302,6 +1314,9 @@ end;
 
 {
   $Log$
+  Revision 1.131  2004/08/04 07:32:01  micha
+  fix win32 keyhandling, send cn_char
+
   Revision 1.130  2004/08/01 14:21:06  micha
   better pre/post-intf key handling
 

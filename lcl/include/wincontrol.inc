@@ -3062,9 +3062,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.CNChar(var Message: TLMKeyUp);
 begin
-  {$IFNDEF Win32}
   if not DoKeyPress(Message) then {inherited}; // there is nothing to inherit
-  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -3165,9 +3163,6 @@ end;
 procedure TWinControl.WMChar(var Message: TLMChar);
 begin
   Assert(False, Format('Trace:[TWinControl.WMChar] %s', [ClassName]));
-  {$IFDEF Win32}
-  if not DoKeyPress(Message) then {inherited}; // there is nothing to inherit
-  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -3796,6 +3791,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.259  2004/08/04 07:32:01  micha
+  fix win32 keyhandling, send cn_char
+
   Revision 1.258  2004/08/03 09:01:54  mattias
   LCL now handles for non win32 CN_CHAR
 
