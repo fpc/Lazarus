@@ -657,7 +657,7 @@ begin
     or (AnsiCompareText(ParamStr(1),'-help')=0)
     or (AnsiCompareText(ParamStr(1),'-?')=0)) then
   begin
-    TranslateResourceStrings(ExtractFilePath(ParamStr(0)),'');
+    TranslateResourceStrings(ProgramDirectory,'');
     writeln(lisCmdLineHlpHeader);
     writeln(Format(lisCmdLinePrimaryConfigPathDesc,[GetPrimaryConfigPath]));
     writeln(Format(lisCmdLineSecondaryConfigPathDesc,[GetSecondaryConfigPath]));
@@ -5780,7 +5780,6 @@ begin
   end else if MacroName='lazarusdir' then begin
     Handled:=true;
     s:=EnvironmentOptions.LazarusDirectory;
-    if s='' then s:=ExtractFilePath(ParamStr(0));
   end else if MacroName='lclwidgettype' then begin
     Handled:=true;
     s:=Project1.CompilerOptions.LCLWidgetType;
@@ -7721,6 +7720,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.460  2003/02/07 17:49:21  mattias
+  added ReadAllLinks
+
   Revision 1.459  2003/02/06 20:46:51  mattias
   default fpc src dirs and clean ups
 
