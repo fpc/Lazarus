@@ -299,7 +299,7 @@ begin
     BrushStyle:= bsClear
   else
     BrushStyle:= bsSolid;}
-  
+
   DrawFlags:=DFCS_BUTTONPUSH;
   if Flat and (not (csDesigning in ComponentState)) then inc(DrawFlags,DFCS_FLAT);
   if FState in [bsDown, bsExclusive] then inc(DrawFlags,DFCS_PUSHED);
@@ -400,6 +400,8 @@ begin
 
   FGlyph.Draw(Canvas, PaintRect, Offset, FState, Transparent, 0);
   if Caption <> '' then begin
+    Canvas.Brush.Color:=clBlue;
+    Canvas.FillRect(PaintRect);
     TXTStyle := Canvas.TextStyle;
     TXTStyle.Opaque := False;
     TXTStyle.Clipping := True;
@@ -657,6 +659,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.26  2002/09/12 15:35:57  lazarus
+  MG: small bugfixes
+
   Revision 1.25  2002/09/06 16:14:19  lazarus
   MG: fixed removing TSpeedButton
 
