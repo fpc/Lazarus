@@ -114,7 +114,8 @@ type
       override;
     function GetEol: Boolean; override;
     function GetTokenID: TtkTokenKind;
-    procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: String; LineNumber:Integer); override;
+    procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: String;
+                      LineNumber:Integer); override;
     function GetToken: String; override;
     {$IFDEF SYN_LAZARUS}
     procedure GetTokenEx(var TokenStart: PChar; var TokenLength: integer); override;
@@ -129,9 +130,8 @@ type
       write fCommentAttri;
     property TextAttri: TSynHighlighterAttributes read fTextAttri
       write fTextAttri;
-    property ControlSequenceAttri: TSynHighlighterAttributes read
-fControlSequenceAttri
-      write fControlSequenceAttri;
+    property ControlSequenceAttri: TSynHighlighterAttributes
+      read fControlSequenceAttri write fControlSequenceAttri;
     property MathmodeAttri: TSynHighlighterAttributes read fMathmodeAttri
       write fMathmodeAttri;
     property SpaceAttri: TSynHighlighterAttributes read fSpaceAttri
@@ -394,7 +394,7 @@ function TSynTeXSyn.CreateHighlighterAttributes(AName:String; Foreground,
                                                 FontStyles: TFontStyles) :
 TSynHighlighterAttributes;
 begin
-  Result:=TSynHighlighterAttributes.Create(Name);
+  Result:=TSynHighlighterAttributes.Create(AName);
   if Foreground<>clNone then Result.Foreground:=ForeGround;
   if Background<>clNone then Result.Background:=Background;
   Result.Style:=FontStyles;
