@@ -57,7 +57,7 @@ uses
   Project, ProjectDefs, NewProjectDlg, ProjectOpts, PublishProjectDlg,
   // designer
   CompReg, IDEComp, AbstractFormEditor, Designer, FormEditor, CustomFormEditor,
-  ObjectInspector, PropEdits, ControlSelection, ColumnDlg,
+  ObjectInspector, PropEdits, ControlSelection, ColumnDlg, MenuPropEdit,
   // debugger
   Debugger, DBGOutputForm, GDBMIDebugger, RunParamsOpts, Watchesdlg,
   BreakPointsdlg, DebuggerDlg, LocalsDlg,
@@ -8123,6 +8123,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.504  2003/04/01 23:35:28  mattias
+  added menu component editor from Olivier
+
   Revision 1.503  2003/04/01 17:29:36  mattias
   added packagemanager and added config dialog for custom components from Tony
 
