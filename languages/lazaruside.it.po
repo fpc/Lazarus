@@ -4559,6 +4559,10 @@ msgstr "Ricerca nel risultato di messaggi del compilatore Free Pascal"
 msgid "Scan output for make messages"
 msgstr "Ricerca nel risultato di messaggi di make"
 
+#: lazarusidestrconsts:lisa2pupdateunitnameandhasregisterprocedure
+msgid "Scan Unit for Unit Name and Register procedure"
+msgstr ""
+
 #: lazarusidestrconsts:dlgscope
 msgid "Scope"
 msgstr "Campo di validità"
@@ -6119,10 +6123,6 @@ msgstr "Pacchetto non salvato"
 msgid "Up"
 msgstr "Su"
 
-#: lazarusidestrconsts:lisa2pupdateunitnameandhasregisterprocedure
-msgid "Update Unit Name and Has Register procedure"
-msgstr "Aggiorna nome unit e la procedura Has Register"
-
 #: lazarusidestrconsts:lispckoptsupdaterebuild
 msgid "Update/Rebuild"
 msgstr "Aggiorna/Rebuild"
@@ -6316,8 +6316,8 @@ msgid "Virtual Unit"
 msgstr "Unit virtuale"
 
 #: lazarusidestrconsts:lisaf2pisvirtualunit
-msgid "Virtual unit (file is not in package)"
-msgstr "Unit virtuale (il file non è nel pacchetto)"
+msgid "Virtual unit (source is not in package)"
+msgstr ""
 
 #: lazarusidestrconsts:dlgvisiblegutter
 msgid "Visible gutter"

@@ -4560,6 +4560,10 @@ msgstr "Przeszukuj wyj¶cie komunikatów Free Pascal Compiler"
 msgid "Scan output for make messages"
 msgstr "Przeszukuj wyj¶cie komunikatów make"
 
+#: lazarusidestrconsts:lisa2pupdateunitnameandhasregisterprocedure
+msgid "Scan Unit for Unit Name and Register procedure"
+msgstr ""
+
 #: lazarusidestrconsts:dlgscope
 msgid "Scope"
 msgstr "Zasiêg"
@@ -6120,10 +6124,6 @@ msgstr "Niezapisany pakiet"
 msgid "Up"
 msgstr "W górê"
 
-#: lazarusidestrconsts:lisa2pupdateunitnameandhasregisterprocedure
-msgid "Update Unit Name and Has Register procedure"
-msgstr "Od¶wie¿ nazwê modu³u i posiadanie procedury Register"
-
 #: lazarusidestrconsts:lispckoptsupdaterebuild
 msgid "Update/Rebuild"
 msgstr "Od¶wie¿/przebuduj"
@@ -6317,8 +6317,8 @@ msgid "Virtual Unit"
 msgstr "Wirtualny modu³"
 
 #: lazarusidestrconsts:lisaf2pisvirtualunit
-msgid "Virtual unit (file is not in package)"
-msgstr "Wirtualny modu³ (Plik nie nale¿y do pakietu)"
+msgid "Virtual unit (source is not in package)"
+msgstr ""
 
 #: lazarusidestrconsts:dlgvisiblegutter
 msgid "Visible gutter"

@@ -4560,6 +4560,10 @@ msgstr ""
 msgid "Scan output for make messages"
 msgstr ""
 
+#: lazarusidestrconsts:lisa2pupdateunitnameandhasregisterprocedure
+msgid "Scan Unit for Unit Name and Register procedure"
+msgstr ""
+
 #: lazarusidestrconsts:dlgscope
 msgid "Scope"
 msgstr ""
@@ -6120,10 +6124,6 @@ msgstr ""
 msgid "Up"
 msgstr ""
 
-#: lazarusidestrconsts:lisa2pupdateunitnameandhasregisterprocedure
-msgid "Update Unit Name and Has Register procedure"
-msgstr ""
-
 #: lazarusidestrconsts:lispckoptsupdaterebuild
 msgid "Update/Rebuild"
 msgstr ""
@@ -6317,7 +6317,7 @@ msgid "Virtual Unit"
 msgstr ""
 
 #: lazarusidestrconsts:lisaf2pisvirtualunit
-msgid "Virtual unit (file is not in package)"
+msgid "Virtual unit (source is not in package)"
 msgstr ""
 
 #: lazarusidestrconsts:dlgvisiblegutter

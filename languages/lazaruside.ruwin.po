@@ -4550,6 +4550,10 @@ msgstr "Поиск сообщений компилятора FreePascal в выводе"
 msgid "Scan output for make messages"
 msgstr "Поиск сообщений make в выводе"
 
+#: lazarusidestrconsts:lisa2pupdateunitnameandhasregisterprocedure
+msgid "Scan Unit for Unit Name and Register procedure"
+msgstr ""
+
 #: lazarusidestrconsts:dlgscope
 msgid "Scope"
 msgstr "Где"
@@ -6110,10 +6114,6 @@ msgstr "Несохранённый пакет"
 msgid "Up"
 msgstr "Вверх"
 
-#: lazarusidestrconsts:lisa2pupdateunitnameandhasregisterprocedure
-msgid "Update Unit Name and Has Register procedure"
-msgstr "Обновить имя модуля и наличие проц-ры Register"
-
 #: lazarusidestrconsts:lispckoptsupdaterebuild
 msgid "Update/Rebuild"
 msgstr "Обновить/перебрать"
@@ -6307,8 +6307,8 @@ msgid "Virtual Unit"
 msgstr "Виртуальный модуль"
 
 #: lazarusidestrconsts:lisaf2pisvirtualunit
-msgid "Virtual unit (file is not in package)"
-msgstr "Виртуальный модуль (файл не в пакете)"
+msgid "Virtual unit (source is not in package)"
+msgstr ""
 
 #: lazarusidestrconsts:dlgvisiblegutter
 msgid "Visible gutter"

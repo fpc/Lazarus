@@ -5947,7 +5947,7 @@ msgid "Has Register procedure"
 msgstr ""
 
 #: lazarusidestrconsts:lisaf2pisvirtualunit
-msgid "Virtual unit (file is not in package)"
+msgid "Virtual unit (source is not in package)"
 msgstr ""
 
 #: lazarusidestrconsts:lisaf2pfiletype
@@ -6167,7 +6167,7 @@ msgid "Add LFM, LRS files, if they exist"
 msgstr ""
 
 #: lazarusidestrconsts:lisa2pupdateunitnameandhasregisterprocedure
-msgid "Update Unit Name and Has Register procedure"
+msgid "Scan Unit for Unit Name and Register procedure"
 msgstr ""
 
 #: lazarusidestrconsts:lisa2pancestortype

@@ -1976,7 +1976,7 @@ resourcestring
     +'package %s.';
   lisAF2PUnitName = 'Unit Name: ';
   lisAF2PHasRegisterProcedure = 'Has Register procedure';
-  lisAF2PIsVirtualUnit = 'Virtual unit (file is not in package)';
+  lisAF2PIsVirtualUnit = 'Virtual unit (source is not in package)';
   lisAF2PFileType = 'File Type';
   lisAF2PDestinationPackage = 'Destination Package';
   lisAF2PShowAll = 'Show All';
@@ -2061,7 +2061,7 @@ resourcestring
   lisA2PUnitFileName = 'Unit file name:';
   lisA2PchooseAnExistingFile = '<choose an existing file>';
   lisA2PAddLFMLRSFilesIfTheyExist = 'Add LFM, LRS files, if they exist';
-  lisA2PUpdateUnitNameAndHasRegisterProcedure = 'Update Unit Name and Has '
+  lisA2PUpdateUnitNameAndHasRegisterProcedure = 'Scan Unit for Unit Name and '
     +'Register procedure';
   lisA2PAncestorType = 'Ancestor Type';
   lisA2PShowAll = 'Show all';

@@ -4559,6 +4559,10 @@ msgstr "Scanner les messages FPC"
 msgid "Scan output for make messages"
 msgstr "Scanner les message Make"
 
+#: lazarusidestrconsts:lisa2pupdateunitnameandhasregisterprocedure
+msgid "Scan Unit for Unit Name and Register procedure"
+msgstr ""
+
 #: lazarusidestrconsts:dlgscope
 msgid "Scope"
 msgstr "Portée"
@@ -6119,10 +6123,6 @@ msgstr ""
 msgid "Up"
 msgstr "Haut"
 
-#: lazarusidestrconsts:lisa2pupdateunitnameandhasregisterprocedure
-msgid "Update Unit Name and Has Register procedure"
-msgstr ""
-
 #: lazarusidestrconsts:lispckoptsupdaterebuild
 msgid "Update/Rebuild"
 msgstr ""
@@ -6316,8 +6316,8 @@ msgid "Virtual Unit"
 msgstr "Unité virtuelle"
 
 #: lazarusidestrconsts:lisaf2pisvirtualunit
-msgid "Virtual unit (file is not in package)"
-msgstr "Unité virtuelle (le fichier n'est pas dans le paquet)"
+msgid "Virtual unit (source is not in package)"
+msgstr ""
 
 #: lazarusidestrconsts:dlgvisiblegutter
 msgid "Visible gutter"

@@ -1714,6 +1714,7 @@ var
 begin
   CurFilename:=AddFilenameEdit.Text;
   NewPFT:=FileNameToPkgFileType(CurFilename);
+  if NewPFT=pftUnit then NewPFT:=pftVirtualUnit;
   i:=0;
   for CurPFT:=Low(TPkgFileType) to High(TPkgFileType) do begin
     if CurPFT=pftUnit then continue;
