@@ -419,11 +419,10 @@ Procedure BezierArcPoints(X, Y, Width, Height : Longint; Angle1, Angle2,
   Rotation : Extended; var Points : PPoint; var Count : Longint);
 var
   B : TBezier;
-  I : Integer;
 begin
   If ABS(Angle2) > 90*16 then begin
-    PolyBezierArcPoints(X, Y, Width, Height, Angle1, Angle2, Rotation, 
-Points, Count);
+    PolyBezierArcPoints(X, Y, Width, Height, Angle1, Angle2, Rotation, Points,
+                        Count);
     Exit;
   end;
   If Angle2 = 0 then
