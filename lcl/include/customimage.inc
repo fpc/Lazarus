@@ -1,6 +1,6 @@
 // included by extctrls.pp
 
-{ TImage
+{ TCustomImage
 
  *****************************************************************************
  *                                                                           *
@@ -16,7 +16,7 @@
  *****************************************************************************
 }
 
-constructor TImage.Create(TheOwner: TComponent);
+constructor TCustomImage.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FCompStyle := csImage;
@@ -30,7 +30,7 @@ begin
   SetInitialBounds(0,0,100,100);
 end;
 
-destructor TImage.Destroy;
+destructor TCustomImage.Destroy;
 begin
   FPicture.OnChange := nil;
   FPicture.Graphic := nil;
@@ -38,13 +38,13 @@ begin
   inherited;
 end;
 
-procedure TImage.SetPicture(const AValue: TPicture);
+procedure TCustomImage.SetPicture(const AValue: TPicture);
 begin
   if FPicture=AValue then exit;
   FPicture.Assign(AValue);  //the onchange of the picture gets called and notifies that something changed.
 end;
 
-procedure TImage.DoAutoSize;
+procedure TCustomImage.DoAutoSize;
 var
   ModifyWidth,
   ModifyHeight : Boolean;
@@ -62,35 +62,35 @@ begin
   end;
 end;
 
-procedure TImage.SetStretch(Value : Boolean);
+procedure TCustomImage.SetStretch(Value : Boolean);
 begin
   if FStretch=Value then exit;
   FStretch := Value;
   PictureChanged(Self);
 end;
 
-procedure TImage.SetTransparent(Value : Boolean);
+procedure TCustomImage.SetTransparent(Value : Boolean);
 begin
   if FTransparent=Value then exit;
   FTransparent := Value;
   PictureChanged(Self);
 end;
 
-procedure TImage.SetCenter(Value : Boolean);
+procedure TCustomImage.SetCenter(Value : Boolean);
 begin
   if FCenter=Value then exit;
   FCenter := Value;
   PictureChanged(Self);
 end;
 
-procedure TImage.SetProportional(const AValue: Boolean);
+procedure TCustomImage.SetProportional(const AValue: Boolean);
 begin
   if FProportional=AValue then exit;
   FProportional:=AValue;
   PictureChanged(Self);
 end;
 
-Procedure TImage.PictureChanged(Sender : TObject);
+Procedure TCustomImage.PictureChanged(Sender : TObject);
 begin
   If AutoSize then begin
     SetAutoSize(False);
@@ -99,7 +99,7 @@ begin
   Invalidate;
 end;
 
-function TImage.DestRect: TRect;
+function TCustomImage.DestRect: TRect;
 var
   PicWidth: Integer;
   PicHeight: Integer;
@@ -136,7 +136,7 @@ begin
     OffsetRect(Result,(ImgWidth-PicWidth) div 2,(ImgHeight-PicHeight) div 2);
 end;
 
-Procedure TImage.Paint;
+Procedure TCustomImage.Paint;
 
   Procedure DrawFrame;
   begin

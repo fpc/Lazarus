@@ -607,6 +607,54 @@ Type
   end;
   
 
+  { TDBImage }
+
+  TDBImage = class(TCustomImage)
+  private
+    FAutoDisplay: Boolean;
+    FDataLink: TFieldDataLink;
+    FQuickDraw: Boolean;
+    FPictureLoaded: boolean;
+    function GetDataField: string;
+    function GetDataSource: TDataSource;
+    function GetField: TField;
+    function GetReadOnly: Boolean;
+    procedure SetAutoDisplay(const AValue: Boolean);
+    procedure SetDataField(const AValue: string);
+    procedure SetDataSource(const AValue: TDataSource);
+    procedure SetReadOnly(const AValue: Boolean);
+  protected
+    procedure Notification(AComponent: TComponent;
+      Operation: TOperation); override;
+    procedure DataChange(Sender: TObject); virtual;
+    procedure UpdateData(Sender: TObject); virtual;
+    procedure LoadPicture; virtual;
+  public
+    constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
+    property Field: TField read GetField;
+  published
+    property Align;
+    property AutoDisplay: Boolean read FAutoDisplay write SetAutoDisplay default True;
+    property AutoSize;
+    property Center;
+    property Constraints;
+    property DataField: string read GetDataField write SetDataField;
+    property DataSource: TDataSource read GetDataSource write SetDataSource;
+    property OnClick;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property Picture;
+    property Proportional;
+    property QuickDraw: Boolean read FQuickDraw write FQuickDraw default True;
+    property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
+    property Stretch;
+    property Transparent;
+    property Visible;
+  end;
+
+
   { TDBCalender }
 
   TDBCalendar = class(TCalendar)
@@ -1010,6 +1058,7 @@ end;
 {$Include dbcombobox.inc}
 {$Include dbmemo.inc}
 {$Include dbgroupbox.inc}
+{$Include dbimage.inc}
 {$Include dbcalendar.inc}
 
 end.
@@ -1017,6 +1066,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.11  2003/09/18 21:01:18  mattias
+  started TDBImage
+
   Revision 1.10  2003/09/18 15:27:07  ajgenius
   added initial TDBCalendar
 

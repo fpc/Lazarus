@@ -343,9 +343,9 @@ type
   end;
 
 
-  { TImage }
-  
-  TImage = class(TGraphicControl)
+  { TCustomImage }
+
+  TCustomImage = class(TGraphicControl)
   private
     FPicture: TPicture;
     FCenter: Boolean;
@@ -365,7 +365,7 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
-  published
+  public
     Property Align;
     property AutoSize;
     property Center : Boolean read FCenter write SetCenter;
@@ -379,6 +379,26 @@ type
     property Stretch: Boolean read FStretch write SetStretch;
     property Transparent: Boolean read FTransparent write SetTransparent;
     property Proportional: Boolean read FProportional write SetProportional default false;
+  end;
+
+
+  { TImage }
+  
+  TImage = class(TCustomImage)
+  published
+    property Align;
+    property AutoSize;
+    property Center;
+    property Constraints;
+    property Picture;
+    property Visible;
+    property OnClick;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property Stretch;
+    property Transparent;
+    property Proportional;
   end;
 
 
@@ -749,12 +769,15 @@ end;
 {$I custompanel.inc}
 {$I radiogroup.inc}
 {$I bevel.inc}
-{$I image.inc}
+{$I customimage.inc}
 
 end.
 
  {
   $Log$
+  Revision 1.76  2003/09/18 21:01:18  mattias
+  started TDBImage
+
   Revision 1.75  2003/09/18 09:21:03  mattias
   renamed LCLLinux to LCLIntf
 
