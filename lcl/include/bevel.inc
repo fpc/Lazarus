@@ -154,6 +154,8 @@ Begin
       LineTo(ALeft + Width - 2, ATop + Height);
     End;
   End;
+  
+  inherited Paint;
 End;
 
 // included by extctrls.pp
@@ -249,6 +251,9 @@ End;
 
 {
   $Log$
+  Revision 1.8  2004/02/03 19:02:35  mattias
+  fixed calling TImage.OnPaint
+
   Revision 1.7  2002/08/30 12:32:20  lazarus
   MG: MoveWindowOrgEx, Splitted FWinControls/FControls, TControl drawing, Better DesignerDrawing, ...
 

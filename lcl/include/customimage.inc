@@ -174,6 +174,8 @@ begin
     end;
     StretchDraw(iRect, Picture.Graphic);
   end;
+
+  inherited Paint;
 end;
 
 // included by extctrls.pp
