@@ -11,12 +11,13 @@ version=0.8a
 packages=rtl fcl gtk
 
 [target]
+#dirs=../gtk
 units=interfaces
 implicitunits=gnomeint
 
 [compiler]
 options=-gl
-unitdir=../../units .
+unitdir=../../units ../gtk .
 unittargetdir=../../units/gnome
 
 [clean]

@@ -8,7 +8,7 @@
 main=lcl
 
 [target]
-dirs=gtk win32
+dirs=gtk win32 gnome
 
 [default]
 dir=$(LCL_PLATFORM)
