@@ -212,6 +212,7 @@ examples/trackbar.pp svneol=native#text/pascal
 ide/aboutfrm.lfm svneol=native#text/plain
 ide/aboutfrm.lrs svneol=native#text/pascal
 ide/aboutfrm.pas svneol=native#text/pascal
+ide/addtoprojectdlg.pas svneol=native#text/pascal
 ide/basedebugmanager.pas svneol=native#text/pascal
 ide/buildlazdialog.pas svneol=native#text/pascal
 ide/clipboardhistory.pas svneol=native#text/pascal
