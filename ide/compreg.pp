@@ -201,7 +201,7 @@ var NewPage:TRegisteredComponentPage;
 begin
 
   NewPage:=FindPageByName(Page);
-  if NewPage=nil then begin
+  if (NewPage=nil) then begin
     NewPage:=TRegisteredComponentPage.Create(Self,FPages.Count,Page);
     FPages.Add(NewPage);
   end;

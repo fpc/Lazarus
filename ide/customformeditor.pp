@@ -25,7 +25,7 @@ unit CustomFormEditor;
 interface
 
 uses
-  classes, abstractformeditor, controls,propedits,Typinfo,ObjectInspector,forms;
+  classes, abstractformeditor, controls,propedits,Typinfo,ObjectInspector,forms,IDEComp;
 
 Const OrdinalTypes = [tkInteger,tkChar,tkENumeration,tkbool];
 
@@ -118,7 +118,10 @@ TCustomFormEditor
 implementation
 
 uses
-  SysUtils;
+  SysUtils,jitforms;
+
+var
+JITFormList : TJITForms;
 
 {TComponentInterface}
 
@@ -462,13 +465,16 @@ begin
   inherited Create;
   FComponentInterfaceList := TList.Create;
   FSelectedComponents := TComponentSelectionList.Create;
+  JITFormList := TJITForms.Create;
+  JITFormList.RegCompList := RegCompList;
 end;
 
 destructor TCustomFormEditor.Destroy;
 begin
-  inherited;
+  JITFormList.Destroy;
   FComponentInterfaceList.Free;
   FSelectedComponents.Free;
+  inherited;
 end;
 
 Function TCustomFormEditor.AddSelected(Value : TComponent) : Integer;
@@ -535,9 +541,7 @@ Begin
   Result:=nil;
 end;
 
-//Function TCustomFormEditor.CreateComponent(CI : TIComponentInterface; TypeName : String;
-Function TCustomFormEditor.CreateComponent(
-ParentCI : TIComponentInterface;
+Function TCustomFormEditor.CreateComponent(ParentCI : TIComponentInterface;
 TypeClass : TComponentClass;  X,Y,W,H : Integer): TIComponentInterface;
 Var
   Temp : TComponentInterface;
@@ -545,7 +549,7 @@ Var
   TempClass    : TPersistentClass;
   TempName    : String;
   Found : Boolean;
-  I, Num : Integer;
+  I, Num,NewFormIndex : Integer;
   CompLeft, CompTop, CompWidth, CompHeight: integer;
   DummyComponent:TComponent;
 Begin
@@ -560,27 +564,13 @@ Begin
       Temp.FControl :=
         TypeClass.Create(TComponentInterface(ParentCI).FControl)
   end else
-    Temp.FControl := TypeClass.Create(nil);
-{  if SelectedComponents.Count = 0 then
-  else
-  Begin
-    Writeln('Selected Components > 0');
-    if (SelectedComponents.Items[0] is TWinControl)
-    and (csAcceptsControls in
-         TWinControl(SelectedComponents.Items[0]).ControlStyle) then
     Begin
-      Writeln('The Control is a TWinControl and it accepts controls');
-      Writeln('The owners name is '+TWinControl(SelectedComponents.Items[0]).Name);
-      Temp.FControl := TypeClass.Create(SelectedComponents.Items[0]);
-    end
-    else
-    Begin
-      Writeln('The Control is not a TWinControl or it does not accept controls');
-      Temp.FControl := TypeClass.Create(SelectedComponents.Items[0].Owner);
+    //this should be a form
+       NewFormIndex := JITFormList.AddNewJITForm;
+       if NewFormIndex > 0 then
+       Temp.FControl := JITFormList[NewFormIndex];
+//       Temp.FControl := TypeClass.Create(nil);
     end;
-  end;}
-
-  Writeln('4');
 
   if Assigned(ParentCI) then
     Begin
@@ -598,56 +588,33 @@ Begin
           TWinControl(TComponentInterface(ParentCI).FControl).Parent;
         writeln('Parent is '''+TWinControl(Temp.FControl).Parent.Name+'''');
       end;
-{    End
-  else
-    Begin //ParentCI is not assigned so check the selected control
-      Writeln('ParentCI is not assigned....');
-      if SelectedComponents.Count > 0 then
-        Begin
-          Writeln('ParentCI is not assigned but something is selected....');
-          TempInterface := TComponentInterface(
-            FindComponent(SelectedComponents.Items[0]));
-          Writeln('The selected control is '''+TempInterface.FControl.Name+'''');
-
-          if (TempInterface.FControl is TWinControl) and
-             (csAcceptsControls in
-               TWinControl(TempInterface.FControl).ControlStyle) then
-          Begin
-            Writeln('The selected control IS a TWincontrol and accepts controls');
-            TWinControl(Temp.FControl).Parent :=
-              TWinControl(TempInterface.FControl);
-          end
-          else
-            TWinControl(Temp.FControl).Parent :=
-              TWinControl(TempInterface.FControl).Parent;
-        end}
     end;
 
-Writeln('5');
-
-  TempName := Temp.FControl.ClassName;
-  delete(TempName,1,1);
-  writeln('TempName is '''+TempName+'''');
-  Num := 0;
-  Found := True;
-  While Found do
-  Begin
-    Found := False;
-    inc(num);
-    for I := 0 to FComponentInterfaceList.Count-1 do
-    begin
-      DummyComponent:=TComponent(TComponentInterface(
-        FComponentInterfaceList.Items[i]).FControl);
-      if UpCase(DummyComponent.Name)=UpCase(TempName+IntToStr(Num)) then
+  if ParentCI <> nil then
+   Begin
+    TempName := Temp.FControl.ClassName;
+    delete(TempName,1,1);
+    writeln('TempName is '''+TempName+'''');
+    Num := 0;
+    Found := True;
+    While Found do
+    Begin
+      Found := False;
+      inc(num);
+      for I := 0 to FComponentInterfaceList.Count-1 do
       begin
-        Found := True;
-        break;
+        DummyComponent:=TComponent(TComponentInterface(
+          FComponentInterfaceList.Items[i]).FControl);
+        if UpCase(DummyComponent.Name)=UpCase(TempName+IntToStr(Num)) then
+        begin
+          Found := True;
+          break;
+        end;
       end;
     end;
-  end;
-  Temp.FControl.Name := TempName+IntToStr(Num);
-  Writeln('TempName + num = '+TempName+Inttostr(num));
-
+    Temp.FControl.Name := TempName+IntToStr(Num);
+    Writeln('TempName + num = '+TempName+Inttostr(num));
+   end;
   if (Temp.FControl is TControl) then
   Begin
     CompLeft:=X;

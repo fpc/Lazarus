@@ -242,8 +242,7 @@ function TIDEComponent.LoadImageIntoPixmap: TPixmap;
 begin
   Result:=TPixMap.Create;
   Result.TransparentColor:=clBtnFace;
-  if not LoadResource
-    (FRegisteredComponent.ComponentClass.ClassName,Result) then
+  if not LoadResource(FRegisteredComponent.ComponentClass.ClassName,Result) then
   begin
     LoadResource('default',Result);
   end;
@@ -269,6 +268,7 @@ begin
 // RegisterStandardComponents
 
   RegisterComponentsProc:=@RegisterComponents;
+  RegisterComponents('','ExtCtrls',[TPage]);
   RegisterComponents('Standard','Menus',[TMenu,TPopupMenu]);
   RegisterComponents('Standard','Buttons',[TButton]);
   RegisterComponents('Standard','StdCtrls',[TEdit,TLabel,TMemo,TCheckBox
@@ -277,7 +277,8 @@ begin
   RegisterComponents('Additional','ExtCtrls',[TNoteBook,TPaintBox
           ,TBevel,TRadioGroup]);
   RegisterComponents('Additional','ComCtrls',[TStatusBar,TListView,TProgressBar
-          ,TToolBar,TToolButton,TTrackBar]);
+          ,TToolBar,TTrackbar]);
+  RegisterComponents('','ComCtrls',[TToolbutton]);
 
   RegisterComponents('Samples','Spin',[TSpinEdit]);
   RegisterComponents('System','ExtCtrls',[TTimer]);

@@ -1762,7 +1762,10 @@ begin
   then begin
     R:= Rect(ALeft, ATop, AWidth, AHeight);
     CNSendMessage(LM_SetSize, Self, @R);
-    //TODO handle through SetWindowPos
+    FLeft := aLeft;
+    FTop := aTop;
+    FWidth := aWidth;
+    FHeight := aHeight;
   end
   else inherited SetBounds(aLeft, aTop, aWidth, aHeight);
 end;
@@ -1892,6 +1895,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.9  2001/01/15 18:25:51  lazarus
+  Fixed a stupid error I caused by using a variable as an index in main.pp and this variable sometimes caused an exception because the index was out of range.
+  Shane
+
   Revision 1.8  2001/01/12 20:22:09  lazarus
   Shiftstate fixed so it reports ssCtrl and ssShift now.
   You can use Shift-Ctrl-Up and Down to jump to procedures in the code explorer.

@@ -54,7 +54,7 @@ begin
    Application.CreateForm(TMainIDE, MainIDE);
    Application.CreateForm(TViewUnits1, ViewUnits1);
    Application.CreateForm(TViewForms1, ViewForms1);
-//   Application.CreateForm(TMessageDlg, MessageDlg);
+   Application.CreateForm(TMessageDlg, MessageDlg);
    Application.CreateForm(TfrmCompilerOptions, frmCompilerOptions);
    SplashForm.StartTimer;
    Application.Run;
@@ -63,6 +63,10 @@ end.
 
 {
   $Log$
+  Revision 1.9  2001/01/15 18:25:51  lazarus
+  Fixed a stupid error I caused by using a variable as an index in main.pp and this variable sometimes caused an exception because the index was out of range.
+  Shane
+
   Revision 1.8  2001/01/13 06:11:06  lazarus
   Minor fixes
   Shane

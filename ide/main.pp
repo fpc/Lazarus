@@ -251,7 +251,7 @@ var
   i,x : Integer;
   R : TRect;
   IDEControl : pointer;
-
+  PageCount : Integer;
   RegComp     : TRegisteredComponent;
   RegCompPage : TRegisteredComponentPage;
   IDeComponent : TIdeComponent;
@@ -307,20 +307,19 @@ begin
   end;
 
 
-
+  PageCount := 0;
   for I := 0 to RegCompList.PageCount-1 do
   begin
     RegCompPage := RegCompList.Pages[i];
     if RegCompPage.Name <> '' then
     Begin
-      if I = 0
-      then Notebook1.Pages.Strings[i] := RegCompPage.Name
+      if (pagecount = 0) then
+         Notebook1.Pages.Strings[pagecount] := RegCompPage.Name
       else Notebook1.Pages.Add(RegCompPage.Name);
-
       GlobalMouseSpeedButton := TSpeedButton.Create(Self);
       with GlobalMouseSPeedButton do
       Begin
-        Parent := Notebook1.page[I];
+        Parent := Notebook1.page[PageCount];
         Enabled := True;
         Width := 25;
         Height := 25;
@@ -329,7 +328,7 @@ begin
         Visible := True;
         Flat := True;
         Down := True;
-        Name := 'GlobalMouseSpeedButton'+inttostr(i);
+        Name := 'GlobalMouseSpeedButton'+inttostr(PageCount);
       end;
 
       for x := 0 to RegCompPage.Count-1 do  //for every component on the page....
@@ -337,12 +336,14 @@ begin
         RegComp := RegCompPage.Items[x];
         IDEComponent := TIDEComponent.Create;
         IdeComponent.RegisteredComponent := RegComp;
-        IDEComponent._SpeedButton(Self,Notebook1.Page[i]);
+        Writeln('Name is '+RegComp.ComponentClass.ClassName);
+        IDEComponent._SpeedButton(Self,Notebook1.Page[PageCount]);
         IDEComponent.SpeedButton.OnClick := @ControlClick;
         IDEComponent.SpeedButton.Hint := RegComp.ComponentClass.ClassName;
         IDEComponent.SpeedButton.Name := IDEComponent.SpeedButton.Hint;
         IDEComponent.SpeedButton.ShowHint := True;
       end;
+      inc(PageCount);
     end;
    end;
   Notebook1.PageIndex := 0;   // Set it to the first page
@@ -659,10 +660,10 @@ begin
 
   Project1 := TProject.Create;
   Self.OnShow := @FormShow;
-  MessageDlg := TMessageDlg.Create(self);
+{  MessageDlg := TMessageDlg.Create(self);
   MessageDlg.Caption := 'Compiler Messages';
   MessageDlg.MessageView.OnDblClick := @MessageViewDblClick;
-
+ }
   Compiler1 := TCompiler.Create;
   Compiler1.OutputString := @Messagedlg.Add;
 
@@ -1900,6 +1901,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.44  2001/01/15 18:25:51  lazarus
+  Fixed a stupid error I caused by using a variable as an index in main.pp and this variable sometimes caused an exception because the index was out of range.
+  Shane
+
   Revision 1.43  2001/01/14 03:56:57  lazarus
   Shane
 
