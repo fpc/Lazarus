@@ -290,6 +290,7 @@ type
     FOnSelection: TOnSelectEvent;
     FOnTopLeftChanged: TNotifyEvent;
     FSkipUnselectable: Boolean;
+    FGSMHBar, FGSMVBar: Integer; // Scrollbar's metrics
 
     procedure AdjustCount(IsColumn:Boolean; OldValue, NewValue:Integer);
     procedure CacheVisibleGrid;
@@ -351,6 +352,7 @@ type
     procedure WriteColWidths(Writer: TWriter);
     procedure WriteRowHeights(Writer: TWriter);
     procedure WMEraseBkgnd(var message: TLMEraseBkgnd); message LM_ERASEBKGND;
+    procedure WMGetDlgCode(var Msg: TLMNoParams); message LM_GETDLGCODE;
     procedure WMSize(var Msg: TLMSize); message LM_SIZE;
     procedure WMChar(var message: TLMChar); message LM_CHAR;
   protected
@@ -412,7 +414,7 @@ type
     procedure SaveContent(cfg: TXMLConfig); virtual;
     procedure ScrollBarRange(Which:Integer; IsVisible:boolean; aRange: Integer);
     procedure ScrollBarPosition(Which, Value: integer);
-    function  ScrollBarIsVisible(Which:Integer): Boolean;
+    //function  ScrollBarIsVisible(Which:Integer): Boolean;
     procedure ScrollBarPage(Which: Integer; aPage: Integer);
     procedure ScrollBarShow(Which: Integer; aValue: boolean);
     function  ScrollBarAutomatic(Which: TScrollStyle): boolean; virtual;
@@ -735,11 +737,70 @@ begin
   I2:=Tmp;
 end;
 
+{$ifdef GridTraceMsg}
+function TransMsg(const S: String; const TheMsg: TLMessage): String;
+var
+	hex: string;
+begin
+  with TheMsg do begin
+    hex:= S + '['+IntToHex(msg, 8)+'] W='+IntToHex(WParam,8)+' L='+IntToHex(LParam,8)+' ';
+    case Msg of
+      CM_BASE..CM_MOUSEWHEEL:
+        case Msg of
+          CM_MOUSEENTER:          WriteLn(hex, 'CM_MOUSEENTER');
+          CM_MOUSELEAVE:          WriteLn(hex, 'CM_MOUSELEAVE');
+          CM_TEXTCHANGED:           WriteLn(hex, 'CM_TEXTCHANGED');
+          CM_PARENTCTL3DCHANGED:    WriteLn(hex, 'CM_PARENTCTL3DCHANGED');
+          CM_UIACTIVATE:            WriteLn(hex, 'CM_UIACTIVATE');
+          CM_CONTROLLISTCHANGE:     WriteLn(hex, 'CM_CONTROLLISTCHANGE');
+          
+          CM_PARENTCOLORCHANGED:  WriteLn(hex, 'CM_PARENTCOLORCHANGED');
+          CM_PARENTFONTCHANGED:   WriteLn(hex, 'CM_PARENTFONTCHANGED');
+          CM_PARENTSHOWHINTCHANGED: WriteLn(hex, 'CM_PARENTSHOWHINTCHANGED');
+          CM_PARENTBIDIMODECHANGED: WriteLn(hex, 'CM_PARENTBIDIMODECHANGED');
+          CM_CONTROLCHANGE:         WriteLn(Hex, 'CM_CONTROLCHANGE');
+          CM_SHOWINGCHANGED:        WriteLn(Hex, 'CM_SHOWINGCHANGED');
+          CM_VISIBLECHANGED:        WriteLn(Hex, 'CM_VISIBLECHANGED');
+          else                    WriteLn(Hex, 'CM_BASE + ', Msg - CM_BASE);
+        end;
+      else
+        case Msg of
+          //CN_BASE MESSAGES
+          CN_COMMAND:             WriteLn(hex, 'LM_CNCOMMAND');
+          // NORMAL MESSAGES
+          LM_SETFOCUS:            WriteLn(hex, 'LM_SetFocus');
+          LM_LBUTTONDOWN:         WriteLn(hex, 'LM_MOUSEDOWN');
+          LM_LBUTTONUP:           WriteLn(hex, 'LM_LBUTTONUP');
+          LM_RBUTTONDOWN:         WriteLn(hex, 'LM_RBUTTONDOWN');
+          LM_RBUTTONUP:           WriteLn(hex, 'LM_RBUTTONUP');
+          LM_GETDLGCODE:          WriteLn(hex, 'LM_GETDLGCODE');
+          LM_KEYDOWN:             WriteLn(hex, 'LM_KEYDOWN');
+          LM_KEYUP:               WriteLn(hex, 'LM_KEYUP');
+          LM_CAPTURECHANGED:      WriteLn(hex, 'LM_CAPTURECHANGED');
+          LM_ERASEBKGND:          WriteLn(hex, 'LM_ERASEBKGND');
+          LM_KILLFOCUS:           WriteLn(hex, 'LM_KILLFOCUS');
+          LM_CHAR:                WriteLn(hex, 'LM_CHAR');
+          LM_SHOWWINDOW:          WriteLn(hex, 'LM_SHOWWINDOW');
+          LM_SIZE:                WriteLn(hex, 'LM_SIZE');
+          LM_WINDOWPOSCHANGED:    WriteLn(hex, 'LM_WINDOWPOSCHANGED');
+          LM_HSCROLL:             WriteLn(hex, 'LM_HSCROLL');
+          LM_VSCROLL:             WriteLn(hex, 'LM_VSCROLL');
+          
+          LM_MOUSEMOVE:           ;//WriteLn(hex, 'LM_MOUSEMOVE');
+          LM_MOUSEWHEEL:          WriteLn(Hex, 'LM_MOUSEWHEEL');
+          else                    WriteLn(hex, GetMessageName(Msg));
+        end;
+    end;
+  end;
+end;
+{$Endif GridTraceMsg}
+
 { TCustomGrid }
 
 function TCustomGrid.Getrowheights(Arow: Integer): Integer;
 begin
-  Result:=Integer(FRows[aRow]);
+  if aRow<RowCount then Result:=Integer(FRows[aRow])
+  else                  Result:=-1;
   if Result<0 then Result:=fDefRowHeight;
 end;
 
@@ -781,7 +842,8 @@ end;
 
 function TCustomGrid.Getcolwidths(Acol: Integer): Integer;
 begin
-  Result:=Integer(FCols[aCol]);
+  if aCol<ColCount then Result := Integer(FCols[aCol])
+  else                  Result := -1;
   if result<0 then Result:=fDefColWidth;
 end;
 
@@ -1107,8 +1169,8 @@ begin
     FGCache.TLRowOff:=0;
   end;
 
-  Dh:=18; //GetSystemMetrics(SM_CYHSCROLL);
-  DV:=18; //GetSystemMetrics(SM_CXVSCROLL);
+  Dh:=FGSMHBar;
+  DV:=FGSMVBar;
   TW:=FGCache.GridWidth;
   TH:=FGCache.GridHeight;
 
@@ -1142,7 +1204,7 @@ begin
   if ScrollBarAutomatic(ssHorizontal) then begin
 
     if HSbVisible then begin
-      HsbRange:=GridWidth + 2 + dv;
+      HsbRange:=GridWidth + 2 {+ dv};
 
       if not (goSmoothScroll in Options) then begin
         TW:= Integer(AccumWidth[MaxTopLeft.X])-(HsbRange-ClientWidth);
@@ -1164,7 +1226,7 @@ begin
   with FGCache do
   if ScrollBarAutomatic(ssVertical)  then begin
     if VSbVisible then begin
-      VSbRange:= GridHeight + 2 + dh;
+      VSbRange:= GridHeight + 2{ + dh};
 
       if not (goSmoothScroll in Options) then begin
         TH:= Integer(accumHeight[MaxTopLeft.Y])-(VsbRange-ClientHeight);
@@ -1234,7 +1296,7 @@ begin
     SetScrollInfo(Handle, Which, ScrollInfo, True);
   end;
 end;
-
+{
 function TCustomGrid.ScrollBarIsVisible(Which: Integer): Boolean;
 begin
   Result:=false;
@@ -1242,7 +1304,7 @@ begin
     Result:= getScrollbarVisible(handle, Which);
   end;
 end;
-
+}
 procedure TCustomGrid.ScrollBarPage(Which: Integer; aPage: Integer);
 var
   ScrollInfo: TScrollInfo;
@@ -1765,9 +1827,14 @@ end;
 procedure TCustomGrid.WMEraseBkgnd(var message: TLMEraseBkgnd);
 begin
   message.Result:=1;
-  WriteLn('TCustomGrid.WMEraseBkgnd');
+  //WriteLn('TCustomGrid.WMEraseBkgnd');
 end;
 
+procedure TCustomGrid.WMGetDlgCode(var Msg: TLMNoParams);
+begin
+	Msg.Result := DLGC_WANTARROWS or DLGC_WANTCHARS or DLGC_WANTALLKEYS;
+	if goTabs in Options then Msg.Result:= Msg.Result or DLGC_WANTTAB;
+end;
 
 //
 // NOTE: WMHScroll and VMHScroll
@@ -1776,14 +1843,16 @@ end;
 procedure TCustomGrid.WMHScroll(var message: TLMHScroll);
 var
   C,TL,CTL: Integer;
-  R: TRect;
 begin
+
   // Avoid invalidating right know, just let the scrollbar
   // calculate its position
+  {
   BeginUpdate;
   Inherited;
   message.Result:=1;
   EndUpdate(uoNone);
+  }
 
   {$IfDef dbgScroll}
   WriteLn('HSCROLL: Code=',message.ScrollCode,' Position=', message.Pos);
@@ -1823,7 +1892,14 @@ begin
       SB_ENDSCROLL: Exit;
     end;
 
+    {$Ifdef dbgScroll}
+    WriteLn('---- Position=',C, ' FixedWidth=',FGCache.FixedWidth);
+    {$Endif}
+    ScrollBarPosition(SB_HORZ, C);
     C:= C + FGCache.FixedWidth;
+    {$Ifdef dbgScroll}
+    WriteLn('---- Position=',C, ' FixedWidth=',FGCache.FixedWidth);
+    {$Endif}
     TL:=OffsetToColRow(True, False, C, FGCache.TLColOff);
     {$Ifdef dbgScroll}
     WriteLn('---- Offset=',C, ' TL=',TL,' TLColOFf=', FGCache.TLColOff);
@@ -1837,10 +1913,12 @@ begin
     end else
     if goSmoothScroll in Options then begin
       CacheVisibleGrid;
+      {
       R.Topleft:=Point(FGCache.FixedWidth, 0);
       R.BottomRight:= FGCache.MaxClientXY;
       InvalidateRect(Handle, @R, false);
-      //Invalidate;
+      }
+      Invalidate;
     end;
   end;
 end;
@@ -1848,15 +1926,15 @@ end;
 procedure TCustomGrid.WMVScroll(var message: TLMVScroll);
 var
   C, TL, CTL: Integer;
-  R: TRect;
 begin
   // Avoid invalidating right know, just let the scrollbar
   // calculate its position
+  {
   BeginUpdate;
   Inherited;
   message.Result:=1;
   EndUpdate(uoNone);
-
+  }
   {$IfDef dbgScroll}
   WriteLn('VSCROLL: Code=',message.ScrollCode,' Position=', message.Pos);
   {$Endif}
@@ -1892,7 +1970,14 @@ begin
       SB_ENDSCROLL: Exit;
     end;
 
+    {$Ifdef dbgScroll}
+    WriteLn('---- Position=',C, ' FixedHeight=',FGCache.FixedHeight);
+    {$Endif}
+    ScrollBarPosition(SB_VERT, C);
     C:= C + FGCache.FixedHeight;
+    {$Ifdef dbgScroll}
+    WriteLn('---- NewPosition=',C);
+    {$Endif}
     TL:=OffsetToColRow(False, False, C, FGCache.TLRowOff);
     {$Ifdef dbgScroll}
     WriteLn('---- Offset=',C, ' TL=',TL, ' TLRowOFf=', FGCache.TLRowOff);
@@ -1906,10 +1991,12 @@ begin
     end else
     if goSmoothScroll in Options then begin
       CacheVisibleGrid;
+      {
       R.TopLeft:=Point(0, FGCache.FixedHeight);
       R.BottomRight:=FGCache.MaxClientXY;
       InvalidateRect(Handle, @R, false);
-      //Invalidate;
+      }
+      Invalidate;
     end;
   end;
 end;
@@ -1935,25 +2022,16 @@ end;
 
 procedure TCustomGrid.WndProc(var TheMessage: TLMessage);
 begin
-  {
-  case TheMessage.Msg of
-    LM_SETFOCUS:
-      begin
-        (*
-        write('LM_SETFOCUS RECIBIDO');
-        if FExchangingFocus then begin
-          WriteLn(' - AVOIDING');
+	{$IfDef GridTraceMsg}
+	TransMsg('GRID: ', TheMessage);
+	{$Endif}
+ 
+  with TheMessage do
+  if (csDesigning in ComponentState) and
+     ((Msg = LM_HSCROLL)or(Msg = LM_VSCROLL))
+  then
           Exit;
-        end else WriteLn;
-        *)
-      end;
 
-    LM_LBUTTONDOWN: WriteLn('LM_MOUSEDOWN');
-    CM_MOUSEENTER:  WriteLn('CM_MOUSEENTER');
-    CM_MOUSELEAVE:  WriteLn('CM_MOUSELEAVE');
-    LM_MOUSEMOVE:   WriteLn('LM_MOUSEMOVE');
-  end;
-  }
   inherited WndProc(TheMessage);
 end;
 
@@ -1990,21 +2068,21 @@ begin
   // Special condition only When scrolling by draging
   // the scrollbars see: WMHScroll and WVHScroll
   if FUpdateScrollBarsCount=0 then begin
-    if Which in [ssHorizontal, ssBoth] then
-      if ScrollBarAutomatic(ssHorizontal) and
-        ScrollBarIsVisible(SB_HORZ) then begin
+    if Which in [ssHorizontal, ssBoth] then begin
+      if ScrollBarAutomatic(ssHorizontal) Then begin
           with FGCache do
             ScrollBarPosition(SB_HORZ,
               Integer(AccumWidth[FTopLeft.x])-TLColOff-FixedWidth );
       end;
+    end;
 
-    if Which in [ssVertical, ssBoth] then
-      if ScrollbarAutomatic(ssVertical) and
-        ScrollbarIsVisible(SB_VERT) then begin
+    if Which in [ssVertical, ssBoth] then begin
+      if ScrollBarAutomatic(ssVertical) then begin
           with FGCache do
             ScrollBarPosition(SB_VERT,
               Integer(AccumHeight[FTopLeft.y])-TLRowOff-FixedHeight);
       end;
+    end;
   end; {if FUpd...}
 end;
 
@@ -2249,6 +2327,7 @@ begin
       end;
     end;
     while Offset>(Integer(AccumWidth[Result])+GetColWidths(Result)-1) do Inc(Result);
+
     Rest:=Offset;
     if Result<>0 then Rest:=Offset-Integer(AccumWidth[Result]);
 
@@ -2372,7 +2451,7 @@ begin
 
   if not FGCache.ValidGrid then Exit;
   if not (ssLeft in Shift) then Exit;
-  //if csDesigning in componentState then Exit;
+  if csDesigning in componentState then Exit;
 
   {$IfDef dbgFocus} WriteLn('MouseDown INIT'); {$Endif}
 
@@ -2408,7 +2487,6 @@ begin
       if Not (csDesigning in componentState) then begin
         fGridState:=gsSelecting;
         FSplitter:=MouseToCell(Point(X,Y));
-
         if Not Focused then setFocus;
 
         if not (goEditing in Options) then begin
@@ -3419,6 +3497,8 @@ begin
   FRows:=TList.Create;
   FGCache.AccumWidth:=TList.Create;
   FGCache.AccumHeight:=TList.Create;
+  FGSMHBar := GetSystemMetrics(SM_CYHSCROLL);
+  FGSMVBar := GetSystemMetrics(SM_CXVSCROLL);  
   inherited Create(AOwner);
   //AutoScroll:=False;
   FDefaultDrawing := True;

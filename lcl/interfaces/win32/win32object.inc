@@ -927,12 +927,10 @@ activate_time :	the time at which the activation event occurred.
         case TControl(Sender).FCompStyle of
           csComboBox:
             begin
-          SendMessage(Handle, CB_SETEDITSEL, 0,
-                      MakeLParam(Word(Integer(Data)), High(Word)));
+              SendMessage(Handle, CB_SETEDITSEL, 0, MakeLParam(integer(Data), integer(Data)));
             end;
           csEdit:
             begin
-              //WriteLn('LM_SETSELSTART: Start=',Integer(Data));
               SendMessage(Handle, EM_SETSEL, Windows.WParam(Data), Windows.LParam(Data));
             end;
         end;
@@ -943,13 +941,14 @@ activate_time :	the time at which the activation event occurred.
         Case TControl(Sender).FCompStyle of
           csComboBox:
             begin
-          Windows.SendMessage(Handle, CB_SETCURSEL, Windows.WParam(Data), 0);
+              Windows.SendMessage(Handle, CB_GETEDITSEL, Windows.Wparam(@i), Windows.LParam(@Num));
+              Num := i + Integer(Data);
+              Windows.SendMessage(Handle, CB_SETEDITSEL, 0, MakeLParam( i, Num ));
             end;
           csEdit:
             begin
               Windows.SendMessage(Handle, EM_GETSEL, Windows.Wparam(@i), Windows.LParam(@Num));
               Num := i + Integer(Data);
-              //WriteLn('LM_SETSELLEN: Start=',i, ' End= ',Num, 'Length=',Integer(Data));
               Windows.SendMessage(Handle, EM_SETSEL, Windows.WParam(i), Windows.LParam(Num));
             end;
         end;
@@ -3025,6 +3024,9 @@ End;
 
 {
   $Log$
+  Revision 1.183  2004/03/18 22:26:24  mattias
+  fixed grids TComboBox from Jesus
+
   Revision 1.182  2004/03/07 12:55:53  micha
   don't create window for image
 
