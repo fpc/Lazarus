@@ -1158,14 +1158,19 @@ end;
        TCustomForm SetFormStyle
 ------------------------------------------------------------------------------}
 Procedure TCustomForm.SetFormStyle(Value : TFormStyle);
+var
+  OldFormStyle: TFormStyle;
 Begin
   if FFormStyle = Value then exit;
   if (Value in [fsMDIChild, fsMDIForm]) then
     raise Exception.Create('TCustomForm.SetFormStyle MDI forms are not implemented yet');
+  OldFormStyle:=FFormStyle;
   FFormStyle := Value;
   Include(FFormState,fsFormStyleChanged);
   if FFormStyle=fsSplash then begin
     BorderStyle:=bsNone;
+  end else if OldFormStyle=fsSplash then begin
+    BorderStyle:=bsSizeable;
   end;
 end;
 
@@ -1892,6 +1897,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.178  2005/03/04 13:50:08  mattias
+  fixed Arc and changed x,y to Left,Top to make meaning more clear
+
   Revision 1.177  2005/02/05 13:33:05  mattias
   implemented gtkwidgetset.IsWindowEnabled
 

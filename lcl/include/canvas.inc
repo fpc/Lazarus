@@ -382,10 +382,10 @@ var
   w: Integer;
   h: Integer;
 begin
-  x:=(Bounds.Left+Bounds.Right) div 2;
-  y:=(Bounds.Top+Bounds.Bottom) div 2;
-  w:=Abs(Bounds.Right-Bounds.Left) div 2;
-  h:=Abs(Bounds.Bottom-Bounds.Top) div 2;
+  if Bounds.Left<Bounds.Right then x:=Bounds.Left else x:=Bounds.Right;
+  if Bounds.Top<Bounds.Bottom then y:=Bounds.Top else y:=Bounds.Bottom;
+  w:=Abs(Bounds.Right-Bounds.Left);
+  h:=Abs(Bounds.Bottom-Bounds.Top);
   Arc(x,y,w,h,0,360*16);
 end;
 
@@ -501,7 +501,7 @@ end;
 
 {------------------------------------------------------------------------------
   Method:   TCanvas.Arc
-  Params:   x,y,AWidth,AHeight,angle1,angle2
+  Params:   Left,Top,AWidth,AHeight,angle1,angle2
   Returns:  Nothing
 
   Use Arc to draw an elliptically curved line with the current Pen.
@@ -511,17 +511,17 @@ end;
   Zero degrees is at the 3'o clock position.
 
  ------------------------------------------------------------------------------}
-procedure TCanvas.Arc(x,y,AWidth,AHeight,angle1,angle2 : Integer);
+procedure TCanvas.Arc(Left,Top,AWidth,AHeight,angle1,angle2 : Integer);
 begin
   Changing;
   RequiredState([csHandleValid, csPenValid]);
-  LCLIntf.Arc(FHandle,x,y,AWidth,AHeight,angle1,angle2);
+  LCLIntf.Arc(FHandle,Left,Top,AWidth,AHeight,angle1,angle2);
   Changed;
 end;
 
 {------------------------------------------------------------------------------
   Method:   TCanvas.Arc
-  Params:   DC,x,y,AWidth,AHeight,sx,sy,ex,ey
+  Params:   DC,Left,Top,AWidth,AHeight,sx,sy,ex,ey
   Returns:  Nothing
 
   Use Arc to draw an elliptically curved line with the current Pen. The
@@ -529,11 +529,11 @@ end;
   between which the Arc is drawn.
 
 ------------------------------------------------------------------------------}
-procedure TCanvas.Arc(x,y,AWidth,AHeight,sx,sy,ex,ey : Integer);
+procedure TCanvas.Arc(Left,Top,AWidth,AHeight,sx,sy,ex,ey : Integer);
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
-  LCLIntf.RadialArc(FHandle,x,y,AWidth,AHeight,sx,sy,ex,ey);
+  LCLIntf.RadialArc(FHandle,Left,Top,AWidth,AHeight,sx,sy,ex,ey);
   Changed;
 end;
 
@@ -1535,6 +1535,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.91  2005/03/04 13:50:08  mattias
+  fixed Arc and changed x,y to Left,Top to make meaning more clear
+
   Revision 1.90  2005/02/04 01:04:40  mattias
   fixed gtk intf Arc
 

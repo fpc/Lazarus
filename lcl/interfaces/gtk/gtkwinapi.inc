@@ -51,7 +51,7 @@ const
 
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.Arc(DC: HDC;
-  x,y,width,height,angle1,angle2 : Integer): Boolean;
+  Left,Top,width,height,angle1,angle2 : Integer): Boolean;
 var
   DCOrigin: TPoint;
 begin
@@ -73,10 +73,10 @@ begin
         if (CurrentPen^.IsNullPen) then exit;
 
         DCOrigin:=GetDCOffset(TDeviceContext(DC));
-        inc(X,DCOrigin.X);
-        inc(Y,DCOrigin.Y);
+        inc(Left,DCOrigin.X);
+        inc(Top,DCOrigin.Y);
         {$IFDEF DebugGDKTraps}BeginGDKErrorTrap;{$ENDIF}
-        gdk_draw_arc(Drawable, GC, 0, X-Width, Y-Height, 2*Width, 2*Height,
+        gdk_draw_arc(Drawable, GC, 0, Left,Top,Width,Height,
                      Angle1 shl 2, Angle2 shl 2);
         {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
       end else
@@ -8937,6 +8937,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.404  2005/03/04 13:50:09  mattias
+  fixed Arc and changed x,y to Left,Top to make meaning more clear
+
   Revision 1.403  2005/03/04 12:21:56  mattias
   fixed TShape FPCanvas issue
 

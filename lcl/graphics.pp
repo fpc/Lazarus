@@ -1013,8 +1013,8 @@ type
     procedure Changed; virtual;
 
     // extra drawing methods (there are more in the ancestor TFPCustomCanvas)
-    procedure Arc(x, y, AWidth, AHeight, angle1, angle2: Integer); virtual;
-    procedure Arc(x, y, AWidth, AHeight, SX, SY, EX, EY: Integer); virtual;
+    procedure Arc(Left, Top, AWidth, AHeight, angle1, angle2: Integer); virtual;
+    procedure Arc(Left, Top, AWidth, AHeight, SX, SY, EX, EY: Integer); virtual;
     Procedure BrushCopy(Dest: TRect; InternalImages: TBitmap; Src: TRect;
                         TransparentColor: TColor); virtual;
     procedure Chord(x, y, AWidth, AHeight,
@@ -1951,6 +1951,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.174  2005/03/04 13:50:08  mattias
+  fixed Arc and changed x,y to Left,Top to make meaning more clear
+
   Revision 1.173  2005/02/25 20:29:55  mattias
   FPCanvas is now used as default
 

@@ -28,10 +28,10 @@
 
 //##apiwiz##sps##   // Do not remove
 
-function TCarbonWidgetSet.Arc(DC: HDC; x, y, width, height, angle1,
+function TCarbonWidgetSet.Arc(DC: HDC; Left,Top, width, height, angle1,
   angle2: Integer): Boolean;
 begin
-  Result:=inherited Arc(DC, x, y, width, height, angle1, angle2);
+  Result:=inherited Arc(DC, Left,Top, width, height, angle1, angle2);
 end;
 
 function TCarbonWidgetSet.AngleChord(DC: HDC; x, y, width, height, angle1,
@@ -926,6 +926,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.3  2005/03/04 13:50:09  mattias
+  fixed Arc and changed x,y to Left,Top to make meaning more clear
+
   Revision 1.2  2005/02/23 01:12:46  marc
   + Added RemoveProp winapi call
   * Some maintenace on winapi/lclintf files

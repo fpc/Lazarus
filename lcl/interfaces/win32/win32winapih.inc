@@ -22,7 +22,7 @@
 }
 //##apiwiz##sps##   // Do not remove
 
-Function Arc(DC: HDC; X, Y, Width, Height, Angle1, Angle2: Integer): Boolean; Override;
+Function Arc(DC: HDC; Left,Top, Width, Height, Angle1, Angle2: Integer): Boolean; Override;
 function AngleChord(DC: HDC; x,y,width,height,angle1,angle2 : Integer): Boolean; override;
 
 Function BeginPaint(Handle : hwnd; var PS : TPaintStruct): hdc; Override;
@@ -196,6 +196,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.55  2005/03/04 13:50:09  mattias
+  fixed Arc and changed x,y to Left,Top to make meaning more clear
+
   Revision 1.54  2005/02/23 01:12:47  marc
   + Added RemoveProp winapi call
   * Some maintenace on winapi/lclintf files

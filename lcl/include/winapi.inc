@@ -33,9 +33,9 @@
  ******************************************************************************}
 //##apiwiz##sps##   // Do not remove
 
-function Arc(DC: HDC; x,y,width,height,angle1,angle2 : Integer): Boolean;
+function Arc(DC: HDC; Left,Top,width,height,angle1,angle2 : Integer): Boolean;
 begin
-  Result := InterfaceObject.Arc(DC,x,y,width,height,angle1,angle2);
+  Result := InterfaceObject.Arc(DC,Left,Top,width,height,angle1,angle2);
 end;
 
 function AngleChord(DC: HDC; x,y,width,height,angle1,angle2 : Integer): Boolean;
@@ -1335,6 +1335,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.120  2005/03/04 13:50:09  mattias
+  fixed Arc and changed x,y to Left,Top to make meaning more clear
+
   Revision 1.119  2005/02/23 01:15:56  marc
   + Added RemoveProp winapi call
 

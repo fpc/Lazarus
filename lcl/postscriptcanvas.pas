@@ -129,8 +129,8 @@ Type
                       Winding: boolean{$IFNDEF VER1_0}=False{$ENDIF}); override;
 
     procedure Ellipse(x1, y1, x2, y2: Integer); override;
-    procedure Arc(x,y,AWidth,AHeight,angle1,angle2: Integer); override;
-    procedure RadialPie(x,y,AWidth,AHeight,angle1,angle2: Integer); override;
+    procedure Arc(Left,Top,AWidth,AHeight,angle1,angle2: Integer); override;
+    procedure RadialPie(Left,Top,AWidth,AHeight,angle1,angle2: Integer); override;
     procedure Chord(x, y, AWidth, AHeight, angle1, angle2: Integer); override;
 
     procedure TextOut(X,Y: Integer; const Text: String); override;
@@ -1594,7 +1594,7 @@ begin
 end;
 
 //Draw an Arc
-procedure TPostscriptPrinterCanvas.Arc(x, y, AWidth, AHeight, angle1,
+procedure TPostscriptPrinterCanvas.Arc(Left,Top,AWidth,AHeight, angle1,
   angle2: Integer);
 var xScale : Real;
     yScale : Real;
@@ -1606,12 +1606,11 @@ begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
 
-  writecomment(Format('Arc(%d,%d,%d,%d,%d,%d)',[x,y,AWidth,AHeight,Angle1,Angle2]));
-  TranslateCoord(X,Y);
+  TranslateCoord(Left,Top);
 
   //calculate centre of ellipse
-  cx:=x;
-  cy:=y;
+  cx:=Left;
+  cy:=Top;
   rx:=AWidth;
   ry:=AHeight;
 
@@ -1645,7 +1644,7 @@ begin
   Changed;
 end;
 
-procedure TPostscriptPrinterCanvas.RadialPie(x, y, AWidth, AHeight, angle1,
+procedure TPostscriptPrinterCanvas.RadialPie(Left,Top, AWidth, AHeight, angle1,
   angle2: Integer);
 var xScale : Real;
     yScale : Real;
@@ -1657,12 +1656,12 @@ begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
 
-  writecomment(Format('RadialPie(%d,%d,%d,%d,%d,%d)',[x,y,AWidth,AHeight,Angle1,Angle2]));
-  TranslateCoord(X,Y);
+  writecomment(Format('RadialPie(%d,%d,%d,%d,%d,%d)',[Left,Top,AWidth,AHeight,Angle1,Angle2]));
+  TranslateCoord(Left,Top);
 
   //calculate centre of ellipse
-  cx:=x;
-  cy:=y;
+  cx:=Left;
+  cy:=Top;
   rx:=AWidth;
   ry:=AHeight;
 
@@ -1683,7 +1682,7 @@ begin
   ClearBuffer;
   writeB(Format('%.3f %.3f moveto',[cX+(rX*Cos((Angle1/16)*-1)),cY+(rY*Sin((Angle1/16)*-1))]));
   WriteB(Code);
-  writeB(Format('%d %d lineto',[X,Y]));
+  writeB(Format('%d %d lineto',[Left,Top]));
   writeB(Format('%.3f %.3f lineto',[cX+(rX*Cos((Angle1/16)*-1)),cY+(rY*Sin((Angle1/16)*-1))]));
   SetBrushFillPattern(False,True);
 
@@ -1692,7 +1691,7 @@ begin
   ClearBuffer;
   writeB(Format('%.3f %.3f moveto',[cX+(rX*Cos((Angle1/16)*-1)),cY+(rY*Sin((Angle1/16)*-1))]));
   WriteB(Code);
-  writeB(Format('%d %d lineto',[X,Y]));
+  writeB(Format('%d %d lineto',[Left,Top]));
   writeB(Format('%.3f %.3f lineto',[cX+(rX*Cos((Angle1/16)*-1)),cY+(rY*Sin((Angle1/16)*-1))]));
   SetBrushFillPattern(True,False);
 

@@ -28,7 +28,7 @@
 //##apiwiz##sps##   // Do not remove
 
 function TWidgetSet.Arc(DC: HDC;
-  x,y,width,height,angle1,angle2 : Integer): Boolean;
+  Left,Top,width,height,angle1,angle2 : Integer): Boolean;
 var
   Points : PPoint;
   Count : Longint;
@@ -36,7 +36,7 @@ begin
   Result := False;
   Points := nil;
   Count := 0;
-  PolyBezierArcPoints(X,Y,Width,Height,Angle1, Angle2, 0, Points, Count);
+  PolyBezierArcPoints(Left,Top,Width,Height,Angle1, Angle2, 0, Points, Count);
   Polygon(DC, Points, Count, False);
   ReallocMem(Points, 0);
   Result := True;
@@ -1178,6 +1178,7 @@ begin
 
     Pen := SelectObject(DC, GetStockObject(NULL_PEN));
 
+    //debugln('TWidgetSet.RoundRect ',dbgs(Rect(X1,Y1,X2,Y2)),' ',dbgs(Point(RX,RY)));
     RadialPieWithAngles(DC, X1, Y1, RX, RY, 90*16,90*16);
     RadialPieWithAngles(DC, X2 - RX, Y1, RX, RY, 0, 90*16);
     RadialPieWithAngles(DC, X1, Y2 - RY, RX, RY, 180*16,90*16);
@@ -1425,6 +1426,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.21  2005/03/04 13:50:09  mattias
+  fixed Arc and changed x,y to Left,Top to make meaning more clear
+
   Revision 1.20  2005/02/23 01:15:56  marc
   + Added RemoveProp winapi call
 

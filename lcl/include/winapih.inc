@@ -38,7 +38,7 @@
  ******************************************************************************}
 //##apiwiz##sps##   // Do not remove
 
-function Arc(DC: HDC; x,y,width,height,angle1,angle2 : Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function Arc(DC: HDC; Left,Top,width,height,angle1,angle2 : Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function AngleChord(DC: HDC; x,y,width,height,angle1,angle2 : Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 Function BeginPaint(Handle : hwnd; var PS : TPaintStruct): hdc; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -301,6 +301,9 @@ function RGB(R, G, B : Byte) : TColorRef;
 { =============================================================================
 
   $Log$
+  Revision 1.107  2005/03/04 13:50:09  mattias
+  fixed Arc and changed x,y to Left,Top to make meaning more clear
+
   Revision 1.106  2005/02/23 01:15:56  marc
   + Added RemoveProp winapi call
 

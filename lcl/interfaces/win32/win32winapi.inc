@@ -56,12 +56,12 @@ Const
   counter-clockwise while negative values mean clockwise direction.
   Zero degrees is at the 3'o clock position.
  ------------------------------------------------------------------------------}
-Function TWin32WidgetSet.Arc(DC: HDC; X, Y, Width, Height, Angle1, Angle2: Integer): Boolean;
+Function TWin32WidgetSet.Arc(DC: HDC; Left,Top, Width, Height, Angle1, Angle2: Integer): Boolean;
 var
   SX, SY, EX, EY : Longint;
 Begin
-  Angles2Coords(X, Y, Width, Height, Angle1, Angle2, SX, SY, EX, EY);
-  Result := Boolean(Windows.Arc(DC, X, Y, X+Width, Y+Height, SX, SY, EX, EY));
+  Angles2Coords(Left,Top, Width, Height, Angle1, Angle2, SX, SY, EX, EY);
+  Result := Boolean(Windows.Arc(DC, Left,Top, Left+Width, Top+Height, SX, SY, EX, EY));
 End;
 
 {------------------------------------------------------------------------------
@@ -3093,6 +3093,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.138  2005/03/04 13:50:09  mattias
+  fixed Arc and changed x,y to Left,Top to make meaning more clear
+
   Revision 1.137  2005/02/23 01:12:47  marc
   + Added RemoveProp winapi call
   * Some maintenace on winapi/lclintf files
