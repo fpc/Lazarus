@@ -197,6 +197,9 @@ Const
   CL_CENTER   =   $10;
   CL_BOTTOM   =   $20;
 
+Type
+  EGridException = class(Exception);
+
 
 Type
   TGridOption = (
@@ -269,7 +272,6 @@ Type
   TStringCellEditor=Class(TCustomEdit)
   Private
     FGrid: TCustomGrid;
-    FLeaving: Boolean;
   Protected
     Procedure doExit; Override;
     procedure KeyDown(var Key : Word; Shift : TShiftState); Override;
@@ -1182,6 +1184,7 @@ Var
 begin
   // Calculate New Cached Values
   FGCache.GridWidth:=0;
+  FGCache.FixedWidth:=0;
   For Tw:=0 To ColCount-1 do begin
     FGCache.AccumWidth[Tw]:=Pointer(FGCache.GridWidth);
     FGCache.GridWidth:=FGCache.GridWidth + GetColWidths(Tw);
@@ -1191,6 +1194,7 @@ begin
     {$Endif}
   End;
   FGCache.Gridheight:=0;
+  FGCache.FixedHeight:=0;
   For Tw:=0 To RowCount-1 do begin
     FGCache.AccumHeight[Tw]:=Pointer(FGCache.Gridheight);
     FGCache.Gridheight:=FGCache.Gridheight+GetRowHeights(Tw);
@@ -1342,7 +1346,7 @@ begin
   Ch:=FGCache.ClientHeight; //ClientHeight;
 
   Fw:=FGCache.FixedWidth; //GetFixedWidth;
-  Fh:=FGcache.FixedWidth; //GetFixedHeight;
+  Fh:=FGcache.FixedHeight; //GetFixedHeight;
   
   OldTopLeft:=fTopLeft;
   While (fTopLeft.x>=0) And
@@ -1398,7 +1402,6 @@ begin
   If Assigned(OnTopLeftChange) Then OnTopLeftChange(Self);
 end;
 
-{$hints off}
 procedure TCustomGrid.HeaderClick(IsColumn: Boolean; Index: Integer);
 begin
 end;
@@ -1421,8 +1424,6 @@ end;
 procedure TCustomGrid.ColRowDeleted(IsColumn: Boolean; Index: Integer);
 begin
 end;
-{$hints on}
-
 
 procedure TCustomGrid.Paint;
 begin
@@ -1902,8 +1903,6 @@ end;
 
 { Reposition the scrollbars according to the current TopLeft }
 procedure TCustomGrid.UpdateScrollbarPos(Which: TControlScrollbar);
-Var
-  I: Integer;
 begin
   // Adjust ScrollBar Positions
   {$IfDef Scr1}
@@ -1951,10 +1950,12 @@ end;
 
 procedure TCustomGrid.CheckFixedCount(aCol,aRow,aFCol,aFRow: Integer);
 begin
-  If (aFCol<>0)And (aFCol>=aCol) Then
-    Raise Exception.Create('FixedCols can''t be <= than ColCount');
-  If (aFRow<>0)And (aFRow>=aRow) Then
-    Raise Exception.Create('FixedRows can''t be <= than RowCount');
+  If AFRow<0 Then Raise EGridException.Create('FixedRows<0');
+  If AFCol<0 Then Raise EGridException.Create('FixedCols<0');
+  If (ACol>0)And(aFCol>=ACol) Then
+    Raise EGridException.Create('FixedCols can''t be >= ColCount');
+  If (ARow>0)And(aFRow>=ARow) Then
+    Raise EGridException.Create('FixedRows can''t be >= RowCount');
 end;
 
 { Save to the cache the current visible grid (excluding fixed cells) }
@@ -2206,6 +2207,7 @@ begin
     End;
     Fin:=Ini + Dim;
   End;
+  Result:=true;
 end;
 
 {
@@ -2787,8 +2789,7 @@ end;
 
 procedure TCustomGrid.PosEditor;
 Var
-   R: TRect;
-   CurVisible: Boolean;
+  R: TRect;
 begin
   If fEditor<>nil Then begin
     R:=ColRowToClientCellRect(FCol,FRow);
