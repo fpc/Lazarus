@@ -541,23 +541,25 @@ begin
   IsKeyWordProcedureSpecifier:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(IsKeyWordProcedureSpecifier);
   with IsKeyWordProcedureSpecifier do begin
-    Add('STDCALL'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('REGISTER'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('POPSTACK'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('OVERLOAD'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('CDECL'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('INLINE'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('EXTERNAL'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('FORWARD'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('PASCAL'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('ASSEMBLER'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('STDCALL'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('REGISTER'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('POPSTACK'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('OVERLOAD'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('CDECL'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('INLINE'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('EXTERNAL'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('FORWARD'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('PASCAL'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('ASSEMBLER'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('SAVEREGISTERS',{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('FAR'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('NEAR'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('DEPRECATED' ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('PLATFORM'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('LOCAL'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('['          ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('FAR'          ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('NEAR'         ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('DEPRECATED'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('PLATFORM'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('LOCAL'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('COMPILERPROC' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('IOCHECK'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('['            ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   IsKeyWordProcedureTypeSpecifier:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(IsKeyWordProcedureTypeSpecifier);
@@ -652,6 +654,7 @@ begin
     Add('NOT',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('OBJECT',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('OF',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('OPERATOR',{$ifdef FPC}@{$endif}AllwaysTrue);
     //Add('ON',{$ifdef FPC}@{$endif}AllwaysTrue); // not for Delphi
     Add('OR',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('PACKED',{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -673,6 +676,7 @@ begin
     Add('UNTIL',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('USES',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('VAR',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('THREADVAR',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('WHILE',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('WITH',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('XOR',{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -779,6 +783,7 @@ begin
     Add('TYPE',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('UNIT',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('VAR',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('THREADVAR',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   WordIsLogicalBlockStart:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(WordIsLogicalBlockStart);

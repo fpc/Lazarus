@@ -914,7 +914,8 @@ function TPascalParserTool.KeyWordFuncClassMethod: boolean;
    function Intf.Method = ImplementingMethodName;
 
  proc specifiers without parameters:
-   stdcall, virtual, abstract, dynamic, overload, override, cdecl, inline
+   stdcall, virtual, abstract, dynamic, overload, override, cdecl, inline,
+   compilerproc
 
  proc specifiers with parameters:
    message <id or number>
@@ -1213,6 +1214,7 @@ function TPascalParserTool.ReadTilProcedureHeadEnd(
    external <id or number> name <id>;
    external <id or number> index <id>;
    [alias: <string constant>]
+   [external name <string constant>]
 }
 
   procedure RaiseKeyWordExampleExpected;
@@ -1313,7 +1315,8 @@ begin
           end;
         end;
       end else if CurPos.Flag=cafEdgedBracketOpen then begin
-        // read assembler alias   [public,alias: 'alternative name']
+        // read assembler alias   [public,alias: 'alternative name'],
+        // internproc, external
         repeat
           ReadNextAtom;
           if not (CurPos.Flag in AllCommonAtomWords) then
@@ -1322,13 +1325,25 @@ begin
             CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
           then
             RaiseKeyWordExampleExpected;
-          if UpAtomIs('INTERNPROC') or UpAtomIs('EXTERNAL') then
+          if UpAtomIs('INTERNPROC') then
             HasForwardModifier:=true;
-          ReadNextAtom;
+          if UpAtomIs('EXTERNAL') then begin
+            HasForwardModifier:=true;
+            ReadNextAtom;
+            if not (CurPos.Flag in [cafComma,cafEdgedBracketClose]) then begin
+              if not UpAtomIs('NAME') then
+                ReadConstant(true,false,[]);
+              if UpAtomIs('NAME') or UpAtomIs('INDEX') then begin
+                ReadNextAtom;
+                ReadConstant(true,false,[]);
+              end;
+            end;
+          end else
+            ReadNextAtom;
           if CurPos.Flag in [cafColon,cafEdgedBracketClose] then
             break;
           if CurPos.Flag<>cafComma then
-            RaiseCharExpectedButAtomFound(':');
+            RaiseCharExpectedButAtomFound(']');
         until false;
         if CurPos.Flag=cafColon then begin
           ReadNextAtom;
