@@ -396,6 +396,8 @@ end;
 {------------------------------------------------------------------------------}
 destructor TCustomListBox.Destroy;
 begin
+  Destroying;
+  DestroyWnd;
   FreeAndNil(FCanvas);
   inherited Destroy;
   FreeAndNil(FItems);
