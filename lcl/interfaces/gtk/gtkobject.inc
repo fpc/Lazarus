@@ -291,7 +291,6 @@ end;
 procedure TgtkObject.ShowModal(Sender: TObject);
 var
   GtkWindow: PGtkWindow;
-  ParentWindow: PGtkWindow;
 begin
   if Sender is TCommonDialog then
   begin
@@ -321,14 +320,148 @@ begin
 
   // apart from none and sizeable, this will only work if WM supports
   // motif flags properly, which very few actually do.
-  
-  ParentWindow:=PGtkWindow(GetActiveWindow);
-  if (GtkWindow<>nil)
-  and GtkWidgetIsA(PGtkWidget(ParentWindow),GTK_WINDOW_TYPE) then
-    gtk_window_set_transient_for(GtkWindow,ParentWindow);
+
+  if ModalWindows=nil then ModalWindows:=TList.Create;
+  ModalWindows.Add(GtkWindow);
+  UpdateTransientWindows;
 
   gtk_window_set_modal(GtkWindow, true);
   gtk_widget_show(PGtkWidget(GtkWindow));
+end;
+
+{------------------------------------------------------------------------------
+  procedure TgtkObject.UpdateTransientWindows;
+ ------------------------------------------------------------------------------}
+procedure TgtkObject.UpdateTransientWindows;
+
+type
+  PTransientWindow = ^TTransientWindow;
+  TTransientWindow = record
+    GtkWindow: PGtkWindow;
+    Component: TComponent;
+    IsModal: boolean;
+    SortIndex: integer;
+  end;
+
+var
+  AllWindows: TList;
+  List: PGList;
+  Window: PGTKWindow;
+  ATransientWindow: PTransientWindow;
+  LCLObject: TObject;
+  LCLComponent: TComponent;
+  i: Integer;
+  FirstModal: Integer;
+  j: Integer;
+  ATransientWindow1: PTransientWindow;
+  ATransientWindow2: PTransientWindow;
+  ParentWindow: PGtkWindow;
+begin
+  AllWindows:=nil;
+
+  // find all current visible gtkwindows
+  List := gdk_window_get_toplevels;
+  while List <> nil do
+  begin
+    if (List^.Data <> nil)
+    then begin
+      gdk_window_get_user_data(PGDKWindow(List^.Data), @Window);
+      if GtkWidgetIsA(PGtkWidget(Window),GTK_WINDOW_TYPE)
+      and (GTK_WIDGET_VISIBLE(PGtkWidget(Window))) then begin
+        // visible window found -> add to list
+        New(ATransientWindow);
+        FillChar(ATransientWindow^,SizeOf(TTransientWindow),0);
+        ATransientWindow^.GtkWindow:=Window;
+        LCLObject:=GetLCLObject(Window);
+        if (LCLObject<>nil) and (LCLObject is TComponent) then begin
+          LCLComponent:=TComponent(LCLObject);
+          ATransientWindow^.Component:=LCLComponent;
+          if LCLComponent is TCustomForm then begin
+            ATransientWindow^.IsModal:=
+              fsModal in TCustomForm(LCLComponent).FormState;
+          end else if (LCLComponent is TCommonDialog) then begin
+            ATransientWindow^.IsModal:=true;
+          end;
+        end;
+        if ATransientWindow^.IsModal then begin
+          if (ModalWindows<>nil) then
+            ATransientWindow^.SortIndex:=ModalWindows.IndexOf(Window)
+          else begin
+            ATransientWindow^.SortIndex:=-1;
+            writeln('WARNING: UpdateTransientWindows: unknown modal window ',HexStr(Cardinal(Window),8));
+          end;
+        end;
+        if AllWindows=nil then AllWindows:=TList.Create;
+        AllWindows.Add(ATransientWindow);
+      end;
+    end;
+    list := g_list_next(list);
+  end;
+
+  if AllWindows=nil then exit;
+
+  // sort
+  // move all modal windows at the end of the window list
+  i:=AllWindows.Count-1;
+  FirstModal:=AllWindows.Count;
+  while i>=0 do begin
+    ATransientWindow:=PTransientWindow(AllWindows[i]);
+    if ATransientWindow^.IsModal
+    and (i<FirstModal) then begin
+      dec(FirstModal);
+      if i<FirstModal then
+        AllWindows.Exchange(i,FirstModal);
+    end;
+    dec(i);
+  end;
+  
+  if FirstModal=AllWindows.Count then begin
+    // there is no modal window
+    // -> break all transient window relation ships
+    for i:=0 to AllWindows.Count-1 do begin
+      ATransientWindow:=PTransientWindow(AllWindows[i]);
+      gtk_window_set_transient_for(ATransientWindow^.GtkWindow,nil);
+    end;
+  end else begin
+    // there are modal windows
+    // -> sort windows in z order and setup transient relationships
+    
+    // sort modal windows (bubble sort)
+    for i:=FirstModal to AllWindows.Count-2 do begin
+      for j:=i+1 to AllWindows.Count-1 do begin
+        ATransientWindow1:=PTransientWindow(AllWindows[i]);
+        ATransientWindow2:=PTransientWindow(AllWindows[j]);
+        if ATransientWindow1^.SortIndex>ATransientWindow2^.SortIndex then
+          AllWindows.Exchange(i,j);
+      end;
+    end;
+    
+    // sort non modal windows for z order
+    // ToDo: How do we get the z order?
+    // For now, we just keep the gtk window order
+    
+    // set al transient relationships
+    for i:=0 to AllWindows.Count-1 do begin
+      ATransientWindow:=PTransientWindow(AllWindows[i]);
+      if i>0 then begin
+        ParentWindow:=PTransientWindow(AllWindows[i-1])^.GtkWindow;
+        //writeln('UpdateTransientWindows: ',i,
+        //  ' Transient: ',ATransientWindow^.Component.Name,':',
+        //                 ATransientWindow^.Component.ClassName,
+        //  ' Parent=',PTransientWindow(AllWindows[i-1])^.Component.Name,':',
+        //             PTransientWindow(AllWindows[i-1])^.Component.ClassName);
+      end else
+        ParentWindow:=nil;
+      gtk_window_set_transient_for(ATransientWindow^.GtkWindow,ParentWindow);
+    end;
+  end;
+
+  // clean up
+  for i:=0 to AllWindows.Count-1 do begin
+    ATransientWindow:=PTransientWindow(AllWindows[i]);
+    Dispose(ATransientWindow);
+  end;
+  AllWindows.Free;
 end;
 
 {------------------------------------------------------------------------------
@@ -3345,14 +3478,19 @@ begin
     case TControl(Sender).fCompStyle of
     csComboBox:
       begin
-        SetComboBoxText(PGtkCombo(Handle),nil);
-        FreeWinWidgetInfo(PGtkCombo(Handle)^.Entry);
-        FreeWinWidgetInfo(PGtkCombo(Handle)^.Button);
+        SetComboBoxText(PGtkCombo(Widget),nil);
+        FreeWinWidgetInfo(PGtkCombo(Widget)^.Entry);
+        FreeWinWidgetInfo(PGtkCombo(Widget)^.Button);
       end;
 
     end;
     if Sender is TCustomForm then begin
       gtk_window_set_transient_for(PGtkWindow(Widget),nil);
+      if ModalWindows<>nil then begin
+        ModalWindows.Remove(PGtkWindow(Widget));
+        if ModalWindows.Count=0 then FreeAndNil(ModalWindows);
+      end;
+      UpdateTransientWindows;
     end;
   end
   else if Sender is TCommonDialog then begin
@@ -4874,11 +5012,18 @@ begin
   else Begin
   
     if (Sender is TCustomForm) then begin
-      gtk_window_set_transient_for(PGtkWindow(SenderWidget),nil);
       UnshareWindowAccelGroups(SenderWidget);
     end;
   
     gtk_widget_hide(SenderWidget);
+    
+    if (Sender is TCustomForm) then begin
+      if ModalWindows<>nil then begin
+        ModalWindows.Remove(PGtkWindow(SenderWidget));
+        if ModalWindows.Count=0 then FreeAndNil(ModalWindows);
+      end;
+      UpdateTransientWindows;
+    end;
   end;
   //if Sender is TForm then
   //  writeln('[TgtkObject.ShowHide] END ',Sender.ClassName,' Window=',FormWidget^.Window<>nil);
@@ -6898,6 +7043,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.332  2003/03/15 18:32:38  mattias
+  implemented transient windows for all cases
+
   Revision 1.331  2003/03/15 09:42:50  mattias
   fixed transient windows
 
