@@ -868,7 +868,6 @@ var
 
 {$ifdef win32}
 var
-   StartUpHeapEnd : pointer;
    { I found no symbol for start of text section :(
      so we usee the _mainCRTStartup which should be
      in wprt0.ow or wdllprt0.ow PM }
@@ -1179,9 +1178,6 @@ begin
 {$ifdef go32v2}
   Heap_at_init:=HeapPtr;
 {$endif}
-{$ifdef win32}
-  StartupHeapEnd:=HeapEnd;
-{$endif}
 end;
 
 
@@ -1217,32 +1213,26 @@ begin
 end;
 
 {$ifdef win32}
-   function GetEnvironmentStrings : pchar;
-     external 'kernel32' name 'GetEnvironmentStringsA';
-   function FreeEnvironmentStrings(p : pchar) : longbool;
-     external 'kernel32' name 'FreeEnvironmentStringsA';
+
+{$h+}
+
+   function GetEnvironmentVariable(lpName: pchar; lpBuffer: pchar; nSize: dword) : dword; stdcall;
+     external 'kernel32' name 'GetEnvironmentVariableA'; 
+   function FreeEnvironmentStrings(p : pchar) : longbool; stdcall;
+     external 'kernel32' name 'FreeEnvironmentStringsA'; 
 Function  GetEnv(envvar: string): string;
 var
-   s : string;
-   i : longint;
-   hp,p : pchar;
+  len : longint;
 begin
-   getenv:='';
-   p:=GetEnvironmentStrings;
-   hp:=p;
-   while hp^<>#0 do
-     begin
-        s:=strpas(hp);
-        i:=pos('=',s);
-        if upcase(copy(s,1,i-1))=upcase(envvar) then
-          begin
-             getenv:=copy(s,i+1,length(s)-i);
-             break;
-          end;
-        { next string entry}
-        hp:=hp+strlen(hp)+1;
-     end;
-   FreeEnvironmentStrings(p);
+  len := GetEnvironmentVariable(pchar(envvar), nil, 0);
+  if len = 0 then
+  begin
+    getenv := ''
+  end else begin
+    { len includes null-terminator }
+    SetLength(getenv, len-1);
+    GetEnvironmentVariable(pchar(envvar), pchar(getenv), len);
+  end;
 end;
 {$else}
 Function GetEnv(P:string):Pchar;
@@ -2568,6 +2558,11 @@ end.
 
 {
   $Log$
+  Revision 1.30  2004/04/11 10:15:58  micha
+  - removed: startupheapend, it's unused
+  - fixed calling convention which fixes startup crash
+  - cleaner implementation GetEnv, GetEnvironmentStrings is deprecated
+
   Revision 1.29  2004/02/21 01:01:02  mattias
   added uninstall popupmenuitem to package graph explorer
 
