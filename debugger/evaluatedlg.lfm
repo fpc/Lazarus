@@ -1,0 +1,110 @@
+object EvaluateDlg: TEvaluateDlg
+  BorderStyle = bsSizeToolWin
+  Caption = 'Evaluate/Modify'
+  ClientHeight = 296
+  ClientWidth = 400
+  PixelsPerInch = 90
+  HorzScrollBar.Page = 401
+  VertScrollBar.Page = 297
+  Left = 351
+  Height = 296
+  Top = 136
+  Width = 400
+  object ToolBar1: TToolBar
+    AutoSize = True
+    ButtonHeight = 50
+    ButtonWidth = 75
+    Caption = 'ToolBar1'
+    EdgeBorders = [ebTop, ebBottom]
+    Flat = True
+    Height = 50
+    ParentColor = True
+    ShowCaptions = True
+    TabOrder = 0
+    TabStop = True
+    Height = 50
+    Width = 400
+    object tbInspect: TToolButton
+      Caption = '&Inspect'
+      Enabled = False
+      Left = 226
+      Height = 50
+      Width = 75
+    end
+    object tbWatch: TToolButton
+      Caption = '&Watch'
+      Enabled = False
+      OnClick = tbWatchClick
+      Left = 151
+      Height = 50
+      Width = 75
+    end
+    object tbModify: TToolButton
+      Caption = '&Modify'
+      Enabled = False
+      Left = 76
+      Height = 50
+      Width = 75
+    end
+    object tbEvaluate: TToolButton
+      Caption = 'E&valuate'
+      Enabled = False
+      OnClick = tbEvaluateClick
+      Height = 50
+      Width = 75
+    end
+  end
+  object Label1: TLabel
+    Caption = '&Expression:'
+    Left = 8
+    Height = 17
+    Top = 56
+    Width = 65
+  end
+  object cmbExpression: TComboBox
+    Anchors = [akTop, akLeft, akRight]
+    MaxLength = 0
+    OnChange = cmbExpressionChange
+    TabOrder = 2
+    Left = 8
+    Height = 25
+    Top = 72
+    Width = 384
+  end
+  object Label2: TLabel
+    Caption = '&Result:'
+    Left = 8
+    Height = 17
+    Top = 104
+    Width = 65
+  end
+  object txtResult: TMemo
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    TabOrder = 4
+    Left = 8
+    Height = 124
+    Top = 120
+    Width = 384
+  end
+  object lblNewValue: TLabel
+    Anchors = [akLeft, akBottom]
+    Caption = '&New value:'
+    Left = 8
+    Height = 13
+    Top = 248
+    Width = 65
+  end
+  object cmbNewValue: TComboBox
+    Anchors = [akLeft, akRight, akBottom]
+    MaxLength = 0
+    TabOrder = 6
+    Left = 8
+    Height = 25
+    Top = 264
+    Width = 384
+  end
+  object ImageList1: TImageList
+    left = 16
+    top = 352
+  end
+end

@@ -47,7 +47,7 @@ uses
   MainBar, MainIntf, MainBase, BaseDebugManager,
   SourceMarks,
   DebuggerDlg, Watchesdlg, BreakPointsdlg, LocalsDlg, WatchPropertyDlg,
-  CallStackDlg, DBGOutputForm,
+  CallStackDlg, EvaluateDlg, DBGOutputForm,
   GDBMIDebugger, SSHGDBMIDebugger;
 
 
@@ -57,7 +57,8 @@ type
     ddtBreakpoints,
     ddtWatches,
     ddtLocals,
-    ddtCallStack
+    ddtCallStack,
+    ddtEvaluate
     );
     
   TDebugManager = class(TBaseDebugManager)
@@ -111,6 +112,7 @@ type
     procedure InitWatchesDlg;
     procedure InitLocalsDlg;
     procedure InitCallStackDlg;
+    procedure InitEvaluateDlg;
 
     procedure FreeDebugger;
   protected
@@ -161,7 +163,8 @@ implementation
 
 const
   DebugDlgIDEWindow: array[TDebugDialogType] of TNonModalIDEWindow = (
-    nmiwDbgOutput,  nmiwBreakPoints, nmiwWatches, nmiwLocals, nmiwCallStack
+    nmiwDbgOutput,  nmiwBreakPoints, nmiwWatches, nmiwLocals, nmiwCallStack,
+    nmiwEvaluate
   );
   
 type
@@ -1175,9 +1178,11 @@ begin
   SrcLine:=ALocation.SrcLine;
 
   //TODO: Show assembler window if no source can be found.
-  if SrcLine < 1 then begin
+  if SrcLine < 1
+  then begin
     MessageDlg(lisExecutionPaused,
-      Format(lisExecutionPausedAdress, [#13#13, ALocation.Address, #13,
+      Format(lisExecutionPausedAdress, [#13#13,
+        HexStr(ALocation.Address, FDebugger.TargetWidth div 4), #13,
         ALocation.FuncName, #13, ALocation.SrcFile, #13#13#13, #13]),
       mtInformation, [mbOK],0);
 
@@ -1254,7 +1259,8 @@ end;
 procedure TDebugManager.ViewDebugDialog(const ADialogType: TDebugDialogType);
 const
   DEBUGDIALOGCLASS: array[TDebugDialogType] of TDebuggerDlgClass = (
-    TDbgOutputForm, TBreakPointsDlg, TWatchesDlg, TLocalsDlg, TCallStackDlg
+    TDbgOutputForm, TBreakPointsDlg, TWatchesDlg, TLocalsDlg, TCallStackDlg,
+    TEvaluateDlg
   );
 var
   CurDialog: TDebuggerDlg;
@@ -1276,6 +1282,7 @@ begin
       ddtWatches:     InitWatchesDlg;
       ddtLocals:      InitLocalsDlg;
       ddtCallStack:   InitCallStackDlg;
+      ddtEvaluate:    InitEvaluateDlg;
     end;
   end
   else begin
@@ -1344,6 +1351,11 @@ begin
   TheDialog.CallStack := FCallStack;
 end;
 
+procedure TDebugManager.InitEvaluateDlg;
+begin
+  // todo: pass current selection
+end;
+
 constructor TDebugManager.Create(TheOwner: TComponent);
 var
   DialogType: TDebugDialogType;
@@ -1406,7 +1418,13 @@ begin
     itmViewDebugOutput.Tag := Ord(ddtOutput);
 
     itmRunMenuResetDebugger.OnClick := @mnuResetDebuggerClicked;
-    
+
+//    itmRunMenuInspect.OnClick := @mnuViewDebugDialogClick;
+    itmRunMenuEvaluate.OnClick := @mnuViewDebugDialogClick;
+    itmRunMenuEvaluate.Tag := Ord(ddtEvaluate);
+//    itmRunMenuAddWatch.OnClick := @;
+//    itmRunMenuAddBpSource.OnClick := @;
+
     itmEnvDebuggerOptions.OnClick := @mnuDebuggerOptionsClick;
   end;
 end;
@@ -1425,6 +1443,10 @@ begin
     itmViewDebugOutput.ShortCut := CommandToShortCut(ecToggleDebuggerOut);
     itmViewLocals.ShortCut := CommandToShortCut(ecToggleLocals);
     itmViewCallStack.ShortCut := CommandToShortCut(ecToggleCallStack);
+    
+    itmRunMenuInspect.ShortCut := CommandToShortCut(ecInspect);
+    itmRunMenuEvaluate.ShortCut := CommandToShortCut(ecEvaluate);
+    itmRunMenuAddWatch.ShortCut := CommandToShortCut(ecAddWatch);
   end;
 end;
 
@@ -1452,6 +1474,8 @@ begin
                                      or (dcRunTo in FDebugger.Commands);
     itmRunMenuStop.Enabled := (FDebugger<>nil); // always allow to stop
 
+    itmRunMenuEvaluate.Enabled := (not DebuggerInvalid)
+                              and (dcEvaluate in FDebugger.Commands);
     // TODO: add other debugger menuitems
     // TODO: implement by actions
   end;
@@ -1896,6 +1920,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.77  2004/11/23 00:54:55  marc
+  + Added Evaluate/Modify dialog
+
   Revision 1.76  2004/10/11 23:33:36  marc
   * Fixed interrupting GDB on win32
   * Reset exename after run so that the exe is not locked on win32

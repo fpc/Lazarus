@@ -90,7 +90,7 @@ implementation
 constructor TWatchesDlg.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  Name:='WatchesDlg';
+//  Name:='WatchesDlg';
   FWatchesNotification := TIDEWatchesNotification.Create;
   FWatchesNotification.AddReference;
   FWatchesNotification.OnAdd := @WatchAdd;
@@ -271,6 +271,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.9  2004/11/23 00:54:55  marc
+  + Added Evaluate/Modify dialog
+
   Revision 1.8  2004/08/26 23:50:05  marc
   * Restructured debugger view classes
   * Fixed help

@@ -214,6 +214,11 @@ type
     itmRunMenuBuildFile: TMenuItem;
     itmRunMenuRunFile: TMenuItem;
     itmRunMenuConfigBuildFile: TMenuItem;
+    itmRunMenuInspect: TMenuItem;
+    itmRunMenuEvaluate: TMenuItem;
+    itmRunMenuAddWatch: TMenuItem;
+    itmRunMenuAddBreakpoint: TMenuItem;
+    itmRunMenuAddBpSource: TMenuItem;
 
     // components menu
     itmPkgOpenPackage: TMenuItem;

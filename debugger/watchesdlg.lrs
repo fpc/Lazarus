@@ -1,23 +1,23 @@
 { This is an automatically generated lazarus resource file }
 
 LazarusResources.Add('TWatchesDlg','FORMDATA',[
-  'TPF0'#11'TWatchesDlg'#10'WatchesDlg'#7'Caption'#6#10'Watch list'#12'ClientHe'
-  +'ight'#3#200#0#11'ClientWidth'#3#244#1#18'HorzScrollBar.Page'#3#245#1#18'Ver'
-  +'tScrollBar.Page'#3#201#0#4'Left'#3'g'#1#6'Height'#3#200#0#3'Top'#2'~'#5'Wid'
-  +'th'#3#244#1#0#9'TListView'#9'lvWatches'#5'Align'#7#8'ALCLIENT'#7'Columns'#14
-  +#1#7'Caption'#6#10'Expression'#7'Visible'#9#5'Width'#3#150#0#0#1#7'Caption'#6
-  +#5'Value'#7'Visible'#9#5'Width'#3#144#1#0#0#11'MultiSelect'#9#9'PopupMenu'#7
-  +#8'mnuPopup'#9'ViewStyle'#7#8'VSREPORT'#7'OnClick'#7#14'lvWatchesClick'#12'O'
-  +'nSelectItem'#7#19'lvWatchesSelectItem'#6'Height'#3#200#0#5'Width'#3#244#1#0
-  +#0#10'TPopupMenu'#8'mnuPopup'#4'left'#2'd'#3'top'#2'`'#0#9'TMenuItem'#6'popA'
-  +'dd'#7'Caption'#6#4'&Add'#7'OnClick'#7#11'popAddClick'#0#0#9'TMenuItem'#2'N1'
-  +#7'Caption'#6#1'-'#0#0#9'TMenuItem'#13'popProperties'#7'Caption'#6#11'&Prope'
-  +'rties'#7'OnClick'#7#18'popPropertiesClick'#0#0#9'TMenuItem'#10'popEnabled'#7
-  +'Caption'#6#8'&Enabled'#7'OnClick'#7#15'popEnabledClick'#0#0#9'TMenuItem'#9
-  +'popDelete'#7'Caption'#6#7'&Delete'#7'OnClick'#7#14'popDeleteClick'#0#0#9'TM'
-  +'enuItem'#2'N2'#7'Caption'#6#1'-'#0#0#9'TMenuItem'#13'popDisableAll'#7'Capti'
-  +'on'#6#12'D&isable All'#7'OnClick'#7#18'popDisableAllClick'#0#0#9'TMenuItem'
-  +#12'popEnableAll'#7'Caption'#6#11'E&nable All'#7'OnClick'#7#17'popEnableAllC'
-  +'lick'#0#0#9'TMenuItem'#12'popDeleteAll'#7'Caption'#6#11'De&lete All'#7'OnCl'
-  +'ick'#7#17'popDeleteAllClick'#0#0#0#0
+  'TPF0'#11'TWatchesDlg'#10'WatchesDlg'#13'ActiveControl'#7#9'lvWatches'#7'Capt'
+  +'ion'#6#10'Watch list'#12'ClientHeight'#3#200#0#11'ClientWidth'#3#244#1#13'P'
+  +'ixelsPerInch'#2'Z'#18'HorzScrollBar.Page'#3#245#1#18'VertScrollBar.Page'#3
+  +#201#0#4'Left'#3'g'#1#6'Height'#3#200#0#3'Top'#2'~'#5'Width'#3#244#1#0#9'TLi'
+  +'stView'#9'lvWatches'#5'Align'#7#8'alClient'#7'Columns'#14#1#7'Caption'#6#10
+  +'Expression'#5'Width'#3#150#0#0#1#7'Caption'#6#5'Value'#5'Width'#2#0#0#0#11
+  +'MultiSelect'#9#9'PopupMenu'#7#8'mnuPopup'#9'ViewStyle'#7#8'vsReport'#7'OnCl'
+  +'ick'#7#14'lvWatchesClick'#12'OnSelectItem'#7#19'lvWatchesSelectItem'#6'Heig'
+  +'ht'#3#200#0#5'Width'#3#244#1#0#0#10'TPopupMenu'#8'mnuPopup'#4'left'#2'd'#3
+  +'top'#2'`'#0#9'TMenuItem'#6'popAdd'#7'Caption'#6#4'&Add'#7'OnClick'#7#11'pop'
+  +'AddClick'#0#0#9'TMenuItem'#2'N1'#7'Caption'#6#1'-'#0#0#9'TMenuItem'#13'popP'
+  +'roperties'#7'Caption'#6#11'&Properties'#7'OnClick'#7#18'popPropertiesClick'
+  +#0#0#9'TMenuItem'#10'popEnabled'#7'Caption'#6#8'&Enabled'#7'OnClick'#7#15'po'
+  +'pEnabledClick'#0#0#9'TMenuItem'#9'popDelete'#7'Caption'#6#7'&Delete'#7'OnCl'
+  +'ick'#7#14'popDeleteClick'#0#0#9'TMenuItem'#2'N2'#7'Caption'#6#1'-'#0#0#9'TM'
+  +'enuItem'#13'popDisableAll'#7'Caption'#6#12'D&isable All'#7'OnClick'#7#18'po'
+  +'pDisableAllClick'#0#0#9'TMenuItem'#12'popEnableAll'#7'Caption'#6#11'E&nable'
+  +' All'#7'OnClick'#7#17'popEnableAllClick'#0#0#9'TMenuItem'#12'popDeleteAll'#7
+  +'Caption'#6#11'De&lete All'#7'OnClick'#7#17'popDeleteAllClick'#0#0#0#0
 ]);

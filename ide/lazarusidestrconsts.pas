@@ -224,6 +224,12 @@ resourcestring
   lisMenuBuildFile = 'Build File';
   lisMenuRunFile = 'Run File';
   lisMenuConfigBuildFile = 'Configure Build+Run File';
+  lisMenuInspect = 'Inspect ...';
+  lisMenuEvaluate = 'Evaluate/Modify ...';
+  lisMenuAddWatch= 'Add watch ...';
+  lisMenuAddBreakpoint = 'Add breakpoint';
+  lisMenuAddBpSource = 'Source breakpoint';
+
 
   lisMenuOpenPackage = 'Open loaded package';
   lisMenuOpenRecentPkg = 'Open recent package';
@@ -1298,7 +1304,10 @@ resourcestring
   srkmecBuildFile                 = 'build file';
   srkmecRunFile                   = 'run file';
   srkmecConfigBuildFile           = 'config build file';
-  
+  srkmecInspect                   = 'inspect';
+  srkmecEvaluate                  = 'evaluate/modify';
+  srkmecAddWatch                  = 'add watch';
+
   // tools menu
   srkmecExtToolSettings           = 'External tools settings';
   srkmecBuildLazarus              = 'Build lazarus';
@@ -1866,7 +1875,7 @@ resourcestring
   lisExecutionStopped = 'Execution stopped';
   lisExecutionStoppedOn = 'Execution stopped%s';
   lisExecutionPaused = 'Execution paused';
-  lisExecutionPausedAdress = 'Execution paused%s  Adress: $%8.8x%s  Procedure: %'
+  lisExecutionPausedAdress = 'Execution paused%s  Adress: $%s%s  Procedure: %'
     +'s%s  File: %s%s(Some day an assembler window might popup here :)%s';
   lisFileNotFound = 'File not found';
   lisTheFileWasNotFoundDoYouWantToLocateItYourself = 'The file %s%s%s%swas '

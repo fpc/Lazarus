@@ -80,6 +80,8 @@ type
     nmiwWatches,
     nmiwLocals,
     nmiwCallStack,
+    nmiwEvaluate,
+    // extra
     nmiwSearchResultsViewName
     );
 
@@ -113,6 +115,7 @@ const
     'Watches',
     'Locals',
     'CallStack',
+    'EvaluateModify',
     // extra
     'SearchResults'
    );

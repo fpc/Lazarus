@@ -197,6 +197,9 @@ const
   ecBuildFile            = ecUserFirst + 411;
   ecRunFile              = ecUserFirst + 412;
   ecConfigBuildFile      = ecUserFirst + 413;
+  ecInspect              = ecUserFirst + 414;
+  ecEvaluate             = ecUserFirst + 415;
+  ecAddWatch             = ecUserFirst + 416;
 
   // project menu
   ecNewProject           = ecUserFirst + 500;
@@ -668,6 +671,9 @@ begin
   ecBuildFile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecRunFile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecConfigBuildFile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInspect: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecEvaluate: SetResult(VK_F7,[ssCtrl],VK_UNKNOWN,[]);
+  ecAddWatch: SetResult(VK_F5,[ssCtrl],VK_UNKNOWN,[]);
 
   // components menu
   ecOpenPackage: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1219,6 +1225,9 @@ begin
     ecBuildFile             : Result:= srkmecBuildFile;
     ecRunFile               : Result:= srkmecRunFile;
     ecConfigBuildFile       : Result:= srkmecConfigBuildFile;
+    ecInspect               : Result:= srkmecInspect;
+    ecEvaluate              : Result:= srkmecEvaluate;
+    ecAddWatch              : Result:= srkmecAddWatch;
 
     // components menu
     ecOpenPackage           : Result:= lisMenuOpenPackage;
@@ -2089,6 +2098,9 @@ begin
   AddDefault(C,'Build File',ecBuildFile);
   AddDefault(C,'Run File',ecRunFile);
   AddDefault(C,'Config "Build File"',ecConfigBuildFile);
+  AddDefault(C,'Inspect',ecInspect);
+  AddDefault(C,'Evaluate/Modify',ecEvaluate);
+  AddDefault(C,'Add watch',ecAddWatch);
 
   // components menu
   C:=Categories[AddCategory('Components',srkmCatComponentsMenu,caAll)];
