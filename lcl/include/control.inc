@@ -16,10 +16,7 @@
 {------------------------------------------------------------------------------}
 procedure TControl.Adjustsize;
 begin
-{$IFDEF CHECK_POSITION}
-//writeln('[TControl.Adjustsize] ',Name,':',ClassName);
-{$ENDIF}
-  //if not (csLoading in ComponentState) then SetBounds(Left, Top, Width, Height);
+  if not (csLoading in ComponentState) then SetBounds(Left, Top, Width, Height);
 end;
 
 {------------------------------------------------------------------------------
@@ -66,9 +63,17 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TControl.BeginAutoDrag;
 begin
-BeginDrag(Mouse.DragImmediate,MOuse.DragThreshold);
+  BeginDrag(Mouse.DragImmediate,MOuse.DragThreshold);
 end;
 
+{------------------------------------------------------------------------------}
+{       TControl.BoundsChanged                                                 
+}
+{------------------------------------------------------------------------------}
+procedure TControl.BoundsChanged;
+begin
+  { Notifications can be performed here }
+end; 
 
 {------------------------------------------------------------------------------}
 {       TControl.Bringtofront
@@ -88,6 +93,56 @@ Begin
   Perform(CM_CHANGED,0,Longint(self));
 End;
 
+{------------------------------------------------------------------------------}
+{       TControl.ChangeBounds
+}
+{------------------------------------------------------------------------------}
+procedure TControl.ChangeBounds(ALeft, ATop, AWidth, AHeight : integer);
+var SizeChanged, PosChanged : boolean;
+    SizeMsg : TLMSize;
+    MoveMsg : TLMMove;
+begin
+  DoConstrainedResize(AWidth, AHeight);
+  SizeChanged:= (FWidth <> AWidth) or (FHeight <> AHeight);
+  PosChanged:= (FLeft <> ALeft) or (FTop <> ATop);
+  if SizeChanged or PosChanged then begin
+    FLeft:= ALeft;
+    FTop:= ATop;
+    FWidth:= AWidth;
+    FHeight:= AHeight;
+    Invalidate;
+//    UpdateAnchorRules;
+    BoundsChanged;
+    RequestAlign;
+    if not (csLoading in ComponentState) then Resize;
+    Perform(LM_WindowposChanged, 0, 0);
+    
+    { TODO : Replace this with LCL functions eventually.
+        Right now we have to call these messages as some
+	descendents incorrectly depend on it, so force it
+	down their throat }
+	
+    if SizeChanged then begin
+      with SizeMsg do begin
+        Msg:= LM_SIZE;
+	SizeType:= 6; // force realign
+	Width:= AWidth;
+	Height:= AHeight;
+      end;
+      WindowProc(TLMessage(SizeMsg));
+    end;
+    
+    if PosChanged then begin
+      with MoveMsg do begin
+        Msg:= LM_MOVE;
+	MoveType:= 1;
+	XPos:= ALeft;
+	YPos:= ATop;
+      end;
+      WindowProc(TLMessage(MoveMsg));
+    end;
+  end;    
+end;
 
 {------------------------------------------------------------------------------}
 {       TControl.ChangeScale
@@ -175,7 +230,6 @@ if FParent <> nil then
 
 end;
 
-
 {------------------------------------------------------------------------------}
 {       TControl.CMVisibleChanged
 }
@@ -185,6 +239,49 @@ begin
   if not (csDesigning in ComponentState) or (csNoDesignVisible in ControlStyle) then begin
     InvalidateControl(true, FVisible and (csOpaque in ControlStyle));
   end;
+end;
+
+{------------------------------------------------------------------------------}
+{       TControl.ConstrainedResize
+}
+{------------------------------------------------------------------------------}
+procedure TControl.ConstrainedResize(var MinWidth, MinHeight, MaxWidth, MaxHeight : TConstraintSize);
+begin
+  if Assigned(FOnConstrainedResize) then
+    FOnConstrainedResize(Self, MinWidth, MinHeight, MaxWidth, MaxHeight);
+end;
+
+{------------------------------------------------------------------------------}
+{       TControl.DoConstrainedResize
+}
+{------------------------------------------------------------------------------}
+procedure TControl.DoConstrainedResize(var NewWidth, NewHeight : integer);
+var MinWidth, MinHeight, MaxWidth, MaxHeight : TConstraintSize;
+begin
+  if Constraints.MinWidth > 0 then MinWidth:= Constraints.MinWidth
+  else MinWidth:= 0;
+  if Constraints.MinHeight > 0 then MinHeight:= Constraints.MinHeight
+  else MinHeight:= 0;
+  if Constraints.MaxWidth > 0 then MaxWidth:= Constraints.MaxWidth
+  else MaxWidth:= 0;
+  if Constraints.MaxHeight > 0 then MaxHeight:= Constraints.MaxHeight
+  else MaxHeight:= 0;
+
+  ConstrainedResize(MinWidth, MinHeight, MaxWidth, MaxHeight);
+  
+  if (MinWidth > 0) and (NewWidth < MinWidth) then NewWidth:= MinWidth
+  else if (MaxWidth > 0) and (NewWidth > MaxWidth) then NewWidth:= MaxWidth;
+  
+  if (MinHeight > 0) and (NewHeight < MinHeight) then NewHeight:= MinHeight
+  else if (MaxHeight > 0) and (NewHeight > MaxHeight) then NewHeight:= MaxHeight;
+end;
+
+{------------------------------------------------------------------------------}
+{       TControl.DoConstraintsChange					       }
+{------------------------------------------------------------------------------}
+procedure TControl.DoConstraintsChange(Sender : TObject);
+begin
+  AdjustSize;
 end;
 
 {------------------------------------------------------------------------------}
@@ -763,6 +860,16 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
+{  TControl Show                                                               }
+{------------------------------------------------------------------------------}
+procedure TControl.Show;
+begin
+  if Parent <> nil then Parent.ShowControl(Self);
+  if not(csDesigning in ComponentState) or (csNoDesignVisible in ControlStyle) then
+    Visible:= true;
+end;
+
+{------------------------------------------------------------------------------}
 {  TControl Notification                                                       }
 {------------------------------------------------------------------------------}
 procedure TControl.Notification( AComponent : TComponent; Operation : TOperation);
@@ -795,16 +902,6 @@ end;
 Function TControl.IsCaptionStored : Boolean;
 Begin
 result := true;
-end;
-
-{------------------------------------------------------------------------------}
-{  TControl WMWindowPosChanged                                                 }
-{------------------------------------------------------------------------------}
-
-procedure TControl.WMWindowPosChanged(var Message: TLMWindowPosChanged);
-begin
-  Assert(False, Format('Trace:[TControl.WMWindowPosChanged] %s', [ClassName]));
-  // ToDo something with constraints and docksites
 end;
 
 {------------------------------------------------------------------------------}
@@ -878,22 +975,15 @@ end;
 {------------------------------------------------------------------------------}
 procedure TControl.SetBounds(ALeft, ATop, AWidth, AHeight : integer);
 begin
-  if (ALeft = Left) and (ATop = Top) and (AWidth = Width) and (AHeight = Height)
-  then Exit;
-{$IFDEF CHECK_POSITION}
-writeln('[TControl.SetBounds] ',Name,':',ClassName,' Old=',Left,',',Top,',',Width,',',Height,' -> New=',ALeft,',',ATop,',',AWidth,',',AHeight);
-{$ENDIF}
-  IsResizing := True;
-  try
-    FLeft := ALeft;
-    FTop := ATop;
-    FWidth := AWidth;
-    FHeight := AHeight;
-    Perform(LM_WindowposChanged, 0, 0);
-    if not (csLoading in ComponentState) then Resize;
-  finally
-    IsResizing := False;
-  end;
+  ChangeBounds(ALeft, ATop, AWidth, AHeight);
+end;
+
+{------------------------------------------------------------------------------}
+{  TControl SetConstraints                                                     }
+{------------------------------------------------------------------------------}
+procedure TControl.SetConstraints(const Value : TSizeConstraints);
+begin
+  FConstraints.Assign(Value);
 end;
 
 {------------------------------------------------------------------------------}
@@ -1100,13 +1190,12 @@ end;
 {------------------------------------------------------------------------------}
 procedure TControl.SetVisible(Value : Boolean);
 begin
-//writeln('[TControl.SetVisible] START ',ClassName,' ',Value,' ',FVisible);
   if FVisible <> Value then
   begin
     FVisible := Value;
     Perform(CM_VISIBLECHANGED, Ord(Value), 0);
+    RequestAlign;
   end;
-//writeln('[TControl.SetVisible] END ',ClassName,' ',Value,' ',FVisible);
 end;
 
 {------------------------------------------------------------------------------}
@@ -1260,6 +1349,9 @@ begin
   inherited Create(AOwner);
 
   FControlStyle := [csCaptureMouse, csClickEvents, csSetCaption, csDoubleClicks];
+  FConstraints:= TSizeConstraints.Create(Self);
+  FConstraints.OnChange:= @DoConstraintsChange;
+  
   FAnchors := [akLeft,akTop];
   FAlign := alNone;
   // initial control isn't visible (It isn't created yet)
@@ -1342,6 +1434,72 @@ begin
   SetZOrder(false);
 end;
 
+{------------------------------------------------------------------------------
+  Method: TControl.WMWindowPosChanged
+  Params:   Msg: The message
+  Returns:  nothing
+
+  event handler.
+  
+ ------------------------------------------------------------------------------}
+procedure TControl.WMWindowPosChanged(var Message: TLMWindowPosChanged);
+begin
+  Assert(False, Format('Trace:[TControl.WMWindowPosChanged] %s', [ClassName]));
+  // TODO : Docksites and constraints
+  
+  { Do not handle this message and leave it to WMSize and WMMove }
+  Message.Result:= 0;
+  
+  //if Message.WindowPos <> nil then with Message.WindowPos^ do begin
+  //   SetBounds(X, Y, cX, cY);
+  //   Message.Result:= 1;
+  //end;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TControl.WMSize
+  Params:   Msg: The message
+  Returns:  nothing
+
+  event handler.
+  
+  Message.SizeType=Size_Restored is the default. All other values will force a
+  ReAlign.
+ ------------------------------------------------------------------------------}
+procedure TControl.WMSize(Var Message : TLMSize);
+begin
+  if (Message.SizeType = Size_Restored) 
+    and (FWidth = Message.Width) and (FHeight = Message.Height) then exit;
+
+{$IFDEF CHECK_POSITION}
+writeln('[TWinControl.WMSize] Name=',Name,' Message.Width=',Message.Width,' Message.Height=',Message.Height,' Width=',Width,' Height=',Height);
+{$ENDIF}
+  Assert(False, Format('Trace:[TWinControl.WMSize] %s', [ClassName]));
+
+  SetBounds(Left, Top, Message.Width, Message.Height);
+  if not (csLoading in ComponentState) then Resize;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TControl.WMMove
+  Params:   Msg: The message
+  Returns:  nothing
+
+  event handler.
+  
+  Message.MoveType=0 is the default, all other values will force a RequestAlign.
+ ------------------------------------------------------------------------------}
+procedure TControl.WMMove(var Message: TLMMove);
+begin
+  if (Message.MoveType = 0) and (FLeft = Message.XPos) and (FTop = Message.YPos) then Exit;
+{$IFDEF CHECK_POSITION}
+writeln('[TWinControl.WMMove] Name=',Name,' Message.XPos=',Message.XPos,' Message.YPos=',Message.YPos,' Left=',Left,' Top=',Top);
+{$ENDIF}
+  { Just sync the coordinates }
+  SetBounds(Message.XPos, Message.YPos, Width, Height);
+end;
+
+
 {$IFDEF ASSERT_IS_ON}
   {$UNDEF ASSERT_IS_ON}
   {$C-}
@@ -1349,6 +1507,12 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.35  2002/03/13 22:48:16  lazarus
+  Constraints implementation (first cut) and sizig - moving system rework to
+  better match Delphi/Kylix way of doing things (the existing implementation
+  worked by acident IMHO :-)
+
+
   Revision 1.34  2002/03/09 02:03:59  lazarus
   MWE:
     * Upgraded gdb debugger to gdb/mi debugger
