@@ -86,7 +86,7 @@ Begin
 
   Assert(False, 'Trace:WindowProc - Checking Proc');
   Assert(False, Format('Trace:WindowProc - Window Value: $%S; Msg Value: %S; WParam: $%S; LParam: $%S', [IntToHex(Window, 4), WM_To_String(Msg), IntToHex(WParam, 4), IntToHex(LParam, 4)]));
-
+  
   Case Msg Of
     LM_MONTHCHANGED..LM_DAYCHANGED:
     Begin
@@ -1485,6 +1485,11 @@ end;}
 
 {
   $Log$
+  Revision 1.9  2002/02/04 10:54:33  lazarus
+  Keith:
+    * Fixes for Win32
+    * Added new listviewtest.pp example
+
   Revision 1.8  2002/02/03 06:06:25  lazarus
   Keith: Fixed Win32 compilation problems
 

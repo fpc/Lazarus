@@ -8,8 +8,9 @@ version=0.8a
 
 [target]
 units=hello notebk comdialogs progressbar trackbar listboxtest \
-   bitbutton combobox checkbox scrollbar memotest groupbox \
-   speedtest toolbar messagedialogs notebooktest testall
+   bitbutton combobox checkbox scrollbar edittest memotest \
+   groupbox speedtest toolbar messagedialogs notebooktest \
+   listviewtest testall
 
 [require]
 packages=fcl regexpr

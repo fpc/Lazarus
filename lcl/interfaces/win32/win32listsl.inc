@@ -19,8 +19,8 @@ Function DefaultCompareFunc(A, B: HWND): Integer; CDecl;
 Var
   AStr, BStr: PChar;
 Begin
-  GetWindowText(A, @AStr, GetWindowTextLength(A) + 1);
-  GetWindowText(B, @BStr, GetWindowTextLength(B) + 1);
+  GetWindowText(A, AStr, GetWindowTextLength(A) + 1);
+  GetWindowText(B, BStr, GetWindowTextLength(B) + 1);
   Result := StrComp(AStr, BStr);
 end;
 
@@ -41,6 +41,8 @@ Begin
     Raise Exception.Create('Unspecified list window');
     //Assert(False, 'Trace:Unspecified list window');
   FWin32List := List;
+  FSender := TControl(GetProp(FWin32List, 'Lazarus'));
+  FOrigHeight := FSender.Height;
 End;
 
 {------------------------------------------------------------------------------
@@ -106,7 +108,7 @@ Begin
     Raise Exception.Create('Out of bounds.')
   Else
   Begin
-    SendMessage(FWin32List, CB_GETLBTEXT, Index, LPARAM(@Item));  
+    SendMessage(FWin32List, CB_GETLBTEXT, Index, LPARAM(Item));  
   End;      
   Result := StrPas(Item);
 End;
@@ -130,6 +132,7 @@ End;
  ------------------------------------------------------------------------------}
 Procedure TWin32ListStringList.Clear;
 Begin
+  FSender.Height := FOrigHeight;
   SendMessage(FWin32List, CB_RESETCONTENT, 0, 0);
 End;  
 
@@ -141,6 +144,8 @@ End;
  ------------------------------------------------------------------------------}
 Procedure TWin32ListStringList.Delete(Index: Integer);
 Begin
+  If GetCount <> 0 Then
+    FSender.Height := (FSender.Height - (FSender.Height Div GetCount));
   SendMessage(FWin32List, CB_DELETESTRING, Index, 0);
 End;
 
@@ -154,6 +159,8 @@ Procedure TWin32ListStringList.Insert(Index: Integer; Const S: String);
 Var
   Li: HWND;
 Begin
+  If GetCount <> 0 Then
+    FSender.Height := (FSender.Height + (FSender.Height Div GetCount));
   SendMessage(FWin32List, CB_INSERTSTRING, Index, LPARAM(PChar(S)));
   If FSorted Then
     Sort;
@@ -175,7 +182,7 @@ Begin
   If List = HWND(Nil) Then
     Raise Exception.Create('Unspecified list widget');
   FWin32CList := List;
-end;
+End;
 
 {------------------------------------------------------------------------------
   Method: TWin32CListStringList.SetSorted
@@ -191,7 +198,7 @@ Begin
     If Val Then
       Sort
     Else
-      SetWindowLong(FWin32CList, GWL_STYLE, GetWindowLong(FWin32CList, GWL_STYLE) And Not CBS_SORT);
+      SetWindowLong(FWin32CList, GWL_STYLE, GetWindowLong(FWin32CList, GWL_STYLE) And Not LBS_SORT);
   End;
 End;
 
@@ -203,7 +210,7 @@ End;
  ------------------------------------------------------------------------------}
 Procedure TWin32CListStringList.Sort;
 Begin
-  SetWindowLong(FWin32CList, GWL_STYLE, GetWindowLong(FWin32CList, GWL_STYLE) Or CBS_SORT);
+  SetWindowLong(FWin32CList, GWL_STYLE, GetWindowLong(FWin32CList, GWL_STYLE) Or LBS_SORT);
 End;
 
 {------------------------------------------------------------------------------
@@ -235,7 +242,7 @@ End;
  ------------------------------------------------------------------------------}
 Procedure TWin32CListStringList.Clear;
 Begin
-  SendMessage(FWin32CList, CB_RESETCONTENT, 0, 0);
+  SendMessage(FWin32CList, LB_RESETCONTENT, 0, 0);
 End;
 
 {------------------------------------------------------------------------------
@@ -246,7 +253,7 @@ End;
  ------------------------------------------------------------------------------}
 procedure TWin32CListStringList.Delete(Index: Integer);
 begin
-  SendMessage(FWin32CList, CB_DELETESTRING, Index, 0);
+  SendMessage(FWin32CList, LB_DELETESTRING, Index, 0);
 end;
 
 {------------------------------------------------------------------------------
@@ -263,7 +270,7 @@ Begin
     Raise Exception.Create('Out of bounds.')
   Else
   Begin
-    SendMessage(FWin32CList, CB_GETLBTEXT, Index, LPARAM(@Item));
+    SendMessage(FWin32CList, LB_GETTEXT, Index, LPARAM(Item));
     Result := StrPas(Item);
   End;
 End;
@@ -276,7 +283,7 @@ End;
  ------------------------------------------------------------------------------}
 Function TWin32CListStringList.GetCount: Integer;
 Begin
-  Result := SendMessage(FWin32CList, CB_GETCOUNT, 0, 0);
+  Result := SendMessage(FWin32CList, LB_GETCOUNT, 0, 0);
 End;
 
 {------------------------------------------------------------------------------
@@ -287,7 +294,7 @@ End;
  ------------------------------------------------------------------------------}
 Function TWin32CListStringList.GetObject(Index: Integer): TObject;
 Begin
-  HWND(Result) := SendMessage(FWin32CList, CB_GETITEMDATA, Index, 0);
+  HWND(Result) := SendMessage(FWin32CList, LB_GETITEMDATA, Index, 0);
 End;
 
 {------------------------------------------------------------------------------
@@ -307,7 +314,7 @@ Var
   CSize: Integer;
   K: Integer;
 Begin
-  SendMessage(FWin32CList, CB_INSERTSTRING, Index, LPARAM(PChar(@S)));
+  SendMessage(FWin32CList, LB_INSERTSTRING, Index, LPARAM(PChar(S)));
 End;
 
 {------------------------------------------------------------------------------
@@ -318,7 +325,7 @@ End;
  ------------------------------------------------------------------------------}
 Procedure TWin32CListStringList.PutObject(Index: Integer; AObject: TObject);
 Begin
-  SendMessage(FWin32CList, CB_SETITEMDATA, Index, LPARAM(AObject));
+  SendMessage(FWin32CList, LB_SETITEMDATA, Index, LPARAM(AObject));
 End;
 
 {$IFDEF H_PLUS}
@@ -330,6 +337,11 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.4  2002/02/04 10:54:33  lazarus
+  Keith:
+    * Fixes for Win32
+    * Added new listviewtest.pp example
+
   Revision 1.3  2002/02/01 10:13:09  lazarus
   Keith: Fixes for Win32
 

@@ -30,13 +30,13 @@ program edittest;
 {$mode objfpc}
 
 uses
-  buttons, classes, forms, controls, sysutils, Graphics,  mwcustomedit, mwPasSyn;
+  buttons, classes, forms, controls, sysutils, Graphics,  SynEdit, SynHighlighterPas;
 
 type
   TEditTestForm = class(TForm)
   public
-    FEdit: TmwCustomEdit;
-    FHighlighter: TmwPasSyn;
+    FEdit: TSynEdit;
+    FHighlighter: TSynPasSyn;
     constructor Create(AOwner: TComponent); override;
   end;
 
@@ -57,24 +57,20 @@ begin
 
   if FHighlighter = nil
   then begin
-    FHighlighter := TmwPasSyn.Create(Self);
+    FHighlighter := TSynPasSyn.Create(Self);
     FHighlighter.CommentAttri.Foreground := clNavy;
     FHighlighter.NumberAttri.Foreground := clRed;
     FHighlighter.KeyAttri.Foreground := clGreen;
   end;
 
-  FEdit := TmwCustomEdit.Create(Self);
+  FEdit := TSynEdit.Create(Self);
   with FEdit
   do begin
     Parent := Self;
 		Width := 300;
 		Height := 200;
-    {$IFDEF NEW_EDITOR}
     Gutter.Color := clBtnface;
     Gutter.ShowLineNumbers := True;
-   {$ELSE}
-    GutterColor := clBtnface;
-    {$ENDIF}
     Color := clWindow;
     Visible := True;
     Font.Name := 'courier';
@@ -91,6 +87,11 @@ end.
 
 {
   $Log$
+  Revision 1.2  2002/02/04 10:54:33  lazarus
+  Keith:
+    * Fixes for Win32
+    * Added new listviewtest.pp example
+
   Revision 1.1  2000/12/31 15:48:41  lazarus
   MWE:
     + Added Editor test app.

@@ -1,7 +1,7 @@
 (******************************************************************************
                                  win32listslh.inc
                  TWin32ListStringList and TWin32CListStringList
-                 
+
  ******************************************************************************)
 
 {$IFOPT H+} 
@@ -15,18 +15,20 @@ Type
   Private
     FWin32List: HWND;
     FSorted: Boolean;
+    FSender: TControl;
+    FOrigHeight: Integer;
   Protected
     Function Get(Index: Integer): String; Override;
     Function GetCount: Integer; Override;
-	Procedure SetSorted(Val: Boolean); Virtual;
+    Procedure SetSorted(Val: Boolean); Virtual;
   Public
     Constructor Create(List: HWND);
     Procedure Assign(Source: TPersistent); Override;
     Procedure Clear; Override;
     Procedure Delete(Index: Integer); Override;
     Procedure Insert(Index: Integer; Const S: String); Override;
-  	Procedure Sort; Virtual;
-  	Property Sorted: Boolean Read FSorted Write SetSorted;
+    Procedure Sort; Virtual;
+    Property Sorted: Boolean Read FSorted Write SetSorted;
   End;
 
   TWin32CListStringList = Class(TStrings)
@@ -45,8 +47,8 @@ Type
     Procedure Clear; Override;
     Procedure Delete(Index: Integer); Override;
     Procedure Insert(Index: Integer; Const S: String); Override;
-  	Procedure Sort; Virtual;
-  	Property Sorted: Boolean Read FSorted Write SetSorted;
+    Procedure Sort; Virtual;
+    Property Sorted: Boolean Read FSorted Write SetSorted;
   End;
 
 {$IFDEF H_PLUS}
@@ -58,6 +60,11 @@ Type
 { =============================================================================
 
   $Log$
+  Revision 1.2  2002/02/04 10:54:33  lazarus
+  Keith:
+    * Fixes for Win32
+    * Added new listviewtest.pp example
+
   Revision 1.1  2002/01/06 23:09:53  lazarus
   MG: added missing files
 

@@ -90,6 +90,7 @@ examples/groupbox.pp svneol=native#text/pascal
 examples/hello.pp svneol=native#text/pascal
 examples/helloform.pp svneol=native#text/pascal
 examples/listboxtest.pp svneol=native#text/pascal
+examples/listviewtest.pp svneol=native#text/pascal
 examples/memotest.pp svneol=native#text/pascal
 examples/messagedialogs.pp svneol=native#text/pascal
 examples/notebk.pp svneol=native#text/pascal

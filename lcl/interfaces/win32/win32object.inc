@@ -107,11 +107,21 @@ Begin
   Data := '';
   Result := True;
   Case Sender.FCompStyle Of
+    csComboBox:
+    Begin
+      CapLen := SendMessage((Sender As TWinControl).Handle, CB_GETLBTEXTLEN, CNSendMessage(LM_GETITEMINDEX, Self, Nil), 0);
+      Caption := StrAlloc(CapLen + 1);
+      SendMessage((Sender As TWinControl).Handle, CB_GETLBTEXT, CNSendMessage(LM_GETITEMINDEX, Self, Nil), LPARAM(Caption));
+      Data := StrPas(Caption);
+      StrDispose(Caption);
+    End;
     csEdit, csMemo:
     Begin
       CapLen := GetWindowTextLength((Sender As TWinControl).Handle);
+      Caption := StrAlloc(CapLen + 1);
       GetWindowText((Sender As TWinControl).Handle, Caption, CapLen + 1);
       Data := StrPas(Caption);
+      StrDispose(Caption);
     End;
     csPage:
     Begin 
@@ -186,6 +196,10 @@ Begin
       Assert(False, Format('Trace:TWin32Object.SetLabel - Got %S', [CS_To_String(TControl(Sender).FCompStyle)]));
       Assert(False, Format('Trace:TWin32Object.SetLabel - label --> %S', [String(PChar(Data))]));
       Assert(False, 'Trace:TWin32Object.SetLabel - I''m not sure if this''ll work');
+    End;
+    csMemo:
+    Begin
+      SendMessage(Handle, WM_SETTEXT, 0, LPARAM(Data));
     End;
     csPage:
     Begin
@@ -405,7 +419,16 @@ Begin
         If Sender Is TListView Then
         Begin
           Num := Integer(Data^);
+          ListView_SetItemCount(Handle, Num);
           ListItemIndex := (Sender As TListView).Items[Num];
+          With LVI Do
+          Begin
+            Mask := LVIF_TEXT;
+            IItem := Num;
+            PSzText := PChar(ListItemIndex.Caption);
+            WriteLn('item: ', Num, ', caption: ', String(PSzText));
+            ListView_SetItem(Handle, LVI);
+          End;
           For I := 0 To ListItemIndex.SubItems.Count - 1 Do
           Begin
             With LVI Do
@@ -414,8 +437,8 @@ Begin
               IItem := Num;
               ISubItem := I + 1;
               PSzText := PChar(ListItemIndex.SubItems.Strings[I]);
+              ListView_SetItem(Handle, LVI);
             End;
-            ListView_SetItem(Handle, LVI);
           End;
         End;
       End;
@@ -423,14 +446,18 @@ Begin
       Begin
         If Sender Is TListView Then
         Begin
-          ListItemIndex := TListView(Sender).Items[TListView(Sender).Items.Count];
+          ListItemIndex := TListView(Sender).Items[TListView(Sender).Items.Count - 1];
           With LVI Do
           Begin
             Mask := LVIF_TEXT;
-            IItem := TListView(Sender).Items.Count + 1;
-            PSzText := PChar(ListItemIndex.Caption);
+            IItem := TListView(Sender).Items.Count - 1;
+            CCHTextMax := MAX_PATH;
+            PSzText := StrAlloc(Length(ListItemIndex.Caption) + 1);
+            StrPCopy(PSzText, ListItemIndex.Caption);
+            ListView_InsertItem(Handle, LVI);
+            ListView_Update(Handle, IItem);
+            StrDispose(PSzText);
           End;
-          ListView_InsertItem(Handle, LVI);
         End;
       End;
         LM_BRINGTOFRONT:
@@ -1331,17 +1358,16 @@ Begin
     If Sender Is TOpenDialog Then
     Begin
       OpenFile := LPOpenFileName(@Sender)^;
-      //FN := (Sender As TFileDialog).FileName;
       ZeroMemory(@OpenFile, SizeOf(OpenFileName));
       With OpenFile Do
       Begin
         LStructSize := SizeOf(OpenFileName);
         HWndOwner := ((Sender As TComponent).Owner As TWinControl).Handle;
-        //LPStrFilter := PChar((Sender As TFileDialog).Filter);
-        //If FN <> '' Then
-          //LPStrFile := PChar(FN);
-        //LPStrFileTitle := PChar((Sender As TCommonDialog).Title);
-        LPStrInitialDir := PChar((Sender As TFileDialog).InitialDir);
+        LPStrFilter := PChar((Sender As TOpenDialog).Filter);
+        {If (Sender As TOpenDialog).FileName <> '' Then
+          LPStrFile := PChar((Sender As TOpenDialog).FileName);}
+        LPStrFileTitle := PChar((Sender As TOpenDialog).Title);
+        LPStrInitialDir := PChar((Sender As TOpenDialog).InitialDir);
           Flags := GetFlagsFromOptions((Sender As TOpenDialog).Options);
       End;
       Ret := GetOpenFileName(@OpenFile)
@@ -1349,19 +1375,18 @@ Begin
     Else If Sender Is TSaveDialog Then
     Begin
       OpenFile := LPOpenFileName(@Sender)^;
-      FN := (Sender As TFileDialog).FileName;
       ZeroMemory(@OpenFile, SizeOf(OpenFileName));
       With OpenFile Do
       Begin
         LStructSize := SizeOf(OpenFileName);
         HWndOwner := ((Sender As TComponent).Owner As TWinControl).Handle;
-        //LPStrFilter := PChar((Sender As TFileDialog).Filter);
-        //If FN <> '' Then
-          //LPStrFile := PChar(FN);
-        //LPStrFileTitle := PChar((Sender As TCommonDialog).Title);
-        LPStrInitialDir := PChar((Sender As TFileDialog).InitialDir);
-        //If Sender Is TOpenDialog Then
-         // Flags := GetFlagsFromOptions((Sender As TOpenDialog).Options);
+        LPStrFilter := PChar((Sender As TSaveDialog).Filter);
+        {If (Sender As TSaveDialog).FileName <> '' Then
+          LPStrFile := PChar((Sender As TSaveDialog).FileName);}
+        LPStrFileTitle := PChar((Sender As TSaveDialog).Title);
+        LPStrInitialDir := PChar((Sender As TSaveDialog).InitialDir);
+        If Sender Is TOpenDialog Then
+          Flags := GetFlagsFromOptions((Sender As TOpenDialog).Options);
       End;
       Ret := GetSaveFileName(@OpenFile);
     End;
@@ -1708,7 +1733,7 @@ Begin
     End;
     csComboBox:
     Begin
-      Window := CreateWindow('COMBOBOX', Nil, Flags Or CBS_AUTOHSCROLL Or CBS_DROPDOWNLIST Or CBS_HASSTRINGS, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
+      Window := CreateWindow('COMBOBOX', Nil, Flags Or CBS_DROPDOWN, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       SetProp(Window, 'Lazarus', Sender);
       SetName(Window, StrTemp);
     End;
@@ -1740,7 +1765,7 @@ Begin
     Begin
       Window := CreateWindowEx(WS_EX_CLIENTEDGE, 'EDIT', StrTemp, Flags Or ES_AUTOHSCROLL, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       SetProp(Window, 'Lazarus', Sender);
-      SetName(Window, strTemp);
+      SetName(Window, StrTemp);
     End;
     csColorDialog, csFileDialog, csFontDialog:
     Begin
@@ -2526,14 +2551,14 @@ begin
         If Smooth Then
           SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) Or PBS_SMOOTH)
         Else
-          SetWindowLong(HWND(Handle), GWL_STYLE, GetWindowLong(HWND(Handle), GWL_STYLE) Or Not PBS_SMOOTH);
+          SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) And Not PBS_SMOOTH);
         Case Orientation Of
           pbVertical:
             SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) Or PBS_VERTICAL);
           pbRightToLeft:
           Begin
             Assert(False, 'TRACE:TRYING to create a right-to-left progress bar');
-            SetWindowLong(Handle, GWL_EXSTYLE, GetWindowLong(HWND(Handle), GWL_EXSTYLE) And Not WS_EX_LTRREADING);
+            SetWindowLong(Handle, GWL_EXSTYLE, GetWindowLong(Handle, GWL_EXSTYLE) And Not WS_EX_LTRREADING);
           End;
           pbTopDown:
           Begin
@@ -2559,6 +2584,12 @@ begin
       Begin
         SendMessage(Handle, SBM_SETRANGE, Min, Max);
         SendMessage(Handle, SBM_SETPOS, Position, LPARAM(True));
+        Case Kind Of
+          sbHorizontal:
+            SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) Or SBS_HORZ);
+          sbVertical:
+            SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) Or SBS_VERT);
+        End;
         Assert(False, 'Trace:TODO: [TWin32Object.SetProperties] Set up step and page increments for csScrollBar');
       End;
     csTrackbar: 
@@ -2569,6 +2600,12 @@ begin
         SendMessage(Handle, TBM_SETPOS, WPARAM(True), Position);
         SendMessage(Handle, TBM_SETLINESIZE, 0, LineSize);
         SendMessage(Handle, TBM_SETPAGESIZE, 0, PageSize);
+        Case Orientation Of
+          trVertical:
+            SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) Or TBS_VERT);
+          trHorizontal:
+            SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) Or TBS_HORZ);
+        End;
         If ShowScale Then
         Begin
           Case ScalePos of
@@ -3050,6 +3087,11 @@ End;
 
 {
   $Log$
+  Revision 1.15  2002/02/04 10:54:33  lazarus
+  Keith:
+    * Fixes for Win32
+    * Added new listviewtest.pp example
+
   Revision 1.14  2002/02/03 06:06:25  lazarus
   Keith: Fixed Win32 compilation problems
 
