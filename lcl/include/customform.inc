@@ -437,9 +437,9 @@ procedure TCustomForm.WMSize(var Message: TLMSize);
 var
   OldState: TWindowState;
 begin
-{$IFDEF CHECK_POSITION}
-Writeln('[TCustomForm.WMSize] Name=',Name,' Class=',ClassName,' Message.Width=',Message.Width,' Message.Height=',Message.Height);
-{$ENDIF}
+  {$IFDEF CHECK_POSITION}
+  Writeln('[TCustomForm.WMSize] Name=',Name,' Class=',ClassName,' Message.Width=',Message.Width,' Message.Height=',Message.Height);
+  {$ENDIF}
   Assert(False, 'Trace:WMSIZE in TCustomForm');
   if not (csDesigning in ComponentState) then begin
     OldState:=FWindowState;
@@ -1087,9 +1087,19 @@ begin
   Visible := False;
 end;
 
-{------------------------------------------------------------------------------}
-{       TCustomForm Method IsForm                                              }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  procedure TCustomForm.ShowOnTop;
+------------------------------------------------------------------------------}
+procedure TCustomForm.ShowOnTop;
+begin
+  Show;
+  BringToFront;
+  LCLLinux.ShowWindow(Handle,SW_SHOWNORMAL);
+end;
+
+{------------------------------------------------------------------------------
+       TCustomForm Method IsForm
+------------------------------------------------------------------------------}
 function TCustomForm.IsForm: Boolean;
 begin
   //TODO:
@@ -1399,6 +1409,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.94  2003/04/11 21:21:34  mattias
+  implemented closing unneeded package
+
   Revision 1.93  2003/04/11 09:32:20  mattias
   added some help stuff
 

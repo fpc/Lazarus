@@ -273,9 +273,14 @@ type
     
   TLazPackageFlag = (
     lpfAutoIncrementVersionOnBuild, // increment version before
-    lpfModified,           // package needs saving
-    lpfAutoUpdate          // auto compile, if this package
-                           // or any required package has been modified
+    lpfModified,       // package needs saving
+    lpfAutoUpdate,     // auto compile, if this package
+                       // or any required package has been modified
+    lpfNeeded,         // Set by PackageGraph, if package is in use
+                       //   (for example because it is Installed or an Installed
+                       //    package requires this package)
+    lpfVisited,        // Used by the PackageGraph to avoid double checking
+    lpfDestroying      // set during destruction
     );
   TLazPackageFlags = set of TLazPackageFlag;
   
@@ -425,6 +430,8 @@ type
       read FUsageOptions;
   end;
   
+  PLazPackage = ^TLazPackage;
+  
   
   { TBasePackageEditor }
   
@@ -449,25 +456,32 @@ const
   LazPackageTypeIdents: array[TLazPackageType] of string = (
     'RunTime', 'DesignTime', 'RunAndDesignTime');
   LazPackageFlagNames: array[TLazPackageFlag] of string = (
-    'lpfAutoIncrementVersionOnBuild', 'lpfModified', 'lpfAutoUpdate');
+    'lpfAutoIncrementVersionOnBuild', 'lpfModified', 'lpfAutoUpdate',
+    'lpfNeeded', 'lpfVisited', 'lpfDestroying');
     
 var
-  // All TPkgDependency are added to this AVL tree
+  // All TPkgDependency are added to this AVL tree (sorted for names, not version!)
   PackageDependencies: TAVLTree; // tree of TPkgDependency
 
 
 function PkgFileTypeIdentToType(const s: string): TPkgFileType;
 function LazPackageTypeIdentToType(const s: string): TLazPackageType;
+
 procedure SortDependencyList(Dependencies: TList);
+
 function CompareLazPackageID(Data1, Data2: Pointer): integer;
 function CompareNameWithPackageID(Key, Data: Pointer): integer;
 function CompareLazPackageIDNames(Data1, Data2: Pointer): integer;
+function CompareNameWithPkgDependency(Key, Data: Pointer): integer;
+function ComparePkgDependencyNames(Data1, Data2: Pointer): integer;
+
 function FindDependencyByNameInList(First: TPkgDependency;
   ListType: TPkgDependencyList; const Name: string): TPkgDependency;
 function FindCompatibleDependencyInList(First: TPkgDependency;
   ListType: TPkgDependencyList; ComparePackage: TLazPackageID): TPkgDependency;
 function GetDependencyWithIndex(First: TPkgDependency;
   ListType: TPkgDependencyList; Index: integer): TPkgDependency;
+  
 function FindLowestPkgDependencyWithName(const PkgName: string): TPkgDependency;
 function FindLowestPkgDependencyNodeWithName(const PkgName: string): TAVLTreeNode;
 function FindNextPkgDependecyNodeWithSameName(Node: TAVLTreeNode): TAVLTreeNode;
@@ -557,6 +571,26 @@ begin
   Result:=AnsiCompareText(Pkg1.Name,Pkg2.Name);
 end;
 
+function CompareNameWithPkgDependency(Key, Data: Pointer): integer;
+var
+  PkgName: String;
+  Dependency: TPkgDependency;
+begin
+  PkgName:=String(Key);
+  Dependency:=TPkgDependency(Data);
+  Result:=AnsiCompareText(PkgName,Dependency.PackageName);
+end;
+
+function ComparePkgDependencyNames(Data1, Data2: Pointer): integer;
+var
+  Dependency1: TPkgDependency;
+  Dependency2: TPkgDependency;
+begin
+  Dependency1:=TPkgDependency(Data1);
+  Dependency2:=TPkgDependency(Data2);
+  Result:=AnsiCompareText(Dependency1.PackageName,Dependency2.PackageName);
+end;
+
 function FindDependencyByNameInList(First: TPkgDependency;
   ListType: TPkgDependencyList; const Name: string): TPkgDependency;
 begin
@@ -595,7 +629,8 @@ var
 begin
   Result:=nil;
   if PackageDependencies=nil then exit;
-  Result:=PackageDependencies.FindKey(PChar(PkgName),@CompareNameWithPackageID);
+  Result:=
+    PackageDependencies.FindKey(PChar(PkgName),@CompareNameWithPkgDependency);
   if Result=nil then exit;
   while true do begin
     PrecNode:=PackageDependencies.FindPrecessor(Result);
@@ -832,7 +867,11 @@ end;
 procedure TPkgDependency.SetPackageName(const AValue: string);
 begin
   if FPackageName=AValue then exit;
+  if (PackageDependencies<>nil) and (FPackageName<>'') then
+    PackageDependencies.Remove(Self);
   FPackageName:=AValue;
+  if (PackageDependencies<>nil) and (FPackageName<>'') then
+    PackageDependencies.Add(Self);
 end;
 
 procedure TPkgDependency.SetRemoved(const AValue: boolean);
@@ -856,14 +895,13 @@ constructor TPkgDependency.Create;
 begin
   MinVersion:=TPkgVersion.Create;
   MaxVersion:=TPkgVersion.Create;
-  if PackageDependencies<>nil then PackageDependencies.Add(Self);
   Clear;
 end;
 
 destructor TPkgDependency.Destroy;
 begin
   RequiredPackage:=nil;
-  if PackageDependencies<>nil then PackageDependencies.Remove(Self);
+  PackageName:='';
   FreeAndNil(fMinVersion);
   FreeAndNil(fMaxVersion);
   inherited Destroy;
@@ -872,11 +910,11 @@ end;
 procedure TPkgDependency.Clear;
 begin
   RequiredPackage:=nil;
+  PackageName:='';
   FRemoved:=false;
   FFlags:=[];
   FMaxVersion.Clear;
   FMinVersion.Clear;
-  FPackageName:='';
 end;
 
 procedure TPkgDependency.LoadFromXMLConfig(XMLConfig: TXMLConfig;
@@ -1215,10 +1253,14 @@ begin
 end;
 
 procedure TLazPackage.SetFlags(const AValue: TLazPackageFlags);
+var
+  ChangedFlags: TLazPackageFlags;
 begin
   if FFlags=AValue then exit;
+  ChangedFlags:=FFlags+AValue-(FFlags*AValue);
   FFlags:=AValue;
-  Modified:=true;
+  if ChangedFlags*[lpfAutoIncrementVersionOnBuild,lpfAutoUpdate]<>[] then
+    Modified:=true;
 end;
 
 procedure TLazPackage.SetIconFile(const AValue: string);
@@ -1906,7 +1948,10 @@ begin
 end;
 
 initialization
-  PackageDependencies:=nil;
+  PackageDependencies:=TAVLTree.Create(@ComparePkgDependencyNames);
+
+finalization
+  FreeThenNil(PackageDependencies);
 
 end.
 

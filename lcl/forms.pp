@@ -367,6 +367,7 @@ type
     procedure Close;
     procedure Release;
     procedure Hide;
+    procedure ShowOnTop;
     function WantChildKey(Child : TControl;
       var Message : TLMessage): Boolean; virtual;
     procedure SetFocus; override;

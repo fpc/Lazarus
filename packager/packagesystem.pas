@@ -65,7 +65,8 @@ const
      fpfSearchInPckgsWithEditor,fpfSearchInPkgLinks];
 
 type
-  TPkgAddedEvent = procedure(Pkg: TLazPackage) of object;
+  TPkgAddedEvent = procedure(APackage: TLazPackage) of object;
+  TPkgDeleteEvent = procedure(APackage: TLazPackage) of object;
 
   TLazPackageGraph = class
   private
@@ -75,6 +76,7 @@ type
     FLCLPackage: TLazPackage;
     FOnAddPackage: TPkgAddedEvent;
     FOnChangePackageName: TPkgChangeNameEvent;
+    FOnDeletePackage: TPkgDeleteEvent;
     FRegistrationFile: TPkgFile;
     FRegistrationPackage: TLazPackage;
     FRegistrationUnitName: string;
@@ -90,6 +92,7 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
+    procedure Delete(Index: integer);
     function Count: integer;
     function FindLowestPkgNodeByName(const PkgName: string): TAVLTreeNode;
     function FindNextSameName(ANode: TAVLTreeNode): TAVLTreeNode;
@@ -122,6 +125,11 @@ type
     procedure RegistrationError(const Msg: string);
     procedure AddPackage(APackage: TLazPackage);
     procedure AddStaticBasePackages;
+    procedure ClosePackage(APackage: TLazPackage);
+    procedure MarkNeededPackages;
+    procedure CloseUnneededPackages;
+    function CheckIfPackageCanBeClosed(APackage: TLazPackage): boolean;
+    function PackageIsNeeded(APackage: TLazPackage): boolean;
     procedure RegisterStaticPackages;
     function OpenDependency(Dependency: TPkgDependency;
                             var APackage: TLazPackage): TLoadPackageResult;
@@ -147,6 +155,7 @@ type
     property OnChangePackageName: TPkgChangeNameEvent read FOnChangePackageName
                                                      write FOnChangePackageName;
     property OnAddPackage: TPkgAddedEvent read FOnAddPackage write FOnAddPackage;
+    property OnDeletePackage: TPkgDeleteEvent read FOnDeletePackage write FOnDeletePackage;
   end;
   
 var
@@ -218,14 +227,20 @@ end;
 procedure TLazPackageGraph.Clear;
 var
   i: Integer;
+begin
+  for i:=FItems.Count-1 downto 0 do Delete(i);
+end;
+
+procedure TLazPackageGraph.Delete(Index: integer);
+var
   CurPkg: TLazPackage;
 begin
-  for i:=FItems.Count-1 downto 0 do begin
-    CurPkg:=Packages[i];
-    FItems.Delete(i);
-    FTree.Remove(CurPkg);
-    CurPkg.Free;
-  end;
+  CurPkg:=Packages[Index];
+  CurPkg.Flags:=CurPkg.Flags+[lpfDestroying];
+  if Assigned(OnDeletePackage) then OnDeletePackage(CurPkg);
+  FItems.Delete(Index);
+  FTree.Remove(CurPkg);
+  CurPkg.Free;
 end;
 
 function TLazPackageGraph.Count: integer;
@@ -676,6 +691,7 @@ procedure TLazPackageGraph.AddPackage(APackage: TLazPackage);
 var
   RequiredPackage: TLazPackage;
   Dependency: TPkgDependency;
+  DepNode: TAVLTreeNode;
 begin
   FTree.Add(APackage);
   FItems.Add(APackage);
@@ -688,8 +704,17 @@ begin
     Dependency:=Dependency.NextRequiresDependency;
   end;
   
-  // update all dependencies
-  
+  // update all missing dependencies
+  DepNode:=FindLowestPkgDependencyNodeWithName(APackage.Name);
+  while DepNode<>nil do begin
+    Dependency:=TPkgDependency(DepNode.Data);
+    if (Dependency.LoadPackageResult<>lprSuccess)
+    and Dependency.IsCompatible(APackage) then begin
+      Dependency.RequiredPackage:=APackage;
+      Dependency.LoadPackageResult:=lprSuccess;
+    end;
+    DepNode:=FindNextPkgDependecyNodeWithSameName(DepNode);
+  end;
   
   if Assigned(OnAddPackage) then OnAddPackage(APackage);
 end;
@@ -702,6 +727,99 @@ begin
   // LCL
   FLCLPackage:=CreateLCLPackage;
   AddPackage(FLCLPackage);
+end;
+
+procedure TLazPackageGraph.ClosePackage(APackage: TLazPackage);
+begin
+  if (lpfDestroying in APackage.Flags) or PackageIsNeeded(APackage) then exit;
+  CloseUnneededPackages;
+end;
+
+procedure TLazPackageGraph.MarkNeededPackages;
+var
+  i: Integer;
+  Pkg: TLazPackage;
+  PkgStack: PLazPackage;
+  StackPtr: Integer;
+  RequiredPackage: TLazPackage;
+  Dependency: TPkgDependency;
+begin
+  if Count=0 then exit;
+  // mark all packages as unneeded and not visited
+  for i:=0 to FItems.Count-1 do begin
+    Pkg:=TLazPackage(FItems[i]);
+    Pkg.Flags:=Pkg.Flags-[lpfNeeded];
+  end;
+  // create stack
+  GetMem(PkgStack,SizeOf(Pointer)*Count);
+  StackPtr:=0;
+  // put all needed packages on stack
+  for i:=0 to FItems.Count-1 do begin
+    Pkg:=TLazPackage(FItems[i]);
+    if PackageIsNeeded(Pkg)
+    and (not (lpfNeeded in Pkg.Flags)) then begin
+      Pkg.Flags:=Pkg.Flags+[lpfNeeded];
+      PkgStack[StackPtr]:=Pkg;
+      inc(StackPtr);
+    end;
+  end;
+  // mark all needed packages
+  while StackPtr>0 do begin
+    // get needed package from stack
+    dec(StackPtr);
+    Pkg:=PkgStack[StackPtr];
+    // mark package as needed
+    Pkg.Flags:=Pkg.Flags+[lpfNeeded,lpfVisited];
+    // put all required packages on stack
+    Dependency:=Pkg.FirstRequiredDependency;
+    while Dependency<>nil do begin
+      if Dependency.LoadPackageResult=lprSuccess then begin
+        RequiredPackage:=Dependency.RequiredPackage;
+        if (not (lpfNeeded in RequiredPackage.Flags)) then begin
+          RequiredPackage.Flags:=RequiredPackage.Flags+[lpfNeeded];
+          PkgStack[StackPtr]:=RequiredPackage;
+          inc(StackPtr);
+        end;
+      end;
+      Dependency:=Dependency.NextRequiresDependency;
+    end;
+  end;
+  // clean up
+  FreeMem(PkgStack);
+end;
+
+procedure TLazPackageGraph.CloseUnneededPackages;
+var
+  i: Integer;
+begin
+  MarkNeededPackages;
+  for i:=FItems.Count-1 downto 0 do
+    if not (lpfNeeded in Packages[i].Flags) then Delete(i);
+end;
+
+function TLazPackageGraph.CheckIfPackageCanBeClosed(APackage: TLazPackage
+  ): boolean;
+begin
+  MarkNeededPackages;
+  Result:=lpfNeeded in APackage.FLags;
+end;
+
+function TLazPackageGraph.PackageIsNeeded(APackage: TLazPackage): boolean;
+begin
+  Result:=true;
+  // check if package is open, installed or will be installed
+  if (APackage.Installed<>pitNope) or (APackage.AutoInstall<>pitNope)
+  or ((APackage.Editor<>nil) and (APackage.Editor.Visible)) then
+  begin
+    Result:=true;
+    exit;
+  end;
+  // check if package is used
+  if (APackage.FirstUsedByDependency=nil) then begin
+    Result:=false;
+    exit;
+  end;
+  Result:=false;
 end;
 
 procedure TLazPackageGraph.RegisterStaticPackages;

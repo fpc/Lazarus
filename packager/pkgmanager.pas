@@ -44,11 +44,11 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, LCLProc, Forms, Controls, FileCtrl, Dialogs, Menus,
-  CodeToolManager, CodeCache, Laz_XMLCfg, AVL_Tree, LazarusIDEStrConsts,
-  KeyMapping, EnvironmentOpts, IDEProcs, ProjectDefs, InputHistory,
-  IDEDefs, UComponentManMain, PackageEditor, AddToPackageDlg, PackageDefs,
-  PackageLinks, PackageSystem, ComponentReg, OpenInstalledPkgDlg,
+  Classes, SysUtils, LCLProc, Forms, Controls, FileCtrl,
+  Dialogs, Menus, CodeToolManager, CodeCache, Laz_XMLCfg, AVL_Tree,
+  LazarusIDEStrConsts, KeyMapping, EnvironmentOpts, IDEProcs, ProjectDefs,
+  InputHistory, IDEDefs, UComponentManMain, PackageEditor, AddToPackageDlg,
+  PackageDefs, PackageLinks, PackageSystem, ComponentReg, OpenInstalledPkgDlg,
   PkgGraphExporer,
   BasePkgManager, MainBar;
 
@@ -57,21 +57,25 @@ type
     procedure MainIDEitmPkgOpenPackageFileClick(Sender: TObject);
     procedure MainIDEitmPkgPkgGraphClick(Sender: TObject);
     function OnPackageEditorCreateFile(Sender: TObject;
-      const Params: TAddToPkgResult): TModalResult;
+                                   const Params: TAddToPkgResult): TModalResult;
+    procedure OnPackageEditorFreeEditor(APackage: TLazPackage);
     procedure OnPackageEditorGetUnitRegisterInfo(Sender: TObject;
-      const AFilename: string; var TheUnitName: string;
-      var HasRegisterProc: boolean);
+                              const AFilename: string; var TheUnitName: string;
+                              var HasRegisterProc: boolean);
     function OnPackageEditorOpenPackage(Sender: TObject; APackage: TLazPackage
-      ): TModalResult;
-    procedure OnPackageEditorSavePackage(Sender: TObject);
-    procedure PackageGraphChangePackageName(Pkg: TLazPackage;
-      const OldName: string);
+                                        ): TModalResult;
+    function OnPackageEditorSavePackage(Sender: TObject;
+                                           APackage: TLazPackage): TModalResult;
+    procedure PackageGraphChangePackageName(APackage: TLazPackage;
+                                            const OldName: string);
+    procedure PackageGraphDeletePackage(APackage: TLazPackage);
     function PackageGraphExplorerOpenPackage(Sender: TObject;
-      APackage: TLazPackage): TModalResult;
+                                           APackage: TLazPackage): TModalResult;
     procedure PkgManagerAddPackage(Pkg: TLazPackage);
     procedure mnuConfigCustomCompsClicked(Sender: TObject);
     procedure mnuPkgOpenPackageClicked(Sender: TObject);
     procedure mnuOpenRecentPackageClicked(Sender: TObject);
+    procedure OnApplicationIdle(Sender: TObject);
   private
     function DoShowSavePackageAsDialog(APackage: TLazPackage): TModalResult;
   public
@@ -185,6 +189,12 @@ begin
                     [nfOpenInEditor,nfIsNotPartOfProject,nfSave,nfAddToRecent]);
 end;
 
+procedure TPkgManager.OnPackageEditorFreeEditor(APackage: TLazPackage);
+begin
+  APackage.Editor:=nil;
+  PackageGraph.ClosePackage(APackage);
+end;
+
 procedure TPkgManager.OnPackageEditorGetUnitRegisterInfo(Sender: TObject;
   const AFilename: string; var TheUnitName: string; var HasRegisterProc: boolean
   );
@@ -212,17 +222,25 @@ begin
   Result:=DoOpenPackage(APackage);
 end;
 
-procedure TPkgManager.OnPackageEditorSavePackage(Sender: TObject);
+function TPkgManager.OnPackageEditorSavePackage(Sender: TObject;
+  APackage: TLazPackage): TModalResult;
 begin
-  if Sender is TLazPackage then
-    DoSavePackage(TLazPackage(Sender),[]);
+  Result:=DoSavePackage(APackage,[]);
 end;
 
-procedure TPkgManager.PackageGraphChangePackageName(Pkg: TLazPackage;
+procedure TPkgManager.PackageGraphChangePackageName(APackage: TLazPackage;
   const OldName: string);
 begin
   if PackageGraphExplorer<>nil then
-    PackageGraphExplorer.UpdatePackageName(Pkg,OldName);
+    PackageGraphExplorer.UpdatePackageName(APackage,OldName);
+end;
+
+procedure TPkgManager.PackageGraphDeletePackage(APackage: TLazPackage);
+begin
+  if APackage.Editor<>nil then begin
+    APackage.Editor.Hide;
+    APackage.Editor.Free;
+  end;
 end;
 
 function TPkgManager.PackageGraphExplorerOpenPackage(Sender: TObject;
@@ -269,6 +287,11 @@ begin
       UpdateEnvironment;
     end;
   end;
+end;
+
+procedure TPkgManager.OnApplicationIdle(Sender: TObject);
+begin
+  PackageGraph.CloseUnneededPackages;
 end;
 
 function TPkgManager.DoShowSavePackageAsDialog(
@@ -438,11 +461,10 @@ begin
   
   PkgLinks:=TPackageLinks.Create;
 
-  PackageDependencies:=TAVLTree.Create(@CompareLazPackageID);
-
   PackageGraph:=TLazPackageGraph.Create;
   PackageGraph.OnChangePackageName:=@PackageGraphChangePackageName;
   PackageGraph.OnAddPackage:=@PkgManagerAddPackage;
+  PackageGraph.OnDeletePackage:=@PackageGraphDeletePackage;
   
   PackageEditors:=TPackageEditors.Create;
   PackageEditors.OnOpenFile:=@MainIDE.DoOpenMacroFile;
@@ -450,7 +472,10 @@ begin
   PackageEditors.OnCreateNewFile:=@OnPackageEditorCreateFile;
   PackageEditors.OnGetIDEFileInfo:=@MainIDE.GetIDEFileState;
   PackageEditors.OnGetUnitRegisterInfo:=@OnPackageEditorGetUnitRegisterInfo;
+  PackageEditors.OnFreeEditor:=@OnPackageEditorFreeEditor;
   PackageEditors.OnSavePackage:=@OnPackageEditorSavePackage;
+
+  Application.AddOnIdleHandler(@OnApplicationIdle);
 end;
 
 destructor TPkgManager.Destroy;
@@ -576,8 +601,7 @@ var
 begin
   // open a package editor
   CurEditor:=PackageEditors.OpenEditor(APackage);
-  CurEditor.Show;
-  CurEditor.BringToFront;
+  CurEditor.ShowOnTop;
   Result:=mrOk;
 end;
 
@@ -707,8 +731,7 @@ begin
     PackageGraphExplorer:=TPkgGraphExplorer.Create(Application);
     PackageGraphExplorer.OnOpenPackage:=@PackageGraphExplorerOpenPackage;
   end;
-  PackageGraphExplorer.Show;
-  PackageGraphExplorer.BringToFront;
+  PackageGraphExplorer.ShowOnTop;
   Result:=mrOk;
 end;
 

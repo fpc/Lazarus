@@ -45,12 +45,15 @@ uses
   
 type
   TOnOpenFile =
-    function(Sender: TObject; const Filename: string): TModalResult of Object;
+    function(Sender: TObject; const Filename: string): TModalResult of object;
   TOnOpenPackage =
-    function(Sender: TObject; APackage: TLazPackage): TModalResult of Object;
+    function(Sender: TObject; APackage: TLazPackage): TModalResult of object;
+  TOnSavePackage =
+    function(Sender: TObject; APackage: TLazPackage): TModalResult of object;
   TOnCreateNewPkgFile =
     function(Sender: TObject;
              const Params: TAddToPkgResult): TModalResult  of object;
+  TOnFreePkgEditor = procedure(APackage: TLazPackage) of object;
 
 
   { TPackageEditorForm }
@@ -92,6 +95,9 @@ type
     procedure MaxVersionEditChange(Sender: TObject);
     procedure MinVersionEditChange(Sender: TObject);
     procedure OpenFileMenuItemClick(Sender: TObject);
+    procedure PackageEditorFormClose(Sender: TObject; var Action: TCloseAction);
+    procedure PackageEditorFormCloseQuery(Sender: TObject; var CanClose: boolean
+      );
     procedure PackageEditorFormResize(Sender: TObject);
     procedure ReAddMenuItemClick(Sender: TObject);
     procedure RegisteredListBoxDrawItem(Control: TWinControl; Index: Integer;
@@ -134,11 +140,12 @@ type
   private
     FItems: TList; // list of TPackageEditorForm
     FOnCreateNewFile: TOnCreateNewPkgFile;
+    FOnFreeEditor: TOnFreePkgEditor;
     FOnGetIDEFileInfo: TGetIDEFileStateEvent;
     FOnGetUnitRegisterInfo: TOnGetUnitRegisterInfo;
     FOnOpenFile: TOnOpenFile;
     FOnOpenPackage: TOnOpenPackage;
-    FOnSavePackage: TNotifyEvent;
+    FOnSavePackage: TOnSavePackage;
     function GetEditors(Index: integer): TPackageEditorForm;
   public
     constructor Create;
@@ -152,9 +159,10 @@ type
     function OpenFile(Sender: TObject; const Filename: string): TModalResult;
     function OpenDependency(Sender: TObject;
                             Dependency: TPkgDependency): TModalResult;
+    procedure DoFreeEditor(Pkg: TLazPackage);
     function CreateNewFile(Sender: TObject;
                            const Params: TAddToPkgResult): TModalResult;
-    procedure SavePackage(APackage: TLazPackage);
+    function SavePackage(APackage: TLazPackage): TModalResult;
   public
     property Editors[Index: integer]: TPackageEditorForm read GetEditors;
     property OnCreateNewFile: TOnCreateNewPkgFile read FOnCreateNewFile
@@ -165,7 +173,8 @@ type
                                                      write FOnGetIDEFileInfo;
     property OnGetUnitRegisterInfo: TOnGetUnitRegisterInfo
                        read FOnGetUnitRegisterInfo write FOnGetUnitRegisterInfo;
-    property OnSavePackage: TNotifyEvent read FOnSavePackage write FOnSavePackage;
+    property OnFreeEditor: TOnFreePkgEditor read FOnFreeEditor write FOnFreeEditor;
+    property OnSavePackage: TOnSavePackage read FOnSavePackage write FOnSavePackage;
   end;
   
 var
@@ -350,6 +359,31 @@ begin
   end;
 end;
 
+procedure TPackageEditorForm.PackageEditorFormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  if LazPackage=nil then exit;
+
+end;
+
+procedure TPackageEditorForm.PackageEditorFormCloseQuery(Sender: TObject;
+  var CanClose: boolean);
+var
+  MsgResult: Integer;
+begin
+  if (LazPackage=nil) or (lpfDestroying in LazPackage.Flags)
+  or (LazPackage.ReadOnly) or (not LazPackage.Modified) then exit;
+
+  MsgResult:=MessageDlg('Save Changes?',
+    'Package "'+LazPackage.IDAsString+'" has changed.'#13
+    +'Save package?',
+    mtConfirmation,[mbYes,mbNo,mbAbort],0);
+  if MsgResult=mrYes then begin
+    MsgResult:=PackageEditors.SavePackage(LazPackage);
+  end;
+  if MsgResult=mrAbort then CanClose:=false;
+end;
+
 procedure TPackageEditorForm.RegisteredListBoxDrawItem(Control: TWinControl;
   Index: Integer; ARect: TRect; State: TOwnerDrawState);
 var
@@ -362,6 +396,7 @@ var
   IconHeight: Integer;
   CurRect: TRect;
 begin
+  if LazPackage=nil then exit;
   if (Index<0) or (Index>=FPlugins.Count) then exit;
   CurObject:=FPlugins.Objects[Index];
   if CurObject is TPkgComponent then begin
@@ -594,6 +629,7 @@ var
   NodeIndex: Integer;
   CurFile: TPkgFile;
 begin
+  if LazPackage=nil then exit;
   CurNode:=FilesTreeView.Selected;
   if (CurNode=nil) then exit;
   if (CurNode.Parent=FilesNode) then begin
@@ -618,7 +654,9 @@ var
   ARect: TRect;
 begin
   if FLazPackage=AValue then exit;
+  if FLazPackage<>nil then FLazPackage.Editor:=nil;
   FLazPackage:=AValue;
+  if FLazPackage=nil then exit;
   FLazPackage.Editor:=Self;
   // find a nice position for the editor
   ARect:=FLazPackage.EditorRect;
@@ -830,6 +868,7 @@ end;
 
 procedure TPackageEditorForm.UpdateAll;
 begin
+  if LazPackage=nil then exit;
   FilesTreeView.BeginUpdate;
   UpdateTitle;
   UpdateButtons;
@@ -844,6 +883,7 @@ procedure TPackageEditorForm.UpdateTitle;
 var
   NewCaption: String;
 begin
+  if LazPackage=nil then exit;
   NewCaption:='Package '+FLazPackage.Name;
   if LazPackage.Modified then
     NewCaption:=NewCaption+'*';
@@ -852,6 +892,7 @@ end;
 
 procedure TPackageEditorForm.UpdateButtons;
 begin
+  if LazPackage=nil then exit;
   SaveBitBtn.Enabled:=(not LazPackage.ReadOnly)
                               and (LazPackage.IsVirtual or LazPackage.Modified);
   CompileBitBtn.Enabled:=(not LazPackage.IsVirtual);
@@ -889,6 +930,7 @@ var
   CurNode: TTreeNode;
   NextNode: TTreeNode;
 begin
+  if LazPackage=nil then exit;
   FilesTreeView.BeginUpdate;
   
   // files
@@ -947,6 +989,7 @@ var
   CurDependency: TPkgDependency;
   NextNode: TTreeNode;
 begin
+  if LazPackage=nil then exit;
   FilesTreeView.BeginUpdate;
   
   // required packages
@@ -1011,6 +1054,7 @@ var
   Dependency: TPkgDependency;
   Removed: boolean;
 begin
+  if LazPackage=nil then exit;
   FPlugins.Clear;
   CurFile:=GetCurrentFile(Removed);
   if CurFile=nil then
@@ -1067,6 +1111,7 @@ var
   AVersion: TPkgVersion;
   Removed: boolean;
 begin
+  if LazPackage=nil then exit;
   DepencyChanged:=false;
   CurDependency:=GetCurrentDependency(Removed);
   if (CurDependency<>nil) then begin
@@ -1106,6 +1151,7 @@ procedure TPackageEditorForm.UpdateStatusBar;
 var
   StatusText: String;
 begin
+  if LazPackage=nil then exit;
   if LazPackage.IsVirtual and (not LazPackage.ReadOnly) then begin
     StatusText:='package '+LazPackage.Name+' not saved';
   end else begin
@@ -1171,10 +1217,13 @@ begin
   FPlugins:=TStringList.Create;
   SetupComponents;
   OnResize:=@PackageEditorFormResize;
+  OnCloseQuery:=@PackageEditorFormCloseQuery;
+  OnClose:=@PackageEditorFormClose;
 end;
 
 destructor TPackageEditorForm.Destroy;
 begin
+  PackageEditors.DoFreeEditor(LazPackage);
   FreeAndNil(FPlugins);
   inherited Destroy;
 end;
@@ -1261,6 +1310,12 @@ begin
   end;
 end;
 
+procedure TPackageEditors.DoFreeEditor(Pkg: TLazPackage);
+begin
+  FItems.Remove(Pkg.Editor);
+  if Assigned(OnFreeEditor) then OnFreeEditor(Pkg);
+end;
+
 function TPackageEditors.CreateNewFile(Sender: TObject;
   const Params: TAddToPkgResult): TModalResult;
 begin
@@ -1269,9 +1324,9 @@ begin
     Result:=OnCreateNewFile(Sender,Params);
 end;
 
-procedure TPackageEditors.SavePackage(APackage: TLazPackage);
+function TPackageEditors.SavePackage(APackage: TLazPackage): TModalResult;
 begin
-  if Assigned(OnSavePackage) then OnSavePackage(APackage);
+  if Assigned(OnSavePackage) then Result:=OnSavePackage(Self,APackage);
 end;
 
 initialization
