@@ -736,11 +736,11 @@ begin
   if Form <> nil then
   begin
     Control := Self;
-    while Control <> Form do
-    begin
+    repeat
       if not (Control.FVisible and Control.Enabled) then Exit;
+      if Control = Form then break;
       Control := Control.Parent;
-    end;
+    until false;
     Result := True;
   end;
 end;
@@ -4232,6 +4232,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.295  2005/01/04 11:26:26  micha
+  let canfocus imply that setfocus can be called
+
   Revision 1.294  2005/01/03 22:44:31  mattias
   implemented TControl.AnchorSide
 

@@ -1094,7 +1094,8 @@ Begin
     if not
       ((AWinControl = nil)
       or (AWinControl <> Self) and (GetParentForm(AWinControl) = Self)
-        and ((csLoading in ComponentState) or AWinControl.CanFocus))
+        and ((csLoading in ComponentState) or not (Visible and Enabled)
+          or AWinControl.CanFocus))
     then
       RaiseGDBException(SCannotFocus);
       // EInvalidOperation.Create(SCannotFocus);
@@ -1827,6 +1828,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.170  2005/01/04 11:26:26  micha
+  let canfocus imply that setfocus can be called
+
   Revision 1.169  2004/12/27 00:06:44  mattias
   added DestroyHandle after ShowModal to save resources
 
