@@ -439,7 +439,8 @@ Var
 Begin
   Result := True;
   If GetClipboardOwner <> HWND(Nil) Then
-    OnRequestProc(0, Nil);
+    if Assigned(OnRequestProc) then
+      OnRequestProc(0, Nil);
   GetMem(Formats, FormatCount * SizeOf(TClipboardFormat));
   Try
     For I := 0 To FormatCount Do
@@ -2910,6 +2911,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.96  2004/01/29 20:58:23  micha
+  fixed: calling of nil proc when destroying clipboard
+
   Revision 1.95  2004/01/20 22:14:27  micha
   REVERTED: "try register globally unique properties"; implemented new WindowFromPoint not returning window if from different process (tip from vincent)
 
