@@ -81,17 +81,20 @@ begin
   NewImage:=nil;
   NewMask:=nil;
   try
-    NewImage:=TBitmap.Create;
-    NewMask:=TBitmap.Create;
     NewImage := TBitmap.Create;
     NewImage.Assign(SrcImage);
-    NewMask := TBitmap.Create;
-    NewMask.Assign(SrcMask);
+    if Assigned(SrcMask) 
+    then begin
+      NewMask := TBitmap.Create;
+      NewMask.Assign(SrcMask);
+    end;
+    Result:=AddDirect(NewImage, NewMask);
+    NewImage:=nil;
+    NewMask:=nil;
   finally
     NewImage.Free;
     NewMask.Free;
   end;
-  Result:=AddDirect(NewImage, NewMask);
 end;
 
 {------------------------------------------------------------------------------
@@ -136,9 +139,9 @@ begin
       Height := FHeight;
       Width := FWidth;
     end;
-    for n := 0 to Count - 1 do begin
+    for n := 0 to Value.Count - 1 do begin
       Value.GetImages(n, Image, Mask);
-      Add(Image, Mask);
+      AddCopy(Image, Mask);
     end;
     Change;
   finally
@@ -1162,6 +1165,10 @@ end;
 {
 
   $Log$
+  Revision 1.28  2004/03/01 23:45:33  marc
+  * Patch from olivier GUILBAUD and Colin Western
+  * fixed addcopy
+
   Revision 1.27  2004/02/29 22:51:54  mattias
   added jpeg example
 
