@@ -232,21 +232,53 @@ Procedure TWin32Object.CallDefaultWndHandler(Sender: TObject; var Message);
     Windows.DeleteDC(hdcBitmap);
   end;
 
-  procedure DrawCheckListBoxItem(Checked: Boolean; Text: PChar; Data: PDrawItemStruct);
+  procedure DrawCheckListBoxItem(CheckListBox: TCheckListBox; Data: PDrawItemStruct);
   var
-    Flags: Cardinal;
+    Selected: Boolean;
+    lgBrush: LOGBRUSH;
+    Brush: HBRUSH;
     Rect: Windows.Rect;
+    Flags: Cardinal;
+    OldColor: COLORREF;
+    OldBackColor: COLORREF;
+
   begin
+    Selected := (Data^.itemState AND ODS_SELECTED)>0;
+
+    // fill the background
+    if Selected then
+      lgBrush.lbColor := Windows.GetSysColor(COLOR_HIGHLIGHT)
+    else
+      lgBrush.lbColor := Windows.GetSysColor(COLOR_WINDOW);
+    lgBrush.lbStyle := BS_SOLID;
+    Brush := CreateBrushIndirect(lgBrush);
+    Windows.FillRect(Data^._HDC, Windows.Rect(Data^.rcItem), Brush);
+    DeleteObject(Brush);
+
+    // draw checkbox
     Flags := DFCS_BUTTONCHECK;
-    if Checked then
+    if CheckListBox.Checked[Data^.ItemID] then
       Flags := Flags or DFCS_CHECKED;
-    Rect := Windows.Rect(Data^.rcItem);
-    WriteLn('DrawItem rect:',Rect.Left,',',Rect.Top,';',Rect.Right,',',Rect.Bottom);
-    Rect.Right := Rect.Bottom-Rect.Top;
+    Rect.Left := Data^.rcItem.Left + 2;
+    Rect.Top := Data^.rcItem.Top + 2;
+    Rect.Bottom := Data^.rcItem.Bottom - 2;
+    Rect.Right := Rect.Left + Rect.Bottom - Rect.Top;
     Windows.DrawFrameControl(Data^._HDC, Rect, DFC_BUTTON, Flags);
+
+    // draw text
+    Rect := Windows.Rect(Data^.rcItem);
     Rect.Right := Data^.rcItem.Right;
     Rect.Left := Rect.Bottom-Rect.Top + 5;
-    Windows.DrawText(Data^._HDC, Text, -1, Rect, DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
+    if Selected then begin
+      OldColor := Windows.SetTextColor(Data^._HDC, Windows.GetSysColor(COLOR_HIGHLIGHTTEXT));
+      OldBackColor := Windows.SetBkColor(Data^._HDC, Windows.GetSysColor(COLOR_HIGHLIGHT));
+    end;
+    Windows.DrawText(Data^._HDC, PChar(CheckListBox.Items[Data^.ItemID]), -1,
+      Rect, DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
+    if Selected then begin
+      Windows.SetTextColor(Data^._HDC, OldColor);
+      Windows.SetBkColor(Data^._HDC, OldBackColor);
+    end;
   end;
 
 begin
@@ -267,8 +299,7 @@ begin
         begin
           // ItemID not UINT(-1)
           if DrawItemStruct^.ItemID <> DWORD($FFFFFFFF) then
-            DrawCheckListBoxItem(TCheckListBox(Sender).Checked[DrawItemStruct^.ItemID],
-              PChar(TCheckListBox(Sender).Items[DrawItemStruct^.ItemID]), DrawItemStruct);
+            DrawCheckListBoxItem(TCheckListBox(Sender), DrawItemStruct);
         end;
       end;
     end;
@@ -2835,6 +2866,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.88  2003/12/30 08:38:03  micha
+  enable selection of checklistbox items (from vincent)
+
   Revision 1.87  2003/12/29 14:22:22  micha
   fix a lot of range check errors win32
 

@@ -222,6 +222,7 @@ Var
     for I := 0 to Windows.SendMessage(Window, LB_GETCOUNT, 0, 0) - 1 do
     begin
       Windows.SendMessage(Window, LB_GETITEMRECT, I, LongInt(@ItemRect));
+      ItemRect.Right := ItemRect.Left + ItemRect.Bottom - ItemRect.Top;
       if Windows.PtInRect(ItemRect, MousePos) then
       begin
         // item clicked: toggle
@@ -917,6 +918,9 @@ end;
 
 {
   $Log$
+  Revision 1.83  2003/12/30 08:38:03  micha
+  enable selection of checklistbox items (from vincent)
+
   Revision 1.82  2003/12/29 14:22:22  micha
   fix a lot of range check errors win32
 
