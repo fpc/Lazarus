@@ -31,11 +31,12 @@ type
     FSorted : boolean;
     FStates: TGtkListStringsStates;
     FCachedCount: integer;
+    FCachedCapacity: integer;
     FCachedItems: PPGtkListItem;
     FUpdateCount: integer;
     FWithCheckBox: Boolean;
   protected
-    function GetCount : integer; override;
+    function GetCount: integer; override;
     function Get(Index : Integer) : string; override;
     function GetObject(Index: Integer): TObject; override;
     procedure PutObject(Index: Integer; AnObject: TObject); override;
@@ -57,11 +58,12 @@ type
     function IndexOf(const S: string): Integer; override;
     procedure Insert(Index : integer; const S: string); override;
     procedure Sort; virtual;
-    function IsEqual(List: TStrings): boolean;
+    function IsEqual(List: TStrings; CompareObjects: boolean): boolean;
     procedure BeginUpdate;
     procedure EndUpdate;
+    procedure ConsistencyCheck;
   public
-    property Sorted : boolean read FSorted write SetSorted;
+    property Sorted: boolean read FSorted write SetSorted;
     property Owner: TWinControl read FOwner;
   end;
 
@@ -88,6 +90,9 @@ type
 { =============================================================================
 
   $Log$
+  Revision 1.9  2004/06/27 12:37:18  mattias
+  fixed gtk lists sorted
+
   Revision 1.8  2003/08/28 09:10:00  mattias
   listbox and comboboxes now set sort and selection at handle creation
 

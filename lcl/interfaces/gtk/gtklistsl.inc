@@ -137,7 +137,8 @@ end;
   Returns: 
 
  ------------------------------------------------------------------------------}
-constructor TGtkListStringList.Create(List : PGtkList; TheOwner: TWinControl; const AWithCheckBox: Boolean);
+constructor TGtkListStringList.Create(List: PGtkList; TheOwner: TWinControl;
+  const AWithCheckBox: Boolean);
 begin
   inherited Create;
   if List = nil then RaiseException(
@@ -150,6 +151,9 @@ begin
   //DebugLn('TGtkListStringList.Create Self=',HexStr(Cardinal(Self),8),' List=',HexStr(Cardinal(List),8),' Owner=',HexStr(Cardinal(Owner),8));
   Include(FStates,glsItemCacheNeedsUpdate);
   ConnectAllCallbacks;
+  {$IFDEF CheckGtkList}
+  ConsistencyCheck;
+  {$ENDIF}
 end;
 
 destructor TGtkListStringList.Destroy;
@@ -157,6 +161,9 @@ begin
   // don't destroy the widgets
   RemoveAllCallbacks;
   ReAllocMem(FCachedItems,0);
+  FCachedItems:=nil;
+  FCachedCount:=0;
+  FCachedCapacity:=0;
   //DebugLn('TGtkListStringList.Destroy Self=',HexStr(Cardinal(Self),8),' List=',HexStr(Cardinal(FGtkList),8),' Owner=',HexStr(Cardinal(Owner),8));
   inherited Destroy;
 end;
@@ -275,7 +282,15 @@ begin
     FCachedCount:=g_list_length(FGtkList^.children)
   else
     FCachedCount:=0;
-  ReAllocMem(FCachedItems,SizeOf(PGtkListItem)*FCachedCount);
+  if FCachedCount=0 then
+    FCachedCapacity:=0
+  else begin
+    FCachedCapacity:=1;
+    while FCachedCapacity<FCachedCount do
+      FCachedCapacity:=FCachedCapacity shl 1;
+    FCachedCapacity:=FCachedCapacity shl 1;
+  end;
+  ReAllocMem(FCachedItems,SizeOf(PGtkListItem)*FCachedCapacity);
   if FGtkList<>nil then begin
     CurListItem:=FGtkList^.children;
     i:=0;
@@ -328,7 +343,8 @@ begin
   EndUpdate;
 end;
 
-function TGtkListStringList.IsEqual(List: TStrings): boolean;
+function TGtkListStringList.IsEqual(List: TStrings;
+  CompareObjects: boolean): boolean;
 var
   i, Cnt: integer;
   CmpList: TStringList;
@@ -339,21 +355,23 @@ begin
   end;
   Result:=false;
   if List=nil then exit;
-  BeginUpdate;
   Cnt:=Count;
   if (Cnt<>List.Count) then exit;
+  BeginUpdate;
   CmpList:=TStringList.Create;
   try
     CmpList.Assign(List);
     CmpList.Sorted:=FSorted;
     for i:=0 to Cnt-1 do begin
-      if (Strings[i]<>CmpList[i]) or (Objects[i]<>CmpList.Objects[i]) then exit;
+      if (Strings[i]<>CmpList[i])
+      or (CompareObjects and (Objects[i]<>CmpList.Objects[i])) then
+        exit;
     end;
   finally
     CmpList.Free;
+    EndUpdate;
   end;
   Result:=true;
-  EndUpdate;
 end;
 
 procedure TGtkListStringList.BeginUpdate;
@@ -364,6 +382,49 @@ end;
 procedure TGtkListStringList.EndUpdate;
 begin
   dec(FUpdateCount);
+  if (FUpdateCount=0) and (glsItemCacheNeedsUpdate in FStates) then
+    UpdateItemCache;
+end;
+
+procedure TGtkListStringList.ConsistencyCheck;
+var
+  CurListItem: PGList;
+  i: integer;
+  RealCachedCount: Integer;
+  Str1: string;
+  Str2: string;
+begin
+  if FCachedCount>FCachedCapacity then RaiseException('');
+  if (FCachedItems=nil) and (FCachedCapacity>0) then RaiseException('');
+  if (FCachedItems<>nil) and (FCachedCapacity=0) then RaiseException('');
+
+  UpdateItemCache;
+  if (FGtkList<>nil) and (FGtkList^.children<>nil) then
+    RealCachedCount:=g_list_length(FGtkList^.children)
+  else
+    RealCachedCount:=0;
+  if RealCachedCount<>FCachedCount then
+    RaiseException('RealCachedCount='+IntToStr(RealCachedCount)
+      +' FCachedCount='+IntToStr(FCachedCount));
+  if FGtkList<>nil then begin
+    CurListItem:=FGtkList^.children;
+    i:=0;
+    while CurListItem<>nil do begin
+      if FCachedItems[i]<>PGtkListItem(CurListItem^.Data) then
+        RaiseException(IntToStr(i));
+      inc(i);
+      CurListItem:=CurListItem^.Next;
+    end;
+  end;
+
+  if Sorted then begin
+    for i:=0 to FCachedCount-2 do begin
+      Str1:=Strings[i];
+      Str2:=Strings[i+1];
+      if (AnsiCompareText(Str1,Str2)>0) then
+        RaiseException(IntToStr(i)+':'+Str1+'>'+IntToStr(i+1)+':'+Str2);
+    end;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -375,6 +436,7 @@ end;
 procedure TGtkListStringList.Assign(Source : TPersistent);
 var
   i, Cnt: integer;
+  SrcStrings: TStrings;
 begin
   if (Source=Self) or (Source=nil) then exit;
   if ((Source is TGtkListStringList)
@@ -387,11 +449,12 @@ begin
     if Source is TStrings then begin
       // clearing and resetting can change other properties of the widget,
       // => don't change if the content is already the same
-      if IsEqual(TStrings(Source)) then exit;
+      SrcStrings:=TStrings(Source);
+      if IsEqual(SrcStrings,true) then exit;
       Clear;
-      Cnt:=TStrings(Source).Count;
+      Cnt:=SrcStrings.Count;
       for i:=0 to Cnt - 1 do begin
-        AddObject(TStrings(Source)[i],TStrings(Source).Objects[i]);
+        AddObject(SrcStrings[i],SrcStrings.Objects[i]);
       end;
       // ToDo: restore other settings
 
@@ -401,6 +464,9 @@ begin
   finally
     EndUpdate;
   end;
+  {$IFDEF CheckGtkList}
+  ConsistencyCheck;
+  {$ENDIF}
 //DebugLn('[TGtkListStringList.Assign] END ',Source.Classname);
 end;
 
@@ -478,10 +544,16 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGtkListStringList.Clear;
 begin
+  BeginUpdate;
   RemoveAllCallbacks;
   Include(FStates,glsItemCacheNeedsUpdate);
   gtk_list_clear_items(FGtkList, 0, Count);
-end;  
+  FCachedCount:=0;
+  EndUpdate;
+  {$IFDEF CheckGtkList}
+  ConsistencyCheck;
+  {$ENDIF}
+end;
 
 {------------------------------------------------------------------------------
   Method: TGtkListStringList.Delete
@@ -489,13 +561,33 @@ end;
   Returns: 
 
  ------------------------------------------------------------------------------}
-procedure TGtkListStringList.Delete(Index : integer);
+procedure TGtkListStringList.Delete(Index: integer);
 begin
+  UpdateItemCache;
   RemoveItemCallbacks(Index);
-  Include(FStates,glsItemCacheNeedsUpdate);
+  // remove item from cache
+  if (Index<FCachedCount-1) then begin
+    System.Move(FCachedItems[Index+1],FCachedItems[Index],
+      SizeOf(Pointer)*(FCachedCount-1-Index));
+  end;
+  // shrink cache (lazy)
+  dec(FCachedCount);
+  if (FCachedCount<(FCachedCapacity shr 2)) then begin
+    FCachedCapacity:=FCachedCapacity shr 1;
+    ReAllocMem(FCachedItems,SizeOf(PGtkListItem)*FCachedCapacity);
+  end;
+  // remove item from gtk list
   gtk_list_clear_items(FGtkList, Index, Index + 1);
+  {$IFDEF CheckGtkList}
+  ConsistencyCheck;
+  {$ENDIF}
 end;
 
+{------------------------------------------------------------------------------
+  function TGtkListStringList.IndexOf(const S: string): Integer;
+
+  Returns index of item with string.
+ ------------------------------------------------------------------------------}
 function TGtkListStringList.IndexOf(const S: string): Integer;
 var
   l, m, r, cmp: integer;
@@ -572,7 +664,7 @@ begin
     if FWithCheckBox
     then begin
       li := gtk_list_item_new;
-      box := gtk_hbox_new(False, 0);              //^Pointer(PGTKBox(box)^.children^.Next^.Data)^
+      box := gtk_hbox_new(False, 0); //^Pointer(PGTKBox(box)^.children^.Next^.Data)^
       gtk_container_add(PGTKContainer(li), box);
       cb := gtk_check_button_new;
       gtk_box_pack_start(PGTKBox(box), cb, False, False, 0);
@@ -582,13 +674,23 @@ begin
       li:=gtk_list_item_new_with_label(PChar(S));
     end;
     ConnectItemCallbacks(PGtkListItem(li));
-    ReAllocMem(FCachedItems,SizeOf(PGtkListItem)*(OldCount+1));
+    // grow capacity
+    if (FCachedCapacity<=OldCount) then begin
+      if FCachedCapacity=0 then FCachedCapacity:=1;
+      while (FCachedCapacity<=OldCount) do
+        FCachedCapacity:=FCachedCapacity shl 1;
+      ReAllocMem(FCachedItems,SizeOf(PGtkListItem)*FCachedCapacity);
+    end;
+    // insert item in cache
+    inc(FCachedCount);
     if Index<OldCount then
       System.Move(FCachedItems[Index],FCachedItems[Index+1],
                   SizeOf(PGtkListItem)*(OldCount-Index));
     FCachedItems[Index]:=PGtkListItem(li);
+    // insert in gtk
     gtk_widget_show_all(li);
     gtk_list_insert_items(FGtkList, g_list_append(nil, li), Index);
+    // adjust gtk height
     if (Owner is TCustomListBox)
     and (TListBox(Owner).ItemHeight>1) then begin
       if li^.Allocation.Width>1 then
@@ -600,6 +702,9 @@ begin
     end;
   finally
     EndUpdate;
+    {$IFDEF CheckGtkList}
+    ConsistencyCheck;
+    {$ENDIF}
   end;
 //DebugLn('[TGtkListStringList.Insert] END Index=',Index,' Count=',Count,' ',S,',',Count);
 end;
@@ -786,6 +891,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.25  2004/06/27 12:37:18  mattias
+  fixed gtk lists sorted
+
   Revision 1.24  2004/06/27 09:34:24  mattias
   fixed TStringGrid goEditing   from Jesus
 
