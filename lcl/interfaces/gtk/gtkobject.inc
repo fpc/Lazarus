@@ -5154,8 +5154,7 @@ begin
   csStaticText:
     begin
       P := gtk_label_new(StrTemp);
-      SetLabelAlignment(PGtkLabel(p),TCustomStaticText(Sender).Alignment,
-                        TCustomStaticText(Sender).Layout);
+      SetLabelAlignment(PGtkLabel(p),TCustomStaticText(Sender).Alignment);
       SetupProps:= true;
     end;
 
@@ -6990,6 +6989,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.615  2005/01/11 21:40:29  micha
+  fix gtk compilation for tstatictext.layout
+
   Revision 1.614  2005/01/08 11:03:18  mattias
   implemented TPen.Mode=pmXor  from Jesus
 

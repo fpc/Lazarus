@@ -194,8 +194,6 @@ type
   public
     class procedure SetAlignment(const ACustomStaticText: TCustomStaticText;
                                  const NewAlignment: TAlignment); override;
-    class procedure SetLayout(const ACustomStaticText: TCustomStaticText;
-                              const NewLayout: TTextLayout); override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
                         var PreferredWidth, PreferredHeight: integer); override;
   end;
@@ -777,16 +775,7 @@ end;
 procedure TGtkWSCustomStaticText.SetAlignment(const ACustomStaticText: TCustomStaticText;
   const NewAlignment: TAlignment);
 begin
-  SetLabelAlignment(PGtkLabel(ACustomStaticText.Handle),NewAlignment,
-                    ACustomStaticText.Layout);
-end;
-
-procedure TGtkWSCustomStaticText.SetLayout(const ACustomStaticText: TCustomStaticText;
-  const NewLayout: TTextLayout);
-begin
-  ACustomStaticText.InvalidatePreferredSize;
-  SetLabelAlignment(PGtkLabel(ACustomStaticText.Handle),ACustomStaticText.Alignment,
-                    NewLayout);
+  SetLabelAlignment(PGtkLabel(ACustomStaticText.Handle),NewAlignment);
 end;
 
 procedure TGtkWSCustomStaticText.GetPreferredSize(const AWinControl: TWinControl;

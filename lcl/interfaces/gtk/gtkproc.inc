@@ -954,7 +954,7 @@ begin
 end;
 
 procedure SetLabelAlignment(LabelWidget: PGtkLabel;
-  const NewAlignment: TAlignment; const NewLayout: TTextLayout);
+  const NewAlignment: TAlignment);
 const
   cLabelAlignX : array[TAlignment] of gfloat = (0.0, 1.0, 0.5);
   cLabelAlignY : array[TTextLayout] of gfloat = (0.0, 0.5, 1.0);
@@ -963,7 +963,7 @@ const
 begin
   gtk_label_set_justify(LabelWidget, cLabelAlign[NewAlignment]);
   gtk_misc_set_alignment(GTK_MISC(LabelWidget), cLabelAlignX[NewAlignment],
-                        cLabelAlignY[NewLayout]);
+                        cLabelAlignY[tlTop]);
 end;
 
 {------------------------------------------------------------------------------
@@ -7900,6 +7900,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.327  2005/01/11 21:40:29  micha
+  fix gtk compilation for tstatictext.layout
+
   Revision 1.326  2005/01/01 16:31:14  mattias
   implemented changing font size and name of TEdit for gtk1
 

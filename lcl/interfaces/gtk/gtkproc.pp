@@ -352,8 +352,8 @@ function GetComboBoxItemIndex(ComboBox: TCustomComboBox): integer;
 procedure SetComboBoxItemIndex(ComboBox: TCustomComboBox; Index: integer);
 
 // label
-procedure SetLabelAlignment(LabelWidget: PGtkLabel;
-  const NewAlignment: TAlignment; const NewLayout: TTextLayout);
+procedure SetLabelAlignment(LabelWidget: PGtkLabel; 
+  const NewAlignment: TAlignment);
 
 // paint messages
 function GtkPaintMessageToPaintMessage(var GtkPaintMsg: TLMGtkPaint;
