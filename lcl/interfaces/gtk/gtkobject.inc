@@ -3303,7 +3303,8 @@ begin
     csFixed: //used for TWinControl, maybe change this to csWinControl
     begin
       p := GTKAPIWidget_New;
-      gtk_scrolled_window_set_policy(PGTKScrolledWindow(p), GTK_POLICY_NEVER, GTK_POLICY_NEVER);
+      gtk_scrolled_window_set_policy(PGTKScrolledWindow(p),
+        GTK_POLICY_NEVER, GTK_POLICY_NEVER);
 
       Adjustment := gtk_scrolled_window_get_vadjustment(PGTKScrolledWindow(p));
       if Adjustment <> nil
@@ -4950,6 +4951,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.131  2002/05/31 06:45:22  lazarus
+  MG: deactivated new system colors, till we got a consistent solution
+
   Revision 1.130  2002/05/30 14:11:12  lazarus
   MG: added filters and history to TOpenDialog
 
