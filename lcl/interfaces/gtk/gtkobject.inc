@@ -966,16 +966,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function GetComboBoxItemIndex(ComboBox: TComboBox): integer;
-
-  Returns the current ItemIndex of a TComboBox
- ------------------------------------------------------------------------------}
-function GetComboBoxItemIndex(ComboBox: TComboBox): integer;
-begin
-  Result:=ComboBox.Items.IndexOf(ComboBox.Text);
-end;
-
-{------------------------------------------------------------------------------
   Method: TGtkObject.IntSendMessage3
   Params:  LM_Message - message to be processed by GTK
            Sender     - sending control
@@ -1685,16 +1675,16 @@ begin
           case TControl(Sender).fCompStyle of
         
           csComboBox:
-            gtk_list_select_item(PGtkList(PGTKCOMBO(Handle)^.list), Integer(Data));
-                                 
+            SetComboBoxItemIndex(TComboBox(Sender),Integer(Data));
+
           csListBox :
-            begin
-              gtk_list_select_item(PGtkList(GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget), Integer(Data));
-            end;
-            
+            gtk_list_select_item(PGtkList(GetWidgetInfo(Pointer(Handle),
+                                   True)^.ImplementationWidget), Integer(Data));
+
           csCListBox:
-            gtk_clist_select_row(PGtkCList(GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget),
-              Integer(Data), 1);    // column
+            gtk_clist_select_row(PGtkCList(GetWidgetInfo(Pointer(Handle),
+                                   True)^.ImplementationWidget),
+                                 Integer(Data), 1);    // column
               
           csNotebook:
             if Data<>nil then begin
@@ -2440,10 +2430,14 @@ begin
     LM_FOCUS :
     begin
       if (sender is TCustomComboBox) then begin
-        ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.entry), 'focus-in-event', @gtkFocusCB);
-        ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.entry), 'focus-out-event', @gtkKillFocusCB);
-        ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.list), 'focus-in-event', @gtkFocusCB);
-        ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.list), 'focus-out-event', @gtkKillFocusCB);
+        ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.entry),
+                            'focus-in-event', @gtkFocusCB);
+        ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.entry),
+                            'focus-out-event', @gtkKillFocusCB);
+        ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.list),
+                            'focus-in-event', @gtkFocusCB);
+        ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.list),
+                            'focus-out-event', @gtkKillFocusCB);
       end else begin
         ConnectSenderSignal(gObject, 'focus-in-event', @gtkFocusCB);
         ConnectSenderSignal(gObject, 'focus-out-event', @gtkKillFocusCB);
@@ -2469,19 +2463,25 @@ begin
           'key-release-event', @GTKKeyUpDown, GDK_KEY_RELEASE_MASK);
       end
       else if (Sender is TCustomForm) then begin
-        ConnectSenderSignal(gObject, 'key-press-event', @GTKKeyUpDown, GDK_KEY_PRESS_MASK);
-        ConnectSenderSignal(gObject, 'key-release-event', @GTKKeyUpDown, GDK_KEY_RELEASE_MASK);
+        ConnectSenderSignal(gObject, 'key-press-event', @GTKKeyUpDown,
+                            GDK_KEY_PRESS_MASK);
+        ConnectSenderSignal(gObject, 'key-release-event', @GTKKeyUpDown,
+                            GDK_KEY_RELEASE_MASK);
       end
       else
       if (Sender is TCustomListBox) then Begin
       
         //TODO:listbox is STILL not sendig keypress events even with these lines.
 
-        ConnectSenderSignal(gCore, 'key-press-event', @GTKKeyUpDown, GDK_KEY_PRESS_MASK);
-        ConnectSenderSignal(gCore, 'key-release-event', @GTKKeyUpDown, GDK_KEY_RELEASE_MASK);
+        ConnectSenderSignal(gCore, 'key-press-event', @GTKKeyUpDown,
+                            GDK_KEY_PRESS_MASK);
+        ConnectSenderSignal(gCore, 'key-release-event', @GTKKeyUpDown,
+                            GDK_KEY_RELEASE_MASK);
       end;
-      ConnectSenderSignal(gFixed, 'key-press-event', @GTKKeyUpDown, GDK_KEY_PRESS_MASK);
-      ConnectSenderSignal(gFixed, 'key-release-event', @GTKKeyUpDown, GDK_KEY_RELEASE_MASK);
+      ConnectSenderSignal(gFixed, 'key-press-event', @GTKKeyUpDown,
+                          GDK_KEY_PRESS_MASK);
+      ConnectSenderSignal(gFixed, 'key-release-event', @GTKKeyUpDown,
+                          GDK_KEY_RELEASE_MASK);
     end;
     
     LM_MONTHCHANGED :  //calendar
@@ -5907,6 +5907,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.231  2002/10/04 20:46:52  lazarus
+  MG: improved TComboBox.SetItemIndex
+
   Revision 1.230  2002/10/04 14:24:15  lazarus
   MG: added DrawItem to TComboBox/TListBox
 
