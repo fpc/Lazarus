@@ -109,9 +109,9 @@ end;
 
 function TCalendar.GetDate: String;
 begin
-   Result := '';
-   GetPRops;
-   Result := FDate;
+  Result := '';
+  GetPRops;
+  Result := FDate;
 end;
 
 procedure TCalendar.SetDate(const AValue: String);
@@ -135,8 +135,9 @@ end;
 
 procedure TCalendar.SetDisplaySettings(const AValue: TDisplaySettings);
 begin
-   FDisplaySettings := AValue;
-   SetProps;
+  if FDisplaySettings = AValue then exit;
+  FDisplaySettings := AValue;
+  SetProps;
 end;
 
 procedure TCalendar.SetReadOnly(const AValue: Boolean);
@@ -152,7 +153,6 @@ Procedure TCalendar.GetProps;
 var
   Temp : TLMCalendar;
 begin
-
    if HandleAllocated then
       begin
         CNSendMessage(LM_GETVALUE, Self, @temp);	// Get the info
@@ -166,7 +166,7 @@ var
 begin
    if HandleAllocated then
       begin
-        Temp.Date := StrtoDate(FDate);
+        Temp.Date := StrToDate(FDate);
         Temp.DisplaySettings := FDisplaySettings;
         Temp.ReadOnly := fReadOnly;
         CNSendMessage(LM_SETVALUE, Self, @temp);	// Get the info
@@ -184,14 +184,12 @@ procedure TCalendar.LMMonthChanged(var Message: TLMessage);
 begin
   if Assigned(OnMonthChanged) then
      OnMonthChanged(self);
-
 end;
 
 procedure TCalendar.LMYEARChanged(var Message: TLMessage);
 begin
   if Assigned(OnYearChanged) then
      OnYearChanged(self);
-
 end;
 
 

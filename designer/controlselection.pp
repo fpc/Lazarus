@@ -237,11 +237,13 @@ type
     procedure EndUpdate;
     function IndexOf(AComponent:TComponent):integer;
     function Add(AComponent: TComponent):integer;
+    function AssignComponent(AComponent:TComponent): boolean;
     procedure Remove(AComponent: TComponent);
     procedure Delete(Index:integer);
     procedure Clear;
     procedure Assign(AControlSelection:TControlSelection);
     function IsSelected(AComponent: TComponent): Boolean;
+    function IsOnlySelected(AComponent: TComponent): Boolean;
     procedure SaveBounds;
     
     function IsResizing: boolean;
@@ -293,7 +295,8 @@ type
     property RubberbandBounds:TRect read FRubberbandBounds write SetRubberbandBounds;
     property RubberbandActive: boolean read FRubberbandActive write FRubberbandActive;
     procedure DrawRubberband(DC: TDesignerDeviceContext);
-    procedure SelectWithRubberBand(ACustomForm:TCustomForm; ExclusiveOr: boolean);
+    procedure SelectWithRubberBand(ACustomForm:TCustomForm;
+      ClearBefore, ExclusiveOr: boolean; var SelectionChanged: boolean);
 
     procedure Sort(SortProc: TSelectionSortCompare);
     property Visible:boolean read FVisible write SetVisible;
@@ -1121,6 +1124,16 @@ begin
   DoChange;
 end;
 
+function TControlSelection.AssignComponent(AComponent: TComponent): boolean;
+begin
+  Result:=not IsOnlySelected(AComponent);
+  if not Result then exit;
+  BeginUpdate;
+  Clear;
+  Add(AComponent);
+  EndUpdate;
+end;
+
 procedure TControlSelection.Remove(AComponent: TComponent);
 var i:integer;
 begin
@@ -1174,6 +1187,11 @@ end;
 function TControlSelection.IsSelected(AComponent: TComponent): Boolean;
 begin
   Result:=(IndexOf(AComponent)>=0);
+end;
+
+function TControlSelection.IsOnlySelected(AComponent: TComponent): Boolean;
+begin
+  Result:=(Count=1) and (Items[0].Component=AComponent);
 end;
 
 procedure TControlSelection.MoveSelection(dx, dy: integer);
@@ -1406,7 +1424,7 @@ begin
 end;
 
 procedure TControlSelection.SelectWithRubberBand(ACustomForm:TCustomForm; 
-  ExclusiveOr:boolean);
+  ClearBefore, ExclusiveOr:boolean; var SelectionChanged: boolean);
 var i:integer;
 
   function ControlInRubberBand(AComponent:TComponent):boolean;
@@ -1431,13 +1449,26 @@ var i:integer;
 
 // SelectWithRubberBand
 begin
+  SelectionChanged:=false;
+  if ClearBefore then begin
+    for i:=0 to ACustomForm.ComponentCount-1 do
+      if not ControlInRubberBand(ACustomForm.Components[i]) then begin
+        if IsSelected(ACustomForm.Components[i]) then begin
+          Remove(ACustomForm.Components[i]);
+          SelectionChanged:=true;
+        end;
+      end;
+  end;
   for i:=0 to ACustomForm.ComponentCount-1 do
     if ControlInRubberBand(ACustomForm.Components[i]) then begin
       if IsSelected(ACustomForm.Components[i]) then begin
-        if ExclusiveOr then
+        if ExclusiveOr then begin
           Remove(ACustomForm.Components[i]);
+          SelectionChanged:=true;
+        end;
       end else begin
         Add(ACustomForm.Components[i]);
+        SelectionChanged:=true;
       end;
     end;
 end;

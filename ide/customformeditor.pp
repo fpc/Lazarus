@@ -39,7 +39,7 @@ uses
   MemCheck,
 {$ENDIF}
   Classes, AbstractFormeditor, Controls, PropEdits, TypInfo, ObjectInspector ,
-  Forms, IDEComp, JITForms,Compreg;
+  Forms, IDEComp, JITForms, Compreg, ComponentEditors;
 
 Const OrdinalTypes = [tkInteger,tkChar,tkENumeration,tkbool];
 
@@ -55,9 +55,12 @@ each control that's dropped onto the form
   TComponentInterface = class(TIComponentInterface)
   private
     FComponent : TComponent;
+    FComponentEditor: TBaseComponentEditor;
+    FDesigner: TComponentEditorDesigner;
     FFormEditor : TCustomFormEditor;  //used to call it's functions
     Function FSetProp(PRI : PPropInfo; const Value) : Boolean;
     Function FGetProp(PRI : PPropInfo; var Value) : Boolean;
+    function GetDesigner: TComponentEditorDesigner;
 
   protected
     Function GetPPropInfobyIndex(Index : Integer) : PPropInfo;
@@ -84,7 +87,6 @@ each control that's dropped onto the form
     Function SetProp(Index : Integer; const Value) : Boolean; override;
     Function SetPropbyName(Name : ShortString; const Value) : Boolean; override;
 
-
     Function GetControlCount: Integer; override;
     Function GetControl(Index : Integer): TIComponentInterface; override;
 
@@ -94,6 +96,10 @@ each control that's dropped onto the form
     Function Select : Boolean; override;
     Function Focus : Boolean; override;
     Function Delete : Boolean; override;
+    
+    function GetComponentEditor: TBaseComponentEditor;
+    property Designer: TComponentEditorDesigner read GetDesigner write FDesigner;
+    
     property Component : TComponent read FComponent;
   end;
 
@@ -126,6 +132,7 @@ TCustomFormEditor
     Function FormModified : Boolean; override;
     Function FindComponentByName(const Name : ShortString) : TIComponentInterface; override;
     Function FindComponent(AComponent: TComponent): TIComponentInterface; override;
+    function GetComponentEditor(AComponent: TComponent): TBaseComponentEditor;
     Function GetFormComponent : TIComponentInterface; override;
 //    Function CreateComponent(CI : TIComponentInterface; TypeName : String;
     Function CreateComponentInterface(AComponent: TComponent): TIComponentInterface;
@@ -164,6 +171,7 @@ end;
 
 destructor TComponentInterface.Destroy;
 begin
+  FreeAndNil(FComponentEditor);
   inherited Destroy;
 end;
 
@@ -247,6 +255,33 @@ Result := True;
        end;//case
 end;
 
+function TComponentInterface.GetDesigner: TComponentEditorDesigner;
+var
+  OwnerForm: TCustomForm;
+begin
+  if FDesigner=nil then begin
+    OwnerForm:=TCustomForm(Component.Owner);
+    if OwnerForm=nil then begin
+      raise Exception.Create('TComponentInterface.GetDesigner: '
+        +Component.Name+' Owner=nil');
+    end;
+    if not (OwnerForm is TCustomForm) then begin
+      raise Exception.Create('TComponentInterface.GetDesigner: '
+        +Component.Name+' OwnerForm='+OwnerForm.ClassName);
+    end;
+    FDesigner:=TComponentEditorDesigner(OwnerForm.Designer);
+    if FDesigner=nil then begin
+      raise Exception.Create('TComponentInterface.GetDesigner: '
+        +Component.Name+' Designer=nil');
+    end;
+    if not (FDesigner is TComponentEditorDesigner) then begin
+      raise Exception.Create('TComponentInterface.GetDesigner: '
+         +Component.Name+' Designer='+
+         +FDesigner.ClassName);
+    end;
+  end;
+  Result:=FDesigner;
+end;
 
 Function TComponentInterface.GetPPropInfoByIndex(Index:Integer): PPropInfo;
 var
@@ -525,6 +560,14 @@ Begin
   Result := True;
 end;
 
+function TComponentInterface.GetComponentEditor: TBaseComponentEditor;
+begin
+  if FComponentEditor=nil then begin
+    FComponentEditor:=ComponentEditors.GetComponentEditor(Component,Designer);
+  end;
+  Result:=FComponentEditor;
+end;
+
 
 { TCustomFormEditor }
 
@@ -620,6 +663,18 @@ Begin
     inc(num);
   end;
   Result:=nil;
+end;
+
+function TCustomFormEditor.GetComponentEditor(AComponent: TComponent
+  ): TBaseComponentEditor;
+var
+  ACompIntf: TComponentInterface;
+begin
+  Result:=nil;
+  if AComponent=nil then exit;
+  ACompIntf:=TComponentInterface(FindComponent(AComponent));
+  if ACompIntf=nil then exit;
+  Result:=ACompIntf.GetComponentEditor;
 end;
 
 Function TCustomFormEditor.CreateComponent(ParentCI : TIComponentInterface;
