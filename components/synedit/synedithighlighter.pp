@@ -134,7 +134,6 @@ type
     fDefaultFilter: string;
     fUpdateChange: boolean;                                                     //mh 2001-09-13
     procedure AddAttribute(AAttrib: TSynHighlighterAttributes);
-    procedure DefHighlightChange(Sender: TObject);
     procedure FreeHighlighterAttributes;                                        //mh 2001-09-13
     function GetAttribCount: integer; virtual;
     function GetAttribute(idx: integer): TSynHighlighterAttributes; virtual;
@@ -149,6 +148,7 @@ type
     procedure SetDefaultFilter(Value: string); virtual;
     procedure SetSampleSource(Value: string); virtual;
   public
+    procedure DefHighlightChange(Sender: TObject);
 {$IFNDEF SYN_CPPB_1} class {$ENDIF}
     function GetCapabilities: TSynHighlighterCapabilities; virtual;
 {$IFNDEF SYN_CPPB_1} class {$ENDIF}
