@@ -46,6 +46,25 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function CompareFilenames(const Filename1, Filename2: string;
+    ResolveLinks: boolean): integer;
+ ------------------------------------------------------------------------------}
+function CompareFilenames(const Filename1, Filename2: string;
+  ResolveLinks: boolean): integer;
+var
+  File1: String;
+  File2: String;
+begin
+  File1:=Filename1;
+  File2:=Filename2;
+  if ResolveLinks then begin
+    File1:=ReadAllLinks(File1,false);
+    File2:=ReadAllLinks(File2,false);
+  end;
+  Result:=CompareFilenames(File1, File1);
+end;
+
+{------------------------------------------------------------------------------
   function FilenameIsAbsolute(TheFilename: string):boolean;
  ------------------------------------------------------------------------------}
 function FilenameIsAbsolute(TheFilename: string):boolean;
@@ -831,6 +850,9 @@ end;
 
 {
   $Log$
+  Revision 1.20  2003/03/29 17:20:05  mattias
+  added TMemoScrollBar
+
   Revision 1.19  2003/03/28 23:03:38  mattias
   started TMemoScrollbar
 

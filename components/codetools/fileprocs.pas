@@ -55,6 +55,7 @@ const
 function CompareFilenames(const Filename1, Filename2: string): integer;
 function CompareFileExt(const Filename, Ext: string;
   CaseSensitive: boolean): integer;
+function GetFilenameOnDisk(const AFilename: string): string;
 function DirectoryExists(DirectoryName: string): boolean;
 function ExtractFileNameOnly(const AFilename: string): string;
 function FilenameIsAbsolute(TheFilename: string):boolean;
@@ -155,6 +156,11 @@ begin
   {$ELSE}
   Result:=(TheFilename<>'') and (TheFilename[1]='/');
   {$ENDIF}
+end;
+
+function GetFilenameOnDisk(const AFilename: string): string;
+begin
+  Result:=AFilename;
 end;
 
 function DirectoryExists(DirectoryName: string): boolean;

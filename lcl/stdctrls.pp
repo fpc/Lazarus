@@ -482,17 +482,17 @@ type
   { TMemoScrollbar }
   
   TMemoScrollbar = class(TControlScrollBar)
-  private
-  
+  protected
+    function GetHorzScrollBar: TControlScrollBar; override;
+    function GetVertScrollBar: TControlScrollBar; override;
   public
-    property Increment: TScrollBarInc read FIncrement;
-    property Page: TScrollBarInc read FPage;
-    property Range: Integer read FRange;
-  published
-    property Smooth : Boolean read FSmooth write SetSmooth;// default True
-    property Position: Integer read FPosition write SetPosition default 0;
-    property Size: integer read GetSize write SetSize stored false;
-    property Visible: Boolean read FVisible write SetVisible;// default True;
+    property Increment;
+    property Page;
+    property Smooth;
+    property Position;
+    property Range;
+    property Size;
+    property Visible;
   end;
   
   
@@ -510,7 +510,7 @@ type
     procedure SetVertScrollBar(const AValue: TMemoScrollBar);
     function StoreScrollBars: boolean;
   protected
-    procedure SetLines(Value : TStrings);
+    procedure SetLines(const Value : TStrings);
     procedure SetWordWrap(const Value : boolean);
     procedure SetScrollBars(const Value : TScrollStyle);
   public
@@ -1420,6 +1420,7 @@ end;
 {$I customcheckbox.inc}
 
 {$I scrollbar.inc} 
+{$I memoscrollbar.inc}
 {$I memo.inc}
 {$I memostrings.inc}
 
@@ -1443,6 +1444,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.86  2003/03/29 17:20:05  mattias
+  added TMemoScrollBar
+
   Revision 1.85  2003/03/28 23:03:38  mattias
   started TMemoScrollbar
 

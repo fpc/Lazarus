@@ -68,50 +68,61 @@ type
   TScrollBarKind = (sbHorizontal, sbVertical);
   TScrollBarInc = 1..32768;
   TScrollBarStyle = (ssRegular, ssFlat, ssHotTrack);
+  EScrollBar = class(Exception) end;
 
   TControlScrollBar = class(TPersistent)
   private
-    FControl: TWinControl;
-
     FAutoRange : Longint;
-
-    FKind: TScrollBarKind;
-
     FIncrement: TScrollBarInc;
+    FKind: TScrollBarKind;
     FPage: TScrollBarInc;
     FPosition: Integer;
     FRange: Integer;
     FSmooth : Boolean;
     FVisible: Boolean;
-    function SmoothIsStored: boolean;
-    function VisibleIsStored: boolean;
   protected
-    function GetSize: integer; virtual;
-    procedure SetPosition(Value: Integer); virtual;
-    procedure SetRange(Value: Integer); virtual;
-    procedure SetSize(const AValue: integer); virtual;
-    procedure SetSmooth(Value: Boolean); virtual;
-    procedure SetVisible(Value: Boolean); virtual;
-    procedure ScrollControlBy(DeltaX, DeltaY: integer); virtual;
-    procedure AutoCalcRange; virtual;
-    Procedure UpdateScrollBar; virtual;
+    FControl: TWinControl;
     function ControlAutoScroll: boolean; virtual;
-    procedure ScrollHandler(var Message: TLMScroll);
+    function ControlHandle: HWnd; virtual;
+    function GetIncrement: TScrollBarInc; virtual;
+    function GetPage: TScrollBarInc; virtual;
+    function GetPosition: Integer; virtual;
+    function GetRange: Integer; virtual;
+    function GetSize: integer; virtual;
+    function GetSmooth: Boolean; virtual;
+    function GetVisible: Boolean; virtual;
+    function HandleAllocated: boolean; virtual;
+    function SmoothIsStored: boolean; virtual;
+    function VisibleIsStored: boolean; virtual;
+    procedure AutoCalcRange; virtual;
     procedure ControlUpdateScrollBars; virtual;
+    procedure ScrollControlBy(DeltaX, DeltaY: integer); virtual;
+    procedure ScrollHandler(var Message: TLMScroll);
+    procedure SetIncrement(const AValue: TScrollBarInc); virtual;
+    procedure SetPage(const AValue: TScrollBarInc); virtual;
+    procedure SetPosition(const Value: Integer); virtual;
+    procedure SetRange(const Value: Integer); virtual;
+    procedure SetSize(const AValue: integer); virtual;
+    procedure SetSmooth(const Value: Boolean); virtual;
+    procedure SetVisible(const Value: Boolean); virtual;
+    Procedure UpdateScrollBar; virtual;
   public
     constructor Create(AControl: TWinControl; AKind: TScrollBarKind);
     procedure Assign(Source: TPersistent); override;
     function IsScrollBarVisible: Boolean; virtual;
     function ScrollPos: Integer; virtual;
     property Kind: TScrollBarKind read FKind;
-  published
-    property Increment: TScrollBarInc read FIncrement write FIncrement default 8;
-    property Page: TScrollBarInc read FPage write FPage default 80;
-    property Smooth : Boolean read FSmooth write SetSmooth stored SmoothIsStored;
-    property Position: Integer read FPosition write SetPosition default 0;
-    property Range: Integer read FRange write SetRange default 0;
+    function GetOtherScrollBar: TControlScrollBar;
+    function GetHorzScrollBar: TControlScrollBar; virtual;
+    function GetVertScrollBar: TControlScrollBar; virtual;
     property Size: integer read GetSize write SetSize stored false;
-    property Visible: Boolean read FVisible write SetVisible stored VisibleIsStored;
+  published
+    property Increment: TScrollBarInc read GetIncrement write SetIncrement default 8;
+    property Page: TScrollBarInc read GetPage write SetPage default 80;
+    property Smooth : Boolean read GetSmooth write SetSmooth stored SmoothIsStored;
+    property Position: Integer read GetPosition write SetPosition default 0;
+    property Range: Integer read GetRange write SetRange default 0;
+    property Visible: Boolean read GetVisible write SetVisible stored VisibleIsStored;
   end;
   
   
@@ -983,7 +994,7 @@ end;
 
 //==============================================================================
 
-
+{$I controlscrollbar.inc}
 {$I scrollingwincontrol.inc}
 {$I scrollbox.inc}
 {$I customform.inc}

@@ -495,9 +495,9 @@ end;
 function TCodeToolManager.LoadFile(const ExpandedFilename: string;
   UpdateFromDisk, Revert: boolean): TCodeBuffer;
 begin
-{$IFDEF CTDEBUG}
-writeln('>>>>>> [TCodeToolManager.LoadFile] ',ExpandedFilename,' Update=',UpdateFromDisk,' Revert=',Revert);
-{$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('>>>>>> [TCodeToolManager.LoadFile] ',ExpandedFilename,' Update=',UpdateFromDisk,' Revert=',Revert);
+  {$ENDIF}
   Result:=SourceCache.LoadFile(ExpandedFilename);
   if Result<>nil then begin
     if Revert then
@@ -510,9 +510,9 @@ end;
 function TCodeToolManager.CreateFile(const AFilename: string): TCodeBuffer;
 begin
   Result:=SourceCache.CreateFile(AFilename);
-{$IFDEF CTDEBUG}
-writeln('****** TCodeToolManager.CreateFile "',AFilename,'" ',Result<>nil);
-{$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('****** TCodeToolManager.CreateFile "',AFilename,'" ',Result<>nil);
+  {$ENDIF}
 end;
 
 function TCodeToolManager.SaveBufferAs(OldBuffer: TCodeBuffer;

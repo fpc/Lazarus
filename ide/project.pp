@@ -215,6 +215,12 @@ type
      (ptApplication, ptProgram, ptCustomProgram); 
   TProjectFlag = (pfSaveClosedUnits, pfSaveOnlyProjectUnits);
   TProjectFlags = set of TProjectFlag;
+  
+  TProjectFileSearchFlag = (
+    pfsfResolveFileLinks,
+    pfsfOnlyEditorFiles
+    );
+  TProjectFileSearchFlags = set of TProjectFileSearchFlag;
 
   TProject = class(TObject)
   private
@@ -302,6 +308,8 @@ type
     function IndexOfUnitWithFormName(const AFormName: string;
                       OnlyProjectUnits:boolean; IgnoreUnit: TUnitInfo): integer;
     function IndexOfFilename(const AFilename: string): integer;
+    function IndexOfFilename(const AFilename: string;
+                             SearchFlags: TProjectFileSearchFlags): integer;
     function ProjectUnitWithFilename(const AFilename: string): TUnitInfo;
     function ProjectUnitWithUnitname(const AnUnitName: string): TUnitInfo;
     function UnitWithEditorIndex(Index:integer): TUnitInfo;
@@ -2077,6 +2085,30 @@ begin
   end;
 end;
 
+function TProject.IndexOfFilename(const AFilename: string;
+  SearchFlags: TProjectFileSearchFlags): integer;
+var
+  BaseFilename: String;
+  CurBaseFilename: String;
+begin
+  BaseFilename:=AFilename;
+  if pfsfResolveFileLinks in SearchFlags then
+    BaseFilename:=ReadAllLinks(AFilename,false);
+  Result:=UnitCount-1;
+  while (Result>=0) do begin
+    if (pfsfOnlyEditorFiles in SearchFlags)
+    and (Units[Result].EditorIndex>=0) then begin
+      dec(Result);
+      continue;
+    end;
+    CurBaseFilename:=Units[Result].Filename;
+    if pfsfResolveFileLinks in SearchFlags then
+      CurBaseFilename:=ReadAllLinks(CurBaseFilename,false);
+    if CompareFilenames(BaseFilename,CurBaseFilename)=0 then exit;
+    dec(Result);
+  end;
+end;
+
 function TProject.ProjectUnitWithFilename(const AFilename: string): TUnitInfo;
 begin
   Result:=fFirstPartOfProject;
@@ -2253,6 +2285,9 @@ end.
 
 {
   $Log$
+  Revision 1.100  2003/03/29 17:20:04  mattias
+  added TMemoScrollBar
+
   Revision 1.99  2003/03/25 17:11:16  mattias
   set Project.AutoCreateForms default to true
 

@@ -29,11 +29,13 @@ constructor TCustomMemo.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   fCompStyle := csMemo;
-  Width:= 185;
-  Height:= 89;
   FWordWrap := True;
   FFont := TFont.Create;
   FLines := TMemoStrings.Create(Self);
+  FVertScrollbar := TMemoScrollBar.Create(Self, sbVertical);
+  FHorzScrollbar := TMemoScrollBar.Create(Self, sbHorizontal);
+  
+  SetBounds(0,0,185,90);
 end;
 
 {------------------------------------------------------------------------------
@@ -47,6 +49,8 @@ destructor TCustomMemo.Destroy;
 begin
   FreeThenNil(FLines);
   FreeThenNil(FFont);
+  FreeThenNil(FVertScrollbar);
+  FreeThenNil(FHorzScrollbar);
   inherited destroy;
 end;
 
@@ -92,12 +96,10 @@ end;
   Returns: 
 
  ------------------------------------------------------------------------------}
-procedure TCustomMemo.SetLines(Value : TStrings);
+procedure TCustomMemo.SetLines(const Value : TStrings);
 begin
-  if Value <> nil then
-  begin
+  if (Value <> nil) then
     FLines.Assign(Value);
-  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -135,6 +137,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.12  2003/03/29 17:20:05  mattias
+  added TMemoScrollBar
+
   Revision 1.11  2003/03/28 23:03:38  mattias
   started TMemoScrollbar
 

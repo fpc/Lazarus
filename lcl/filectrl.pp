@@ -45,6 +45,8 @@ uses
 
 // file attributes and states
 function CompareFilenames(const Filename1, Filename2: string): integer;
+function CompareFilenames(const Filename1, Filename2: string;
+  ResolveLinks: boolean): integer;
 function FilenameIsAbsolute(TheFilename: string):boolean;
 procedure CheckIfFileIsExecutable(const AFilename: string);
 procedure CheckIfFileIsSymlink(const AFilename: string);
@@ -124,6 +126,9 @@ end.
 
 {
   $Log$
+  Revision 1.16  2003/03/29 17:20:05  mattias
+  added TMemoScrollBar
+
   Revision 1.15  2003/03/28 23:03:38  mattias
   started TMemoScrollbar
 

@@ -753,7 +753,7 @@ type
     nMin: Integer;
     nMax: Integer;
     nPage: UInt;
-    npos: Integer;
+    nPos: Integer;
     nTrackPos: Integer;
   end;
   PScrollInfo = ^TScrollInfo;
@@ -1797,6 +1797,9 @@ end.
 
 {
   $Log$
+  Revision 1.35  2003/03/29 17:20:05  mattias
+  added TMemoScrollBar
+
   Revision 1.34  2003/03/16 13:47:45  mattias
   improved rpm building and added support for 1.0.7
 

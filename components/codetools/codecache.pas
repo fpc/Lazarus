@@ -243,9 +243,13 @@ begin
   if Result=nil then begin
     // load new buffer
     Result:=TCodeBuffer.Create;
-    Result.Filename:=AFilename;
-    if (not FileExists(Result.Filename))
-    or (not Result.LoadFromFile(Result.Filename)) then
+    if (not FileExists(AFilename)) then begin
+      Result.Free;
+      Result:=nil;
+      exit;
+    end;
+    Result.Filename:=GetFilenameOnDisk(AFilename);
+    if (not Result.LoadFromFile(Result.Filename)) then
     begin
       Result.Free;
       Result:=nil;
@@ -659,15 +663,15 @@ end;
 
 function TCodeBuffer.LoadFromFile(const AFilename: string): boolean;
 begin
-//writeln('[TCodeBuffer.LoadFromFile] WriteLock=',WriteLock,' ReadOnly=',ReadOnly,
-//' IsVirtual=',IsVirtual,' Old="',Filename,'" ',CompareFilenames(AFilename,Filename));
+  //writeln('[TCodeBuffer.LoadFromFile] WriteLock=',WriteLock,' ReadOnly=',ReadOnly,
+  //' IsVirtual=',IsVirtual,' Old="',Filename,'" ',CompareFilenames(AFilename,Filename));
   if (WriteLock>0) or (ReadOnly) then begin
     Result:=false;
     exit;
   end;
   if not IsVirtual then begin
     if CompareFilenames(AFilename,Filename)=0 then begin
-//writeln('****** [TCodeBuffer.LoadFromFile] ',Filename,' FileDateValid=',FileDateValid,' ',FFileDate,',',FileAge(Filename),',',FFileChangeStep,',',ChangeStep,', NeedsUpdate=',FileNeedsUpdate);
+      //writeln('****** [TCodeBuffer.LoadFromFile] ',Filename,' FileDateValid=',FileDateValid,' ',FFileDate,',',FileAge(Filename),',',FFileChangeStep,',',ChangeStep,', NeedsUpdate=',FileNeedsUpdate);
       if FileNeedsUpdate then begin
         Result:=inherited LoadFromFile(AFilename);
         if Result then MakeFileDateValid;
@@ -685,7 +689,7 @@ end;
 function TCodeBuffer.SaveToFile(const AFilename: string): boolean;
 begin
   Result:=inherited SaveToFile(AFilename);
-//writeln('TCodeBuffer.SaveToFile ',Filename,' -> ',AFilename,' ',Result);
+  //writeln('TCodeBuffer.SaveToFile ',Filename,' -> ',AFilename,' ',Result);
   if CompareFilenames(AFilename,Filename)=0 then begin
     if FIsDeleted then FIsDeleted:=not Result;
     if Result then MakeFileDateValid;

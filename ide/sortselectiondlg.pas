@@ -466,6 +466,7 @@ begin
       Add('Ascending');
       Add('Descending');
       Columns:=2;
+      ItemIndex:=0;
       EndUpdate;
     end;
     OnClick:=@DirectionRadioGroupClick;
@@ -485,6 +486,7 @@ begin
       Add('Lines');
       Add('Words');
       Add('Paragraphs');
+      ItemIndex:=0;
       Columns:=3;
       EndUpdate;
     end;
