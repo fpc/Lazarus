@@ -284,6 +284,7 @@ const
   xtAllRealTypes = [xtReal, xtConstReal, xtSingle, xtDouble, xtExtended,
                     xtCurrency, xtComp];
   xtAllStringTypes = [xtConstString, xtShortString, xtString, xtAnsiString];
+  xtAllStringCompatibleTypes = xtAllStringTypes+[xtChar];
   xtAllPointerTypes = [xtPointer, xtNil];
   xtAllIntegerConvertibles = xtAllIntegerTypes;
   xtAllRealConvertibles = xtAllRealTypes+xtAllIntegerTypes;
@@ -4329,10 +4330,10 @@ begin
     
     
     if (Src[BinaryOperator.StartPos]='+')
-    and (LeftOperand.Desc in [xtAnsiString,xtShortString,xtString,xtChar])
+    and (LeftOperand.Desc in xtAllStringCompatibleTypes)
     then begin
       // string/char '+'
-      if (RightOperand.Desc in [xtAnsiString,xtShortString,xtString,xtChar])
+      if (RightOperand.Desc in xtAllStringCompatibleTypes)
       then
         Result.Desc:=xtConstString
       else begin
