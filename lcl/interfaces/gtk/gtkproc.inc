@@ -625,7 +625,7 @@ end;
 
 // ----------------------------------------------------------------------
 // the fixed widget is the container for controls. By default a widget
-// scales/places a control. whith the use of a fixed we can place them.
+// scales/places a control. with the use of a fixed we can place them.
 // ----------------------------------------------------------------------
 function GetFixedWidget(const Widget: Pointer): Pointer;
 begin
@@ -915,6 +915,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.34  2002/05/06 08:50:37  lazarus
+  MG: replaced logo, increased version to 0.8.3a and some clientrectbugfix
+
   Revision 1.33  2002/04/26 12:26:51  lazarus
   MG: improved clean up
 
