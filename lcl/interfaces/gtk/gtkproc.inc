@@ -131,12 +131,12 @@ begin
     else begin
       gdk_gc_set_line_attributes(GC, GDIPenWidth, GDK_LINE_ON_OFF_DASH, 0, 0);
       case GDIPenStyle of
-        PS_DASH:       gdk_gc_set_dashes(GC, 0, #4#4, 2);
-      	PS_DOT:        gdk_gc_set_dashes(GC, 0, #2#2, 2);
-      	PS_DASHDOT:    gdk_gc_set_dashes(GC, 0, #4#2#2#2+#0, 4);
-      	PS_DASHDOTDOT: gdk_gc_set_dashes(GC, 0, #4#2#2#2#2#2, 6);
-      	PS_NULL:       gdk_gc_set_dashes(GC, 0, #0#4, 2);
-      end;	
+        PS_DASH:       gdk_gc_set_dashes(GC, 0, [4,4], 2);
+        PS_DOT:        gdk_gc_set_dashes(GC, 0, [2,2], 2);
+        PS_DASHDOT:    gdk_gc_set_dashes(GC, 0, [4,2,2,2,0], 4);
+        PS_DASHDOTDOT: gdk_gc_set_dashes(GC, 0, [4,2,2,2,2,2], 6);
+        PS_NULL:       gdk_gc_set_dashes(GC, 0, [0,4], 2);
+      end;  
     end;
   end;
 end;
@@ -223,7 +223,7 @@ begin
           'a'..'z': VirtualKey := KeyCode - Ord('a') + Ord('A');
         end;
         
-	      { look for control code }
+        { look for control code }
         if CtrlDown and (Chr(KeyCode) in ['@'..'Z'])
         then Dec(KeyCode, Ord('@'));
       end;
@@ -668,6 +668,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.7  2001/01/08 21:59:36  lazarus
+  MWE:
+    ~ applieed patch from Peter Vreman to reflect compiler fix
+
   Revision 1.6  2000/12/19 18:43:13  lazarus
   Removed IDEEDITOR.  This causes the PROJECT class to not function.
   Saving projects no longer works.
