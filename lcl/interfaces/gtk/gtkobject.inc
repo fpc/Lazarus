@@ -2286,48 +2286,52 @@ begin
           Result:= PGtkEntry(PGtkCombo(Handle)^.entry)^.text_max_length;
         end;
       end;
-  
-      LM_SETSELSTART : 
+
+      LM_SETSELSTART:
       begin
         if (Sender is TControl) then begin
           case TControl(Sender).fCompStyle of
-          csComboBox:
-            gtk_editable_set_position(PGtkEditable(PGtkCombo(Handle)^.entry),
-                                      Integer(Data));
-	  csEdit, csMemo: 
-	    begin
-	      Widget:= GetWidgetInfo(Pointer(Handle), true)^.ImplementationWidget;
-              gtk_editable_set_position(PGtkEditable(Widget), Integer(Data));
-	    end;  
-	  end;
+            csComboBox:
+              Widget:=PGtkCombo(Handle)^.entry;
+
+            csEdit, csMemo:
+              Widget:=GetWidgetInfo(Pointer(Handle), true)^.ImplementationWidget;
+
+          else
+            Widget:=nil;
+      	  end;
+
+          if Widget<>nil then begin
+            gtk_editable_set_position(PGtkEditable(Widget), Integer(Data));
+          end;
         end;
       end;
-          
+
       LM_SETSELLEN :
       begin
         if (Sender is TControl) then begin
           case TControl(Sender).fCompStyle of
-  	    csComboBox:
-            begin
-              gtk_editable_select_region(PGtkEditable(PGtkCombo(Handle)^.entry),
-                gtk_editable_get_position(PGtkEditable(PGtkCombo(Handle)^.entry)),
-                gtk_editable_get_position(PGtkEditable(PGtkCombo(Handle)^.entry))
-                          + Integer(Data));
-            end;
-            
-	        csEdit:
-            begin
-              gtk_editable_select_region(PGtkEditable(Handle),
-                gtk_editable_get_position(PGtkEditable(Handle)),
-                gtk_editable_get_position(PGtkEditable(Handle)) + Integer(Data));
-            end;
+            csComboBox:
+              Widget:=PGtkCombo(Handle)^.entry;
+
+            csEdit, csMemo:
+              Widget:=GetWidgetInfo(Pointer(Handle), true)^.ImplementationWidget;
+              
+          else
+            Widget:=nil;
+      	  end;
+         
+          if Widget<>nil then begin
+            gtk_editable_select_region(PGtkEditable(Widget),
+              gtk_editable_get_position(PGtkEditable(Widget)),
+              gtk_editable_get_position(PGtkEditable(Widget)) + Integer(Data));
       	  end;
       	end;
       end;  
  
       LM_GetLineCount :
       begin
-
+        writeln('ToDo: LM_GetLineCount');
       end;
 
       LM_GETSELCOUNT :
@@ -7063,6 +7067,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.340  2003/03/25 13:00:39  mattias
+  implemented TMemo.SelLength, improved OI hints
+
   Revision 1.339  2003/03/25 10:45:41  mattias
   reduced focus handling and improved focus setting
 
