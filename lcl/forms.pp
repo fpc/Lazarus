@@ -866,10 +866,11 @@ type
     {$ENDIF}
   end;
   
+  
+  { TApplicationProperties }
+  
   TApplicationProperties = class(TComponent)
   private
-    WE_MIGHT_BE_DESIGNING : Boolean;
-
     FCaptureExceptions: boolean;
     FHelpFile: string;
     FHint: string;
@@ -930,6 +931,7 @@ type
     property OnShowHint: TShowHintEvent read FOnShowHint write SetOnShowHint;
     property OnUserInput: TOnUserInputEvent read FOnUserInput write SetOnUserInput;
   end;
+  
   
   { TIDesigner }
 
@@ -1481,7 +1483,7 @@ Procedure TApplicationProperties.SetCaptureExceptions(Const AValue : boolean);
 begin
   FCaptureExceptions := AValue;
 
-  If not WE_MIGHT_BE_DESIGNING then
+  If not (csDesigning in ComponentState) then
     Application.CaptureExceptions := AValue;
 end;
 
@@ -1489,7 +1491,7 @@ Procedure TApplicationProperties.SetHelpFile(Const AValue : string);
 begin
   FHelpFile := AValue;
 
-  If not WE_MIGHT_BE_DESIGNING then
+  If not (csDesigning in ComponentState) then
     Application.HelpFile := AValue;
 end;
 
@@ -1497,7 +1499,7 @@ Procedure TApplicationProperties.SetHint(Const AValue : string);
 begin
   FHint := AValue;
 
-  If not WE_MIGHT_BE_DESIGNING then
+  If not (csDesigning in ComponentState) then
     Application.Hint := AValue;
 end;
 
@@ -1505,7 +1507,7 @@ Procedure TApplicationProperties.SetHintColor(Const AValue : TColor);
 begin
   FHintColor := AValue;
 
-  If not WE_MIGHT_BE_DESIGNING then
+  If not (csDesigning in ComponentState) then
     Application.HintColor := AValue;
 end;
 
@@ -1513,7 +1515,7 @@ Procedure TApplicationProperties.SetHintHidePause(Const AValue : Integer);
 begin
   FHintHidePause := AValue;
 
-  If not WE_MIGHT_BE_DESIGNING then
+  If not (csDesigning in ComponentState) then
     Application.HintHidePause := AValue;
 end;
 
@@ -1521,7 +1523,7 @@ Procedure TApplicationProperties.SetHintPause(Const AValue : Integer);
 begin
   FHintPause := AValue;
 
-  If not WE_MIGHT_BE_DESIGNING then
+  If not (csDesigning in ComponentState) then
     Application.HintPause := AValue;
 end;
 
@@ -1529,7 +1531,7 @@ Procedure TApplicationProperties.SetHintShortCuts(Const AValue : Boolean);
 begin
   FHintShortCuts := AValue;
 
-  If not WE_MIGHT_BE_DESIGNING then
+  If not (csDesigning in ComponentState) then
     Application.HintShortCuts := AValue;
 end;
 
@@ -1537,7 +1539,7 @@ Procedure TApplicationProperties.SetHintShortPause(Const AValue : Integer);
 begin
   FHintShortPause := AValue;
 
-  If not WE_MIGHT_BE_DESIGNING then
+  If not (csDesigning in ComponentState) then
     Application.HintShortPause := AValue;
 end;
 
@@ -1545,7 +1547,7 @@ Procedure TApplicationProperties.SetShowHint(Const AValue : Boolean);
 begin
   FShowHint := AValue;
 
-  If not WE_MIGHT_BE_DESIGNING then
+  If not (csDesigning in ComponentState) then
     Application.ShowHint := AValue;
 end;
 
@@ -1553,7 +1555,7 @@ Procedure TApplicationProperties.SetTitle(Const AValue : String);
 begin
   FTitle := AValue;
 
-  If not WE_MIGHT_BE_DESIGNING then
+  If not (csDesigning in ComponentState) then
     Application.Title := AValue;
 end;
 
@@ -1561,7 +1563,7 @@ Procedure TApplicationProperties.SetOnException(Const AValue : TExceptionEvent);
 begin
   FOnException := AValue;
 
-  If not WE_MIGHT_BE_DESIGNING then
+  If not (csDesigning in ComponentState) then
     Application.OnException := AValue;
 end;
 
@@ -1569,7 +1571,7 @@ Procedure TApplicationProperties.SetOnIdle(Const AValue : TIdleEvent);
 begin
   FOnIdle := AValue;
 
-  If not WE_MIGHT_BE_DESIGNING then
+  If not (csDesigning in ComponentState) then
     Application.OnIdle := AValue;
 end;
 
@@ -1577,7 +1579,7 @@ Procedure TApplicationProperties.SetOnIdleEnd(Const AValue : TNotifyEvent);
 begin
   FOnIdleEnd := AValue;
 
-  If not WE_MIGHT_BE_DESIGNING then
+  If not (csDesigning in ComponentState) then
     Application.OnIdleEnd := AValue;
 end;
 
@@ -1585,7 +1587,7 @@ Procedure TApplicationProperties.SetOnHelp(Const AValue : THelpEvent);
 begin
   FOnHelp := AValue;
 
-  If not WE_MIGHT_BE_DESIGNING then
+  If not (csDesigning in ComponentState) then
     Application.OnHelp := AValue;
 end;
 
@@ -1593,7 +1595,7 @@ Procedure TApplicationProperties.SetOnHint(Const AValue : TNotifyEvent);
 begin
   FOnHint := AValue;
 
-  If not WE_MIGHT_BE_DESIGNING then
+  If not (csDesigning in ComponentState) then
     Application.OnHint := AValue;
 end;
 
@@ -1601,7 +1603,7 @@ Procedure TApplicationProperties.SetOnShowHint(Const AValue : TShowHintEvent);
 begin
   FOnShowHint := AValue;
 
-  If not WE_MIGHT_BE_DESIGNING then
+  If not (csDesigning in ComponentState) then
     Application.OnShowHint := AValue;
 end;
 
@@ -1609,20 +1611,15 @@ Procedure TApplicationProperties.SetOnUserInput(Const AValue : TOnUserInputEvent
 begin
   FOnUserInput := AValue;
 
-  If not WE_MIGHT_BE_DESIGNING then
+  If not (csDesigning in ComponentState) then
     Application.OnUserInput := AValue;
 end;
 
 constructor TApplicationProperties.Create(AOwner: TComponent);
 begin
-  If (FindRootDesigner(Self)<>nil) or
-    (FindRootDesigner(AOwner)<>nil) or
-    (Application.Title = 'lazarus')
-  then
-    WE_MIGHT_BE_DESIGNING := True;//temp hack, should be replaced later
-                                  //with (csDesigning in ComponentState)
+  inherited Create(AOwner);
 
-  If WE_MIGHT_BE_DESIGNING then begin
+  If (csDesigning in ComponentState) then begin
     FCaptureExceptions:=true;
     FHintColor := DefHintColor;
     FHintPause := DefHintPause;
@@ -1652,8 +1649,6 @@ begin
   FOnHint := nil;
   FOnShowHint := nil;
   FOnUserInput := nil;
-
-  inherited Create(AOwner);
 end;
 
 //==============================================================================

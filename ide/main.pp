@@ -8155,7 +8155,6 @@ begin
     CompilerUnitLinks:='';
     if UnitLinksValid then
       CompilerUnitLinks:=InputHistories.FPCConfigCache.GetUnitLinks(CurOptions);
-
     FPCSrcTemplate:=CodeToolBoss.DefinePool.CreateFPCSrcTemplate(
       CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'FPCSrcDir'],
       CompilerUnitSearchPath,
@@ -9957,6 +9956,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.657  2003/10/16 20:31:21  mattias
+  fixed TApplicationProperties
+
   Revision 1.656  2003/10/15 18:01:09  mattias
   implemented extract proc, check lfm and convert delphi unit
 

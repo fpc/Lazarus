@@ -2282,19 +2282,20 @@ var
   SecondaryFileNameOnly: String;
 begin
   Path:=ExtractFilePath(AFilename);
-  if Path<>'' then Path:=ExpandFilename(Path);
+  if (Path<>'') and (not FilenameIsAbsolute(Path)) then
+    Path:=ExpandFilename(Path);
   FileNameOnly:=ExtractFilename(AFilename);
   Result:=nil;
-  Result:=FOnLoadSource(Self,Path+FileNameOnly,true);
+  Result:=FOnLoadSource(Self,TrimFilename(Path+FileNameOnly),true);
   if (Result<>nil) then exit;
   SecondaryFileNameOnly:=lowercase(FileNameOnly);
   if (SecondaryFileNameOnly<>FileNameOnly) then begin
-    Result:=FOnLoadSource(Self,Path+SecondaryFileNameOnly,true);
+    Result:=FOnLoadSource(Self,TrimFilename(Path+SecondaryFileNameOnly),true);
     if (Result<>nil) then exit;
   end;
   SecondaryFileNameOnly:=UpperCaseStr(FileNameOnly);
   if (SecondaryFileNameOnly<>FileNameOnly) then begin
-    Result:=FOnLoadSource(Self,Path+SecondaryFileNameOnly,true);
+    Result:=FOnLoadSource(Self,TrimFilename(Path+SecondaryFileNameOnly),true);
     if (Result<>nil) then exit;
   end;
 end;
@@ -2353,16 +2354,16 @@ begin
     if Result then exit;
   end else begin
     // main source has relative filename (= virtual)
-    NewCode:=FOnLoadSource(Self,AFilename,true);
+    NewCode:=FOnLoadSource(Self,TrimFilename(AFilename),true);
     if NewCode=nil then begin
       SecondaryFilename:=lowercase(AFilename);
       if SecondaryFilename<>AFilename then
-        NewCode:=FOnLoadSource(Self,SecondaryFilename,true);
+        NewCode:=FOnLoadSource(Self,TrimFilename(SecondaryFilename),true);
     end;
     if NewCode=nil then begin
       SecondaryFilename:=UpperCaseStr(AFilename);
       if SecondaryFilename<>AFilename then
-        NewCode:=FOnLoadSource(Self,SecondaryFilename,true);
+        NewCode:=FOnLoadSource(Self,TrimFilename(SecondaryFilename),true);
     end;
     Result:=(NewCode<>nil);
     if Result then exit;
