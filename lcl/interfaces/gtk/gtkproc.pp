@@ -332,6 +332,7 @@ function GetWinControlWidget(Child: PGtkWidget): PGtkWidget;
 function GetWinControlFixedWidget(Child: PGtkWidget): PGtkWidget;
 function FindFixedChildListItem(ParentFixed: PGtkFixed; Child: PGtkWidget): PGList;
 function FindFixedLastChildListItem(ParentFixed: PGtkFixed): PGList;
+function GetFixedChildListWidget(Item: PGList): PGtkWidget;
 
 // fixed widgets
 Procedure FixedMoveControl(Parent, Child: PGTKWIdget; Left, Top: Longint);

@@ -18,8 +18,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -29,8 +27,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -51,8 +47,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -62,8 +56,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -95,8 +87,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -106,8 +96,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -117,8 +105,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -128,8 +114,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -139,8 +123,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -159,12 +141,6 @@
 <!-- argument Visibility: default -->
 <element name="TLinkList.DisposeItem.AnItem">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: private -->
@@ -181,12 +157,6 @@
 <!-- argument Visibility: default -->
 <element name="TLinkList.Unbind.AnItem">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- function Visibility: protected -->
@@ -203,12 +173,6 @@
 <!-- function result Visibility: default -->
 <element name="TLinkList.CreateItem.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- function Visibility: protected -->
@@ -225,12 +189,6 @@
 <!-- function result Visibility: default -->
 <element name="TLinkList.GetNewItem.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -247,12 +205,6 @@
 <!-- argument Visibility: default -->
 <element name="TLinkList.AddAsLast.AnItem">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- property Visibility: public -->
@@ -260,8 +212,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -271,8 +221,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -282,8 +230,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -302,12 +248,6 @@
 <!-- argument Visibility: default -->
 <element name="TLinkList.Delete.AnItem">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: public -->
@@ -324,12 +264,6 @@
 <!-- argument Visibility: default -->
 <element name="TLinkList.MoveToLast.AnItem">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: public -->
@@ -357,12 +291,6 @@
 <!-- function result Visibility: default -->
 <element name="TLinkList.ConsistencyCheck.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- constructor Visibility: public -->

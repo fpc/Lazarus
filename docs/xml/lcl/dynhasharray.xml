@@ -18,8 +18,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -29,8 +27,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -40,8 +36,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -62,8 +56,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -71,34 +63,16 @@
 <!-- function result Visibility: default -->
 <element name="THashFunction.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="THashFunction.Sender">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="THashFunction.Item">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- function type Visibility: default -->
@@ -106,8 +80,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -115,23 +87,11 @@
 <!-- function result Visibility: default -->
 <element name="TOwnerHashFunction.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TOwnerHashFunction.Item">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- function type Visibility: default -->
@@ -139,8 +99,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -148,23 +106,11 @@
 <!-- function result Visibility: default -->
 <element name="TOnGetKeyForHashItem.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TOnGetKeyForHashItem.Item">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- pointer type Visibility: default -->
@@ -172,8 +118,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -183,8 +127,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -194,8 +136,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -205,8 +145,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -216,8 +154,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -227,8 +163,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -238,8 +172,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -247,23 +179,11 @@
 <!-- enumeration value Visibility: default -->
 <element name="TDynHashArrayOption.dhaoCachingEnabled">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TDynHashArrayOption.dhaoCacheContains">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- set type Visibility: default -->
@@ -271,8 +191,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -293,8 +211,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -304,8 +220,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -315,8 +229,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -326,8 +238,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -337,8 +247,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -348,8 +256,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -359,8 +265,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -370,8 +274,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -381,8 +283,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -392,8 +292,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -403,8 +301,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -414,8 +310,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -425,8 +319,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -436,8 +328,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -447,8 +337,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -467,12 +355,6 @@
 <!-- function result Visibility: default -->
 <element name="TDynHashArray.NewHashItem.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: private -->
@@ -489,12 +371,6 @@
 <!-- argument Visibility: default -->
 <element name="TDynHashArray.DisposeHashItem.ADynHashArrayItem">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: private -->
@@ -522,12 +398,6 @@
 <!-- argument Visibility: default -->
 <element name="TDynHashArray.SetCapacity.NewCapacity">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: private -->
@@ -544,12 +414,6 @@
 <!-- argument Visibility: default -->
 <element name="TDynHashArray.SetCustomHashFunction.AValue">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: private -->
@@ -566,12 +430,6 @@
 <!-- argument Visibility: default -->
 <element name="TDynHashArray.SetOnGetKeyForHashItem.AValue">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: private -->
@@ -588,12 +446,6 @@
 <!-- argument Visibility: default -->
 <element name="TDynHashArray.SetOptions.AValue">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: private -->
@@ -610,12 +462,6 @@
 <!-- argument Visibility: default -->
 <element name="TDynHashArray.SetOwnerHashFunction.AValue">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -643,23 +489,11 @@
 <!-- argument Visibility: default -->
 <element name="TDynHashArray.SaveCacheItem.Item">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TDynHashArray.SaveCacheItem.Index">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- constructor Visibility: public -->
@@ -687,12 +521,6 @@
 <!-- argument Visibility: default -->
 <element name="TDynHashArray.Create.InitialMinCapacity">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- destructor Visibility: public -->
@@ -720,12 +548,6 @@
 <!-- argument Visibility: default -->
 <element name="TDynHashArray.Add.Item">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- function Visibility: public -->
@@ -742,23 +564,11 @@
 <!-- function result Visibility: default -->
 <element name="TDynHashArray.Contains.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TDynHashArray.Contains.Item">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- function Visibility: public -->
@@ -775,23 +585,11 @@
 <!-- function result Visibility: default -->
 <element name="TDynHashArray.ContainsKey.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TDynHashArray.ContainsKey.Key">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: public -->
@@ -808,12 +606,6 @@
 <!-- argument Visibility: default -->
 <element name="TDynHashArray.Remove.Item">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: public -->
@@ -852,12 +644,6 @@
 <!-- function result Visibility: default -->
 <element name="TDynHashArray.First.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- property Visibility: public -->
@@ -865,8 +651,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -885,23 +669,11 @@
 <!-- function result Visibility: default -->
 <element name="TDynHashArray.IndexOf.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TDynHashArray.IndexOf.AnItem">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- function Visibility: public -->
@@ -918,23 +690,11 @@
 <!-- function result Visibility: default -->
 <element name="TDynHashArray.IndexOfKey.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TDynHashArray.IndexOfKey.Key">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- function Visibility: public -->
@@ -951,23 +711,11 @@
 <!-- function result Visibility: default -->
 <element name="TDynHashArray.FindHashItem.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TDynHashArray.FindHashItem.Item">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- function Visibility: public -->
@@ -984,23 +732,11 @@
 <!-- function result Visibility: default -->
 <element name="TDynHashArray.FindHashItemWithKey.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TDynHashArray.FindHashItemWithKey.Key">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- function Visibility: public -->
@@ -1017,23 +753,11 @@
 <!-- function result Visibility: default -->
 <element name="TDynHashArray.FindItemWithKey.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TDynHashArray.FindItemWithKey.Key">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- function Visibility: public -->
@@ -1050,23 +774,11 @@
 <!-- function result Visibility: default -->
 <element name="TDynHashArray.GetHashItem.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TDynHashArray.GetHashItem.HashIndex">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: public -->
@@ -1083,12 +795,6 @@
 <!-- argument Visibility: default -->
 <element name="TDynHashArray.Delete.ADynHashArrayItem">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: public -->
@@ -1105,12 +811,6 @@
 <!-- argument Visibility: default -->
 <element name="TDynHashArray.AssignTo.List">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- function Visibility: public -->
@@ -1127,34 +827,16 @@
 <!-- function result Visibility: default -->
 <element name="TDynHashArray.SlowAlternativeHashMethod.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TDynHashArray.SlowAlternativeHashMethod.Sender">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TDynHashArray.SlowAlternativeHashMethod.Item">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- function Visibility: public -->
@@ -1171,12 +853,6 @@
 <!-- function result Visibility: default -->
 <element name="TDynHashArray.ConsistencyCheck.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: public -->
@@ -1195,8 +871,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -1206,8 +880,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -1217,8 +889,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -1228,8 +898,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -1239,8 +907,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -1250,8 +916,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -1261,8 +925,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -1272,8 +934,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -1294,8 +954,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -1305,8 +963,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -1316,8 +972,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -1327,8 +981,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -1338,8 +990,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -1358,12 +1008,6 @@
 <!-- argument Visibility: default -->
 <element name="TDynHashArrayItemMemManager.SetMaxFreeRatio.NewValue">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: private -->
@@ -1380,12 +1024,6 @@
 <!-- argument Visibility: default -->
 <element name="TDynHashArrayItemMemManager.SetMinFree.NewValue">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: private -->
@@ -1413,12 +1051,6 @@
 <!-- argument Visibility: default -->
 <element name="TDynHashArrayItemMemManager.DisposeItem.ADynHashArrayItem">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- function Visibility: public -->
@@ -1435,12 +1067,6 @@
 <!-- function result Visibility: default -->
 <element name="TDynHashArrayItemMemManager.NewItem.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- property Visibility: public -->
@@ -1448,8 +1074,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -1459,8 +1083,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -1470,8 +1092,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -1523,12 +1143,6 @@
 <!-- function result Visibility: default -->
 <element name="TDynHashArrayItemMemManager.ConsistencyCheck.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: public -->
@@ -1558,8 +1172,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>

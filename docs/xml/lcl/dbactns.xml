@@ -18,8 +18,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -29,8 +27,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -40,8 +36,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -62,8 +56,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -82,12 +74,6 @@
 <!-- argument Visibility: default -->
 <element name="TDataSetAction.SetDataSource.Value">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -104,23 +90,11 @@
 <!-- argument Visibility: default -->
 <element name="TDataSetAction.Notification.AComponent">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TDataSetAction.Notification.Operation">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- function Visibility: protected -->
@@ -137,23 +111,11 @@
 <!-- function result Visibility: default -->
 <element name="TDataSetAction.GetDataSet.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TDataSetAction.GetDataSet.Target">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- function Visibility: public -->
@@ -170,23 +132,11 @@
 <!-- function result Visibility: default -->
 <element name="TDataSetAction.HandlesTarget.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TDataSetAction.HandlesTarget.Target">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- property Visibility: public -->
@@ -194,8 +144,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -225,12 +173,6 @@
 <!-- argument Visibility: default -->
 <element name="TDataSetFirst.ExecuteTarget.Target">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: public -->
@@ -247,12 +189,6 @@
 <!-- argument Visibility: default -->
 <element name="TDataSetFirst.UpdateTarget.Target">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- property Visibility: published -->
@@ -260,8 +196,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -291,12 +225,6 @@
 <!-- argument Visibility: default -->
 <element name="TDataSetLast.ExecuteTarget.Target">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: public -->
@@ -313,12 +241,6 @@
 <!-- argument Visibility: default -->
 <element name="TDataSetLast.UpdateTarget.Target">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- property Visibility: published -->
@@ -326,8 +248,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -357,12 +277,6 @@
 <!-- argument Visibility: default -->
 <element name="TDataSetNext.ExecuteTarget.Target">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: public -->
@@ -379,12 +293,6 @@
 <!-- argument Visibility: default -->
 <element name="TDataSetNext.UpdateTarget.Target">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- property Visibility: published -->
@@ -392,8 +300,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -423,12 +329,6 @@
 <!-- argument Visibility: default -->
 <element name="TDataSetPrior.ExecuteTarget.Target">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: public -->
@@ -445,12 +345,6 @@
 <!-- argument Visibility: default -->
 <element name="TDataSetPrior.UpdateTarget.Target">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- property Visibility: published -->
@@ -458,8 +352,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -489,12 +381,6 @@
 <!-- argument Visibility: default -->
 <element name="TDataSetRefresh.ExecuteTarget.Target">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: public -->
@@ -511,12 +397,6 @@
 <!-- argument Visibility: default -->
 <element name="TDataSetRefresh.UpdateTarget.Target">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- property Visibility: published -->
@@ -524,8 +404,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -555,12 +433,6 @@
 <!-- argument Visibility: default -->
 <element name="TDataSetCancel.ExecuteTarget.Target">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: public -->
@@ -577,12 +449,6 @@
 <!-- argument Visibility: default -->
 <element name="TDataSetCancel.UpdateTarget.Target">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- property Visibility: published -->
@@ -590,8 +456,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -621,12 +485,6 @@
 <!-- argument Visibility: default -->
 <element name="TDataSetDelete.ExecuteTarget.Target">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: public -->
@@ -643,12 +501,6 @@
 <!-- argument Visibility: default -->
 <element name="TDataSetDelete.UpdateTarget.Target">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- property Visibility: published -->
@@ -656,8 +508,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -687,12 +537,6 @@
 <!-- argument Visibility: default -->
 <element name="TDataSetEdit.ExecuteTarget.Target">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: public -->
@@ -709,12 +553,6 @@
 <!-- argument Visibility: default -->
 <element name="TDataSetEdit.UpdateTarget.Target">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- property Visibility: published -->
@@ -722,8 +560,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -753,12 +589,6 @@
 <!-- argument Visibility: default -->
 <element name="TDataSetInsert.ExecuteTarget.Target">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: public -->
@@ -775,12 +605,6 @@
 <!-- argument Visibility: default -->
 <element name="TDataSetInsert.UpdateTarget.Target">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- property Visibility: published -->
@@ -788,8 +612,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -819,12 +641,6 @@
 <!-- argument Visibility: default -->
 <element name="TDataSetPost.ExecuteTarget.Target">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: public -->
@@ -841,12 +657,6 @@
 <!-- argument Visibility: default -->
 <element name="TDataSetPost.UpdateTarget.Target">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- property Visibility: published -->
@@ -854,8 +664,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>

@@ -1,0 +1,495 @@
+<?xml version="1.0" encoding="ISO8859-1"?>
+<fpdoc-descriptions>
+<package name="gtk">
+
+<!--
+  ====================================================================
+    GtkFontCache
+  ====================================================================
+-->
+
+<module name="GtkFontCache">
+<short></short>
+<descr>
+</descr>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Classes">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="SysUtils">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="FPCAdds">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LCLProc">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LCLType">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="AvgLvlTree">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="gdk">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="gtkdef">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LCLResCache">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGdkFontCacheDescriptor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGdkFontCacheItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TGdkFontCacheItem.GdkFont">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TGdkFontCacheItem.MetricsValid">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TGdkFontCacheItem.lBearing">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TGdkFontCacheItem.rBearing">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TGdkFontCacheItem.TextMetric">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TGdkFontCacheItem.IsDoubleByteChar">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGdkFontCacheItem.WarnReferenceHigh">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGdkFontCacheDescriptor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TGdkFontCacheDescriptor.LogFont">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TGdkFontCacheDescriptor.LongFontName">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TGdkFontCacheDescriptor.xlfd">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGdkFontCache">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TGdkFontCache.RemoveItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGdkFontCache.RemoveItem.Item">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TGdkFontCache.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGdkFontCache.CompareItems">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGdkFontCache.CompareItems.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGdkFontCache.CompareItems.Tree">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGdkFontCache.CompareItems.Item1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGdkFontCache.CompareItems.Item2">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGdkFontCache.CompareDescriptors">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGdkFontCache.CompareDescriptors.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGdkFontCache.CompareDescriptors.Tree">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGdkFontCache.CompareDescriptors.Desc1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGdkFontCache.CompareDescriptors.Desc2">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGdkFontCache.FindGDKFont">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGdkFontCache.FindGDKFont.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGdkFontCache.FindGDKFont.TheGdkFont">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGdkFontCache.FindGDKFontDesc">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGdkFontCache.FindGDKFontDesc.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGdkFontCache.FindGDKFontDesc.LogFont">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGdkFontCache.FindGDKFontDesc.LongFontName">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGdkFontCache.FindADescriptor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGdkFontCache.FindADescriptor.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGdkFontCache.FindADescriptor.TheGdkFont">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGdkFontCache.Add">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGdkFontCache.Add.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGdkFontCache.Add.TheGdkFont">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGdkFontCache.Add.LogFont">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGdkFontCache.Add.LongFontName">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGdkFontCache.Reference">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGdkFontCache.Reference.TheGdkFont">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGdkFontCache.Unreference">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGdkFontCache.Unreference.TheGdkFont">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGdkFontCache.DumpDescriptors">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: default -->
+<element name="LogFontToString">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="LogFontToString.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LogFontToString.LogFont">
+<short></short>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="FontCache">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+</module> <!-- GtkFontCache -->
+</package>
+</fpdoc-descriptions>

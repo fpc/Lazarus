@@ -18,8 +18,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -29,8 +27,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -40,8 +36,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -51,8 +45,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -62,8 +54,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -73,8 +63,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -84,8 +72,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -95,8 +81,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -106,8 +90,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -117,8 +99,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -128,8 +108,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -139,8 +117,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -150,8 +126,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -161,8 +135,15 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Menus">
+<short></short>
+<descr>
+</descr>
 <seealso>
 </seealso>
 </element>
@@ -172,8 +153,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -181,45 +160,21 @@
 <!-- enumeration value Visibility: default -->
 <element name="TButtonLayout.blGlyphLeft">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TButtonLayout.blGlyphRight">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TButtonLayout.blGlyphTop">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TButtonLayout.blGlyphBottom">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- enumeration type Visibility: default -->
@@ -227,8 +182,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -236,45 +189,21 @@
 <!-- enumeration value Visibility: default -->
 <element name="TButtonState.bsUp">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TButtonState.bsDisabled">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TButtonState.bsDown">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TButtonState.bsExclusive">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- range type Visibility: default -->
@@ -282,8 +211,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -304,8 +231,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -315,8 +240,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -326,8 +249,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -337,8 +258,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -357,12 +276,6 @@
 <!-- argument Visibility: default -->
 <element name="TCustomButton.SetCancel.NewCancel">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: private -->
@@ -379,12 +292,6 @@
 <!-- argument Visibility: default -->
 <element name="TCustomButton.SetDefault.Value">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: private -->
@@ -401,12 +308,6 @@
 <!-- argument Visibility: default -->
 <element name="TCustomButton.WMDefaultClicked.Message">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -456,23 +357,11 @@
 <!-- argument Visibility: default -->
 <element name="TCustomButton.ControlKeyDown.Key">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TCustomButton.ControlKeyDown.Shift">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -489,12 +378,6 @@
 <!-- argument Visibility: default -->
 <element name="TCustomButton.SetParent.AParent">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -511,12 +394,6 @@
 <!-- argument Visibility: default -->
 <element name="TCustomButton.RealSetText.Value">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- function Visibility: protected -->
@@ -533,23 +410,11 @@
 <!-- function result Visibility: default -->
 <element name="TCustomButton.ChildClassAllowed.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TCustomButton.ChildClassAllowed.ChildClass">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- constructor Visibility: public -->
@@ -566,12 +431,6 @@
 <!-- argument Visibility: default -->
 <element name="TCustomButton.Create.TheOwner">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: public -->
@@ -612,8 +471,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -623,8 +480,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -634,8 +489,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -645,8 +498,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -667,8 +518,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -678,8 +527,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -689,8 +536,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -700,8 +545,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -711,8 +554,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -722,8 +563,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -733,8 +572,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -744,8 +581,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -755,8 +590,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -766,8 +599,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -777,8 +608,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -788,8 +617,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -799,8 +626,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -810,8 +635,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -821,8 +644,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -832,8 +653,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -843,8 +662,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -854,8 +671,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -865,8 +680,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -876,8 +689,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -887,8 +698,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -898,8 +707,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -909,8 +716,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -920,8 +725,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -931,8 +734,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -942,8 +743,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -964,8 +763,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -975,8 +772,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -986,8 +781,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -1006,12 +799,6 @@
 <!-- argument Visibility: default -->
 <element name="TButtonGlyph.SetGlyph.Value">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: private -->
@@ -1028,12 +815,6 @@
 <!-- argument Visibility: default -->
 <element name="TButtonGlyph.SetNumGlyphs.Value">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -1050,12 +831,6 @@
 <!-- argument Visibility: default -->
 <element name="TButtonGlyph.GlyphChanged.Sender">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- constructor Visibility: public -->
@@ -1094,78 +869,36 @@
 <!-- function result Visibility: default -->
 <element name="TButtonGlyph.Draw.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TButtonGlyph.Draw.Canvas">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TButtonGlyph.Draw.Client">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TButtonGlyph.Draw.Offset">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TButtonGlyph.Draw.State">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TButtonGlyph.Draw.Transparent">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TButtonGlyph.Draw.BiDiFlags">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- property Visibility: public -->
@@ -1173,8 +906,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -1184,8 +915,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -1195,8 +924,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -1206,8 +933,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -1215,144 +940,66 @@
 <!-- enumeration value Visibility: default -->
 <element name="TBitBtnKind.bkCustom">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TBitBtnKind.bkOK">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TBitBtnKind.bkCancel">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TBitBtnKind.bkHelp">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TBitBtnKind.bkYes">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TBitBtnKind.bkNo">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TBitBtnKind.bkClose">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TBitBtnKind.bkAbort">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TBitBtnKind.bkRetry">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TBitBtnKind.bkIgnore">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TBitBtnKind.bkAll">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TBitBtnKind.bkNoToAll">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TBitBtnKind.bkYesToAll">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- set type Visibility: default -->
@@ -1360,8 +1007,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -1382,8 +1027,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -1393,8 +1036,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -1404,8 +1045,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -1415,8 +1054,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -1426,8 +1063,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -1446,12 +1081,6 @@
 <!-- function result Visibility: default -->
 <element name="TCustomBitBtn.GetGlyph.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- function Visibility: private -->
@@ -1468,12 +1097,6 @@
 <!-- function result Visibility: default -->
 <element name="TCustomBitBtn.IsGlyphStored.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: private -->
@@ -1490,12 +1113,6 @@
 <!-- argument Visibility: default -->
 <element name="TCustomBitBtn.SetGlyph.AValue">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: private -->
@@ -1512,12 +1129,6 @@
 <!-- argument Visibility: default -->
 <element name="TCustomBitBtn.SetKind.AValue">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: private -->
@@ -1534,12 +1145,6 @@
 <!-- argument Visibility: default -->
 <element name="TCustomBitBtn.SetLayout.AValue">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: private -->
@@ -1556,12 +1161,6 @@
 <!-- argument Visibility: default -->
 <element name="TCustomBitBtn.SetMargin.AValue">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: private -->
@@ -1578,12 +1177,6 @@
 <!-- argument Visibility: default -->
 <element name="TCustomBitBtn.SetSpacing.AValue">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: private -->
@@ -1611,23 +1204,11 @@
 <!-- function result Visibility: default -->
 <element name="TCustomBitBtn.GetCaptionOfKind.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TCustomBitBtn.GetCaptionOfKind.aKind">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -1644,23 +1225,11 @@
 <!-- argument Visibility: default -->
 <element name="TCustomBitBtn.ActionChange.Sender">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TCustomBitBtn.ActionChange.CheckDefaults">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -1688,12 +1257,6 @@
 <!-- argument Visibility: default -->
 <element name="TCustomBitBtn.GlyphChanged.Sender">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -1721,12 +1284,6 @@
 <!-- argument Visibility: default -->
 <element name="TCustomBitBtn.Create.TheOwner">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- destructor Visibility: public -->
@@ -1740,57 +1297,47 @@
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
+<!-- property Visibility: public -->
 <element name="TCustomBitBtn.Glyph">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
+<!-- property Visibility: public -->
 <element name="TCustomBitBtn.Kind">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
+<!-- property Visibility: public -->
 <element name="TCustomBitBtn.Layout">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
+<!-- property Visibility: public -->
 <element name="TCustomBitBtn.Margin">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
+<!-- property Visibility: public -->
 <element name="TCustomBitBtn.Spacing">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -1811,8 +1358,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -1822,8 +1367,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -1833,8 +1376,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -1844,8 +1385,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -1855,8 +1394,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -1866,8 +1403,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -1877,8 +1412,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -1888,8 +1421,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -1899,8 +1430,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -1910,8 +1439,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -1921,8 +1448,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -1932,8 +1457,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -1943,8 +1466,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -1954,8 +1475,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -1965,8 +1484,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -1976,8 +1493,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -1987,8 +1502,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -1998,8 +1511,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -2009,8 +1520,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -2020,8 +1529,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -2031,8 +1538,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -2042,8 +1547,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -2053,8 +1556,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -2064,8 +1565,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -2075,8 +1574,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -2086,8 +1583,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -2097,8 +1592,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -2108,8 +1601,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -2119,8 +1610,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -2130,8 +1619,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -2141,8 +1628,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -2152,8 +1637,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -2183,12 +1666,6 @@
 <!-- argument Visibility: default -->
 <element name="TSpeedButtonActionLink.AssignClient.AClient">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- function Visibility: protected -->
@@ -2205,12 +1682,6 @@
 <!-- function result Visibility: default -->
 <element name="TSpeedButtonActionLink.IsCheckedLinked.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- function Visibility: protected -->
@@ -2227,12 +1698,6 @@
 <!-- function result Visibility: default -->
 <element name="TSpeedButtonActionLink.IsGroupIndexLinked.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -2249,12 +1714,6 @@
 <!-- argument Visibility: default -->
 <element name="TSpeedButtonActionLink.SetGroupIndex.Value">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -2271,12 +1730,6 @@
 <!-- argument Visibility: default -->
 <element name="TSpeedButtonActionLink.SetChecked.Value">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- object Visibility: default -->
@@ -2295,8 +1748,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -2306,8 +1757,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -2317,8 +1766,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -2328,8 +1775,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -2339,8 +1784,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -2350,8 +1793,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -2361,8 +1802,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -2372,8 +1811,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -2383,8 +1820,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -2394,8 +1829,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -2405,8 +1838,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -2416,8 +1847,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -2427,8 +1856,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -2447,12 +1874,6 @@
 <!-- function result Visibility: default -->
 <element name="TCustomSpeedButton.GetGlyph.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: private -->
@@ -2480,12 +1901,6 @@
 <!-- argument Visibility: default -->
 <element name="TCustomSpeedButton.SetAllowAllUp.Value">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: private -->
@@ -2502,12 +1917,6 @@
 <!-- argument Visibility: default -->
 <element name="TCustomSpeedButton.SetGlyph.Value">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: private -->
@@ -2524,12 +1933,6 @@
 <!-- argument Visibility: default -->
 <element name="TCustomSpeedButton.SetLayout.Value">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: private -->
@@ -2546,12 +1949,6 @@
 <!-- argument Visibility: default -->
 <element name="TCustomSpeedButton.SetTransparent.Value">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: private -->
@@ -2568,12 +1965,6 @@
 <!-- argument Visibility: default -->
 <element name="TCustomSpeedButton.CMButtonPressed.Message">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: private -->
@@ -2612,12 +2003,6 @@
 <!-- argument Visibility: default -->
 <element name="TCustomSpeedButton.CMEnabledChanged.Message">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- variable Visibility: protected -->
@@ -2625,8 +2010,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -2645,12 +2028,6 @@
 <!-- function result Visibility: default -->
 <element name="TCustomSpeedButton.GetNumGlyphs.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -2667,12 +2044,6 @@
 <!-- argument Visibility: default -->
 <element name="TCustomSpeedButton.GlyphChanged.Sender">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -2689,45 +2060,21 @@
 <!-- argument Visibility: default -->
 <element name="TCustomSpeedButton.MouseDown.Button">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TCustomSpeedButton.MouseDown.Shift">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TCustomSpeedButton.MouseDown.X">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TCustomSpeedButton.MouseDown.Y">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -2744,34 +2091,16 @@
 <!-- argument Visibility: default -->
 <element name="TCustomSpeedButton.MouseMove.Shift">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TCustomSpeedButton.MouseMove.X">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TCustomSpeedButton.MouseMove.Y">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -2788,45 +2117,21 @@
 <!-- argument Visibility: default -->
 <element name="TCustomSpeedButton.MouseUp.Button">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TCustomSpeedButton.MouseUp.Shift">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TCustomSpeedButton.MouseUp.X">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TCustomSpeedButton.MouseUp.Y">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -2854,12 +2159,6 @@
 <!-- argument Visibility: default -->
 <element name="TCustomSpeedButton.SetDown.Value">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -2876,12 +2175,6 @@
 <!-- argument Visibility: default -->
 <element name="TCustomSpeedButton.SetGroupIndex.Value">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -2898,12 +2191,6 @@
 <!-- argument Visibility: default -->
 <element name="TCustomSpeedButton.SetFlat.Value">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -2920,12 +2207,6 @@
 <!-- argument Visibility: default -->
 <element name="TCustomSpeedButton.SetMargin.Value">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -2942,12 +2223,6 @@
 <!-- argument Visibility: default -->
 <element name="TCustomSpeedButton.SetNumGlyphs.Value">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -2964,12 +2239,6 @@
 <!-- argument Visibility: default -->
 <element name="TCustomSpeedButton.SetSpacing.Value">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -2986,12 +2255,6 @@
 <!-- argument Visibility: default -->
 <element name="TCustomSpeedButton.RealSetText.Value">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -3008,12 +2271,6 @@
 <!-- argument Visibility: default -->
 <element name="TCustomSpeedButton.UpdateState.InvalidateOnChange">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- function Visibility: protected -->
@@ -3030,12 +2287,6 @@
 <!-- function result Visibility: default -->
 <element name="TCustomSpeedButton.GetDrawFlags.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- property Visibility: protected -->
@@ -3043,8 +2294,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -3063,23 +2312,11 @@
 <!-- argument Visibility: default -->
 <element name="TCustomSpeedButton.ActionChange.Sender">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TCustomSpeedButton.ActionChange.CheckDefaults">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- function Visibility: protected -->
@@ -3096,12 +2333,6 @@
 <!-- function result Visibility: default -->
 <element name="TCustomSpeedButton.GetActionLinkClass.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- constructor Visibility: public -->
@@ -3118,12 +2349,6 @@
 <!-- argument Visibility: default -->
 <element name="TCustomSpeedButton.Create.AOwner">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- destructor Visibility: public -->
@@ -3148,112 +2373,92 @@
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
+<!-- property Visibility: public -->
 <element name="TCustomSpeedButton.AllowAllUp">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
+<!-- property Visibility: public -->
 <element name="TCustomSpeedButton.Down">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
+<!-- property Visibility: public -->
 <element name="TCustomSpeedButton.Flat">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
+<!-- property Visibility: public -->
 <element name="TCustomSpeedButton.Glyph">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
+<!-- property Visibility: public -->
 <element name="TCustomSpeedButton.GroupIndex">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
+<!-- property Visibility: public -->
 <element name="TCustomSpeedButton.Layout">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
+<!-- property Visibility: public -->
 <element name="TCustomSpeedButton.Margin">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
+<!-- property Visibility: public -->
 <element name="TCustomSpeedButton.NumGlyphs">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
+<!-- property Visibility: public -->
 <element name="TCustomSpeedButton.Spacing">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
+<!-- property Visibility: public -->
 <element name="TCustomSpeedButton.Transparent">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -3274,8 +2479,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -3285,8 +2488,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -3296,8 +2497,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -3307,8 +2506,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -3318,8 +2515,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -3329,8 +2524,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -3340,8 +2533,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -3351,8 +2542,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -3362,8 +2551,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -3373,8 +2560,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -3384,8 +2569,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -3395,8 +2578,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -3406,8 +2587,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -3417,8 +2596,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -3428,8 +2605,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -3439,8 +2614,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -3450,8 +2623,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -3461,8 +2632,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -3472,8 +2641,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -3483,8 +2650,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -3494,8 +2659,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -3505,8 +2668,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -3516,8 +2677,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -3527,8 +2686,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -3538,8 +2695,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -3549,8 +2704,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -3560,8 +2713,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>

@@ -1,0 +1,575 @@
+<?xml version="1.0" encoding="ISO8859-1"?>
+<fpdoc-descriptions>
+<package name="gtk">
+
+<!--
+  ====================================================================
+    GtkWSButtons
+  ====================================================================
+-->
+
+<module name="GtkWSButtons">
+<short></short>
+<descr>
+</descr>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="GLib">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Gtk">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Classes">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LCLProc">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LCLType">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LMessages">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Controls">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Graphics">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Buttons">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="WSButtons">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="WSLCLClasses">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="WSProc">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="GtkDef">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- pointer type Visibility: default -->
+<element name="PBitBtnWidgetInfo">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- record type Visibility: default -->
+<element name="TBitBtnWidgetInfo">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TBitBtnWidgetInfo.LabelWidget">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TBitBtnWidgetInfo.ImageWidget">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TBitBtnWidgetInfo.SpaceWidget">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TBitBtnWidgetInfo.AlignWidget">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TBitBtnWidgetInfo.TableWidget">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSButton">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TGtkWSButton.SetCallbacks">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSButton.SetCallbacks.AGtkWidget">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSButton.SetCallbacks.AWidgetInfo">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGtkWSButton.CreateHandle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkWSButton.CreateHandle.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSButton.CreateHandle.AWinControl">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSButton.CreateHandle.AParams">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSButton.DefaultButtonChanged">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSButton.DefaultButtonChanged.AButton">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGtkWSButton.GetText">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkWSButton.GetText.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSButton.GetText.AWinControl">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSButton.GetText.AText">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSButton.SetShortcut">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSButton.SetShortcut.AButton">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSButton.SetShortcut.OldShortcut">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSButton.SetShortcut.NewShortcut">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSButton.SetText">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSButton.SetText.AWinControl">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSButton.SetText.AText">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSButton.GetPreferredSize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSButton.GetPreferredSize.AWinControl">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSButton.GetPreferredSize.PreferredWidth">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSButton.GetPreferredSize.PreferredHeight">
+<short></short>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSBitBtn">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TGtkWSBitBtn.UpdateLayout">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSBitBtn.UpdateLayout.AInfo">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSBitBtn.UpdateLayout.ALayout">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSBitBtn.UpdateLayout.AMargin">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TGtkWSBitBtn.UpdateMargin">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSBitBtn.UpdateMargin.AInfo">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSBitBtn.UpdateMargin.ALayout">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSBitBtn.UpdateMargin.AMargin">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGtkWSBitBtn.CreateHandle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkWSBitBtn.CreateHandle.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSBitBtn.CreateHandle.AWinControl">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSBitBtn.CreateHandle.AParams">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSBitBtn.SetGlyph">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSBitBtn.SetGlyph.ABitBtn">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSBitBtn.SetGlyph.AValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSBitBtn.SetLayout">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSBitBtn.SetLayout.ABitBtn">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSBitBtn.SetLayout.AValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSBitBtn.SetMargin">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSBitBtn.SetMargin.ABitBtn">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSBitBtn.SetMargin.AValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSBitBtn.SetSpacing">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSBitBtn.SetSpacing.ABitBtn">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSBitBtn.SetSpacing.AValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSBitBtn.SetText">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSBitBtn.SetText.AWinControl">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSBitBtn.SetText.AText">
+<short></short>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSSpeedButton">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+</module> <!-- GtkWSButtons -->
+</package>
+</fpdoc-descriptions>

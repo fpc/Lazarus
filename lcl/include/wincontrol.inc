@@ -1227,22 +1227,26 @@ begin
       Count := FParent.FWinControls.Count;
       if NewPosition < 0 then NewPosition := 0;
       if NewPosition >= Count then NewPosition := Count - 1;
-      if NewPosition <> OldPosition then
-      begin
-        FParent.FWinControls.Move(OldPosition,NewPosition);
-      end;
+      if NewPosition = OldPosition then exit;
+      FParent.FWinControls.Move(OldPosition,NewPosition);
+    end else begin
+      // MG: What if OldPosition<0 ?
+      debugln('WARNING: TWinControl.SetZOrderPosition OldPosition<0');
     end;
     if HandleAllocated then
     begin
-      if NewPosition = 0 then
+      // In LCL, position 0 is "at the back" and position
+      // Count - 1 is "in front", so the order is reversed from win32 api POV.
+      // In SetWindowPos, you should give the handle of the window
+      // (hWndInsertAfter) of which you want to become just in front of your
+      // window (hWnd).
+      // Keep in mind, that FWinControls is already reordered.
+      if NewPosition <= 0 then
         Pos := HWND_BOTTOM
-      else if NewPosition = FParent.FWinControls.Count - 1 then
+      else if NewPosition >= FParent.FWinControls.Count - 1 then
         Pos := HWND_TOP
-      else if NewPosition > OldPosition then
-        Pos := TWinControl(FParent.FWinControls[NewPosition + 1]).Handle
-      else if NewPosition < OldPosition then
-        Pos := TWinControl(FParent.FWinControls[NewPosition]).Handle
-      else Exit;
+      else
+        Pos := TWinControl(FParent.FWinControls[NewPosition + 1]).Handle;
       SetWindowPos(Handle, Pos, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE);
     end;
   end;
@@ -4180,6 +4184,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.292  2004/12/01 16:17:17  mattias
+  updated fpdoc sceletons for lcl and gtk intf
+
   Revision 1.291  2004/11/29 01:12:36  mattias
   added SysKey messages to gtk intf and LCL
 

@@ -18,8 +18,15 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LCLProc">
+<short></short>
+<descr>
+</descr>
 <seealso>
 </seealso>
 </element>
@@ -29,65 +36,46 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="math">
+<short></short>
+<descr>
+</descr>
 <seealso>
 </seealso>
 </element>
 
 <!-- enumeration type Visibility: default -->
-<element name="TArrowDirection">
+<element name="TShapeDirection">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
 <!-- enumeration value Visibility: default -->
-<element name="TArrowDirection.atUp">
+<element name="TShapeDirection.atUp">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- enumeration value Visibility: default -->
-<element name="TArrowDirection.atDown">
+<element name="TShapeDirection.atDown">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- enumeration value Visibility: default -->
-<element name="TArrowDirection.atLeft">
+<element name="TShapeDirection.atLeft">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- enumeration value Visibility: default -->
-<element name="TArrowDirection.atRight">
+<element name="TShapeDirection.atRight">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: default -->
@@ -104,23 +92,11 @@
 <!-- argument Visibility: default -->
 <element name="PaintDiamond.Canvas">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="PaintDiamond.PaintRect">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: default -->
@@ -137,100 +113,46 @@
 <!-- argument Visibility: default -->
 <element name="PaintCross.Canvas">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="PaintCross.XLeft">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="PaintCross.YUp">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="PaintCross.XRight">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="PaintCross.YLow">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="PaintCross.CrossX1">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="PaintCross.CrossX2">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="PaintCross.CrossY1">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="PaintCross.CrossY2">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: default -->
@@ -247,23 +169,11 @@
 <!-- argument Visibility: default -->
 <element name="PaintPlus.Canvas">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="PaintPlus.PaintRect">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: default -->
@@ -280,34 +190,16 @@
 <!-- argument Visibility: default -->
 <element name="PaintTriangle.Canvas">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="PaintTriangle.PaintRect">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
-<element name="PaintTriangle.AArrowType">
+<element name="PaintTriangle.AArrowDirection">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: default -->
@@ -324,34 +216,16 @@
 <!-- argument Visibility: default -->
 <element name="PaintBoldArrow.Canvas">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="PaintBoldArrow.PaintRect">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
-<element name="PaintBoldArrow.AArrowType">
+<element name="PaintBoldArrow.AArrowDirection">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: default -->
@@ -368,34 +242,16 @@
 <!-- argument Visibility: default -->
 <element name="PaintChevronArrow.Canvas">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="PaintChevronArrow.PaintRect">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
-<element name="PaintChevronArrow.AArrowType">
+<element name="PaintChevronArrow.AArrowDirection">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: default -->
@@ -412,17 +268,21 @@
 <!-- argument Visibility: default -->
 <element name="PaintVArrow.Canvas">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="PaintVArrow.PaintRect">
 <short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="PaintVArrow.AArrowDirection">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="PaintHalfEllipse">
+<short></short>
 <descr>
 </descr>
 <errors>
@@ -432,7 +292,22 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="PaintVArrow.AArrowType">
+<element name="PaintHalfEllipse.Canvas">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="PaintHalfEllipse.PaintRect">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="PaintHalfEllipse.AHalfEllipseDirection">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="PaintFivePointStar">
 <short></short>
 <descr>
 </descr>
@@ -440,6 +315,155 @@
 </errors>
 <seealso>
 </seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="PaintFivePointStar.Canvas">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="PaintFivePointStar.PaintRect">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="PaintFivePointLineStar">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="PaintFivePointLineStar.Canvas">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="PaintFivePointLineStar.PaintRect">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="PaintStarN">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="PaintStarN.Canvas">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="PaintStarN.cx">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="PaintStarN.cy">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="PaintStarN.r">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="PaintStarN.n">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="PaintStarN.a">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="CalculatePentagonPoints">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CalculatePentagonPoints.PentagonRect">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CalculatePentagonPoints.P1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CalculatePentagonPoints.P2">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CalculatePentagonPoints.P3">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CalculatePentagonPoints.P4">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CalculatePentagonPoints.P5">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="LinesPointOfIntersection">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="LinesPointOfIntersection.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LinesPointOfIntersection.Line1a">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LinesPointOfIntersection.Line1b">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LinesPointOfIntersection.Line2a">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LinesPointOfIntersection.line2b">
+<short></short>
 </element>
 </module> <!-- ExtGraphics -->
 </package>

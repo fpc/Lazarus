@@ -18,8 +18,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -29,8 +27,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -40,8 +36,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -51,8 +45,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -62,8 +54,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -73,8 +63,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -84,8 +72,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -95,8 +81,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -106,8 +90,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -117,8 +99,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -128,8 +108,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -139,8 +117,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -148,34 +124,16 @@
 <!-- argument Visibility: default -->
 <element name="TOnGetLazIntfImagePixel.x">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TOnGetLazIntfImagePixel.y">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TOnGetLazIntfImagePixel.Color">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure type Visibility: default -->
@@ -183,8 +141,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -192,34 +148,16 @@
 <!-- argument Visibility: default -->
 <element name="TOnSetLazIntfImagePixel.x">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TOnSetLazIntfImagePixel.y">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TOnSetLazIntfImagePixel.Color">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure type Visibility: default -->
@@ -227,8 +165,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -236,56 +172,26 @@
 <!-- argument Visibility: default -->
 <element name="TOnReadRawImageBits.TheData">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TOnReadRawImageBits.Position">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TOnReadRawImageBits.Prec">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TOnReadRawImageBits.Shift">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TOnReadRawImageBits.Bits">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure type Visibility: default -->
@@ -293,8 +199,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -302,56 +206,26 @@
 <!-- argument Visibility: default -->
 <element name="TOnWriteRawImageBits.TheData">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TOnWriteRawImageBits.Position">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TOnWriteRawImageBits.Prec">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TOnWriteRawImageBits.Shift">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TOnWriteRawImageBits.Bits">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- object Visibility: default -->
@@ -370,8 +244,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -381,8 +253,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -392,8 +262,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -403,8 +271,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -414,8 +280,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -425,8 +289,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -436,8 +298,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -447,8 +307,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -458,8 +316,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -469,8 +325,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -480,8 +334,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -491,8 +343,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -502,8 +352,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -513,8 +361,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -524,10 +370,34 @@
 <short></short>
 <descr>
 </descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TLazIntfImage.GetTColors">
+<short></short>
+<descr>
+</descr>
 <errors>
 </errors>
 <seealso>
 </seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TLazIntfImage.GetTColors.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazIntfImage.GetTColors.x">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazIntfImage.GetTColors.y">
+<short></short>
 </element>
 
 <!-- procedure Visibility: private -->
@@ -544,6 +414,11 @@
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.SetAutoCreateMask.AValue">
 <short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TLazIntfImage.SetTColors">
+<short></short>
 <descr>
 </descr>
 <errors>
@@ -552,13 +427,26 @@
 </seealso>
 </element>
 
+<!-- argument Visibility: default -->
+<element name="TLazIntfImage.SetTColors.x">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazIntfImage.SetTColors.y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazIntfImage.SetTColors.AValue">
+<short></short>
+</element>
+
 <!-- variable Visibility: protected -->
 <element name="TLazIntfImage.OnGetInternalColor">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -568,8 +456,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -588,12 +474,6 @@
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.SetUsePalette.Value">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -610,34 +490,16 @@
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.SetInternalColor.x">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.SetInternalColor.y">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.SetInternalColor.Value">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- function Visibility: protected -->
@@ -654,34 +516,16 @@
 <!-- function result Visibility: default -->
 <element name="TLazIntfImage.GetInternalColor.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.GetInternalColor.x">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.GetInternalColor.y">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -698,34 +542,16 @@
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.SetInternalPixel.x">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.SetInternalPixel.y">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.SetInternalPixel.Value">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- function Visibility: protected -->
@@ -742,34 +568,16 @@
 <!-- function result Visibility: default -->
 <element name="TLazIntfImage.GetInternalPixel.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.GetInternalPixel.x">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.GetInternalPixel.y">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -852,56 +660,26 @@
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.CreateDataAndLineStarts.Data">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.CreateDataAndLineStarts.DataSize">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.CreateDataAndLineStarts.TheLineStarts">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.CreateDataAndLineStarts.TheBitsPerPixel">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.CreateDataAndLineStarts.TheLineEnd">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -918,12 +696,6 @@
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.SetDataDescription.NewDescription">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -951,56 +723,26 @@
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.ChooseRawBitsProc.BitsPerPixel">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.ChooseRawBitsProc.ByteOrder">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.ChooseRawBitsProc.BitOrder">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.ChooseRawBitsProc.ProcReadRawImageBits">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.ChooseRawBitsProc.ProcWriteRawImageBits">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -1017,34 +759,16 @@
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.GenericGetColor.x">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.GenericGetColor.y">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.GenericGetColor.Value">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -1061,34 +785,16 @@
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.GetColor_NoPalette_RGBA_Alpha_Sep_Mask.x">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.GetColor_NoPalette_RGBA_Alpha_Sep_Mask.y">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.GetColor_NoPalette_RGBA_Alpha_Sep_Mask.Value">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -1105,34 +811,16 @@
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.GetColor_NoPalette_RGBA_Alpha_Sep_NoMask.x">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.GetColor_NoPalette_RGBA_Alpha_Sep_NoMask.y">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.GetColor_NoPalette_RGBA_Alpha_Sep_NoMask.Value">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -1149,34 +837,16 @@
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.GetColor_NoPalette_RGBA_Alpha_NoSep.x">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.GetColor_NoPalette_RGBA_Alpha_NoSep.y">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.GetColor_NoPalette_RGBA_Alpha_NoSep.Value">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -1193,34 +863,16 @@
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.GetColor_NoPalette_RGBA_NoAlpha.x">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.GetColor_NoPalette_RGBA_NoAlpha.y">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.GetColor_NoPalette_RGBA_NoAlpha.Value">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -1237,34 +889,16 @@
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.GetColor_NoPalette_Gray.x">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.GetColor_NoPalette_Gray.y">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.GetColor_NoPalette_Gray.Value">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -1281,34 +915,16 @@
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.GetColor_NULL.x">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.GetColor_NULL.y">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.GetColor_NULL.Value">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -1325,34 +941,16 @@
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.GenericSetColor.x">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.GenericSetColor.y">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.GenericSetColor.Value">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -1369,34 +967,16 @@
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.SetColor_NoPalette_RGBA_Alpha_Sep_Mask.x">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.SetColor_NoPalette_RGBA_Alpha_Sep_Mask.y">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.SetColor_NoPalette_RGBA_Alpha_Sep_Mask.Value">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -1413,34 +993,16 @@
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.SetColor_NoPalette_RGBA_Alpha_NoSep.x">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.SetColor_NoPalette_RGBA_Alpha_NoSep.y">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.SetColor_NoPalette_RGBA_Alpha_NoSep.Value">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -1457,34 +1019,16 @@
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.SetColor_NoPalette_RGBA_NoAlpha.x">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.SetColor_NoPalette_RGBA_NoAlpha.y">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.SetColor_NoPalette_RGBA_NoAlpha.Value">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -1501,34 +1045,16 @@
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.SetColor_NoPalette_Gray.x">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.SetColor_NoPalette_Gray.y">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.SetColor_NoPalette_Gray.Value">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -1545,34 +1071,16 @@
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.SetColor_NULL.x">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.SetColor_NULL.y">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.SetColor_NULL.Value">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -1589,34 +1097,16 @@
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.SetColor_BPP32_R8G8B8_A1_BIO_TTB.x">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.SetColor_BPP32_R8G8B8_A1_BIO_TTB.y">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.SetColor_BPP32_R8G8B8_A1_BIO_TTB.Value">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -1633,34 +1123,16 @@
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.SetColor_BPP32_R8G8B8_A1_BIO_TTB_RBO.x">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.SetColor_BPP32_R8G8B8_A1_BIO_TTB_RBO.y">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.SetColor_BPP32_R8G8B8_A1_BIO_TTB_RBO.Value">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- constructor Visibility: public -->
@@ -1677,23 +1149,11 @@
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.Create.AWidth">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.Create.AHeight">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- destructor Visibility: public -->
@@ -1743,23 +1203,11 @@
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.SetSize.AWidth">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.SetSize.AHeight">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- function Visibility: public -->
@@ -1776,34 +1224,16 @@
 <!-- function result Visibility: default -->
 <element name="TLazIntfImage.CheckDescription.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.CheckDescription.ADescription">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.CheckDescription.ExceptionOnError">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: public -->
@@ -1820,12 +1250,6 @@
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.GetDescriptionFromDevice.DC">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: public -->
@@ -1842,12 +1266,6 @@
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.GetDescriptionFromBitmap.Bitmap">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: public -->
@@ -1864,12 +1282,6 @@
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.LoadFromDevice.DC">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: public -->
@@ -1886,23 +1298,11 @@
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.LoadFromBitmap.Bitmap">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.LoadFromBitmap.MaskBitmap">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: public -->
@@ -1919,34 +1319,16 @@
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.CreateBitmap.Bitmap">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.CreateBitmap.MaskBitmap">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.CreateBitmap.AlwaysCreateMask">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: public -->
@@ -1963,12 +1345,6 @@
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.SetRawImage.RawImage">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: public -->
@@ -1985,12 +1361,6 @@
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.GetRawImage.RawImage">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: public -->
@@ -2007,12 +1377,6 @@
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.FillPixels.Color">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: public -->
@@ -2029,34 +1393,16 @@
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.GetXYDataPostion.x">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.GetXYDataPostion.y">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.GetXYDataPostion.Position">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: public -->
@@ -2073,34 +1419,16 @@
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.GetXYMaskPostion.x">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.GetXYMaskPostion.y">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImage.GetXYMaskPostion.Position">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- property Visibility: public -->
@@ -2108,8 +1436,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -2119,8 +1445,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -2130,8 +1454,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -2141,10 +1463,27 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TLazIntfImage.TColors">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazIntfImage.TColors.x">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazIntfImage.TColors.y">
+<short></short>
 </element>
 
 <!-- object Visibility: default -->
@@ -2163,8 +1502,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -2183,34 +1520,16 @@
 <!-- argument Visibility: default -->
 <element name="TLazIntfImageMask.SetInternalColor.x">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImageMask.SetInternalColor.y">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImageMask.SetInternalColor.Value">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- function Visibility: protected -->
@@ -2227,34 +1546,16 @@
 <!-- function result Visibility: default -->
 <element name="TLazIntfImageMask.GetInternalColor.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImageMask.GetInternalColor.x">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImageMask.GetInternalColor.y">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -2271,34 +1572,16 @@
 <!-- argument Visibility: default -->
 <element name="TLazIntfImageMask.SetInternalPixel.x">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImageMask.SetInternalPixel.y">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImageMask.SetInternalPixel.Value">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- function Visibility: protected -->
@@ -2315,34 +1598,16 @@
 <!-- function result Visibility: default -->
 <element name="TLazIntfImageMask.GetInternalPixel.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImageMask.GetInternalPixel.x">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazIntfImageMask.GetInternalPixel.y">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- constructor Visibility: public -->
@@ -2359,12 +1624,6 @@
 <!-- argument Visibility: default -->
 <element name="TLazIntfImageMask.CreateWithImage.TheImage">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- property Visibility: public -->
@@ -2372,8 +1631,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -2394,8 +1651,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -2405,8 +1660,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -2425,12 +1678,6 @@
 <!-- argument Visibility: default -->
 <element name="TLazAVLPalette.SetCount.NewCount">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -2447,23 +1694,11 @@
 <!-- argument Visibility: default -->
 <element name="TLazAVLPalette.SetColor.Index">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazAVLPalette.SetColor.NewColor">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- function Visibility: protected -->
@@ -2480,34 +1715,16 @@
 <!-- function result Visibility: default -->
 <element name="TLazAVLPalette.CompareEntries.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazAVLPalette.CompareEntries.Index1">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazAVLPalette.CompareEntries.Index2">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- function Visibility: protected -->
@@ -2524,34 +1741,16 @@
 <!-- function result Visibility: default -->
 <element name="TLazAVLPalette.CompareColorWithEntries.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazAVLPalette.CompareColorWithEntries.AColor">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazAVLPalette.CompareColorWithEntries.Index">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -2590,23 +1789,11 @@
 <!-- function result Visibility: default -->
 <element name="TLazAVLPalette.IndexOf.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazAVLPalette.IndexOf.AColor">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- function Visibility: public -->
@@ -2623,23 +1810,11 @@
 <!-- function result Visibility: default -->
 <element name="TLazAVLPalette.Add.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazAVLPalette.Add.NewColor">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: public -->
@@ -2658,8 +1833,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -2680,8 +1853,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -2691,8 +1862,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -2702,8 +1871,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -2713,8 +1880,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -2724,8 +1889,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -2735,8 +1898,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -2799,12 +1960,6 @@
 <!-- argument Visibility: default -->
 <element name="TArrayNode.CreateChildNode.ChildValue">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- function Visibility: public -->
@@ -2821,34 +1976,16 @@
 <!-- function result Visibility: default -->
 <element name="TArrayNode.GetChildNode.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TArrayNode.GetChildNode.ChildValue">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TArrayNode.GetChildNode.CreateIfNotExists">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: public -->
@@ -2865,12 +2002,6 @@
 <!-- argument Visibility: default -->
 <element name="TArrayNode.Expand.ValueToInclude">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- function Visibility: public -->
@@ -2887,12 +2018,6 @@
 <!-- function result Visibility: default -->
 <element name="TArrayNode.FindPrevSibling.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- function Visibility: public -->
@@ -2909,12 +2034,6 @@
 <!-- function result Visibility: default -->
 <element name="TArrayNode.FindNextSibling.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- function Visibility: public -->
@@ -2931,12 +2050,6 @@
 <!-- function result Visibility: default -->
 <element name="TArrayNode.FindNext.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- function Visibility: public -->
@@ -2953,12 +2066,6 @@
 <!-- function result Visibility: default -->
 <element name="TArrayNode.FindPrev.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- function Visibility: public -->
@@ -2975,12 +2082,6 @@
 <!-- function result Visibility: default -->
 <element name="TArrayNode.FindFirstChild.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- function Visibility: public -->
@@ -2997,12 +2098,6 @@
 <!-- function result Visibility: default -->
 <element name="TArrayNode.FindLastChild.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- function Visibility: public -->
@@ -3019,12 +2114,6 @@
 <!-- function result Visibility: default -->
 <element name="TArrayNode.FindLastSubChild.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- function Visibility: public -->
@@ -3041,12 +2130,6 @@
 <!-- function result Visibility: default -->
 <element name="TArrayNode.FindFirstSibling.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- function Visibility: public -->
@@ -3063,12 +2146,6 @@
 <!-- function result Visibility: default -->
 <element name="TArrayNode.FindLastSibling.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: public -->
@@ -3098,8 +2175,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -3118,34 +2193,16 @@
 <!-- function result Visibility: default -->
 <element name="TArrayNodesTree.FindNode.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TArrayNodesTree.FindNode.IntArray">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TArrayNodesTree.FindNode.Count">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- function Visibility: public -->
@@ -3162,34 +2219,16 @@
 <!-- function result Visibility: default -->
 <element name="TArrayNodesTree.FindData.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TArrayNodesTree.FindData.IntArray">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TArrayNodesTree.FindData.Count">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- function Visibility: public -->
@@ -3206,45 +2245,21 @@
 <!-- function result Visibility: default -->
 <element name="TArrayNodesTree.SetNode.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TArrayNodesTree.SetNode.IntArray">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TArrayNodesTree.SetNode.Count">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TArrayNodesTree.SetNode.Data">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: public -->
@@ -3261,12 +2276,6 @@
 <!-- argument Visibility: default -->
 <element name="TArrayNodesTree.Delete.Node">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: public -->
@@ -3329,8 +2338,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -3340,8 +2347,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -3351,8 +2356,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -3362,8 +2365,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -3373,8 +2374,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -3384,8 +2383,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -3395,8 +2392,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -3426,23 +2421,11 @@
 <!-- argument Visibility: default -->
 <element name="TLazReaderXPM.InternalRead.Str">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazReaderXPM.InternalRead.Img">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- function Visibility: protected -->
@@ -3459,23 +2442,11 @@
 <!-- function result Visibility: default -->
 <element name="TLazReaderXPM.InternalCheck.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazReaderXPM.InternalCheck.Str">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- constructor Visibility: public -->
@@ -3516,8 +2487,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -3527,8 +2496,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -3547,12 +2514,6 @@
 <!-- argument Visibility: default -->
 <element name="TLazWriterXPM.SetNibblesPerSample.AValue">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -3569,23 +2530,11 @@
 <!-- argument Visibility: default -->
 <element name="TLazWriterXPM.InternalWrite.Str">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazWriterXPM.InternalWrite.Img">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- constructor Visibility: public -->
@@ -3604,8 +2553,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -3637,8 +2584,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -3648,8 +2593,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -3659,8 +2602,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -3670,8 +2611,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -3690,45 +2629,21 @@
 <!-- argument Visibility: default -->
 <element name="TLazReaderBMP.SetupRead.nPalette">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazReaderBMP.SetupRead.nRowBits">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazReaderBMP.SetupRead.Stream">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazReaderBMP.SetupRead.ReadPalette">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -3745,23 +2660,11 @@
 <!-- argument Visibility: default -->
 <element name="TLazReaderBMP.ReadScanLine.Row">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazReaderBMP.ReadScanLine.Stream">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -3778,23 +2681,11 @@
 <!-- argument Visibility: default -->
 <element name="TLazReaderBMP.WriteScanLine.Row">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazReaderBMP.WriteScanLine.Img">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- function Visibility: protected -->
@@ -3811,23 +2702,11 @@
 <!-- function result Visibility: default -->
 <element name="TLazReaderBMP.BmpRGBAToFPColor.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazReaderBMP.BmpRGBAToFPColor.RGBA">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -3844,23 +2723,11 @@
 <!-- argument Visibility: default -->
 <element name="TLazReaderBMP.InternalRead.Stream">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazReaderBMP.InternalRead.Img">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -3877,23 +2744,11 @@
 <!-- argument Visibility: default -->
 <element name="TLazReaderBMP.InternalReadBody.Stream">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazReaderBMP.InternalReadBody.Img">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- function Visibility: protected -->
@@ -3910,23 +2765,11 @@
 <!-- function result Visibility: default -->
 <element name="TLazReaderBMP.InternalCheck.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazReaderBMP.InternalCheck.Stream">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- constructor Visibility: public -->
@@ -3976,23 +2819,11 @@
 <!-- argument Visibility: default -->
 <element name="TLazReaderPartIcon.InternalRead.Stream">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazReaderPartIcon.InternalRead.Img">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- function Visibility: protected -->
@@ -4009,23 +2840,11 @@
 <!-- function result Visibility: default -->
 <element name="TLazReaderPartIcon.InternalCheck.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazReaderPartIcon.InternalCheck.Stream">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- function Visibility: protected -->
@@ -4042,23 +2861,11 @@
 <!-- function result Visibility: default -->
 <element name="TLazReaderPartIcon.BmpRGBAToFPColor.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazReaderPartIcon.BmpRGBAToFPColor.RGBA">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- object Visibility: default -->
@@ -4077,8 +2884,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -4088,8 +2893,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -4099,8 +2902,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -4119,12 +2920,6 @@
 <!-- argument Visibility: default -->
 <element name="TLazReaderIcon.SetIcon.AValue">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -4141,23 +2936,11 @@
 <!-- argument Visibility: default -->
 <element name="TLazReaderIcon.InternalRead.Stream">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazReaderIcon.InternalRead.Img">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- function Visibility: protected -->
@@ -4174,23 +2957,11 @@
 <!-- function result Visibility: default -->
 <element name="TLazReaderIcon.InternalCheck.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazReaderIcon.InternalCheck.Stream">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- property Visibility: public -->
@@ -4198,8 +2969,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -4218,34 +2987,16 @@
 <!-- function result Visibility: default -->
 <element name="ReadCompleteStreamToString.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="ReadCompleteStreamToString.Str">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="ReadCompleteStreamToString.StartSize">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: default -->
@@ -4262,34 +3013,16 @@
 <!-- argument Visibility: default -->
 <element name="ReadCompleteStreamToStream.SrcStream">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="ReadCompleteStreamToStream.DestStream">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="ReadCompleteStreamToStream.StartSize">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 </module> <!-- IntfGraphics -->
 </package>

@@ -18,8 +18,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -29,8 +27,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -40,8 +36,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -51,8 +45,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -62,8 +54,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -73,8 +63,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -84,8 +72,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -95,8 +81,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -117,8 +101,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -128,8 +110,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -139,8 +119,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -150,8 +128,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -161,8 +137,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -172,8 +146,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -183,8 +155,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -194,8 +164,15 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TTextStrings.FChangedWhileUpdate">
+<short></short>
+<descr>
+</descr>
 <seealso>
 </seealso>
 </element>
@@ -214,12 +191,6 @@
 <!-- function result Visibility: default -->
 <element name="TTextStrings.GetTextStr.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -236,12 +207,6 @@
 <!-- argument Visibility: default -->
 <element name="TTextStrings.SetTextStr.AValue">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -269,12 +234,6 @@
 <!-- function result Visibility: default -->
 <element name="TTextStrings.GetCount.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -313,23 +272,11 @@
 <!-- function result Visibility: default -->
 <element name="TTextStrings.Get.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TTextStrings.Get.Index">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -357,6 +304,16 @@
 <!-- function result Visibility: default -->
 <element name="TTextStrings.GetObject.Result">
 <short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TTextStrings.GetObject.Index">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TTextStrings.Put">
+<short></short>
 <descr>
 </descr>
 <errors>
@@ -366,14 +323,13 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TTextStrings.GetObject.Index">
+<element name="TTextStrings.Put.Index">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TTextStrings.Put.S">
+<short></short>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -390,23 +346,11 @@
 <!-- argument Visibility: default -->
 <element name="TTextStrings.PutObject.Index">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TTextStrings.PutObject.AnObject">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- function Visibility: protected -->
@@ -423,34 +367,16 @@
 <!-- function result Visibility: default -->
 <element name="TTextStrings.GetLineLen.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TTextStrings.GetLineLen.Index">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TTextStrings.GetLineLen.IncludeNewLineChars">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- destructor Visibility: public -->
@@ -489,12 +415,6 @@
 <!-- argument Visibility: default -->
 <element name="TTextStrings.SetText.TheText">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: public -->
@@ -511,23 +431,11 @@
 <!-- argument Visibility: default -->
 <element name="TTextStrings.Insert.Index">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TTextStrings.Insert.S">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: public -->
@@ -544,12 +452,6 @@
 <!-- argument Visibility: default -->
 <element name="TTextStrings.Delete.Index">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: public -->
@@ -566,6 +468,16 @@
 <!-- argument Visibility: default -->
 <element name="TTextStrings.Exchange.Index1">
 <short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TTextStrings.Exchange.Index2">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TTextStrings.Move">
+<short></short>
 <descr>
 </descr>
 <errors>
@@ -575,14 +487,13 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TTextStrings.Exchange.Index2">
+<element name="TTextStrings.Move.CurIndex">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TTextStrings.Move.NewIndex">
+<short></short>
 </element>
 
 <!-- procedure Visibility: public -->
@@ -596,13 +507,107 @@
 </seealso>
 </element>
 
-<!-- property Visibility: public -->
-<element name="TTextStrings.Text">
+<!-- procedure Visibility: public -->
+<element name="TTextStrings.BeginUpdate">
 <short></short>
 <descr>
 </descr>
 <errors>
 </errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TTextStrings.EndUpdate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TTextStrings.GetText">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TTextStrings.GetText.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TTextStrings.IndexOf">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TTextStrings.IndexOf.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TTextStrings.IndexOf.S">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TTextStrings.Add">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TTextStrings.Add.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TTextStrings.Add.S">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TTextStrings.AddStrings">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TTextStrings.AddStrings.TheStrings">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TTextStrings.Text">
+<short></short>
+<descr>
+</descr>
 <seealso>
 </seealso>
 </element>
@@ -612,8 +617,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -623,8 +626,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>

@@ -1,31 +1,47 @@
 <?xml version="1.0" encoding="ISO8859-1"?>
 <fpdoc-descriptions>
-<package name="lcl">
+<package name="gtk">
 
 <!--
   ====================================================================
-    KeyMap
+    GtkWSPairSplitter
   ====================================================================
 -->
 
-<module name="KeyMap">
+<module name="GtkWSPairSplitter">
 <short></short>
 <descr>
 </descr>
 
 <!-- unresolved type reference Visibility: default -->
-<element name="LCLType">
+<element name="PairSplitter">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
 <!-- unresolved type reference Visibility: default -->
-<element name="gdk">
+<element name="WSPairSplitter">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="WSLCLClasses">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSPairSplitterSide">
 <short></short>
 <descr>
 </descr>
@@ -35,8 +51,8 @@
 </seealso>
 </element>
 
-<!-- function Visibility: default -->
-<element name="VK2GDK">
+<!-- object Visibility: default -->
+<element name="TGtkWSCustomPairSplitter">
 <short></short>
 <descr>
 </descr>
@@ -46,8 +62,8 @@
 </seealso>
 </element>
 
-<!-- function result Visibility: default -->
-<element name="VK2GDK.Result">
+<!-- object Visibility: default -->
+<element name="TGtkWSPairSplitter">
 <short></short>
 <descr>
 </descr>
@@ -56,50 +72,6 @@
 <seealso>
 </seealso>
 </element>
-
-<!-- argument Visibility: default -->
-<element name="VK2GDK.Key">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: default -->
-<element name="GDK2VK">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="GDK2VK.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="GDK2VK.Key">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-</module> <!-- KeyMap -->
+</module> <!-- GtkWSPairSplitter -->
 </package>
 </fpdoc-descriptions>

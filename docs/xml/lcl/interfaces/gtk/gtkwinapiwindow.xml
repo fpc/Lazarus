@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO8859-1"?>
 <fpdoc-descriptions>
-<package name="lcl">
+<package name="gtk">
 
 <!--
   ====================================================================
@@ -14,12 +14,28 @@
 </descr>
 
 <!-- unresolved type reference Visibility: default -->
+<element name="SysUtils">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LCLProc">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
 <element name="glib">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -29,8 +45,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -40,8 +54,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -51,19 +63,15 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
 <!-- unresolved type reference Visibility: default -->
-<element name="SysUtils">
+<element name="GtkDef">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -73,8 +81,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -84,8 +90,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -95,8 +99,15 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TGTKAPIWidget.Frame">
+<short></short>
+<descr>
+</descr>
 <seealso>
 </seealso>
 </element>
@@ -106,8 +117,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -117,8 +126,6 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -128,19 +135,15 @@
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
 <!-- variable Visibility: default -->
-<element name="TGTKAPIWidgetClass.parent_class">
+<element name="TGTKAPIWidgetClass.ParentClass">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -159,12 +162,6 @@
 <!-- function result Visibility: default -->
 <element name="GTKAPIWidget_GetType.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- function Visibility: default -->
@@ -181,12 +178,6 @@
 <!-- function result Visibility: default -->
 <element name="GTKAPIWidget_New.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: default -->
@@ -203,45 +194,21 @@
 <!-- argument Visibility: default -->
 <element name="GTKAPIWidget_CreateCaret.APIWidget">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="GTKAPIWidget_CreateCaret.AWidth">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="GTKAPIWidget_CreateCaret.AHeight">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="GTKAPIWidget_CreateCaret.ABitmap">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: default -->
@@ -258,12 +225,6 @@
 <!-- argument Visibility: default -->
 <element name="GTKAPIWidget_DestroyCaret.APIWidget">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: default -->
@@ -280,12 +241,11 @@
 <!-- argument Visibility: default -->
 <element name="GTKAPIWidget_HideCaret.APIWidget">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GTKAPIWidget_HideCaret.OldVisible">
+<short></short>
 </element>
 
 <!-- procedure Visibility: default -->
@@ -302,12 +262,6 @@
 <!-- argument Visibility: default -->
 <element name="GTKAPIWidget_ShowCaret.APIWidget">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: default -->
@@ -324,34 +278,16 @@
 <!-- argument Visibility: default -->
 <element name="GTKAPIWidget_SetCaretPos.APIWidget">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="GTKAPIWidget_SetCaretPos.X">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="GTKAPIWidget_SetCaretPos.Y">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: default -->
@@ -368,34 +304,16 @@
 <!-- argument Visibility: default -->
 <element name="GTKAPIWidget_GetCaretPos.APIWidget">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="GTKAPIWidget_GetCaretPos.X">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="GTKAPIWidget_GetCaretPos.Y">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: default -->
@@ -412,23 +330,11 @@
 <!-- argument Visibility: default -->
 <element name="GTKAPIWidget_SetCaretRespondToFocus.APIWidget">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="GTKAPIWidget_SetCaretRespondToFocus.ShowHideOnFocus">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 
 <!-- procedure Visibility: default -->
@@ -445,6 +351,16 @@
 <!-- argument Visibility: default -->
 <element name="GTKAPIWidget_GetCaretRespondToFocus.APIWidget">
 <short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GTKAPIWidget_GetCaretRespondToFocus.ShowHideOnFocus">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GTK_APIWIDGETCLIENT_TYPE">
+<short></short>
 <descr>
 </descr>
 <errors>
@@ -453,15 +369,9 @@
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
-<element name="GTKAPIWidget_GetCaretRespondToFocus.ShowHideOnFocus">
+<!-- function result Visibility: default -->
+<element name="GTK_APIWIDGETCLIENT_TYPE.Result">
 <short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
 </module> <!-- GTKWinapiWindow -->
 </package>

@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="ISO8859-1"?>
+<fpdoc-descriptions>
+<package name="gtk">
+
+<!--
+  ====================================================================
+    GtkWSMenus
+  ====================================================================
+-->
+
+<module name="GtkWSMenus">
+<short></short>
+<descr>
+</descr>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Classes">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="InterfaceBase">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LCLType">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="WSMenus">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="WSLCLClasses">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="glib">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="gdk">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="gtk">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="gdkpixbuf">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="GtkInt">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="gtkproc">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="gtkglobals">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Menus">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSMenuItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSMenuItem.AttachMenu">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSMenuItem.AttachMenu.AMenuItem">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGtkWSMenuItem.CreateHandle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkWSMenuItem.CreateHandle.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSMenuItem.CreateHandle.AMenuItem">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSMenuItem.DestroyHandle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSMenuItem.DestroyHandle.AMenuItem">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSMenuItem.SetCaption">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSMenuItem.SetCaption.AMenuItem">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSMenuItem.SetCaption.ACaption">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSMenuItem.SetShortCut">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSMenuItem.SetShortCut.AMenuItem">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSMenuItem.SetShortCut.OldShortCut">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSMenuItem.SetShortCut.NewShortCut">
+<short></short>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSMenu">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TGtkWSMenu.CreateHandle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TGtkWSMenu.CreateHandle.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSMenu.CreateHandle.AMenu">
+<short></short>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSMainMenu">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TGtkWSPopupMenu">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TGtkWSPopupMenu.Popup">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSPopupMenu.Popup.APopupMenu">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSPopupMenu.Popup.X">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGtkWSPopupMenu.Popup.Y">
+<short></short>
+</element>
+</module> <!-- GtkWSMenus -->
+</package>
+</fpdoc-descriptions>

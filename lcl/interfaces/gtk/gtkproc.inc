@@ -3431,6 +3431,11 @@ begin
   Result:=g_list_last(ParentFixed^.children);
 end;
 
+function GetFixedChildListWidget(Item: PGList): PGtkWidget;
+begin
+  Result:=PGtkFixedChild(Item^.Data)^.Widget;
+end;
+
 {------------------------------------------------------------------------------
   procedure MoveGListLinkBehind(First, Item, After: PGList);
 
@@ -7884,6 +7889,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.324  2004/12/01 16:17:17  mattias
+  updated fpdoc sceletons for lcl and gtk intf
+
   Revision 1.323  2004/11/29 01:12:36  mattias
   added SysKey messages to gtk intf and LCL
 

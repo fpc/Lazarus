@@ -22,4 +22,19 @@ Finding old the files in CVS not needed any more:
 perl find_cvs_fpdoc_files.pl -s ../../lcl -o lcl -l old
 
 
+--------------------------------------------------------------------------------
+Examples for gtk interface:
+
+Creation:
+perl multi_makeskel.pl -p gtk -s ../../lcl/interfaces/gtk \
+  -o lcl/interfaces/gtk -i '-Fi/path/to/lazarus/lcl/interfaces/gtk' -x
+
+Finding the new files, not yet in CVS:
+perl find_cvs_fpdoc_files.pl -s ../../lcl/interfaces/gtk \
+  -o lcl/interfaces/gtk -l new
+
+Finding old the files in CVS not needed any more:
+perl find_cvs_fpdoc_files.pl -s ../../lcl/interfaces/gtk \
+  -o lcl/interfaces/gtk -l old
+  
 

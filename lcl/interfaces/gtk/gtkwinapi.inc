@@ -8195,7 +8195,7 @@ end;
   hWndInsertAfter:
     HWND_BOTTOM to move bottommost
     HWND_TOP to move topmost
-    the Widget, that should ly just on top of hWnd
+    the Widget, that should lie just on top of hWnd
   uFlags:
     SWP_NOMOVE: ignore X, Y
     SWP_NOSIZE: ignore cx, cy
@@ -8215,49 +8215,72 @@ function TGtkWidgetSet.SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;
   begin
     OldListItem:=FindFixedChildListItem(PGtkFixed(FixedWidget),Widget);
     if OldListItem=nil then begin
-      DebugLn('TGtkWidgetSet.SetWindowPos WARNING: Widget not on parents fixed widget');
+      DebugLn('TGtkWidgetSet.SetWindowPos.SetZOrderOnFixedWidget WARNING: Widget not on parents fixed widget');
       exit;
     end;
     AfterWidget:=nil;
     AfterListItem:=nil;
     if hWndInsertAfter=HWND_BOTTOM then begin
+      //debugln('HWND_BOTTOM');
       // HWND_BOTTOM
     end else if hWndInsertAfter=HWND_TOP then begin
+      //debugln('HWND_TOP');
       // HWND_TOP
       AfterListItem:=FindFixedLastChildListItem(PGtkFixed(FixedWidget));
+    end else if hWndInsertAfter=0 then begin
+      DebugLn('TGtkWidgetSet.SetWindowPos.SetZOrderOnFixedWidget WARNING: hWndInsertAfter=0');
+      exit;
     end else begin
       // hWndInsertAfter
       AfterWidget:=PGtkWidget(hWndInsertAfter);
       AfterListItem:=FindFixedChildListItem(PGtkFixed(FixedWidget),AfterWidget);
+      //debugln('AfterWidget=',GetWidgetDebugReport(AfterWidget));
     end;
     if (AfterListItem=nil) and (AfterWidget<>nil) then begin
-      DebugLn('TGtkWidgetSet.SetWindowPos WARNING: AfterWidget not on parents fixed widget');
+      DebugLn('TGtkWidgetSet.SetWindowPos.SetZOrderOnFixedWidget WARNING: AfterWidget not on parents fixed widget');
       exit;
     end;
     if (OldListItem=AfterListItem) or (OldListItem^.next=AfterListItem) then
+    begin
+      {$IFDEF EnableGtkZReordering}
+      DebugLn('TGtkWidgetSet.SetWindowPos.SetZOrderOnFixedWidget Hint: Already there');
+      {$ENDIF}
       exit;
+    end;
     //DebugLn('TGtkWidgetSet.SetWindowPos Moving GList entry');
-    
+
     // reorder
-    // This trick does not work properly
-    exit;
+    {$IFDEF EnableGtkZReordering}
+    // MG: This trick does not work properly
+    debugln('SetZOrderOnFixedWidget FixedWidget=['+GetWidgetDebugReport(FixedWidget)+']',
+      ' Widget=['+GetWidgetDebugReport(Widget)+']',
+      ' AfterWidget=['+GetWidgetDebugReport(AfterWidget)+']');
     MoveGListLinkBehind(PGtkFixed(FixedWidget)^.children,
                         OldListItem,AfterListItem);
-    if GTK_WIDGET_VISIBLE(FixedWidget) and GTK_WIDGET_VISIBLE (Widget)
+    if GTK_WIDGET_VISIBLE(FixedWidget) and GTK_WIDGET_VISIBLE(Widget)
     and GTK_WIDGET_MAPPED(Widget) then begin
+      DebugLn('TGtkWidgetSet.SetWindowPos.SetZOrderOnFixedWidget resize ..');
       gtk_widget_queue_resize(FixedWidget);
+      AfterListItem:=PGtkFixed(FixedWidget)^.children;
+      while AfterListItem<>nil do begin
+        AfterWidget:=GetFixedChildListWidget(AfterListItem);
+        DebugLn('TGtkWidgetSet.SetWindowPos.SetZOrderOnFixedWidget A ',GetWidgetDebugReport(AfterWidget));
+        AfterListItem:=AfterListItem^.next;
+      end;
     end;
+    {$ENDIF}
   end;
   
   procedure SetZOrderOnLayoutWidget(Widget, LayoutWidget: PGtkWidget);
   begin
-    //DebugLn('ToDO: SetZOrderOnLayoutWidget');
+    //DebugLn('TGtkWidgetSet.SetWindowPos.SetZOrderOnLayoutWidget Not implemented: ZOrdering .. on ',GetWidgetDebugReport(LayoutWidget));
   end;
 
 var
   Widget: PGTKWidget;
   FixedWidget: PGtkWidget;
 begin
+  Result:=false;
   Widget:=PGtkWidget(hWnd);
   {DebugLn('[TGtkWidgetSet.SetWindowPos] ',GetWidgetDebugReport(Widget),
     ' Top=',hWndInsertAfter=HWND_TOP,
@@ -8280,10 +8303,11 @@ begin
     if GtkWidgetIsA(FixedWidget,GTK_Fixed_Get_Type) then begin
       // parent's client area is a gtk_fixed widget
       SetZOrderOnFixedWidget(Widget,FixedWidget);
-      exit;
     end else if GtkWidgetIsA(FixedWidget,GTK_Layout_Get_Type) then begin
       // parent's client area is a gtk_layout widget
       SetZOrderOnLayoutWidget(Widget,FixedWidget);
+    end else begin
+      //DebugLn('TGtkWidgetSet.SetWindowPos Not implemented: ZOrdering .. on ',GetWidgetDebugReport(FixedWidget));
       exit;
     end;
   end;
@@ -8786,6 +8810,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.376  2004/12/01 16:17:18  mattias
+  updated fpdoc sceletons for lcl and gtk intf
+
   Revision 1.375  2004/11/27 13:57:49  mattias
   added more gtk ISO character sets
 
