@@ -328,7 +328,7 @@ end;
 {$I actionlink.inc}
 {$I shortcutlist.inc}
 {$I customaction.inc}
-{$I action.inc}
+{$I lclaction.inc}
 
 initialization
   ApplicationActionComponent:=nil;
