@@ -406,7 +406,7 @@ end;
 
 Function GetCursorPos(var lpPoint:TPoint): Boolean;
 Begin
-  Result := InterfaceObject.GetCaretPos(lpPoint);
+  Result := InterfaceObject.GetCursorPos(lpPoint);
 end;
 
 function GetCharABCWidths(DC: HDC; p2, p3: UINT; const ABCStructs): Boolean;
@@ -1660,6 +1660,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.93  2003/07/29 00:28:42  marc
+  + Implemented GetCursorPos
+
   Revision 1.92  2003/07/07 13:19:08  mattias
   added raw image examples
 

@@ -93,6 +93,7 @@ Function GetClientRect(handle : HWND; var ARect : TRect) : Boolean; override;
 Function GetClipBox(DC : hDC; lpRect : PRect) : Longint; override;
 Function GetClipRGN(DC : hDC; RGN : hRGN) : Longint; override;
 Function GetCmdLineParamDescForInterface: string; override;
+function GetCursorPos(var lpPoint: TPoint): Boolean; override;
 function GetDC(hWnd: HWND): HDC;  override;
 function GetDeviceCaps(DC: HDC; Index: Integer): Integer; Override;
 function GetDeviceRawImageDescription(DC: HDC; Desc: PRawImageDescription): boolean; override;
@@ -211,6 +212,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.74  2003/07/29 00:28:43  marc
+  + Implemented GetCursorPos
+
   Revision 1.73  2003/07/06 20:40:34  mattias
   TWinControl.WmSize/Move now updates interface messages smarter
 

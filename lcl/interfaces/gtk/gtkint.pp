@@ -53,6 +53,7 @@ uses
   {$ELSE}
   glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf}
   {$ENDIF}
+  xlib,
   SysUtils, LMessages, Classes, Controls, Forms, LCLStrConsts,
   VclGlobals, LCLProc, LCLLinux, LCLType, gtkDef, DynHashArray, LazQueue,
   GraphType, GraphMath;
@@ -349,6 +350,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.136  2003/07/29 00:28:43  marc
+  + Implemented GetCursorPos
+
   Revision 1.135  2003/07/06 17:53:34  mattias
   updated polish localization
 

@@ -3308,12 +3308,15 @@ end;
  ------------------------------------------------------------------------------}
 Function TGTKObject.GetActiveWindow : HWND;
 var
-  List: PGList;
+  TopList, List: PGList;
   Widget: PGTKWidget;
   Window: PGTKWindow;
 begin
-  List := gdk_window_get_toplevels;
+  // Default to 0
+  Result := 0;
 
+  TopList := gdk_window_get_toplevels;
+  List := TopList;
   while List <> nil do
   begin
     if (List^.Data <> nil)
@@ -3326,15 +3329,14 @@ begin
         if (Widget <> nil) and gtk_widget_has_focus(Widget)
         then begin
           Result := HWND(GetMainWidget(PGtkWidget(Window)));
-          Exit;
+          Break;
         end;
       end;
     end;
     list := g_list_next(list);
   end;
-
-  // If we are here we didn't find anything
-  Result := 0;
+  if TopList <> nil
+  then g_list_free(TopList);
 end;
 
 {------------------------------------------------------------------------------
@@ -3365,9 +3367,8 @@ end;
 
 {------------------------------------------------------------------------------
   Function: GetCaretPos
-  Params:  none
-  Returns: Nothing
-
+  Params:  lpPoint: The caretposition
+  Returns: True if succesful
 
  ------------------------------------------------------------------------------}
 function TgtkObject.GetCaretPos(var lpPoint: TPoint): Boolean;
@@ -3740,6 +3741,44 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: GetCursorPos
+  Params:  lpPoint: The cursorposition
+  Returns: True if succesful
+
+ ------------------------------------------------------------------------------}
+function TgtkObject.GetCursorPos(var lpPoint: TPoint ): Boolean;
+var
+  root, child: pointer;
+  winx, winy: Integer;
+  xmask: Cardinal;
+  TopList, List: PGList;
+begin
+  // TODO: GTK2 native implementation with gdk_display_get_pointer
+
+  Result := False;
+
+  TopList := gdk_window_get_toplevels;
+  List := TopList;
+  while List <> nil do
+  begin
+    if (List^.Data <> nil)
+    and gdk_window_is_visible(List^.Data)
+    then begin
+      XQueryPointer(gdk_window_xdisplay(List^.Data),
+                    gdk_window_xwindow(List^.Data),
+                    @root, @child, @lpPoint.X, @lpPoint.Y, @winx, @winy, @xmask);
+
+      Result := True;
+      Break;
+    end;
+    List := g_list_next(List);
+  end;
+
+  if TopList <> nil
+  then g_list_free(TopList);
+end;
+
+{------------------------------------------------------------------------------
   Function: GetDC
   Params:  none
   Returns: Nothing
@@ -3892,12 +3931,15 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.GetFocus: HWND;
 var
-  List: PGList;
+  TopList, List: PGList;
   Widget: PGTKWidget;
   Window: PGTKWindow;
 begin
-  List := gdk_window_get_toplevels;
-
+  // Default to 0
+  Result := 0;
+  
+  TopList := gdk_window_get_toplevels;
+  List := TopList;
   while List <> nil do
   begin
     if (List^.Data <> nil)
@@ -3910,15 +3952,15 @@ begin
         if (Widget <> nil) and gtk_widget_has_focus(Widget)
         then begin
           Result := HWND(GetMainWidget(Widget));
-          Exit;
+          Break;
         end;
       end;
     end;
     list := g_list_next(list);
   end;
 
-  // If we are here we didn't find anything
-  Result := 0;
+  if TopList <> nil
+  then g_list_free(TopList);
 end;
 
 {------------------------------------------------------------------------------
@@ -8707,6 +8749,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.265  2003/07/29 00:28:43  marc
+  + Implemented GetCursorPos
+
   Revision 1.264  2003/07/21 23:43:32  marc
   * Fixed radiogroup menuitems
 
