@@ -87,9 +87,12 @@ uses
   procedure GetDefaultTestBuildDirs(List: TStrings);
   function GetDefaultCompilerFilename: string;
 
-  function GetDefaultLCLWidgetType: string;
   function GetDefaultTargetCPU: string;
   function GetDefaultTargetOS: string;
+
+  function GetDefaultLCLWidgetType: string;
+  procedure GetDefaultLCLLibPaths(List: TStrings);
+  function GetDefaultLCLLibPaths(const Prefix, Postfix, Separator: string): string;
 
 const
   EmptyLine = LineEnding + LineEnding;
@@ -98,6 +101,21 @@ const
 implementation
 
 {$I lazconf.inc}
+
+function GetDefaultLCLLibPaths(const Prefix, Postfix, Separator: string): string;
+var
+  List: TStringList;
+  i: Integer;
+begin
+  List:=TStringList.Create;
+  GetDefaultLCLLibPaths(List);
+  Result:='';
+  for i:=0 to List.Count-1 do begin
+    if Result<>'' then Result:=Result+Separator;
+    Result:=Result+Prefix+List[i]+PostFix;
+  end;
+  List.Free;
+end;
 
 function GetDefaultTargetCPU: string;
 begin
@@ -172,6 +190,9 @@ end.
 
 {
   $Log$
+  Revision 1.29  2004/08/20 09:47:36  mattias
+  added darwin libpaths to Makefile and LCL Usage lib paths
+
   Revision 1.28  2004/08/13 12:28:01  mattias
   replaced ppc386 with platform independent name
 

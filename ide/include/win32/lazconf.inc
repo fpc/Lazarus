@@ -35,6 +35,10 @@ begin
   Result:='win32';
 end;
 
+procedure GetDefaultLCLLibPaths(List: TStrings);
+begin
+end;
+
 {---------------------------------------------------------------------------
   getPrimaryConfigPath function
  ---------------------------------------------------------------------------}
@@ -191,6 +195,9 @@ end;
 
 {
   $Log$
+  Revision 1.24  2004/08/20 09:47:36  mattias
+  added darwin libpaths to Makefile and LCL Usage lib paths
+
   Revision 1.23  2004/08/16 18:05:29  vincents
   replaced GetEnv from dos unit by GetEnvironmentVariable from SysUtils unit
 

@@ -398,7 +398,8 @@ end;
 
 constructor TCodeTreeNode.Create;
 begin
-  Clear;
+  StartPos:=-1;
+  EndPos:=-1;
 end;
 
 procedure TCodeTreeNode.Clear;
@@ -539,7 +540,6 @@ end;
 
 constructor TCodeTree.Create;
 begin
-  inherited Create;
   Root:=nil;
   FNodeCount:=0;
 end;
@@ -664,8 +664,7 @@ end;
 
 constructor TCodeTreeNodeExtension.Create;
 begin
-  inherited Create;
-  Clear;
+  Position:=-1;
 end;
 
 destructor TCodeTreeNodeExtension.Destroy;

@@ -46,8 +46,9 @@ uses
   MemCheck,
 {$ENDIF}
   Classes, SysUtils, AVL_Tree, Laz_XMLCfg, FileCtrl, Forms, Controls, Dialogs,
-  LazarusIDEStrConsts, IDEProcs, PackageLinks, PackageDefs, LazarusPackageIntf,
-  ComponentReg, RegisterFCL, RegisterLCL, RegisterSynEdit, RegisterIDEIntf;
+  LazarusIDEStrConsts, IDEProcs, LazConf, CompilerOptions, PackageLinks,
+  PackageDefs, LazarusPackageIntf, ComponentReg, RegisterFCL, RegisterLCL,
+  RegisterSynEdit, RegisterIDEIntf;
   
 type
   TFindPackageFlag = (
@@ -869,6 +870,19 @@ begin
 end;
 
 function TLazPackageGraph.CreateLCLPackage: TLazPackage;
+
+  procedure AddLCLLinkPaths(UsageOptions: TAdditionalCompilerOptions);
+  var
+    NewPath: string;
+    OldLibPath: String;
+  begin
+    NewPath:=GetDefaultLCLLibPaths('','',';');
+    OldLibPath:=UsageOptions.LibraryPath;
+    if OldLibPath<>'' then OldLibPath:=OldLibPath+';';
+    OldLibPath:=OldLibPath+NewPath;
+    UsageOptions.LibraryPath:=NewPath;
+  end;
+
 var
   i: Integer;
 begin
@@ -927,6 +941,7 @@ begin
     // add include path
     CompilerOptions.IncludeFiles:=SetDirSeparators(
       '$(LazarusDir)/lcl/include;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)');
+    AddLCLLinkPaths(UsageOptions);
 
     // use the lcl/units/$(TargetCPU)/$(TargetOS)/alllclunits.o
     // file as indicator, if LCL has been recompiled

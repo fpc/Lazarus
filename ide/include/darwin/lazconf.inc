@@ -40,10 +40,24 @@ begin
   Result:='darwin';
 end;
 
+procedure IfDirectoryExistsAdd(const Directory: string; List: TStrings);
+begin
+  if DirectoryExists(Directory) then List.Add(Directory);
+end;
+
+procedure GetDefaultLCLLibPaths(List: TStrings);
+begin
+  IfDirectoryExistsAdd('/usr/X11R6/lib',List);
+  IfDirectoryExistsAdd('/sw/lib',List);
+end;
+
 {$I ../unix/lazbaseconf.inc}
 
 {
   $Log$
+  Revision 1.3  2004/08/20 09:47:36  mattias
+  added darwin libpaths to Makefile and LCL Usage lib paths
+
   Revision 1.2  2004/07/25 12:59:49  mattias
   added codetools defines and lazconf support for powerpc
 

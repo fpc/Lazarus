@@ -40,10 +40,17 @@ begin
   Result:='netbsd';
 end;
 
+procedure GetDefaultLCLLibPaths(List: TStrings);
+begin
+end;
+
 {$I ../unix/lazbaseconf.inc}
 
 {
   $Log$
+  Revision 1.11  2004/08/20 09:47:36  mattias
+  added darwin libpaths to Makefile and LCL Usage lib paths
+
   Revision 1.10  2003/12/20 01:20:52  mattias
   splitted output directories for cross compilation
 

@@ -224,6 +224,9 @@ override COMPILER_UNITDIR+=lcl/nonwin32
 endif
 endif
 export LCL_PLATFORM
+ifeq ($(OS_TARGET),darwin)
+LAZARUS_LIBPATHS=-Fl/usr/X11R6/lib -Fl/sw/lib
+endif
 ifndef LAZARUS_CONFIG_DIR
 ifeq ($(OS_TARGET),win32)
 LAZARUS_CONFIG_DIR=.
@@ -233,6 +236,7 @@ endif
 endif
 export LAZARUS_CONFIG_DIR
 LAZARUS_IDE_CONFIG=$(LAZARUS_CONFIG_DIR)/idemake.cfg
+LAZARUS_OPT=$(LAZARUS_LIBPATHS)
 override TARGET_DIRS+=lcl components packager/registration ideintf designer packager
 override TARGET_PROGRAMS+=lazarus
 override TARGET_EXAMPLEDIRS+=examples
@@ -2513,9 +2517,13 @@ ide:
 ifeq ($(OS_TARGET), win32)
 	$(MAKE) lazarus.res
 endif
+ifeq ($(LAZARUS_OPT),)
 	$(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT)
+else
+	$(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(OPT) $(LAZARUS_OPT)'
+endif
 idepkg:
-	$(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(OPT) @$(LAZARUS_IDE_CONFIG)'
+	$(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(OPT) $(LAZARUS_OPT) @$(LAZARUS_IDE_CONFIG)'
 tools: lcl components
 	$(MAKE) -C tools
 all: lcl components packager/registration ideintf designer packager ide

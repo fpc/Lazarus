@@ -38,12 +38,26 @@ begin
   Result:='linux';
 end;
 
+procedure IfDirectoryExistsAdd(const Directory: string; List: TStrings);
+begin
+  if DirectoryExists(Directory) then List.Add(Directory);
+end;
+
+procedure GetDefaultLCLLibPaths(List: TStrings);
+begin
+  // for SuSE
+  IfDirectoryExistsAdd('/opt/gnome/lib',List);
+end;
+
 {$I ../unix/lazbaseconf.inc}
 
 // included by lazconf.pp
 
 {
   $Log$
+  Revision 1.18  2004/08/20 09:47:36  mattias
+  added darwin libpaths to Makefile and LCL Usage lib paths
+
   Revision 1.17  2003/12/20 01:20:52  mattias
   splitted output directories for cross compilation
 
