@@ -75,6 +75,8 @@ Procedure TBevel.Paint;
 Var
   Colora, Colorb: TColor;
   ALeft, ATop: integer;
+  AWidth: LongInt;
+  AHeight: LongInt;
 Begin
   Case Style Of
   bsRaised:
@@ -92,76 +94,78 @@ Begin
   
   ALeft:=0;
   ATop:=0;
+  AWidth:=Width;
+  AHeight:=Height;
   
   Case Shape Of
   bsBox:
     With Canvas Do
     Begin
       Pen.Color:=Colora;
-      MoveTo(ALeft, ATop + Height - 1);
+      MoveTo(ALeft, ATop + AHeight - 1);
       LineTo(ALeft, ATop);
-      LineTo(ALeft + Width - 1, ATop);
+      LineTo(ALeft + AWidth - 1, ATop);
       Pen.Color:=Colorb;
-      LineTo(ALeft + Width - 1, ATop + Height - 1);
-      LineTo(ALeft , ATop + Height - 1);
+      LineTo(ALeft + AWidth - 1, ATop + AHeight - 1);
+      LineTo(ALeft , ATop + AHeight - 1);
     End;
   bsFrame:
     With Canvas Do
     Begin
       Pen.Color:=Colora;
-      MoveTo(ALeft, ATop + Height - 1);
+      MoveTo(ALeft, ATop + AHeight - 1);
       LineTo(ALeft, ATop);
-      LineTo(ALeft + Width - 1, ATop);
-      MoveTo(ALeft + Width - 2, ATop + 1);
-      LineTo(ALeft + Width - 2, ATop + Height - 2);
-      LineTo(ALeft + 1, ATop + Height - 2);
+      LineTo(ALeft + AWidth - 1, ATop);
+      MoveTo(ALeft + AWidth - 2, ATop + 1);
+      LineTo(ALeft + AWidth - 2, ATop + AHeight - 2);
+      LineTo(ALeft + 1, ATop + AHeight - 2);
       Pen.Color:=Colorb;
-      MoveTo(ALeft + 1, ATop + Height - 2);
+      MoveTo(ALeft + 1, ATop + AHeight - 2);
       LineTo(ALeft + 1, ATop + 1);
-      LineTo(ALeft + Width - 2, ATop + 1);
-      MoveTo(ALeft + Width - 1, ATop);
-      LineTo(ALeft + Width - 1, ATop + Height - 1);
-      LineTo(ALeft, ATop + Height - 1);
+      LineTo(ALeft + AWidth - 2, ATop + 1);
+      MoveTo(ALeft + AWidth - 1, ATop);
+      LineTo(ALeft + AWidth - 1, ATop + AHeight - 1);
+      LineTo(ALeft, ATop + AHeight - 1);
     End;
   bsTopLine:
     With Canvas Do
     Begin
       Pen.Color:=Colora;
       MoveTo(ALeft, ATop);
-      LineTo(ALeft + Width - 1, ATop);
+      LineTo(ALeft + AWidth - 1, ATop);
       Pen.Color:=Colorb;
       MoveTo(ALeft, ATop + 1);
-      LineTo(ALeft + Width - 1, ATop + 1);
+      LineTo(ALeft + AWidth - 1, ATop + 1);
     End;
   bsBottomLine:
     With Canvas Do
     Begin
       Pen.Color:=Colorb;
-      MoveTo(ALeft, ATop + Height - 1);
-      LineTo(ALeft + Width - 1, ATop + Height - 1);
+      MoveTo(ALeft, ATop + AHeight - 1);
+      LineTo(ALeft + AWidth - 1, ATop + AHeight - 1);
       Pen.Color:=Colora;
-      MoveTo(ALeft, ATop + Height - 2);
-      LineTo(ALeft + Width - 1, ATop + Height - 2);
+      MoveTo(ALeft, ATop + AHeight - 2);
+      LineTo(ALeft + AWidth - 1, ATop + AHeight - 2);
     End;
   bsLeftLine:
     With Canvas Do
     Begin
       Pen.Color:=Colora;
       MoveTo(ALeft, ATop);
-      LineTo(ALeft, ATop + Height - 1);
+      LineTo(ALeft, ATop + AHeight - 1);
       Pen.Color:=Colorb;
       MoveTo(ALeft + 1, ATop);
-      LineTo(ALeft + 1, ATop + Height - 1);
+      LineTo(ALeft + 1, ATop + AHeight - 1);
     End;
   bsRightLine:
     With Canvas Do
     Begin
       Pen.Color:=Colorb;
-      MoveTo(ALeft + Width - 1, ATop);
-      LineTo(ALeft + Width - 1, ATop + Height - 1);
+      MoveTo(ALeft + AWidth - 1, ATop);
+      LineTo(ALeft + AWidth - 1, ATop + AHeight - 1);
       Pen.Color:=Colora;
-      MoveTo(ALeft + Width - 2, ATop);
-      LineTo(ALeft + Width - 2, ATop + Height);
+      MoveTo(ALeft + AWidth - 2, ATop);
+      LineTo(ALeft + AWidth - 2, ATop + AHeight);
     End;
   End;
   
@@ -261,6 +265,9 @@ End;
 
 {
   $Log$
+  Revision 1.11  2005/03/04 17:11:09  mattias
+  fixed TBevel painting for FPCanvas
+
   Revision 1.10  2005/01/28 18:48:35  micha
   implement assign for tbevel
 
