@@ -2372,7 +2372,7 @@ end;
 Procedure TWinControl.Invalidate;
 Begin
   if HandleAllocated and ([csDestroying,csLoading]*ComponentState=[]) then
-    CNSendMessage(LM_Invalidate,Self,Nil);
+    TWSWinControlClass(WidgetSetClass).Invalidate(Self);
 end;
 
 {------------------------------------------------------------------------------}
@@ -3912,6 +3912,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.278  2004/09/14 15:48:28  micha
+  convert LM_INVALIDATE message to interface method
+
   Revision 1.277  2004/09/12 19:50:35  micha
   convert LM_SETSIZE message to new interface method
 

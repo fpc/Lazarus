@@ -3118,23 +3118,6 @@ begin
             TLMNotebookEvent(Data^).Page);
         end;
 
-      LM_Invalidate :
-      begin
-         Assert(False, 'Trace:Trying to invalidate window... !!!');
-   //THIS DOESN'T WORK YET....
-  {
-         Event.thetype := GDK_EXPOSE;
-     Event.window := PgtkWidget(Handle)^.Window;
-     Event.Send_Event := 0;
-     Event.X := 0;
-     Event.Y := 0;
-     Event.Width := PgtkWidget((Handle)^.Allocation.Width;
-     Event.Height := PgtkWidget(Handle)^.Allocation.Height;
-         gtk_Signal_Emit_By_Name(PgtkObject(Handle),'expose_event',[(Sender as TWinControl).Handle,Sender,@Event]);
-     Assert(False, 'Trace:Signal Emitted - invalidate window'); }
-        gtk_widget_queue_draw(PGtkWidget(Handle));
-      end;
-
       LM_SETFORMICON :
       begin
         if (Sender is TCustomForm) and (TCustomForm(Sender).Parent=nil) then
@@ -8228,6 +8211,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.567  2004/09/14 15:48:28  micha
+  convert LM_INVALIDATE message to interface method
+
   Revision 1.566  2004/09/14 14:41:17  micha
   convert LM_INSERTTOOLBUTTON and LM_DELETETOOLBUTTON messages to interface methods; warning: still very ugly code, as if it is "OldToolbar" so probably, obsolete
 

@@ -56,7 +56,6 @@ const
   LM_RESIZECHILDREN = LM_ComUser+13;
   LM_GetLineCount   = LM_ComUser+16;
   LM_CANVASCREATE   = LM_ComUser+19;
-  LM_Invalidate     = LM_ComUser+32;
 
   LM_SETPROPERTIES  = LM_ComUser+39;         // update object to reflect current properties
   LM_SETVALUE       = LM_ComUser+40;         // set actual value of object to visual object
@@ -826,7 +825,6 @@ begin
   LM_RESIZECHILDREN :Result:='LM_RESIZECHILDREN';
   LM_GetLineCount   :Result:='LM_GetLineCount';
   LM_CANVASCREATE   :Result:='LM_CANVASCREATE';
-  LM_Invalidate     :Result:='LM_Invalidate';
 
   LM_SETPROPERTIES  :Result:='LM_SETPROPERTIES';
   LM_SETVALUE       :Result:='LM_SETVALUE';
@@ -963,6 +961,9 @@ end.
 
 {
   $Log$
+  Revision 1.99  2004/09/14 15:48:28  micha
+  convert LM_INVALIDATE message to interface method
+
   Revision 1.98  2004/09/14 14:41:17  micha
   convert LM_INSERTTOOLBUTTON and LM_DELETETOOLBUTTON messages to interface methods; warning: still very ugly code, as if it is "OldToolbar" so probably, obsolete
 

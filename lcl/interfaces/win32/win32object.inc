@@ -253,7 +253,6 @@ Var
   //CBI: COMBOBOXINFO;
   DC: HDC;
   Handle: HWND;
-  SizeRect: TRECT; // used by LM_SETSIZE,LM_INVALIDATE,LM_CLB_SET_CHECKED and LM_REDRAW
   AMenu: TMenu;
   AccelTable: HACCEL;
 
@@ -330,12 +329,6 @@ Begin
         End
         Else
           Assert(False, Format('Trace:I don''t know how to destroy component %S', [Sender.ClassName]));
-      End;
-      LM_INVALIDATE:
-      Begin
-        Assert(False, 'Trace:Trying to invalidate window... !!!');
-        GetClientRect(Handle, SizeRect);
-        InvalidateRect(Handle, @SizeRect, True);
       End;
       LM_SETFORMICON:
       Begin
@@ -2246,6 +2239,9 @@ End;
 
 {
   $Log$
+  Revision 1.259  2004/09/14 15:48:28  micha
+  convert LM_INVALIDATE message to interface method
+
   Revision 1.258  2004/09/14 14:41:17  micha
   convert LM_INSERTTOOLBUTTON and LM_DELETETOOLBUTTON messages to interface methods; warning: still very ugly code, as if it is "OldToolbar" so probably, obsolete
 

@@ -73,6 +73,7 @@ type
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
 
+    class procedure Invalidate(const AWinControl: TWinControl); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
   end;
 
@@ -313,6 +314,11 @@ Begin
   Assert(False, Format('Trace:[TWin32WidgetSet.SetLabel] %S --> END', [AWinControl.ClassName]));
 End;
 
+procedure TWin32WSWinControl.Invalidate(const AWinControl: TWinControl);
+begin
+  // lpRect = nil updates entire client area of window
+  InvalidateRect(AWinControl.Handle, nil, true);
+end;
 
 procedure TWin32WSWinControl.ShowHide(const AWinControl: TWinControl);
 begin

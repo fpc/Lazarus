@@ -70,6 +70,7 @@ type
     class procedure SetColor(const AWinControl: TWinControl); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
 
+    class procedure Invalidate(const AWinControl: TWinControl); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
   end;
 
@@ -422,6 +423,24 @@ begin
     // DebugLn('WARNING: [TGtkWidgetSet.SetLabel] --> not handled for class ',Sender.ClassName);
   end;
   Assert(False, Format('trace:  [TGtkWidgetSet.SetLabel] %s --> END', [AWinControl.ClassName]));
+end;
+
+procedure TGtkWSWinControl.Invalidate(const AWinControl: TWinControl);
+begin
+  Assert(false, 'Trace:Trying to invalidate window... !!!');
+  //THIS DOESN'T WORK YET....
+  {
+         Event.thetype := GDK_EXPOSE;
+     Event.window := PgtkWidget(Handle)^.Window;
+     Event.Send_Event := 0;
+     Event.X := 0;
+     Event.Y := 0;
+     Event.Width := PgtkWidget((Handle)^.Allocation.Width;
+     Event.Height := PgtkWidget(Handle)^.Allocation.Height;
+         gtk_Signal_Emit_By_Name(PgtkObject(Handle),'expose_event',[(Sender as TWinControl).Handle,Sender,@Event]);
+     Assert(False, 'Trace:Signal Emitted - invalidate window'); 
+  }
+  gtk_widget_queue_draw(PGtkWidget(AWinControl.Handle));
 end;
 
 procedure TGtkWSWinControl.ShowHide(const AWinControl: TWinControl);
