@@ -1066,12 +1066,12 @@ end;
 
 procedure TCodeToolsDefinesEditor.CreateComponents;
 
-  procedure CreateWinControl(var AWinControl: TWinControl;
-    AWinControlClass: TWinControlClass; const AName: string;
+  procedure CreateControl(var AControl: TControl;
+    AControlClass: TControlClass; const AName: string;
     AParent: TWinControl);
   begin
-    AWinControl:=AWinControlClass.Create(Self);
-    with AWinControl do begin
+    AControl:=AControlClass.Create(Self);
+    with AControl do begin
       Name:=AName;
       Parent:=AParent;
       Visible:=true;
@@ -1464,7 +1464,7 @@ begin
               @InsertKylixProjectTemplateMenuItemClick;
 
   // define tree----------------------------------------------------------------
-  CreateWinControl(DefineTreeView,TTreeView,'DefineTreeView',Self);
+  CreateControl(DefineTreeView,TTreeView,'DefineTreeView',Self);
   with DefineTreeView do begin
     DefaultItemHeight:=22;
     Images:=TheImageList;
@@ -1473,30 +1473,30 @@ begin
   end;
 
   // selected item
-  CreateWinControl(SelectedItemGroupBox,TGroupBox,'SelectedItemGroupBox',Self);
+  CreateControl(SelectedItemGroupBox,TGroupBox,'SelectedItemGroupBox',Self);
   SelectedItemGroupBox.Caption:=lisCodeToolsDefsSelectedNode;
   SelectedItemGroupBox.OnResize:=@SelectedItemGroupBoxResize;
   
-  CreateWinControl(TypeLabel,TLabel,'TypeLabel',SelectedItemGroupBox);
+  CreateControl(TypeLabel,TLabel,'TypeLabel',SelectedItemGroupBox);
   
-  CreateWinControl(NameLabel,TLabel,'NameLabel',SelectedItemGroupBox);
+  CreateControl(NameLabel,TLabel,'NameLabel',SelectedItemGroupBox);
   NameLabel.Caption:=lisCodeToolsDefsName;
   
-  CreateWinControl(NameEdit,TEdit,'NameEdit',SelectedItemGroupBox);
+  CreateControl(NameEdit,TEdit,'NameEdit',SelectedItemGroupBox);
 
-  CreateWinControl(DescriptionLabel,TLabel,'DescriptionLabel',
+  CreateControl(DescriptionLabel,TLabel,'DescriptionLabel',
                    SelectedItemGroupBox);
   DescriptionLabel.Caption:=lisCodeToolsDefsDescription;
                    
-  CreateWinControl(DescriptionEdit,TEdit,'DescriptionEdit',
+  CreateControl(DescriptionEdit,TEdit,'DescriptionEdit',
                    SelectedItemGroupBox);
                    
-  CreateWinControl(VariableLabel,TLabel,'VariableLabel',SelectedItemGroupBox);
+  CreateControl(VariableLabel,TLabel,'VariableLabel',SelectedItemGroupBox);
   VariableLabel.Caption:=lisCodeToolsDefsVariable;
   
-  CreateWinControl(VariableEdit,TEdit,'VariableEdit',SelectedItemGroupBox);
+  CreateControl(VariableEdit,TEdit,'VariableEdit',SelectedItemGroupBox);
   
-  CreateWinControl(ValueNoteBook,TNoteBook,'ValueNoteBook',
+  CreateControl(ValueNoteBook,TNoteBook,'ValueNoteBook',
                    SelectedItemGroupBox);
   with ValueNoteBook do begin
     if PageCount>0 then
@@ -1508,7 +1508,7 @@ begin
     OnResize:=@ValueNoteBookResize;
   end;
                    
-  CreateWinControl(ValueAsTextSynEdit,TSynEdit,'ValueAsTextSynEdit',
+  CreateControl(ValueAsTextSynEdit,TSynEdit,'ValueAsTextSynEdit',
                    ValueNoteBook.Page[0]);
   ValueAsTextSynEdit.Options:=[eoBracketHighlight, eoHideRightMargin,
     eoDragDropEditing, eoHalfPageScroll, eoScrollByOneLess, eoScrollPastEol,
@@ -1518,29 +1518,29 @@ begin
   ValueAsTextSynEdit.Scrollbars:=ssBoth;
   ValueAsTextSynEdit.Align:=alLeft;
 
-  CreateWinControl(ValueAsFilePathsSynEdit,TSynEdit,'ValueAsFilePathsSynEdit',
+  CreateControl(ValueAsFilePathsSynEdit,TSynEdit,'ValueAsFilePathsSynEdit',
                    ValueNoteBook.Page[1]);
   ValueAsFilePathsSynEdit.Options:=ValueAsTextSynEdit.Options;
   ValueAsFilePathsSynEdit.Gutter.Visible:=false;
   ValueAsFilePathsSynEdit.Scrollbars:=ssBoth;
   ValueAsFilePathsSynEdit.Align:=alLeft;
 
-  CreateWinControl(MoveFilePathUpBitBtn,TBitBtn,'MoveFilePathUpBitBtn',
+  CreateControl(MoveFilePathUpBitBtn,TBitBtn,'MoveFilePathUpBitBtn',
                    ValueNoteBook.Page[1]);
   MoveFilePathUpBitBtn.Caption:=dlgUpWord;
   MoveFilePathUpBitBtn.OnClick:=@MoveFilePathUpBitBtnClick;
                    
-  CreateWinControl(MoveFilePathDownBitBtn,TBitBtn,'MoveFilePathDownBitBtn',
+  CreateControl(MoveFilePathDownBitBtn,TBitBtn,'MoveFilePathDownBitBtn',
                    ValueNoteBook.Page[1]);
   MoveFilePathDownBitBtn.Caption:=dlgDownWord;
   MoveFilePathDownBitBtn.OnClick:=@MoveFilePathDownBitBtnClick;
                    
-  CreateWinControl(DeleteFilePathBitBtn,TBitBtn,'DeleteFilePathBitBtn',
+  CreateControl(DeleteFilePathBitBtn,TBitBtn,'DeleteFilePathBitBtn',
                    ValueNoteBook.Page[1]);
   DeleteFilePathBitBtn.Caption:=dlgEdDelete;
   DeleteFilePathBitBtn.OnClick:=@DeleteFilePathBitBtnClick;
                    
-  CreateWinControl(InsertFilePathBitBtn,TBitBtn,'InsertFilePathBitBtn',
+  CreateControl(InsertFilePathBitBtn,TBitBtn,'InsertFilePathBitBtn',
                    ValueNoteBook.Page[1]);
   InsertFilePathBitBtn.Caption:=srVK_INSERT;
   InsertFilePathBitBtn.OnClick:=@InsertFilePathBitBtnClick;
