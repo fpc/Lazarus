@@ -171,6 +171,7 @@ type
 
     function CleanPosIsInComment(CleanPos, CleanCodePosInFront: integer;
         var CommentStart, CommentEnd: integer): boolean;
+        
     procedure BuildTree(OnlyInterfaceNeeded: boolean); virtual;
     procedure BuildTreeAndGetCleanPos(TreeRange: TTreeRange;
         CursorPos: TCodeXYPosition; var CleanCursorPos: integer);
@@ -179,7 +180,9 @@ type
     procedure BuildSubTreeForProcHead(ProcNode: TCodeTreeNode); virtual;
     procedure BuildSubTreeForProcHead(ProcNode: TCodeTreeNode;
         var FunctionResult: TCodeTreeNode);
+        
     function DoAtom: boolean; override;
+    
     function ExtractPropName(PropNode: TCodeTreeNode;
         InUpperCase: boolean): string;
     function ExtractPropType(PropNode: TCodeTreeNode;
@@ -194,35 +197,43 @@ type
     function FindProcNode(StartNode: TCodeTreeNode; const AProcHead: string;
         Attr: TProcHeadAttributes): TCodeTreeNode;
     function FindProcBody(ProcNode: TCodeTreeNode): TCodeTreeNode;
+    procedure MoveCursorToFirstProcSpecifier(ProcNode: TCodeTreeNode);
+    function MoveCursorToProcSpecifier(ProcNode: TCodeTreeNode;
+        ProcSpec: TProcedureSpecifier): boolean;
+    function ProcNodeHasSpecifier(ProcNode: TCodeTreeNode;
+        ProcSpec: TProcedureSpecifier): boolean;
+
     function FindVarNode(StartNode: TCodeTreeNode;
         const UpperVarName: string): TCodeTreeNode;
+    function FindTypeNodeOfDefinition(
+        DefinitionNode: TCodeTreeNode): TCodeTreeNode;
+
     function FindFirstNodeOnSameLvl(StartNode: TCodeTreeNode): TCodeTreeNode;
     function FindNextNodeOnSameLvl(StartNode: TCodeTreeNode): TCodeTreeNode;
+    
     function FindClassNode(StartNode: TCodeTreeNode;
         const UpperClassName: string;
         IgnoreForwards, IgnoreNonForwards: boolean): TCodeTreeNode;
     function FindClassNodeInInterface(const UpperClassName: string;
         IgnoreForwards, IgnoreNonForwards: boolean): TCodeTreeNode;
     function FindFirstIdentNodeInClass(ClassNode: TCodeTreeNode): TCodeTreeNode;
+    function ClassSectionNodeStartsWithWord(ANode: TCodeTreeNode): boolean;
+
+    function GetSourceType: TCodeTreeNodeDesc;
     function FindInterfaceNode: TCodeTreeNode;
     function FindImplementationNode: TCodeTreeNode;
     function FindInitializationNode: TCodeTreeNode;
     function FindMainBeginEndNode: TCodeTreeNode;
-    function FindTypeNodeOfDefinition(
-        DefinitionNode: TCodeTreeNode): TCodeTreeNode;
-    function GetSourceType: TCodeTreeNodeDesc;
+    
     function NodeHasParentOfType(ANode: TCodeTreeNode;
         NodeDesc: TCodeTreeNodeDesc): boolean;
     function NodeIsInAMethod(Node: TCodeTreeNode): boolean;
     function NodeIsFunction(ProcNode: TCodeTreeNode): boolean;
     function NodeIsPartOfTypeDefinition(ANode: TCodeTreeNode): boolean;
     function PropertyIsDefault(PropertyNode: TCodeTreeNode): boolean;
-    procedure MoveCursorToFirstProcSpecifier(ProcNode: TCodeTreeNode);
-    function MoveCursorToProcSpecifier(ProcNode: TCodeTreeNode;
-        ProcSpec: TProcedureSpecifier): boolean;
-    function ProcNodeHasSpecifier(ProcNode: TCodeTreeNode;
-        ProcSpec: TProcedureSpecifier): boolean;
-    function ClassSectionNodeStartsWithWord(ANode: TCodeTreeNode): boolean;
+    
+    procedure MoveCursorToUsesEnd(UsesNode: TCodeTreeNode);
+    procedure ReadPriorUsedUnit(var UnitNameAtom, InAtom: TAtomPosition);
 
     constructor Create;
     destructor Destroy; override;
@@ -492,21 +503,39 @@ end;
 
 procedure TPascalParserTool.BuildSubTreeForClass(ClassNode: TCodeTreeNode);
 // reparse a quick parsed class and build the child nodes
+
+  procedure RaiseClassNodeNil;
+  begin
+    SaveRaiseException(
+       'TPascalParserTool.BuildSubTreeForClass: Classnode=nil');
+  end;
+  
+  procedure RaiseClassDescInvalid;
+  begin
+    SaveRaiseException('[TPascalParserTool.BuildSubTreeForClass] ClassNode.Desc='
+                   +ClassNode.DescAsString);
+  end;
+
+  procedure RaiseClassKeyWordExpected;
+  begin
+    SaveRaiseException(
+        'TPascalParserTool.BuildSubTreeForClass:'
+       +' class/object keyword expected, but '+GetAtom+' found');
+  end;
+
 var OldPhase: integer;
 begin
   OldPhase:=CurrentPhase;
   CurrentPhase:=CodeToolPhaseParse;
   try
     if ClassNode=nil then
-      SaveRaiseException(
-         'TPascalParserTool.BuildSubTreeForClass: Classnode=nil');
+      RaiseClassNodeNil;
     if (ClassNode.FirstChild<>nil)
     or ((ClassNode.SubDesc and ctnsNeedJITParsing)=0) then
       // class already parsed
       exit;
     if ClassNode.Desc<>ctnClass then
-      SaveRaiseException('[TPascalParserTool.BuildSubTreeForClass] ClassNode.Desc='
-                     +ClassNode.DescAsString);
+      RaiseClassDescInvalid;
     // set CursorPos after class head
     MoveCursorToNodeStart(ClassNode);
     // parse
@@ -519,9 +548,7 @@ begin
     ReadNextAtom;
     if UpAtomIs('PACKED') then ReadNextAtom;
     if (not UpAtomIs('CLASS')) and (not UpAtomIs('OBJECT')) then
-      SaveRaiseException(
-          'TPascalParserTool.BuildSubTreeForClass:'
-         +' class/object keyword expected, but '+GetAtom+' found');
+      RaiseClassKeyWordExpected;
     ReadNextAtom;
     if CurPos.Flag=cafRoundBracketOpen then
       // read inheritage
@@ -3658,6 +3685,34 @@ begin
   if (CurPos.Flag<>cafSemicolon) then exit;
   ReadPriorAtom;
   Result:=UpAtomIs('DEFAULT');
+end;
+
+procedure TPascalParserTool.MoveCursorToUsesEnd(UsesNode: TCodeTreeNode);
+begin
+  if (UsesNode=nil) or (UsesNode.Desc<>ctnUsesSection) then
+    RaiseException('[TPascalParserTool.MoveCursorToUsesEnd] '
+      +'internal error: invalid UsesNode');
+  // search backwards through the uses section
+  MoveCursorToCleanPos(UsesNode.EndPos);
+  ReadPriorAtom; // read ';'
+  if not AtomIsChar(';') then
+    RaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',GetAtom]);
+end;
+
+procedure TPascalParserTool.ReadPriorUsedUnit(var UnitNameAtom,
+  InAtom: TAtomPosition);
+begin
+  ReadPriorAtom; // read unitname
+  if AtomIsStringConstant then begin
+    InAtom:=CurPos;
+    ReadPriorAtom; // read 'in'
+    if not UpAtomIs('IN') then
+      RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsKeywordIn,GetAtom]);
+    ReadPriorAtom; // read unitname
+  end else
+    InAtom.StartPos:=-1;
+  AtomIsIdentifier(true);
+  UnitNameAtom:=CurPos;
 end;
 
 procedure TPascalParserTool.MoveCursorToFirstProcSpecifier(

@@ -73,7 +73,7 @@ var
   NM: TNMListView;
 begin
   EventTrace('click-column', Adata);
-  msg.Msg := LM_NOTIFY;
+  msg.Msg := CN_NOTIFY;
 
   FillChar(NM, SizeOf(NM), 0);
   NM.hdr.hwndfrom := longint(AList);
@@ -96,7 +96,7 @@ begin
   // Simulate move by remove and insert
 
   EventTrace('row-move', Adata);
-  msg.Msg := LM_NOTIFY;
+  msg.Msg := CN_NOTIFY;
 
   FillChar(NM, SizeOf(NM), 0);
   NM.hdr.hwndfrom := longint(AList);
@@ -119,7 +119,7 @@ var
   NM: TNMListView;
 begin
   EventTrace('select-row', Adata);
-  msg.Msg := LM_NOTIFY;
+  msg.Msg := CN_NOTIFY;
 
   FillChar(NM, SizeOf(NM), 0);
   NM.hdr.hwndfrom := longint(AList);
@@ -138,7 +138,7 @@ var
   NM: TNMListView;
 begin
   EventTrace('unselect-row', Adata);
-  msg.Msg := LM_NOTIFY;
+  msg.Msg := CN_NOTIFY;
 
   FillChar(NM, SizeOf(NM), 0);
   NM.hdr.hwndfrom := longint(AList);
@@ -157,7 +157,7 @@ function gtkLVToggleFocusRow(AList: PGTKCList; AData: gPointer): GBoolean; cdecl
   //NM: TNMListView;
 begin
   EventTrace('toggle-focus-row', Adata);
-  //msg.Msg := LM_NOTIFY;
+  //msg.Msg := CN_NOTIFY;
 (*
   TODO:
   Do we need this?
@@ -173,8 +173,8 @@ var
   n: Integer;
 begin
   EventTrace('select-all', Adata);
-  msg.Msg := LM_NOTIFY;
-  
+  msg.Msg := CN_NOTIFY;
+
   ListView := TObject(AData) as TListView;
 
   FillChar(NM, SizeOf(NM), 0);

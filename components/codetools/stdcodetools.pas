@@ -89,6 +89,7 @@ type
           SourceChangeCache: TSourceChangeCache): boolean;
     function FindUsedUnits(var MainUsesSection,
           ImplementationUsesSection: TStrings): boolean;
+    function UsesSectionToFilenames(UsesNode: TCodeTreeNode): TStrings;
 
     // lazarus resources
     function FindNextIncludeInInitialization(
@@ -521,25 +522,69 @@ end;
 
 function TStandardCodeTool.FindUsedUnits(var MainUsesSection,
   ImplementationUsesSection: TStrings): boolean;
-
-  function UsesSectionToStrings(ANode: TCodeTreeNode): TStrings;
-  begin
-    Result:=TStringList.Create;
-    if ANode=nil then exit;
-
-  end;
-
 var
   MainUsesNode, ImplementatioUsesNode: TCodeTreeNode;
 begin
+  MainUsesSection:=nil;
+  ImplementationUsesSection:=nil;
   // find the uses sections
   BuildTree(false);
   MainUsesNode:=FindMainUsesSection;
   ImplementatioUsesNode:=FindImplementationUsesSection;
   // create lists
-  MainUsesSection:=UsesSectionToStrings(MainUsesNode);
-  ImplementationUsesSection:=UsesSectionToStrings(ImplementatioUsesNode);
+  try
+    MainUsesSection:=UsesSectionToFilenames(MainUsesNode);
+    ImplementationUsesSection:=UsesSectionToFilenames(ImplementatioUsesNode);
+  finally
+    FreeAndNil(MainUsesSection);
+    FreeAndNil(ImplementationUsesSection);
+  end;
   Result:=true;
+end;
+
+{------------------------------------------------------------------------------
+  function TStandardCodeTool.UsesSectionToFilenames(UsesNode: TCodeTreeNode
+    ): TStrings;
+
+  Reads the uses section backwards and tries to find each unit file
+  The associated objects in the list will be the found codebuffers.
+  If no codebuffer was found/created then the filename will be the unit name
+  plus the 'in' extension.
+------------------------------------------------------------------------------}
+function TStandardCodeTool.UsesSectionToFilenames(UsesNode: TCodeTreeNode
+  ): TStrings;
+var
+  InAtom, UnitNameAtom: TAtomPosition;
+  AnUnitName, AnUnitInFilename: string;
+  NewCode: TCodeBuffer;
+  UnitFilename: string;
+begin
+  MoveCursorToUsesEnd(UsesNode);
+  Result:=TStringList.Create;
+  repeat
+    // read prior unit name
+    ReadPriorUsedUnit(UnitNameAtom, InAtom);
+    AnUnitName:=GetAtom(UnitNameAtom);
+    if InAtom.StartPos>0 then
+      AnUnitInFilename:=GetAtom(InAtom)
+    else
+      AnUnitInFilename:='';
+    // find unit file
+    NewCode:=FindUnitSource(AnUnitName,AnUnitInFilename);
+    if (NewCode=nil) then begin
+      // no source found
+      UnitFilename:=AnUnitName;
+      if AnUnitInFilename<>'' then
+        UnitFilename:=UnitFilename+' in '+AnUnitInFilename;
+    end else begin
+      // source found
+      UnitFilename:=NewCode.Filename;
+    end;
+    // add filename to list
+    Result.AddObject(UnitFilename,NewCode);
+    // read keyword 'uses' or comma
+    ReadPriorAtom;
+  until not AtomIsChar(',');
 end;
 
 function TStandardCodeTool.FindNextIncludeInInitialization(

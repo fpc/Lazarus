@@ -121,6 +121,7 @@ type
     property Visible;
   end;
 
+
  { Custom draw }
 
   TCustomDrawTarget = (dtControl, dtItem, dtSubItem);
@@ -130,7 +131,8 @@ type
   TCustomDrawState = set of TCustomDrawStateFlag;
 
 
-{TListView}
+  { TListView }
+  
   TListItems = class;  //forward declaration!
   TCustomListView = class;  //forward declaration!
   TSortType = (stNone, stData, stText, stBoth);
@@ -171,7 +173,7 @@ type
     property ImageIndex : Integer read FImageIndex write SetImageIndex default -1;
   end;
 
- TListItems = class(TPersistent)
+  TListItems = class(TPersistent)
   private
     FOwner : TCustomListView;
     FItems : TList;
@@ -272,7 +274,7 @@ type
     FScrollBars: TScrollStyle;
     FScrolledLeft: integer; // horizontal scrolled pixels (hidden pixels at top)
     FScrolledTop: integer;  // vertical scrolled pixels (hidden pixels at top)
-    FSelected: TListItem; // temp copy of the selected item
+    FSelected: TListItem;   // temp copy of the selected item
     FLastHorzScrollInfo: TScrollInfo;
     FLastVertScrollInfo: TScrollInfo;
     FUpdateCount: integer;
@@ -1598,6 +1600,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.46  2002/09/14 08:38:05  lazarus
+  MG: added TListView notification from Vincent
+
   Revision 1.45  2002/09/13 16:07:20  lazarus
   Reverting statusbar changes.
 

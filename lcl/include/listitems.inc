@@ -80,7 +80,10 @@ var
 begin
   idx := FItems.Remove(AItem);
   if (idx >= 0) and (FOwner <> nil)
-  then FOwner.ItemDeleted(idx);
+  then begin
+    if FOwner.FSelected=AItem then FOwner.FSelected:=nil;
+    FOwner.ItemDeleted(idx);
+  end;
 end;
 
 {------------------------------------------------------------------------------}
@@ -134,6 +137,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.12  2002/09/14 08:38:06  lazarus
+  MG: added TListView notification from Vincent
+
   Revision 1.11  2002/05/10 06:05:53  lazarus
   MG: changed license to LGPL
 

@@ -156,6 +156,8 @@ type
         const AnAtom: shortstring): boolean; // 0=current, 1=prior current, ...
     function GetAtom: string;
     function GetUpAtom: string;
+    function GetAtom(Atom: TAtomPosition): string;
+    function GetUpAtom(Atom: TAtomPosition): string;
     function CompareNodeIdentChars(ANode: TCodeTreeNode;
         const AnUpperIdent: string): integer;
     function CompareSrcIdentifiers(
@@ -596,6 +598,16 @@ end;
 function TCustomCodeTool.GetUpAtom: string;
 begin
   Result:=copy(UpperSrc,CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
+end;
+
+function TCustomCodeTool.GetAtom(Atom: TAtomPosition): string;
+begin
+  Result:=copy(Src,Atom.StartPos,Atom.EndPos-Atom.StartPos);
+end;
+
+function TCustomCodeTool.GetUpAtom(Atom: TAtomPosition): string;
+begin
+  Result:=copy(UpperSrc,Atom.StartPos,Atom.EndPos-Atom.StartPos);
 end;
 
 procedure TCustomCodeTool.ReadNextAtom;

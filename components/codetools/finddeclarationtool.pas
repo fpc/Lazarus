@@ -2527,31 +2527,15 @@ function TFindDeclarationTool.FindIdentifierInUsesSection(
    search backwards through the uses section
    compare first the unit name, then load the unit and search there
 }
-var InAtom, UnitNameAtom: TAtomPosition;
+var
+  InAtom, UnitNameAtom: TAtomPosition;
   NewCodeTool: TFindDeclarationTool;
   OldInput: TFindDeclarationInput;
 begin
   Result:=false;
-  if (UsesNode=nil) or (UsesNode.Desc<>ctnUsesSection) then
-    RaiseException('[TFindDeclarationTool.FindIdentifierInUsesSection] '
-      +'internal error: invalid UsesNode');
-  // search backwards through the uses section
-  MoveCursorToCleanPos(UsesNode.EndPos);
-  ReadPriorAtom; // read ';'
-  if not AtomIsChar(';') then
-    RaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',GetAtom]);
+  MoveCursorToUsesEnd(UsesNode);
   repeat
-    ReadPriorAtom; // read unitname
-    if AtomIsStringConstant then begin
-      InAtom:=CurPos;
-      ReadPriorAtom; // read 'in'
-      if not UpAtomIs('IN') then
-        RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsKeywordIn,GetAtom]);
-      ReadPriorAtom; // read unitname
-    end else
-      InAtom.StartPos:=-1;
-    AtomIsIdentifier(true);
-    UnitNameAtom:=CurPos;
+    ReadPriorUsedUnit(UnitNameAtom, InAtom);
     if (fdfIgnoreUsedUnits in Params.Flags) then begin
       if CompareSrcIdentifiers(UnitNameAtom.StartPos,Params.Identifier) then
       begin
@@ -2568,12 +2552,10 @@ begin
       NewCodeTool:=FindCodeToolForUsedUnit(UnitNameAtom,InAtom,false);
       if NewCodeTool=nil then begin
         MoveCursorToCleanPos(UnitNameAtom.StartPos);
-        RaiseExceptionFmt(ctsUnitNotFound,[copy(Src,UnitNameAtom.StartPos,
-           UnitNameAtom.EndPos-UnitNameAtom.StartPos)]);
+        RaiseExceptionFmt(ctsUnitNotFound,[GetAtom(UnitNameAtom)]);
       end else if NewCodeTool=Self then begin
         MoveCursorToCleanPos(UnitNameAtom.StartPos);
-        RaiseExceptionFmt(ctsIllegalCircleInUsedUnits,[copy(Src,
-           UnitNameAtom.StartPos,UnitNameAtom.EndPos-UnitNameAtom.StartPos)]);
+        RaiseExceptionFmt(ctsIllegalCircleInUsedUnits,[GetAtom(UnitNameAtom)]);
       end;
       // search the identifier in the interface of the used unit
       Params.Save(OldInput);
