@@ -37,7 +37,7 @@ var
 
   //Dragging : Boolean;
 
-  MCaptureHandle: HWND;
+  MouseCaptureWidget: PGtkWidget;
 
 const
   DblClickTime = 250;// 250 miliseconds or less between clicks is a double click
