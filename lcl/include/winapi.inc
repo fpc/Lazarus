@@ -1,3 +1,5 @@
+// included by lcllinux.pp
+
 (******************************************************************************
   All Winapi related stuff goes here.
   This file is used by LCLLinux
@@ -24,7 +26,7 @@
  ******************************************************************************)
 
 {******************************************************************************
-  Platform specific stuff
+  These functions redirect to the platform specific interface object.
 
  ******************************************************************************}
 //##apiwiz##sps##   // Do not remove
@@ -1555,9 +1557,15 @@ begin
 end;
 
 //##apiwiz##epi##   // Do not remove
+
+// included by lcllinux.pp
+
 { =============================================================================
 
   $Log$
+  Revision 1.72  2003/02/28 10:14:29  mattias
+  started package system (packager)
+
   Revision 1.71  2003/02/26 12:44:52  mattias
   readonly flag is now only saved if user set
 

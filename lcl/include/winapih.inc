@@ -31,7 +31,7 @@
   Platform specific stuff
  ******************************************************************************}
 //##apiwiz##sps##   // Do not remove
- 
+
 function Arc(DC: HDC; x,y,width,height,angle1,angle2 : Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function AngleChord(DC: HDC; x,y,width,height,angle1,angle2 : Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
@@ -372,6 +372,9 @@ procedure RaiseLastOSError;
 { =============================================================================
 
   $Log$
+  Revision 1.66  2003/02/28 10:14:29  mattias
+  started package system (packager)
+
   Revision 1.65  2003/02/26 12:44:52  mattias
   readonly flag is now only saved if user set
 
