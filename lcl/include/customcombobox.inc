@@ -27,7 +27,9 @@
   Create the underlying interface-object.
  ------------------------------------------------------------------------------}
 procedure TCustomComboBox.CreateHandle;
-var NewStrings : TStrings;
+var
+  NewStrings: TStrings;
+  OldText: string;
 begin
   inherited CreateHandle;
   
@@ -35,7 +37,9 @@ begin
   NewStrings:= TStrings(Pointer(CNSendMessage(LM_GETITEMS, Self, nil)));
   // then delete internal list
   if (FItems<>NewStrings) and (FItems<>nil) then begin
+    OldText:=Text;
     NewStrings.Assign(FItems);
+    Text:=OldText;
     FItems.Free;
   end;
   // and use the interface based list
@@ -723,6 +727,9 @@ end;
 
 {
   $Log$
+  Revision 1.22  2002/11/17 00:18:11  mattias
+  fixed combobox createhandle
+
   Revision 1.21  2002/11/15 23:40:40  mattias
   added combobox createhandle old list assign
 
