@@ -77,11 +77,12 @@ type
     procedure AdjustClientRect(var ARect: TRect); override;
   published
     property Caption;
-    //property Height;
     property ImageIndex: integer read FImageIndex write SetImageIndex default -1;
-    // property TabOrder;     This property needs to be created in TWinControl
-    property Visible;
-    //property Width;
+    // property TabOrder; This property needs to be created in TWinControl
+    property Height stored False;
+    property TabOrder stored False;
+    property Visible stored False;
+    property Width stored False;
   end;
 
   TCustomNotebook = class;
@@ -115,7 +116,7 @@ type
     @abstract(Base class for TNotebook and TTabbedNotebook.)
     Introduced by Curtis White
   }
-  TNoteBookOption = (nboShowCloseButtons);
+  TNoteBookOption = (nboShowCloseButtons, nboMultiLine);
   TNoteBookOptions = set of TNoteBookOption;
   
   TCustomNotebook = class(TCustomControl)
@@ -132,6 +133,9 @@ type
     fTabPosition: TTabPosition;
 
     Procedure CNNotify(var Message : TLMNotify); message CN_NOTIFY;
+    procedure DoSendPageIndex;
+    procedure DoSendShowTabs;
+    procedure DoSendTabPosition;
     function GetActivePage: String;
     function GetPage(aIndex: Integer): TPage;
     function GetPageCount : integer;
@@ -143,7 +147,7 @@ type
     //procedure SetMultiLine(Value: boolean);
     procedure SetPageIndex(Value: Integer);
     procedure SetPages(Value: TStrings);
-    procedure SetShowTabs(Value: Boolean);
+    procedure SetShowTabs(AValue: Boolean);
     procedure SetTabPosition(tabPos: TTabPosition);
   protected
     procedure CreateParams(var Params: TCreateParams);override;
@@ -152,9 +156,12 @@ type
     function GetChildOwner: TComponent; override;
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     procedure ReadState(Reader: TAbstractReader); override;
-    procedure ShowControl(AControl: TControl); override;
+    procedure ShowControl(APage: TControl); override;
     procedure UpdateTabProperties; virtual;
 
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     property ActivePage: String read GetActivePage write SetActivePage;
     //property MultiLine: boolean read fMultiLine write SetMultiLine default false;
     property Page[Index: Integer]: TPage read GetPage;
@@ -165,9 +172,6 @@ type
     property OnPageChanged: TNotifyEvent read fOnPageChanged write fOnPageChanged;
     property ShowTabs: Boolean read fShowTabs write SetShowTabs;
     property TabPosition: TTabPosition read fTabPosition write SetTabPosition;
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
     procedure DoCloseTabClicked(APage: TPage); virtual;
     property Images: TImageList read FImages write SetImages;
     property Name;
@@ -466,6 +470,9 @@ end.
 
  {
   $Log$
+  Revision 1.28  2002/09/02 19:10:28  lazarus
+  MG: TNoteBook now starts with no Page and TPage has no auto names
+
   Revision 1.27  2002/08/28 11:41:53  lazarus
   MG: activated environment opts in debugger
 
