@@ -65,7 +65,7 @@ implementation
 uses
   Graphics, Buttons, Menus, GTKWinApiWindow, StdCtrls, ComCtrls, CListBox,
   KeyMap, Calendar, Arrow, Spin, CommCtrl, ExtCtrls, Dialogs, FileCtrl,
-  LResources, Math, gtkglobals, GTKPRoc, LCLStrConsts;
+  LResources, Math, gtkglobals, gtkproc, LCLStrConsts;
 
 Function InsertLineBreaks(Font : hFont; Str : PChar; MaxWidth : Longint) : String;
 var
@@ -267,6 +267,9 @@ end.
 
 {
   $Log$
+  Revision 1.6  2002/10/15 22:28:04  lazarus
+  AJ: added forcelinebreaks
+
   Revision 1.5  2002/10/14 14:29:50  lazarus
   AJ: Improvements to TUpDown; Added TStaticText & GNOME DrawText
 
