@@ -752,7 +752,7 @@ begin
   ExpFile:=CleanAndExpandFilename(Filename);
   ExpPath:=CleanAndExpandDirectory(Path);
   l:=length(ExpPath);
-  Result:=(length(ExpFile)>l) and (ExpFile[l+1]=PathDelim)
+  Result:=(l>0) and (length(ExpFile)>l) and (ExpFile[l]=PathDelim)
           and (CompareFilenames(ExpPath,LeftStr(ExpFile,l))=0);
 end;
 
@@ -894,6 +894,9 @@ end;
 
 {
   $Log$
+  Revision 1.25  2003/05/28 21:16:47  mattias
+  added a help and a more button tot he package editor
+
   Revision 1.24  2003/04/22 18:53:12  mattias
   implemented compiling project dependencies and auto add dependency
 

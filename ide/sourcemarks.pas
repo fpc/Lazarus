@@ -1,7 +1,7 @@
 {
 /***************************************************************************
-                               UnitEditor.pp
-                             -------------------
+                             SourceMarks.pas
+                             ---------------
 
  ***************************************************************************/
 
@@ -27,8 +27,9 @@
   Author: Mattias Gaertner
   
   Abstract:
-    All source editor marks, except the bookmarks, are managed by the source
-    marks.
+    All source editor marks, except the bookmarks, are managed by the
+    SourceEditorMarks. It extends the TSynEditMark and combines all marks of
+    all editors.
 }
 unit SourceMarks;
 

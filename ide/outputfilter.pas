@@ -26,12 +26,14 @@ unit OutputFilter;
 
 interface
 
+{$DEFINE ShowTriedFiles}
+
 uses
   Classes, SysUtils, Forms, Controls, CompilerOptions, Project, Process,
   IDEProcs, FileCtrl;
 
 type
-  TOnOutputString = procedure(const Value: String) of Object;
+  TOnOutputString = procedure(const Msg, Directory: String) of Object;
   TOnGetIncludePath = function(const Directory: string): string of object;
   
   TOuputFilterOption = (
@@ -197,7 +199,7 @@ begin
   fLastMessageType:=omtNone;
   fLastErrorType:=etNone;
   fOutput.Add(s);
-  if Assigned(OnReadLine) then OnReadLine(s);
+  if Assigned(OnReadLine) then OnReadLine(s,fCurrentDirectory);
   if DontFilterLine then begin
     DoAddFilteredLine(s);
   end else if (ofoSearchForFPCMessages in Options) and (ReadFPCompilerLine(s))
@@ -261,6 +263,9 @@ var i, j, FilenameEndPos: integer;
   end;
   
   function CheckForUrgentMessages: boolean;
+  var
+    NewLine: String;
+    LastFile: string;
   begin
     Result:=false;
     if ('Fatal: '=copy(s,1,length('Fatal: ')))
@@ -278,9 +283,22 @@ var i, j, FilenameEndPos: integer;
         fLastMessageType:=omtLinker;
         fLastErrorType:=etFatal;
       end;
-      DoAddFilteredLine(s);
+      NewLine:=s;
+      if fLastErrorType in [etPanic,etFatal] then begin
+        // fatal an panic errors are not very informative
+        // -> prepend current file
+        if (fCompilingHistory<>nil) and (fCompilingHistory.Count>0) then begin
+          LastFile:=fCompilingHistory[fCompilingHistory.Count-1];
+          if ofoMakeFilenamesAbsolute in Options then begin
+            if not FilenameIsAbsolute(LastFile) then
+              LastFile:=TrimFilename(fCurrentDirectory+LastFile);
+          end;
+          NewLine:=LastFile+'(1,1) '+NewLine;
+        end;
+      end;
+      DoAddFilteredLine(NewLine);
       if (ofoExceptionOnError in Options) then
-        raise EOutputFilterError.Create(s);
+        raise EOutputFilterError.Create(NewLine);
       Result:=true;
       exit;
     end;
@@ -446,10 +464,15 @@ begin
       end;
       
       // make filenames absolute if wanted
+      Filename:=copy(Msg,1,FilenameEndPos);
       if (ofoMakeFilenamesAbsolute in Options) then begin
-        Filename:=copy(Msg,1,FilenameEndPos);
         if not FilenameIsAbsolute(Filename) then begin
           Filename:=TrimFilename(fCurrentDirectory+Filename);
+          Msg:=Filename+copy(Msg,FilenameEndPos+1,length(Msg)-FilenameEndPos);
+        end;
+      end else begin
+        if FileIsInPath(Filename,fCurrentDirectory) then begin
+          Filename:=CreateRelativePath(Filename,fCurrentDirectory);
           Msg:=Filename+copy(Msg,FilenameEndPos+1,length(Msg)-FilenameEndPos);
         end;
       end;
@@ -557,7 +580,7 @@ procedure TOutputFilter.DoAddFilteredLine(const s: string);
 begin
   fFilteredOutput.Add(s);
   if Assigned(OnOutputString) then
-    OnOutputString(s);
+    OnOutputString(s,fCurrentDirectory);
 end;
 
 procedure TOutputFilter.DoAddLastLinkerMessages(SkipLastLine: boolean);
@@ -653,7 +676,7 @@ end;
 
 procedure TOutputFilter.InternalSetCurrentDirectory(const Dir: string);
 begin
-  fCurrentDirectory:=TrimFIlename(AppendPathDelim(Dir));
+  fCurrentDirectory:=TrimFilename(AppendPathDelim(Dir));
 end;
 
 destructor TOutputFilter.Destroy;

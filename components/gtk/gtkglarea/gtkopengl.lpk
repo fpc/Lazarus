@@ -22,11 +22,11 @@
       </Item3>
       <Item4>
         <Filename Value="nvgl.pp"/>
-        <UnitName Value="NVGL"/>
+        <UnitName Value="nvGL"/>
       </Item4>
       <Item5>
-        <Filename Value="nvglx.pas"/>
-        <UnitName Value="NVGLX"/>
+        <Filename Value="nvglx.pp"/>
+        <UnitName Value="nvGLX"/>
       </Item5>
     </Files>
     <AutoIncrementVersionOnBuild Value="False"/>
@@ -51,9 +51,11 @@
   </Package>
   <CompilerOptions>
     <SearchPaths>
-      <CompilerPath Value="$(CompPath)"/>
       <UnitOutputDirectory Value="lib/"/>
       <LCLWidgetType Value="gtk"/>
     </SearchPaths>
+    <Other>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
   </CompilerOptions>
 </CONFIG>

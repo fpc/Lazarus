@@ -45,29 +45,37 @@ type
   TMessagesView = class(TForm)
     MessageView : TListBox;
   private
+    FDirectories: TStringList;
     FLastLineIsProgress: boolean;
     FOnSelectionChanged: TNotifyEvent;
+    function GetDirectory: string;
     Function GetMessage: String;
     Procedure MessageViewClicked(sender : TObject);
     procedure SetLastLineIsProgress(const AValue: boolean);
   protected
     Function GetSelectedLineIndex: Integer;
     procedure SetSelectedLineIndex(const AValue: Integer);
+    procedure SetMsgDirectory(Index: integer; const CurDir: string);
   public
     constructor Create(TheOwner: TComponent); override;
-    procedure Add(const Msg: String);
+    procedure Add(const Msg, CurDir: String; ProgressLine: boolean);
+    procedure AddMsg(const Msg, CurDir: String);
+    procedure AddProgress(const Msg, CurDir: String);
     procedure AddSeparator;
-    procedure ShowProgress(const Msg: String);
     procedure ClearTillLastSeparator;
     procedure ShowTopMessage;
     function MsgCount: integer;
     procedure Clear;
+    procedure GetMessageAt(Index: integer; var Msg, MsgDirectory: string);
   public
-    property LastLineIsProgress: boolean read FLastLineIsProgress write SetLastLineIsProgress;
-    property Message : String read GetMessage;
-    property SelectedMessageIndex: Integer
-      read GetSelectedLineIndex write SetSelectedLineIndex;
-    property OnSelectionChanged : TNotifyEvent read FOnSelectionChanged write FOnSelectionChanged;
+    property LastLineIsProgress: boolean read FLastLineIsProgress
+                                         write SetLastLineIsProgress;
+    property Message: String read GetMessage;
+    property Directory: string read GetDirectory;
+    property SelectedMessageIndex: Integer read GetSelectedLineIndex
+                                           write SetSelectedLineIndex;
+    property OnSelectionChanged: TNotifyEvent read FOnSelectionChanged
+                                              write FOnSelectionChanged;
   end;
 
 var
@@ -106,30 +114,34 @@ end;
 {------------------------------------------------------------------------------
   TMessagesView.Add
 ------------------------------------------------------------------------------}
-Procedure TMessagesView.Add(const Msg: String);
+Procedure TMessagesView.Add(const Msg, CurDir: String; ProgressLine: boolean);
+var
+  i: Integer;
 Begin
   if FLastLineIsProgress then begin
     MessageView.Items[MessageView.Items.Count-1]:=Msg;
-    FLastLineIsProgress:=false;
   end else begin
     MessageView.Items.Add(Msg);
   end;
+  FLastLineIsProgress:=ProgressLine;
+  i:=MessageView.Items.Count-1;
+  SetMsgDirectory(i,CurDir);
+  MessageView.TopIndex:=MessageView.Items.Count-1;
+end;
+
+procedure TMessagesView.AddMsg(const Msg, CurDir: String);
+begin
+  Add(Msg,CurDir,false);
+end;
+
+procedure TMessagesView.AddProgress(const Msg, CurDir: String);
+begin
+  Add(Msg,CurDir,true);
 end;
 
 Procedure TMessagesView.AddSeparator;
 begin
-  Add(SeparatorLine);
-end;
-
-procedure TMessagesView.ShowProgress(const Msg: String);
-begin
-  if FLastLineIsProgress then
-    MessageView.Items[MessageView.Items.Count-1]:=Msg
-  else begin
-    MessageView.Items.Add(Msg);
-    FLastLineIsProgress:=true;
-  end;
-  MessageView.TopIndex:=MessageView.Items.Count-1;
+  Add(SeparatorLine,'',false);
 end;
 
 procedure TMessagesView.ClearTillLastSeparator;
@@ -170,6 +182,22 @@ Begin
     MessageView.OnClick := @MessageViewClicked;
 end;
 
+procedure TMessagesView.GetMessageAt(Index: integer;
+  var Msg, MsgDirectory: string);
+begin
+  // consistency checks
+  if (Index<0) then
+    RaiseException('TMessagesView.GetMessageAt');
+  if MessageView.Items.Count<=Index then
+    RaiseException('TMessagesView.GetMessageAt');
+  if (FDirectories=nil) then
+    RaiseException('TMessagesView.GetMessageAt');
+  if (FDirectories.Count<=Index) then
+    RaiseException('TMessagesView.GetMessageAt');
+  Msg:=MessageView.Items[Index];
+  MsgDirectory:=FDirectories[Index];
+end;
+
 {------------------------------------------------------------------------------
   TMessagesView.GetMessage
 ------------------------------------------------------------------------------}
@@ -178,6 +206,16 @@ Begin
   Result := '';
   if (MessageView.Items.Count > 0) and (MessageView.SelCount > 0) then
     Result := MessageView.Items.Strings[GetSelectedLineIndex];
+end;
+
+function TMessagesView.GetDirectory: string;
+var
+  i: Integer;
+begin
+  Result := '';
+  i:=GetSelectedLineIndex;
+  if (FDirectories<>nil) and (FDirectories.Count>i) then
+    Result := FDirectories[i];
 end;
 
 Function TMessagesView.GetSelectedLineIndex : Integer;
@@ -217,6 +255,13 @@ procedure TMessagesView.SetSelectedLineIndex(const AValue: Integer);
 begin
   MessageView.ItemIndex:=AValue;
   MessageView.TopIndex:=MessageView.ItemIndex;
+end;
+
+procedure TMessagesView.SetMsgDirectory(Index: integer; const CurDir: string);
+begin
+  if FDirectories=nil then FDirectories:=TStringList.Create;
+  while FDirectories.Count<=Index do FDirectories.Add('');
+  FDirectories[Index]:=CurDir;
 end;
 
 initialization

@@ -96,6 +96,8 @@ type
     InstallBitBtn: TBitBtn;
     OptionsBitBtn: TBitBtn;
     CompilerOptionsBitBtn: TBitBtn;
+    MoreBitBtn: TBitBtn;
+    HelpBitBtn: TBitBtn;
     // items
     FilesTreeView: TTreeView;
     // properties
@@ -127,9 +129,11 @@ type
     procedure FilesPopupMenuPopup(Sender: TObject);
     procedure FilesTreeViewDblClick(Sender: TObject);
     procedure FilesTreeViewSelectionChanged(Sender: TObject);
+    procedure HelpBitBtnClick(Sender: TObject);
     procedure InstallBitBtnClick(Sender: TObject);
     procedure MaxVersionEditChange(Sender: TObject);
     procedure MinVersionEditChange(Sender: TObject);
+    procedure MoreBitBtnClick(Sender: TObject);
     procedure MoveDependencyUpClick(Sender: TObject);
     procedure MoveDependencyDownClick(Sender: TObject);
     procedure OpenFileMenuItemClick(Sender: TObject);
@@ -312,33 +316,38 @@ var
   y: Integer;
   w: Integer;
   h: Integer;
+  y1: Integer;
+  y2: Integer;
 begin
   x:=0;
   y:=0;
-  w:=ClientWidth div 7;
+  w:=ClientWidth div 5;
   h:=25;
-  SaveBitBtn.SetBounds(x,y,w-2,h);
+  y1:=y;
+  y2:=y1+h;
+  // first column of buttons
+  SaveBitBtn.SetBounds(x,y1,w,h);
+  CompileBitBtn.SetBounds(x,y2,w,h);
   inc(x,w);
 
-  CompileBitBtn.SetBounds(x,y,w-2,h);
+  // second column of buttons
+  AddBitBtn.SetBounds(x,y1,w,h);
+  RemoveBitBtn.SetBounds(x,y2,w,h);
   inc(x,w);
 
-  AddBitBtn.SetBounds(x,y,w-2,h);
+  // third and forth column of buttons
+  OptionsBitBtn.SetBounds(x,y1,w,h);
+  CompilerOptionsBitBtn.SetBounds(x,y2,2*w,h);
+  inc(x,w);
+  InstallBitBtn.SetBounds(x,y1,w,h);
   inc(x,w);
 
-  RemoveBitBtn.SetBounds(x,y,w-2,h);
-  inc(x,w);
+  // fifth column of buttons
+  HelpBitBtn.SetBounds(x,y1,ClientWidth-x,h);
+  MoreBitBtn.SetBounds(x,y2,ClientWidth-x,h);
 
-  InstallBitBtn.SetBounds(x,y,w-2,h);
-  inc(x,w);
-
-  OptionsBitBtn.SetBounds(x,y,w-2,h);
-  inc(x,w);
-
-  CompilerOptionsBitBtn.SetBounds(x,y,ClientWidth-x,h);
-  
   x:=0;
-  inc(y,h+3);
+  y:=y2+h+2;
   w:=ClientWidth;
   h:=Max(10,ClientHeight-y-123-StatusBar.Height);
   FilesTreeView.SetBounds(x,y,w,h);
@@ -530,6 +539,13 @@ begin
   UpdateButtons;
 end;
 
+procedure TPackageEditorForm.HelpBitBtnClick(Sender: TObject);
+begin
+  MessageDlg(lisPkgEdOnlineHelpNotYetImplemented,
+    lisPkgEdRightClickOnTheItemsTreeToGetThePopupmenuWithAllAv,
+    mtInformation,[mbOk],0);
+end;
+
 procedure TPackageEditorForm.InstallBitBtnClick(Sender: TObject);
 begin
   PackageEditors.InstallPackage(LazPackage);
@@ -543,6 +559,11 @@ end;
 procedure TPackageEditorForm.MinVersionEditChange(Sender: TObject);
 begin
   UpdateApplyDependencyButton;
+end;
+
+procedure TPackageEditorForm.MoreBitBtnClick(Sender: TObject);
+begin
+  FilesPopupMenu.Popup(MoreBitBtn.Left,MoreBitBtn.Top+MoreBitBtn.Height);
 end;
 
 procedure TPackageEditorForm.MoveDependencyUpClick(Sender: TObject);
@@ -1151,6 +1172,27 @@ begin
     Caption:=lisPckEditCompOpts;
     OnClick:=@CompilerOptionsBitBtnClick;
     Hint:=lisPckEditEditOptionsToCompilePackage;
+    ShowHint:=true;
+  end;
+
+  HelpBitBtn:=TBitBtn.Create(Self);
+  with HelpBitBtn do begin
+    Name:='HelpBitBtn';
+    Parent:=Self;
+    Caption:=lisPckEditHelp;
+    OnClick:=@HelpBitBtnClick;
+    Hint:=lisPkgEdThereAreMoreFunctionsInThePopupmenu;
+    ShowHint:=true;
+  end;
+
+  MoreBitBtn:=TBitBtn.Create(Self);
+  with MoreBitBtn do begin
+    Name:='MoreBitBtn';
+    Parent:=Self;
+    Caption:=lisPckEditMore;
+    Enabled:=true;
+    OnClick:=@MoreBitBtnClick;
+    Hint:=lisPkgEdThereAreMoreFunctionsInThePopupmenu;
     ShowHint:=true;
   end;
 

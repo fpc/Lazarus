@@ -747,6 +747,10 @@ resourcestring
   
   // compiler options
   dlgCompilerOptions = 'Compiler Options';
+  lisPkgEdOnlineHelpNotYetImplemented = 'Online Help not yet implemented';
+  lisPkgEdRightClickOnTheItemsTreeToGetThePopupmenuWithAllAv = 'Right click '
+    +'on the items tree to get the popupmenu with all available package '
+    +'functions.';
   dlgSearchPaths = 'Paths';
   dlgCOParsing = 'Parsing';
   dlgCodeGeneration = 'Code';
@@ -2037,7 +2041,11 @@ resourcestring
   lisPckEditRemoveSelectedItem = 'Remove selected item';
   lisPckEditInstallPackageInTheIDE = 'Install package in the IDE';
   lisPckEditEditGeneralOptions = 'Edit General Options';
-  lisPckEditCompOpts = 'Comp. Opts.';
+  lisPckEditCompOpts = 'Compiler Options';
+  lisPckEditHelp = 'Help';
+  lisPkgEdThereAreMoreFunctionsInThePopupmenu = 'There are more functions in '
+    +'the popupmenu';
+  lisPckEditMore = 'More ...';
   lisPckEditEditOptionsToCompilePackage = 'Edit Options to compile package';
   lisPckEditRequiredPackages = 'Required Packages';
   lisPckEditFileProperties = 'File Properties';
