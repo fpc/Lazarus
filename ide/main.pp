@@ -512,8 +512,8 @@ begin
       Begin
         Parent := ComponentNotebook.Page[PageCount];
         Enabled := True;
-        Width := 25;
-        Height := 25;
+        Width := 26;
+        Height := 26;
         OnClick := @ControlClick;
         Glyph := SelectionPointerPixmap;
         Visible := True;
@@ -4759,6 +4759,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.158  2001/11/22 14:28:30  lazarus
+  MG: cropped all component icons
+
   Revision 1.157  2001/11/22 10:37:23  lazarus
   MG: moved lazres, added images/README
 
