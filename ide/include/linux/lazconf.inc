@@ -27,10 +27,11 @@
  ***************************************************************************
 }
 uses
+  Dos,
   {$IFNDEF VER1_0}
-  unix,BaseUnix;
+  Unix, BaseUnix;
   {$ELSE}
-  linux;
+  Linux;
   {$ENDIF}
 
 function GetDefaultTargetOS: string;
@@ -55,6 +56,9 @@ end;
 
 {
   $Log$
+  Revision 1.20  2004/12/09 19:29:42  mattias
+  fixed compilation for lazconf  linux, bsd, macosx
+
   Revision 1.19  2004/08/22 22:47:43  mattias
   implemented context help for source editor
 

@@ -29,10 +29,11 @@
 
 {Should become unit Unix in the future. For both Linux and FreeBSD}
 uses
+  Dos,
   {$IFNDEF VER1_0}
-  BaseUnix,unix;
+  BaseUnix, Unix;
   {$ELSE}
-  linux;
+  Linux;
   {$ENDIF}
 
 function GetDefaultTargetOS: string;
@@ -48,6 +49,9 @@ end;
 
 {
   $Log$
+  Revision 1.16  2004/12/09 19:29:42  mattias
+  fixed compilation for lazconf  linux, bsd, macosx
+
   Revision 1.15  2004/08/20 09:47:36  mattias
   added darwin libpaths to Makefile and LCL Usage lib paths
 

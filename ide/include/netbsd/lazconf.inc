@@ -28,7 +28,8 @@
 }
 
 {Should become unit Unix in the future. For both Linux and FreeBSD}
-IFNDEF VER1_0
+uses
+  Dos,
   {$IFDEF VER1_1}
   unix;
   {$ELSE}
@@ -48,6 +49,9 @@ end;
 
 {
   $Log$
+  Revision 1.12  2004/12/09 19:29:42  mattias
+  fixed compilation for lazconf  linux, bsd, macosx
+
   Revision 1.11  2004/08/20 09:47:36  mattias
   added darwin libpaths to Makefile and LCL Usage lib paths
 

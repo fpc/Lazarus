@@ -1828,7 +1828,7 @@ var
   I: Integer;
   OpenFlags: TOpenFlags;
 begin
-  OpenDialog:=TOpenDialog.Create(Application);
+  OpenDialog:=TOpenDialog.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisOpenFile;
@@ -2514,8 +2514,8 @@ begin
       // open failed
       if not FileExists(AFilename) then begin
         EnvironmentOptions.RemoveFromRecentProjectFiles(AFilename);
+      end else
         AddRecentProjectFileToEnvironment(AFilename);
-      end;
     end;
   end;
 end;
@@ -10962,6 +10962,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.805  2004/12/09 19:29:42  mattias
+  fixed compilation for lazconf  linux, bsd, macosx
+
   Revision 1.804  2004/12/06 23:10:04  vincents
   replaced processid by getprocessid for fpc version > 1.9.4
 

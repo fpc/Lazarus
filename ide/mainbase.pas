@@ -155,7 +155,7 @@ type
 
     procedure UpdateWindowsMenu; override;
     procedure SetRecentSubMenu(ParentMenuItem: TMenuItem; FileList: TStringList;
-       OnClickEvent: TNotifyEvent); override;
+                               OnClickEvent: TNotifyEvent); override;
 
     function DoJumpToCodePosition(
                         ActiveSrcEdit: TSourceEditorInterface;

@@ -29,8 +29,9 @@
 
 {Should become unit Unix in the future. For both Linux and FreeBSD}
 uses
+  Dos,
   {$IFNDEF VER1_0}
-  BaseUnix,unix;
+  BaseUnix, Unix;
   {$ELSE}
   linux;
   {$ENDIF}
@@ -55,6 +56,9 @@ end;
 
 {
   $Log$
+  Revision 1.5  2004/12/09 19:29:42  mattias
+  fixed compilation for lazconf  linux, bsd, macosx
+
   Revision 1.4  2004/08/22 22:47:43  mattias
   implemented context help for source editor
 
