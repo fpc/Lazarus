@@ -3035,8 +3035,8 @@ begin
 
   //writeln('>>> LM_DESTROY ',Sender.Classname,' Sender=',HexStr(Cardinal(Sender),8),' Handle=',HexStr(Cardinal(Handle),8));
   // update mouse capturing
-  if (MCaptureHandle=Handle) or (MCaptureHandle=HWnd(FixWidget)) then
-    Uncapturehandle;
+  if (MouseCaptureWidget=Widget) or (MouseCaptureWidget=FixWidget) then
+    MouseCaptureWidget:=nil;
   
   // update clipboard widget
   if (ClipboardWidget=Widget) or (ClipboardWidget=FixWidget) then
@@ -6528,6 +6528,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.253  2002/10/17 21:00:17  lazarus
+  MG: fixed uncapturing of mouse
+
   Revision 1.252  2002/10/17 15:09:32  lazarus
   MG: made mouse capturing more strict
 
