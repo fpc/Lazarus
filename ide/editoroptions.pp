@@ -2133,7 +2133,6 @@ var a:integer;
 
 // GeneralCheckBoxOnClick
 begin
-writeln('AAA1 ',TCheckBox(Sender).Name);
   if FormCreating then exit;
   {$IFDEF NEW_EDITOR_SYNEDIT}
   // general
