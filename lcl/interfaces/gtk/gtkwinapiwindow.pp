@@ -520,8 +520,16 @@ function GTKAPIWidgetClient_KeyPress(Widget: PGTKWidget;
   Event: PGDKEventKey): GTKEventResult; cdecl;
 begin
   if (Widget=nil) or (Event=nil) then ;
-  // supress further processing
+
+
+  // DO NOT supress further processing. The next one who changes that please do the debugging too.
+  // just dont.
+  
+{$ifdef gtk2}
+  Result := gtk_False;
+{$else}
   Result := gtk_True;
+{$endif}
 end;
 
 function GTKAPIWidgetClient_ButtonPress(Widget: PGTKWidget;
@@ -1122,6 +1130,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.67  2005/03/04 12:25:13  mattias
+  fixed gtk2 intf winapiwindow keypress handler result  from Danny Milosavljevic
+
   Revision 1.66  2005/01/22 23:53:43  mattias
   fixed gtk2 intf  from Peter Vreman
 
