@@ -594,7 +594,7 @@ begin
   
   i:=0;
   for CurPFT:=Low(TPkgFileType) to High(TPkgFileType) do begin
-    if CurPFT=pftUnit then continue;
+    if CurPFT=pftVirtualUnit then continue;
     if i=AddFileTypeRadioGroup.ItemIndex then begin
       Params.FileType:=CurPFT;
     end;
@@ -1548,7 +1548,7 @@ begin
     with Items do begin
       BeginUpdate;
       for pft:=Low(TPkgFileType) to High(TPkgFileType) do begin
-        if pft=pftUnit then continue;
+        if pft=pftVirtualUnit then continue;
         Add(GetPkgFileTypeLocalizedName(pft));
       end;
       EndUpdate;
@@ -1714,10 +1714,10 @@ var
 begin
   CurFilename:=AddFilenameEdit.Text;
   NewPFT:=FileNameToPkgFileType(CurFilename);
-  if NewPFT=pftUnit then NewPFT:=pftVirtualUnit;
+  if NewPFT=pftVirtualUnit then NewPFT:=pftUnit;
   i:=0;
   for CurPFT:=Low(TPkgFileType) to High(TPkgFileType) do begin
-    if CurPFT=pftUnit then continue;
+    if CurPFT=pftVirtualUnit then continue;
     if CurPFT=NewPFT then break;
     inc(i);
   end;
