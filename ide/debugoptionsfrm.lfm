@@ -1,11 +1,12 @@
 object DebuggerOptionsForm: TDebuggerOptionsForm
-  BorderStyle = BSDIALOG
+  BorderStyle = bsDialog
   Caption = 'Debugger Options'
   ClientHeight = 442
   ClientWidth = 480
   OnCreate = DebuggerOptionsFormCREATE
   OnDestroy = DebuggerOptionsFormDESTROY
-  Position = POSCREENCENTER
+  PixelsPerInch = 90
+  Position = poScreenCenter
   HorzScrollBar.Page = 481
   VertScrollBar.Page = 443
   Left = 411
@@ -13,7 +14,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
   Top = 185
   Width = 480
   object nbDebugOptions: TNotebook
-    Align = ALTOP
+    Align = alTop
     PageIndex = 0
     Height = 398
     Width = 480
@@ -41,7 +42,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           OnChange = cmbDebuggerTypeCHANGE
           ParentCtl3D = False
           TabOrder = 0
-          TabStop = True
           Left = 6
           Height = 25
           Top = 5
@@ -51,7 +51,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           MaxLength = 0
           ParentCtl3D = False
           TabOrder = 1
-          TabStop = True
           Left = 6
           Height = 25
           Top = 37
@@ -59,9 +58,8 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         end
         object cmdOpenDebuggerPath: TButton
           Caption = '...'
-          TabStop = True
-          TabOrder = 2
           OnClick = cmdOpenDebuggerPathCLICK
+          TabOrder = 2
           Left = 442
           Height = 25
           Top = 37
@@ -80,7 +78,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         Top = 100
         Width = 472
         object txtAdditionalPath: TEdit
-          TabStop = True
           TabOrder = 0
           Left = 6
           Height = 25
@@ -89,7 +86,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         end
         object cmdOpenAdditionalPath: TButton
           Caption = '...'
-          TabStop = True
+          OnClick = cmdOpenAdditionalPathClick
           TabOrder = 1
           Left = 442
           Height = 24
@@ -109,11 +106,12 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         Top = 156
         Width = 472
         object pnlDebugSpecific: TPanel
-          Align = ALCLIENT
-          BevelOuter = BVNONE
+          Align = alClient
+          BevelOuter = bvNone
           BorderWidth = 4
           ClientHeight = 187
           ClientWidth = 468
+          FullRepaint = False
           TabOrder = 0
           TabStop = True
           Height = 187
@@ -131,8 +129,8 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
       Width = 476
       object gbGeneral: TGroupBox
         Caption = 'General'
-        ClientHeight = 115
-        ClientWidth = 226
+        ClientHeight = 132
+        ClientWidth = 230
         ParentColor = True
         ParentCtl3D = False
         TabOrder = 0
@@ -144,9 +142,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           AllowGrayed = True
           AutoSize = True
           Caption = 'Clear log on run'
-          DragCursor = 65524
           TabOrder = 0
-          TabStop = True
           Left = 4
           Height = 20
           Top = 5
@@ -156,16 +152,19 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           AllowGrayed = True
           AutoSize = True
           Caption = 'Limit linecount to'
-          DragCursor = 65524
           TabOrder = 1
-          TabStop = True
           Left = 4
           Height = 20
           Top = 29
           Width = 119
         end
         object seLimitLinecount: TSpinEdit
+          Climb_Rate = 7.10933840589535E-34
           Enabled = False
+          MaxValue = 7.10933840589535E-34
+          MinValue = 7.10933840589535E-34
+          TabOrder = 2
+          Value = 7.10933840589535E-34
           Climb_Rate = 7.10933840589535E-34
           MinValue = 7.10933840589535E-34
           MaxValue = 7.10933840589535E-34
@@ -178,8 +177,8 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
       end
       object gbMessages: TGroupBox
         Caption = 'Messages'
-        ClientHeight = 171
-        ClientWidth = 228
+        ClientHeight = 188
+        ClientWidth = 232
         Enabled = False
         ParentColor = True
         ParentCtl3D = False
@@ -192,9 +191,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           AllowGrayed = True
           AutoSize = True
           Caption = 'Breakpoint'
-          DragCursor = 65524
           TabOrder = 0
-          TabStop = True
           Left = 4
           Height = 20
           Top = 5
@@ -204,9 +201,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           AllowGrayed = True
           AutoSize = True
           Caption = 'Process'
-          DragCursor = 65524
           TabOrder = 1
-          TabStop = True
           Left = 4
           Height = 20
           Top = 29
@@ -216,9 +211,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           AllowGrayed = True
           AutoSize = True
           Caption = 'Thread'
-          DragCursor = 65524
           TabOrder = 2
-          TabStop = True
           Left = 4
           Height = 20
           Top = 53
@@ -228,9 +221,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           AllowGrayed = True
           AutoSize = True
           Caption = 'Module'
-          DragCursor = 65524
           TabOrder = 3
-          TabStop = True
           Left = 4
           Height = 20
           Top = 77
@@ -240,9 +231,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           AllowGrayed = True
           AutoSize = True
           Caption = 'Output'
-          DragCursor = 65524
           TabOrder = 4
-          TabStop = True
           Left = 4
           Height = 20
           Top = 101
@@ -252,9 +241,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           AllowGrayed = True
           AutoSize = True
           Caption = 'Window'
-          DragCursor = 65524
           TabOrder = 5
-          TabStop = True
           Left = 4
           Height = 20
           Top = 125
@@ -264,9 +251,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           AllowGrayed = True
           AutoSize = True
           Caption = 'Interface'
-          DragCursor = 65524
           TabOrder = 6
-          TabStop = True
           Left = 4
           Height = 20
           Top = 149
@@ -284,8 +269,8 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
       Width = 476
       object bgIgnoreExceptions: TGroupBox
         Caption = 'Ignore these exceptions'
-        ClientHeight = 311
-        ClientWidth = 464
+        ClientHeight = 328
+        ClientWidth = 468
         ParentColor = True
         ParentCtl3D = False
         TabOrder = 0
@@ -294,11 +279,10 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         Top = 8
         Width = 468
         object cmdExceptionRemove: TButton
-          Enabled = False
           Caption = 'Remove'
-          TabStop = True
-          TabOrder = 0
+          Enabled = False
           OnClick = cmdExceptionRemoveCLICK
+          TabOrder = 0
           Left = 380
           Height = 25
           Top = 277
@@ -306,9 +290,8 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         end
         object cmdExceptionAdd: TButton
           Caption = 'Add'
-          TabStop = True
-          TabOrder = 1
           OnClick = cmdExceptionAddCLICK
+          TabOrder = 1
           Left = 300
           Height = 25
           Top = 277
@@ -317,7 +300,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         object clbExceptions: TCheckListBox
           OnClick = clbExceptionsCLICK
           TabOrder = 2
-          TabStop = True
           TopIndex = -1
           Left = 8
           Height = 264
@@ -329,9 +311,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         AllowGrayed = True
         AutoSize = True
         Caption = 'Break on Lazarus Exceptions'
-        DragCursor = 65524
         TabOrder = 1
-        TabStop = True
         Left = 2
         Height = 20
         Top = 340
@@ -348,8 +328,8 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
       Width = 476
       object gbSignals: TGroupBox
         Caption = 'Signals'
-        ClientHeight = 337
-        ClientWidth = 464
+        ClientHeight = 354
+        ClientWidth = 468
         ParentColor = True
         ParentCtl3D = False
         TabOrder = 0
@@ -358,9 +338,8 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         Top = 8
         Width = 468
         object cmdSignalRemove: TButton
-          Enabled = False
           Caption = 'Remove'
-          TabStop = True
+          Enabled = False
           TabOrder = 0
           Left = 381
           Height = 25
@@ -369,7 +348,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         end
         object cmdSignalAdd: TButton
           Caption = 'Add'
-          TabStop = True
           TabOrder = 1
           Left = 296
           Height = 25
@@ -380,26 +358,21 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           Columns = <          
             item
               Caption = 'Name'
-              Visible = True
               Width = 200
             end          
             item
               Caption = 'ID'
-              Visible = True
-              Width = 50
             end          
             item
               Caption = 'Handled by'
-              Visible = True
               Width = 75
             end          
             item
               Caption = 'Resume'
-              Visible = True
-              Width = 75
+              Width = 0
             end>
           PopupMenu = popSignal
-          ViewStyle = VSREPORT
+          ViewStyle = vsReport
           Left = 8
           Height = 292
           Top = 5
@@ -409,10 +382,9 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
     end
   end
   object cmdCancel: TButton
-    ModalResult = 2
     Cancel = True
     Caption = 'Cancel'
-    TabStop = True
+    ModalResult = 2
     TabOrder = 1
     Left = 400
     Height = 25
@@ -420,11 +392,10 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
     Width = 75
   end
   object cmdOK: TButton
-    Default = True
     Caption = 'OK'
-    TabStop = True
-    TabOrder = 2
+    Default = True
     OnClick = cmdOKCLICK
+    TabOrder = 2
     Left = 320
     Height = 25
     Top = 408

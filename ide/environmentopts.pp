@@ -112,6 +112,7 @@ type
   { class for storing environment options }
   TEnvironmentOptions = class
   private
+    FDebuggerSearchPath: string;
     FFilename: string;
     FFileAge: longint;
     FFileHasChangedOnDisk: boolean;
@@ -205,6 +206,7 @@ type
     fLanguageID: string;
     
     procedure SetCompilerFilename(const AValue: string);
+    procedure SetDebuggerSearchPath(const AValue: string);
     procedure SetMakeFilename(const AValue: string);
     procedure SetDebuggerFilename(const AValue: string);
     procedure SetFPCSourceDirectory(const AValue: string);
@@ -313,6 +315,8 @@ type
                                       write SetDebuggerFilename;
     property DebuggerFileHistory: TStringList read FDebuggerFileHistory
                                               write FDebuggerFileHistory;
+    property DebuggerSearchPath: string read FDebuggerSearchPath
+                                      write SetDebuggerSearchPath;
     property TestBuildDirectory: string read FTestBuildDirectory
                                         write SetTestBuildDirectory;
     property TestBuildDirHistory: TStringList read FTestBuildDirHistory
@@ -792,6 +796,7 @@ begin
   FMakeFileHistory:=TStringList.Create;
   DebuggerFilename:='';
   FDebuggerFileHistory:=TStringList.Create;
+  FDebuggerSearchPath:='';
   TestBuildDirectory:=GetDefaultTestBuildDirectory;
   FTestBuildDirHistory:=TStringList.Create;
 
@@ -1054,9 +1059,11 @@ begin
       end;
       DebuggerClass:=CurDebuggerClass;
       DebuggerFilename:=XMLConfig.GetValue(
-         Path+'DebuggerFilename/Value',FDebuggerFilename);
+         Path+'DebuggerFilename/Value','');
       LoadRecentList(XMLConfig,FDebuggerFileHistory,
          Path+'DebuggerFilename/History/');
+      DebuggerSearchPath:=XMLConfig.GetValue(
+         Path+'DebuggerSearchPath/Value','');
     end;
 
     // hints
@@ -1252,6 +1259,8 @@ begin
           FDebuggerFilename,'');
       SaveRecentList(XMLConfig,FDebuggerFileHistory,
          Path+'DebuggerFilename/History/');
+      XMLConfig.SetDeleteValue(Path+'DebuggerSearchPath/Value',
+          FDebuggerSearchPath,'');
     end;
 
     // hints
@@ -1432,6 +1441,12 @@ begin
   FCompilerFilename:=TrimFilename(AValue);
 end;
 
+procedure TEnvironmentOptions.SetDebuggerSearchPath(const AValue: string);
+begin
+  if FDebuggerSearchPath=AValue then exit;
+  FDebuggerSearchPath:=TrimSearchPath(AValue,'');
+end;
+
 procedure TEnvironmentOptions.SetMakeFilename(const AValue: string);
 begin
   if FMakeFilename=AValue then exit;
@@ -1445,6 +1460,7 @@ begin
   if FDebuggerFilename=AValue then exit;
   FDebuggerFilename:=AValue;
   // trim the filename and keep the options after the space (if any)
+  // TODO: split/find filename with spaces
   SpacePos:=1;
   while (SpacePos<=length(FDebuggerFilename))
   and (FDebuggerFilename[SpacePos]<>' ') do

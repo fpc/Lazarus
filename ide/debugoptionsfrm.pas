@@ -32,9 +32,10 @@ interface
 
 uses
   Classes, SysUtils, TypInfo, LResources, Forms, Controls, Graphics, Dialogs,
-  ExtCtrls, StdCtrls, Buttons, ComCtrls, Menus, Spin, CheckLst,
-  PropEdits, ObjectInspector, LazarusIDEStrConsts, FileProcs, InputHistory,
-  EnvironmentOpts, BaseDebugManager, Debugger, DBGUtils;
+  ExtCtrls, StdCtrls, Buttons, ComCtrls, Menus, Spin, CheckLst, FileUtil,
+  PropEdits, ObjectInspector,
+  LazarusIDEStrConsts, InputHistory, IDEProcs,
+  PathEditorDlg, EnvironmentOpts, BaseDebugManager, Debugger, DBGUtils;
 
 type
   TDebuggerOptionsForm = class (TForm )
@@ -89,6 +90,7 @@ type
     procedure cmdExceptionAddCLICK (Sender: TObject );
     procedure cmdExceptionRemoveCLICK (Sender: TObject );
     procedure cmdOKCLICK (Sender: TObject );
+    procedure cmdOpenAdditionalPathClick(Sender: TObject);
     procedure cmdOpenDebuggerPathCLICK(Sender: TObject);
   private
     FPropertyEditorHook: TPropertyEditorHook;
@@ -184,6 +186,7 @@ begin
     
   FOldDebuggerPathAndParams:=EnvironmentOptions.DebuggerFilename;
   SetComboBoxText(cmbDebuggerPath,FOldDebuggerPathAndParams,20);
+  txtAdditionalPath.Text:=EnvironmentOptions.DebuggerSearchPath;
 end;
 
 procedure TDebuggerOptionsForm.FetchDebuggerSpecificOptions;
@@ -267,7 +270,7 @@ begin
   cmdExceptionRemove.Enabled :=  clbExceptions.ItemIndex <> -1;
 end;
 
-procedure TDebuggerOptionsForm.cmdOKCLICK (Sender: TObject );
+procedure TDebuggerOptionsForm.cmdOKCLICK(Sender: TObject );
 var
   n: Integer;
   ie: TIDEException;
@@ -284,7 +287,7 @@ begin
       ie.Enabled := clbExceptions.Checked[n];
     end
     else begin
-      ie.BeginUpdate;        //ie^
+      ie.BeginUpdate;
       try
         ie.Name := clbExceptions.Items[n];
         ie.Enabled := clbExceptions.Checked[n];
@@ -296,11 +299,26 @@ begin
 
   EnvironmentOptions.DebuggerFilename:=cmbDebuggerPath.Text;
   EnvironmentOptions.DebuggerFileHistory.Assign(cmbDebuggerPath.Items);
+  EnvironmentOptions.DebuggerSearchPath:=
+                                      TrimSearchPath(txtAdditionalPath.Text,'');
   if FCurDebuggerClass = nil
   then EnvironmentOptions.DebuggerClass := ''
   else EnvironmentOptions.DebuggerClass := FCurDebuggerClass.ClassName;
 
   ModalResult:=mrOk;
+end;
+
+procedure TDebuggerOptionsForm.cmdOpenAdditionalPathClick(Sender: TObject);
+begin
+  PathEditorDialog.Path:=txtAdditionalPath.Text;
+  PathEditorDialog.Templates:=SetDirSeparators(
+        '$(LazarusDir)/include/$(TargetOS)'
+      +';$(FPCSrcDir)/rtl/inc/'
+      +';$(FPCSrcDir)/rtl/$(SrcOS)'
+      +';$(FPCSrcDir)/rtl/$(TargetOS)'
+      );
+  if PathEditorDialog.ShowModal=mrOk then
+    txtAdditionalPath.Text:=PathEditorDialog.Path;
 end;
 
 procedure TDebuggerOptionsForm.cmdOpenDebuggerPathCLICK(Sender: TObject);
@@ -354,7 +372,7 @@ begin
       , tkSString, tkLString, tkAString, tkWString, tkVariant
       {, tkArray, tkRecord, tkInterface}, tkClass, tkObject, tkWChar, tkBool
       , tkInt64, tkQWord],
-      25);
+      0);
   with PropertyGrid do begin
     Name:='PropertyGrid';
     // Use panel for border

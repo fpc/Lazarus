@@ -8329,8 +8329,9 @@ begin
 
   // search file in debug path
   if fsfUseDebugPath in Flags then begin
-    SearchPath:=TrimSearchPath(Project1.CompilerOptions.DebugPath,
-                               Project1.ProjectDirectory);
+    SearchPath:=MergeSearchPaths(Project1.CompilerOptions.DebugPath,
+                                 EnvironmentOptions.DebuggerSearchPath);
+    SearchPath:=TrimSearchPath(SearchPath,Project1.ProjectDirectory);
     if SearchInPath(SearchPath,AFilename,Result) then exit;
   end;
 
@@ -10970,6 +10971,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.807  2004/12/11 01:17:22  mattias
+  implemented global debugger search path
+
   Revision 1.806  2004/12/10 11:07:52  mattias
   added FindInFiles and ToggleMessages shortcuts
 
