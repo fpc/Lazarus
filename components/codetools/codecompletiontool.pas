@@ -34,6 +34,7 @@
       - complete local variables
 
   ToDo:
+    -add missing method definitions
     -ProcExists: search procs in ancestors too
     -VarExists: search vars in ancestors too
 }
@@ -529,16 +530,12 @@ begin
       +'CleanPosToCodePos');
   end;
 
-  //writeln('TCodeCompletionCodeTool.AddLocalVariable A2 ',CursorNode<>nil);
-  
   // find parent block node at cursor
   BeginNode:=CursorNode.GetNodeOfType(ctnBeginBlock);
   if (BeginNode=nil) or (BeginNode.Parent=nil) then begin
     writeln('TCodeCompletionCodeTool.AddLocalVariable - Not in Begin Block');
     exit;
   end;
-
-  //writeln('TCodeCompletionCodeTool.AddLocalVariable C ');
 
   // find last 'var' section node
   VarSectionNode:=BeginNode;
@@ -552,10 +549,12 @@ begin
     // there is already a var section
     // -> append variable
     VarNode:=VarSectionNode.FirstChild;
-    Indent:=GetLineIndent(Src,VarNode.StartPos);
     // search last variable in var section
     while (VarNode.NextBrother<>nil) do
       VarNode:=VarNode.NextBrother;
+    Indent:=GetLineIndent(Src,VarNode.StartPos);
+    if PositionsInSameLine(Src,VarSectionNode.StartPos,VarNode.StartPos) then
+      inc(Indent,SourceChangeCache.BeautifyCodeOptions.Indent);
     InsertPos:=FindLineEndOrCodeAfterPosition(VarNode.EndPos);
   end else begin
     // there is no var section yet
