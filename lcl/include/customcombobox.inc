@@ -744,39 +744,17 @@ end;
 procedure TCustomComboBox.CNCommand(var TheMessage: TLMCommand);
 begin
   case TheMessage.NotifyCode of
-    {CBN_DBLCLK:
-      DblClick;
-    CBN_EDITCHANGE:
-      Change;}
     CBN_DROPDOWN:
       begin
         FDroppedDown:=true;
         DropDown;
         AdjustDropDown;
       end;
-    {CBN_SELCHANGE:
-      begin
-        Text := Items[ItemIndex];
-        Click;
-        Select;
-      end;}
     CBN_CLOSEUP:
       begin
         FDroppedDown:=false;
         CloseUp;
       end;
-    {CBN_SETFOCUS:
-      begin
-        FIsFocused := True;
-        FFocusChanged := True;
-        SetIme;
-      end;
-    CBN_KILLFOCUS:
-      begin
-        FIsFocused := False;
-        FFocusChanged := True;
-        ResetIme;
-      end;}
   end;
 end;
 
@@ -793,6 +771,9 @@ end;
 
 {
   $Log$
+  Revision 1.51  2005/01/20 16:58:16  mattias
+  published TComboBox.OnDbClick
+
   Revision 1.50  2005/01/13 18:39:45  mattias
   fixed getting ItemIndex before combobox destroys handle
 

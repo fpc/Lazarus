@@ -349,6 +349,7 @@ type
     property OnChangeBounds;
     property OnClick;
     property OnCloseUp;
+    property OnDblClick;
     property OnDrawItem;
     property OnDropDown;
     property OnEditingDone;
@@ -1213,6 +1214,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.185  2005/01/20 16:58:16  mattias
+  published TComboBox.OnDbClick
+
   Revision 1.184  2005/01/17 16:42:35  mattias
   improved TLabel autosizing
 

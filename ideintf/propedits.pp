@@ -4907,14 +4907,17 @@ end;
 procedure TURLPropertyEditor.SetFilename(const Filename: string);
 
   function FilenameToURL(const Filename: string): string;
+  {$IFDEF Windows}
   var
     i: Integer;
+  {$ENDIF}
   begin
     Result:=Filename;
-    if PathDelim<>'/' then
+    {$IFDEF Windows}
       for i:=1 to length(Result) do
-        if Result[i]=PathDelim then
+        if Result[i]='\' then
           Result[i]:='/';
+    {$ENDIF}
     if Result<>'' then
       Result:='file://'+Result;
   end;
