@@ -88,6 +88,8 @@ ResourceString
   lisMenuPaste = 'Paste';
   lisMenuIndentSelection = 'Indent selection';
   lisMenuUnindentSelection = 'Unindent selection';
+  lisMenuUpperCaseSelection = 'Uppercase selection';
+  lisMenuLowerCaseSelection = 'Lowercase selection';
   lisMenuCompleteCode = 'Complete Code';
   
   lisMenuFind = 'Find';

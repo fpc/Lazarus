@@ -80,15 +80,6 @@ type
     procedure mnuCloseAllClicked(Sender : TObject);
     procedure mnuQuitClicked(Sender : TObject);
 
-    // search menu
-    procedure mnuSearchFindBlockOtherEnd(Sender: TObject);
-    procedure mnuSearchFindBlockStart(Sender: TObject);
-    procedure mnuSearchFindDeclaration(Sender: TObject);
-    procedure mnuSearchOpenFileAtCursor(Sender: TObject);
-    procedure mnuFindDeclarationClicked(Sender : TObject);
-    procedure mnuOpenFileAtCursorClicked(Sender : TObject);
-    procedure mnuGotoIncludeDirectiveClicked(Sender : TObject);
-
     // edit menu
     procedure mnuEditUndoClicked(Sender: TObject);
     procedure mnuEditRedoClicked(Sender: TObject);
@@ -97,7 +88,18 @@ type
     procedure mnuEditPasteClicked(Sender: TObject);
     procedure mnuEditIndentBlockClicked(Sender: TObject);
     procedure mnuEditUnindentBlockClicked(Sender: TObject);
+    procedure mnuEditUpperCaseBlockClicked(Sender: TObject);
+    procedure mnuEditLowerCaseBlockClicked(Sender: TObject);
     procedure mnuEditCompleteCodeClicked(Sender: TObject);
+
+    // search menu
+    procedure mnuSearchFindBlockOtherEnd(Sender: TObject);
+    procedure mnuSearchFindBlockStart(Sender: TObject);
+    procedure mnuSearchFindDeclaration(Sender: TObject);
+    procedure mnuSearchOpenFileAtCursor(Sender: TObject);
+    procedure mnuFindDeclarationClicked(Sender : TObject);
+    procedure mnuOpenFileAtCursorClicked(Sender : TObject);
+    procedure mnuGotoIncludeDirectiveClicked(Sender : TObject);
 
     // view menu
     procedure mnuViewInspectorClicked(Sender : TObject);
@@ -1287,6 +1289,18 @@ begin
   itmEditUnindentBlock.Caption := lisMenuUnindentSelection;
   itmEditUnindentBlock.OnClick:=@mnuEditUnindentBlockClicked;
   mnuEdit.Add(itmEditUnindentBlock);
+
+  itmEditUpperCaseBlock := TMenuItem.Create(Self);
+  itmEditUpperCaseBlock.Name:='itmEditUpperCaseBlock';
+  itmEditUpperCaseBlock.Caption := lisMenuUpperCaseSelection;
+  itmEditUpperCaseBlock.OnClick:=@mnuEditUpperCaseBlockClicked;
+  mnuEdit.Add(itmEditUpperCaseBlock);
+
+  itmEditLowerCaseBlock := TMenuItem.Create(Self);
+  itmEditLowerCaseBlock.Name:='itmEditLowerCaseBlock';
+  itmEditLowerCaseBlock.Caption := lisMenuLowerCaseSelection;
+  itmEditLowerCaseBlock.OnClick:=@mnuEditLowerCaseBlockClicked;
+  mnuEdit.Add(itmEditLowerCaseBlock);
 
   mnuEdit.Add(CreateSeperator);
 
@@ -6290,6 +6304,16 @@ begin
   DoEditMenuCommand(ecBlockUnindent);
 end;
 
+procedure TMainIDE.mnuEditUpperCaseBlockClicked(Sender: TObject);
+begin
+  DoEditMenuCommand(ecSelectionUpperCase);
+end;
+
+procedure TMainIDE.mnuEditLowerCaseBlockClicked(Sender: TObject);
+begin
+  DoEditMenuCommand(ecSelectionLowerCase);
+end;
+
 procedure TMainIDE.mnuEditCompleteCodeClicked(Sender: TObject);
 begin
   DoCompleteCodeAtCursor;
@@ -6366,6 +6390,8 @@ begin
     itmEditPaste.ShortCut:=CommandToShortCut(ecPaste);
     itmEditIndentBlock.ShortCut:=CommandToShortCut(ecBlockIndent);
     itmEditUnindentBlock.ShortCut:=CommandToShortCut(ecBlockUnindent);
+    itmEditUpperCaseBlock.ShortCut:=CommandToShortCut(ecSelectionUpperCase);
+    itmEditLowerCaseBlock.ShortCut:=CommandToShortCut(ecSelectionLowerCase);
     itmEditCompleteCode.ShortCut:=CommandToShortCut(ecCompleteCode);
 
     itmSearchFind.ShortCut:=CommandToShortCut(ecFind);
@@ -6462,6 +6488,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.312  2002/06/13 18:37:47  lazarus
+  MG: added upper/lowercase selection
+
   Revision 1.311  2002/06/12 14:27:15  lazarus
   MG: reduced IDE output
 

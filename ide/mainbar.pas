@@ -125,6 +125,8 @@ type
     itmEditPaste: TMenuItem;
     itmEditIndentBlock: TMenuItem;
     itmEditUnindentBlock: TMenuItem;
+    itmEditUpperCaseBlock: TMenuItem;
+    itmEditLowerCaseBlock: TMenuItem;
     itmEditCompleteCode: TMenuItem;
 
     itmSearchFind: TMenuItem;

@@ -210,7 +210,9 @@ type
     procedure GetDialogPosition(Width, Height:integer; var Left,Top:integer);
     procedure SetBreakPoint(const ALine: Integer; const AType: TSrcEditMarkerType);
     procedure RemoveBreakPoint(const ALine: Integer); overload;
-    
+    procedure UpperCaseSelection;
+    procedure LowerCaseSelection;
+
     // editor commands
     procedure DoEditorExecuteCommand(EditorCommand: integer);
 
@@ -849,6 +851,12 @@ Begin
       IdentCompletionTimer.Enabled := True;
     end;
     
+  ecSelectionUpperCase:
+    UpperCaseSelection;
+    
+  ecSelectionLowerCase:
+    LowerCaseSelection;
+    
   else
     begin
       Handled:=false;
@@ -939,6 +947,46 @@ end;
 procedure TSourceEditor.RemoveBreakPoint(const ALine: Integer);
 begin
   RemoveBreakPoint(GetBreakPointMark(ALine));
+end;
+
+{-------------------------------------------------------------------------------
+  method TSourceEditor.UpperCaseSelection
+  
+  Turns current text selection uppercase.
+-------------------------------------------------------------------------------}
+procedure TSourceEditor.UpperCaseSelection;
+var OldBlockBegin, OldBlockEnd: TPoint;
+begin
+  if not EditorComponent.SelAvail then exit;
+  OldBlockBegin:=FEditor.BlockBegin;
+  OldBlockEnd:=FEditor.BlockEnd;
+  FEditor.BeginUpdate;
+  FEditor.BeginUndoBlock;
+  FEditor.SelText:=UpperCase(EditorComponent.SelText);
+  FEditor.BlockBegin:=OldBlockBegin;
+  FEditor.BlockEnd:=OldBlockEnd;
+  FEditor.EndUndoBlock;
+  FEditor.EndUpdate;
+end;
+
+{-------------------------------------------------------------------------------
+  method TSourceEditor.LowerCaseSelection
+
+  Turns current text selection lowercase.
+-------------------------------------------------------------------------------}
+procedure TSourceEditor.LowerCaseSelection;
+var OldBlockBegin, OldBlockEnd: TPoint;
+begin
+  if not EditorComponent.SelAvail then exit;
+  OldBlockBegin:=FEditor.BlockBegin;
+  OldBlockEnd:=FEditor.BlockEnd;
+  FEditor.BeginUpdate;
+  FEditor.BeginUndoBlock;
+  FEditor.SelText:=LowerCase(EditorComponent.SelText);
+  FEditor.BlockBegin:=OldBlockBegin;
+  FEditor.BlockEnd:=OldBlockEnd;
+  FEditor.EndUndoBlock;
+  FEditor.EndUpdate;
 end;
 
 procedure TSourceEditor.RemoveBreakPoint(const ABreakPointMark: TSynEditMark);
@@ -1517,7 +1565,7 @@ end;
 
 procedure TSourceEditor.DoEditorExecuteCommand(EditorCommand: integer);
 begin
-  EditorComponent.ExecuteCommand(EditorCommand,' ',nil);
+  EditorComponent.CommandProcessor(EditorCommand,' ',nil);
 end;
 
 {------------------------------------------------------------------------}

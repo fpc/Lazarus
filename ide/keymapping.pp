@@ -69,6 +69,9 @@ const
   ecFindBlockStart       = ecUserFirst + 22;
   ecOpenFileAtCursor     = ecUserFirst + 23;
   ecGotoIncludeDirective = ecUserFirst + 24;
+  
+  ecSelectionUpperCase   = ecUserFirst + 50;
+  ecSelectionLowerCase   = ecUserFirst + 51;
 
   ecWordCompletion       = ecUserFirst + 100;
   ecCompleteCode         = ecUserFirst + 101;
@@ -452,6 +455,10 @@ begin
     ecClose: Result:= 'close';
     ecCloseAll: Result:= 'close all';
     ecQuit: Result:= 'quit';
+    
+    // edit menu
+    ecSelectionUpperCase: Result:='Selection uppercase';
+    ecSelectionLowerCase: Result:='Selection lowercase';
 
     // search menu
     ecFind: Result:= 'Find text';
@@ -1097,6 +1104,8 @@ begin
   Add(C,'Select page bottom',ecSelPageBottom,VK_NEXT, [ssShift,ssCtrl],VK_UNKNOWN,[]);
   Add(C,'Select to absolute beginning',ecSelEditorTop,VK_HOME, [ssShift,ssCtrl],VK_UNKNOWN,[]);
   Add(C,'Select to absolute end',ecSelEditorBottom,VK_END, [ssShift,ssCtrl],VK_UNKNOWN,[]);
+  Add(C,'Uppercase selection',ecSelectionUpperCase,VK_UNKNOWN, [],VK_UNKNOWN,[]);
+  Add(C,'Lowercase selection',ecSelectionLowerCase,VK_UNKNOWN, [],VK_UNKNOWN,[]);
 
   // editing
   C:=Categories[AddCategory('editing commands','Text editing commands')];
