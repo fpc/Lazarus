@@ -44,7 +44,6 @@ type
   protected
     MouseDownControl : TObject;
     MouseDownPos, MouseUpPos, LastMouseMovePos : TPoint;
-    CTRLDOWN, SHIFTDOWN : Boolean;
 
     Procedure MouseDownOnControl(Sender : TControl; Message : TLMessage);
     procedure MouseMoveOnControl(Sender : TControl; var Message : TLMessage);
@@ -403,6 +402,7 @@ Procedure TDesigner.KeyDown(Sender : TControl; Message:TLMKEY);
 var
   I : Integer;
   Continue : Boolean;
+  Shift : TShiftState;
 Begin
 Writeln('KEYDOWN');
 with MEssage do
@@ -411,15 +411,9 @@ with MEssage do
   Writeln('KEYDATA = '+inttostr(KeyData));
   end;
 
-{    CTRLDOWN, SHIFTDOWN : Boolean;
-}
 
-if Message.CharCode = 16 then //SHIFT
-   SHIFTDOWN := True
-else
-if Message.CharCode = 17 then //CTRL
-   CTRLDOWN := True
-else
+Shift := KeyDataToShiftState(Message.KeyData);
+
 if Message.CharCode = 46 then //DEL KEY
    begin
    Continue := True;
@@ -444,37 +438,37 @@ if Message.CharCode = 46 then //DEL KEY
    else
 if Message.CharCode = 38 then //UP ARROW
    Begin
-   If CTRLDOWN then
+   if (ssCtrl in Shift) then
    NudgeControl(0,-1)
    else
-   If SHIFTDOWN then
+   if (ssShift in Shift) then
    NudgeSize(0,-1);
    end
    else
 if Message.CharCode = 40 then //DOWN ARROW
    Begin
-   If CTRLDOWN then
+   if (ssCtrl in Shift) then
    NudgeControl(0,1)
    else
-   If SHIFTDOWN then
+   if (ssShift in Shift) then
    NudgeSize(0,1);
    end
    else
 if Message.CharCode = 39 then //RIGHT ARROW
    Begin
-   If CTRLDOWN then
+   if (ssCtrl in Shift) then
    NudgeControl(1,0)
    else
-   If SHIFTDOWN then
+   if (ssShift in Shift) then
    NudgeSize(1,0);
    end
    else
 if Message.CharCode = 37 then //LEFT ARROW
    Begin
-   If CTRLDOWN then
+   if (ssCtrl in Shift) then
    NudgeControl(-1,0)
    else
-   If SHIFTDOWN then
+   if (ssShift in Shift) then
    NudgeSize(-1,0);
    end;
 
@@ -495,15 +489,6 @@ with MEssage do
   Writeln('CHARCODE = '+inttostr(charcode));
   Writeln('KEYDATA = '+inttostr(KeyData));
   end;
-
-{    CTRLDOWN, SHIFTDOWN : Boolean;
-}
-
-if Message.CharCode = 16 then //SHIFT
-   SHIFTDOWN := False
-else
-if Message.CharCode = 17 then //CTRL
-   CTRLDOWN := False
 
 end;
 

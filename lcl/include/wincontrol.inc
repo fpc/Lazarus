@@ -779,7 +779,7 @@ begin
   with Message do
   begin
     ShiftState := KeyDataToShiftState(KeyData);
-    ShiftState := [];
+    //ShiftState := [];
     if not (csNoStdEvents in ControlStyle) 
     then begin
       KeyDown(CharCode, ShiftState);
@@ -1892,6 +1892,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.8  2001/01/12 20:22:09  lazarus
+  Shiftstate fixed so it reports ssCtrl and ssShift now.
+  You can use Shift-Ctrl-Up and Down to jump to procedures in the code explorer.
+  Shane
+
   Revision 1.7  2001/01/09 18:23:21  lazarus
   Worked on moving controls.  It's just not working with the X and Y coord's I'm getting.
   Shane

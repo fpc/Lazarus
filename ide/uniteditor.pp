@@ -86,6 +86,9 @@ type
     Procedure SetCurrentCursorYLine(num : Integer);
     Function GetAncestor : String;
     Function GetModified : Boolean;
+    Function TextUnderCursor : String;
+    Function GotoMethod(Value : String) : Integer;
+    Function GotoMethodDeclaration(Value : String) : Integer;
 
     Procedure CreateEditor(AOwner : TComponent; AParent: TWinControl);
 
@@ -103,6 +106,7 @@ type
     Procedure BookMarkToggle(Value : Integer);
     Procedure BookMarkGoto(Value : Integer);
     Procedure EditorKeyDown(Sender : TObject; var Key: Word; Shift : TShiftState);
+    Procedure EditorKeyUp(Sender : TObject; var Key: Word; Shift : TShiftState);
 
     property Editor : TmwCustomEdit read FEditor;
 
@@ -187,6 +191,7 @@ type
 implementation
 uses
   LCLLinux,TypInfo,LResources,Main;
+
 
 { TSourceEditor }
 
@@ -293,50 +298,71 @@ Begin
 
 end;
 
-Procedure TSourceEditor.BookMarkClicked(Sender : TObject);
-var
-  MenuItem : TMenuItem;
+{------------------------------G O T O   M E T H O D ---------------------------------}
+
+Function TSourceEditor.GotoMethod(Value : String) : Integer;
+Var
+I : Integer;
+Texts2 : String;
 Begin
-  MenuItem := TMenuItem(sender);
-  BookMarkToggle(MenuItem.Tag);
-end;
+     Result := -1;
+     if Length(Value) <= 1 then Exit;
 
-Procedure TSourceEditor.BookMarkGotoClicked(Sender : TObject);
-var
-  MenuItem : TMenuItem;
-Begin
-  MenuItem := TMenuItem(sender);
-  BookMarkGoto(MenuItem.Tag);
-end;
-
-
-Procedure TSourceEditor.BookMarkToggle(Value : Integer);
-var
-   MenuItem : TmenuItem;
-Begin
-  MenuItem := TmenuItem(ToggleMenuItem.Items[Value]);
-  MenuItem.Checked := not(MenuItem.Checked);
-
-  if MenuItem.Checked then
-     Begin
-        FEditor.SetBookMark(Value,GetCurrentCursorXLine,GetCurrentCursorYLine);
-        MenuItem.Caption := MenuItem.Caption + '*';
-     end
-     else
-     begin
-     FEditor.ClearBookMark(Value);
-     MenuItem.Caption := copy(MenuItem.Caption,1,Length(MenuItem.Caption)-1);
-     end;
-
+     //move down looking for the classname.texts
+     //we need to parse for the class name eventually
+    //for now just search for .procedurename
+     Value := '.'+lowercase(value);
+     for I := CurrentCursorYLine to Source.Count -1 do
+         begin
+            Texts2 := Lowercase(Source.Strings[i]);
+            if (pos('procedure',Texts2) <> 0) or (pos('function',texts2) <> 0) then
+                begin
+                if pos(Value,texts2) <> 0 then
+                   begin
+                     CurrentCursorYLine := I;
+                     FEditor.TopLine := I-1;
+                     Result := I;
+                     Break;
+                   end;
+                end;
+           end;
 
 End;
 
-Procedure TSourceEditor.BookMarkGoto(Value : Integer);
+
+{------------------------------G O T O   M E T H O D    D E C L A R A T I O N---------}
+Function TSourceEditor.GotoMethodDeclaration(Value : String) : Integer;
+Var
+I : Integer;
+Texts2 : String;
 Begin
-  FEditor.GotoBookMark(Value);
+     Result := -1;
+     if Length(Value) <= 1 then Exit;
+
+     //move down looking for the classname.texts
+     //we need to parse for the class name eventually
+    //for now just search for .procedurename
+     Value := lowercase(value);
+     for I := 0 to Source.Count -1 do
+         begin
+            Texts2 := Lowercase(Source.Strings[i]);
+            if (pos('procedure',Texts2) <> 0) or (pos('function',texts2) <> 0) then
+                begin
+                if pos(Value,texts2) <> 0 then
+                   begin
+                     FEditor.TopLine := I;
+                     CurrentCursorYLine := I;
+                     Result := I;
+                     Break;
+                   end;
+                end;
+           end;
+
 End;
 
-Procedure TSourceEditor.OpenAtCursorClicked(Sender : TObject);
+
+{------------------------------TEXT UNDER CURSOR----------------------------------------}
+Function TSourceEditor.TextUnderCursor : String;
 var
   Texts : String;
   EditorLine : String;
@@ -346,6 +372,7 @@ var
   AppDIr : String;
   TempDir : String;
   Num : Integer;
+
 Begin
   //get the text by the cursor.
   EditorLine := FEditor.Lines.Strings[GetCurrentCursorYLine-1];
@@ -367,6 +394,66 @@ Begin
   if not(((ord(upcase(Texts[x])) >= 65) and (ord(upcase(Texts[x])) <= 90))) then dec(x);
   Texts := Copy(Texts,1,X);
 
+  Result := Texts;
+end;
+
+{------------------------------Book Mark Clicked ---------------------------------}
+Procedure TSourceEditor.BookMarkClicked(Sender : TObject);
+var
+  MenuItem : TMenuItem;
+Begin
+  MenuItem := TMenuItem(sender);
+  BookMarkToggle(MenuItem.Tag);
+end;
+
+{------------------------------BOOK MARK GOTO CLICKED ---------------------------------}
+Procedure TSourceEditor.BookMarkGotoClicked(Sender : TObject);
+var
+  MenuItem : TMenuItem;
+Begin
+  MenuItem := TMenuItem(sender);
+  BookMarkGoto(MenuItem.Tag);
+end;
+
+
+{------------------------------BOOKMARK TOGGLE ---------------------------------}
+Procedure TSourceEditor.BookMarkToggle(Value : Integer);
+var
+   MenuItem : TmenuItem;
+Begin
+  MenuItem := TmenuItem(ToggleMenuItem.Items[Value]);
+  MenuItem.Checked := not(MenuItem.Checked);
+
+  if MenuItem.Checked then
+     Begin
+        FEditor.SetBookMark(Value,GetCurrentCursorXLine,GetCurrentCursorYLine);
+        MenuItem.Caption := MenuItem.Caption + '*';
+     end
+     else
+     begin
+     FEditor.ClearBookMark(Value);
+     MenuItem.Caption := copy(MenuItem.Caption,1,Length(MenuItem.Caption)-1);
+     end;
+
+
+End;
+
+{------------------------------BOOKMARK GOTO ---------------------------------}
+Procedure TSourceEditor.BookMarkGoto(Value : Integer);
+Begin
+  FEditor.GotoBookMark(Value);
+End;
+
+Procedure TSourceEditor.OpenAtCursorClicked(Sender : TObject);
+var
+  Texts : String;
+  Found : Boolean;
+  SearchDir : String;
+  AppDIr : String;
+  TempDir : String;
+  Num : Integer;
+Begin
+  Texts := TextunderCursor;
   if Length(Texts) <= 1 then Exit;
 
   Found := False;
@@ -435,11 +522,63 @@ end;
 
 
 Procedure TSourceEditor.EditorKeyDown(Sender : TObject; var Key: Word; Shift : TShiftState);
+var
+  Texts,nmForm : String;
+  Texts2 : String;
+  I,Y : Integer;
+  TheName : String;
 Begin
-Writeln('Editor Key Down');
-Writeln('KEY IS ='+Inttostr(key));
+  if (Key = 40) and ( ssCTRL in Shift) then
+     Begin
+     //jump down to the procedure definition
+     Texts := TextUnderCursor;  //this should be a procedure name.
+     GotoMethod(Texts);
+
+     end
+  else
+  if (Key = 38) and (ssCTRL in Shift) and (ssShift in Shift)then
+     Begin
+     //jump up to the procedure definition
+    //move up until you find the work PROCEDURE or FUNCTION
+    Y := CurrentCursorYLine;
+    Texts2 := Lowercase(Source.Strings[Y-1]);
+    Writeln('The source line = '+Texts2);
+    I := pos('function',Texts2);
+    if I = 0 then
+    I := pos('procedure',Texts2);
+    While (I = 0) and (Y > 0) do
+    begin
+    dec(Y);
+    Texts2 := Lowercase(Source.Strings[Y-1]);
+    Writeln('The source line = '+Texts2);
+    I := pos('function ',Texts2);
+    if I = 0 then
+    I := pos('procedure ',Texts2);
+    end;
+
+    if I <> 0 then
+       Begin
+          TheName := '';
+          I := pos('.',Texts2);
+          inc(i);
+          while (not(Texts2[i] in [';',' ','('])) do
+             Begin
+               TheName := TheName + Texts2[i];
+               inc(i);
+             end;
+          Writeln('Thename = '+TheName);
+          GotoMethodDeclaration(TheName);
+       end;
+
+    end;
+
+
 end;
 
+Procedure TSourceEditor.EditorKeyUp(Sender : TObject; var Key: Word; Shift : TShiftState);
+Begin
+
+end;
 
 
 Procedure TSourceEditor.CreateEditor(AOwner : TComponent; AParent: TWinControl);
@@ -456,9 +595,9 @@ FEditor := TmwCustomEdit.Create(FAOwner);
     Parent := AParent;
     Top := 25;
     Left := 0;
-    Align := alClient;
     Width := TWinControl(FAOwner).ClientWidth - 10;//clientwidth;//500;
     Height :=TWinControl(FAOwner).ClientHeight -10;//clientheight;//250;
+    Align := alClient;
     {$IFDEF NEW_EDITOR}
     Gutter.Color := clBtnface;
     Gutter.ShowLineNumbers := True;
@@ -480,6 +619,7 @@ FEditor := TmwCustomEdit.Create(FAOwner);
                    end;
          end;
       OnKeyDown := @EditorKeyDown;
+      OnKeyUp := @EditorKeyUp;
   end;
 FEditor.Lines.Assign(FSource);
 
@@ -1169,6 +1309,7 @@ Begin
 end;
 
 initialization
+
 
 {$I designer/bookmark.lrs}
 
