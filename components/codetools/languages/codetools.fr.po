@@ -140,7 +140,7 @@ msgstr "position du curseur en dehors du code"
 
 #: codetoolsstrconsts:ctscustomcomponentsdirectory
 msgid "Custom Components Directory"
-msgstr ""
+msgstr "Répertoire de composants personalisés"
 
 #: codetoolsstrconsts:ctsdebuggerdirectory
 msgid "Debugger Directory"
@@ -152,7 +152,7 @@ msgstr "ancêtre de classe par défaut (TObject) non trouvé"
 
 #: codetoolsstrconsts:ctsdefaultinterfaceancestoriinterfacenotfound
 msgid "default interface ancestor IInterface not found"
-msgstr ""
+msgstr "Ancètre par défaut de IInterface non trouvée"
 
 #: codetoolsstrconsts:ctsdefaultparameterexpectedbutatomfound
 msgid "default parameter expected, but %s found"
@@ -180,7 +180,7 @@ msgstr "Micro processeur cible par défaut pour ppc386"
 
 #: codetoolsstrconsts:ctsdefaultpropertynotfound
 msgid "default property not found"
-msgstr ""
+msgstr "propriété default non trouvée"
 
 #: codetoolsstrconsts:ctsdefaultspecifierredefined
 msgid "default specifier redefined"
@@ -188,15 +188,11 @@ msgstr "défaut (default) redéfini"
 
 #: codetoolsstrconsts:ctsdefinemacroname
 msgid "Define Macro %s"
-msgstr ""
+msgstr "Macro définie %s"
 
 #: codetoolsstrconsts:ctsdefinemacrogtk2
 msgid "Define macro gtk2"
-msgstr ""
-
-#: codetoolsstrconsts:ctsdefinemakroname
-msgid "Define Makro %s"
-msgstr "Macro définie %s"
+msgstr "Macro gtk2 définie"
 
 #: codetoolsstrconsts:ctsdefsforlazarussources
 msgid "Definitions for the Lazarus Sources"
@@ -256,7 +252,7 @@ msgstr "impossible de trouver la définition de la classe : %s"
 
 #: codetoolsstrconsts:ctsfreepascalcompilerinitialmacros
 msgid "Free Pascal Compiler initial macros"
-msgstr ""
+msgstr "Macro initiale de Free Pascal"
 
 #: codetoolsstrconsts:ctsfreepascalcompilerinitialmacros
 msgid "Free Pascal Compiler initial makros"
@@ -276,15 +272,15 @@ msgstr "Sources de Free Pascal, %s"
 
 #: codetoolsstrconsts:ctsgnomeintfdirectory
 msgid "gnome interface directory"
-msgstr ""
+msgstr "répertoire interface gnome"
 
 #: codetoolsstrconsts:ctsgtkintfdirectory
 msgid "gtk interface directory"
-msgstr ""
+msgstr "répertoire interface gtk"
 
 #: codetoolsstrconsts:ctsgtk2intfdirectory
 msgid "gtk2 interface directory"
-msgstr ""
+msgstr "répertoire interface gtk2"
 
 #: codetoolsstrconsts:ctsidentifier
 msgid "identifier"
@@ -292,7 +288,7 @@ msgstr "identificateur"
 
 #: codetoolsstrconsts:ctsidentifieralreadydefined
 msgid "Identifier %s already defined"
-msgstr ""
+msgstr "Identificateur %s déjà défini"
 
 #: codetoolsstrconsts:ctsidentexpectedbutatomfound
 msgid "identifier expected, but %s found"
@@ -416,7 +412,7 @@ msgstr "type manquant"
 
 #: codetoolsstrconsts:ctsnestedcommentson
 msgid "Nested Comments On"
-msgstr ""
+msgstr "Commentaires au dessus"
 
 #: codetoolsstrconsts:ctsnewprocbodynotfound
 msgid "new proc body not found"
@@ -520,7 +516,7 @@ msgstr "Erreur de syntaxe dans l'expression \"%s\""
 
 #: codetoolsstrconsts:ctstermnotsimple
 msgid "Term has no simple type"
-msgstr ""
+msgstr "Ce terme n'a pas de type simple"
 
 #: codetoolsstrconsts:ctstoolsdirectory
 msgid "Tools Directory"
@@ -588,7 +584,7 @@ msgstr "l'unité utilisée n'est pas une unité pascal"
 
 #: codetoolsstrconsts:ctsutilsdirectories
 msgid "Utils directories"
-msgstr ""
+msgstr "Répertoires utils"
 
 #: codetoolsstrconsts:ctswidgetdirectory
 msgid "Widget Directory"

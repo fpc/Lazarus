@@ -1,34 +1,44 @@
+msgid ""
+msgstr ""
+""
+"Last-Translator: Olivier GUILBAUD (golivier@free.fr)\n"
+"PO-Revision-Date: 2003-01-09 01:15+0100\n"
+"Language-Team:  <fr@li.org>\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 0.9.6\n"
+
 #: lclstrconsts:rsmball
 msgid "&All"
-msgstr ""
+msgstr "&Tout"
 
 #: lclstrconsts:rsmbclose
 msgid "&Close"
-msgstr ""
+msgstr "&Fermer"
 
 #: lclstrconsts:rsmbhelp
 msgid "&Help"
-msgstr ""
+msgstr "&Aide"
 
 #: lclstrconsts:rsmbignore
 msgid "&Ignore"
-msgstr ""
+msgstr "&Ignorer"
 
 #: lclstrconsts:rsmbno
 msgid "&No"
-msgstr ""
+msgstr "&Non"
 
 #: lclstrconsts:rsmbok
 msgid "&OK"
-msgstr ""
+msgstr "&Ok"
 
 #: lclstrconsts:rsmbretry
 msgid "&Retry"
-msgstr ""
+msgstr "Réessayer"
 
 #: lclstrconsts:rsmbyes
 msgid "&Yes"
-msgstr ""
+msgstr "&Oui"
 
 #: lclstrconsts:rsmbabort
 msgid "Abort"
@@ -86,15 +96,6 @@ msgstr "Réessayer"
 msgid "Warning"
 msgstr "Avertissement"
 
-msgid ""
-msgstr ""
-""
-"Last-Translator: Olivier GUILBAUD (golivier@free.fr)\n"
-"PO-Revision-Date: 2003-01-09 01:15+0100\n"
-"Language-Team:  <fr@li.org>\n"
-"Content-Type: text/plain; charset=ISO-8859-1\n"
-"Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 0.9.6\n"
 #: lclstrconsts:rsmbyes
 msgid "Yes"
 msgstr "Oui"

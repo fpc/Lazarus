@@ -72,7 +72,7 @@ msgstr "&Voir"
 
 #: lazarusidestrconsts:lismenuwindows
 msgid "&Windows"
-msgstr ""
+msgstr "&Fenêtres"
 
 #: lazarusidestrconsts:liscmdlineprimaryconfigpathdesc
 msgid "--primary-config-path <path>\n                         primary config directory, where Lazarus\n                         stores its config files. Default is \n                         %s\n\n"
@@ -136,7 +136,7 @@ msgstr "Alphabétiquement"
 
 #: lazarusidestrconsts:dlgaltsetclmode
 msgid "Alt Sets Column Mode"
-msgstr ""
+msgstr "Alt fixe le mode colonne"
 
 #: lazarusidestrconsts:dlgambigfileact
 msgid "Ambigious file action:"
@@ -572,7 +572,7 @@ msgstr "Bas"
 
 #: lazarusidestrconsts:dlgdragdroped
 msgid "Drag Drop Editing"
-msgstr ""
+msgstr "Edition Drag&Drop"
 
 #: lazarusidestrconsts:dlgdropfiles
 msgid "Drop Files"
@@ -836,7 +836,7 @@ msgstr "Achèvement du code"
 
 #: lazarusidestrconsts:dlgedidcomlet
 msgid "Identifier completion"
-msgstr ""
+msgstr "Compléter identificateur"
 
 #: lazarusidestrconsts:dlgidentifierpolicy
 msgid "Identifier policy"
@@ -868,7 +868,7 @@ msgstr "Inclure les variables système"
 
 #: lazarusidestrconsts:lismenuincrementalfind
 msgid "Incremental Find"
-msgstr ""
+msgstr "Poursuivre la recherche"
 
 #: lazarusidestrconsts:dlgindentcodeto
 msgid "Indent code to"
@@ -1032,7 +1032,7 @@ msgstr "Librairies"
 
 #: lazarusidestrconsts:lisaboutlazarusmsg
 msgid "License: GPL/LGPL\n\nLazarus are the class libraries for Free Pascal that emulate Delphi. Free Pascal is a (L)GPL'ed compiler that runs on Linux, Win32, OS/2, 68K and more. Free Pascal is designed to be able to understand and compile Delphi syntax, which is of course OOP.\n\nLazarus is the missing part of the puzzle that will allow you to develop Delphi like programs in all of the above platforms. The IDE will eventually become a RAD tool like Delphi.\n\nAs Lazarus is growing we need more developers."
-msgstr ""
+msgstr "Licence: GPL/LGPL\n\nLazarus est une suite de librairie pour Free Pascal qui émule Delphi.\nFree Pascal est un compilateur sous licence GPL fonctionnant sous Linux,\nWin32, OS/2, 68K et plus. Free Pascal est employé pour compiler du code\nDelphi orienter objet (OOP).\n\nLazarus est un morceau du puzzle qui vous permettra de développer des programmes\ncomme Delphi sur toutes les plates formes supportée par Free Pascal.\nL'IDE deviendra par la suite un outil de RAD comme Delphi.\n\nPendant le développement de Lazarus, nous avons besoin de plus de développeurs."
 
 #: lazarusidestrconsts:lisaboutlazarusmsg
 msgid "License: GPL/LGPL\nLazarus are the class libraries for Free Pascal that emulate Delphi.\nFree Pascal is a (L)GPL'ed compiler that runs on Linux,\nWin32, OS/2, 68K and more. Free Pascal is designed to be able to\nunderstand and compile Delphi syntax, which is of course OOP.\nLazarus is the missing part of the puzzle that will allow you to\ndevelop Delphi like programs in all of the above platforms.\nThe IDE will eventually become a RAD tool like Delphi.\n\nAs Lazarus is growing we need more developers."
@@ -1164,7 +1164,7 @@ msgstr "Multi"
 
 #: lazarusidestrconsts:dlgmultiline
 msgid "Multi Line"
-msgstr ""
+msgstr "Multi ligne"
 
 #: lazarusidestrconsts:fdinvalidmutliselectiontext
 msgid "Multiselected components must be of a single form."
@@ -1528,7 +1528,7 @@ msgstr "Portée"
 
 #: lazarusidestrconsts:dlgscrollbyoneless
 msgid "Scroll By One Less"
-msgstr ""
+msgstr "Déplacement d'une ligne"
 
 #: lazarusidestrconsts:dlgscrollpastendfile
 msgid "Scroll Past End of File"
@@ -1724,7 +1724,7 @@ msgstr "Aligner sur les lignes de guide"
 
 #: lazarusidestrconsts:lismenusortselection
 msgid "Sort selection"
-msgstr ""
+msgstr "Trier la sélection"
 
 #: lazarusidestrconsts:dlgsrcedit
 msgid "Source Editor"
@@ -2052,7 +2052,7 @@ msgstr "Voir l'historique des déplacement"
 
 #: lazarusidestrconsts:dlgmainviewforms
 msgid "View project forms"
-msgstr ""
+msgstr "Voir les fiches du projet"
 
 #: lazarusidestrconsts:dlgmainviewunits
 msgid "View project units"
