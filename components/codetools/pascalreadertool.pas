@@ -103,7 +103,7 @@ type
         const UpperClassName: string;
         IgnoreForwards, IgnoreNonForwards: boolean): TCodeTreeNode;
     function FindClassNodeInInterface(const UpperClassName: string;
-        IgnoreForwards, IgnoreNonForwards: boolean): TCodeTreeNode;
+        IgnoreForwards, IgnoreNonForwards, ErrorOnNotFound: boolean): TCodeTreeNode;
     function FindFirstIdentNodeInClass(ClassNode: TCodeTreeNode): TCodeTreeNode;
     function ClassSectionNodeStartsWithWord(ANode: TCodeTreeNode): boolean;
 
@@ -943,17 +943,26 @@ begin
 end;
 
 function TPascalReaderTool.FindClassNodeInInterface(
-  const UpperClassName: string; IgnoreForwards, IgnoreNonForwards: boolean
-  ): TCodeTreeNode;
+  const UpperClassName: string; IgnoreForwards, IgnoreNonForwards,
+  ErrorOnNotFound: boolean): TCodeTreeNode;
+  
+  procedure RaiseClassNotFound;
+  begin
+    RaiseExceptionFmt(ctsClassSNotFound, [UpperClassName]);
+  end;
+  
 begin
   Result:=Tree.Root;
-  if Result=nil then exit;
-  if Result.Desc=ctnUnit then begin
-    Result:=Result.NextBrother;
-    if Result=nil then exit;
+  if Result<>nil then begin
+    if Result.Desc=ctnUnit then begin
+      Result:=Result.NextBrother;
+    end;
+    if Result<>nil then
+      Result:=FindClassNode(Result.FirstChild,UpperClassName,
+                   IgnoreForwards, IgnoreNonForwards);
   end;
-  Result:=FindClassNode(Result.FirstChild,UpperClassName,
-               IgnoreForwards, IgnoreNonForwards);
+  if (Result=nil) and ErrorOnNotFound then
+    RaiseClassNotFound;
 end;
 
 function TPascalReaderTool.FindFirstIdentNodeInClass(ClassNode: TCodeTreeNode

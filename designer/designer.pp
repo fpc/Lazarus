@@ -148,7 +148,7 @@ type
     PopupMenuComponentEditor: TBaseComponentEditor;
     LastFormCursor: TCursor;
     DeletingComponents: TList;
-    
+
     LastPaintSender: TControl;
 
     // event handlers for designed components
@@ -173,6 +173,8 @@ type
     function DoCopySelectionToClipboard: boolean;
     procedure DoPasteSelectionFromClipboard;
     procedure DoShowTabOrderEditor;
+    procedure GiveComponentsNames;
+    procedure NotifyComponentAdded(AComponent: TComponent);
 
     // popup menu
     procedure BuildPopupMenu;
@@ -214,7 +216,7 @@ type
     procedure PasteSelection;
     procedure DeleteSelection;
     function InvokeComponentEditor(AComponent: TComponent;
-      MenuIndex: integer): boolean;
+                                   MenuIndex: integer): boolean;
     procedure DoProcessCommand(Sender: TObject; var Command: word;
                                var Handled: boolean);
 
@@ -226,13 +228,14 @@ type
     function GetShiftState: TShiftState; override;
 
     procedure AddComponentEditorMenuItems(
-      AComponentEditor: TBaseComponentEditor; AParentMenuItem: TMenuItem);
+            AComponentEditor: TBaseComponentEditor; AParentMenuItem: TMenuItem);
 
     function IsDesignMsg(Sender: TControl;
-       var TheMessage: TLMessage): Boolean; override;
+                                  var TheMessage: TLMessage): Boolean; override;
+    function UniqueName(const BaseName: string): string; override;
     Procedure RemoveComponentAndChilds(AComponent: TComponent);
     procedure Notification(AComponent: TComponent;
-       Operation: TOperation); override;
+                           Operation: TOperation); override;
     procedure ValidateRename(AComponent: TComponent;
        const CurName, NewName: string); override;
     function CreateUniqueComponentName(const AClassName: string): string; override;
@@ -634,8 +637,7 @@ var
       // set new nice bounds
       FindUniquePosition(NewComponent);
       // finish adding component
-      if Assigned(FOnComponentAdded) then
-        FOnComponentAdded(Self,NewComponent,nil);
+      NotifyComponentAdded(NewComponent);
       Modified;
     end;
 
@@ -705,6 +707,31 @@ procedure TDesigner.DoShowTabOrderEditor;
 begin
   if ShowTabOrderDialog(FLookupRoot)=mrOk then
     Modified;
+end;
+
+procedure TDesigner.GiveComponentsNames;
+var
+  i: Integer;
+  CurComponent: TComponent;
+begin
+  if LookupRoot=nil then exit;
+  for i:=0 to LookupRoot.ComponentCount-1 do begin
+    CurComponent:=LookupRoot.Components[i];
+    if CurComponent.Name='' then
+      CurComponent.Name:=UniqueName(CurComponent.ClassName);
+  end;
+end;
+
+procedure TDesigner.NotifyComponentAdded(AComponent: TComponent);
+begin
+  try
+    GiveComponentsNames;
+    if Assigned(FOnComponentAdded) then
+      FOnComponentAdded(Self,AComponent,nil);
+  except
+    on E: Exception do
+      MessageDlg('Error:',E.Message,mtError,[mbOk],0);
+  end;
 end;
 
 procedure TDesigner.SelectOnlyThisComponent(AComponent:TComponent);
@@ -1184,13 +1211,7 @@ writeln('AddComponent A ',FLookupRoot is TCustomForm);
       FOnSetDesigning(Self,NewCI.Component,True);
       
     // tell IDE about the new component (e.g. add it to the source)
-    try
-      if Assigned(FOnComponentAdded) then
-        FOnComponentAdded(Self,NewCI.Component,SelectedCompClass);
-    except
-      on E: Exception do
-        MessageDlg('Error:',E.Message,mtError,[mbOk],0);
-    end;
+    NotifyComponentAdded(NewCI.Component);
 
     // creation completed
     // -> select new component
@@ -1200,7 +1221,6 @@ writeln('AddComponent A ',FLookupRoot is TCustomForm);
         // this resets the component palette to the selection tool
         FOnUnselectComponentClass(Self);
         
-    //Form.Invalidate;
     {$IFDEF VerboseDesigner}
     writeln('NEW COMPONENT ADDED: Form.ComponentCount=',Form.ComponentCount,
        '  NewCI.Control.Owner.Name=',NewCI.Component.Owner.Name);
@@ -1562,24 +1582,27 @@ var
   Hook: TPropertyEditorHook;
 begin
   PopupMenuComponentEditor:=nil;
-  if TheFormEditor.FindComponent(AComponent)<>nil then begin
-    // unselect component
-    ControlSelection.Remove(AComponent);
-    // call RemoveComponent handler
-    if Assigned(FOnRemoveComponent) then
-      FOnRemoveComponent(Self,AComponent);
-    // call component deleting handlers
-    Hook:=GetPropertyEditorHook;
-    if Hook<>nil then
-      Hook.ComponentDeleting(AComponent);
-    // delete component
-    TheFormEditor.DeleteControl(AComponent,FreeComponent);
+  if TheFormEditor.FindComponent(AComponent)=nil then begin
     // unmark component
     DeletingComponents.Remove(AComponent);
-    // call ComponentDeleted handler
-    if Assigned(FOnComponentDeleted) then
-      FOnComponentDeleted(Self,AComponent);
+    exit;
   end;
+  // unselect component
+  ControlSelection.Remove(AComponent);
+  // call RemoveComponent handler
+  if Assigned(FOnRemoveComponent) then
+    FOnRemoveComponent(Self,AComponent);
+  // call component deleting handlers
+  Hook:=GetPropertyEditorHook;
+  if Hook<>nil then
+    Hook.ComponentDeleting(AComponent);
+  // delete component
+  TheFormEditor.DeleteControl(AComponent,FreeComponent);
+  // unmark component
+  DeletingComponents.Remove(AComponent);
+  // call ComponentDeleted handler
+  if Assigned(FOnComponentDeleted) then
+    FOnComponentDeleted(Self,AComponent);
 end;
 
 procedure TDesigner.MarkComponentForDeletion(AComponent: TComponent);
@@ -1627,6 +1650,11 @@ Begin
       Result:=false;
     end;
   end;
+end;
+
+function TDesigner.UniqueName(const BaseName: string): string;
+begin
+  Result:=TheFormEditor.CreateUniqueComponentName(BaseName,LookupRoot);
 end;
 
 procedure TDesigner.Modified;

@@ -63,8 +63,8 @@ type
   TCodeCompletionCodeTool = class(TMethodJumpingCodeTool)
   private
     ASourceChangeCache: TSourceChangeCache;
-    ClassNode: TCodeTreeNode; // the class that is to be completed
-    StartNode: TCodeTreeNode; // the first variable/method/GUID node in ClassNode
+    CompletingClassNode: TCodeTreeNode; // the class that is to be completed
+    StartNode: TCodeTreeNode; // the first variable/method/GUID node in CompletingClassNode
     FAddInheritedCodeToOverrideMethod: boolean;
     FCompleteProperties: boolean;
     FirstInsert: TCodeTreeNodeExtension; // list of insert requests
@@ -110,7 +110,7 @@ type
                        SourceChangeCache: TSourceChangeCache): boolean;
   protected
     property CodeCompleteClassNode: TCodeTreeNode
-                                  read ClassNode write SetCodeCompleteClassNode;
+                                  read CompletingClassNode write SetCodeCompleteClassNode;
     property CodeCompleteSrcChgCache: TSourceChangeCache
                        read ASourceChangeCache write SetCodeCompleteSrcChgCache;
   public
@@ -163,9 +163,9 @@ procedure TCodeCompletionCodeTool.SetCodeCompleteClassNode(
   const AClassNode: TCodeTreeNode);
 begin
   FreeClassInsertionList;
-  ClassNode:=AClassNode;
-  BuildSubTreeForClass(ClassNode);
-  StartNode:=ClassNode.FirstChild;
+  CompletingClassNode:=AClassNode;
+  BuildSubTreeForClass(CompletingClassNode);
+  StartNode:=CompletingClassNode.FirstChild;
   while (StartNode<>nil) and (StartNode.FirstChild=nil) do
     StartNode:=StartNode.NextBrother;
   if StartNode<>nil then StartNode:=StartNode.FirstChild;
@@ -677,9 +677,8 @@ begin
   // find classnode
   BuildTree(false);
   if not EndOfSourceFound then exit;
-  ClassNode:=FindClassNodeInInterface(UpperClassName,true,false);
   // initialize class for code completion
-  CodeCompleteClassNode:=ClassNode;
+  CodeCompleteClassNode:=FindClassNodeInInterface(UpperClassName,true,false,true);
   CodeCompleteSrcChgCache:=SourceChangeCache;
   // check if variable already exists
   if VarExistsInCodeCompleteClass(UpperCaseStr(VarName)) then begin
@@ -1267,7 +1266,7 @@ begin
           ClassSectionNode:=ClassSectionNode.PriorBrother;
       end else begin
         // insert into first published section
-        ClassSectionNode:=ClassNode.FirstChild;
+        ClassSectionNode:=CompletingClassNode.FirstChild;
         // the first class section is always a published section, even if there
         // is no 'published' keyword. If the class starts with the 'published'
         // keyword, then it will be more beautiful to insert vars and procs to
@@ -1450,10 +1449,11 @@ begin
         the first published section. But if a privat variable is already
         needed in the first published section, then the new private section
         must be inserted in front of all }
-      if (ClassNode.FirstChild.EndPos>TopMostPrivateNode.StartPos) then begin
+      if (CompletingClassNode.FirstChild.EndPos>TopMostPrivateNode.StartPos)
+      then begin
         // topmost node is in the first section
         // -> insert as the first section
-        ANode:=ClassNode.FirstChild;
+        ANode:=CompletingClassNode.FirstChild;
         NewPrivatSectionIndent:=GetLineIndent(Src,ANode.StartPos);
         if (ANode.FirstChild<>nil) and (ANode.FirstChild.Desc<>ctnClassGUID)
         then
@@ -1463,7 +1463,7 @@ begin
         PublishedNeeded:=CompareNodeIdentChars(ANode,'PUBLISHED')<>0;
       end else begin
         // default: insert new privat section behind first published section
-        ANode:=ClassNode.FirstChild;
+        ANode:=CompletingClassNode.FirstChild;
         NewPrivatSectionIndent:=GetLineIndent(Src,ANode.StartPos);
         NewPrivatSectionInsertPos:=ANode.EndPos;
       end;
@@ -1631,14 +1631,14 @@ var
   
   procedure GatherExistingClassProcBodies;
   begin
-    TypeSectionNode:=ClassNode.Parent;
+    TypeSectionNode:=CompletingClassNode.Parent;
     if (TypeSectionNode<>nil) and (TypeSectionNode.Parent<>nil)
     and (TypeSectionNode.Parent.Desc=ctnTypeSection) then
       TypeSectionNode:=TypeSectionNode.Parent;
     ClassProcs:=nil;
     ProcBodyNodes:=GatherProcNodes(TypeSectionNode,
                          [phpInUpperCase,phpIgnoreForwards,phpOnlyWithClassname],
-                         ExtractClassName(ClassNode,true));
+                         ExtractClassName(CompletingClassNode,true));
   end;
   
   procedure FindTopMostAndBottomMostProcCodies;
@@ -1707,7 +1707,7 @@ var
   
   procedure FindInsertPointForNewClass;
   begin
-    if NodeHasParentOfType(ClassNode,ctnInterface) then begin
+    if NodeHasParentOfType(CompletingClassNode,ctnInterface) then begin
       // class is in interface section
       // -> insert at the end of the implementation section
       ImplementationNode:=FindImplementationNode;
@@ -1724,7 +1724,7 @@ var
     end else begin
       // class is not in interface section
       // -> insert at the end of the type section
-      ANode:=ClassNode.Parent; // type definition
+      ANode:=CompletingClassNode.Parent; // type definition
       if ANode=nil then
         RaiseException(ctsClassNodeWithoutParentNode);
       if ANode.Parent.Desc=ctnTypeSection then
@@ -1741,7 +1741,7 @@ var
     // insert class comment
     if ClassProcs.Count>0 then begin
       ClassStartComment:=GetIndentStr(Indent)
-                          +'{ '+ExtractClassName(ClassNode,false)+' }';
+                          +'{ '+ExtractClassName(CompletingClassNode,false)+' }';
       ASourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,
          ClassStartComment);
     end;
@@ -1762,11 +1762,11 @@ begin
     {$IFDEF CTDEBUG}
     writeln('TCodeCompletionCodeTool.CreateMissingProcBodies Gather existing method declarations ... ');
     {$ENDIF}
-    TheClassName:=ExtractClassName(ClassNode,false);
+    TheClassName:=ExtractClassName(CompletingClassNode,false);
 
     // gather existing class proc definitions
     ClassProcs:=GatherProcNodes(StartNode,[phpInUpperCase,phpAddClassName],
-       ExtractClassName(ClassNode,true));
+       ExtractClassName(CompletingClassNode,true));
 
     // check for double defined methods in ClassProcs
     CheckForDoubleDefinedMethods;
@@ -1972,7 +1972,7 @@ var CleanCursorPos, Indent, insertPos: integer;
       {$IFDEF CTDEBUG}
       writeln('TCodeCompletionCodeTool.CompleteCode Complete Properties ... ');
       {$ENDIF}
-      SectionNode:=ClassNode.FirstChild;
+      SectionNode:=CompletingClassNode.FirstChild;
       while SectionNode<>nil do begin
         ANode:=SectionNode.FirstChild;
         while ANode<>nil do begin
@@ -2021,12 +2021,13 @@ var CleanCursorPos, Indent, insertPos: integer;
         // find CodeTreeNode at cursor
         CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
 
-        ClassNode:=CursorNode;
-        while (ClassNode<>nil) and (ClassNode.Desc<>ctnClass) do
-          ClassNode:=ClassNode.Parent;
-        if ClassNode=nil then
+        CompletingClassNode:=CursorNode;
+        while (CompletingClassNode<>nil)
+        and (CompletingClassNode.Desc<>ctnClass) do
+          CompletingClassNode:=CompletingClassNode.Parent;
+        if CompletingClassNode=nil then
           RaiseException('oops, I lost your class');
-        ANode:=ClassNode.Parent;
+        ANode:=CompletingClassNode.Parent;
         if ANode=nil then
           RaiseException(ctsClassNodeWithoutParentNode);
         if (ANode.Parent<>nil) and (ANode.Parent.Desc=ctnTypeSection) then

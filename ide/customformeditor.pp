@@ -158,7 +158,6 @@ each control that's dropped onto the form
     function CreateUniqueComponentName(AComponent: TComponent): string;
     function CreateUniqueComponentName(const AClassName: string;
       OwnerComponent: TComponent): string;
-//    Function CreateComponent(CI : TIComponentInterface; TypeName : String;
     Function CreateComponentInterface(AComponent: TComponent): TIComponentInterface;
     Function CreateComponent(ParentCI : TIComponentInterface;
       TypeClass: TComponentClass;  X,Y,W,H : Integer): TIComponentInterface; override;

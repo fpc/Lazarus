@@ -24,7 +24,8 @@
     TEventsCodeTool enhances TCodeCompletionCodeTool.
     TEventsCodeTool provides functions to work with published methods in the
     source. It can gather a list of compatible methods, test if method exists,
-    jump to the method body, create a method
+    jump to the method body, create a method, complete all missing published
+    variables and events from a root component.
 }
 unit EventCodeTool;
 
@@ -59,6 +60,9 @@ type
     function CollectPublishedMethods(Params: TFindDeclarationParams;
       const FoundContext: TFindContext): TIdentifierFoundResult;
   public
+    function CompleteComponent(AComponent: TComponent;
+        SourceChangeCache: TSourceChangeCache): boolean;
+  
     function GetCompatiblePublishedMethods(const UpperClassName: string;
         TypeData: PTypeData; Proc: TGetStringProc): boolean;
     function GetCompatiblePublishedMethods(ClassNode: TCodeTreeNode;
@@ -193,7 +197,7 @@ begin
     {$ENDIF}
     BuildTree(true);
     if not InterfaceSectionFound then exit;
-    ClassNode:=FindClassNodeInInterface(UpperClassName,true,false);
+    ClassNode:=FindClassNodeInInterface(UpperClassName,true,false,true);
     {$IFDEF CTDEBUG}
     writeln('[TEventsCodeTool.GetCompatiblePublishedMethods] B ',ClassNode<>nil);
     {$ENDIF}
@@ -376,7 +380,7 @@ begin
     {$ENDIF}
     BuildTree(true);
     if not InterfaceSectionFound then exit;
-    ClassNode:=FindClassNodeInInterface(UpperClassName,true,false);
+    ClassNode:=FindClassNodeInInterface(UpperClassName,true,false,true);
     {$IFDEF CTDEBUG}
     writeln('[TEventsCodeTool.PublishedMethodExists] B ',ClassNode<>nil);
     {$ENDIF}
@@ -474,7 +478,7 @@ var ClassNode: TCodeTreeNode;
 begin
   BuildTree(false);
   if not EndOfSourceFound then exit;
-  ClassNode:=FindClassNodeInInterface(UpperClassName,true,false);
+  ClassNode:=FindClassNodeInInterface(UpperClassName,true,false,true);
   Result:=RenamePublishedMethod(ClassNode,UpperOldMethodName,NewMethodName,
                                 SourceChangeCache);
 end;
@@ -527,12 +531,12 @@ end;
 function TEventsCodeTool.CreatePublishedMethod(const UpperClassName,
   AMethodName: string; ATypeInfo: PTypeInfo;
   SourceChangeCache: TSourceChangeCache): boolean;
-var ClassNode: TCodeTreeNode;
+var AClassNode: TCodeTreeNode;
 begin
   BuildTree(false);
   if not EndOfSourceFound then exit;
-  ClassNode:=FindClassNodeInInterface(UpperClassName,true,false);
-  Result:=CreatePublishedMethod(ClassNode,AMethodName,ATypeInfo,
+  AClassNode:=FindClassNodeInInterface(UpperClassName,true,false,true);
+  Result:=CreatePublishedMethod(AClassNode,AMethodName,ATypeInfo,
                SourceChangeCache);
 end;
 
@@ -702,6 +706,68 @@ begin
   Result:=ifrProceedSearch;
 end;
 
+function TEventsCodeTool.CompleteComponent(AComponent: TComponent;
+  SourceChangeCache: TSourceChangeCache): boolean;
+{ - Adds all missing published variable declarations to the class definition
+    in the source
+}
+var
+  UpperClassName: String;
+  i: Integer;
+  CurComponent: TComponent;
+  VarName: String;
+  UpperCurComponentName: String;
+  VarType: String;
+begin
+  Result:=false;
+  BuildTree(false);
+  if not EndOfSourceFound then exit;
+  UpperClassName:=UpperCaseStr(AComponent.ClassName);
+  { $IFDEF CTDEBUG}
+  writeln('[TEventsCodeTool.CompleteComponent] A Component="',AComponent.Name,':',AComponent.ClassName);
+  { $ENDIF}
+  // initialize class for code completion
+  CodeCompleteClassNode:=FindClassNodeInInterface(UpperClassName,true,false,true);
+  CodeCompleteSrcChgCache:=SourceChangeCache;
+  // complete all child components
+  for i:=0 to AComponent.ComponentCount-1 do begin
+    CurComponent:=AComponent.Components[i];
+    writeln('[TEventsCodeTool.CompleteComponent]  CurComponent=',CurComponent.Name,':',CurComponent.ClassName);
+    VarName:=CurComponent.Name;
+    if VarName='' then continue;
+    UpperCurComponentName:=UpperCaseStr(VarName);
+    VarType:=CurComponent.ClassName;
+    // add missing published variable
+    if VarExistsInCodeCompleteClass(UpperCurComponentName) then begin
+    end else begin
+      writeln('[TEventsCodeTool.CompleteComponent] ADDING variable ',CurComponent.Name,':',CurComponent.ClassName);
+      AddClassInsertion(nil,UpperCurComponentName,
+              VarName+':'+VarType+';',VarName,'',ncpPublishedVars);
+    end;
+    // add missing published events
+    
+    // ToDo
+    
+  end;
+  { $IFDEF CTDEBUG}
+  writeln('[TEventsCodeTool.CompleteComponent] invoke class completion');
+  { $ENDIF}
+  if not InsertAllNewClassParts then
+    RaiseException(ctsErrorDuringInsertingNewClassParts);
+
+  // insert all missing proc bodies
+  if not CreateMissingProcBodies then
+    RaiseException(ctsErrorDuringCreationOfNewProcBodies);
+
+  // apply the changes
+  if not SourceChangeCache.Apply then
+    RaiseException(ctsUnableToApplyChanges);
+  { $IFDEF CTDEBUG}
+  writeln('[TEventsCodeTool.CompleteComponent] END');
+  { $ENDIF}
+  Result:=true;
+end;
+
 function TEventsCodeTool.FindIdentifierNodeInClass(ClassNode: TCodeTreeNode;
   Identifier: PChar): TCodeTreeNode;
 var
@@ -722,8 +788,6 @@ begin
   end;
   Result:=nil;
 end;
-
-
 
 end.
 

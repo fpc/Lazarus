@@ -1136,7 +1136,7 @@ begin
   AncestorClassName:='';
   if UpperClassName='' then exit;
   BuildTree(true);
-  ClassNode:=FindClassNodeInInterface(UpperClassName,true,false);
+  ClassNode:=FindClassNodeInInterface(UpperClassName,true,false,false);
   if (ClassNode=nil) then exit;
   // search the ancestor name
   MoveCursorToNodeStart(ClassNode);
@@ -2001,7 +2001,7 @@ begin
   Result:=nil;
   if (UpperClassName='') or (length(UpperClassName)>255) then exit;
   BuildTree(true);
-  ClassNode:=FindClassNodeInInterface(UpperClassName,true,false);
+  ClassNode:=FindClassNodeInInterface(UpperClassName,true,false,false);
   if ClassNode=nil then exit;
   BuildSubTreeForClass(ClassNode);
   SectionNode:=ClassNode.FirstChild;
@@ -2034,7 +2034,7 @@ begin
     Result:=true;
     exit;
   end;
-  ClassNode:=FindClassNodeInInterface(UpperClassName,true,false);
+  ClassNode:=FindClassNodeInInterface(UpperClassName,true,false,true);
   if ClassNode=nil then exit;
   BuildSubTreeForClass(ClassNode);
   SectionNode:=ClassNode.FirstChild;

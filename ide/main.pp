@@ -1073,12 +1073,6 @@ begin
   OpenFilePopUpMenu := TPopupMenu.Create(self);
   OpenFilePopupMenu.Name:='OpenFilePopupMenu';
   OpenFilePopupMenu.AutoPopup := False;
-  {
-    MenuItem := TMenuItem.Create(Self);
-    MenuItem.Caption := 'No files have been opened';
-    MenuItem.OnClick := nil;
-    OpenFilePopupMenu.Items.Add(MenuItem);
-  }
 end;
 
 procedure TMainIDE.SetupComponentNoteBook;
@@ -7313,7 +7307,7 @@ procedure TMainIDE.OnDesignerComponentAdded(Sender: TObject;
 var
   ActiveUnitInfo: TUnitInfo;
   ActiveSrcEdit: TSourceEditor;
-  OwnerClassName: string;
+  ADesigner: TDesigner;
 begin
   if not (Sender is TDesigner) then begin
     writeln('TMainIDE.OnDesignerComponentAdded ERROR: Sender.ClassName=',
@@ -7322,8 +7316,8 @@ begin
   end;
   if AComponentClass=nil then
     AComponentClass:=IDEComponentPalette.FindComponent(AComponent.ClassName);
-  BeginCodeTool(TDesigner(Sender),ActiveSrcEdit,ActiveUnitInfo,
-                [ctfSwitchToFormSource]);
+  ADesigner:=TDesigner(Sender);
+  BeginCodeTool(ADesigner,ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource]);
 
   // add needed package to required packages
   PkgBoss.AddProjectRegCompDependency(Project1,AComponentClass);
@@ -7331,15 +7325,8 @@ begin
   CodeToolBoss.AddUnitToMainUsesSection(ActiveUnitInfo.Source,
                                         AComponentClass.GetUnitName,'');
   ActiveUnitInfo.Modified:=true;
-  // add component definition to form source
-  OwnerClassName:=AComponent.Owner.ClassName;
-  if not CodeToolBoss.PublishedVariableExists(ActiveUnitInfo.Source,
-    OwnerClassName,AComponent.Name) then begin
-    // ! AddPublishedVariable does not rebuild the CodeTree, so we need
-    // PublishedVariableExists before !
-    CodeToolBoss.AddPublishedVariable(ActiveUnitInfo.Source,OwnerClassName,
-      AComponent.Name, AComponent.ClassName);
-  end;
+  // add component definitions to form source
+  CodeToolBoss.CompleteComponent(ActiveUnitInfo.Source,ADesigner.LookupRoot);
 
   ObjectInspector1.FillComponentComboBox;
 end;
@@ -8457,12 +8444,16 @@ begin
   if (not IsValidIdent(NewName)) or (NewName='') then
     raise Exception.Create(Format(lisComponentNameIsNotAValidIdentifier, ['"',
       Newname, '"']));
+  if AComponent.Name='' then begin
+    // this component was never added to the source. It is a new component.
+    exit;
+  end;
   BeginCodeTool(ADesigner,ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource]);
   ActiveUnitInfo:=Project1.UnitWithComponent(ADesigner.LookupRoot);
   if CodeToolBoss.IsKeyWord(ActiveUnitInfo.Source,NewName) then
     raise Exception.Create(Format(lisComponentNameIsKeyword, ['"', Newname, '"']
       ));
-  if AComponent.Owner<>nil then begin
+  if ADesigner.LookupRoot<>nil then begin
     // rename published variable in form source
     BossResult:=CodeToolBoss.RenamePublishedVariable(ActiveUnitInfo.Source,
       ADesigner.LookupRoot.ClassName,
@@ -9301,6 +9292,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.616  2003/06/23 12:33:55  mattias
+  implemented TPairSplitter streaming
+
   Revision 1.615  2003/06/23 09:42:09  mattias
   fixes for debugging lazarus
 

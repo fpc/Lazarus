@@ -311,10 +311,10 @@ implementation
 
 { Menu command managment }
 
-var
+{var
   CommandPool: TBits;
 
-{function UniqueCommand: Word;
+function UniqueCommand: Word;
 begin
   Result := CommandPool.OpenBit;
   CommandPool[Result] := True;
@@ -374,6 +374,9 @@ end.
 
 {
   $Log$
+  Revision 1.46  2003/06/23 12:33:55  mattias
+  implemented TPairSplitter streaming
+
   Revision 1.45  2003/06/23 09:42:09  mattias
   fixes for debugging lazarus
 

@@ -35,8 +35,8 @@ unit PairSplitter;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LMessages, VCLGlobals, Graphics, LCLLinux,
-  Controls;
+  Classes, SysUtils, LCLProc, LMessages, VCLGlobals, Graphics, GraphType,
+  LCLLinux, Controls;
   
 type
   TCustomPairSplitter = class;
@@ -59,7 +59,13 @@ type
   public
     property Splitter: TCustomPairSplitter read GetSplitter;
     property Visible;
+    property Left;
+    property Top;
+    property Width;
+    property Height;
   published
+    property ClientWidth;
+    property ClientHeight;
     property Enabled;
     property OnMouseDown;
     property OnMouseMove;
@@ -125,7 +131,15 @@ type
     property Visible;
   end;
   
+procedure Register;
+  
 implementation
+
+procedure Register;
+begin
+  RegisterComponents('Additional',[TPairSplitter]);
+  RegisterNoIcon([TPairSplitterSide]);
+end;
 
 { TPairSplitterSide }
 
@@ -176,7 +190,7 @@ begin
     ACanvas := TControlCanvas.Create;
     with ACanvas do begin
       Control := Self;
-      Pen.Color:=clRed;
+      Pen.Style := psDash;
       Frame(0,0,Width-1,Height-1);
       Free;
     end;
@@ -260,8 +274,7 @@ begin
       FSides[i]:=nil;
     end;
   // if the user deletes a side at designtime, autocreate a new one
-  if (csDesigning in ComponentState) and (not (csDestroying in ComponentState))
-  then
+  if (csDesigning in ComponentState) then
     CreateSides;
 end;
 
@@ -271,9 +284,9 @@ begin
   FCompStyle := csPairSplitter;
   ControlStyle:=ControlStyle-[csAcceptsControls];
   FSplitterType:=pstHorizontal;
-  SetInitialBounds(0, 0, 50, 50);
-  if not (csLoading in ComponentState) then
-    CreateSides;
+  SetInitialBounds(0, 0, 90, 90);
+  FPosition:=45;
+  CreateSides;
 end;
 
 destructor TCustomPairSplitter.Destroy;
@@ -291,12 +304,16 @@ end;
 procedure TCustomPairSplitter.CreateWnd;
 var
   i: Integer;
+  APosition: Integer;
 begin
   inherited CreateWnd;
   for i:=Low(FSides) to High(FSides) do
     if FSides[i]<>nil then
       PairSplitterAddSide(Handle,FSides[i].Handle,i);
-  PairSplitterSetPosition(Handle,FPosition);
+  APosition:=FPosition;
+  PairSplitterSetPosition(Handle,APosition);
+  if not (csLoading in ComponentState) then
+    FPosition:=APosition;
 end;
 
 procedure TCustomPairSplitter.UpdatePosition;
@@ -315,16 +332,15 @@ var
   ASide: TPairSplitterSide;
   i: Integer;
 begin
-  if fDoNotCreateSides then exit;
+  if fDoNotCreateSides or (csDestroying in ComponentState)
+  or (csLoading in ComponentState)
+  or ((Owner<>nil) and (csLoading in Owner.ComponentState)) then exit;
   // create the missing side controls
   for i:=Low(FSides) to High(FSides) do
     if FSides[i]=nil then begin
       // For streaming it is important that the side controls are owned by
       // the owner of the splitter
-      if (Owner<>nil) then
-        ASide:=TPairSplitterSide.Create(Owner)
-      else
-        ASide:=TPairSplitterSide.Create(Self);
+      ASide:=TPairSplitterSide.Create(Owner);
       ASide.fCreatedBySplitter:=true;
       ASide.Parent:=Self;
     end;
@@ -334,6 +350,8 @@ procedure TCustomPairSplitter.Loaded;
 begin
   inherited Loaded;
   CreateSides;
+  if HandleAllocated then
+    PairSplitterSetPosition(Handle,FPosition);
 end;
 
 end.

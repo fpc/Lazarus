@@ -290,24 +290,6 @@ type
     function ReplaceCode(Code: TCodeBuffer; StartX, StartY: integer;
           EndX, EndY: integer; const NewCode: string): boolean;
 
-    // functions for events in the object inspector
-    function GetCompatiblePublishedMethods(Code: TCodeBuffer;
-          const AClassName: string; TypeData: PTypeData;
-          Proc: TGetStringProc): boolean;
-    function PublishedMethodExists(Code:TCodeBuffer; const AClassName,
-          AMethodName: string; TypeData: PTypeData;
-          var MethodIsCompatible, MethodIsPublished, IdentIsMethod: boolean
-          ): boolean;
-    function JumpToPublishedMethodBody(Code: TCodeBuffer;
-          const AClassName, AMethodName: string;
-          var NewCode: TCodeBuffer;
-          var NewX, NewY, NewTopLine: integer): boolean;
-    function RenamePublishedMethod(Code: TCodeBuffer;
-          const AClassName, OldMethodName,
-          NewMethodName: string): boolean;
-    function CreatePublishedMethod(Code: TCodeBuffer; const AClassName,
-          NewMethodName: string; ATypeInfo: PTypeInfo): boolean;
-          
     // code completion = auto class completion, auto forward proc completion,
     //             local var assignment completion, event assignment completion
     function CompleteCode(Code: TCodeBuffer; X,Y,TopLine: integer;
@@ -350,6 +332,10 @@ type
     function RenameIncludeDirective(Code: TCodeBuffer; LinkIndex: integer;
           const NewFilename: string; KeepPath: boolean): boolean;
 
+    // register proc
+    function HasInterfaceRegisterProc(Code: TCodeBuffer;
+          var HasRegisterProc: boolean): boolean;
+
     // Application.Createform(ClassName,VarName) statements in program source
     function FindCreateFormStatement(Code: TCodeBuffer; StartPos: integer;
           const AClassName, AVarName: string;
@@ -374,6 +360,8 @@ type
       var AncestorClassName: string; DirtySearch: boolean): boolean;
 
     // form components
+    function CompleteComponent(Code: TCodeBuffer; AComponent: TComponent
+          ): boolean;
     function PublishedVariableExists(Code: TCodeBuffer;
           const AClassName, AVarName: string): boolean;
     function AddPublishedVariable(Code: TCodeBuffer;
@@ -384,9 +372,23 @@ type
           const AClassName, OldVariableName, NewVarName,
           VarType: shortstring): boolean;
           
-    // register
-    function HasInterfaceRegisterProc(Code: TCodeBuffer;
-          var HasRegisterProc: boolean): boolean;
+    // functions for events in the object inspector
+    function GetCompatiblePublishedMethods(Code: TCodeBuffer;
+          const AClassName: string; TypeData: PTypeData;
+          Proc: TGetStringProc): boolean;
+    function PublishedMethodExists(Code:TCodeBuffer; const AClassName,
+          AMethodName: string; TypeData: PTypeData;
+          var MethodIsCompatible, MethodIsPublished, IdentIsMethod: boolean
+          ): boolean;
+    function JumpToPublishedMethodBody(Code: TCodeBuffer;
+          const AClassName, AMethodName: string;
+          var NewCode: TCodeBuffer;
+          var NewX, NewY, NewTopLine: integer): boolean;
+    function RenamePublishedMethod(Code: TCodeBuffer;
+          const AClassName, OldMethodName,
+          NewMethodName: string): boolean;
+    function CreatePublishedMethod(Code: TCodeBuffer; const AClassName,
+          NewMethodName: string; ATypeInfo: PTypeInfo): boolean;
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -2003,6 +2005,21 @@ begin
   if (not Result) and DirtySearch then begin
     AncestorClassName:=FindClassAncestorName(Code.Source,FormClassName);
     Result:=AncestorClassName<>'';
+  end;
+end;
+
+function TCodeToolManager.CompleteComponent(Code: TCodeBuffer;
+  AComponent: TComponent): boolean;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.CompleteComponent A ',Code.Filename,' ',AComponent.Name,':',AComponent.ClassName);
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.CompleteComponent(AComponent,SourceChangeCache);
+  except
+    on e: Exception do Result:=HandleException(e);
   end;
 end;
 

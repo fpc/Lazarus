@@ -52,6 +52,7 @@ ResourceString
   ctsIdentExpectedButAtomFound = 'identifier expected, but %s found';
   ctsIdentExpectedButKeyWordFound = 'identifier expected, but keyword %s found';
   ctsStrExpectedButAtomFound = '%s expected, but %s found';
+  ctsClassSNotFound = 'Class %s not found';
   ctsIdentExpectedButEOFFound = 'unexpected end of file (identifier expected)';
   ctsBracketOpenExpectedButAtomFound = 'bracket open expected, but %s found';
   ctsBracketCloseExpectedButAtomFound = 'bracket close expected, but %s found';
