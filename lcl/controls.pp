@@ -1415,15 +1415,21 @@ type
     procedure WMExit(var Message: TLMExit); message LM_EXIT;
     procedure WMMouseWheel(var Message: TLMMouseEvent); message LM_MOUSEWHEEL;
     procedure WMKeyDown(var Message: TLMKeyDown); message LM_KEYDOWN;
+    procedure WMSysKeyDown(var Message: TLMKeyDown); message LM_SYSKEYDOWN;
     procedure WMKeyUp(var Message: TLMKeyUp); message LM_KEYUP;
+    procedure WMSysKeyUp(var Message: TLMKeyUp); message LM_SYSKEYUP;
     procedure WMChar(var Message: TLMChar); message LM_CHAR;
+    procedure WMSysChar(var Message: TLMChar); message LM_SYSCHAR;
     procedure WMPaint(var Msg: TLMPaint); message LM_PAINT;
     procedure WMDestroy(var Message: TLMDestroy); message LM_DESTROY;
     procedure WMMove(var Message: TLMMove); message LM_MOVE;
     procedure WMSize(var Message: TLMSize); message LM_SIZE;
     procedure CNKeyDown(var Message: TLMKeyDown); message CN_KEYDOWN;
+    procedure CNSysKeyDown(var Message: TLMKeyDown); message CN_SYSKEYDOWN;
     procedure CNKeyUp(var Message: TLMKeyUp); message CN_KEYUP;
+    procedure CNSysKeyUp(var Message: TLMKeyUp); message CN_SYSKEYUP;
     procedure CNChar(var Message: TLMKeyUp); message CN_CHAR;
+    procedure CNSysChar(var Message: TLMKeyUp); message CN_SYSCHAR;
   protected
     // drag and drop
     procedure DoAddDockClient(Client: TControl; const ARect: TRect); dynamic;
@@ -1447,6 +1453,7 @@ type
     function  DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean; dynamic;
     function  DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; dynamic;
     function  DoKeyDown(var Message: TLMKey): Boolean;
+    function  DoRemainginKeyDown(var Message: TLMKeyDown): Boolean;
     function  DoKeyPress(var Message: TLMKey): Boolean;
     function  DoUTF8KeyPress(var UTF8Key: TUTF8Char): boolean; dynamic;
     function  DoKeyUp(var Message: TLMKey): Boolean;
@@ -2496,6 +2503,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.257  2004/11/29 01:12:36  mattias
+  added SysKey messages to gtk intf and LCL
+
   Revision 1.256  2004/11/05 22:08:53  mattias
   implemented auto sizing: child to parent sizing
 

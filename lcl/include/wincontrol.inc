@@ -2305,6 +2305,39 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  TWinControl DoRemainginKeyDown
+
+  Returns True if key handled
+------------------------------------------------------------------------------}
+function TWinControl.DoRemainginKeyDown(var Message: TLMKeyDown): Boolean;
+var
+  ShiftState: TShiftState;
+begin
+  Result:=true;
+  
+  ShiftState := KeyDataToShiftState(Message.KeyData);
+
+  // handle LCL special keys
+  ControlKeyDown(Message.CharCode,ShiftState);
+  if Message.CharCode=VK_UNKNOWN then exit;
+
+  //DebugLn('TWinControl.WMKeyDown ',Name,':',ClassName);
+  if not (csNoStdEvents in ControlStyle) then
+  begin
+    KeyDownAfterInterface(Message.CharCode, ShiftState);
+    if Message.CharCode=VK_UNKNOWN then exit;
+    // Note: Message.CharCode can now be different or even 0
+  end;
+
+  // let application handle the remaining key
+  if Application<>nil then
+    Application.NotifyKeyDownHandler(Self, Message.CharCode, ShiftState);
+  if Message.CharCode = VK_UNKNOWN then Exit;
+
+  Result := False;
+end;
+
+{------------------------------------------------------------------------------
   TWinControl DoKeyPress
   
   Returns True if key handled
@@ -3181,6 +3214,22 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  procedure TWinControl.CNSysKeyDown(var Message: TLMKeyDown);
+ ------------------------------------------------------------------------------}
+procedure TWinControl.CNSysKeyDown(var Message: TLMKeyDown);
+begin
+  if not DoKeyDown(Message) then {inherited};  // there is nothing to inherit
+end;
+
+{------------------------------------------------------------------------------
+  procedure TWinControl.CNSysKeyUp(var Message: TLMKeyUp);
+ ------------------------------------------------------------------------------}
+procedure TWinControl.CNSysKeyUp(var Message: TLMKeyUp);
+begin
+
+end;
+
+{------------------------------------------------------------------------------
   Method: TWinControl.CNKeyUp
   Params:   Msg: The message
   Returns:  nothing
@@ -3198,7 +3247,7 @@ end;
   Returns:  nothing
 
   event handler.
-  WMChar is sent by the interface befor it has handled the keypress by itself.
+  CNChar is sent by the interface before it has handled the keypress itself.
  ------------------------------------------------------------------------------}
 procedure TWinControl.CNChar(var Message: TLMKeyUp);
 var
@@ -3222,6 +3271,11 @@ begin
       end;
     end;
   end;
+end;
+
+procedure TWinControl.CNSysChar(var Message: TLMKeyUp);
+begin
+  if not DoKeyPress(Message) then {inherited}; // there is nothing to inherit
 end;
 
 {------------------------------------------------------------------------------
@@ -3324,6 +3378,11 @@ begin
   Assert(False, Format('Trace:[TWinControl.WMChar] %s', [ClassName]));
 end;
 
+procedure TWinControl.WMSysChar(var Message: TLMChar);
+begin
+
+end;
+
 {------------------------------------------------------------------------------
   Method: TWinControl.WMKeyDown
   Params:   Msg: The message
@@ -3332,27 +3391,21 @@ end;
   Event handler for keys not handled by the interface
  ------------------------------------------------------------------------------}
 Procedure TWinControl.WMKeyDown(Var Message: TLMKeyDown);
-var
-  ShiftState: TShiftState;
 begin
-  ShiftState := KeyDataToShiftState(Message.KeyData);
+  DoRemainginKeyDown(Message);
+end;
 
-  // handle LCL special keys
-  ControlKeyDown(Message.CharCode,ShiftState);
-  if Message.CharCode=VK_UNKNOWN then exit;
+procedure TWinControl.WMSysKeyDown(var Message: TLMKeyDown);
+begin
+  DoRemainginKeyDown(Message);
+end;
 
-  //DebugLn('TWinControl.WMKeyDown ',Name,':',ClassName);
-  if not (csNoStdEvents in ControlStyle) then
-  begin
-    KeyDownAfterInterface(Message.CharCode, ShiftState);
-    if Message.CharCode=VK_UNKNOWN then exit;
-    // Note: Message.CharCode can now be different or even 0
-  end;
-
-  // let application handle the remaining key
-  if Application<>nil then
-    Application.NotifyKeyDownHandler(Self, Message.CharCode, ShiftState);
-  if Message.CharCode = VK_UNKNOWN then Exit;
+{------------------------------------------------------------------------------
+  procedure TWinControl.WMSysKeyUp(var Message: TLMKeyUp);
+ ------------------------------------------------------------------------------}
+procedure TWinControl.WMSysKeyUp(var Message: TLMKeyUp);
+begin
+  if not DoKeyUp(Message) then {inherited}; // there is nothing to inherit
 end;
 
 {------------------------------------------------------------------------------
@@ -3364,7 +3417,6 @@ end;
  ------------------------------------------------------------------------------}
 Procedure TWinControl.WMKeyUp(Var Message: TLMKeyUp);
 Begin
-  Assert(False, Format('Trace:[TWinControl.WMKeyUp] %s', [ClassName]));
   if not DoKeyUp(Message) then {inherited}; // there is nothing to inherit
 end;
 
@@ -4128,6 +4180,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.291  2004/11/29 01:12:36  mattias
+  added SysKey messages to gtk intf and LCL
+
   Revision 1.290  2004/11/28 01:03:26  mattias
   do not send OnExit/OnEnter during destroy, design or loading
 

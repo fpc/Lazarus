@@ -2098,14 +2098,14 @@ begin
 
       Msg.CharCode := VKey.VKey;
       if BeforeEvent then begin
-        //if SysKey then
-        //  Msg.msg := CN_SYSKEYUP
-        //else
+        if SysKey then
+          Msg.msg := CN_SYSKEYUP
+        else
           Msg.msg := CN_KEYUP;
       end else begin
-        //if SysKey then
-        //  Msg.msg := LM_SYSKEYUP
-        //else
+        if SysKey then
+          Msg.msg := LM_SYSKEYUP
+        else
           Msg.msg := LM_KEYUP;
       end;
 
@@ -2134,14 +2134,14 @@ begin
       Msg.CharCode := VKey.VKey;
 
       if BeforeEvent then begin
-        //if SysKey then
-        //  Msg.msg := CN_SYSKEYDOWN
-        //else
+        if SysKey then
+          Msg.msg := CN_SYSKEYDOWN
+        else
           Msg.msg := CN_KEYDOWN;
       end else begin
-        //if SysKey then
-        //  Msg.msg := LM_SYSKEYDOWN
-        //else
+        if SysKey then
+          Msg.msg := LM_SYSKEYDOWN
+        else
           Msg.msg := LM_KEYDOWN;
       end;
 
@@ -2185,14 +2185,14 @@ begin
           Msg.KeyData := CommonKeyData;
 
           if BeforeEvent then begin
-            //if SysKey then
-            //  Msg.msg := CN_SYSCHAR
-            //else
+            if SysKey then
+              Msg.msg := CN_SYSCHAR
+            else
               Msg.msg := CN_CHAR
           end else begin
-            //if SysKey then
-            //  Msg.msg := LM_SYSCHAR
-            //else
+            if SysKey then
+              Msg.msg := LM_SYSCHAR
+            else
               Msg.msg := LM_CHAR;
           end;
 
@@ -7884,6 +7884,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.323  2004/11/29 01:12:36  mattias
+  added SysKey messages to gtk intf and LCL
+
   Revision 1.322  2004/11/28 00:55:44  mattias
   deactivated sending SYSKey messages in gtk intf - they are not used anyway
 
