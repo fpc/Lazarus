@@ -32,6 +32,7 @@
        - 'inherited'
        - variants
        - array of const
+       - open arrays
        - interfaces
        - Get and Set property access parameter lists
        - ignore error after cursor position
@@ -593,6 +594,25 @@ begin
       if CursorNode.Desc=ctnProcedure then begin
         BuildSubTreeForProcHead(CursorNode);
         CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
+        // check if cursor on proc name
+        if (CursorNode.Desc=ctnProcedureHead)
+        and (CleanCursorPos>CursorNode.StartPos) then begin
+          MoveCursorToNodeStart(CursorNode);
+          ReadNextAtom;
+          if AtomIsIdentifier(false) then begin
+            ReadNextAtom;
+            if AtomIsChar('.') then begin
+              ReadNextAtom;
+              ReadNextAtom;
+            end;
+          end;
+          if CurPos.StartPos>CleanCursorPos then
+            // cursor on proc name
+            // -> ignore proc name and search overloaded identifier
+            SearchAlsoInCurContext:=false;
+        end;
+        if CursorNode.Desc=ctnProcedureHead then
+          CursorNode:=CursorNode.Parent;
       end;
       MoveCursorToCleanPos(CleanCursorPos);
       while (CurPos.StartPos>1) and (IsIdentChar[Src[CurPos.StartPos-1]]) do
@@ -3945,6 +3965,8 @@ end;
 function TFindDeclarationTool.IsCompatible(TargetType,
   ExpressionType: TExpressionType; Params: TFindDeclarationParams
   ): TTypeCompatibility;
+// can ExpressionType be assigned to TargetType
+var TargetNode, ExprNode: TCodeTreeNode;
 begin
   {$IFDEF ShowExprEval}
   writeln('[TFindDeclarationTool.IsCompatible] B ',
@@ -3952,9 +3974,39 @@ begin
   ' ExpressionType=',ExpressionTypeDescNames[ExpressionType.Desc]);
   {$ENDIF}
   Result:=tcIncompatible;
-  if (TargetType.Desc=ExpressionType.Desc)
-  and (not (TargetType.Desc in [xtNone,xtContext])) then begin
-    Result:=tcExact;
+  if (TargetType.Desc=ExpressionType.Desc) then begin
+    case TargetType.Desc of
+    xtNone: ;
+    xtContext:
+      begin
+        TargetNode:=TargetType.Context.Node;
+        ExprNode:=ExpressionType.Context.Node;
+        if ExprNode.Desc=TargetNode.Desc then begin
+          // same context type
+          case ExprNode.Desc of
+          
+          ctnClass:
+            // check, if ExpressionType.Context is descend of TargetContext
+            if ContextIsDescendOf(ExpressionType.Context,
+                                  TargetType.Context,Params)
+            then
+              Result:=tcCompatible;
+              
+          ctnArrayType:
+            // check if
+            begin
+            
+            end;
+            
+          end;
+        end else begin
+          // different context type
+          
+        end;
+      end;
+    else
+      Result:=tcExact;
+    end;
   end else begin
     // check, if ExpressionType can be auto converted into TargetType
     if ((TargetType.Desc in xtAllRealTypes)
@@ -3967,18 +4019,14 @@ begin
       and (ExpressionType.Desc in xtAllBooleanConvertibles))
     or ((TargetType.Desc in xtAllPointerTypes)
       and (ExpressionType.Desc in xtAllPointerConvertibles))
-    or ((TargetType.Desc=xtContext)
-      and (TargetType.Context.Node.Desc in [ctnClass,ctnProcedure])
-      and (ExpressionType.Desc=xtNil))
     then
       Result:=tcCompatible
-    else if (ExpressionType.Desc=xtContext) then begin
-      if ExpressionType.Context.Node.Desc=ctnClass then begin
-        // check, if ExpressionType.Context is descend of FindContext
-        if ContextIsDescendOf(ExpressionType.Context,TargetType.Context,Params)
-        then
-          Result:=tcCompatible;
-      end;
+    else if (TargetType.Desc=xtContext) then begin
+      if (TargetType.Context.Node.Desc in [ctnClass,ctnProcedure])
+        and (ExpressionType.Desc=xtNil)
+      //or (TargetType.Context.Node.Desc=ctnA)
+      then
+        Result:=tcCompatible
     end;
   end;
 end;

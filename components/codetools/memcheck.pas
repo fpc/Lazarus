@@ -3,6 +3,8 @@
  *                                                                         *
  * This unit is an altered heaptrc.pp from the fpc sources                 *
  *                                                                         *
+ * The only change are the 2 procs CheckHeap                               *
+ *                                                                         *
  ***************************************************************************
 }
 unit MemCheck;

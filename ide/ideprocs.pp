@@ -293,7 +293,7 @@ begin
   // check if filename absolute
   if FilenameIsAbsolute(Filename) then begin
     if FileExists(Filename) then begin
-      Result:=Filename;
+      Result:=ExpandFilename(Filename);
       exit;
     end else begin
       Result:='';
