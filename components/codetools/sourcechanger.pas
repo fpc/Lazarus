@@ -46,11 +46,26 @@ uses
   AVL_Tree, KeywordFuncLists;
   
 type
-  // TBeautifyCodeOptions
-  TClassPartInsertPolicy = (cpipAlphabetically, cpipLast);
-  TMethodInsertPolicy = (mipAlphabetically, mipLast, mipClassOrder);
+  { TBeautifyCodeOptions }
+  
+  // Insert policy types for class parts (properties, variables, method defs)
+  TClassPartInsertPolicy = (
+    cpipAlphabetically,
+    cpipLast            // as last sibling
+    );
+    
+  // Insert policy for method bodies (begin..end of methods, not procs)
+  TMethodInsertPolicy = (
+    mipAlphabetically,
+    mipLast,           // behind all existing methods of the same class
+    mipClassOrder      // try to copy the order of the class
+    );
+    
   TForwardProcInsertPolicy = (
-    fpipLast, fpipInFrontOfMethods, fpipBehindMethods);
+    fpipLast,
+    fpipInFrontOfMethods,
+    fpipBehindMethods
+    );
 
   TWordPolicy = (wpNone, wpLowerCase, wpUpperCase, wpLowerCaseFirstLetterUp);
   TAtomType = (atNone, atKeyword, atIdentifier, atColon, atSemicolon, atComma,
@@ -73,8 +88,10 @@ type
     LineEnd: string; // default: #13#10
     Indent: integer;
     ClassPartInsertPolicy: TClassPartInsertPolicy;
+    MixMethodsAndPorperties: boolean;
     MethodInsertPolicy: TMethodInsertPolicy;
     ForwardProcInsertPolicy: TForwardProcInsertPolicy;
+    KeepForwardProcOrder: boolean;
     KeyWordPolicy: TWordPolicy;
     IdentifierPolicy: TWordPolicy;
     DoNotSplitLineInFront: TAtomTypes;
@@ -725,8 +742,10 @@ begin
   LineEnd:={$IFDEF win32}#13+{$ENDIF}#10;
   Indent:=2;
   ClassPartInsertPolicy:=cpipLast;
+  MixMethodsAndPorperties:=false;
   MethodInsertPolicy:=mipClassOrder;
   ForwardProcInsertPolicy:=fpipBehindMethods;
+  KeepForwardProcOrder:=true;
   KeyWordPolicy:=wpLowerCase;
   IdentifierPolicy:=wpNone;
   DoNotSplitLineInFront:=DefaultDoNotSplitLineInFront;
