@@ -64,7 +64,7 @@ type
     StartNode: TCodeTreeNode; // the first variable/method/GUID node in ClassNode
     FAddInheritedCodeToOverrideMethod: boolean;
     FCompleteProperties: boolean;
-    FirstInsert: TCodeTreeNodeExtension; // first of a list of insert requests
+    FirstInsert: TCodeTreeNodeExtension; // list of insert requests
     FSetPropertyVariablename: string;
     JumpToProcName: string;
     NewPrivatSectionIndent, NewPrivatSectionInsertPos: integer;
@@ -1688,6 +1688,8 @@ var CleanCursorPos, Indent, insertPos: integer;
         Result:=FullTopLvlName;
         l:=PropertyAtom.EndPos-PropertyAtom.StartPos;
         PropertyName:=copy(Src,PropertyAtom.StartPos,l);
+        if AnsiCompareText(PropertyName,RightStr(Result,l))<>0 then
+          Result:=Result+PropertyName;
         if AnsiCompareText(PropertyName,Result)=0 then begin
           // this is an event of the class (not event of published objects)
           // -> add form name
@@ -1700,7 +1702,7 @@ var CleanCursorPos, Indent, insertPos: integer;
         end;
         // convert OnClick to Click
         if (UpperCaseStr(LeftStr(PropertyName,2))='ON')
-        and (AnsiComparetext(RightStr(Result,l),PropertyName)=0)
+        and (AnsiCompareText(RightStr(Result,l),PropertyName)=0)
         then
           Result:=LeftStr(Result,length(Result)-l)+RightStr(Result,l-2);
       end else begin
