@@ -3064,7 +3064,6 @@ var
   Widget      : PGtkWidget;            // pointer to gtk-widget (local use when neccessary)
   GList       : pGList;                // Only used for listboxes, replace with widget!!!!!
   ListItem    : PGtkListItem;          // currently only used for listboxes
-  Rect        : TRect;
   FormIconGdiObject: PGdiObject;     // currently only used by LM_SETFORMICON
   Geometry    : TGdkGeometry;
   AWindow     : PGdkWindow;
@@ -3117,22 +3116,6 @@ begin
 
       LM_DESTROY :
         DestroyLCLComponent(Sender);
-
-  //SH: think of TCanvas.handle!!!!
-      LM_REDRAW:
-      begin
-        Assert(False, Format('Trace:  [TGtkWidgetSet.IntSendMessage3] %s --> Redraw', [Sender.ClassName]));
-        if (Sender is TCanvas) then
-          ReDraw(PgtkWidget(TCanvas(Sender).Handle))
-        else begin
-          if Sender is TWinControl then
-            ReDraw(PgtkWidget(Handle))
-          else begin
-            Rect := TControl(Sender).BoundsRect;
-            InvalidateRect(TControl(Sender).Parent.Handle, @Rect, true);
-          end;
-        end;
-      end;
 
       LM_MovePage :
         if Sender is TCustomNoteBook then begin
@@ -6534,38 +6517,6 @@ begin
   UpdateNoteBookClientWidget(ANoteBook);
 end;
 
-{------------------------------------------------------------------------------}
-{       TGtkWidgetSet ReDraw                                                      }
-{       *Note:                                                                 }
-{------------------------------------------------------------------------------}
-procedure TGtkWidgetSet.ReDraw(Child : Pointer);
-var
-  fWindow :pGdkWindow;
-  widget : PgtkWIdget;
-  PixMap : pgdkPixMap;
-  //gc : PGDKGc;
-begin
-  Assert(False, 'Trace:In AutoRedraw in GTKObject');
-
-  Widget := GetFixedWidget(Child);
-  pixmap := gtk_Object_get_data(pgtkobject(Child),'Pixmap');
-  if PixMap = nil then Exit;
-  fWindow := GetControlWindow(widget);
-  //gc := gdk_gc_new(PgdkWindow(fWindow));
-
-  if fWindow<>nil then begin
-    {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
-    gdk_draw_pixmap(fwindow,
-      gtk_widget_get_style(widget)^.fg_gc[GTK_WIDGET_STATE (widget)],
-      pixmap,
-      0,0,
-      0,0,
-      pgtkwidget(widget)^.allocation.width,
-      pgtkwidget(widget)^.allocation.height);
-    {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
-  end;
-end;
-
 {------------------------------------------------------------------------------
   Method: TGtkWidgetSet.SetPixel
   Params:  Sender : the lcl object which called this func via SendMessage
@@ -6593,6 +6544,36 @@ begin
   {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
   gdk_draw_point(aDC.Drawable, aDC.GC, X, Y);
   {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
+end;
+
+procedure TGtkWidgetSet.DCRedraw(CanvasHandle: HDC);
+var
+  fWindow :pGdkWindow;
+  widget : PgtkWIdget;
+  PixMap : pgdkPixMap;
+  //gc : PGDKGc;
+  Child: PGtkWidget;
+begin
+  Assert(False, 'Trace:In AutoRedraw in GTKObject');
+  
+  Child := PgtkWidget(CanvasHandle);
+  Widget := GetFixedWidget(Child);
+  pixmap := gtk_Object_get_data(pgtkobject(Child),'Pixmap');
+  if PixMap = nil then Exit;
+  fWindow := GetControlWindow(widget);
+  //gc := gdk_gc_new(PgdkWindow(fWindow));
+
+  if fWindow<>nil then begin
+    {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
+    gdk_draw_pixmap(fwindow,
+      gtk_widget_get_style(widget)^.fg_gc[GTK_WIDGET_STATE (widget)],
+      pixmap,
+      0,0,
+      0,0,
+      pgtkwidget(widget)^.allocation.width,
+      pgtkwidget(widget)^.allocation.height);
+    {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -8309,6 +8290,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.564  2004/09/14 10:06:26  micha
+  convert LM_REDRAW message to interface method (in twidgetset)
+
   Revision 1.563  2004/09/13 19:57:30  micha
   convert LM_SHOWTABS message to interface method
 

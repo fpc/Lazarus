@@ -335,23 +335,6 @@ Begin
         Else
           Assert(False, Format('Trace:I don''t know how to destroy component %S', [Sender.ClassName]));
       End;
-      //SH: think of TCanvas.handle!!!!
-      LM_REDRAW:
-      Begin
-        Assert(False, Format('Trace:[TWin32WidgetSet.IntSendMessage3] %S --> Redraw', [Sender.ClassName]));
-        If Sender Is TCanvas Then
-          ReDraw(TCanvas(Sender))
-        Else If Not (Sender Is TCustomSpeedbutton) Then
-          ReDraw(Sender)
-        Else If Sender Is TCustomSpeedButton Then
-          If TCustomSpeedButton(Sender).Visible Then
-            TCustomSpeedButton(Sender).Perform(LM_PAINT, 0, 0)
-          Else
-          Begin
-            SizeRect := TCustomSpeedButton(sender).BoundsRect;
-            InvalidateRect(TCustomSpeedButton(Sender).Parent.Handle, @SizeRect, True);
-          End;
-      End;
       LM_SETTABPOSITION :
       Begin
         // VS: not tested
@@ -1962,21 +1945,20 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TWin32WidgetSet.ReDraw
-  Params: Child - Component to redraw
+  Method: TWin32WidgetSet.DCReDraw
+  Params: CanvasHandle - HDC to redraw
   Returns: Nothing
 
-  Redraws a component
+  Redraws (the window of) a canvas
  ------------------------------------------------------------------------------}
-Procedure TWin32WidgetSet.ReDraw(Child: TObject);
-Begin
+procedure TWin32WidgetSet.DCRedraw(CanvasHandle: HDC);
+begin
+  // TODO: implement me!
   Assert(False, 'TRACE:[TWin32WidgetSet.ReDraw] Redrawing...');
   Assert(False, 'TRACE:Invalidating the window');
-  IntSendMessage3(LM_INVALIDATE, Child, Nil);
   Assert(False, 'TRACE:Updating the window');
-  UpdateWindow(TWinControl(Child).Handle);
   Assert(False, 'TRACE:[TWin32WidgetSet.ReDraw] Finished redrawing');
-End;
+end;
 
 {------------------------------------------------------------------------------
   Method: TWin32WidgetSet.SetPixel
@@ -2336,6 +2318,9 @@ End;
 
 {
   $Log$
+  Revision 1.256  2004/09/14 10:06:26  micha
+  convert LM_REDRAW message to interface method (in twidgetset)
+
   Revision 1.255  2004/09/13 19:57:30  micha
   convert LM_SHOWTABS message to interface method
 

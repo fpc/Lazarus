@@ -54,6 +54,7 @@ type
     procedure AppBringToFront; virtual; abstract;
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; virtual; abstract;
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); virtual; abstract;
+    procedure DCRedraw(CanvasHandle: HDC); virtual; abstract;
     function  InitHintFont(HintFont: TObject): Boolean; virtual;
     function  IntSendMessage3(LM_Message: Integer; Sender: TObject;
                               Data: pointer): integer; virtual; abstract;
@@ -118,6 +119,9 @@ end.
 
 {
   $Log$
+  Revision 1.52  2004/09/14 10:06:25  micha
+  convert LM_REDRAW message to interface method (in twidgetset)
+
   Revision 1.51  2004/09/12 13:11:50  micha
   convert LM_GETPIXEL and LM_SETPIXEL to interface methods (of twidgetset, DCGetPixel and DCSetPixel)
 

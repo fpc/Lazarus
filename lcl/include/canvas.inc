@@ -193,8 +193,8 @@ end;
 procedure TCanvas.SetAutoRedraw(Value : Boolean);
 begin
   FAutoRedraw := Value;
-  If FAutoRedraw then
-    SendIntfMessage(LM_REDRAW, Self, nil);
+  if FAutoRedraw and HandleAllocated then
+    InterfaceObject.DCRedraw(Handle);
 end;
 
 {------------------------------------------------------------------------------
@@ -1244,6 +1244,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.78  2004/09/14 10:06:26  micha
+  convert LM_REDRAW message to interface method (in twidgetset)
+
   Revision 1.77  2004/09/13 15:33:07  micha
   rename AutoReDraw to AutoRedraw, as "Re" is not a word
 

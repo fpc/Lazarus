@@ -56,7 +56,6 @@ const
   LM_RESIZECHILDREN = LM_ComUser+13;
   LM_GetLineCount   = LM_ComUser+16;
   LM_CANVASCREATE   = LM_ComUser+19;
-  LM_ReDraw         = LM_ComUser+26;
   LM_SetTabPosition = LM_ComUser+30;
   LM_Invalidate     = LM_ComUser+32;
 
@@ -831,7 +830,6 @@ begin
   LM_RESIZECHILDREN :Result:='LM_RESIZECHILDREN';
   LM_GetLineCount   :Result:='LM_GetLineCount';
   LM_CANVASCREATE   :Result:='LM_CANVASCREATE';
-  LM_ReDraw         :Result:='LM_ReDraw';
   LM_SetTabPosition :Result:='LM_SetTabPosition';
   LM_Invalidate     :Result:='LM_Invalidate';
 
@@ -973,6 +971,9 @@ end.
 
 {
   $Log$
+  Revision 1.96  2004/09/14 10:06:26  micha
+  convert LM_REDRAW message to interface method (in twidgetset)
+
   Revision 1.95  2004/09/13 19:57:30  micha
   convert LM_SHOWTABS message to interface method
 

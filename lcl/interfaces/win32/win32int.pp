@@ -132,7 +132,6 @@ Type
 
     Function  GetOwnerHandle(ADialog : TCommonDialog): HWND;
     Procedure AssignSelf(Window: HWnd; Data: Pointer);
-    Procedure ReDraw(Child: TObject);
 
     procedure ChangeActivePage(const Data: TLMNotebookEvent);
     Procedure SetText(Window: HWND; Data: Pointer);
@@ -172,6 +171,7 @@ Type
     procedure AppBringToFront; override;
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); override;
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
+    procedure DCRedraw(CanvasHandle: HDC); override;
     Function IntSendMessage3(LM_Message: Integer; Sender: TObject; Data: Pointer) : Integer; Override;
     Procedure HandleEvents; Override;
     Procedure WaitMessage; Override;
@@ -278,6 +278,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.111  2004/09/14 10:06:26  micha
+  convert LM_REDRAW message to interface method (in twidgetset)
+
   Revision 1.110  2004/09/13 19:57:30  micha
   convert LM_SHOWTABS message to interface method
 

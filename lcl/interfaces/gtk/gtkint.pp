@@ -273,7 +273,6 @@ type
               const AGTKObject: Pointer; const ASetupProps : Boolean); virtual;
 
     // show, hide and invalidate
-    procedure ReDraw(Child : Pointer);virtual;
     procedure ShowHide(Sender : TObject);virtual;
 
     // control functions for messages, callbacks
@@ -292,6 +291,7 @@ type
     procedure AppBringToFront; override;
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); override;
+    procedure DCRedraw(CanvasHandle: HDC); override;
         
     // helper routines needed by interface methods
     procedure UnsetResizeRequest(Widget: PGtkWidget);virtual;
@@ -454,6 +454,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.205  2004/09/14 10:06:26  micha
+  convert LM_REDRAW message to interface method (in twidgetset)
+
   Revision 1.204  2004/09/13 19:06:04  micha
   convert LM_ADDPAGE and LM_REMOVEPAGE messages to new interface methods
 
