@@ -959,14 +959,14 @@ begin
 end;
 
 function CreateTabsAndSpaces(StartPos, SpaceLen, TabWidth: integer;
-  TabsToSpaces: boolean): string;
+  UseTabs: boolean): string;
 var
   TabCount: Integer;
   EndPos: Integer;
   PosPlusOneTab: Integer;
 begin
   Result:='';
-  if TabsToSpaces then begin
+  if not UseTabs then begin
     Result:=StringOfChar(' ',SpaceLen);
     exit;
   end;
@@ -4700,8 +4700,8 @@ var
                     LogicalToPhysicalPos(Point(Length(sLeftSide)+1,CaretY)).X-1;
         sLeftSide := sLeftSide
                      + CreateTabsAndSpaces(CaretX,
-                                           CaretX-1-PhysicalLineEndPos,
-                                           TabWidth, eoSpacesToTabs in Options);
+                                           CaretX-1-PhysicalLineEndPos,TabWidth,
+                                           eoSpacesToTabs in Options);
       end;
       sRightSide := Copy(LineText, LogCaretXY.X,
                          Length(LineText) - (LogCaretXY.X - 1));
