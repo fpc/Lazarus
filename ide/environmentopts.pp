@@ -64,25 +64,48 @@ type
   
   TDebuggerType = (dtNone, dtGnuDebugger);
 
-  TPascalExtType = (petNone, petPAS, petPP);
-  
-  TLazarusLanguage = (llAutomatic, llEnglish, llGerman);
-
 const
   DebuggerName : array[TDebuggerType] of string = (
     '(None)','GNU debugger (gdb)'
   );
+
+type
+  TPascalExtType = (petNone, petPAS, petPP);
+
+const
+  PascalExtension: array[TPascalExtType] of string = ('', '.pas', '.pp');
+
+type
+  TLazarusLanguage = (llAutomatic, llEnglish, llGerman);
   
+const
   LazarusLanguageNames: array[TLazarusLanguage] of string = (
     'Automatic (default is english)', 'English', 'Deutsch'
   );
-  
+
   LazarusLanguageIDs: array[TLazarusLanguage] of string = (
     '', 'en', 'de'
   );
-  
-  PascalExtension: array[TPascalExtType] of string = ('', '.pas', '.pp');
-  
+
+type
+  TAmbigiousFileAction = (
+      afaAsk,
+      afaAutoDelete,
+      afaAutoRename,
+      afaWarnOnCompile,
+      afaIgnore
+    );
+  TAmbigiousFileActions = set of TAmbigiousFileAction;
+
+const
+  AmbigiousFileActionNames: array[TAmbigiousFileAction] of string = (
+      'Ask',
+      'AutoDelete',
+      'AutoRename',
+      'WarnOnCompile',
+      'Ignore'
+    );
+
 type
   { class for storing environment options }
   TEnvironmentOptions = class
@@ -150,7 +173,7 @@ type
     // naming conventions
     fPascalFileExtension: TPascalExtType;
     fPascalFileLowerCase: boolean;
-    fAutoDeleteAmbigiousSources: boolean;
+    fAmbigiousFileAction: TAmbigiousFileAction;
     
     // language
     fLanguage: TLazarusLanguage;
@@ -266,8 +289,8 @@ type
        read fPascalFileExtension write fPascalFileExtension;
     property PascalFileLowerCase: boolean
        read fPascalFileLowerCase write fPascalFileLowerCase;
-    property AutoDeleteAmbigiousSources: boolean
-       read fAutoDeleteAmbigiousSources write fAutoDeleteAmbigiousSources;
+    property AmbigiousFileAction: TAmbigiousFileAction
+       read fAmbigiousFileAction write fAmbigiousFileAction;
        
     // language
     property Language: TLazarusLanguage read fLanguage write fLanguage;
@@ -376,7 +399,7 @@ type
     // naming conventions
     PascalFileExtRadiogroup: TRadioGroup;
     PascalFileLowercaseCheckBox: TCheckBox;
-    AutoDeleteAmbigiousSourcesCheckBox: TCheckBox;
+    AmbigiousFileActionRadioGroup: TRadioGroup;
 
     // buttons at bottom
     OkButton: TButton;
@@ -432,7 +455,7 @@ function PascalExtToType(const Ext: string): TPascalExtType;
 function FilenameIsPascalUnit(const Filename: string): boolean;
 function FilenameIsPascalSource(const Filename: string): boolean;
 function FilenameIsFormText(const Filename: string): boolean;
-
+function AmbigiousFileActionNameToType(const Action: string): TAmbigiousFileAction;
 
 implementation
 
@@ -474,6 +497,16 @@ begin
     for Result:=Low(TPascalExtType) to High(TPascalExtType) do
       if CompareFilenames(Ext,PascalExtension[Result])=0 then exit;
   Result:=petNone;
+end;
+
+function AmbigiousFileActionNameToType(
+  const Action: string): TAmbigiousFileAction;
+begin
+  for Result:=Low(TAmbigiousFileAction) to High(TAmbigiousFileAction) do begin
+    if AnsiCompareText(AmbigiousFileActionNames[Result],Action)=0 then
+      exit;
+  end;
+  Result:=afaAsk;
 end;
 
 { TEnvironmentOptions }
@@ -792,8 +825,9 @@ begin
     LoadPascalFileExt('EnvironmentOptions/');
     fPascalFileLowerCase:=XMLConfig.GetValue(
       'EnvironmentOptions/PascalFileLowerCase/Value',true);
-    fAutoDeleteAmbigiousSources:=XMLConfig.GetValue(
-      'EnvironmentOptions/AutoDeleteAmbigiousSources/Value',true);
+    fAmbigiousFileAction:=AmbigiousFileActionNameToType(XMLConfig.GetValue(
+      'EnvironmentOptions/AmbigiousFileAction/Value',
+        AmbigiousFileActionNames[fAmbigiousFileAction]));
 
     XMLConfig.Free;
 
@@ -951,7 +985,7 @@ begin
     XMLConfig.SetValue('EnvironmentOptions/PascalFileLowerCase/Value',
       fPascalFileLowerCase);
     XMLConfig.SetValue('EnvironmentOptions/AutoDeleteAmbigiousSources/Value',
-      fAutoDeleteAmbigiousSources);
+      AmbigiousFileActionNames[fAmbigiousFileAction]);
 
     XMLConfig.Flush;
     XMLConfig.Free;
@@ -2159,14 +2193,24 @@ begin
     Visible:=true;
   end;
   
-  AutoDeleteAmbigiousSourcesCheckBox:=TCheckBox.Create(Self);
-  with AutoDeleteAmbigiousSourcesCheckBox do begin
-    Name:='AutoDeleteAmbigiousSourcesCheckBox';
+  AmbigiousFileActionRadioGroup:=TRadioGroup.Create(Self);
+  with AmbigiousFileActionRadioGroup do begin
+    Name:='AmbigiousFileActionRadioGroup';
     Parent:=NoteBook.Page[Page];
     Left:=PascalFileLowercaseCheckBox.Left;
-    Top:=PascalFileLowercaseCheckBox.Top+PascalFileLowercaseCheckBox.Height+10;
-    Width:=300;
-    Caption:='Auto delete ambigious sources';
+    Top:=PascalFileLowercaseCheckBox.Top+PascalFileLowercaseCheckBox.Height+15;
+    Width:=200;
+    Height:=130;
+    Caption:='Ambigious file action:';
+    with Items do begin
+      BeginUpdate;
+      Add('Ask');
+      Add('Auto delete file');
+      Add('Auto rename file');
+      Add('Warn on compile');
+      Add('Ignore');
+      EndUpdate;
+    end;
     Visible:=true;
   end;
 end;
@@ -2672,10 +2716,11 @@ begin
     Width:=300;
   end;
 
-  with AutoDeleteAmbigiousSourcesCheckBox do begin
+  with AmbigiousFileActionRadioGroup do begin
     Left:=PascalFileLowercaseCheckBox.Left;
-    Top:=PascalFileLowercaseCheckBox.Top+PascalFileLowercaseCheckBox.Height+10;
-    Width:=300;
+    Top:=PascalFileLowercaseCheckBox.Top+PascalFileLowercaseCheckBox.Height+15;
+    Width:=200;
+    Height:=130;
   end;
 end;
 
@@ -2925,7 +2970,7 @@ begin
       if PascalFileExtRadiogroup.Items[i]=PascalExtension[PascalFileExtension]
       then PascalFileExtRadiogroup.ItemIndex:=i;
     PascalFileLowercaseCheckBox.Checked:=PascalFileLowerCase;
-    AutoDeleteAmbigiousSourcesCheckBox.Checked:=AutoDeleteAmbigiousSources;
+    AmbigiousFileActionRadioGroup.ItemIndex:=ord(AmbigiousFileAction);
   end;
 end;
 
@@ -3038,7 +3083,8 @@ begin
     else
       PascalFileExtension:=petPAS;
     PascalFileLowerCase:=PascalFileLowercaseCheckBox.Checked;
-    AutoDeleteAmbigiousSources:=AutoDeleteAmbigiousSourcesCheckBox.Checked;
+    AmbigiousFileAction:=
+      TAmbigiousFileAction(AmbigiousFileActionRadioGroup.ItemIndex);
   end;
 end;
 

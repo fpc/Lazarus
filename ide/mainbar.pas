@@ -43,8 +43,8 @@ uses
   Classes, LazarusIDEStrConsts, LCLType, LclLinux, Compiler, StdCtrls, Forms,
   Buttons, Menus, ComCtrls, Spin, Project, SysUtils, FileCtrl, Controls,
   Graphics, ExtCtrls, Dialogs, LazConf, CompReg, CodeToolManager,
-  ObjectInspector, PropEdits, SynEditKeyCmds,
-  MsgView, EditorOptions, IDEComp, FormEditor,
+  ObjectInspector, PropEdits, SynEditKeyCmds, OutputFilter,
+  MsgView, EnvironmentOpts, EditorOptions, IDEComp, FormEditor,
   KeyMapping, IDEProcs, UnitEditor, Debugger, IDEOptionDefs, CodeToolsDefines;
 
 const
@@ -224,6 +224,9 @@ type
     HintTimer1 : TTimer;
     HintWindow1 : THintWindow;
   protected
+    TheCompiler: TCompiler;
+    TheOutputFilter: TOutputFilter;
+    
     function CreateMenuSeparator : TMenuItem;
     procedure SetupFileMenu; virtual;
     procedure SetupEditMenu; virtual;
@@ -252,6 +255,8 @@ type
     function DoInitProjectRun: TModalResult; virtual; abstract;
     
     function DoCheckFilesOnDisk: TModalResult; virtual; abstract;
+    function DoCheckAmbigiousSources(const AFilename: string;
+      Compiling: boolean): TModalResult;
   end;
 
 var
@@ -906,6 +911,107 @@ begin
     itmHelpAboutLazarus.ShortCut:=CommandToShortCut(ecAboutLazarus);
   end;
 end;
+
+{-------------------------------------------------------------------------------
+  function TMainIDEBar.DoCheckAmbigiousSources(const AFilename: string
+    ): TModalResult;
+
+  Checks if file exists with same name and similar extension. The compiler
+  prefers for example .pp to .pas files. So, if we save a .pas file delete .pp
+  file, so that compiling does what is expected.
+-------------------------------------------------------------------------------}
+function TMainIDEBar.DoCheckAmbigiousSources(const AFilename: string;
+  Compiling: boolean): TModalResult;
+
+  function DeleteAmbigiousFile(const AmbigiousFilename: string): TModalResult;
+  begin
+    if not DeleteFile(AmbigiousFilename) then begin
+      Result:=MessageDlg('Error deleting file',
+       'Unable to delete ambigious file "'+AmbigiousFilename+'"',
+       mtError,[mbOk,mbAbort],0);
+    end else
+      Result:=mrOk;
+  end;
+
+  function RenameAmbigiousFile(const AmbigiousFilename: string): TModalResult;
+  var
+    NewFilename: string;
+  begin
+    NewFilename:=AmbigiousFilename+'.ambigious';
+    if not RenameFile(AmbigiousFilename,NewFilename) then
+    begin
+      Result:=MessageDlg('Error renaming file',
+       'Unable to rename ambigious file "'+AmbigiousFilename+'"'#13
+       +'to "'+NewFilename+'"',
+       mtError,[mbOk,mbAbort],0);
+    end else
+      Result:=mrOk;
+  end;
+
+  function AddCompileWarning(const AmbigiousFilename: string): TModalResult;
+  begin
+    Result:=mrOk;
+    if Compiling then begin
+      TheOutputFilter.ReadLine('Warning: ambigious file found: "'+AmbigiousFilename+'"'
+        +'. Source file is: "'+AFilename+'"',true);
+    end;
+  end;
+
+  function CheckFile(const AmbigiousFilename: string): TModalResult;
+  begin
+    if not FileExists(AmbigiousFilename) then exit;
+    if Compiling then begin
+      Result:=AddCompileWarning(AmbigiousFilename);
+      exit;
+    end;
+    case EnvironmentOptions.AmbigiousFileAction of
+    afaAsk:
+      begin
+        Result:=MessageDlg('Ambigious file found',
+          'There is a file with the same name and a similar extension ond disk'#13
+          +'File: '+AFilename+#13
+          +'Ambigious File: '+AmbigiousFilename+#13
+          +#13
+          +'Delete ambigious file?',
+          mtWarning,[mbYes,mbIgnore,mbAbort],0);
+        case Result of
+        mrYes:    Result:=DeleteAmbigiousFile(AmbigiousFilename);
+        mrIgnore: Result:=mrOk;
+        end;
+      end;
+
+    afaAutoDelete:
+      Result:=DeleteAmbigiousFile(AmbigiousFilename);
+
+    afaAutoRename:
+      Result:=RenameAmbigiousFile(AmbigiousFilename);
+
+    afaWarnOnCompile:
+      Result:=AddCompileWarning(AmbigiousFilename);
+
+    else
+      Result:=mrOk;
+    end;
+  end;
+
+var
+  Ext, LowExt: string;
+begin
+  Result:=mrOk;
+  if EnvironmentOptions.AmbigiousFileAction=afaIgnore then exit;
+  if (EnvironmentOptions.AmbigiousFileAction=afaWarnOnCompile)
+  and not Compiling then exit;
+
+  if FilenameIsPascalUnit(AFilename) then begin
+    Ext:=ExtractFileExt(AFilename);
+    LowExt:=lowercase(Ext);
+    if LowExt='.pp' then
+      Result:=CheckFile(ChangeFileExt(AFilename,'.pas'))
+    else if LowExt='.pas' then
+      Result:=CheckFile(ChangeFileExt(AFilename,'.pp'));
+  end;
+end;
+
 
 end.
 

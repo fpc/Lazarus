@@ -106,14 +106,14 @@ type
     procedure SetSource(ABuffer: TCodeBuffer);
     procedure SetUnitName(const NewUnitName:string);
   protected
-    NextUnitWithEditorIndex: TUnitInfo;
-    PrevUnitWithEditorIndex: TUnitInfo;
-    NextUnitWithForm: TUnitInfo;
-    PrevUnitWithForm: TUnitInfo;
-    NextLoadedUnit: TUnitInfo;
-    PrevLoadedUnit: TUnitInfo;
-    NextAutoRevertLockedUnit: TUnitInfo;
-    PrevAutoRevertLockedUnit: TUnitInfo;
+    fNextUnitWithEditorIndex: TUnitInfo;
+    fPrevUnitWithEditorIndex: TUnitInfo;
+    fNextUnitWithForm: TUnitInfo;
+    fPrevUnitWithForm: TUnitInfo;
+    fNextLoadedUnit: TUnitInfo;
+    fPrevLoadedUnit: TUnitInfo;
+    fNextAutoRevertLockedUnit: TUnitInfo;
+    fPrevAutoRevertLockedUnit: TUnitInfo;
     procedure UpdateEditorIndexList;
     procedure UpdateFormList;
     procedure UpdateLoadedList;
@@ -142,6 +142,16 @@ type
     function NeedsSaveToDisk: boolean;
 
     { Properties }
+  public
+    property NextUnitWithEditorIndex: TUnitInfo read fNextUnitWithEditorIndex;
+    property PrevUnitWithEditorIndex: TUnitInfo read fPrevUnitWithEditorIndex;
+    property NextUnitWithForm: TUnitInfo read fNextUnitWithForm;
+    property PrevUnitWithForm: TUnitInfo read fPrevUnitWithForm;
+    property NextLoadedUnit: TUnitInfo read fNextLoadedUnit;
+    property PrevLoadedUnit: TUnitInfo read fPrevLoadedUnit;
+    property NextAutoRevertLockedUnit: TUnitInfo read fNextAutoRevertLockedUnit;
+    property PrevAutoRevertLockedUnit: TUnitInfo read fPrevAutoRevertLockedUnit;
+  public
     property Breakpoints: TProjectBreakPointList
         read fBreakpoints write fBreakpoints;
     property CursorPos: TPoint read fCursorPos write fCursorPos;
@@ -289,6 +299,11 @@ type
     property Bookmarks: TProjectBookmarkList read fBookmarks write fBookmarks;
     property CompilerOptions: TCompilerOptions 
        read fCompilerOptions write fCompilerOptions;
+    property FirstAutoRevertLockedUnit: TUnitInfo read fFirstAutoRevertLockedUnit;
+    property FirstLoadedUnit: TUnitInfo read fFirstLoadedUnit;
+    property FirstUnitWithEditorIndex: TUnitInfo read fFirstUnitWithEditorIndex;
+    property FirstUnitWithForm: TUnitInfo read fFirstUnitWithForm;
+
     property Flags: TProjectFlags read FFlags write SetFlags;
     property IconPath: String read fIconPath write fIconPath;
     property JumpHistory: TProjectJumpHistory
@@ -609,8 +624,8 @@ begin
   if Project<>nil then begin
     Project.AddToOrRemoveFromEditorWithIndexList(Self);
   end else begin
-    NextUnitWithEditorIndex:=nil;
-    PrevUnitWithEditorIndex:=nil;
+    fNextUnitWithEditorIndex:=nil;
+    fPrevUnitWithEditorIndex:=nil;
   end;
 end;
 
@@ -619,8 +634,8 @@ begin
   if Project<>nil then begin
     Project.AddToOrRemoveFromFormList(Self);
   end else begin
-    NextUnitWithForm:=nil;
-    PrevUnitWithForm:=nil;
+    fNextUnitWithForm:=nil;
+    fPrevUnitWithForm:=nil;
   end;
 end;
 
@@ -629,8 +644,8 @@ begin
   if Project<>nil then begin
     Project.AddToOrRemoveFromLoadedList(Self);
   end else begin
-    NextLoadedUnit:=nil;
-    PrevLoadedUnit:=nil;
+    fNextLoadedUnit:=nil;
+    fPrevLoadedUnit:=nil;
   end;
 end;
 
@@ -639,8 +654,8 @@ begin
   if Project<>nil then begin
     Project.AddToOrRemoveFromAutoRevertLockedList(Self);
   end else begin
-    NextAutoRevertLockedUnit:=nil;
-    PrevAutoRevertLockedUnit:=nil;
+    fNextAutoRevertLockedUnit:=nil;
+    fPrevAutoRevertLockedUnit:=nil;
   end;
 end;
 
@@ -1439,7 +1454,7 @@ function TProject.UnitWithEditorIndex(Index:integer):TUnitInfo;
 begin
   Result:=fFirstUnitWithEditorIndex;
   while (Result<>nil) and (Result.EditorIndex<>Index) do begin
-    Result:=Result.NextUnitWithEditorIndex;
+    Result:=Result.fNextUnitWithEditorIndex;
   end;
 end;
 
@@ -1521,7 +1536,7 @@ var i:integer;
 begin
   AnUnitInfo:=fFirstUnitWithEditorIndex;
   while AnUnitInfo<>nil do begin
-    NextUnitInfo:=AnUnitInfo.NextUnitWithEditorIndex;
+    NextUnitInfo:=AnUnitInfo.fNextUnitWithEditorIndex;
     if AnUnitInfo.EditorIndex=EditorIndex then
       AnUnitInfo.EditorIndex:=-1
     else if AnUnitInfo.EditorIndex>EditorIndex then
@@ -1547,7 +1562,7 @@ begin
   while AnUnitInfo<>nil do begin
     if AnUnitInfo.EditorIndex>=EditorIndex then
       AnUnitInfo.EditorIndex:=AnUnitInfo.EditorIndex+1;
-    AnUnitInfo:=AnUnitInfo.NextUnitWithEditorIndex;
+    AnUnitInfo:=AnUnitInfo.fNextUnitWithEditorIndex;
   end;
   i:=Bookmarks.Count-1;
   while (i>=0) do begin
@@ -1711,7 +1726,7 @@ begin
         AnUnitList:=TList.Create;
       AnUnitList.Add(AnUnitInfo);
     end;
-    AnUnitInfo:=AnUnitInfo.NextAutoRevertLockedUnit;
+    AnUnitInfo:=AnUnitInfo.fNextAutoRevertLockedUnit;
   end;
 end;
 
@@ -1760,7 +1775,7 @@ Function TProject.UnitWithForm(AForm : TComponent) : TUnitInfo;
 begin
   Result:=fFirstUnitWithForm;
   while (Result<>nil) and (Result.Form<>AForm) do
-    Result:=Result.NextUnitWithForm;
+    Result:=Result.fNextUnitWithForm;
 end;
 
 function TProject.IndexOfFilename(const AFilename: string): integer;
@@ -1782,13 +1797,13 @@ procedure TProject.AddToEditorWithIndexList(AnUnitInfo: TUnitInfo);
 begin
   // add to list if AnUnitInfo is not in list
   if (fFirstUnitWithEditorIndex<>AnUnitInfo)
-  and (AnUnitInfo.NextUnitWithEditorIndex=nil)
-  and (AnUnitInfo.PrevUnitWithEditorIndex=nil) then begin
-    AnUnitInfo.NextUnitWithEditorIndex:=fFirstUnitWithEditorIndex;
-    AnUnitInfo.PrevUnitWithEditorIndex:=nil;
+  and (AnUnitInfo.fNextUnitWithEditorIndex=nil)
+  and (AnUnitInfo.fPrevUnitWithEditorIndex=nil) then begin
+    AnUnitInfo.fNextUnitWithEditorIndex:=fFirstUnitWithEditorIndex;
+    AnUnitInfo.fPrevUnitWithEditorIndex:=nil;
     fFirstUnitWithEditorIndex:=AnUnitInfo;
-    if AnUnitInfo.NextUnitWithEditorIndex<>nil then
-      AnUnitInfo.NextUnitWithEditorIndex.PrevUnitWithEditorIndex:=AnUnitInfo;
+    if AnUnitInfo.fNextUnitWithEditorIndex<>nil then
+      AnUnitInfo.fNextUnitWithEditorIndex.fPrevUnitWithEditorIndex:=AnUnitInfo;
   end;
 end;
 
@@ -1796,28 +1811,28 @@ procedure TProject.RemoveFromEditorWithIndexList(AnUnitInfo: TUnitInfo);
 begin
   // remove from list if AnUnitInfo is in list
   if fFirstUnitWithEditorIndex=AnUnitInfo then
-    fFirstUnitWithEditorIndex:=AnUnitInfo.NextUnitWithEditorIndex;
-  if AnUnitInfo.NextUnitWithEditorIndex<>nil then
-    AnUnitInfo.NextUnitWithEditorIndex.PrevUnitWithEditorIndex:=
-      AnUnitInfo.PrevUnitWithEditorIndex;
-  if AnUnitInfo.PrevUnitWithEditorIndex<>nil then
-    AnUnitInfo.PrevUnitWithEditorIndex.NextUnitWithEditorIndex:=
-      AnUnitInfo.NextUnitWithEditorIndex;
-  AnUnitInfo.NextUnitWithEditorIndex:=nil;
-  AnUnitInfo.PrevUnitWithEditorIndex:=nil;
+    fFirstUnitWithEditorIndex:=AnUnitInfo.fNextUnitWithEditorIndex;
+  if AnUnitInfo.fNextUnitWithEditorIndex<>nil then
+    AnUnitInfo.fNextUnitWithEditorIndex.fPrevUnitWithEditorIndex:=
+      AnUnitInfo.fPrevUnitWithEditorIndex;
+  if AnUnitInfo.fPrevUnitWithEditorIndex<>nil then
+    AnUnitInfo.fPrevUnitWithEditorIndex.fNextUnitWithEditorIndex:=
+      AnUnitInfo.fNextUnitWithEditorIndex;
+  AnUnitInfo.fNextUnitWithEditorIndex:=nil;
+  AnUnitInfo.fPrevUnitWithEditorIndex:=nil;
 end;
 
 procedure TProject.AddToFormList(AnUnitInfo: TUnitInfo);
 begin
   // add to list if AnUnitInfo is not in list
   if (fFirstUnitWithForm<>AnUnitInfo)
-  and (AnUnitInfo.NextUnitWithForm=nil)
-  and (AnUnitInfo.PrevUnitWithForm=nil) then begin
-    AnUnitInfo.NextUnitWithForm:=fFirstUnitWithForm;
-    AnUnitInfo.PrevUnitWithForm:=nil;
+  and (AnUnitInfo.fNextUnitWithForm=nil)
+  and (AnUnitInfo.fPrevUnitWithForm=nil) then begin
+    AnUnitInfo.fNextUnitWithForm:=fFirstUnitWithForm;
+    AnUnitInfo.fPrevUnitWithForm:=nil;
     fFirstUnitWithForm:=AnUnitInfo;
-    if AnUnitInfo.NextUnitWithForm<>nil then
-      AnUnitInfo.NextUnitWithForm.PrevUnitWithForm:=AnUnitInfo;
+    if AnUnitInfo.fNextUnitWithForm<>nil then
+      AnUnitInfo.fNextUnitWithForm.fPrevUnitWithForm:=AnUnitInfo;
   end;
 end;
 
@@ -1825,28 +1840,28 @@ procedure TProject.RemoveFromFormList(AnUnitInfo: TUnitInfo);
 begin
   // remove from list if AnUnitInfo is in list
   if fFirstUnitWithForm=AnUnitInfo then
-    fFirstUnitWithForm:=AnUnitInfo.NextUnitWithForm;
-  if AnUnitInfo.NextUnitWithForm<>nil then
-    AnUnitInfo.NextUnitWithForm.PrevUnitWithForm:=
-      AnUnitInfo.PrevUnitWithForm;
-  if AnUnitInfo.PrevUnitWithForm<>nil then
-    AnUnitInfo.PrevUnitWithForm.NextUnitWithForm:=
-      AnUnitInfo.NextUnitWithForm;
-  AnUnitInfo.NextUnitWithForm:=nil;
-  AnUnitInfo.PrevUnitWithForm:=nil;
+    fFirstUnitWithForm:=AnUnitInfo.fNextUnitWithForm;
+  if AnUnitInfo.fNextUnitWithForm<>nil then
+    AnUnitInfo.fNextUnitWithForm.fPrevUnitWithForm:=
+      AnUnitInfo.fPrevUnitWithForm;
+  if AnUnitInfo.fPrevUnitWithForm<>nil then
+    AnUnitInfo.fPrevUnitWithForm.fNextUnitWithForm:=
+      AnUnitInfo.fNextUnitWithForm;
+  AnUnitInfo.fNextUnitWithForm:=nil;
+  AnUnitInfo.fPrevUnitWithForm:=nil;
 end;
 
 procedure TProject.AddToLoadedList(AnUnitInfo: TUnitInfo);
 begin
   // add to list if AnUnitInfo is not in list
   if (fFirstLoadedUnit<>AnUnitInfo)
-  and (AnUnitInfo.NextLoadedUnit=nil)
-  and (AnUnitInfo.PrevLoadedUnit=nil) then begin
-    AnUnitInfo.NextLoadedUnit:=fFirstLoadedUnit;
-    AnUnitInfo.PrevLoadedUnit:=nil;
+  and (AnUnitInfo.fNextLoadedUnit=nil)
+  and (AnUnitInfo.fPrevLoadedUnit=nil) then begin
+    AnUnitInfo.fNextLoadedUnit:=fFirstLoadedUnit;
+    AnUnitInfo.fPrevLoadedUnit:=nil;
     fFirstLoadedUnit:=AnUnitInfo;
-    if AnUnitInfo.NextLoadedUnit<>nil then
-      AnUnitInfo.NextLoadedUnit.PrevLoadedUnit:=AnUnitInfo;
+    if AnUnitInfo.fNextLoadedUnit<>nil then
+      AnUnitInfo.fNextLoadedUnit.fPrevLoadedUnit:=AnUnitInfo;
   end;
 end;
 
@@ -1854,28 +1869,28 @@ procedure TProject.RemoveFromLoadedList(AnUnitInfo: TUnitInfo);
 begin
   // remove from list if AnUnitInfo is in list
   if fFirstLoadedUnit=AnUnitInfo then
-    fFirstLoadedUnit:=AnUnitInfo.NextUnitWithForm;
-  if AnUnitInfo.NextLoadedUnit<>nil then
-    AnUnitInfo.NextLoadedUnit.PrevLoadedUnit:=
-      AnUnitInfo.PrevLoadedUnit;
-  if AnUnitInfo.PrevLoadedUnit<>nil then
-    AnUnitInfo.PrevLoadedUnit.NextLoadedUnit:=
-      AnUnitInfo.NextLoadedUnit;
-  AnUnitInfo.NextLoadedUnit:=nil;
-  AnUnitInfo.PrevLoadedUnit:=nil;
+    fFirstLoadedUnit:=AnUnitInfo.fNextUnitWithForm;
+  if AnUnitInfo.fNextLoadedUnit<>nil then
+    AnUnitInfo.fNextLoadedUnit.fPrevLoadedUnit:=
+      AnUnitInfo.fPrevLoadedUnit;
+  if AnUnitInfo.fPrevLoadedUnit<>nil then
+    AnUnitInfo.fPrevLoadedUnit.fNextLoadedUnit:=
+      AnUnitInfo.fNextLoadedUnit;
+  AnUnitInfo.fNextLoadedUnit:=nil;
+  AnUnitInfo.fPrevLoadedUnit:=nil;
 end;
 
 procedure TProject.AddToAutoRevertLockedList(AnUnitInfo: TUnitInfo);
 begin
   // add to list if AnUnitInfo is not in list
   if (fFirstAutoRevertLockedUnit<>AnUnitInfo)
-  and (AnUnitInfo.NextAutoRevertLockedUnit=nil)
-  and (AnUnitInfo.PrevAutoRevertLockedUnit=nil) then begin
-    AnUnitInfo.NextAutoRevertLockedUnit:=fFirstAutoRevertLockedUnit;
-    AnUnitInfo.PrevAutoRevertLockedUnit:=nil;
+  and (AnUnitInfo.fNextAutoRevertLockedUnit=nil)
+  and (AnUnitInfo.fPrevAutoRevertLockedUnit=nil) then begin
+    AnUnitInfo.fNextAutoRevertLockedUnit:=fFirstAutoRevertLockedUnit;
+    AnUnitInfo.fPrevAutoRevertLockedUnit:=nil;
     fFirstAutoRevertLockedUnit:=AnUnitInfo;
-    if AnUnitInfo.NextAutoRevertLockedUnit<>nil then
-      AnUnitInfo.NextAutoRevertLockedUnit.PrevAutoRevertLockedUnit:=AnUnitInfo;
+    if AnUnitInfo.fNextAutoRevertLockedUnit<>nil then
+      AnUnitInfo.fNextAutoRevertLockedUnit.fPrevAutoRevertLockedUnit:=AnUnitInfo;
   end;
 end;
 
@@ -1883,15 +1898,15 @@ procedure TProject.RemoveFromAutoRevertLockedList(AnUnitInfo: TUnitInfo);
 begin
   // remove from list if AnUnitInfo is in list
   if fFirstAutoRevertLockedUnit=AnUnitInfo then
-    fFirstAutoRevertLockedUnit:=AnUnitInfo.NextAutoRevertLockedUnit;
-  if AnUnitInfo.NextAutoRevertLockedUnit<>nil then
-    AnUnitInfo.NextAutoRevertLockedUnit.PrevAutoRevertLockedUnit:=
-      AnUnitInfo.PrevAutoRevertLockedUnit;
-  if AnUnitInfo.PrevAutoRevertLockedUnit<>nil then
-    AnUnitInfo.PrevAutoRevertLockedUnit.NextAutoRevertLockedUnit:=
-      AnUnitInfo.NextAutoRevertLockedUnit;
-  AnUnitInfo.NextAutoRevertLockedUnit:=nil;
-  AnUnitInfo.PrevAutoRevertLockedUnit:=nil;
+    fFirstAutoRevertLockedUnit:=AnUnitInfo.fNextAutoRevertLockedUnit;
+  if AnUnitInfo.fNextAutoRevertLockedUnit<>nil then
+    AnUnitInfo.fNextAutoRevertLockedUnit.fPrevAutoRevertLockedUnit:=
+      AnUnitInfo.fPrevAutoRevertLockedUnit;
+  if AnUnitInfo.fPrevAutoRevertLockedUnit<>nil then
+    AnUnitInfo.fPrevAutoRevertLockedUnit.fNextAutoRevertLockedUnit:=
+      AnUnitInfo.fNextAutoRevertLockedUnit;
+  AnUnitInfo.fNextAutoRevertLockedUnit:=nil;
+  AnUnitInfo.fPrevAutoRevertLockedUnit:=nil;
 end;
 
 
@@ -1901,6 +1916,9 @@ end.
 
 {
   $Log$
+  Revision 1.74  2002/09/05 19:03:36  lazarus
+  MG: improved handling of ambigious source files
+
   Revision 1.73  2002/08/23 07:05:15  lazarus
   MG: started form renaming
 
