@@ -583,6 +583,7 @@ ide/multireplacedlg.lrs svneol=native#text/pascal
 ide/multireplacedlg.pas svneol=native#text/pascal
 ide/newdialog.pas svneol=native#text/pascal
 ide/newprojectdlg.pp svneol=native#text/pascal
+ide/objectlists.pas svneol=native#text/pascal
 ide/outputfilter.pas svneol=native#text/pascal
 ide/patheditordlg.pas svneol=native#text/pascal
 ide/project.pp svneol=native#text/pascal
