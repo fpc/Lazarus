@@ -814,8 +814,12 @@ begin
     Result:=Result+' rc_style=nil';
   end else begin
     Result:=Result+' rc_style=[';
+{$IFDEF GTK1}
     Result:=Result+ARCStyle^.font_name+',';
     Result:=Result+ARCStyle^.fontset_name+',';
+{$ELSE GTK1}
+    {$WARNING TODO find GTK2 font naming}
+{$ENDIF GTK1}
     Result:=Result+']';
   end;
 end;
@@ -7359,13 +7363,20 @@ begin
       gtk_widget_modify_style(Widget,RCStyle);
 
       if FreeFontName then begin
+{$ifdef gtk1}      
         g_free(RCStyle^.font_name);
         RCStyle^.font_name:=nil;
+{$else}
+        pango_font_description_free(RCStyle^.font_desc);
+        RCStyle^.font_desc:=nil;
+{$endif}	
       end;
+{$ifdef gtk1}      
       if FreeFontSetName then begin
         g_free(RCStyle^.fontset_name);
         RCStyle^.fontset_name:=nil;
       end;
+{$endif}      
       //DebugLn('UpdateWidgetStyleOfControl END ',DbgSName(AWinControl),' Widget=',GetWidgetDebugReport(Widget),' Style=',GetWidgetStyleReport(Widget));
       gtk_rc_style_unref(RCStyle);
     end;
@@ -7912,6 +7923,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.329  2005/01/22 23:53:43  mattias
+  fixed gtk2 intf  from Peter Vreman
+
   Revision 1.328  2005/01/16 11:40:10  mattias
   fixed TGtkWidgetSet.ExtSelectClipRGN for DCOrigin
 

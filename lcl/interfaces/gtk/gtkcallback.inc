@@ -379,7 +379,7 @@ begin
   EventTrace('toggled', data);
   if LockOnChange(PgtkObject(Widget),0) > 0 then Exit;
 
-  if GtkWidgetIsA(Widget,GTK_TOGGLE_BUTTON_TYPE) then begin
+  if GtkWidgetIsA(Widget,gtk_toggle_button_get_type) then begin
     gtk_object_set_data(PgtkObject(Widget), 'Grayed', nil);
   end;
 
@@ -2491,7 +2491,11 @@ begin
   Assert(False, Format('Trace:[GTKHScrollCB] Value: %d', [RoundToInt(Adjustment^.Value)]));
   Scroll := PgtkRange(gtk_object_get_data(PGTKObject(Adjustment), 'ScrollBar'));
   if Scroll=nil then exit;
+{$ifdef gtk1}  
   RangeClass := PgtkRangeClass(PgtkObject(Scroll)^.klass);
+{$else}  
+  RangeClass := GTK_OBJECT_GET_CLASS(Scroll);
+{$endif}  
   UpdatePolicy := gtk_range_get_update_policy(Scroll);
   //X := integer(gtk_object_get_data(PGtkObject(Scroll), 'FinalEvent'));
   //WriteLn('FINAL EVENT: ', X);
@@ -2506,6 +2510,7 @@ begin
   with Msg do begin
     pos := Round(Adjustment^.Value);
     ScrollBar := HWND(Scroll);
+{$ifdef gtk1}
     case Scroll_type(Scroll^) of
       GTK_SCROLL_NONE:
         begin
@@ -2534,6 +2539,9 @@ begin
             ScrollCode := SB_THUMBPOSITION;
         end;
     end;
+{$else}
+  {$warning gtk2 TODO}
+{$endif}      
   end;
   DeliverMessage(Data, Msg);
 end;
@@ -2551,7 +2559,11 @@ begin
   Assert(False, Format('Trace:[GTKVScrollCB] Value: %d', [RoundToInt(Adjustment^.Value)]));
   Scroll := PgtkRange(gtk_object_get_data(PGTKObject(Adjustment), 'ScrollBar'));
   if (Scroll=nil) then exit;
+{$ifdef gtk1}  
   RangeClass := PgtkRangeClass(PgtkObject(Scroll)^.klass);
+{$else}  
+  RangeClass := GTK_OBJECT_GET_CLASS(Scroll);
+{$endif}  
   UpdatePolicy := gtk_range_get_update_policy(Scroll);
   //UpdatePolicy := TGtkUpdateType( gtk_object_get_data(PgtkObject(Scroll), 'UpdatePolicy'));
   //WriteLn('FINAL EVENT: ', integer(gtk_object_get_data(PGtkObject(Scroll), 'FinalEvent')));
@@ -2566,6 +2578,7 @@ begin
   with Msg do begin
     pos := Round(Adjustment^.Value);
     ScrollBar := HWND(Scroll);
+{$ifdef gtk1}    
     case Scroll_type(Scroll^) of
       GTK_SCROLL_NONE:
         begin
@@ -2594,6 +2607,9 @@ begin
             ScrollCode := SB_THUMBPOSITION;
         end;
     end;
+{$else}
+  {$warning gtk2 TODO}
+{$endif}    
   end;
   DeliverMessage(Data, Msg);
 end;
@@ -2969,6 +2985,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.260  2005/01/22 23:53:43  mattias
+  fixed gtk2 intf  from Peter Vreman
+
   Revision 1.259  2005/01/22 22:26:16  mattias
   added sprite example
 

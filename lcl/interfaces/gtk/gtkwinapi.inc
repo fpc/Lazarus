@@ -4060,7 +4060,7 @@ begin
         Result := 0;
       end else begin
         gdk_gc_get_values(GC, @Values);
-        result := GdkFunctionToROP2Mode( Values.thefunction )
+        result := GdkFunctionToROP2Mode( Values.{$ifdef gtk1}thefunction{$else}_function{$endif} )
       end;
     end;
 end;
@@ -8857,6 +8857,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.388  2005/01/22 23:53:43  mattias
+  fixed gtk2 intf  from Peter Vreman
+
   Revision 1.387  2005/01/17 16:42:35  mattias
   improved TLabel autosizing
 

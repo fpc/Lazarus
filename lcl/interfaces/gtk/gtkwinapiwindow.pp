@@ -165,7 +165,11 @@ function GTKAPIWidgetClient_FocusOut(AWidget: PGTKWidget;
   Event: PGdkEventFocus): GTKEventResult; cdecl; forward;
 
 procedure GTKAPIWidgetClient_ClassInit(theClass: Pointer);cdecl; forward;
+{$ifdef gtk2}
+procedure GTKAPIWidgetClient_Init(Client:PGTypeInstance; theClass: Pointer); cdecl; forward;
+{$else}
 procedure GTKAPIWidgetClient_Init(Client, theClass: Pointer); cdecl; forward;
+{$endif}
 function GTKAPIWidgetClient_GetType: Guint; forward;
 function GTKAPIWidgetClient_New: PGTKWidget; forward;
 
@@ -268,7 +272,11 @@ begin
   end;
 end;
 
+{$ifdef gtk2}
+procedure GTKAPIWidgetClient_Init(Client:PGTypeInstance; theClass: Pointer); cdecl;
+{$else}
 procedure GTKAPIWidgetClient_Init(Client, theClass: Pointer); cdecl;
+{$endif}
 // Client: PGTKAPIWidgetClient
 // theClass: PGTKAPIWidgetClientClass
 begin
@@ -922,7 +930,11 @@ begin
   WidgetClass^.focus_out_event := @GTKAPIWidget_FocusOut;
 end;
 
+{$ifdef gtk2}
+procedure GTKAPIWidget_Init(waw:PGTypeInstance; theClass: Pointer); cdecl;
+{$else}
 procedure GTKAPIWidget_Init(waw, theClass: Pointer); cdecl;
+{$endif}
 // waw: PGTKAPIWidget; 
 // theClass: PGTKAPIWidgetClass
 var
@@ -1110,6 +1122,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.66  2005/01/22 23:53:43  mattias
+  fixed gtk2 intf  from Peter Vreman
+
   Revision 1.65  2004/08/30 15:47:29  mazen
   * Fix parameters in function call
 

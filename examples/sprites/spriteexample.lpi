@@ -19,10 +19,10 @@
         <Filename Value="spriteexample.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="SpriteExample"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="22"/>
       </Unit0>
       <Unit1>
-        <CursorPos X="11" Y="82"/>
+        <CursorPos X="12" Y="80"/>
         <EditorIndex Value="0"/>
         <Filename Value="playground.pas"/>
         <ComponentName Value="PlayGroundForm"/>
@@ -31,7 +31,7 @@
         <ResourceFilename Value="playground.lrs"/>
         <TopLine Value="63"/>
         <UnitName Value="PlayGround"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="22"/>
       </Unit1>
     </Units>
     <PublishOptions>

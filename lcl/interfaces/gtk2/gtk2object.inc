@@ -965,6 +965,7 @@ begin
   Result := HBitmap(Pixmap);
 end;
 
+(*
 {------------------------------------------------------------------------------
   Method: TGtk2WidgetSet.SetLabel
   Params:  sender - the calling object
@@ -1059,6 +1060,8 @@ begin
   end;
   Assert(False, Format('trace:  [TGtk2WidgetSet.SetLabel] %s --> END', [Sender.ClassName]));
 end;
+*)
+
 
 {------------------------------------------------------------------------------
   Method: TGtk2WidgetSet.SetProperties
@@ -1200,6 +1203,7 @@ begin
   end;
 end;
 
+(*
 {------------------------------------------------------------------------------
   function TGtk2WidgetSet.SetTopIndex(Sender: TObject; NewTopIndex: integer
     ): integer;
@@ -1241,6 +1245,7 @@ begin
     end;
   end;
 end;
+*)
 
 {------------------------------------------------------------------------------
   procedure TGtk2WidgetSet.UpdateDCTextMetric(DC: TDeviceContext);
@@ -1375,6 +1380,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.20  2005/01/22 23:53:43  mattias
+  fixed gtk2 intf  from Peter Vreman
+
   Revision 1.19  2004/09/30 10:35:50  mazen
   * Fix compile probelem under GTK2 related to
     THandle <--> Pointer conversion

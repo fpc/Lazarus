@@ -504,13 +504,13 @@ begin
   if Handle<>0 then 
   begin
     Widget:=GetWidgetInfo(Pointer(Handle),True)^.CoreWidget;
-    if GtkWidgetIsA(Widget,GTK_LIST_TYPE) then begin
+    if GtkWidgetIsA(Widget,gtk_list_get_type) then begin
       if AIndex >= 0 then
       begin
         gtk_list_select_item(PGtkList(Widget), AIndex)
       end else
         gtk_list_unselect_all(PGtkList(Widget));
-    end else if GtkWidgetIsA(Widget,GTK_CLIST_TYPE) then begin
+    end else if GtkWidgetIsA(Widget,gtk_clist_get_type) then begin
       gtk_clist_select_row(PGtkCList(Widget), AIndex, 1);    // column
     end else
       raise Exception.Create('');
@@ -953,9 +953,17 @@ begin
   border_width:=(PGtkContainer(Widget)^.flag0 and bm_TGtkContainer_border_width)
                  shr bp_TGtkContainer_border_width;
   PreferredWidth := (border_width + gtk_widget_get_xthickness(Widget)) * 2
+{$ifdef gtk1}  
                     +PGtkFrame(Widget)^.label_width;
-  PreferredHeight := Max(PGtkFrame(Widget)^.label_height,
-                         gtk_widget_get_ythickness(Widget))
+{$else}
+                    +gtk_widget_get_xthickness(PGtkFrame(Widget)^.label_widget);
+{$endif}		    
+  PreferredHeight := Max(gtk_widget_get_ythickness(Widget),
+{$ifdef gtk1}  
+                         PGtkFrame(Widget)^.label_height)
+{$else}			 
+                         gtk_widget_get_ythickness(PGtkFrame(Widget)^.label_widget))
+{$endif}			 
                      + gtk_widget_get_ythickness(Widget)
                      + 2*border_width;
   //debugln('TGtkWSCustomGroupBox.GetPreferredSize ',DbgSName(AWinControl),' PreferredWidth=',dbgs(PreferredWidth),' PreferredHeight=',dbgs(PreferredHeight));

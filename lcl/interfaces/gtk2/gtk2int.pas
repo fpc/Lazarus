@@ -56,11 +56,11 @@ type
     //function IntSendMessage3(LM_Message : Integer; Sender : TObject; data : pointer) : integer; override;
     function LoadStockPixmap(StockID: longint) : HBitmap; override;
     procedure SetCallback(const AMsg: LongInt; const AGTKObject: PGTKObject; const ALCLObject: TObject);override;
-    procedure SetLabel(Sender : TObject; Data : Pointer);
+    //procedure SetLabel(Sender : TObject; Data : Pointer);
     //function SetProperties(Sender : TObject) : integer; override;
     procedure SetSelectionMode(Sender: TObject; Widget: PGtkWidget;
       MultiSelect, ExtendedSelect: boolean); override;
-    function SetTopIndex(Sender: TObject; NewTopIndex: integer): integer; override;
+    //function SetTopIndex(Sender: TObject; NewTopIndex: integer): integer; override;
     procedure UpdateDCTextMetric(DC: TDeviceContext); override;
   public
     function BeginPaint(Handle: hWnd; Var PS : TPaintStruct) : hdc; override;
@@ -594,6 +594,9 @@ end.
 
 {
   $Log$
+  Revision 1.36  2005/01/22 23:53:43  mattias
+  fixed gtk2 intf  from Peter Vreman
+
   Revision 1.35  2004/09/30 10:35:50  mazen
   * Fix compile probelem under GTK2 related to
     THandle <--> Pointer conversion
