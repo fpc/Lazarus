@@ -8004,7 +8004,11 @@ begin
 end;
 
 {$IFDEF GTK1}
+{$IFNDEF VER1_0}
 var
+{$ELSE}
+const
+{$ENDIF}
   FirstScreenCalled: Boolean = False;
   FirstScreenResult: Boolean = False;
 {$IFDEF UseXinerama}
@@ -8075,6 +8079,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.342  2005/02/21 07:02:00  vincents
+  fixed fpc 1.0.x compilation
+
   Revision 1.341  2005/02/20 11:03:36  mattias
   added finnish translation for windows codepage  from Seppo
 
