@@ -95,11 +95,22 @@ type
   public
     Node: TCodeTreeNode;
     VarType: TExtractedProcVariableType;
-    UsedInSelection: boolean;
+    ReadInSelection: boolean;
+    WriteInSelection: boolean;
     UsedInNonSelection: boolean;
+    ReadAfterSelection: boolean;
+    ReadAfterSelectionValid: boolean;
     RemovedFromOldProc: boolean;
+    function UsedInSelection: boolean;
   end;
-  
+
+{ TExtractedProcVariable }
+
+function TExtractedProcVariable.UsedInSelection: boolean;
+begin
+  Result:=ReadInSelection or WriteInSelection;
+end;
+
 function CompareExtractedProcVariables(V1, V2: TExtractedProcVariable): integer;
 var
   cmp: Integer;
@@ -217,42 +228,80 @@ function TExtractProcTool.ExtractProc(const StartPos, EndPos: TCodeXYPosition;
   ProcType: TExtractProcType; const ProcName: string;
   var NewPos: TCodeXYPosition; var NewTopLine: integer;
   SourceChangeCache: TSourceChangeCache): boolean;
+type
+  TParameterType = (ptNone, ptConst, ptVar, ptOut, ptNoSpecifier);
 const
   ShortProcFormat = [phpWithoutClassKeyword];
+  ParameterTypeNames: array[TParameterType] of string = (
+    'ptNone', 'ptConst', 'ptVar', 'ptOut', 'ptNoSpecifier');
 var
   BlockStartPos, BlockEndPos: integer; // the selection
   ProcNode: TCodeTreeNode; // the main proc node of the selection
   VarTree: TAVLTree;
   
   procedure AddVariableToTree(VarNode: TCodeTreeNode; IsInSelection,
-    IsParameter: boolean);
+    IsAfterSelection, IsChanged: boolean; ParameterType: TParameterType);
   var
-    NewProcVar: TExtractedProcVariable;
     AVLNode: TAVLTreeNode;
     ProcVar: TExtractedProcVariable;
-    UsedInNonSelection: Boolean;
   begin
     {$IFDEF CTDebug}
-    DebugLn('AddVariableToTree A Ident=',GetIdentifier(@Src[VarNode.StartPos]),' IsInSelection=',dbgs(IsInSelection),' IsParameter=',dbgs(IsParameter));
+    DebugLn('AddVariableToTree A Ident=',GetIdentifier(@Src[VarNode.StartPos]),
+      ' IsInSelection=',dbgs(IsInSelection),
+      ' ParameterType=',ParameterTypeNames[ParameterType]);
     {$ENDIF}
-    UsedInNonSelection:=(not IsInSelection) or IsParameter;
     if VarTree=nil then
       VarTree:=TAVLTree.Create(@CompareExtractedProcVariables);
     AVLNode:=VarTree.FindKey(VarNode,@CompareNodeWithExtractedProcVariable);
     if AVLNode<>nil then begin
       ProcVar:=TExtractedProcVariable(AVLNode.Data);
-      ProcVar.UsedInSelection:=ProcVar.UsedInSelection or IsInSelection;
-      ProcVar.UsedInNonSelection:=ProcVar.UsedInNonSelection or UsedInNonSelection;
     end else begin
-      NewProcVar:=TExtractedProcVariable.Create;
-      NewProcVar.Node:=VarNode;
-      NewProcVar.UsedInSelection:=IsInSelection;
-      NewProcVar.UsedInNonSelection:=UsedInNonSelection;
-      if IsParameter then
-        NewProcVar.VarType:=epvtParameter
+      ProcVar:=TExtractedProcVariable.Create;
+      ProcVar.Node:=VarNode;
+    end;
+    ProcVar.ReadInSelection:=ProcVar.ReadInSelection or IsInSelection;
+    ProcVar.WriteInSelection:=ProcVar.WriteInSelection
+                              or (IsInSelection and IsChanged);
+    ProcVar.UsedInNonSelection:=ProcVar.UsedInNonSelection
+                              or (not IsInSelection) or (ParameterType<>ptNone);
+    if (not ProcVar.ReadAfterSelectionValid) then begin
+      // a) variable is a var or out parameter
+      //    => the variable value IS needed after the extracted proc
+      // b) just after the selection the variable is read
+      //    => the variable value IS needed after the extracted proc
+      // c) just after the selection the variable is written
+      //    => the variable value IS NOT needed after the extracted proc
+      if (ParameterType in [ptOut,ptVar]) then begin
+        ProcVar.ReadAfterSelectionValid:=true;
+        ProcVar.ReadAfterSelection:=true;
+      end else if (not IsInSelection) and IsAfterSelection then begin
+        ProcVar.ReadAfterSelectionValid:=true;
+        ProcVar.ReadAfterSelection:=not IsChanged;
+      end;
+    end;
+    if AVLNode=nil then begin
+      if ParameterType<>ptNone then
+        ProcVar.VarType:=epvtParameter
       else
-        NewProcVar.VarType:=epvtLocalVar;
-      VarTree.Add(NewProcVar);
+        ProcVar.VarType:=epvtLocalVar;
+      VarTree.Add(ProcVar);
+    end;
+  end;
+  
+  function VariableIsChanged(VarStartPos: integer): boolean;
+  begin
+    Result:=false;
+    MoveCursorToCleanPos(VarStartPos);
+    // read identifier
+    ReadNextAtom;
+    if CurPos.Flag in [cafRoundBracketOpen] then
+      ReadTilBracketClose(true);
+    // read next atom
+    ReadNextAtom;
+    if AtomIs(':=') or AtomIs('+=') or AtomIs('-=') or AtomIs('*=')
+    or AtomIs('/=') then begin
+      Result:=true;
+      exit;
     end;
   end;
 
@@ -265,11 +314,15 @@ var
     IsInSelection: Boolean;
     ClosestProcNode: TCodeTreeNode;
     IsParameter: boolean;
+    IsChanged: Boolean;
+    IsAfterSelection: Boolean;
+    ParameterType: TParameterType;
   begin
     Result:=false;
     // find start of variable
     VarStartPos:=FindStartOfVariable(CurPos.StartPos);
     IsInSelection:=(VarStartPos>=BlockStartPos) and (VarStartPos<BlockEndPos);
+    IsAfterSelection:=(VarStartPos>=BlockEndPos);
     MoveCursorToCleanPos(VarStartPos);
     Params:=TFindDeclarationParams.Create;
     try
@@ -299,7 +352,21 @@ var
           if ClosestProcNode=ProcNode then begin
             // VarNode is a variable defined by the main proc
             IsParameter:=VarNode.GetNodeOfType(ctnProcedureHead)<>nil;
-            AddVariableToTree(VarNode,IsInSelection,IsParameter);
+            ParameterType:=ptNone;
+            if IsParameter then begin
+              MoveCursorToParameterSpecifier(VarNode);
+              if UpAtomIs('CONST') then
+                ParameterType:=ptConst
+              else if UpAtomIs('VAR') then
+                ParameterType:=ptVar
+              else if UpAtomIs('OUT') then
+                ParameterType:=ptOut
+              else
+                ParameterType:=ptNoSpecifier;
+            end;
+            IsChanged:=VariableIsChanged(VarStartPos);
+            AddVariableToTree(VarNode,IsInSelection,IsAfterSelection,IsChanged,
+                              ParameterType);
           end;
         end;
       end;
@@ -382,8 +449,11 @@ var
         ProcVar:=TExtractedProcVariable(AVLNode.Data);
         {$IFDEF CTDebug}
         DebugLn('TExtractProcTool.ReplaceSelectionWithCall B ',GetIdentifier(@Src[ProcVar.Node.StartPos]),
-          ' UsedInSelection=',dbgs(ProcVar.UsedInSelection),
-          ' UsedInNonSelection=',dbgs(ProcVar.UsedInNonSelection));
+          ' ReadInSelection=',dbgs(ProcVar.ReadInSelection),
+          ' WriteInSelection=',dbgs(ProcVar.WriteInSelection),
+          ' UsedInNonSelection=',dbgs(ProcVar.UsedInNonSelection),
+          ' ReadAfterSelection=',dbgs(ProcVar.ReadAfterSelection),
+          '');
         {$ENDIF}
         if ProcVar.UsedInSelection and ProcVar.UsedInNonSelection then begin
           // variables
@@ -419,12 +489,8 @@ var
         Result:=false;
       end else begin
         CurProcVar:=TExtractedProcVariable(AVLNode.Data);
-        if (not CurProcVar.UsedInSelection)
-        or (CurProcVar.UsedInNonSelection) then begin
-          Result:=false;
-        end else begin
-          Result:=true;
-        end;
+        Result:=(not CurProcVar.UsedInNonSelection)
+                and CurProcVar.UsedInSelection;
       end;
     end;
   
@@ -553,8 +619,11 @@ var
         ProcVar:=TExtractedProcVariable(AVLNode.Data);
         {$IFDEF CTDebug}
         DebugLn('TExtractProcTool.DeleteMovedLocalVariables B ',GetIdentifier(@Src[ProcVar.Node.StartPos]),
-          ' UsedInSelection=',dbgs(ProcVar.UsedInSelection),
-          ' UsedInNonSelection=',dbgs(ProcVar.UsedInNonSelection));
+          ' ReadInSelection=',dbgs(ProcVar.ReadInSelection),
+          ' WriteInSelection=',dbgs(ProcVar.WriteInSelection),
+          ' UsedInNonSelection=',dbgs(ProcVar.UsedInNonSelection),
+          ' ReadAfterSelection=',dbgs(ProcVar.ReadAfterSelection),
+          '');
         {$ENDIF}
         if ProcVar.UsedInSelection and (not ProcVar.UsedInNonSelection) then
         begin
@@ -613,8 +682,11 @@ var
         ProcVar:=TExtractedProcVariable(AVLNode.Data);
         {$IFDEF CTDebug}
         DebugLn('TExtractProcTool.CreateProcParamList B ',GetIdentifier(@Src[ProcVar.Node.StartPos]),
-          ' UsedInSelection=',dbgs(ProcVar.UsedInSelection),
-          ' UsedInNonSelection=',dbgs(ProcVar.UsedInNonSelection));
+          ' ReadInSelection=',dbgs(ProcVar.ReadInSelection),
+          ' WriteInSelection=',dbgs(ProcVar.WriteInSelection),
+          ' UsedInNonSelection=',dbgs(ProcVar.UsedInNonSelection),
+          ' ReadAfterSelection=',dbgs(ProcVar.ReadAfterSelection),
+          '');
         {$ENDIF}
         if ProcVar.UsedInSelection and ProcVar.UsedInNonSelection then begin
           // extract identifier and type
@@ -629,6 +701,8 @@ var
           {$ENDIF}
           // ToDo: ParamSpecifier 'var ' and none
           ParamSpecifier:='const ';
+          if ProcVar.ReadAfterSelection then
+            ParamSpecifier:='var ';
           CompleteParamListCode:=CompleteParamListCode
                                  +ParamSpecifier+ParamName+':'+ParamTypeCode;
           BaseParamListCode:=BaseParamListCode+':'+ParamTypeCode;
@@ -665,8 +739,10 @@ var
         ProcVar:=TExtractedProcVariable(AVLNode.Data);
         {$IFDEF CTDebug}
         DebugLn('TExtractProcTool.CreateProcVarSection B ',GetIdentifier(@Src[ProcVar.Node.StartPos]),
-          ' UsedInSelection=',dbgs(ProcVar.UsedInSelection),
-          ' UsedInNonSelection=',dbgs(ProcVar.UsedInNonSelection));
+          ' ReadInSelection=',dbgs(ProcVar.ReadInSelection),
+          ' WriteInSelection=',dbgs(ProcVar.WriteInSelection),
+          ' UsedInNonSelection=',dbgs(ProcVar.UsedInNonSelection),
+          ' ReadAfterSelection=',dbgs(ProcVar.ReadAfterSelection),'');
         {$ENDIF}
         if ProcVar.UsedInSelection and (not ProcVar.UsedInNonSelection) then
         begin

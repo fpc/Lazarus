@@ -193,6 +193,8 @@ type
                               var ActiveSourceEditor: TSourceEditorInterface;
                               var ActiveUnitInfo: TUnitInfo); virtual; abstract;
 
+    procedure DoCommand(EditorCommand: integer); virtual; abstract;
+
     function GetTestBuildDir: string; virtual; abstract;
     function GetTestUnitFilename(AnUnitInfo: TUnitInfo): string; virtual; abstract;
     function IsTestUnitFilename(const AFilename: string): boolean; virtual; abstract;

@@ -580,7 +580,7 @@ type
                             TheCompilerOptions: TCompilerOptions): TModalResult;
 
     // edit menu
-    procedure DoEditMenuCommand(EditorCommand: integer);
+    procedure DoCommand(EditorCommand: integer); override;
 
     // tools
     function DoConvertDFMtoLFM: TModalResult;
@@ -10416,132 +10416,132 @@ end;
 
 procedure TMainIDE.mnuEditCopyClicked(Sender: TObject);
 begin
-  DoEditMenuCommand(ecCopy);
+  DoCommand(ecCopy);
 end;
 
 procedure TMainIDE.mnuEditCutClicked(Sender: TObject);
 begin
-  DoEditMenuCommand(ecCut);
+  DoCommand(ecCut);
 end;
 
 procedure TMainIDE.mnuEditPasteClicked(Sender: TObject);
 begin
-  DoEditMenuCommand(ecPaste);
+  DoCommand(ecPaste);
 end;
 
 procedure TMainIDE.mnuEditRedoClicked(Sender: TObject);
 begin
-  DoEditMenuCommand(ecRedo);
+  DoCommand(ecRedo);
 end;
 
 procedure TMainIDE.mnuEditUndoClicked(Sender: TObject);
 begin
-  DoEditMenuCommand(ecUndo);
+  DoCommand(ecUndo);
 end;
 
 procedure TMainIDE.mnuEditIndentBlockClicked(Sender: TObject);
 begin
-  DoEditMenuCommand(ecBlockIndent);
+  DoCommand(ecBlockIndent);
 end;
 
 procedure TMainIDE.mnuEditUnindentBlockClicked(Sender: TObject);
 begin
-  DoEditMenuCommand(ecBlockUnindent);
+  DoCommand(ecBlockUnindent);
 end;
 
 procedure TMainIDE.mnuEditEncloseBlockClicked(Sender: TObject);
 begin
-  DoEditMenuCommand(ecSelectionEnclose);
+  DoCommand(ecSelectionEnclose);
 end;
 
 procedure TMainIDE.mnuEditUpperCaseBlockClicked(Sender: TObject);
 begin
-  DoEditMenuCommand(ecSelectionUpperCase);
+  DoCommand(ecSelectionUpperCase);
 end;
 
 procedure TMainIDE.mnuEditLowerCaseBlockClicked(Sender: TObject);
 begin
-  DoEditMenuCommand(ecSelectionLowerCase);
+  DoCommand(ecSelectionLowerCase);
 end;
 
 procedure TMainIDE.mnuEditTabsToSpacesBlockClicked(Sender: TObject);
 begin
-  DoEditMenuCommand(ecSelectionTabs2Spaces);
+  DoCommand(ecSelectionTabs2Spaces);
 end;
 
 procedure TMainIDE.mnuEditCommentBlockClicked(Sender: TObject);
 begin
-  DoEditMenuCommand(ecSelectionComment);
+  DoCommand(ecSelectionComment);
 end;
 
 procedure TMainIDE.mnuEditUncommentBlockClicked(Sender: TObject);
 begin
-  DoEditMenuCommand(ecSelectionUncomment);
+  DoCommand(ecSelectionUncomment);
 end;
 
 procedure TMainIDE.mnuEditConditionalBlockClicked(Sender: TObject);
 begin
-  DoEditMenuCommand(ecSelectionConditional);
+  DoCommand(ecSelectionConditional);
 end;
 
 procedure TMainIDE.mnuEditSortBlockClicked(Sender: TObject);
 begin
-  DoEditMenuCommand(ecSelectionSort);
+  DoCommand(ecSelectionSort);
 end;
 
 procedure TMainIDE.mnuEditSelectionBreakLinesClicked(Sender: TObject);
 begin
-  DoEditMenuCommand(ecSelectionBreakLines);
+  DoCommand(ecSelectionBreakLines);
 end;
 
 procedure TMainIDE.mnuEditSelectAllClick(Sender: TObject);
 begin
-  DoEditMenuCommand(ecSelectAll);
+  DoCommand(ecSelectAll);
 end;
 
 procedure TMainIDE.mnuEditSelectCodeBlockClick(Sender: TObject);
 begin
-  DoEditMenuCommand(ecSelectCodeBlock);
+  DoCommand(ecSelectCodeBlock);
 end;
 
 procedure TMainIDE.mnuEditSelectToBraceClick(Sender: TObject);
 begin
-  DoEditMenuCommand(ecSelectToBrace);
+  DoCommand(ecSelectToBrace);
 end;
 
 procedure TMainIDE.mnuEditSelectLineClick(Sender: TObject);
 begin
-  DoEditMenuCommand(ecSelectLine);
+  DoCommand(ecSelectLine);
 end;
 
 procedure TMainIDE.mnuEditSelectParagraphClick(Sender: TObject);
 begin
-  DoEditMenuCommand(ecSelectParagraph);
+  DoCommand(ecSelectParagraph);
 end;
 
 procedure TMainIDE.mnuEditInsertGPLNoticeClick(Sender: TObject);
 begin
-  DoEditMenuCommand(ecInsertGPLNotice);
+  DoCommand(ecInsertGPLNotice);
 end;
 
 procedure TMainIDE.mnuEditInsertLGPLNoticeClick(Sender: TObject);
 begin
-  DoEditMenuCommand(ecInsertLGPLNotice);
+  DoCommand(ecInsertLGPLNotice);
 end;
 
 procedure TMainIDE.mnuEditInsertUsernameClick(Sender: TObject);
 begin
-  DoEditMenuCommand(ecInsertUserName);
+  DoCommand(ecInsertUserName);
 end;
 
 procedure TMainIDE.mnuEditInsertDateTimeClick(Sender: TObject);
 begin
-  DoEditMenuCommand(ecInsertDateTime);
+  DoCommand(ecInsertDateTime);
 end;
 
 procedure TMainIDE.mnuEditInsertChangeLogEntryClick(Sender: TObject);
 begin
-  DoEditMenuCommand(ecInsertChangeLogEntry);
+  DoCommand(ecInsertChangeLogEntry);
 end;
 
 procedure TMainIDE.mnuSearchFindInFiles(Sender: TObject);
@@ -10561,50 +10561,50 @@ end;
 
 procedure TMainIDE.mnuEditInsertCharacterClicked(Sender: TObject);
 begin
-  DoEditMenuCommand(ecInsertCharacter);
+  DoCommand(ecInsertCharacter);
 end;
 
 procedure TMainIDE.mnuEditInsertCVSAuthorClick(Sender: TObject);
 begin
-  DoEditMenuCommand(ecInsertCVSAuthor);
+  DoCommand(ecInsertCVSAuthor);
 end;
 
 procedure TMainIDE.mnuEditInsertCVSDateClick(Sender: TObject);
 begin
-  DoEditMenuCommand(ecInsertCVSDate);
+  DoCommand(ecInsertCVSDate);
 end;
 
 procedure TMainIDE.mnuEditInsertCVSHeaderClick(Sender: TObject);
 begin
-  DoEditMenuCommand(ecInsertCVSHeader);
+  DoCommand(ecInsertCVSHeader);
 end;
 
 procedure TMainIDE.mnuEditInsertCVSIDClick(Sender: TObject);
 begin
-  DoEditMenuCommand(ecInsertCVSID);
+  DoCommand(ecInsertCVSID);
 end;
 
 procedure TMainIDE.mnuEditInsertCVSLogClick(Sender: TObject);
 begin
-  DoEditMenuCommand(ecInsertCVSLog);
+  DoCommand(ecInsertCVSLog);
 end;
 
 procedure TMainIDE.mnuEditInsertCVSNameClick(Sender: TObject);
 begin
-  DoEditMenuCommand(ecInsertCVSName);
+  DoCommand(ecInsertCVSName);
 end;
 
 procedure TMainIDE.mnuEditInsertCVSRevisionClick(Sender: TObject);
 begin
-  DoEditMenuCommand(ecInsertCVSRevision);
+  DoCommand(ecInsertCVSRevision);
 end;
 
 procedure TMainIDE.mnuEditInsertCVSSourceClick(Sender: TObject);
 begin
-  DoEditMenuCommand(ecInsertCVSSource);
+  DoCommand(ecInsertCVSSource);
 end;
 
-procedure TMainIDE.DoEditMenuCommand(EditorCommand: integer);
+procedure TMainIDE.DoCommand(EditorCommand: integer);
 var
   ActiveSourceEditor: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
@@ -10704,6 +10704,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.771  2004/09/16 00:15:49  mattias
+  added refactoring submenu in source editor popupmenu and implemented simple var/const heuristic for extract proc
+
   Revision 1.770  2004/09/14 10:23:44  mattias
   implemented finding DefineProperties in registered TPersistent, implemented auto commenting of missing units for Delphi unit conversion
 

@@ -325,7 +325,14 @@ type
   TSourceNotebookStates = set of TSourceNotebookState;
 
   TSourceNotebook = class(TForm)
+    AddBreakpointMenuItem: TMenuItem;
+    AddWatchAtCursorMenuItem: TMenuItem;
     ClosePageMenuItem: TMenuItem;
+    CompleteCodeMenuItem: TMenuItem;
+    DebugMenuItem: TMenuItem;
+    EditorPropertiesMenuItem: TMenuItem;
+    EncloseSelectionMenuItem: TMenuItem;
+    ExtractProcMenuItem: TMenuItem;
     FindDeclarationMenuItem: TMenuItem;
     GotoBookmarkMenuItem: TMenuItem;
     MoveEditorLeftMenuItem: TMenuItem;
@@ -333,19 +340,19 @@ type
     Notebook: TNotebook;
     OpenFileAtCursorMenuItem: TMenuItem;
     ReadOnlyMenuItem: TMenuItem;
+    RefactorMenuItem: TMenuItem;
+    RunToCursorMenuItem: TMenuItem;
     SetBookmarkMenuItem: TMenuItem;
     ShowLineNumbersMenuItem: TMenuItem;
     ShowUnitInfoMenuItem: TMenuItem;
     SrcPopUpMenu: TPopupMenu;
     StatusBar: TStatusBar;
-    DebugMenuItem: TMenuItem;
-    AddBreakpointMenuItem: TMenuItem;
-    AddWatchAtCursorMenuItem: TMenuItem;
-    RunToCursorMenuItem: TMenuItem;
     ViewCallStackMenuItem: TMenuItem;
-    EditorPropertiesMenuItem: TMenuItem;
     Procedure AddBreakpointClicked(Sender: TObject);
+    procedure CompleteCodeMenuItemClick(Sender: TObject);
     Procedure DeleteBreakpointClicked(Sender: TObject);
+    procedure EncloseSelectionMenuItemClick(Sender: TObject);
+    procedure ExtractProcMenuItemClick(Sender: TObject);
     procedure RunToClicked(Sender: TObject);
     procedure ViewCallStackClick(Sender: TObject);
     Procedure AddWatchAtCursor(Sender: TObject);
@@ -3061,6 +3068,39 @@ Begin
 
   SrcPopupMenu.Items.Add(Seperator);
 
+  RefactorMenuItem := TMenuItem.Create(Self);
+  with RefactorMenuItem do begin
+    Name:='RefactorMenuItem';
+    Caption := uemRefactor;
+  end;
+  SrcPopupMenu.Items.Add(RefactorMenuItem);
+  
+      CompleteCodeMenuItem := TMenuItem.Create(Self);
+      with CompleteCodeMenuItem do begin
+        Name := 'CompleteCodeMenuItem';
+        Caption := uemCompleteCode;
+        OnClick :=@CompleteCodeMenuItemClick;
+      end;
+      RefactorMenuItem.Add(CompleteCodeMenuItem);
+
+      EncloseSelectionMenuItem := TMenuItem.Create(Self);
+      with EncloseSelectionMenuItem do begin
+        Name := 'EncloseSelectionMenuItem';
+        Caption := uemEncloseSelection;
+        OnClick :=@EncloseSelectionMenuItemClick;
+      end;
+      RefactorMenuItem.Add(EncloseSelectionMenuItem);
+
+      ExtractProcMenuItem := TMenuItem.Create(Self);
+      with ExtractProcMenuItem do begin
+        Name := 'ExtractProcMenuItem';
+        Caption := uemExtractProc;
+        OnClick :=@ExtractProcMenuItemClick;
+      end;
+      RefactorMenuItem.Add(ExtractProcMenuItem);
+
+  SrcPopupMenu.Items.Add(Seperator);
+
   EditorPropertiesMenuItem := TMenuItem.Create(Self);
   with EditorPropertiesMenuItem do begin
     Name := 'EditorPropertiesMenuItem';
@@ -3846,6 +3886,11 @@ begin
                                ASrcEdit.EditorComponent.CaretY);
 end;
 
+procedure TSourceNotebook.CompleteCodeMenuItemClick(Sender: TObject);
+begin
+  MainIDEInterface.DoCommand(ecCompleteCode);
+end;
+
 procedure TSourceNotebook.DeleteBreakpointClicked(Sender: TObject);
 var
   ASrcEdit: TSourceEditor;
@@ -3854,6 +3899,20 @@ begin
   if ASrcEdit=nil then exit;
   DebugBoss.DoDeleteBreakPoint(ASrcEdit.Filename,
                                ASrcEdit.EditorComponent.CaretY);
+end;
+
+procedure TSourceNotebook.EncloseSelectionMenuItemClick(Sender: TObject);
+var
+  ASrcEdit: TSourceEditor;
+begin
+  ASrcEdit:=GetActiveSE;
+  if ASrcEdit=nil then exit;
+  ASrcEdit.EncloseSelection;
+end;
+
+procedure TSourceNotebook.ExtractProcMenuItemClick(Sender: TObject);
+begin
+  MainIDEInterface.DoCommand(ecExtractProc);
 end;
 
 procedure TSourceNotebook.RunToClicked(Sender: TObject);

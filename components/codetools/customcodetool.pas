@@ -1427,6 +1427,7 @@ end;
 function TCustomCodeTool.ReadTilBracketClose(
   ExceptionOnNotFound: boolean): boolean;
 // reads code brackets (not comment brackets)
+// after call cursor is on the closing bracket
 var CloseBracket, AntiCloseBracket: TCommonAtomFlag;
   Start: TAtomPosition;
   

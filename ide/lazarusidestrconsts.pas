@@ -1056,6 +1056,10 @@ resourcestring
   uemViewCallStackCursor = 'View Call Stack';
   uemMoveEditorLeft='Move Editor Left';
   uemMoveEditorRight='Move Editor Right';
+  uemRefactor = 'Refactoring';
+  uemCompleteCode = 'Complete Code';
+  uemEncloseSelection = 'Enclose Selection';
+  uemExtractProc = 'Extract Procedure';
   uemEditorproperties='Editor properties';
   ueNotImplCap='Not implemented yet';
   ueNotImplText='If You can help us to implement this feature, mail to '
