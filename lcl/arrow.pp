@@ -60,7 +60,8 @@ Type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
+    procedure Loaded; override;
+    procedure InitializeWnd; override;
   published
     Property ArrowType : TArrowType read GetArrowType write SetArrowType;
     property ShadowType : TShadowType read fShadowType write SetShadowType;
@@ -97,6 +98,18 @@ begin
   inherited;
 end;
 
+procedure TArrow.Loaded;
+begin
+  inherited Loaded;
+  SetProps;
+end;
+
+procedure TArrow.InitializeWnd;
+begin
+  inherited InitializeWnd;
+  SetProps;
+end;
+
 function TArrow.GetArrowType: TArrowType;
 begin
   Result := FArrowType;
@@ -117,13 +130,12 @@ procedure TArrow.SetProps;
 var
   Temp : TLMArrow;
 begin
-
-  if HandleAllocated then
-     begin
-       Temp.ArrowType := FArrowType;
-       Temp.ShadowType := FShadowType;
-       CNSendMessage(LM_SetValue,self,@Temp);
-     end;
+  if HandleAllocated and (not (csLoading in ComponentState)) then
+  begin
+    Temp.ArrowType := FArrowType;
+    Temp.ShadowType := FShadowType;
+    CNSendMessage(LM_SetValue,self,@Temp);
+  end;
 end;
 
 procedure TArrow.SetShadowType(const AValue: TShadowType);

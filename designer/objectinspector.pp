@@ -2252,7 +2252,6 @@ begin
 //,' ',FPropertyEditorHook<>nil,'  ',FPropertyEditorHook.LookupRoot<>nil);
   if FUpdatingAvailComboBox then exit;
   FUpdatingAvailComboBox:=true;
-  
   NewList:=TStringList.Create;
   try
     if (FPropertyEditorHook<>nil)
@@ -2263,7 +2262,9 @@ begin
       for a:=0 to Root.ComponentCount-1 do
         AddComponentToList(Root.Components[a],NewList);
     end;
-    
+
+    if AvailCompsComboBox.Items.Equals(NewList) then exit;
+
     AvailCompsComboBox.Items.BeginUpdate;
     if AvailCompsComboBox.Items.Count=1 then
       OldText:=AvailCompsComboBox.Text
@@ -2271,7 +2272,6 @@ begin
       OldText:='';
     AvailCompsComboBox.Items.Assign(NewList);
     AvailCompsComboBox.Items.EndUpdate;
-    FUpdatingAvailComboBox:=false;
     a:=AvailCompsComboBox.Items.IndexOf(OldText);
     if (OldText='') or (a<0) then
       SetAvailComboBoxText
@@ -2280,6 +2280,7 @@ begin
 
   finally
     NewList.Free;
+    FUpdatingAvailComboBox:=false;
   end;
 end;
 
