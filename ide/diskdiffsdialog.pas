@@ -46,6 +46,7 @@ type
     procedure DiskDiffsDlgKeyDown(Sender: TObject; var Key: Word;
           Shift: TShiftState);
     procedure DiskDiffsDlgResize(Sender: TObject);
+    procedure MainGroupBoxResize(Sender: TObject);
   private
     FUnitList: TList;
     procedure FillFilesListBox;
@@ -93,11 +94,6 @@ begin
     Height:=Self.ClientHeight-50-Top;
   end;
   
-  with DiffSynEdit do begin
-    Width:=MainGroupBox.ClientWidth;
-    Height:=MainGroupBox.ClientHeight-Top;
-  end;
-
   with RevertAllButton do begin
     Top:=Self.ClientHeight-40;
   end;
@@ -105,6 +101,14 @@ begin
   with IgnoreDiskChangesButton do begin
     Left:=RevertAllButton.Left+RevertAllButton.Width+10;
     Top:=RevertAllButton.Top;
+  end;
+end;
+
+procedure TDiskDiffsDlg.MainGroupBoxResize(Sender: TObject);
+begin
+  with DiffSynEdit do begin
+    Width:=MainGroupBox.ClientWidth;
+    Height:=MainGroupBox.ClientHeight-Top;
   end;
 end;
 
@@ -143,6 +147,7 @@ begin
       Height:=Self.ClientHeight-50-Top;
       Caption:='Changed files:';
       Visible:=true;
+      OnResize:=@MainGroupBoxResize;
     end;
     
     FilesListBox:=TListBox.Create(Self);
@@ -164,7 +169,7 @@ begin
       Top:=FilesListBox.Height+2;
       Width:=MainGroupBox.ClientWidth;
       Height:=MainGroupBox.ClientHeight-Top;
-      Lines.Text:='Diff not implemented yet.';
+      Lines.Text:='The Diff View is not implemented yet.';
       Visible:=true;
     end;
     
