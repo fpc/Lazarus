@@ -2647,34 +2647,38 @@ var
   RCStyle : PGtkRCStyle;
   Widget, FixWidget : PGTKWidget;
 begin
-  exit;
   {$IfNdef Win32}
   if Sender is TWinControl
   then with TWinControl(Sender) do
   begin
     // Temphack to set backcolor, till better solution
-    if HandleAllocated and ((Color and SYS_COLOR_BASE)=0) then begin
+    if HandleAllocated then begin
       Widget:=PGtkWidget(Handle);
-      
-      // don't set background for custom controls (to prevent flickering)
-      if GtkWidgetIsA(Widget,GTKAPIWidget_GetType) then exit;
-      
       FixWidget:=GetFixedWidget(Widget);
-
       If FixWidget <> Widget then Widget := FixWidget;
 
-      RCStyle:=gtk_rc_style_new;
-      RCStyle^.bg[GTK_STATE_NORMAL]:=TColortoTGDKColor(Color);
+      // set default background
+      if (Color=clNone) and (FixWidget^.Window<>nil) then
+        gdk_window_set_back_pixmap(FixWidget^.Window,nil,0)
+      else
+      if (not ColorIsStored)
+      and ((Color and SYS_COLOR_BASE)=0) then begin
+        // don't set background for custom controls (to prevent flickering)
+        if GtkWidgetIsA(PGtkWidget(Handle),GTKAPIWidget_GetType) then exit;
 
-      // Indicate which colors the GtkRcStyle will affect;
-      // unflagged colors will follow the theme
-      RCStyle^.color_flags[GTK_STATE_NORMAL]:=
-        RCStyle^.color_flags[GTK_STATE_NORMAL] or GTK_RC_BG;
+        RCStyle:=gtk_rc_style_new;
+        RCStyle^.bg[GTK_STATE_NORMAL]:=TColortoTGDKColor(Color);
 
-      gtk_widget_modify_style(Widget,RCStyle);
-      gtk_rc_style_unref(RCStyle);
+        // Indicate which colors the GtkRcStyle will affect;
+        // unflagged colors will follow the theme
+        RCStyle^.color_flags[GTK_STATE_NORMAL]:=
+          RCStyle^.color_flags[GTK_STATE_NORMAL] or GTK_RC_BG;
 
-      //SetBKColor(Handle, ColorToRGB(Color));
+        gtk_widget_modify_style(Widget,RCStyle);
+        gtk_rc_style_unref(RCStyle);
+
+        //SetBKColor(Handle, ColorToRGB(Color));
+      end;
     end;
   end;
   {$Else}
@@ -6820,6 +6824,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.311  2002/12/27 17:46:04  mattias
+  fixed SetColor
+
   Revision 1.310  2002/12/27 17:12:38  mattias
   added more Delphi win32 compatibility functions
 
