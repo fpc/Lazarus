@@ -460,7 +460,8 @@ type
     procedure DoGoToPascalBlockOtherEnd;
     procedure DoGoToPascalBlockStart;
     procedure DoJumpToGuessedUnclosedBlock(FindNext: boolean);
-    
+    procedure SaveIncludeLinks;
+
     // methods for debugging, compiling and external tools
     function DoJumpToCompilerMessage(Index:integer;
       FocusEditor: boolean): boolean;
@@ -500,6 +501,10 @@ type
     procedure LoadDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
     procedure SaveDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
   end;
+
+
+const
+  CodeToolsIncludeLinkFile = 'includelinks.xml';
 
 
 var
@@ -961,6 +966,7 @@ end;
 procedure TMainIDE.FormClose(Sender : TObject; var Action: TCloseAction);
 begin
   SaveEnvironment;
+  SaveIncludeLinks;
   if TheControlSelection<>nil then TheControlSelection.Clear;
   if SourceNoteBook<>nil then SourceNoteBook.ClearUnUsedEditorComponents(true);
 end;
@@ -3788,6 +3794,7 @@ writeln('AnUnitInfo.Filename=',AnUnitInfo.Filename);
       if MainUnitInfo<>nil then MainUnitInfo.Modified:=false;
       if MainUnitSrcEdit<>nil then MainUnitSrcEdit.Modified:=false;
     end;
+    SaveIncludeLinks;
     UpdateCaption;
   end;
 
@@ -5368,6 +5375,7 @@ procedure TMainIDE.InitCodeToolBoss;
 var CompilerUnitSearchPath: string;
   ADefTempl: TDefineTemplate;
   c: integer;
+  AFilename: string;
 begin
   FOpenEditorsOnCodeToolChange:=false;
   
@@ -5419,18 +5427,25 @@ begin
     AddTemplate(ADefTempl,true,
         'NOTE: Could not create Define Template for Lazarus Sources');
   end;
-  // build define tree
-  c:=CodeToolBoss.ConsistencyCheck;
-  if c<>0 then begin
-    writeln('CodeToolBoss.ConsistencyCheck=',c);
-    Halt;
-  end;
+
+  // load include file relationships
+  AFilename:=AppendPathDelim(GetPrimaryConfigPath)+CodeToolsIncludeLinkFile;
+  if FileExists(AFilename) then
+    CodeToolBoss.SourceCache.LoadIncludeLinksFromFile(AFilename);
+
   
   with CodeToolBoss do begin
     WriteExceptions:=true;
     CatchExceptions:=true;
     OnBeforeApplyChanges:=@OnBeforeCodeToolBossApplyChanges;
     OnAfterApplyChanges:=@OnAfterCodeToolBossApplyChanges;
+  end;
+
+  // codetools consistency check
+  c:=CodeToolBoss.ConsistencyCheck;
+  if c<>0 then begin
+    writeln('CodeToolBoss.ConsistencyCheck=',c);
+    Halt;
   end;
 end;
 
@@ -5693,6 +5708,14 @@ writeln('[TMainIDE.DoGoToPascalBlockEnd] ************');
       NewSource, NewX, NewY, NewTopLine, true);
   end else 
     DoJumpToCodeToolBossError;
+end;
+
+procedure TMainIDE.SaveIncludeLinks;
+var AFilename: string;
+begin
+  // save include file relationships
+  AFilename:=AppendPathDelim(GetPrimaryConfigPath)+CodeToolsIncludeLinkFile;
+  CodeToolBoss.SourceCache.SaveIncludeLinksToFile(AFilename);
 end;
 
 procedure TMainIDE.DoCompleteCodeAtCursor;
@@ -6439,6 +6462,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.251  2002/03/22 17:36:09  lazarus
+  MG: added include link history
+
   Revision 1.250  2002/03/22 13:11:29  lazarus
   Added Application.ProcessMessages in MainMouseMoved to prevent the IDE hanging.
 

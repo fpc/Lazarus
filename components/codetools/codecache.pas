@@ -57,6 +57,7 @@ type
     FCodeCache: TCodeCache;
     FIsVirtual: boolean;
     FIsDeleted: boolean;
+    function GetLastIncludedByFile: string;
     procedure SetFilename(const Value: string);
     procedure SetScanner(const Value: TLinkScanner);
     procedure SetIsDeleted(const NewValue: boolean);
@@ -64,7 +65,7 @@ type
   public
     property Scanner: TLinkScanner read FScanner write SetScanner;
     property LastIncludedByFile: string
-          read FLastIncludedByFile write FLastIncludedByFile;
+          read GetLastIncludedByFile write FLastIncludedByFile;
     property Filename: string read FFilename write SetFilename;
     function LoadFromFile(const AFilename: string): boolean; override;
     function Reload: boolean; // = LoadFromFile(Filename)
@@ -111,6 +112,9 @@ type
                  var ReadOnly: boolean);
     procedure OnScannerDeleteSource(Sender: TObject; Code: Pointer;
                  Pos, Len: integer);
+    function FindIncludeLinkNode(const IncludeFilename: string): TIncludedByLink;
+    function FindIncludeLink(const IncludeFilename: string): string;
+    procedure UpdateIncludeLinks;
   public
     function Count: integer;
     function FindFile(const AFilename: string): TCodeBuffer;
@@ -234,7 +238,7 @@ begin
     FItems.Add(Result);
     with Result do begin
       FCodeCache:=Self;
-      LastIncludedByFile:=Self.LastIncludedByFile(AFilename);
+      LastIncludedByFile:=FindIncludeLink(AFilename);
       ReadOnly:=not FileIsWritable(Filename);
     end;
   end else if Result.IsDeleted then begin
@@ -257,7 +261,7 @@ begin
     Result.FileName:=AFileName;
     FItems.Add(Result);
     Result.FCodeCache:=Self;
-    Result.LastIncludedByFile:=LastIncludedByFile(AFilename);
+    Result.LastIncludedByFile:=FindIncludeLink(AFilename);
   end;
 end;
 
@@ -291,7 +295,7 @@ begin
     end;
     FItems.Add(NewBuffer);
     NewBuffer.FCodeCache:=Self;
-    NewBuffer.LastIncludedByFile:=LastIncludedByFile(AFilename);
+    NewBuffer.LastIncludedByFile:=FindIncludeLink(AFilename);
   end else begin
     NewBuffer.Source:=OldBuffer.Source;
     Result:=NewBuffer.Save;
@@ -305,25 +309,12 @@ end;
 
 function TCodeCache.LastIncludedByFile(const IncludeFilename: string): string;
 var Code: TCodeBuffer;
-  ANode: TAVLTreeNode;
-  cmp: integer;
 begin
   Code:=FindFile(IncludeFilename);
   if Code<>nil then
     Result:=Code.LastIncludedByFile
   else begin
-    ANode:=FIncludeLinks.Root;
-    while ANode<>nil do begin
-      cmp:=CompareFilenames(
-              IncludeFilename,TIncludedByLink(ANode.Data).IncludeFilename);
-      if cmp<0 then ANode:=ANode.Left
-      else if cmp>0 then ANode:=ANode.Right
-      else begin
-        Result:=TIncludedByLink(ANode.Data).IncludedByFile;
-        exit;
-      end;
-    end;
-    Result:='';
+    Result:=FindIncludeLink(IncludeFilename);
   end;
 end;
 
@@ -401,6 +392,60 @@ begin
   TCodeBuffer(Code).Delete(Pos,Len);
 end;
 
+function TCodeCache.FindIncludeLinkNode(const IncludeFilename: string
+  ): TIncludedByLink;
+var
+  ANode: TAVLTreeNode;
+  cmp: integer;
+begin
+  ANode:=FIncludeLinks.Root;
+  while ANode<>nil do begin
+    Result:=TIncludedByLink(ANode.Data);
+    cmp:=CompareFilenames(
+            IncludeFilename,Result.IncludeFilename);
+    if cmp<0 then ANode:=ANode.Left
+    else if cmp>0 then ANode:=ANode.Right
+    else begin
+      exit;
+    end;
+  end;
+  Result:=nil;
+end;
+
+function TCodeCache.FindIncludeLink(const IncludeFilename: string): string;
+var Link: TIncludedByLink;
+begin
+  Link:=FindIncludeLinkNode(IncludeFilename);
+  if Link<>nil then begin
+    Result:=Link.IncludedByFile;
+    if CompareFilenames(Result,IncludeFilename)=0 then Result:='';
+  end else
+    Result:='';
+end;
+
+procedure TCodeCache.UpdateIncludeLinks;
+var CodeNode: TAVLTreeNode;
+  IncludeNode: TIncludedByLink;
+  Code: TCodeBuffer;
+  CurrDate: TDateTime;
+begin
+  CodeNode:=FItems.FindLowest;
+  CurrDate:=Date;
+  while CodeNode<>nil do begin
+    Code:=TCodeBuffer(CodeNode.Data);
+    IncludeNode:=FindIncludeLinkNode(Code.Filename);
+    if IncludeNode<>nil then begin
+      // there is already an entry for this file -> update it
+      IncludeNode.IncludedByFile:=Code.LastIncludedByFile;
+    end else if Code.LastIncludedByFile<>'' then begin
+      // there is no entry for this include file -> add one
+      FIncludeLinks.Add(TIncludedByLink.Create(Code.Filename,
+                        Code.LastIncludedByFile,CurrDate));
+    end;
+    CodeNode:=FItems.FindSuccessor(CodeNode);
+  end;
+end;
+
 function TCodeCache.SaveIncludeLinksToFile(const AFilename: string): boolean;
 var XMLConfig: TXMLConfig;
 begin
@@ -412,7 +457,7 @@ begin
       XMLConfig.Free;
     end;
   except
-    Result:=false
+    Result:=false;
   end;
 end;
 
@@ -427,7 +472,7 @@ begin
       XMLConfig.Free;
     end;
   except
-    Result:=false
+    Result:=false;
   end;
 end;
 
@@ -442,7 +487,7 @@ var Index: integer;
     if ANode=nil then exit;
     SaveLinkTree(ANode.Left);
     ALink:=TIncludedByLink(ANode.Data);
-    APath:=XMLPath+'/IncludeLinks/Link'+IntToStr(Index)+'/';
+    APath:=XMLPath+'IncludeLinks/Link'+IntToStr(Index)+'/';
     XMLConfig.SetValue(APath+'IncludeFilename/Value',ALink.IncludeFilename);
     XMLConfig.SetValue(APath+'IncludedByFilename/Value',ALink.IncludedByFile);
     XMLConfig.SetValue(APath+'LastTimeUsed/Value',DateToStr(ALink.LastTimeUsed));
@@ -452,9 +497,10 @@ var Index: integer;
 
 begin
   try
-    XMLConfig.SetValue(XMLPath+'/IncludeLinks/ExpirationTimeInDays',
+    UpdateIncludeLinks;
+    XMLConfig.SetValue(XMLPath+'IncludeLinks/ExpirationTimeInDays',
         FExpirationTimeInDays);
-    XMLConfig.SetValue(XMLPath+'/IncludeLinks/Count',FIncludeLinks.Count);
+    XMLConfig.SetValue(XMLPath+'IncludeLinks/Count',FIncludeLinks.Count);
     Index:=0;
     SaveLinkTree(FIncludeLinks.Root);
     Result:=true;
@@ -473,19 +519,21 @@ begin
   try
     FIncludeLinks.FreeAndClear;
     FExpirationTimeInDays:=XMLConfig.GetValue(
-        XMLPath+'/IncludeLinks/ExpirationTimeInDays',
+        XMLPath+'IncludeLinks/ExpirationTimeInDays',
         FExpirationTimeInDays);
-    LinkCnt:=XMLConfig.GetValue(XMLPath+'/IncludeLinks/Count',0);
+    LinkCnt:=XMLConfig.GetValue(XMLPath+'IncludeLinks/Count',0);
     CurrDate:=Date;
     for i:=0 to LinkCnt-1 do begin
-      APath:=XMLPath+'/IncludeLinks/Link'+IntToStr(i)+'/';
+      APath:=XMLPath+'IncludeLinks/Link'+IntToStr(i)+'/';
       try
         LastTimeUsed:=StrToDate(XMLConfig.GetValue(APath+'LastTimeUsed/Value',
              DateToStr(CurrDate)));
       except
         LastTimeUsed:=CurrDate;
       end;
+      
       // ToDo: check if link has expired
+      
       IncludeFilename:=XMLConfig.GetValue(APath+'IncludeFilename/Value','');
       if IncludeFilename='' then continue;
       IncludedByFile:=XMLConfig.GetValue(APath+'IncludedByFilename/Value','');
@@ -629,6 +677,12 @@ begin
     Result:=SaveToFile(Filename)
   else
     Result:=false;
+end;
+
+function TCodeBuffer.GetLastIncludedByFile: string;
+begin
+  Result:=FLastIncludedByFile;
+  if Result=Filename then Result:='';
 end;
 
 procedure TCodeBuffer.SetFilename(const Value: string);

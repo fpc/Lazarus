@@ -46,13 +46,13 @@ uses
     Currently maintained by Curtis White <cwhite@aracnet.com>
   }
 
-  { The primary config path is the local/user specific path.
+  { The primary config path is the local or user specific path.
     If the primary config path does not exists, it will automatically be
     created.
-    The secondary config path is for templates. Lazarus will never write to it.
+    The secondary config path is for templates. The IDE will never write to it.
     If a config file is not found in the primary config file, Lazarus will
     copy the template file from the secondary config file. If there is no
-    template file, Lazarus will create a default file.
+    template file, the IDE will create a default file.
   }
   function GetPrimaryConfigPath: String;
   function GetSecondaryConfigPath: String;
@@ -72,6 +72,9 @@ end.
 
 {
   $Log$
+  Revision 1.5  2002/03/22 17:36:09  lazarus
+  MG: added include link history
+
   Revision 1.4  2001/12/10 08:44:23  lazarus
   MG: added search for compiler, if not set
 
