@@ -265,7 +265,7 @@ Begin
    Begin
     Parent := nParent;
     Flat := True;
-    SetBounds((FRegisteredComponent.IndexInPage+1)*27,Top,
+    SetBounds((FRegisteredComponent.IndexInPage+1)*27+12,Top,
               ComponentPaletteBtnWidth,ComponentPaletteBtnHeight);
     Enabled := True;
     Glyph := Pixmap1;

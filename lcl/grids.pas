@@ -554,7 +554,7 @@ Type
 
     Property CellAttr[ACol,ARow:Integer]: TCellAttr read GetCellAttr write SetCellAttr;
     property CellColor[ACol, ARow:Integer]: TColor read GetCellColor write SetCellColor;
-    Property CellFontCOlor[ACol,ARow:Integer]: TColor read GetCellFontCOlor write SetCellFontCOlor;
+    Property CellFontCOlor[ACol,ARow:Integer]: TColor read GetCellFontColor write SetCellFontCOlor;
     Property CellAlign[ACol,ARow: Integer]: Integer read GetCellAlign write SetCellAlign;
     Property DefaultCellAttr: TCellAttr read fDefCellAttr write SetDefaultCellAttr;
     
@@ -2233,7 +2233,6 @@ begin
       End;
     gzNormal:
       Begin
-
         fGridState:=gsSelecting;
         FSplitter:=MouseToCell(Point(X,Y));
 
@@ -2246,7 +2245,7 @@ begin
               FSelectActive:=true;
             End;
           End;
-          MoveExtend(False, fsplitter.X, fSplitter.y);
+          MoveExtend(False, fSplitter.X, fSplitter.y);
         End Else begin
           If TryMoveSelection(False, FSplitter.X, FSplitter.Y) Then Begin
             MoveExtend(False, FSplitter.X, FSplitter.Y);
@@ -2551,7 +2550,6 @@ begin
   InvalidateRect(Handle, @R, True);
 End;
 
-
 Function TCustomGrid.MoveExtend(Relative: Boolean; DCol, DRow: Integer): Boolean;
 Var
   InvalidateAll: Boolean;
@@ -2559,7 +2557,7 @@ Var
   WasVis: Boolean;
 begin
   Result:=TryMoveSelection(Relative,DCol,DRow);
-  If Not result Then Exit;
+  If (Not Result) Then Exit;
   
   {$IfDef dbgFocus}WriteLn(' MoveExtend INIT FCol= ',FCol, ' FRow= ',FRow);{$Endif}
 
@@ -2692,7 +2690,7 @@ end;
 
 procedure TCustomGrid.MoveSelection;
 begin
-  if Assigned(onSelection) Then OnSelection(Self, FCol, FRow);
+  if Assigned(OnSelection) Then OnSelection(Self, FCol, FRow);
 end;
 
 procedure TCustomGrid.BeginUpdate;
