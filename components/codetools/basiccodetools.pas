@@ -37,6 +37,11 @@ uses
 //-----------------------------------------------------------------------------
 // functions / procedures
 
+{ These functions are not context sensitive. Especially they ignore compiler
+  settings and compiler directives. They exist only for easy usage, they are not
+  used by the CodeTools
+}
+
 // source type
 function FindSourceType(const Source: string;
   var SrcNameStart, SrcNameEnd: integer): string;
@@ -118,13 +123,16 @@ function ReadRawNextPascalAtom(const Source:string;
    var Position,AtomStart:integer):string;
 
 //----------------------------------------------------------------------------
+{ These functions are used by the codetools
+}
+
 // comments
 function FindNextNonSpace(const ASource: string; StartPos: integer
-  ): integer;
+    ): integer;
 function FindCommentEnd(const ASource: string; StartPos: integer;
     NestedComments: boolean): integer;
 function FindNextCompilerDirective(const ASource: string; StartPos: integer;
-  NestedComments: boolean): integer;
+    NestedComments: boolean): integer;
 function CleanCodeFromComments(const DirtyCode: string;
     NestedComments: boolean): string;
 
@@ -141,7 +149,7 @@ procedure GetIdentStartEndAtPosition(const Source:string; Position:integer;
 function GetIdentLen(Identifier: PChar): integer;
 function GetIdentifier(Identifier: PChar): string;
 function FindNextIdentifier(const Source: string; StartPos, MaxPos: integer
-  ): integer;
+    ): integer;
 
 // line/code ends
 function FindFirstNonSpaceCharInLine(const Source: string;
@@ -165,8 +173,14 @@ function CountNeededLineEndsToAddBackward(const Src: string;
     StartPos, MinLineEnds: integer): integer;
 
 // comparison
+function CompareText(Txt1: PChar; Len1: integer; Txt2: PChar; Len2: integer;
+    CaseSensitive: boolean): integer;
+function CompareText(Txt1: PChar; Len1: integer; Txt2: PChar; Len2: integer;
+    CaseSensitive, IgnoreSpace: boolean): integer;
 function CompareTextIgnoringSpace(const Txt1, Txt2: string;
     CaseSensitive: boolean): integer;
+function CompareTextIgnoringSpace(Txt1: PChar; Len1: integer;
+    Txt2: PChar; Len2: integer; CaseSensitive: boolean): integer;
 function CompareSubStrings(const Find, Txt: string;
     FindStartPos, TxtStartPos, Len: integer; CaseSensitive: boolean): integer;
 function CompareIdentifiers(Identifier1, Identifier2: PChar): integer;
@@ -201,6 +215,15 @@ var
   IsSpaceChar
      : array[char] of boolean;
 
+function Min(i1, i2: integer): integer;
+begin
+  if i1<i2 then Result:=i1 else Result:=i2;
+end;
+
+function Max(i1, i2: integer): integer;
+begin
+  if i1>i2 then Result:=i1 else Result:=i2;
+end;
 
 { most simple code tools - just methods }
 
@@ -1689,21 +1712,27 @@ end;
 
 function CompareTextIgnoringSpace(const Txt1, Txt2: string;
   CaseSensitive: boolean): integer;
+begin
+  Result:=CompareTextIgnoringSpace(
+               PChar(Txt1),length(Txt1),PChar(Txt2),length(Txt2),
+               CaseSensitive);
+end;
+
+function CompareTextIgnoringSpace(Txt1: PChar; Len1: integer;
+    Txt2: PChar; Len2: integer; CaseSensitive: boolean): integer;
 { Txt1  Txt2  Result
    A     A      0
    A     B      1
    A     AB     1
    A;    A      -1
 }
-var P1, P2, Len1, Len2: integer;
+var P1, P2: integer;
   InIdentifier: boolean;
 begin
-  P1:=1;
-  P2:=1;
-  Len1:=length(Txt1);
-  Len2:=length(Txt2);
+  P1:=0;
+  P2:=0;
   InIdentifier:=false;
-  while (P1<=Len1) and (P2<=Len2) do begin
+  while (P1<Len1) and (P2<Len2) do begin
     if (CaseSensitive and (Txt1[P1]=Txt2[P2]))
     or ((not CaseSensitive) and (UpChars[Txt1[P1]]=UpChars[Txt2[P2]])) then
     begin
@@ -1724,12 +1753,12 @@ begin
         // ignore/skip spaces in Txt1
         repeat
           inc(P1);
-        until (P1>Len1) or (ord(Txt1[P1])>ord(' '));
+        until (P1>=Len1) or (ord(Txt1[P1])>ord(' '));
       end else if (ord(Txt2[P2])<=ord(' ')) then begin
         // ignore/skip spaces in Txt2
         repeat
           inc(P2);
-        until (P2>Len2) or (ord(Txt2[P2])>ord(' '));
+        until (P2>=Len2) or (ord(Txt2[P2])>ord(' '));
       end else begin
         // Txt1<>Txt2
         if (CaseSensitive and (Txt1[P1]>Txt2[P2]))
@@ -1744,13 +1773,13 @@ begin
   end;
   // one text was totally read -> check the rest of the other one
   // skip spaces
-  while (P1<=Len1) and (ord(Txt1[P1])<=ord(' ')) do
+  while (P1<Len1) and (ord(Txt1[P1])<=ord(' ')) do
     inc(P1);
-  while (P2<=Len2) and (ord(Txt2[P2])<=ord(' ')) do
+  while (P2<Len2) and (ord(Txt2[P2])<=ord(' ')) do
     inc(P2);
-  if (P1>Len1) then begin
+  if (P1>=Len1) then begin
     // rest of P1 was only space
-    if (P2>Len2) then
+    if (P2>=Len2) then
       // rest of P2 was only space
       Result:=0
     else
@@ -1764,45 +1793,10 @@ end;
 
 function CompareSubStrings(const Find, Txt: string;
   FindStartPos, TxtStartPos, Len: integer; CaseSensitive: boolean): integer;
-var FindLen, TxtLen: integer;
 begin
-  FindLen:=length(Find);
-  TxtLen:=length(Txt);
-  if CaseSensitive then begin
-    while (FindStartPos<=FindLen) and (TxtStartPos<=TxtLen) and (Len>0) do begin
-      if Find[FindStartPos]=Txt[TxtStartPos] then begin
-        inc(FindStartPos);
-        inc(TxtStartPos);
-        dec(Len);
-      end else begin
-        if Find[FindStartPos]>Txt[TxtStartPos] then
-          Result:=1
-        else
-          Result:=-1;
-        exit;
-      end;
-    end;
-  end else begin
-    while (FindStartPos<=FindLen) and (TxtStartPos<=TxtLen) and (Len>0) do begin
-      if UpChars[Find[FindStartPos]]=UpChars[Txt[TxtStartPos]] then begin
-        inc(FindStartPos);
-        inc(TxtStartPos);
-        dec(Len);
-      end else begin
-        if UpChars[Find[FindStartPos]]>UpChars[Txt[TxtStartPos]] then
-          Result:=1
-        else
-          Result:=-1;
-        exit;
-      end;
-    end;
-  end;
-  if Len=0 then
-    Result:=0
-  else if FindStartPos>FindLen then
-    Result:=1
-  else
-    Result:=-1;
+  Result:=CompareText(@Find[FindStartPos],Min(length(Find)-FindStartPos+1,Len),
+                      @Txt[TxtStartPos],Min(length(Txt)-TxtStartPos+1,Len),
+                      CaseSensitive);
 end;
 
 function CleanCodeFromComments(const DirtyCode: string;
@@ -2135,6 +2129,57 @@ begin
     else
       break;
   end;
+end;
+
+function CompareText(Txt1: PChar; Len1: integer; Txt2: PChar; Len2: integer;
+  CaseSensitive: boolean): integer;
+begin
+  if CaseSensitive then begin
+    while (Len1>0) and (Len2>0) do begin
+      if Txt1^=Txt2^ then begin
+        inc(Txt1);
+        dec(Len1);
+        inc(Txt2);
+        dec(Len2);
+      end else begin
+        if Txt1^<Txt2^ then
+          Result:=1
+        else
+          Result:=-1;
+        exit;
+      end;
+    end;
+  end else begin
+    while (Len1>0) and (Len2>0) do begin
+      if UpChars[Txt1^]=UpChars[Txt2^] then begin
+        inc(Txt1);
+        dec(Len1);
+        inc(Txt2);
+        dec(Len2);
+      end else begin
+        if UpChars[Txt1^]<UpChars[Txt2^] then
+          Result:=1
+        else
+          Result:=-1;
+        exit;
+      end;
+    end;
+  end;
+  if Len1>Len2 then
+    Result:=-1
+  else if Len1<Len2 then
+    Result:=1
+  else
+    Result:=0;
+end;
+
+function CompareText(Txt1: PChar; Len1: integer; Txt2: PChar; Len2: integer;
+  CaseSensitive, IgnoreSpace: boolean): integer;
+begin
+  if IgnoreSpace then
+    Result:=CompareTextIgnoringSpace(Txt1,Len1,Txt2,Len2,CaseSensitive)
+  else
+    Result:=CompareText(Txt1,Len1,Txt2,Len2,CaseSensitive);
 end;
 
 

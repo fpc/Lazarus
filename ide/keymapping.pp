@@ -78,10 +78,11 @@ const
   ecSelectionTabs2Spaces = ecUserFirst + 52;
   ecSelectionComment     = ecUserFirst + 53;
   ecSelectionUncomment   = ecUserFirst + 54;
-  ecSelectToBrace        = ecUserFirst + 55;
-  ecSelectCodeBlock      = ecUserFirst + 56;
-  ecSelectLine           = ecUserFirst + 57;
-  ecSelectParagraph      = ecUserFirst + 58;
+  ecSelectionSort        = ecUserFirst + 55;
+  ecSelectToBrace        = ecUserFirst + 56;
+  ecSelectCodeBlock      = ecUserFirst + 57;
+  ecSelectLine           = ecUserFirst + 58;
+  ecSelectParagraph      = ecUserFirst + 59;
   
   ecInsertGPLNotice      = ecUserFirst + 80;
   ecInsertUserName       = ecUserFirst + 81;
@@ -531,6 +532,7 @@ begin
     ecSelectionTabs2Spaces: Result:='Selection tabs to spaces';
     ecSelectionComment: Result:='Comment selection';
     ecSelectionUncomment: Result:='Uncomment selection';
+    ecSelectionSort: Result:='Sort selection';
     ecSelectToBrace: Result:= 'Select to brace';
     ecSelectCodeBlock: Result:= 'Select code block';
     ecSelectLine: Result:= 'Select line';
@@ -1263,6 +1265,7 @@ begin
   Add(C,'Convert tabs to spaces in selection',ecSelectionTabs2Spaces,VK_UNKNOWN, [],VK_UNKNOWN,[]);
   Add(C,'Comment selection',ecSelectionComment,VK_UNKNOWN, [],VK_UNKNOWN,[]);
   Add(C,'Uncomment selection',ecSelectionUncomment,VK_UNKNOWN, [],VK_UNKNOWN,[]);
+  Add(C,'Sort selection',ecSelectionSort,VK_UNKNOWN, [],VK_UNKNOWN,[]);
 
   // editing
   C:=Categories[AddCategory('editing commands','Text editing commands',caSrcEditOnly)];

@@ -1146,11 +1146,12 @@ function TFindDeclarationTool.FindUnitSource(const AnUnitName,
       UnitLinkLen:=UnitLinkEnd-UnitLinkStart;
       if UnitLinkLen>0 then begin
         {$IFDEF ShowTriedFiles}
-        //writeln('  unit "',copy(UnitLinks,UnitLinkStart,UnitLinkEnd-UnitLinkStart),'"');
+        writeln('  unit "',copy(UnitLinks,UnitLinkStart,UnitLinkEnd-UnitLinkStart),'" ',CompareSubStrings(TheUnitName,UnitLinks,1,
+          UnitLinkStart,UnitLinkLen,false));
         {$ENDIF}
         if (UnitLinkLen=length(TheUnitName))
-        and (CompareSubStrings(TheUnitName,UnitLinks,1,
-          UnitLinkStart,UnitLinkLen,false)=0)
+        and (CompareText(PChar(TheUnitName),length(TheUnitName),
+          @UnitLinks[UnitLinkStart],UnitLinkLen,false)=0)
         then begin
           // unit found -> parse filename
           UnitLinkStart:=UnitLinkEnd+1;

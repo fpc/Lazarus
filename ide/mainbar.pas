@@ -169,6 +169,7 @@ type
     itmEditTabsToSpacesBlock: TMenuItem;
     itmEditCommentBlock: TMenuItem;
     itmEditUncommentBlock: TMenuItem;
+    itmEditSortBlock: TMenuItem;
     itmEditSelect: TMenuItem;
     itmEditSelectAll: TMenuItem;
     itmEditSelectToBrace: TMenuItem;
@@ -534,6 +535,11 @@ begin
   itmEditUncommentBlock.Name:='itmEditUncommentBlock';
   itmEditUncommentBlock.Caption := lisMenuUncommentSelection;
   mnuEdit.Add(itmEditUncommentBlock);
+
+  itmEditSortBlock := TMenuItem.Create(Self);
+  itmEditSortBlock.Name:='itmEditSortBlock';
+  itmEditSortBlock.Caption := lisMenuSortSelection;
+  mnuEdit.Add(itmEditSortBlock);
 
   mnuEdit.Add(CreateMenuSeparator);
 
@@ -1067,6 +1073,7 @@ begin
     itmEditTabsToSpacesBlock.ShortCut:=CommandToShortCut(ecSelectionTabs2Spaces);
     itmEditCommentBlock.ShortCut:=CommandToShortCut(ecSelectionComment);
     itmEditUncommentBlock.ShortCut:=CommandToShortCut(ecSelectionUncomment);
+    itmEditSortBlock.ShortCut:=CommandToShortCut(ecSelectionSort);
     itmEditSelectAll.ShortCut:=CommandToShortCut(ecSelectAll);
     itmEditSelectToBrace.ShortCut:=CommandToShortCut(ecSelectToBrace);
     itmEditSelectCodeBlock.ShortCut:=CommandToShortCut(ecSelectCodeBlock);

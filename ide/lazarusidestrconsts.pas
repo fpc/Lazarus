@@ -125,6 +125,7 @@ resourcestring
   lisMenuTabsToSpacesSelection = 'Tabs to spaces in selection';
   lisMenuCommentSelection = 'Comment selection';
   lisMenuUncommentSelection = 'Uncomment selection';
+  lisMenuSortSelection = 'Sort selection';
   lisMenuSelect = 'Select';
   lisMenuSelectAll = 'Select all';
   lisMenuSelectToBrace = 'Select to brace';
