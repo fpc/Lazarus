@@ -570,10 +570,7 @@ type
     radGenFaster: TRadioButton;
     radGenSmaller: TRadioButton;
 
-    grpTargetProc: TGroupBox;
-    radTarget386: TRadioButton;
-    radTargetPent: TRadioButton;
-    radTargetPentPro: TRadioButton;
+    grpTargetProc: TRadioGroup;
 
     grpOptimizations: TGroupBox;
     chkOptVarsInReg: TCheckBox;
@@ -1985,9 +1982,10 @@ Processor specific options:
 
   { TargetProcessor  p1 = 386/486   p2 = Pentium/Pentium MMX  p3 = PentiumPro/PII/K6 }
   case (TargetProcessor) of
-    1:  switches := switches + 'p1';
-    2:  switches := switches + 'p2';
-    3:  switches := switches + 'p3';
+    1:  switches := switches + 'p1';  // 386/486
+    2:  switches := switches + 'p2';  // Pentium/Pentium MMX
+    3:  switches := switches + 'p3';  // PentiumPro/PII/K6
+    4:  {this is done via the TargetOS};  // PowerPC
   end;
 
   { Target OS
@@ -2863,7 +2861,7 @@ begin
   if i<0 then i:=0;
   LCLWidgetTypeRadioGroup.ItemIndex:=i;
   i:=TargetOSComboBox.Items.IndexOf(Options.TargetOS);
-  if i<0 then i:=0;
+  if i<0 then i:=0;  // 0 is default
   TargetOSComboBox.ItemIndex:=i;
   TargetOSComboBox.Text:=Options.TargetOS;
 
@@ -2905,9 +2903,9 @@ begin
   end;
 
   case Options.TargetProcessor of
-    1: radTarget386.Checked := true;
-    2: radTargetPent.Checked := true;
-    3: radTargetPentPro.Checked := true;
+    1..4: grpTargetProc.ItemIndex:=Options.TargetProcessor-1;
+  else
+    grpTargetProc.ItemIndex:=0;
   end;
 
   chkOptVarsInReg.Checked := Options.VariablesInRegisters;
@@ -3072,14 +3070,7 @@ begin
   else
     Options.Generate := cgcNormalCode;
 
-  if (radTarget386.Checked) then
-    Options.TargetProcessor := 1
-  else if (radTargetPent.Checked) then
-    Options.TargetProcessor := 2
-  else if (radTargetPentPro.Checked) then
-    Options.TargetProcessor := 3
-  else
-    Options.TargetProcessor := 1;
+  Options.TargetProcessor := grpTargetProc.ItemIndex+1;
 
   Options.VariablesInRegisters := chkOptVarsInReg.Checked;
   Options.UncertainOptimizations := chkOptUncertain.Checked;
@@ -3146,7 +3137,7 @@ begin
     
     
   NewTargetOS:=TargetOSComboBox.Text;
-  if (NewTargetOS<>'') and (not IsValidIdent(NewTargetOS)) then
+  if TargetOSComboBox.Items.IndexOf(NewTargetOS)<=0 then
     NewTargetOS:='';
   Options.TargetOS:=NewTargetOS;
 
@@ -3656,7 +3647,7 @@ begin
 
   {------------------------------------------------------------}
 
-  grpTargetProc := TGroupBox.Create(Self);
+  grpTargetProc := TRadioGroup.Create(Self);
   with grpTargetProc do
   begin
     Parent := CodeGenPage;
@@ -3665,41 +3656,13 @@ begin
     Height := 90;
     Width := 270;
     Caption := dlgTargetProc;
+    with Items do begin
+      Add('386/486');
+      Add('Pentium/Pentium MMX');
+      Add('Pentium Pro/Pentium II/C6x86/K6');
+      Add('PowerPC');
+    end;
   end;
-
-  radTarget386 := TRadioButton.Create(grpTargetProc);
-  with radTarget386 do
-  begin
-    Parent := grpTargetProc;
-    Caption := '386/486';
-    Top := 8;
-    Left := 5;
-    Height := 16;
-    Width := 220;
-  end;
-
-  radTargetPent := TRadioButton.Create(grpTargetProc);
-  with radTargetPent do
-  begin
-    Parent := grpTargetProc;
-    Caption := 'Pentium/Pentium MMX';
-    Top := 29;
-    Left := 5;
-    Height := 16;
-    Width := 220;
-  end;
-
-  radTargetPentPro := TRadioButton.Create(grpTargetProc);
-  with radTargetPentPro do
-  begin
-    Parent := grpTargetProc;
-    Caption := 'Pentium Pro/Pentium II/C6x86/K6';
-    Top := 50;
-    Left := 5;
-    Height := 16;
-    Width := 220;
-  end;
-
 
   {------------------------------------------------------------}
 
@@ -3798,7 +3761,7 @@ begin
     Parent := TargetOSGroupBox;
     Align:=alTop;
     with Items do begin
-      Add('(default)');
+      Add('('+rsiwpDefault+')');
       Add('Darwin');
       Add('FreeBSD');
       Add('Linux');
