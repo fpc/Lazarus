@@ -3028,27 +3028,28 @@ begin
       Result := False;
     end
     else begin
-      Width := Rect.Right - Rect.Left;
-      Height := Rect.Bottom - Rect.Top;
-      // Temporary hold the old brush to 
-      // replace it with the given brush
-      OldCurrentBrush := CurrentBrush;
-      if PGdiObject(Brush)<>OldCurrentBrush then begin
+      if not PGdiObject(Brush)^.IsNullBrush then begin
+        Width := Rect.Right - Rect.Left;
+        Height := Rect.Bottom - Rect.Top;
+        // Temporary hold the old brush to
+        // replace it with the given brush
         OldCurrentBrush := CurrentBrush;
-        CurrentBrush := PGdiObject(Brush);
-        SelectedColors:=dcscCustom;
-      end;
-      SelectGDKBrushProps(DC);
-      If not CurrentBrush^.IsNullBrush then begin
-        DCOrigin:=GetDCOffset(TDeviceContext(DC));
-        gdk_draw_rectangle(Drawable, GC, 1,
-                           Rect.Left+DCOrigin.X, Rect.Top+DCOrigin.Y,
-                           Width, Height);
-      end;
-      // Restore current brush
-      if PGdiObject(Brush)<>OldCurrentBrush then begin
-        SelectedColors:=dcscCustom;
-        CurrentBrush := OldCurrentBrush;
+        if not CompareGDIBrushes(PGdiObject(Brush),OldCurrentBrush) then begin
+          CurrentBrush := PGdiObject(Brush);
+          SelectedColors:=dcscCustom;
+        end;
+        SelectGDKBrushProps(DC);
+        If not CurrentBrush^.IsNullBrush then begin
+          DCOrigin:=GetDCOffset(TDeviceContext(DC));
+          gdk_draw_rectangle(Drawable, GC, 1,
+                             Rect.Left+DCOrigin.X, Rect.Top+DCOrigin.Y,
+                             Width, Height);
+        end;
+        // Restore current brush
+        if not CompareGDIBrushes(PGdiObject(Brush),OldCurrentBrush) then begin
+          SelectedColors:=dcscCustom;
+          CurrentBrush := OldCurrentBrush;
+        end;
       end;
 
       Result := True;
@@ -7954,6 +7955,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.225  2003/03/28 19:39:54  mattias
+  started typeinfo for double extended
+
   Revision 1.224  2003/03/26 19:25:27  mattias
   added transient deactivation option and updated localization
 
