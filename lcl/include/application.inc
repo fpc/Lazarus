@@ -27,16 +27,25 @@ const
   DefHintShortPause = 0;    { default reshow pause }
   DefHintHidePause = DefHintPause * 5; { default pause before hint is hidden }
 
+function GetHintControl(Control: TControl): TControl;
+begin
+  Result := Control;
+  while (Result <> nil)
+  and ((not Result.ShowHint) or (Result.Hint='')) do
+    Result := Result.Parent;
+  if (Result <> nil)
+  and ([csDesigning,csDestroying,csLoading]*Result.ComponentState<>[]) then
+    Result := nil;
+end;
 
 function GetHintInfoAtMouse: THintInfoAtMouse;
 begin
   if Mouse<>nil then begin
     Result.MousePos:=Mouse.CursorPos;
-    Result.Control:=FindLCLControl(Result.MousePos);
-    Result.ControlHasHint:=(Result.Control<>nil)
-      and (Result.Control.ShowHint)
-      and (Result.Control.Hint<>'')
-      and ([csDesigning,csDestroying,csLoading]*Result.Control.ComponentState=[])
+    Result.Control:=GetHintControl(FindLCLControl(Result.MousePos));
+    Result.ControlHasHint:=
+      (Result.Control<>nil)
+      and (Application<>nil) and (Application.ShowHint)
       and (GetCapture=0)
       and (GetKeyState(VK_LBUTTON)=0)
       and (GetKeyState(VK_MBUTTON)=0)
@@ -65,6 +74,7 @@ begin
   FHintShortCuts := True;
   FHintShortPause := DefHintShortPause;
   FHintHidePause := DefHintHidePause;
+  FShowHint := true;
   FList := nil;
   FOnIdle := nil;
   FIcon := nil;
@@ -385,31 +395,89 @@ end;
   procedure TApplication.ShowHintWindow(const Info: THintInfoAtMouse);
  ------------------------------------------------------------------------------}
 procedure TApplication.ShowHintWindow(const Info: THintInfoAtMouse);
-var
-  ARect: TRect;
-  AHint: string;
-begin
-  // create hint window
-  if FHintWindow=nil then begin
-    FHintWindow:=THintWindow.Create(Self);
-    with FHintWindow do begin
-      Visible := False;
-      Caption := '';
-      AutoHide := False;
-      Color := Self.HintColor;
-    end;
+
+  function GetCursorHeightMargin: integer;
+  begin
+    Result:=25;
   end;
-  // show hint window
-  AHint := Info.Control.Hint;
-  ARect := FHintWindow.CalcHintRect(0,AHint,nil);  //no maxwidth
-  ARect.Left := Info.MousePos.X+10;
-  ARect.Top := Info.MousePos.Y+10;
-  ARect.Right := ARect.Left + ARect.Right;
-  ARect.Bottom := ARect.Top + ARect.Bottom;
+
+var
+  ClientOrigin, ParentOrigin: TPoint;
+  HintInfo: THintInfo;
+  CanShow: Boolean;
+  HintWinRect: TRect;
+begin
+  if not FShowHint then exit;
+  FHintControl:=Info.Control;
+
+  FillChar(HintInfo,SizeOf(HintInfo),0);
+  HintInfo.HintControl := FHintControl;
+  HintInfo.HintPos := Info.MousePos;
+  Inc(HintInfo.HintPos.Y, GetCursorHeightMargin);
+  HintInfo.HintMaxWidth := Screen.Width;
+  HintInfo.HintColor := FHintColor;
+  HintInfo.CursorRect := FHintControl.BoundsRect;
+  ClientOrigin := FHintControl.ClientOrigin;
+  ParentOrigin.X := 0;
+  ParentOrigin.Y := 0;
+  if FHintControl.Parent <> nil then
+    ParentOrigin := FHintControl.Parent.ClientOrigin;
+  {else if (FHintControl is TWinControl) and
+    (TWinControl(FHintControl).ParentWindow <> 0) then
+    Windows.ClientToScreen(TWinControl(FHintControl).ParentWindow, ParentOrigin);}
+  OffsetRect(HintInfo.CursorRect, ParentOrigin.X - ClientOrigin.X,
+    ParentOrigin.Y - ClientOrigin.Y);
+  HintInfo.CursorPos := FHintControl.ScreenToClient(Info.MousePos);
+  HintInfo.HintStr := GetShortHint(Info.Control.Hint);
+  HintInfo.ReshowTimeout := 0;
+  HintInfo.HideTimeout := FHintHidePause;
+  HintInfo.HintWindowClass := HintWindowClass;
+  HintInfo.HintData := nil;
+  CanShow := FHintControl.Perform(CM_HINTSHOW, 0, Longint(@HintInfo)) = 0;
+  if CanShow and Assigned(FOnShowHint) then
+    FOnShowHint(HintInfo.HintStr, CanShow, HintInfo);
+  if CanShow and (FHintControl <> nil) and (HintInfo.HintStr <> '') then
+  begin
+    // create hint window
+    if FHintWindow=nil then begin
+      FHintWindow:=THintWindow.Create(Self);
+      with FHintWindow do begin
+        Visible := False;
+        Caption := '';
+        AutoHide := False;
+      end;
+    end;
+    
+    { make the hint have the same BiDiMode as the activating control }
+    //FHintWindow.BiDiMode := FHintControl.BiDiMode;
+    { calculate the width of the hint based on HintStr and MaxWidth }
+    with HintInfo do
+      HintWinRect := FHintWindow.CalcHintRect(HintMaxWidth, HintStr, HintData);
+    OffsetRect(HintWinRect, HintInfo.HintPos.X, HintInfo.HintPos.Y);
+    {if FHintWindow.UseRightToLeftAlignment then
+      with HintWinRect do
+      begin
+        Dec(Left, FHintWindow.Canvas.TextWidth(HintInfo.HintStr) + 5);
+        Dec(Right, FHintWindow.Canvas.TextWidth(HintInfo.HintStr) + 5);
+      end;}
+
+    { Convert the client's rect to screen coordinates }
+    {with HintInfo do
+    begin
+      FHintCursorRect.TopLeft :=
+        FHintControl.ClientToScreen(CursorRect.TopLeft);
+      FHintCursorRect.BottomRight :=
+        FHintControl.ClientToScreen(CursorRect.BottomRight);
+    end;}
+
+    FHintWindow.Color := HintInfo.HintColor;
+    
+    FHintWindow.ActivateHint(HintWinRect,HintInfo.HintStr);
+    // start hide timer
+    StartHintTimer(HintHidePause,ahtHideHint);
+    Exit;
+  end;
   //writeln('TApplication.ShowHintWindow Info.ControlHasHint=',Info.ControlHasHint,' Type=',ord(FHintTimerType));
-  FHintWindow.ActivateHint(ARect,AHint);
-  // start hide timer
-  StartHintTimer(HintHidePause,ahtHideHint);
 end;
 
 {------------------------------------------------------------------------------
@@ -750,6 +818,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.33  2002/11/05 23:44:47  lazarus
+  MG: implemented Application.OnShowHint
+
   Revision 1.32  2002/11/05 20:03:42  lazarus
   MG: implemented hints
 
