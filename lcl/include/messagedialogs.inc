@@ -18,457 +18,165 @@
  *****************************************************************************
   current design flaws:
 
-  - The actual design ignores any features provided by the underlying 
-    widgetset. This is because the GTK libraries do not provide an
-    abstract dialog class
-	   
+  - ??? There has to be at least one :-)
+
   Delphi compatibility:
 
    - the interface is almost like in delphi 5
      
   TODO:
-    - calculate the size required for the dialog based on the 
-      current font and the length of the text to be displayed
-    - remove all those nasty constants (cBitmapWidth...)
-    - use better strategy to set default button in function SetButtons 
-    - Help-button    
+    - Help Context
+    - Help-button
+    - User ability to customize Button order
 
 }
-type
-
-  { TMessageBox
-   
-    Internal class used to build a MessageBox. 
-  }
-  TMessageBox = class(TForm)
-    procedure MessageBoxKeyDown(Sender: TObject; var Key: Word;
-          Shift: TShiftState);
-  private
-    FBitmap : TBitmap;
-    FLabel : TLabel;
-    FDlgType : TMsgDlgType;
-    FButtons : TMsgDlgButtons;
-    FRelayoutNeeded: boolean;
-    FUpdateCounter: integer;
-    FMsgLines: TStringList;
-    procedure SetMessage(const value : string); 
-    function GetMessage: string; 
-    procedure SetDialogType (const value : TMsgDlgType);
-    procedure SetButtons (const value : TMsgDlgButtons);
-    procedure ReLayout;
-    function LineWidth(Index: integer): integer;
-    function LineHeight: integer;
-  public
-    constructor Create (AOwner : TComponent); override;
-    destructor Destroy; override;
-    procedure Paint; override;
-    procedure FormActivate(Sender: TObject);
-    property TheMessage : string read GetMessage write SetMessage;
-    property DialogType : TMsgDlgType write SetDialogType;
-    property Buttons : TMsgDlgButtons write SetButtons;
-    procedure BeginUpdate;
-    procedure EndUpdate;
-  end;
-
-{------------------------------------------------------------------------------
-  Method: TMessageBox.Create
-  Params:  AOwner: the owner of the class
-  Returns: Nothing
-
-  Constructor for a MessageBox
- ------------------------------------------------------------------------------}
-constructor TMessageBox.Create (AOwner : TComponent);
+Function ModalEscapeValue(Buttons : TMsgDlgButtons) : TModalResult;
 begin
-  inherited Create (AOwner);
-   
-  FMsgLines   := TStringList.Create;
-  FLabel      := TLabel.Create(Self);
-  FLabel.Alignment:= taLeftJustify;
-  FLabel.ShowAccelChar:= false;
-  FLabel.Parent:= Self;
-  FLabel.Visible:= true;
-  
-  ControlStyle:= ControlStyle-[csSetCaption];
-  BorderStyle := bsDialog;
-  Position    := poScreenCenter;
-  Width       := 200;
-  Height      := 100;
-  FDlgType    := mtInformation;
-  FBitmap     := nil;
-  FButtons    := [mbOk];
-  FRelayoutNeeded := false;
-  FUpdateCounter := 0;
-  OnKeyDown:=@MessageBoxKeyDown;
-  OnActivate:=@FormActivate;
-end;
-
-{------------------------------------------------------------------------------
-  Method: TMessageBox.Destroy
-  Params:  ---
-  Returns: Nothing
-
-  Destructor for a MessageBox
- ------------------------------------------------------------------------------}
-destructor TMessageBox.Destroy;
-begin
-  FLabel.Free;
-  FBitmap.Free;
-  FMsgLines.Free;
-  inherited Destroy;
-end;
-
-{------------------------------------------------------------------------------
-  Method: TMessageBox.FormActivate
-  Params:  ---
-  Returns: Nothing
-
-  
- ------------------------------------------------------------------------------}
-procedure TMessageBox.FormActivate(Sender: TObject);
-var i: integer;
-begin
-  for i:=0 to ComponentCount-1 do begin
-    if (Components[i] is TBitBtn) and (TBitBtn(Components[i]).Default) then begin
-  //    TBitBtn(Components[i]).SetFocus;
-      break;
-    end;
-  end;
-end;
-
-{------------------------------------------------------------------------------
-  Method: TMessageBox.Paint
-  Params:  ---
-  Returns: Nothing
-
-  Draw the icon in the messagebox.
- ------------------------------------------------------------------------------}
-procedure TMessageBox.Paint;
-begin
-  inherited Paint;
-  if assigned (FBitmap) then
-    Canvas.CopyRect(Bounds(cBitmapX, cBitmapY,cBitmapWidth,cBitmapHeight),
-                    FBitmap.Canvas,
-                    Rect(0,0,cBitmapWidth,cBitmapHeight));
-end;
-
-{------------------------------------------------------------------------------
-  Method: TMessageBox.LineWidth
-  Params:  Index - index of the line to check the width
-  Returns: Text width of the line
- ------------------------------------------------------------------------------}
-function TMessageBox.LineWidth(Index: integer): integer;
-begin
-  if (Index>=0) and (Index<FMsgLines.Count) then
-    Result:= Canvas.TextWidth(FMsgLines[Index])
+  If mbNo in Buttons then
+    Result := mrNo
   else
-    Result:= 0;
-end;
-
-{------------------------------------------------------------------------------
-  Method: TMessageBox.LineHeight
-  Params:  nothing
-  Returns: Text height of the line
- ------------------------------------------------------------------------------}
-function TMessageBox.LineHeight: integer;
-begin
-  Result:=Canvas.TextHeight('ABCDEFGHIJKLMNOPQRSTUVWXYZgp09') + 4;
-end;
-
-{------------------------------------------------------------------------------
-  Method: TMessageBox.MessageBoxKeyDown
-
-  OnKeyDown Event handler for messages dialogs.
-  The 'Escape' key has the same meaning as a Cancel or Abort click.
- ------------------------------------------------------------------------------}
-procedure TMessageBox.MessageBoxKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-begin
-  if (Key=VK_Escape) then begin
-    if mbCancel in FButtons then
-      ModalResult:=mrCancel
-    else if mbAbort in FButtons then
-      ModalResult:=mrAbort;
-  end;
-end;
-
-{------------------------------------------------------------------------------
-  Method: TMessageBox.SetMessage
-  Params:  value - text to be displayed in the message box
-  Returns: Nothing
-
-  Sets the Text in MessageBox
- ------------------------------------------------------------------------------}
-procedure TMessageBox.SetMessage(const Value : string);
-begin
-  if Value=FMsgLines.Text then exit;
-  FMsgLines.Text:=Value;
-  FRelayoutNeeded:=true;
-  ReLayout;
-end;
-
-{------------------------------------------------------------------------------
-  Method: TMessageBox.GetMessage
-  Params: Nothing
-  Returns: Message Text
-
-  Sets the Text in MessageBox
- ------------------------------------------------------------------------------}
-function TMessageBox.GetMessage: string;
-begin
-  if FMsgLines<>nil then
-    Result:=FMsgLines.Text
+    If mbAbort in Buttons then
+      Result := mrAbort
   else
-    Result:='';
+    If mbCancel in Buttons then
+      Result := mrCancel
+  else
+    If mbIgnore in Buttons then
+      Result := mrIgnore
+  else
+    If mbNoToAll in Buttons then
+      Result := mrNoToAll
+  else
+    If mbYes in Buttons then
+      Result := mrYes
+  else
+    If mbOk in Buttons then
+      Result := mrOk
+  else
+    If mbRetry in Buttons then
+      Result := mrRetry
+  else
+    If mbAll in Buttons then
+      Result := mrAll
+  else
+    If mbYesToAll in Buttons then
+      Result := mrYesToAll;
 end;
-{------------------------------------------------------------------------------
-  Method: TMessageBox.SetDialogType
-  Params:  value - the type of dialog to be shown
-  Returns: Nothing
 
-  Sets the type of dialog.
- ------------------------------------------------------------------------------}
-procedure TMessageBox.SetDialogType (const Value : TMsgDlgType);
-var DefaultCaption: boolean;
+Function ModalDefaultButton(Buttons : TMsgDlgButtons) : TMsgDlgbtn;
 begin
-  if (value = FDlgType) and (assigned (FBitmap)) then exit;
-  DefaultCaption:=(Caption=cMtCaption[FDlgType]) or (Caption='');
-  FDlgType := value;
-  FBitmap.Free;
-  FBitmap := TBitmap.Create; 
-  FBitmap.Handle := LoadStockPixmap(mtImages[FDlgType]);
-  if DefaultCaption then
-    Caption := cMtCaption[FDlgType];
+  If mbYes in Buttons then
+    Result := mbYes
+  else
+    If mbOk in Buttons then
+      Result := mbOk
+  else
+    If mbYesToAll in Buttons then
+      Result := mbYesToAll
+  else
+    If mbAll in Buttons then
+      Result := mbAll
+  else
+    If mbRetry in Buttons then
+      Result := mbRetry
+  else
+    If mbCancel in Buttons then
+      Result := mbCancel
+  else
+    If mbNo in Buttons then
+      Result := mbNo
+  else
+    If mbNoToAll in Buttons then
+      Result := mbNoToAll
+  else
+    If mbAbort in Buttons then
+      Result := mbAbort
+  else
+    If mbIgnore in Buttons then
+      Result := mbIgnore;
 end;
 
-{------------------------------------------------------------------------------
-  Method: TMessageBox.SetButtons
-  Params:  value - the set of buttons required
-  Returns: Nothing
-
-  Depending on "value" this method inserts some buttons into the dialog.
-  The more buttons required, the wider the dialog will be.
- ------------------------------------------------------------------------------}
-procedure TMessageBox.SetButtons(const value : TMsgDlgButtons);
-begin
-  if FButtons = Value then exit;
-  FButtons := Value;
-  if FButtons=[] then FButtons:=[mbOk];
-  FRelayoutNeeded:=true;
-  ReLayout;
-end;
-
-{------------------------------------------------------------------------------
-  Method: TMessageBox.ReLayout
-  Params:  nothing
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-Function GetAvgCharSize(Handle : hDC) : TPoint;
-var
-  I : integer;
-  Buffer : Array[0..51] of Char;
-begin
-  For I := 0 to 25 do Buffer[I] := chr(I + Ord('A'));
-  For I := 0 to 25 do Buffer[I + 26] := chr(I + Ord('a'));
-  GetTextExtentPoint(Handle,Buffer,52,TSize(Result));
-  Result.X := Result.X div 52;
-end;
-
-procedure TMessageBox.ReLayout;
 const
-  cBtnCalcWidth  = 50;
-  cBtnCalcHeight = 13;
-  cBtnCalcSpace   = 4;
-  cMinLeft   = cBitmapX + cBitmapWidth + cLabelSpacing;
+  DialogIds : Array[mtWarning..mtCustom] of Longint = (idDialogWarning,
+    idDialogError, idDialogInfo, idDialogConfirm, idDialogBase);
+
+  ButtonIds : Array[TMsgDlgbtn] of Longint = (idButtonYes, idButtonNo,
+    idButtonOK, idButtonCancel, idButtonAbort, idButtonRetry, idButtonIgnore,
+    idButtonAll, idButtonNoToAll, idButtonYesToAll, idButtonHelp);
+
+  DialogResults : Array[idButtonOK..idButtonNoToAll] of TModalResult = (
+    mrOk, mrCancel, mrOk{CLOSE!!}, mrYes, mrNo, -1{HELP!!}, mrAbort, mrRetry,
+    mrIgnore, mrAll, mrYesToAll, mrNoToAll);
+
+  ButtonResults : Array[mrNone..mrYesToAll] of Longint = (
+    -1, idButtonOK, idButtonCancel, idButtonAbort, idButtonRetry,
+    idButtonIgnore, idButtonYes,idButtonNo, idButtonAll, idButtonNoToAll,
+    idButtonYesToAll);
+
+Function GetPromptUserButtons(Buttons: TMsgDlgButtons; var CancelValue,
+  DefaultIndex, ButtonCount : Longint) : PLongint;
 var
-  aBitmap     : TBitmap;    // temp. variable to create bitmaps for buttons
-  curBtn      : TMsgDlgBtn; // variable to loop through TMsgDlgButtons
-  cBtnWidth,
-  cBtnHeight,
-  curBtnWidth,
-  cBtnDist,
-  ButtonLeft  : integer;    // left position of button(s)
-  reqBtnWidth : integer;    // width neccessary to display buttons
-  reqWidth, reqHeight : integer;    // width and height neccessary to display all
-  i        : integer;
-  ButtonIndex : integer;
-  Avg : TPoint;
-  TextBox : TRect;
-  TextStyle : TTextStyle;
+  CurBtn      : TMsgDlgBtn; // variable to loop through TMsgDlgButtons
+  DefaultButton : TMsgDlgBtn;
 begin
-  if FUpdateCounter > 0 then exit;
-
-  FillChar(TextStyle, SizeOf(TextStyle), 0);
-  
-  With TextStyle do begin
-    Clipping   := True;
-    Wordbreak  := True;
-    SystemFont := True;
-  end;
-
-  // calculate the width & height we need to display the Message
-  TextBox := Rect(0,0, Screen.Width div 2,Screen.Height - 100);
-  SelectObject(Canvas.Handle, GetStockObject(SYSTEM_FONT));
-  DrawText(Canvas.Handle, PChar(FMsgLines.Text), Length(FMsgLines.Text),
-    TextBox, DT_WORDBREAK or DT_INTERNAL or DT_CALCRECT);
-
-  // destroy old BitBtns
-  for i:=ComponentCount-1 downto 0 do
-    if Components[i] is TBitBtn then
-      Components[i].Free;
-
-  // calculate the width we need to display the buttons
-  SelectObject(Canvas.Handle, GetStockObject(SYSTEM_FONT));
-  Avg := GetAvgCharSize(Canvas.Handle);
-  reqBtnWidth := 0;
-  cBtnWidth := (cBtnCalcWidth*Avg.X) div 4;
-  cBtnHeight := (cBtnCalcHeight*AVG.Y) div 8;
-  cBtnDist := (cBtnCalcSpace * Avg.X) div 4;
-  for curBtn := Low(TMsgDlgBtn) to High(TMsgDlgBtn) do
-    if curBtn in FButtons then
-    begin
-      curBtnWidth := Canvas.TextWidth(cMbCaption[curBtn]) + 8;
-      if curBtnWidth > cBtnWidth then
-        cBtnWidth := curBtnWidth;
-      Inc(reqBtnWidth, cBtnWidth + cBtnDist)
-    end;
-  if reqBtnWidth > 0 then Dec(reqBtnWidth, cBtnDist);
-  Inc(cBtnDist, cBtnWidth);
-
-  // patch positions to center label and buttons
-  reqWidth:= reqBtnWidth;
-  if reqWidth < (TextBox.Right + cMinLeft) then reqWidth:= TextBox.Right + cMinLeft;
-  
-  ButtonLeft := ((reqWidth - reqBtnWidth) div 2) + cLabelSpacing;
-
-  reqHeight:= TextBox.Bottom;
-  if reqHeight < cBitmapHeight then reqHeight:= cBitmapHeight;
-
-  OffsetRect(TextBox, ((reqWidth - cMinLeft - TextBox.Right) div 2) + cMinLeft,cLabelSpacing);
-
-  // set size of form
-  SetBounds(Left, Top, reqWidth + 2 * cLabelSpacing,
-        3 * cLabelSpacing + reqHeight + cBtnHeight);
-  
-  // set up labels
-  FLabel.SetBounds(TextBox.Left, TextBox.Top, TextBox.Right, TextBox.Bottom);
-  Flabel.Caption:= Trim(FMsgLines.Text);
-
-  // create the buttons
-  ButtonIndex := -1;
-  for curBtn := low(TMsgDlgBtn) to high(TMsgDlgBtn) do begin
-    if curBtn in FButtons then begin
-      inc(ButtonIndex);
-      
-      with TBitBtn.Create(Self) do begin
-        Parent:= Self;
-        SetBounds (ButtonLeft, 2 * cLabelSpacing + reqHeight, cBtnWidth, cBtnHeight);
-        inc(ButtonLeft, cBtnDist);
-        Layout  := blGlyphLeft;
-        // ToDo: when TBitmap streaming is working, load image from resource 
-        aBitmap := TBitmap.Create;
-        aBitmap.Handle := LoadStockPixmap(mbImages[curBtn]);
-        Glyph   := aBitmap;
-        ModalResult := cMbResult[curBtn];
-        Caption := cMbCaption[curBtn];
-        if ButtonIndex=0 then Default := true;
-        if curbtn in [mbOK, mbYes] then Default := true;
-        Visible:=true;
-      end;
+  If (Buttons = []) or (Buttons = [mbHelp]) then
+    Buttons := Buttons + [mbOk];
+  CancelValue := ButtonResults[ModalEscapeValue (Buttons)];
+  DefaultButton := ModalDefaultButton(Buttons);
+  DefaultIndex := 0;
+  ButtonCount := 0;
+  Result := nil;
+  For CurBtn := Low(TMsgDlgBtn) to High(TMsgDlgBtn) do begin
+    If CurBtn in Buttons then begin
+      ReallocMem(Result, (ButtonCount + 1)*SizeOf(Longint));
+      Result[ButtonCount] := ButtonIds[CurBtn];
+      If DefaultButton = CurBtn then
+        DefaultIndex := ButtonCount;
+      Inc(ButtonCount)
     end;
   end;
-  
-  for i:=0 to ComponentCount-1 do begin
-    if (Components[i] is TBitBtn) and (TBitBtn(Components[i]).Default) then begin
-      TBitBtn(Components[i]).SetFocus;
-      break;
-    end;
-  end;
-  
-  FRelayoutNeeded:=false;
-end;
-
-procedure TMessageBox.BeginUpdate;
-begin
-  inc(FUpdateCounter);
-end;
-
-procedure TMessageBox.EndUpdate;
-begin
-  dec(FUpdateCounter);
-  if FUpdateCounter<0 then FUpdateCounter:= 0;
-  if (FUpdateCounter = 0) and FRelayoutNeeded then ReLayout;
-end;
-
-// ---------------------------------------------------------------------------
-
-function CreateMessageDialog(const aMsg: string; DlgType: TMsgDlgType;
-  Buttons: TMsgDlgButtons): TForm;
-var
-  msgbox : TMessageBox;
-begin
-  msgbox:= TMessageBox.Create(Application);
-  msgbox.BeginUpdate;
-  msgbox.theMessage := aMsg;
-  msgBox.DialogType := DlgType;
-  msgBox.Buttons    := buttons;
-  msgbox.EndUpdate;
-  Result:= msgbox;
-end;
-
-function CreateMessageDialogWithCap(const aCaption, aMsg: string;
-  DlgType: TMsgDlgType;  Buttons: TMsgDlgButtons): TForm;
-var
-  msgbox : TMessageBox;
-begin
-  msgbox:= TMessageBox.Create(Application);
-  msgbox.BeginUpdate;
-  msgbox.theMessage := aMsg;
-  msgBox.DialogType := DlgType;
-  msgBox.Buttons    := buttons;
-  msgBox.Caption    := aCaption;
-  msgbox.EndUpdate;
-  Result:= msgbox;
 end;
 
 function MessageDlg(const aMsg: string; DlgType: TMsgDlgType;
   Buttons: TMsgDlgButtons; HelpCtx: Longint): Integer;
 var
-  aDialog : TForm;
+  DefaultIndex,
+  CancelValue,
+  ButtonCount : Longint;
+  Btns : PLongint;
 begin
-  aDialog := CreateMessageDialog (aMsg, DlgType, buttons);
-  try
-    Result := aDialog.ShowModal;
-  finally
-    aDialog.Free;
-  end;
+  Btns := GetPromptUserButtons(Buttons, CancelValue, DefaultIndex, ButtonCount);
+  Result := DialogResults[PromptUser(aMsg, DialogIds[DlgType], Btns, ButtonCount,
+    DefaultIndex, CancelValue)];
+  ReallocMem(Btns, 0);
 end;
 
 function MessageDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
   Buttons: TMsgDlgButtons; HelpCtx: Longint): Integer;
 var
-  aDialog : TForm;
+  DefaultIndex,
+  CancelValue,
+  ButtonCount : Longint;
+  Btns : PLongint;
 begin
-  aDialog := CreateMessageDialogWithCap(aCaption, aMsg, DlgType, buttons);
-  try
-    Result := aDialog.ShowModal;
-  finally
-    aDialog.Free;
-  end;
+  Btns := GetPromptUserButtons(Buttons, CancelValue, DefaultIndex, ButtonCount);
+  Result := DialogResults[PromptUser(aCaption, aMsg, DialogIds[DlgType], Btns,
+    ButtonCount, DefaultIndex, CancelValue)];
+  ReallocMem(Btns, 0);
 end;
 
 function MessageDlgPos(const aMsg: String; DlgType: TMsgDlgType;
   Buttons: TMsgDlgButtons; Helpctx : Longint; X,Y : Integer): Integer;
+var
+  DefaultIndex,
+  CancelValue,
+  ButtonCount : Longint;
+  Btns : PLongint;
 begin
-  with CreateMessageDialog (aMsg, DlgType, Buttons) do
-    try
-      Position := poDesigned;
-      Left := X;
-      Top := Y;
-      //HelpContext := Helpctx;
-      Result := ShowModal;
-    finally
-      Close;
-    end;
+  Btns := GetPromptUserButtons(Buttons, CancelValue, DefaultIndex, ButtonCount);
+  Result := DialogResults[PromptUserAtXY(aMsg, DialogIds[DlgType], Btns,
+    ButtonCount, DefaultIndex, CancelValue, X, Y)];
+  ReallocMem(Btns, 0);
 end;
 
 function MessageDlgPosHelp(const aMsg: string; DlgType: TMsgDlgType;
@@ -524,6 +232,9 @@ end;
 
 {
    $Log$
+   Revision 1.21  2002/10/25 14:59:11  lazarus
+   AJ: MessageDlgs -> PromptUser, better Cancel/Default order
+
    Revision 1.20  2002/10/25 10:06:34  lazarus
    MG: broke interfacebase uses circles
 

@@ -231,9 +231,6 @@ type
 
   { MessageDlg }
   
-  function CreateMessageDialog(const aMsg: string; DlgType: TMsgDlgType;
-              Buttons: TMsgDlgButtons): TForm;
-              
   function MessageDlg(const aMsg: string; DlgType: TMsgDlgType;
               Buttons: TMsgDlgButtons; HelpCtx: Longint): Integer;
   function MessageDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
@@ -261,25 +258,6 @@ uses
   InterfaceBase;
 
 const
-   cMtCaption : array [TMsgDlgType] of string = 
-        (rsMtWarning, rsMtError, rsMtInformation, rsMtConfirmation, rsMtCustom);
-   cMbCaption : array [TMsgDlgbtn] of string = 
-        (rsMbYes,    rsMbNo,  rsMbOK,      rsMbCancel,   rsMbAbort, rsMbRetry,
-         rsMbIgnore, rsMbAll, rsMbNoToAll, rsMbYesToAll, rsMbHelp);
-   cMbResult : array [TMsgDlgbtn] of TModalResult = 
-//TODO: think of more modalresults!
-        (mrYes, mrNo, mrOK, mrCAncel, mrAbort, mrRetry, mrIgnore, mrAll,
-         mrNoToAll, mrYesToAll, 0);
-
-   mtImages   : Array [TMsgDlgType] of Longint = (
-     idDialogWarning, idDialogError, idDialogInfo, idDialogConfirm,
-     idDialogInfo);
-   mbImages   : array [TMsgDlgBtn] of longint = (
-     idButtonYes, idButtonNo, idButtonOK, idButtonCancel, idButtonAbort,
-     idButtonRetry, idButtonIgnore, idButtonAll,idButtonAll, idButtonAll,
-     idButtonHelp);
-
-const
   //
   //TODO: all the constants below should be replaced in the future
   //      their only purpose is to overcome some current design flaws &
@@ -287,8 +265,6 @@ const
   //
   cBitmapX  = 10;      // x-position for bitmap in messagedialog
   cBitmapY  = 10;      // y-position for bitmap in messagedialog
-  cBitmapWidth = 32;   // width of the dialogs icon
-  cBitmapHeight= 32;   // height of the dialogs icon
   cLabelSpacing= 10;   // distance between icon & label
 
 
@@ -357,6 +333,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.25  2002/10/25 14:59:11  lazarus
+  AJ: MessageDlgs -> PromptUser, better Cancel/Default order
+
   Revision 1.24  2002/10/25 10:06:34  lazarus
   MG: broke interfacebase uses circles
 
