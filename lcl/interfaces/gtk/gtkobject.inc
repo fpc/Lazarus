@@ -3714,6 +3714,11 @@ begin
   // destroy the widget
   DestroyWidget(Widget);
 
+  // clean up unneeded containers
+  if Sender is TMenuItem then begin
+    DestroyEmptySubmenu(TMenuItem(Sender));
+  end;
+
   //writeln('>>> LM_DESTROY END ',Sender.Classname,' Sender=',HexStr(Cardinal(Sender),8),' Handle=',HexStr(Cardinal(Handle),8));
   // remove all remaining messages to this component
   QueueItem:=FMessageQueue.First;
@@ -5098,19 +5103,53 @@ begin
   FinishComponentCreate(Sender, P, SetupProps);
 end;
 
-{------------------------------------------------------------------------------}
-{       TGtkObject AssignSelf                                                  }
-{       *Note: Assigns a pointer to self on a widget                           }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  procedure TgtkObject.DestroyEmptySubmenu(Sender: TObject);
+  
+  Used by DestroyLCLComponent to destroy empty submenus, when destroying the
+  last menu item.
+------------------------------------------------------------------------------}
+procedure TgtkObject.DestroyEmptySubmenu(Sender: TObject);
+var
+  LCLMenuItem: TMenuItem;
+  ParentLCLMenuItem: TMenuItem;
+  ParentMenuWidget: PGtkWidget;
+  ParentSubMenuWidget: PGtkWidget;
+  SubMenuWidget: PGtkMenu;
+begin
+  if not (Sender is TMenuItem) then
+    RaiseException('TgtkObject.DestroyEmptySubmenu');
+  // destroying a TMenuItem
+  LCLMenuItem:=TMenuItem(Sender);
+  // check if in a sub menu
+  if (LCLMenuItem.Parent=nil) then exit;
+  if not (LCLMenuItem.Parent is TMenuItem) then exit;
+  ParentLCLMenuItem:=TMenuItem(LCLMenuItem.Parent);
+  if not ParentLCLMenuItem.HandleAllocated then exit;
+  ParentMenuWidget:=PGtkWidget(ParentLCLMenuItem.Handle);
+  if not GtkWidgetIsA(ParentMenuWidget,GTK_MENU_ITEM_TYPE) then exit;
+  ParentSubMenuWidget:=PGTKMenuItem(ParentMenuWidget)^.submenu;
+  if not GtkWidgetIsA(ParentSubMenuWidget,GTK_MENU_TYPE) then exit;
+  SubMenuWidget:=PGTKMenu(ParentSubMenuWidget);
+  if SubMenuWidget^.menu_shell.children=nil then begin
+    gtk_widget_destroy(PgtkWidget(SubMenuWidget));
+    gtk_object_set_data(PGtkObject(ParentMenuWidget),'ContainerMenu',nil);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+       TGtkObject AssignSelf
+       *Note: Assigns a pointer to self on a widget
+------------------------------------------------------------------------------}
 procedure TgtkObject.AssignSelf(Child,Data : Pointer);
 begin
    gtk_Object_Set_Data(Pgtkobject(Child),'Self',Data);
 end;
 
-{------------------------------------------------------------------------------}
-{       TGtkObject ShowHide                                                    }
-{       *Note: Show or hide a widget                                           }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TGtkObject ShowHide
+       *Note: Show or hide a widget
+------------------------------------------------------------------------------}
 procedure TgtkObject.ShowHide(Sender : TObject);
 
   procedure RaiseWrongClass;
@@ -7265,6 +7304,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.363  2003/05/18 10:42:58  mattias
+  implemented deleting empty submenus
+
   Revision 1.362  2003/05/14 13:06:00  mattias
   fixed setting TListBox.Selected before createhandle
 
