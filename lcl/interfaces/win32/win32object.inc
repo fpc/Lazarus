@@ -853,7 +853,7 @@ activate_time :	the time at which the activation event occurred.
         End;
         LM_SETFORMICON:
         Begin
-          SetClassLong(Handle, GCL_HIcon, (Sender As TCustomForm).GetIconHandle);
+          SetClassLong(Handle, GCL_HIcon, integer(Data));
         End;
         LM_GETITEMS :
         Begin
@@ -1312,6 +1312,7 @@ Begin
   Pixmap := CreatePixmapIndirect(PixmapData, 0);
   DrawIcon(DC, TWinControl(Surface).Left, TWinControl(Surface).Top, Pixmap);
   ReleaseDC(TWinControl(Surface).Handle, DC);
+  DeleteObject(Pixmap);
 End;
 
 {------------------------------------------------------------------------------
@@ -2765,14 +2766,14 @@ Begin
     cbsize:=sizeof(MENUITEMINFO);
     fMask:=Mask;
     fType:=Style;
-    {fState:=MFS_ENABLED;} {not needed}
     wID:=TMenuItem(Sender).Command; {value may only be 16 bit wide!}
     hSubmenu:=MenuHandle;
-    {hbmpChecked:=0;
-    hbmpUnchecked:=0;} {not needed}
     dwItemData:=integer(Sender);
-    {dwTypeData:=LPSTR(TMenuItem(Sender).Caption);}
-    {cch:=length(TMenuItem(Sender).Caption);} {not needed}
+    if assigned(TmenuItem(Sender).Graphic) then {adds the menuitem icon}
+    begin
+      fMask:=fMask or MIIM_CHECKMARKS;
+      hbmpUnchecked:=(TMenuItem(Sender).Graphic as TBitmap).Handle;
+    end;
   end;
   InsertMenuItem(ParentMenuHandle, High(UINT), true, @MenuInfo);
   if TMenuItem(Sender).ShortCut <> 0 then
@@ -2806,6 +2807,9 @@ End;
 
 {
   $Log$
+  Revision 1.127  2003/11/09 10:35:19  mattias
+  started Menu icons for win32 intf from Martin Smat
+
   Revision 1.126  2003/11/08 17:41:03  micha
   compiler warning cleanups
 

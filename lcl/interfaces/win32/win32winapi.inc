@@ -223,13 +223,11 @@ End;
  ------------------------------------------------------------------------------}
 Function TWin32Object.CheckMenuItem(HndMenu: HMENU; uIDEnableItem: Integer; BChecked: Boolean): Boolean;
 var CheckFlag: integer;
-    PrevState: integer;
 Begin
   if BChecked then CheckFlag := MF_CHECKED
   else CheckFlag := MF_UNCHECKED;
   CheckFlag := CheckFlag or MF_BYCOMMAND;
-  PrevState := Windows.CheckMenuItem(FMenu, UIDEnableItem, CheckFlag);
-  Result := PrevState = MF_ENABLED;
+  Result := Windows.CheckMenuItem(FMenu, UIDEnableItem, CheckFlag)=MF_ENABLED;
 End;
 
 {------------------------------------------------------------------------------
@@ -718,6 +716,7 @@ Begin
     CreateColorMap;
     DoDrawBitmap;
     DestroyColorMap;
+    SelectObject(hdcBitmap, OldObject);
     ReleaseDC(GetDesktopWindow, hdcScreen);
     SelectObject(hdcBitmap, OldObject);
     DeleteDC(hdcBitmap);
@@ -2534,6 +2533,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.70  2003/11/09 10:35:19  mattias
+  started Menu icons for win32 intf from Martin Smat
+
   Revision 1.69  2003/11/08 17:41:03  micha
   compiler warning cleanups
 
