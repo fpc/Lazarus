@@ -316,6 +316,7 @@ type
     procedure ValidateRename(AComponent: TComponent;
                              const CurName, NewName: string);override;
     Procedure SetZOrder(Topmost: Boolean); override;
+    procedure VisibleChanging; override;
     procedure WndProc(var TheMessage : TLMessage); override;
   public
     // properties

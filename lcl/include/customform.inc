@@ -241,6 +241,7 @@ Begin
     Exclude(FFormState, fsVisible);
 //writeln('TCustomForm.SetVisible ',Name,':',ClassName,' ',FormUpdating);
   if (fsCreating in FFormState) {or FormUpdating} then
+    // will be done when finished loading
   else
   begin
     inherited Visible := Value;
@@ -607,6 +608,15 @@ begin
     exit;
   end;
   inherited SetZOrder(Topmost);
+end;
+
+{------------------------------------------------------------------------------
+  procedure TCustomForm.VisibleChanging;
+------------------------------------------------------------------------------}
+procedure TCustomForm.VisibleChanging;
+begin
+  //if (FormStyle = fsMDIChild) and Visible then
+  //  raise EInvalidOperation.Create(SMDIChildNotVisible);
 end;
 
 {------------------------------------------------------------------------------
@@ -1028,8 +1038,7 @@ end;
 {------------------------------------------------------------------------------}
 procedure TCustomForm.Hide;
 begin
-  If (fsModal in FormState)
-  and (ModalResult=0) then
+  If (fsModal in FormState) and (ModalResult=0) then
     ModalResult := mrCancel;
   Visible := False;
 end;
@@ -1298,6 +1307,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.88  2003/03/11 22:56:41  mattias
+  added visiblechanging
+
   Revision 1.87  2003/03/11 07:46:43  mattias
   more localization for gtk- and win32-interface and lcl
 
