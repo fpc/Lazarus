@@ -476,6 +476,7 @@ resourcestring
   lisPlzCheckTheCompilerName = 'Please check the compiler name';
   lisAboutLazarus = 'About Lazarus';
   lisVersion = 'Version';
+  lisDate = 'Date';
   lisClose = 'Close';
   lisAboutLazarusMsg =
        'License: GPL/LGPL'

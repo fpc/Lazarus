@@ -30,6 +30,7 @@ uses
 
 type
   TAboutForm = class(TForm)
+    Label2: TLABEL;
     Memo1: TMEMO;
     Button1: TBUTTON;
     Label1: TLABEL;
@@ -63,12 +64,31 @@ end;
 { TAboutForm }
 
 constructor TAboutForm.Create(AOwner: TComponent);
+  {The compiler generated date string is always of the form y/m/d.
+   This function gives it a string respresentation according to the
+   shortdateformat}
+  function GetLocalizedBuildDate(): string;
+  var
+    BuildDate: string;
+    SlashPos1, SlashPos2: integer;
+    Date: TDate;
+  begin
+    BuildDate := {$I %date%};
+    SlashPos1 := Pos('/',BuildDate);
+    SlashPos2 := SlashPos1 +
+      Pos('/', Copy(BuildDate, SlashPos1+1, Length(BuildDate)-SlashPos1));
+    Date := EncodeDate(StrToInt(Copy(BuildDate,1,SlashPos1-1)),
+      StrToInt(Copy(BuildDate,SlashPos1+1,SlashPos2-SlashPos1-1)),
+      StrToInt(Copy(BuildDate,SlashPos2+1,Length(BuildDate)-SlashPos2)));
+    Result := DateTimeToStr(Date);
+  end;
 begin
   inherited Create(AOwner);
 
   FPixmap := TPixmap.Create;
   FPixmap.LoadFromLazarusResource('lazarus_about_logo');
   Label1.Caption := lisVersion+' #: '+lisLazarusVersionString;
+  Label2.Caption := lisDate+': '+GetLocalizedBuildDate;
   
   Memo1.Lines.Text:=Format(lisAboutLazarusMsg,[LineEnding,LineEnding,LineEnding]);
   Button1.Caption:=lisClose;
@@ -99,7 +119,7 @@ procedure TAboutForm.Paint;
 begin
   inherited Paint;
   if FPixmap <>nil
-  then Canvas.Copyrect(Bounds(12, 36, Width, Height)
+  then Canvas.Copyrect(Bounds(12, 44, Width, Height)
     ,FPixmap.Canvas, Rect(0,0, Width, Height));
 end;
 

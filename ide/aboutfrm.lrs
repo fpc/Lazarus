@@ -9,6 +9,7 @@ LazarusResources.Add('TAboutForm','FORMDATA',[
   +#3#219#0#3'Top'#2#14#5'Width'#3'S'#1#0#0#7'TButton'#7'Button1'#11'ModalResul'
   +'t'#2#1#7'Caption'#6#5'Close'#8'TabOrder'#2#1#4'Left'#2'N'#6'Height'#2#25#3
   +'Top'#3#184#0#5'Width'#2'K'#0#0#6'TLabel'#6'Label1'#9'Alignment'#7#8'tacente'
-  +'r'#7'Caption'#6#10'Version #:'#6'Layout'#7#5'tltop'#4'Left'#2#14#6'Height'#2
-  +#17#3'Top'#2#6#5'Width'#3#200#0#0#0#0
+  +'r'#7'Caption'#6#10'Version #:'#4'Left'#2#14#6'Height'#2#17#3'Top'#2#6#5'Wid'
+  +'th'#3#200#0#0#0#6'TLabel'#6'Label2'#9'Alignment'#7#8'tacenter'#7'Caption'#6
+  +#5'Date:'#4'Left'#2#14#6'Height'#2#17#3'Top'#2#23#5'Width'#3#200#0#0#0#0
 ]);

@@ -30,10 +30,17 @@ object AboutForm: TAboutForm
   object Label1: TLabel
     Alignment = tacenter
     Caption = 'Version #:'
-    Layout = tltop
     Left = 14
     Height = 17
     Top = 6
+    Width = 200
+  end
+  object Label2: TLabel
+    Alignment = tacenter
+    Caption = 'Date:'
+    Left = 14
+    Height = 17
+    Top = 23
     Width = 200
   end
 end

@@ -371,6 +371,8 @@ type
   TIcon = class;                    // ico
   TPortableNetworkGraphic = class;  // png
   {$IFDEF UseSimpleJpeg}
+  // MG: will be added to the LCL, when fpc 2.0 is released
+  //     but then with the advanced features of the existing package
   TJpegImage = class;               // jpg
   {$ENDIF}
 
@@ -1699,6 +1701,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.138  2004/05/23 21:30:10  mattias
+  added build date to About box  from vincent
+
   Revision 1.137  2004/05/07 08:07:57  mattias
   ifdefd UseSimpleJpeg
 
