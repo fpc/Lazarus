@@ -342,7 +342,7 @@ type
     function DoCloseEditorUnit(PageIndex:integer;
         SaveFirst: boolean):TModalResult;
     function DoOpenEditorFile(const AFileName:string;
-        ProjectLoading:boolean):TModalResult;
+        ProjectLoading, OnlyIfExists:boolean):TModalResult;
     function DoOpenFileAtCursor(Sender: TObject):TModalResult;
     function DoSaveAll: TModalResult;
     function DoOpenMainUnit(ProjectLoading: boolean): TModalResult;
@@ -1677,7 +1677,7 @@ begin
             AFilename:=ExpandFilename(OpenDialog.Files.Strings[i]);
             if i=0 then
               EnvironmentOptions.LastOpenDialogDir:=ExtractFilePath(AFilename);
-            if DoOpenEditorFile(AFilename,false)=mrOk then begin
+            if DoOpenEditorFile(AFilename,false,false)=mrOk then begin
                EnvironmentOptions.AddToRecentOpenFiles(AFilename);
           end;
         end;
@@ -1688,7 +1688,7 @@ begin
     end;
   end else if Sender is TMenuItem then begin
     AFileName:=ExpandFilename(TMenuItem(Sender).Caption);
-    if DoOpenEditorFile(AFilename,false)=mrOk then begin
+    if DoOpenEditorFile(AFilename,false,false)=mrOk then begin
       EnvironmentOptions.AddToRecentOpenFiles(AFilename);
       SaveEnvironment;
     end;
@@ -2819,7 +2819,7 @@ writeln('TMainIDE.DoCloseEditorUnit end');
 end;
 
 function TMainIDE.DoOpenEditorFile(const AFileName:string; 
-  ProjectLoading:boolean):TModalResult;
+  ProjectLoading, OnlyIfExists:boolean):TModalResult;
 var Ext,ACaption,AText:string;
   i,BookmarkID:integer;
   ReOpen:boolean;
@@ -2867,10 +2867,11 @@ CheckHeap(IntToStr(GetMem_Cnt));
         mtError, [mbIgnore, mbAbort], 0);
       exit;
     end;
-    if MessageDlg('File not found',
+    if (not OnlyIfExists)
+    and (MessageDlg('File not found',
       'File "'+AFilename+'" not found.'#13
       +'Do you want to create it?'#13
-      ,mtInformation,[mbYes,mbNo],0)=mrYes then
+      ,mtInformation,[mbYes,mbNo],0)=mrYes) then
     begin
       // create new file
       Ext:=lowercase(ExtractFileExt(AFilename));
@@ -2878,6 +2879,11 @@ CheckHeap(IntToStr(GetMem_Cnt));
         Result:=DoNewEditorUnit(nuUnit,AFilename)
       else
         Result:=DoNewEditorUnit(nuEmpty,AFilename);
+      exit;
+    end else if OnlyIfExists then begin
+      MessageDlg('File not found','File "'+AFilename+'" not found.'#13,
+                 mtInformation,[mbYes,mbNo],0);
+      // cancel loading file
       exit;
     end else begin
       // cancel loading file
@@ -3185,7 +3191,7 @@ Begin
             if MainUnitIndex=i then
               Result:=DoOpenMainUnit(false)
             else
-              Result:=DoOpenEditorFile(AnUnitInfo.Filename,false);
+              Result:=DoOpenEditorFile(AnUnitInfo.Filename,false,true);
             if Result=mrAbort then exit;
           end;
         end;
@@ -3291,7 +3297,7 @@ begin
   if FindPasFile(FName,SPath) then begin
     result:=mrOk;
     EnvironmentOptions.LastOpenDialogDir:=ExtractFilePath(FName);
-    if DoOpenEditorFile(FName,false)=mrOk then begin
+    if DoOpenEditorFile(FName,false,false)=mrOk then begin
       EnvironmentOptions.AddToRecentOpenFiles(FName);
       SaveEnvironment;
     end;
@@ -3623,7 +3629,7 @@ CheckHeap(IntToStr(GetMem_Cnt));
     Ext:='.lpi';
   end;
   if Ext<>'.lpi' then begin
-    Result:=DoOpenEditorFile(AFilename,false);
+    Result:=DoOpenEditorFile(AFilename,false,false);
     exit;
   end;
   if FileExists(AFilename) and (not FileIsText(AFilename)) then begin
@@ -3694,7 +3700,8 @@ CheckHeap(IntToStr(GetMem_Cnt));
     if LowestEditorIndex>=0 then begin
       // reopen file
 //writeln('TMainIDE.DoOpenProjectFile C2 ',Project.Units[LowestUnitIndex].Filename);
-      Result:=DoOpenEditorFile(Project.Units[LowestUnitIndex].Filename,true);
+      Result:=DoOpenEditorFile(Project.Units[LowestUnitIndex].Filename,true,
+                               true);
 //writeln('TMainIDE.DoOpenProjectFile C3 ',Result=mrOk);
       if Result=mrAbort then begin
         // mark all files, that are left to load as unloaded:
@@ -4267,7 +4274,7 @@ begin
   if (Sender<>FDebugger) or (Sender=nil) then exit;
   //TODO: Show assembler window if no source can be found.
   if ALocation.SrcLine = -1 then Exit;
-  if DoOpenEditorFile(ALocation.SrcFile, false) <> mrOk then exit;
+  if DoOpenEditorFile(ALocation.SrcFile,false,true) <> mrOk then exit;
   ActiveSrcEdit:=SourceNoteBook.GetActiveSE;
   if ActiveSrcEdit=nil then exit;
   with ActiveSrcEdit.EditorComponent do begin
@@ -4793,7 +4800,7 @@ begin
       // open the file in the source editor
       Ext:=lowercase(ExtractFileExt(SearchedFilename));
       if (Ext<>'.lfm') and (Ext<>'.lpi') then begin
-        Result:=(DoOpenEditorFile(SearchedFilename,false)=mrOk);
+        Result:=(DoOpenEditorFile(SearchedFilename,false,true)=mrOk);
         if Result then begin
           // set caret position
           SourceNotebook.AddJumpPointClicked(Self);
@@ -5129,7 +5136,7 @@ begin
     // open all sources in editor
     for i:=0 to Manager.SourceChangeCache.BuffersToModifyCount-1 do begin
       if DoOpenEditorFile(Manager.SourceChangeCache.BuffersToModify[i].Filename,
-        false)<>mrOk then
+        false,true)<>mrOk then
       begin
         Abort:=true;
         exit;
@@ -5193,7 +5200,7 @@ begin
   end;
   if NewSource<>ActiveUnitInfo.Source then begin
     // jump to other file -> open it
-    Result:=DoOpenEditorFile(NewSource.Filename,false);
+    Result:=DoOpenEditorFile(NewSource.Filename,false,true);
     if Result<>mrOk then exit;
     GetUnitWithPageIndex(SourceNoteBook.NoteBook.PageIndex,NewSrcEdit,
       NewUnitInfo);
@@ -5260,7 +5267,8 @@ begin
   // jump to error in source editor
   if CodeToolBoss.ErrorCode<>nil then begin
     SourceNotebook.AddJumpPointClicked(Self);
-    if DoOpenEditorFile(CodeToolBoss.ErrorCode.Filename,false)=mrOk then begin
+    if DoOpenEditorFile(CodeToolBoss.ErrorCode.Filename,false,true)=mrOk then
+    begin
       ActiveSrcEdit:=SourceNoteBook.GetActiveSE;
       SourceNotebook.BringToFront;
       with ActiveSrcEdit.EditorComponent do begin
@@ -5755,6 +5763,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.210  2002/02/06 08:58:27  lazarus
+  MG: fixed compiler warnings and asking to create non existing files
+
   Revision 1.209  2002/02/05 23:16:47  lazarus
   MWE: * Updated tebugger
        + Added debugger to IDE
@@ -6263,3 +6274,4 @@ end.
   + Initial import
 
 }
+

@@ -54,7 +54,7 @@ type
     procedure SetFileName(const AValue: String); override;
     function  RequestCommand(const ACommand: TDBGCommand; const AParams: array of const): Boolean; override;
   public
-    constructor Create; override;
+    constructor Create; {override;}
     destructor Destroy; override;
   
     procedure Init; override;         // Initializes external debugger
@@ -168,7 +168,7 @@ var
   loc: TDBGLocationRec;
   dState: TDBGState;
   StopAdress: Integer;
-  idx:  Integer;
+  //idx:  Integer;
   S: String;
 begin
   if State in [dsIdle, dsStop]
@@ -466,6 +466,7 @@ end;
 
 function TGDBWatch.GetValid: Boolean; 
 begin
+  Result:=false;
 end;
 
 procedure TGDBWatch.SetExpression(const AValue: String); 
@@ -484,6 +485,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.5  2002/02/06 08:58:29  lazarus
+  MG: fixed compiler warnings and asking to create non existing files
+
   Revision 1.4  2002/02/05 23:16:48  lazarus
   MWE: * Updated tebugger
        + Added debugger to IDE

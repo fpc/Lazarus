@@ -237,6 +237,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.12  2002/02/06 08:58:29  lazarus
+  MG: fixed compiler warnings and asking to create non existing files
+
   Revision 1.11  2002/02/03 00:24:00  lazarus
   TPanel implemented.
   Basic graphic primitives split into GraphType package, so that we can

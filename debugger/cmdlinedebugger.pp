@@ -52,7 +52,7 @@ type
     property  DebugProcess: TProcess read FDbgProcess;         
     property  OutputLines: TStringList read FOutputLines;
   public
-    constructor Create; override;
+    constructor Create; {override; }
     destructor Destroy; override;
     procedure TestCmd(const ACommand: String); virtual;// For internal debugging purposes
   end;
@@ -387,6 +387,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.5  2002/02/06 08:58:29  lazarus
+  MG: fixed compiler warnings and asking to create non existing files
+
   Revision 1.4  2002/02/05 23:16:48  lazarus
   MWE: * Updated tebugger
        + Added debugger to IDE

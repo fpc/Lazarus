@@ -102,7 +102,7 @@ type
     procedure SetFileName(const AValue: String); virtual;
     procedure SetState(const AValue: TDBGState); 
   public
-    constructor Create; virtual;
+    constructor Create; {virtual; Virtual constructor makes no sense}
     destructor Destroy; override;
     
     procedure Init; virtual;                         // Initializes the debugger
@@ -299,6 +299,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.7  2002/02/06 08:58:29  lazarus
+  MG: fixed compiler warnings and asking to create non existing files
+
   Revision 1.6  2002/02/05 23:16:48  lazarus
   MWE: * Updated tebugger
        + Added debugger to IDE

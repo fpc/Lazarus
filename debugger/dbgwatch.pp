@@ -35,7 +35,7 @@ type
     FDebugger: TObject;  // reference to our debugger
     FEnabled: Boolean;
     FExpression: String;
-    FValue: String;
+    //FValue: String;
     FOnChange: TNotifyEvent;
     procedure SetEnabled(const AValue: Boolean);
   protected
@@ -147,6 +147,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.7  2002/02/06 08:58:29  lazarus
+  MG: fixed compiler warnings and asking to create non existing files
+
   Revision 1.6  2002/02/05 23:16:48  lazarus
   MWE: * Updated tebugger
        + Added debugger to IDE
