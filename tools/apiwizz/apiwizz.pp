@@ -33,12 +33,16 @@ uses
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TApiWizForm, ApiWizForm);
   Application.Run;
 end.
 { =============================================================================
 
   $Log$
+  Revision 1.4  2003/12/13 01:12:01  marc
+  * Applied patch from Vincent Snijders
+  + Added LCLplatform implementations
+
   Revision 1.3  2003/09/25 23:03:13  marc
   = Changed LCLLinux to LCLIntf
 

@@ -26,133 +26,58 @@
 }
 unit APIWizard;
 
+{$mode objfpc}{$H+}
+
 interface
 
-{$Mode objfpc}
-
 uses
-  LCLIntf, buttons, 
-  Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls;
+  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  Buttons, ExtCtrls;
 
 type
-  TForm1 = class(TForm)
+  TApiWizForm = class(TForm)
+    cbgLCLPlatform: TCHECKGROUP;
+    cmdGenerate: TButton;
+    Groupbox1: TGROUPBOX;
+    rbIndependent: TRADIOBUTTON;
+    rbDependent: TRADIOBUTTON;
+    rdgApiType: TRadioGroup;
     txtDeclare: TEdit;
     lblDeclare: TLabel;
     txtLazarus: TEdit;
     lblLazarus: TLabel;
-    chkIndependent: TCheckBox;
-    cmdGenerate: TButton;
     procedure cmdGenerateClick(Sender: TObject);
+    procedure ApiWizFormCreate(Sender: TObject);
+    procedure rbPlatformDependencyClick(Sender: TObject);
+    procedure rdgApiTypeClick (Sender: TObject );
   private
   public
-    constructor Create(AOwner: TComponent); override;
   end;
 
   TProcType = (ptFunction, ptProcedure);
 
 var
-  Form1: TForm1;
+  ApiWizForm: TApiWizForm;
 
 implementation
 
 const
   DECL_OFFSET: array[TProctype] of Integer = (9, 10);
 
-constructor TForm1.Create(AOwner: TComponent);
+{ TApiWizForm }
+
+procedure TApiWizForm.ApiWizFormCreate(Sender: TObject);
 var
   n: Integer;
   S: String;
 begin
-  inherited Create(AOwner);
-
-  Width := 513;
-  Height := 186;
-  Caption := 'ApiWiZZ';
-
-  lblDeclare := TLabel.Create(Self);
-  with lblDeclare do
-  begin
-  	Parent := Self;
-    Left := 4;
-    Top := 68;
-    Width := 120;
-    Height := 16;
-    Caption := 'Declaration:';
-    Visible := True;
-  end;
-
-  lblLazarus := TLabel.Create(Self);
-  with lblLazarus do
-  begin
-  	Parent := Self;
-    Left := 4;
-    Top := 16;
-    Width := 120;
-    Height := 16;
-    Caption := 'Lazarus dir:';
-    Visible := True;
-  end;
-
-  txtDeclare := TEdit.Create(Self);
-  with txtDeclare do
-  begin
-  	Parent := Self;
-    Left := 4;
-    Top := 88;
-    Width := 493;
-    Height := 24;
-    TabOrder := 0;
-    Visible := True;
-  end;
-
-  txtLazarus := TEdit.Create(Self);
-  with txtLazarus do
-  begin
-  	Parent := Self;
-    Left := 4;
-    Top := 36;
-    Width := 493;
-    Height := 24;
-    TabOrder := 1;
-    Visible := True;
-  end;
-
-  chkIndependent := TCheckBox.Create(Self);
-  with chkIndependent do
-  begin
-  	Parent := Self;
-    Left := 4;
-    Top := 124;
-    Width := 400;
-    Height := 17;
-    Caption := 'Platform independent';
-    TabOrder := 2;
-    Visible := True;
-  end;
-
-  cmdGenerate := TButton.Create(Self);
-  with cmdGenerate do
-  begin
-  	Parent := Self;
-    Left := 420;
-    Top := 120;
-    Width := 75;
-    Height := 25;
-    Caption := 'Generate';
-    TabOrder := 3;
-    OnClick := @cmdGenerateClick;
-    Visible := True;
-  end;
-
-
   S := ParamStr(1);
   // find the lazarus dir
   if S = ''
   then begin
     S := ExtractFilePath(ParamStr(0));
     n := Pos('apiwizz', S);
-    if n <> 0 
+    if n <> 0
     then S := Copy(S, 1, n - 7)
     else S := '';
   end;
@@ -164,28 +89,7 @@ begin
     if n <> 0 then S := Copy(S, 1, n - 7);
   end;
   txtLazarus.Text := S;
-
 end;
-
-procedure ShowMessage(const Msg: string);
-var
-  pStr: PChar;
-begin
-//  ShowMessagePos(Msg, -1, -1);
-  pStr := StrAlloc(Length(Msg) + 1);
-  try
-    StrPCopy(pStr, Msg);
-    MessageBox(0, pStr, '', 0);
-  finally
-    strDispose(pStr);
-  end;
-end;
-
-procedure ShowMessageFmt(const Msg: string; Params: array of const);
-begin
-  ShowMessage(Format(Msg, Params));
-end;
-
 
 function GetName(const ADeclaration: String): String;
 var
@@ -419,7 +323,7 @@ begin
   end;
 end;
 
-procedure TForm1.cmdGenerateClick(Sender: TObject);
+procedure TApiWizForm.cmdGenerateClick(Sender: TObject);
 const
   RETURN_PROC: array[TProcType] of String = ('',  ' Nothing');
   PROC_DESC: array[TProcType] of String = ('Function',  'Procedure');
@@ -427,8 +331,9 @@ const
 var
   ApiText, ProcLines, ProcParams: TStringList;
   S, DeclarationText: String;
-  ProcName: String;
-  n, Idx: Integer;
+  ProcName, FileName, IntfBase: String;
+  PlatformPrefix, PlatformDir, PlatformObject: String;
+  n, Idx, PlatformIdx: Integer;
   ProcType: TProcType;
 
   procedure CreateLeadingCR;
@@ -443,9 +348,17 @@ var
   end;
 begin
   DeclarationText := Trim(txtDeclare.Text);
-  while DeclarationText[Length(DeclarationText)] = ';' do Delete(DeclarationText, Length(DeclarationText), 1);
 
-  if Trim(DeclarationText) = '' then Exit;
+  while (Length(DeclarationText) > 0) and (DeclarationText[Length(DeclarationText)] in [';', ' ']) do
+  begin
+    Delete(DeclarationText, Length(DeclarationText), 1);
+  end;
+
+  if Trim(DeclarationText) = ''
+  then begin
+    ShowMessage('No declaration specified');
+    Exit;
+  end;
 
   ProcParams := TStringList.Create;
   try
@@ -454,28 +367,47 @@ begin
       ShowMessage('Bad formatted declaration');
       Exit;
     end;
+    
+    case rdgApiType.ItemIndex of
+      0: begin
+        FileName := 'winapi';
+        IntfBase := 'intfbasewinapi.inc';
+      end;
+      1: begin
+        FileName := 'lclintf';
+        IntfBase := 'intfbaselcl.inc';
+//        if Lowercase(copy(Procname, 1, 3)) <> 'lcl'
+//        then begin
+//          ShowMessage('LCL interface functions should start with LCL');
+//          Exit;
+//        end;
+      end;
+    else
+      ShowMessage('No API type selected');
+      Exit;
+    end;
 
     ApiText := TStringList.Create;
     ProcLines := TStringList.Create;
     try
-      //-----------------
-      // open winapih.inc
-      //-----------------
-      ApiText.LoadFromFile(txtLazarus.text + '/lcl/include/winapih.inc');
-      Idx := FindInsertPoint(ApiText, 'ps', ProcName, 'winapih.inc', True);
+      //--------------------------------
+      // open winapih.inc / lclintfh.inc
+      //--------------------------------
+      ApiText.LoadFromFile(txtLazarus.text + '/lcl/include/' + FileName + 'h.inc');
+      Idx := FindInsertPoint(ApiText, 'ps', ProcName, FileName + 'h.inc', True);
       if Idx <> -1
       then begin
         ProcLines.Clear;
         CreateLeadingCR;
-        if chkIndependent.Checked
+        if rbIndependent.Checked
         then ProcLines.Add(Format('//%s %s --> independent', [LowerCase(PROC_DESC[proctype]), procname]))
         else ProcLines.Add(DeclarationText + '; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}');
 
         InsertLines(Idx, ApiText, ProcLines);
 
-        if chkIndependent.Checked
+        if rbIndependent.Checked
         then begin
-          Idx := FindInsertPoint(ApiText, 'pi', ProcName, 'winapih.inc', True);
+          Idx := FindInsertPoint(ApiText, 'pi', ProcName, FileName + 'h.inc', True);
           if Idx <> -1
           then begin
             ProcLines.Clear;
@@ -484,15 +416,15 @@ begin
             InsertLines(Idx, ApiText, ProcLines);
           end;
         end;
-        ApiText.SaveToFile(txtLazarus.text + '/lcl/include/winapih.inc');
+        ApiText.SaveToFile(txtLazarus.text + '/lcl/include/' + FileName + 'h.inc');
       end;
-      //-----------------
-      // open winapi.inc
-      //-----------------
-      ApiText.LoadFromFile(txtLazarus.text + '/lcl/include/winapi.inc');
-      if chkIndependent.Checked
+      //------------------------------
+      // open winapi.inc / lclintf.inc
+      //------------------------------
+      ApiText.LoadFromFile(txtLazarus.text + '/lcl/include/' + FileName + '.inc');
+      if rbIndependent.Checked
       then begin
-        Idx := FindInsertPoint(ApiText, 'pi', ProcName, 'winapi.inc', False);
+        Idx := FindInsertPoint(ApiText, 'pi', ProcName, FileName + '.inc', False);
         if Idx <> -1
         then begin
           with ProcLines do
@@ -520,7 +452,7 @@ begin
         end;
       end
       else begin
-        Idx := FindInsertPoint(ApiText, 'ps', ProcName, 'winapi.inc', False);
+        Idx := FindInsertPoint(ApiText, 'ps', ProcName, FileName + '.inc', False);
         if Idx <> -1
         then begin
 
@@ -547,19 +479,19 @@ begin
       if Idx <> -1
       then begin
         InsertLines(Idx, ApiText, ProcLines);
-        ApiText.SaveToFile(txtLazarus.text + '/lcl/include/winapi.inc');
+        ApiText.SaveToFile(txtLazarus.text + '/lcl/include/' + FileName + '.inc');
       end;
 
-      // ++++++++++++++++++
-      // from here only dependent  stuff
-      // ++++++++++++++++++
-      if not chkIndependent.Checked
+      // ++++++++++++++++++++++++++++++ //
+      // from here only dependent stuff //
+      // ++++++++++++++++++++++++++++++ //
+      if rbDependent.Checked
       then begin
-        //-----------------
-        // open interfacebase.inc
-        //-----------------
-        ApiText.LoadFromFile(txtLazarus.text + '/lcl/include/interfacebase.inc');
-        Idx := FindInsertPoint(ApiText, 'ps', ProcName, 'interfacebase.inc', False);
+        //------------------------------------------
+        // open intfbasewinapi.inc / intfbaselcl.inc
+        //------------------------------------------
+        ApiText.LoadFromFile(txtLazarus.text + '/lcl/include/' + IntfBase);
+        Idx := FindInsertPoint(ApiText, 'ps', ProcName, IntfBase, False);
         if Idx <> -1
         then begin
           S := DeclarationText;
@@ -581,58 +513,68 @@ begin
             Add('end;');
           end;
           InsertLines(Idx, ApiText, ProcLines);
-          ApiText.SaveToFile(txtLazarus.text + '/lcl/include/interfacebase.inc');
+          ApiText.SaveToFile(txtLazarus.text + '/lcl/include/' + IntfBase);
         end;
 
-        //-----------------
-        // open gtkwinapih.inc
-        //-----------------
-        ApiText.LoadFromFile(txtLazarus.text + '/lcl/interfaces/gtk/gtkwinapih.inc');
-        Idx := FindInsertPoint(ApiText, 'ps', ProcName, 'gtkwinapih.inc', True);
-        if IDX <> -1
-        then begin
-        	ProcLines.Clear;
-          CreateLeadingCR;
-          ProcLines.Add(DeclarationText + '; override;');
-          InsertLines(Idx, ApiText, ProcLines);
-          ApiText.SaveToFile(txtLazarus.text + '/lcl/interfaces/gtk/gtkwinapih.inc');
-        end;
-
-        //-----------------
-        // open gtkwinapi.inc
-        //-----------------
-        ApiText.LoadFromFile(txtLazarus.text + '/lcl/interfaces/gtk/gtkwinapi.inc');
-        Idx := FindInsertPoint(ApiText, 'ps', ProcName, 'gtkwinapi.inc', False);
-        if Idx <> -1
-        then begin
-          S := DeclarationText;
-          // Remove spaces
-          while S[DECL_OFFSET[ProcType]] = ' ' do Delete(S, DECL_OFFSET[ProcType], 1);
-
-          System.Insert(' TGTKObject.', S, DECL_OFFSET[ProcType]);
-          with ProcLines do
-          begin
-            Clear;
-            Add('');
-            Add('{------------------------------------------------------------------------------' );
-            Add('  ' + PROC_DESC[ProcType] + ': ' + ProcName );
-            if ProcParams.Count = 0
-            then Add('  Params: none' )
-            else begin
-              Add('  Params: ' + ProcParams[0] + ':');
-              for n := 1 to ProcParams.Count  - 1  do
-                Add('          ' + ProcParams[n] + ':');
-            end;
-            Add('  Returns:' + RETURN_PROC[ProcType] );
-            Add('' );
-            Add(' ------------------------------------------------------------------------------}' );
-            Add(S + ';');
-            Add('begin' );
-            Add('  // Your code here' );
-            Add('end;');
+        for PlatformIdx := 0 to cbgLCLPlatform.Items.Count - 1 do
+        begin
+          if not cbgLCLPlatform.Checked[PlatformIdx] then Continue;
+          
+          // for now they can all be based on the check caption
+          PlatformPrefix := cbgLCLPlatform.Items[PlatformIdx];
+          PlatformDir := PlatformPrefix;
+          PlatformObject := 'T' + UpperCase(PlatformPrefix) + 'Object';
+          
+          //------------------
+          // open *winapih.inc
+          //------------------
+          ApiText.LoadFromFile(txtLazarus.text + '/lcl/interfaces/' + PlatformDir + '/' + PlatformPrefix + FileName + 'h.inc');
+          Idx := FindInsertPoint(ApiText, 'ps', ProcName, PlatformPrefix + FileName + 'h.inc', True);
+          if IDX <> -1
+          then begin
+          	ProcLines.Clear;
+            CreateLeadingCR;
+            ProcLines.Add(DeclarationText + '; override;');
+            InsertLines(Idx, ApiText, ProcLines);
+            ApiText.SaveToFile(txtLazarus.text + '/lcl/interfaces/' + PlatformDir + '/' + PlatformPrefix + FileName + 'h.inc');
           end;
-          InsertLines(Idx, ApiText, ProcLines);
-          ApiText.SaveToFile(txtLazarus.text + '/lcl/interfaces/gtk/gtkwinapi.inc');
+
+          //-----------------
+          // open *winapi.inc
+          //-----------------
+          ApiText.LoadFromFile(txtLazarus.text + '/lcl/interfaces/' + PlatformDir + '/' + PlatformPrefix + FileName + '.inc');
+          Idx := FindInsertPoint(ApiText, 'ps', ProcName, PlatformPrefix + FileName + '.inc', False);
+          if Idx <> -1
+          then begin
+            S := DeclarationText;
+            // Remove spaces
+            while S[DECL_OFFSET[ProcType]] = ' ' do Delete(S, DECL_OFFSET[ProcType], 1);
+
+            System.Insert(' ' + PlatformObject + '.', S, DECL_OFFSET[ProcType]);
+            with ProcLines do
+            begin
+              Clear;
+              Add('');
+              Add('{------------------------------------------------------------------------------' );
+              Add('  ' + PROC_DESC[ProcType] + ': ' + ProcName );
+              if ProcParams.Count = 0
+              then Add('  Params: none' )
+              else begin
+                Add('  Params: ' + ProcParams[0] + ':');
+                for n := 1 to ProcParams.Count  - 1  do
+                  Add('          ' + ProcParams[n] + ':');
+              end;
+              Add('  Returns:' + RETURN_PROC[ProcType] );
+              Add('' );
+              Add(' ------------------------------------------------------------------------------}' );
+              Add(S + ';');
+              Add('begin' );
+              Add('  // Your code here' );
+              Add('end;');
+            end;
+            InsertLines(Idx, ApiText, ProcLines);
+            ApiText.SaveToFile(txtLazarus.text + '/lcl/interfaces/' + PlatformDir + '/' + PlatformPrefix + FileName + '.inc');
+          end;
         end;
       end;
     finally
@@ -644,10 +586,27 @@ begin
   end;
 end;
 
+procedure TApiWizForm.rbPlatformDependencyClick (Sender: TObject );
+begin
+  cbgLCLPlatform.Enabled := rbDependent.Checked;
+end;
+
+procedure TApiWizForm.rdgApiTypeClick (Sender: TObject );
+begin
+
+end;
+
+initialization
+  {$I apiwizard.lrs}
+
 end.
 { =============================================================================
 
   $Log$
+  Revision 1.4  2003/12/13 01:12:01  marc
+  * Applied patch from Vincent Snijders
+  + Added LCLplatform implementations
+
   Revision 1.3  2003/09/25 23:03:13  marc
   = Changed LCLLinux to LCLIntf
 

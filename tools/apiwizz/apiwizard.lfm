@@ -1,0 +1,136 @@
+object ApiWizForm: TApiWizForm
+  CAPTION = 'ApiWiZZ'
+  CLIENTHEIGHT = 273
+  CLIENTWIDTH = 504
+  ONCREATE = ApiWizFormCreate
+  POSITION = podefaultposonly
+  HORZSCROLLBAR.PAGE = 505
+  VERTSCROLLBAR.PAGE = 274
+  LEFT = 358
+  HEIGHT = 273
+  TOP = 185
+  WIDTH = 504
+  object lblDeclare: TLABEL
+    ANCHORS = [aktop, akleft]
+    CAPTION = 'Declaration:'
+    COLOR = -2147483633
+    LAYOUT = tltop
+    LEFT = 4
+    HEIGHT = 16
+    TOP = 68
+    WIDTH = 120
+  end
+  object lblLazarus: TLABEL
+    ANCHORS = [aktop, akleft]
+    CAPTION = 'Lazarus dir:'
+    COLOR = -2147483633
+    LAYOUT = tltop
+    LEFT = 4
+    HEIGHT = 16
+    TOP = 16
+    WIDTH = 120
+  end
+  object txtDeclare: TEDIT
+    ANCHORS = [aktop, akleft, akright]
+    TABSTOP = True
+    TABORDER = 0
+    LEFT = 4
+    HEIGHT = 24
+    TOP = 88
+    WIDTH = 492
+  end
+  object cmdGenerate: TBUTTON
+    ANCHORS = [akright, akbottom]
+    CAPTION = 'Generate'
+    TABSTOP = True
+    TABORDER = 2
+    ONCLICK = cmdGenerateClick
+    LEFT = 421
+    HEIGHT = 28
+    TOP = 238
+    WIDTH = 75
+  end
+  object txtLazarus: TEDIT
+    ANCHORS = [aktop, akleft, akright]
+    TABSTOP = True
+    TABORDER = 1
+    LEFT = 4
+    HEIGHT = 24
+    TOP = 36
+    WIDTH = 492
+    TAG = 493
+  end
+  object rdgApiType: TRADIOGROUP
+    ANCHORS = [aktop, akleft]
+    CAPTION = 'Api type'
+    ITEMINDEX = 0
+    ITEMS.Strings = (
+      'win32 compatibility'
+      'LCL interface'
+    )
+    ONCLICK = rdgApiTypeClick
+    LEFT = 176
+    HEIGHT = 72
+    TOP = 128
+    WIDTH = 158
+  end
+  object Groupbox1: TGROUPBOX
+    ANCHORS = [aktop, akleft]
+    CAPTION = 'LCL Platform'
+    CLIENTHEIGHT = 115
+    CLIENTWIDTH = 160
+    COLOR = -2147483633
+    PARENTCOLOR = True
+    PARENTCTL3D = False
+    TABORDER = 6
+    LEFT = 4
+    HEIGHT = 138
+    TOP = 128
+    WIDTH = 164
+    object cbgLCLPlatform: TCHECKGROUP
+      ENABLED = False
+      ITEMS.Strings = (
+        'gtk'
+        'gtk2'
+        'win32'
+      )
+      LEFT = 26
+      HEIGHT = 80
+      TOP = 30
+      WIDTH = 128
+      Data = {
+        03000000020202
+      }
+    end
+    object rbIndependent: TRADIOBUTTON
+      ANCHORS = [aktop, akleft]
+      AUTOSIZE = True
+      ALLOWGRAYED = True
+      CAPTION = 'Independent'
+      CHECKED = True
+      STATE = cbchecked
+      DRAGCURSOR = 0
+      TABORDER = 1
+      TABSTOP = True
+      ONCLICK = rbPlatformDependencyClick
+      LEFT = 10
+      HEIGHT = 20
+      TOP = 3
+      WIDTH = 115
+    end
+    object rbDependent: TRADIOBUTTON
+      ANCHORS = [aktop, akleft]
+      AUTOSIZE = True
+      ALLOWGRAYED = True
+      CAPTION = 'Dependent'
+      DRAGCURSOR = 0
+      TABORDER = 2
+      TABSTOP = True
+      ONCLICK = rbPlatformDependencyClick
+      LEFT = 10
+      HEIGHT = 20
+      TOP = 30
+      WIDTH = 106
+    end
+  end
+end
