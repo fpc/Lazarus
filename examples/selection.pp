@@ -20,7 +20,7 @@
 }
 program Selection;
 
-{$mode delphi}
+{$mode objfpc}{$H+}
 
 uses
   Interfaces,

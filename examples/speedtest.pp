@@ -20,7 +20,7 @@
 }
 program SpeedTest;
 
-{$mode Delphi}
+{$mode objfpc}{$H+}
 
 uses 
   Interfaces, Forms, SysUtils, Buttons, Classes, StdCtrls, LCLType,

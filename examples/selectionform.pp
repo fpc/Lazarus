@@ -22,7 +22,7 @@ unit SelectionForm;
 
 interface
 
-{$mode delphi}
+{$mode objfpc}{$H+}
 
 uses
   Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
