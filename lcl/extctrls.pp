@@ -45,7 +45,7 @@ interface
 {$endif}
 
 uses
-  SysUtils, Classes, LCLProc, Controls, StdCtrls, vclGlobals, lMessages,
+  SysUtils, Classes, LCLProc, Controls, Forms, StdCtrls, vclGlobals, lMessages,
   GraphType, Graphics, LCLLinux, CustomTimer;
 
 type
@@ -55,11 +55,8 @@ type
   { TTabPosition - Move to TTabbedNotebook when it is created }
   TTabPosition = (tpTop, tpBottom, tpLeft, tpRight);
 
+
   { TPage }
-  {
-    @abstract(Pages for Notebooks and TabbedNotebooks.)
-    Introduced and (currently) maintained by Curtis White
-  }
 
   TPageFlag = (pfAdded);
   TPageFlags = set of TPageFlag;
@@ -94,11 +91,9 @@ type
 
   TCustomNotebook = class;
 
+
   { TNBPages }
-  {
-    @abstract(Notebook page access class to provide access to notebook pages.)
-    Introduced and (currently) maintained by Curtis White
-  }
+
   TNBPages = class(TStrings)
   private
     fPageList: TList;
@@ -119,11 +114,9 @@ type
     procedure Move(CurIndex, NewIndex: Integer); override;
   end;
 
+
   { TCustomNotebook }
-  {
-    @abstract(Base class for TNotebook and TTabbedNotebook.)
-    Introduced by Curtis White
-  }
+
   TNoteBookOption = (nboShowCloseButtons, nboMultiLine);
   TNoteBookOptions = set of TNoteBookOption;
   
@@ -189,11 +182,9 @@ type
     property Options: TNoteBookOptions read FOptions write SetOptions;
   end;
 
+
   { TNotebook }
-  {
-    @abstract(A Delphi style TNotebook.)
-    Introduced and (currently) maintained by Curtis White
-  }
+
   TNotebook = class(TCustomNotebook)
   public
     constructor Create(AOwner: TComponent); override;
@@ -211,14 +202,48 @@ type
 
 
   { Timer }
-  {
-    @abstract(A free running timer.)
-    Introduced and (currently) maintained by Stefan Hille (stoppok@osibisa.ms.sub.org)
-  }
+
   TTimer = class (TCustomTimer)
   end;
+  
+  
+  { TIdleTimer }
+  
+  TIdleTimerAutoEvent = (
+    itaOnIdle,
+    itaOnIdleEnd,
+    itaOnUserInput
+    );
+  TIdleTimerAutoEvents = set of TIdleTimerAutoEvent;
+
+  TIdleTimer = class(TTimer)
+  private
+    FAutoEnabled: boolean;
+    FAutoEndEvent: TIdleTimerAutoEvent;
+    FAutoStartEvent: TIdleTimerAutoEvent;
+    FHandlersConnected: boolean;
+    procedure UpdateHandlers;
+    procedure SetAutoEndEvent(const AValue: TIdleTimerAutoEvent);
+    procedure SetAutoStartEvent(const AValue: TIdleTimerAutoEvent);
+  protected
+    procedure SetAutoEnabled(const AValue: boolean); virtual;
+    procedure DoOnIdle(Sender: TObject); virtual;
+    procedure DoOnIdleEnd(Sender: TObject); virtual;
+    procedure DoOnUserInput(Sender: TObject); virtual;
+    procedure Loaded; override;
+  public
+    constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
+    property AutoEnabled: boolean read FAutoEnabled write SetAutoEnabled;
+    property AutoEndEvent: TIdleTimerAutoEvent
+      read FAutoEndEvent write SetAutoEndEvent default itaOnIdle;
+    property AutoStartEvent: TIdleTimerAutoEvent
+      read FAutoStartEvent write SetAutoStartEvent default itaOnUserInput;
+  end;
+  
 
   { TShape }
+  
   TShapeType = (stRectangle, stSquare, stRoundRect, stRoundSquare,
     stEllipse, stCircle);
 
@@ -260,6 +285,7 @@ type
 //    property OnStartDock;
 //    property OnStartDrag;
   end;
+
 
   { TPaintBox }
 
@@ -336,6 +362,7 @@ type
     property Transparent: Boolean read FTransparent write SetTransparent;
   end;
 
+
   { TBevel }
   
   TBevelStyle = (bsLowered, bsRaised);
@@ -371,10 +398,7 @@ type
 
 
   { TCustomRadioGroup }
-  {
-    @abstract(Base class for TRadioGroup.)
-    (currently) maintained by Stefan Hille (stoppok@osibisa.ms.sub.org)
-  }
+
   TCustomRadioGroup = class(TCustomGroupBox)
   private
     FButtonList : TList; // list of TRadioButton
@@ -407,10 +431,7 @@ type
 
 
   { TRadioGroup }
-  {
-    @abstract(Group of radiobuttons.)
-    (currently) maintained by Stefan Hille (stoppok@osibisa.ms.sub.org)
-  }
+
   TRadioGroup = class(TCustomRadioGroup)
   public
     constructor Create (AOwner : TComponent); override;
@@ -520,6 +541,7 @@ uses Math;
 {$I customnotebook.inc}
 {$I notebook.inc}
 {$I timer.inc}
+{$I idletimer.inc}
 {$I shape.inc}
 {$I paintbox.inc}
 {$I customradiogroup.inc}
@@ -533,6 +555,9 @@ end.
 
  {
   $Log$
+  Revision 1.43  2002/11/04 11:48:48  lazarus
+  MG: implemented TIdleTimer and fixed small bugs
+
   Revision 1.42  2002/10/31 04:27:58  lazarus
   AJ: added TShape
 
