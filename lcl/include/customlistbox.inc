@@ -100,6 +100,9 @@ var
   i, Cnt: integer;
 begin
   LockSelectionChange;
+  // save ItemIndex on destroy handle
+  if ([csDestroying,csLoading]*ComponentState=[]) then
+    GetItemIndex;
   //DebugLn('[TCustomListBox.DestroyHandle] A ',FItems.ClassName);
   // create internal item list
   NewStrings:= TExtendedStringList.Create(GetCachedDataSize);
