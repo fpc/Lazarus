@@ -189,7 +189,7 @@ Begin
     Begin
       With TLMKey(LMessage) Do
       Begin
-        Msg := LM_SYSKEYUP;
+        Msg := LM_SYSKEYDOWN;
         KeyData := LParam;
         CharCode := WParam;
       End;
@@ -305,7 +305,7 @@ Begin
         Msg := LM_MOVE;
         MoveType := WParam;
         XPos := Lo(LParam);
-        YPos := Lo(LParam);
+        YPos := Hi(LParam);
       End;
     End;
     //TODO:LM_MOVEPAGE,LM_MOVETOROW,LM_MOVETOCOLUMN
@@ -462,6 +462,9 @@ End;
 
 {
   $Log$
+  Revision 1.13  2002/06/08 19:18:34  lazarus
+  Keith: Fixed some bugs that were brought to my attention; fixed compilation problem.
+
   Revision 1.12  2002/05/10 07:43:48  lazarus
   MG: updated licenses
 
