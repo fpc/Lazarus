@@ -2317,7 +2317,6 @@ procedure TWinControl.Loaded;
 begin
   inherited Loaded;
   if wcfColorChanged in FFlags then begin
-writeln('TWinControl.Loaded ',Name,':',ClassName);
     CNSendMessage(LM_SETCOLOR, Self, nil);
     Exclude(FFlags,wcfColorChanged);
   end;
@@ -2581,6 +2580,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.118  2003/02/26 12:44:52  mattias
+  readonly flag is now only saved if user set
+
   Revision 1.117  2003/02/09 18:07:42  mattias
   cleanup
 
