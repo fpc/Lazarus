@@ -92,6 +92,9 @@ function CopyDirectoryWithMethods(const SrcDirectory, DestDirectory: string;
 function ProgramDirectory: string;
 function FindFilesCaseInsensitive(const Directory,
   CaseInsensitiveFilename: string; IgnoreExact: boolean): TStringList;
+function FilenameIsPascalUnit(const Filename: string): boolean;
+function FilenameIsPascalSource(const Filename: string): boolean;
+function FilenameIsFormText(const Filename: string): boolean;
 
 // XMLConfig
 procedure LoadRecentList(XMLConfig: TXMLConfig; List: TStringList;
@@ -134,6 +137,8 @@ procedure RaiseException(const Msg: string);
 // miscellaneous
 procedure FreeThenNil(var Obj: TObject);
 function CompareCaret(const FirstCaret, SecondCaret: TPoint): integer;
+procedure CheckList(List: TList; TestListNil, TestDoubles, TestNils: boolean);
+procedure CheckEmptyListCut(List1, List2: TList);
 
 const
   {$IFDEF Win32}
@@ -218,6 +223,31 @@ begin
     until SysUtils.FindNext(FileInfo)<>0;
   end;
   SysUtils.FindClose(FileInfo);
+end;
+
+function FilenameIsPascalSource(const Filename: string): boolean;
+var Ext: string;
+begin
+  Ext:=lowercase(ExtractFileExt(Filename));
+  Result:=((Ext='.pp') or (Ext='.pas') or (Ext='.lpr')
+          or (Ext='.dpr') or (Ext='.dpk'))
+          and (ExtractFileNameOnly(Filename)<>'');
+end;
+
+function FilenameIsPascalUnit(const Filename: string): boolean;
+var Ext: string;
+begin
+  Ext:=lowercase(ExtractFileExt(Filename));
+  Result:=((Ext='.pp') or (Ext='.pas'))
+          and (ExtractFileNameOnly(Filename)<>'');
+end;
+
+function FilenameIsFormText(const Filename: string): boolean;
+var Ext: string;
+begin
+  Ext:=lowercase(ExtractFileExt(Filename));
+  Result:=((Ext='.lfm') or (Ext='.dfm') or (Ext='.xfm'))
+          and (ExtractFileNameOnly(Filename)<>'');
 end;
 
 procedure LoadRecentList(XMLConfig: TXMLConfig; List: TStringList;
@@ -532,6 +562,54 @@ begin
     Result:=-1
   else
     Result:=0;
+end;
+
+{-------------------------------------------------------------------------------
+  procedure CheckList(List: TList; TestListNil, TestDoubles, TestNils: boolean);
+-------------------------------------------------------------------------------}
+procedure CheckList(List: TList; TestListNil, TestDoubles, TestNils: boolean);
+var
+  Cnt: Integer;
+  i: Integer;
+  CurItem: Pointer;
+  j: Integer;
+begin
+  if List=nil then begin
+    if TestListNil then
+      RaiseException('CheckList List is Nil');
+    exit;
+  end;
+  Cnt:=List.Count;
+  if TestNils then begin
+    for i:=0 to Cnt-1 do
+      if List[i]=nil then
+        RaiseException('CheckList item is Nil');
+  end;
+  if TestDoubles then begin
+    for i:=0 to Cnt-2 do begin
+      CurItem:=List[i];
+      for j:=i+1 to Cnt-1 do begin
+        if List[j]=CurItem then
+          RaiseException('CheckList Double');
+      end;
+    end;
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  procedure CheckEmptyListCut(List1, List2: TList);
+-------------------------------------------------------------------------------}
+procedure CheckEmptyListCut(List1, List2: TList);
+var
+  Cnt1: Integer;
+  i: Integer;
+begin
+  if (List1=nil) or (List2=nil) then exit;
+  Cnt1:=List1.Count;
+  for i:=0 to Cnt1 do begin
+    if List2.IndexOf(List1[i])>=0 then
+      RaiseException('CheckEmptyListCut');
+  end;
 end;
 
 {-------------------------------------------------------------------------------
