@@ -1337,12 +1337,6 @@ Var
   Handle: HWND;
   TM: TEXTMETRICA;
 Begin
-  If Sender Is TCustomForm Then
-  Begin
-    Inc(Width, 50);
-    Inc(Height, 50);
-  End;
-
   Handle := (Sender As TWinControl).Handle;
   If (TControl(Sender).Parent Is TCustomGroupBox) Or (TControl(Sender).Parent Is TPage) Then
   Begin
@@ -2502,6 +2496,9 @@ End;
 
 {
   $Log$
+  Revision 1.24  2002/08/29 17:55:04  lazarus
+  Keith: Removed form sizing hack.
+
   Revision 1.23  2002/08/28 17:28:11  lazarus
   Keith: Win32 fixes.  Much appreciation to Markus Lüdin.
 
