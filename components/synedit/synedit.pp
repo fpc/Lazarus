@@ -4566,7 +4566,7 @@ begin
       SetParagraphBlock(PixelsToRowColumn(ptMouse))
     end;
     inherited;
-    Include(fStateFlags, sfTripleClicked);
+    Include(fStateFlags, sfQuadClicked);
     MouseCapture := FALSE;
   end else
     inherited;
