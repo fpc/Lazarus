@@ -361,7 +361,6 @@ var
   KeyCode: Word;
   Flags: Integer;
   Toggle, Extended, SysKey: Boolean;
-  Control : TControl;
 begin
   GetGTKKeyInfo(Event, KeyCode, Msg.CharCode, SysKey, Extended, Toggle);
   // Assert(False, Format('Trace:[GTKKeyUpDown] Type: %3:d, GTK: 0x%0:x(%0:d) LCL: 0x%1:x(%1:d) VK: 0x%2:x(%2:d)', [Event^.keyval, KeyCode, Msg.CharCode, Event^.theType]));
@@ -388,6 +387,7 @@ begin
         Msg.KeyData := Msg.KeyData or (Flags shl 16) or $0001 {allways};
         Code := Msg.CharCode;
 
+        // ToDo: This should be DeliverMessage and go o the WndProc
         TObject(Data).Dispatch(Msg);//Result := DeliverPostMessage(Data, Msg);
 
         If Msg.CharCode <> Code then begin
@@ -2395,6 +2395,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.134  2002/09/30 09:26:42  lazarus
+  MG: added DoSaveAll before CloseAll
+
   Revision 1.133  2002/09/29 15:08:39  lazarus
   MWE: Applied patch from "Andrew Johnson" <aj_genius@hotmail.com>
     Patch includes:
