@@ -2597,7 +2597,7 @@ Begin
     end;
     if EnvironmentOptionsDialog.ShowModal=mrOk then begin
       // invalidate cached substituted macros
-      IncreaseParseStamp;
+      IncreaseCompilerParseStamp;
       
       // load settings from EnvironmentOptionsDialog to EnvironmentOptions
       OldCompilerFilename:=EnvironmentOptions.CompilerFilename;
@@ -3733,7 +3733,7 @@ begin
   end;
   
   // invalidate cached substituted macros
-  IncreaseParseStamp;
+  IncreaseCompilerParseStamp;
   
   Result:=mrOk;
 end;
@@ -4661,7 +4661,7 @@ writeln('TMainIDE.DoNewProject A');
   Result:=mrCancel;
 
   // invalidate cached substituted macros
-  IncreaseParseStamp;
+  IncreaseCompilerParseStamp;
 
   // close current project first
   If Project1<>nil then begin
@@ -4732,7 +4732,7 @@ writeln('TMainIDE.DoNewProject A');
   for i:=0 to Project1.UnitCount-1 do
     Project1.Units[i].Modified:=false;
   Project1.Modified:=false;
-  IncreaseParseStamp;
+  IncreaseCompilerParseStamp;
 
 writeln('TMainIDE.DoNewProject end ',CodeToolBoss.ConsistencyCheck);
   Result:=mrOk;
@@ -4854,7 +4854,7 @@ begin
     if Result=mrAbort then exit;
   end;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoCloseProject B');{$ENDIF}
-  IncreaseParseStamp;
+  IncreaseCompilerParseStamp;
   // close Project
   FreeThenNil(Project1);
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoCloseProject C');{$ENDIF}
@@ -4952,7 +4952,7 @@ begin
   writeln('TMainIDE.DoOpenProjectFile C');
   {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoOpenProjectFile C');{$ENDIF}
-  IncreaseParseStamp;
+  IncreaseCompilerParseStamp;
 
   // restore files
   LastEditorIndex:=-1;
@@ -5026,7 +5026,7 @@ begin
   end;
   Project1.Modified:=false;
   
-  IncreaseParseStamp;
+  IncreaseCompilerParseStamp;
   Result:=mrOk;
   {$IFDEF IDE_VERBOSE}
   writeln('TMainIDE.DoOpenProjectFile end  CodeToolBoss.ConsistencyCheck=',CodeToolBoss.ConsistencyCheck);
@@ -5054,7 +5054,7 @@ begin
   if ShowDialog then begin
     Result:=ShowPublishProjectDialog(Project1.PublishOptions);
     if Result<>mrOk then exit;
-    IncreaseParseStamp;
+    IncreaseCompilerParseStamp;
   end;
 
   // save project
@@ -5174,7 +5174,7 @@ begin
   Project1.ProjectInfoFile:=ChangeFileExt(ProgramBuf.Filename,'.lpi');
   Project1.CompilerOptions.CompilerPath:='$(CompPath)';
   UpdateCaption;
-  IncreaseParseStamp;
+  IncreaseCompilerParseStamp;
 
   // set project type specific things
   ds:=PathDelim;
@@ -6149,7 +6149,7 @@ begin
   MacroName:=lowercase(TheMacro.Name);
   if MacroName='save' then begin
     Handled:=true;
-    if SourceNoteBook.NoteBook<>nil then
+    if (SourceNoteBook<>nil) and (SourceNoteBook.NoteBook<>nil) then
       Abort:=(DoSaveEditorFile(SourceNoteBook.NoteBook.PageIndex,
               [sfCheckAmbigiousFiles])<>mrOk);
     s:='';
@@ -6159,30 +6159,39 @@ begin
     s:='';
   end else if MacroName='edfile' then begin
     Handled:=true;
-    if SourceNoteBook.NoteBook<>nil then
+    if (SourceNoteBook<>nil) and (SourceNoteBook.NoteBook<>nil) then
       s:=Project1.UnitWithEditorIndex(SourceNoteBook.NoteBook.PageIndex).Filename
     else
       s:='';
   end else if MacroName='col' then begin
     Handled:=true;
-    if SourceNoteBook.NoteBook<>nil then
+    if (SourceNoteBook<>nil) and (SourceNoteBook.NoteBook<>nil) then
       s:=IntToStr(SourceNoteBook.GetActiveSE.EditorComponent.CaretX);
   end else if MacroName='row' then begin
     Handled:=true;
-    if SourceNoteBook.NoteBook<>nil then
+    if (SourceNoteBook<>nil) and (SourceNoteBook.NoteBook<>nil) then
       s:=IntToStr(SourceNoteBook.GetActiveSE.EditorComponent.CaretY);
   end else if MacroName='projfile' then begin
     Handled:=true;
-    s:=Project1.MainFilename;
+    if Project1<>nil then
+      s:=Project1.MainFilename
+    else
+      s:='';
   end else if MacroName='projpath' then begin
     Handled:=true;
-    s:=Project1.ProjectDirectory;
+    if Project1<>nil then
+      s:=Project1.ProjectDirectory
+    else
+      s:='';
   end else if MacroName='projpublishdir' then begin
     Handled:=true;
-    s:=Project1.PublishOptions.DestinationDirectory;
+    if Project1<>nil then
+      s:=Project1.PublishOptions.DestinationDirectory
+    else
+      s:='';
   end else if MacroName='curtoken' then begin
     Handled:=true;
-    if SourceNoteBook.NoteBook<>nil then
+    if (SourceNoteBook<>nil) and (SourceNoteBook.NoteBook<>nil) then
       with SourceNoteBook.GetActiveSE.EditorComponent do
         s:=GetWordAtRowCol(CaretXY);
   end else if MacroName='lazarusdir' then begin
@@ -6190,7 +6199,10 @@ begin
     s:=EnvironmentOptions.LazarusDirectory;
   end else if MacroName='lclwidgettype' then begin
     Handled:=true;
-    s:=Project1.CompilerOptions.LCLWidgetType;
+    if Project1<>nil then
+      s:=Project1.CompilerOptions.LCLWidgetType
+    else
+      s:='';
     if s='' then s:='gtk';
   end else if MacroName='fpcsrcdir' then begin
     Handled:=true;
@@ -6200,26 +6212,44 @@ begin
     s:=EnvironmentOptions.CompilerFilename;
   end else if MacroName='params' then begin
     Handled:=true;
-    s:=Project1.RunParameterOptions.CmdLineParams;
+    if Project1<>nil then
+      s:=Project1.RunParameterOptions.CmdLineParams
+    else
+      s:='';
   end else if MacroName='targetfile' then begin
     Handled:=true;
-    s:=GetProjectTargetFilename;
-  end else if MacroName='targetcmdline' then begin
-    Handled:=true;
-    s:=Project1.RunParameterOptions.CmdLineParams;
-    if s='' then
+    if Project1<>nil then
       s:=GetProjectTargetFilename
     else
-      s:=GetProjectTargetFilename+' '+s;
+      s:='';
+  end else if MacroName='targetcmdline' then begin
+    Handled:=true;
+    if Project1<>nil then begin
+      s:=Project1.RunParameterOptions.CmdLineParams;
+      if s='' then
+        s:=GetProjectTargetFilename
+      else
+        s:=GetProjectTargetFilename+' '+s;
+    end else
+      s:='';
   end else if MacroName='testdir' then begin
     Handled:=true;
-    s:=GetTestBuildDir;
+    if Project1<>nil then
+      s:=GetTestBuildDir
+    else
+      s:='';
   end else if MacroName='runcmdline' then begin
     Handled:=true;
-    s:=GetRunCommandLine;
+    if Project1<>nil then
+      s:=GetRunCommandLine
+    else
+      s:='';
   end else if MacroName='projpublishdir' then begin
     Handled:=true;
-    s:=GetProjPublishDir;
+    if Project1<>nil then
+      s:=GetProjPublishDir
+    else
+      s:='';
   end;
 end;
 
@@ -8288,6 +8318,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.523  2003/04/15 17:58:28  mattias
+  implemented inherited Compiler Options View
+
   Revision 1.522  2003/04/15 08:54:26  mattias
   fixed TMemo.WordWrap
 
