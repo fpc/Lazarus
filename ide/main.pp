@@ -2736,6 +2736,8 @@ begin
   FormEditor1.SetComponentNameAndClass(CInterface,
     NewUnitInfo.ComponentName,'T'+NewUnitInfo.ComponentName);
   NewComponent:=CInterface.Component;
+  if NewComponent is TControl then
+    TControl(NewComponent).Visible:=true;
   NewUnitInfo.Component:=NewComponent;
   CreateDesignerForComponent(NewComponent);
 
@@ -9158,6 +9160,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.606  2003/06/16 22:52:47  mattias
+  fixed Visible=true for new forms
+
   Revision 1.605  2003/06/16 22:47:19  mattias
   fixed keeping TForm.Visible=false
 
