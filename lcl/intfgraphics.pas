@@ -94,6 +94,11 @@ type
         ...
       end;
     }
+    
+  TOnGetLazIntfImagePixel = procedure(x, y: integer; var Color: TFPColor)
+                            of object;
+  TOnSetLazIntfImagePixel = procedure(x, y: integer; const Color: TFPColor)
+                            of object;
 
   TLazIntfImage = class(TFPCustomImage)
   private
@@ -109,6 +114,8 @@ type
     fCreateAllDataNeeded: boolean;
     procedure SetAutoCreateMask(const AValue: boolean);
   protected
+    OnGetInternalColor: TOnGetLazIntfImagePixel;
+    OnSetInternalColor: TOnSetLazIntfImagePixel;
     procedure SetInternalColor(x, y: integer; const Value: TFPColor); override;
     function GetInternalColor(x, y: integer): TFPColor; override;
     procedure SetInternalPixel (x,y:integer; Value:integer); override;
@@ -124,6 +131,9 @@ type
                                       TheBitsPerPixel: cardinal;
                                       TheLineEnd: TRawImageLineEnd); virtual;
     procedure SetDataDescription(const NewDescription: TRawImageDescription); virtual;
+    procedure ChooseGetSetColorFunctions; virtual;
+    procedure GenericGetColor(x, y: integer; var Value: TFPColor);
+    procedure GenericSetColor(x, y: integer; const Value: TFPColor);
   public
     constructor Create(AWidth, AHeight: integer); override;
     destructor Destroy; override;
@@ -520,6 +530,7 @@ begin
   try
     FreeAllData;
     fDataDescription:=NewDescription;
+    ChooseGetSetColorFunctions;
     SetSize(0,0);
     fCreateAllDataNeeded:=false;
   finally
@@ -527,17 +538,80 @@ begin
   end;
 end;
 
-procedure TLazIntfImage.SetAutoCreateMask(const AValue: boolean);
+procedure TLazIntfImage.ChooseGetSetColorFunctions;
 begin
-  if FAutoCreateMask=AValue then exit;
-  FAutoCreateMask:=AValue;
-  if AutoCreateMask then
-    CreateMaskData
-  else
-    FreeMaskData;
+  // Default: use the generic functions, that can handle all kinds of RawImages
+  OnGetInternalColor:=@GenericGetColor;
+  OnSetInternalColor:=@GenericSetColor;
 end;
 
-procedure TLazIntfImage.SetInternalColor(x, y: integer; const Value: TFPColor);
+procedure TLazIntfImage.GenericGetColor(x, y: integer; var Value: TFPColor);
+var
+  Position: TRawImagePosition;
+  MaskPosition: TRawImagePosition;
+begin
+  GetXYDataPostion(x,y,Position);
+  if not FDataDescription.HasPalette then begin
+    case FDataDescription.Format of
+    ricfRGBA:
+      begin
+        ReadRawImageBits(FPixelData,Position,FDataDescription.BitsPerPixel,
+                     FDataDescription.RedPrec,FDataDescription.RedShift,
+                     FDataDescription.BitOrder,Value.Red);
+        ReadRawImageBits(FPixelData,Position,FDataDescription.BitsPerPixel,
+                     FDataDescription.GreenPrec,FDataDescription.GreenShift,
+                     FDataDescription.BitOrder,Value.Green);
+        ReadRawImageBits(FPixelData,Position,FDataDescription.BitsPerPixel,
+                     FDataDescription.BluePrec,FDataDescription.BlueShift,
+                     FDataDescription.BitOrder,Value.Blue);
+        if FDataDescription.AlphaPrec>0 then begin
+          if FDataDescription.AlphaSeparate then begin
+            if (FMaskData<>nil) then begin
+              GetXYMaskPostion(x,y,MaskPosition);
+              ReadRawImageBits(FMaskData,MaskPosition,
+                           FDataDescription.AlphaBitsPerPixel,
+                           FDataDescription.AlphaPrec,
+                           FDataDescription.AlphaShift,
+                           FDataDescription.AlphaBitOrder,Value.Alpha);
+            end else begin
+              // no alpha mask -> set opaque
+              Value.Alpha:=high(Value.Alpha);
+            end;
+          end else
+            ReadRawImageBits(FPixelData,Position,FDataDescription.BitsPerPixel,
+                         FDataDescription.AlphaPrec,FDataDescription.AlphaShift,
+                         FDataDescription.AlphaBitOrder,Value.Alpha)
+        end else begin
+          // no alpha -> set opaque
+          Value.Alpha:=high(Value.Alpha);
+        end;
+      end;
+
+    ricfGray:
+      begin
+        ReadRawImageBits(FPixelData,Position,FDataDescription.BitsPerPixel,
+                     FDataDescription.RedPrec,FDataDescription.RedShift,
+                     FDataDescription.BitOrder,Value.Red);
+        Value.Green:=Value.Red;
+        Value.Blue:=Value.Red;
+      end;
+
+    else
+      Value.Red:=0;
+      Value.Green:=0;
+      Value.Blue:=0;
+      Value.Alpha:=0;
+    end;
+  end else begin
+    // ToDo: read index, then palette
+    Value.Red:=0;
+    Value.Green:=0;
+    Value.Blue:=0;
+    Value.Alpha:=0;
+  end;
+end;
+
+procedure TLazIntfImage.GenericSetColor(x, y: integer; const Value: TFPColor);
 var
   Position: TRawImagePosition;
   MaskPosition: TRawImagePosition;
@@ -592,70 +666,24 @@ begin
   end;
 end;
 
-function TLazIntfImage.GetInternalColor(x, y: integer): TFPColor;
-var
-  Position: TRawImagePosition;
-  MaskPosition: TRawImagePosition;
+procedure TLazIntfImage.SetAutoCreateMask(const AValue: boolean);
 begin
-  GetXYDataPostion(x,y,Position);
-  if not FDataDescription.HasPalette then begin
-    case FDataDescription.Format of
-    ricfRGBA:
-      begin
-        ReadRawImageBits(FPixelData,Position,FDataDescription.BitsPerPixel,
-                     FDataDescription.RedPrec,FDataDescription.RedShift,
-                     FDataDescription.BitOrder,Result.Red);
-        ReadRawImageBits(FPixelData,Position,FDataDescription.BitsPerPixel,
-                     FDataDescription.GreenPrec,FDataDescription.GreenShift,
-                     FDataDescription.BitOrder,Result.Green);
-        ReadRawImageBits(FPixelData,Position,FDataDescription.BitsPerPixel,
-                     FDataDescription.BluePrec,FDataDescription.BlueShift,
-                     FDataDescription.BitOrder,Result.Blue);
-        if FDataDescription.AlphaPrec>0 then begin
-          if FDataDescription.AlphaSeparate then begin
-            if (FMaskData<>nil) then begin
-              GetXYMaskPostion(x,y,MaskPosition);
-              ReadRawImageBits(FMaskData,MaskPosition,
-                           FDataDescription.AlphaBitsPerPixel,
-                           FDataDescription.AlphaPrec,
-                           FDataDescription.AlphaShift,
-                           FDataDescription.AlphaBitOrder,Result.Alpha);
-            end else begin
-              // no alpha mask -> set opaque
-              Result.Alpha:=high(Result.Alpha);
-            end;
-          end else
-            ReadRawImageBits(FPixelData,Position,FDataDescription.BitsPerPixel,
-                         FDataDescription.AlphaPrec,FDataDescription.AlphaShift,
-                         FDataDescription.AlphaBitOrder,Result.Alpha)
-        end else begin
-          // no alpha -> set opaque
-          Result.Alpha:=high(Result.Alpha);
-        end;
-      end;
+  if FAutoCreateMask=AValue then exit;
+  FAutoCreateMask:=AValue;
+  if AutoCreateMask then
+    CreateMaskData
+  else
+    FreeMaskData;
+end;
 
-    ricfGray:
-      begin
-        ReadRawImageBits(FPixelData,Position,FDataDescription.BitsPerPixel,
-                     FDataDescription.RedPrec,FDataDescription.RedShift,
-                     FDataDescription.BitOrder,Result.Red);
-        Result.Green:=Result.Red;
-        Result.Blue:=Result.Blue;
-      end;
+procedure TLazIntfImage.SetInternalColor(x, y: integer; const Value: TFPColor);
+begin
+  OnSetInternalColor(x,y,Value);
+end;
 
-    else
-      Result.Red:=0;
-      Result.Green:=0;
-      Result.Blue:=0;
-      Result.Alpha:=0;
-    end;
-  end else begin
-    // ToDo: read index, then palette
-    Result.Red:=0;
-    Result.Green:=0;
-    Result.Blue:=0;
-    Result.Alpha:=0;
-  end;
+function TLazIntfImage.GetInternalColor(x, y: integer): TFPColor;
+begin
+  OnGetInternalColor(x,y,Result);
 end;
 
 procedure TLazIntfImage.SetInternalPixel(x, y: integer; Value: integer);
@@ -733,6 +761,8 @@ end;
 constructor TLazIntfImage.Create(AWidth, AHeight: integer);
 begin
   FAutoCreateMask:=true;
+  OnGetInternalColor:=@GenericGetColor;
+  OnSetInternalColor:=@GenericSetColor;
   inherited Create(AWidth, AHeight);
 end;
 
@@ -873,6 +903,7 @@ begin
     if (FMaskData<>nil) then
       CreateRawImageLineStarts(Width,Height,FDataDescription.AlphaBitsPerPixel,
                        FDataDescription.AlphaLineEnd,FMaskLineStarts);
+    ChooseGetSetColorFunctions;
   finally
     EndUpdate;
   end;
