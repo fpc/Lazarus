@@ -2746,12 +2746,12 @@ begin
     dec(i);
   end;
   {$IFDEF DEBUG_CLIPBOARD}
-  DebugLn('[ClipboardSelectionReceivedHandler] A TimeID=',TimeID,' RequestIndex=',i,
-    ' selection=',SelectionData^.selection,
-    ' target=',SelectionData^.Target,
-    ' theType=',SelectionData^.theType,
-    ' format=',SelectionData^.format,
-    ' len=',SelectionData^.length
+  DebugLn('[ClipboardSelectionReceivedHandler] A TimeID=',dbgs(TimeID),' RequestIndex=',dbgs(i),
+    ' selection=',dbgs(SelectionData^.selection),
+    ' target=',dbgs(SelectionData^.Target),
+    ' theType=',dbgs(SelectionData^.theType),
+    ' format=',dbgs(SelectionData^.format),
+    ' len=',dbgs(SelectionData^.length)
     );
   {$ENDIF}
   if i<0 then exit;
@@ -2762,7 +2762,7 @@ begin
   // copy the raw data to an internal buffer (the gtk buffer will be destroyed
   // right after this event)
   {$IFDEF DEBUG_CLIPBOARD}
-  DebugLn('[ClipboardSelectionReceivedHandler] B DataLen=',c^.Data.Length);
+  DebugLn('[ClipboardSelectionReceivedHandler] B DataLen=',dbgs(c^.Data.Length));
   {$ENDIF}
   if (c^.Data.Data<>nil)
   and (c^.Data.Length>0) then begin
@@ -2770,7 +2770,7 @@ begin
     Move(c^.Data.Data^,TempBuf^,c^.Data.Length);
     c^.Data.Data:=TempBuf;
     {$IFDEF DEBUG_CLIPBOARD}
-    DebugLn('[ClipboardSelectionReceivedHandler] C FirstCharacter=',ord(PChar(c^.Data.Data)[0]));
+    DebugLn('[ClipboardSelectionReceivedHandler] C FirstCharacter=',dbgs(ord(PChar(c^.Data.Data)[0])));
     {$ENDIF}
   end else
     c^.Data.Data:=nil;
@@ -2806,7 +2806,7 @@ begin
         // now create a stream and find a supported format
         {$IFDEF DEBUG_CLIPBOARD}
         p:=gdk_atom_name(SelectionData^.Target);
-        DebugLn('[ClipboardSelectionRequestHandler] ',ClipboardTypeName[ClipboardType],' Format=',p,' ID=',SelectionData^.Target);
+        DebugLn('[ClipboardSelectionRequestHandler] ',ClipboardTypeName[ClipboardType],' Format=',dbgs(p),' ID=',dbgs(SelectionData^.Target));
         g_free(p);
         {$ENDIF}
         MemStream:=TMemoryStream.Create;
@@ -2824,7 +2824,7 @@ begin
             FormatID:=gdk_atom_intern('text/plain',GdkFalse);
 
           {$IFDEF DEBUG_CLIPBOARD}
-          DebugLn('[ClipboardSelectionRequestHandler] FormatID=',FormatID,' CompoundText=',gdk_atom_intern('COMPOUND_TEXT',1),' ',ClipboardExtraGtkFormats[ClipboardType][gfCOMPOUND_TEXT]);
+          DebugLn('[ClipboardSelectionRequestHandler] FormatID=',dbgs(FormatID),' CompoundText=',dbgs(gdk_atom_intern('COMPOUND_TEXT',1)),' ',dbgs(ClipboardExtraGtkFormats[ClipboardType][gfCOMPOUND_TEXT]));
           {$ENDIF}
           // get the requested data by calling the handler for this clipboard type
           ClipboardHandler[ClipboardType](FormatID,MemStream);
@@ -2858,7 +2858,7 @@ begin
           end;
           if Buffer=nil then begin
             {$IFDEF DEBUG_CLIPBOARD}
-            DebugLn('[ClipboardSelectionRequestHandler] Default MemStream.Size=',MemStream.Size);
+            DebugLn('[ClipboardSelectionRequestHandler] Default MemStream.Size=',dbgs(MemStream.Size));
             {$ENDIF}
             BufLength:=integer(MemStream.Size);
             if BufLength>0 then begin
@@ -2871,7 +2871,7 @@ begin
             end;
           end;
           {$IFDEF DEBUG_CLIPBOARD}
-          DebugLn('[ClipboardSelectionRequestHandler] Len=',BufLength);
+          DebugLn('[ClipboardSelectionRequestHandler] Len=',dbgs(BufLength));
           {$ENDIF}
           gtk_selection_data_set(SelectionData,SelectionData^.Target,BitCount,
             Buffer,BufLength);
@@ -2962,6 +2962,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.271  2005/03/02 16:47:20  mattias
+  fixed loading forms under fpc 1.9.9
+
   Revision 1.270  2005/02/26 18:39:56  mattias
   fixed gtk open dialog go up
 

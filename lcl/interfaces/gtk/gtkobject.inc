@@ -3703,8 +3703,6 @@ begin
 
   FixWidget:=GetFixedWidget(Widget);
 
-  // clipboard widget
-
   // Remove control accelerators - has to be done due to GTK+ bug?
   {$IFNDef GTK2}
   //DebugLn('TGtkWidgetSet.DestroyLCLComponent B ',TWinControl(Sender).Name,':',TWinControl(Sender).ClassName);
@@ -6627,12 +6625,12 @@ const
     DebugLn('  WriteTargetLists WWW START');
     for c:=Low(TClipboardType) to High(TClipboardType) do begin
       TargetList:=gtk_selection_target_list_get(Widget,c);
-      DebugLn('  WriteTargetLists WWW ',ClipboardTypeName[c],' ',TargetList<>nil);
+      DebugLn('  WriteTargetLists WWW ',ClipboardTypeName[c],' ',dbgs(TargetList<>nil));
       if TargetList<>nil then begin
         TmpList:=TargetList^.List;
         while TmpList<>nil do begin
           Pair:=PGtkTargetPair(TmpList^.Data);
-          DebugLn('    WriteTargetLists BBB ',Pair^.Target);
+          DebugLn('    WriteTargetLists BBB ',dbgs(Pair^.Target));
           TmpList:=TmpList^.Next;
         end;
       end;
@@ -6671,7 +6669,7 @@ var c: TClipboardType;
 begin
   if ClipboardWidget=TargetWidget then exit;
   {$IFDEF DEBUG_CLIPBOARD}
-  DebugLn('[TGtkWidgetSet.SetClipboardWidget] ',ClipboardWidget<>nil,' -> ',TargetWidget<>nil);
+  DebugLn('[TGtkWidgetSet.SetClipboardWidget] ',dbgs(ClipboardWidget<>nil),' -> ',dbgs(TargetWidget<>nil));
   {$ENDIF}
   if ClipboardWidget<>nil then begin
     {$IFDEF DEBUG_CLIPBOARD}
@@ -6997,6 +6995,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.634  2005/03/02 16:47:20  mattias
+  fixed loading forms under fpc 1.9.9
+
   Revision 1.633  2005/02/28 18:21:43  mattias
   fixed gtk file dialog with empty filter  from Collin
 

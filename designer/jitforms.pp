@@ -362,7 +362,7 @@ begin
 end;
 
 var
-  MyFindGlobalComponentProc:function(const AName: AnsiString): TComponent of object;
+  MyFindGlobalComponentProc: function(const AName: AnsiString): TComponent of object;
 
 function MyFindGlobalComponent(const AName: AnsiString): TComponent;
 begin
@@ -707,10 +707,10 @@ begin
   
   DestroyDriver:=false;
   Reader:=CreateLRSReader(BinStream,DestroyDriver);
+  MyFindGlobalComponentProc:=@OnFindGlobalComponent;
   {$IFDEF RegisterFindGlobalComponent}
   RegisterFindGlobalComponentProc(@MyFindGlobalComponent);
   {$ELSE}
-  MyFindGlobalComponentProc:=@OnFindGlobalComponent;
   FindGlobalComponent:=@MyFindGlobalComponent;
   {$ENDIF}
 

@@ -6246,7 +6246,7 @@ var
   c: PClipboardEventData;
 begin
   {$IFDEF DEBUG_CLIPBOARD}
-  DebugLn('[RequestSelectionData] FormatID=',FormatID);
+  DebugLn('[RequestSelectionData] FormatID=',dbgs(FormatID));
   {$ENDIF}
   FillChar(Result,SizeOf(TGtkSelectionData),0);
   if (ClipboardWidget=nil) or (FormatID=0) 
@@ -6267,7 +6267,7 @@ begin
     FillChar(c^.Data,SizeOf(TGtkSelectionData),0);
     ClipboardSelectionData.Add(c);
     {$IFDEF DEBUG_CLIPBOARD}
-    DebugLn('[RequestSelectionData] TimeID=',TimeID);
+    DebugLn('[RequestSelectionData] TimeID=',dbgs(TimeID));
     {$ENDIF}
     if gtk_selection_convert(ClipboardWidget, ClipboardTypeAtoms[ClipboardType],
                              FormatID, TimeID)<>GdkFalse
@@ -8083,6 +8083,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.346  2005/03/02 16:47:20  mattias
+  fixed loading forms under fpc 1.9.9
+
   Revision 1.345  2005/02/28 18:21:43  mattias
   fixed gtk file dialog with empty filter  from Collin
 
