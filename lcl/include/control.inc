@@ -1367,7 +1367,7 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TControl.SetParentComponent(Value : TComponent);
 Begin
-if (Value is TWinControl) then Setparent(TWinControl(Value));
+  if (Value is TWinControl) then SetParent(TWinControl(Value));
 end;
 
 {------------------------------------------------------------------------------}
@@ -1783,6 +1783,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.73  2002/09/02 19:10:28  lazarus
+  MG: TNoteBook now starts with no Page and TPage has no auto names
+
   Revision 1.72  2002/09/01 16:11:21  lazarus
   MG: double, triple and quad clicks now works
 
