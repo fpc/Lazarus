@@ -34,7 +34,7 @@
 }
 program NotebookTest;
  
-{$mode delphi}
+{$mode objfpc}{$H+}
 
 uses
   Interfaces, Classes, Controls, Forms, Buttons, SysUtils, StdCtrls,
@@ -60,7 +60,7 @@ begin
   Left := 0;
   Top := 0;
   Width := 700; 
-  height := 300;
+  Height := 300;
   Position:= poMainFormCenter;
 
   Button1 := TButton.Create(Self);
@@ -70,9 +70,8 @@ begin
     Width:= 50;
     Height:= 20;
     Parent:= Self;
-    Visible:= true;
     Caption := 'Button';
-    OnClick := Button1Click;
+    OnClick := @Button1Click;
   end;
   
   Button2 := TButton.Create(Self);
@@ -82,9 +81,8 @@ begin
     Width:= 50;
     Height:= 20;
     Parent:= Self;
-    Visible:= true;
     Caption := 'Button';
-    OnClick := Button2Click;
+    OnClick := @Button2Click;
   end;
 
   NoteBook1 := TNoteBook.Create(Self);
@@ -95,7 +93,6 @@ begin
     Width:= 650;
     Height:= 250;
     Parent:= Self;
-    Visible:= true;
   end;
 end;
 
@@ -121,18 +118,19 @@ end;
 
 procedure TForm1.Button2Click(Sender : TObject);
 begin
-  Notebook1.Pages[Notebook1.PageIndex] := 'Test';
+  if Notebook1.PageIndex>=0 then
+    Notebook1.Pages[Notebook1.PageIndex] := 'Test';
 end;
 
 var
   F1: TForm1;
 
 begin
-   WriteLN('------ INIT ------- ');
-   Application.Initialize; 
-   WriteLN('------ CREATE ------- ');
-   Application.CreateForm(TForm1, F1);
-   WriteLN('------ RUN ------- ');
-   Application.Run;
-   WriteLN('------ DONE ------- ');
+  WriteLN('------ INIT ------- ');
+  Application.Initialize;
+  WriteLN('------ CREATE ------- ');
+  Application.CreateForm(TForm1, F1);
+  WriteLN('------ RUN ------- ');
+  Application.Run;
+  WriteLN('------ DONE ------- ');
 end.
