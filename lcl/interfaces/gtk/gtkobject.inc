@@ -6310,35 +6310,6 @@ begin
   Widget:= GTK_WIDGET(wHandle);
 
   case TControl(Sender).fCompStyle of
-  csComboBox:
-    begin
-      //debugln('TGtkWidgetSet.SetProperties ',DbgSName(Sender),' ',dbgs(TCustomComboBox(Sender).ArrowKeysTraverseList));
-      case TCustomComboBox(Sender).Style of
-        csDropDownList :
-          begin
-            // do not set ok_if_empty = true, otherwise it can hang focus
-            gtk_combo_set_value_in_list(GTK_COMBO(wHandle),GdkTrue,GdkTrue);
-            gtk_combo_set_use_arrows_always(GTK_COMBO(wHandle),GdkTrue);
-            gtk_combo_set_case_sensitive(GTK_COMBO(wHandle),GdkFalse);
-          end;
-        else
-          begin
-            // do not set ok_if_empty = true, otherwise it can hang focus
-            gtk_combo_set_value_in_list(GTK_COMBO(wHandle),GdkFalse,GdkTrue);
-            gtk_combo_set_use_arrows_always(GTK_COMBO(wHandle),GdkFalse);
-            gtk_combo_set_case_sensitive(GTK_COMBO(wHandle),GdkTrue);
-          end;
-      end;
-
-      if TCustomComboBox(Sender).ArrowKeysTraverseList = True then
-      begin
-        gtk_combo_set_use_arrows(GTK_COMBO(wHandle),GdkTrue);
-      end else
-      begin
-        gtk_combo_set_use_arrows(GTK_COMBO(wHandle),GdkFalse);
-      end;
-    end;
-
   {$IfDef GTK1}
   csEdit :
     with TCustomEdit(Sender) do
@@ -7704,6 +7675,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.588  2004/09/20 21:01:04  micha
+  convert LM_SETPROPERTIES to interface methods for TCustomComboBox
+
   Revision 1.587  2004/09/19 19:39:10  micha
   undo removal of LM_SETDESIGNING; used by lazarus ide (main.pp)
 

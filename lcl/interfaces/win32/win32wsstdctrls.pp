@@ -74,11 +74,14 @@ type
     class function  GetItemIndex(const ACustomComboBox: TCustomComboBox): integer; override;
     class function  GetMaxLength(const ACustomComboBox: TCustomComboBox): integer; override;
 
+    class procedure SetArrowKeysTraverseList(const ACustomComboBox: TCustomComboBox; 
+      NewTraverseList: boolean); override;
     class procedure SetSelStart(const ACustomComboBox: TCustomComboBox; NewStart: integer); override;
     class procedure SetSelLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
     class procedure SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer); override;
     class procedure SetMaxLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
-
+    class procedure SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle); override;
+    
     class function  GetItems(const ACustomComboBox: TCustomComboBox): TStrings; override;
     class procedure Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean); override;
   end;
@@ -370,6 +373,11 @@ begin
   Result := SendMessage(ACustomComboBox.Handle, CB_GETEDITSEL, Windows.WPARAM(nil), Windows.LPARAM(nil));
 end;
 
+procedure TWin32WSCustomComboBox.SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle);
+begin
+  // TODO: implement me
+end;
+
 function  TWin32WSCustomComboBox.GetItemIndex(const ACustomComboBox: TCustomComboBox): integer;
 begin
   Result := SendMessage(ACustomComboBox.Handle, CB_GETCURSEL, 0, 0);
@@ -384,6 +392,12 @@ end;
 function  TWin32WSCustomComboBox.GetMaxLength(const ACustomComboBox: TCustomComboBox): integer;
 begin
   Result := integer(GetProp(ACustomComboBox.Handle, 'MAXLENGTH'));
+end;
+
+procedure TWin32WSCustomComboBox.SetArrowKeysTraverseList(const ACustomComboBox: TCustomComboBox; 
+  NewTraverseList: boolean);
+begin
+  // TODO: implement me?
 end;
 
 procedure TWin32WSCustomComboBox.SetSelStart(const ACustomComboBox: TCustomComboBox; NewStart: integer);

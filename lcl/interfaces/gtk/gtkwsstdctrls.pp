@@ -33,7 +33,7 @@ uses
   {$ELSE}
   glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf} GtkFontCache,
   {$ENDIF}
-  WSStdCtrls, WSLCLClasses, GtkInt, Classes, LCLType,
+  WSStdCtrls, WSLCLClasses, GtkInt, Classes, LCLType, GtkDef,
   GTKWinApiWindow, gtkglobals, gtkproc, InterfaceBase;
 
 
@@ -74,11 +74,14 @@ type
     class function  GetItemIndex(const ACustomComboBox: TCustomComboBox): integer; override;
     class function  GetMaxLength(const ACustomComboBox: TCustomComboBox): integer; override;
 
+    class procedure SetArrowKeysTraverseList(const ACustomComboBox: TCustomComboBox; 
+      NewTraverseList: boolean); override;
     class procedure SetSelStart(const ACustomComboBox: TCustomComboBox; NewStart: integer); override;
     class procedure SetSelLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
     class procedure SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer); override;
     class procedure SetMaxLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
-
+    class procedure SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle); override;
+    
     class function  GetItems(const ACustomComboBox: TCustomComboBox): TStrings; override;
     class procedure Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean); override;
   end;
@@ -542,6 +545,21 @@ begin
   Result:= PGtkEntry(PGtkCombo(ACustomComboBox.Handle)^.entry)^.text_max_length;
 end;
 
+procedure TGtkWSCustomComboBox.SetArrowKeysTraverseList(const ACustomComboBox: TCustomComboBox; 
+  NewTraverseList: boolean);
+var
+  GtkCombo: GTK_COMBO;
+begin
+  GtkCombo := GTK_COMBO(ACustomComboBox.Handle);
+  if ACustomComboBox.ArrowKeysTraverseList then
+  begin
+    gtk_combo_set_use_arrows(GtkCombo,GdkTrue);
+  end else
+  begin
+    gtk_combo_set_use_arrows(GtkCombo,GdkFalse);
+  end;
+end;
+
 procedure TGtkWSCustomComboBox.SetSelStart(const ACustomComboBox: TCustomComboBox; NewStart: integer);
 begin
   gtk_editable_set_position(PGtkOldEditable(PGtkCombo(ACustomComboBox.Handle)^.entry), NewStart);
@@ -561,6 +579,29 @@ end;
 procedure TGtkWSCustomComboBox.SetMaxLength(const ACustomComboBox: TCustomComboBox; NewLength: integer);
 begin
   gtk_entry_set_max_length(PGtkEntry(PGtkCombo(ACustomComboBox.Handle)^.entry), NewLength);
+end;
+
+procedure TGtkWSCustomComboBox.SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle);
+var
+  GtkCombo: GTK_COMBO;
+begin
+  GtkCombo := GTK_COMBO(ACustomComboBox.Handle);
+  case ACustomComboBox.Style of
+    csDropDownList :
+      begin
+        // do not set ok_if_empty = true, otherwise it can hang focus
+        gtk_combo_set_value_in_list(GtkCombo,GdkTrue,GdkTrue);
+        gtk_combo_set_use_arrows_always(GtkCombo,GdkTrue);
+        gtk_combo_set_case_sensitive(GtkCombo,GdkFalse);
+      end;
+    else
+      begin
+        // do not set ok_if_empty = true, otherwise it can hang focus
+        gtk_combo_set_value_in_list(GtkCombo,GdkFalse,GdkTrue);
+        gtk_combo_set_use_arrows_always(GtkCombo,GdkFalse);
+        gtk_combo_set_case_sensitive(GtkCombo,GdkTrue);
+      end;
+  end;
 end;
 
 function  TGtkWSCustomComboBox.GetItems(const ACustomComboBox: TCustomComboBox): TStrings;

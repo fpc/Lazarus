@@ -72,10 +72,13 @@ type
     class function  GetItemIndex(const ACustomComboBox: TCustomComboBox): integer; virtual;
     class function  GetMaxLength(const ACustomComboBox: TCustomComboBox): integer; virtual;
     
+    class procedure SetArrowKeysTraverseList(const ACustomComboBox: TCustomComboBox; 
+      NewTraverseList: boolean); virtual;
     class procedure SetSelStart(const ACustomComboBox: TCustomComboBox; NewStart: integer); virtual;
     class procedure SetSelLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); virtual;
     class procedure SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer); virtual;
     class procedure SetMaxLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); virtual;
+    class procedure SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle); virtual;
 
     class function  GetItems(const ACustomComboBox: TCustomComboBox): TStrings; virtual;
     class procedure Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean); virtual;
@@ -260,6 +263,11 @@ begin
   result := 0;
 end;
 
+procedure TWSCustomComboBox.SetArrowKeysTraverseList(const ACustomComboBox: TCustomComboBox; 
+  NewTraverseList: boolean);
+begin
+end;
+
 procedure TWSCustomComboBox.SetSelStart(const ACustomComboBox: TCustomComboBox; NewStart: integer);
 begin
 end;
@@ -273,6 +281,10 @@ begin
 end;
 
 procedure TWSCustomComboBox.SetMaxLength(const ACustomComboBox: TCustomComboBox; NewLength: integer);
+begin
+end;
+
+procedure TWSCustomComboBox.SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle);
 begin
 end;
 

@@ -45,7 +45,8 @@ begin
 
   if FItemIndex <> -1 then
     TWSCustomComboBoxClass(WidgetSetClass).SetItemIndex(Self, FItemIndex);
-  CNSendMessage(LM_SETPROPERTIES, Self, nil);
+  TWSCustomComboBoxClass(WidgetSetClass).SetStyle(Self, FStyle);
+  TWSCustomComboBoxClass(WidgetSetClass).SetArrowKeysTraverseList(Self, FArrowKeysTraverseList);
 end;
 
 
@@ -359,7 +360,7 @@ begin
   if Val <> FStyle then begin
     FStyle:= Val;
     if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then
-      CNSendMessage(LM_SETPROPERTIES, Self, nil);
+      TWSCustomComboBoxClass(WidgetSetClass).SetStyle(Self, Val);
   end;
 end;
 
@@ -368,7 +369,7 @@ begin
   if Value <> FArrowKeysTraverseList then begin
     FArrowKeysTraverseList := Value;
     if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then
-      CNSendMessage(LM_SETPROPERTIES, Self, nil);
+      TWSCustomComboBoxClass(WidgetSetClass).SetArrowKeysTraverseList(Self, Value);
    end;
 end;
 
@@ -792,6 +793,9 @@ end;
 
 {
   $Log$
+  Revision 1.47  2004/09/20 21:01:04  micha
+  convert LM_SETPROPERTIES to interface methods for TCustomComboBox
+
   Revision 1.46  2004/09/07 10:26:16  micha
   fix logs to get rid of comment level 2 warning
 
