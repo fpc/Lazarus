@@ -37,7 +37,7 @@ interface
 {$ASSERTIONS ON}
 {$endif}
 
-uses StdCtrls, VCLGlobals, Classes, LCLType, LCLProc, LCLLinux,
+uses StdCtrls, VCLGlobals, Classes, LCLType, LCLProc, LCLLinux, LCLStrConsts,
   GraphType, Graphics, SysUtils, Controls, lMessages, Forms, Messages;
 
 type
@@ -242,7 +242,6 @@ type
 
 implementation
 
-uses LCLStrConsts;
 
 const
   BitBtnModalResults : array[TBitBtnKind] of TModalResult = (
@@ -273,6 +272,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.32  2002/10/25 10:42:07  lazarus
+  MG: broke minor circles
+
   Revision 1.31  2002/10/25 09:47:37  lazarus
   MG: added inputdialog.inc
 
