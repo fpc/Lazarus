@@ -182,6 +182,7 @@ Type
     Destructor Destroy; Override;
     { Initialize the API }
     Procedure AppInit; Override;
+    procedure AppMinimize; override;
     Function IntSendMessage3(LM_Message: Integer; Sender: TObject; Data: Pointer) : Integer; Override;
     Procedure HandleEvents; Override;
     Procedure WaitMessage; Override;
@@ -284,6 +285,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.94  2004/08/27 08:55:23  micha
+  implement tapplication.minimize for win32, stub for gtk
+
   Revision 1.93  2004/08/25 15:04:44  micha
   use new lcl interface methods instead of messages (for win32; twsbitbtn)
 

@@ -307,6 +307,7 @@ type
     procedure SendCachedLCLMessages; override;
     procedure AppTerminate; override;
     procedure AppInit; override;
+    procedure AppMinimize; override;
 
     // create and destroy
     function CreateComponent(Sender : TObject): THandle; override;
@@ -459,6 +460,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.187  2004/08/27 08:55:22  micha
+  implement tapplication.minimize for win32, stub for gtk
+
   Revision 1.186  2004/08/18 20:49:02  mattias
   simple forms can now be child controls
 

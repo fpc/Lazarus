@@ -188,6 +188,18 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
+  Method: TWin32WidgetSet.AppMinimize
+  Params:  None
+  Returns: Nothing
+
+  Minimizes the whole application to the taskbar
+ ------------------------------------------------------------------------------}
+procedure TWin32WidgetSet.AppMinimize;
+begin
+  Windows.SendMessage(FAppHandle, WM_SYSCOMMAND, SC_MINIMIZE, 0);
+end;
+
+{------------------------------------------------------------------------------
   Method: TWin32WidgetSet.GetOwnerHandle
   Params:  ADialog - dialog to get 'guiding parent' window handle for
   Returns: A window handle
@@ -3066,6 +3078,9 @@ End;
 
 {
   $Log$
+  Revision 1.229  2004/08/27 08:55:23  micha
+  implement tapplication.minimize for win32, stub for gtk
+
   Revision 1.228  2004/08/25 17:08:10  micha
   use new lcl interface methods instead of messages (for win32; twscustomlistview)
 

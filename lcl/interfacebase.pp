@@ -50,6 +50,7 @@ type
     procedure WaitMessage; virtual; abstract;
     procedure AppInit; virtual; abstract;
     procedure AppTerminate; virtual; abstract;
+    procedure AppMinimize; virtual; abstract;
     function  InitHintFont(HintFont: TObject): Boolean; virtual;
     function  IntSendMessage3(LM_Message: Integer; Sender: TObject;
                               Data: pointer): integer; virtual; abstract;
@@ -114,6 +115,9 @@ end.
 
 {
   $Log$
+  Revision 1.49  2004/08/27 08:55:22  micha
+  implement tapplication.minimize for win32, stub for gtk
+
   Revision 1.48  2004/08/18 09:31:21  mattias
   removed obsolete unit vclglobals
 

@@ -1556,6 +1556,17 @@ begin
   InitKeyboardTables;
 end;
 
+{------------------------------------------------------------------------------
+  Method: TGtkWidgetSet.AppMinimize
+  Params:  None
+  Returns: Nothing
+
+  Minimizes the application
+ ------------------------------------------------------------------------------}
+procedure TGtkWidgetSet.AppMinimize;
+begin
+  // TODO: Implement me!
+end;
 
 {------------------------------------------------------------------------------
   Method: TGtkWidgetSet.RecreateWnd
@@ -9241,6 +9252,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.534  2004/08/27 08:55:22  micha
+  implement tapplication.minimize for win32, stub for gtk
+
   Revision 1.533  2004/08/25 18:30:05  micha
   remove obsolete message handlers
 

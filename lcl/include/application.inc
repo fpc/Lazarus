@@ -201,6 +201,18 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method: TApplication.Minimize
+  Params: None
+  Returns: Nothing
+
+  Minimizes the application.
+ ------------------------------------------------------------------------------}
+procedure TApplication.Minimize;
+begin
+  InterfaceObject.AppMinimize;
+end;
+
+{------------------------------------------------------------------------------
   TApplication ProcesssMessages  "Enter the messageloop and process until empty"
 ------------------------------------------------------------------------------}
 procedure TApplication.ProcessMessages;
@@ -1327,6 +1339,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.89  2004/08/27 08:55:22  micha
+  implement tapplication.minimize for win32, stub for gtk
+
   Revision 1.88  2004/08/26 22:12:39  mattias
   localized graphprop editor form and replaced opensavedialog with opensavepicturedialog
 

@@ -512,9 +512,14 @@ begin
   Assert(False, 'Trace:WMSIZE in TCustomForm');
   if not (csDesigning in ComponentState) then begin
     OldState:=FWindowState;
-    Case Message.SizeType of
+    Case (Message.SizeType and not SIZE_SourceIsInterface) of
       SIZENORMAL : FWindowState := wsNormal;
-      SIZEICONIC : FWindowState := wsMinimized;
+      SIZEICONIC : 
+        begin
+          FWindowState := wsMinimized;
+          if Application.MainForm = Self then
+            Application.Minimize;
+        end;
       SIZEFULLSCREEN : FWindowState := wsMaximized;
     end;
     if OldState<>FWindowState then begin
@@ -1779,6 +1784,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.154  2004/08/27 08:55:22  micha
+  implement tapplication.minimize for win32, stub for gtk
+
   Revision 1.153  2004/08/25 17:59:06  micha
   upon form show, if no activecontrol, then focus first control in tab order
 

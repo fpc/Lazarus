@@ -909,6 +909,7 @@ type
     property Icon: TIcon read FIcon write SetIcon;
     procedure Initialize; override;
     function MessageBox(Text, Caption: PChar; Flags: Longint): Integer;
+    procedure Minimize;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     Procedure ProcessMessages;
     procedure Run;
