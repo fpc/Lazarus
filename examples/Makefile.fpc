@@ -7,19 +7,56 @@ name=lazarus-examples
 version=0.9b
 
 [target]
-units=hello notebk comdialogs progressbar trackbar listboxtest \
-   bitbutton combobox checkbox scrollbar edittest memotest \
-   groupbox speedtest toolbar messagedialogs notebooktest \
-   listviewtest synedit1 groupboxnested testall
+units=hello \
+  bitbutton \
+  checkbox \
+  combobox \
+  comdialogs \
+  edittest \
+  groupbox \
+  groupboxnested \
+  listboxtest \
+  listviewtest \
+  loadpicture \
+  memotest \
+  messagedialogs \
+  notebk \
+  notebooktest \
+  progressbar \
+  scrollbar \
+  speedtest \
+  synedit1 \
+  testall \
+  toolbar \
+  trackbar
 
 [require]
 packages=fcl regexpr
 
 [clean]
 files=$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) \
-  trackbar toolbar testall speedtest scrollbar progressbar notebooktest \
-  notebk messagedialogs memotest listviewtest listboxtest hello groupbox \
-  edittest comdialogs combobox checkbox bitbutton synedit1 groupboxnested
+  hello \
+  bitbutton \
+  checkbox \
+  combobox \
+  comdialogs \
+  edittest \
+  groupbox \
+  groupboxnested \
+  listboxtest \
+  listviewtest \
+  loadpicture \
+  memotest \
+  messagedialogs \
+  notebk \
+  notebooktest \
+  progressbar \
+  scrollbar \
+  speedtest \
+  synedit1 \
+  testall \
+  toolbar \
+  trackbar
 
 [default]
             
