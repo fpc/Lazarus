@@ -184,7 +184,7 @@ end;
 
 procedure TNewProjectDialog.ListBoxDblClick(Sender: TObject);
 begin
-  CreateButton.Click;
+  CreateButtonClick(Self);
 end;
 
 procedure TNewProjectDialog.ListBoxMouseUp(Sender:TObject;
