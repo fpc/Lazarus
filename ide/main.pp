@@ -2188,13 +2188,13 @@ Begin
   OpenDialog:=TOpenDialog.Create(Application);
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
-    OpenDialog.Title:='Choose program source (*.pp,*.pas,*.lpr)';
+    OpenDialog.Title:=lisChooseProgramSourcePpPasLpr;
     OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist,ofFileMustExist];
     if OpenDialog.Execute then begin
       AFilename:=ExpandFilename(OpenDialog.Filename);
       if not FilenameIsPascalSource(AFilename) then begin
-        MessageDlg('Invalid file extension',
-          'Program source must have a pascal extension like .pas, .pp or .lpr',
+        MessageDlg(lisPkgMangInvalidFileExtension,
+          lisProgramSourceMustHaveAPascalExtensionLikePasPpOrLp,
           mtError,[mbOk],0);
         exit;
       end;
@@ -2223,7 +2223,7 @@ begin
     try
       InputHistories.ApplyFileDialogSettings(OpenDialog);
       OpenDialog.Title:=lisOpenProjectFile+' (*.lpi)';
-      OpenDialog.Filter := 'Lazarus Project Info (*.lpi)|*.lpi|All Files|*.*';
+      OpenDialog.Filter := lisLazarusProjectInfoLpiLpiAllFiles;
       if OpenDialog.Execute then begin
         AFilename:=ExpandFilename(OpenDialog.Filename);
         DoOpenProjectFile(AFilename,[ofAddToRecent]);
@@ -2346,7 +2346,8 @@ begin
     NewCaption:=Project1.Title;
     if NewCaption='' then
       NewCaption:=ExtractFilenameOnly(Project1.ProjectInfoFile);
-    frmCompilerOptions.Caption:='Compiler Options for Project: '+NewCaption;
+    frmCompilerOptions.Caption:=Format(lisCompilerOptionsForProject, [NewCaption
+      ]);
     frmCompilerOptions.CompilerOpts:=Project1.CompilerOptions;
     frmCompilerOptions.GetCompilerOptions;
     if frmCompilerOptions.ShowModal=mrOk then begin
@@ -2520,8 +2521,8 @@ begin
       DFMStream.LoadFromFile(DFMFilename);
     except
       on E: Exception do begin
-        Result:=MessageDlg('Read error','Unable to read file "'+DFMFilename+'"'#13
-          +'Error: '+E.Message,
+        Result:=MessageDlg(lisCodeToolsDefsReadError, Format(
+          lisUnableToReadFileError, ['"', DFMFilename, '"', #13, E.Message]),
           mtError,[mbIgnore,mbAbort],0);
         exit;
       end;
@@ -2530,9 +2531,9 @@ begin
       FormDataToText(DFMStream,LFMStream);
     except
       on E: Exception do begin
-        Result:=MessageDlg('Format error',
-          'Unable to convert file "'+DFMFilename+'"'#13
-          +'Error: '+E.Message,
+        Result:=MessageDlg(lisFormatError,
+          Format(lisUnableToConvertFileError, ['"', DFMFilename, '"', #13,
+            E.Message]),
           mtError,[mbIgnore,mbAbort],0);
         exit;
       end;
@@ -2542,9 +2543,9 @@ begin
       LFMStream.SaveToFile(LFMFilename);
     except
       on E: Exception do begin
-        Result:=MessageDlg('Write error',
-          'Unable to write file "'+LFMFilename+'"'#13
-          +'Error: '+E.Message,
+        Result:=MessageDlg(lisCodeToolsDefsWriteError,
+          Format(lisUnableToWriteFileError, ['"', LFMFilename, '"', #13,
+            E.Message]),
           mtError,[mbIgnore,mbAbort],0);
         exit;
       end;
@@ -2838,12 +2839,9 @@ begin
     // if no resource file found then tell the user
     if (ResourceCode=nil) and (not IgnoreSourceErrors)
     then begin
-      MsgTxt:='Unable to load old resource file.'#13
-              +'The resource file is the first include file in the'#13
-              +'initialization section.'#13
-              +'For example {$I '+AnUnitInfo.UnitName+'.lrs}.'#13
-              +'Probably a syntax error.';
-      Result:=MessageDlg('Resource load error',MsgTxt,mtWarning,
+      MsgTxt:=Format(lisUnableToLoadOldResourceFileTheResourceFileIs, [#13,
+        #13, #13, AnUnitInfo.UnitName, #13]);
+      Result:=MessageDlg(lisResourceLoadError, MsgTxt, mtWarning,
                          [mbIgnore,mbAbort],0);
       if Result=mrAbort then exit;
     end;
@@ -2896,7 +2894,7 @@ begin
   if SaveAsFilename='' then
     SaveAsFilename:=ExtractFileNameOnly(AnUnitInfo.Filename);
   if SaveAsFilename='' then
-    SaveAsFilename:='noname';
+    SaveAsFilename:=lisnoname;
     
   // let user choose a filename
   SaveDialog:=TSaveDialog.Create(Application);
@@ -2932,9 +2930,9 @@ begin
   // check file path
   NewFilePath:=ExtractFilePath(NewFilename);
   if not DirectoryExists(NewFilePath) then begin
-    ACaption:='Directory not found';
-    AText:='The destination directory'#13+
-      '"'+NewFilePath+'" does not exist.';
+    ACaption:=lisEnvOptDlgDirectoryNotFound;
+    AText:=Format(lisTheDestinationDirectoryDoesNotExist, [#13, '"',
+      NewFilePath, '"']);
     MessageDlg(ACaption, AText, mtConfirmation,[mbCancel],0);
     Result:=mrCancel;
     exit;
@@ -2982,10 +2980,9 @@ begin
     if EnvironmentOptions.PascalFileAskLowerCase then begin
       if lowercase(FileWithoutPath)<>FileWithoutPath
       then begin
-        Result:=MessageDlg('Rename file?',
-           'This looks like a pascal file.'#13
-          +'fpc 1.0.x expects pascal files lowercase.'#13
-          +'Rename it to lowercase?',
+        Result:=MessageDlg(lisRenameFile,
+           Format(lisThisLooksLikeAPascalFileFpc10XExpectsPascalFiles, [#13, #13
+             ]),
           mtWarning,[mbYes,mbNo],0);
         if Result=mrYes then
           NewFileName:=ExtractFilePath(NewFilename)+lowercase(FileWithoutPath);
@@ -2999,8 +2996,8 @@ begin
   if (AnUnitInfo.IsVirtual
       or (CompareFilenames(NewFilename,AnUnitInfo.Filename)<>0))
   and FileExists(NewFilename) then begin
-    ACaption:='Overwrite file?';
-    AText:='A file "'+NewFilename+'" already exists.'#13'Replace it?';
+    ACaption:=lisOverwriteFile;
+    AText:=Format(lisAFileAlreadyExistsReplaceIt, ['"', NewFilename, '"', #13]);
     Result:=MessageDlg(ACaption, AText, mtConfirmation,[mbok,mbCancel],0);
     if Result=mrCancel then exit;
   end;
@@ -3010,11 +3007,9 @@ begin
   AmbigiousFiles:=
     FindFilesCaseInsensitive(NewFilePath,ExtractFilename(NewFilename),true);
   if AmbigiousFiles<>nil then begin
-    Result:=MessageDlg('Ambigious files found',
-      'There are other files in the directory with the same name,'#13
-      +'which only differ in case:'#13
-      +AmbigiousFiles.Text+#13
-      +'Delete them?',
+    Result:=MessageDlg(lisAmbigiousFilesFound,
+      Format(lisThereAreOtherFilesInTheDirectoryWithTheSameName, [#13, #13,
+        AmbigiousFiles.Text, #13]),
       mtWarning,[mbYes,mbNo,mbAbort],0);
     if Result=mrAbort then exit;
     if Result=mrYes then begin
@@ -3023,8 +3018,9 @@ begin
         AmbigiousFilename:=NewFilePath+AmbigiousFiles[i];
         if (FileExists(AmbigiousFilename))
         and (not DeleteFile(AmbigiousFilename))
-        and (MessageDlg('Delete failed','Deleting of file "'+AmbigiousFilename+'"'
-             +' failed.',mtError,[mbIgnore,mbCancel],0)=mrCancel) then
+        and (MessageDlg(lisPkgMangDeleteFailed, Format(lisDeletingOfFileFailed,
+          ['"', AmbigiousFilename, '"']), mtError, [mbIgnore, mbCancel], 0)=
+          mrCancel) then
         begin
           Result:=mrCancel;
           exit;
@@ -3040,8 +3036,9 @@ begin
     NewLFMFilename:=ChangeFileExt(NewFilename,'.lfm');
     if (FileExists(NewLFMFilename))
     and (not DeleteFile(NewLFMFilename))
-    and (MessageDlg('Delete failed','Deleting of file "'+NewLFMFilename+'"'
-         +' failed.',mtError,[mbIgnore,mbCancel],0)=mrCancel) then
+    and (MessageDlg(lisPkgMangDeleteFailed, Format(lisDeletingOfFileFailed, [
+      '"', NewLFMFilename, '"']), mtError, [mbIgnore, mbCancel], 0)=mrCancel)
+      then
     begin
       Result:=mrCancel;
       exit;
@@ -3169,9 +3166,9 @@ begin
             Driver.Free;
           end;
         except
-          ACaption:='Streaming error';
-          AText:='Unable to stream '
-              +AnUnitInfo.FormName+':T'+AnUnitInfo.FormName+'.';
+          ACaption:=lisStreamingError;
+          AText:=Format(lisUnableToStreamT, [AnUnitInfo.FormName,
+            AnUnitInfo.FormName]);
           Result:=MessageDlg(ACaption, AText, mtError,
                      [mbAbort, mbRetry, mbIgnore], 0);
           if Result=mrAbort then exit;
@@ -3221,22 +3218,20 @@ begin
             if (not CodeToolBoss.AddLazarusResourceHeaderComment(ResourceCode,
                lisResourceFileComment)) then
             begin
-              ACaption:='Resource save error';
-              AText:='Unable to add resource header comment'
-                +' to resource file '#13
-                +'"'+ResourceCode.FileName+'".'#13
-                +'Probably a syntax error.';
+              ACaption:=lisResourceSaveError;
+              AText:=Format(lisUnableToAddResourceHeaderCommentToResourceFile, [
+                #13, '"', ResourceCode.FileName, '"', #13]);
               Result:=MessageDlg(ACaption,AText,mtError,[mbIgnore,mbAbort],0);
               if Result=mrAbort then exit;
             end;
             if (not CodeToolBoss.AddLazarusResource(ResourceCode,
                'T'+AnUnitInfo.FormName,CompResourceCode)) then
             begin
-              ACaption:='Resource save error';
-              AText:='Unable to add resource '
-                +'T'+AnUnitInfo.FormName+':FORMDATA to resource file '#13
-                +'"'+ResourceCode.FileName+'".'#13
-                +'Probably a syntax error.';
+              ACaption:=lisResourceSaveError;
+              AText:=Format(
+                lisUnableToAddResourceTFORMDATAToResourceFileProbably, [
+                AnUnitInfo.FormName, #13, '"', ResourceCode.FileName, '"', #13]
+                );
               Result:=MessageDlg(ACaption, AText, mtError, [mbIgnore, mbAbort],0);
               if Result=mrAbort then exit;
             end else begin
@@ -3253,8 +3248,8 @@ begin
           if LFMCode=nil then begin
             LFMCode:=CodeToolBoss.CreateFile(LFMFilename);
             if LFMCode=nil then begin
-              MessageDlg('Unable to create file',
-                'Unable to create file "'+LFMFilename+'"',
+              MessageDlg(lisUnableToCreateFile,
+                Format(lisUnableToCreateFile2, ['"', LFMFilename, '"']),
                 mtWarning,[mbIgnore,mbCancel],0);
             end;
           end;
@@ -3280,10 +3275,10 @@ begin
                   TxtCompStream.Free;
                 end;
               except
-                ACaption:='Streaming error';
-                AText:='Unable to transform binary component stream of '
-                   +AnUnitInfo.FormName+':T'+AnUnitInfo.FormName
-                   +' into text.';
+                ACaption:=lisStreamingError;
+                AText:=Format(
+                  lisUnableToTransformBinaryComponentStreamOfTIntoText, [
+                  AnUnitInfo.FormName, AnUnitInfo.FormName]);
                 Result:=MessageDlg(ACaption, AText, mtError,
                                    [mbAbort, mbRetry, mbIgnore], 0);
                 if Result=mrAbort then exit;
@@ -3328,11 +3323,9 @@ function TMainIDE.DoOpenNotExistingFile(const AFileName: string;
 begin
   if ofProjectLoading in Flags then begin
     // this is a file, that was loaded last time, but was removed from disk
-    Result:=MessageDlg('File not found',
-      'The file "'+AFilename+'"'#13
-      +'was not found.'#13
-      +'Ignore will go on loading the project,'#13
-      +'Abort  will stop the loading.',
+    Result:=MessageDlg(lisFileNotFound,
+      Format(lisTheFileWasNotFoundIgnoreWillGoOnLoadingTheProject, ['"',
+        AFilename, '"', #13, #13, #13]),
       mtError, [mbIgnore, mbAbort], 0);
     exit;
   end;
@@ -3343,15 +3336,15 @@ begin
 
   if ofOnlyIfExists in Flags 
   then begin
-    MessageDlg('File not found','File "'+AFilename+'" not found.'#13,
+    MessageDlg(lisFileNotFound, Format(lisFileNotFound2, ['"', AFilename, '"',
+      #13]),
                mtInformation,[mbCancel],0);
     // cancel loading file
     Exit;       
   end;
 
-  if MessageDlg('File not found',
-    'File "'+AFilename+'" not found.'#13
-    +'Do you want to create it?'#13
+  if MessageDlg(lisFileNotFound,
+    Format(lisFileNotFoundDoYouWantToCreateIt, ['"', AFilename, '"', #13, #13])
     ,mtInformation,[mbYes,mbNo],0)=mrYes then
   begin
     // create new file
@@ -3398,11 +3391,9 @@ begin
       // or it is not yet a lazarus project ;)
       LPIFilename:=ChangeFileExt(AFilename,'.lpi');
       if FileExists(LPIFilename) then begin
-        AText:='The file "'+AFilename+'"'#13
-            +'seems to be the program file of an existing lazarus Project1.'#13
-            +'Open project?'#13
-            +'Cancel will load the file as normal source.';
-        ACaption:='Project info file detected';
+        AText:=Format(lisTheFileSeemsToBeTheProgramFileOfAnExistingLazarus, [
+          '"', AFilename, '"', #13, #13, #13]);
+        ACaption:=lisProjectInfoFileDetected;
         if MessageDlg(ACaption, AText, mtconfirmation,
              [mbok, mbcancel], 0)=mrOk then
         begin
@@ -3411,11 +3402,9 @@ begin
           exit;
         end;
       end else begin
-        AText:='The file "'+AFilename+'"'#13
-            +'seems to be a program. Close current project'
-            +' and create a new lazarus project for this program?'#13
-            +'Cancel will load the file as normal source.';
-        ACaption:='Program detected';
+        AText:=Format(lisTheFileSeemsToBeAProgramCloseCurrentProject, ['"',
+          AFilename, '"', #13, #13]);
+        ACaption:=lisProgramDetected;
         if MessageDlg(ACaption, AText, mtConfirmation,
             [mbOk, mbCancel], 0)=mrOk then
         begin
@@ -3484,10 +3473,9 @@ begin
           Result:=mrOk;
         except
           on E: Exception do begin
-            ACaption:='Format error';
-            AText:='Unable to convert text form data of file '#13
-              +'"'+LFMBuf.Filename+'"'#13
-              +'into binary stream. ('+E.Message+')';
+            ACaption:=lisFormatError;
+            AText:=Format(lisUnableToConvertTextFormDataOfFileIntoBinaryStream,
+              [#13, '"', LFMBuf.Filename, '"', #13, E.Message]);
             Result:=MessageDlg(ACaption, AText, mtError, [mbOk, mbCancel], 0);
             if Result=mrCancel then Result:=mrAbort;
             if Result<>mrOk then exit;
@@ -3506,9 +3494,9 @@ begin
         CInterface := TComponentInterface(
           FormEditor1.CreateFormFromStream(BinLFMStream));
         if CInterface=nil then begin
-          ACaption:='Form load error';
-          AText:='Unable to build form from file '#13
-                      +'"'+LFMBuf.Filename+'".';
+          ACaption:=lisFormLoadError;
+          AText:=Format(lisUnableToBuildFormFromFile, [#13, '"',
+            LFMBuf.Filename, '"']);
           Result:=MessageDlg(ACaption, AText, mterror, [mbok, mbcancel], 0);
           if Result=mrCancel then Result:=mrAbort;
           if Result<>mrOk then exit;
@@ -3645,7 +3633,7 @@ begin
   SaveDialog:=TSaveDialog.Create(Application);
   try
     InputHistories.ApplyFileDialogSettings(SaveDialog);
-    SaveDialog.Title:='Save Project '+Project1.Title+' (*.lpi)';
+    SaveDialog.Title:=Format(lisSaveProjectLpi, [Project1.Title]);
     
     // build a nice project info filename suggestion
     NewFilename:='';
@@ -3679,9 +3667,9 @@ begin
 
       // check programname
       if (NewProgramName='') or (not IsValidIdent(NewProgramName)) then begin
-        Result:=MessageDlg('Invalid project filename',
-          '"'+SaveDialog.Filename+'" is an invalid project name.'#13
-          +'Please choose another (e.g. project1.lpi)',
+        Result:=MessageDlg(lisInvalidProjectFilename,
+          Format(lisisAnInvalidProjectNamePleaseChooseAnotherEGProject, ['"',
+            SaveDialog.Filename, '"', #13]),
           mtInformation,[mbRetry,mbAbort],0);
         if Result=mrAbort then exit;
         continue; // try again
@@ -3697,8 +3685,9 @@ begin
       // check pascal identifier
       if FilenameIsPascalSource(NewFilename) then begin
         if not IsValidIdent(NewProgramName) then begin
-          Result:=MessageDlg('Invalid Pascal Identifier',
-            'The name "'+NewProgramName+'" is not a valid pascal identifier.'
+          Result:=MessageDlg(lisInvalidPascalIdentifierCap,
+            Format(lisTheNameIsNotAValidPascalIdentifier, ['"', NewProgramName,
+              '"'])
             ,mtWarning,[mbIgnore,mbCancel],0);
           if Result=mrCancel then exit;
           Result:=mrCancel;
@@ -3717,9 +3706,9 @@ begin
         if Ext='' then Ext:=ProjectDefaultExt[Project1.ProjectType];
         NewProgramFilename:=ChangeFileExt(NewFilename,Ext);
         if CompareFilenames(NewFilename,NewProgramFilename)=0 then begin
-          ACaption:='Choose a different name';
-          AText:='The project info file "'+NewFilename+'"'#13
-             +'is equal to the project main source file!';
+          ACaption:=lisChooseADifferentName;
+          AText:=Format(lisTheProjectInfoFileIsEqualToTheProjectMainSource, [
+            '"', NewFilename, '"', #13]);
           Result:=MessageDlg(ACaption, AText, mtError, [mbAbort,mbRetry],0);
           if Result=mrAbort then exit;
           continue; // try again
@@ -3729,10 +3718,9 @@ begin
         and (Project1.IndexOfUnitWithName(NewProgramName,true,
                                        Project1.MainUnitInfo)>=0) then
         begin
-          ACaption:='Unit identifier exists';
-          AText:='There is a unit with the name "'+NewProgramName+'"'
-              +' in the project.'#13
-              +'Plz choose a different name';
+          ACaption:=lisUnitIdentifierExists;
+          AText:=Format(lisThereIsAUnitWithTheNameInTheProjectPlzChoose, ['"',
+            NewProgramName, '"', #13]);
           Result:=MessageDlg(ACaption,AText,mtError,[mbRetry,mbAbort],0);
           if Result=mrAbort then exit;
           continue; // try again
@@ -3750,15 +3738,15 @@ begin
 
   // check if info file or source file already exists
   if FileExists(NewFilename) then begin
-    ACaption:='Overwrite file?';
-    AText:='A file "'+NewFilename+'" already exists.'#13'Replace it?';
+    ACaption:=lisOverwriteFile;
+    AText:=Format(lisAFileAlreadyExistsReplaceIt, ['"', NewFilename, '"', #13]);
     Result:=MessageDlg(ACaption, AText, mtConfirmation, [mbOk, mbCancel], 0);
     if Result=mrCancel then exit;
   end else if Project1.ProjectType in [ptProgram, ptApplication] then begin
     if FileExists(NewProgramFilename) then begin
-      ACaption:='Overwrite file?';
-      AText:='A file "'+NewProgramFilename+'" already exists.'#13
-                      +'Replace it?';
+      ACaption:=lisOverwriteFile;
+      AText:=Format(lisAFileAlreadyExistsReplaceIt, ['"', NewProgramFilename,
+        '"', #13]);
       Result:=MessageDlg(ACaption, AText, mtConfirmation,[mbOk,mbCancel],0);
       if Result=mrCancel then exit;
     end;
@@ -3783,8 +3771,8 @@ begin
     // switch MainUnitInfo.Source to new code
     NewBuf:=CodeToolBoss.CreateFile(NewProgramFilename);
     if NewBuf=nil then begin
-      Result:=MessageDlg('Error creating file','Unable to create file'#13
-           +'"'+NewProgramFilename+'"',mtError,[mbCancel],0);
+      Result:=MessageDlg(lisErrorCreatingFile, Format(lisUnableToCreateFile3, [
+        #13, '"', NewProgramFilename, '"']), mtError, [mbCancel], 0);
       exit;
     end;
     
@@ -3839,17 +3827,17 @@ procedure TMainIDE.OnCopyError(const ErrorData: TCopyErrorData;
 begin
   case ErrorData.Error of
     ceSrcDirDoesNotExists:
-      MessageDlg('Copy error',
-        'Source directory "'+ErrorData.Param1+'" does not exists.',
+      MessageDlg(lisCopyError2,
+        Format(lisSourceDirectoryDoesNotExists, ['"', ErrorData.Param1, '"']),
         mtError,[mbCancel],0);
     ceCreatingDirectory:
-      MessageDlg('Copy error',
-        'Unable to create directory "'+ErrorData.Param1+'".',
+      MessageDlg(lisCopyError2,
+        Format(lisUnableToCreateDirectory, ['"', ErrorData.Param1, '"']),
         mtError,[mbCancel],0);
     ceCopyFileError:
-      MessageDlg('Copy error',
-        'Unable to copy file "'+ErrorData.Param1+'"'#13
-        +'to "'+ErrorData.Param1+'"',
+      MessageDlg(lisCopyError2,
+        Format(lisUnableToCopyFileTo, ['"', ErrorData.Param1, '"', #13, '"',
+          ErrorData.Param1, '"']),
         mtError,[mbCancel],0);
   end;
 end;
@@ -4059,8 +4047,8 @@ begin
     // packages
     niiPackage: PkgBoss.DoNewPackage;
     else
-      MessageDlg('Not implemented yet',
-                 'Sorry, this type is not yet implemented',
+      MessageDlg(ueNotImplCap,
+                 lisSorryThisTypeIsNotYetImplemented,
         mtInformation,[mbOk],0);
     end;
   finally
@@ -4216,12 +4204,13 @@ begin
   if (cfSaveFirst in Flags) and (not ActiveUnitInfo.ReadOnly)
   and ((ActiveSrcEdit.Modified) or (ActiveUnitInfo.Modified)) then begin
     if ActiveUnitInfo.Filename<>'' then
-      AText:='File "'+ActiveUnitInfo.Filename+'" has changed. Save?'
+      AText:=Format(lisFileHasChangedSave, ['"', ActiveUnitInfo.Filename, '"'])
     else if ActiveUnitInfo.UnitName<>'' then
-      AText:='Unit "'+ActiveUnitInfo.Unitname+'" has changed. Save?'
+      AText:=Format(lisUnitHasChangedSave, ['"', ActiveUnitInfo.Unitname, '"'])
     else
-      AText:='Source of page "'+ActiveSrcEdit.PageName+'" has changed. Save?';
-    ACaption:='Source modified';
+      AText:=Format(lisSourceOfPageHasChangedSave, ['"',
+        ActiveSrcEdit.PageName, '"']);
+    ACaption:=lisSourceModified;
     Result:=Messagedlg(ACaption, AText,
                        mtConfirmation, [mbYes, mbNo, mbAbort], 0);
     if Result=mrYes then begin
@@ -4304,9 +4293,8 @@ begin
   and FilenameIsAbsolute(AFilename) and FileExists(AFilename) then begin
     // check for project information files (.lpi)
     if (CompareFileExt(AFilename,'.lpi',false)=0) then begin
-      if MessageDlg('Open Project?',
-        'Open the project '+AFilename+'?'#13
-        +'Answer No to load it as xml file.',
+      if MessageDlg(lisOpenProject,
+        Format(lisOpenTheProjectAnswerNoToLoadItAsXmlFile, [AFilename, #13]),
         mtConfirmation,[mbYes,mbNo],0)=mrYes
       then begin
         Result:=DoOpenProjectFile(AFilename,[ofAddToRecent]);
@@ -4315,9 +4303,8 @@ begin
     end;
     {$IFDEF EnablePkgs}
     if (CompareFileExt(AFilename,'.lpk',false)=0) then begin
-      if MessageDlg('Open Package?',
-        'Open the package '+AFilename+'?'#13
-        +'Answer No to load it as xml file.',
+      if MessageDlg(lisOpenPackage,
+        Format(lisOpenThePackageAnswerNoToLoadItAsXmlFile, [AFilename, #13]),
         mtConfirmation,[mbYes,mbNo],0)=mrYes
       then begin
         Result:=PkgBoss.DoOpenPackageFile(AFilename,[pofAddToRecent]);
@@ -4354,7 +4341,8 @@ begin
     AFilename:=NewUnitInfo.Filename;
     if NewUnitInfo.IsVirtual then begin
       if (not (ofQuiet in Flags)) then begin
-        MessageDlg('Revert failed','File "'+AFilename+'" is virtual.',
+        MessageDlg(lisRevertFailed, Format(lisFileIsVirtual, ['"', AFilename,
+          '"']),
           mtInformation,[mbCancel],0);
       end;
       Result:=mrCancel;
@@ -4369,7 +4357,8 @@ begin
     if (ofRevert in Flags) then begin
       // revert failed, due to missing file
       if not (ofQuiet in Flags) then begin
-        MessageDlg('Revert failed','File "'+AFilename+'" not found.',
+        MessageDlg(lisRevertFailed, Format(lisPkgMangFileNotFound, ['"',
+          AFilename, '"']),
           mtError,[mbCancel],0);
       end;
       Result:=mrCancel;
@@ -4607,9 +4596,8 @@ begin
     end;
   except
     on E: Exception do begin
-      Result:=MessageDlg('Error writing file',
-        'Unable to write '+FileDescription+#13
-        +'"'+Filename+'".',
+      Result:=MessageDlg(lisPkgMangErrorWritingFile,
+        Format(lisUnableToWrite, [FileDescription, #13, '"', Filename, '"']),
         mtError,[mbCancel,mbAbort],0);
       exit;
     end;
@@ -4994,8 +4982,8 @@ begin
   
   // check if file exists
   if not FileExists(AFilename) then begin
-    ACaption:='File not found';
-    AText:='File "'+AFilename+'" not found.';
+    ACaption:=lisFileNotFound;
+    AText:=Format(lisPkgMangFileNotFound, ['"', AFilename, '"']);
     Result:=MessageDlg(ACaption, AText, mtError, [mbAbort], 0);
     exit;
   end;
@@ -5008,10 +4996,9 @@ begin
   end;
   
   if (not FileIsText(AFilename)) then begin
-    ACaption:='File not text';
-    AText:='File "'+AFilename+'"'#13
-          +'does not look like a text file.'#13
-          +'Open it anyway?';
+    ACaption:=lisFileNotText;
+    AText:=Format(lisFileDoesNotLookLikeATextFileOpenItAnyway, ['"', AFilename,
+      '"', #13, #13]);
     Result:=MessageDlg(ACaption, AText, mtConfirmation, [mbYes, mbAbort], 0);
     if Result=mrAbort then exit;
   end;
@@ -5163,8 +5150,8 @@ var
   
   procedure ShowErrorForCommandAfter;
   begin
-    MessageDlg('Invalid command',
-      'The command after "'+CmdAfterExe+'" is not executable.',
+    MessageDlg(lisInvalidCommand,
+      Format(lisTheCommandAfterIsNotExecutable, ['"', CmdAfterExe, '"']),
       mtError,[mbCancel],0);
   end;
   
@@ -5196,18 +5183,18 @@ begin
   // clear destination directory
   DestDir:=GetProjPublishDir;
   if (DestDir='') then begin
-    MessageDlg('Invalid destination directory',
-      'Destination directory "'+DestDir+'" is invalid.'#13
-      +'Please choose a complete path.',
+    MessageDlg(lisInvalidDestinationDirectory,
+      Format(lisDestinationDirectoryIsInvalidPleaseChooseAComplete, ['"',
+        DestDir, '"', #13]),
       mtError,[mbOk],0);
     Result:=mrCancel;
     exit;
   end;
   if DirectoryExists(DestDir) and (not DeleteDirectory(DestDir,true)) then
   begin
-    MessageDlg('Unable to clean up destination directory',
-      'Unable to clean up "'+DestDir+'".'#13
-      +'Please check permissions.',
+    MessageDlg(lisUnableToCleanUpDestinationDirectory,
+      Format(lisUnableToCleanUpPleaseCheckPermissions, ['"', DestDir, '"', #13]
+        ),
       mtError,[mbOk],0);
     Result:=mrCancel;
     exit;
@@ -5234,7 +5221,7 @@ begin
     if FileIsExecutable(CmdAfterExe) then begin
       Tool:=TExternalToolOptions.Create;
       Tool.Filename:=CmdAfterExe;
-      Tool.Title:='Command after publishing project';
+      Tool.Title:=lisCommandAfterPublishingProject;
       Tool.WorkingDirectory:=DestDir;
       Tool.CmdLineParams:=CmdAfterParams;
       Result:=EnvironmentOptions.ExternalTools.Run(Tool,MacroList);
@@ -5351,10 +5338,12 @@ begin
       and (Project1.IndexOfUnitWithName(ActiveUnitInfo.UnitName,
           true,ActiveUnitInfo)>=0) then
       begin
-        MessageDlg('Unable to add '+s+' to project, because there is already a '
-           +'unit with the same name in the Project1.',mtInformation,[mbOk],0);
+        MessageDlg(Format(
+          lisUnableToAddToProjectBecauseThereIsAlreadyAUnitWith, [s]),
+          mtInformation, [mbOk], 0);
       end else begin
-        if MessageDlg('Add '+s+' to project?',mtConfirmation,[mbOk,mbCancel],0)
+        if MessageDlg(Format(lisAddToProject, [s]), mtConfirmation, [mbOk,
+          mbCancel], 0)
           =mrOk then
         begin
           ActiveUnitInfo.IsPartOfProject:=true;
@@ -5374,10 +5363,10 @@ begin
       end;
     end else begin
       if not ActiveUnitInfo.IsVirtual then
-        s:='The file "'+ActiveUnitInfo.Filename+'"'
+        s:=Format(lisTheFile, ['"', ActiveUnitInfo.Filename, '"'])
       else
-        s:='The file "'+ActiveSourceEditor.PageName+'"';
-      s:=s+' is already part of the Project1.';
+        s:=Format(lisTheFile, ['"', ActiveSourceEditor.PageName, '"']);
+      s:=Format(lisisAlreadyPartOfTheProject1, [s]);
       MessageDlg(s,mtInformation,[mbOk],0);
     end;
   end else begin
@@ -5400,7 +5389,7 @@ Begin
         UnitList.Add(TViewUnitsEntry.Create(AName,i,false));
       end;
     end;
-    if ShowViewUnitsDlg(UnitList,true,'Remove from project')=mrOk then begin
+    if ShowViewUnitsDlg(UnitList, true, lisRemoveFromProject)=mrOk then begin
       for i:=0 to UnitList.Count-1 do begin
         if TViewUnitsEntry(UnitList[i]).Selected then begin
           AnUnitInfo:=Project1.Units[TViewUnitsEntry(UnitList[i]).ID];
@@ -5450,7 +5439,7 @@ begin
     exit;
   end;
   if Project1=nil then Begin
-    MessageDlg('Create a project first!',mterror,[mbok],0);
+    MessageDlg(lisCreateAProjectFirst, mterror, [mbok], 0);
     Exit;
   end;
 
@@ -5473,17 +5462,15 @@ begin
   if (EnvironmentOptions.TestBuildDirectory='')
   or (not DirectoryExists(EnvironmentOptions.TestBuildDirectory)) then begin
     if (EnvironmentOptions.TestBuildDirectory<>'') then begin
-      MessageDlg('The Test Directory could not be found:'#13
-             +'"'+EnvironmentOptions.TestBuildDirectory+'"'#13
-             +'(see environment options)',mtError,[mbCancel],0);
+      MessageDlg(Format(lisTheTestDirectoryCouldNotBeFoundSeeEnvironmentOpt, [
+        #13, '"', EnvironmentOptions.TestBuildDirectory, '"', #13]), mtError, [
+        mbCancel], 0);
       Result:=mrCancel;
       exit;
     end;
-    Result:=MessageDlg('Build new project',
-       'The project must be saved before building'#13
-      +'If you set the Test Directory in the environment options,'#13
-      +'you can create new projects and build them at once.'#13
-      +'Save project?',mtInformation,[mbYes,mbNo],0);
+    Result:=MessageDlg(lisBuildNewProject,
+       Format(lisTheProjectMustBeSavedBeforeBuildingIfYouSetTheTest, [#13, #13,
+         #13]), mtInformation, [mbYes, mbNo], 0);
     if Result<>mrYes then exit;
     Result:=DoSaveAll([sfCheckAmbigiousFiles]);
     exit;
@@ -5543,7 +5530,7 @@ begin
     Result:=TheCompiler.Compile(Project1,BuildAll,DefaultFilename);
     if Result=mrOk then begin
       MessagesView.Add(
-        'Project "'+Project1.Title+'" successfully built. :)');
+        Format(lisProjectSuccessfullyBuilt, ['"', Project1.Title, '"']));
     end else begin
       DoJumpToCompilerMessage(-1,true);
     end;
@@ -5580,8 +5567,9 @@ begin
   ProgramFilename := GetProjectTargetFilename;
   if not FileExists(ProgramFilename)
   then begin
-    MessageDlg('File not found',
-      Format('No program file "%s" found.', [ProgramFilename]), mtError,
+    MessageDlg(lisFileNotFound,
+      Format(Format(lisNoProgramFileSFound, ['"', '"']), [ProgramFilename]),
+        mtError,
       [mbCancel], 0);
     Exit;
   end;
@@ -5613,9 +5601,8 @@ begin
       FRunProcess.ShowWindow := swoNone;
     except
       on e: Exception do 
-        MessageDlg(Format('Error initializing program'#13 + 
-                          '"%s"'#13 + 
-                          'Error: %s', [ProgramFilename, e.Message]), mterror, [mbok], 0);
+        MessageDlg(Format(Format(lisErrorInitializingProgramSErrorS, [#13, '"',
+          '"', #13]), [ProgramFilename, e.Message]), mterror, [mbok], 0);
     end;
   end;   
   
@@ -5652,9 +5639,8 @@ begin
       Result := mrOk;
     except
       on e: Exception do 
-        MessageDlg(Format('Error initializing program'#13 + 
-                          '"%s"'#13 + 
-                          'Error: %s',
+        MessageDlg(Format(Format(lisErrorInitializingProgramSErrorS2, [#13,
+          '"', '"', #13]),
                           [FRunProcess.CommandLine, e.Message]), mtError,
                           [mbOk], 0);
     end;
@@ -5934,8 +5920,8 @@ begin
   repeat
     NewBuf:=CodeToolBoss.CreateFile(FileName);
     if (NewBuf<>nil) or (not NewBuf.SaveToFile(Filename)) then begin
-      ACaption:='Write error';
-      AText:='Unable to save file "'+Filename+'"';
+      ACaption:=lisCodeToolsDefsWriteError;
+      AText:=Format(lisUnableToSaveFile, ['"', Filename, '"']);
       Result:=MessageDlg(ACaption,AText,mterror, [mbabort, mbretry, mbignore],0);
       if Result=mrIgnore then Result:=mrOk;
       if Result=mrAbort then exit;
@@ -5960,8 +5946,8 @@ begin
       end;
       Result:=mrOk;
     except
-      ACaption:='Read Error';
-      AText:='Unable to read file "'+AFilename+'"!';
+      ACaption:=lisReadError;
+      AText:=Format(lisUnableToReadFile2, ['"', AFilename, '"']);
       result := Application.MessageBox(PChar(aText),pChar(aCaption),mb_IconError+mb_AbortRetryIgnore);
       if Result=mrAbort then exit;
     end;
@@ -5979,8 +5965,8 @@ begin
     if ABuffer.SaveToFile(AFilename) then begin
       Result:=mrOk;
     end else begin
-      ACaption:='Write Error';
-      AText:='Unable to write to file "'+AFilename+'"!';
+      ACaption:=lisWriteError;
+      AText:=Format(lisUnableToWriteToFile, ['"', AFilename, '"']);
       Result:=MessageDlg(ACaption,AText,mtError,[mbAbort, mbRetry, mbIgnore],0);
       if Result=mrAbort then exit;
       if Result=mrIgnore then Result:=mrOk;
@@ -6003,10 +5989,9 @@ begin
       if lbfQuiet in Flags then begin
         Result:=mrCancel;
       end else begin
-        ACaption:='File not text';
-        AText:='File "'+AFilename+'"'#13
-              +'does not look like a text file.'#13
-              +'Open it anyway?';
+        ACaption:=lisFileNotText;
+        AText:=Format(lisFileDoesNotLookLikeATextFileOpenItAnyway2, ['"',
+          AFilename, '"', #13, #13]);
         Result:=MessageDlg(ACaption, AText, mtConfirmation,
                            [mbOk, mbIgnore, mbAbort], 0);
       end;
@@ -6023,8 +6008,8 @@ begin
       if lbfQuiet in Flags then
         Result:=mrCancel
       else begin
-        ACaption:='Read Error';
-        AText:='Unable to read file "'+AFilename+'"!';
+        ACaption:=lisReadError;
+        AText:=Format(lisUnableToReadFile2, ['"', AFilename, '"']);
         Result:=MessageDlg(ACaption,AText,mtError,[mbAbort,mbRetry,mbIgnore],0);
       end;
       if Result=mrAbort then break;
@@ -6069,7 +6054,8 @@ begin
     repeat
       if not DirectoryExists(SubDir) then begin
         if not CreateDir(SubDir) then begin
-          Result:=MessageDlg('Unable to create backup directory "'+SubDir+'".'
+          Result:=MessageDlg(Format(lisUnableToCreateBackupDirectory, ['"',
+            SubDir, '"'])
                 ,mtWarning,[mbAbort,mbRetry,mbIgnore],0);
           if Result=mrAbort then exit;
           if Result=mrIgnore then Result:=mrOk;
@@ -6098,8 +6084,9 @@ begin
     repeat
       if FileExists(BackupFilename) then begin
         if not DeleteFile(BackupFilename) then begin
-          ACaption:='Delete file failed';
-          AText:='Unable to remove old backup file "'+BackupFilename+'"!';
+          ACaption:=lisDeleteFileFailed;
+          AText:=Format(lisUnableToRemoveOldBackupFile, ['"', BackupFilename,
+            '"']);
           Result:=MessageDlg(ACaption,AText,mtError,[mbAbort,mbRetry,mbIgnore],
                              0);
           if Result=mrAbort then exit;
@@ -6130,8 +6117,9 @@ begin
         repeat
           if FileExists(CounterFilename) then begin
             if not DeleteFile(CounterFilename) then begin
-              ACaption:='Delete file failed';
-              AText:='Unable to remove old backup file "'+CounterFilename+'"!';
+              ACaption:=lisDeleteFileFailed;
+              AText:=Format(lisUnableToRemoveOldBackupFile, ['"',
+                CounterFilename, '"']);
               Result:=MessageDlg(ACaption,AText,mtError,
                                  [mbAbort,mbRetry,mbIgnore],0);
               if Result=mrAbort then exit;
@@ -6147,9 +6135,9 @@ begin
           if not RenameFile(BackupFilename+IntToStr(i),
              BackupFilename+IntToStr(i+1)) then
           begin
-            ACaption:='Rename file failed';
-            AText:='Unable to rename file "'+BackupFilename+IntToStr(i)
-                  +'" to "'+BackupFilename+IntToStr(i+1)+'"!';
+            ACaption:=lisRenameFileFailed;
+            AText:=Format(lisUnableToRenameFileTo, ['"', BackupFilename+IntToStr
+              (i), '"', '"', BackupFilename+IntToStr(i+1), '"']);
             Result:=MessageDlg(ACaption,AText,mtError,
                                [mbAbort,mbRetry,mbIgnore],0);
             if Result=mrAbort then exit;
@@ -6164,8 +6152,9 @@ begin
   // backup file
   repeat
     if not BackupFile(Filename,BackupFilename) then begin
-      ACaption:='Backup file failed';
-      AText:='Unable to backup file "'+Filename+'" to "'+BackupFilename+'"!';
+      ACaption:=lisBackupFileFailed;
+      AText:=Format(lisUnableToBackupFileTo, ['"', Filename, '"', '"',
+        BackupFilename, '"']);
       Result:=MessageDlg(ACaption,AText,mterror,[mbabort,mbretry,mbignore],0);
       if Result=mrAbort then exit;
       if Result=mrIgnore then Result:=mrOk;
@@ -6196,16 +6185,16 @@ begin
         then begin
           CurFilename:=ADirectory+FileInfo.Name;
           if EnvironmentOptions.AmbigiousFileAction=afaAsk then begin
-            if MessageDlg('Delete ambigious file?',
-              'Delete ambigious file "'+CurFilename+'"?',
+            if MessageDlg(lisDeleteAmbigiousFile,
+              Format(lisDeleteAmbigiousFile2, ['"', CurFilename, '"']),
               mtConfirmation,[mbYes,mbNo],0)=mrNo
             then continue;
           end;
           if EnvironmentOptions.AmbigiousFileAction in [afaAutoDelete,afaAsk]
           then begin
             if not DeleteFile(CurFilename) then begin
-              MessageDlg('Delete file failed',
-                'Unable to delete file "'+CurFilename+'".',
+              MessageDlg(lisDeleteFileFailed,
+                Format(lisPkgMangUnableToDeleteFile, ['"', CurFilename, '"']),
                 mtError,[mbOk],0);
             end;
           end else if EnvironmentOptions.AmbigiousFileAction=afaAutoRename then
@@ -6255,14 +6244,14 @@ end;
 procedure TMainIDE.UpdateCaption;
 var NewCaption:string;
 begin
-  NewCaption := 'Lazarus Editor v'+lisLazarusVersionString;
+  NewCaption := Format(lisLazarusEditorV, [lisLazarusVersionString]);
   if Project1<>nil then begin
     if Project1.Title<>'' then
       NewCaption:=NewCaption +' - '+Project1.Title
     else if Project1.ProjectInfoFile<>'' then
       NewCaption:=NewCaption+' - '+ExtractFileName(Project1.ProjectInfoFile)
     else
-      NewCaption:=NewCaption+' - (new project)'
+      NewCaption:=Format(lisnewProject, [NewCaption])
   end;
   Caption:=NewCaption;
 end;
@@ -6585,12 +6574,12 @@ begin
       end;
     end else begin
       if FilenameIsAbsolute(Filename) then begin
-        MessageDlg('Unable to find file "'+Filename+'".',
+        MessageDlg(Format(lisUnableToFindFile, ['"', Filename, '"']),
            mtInformation,[mbOk],0)
       end else begin
-        MessageDlg('Unable to find file "'+Filename+'".'#13
-           +'Check search path in'#13
-           +'Run->Compiler Options...->Search Paths->Other Unit Files',
+        MessageDlg(Format(
+          lisUnableToFindFileCheckSearchPathInRunCompilerOption, ['"',
+          Filename, '"', #13, #13]),
            mtInformation,[mbOk],0);
       end;
     end;
@@ -7024,7 +7013,7 @@ begin
       InputHistories.Save;
     end;
     AddTemplate(ADefTempl,false,
-      'NOTE: Could not create Define Template for Free Pascal Sources');
+      lisNOTECouldNotCreateDefineTemplateForFreePascal);
         
     // create compiler macros for the lazarus sources
     ADefTempl:=CreateLazarusSrcTemplate(
@@ -7032,7 +7021,7 @@ begin
       '$('+ExternalMacroStart+'LCLWidgetType)',
       MiscellaneousOptions.BuildLazOpts.ExtraOptions,CodeToolsOpts);
     AddTemplate(ADefTempl,true,
-      'NOTE: Could not create Define Template for Lazarus Sources');
+      lisNOTECouldNotCreateDefineTemplateForLazarusSources);
   end;
 
   // load include file relationships
@@ -7591,9 +7580,8 @@ begin
     begin
       // the codetools have calculated the maximum bounds
       if (StartCode=EndCode) and (CompareCaret(StartPos,EndPos)=0) then begin
-        MessageDlg('No String Constant Found',
-        +'Hint: The Make Resourcestring Function expects a string constant.'#13
-        +'Please select the expression and try again.',
+        MessageDlg(lisNoStringConstantFound,
+        Format(lisHintTheMakeResourcestringFunctionExpectsAStringCon, [#13]),
         mtError,[mbCancel],0);
         exit;
       end;
@@ -7605,9 +7593,8 @@ begin
         if (StartCode<>ActiveUnitInfo.Source)
         or (EndCode<>ActiveUnitInfo.Source)
         then begin
-          MessageDlg('No String Constant Found','Invalid expression.'#13
-          +'Hint: The Make Resourcestring Function expects a string constant'
-          +' in a single file. Please select the expression and try again.',
+          MessageDlg(lisNoStringConstantFound, Format(
+            lisInvalidExpressionHintTheMakeResourcestringFunction, [#13]),
           mtError,[mbCancel],0);
           exit;
         end;
@@ -7619,9 +7606,8 @@ begin
         if (CompareCaret(SelectedStartPos,StartPos)>0)
         or (CompareCaret(SelectedEndPos,EndPos)<0)
         then begin
-          MessageDlg('Selection exceeds string constant',
-          'Hint: The Make Resourcestring Function expects a string constant.'#13
-          +'Please select only a string expression and try again.',
+          MessageDlg(lisSelectionExceedsStringConstant,
+          Format(lisHintTheMakeResourcestringFunctionExpectsAStringCon2, [#13]),
           mtError,[mbCancel],0);
           exit;
         end;
@@ -7641,9 +7627,8 @@ begin
       exit;
     end;
     if CodeToolBoss.Positions.Count=0 then begin
-      MessageDlg('No ResourceString Section found',
-        'Unable to find a ResourceString section in this '
-        +'or any of the used units.',
+      MessageDlg(lisNoResourceStringSectionFound,
+        lisUnableToFindAResourceStringSectionInThisOrAnyOfThe,
         mtError,[mbCancel],0);
       exit;
     end;
@@ -7840,18 +7825,20 @@ var
   
 begin
   if (not IsValidIdent(NewName)) or (NewName='') then
-    raise Exception.Create('Component name "'+Newname+'" is not a valid identifier');
+    raise Exception.Create(Format(lisComponentNameIsNotAValidIdentifier, ['"',
+      Newname, '"']));
   BeginCodeTool(ADesigner,ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource]);
   ActiveUnitInfo:=Project1.UnitWithForm(ADesigner.Form);
   if CodeToolBoss.IsKeyWord(ActiveUnitInfo.Source,NewName) then
-    raise Exception.Create('Component name "'+Newname+'" is keyword');
+    raise Exception.Create(Format(lisComponentNameIsKeyword, ['"', Newname, '"']
+      ));
   if AComponent.Owner<>nil then begin
     // rename published variable in form source
     BossResult:=CodeToolBoss.RenamePublishedVariable(ActiveUnitInfo.Source,
       ADesigner.Form.ClassName,
       AComponent.Name,NewName,AComponent.ClassName);
-    ApplyBossResult('Unable to rename variable in source.'#13
-                    +'See messages.');
+    ApplyBossResult(Format(lisUnableToRenameVariableInSourceSeeMessages, [#13])
+      );
   end else if AComponent=ADesigner.Form then begin
     // rename form
     // ToDo:
@@ -7863,15 +7850,15 @@ begin
     i:=Project1.IndexOfUnitWithFormName(NewName,true,ActiveUnitInfo);
     if i>=0 then
       raise Exception.Create(
-                         'There is already a form with the name "'+Newname+'"');
+                         Format(lisThereIsAlreadyAFormWithTheName, ['"',
+                           Newname, '"']));
     NewClassName:='T'+NewName;
 
     // rename form in source
     BossResult:=CodeToolBoss.RenameForm(ActiveUnitInfo.Source,
       AComponent.Name,AComponent.ClassName,
       NewName,NewClassName);
-    ApplyBossResult('Unable to rename form in source.'#13
-                    +'See messages.');
+    ApplyBossResult(Format(lisUnableToRenameFormInSourceSeeMessages, [#13]));
     ActiveUnitInfo.FormName:=NewName;
 
     // rename form class
@@ -8061,7 +8048,7 @@ end;
 Procedure TMainIDE.OnSrcNotebookViewJumpHistory(Sender : TObject);
 begin
   // ToDo
-  MessageDlg('Not implemented yet','Sorry, not implemented yet',mtInformation,
+  MessageDlg(ueNotImplCap, lisSorryNotImplementedYet, mtInformation,
      [mbOk],0);
 end;
 
@@ -8247,8 +8234,8 @@ begin
                             MethodIsCompatible,MethodIsPublished,IdentIsMethod);
   if CodeToolBoss.ErrorMessage<>'' then begin
     DoJumpToCodeToolBossError;
-    raise Exception.Create('Unable to find method.'
-                          +' Plz fix the error shown in the message window.');
+    raise Exception.Create(lisUnableToFindMethodPlzFixTheErrorShownInTheMessage
+      );
   end;
 end;
 
@@ -8281,8 +8268,7 @@ begin
                                                       ,AMethodName);
     end else begin
       DoJumpToCodeToolBossError;
-      raise Exception.Create('Unable to create new method.'
-                            +' Plz fix the error shown in the message window.');
+      raise Exception.Create(lisUnableToCreateNewMethodPlzFixTheErrorShownIn);
     end;
   finally
     FOpenEditorsOnCodeToolChange:=false;
@@ -8310,8 +8296,8 @@ begin
       NewSource, NewX, NewY, NewTopLine, true);
   end else begin
     DoJumpToCodeToolBossError;
-    raise Exception.Create('Unable to show method.'
-                           +' Plz fix the error shown in the message window.');
+    raise Exception.Create(lisUnableToShowMethodPlzFixTheErrorShownInTheMessage
+      );
   end;
 end;
 
@@ -8341,8 +8327,8 @@ begin
                                            CurName,NewName);
     end else begin
       DoJumpToCodeToolBossError;
-      raise Exception.Create('Unable to rename method.'
-                            +' Plz fix the error shown in the message window.');
+      raise Exception.Create(
+        lisUnableToRenameMethodPlzFixTheErrorShownInTheMessag);
     end;
   finally
     FOpenEditorsOnCodeToolChange:=false;
@@ -8395,7 +8381,7 @@ writeln('TMainIDE.OnPropHookComponentAdded A ',AComponent.Name,':',AComponent.Cl
   if Select then begin
     TheControlSelection.AssignComponent(AComponent);
   end;
-writeln('TMainIDE.OnPropHookComponentAdded END ',AComponent.Name,':',AComponent.ClassName,' ',Select);
+  writeln('TMainIDE.OnPropHookComponentAdded END ',AComponent.Name,':',AComponent.ClassName,' ',Select);
 end;
 
 procedure TMainIDE.OnPropHookDeleteComponent(AComponent: TComponent);
@@ -8667,6 +8653,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.555  2003/05/05 18:45:32  mattias
+  localization
+
   Revision 1.554  2003/05/05 13:40:26  mattias
   ide extra options are now saved, so creating a packaged ide is now possible on commandline
 
