@@ -54,7 +54,7 @@ uses
   LMessages, ProjectDefs, Watchesdlg, BreakPointsdlg, ColumnDlg, OutputFilter,
   BuildLazDialog, MiscOptions, EditDefineTree, CodeToolsOptions, TypInfo,
   IDEOptionDefs, CodeToolsDefines, LocalsDlg, DebuggerDlg, InputHistory,
-  DiskDiffsDialog,
+  DiskDiffsDialog, UnitDependencies,
   // main ide
   BaseDebugManager, DebugManager, MainBar;
 
@@ -131,6 +131,7 @@ type
     procedure mnuViewInspectorClicked(Sender : TObject);
     procedure mnuViewUnitsClicked(Sender : TObject);
     procedure mnuViewFormsClicked(Sender : TObject);
+    procedure mnuViewUnitDependenciesClicked(Sender : TObject);
     procedure mnuViewCodeExplorerClick(Sender : TObject);
     procedure mnuViewMessagesClick(Sender : TObject);
     procedure MessageViewDblClick(Sender : TObject);
@@ -377,7 +378,8 @@ type
     function DoOpenMainUnit(ProjectLoading: boolean): TModalResult;
     function DoRevertMainUnit: TModalResult;
     function DoViewUnitsAndForms(OnlyForms: boolean): TModalResult;
-    
+    procedure DoViewUnitDependencies;
+
     // project(s)
     function DoNewProject(NewProjectType:TProjectType):TModalResult;
     function DoSaveProject(Flags: TSaveFlags):TModalResult;
@@ -645,7 +647,7 @@ begin
   with EnvironmentOptions do begin
     SetLazarusDefaultFilename;
     Load(false);
-    TranslateResourceStrings(ExtractFilePath(ExpandFilename(ParamStr(0))),
+    TranslateResourceStrings(EnvironmentOptions.LazarusDirectory,
       LazarusLanguageIDs[EnvironmentOptions.Language]);
 
     if EnvironmentOptions.CompilerFilename='' then
@@ -1338,6 +1340,7 @@ begin
   itmViewCodeExplorer.OnClick := @mnuViewCodeExplorerClick;
   itmViewUnits.OnClick := @mnuViewUnitsClicked;
   itmViewForms.OnClick := @mnuViewFormsClicked;
+  itmViewUnitDependencies.OnClick := @mnuViewUnitDependenciesClicked;
   itmViewToggleFormUnit.OnClick := @mnuToggleFormUnitClicked;
   itmViewMessage.OnClick := @mnuViewMessagesClick;
 end;
@@ -1901,6 +1904,11 @@ end;
 Procedure TMainIDE.mnuViewFormsClicked(Sender : TObject);
 Begin
   DoViewUnitsAndForms(true);
+end;
+
+Procedure TMainIDE.mnuViewUnitDependenciesClicked(Sender : TObject);
+begin
+  DoViewUnitDependencies;
 end;
 
 Procedure TMainIDE.mnuViewCodeExplorerClick(Sender : TObject);
@@ -3961,6 +3969,33 @@ Begin
     UnitList.Free;
   end;
   Result:=mrOk;
+end;
+
+procedure TMainIDE.DoViewUnitDependencies;
+var
+  WasVisible: boolean;
+  ALayout: TIDEWindowLayout;
+begin
+  if UnitDependenciesView=nil then begin
+    UnitDependenciesView:=TUnitDependenciesView.Create(Self);
+    WasVisible:=false;
+  end else
+    WasVisible:=UnitDependenciesView.Visible;
+
+  if not UnitDependenciesView.RootValid then begin
+    if Project1.MainUnit>=0 then begin
+      UnitDependenciesView.RootFilename:=Project1.MainUnitInfo.Filename;
+      UnitDependenciesView.RootShortFilename:=
+        ExtractFilename(Project1.MainUnitInfo.Filename);
+    end;
+  end;
+
+  UnitDependenciesView.Show;
+  ALayout:=EnvironmentOptions.IDEWindowLayoutList.
+    ItemByFormID(DefaultUnitDependenciesName);
+  ALayout.Apply;
+  if not WasVisible then
+    BringWindowToTop(UnitDependenciesView.Handle);
 end;
 
 function TMainIDE.DoOpenFileAtCursor(Sender: TObject):TModalResult;
@@ -7016,6 +7051,9 @@ begin
       ALayout.Form.SetBounds(250,Top+Height+30,Screen.Width-300,
         Screen.Height-200-Top-Height);
     end else
+    if ALayout.FormID=DefaultUnitDependenciesName then begin
+      ALayout.Form.SetBounds(200,200,400,300);
+    end else
     if ALayout.FormID=DefaultMessagesViewName then begin
       ALayout.Form.SetBounds(260,SourceNotebook.Top+SourceNotebook.Height+30,
         Screen.Width-300,80);
@@ -7060,6 +7098,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.379  2002/09/14 07:05:12  lazarus
+  MG: added uni dependencies
+
   Revision 1.378  2002/09/13 16:58:23  lazarus
   MG: removed the 1x1 bitmap from TBitBtn
 

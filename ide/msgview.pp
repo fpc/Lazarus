@@ -63,8 +63,8 @@ type
     property OnSelectionChanged : TNotifyEvent read FOnSelectionChanged write FOnSelectionChanged;
   end;
 
-var
-  MessagesView : TMessagesView;
+const
+  MessagesView : TMessagesView = nil;
 
 
 implementation
