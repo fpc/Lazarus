@@ -162,7 +162,7 @@ begin
 
       if TheWinControl<>nil then begin
         SetCursor(TheWinControl);
-        ConnectHiddenWidgetsSignals(TheWinControl);
+        ConnectInternalWidgetsSignals(TheWinControl);
       end;
     end;
   end else begin
@@ -2143,6 +2143,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.100  2002/08/19 08:50:28  lazarus
+  MG: fixed parser for Clx enums and empty param lists
+
   Revision 1.99  2002/08/17 15:45:33  lazarus
   MG: removed ClientRectBugfix defines
 
