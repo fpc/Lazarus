@@ -121,6 +121,7 @@ const
   XMLBreakPointsNode = 'BreakPoints';
   XMLBreakPointGroupsNode = 'BreakPointGroups';
   XMLWatchesNode = 'Watches';
+  XMLExceptionsNode = 'Exceptions';
 
 type
   EDebuggerException = class(Exception);
@@ -3514,14 +3515,36 @@ end;
 
 procedure TIDEExceptions.LoadFromXMLConfig (const AXMLConfig: TXMLConfig;
   const APath: string);
+var
+  NewCount: Integer;
+  i: Integer;
+  IDEException: TIDEException;
 begin
-  // TODO
+  Clear;
+  NewCount := AXMLConfig.GetValue(APath + 'Count', 0);
+  for i := 0 to NewCount-1 do
+  begin
+    IDEException := TIDEException(inherited Add(''));
+    IDEException.LoadFromXMLConfig(AXMLConfig,
+                                    Format('%sItem%d/', [APath, i + 1]));
+  end;
 end;
 
 procedure TIDEExceptions.SaveToXMLConfig (const AXMLConfig: TXMLConfig;
   const APath: string);
+var
+  Cnt: Integer;
+  i: Integer;
+  IDEException: TIDEException;
 begin
-  // TODO
+  Cnt := Count;
+  AXMLConfig.SetDeleteValue(APath + 'Count', Cnt, 0);
+  for i := 0 to Cnt - 1 do
+  begin
+    IDEException := Items[i];
+    IDEException.SaveToXMLConfig(AXMLConfig,
+                                  Format('%sItem%d/', [APath, i + 1]));
+  end;
 end;
 
 procedure TIDEExceptions.SetItem(const AIndex: Integer;
@@ -3552,6 +3575,9 @@ finalization
 end.
 { =============================================================================
   $Log$
+  Revision 1.66  2004/12/03 14:35:30  vincents
+  implemented TIDEExceptions.LoadFromXMLConfig and SaveToXMLConfig
+
   Revision 1.65  2004/11/23 12:25:47  vincents
   fixed fpc 1.0.x compilation
 

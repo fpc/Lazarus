@@ -8,6 +8,9 @@ codetools
 custom
   Obsolete: Use packages instead
     User defined components for the IDE
+    
+fpcunit
+  template for a fpcunit gui test runner
 
 gtk
   GTK specific components

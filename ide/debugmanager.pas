@@ -1495,6 +1495,7 @@ begin
                                  @Project1.LongenFilename,
                                  @FBreakPointGroups.GetGroupByName);
   FWatches.LoadFromXMLConfig(XMLConfig,'Debugging/'+XMLWatchesNode+'/');
+  FExceptions.LoadFromXMLConfig(XMLConfig,'Debugging/'+XMLExceptionsNode+'/');
 end;
 
 {------------------------------------------------------------------------------
@@ -1509,6 +1510,7 @@ begin
   FBreakPoints.SaveToXMLConfig(XMLConfig,'Debugging/'+XMLBreakPointsNode+'/',
                                @Project1.ShortenFilename);
   FWatches.SaveToXMLConfig(XMLConfig,'Debugging/'+XMLWatchesNode+'/');
+  FExceptions.SaveToXMLConfig(XMLConfig,'Debugging/'+XMLExceptionsNode+'/');
 end;
 
 procedure TDebugManager.DoRestoreDebuggerMarks(AnUnitInfo: TUnitInfo);
@@ -1941,6 +1943,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.80  2004/12/03 14:35:30  vincents
+  implemented TIDEExceptions.LoadFromXMLConfig and SaveToXMLConfig
+
   Revision 1.79  2004/11/24 08:18:13  mattias
   TTextStrings improvements (Exchange, Put), clean ups
 
