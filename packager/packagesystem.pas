@@ -47,7 +47,7 @@ uses
 {$ENDIF}
   Classes, SysUtils, AVL_Tree, Laz_XMLCfg, FileCtrl, Forms, Controls, Dialogs,
   LazarusIDEStrConsts, IDEProcs, PackageLinks, PackageDefs, LazarusPackageIntf,
-  ComponentReg, RegisterFCL, RegisterLCL, RegisterSynEdit;
+  ComponentReg, RegisterFCL, RegisterLCL, RegisterSynEdit, RegisterIDEIntf;
   
 type
   TFindPackageFlag = (
@@ -82,6 +82,7 @@ type
     FDefaultPackage: TLazPackage;
     FErrorMsg: string;
     FFCLPackage: TLazPackage;
+    FIDEIntfPackage: TLazPackage;
     FItems: TList;   // unsorted list of TLazPackage
     FLazarusBasePackages: TList;
     FLCLPackage: TLazPackage;
@@ -100,6 +101,7 @@ type
     function CreateFCLPackage: TLazPackage;
     function CreateLCLPackage: TLazPackage;
     function CreateSynEditPackage: TLazPackage;
+    function CreateIDEIntfPackage: TLazPackage;
     function CreateDefaultPackage: TLazPackage;
     function GetPackages(Index: integer): TLazPackage;
     procedure DoDependencyChanged(Dependency: TPkgDependency);
@@ -232,6 +234,7 @@ type
     property FCLPackage: TLazPackage read FFCLPackage;
     property LCLPackage: TLazPackage read FLCLPackage;
     property SynEditPackage: TLazPackage read FSynEditPackage;
+    property IDEIntfPackage: TLazPackage read FIDEIntfPackage;
     property LazarusBasePackages: TList read FLazarusBasePackages;
     property DefaultPackage: TLazPackage read FDefaultPackage;
     property OnAddPackage: TPkgAddedEvent read FOnAddPackage write FOnAddPackage;
@@ -977,10 +980,56 @@ begin
     UsageOptions.UnitPath:=SetDirSeparators(
                      '$(LazarusDir)/components/units/$(TargetCPU)/$(TargetOS)');
 
-    // use the lcl/units/allunits.o file as indicator,
+    // use the components/units/..../allsyneditunits.o file as indicator,
     // if synedit has been recompiled
     OutputStateFile:=SetDirSeparators(
       '$(LazarusDir)/components/units/$(TargetCPU)/$(TargetOS)/allsyneditunits.o');
+
+    Modified:=false;
+  end;
+end;
+
+function TLazPackageGraph.CreateIDEIntfPackage: TLazPackage;
+begin
+  Result:=TLazPackage.Create;
+  with Result do begin
+    AutoCreated:=true;
+    Name:='IDEIntf';
+    Filename:=SetDirSeparators('$(LazarusDir)/ideintf/');
+    Version.SetValues(1,0,0,0);
+    Author:='Lazarus';
+    License:='GPL-2';
+    AutoInstall:=pitStatic;
+    AutoUpdate:=pupManually;
+    Description:='IDEIntf - the interface units for the IDE';
+    PackageType:=lptDesignTime;
+    Installed:=pitStatic;
+    CompilerOptions.UnitOutputDirectory:='';
+
+    // add requirements
+    AddRequiredDependency(LCLPackage.CreateDependencyForThisPkg(Result));
+
+    // add units
+    AddFile('actionseditor.pas','ActionsEditor',pftUnit,[],cpBase);
+    AddFile('columndlg.pp','ColumnDlg',pftUnit,[],cpBase);
+    AddFile('componenteditors.pas','ComponentEditors',pftUnit,[],cpBase);
+    AddFile('componenttreeview.pas','ComponentTreeview',pftUnit,[],cpBase);
+    AddFile('graphpropedits.pas','GraphPropEdits',pftUnit,[],cpBase);
+    AddFile('idecommands.pas','IDECommands',pftUnit,[],cpBase);
+    AddFile('imagelisteditor.pp','ImageListEditor',pftUnit,[],cpBase);
+    AddFile('listviewpropedit.pp','ListViewPropEdit',pftUnit,[],cpBase);
+    AddFile('objectinspector.pp','ObjectInspector',pftUnit,[],cpBase);
+    AddFile('objinspstrconsts.pas','ObjInspStrConsts',pftUnit,[],cpBase);
+    AddFile('propedits.pp','PropEdits',pftUnit,[],cpBase);
+
+    // add unit paths
+    UsageOptions.UnitPath:=SetDirSeparators(
+                     '$(LazarusDir)/ideintf/units/$(TargetCPU)/$(TargetOS)');
+
+    // use the components/units/$(TargetCPU)/$(TargetOS)/allideintf.o file
+    // as indicator, if ideintf has been recompiled
+    OutputStateFile:=SetDirSeparators(
+      '$(LazarusDir)/components/units/$(TargetCPU)/$(TargetOS)/allideintf.o');
 
     Modified:=false;
   end;
@@ -1108,6 +1157,7 @@ begin
   AddStaticBasePackage(CreateFCLPackage,FFCLPackage);
   AddStaticBasePackage(CreateLCLPackage,FLCLPackage);
   AddStaticBasePackage(CreateSynEditPackage,FSynEditPackage);
+  AddStaticBasePackage(CreateIDEIntfPackage,FIDEIntfPackage);
   // the default package will be added on demand
   FDefaultPackage:=CreateDefaultPackage;
 end;
@@ -1791,6 +1841,7 @@ begin
   RegisterStaticPackage(FCLPackage,@RegisterFCL.Register);
   RegisterStaticPackage(LCLPackage,@RegisterLCL.Register);
   RegisterStaticPackage(SynEditPackage,@RegisterSynEdit.Register);
+  RegisterStaticPackage(IDEIntfPackage,@RegisterIDEIntf.Register);
 
   // custom IDE components
   RegistrationPackage:=DefaultPackage;

@@ -3570,6 +3570,9 @@ begin
       DecPaintLock;
     end;
   end;
+  {$IFDEF SYN_LAZARUS}
+  fLastCaretX := CaretX;
+  {$ENDIF}
 end;
 
 procedure TCustomSynEdit.SetFont(const Value: TFont);
@@ -7230,7 +7233,7 @@ begin
   end;
   if (ptO.Y <> ptDst.Y) then begin
     if eoKeepCaretX in Options then                                             //mh 2000-10-19
-      ptDst.X := fLastCaretX ;                                                  //mh 2000-10-19
+      ptDst.X := fLastCaretX;                                                   //mh 2000-10-19
   end;
 
   ptDst := PhysicalToLogicalPos(ptDst);                                         // sblbg 2001-12-17
@@ -7389,7 +7392,7 @@ begin
   end;
   {$IFDEF SYN_LAZARUS}
   // i now contains the needed spaces
-  Spaces:=CreateTabsAndSpaces(CaretX,i,TabWidth,eoTabsToSpaces in Options);
+  Spaces := CreateTabsAndSpaces(CaretX,i,TabWidth,eoTabsToSpaces in Options);
   {$ELSE}
   Spaces := StringOfChar(' ', i);
   {$ENDIF}

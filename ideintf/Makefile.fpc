@@ -10,20 +10,28 @@ version=0.9b
 [compiler]
 unitdir=../lcl/units/$(CPU_TARGET)/$(OS_TARGET) \
         ../components/units/$(CPU_TARGET)/$(OS_TARGET) .
-unittargetdir=units
+unittargetdir=units/$(CPU_TARGET)/$(OS_TARGET)
 options=-gl
 
 [target]
 units=allideintf
-implicitunits=idecommands propedits objinspstrconsts objectinspector columndlg \
-  componenteditors graphpropedits listviewpropedit imagelisteditor \
-  componenttreeview actionseditor
+implicitunits=actionseditor \
+  columndlg \
+  componenteditors \
+  componenttreeview \
+  graphpropedits \
+  idecommands \
+  imagelisteditor \
+  listviewpropedit \
+  objectinspector \
+  objinspstrconsts \
+  propedits
 
 [clean]
 files=$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT)) \
-      $(wildcard ./units/*$(OEXT)) \
-      $(wildcard ./units/*$(PPUEXT)) \
-      $(wildcard ./units/*$(RSTEXT))
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT))
 
 [require]
 packages=fcl

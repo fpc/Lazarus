@@ -3344,6 +3344,7 @@ var
   CurCPU, CurOS, CurWidgetSet, ExtraSrcPath: string;
   ElseTemplate: TDefineTemplate;
   LCLWidgetSetDir: TDefineTemplate;
+  IDEIntfDir: TDefineTemplate;
 begin
   Result:=nil;
   if (LazarusSrcDir='') or (WidgetType='') then exit;
@@ -3525,15 +3526,16 @@ begin
   SubDirTempl:=TDefineTemplate.Create('Packager Units',
     ctsPackagerUnitsDirectory,'','units',da_Directory);
   SubDirTempl.AddChild(TDefineTemplate.Create('CompiledSrcPath',
-    ctsCompiledSrcPath,CompiledSrcPathMacroName,d('../registration/'),
-    da_Define));
+    ctsCompiledSrcPath,CompiledSrcPathMacroName,
+    LazarusSrcDir+d('/packager/registration'),
+    da_DefineRecurse));
   DirTempl.AddChild(SubDirTempl);
   MainDir.AddChild(DirTempl);
 
   // <LazarusSrcDir>/ideintf
-  DirTempl:=TDefineTemplate.Create('IDEIntf',ctsIDEIntfDirectory,
+  IDEIntfDir:=TDefineTemplate.Create('IDEIntf',ctsIDEIntfDirectory,
     '','ideintf',da_Directory);
-  DirTempl.AddChild(TDefineTemplate.Create('LCL path addition',
+  IDEIntfDir.AddChild(TDefineTemplate.Create('LCL path addition',
     Format(ctsAddsDirToSourcePath,['lcl']),
     SrcPathMacroName,
       d('../components/codetools'
@@ -3541,7 +3543,11 @@ begin
        +';../lcl/interfaces/'+WidgetType)
        +';'+SrcPath
     ,da_Define));
-  MainDir.AddChild(DirTempl);
+  IDEIntfDir.AddChild(TDefineTemplate.Create('CompiledSrcPath',
+    ctsCompiledSrcPath,CompiledSrcPathMacroName,
+    LazarusSrcDir+d('/ideintf'),
+    da_DefineRecurse));
+  MainDir.AddChild(IDEIntfDir);
 
   // <LazarusSrcDir>/examples
   DirTempl:=TDefineTemplate.Create('Examples',

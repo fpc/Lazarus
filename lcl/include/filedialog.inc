@@ -208,12 +208,12 @@ end;
 
   Constructor for the class.
  ------------------------------------------------------------------------------}
-constructor TOpenDialog.Create (AOwner : TComponent);
+constructor TOpenDialog.Create(TheOwner: TComponent);
 begin
-  inherited Create(AOwner);
+  inherited Create(TheOwner);
   fCompStyle:=csOpenFileDialog;
   FTitle:= rsfdOpenFile;
-  FOptions := [ofEnableSizing, ofViewDetail];
+  FOptions := DefaultOpenDialogOptions;
 end;
 
 procedure TOpenDialog.DoFolderChange;
@@ -278,6 +278,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.19  2004/03/20 17:36:56  mattias
+  added IDEIntf package and component editors for MemDS
+
   Revision 1.18  2004/03/01 18:02:00  mattias
   fixed IsFileExtensionSupported
 

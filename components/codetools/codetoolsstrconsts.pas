@@ -208,6 +208,7 @@ ResourceString
   ctsPackagerDirectory = 'Packager Directory';
   ctsPackagerRegistrationDirectory = 'Packager Registration Directory';
   ctsPackagerUnitsDirectory = 'Packager Units Directory';
+  ctsCPUDirectory = 'CPU directory';
   ctsLazarusMainDirectory = 'lazarus main directory';
   ctsDebuggerDirectory = 'Debugger Directory';
   ctsDocEditorDirectory = 'Doc Editor Directory';

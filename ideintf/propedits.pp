@@ -697,6 +697,21 @@ type
   end;
   
   
+{ TFileNamePropertyEditor
+  PropertyEditor editor for filename properties.
+  Show an TOpenDialog on Edit. }
+
+  TFileNamePropertyEditor = class(TStringPropertyEditor)
+  public
+    function GetAttributes: TPropertyAttributes; override;
+    procedure Edit; override;
+    function GetFilter: String; virtual;
+    function GetDialogOptions: TOpenOptions; virtual;
+    function GetDialogTitle: string; virtual;
+    function GetInitialDirectory: string; virtual;
+  end;
+
+
 { TListElementPropertyEditor
   A property editor for a single element of a TListPropertyEditor
   This editor simply redirects all methods to the TListPropertyEditor }
@@ -4319,6 +4334,49 @@ begin
     SetOrdValue(CValue)
   else
     inherited SetValue(NewValue);
+end;
+
+{ TFileNamePropertyEditor }
+
+function TFileNamePropertyEditor.GetAttributes: TPropertyAttributes;
+begin
+  Result:=[paDialog,paRevertable];
+end;
+
+procedure TFileNamePropertyEditor.Edit;
+begin
+  With TOpenDialog.Create(Application) do
+    Try
+      Filter:=GetFilter;
+      Options:=GetDialogOptions;
+      FileName:=GetStrValue;
+      InitialDir:=GetInitialDirectory;
+      Title:=GetDialogTitle;
+      If Execute then
+        SetStrValue(FileName);
+    Finally
+      Free;
+    end;
+end;
+
+function TFileNamePropertyEditor.GetFilter: String;
+begin
+  Result:=oisAllFiles;
+end;
+
+function TFileNamePropertyEditor.GetDialogOptions: TOpenOptions;
+begin
+  Result:=DefaultOpenDialogOptions;
+end;
+
+function TFileNamePropertyEditor.GetDialogTitle: string;
+begin
+  Result:=oisSelectAFile;
+end;
+
+function TFileNamePropertyEditor.GetInitialDirectory: string;
+begin
+  Result:='';
 end;
 
 //==============================================================================

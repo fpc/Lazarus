@@ -17,7 +17,8 @@ unit ObjInspStrConsts;
 interface
 
 resourcestring
-  //
+
+  // Object Inspector
   oisObjectInspector = 'Object Inspector';
   oisAll = 'All';
   oisError = 'Error';
@@ -36,7 +37,7 @@ resourcestring
   oisValue = 'Value:';
   
 
-  //ListView items editor
+  // ListView items editor
   sccsLvEdtCaption        = 'ListView editor';
   sccsLvEdtGrpLCaption    = ' Items ';
   sccsLvEdtGrpRCaption    = ' Item property ';
@@ -48,7 +49,7 @@ resourcestring
   oisAction = 'Action';
   sccsLvEdtBtnAddSub      = 'Sub item';
 
-  //Image editor strings
+  // Image editor strings
   sccsILEdtCaption = 'Image list editor';
   sccsILCmbImgSel  = ' Selected image ';
   sccsILCmbImgList = ' Images ';
@@ -66,6 +67,10 @@ resourcestring
   oisActionListEditor = 'Action List Editor';
   oisAdd = 'Add';
   cActionListEditorAllCategory='(All)';
+
+  // TFileNamePropertyEditor
+  oisSelectAFile = 'Select a file';
+  oisAllFiles = 'All files (*.*)|*.*';
 
 implementation
 

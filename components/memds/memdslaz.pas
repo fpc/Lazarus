@@ -1,6 +1,6 @@
 { This file was automatically created by Lazarus. Do not edit!
   This source is only used to compile and install
-  the package MemDSLaz 0.1.1.
+  the package MemDSLaz 1.2.1.
 }
 
 unit MemDSLaz; 
@@ -8,13 +8,13 @@ unit MemDSLaz;
 interface
 
 uses
-  registermemds, memds, LazarusPackageIntf; 
+  memds, frmSelectDataset, LazarusPackageIntf; 
 
 implementation
 
 procedure Register; 
 begin
-  RegisterUnit('registermemds', @registermemds.Register); 
+  RegisterUnit('frmSelectDataset', @frmSelectDataset.Register); 
 end; 
 
 initialization

@@ -17,8 +17,6 @@
     A Component Editor is a plugin used by the designer to add special
     functions for component classes.
     For more information see the big comment part below.
-
-  ToDo:
 }
 unit ComponentEditors;
 
@@ -140,6 +138,7 @@ type
     function GetComponent: TComponent; virtual; abstract;
     function GetDesigner: TComponentEditorDesigner; virtual; abstract;
     function GetHook(var Hook: TPropertyEditorHook): boolean; virtual; abstract;
+    procedure Modified; virtual; abstract;
   end;
 
   TComponentEditorClass = class of TBaseComponentEditor;
@@ -170,6 +169,7 @@ type
     property Component: TComponent read FComponent;
     property Designer: TComponentEditorDesigner read GetDesigner;
     function GetHook(var Hook: TPropertyEditorHook): boolean; override;
+    procedure Modified; override;
   end;
 
 
@@ -415,6 +415,11 @@ begin
   Result:=Hook<>nil;
 end;
 
+procedure TComponentEditor.Modified;
+begin
+  GetDesigner.Modified;
+end;
+
 { TDefaultComponentEditor }
 
 procedure TDefaultComponentEditor.CheckEdit(Prop: TPropertyEditor);
@@ -533,7 +538,7 @@ begin
   NewPage.Name:=NewName;
   NoteBook.PageIndex:=Index;
   Hook.ComponentAdded(NewPage,true);
-  GetDesigner.Modified;
+  Modified;
 end;
 
 procedure TNotebookComponentEditor.DoAddPage;
@@ -594,7 +599,7 @@ procedure TNotebookComponentEditor.DoMoveActivePage(
   CurIndex, NewIndex: Integer);
 begin
   NoteBook.Pages.Move(CurIndex,NewIndex);
-  GetDesigner.Modified;
+  Modified;
 end;
 
 procedure TNotebookComponentEditor.AddMenuItemsForPages(
@@ -789,8 +794,7 @@ begin
         //Apply the modifications
         AssignGrid(aGrid, Dlg.FGrid);
         //not work :o( aImg.AddImages(Dlg.fGrid);
-        if Assigned(Hook) then
-          Hook.Modified(Self);
+        Modified;
       end;
     end;
   finally
@@ -857,7 +861,7 @@ begin
   NewToolButton.Style:=NewStyle;
   NewToolButton.Parent:=CurToolBar;
   Hook.ComponentAdded(NewToolButton,true);
-  GetDesigner.Modified;
+  Modified;
 end;
 
 function TToolBarComponentEditor.GetVerb(Index: Integer): string;

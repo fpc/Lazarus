@@ -171,6 +171,11 @@ type
     );
   TOpenOptions = set of TOpenOption;
   
+const
+  DefaultOpenDialogOptions = [ofEnableSizing, ofViewDetail];
+  
+type
+  
   TOpenDialog = class(TFileDialog)
   private
     FOnFolderChange: TNotifyEvent;
@@ -183,12 +188,12 @@ type
     function CheckAllFiles: boolean; virtual;
     function DoExecute: boolean; override;
   public
-    constructor Create(AOwner: TComponent); override;
+    constructor Create(TheOwner: TComponent); override;
     procedure DoFolderChange; virtual;
     procedure DoSelectionChange; virtual;
   published
     property Options: TOpenOptions read FOptions write FOptions
-      default [ofEnableSizing, ofViewDetail];
+      default DefaultOpenDialogOptions;
     property OnFolderChange: TNotifyEvent read FOnFolderChange write FOnFolderChange;
     property OnSelectionChange: TNotifyEvent read FOnSelectionChange write FOnSelectionChange;
   end;
@@ -411,6 +416,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.48  2004/03/20 17:36:56  mattias
+  added IDEIntf package and component editors for MemDS
+
   Revision 1.47  2004/03/17 00:34:37  marc
   * Interface reconstruction. Created skeleton units, classes and wscontrols
 

@@ -80,8 +80,8 @@ const
   );
   
   LazSyntaxHighlighterClasses: array[TLazSyntaxHighlighter] of TCustomSynClass =
-    ( nil, nil, TSynPasSyn, TSynPasSyn, TSynLFMSyn, TSynXMLSyn, TSynHTMLSyn,
-      TSynCPPSyn, TSynPerlSyn, TSynJavaSyn, TSynUNIXShellScriptSyn);
+    (nil, nil, TSynPasSyn, TSynPasSyn, TSynLFMSyn, TSynXMLSyn, TSynHTMLSyn,
+     TSynCPPSyn, TSynPerlSyn, TSynJavaSyn, TSynUNIXShellScriptSyn);
     
 
   { Comments }
@@ -2080,6 +2080,7 @@ begin
   SetComboBoxText(ColorSchemeComboBox,ColorSchemeComboBox.Text);
   FillColorElementListBox;
   FindCurHighlightElement;
+  ShowCurAttribute;
   
   // code Tools options
   with SynAutoComplete do begin
@@ -2602,14 +2603,16 @@ begin
     end;
     inc(a);
   end;
-  if (CurHighlightElement=nil) and (ColorElementListBox.Items.Count>0) then 
+  if (CurHighlightElement=nil) and (ColorElementListBox.Items.Count>0) then
   begin
     // none selected -> select one
     ColorElementListBox.Selected[0]:=true;
     i:=PreviewSyn.AttrCount-1;
     while (i>=0) do begin
-      if ColorElementListBox.Items[0]=PreviewSyn.Attribute[i].Name then
+      if ColorElementListBox.Items[0]=PreviewSyn.Attribute[i].Name then begin
+        CurHighlightElement:=PreviewSyn.Attribute[i];
         break;
+      end;
       dec(i);
     end;
   end;
@@ -2628,10 +2631,12 @@ end;
 procedure TEditorOptionsForm.SetPreviewSynInAllPreviews;
 var a:integer;
 begin
-  if EditorOpts.UseSyntaxHighlight then
-    for a:=Low(PreviewEdits) to High(PreviewEdits) do
-      if PreviewEdits[a]<>nil then
-        PreviewEdits[a].Highlighter:=PreviewSyn;
+  for a:=Low(PreviewEdits) to High(PreviewEdits) do
+    if PreviewEdits[a]<>nil then
+      if EditorOpts.UseSyntaxHighlight then
+        PreviewEdits[a].Highlighter:=PreviewSyn
+      else
+        PreviewEdits[a].Highlighter:=nil;
 end;
 
 procedure TEditorOptionsForm.ShowCurAttribute;
@@ -2774,12 +2779,12 @@ begin
     EndUpdate;
   end;
 
+  CurHighlightElement:=nil;
   if ColorElementListBox.Items.Count>0 then
   begin
     ColorElementListBox.Selected[0]:=true;
-    CurHighlightElement:=PreviewSyn.Attribute[0];
-  end
-  else CurHighlightElement:=nil;
+  end;
+  FindCurHighlightElement;
 end;
 
 procedure TEditorOptionsForm.ColorPreviewMouseUp(Sender:TObject;
@@ -2809,7 +2814,6 @@ begin
   if NewIndex>=0 then begin
     ColorElementListBox.ItemIndex:=NewIndex;
     FindCurHighlightElement;
-    ShowCurAttribute;
   end;
 end;
 

@@ -2253,7 +2253,7 @@ resourcestring
 
   // package explorer (package graph)
   lisPckExplLoadedPackages = 'Loaded Packages:';
-  lisPckExplIsRequiredBy = 'Is required by:';
+  lisPckExplIsRequiredBy = 'Selected package is required by:';
   lisPckExplPackageNotFound = 'Package %s not found';
   lisPckExplState = '%sState: ';
   lisPckExplAutoCreated = 'AutoCreated';
