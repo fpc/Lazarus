@@ -59,7 +59,12 @@ uses
   Project, ProjectDefs, NewProjectDlg, ProjectOpts, PublishProjectDlg,
   ProjectInspector,
   // designer
-  CompReg, IDEComp, AbstractFormEditor, Designer, FormEditor, CustomFormEditor,
+  {$IFDEF EnablePkgs}
+  ComponentReg,
+  {$ELSE}
+  CompReg, IDEComp,
+  {$ENDIF}
+  AbstractFormEditor, Designer, FormEditor, CustomFormEditor,
   ObjectInspector, PropEdits, ControlSelection, ColumnDlg,
   {$IFDEF UseNewMenuEditor}
   MenuEditorForm,
@@ -376,7 +381,9 @@ type
     procedure ConnectMainBarEvents;
     procedure SetupSpeedButtons;
     procedure SetupComponentNoteBook;
+    {$IFNDEF EnablePkgs}
     procedure SetupComponentTabs;
+    {$ENDIF}
     procedure SetupHints;
     procedure SetupOutputFilter;
     procedure SetupObjectInspector;
@@ -807,7 +814,9 @@ begin
   Name := NonModalIDEWindowNames[nmiwMainIDEName];
   EnvironmentOptions.IDEWindowLayoutList.Apply(TForm(Self),Name);
 
+  {$IFNDEF EnablePkgs}
   InitIDEComponents;
+  {$ENDIF}
   if LazarusResources.Find(ClassName)=nil then begin
     SetupMainMenu;
     SetupSpeedButtons;
@@ -829,7 +838,9 @@ begin
   SetupSourceNotebook;
   SetupTransferMacros;
   SetupControlSelection;
+  {$IFNDEF EnablePkgs}
   SetupComponentTabs;
+  {$ENDIF}
 
   // Main IDE bar created and setup completed -> Show it
   Show;
@@ -1065,12 +1076,13 @@ begin
   end;
 end;
 
+{$IFNDEF EnablePkgs}
 procedure TMainIDE.SetupComponentTabs;
 var
   PageCount, I, X: integer;
   RegComp     : TRegisteredComponent;
   RegCompPage : TRegisteredComponentPage;
-  IDEComponent: TIdeComponent;
+  IDEComponent: TIDEComponent;
   SelectionPointerPixmap: TPixmap;
 begin
   PageCount := 0;
@@ -1117,6 +1129,7 @@ begin
   ComponentNotebook.OnPageChanged := @ControlClick;
   ComponentNotebook.Show;
 end;
+{$ENDIF}
 
 procedure TMainIDE.SetupHints;
 var
@@ -4409,14 +4422,14 @@ begin
   if Project1.MainUnitID<0 then exit;
   MainUnitInfo:=Project1.MainUnitInfo;
   
-  // check if main unit is already loaded in source editor
-  if MainUnitInfo.Loaded then begin
+  // check if main unit is already open in source editor
+  if MainUnitInfo.Loaded and (not ProjectLoading) then begin
     // already loaded -> switch to source editor
     SourceNotebook.NoteBook.PageIndex:=MainUnitInfo.EditorIndex;
     Result:=mrOk;
     exit;
   end;
-  
+
   // open file in source notebook
   OpenFlags:=[];
   if ProjectLoading then Include(OpenFlags,ofProjectLoading);
@@ -8471,6 +8484,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.532  2003/04/21 18:00:52  mattias
+  fixed opening main unit
+
   Revision 1.531  2003/04/21 16:21:28  mattias
   implemented default package for custom IDE components
 
