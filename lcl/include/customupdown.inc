@@ -22,18 +22,18 @@ Type
   { TUpDownButton }
 
   TUpDownButton = Class(TSpeedButton)
-  Private
+  private
     BTimer : TTimer;
     FUpDown : TCustomUpDown;
     FButtonType : TUDBtnType;
-  Protected
+  protected
     procedure Click; Override;
     procedure ButtonMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure ButtonMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
-    procedure DblClick(Sender: TObject);
-  Public
+    procedure DoubleClick(Sender: TObject);
+  public
     constructor CreateWithParams(UpDown : TCustomUpDown;
       ButtonType : TUDBtnType);
 
@@ -72,7 +72,7 @@ begin
     end;
 end;
 
-procedure TUpDownButton.DblClick(Sender: TObject);
+procedure TUpDownButton.DoubleClick(Sender: TObject);
 begin
   Click;
 end;
@@ -120,7 +120,7 @@ begin
   ControlStyle := ControlStyle + [csNoFocus];
   OnMouseDown := @ButtonMouseDown;
   OnMouseUp := @ButtonMouseUp;
-  OnDblClick := @DblClick;
+  OnDblClick := @DoubleClick;
 end;
 
 Procedure TUpDownButton.Paint;
