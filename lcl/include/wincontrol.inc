@@ -2132,7 +2132,7 @@ begin
       with TWinControl(FWinControls.Items[n]) do
         if Visible then HandleNeeded;
   end;
-  //writeln('[TWinControl.CreateWnd] END ',Classname);
+  //writeln('[TWinControl.CreateWnd] END ',Name,':',Classname);
   //WriteClientRect('D');
 end;
 
@@ -2459,6 +2459,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.92  2002/10/08 22:32:27  lazarus
+  MG: fixed cool little bug (menu double attaching bug)
+
   Revision 1.91  2002/10/04 20:46:51  lazarus
   MG: improved TComboBox.SetItemIndex
 
