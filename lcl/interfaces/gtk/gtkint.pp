@@ -41,7 +41,7 @@ interface
 {off $DEFINE NoGdkPixbufLib}
 {$ENDIF}
 
-uses 
+uses
   InterfaceBase, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf} gtk, gdk,
   glib, SysUtils, LMessages, Classes, Controls, Forms, VclGlobals, 
   LCLLinux, LCLType, gtkDef, DynHashArray, LazQueue, GraphType, 
@@ -261,6 +261,10 @@ type
     destroy_func:     TGtkSignalDestroy;
   end;
 
+const
+  bmSignalAfter = $00200000;
+  
+type
   { lazarus GtkInterface definition for additional timer data, not in gtk }
   PGtkITimerInfo = ^TGtkITimerinfo;
   TGtkITimerInfo = record
@@ -345,13 +349,15 @@ const
 
 
 // some callbacks
-function GTKHiddenRealizeAfterCB(Widget: PGtkWidget; Data: Pointer): GBoolean; forward; cdecl;
+function GTKRealizeCB(Widget: PGtkWidget; Data: Pointer): GBoolean; cdecl; forward;
+function GTKRealizeAfterCB(Widget: PGtkWidget; Data: Pointer): GBoolean; cdecl; forward;
 function gtkMouseBtnPress(widget: PGtkWidget; event : pgdkEventButton;
   data: gPointer) : GBoolean; forward; cdecl;
 function GTKMotionNotify(Widget:PGTKWidget; event: PGDKEventMotion;
   data: gPointer): GBoolean; forward; cdecl;
 function gtkMouseBtnRelease(widget: PGtkWidget; event : pgdkEventButton;
   data: gPointer) : GBoolean; forward; cdecl;
+
 
 {$I dragicons.inc}
 {$I gtkproc.inc}
@@ -421,6 +427,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.60  2002/08/19 18:00:02  lazarus
+  MG: design signals for gtk internal widgets
+
   Revision 1.59  2002/08/17 15:45:33  lazarus
   MG: removed ClientRectBugfix defines
 
