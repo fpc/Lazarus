@@ -6696,41 +6696,6 @@ Begin
 end;
 
 {------------------------------------------------------------------------------
-  function TgtkObject.SetRadioButtonGroupMode(Handle: hWnd;
-    AutoGroup: boolean): Boolean;
- ------------------------------------------------------------------------------}
-function TgtkObject.SetRadioButtonGroupMode(Handle: hWnd;
-  AutoGroup: boolean): Boolean;
-var
-  NewGroup: PGSList;
-  LCLObject: TObject;
-  Parent: TWinControl;
-  i: Integer;
-begin
-  Result:=false;
-  NewGroup:=nil;
-  if AutoGroup then begin
-    // search another radiobutton with the same parent
-    LCLObject:=GetLCLObject(PGtkWidget(Handle));
-    if not (LCLObject is TRadioButton) then exit;
-    Parent:=TRadioButton(LCLObject).Parent;
-    if Parent<>nil then begin
-      for i:=0 to Parent.ComponentCount-1 do begin
-        if (not (Parent.Components[i] is TRadioButton))
-        or (not (TRadioButton(Parent.Components[i]).HandleAllocated))
-        then
-          continue;
-        NewGroup:=
-          PGtkRadioButton(TRadioButton(Parent.Components[i]).Handle)^.Group;
-        break;
-      end;
-    end;
-  end;
-  gtk_radio_button_set_group(PGtkRadioButton(Handle),NewGroup);
-  Result:=true;
-end;
-
-{------------------------------------------------------------------------------
   Function: SetScrollInfo
   Params:  none
   Returns: The old position value
@@ -7969,6 +7934,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.220  2003/03/17 20:53:16  mattias
+  removed SetRadioButtonGroupMode
+
   Revision 1.219  2003/03/17 20:50:30  mattias
   fixed TRadioGroup.ItemIndex=-1
 
