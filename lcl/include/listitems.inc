@@ -108,7 +108,7 @@ destructor TListItems.Destroy;
 begin
   while FItems.Count>0 do
     TListItem(FItems[0]).Free;
-  FItems.Free;
+  FreeThenNil(FItems);
   inherited Destroy;
 end;
 
@@ -145,6 +145,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.15  2002/11/18 13:38:44  mattias
+  fixed buffer overrun and added several checks
+
   Revision 1.14  2002/11/13 18:21:04  lazarus
   MG: added TListItems.Clear
 

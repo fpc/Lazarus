@@ -66,6 +66,7 @@ type
   public
     { public declarations }
     constructor Create(AOwner : TComponent); override;
+    destructor Destroy; override;
     property Columns: TListColumns read FColumns write SetColumns;
   end;
 
@@ -252,6 +253,12 @@ Begin
   end;
   FColumns := TListColumns.Create(nil);
   FSelectedIndex:= -1;
+end;
+
+destructor TColumnDlg.Destroy;
+begin
+  FreeAndNil(FColumns);
+  inherited Destroy;
 end;
 
 

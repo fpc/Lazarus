@@ -88,7 +88,7 @@ begin
   if FOwner <> nil
   then FOwner.ItemDeleted(Self);
   
-  SubItems.Free;    
+  FreeThenNil(FSubItems);
   inherited Destroy;
 end;
 
@@ -97,7 +97,7 @@ begin
   if AValue <> FImageIndex then
     Begin
       FImageIndex := AValue;
-      ItemChanged(self);
+      ItemChanged(Self);
     end;
 end;
 
@@ -119,6 +119,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.11  2002/11/18 13:38:44  mattias
+  fixed buffer overrun and added several checks
+
   Revision 1.10  2002/05/10 06:05:53  lazarus
   MG: changed license to LGPL
 

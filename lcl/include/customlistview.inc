@@ -16,7 +16,7 @@
 {------------------------------------------------------------------------------
    TCustomListView Constructor
 ------------------------------------------------------------------------------}
-constructor TCustomListView.Create(Aowner: TComponent);
+constructor TCustomListView.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FColumns := TListColumns.Create(self);
@@ -85,7 +85,8 @@ begin
 //    NM_CUSTOMDRAW:
 //    LVN_BEGINDRAG: 
     LVN_DELETEITEM: begin
-      //don'tcall delete yet, there is no sulution available when we have deleted the item first
+      // don't call delete yet,
+      // there is no solution available when we have deleted the item first
       Item := Items[nm^.iItem];
       DoDeletion(Item)
     end;
@@ -152,9 +153,9 @@ end;
 procedure TCustomListView.InitializeWnd;
 begin
   inherited InitializeWnd;
-  CNSendMessage(LM_SETPROPERTIES,self,nil);
+  CNSendMessage(LM_SETPROPERTIES,Self,nil);
   if FSelected<>nil then
-    CNSendMessage(LM_LV_SELECTITEM,self,FSelected);
+    CNSendMessage(LM_LV_SELECTITEM,Self,FSelected);
 end;
 
 procedure TCustomListView.Loaded;
@@ -252,7 +253,10 @@ end;
 {------------------------------------------------------------------------------}
 procedure TCustomListView.SetColumns(const AValue: TListColumns);
 begin
+  if AValue=FColumns then exit;
   FColumns.Assign(AValue);
+  if ([csDesigning,csLoading,csReading]*ComponentState=[csDesigning]) then
+    OwnerFormDesignerModified(Self);
 end;
          
 {------------------------------------------------------------------------------}
@@ -294,9 +298,9 @@ end;
 {------------------------------------------------------------------------------}
 destructor TCustomListView.Destroy;
 begin
-  Columns.Free;
-  FImageChangeLink.Free;
-  FListItems.Free;
+  FreeThenNil(FColumns);
+  FreeThenNil(FImageChangeLink);
+  FreeThenNil(FListItems);
   inherited Destroy;
 end;
 
@@ -314,11 +318,12 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-{   TCustomListView GetSelection                                                 }
+{   TCustomListView GetSelection                                               }
 {------------------------------------------------------------------------------}
 procedure TCustomListView.EndUpdate;
 begin
-  if FUpdateCount=0 then exit;
+  if FUpdateCount=0 then
+    RaiseGDBException('TCustomListView.EndUpdate FUpdateCount=0');
   dec(FUpdateCount);
   if FUpdateCount>0 then exit;
   DoUpdate;
@@ -330,7 +335,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-{   TCustomListView GetSelection                                                 }
+{   TCustomListView GetSelection                                               }
 {------------------------------------------------------------------------------}
 function TCustomListView.GetSelection: TListItem;
 begin
@@ -338,7 +343,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-{   TCustomListView SetSelection                                                 }
+{   TCustomListView SetSelection                                               }
 {------------------------------------------------------------------------------}
 procedure TCustomListView.SetSelection(const AValue: TListItem);
 begin
@@ -351,15 +356,17 @@ end;
 
 procedure TCustomListView.SetMultiSelect(const AValue: Boolean);
 begin
-  if MultiSelect <> AValue then
-  Begin
-    if AValue then
-      Include(FStates,lvMultiSelect)
-    else
-      Exclude(FStates,lvMultiSelect);
-    if (not HandleAllocated) or (csLoading in ComponentState) then
-      Include(FStates,lvUpdateNeeded);
-    CNSendMessage(LM_SETPROPERTIES,self,nil);
+  if MultiSelect = AValue then exit;
+  if AValue then
+    Include(FStates,lvMultiSelect)
+  else
+    Exclude(FStates,lvMultiSelect);
+  if FUpdateCount>0 then
+    Include(FStates,lvUpdateNeeded)
+  else begin
+    //notify the interface...
+    if (not HandleAllocated) or (csLoading in ComponentState) then exit;
+    CNSendMessage(LM_SETPROPERTIES,Self,nil);
   end;
 end;
 
@@ -384,7 +391,7 @@ end;
 
 Procedure TCustomListView.ImageChanged(Sender : TObject);
 begin
-  if csDestroying in Componentstate Then Exit;
+  if csDestroying in ComponentState Then Exit;
   if FUpdateCount>0 then
     Include(FStates,lvUpdateNeeded)
   else begin
@@ -396,9 +403,13 @@ end;
 
 procedure TCustomListView.SetScrollBars(const Value: TScrollStyle);
 begin
-  if (FScrollBars <> Value) then
-  begin
-    FScrollBars := Value;
+  if (FScrollBars = Value) then exit;
+  FScrollBars := Value;
+  if FUpdateCount>0 then
+    Include(FStates,lvUpdateNeeded)
+  else begin
+    //notify the interface...
+    if (not HandleAllocated) or (csLoading in ComponentState) then exit;
     RecreateWnd;
     UpdateScrollBars;
   end;
@@ -545,6 +556,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.24  2002/11/18 13:38:44  mattias
+  fixed buffer overrun and added several checks
+
   Revision 1.23  2002/10/09 11:46:04  lazarus
   MG: fixed loading TListView from stream
 

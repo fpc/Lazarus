@@ -157,7 +157,6 @@ type
     function GetIndex : Integer;
   protected
     Procedure ItemChanged(sender : TObject);  //called by the onchange of the tstringlist in TListItem
-
   public
     constructor Create(AOwner : TListItems);
     destructor Destroy; override;
@@ -248,6 +247,7 @@ type
     function Add: TListColumn;
     property Owner: TCustomListView read FOwner;
     property Items[const AIndex: Integer]: TListColumn read GetItem write SetItem; default;
+    procedure Assign(Source: TPersistent); override;
   end;
 
   TItemChange = (ctText, ctImage, ctState);
@@ -1699,6 +1699,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.59  2002/11/18 13:38:44  mattias
+  fixed buffer overrun and added several checks
+
   Revision 1.58  2002/11/13 18:21:04  lazarus
   MG: added TListItems.Clear
 

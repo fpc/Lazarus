@@ -20,6 +20,20 @@
 function TListColumns.Add: TListColumn;
 Begin
   Result := TListColumn(inherited Add);
+  if (Owner<>nil)
+  and ([csDesigning,csLoading,csReading]*Owner.ComponentState=[csDesigning])
+  then
+    OwnerFormDesignerModified(Owner);
+end;
+
+procedure TListColumns.Assign(Source: TPersistent);
+begin
+  if (Source=nil) or (Source=Self) then exit;
+  inherited Assign(Source);
+  if (Owner<>nil)
+  and ([csDesigning,csLoading,csReading]*Owner.ComponentState=[csDesigning])
+  then
+    OwnerFormDesignerModified(Owner);
 end;
 
 constructor TListColumns.Create(AOwner: TCustomListView);
@@ -40,15 +54,18 @@ end;
 
 procedure TListColumns.Update(AnItem: TCollectionItem);
 begin
-//TODO: Optimize implementation by invoking individual upadates instead of 
+//TODO: Optimize implementation by invoking individual updates instead of
 //      recreating window
-  if FOwner <>nil
-  then FOwner.ColumnsChanged;
+  if FOwner <>nil then
+    FOwner.ColumnsChanged;
 end;
 
 { =============================================================================
 
   $Log$
+  Revision 1.5  2002/11/18 13:38:44  mattias
+  fixed buffer overrun and added several checks
+
   Revision 1.4  2002/10/09 11:46:05  lazarus
   MG: fixed loading TListView from stream
 

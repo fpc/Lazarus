@@ -37,6 +37,8 @@ end;
 function TNBPages.Get(Index: Integer): String;
 begin
 //writeln('TNBPages.Get Index=',Index);
+  if (Index<0) or (Index>=fPageList.Count) then
+    RaiseGDBException('TNBPages.Get Index out of bounds');
   Result := TPage(fPageList[Index]).Caption;
 end;
 
@@ -53,6 +55,8 @@ end;
  ------------------------------------------------------------------------------}
 function TNBPages.GetObject(Index: Integer): TObject;
 begin
+  if (Index<0) or (Index>=fPageList.Count) then
+    RaiseGDBException('TNBPages.GetObject Index out of bounds');
   Result := TPage(fPageList[Index]);
 end;
 
@@ -63,6 +67,8 @@ procedure TNBPages.Put(Index: Integer; const S: String);
 var
   Msg: TLMNotebookEvent;
 begin
+  if (Index<0) or (Index>=fPageList.Count) then
+    RaiseGDBException('TNBPages.Put Index out of bounds');
   TPage(fPageList[Index]).Caption := S;
 
   if (FNoteBook.HandleAllocated)
@@ -464,8 +470,6 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomNotebook.GetPageIndex: Integer;
 begin
-  //we don't have to query the control.
-  //  FPageindex should track this along with the pagechanged handler.
   Result := fPageIndex;
 end;
 
@@ -495,6 +499,8 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomNotebook.GetPage(aIndex: Integer): TPage;
 begin
+  if (aIndex<0) or (aIndex>=fPageList.Count) then
+    RaiseGDBException('TCustomNotebook.GetPage Index out of bounds');
   Result := TPage(fPageList.Items[aIndex]);
 end;
 
@@ -697,6 +703,9 @@ end;}
 { =============================================================================
 
   $Log$
+  Revision 1.26  2002/11/18 13:38:44  mattias
+  fixed buffer overrun and added several checks
+
   Revision 1.25  2002/11/09 15:02:07  lazarus
   MG: fixed LM_LVChangedItem, OnShowHint, small bugs
 
