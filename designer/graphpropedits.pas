@@ -556,10 +556,7 @@ procedure TColorPropertyEditor.PropDrawValue(ACanvas:TCanvas; const ARect:TRect;
   AState:TPropEditDrawState);
 begin
   if GetVisualValue <> '' then begin
-    If pedsInEdit in AState then
-      ListDrawValue(GetVisualValue, -1, ACanvas, ARect, [pedsInEdit])
-    else
-      ListDrawValue(GetVisualValue, -1, ACanvas, ARect, [pedsInComboList]);
+    ListDrawValue(GetVisualValue, -1, ACanvas, ARect, [pedsInEdit])
   end
   else
     inherited PropDrawValue(ACanvas, ARect, AState);
@@ -607,7 +604,19 @@ begin
     vOldBrushColor := Brush.Color;
 
     // frame things
+    if pedsInEdit in AState then begin
+      if pedsSelected in AState then
+        Brush.Color := clWindow
+      else
+        Brush.Color := ACanvas.Color;
+      end else begin
+        if pedsSelected in AState then
+          Brush.Color := clHighlightText
+        else
+         Brush.Color := clWindow;
+      end;
     Pen.Color := Brush.Color;
+    FillRect(ARect);
     Rectangle(ARect.Left, ARect.Top, vRight, vBottom);
 
     // set things up and do the work
@@ -659,7 +668,7 @@ procedure TBrushStylePropertyEditor.PropDrawValue(ACanvas: TCanvas;
   const ARect: TRect;  AState:TPropEditDrawState);
 begin
   if GetVisualValue <> '' then
-    ListDrawValue(GetVisualValue, -1, ACanvas, ARect, [])
+    ListDrawValue(GetVisualValue, -1, ACanvas, ARect, [pedsInEdit])
   else
     inherited PropDrawValue(ACanvas, ARect, AState);
 end;
@@ -723,7 +732,7 @@ procedure TPenStylePropertyEditor.PropDrawValue(ACanvas: TCanvas;
   const ARect: TRect;  AState:TPropEditDrawState);
 begin
   if GetVisualValue <> '' then
-    ListDrawValue(GetVisualValue, -1, ACanvas, ARect, [])
+    ListDrawValue(GetVisualValue, -1, ACanvas, ARect, [pedsInEdit])
   else
     inherited PropDrawValue(ACanvas, ARect, AState);
 end;
