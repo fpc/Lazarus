@@ -26,6 +26,14 @@ msgstr " конфликтует с "
 msgid " The key \"%s\" is already connected to \"%s\"."
 msgstr "Клавика \"%s\" уже сопоставлена с \"%s\"."
 
+#: lazarusidestrconsts:liscompiling
+msgid "%s (compiling ...)"
+msgstr ""
+
+#: lazarusidestrconsts:lisdebugging
+msgid "%s (debugging ...)"
+msgstr ""
+
 #: lazarusidestrconsts:lisnewproject
 msgid "%s - (new project)"
 msgstr ""
@@ -806,6 +814,10 @@ msgstr "Закрыть все"
 msgid "Close all editor files"
 msgstr "Закрыть все файлы редактора"
 
+#: lazarusidestrconsts:dlgcodegeneration
+msgid "Code"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcodecreation
 msgid "Code Creation"
 msgstr "Создание кода"
@@ -813,10 +825,6 @@ msgstr "Создание кода"
 #: lazarusidestrconsts:lismenuviewcodeexplorer
 msgid "Code Explorer"
 msgstr "Обозреватель кода"
-
-#: lazarusidestrconsts:dlgcodegeneration
-msgid "Code Generation"
-msgstr "Создание кода"
 
 #: lazarusidestrconsts:dlgedcodeparams
 msgid "Code parameters"
@@ -902,6 +910,10 @@ msgstr "Параметры командной строки (без имени приложения)"
 msgid "Command line parameters of program"
 msgstr "Параметры командной строки программы"
 
+#: lazarusidestrconsts:liscocommand
+msgid "Command:"
+msgstr ""
+
 #: lazarusidestrconsts:lismenucommentselection
 msgid "Comment selection"
 msgstr "Закомментировать"
@@ -912,6 +924,10 @@ msgstr "Комментарий:"
 
 #: lazarusidestrconsts:lispckeditcompopts
 msgid "Comp. Opts."
+msgstr ""
+
+#: lazarusidestrconsts:dlgcocompilation
+msgid "Compilation"
 msgstr ""
 
 #: lazarusidestrconsts:lispckeditcompile
@@ -1061,6 +1077,10 @@ msgstr "Ошибка копирования"
 #: lazarusidestrconsts:srkmeccopy
 msgid "Copy selection to clipboard"
 msgstr "Копировать выделение в буфер"
+
+#: lazarusidestrconsts:dlgcopywordatcursoroncopynone
+msgid "Copy word on copy none"
+msgstr ""
 
 #: lazarusidestrconsts:lislgplnotice
 msgid "Copyright (C) <year> <name of author>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -1678,6 +1698,14 @@ msgstr "Испанский"
 msgid "Execute"
 msgstr "Выполнить"
 
+#: lazarusidestrconsts:liscoexecuteafter
+msgid "Execute after"
+msgstr ""
+
+#: lazarusidestrconsts:liscoexecutebefore
+msgid "Execute before"
+msgstr ""
+
 #: lazarusidestrconsts:lisexecutionpaused
 msgid "Execution paused"
 msgstr ""
@@ -2177,6 +2205,10 @@ msgstr "Справка"
 #: lazarusidestrconsts:srkmcarhelpmenu
 msgid "Help menu commands"
 msgstr "Команды меню Справка"
+
+#: lazarusidestrconsts:dlghideideonrun
+msgid "Hide IDE windows on run"
+msgstr ""
 
 #: lazarusidestrconsts:dlgedhintcommand
 msgid "Hint: click on the command you want to edit"
@@ -3678,6 +3710,10 @@ msgstr ""
 msgid "Path To Compiler:"
 msgstr "Путь к компилятору:"
 
+#: lazarusidestrconsts:dlgsearchpaths
+msgid "Paths"
+msgstr ""
+
 #: lazarusidestrconsts:lisuidpathsreadonly
 msgid "Paths (Read Only)"
 msgstr ""
@@ -4078,6 +4114,10 @@ msgstr "Отчет"
 msgid "Required Packages"
 msgstr ""
 
+#: lazarusidestrconsts:lismenuresetdebugger
+msgid "Reset debugger"
+msgstr ""
+
 #: lazarusidestrconsts:lisresourceloaderror
 msgid "Resource load error"
 msgstr ""
@@ -4258,6 +4298,14 @@ msgstr "Сохранить проект как..."
 msgid "Scale"
 msgstr "Масштаб"
 
+#: lazarusidestrconsts:liscoscanforfpcmessages
+msgid "Scan for FPC messages"
+msgstr ""
+
+#: lazarusidestrconsts:liscoscanformakemessages
+msgid "Scan for Make messages"
+msgstr ""
+
 #: lazarusidestrconsts:lisedtexttoolscanoutputforfreepascalcompilermessages
 msgid "Scan output for Free Pascal Compiler messages"
 msgstr ""
@@ -4313,10 +4361,6 @@ msgstr ""
 #: lazarusidestrconsts:lisfindfilesearchindirectories
 msgid "search in directories"
 msgstr ""
-
-#: lazarusidestrconsts:dlgsearchpaths
-msgid "Search Paths"
-msgstr "Пути поиска"
 
 #: lazarusidestrconsts:lispatheditsearchpaths
 msgid "Search paths:"
@@ -4638,6 +4682,10 @@ msgstr "Показать предупреждения"
 msgid "Size"
 msgstr "Размер"
 
+#: lazarusidestrconsts:liscoskipcallingcompiler
+msgid "Skip calling Compiler"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcosmaller
 msgid "Smaller Code"
 msgstr "Меньший код"
@@ -4686,7 +4734,7 @@ msgstr "Сортировка выбранного"
 msgid "Source directory %s%s%s does not exists."
 msgstr ""
 
-#: lazarusidestrconsts:dlgsrcedit
+#: lazarusidestrconsts:lismenuviewsourceeditor
 msgid "Source Editor"
 msgstr "Редактор исходников"
 
@@ -5898,10 +5946,6 @@ msgstr "Просмотр сообщений"
 msgid "View Object Inspector"
 msgstr "Показать Инспектор Объектов"
 
-#: lazarusidestrconsts:srkmectoggleprojectexpl
-msgid "View project explorer"
-msgstr "Показать обозреватель проекта"
-
 #: lazarusidestrconsts:dlgmainviewforms
 msgid "View project forms"
 msgstr "Показать формы проекта"
@@ -5913,6 +5957,10 @@ msgstr "Показать модули проекта"
 #: lazarusidestrconsts:lismenuviewsource
 msgid "View Source"
 msgstr "Просмотр исходника"
+
+#: lazarusidestrconsts:srkmectogglesourceeditor
+msgid "View Source Editor"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuviewprojecttodos
 msgid "View ToDo List"
@@ -5981,6 +6029,10 @@ msgstr "Ширина:"
 #: lazarusidestrconsts:dlgwinpos
 msgid "Window Positions"
 msgstr "Позиции окна"
+
+#: lazarusidestrconsts:dlgwindows
+msgid "Windows"
+msgstr ""
 
 #: lazarusidestrconsts:lislazbuildwithstaticpackages
 msgid "With Packages"

@@ -36,6 +36,14 @@ msgstr " steht im Konflikt mit "
 msgid " The key \"%s\" is already connected to \"%s\"."
 msgstr "Die Taste \"%s\" ist bereits belegt auf \"%s\"."
 
+#: lazarusidestrconsts:liscompiling
+msgid "%s (compiling ...)"
+msgstr ""
+
+#: lazarusidestrconsts:lisdebugging
+msgid "%s (debugging ...)"
+msgstr ""
+
 #: lazarusidestrconsts:lisnewproject
 msgid "%s - (new project)"
 msgstr "%s - (Neues Projekt)"
@@ -816,6 +824,10 @@ msgstr ""
 msgid "Close all editor files"
 msgstr ""
 
+#: lazarusidestrconsts:dlgcodegeneration
+msgid "Code"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcodecreation
 msgid "Code Creation"
 msgstr ""
@@ -823,10 +835,6 @@ msgstr ""
 #: lazarusidestrconsts:lismenuviewcodeexplorer
 msgid "Code Explorer"
 msgstr "Code Explorer"
-
-#: lazarusidestrconsts:dlgcodegeneration
-msgid "Code Generation"
-msgstr ""
 
 #: lazarusidestrconsts:dlgedcodeparams
 msgid "Code parameters"
@@ -912,6 +920,10 @@ msgstr ""
 msgid "Command line parameters of program"
 msgstr "Kommandozeilen Parameter des Programms"
 
+#: lazarusidestrconsts:liscocommand
+msgid "Command:"
+msgstr ""
+
 #: lazarusidestrconsts:lismenucommentselection
 msgid "Comment selection"
 msgstr ""
@@ -922,6 +934,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lispckeditcompopts
 msgid "Comp. Opts."
+msgstr ""
+
+#: lazarusidestrconsts:dlgcocompilation
+msgid "Compilation"
 msgstr ""
 
 #: lazarusidestrconsts:lispckeditcompile
@@ -1070,6 +1086,10 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmeccopy
 msgid "Copy selection to clipboard"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcopywordatcursoroncopynone
+msgid "Copy word on copy none"
 msgstr ""
 
 #: lazarusidestrconsts:lislgplnotice
@@ -1688,6 +1708,14 @@ msgstr ""
 msgid "Execute"
 msgstr ""
 
+#: lazarusidestrconsts:liscoexecuteafter
+msgid "Execute after"
+msgstr ""
+
+#: lazarusidestrconsts:liscoexecutebefore
+msgid "Execute before"
+msgstr ""
+
 #: lazarusidestrconsts:lisexecutionpaused
 msgid "Execution paused"
 msgstr ""
@@ -2186,6 +2214,10 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmcarhelpmenu
 msgid "Help menu commands"
+msgstr ""
+
+#: lazarusidestrconsts:dlghideideonrun
+msgid "Hide IDE windows on run"
 msgstr ""
 
 #: lazarusidestrconsts:dlgedhintcommand
@@ -3688,6 +3720,10 @@ msgstr ""
 msgid "Path To Compiler:"
 msgstr ""
 
+#: lazarusidestrconsts:dlgsearchpaths
+msgid "Paths"
+msgstr ""
+
 #: lazarusidestrconsts:lisuidpathsreadonly
 msgid "Paths (Read Only)"
 msgstr ""
@@ -4088,6 +4124,10 @@ msgstr ""
 msgid "Required Packages"
 msgstr ""
 
+#: lazarusidestrconsts:lismenuresetdebugger
+msgid "Reset debugger"
+msgstr ""
+
 #: lazarusidestrconsts:lisresourceloaderror
 msgid "Resource load error"
 msgstr ""
@@ -4268,6 +4308,14 @@ msgstr "Projekt speichern unter..."
 msgid "Scale"
 msgstr ""
 
+#: lazarusidestrconsts:liscoscanforfpcmessages
+msgid "Scan for FPC messages"
+msgstr ""
+
+#: lazarusidestrconsts:liscoscanformakemessages
+msgid "Scan for Make messages"
+msgstr ""
+
 #: lazarusidestrconsts:lisedtexttoolscanoutputforfreepascalcompilermessages
 msgid "Scan output for Free Pascal Compiler messages"
 msgstr ""
@@ -4322,10 +4370,6 @@ msgstr ""
 
 #: lazarusidestrconsts:lisfindfilesearchindirectories
 msgid "search in directories"
-msgstr ""
-
-#: lazarusidestrconsts:dlgsearchpaths
-msgid "Search Paths"
 msgstr ""
 
 #: lazarusidestrconsts:lispatheditsearchpaths
@@ -4648,6 +4692,10 @@ msgstr ""
 msgid "Size"
 msgstr ""
 
+#: lazarusidestrconsts:liscoskipcallingcompiler
+msgid "Skip calling Compiler"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcosmaller
 msgid "Smaller Code"
 msgstr ""
@@ -4696,7 +4744,7 @@ msgstr ""
 msgid "Source directory %s%s%s does not exists."
 msgstr ""
 
-#: lazarusidestrconsts:dlgsrcedit
+#: lazarusidestrconsts:lismenuviewsourceeditor
 msgid "Source Editor"
 msgstr ""
 
@@ -5908,10 +5956,6 @@ msgstr ""
 msgid "View Object Inspector"
 msgstr ""
 
-#: lazarusidestrconsts:srkmectoggleprojectexpl
-msgid "View project explorer"
-msgstr ""
-
 #: lazarusidestrconsts:dlgmainviewforms
 msgid "View project forms"
 msgstr ""
@@ -5923,6 +5967,10 @@ msgstr ""
 #: lazarusidestrconsts:lismenuviewsource
 msgid "View Source"
 msgstr "Zeige Projektcode"
+
+#: lazarusidestrconsts:srkmectogglesourceeditor
+msgid "View Source Editor"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuviewprojecttodos
 msgid "View ToDo List"
@@ -5990,6 +6038,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgwinpos
 msgid "Window Positions"
+msgstr ""
+
+#: lazarusidestrconsts:dlgwindows
+msgid "Windows"
 msgstr ""
 
 #: lazarusidestrconsts:lislazbuildwithstaticpackages

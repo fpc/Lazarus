@@ -35,6 +35,14 @@ msgstr "Confli avec "
 msgid " The key \"%s\" is already connected to \"%s\"."
 msgstr "La touche \"%s\" est déjà associée à la commande \"%s\"."
 
+#: lazarusidestrconsts:liscompiling
+msgid "%s (compiling ...)"
+msgstr ""
+
+#: lazarusidestrconsts:lisdebugging
+msgid "%s (debugging ...)"
+msgstr ""
+
 #: lazarusidestrconsts:lisnewproject
 msgid "%s - (new project)"
 msgstr "%s - (nouveau projet)"
@@ -815,6 +823,10 @@ msgstr "Fermer tout"
 msgid "Close all editor files"
 msgstr "Fermer tous les fichiers ouverts"
 
+#: lazarusidestrconsts:dlgcodegeneration
+msgid "Code"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcodecreation
 msgid "Code Creation"
 msgstr "Création de code"
@@ -822,10 +834,6 @@ msgstr "Création de code"
 #: lazarusidestrconsts:lismenuviewcodeexplorer
 msgid "Code Explorer"
 msgstr "Explorateur de code"
-
-#: lazarusidestrconsts:dlgcodegeneration
-msgid "Code Generation"
-msgstr "Génération de code"
 
 #: lazarusidestrconsts:dlgedcodeparams
 msgid "Code parameters"
@@ -911,6 +919,10 @@ msgstr "Ligne de commande (paramètres sans le nom de l'application)"
 msgid "Command line parameters of program"
 msgstr "Paramètres du programme"
 
+#: lazarusidestrconsts:liscocommand
+msgid "Command:"
+msgstr ""
+
 #: lazarusidestrconsts:lismenucommentselection
 msgid "Comment selection"
 msgstr "Mise en commentaire de la sélection"
@@ -922,6 +934,10 @@ msgstr "Commentaire:"
 #: lazarusidestrconsts:lispckeditcompopts
 msgid "Comp. Opts."
 msgstr "Comp. Options"
+
+#: lazarusidestrconsts:dlgcocompilation
+msgid "Compilation"
+msgstr ""
 
 #: lazarusidestrconsts:lispckeditcompile
 msgid "Compile"
@@ -1070,6 +1086,10 @@ msgstr "Erreur de copie"
 #: lazarusidestrconsts:srkmeccopy
 msgid "Copy selection to clipboard"
 msgstr "Copie de la sélection dans le presse papier"
+
+#: lazarusidestrconsts:dlgcopywordatcursoroncopynone
+msgid "Copy word on copy none"
+msgstr ""
 
 #: lazarusidestrconsts:lislgplnotice
 msgid "Copyright (C) <year> <name of author>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -1687,6 +1707,14 @@ msgstr "Espagnol"
 msgid "Execute"
 msgstr "Exécuter"
 
+#: lazarusidestrconsts:liscoexecuteafter
+msgid "Execute after"
+msgstr ""
+
+#: lazarusidestrconsts:liscoexecutebefore
+msgid "Execute before"
+msgstr ""
+
 #: lazarusidestrconsts:lisexecutionpaused
 msgid "Execution paused"
 msgstr "Suspendre l'exécution"
@@ -2186,6 +2214,10 @@ msgstr "Aide"
 #: lazarusidestrconsts:srkmcarhelpmenu
 msgid "Help menu commands"
 msgstr "Commandes du menu Aide"
+
+#: lazarusidestrconsts:dlghideideonrun
+msgid "Hide IDE windows on run"
+msgstr ""
 
 #: lazarusidestrconsts:dlgedhintcommand
 msgid "Hint: click on the command you want to edit"
@@ -3687,6 +3719,10 @@ msgstr "Chemin de modèles"
 msgid "Path To Compiler:"
 msgstr "Chemins à compiler"
 
+#: lazarusidestrconsts:dlgsearchpaths
+msgid "Paths"
+msgstr ""
+
 #: lazarusidestrconsts:lisuidpathsreadonly
 msgid "Paths (Read Only)"
 msgstr "Chemins (Lecture seule)"
@@ -4087,6 +4123,10 @@ msgstr "Rapport"
 msgid "Required Packages"
 msgstr "Paquets requis"
 
+#: lazarusidestrconsts:lismenuresetdebugger
+msgid "Reset debugger"
+msgstr ""
+
 #: lazarusidestrconsts:lisresourceloaderror
 msgid "Resource load error"
 msgstr "Erreur de lecture de ressource"
@@ -4267,6 +4307,14 @@ msgstr "Enregistrer le projet sous ..."
 msgid "Scale"
 msgstr "Zoomé"
 
+#: lazarusidestrconsts:liscoscanforfpcmessages
+msgid "Scan for FPC messages"
+msgstr ""
+
+#: lazarusidestrconsts:liscoscanformakemessages
+msgid "Scan for Make messages"
+msgstr ""
+
 #: lazarusidestrconsts:lisedtexttoolscanoutputforfreepascalcompilermessages
 msgid "Scan output for Free Pascal Compiler messages"
 msgstr ""
@@ -4322,10 +4370,6 @@ msgstr "recherche tous les fichiers ouverts"
 #: lazarusidestrconsts:lisfindfilesearchindirectories
 msgid "search in directories"
 msgstr "recherche dans tous les réperoires"
-
-#: lazarusidestrconsts:dlgsearchpaths
-msgid "Search Paths"
-msgstr "Chemins de recherche"
 
 #: lazarusidestrconsts:lispatheditsearchpaths
 msgid "Search paths:"
@@ -4647,6 +4691,10 @@ msgstr "Affiche les avertissements"
 msgid "Size"
 msgstr "Taille"
 
+#: lazarusidestrconsts:liscoskipcallingcompiler
+msgid "Skip calling Compiler"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcosmaller
 msgid "Smaller Code"
 msgstr "Du code lent"
@@ -4695,7 +4743,7 @@ msgstr "Trier la sélection"
 msgid "Source directory %s%s%s does not exists."
 msgstr "Le répertoire source %s%s% n'existe pas"
 
-#: lazarusidestrconsts:dlgsrcedit
+#: lazarusidestrconsts:lismenuviewsourceeditor
 msgid "Source Editor"
 msgstr "Editeur de source"
 
@@ -5907,10 +5955,6 @@ msgstr "Voir les messages"
 msgid "View Object Inspector"
 msgstr "Voir l'inspecteur d'objet"
 
-#: lazarusidestrconsts:srkmectoggleprojectexpl
-msgid "View project explorer"
-msgstr "Voir l'explorateur de projet"
-
 #: lazarusidestrconsts:dlgmainviewforms
 msgid "View project forms"
 msgstr "Voir les fiches du projet"
@@ -5922,6 +5966,10 @@ msgstr "Voir les unités du projet"
 #: lazarusidestrconsts:lismenuviewsource
 msgid "View Source"
 msgstr "Voir le source"
+
+#: lazarusidestrconsts:srkmectogglesourceeditor
+msgid "View Source Editor"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuviewprojecttodos
 msgid "View ToDo List"
@@ -5990,6 +6038,10 @@ msgstr "Largeur:"
 #: lazarusidestrconsts:dlgwinpos
 msgid "Window Positions"
 msgstr "Positions de fenêtre"
+
+#: lazarusidestrconsts:dlgwindows
+msgid "Windows"
+msgstr ""
 
 #: lazarusidestrconsts:lislazbuildwithstaticpackages
 msgid "With Packages"

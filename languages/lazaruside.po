@@ -406,6 +406,10 @@ msgstr ""
 msgid "Object Inspector"
 msgstr ""
 
+#: lazarusidestrconsts:lismenuviewsourceeditor
+msgid "Source Editor"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuviewcodeexplorer
 msgid "Code Explorer"
 msgstr ""
@@ -536,6 +540,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenustop
 msgid "Stop"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuresetdebugger
+msgid "Reset debugger"
 msgstr ""
 
 #: lazarusidestrconsts:lismenucompileroptions
@@ -958,10 +966,6 @@ msgstr ""
 msgid "Error initializing program%s%s%s%s%sError: %s"
 msgstr ""
 
-#: lazarusidestrconsts:liserrorinitializingprogramserrors2
-msgid "Error initializing program%s%s%s%s%sError: %s"
-msgstr ""
-
 #: lazarusidestrconsts:lisunabletosavefile
 msgid "Unable to save file %s%s%s"
 msgstr ""
@@ -1028,6 +1032,14 @@ msgstr ""
 
 #: lazarusidestrconsts:lisnewproject
 msgid "%s - (new project)"
+msgstr ""
+
+#: lazarusidestrconsts:liscompiling
+msgid "%s (compiling ...)"
+msgstr ""
+
+#: lazarusidestrconsts:lisdebugging
+msgid "%s (debugging ...)"
 msgstr ""
 
 #: lazarusidestrconsts:lisunabletofindfile
@@ -1306,6 +1318,10 @@ msgstr ""
 msgid "Desktop"
 msgstr ""
 
+#: lazarusidestrconsts:dlgwindows
+msgid "Windows"
+msgstr ""
+
 #: lazarusidestrconsts:dlgfrmeditor
 msgid "Form Editor"
 msgstr ""
@@ -1364,6 +1380,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgminimizeallonminimizemain
 msgid "Minimize all on minimize main"
+msgstr ""
+
+#: lazarusidestrconsts:dlghideideonrun
+msgid "Hide IDE windows on run"
 msgstr ""
 
 #: lazarusidestrconsts:dlgpalhints
@@ -1774,6 +1794,10 @@ msgstr ""
 msgid "Use syntax highlight"
 msgstr ""
 
+#: lazarusidestrconsts:dlgcopywordatcursoroncopynone
+msgid "Copy word on copy none"
+msgstr ""
+
 #: lazarusidestrconsts:dlgblockindent
 msgid "Block indent:"
 msgstr ""
@@ -2115,7 +2139,7 @@ msgid "Compiler Options"
 msgstr ""
 
 #: lazarusidestrconsts:dlgsearchpaths
-msgid "Search Paths"
+msgid "Paths"
 msgstr ""
 
 #: lazarusidestrconsts:dlgcoparsing
@@ -2123,7 +2147,7 @@ msgid "Parsing"
 msgstr ""
 
 #: lazarusidestrconsts:dlgcodegeneration
-msgid "Code Generation"
+msgid "Code"
 msgstr ""
 
 #: lazarusidestrconsts:dlgcolinking
@@ -2140,6 +2164,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgcoinherited
 msgid "Inherited"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcocompilation
+msgid "Compilation"
 msgstr ""
 
 #: lazarusidestrconsts:dlgshowcompileroptions
@@ -2440,6 +2468,30 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgtofpcpath
 msgid "Path To Compiler:"
+msgstr ""
+
+#: lazarusidestrconsts:liscoskipcallingcompiler
+msgid "Skip calling Compiler"
+msgstr ""
+
+#: lazarusidestrconsts:liscoexecuteafter
+msgid "Execute after"
+msgstr ""
+
+#: lazarusidestrconsts:liscoexecutebefore
+msgid "Execute before"
+msgstr ""
+
+#: lazarusidestrconsts:liscocommand
+msgid "Command:"
+msgstr ""
+
+#: lazarusidestrconsts:liscoscanforfpcmessages
+msgid "Scan for FPC messages"
+msgstr ""
+
+#: lazarusidestrconsts:liscoscanformakemessages
+msgid "Scan for Make messages"
 msgstr ""
 
 #: lazarusidestrconsts:dlgunitoutp
@@ -3334,12 +3386,12 @@ msgstr ""
 msgid "View Object Inspector"
 msgstr ""
 
-#: lazarusidestrconsts:srkmectoggleprojectexpl
-msgid "View project explorer"
+#: lazarusidestrconsts:srkmectogglesourceeditor
+msgid "View Source Editor"
 msgstr ""
 
 #: lazarusidestrconsts:srkmectogglecodeexpl
-msgid "View code explorer"
+msgid "View Code Explorer"
 msgstr ""
 
 #: lazarusidestrconsts:srkmectogglemessages
@@ -3424,6 +3476,10 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecstopprogram
 msgid "stop program"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecresetdebugger
+msgid "reset debugger"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecrunparameters
