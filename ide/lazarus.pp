@@ -40,7 +40,7 @@ program Lazarus;
   {$R *.res}
 {$ENDIF}
 
-{$DEFINE IDE_MEM_CHECK}
+{ $DEFINE IDE_MEM_CHECK}
 
 uses
   //cmem,
@@ -99,6 +99,9 @@ end.
 
 {
   $Log$
+  Revision 1.52  2003/08/18 14:40:29  mattias
+  deactivated memcheck
+
   Revision 1.51  2003/08/18 13:21:23  mattias
   renamed lazqueue to lazlinkedlist, patch from Jeroen
 
