@@ -124,16 +124,18 @@ begin
 end;   
 
 type
-  TMethodNameTable = packed record
-    Count: DWord;
-    Entries: packed array[0..0] of packed record
+  TMethodNameTableEntry = packed record
       Name: PShortstring;
       Addr: Pointer;
     end;
+
+  TMethodNameTable = packed record
+    Count: DWord;
+    Entries: packed array[0..9999999] of TMethodNameTableEntry;
   end;
   PMethodNameTable =  ^TMethodNameTable;
   
-  TPointerArray = packed array[0..0] of Pointer;
+  TPointerArray = packed array[0..9999999] of Pointer;
   PPointerArray = ^TPointerArray;
 
 procedure RegisterWSComponent(const AComponent: TComponentClass;

@@ -43,7 +43,7 @@ uses
   Comctrls, Graphics, StdCtrls, Arrow, Controls, ImgList, Menus, Toolwin,
   Dialogs, Messages, Clistbox, ActnList, Grids, MaskEdit,
   Printers, PostScriptPrinter, CheckLst, PairSplitter, ExtDlgs,
-  DBCtrls, DBGrids, EditBtn,
+  DBCtrls, DBGrids, EditBtn, ExtGraphics,
   // widgetset skeleton
   WSActnList, WSArrow, WSButtons, WSCalendar,
   WSCheckLst, WSCListBox, WSComCtrls, WSControls,
@@ -60,6 +60,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.13  2004/05/01 23:24:19  mattias
+  fixed range check error and added extgraphics.pas
+
   Revision 1.12  2004/04/29 18:08:17  mattias
   fixed 1.0.10 compilation
 
