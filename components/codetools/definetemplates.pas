@@ -2872,6 +2872,9 @@ begin
   DefTempl:=TDefineTemplate.Create('Reset SrcPath',
     ctsSrcPathInitialization,ExternalMacroStart+'SrcPath','',da_DefineRecurse);
   MainDir.AddChild(DefTempl);
+  DefTempl:=TDefineTemplate.Create('Reset UnitPath',
+    ctsSrcPathInitialization,ExternalMacroStart+'UnitPath','',da_DefineRecurse);
+  MainDir.AddChild(DefTempl);
   // turn Nested comments on
   DefTempl:=TDefineTemplate.Create('Nested Comments',
     ctsNestedCommentsOn,ExternalMacroStart+'NestedComments','',da_DefineRecurse);

@@ -348,6 +348,8 @@ type
     CurrentParsedCompilerOption: TParsedCompilerOptions;
     MacroList: TTransferMacroList;
 
+    procedure CreateOftenUsedForms; virtual; abstract;
+
     function FindUnitFile(const AFilename: string): string; virtual; abstract;
     procedure GetCurrentUnit(var ActiveSourceEditor:TSourceEditor;
       var ActiveUnitInfo:TUnitInfo); virtual; abstract;

@@ -70,8 +70,8 @@ type
     property OnSelectionChanged : TNotifyEvent read FOnSelectionChanged write FOnSelectionChanged;
   end;
 
-const
-  MessagesView : TMessagesView = nil;
+var
+  MessagesView: TMessagesView;
 
 
 implementation
@@ -220,6 +220,7 @@ begin
 end;
 
 initialization
+  MessagesView:=nil;
   { $I msgview.lrs}
 
 

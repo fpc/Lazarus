@@ -27,7 +27,7 @@ unit UnitInfoDlg;
 interface
 
 uses
-  Classes, SysUtils, Controls, StdCtrls, Forms, Buttons, ExtCtrls;
+  Classes, SysUtils, Controls, StdCtrls, Forms, Buttons, ExtCtrls, IDEProcs;
 
 type
   TUnitInfoDlg = class(TFORM)
@@ -59,7 +59,9 @@ type
     procedure OkButtonClick(Sender:TObject);
     procedure clearIncludedByClick(Sender: TObject);
   private
+    FFilePath: string;
     function getIncludedBy: string;
+    procedure setFilePath(const AFilePath: string);
     procedure setShortName(const str:string);
     procedure setType(const str:string);
     procedure setInProject(const str:string);
@@ -95,6 +97,7 @@ begin
   Dlg:=TUnitInfoDlg.Create(Application);
   with Dlg do begin
     Caption:='Information about '+AnUnitName;
+    setFilePath(FilePath);
     setShortName(AnUnitName);
     setType(AType);
     if IsPartOfProject then
@@ -554,6 +557,11 @@ end;
 function TUnitInfoDlg.getIncludedBy: string;
 begin
   Result:=outIncludedBy.Caption;
+end;
+
+procedure TUnitInfoDlg.setFilePath(const AFilePath: string);
+begin
+  FFilePath:=AFilePath;
 end;
 
 end.

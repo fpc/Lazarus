@@ -208,6 +208,9 @@ type
     fPascalFileAskLowerCase: boolean;
     fAmbigiousFileAction: TAmbigiousFileAction;
     
+    // auto install packages
+    fAutoInstallPackages: TStringList;
+    
     // language
     fLanguage: TLazarusLanguage;
     
@@ -359,6 +362,9 @@ type
        
     // language
     property Language: TLazarusLanguage read fLanguage write fLanguage;
+    
+    // auto install packages
+    property AutoInstallPackages: TStringList read fAutoInstallPackages;
   end;
 
   //----------------------------------------------------------------------------
@@ -706,13 +712,18 @@ begin
   // external tools
   fExternalTools:=TExternalToolList.Create;
   
+  // naming
   fPascalFileExtension:=petPAS;
   fPascalFileAutoLowerCase:=false;
   fPascalFileAskLowerCase:=true;
+  
+  // auto install packages
+  fAutoInstallPackages:=TStringList.Create;
 end;
 
 destructor TEnvironmentOptions.Destroy;
 begin
+  fAutoInstallPackages.Free;
   fExternalTools.Free;
   FRecentOpenFiles.Free;
   FRecentProjectFiles.Free;
@@ -940,6 +951,10 @@ begin
         ,'EnvironmentOptions/BackupProjectFiles/');
       LoadBackupInfo(FBackupInfoOtherFiles
         ,'EnvironmentOptions/BackupOtherFiles/');
+        
+      // auto install packages
+      LoadStringList(XMLConfig,fAutoInstallPackages,
+                     'EnvironmentOptions/AutoInstallPackages/');
     end;
 
     // hints
@@ -1123,6 +1138,10 @@ begin
         ,'EnvironmentOptions/BackupProjectFiles/');
       SaveBackupInfo(FBackupInfoOtherFiles
         ,'EnvironmentOptions/BackupOtherFiles/');
+
+      // auto install packages
+      SaveStringList(XMLConfig,fAutoInstallPackages,
+                     'EnvironmentOptions/AutoInstallPackages/');
     end;
 
     // hints

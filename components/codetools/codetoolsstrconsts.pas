@@ -162,6 +162,7 @@ ResourceString
                                   'Source filenames for the standard fpc units';
   ctsFreePascalSourceDir = 'Free Pascal Source Directory';
   ctsSrcPathInitialization = 'SrcPath Initialization';
+  ctsUnitPathInitialization = 'UnitPath Initialization';
   ctsNestedCommentsOn = 'Nested Comments On';
   ctsCompiler = 'Compiler';
   ctsDefineProzessorType = 'Define processor type';

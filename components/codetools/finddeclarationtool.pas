@@ -1229,8 +1229,16 @@ begin
     exit;
   if Assigned(OnGetUnitSourceSearchPath) then
     UnitSrcSearchPath:=OnGetUnitSourceSearchPath(Self)
-  else
+  else begin
+    UnitSearchPath:=Scanner.Values[ExternalMacroStart+'UnitPath'];
     UnitSrcSearchPath:=Scanner.Values[ExternalMacroStart+'SrcPath'];
+    if UnitSearchPath<>'' then begin
+      if UnitSrcSearchPath<>'' then
+        UnitSrcSearchPath:=UnitSrcSearchPath+';'+UnitSearchPath
+      else
+        UnitSrcSearchPath:=UnitSearchPath;
+    end;
+  end;
   {$IFDEF ShowSearchPaths}
   writeln('TFindDeclarationTool.FindUnitSource ',
   ' Self="',MainFilename,'"',

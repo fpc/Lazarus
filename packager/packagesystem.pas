@@ -272,7 +272,7 @@ begin
   if FRegistrationPackage=AValue then exit;
   FRegistrationPackage:=AValue;
   AbortRegistration:=false;
-  LazarusPackageIntf.RegisterUnit:=@RegisterUnitHandler;
+  LazarusPackageIntf.RegisterUnitProc:=@RegisterUnitHandler;
   RegisterComponentsProc:=@RegisterComponentsGlobalHandler;
   RegisterNoIconProc:=@RegisterNoIconGlobalHandler;
 end;
@@ -338,8 +338,8 @@ end;
 
 destructor TLazPackageGraph.Destroy;
 begin
-  if LazarusPackageIntf.RegisterUnit=@RegisterUnitHandler then
-    LazarusPackageIntf.RegisterUnit:=nil;
+  if LazarusPackageIntf.RegisterUnitProc=@RegisterUnitHandler then
+    LazarusPackageIntf.RegisterUnitProc:=nil;
   if RegisterComponentsProc=@RegisterComponentsGlobalHandler then
     RegisterComponentsProc:=nil;
   if RegisterNoIconProc=@RegisterNoIconGlobalHandler then
@@ -806,7 +806,7 @@ begin
     AutoCreated:=true;
     Name:='FCL';
     Filename:='$(FPCSrcDir)/fcl/';
-    Version.SetValues(1,0,1,1);
+    Version.SetValues(1,0,0,0);
     Author:='FPC team';
     License:='LGPL-2';
     AutoInstall:=pitStatic;
@@ -837,7 +837,7 @@ begin
     AutoCreated:=true;
     Name:='LCL';
     Filename:='$(LazarusDir)/lcl/';
-    Version.SetValues(1,0,1,1);
+    Version.SetValues(1,0,0,0);
     Author:='Lazarus';
     License:='LGPL-2';
     AutoInstall:=pitStatic;
@@ -847,6 +847,9 @@ begin
     PackageType:=lptDesignTime;
     Installed:=pitStatic;
     CompilerOptions.UnitOutputDirectory:='';
+
+    // add requirements
+    AddRequiredDependency(FCLPackage.CreateDependencyForThisPkg);
 
     // add registering units
     AddFile('menus.pp','Menus',pftUnit,[pffHasRegisterProc],cpBase);
@@ -870,10 +873,11 @@ begin
     // add unit paths
     UsageOptions.UnitPath:=
       '$(LazarusDir)/lcl/units;$(LazarusDir)/lcl/units/$(LCLWidgetType)';
+      
+    // use the lcl/units/allunits.o file as indicator,
+    // if LCL has been recompiled
+    OutputStateFile:='$(LazarusDir)/lcl/units/allunits.o';
 
-    // add requirements
-    AddRequiredDependency(FCLPackage.CreateDependencyForThisPkg);
-    
     Modified:=false;
   end;
 end;
@@ -896,6 +900,9 @@ begin
     Installed:=pitStatic;
     CompilerOptions.UnitOutputDirectory:='';
 
+    // add requirements
+    AddRequiredDependency(LCLPackage.CreateDependencyForThisPkg);
+
     // add units
     AddFile('synedit.pp','SynEdit',pftUnit,[],cpBase);
     AddFile('syneditlazdsgn.pas','SynEditLazDsgn',pftUnit,[],cpBase);
@@ -915,8 +922,9 @@ begin
     // add unit paths
     UsageOptions.UnitPath:='$(LazarusDir)/components/units';
 
-    // add requirements
-    AddRequiredDependency(LCLPackage.CreateDependencyForThisPkg);
+    // use the lcl/units/allunits.o file as indicator,
+    // if synedit has been recompiled
+    OutputStateFile:='$(LazarusDir)/components/units/allunits.o';
 
     Modified:=false;
   end;

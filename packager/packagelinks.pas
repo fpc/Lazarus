@@ -77,7 +77,7 @@ type
 
   TPackageLinks = class
   private
-    FGlobalLinks: TAVLTree; // tree of TPackageLink
+    FGlobalLinks: TAVLTree; // tree of TPackageLink sorted for ID
     FModified: boolean;
     FUserLinks: TAVLTree; // tree of TPackageLink
     fUpdateLock: integer;

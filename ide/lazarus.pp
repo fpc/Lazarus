@@ -51,14 +51,15 @@ uses
   Forms,
   Splash,
   Main,
-  MainBar,
-  MsgView,
-  FindReplaceDialog,
-  FindInFilesDlg;
+  // use the custom IDE static packages AFTER 'main'
+  {$IFDEF AddStaticPkgs}
+  {$I staticpackages.inc}
+  {$ENDIF}
+  MainBar;
 
 begin
   Application.Initialize;
-  TMainIde.ParseCmdLineOptions;
+  TMainIDE.ParseCmdLineOptions;
 
   // Show splashform
   SplashForm := TSplashForm.Create(nil);
@@ -69,14 +70,11 @@ begin
   Application.ProcessMessages; // process splash paint message
 
   Application.CreateForm(TMainIDE, MainIDE);
+  MainIDE.CreateOftenUsedForms;
   {$IFDEF IDE_MEM_CHECK}
   CheckHeapWrtMemCnt('lazarus.pp: TMainIDE created');
   {$ENDIF}
-  Application.CreateForm(TMessagesView, MessagesView);
 
-  Application.CreateForm(TLazFindReplaceDialog, FindReplaceDlg);
-  Application.CreateForm(TLazFindInFilesDialog, FindInFilesDialog);
-  
   SplashForm.StartTimer;
   Application.Run;
   SplashForm.Free;
@@ -92,6 +90,9 @@ end.
 
 {
   $Log$
+  Revision 1.43  2003/04/26 07:34:54  mattias
+  implemented custom package initialization
+
   Revision 1.42  2003/04/21 16:21:28  mattias
   implemented default package for custom IDE components
 

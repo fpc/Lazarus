@@ -770,6 +770,7 @@ var
   CurFile: TPkgFile;
   Dependency: TPkgDependency;
   RequiredPackage: TLazPackage;
+  OtherStateFile: String;
 begin
   Result:=mrYes;
   writeln('TPkgManager.CheckIfPackageNeedsCompilation A ',APackage.IDAsString);
@@ -799,6 +800,7 @@ begin
   while Dependency<>nil do begin
     if (Dependency.LoadPackageResult=lprSuccess) then begin
       RequiredPackage:=Dependency.RequiredPackage;
+      // check compile state file of required package
       if not RequiredPackage.AutoCreated then begin
         Result:=DoLoadPackageCompiledState(RequiredPackage,false);
         if Result<>mrOk then exit;
@@ -813,6 +815,14 @@ begin
             'State file ',APackage.IDAsString);
           exit;
         end;
+      end;
+      // check output state file of required package
+      if RequiredPackage.OutputStateFile<>'' then begin
+        OtherStateFile:=RequiredPackage.OutputStateFile;
+        MainIDE.MacroList.SubstituteStr(OtherStateFile);
+        if FileExists(OtherStateFile)
+        and (FileAge(OtherStateFile)>StateFileAge) then
+          exit;
       end;
     end;
     Dependency:=Dependency.NextRequiresDependency;
@@ -1679,14 +1689,15 @@ begin
       +'uses'+e
       +'  '+UsedUnits+', LazarusPackageIntf;'+e
       +e
-      +'procedure Register;'+e
-      +e
       +'implementation'+e
       +e
       +'procedure Register;'+e
       +'begin'+e
       +RegistrationCode
       +'end;'+e
+      +e
+      +'initialization'
+      +'  RegisterPackage('''+APackage.Name+''',@Register)'
       +e
       +'end.'+e;
   Src:=CodeToolBoss.SourceChangeCache.BeautifyCodeOptions.

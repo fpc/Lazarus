@@ -439,6 +439,7 @@ type
     FLicense: string;
     FMacros: TTransferMacroList;
     FModifiedLock: integer;
+    FOutputStateFile: string;
     FPackageEditor: TBasePackageEditor;
     FPackageType: TLazPackageType;
     FReadOnly: boolean;
@@ -468,6 +469,7 @@ type
     procedure SetIconFile(const AValue: string);
     procedure SetInstalled(const AValue: TPackageInstallType);
     procedure SetLicense(const AValue: string);
+    procedure SetOutputStateFile(const AValue: string);
     procedure SetRegistered(const AValue: boolean);
     procedure SetModified(const AValue: boolean);
     procedure SetName(const AValue: string); override;
@@ -582,6 +584,7 @@ type
     property License: string read FLicense write SetLicense;
     property Macros: TTransferMacroList read FMacros;
     property Modified: boolean read GetModified write SetModified;
+    property OutputStateFile: string read FOutputStateFile write SetOutputStateFile;
     property PackageType: TLazPackageType read FPackageType
                                           write SetPackageType;
     property ReadOnly: boolean read FReadOnly write SetReadOnly;
@@ -1433,8 +1436,11 @@ end;
 
 function TPkgVersion.AsString: string;
 begin
-  Result:=IntToStr(Major)+'.'+IntToStr(Minor)+'.'+IntToStr(Release)
-          +'.'+IntToStr(Build);
+  Result:=IntToStr(Major)+'.'+IntToStr(Minor);
+  if (Build<>0) then
+    Result:=Result+'.'+IntToStr(Release)+'.'+IntToStr(Build)
+  else if (Release<>0) then
+    Result:=Result+'.'+IntToStr(Release)
 end;
 
 function TPkgVersion.ReadString(const s: string): boolean;
@@ -1447,22 +1453,24 @@ begin
   Result:=false;
   CurPos:=1;
   for i:=Low(ints) to High(ints) do begin
-    // read int
-    StartPos:=CurPos;
     ints[i]:=0;
-    while (CurPos<=length(s)) and (s[CurPos] in ['0'..'9']) do begin
-      ints[i]:=ints[i]*10+ord(s[CurPos])-ord('0');
-      inc(CurPos);
-    end;
-    if (StartPos=CurPos) then exit;
-    // read point
-    if (CurPos>length(s)) then begin
-      if i<High(ints) then exit;
-    end else begin
-      if s[CurPos]<>'.' then exit;
-      inc(CurPos);
+    if CurPos<length(s) then begin
+      if i>Low(ints) then begin
+        // read point
+        if s[CurPos]<>'.' then exit;
+        inc(CurPos);
+      end;
+      // read int
+      StartPos:=CurPos;
+      while (CurPos<=length(s)) and (i<=9999)
+      and (s[CurPos] in ['0'..'9']) do begin
+        ints[i]:=ints[i]*10+ord(s[CurPos])-ord('0');
+        inc(CurPos);
+      end;
+      if (StartPos=CurPos) then exit;
     end;
   end;
+  if CurPos<=length(s) then exit;
   SetValues(ints[1],ints[2],ints[3],ints[4]);
 
   Result:=true;
@@ -1653,6 +1661,12 @@ begin
   if FLicense=AValue then exit;
   FLicense:=AValue;
   Modified:=true;
+end;
+
+procedure TLazPackage.SetOutputStateFile(const AValue: string);
+begin
+  if FOutputStateFile=AValue then exit;
+  FOutputStateFile:=AValue;
 end;
 
 procedure TLazPackage.SetRegistered(const AValue: boolean);
@@ -1879,6 +1893,7 @@ begin
   LoadFlags(Path);
   FIconFile:=XMLConfig.GetValue(Path+'IconFile/Value','');
   FName:=XMLConfig.GetValue(Path+'Name/Value','');
+  OutputStateFile:=XMLConfig.GetValue(Path+'OutputStateFile/Value','');
   FPackageType:=LazPackageTypeIdentToType(XMLConfig.GetValue(Path+'Type/Value',
                                           LazPackageTypeIdents[lptRunTime]));
   LoadPkgDependencyList(XMLConfig,Path+'RequiredPkgs/',
@@ -1923,6 +1938,7 @@ begin
   SaveFlags(Path);
   XMLConfig.SetDeleteValue(Path+'IconFile/Value',FIconFile,'');
   XMLConfig.SetDeleteValue(Path+'Name/Value',FName,'');
+  XMLConfig.SetDeleteValue(Path+'OutputStateFile/Value',OutputStateFile,'');
   XMLConfig.SetDeleteValue(Path+'Type/Value',LazPackageTypeIdents[FPackageType],
                            LazPackageTypeIdents[lptRunTime]);
   SavePkgDependencyList(XMLConfig,Path+'RequiredPkgs/',
@@ -2413,7 +2429,11 @@ end;
 
 procedure TLazPackageID.UpdateIDAsString;
 begin
-  FIDAsString:=Name+' '+Version.AsString;
+  FIDAsString:=Version.AsString;
+  if FIDAsString<>'' then
+    FIDAsString:=Name+' '+FIDAsString
+  else
+    FIDAsString:=FIDAsString;
 end;
 
 procedure TLazPackageID.VersionChanged(Sender: TObject);
