@@ -681,6 +681,9 @@ initialization
   Printer:=TCUPSPrinter.Create;
 
 FINALIZATION
+  // Free the printer before unloading library
+  Printer.Free;
+  Printer:=nil;
   //Unload CUPSLib if loaded
   FinalizeCups;
 
