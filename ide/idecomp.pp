@@ -61,7 +61,7 @@ uses
   SynEditLazDsgn, SynEdit, SynCompletion, SynExportHTML, SynMacroRecorder,
    SynMemo, SynHighlighterPas, SynHighlighterCPP, SynHighlighterJava,
    SynHighlighterPerl, SynHighlighterHTML, SynHighlighterXML,
-   SynHighlighterLFM, SynHighlighterMulti,
+   SynHighlighterLFM, SynHighlighterMulti
   // custom components
   {$IFDEF CustomIDEComps}
   ,CustomIDEComps
