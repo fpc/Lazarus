@@ -58,7 +58,6 @@ type
     procedure RemoveItem(Item: TResourceCacheItem); override;
   public
     constructor Create;
-    destructor Destroy; override;
     function CompareItems(Tree: TAvgLvlTree; Item1, Item2: Pointer): integer; override;
     function CompareDescriptors(Tree: TAvgLvlTree; Desc1, Desc2: Pointer): integer; override;
     function FindGDKFont(TheGdkFont: PGDKFont): TGdkFontCacheItem;
@@ -142,11 +141,6 @@ begin
   FResourceCacheDescriptorClass:=TGdkFontCacheDescriptor;
 end;
 
-destructor TGdkFontCache.Destroy;
-begin
-  inherited Destroy;
-end;
-
 function TGdkFontCache.CompareItems(Tree: TAvgLvlTree; Item1, Item2: Pointer
   ): integer;
 begin
@@ -212,9 +206,7 @@ begin
     gdk_font_ref(TheGdkFont);
     FItems.Add(Item);
   end;
-  if FindGDKFont(TheGdkFont)=nil then
-    RaiseGDBException('');
-    
+
   // create descriptor
   Result:=TGdkFontCacheDescriptor.Create(Self,Item);
   Result.LongFontName:=LongFontName;

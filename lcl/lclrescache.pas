@@ -182,7 +182,7 @@ begin
   inc(FReferenceCount);
   if FReferenceCount=1 then
     Cache.ItemUsed(Self);
-  if (FReferenceCount=100) or (FReferenceCount=1000) then
+  if (FReferenceCount=1000) or (FReferenceCount=10000) then
     WarnReferenceHigh;
 end;
 
@@ -218,7 +218,7 @@ end;
 
 procedure TResourceCacheItem.WarnReferenceHigh;
 begin
-  debugln('WARNING: TResourceCacheItem.IncreaseRefCount ',dbgs(FReferenceCount));
+  debugln('WARNING: TResourceCacheItem.IncreaseRefCount ',dbgs(FReferenceCount),' ',Cache.ClassName);
 end;
 
 { TResourceCacheDescriptor }
@@ -433,8 +433,8 @@ end;
 
 destructor TBlockResourceCacheDescriptor.Destroy;
 begin
-  ReAllocMem(Data,0);
   inherited Destroy;
+  ReAllocMem(Data,0);
 end;
 
 end.

@@ -28,7 +28,7 @@ end;
 
 constructor TPenHandleCache.Create;
 begin
-  inherited Create(SizeOf(TPenData));
+  inherited Create(SizeOf(TLogPen));
 end;
 
 { TPen }
@@ -233,6 +233,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.11  2004/08/11 22:05:07  mattias
+  fixed brush handle cache size
+
   Revision 1.10  2004/08/11 20:57:09  mattias
   moved intfstrconsts.pp to lclstrconsts.pas, implemented TPenHandleCache
 

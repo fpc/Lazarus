@@ -17,6 +17,109 @@
  *****************************************************************************
 }
 
+
+{ TFontHandleCache }
+
+type
+  TLogFontAndName = record
+    LogFont: TLogFont;
+    LongFontName: string;
+  end;
+  PLogFontAndName = ^TLogFontAndName;
+
+function CompareLogFontAndNameWithResDesc(Key: PLogFontAndName;
+  Desc: TFontHandleCacheDescriptor): integer;
+begin
+  Result:=CompareStr(Key^.LongFontName,Desc.LongFontName);
+  //writeln('CompareLogFontAndNameWithResDesc A ',Key^.LongFontName,' ',Desc.LongFontName,' ',HexStr(Cardinal(Desc),8),' Result=',Result);
+  if Result=0 then
+    Result:=CompareMemRange(@Key^.LogFont,@Desc.LogFont,SizeOf(Desc.LogFont));
+  //writeln('CompareLogFontAndNameWithResDesc END Result=',Result);
+end;
+
+procedure TFontHandleCache.RemoveItem(Item: TResourceCacheItem);
+begin
+  DeleteObject(Item.Handle);
+  inherited RemoveItem(Item);
+end;
+
+constructor TFontHandleCache.Create;
+begin
+  inherited Create;
+  FResourceCacheDescriptorClass:=TFontHandleCacheDescriptor;
+end;
+
+function TFontHandleCache.CompareDescriptors(Tree: TAvgLvlTree; Desc1,
+  Desc2: Pointer): integer;
+var
+  Descriptor1: TFontHandleCacheDescriptor;
+  Descriptor2: TFontHandleCacheDescriptor;
+begin
+  Descriptor1:=TFontHandleCacheDescriptor(Desc1);
+  Descriptor2:=TFontHandleCacheDescriptor(Desc2);
+  Result:=CompareStr(Descriptor1.LongFontName,Descriptor2.LongFontName);
+  if Result<>0 then exit;
+  Result:=CompareMemRange(@Descriptor1.LogFont,@Descriptor2.LogFont,
+                          SizeOf(Descriptor1.LogFont));
+end;
+
+function TFontHandleCache.FindFont(TheFont: HFONT): TResourceCacheItem;
+var
+  ANode: TAvgLvlTreeNode;
+begin
+  ANode:=FItems.FindKey(@THandle(TheFont),@ComparePHandleWithResourceCacheItem);
+  if ANode<>nil then
+    Result:=TResourceCacheItem(ANode.Data)
+  else
+    Result:=nil;
+end;
+
+function TFontHandleCache.FindFontDesc(const LogFont: TLogFont;
+  const LongFontName: string): TFontHandleCacheDescriptor;
+var
+  LogFontAndName: TLogFontAndName;
+  ANode: TAvgLvlTreeNode;
+begin
+  LogFontAndName.LogFont:=LogFont;
+  LogFontAndName.LongFontName:=LongFontName;
+  ANode:=FDescriptors.Findkey(@LogFontAndName,
+                              @CompareLogFontAndNameWithResDesc);
+  if ANode<>nil then
+    Result:=TFontHandleCacheDescriptor(ANode.Data)
+  else
+    Result:=nil;
+end;
+
+function TFontHandleCache.Add(TheFont: HFONT; const LogFont: TLogFont;
+  const LongFontName: string): TFontHandleCacheDescriptor;
+var
+  Item: TResourceCacheItem;
+begin
+  if FindFontDesc(LogFont,LongFontName)<>nil then
+    RaiseGDBException('TFontHandleCache.Add font desc added twice');
+
+  // find cache item with TheFont
+  Item:=FindFont(TheFont);
+  if Item=nil then begin
+    // create new item
+    Item:=TResourceCacheItem.Create(Self,TheFont);
+    FItems.Add(Item);
+  end;
+
+  // create descriptor
+  Result:=TFontHandleCacheDescriptor.Create(Self,Item);
+  Result.LongFontName:=LongFontName;
+  Result.LogFont:=LogFont;
+  FDescriptors.Add(Result);
+  if FindFontDesc(LogFont,LongFontName)=nil then begin
+    debugln('TFontHandleCache.Add Added: ',HexStr(Cardinal(Result),8),' LongFontName=',Result.LongFontName);
+    RaiseGDBException('');
+  end;
+end;
+
+
+{ TFont }
+
 procedure GetCharsetValues(Proc: TGetStrProc);
 var
   I: Integer;
@@ -693,6 +796,7 @@ const
   LF_WEIGHT: array[Boolean] of Integer = (FW_NORMAL, FW_BOLD);
 var
   ALogFont: TLogFont;
+  CachedFont: TFontHandleCacheDescriptor;
 
   procedure SetLogFontName(const NewName: string);
   var l: integer;
@@ -735,8 +839,15 @@ begin
     end;
 
     // ask the interface for the nearest font
-    // TODO: cache the result for other fonts
-    FFontData.Handle := CreateFontIndirectEx(ALogFont,Name);
+    CachedFont:=FontResourceCache.FindFontDesc(ALogFont,Name);
+    if CachedFont<>nil then begin
+      CachedFont.Item.IncreaseRefCount;
+      FFontData.Handle := CachedFont.Item.Handle;
+    end else begin
+      FFontData.Handle := CreateFontIndirectEx(ALogFont,Name);
+      FontResourceCache.Add(FFontData.Handle,ALogFont,Name);
+    end;
+    FFontHandleCached:=true;
   end;
   
   Result := FFontData.Handle;
@@ -753,7 +864,11 @@ procedure TFont.FreeHandle;
 begin
   if FFontData.Handle <> 0 
   then begin
-    DeleteObject(FFontData.Handle);
+    if FFontHandleCached then begin
+      FontResourceCache.FindFont(FFontData.Handle).DecreaseRefCount;
+      FFontHandleCached:=false;
+    end else
+      DeleteObject(FFontData.Handle);
     FFontData.Handle := 0;
   end;
 end;
@@ -834,6 +949,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.15  2004/08/11 22:05:07  mattias
+  fixed brush handle cache size
+
   Revision 1.14  2004/08/10 17:34:13  mattias
   implemented font cache for gtk, which accelerates switching fonts
 

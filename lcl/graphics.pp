@@ -42,6 +42,7 @@ uses
   {$IFNDEF DisableFPImage}
   FPImage, FPReadPNG, FPWritePNG, FPReadBMP, FPWriteBMP, IntfGraphics,
   {$ENDIF}
+  AvgLvlTree,
   LCLStrConsts, vclGlobals, LCLType, LCLProc, LMessages, LCLIntf, LResources,
   LCLResCache, GraphType, GraphMath;
 
@@ -385,6 +386,31 @@ type
   end;
   
 
+  { TFontHandleCacheDescriptor }
+
+  TFontHandleCacheDescriptor = class(TResourceCacheDescriptor)
+  public
+    LogFont: TLogFont;
+    LongFontName: string;
+  end;
+
+
+  { TFontHandleCache }
+
+  TFontHandleCache = class(TResourceCache)
+  protected
+    procedure RemoveItem(Item: TResourceCacheItem); override;
+  public
+    constructor Create;
+    function CompareDescriptors(Tree: TAvgLvlTree; Desc1, Desc2: Pointer): integer; override;
+    function FindFont(TheFont: HFONT): TResourceCacheItem;
+    function FindFontDesc(const LogFont: TLogFont;
+                          const LongFontName: string): TFontHandleCacheDescriptor;
+    function Add(TheFont: HFONT; const LogFont: TLogFont;
+                 const LongFontName: string): TFontHandleCacheDescriptor;
+  end;
+
+
   { TFont }
 
   TFont = class(TGraphicsObject)
@@ -395,6 +421,7 @@ type
     FFontName: string;
     FUpdateCount: integer;
     FChanged: boolean;
+    FFontHandleCached: boolean;
     procedure FreeHandle;
     procedure GetData(var FontData: TFontData);
     function IsNameStored: boolean;
@@ -511,10 +538,10 @@ type
     procedure FreeHandle;
   protected
     function GetHandle: HBRUSH;
-    Procedure SetBitmap(Value: TBitmap);
-    Procedure SetColor(Value: TColor);
+    procedure SetBitmap(Value: TBitmap);
+    procedure SetColor(Value: TColor);
     procedure SetHandle(const Value: HBRUSH);
-    Procedure SetStyle(value: TBrushStyle);
+    Procedure SetStyle(Value: TBrushStyle);
   public
     procedure Assign(Source: TPersistent); override;
     constructor Create;
@@ -1225,6 +1252,7 @@ var
   { Stores information about the current screen }
   ScreenInfo: TLMScreenInit;
   
+  FontResourceCache: TFontHandleCache;
   PenResourceCache: TPenHandleCache;
   BrushResourceCache: TBrushHandleCache;
 
@@ -1687,6 +1715,7 @@ end;
 procedure InterfaceFinal;
 begin
   //debugln('Graphics.InterfaceFinal');
+  FreeAndNil(FontResourceCache);
   FreeAndNil(PenResourceCache);
   FreeAndNil(BrushResourceCache);
 end;
@@ -1696,6 +1725,7 @@ initialization
   PicFileFormats:=nil;
   OnLoadGraphicFromClipboardFormat:=nil;
   OnSaveGraphicToClipboardFormat:=nil;
+  FontResourceCache:=TFontHandleCache.Create;
   PenResourceCache:=TPenHandleCache.Create;
   BrushResourceCache:=TBrushHandleCache.Create;
   RegisterIntegerConsts(TypeInfo(TColor), @IdentToColor, @ColorToIdent);
@@ -1715,6 +1745,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.142  2004/08/11 22:05:07  mattias
+  fixed brush handle cache size
+
   Revision 1.141  2004/08/11 21:10:30  mattias
   implemented TBrushHandleCache
 

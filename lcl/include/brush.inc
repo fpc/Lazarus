@@ -28,7 +28,7 @@ end;
 
 constructor TBrushHandleCache.Create;
 begin
-  inherited Create(SizeOf(TBrushData));
+  inherited Create(SizeOf(TLogBrush));
 end;
 
 
@@ -227,6 +227,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.10  2004/08/11 22:05:07  mattias
+  fixed brush handle cache size
+
   Revision 1.9  2004/08/11 21:10:30  mattias
   implemented TBrushHandleCache
 
