@@ -617,7 +617,12 @@ end;
 
 constructor TMainIDE.Create(TheOwner: TComponent);
 begin
+  // The MainIDE variable is assigned via
+  // Application.CreateForm(TMainIDE,MainIDE) _after_ the creation of the form.
+  // But some IDE parts needs the variable already during creation, so it is set
+  // here.
   MainIDE:=Self;
+  
   inherited Create(TheOwner);
 
   // load options
@@ -6561,6 +6566,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.319  2002/07/04 10:44:50  lazarus
+  MG: added comment for MainIDE:=Self;
+
   Revision 1.318  2002/07/04 10:22:46  lazarus
   MG: fixed double parsing of command line
 
