@@ -197,7 +197,7 @@ begin
   Add(PredefinedClipboardFormat(pcfDelphiBitmap), TBitmap);
   Add(PredefinedClipboardFormat(pcfPixmap), TPixmap);
   //Add(PredefinedClipboardFormat(pcfIcon), TIcon);
-  Add('image/png', TPortableNetworkGraphic);
+  Add(ClipboardRegisterFormat('image/png'), TPortableNetworkGraphic);
 end;
 
 procedure TPicClipboardFormats.Clear;
