@@ -3135,7 +3135,12 @@ begin
   if Info = nil then Exit;
 
   if Info^.DoubleBuffer <> nil then
-      gdk_pixmap_unref(Info^.DoubleBuffer);
+    gdk_pixmap_unref(Info^.DoubleBuffer);
+
+  if (Info^.UserData <> nil) and (Info^.DataOwner) then begin
+     FreeMem(Info^.UserData);
+     Info^.UserData := nil;
+  end;
   gtk_object_set_data(AWidget,'widgetinfo',nil);
 
   Dispose(Info);
@@ -6778,6 +6783,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.281  2004/06/11 12:53:50  vincents
+  fixed memleak in WidgetInfo.UserData used by BitBtn
+
   Revision 1.280  2004/05/16 23:24:41  marc
   + Added WSBitBtn interface
   + Implemented WSBitBtn interface for gtk
