@@ -1090,7 +1090,8 @@ begin
       end;
       if SynEditOptName<>'' then begin
         if XMLConfig.GetValue('EditorOptions/General/Editor/'+SynEditOptName,
-            SynEditOpt in SYNEDIT_DEFAULT_OPTIONS) then
+            SynEditOpt in SYNEDIT_DEFAULT_OPTIONS)
+        then
           Include(fSynEditOptions,SynEditOpt)
         else
           Exclude(fSynEditOptions,SynEditOpt);
