@@ -5682,6 +5682,7 @@ Begin
       end;
     end;
   finally
+    for i:=0 to UnitList.Count-1 do TViewUnitsEntry(UnitList[i]).Free;
     UnitList.Free;
   end;
   Result:=mrOk;
@@ -10236,6 +10237,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.690  2003/12/28 11:00:43  mattias
+  fixed memleak after showing project units  from vincent
+
   Revision 1.689  2003/12/27 01:26:00  mattias
   fixed 1.0.10 compilation
 
