@@ -126,9 +126,12 @@ const
   lihcFCLUnits = 'FCLUnits';
   lihcLCLUnits = 'LCLUnits';
 
-  lihRTLURL = 'http://www.freepascal.org/docs-html/rtl/';
-  lihFCLURL = 'http://www.freepascal.org/docs-html/fcl/';
-  lihLCLURL = 'http://www.freepascal.org/docs-html/lcl/';
+  lihRTLURL = 'http://lazarus-ccr.sourceforge.net/docs/rtl/';
+  lihFCLURL = 'http://lazarus-ccr.sourceforge.net/docs/fcl/';
+  lihLCLURL = 'http://lazarus-ccr.sourceforge.net/docs/lcl/';
+  //lihRTLURL = 'http://www.freepascal.org/docs-html/rtl/';
+  //lihFCLURL = 'http://www.freepascal.org/docs-html/fcl/';
+  //lihLCLURL = 'http://www.freepascal.org/docs-html/lcl/';
 
 var
   HelpBoss: TBaseHelpManager;

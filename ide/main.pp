@@ -6952,6 +6952,7 @@ begin
     if Result<>mrOk then exit;
   end;
   // rename files (.pas,.dfm) lowercase
+  // TODO: rename if files in project
   DebugLn('TMainIDE.DoConvertDelphiUnit Rename files');
   LazarusUnitFilename:='';
   LFMFilename:='';
@@ -11273,6 +11274,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.816  2005/01/01 17:02:53  mattias
+  changed default online help paths to lazarus-ccr
+
   Revision 1.815  2005/01/01 16:04:13  mattias
   implemented CodeExplorer auto update on switching source editor page
 
