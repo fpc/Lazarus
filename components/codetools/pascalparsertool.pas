@@ -31,9 +31,7 @@
     
 
   ToDo:
-    -Parsing of GUID
-    -Parsing of With and Case
-    -Parsing of proc modifier alias [Alias: ''];
+  
 }
 unit PascalParserTool;
 
@@ -526,8 +524,21 @@ begin
     CurNode.Desc:=ctnClassPrivate
   else if UpAtomIs('PROTECTED') then
     CurNode.Desc:=ctnClassProtected
-  else
+  else begin
     CurNode.Desc:=ctnClassPublished;
+    if AtomIsChar('[') then begin
+      // read GUID
+      ReadNextAtom;
+      if not AtomIsStringConstant then
+        RaiseException('string constant expected, but '+GetAtom+' found');
+      if not ReadNextAtomIsChar(']') then
+        RaiseException('] expected, but '+GetAtom+' found');
+      ReadNextAtom;
+      if (not (AtomIsChar(';') or UpAtomIs('END'))) then
+        RaiseException('; expected, but '+GetAtom+' found');
+      ReadNextAtom;
+    end;
+  end;
   // parse till "end" of class/object
   CurKeyWordFuncList:=InnerClassKeyWordFuncList;
   try
@@ -989,6 +1000,7 @@ function TPascalParserTool.ReadTilProcedureHeadEnd(
  proc specifiers with parameters:
    message <id or number>
    external <id or number> name <id>
+   [alias: <string constant>]
 }
 var IsSpecifier: boolean;
 begin
@@ -1047,7 +1059,24 @@ begin
             exit;
           end;
         until (CurPos.Startpos>SrcLen) or AtomIsChar(';');
+      end else if AtomIsChar(';') then begin
+        // read assembler alias   [alias: 'alternative name']
+        if not ReadNextUpAtomIs('ALIAS') then
+          RaiseException('alias keyword expected, but '+GetAtom+' found');
+        if not ReadNextAtomIsChar(':') then
+          RaiseException('; expected, but '+GetAtom+' found');
+        ReadNextAtom;
+        if not AtomIsStringConstant then
+          RaiseException('string constant expected, but '+GetAtom+' found');
+        if not ReadNextAtomIsChar(']') then
+          RaiseException('] expected, but '+GetAtom+' found');
+        ReadNextAtom;
+        if UpAtomIs('END') then begin
+          UndoReadNextAtom;
+          exit;
+        end;
       end else begin
+        // read specifier without parameters
         if UpAtomIs('FORWARD') then HasForwardModifier:=true;
         ReadNextAtom;
         if UpAtomIs('END') then begin
@@ -1357,10 +1386,10 @@ begin
 end;
 
 function TPascalParserTool.KeyWordFuncEnd: boolean;
-// keyword 'end'  (parse end of block, e.g. begin..end)
+// keyword 'end'  (source end.)
 begin
   if LastAtomIs(0,'@') then
-    RaiseException('syntax error: identifer expected but keyword end found');
+    RaiseException('syntax error: identifier expected but keyword end found');
   if LastAtomIs(0,'@@') then begin
     // for Delphi compatibility @@end is allowed
     Result:=true;
@@ -1372,10 +1401,9 @@ begin
     CurNode.EndPos:=CurPos.EndPos;
   EndChildNode;
   ReadNextAtom;
-  if AtomIsChar('.') then
-    CurSection:=ctnNone
-  else
-    UndoReadNextAtom;
+  if not AtomIsChar('.') then
+    RaiseException('. expected, but '+GetAtom+' found');
+  CurSection:=ctnNone;
   Result:=true;
 end;
 

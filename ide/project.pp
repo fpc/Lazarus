@@ -197,6 +197,7 @@ type
     function SearchFile(const Filename,SearchPaths,InitialDir:string):string;
     function GetMainResourceFilename(AnUnitInfo: TUnitInfo): string;
     function IsVirtual: boolean;
+    function RemoveProjectPathFromFilename(const AFilename: string): string;
 
     property ActiveEditorIndexAtStart: integer 
        read fActiveEditorIndexAtStart write fActiveEditorIndexAtStart;
@@ -1198,10 +1199,27 @@ begin
   end else begin
     // try making filename relative to project file
     if FilenameIsAbsolute(AFilename) 
-    and (copy(AFilename,1,length(ProjectPath))=ProjectPath) then
+    and (CompareFileNames(copy(AFilename,1,length(ProjectPath)),ProjectPath)=0)
+    then
       AFilename:=copy(AFilename,length(ProjectPath)+1,
            length(AFilename)-length(ProjectPath));
   end;
+end;
+
+function TProject.RemoveProjectPathFromFilename(
+  const AFilename: string): string;
+var ProjectPath:string;
+begin
+  ProjectPath:=ExtractFilePath(ProjectFile);
+  if ProjectPath='' then ProjectPath:=GetCurrentDir;
+  Result:=AFilename;
+  DoDirSeparators(Result);
+  // try making filename relative to project file
+  if FilenameIsAbsolute(Result)
+  and (CompareFileNames(copy(Result,1,length(ProjectPath)),ProjectPath)=0)
+  then
+    Result:=copy(Result,length(ProjectPath)+1,
+         length(Result)-length(ProjectPath));
 end;
 
 procedure TProject.OnUnitNameChange(AnUnitInfo: TUnitInfo; 
@@ -1269,6 +1287,9 @@ end.
 
 {
   $Log$
+  Revision 1.47  2001/12/19 22:09:14  lazarus
+  MG: added GUID and alias parsing, added DoJumpToCodeToolBossError
+
   Revision 1.46  2001/12/16 22:24:54  lazarus
   MG: changes for new compiler 20011216
 

@@ -364,8 +364,6 @@ type
       var Handled, Abort: boolean);
     function OnMacroPromptFunction(const s:string; var Abort: boolean):string;
     procedure OnCmdLineCreate(var CmdLine: string; var Abort:boolean);
-    function DoJumpToCompilerMessage(Index:integer;
-      FocusEditor: boolean): boolean;
     procedure DoShowMessagesView;
     procedure DoArrangeSourceEditorAndMessageView;
     function GetProjectTargetFilename: string;
@@ -373,11 +371,14 @@ type
     function GetTestUnitFilename(AnUnitInfo: TUnitInfo): string;
     procedure SaveSourceEditorChangesToCodeCache;
     procedure ApplyCodeToolChanges;
+    function DoJumpToCompilerMessage(Index:integer;
+      FocusEditor: boolean): boolean;
     procedure DoJumpToProcedureSection;
     procedure DoFindDeclarationAtCursor;
     procedure DoCompleteCodeAtCursor;
-    function DoInitDebugger: TModalResult;
+    procedure DoJumpToCodeToolBossError;
     function DoCheckSyntax: TModalResult;
+    function DoInitDebugger: TModalResult;
     procedure UpdateDefaultPascalFileExtensions;
 
     procedure LoadMainMenu;
@@ -4143,28 +4144,9 @@ begin
   CodeToolBoss.VisibleEditorLines:=ActiveSrcEdit.EditorComponent.LinesInWindow;
   SaveSourceEditorChangesToCodeCache;
   if not CodeToolBoss.CheckSyntax(ActiveUnitInfo.Source,NewCode,NewX,NewY,
-    NewTopLine,ErrorMsg) then begin
-    // syntax error -> show error and jump
-    // show error in message view
-    DoArrangeSourceEditorAndMessageView;
-    MessagesView.AddSeparator;
-    MessagesView.Add(ErrorMsg);
-    // jump to error in source editor
-    if NewCode<>nil then begin
-      Result:=DoOpenEditorFile(NewCode.Filename,false);
-      if Result=mrOk then begin
-        ActiveSrcEdit:=SourceNoteBook.GetActiveSE;
-        SourceNotebook.BringToFront;
-        with ActiveSrcEdit.EditorComponent do begin
-          SetFocus;
-          CaretXY:=Point(NewX,NewY);
-          BlockBegin:=CaretXY;
-          BlockEnd:=CaretXY;
-          TopLine:=NewTopLine;
-        end;
-        ActiveSrcEdit.ErrorLine:=NewY;
-      end;
-    end;
+    NewTopLine,ErrorMsg) then
+  begin
+    DoJumpToCodeToolBossError;
   end;
 end;
 
@@ -5042,7 +5024,44 @@ writeln('[TMainIDE.DoJumpToProcedureSection] ************');
       TopLine:=NewTopLine;
     end;
   end else begin
-    // probably a syntax error or just not in a procedure head/body -> ignore
+    if CodeToolBoss.ErrorMessage<>'' then
+      DoJumpToCodeToolBossError;
+  end;
+end;
+
+procedure TMainIDE.DoJumpToCodeToolBossError;
+var
+  ActiveSrcEdit:TSourceEditor;
+begin
+  if CodeToolBoss.ErrorMessage='' then exit;
+  // syntax error -> show error and jump
+  // show error in message view
+  DoArrangeSourceEditorAndMessageView;
+  MessagesView.AddSeparator;
+  if CodeToolBoss.ErrorCode<>nil then begin
+    MessagesView.Add(Project.RemoveProjectPathFromFilename(
+       CodeToolBoss.ErrorCode.Filename)
+      +'('+IntToStr(CodeToolBoss.ErrorLine)
+      +','+IntToStr(CodeToolBoss.ErrorColumn)
+      +') Error: '+CodeToolBoss.ErrorMessage);
+  end else
+    MessagesView.Add(CodeToolBoss.ErrorMessage);
+  // jump to error in source editor
+  if CodeToolBoss.ErrorCode<>nil then begin
+    SourceNotebook.AddJumpPointClicked(Self);
+    if DoOpenEditorFile(CodeToolBoss.ErrorCode.Filename,false)=mrOk then begin
+      ActiveSrcEdit:=SourceNoteBook.GetActiveSE;
+      SourceNotebook.BringToFront;
+      with ActiveSrcEdit.EditorComponent do begin
+        SetFocus;
+        CaretXY:=Point(CodeToolBoss.ErrorColumn,CodeToolBoss.ErrorLine);
+        BlockBegin:=CaretXY;
+        BlockEnd:=CaretXY;
+        if CodeToolBoss.ErrorTopLine>0 then
+          TopLine:=CodeToolBoss.ErrorTopLine;
+      end;
+      ActiveSrcEdit.ErrorLine:=CodeToolBoss.ErrorLine;
+    end;
   end;
 end;
 
@@ -5130,6 +5149,8 @@ writeln('[TMainIDE.DoCompleteCodeAtCursor] ************');
     // or not in a class
     // -> there are enough events to handle everything, so it can be ignored here
     ApplyCodeToolChanges;
+    if CodeToolBoss.ErrorMessage<>'' then
+      DoJumpToCodeToolBossError;
   end;
   FOpenEditorsOnCodeToolChange:=false;
 end;
@@ -5453,17 +5474,35 @@ end.
 
 
 { =============================================================================
+<<<<<<< main.pp
+=======
 
   $Log$
+  Revision 1.192  2001/12/19 22:09:13  lazarus
+  MG: added GUID and alias parsing, added DoJumpToCodeToolBossError
+
   Revision 1.191  2001/12/19 20:28:50  lazarus
   Enabled Alignment of columns in a TListView.
   Shane
+>>>>>>> 1.191
+
+<<<<<<< main.pp
+  $Log$
+  Revision 1.192  2001/12/19 22:09:13  lazarus
+  MG: added GUID and alias parsing, added DoJumpToCodeToolBossError
 
   Revision 1.190  2001/12/18 21:09:58  lazarus
   MOre additions for breakpoints dialog
   Added a TSynEditPlugin in SourceEditor to get notified of lines inserted and deleted from the source.
   Shane
 
+=======
+  Revision 1.190  2001/12/18 21:09:58  lazarus
+  MOre additions for breakpoints dialog
+  Added a TSynEditPlugin in SourceEditor to get notified of lines inserted and deleted from the source.
+  Shane
+
+>>>>>>> 1.191
   Revision 1.189  2001/12/18 21:00:59  lazarus
   MG: compiler, fpc source and lazarus src can now be changed without restart
 
