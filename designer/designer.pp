@@ -1241,13 +1241,15 @@ begin
   for i:=0 to FCustomForm.ComponentCount-1 do begin
     if not (FCustomForm.Components[i] is TControl) then begin
       Diff:=aDDC.FormOrigin;
-      aDDC.Save;
       // non-visual component
       ItemLeftTop:=NonVisualComponentLeftTop(FCustomForm.Components[i]);
       ItemLeft:=ItemLeftTop.X-Diff.X;
       ItemTop:=ItemLeftTop.Y-Diff.Y;
       ItemRight:=ItemLeft+NonVisualCompWidth;
       ItemBottom:=ItemTop+NonVisualCompWidth;
+      if not aDDC.RectVisible(ItemLeft,ItemTop,ItemRight,ItemBottom) then
+        continue;
+      aDDC.Save;
       with aDDC.Canvas do begin
         Brush.Color:=clWhite;
         for j:=0 to NonVisualCompBorder-1 do begin
@@ -1283,7 +1285,7 @@ begin
       end;
       if (ControlSelection.Count>1)
       and (ControlSelection.IsSelected(FCustomForm.Components[i])) then
-        ControlSelection.DrawMarkerAt(aDDC.Canvas,
+        ControlSelection.DrawMarkerAt(aDDC,
           ItemLeft,ItemTop,NonVisualCompWidth,NonVisualCompWidth);
     end;
   end;
