@@ -245,6 +245,7 @@ begin
       CurrentFont := SourceDC^.CurrentFont;
       CurrentPen := SourceDC^.CurrentPen;
       CurrentBrush := SourceDC^.CurrentBrush;
+      //CurrentPalette := SourceDC^.CurrentPalette;
       CurrentTextColor := SourceDC^.CurrentTextColor;
       CurrentBackColor := SourceDC^.CurrentBackColor;
       ClipRegion := SourceDC^.ClipRegion;
@@ -335,10 +336,10 @@ begin
     Pixel := 0;
   end;
 
-  with PDeviceContext(DC)^ do
+  {with PDeviceContext(DC)^ do
     If CurrentPalette <> nil then
       GDIColor.Colormap := CurrentPalette^.PaletteColormap
-    else
+    else}
       GDIColor.Colormap := GDK_Colormap_get_system;
 
   gdk_colormap_alloc_color(GDIColor.Colormap, @GDIColor.Color,True,True);
@@ -489,6 +490,130 @@ begin
     EnsureGCColor(DC, GC, CurrentBackColor, True, True);//BKColor
     EnsureGCColor(DC, GC, CurrentTextColor, False, False);//Font Color
     Assert(False, Format('trace:  [SelectGDKTextProps] Color --> pixel: %d, red: 0x%x, green: 0x%x, blue: 0x%x', [CurrentTextColor.Color.Pixel, CurrentTextColor.Color.Red, CurrentTextColor.Color.Green, CurrentTextColor.Color.Blue]));
+  end;
+end;
+
+{Palette Index<->RGB Hash Functions}
+type
+  TIndexRGB = record
+    Index: longint;
+    RGB: longint;
+  end;
+  PIndexRGB = ^TIndexRGB;
+
+function GetIndexAsKey(p: pointer): pointer;
+begin
+  Result:=Pointer(PIndexRGB(p)^.Index + 1);
+end;
+
+function GetRGBAsKey(p: pointer): pointer;
+begin
+  Result:=Pointer(PIndexRGB(p)^.RGB + 1);
+end;
+
+function PaletteIndexToIndexRGB(Pal : PGDIObject; I : longint): PIndexRGB;
+var
+  HashItem: PDynHashArrayItem;
+begin
+  Result := nil;
+  HashItem:=Pal^.IndexTable.FindHashItemWithKey(Pointer(I + 1));
+  if HashItem<>nil then
+    Result:=PIndexRGB(HashItem^.Item);
+end;
+
+function PaletteRGBToIndexRGB(Pal : PGDIObject; RGB : longint): PIndexRGB;
+var
+  HashItem: PDynHashArrayItem;
+begin
+  Result := nil;
+  HashItem:=Pal^.RGBTable.FindHashItemWithKey(Pointer(RGB + 1));
+  if HashItem<>nil then
+    Result:=PIndexRGB(HashItem^.Item);
+end;
+
+{Palette Index<->RGB lookup Functions}
+
+function PaletteIndexExists(Pal : PGDIObject; I : longint): Boolean;
+begin
+  Result := Pal^.IndexTable.ContainsKey(Pointer(I + 1));
+end;
+
+function PaletteRGBExists(Pal : PGDIObject; RGB : longint): Boolean;
+begin
+  Result := Pal^.RGBTable.ContainsKey(Pointer(RGB + 1));
+end;
+
+function PaletteAddIndex(Pal : PGDIObject; I, RGB : Longint): Boolean;
+var
+  IndexRGB: PIndexRGB;
+begin
+  New(IndexRGB);
+  IndexRGB^.Index:=I;
+  IndexRGB^.RGB:=RGB;
+  Pal^.IndexTable.Add(IndexRGB);
+  Result := PaletteIndexExists(Pal, I);
+  If Not Result then
+    Dispose(IndexRGB)
+  else begin
+    Pal^.RGBTable.Add(IndexRGB);
+    Result := PaletteRGBExists(Pal, RGB);
+    If not Result then begin
+      Pal^.IndexTable.Remove(IndexRGB);
+      Dispose(IndexRGB);
+    end;
+  end;
+end;
+
+function PaletteDeleteIndex(Pal : PGDIObject; I : Longint): Boolean;
+var
+  RGBIndex : PIndexRGB;
+begin
+  RGBIndex := PaletteIndextoIndexRGB(Pal,I);
+  Result := RGBIndex = nil;
+  If not Result then begin
+    Pal^.IndexTable.Remove(RGBIndex);
+    If PaletteRGBExists(Pal, RGBIndex^.RGB) then
+      Pal^.RGBTable.Remove(RGBIndex);
+    Dispose(RGBIndex);
+  end;
+end;
+
+function PaletteIndexToRGB(Pal : PGDIObject; I : longint): longint;
+var
+  RGBIndex : PIndexRGB;
+begin
+  RGBIndex := PaletteIndextoIndexRGB(Pal,I);
+  if RGBIndex = nil then
+    Result := -1//InvalidRGB
+  else
+    Result := RGBIndex^.RGB;
+end;
+
+function PaletteRGBToIndex(Pal : PGDIObject; RGB : longint): longint;
+var
+  RGBIndex : PIndexRGB;
+begin
+  RGBIndex := PaletteRGBtoIndexRGB(Pal,RGB);
+  if RGBIndex = nil then
+    Result:=-1//InvalidIndex
+  else
+    Result := RGBIndex^.Index;
+end;
+
+Procedure InitializePalette(Pal : PGDIObject; Entries : PPALETTEENTRY; RGBCount : Longint);
+var
+  PalEntries : PPALETTEENTRY;
+  I : Integer;
+  RGBValue : Longint;
+begin
+  PalEntries := Entries;
+  For I := 0 to RGBCount - 1 do begin
+    If PaletteIndexExists(Pal, I) then
+      PaletteDeleteIndex(Pal, I);
+    With PalEntries[I] do
+      RGBValue := RGB(peRed, peGreen, peBlue) {or (peFlags shl 32)??};
+    If not PaletteRGBExists(Pal, RGBValue) then
+      PaletteAddIndex(Pal, I, RGBValue);
   end;
 end;
 
@@ -822,7 +947,6 @@ begin
       VirtualKey := VK_IRREGULAR;
   end;
 end;
-
 
 {------------------------------------------------------------------------------
   procedure Uncapturehandle;
@@ -2763,10 +2887,37 @@ end;
   'default', checkbox', etc. This should only be called on theme change or on
   application terminate.
  ------------------------------------------------------------------------------}
+Type
+  PStyleObject = ^TStyleObject;
+  TStyleObject = Record
+    Style : PGTKStyle;
+    Widget : PGTKWidget;
+  end;
+
+Function NewStyleObject : PStyleObject;
+begin
+  New(Result);
+  Result^.Widget := nil;
+  Result^.Style := nil;
+end;
+
+Procedure FreeStyleObject(var StyleObject : PStyleObject);
+begin
+  If StyleObject <> nil then begin
+    If StyleObject^.Widget <> nil then
+      GTK_Widget_Destroy(StyleObject^.Widget);
+    If StyleObject^.Style <> nil then
+      If StyleObject^.Style^.Ref_Count > 0 then
+        GTK_Style_Unref(StyleObject^.Style);
+    Dispose(StyleObject);
+    StyleObject := nil;
+  end;
+end;
+
 Procedure ReleaseStyle(const WName : String);
 var
   l : Longint;
-  s : PGTKStyle;
+  s : PStyleObject;
 begin
   If Not Assigned(Styles) then
     exit;
@@ -2774,9 +2925,8 @@ begin
   If l >= 0 then begin
     If Styles.Objects[l] <> nil then
       Try
-        s := PGTKStyle(Styles.Objects[l]);
-        If S^.Ref_Count > 0 then
-          GTK_Style_Unref(S);
+        s := PStyleObject(Styles.Objects[l]);
+        FreeStyleObject(S);
       Except
         Writeln('[ReleaseStyle] : Unable To Unreference Style');
       end;
@@ -2797,63 +2947,80 @@ end;
  ------------------------------------------------------------------------------}
 function GetStyle(const WName : String) : PGTKStyle;
 var
-  Wd : PGTKWidget;
   Tp : Pointer;
   l : Longint;
-  Style: PGtkStyle;
+  StyleObject : PStyleObject;
 begin
   Result := nil;
   If Not Assigned(Styles) then
     exit;
   l:=IndexOfStyle(WName);
   If l < 0 then begin
+    StyleObject := NewStyleObject;
     If AnsiCompareText(WName,'button')=0 then
-      Wd := GTK_BUTTON_NEW
+      StyleObject^.Widget := GTK_BUTTON_NEW
     else
       If AnsiCompareText(WName,'default')=0 then
-        Wd := GTK_WIDGET_NEW(GTK_WIDGET_TYPE,nil,[])
+        StyleObject^.Widget := GTK_WIDGET_NEW(GTK_WIDGET_TYPE,nil,[])
     else
-      If AnsiCompareText(WName,'checkbox')=0 then
-        Wd := GTK_CHECK_BUTTON_NEW
+      If AnsiCompareText(WName,'window')=0 then
+        StyleObject^.Widget := GTK_WINDOW_NEW(0)
+    else
+      If AnsiCompareText(WName,'checkbox')=0 then begin
+        StyleObject^.Widget := GTK_CHECK_BUTTON_NEW;
+      end
     else
       If AnsiCompareText(WName,'radiobutton')=0 then
-        Wd := GTK_RADIO_BUTTON_NEW(nil)
+        StyleObject^.Widget := GTK_RADIO_BUTTON_NEW(nil)
     else
       If AnsiCompareText(WName,'menu')=0 then
-        Wd := GTK_MENU_NEW
+        StyleObject^.Widget := GTK_MENU_NEW
     else
       If AnsiCompareText(WName,'menuitem')=0 then
-        Wd := GTK_MENU_ITEM_NEW
+        StyleObject^.Widget := GTK_MENU_ITEM_NEW
     else
       If AnsiCompareText(WName,'scrollbar')=0 then
-        Wd := gtk_hscrollbar_new(nil)//can't dif. between Horiz/Vert. Styles
+        StyleObject^.Widget := gtk_hscrollbar_new(nil)//can't dif. between Horiz/Vert. Styles
     else
       If AnsiCompareText(WName,'tooltip')=0 then begin
         TP := gtk_tooltips_new;
-        wd := GTK_Button_New;
-        gtk_tooltips_set_tip(TP,WD,'Dummy', 'Dummy Style Test');
+        StyleObject^.Widget := nil;
         GTK_Tooltips_Force_Window(TP);
         gtk_widget_ensure_style(PGTKTooltips(TP)^.Tip_Window);
-        Style:=GTK_RC_GET_STYLE(PGTKTooltips(TP)^.Tip_Window);
+        StyleObject^.Style:=GTK_RC_GET_STYLE(PGTKTooltips(TP)^.Tip_Window);
       end
-    else
+    else begin
+      FreeStyleObject(StyleObject);
       exit;
-    If AnsiCompareText(WName,'tooltip')<>0 then begin
-      gtk_widget_ensure_style(Wd);
-      Style:=GTK_RC_GET_STYLE(Wd);
     end;
-    If Style <> nil then
-      Style:=GTK_Style_Ref(Style);
-    if Style <> nil then begin
-      Styles.AddObject(WName, TObject(Style));
-      Result:=Style;
-      UpdateSysColorMap(Wd);
+    If (StyleObject^.Widget <> nil) then begin
+      gtk_widget_ensure_style(StyleObject^.Widget);
+      StyleObject^.Style:=GTK_RC_GET_STYLE(StyleObject^.Widget);
+    end;
+    If StyleObject^.Style <> nil then
+      StyleObject^.Style:=GTK_Style_Ref(StyleObject^.Style);
+    if StyleObject^.Style <> nil then begin
+      Styles.AddObject(WName, TObject(StyleObject));
+      Result:=StyleObject^.Style;
+      If StyleObject^.Widget <> nil then
+        UpdateSysColorMap(StyleObject^.Widget);
     end;
     If AnsiCompareText(WName,'tooltip')=0 then
       GTK_Object_Destroy(Tp);
-    GTK_Widget_Destroy(Wd);
   end else
-    Result := PGTKStyle(Styles.Objects[l]);
+    Result := PStyleObject(Styles.Objects[l])^.Style;
+end;
+
+Function GetStyleWidget(WName : String) : PGTKWidget;
+var
+  l : Longint;
+begin
+  Result := nil;
+  l:=IndexOfStyle(WName);
+  If (l > -1) or (GetStyle(WName) <> nil) then begin
+    l:=IndexOfStyle(WName);
+    Result := PStyleObject(Styles.Objects[l])^.Widget;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -2966,7 +3133,7 @@ begin
     COLOR_BTNFACE :
       begin
         Case Color of
-          COLOR_BTNFACE : Style := GetStyle('button');
+          COLOR_BTNFACE : Style := GetStyle('window');
           COLOR_MENU : Style := GetStyle('menu');
           COLOR_SCROLLBAR : Style := GetStyle('scrollbar');
         end;
@@ -3246,6 +3413,69 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.104  2002/09/27 20:52:24  lazarus
+  MWE: Applied patch from "Andrew Johnson" <aj_genius@hotmail.com>
+
+  Here is the run down of what it includes -
+
+   -Vasily Volchenko's Updated Russian Localizations
+
+   -improvements to GTK Styles/SysColors
+   -initial GTK Palette code - (untested, and for now useless)
+
+   -Hint Windows and Modal dialogs now try to stay transient to
+    the main program form, aka they stay on top of the main form
+    and usually minimize/maximize with it.
+
+   -fixes to Form BorderStyle code(tool windows needed a border)
+
+   -fixes DrawFrameControl DFCS_BUTTONPUSH to match Win32 better
+    when flat
+
+   -fixes DrawFrameControl DFCS_BUTTONCHECK to match Win32 better
+    and to match GTK theme better. It works most of the time now,
+    but some themes, noteably Default, don't work.
+
+   -fixes bug in Bitmap code which broke compiling in NoGDKPixbuf
+    mode.
+
+   -misc other cleanups/ fixes in gtk interface
+
+   -speedbutton's should now draw correctly when flat in Win32
+
+   -I have included an experimental new CheckBox(disabled by
+    default) which has initial support for cbGrayed(Tri-State),
+    and WordWrap, and misc other improvements. It is not done, it
+    is mostly a quick hack to test DrawFrameControl
+    DFCS_BUTTONCHECK, however it offers many improvements which
+    can be seen in cbsCheck/cbsCrissCross (aka non-themed) state.
+
+   -fixes Message Dialogs to more accurately determine
+    button Spacing/Size, and Label Spacing/Size based on current
+    System font.
+   -fixes MessageDlgPos, & ShowMessagePos in Dialogs
+   -adds InputQuery & InputBox to Dialogs
+
+   -re-arranges & somewhat re-designs Control Tabbing, it now
+    partially works - wrapping around doesn't work, and
+    subcontrols(Panels & Children, etc) don't work. TabOrder now
+    works to an extent. I am not sure what is wrong with my code,
+    based on my other tests at least wrapping and TabOrder SHOULD
+    work properly, but.. Anyone want to try and fix?
+
+   -SynEdit(Code Editor) now changes mouse cursor to match
+    position(aka over scrollbar/gutter vs over text edit)
+
+   -adds a TRegion property to Graphics.pp, and Canvas. Once I
+    figure out how to handle complex regions(aka polygons) data
+    properly I will add Region functions to the canvas itself
+    (SetClipRect, intersectClipRect etc.)
+
+   -BitBtn now has a Stored flag on Glyph so it doesn't store to
+    lfm/lrs if Glyph is Empty, or if Glyph is not bkCustom(aka
+    bkOk, bkCancel, etc.) This should fix most crashes with older
+    GDKPixbuf libs.
+
   Revision 1.103  2002/09/26 21:29:30  lazarus
   MWE: Fixed window color
 
