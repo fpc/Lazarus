@@ -7087,7 +7087,8 @@ var
   SrcGDIBitmap: PGdiObject;
   ScaleBMP : hBITMAP;
   Scale : PGdiObject;
-
+  temp_mask : PGdkPixmap;
+  
   {$IfDef Win32}
   Procedure gdk_window_copy_area(Dest : PGDKWindow; GC : PGDKGC; X,
     Y : Longint; SRC : PGDKWindow; XSRC, YSRC, Width, Height : Longint);
@@ -7097,19 +7098,57 @@ var
   {$EndIf}
 
   Procedure SetClipping(DestGC : PGDKGC; GDIBitmap : PGdiObject);
+  var
+    temp_gc : PGDKGC;
+    temp_color : TGDKColor;
+    Region: PGdiObject;
+    RGNType : Longint;
   begin
     SelectGDIRegion(DestDC);
-    if (GDIBitmap <> NIL) AND (GDIBitmap^.GDIBitmapMaskObject <> nil) then
+    temp_mask := nil;
+    if ((GDIBitmap <> NIL) {and (GDIBitmap^.UseMask)} and (GDIBitmap^.GDIBitmapMaskObject <> nil))
+    then
+    begin
+      temp_mask := PGdkBitmap(gdk_pixmap_new(NIL, width, height, 1));
+      temp_gc := gdk_gc_new(temp_mask);
+
+      gdk_gc_set_clip_region(temp_gc,  nil);
+      gdk_gc_set_clip_rectangle (temp_gc,  nil);
+
+      temp_color.pixel := 0;
+      gdk_gc_set_foreground(temp_gc, @temp_color);
+
+      gdk_draw_rectangle(temp_mask, temp_gc, 1, 0, 0, width, height);
+      gdk_draw_rectangle(temp_mask, temp_gc, 0, 0, 0, width, height);
+
+      with TDeviceContext(DestDC) do
       begin
-        gdk_gc_set_clip_mask(DestGC, GDIBitmap^.GDIBitmapMaskObject);
-        gdk_gc_set_clip_origin(DestGC, X, Y);
+        If (ClipRegion <> 0) then begin
+          Region:=PGDIObject(ClipRegion);
+          RGNType := RegionType(Region^.GDIRegionObject);
+          If (RGNType <> ERROR) and (RGNType <> NULLREGION) then begin
+            gdk_region_offset(Region^.GDIRegionObject,0,0);
+            gdk_gc_set_clip_region(temp_gc,  PGDIObject(ClipRegion)^.GDIRegionObject);
+          end;
+        end;
       end;
+
+      gdk_draw_pixmap(temp_mask, temp_gc, GDIBitmap^.GDIBitmapMaskObject,
+                      0, 0, 0, 0, width, height);
+
+      gdk_gc_destroy(temp_gc);
+
+      gdk_gc_set_clip_mask(DestGC, temp_mask);
+
+      gdk_gc_set_clip_origin(DestGC, x, y);
+    end;
   end;
 
   Procedure ResetClipping(DestGC : PGDKGC);
   begin
     gdk_gc_set_clip_mask (DestGC, nil);
     gdk_gc_set_clip_origin (DestGC, 0,0);
+    if (temp_mask <> nil) then gdk_bitmap_unref(temp_mask);
     SelectGDIRegion(DestDC);
   end;
 
@@ -7812,6 +7851,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.214  2003/03/10 20:10:28  ajgenius
+  initial changes to fix mask vs. region clipping
+
   Revision 1.213  2003/03/09 21:13:32  mattias
   localized gtk interface
 
