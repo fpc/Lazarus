@@ -186,18 +186,11 @@ type
    procedure SetInterval(Value: Cardinal);
    procedure SetOnTimer(Value: TNotifyEvent);
    procedure KillTimer;
-   procedure SetTimerID (Value : integer);
  protected
-   { controls write access to the @link(timerid) property }
-   AllowIdAccess : boolean;
+   procedure Timer (var msg); message LM_Timer;
  public
    constructor Create(AOwner: TComponent); override;
    destructor Destroy; override;
-   { The TimerID should be protected but can't be because of GTK implementation
-     details. To avoid invalid access it's protected by the AllowIdAccess
-     variable so don't try to write it from your application}
-   property TimerID : integer read FTimerID write SetTimerID;
-   procedure Timer (var msg); message LM_Timer;
  published
    property Enabled: Boolean read FEnabled write SetEnabled default True;
    property Interval: Cardinal read FInterval write SetInterval default 1000;
@@ -313,7 +306,7 @@ TCN_SELCHANGE = TCN_FIRST - 1;
 
 implementation
 
- uses Graphics;
+ uses Graphics, interfaces;
 
 {$I page.inc}
 {$I customnotebook.inc}
@@ -328,6 +321,9 @@ end.
 
  {
   $Log$
+  Revision 1.9  2001/04/06 22:28:09  lazarus
+  * TTimer uses winapi interface now instead of sendmessage interface, stoppok
+
   Revision 1.8  2001/03/15 14:42:20  lazarus
   MG: customradiogroup is now streamable
 

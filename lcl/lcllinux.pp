@@ -561,7 +561,6 @@ const
 
 type
 
-
   PNMHdr = ^TNMHdr;
   tagNMHDR = packed record
     hwndFrom: HWND;
@@ -585,7 +584,6 @@ type
    end;
    TDrawItemStruct = tagDrawItemStruct;
    DrawItemStruct = tagDrawItemStruct;
-
 
 {painting stuff}
   PPaintStruct = ^TPaintStruct;
@@ -1346,6 +1344,8 @@ type
  TMsg = tagMSG;
  _MSG = tagMSG;
 
+// prototype for timer callback
+TFNTimerProc = procedure(Handle: HWND; Message : cardinal; IDEvent: Integer; Time: Cardinal); 
 
 // All winapi related stuff
 {$I winapih.inc}
@@ -1378,6 +1378,9 @@ end.
 
 {
   $Log$
+  Revision 1.7  2001/04/06 22:28:09  lazarus
+  * TTimer uses winapi interface now instead of sendmessage interface, stoppok
+
   Revision 1.6  2001/03/26 14:58:31  lazarus
   MG: setwindowpos + bugfixes
 

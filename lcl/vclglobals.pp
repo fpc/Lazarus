@@ -69,7 +69,7 @@ csGroupBox = 29;
 csFont = 30;
 csPen = 31;
 csBrush = 32;
-csTimer = 33;
+//csTimer = 33;
 csPage = 34;
 
 csColorDialog = 35;
