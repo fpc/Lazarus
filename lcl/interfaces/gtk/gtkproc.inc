@@ -2186,8 +2186,12 @@ begin
     end;
   end;
   
+  {$IFDEF Gtk1}
+  Result:=true;
+  {$ELSE}
   Result:=EventStopped;
-//DebugLn('[HandleGTKKeyUpDown] ',TControl(Data).Name,':',TControl(Data).ClassName,' Result=',Result);
+  {$ENDIF}
+  //DebugLn('[HandleGTKKeyUpDown] ',DbgSName(TObject(Data)),' Result=',dbgs(Result));
 end;
 
 {------------------------------------------------------------------------------
@@ -7238,6 +7242,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.304  2004/09/05 10:39:01  mattias
+  fixed gtk1 intf key handler result
+
   Revision 1.303  2004/09/04 22:24:16  mattias
   added default values for compiler skip options and improved many parts of synedit for UTF8
 
