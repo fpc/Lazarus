@@ -2896,7 +2896,7 @@ begin
   NewUnitInfo:=nil;
 
   // check if unit is a program
-  if ([ofProjectLoading,ofRegularFile]*Flags<>[])
+  if ([ofProjectLoading,ofRegularFile]*Flags=[])
   and FilenameIsPascalSource(AFilename)
   and (CodeToolBoss.GetSourceType(PreReadBuf,false)='PROGRAM') then begin
     NewProgramName:=CodeToolBoss.GetSourceName(PreReadBuf,false);
@@ -6892,6 +6892,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.370  2002/09/10 17:45:02  lazarus
+  MG: fixed creating project with program source
+
   Revision 1.369  2002/09/10 14:48:21  lazarus
   MG: added SaveFlagNames
 
