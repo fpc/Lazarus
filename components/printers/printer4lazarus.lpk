@@ -13,11 +13,6 @@
       <CodeGeneration>
         <Generate Value="Faster"/>
       </CodeGeneration>
-      <Linking>
-        <Debugging>
-          <GenGProfCode Value="True"/>
-        </Debugging>
-      </Linking>
       <Other>
         <CustomOptions Value="-dUseCache"/>
         <CompilerPath Value="$(CompPath)"/>
