@@ -40,7 +40,7 @@ uses
   Classes, SysUtils, Forms, Controls, Buttons, GraphType, Graphics, Laz_XMLCfg,
   ObjectInspector, ExtCtrls, StdCtrls, EditorOptions, LResources, LazConf,
   Dialogs, ExtToolDialog, IDEProcs, IDEOptionDefs, InputHistory,
-  LazarusIDEStrConsts;
+  LazarusIDEStrConsts, FileCtrl;
 
 const
   EnvOptsVersion: integer = 101;

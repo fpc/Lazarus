@@ -52,8 +52,6 @@ const
   {$define CaseInsensitiveFilenames}
   {$endif}
 
-
-// files
 function CompareFilenames(const Filename1, Filename2: string): integer;
 function DirectoryExists(DirectoryName: string): boolean;
 function ExtractFileNameOnly(const AFilename: string): string;

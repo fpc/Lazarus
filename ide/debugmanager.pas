@@ -42,7 +42,7 @@ uses
   Classes, SysUtils, Forms, Controls, Dialogs, CompilerOptions, EditorOptions,
   EnvironmentOpts, KeyMapping, UnitEditor, Project, IDEProcs,
   Debugger, RunParamsOpts, ExtToolDialog, LazarusIDEStrConsts,
-  ProjectDefs, BaseDebugManager, MainBar, DebuggerDlg;
+  ProjectDefs, BaseDebugManager, MainBar, DebuggerDlg, FileCtrl;
   
 type
   TDebugDialogType = (ddtOutput, ddtBreakpoints, ddtWatches, ddtLocals, ddtCallStack);
@@ -671,6 +671,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.10  2002/12/09 16:48:34  mattias
+  added basic file handling functions to filectrl
+
   Revision 1.9  2002/11/05 22:41:13  lazarus
   MWE:
     * Some minor debugger updates

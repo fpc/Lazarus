@@ -28,7 +28,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, CompilerOptions, Project, Process,
-  IDEProcs;
+  IDEProcs, FileCtrl;
 
 type
   TOnOutputString = procedure(const Value: String) of Object;
@@ -533,7 +533,7 @@ begin
       if Assigned(OnGetIncludePath) then begin
         // search with include path of directory
         IncludePath:=OnGetIncludePath(FullDir);
-        Result:=SearchFileInPath(ShortIncFilename,FullDir,IncludePath,';');
+        Result:=IDEProcs.SearchFileInPath(ShortIncFilename,FullDir,IncludePath,';');
         if Result<>'' then begin
           if LeftStr(Result,length(fCurrentDirectory))=fCurrentDirectory then
             Result:=RightStr(Result,length(Result)-length(fCurrentDirectory));

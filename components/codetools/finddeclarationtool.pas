@@ -2984,8 +2984,6 @@ begin
       Params.Flags:=[fdfIgnoreUsedUnits]+(fdfGlobalsSameIdent*Params.Flags)
                    -[fdfExceptionOnNotFound];
       Result:=NewCodeTool.FindIdentifierInInterface(Self,Params);
-if Result and (Params.NewNode.Desc=ctnProcedureHead) then
-writeln('CCC1 TFindDeclarationTool.FindIdentifierInUsesSection');
       if Result then exit;
       Params.Load(OldInput);
       // restore the cursor
@@ -3104,8 +3102,6 @@ begin
                 -[fdfExceptionOnNotFound,fdfSearchInParentNodes];
   Params.ContextNode:=InterfaceNode;
   Result:=FindIdentifierInContext(Params);
-if Result and (Params.NewNode.Desc=ctnProcedureHead) then
-writeln('DDD1 ',MainFilename);
   Params.Load(OldInput);
 
   // save result in cache

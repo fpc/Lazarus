@@ -41,7 +41,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, LCLType, Controls, Forms, Buttons, StdCtrls, ComCtrls, 
   Dialogs, ExtCtrls, LResources, Laz_XMLCfg, ExtToolEditDlg, Process,
-  KeyMapping, TransferMacros, IDEProcs, OutputFilter;
+  KeyMapping, TransferMacros, IDEProcs, OutputFilter, FileCtrl;
 
 const
   MaxExtTools = ecExtToolLast-ecExtToolFirst+1;

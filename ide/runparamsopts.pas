@@ -49,7 +49,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, Controls, Forms, Buttons, StdCtrls, ComCtrls, Dialogs,
   ExtCtrls, LResources, Laz_XMLCfg, IDEProcs, SysVarUserOverrideDlg,
-  InputHistory, LazarusIDEStrConsts;
+  InputHistory, LazarusIDEStrConsts, FileCtrl;
 
 { The xml format version:
     When the format changes (new values, changed formats) we can distinguish old

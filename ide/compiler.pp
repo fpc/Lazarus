@@ -40,7 +40,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, CompilerOptions, Project, Process,
-  IDEProcs, OutputFilter;
+  IDEProcs, OutputFilter, FileCtrl;
 
 type
   TOnCmdLineCreate = procedure(var CmdLine: string; var Abort:boolean)
@@ -189,6 +189,9 @@ end.
 
 {
   $Log$
+  Revision 1.36  2002/12/09 16:48:34  mattias
+  added basic file handling functions to filectrl
+
   Revision 1.35  2002/10/21 22:20:00  lazarus
   MG: reduced output
 

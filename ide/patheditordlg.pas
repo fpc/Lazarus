@@ -29,7 +29,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, SynEdit, Buttons, StdCtrls, ExtCtrls,
-  Dialogs;
+  Dialogs, IDEProcs, LResources, FileCtrl;
 
 type
   TPathEditorDialog = class(TForm)
@@ -90,7 +90,7 @@ function PathEditorDialog: TPathEditorDialog;
 
 implementation
 
-uses Math, IDEProcs, LResources;
+uses Math;
 
 var PathEditor: TPathEditorDialog;
 

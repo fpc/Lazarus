@@ -46,7 +46,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, Controls, Forms, Dialogs, Buttons, ComCtrls, StdCtrls,
   CodeToolManager, CodeCache, EnvironmentOpts, LResources, IDEOptionDefs,
-  LazarusIDEStrConsts, InputHistory, IDEProcs, Graphics, LCLType;
+  LazarusIDEStrConsts, InputHistory, IDEProcs, Graphics, LCLType, FileCtrl;
   
 type
 
