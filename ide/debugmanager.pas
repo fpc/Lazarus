@@ -82,8 +82,7 @@ type
       var Filename: string; AskUserIfNotFound: boolean): TModalresult;
   private
     FDebugger: TDebugger;
-    FBreakpointsNotification: TIDEBreakPointsNotification;// Notification for
-      // our BreakPoints
+    FBreakpointsNotification: TIDEBreakPointsNotification;
 
     // When no debugger is created the IDE stores all debugger settings in its
     // own variables. When the debugger object is created these items point
@@ -205,6 +204,152 @@ type
     destructor Destroy; override;
     property Master: TDBGBreakPoints read FMaster write SetMaster;
   end;
+  
+  TManagedSignal = class(TIDESignal)
+  private
+    FMaster: TDBGSignal;
+  protected
+    procedure AssignTo(Dest: TPersistent); override;
+  public
+    constructor Create(ACollection: TCollection); override;
+    procedure ResetMaster;
+  end;
+
+  TManagedSignals = class(TIDESignals)
+  private
+    FMaster: TDBGSignals;
+    procedure SetMaster(const AValue: TDBGSignals);
+  protected
+  public
+    constructor Create;
+    property Master: TDBGSignals read FMaster write SetMaster;
+  end;
+
+  TManagedException = class(TIDEException)
+  private
+    FMaster: TDBGException;
+  protected
+    procedure DoChanged; override;
+  public
+    constructor Create(ACollection: TCollection); override;
+    procedure ResetMaster;
+  end;
+
+  TManagedExceptions = class(TIDEExceptions)
+  private
+    FMaster: TDBGExceptions;
+    procedure SetMaster(const AValue: TDBGExceptions);
+  protected
+  public
+    constructor Create;
+    property Master: TDBGExceptions read FMaster write SetMaster;
+  end;
+
+{ TManagedException }
+
+constructor TManagedException.Create(ACollection: TCollection);
+begin
+  FMaster := nil;
+  inherited Create(ACollection);
+end;
+
+procedure TManagedException.DoChanged;
+var
+  E: TDBGExceptions;
+begin
+  E := TManagedExceptions(GetOwner).FMaster;
+  if ((FMaster = nil) = Enabled) and (E <> nil)
+  then begin
+    if Enabled
+    then FMaster := E.Add(Name)
+    else FreeAndNil(FMaster);
+  end;
+
+  inherited DoChanged;
+end;
+
+procedure TManagedException.ResetMaster;
+begin
+  FMaster := nil;
+end;
+
+{ TManagedExceptions }
+
+constructor TManagedExceptions.Create;
+begin
+  FMaster := nil;
+  inherited Create(TManagedException);
+end;
+
+procedure TManagedExceptions.SetMaster(const AValue: TDBGExceptions);
+var
+  n: Integer;
+  Item: TIDEException;
+begin
+  if FMaster = AValue then Exit;
+  FMaster := AValue;
+  if FMaster = nil
+  then begin
+    for n := 0 to Count - 1 do
+      TManagedException(Items[n]).ResetMaster;
+  end
+  else begin
+    // Do not assign, add only enabled exceptions
+    for n := 0 to Count - 1 do
+    begin
+      Item := Items[n];
+      if Item.Enabled
+      then FMaster.Add(Item.Name);
+    end;
+  end;
+end;
+
+{ TManagedSignal }
+
+procedure TManagedSignal.AssignTo (Dest: TPersistent );
+begin
+  inherited AssignTo(Dest);
+  if (TManagedSignals(GetOwner).FMaster <> nil)
+  and (Dest is TDBGSignal)
+  then begin
+    FMaster := TDBGSignal(Dest);
+  end;
+end;
+
+constructor TManagedSignal.Create(ACollection: TCollection);
+begin
+  FMaster := nil;
+  inherited Create(ACollection);
+end;
+
+procedure TManagedSignal.ResetMaster;
+begin
+  FMaster := nil;
+end;
+
+{ TManagedSignals }
+
+constructor TManagedSignals.Create;
+begin
+  FMaster := nil;
+  inherited Create(TManagedSignal);
+end;
+
+procedure TManagedSignals.SetMaster(const AValue: TDBGSignals);
+var
+  n: Integer;
+begin
+  if FMaster = AValue then Exit;
+  FMaster := AValue;
+  if FMaster = nil
+  then begin
+    for n := 0 to Count - 1 do
+      TManagedSignal(Items[n]).ResetMaster;
+  end
+  else begin
+    FMaster.Assign(Self);
+  end;
+end;
 
 { TManagedBreakPoints }
 
@@ -861,6 +1006,12 @@ begin
   FBreakPointGroups := TIDEBreakPointGroups.Create;
   FWatches := TDBGWatches.Create(nil, TDBGWatch);
   
+  FExceptions := TManagedExceptions.Create;
+  // Temp hack
+  FExceptions.Add('ECodetoolError');
+  
+  FSignals := TManagedSignals.Create;
+
   FUserSourceFiles := TStringList.Create;
   
   inherited Create(TheOwner);
@@ -882,16 +1033,19 @@ begin
     if FDebugger.Watches = FWatches
     then FWatches := nil;
   
-    FreeThenNil(FDebugger);
+    FreeAndNil(FDebugger);
   end
   else begin
-    FreeThenNil(FWatches);
+    FreeAndNil(FWatches);
   end;
   
-  FreeThenNil(FBreakPoints);
-  FreeThenNil(FBreakPointGroups);
-  FreeThenNil(FBreakpointsNotification);
-  FreeThenNil(FUserSourceFiles);
+  FreeAndNil(FBreakPoints);
+  FreeAndNil(FBreakPointGroups);
+  FreeAndNil(FBreakpointsNotification);
+  FreeAndNil(FExceptions);
+  FreeAndNil(FSignals);
+
+  FreeAndNil(FUserSourceFiles);
 
   inherited Destroy;
 end;
@@ -1065,8 +1219,6 @@ end;
 
 function TDebugManager.DoInitDebugger: TModalResult;
 var
-//@@  OldBreakpoints: TDBGBreakPoints;
-//@@  OldBreakPointGroups: TDBGBreakPointGroups;
   OldWatches: TDBGWatches;
   
   procedure ResetDialogs;
@@ -1100,8 +1252,9 @@ var
   begin
     SaveDebuggerItems;
     TManagedBreakPoints(FBreakPoints).Master := nil;
-    FDebugger.Free;
-    FDebugger := nil;
+    TManagedSignals(FSignals).Master := nil;
+    TManagedExceptions(FExceptions).Master := nil;;
+    FreeAndNil(FDebugger);
     ResetDialogs;
   end;
 
@@ -1140,8 +1293,10 @@ begin
             SaveDebuggerItems;
             FDebugger := TGDBMIDebugger.Create(EnvironmentOptions.DebuggerFilename);
 
-            TManagedBreakPoints(FBreakPoints).Master := FDebugger.BreakPoints; //!!
-            
+            TManagedBreakPoints(FBreakPoints).Master := FDebugger.BreakPoints;
+            TManagedSignals(FSignals).Master := FDebugger.Signals;
+            TManagedExceptions(FExceptions).Master := FDebugger.Exceptions;
+
             FWatches := FDebugger.Watches;
             ResetDialogs;
           end;
@@ -1371,6 +1526,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.52  2003/06/13 19:21:31  marc
+  MWE: + Added initial signal and exception handling
+
   Revision 1.51  2003/06/10 23:48:26  marc
   MWE: * Enabled modification of breakpoints while running
 

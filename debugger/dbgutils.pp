@@ -34,6 +34,24 @@ unit DBGUtils;
 
 interface 
 
+uses
+  Classes;
+
+type
+  TDelayedUdateItem = class(TCollectionItem)
+  private
+    FUpdateCount: Integer;
+    FDoChanged: Boolean;
+  protected
+    procedure Changed;
+    procedure DoChanged; virtual;
+  public
+    procedure Assign(ASource: TPersistent); override;
+    procedure BeginUpdate;
+    constructor Create(ACollection: TCollection); override;
+    procedure EndUpdate;
+  end;
+  
 function GetLine(var ABuffer: String): String;
 function StripLN(const ALine: String): String;
 function GetPart(const ASkipTo, AnEnd: String; var ASource: String): String; overload;
@@ -220,9 +238,64 @@ begin
   end;
 end;
 
+{ TDelayedUdateItem }
+
+procedure TDelayedUdateItem.Assign(ASource: TPersistent);
+begin
+  BeginUpdate;
+  try
+    inherited Assign(ASource);
+  finally
+    EndUpdate;
+  end;
+end;
+
+procedure TDelayedUdateItem.BeginUpdate;
+begin
+  Inc(FUpdateCount);
+  if FUpdateCount = 1 then FDoChanged := False;
+  
+  WriteLn(Classname,'.BeginUpdate count=', FUpdateCount);
+end;
+
+procedure TDelayedUdateItem.Changed;
+begin
+  if FUpdateCount > 0
+  then FDoChanged := True
+  else DoChanged;
+end;
+
+constructor TDelayedUdateItem.Create(ACollection: TCollection);
+begin
+  inherited Create(ACollection);
+  FUpdateCount := 0;
+end;
+
+procedure TDelayedUdateItem.DoChanged;
+begin
+  inherited Changed(False);
+end;
+
+procedure TDelayedUdateItem.EndUpdate;
+begin
+  Dec(FUpdateCount);
+  WriteLn(Classname,'.EndUpdate A count=', FUpdateCount);
+  if FUpdateCount < 0 then raise EInvalidOperation.Create('TDelayedUdateItem.EndUpdate');
+  if (FUpdateCount = 0) and FDoChanged
+  then begin
+    DoChanged;
+    FDoChanged := False;
+    WriteLn(Classname,'.EndUpdate B');
+  end;
+  WriteLn(Classname,'.EndUpdate C');
+end;
+
 end.
 { =============================================================================
   $Log$
+  Revision 1.7  2003/06/13 19:21:31  marc
+  MWE: + Added initial signal and exception handling
+
   Revision 1.6  2003/06/10 23:48:26  marc
   MWE: * Enabled modification of breakpoints while running
 

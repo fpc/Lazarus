@@ -115,9 +115,13 @@ const
   XMLWatchesNode = 'Watches';
 
 type
-{ ---------------------------------------------------------
+  EDebuggerException = class(Exception);
+  EDBGExceptions = class(EDebuggerException);
+
+type
+{ ---------------------------------------------------------<br>
   TDebuggerNotification is a reference counted baseclass
-  for handling notifications for locals, watches, breakpoints etc.
+  for handling notifications for locals, watches, breakpoints etc.<br>
   ---------------------------------------------------------}
   TDebuggerNotification = class(TObject)
   private
@@ -128,6 +132,7 @@ type
     destructor Destroy; override;
     procedure ReleaseReference;
   end;
+  
 
   TIDEBreakPoints = class;
   TIDEBreakPointGroup = class;
@@ -138,6 +143,14 @@ type
   TOnSaveFilenameToConfig = procedure(var Filename: string) of object;
   TOnLoadFilenameFromConfig = procedure(var Filename: string) of object;
   TOnGetGroupByName = function(const GroupName: string): TIDEBreakPointGroup of object;
+
+(******************************************************************************)
+(******************************************************************************)
+(**                                                                          **)
+(**   B R E A K P O I N T S                                                  **)
+(**                                                                          **)
+(******************************************************************************)
+(******************************************************************************)
 
   { TIDEBreakPoint }
 
@@ -154,7 +167,7 @@ type
     );
   TIDEBreakPointActions = set of TIDEBreakPointAction;
   
-  TBaseBreakPoint = class(TCollectionItem)
+  TBaseBreakPoint = class(TDelayedUdateItem)
   private
     FEnabled: Boolean;
     FExpression: String;
@@ -162,13 +175,9 @@ type
     FLine: Integer;
     FSource: String;
     FValid: TValidState;
-    FChangedWhileLocked: Boolean;
-    FUpdateLock: Integer;
     FInitialEnabled: Boolean;
   protected
     procedure AssignTo(Dest: TPersistent); override;
-    procedure Changed;
-    procedure DoChanged; virtual;
     procedure DoExpressionChange; virtual;
     procedure DoEnableChange; virtual;
     procedure DoHit(const ACount: Integer; var AContinue: Boolean); virtual;
@@ -187,10 +196,7 @@ type
     procedure SetEnabled(const AValue: Boolean); virtual;
     procedure SetExpression(const AValue: String); virtual;
   public
-    procedure BeginUpdate;
     constructor Create(ACollection: TCollection); override;
-    destructor Destroy; override;
-    procedure EndUpdate;
     function GetSourceLine: integer; virtual;
     property Enabled: Boolean read GetEnabled write SetEnabled;
     property Expression: String read GetExpression write SetExpression;
@@ -218,10 +224,6 @@ type
     procedure RemoveFromGroupList(const AGroup: TIDEBreakPointGroup;
                                   const AGroupList: TList);
     procedure ClearGroupList(const AGroupList: TList);
-//    procedure CopyGroupList(SrcGroupList, DestGroupList: TList;
-//                            DestGroups: TIDEBreakPointGroups);
-//    procedure CopyAllGroupLists(SrcBreakPoint: TIDEBreakPoint;
-//                                DestGroups: TIDEBreakPointGroups);
     procedure ClearAllGroupLists;
     // virtual properties
     function GetActions: TIDEBreakPointActions; virtual;
@@ -240,7 +242,6 @@ type
                       const OnGetGroup: TOnGetGroupByName); virtual;
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                       const OnSaveFilename: TOnSaveFilenameToConfig); virtual;
-//    function UpdateLockCount: integer;
   public
     property Actions: TIDEBreakPointActions read GetActions write SetActions;
     property Group: TIDEBreakPointGroup read GetGroup write SetGroup;
@@ -403,6 +404,14 @@ type
   end;
   
   
+(******************************************************************************)
+(******************************************************************************)
+(**                                                                          **)
+(**   W A T C H E S                                                          **)
+(**                                                                          **)
+(******************************************************************************)
+(******************************************************************************)
+
   { TDBGWatch }
 
   TDBGWatch = class(TCollectionItem)
@@ -486,6 +495,14 @@ type
   end;
   
   
+(******************************************************************************)
+(******************************************************************************)
+(**                                                                          **)
+(**   L O C A L S                                                            **)
+(**                                                                          **)
+(******************************************************************************)
+(******************************************************************************)
+
   { TDBGLocals }
 
   TDBGLocals = class(TObject)
@@ -508,6 +525,14 @@ type
   end;
   
   
+(******************************************************************************)
+(******************************************************************************)
+(**                                                                          **)
+(**   C A L L S T A C K                                                      **)
+(**                                                                          **)
+(******************************************************************************)
+(******************************************************************************)
+
   { TDBGCallStackEntry }
 
   TDBGCallStackEntry = class(TObject)
@@ -560,7 +585,197 @@ type
     property Entries[const AIndex: Integer]: TDBGCallStackEntry read GetStackEntry;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
+  
+(******************************************************************************)
+(******************************************************************************)
+(**                                                                          **)
+(**   S I G N A L S  and  E X C E P T I O N S                                **)
+(**                                                                          **)
+(******************************************************************************)
+(******************************************************************************)
 
+  { TBaseSignal }
+
+  TBaseSignal = class(TDelayedUdateItem)
+  private
+    FHandledByDebugger: Boolean;
+    FID: Integer;
+    FName: String;
+    FResumeHandled: Boolean;
+  protected
+    procedure AssignTo(Dest: TPersistent); override;
+    procedure SetHandledByDebugger(const AValue: Boolean); virtual;
+    procedure SetID(const AValue: Integer); virtual;
+    procedure SetName(const AValue: String); virtual;
+    procedure SetResumeHandled(const AValue: Boolean); virtual;
+  public
+    constructor Create(ACollection: TCollection); override;
+    property ID: Integer read FID write SetID;
+    property Name: String read FName write SetName;
+    property HandledByDebugger: Boolean read FHandledByDebugger write SetHandledByDebugger;
+    property ResumeHandled: Boolean read FResumeHandled write SetResumeHandled;
+  end;
+  TBaseSignalClass = class of TBaseSignal;
+    
+  { TDBGSignal }
+  
+  TDBGSignal = class(TBaseSignal)
+  private
+    function GetDebugger: TDebugger;
+  protected
+    property Debugger: TDebugger read GetDebugger;
+  public
+  end;
+  TDBGSignalClass = class of TDBGSignal;
+  
+  TIDESignal = class(TBaseSignal)
+  private
+  protected
+  public
+    procedure LoadFromXMLConfig(const AXMLConfig: TXMLConfig;
+                                const APath: string);
+    procedure SaveToXMLConfig(const AXMLConfig: TXMLConfig;
+                              const APath: string);
+  end;
+
+  { TBaseSignals }
+  TBaseSignals = class(TCollection)
+  private
+    function Add(const AName: String; AID: Integer): TBaseSignal;
+    function Find(const AName: String): TBaseSignal;
+  protected
+  public
+    constructor Create(const AItemClass: TBaseSignalClass);
+  end;
+
+  { TDBGSignals }
+
+  TDBGSignals = class(TBaseSignals)
+  private
+    FDebugger: TDebugger;  // reference to our debugger
+    function GetItem(const AIndex: Integer): TDBGSignal;
+    procedure SetItem(const AIndex: Integer; const AValue: TDBGSignal);
+  protected
+  public
+    constructor Create(const ADebugger: TDebugger;
+                       const ASignalClass: TDBGSignalClass);
+    function Add(const AName: String; AID: Integer): TDBGSignal;
+    function Find(const AName: String): TDBGSignal;
+  public
+    property Items[const AIndex: Integer]: TDBGSignal read GetItem
+                                                      write SetItem; default;
+  end;
+
+  { TIDESignals }
+  
+  TIDESignals = class(TBaseSignals)
+  private
+    function GetItem(const AIndex: Integer): TIDESignal;
+    procedure SetItem(const AIndex: Integer; const AValue: TIDESignal);
+  protected
+  public
+    function Add(const AName: String; AID: Integer): TIDESignal;
+    function Find(const AName: String): TIDESignal;
+  public
+    procedure LoadFromXMLConfig(const AXMLConfig: TXMLConfig;
+                                const APath: string);
+    procedure SaveToXMLConfig(const AXMLConfig: TXMLConfig;
+                              const APath: string);
+    property Items[const AIndex: Integer]: TIDESignal read GetItem
+                                                      write SetItem; default;
+  end;
+
+  { TBaseException }
+  TBaseException = class(TDelayedUdateItem)
+  private
+    FName: String;
+  protected
+    procedure AssignTo(Dest: TPersistent); override;
+    procedure SetName(const AValue: String); virtual;
+  public
+    constructor Create(ACollection: TCollection); override;
+    property Name: String read FName write SetName;
+  end;
+  TBaseExceptionClass = class of TBaseException;
+
+  { TDBGException }
+  TDBGException = class(TBaseException)
+  private
+  protected
+  public
+  end;
+  TDBGExceptionClass = class of TDBGException;
+
+  { TIDEException }
+  TIDEException = class(TBaseException)
+  private
+    FEnabled: Boolean;
+    procedure SetEnabled(const AValue: Boolean);
+  protected
+  public
+    constructor Create(ACollection: TCollection); override;
+    procedure LoadFromXMLConfig(const AXMLConfig: TXMLConfig;
+                                const APath: string);
+    procedure SaveToXMLConfig(const AXMLConfig: TXMLConfig;
+                              const APath: string);
+    property Enabled: Boolean read FEnabled write SetEnabled;
+  end;
+
+  { TBaseExceptions }
+  TBaseExceptions = class(TCollection)
+  private
+    function Add(const AName: String): TBaseException;
+    function Find(const AName: String): TBaseException;
+  protected
+  public
+    constructor Create(const AItemClass: TBaseExceptionClass);
+  end;
+
+  { TDBGExceptions }
+
+  TDBGExceptions = class(TBaseExceptions)
+  private
+    FDebugger: TDebugger;  // reference to our debugger
+    function GetItem(const AIndex: Integer): TDBGException;
+    procedure SetItem(const AIndex: Integer; const AValue: TDBGException);
+  protected
+  public
+    constructor Create(const ADebugger: TDebugger;
+                       const AExceptionClass: TDBGExceptionClass);
+    function Add(const AName: String): TDBGException;
+    function Find(const AName: String): TDBGException;
+  public
+    property Items[const AIndex: Integer]: TDBGException read GetItem
+                                                        write SetItem; default;
+  end;
+
+  { TIDEExceptions }
+
+  TIDEExceptions = class(TBaseExceptions)
+  private
+    function GetItem(const AIndex: Integer): TIDEException;
+    procedure SetItem(const AIndex: Integer; const AValue: TIDEException);
+  protected
+  public
+    function Add(const AName: String): TIDEException;
+    function Find(const AName: String): TIDEException;
+  public
+    procedure LoadFromXMLConfig(const AXMLConfig: TXMLConfig;
+                                const APath: string);
+    procedure SaveToXMLConfig(const AXMLConfig: TXMLConfig;
+                              const APath: string);
+    property Items[const AIndex: Integer]: TIDEException read GetItem
+                                                        write SetItem; default;
+  end;
+
+
+(******************************************************************************)
+(******************************************************************************)
+(**                                                                          **)
+(**   D E B U G G E R                                                        **)
+(**                                                                          **)
+(******************************************************************************)
+(******************************************************************************)
 
   { TDebugger }
 
@@ -577,10 +792,13 @@ type
     FArguments: String;
     FBreakPoints: TDBGBreakPoints;
     FEnvironment: TStrings;
+    FExceptions: TDBGExceptions;
     FExitCode: Integer;
     FExternalDebugger: String;
+    FExceptionss: TDBGExceptions;
     FFileName: String;
     FLocals: TDBGLocals;
+    FSignals: TDBGSignals;
     FState: TDBGState;
     FCallStack: TDBGCallStack;
     FWatches: TDBGWatches;
@@ -600,6 +818,8 @@ type
     function  CreateLocals: TDBGLocals; virtual;
     function  CreateCallStack: TDBGCallStack; virtual;
     function  CreateWatches: TDBGWatches; virtual;
+    function  CreateSignals: TDBGSignals; virtual;
+    function  CreateExceptions: TDBGExceptions; virtual;
     procedure DoCurrent(const ALocation: TDBGLocationRec);
     procedure DoDbgOutput(const AText: String);
     procedure DoException(const AExceptionClass: String; const AExceptionText: String);
@@ -641,19 +861,22 @@ type
     property CallStack: TDBGCallStack read FCallStack;
     property Commands: TDBGCommands read GetCommands;                            // All current available commands of the debugger
     property Environment: TStrings read FEnvironment write SetEnvironment;
+    property Exceptions: TDBGExceptions read FExceptions;                        // A list of exceptions we should ignore
     property ExitCode: Integer read FExitCode;
     property ExternalDebugger: String read FExternalDebugger;
     property FileName: String read FFileName write SetFileName;                  // The name of the exe to be debugged
     property Locals: TDBGLocals read FLocals;
+    property Signals: TDBGSignals read FSignals;                                 // A list of actions for signals we know
+    property State: TDBGState read FState;                                       // The current state of the debugger
+    property SupportedCommands: TDBGCommands read GetSupportedCommands;          // All available commands of the debugger
+    property Watches: TDBGWatches read FWatches;                                 // list of all watches localvars etc
+    property WorkingDir: String read FWorkingDir write FWorkingDir;              // The working dir of the exe being debugged
+    // Events
     property OnCurrent: TDBGCurrentLineEvent read FOnCurrent write FOnCurrent;   // Passes info about the current line being debugged
     property OnDbgOutput: TDBGOutputEvent read FOnDbgOutput write FOnDbgOutput;  // Passes all debuggeroutput
     property OnException: TDBGExceptionEvent read FOnException write FOnException;  // Fires when the debugger received an exeption
     property OnOutput: TDBGOutputEvent read FOnOutput write FOnOutput;           // Passes all output of the debugged target
     property OnState: TDebuggerStateChangedEvent read FOnState write FOnState;   // Fires when the current state of the debugger changes
-    property State: TDBGState read FState;                                       // The current state of the debugger
-    property SupportedCommands: TDBGCommands read GetSupportedCommands;          // All available commands of the debugger
-    property Watches: TDBGWatches read FWatches;                                 // list of all watches localvars etc
-    property WorkingDir: String read FWorkingDir write FWorkingDir;              // The wirking dir of the exe being debugged
   end;
   
 const
@@ -691,6 +914,11 @@ function DBGCommandNameToCommand(const s: string): TDBGCommand;
 function DBGStateNameToState(const s: string): TDBGState;
 function DBGBreakPointActionNameToAction(const s: string): TIDEBreakPointAction;
 
+(******************************************************************************)
+(******************************************************************************)
+(******************************************************************************)
+(******************************************************************************)
+
 implementation
 
 const
@@ -727,6 +955,43 @@ begin
 end;
 
 { =========================================================================== }
+{ TDebuggerNotification }
+{ =========================================================================== }
+
+procedure TDebuggerNotification.AddReference;
+begin
+  Inc(FRefcount);
+end;
+
+constructor TDebuggerNotification.Create;
+begin
+  FRefCount := 0;
+  inherited;
+end;
+
+destructor TDebuggerNotification.Destroy;
+begin
+  Assert(FRefcount = 0, 'Destroying referenced object');
+  inherited;
+end;
+
+procedure TDebuggerNotification.ReleaseReference;
+begin
+  Dec(FRefCount);
+  if FRefCount = 0 then Free;
+end;
+
+
+(******************************************************************************)
+(******************************************************************************)
+(**                                                                          **)
+(**   D E B U G G E R                                                        **)
+(**                                                                          **)
+(******************************************************************************)
+(******************************************************************************)
+
+
+{ =========================================================================== }
 { TDebugger }
 { =========================================================================== }
 
@@ -746,12 +1011,14 @@ begin
   FArguments := '';
   FFilename := '';
   FExternalDebugger := AExternalDebugger;
+  FEnvironment := TStringList.Create;
   FBreakPoints := CreateBreakPoints;
   FLocals := CreateLocals;
   FCallStack := CreateCallStack;
   FWatches := CreateWatches;
+  FExceptions := CreateExceptions;
+  FSignals := CreateSignals;
   FExitCode := 0;
-  FEnvironment:=TStringList.Create;
 end;
 
 function TDebugger.CreateBreakPoints: TDBGBreakPoints;
@@ -764,9 +1031,19 @@ begin
   Result := TDBGCallStack.Create(Self);
 end;
 
+function TDebugger.CreateExceptions: TDBGExceptions;
+begin
+  Result := TDBGExceptions.Create(Self, TDBGException);
+end;
+
 function TDebugger.CreateLocals: TDBGLocals;
 begin
   Result := TDBGLocals.Create(Self);
+end;
+
+function TDebugger.CreateSignals: TDBGSignals;
+begin
+  Result := TDBGSignals.Create(Self, TDBGSignal);
 end;
 
 function TDebugger.CreateWatches: TDBGWatches;
@@ -795,6 +1072,7 @@ begin
   FreeAndNil(FCallStack);
   FreeAndNil(FWatches);
   FreeAndNil(FEnvironment);
+  FreeAndNil(FSignals);
   inherited;
 end;
 
@@ -973,43 +1251,35 @@ begin
   ReqCmd(dcStop, []);
 end;
 
+(******************************************************************************)
+(******************************************************************************)
+(**                                                                          **)
+(**   B R E A K P O I N T S                                                  **)
+(**                                                                          **)
+(******************************************************************************)
+(******************************************************************************)
+
 { ===========================================================================
   TBaseBreakPoint
   =========================================================================== }
 
-procedure TBaseBreakPoint.AssignTo (Dest: TPersistent );
+procedure TBaseBreakPoint.AssignTo(Dest: TPersistent);
 var
   DestBreakPoint: TBaseBreakPoint;
 begin
+  // updatelock is set in source.assignto
   if Dest is TBaseBreakPoint
   then begin
     DestBreakPoint:=TBaseBreakPoint(Dest);
-    DestBreakPoint.BeginUpdate;
-    try
-      DestBreakPoint.SetLocation(FSource, FLine);
-      DestBreakPoint.SetExpression(FExpression);
-      DestBreakPoint.SetEnabled(FEnabled);
-      DestBreakPoint.InitialEnabled := FInitialEnabled;
-    finally
-      DestBreakPoint.EndUpdate;
-    end;
+    DestBreakPoint.SetLocation(FSource, FLine);
+    DestBreakPoint.SetExpression(FExpression);
+    DestBreakPoint.SetEnabled(FEnabled);
+    DestBreakPoint.InitialEnabled := FInitialEnabled;
   end
   else inherited;
 end;
 
-procedure TBaseBreakPoint.BeginUpdate;
-begin
-  Inc(FUpdateLock);
-end;
-
-procedure TBaseBreakPoint.Changed;
-begin
-  if FUpdateLock > 0
-  then FChangedWhileLocked := True
-  else DoChanged;
-end;
-
-constructor TBaseBreakPoint.Create (ACollection: TCollection );
+constructor TBaseBreakPoint.Create(ACollection: TCollection);
 begin
   FSource := '';
   FLine := -1;
@@ -1017,19 +1287,8 @@ begin
   FEnabled := False;
   FHitCount := 0;
   FExpression := '';
-  FUpdateLock := 0;
   FInitialEnabled := False;
   inherited Create(ACollection);
-end;
-
-destructor TBaseBreakPoint.Destroy;
-begin
-  inherited Destroy;
-end;
-
-procedure TBaseBreakPoint.DoChanged;
-begin
-  inherited Changed(False);
 end;
 
 procedure TBaseBreakPoint.DoEnableChange;
@@ -1045,17 +1304,6 @@ end;
 procedure TBaseBreakPoint.DoHit(const ACount: Integer; var AContinue: Boolean );
 begin
   SetHitCount(ACount);
-end;
-
-procedure TBaseBreakPoint.EndUpdate;
-begin
-  Dec(FUpdateLock);
-  if FUpdateLock < 0 then RaiseException('TIDEBreakPoint.EndUpdate');
-  if (FUpdateLock = 0) and FChangedWhileLocked
-  then begin
-    DoChanged;
-    FChangedWhileLocked := False
-  end;
 end;
 
 function TBaseBreakPoint.GetSourceLine: integer;
@@ -1158,20 +1406,11 @@ begin
 end;
 
 procedure TIDEBreakPoint.AssignTo(Dest: TPersistent);
-var
-  DestBreakPoint: TIDEBreakPoint;
 begin
   inherited;
   if Dest is TIDEBreakPoint
   then begin
-    DestBreakPoint := TIDEBreakPoint(Dest);
-    //writeln('TIDEBreakPoint.AssignTo Src=',ClassName,' Dest=',Dest.ClassName,' File="',FSource,'" Line=',FLine);
-    DestBreakPoint.BeginUpdate;
-    try
-      DestBreakPoint.Actions := FActions;
-    finally
-      DestBreakPoint.EndUpdate;
-    end;
+    TIDEBreakPoint(Dest).Actions := FActions;
   end;
 end;
 
@@ -1577,7 +1816,7 @@ var
 begin
   Clear;
   NewCount:=XMLConfig.GetValue(Path+'Count',0);
-  //writeln('TIDEBreakPoints.LoadFromXMLConfig NewCount=',NewCount);
+
   for i:=0 to NewCount-1 do
   begin
     LoadBreakPoint := TIDEBreakPoint.Create(nil);
@@ -1585,9 +1824,6 @@ begin
       Path+'Item'+IntToStr(i+1)+'/',OnLoadFilename,OnGetGroup);
       
     BreakPoint := Find(LoadBreakPoint.Source, LoadBreakPoint.Line, LoadBreakPoint);
-    //writeln('TIDEBreakPoints.LoadFromXMLConfig i=',i,' ',
-    //  LoadBreakPoint.InitialEnabled,' ',LoadBreakPoint.Source,' ',LoadBreakPoint.Line,
-    //  ' OldBreakPoint=',BreakPoint<>nil);
 
     if BreakPoint = nil
     then BreakPoint := Add(LoadBreakPoint.Source, LoadBreakPoint.Line);
@@ -1688,24 +1924,23 @@ end;
 { TBaseBreakPoints }
 { =========================================================================== }
 
-function TBaseBreakPoints.Add (const ASource: String; const ALine: Integer ): TBaseBreakPoint;
+function TBaseBreakPoints.Add(const ASource: String; const ALine: Integer): TBaseBreakPoint;
 begin
   Result := TBaseBreakPoint(inherited Add);
-  //writeln('TBaseBreakPoints.Add ',Result.ClassName,' ',ASource,' ',ALine);
   Result.SetLocation(ASource, ALine);
 end;
 
-constructor TBaseBreakPoints.Create (const ABreakPointClass: TBaseBreakPointClass );
+constructor TBaseBreakPoints.Create(const ABreakPointClass: TBaseBreakPointClass);
 begin
   inherited Create(ABreakPointClass);
 end;
 
-function TBaseBreakPoints.Find (const ASource: String; const ALine: Integer ): TBaseBreakPoint;
+function TBaseBreakPoints.Find(const ASource: String; const ALine: Integer): TBaseBreakPoint;
 begin
   Result := Find(ASource, ALine, nil);
 end;
 
-function TBaseBreakPoints.Find (const ASource: String; const ALine: Integer; const AIgnore: TBaseBreakPoint ): TBaseBreakPoint;
+function TBaseBreakPoints.Find(const ASource: String; const ALine: Integer; const AIgnore: TBaseBreakPoint): TBaseBreakPoint;
 var
   n: Integer;
 begin
@@ -1864,13 +2099,11 @@ var
 begin
   Clear;
   NewCount:=XMLConfig.GetValue(Path+'Count',0);
-  //writeln('TIDEBreakPointGroups.LoadFromXMLConfig Count=',NewCount);
   for i:=0 to NewCount-1 do begin
     NewGroup:=TIDEBreakPointGroup(inherited Add);
     NewGroup.LoadFromXMLConfig(XMLConfig,
                                Path+'Item'+IntToStr(i+1)+'/');
     OldGroup:=FindGroupByName(NewGroup.Name,NewGroup);
-    //writeln('TIDEBreakPointGroups.LoadFromXMLConfig i=',i,' ',NewGroup.Name,' OldGroup=',OldGroup<>nil);
     if OldGroup<>nil then
       NewGroup.Free;
   end;
@@ -1973,6 +2206,14 @@ procedure TIDEBreakPointGroups.SetItem(const AnIndex: Integer;
 begin
   inherited SetItem(AnIndex, AValue);
 end;
+
+(******************************************************************************)
+(******************************************************************************)
+(**                                                                          **)
+(**   W A T C H E S                                                          **)
+(**                                                                          **)
+(******************************************************************************)
+(******************************************************************************)
 
 { =========================================================================== }
 { TDBGWatch }
@@ -2184,11 +2425,9 @@ var
 begin
   Clear;
   NewCount:=XMLConfig.GetValue(Path+'Count',0);
-  //writeln('TDBGWatches.LoadFromXMLConfig Count=',NewCount);
   for i:=0 to NewCount-1 do begin
     NewWatch:=TDBGWatch(inherited Add);
     NewWatch.LoadFromXMLConfig(XMLConfig,Path+'Item'+IntToStr(i+1)+'/');
-    //writeln('TDBGWatches.LoadFromXMLConfig i=',i,' ',NewWatch.Expression);
   end;
 end;
 
@@ -2234,6 +2473,14 @@ begin
   end;
 end;
 
+(******************************************************************************)
+(******************************************************************************)
+(**                                                                          **)
+(**   L O C A L S                                                            **)
+(**                                                                          **)
+(******************************************************************************)
+(******************************************************************************)
+
 { =========================================================================== }
 { TDBGLocals }
 { =========================================================================== }
@@ -2268,32 +2515,13 @@ begin
   Result := '';
 end;
 
-{ =========================================================================== }
-{ TDebuggerNotification }
-{ =========================================================================== }
-
-procedure TDebuggerNotification.AddReference;
-begin
-  Inc(FRefcount);
-end;
-
-constructor TDebuggerNotification.Create;
-begin
-  FRefCount := 0;
-  inherited;
-end;
-
-destructor TDebuggerNotification.Destroy;
-begin
-  Assert(FRefcount = 0, 'Destroying referenced object');
-  inherited;
-end;
-
-procedure TDebuggerNotification.ReleaseReference;
-begin
-  Dec(FRefCount);
-  if FRefCount = 0 then Free;
-end;
+(******************************************************************************)
+(******************************************************************************)
+(**                                                                          **)
+(**   C A L L S T A C K                                                      **)
+(**                                                                          **)
+(******************************************************************************)
+(******************************************************************************)
 
 { =========================================================================== }
 { TDBGCallStackEntry }
@@ -2422,9 +2650,347 @@ begin
   then FEntries.Add(Result);
 end;
 
+
+(******************************************************************************)
+(******************************************************************************)
+(**                                                                          **)
+(**   S I G N A L S  and  E X C E P T I O N S                                **)
+(**                                                                          **)
+(******************************************************************************)
+(******************************************************************************)
+
+{ =========================================================================== }
+{ TBaseSignal }
+{ =========================================================================== }
+
+procedure TBaseSignal.AssignTo(Dest: TPersistent);
+begin
+  if Dest is TBaseSignal
+  then begin
+    TBaseSignal(Dest).Name := FName;
+    TBaseSignal(Dest).ID := FID;
+    TBaseSignal(Dest).HandledByDebugger := FHandledByDebugger;
+    TBaseSignal(Dest).ResumeHandled := FResumeHandled;
+  end
+  else inherited AssignTo(Dest);
+end;
+
+constructor TBaseSignal.Create(ACollection: TCollection);
+begin
+  FID := 0;
+  FHandledByDebugger := False;
+  FResumeHandled := True;
+  inherited Create(ACollection);
+end;
+
+procedure TBaseSignal.SetHandledByDebugger(const AValue: Boolean);
+begin
+  if AValue = FHandledByDebugger then Exit;
+  FHandledByDebugger := AValue;
+  Changed;
+end;
+
+procedure TBaseSignal.SetID (const AValue: Integer );
+begin
+  if FID = AValue then Exit;
+  FID := AValue;
+  Changed;
+end;
+
+procedure TBaseSignal.SetName (const AValue: String );
+begin
+  if FName = AValue then Exit;
+  FName := AValue;
+  Changed;
+end;
+
+procedure TBaseSignal.SetResumeHandled(const AValue: Boolean);
+begin
+  if FResumeHandled = AValue then Exit;
+  FResumeHandled := AValue;
+  Changed;
+end;
+
+{ =========================================================================== }
+{ TDBGSignal }
+{ =========================================================================== }
+
+function TDBGSignal.GetDebugger: TDebugger;
+begin
+  Result := TDBGSignals(Collection).FDebugger;
+end;
+
+{ =========================================================================== }
+{ TIDESignal }
+{ =========================================================================== }
+
+procedure TIDESignal.LoadFromXMLConfig (const AXMLConfig: TXMLConfig; const APath: string );
+begin
+  // TODO
+end;
+
+procedure TIDESignal.SaveToXMLConfig (const AXMLConfig: TXMLConfig; const APath: string );
+begin
+  // TODO
+end;
+
+{ =========================================================================== }
+{ TBaseSignals }
+{ =========================================================================== }
+
+function TBaseSignals.Add (const AName: String; AID: Integer ): TBaseSignal;
+begin
+  Result := TBaseSignal(inherited Add);
+  Result.BeginUpdate;
+  try
+    Result.Name := AName;
+    Result.ID := AID;
+  finally
+    Result.EndUpdate;
+  end;
+end;
+
+constructor TBaseSignals.Create (const AItemClass: TBaseSignalClass );
+begin
+  inherited Create(AItemClass);
+end;
+
+function TBaseSignals.Find(const AName: String): TBaseSignal;
+var
+  n: Integer;
+  S: String;
+begin
+  S := UpperCase(AName);
+  for n := 0 to Count - 1 do
+  begin
+    Result := TBaseSignal(GetItem(n));
+    if UpperCase(Result.Name) = S
+    then Exit;
+  end;
+  Result := nil;
+end;
+
+{ =========================================================================== }
+{ TDBGSignals }
+{ =========================================================================== }
+
+function TDBGSignals.Add(const AName: String; AID: Integer): TDBGSignal;
+begin
+  Result := TDBGSignal(inherited Add(AName, AID));
+end;
+
+constructor TDBGSignals.Create(const ADebugger: TDebugger;
+                               const ASignalClass: TDBGSignalClass);
+begin
+  FDebugger := ADebugger;
+  inherited Create(ASignalClass);
+end;
+
+function TDBGSignals.Find(const AName: String): TDBGSignal;
+begin
+  Result := TDBGSignal(inherited Find(ANAme));
+end;
+
+function TDBGSignals.GetItem(const AIndex: Integer): TDBGSignal;
+begin
+  Result := TDBGSignal(inherited GetItem(AIndex));
+end;
+
+procedure TDBGSignals.SetItem(const AIndex: Integer; const AValue: TDBGSignal);
+begin
+  inherited SetItem(AIndex, AValue);
+end;
+
+{ =========================================================================== }
+{ TIDESignals }
+{ =========================================================================== }
+
+function TIDESignals.Add(const AName: String; AID: Integer): TIDESignal;
+begin
+  Result := TIDESignal(inherited Add(AName, AID));
+end;
+
+function TIDESignals.Find(const AName: String): TIDESignal;
+begin
+  Result := TIDESignal(inherited Find(AName));
+end;
+
+function TIDESignals.GetItem(const AIndex: Integer): TIDESignal;
+begin
+  Result := TIDESignal(inherited GetItem(AIndex));
+end;
+
+procedure TIDESignals.LoadFromXMLConfig(const AXMLConfig: TXMLConfig; const APath: string);
+begin
+  // TODO
+end;
+
+procedure TIDESignals.SaveToXMLConfig(const AXMLConfig: TXMLConfig; const APath: string);
+begin
+  // TODO
+end;
+
+procedure TIDESignals.SetItem(const AIndex: Integer; const AValue: TIDESignal);
+begin
+  inherited SetItem(AIndex, AValue);
+end;
+
+{ =========================================================================== }
+{ TBaseException }
+{ =========================================================================== }
+
+procedure TBaseException.AssignTo(Dest: TPersistent);
+begin
+  if Dest is TBaseException
+  then begin
+    TBaseException(Dest).Name := FName;
+  end
+  else inherited AssignTo(Dest);
+end;
+
+constructor TBaseException.Create(ACollection: TCollection);
+begin
+  inherited Create(ACollection);
+end;
+
+procedure TBaseException.SetName(const AValue: String);
+begin
+  if FName = AValue then exit;
+  
+  if TBaseExceptions(GetOwner).Find(AValue) <> nil
+  then raise EDBGExceptions.Create('Duplicate name');
+
+  FName := AValue;
+  Changed;
+end;
+
+{ =========================================================================== }
+{ TIDEException }
+{ =========================================================================== }
+
+constructor TIDEException.Create (ACollection: TCollection );
+begin
+  FEnabled := True;
+  inherited Create(ACollection);
+end;
+
+procedure TIDEException.LoadFromXMLConfig(const AXMLConfig: TXMLConfig; const APath: string);
+begin
+  // TODO
+end;
+
+procedure TIDEException.SaveToXMLConfig(const AXMLConfig: TXMLConfig; const APath: string);
+begin
+  // TODO
+end;
+
+procedure TIDEException.SetEnabled(const AValue: Boolean);
+begin
+  if FEnabled = AValue then Exit;
+  FEnabled := AValue;
+  Changed;
+end;
+
+{ =========================================================================== }
+{ TBaseExceptions }
+{ =========================================================================== }
+
+function TBaseExceptions.Add(const AName: String): TBaseException;
+begin
+  Result := TBaseException(inherited Add);
+  Result.Name := AName;
+end;
+
+constructor TBaseExceptions.Create(const AItemClass: TBaseExceptionClass);
+begin
+  inherited Create(AItemClass);
+end;
+
+function TBaseExceptions.Find(const AName: String): TBaseException;
+var
+  n: Integer;
+  S: String;
+begin
+  S := UpperCase(AName);
+  for n := 0 to Count - 1 do
+  begin
+    Result := TBaseException(GetItem(n));
+    if UpperCase(Result.Name) = S
+    then Exit;
+  end;
+  Result := nil;
+end;
+
+{ =========================================================================== }
+{ TDBGExceptions }
+{ =========================================================================== }
+
+function TDBGExceptions.Add(const AName: String): TDBGException;
+begin
+  Result := TDBGException(inherited Add(AName));
+end;
+
+constructor TDBGExceptions.Create(const ADebugger: TDebugger; const AExceptionClass: TDBGExceptionClass);
+begin
+  FDebugger := ADebugger;
+  inherited Create(AExceptionClass);
+end;
+
+function TDBGExceptions.Find(const AName: String): TDBGException;
+begin
+  Result := TDBGException(inherited Find(AName));
+end;
+
+function TDBGExceptions.GetItem(const AIndex: Integer): TDBGException;
+begin
+  Result := TDBGException(inherited GetItem(AIndex));
+end;
+
+procedure TDBGExceptions.SetItem(const AIndex: Integer; const AValue: TDBGException);
+begin
+  inherited SetItem(AIndex, AValue);
+end;
+
+{ =========================================================================== }
+{ TIDEExceptions }
+{ =========================================================================== }
+
+function TIDEExceptions.Add(const AName: String): TIDEException;
+begin
+  Result := TIDEException(inherited Add(AName));
+end;
+
+function TIDEExceptions.Find(const AName: String): TIDEException;
+begin
+  Result := TIDEException(inherited Find(AName));
+end;
+
+function TIDEExceptions.GetItem(const AIndex: Integer): TIDEException;
+begin
+  Result := TIDEException(inherited GetItem(AIndex));
+end;
+
+procedure TIDEExceptions.LoadFromXMLConfig (const AXMLConfig: TXMLConfig; const APath: string);
+begin
+  // TODO
+end;
+
+procedure TIDEExceptions.SaveToXMLConfig (const AXMLConfig: TXMLConfig; const APath: string);
+begin
+  // TODO
+end;
+
+procedure TIDEExceptions.SetItem(const AIndex: Integer; const AValue: TIDEException);
+begin
+  inherited SetItem(Aindex, AValue);
+end;
+
 end.
 { =============================================================================
   $Log$
+  Revision 1.44  2003/06/13 19:21:31  marc
+  MWE: + Added initial signal and exception handling
+
   Revision 1.43  2003/06/11 22:29:42  mattias
   fixed realizing bounds after loading form
 

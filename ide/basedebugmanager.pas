@@ -44,8 +44,11 @@ uses
 
 type
   TBaseDebugManager = class(TComponent)
+  private
   protected
     FDestroying: boolean;
+    FExceptions: TIDEExceptions;
+    FSignals: TIDESignals;
     FBreakPoints: TIDEBreakPoints;
     function  GetState: TDBGState; virtual; abstract;
     function  GetCommands: TDBGCommands; virtual; abstract;
@@ -82,9 +85,11 @@ type
 
   public
     property Commands: TDBGCommands read GetCommands;  // All current available commands of the debugger
+    property Destroying: boolean read FDestroying;
     property State: TDBGState read GetState;           // The current state of the debugger
     property BreakPoints: TIDEBreakPoints read FBreakpoints;
-    property Destroying: boolean read FDestroying;
+    property Exceptions: TIDEExceptions read FExceptions;                        // A list of exceptions we should ignore
+    property Signals: TIDESignals read FSignals;                                 // A list of actions for signals we know of
   end;
 
 var
