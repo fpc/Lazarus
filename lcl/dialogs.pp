@@ -94,11 +94,11 @@ type
     property InitialDir: string read FInitialDir write FInitialDir;
   end;
 
-  TOpenOption = ({ofReadOnly, ofOverwritePrompt, ofHideReadOnly,
-    ofNoChangeDir, ofShowHelp, ofNoValidate,} ofAllowMultiSelect{,
+  TOpenOption = (ofReadOnly, ofOverwritePrompt, ofHideReadOnly,
+    ofNoChangeDir, ofShowHelp, ofNoValidate, ofAllowMultiSelect,
     ofExtensionDifferent, ofPathMustExist, ofFileMustExist, ofCreatePrompt,
     ofShareAware, ofNoReadOnlyReturn, ofNoTestFileCreate, ofNoNetworkButton,
-    ofNoLongNames, ofOldStyleDialog, ofNoDereferenceLinks, ofEnableIncludeNotify,
+    ofNoLongNames, ofOldStyleDialog, ofNoDereferenceLinks{, ofEnableIncludeNotify,
     ofEnableSizing});
   TOpenOptions = set of TOpenOption;
   
@@ -232,6 +232,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.10  2002/01/25 19:42:56  lazarus
+  Keith: Improved events and common dialogs on Win32
+
   Revision 1.9  2001/12/11 14:36:41  lazarus
   MG: started multiselection for TOpenDialog
 

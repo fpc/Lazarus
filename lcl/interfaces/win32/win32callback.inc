@@ -52,8 +52,6 @@ End;
   applications
  ------------------------------------------------------------------------------}
 Function WindowProc(Window: HWnd; Msg: UInt; WParam: WParam; LParam: LParam): LResult;
-Type
-  PLMInsertText = ^TLMInsertText;
 Var
   C: Cardinal;
   CbObj: PObject;
@@ -279,14 +277,14 @@ Begin
         Keys := WParam;
       End;
     End;
-    {WM_MOUSEHOVER:
+    WM_MOUSEHOVER:
     Begin
       LMessage.Msg := LM_ENTER;
     End;
     WM_MOUSELEAVE:
     Begin
       LMessage.Msg := LM_LEAVE;
-    End;}
+    End;
     WM_MOUSEMOVE:
     Begin
       With TLMMouseMove(LMessage) Do
@@ -297,18 +295,18 @@ Begin
         Keys := WParam;
       End;
     End;
-    {WM_MOUSEWHEEL:
+    WM_MOUSEWHEEL:
     Begin
-      With TLMMouseEvent(LMessage) Do
+      With PLMMouseEvent(@LMessage)^ Do
       Begin
         Msg := LM_MOUSEWHEEL;
         WheelDelta := Hi(WParam);
         X := Lo(LParam);
         Y := Hi(LParam);
         State := GetShiftState;
-        UserData := GetWindowLong(Window, GWL_USERDATA);
+        UserData := Pointer(GetWindowLong(Window, GWL_USERDATA));
       End;
-    End;}
+    End;
     WM_MOVE:
     Begin
       With TLMMove(LMessage) Do
@@ -455,10 +453,10 @@ Begin
           DeliverMessage(OwnerObject, LMessage);
           Exit;
         End;
-  {$ENDIF}
-
-  If (OwnerObject <> Nil) And (LMessage.Msg <> -1) Then
-    DeliverMessage(OwnerObject, LMessage);
+  {$ELSE VER1_1}
+    If (OwnerObject <> Nil) And (LMessage.Msg <> -1) Then
+      DeliverMessage(OwnerObject, LMessage);
+  {$ENDIF VER1_1}
 
   If WinProcess Then
     Result := DefWindowProc(Window, Msg, WParam, LParam);
@@ -1488,6 +1486,9 @@ end;}
 
 {
   $Log$
+  Revision 1.6  2002/01/25 19:42:56  lazarus
+  Keith: Improved events and common dialogs on Win32
+
   Revision 1.5  2002/01/25 13:22:56  lazarus
   Keith: Added initial support for events
 

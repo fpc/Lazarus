@@ -107,7 +107,7 @@ Begin
   Data := '';
   Result := True;
   Case Sender.FCompStyle Of
-    {csComboBox, }csEdit, csMemo:
+    csEdit, csMemo:
     Begin
       CapLen := GetWindowTextLength((Sender As TWinControl).Handle);
       GetWindowText((Sender As TWinControl).Handle, Caption, CapLen + 1);
@@ -185,7 +185,7 @@ Begin
       Assert(False, Format('Trace:TWin32Object.SetLabel - Got %S', [CS_To_String(TControl(Sender).FCompStyle)]));
       Assert(False, Format('Trace:TWin32Object.SetLabel - label --> %S', [String(PChar(Data))]));
       Assert(False, 'Trace:TWin32Object.SetLabel - I''m not sure if this''ll work');
-      //SendMessage(Handle, CB_DELETESTRING, (Sender As TComboBox).ItemIndex, 0);
+      SendMessage(Handle, CB_DELETESTRING, (Sender As TComboBox).ItemIndex, 0);
       SendMessage(Handle, CB_INSERTSTRING, (Sender As TComboBox).ItemIndex, LPARAM(Data));
     End;
     csPage:
@@ -725,7 +725,7 @@ activate_time :	the time at which the activation event occurred.
                 Result := SendMessage(Handle, LB_GETCURSEL, 0, 0);
                 If Result = LB_ERR Then
                 Begin
-                  Assert(False, '[TWin32Object.IntSendMessage3] Could not retrieve item index via LM_GETITEMINDEX; try selecting an item first');
+                  Assert(False, 'Trace:[TWin32Object.IntSendMessage3] Could not retrieve item index via LM_GETITEMINDEX; try selecting an item first');
                   Result := -1;
                 End;
               End;
@@ -1271,10 +1271,43 @@ Var
 
   Function GetFlagsFromOptions(Options: TOpenOptions): DWord;
   Begin
-    Result := OFN_EXPLORER Or OFN_HIDEREADONLY;
-    { dialogs.pp only has ofAllowMultiSelect; more options may be added in the future }
+    Result := 0;
     If ofAllowMultiSelect In Options Then
       Result := Result Or OFN_ALLOWMULTISELECT;
+    If ofCreatePrompt In Options Then
+      Result := Result Or OFN_CREATEPROMPT;
+    If Not (ofOldStyleDialog In Options) Then
+      Result := Result Or OFN_EXPLORER;
+    If ofExtensionDifferent In Options Then
+      Result := Result Or OFN_EXTENSIONDIFFERENT;
+    If ofFileMustExist In Options Then
+      Result := Result Or OFN_FILEMUSTEXIST;
+    If ofHideReadOnly In Options Then
+      Result := Result Or OFN_HIDEREADONLY;
+    If ofNoChangeDir In Options Then
+      Result := Result Or OFN_NOCHANGEDIR;
+    If ofNoDereferenceLinks In Options Then
+      Result := Result Or OFN_NODEREFERENCELINKS;
+    If ofNoLongNames In Options Then
+      Result := Result Or OFN_NOLONGNAMES;
+    If ofNoNetworkButton In Options Then
+      Result := Result Or OFN_NONETWORKBUTTON;
+    If ofNoReadOnlyReturn In  Options Then
+      Result := Result Or OFN_NOREADONLYRETURN;
+    If ofNoTestFileCreate In Options Then
+      Result := Result Or OFN_NOTESTFILECREATE;
+    If ofNoValidate In Options Then
+      Result := Result Or OFN_NOVALIDATE;
+    If ofOverwritePrompt In Options Then
+      Result := Result Or OFN_OVERWRITEPROMPT;
+    If ofPathMustExist In Options Then
+      Result := Result Or OFN_PATHMUSTEXIST;
+    If ofReadOnly In Options Then
+      Result := Result Or OFN_READONLY;
+    If ofShareAware In Options Then
+      Result := Result Or OFN_SHAREAWARE;
+    If ofShowHelp In Options Then
+      Result := Result Or OFN_SHOWHELP;
   End;
 Begin
   Assert(False, 'Trace:TWin32Object.CreateCommonDialog - Start');
@@ -1306,7 +1339,8 @@ Begin
         LPStrFile := PChar(FN);
       LPStrFileTitle := PChar((Sender As TCommonDialog).Title);
       LPStrInitialDir := PChar((Sender As TFileDialog).InitialDir);
-      Flags := GetFlagsFromOptions((Sender As TOpenDialog).Options);
+      If Sender Is TOpenDialog Then
+        Flags := GetFlagsFromOptions((Sender As TOpenDialog).Options);
     End;
     If Sender Is TOpenDialog Then
       Ret := GetOpenFileName(@OpenFile)
@@ -1583,12 +1617,12 @@ Begin
     Begin
       Window := CreateWindow('BUTTON', Nil, Flags Or BS_BITMAP, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       IntSendMessage3(LM_LOADXPM, Sender, StrTemp);
-      SetProp(Window, 'Lazarus', @Sender);
+      SetProp(Window, 'Lazarus', Sender);
       SetName(Window, StrTemp);
     End;
     csButton:
     Begin
-      {Assert(False, 'Trace:CreateComponent - Creating Button');
+      Assert(False, 'Trace:CreateComponent - Creating Button');
       Assert(False, 'Trace:CreateComponent - Value of Button Parent is $' + IntToHex(LongInt((Sender as TControl).Parent), 8));
       Assert(False, 'Trace:CreateComponent - Value of Button Owner is $' + IntToHex(LongInt((Sender as TControl).Owner), 8));
       ParentControl := (Sender As TControl).Owner;
@@ -1597,7 +1631,7 @@ Begin
       Assert(False, 'Trace:CreateComponent - Value of Button Left   is $' + IntToHex((Sender as TControl).Left  , 4));
       Assert(False, 'Trace:CreateComponent - Value of Button Top    is $' + IntToHex((Sender as TControl).Top   , 4));
       Assert(False, 'Trace:CreateComponent - Value of Button Width  is $' + IntToHex((Sender as TControl).Width , 4));
-      Assert(False, 'Trace:CreateComponent - Value of Button Height is $' + IntToHex((Sender as TControl).Height, 4));}
+      Assert(False, 'Trace:CreateComponent - Value of Button Height is $' + IntToHex((Sender as TControl).Height, 4));
       If Not (Sender As TButton).Default Then
         Flags := Flags Or BS_PUSHBUTTON
       Else
@@ -1620,20 +1654,20 @@ Begin
     Begin
       Assert(False, 'Trace:TODO: Code TWin32Object.CreateComponent: style csCanvas');
       Window := CreateWindow(ClsName, StrTemp, WS_DLGFRAME Or WS_POPUP Or WS_VISIBLE, Left, Top, Width, Height, HWND(Nil), HMENU(Nil), HInstance, Nil);
-      SetProp(Window, 'Lazarus', @Sender);
+      SetProp(Window, 'Lazarus', Sender);
       SetName(Window, StrTemp);
     End;
     csCheckbox:
     Begin
       Window := CreateWindow('BUTTON', StrTemp, Flags Or BS_AUTOCHECKBOX, Left, Top, Width, Height, Parent, HMenu(Nil), HInstance, Nil);
-      SetProp(Window, 'Lazarus', @Sender);
+      SetProp(Window, 'Lazarus', Sender);
       SetName(Window, StrTemp);
     End;
     csComboBox:
     Begin
       Window := CreateWindow('COMBOBOX', Nil, Flags Or CBS_AUTOHSCROLL Or CBS_DROPDOWN, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       SendMessage(Window, CB_ADDSTRING, 0, LPARAM(LPCTSTR(StrTemp)));
-      SetProp(Window, 'Lazarus', @Sender);
+      SetProp(Window, 'Lazarus', Sender);
       SetName(Window, StrTemp);
     End;
     csImage:
@@ -1649,7 +1683,7 @@ Begin
     Begin
       Window := CreateWindow('LISTBOX', Nil, Flags, Left, Top, Width, Width, Parent, HMENU(Nil), HInstance, Nil);
       SendMessage(Window, LB_ADDSTRING, 0, LPARAM(LPCTSTR(StrTemp)));
-      SetProp(Window, 'Lazarus', @Sender);
+      SetProp(Window, 'Lazarus', Sender);
       SetName(Window, StrTemp);
     End;
     csCListBox:
@@ -1657,13 +1691,13 @@ Begin
       Window := CreateWindow('LISTBOX', Nil, Flags Or LBS_MULTICOLUMN, Left, Top, Width, Width, Parent, HMENU(Nil), HInstance, Nil);
       SendMessage(Window, LB_SETCOLUMNWIDTH, WPARAM((Sender As TCListBox).Width Div ((Sender As TCListBox).ListColumns)), 0);
       SendMessage(Window, LB_ADDSTRING, 0, LPARAM(LPCTSTR(StrTemp)));
-      SetProp(Window, 'Lazarus', @Sender);
+      SetProp(Window, 'Lazarus', Sender);
       SetName(Window, StrTemp);
     End;
     csEdit:
     Begin
       Window := CreateWindowEx(WS_EX_CLIENTEDGE, 'EDIT', StrTemp, Flags Or ES_AUTOHSCROLL, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
-      SetProp(Window, 'Lazarus', @Sender);
+      SetProp(Window, 'Lazarus', Sender);
       SetName(Window, strTemp);
     End;
     csColorDialog, csFileDialog, csFontDialog:
@@ -1674,7 +1708,7 @@ Begin
     Begin
       Assert(False, 'Trace:TODO: Figure out what component style csFixed is and code the component.  No component created.');
       Window := CreateWindow(ClsName, StrTemp, WS_OVERLAPPEDWINDOW Or WS_HSCROLL Or WS_VSCROLL, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
-      SetProp(Window, 'Lazarus', @Sender);
+      SetProp(Window, 'Lazarus', Sender);
       SetName(Window, StrTemp);
     End;
     csFont:
@@ -1682,7 +1716,7 @@ Begin
       Assert(False, 'Trace:CreateComponent - Creating a font');
       With LPLogFont(@Sender)^ Do
         Window := CreateFont(LFHeight, LFWidth, LFEscapement, LFOrientation, LFWeight, LFItalic, LFUnderLine, LFStrikeOut, LFCharSet, LFOutPrecision, LFClipPrecision, LFQuality, LFPitchAndFamily, LFFaceName);
-      SetProp(Window, 'Lazarus', @Sender);
+      SetProp(Window, 'Lazarus', Sender);
       SetName(Window, StrTemp);
     End;
     csForm:
@@ -1704,7 +1738,7 @@ Begin
       FParentWindow := Window;
       Assert(False, 'Trace:CreateComponent - Form Window Handle Value = $' + IntToHex(Window, 8));
       Assert(False, 'Trace:Creating a Form - SetProp');
-      //SetProp(Window, 'Lazarus', @Sender);
+      //SetProp(Window, 'Lazarus', Sender);
       SetProp(Window, 'Lazarus', Sender);
       If Window = 0 then
       Begin
@@ -1724,7 +1758,7 @@ Begin
       StrDispose(PStr);
       Assert(False, 'Trace:CreateComponent - MainForm Window Handle Value = $' + IntToHex(Window, 8));
       Assert(False, 'Trace:Creating a Form - MainForm SetProp');
-      SetProp(Window, 'Lazarus', @Sender);
+      SetProp(Window, 'Lazarus', Sender);
       If Window = 0 Then
       Begin
         MessageBox(0, 'csMainForm CreateWindow Failed', nil, mb_Ok);
@@ -1735,7 +1769,7 @@ Begin
     csFrame:
     Begin
       Window := CreateWindow('BUTTON', StrTemp, Flags Or BS_GROUPBOX, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
-      SetProp(Window, 'Lazarus', @Sender);
+      SetProp(Window, 'Lazarus', Sender);
       SetName(Window, StrTemp);
     End;
     csHintWindow:
@@ -1748,7 +1782,7 @@ Begin
     csLabel:
     Begin
       Window := CreateWindow('STATIC', StrTemp, Flags Or SS_LEFT Or SS_SIMPLE, (Sender As TControl).Left, (Sender As TControl).Top, (Sender As TControl).Width, (Sender As TControl).Height, FParentWindow, HMENU(Nil), HInstance, Nil);
-      SetProp(Window, 'Lazarus', @Sender);
+      SetProp(Window, 'Lazarus', Sender);
       SetName(Window, StrTemp);
     End;
     csListView:
@@ -1772,7 +1806,7 @@ Begin
           Flags := Flags Or WS_HSCROLL Or WS_VSCROLL;
       End;
       Window := CreateWindowEx(WS_EX_CLIENTEDGE, 'EDIT', StrTemp, Flags, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
-      SetProp(Window, 'Lazarus', @Sender);
+      SetProp(Window, 'Lazarus', Sender);
       SetName(Window, StrTemp);
     End;
     csMainMenu, csMenuBar:
@@ -1791,6 +1825,8 @@ Begin
           StrPCopy(StrTemp, Items[I].Caption);
           Items[I].Handle := CreateMenu;
           AppendMenu(Window, MF_POPUP, Items[I].Handle, StrTemp);
+          Self.SetProp(Items[I].Handle, 'Lazarus', Items[I]);
+          Self.SetName(Items[I].Handle, StrTemp);
           For J := 0 To Items[I].Count - 1 Do
           Begin
             Assert(False, Format('Trace:TWin32Object.CreateComponent - Menu class: %S, menu-item class: %S, item: %D, Caption: %S', [ClassName, Items[I].Items[J].ClassName, J, Items[I].Items[J].Caption]));
@@ -1800,6 +1836,8 @@ Begin
             StrPCopy(StrTemp, Items[I].Items[J].Caption);
             Items[I].Items[J].Handle := CreatePopupMenu;
             Windows.AppendMenu(Items[I].Handle, MF_STRING, FControlIndex, StrTemp);
+            Self.SetProp(Items[I].Items[J].Handle, 'Lazarus', Items[I].Items[J]);
+            Self.SetName(Items[I].Items[J].Handle, StrTemp);
             If Items[I].Items[J].Count > 0 Then
             Begin
               For K := 0 To Items[I].Items[J].Count - 1 Do
@@ -1811,6 +1849,8 @@ Begin
                 StrPCopy(StrTemp, Items[I].Items[J].Items[K].Caption);
                 Items[I].Items[J].Items[K].Handle := CreatePopupMenu;
                 Windows.AppendMenu(Items[I].Items[J].Handle, MF_STRING, FControlIndex, StrTemp);
+                Self.SetProp(Items[I].Items[J].Items[K].Handle, 'Lazarus', Items[I].Items[J].Items[K]);
+                Self.SetName(Items[I].Items[J].Items[K].Handle, StrTemp);
               End;
             End;
           End;
@@ -1820,7 +1860,7 @@ Begin
       End;
       Windows.SetMenu(((Sender As TComponent).Owner As TWinControl).Handle, Window);
       Windows.DrawMenuBar(((Sender As TComponent).Owner As TWinControl).Handle);
-      Self.SetProp(Window, 'Lazarus', @Sender);
+      Self.SetProp(Window, 'Lazarus', Sender);
       Self.SetName(Window, StrTemp);
     End;
     csMenuItem:
@@ -1832,19 +1872,19 @@ Begin
       AccelIndex := Pos('&', Caption);
       If AccelIndex <> 0 Then
         SetAccelKey(Window, Nil);
-      //SetProp(Window, 'Lazarus', @Sender);
+      //SetProp(Window, 'Lazarus', Sender);
       //SetName(Window, StrTemp);
     End;
     csNotebook:
     Begin
       Window := CreateWindow(WC_TABCONTROL, Nil, Flags Or WS_CLIPSIBLINGS, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
-      SetProp(Window, 'Lazarus', @Sender);
+      SetProp(Window, 'Lazarus', Sender);
       SetName(Window, StrTemp);
     End;
     csRadioButton:
     Begin
       Window := CreateWindow('BUTTON', StrTemp, Flags Or BS_AUTORADIOBUTTON, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
-      SetProp(Window, 'Lazarus', @Sender);
+      SetProp(Window, 'Lazarus', Sender);
       SetName(Window, StrTemp);
     End;
     csScrollBar:
@@ -1856,14 +1896,14 @@ Begin
           Flags := Flags Or SBS_VERT;
       End;
       Window := CreateWindow('SCROLLBAR', Nil, Flags, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
-      SetProp(Window, 'Lazarus', @Sender);
+      SetProp(Window, 'Lazarus', Sender);
       SetName(Window, StrTemp);
     End;
     csScrolledWindow:
     Begin
       Assert(False, 'TRACE: CreateComponent - creating a scrolled window');
       Window := CreateWindow(AppName, strTemp, WS_OVERLAPPEDWINDOW Or WS_HSCROLL Or WS_VSCROLL Or WS_Visible, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, HWND(Nil), HMENU(Nil), HInstance, Nil);
-      SetProp(Window, 'Lazarus', @Sender);
+      SetProp(Window, 'Lazarus', Sender);
       SetName(Window, strTemp);
     End;
     csSpeedButton:
@@ -1877,7 +1917,7 @@ Begin
       Inc(FControlIndex);
       Buddy := CreateWindowEx(WS_EX_CLIENTEDGE, 'EDIT', StrTemp, Flags Or ES_AUTOHSCROLL, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       Window := CreateUpDownControl(Flags Or WS_Border, Left + Width + 10, Top, 10, Height, Parent, FControlIndex, HInstance, Buddy, 0, 100, Trunc((Sender As TSpinEdit).Value));
-      SetProp(Window, 'Lazarus', @Sender);
+      SetProp(Window, 'Lazarus', Sender);
       SetName(Window, StrTemp);
       Assert(False, 'TRACE:Spin edit control not created');
     End;
@@ -1886,7 +1926,7 @@ Begin
       Assert(False, 'TRACE:CreateComponent - Creating Status Bar');
       Inc(FControlIndex);
       Window := CreateStatusWindow(Flags, StrTemp, Parent, FControlIndex);
-      SetProp(Window, 'Lazarus', @Sender);
+      SetProp(Window, 'Lazarus', Sender);
       SetName(Window, StrTemp);
     End;
     csGTKTable:
@@ -1902,19 +1942,19 @@ Begin
     Begin
       Assert(False, 'TRACE: CreateComponent - Creating toggle box');
       Window := CreateWindow('BUTTON', StrTemp, Flags Or BS_AUTOCHECKBOX Or BS_PUSHLIKE, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
-      SetProp(Window, 'Lazarus', @Sender);
+      SetProp(Window, 'Lazarus', Sender);
       SetName(Window, StrTemp);
     End;
     csToolBar:
     Begin
       Window := CreateWindow(TOOLBARCLASSNAME, LPSTR(Nil), Flags OR CCS_ADJUSTABLE, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
-      SetProp(Window, 'Lazarus', @Sender);
+      SetProp(Window, 'Lazarus', Sender);
       SetName(Window, StrTemp);
     End;
     csToolButton:
     Begin
       Window := IntSendMessage3(LM_INSERTTOOLBUTTON, Sender, Pointer((Sender As TToolButton).Index));
-      SetProp(Window, 'Lazarus', @Sender);
+      SetProp(Window, 'Lazarus', Sender);
       SetName(Window, StrTemp);
     End;
     csGroupBox:
@@ -1955,9 +1995,13 @@ Begin
           Assert(False, 'Trace:csPage - Could not insert page');
           Exit;
         End;
-        If PageIndex >= Pages.Count - 1 Then
+        {If PageIndex >= Pages.Count - 1 Then
+          TabCtrl_DeleteItem(Handle, Pages.Count)
+        Else}
+        If (PageIndex + 1 < Pages.Count) And (Pages.Count > 1) Then
+          PageIndex := PageIndex + 1
+        Else
           TabCtrl_DeleteItem(Handle, Pages.Count);
-        PageIndex := PageIndex + 1;
         SetProp(Handle, 'Lazarus', @Sender);
         Self.SetName(Handle, StrTemp);
       End;
@@ -1966,20 +2010,20 @@ Begin
     Begin
       Window := CreatePopupMenu;
       FSubMenu := Window;
-      SetProp(Window, 'Lazarus', @Sender);
+      SetProp(Window, 'Lazarus', Sender);
       SetName(Window, StrTemp);
     End;
     csProgressBar:
     Begin
       Window := CreateWindow(PROGRESS_CLASS, NULL, Flags, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
-      SetProp(Window, 'Lazarus', @Sender);
+      SetProp(Window, 'Lazarus', Sender);
       SetName(Window, StrTemp);
     End;
     csTrackBar:
     Begin
       Assert(False, 'TRACE:CreateComponent - Creating a Track Bar (if we''re lucky)');
       Window := CreateWindow(TRACKBAR_CLASS, StrTemp, Flags, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
-      SetProp(Window, 'Lazarus', @Sender);
+      SetProp(Window, 'Lazarus', Sender);
       SetName(Window, StrTemp);
     End;
   End; {Case}
@@ -2953,6 +2997,9 @@ End;
 
 {
   $Log$
+  Revision 1.11  2002/01/25 19:42:56  lazarus
+  Keith: Improved events and common dialogs on Win32
+
   Revision 1.10  2002/01/24 07:34:50  lazarus
   Keith: Fixed some bugs
 

@@ -386,7 +386,7 @@ TLMGetText = record
 
 TLMGetTextLength = TLMNoParams;
 
-
+PLMInsertText = ^TLMInsertText;
 TLMInsertText = record
   Msg : Cardinal;
   NewText : String;
@@ -595,6 +595,7 @@ TLMKeyEvent = Record
   UserData : Pointer;
  end;
 
+PLMMouseEvent = ^TLMMouseEvent;
 TLMMouseEvent = Record
   Msg : Cardinal;
   Button : LongInt;
@@ -787,6 +788,9 @@ end.
 
 {
   $Log$
+  Revision 1.18  2002/01/25 19:42:56  lazarus
+  Keith: Improved events and common dialogs on Win32
+
   Revision 1.17  2002/01/01 15:50:14  lazarus
   MG: fixed initial component aligning
 

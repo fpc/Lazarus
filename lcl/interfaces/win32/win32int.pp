@@ -256,6 +256,13 @@ Type
     Next: PLazObject;
   End;
 
+  PLazProp = ^TLazProp;
+  TLazProp = Record
+    Window: HWND;
+    Key: PChar;
+    Val: Pointer;
+  End;
+
   {$IFDEF VER1_1}
     TMsgArray = Array Of Integer;
   {$ELSE}
@@ -325,6 +332,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.7  2002/01/25 19:42:56  lazarus
+  Keith: Improved events and common dialogs on Win32
+
   Revision 1.6  2002/01/17 03:17:44  lazarus
   Keith: Fixed TPage creation
 

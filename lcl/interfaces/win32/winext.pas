@@ -64,6 +64,12 @@ Const
   PBS_SMOOTH = 1;
   { Vertical progress bar }
   PBS_VERTICAL = 4;
+  { Mouse-hovering message }
+  WM_MOUSEHOVER = $02A1;
+  { Mouse-leaving message }
+  WM_MOUSELEAVE = $02A3;
+  { Mouse-wheel message }
+  WM_MOUSEWHEEL = $020A;
   { Left-to-right reading text }
   WS_EX_LTRLEADING = 0;
 
