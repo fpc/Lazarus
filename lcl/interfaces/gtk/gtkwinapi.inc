@@ -3944,7 +3944,7 @@ begin
       Size.cY := GDK_String_Height(UseFont, Str)
         {$IfNDef Win32} + descent div 2{$EndIf};
       If UnRef then
-       GDK_Font_UnRef(UseFont);
+        GDK_Font_UnRef(UseFont);
     end;
   end;
   Assert(False, 'trace:< [TgtkObject.GetTextExtentPoint]');
@@ -7164,6 +7164,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.156  2002/10/15 07:01:31  lazarus
+  MG: fixed timer checking
+
   Revision 1.155  2002/10/14 19:00:50  lazarus
   MG: fixed zombie timers
 
