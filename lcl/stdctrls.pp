@@ -495,6 +495,8 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Append(const Value : String);
+    procedure Clear;
+  public
     property Lines: TStrings read FLines write SetLines;
     property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars;
     property WordWrap: Boolean read FWordWrap write SetWordWrap;
@@ -1393,6 +1395,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.80  2003/03/17 08:51:09  mattias
+  added IsWindowVisible
+
   Revision 1.79  2003/03/11 07:46:43  mattias
   more localization for gtk- and win32-interface and lcl
 

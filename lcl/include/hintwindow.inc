@@ -131,5 +131,10 @@ begin
   Inc(Result.Right, 3);
 end;
 
+procedure THintWindow.ReleaseHandle;
+begin
+  DestroyHandle;
+end;
+
 // included by forms.pp
 

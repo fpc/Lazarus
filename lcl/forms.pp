@@ -438,6 +438,8 @@ type
     destructor Destroy; override;
     procedure ActivateHint(ARect: TRect; const AHint: String); virtual;
     function CalcHintRect(MaxWidth: Integer; const AHint: String; AData: Pointer): TRect; virtual;
+    procedure ReleaseHandle;
+  public
     property AutoHide : Boolean read FAutoHide write SetAutoHide;
     property HideInterval : Integer read FHideInterval write SetHideInterval;
   end;

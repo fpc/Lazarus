@@ -332,9 +332,10 @@ end;
 
 function GTKAPIWidgetClient_GetType: Guint;
 const 
+  TYPE_NAME = 'LCLWinapiClient';
   TheType: Guint = 0;
   Info: TGTKTypeInfo = (
-    type_name: 'LCLWinapiClient';
+    type_name: TYPE_NAME;
     object_size: SizeOf(TGTKAPIWidgetClient)+100;
     class_size: SizeOf(TGTKAPIWidgetClientClass)+100;
     class_init_func: @GTKAPIWidgetClient_ClassInit;
@@ -344,8 +345,12 @@ const
     base_class_init_func: nil;
   );
 begin
-  if (TheType = 0) then
-    TheType := gtk_type_unique(gtk_fixed_type,@Info);
+  if (TheType = 0)
+  then begin
+    TheType := gtk_type_from_name(TYPE_NAME);
+    if TheType = 0
+    then TheType := gtk_type_unique(gtk_fixed_type,@Info);
+  end;
   Result := TheType;
 end;
 
@@ -674,9 +679,10 @@ end;
 
 function GTKAPIWidget_GetType: Guint;
 const 
+  WAW_NAME = 'LCLWinapiWidget';
   wawType: Guint = 0;
   wawInfo: TGTKTypeInfo = (
-    type_name: 'LCLWinapiWidget';
+    type_name: WAW_NAME;
     object_size: SizeOf(TGTKAPIWidget)+100; // a TGTKScrolledWindow
     class_size: SizeOf(TGTKAPIWidgetClass)+100;
     class_init_func: @GTKAPIWidget_ClassInit;
@@ -686,8 +692,12 @@ const
     base_class_init_func: nil;
   );
 begin
-  if (wawType = 0) 
-  then wawType := gtk_type_unique(gtk_scrolled_window_get_type, @wawInfo);
+  if (wawType = 0)
+  then begin
+    wawType := gtk_type_from_name(WAW_NAME);
+    if wawType = 0
+    then wawType := gtk_type_unique(gtk_scrolled_window_get_type, @wawInfo);
+  end;
   Result := wawType;
 end;
 
@@ -826,6 +836,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.44  2003/03/17 08:51:10  mattias
+  added IsWindowVisible
+
   Revision 1.43  2002/12/30 17:24:08  mattias
   added history to identifier completion
 

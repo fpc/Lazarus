@@ -62,6 +62,14 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  procedure TCustomMemo.Clear;
+ ------------------------------------------------------------------------------}
+procedure TCustomMemo.Clear;
+begin
+  Lines.Clear;
+end;
+
+{------------------------------------------------------------------------------
   Method: TCustomMemo.SetLines
   Params: 
   Returns: 
@@ -110,6 +118,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.10  2003/03/17 08:51:09  mattias
+  added IsWindowVisible
+
   Revision 1.9  2003/03/11 07:46:43  mattias
   more localization for gtk- and win32-interface and lcl
 
