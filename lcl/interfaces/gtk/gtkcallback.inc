@@ -433,7 +433,6 @@ begin
   if Extended then Flags := KF_EXTENDED;
   if SysKey then Flags := Flags or KF_ALTDOWN;
   Msg.KeyData := $00000000; //TODO: OEM char
-  
 
 
   //writeln('[GTKKeyUpDown] ',TControl(Data).Name,':',TControl(Data).ClassName,' ',Event^.theType);
@@ -2542,6 +2541,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.167  2003/02/18 22:56:23  mattias
+  fixed key grabbing
+
   Revision 1.166  2003/02/04 11:44:13  mattias
   fixed modified and loading xpms for button glyphs
 
