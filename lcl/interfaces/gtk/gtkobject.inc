@@ -3033,7 +3033,9 @@ begin
                             'focus-out-event', @gtkKillFocusCBAfter);
       end else begin
         ConnectSenderSignal(gCore, 'focus-in-event', @gtkFocusCB);
-        ConnectSenderSignal(gCore, 'focus-out-event', @gtkKillFocusCBAfter);
+        ConnectSenderSignalAfter(gCore, 'focus-in-event', @gtkFocusCBAfter);
+        ConnectSenderSignal(gCore, 'focus-out-event', @gtkKillFocusCB);
+        ConnectSenderSignalAfter(gCore, 'focus-out-event', @gtkKillFocusCBAfter);
       end;
     end;
     
@@ -7061,6 +7063,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.339  2003/03/25 10:45:41  mattias
+  reduced focus handling and improved focus setting
+
   Revision 1.338  2003/03/18 13:45:39  mattias
   set transient forms with Screen object order
 
