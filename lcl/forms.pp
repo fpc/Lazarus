@@ -792,7 +792,9 @@ type
     AppWaiting,
     AppIdleEndSent,
     AppHandlingException,
-    AppNoExceptionMessages
+    AppNoExceptionMessages,
+    AppDestroying,
+    AppDoNotReleaseComponents
     );
   TApplicationFlags = set of TApplicationFlag;
   
@@ -832,6 +834,7 @@ type
     FOnIdleEnd: TNotifyEvent;
     FOnShowHint: TShowHintEvent;
     FOnUserInput: TOnUserInputEvent;
+    FReleaseComponents: TList;
     FShowHint: Boolean;
     procedure DoOnIdleEnd;
     function GetCurrentHelpFile: string;
@@ -870,12 +873,14 @@ type
     procedure UpdateVisible;
     procedure DoIdleActions;
     procedure MenuPopupHandler(Sender: TObject);
+    procedure DoFreeReleaseComponents;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure ControlDestroyed(AControl: TControl);
     Procedure BringToFront;
     procedure CreateForm(InstanceClass: TComponentClass; var Reference);
+    procedure ReleaseComponent(AComponent: TComponent);
     function ExecuteAction(ExeAction: TBasicAction): Boolean; override;
     function UpdateAction(TheAction: TBasicAction): Boolean; override;
     function HandleAllocated: boolean;

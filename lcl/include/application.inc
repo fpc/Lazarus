@@ -101,6 +101,8 @@ destructor TApplication.Destroy;
 var
   HandlerType: TApplicationHandlerType;
 begin
+  Include(FFlags,AppDestroying);
+  DoFreeReleaseComponents;
   if OnMenuPopupHandler=@MenuPopupHandler then
     OnMenuPopupHandler:=nil;
   
@@ -117,6 +119,9 @@ begin
   do
     FreeThenNil(FApplicationHandlers[HandlerType]);
   inherited Destroy;
+  
+  Include(FFlags,AppDoNotReleaseComponents);
+  DoFreeReleaseComponents;
 
   // restore exception handling
   CaptureExceptions:=false;
@@ -284,6 +289,7 @@ procedure TApplication.Idle;
 var
   Done: Boolean;
 begin
+  DoFreeReleaseComponents;
   MouseIdle(GetControlAtMouse);
 
   Done := True;
@@ -686,6 +692,24 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method: TApplication.DoFreeReleaseComponents
+  
+  Free all components that were queued for freeing (ReleaseComponent)
+ ------------------------------------------------------------------------------}
+procedure TApplication.DoFreeReleaseComponents;
+var
+  AComponent: TComponent;
+begin
+  if FReleaseComponents=nil then exit;
+  while FReleaseComponents.Count>0 do begin
+    AComponent:=TComponent(FReleaseComponents[0]);
+    FReleaseComponents.Delete(0);
+    AComponent.Free;
+  end;
+  FreeThenNil(FReleaseComponents);
+end;
+
+{------------------------------------------------------------------------------
   Method: TApplication.IconChanged
  ------------------------------------------------------------------------------}
 procedure TApplication.IconChanged(Sender: TObject);
@@ -887,8 +911,7 @@ procedure TApplication.Run;
   end;
 
 begin
-  if FMainForm <> nil
-  then FMainForm.Show;
+  if FMainForm <> nil then FMainForm.Show;
   repeat
     if CaptureExceptions then begin
       // run with try..except
@@ -1187,6 +1210,16 @@ begin
   {$ENDIF}
 end;
 
+procedure TApplication.ReleaseComponent(AComponent: TComponent);
+begin
+  if AppDoNotReleaseComponents in FFlags then
+    raise Exception.Create('TApplication.ReleaseComponent already shut down');
+  if FReleaseComponents=nil then
+    FReleaseComponents:=TList.Create;
+  if FReleaseComponents.IndexOf(AComponent)<0 then
+    FReleaseComponents.Add(AComponent);
+end;
+
 function TApplication.ExecuteAction(ExeAction: TBasicAction): Boolean;
 begin
   Result := False;
@@ -1214,6 +1247,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.86  2004/08/18 14:24:55  mattias
+  implemented TCustomForm.Release
+
   Revision 1.85  2004/08/13 10:20:19  mattias
   fixed codetools ConstSet, implemented notifying TApplication whenmenu popups
 

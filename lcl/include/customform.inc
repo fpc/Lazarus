@@ -70,7 +70,7 @@ begin
     end;
     case CloseAction of
       caNone: ModalResult := 0;
-      //caFree: Release;
+      caFree: Release;
     end;
   except
     ModalResult := 0;
@@ -1212,7 +1212,10 @@ end;
 ------------------------------------------------------------------------------}
 procedure TCustomForm.Release;
 begin
-  Free;
+  if Application<>nil then
+    Application.ReleaseComponent(Self)
+  else
+    Free;
 end;
 
 {------------------------------------------------------------------------------
@@ -1719,6 +1722,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.151  2004/08/18 14:24:55  mattias
+  implemented TCustomForm.Release
+
   Revision 1.150  2004/08/16 22:09:18  mattias
   started TCustomDockForm
 
