@@ -334,6 +334,7 @@ type
           var RealDir: string);
     procedure CodeToolBossGetVirtualDirectoryDefines(DefTree: TDefineTree;
           DirDef: TDirectoryDefines);
+    procedure OnCompilerGraphStampIncreased;
 
     // MessagesView events
     procedure MessagesViewSelectionChanged(sender : TObject);
@@ -5453,7 +5454,13 @@ var
 begin
   Result:=DoSaveForBuild;
   if Result<>mrOk then exit;
-  
+
+  // compile required packages
+  {$IFDEF EnablePkgs}
+  Result:=PkgBoss.DoCompileProjectDependencies(Project1,[pcfAutomatic]);
+  if Result<>mrOk then exit;
+  {$ENDIF}
+
   // get main source filename
   if not Project1.IsVirtual then
     DefaultFilename:=''
@@ -6671,6 +6678,10 @@ begin
   BeginCodeTool(TDesigner(Sender),ActiveSrcEdit,ActiveUnitInfo,
                 [ctfSwitchToFormSource]);
 
+  // add needed package to required packages
+  {$IFDEF EnablePkgs}
+  PkgBoss.AddProjectRegCompDependency(Project1,AComponentClass);
+  {$ENDIF}
   // add needed unit to source
   CodeToolBoss.AddUnitToMainUsesSection(ActiveUnitInfo.Source,
       AComponentClass.{$IFDEF EnablePkgs}GetUnitName{$ELSE}UnitName{$ENDIF},'');
@@ -6919,6 +6930,8 @@ begin
     OnAfterApplyChanges:=@OnAfterCodeToolBossApplyChanges;
     OnSearchUsedUnit:=@OnCodeToolBossSearchUsedUnit;
   end;
+  
+  CompilerGraphStampIncreased:=@OnCompilerGraphStampIncreased;
 
   // codetools consistency check
   c:=CodeToolBoss.ConsistencyCheck;
@@ -7008,6 +7021,11 @@ procedure TMainIDE.CodeToolBossGetVirtualDirectoryDefines(DefTree: TDefineTree;
 begin
   if (Project1<>nil) and Project1.IsVirtual then
     Project1.GetVirtualDefines(DefTree,DirDef);
+end;
+
+procedure TMainIDE.OnCompilerGraphStampIncreased;
+begin
+  CodeToolBoss.DefineTree.ClearCache;
 end;
 
 procedure TMainIDE.SaveSourceEditorChangesToCodeCache(PageIndex: integer);
@@ -8508,6 +8526,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.535  2003/04/22 18:53:12  mattias
+  implemented compiling project dependencies and auto add dependency
+
   Revision 1.534  2003/04/22 13:27:09  mattias
   implemented installing components in component palette
 
