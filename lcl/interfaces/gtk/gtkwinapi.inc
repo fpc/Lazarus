@@ -2182,16 +2182,18 @@ var
         end;
       end;
 
-      aStyle := GetStyle('button');
-      If aStyle = nil then
-        aStyle := Widget^.theStyle
-      else
-        If State = GTK_STATE_SELECTED then
-          State := GTK_STATE_ACTIVE;
-          
       aDC:=TDeviceContext(DC);
       DCOrigin:=GetDCOffset(aDC);
 
+      aStyle := GetStyle('button');
+      If aStyle = nil then
+        aStyle := Widget^.theStyle
+      else begin
+        If State = GTK_STATE_SELECTED then
+          State := GTK_STATE_ACTIVE;
+        aStyle := gtk_style_attach(gtk_style_ref(aStyle),aDC.Drawable);
+      end;
+          
       If (DFCS_FLAT and uState)<>0 then
         gtk_paint_flat_box(aStyle,aDC.Drawable,
            State,
@@ -7759,6 +7761,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.210  2003/02/16 01:40:43  mattias
+  fixed uninitialized style
+
   Revision 1.209  2003/02/04 14:36:19  mattias
   fixed set method in OI
 
