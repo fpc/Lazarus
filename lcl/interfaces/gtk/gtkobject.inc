@@ -3769,7 +3769,7 @@ begin
 
   if (Sender is TControl) then
     Begin
-      case (sender as TControl).FCompStyle of
+      case TControl(sender).FCompStyle of
 
         csButton,csBitBtn:
         Begin
@@ -7259,6 +7259,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.360  2003/04/29 19:00:43  mattias
+  added package gtkopengl
+
   Revision 1.359  2003/04/29 13:35:39  mattias
   improved configure build lazarus dialog
 
