@@ -44,7 +44,7 @@ interface
 uses
   Classes, LclLinux, Process,StdCtrls, Forms, Buttons, Menus, ComCtrls, Arrow,
   Spin, SysUtils, Controls, CompReg, Graphics, ExtCtrls, Dialogs, Calendar,
-  ImgList, Grids, LResources,
+  ImgList, Grids, LResources, MaskEdit,
   SynEditLazDsgn, SynEdit, SynCompletion, SynExportHTML, SynMacroRecorder,
    SynMemo, SynHighlighterPas, SynHighlighterCPP, SynHighlighterJava,
    SynHighlighterPerl, SynHighlighterHTML, SynHighlighterXML,
@@ -339,6 +339,7 @@ begin
                                               TNoteBook]);
   RegisterComponents('Additional','Forms',[TScrollBox]);
   RegisterComponents('Additional','Grids',[TStringGrid,TDrawGrid]);
+  RegisterComponents('Additional','MaskEdit',[TMaskEdit]);
 
   // Common
   RegisterComponents('Common Controls','Controls',[TImageList]);

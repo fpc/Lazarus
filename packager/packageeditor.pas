@@ -284,7 +284,7 @@ begin
     if (Dependency<>nil) and (Removed) then begin
       // re-add dependency
       if not CheckAddingDependency(LazPackage,Dependency) then exit;
-      LazPackage.DeleteRemoveRequiredPkg(Dependency);
+      LazPackage.RemoveRemovedDependency(Dependency);
       PackageGraph.AddDependencyToPackage(LazPackage,Dependency);
     end;
   end;
@@ -545,9 +545,8 @@ begin
         mtConfirmation,[mbYes,mbNo],0)=mrNo
       then
         exit;
-      LazPackage.RemoveRequiredDependency(CurDependency);
+      PackageGraph.RemoveDependencyFromPackage(LazPackage,CurDependency,true);
     end;
-    UpdateAll;
   end;
 end;
 
@@ -626,6 +625,7 @@ begin
   then
     exit;
 
+  PackageGraph.BeginUpdate(false);
   case AddParams.AddType of
   d2ptUnit:
     begin
@@ -641,7 +641,7 @@ begin
         LazPackage.AddFile(UnitFilename,UnitName,FileType,PkgFileFlags,cpNormal);
       // add dependency
       if AddParams.Dependency<>nil then begin
-        LazPackage.AddRequiredDependency(AddParams.Dependency);
+        PackageGraph.AddDependencyToPackage(LazPackage,AddParams.Dependency);
       end;
       // open file in editor
       PackageEditors.CreateNewFile(Self,AddParams);
@@ -655,8 +655,7 @@ begin
     
   end;
   LazPackage.Modified:=true;
-  
-  UpdateAll;
+  PackageGraph.EndUpdate;
 end;
 
 procedure TPackageEditorForm.ApplyDependencyButtonClick(Sender: TObject);

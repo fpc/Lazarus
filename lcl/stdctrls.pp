@@ -1,6 +1,6 @@
 { 
  /*************************************************************************** 
-                               StdCtrls.pp
+                               stdctrls.pp
                                -----------
  
                    Initial Revision  : Tue Oct 19 CST 1999 
@@ -20,19 +20,12 @@
  *                                                                           *
  *****************************************************************************
 }
- 
-{
-@author()
-@created()
-@lastmod()
-
-Detailed description of the Unit.
-}
 
 unit StdCtrls;
 
 {$mode objfpc}{$H+}
 {off $Define NewCheckBox}
+
 interface
 
 
@@ -1456,6 +1449,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.90  2003/04/16 22:59:35  mattias
+  added TMaskEdit from Tony
+
   Revision 1.89  2003/04/15 08:54:27  mattias
   fixed TMemo.WordWrap
 

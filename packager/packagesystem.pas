@@ -177,6 +177,8 @@ type
     // dependency handling
     procedure AddDependencyToPackage(APackage: TLazPackage;
                                      Dependency: TPkgDependency);
+    procedure RemoveDependencyFromPackage(APackage: TLazPackage;
+                         Dependency: TPkgDependency; AddToRemovedList: boolean);
     procedure ChangeDependency(Dependency, NewDependency: TPkgDependency);
     function OpenDependency(Dependency: TPkgDependency;
                             var APackage: TLazPackage): TLoadPackageResult;
@@ -756,7 +758,7 @@ begin
   if FRegistrationPackage=nil then begin
     ErrorMsg:='RegisterUnit was called, but no package is registering.';
   end else begin
-    ErrorMsg:='Package: "'+FRegistrationPackage.NameAndVersion+'"';
+    ErrorMsg:='Package: "'+FRegistrationPackage.IDAsString+'"';
     // current unitname
     if FRegistrationUnitName<>'' then
       ErrorMsg:=ErrorMsg+#13+'Unit Name: "'+FRegistrationUnitName+'"';
@@ -1203,6 +1205,17 @@ begin
   APackage.AddRequiredDependency(Dependency);
   Dependency.LoadPackageResult:=lprUndefined;
   OpenDependency(Dependency,RequiredPackage);
+  EndUpdate;
+end;
+
+procedure TLazPackageGraph.RemoveDependencyFromPackage(APackage: TLazPackage;
+  Dependency: TPkgDependency; AddToRemovedList: boolean);
+begin
+  BeginUpdate(true);
+  if AddToRemovedList then
+    APackage.RemoveRequiredDependency(Dependency)
+  else
+    APackage.DeleteRequiredDependency(Dependency);
   EndUpdate;
 end;
 
