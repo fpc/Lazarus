@@ -71,6 +71,7 @@ type
     
     fGenDebugInfo: Boolean;
     fGenDebugDBX: Boolean;
+    fUseLineInfoUnit: Boolean;
     fUseHeaptrc: Boolean;
     fStripSymbols: Boolean;
     fLinkStyle: Integer;
@@ -145,6 +146,7 @@ type
     
     property GenerateDebugInfo: Boolean read fGenDebugInfo write fGenDebugInfo;
     property GenerateDebugDBX: Boolean read fGenDebugDBX write fGenDebugDBX;
+    property UseLineInfoUnit: Boolean read fUseLineInfoUnit write fUseLineInfoUnit;
     property UseHeaptrc: Boolean read fUseHeaptrc write fUseHeaptrc;
     property StripSymbols: Boolean read fStripSymbols write fStripSymbols;
     property LinkStyle: Integer read fLinkStyle write fLinkStyle;
@@ -236,6 +238,7 @@ type
     grpDebugging: TGroupBox;
     chkDebugGDB: TCheckBox;
     chkDebugDBX: TCheckBox;
+    chkUseLineInfoUnit: TCheckBox;
     chkUseHeaptrc: TCheckBox;
     chkSymbolsStrip: TCheckBox;
 
@@ -406,6 +409,7 @@ begin
   { Linking }
   GenerateDebugInfo := XMLConfigFile.GetValue('CompilerOptions/Linking/Debugging/GenerateDebugInfo/Value', false);
   GenerateDebugDBX := XMLConfigFile.GetValue('CompilerOptions/Linking/Debugging/GenerateDebugDBX/Value', false);
+  UseLineInfoUnit := XMLConfigFile.GetValue('CompilerOptions/Linking/Debugging/UseLineInfoUnit/Value', false);
   UseHeaptrc := XMLConfigFile.GetValue('CompilerOptions/Linking/Debugging/UseHeaptrc/Value', false);
   StripSymbols := XMLConfigFile.GetValue('CompilerOptions/Linking/Debugging/StripSymbols/Value', false);
   LinkStyle := XMLConfigFile.GetValue('CompilerOptions/CodeGeneration/LinkStyle/Value', 1);
@@ -495,6 +499,7 @@ begin
   { Linking }
   XMLConfigFile.SetValue('CompilerOptions/Linking/Debugging/GenerateDebugInfo/Value', GenerateDebugInfo);
   XMLConfigFile.SetValue('CompilerOptions/Linking/Debugging/GenerateDebugDBX/Value', GenerateDebugDBX);
+  XMLConfigFile.SetValue('CompilerOptions/Linking/Debugging/UseLineInfoUnit/Value', UseLineInfoUnit);
   XMLConfigFile.SetValue('CompilerOptions/Linking/Debugging/UseHeaptrc/Value', UseHeaptrc);
   XMLConfigFile.SetValue('CompilerOptions/Linking/Debugging/StripSymbols/Value', StripSymbols);
   XMLConfigFile.SetValue('CompilerOptions/CodeGeneration/LinkStyle/Value', LinkStyle);
@@ -681,6 +686,10 @@ begin
   { Debug Info for DBX }
   if (GenerateDebugDBX) then
     switches := switches + ' ' + '-gd';
+
+  { Line Numbers in Run-time Error Backtraces - Use LineInfo Unit }
+  if (UseLineInfoUnit) then
+    switches := switches + ' ' + '-gl';
 
   { Use Heaptrc Unix }
   if (UseHeaptrc) then
@@ -968,6 +977,7 @@ begin
     
   fGenDebugInfo := false;
   fGenDebugDBX := false;
+  fUseLineInfoUnit := false;
   fUseHeaptrc := false;
   fStripSymbols := false;
   fLinkStyle := 1;
@@ -1188,6 +1198,7 @@ begin
 
   chkDebugGDB.Checked := CompilerOpts.GenerateDebugInfo;
   chkDebugDBX.Checked := CompilerOpts.GenerateDebugDBX;
+  chkUseLineInfoUnit.Checked := CompilerOpts.UseLineInfoUnit;
   chkUseHeaptrc.Checked := CompilerOpts.UseHeaptrc;
   chkSymbolsStrip.Checked := CompilerOpts.StripSymbols;
 
@@ -1313,6 +1324,7 @@ begin
 
   CompilerOpts.GenerateDebugInfo := chkDebugGDB.Checked;
   CompilerOpts.GenerateDebugDBX := chkDebugDBX.Checked;
+  CompilerOpts.UseLineInfoUnit := chkUseLineInfoUnit.Checked;
   CompilerOpts.UseHeaptrc := chkUseHeaptrc.Checked;
   CompilerOpts.StripSymbols := chkSymbolsStrip.Checked;
 
@@ -1880,7 +1892,7 @@ begin
     Parent := nbMain.Page[2];
     Top := 10;
     Left := 10;
-    Height := 110;
+    Height := 130;
     Width := 350;
     Caption := 'Debugging:';
     Visible := True;
@@ -1910,12 +1922,24 @@ begin
     Visible := True;
   end;
 
+  chkUseLineInfoUnit := TCheckBox.Create(grpDebugging);
+  with chkUseLineInfoUnit do
+  begin
+    Parent := grpDebugging;
+    Caption := 'Display Line Numbers in Run-time Error Backtraces';
+    Top := 48;
+    Left := 8;
+    Height := 16;
+    Width := 330;
+    Visible := True;
+  end;
+
   chkUseHeaptrc := TCheckBox.Create(grpDebugging);
   with chkUseHeaptrc do
   begin
     Parent := grpDebugging;
     Caption := 'Use Heaptrc Unit';
-    Top := 48;
+    Top := 69;
     Left := 8;
     Height := 16;
     Width := 330;
@@ -1927,7 +1951,7 @@ begin
   begin
     Parent := grpDebugging;
     Caption := 'Strip Symbols From Executable';
-    Top := 69;
+    Top := 90;
     Left := 8;
     Height := 16;
     Width := 330;
