@@ -67,24 +67,26 @@ Procedure TCanvas.CopyRect(const Dest: TRect; SrcCanvas: TCanvas;
 var
   SH, SW, DH, DW: Integer;
 Begin
-//this SHOULD stretch the image to the new canvas, but it doesn't yet.....
   Assert(False, Format('Trace:==> [TCanvas.CopyRect] ', []));
-  if SrcCanvas<> nil then begin
-    SrcCanvas.RequiredState([csHandleValid, csBrushValid]);
-    RequiredState([csHandleValid, csBrushValid]);
+  if SrcCanvas= nil then exit;
 
-    SH := Source.Bottom - Source.Top;
-    SW := Source.Right - Source.Left;
-    if (SH=0) and (SW=0) then exit;
-    DH := Dest.Bottom - Dest.Top;
-    DW := Dest.Right - Dest.Left;
-    if (Dh=0) and (DW=0) then exit;
-    //writeln('TCanvas.CopyRect ',ClassName,' SRcCanvas=',SrcCanvas.ClassName,' ',
-    //  ' Src=',Source.Left,',',Source.Top,',',SW,',',SH,
-    //  ' Dest=',Dest.Left,',',Dest.Top,',',DW,',',DH);
-    StretchBlt(FHandle, Dest.Left, Dest.Top, DW, DH,
-      SrcCanvas.FHandle, Source.Left, Source.Top, SW, SH, CopyMode);
-  end;
+  SH := Source.Bottom - Source.Top;
+  SW := Source.Right - Source.Left;
+  if (SH=0) or (SW=0) then exit;
+  DH := Dest.Bottom - Dest.Top;
+  DW := Dest.Right - Dest.Left;
+  if (Dh=0) or (DW=0) then exit;
+
+  Changing;
+  SrcCanvas.RequiredState([csHandleValid, csBrushValid]);
+  RequiredState([csHandleValid, csBrushValid]);
+
+  //writeln('TCanvas.CopyRect ',ClassName,' SRcCanvas=',SrcCanvas.ClassName,' ',
+  //  ' Src=',Source.Left,',',Source.Top,',',SW,',',SH,
+  //  ' Dest=',Dest.Left,',',Dest.Top,',',DW,',',DH);
+  StretchBlt(FHandle, Dest.Left, Dest.Top, DW, DH,
+    SrcCanvas.FHandle, Source.Left, Source.Top, SW, SH, CopyMode);
+  Changed;
 
   Assert(False, Format('Trace:<== [TCanvas.CopyRect] ', []));
 end;
@@ -1257,6 +1259,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.65  2004/02/10 00:05:03  mattias
+  TSpeedButton now uses MaskBlt
+
   Revision 1.64  2004/02/03 08:54:09  mattias
   Frame3D rect now var again
 

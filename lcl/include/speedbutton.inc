@@ -504,7 +504,7 @@ begin
   if FFlat and Enabled
   then begin
     GetCursorPos(p);
-    FMouseInControl := not (FindDragTarget(P, True) = Self);
+    FMouseInControl := (FindDragTarget(P, True) <> Self);
     if FMouseInControl
     then Perform(CM_MOUSELEAVE,0,0)
     else Perform(CM_MOUSEENTER,0,0);
@@ -773,6 +773,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.47  2004/02/10 00:05:03  mattias
+  TSpeedButton now uses MaskBlt
+
   Revision 1.46  2004/02/05 09:45:33  mattias
   implemented Actions for TSpeedButton, TMenuItem, TCheckBox
 

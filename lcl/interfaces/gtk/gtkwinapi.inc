@@ -5939,31 +5939,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: MaskBlt
-  Params:  DestDC:                The destination devicecontext
-           X, Y:                  The left/top corner of the destination rectangle
-           Width, Height:         The size of the destination rectangle
-           SrcDC:                 The source devicecontext
-           XSrc, YSrc:            The left/top corner of the source rectangle
-           Mask:                  The handle of a monochrome bitmap
-           XMask, YMask:          The left/top corner of the mask rectangle
-           ROp:                   The raster operation to be performed
-  Returns: True if succesful
-
-  The MaskBlt function copies a bitmap from a source context into a destination
-  context using the specified mask and raster operation.
- ------------------------------------------------------------------------------}
-function TgtkObject.MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer;
-  SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer;
-  ROp: DWORD): Boolean;
-begin
-  Result:=StretchMaskBlt(DestDC,X,Y,Width,Height,
-                         SrcDC,XSrc,YSrc,Width,Height,
-                         Mask,XMask,YMask,
-                         ROp);
-end;
-
-{------------------------------------------------------------------------------
   Function: MessageBox
   Params:  hWnd:                  The handle of parent window
   Returns: 0 if not successful (out of memory), otherwise one of the defined value :
@@ -8707,6 +8682,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.328  2004/02/10 00:05:03  mattias
+  TSpeedButton now uses MaskBlt
+
   Revision 1.327  2004/02/04 22:17:09  mattias
   removed workaround VirtualCreate
 

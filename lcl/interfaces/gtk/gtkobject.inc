@@ -2584,11 +2584,12 @@ var
   end;
 
 var
-  DCOrigin: TPoint;
   NewSrcWidth: Integer;
   NewSrcHeight: Integer;
   NewWidth: Integer;
   NewHeight: Integer;
+  SrcDCOrigin: TPoint;
+  DestDCOrigin: TPoint;
 begin
   Result := IsValidDC(DestDC) and IsValidDC(SrcDC);
   {$IFDEF VerboseStretchCopyArea}
@@ -2603,15 +2604,15 @@ begin
   DestDevContext:=TDeviceContext(DestDC);
 
   with SrcDevContext do begin
-    DCOrigin:=GetDCOffset(TDeviceContext(SrcDC));
-    Inc(XSrc,DCOrigin.X);
-    Inc(YSrc,DCOrigin.Y);
+    SrcDCOrigin:=GetDCOffset(TDeviceContext(SrcDC));
+    Inc(XSrc,SrcDCOrigin.X);
+    Inc(YSrc,SrcDCOrigin.Y);
     gdk_window_get_size(PGdkWindow(Drawable),@SrcWholeWidth,@SrcWholeHeight);
   end;
   with DestDevContext do begin
-    DCOrigin:=GetDCOffset(TDeviceContext(DestDC));
-    Inc(X,DCOrigin.X);
-    Inc(Y,DCOrigin.Y);
+    DestDCOrigin:=GetDCOffset(TDeviceContext(DestDC));
+    Inc(X,DestDCOrigin.X);
+    Inc(Y,DestDCOrigin.Y);
     gdk_window_get_size(PGdkWindow(Drawable),@DestWholeWidth,@DestWholeHeight);
   end;
 
@@ -2619,7 +2620,9 @@ begin
   writeln('TgtkObject.StretchCopyArea BEFORE CLIPPING X=',X,' Y=',Y,' Width=',Width,' Height=',Height,
     ' XSrc=',XSrc,' YSrc=',YSrc,' SrcWidth=',SrcWidth,' SrcHeight=',SrcHeight,
     ' SrcDrawable=',HexStr(Cardinal(TDeviceContext(SrcDC).Drawable),8),
+    ' SrcOrigin=',SrcDCOrigin.X,',',SrcDCOrigin.Y,
     ' DestDrawable=',HexStr(Cardinal(TDeviceContext(DestDC).Drawable),8),
+    ' DestOrigin=',DestDCOrigin.X,',',DestDCOrigin.Y,
     ' Mask=',HexStr(Cardinal(Mask),8),' XMask=',XMask,' YMask=',YMask,
     ' SizeChange=',SizeChange,' ROpIsSpecial=',ROpIsSpecial,
     ' DestWhole=',DestWholeWidth,',',DestWholeHeight,
@@ -9189,6 +9192,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.465  2004/02/10 00:05:03  mattias
+  TSpeedButton now uses MaskBlt
+
   Revision 1.464  2004/02/07 18:04:14  mattias
   fixed grids OnDrawCells
 

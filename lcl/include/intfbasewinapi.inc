@@ -993,16 +993,17 @@ end;
 
 function TInterfaceBase.MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer;
   SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer;
-  Rop: DWORD): Boolean;
+  ROp: DWORD): Boolean;
 begin
-  Result := False;
+  Result := StretchMaskBlt(DestDC,X,Y,Width,Height,SrcDC,XSrc,YSrc,Width,Height,
+                           Mask,XMask,YMask,ROp);
 end;
 
-//todo: remove
 function TInterfaceBase.MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer;
   SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer): Boolean;
 begin
-  Result := False;
+  Result := MaskBlt(DestDC,X,Y,Width,Height,SrcDC,XSrc,YSrc,
+                    Mask,XMask,YMask,SRCCOPY);
 end;
 
 function TInterfaceBase.MoveToEx(DC: HDC; X, Y: Integer;
@@ -1397,6 +1398,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.5  2004/02/10 00:05:03  mattias
+  TSpeedButton now uses MaskBlt
+
   Revision 1.4  2004/01/10 22:34:20  mattias
   started double buffering for gtk intf
 

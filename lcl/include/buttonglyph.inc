@@ -82,16 +82,20 @@ Function TButtonGlyph.Draw(Canvas: TCanvas; const Client: TRect;
   const Offset: TPoint;  State: TButtonState;  Transparent: Boolean;
   BiDiFlags: Longint): TRect;
 var
-  gWidth : integer;
-  gHeight : integer;
-  DestRect: TRect;
+  gWidth: integer;
+  gHeight: integer;
+  DestRect, SrcRect: TRect;
   ImgID: integer;
+  UseMaskHandle: HBitmap;
 begin
-  if FOriginal = nil then Exit;
-  if (FOriginal.Width = 0) or (FOriginal.Height = 0) then Exit;
+  Result:=Client;
+  if (FOriginal = nil) then exit;
+
+  gWidth := FOriginal.Width;
+  gHeight := FOriginal.Height;
+  if (gWidth = 0) or (gHeight = 0)
+  or (Client.Left>=Client.Right) or (Client.Top>=Client.Bottom) then Exit;
   
-  gWidth := TPixMap(FOriginal).Width;
-  gHeight := TPixMap(FOriginal).Height;
   if NumGlyphs > 1 then
     gWidth := gWidth div NumGlyphs;
     
@@ -102,19 +106,29 @@ begin
     bsExclusive: if NumGlyphs>3 then ImgID:=3;
   end;
 
-  Result := Rect((ImgID*gWidth), 0, ((ImgID+1)*gWidth), gHeight);
+  SrcRect := Rect((ImgID*gWidth), 0, ((ImgID+1)*gWidth), gHeight);
   DestRect:=Client;
   inc(DestRect.Left,Offset.X);
   inc(DestRect.Top,Offset.Y);
-  If DestRect.Right > DestRect.Left + Result.Right - Result.Left then
-    DestRect.Right := DestRect.Left + Result.Right - Result.Left;
+  If DestRect.Right > DestRect.Left + SrcRect.Right - SrcRect.Left then
+    DestRect.Right := DestRect.Left + SrcRect.Right - SrcRect.Left;
   If DestRect.Bottom > DestRect.Top + gHeight then
     DestRect.Bottom := DestRect.Top + gHeight;
-  If (Result.Right - Result.Left) <> (DestRect.Right - DestRect.Left) then
-    Result.Right := Result.Left + DestRect.Right - DestRect.Left;
-  If (Result.Bottom - Result.Top) <> (DestRect.Bottom - DestRect.Top) then
-    Result.Bottom := Result.Top + DestRect.Bottom - DestRect.Top;
-  Canvas.Copyrect(DestRect, TPixmap(FOriginal).Canvas, Result)
+  If (SrcRect.Right - SrcRect.Left) <> (DestRect.Right - DestRect.Left) then
+    SrcRect.Right := SrcRect.Left + DestRect.Right - DestRect.Left;
+  If (SrcRect.Bottom - SrcRect.Top) <> (DestRect.Bottom - DestRect.Top) then
+    SrcRect.Bottom := SrcRect.Top + DestRect.Bottom - DestRect.Top;
+
+  //Canvas.CopyRect(DestRect, FOriginal.Canvas, SrcRect)
+  UseMaskHandle:=FOriginal.MaskHandle;
+  MaskBlt(Canvas.Handle,
+          DestRect.Left,DestRect.Top,
+          DestRect.Right-DestRect.Left,DestRect.Bottom-DestRect.Top,
+          FOriginal.Canvas.Handle,SrcRect.Left,SrcRect.Top,
+          UseMaskHandle,SrcRect.Left,SrcRect.Top);
+
+  // ToDo: VCL returns the text rectangle
+  Result:=SrcRect;
 end;
 
 

@@ -87,10 +87,22 @@ begin
 end;
 
 procedure TBitmap.Draw(ACanvas: TCanvas; const ARect: TRect);
+var
+  UseMaskHandle: HBitmap;
 begin
+  if (ARect.Right<=ARect.Left) or (ARect.Bottom<=ARect.Top)
+  or (Width=0) or (Height=0) then exit;
   HandleNeeded;
-  if HandleAllocated then
-    ACanvas.CopyRect(ARect, Self.Canvas, Rect(0, 0, Width, Height));
+  if HandleAllocated then begin
+    //ACanvas.CopyRect(ARect, Self.Canvas, Rect(0, 0, Width, Height));
+    if Transparent then
+      UseMaskHandle:=MaskHandle
+    else
+      UseMaskHandle:=0;
+    MaskBlt(ACanvas.Handle,
+            ARect.Left,ARect.Top, ARect.Right-ARect.Left,ARect.Bottom-ARect.Top,
+            Canvas.Handle,0,0, UseMaskHandle,0,0);
+  end;
 end;
 
 constructor TBitmap.Create;
@@ -1042,6 +1054,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.62  2004/02/10 00:05:03  mattias
+  TSpeedButton now uses MaskBlt
+
   Revision 1.61  2004/02/08 11:31:32  mattias
   TMenuItem.Bitmap is now auto created on read. Added TMenuItem.HasBitmap
 

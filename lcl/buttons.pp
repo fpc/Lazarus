@@ -232,7 +232,7 @@ type
     procedure CMMouseLeave(var Message: TLMessage); message CM_MouseLeave;
     procedure CMEnabledChanged(var Message: TLMessage); message CM_ENABLEDCHANGED;
   protected
-    FState : TButtonState;
+    FState: TButtonState;
     function GetNumGlyphs : Integer;
     procedure GlyphChanged(Sender : TObject);
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -250,7 +250,7 @@ type
     procedure SetText(const Value: TCaption); override;
     procedure UpdateState(InvalidateOnChange: boolean); virtual;
     function GetDrawFlags: integer; virtual;
-    property MouseInControl : Boolean read FMouseInControl;
+    property MouseInControl: Boolean read FMouseInControl;
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
     function GetActionLinkClass: TControlActionLinkClass; override;
   public
@@ -331,6 +331,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.58  2004/02/10 00:05:03  mattias
+  TSpeedButton now uses MaskBlt
+
   Revision 1.57  2004/02/07 20:25:37  mattias
   fixed saving custom TBitBtn kind
 
