@@ -20,7 +20,7 @@
  *                                                                         * 
  ***************************************************************************/ 
 } 
-unit DBGDebugger;
+unit Debugger;
 
 {$mode objfpc}
 
@@ -122,6 +122,10 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.1  2001/02/28 22:09:15  lazarus
+  MWE:
+    * Renamed DBGDebugger to Debugger
+
   Revision 1.2  2001/02/25 16:44:57  lazarus
   MWE:
     + Added header and footer

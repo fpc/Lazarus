@@ -33,7 +33,7 @@ uses
   DlgMessage, Process, IDEComp, AbstractFormEditor, FormEditor,
   CustomFormEditor, ObjectInspector, ControlSelection, PropEdits, UnitEditor,
   CompilerOptions, EditorOptions, {CodeTemplateDialog,} EnvironmentOpts,
-  DBGDebugger;
+  Debugger;
 
 const
   Version_String = '0.7';
@@ -1785,6 +1785,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.67  2001/02/28 22:09:15  lazarus
+  MWE:
+    * Renamed DBGDebugger to Debugger
+
   Revision 1.66  2001/02/27 18:39:22  lazarus
   Changed NEWPROJECT to call NEWFORMCLICKED to create the first unit.
   Shane
