@@ -173,6 +173,11 @@ end;
 {------------------------------------------------------------------------------}
 procedure TApplication.Initialize;
 begin
+  if InterfaceObject=nil then begin
+    writeln('ERROR: no widget interface object. Did u compile an abstract LCL?');
+    raise Exception.Create(
+      'No widget interface object. Did u compile an abstract LCL?');
+  end;
   InterfaceObject.Init;
   CNSendMessage(LM_SCREENINIT, nil, @ScreenInfo);
   if LazarusResources.Find('MAINICON')<>nil then begin
@@ -389,6 +394,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.16  2002/01/27 23:24:37  lazarus
+  MG: added error message, when lcl founds no widget interface object
+
   Revision 1.15  2001/12/08 12:35:12  lazarus
   MG: added TApplication.ShowException
 
