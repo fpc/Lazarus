@@ -381,14 +381,16 @@ end;
 {-----------------------------------------------------------------------------}
 
 procedure TIpMemMapStream.OpenFile;
+{$IFDEF IP_LAZARUS}
+begin
+  writeln('TIpMemMapStream.OpenFile ToDo');
+end;
+{$ELSE}
 var
   CreateMode,
   Flags,
   OpenMode : DWORD;
 begin
-  {$IFDEF IP_LAZARUS}
-  writeln('TIpMemMapStream.OpenFile ToDo');
-  {$ELSE}
 
   { Check requirements. }
   CheckFileName;
@@ -422,21 +424,23 @@ begin
     { Raise exception. }
     raise EIpBaseException.Create(SysErrorMessage(GetLastError) + SFilename +
                                   mmFileName);
-  {$ENDIF}
 end;
+{$ENDIF}
 
 {-----------------------------------------------------------------------------}
 
 procedure TIpMemMapStream.OpenMap;
+{$IFDEF IP_LAZARUS}
+begin
+  writeln('TIpMemMapStream.OpenMap ToDo');
+end;
+{$ELSE}
 var
   AccessMode,
   ProtectMode,
   SizeHigh : DWORD;
   Size : DWORD;
 begin
-  {$IFDEF IP_LAZARUS}
-  writeln('TIpMemMapStream.OpenMap ToDo');
-  {$ELSE}
   { If this was an existing file then get the size of the file. }
   if mmFileExists then begin
     SizeHigh := 0;
@@ -473,8 +477,8 @@ begin
     raise EIpBaseException.Create(SysErrorMessage(GetLastError) + SFilename +
                                   mmFileName);
   mmPos := 0;
-  {$ENDIF}
 end;
+{$ENDIF}
 
 {-----------------------------------------------------------------------------}
 
@@ -1617,21 +1621,23 @@ begin
 end;
 
 function TIpDownloadFileStream.Read(var Buffer; Count : Longint) : Longint;
+{$IFDEF IP_LAZARUS}
+begin
+  writeln('ToDo: TIpDownloadFileStream.Read ');
+  Result:=0;
+end;
+{$ELSE}
 var
   ReadOK : Bool;
 begin
-  {$IFDEF IP_LAZARUS}
-  writeln('ToDo: TIpDownloadFileStream.Read ');
-  Result:=0;
-  {$ELSE}
   ReadOK := ReadFile(Handle, Buffer, Count, DWord(Result), nil);
 
   if not ReadOK then begin
     raise EIpBaseException.Create(SysErrorMessage(GetLastError) + SFilename + FFileName);
     Result := 0;
   end;
-  {$ENDIF}
 end;
+{$ENDIF}
 
 procedure TIpDownloadFileStream.Rename(aNewName : string);
 var
@@ -1724,21 +1730,23 @@ begin
 end;
 
 function TIpDownloadFileStream.Write(const Buffer; Count : Longint) : Longint;
+{$IFDEF IP_LAZARUS}
+begin
+  writeln('ToDo: TIpDownloadFileStream.Write');
+  Result:=Count;
+end;
+{$ELSE}
 var
   WriteOK : Bool;
 begin
-  {$IFDEF IP_LAZARUS}
-  writeln('ToDo: TIpDownloadFileStream.Write');
-  Result:=Count;
-  {$ELSE}
   WriteOK := WriteFile(Handle, Buffer, Count, DWord(Result), nil);
 
   if not WriteOK then begin
     raise EIpBaseException.Create(SysErrorMessage(GetLastError) + SFilename + FFileName);
     Result := 0
   end;
-  {$ENDIF}
 end;
+{$ENDIF}
 
 
 { TIpByteStream }
@@ -1780,6 +1788,9 @@ end;
 
 {
   $Log$
+  Revision 1.4  2004/10/04 09:36:23  mattias
+  fixed compilation of ipro
+
   Revision 1.3  2004/02/04 22:17:59  mattias
   TipHtmlPanel can now show fpdoc html output
 

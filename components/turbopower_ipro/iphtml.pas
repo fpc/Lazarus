@@ -2940,9 +2940,7 @@ const
 procedure THtmlRadioButton.CreateWnd;
 begin
   inherited CreateWnd;
-  {$IFDEF IP_LAZARUS}
-  CNSendMessage(LM_SetValue,Self,@CheckStates[FChecked]);
-  {$ELSE}
+  {$IFNDEF IP_LAZARUS}
   SendMessage(Handle, BM_SETCHECK, Integer(FChecked), 0);
   {$ENDIF}
 end;
@@ -2953,6 +2951,11 @@ begin
 end;
 
 procedure THtmlRadioButton.SetChecked(Value: Boolean);
+{$IFDEF IP_LAZARUS}
+begin
+  inherited SetChecked(Value);
+end;
+{$ELSE IP_LAZARUS}
 
   procedure TurnSiblingsOff;
   var
@@ -2976,11 +2979,7 @@ begin
     FChecked := Value;
     TabStop := Value;
     if HandleAllocated then
-      {$IFDEF IP_LAZARUS}
-      CNSendMessage(LM_SetValue,Self,@CheckStates[FChecked]);
-      {$ELSE}
       SendMessage(Handle, BM_SETCHECK, Integer(FChecked), 0);
-      {$ENDIF}
     if Value then begin
       TurnSiblingsOff;
       inherited Changed;
@@ -2989,6 +2988,8 @@ begin
     end;
   end;
 end;
+{$ENDIF IP_LAZARUS}
+
 {$ENDIF}
 
 
@@ -17186,7 +17187,7 @@ end;
 
 procedure TIpHtmlCustomPanel.WMGetDlgCode(var Msg: TMessage);
 begin
-  { we want 'em all!}
+  { we want 'em all!  For Lazarus: Then use OnKeyDown }
   Msg.Result := DLGC_WANTALLKEYS +
                 DLGC_WANTARROWS +
                 DLGC_WANTCHARS +
@@ -17591,6 +17592,9 @@ initialization
   InitScrollProcs;
 {
   $Log$
+  Revision 1.16  2004/10/04 09:36:22  mattias
+  fixed compilation of ipro
+
   Revision 1.15  2004/08/30 16:02:17  mattias
   started project interface
 

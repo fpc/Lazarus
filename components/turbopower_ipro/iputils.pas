@@ -41,7 +41,7 @@ uses
   GraphType,
   LCLIntf,
   LMessages,
-  FileCtrl,
+  FileUtil,
   {$ELSE}
   Messages,
   Windows,
@@ -504,19 +504,19 @@ end;
 { Returns True if a given address is a Class B address }
 function InClassB(Addr : LongInt) : Boolean;
 begin
-  Result := (Addr and $C0000000) = $80000000;
+  Result := (Cardinal(Addr) and $C0000000) = $80000000;
 end;
 
 { Returns True if a given address is a Class C address }
 function InClassC(Addr : LongInt) : Boolean;
 begin
-  Result := (Addr and $E0000000) = $C0000000;
+  Result := (Cardinal(Addr) and $E0000000) = $C0000000;
 end;
 
 { Returns True if a given address is a Class D address }
 function InClassD(Addr : LongInt) : Boolean;
 begin
-  Result := (Addr and $F0000000) = $E0000000;
+  Result := (Cardinal(Addr) and $F0000000) = $E0000000;
 end;
 
 { Returns True if a given address is a multicast address }
@@ -2686,7 +2686,7 @@ end;
 function GetTemporaryFile(const Path : string) : string;
 {$IFDEF IP_LAZARUS}
 begin
-  Result:=FileCtrl.GetTempFileName(Path,'IP_');
+  Result:=FileUtil.GetTempFileName(Path,'IP_');
 end;
 {$ELSE}
 var
