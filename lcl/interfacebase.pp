@@ -33,8 +33,8 @@ interface
 {$endif}
 
 uses
-  Classes, SysUtils, Math, FPCAdds, LCLType, LCLProc, VCLGlobals, LMessages,
-  GraphType, GraphMath, IntfStrConsts;
+  Classes, SysUtils, Math, FPCAdds, LCLStrConsts, LCLType, LCLProc, VCLGlobals,
+  LMessages, GraphType, GraphMath;
 
 type
 
@@ -51,7 +51,8 @@ type
     procedure AppInit; virtual; abstract;
     procedure AppTerminate; virtual; abstract;
     function  InitHintFont(HintFont: TObject): Boolean; virtual;
-    function  IntSendMessage3(LM_Message: Integer; Sender: TObject; Data: pointer): integer; virtual; abstract;
+    function  IntSendMessage3(LM_Message: Integer; Sender: TObject;
+                              Data: pointer): integer; virtual; abstract;
 
     // create and destroy
     function CreateComponent(Sender : TObject): THandle; virtual; abstract;
@@ -113,6 +114,9 @@ end.
 
 {
   $Log$
+  Revision 1.47  2004/08/11 20:57:09  mattias
+  moved intfstrconsts.pp to lclstrconsts.pas, implemented TPenHandleCache
+
   Revision 1.46  2004/03/19 00:53:34  marc
   * Removed all ComponentCreateHandle routines
 

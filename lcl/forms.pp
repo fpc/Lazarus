@@ -1330,6 +1330,7 @@ begin
   Application.Free;
   Application:=nil;
   FreeAllClipBoards;
+  CallInterfaceFinalizationHandlers;
   InterfaceObject.Free;
   InterfaceObject:=nil;
 end;

@@ -42,11 +42,8 @@ uses
   {$IFNDEF DisableFPImage}
   FPImage, FPReadPNG, FPWritePNG, FPReadBMP, FPWriteBMP, IntfGraphics,
   {$ENDIF}
-  {$IFDEF UseSimpleJpeg}
-  FPReadJpeg,FPWriteJpeg,
-  {$ENDIF}
-  LCLStrConsts, vclGlobals, LMessages, LCLType, LCLProc, LCLIntf, LResources,
-  GraphType, GraphMath;
+  LCLStrConsts, vclGlobals, LCLType, LCLProc, LMessages, LCLIntf, LResources,
+  LCLResCache, GraphType, GraphMath;
 
 type
   PColor = ^TColor;
@@ -105,13 +102,6 @@ type
               pmMaskPenNot, pmMergeNotPen, pmMaskNotPen, pmMerge,pmNotMerge, pmMask,
               pmNotMask, pmXor, pmNotXor
              );
-
-  TPenData = record
-    Handle: HPen;
-    Color: TColor;
-    Width: Integer;
-    Style: TPenStyle;
-  end;
 
   TBrushStyle = (bsSolid, bsClear, bsHorizontal, bsVertical, bsFDiagonal,
                  bsBDiagonal, bsCross, bsDiagCross);
@@ -371,9 +361,9 @@ type
   TIcon = class;                    // ico
   TPortableNetworkGraphic = class;  // png
   {$IFDEF UseSimpleJpeg}
+  {$error will be added to the LCL, when fpc 2.0 is released. Use the jpeg package in the components/jpeg directory instead. }
   // MG: will be added to the LCL, when fpc 2.0 is released
   //     but then with the advanced features of the existing package
-  TJpegImage = class;               // jpg
   {$ENDIF}
 
 
@@ -393,7 +383,7 @@ type
     property OnChanging: TNotifyEvent read FOnChanging write FOnChanging;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
-
+  
 
   { TFont }
 
@@ -457,11 +447,26 @@ type
 
 
   { TPen }
+  
+  TPenData = record
+    Handle: HPen;
+    Color: TColor;
+    Width: Integer;
+    Style: TPenStyle;
+  end;
+  
+  TPenHandleCache = class(TBlockResourceCache)
+  protected
+    procedure RemoveItem(Item: TResourceCacheItem); override;
+  public
+    constructor Create;
+  end;
 
   TPen = class(TGraphicsObject)
   private
     FPenData: TPenData;
     FMode: TPenMode;
+    FPenHandleCached: boolean;
     procedure FreeHandle;
   protected
     function GetHandle: HPEN;
@@ -469,7 +474,7 @@ type
     procedure SetColor(Value: TColor);
     procedure SetMode(Value: TPenMode);
     procedure SetStyle(Value: TPenStyle);
-    procedure Setwidth(value: Integer);
+    procedure SetWidth(value: Integer);
   public
     constructor Create;
     destructor Destroy; override;
@@ -1115,18 +1120,6 @@ type
   end;
 
 
-  {$IFDEF UseSimpleJpeg}
-  { TJpegImage }
-
-  TJpegImage = class(TFPImageBitmap)
-  public
-    class function GetFileExtensions: string; override;
-    class function GetDefaultFPReader: TFPCustomImageReaderClass; override;
-    class function GetDefaultFPWriter: TFPCustomImageWriterClass; override;
-  end;
-  {$ENDIF}
-
-
   { TIcon }
   {
     TIcon reads and writes .ICO file format.
@@ -1223,6 +1216,8 @@ function ReadXPMSize(XPM: PPChar; var Width, Height, ColorCount: integer
 var
   { Stores information about the current screen }
   ScreenInfo: TLMScreenInit;
+  
+  PenResourceCache: TPenHandleCache;
 
 const
   FontCharsets: array[0..18] of TIdentMapEntry = (
@@ -1680,13 +1675,21 @@ begin
 end;
 {$ENDIF}
 
+procedure InterfaceFinal;
+begin
+  //debugln('Graphics.InterfaceFinal');
+  FreeAndNil(PenResourceCache);
+end;
+
 initialization
   PicClipboardFormats:=nil;
   PicFileFormats:=nil;
   OnLoadGraphicFromClipboardFormat:=nil;
   OnSaveGraphicToClipboardFormat:=nil;
+  PenResourceCache:=TPenHandleCache.Create;
   RegisterIntegerConsts(TypeInfo(TColor), @IdentToColor, @ColorToIdent);
   RegisterIntegerConsts(TypeInfo(TFontCharset), @IdentToCharset, @CharsetToIdent);
+  RegisterInterfaceFinalizationHandler(@InterfaceFinal);
 
 finalization
   GraphicsFinalized:=true;
@@ -1701,6 +1704,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.140  2004/08/11 20:57:09  mattias
+  moved intfstrconsts.pp to lclstrconsts.pas, implemented TPenHandleCache
+
   Revision 1.139  2004/05/25 21:50:32  mattias
   TCustomNotebook now allows pageclass descendents
 
@@ -2406,4 +2412,4 @@ end.
 
        Finished the TColorDialog added to comDialog example.        MAH
 
- }
+}

@@ -23,19 +23,19 @@
  *****************************************************************************
 }
 
-unit lMessages;
+unit LMessages;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses Classes, SysUtils, vclGlobals, LCLType, GraphType
-{$ifdef win32}
-{$ifndef ver1_0}
-,messages
-{$endif ver1_0}
-{$endif win32}
-;
+  {$ifdef win32}
+  {$ifndef ver1_0}
+  ,messages
+  {$endif ver1_0}
+  {$endif win32}
+  ;
 
 const
   //-------------
@@ -1080,6 +1080,9 @@ end.
 
 {
   $Log$
+  Revision 1.68  2004/08/11 20:57:09  mattias
+  moved intfstrconsts.pp to lclstrconsts.pas, implemented TPenHandleCache
+
   Revision 1.67  2004/07/16 21:49:00  mattias
   added RTTI controls
 

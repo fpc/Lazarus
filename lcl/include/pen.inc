@@ -16,6 +16,23 @@
  *                                                                           *
  *****************************************************************************
 }
+
+{ TPenHandleCache }
+
+procedure TPenHandleCache.RemoveItem(Item: TResourceCacheItem);
+begin
+  //debugln('TPenHandleCache.RemoveItem ',HexStr(Cardinal(Item.Handle),8));
+  DeleteObject(Item.Handle);
+  inherited RemoveItem(Item);
+end;
+
+constructor TPenHandleCache.Create;
+begin
+  inherited Create(SizeOf(TPenData));
+end;
+
+{ TPen }
+
 {------------------------------------------------------------------------------
   Method: TPen.SetColor
   Params: Value: the new value
@@ -166,16 +183,26 @@ const
     PS_SOLID,PS_DASH,PS_DOT,PS_DASHDOT,PS_DASHDOTDOT,PS_NULL,PS_INSIDEFRAME);
 var
   LogPen: TLogPen;
+  CachedPen: TBlockResourceCacheDescriptor;
 begin
   if FPenData.Handle = 0
   then begin
+    FillChar(LogPen,SizeOf(LogPen),0);
     with LogPen do
     begin
       lopnStyle := PEN_STYLES[FPenData.Style];
       lopnWidth.X := FPenData.Width;
       lopnColor := FPenData.Color;
     end;
-    FPenData.Handle := CreatePenIndirect(LogPen);
+    CachedPen:=PenResourceCache.FindDescriptor(@LogPen);
+    if CachedPen<>nil then begin
+      CachedPen.Item.IncreaseRefCount;
+      FPenData.Handle := CachedPen.Item.Handle;
+    end else begin
+      FPenData.Handle := CreatePenIndirect(LogPen);
+      PenResourceCache.AddResource(FPenData.Handle,@LogPen);
+    end;
+    FPenHandleCached:=true;
   end;
 
   Result := FPenData.Handle;
@@ -194,7 +221,11 @@ begin
   then begin
     // Changing triggers deselecting the current handle
     Changing;
-    DeleteObject(FPenData.Handle);
+    if FPenHandleCached then begin
+      PenResourceCache.FindItem(FPenData.Handle).DecreaseRefCount;
+      FPenHandleCached:=false;
+    end else
+      DeleteObject(FPenData.Handle);
     FPenData.Handle := 0;
   end;
 end;
@@ -202,6 +233,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.10  2004/08/11 20:57:09  mattias
+  moved intfstrconsts.pp to lclstrconsts.pas, implemented TPenHandleCache
+
   Revision 1.9  2004/04/10 17:58:57  mattias
   implemented mainunit hints for include files
 

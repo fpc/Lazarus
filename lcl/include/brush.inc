@@ -149,6 +149,7 @@ var
 begin
   if FBrushData.Handle = 0
   then begin
+    FillChar(LogBrush,SizeOf(LogBrush),0);
     with LogBrush do
     begin
       if FBrushData.Bitmap <> nil
@@ -195,6 +196,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.8  2004/08/11 20:57:09  mattias
+  moved intfstrconsts.pp to lclstrconsts.pas, implemented TPenHandleCache
+
   Revision 1.7  2004/04/10 17:58:56  mattias
   implemented mainunit hints for include files
 

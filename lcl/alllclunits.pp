@@ -35,7 +35,7 @@ uses
   FPCAdds, LazLinkedList, DynHashArray, LCLMemManager, AvgLvlTree,
   StringHashList, ExtendedStrings, DynamicArray, UTrace, TextStrings,
   // base types and base functions
-  LCLProc, LCLType, GraphMath, VCLGlobals, FileCtrl, LMessages,
+  LCLProc, LCLType, LCLResCache, GraphMath, VCLGlobals, FileCtrl, LMessages,
   // the interface base
   InterfaceBase,
   {$IFNDEF DisableFPImage}IntfGraphics,{$ENDIF}
@@ -63,6 +63,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.18  2004/08/11 20:57:09  mattias
+  moved intfstrconsts.pp to lclstrconsts.pas, implemented TPenHandleCache
+
   Revision 1.17  2004/08/03 10:01:22  mattias
   added DBActns  from Michael VC
 

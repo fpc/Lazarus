@@ -69,6 +69,7 @@ type
   TSendMessageToInterfaceFunction =
     function(LM_Message: Integer; Sender: TObject; data: pointer): integer
              of object;
+             
 
 var
   SendApplicationMessageFunction: TSendApplicationMessageFunction;
@@ -78,9 +79,12 @@ var
 
 function SendApplicationMessage(Msg: Cardinal; WParam: WParam; LParam: LParam):Longint;
 procedure OwnerFormDesignerModified(AComponent: TComponent);
-function OffsetRect(var ARect: TRect; dx,dy: Integer): Boolean;
 procedure FreeThenNil(var AnObject: TObject);
 
+procedure RegisterInterfaceFinalizationHandler(p: TProcedure);
+procedure CallInterfaceFinalizationHandlers;
+
+function OffsetRect(var ARect: TRect; dx,dy: Integer): Boolean;
 procedure MakeMinMax(var i1, i2: integer);
 procedure CalculateLeftTopWidthHeight(X1,Y1,X2,Y2: integer;
   var Left,Top,Width,Height: integer);
@@ -133,6 +137,9 @@ function DbgS(const i1,i2,i3,i4: integer): string;
 
 
 implementation
+
+var
+  InterfaceFinalizationHandlers: TList;
 
 
 Function DeleteAmpersands(var Str : String) : Longint;
@@ -330,6 +337,19 @@ begin
     AnObject.Free;
     AnObject:=nil;
   end;
+end;
+
+procedure RegisterInterfaceFinalizationHandler(p: TProcedure);
+begin
+  InterfaceFinalizationHandlers.Add(p);
+end;
+
+procedure CallInterfaceFinalizationHandlers;
+var
+  i: Integer;
+begin
+  for i:=0 to InterfaceFinalizationHandlers.Count-1 do
+    TProcedure(InterfaceFinalizationHandlers[i])();
 end;
 
 { TMethodList }
@@ -770,6 +790,10 @@ end;
 initialization
   SendApplicationMessageFunction:=nil;
   OwnerFormDesignerModifiedProc:=nil;
+  InterfaceFinalizationHandlers:=TList.Create;
+finalization
+  InterfaceFinalizationHandlers.Free;
+  InterfaceFinalizationHandlers:=nil;
 
 end.
 
