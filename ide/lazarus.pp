@@ -63,13 +63,16 @@ CheckHeap('TMainIDE created');
   SplashForm.StartTimer;
   Application.Run;
   SplashForm.Free;
-
+  
 writeln('LAZARUS END');
 end.
 
 
 {
   $Log$
+  Revision 1.28  2002/02/25 16:48:10  lazarus
+  MG: new IDE window layout system
+
   Revision 1.27  2002/01/29 18:55:27  lazarus
   Keith: Fixed duplicate compiler options on Win32
 

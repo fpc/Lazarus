@@ -357,10 +357,19 @@ var FormatAtom, FormatTry: Cardinal;
       Result:=false;
       AllID:=gdk_atom_intern('TARGETS',0);
       SelData:=RequestSelectionData(ClipboardWidget,ClipboardType,AllID);
+{writeln('BBB2.2 ',HexStr(Cardinal(SelData.Selection),8),
+' ',HexStr(Cardinal(ClipboardTypeAtoms[ClipboardType]),8),
+' SelData.Target=',SelData.Target,' AllID=',AllID,
+' SelData.TheType=',SelData.TheType,' ',gdk_atom_intern('ATOM',0),
+' SelData.Length=',SelData.Length,
+' SelData.Format=',SelData.Format
+);}
       if (SelData.Selection<>ClipboardTypeAtoms[ClipboardType])
       or (SelData.Target<>AllID)
-      or (SelData.TheType<>gdk_atom_intern('ATOM',0)) then
+      or (SelData.TheType<>gdk_atom_intern('ATOM',0)) then begin
+        SupportedCnt:=0;
         exit;
+      end;
       SupportedCnt:=SelData.Length div (SelData.Format shr 3);
       SupportedFormats:=PGdkAtom(SelData.Data);
     end;
@@ -391,6 +400,8 @@ writeln('[TgtkObject.ClipboardGetData] A ClipboardWidget=',HexStr(Cardinal(Clipb
       FormatTry:=gdk_atom_intern('COMPOUND_TEXT',1);
       if IsFormatSupported(FormatTry) then
         FormatAtom:=FormatTry;
+      if (SupportedCnt=0) then
+        FormatAtom:=gdk_atom_intern('COMPOUND_TEXT',1);
       // then check for simple text format 'text/plain'
       FormatTry:=gdk_atom_intern('text/plain',1);
       if (FormatAtom=0) and IsFormatSupported(FormatTry) then
@@ -4368,6 +4379,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.61  2002/02/25 16:48:13  lazarus
+  MG: new IDE window layout system
+
   Revision 1.60  2002/02/03 00:24:01  lazarus
   TPanel implemented.
   Basic graphic primitives split into GraphType package, so that we can

@@ -326,6 +326,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.29  2002/02/25 16:48:13  lazarus
+  MG: new IDE window layout system
+
   Revision 1.28  2002/02/20 19:11:48  lazarus
   Minor tweaks, default font caching.
 

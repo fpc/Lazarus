@@ -27,7 +27,8 @@ unit MsgView;
 interface
 
 uses
-  Classes, SysUtils, Controls, StdCtrls, Forms, LResources;
+  Classes, SysUtils, Controls, StdCtrls, Forms, LResources, IDEOptionDefs,
+  EnvironmentOpts;
 
 type
 
@@ -61,23 +62,27 @@ implementation
 
 
 {------------------------------------------------------------------------------}
-{  TMessagesView.Create                                                           }
+{  TMessagesView.Create                                                        }
 {------------------------------------------------------------------------------}
 constructor TMessagesView.Create(AOwner : TComponent);
+var ALayout: TIDEWindowLayout;
 Begin
   inherited Create(AOwner);
   if LazarusResources.Find(ClassName)=nil then begin
-    Caption:='Compiler Messages';
+    Caption:='Messages';
     MessageView := TListBox.Create(Self);
     With MessageView do Begin
       Parent:= Self;
       Align:= alClient;
       Visible:= true;
-      Name := 'MessageView';
-
     end;
   end;
+  Name := DefaultMessagesViewName;
   LastSelectedIndex := -1;
+  ALayout:=EnvironmentOptions.IDEWindowLayoutList.
+    ItemByFormID(DefaultMessagesViewName);
+  ALayout.Form:=TForm(Self);
+  ALayout.Apply;
 end;
 
 

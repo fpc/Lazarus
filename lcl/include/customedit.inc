@@ -11,10 +11,11 @@
  ------------------------------------------------------------------------------}
 constructor TCustomEdit.Create(AOwner : TComponent);
 begin
-   inherited Create(AOwner);
-   //FCompStyle is set here because TEdit inherits from this.
-   //TCustomMemo also inherits from here but it's create changes fcompstyle to csMemo
-   FCompStyle := csEdit;
+  inherited Create(AOwner);
+  //FCompStyle is set here because TEdit inherits from this.
+  //TCustomMemo also inherits from here but it's create changes fcompstyle to csMemo
+  FCompStyle := csEdit;
+  Height:=23;
 end;
 
 
@@ -131,6 +132,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.5  2002/02/25 16:48:13  lazarus
+  MG: new IDE window layout system
+
   Revision 1.4  2001/06/04 09:32:17  lazarus
   MG: fixed bugs and cleaned up messages
 
