@@ -154,6 +154,7 @@ end;
 
 function GetDefaultTargetCPU: string;
 begin
+  Result:='undefined';
   {$IFDEF CPUPowerPC}
   Result:='powerpc';
   {$ENDIF}
@@ -162,6 +163,18 @@ begin
   {$ENDIF}
   {$IFDEF CPUi386}
   Result:='i386';
+  {$ENDIF}
+  {$IFDEF CPUSparc}
+  Result:='sparc';
+  {$ENDIF}
+  {$IFDEF CPUALPHA}
+  Result:='alpha';
+  {$ENDIF}
+  {$IFDEF CPUX86_64}
+  Result:='x86_64';
+  {$ENDIF}
+  {$IFDEF CPUARM}
+  Result:='arm';
   {$ENDIF}
 end;
 
@@ -242,6 +255,9 @@ end.
 
 {
   $Log$
+  Revision 1.37  2005/02/27 16:21:53  marc
+  + Added extra cpus
+
   Revision 1.36  2005/02/27 16:13:45  marc
   + Added all possible compilernames
 
