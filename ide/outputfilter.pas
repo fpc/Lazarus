@@ -397,55 +397,55 @@ begin
       fLastMessageType:=omtFPC;
       
       SkipMessage:=true;
-      if CompilerOptions<>nil then begin
-        case MsgType of
-
-        etHint:
-          begin
-            SkipMessage:=not (CompilerOptions.ShowHints
-                              or CompilerOptions.ShowAll);
-            if (not SkipMessage)
-            and (not CompilerOptions.ShowAll)
-            and (not CompilerOptions.ShowHintsForUnusedUnitsInMainSrc) then
-            begin
-              MainSrcFilename:=CompilerOptions.GetDefaultMainSourceFileName;
-              if (MainSrcFilename<>'')
-              and (IsHintForUnusedUnit(s,MainSrcFilename)) then
-                SkipMessage:=true;
-            end;
-          end;
-
-        etNote:
-          begin
-            SkipMessage:=not (CompilerOptions.ShowNotes
-                              or CompilerOptions.ShowAll);
-          end;
-
-        etError:
-          begin
-            SkipMessage:=not (CompilerOptions.ShowErrors
-                              or CompilerOptions.ShowAll);
-            if copy(s,j+2,length(s)-j-1)='Error while linking' then begin
-              DoAddLastLinkerMessages(true);
-            end
-            else if copy(s,j+2,length(AsmError))=AsmError then begin
-              DoAddLastAssemblerMessages;
-            end;
-          end;
-
-        etWarning:
-          begin
-            SkipMessage:=not (CompilerOptions.ShowWarn
-                              or CompilerOptions.ShowAll);
-          end;
-
-        etPanic, etFatal:
-          SkipMessage:=false;
-
-        end;
-      end else
-        SkipMessage:=false;
       
+      case MsgType of
+
+      etHint:
+        begin
+          SkipMessage:=(CompilerOptions<>nil)
+                       and (not (CompilerOptions.ShowHints
+                            or CompilerOptions.ShowAll));
+          if (not SkipMessage)
+          and (CompilerOptions<>nil)
+          and (not CompilerOptions.ShowAll)
+          and (not CompilerOptions.ShowHintsForUnusedUnitsInMainSrc) then
+          begin
+            MainSrcFilename:=CompilerOptions.GetDefaultMainSourceFileName;
+            if (MainSrcFilename<>'')
+            and (IsHintForUnusedUnit(s,MainSrcFilename)) then
+              SkipMessage:=true;
+          end;
+        end;
+
+      etNote:
+        begin
+          SkipMessage:=(CompilerOptions<>nil)
+               and (not (CompilerOptions.ShowNotes or CompilerOptions.ShowAll));
+        end;
+
+      etError:
+        begin
+          SkipMessage:=(CompilerOptions<>nil)
+              and (not (CompilerOptions.ShowErrors or CompilerOptions.ShowAll));
+          if copy(s,j+2,length(s)-j-1)='Error while linking' then begin
+            DoAddLastLinkerMessages(true);
+          end
+          else if copy(s,j+2,length(AsmError))=AsmError then begin
+            DoAddLastAssemblerMessages;
+          end;
+        end;
+
+      etWarning:
+        begin
+          SkipMessage:=(CompilerOptions<>nil)
+                and (not (CompilerOptions.ShowWarn or CompilerOptions.ShowAll));
+        end;
+
+      etPanic, etFatal:
+        SkipMessage:=false;
+
+      end;
+
       // beautify compiler message
       
       // the compiler always gives short filenames, even if it went into a
