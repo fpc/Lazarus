@@ -177,6 +177,7 @@ type
     procedure UpdateSourceMark;
   public
     constructor Create(ACollection: TCollection); override;
+    destructor Destroy; override;
     procedure ResetMaster;
     property SourceMark: TSourceMark read FSourceMark write SetSourceMark;
   end;
@@ -309,6 +310,12 @@ constructor TManagedBreakPoint.Create (ACollection: TCollection );
 begin
   inherited Create(ACollection);
   FMaster := nil;
+end;
+
+destructor TManagedBreakPoint.Destroy;
+begin
+  FreeAndNil(FMaster);
+  inherited Destroy;
 end;
 
 function TManagedBreakPoint.GetHitCount: Integer;
@@ -885,10 +892,17 @@ end;
 
 procedure TDebugManager.BreakpointAdded(const ASender: TDBGBreakPoints;
   const ABreakpoint: TDBGBreakPoint);
+var
+  BP: TDBGBreakPoint;
 begin
 writeln('TDebugManager.BreakpointAdded A ',ABreakpoint.Source,' ',ABreakpoint.Line);
   ABreakpoint.InitialEnabled := True;
   ABreakpoint.Enabled := True;
+  if FDebugger <> nil
+  then begin
+    BP := FDebugger.BreakPoints.Add(ABreakpoint.Source, ABreakpoint.Line);
+    BP.Assign(ABreakPoint);
+  end;
   CreateSourceMarkForBreakPoint(ABreakpoint,nil);
   Project1.Modified := True;
 end;
@@ -1316,6 +1330,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.35  2003/05/28 22:43:21  marc
+  MWE: * Fixed adding/removing breakpoints while paused
+
   Revision 1.34  2003/05/28 15:56:19  mattias
   implemented sourcemarks
 
