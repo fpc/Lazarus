@@ -821,8 +821,6 @@ begin
   // Initialize Stringlist for holding styles
   Styles := TStringlist.Create;
   
-  LoadGDKCursors;
-
   gtk_key_snooper_install(@GTKKeySnooper, @FKeyStateList);
 
   // Init tooltips
@@ -6526,6 +6524,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.271  2002/10/30 12:37:25  lazarus
+  MG: mouse cursors are now allocated on demand
+
   Revision 1.270  2002/10/30 00:08:09  lazarus
   MG: finished ParseRCFile
 
