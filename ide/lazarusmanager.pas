@@ -30,16 +30,16 @@
  Abstract:
    This is the worker unit of the 'startlazarus' application.
 
+   It waits for running lazarus, if its pid was passed as command line
+   parameter.
    It searches the new lazarus executable.
      1. open the build lazarus options and look for a custom target directory
      2. look in the directory of startlazarus (the lazarus main directory)
         and in $(ConfigDir)/bin/ and use the newest lazarus executable.
    On systems which lock executables on run it renames the
      lazarus to lazarus.old and lazarus.new to lazarus.
-   Then it starts lazarus and waits until it is finished. It waits only for a
-   specific running lazarus: the one which pid was passed as command line
-   parameter. If lazarus gives a special exit code (ExitCodeRestartLazarus) it
-   goes to step 1.
+   Then it starts lazarus and waits until it is finished. If lazarus gives a
+   special exit code (ExitCodeRestartLazarus), it goes to step 1.
    Any other exit code, also stops startlazarus.
 
     
@@ -304,6 +304,9 @@ end;
 end.
 {
   $Log$
+  Revision 1.16  2004/12/06 12:22:45  vincents
+  fixed startlazarus description
+
   Revision 1.15  2004/12/06 10:32:32  mattias
   fixed startlazarus description
 
