@@ -785,6 +785,13 @@ begin
   Result := 0;
 end;
 
+function TInterfaceBase.GetDeviceSize(DC: HDC; var p: TPoint): boolean;
+begin
+  p.X := 0;
+  p.Y := 0;
+  Result := false;
+end;
+
 function TInterfaceBase.GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer;
 begin
   Result := 0;
@@ -1345,6 +1352,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.49  2002/09/19 19:56:14  lazarus
+  MG: accelerated designer drawings
+
   Revision 1.48  2002/09/18 17:07:24  lazarus
   MG: added patch from Andrew
 
