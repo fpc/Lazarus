@@ -299,7 +299,7 @@ type
     property ItemHeight;
     property ItemWidth;
     property Items;
-    property MaxLength;
+    property MaxLength default -1;
     property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
@@ -446,6 +446,7 @@ type
     procedure SetSelLength(Val : integer); virtual;
     procedure SetSelStart(Val : integer); virtual;
     procedure SetSelText(const Val : string); virtual;
+    procedure SetText(const Value: TCaption); override;
 
     property OnChange : TNotifyEvent read FOnChange write FOnChange;
   public
@@ -453,7 +454,7 @@ type
     procedure SelectAll;
     property CharCase : TEditCharCase read FCharCase write SetCharCase default ecNormal;
     property EchoMode : TEchoMode read FEchoMode write SetEchoMode default emNormal;
-    property MaxLength : Integer read FMaxLength write SetMaxLength default 0;
+    property MaxLength : Integer read FMaxLength write SetMaxLength default -1;
     property ReadOnly : Boolean read FReadOnly write SetReadOnly default false;
     property SelLength: integer read GetSelLength write SetSelLength;
     property SelStart: integer read GetSelStart write SetSelStart;
@@ -525,6 +526,7 @@ type
     property Color;
     property Font;
     property Lines;
+    property MaxLength;
     property PopupMenu;
     property ReadOnly;
     property ScrollBars;
@@ -535,8 +537,8 @@ type
     property OnEnter;
     property OnExit;
     property OnKeyPress;
-    Property OnKeyDown;
-    Property OnKeyUp;
+    property OnKeyDown;
+    property OnKeyUp;
   end;
 
 
@@ -1380,6 +1382,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.67  2002/11/16 11:22:56  mbukovjan
+  Fixes to MaxLength. TCustomMemo now has MaxLength, too.
+
   Revision 1.66  2002/11/12 10:16:14  lazarus
   MG: fixed TMainMenu creation
 

@@ -51,6 +51,7 @@ begin
   //FCompStyle is set here because TEdit inherits from this.
   //TCustomMemo also inherits from here but it's create changes fcompstyle to csMemo
   FCompStyle := csEdit;
+  FMaxLength:= -1;
   Height:=23;
 end;
 
@@ -219,11 +220,26 @@ end;
   Params:  Value to set FReadOnly to
   Returns: Nothing
  ------------------------------------------------------------------------------}
-Procedure TCustomEdit.SetReadOnly(Value : Boolean);
-Begin
-FReadOnly := Value;
-CNSendMessage(LM_SETPROPERTIES, Self, nil);
-End;
+procedure TCustomEdit.SetReadOnly(Value : Boolean);
+begin
+  if FreadOnly <> Value then begin
+    FReadOnly := Value;
+    CNSendMessage(LM_SETPROPERTIES, Self, nil);
+  end;  
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCustomEdit.SetText
+  Params:  Override of text setup to watch for max length
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TCustomEdit.SetText(const Value: TCaption);
+begin
+  if (MaxLength >= 0) and (Length(Value) > MaxLength) then
+    inherited SetText(Copy(Value, 1, MaxLength))
+  else
+    inherited SetText(Value);
+end;
 
 {------------------------------------------------------------------------------
   Method:  TCustomEdit.SetModified
@@ -274,6 +290,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.13  2002/11/16 11:22:57  mbukovjan
+  Fixes to MaxLength. TCustomMemo now has MaxLength, too.
+
   Revision 1.12  2002/11/13 08:40:44  lazarus
   MB: Fixed selection start/end/text for edits and combos. Add support for memos.
 
