@@ -189,7 +189,6 @@ procedure TGtkListStringList.Insert(Index : integer; const S : string);
 var li : PGtkWidget;
   l, m, r, cmp: integer;
 begin
-//writeln('[TGtkListStringList.Insert] Index=',Index,' Count=',Count,' ',S);
   if FSorted then begin
     l:=0;
     r:=Count-1;
@@ -211,6 +210,12 @@ begin
   if (Index < 0) or (Index > Count) then 
     raise Exception.Create('TGtkListStringList.Insert: Index '+IntToStr(Index)
       +' out of bounds. Count='+IntToStr(Count));
+
+  // ToDo:
+  //  - CustomDraw needs expose/draw events
+  //  - Icons
+  //  - measure item
+  
   li:=gtk_list_item_new_with_label(PChar(S));
   gtk_widget_show(li);
   gtk_list_insert_items(FGtkList, g_list_append(nil, li), Index);
@@ -399,6 +404,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.6  2002/08/29 00:07:02  lazarus
+  MG: fixed TComboBox and InvalidateControl
+
   Revision 1.5  2002/05/10 06:05:57  lazarus
   MG: changed license to LGPL
 
