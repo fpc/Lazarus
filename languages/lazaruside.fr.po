@@ -15,6 +15,10 @@ msgstr "    commande 1 \""
 msgid "    command2 \""
 msgstr "    commande 2 \""
 
+#: lazarusidestrconsts:liscodetemplatokenalreadyexists
+msgid " A token %s%s%s already exists! "
+msgstr ""
+
 #: lazarusidestrconsts:srkmconflicw
 msgid " conflicts with "
 msgstr "Confli avec "
@@ -37,6 +41,14 @@ msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsprojectspecific
 msgid "%s, project specific"
+msgstr ""
+
+#: lazarusidestrconsts:dlgpasautolower
+msgid "%sSave As%s always saves pascal files lowercase"
+msgstr ""
+
+#: lazarusidestrconsts:dlgpasasklower
+msgid "%sSave As%s asks to save pascal files lowercase"
 msgstr ""
 
 #: lazarusidestrconsts:uemaddwatchatcursor
@@ -151,9 +163,17 @@ msgstr "Accept"
 msgid "Action: %s"
 msgstr ""
 
+#: lazarusidestrconsts:liscodetempladd
+msgid "Add"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuaddunittoproject
 msgid "Add active unit to Project"
 msgstr "Ajouter l'unité active au projet"
+
+#: lazarusidestrconsts:liscodetempladdcodetemplate
+msgid "Add code template"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecaddjumppoint
 msgid "Add jump point"
@@ -206,6 +226,10 @@ msgstr "Touche complémentaire"
 #: lazarusidestrconsts:dlgambigfileact
 msgid "Ambigious file action:"
 msgstr "Action sur les ambiguïtés"
+
+#: lazarusidestrconsts:lismakeresstrappendtosection
+msgid "Append to section"
+msgstr ""
 
 #: lazarusidestrconsts:dlgpoapplication
 msgid "Application"
@@ -411,6 +435,10 @@ msgstr "Annuler"
 msgid "Capital"
 msgstr "Majuscule"
 
+#: lazarusidestrconsts:lisdiffdlgcaseinsensitive
+msgid "Case Insensitive"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcasesensitive
 msgid "Case Sensitive"
 msgstr "Respecter la casse"
@@ -418,6 +446,10 @@ msgstr "Respecter la casse"
 #: lazarusidestrconsts:dlgcentercursorline
 msgid "Center Cursor Line"
 msgstr "Centrer sur la ligne du curseur"
+
+#: lazarusidestrconsts:liscodetemplchange
+msgid "Change"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuinsertchangelogentry
 msgid "ChangeLog entry"
@@ -579,6 +611,10 @@ msgstr "Paramètres du programme"
 msgid "Comment selection"
 msgstr "Mise en commentaire de la sélection"
 
+#: lazarusidestrconsts:liscodetemplcomment
+msgid "Comment:"
+msgstr ""
+
 #: lazarusidestrconsts:liscompilererror
 msgid "Compiler error"
 msgstr "Erreur de compilation"
@@ -639,6 +675,10 @@ msgstr "Le nom du constructeur doit être \"Init\" (le destructeur doit être \"Do
 msgid "Control"
 msgstr ""
 
+#: lazarusidestrconsts:lismakeresstrconversionoptions
+msgid "Conversion Options"
+msgstr ""
+
 #: lazarusidestrconsts:srvk_convert
 msgid "Convert"
 msgstr ""
@@ -666,6 +706,14 @@ msgstr "Erreur de copie"
 #: lazarusidestrconsts:srkmeccopy
 msgid "Copy selection to clipboard"
 msgstr "Copie de la sélection dans le presse papier"
+
+#: lazarusidestrconsts:lislgplnotice
+msgid "Copyright (C) <year> <name of author>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
+msgstr ""
+
+#: lazarusidestrconsts:lisgplnotice
+msgid "Copyright (C) <year> <name of author>%sThis program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
+msgstr ""
 
 #: lazarusidestrconsts:dlgsmbcounter
 msgid "Counter (.pp;1)"
@@ -722,6 +770,10 @@ msgstr "Commandes de déplacements"
 #: lazarusidestrconsts:liscursorrowincurrenteditor
 msgid "Cursor row in current editor"
 msgstr "Ligne du curseur dans l'éditeur courant"
+
+#: lazarusidestrconsts:lismakeresstrcustomidentifier
+msgid "Custom Identifier"
+msgstr ""
 
 #: lazarusidestrconsts:rsiwpcustomposition
 msgid "Custom position"
@@ -863,6 +915,10 @@ msgstr "Allemand"
 msgid "Dialogs"
 msgstr "Dialogues"
 
+#: lazarusidestrconsts:lismenudiff
+msgid "Diff"
+msgstr ""
+
 #: lazarusidestrconsts:dlgdirection
 msgid "Direction"
 msgstr "Sens"
@@ -935,6 +991,10 @@ msgstr "&Configuration"
 msgid "Edit"
 msgstr ""
 
+#: lazarusidestrconsts:liscodetempleditcodetemplate
+msgid "Edit code template"
+msgstr ""
+
 #: lazarusidestrconsts:srkmeditkeys
 msgid "Edit Keys"
 msgstr "Edition des touches"
@@ -1002,6 +1062,10 @@ msgstr "Commandes du menu Configuration"
 #: lazarusidestrconsts:lismenugeneraloptions
 msgid "Environment options"
 msgstr "Options d'environnement"
+
+#: lazarusidestrconsts:liscodetemplerror
+msgid "Error"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefserrorreading
 msgid "Error reading %s%s%s%s%s"
@@ -1267,6 +1331,10 @@ msgstr "Aller à la directive \"Include\""
 msgid "Goto line"
 msgstr "Aller à la ligne"
 
+#: lazarusidestrconsts:dlgtodolistgotoline
+msgid "Goto selected source line"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecgotoxy
 msgid "Goto XY"
 msgstr "Aller en XY"
@@ -1387,9 +1455,17 @@ msgstr ""
 msgid "Identifier completion"
 msgstr "Compléter identificateur"
 
+#: lazarusidestrconsts:lismakeresstridentifierlength
+msgid "Identifier Length:"
+msgstr ""
+
 #: lazarusidestrconsts:dlgidentifierpolicy
 msgid "Identifier policy"
 msgstr "Politique des identificateurs"
+
+#: lazarusidestrconsts:lismakeresstridentifierprefix
+msgid "Identifier Prefix:"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsif
 msgid "If"
@@ -1410,6 +1486,30 @@ msgstr ""
 #: lazarusidestrconsts:dlgignoreverb
 msgid "Ignore"
 msgstr "Ignorer"
+
+#: lazarusidestrconsts:lisdiffdlgignoreifspacecharswereadd
+msgid "Ignore amount of space chars"
+msgstr ""
+
+#: lazarusidestrconsts:lisdiffdlgignoreiflineendcharsdiffe
+msgid "Ignore difference in line ends (e.g. #10 = #13#10)"
+msgstr ""
+
+#: lazarusidestrconsts:lisdiffdlgignoreifemptylineswereadd
+msgid "Ignore if empty lines were added or removed"
+msgstr ""
+
+#: lazarusidestrconsts:lisdiffdlgignorespaces
+msgid "Ignore spaces (newline chars not included)"
+msgstr ""
+
+#: lazarusidestrconsts:lisdiffdlgignorespacesatendofline
+msgid "Ignore spaces at end of line"
+msgstr ""
+
+#: lazarusidestrconsts:lisdiffdlgignorespacesatstartofline
+msgid "Ignore spaces at start of line"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecimestr
 msgid "Ime Str"
@@ -1458,6 +1558,10 @@ msgstr "INS"
 #: lazarusidestrconsts:srvk_insert
 msgid "Insert"
 msgstr "Inser"
+
+#: lazarusidestrconsts:lismakeresstrinsertalphabetically
+msgid "Insert alphabetically"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecinsertchangelogentry
 msgid "Insert ChangeLog entry"
@@ -1547,6 +1651,10 @@ msgstr "Insert la licence GPL"
 msgid "Insert Lazarus Directory Template"
 msgstr ""
 
+#: lazarusidestrconsts:srkmecinsertlgplnotice
+msgid "Insert LGPL notice"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecinsertmode
 msgid "Insert Mode"
 msgstr "Mode insertion"
@@ -1609,6 +1717,10 @@ msgstr "Identificateur Pascal invalide"
 
 #: lazarusidestrconsts:liscodetoolsdefsinvalidpreviousnode
 msgid "Invalid previous node"
+msgstr ""
+
+#: lazarusidestrconsts:lismakeresstrinvalidresourcestringsect
+msgid "Invalid Resourcestring section"
 msgstr ""
 
 #: lazarusidestrconsts:srvk_irregular
@@ -1755,6 +1867,10 @@ msgstr "Niveau 2 (Optimisation plus lente)"
 msgid "Level 3 (Level 2 + Uncertain)"
 msgstr "Niveau 3 (Niveau 2 avec des insertitudes)"
 
+#: lazarusidestrconsts:lismenuinsertlgplnotice
+msgid "LGPL notice"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcolibraries
 msgid "Libraries:"
 msgstr "Librairies"
@@ -1822,6 +1938,10 @@ msgstr "Menu principal"
 #: lazarusidestrconsts:lismenumakeresourcestring
 msgid "Make Resource String"
 msgstr "Construire une resource de chaines"
+
+#: lazarusidestrconsts:lismakeresourcestring
+msgid "Make ResourceString"
+msgstr ""
 
 #: lazarusidestrconsts:dlgmargingutter
 msgid "Margin and gutter"
@@ -2099,9 +2219,17 @@ msgstr "Inspecteur d'objet"
 msgid "Ok"
 msgstr ""
 
+#: lazarusidestrconsts:lisdiffdlgonlyselection
+msgid "Only selection"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuopen
 msgid "Open"
 msgstr "Ouvrir"
+
+#: lazarusidestrconsts:lisdiffdlgopendiffineditor
+msgid "Open Diff in editor"
+msgstr ""
 
 #: lazarusidestrconsts:lisopenfile
 msgid "Open file"
@@ -2247,6 +2375,10 @@ msgstr "S.V.P. vérifiez le nom du compilateur"
 msgid "Please check the freepascal source directory"
 msgstr "S.V.P. , vérifiez le répertoire des sources de FreePascal"
 
+#: lazarusidestrconsts:lismakeresstrpleasechoosearesourstring
+msgid "Please choose a resourstring section from the list."
+msgstr ""
+
 #: lazarusidestrconsts:srkmpresskey
 msgid "Please press a key ..."
 msgstr "Appuyez sur une touche SVP ..."
@@ -2270,6 +2402,10 @@ msgstr ""
 #: lazarusidestrconsts:srvk_print
 msgid "Print"
 msgstr "Imprimer"
+
+#: lazarusidestrconsts:dlgtodolistprintlist
+msgid "Print todo items"
+msgstr ""
 
 #: lazarusidestrconsts:srvk_prior
 msgid "Prior"
@@ -2371,6 +2507,10 @@ msgstr "Refaire"
 msgid "Refresh"
 msgstr "Refraichir"
 
+#: lazarusidestrconsts:dlgtodolistrefresh
+msgid "Refresh todo items"
+msgstr ""
+
 #: lazarusidestrconsts:dlgregularexpressions
 msgid "Regular Expressions"
 msgstr "Expression régulière:"
@@ -2394,6 +2534,14 @@ msgstr "Texte à remplacer"
 #: lazarusidestrconsts:dlgreport
 msgid "Report"
 msgstr "Rapport"
+
+#: lazarusidestrconsts:lismakeresstrresourcestringalreadyexis
+msgid "Resourcestring already exists"
+msgstr ""
+
+#: lazarusidestrconsts:lismakeresstrresourcestringsection
+msgid "Resourcestring Section:"
+msgstr ""
 
 #: lazarusidestrconsts:rsiwprestorewindowgeometry
 msgid "Restore window geometry"
@@ -2502,10 +2650,6 @@ msgstr "Enregistrer les infos de l'éditeur pour les fichiers fermés"
 #: lazarusidestrconsts:dlgsaveeditorinfoproject
 msgid "Save editor info only for project files"
 msgstr "Enregistrer les infos de l'éditeur seulement pour les fichiers projet"
-
-#: lazarusidestrconsts:dlgpaslower
-msgid "Save pascal files lowercase"
-msgstr "Enregistrer les fichiers pascal en minuscules"
 
 #: lazarusidestrconsts:lismenusaveproject
 msgid "Save Project"
@@ -2851,6 +2995,10 @@ msgstr "Editeur de source"
 msgid "Source Notebook commands"
 msgstr "Commandes des onglets de sources"
 
+#: lazarusidestrconsts:lismakeresstrsourcepreview
+msgid "Source preview"
+msgstr ""
+
 #: lazarusidestrconsts:dlgspacenotcosmos
 msgid "Space"
 msgstr "Espace"
@@ -2901,6 +3049,14 @@ msgstr "Suffixe \"Stored\""
 
 #: lazarusidestrconsts:liscodetoolsoptsstringconst
 msgid "String constant"
+msgstr ""
+
+#: lazarusidestrconsts:lismakeresstrstringconstantinsource
+msgid "String Constant in source"
+msgstr ""
+
+#: lazarusidestrconsts:lismakeresstrstringswithsamevalue
+msgid "Strings with same value:"
 msgstr ""
 
 #: lazarusidestrconsts:dlgcostrip
@@ -3019,6 +3175,14 @@ msgstr "Commandes de recherche et remplacement"
 msgid "Text selection commands"
 msgstr "Commandes de sélection de texte"
 
+#: lazarusidestrconsts:lisdiffdlgtext1
+msgid "Text1"
+msgstr ""
+
+#: lazarusidestrconsts:lisdiffdlgtext2
+msgid "Text2"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsdelphimaindirectoryforproject
 msgid "The %s main directory,%swhere Borland has installed all %s sources,%swhich are used by this %s project.%sFor example: C:/Programme/Borland/Delphi%s"
 msgstr ""
@@ -3083,6 +3247,10 @@ msgstr ""
 msgid "The path to the free pascal compiler.%s For example %s/usr/bin/ppc386 -n%s or %s/usr/local/bin/fpc @/etc/11fpc.cfg%s."
 msgstr ""
 
+#: lazarusidestrconsts:lismakeresstrchooseanothername
+msgid "The resourcestring %s%s%s already exists.%sPlease choose another name.%sUse Ignore to add it anyway."
+msgstr ""
+
 #: lazarusidestrconsts:lisunitnamealreadyexiststext
 msgid "The unit \"%s\" already exists.\nIgnore will force the renaming,\nCancel will cancel the saving of this source and\nAbort will abort the whole saving."
 msgstr "L'unité \"%s\" existe déjà. \nIgnorer pour la renommer,\nAnnuler, Annulera l'enregistrement de ce source."
@@ -3091,13 +3259,17 @@ msgstr "L'unité \"%s\" existe déjà. \nIgnorer pour la renommer,\nAnnuler, Annule
 msgid "This is an automatically generated lazarus resource file"
 msgstr "Ceci est un fichier ressource généré automatiquement par Lazarus"
 
-#: lazarusidestrconsts:lisgplnotice
-msgid "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. "
-msgstr "Ce programme est un logiciel libre. Vous pouvez le redistribuer et/ou\nle modifier sous les termes de la GNU General Public Licence,\ntelle que publiée par la Free Software Foundation, version 2 ou\n(selon votre choix) plus récente.\n\nCe programme est distribué en espérant qu'il sera utile, mais\nSANS AUCUNE GARANTIE ; sans même la garantie implicite de\nCOMMERCIALISE ni ADAPTATION À UNE USAGE PARTICULIER;\nVoyez la GNU Général Public Licence pour des détails supplémentaires.\n\nVous devriez avoir reçu une copie de la GNU General Public Licence\navec ce programme. Dans le cas contraire, écrivez à la Free Software\nFoundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."
-
 #: lazarusidestrconsts:dlgpotitle
 msgid "Title:"
 msgstr "Titre"
+
+#: lazarusidestrconsts:dlgtodolistcaption
+msgid "ToDo List"
+msgstr ""
+
+#: lazarusidestrconsts:dlgtodolistoptions
+msgid "ToDo options..."
+msgstr ""
 
 #: lazarusidestrconsts:lishinttoggleformunit
 msgid "Toggle Form/Unit"
@@ -3110,6 +3282,10 @@ msgstr "Basculer voir Unité/Fiche"
 #: lazarusidestrconsts:srkmectogglemode
 msgid "Toggle Mode"
 msgstr "Mode bascule"
+
+#: lazarusidestrconsts:liscodetempltoken
+msgid "Token:"
+msgstr ""
 
 #: lazarusidestrconsts:srkmcattoolmenu
 msgid "Tools menu commands"
@@ -3366,6 +3542,10 @@ msgstr "Voir les unités du projet"
 #: lazarusidestrconsts:lismenuviewsource
 msgid "View Source"
 msgstr "Voir le source"
+
+#: lazarusidestrconsts:lismenuviewprojecttodos
+msgid "View ToDo List"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuviewunitdependencies
 msgid "View Unit Dependencies"

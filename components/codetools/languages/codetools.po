@@ -482,8 +482,16 @@ msgstr ""
 msgid "If LCLWidgetType=gtk2 then"
 msgstr ""
 
+#: codetoolsstrconsts:ctsiflclwidgettypeequalsgnome2
+msgid "If LCLWidgetType=gnome2 then"
+msgstr ""
+
 #: codetoolsstrconsts:ctsdefinemacrogtk2
 msgid "Define macro gtk2"
+msgstr ""
+
+#: codetoolsstrconsts:ctsdefinemacrognome2
+msgid "Define macro gnome2"
 msgstr ""
 
 #: codetoolsstrconsts:ctsgtk2intfdirectory
@@ -544,6 +552,14 @@ msgstr ""
 
 #: codetoolsstrconsts:ctsnamedproject
 msgid "%s Project"
+msgstr ""
+
+#: codetoolsstrconsts:ctsdefine
+msgid "Define "
+msgstr ""
+
+#: codetoolsstrconsts:ctscommandlineparameters
+msgid "Command line parameters"
 msgstr ""
 
 #: codetoolsstrconsts:ctsmethodtypedefinitionnotfound

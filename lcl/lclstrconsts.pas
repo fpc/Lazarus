@@ -88,6 +88,8 @@ ResourceString
   rsBlank = 'Blank';
   rsUnableToLoadDefaultFont = 'Unable to load default font';
   rsFileInfoFileNotFound = '(file not found: "%s")';
+  rsgtkOptionNoTransient = '--lcl-no-transient    Do not set transient order for'
+    +' modal forms';
   rsgtkOptionModule = '--gtk-module module   Load the specified module at '
     +'startup.';
   rsgOptionFatalWarnings = '--g-fatal-warnings    Warnings and errors '

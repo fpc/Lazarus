@@ -282,6 +282,10 @@ msgstr ""
 msgid "GPL notice"
 msgstr ""
 
+#: lazarusidestrconsts:lismenuinsertlgplnotice
+msgid "LGPL notice"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuinsertusername
 msgid "Current username"
 msgstr ""
@@ -454,6 +458,10 @@ msgstr ""
 msgid "View Source"
 msgstr ""
 
+#: lazarusidestrconsts:lismenuviewprojecttodos
+msgid "View ToDo List"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuprojectoptions
 msgid "Project Options..."
 msgstr ""
@@ -516,6 +524,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenumakeresourcestring
 msgid "Make Resource String"
+msgstr ""
+
+#: lazarusidestrconsts:lismenudiff
+msgid "Diff"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuconvertdfmtolfm
@@ -683,7 +695,11 @@ msgid "Step Over"
 msgstr ""
 
 #: lazarusidestrconsts:lisgplnotice
-msgid "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. "
+msgid "Copyright (C) <year> <name of author>%sThis program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
+msgstr ""
+
+#: lazarusidestrconsts:lislgplnotice
+msgid "Copyright (C) <year> <name of author>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 msgstr ""
 
 #: lazarusidestrconsts:idestandard
@@ -974,8 +990,12 @@ msgstr ""
 msgid "Default pascal extension"
 msgstr ""
 
-#: lazarusidestrconsts:dlgpaslower
-msgid "Save pascal files lowercase"
+#: lazarusidestrconsts:dlgpasautolower
+msgid "%sSave As%s always saves pascal files lowercase"
+msgstr ""
+
+#: lazarusidestrconsts:dlgpasasklower
+msgid "%sSave As%s asks to save pascal files lowercase"
 msgstr ""
 
 #: lazarusidestrconsts:dlgambigfileact
@@ -2634,6 +2654,10 @@ msgstr ""
 msgid "Insert GPL notice"
 msgstr ""
 
+#: lazarusidestrconsts:srkmecinsertlgplnotice
+msgid "Insert LGPL notice"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecinsertusername
 msgid "Insert current username"
 msgstr ""
@@ -2856,6 +2880,10 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecmakeresourcestring
 msgid "Make resource string"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecdiff
+msgid "Diff"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecunknown
@@ -3624,5 +3652,161 @@ msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefscodetoolsdefineseditor
 msgid "CodeTools Defines Editor"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetempladdcodetemplate
+msgid "Add code template"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetempladd
+msgid "Add"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetempleditcodetemplate
+msgid "Edit code template"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetemplchange
+msgid "Change"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetempltoken
+msgid "Token:"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetemplcomment
+msgid "Comment:"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetemplatokenalreadyexists
+msgid " A token %s%s%s already exists! "
+msgstr ""
+
+#: lazarusidestrconsts:liscodetemplerror
+msgid "Error"
+msgstr ""
+
+#: lazarusidestrconsts:lismakeresourcestring
+msgid "Make ResourceString"
+msgstr ""
+
+#: lazarusidestrconsts:lismakeresstrinvalidresourcestringsect
+msgid "Invalid Resourcestring section"
+msgstr ""
+
+#: lazarusidestrconsts:lismakeresstrpleasechoosearesourstring
+msgid "Please choose a resourstring section from the list."
+msgstr ""
+
+#: lazarusidestrconsts:lismakeresstrresourcestringalreadyexis
+msgid "Resourcestring already exists"
+msgstr ""
+
+#: lazarusidestrconsts:lismakeresstrchooseanothername
+msgid "The resourcestring %s%s%s already exists.%sPlease choose another name.%sUse Ignore to add it anyway."
+msgstr ""
+
+#: lazarusidestrconsts:lismakeresstrstringconstantinsource
+msgid "String Constant in source"
+msgstr ""
+
+#: lazarusidestrconsts:lismakeresstrconversionoptions
+msgid "Conversion Options"
+msgstr ""
+
+#: lazarusidestrconsts:lismakeresstridentifierprefix
+msgid "Identifier Prefix:"
+msgstr ""
+
+#: lazarusidestrconsts:lismakeresstridentifierlength
+msgid "Identifier Length:"
+msgstr ""
+
+#: lazarusidestrconsts:lismakeresstrcustomidentifier
+msgid "Custom Identifier"
+msgstr ""
+
+#: lazarusidestrconsts:lismakeresstrresourcestringsection
+msgid "Resourcestring Section:"
+msgstr ""
+
+#: lazarusidestrconsts:lismakeresstrstringswithsamevalue
+msgid "Strings with same value:"
+msgstr ""
+
+#: lazarusidestrconsts:lismakeresstrappendtosection
+msgid "Append to section"
+msgstr ""
+
+#: lazarusidestrconsts:lismakeresstrinsertalphabetically
+msgid "Insert alphabetically"
+msgstr ""
+
+#: lazarusidestrconsts:lismakeresstrsourcepreview
+msgid "Source preview"
+msgstr ""
+
+#: lazarusidestrconsts:lisdiffdlgtext1
+msgid "Text1"
+msgstr ""
+
+#: lazarusidestrconsts:lisdiffdlgonlyselection
+msgid "Only selection"
+msgstr ""
+
+#: lazarusidestrconsts:lisdiffdlgtext2
+msgid "Text2"
+msgstr ""
+
+#: lazarusidestrconsts:lisdiffdlgcaseinsensitive
+msgid "Case Insensitive"
+msgstr ""
+
+#: lazarusidestrconsts:lisdiffdlgignoreifemptylineswereadd
+msgid "Ignore if empty lines were added or removed"
+msgstr ""
+
+#: lazarusidestrconsts:lisdiffdlgignorespacesatstartofline
+msgid "Ignore spaces at start of line"
+msgstr ""
+
+#: lazarusidestrconsts:lisdiffdlgignorespacesatendofline
+msgid "Ignore spaces at end of line"
+msgstr ""
+
+#: lazarusidestrconsts:lisdiffdlgignoreiflineendcharsdiffe
+msgid "Ignore difference in line ends (e.g. #10 = #13#10)"
+msgstr ""
+
+#: lazarusidestrconsts:lisdiffdlgignoreifspacecharswereadd
+msgid "Ignore amount of space chars"
+msgstr ""
+
+#: lazarusidestrconsts:lisdiffdlgignorespaces
+msgid "Ignore spaces (newline chars not included)"
+msgstr ""
+
+#: lazarusidestrconsts:lisdiffdlgopendiffineditor
+msgid "Open Diff in editor"
+msgstr ""
+
+#: lazarusidestrconsts:dlgtodolistcaption
+msgid "ToDo List"
+msgstr ""
+
+#: lazarusidestrconsts:dlgtodolistrefresh
+msgid "Refresh todo items"
+msgstr ""
+
+#: lazarusidestrconsts:dlgtodolistgotoline
+msgid "Goto selected source line"
+msgstr ""
+
+#: lazarusidestrconsts:dlgtodolistprintlist
+msgid "Print todo items"
+msgstr ""
+
+#: lazarusidestrconsts:dlgtodolistoptions
+msgid "ToDo options..."
 msgstr ""
 

@@ -6,6 +6,10 @@ msgstr ""
 msgid "    command2 \""
 msgstr ""
 
+#: lazarusidestrconsts:liscodetemplatokenalreadyexists
+msgid " A token %s%s%s already exists! "
+msgstr ""
+
 #: lazarusidestrconsts:srkmconflicw
 msgid " conflicts with "
 msgstr ""
@@ -28,6 +32,14 @@ msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsprojectspecific
 msgid "%s, project specific"
+msgstr ""
+
+#: lazarusidestrconsts:dlgpasautolower
+msgid "%sSave As%s always saves pascal files lowercase"
+msgstr ""
+
+#: lazarusidestrconsts:dlgpasasklower
+msgid "%sSave As%s asks to save pascal files lowercase"
 msgstr ""
 
 #: lazarusidestrconsts:uemaddwatchatcursor
@@ -142,9 +154,17 @@ msgstr ""
 msgid "Action: %s"
 msgstr ""
 
+#: lazarusidestrconsts:liscodetempladd
+msgid "Add"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuaddunittoproject
 msgid "Add active unit to Project"
 msgstr "Fuege Unit zum Projekt hinzu"
+
+#: lazarusidestrconsts:liscodetempladdcodetemplate
+msgid "Add code template"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecaddjumppoint
 msgid "Add jump point"
@@ -196,6 +216,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgambigfileact
 msgid "Ambigious file action:"
+msgstr ""
+
+#: lazarusidestrconsts:lismakeresstrappendtosection
+msgid "Append to section"
 msgstr ""
 
 #: lazarusidestrconsts:dlgpoapplication
@@ -402,12 +426,20 @@ msgstr ""
 msgid "Capital"
 msgstr ""
 
+#: lazarusidestrconsts:lisdiffdlgcaseinsensitive
+msgid "Case Insensitive"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcasesensitive
 msgid "Case Sensitive"
 msgstr ""
 
 #: lazarusidestrconsts:dlgcentercursorline
 msgid "Center Cursor Line"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetemplchange
+msgid "Change"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuinsertchangelogentry
@@ -570,6 +602,10 @@ msgstr "Kommandozeilen Parameter des Programms"
 msgid "Comment selection"
 msgstr ""
 
+#: lazarusidestrconsts:liscodetemplcomment
+msgid "Comment:"
+msgstr ""
+
 #: lazarusidestrconsts:liscompilererror
 msgid "Compiler error"
 msgstr "Compiler Fehler"
@@ -630,6 +666,10 @@ msgstr ""
 msgid "Control"
 msgstr ""
 
+#: lazarusidestrconsts:lismakeresstrconversionoptions
+msgid "Conversion Options"
+msgstr ""
+
 #: lazarusidestrconsts:srvk_convert
 msgid "Convert"
 msgstr ""
@@ -656,6 +696,14 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmeccopy
 msgid "Copy selection to clipboard"
+msgstr ""
+
+#: lazarusidestrconsts:lislgplnotice
+msgid "Copyright (C) <year> <name of author>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
+msgstr ""
+
+#: lazarusidestrconsts:lisgplnotice
+msgid "Copyright (C) <year> <name of author>%sThis program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 msgstr ""
 
 #: lazarusidestrconsts:dlgsmbcounter
@@ -713,6 +761,10 @@ msgstr ""
 #: lazarusidestrconsts:liscursorrowincurrenteditor
 msgid "Cursor row in current editor"
 msgstr "Cursor Zeile im aktuellem Editor"
+
+#: lazarusidestrconsts:lismakeresstrcustomidentifier
+msgid "Custom Identifier"
+msgstr ""
 
 #: lazarusidestrconsts:rsiwpcustomposition
 msgid "Custom position"
@@ -854,6 +906,10 @@ msgstr ""
 msgid "Dialogs"
 msgstr ""
 
+#: lazarusidestrconsts:lismenudiff
+msgid "Diff"
+msgstr ""
+
 #: lazarusidestrconsts:dlgdirection
 msgid "Direction"
 msgstr ""
@@ -926,6 +982,10 @@ msgstr "Ei&nstellungen"
 msgid "Edit"
 msgstr ""
 
+#: lazarusidestrconsts:liscodetempleditcodetemplate
+msgid "Edit code template"
+msgstr ""
+
 #: lazarusidestrconsts:srkmeditkeys
 msgid "Edit Keys"
 msgstr ""
@@ -992,6 +1052,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenugeneraloptions
 msgid "Environment options"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetemplerror
+msgid "Error"
 msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefserrorreading
@@ -1258,6 +1322,10 @@ msgstr "Gehe zur Include Direktiven"
 msgid "Goto line"
 msgstr "Gehe zu Zeilennummer"
 
+#: lazarusidestrconsts:dlgtodolistgotoline
+msgid "Goto selected source line"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecgotoxy
 msgid "Goto XY"
 msgstr ""
@@ -1378,8 +1446,16 @@ msgstr ""
 msgid "Identifier completion"
 msgstr ""
 
+#: lazarusidestrconsts:lismakeresstridentifierlength
+msgid "Identifier Length:"
+msgstr ""
+
 #: lazarusidestrconsts:dlgidentifierpolicy
 msgid "Identifier policy"
+msgstr ""
+
+#: lazarusidestrconsts:lismakeresstridentifierprefix
+msgid "Identifier Prefix:"
 msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsif
@@ -1400,6 +1476,30 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgignoreverb
 msgid "Ignore"
+msgstr ""
+
+#: lazarusidestrconsts:lisdiffdlgignoreifspacecharswereadd
+msgid "Ignore amount of space chars"
+msgstr ""
+
+#: lazarusidestrconsts:lisdiffdlgignoreiflineendcharsdiffe
+msgid "Ignore difference in line ends (e.g. #10 = #13#10)"
+msgstr ""
+
+#: lazarusidestrconsts:lisdiffdlgignoreifemptylineswereadd
+msgid "Ignore if empty lines were added or removed"
+msgstr ""
+
+#: lazarusidestrconsts:lisdiffdlgignorespaces
+msgid "Ignore spaces (newline chars not included)"
+msgstr ""
+
+#: lazarusidestrconsts:lisdiffdlgignorespacesatendofline
+msgid "Ignore spaces at end of line"
+msgstr ""
+
+#: lazarusidestrconsts:lisdiffdlgignorespacesatstartofline
+msgid "Ignore spaces at start of line"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecimestr
@@ -1448,6 +1548,10 @@ msgstr ""
 
 #: lazarusidestrconsts:srvk_insert
 msgid "Insert"
+msgstr ""
+
+#: lazarusidestrconsts:lismakeresstrinsertalphabetically
+msgid "Insert alphabetically"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecinsertchangelogentry
@@ -1538,6 +1642,10 @@ msgstr ""
 msgid "Insert Lazarus Directory Template"
 msgstr ""
 
+#: lazarusidestrconsts:srkmecinsertlgplnotice
+msgid "Insert LGPL notice"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecinsertmode
 msgid "Insert Mode"
 msgstr ""
@@ -1600,6 +1708,10 @@ msgstr "Ungueltiger Pascal Identifier"
 
 #: lazarusidestrconsts:liscodetoolsdefsinvalidpreviousnode
 msgid "Invalid previous node"
+msgstr ""
+
+#: lazarusidestrconsts:lismakeresstrinvalidresourcestringsect
+msgid "Invalid Resourcestring section"
 msgstr ""
 
 #: lazarusidestrconsts:srvk_irregular
@@ -1746,6 +1858,10 @@ msgstr ""
 msgid "Level 3 (Level 2 + Uncertain)"
 msgstr ""
 
+#: lazarusidestrconsts:lismenuinsertlgplnotice
+msgid "LGPL notice"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcolibraries
 msgid "Libraries:"
 msgstr ""
@@ -1812,6 +1928,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenumakeresourcestring
 msgid "Make Resource String"
+msgstr ""
+
+#: lazarusidestrconsts:lismakeresourcestring
+msgid "Make ResourceString"
 msgstr ""
 
 #: lazarusidestrconsts:dlgmargingutter
@@ -2090,9 +2210,17 @@ msgstr "Object Inspector"
 msgid "Ok"
 msgstr ""
 
+#: lazarusidestrconsts:lisdiffdlgonlyselection
+msgid "Only selection"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuopen
 msgid "Open"
 msgstr "Oeffne"
+
+#: lazarusidestrconsts:lisdiffdlgopendiffineditor
+msgid "Open Diff in editor"
+msgstr ""
 
 #: lazarusidestrconsts:lisopenfile
 msgid "Open file"
@@ -2238,6 +2366,10 @@ msgstr "Bitte ueberpruefen Sie den Compilerdateiname"
 msgid "Please check the freepascal source directory"
 msgstr "Bitte ueberpruefen Sie das FreePascal Source Verzeichnis"
 
+#: lazarusidestrconsts:lismakeresstrpleasechoosearesourstring
+msgid "Please choose a resourstring section from the list."
+msgstr ""
+
 #: lazarusidestrconsts:srkmpresskey
 msgid "Please press a key ..."
 msgstr ""
@@ -2260,6 +2392,10 @@ msgstr ""
 
 #: lazarusidestrconsts:srvk_print
 msgid "Print"
+msgstr ""
+
+#: lazarusidestrconsts:dlgtodolistprintlist
+msgid "Print todo items"
 msgstr ""
 
 #: lazarusidestrconsts:srvk_prior
@@ -2362,6 +2498,10 @@ msgstr "Wiederholen"
 msgid "Refresh"
 msgstr ""
 
+#: lazarusidestrconsts:dlgtodolistrefresh
+msgid "Refresh todo items"
+msgstr ""
+
 #: lazarusidestrconsts:dlgregularexpressions
 msgid "Regular Expressions"
 msgstr ""
@@ -2384,6 +2524,14 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgreport
 msgid "Report"
+msgstr ""
+
+#: lazarusidestrconsts:lismakeresstrresourcestringalreadyexis
+msgid "Resourcestring already exists"
+msgstr ""
+
+#: lazarusidestrconsts:lismakeresstrresourcestringsection
+msgid "Resourcestring Section:"
 msgstr ""
 
 #: lazarusidestrconsts:rsiwprestorewindowgeometry
@@ -2492,10 +2640,6 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgsaveeditorinfoproject
 msgid "Save editor info only for project files"
-msgstr ""
-
-#: lazarusidestrconsts:dlgpaslower
-msgid "Save pascal files lowercase"
 msgstr ""
 
 #: lazarusidestrconsts:lismenusaveproject
@@ -2842,6 +2986,10 @@ msgstr ""
 msgid "Source Notebook commands"
 msgstr ""
 
+#: lazarusidestrconsts:lismakeresstrsourcepreview
+msgid "Source preview"
+msgstr ""
+
 #: lazarusidestrconsts:dlgspacenotcosmos
 msgid "Space"
 msgstr ""
@@ -2892,6 +3040,14 @@ msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsoptsstringconst
 msgid "String constant"
+msgstr ""
+
+#: lazarusidestrconsts:lismakeresstrstringconstantinsource
+msgid "String Constant in source"
+msgstr ""
+
+#: lazarusidestrconsts:lismakeresstrstringswithsamevalue
+msgid "Strings with same value:"
 msgstr ""
 
 #: lazarusidestrconsts:dlgcostrip
@@ -3010,6 +3166,14 @@ msgstr ""
 msgid "Text selection commands"
 msgstr ""
 
+#: lazarusidestrconsts:lisdiffdlgtext1
+msgid "Text1"
+msgstr ""
+
+#: lazarusidestrconsts:lisdiffdlgtext2
+msgid "Text2"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsdelphimaindirectoryforproject
 msgid "The %s main directory,%swhere Borland has installed all %s sources,%swhich are used by this %s project.%sFor example: C:/Programme/Borland/Delphi%s"
 msgstr ""
@@ -3074,6 +3238,10 @@ msgstr ""
 msgid "The path to the free pascal compiler.%s For example %s/usr/bin/ppc386 -n%s or %s/usr/local/bin/fpc @/etc/11fpc.cfg%s."
 msgstr ""
 
+#: lazarusidestrconsts:lismakeresstrchooseanothername
+msgid "The resourcestring %s%s%s already exists.%sPlease choose another name.%sUse Ignore to add it anyway."
+msgstr ""
+
 #: lazarusidestrconsts:lisunitnamealreadyexiststext
 msgid "The unit \"%s\" already exists.\nIgnore will force the renaming,\nCancel will cancel the saving of this source and\nAbort will abort the whole saving."
 msgstr ""
@@ -3082,12 +3250,16 @@ msgstr ""
 msgid "This is an automatically generated lazarus resource file"
 msgstr "Dies ist eine automatisch erzeugtes resource Datei"
 
-#: lazarusidestrconsts:lisgplnotice
-msgid "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. "
-msgstr ""
-
 #: lazarusidestrconsts:dlgpotitle
 msgid "Title:"
+msgstr ""
+
+#: lazarusidestrconsts:dlgtodolistcaption
+msgid "ToDo List"
+msgstr ""
+
+#: lazarusidestrconsts:dlgtodolistoptions
+msgid "ToDo options..."
 msgstr ""
 
 #: lazarusidestrconsts:lishinttoggleformunit
@@ -3100,6 +3272,10 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmectogglemode
 msgid "Toggle Mode"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetempltoken
+msgid "Token:"
 msgstr ""
 
 #: lazarusidestrconsts:srkmcattoolmenu
@@ -3357,6 +3533,10 @@ msgstr ""
 #: lazarusidestrconsts:lismenuviewsource
 msgid "View Source"
 msgstr "Zeige Projektcode"
+
+#: lazarusidestrconsts:lismenuviewprojecttodos
+msgid "View ToDo List"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuviewunitdependencies
 msgid "View Unit Dependencies"

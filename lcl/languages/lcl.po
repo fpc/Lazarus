@@ -154,6 +154,10 @@ msgstr ""
 msgid "(file not found: \"%s\")"
 msgstr ""
 
+#: lclstrconsts:rsgtkoptionnotransient
+msgid "--lcl-no-transient    Do not set transient order for modal forms"
+msgstr ""
+
 #: lclstrconsts:rsgtkoptionmodule
 msgid "--gtk-module module   Load the specified module at startup."
 msgstr ""
@@ -364,5 +368,9 @@ msgstr ""
 
 #: lclstrconsts:rsnointerfaceobject
 msgid "No interface object. Plz check if the unit \"interfaces\" was added to the programs uses clause."
+msgstr ""
+
+#: lclstrconsts:rscannotfocus
+msgid "Can not focus"
 msgstr ""
 

@@ -104,6 +104,10 @@ msgstr ""
 msgid "--gtk-no-debug flags  Turn off specific Gtk+ trace/debug messages."
 msgstr ""
 
+#: lclstrconsts:rsgtkoptionnotransient
+msgid "--lcl-no-transient    Do not set transient order for modal forms"
+msgstr ""
+
 #: lclstrconsts:rsgtkoptionname
 msgid "--name programe       Set program name to \"progname\". If not specified, program name will be set to ParamStr(0)."
 msgstr ""
@@ -126,6 +130,10 @@ msgstr "Abortar"
 
 #: lclstrconsts:rsblank
 msgid "Blank"
+msgstr ""
+
+#: lclstrconsts:rscannotfocus
+msgid "Can not focus"
 msgstr ""
 
 #: lclstrconsts:rsmbcancel

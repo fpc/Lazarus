@@ -114,6 +114,10 @@ msgstr ""
 msgid "class without name"
 msgstr ""
 
+#: codetoolsstrconsts:ctscommandlineparameters
+msgid "Command line parameters"
+msgstr ""
+
 #: codetoolsstrconsts:ctscommentendnotfound
 msgid "Comment end not found"
 msgstr ""
@@ -178,8 +182,16 @@ msgstr ""
 msgid "default specifier redefined"
 msgstr ""
 
+#: codetoolsstrconsts:ctsdefine
+msgid "Define "
+msgstr ""
+
 #: codetoolsstrconsts:ctsdefinemacroname
 msgid "Define Macro %s"
+msgstr ""
+
+#: codetoolsstrconsts:ctsdefinemacrognome2
+msgid "Define macro gnome2"
 msgstr ""
 
 #: codetoolsstrconsts:ctsdefinemacrogtk2
@@ -292,6 +304,10 @@ msgstr ""
 
 #: codetoolsstrconsts:ctsidentifiernotfound
 msgid "identifier not found: %s"
+msgstr ""
+
+#: codetoolsstrconsts:ctsiflclwidgettypeequalsgnome2
+msgid "If LCLWidgetType=gnome2 then"
 msgstr ""
 
 #: codetoolsstrconsts:ctsiflclwidgettypeequalsgtk2
