@@ -5455,7 +5455,9 @@ begin
         
           gtk_entry_set_editable(PgtkEntry(Handle), not (TCustomEdit(Sender).ReadOnly));
           gtk_entry_set_max_length(PgtkEntry(Handle), TCustomEdit(Sender).MaxLength);
-          gtk_entry_set_visibility(PGtkEntry(Handle), TCustomEdit(Sender).EchoMode = emNormal);
+          gtk_entry_set_visibility(PGtkEntry(Handle),
+            (TCustomEdit(Sender).EchoMode = emNormal)
+            and (TCustomEdit(Sender).PassWordChar=#0));
         end;
 
     csProgressBar :
@@ -6699,6 +6701,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.297  2002/12/12 17:47:46  mattias
+  new constants for compatibility
+
   Revision 1.296  2002/12/07 08:42:08  mattias
   improved ExtTxtOut: support for char dist array
 
