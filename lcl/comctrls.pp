@@ -645,7 +645,7 @@ type
     procedure SetColumns(const AValue: TListColumns);
     procedure SetDefaultItemHeight(AValue: integer);
     procedure SetItems(const AValue : TListItems);
-    procedure SetItemVisible(const Avalue: TListItem);
+    procedure SetItemVisible(const Avalue: TListItem; const PartialOK: Boolean);
     procedure SetMultiSelect(const AValue: Boolean);
     procedure SetSmallImages(const AValue: TCustomImageList);
     procedure SetScrollBars(const Value: TScrollStyle);
@@ -2456,6 +2456,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.146  2004/09/08 23:05:35  mattias
+  improved TListView.SetItemVisible  from Andrew Haines
+
   Revision 1.145  2004/09/08 22:59:54  mattias
   started TTabControl
 

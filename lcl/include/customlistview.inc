@@ -243,10 +243,12 @@ end;
 {------------------------------------------------------------------------------}
 {   TCustomListView SetItemVisible                                             }
 {------------------------------------------------------------------------------}
-procedure TCustomListView.SetItemVisible(const AValue : TListItem);
+procedure TCustomListView.SetItemVisible(const AValue : TListItem;
+                                                      const PartialOK: Boolean);
 begin
   if (not HandleAllocated) or (csLoading in ComponentState) then exit;
-  TWSCustomListViewClass(WidgetSetClass).ItemShow(Self, AValue.Index, AValue);
+  TWSCustomListViewClass(WidgetSetClass).ItemShow(
+                                         Self, AValue.Index, AValue, PartialOK);
 end;
 {------------------------------------------------------------------------------}
 {   TCustomListView Delete                                                     }
@@ -613,6 +615,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.40  2004/09/08 23:05:35  mattias
+  improved TListView.SetItemVisible  from Andrew Haines
+
   Revision 1.39  2004/07/24 00:00:33  mattias
   started TCollectionPropertyEditor
 

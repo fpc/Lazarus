@@ -86,7 +86,7 @@ type
     class procedure ItemSetImage(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex, AImageIndex: Integer); override;
     class procedure ItemSetState(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AState: TListItemState; const AIsSet: Boolean); override;
     class procedure ItemSetText(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex: Integer; const AText: String); override;
-    class procedure ItemShow(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem); override;
+    class procedure ItemShow(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const PartialOK: Boolean); override;
   end;
 
   { TWin32WSListView }
@@ -440,12 +440,12 @@ begin
   ListView_SetItemText(ALV.Handle, AIndex, ASubIndex, PChar(AText));
 end;
 
-procedure TWin32WSCustomListView.ItemShow(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem); 
+procedure TWin32WSCustomListView.ItemShow(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const PartialOK: Boolean);
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemShow')
   then Exit;  
   
-  ListView_EnsureVisible(ALV.Handle, AIndex, 1);
+  ListView_EnsureVisible(ALV.Handle, AIndex, Ord(PartialOK));
 end;
 
 

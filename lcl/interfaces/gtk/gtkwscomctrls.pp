@@ -94,7 +94,7 @@ type
     class procedure ItemSetImage(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex, AImageIndex: Integer); override;
     class procedure ItemSetState(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AState: TListItemState; const AIsSet: Boolean); override;
     class procedure ItemSetText(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex: Integer; const AText: String); override;
-    class procedure ItemShow(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem); override;
+    class procedure ItemShow(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const PartialOK: Boolean); override;
 {$ENDIF}
   end;
 
@@ -727,22 +727,40 @@ begin
   end;
 end;
 
-procedure TGtkWSCustomListView.ItemShow(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem);
+procedure TGtkWSCustomListView.ItemShow(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const PartialOK: Boolean);
 var
   WidgetInfo: PWidgetInfo;
   CListWidget: PGtkCList;
+  RowTopY: Integer;
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemShow')
   then Exit;
 
   WidgetInfo := GetWidgetInfo(Pointer(ALV.Handle));
   CListWidget := PGtkCList(WidgetInfo^.CoreWidget);
-
-  //0=NotVisible
-  //1=PartiallyVisible
-  //2=Fully Visible
-  if gtk_clist_row_is_visible(CListWidget, AIndex) < 2
-  then gtk_clist_moveto(CListWidget, AIndex, 0, 1, 0);
+  
+  RowTopY := (CListWidget^.row_height * AIndex) + ((AIndex +1) *
+                                     {CELL} 1 {SPACING} + CListWidget^.voffset);
+                                     
+                                                 // 0=NotVisible
+                                                 // 1=PartiallyVisible
+                                                 // 2=Fully Visible
+                                                 //   |
+  if gtk_clist_row_is_visible(CListWidget, AIndex) < (2 - Ord(PartialOK)) then begin
+    if (RowTopY + CListWidget^.row_height > CListWidget^.clist_window_height) then begin
+      gtk_clist_moveto (CListWidget, AIndex, -1, 1, 0);
+        //                              |     |  |  |
+        //                        The Row     |  |  |
+        //                           The Column  |  |
+        //                               Row Align  |
+    end //                               Column Align
+    else if (RowTopY < 0) then begin
+      gtk_clist_moveto (CListWidget, AIndex, -1, 0, 0);
+    end;//                                       |
+  end;  //                                       |
+        //                                       |
+        //                      0 = your row will be at the top.
+        //                      1 = it will be at the bottom.
 end;
 {$ENDIF}
 

@@ -520,7 +520,7 @@ procedure TListItem.MakeVisible(PartialOK: Boolean);
 begin
   if (FOwner <> nil)
   and (FOwner.Fowner <> nil) 
-  then FOwner.FOwner.SetItemVisible(Self);
+  then FOwner.FOwner.SetItemVisible(Self, PartialOK);
 end;
 
 {------------------------------------------------------------------------------}
@@ -564,6 +564,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.20  2004/09/08 23:05:35  mattias
+  improved TListView.SetItemVisible  from Andrew Haines
+
   Revision 1.19  2004/07/14 15:57:53  mattias
   fixed 1.0.10 compilation  from Vincent
 
