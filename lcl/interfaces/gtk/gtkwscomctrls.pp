@@ -159,7 +159,11 @@ implementation
 uses
   SysUtils, 
   GtkProc, GtkInt, GtkGlobals,
-  GtkWSControls;
+  GtkWSControls
+{$ifdef gtk2}
+, gdk2
+{$endif gtk2}
+;
 
 
   { TGtkWSCustomListView }

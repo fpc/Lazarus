@@ -2114,7 +2114,7 @@ begin
     GDK_VISUAL_DIRECT_COLOR: Desc^.Format:=ricfRGBA;
     else
       DebugLn('TGtkWidgetSet.GetWindowRawImageDescription unknown Visual type ',
-              dbgs(Visual^.thetype));
+      dbgs({$ifdef gtk2}Pointer{$endif gtk2}(Visual^.thetype)));
       exit;
     end;
   end;
@@ -9197,6 +9197,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.512  2004/07/05 15:48:31  mazen
+  * fix compilation error with gtk2 platform
+
   Revision 1.511  2004/06/28 17:03:37  mattias
   clean up
 
