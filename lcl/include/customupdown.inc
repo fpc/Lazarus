@@ -19,6 +19,8 @@ Problems -
   - Associate Key down and Tabbing(VK_Up, VK_Down)
 }
 Type
+  { TUpDownButton }
+
   TUpDownButton = Class(TSpeedButton)
   Private
     FUpDown : TCustomUpDown;
@@ -94,7 +96,7 @@ begin
         end;
         
     end;
-    FUpDown.Click(FButtonType);
+    Click(FButtonType);
   end;
 end;
 
@@ -110,7 +112,6 @@ begin
   ControlStyle := ControlStyle + [csNoFocus];
   OnMouseDown := @ButtonMouseDown;
   OnMouseUp := @ButtonMouseUp;
-  Show;
 end;
 
 Procedure TUpDownButton.Paint;
@@ -189,17 +190,17 @@ begin
   end;
 end;
 
+{ TCustomUpDown }
+
 constructor TCustomUpDown.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   fCompStyle := csPanel;
   ControlStyle := ControlStyle  - [csDoubleClicks] +
-    [csClickEvents, csOpaque,  csReplicatable, csNoFocus];
+                  [csClickEvents, csOpaque, csReplicatable, csNoFocus];
   MinBtn := TUpDownButton.CreateWithParams(Self, btPrev);
   MaxBtn := TUpDownButton.CreateWithParams(Self, btNext);
-  InheritedChangeBounds := True;
-  SetBounds(0,0,17,31);
-  InheritedChangeBounds := False;
+  SetInitialBounds(0,0,17,31);
   BTimerProc := nil;
   BTimerBounds := Rect(0,0,0,0);
   FArrowKeys := True;
@@ -213,7 +214,6 @@ end;
 destructor TCustomUpDown.Destroy;
 begin
   FAssociate := nil;
-  InheritedChangeBounds := True;
   inherited destroy;
 end;
 
@@ -224,7 +224,61 @@ begin
       BTimerProc;
 end;
 
-procedure TCustomUpDown.ChangeBounds(ALeft, ATop, AWidth, AHeight: Integer);
+procedure TCustomUpDown.UpdateUpDownPositionText;
+var
+  str : String;
+begin
+  if (not (csDesigning in ComponentState)) and (FAssociate <> nil) then begin
+    If Thousands then
+      Str := FloatToStrF(FPosition, ffNumber, 0, 0)
+    else
+      str := IntToStr(FPosition);
+    FAssociate.SetText(Str);
+  end;
+end;
+
+procedure TCustomUpDown.UpdateOrientation;
+begin
+  If FOrientation = udHorizontal then begin
+    MinBtn.SetBounds(0,0,ClientWidth div 2,ClientHeight);
+    MaxBtn.SetBounds(ClientWidth div 2,0,ClientWidth div 2,ClientHeight);
+  end
+  else begin
+    MaxBtn.SetBounds(0,0,ClientWidth,ClientHeight div 2);
+    MinBtn.SetBounds(0,ClientHeight div 2,ClientWidth,ClientHeight div 2);
+  end;
+end;
+
+procedure TCustomUpDown.UpdateAlignButtonPos;
+var
+  NewWidth: Integer;
+  NewLeft: Integer;
+  NewHeight: Integer;
+  NewTop: Integer;
+begin
+  If Assigned(Associate) then begin
+    if FAlignButton in [udLeft,udRight] then begin
+      NewWidth := Width;
+      NewHeight := Associate.Height;
+      If FAlignButton = udLeft then
+        NewLeft := Associate.Left - NewWidth
+      else
+        NewLeft := Associate.Left + Associate.Width;
+      NewTop := Associate.Top;
+    end else begin
+      NewWidth := Associate.Width;
+      NewHeight := Height;
+      NewLeft := Associate.Left;
+      If FAlignButton = udTop then
+        NewTop := Associate.Top - NewHeight
+      else
+        NewTop := Associate.Top + Associate.Height;
+    end;
+    SetBounds(NewLeft,NewTop,NewWidth,NewHeight);
+  end;
+end;
+
+{procedure TCustomUpDown.ChangeBounds(ALeft, ATop, AWidth, AHeight: Integer);
 var
   ARect : TRect;
 begin
@@ -240,7 +294,7 @@ begin
     InheritedChangeBounds := False;
     Inherited ChangeBounds(ALeft, ATop, AWidth, AHeight);
   end;
-end;
+end;}
 
 Function TCustomUpDown.CanChange: Boolean;
 begin
@@ -270,7 +324,8 @@ var
   end;
 
 begin
-  if Value <> nil then
+  // check that no other updown component is associated to the new Associate
+  if Value <> FAssociate then
     for I := 0 to Parent.ControlCount - 1 do
       if (Parent.Controls[I] is TCustomUpDown) and
         (Parent.Controls[I] <> Self)
@@ -279,6 +334,7 @@ begin
           raise Exception.CreateFmt(rsIsAlreadyAssociatedWith,
             [Value.Name, Parent.Controls[I].Name]);
 
+  // disconnect old Associate
   if FAssociate <> nil then
   begin
     FAssociate.OnKeyDown := OldKeyDown;
@@ -286,24 +342,26 @@ begin
     FAssociate := nil;
   end;
 
-  if (Value <> nil) and (Value.Parent = Self.Parent) and
-    not (Value is TCustomUpDown) and
-    not (Value is TCustomTreeView) and not (Value is TCustomListView)
+  // connect new Associate
+  if (Value <> nil) and (Value.Parent = Self.Parent)
+  and not (Value is TCustomUpDown) and not (Value is TCustomTreeView)
+  and not (Value is TCustomListView)
   then
   begin
     FAssociate := Value;
-    SetOrientation(FOrientation);
-    SetPosition(FPosition);
-    OldKeyDown := Value.OnKeyDown;
-    Value.OnKeyDown := @AssociateKeyDown;
-    Value.SetText(IntToStr(FPosition));
+    UpdateUpDownPositionText;
+    UpdateOrientation;
+    if not (csDesigning in ComponentState) then
+      OldKeyDown := FAssociate.OnKeyDown;
+    FAssociate.OnKeyDown := @AssociateKeyDown;
   end;
 end;
 
-Procedure TCustomUpDown.AssociateKeyDown(Sender: TObject; var Key: Word; ShiftState : TShiftState);
+Procedure TCustomUpDown.AssociateKeyDown(Sender: TObject; var Key: Word;
+  ShiftState : TShiftState);
 begin
   If Assigned(OldKeyDown) then
-    OldKeyDown(Sender,Key, ShiftState);
+    OldKeyDown(Sender,Key,ShiftState);
   If ArrowKeys then
     If ShiftState = [] then
       Case Key of
@@ -388,43 +446,24 @@ begin
 end;
 
 procedure TCustomUpDown.SetPosition(Value: SmallInt);
-var
-  str : String;
 begin
+  if FPosition = Value then exit;
   FPosition := Value;
-  If Thousands then
-    Str := FloatToStrF(FPosition, ffNumber, 0, 0)
-  else
-    str := IntToStr(FPosition);
-  if (not (csDesigning in ComponentState)) and (FAssociate <> nil) then
-    FAssociate.SetText(Str);
+  UpdateUpDownPositionText;
 end;
 
 procedure TCustomUpDown.SetOrientation(Value: TUDOrientation);
 begin
+  if FOrientation = Value then exit;
   FOrientation := Value;
-  If Value = udHorizontal then begin
-    MinBtn.SetBounds(0,0,Width div 2,Height);
-    MaxBtn.SetBounds(Width div 2,0,Width div 2, ClientHeight);
-  end
-  else begin
-    MaxBtn.SetBounds(0,0,Width,Height div 2);
-    MinBtn.SetBounds(0,Height div 2,Width, ClientHeight div 2);
-  end;
-  SetAlignButton(FAlignButton);
+  UpdateOrientation;
 end;
 
 procedure TCustomUpDown.SetAlignButton(Value: TUDAlignButton);
 begin
+  if FAlignButton = Value then exit;
   FAlignButton := Value;
-  If assigned(Associate) then begin
-    If Value = udLeft then
-      Left := Associate.Left - Width
-    else
-      Left := Associate.Left + Associate.Width;
-    Height := Associate.Height;
-    Top := Associate.Top;
-  end;
+  UpdateAlignButtonPos;
 end;
 
 procedure TCustomUpDown.SetArrowKeys(Value: Boolean);

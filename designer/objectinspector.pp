@@ -131,6 +131,7 @@ type
     LastPaintedValue:string;
     function GetBottom:integer;
     function IsReadOnly: boolean;
+    function IsDisabled: boolean;
   public
     property Editor:TPropertyEditor read FEditor;
     property Top:integer read FTop write FTop;
@@ -930,7 +931,7 @@ begin
       end;
     end;
     if FCurrentButton<>nil then
-      FCurrentButton.Enabled:=not NewRow.IsReadOnly;
+      FCurrentButton.Enabled:=not NewRow.IsDisabled;
   end;
   Exclude(FStates,pgsChangingItemIndex);
 end;
@@ -1886,14 +1887,18 @@ begin
 end;
 
 function TOIPropertyGridRow.IsReadOnly: boolean;
+begin
+  Result:=Editor.IsReadOnly or IsDisabled;
+end;
+
+function TOIPropertyGridRow.IsDisabled: boolean;
 var
   ParentRow: TOIPropertyGridRow;
 begin
-  Result:=Editor.IsReadOnly;
-  if Result then exit;
+  Result:=false;
   ParentRow:=Parent;
   while (ParentRow<>nil) do begin
-    if paReadOnlySubProperties in ParentRow.Editor.GetAttributes then begin
+    if paDisableSubProperties in ParentRow.Editor.GetAttributes then begin
       Result:=true;
       exit;
     end;

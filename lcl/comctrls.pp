@@ -503,7 +503,7 @@ type
  end;
 
 { TUpDown }
-  TUDAlignButton = (udLeft, udRight);
+  TUDAlignButton = (udLeft, udRight, udTop, udBottom);
   TUDOrientation = (udHorizontal, udVertical);
   TUDBtnType = (btNext, btPrev);
   TUDClickEvent = procedure (Sender: TObject; Button: TUDBtnType) of object;
@@ -516,7 +516,6 @@ type
     BTimer : TTimer;
     BTimerProc : Procedure of Object;
     BTimerBounds : TRect;
-    InheritedChangeBounds,
     FArrowKeys: Boolean;
     FAssociate: TWinControl;
     FMin: SmallInt;
@@ -541,10 +540,13 @@ type
     procedure SetThousands(Value: Boolean);
     procedure SetWrap(Value: Boolean);
     Procedure BTimerExec(Sender : TObject);
+    procedure UpdateUpDownPositionText;
+    procedure UpdateOrientation;
+    procedure UpdateAlignButtonPos;
   protected
     OldKeyDown : TKeyEvent;
     Procedure AssociateKeyDown(Sender: TObject; var Key: Word; ShiftState : TShiftState);
-    procedure ChangeBounds(ALeft, ATop, AWidth, AHeight: Integer); Override;
+    //procedure ChangeBounds(ALeft, ATop, AWidth, AHeight: Integer); Override;
     function CanChange: Boolean; dynamic;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Click(Button: TUDBtnType); dynamic; overload;
@@ -1758,6 +1760,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.75  2003/06/13 11:58:46  mattias
+  fixed readonly of properties
+
   Revision 1.74  2003/06/10 00:46:16  mattias
   fixed aligning controls
 

@@ -34,7 +34,7 @@ begin
   FLines := TMemoStrings.Create(Self);
   FVertScrollbar := TMemoScrollBar.Create(Self, sbVertical);
   FHorzScrollbar := TMemoScrollBar.Create(Self, sbHorizontal);
-  SetBounds(0,0,185,90);
+  SetInitialBounds(0,0,185,90);
 end;
 
 {------------------------------------------------------------------------------
@@ -159,6 +159,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.16  2003/06/13 11:58:46  mattias
+  fixed readonly of properties
+
   Revision 1.15  2003/04/15 08:54:27  mattias
   fixed TMemo.WordWrap
 

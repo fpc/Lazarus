@@ -126,7 +126,9 @@ type
         paAutoUpdate:   Causes the SetValue method to be called on each
                         change made to the editor instead of after the change
                         has been approved (e.g. the Caption property).
-        paReadOnly:     Value is not allowed to change.
+        paReadOnly:     Value is not allowed to change. But if paDialog is set
+                        a Dialog can change the value. This disbales only the
+                        edit and combobox in the object inspector.
         paRevertable:   Allows the property to be reverted to the original
                         value.  Things that shouldn't be reverted are nested
                         properties (e.g. Fonts) and elements of a composite
@@ -135,14 +137,15 @@ type
                         need to be rendered and as such the name should be
                         rendered the full width of the inspector.
         paVolatileSubProperties: Any change of property value causes any shown
-                         subproperties to be recollected.
-        paReadOnlySubProperties: All subproperties are readonly.
-        paReference:     Property contains a reference to something else.  When
-                         used in conjunction with paSubProperties the referenced
-                         object should be displayed as sub properties to this
-                         property.
-        paNotNestable:   Indicates that the property is not safe to show when
-                         showing the properties of an expanded reference.
+                        subproperties to be recollected.
+        paDisableSubProperties: All subproperties are readonly
+                        (not even via Dialog).
+        paReference:    property contains a reference to something else.  When
+                        used in conjunction with paSubProperties the referenced
+                        object should be displayed as sub properties to this
+                        property.
+        paNotNestable:  Indicates that the property is not safe to show when
+                        showing the properties of an expanded reference.
 
     GetComponent
       Returns the Index'th component being edited by this property editor.  This
@@ -249,7 +252,7 @@ type
     paRevertable,
     paFullWidthName,
     paVolatileSubProperties,
-    paReadOnlySubProperties,
+    paDisableSubProperties,
     paReference,
     paNotNestable
     );

@@ -58,7 +58,7 @@ begin
   //TCustomMemo also inherits from here but it's create changes fcompstyle to csMemo
   FCompStyle := csEdit;
   FMaxLength:= -1;
-  Height:=23;
+  SetInitialBounds(0,0,80,23);
 end;
 
 {------------------------------------------------------------------------------
@@ -309,6 +309,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.17  2003/06/13 11:58:46  mattias
+  fixed readonly of properties
+
   Revision 1.16  2002/12/27 17:12:37  mattias
   added more Delphi win32 compatibility functions
 
