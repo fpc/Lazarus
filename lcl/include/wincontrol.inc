@@ -404,9 +404,7 @@ begin
       ' New=',r.RIght,'x',r.Bottom);
     {$ENDIF}
     AlignControl(nil);
-    {$IFDEF ClientRectBugFix}
     Resize;
-    {$ENDIF}
   end;
 end;
 
@@ -422,7 +420,6 @@ begin
   InterfaceObject.IntSendMessage3(LM_SETGEOMETRY, Self, nil);
 end;
 
-{$IFDEF ClientRectBugFix}
 {-------------------------------------------------------------------------------
   TWinControl InvalidateClientRectCache
 
@@ -470,7 +467,6 @@ begin
 
   inherited DoSetBounds(ALeft,ATop,AWidth,AHeight);
 end;
-{$ENDIF}
 
 {------------------------------------------------------------------------------}
 {  TWinControl EnableAlign                                                     }
@@ -520,7 +516,6 @@ Begin
 end;
 
 function TWinControl.GetClientRect: TRect;
-{$IFDEF ClientRectBugFix}
 
   procedure StoreClientRect(NewClientRect: TRect);
   begin
@@ -565,11 +560,6 @@ begin
     Result:=Rect(0,0,FClientWidth,FClientHeight);
   end;
 end;
-{$ELSE}
-begin
-  Result:=inherited GetClientRect;
-end;
-{$ENDIF}
 
 {------------------------------------------------------------------------------}
 {  TWinControl ReCreateWnd                                                     }
@@ -2293,6 +2283,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.76  2002/08/17 15:45:33  lazarus
+  MG: removed ClientRectBugfix defines
+
   Revision 1.75  2002/08/05 07:43:28  lazarus
   MG: fixed BadCursor bug and Circle Reference of FixedWidget of csPanel
 
