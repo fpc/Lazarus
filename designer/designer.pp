@@ -39,7 +39,7 @@ uses
   Classes, LCLType, LCLLinux, Forms, Controls, LMessages, GraphType, Graphics,
   Dialogs, ControlSelection, CustomFormEditor, UnitEditor, CompReg, Menus,
   AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg, ExtCtrls, EnvironmentOpts,
-  DesignerProcs, PropEdits, ComponentEditors;
+  DesignerProcs, PropEdits, ComponentEditors, KeyMapping;
 
 type
   TDesigner = class;
@@ -57,6 +57,8 @@ type
     var IconWidth, IconHeight: integer) of object;
   TOnRenameComponent = procedure(Designer: TDesigner; AComponent: TComponent;
     const NewName: string) of object;
+  TOnProcessCommand = procedure(Sender: TObject; Command: word;
+    var Handled: boolean) of object;
     
   TDesignerFlag = (dfHasSized, dfDuringPaintControl,dfShowHints);
   TDesignerFlags = set of TDesignerFlag;
@@ -73,6 +75,7 @@ type
     FOnGetSelectedComponentClass: TOnGetSelectedComponentClass;
     FOnGetNonVisualCompIconCanvas: TOnGetNonVisualCompIconCanvas;
     FOnModified: TNotifyEvent;
+    FOnProcessCommand: TOnProcessCommand;
     FOnPropertiesChanged: TNotifyEvent;
     FOnRemoveComponent: TOnRemoveComponent;
     FOnSetDesigning: TOnSetDesigning;
@@ -195,6 +198,8 @@ type
        read FOnComponentListChanged write FOnComponentListChanged;
     property OnGetSelectedComponentClass: TOnGetSelectedComponentClass
        read FOnGetSelectedComponentClass write FOnGetSelectedComponentClass;
+    property OnProcessCommand: TOnProcessCommand
+       read FOnProcessCommand write FOnProcessCommand;
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
     property OnPropertiesChanged: TNotifyEvent
        read FOnPropertiesChanged write FOnPropertiesChanged;
@@ -871,6 +876,8 @@ end;
 Procedure TDesigner.KeyDown(Sender : TControl; TheMessage:TLMKEY);
 var
   Shift : TShiftState;
+  Command: word;
+  Handled: boolean;
 Begin
   {$IFDEF VerboseDesigner}
   Writeln('TDesigner.KEYDOWN ',TheMessage.CharCode,' ',TheMessage.KeyData);
@@ -878,41 +885,43 @@ Begin
 
   Shift := KeyDataToShiftState(TheMessage.KeyData);
 
-  if (TheMessage.CharCode = 46) then //DEL KEY
-  begin
+  Handled:=false;
+  Command:=FTheFormEditor.TranslateKeyToDesignerCommand(
+                                                 TheMessage.CharCode,Shift);
+  if Assigned(OnProcessCommand) then begin
+    OnProcessCommand(Self,Command,Handled);
+    if Handled or (Command=ecNone) then exit;
+  end;
+
+  case TheMessage.CharCode of
+  VK_DELETE:
     DoDeleteSelectedComponents;
-  end
-  else
-  if TheMessage.CharCode = 38 then //UP ARROW
-  Begin
+
+  VK_UP:
     if (ssCtrl in Shift) then
       NudgeControl(0,-1)
     else if (ssShift in Shift) then
       NudgeSize(0,-1);
-    end
-  else if TheMessage.CharCode = 40 then //DOWN ARROW
-  Begin
+
+  VK_DOWN:
     if (ssCtrl in Shift) then
       NudgeControl(0,1)
     else if (ssShift in Shift) then
       NudgeSize(0,1);
-    end
-  else
-  if TheMessage.CharCode = 39 then //RIGHT ARROW
-  Begin
+
+  VK_RIGHT:
     if (ssCtrl in Shift) then
       NudgeControl(1,0)
     else if (ssShift in Shift) then
       NudgeSize(1,0);
-    end
-  else
-  if TheMessage.CharCode = 37 then //LEFT ARROW
-  Begin
+
+  VK_LEFT:
     if (ssCtrl in Shift) then
       NudgeControl(-1,0)
     else if (ssShift in Shift) then
       NudgeSize(-1,0);
-    end;
+
+  end;
 end;
 
 
@@ -1547,7 +1556,7 @@ Procedure TDesigner.OnFormActivated;
 begin
   //the form was activated.
   if Assigned(FOnActivated) then
-     FOnActivated(Form);
+    FOnActivated(Self);
 end;
 
 function TDesigner.GetPropertyEditorHook: TPropertyEditorHook;
