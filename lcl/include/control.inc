@@ -394,10 +394,26 @@ end;
 {------------------------------------------------------------------------------}
 procedure TControl.DblClick;
 begin
-If Assigned(FOnDblClick) then FOnDblCLick(Self);
+  If Assigned(FOnDblClick) then FOnDblClick(Self);
 end;
 
+{------------------------------------------------------------------------------}
+{       TControl.TripleClick
+}
+{------------------------------------------------------------------------------}
+procedure TControl.TripleClick;
+begin
+  If Assigned(FOnTripleClick) then FOnTripleClick(Self);
+end;
 
+{------------------------------------------------------------------------------}
+{       TControl.QuadClick
+}
+{------------------------------------------------------------------------------}
+procedure TControl.QuadClick;
+begin
+  If Assigned(FOnQuadClick) then FOnQuadClick(Self);
+end;
 
 {------------------------------------------------------------------------------}
 {       TControl.DoDragMsg
@@ -547,16 +563,36 @@ begin
     else
       begin
       if (Message.Msg >= LM_MOUSEFIRST) and (Message.msg <= LM_MOUSELAST) then
-        begin
+      begin
+        // map double clicks for controls, that do not want doubleclicks
         if not (csDoubleClicks in ControlStyle) then
-          begin
+        begin
           case Message.Msg of
             LM_LButtonDBLCLK,
-            LM_RBUTTONDBLCLK,
-            LM_MBUTTONDBLCLK:
+            LM_RButtonDBLCLK,
+            LM_MButtonDBLCLK:
               Dec(Message.Msg, LM_LBUTTONDBLCLK - LM_LBUTTONDOWN);
           end;
+        end;
+        // map triple clicks for controls, that do not want tripleclicks
+        if not (csTripleClicks in ControlStyle) then
+        begin
+          case Message.Msg of
+            LM_LBUTTONTRIPLECLK: Message.Msg:=LM_LBUTTONDOWN;
+            LM_MBUTTONTRIPLECLK: Message.Msg:=LM_MBUTTONDOWN;
+            LM_RBUTTONTRIPLECLK: Message.Msg:=LM_RBUTTONDOWN;
           end;
+        end;
+        // map quad clicks for controls, that do not want quadclicks
+        if not (csQuadClicks in ControlStyle) then
+        begin
+          case Message.Msg of
+            LM_LBUTTONQUADCLK: Message.Msg:=LM_LBUTTONDOWN;
+            LM_MBUTTONQUADCLK: Message.Msg:=LM_MBUTTONDOWN;
+            LM_RBUTTONQUADCLK: Message.Msg:=LM_RBUTTONDOWN;
+          end;
+        end;
+        
         case Message.Msg of
           LM_MOUSEMOVE:
             begin
@@ -681,7 +717,7 @@ begin
   //TODO: SendCancelMode(self);
   if csCaptureMouse in ControlStyle then MouseCapture := True;
   if csClickEvents in ControlStyle then DblClick;
-  DoMouseDown(Message, mbleft ,[ssDouble]);
+  DoMouseDown(Message, mbLeft ,[ssDouble]);
 end;
 
 {------------------------------------------------------------------------------
@@ -693,7 +729,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControl.WMRButtonDblClk(var Message: TLMRButtonDblClk);
 begin
-DoMouseDown(Message, mbRight ,[ssDouble]);
+  DoMouseDown(Message, mbRight ,[ssDouble]);
 end;
 
 {------------------------------------------------------------------------------
@@ -705,9 +741,98 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControl.WMMButtonDblClk(var Message: TLMMButtonDblClk);
 begin
-DoMouseDown(Message, mbMiddle ,[ssDouble]);
+  DoMouseDown(Message, mbMiddle ,[ssDouble]);
 end;
 
+{------------------------------------------------------------------------------
+  Method: TControl.WMLButtonTripleClk
+  Params: Message
+  Returns: Nothing
+
+  Mouse event handler
+ ------------------------------------------------------------------------------}
+procedure TControl.WMLButtonTripleClk(var Message: TLMLButtonTripleClk);
+begin
+  //TODO: SendCancelMode(self);
+  if csCaptureMouse in ControlStyle then MouseCapture := True;
+  if csClickEvents in ControlStyle then TripleClick;
+  {$IFDEF VER_1_0_6}
+  DoMouseDown(Message, mbLeft ,[ssTriple]);
+  {$ENDIF}
+end;
+
+{------------------------------------------------------------------------------
+  Method: TControl.WMRButtonTripleClk
+  Params: Message
+  Returns: Nothing
+
+  Mouse event handler
+ ------------------------------------------------------------------------------}
+procedure TControl.WMRButtonTripleClk(var Message: TLMRButtonTripleClk);
+begin
+  {$IFDEF VER_1_0_6}
+  DoMouseDown(Message, mbRight ,[ssTriple]);
+  {$ENDIF}
+end;
+
+{------------------------------------------------------------------------------
+  Method: TControl.WMMButtonTripleClk
+  Params: Message
+  Returns: Nothing
+
+  Mouse event handler
+ ------------------------------------------------------------------------------}
+procedure TControl.WMMButtonTripleClk(var Message: TLMMButtonTripleClk);
+begin
+  {$IFDEF VER_1_0_6}
+  DoMouseDown(Message, mbMiddle ,[ssTriple]);
+  {$ENDIF}
+end;
+
+{------------------------------------------------------------------------------
+  Method: TControl.WMLButtonQuadClk
+  Params: Message
+  Returns: Nothing
+
+  Mouse event handler
+ ------------------------------------------------------------------------------}
+procedure TControl.WMLButtonQuadClk(var Message: TLMLButtonQuadClk);
+begin
+  //TODO: SendCancelMode(self);
+  if csCaptureMouse in ControlStyle then MouseCapture := True;
+  if csClickEvents in ControlStyle then QuadClick;
+  {$IFDEF VER_1_0_6}
+  DoMouseDown(Message, mbLeft ,[ssQuad]);
+  {$ENDIF}
+end;
+
+{------------------------------------------------------------------------------
+  Method: TControl.WMRButtonQuadClk
+  Params: Message
+  Returns: Nothing
+
+  Mouse event handler
+ ------------------------------------------------------------------------------}
+procedure TControl.WMRButtonQuadClk(var Message: TLMRButtonQuadClk);
+begin
+  {$IFDEF VER_1_0_6}
+  DoMouseDown(Message, mbRight ,[ssQuad]);
+  {$ENDIF}
+end;
+
+{------------------------------------------------------------------------------
+  Method: TControl.WMMButtonQuadClk
+  Params: Message
+  Returns: Nothing
+
+  Mouse event handler
+ ------------------------------------------------------------------------------}
+procedure TControl.WMMButtonQuadClk(var Message: TLMMButtonQuadClk);
+begin
+  {$IFDEF VER_1_0_6}
+  DoMouseDown(Message, mbMiddle ,[ssQuad]);
+  {$ENDIF}
+end;
 
 {------------------------------------------------------------------------------
   Method: TControl.WMLButtonUp
@@ -1504,6 +1629,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.41  2002/03/29 17:12:52  lazarus
+  MG: added Triple and Quad mouse clicks to lcl and synedit
+
   Revision 1.40  2002/03/27 08:57:16  lazarus
   MG: reduced compiler warnings
 
