@@ -12,6 +12,8 @@ type
   TBuildFileDialog = class(TForm)
     AlwaysCompileFirstCheckbox: TCHECKBOX;
     CancelButton: TBUTTON;
+    Combobox1: TCOMBOBOX;
+    RunWorkDirCombobox: TCOMBOBOX;
     CompileAddMacroButton: TBUTTON;
     CompileCommandGroupbox: TGROUPBOX;
     CompileCommandMemo: TMEMO;
@@ -21,6 +23,8 @@ type
     CompileScanForFPCMsgCheckbox: TCHECKBOX;
     CompScanForMakeMsgCheckbox: TCHECKBOX;
     GeneralPage: TPAGE;
+    CompileWorkingDirGroupbox: TGROUPBOX;
+    RunWorkDirGroupbox: TGROUPBOX;
     Notebook1: TNOTEBOOK;
     OkButton: TBUTTON;
     OverrideBuildProjectCheckbox: TCHECKBOX;

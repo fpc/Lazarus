@@ -786,8 +786,10 @@ begin
   Result := False;
 end;
 
-function TInterfaceBase.FloodFill(DC: HDC; X, Y: Integer; Color: TColor;
-  FillStyle: TFillStyle; Brush: HBRUSH): Boolean;
+function TInterfaceBase.FloodFill(DC: HDC; X, Y: Integer;
+  Color: {$IFDEF NewGraphType}TGraphicsColor{$ELSE}TColor{$ENDIF};
+  FillStyle: {$IFDEF NewGraphType}TGraphicsFillStyle{$ELSE}TFillStyle{$ENDIF};
+  Brush: HBRUSH): Boolean;
 begin
   Result := false;
 end;
@@ -803,7 +805,9 @@ begin
 end;
 
 function TInterfaceBase.Frame3d(DC: HDC; var ARect: TRect;
-  const FrameWidth : integer; const Style : TBevelCut) : boolean;
+  const FrameWidth: integer;
+  const Style: {$IFDEF NewGraphType}TGraphicsBevelCut{$ELSE}TBevelCut{$ENDIF}
+  ) : boolean;
 begin
   Result:= false;
 end;
@@ -1820,6 +1824,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.100  2003/08/19 12:23:23  mattias
+  moved types from graphtype.pp back to graphics.pp
+
   Revision 1.99  2003/08/18 19:24:18  mattias
   fixed TCanvas.Pie
 

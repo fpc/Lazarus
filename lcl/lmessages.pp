@@ -421,7 +421,7 @@ type
   TLMCanvasDrawRect = Record
      R : TRect;
      ReDraw : Boolean;
-     PenColor : TColor;
+     PenColor : {$IFDEF NewGraphType}TGraphicsColor{$ELSE}TColor{$ENDIF};
     end;
 
   PLMCanvasDrawLine = ^TLMCanvasDrawLine;
@@ -430,7 +430,7 @@ type
      y1 : Integer;
      x2 : Integer;
      y2 : Integer;
-     PenColor : TColor;
+     PenColor : {$IFDEF NewGraphType}TGraphicsColor{$ELSE}TColor{$ENDIF};
      ReDraw : Boolean;
     end;
 
@@ -440,7 +440,7 @@ type
      y1 : Integer;
      Str : String;
      Font : TObject;
-     PenColor : TColor;
+     PenColor : {$IFDEF NewGraphType}TGraphicsColor{$ELSE}TColor{$ENDIF};
      ReDraw : Boolean;
     end;
 
@@ -730,7 +730,7 @@ type
 
   TLMSetGetPixel = record
     X,Y : Integer;
-    PixColor : TColor;
+    PixColor : {$IFDEF NewGraphType}TGraphicsColor{$ELSE}TColor{$ENDIF};
   end;
 
   TLMSize = packed record
@@ -1057,6 +1057,9 @@ end.
 
 {
   $Log$
+  Revision 1.51  2003/08/19 12:23:23  mattias
+  moved types from graphtype.pp back to graphics.pp
+
   Revision 1.50  2003/07/26 13:26:56  mattias
   fixed WindowProc
 

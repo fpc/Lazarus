@@ -35,6 +35,13 @@ uses
 {$ASSERTIONS ON}
 {$endif}
 
+  {$IFDEF NewGraphType}
+type
+  TGraphicsColor = -$7FFFFFFF-1..$7FFFFFFF;
+  TGraphicsFillStyle = (fsSurface, fsBorder);
+  TGraphicsBevelCut = (bvNone, bvLowered, bvRaised);
+
+  {$ELSE}
 type
   PColor = ^TColor;
   // don't define TColor as longint, or else the RTTI can't distinguish them
@@ -56,7 +63,7 @@ type
     CharSet : TFontCharSet;
     Name : TFontDataName;
   end;
-  
+
   { Reflects text style when drawn in a rectangle }
   
   TTextLayout = (tlTop, tlCenter, tlBottom);
@@ -174,6 +181,7 @@ type
     tmFixed
     );
 
+  {$ENDIF}
 //------------------------------------------------------------------------------
 // raw image data
 type
@@ -260,6 +268,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.19  2003/08/19 12:23:23  mattias
+  moved types from graphtype.pp back to graphics.pp
+
   Revision 1.18  2003/07/07 13:19:08  mattias
   added raw image examples
 

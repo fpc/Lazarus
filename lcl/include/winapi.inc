@@ -307,8 +307,10 @@ begin
   Result := InterfaceObject.FillRgn(DC,RegionHnd,hbr);
 end;
 
-function FloodFill(DC: HDC; X, Y: Integer; Color: TColor;
-  FillStyle: TFillStyle; Brush: HBRUSH): Boolean;
+function FloodFill(DC: HDC; X, Y: Integer;
+  Color: {$IFDEF NewGraphType}TGraphicsColor{$ELSE}TColor{$ENDIF};
+  FillStyle: {$IFDEF NewGraphType}TGraphicsFillStyle{$ELSE}TFillStyle{$ENDIF};
+  Brush: HBRUSH): Boolean;
 begin
   Result := InterfaceObject.FloodFill(DC,X,Y,Color,FillStyle,Brush);
 end;
@@ -319,7 +321,8 @@ begin
 end;
 
 function Frame3d(DC : HDC; var ARect : TRect; const FrameWidth : integer;
-  const Style : TBevelCut) : boolean;
+  const Style: {$IFDEF NewGraphType}TGraphicsBevelCut{$ELSE}TBevelCut{$ENDIF}
+  ) : boolean;
 begin
   Result:= InterfaceObject.Frame3d(DC, ARect, FrameWidth, Style);
 end;
@@ -1670,6 +1673,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.95  2003/08/19 12:23:23  mattias
+  moved types from graphtype.pp back to graphics.pp
+
   Revision 1.94  2003/08/18 19:24:18  mattias
   fixed TCanvas.Pie
 

@@ -56,7 +56,7 @@ uses
   xlib,
   SysUtils, LMessages, Classes, Controls, Forms, LCLStrConsts,
   VclGlobals, LCLProc, LCLLinux, LCLType, gtkDef, DynHashArray, gtkMsgQueue,
-  GraphType, GraphMath;
+  GraphType, GraphMath, Graphics;
 
 
 type
@@ -252,12 +252,11 @@ type
 implementation
 
 uses
-  Graphics, Buttons, Menus, StdCtrls, PairSplitter, Dialogs, Math,
+  Buttons, Menus, StdCtrls, PairSplitter, Dialogs, Math,
   GTKWinApiWindow, ComCtrls, CListBox, KeyMap, Calendar, Arrow, Spin, CommCtrl,
   ExtCtrls, FileCtrl, LResources, gtkglobals, gtkproc;
 
 {$I gtklistsl.inc}
-
 {$I gtkobject.inc}
 {$I gtkwinapi.inc}
 
@@ -348,6 +347,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.139  2003/08/19 12:23:23  mattias
+  moved types from graphtype.pp back to graphics.pp
+
   Revision 1.138  2003/08/18 13:21:23  mattias
   renamed lazqueue to lazlinkedlist, patch from Jeroen
 

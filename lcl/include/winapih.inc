@@ -106,9 +106,14 @@ function ExtSelectClipRGN(dc: hdc; rgn : hrgn; Mode : Longint) : Integer;  {$IFD
 
 function FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function FillRgn(DC: HDC; RegionHnd: HRGN; hbr: HBRUSH): BOOL; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function FloodFill(DC: HDC; X, Y: Integer; Color: TColor; FillStyle: TFillStyle; Brush: HBRUSH): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function FloodFill(DC: HDC; X, Y: Integer;
+                   Color: {$IFDEF NewGraphType}TGraphicsColor{$ELSE}TColor{$ENDIF};
+                   FillStyle: {$IFDEF NewGraphType}TGraphicsFillStyle{$ELSE}TFillStyle{$ENDIF};
+                   Brush: HBRUSH): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function Frame(DC: HDC; const ARect: TRect): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function Frame3d(DC: HDC; var ARect: TRect; const FrameWidth : integer; const Style : TBevelCut): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function Frame3d(DC: HDC; var ARect: TRect; const FrameWidth : integer;
+                 const Style : {$IFDEF NewGraphType}TGraphicsBevelCut{$ELSE}TBevelCut{$ENDIF}
+                 ): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function FrameRect(DC: HDC; const ARect: TRect; hBr: HBRUSH): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 Function GetActiveWindow : HWND; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -391,6 +396,9 @@ procedure RaiseLastOSError;
 { =============================================================================
 
   $Log$
+  Revision 1.85  2003/08/19 12:23:23  mattias
+  moved types from graphtype.pp back to graphics.pp
+
   Revision 1.84  2003/08/18 19:24:18  mattias
   fixed TCanvas.Pie
 
