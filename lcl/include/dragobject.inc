@@ -1,3 +1,5 @@
+// included by controls.pp
+
 {******************************************************************************
                                      TDragObject
  ******************************************************************************
@@ -15,6 +17,8 @@
  *                                                                           *
  *****************************************************************************
 }
+
+{ TDragObject }
 
 procedure TDragObject.Assign(Source: TDragObject);
 begin
@@ -117,3 +121,83 @@ procedure TDragObject.ShowDragImage;
 begin
   // do nothing
 end;
+
+{ TDragControlObject }
+
+function TDragControlObject.GetDragCursor(Accepted: Boolean; X, Y: Integer
+  ): TCursor;
+begin
+  Result:=inherited GetDragCursor(Accepted, X, Y);
+end;
+
+function TDragControlObject.GetDragImages: TDragImageList;
+begin
+  Result:=inherited GetDragImages;
+end;
+
+procedure TDragControlObject.HideDragImage;
+begin
+  inherited HideDragImage;
+end;
+
+procedure TDragControlObject.ShowDragImage;
+begin
+  inherited ShowDragImage;
+end;
+
+{ TDragDockObject }
+
+procedure TDragDockObject.SetBrush(Value: TBrush);
+begin
+
+end;
+
+procedure TDragDockObject.AdjustDockRect(ARect: TRect);
+begin
+
+end;
+
+procedure TDragDockObject.DrawDragDockImage;
+begin
+
+end;
+
+procedure TDragDockObject.EndDrag(Target: TObject; X, Y: Integer);
+begin
+  inherited EndDrag(Target, X, Y);
+end;
+
+procedure TDragDockObject.EraseDragDockImage;
+begin
+
+end;
+
+function TDragDockObject.GetDragCursor(Accepted: Boolean; X, Y: Integer
+  ): TCursor;
+begin
+  Result:=inherited GetDragCursor(Accepted, X, Y);
+end;
+
+function TDragDockObject.GetFrameWidth: Integer;
+begin
+  Result:=4;
+end;
+
+constructor TDragDockObject.Create(AControl: TControl);
+begin
+  inherited Create(AControl);
+end;
+
+destructor TDragDockObject.Destroy;
+begin
+  inherited Destroy;
+end;
+
+procedure TDragDockObject.Assign(Source: TDragObject);
+begin
+  inherited Assign(Source);
+end;
+
+
+// included by controls.pp
+

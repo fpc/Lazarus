@@ -159,7 +159,8 @@ const
 type
   TWinControl = class;
   TControl = class;
-  
+  TWinControlClass = class of TWinControl;
+
   TDate = type TDateTime;
   TTime = type TDateTime;
 
@@ -323,16 +324,19 @@ type
 
   { TDragObject }
           
-  TDragState = (dsDragEnter, dsDragLEave, dsDragMove);
+  TDragObject = class;
+
+  TDragState = (dsDragEnter, dsDragLeave, dsDragMove);
   TDragMode = (dmManual , dmAutomatic);
   TDragKind = (dkDrag, dkDock);
   TDragMessage = (dmDragEnter, dmDragLeave, dmDragMove, dmDragDrop,
                   dmDragCancel,dmFindTarget);
   TDragOverEvent = Procedure(Sender, Source: TObject;
                X,Y : Integer; State: TDragState; Var Accept: Boolean) of Object;
-  TDragDropEvent = Procedure(Sender, Source: TObject; X,Y : Integer) of Object;
-
-  TDragObject = class;
+  TDragDropEvent = Procedure(Sender, Source: TObject; X,Y: Integer) of Object;
+  TStartDragEvent = Procedure(Sender: TObject; DragObject: TDragObject) of Object;
+  TEndDragEvent = Procedure(Sender, Target: TObject; X,Y: Integer) of Object;
+  
 
   PDragRec = ^TDragRec;
   TDragRec = record
@@ -357,6 +361,7 @@ type
     FDragHandle: HWND;
     FDragPos: TPoint;
     FDragTargetPos: TPoint;
+    FDropped: Boolean;
     FMouseDeltaX: Double;
     FMouseDeltaY: Double;
     FCancelling: Boolean;
@@ -378,27 +383,87 @@ type
     property DragPos: TPoint read FDragPos write FDragPos;
     property DragTargetPos: TPoint read FDragTargetPos write FDragTargetPos;
     property DragTarget: Pointer read FDragTarget write FDragTarget;
+    property Dropped: Boolean read FDropped;
     property MouseDeltaX: Double read FMouseDeltaX;
     property MouseDeltaY: Double read FMouseDeltaX;
   end;
 
-  TStartDragEvent = Procedure(Sender : TObject; DragObject: TDragObject) of Object;
-  TEndDragEvent = Procedure(Sender , Target: TObject; X,Y : Integer) of Object;
+  TDragObjectClass = class of TDragObject;
+
+
+  { TBaseDragControlObject }
 
   TBaseDragControlObject = class(TDragObject)
   private
     FControl : TControl;
   protected
-    Procedure EndDrag(Target: TObject; X,Y : Integer); Virtual;
+    Procedure EndDrag(Target: TObject; X, Y: Integer); Virtual;
     procedure Finished(Target: TObject; X, Y: Integer; Accepted: Boolean); override;
   Public
-    constructor Create(AControl : TControl); virtual;
-    property Control : TControl read FControl write FControl;
-  end;
-
-  TDragControlObject = class(TBaseDragControlObject)
+    constructor Create(AControl: TControl); virtual;
+    property Control: TControl read FControl write FControl;
   end;
   
+  
+  { TDragControlObject }
+
+  TDragControlObject = class(TBaseDragControlObject)
+  protected
+    function GetDragCursor(Accepted: Boolean; X, Y: Integer): TCursor; override;
+    function GetDragImages: TDragImageList; override;
+  public
+    procedure HideDragImage; override;
+    procedure ShowDragImage; override;
+  end;
+  
+  
+  { TDragDockObject }
+  
+  TDragDockObject = class;
+  
+  TDockOrientation = (
+    doNoOrient,   // zone contains a TControl and no child zones.
+    doHorizontal, // zone's children are stacked top-to-bottom.
+    doVertical    // zone's children are arranged left-to-right.
+    );
+  TDockDropEvent = procedure(Sender: TObject; Source: TDragDockObject;
+                             X, Y: Integer) of object;
+  TDockOverEvent = procedure(Sender: TObject; Source: TDragDockObject;
+                             X, Y: Integer; State: TDragState;
+                             var Accept: Boolean) of object;
+  TUnDockEvent = procedure(Sender: TObject; Client: TControl;
+                          NewTarget: TWinControl; var Allow: Boolean) of object;
+  TStartDockEvent = procedure(Sender: TObject;
+                              var DragObject: TDragDockObject) of object;
+
+  TDragDockObject = class(TBaseDragControlObject)
+  private
+    FBrush: TBrush;
+    FDockRect: TRect;
+    FDropAlign: TAlign;
+    FDropOnControl: TControl;
+    //FEraseDockRect: TRect;
+    FFloating: Boolean;
+    procedure SetBrush(Value: TBrush);
+  protected
+    procedure AdjustDockRect(ARect: TRect); virtual;
+    procedure DrawDragDockImage; virtual;
+    procedure EndDrag(Target: TObject; X, Y: Integer); override;
+    procedure EraseDragDockImage; virtual;
+    function GetDragCursor(Accepted: Boolean; X, Y: Integer): TCursor; override;
+    function GetFrameWidth: Integer; virtual;
+  public
+    constructor Create(AControl: TControl); override;
+    destructor Destroy; override;
+    procedure Assign(Source: TDragObject); override;
+    property Brush: TBrush read FBrush write SetBrush;
+    property DockRect: TRect read FDockRect write FDockRect;
+    property DropAlign: TAlign read FDropAlign;
+    property DropOnControl: TControl read FDropOnControl;
+    property Floating: Boolean read FFloating write FFloating;
+    property FrameWidth: Integer read GetFrameWidth;
+  end;
+
 
   { TSizeConstraints }
 
@@ -497,10 +562,12 @@ type
     FControlStyle: TControlStyle;
     FCtl3D : Boolean;
     FCursor : TCursor;
+    FDockOrientation: TDockOrientation;
     FDragCursor : TCursor;
     FDragKind : TDragKind;
     FDragMode : TDragMode;
     FEnabled : Boolean;
+    FFloatingDockSiteClass: TWinControlClass;
     FFont: TFont;
     FHeight: Integer;
     FHelpContext: THelpContext;
@@ -518,6 +585,7 @@ type
     FLastResizeWidth: integer;
     FLeft: Integer;
     FLoadedClientSize: TPoint;
+    FLRDockWidth: Integer;
     FMouseEntered: boolean;
     FOnChangeBounds: TNotifyEvent;
     FOnClick: TNotifyEvent;
@@ -545,16 +613,25 @@ type
     FSizeLock: integer;
     FTabOrder: integer;
     FTabStop : Boolean;
+    FTBDockHeight: Integer;
     FText : TCaption;
     FTop: Integer;
+    FUndockHeight: Integer;
+    FUndockWidth: Integer;
     FVisible: Boolean;
     FWidth: Integer;
     FWindowProc: TWndMethod;
     function GetBoundsRect : TRect;
     function GetClientHeight: Integer;
     function GetClientWidth: Integer;
+    function GetFloating: Boolean;
+    function GetFloatingDockSiteClass: TWinControlClass;
+    function GetLRDockWidth: Integer;
     function GetMouseCapture : Boolean;
-    Function  GetTabOrder: TTabOrder;
+    function GetTBDockHeight: Integer;
+    Function GetTabOrder: TTabOrder;
+    function GetUndockHeight: Integer;
+    function GetUndockWidth: Integer;
     function IsAnchorsStored: boolean;
     function IsCaptionStored : Boolean;
     function IsHelpContextStored: boolean;
@@ -576,6 +653,7 @@ type
     procedure SetHeight(Value: Integer);
     procedure SetHelpContext(const AValue: THelpContext);
     procedure SetHelpKeyword(const AValue: String);
+    procedure SetHostDockSite(const AValue: TWinControl);
     procedure SetLeft(Value: Integer);
     procedure SetMouseCapture(Value : Boolean);
     procedure SetParentShowHint(Value : Boolean);
@@ -636,10 +714,11 @@ type
     procedure LockBaseBounds;
     procedure UnlockBaseBounds;
     procedure UpdateAnchorRules;
-    procedure BeginAutoDrag; dynamic;
     procedure ChangeBounds(ALeft, ATop, AWidth, AHeight : integer); virtual;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight : integer); virtual;
     procedure ChangeScale(M,D : Integer); dynamic;
+    procedure BeginAutoDrag; dynamic;
+    procedure Dock(NewDockSite: TWinControl; ARect: TRect); dynamic;
     procedure Click; dynamic;
     procedure DblClick; dynamic;
     procedure TripleClick; dynamic;
@@ -766,7 +845,6 @@ type
     property Ctl3D: Boolean read FCtl3D write FCtl3D;//Is this needed for anything other than compatability?
     property Enabled: Boolean read GetEnabled write SetEnabled default True;
     property Font: TFont read FFont write SetFont;
-    property HostDockSite: TWincontrol read FHostDockSite write FHostDockSite;
     property Parent: TWinControl read FParent write SetParent;
     property PopupMenu: TPopupmenu read GetPopupmenu write SetPopupMenu;
     property ShowHint: Boolean read FShowHint write SetShowHint default False;
@@ -774,6 +852,16 @@ type
     property WindowProc: TWndMethod read FWindowProc write FWindowProc;
     property TabStop: Boolean read FTabStop write SetTabStop;
     property TabOrder: TTabOrder read GetTabOrder write SetTaborder default -1;
+  public
+    // docking properties
+    property DockOrientation: TDockOrientation read FDockOrientation write FDockOrientation;
+    property Floating: Boolean read GetFloating;
+    property FloatingDockSiteClass: TWinControlClass read GetFloatingDockSiteClass write FFloatingDockSiteClass;
+    property HostDockSite: TWinControl read FHostDockSite write SetHostDockSite;
+    property LRDockWidth: Integer read GetLRDockWidth write FLRDockWidth;
+    property TBDockHeight: Integer read GetTBDockHeight write FTBDockHeight;
+    property UndockHeight: Integer read GetUndockHeight write FUndockHeight;
+    property UndockWidth: Integer read GetUndockWidth write FUndockWidth;
   public
     property OnResize: TNotifyEvent read FOnResize write FOnResize;
     property OnChangeBounds: TNotifyEvent read FOnChangeBounds write FOnChangeBounds;
@@ -1507,7 +1595,7 @@ end;
 {$ENDIF}
 
 {$I sizeconstraints.inc}
-{$I BaseDragControlObject.inc}
+{$I basedragcontrolobject.inc}
 {$I controlsproc.inc}
 {$I controlcanvas.inc}
 {$I scrolledwindow.inc}
@@ -1536,6 +1624,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.133  2003/06/25 18:12:32  mattias
+  added docking properties
+
   Revision 1.132  2003/06/23 09:42:09  mattias
   fixes for debugging lazarus
 

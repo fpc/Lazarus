@@ -81,6 +81,11 @@ begin
   BeginDrag(Mouse.DragImmediate,Mouse.DragThreshold);
 end;
 
+procedure TControl.Dock(NewDockSite: TWinControl; ARect: TRect);
+begin
+
+end;
+
 {------------------------------------------------------------------------------}
 {       TControl.BoundsChanged                                                 
 }
@@ -338,6 +343,28 @@ begin
   Result := ClientRect.Right;
 end;
 
+function TControl.GetFloating: Boolean;
+var
+  CurHostDockSite: TWinControl;
+begin
+  CurHostDockSite:=HostDockSite;
+  Result := (CurHostDockSite <> nil)
+            and (CurHostDockSite is FloatingDockSiteClass);
+end;
+
+function TControl.GetFloatingDockSiteClass: TWinControlClass;
+begin
+  Result := FFloatingDockSiteClass;
+end;
+
+function TControl.GetLRDockWidth: Integer;
+begin
+  if FLRDockWidth>0 then
+    Result := FLRDockWidth
+  else
+    Result := UndockWidth;
+end;
+
 function TControl.IsAnchorsStored: boolean;
 begin
   Result:=Anchors<>[akLeft,akTop];
@@ -374,6 +401,22 @@ Begin
     Result := ListIndexOf(Parent.FTabList, Self)
   else
     Result := -1;
+end;
+
+function TControl.GetUndockHeight: Integer;
+begin
+  if FUndockHeight>0 then
+    Result := FUndockHeight
+  else
+    Result := Height;
+end;
+
+function TControl.GetUndockWidth: Integer;
+begin
+  if FUndockWidth>0 then
+    Result := FUndockWidth
+  else
+    Result := Width;
 end;
 
 {------------------------------------------------------------------------------}
@@ -892,6 +935,14 @@ end;
 Function TControl.GetMouseCapture : Boolean;
 Begin
   Result := GetCaptureControl = Self;
+end;
+
+function TControl.GetTBDockHeight: Integer;
+begin
+  if FTBDockHeight>0 then
+    Result := FTBDockHeight
+  else
+    Result := UndockHeight;
 end;
 
 {------------------------------------------------------------------------------}
@@ -1893,6 +1944,12 @@ begin
   FHelpKeyword:=AValue;
 end;
 
+procedure TControl.SetHostDockSite(const AValue: TWinControl);
+begin
+  if AValue=FHostDockSite then exit;
+  Dock(AValue, BoundsRect);
+end;
+
 {------------------------------------------------------------------------------
   Procedure TControl.SetParent(AParent : TWinControl);
 ------------------------------------------------------------------------------}
@@ -2419,6 +2476,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.138  2003/06/25 18:12:32  mattias
+  added docking properties
+
   Revision 1.137  2003/06/23 09:42:09  mattias
   fixes for debugging lazarus
 
