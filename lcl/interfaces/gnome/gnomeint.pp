@@ -78,7 +78,7 @@ implementation
 
 uses
   Graphics, Buttons, Menus, GTKWinApiWindow, StdCtrls, ComCtrls, CListBox,
-  KeyMap, Calendar, Arrow, Spin, CommCtrl, ExtCtrls, Dialogs, FileCtrl,
+  Calendar, Arrow, Spin, CommCtrl, ExtCtrls, Dialogs, FileCtrl,
   LResources, Math, gtkglobals, gtkproc, LCLStrConsts;
 
 procedure TGnomeObject.PassCmdLineOptions;
@@ -245,6 +245,9 @@ end.
 
 {
   $Log$
+  Revision 1.20  2003/10/17 03:35:16  ajgenius
+  fixed compiling of gnome interface, gtk2 lpk
+
   Revision 1.19  2003/09/23 17:19:01  ajgenius
   fix compiling gnome interface
 
