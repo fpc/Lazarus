@@ -56,6 +56,9 @@ type
 
 implementation
 
+uses
+  Win32Int, InterfaceBase;
+
 { TWin32WSCalendar }
 
 function TWin32WSCalendar.CreateHandle(const AWinControl: TWinControl;
@@ -76,6 +79,8 @@ begin
   // create window
   FinishCreateWindow(AWinControl, Params, false);
   Result := Params.Window;
+  // resize to proper size
+  TWin32WidgetSet(InterfaceObject).ResizeChild(AWinControl, Params.Left, Params.Top, 0, 0);
 end;
 
 function  TWin32WSCalendar.GetDateTime(const ACalendar: TCustomCalendar): TDateTime;

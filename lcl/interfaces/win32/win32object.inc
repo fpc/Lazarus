@@ -545,6 +545,7 @@ Var
   OldLeft: Integer;
   OldTop: Integer;
 {$ENDIF}
+  lRect: TRect;
   WinHandle, BuddyHandle: HWND;
   StringList: TWin32ComboBoxStringList;
   suppressMove: boolean;
@@ -592,6 +593,12 @@ Begin
       StringList := TWin32ComboBoxStringList(GetWindowInfo(WinHandle)^.List);
       if StringList <> nil then
         Height := StringList.ComboHeight;
+    end else
+    if Sender is TCustomCalendar then
+    begin
+      Windows.SendMessage(WinHandle, MCM_GETMINREQRECT, 0, LPARAM(@lRect));
+      Width := lRect.Right;
+      Height := lRect.Bottom;
     end;
   end;
   
@@ -719,6 +726,9 @@ end;
 
 {
   $Log$
+  Revision 1.307  2005/02/07 16:19:14  micha
+  force default width and height for calendar control
+
   Revision 1.306  2005/01/31 17:09:17  micha
   use 0 icon handle for bsdialog forms
 

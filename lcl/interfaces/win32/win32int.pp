@@ -249,6 +249,12 @@ type
     Next: PLazObject;
   End;
 
+const
+  // needs to move
+  MCM_FIRST             = $1000;
+  MCM_GETMINREQRECT     = MCM_FIRST + 9;
+      
+
 var
   OnClipBoardRequest: TClipboardRequestEvent;
 
@@ -280,6 +286,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.132  2005/02/07 16:19:14  micha
+  force default width and height for calendar control
+
   Revision 1.131  2005/01/15 10:09:23  micha
   fix bug 558: title bar redraw (win32)
   USE_SYNCHRONIZE enabled per default for 1.9.x
