@@ -376,7 +376,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomListView.BeginUpdate;
 begin
+{$IFNDEF win32}
   inc(FUpdateCount);
+{$ENDIF}
 end;
 
 {------------------------------------------------------------------------------}
@@ -384,11 +386,13 @@ end;
 {------------------------------------------------------------------------------}
 procedure TCustomListView.EndUpdate;
 begin
+{$IFNDEF win32}
   if FUpdateCount=0 then
     RaiseGDBException('TCustomListView.EndUpdate FUpdateCount=0');
   dec(FUpdateCount);
   if FUpdateCount>0 then exit;
   DoUpdate;
+{$ENDIF}
 end;
 
 function TCustomListView.GetMultiSelect: Boolean;
@@ -615,6 +619,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.42  2004/11/25 14:28:45  vincents
+  disabled TCustomListView.Begin/EndUpdate on win32.
+
   Revision 1.41  2004/09/22 18:06:32  micha
   convert LM_SETPROPERTIES message to interface methods for TCustomListView
 
