@@ -522,18 +522,48 @@ begin
 end;
 
 procedure TJITForms.FreevmtCopy(vmtCopy:Pointer);
-var MethodTable : PMethodNameTable;
+
+  procedure FreeNewMethods(MethodTable: PMethodNameTable);
+  var
+    CurCount, BaseCount, i: integer;
+    BaseMethodTable: PMethodNameTable;
+    CurMethod: TMethodNameRec;
+  begin
+    if MethodTable=nil then exit;
+    BaseMethodTable:=PMethodNameTable((Pointer(TJITForm)+vmtMethodTable)^);
+    if Assigned(BaseMethodTable) then
+      BaseCount:=BaseMethodTable^.Count
+    else
+      BaseCount:=0;
+    CurCount:=MethodTable^.Count;
+    if CurCount=BaseCount then exit;
+    i:=CurCount;
+    while i>BaseCount do begin
+      CurMethod:=MethodTable^.Entries[i-1];
+      if CurMethod.Name<>nil then
+        FreeMem(CurMethod.Name);
+      if CurMethod.Addr<>nil then
+        FreeMem(CurMethod.Addr);
+      dec(i);
+    end;
+  end;
+
+var
+  MethodTable : PMethodNameTable;
   ClassNamePtr: Pointer;
 begin
   //writeln('[TJITForms.FreevmtCopy] ClassName='''+TClass(vmtCopy).ClassName+'''');
   if vmtCopy=nil then exit;
   // free copy of methodtable
   MethodTable:=PMethodNameTable((Pointer(vmtCopy)+vmtMethodTable)^);
-  if (Assigned(MethodTable)) then
+  if (Assigned(MethodTable)) then begin
+    FreeNewMethods(MethodTable);
     FreeMem(MethodTable);
+  end;
   // free pointer to classname
   ClassNamePtr:=Pointer(vmtCopy)+vmtClassName;
   FreeMem(Pointer(ClassNamePtr^));
+  // free copy of VMT
   FreeMem(vmtCopy);
 end;
 

@@ -631,13 +631,25 @@ end;
 Procedure TCustomFormEditor.DeleteControl(Value : TComponent);
 var
   Temp : TComponentInterface;
+  i: integer;
+  AForm: TCustomForm;
 Begin
   Temp := TComponentInterface(FindComponent(Value));
   if Temp <> nil then
   begin
     RemoveFromComponentInterfaceList(Temp);
     if (Value is TCustomForm) then begin
-      JITFormList.DestroyJITForm(TForm(Value));
+      AForm:=TCustomForm(Value);
+      i:=AForm.ComponentCount-1;
+      while i>=0 do begin
+        DeleteControl(AForm.Components[i]);
+        dec(i);
+        if i>AForm.ComponentCount-1 then
+          i:=AForm.ComponentCount-1;
+      end;
+      if not (AForm is TForm) then
+        writeln('WARNING: TCustomFormEditor.DeleteControl ',AForm.ClassName);
+      JITFormList.DestroyJITForm(TForm(AForm));
       Temp.Destroy;
     end
     else
