@@ -112,6 +112,11 @@ type
       read GetIncFile write SetIncFile; default;
   end;
   
+  { LinkScanner Token Types }
+  TLSTokenType = (
+    lsttNone, lsttSrcEnd, lsttIdentifier, lsttEqual, lsttPoint, lsttEnd,
+    lsttEndOfInterface);
+  
   TLinkScanner = class(TObject)
   private
     FLinks: TList; // list of PSourceLink
@@ -158,6 +163,7 @@ type
     CommentEndPos: integer;        // postion after '}', '*)', #10
     LastCleanSrcPos: integer;
     IfLevel: integer;
+    KeywordFuncList: TKeyWordFunctionList;
     procedure ReadNextToken;
     function ReadIdentifier: string;
     function ReadUpperIdentifier: string;
@@ -171,6 +177,10 @@ type
     procedure HandleDirectives;
     procedure UpdateCleanedSource(SourcePos: integer);
     function ReturnFromIncludeFile: boolean;
+    procedure InitKeyWordList;
+    function DoEndToken: boolean;
+    function DoDefaultIdentToken: boolean;
+    function DoEndOfInterfaceToken: boolean;
   private
     // directives
     FDirectiveName: shortstring;
@@ -210,6 +220,7 @@ type
     function MissingIncludeFilesNeedsUpdate: boolean;
     procedure ClearMissingIncludeFiles;
   protected
+    // errors
     LastErrorMessage: string;
     LastErrorSrcPos: integer;
     LastErrorCode: pointer;
@@ -222,9 +233,9 @@ type
     // current values, positions, source, flags
     CleanedLen: integer;
     Src: string;     // current parsed source
-    UpperSrc: string;// current parsed source in uppercase
     SrcPos: integer; // current position
     TokenStart: integer; // start position of current token
+    TokenType: TLSTokenType;
     SrcLen: integer; // length of current source
     Code: pointer;   // current code object
     Values: TExpressionEvaluator;
@@ -380,7 +391,7 @@ implementation
 
 // useful procs ----------------------------------------------------------------
 
-function CompareUpToken(const UpToken: shortstring; const UpperTxt: string;
+function CompareUpToken(const UpToken: shortstring; const Txt: string;
   TxtStartPos, TxtEndPos: integer): boolean;
 var len, i: integer;
 begin
@@ -389,15 +400,15 @@ begin
   if len<>length(UpToken) then exit;
   i:=1;
   while i<len do begin
-    if (UpToken[i]<>UpperTxt[TxtStartPos]) then exit;
+    if (UpToken[i]<>UpChars[Txt[TxtStartPos]]) then exit;
     inc(i);
     inc(TxtStartPos);
   end;
   Result:=true;
 end;
 
-function CompareUpToken(const UpToken: ansistring; const UpperTxt: string;
-    TxtStartPos, TxtEndPos: integer): boolean;
+function CompareUpToken(const UpToken: ansistring; const Txt: string;
+  TxtStartPos, TxtEndPos: integer): boolean;
 var len, i: integer;
 begin
   Result:=false;
@@ -405,7 +416,7 @@ begin
   if len<>length(UpToken) then exit;
   i:=1;
   while i<len do begin
-    if (UpToken[i]<>UpperTxt[TxtStartPos]) then exit;
+    if (UpToken[i]<>UpChars[Txt[TxtStartPos]]) then exit;
     inc(i);
     inc(TxtStartPos);
   end;
@@ -486,6 +497,7 @@ end;
 destructor TLinkScanner.Destroy;
 begin
   Clear;
+  KeywordFuncList.Free;
   FIncludeStack.Free;
   FSourceChangeSteps.Free;
   Values.Free;
@@ -594,10 +606,10 @@ begin
       RaiseException('unable to get source with Code='+HexStr(Cardinal(Code),8));
     AddSourceChangeStep(ACode,SrcLog.ChangeStep);
     Src:=SrcLog.Source;
-    UpperSrc:=UpperCaseStr(SrcLog.Source);
     Code:=ACode;
     SrcPos:=1;
     TokenStart:=1;
+    TokenType:=lsttNone;
     SrcLen:=length(Src);
     LastCleanSrcPos:=0;
   end else begin
@@ -610,12 +622,12 @@ var DirStart, DirLen: integer;
 begin
   SrcPos:=CommentInnerStartPos+1;
   DirStart:=SrcPos;
-  while (SrcPos<=SrcLen) and (IsIdentStartChar[UpperSrc[SrcPos]]) do
+  while (SrcPos<=SrcLen) and (IsIdentStartChar[Src[SrcPos]]) do
     inc(SrcPos);
   DirLen:=SrcPos-DirStart;
   if DirLen>255 then DirLen:=255;
-  FDirectiveName:=copy(UpperSrc,DirStart,DirLen);
-  FDirectiveFuncList.DoIt(FDirectiveName);
+  FDirectiveName:=UpperCaseStr(copy(Src,DirStart,DirLen));
+  FDirectiveFuncList.DoIt(Src,DirStart,DirLen);
   SrcPos:=CommentEndPos;
 end;
 
@@ -641,7 +653,7 @@ var
   c1, c2: char;
 begin
   // Skip all spaces and comments
-  //writeln(' TLinkScanner.ReadNextToken SrcPos=',SrcPos,' SrcLen=',SrcLen,' "',copy(Src,SrcPos,5),'" "',copy(UpperSrc,SrcPos,5),'"');
+  //writeln(' TLinkScanner.ReadNextToken SrcPos=',SrcPos,' SrcLen=',SrcLen,' "',copy(Src,SrcPos,5),'"');
   if (SrcPos>SrcLen) then ReturnFromIncludeFile;
   while SrcPos<=SrcLen do begin
     if IsCommentStartChar[Src[SrcPos]] then begin
@@ -668,16 +680,22 @@ begin
     if (SrcPos>SrcLen) then ReturnFromIncludeFile;
   end;
   TokenStart:=SrcPos;
-  if SrcPos>SrcLen then exit;
+  if SrcPos>SrcLen then begin
+    TokenType:=lsttSrcEnd;
+    exit;
+  end;
+  TokenType:=lsttNone;
   // read token
-  c1:=UpperSrc[SrcPos];
+  c1:=Src[SrcPos];
   case c1 of
-    '_','A'..'Z':
+    '_','A'..'Z','a'..'z':
       begin
+        // identifier
         inc(SrcPos);
         while (SrcPos<=SrcLen)
         and (IsIdentChar[Src[SrcPos]]) do
           inc(SrcPos);
+        KeywordFuncList.DoIt(Src,TokenStart,SrcPos-TokenStart);
       end;
     '''','#':
       begin
@@ -714,7 +732,7 @@ begin
           inc(SrcPos);
           while (SrcPos<=SrcLen) and (IsNumberChar[Src[SrcPos]]) do
             inc(SrcPos);
-          if (SrcPos<=SrcLen) and (UpperSrc[SrcPos]='E') then begin
+          if (SrcPos<=SrcLen) and (Src[SrcPos] in ['E','e']) then begin
             // read exponent
             inc(SrcPos);
             if (SrcPos<=SrcLen) and (Src[SrcPos] in ['-','+']) then inc(SrcPos);
@@ -733,8 +751,18 @@ begin
       begin
         inc(SrcPos);
         while (SrcPos<=SrcLen)
-        and (IsHexNumberChar[UpperSrc[SrcPos]]) do
+        and (IsHexNumberChar[Src[SrcPos]]) do
           inc(SrcPos);
+      end;
+    '=':
+      begin
+        inc(SrcPos);
+        TokenType:=lsttEqual;
+      end;
+    '.':
+      begin
+        inc(SrcPos);
+        TokenType:=lsttPoint;
       end;
     else
       inc(SrcPos);
@@ -753,7 +781,7 @@ begin
 end;
 
 procedure TLinkScanner.Scan(TillInterfaceEnd, CheckFilesOnDisk: boolean);
-var LastTokenIsEqual, LastTokenIsEnd: boolean;
+var LastTokenType: TLSTokenType;
   cm: TCompilerMode;
   pc: TPascalCompiler;
   s: string;
@@ -804,9 +832,9 @@ begin
   FMacrosOn:=(Values.Variables['MACROS']<>'0');
   if Src='' then exit;
   // beging scanning
+  InitKeyWordList;
   AddLink(1,SrcPos,Code);
-  LastTokenIsEqual:=false;
-  LastTokenIsEnd:=false;
+  LastTokenType:=lsttNone;
   {$IFDEF CTDEBUG}
   writeln('TLinkScanner.Scan D ',SrcLen);
   {$ENDIF}
@@ -815,21 +843,19 @@ begin
     //writeln('TLinkScanner.Scan E "',copy(Src,TokenStart,SrcPos-TokenStart),'"');
     UpdateCleanedSource(SrcPos-1);
     if (SrcPos<=SrcLen+1) then begin
-      if (not LastTokenIsEqual) and
-        ((UpTokenIs('IMPLEMENTATION')) or (UpTokenIs('INITIALIZATION'))
-          or (UpTokenIs('FINALIZATION'))) then
-            EndOfInterfaceFound:=true;
-      if (LastTokenIsEnd) and (UpTokenIs('.')) then begin
+      if (LastTokenType<>lsttEqual)
+      and (TokenType=lsttEndOfInterface) then begin
+        EndOfInterfaceFound:=true
+      end else if (LastTokenType=lsttEnd) and (TokenType=lsttPoint) then begin
         EndOfInterfaceFound:=true;
         EndOfSourceFound:=true;
         break;
       end;
-      LastTokenIsEqual:=TokenIs('=');
-      LastTokenIsEnd:=UpTokenIs('END');
+      LastTokenType:=TokenType;
     end else
       break;
-  until (SrcPos>SrcLen) or (EndOfSourceFound)
-  or ((ScanTillInterfaceEnd) and (EndOfInterfaceFound));
+  until (SrcPos>SrcLen) or EndOfSourceFound
+  or (ScanTillInterfaceEnd and EndOfInterfaceFound);
   IncreaseChangeStep;
   FForceUpdateNeeded:=false;
   {$IFDEF CTDEBUG}
@@ -975,7 +1001,7 @@ begin
     ATokenLen:=length(AToken);
     if ATokenLen=SrcPos-TokenStart then begin
       for i:=1 to ATokenLen do
-        if AToken[i]<>UpperSrc[TokenStart-1+i] then exit;
+        if AToken[i]<>UpChars[Src[TokenStart-1+i]] then exit;
       Result:=true;
     end;
   end;
@@ -1001,9 +1027,6 @@ begin
   end;
   if SrcLen<>length(Src) then begin // length of current source
     Result:=-4;  exit;
-  end;
-  if UpperSrc<>UpperCaseStr(Src) then begin
-    Result:=-5;  exit;
   end;
   if Values<>nil then begin
     Result:=Values.ConsistencyCheck;
@@ -1199,11 +1222,11 @@ begin
   ValStart:=SrcPos;
   while (SrcPos<=SrcLen) and IsWordChar[Src[SrcPos]] do
     inc(SrcPos);
-  if CompareUpToken('ON',UpperSrc,ValStart,SrcPos) then
+  if CompareUpToken('ON',Src,ValStart,SrcPos) then
     Values.Variables[FDirectiveName]:='1'
-  else if CompareUpToken('OFF',UpperSrc,ValStart,SrcPos) then
+  else if CompareUpToken('OFF',Src,ValStart,SrcPos) then
     Values.Variables[FDirectiveName]:='0'
-  else if CompareUpToken('PRELOAD',UpperSrc,ValStart,SrcPos)
+  else if CompareUpToken('PRELOAD',Src,ValStart,SrcPos)
   and (FDirectiveName='ASSERTIONS') then
     Values.Variables[FDirectiveName]:='PRELOAD'
   else if (FDirectiveName='LOCALSYMBOLS') then
@@ -1212,7 +1235,7 @@ begin
     // ignore link object directive
   else begin
     RaiseExceptionFmt(ctsInvalidFlagValueForDirective,
-        [copy(UpperSrc,ValStart,SrcPos-ValStart),FDirectiveName]);
+        [copy(Src,ValStart,SrcPos-ValStart),FDirectiveName]);
   end;
   Result:=ReadNextSwitchDirective;
 end;
@@ -1232,7 +1255,7 @@ begin
     Values.Undefine(CompilerModeVars[AMode]);
   CompilerMode:=cmFPC;
   // define new mode macro
-  if CompareUpToken('DEFAULT',UpperSrc,ValStart,SrcPos) then begin
+  if CompareUpToken('DEFAULT',Src,ValStart,SrcPos) then begin
     // set mode to initial mode
     for AMode:=Low(TCompilerMode) to High(TCompilerMode) do
       if FInitValues.IsDefined(CompilerModeVars[AMode]) then begin
@@ -1241,7 +1264,7 @@ begin
   end else begin
     ModeValid:=false;
     for AMode:=Low(TCompilerMode) to High(TCompilerMode) do
-      if CompareUpToken(CompilerModeNames[AMode],UpperSrc,ValStart,SrcPos) then
+      if CompareUpToken(CompilerModeNames[AMode],Src,ValStart,SrcPos) then
       begin
         CompilerMode:=AMode;
         Values.Variables[CompilerModeVars[AMode]]:='1';
@@ -1249,7 +1272,7 @@ begin
         break;
       end;
     if not ModeValid then
-      RaiseExceptionFmt(ctsInvalidMode,[copy(UpperSrc,ValStart,SrcPos-ValStart)]);
+      RaiseExceptionFmt(ctsInvalidMode,[copy(Src,ValStart,SrcPos-ValStart)]);
   end;
   Result:=true;
 end;
@@ -1261,12 +1284,12 @@ begin
   if (SrcPos<=SrcLen) and (Src[SrcPos]=',') then begin
     inc(SrcPos);
     DirStart:=SrcPos;
-    while (SrcPos<=SrcLen) and (IsIdentStartChar[UpperSrc[SrcPos]]) do
+    while (SrcPos<=SrcLen) and (IsIdentStartChar[Src[SrcPos]]) do
       inc(SrcPos);
     DirLen:=SrcPos-DirStart;
     if DirLen>255 then DirLen:=255;
-    FDirectiveName:=copy(UpperSrc,DirStart,DirLen);
-    Result:=FDirectiveFuncList.DoIt(FDirectiveName);
+    FDirectiveName:=UpperCaseStr(copy(Src,DirStart,DirLen));
+    Result:=FDirectiveFuncList.DoIt(Src,DirStart,DirLen);
   end else
     Result:=true;
 end;
@@ -1292,9 +1315,9 @@ function TLinkScanner.ReadIdentifier: string;
 var StartPos: integer;
 begin
   StartPos:=SrcPos;
-  if (SrcPos<=SrcLen) and (IsIdentStartChar[UpperSrc[SrcPos]]) then begin
+  if (SrcPos<=SrcLen) and (IsIdentStartChar[Src[SrcPos]]) then begin
     inc(SrcPos);
-    while (SrcPos<=SrcLen) and (IsIdentChar[UpperSrc[SrcPos]]) do
+    while (SrcPos<=SrcLen) and (IsIdentChar[Src[SrcPos]]) do
       inc(SrcPos);
     Result:=copy(Src,StartPos,SrcPos-StartPos);
   end else
@@ -1305,11 +1328,11 @@ function TLinkScanner.ReadUpperIdentifier: string;
 var StartPos: integer;
 begin
   StartPos:=SrcPos;
-  if (SrcPos<=SrcLen) and (IsIdentStartChar[UpperSrc[SrcPos]]) then begin
+  if (SrcPos<=SrcLen) and (IsIdentStartChar[Src[SrcPos]]) then begin
     inc(SrcPos);
-    while (SrcPos<=SrcLen) and (IsIdentChar[UpperSrc[SrcPos]]) do
+    while (SrcPos<=SrcLen) and (IsIdentChar[Src[SrcPos]]) do
       inc(SrcPos);
-    Result:=copy(UpperSrc,StartPos,SrcPos-StartPos);
+    Result:=UpperCaseStr(copy(Src,StartPos,SrcPos-StartPos));
   end else
     Result:='';
 end;
@@ -1590,7 +1613,7 @@ var Option, c: char;
 begin
   inc(IfLevel);
   inc(SrcPos);
-  Option:=UpperSrc[SrcPos];
+  Option:=UpChars[Src[SrcPos]];
   if (IsWordChar[Option]) and (CompilerSwitchesNames[Option]<>'')
   then begin
     inc(SrcPos);
@@ -1680,6 +1703,37 @@ begin
     AddLink(CleanedLen+1,SrcPos,Code);
   end;
   Result:=SrcPos<=SrcLen;
+end;
+
+procedure TLinkScanner.InitKeyWordList;
+begin
+  if KeywordFuncList<>nil then exit;
+  KeywordFuncList:=TKeyWordFunctionList.Create;
+  with KeywordFuncList do begin
+    Add('END'            ,@DoEndToken);
+    Add('IMPLEMENTATION' ,@DoEndOfInterfaceToken);
+    Add('INITIALIZIATION',@DoEndOfInterfaceToken);
+    Add('FINALIZATION'   ,@DoEndOfInterfaceToken);
+    DefaultKeyWordFunction:=@DoDefaultIdentToken;
+  end;
+end;
+
+function TLinkScanner.DoEndToken: boolean;
+begin
+  TokenType:=lsttEnd;
+  Result:=true;
+end;
+
+function TLinkScanner.DoDefaultIdentToken: boolean;
+begin
+  TokenType:=lsttIdentifier;
+  Result:=true;
+end;
+
+function TLinkScanner.DoEndOfInterfaceToken: boolean;
+begin
+  TokenType:=lsttEndOfInterface;
+  Result:=true;
 end;
 
 procedure TLinkScanner.SkipTillEndifElse;
