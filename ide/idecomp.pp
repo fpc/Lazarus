@@ -23,11 +23,22 @@ unit idecomp;
 
 {$mode objfpc}{$H+}
 
+{ $DEFINE DATABASE}
+{ $DEFINE INTERBASE}
+
 interface
 
 uses
   Classes, LclLinux, StdCtrls, Forms, Buttons, Menus, ComCtrls,
-  Spin, SysUtils, Controls, CompReg, Graphics, ExtCtrls, Dialogs; //,db;
+  Spin, SysUtils, Controls, CompReg, Graphics, ExtCtrls, Dialogs
+
+{$IFDEF DATABASE}
+,db
+{$ENDIF}
+{$IFDEF INTERBASE}
+,interbase
+{$ENDIF}
+;
 
 
 type
@@ -301,10 +312,13 @@ begin
 
   RegisterComponents('Samples','Spin',[TSpinEdit]);
 
-//  RegisterComponents('Data Access','Db',[TDatasource,TDatabase]);
-
-//  RegisterComponents('Interbase Data Access','Interbase',[TIBStoredProc,TIBQuery,TIBDatabase]);
-
+{$IFDEF DATABASE}
+  RegisterComponents('Data Access','Db',[TDatasource,TDatabase]);
+{$ENDIF}
+{$IFDEF INTERBASE}
+//Interbase
+  RegisterComponents('Interbase Data Access','Interbase',[TIBStoredProc,TIBQuery,TIBDatabase]);
+{$ENDIF}
   // unselectable components
   // components that are streamed but not selectable in the IDE
   RegisterComponents('','ExtCtrls',[TPage]);

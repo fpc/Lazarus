@@ -424,7 +424,6 @@ begin
                           //trying to prevent some key actions....
                           //this didn't work....
                           //if not (csAcceptsControls in TControl(Sender).ControlStyle) then gtk_widget_set_sensitive(PgtkWidget(TWinControl(sender).Handle),False);
-                          
                           if (Sender is TCustomComboBox) then
                                 begin
                                 gtk_combo_disable_activate(PGTKCombo(TWinControl(sender).handle));
@@ -3359,8 +3358,8 @@ end;
  { =============================================================================
 
   $Log$
-  Revision 1.76  2001/11/21 19:32:33  lazarus
-  TComboBox can now be moved in FormEditor
+  Revision 1.77  2001/11/26 14:19:34  lazarus
+  Added some code to make the interbae components work better.
   Shane
 
   Revision 1.75  2001/11/21 14:55:33  lazarus
