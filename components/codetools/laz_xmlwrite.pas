@@ -202,9 +202,9 @@ const
   AmpStr = '&amp;';
 begin
   if c = '"' then
-    wrt(QuotStr, length(QuotStr))
+    wrtStr(QuotStr)
   else if c = '&' then
-    wrt(AmpStr, length(AmpStr))
+    wrtStr(AmpStr)
   else
     wrt(c,1);
 end;
@@ -216,11 +216,11 @@ const
   AmpStr = '&amp;';
 begin
   if c = '<' then
-    wrt(ltStr, length(ltStr))
+    wrtStr(ltStr)
   else if c = '>' then
-    wrt(gtStr, length(gtStr))
+    wrtStr(gtStr)
   else if c = '&' then
-    wrt(AmpStr, length(AmpStr))
+    wrtStr(AmpStr)
   else
     wrt(c,1);
 end;
@@ -479,6 +479,9 @@ end.
 
 {
   $Log$
+  Revision 1.3  2002/08/04 07:44:44  lazarus
+  MG: fixed xml reading writing of special chars
+
   Revision 1.2  2002/07/30 14:36:28  lazarus
   MG: accelerated xmlread and xmlwrite
 

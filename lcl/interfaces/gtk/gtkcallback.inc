@@ -619,8 +619,8 @@ begin
   //' GDK_BUTTON_RELEASE_MASK=',HexStr(Cardinal(GDK_BUTTON_RELEASE_MASK),8),
   //' Window=',HexStr(Cardinal(Widget^.Window),8)
   //);
-  if GetFixedWidget(Widget)<>nil then
-    writeln('DDD2 ClientWindow=',HexStr(Cardinal(PGtkWidget(GetFixedWidget(Widget))^.Window),8));
+  //if GetFixedWidget(Widget)<>nil then
+  //  writeln('DDD2 ClientWindow=',HexStr(Cardinal(PGtkWidget(GetFixedWidget(Widget))^.Window),8));
 
   EventTrace('Mouse button Press', data);
   Assert(False, Format('Trace:[gtkMouseBtnPress] ', []));
@@ -2169,6 +2169,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.95  2002/08/04 07:44:44  lazarus
+  MG: fixed xml reading writing of special chars
+
   Revision 1.94  2002/08/04 07:09:27  lazarus
   MG: fixed client events
 

@@ -324,6 +324,7 @@ begin
     begin
       FlushStringBuffer;
       ParseReference(attr);
+      OldBuf := buf;
     end else
     begin
       Inc(buf);
@@ -1173,6 +1174,9 @@ end.
 
 {
   $Log$
+  Revision 1.3  2002/08/04 07:44:44  lazarus
+  MG: fixed xml reading writing of special chars
+
   Revision 1.2  2002/07/30 14:36:28  lazarus
   MG: accelerated xmlread and xmlwrite
 
