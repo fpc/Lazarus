@@ -20,13 +20,13 @@ msgstr " Proprietà voce "
 msgid " Items "
 msgstr " Voci "
 
-#: objinspstrconsts:oisitemsselected
-msgid " items selected"
-msgstr " voci selezionate"
-
 #: objinspstrconsts:sccsilcmbimgsel
 msgid " Selected image "
 msgstr " Immagine selezionata "
+
+#: objinspstrconsts:oisitemsselected
+msgid "%u items selected"
+msgstr ""
 
 #: objinspstrconsts:oiscadd
 msgid "&Add"

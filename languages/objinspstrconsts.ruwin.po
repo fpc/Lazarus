@@ -20,13 +20,13 @@ msgstr " Свойство элемента "
 msgid " Items "
 msgstr " Элементы "
 
-#: objinspstrconsts:oisitemsselected
-msgid " items selected"
-msgstr " элементов выбрано"
-
 #: objinspstrconsts:sccsilcmbimgsel
 msgid " Selected image "
 msgstr " Выбранный рисунок "
+
+#: objinspstrconsts:oisitemsselected
+msgid "%u items selected"
+msgstr ""
 
 #: objinspstrconsts:oiscadd
 msgid "&Add"
@@ -86,11 +86,11 @@ msgstr "Свойства"
 
 #: objinspstrconsts:cesstringgrideditor2
 msgid "StringGrid Editor"
-msgstr ""
+msgstr "Редактор Сетки строк"
 
 #: objinspstrconsts:cesstringgrideditor
 msgid "StringGrid Editor ..."
-msgstr ""
+msgstr "Редактор Сетки строк ..."
 
 #: objinspstrconsts:sccslvedtbtnaddsub
 msgid "Sub item"
@@ -98,5 +98,5 @@ msgstr "Подэлемент"
 
 #: objinspstrconsts:oisunknown
 msgid "Unknown"
-msgstr ""
+msgstr "Неизвестный"
 

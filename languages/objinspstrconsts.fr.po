@@ -10,13 +10,13 @@ msgstr "Propriété de l'élément"
 msgid " Items "
 msgstr "Eléments"
 
-#: objinspstrconsts:oisitemsselected
-msgid " items selected"
-msgstr "Sélection"
-
 #: objinspstrconsts:sccsilcmbimgsel
 msgid " Selected image "
 msgstr "Image sélectionnée"
+
+#: objinspstrconsts:oisitemsselected
+msgid "%u items selected"
+msgstr ""
 
 #: objinspstrconsts:oiscadd
 msgid "&Add"

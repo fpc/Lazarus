@@ -5128,8 +5128,16 @@ msgstr "Halt"
 msgid "Stop after number of errors:"
 msgstr ""
 
+#: lazarusidestrconsts:lisstopdebugging
+msgid "Stop Debugging?"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecstopprogram
 msgid "stop program"
+msgstr ""
+
+#: lazarusidestrconsts:lisstopthedebugging
+msgid "Stop the debugging?"
 msgstr ""
 
 #: lazarusidestrconsts:dlgcdtstoredpostfix

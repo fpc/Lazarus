@@ -124,7 +124,7 @@ msgstr "Пустой"
 
 #: lclstrconsts:rscalculator
 msgid "Calculator"
-msgstr ""
+msgstr "Калькулятор"
 
 #: lclstrconsts:rscannotfocus
 msgid "Can not focus"
@@ -268,7 +268,7 @@ msgstr "Неправильный формат потока"
 
 #: lclstrconsts:rslistindexexceedsbounds
 msgid "List index exceeds bounds (%d)"
-msgstr ""
+msgstr "Индекс списка вне диапазона (%d)"
 
 #: lclstrconsts:rslistmustbeempty
 msgid "List must be empty"
@@ -332,7 +332,7 @@ msgstr "свойство ScrollBar вне диапазона"
 
 #: lclstrconsts:rspickdate
 msgid "Select a date"
-msgstr ""
+msgstr "Выберите дату"
 
 #: lclstrconsts:rsselectfonttitle
 msgid "Select a font"
@@ -344,7 +344,7 @@ msgstr "Выбрать цвет"
 
 #: lclstrconsts:rsfdselectdirectory
 msgid "Select Directory"
-msgstr ""
+msgstr "Выберите каталог"
 
 #: lclstrconsts:smenunotfound
 msgid "Sub-menu is not in menu"

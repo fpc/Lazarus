@@ -119,6 +119,8 @@ type
     procedure DollarProc;
     procedure DotProc;
     procedure SetSecondKeys(const Value: TStrings);
+  protected
+    function GetIdentChars: TSynIdentChars; override;
   public
     {$IFNDEF SYN_CPPB_1} class {$ENDIF}                                  
     function GetLanguageName: string; override;
@@ -774,6 +776,11 @@ begin
     end;
   fSecondKeys.Assign(Value);
   DefHighLightChange(nil);
+end;
+
+function TSynUNIXShellScriptSyn.GetIdentChars: TSynIdentChars;
+begin
+  Result := ['_', '0'..'9', 'a'..'z', 'A'..'Z'];
 end;
 
 /////TL 11-06-2003: Moved from below

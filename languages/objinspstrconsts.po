@@ -3,7 +3,7 @@ msgid "Object Inspector"
 msgstr ""
 
 #: objinspstrconsts:oisitemsselected
-msgid " items selected"
+msgid "%u items selected"
 msgstr ""
 
 #: objinspstrconsts:oiscadd

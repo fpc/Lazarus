@@ -3,8 +3,8 @@ msgstr ""
 ""
 "Last-Translator: Vasily <vvi@localhost.localdomain>\n"
 "PO-Revision-Date: 2003-01-15 22:38+0300\n"
-"Language-Team: ru_RU.koi8r <ru@li.org>\n"
-"Content-Type: text/plain; charset=KOI8-R\n"
+"Language-Team: ru_RU.cp1251 \n"
+"Content-Type: text/plain; charset=CP1251\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 0.9.6\n"
 
@@ -20,13 +20,13 @@ msgstr " Свойство элемента "
 msgid " Items "
 msgstr " Элементы "
 
-#: objinspstrconsts:oisitemsselected
-msgid " items selected"
-msgstr " элементов выбрано"
-
 #: objinspstrconsts:sccsilcmbimgsel
 msgid " Selected image "
 msgstr " Выбранный рисунок "
+
+#: objinspstrconsts:oisitemsselected
+msgid "%u items selected"
+msgstr ""
 
 #: objinspstrconsts:oiscadd
 msgid "&Add"
@@ -86,11 +86,11 @@ msgstr "Свойства"
 
 #: objinspstrconsts:cesstringgrideditor2
 msgid "StringGrid Editor"
-msgstr ""
+msgstr "Редактор Сетки строк"
 
 #: objinspstrconsts:cesstringgrideditor
 msgid "StringGrid Editor ..."
-msgstr ""
+msgstr "Редактор Сетки строк ..."
 
 #: objinspstrconsts:sccslvedtbtnaddsub
 msgid "Sub item"
@@ -98,5 +98,5 @@ msgstr "Подэлемент"
 
 #: objinspstrconsts:oisunknown
 msgid "Unknown"
-msgstr ""
+msgstr "Неизвестный"
 

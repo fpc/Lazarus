@@ -1,6 +1,6 @@
 #: lazarusidestrconsts:lisdonotshowsplashscreen
 msgid "                      Do not show splash screen"
-msgstr ""
+msgstr "                      Не показывать заставки"
 
 #: lazarusidestrconsts:lisprimaryconfigdirectorywherelazarusstoresitsconfig
 msgid "                      primary config directory, where Lazarus stores its config files. Default is "
@@ -96,7 +96,7 @@ msgstr "%s/только чтение"
 
 #: lazarusidestrconsts:lispkgmangbothpackagesareconnectedthismeanseitheronepackageu
 msgid "%sBoth packages are connected. This means, either one package uses the other, or they are both used by a third package."
-msgstr ""
+msgstr "%sОба пакета связаны. Это значит, что либо один из них использует другой, либо оба они используются третьим пакетом."
 
 #: lazarusidestrconsts:lisoipdescriptiondescription
 msgid "%sDescription:  %s"
@@ -292,7 +292,7 @@ msgstr "Добавить шаблон кода"
 
 #: lazarusidestrconsts:lismenuaddtoproject
 msgid "Add editor file to Project"
-msgstr ""
+msgstr "Добавить файл редактора к Проекту"
 
 #: lazarusidestrconsts:lisa2paddfile
 msgid "Add File"
@@ -420,7 +420,7 @@ msgstr "Двусмысленное имя модуля"
 
 #: lazarusidestrconsts:lispkgmangambigiousunitsfound
 msgid "Ambigious units found"
-msgstr ""
+msgstr "Найдены модули с одинаково опознаваемыми именами"
 
 #: lazarusidestrconsts:lisa2pancestortype
 msgid "Ancestor Type"
@@ -660,7 +660,7 @@ msgstr "Собрать IDE"
 
 #: lazarusidestrconsts:lisbuildideintf
 msgid "Build IDE Interface"
-msgstr ""
+msgstr "Собрать интерфейс IDE"
 
 #: lazarusidestrconsts:lisbuildjitform
 msgid "Build JIT Form"
@@ -740,7 +740,7 @@ msgstr "С учетом регистра"
 
 #: lazarusidestrconsts:rslanguagecatalan
 msgid "Catalan"
-msgstr ""
+msgstr "Каталанский"
 
 #: lazarusidestrconsts:dlgcentercursorline
 msgid "Center Cursor Line"
@@ -848,7 +848,7 @@ msgstr "Очистить всё"
 
 #: lazarusidestrconsts:lismenucleandirectory
 msgid "Clean directory"
-msgstr ""
+msgstr "Очистить каталог"
 
 #: lazarusidestrconsts:liscleanlazarussource
 msgid "Clean Lazarus Source"
@@ -856,7 +856,7 @@ msgstr "Очистить исходники Lazarus"
 
 #: lazarusidestrconsts:liscldircleansubdirectories
 msgid "Clean sub directories"
-msgstr ""
+msgstr "Очистить подкаталоги"
 
 #: lazarusidestrconsts:lislazbuildcleanbuild
 msgid "Clean+Build"
@@ -1076,7 +1076,7 @@ msgstr "Команды компонентов меню"
 
 #: lazarusidestrconsts:srkmecconfigbuildfile
 msgid "config build file"
-msgstr ""
+msgstr "файл настроек сборки"
 
 #: lazarusidestrconsts:dlgconfigfiles
 msgid "Config Files:"
@@ -1304,7 +1304,7 @@ msgstr "Пользовательский"
 
 #: lazarusidestrconsts:liskeycatcustom
 msgid "Custom commands"
-msgstr ""
+msgstr "Команды пользователя"
 
 #: lazarusidestrconsts:lismakeresstrcustomidentifier
 msgid "Custom Identifier"
@@ -1316,7 +1316,7 @@ msgstr "Пользовательская позиция"
 
 #: lazarusidestrconsts:srkmeccustomtool
 msgid "Custom tool %d"
-msgstr ""
+msgstr "Инструмент пользователя %d"
 
 #: lazarusidestrconsts:lismenucut
 msgid "Cut"
@@ -1728,7 +1728,7 @@ msgstr "ElseIf"
 
 #: lazarusidestrconsts:lismenuencloseselection
 msgid "Enclose selection"
-msgstr ""
+msgstr "Заключить выделение в..."
 
 #: lazarusidestrconsts:srvk_end
 msgid "End"
@@ -2944,7 +2944,7 @@ msgstr "Kana"
 
 #: lazarusidestrconsts:liscldirkeepalltextfiles
 msgid "Keep all text files"
-msgstr ""
+msgstr "Оставлять все текстовые файлы"
 
 #: lazarusidestrconsts:dlgkeepcaretx
 msgid "Keep Caret X"
@@ -2956,7 +2956,7 @@ msgstr "Хранить нек. переменные в регистрах"
 
 #: lazarusidestrconsts:liscldirkeepfilesmatchingfilter
 msgid "Keep files matching filter"
-msgstr ""
+msgstr "Сохранять файлы, соотв. фильтру"
 
 #: lazarusidestrconsts:dlgforwardprocskeeporder
 msgid "Keep order of procedures"
@@ -3644,7 +3644,7 @@ msgstr "Только выбранное"
 
 #: lazarusidestrconsts:lisfindfileonlytextfiles
 msgid "Only text files"
-msgstr ""
+msgstr "Только текстовые файлы"
 
 #: lazarusidestrconsts:lismenuopen
 msgid "Open"
@@ -3876,7 +3876,7 @@ msgstr "Параметры пакета"
 
 #: lazarusidestrconsts:lispkgdefssrcdirmark
 msgid "Package Source Directory Mark"
-msgstr ""
+msgstr "Метка каталога исходника пакета"
 
 #: lazarusidestrconsts:lispkgmangpackage
 msgid "Package: %s"
@@ -4116,7 +4116,7 @@ msgstr "Путь исходников проекта"
 
 #: lazarusidestrconsts:lisedtdefprojectsrcpath
 msgid "Project SrcPath"
-msgstr ""
+msgstr "Путь исх. проекта"
 
 #: lazarusidestrconsts:lisprojectunitpath
 msgid "Project Unit Path"
@@ -4284,7 +4284,7 @@ msgstr "Удалить файл?"
 
 #: lazarusidestrconsts:liscldirremovefilesmatchingfilter
 msgid "Remove files matching filter"
-msgstr ""
+msgstr "Удалить файлы по фильтру"
 
 #: lazarusidestrconsts:lismenuremovefromproject
 msgid "Remove from Project"
@@ -4356,7 +4356,7 @@ msgstr "Требуемые пакеты"
 
 #: lazarusidestrconsts:lismenurescanfpcsourcedirectory
 msgid "Rescan FPC source directory"
-msgstr ""
+msgstr "Пересмотреть каталог исходников FPC"
 
 #: lazarusidestrconsts:lismenuresetdebugger
 msgid "Reset debugger"
@@ -4472,7 +4472,7 @@ msgstr "Русский"
 
 #: lazarusidestrconsts:rslanguagerussianwin
 msgid "Russian(CP1251)"
-msgstr ""
+msgstr "Русский(CP1251)"
 
 #: lazarusidestrconsts:dlgbckupsubdir
 msgid "Same name (in subdirectory)"
@@ -4576,7 +4576,7 @@ msgstr "Поиск сообщений make в выводе"
 
 #: lazarusidestrconsts:lisa2pupdateunitnameandhasregisterprocedure
 msgid "Scan Unit for Unit Name and Register procedure"
-msgstr ""
+msgstr "Искать в модуле имя и процедуру Register"
 
 #: lazarusidestrconsts:dlgscope
 msgid "Scope"
@@ -4640,11 +4640,11 @@ msgstr "Строка поиска '%s' не найдена!"
 
 #: lazarusidestrconsts:dlgsearchabort
 msgid "Search terminated by user."
-msgstr ""
+msgstr "Поиск прерван пользователем."
 
 #: lazarusidestrconsts:dlgsearchcaption
 msgid "Searching..."
-msgstr ""
+msgstr "Поиск..."
 
 #: lazarusidestrconsts:lisuesearching
 msgid "Searching: %s"
@@ -4860,7 +4860,7 @@ msgstr "Показать все"
 
 #: lazarusidestrconsts:liscoshowallmessages
 msgid "Show all messages"
-msgstr ""
+msgstr "Показать все сообщения"
 
 #: lazarusidestrconsts:dlgshowprocserror
 msgid "Show all procs on error"
@@ -4932,7 +4932,7 @@ msgstr "Показать подсказки"
 
 #: lazarusidestrconsts:dlghintsunused
 msgid "Show Hints for unused units in main source"
-msgstr ""
+msgstr "Подсказки для ненужных модулей в главном исходнике"
 
 #: lazarusidestrconsts:dlgshowlinenumbers
 msgid "Show line numbers"
@@ -4972,7 +4972,7 @@ msgstr "Показать предупреждения"
 
 #: lazarusidestrconsts:liscldirsimplesyntaxeginsteadof
 msgid "Simple Syntax (e.g. * instead of .*)"
-msgstr ""
+msgstr "Простой синтаксис (напр., * вместо .*)"
 
 #: lazarusidestrconsts:fdmsizeword
 msgid "Size"
@@ -5118,9 +5118,17 @@ msgstr "Останов"
 msgid "Stop after number of errors:"
 msgstr "Останов после числа ошибок"
 
+#: lazarusidestrconsts:lisstopdebugging
+msgid "Stop Debugging?"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecstopprogram
 msgid "stop program"
 msgstr "остановить программу"
+
+#: lazarusidestrconsts:lisstopthedebugging
+msgid "Stop the debugging?"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcdtstoredpostfix
 msgid "Stored postfix"
@@ -5212,7 +5220,7 @@ msgstr "ТАБ сделать пробелами в выделенном"
 
 #: lazarusidestrconsts:listargetcpu
 msgid "Target CPU"
-msgstr ""
+msgstr "Для ЦП:"
 
 #: lazarusidestrconsts:lislazbuildtargetdirectory
 msgid "Target Directory:"
@@ -5236,7 +5244,7 @@ msgstr "Для какой ОС"
 
 #: lazarusidestrconsts:liscotargetosspecificoptions
 msgid "Target OS specific options"
-msgstr ""
+msgstr "Специфические параметры ОС"
 
 #: lazarusidestrconsts:lislazbuildtargetos
 msgid "Target OS:"
@@ -5644,7 +5652,7 @@ msgstr "В каталоге есть и другие файлы с таким же именем,%sотличающиеся только р
 
 #: lazarusidestrconsts:lispkgmangtherearetwounitswiththesamename1from2from
 msgid "There are two units with the same name:%s%s1. %s%s%s from %s%s2. %s%s%s from %s%s%s"
-msgstr ""
+msgstr "Есть два модуля с одинаковым именем:%s%s1. %s%s%s из %s%s2. %s%s%s из %s%s%s"
 
 #: lazarusidestrconsts:lispkgmangthereisacircleintherequiredpackages
 msgid "There is a circle in the required packages. See package graph."
@@ -5656,11 +5664,11 @@ msgstr "На диске есть файл с таким же именем и похожим расширением%sФайл: %s%sПо
 
 #: lazarusidestrconsts:lispkgmangthereisafpcunitwiththesamenameasapackage
 msgid "There is a FPC unit with the same name as a package:%s%s%s%s%s%s"
-msgstr ""
+msgstr "Есть модуль FPC с таким же именем, как и пакет:%s%s%s%s%s%s"
 
 #: lazarusidestrconsts:lispkgmangthereisafpcunitwiththesamenamefrom
 msgid "There is a FPC unit with the same name as:%s%s%s%s%s from %s%s%s"
-msgstr ""
+msgstr "Есть модуль FPC с таким же именем, как:%s%s%s%s%s из %s%s%s"
 
 #: lazarusidestrconsts:lisexttoolthereisamaximumoftools
 msgid "There is a maximum of %s tools."
@@ -5672,7 +5680,7 @@ msgstr "В проекте есть модуль с именем %s%s%s.%sВыберите другое имя"
 
 #: lazarusidestrconsts:lispkgmangthereisaunitwiththesamenameasapackage1from2
 msgid "There is a unit with the same name as a package:%s%s1. %s%s%s from %s%s2. %s%s%s%s"
-msgstr ""
+msgstr "Есть модуль с тем же именем, что и пакет: %s%s1. %s%s%s из %s%s2. %s%s%s%s"
 
 #: lazarusidestrconsts:listhereisalreadyaformwiththename
 msgid "There is already a form with the name %s%s%s"
@@ -6356,7 +6364,7 @@ msgstr "Виртуальный модуль"
 
 #: lazarusidestrconsts:lisaf2pisvirtualunit
 msgid "Virtual unit (source is not in package)"
-msgstr ""
+msgstr "Виртуальный модуль (исходник не в пакете)"
 
 #: lazarusidestrconsts:dlgvisiblegutter
 msgid "Visible gutter"

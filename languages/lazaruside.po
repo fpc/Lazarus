@@ -1222,6 +1222,14 @@ msgstr ""
 msgid "Unable to rename method. Plz fix the error shown in the message window."
 msgstr ""
 
+#: lazarusidestrconsts:lisstopdebugging
+msgid "Stop Debugging?"
+msgstr ""
+
+#: lazarusidestrconsts:lisstopthedebugging
+msgid "Stop the debugging?"
+msgstr ""
+
 #: lazarusidestrconsts:lisresourcefilecomment
 msgid "This is an automatically generated lazarus resource file"
 msgstr ""

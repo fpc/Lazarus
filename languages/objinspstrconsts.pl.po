@@ -20,13 +20,13 @@ msgstr " W³a¶ciwo¶æ elementu "
 msgid " Items "
 msgstr " Elementy "
 
-#: objinspstrconsts:oisitemsselected
-msgid " items selected"
-msgstr " elementów wybranych"
-
 #: objinspstrconsts:sccsilcmbimgsel
 msgid " Selected image "
 msgstr " Wybrany obrazek "
+
+#: objinspstrconsts:oisitemsselected
+msgid "%u items selected"
+msgstr ""
 
 #: objinspstrconsts:oiscadd
 msgid "&Add"

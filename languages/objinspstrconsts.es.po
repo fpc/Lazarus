@@ -10,12 +10,12 @@ msgstr ""
 msgid " Items "
 msgstr ""
 
-#: objinspstrconsts:oisitemsselected
-msgid " items selected"
-msgstr " elementos seleccionados"
-
 #: objinspstrconsts:sccsilcmbimgsel
 msgid " Selected image "
+msgstr ""
+
+#: objinspstrconsts:oisitemsselected
+msgid "%u items selected"
 msgstr ""
 
 #: objinspstrconsts:oiscadd

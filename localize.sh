@@ -42,7 +42,7 @@ CodeTools_RST=`find components/units -name codetoolsstrconsts.rst | xargs ls -1t
 rstconv -i $CodeTools_RST \
   -o components/codetools/languages/codetools.po
 ./tools/updatepofiles components/codetools/languages/codetools.po
-for lang in de fr pl it ca; do
+for lang in de fr pl it ca ru ruwin; do
   msgfmt components/codetools/languages/codetools.$lang.po \
     -o components/codetools/languages/codetools.$lang.mo
 done
@@ -52,7 +52,7 @@ SynEdit_RST=`find components/units -name syneditstrconst.rst | xargs ls -1t | he
 rstconv -i $SynEdit_RST \
   -o components/synedit/languages/synedit.po
 ./tools/updatepofiles components/synedit/languages/synedit.po
-for lang in de fr pl ca; do
+for lang in de fr pl ca ru ruwin; do
   msgfmt components/synedit/languages/synedit.$lang.po \
     -o components/synedit/languages/synedit.$lang.mo
 done
@@ -62,7 +62,7 @@ SynMacroRec_RST=`find components/units -name synmacrorecorder.rst | xargs ls -1t
 rstconv -i $SynMacroRec_RST \
   -o components/synedit/languages/synmacrorecorder.po
 ./tools/updatepofiles components/synedit/languages/synmacrorecorder.po
-for lang in de fr ru pl ca; do
+for lang in de fr ru ruwin pl ca; do
   msgfmt components/synedit/languages/synmacrorecorder.$lang.po \
     -o components/synedit/languages/synmacrorecorder.$lang.mo || true
 done
