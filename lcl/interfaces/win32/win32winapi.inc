@@ -1742,6 +1742,7 @@ begin
   {BitmapInfo.bmiHeader.biSizeImage := 0;}
 
   hScreenDC := Windows.GetDC(0);
+  MaskBitmap := 0;
   Bitmap := Windows.CreateDIBitmap(hScreenDC, Windows.TBitmapInfoHeader(BitmapInfo.bmiHeader), CBM_INIT, RawImage.Data,
     Windows.TBitmapInfo(BitmapInfo), DIB_RGB_COLORS);
   Result := Bitmap <> 0;
@@ -3077,6 +3078,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.136  2005/02/07 10:21:45  micha
+  properly initialize maskbitmap to 0, not always assigned
+
   Revision 1.135  2005/02/05 20:40:17  vincents
   SetCapture uses HWND as parameter and result type
 
