@@ -1281,7 +1281,7 @@ end;
 
   Add a childwidget onto a client area (fixed or layout widget).
 ------------------------------------------------------------------------------}
-Procedure FixedPutControl(Parent, Child : PGTKWIdget; Left, Top : Longint);
+Procedure FixedPutControl(Parent, Child : PGTKWidget; Left, Top : Longint);
 
   procedure RaiseInvalidFixedWidget;
   begin
@@ -4069,6 +4069,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.169  2003/04/20 20:32:40  mattias
+  implemented removing, re-adding, updating project dependencies
+
   Revision 1.168  2003/04/04 14:59:40  ajgenius
   started fixin for gtk2
 
