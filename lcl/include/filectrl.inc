@@ -431,7 +431,7 @@ end;
 function FileIsWritable(const AFilename: string): boolean;
 begin
   {$IFDEF win32}
-  Result:=((FileGetAttr(AFilename) and faReadOnly)>0);
+  Result:=((FileGetAttr(AFilename) and faReadOnly)=0);
   {$ELSE}
   Result:={$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.Access(
     AFilename,{$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.W_OK);
@@ -886,6 +886,9 @@ end;
 
 {
   $Log$
+  Revision 1.29  2003/09/12 07:17:47  mattias
+  fixed win32 FileIsWritable
+
   Revision 1.28  2003/09/02 21:32:56  mattias
   implemented TOpenPictureDialog
 
