@@ -607,8 +607,6 @@ type
     procedure DoStartDrag(var DragObject: TDragObject); dynamic;
     procedure DragOver(Source: TObject; X,Y : Integer; State : TDragState; var Accept:Boolean); dynamic;
     procedure DragCanceled; dynamic;
-    procedure CreateComponent(AOwner : TComponent);
-    procedure DestroyComponent;
     procedure DoEndDrag(Target: TObject; X,Y : Integer); dynamic;
     procedure InvalidateControl(IsVisible, IsOpaque : Boolean);
     procedure InvalidateControl(IsVisible, IsOpaque, IgnoreWinControls: Boolean);
@@ -805,6 +803,8 @@ type
     procedure CMShowingChanged(var Message: TLMessage); message CM_SHOWINGCHANGED;
     procedure CMVisibleChanged(var TheMessage: TLMessage); message CM_VISIBLECHANGED;
     procedure CreateSubClass(var Params: TCreateParams;ControlClassName: PChar);
+    procedure CreateComponent(AOwner: TComponent);
+    procedure DestroyComponent;
     procedure DoConstraintsChange(Sender : TObject); override;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight : integer); override;
     procedure DoAutoSize; Override;
@@ -1060,7 +1060,7 @@ var
 function CNSendMessage(LM_Message : integer; Sender : TObject;
   Data : pointer) : integer;
 begin
-  result := SendMsgToInterface(LM_Message, Sender, Data);
+  Result := SendMsgToInterface(LM_Message, Sender, Data);
 end;
 
 {------------------------------------------------------------------------------}
@@ -1434,6 +1434,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.97  2002/12/27 17:12:37  mattias
+  added more Delphi win32 compatibility functions
+
   Revision 1.96  2002/12/25 10:21:05  mattias
   made Form.Close more Delphish, added some windows compatibility functions
 
