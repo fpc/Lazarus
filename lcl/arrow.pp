@@ -26,7 +26,7 @@
 @author(Shane Miller)
 @created(05 Dev 2001)
 }
-unit arrow;
+unit Arrow;
 
 {$mode objfpc}{$H+}
 

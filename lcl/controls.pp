@@ -39,8 +39,9 @@ interface
 {$ENDIF}
 
 uses
-  Classes, SysUtils, vclglobals, LCLType, LCLProc, GraphType, Graphics,
-  LMessages, LCLLinux, InterfaceBase, ImgList, UTrace, Menus, ActnList;
+  Classes, SysUtils, LCLStrConsts, vclglobals, LCLType, LCLProc,
+  GraphType, Graphics, LMessages, LCLLinux, InterfaceBase, ImgList, UTrace,
+  Menus, ActnList;
 
 
 const
@@ -1443,6 +1444,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.105  2003/03/11 07:46:43  mattias
+  more localization for gtk- and win32-interface and lcl
+
   Revision 1.104  2003/03/09 17:44:12  mattias
   finshed Make Resourcestring dialog and implemented TToggleBox
 

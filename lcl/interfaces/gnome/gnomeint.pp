@@ -22,7 +22,7 @@
  *****************************************************************************
  }
 
-unit GNOMEInt;
+unit GnomeInt;
 
 {$mode objfpc}
 {$LONGSTRINGS ON}
@@ -246,6 +246,9 @@ end.
 
 {
   $Log$
+  Revision 1.16  2003/03/11 07:46:44  mattias
+  more localization for gtk- and win32-interface and lcl
+
   Revision 1.15  2002/02/09 01:48:23  mattias
   renamed TinterfaceObject.Init to AppInit and TWinControls can now contain childs in gtk
 

@@ -1,3 +1,5 @@
+// included by controls.pp
+
 {
  *****************************************************************************
  *                                                                           *
@@ -27,7 +29,7 @@ begin
   Height := 500;
   Width := 300;
 
-AddControl;
+  AddControl;
 end;
 
 {------------------------------------------------------------------------------}
@@ -35,5 +37,8 @@ end;
 {------------------------------------------------------------------------------}
 destructor TScrolledWindow.Destroy;
 begin
- inherited Destroy;
+  inherited Destroy;
 end;
+
+// included by controls.pp
+

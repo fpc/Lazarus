@@ -1,3 +1,4 @@
+// included by vclglobals.pp
 {
   $Id$
 
@@ -101,9 +102,13 @@ const
   key_Escape    = $1b;
   key_Delete    = $7f;
 
+// included by vclglobals.pp
 
 {
   $Log$
+  Revision 1.3  2003/03/11 07:46:43  mattias
+  more localization for gtk- and win32-interface and lcl
+
   Revision 1.2  2002/05/10 06:05:52  lazarus
   MG: changed license to LGPL
 

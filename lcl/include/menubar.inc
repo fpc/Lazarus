@@ -1,3 +1,4 @@
+// included by menus.pp
 {
  *****************************************************************************
  *                                                                           *
@@ -15,21 +16,13 @@
 {---------------------------------------------------------------------------------------------}
 constructor TMenuBar.Create(AOwner: TComponent);
 begin
-   Assert(False, 'Trace:TMenuBar.Create');
    Inherited Create(AOwner);
-   Assert(False, 'Trace:Back from TMenuBar inherited Create');
-//   fCompStyle := csMenuBar;
-//   CreateComponent(AOwner);
-//   fOwner := TControl(AOwner);
 end;
 
 {-----------------------------------------------------------------------------}
 procedure TMenuBar.Show;
 begin
-//   AddControl;
-   Assert(False, 'Trace:In Menubar.show');
-//   Inherited Show;
-   Assert(False, 'Trace:In Menubar.show');
+
 end;
 
 {---------------------------------------------------------------------------------------------}
@@ -46,3 +39,6 @@ begin
 //   gtk_menu_item_set_submenu(GTK_MENU_ITEM(TControl(fMenu).fComponent), TControl(Menu).fComponent);
 //   gtk_menu_bar_append(GTK_MENU_BAR(fComponent), TControl(fMenu).fComponent);
 end;
+
+// included by menus.pp
+
