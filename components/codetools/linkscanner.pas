@@ -1583,9 +1583,13 @@ function TLinkScanner.CursorToCleanPos(ACursorPos: integer; ACode: pointer;
 // 0=valid CleanPos
 //-1=CursorPos was skipped, CleanPos is between two links
 // 1=CursorPos beyond scanned code
-var i, j: integer;
+var
+  i, j, SkippedCleanPos: integer;
+  SkippedPos: boolean;
 begin
   i:=0;
+  SkippedPos:=false;
+  SkippedCleanPos:=-1;
   while i<LinkCount do begin
 //writeln('[TLinkScanner.CursorToCleanPos] A ACursorPos=',ACursorPos,', Code=',Links[i].Code=ACode,', Links[i].SrcPos=',Links[i].SrcPos,', Links[i].CleanedPos=',Links[i].CleanedPos);
     if (Links[i].Code=ACode) and (Links[i].SrcPos<=ACursorPos) then begin
@@ -1601,8 +1605,13 @@ begin
         while (j<LinkCount) and (Links[j].Code<>ACode) do inc(j);
 //writeln('[TLinkScanner.CursorToCleanPos] D j=',j);
         if (j<LinkCount) and (Links[j].SrcPos>ACursorPos) then begin
-          Result:=-1; // CursorPos was skipped, CleanPos is between two links
-          exit;
+          if not SkippedPos then begin
+            // CursorPos was skipped, CleanPos is between two links
+            SkippedPos:=true;
+            SkippedCleanPos:=ACleanPos;
+          end;
+          // if this is an double included file,
+          // this position can be in clean code -> search next
         end;
         // search next
         i:=j-1;
@@ -1611,14 +1620,23 @@ begin
 //writeln('[TLinkScanner.CursorToCleanPos] E length(FCleanedSrc)=',length(FCleanedSrc));
         if ACleanPos<=length(FCleanedSrc) then
           Result:=0  // valid position
-        else
-          Result:=1; // cursor beyond scanned code
+        else begin
+          if SkippedPos then begin
+            Result:=-1;
+            ACleanPos:=SkippedCleanPos;
+          end else
+            Result:=1; // cursor beyond scanned code
+        end;
         exit;
       end;
     end;
     inc(i);
   end;
-  Result:=1;
+  if SkippedPos then begin
+    Result:=-1;
+    ACLeanPos:=SkippedCleanPos;
+  end else
+    Result:=1;
 end;
 
 function TLinkScanner.CleanedPosToCursor(ACleanedPos: integer;

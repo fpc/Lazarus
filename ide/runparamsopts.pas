@@ -131,7 +131,9 @@ type
     procedure SetupEnvironmentPage;
     procedure SetOptions(NewOptions: TRunParamsOptions);
     procedure FillSystemVariablesListView;
+    procedure FillUserOverridesListView;
     procedure SaveToOptions;
+    procedure SaveUserOverrides;
   public
     constructor Create(AnOwner: TComponent); override;
     property Options: TRunParamsOptions read fOptions write SetOptions;
@@ -542,7 +544,6 @@ begin
     Width:=100;
     Caption:='Add';
     OnClick:=@UserOverridesAddButtonClick;
-    Enabled:=false;
     Visible:=true;
   end;
 
@@ -555,7 +556,6 @@ begin
     Width:=100;
     Caption:='Edit';
     OnClick:=@UserOverridesEditButtonClick;
-    Enabled:=false;
     Visible:=true;
   end;
 
@@ -568,7 +568,6 @@ begin
     Width:=100;
     Caption:='Delete';
     OnClick:=@UserOverridesDeleteButtonClick;
-    Enabled:=false;
     Visible:=true;
   end;
 
@@ -635,24 +634,55 @@ begin
 end;
 
 procedure TRunParamsOptsDlg.UserOverridesAddButtonClick(Sender: TObject);
-var Variable, Value: string;
+var
+  Variable, Value: string;
+  NewLI, SelLI: TListItem;
 begin
-  Variable:='';
-  Value:='';
+  SelLI:=SystemVariablesListView.Selected;
+  if SelLI<>nil then begin
+    Variable:=SelLI.Caption;
+    Value:=SelLI.SubItems[0];
+  end else begin
+    Variable:='';
+    Value:='';
+  end;
   if ShowSysVarUserOverrideDialog(Variable,Value)=mrOk then begin
-
-    
+    NewLI:=UserOverridesListView.Items.Add;
+    NewLI.Caption:=Variable;
+    NewLI.SubItems[0]:=Value;
+    UserOverridesListView.Selected:=NewLI;
   end;
 end;
 
 procedure TRunParamsOptsDlg.UserOverridesEditButtonClick(Sender: TObject);
+var
+  Variable, Value: string;
+  SelLI: TListItem;
 begin
-
+  SelLI:=UserOverridesListView.Selected;
+  if SelLI=nil then exit;
+  Variable:=SelLI.Caption;
+  Value:=SelLI.SubItems[0];
+  if ShowSysVarUserOverrideDialog(Variable,Value)=mrOk then begin
+    SelLI.Caption:=Variable;
+    SelLI.SubItems[0]:=Value;
+  end;
 end;
 
 procedure TRunParamsOptsDlg.UserOverridesDeleteButtonClick(Sender: TObject);
+var
+  SelLI: TListItem;
+  OldIndex: integer;
 begin
-
+  SelLI:=UserOverridesListView.Selected;
+  if SelLI<>nil then begin
+    OldIndex:=SelLI.Index;
+    SelLI.Delete;
+    if OldIndex=UserOverridesListView.Items.Count then
+      dec(OldIndex);
+    if OldIndex>=0 then
+      UserOverridesListView.Selected:=UserOverridesListView.Items[OldIndex];
+  end;
 end;
 
 procedure TRunParamsOptsDlg.SaveToOptions;
@@ -667,10 +697,19 @@ begin
   fOptions.Display:=Trim(DisplayEdit.Text);
   
   // environment
-
-  // ToDo: User Overrides
+  SaveUserOverrides;
 
   fOptions.IncludeSystemVariables:=IncludeSystemVariablesCheckBox.Checked;
+end;
+
+procedure TRunParamsOptsDlg.SaveUserOverrides;
+var i: integer;
+begin
+  Options.UserOverrides.Clear;
+  for i:=0 to UserOverridesListView.Items.Count-1 do begin
+    Options.UserOverrides.Values[UserOverridesListView.Items[i].Caption]:=
+      UserOverridesListView.Items[i].SubItems[0];
+  end;
 end;
 
 procedure TRunParamsOptsDlg.SetOptions(NewOptions: TRunParamsOptions);
@@ -687,7 +726,7 @@ begin
   
   // environment
   FillSystemVariablesListView;
-  // ToDo: User Overrides
+  FillUserOverridesListView;
   
   IncludeSystemVariablesCheckBox.Checked:=fOptions.IncludeSystemVariables;
 end;
@@ -715,6 +754,30 @@ Begin
       Item[i].SubItems[0]:=Value;
     end;
     while Count>EnvCount do
+      Delete(Count-1);
+    //EndUpdate;
+  end;
+end;
+
+procedure TRunParamsOptsDlg.FillUserOverridesListView;
+var
+  i: integer;
+  Variable, Value: string;
+Begin
+  with UserOverridesListView.Items do begin
+    //BeginUpdate;
+    for i:=0 to Options.UserOverrides.Count-1 do begin
+      Variable:=Options.UserOverrides.Names[i];
+      Value:=Options.UserOverrides.Values[Variable];
+      if Count<=i then begin
+        // add line to listview
+        Add;
+        Item[i].SubItems.Add('');
+      end;
+      Item[i].Caption:=Variable;
+      Item[i].SubItems[0]:=Value;
+    end;
+    while Count>Options.UserOverrides.Count do
       Delete(Count-1);
     //EndUpdate;
   end;

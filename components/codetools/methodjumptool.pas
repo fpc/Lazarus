@@ -34,8 +34,6 @@ interface
 
 {$I codetools.inc}
 
-{ $DEFINE CTDEBUG}
-
 uses
   {$IFDEF MEM_CHECK}
   MemCheck,
@@ -248,7 +246,7 @@ writeln('TMethodJumpingCodeTool.FindJumpPoint B');
 {$ENDIF}
   // find the CursorPos in cleaned source
   r:=CaretToCleanPos(CursorPos, CleanCursorPos);
-  if (r<>0) and (r<>-1) then 
+  if (r<>0) and (r<>-1) then
     RaiseException('Cursor outside of code');
   GetLineInfo(CleanCursorPos,LineStart,LineEnd,FirstAtomStart,LastAtomEnd);
   if CleanCursorPos<FirstAtomStart then CleanCursorPos:=FirstAtomStart;
@@ -264,7 +262,6 @@ writeln('TMethodJumpingCodeTool.FindJumpPoint B');
 {$IFDEF CTDEBUG}
 writeln('TMethodJumpingCodeTool.FindJumpPoint C ',NodeDescriptionAsString(CursorNode.Desc));
 {$ENDIF}
-
   // first test if in a class
   ClassNode:=CursorNode;
   while (ClassNode<>nil) and (ClassNode.Desc<>ctnClass) do

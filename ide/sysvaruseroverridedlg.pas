@@ -59,7 +59,7 @@ begin
     ValueEdit.Text:=Value;
     Result:=ShowModal;
     if (Result=mrOk) then begin
-      Variable:=VariableEdit.Text;
+      Variable:=Trim(VariableEdit.Text);
       Value:=ValueEdit.Text;
     end;
     Free;
@@ -69,7 +69,15 @@ end;
 { TSysVarUserOverrideDialog }
 
 procedure TSysVarUserOverrideDialog.OkButtonClick(Sender: TObject);
+var v: string;
 begin
+  v:=Trim(VariableEdit.Text);
+  if not IsValidIdent(v) then begin
+    if MessageDlg('Invalid variable name',
+      '"'+v+'" is not a valid identifier.',
+      mtWarning,[mbCancel,mbIgnore],0)=mrCancel
+    then exit;
+  end;
   ModalResult:=mrOk;
 end;
 
@@ -84,7 +92,9 @@ begin
   if LazarusResources.Find(ClassName)=nil then begin
 
     Caption:='Override system variable';
-    SetBounds((Screen.Width-400) div 2,(Screen.Height-200) div 2,400,200);
+    Width:=400;
+    Height:=170;
+    Position:=poScreenCenter;
 
     VariableLabel:=TLabel.Create(Self);
     with VariableLabel do begin
@@ -100,7 +110,7 @@ begin
       Name:='VariableEdit';
       Parent:=Self;
       SetBounds(VariableLabel.Left,VariableLabel.Top+VariableLabel.Height+2,
-        Self.ClientWidth-2*Left,Height);
+        Self.ClientWidth-2*VariableLabel.Left,Height);
       Visible:=true;
     end;
 
@@ -119,7 +129,7 @@ begin
       Name:='ValueEdit';
       Parent:=Self;
       SetBounds(ValueLabel.Left,ValueLabel.Top+ValueLabel.Height+2,
-        Self.ClientWidth-2*Left,Height);
+        Self.ClientWidth-2*ValueLabel.Left,Height);
       Visible:=true;
     end;
 
