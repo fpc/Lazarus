@@ -3981,17 +3981,15 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  Function: TGTKObject.CreateComboBox
-  Params:   ComboBox: TComboBox
-  Returns:  PGtkCombo
-  
-  
+  function TGTKObject.CreateComboBox(ComboBoxObject: TObject): Pointer;
 -------------------------------------------------------------------------------}
-function CreateComboBox(ComboBox: TComboBox): Pointer;
+function TGTKObject.CreateComboBox(ComboBoxObject: TObject): Pointer;
 var
   Widget: PGtkCombo;
   ItemList: TGtkListStringList;
+  ComboBox: TComboBox;
 begin
+  ComboBox:=TComboBox(ComboBoxObject);
   Result:= gtk_combo_new();
   Widget:= PGTKCombo(Result);
   
@@ -4127,6 +4125,51 @@ begin
   end;
 end;
 
+function TgtkObject.CreateForm(ACustomForm: TCustomForm): PGtkWidget;
+var
+  Box: Pointer;
+  ABorderStyle: TFormBorderStyle;
+  PCaption: PChar;
+  WindowType: TGtkWindowType;
+begin
+  if csDesigning in ACustomForm.ComponentState then
+    ABorderStyle:=bsSizeable
+  else
+    ABorderStyle:=ACustomForm.BorderStyle;
+  WindowType:=FormStyleMap[ABorderStyle];
+  if (ABorderStyle=bsNone) and (ACustomForm.FormStyle=fsStayOnTop) then begin
+    WindowType:=GTK_WINDOW_POPUP;
+  end;
+  
+  Result := gtk_window_new(WindowType);
+
+  gtk_window_set_policy(GTK_WINDOW(Result), FormResizableMap[ABorderStyle],
+    FormResizableMap[ABorderStyle], 0);
+  PCaption:=PChar(ACustomForm.Caption);
+  if PCaption=nil then PCaption:=#0;
+  gtk_window_set_title(pGtkWindow(Result), PCaption);
+
+  // the clipboard needs a widget
+  if ClipboardWidget=nil then
+    SetClipboardWidget(Result);
+
+  Box := CreateFormContents(Result);
+  gtk_container_add(PGtkContainer(Result), Box);
+  gtk_widget_show(Box);
+
+  //drag icons
+  if Drag_Icon = nil then
+    Drag_Icon := gdk_pixmap_colormap_create_from_xpm_d (nil,
+                         gtk_widget_get_colormap (Result), @Drag_Mask,
+                         nil, @IMGDrag_Icon);
+
+  // main menu
+  if (ACustomForm.Menu<>nil)
+  and (ACustomForm.Menu.HandleAllocated) then begin
+    gtk_box_pack_start(Box, PGtkWidget(ACustomForm.Menu.Handle),False,False,0);
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Function: TGTKObject.CreateComponent
   Params:   sender - object for which to create visual representation
@@ -4144,7 +4187,7 @@ var
   CompStyle,                     // componentstyle (type) of GtkWidget which will be created
   TempInt   : Integer;           // local use when neccessary
   // - for csBitBtn
-  Box       : Pointer;           // currently only used for TBitBtn and TForm and TListView
+  Box       : Pointer;           // currently only used for TBitBtn and TListView
   pixmapwid : pGtkWidget;        // currently only used for TBitBtn
   label1    : pgtkwidget;        // currently only used for TBitBtn
   ParentForm: TCustomForm;
@@ -4152,7 +4195,6 @@ var
   AccelKey  : guint;
   SetupProps : boolean;
   Titles: PPGChar;
-  ABorderStyle: TFormBorderStyle;
   AWindow: PGdkWindow;
 begin
   p := nil;
@@ -4278,39 +4320,7 @@ begin
     p:=CreateAPIWidget(TWinControl(Sender));
 
   csForm :
-    begin
-      if csDesigning in TCustomForm(Sender).ComponentState then
-        ABorderStyle:=bsSizeable
-      else
-        ABorderStyle:=TCustomForm(Sender).BorderStyle;
-      
-      p := gtk_window_new(FormStyleMap[ABorderStyle]);
-
-      gtk_window_set_policy(GTK_WINDOW(p), FormResizableMap[ABorderStyle],
-        FormResizableMap[ABorderStyle], 0);
-      gtk_window_set_title(pGtkWindow(p), strTemp);
-
-      // the clipboard needs a widget
-      if ClipboardWidget=nil then
-        SetClipboardWidget(p);
-
-      Box := CreateFormContents(P);
-      gtk_container_add(p, Box);
-      gtk_widget_show(Box);
-
-      //drag icons
-      if Drag_Icon = nil then
-        Drag_Icon := gdk_pixmap_colormap_create_from_xpm_d (nil,
-                             gtk_widget_get_colormap (p), @Drag_Mask,
-                             nil, @IMGDrag_Icon);
-
-      // main menu
-      if (TCustomForm(Sender).Menu<>nil)
-      and (TCustomForm(Sender).Menu.HandleAllocated) then begin
-        gtk_box_pack_start(Box, PGtkWidget(TCustomForm(Sender).Menu.Handle),
-                           False, False, 0);
-      end;
-    end;
+    p:=CreateForm(TCustomForm(Sender));
 
   csFrame :
     begin
@@ -6827,6 +6837,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.319  2003/01/06 12:00:16  mattias
+  implemented fsStayOnTop+bsNone for forms under gtk (useful for splash)
+
   Revision 1.318  2003/01/01 13:01:01  mattias
   fixed setcolor for streamed components
 
