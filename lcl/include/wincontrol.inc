@@ -3146,6 +3146,12 @@ begin
   // set all cached properties
 
   //DebugLn('[TWinControl.InitializeWnd] ',Name,':',ClassName,':', FCaption,' ',Left,',',Top,',',Width,',',Height);
+
+  //First set the WinControl property.
+  //The win32 interface depends on it to determine where to send call backs.
+  SetProp(Handle,'WinControl',TWinControl(Self));
+  SetProp(Handle,'Control',TControl(Self));
+
   DoSendBoundsToInterface;
   CNSendMessage(LM_SHOWHIDE, Self, nil);
 
@@ -3161,9 +3167,6 @@ begin
   // Delay the setting of text until it is completely loaded
   if not (csLoading in ComponentState) 
   then TWSWinControlClass(WidgetSetClass).SetText(Self, FCaption);
-
-  SetProp(Handle,'WinControl',TWinControl(Self));
-  SetProp(Handle,'Control',TControl(Self));
 
   // send pending resize event
   Resize;
@@ -3577,6 +3580,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.235  2004/05/31 13:06:47  marc
+  * Patch from Vincent, moved SetProp(wincontrol)
+
   Revision 1.234  2004/05/30 14:02:30  mattias
   implemented OnChange for TRadioButton, TCheckBox, TToggleBox and some more docking stuff
 
