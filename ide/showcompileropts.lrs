@@ -1,0 +1,16 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TShowCompilerOptionsDlg','FORMDATA',[
+  'TPF0'#23'TShowCompilerOptionsDlg'#22'ShowCompilerOptionsDlg'#7'CAPTION'#6#16
+  +'Compiler Options'#12'CLIENTHEIGHT'#3#203#0#11'CLIENTWIDTH'#3#137#1#18'HORZS'
+  +'CROLLBAR.PAGE'#3#138#1#18'VERTSCROLLBAR.PAGE'#3#204#0#4'LEFT'#3'f'#1#6'HEIG'
+  +'HT'#3#203#0#3'TOP'#3'Q'#1#5'WIDTH'#3#137#1#0#7'TBUTTON'#8'OkButton'#7'ANCHO'
+  +'RS'#11#8'akbottom'#0#7'CAPTION'#6#2'Ok'#7'TABSTOP'#9#8'TABORDER'#2#0#7'ONCL'
+  +'ICK'#7#13'OkButtonCLICK'#4'LEFT'#3#159#0#6'HEIGHT'#2#25#3'TOP'#3#168#0#5'WI'
+  +'DTH'#2'K'#0#0#9'TGROUPBOX'#15'CmdLineGroupbox'#5'ALIGN'#7#5'altop'#7'ANCHOR'
+  +'S'#11#5'aktop'#6'akleft'#8'akbottom'#0#7'CAPTION'#6#23'Command line paramet'
+  +'ers'#12'CLIENTHEIGHT'#3#144#0#11'CLIENTWIDTH'#3#133#1#11'PARENTCTL3D'#8#8'T'
+  +'ABORDER'#2#1#6'HEIGHT'#3#161#0#5'WIDTH'#3#137#1#0#5'TMEMO'#11'CmdLineMemo'#5
+  +'ALIGN'#7#8'alclient'#13'LINES.Strings'#1#6#11'CmdLineMemo'#0#7'TABSTOP'#9#7
+  +'TABSTOP'#9#8'TABORDER'#2#0#6'HEIGHT'#3#144#0#5'WIDTH'#3#133#1#0#0#0#0
+]);

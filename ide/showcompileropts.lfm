@@ -1,0 +1,44 @@
+object ShowCompilerOptionsDlg: TShowCompilerOptionsDlg
+  CAPTION = 'Compiler Options'
+  CLIENTHEIGHT = 203
+  CLIENTWIDTH = 393
+  HORZSCROLLBAR.PAGE = 394
+  VERTSCROLLBAR.PAGE = 204
+  LEFT = 358
+  HEIGHT = 203
+  TOP = 337
+  WIDTH = 393
+  object OkButton: TBUTTON
+    ANCHORS = [akbottom]
+    CAPTION = 'Ok'
+    TABSTOP = True
+    TABORDER = 0
+    ONCLICK = OkButtonCLICK
+    LEFT = 159
+    HEIGHT = 25
+    TOP = 168
+    WIDTH = 75
+  end
+  object CmdLineGroupbox: TGROUPBOX
+    ALIGN = altop
+    ANCHORS = [aktop, akleft, akbottom]
+    CAPTION = 'Command line parameters'
+    CLIENTHEIGHT = 144
+    CLIENTWIDTH = 389
+    PARENTCTL3D = False
+    TABORDER = 1
+    HEIGHT = 161
+    WIDTH = 393
+    object CmdLineMemo: TMEMO
+      ALIGN = alclient
+      LINES.Strings = (
+        'CmdLineMemo'
+      )
+      TABSTOP = True
+      TABSTOP = True
+      TABORDER = 0
+      HEIGHT = 144
+      WIDTH = 389
+    end
+  end
+end

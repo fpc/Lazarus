@@ -44,7 +44,7 @@ uses
   Forms, Classes, SysUtils, ComCtrls, Buttons, StdCtrls, ExtCtrls, Graphics,
   LResources, Laz_XMLCfg, FileCtrl, Dialogs, Controls,
   PathEditorDlg, IDEProcs, LazConf, IDEOptionDefs, LazarusIDEStrConsts,
-  TransferMacros;
+  TransferMacros, ShowCompilerOpts;
 
 type
   TInheritedCompilerOption = (
@@ -626,16 +626,16 @@ type
     ExecuteAfterScanMakeCheckBox: TCheckBox;
 
     { Buttons }
-    btnTest: TButton;
+    btnShowOptions: TButton;
     btnOK: TButton;
     btnCancel: TButton;
-    btnApply: TButton;
+    btnCheck: TButton;
 
     { Procedures }
     procedure ButtonOKClicked(Sender: TObject);
     procedure ButtonCancelClicked(Sender: TObject);
-    procedure ButtonApplyClicked(Sender: TObject);
-    procedure ButtonTestClicked(Sender: TObject);
+    procedure ButtonCheckClicked(Sender: TObject);
+    procedure ButtonShowOptionsClicked(Sender: TObject);
     procedure ExecuteAfterGroupBoxResize(Sender: TObject);
     procedure ExecuteBeforeGroupBoxResize(Sender: TObject);
     procedure FileBrowseBtnClick(Sender: TObject);
@@ -2493,42 +2493,29 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  TfrmCompilerOptions ButtonApplyClicked
+  TfrmCompilerOptions ButtonCheckClicked
 ------------------------------------------------------------------------------}
-procedure TfrmCompilerOptions.ButtonApplyClicked(Sender: TObject);
+procedure TfrmCompilerOptions.ButtonCheckClicked(Sender: TObject);
 begin
   // Apply any changes
   PutCompilerOptions;
 end;
 
 {------------------------------------------------------------------------------
-  TfrmCompilerOptions ButtonTestClicked
+  TfrmCompilerOptions ButtonShowOptionsClicked
      This function is for testing the MakeOptionsString function only. Remove
      this function and its button when the function is working correctly.
 ------------------------------------------------------------------------------}
-procedure TfrmCompilerOptions.ButtonTestClicked(Sender: TObject);
+procedure TfrmCompilerOptions.ButtonShowOptionsClicked(Sender: TObject);
 var
-  teststr: String;
-  i, LineLen: integer;
+  CurOptions: String;
 begin
   // Test MakeOptionsString function
-  Assert(False, 'Trace:Test MakeOptionsString function');
-
   PutCompilerOptions;
-  teststr := CompilerOpts.MakeOptionsString(CompilerOpts.DefaultMakeOptionsFlags);
-  WriteLn('CompilerOpts.MakeOptionsString: ' + teststr);
-  i:=1;
-  LineLen:=0;
-  while (i<=length(TestStr)) do begin
-    inc(LineLen);
-    if (LineLen>60) and (TestStr[i]=' ') then begin
-      TestStr[i]:=#13;
-      LineLen:=0;
-    end;
-    inc(i);
-  end;
-  MessageDlg(dlgShowCompilerOptions,dlgCOOpts+#13+TestStr,mtInformation,
-    [mbOk],0);
+  CurOptions := CompilerOpts.MakeOptionsString(
+                                          CompilerOpts.DefaultMakeOptionsFlags);
+  WriteLn('CompilerOpts.MakeOptionsString: ' + CurOptions);
+  ShowCompilerOptionsDialog(CurOptions);
 end;
 
 procedure TfrmCompilerOptions.ExecuteAfterGroupBoxResize(Sender: TObject);
@@ -4489,16 +4476,16 @@ begin
   // Setup the Button Bar
   Assert(False, 'Trace:Setting up compiler options button bar');
 
-  btnApply := TButton.Create(Self);
-  with btnApply do
+  btnCheck := TButton.Create(Self);
+  with btnCheck do
   begin
     Parent := Self;
     Width := 70;
     Height := 23; 
-    Top := Self.Height - btnApply.Height - 15;
-    Left := Self.Width - btnApply.Width - 10;
+    Top := Self.Height - btnCheck.Height - 15;
+    Left := Self.Width - btnCheck.Width - 10;
     Caption := dlgButApply;
-    OnClick := @ButtonApplyClicked;
+    OnClick := @ButtonCheckClicked;
   end;
 
   btnCancel := TButton.Create(Self);
@@ -4508,7 +4495,7 @@ begin
     Width := 70;
     Height := 23; 
     Top := Self.Height - btnCancel.Height - 15;
-    Left := btnApply.Left - btnCancel.Width - 5;
+    Left := btnCheck.Left - btnCancel.Width - 5;
     Caption := dlgCancel ;
     OnClick := @ButtonCancelClicked;
   end;
@@ -4525,16 +4512,16 @@ begin
     OnClick := @ButtonOKClicked;
   end;
 
-  btnTest := TButton.Create(Self);
-  with btnTest do
+  btnShowOptions := TButton.Create(Self);
+  with btnShowOptions do
   begin
     Parent := Self;
     Width := 110;
     Height := 23; 
-    Top := Self.Height - btnTest.Height - 15;
-    Left := btnOK.Left - btnTest.Width - 5;
+    Top := Self.Height - btnShowOptions.Height - 15;
+    Left := btnOK.Left - btnShowOptions.Width - 5;
     Caption := dlgCOShowOptions;
-    OnClick := @ButtonTestClicked;
+    OnClick := @ButtonShowOptionsClicked;
   end;
 end;
 
@@ -4633,10 +4620,10 @@ begin
     SetBounds(0,0,Parent.ClientWidth,Parent.ClientHeight-45);
 
   x:=Width - 10;
-  y:=Height - btnApply.Height - 15;
-  with btnApply do
+  y:=Height - btnCheck.Height - 15;
+  with btnCheck do
     SetBounds(x-70,y,70,Height);
-  dec(x,btnApply.Width+10);
+  dec(x,btnCheck.Width+10);
   
   with btnCancel do
     SetBounds(x-70,y,70,Height);
@@ -4646,7 +4633,7 @@ begin
     SetBounds(x-70,y,70,Height);
   dec(x,btnOk.Width+10);
 
-  with btnTest do
+  with btnShowOptions do
     SetBounds(x-120,y,120,Height);
 end;
 
@@ -4655,7 +4642,7 @@ begin
   if FReadOnly=AValue then exit;
   FReadOnly:=AValue;
   btnOk.Enabled:=not FReadOnly;
-  btnApply.Enabled:=not FReadOnly;
+  btnCheck.Enabled:=not FReadOnly;
 end;
 
   
