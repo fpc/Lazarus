@@ -2266,24 +2266,36 @@ begin
 end;
 
 procedure TProject.OnLoadSaveFilename(var AFilename: string; Load:boolean);
-var ProjectPath:string;
+var
+  ProjectPath:string;
+  FileWasAbsolute: Boolean;
 begin
   if AFileName='' then exit;
   ProjectPath:=ProjectDirectory;
   if ProjectPath='' then ProjectPath:=GetCurrentDir;
-  if fPathDelimChanged then
+  //debugln('TProject.OnLoadSaveFilename A "',AFilename,'"');
+  if not fPathDelimChanged then begin
+    FileWasAbsolute:=FilenameIsAbsolute(AFileName);
+  end else begin
+    if PathDelim='\' then
+      // PathDelim changed from '/' to '\'
+      FileWasAbsolute:=FilenameIsUnixAbsolute(AFileName)
+    else
+      // PathDelim changed from '\' to '/'
+      FileWasAbsolute:=FilenameIsWinAbsolute(AFileName);
     DoDirSeparators(AFilename);
+  end;
   AFilename:=TrimFilename(AFilename);
   if Load then begin
     // make filename absolute
-    if (AFilename<>'') and (not FilenameIsAbsolute(AFilename)) then
+    if not FileWasAbsolute then
       AFilename:=TrimFilename(ProjectPath+AFilename);
   end else begin
     // try making filename relative to project file
-    if (AFilename<>'') and FilenameIsAbsolute(AFilename)
-    and FileIsInPath(AFilename,ProjectPath) then
+    if FileWasAbsolute and FileIsInPath(AFilename,ProjectPath) then
       AFilename:=CreateRelativePath(AFilename,ProjectPath);
   end;
+  //debugln('TProject.OnLoadSaveFilename END "',AFilename,'" FileWasAbsolute=',dbgs(FileWasAbsolute));
 end;
 
 function TProject.RemoveProjectPathFromFilename(
@@ -3156,6 +3168,9 @@ end.
 
 {
   $Log$
+  Revision 1.175  2005/01/12 23:58:31  mattias
+  improved project: recognizing if filename was fixed before pathdelim changed
+
   Revision 1.174  2005/01/12 23:28:16  mattias
   implemented skipping debugger settings for publishing projects
 

@@ -59,7 +59,9 @@ function CompareFileExt(const Filename, Ext: string;
 function GetFilenameOnDisk(const AFilename: string): string;
 function DirPathExists(DirectoryName: string): boolean;
 function ExtractFileNameOnly(const AFilename: string): string;
-function FilenameIsAbsolute(TheFilename: string):boolean;
+function FilenameIsAbsolute(const TheFilename: string):boolean;
+function FilenameIsWinAbsolute(const TheFilename: string):boolean;
+function FilenameIsUnixAbsolute(const TheFilename: string):boolean;
 function ForceDirectory(DirectoryName: string): boolean;
 procedure CheckIfFileIsExecutable(const AFilename: string);
 function FileIsExecutable(const AFilename: string): boolean;
@@ -215,18 +217,28 @@ begin
   Result:=copy(Result,1,length(Result)-ExtLen);
 end;
 
-function FilenameIsAbsolute(TheFilename: string):boolean;
+function FilenameIsAbsolute(const TheFilename: string):boolean;
 begin
-  DoDirSeparators(TheFilename);
   {$IFDEF win32}
   // windows
+  Result:=FilenameIsWinAbsolute(TheFilename);
+  {$ELSE}
+  // unix
+  Result:=FilenameIsUnixAbsolute(TheFilename);
+  {$ENDIF}
+end;
+
+function FilenameIsWinAbsolute(const TheFilename: string): boolean;
+begin
   Result:=((length(TheFilename)>=2) and (TheFilename[1] in ['A'..'Z','a'..'z'])
            and (TheFilename[2]=':'))
      or ((length(TheFilename)>=2)
          and (TheFilename[1]='\') and (TheFilename[2]='\'));
-  {$ELSE}
+end;
+
+function FilenameIsUnixAbsolute(const TheFilename: string): boolean;
+begin
   Result:=(TheFilename<>'') and (TheFilename[1]='/');
-  {$ENDIF}
 end;
 
 function GetFilenameOnDisk(const AFilename: string): string;

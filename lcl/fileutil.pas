@@ -33,7 +33,9 @@ function CompareFilenames(const Filename1, Filename2: string;
                           ResolveLinks: boolean): integer;
 function CompareFilenames(Filename1: PChar; Len1: integer;
   Filename2: PChar; Len2: integer; ResolveLinks: boolean): integer;
-function FilenameIsAbsolute(TheFilename: string):boolean;
+function FilenameIsAbsolute(const TheFilename: string):boolean;
+function FilenameIsWinAbsolute(const TheFilename: string):boolean;
+function FilenameIsUnixAbsolute(const TheFilename: string):boolean;
 procedure CheckIfFileIsExecutable(const AFilename: string);
 procedure CheckIfFileIsSymlink(const AFilename: string);
 function FileIsReadable(const AFilename: string): boolean;
@@ -116,6 +118,9 @@ end.
 
 {
   $Log$
+  Revision 1.5  2005/01/12 23:58:31  mattias
+  improved project: recognizing if filename was fixed before pathdelim changed
+
   Revision 1.4  2004/12/18 23:46:16  mattias
   added resurce strings for gtk file dlg
 

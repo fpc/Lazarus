@@ -103,18 +103,30 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function FilenameIsAbsolute(TheFilename: string):boolean;
+  function FilenameIsAbsolute(const TheFilename: string):boolean;
  ------------------------------------------------------------------------------}
-function FilenameIsAbsolute(TheFilename: string):boolean;
+function FilenameIsAbsolute(const TheFilename: string):boolean;
 begin
-  DoDirSeparators(TheFilename);
   {$IFDEF win32}
   // windows
-  Result:=(copy(TheFilename,1,2)='\\') or ((length(TheFilename)>3) and
-     (upcase(TheFilename[1]) in ['A'..'Z']) and (copy(TheFilename,2,2)=':\'));
+  Result:=FilenameIsWinAbsolute(TheFilename);
   {$ELSE}
-  Result:=(TheFilename<>'') and (TheFilename[1]='/');
+  // unix
+  Result:=FilenameIsUnixAbsolute(TheFilename);
   {$ENDIF}
+end;
+
+function FilenameIsWinAbsolute(const TheFilename: string): boolean;
+begin
+  Result:=((length(TheFilename)>=2) and (TheFilename[1] in ['A'..'Z','a'..'z'])
+           and (TheFilename[2]=':'))
+     or ((length(TheFilename)>=2)
+         and (TheFilename[1]='\') and (TheFilename[2]='\'));
+end;
+
+function FilenameIsUnixAbsolute(const TheFilename: string): boolean;
+begin
+  Result:=(TheFilename<>'') and (TheFilename[1]='/');
 end;
 
 {------------------------------------------------------------------------------
@@ -1093,6 +1105,9 @@ end;
 
 {
   $Log$
+  Revision 1.9  2005/01/12 23:58:31  mattias
+  improved project: recognizing if filename was fixed before pathdelim changed
+
   Revision 1.8  2004/12/18 23:46:16  mattias
   added resurce strings for gtk file dlg
 
