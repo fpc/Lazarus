@@ -20,11 +20,10 @@
 
 function DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer; override;
 
-Procedure NotifyUser(const DialogCaption, DialogMessage : String; DialogType : longint); override;
-Procedure NotifyUserAtXY(const DialogCaption, DialogMessage : String; DialogType : longint; X, Y : Longint); override;
-
-Function PromptUser(const DialogCaption, DialogMessage : String; DialogType : longint; Buttons : Array of Longint) : Longint; override;
-Function PromptUserAtXY(const DialogCaption, DialogMessage : String; DialogType : longint; Buttons : Array of Longint; X, Y : Longint) : Longint; override;
+Function PromptUser(const DialogCaption, DialogMessage : String; DialogType : longint;
+  Buttons : Array of Longint; DefaultIndex, EscapeResult : Longint) : Longint; override;
+Function PromptUserAtXY(const DialogCaption, DialogMessage : String; DialogType : longint;
+  Buttons : Array of Longint; DefaultIndex, EscapeResult : Longint; X, Y : Longint) : Longint; override;
 
 Function LoadStockPixmap(StockID: longint) : HBitmap; override;
 
@@ -32,6 +31,9 @@ Function RequestInput(const InputCaption, InputPrompt : String; MaskInput : Bool
 
 {
   $Log$
+  Revision 1.6  2002/10/14 18:36:57  lazarus
+  AJ: Improvements/Fixes to new PromptUser API
+
   Revision 1.5  2002/10/14 14:29:50  lazarus
   AJ: Improvements to TUpDown; Added TStaticText & GNOME DrawText
 

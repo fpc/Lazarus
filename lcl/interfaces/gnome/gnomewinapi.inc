@@ -70,7 +70,6 @@ var
   var
     AP : TSize;
     MaxLength : Integer;
-    Width, Height : Longint;
   begin
     theRect := Rect;
     
@@ -277,7 +276,7 @@ end;
    or other information, or to ask questions.
  ------------------------------------------------------------------------------}
 Function PromptUserWidget(const DialogCaption, DialogMessage : String;
-  DialogType : longint; Buttons : Array of Longint) : Pointer;
+  DialogType : longint; Buttons : Array of Longint; DefaultIndex : Longint) : Pointer;
 var
   BoxType : PChar;
   MainWidget : Pointer;
@@ -289,7 +288,6 @@ var
   TXTLayout : PGnomeIconTextInfo;
   NewMessage : AnsiString;
 begin
-  MsgTitle := nil;
   If (Application.MainForm <> nil) and
     (Application.MainForm.HandleAllocated)
   then
@@ -305,11 +303,14 @@ begin
       BoxType := GNOME_MESSAGE_BOX_ERROR;
     idDialogConfirm:
       BoxType := GNOME_MESSAGE_BOX_QUESTION;
-    else begin
+    else
       BoxType := GNOME_MESSAGE_BOX_GENERIC;
-      MsgTitle := PChar(DialogCaption);
-    end;
   end;
+  If DialogCaption <> '' then
+    MsgTitle := PChar(DialogCaption)
+  else
+    MsgTitle := nil;
+    
   BTNArray := nil;
   ReallocMem(BTNArray, SizeOf(PgChar)*(High(Buttons) - Low(Buttons) + 2));
   For I := Low(Buttons) to High(Buttons) do begin
@@ -330,6 +331,8 @@ begin
         StockName := '';
     end;
     BTNArray[I - Low(Buttons)] := StockName;
+    If DefaultIndex = I then
+      DefaultIndex := I - Low(Buttons);
   end;
   BTNArray[High(Buttons) - Low(Buttons) + 1] := nil;
 
@@ -352,6 +355,14 @@ begin
 
   Result := gnome_message_box_newv(PgChar(NewMessage), BoxType, BTNArray);
 
+  If (DefaultIndex >= High(Buttons) - Low(Buttons)) or
+    (DefaultIndex < 0)
+  then
+    DefaultIndex := 0;
+
+  gnome_dialog_set_default(Result, DefaultIndex);
+  gnome_dialog_grab_focus(Result, DefaultIndex);
+  
   If MsgTitle <> nil then
     gtk_window_set_title(Result, PgChar(MsgTitle));
 
@@ -362,15 +373,16 @@ begin
 end;
 
 Function TGnomeObject.PromptUser(const DialogCaption, DialogMessage : String;
-  DialogType : longint; Buttons : Array of Longint) : Longint;
+  DialogType : longint; Buttons : Array of Longint;
+  DefaultIndex, EscapeResult : Longint) : Longint;
 var
   MsgBox : Pointer;
   MSGResult : Longint;
 begin
-  MsgBox := PromptUserWidget(DialogCaption, DialogMessage, DialogType, Buttons);
+  MsgBox := PromptUserWidget(DialogCaption, DialogMessage, DialogType, Buttons, DefaultIndex);
   MSGResult := gnome_dialog_run_and_close(MsgBox);
   Case MSGResult of
-    -1 : Result := -1;
+    -1 : Result := EscapeResult;
     else
       Result := Buttons[MSGResult + Low(Buttons)]
   end;
@@ -394,63 +406,20 @@ end;
    questions.
  ------------------------------------------------------------------------------}
 Function TGnomeObject.PromptUserAtXY(const DialogCaption, DialogMessage : String;
-   DialogType : longint; Buttons : Array of Longint; X, Y : Longint) : Longint;
+   DialogType : longint; Buttons : Array of Longint; DefaultIndex, EscapeResult : Longint;
+   X, Y : Longint) : Longint;
 var
   MsgBox : Pointer;
   MSGResult : Longint;
 begin
-  MsgBox := PromptUserWidget(DialogCaption, DialogMessage, DialogType, Buttons);
+  MsgBox := PromptUserWidget(DialogCaption, DialogMessage, DialogType, Buttons, DefaultIndex);
   gtk_widget_set_uposition(MsgBox, X, Y);
   MSGResult := gnome_dialog_run_and_close(MsgBox);
   Case MSGResult of
-    -1 : Result := -1;
+    -1 : Result := EscapeResult;
     else
       Result := Buttons[MSGResult + Low(Buttons)]
   end;
-end;
-
-{------------------------------------------------------------------------------
-  Method: TGnomeObject.NotifyUser
-  Params:
-         DialogCaption - Dialog Caption to use if is a Custom Dialog
-         DialogMessage - Message/Error/Question to display
-         DialogType - type of dialog (warning/error/question/inform/custom)
-
-   Returns: Nothing
-
-   this routines produces a notification dialog, aka a Dialog consisting of
-   an icon, a message, and an Ok Button. It really only makes sense to use
-   with an Error, Info or Custom Dialog Type.
- ------------------------------------------------------------------------------}
-Procedure TGnomeObject.NotifyUser(const DialogCaption, DialogMessage : String; DialogType : longint);
-var
-  MsgBox : Pointer;
-begin
-  MsgBox := PromptUserWidget(DialogCaption, DialogMessage, DialogType, [idButtonOk]);
-  gnome_dialog_run_and_close(MsgBox);
-end;
-
-{------------------------------------------------------------------------------
-  Method: TGnomeObject.NotifyUserAtXY
-  Params:
-         DialogCaption - Dialog Caption to use if is a Custom Dialog
-         DialogMessage - Message/Error/Question to display
-         DialogType - type of dialog (warning/error/question/inform/custom)
-         X, Y - Position to display dialog at
-
-   Returns: Nothing
-
-   this routines produces a notification dialog at a given position on screen,
-   aka a Dialog consisting of an icon, a message, and an Ok Button. It really
-   only makes sense to use with an Error, Info or Custom Dialog Type.
- ------------------------------------------------------------------------------}
-Procedure TGnomeObject.NotifyUserAtXY(const DialogCaption, DialogMessage : String; DialogType : longint; X, Y : Longint);
-var
-  MsgBox : Pointer;
-begin
-  MsgBox := PromptUserWidget(DialogCaption, DialogMessage, DialogType, [idButtonOk]);
-  gtk_widget_set_uposition(MsgBox, X, Y);
-  gnome_dialog_run_and_close(MsgBox);
 end;
 
 {------------------------------------------------------------------------------
@@ -532,6 +501,9 @@ end;
 
 {
   $Log$
+  Revision 1.7  2002/10/14 18:36:57  lazarus
+  AJ: Improvements/Fixes to new PromptUser API
+
   Revision 1.6  2002/10/14 14:29:50  lazarus
   AJ: Improvements to TUpDown; Added TStaticText & GNOME DrawText
 
