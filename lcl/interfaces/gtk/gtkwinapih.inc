@@ -79,6 +79,7 @@ Function GetActiveWindow : HWND; override;
 function GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint; Override;
 function GetCapture: HWND; override;
 function GetCaretPos(var lpPoint: TPoint): Boolean; override;
+function GetCaretRespondToFocus(handle: HWND; var ShowHideOnFocus: boolean): Boolean; override;
 function GetCharABCWidths(DC: HDC; p2, p3: UINT; const ABCStructs): Boolean; override;
 Function GetClientBounds(handle : HWND; var ARect : TRect) : Boolean; override;
 Function GetClientRect(handle : HWND; var ARect : TRect) : Boolean; override;
@@ -190,6 +191,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.59  2002/12/30 17:24:08  mattias
+  added history to identifier completion
+
   Revision 1.58  2002/12/27 17:12:38  mattias
   added more Delphi win32 compatibility functions
 
