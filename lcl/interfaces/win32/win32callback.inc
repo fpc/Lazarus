@@ -442,6 +442,36 @@ Var
     WinProcess := false;
   end;
 
+  procedure HandleSysCommand;
+  var
+    ParentForm: TCustomForm;
+    prevFocus: HWND;
+  begin
+    // forward keystroke to show window menu, if parent form has no menu
+    // if wparam contains SC_KEYMENU, lparam contains key pressed
+    // keymenu+space should always bring up system menu
+    if ((WParam and $FFF0) = SC_KEYMENU) and (lWinControl <> nil) 
+      and (lParam <> VK_SPACE) then
+    begin
+      ParentForm := GetParentForm(lWinControl);
+      if (ParentForm <> nil) and (ParentForm.Menu = nil) 
+        and (Application <> nil) and (Application.MainForm <> nil)
+        and (Application.MainForm <> ParentForm)
+        and Application.MainForm.HandleAllocated then
+      begin
+        targetWindow := Application.MainForm.Handle;
+        if IsWindowEnabled(targetWindow) and IsWindowVisible(targetWindow) then
+        begin
+          prevFocus := Windows.GetFocus;
+          Windows.SetFocus(targetWindow);
+          PLMsg^.Result := Windows.SendMessage(targetWindow, WM_SYSCOMMAND, WParam, LParam);
+          Windows.SetFocus(prevFocus);
+          WinProcess := false;
+        end;
+      end;
+    end
+  end;
+
 Begin
   Assert(False, 'Trace:WindowProc - Start');
 
@@ -1092,6 +1122,10 @@ Begin
       End;
       WinProcess := false;
     End;
+    WM_SYSCOMMAND:
+    begin
+      HandleSysCommand;
+    end;
     WM_SYSKEYDOWN:
     Begin
       NotifyUserInput := True;
@@ -1556,6 +1590,9 @@ end;
 
 {
   $Log$
+  Revision 1.188  2005/02/03 20:19:17  micha
+  fix bug 267: reroute menu key to main form if form has no menu
+
   Revision 1.187  2005/02/03 15:06:30  micha
   translate and route WM_SYSCHAR messages, fix WM_SYSKEYDOWN and WM_SYSKEYUP messages
 
