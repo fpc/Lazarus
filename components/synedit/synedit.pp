@@ -1144,8 +1144,8 @@ begin
   Height := 150;
   Width := 200;
   Cursor := crIBeam;
-  Color := clWindow;
 {$IFDEF SYN_LAZARUS}
+  Color := clWhite;
   fFontDummy.Name := 'courier';
   fFontDummy.Size := 12;
   fLastMouseCaret := Point(-1,-1);
@@ -1153,6 +1153,7 @@ begin
   fLastControlIsPressed := false;
   fBlockIndent := 2;
 {$ELSE}
+  Color := clWindow;
   fFontDummy.Name := 'Courier New';
   fFontDummy.Size := 10;
 {$ENDIF}
