@@ -53,7 +53,9 @@ type
     FDeviceContexts: TDynHashArray;// hasharray of HDC
     FGDIObjects: TDynHashArray;    // hasharray of PGdiObject
     FMessageQueue: TLazQueue;      // queue of PMsg
-    FPaintMessages: TDynHashArray; // hasharray of PLazQueueItem 
+    FPaintMessages: TDynHashArray; // hasharray of PLazQueueItem
+    FRCFilename: string;
+    FRCFileParsed: boolean;
     {$IFDEF ClientRectBugFix}
     FWidgetsWithResizeRequest: TDynHashArray; // hasharray of PGtkWidget
     {$ENDIF}
@@ -88,6 +90,9 @@ type
     function CreateDefaultBrush: PGdiObject;
     function CreateDefaultFont: PGdiObject;
     function CreateDefaultPen: PGdiObject;
+    
+    procedure SetRCFilename(const AValue: string);
+    procedure ParseRCFile;
 
     procedure ShowHide(Sender : TObject);
     procedure AddNBPage(Parent,Child: TObject; Index: Integer);
@@ -146,6 +151,8 @@ type
     function  RecreateWnd(Sender: TObject): Integer; override;
 
     {$I gtkwinapih.inc}
+    
+    property RCFilename: string read FRCFilename write SetRCFilename;
   end;
 
 {$I gtklistslh.inc}
@@ -369,6 +376,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.43  2002/05/28 19:39:45  lazarus
+  MG: added gtk rc file support and started stule dependent syscolors
+
   Revision 1.42  2002/05/28 14:58:30  lazarus
   MG: added scrollbars for TListView
 
