@@ -94,7 +94,7 @@ const
   IdentifierStartChar = ['a'..'z','A'..'Z','_'];
   IdentifierChar = ['a'..'z','A'..'Z','_','0'..'9'];
   // ToDo: find the constant in the fpc units.
-  EndOfLine:shortstring={$IFDEF win32}#13{$ENDIF}#10;
+  EndOfLine:shortstring={$IFDEF win32}#13+{$ENDIF}#10;
   
 
 function FindIncludeDirective(Source,Section:string; Index:integer;

@@ -205,6 +205,7 @@ type
     FOnSaveClicked : TNotifyEvent;
     FOnSaveAsClicked : TNotifyEvent;
     FOnSaveAllClicked : TNotifyEvent;
+    FOnToggleFormUnitClicked : TNotifyEvent;
 
     // PopupMenu
     Procedure BuildPopupMenu;
@@ -268,6 +269,7 @@ type
     procedure SaveClicked(Sender : TObject);
     procedure SaveAllClicked(Sender : TObject);
     procedure SaveAsClicked(Sender : TObject);
+    procedure ToggleFormUnitClicked(Sender: TObject);
 
     procedure FindClicked(Sender : TObject);
     procedure ReplaceClicked(Sender : TObject);
@@ -306,6 +308,8 @@ type
        read FOnSaveAsClicked write FOnSaveAsClicked;
     property OnSaveAllClicked : TNotifyEvent 
        read FOnSaveAllClicked write FOnSaveAllClicked;
+    property OnToggleFormUnitClicked : TNotifyEvent 
+       read FOnToggleFormUnitClicked write FOnToggleFormUnitClicked;
   end;
 
 {Goto dialog}
@@ -2378,6 +2382,11 @@ Begin
   if Assigned(FOnSaveAllClicked) then FOnSaveAllClicked(Sender);
 end;
 
+procedure TSourceNotebook.ToggleFormUnitClicked(Sender: TObject);
+begin
+  if Assigned(FOnToggleFormUnitClicked) then FOnToggleFormUnitClicked(Sender);
+end;
+
 Function TSourceNotebook.GetSourceForUnit(UnitName : String) : TStrings;
 Var
   I : Integer;
@@ -2514,6 +2523,9 @@ begin
   ecGotoEditor1..ecGotoEditor9,ecGotoEditor0:
     if Notebook.Pages.Count>Command-ecGotoEditor1 then
       Notebook.PageIndex:=Command-ecGotoEditor1;
+
+  ecToggleFormUnit:
+    ToggleFormUnitClicked(self);
 
   end;  //case
 end;

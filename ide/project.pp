@@ -184,7 +184,7 @@ type
 
   //---------------------------------------------------------------------------
   TProjectType =   // for a description see ProjectTypeDescriptions
-     (ptApplication, ptCustomProgram, ptProgram); 
+     (ptApplication, ptProgram, ptCustomProgram); 
 
   TProject = class(TObject)
   private
@@ -291,9 +291,18 @@ const
     );
 
 
+function ProjectTypeNameToType(s:string): TProjectType;
+
+
 implementation
 
 
+function ProjectTypeNameToType(s:string): TProjectType;
+begin
+  for Result:=Low(TProjectType) to High(TProjectType) do
+    if (lowercase(ProjectTypeNames[Result])=lowercase(s)) then exit;
+  Result:=ptCustomProgram;
+end;
 
 { TProjectBookmark }
 
@@ -842,6 +851,8 @@ begin
   try
     repeat
       try
+        xmlcfg.SetValue('ProjectOptions/General/ProjectType/Value',
+            ProjectTypeNames[ProjectType]);
         xmlcfg.SetValue('ProjectOptions/General/MainUnit/Value', MainUnit);
         xmlcfg.SetValue('ProjectOptions/General/ActiveEditorIndexAtStart/Value'
             ,ActiveEditorIndexAtStart);
@@ -909,6 +920,8 @@ writeln('TProject.ReadProject 2 ',LPIFilename);
 
 writeln('TProject.ReadProject 3');
   try
+    ProjectType := ProjectTypeNameToType(xmlcfg.GetValue(
+       'ProjectOptions/General/ProjectType/Value', ''));
     MainUnit := xmlcfg.GetValue('ProjectOptions/General/MainUnit/Value', -1);
     ActiveEditorIndexAtStart := xmlcfg.GetValue(
        'ProjectOptions/General/ActiveEditorIndexAtStart/Value', -1);
@@ -1385,8 +1398,8 @@ end.
 
 {
   $Log$
-  Revision 1.12  2001/03/08 15:59:06  lazarus
-  IDE bugfixes and viewunit/forms functionality
+  Revision 1.13  2001/03/08 23:11:49  lazarus
+  bugfixes
 
   Revision 1.10  2001/03/03 11:06:15  lazarus
   added project support, codetools

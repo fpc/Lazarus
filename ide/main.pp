@@ -134,8 +134,7 @@ type
     Procedure mnuViewUnitsClicked(Sender : TObject);
     Procedure mnuViewFormsClicked(Sender : TObject);
 
-    Procedure mnuToggleFormClicked(Sender : TObject);
-    Procedure CodeOrFormActivated(Sender : TObject);
+    procedure mnuToggleFormUnitClicked(Sender : TObject);
 
     procedure mnuNewProjectClicked(Sender : TObject);
     procedure mnuOpenProjectClicked(Sender : TObject);
@@ -164,6 +163,7 @@ type
     Procedure OnSrcNotebookFileSaveAs(Sender : TObject);
     Procedure OnSrcNotebookFileClose(Sender : TObject);
     Procedure OnSrcNotebookSaveAll(Sender : TObject);
+    Procedure OnSrcNotebookToggleFormUnit(Sender : TObject);
 
     // ObjectInspector events
     procedure OIOnAddAvailableComponent(AComponent:TComponent; var Allowed:boolean);
@@ -177,7 +177,6 @@ type
 
   private
     FCodeLastActivated : Boolean; //used for toggling between code and forms
-    FControlLastActivated : TObject;
     FSelectedComponent : TRegisteredComponent;
     fProject: TProject;
 
@@ -224,6 +223,7 @@ type
       IsPartOfProject:boolean): TModalResult;
     procedure UpdateCaption;
     procedure UpdateMainUnitSrcEdit;
+    procedure DoBringToFrontFormOrUnit;
 
     procedure LoadMainMenu;
     Procedure FormKill(Sender : TObject);
@@ -512,7 +512,7 @@ begin
     Enabled := True;
     Top := 28;
     Left := SaveAllSpeedBtn.Left + 26;
-    OnClick := @mnuToggleFormCLicked;
+    OnClick := @mnuToggleFormUnitCLicked;
     Glyph := LoadSpeedBtnPixMap('btn_toggleform');
     Visible := True;
     Flat := true;
@@ -575,7 +575,6 @@ begin
 
   // connect events
   SourceNotebook := TSourceNotebook.Create(Self);
-  SourceNotebook.OnActivate := @CodeOrFormActivated;
   SourceNotebook.OnNewClicked := @OnSrcNotebookFileNew;
   SourceNotebook.OnOpenClicked := @ OnSrcNotebookFileOpen;
   SourceNotebook.OnOpenFileAtCursorClicked := @OnSrcNotebookFileOpenAtCursor;
@@ -583,6 +582,7 @@ begin
   SourceNotebook.OnSaveAsClicked := @OnSrcNotebookFileSaveAs;
   SourceNotebook.OnCloseClicked := @OnSrcNotebookFileClose;
   SourceNotebook.OnSaveAllClicked := @OnSrcNotebookSaveAll;
+  SourceNotebook.OnToggleFormUnitClicked := @OnSrcNotebookToggleFormUnit;
 
   itmSearchFind.OnClick := @SourceNotebook.FindClicked;
   itmSearchFindAgain.OnClick := @SourceNotebook.FindAgainClicked;
@@ -981,21 +981,11 @@ end;
 {------------------------------------------------------------------------------}
 {------------------------------------------------------------------------------}
 
-Procedure TMainIDE.mnuToggleFormClicked(Sender : TObject);
+Procedure TMainIDE.mnuToggleFormUnitClicked(Sender : TObject);
 Begin
   writeln('Toggle form clicked');
-
-  if FCodeLastActivated then
-    SourceNotebook.DisplayFormForActivePage
-  else
-    SourceNotebook.DisplayCodeforControl(FControlLastActivated);
-end;
-
-Procedure TMainIDE.CodeOrFormActivated(Sender : TObject);
-Begin
-  FCodeLastActivated := (TForm(Sender) = TForm(SourceNotebook));
-  if FCodeLastActivated then Writeln('TRUE') else Writeln('False');
-  FControlLastActivated := Sender;
+  FCodeLastActivated:=not FCodeLastActivated;
+  DoBringToFrontFormOrUnit;
 end;
 
 Procedure TMainIDE.SetDesigning(Control : TComponent; Value : Boolean);
@@ -1201,6 +1191,10 @@ begin
   mnuSaveAllClicked(Sender);
 end;
 
+Procedure TMainIDE.OnSrcNotebookToggleFormUnit(Sender : TObject);
+begin
+  mnuToggleFormUnitClicked(Sender);
+end;
 
 {------------------------------------------------------------------------------}
 
@@ -1279,7 +1273,6 @@ Begin
   aForm.Designer := TDesigner.Create(aForm);
   TDesigner(aForm.Designer).MainIDE := Self;
   TDesigner(aForm.Designer).FormEditor := FormEditor1;
-  aForm.OnActivate := @CodeOrFormActivated;
 end;
 
 
@@ -1572,6 +1565,7 @@ writeln('TMainIDE.DoNewEditorUnit 6');
   end;
   UpdateMainUnitSrcEdit;
 
+  FCodeLastActivated:=not (NewUnitType in [nuForm]);
 writeln('TMainIDE.DoNewUnit end');
 
 end;
@@ -2062,6 +2056,8 @@ writeln('TMainIDE.mnuViewUnitsClicked 2');
           end;
         end;
       end;
+      FCodeLastActivated:=not OnlyForms;
+      DoBringToFrontFormOrUnit;
     end;
 writeln('TMainIDE.mnuViewUnitsClicked 3');
   finally
@@ -2514,6 +2510,27 @@ begin
   end;
 end;
 
+procedure TMainIDE.DoBringToFrontFormOrUnit;
+var AForm: TCustomForm;
+  ActiveUnitInfo: TUnitInfo;
+begin
+  if FCodeLastActivated then begin
+    if SourceNoteBook.NoteBook<>nil then AForm:=SourceNotebook
+    else AForm:=nil;
+  end else begin
+    if (SourceNoteBook.NoteBook<>nil) then begin
+      ActiveUnitInfo:=Project.UnitWithEditorIndex(
+        SourceNoteBook.NoteBook.PageIndex);
+      if (ActiveUnitInfo<>nil) then
+        AForm:=TCustomForm(ActiveUnitInfo.Form);
+    end;
+  end;
+  if AForm<>nil then begin
+    AForm.Hide;
+    AForm.Show;
+  end;
+end;
+
 initialization
   {$I images/laz_images.lrs}
 
@@ -2526,8 +2543,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.70  2001/03/08 15:59:06  lazarus
-  IDE bugfixes and viewunit/forms functionality
+  Revision 1.71  2001/03/08 23:11:49  lazarus
+  bugfixes
 
   Revision 1.68  2001/03/03 11:06:15  lazarus
   added project support, codetools

@@ -41,6 +41,7 @@ const
   ecClose              = ecOpen + 2;
 
   ecJumpToEditor       = ecUserFirst + 300;
+  ecToggleFormUnit     = ecUserFirst + 301;
 
   ecGotoEditor1        = ecUserFirst + 2000;
   ecGotoEditor2        = ecGotoEditor1 + 1;
@@ -740,6 +741,8 @@ begin
   Add('Go to source editor 8',ecGotoEditor0,VK_8,[ssAlt],VK_UNKNOWN,[]);
   Add('Go to source editor 9',ecGotoEditor0,VK_9,[ssAlt],VK_UNKNOWN,[]);
   Add('Go to source editor 10',ecGotoEditor0,VK_0,[ssAlt],VK_UNKNOWN,[]);
+
+  Add('Toggle between Unit and Form',ecToggleFormUnit,VK_F12,[],VK_UNKNOWN,[]);
 end;
 
 destructor TKeyCommandRelationList.Destroy;
@@ -923,3 +926,4 @@ initialization
   KeyMappingEditForm:=nil;
 
 end.
+
