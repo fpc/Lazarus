@@ -617,7 +617,23 @@ resourcestring
   dlgDirectoryDoesNotExist = 'Directory does not exist';
   dlgTheDirectory = 'The directory "';
   dlgDoesNotExist = '" does not exist.';
-  
+  dlgTextToFing = '&Text to Find';
+  dlgReplaceWith = '&Replace With';
+  dlgFROpts = 'Options';
+  dlgCaseSensitive = 'Case Sensitive';
+  dlgWholeWordsOnly = 'Whole Words Only';
+  dlgRegularExpressions = 'Regular Expressions';
+  dlgPromptOnReplace = 'Prompt On Replace';
+  dlgSROrigin = 'Origin';
+  dlgFromCursor = 'From Cursor';
+  dlgEntireScope = 'Entire Scope';
+  dlgScope = 'Scope';
+  dlgGlobal = 'Global';
+  dlgSelectedText = 'Selected Text';
+  dlgDirection = 'Direction';
+  dlgUpWord = 'Up';
+  dlgDownWord = 'Down';
+  dlgReplaceAll = 'Replace All';
 implementation
 
 end.

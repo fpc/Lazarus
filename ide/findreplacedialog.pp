@@ -1,4 +1,3 @@
-{  $Id$  }
 {
  /***************************************************************************
                           findreplacedialog.pp
@@ -42,7 +41,7 @@ interface
 
 uses
   Classes, SysUtils, LCLType, Controls, StdCtrls, Forms, Buttons, ExtCtrls,
-  LResources, SynEdit, IDEProcs;
+  LResources, SynEdit, IDEProcs, LazarusIdeStrConsts;
 
 type
   TFindDlgComponent = (fdcText, fdcReplace);
@@ -133,7 +132,7 @@ begin
       Left:=8;
       Top:=8;
       Width:= 100;
-      Caption:='&Text to Find';
+      Caption:=dlgTextToFing;
       Visible:=true;
       FocusControl:= TextToFindComboBox;
     end;
@@ -158,7 +157,7 @@ begin
       Left:=8;
       Top:=32;
       Width:= 100;
-      Caption:='&Replace With';
+      Caption:=dlgReplaceWith;
       Visible:=true;
       FocusControl:= ReplaceTextComboBox;
     end;
@@ -171,7 +170,7 @@ begin
       Top:=58;
       Width:=194;
       Height:=105;
-      Caption:='Options';
+      Caption:=dlgFROpts ;
       Visible:=true;
     end;
 
@@ -182,9 +181,9 @@ begin
       AutoSize := True;
       Left:=8;
       Top:=6;
-      Width:=135;
+      Width:=155;
       Height:=17;
-      Caption:='Case Sensitive';
+      Caption:=dlgCaseSensitive ;
       Visible:=true;
     end;
 
@@ -195,9 +194,9 @@ begin
       AutoSize := False;
       Left:=8;
       Top:=26;
-      Width:=135;
+      Width:=155;
       Height:=17;
-      Caption:='Whole Words Only';
+      Caption:=dlgWholeWordsOnly;
       Visible:=true;
     end;
 
@@ -208,9 +207,9 @@ begin
       AutoSize := False;
       Left:=8;
       Top:=46;
-      Width:=135;
+      Width:=155;
       Height:=17;
-      Caption:='Regular Expressions';
+      Caption:=dlgRegularExpressions ;
       Visible:=true;
     end;
 
@@ -223,7 +222,7 @@ begin
       Top:=66;
       Width:=135;
       Height:=17;
-      Caption:='Prompt On Replace';
+      Caption:=dlgPromptOnReplace ;
       Checked:=true;
       Visible:=true;
     end;
@@ -236,12 +235,12 @@ begin
       Top:= 58;
       Width:= 194;
       Height:=105;
-      Caption:= 'Origin';
+      Caption:=dlgSROrigin;
       with Items do begin
         BeginUpdate;
         Clear;
-        Add('From Cursor');
-        Add('Entire Scope');
+        Add(dlgFromCursor);
+        Add(dlgEntireScope);
         EndUpdate;
       end;
       ItemIndex:=0;
@@ -256,12 +255,12 @@ begin
       Top:=168;
       Width:=194;
       Height:=65;
-      Caption:='Scope';
+      Caption:=dlgScope;
       with Items do begin
         BeginUpdate;
         Clear;
-        Add('Global');
-        Add('Selected Text');
+        Add(dlgGlobal);
+        Add(dlgSelectedText);
         EndUpdate;
       end;
       ItemIndex:=0;
@@ -276,12 +275,12 @@ begin
       Top:=168;
       Width:=194;
       Height:=65;
-      Caption:='Direction';
+      Caption:=dlgDirection;
       with Items do begin
         BeginUpdate;
         Clear;
-        Add('Up');
-        Add('Down');
+        Add(dlgUpWord);
+        Add(dlgDownWord );
         EndUpdate;
       end;
       ItemIndex:=1;
@@ -292,7 +291,7 @@ begin
     with OkButton do begin
       Name:='OkButton';
       Parent:= Self;
-      Left:= 163;
+      Left:= 143;
       Top:= 237;
       Caption:='Ok';
       OnClick:=@OkButtonClick;
@@ -303,9 +302,10 @@ begin
     with ReplaceAllButton do begin
       Name:='ReplaceAllButton';
       Parent:= Self;
-      Left:= 242;
+      Left:= 222;
       Top:= 237;
-      Caption:='Replace All';
+      Width:=99;
+      Caption:=dlgReplaceAll;
       OnClick:=@ReplaceAllButtonClick;
       Visible:=true;
     end;
@@ -316,7 +316,7 @@ begin
       Parent:= Self;
       Left:= 321;
       Top:= 237;
-      Caption:='Cancel';
+      Caption:=dlgCancel;
       OnClick:=@CancelButtonClick;
       Visible:=true;
     end;
@@ -413,11 +413,11 @@ begin
   ReplaceWithLabel.Enabled:=ReplaceAllButton.Enabled;
   PromptOnReplaceCheckBox.Enabled:=ReplaceAllButton.Enabled;
   if ssoReplace in NewOptions then begin
-    Caption:='Replace';
-    OkButton.Caption:='Replace';
+    Caption:=lisMenuReplace;
+    OkButton.Caption:=lisMenuReplace;
   end else begin
-    Caption:='Find';
-    OkButton.Caption:='Find';
+    Caption:=lisMenuFind ;
+    OkButton.Caption:=lisMenuFind ;
   end;
 end;
 
@@ -462,7 +462,7 @@ procedure TLazFindReplaceDialog.SetComboBoxText(AComboBox:TComboBox;
 var a:integer;
 begin
   a:=AComboBox.Items.IndexOf(AText);
-writeln('TLazFindReplaceDialog.SetComboBoxText ',AText,' ',a);
+  //writeln('TLazFindReplaceDialog.SetComboBoxText ',AText,' ',a);
   if a>=0 then
     AComboBox.ItemIndex:=a
   else begin

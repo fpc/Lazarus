@@ -82,8 +82,16 @@ msgstr ""
 msgid "Target filename + params"
 msgstr ""
 
+#: lazarusidestrconsts:listestdirectory
+msgid "Test directory"
+msgstr ""
+
 #: lazarusidestrconsts:lislaunchingcmdline
 msgid "Launching target command line"
+msgstr ""
+
+#: lazarusidestrconsts:lispublishprojdir
+msgid "Publish project directory"
 msgstr ""
 
 #: lazarusidestrconsts:lismenufile
@@ -159,7 +167,7 @@ msgid "Close"
 msgstr ""
 
 #: lazarusidestrconsts:lismenucloseall
-msgid "Close All"
+msgid "Close all editor files"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuquit
@@ -410,6 +418,10 @@ msgstr ""
 msgid "Save Project As..."
 msgstr ""
 
+#: lazarusidestrconsts:lismenupublishproject
+msgid "Publish Project"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuaddunittoproject
 msgid "Add active unit to Project"
 msgstr ""
@@ -495,7 +507,7 @@ msgid "Configure \"Build Lazarus\""
 msgstr ""
 
 #: lazarusidestrconsts:lismenugeneraloptions
-msgid "General options"
+msgid "Environment options"
 msgstr ""
 
 #: lazarusidestrconsts:lismenueditoroptions
@@ -554,7 +566,7 @@ msgstr ""
 msgid "Compiler error"
 msgstr ""
 
-#: lazarusidestrconsts:lisplzcheckthecmpilername
+#: lazarusidestrconsts:lisplzcheckthecompilername
 msgid "Please check the compiler name"
 msgstr ""
 
@@ -563,7 +575,7 @@ msgid "About Lazarus"
 msgstr ""
 
 #: lazarusidestrconsts:lisaboutlazarusmsg
-msgid "License: GPL/LGPL\nLazarus are the class libraries for Free Pascal that emulate Delphi.\nFree Pascal is a (L)GPL'ed compiler that runs on Linux,\nWin32, OS/2, 68K and more. Free Pascal is designed to be able to\nunderstand and compile Delphi syntax, which is of course OOP.\nLazarus is the missing part of the puzzle that will allow you to\ndevelop Delphi like programs in all of the above platforms.\nThe IDE will eventually become a RAD tool like Delphi.\n\nAs Lazarus is growing we need more developers.\nFor example: Write a nicer about dialog with a logo."
+msgid "License: GPL/LGPL\nLazarus are the class libraries for Free Pascal that emulate Delphi.\nFree Pascal is a (L)GPL'ed compiler that runs on Linux,\nWin32, OS/2, 68K and more. Free Pascal is designed to be able to\nunderstand and compile Delphi syntax, which is of course OOP.\nLazarus is the missing part of the puzzle that will allow you to\ndevelop Delphi like programs in all of the above platforms.\nThe IDE will eventually become a RAD tool like Delphi.\n\nAs Lazarus is growing we need more developers."
 msgstr ""
 
 #: lazarusidestrconsts:lisunitnamealreadyexistscap
@@ -580,6 +592,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisinvalidpascalidentifiertext
 msgid "The name \"%s\" is not a valid pascal identifier."
+msgstr ""
+
+#: lazarusidestrconsts:liscopyerror
+msgid "Copy Error"
 msgstr ""
 
 #: lazarusidestrconsts:lishintnewunit
@@ -930,8 +946,48 @@ msgstr ""
 msgid "Colors"
 msgstr ""
 
-#: lazarusidestrconsts:dlgenvnotes
-msgid "Notes: "
+#: lazarusidestrconsts:dlgenvbackuphelpnote
+msgid "Notes: Project files are all files in the project directory"
+msgstr ""
+
+#: lazarusidestrconsts:lisenvoptdlginvalidcompilerfilename
+msgid "Invalid compiler filename"
+msgstr ""
+
+#: lazarusidestrconsts:lisenvoptdlginvalidcompilerfilenamemsg
+msgid "The compiler file \"%s\" is not an executable."
+msgstr ""
+
+#: lazarusidestrconsts:lisenvoptdlginvaliddebuggerfilename
+msgid "Invalid debugger filename"
+msgstr ""
+
+#: lazarusidestrconsts:lisenvoptdlginvaliddebuggerfilenamemsg
+msgid "The debugger file \"%s\" is not an executable."
+msgstr ""
+
+#: lazarusidestrconsts:lisenvoptdlgdirectorynotfound
+msgid "Directory not found"
+msgstr ""
+
+#: lazarusidestrconsts:lisenvoptdlglazarusdirnotfoundmsg
+msgid "Lazarus directory \"%s\" not found."
+msgstr ""
+
+#: lazarusidestrconsts:lisenvoptdlginvalidlazarusdir
+msgid "The lazarus directory \"%s\" does not look correct. Normally it contains directories like lcl, debugger, designer, components, ... ."
+msgstr ""
+
+#: lazarusidestrconsts:lisenvoptdlgfpcsrcdirnotfoundmsg
+msgid "FPC source directory \"%s\" not found."
+msgstr ""
+
+#: lazarusidestrconsts:lisenvoptdlginvalidfpcsrcdir
+msgid "The FPC source directory \"%s\" does not look correct. Normally it contains directories like rtl, fcl, packages, compiler, ... ."
+msgstr ""
+
+#: lazarusidestrconsts:lisenvoptdlgtestdirnotfoundmsg
+msgid "Test directory \"%s\" not found."
 msgstr ""
 
 #: lazarusidestrconsts:dlgedoptscap
@@ -1028,6 +1084,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgshowscrollhint
 msgid "Show Scroll Hint"
+msgstr ""
+
+#: lazarusidestrconsts:dlgmouselinks
+msgid "Mouse links"
 msgstr ""
 
 #: lazarusidestrconsts:dlgsmarttabs
@@ -1230,6 +1290,10 @@ msgstr ""
 msgid "Code Creation"
 msgstr ""
 
+#: lazarusidestrconsts:dlgwordspolicies
+msgid "Words"
+msgstr ""
+
 #: lazarusidestrconsts:dlglinesplitting
 msgid "Line Splitting"
 msgstr ""
@@ -1268,6 +1332,30 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgcdtlast
 msgid "Last"
+msgstr ""
+
+#: lazarusidestrconsts:dlgmixmethodsandproperties
+msgid "Mix methods and properties"
+msgstr ""
+
+#: lazarusidestrconsts:dlgforwardprocsinsertpolicy
+msgid "Procedure insert policy"
+msgstr ""
+
+#: lazarusidestrconsts:dlglast
+msgid "Last (i.e. at end of source)"
+msgstr ""
+
+#: lazarusidestrconsts:dlginfrontofmethods
+msgid "In front of methods"
+msgstr ""
+
+#: lazarusidestrconsts:dlgbehindmethods
+msgid "Behind methods"
+msgstr ""
+
+#: lazarusidestrconsts:dlgforwardprocskeeporder
+msgid "Keep order of procedures"
 msgstr ""
 
 #: lazarusidestrconsts:dlgmethodinspolicy
@@ -1524,6 +1612,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlglevel3opt
 msgid "Level 3 (Level 2 + Uncertain)"
+msgstr ""
+
+#: lazarusidestrconsts:dlgtargetos
+msgid "Target OS"
 msgstr ""
 
 #: lazarusidestrconsts:dlgcodebugging
@@ -1820,5 +1912,73 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgdoesnotexist
 msgid "\" does not exist."
+msgstr ""
+
+#: lazarusidestrconsts:dlgtexttofing
+msgid "&Text to Find"
+msgstr ""
+
+#: lazarusidestrconsts:dlgreplacewith
+msgid "&Replace With"
+msgstr ""
+
+#: lazarusidestrconsts:dlgfropts
+msgid "Options"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcasesensitive
+msgid "Case Sensitive"
+msgstr ""
+
+#: lazarusidestrconsts:dlgwholewordsonly
+msgid "Whole Words Only"
+msgstr ""
+
+#: lazarusidestrconsts:dlgregularexpressions
+msgid "Regular Expressions"
+msgstr ""
+
+#: lazarusidestrconsts:dlgpromptonreplace
+msgid "Prompt On Replace"
+msgstr ""
+
+#: lazarusidestrconsts:dlgsrorigin
+msgid "Origin"
+msgstr ""
+
+#: lazarusidestrconsts:dlgfromcursor
+msgid "From Cursor"
+msgstr ""
+
+#: lazarusidestrconsts:dlgentirescope
+msgid "Entire Scope"
+msgstr ""
+
+#: lazarusidestrconsts:dlgscope
+msgid "Scope"
+msgstr ""
+
+#: lazarusidestrconsts:dlgglobal
+msgid "Global"
+msgstr ""
+
+#: lazarusidestrconsts:dlgselectedtext
+msgid "Selected Text"
+msgstr ""
+
+#: lazarusidestrconsts:dlgdirection
+msgid "Direction"
+msgstr ""
+
+#: lazarusidestrconsts:dlgupword
+msgid "Up"
+msgstr ""
+
+#: lazarusidestrconsts:dlgdownword
+msgid "Down"
+msgstr ""
+
+#: lazarusidestrconsts:dlgreplaceall
+msgid "Replace All"
 msgstr ""
 

@@ -151,8 +151,9 @@ msgid "Close"
 msgstr "Закрыть"
 
 #: lazarusidestrconsts:lismenucloseall
-msgid "Close All"
-msgstr "Закрыть все"
+msgid "Close all editor files"
+msgstr "Закрыть все файлы редактора"
+
 
 #: lazarusidestrconsts:lismenuquit
 msgid "Quit"
@@ -601,7 +602,7 @@ msgid "Interbase Data Access"
 msgstr "Доступ к Interbase"
 
 #: lazarusidestrconsts:dlgenvopts
-msgid "Environment Options"
+msgid "Environment options"
 msgstr "Параметры окружения"
 
 #: lazarusidestrconsts:dlgdesktop
@@ -1744,3 +1745,75 @@ msgstr "Каталог \""
 #: lazarusidestrconsts:dlgdoesnotexist
 msgid "\" does not exist."
 msgstr "\" не существует."
+
+#: lazarusidestrconsts:dlgtexttofing
+msgid "&Text to Find"
+msgstr "&Найти текст"
+
+#: lazarusidestrconsts:dlgreplacewith
+msgid "&Replace With"
+msgstr "&Заменить чем"
+
+#: lazarusidestrconsts:dlgfropts
+msgid "Options"
+msgstr "Параметры"
+
+#: lazarusidestrconsts:dlgcasesensitive
+msgid "Case Sensitive"
+msgstr "С учетом регистра"
+
+#: lazarusidestrconsts:dlgwholewordsonly
+msgid "Whole Words Only"
+msgstr "Только целые слова"
+
+#: lazarusidestrconsts:dlgregularexpressions
+msgid "Regular Expressions"
+msgstr "Определенные выражения"
+
+#: lazarusidestrconsts:dlgpromptonreplace
+msgid "Prompt On Replace"
+msgstr "Подтверждать замену"
+
+#: lazarusidestrconsts:dlgsrorigin
+msgid "Origin"
+msgstr "Начинать"
+
+#: lazarusidestrconsts:dlgfromcursor
+msgid "From Cursor"
+msgstr "От курсора"
+
+#: lazarusidestrconsts:dlgentirescope
+msgid "Entire Scope"
+msgstr "С начала"
+
+#: lazarusidestrconsts:dlgscope
+msgid "Scope"
+msgstr "Где"
+
+#: lazarusidestrconsts:dlgglobal
+msgid "Global"
+msgstr "Везде"
+
+#: lazarusidestrconsts:dlgselectedtext
+msgid "Selected Text"
+msgstr "В выделенном"
+
+#: lazarusidestrconsts:dlgdirection
+msgid "Direction"
+msgstr "Направление"
+
+#: lazarusidestrconsts:dlgupword
+msgid "Up"
+msgstr "Вверх"
+
+#: lazarusidestrconsts:dlgdownword
+msgid "Down"
+msgstr "Вниз"
+
+#: lazarusidestrconsts:dlgreplaceall
+msgid "Replace All"
+msgstr "Заменить все"
+
+#: lazarusidestrconsts:dlgtargetos
+msgid "Target OS"
+msgstr "Для какой ОС"
