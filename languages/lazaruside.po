@@ -2642,8 +2642,8 @@ msgstr ""
 msgid "As-Is"
 msgstr ""
 
-#: lazarusidestrconsts:dlgsymantecchecking
-msgid "Symantec Checking:"
+#: lazarusidestrconsts:dlgsyntaxoptions
+msgid "Syntax options"
 msgstr ""
 
 #: lazarusidestrconsts:dlgdelphi2ext
@@ -6526,12 +6526,16 @@ msgstr ""
 msgid "Package %s%s%s has no valid output directory:%s%s%s%s"
 msgstr ""
 
-#: lazarusidestrconsts:lispkgmangthisfilewasautomaticallycreatedbylazarusdonotedit
-msgid "%s This file was automatically created by Lazarus. Do not edit!%s  This source is only used to compile and install%s  the package %s.%s"
-msgstr ""
-
 #: lazarusidestrconsts:lispkgmangpackagemainsourcefile
 msgid "package main source file"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangthisfilewasautomaticallycreatedbylazarusdonotedit
+msgid "This file was automatically created by Lazarus. Do not edit!"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangthissourceisonlyusedtocompileandinstallthepackage
+msgid "This source is only used to compile and install the package."
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangrenamefileinpackage

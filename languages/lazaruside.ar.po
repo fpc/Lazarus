@@ -61,10 +61,6 @@ msgstr "%sبصدد ترميم  "
 msgid "%s - (new project)"
 msgstr "%s - مشروع جديد"
 
-#: lazarusidestrconsts:lispkgmangthisfilewasautomaticallycreatedbylazarusdonotedit
-msgid "%s This file was automatically created by Lazarus. Do not edit!%s  This source is only used to compile and install%s  the package %s.%s"
-msgstr ""
-
 #: lazarusidestrconsts:lisuidbytes
 msgid "%s bytes"
 msgstr ""
@@ -5889,10 +5885,6 @@ msgstr ""
 msgid "Switch between form and unit"
 msgstr ""
 
-#: lazarusidestrconsts:dlgsymantecchecking
-msgid "Symantec Checking:"
-msgstr ""
-
 #: lazarusidestrconsts:liscodetoolsoptssymbol
 msgid "Symbol"
 msgstr ""
@@ -5911,6 +5903,10 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecsyntaxcheck
 msgid "Syntax check"
+msgstr ""
+
+#: lazarusidestrconsts:dlgsyntaxoptions
+msgid "Syntax options"
 msgstr ""
 
 #: lazarusidestrconsts:dlgrunosystemvariables
@@ -6545,6 +6541,10 @@ msgstr ""
 msgid "This file is not in any loaded package."
 msgstr ""
 
+#: lazarusidestrconsts:lispkgmangthisfilewasautomaticallycreatedbylazarusdonotedit
+msgid "This file was automatically created by Lazarus. Do not edit!"
+msgstr ""
+
 #: lazarusidestrconsts:lisresourcefilecomment
 msgid "This is an automatically generated lazarus resource file"
 msgstr ""
@@ -6559,6 +6559,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgsysthispackageisinstalledbutthelpkfilewasnotfound
 msgid "This package is installed, but the lpk file was not found.All its components are deactivated. Please fix this."
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangthissourceisonlyusedtocompileandinstallthepackage
+msgid "This source is only used to compile and install the package."
 msgstr ""
 
 #: lazarusidestrconsts:listhisstatementcannotbeextractedpleaseselectsomecode

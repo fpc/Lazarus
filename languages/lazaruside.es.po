@@ -61,10 +61,6 @@ msgstr "%s (depurando ...)"
 msgid "%s - (new project)"
 msgstr "%s - (nuevo proyecto)"
 
-#: lazarusidestrconsts:lispkgmangthisfilewasautomaticallycreatedbylazarusdonotedit
-msgid "%s This file was automatically created by Lazarus. Do not edit!%s  This source is only used to compile and install%s  the package %s.%s"
-msgstr ""
-
 #: lazarusidestrconsts:lisuidbytes
 msgid "%s bytes"
 msgstr "%s bytes"
@@ -5889,10 +5885,6 @@ msgstr "Escoger Rutas"
 msgid "Switch between form and unit"
 msgstr "Escoger entre formulario y unidad"
 
-#: lazarusidestrconsts:dlgsymantecchecking
-msgid "Symantec Checking:"
-msgstr "Verificación Semántica:"
-
 #: lazarusidestrconsts:liscodetoolsoptssymbol
 msgid "Symbol"
 msgstr "Símbolo"
@@ -5912,6 +5904,10 @@ msgstr "SynEdit - El componente editor usado por Lazarus. http://sourceforge.net
 #: lazarusidestrconsts:srkmecsyntaxcheck
 msgid "Syntax check"
 msgstr "Verificar sintaxis"
+
+#: lazarusidestrconsts:dlgsyntaxoptions
+msgid "Syntax options"
+msgstr ""
 
 #: lazarusidestrconsts:dlgrunosystemvariables
 msgid "System variables"
@@ -6545,6 +6541,10 @@ msgstr ""
 msgid "This file is not in any loaded package."
 msgstr ""
 
+#: lazarusidestrconsts:lispkgmangthisfilewasautomaticallycreatedbylazarusdonotedit
+msgid "This file was automatically created by Lazarus. Do not edit!"
+msgstr ""
+
 #: lazarusidestrconsts:lisresourcefilecomment
 msgid "This is an automatically generated lazarus resource file"
 msgstr "Este es un archivo de recurso de Lazarus generado automáticamente"
@@ -6560,6 +6560,10 @@ msgstr "Parece un archivo de pascal.%s fpc 1.0.x espera archivos de pascal en mi
 #: lazarusidestrconsts:lispkgsysthispackageisinstalledbutthelpkfilewasnotfound
 msgid "This package is installed, but the lpk file was not found.All its components are deactivated. Please fix this."
 msgstr "Este paquete está instalado pero no se ha encontrado el archivo lpk. Todos los componentes están desactivados. Por favor arregle esto."
+
+#: lazarusidestrconsts:lispkgmangthissourceisonlyusedtocompileandinstallthepackage
+msgid "This source is only used to compile and install the package."
+msgstr ""
 
 #: lazarusidestrconsts:listhisstatementcannotbeextractedpleaseselectsomecode
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."

@@ -64,10 +64,6 @@ msgstr "%s (Debuggen...)"
 msgid "%s - (new project)"
 msgstr "%s - (Neues Projekt)"
 
-#: lazarusidestrconsts:lispkgmangthisfilewasautomaticallycreatedbylazarusdonotedit
-msgid "%s This file was automatically created by Lazarus. Do not edit!%s  This source is only used to compile and install%s  the package %s.%s"
-msgstr "%s Diese Datei ist automatisch von Lazarus erzeugt worden. Sie sollte nicht editiert werden.%sDieser Quelltext dient nur dazu, das Paket %s%s zu kompilieren und installieren%s."
-
 #: lazarusidestrconsts:lisuidbytes
 msgid "%s bytes"
 msgstr "%s Bytes"
@@ -5892,10 +5888,6 @@ msgstr "Pfade vertauschen"
 msgid "Switch between form and unit"
 msgstr "Zwischen Formular und Unit umschalten"
 
-#: lazarusidestrconsts:dlgsymantecchecking
-msgid "Symantec Checking:"
-msgstr "Semantische Überprüfung"
-
 #: lazarusidestrconsts:liscodetoolsoptssymbol
 msgid "Symbol"
 msgstr "Symbol"
@@ -5915,6 +5907,10 @@ msgstr "SynEdit - die von Lazarus verwendete Editorkomponente. http://sourceforg
 #: lazarusidestrconsts:srkmecsyntaxcheck
 msgid "Syntax check"
 msgstr "Syntaxüberprüfung"
+
+#: lazarusidestrconsts:dlgsyntaxoptions
+msgid "Syntax options"
+msgstr ""
 
 #: lazarusidestrconsts:dlgrunosystemvariables
 msgid "System variables"
@@ -6548,6 +6544,10 @@ msgstr "Es trat ein Fehler beim Kopieren des Komponentenstroms in die Zwischenab
 msgid "This file is not in any loaded package."
 msgstr "Datei ist in keinem der geladenen Pakete vorhanden."
 
+#: lazarusidestrconsts:lispkgmangthisfilewasautomaticallycreatedbylazarusdonotedit
+msgid "This file was automatically created by Lazarus. Do not edit!"
+msgstr ""
+
 #: lazarusidestrconsts:lisresourcefilecomment
 msgid "This is an automatically generated lazarus resource file"
 msgstr "Dies ist eine automatisch erzeugte Lazarus-Ressourcendatei"
@@ -6563,6 +6563,10 @@ msgstr "Das sieht wie ein Pascal-Quelltext aus.%sFPC 1.0.X verlangt, dass Pascal
 #: lazarusidestrconsts:lispkgsysthispackageisinstalledbutthelpkfilewasnotfound
 msgid "This package is installed, but the lpk file was not found.All its components are deactivated. Please fix this."
 msgstr "Dieses Paket ist installiert, aber die .LPK-Datei wurde nicht gefunden. Dessen Kompontenten wurden alle deaktiviert. Bitte beheben Sie diesen Fehler."
+
+#: lazarusidestrconsts:lispkgmangthissourceisonlyusedtocompileandinstallthepackage
+msgid "This source is only used to compile and install the package."
+msgstr ""
 
 #: lazarusidestrconsts:listhisstatementcannotbeextractedpleaseselectsomecode
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
