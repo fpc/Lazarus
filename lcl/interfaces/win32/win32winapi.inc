@@ -859,21 +859,6 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
-  Method:  EndPaint
-  Params:  Handle        - Handle to window
-           PS            - PAINTSTRUCT variable with painting information
-  Returns: always nonzero.
-
-  The EndPaint function marks the end of painting in the specified window.
-  This function is required for each call to the BeginPaint function, but only
-  after painting is complete.
- ------------------------------------------------------------------------------}
-Function TWin32Object.EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer;
-Begin
-  Result := Integer(Windows.EndPaint(Handle, @PS));
-End;
-
-{------------------------------------------------------------------------------
   Method:  EnableWindow
   Params: HWnd    - handle to window
           BEnable -  whether to enable the window
@@ -886,6 +871,21 @@ Function TWin32Object.EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean;
 Begin
   Assert(False, Format('Trace:[TWin32Object.EnableWindow] HWnd: 0x%x, BEnable: %s', [HWnd, BOOL_TEXT[BEnable]]));
   Result := Windows.EnableWindow(HWnd, BEnable);
+End;
+
+{------------------------------------------------------------------------------
+  Method:  EndPaint
+  Params:  Handle        - Handle to window
+           PS            - PAINTSTRUCT variable with painting information
+  Returns: always nonzero.
+
+  The EndPaint function marks the end of painting in the specified window.
+  This function is required for each call to the BeginPaint function, but only
+  after painting is complete.
+ ------------------------------------------------------------------------------}
+Function TWin32Object.EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer;
+Begin
+  Result := Integer(Windows.EndPaint(Handle, @PS));
 End;
 
 {------------------------------------------------------------------------------
@@ -2265,8 +2265,8 @@ var
   Crit : LPCRITICAL_SECTION;
 begin
   { An OS Compatible TCriticalSection needs to be defined}
-  If CritSection <> 0 then
-{    Try
+{  If CritSection <> 0 then
+    Try
       Crit := LPCRITICAL_SECTION(CritSection);
       Dispose(Crit);
     except
@@ -2297,6 +2297,7 @@ begin
   tmp := LPCRITICAL_SECTION(CritSection);
   CritSection := Longint(Crit);
   Dispose(Tmp);}
+  Windows.EnterCriticalSection(LPCRITICAL_SECTION(CritSection));
 end;
 
 Procedure TWin32Object.LeaveCriticalSection(var CritSection: TCriticalSection);
@@ -2319,12 +2320,13 @@ begin
   tmp := LPCRITICAL_SECTION(CritSection);
   CritSection := Longint(Crit);
   Dispose(Tmp);}
+  Windows.LeaveCriticalSection(LPCRITICAL_SECTION(CritSection));
 end;
 
 Procedure TWin32Object.DeleteCriticalSection(var CritSection: TCriticalSection);
-{var
+var
   Crit,
-  tmp : LPCRITICAL_SECTION;}
+  tmp : LPCRITICAL_SECTION;
 begin
   { An OS Compatible TCriticalSection needs to be defined}
 {  New(Crit);
@@ -2338,10 +2340,10 @@ begin
       end;
     end;
   Windows.DeleteCriticalSection(Crit^);
-  Dispose(Crit);
+  Dispose(Crit);   }
   tmp := LPCRITICAL_SECTION(CritSection);
   CritSection := 0;
-  Dispose(Tmp);}
+  Dispose(Tmp);
 end;
 
 //##apiwiz##eps##   // Do not remove
@@ -2354,6 +2356,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.37  2003/07/02 19:35:26  mattias
+  fixed AV on start from Vincent
+
   Revision 1.36  2003/07/02 15:56:15  mattias
   fixed win32 painting and started creating bitmaps from rawimages
 

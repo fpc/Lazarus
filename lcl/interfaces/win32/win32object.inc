@@ -70,13 +70,15 @@ Begin
     DestroyWindow(FTimerWindow);
     FTimerWindow := 0;
   end;
-
   FMessageQueue.Free;
   FDeviceContexts.Free;
   FGDIObjects.Free;
   FKeyStateList.Free;
   FTimerData.Free;
 
+  Windows.UnregisterClass(@ClsName, System.HInstance);
+  Windows.UnregisterClass(@TimerClsName, System.HInstance);
+  Windows.UnregisterClass(@ToolBtnClsName, System.HInstance);
   DestroyAcceleratorTable(FAccelGroup);
 
   Inherited Destroy;
@@ -1060,17 +1062,8 @@ End;
   Tells Windows to halt and destroy
  ------------------------------------------------------------------------------}
 Procedure TWin32Object.AppTerminate;
-Var
-  MainForm: TForm;
 Begin
   Assert(False, 'Trace:TWin32Object.AppTerminate - Start');
-  MainForm := Nil;
-  If Application.MainForm <> Nil Then
-    MainForm := Application.MainForm
-  Else If FMainForm <> Nil then
-    MainForm := FMainForm;
-  if MainForm=nil then exit;
-  // ToDo:
 End;
 
 {------------------------------------------------------------------------------
@@ -1219,7 +1212,7 @@ var WinClass: WndClass;
 begin
   with WinClass do begin
     Style := 0{CS_HRedraw or CS_VRedraw};
-    lpfnWndProc := WndProc(@ToolBtnWindowProc);
+    lpfnWndProc := @ToolBtnWindowProc;
     cbClsExtra := 40;
     cbWndExtra := 40;
     hInstance := System.HInstance;
@@ -2704,6 +2697,9 @@ End;
 
 {
   $Log$
+  Revision 1.67  2003/07/02 19:35:26  mattias
+  fixed AV on start from Vincent
+
   Revision 1.66  2003/07/02 15:57:04  mattias
   added LCL to win32 cursor mapping from Micha
 
