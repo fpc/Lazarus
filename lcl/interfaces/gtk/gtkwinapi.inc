@@ -3513,9 +3513,9 @@ function TGtkWidgetSet.Frame3d(DC : HDC; var ARect : TRect;
   const FrameWidth : integer; const Style : TBevelCut) : boolean;
 
 const GTKThinShadowType: array[TBevelCut] of integer =
-  (GTK_SHADOW_NONE, GTK_SHADOW_IN, GTK_SHADOW_OUT);
+  (GTK_SHADOW_NONE, GTK_SHADOW_IN, GTK_SHADOW_OUT, GTK_SHADOW_NONE);
 const GTKStrongShadowType: array[TBevelCut] of integer =
-  (GTK_SHADOW_NONE, GTK_SHADOW_ETCHED_IN, GTK_SHADOW_ETCHED_OUT);
+  (GTK_SHADOW_NONE, GTK_SHADOW_ETCHED_IN, GTK_SHADOW_ETCHED_OUT, GTK_SHADOW_NONE);
 
 var
   Widget, ClientWidget: PGtkWidget;
@@ -3552,25 +3552,6 @@ begin
     Area.Y:=ARect.Top+DCOrigin.Y;
     Area.Width:=ARect.Right-ARect.Left;
     Area.Height:=ARect.Bottom-ARect.Top;
-    {case Style of
-    bvLowered:
-      begin
-        LeftTopGC:=TheStyle^.light_gc[GTK_STATE_NORMAL];
-        RightBottomGC:=TheStyle^.dark_gc[GTK_STATE_NORMAL];
-      end;
-    bvRaised:
-      begin
-        LeftTopGC:=TheStyle^.dark_gc[GTK_STATE_NORMAL];
-        RightBottomGC:=TheStyle^.light_gc[GTK_STATE_NORMAL];
-      end;
-    else
-      begin
-        LeftTopGC:=TheStyle^.mid_gc[GTK_STATE_NORMAL];
-        RightBottomGC:=TheStyle^.mid_gc[GTK_STATE_NORMAL];
-      end;
-    end;
-    gdk_gc_set_clip_rectangle (LeftTopGC, @Area);
-    gdk_gc_set_clip_rectangle (RightBottomGC, @Area);}
     if FrameWidth=1 then
       ShadowType:=GTKThinShadowType[Style]
     else
@@ -3581,26 +3562,6 @@ begin
     //'');
 
     for i:= 1 to FrameWidth do begin
-     { // left edge
-      gdk_draw_line(Drawable, LeftTopGC,
-                 ARect.Left+DCOrigin.X, ARect.Top+DCOrigin.Y,
-                 ARect.Left+DCOrigin.X, ARect.Bottom+DCOrigin.Y);
-      // top edge
-      gdk_draw_line(Drawable, LeftTopGC,
-                 ARect.Left+DCOrigin.X, ARect.Top+DCOrigin.Y,
-                 ARect.Right+DCOrigin.X, ARect.Top+DCOrigin.Y);
-      // right edge
-      gdk_draw_line(Drawable, RightBottomGC,
-                 ARect.Right+DCOrigin.X, ARect.Top+DCOrigin.Y,
-                 ARect.Right+DCOrigin.X, ARect.Bottom+DCOrigin.Y);
-      // bottom edge
-      gdk_draw_line(Drawable, RightBottomGC,
-                 ARect.Left+DCOrigin.X, ARect.Bottom+DCOrigin.Y,
-                 ARect.Right+DCOrigin.X, ARect.Bottom+DCOrigin.Y);}
-      //DebugLn('TGtkWidgetSet.Frame3d A TheStyle=',HexStr(Cardinal(TheStyle),8),
-      //  ' Drawable=',GetDrawableDebugReport(Drawable),
-      //  ' ClientWidget=',GetWidgetDebugReport(ClientWidget)
-      //  );
       gtk_paint_shadow(TheStyle,
                        AWindow, GTK_STATE_NORMAL,
                        ShadowType,
@@ -8810,6 +8771,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.377  2004/12/11 01:28:58  mattias
+  implemented bvSpace of TBevelCut
+
   Revision 1.376  2004/12/01 16:17:18  mattias
   updated fpdoc sceletons for lcl and gtk intf
 

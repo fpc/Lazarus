@@ -1264,7 +1264,7 @@ End;
 Function TWin32WidgetSet.Frame3D(DC: HDC; var Rect: TRect;
   Const FrameWidth: Integer; Const Style: TBevelCut): Boolean;
 Const
-  Edge: Array[TBevelCut] Of Integer = (0, BDR_SUNKENOUTER, BDR_RAISEDOUTER);
+  Edge: Array[TBevelCut] Of Integer = (0, BDR_SUNKENOUTER, BDR_RAISEDOUTER, 0);
 Begin
   Result := Boolean(DrawEdge(DC, Rect, Edge[Style], BF_RECT));
 End;
@@ -3031,6 +3031,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.129  2004/12/11 01:28:58  mattias
+  implemented bvSpace of TBevelCut
+
   Revision 1.128  2004/11/19 21:59:23  micha
   fix focus issue (for example using MessageDlg)
 

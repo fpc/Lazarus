@@ -38,7 +38,7 @@ uses
 type
   TGraphicsColor = -$7FFFFFFF-1..$7FFFFFFF;
   TGraphicsFillStyle = (fsSurface, fsBorder);
-  TGraphicsBevelCut = (bvNone, bvLowered, bvRaised);
+  TGraphicsBevelCut = (bvNone, bvLowered, bvRaised, bvSpace);
 
 //------------------------------------------------------------------------------
 // raw image data
@@ -775,6 +775,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.34  2004/12/11 01:28:58  mattias
+  implemented bvSpace of TBevelCut
+
   Revision 1.33  2004/08/13 20:40:27  mattias
   fixed DebugLn for VerboseRawImage
 
