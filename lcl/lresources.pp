@@ -61,6 +61,9 @@ type
     destructor Destroy;  override;
   end;
 
+function InitLazResourceComponent(Instance: TComponent;
+  RootAncestor: TClass): Boolean;
+
 procedure BinaryToLazarusResourceCode(BinStream,ResStream:TStream;
   ResourceName, ResourceType:AnsiString);
 function LFMtoLRSfile(LFMfilename:ansistring):boolean;
@@ -1320,6 +1323,47 @@ begin
     raise Exception.Create(rsInvalidFormObjectStream);
   end;
 end;
+
+function InitLazResourceComponent(Instance: TComponent;
+  RootAncestor: TClass): Boolean;
+
+  function InitComponent(ClassType: TClass): Boolean;
+  var
+    CompResource: TLResource;
+    MemStream: TMemoryStream;
+  begin
+    //writeln('[InitComponent] ',ClassType.Classname,' ',Instance<>nil);
+    Result:=false;
+    if (ClassType=TComponent) or (ClassType=RootAncestor) then exit;
+    if Assigned(ClassType.ClassParent) then
+      Result:=InitComponent(ClassType.ClassParent);
+    CompResource:=LazarusResources.Find(ClassType.ClassName);
+    if (CompResource=nil) or (CompResource.Value='') then exit;
+    //writeln('[InitComponent] CompResource found for ',ClassType.Classname);
+    MemStream:=TMemoryStream.Create;
+    try
+      MemStream.Write(CompResource.Value[1],length(CompResource.Value));
+      MemStream.Position:=0;
+      //writeln('Form Stream "',ClassType.ClassName,'" Signature=',copy(CompResource.Value,1,4));
+      try
+        Instance:=MemStream.ReadComponent(Instance);
+      except
+        on E: Exception do begin
+          writeln(Format(rsFormStreamingError,[ClassType.ClassName,E.Message]));
+          exit;
+        end;
+      end;
+    finally
+      MemStream.Free;
+    end;
+    Result:=true;
+  end;
+
+begin
+  Result:=InitComponent(Instance.ClassType);
+end;
+
+
 
 //------------------------------------------------------------------------------
 initialization

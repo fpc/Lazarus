@@ -5875,7 +5875,7 @@ begin
       Result:=PkgBoss.DoCompileAutoInstallPackages([]);
       if Result<>mrOk then exit;
 
-      // create uses addition for IDE
+      // create uses section addition for lazarus.pp
       Result:=PkgBoss.DoSaveAutoInstallConfig;
       if Result<>mrOk then exit;
 
@@ -5886,7 +5886,7 @@ begin
     // save extra options
     IDEBuildFlags:=Flags+[blfOnlyIDE];
     Result:=SaveIDEMakeOptions(MiscellaneousOptions.BuildLazOpts,
-                     MacroList,PkgOptions,IDEBuildFlags);
+                               MacroList,PkgOptions,IDEBuildFlags);
     if Result<>mrOk then exit;
 
     // make ide
@@ -9794,6 +9794,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.653  2003/10/07 14:54:58  mattias
+  moved some lazarus resource code to LResources.pp
+
   Revision 1.652  2003/10/02 12:19:25  mattias
   fixed saving before build file
 

@@ -270,12 +270,13 @@ end;
 ------------------------------------------------------------------------------}
 Procedure TCustomForm.SetVisible(Value : boolean);
 Begin
+  if (Value=(fsVisible in FFormState)) and (Visible=Value) then exit;
   //writeln('[TCustomForm.SetVisible] START ',Name,':',ClassName,' Old=',Visible,' New=',Value,' ',(fsCreating in FFormState),' ',FormUpdating);
   if Value then
     Include(FFormState, fsVisible)
   else
     Exclude(FFormState, fsVisible);
-  //writeln('TCustomForm.SetVisible ',Name,':',ClassName,' ',FormUpdating);
+  //writeln('TCustomForm.SetVisible ',Name,':',ClassName,' FormUpdating=',FormUpdating,' fsCreating=',fsCreating in FFormState);
   if (fsCreating in FFormState) {or FormUpdating} then
     // will be done when finished loading
   else
@@ -978,6 +979,7 @@ Begin
     FFormStyle:= fsNormal;
 
   inherited Create(AOwner);
+  Visible := False;
   fCompStyle:= csForm;
 
   FMenu	:= nil;
@@ -985,7 +987,6 @@ Begin
   ControlStyle := ControlStyle + [csAcceptsControls, csCaptureMouse,
                                   csClickEvents, csSetCaption, csDoubleClicks];
   SetInitialBounds(0,0,320,240);
-  Visible := False;
   ParentColor := False;
   ParentFont := False;
   Ctl3D := True;
@@ -1274,6 +1275,9 @@ begin
     FActiveControl := nil;
     if Control.CanFocus then SetActiveControl(Control);
   end;
+  //writeln('TCustomForm.Loaded ',Name,':',ClassName,' ',FormUpdating,' ',fsCreating in FFormState,' ',Visible,' ',fsVisible in FormState);
+  if fsVisible in FormState then
+    Visible:=true;
 end;
 
 {------------------------------------------------------------------------------
@@ -1435,6 +1439,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.116  2003/10/07 14:54:59  mattias
+  moved some lazarus resource code to LResources.pp
+
   Revision 1.115  2003/09/18 09:21:03  mattias
   renamed LCLLinux to LCLIntf
 

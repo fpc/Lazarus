@@ -2844,15 +2844,15 @@ var
                      for the OS specific)
                      For example:
                        classes.pp can be found in several places
-                        <FPCSrcDir>/fcl/os2/classes.pp
-                        <FPCSrcDir>/fcl/linux/classes.pp
-                        <FPCSrcDir>/fcl/win32/classes.pp
-                        <FPCSrcDir>/fcl/go32v2/classes.pp
-                        <FPCSrcDir>/fcl/freebsd/classes.pp
-                        <FPCSrcDir>/fcl/template/classes.pp
+                        <FPCSrcDir>/fcl/classes/os2/classes.pp
+                        <FPCSrcDir>/fcl/classes/linux/classes.pp
+                        <FPCSrcDir>/fcl/classes/win32/classes.pp
+                        <FPCSrcDir>/fcl/classes/go32v2/classes.pp
+                        <FPCSrcDir>/fcl/classes/freebsd/classes.pp
+                        <FPCSrcDir>/fcl/classes/template/classes.pp
 
                        This will result in a single filename:
-                        $(#FPCSrcDir)/fcl/$(#TargetOS)/classes.pp
+                        $(#FPCSrcDir)/fcl/classes/$(#TargetOS)/classes.pp
                   }
                   if (FileNameMacroCount(OldUnitLink.Filename)=0)
                   or (SrcOSMacroUsed) then begin

@@ -1205,7 +1205,7 @@ function InitResourceComponent(Instance: TComponent;
         end;
       end;
     finally
-      ApplyVisible;
+      //ApplyVisible;
       MemStream.Free;
     end;
     Result:=true;
@@ -1219,7 +1219,8 @@ begin
     //LocalizedLoading:=(Instance.ComponentState * [csInline,csLoading])=[];
     //if LocalizedLoading then BeginGlobalLoading; // push new loadlist onto stack
     try
-      Result:=InitComponent(Instance.ClassType);
+      Result:=InitLazResourceComponent(Instance,RootAncestor);
+      //Result:=InitComponent(Instance.ClassType);
       //if LocalizedLoading then NotifyGlobalLoading; // call Loaded
     finally
       //if LocalizedLoading then EndGlobalLoading; // pop loadlist off stack
