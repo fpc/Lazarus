@@ -143,7 +143,8 @@ begin
   With Canvas do begin
     Color := Self.Color;
     Font := Self.Font;
-    FillRect(R);
+    if Color<>clNone then
+      FillRect(R);
     If BorderStyle <> sbsNone then begin
       InflateRect(R,-2,-2);
       Pen.Style := psSolid;
@@ -187,6 +188,9 @@ end;
 
 {
   $Log$
+  Revision 1.9  2004/12/31 11:27:35  mattias
+  skip FillRect in TStaticText.Paint when Color=clNone
+
   Revision 1.8  2004/09/24 13:45:32  mattias
   fixed TCanvas.TextRect Delphi compatible Rect and added TBarChart from Michael VC
 

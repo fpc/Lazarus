@@ -7056,7 +7056,7 @@ begin
     Result:=mrCancel;
     exit;
   end;
-  // load Delphi project file
+  // load Delphi project file .dpr
   debugln('TMainIDE.DoConvertDelphiProject loading dpr ...');
   Result:=LoadCodeBuffer(DPRCode,DelphiFilename,
                          [lbfCheckIfText,lbfUpdateFromDisk]);
@@ -7078,6 +7078,7 @@ begin
     end;
   end;
 
+  // TODO: read .dof file
   // TODO: get all compiler options (Flags)
   // TODO: get all search paths
   // TODO: get all needed packages
@@ -7123,13 +7124,11 @@ begin
   Result:=DoOpenEditorFile(LPRCode.Filename,-1,[ofAddToRecent,ofRegularFile]);
   if Result=mrAbort then exit;
 
-  // add and convert all project files
+  // find all project files
   FoundInUnits:=nil;
   MissingInUnits:=nil;
   NormalUnits:=nil;
   try
-    // TODO: set compiler options, packages and search paths
-
     debugln('TMainIDE.DoConvertDelphiProject gathering all project units ...');
     if not CodeToolBoss.FindDelphiProjectUnits(LPRCode,FoundInUnits,
                                                MissingInUnits, NormalUnits) then
@@ -7149,7 +7148,7 @@ begin
       if Result<>mrIgnore then exit;
     end;
 
-    // TODO: add all units to the project
+    // add all units to the project
     debugln('TMainIDE.DoConvertDelphiProject adding all project units to project ...');
     for i:=0 to FoundInUnits.Count-1 do begin
       CurUnitInfo:=TUnitInfo.Create(nil);
@@ -7162,8 +7161,16 @@ begin
     Result:=DoSaveProject([]);
     if Result<>mrOk then exit;
 
-    // TODO: convert all units
-
+    // convert all units
+    i:=0;
+    while i<Project1.UnitCount do begin
+      CurUnitInfo:=Project1.Units[i];
+      if CurUnitInfo.IsPartOfProject and not (CurUnitInfo.IsMainUnit) then begin
+        Result:=DoConvertDelphiUnit(CurUnitInfo.Filename);
+        if Result=mrAbort then exit;
+      end;
+      inc(i);
+    end;
 
   finally
     FoundInUnits.Free;
@@ -11253,6 +11260,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.813  2004/12/31 11:27:34  mattias
+  skip FillRect in TStaticText.Paint when Color=clNone
+
   Revision 1.812  2004/12/30 11:24:05  mattias
   updated russian utf translation  from Vasily
 
