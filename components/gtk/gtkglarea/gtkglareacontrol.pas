@@ -23,7 +23,7 @@ uses
   Classes, SysUtils, {$IFDEF VER1_0}Linux{$ELSE}Unix{$ENDIF}, Forms,
   Controls, Graphics, LMessages, VCLGlobals, InterfaceBase, GTKInt,
   WSLCLClasses, WSControls, LResources,
-  GLib, NVGL, GTKGLArea_Int;
+  GLib, Gtk, NVGL, GTKGLArea_Int;
   
 type
   TGtkGlAreaMakeCurrentEvent = procedure(Sender: TObject;
@@ -226,6 +226,9 @@ begin
       exit;
     end;
   end;
+  // make sure the widget is realized
+  gtk_widget_realize(PGtkWidget(Widget));
+  // make current
   Result:=gtk_gl_area_make_current(Widget);
   if Result=gint(True) then begin
     // on success push on stack
