@@ -414,9 +414,14 @@ type
 
   TCheckBox = class(TCustomCheckBox)
   private
+    FAutoSize : Boolean;
+    procedure SetAutoSize(Value : Boolean);
+  protected
+    procedure SetText(const Value: TCaption); Override;
   public
     constructor Create(AOwner: TComponent); override;
   published
+    Property AutoSize : Boolean read FAutoSize write SetAutoSize;
     property AllowGrayed;
     property Caption;
     property Checked;
@@ -483,15 +488,19 @@ type
    TRadioButton = class(TCustomCheckBox)
    private
      fGroup : THandle; // handle to the previous button in the group this button belongs to
-     procedure SetGroup (Value : THandle); 
+     FAutoSize : Boolean;
+     procedure SetGroup (Value : THandle);
      function GetGroup : THandle;
+     procedure SetAutoSize(Value : Boolean);
    protected
      procedure CreateWnd; override;
      procedure DestroyWnd; override;
+     procedure SetText(const Value: TCaption); Override;
    public
      constructor Create (AOwner: TComponent); override;
      property group : THandle read GetGroup write SetGroup;
    published
+     Property AutoSize : Boolean read FAutoSize write SetAutoSize;
      property AllowGrayed;
      property Caption;
      property Checked;
@@ -622,6 +631,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.34  2002/08/24 06:51:22  lazarus
+  MG: from Andrew: style list fixes, autosize for radio/checkbtns
+
   Revision 1.33  2002/08/19 20:34:47  lazarus
   MG: improved Clipping, TextOut, Polygon functions
 
