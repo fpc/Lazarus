@@ -3722,7 +3722,11 @@ var
 
 begin
   //DebugLn('[TWinControl.CreateWnd] START ',Name,':',Classname);
-  if (csDestroying in ComponentState) then exit;
+  if (csDestroying in ComponentState)
+  or (Parent<>nil) and (csDestroying in Parent.ComponentState) then begin
+    DebugLn('[TWinControl.CreateWnd] NOTE: csDestroying ',DbgSName(Self));
+    exit;
+  end;
 
   if wcfInitializing in FWinControlFlags
   then begin
@@ -4486,6 +4490,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.319  2005/03/10 09:26:25  mattias
+  added note on creating handles on destroying
+
   Revision 1.318  2005/03/07 23:21:36  mattias
   fixed DefaultRowHeight=18 and various published properties  from Jesus
 
