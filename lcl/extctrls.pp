@@ -214,7 +214,7 @@ type
   TTimer = class (TComponent)
   private
     FInterval     : Cardinal;
-    FTimerID      : integer;
+    FTimerHandle  : integer;
     FOnTimer      : TNotifyEvent;
     FEnabled      : Boolean;
     procedure UpdateTimer;
@@ -506,6 +506,9 @@ end.
 
  {
   $Log$
+  Revision 1.34  2002/10/15 16:01:36  lazarus
+  MG: fixed timers
+
   Revision 1.33  2002/10/01 10:05:48  lazarus
   MG: changed PDeviceContext into class TDeviceContext
 
