@@ -48,7 +48,7 @@ uses VCLGlobals, Classes;
 
 type
   //TODO: check this against vclglobals
-
+  
   PLongInt = ^LongInt;
   PInteger = ^Integer;
   PSmallInt = ^SmallInt;
@@ -750,6 +750,7 @@ type
     peBlue: Byte;
     peFlags: Byte;
   end;
+  TPaletteEntry = tagPALETTEENTRY;
   PALETTEENTRY = tagPALETTEENTRY;
 
   PLogPalette = ^tagLogPalette;
@@ -788,7 +789,14 @@ type
   end;
   GRADIENTRECT = tagGRADIENTRECT;
 
-{ Bitmap Header Definition }
+{ ********************************** }
+{        B I T M A P    S T U F F    }
+
+  { TBitmap is an encapsulation of a matrix of pixels.  It has a Canvas to allow
+    modifications to the image.  Creating copies of a TBitmap is very fast
+    since the handle is copied not the image.  If the image is modified, and
+    the handle is shared by more than one TBitmap object, the image is copied
+    before the modification is performed (i.e. copy on write). }
   PBitmap = ^TagBitmap;
   tagBITMAP = packed record
     bmType: Longint;
@@ -801,7 +809,20 @@ type
   end;
   BITMAP = tagBITMAP;
 
-  PBitmapInfoHeader = ^TagBitmapInfoHeader;
+
+  PBitmapCoreHeader = ^TBitmapCoreHeader;
+  tagBITMAPCOREHEADER = packed record
+    bcSize: DWORD;
+    bcWidth: Word;
+    bcHeight: Word;
+    bcPlanes: Word;
+    bcBitCount: Word;
+  end;
+  TBitmapCoreHeader = tagBITMAPCOREHEADER;
+  BITMAPCOREHEADER = tagBITMAPCOREHEADER;
+
+
+  PBitmapInfoHeader = ^TBitmapInfoHeader;
   tagBITMAPINFOHEADER = packed record
     biSize : DWORD;
     biWidth : Longint;
@@ -815,14 +836,48 @@ type
     biClrUsed : DWORD;
     biClrImportant : DWORD;
   end;
+  TBitmapInfoHeader = tagBITMAPINFOHEADER;
   BITMAPINFOHEADER = tagBITMAPINFOHEADER;
 
 
-{ ********************************** }
-{        B I T M A P    S T U F F    }
+  PRGBTriple = ^TRGBTriple;
+  tagRGBTRIPLE = packed record
+    rgbtBlue: Byte;
+    rgbtGreen: Byte;
+    rgbtRed: Byte;
+  end;
+  TRGBTriple = tagRGBTRIPLE;
+  RGBTRIPLE = tagRGBTRIPLE;
+
+  PRGBQUAD = ^TRGBQUAD;
+  tagRGBQUAD = packed record
+          rgbBlue : BYTE;
+          rgbGreen : BYTE;
+          rgbRed : BYTE;
+          rgbReserved : BYTE;
+       end;
+  TRGBQuad = tagRGBQUAD;
+  RGBQUAD = tagRGBQUAD;
+
+  PBitmapInfo = ^TBitmapInfo;
+  tagBITMAPINFO = packed record
+    bmiHeader: TBitmapInfoHeader;
+    bmiColors: array[0..0] of TRGBQuad;
+  end;
+  TBitmapInfo = tagBITMAPINFO;
+  BITMAPINFO = tagBITMAPINFO;
+
+  PBitmapCoreInfo = ^TBitmapCoreInfo;
+  tagBITMAPCOREINFO = record
+    bmciHeader: TBitmapCoreHeader;
+    bmciColors: array[0..0] of TRGBTriple;
+    Reserved: array[0..0] of Char;
+  end;
+  TBitmapCoreInfo = tagBITMAPCOREINFO;
+  BITMAPCOREINFO = tagBITMAPCOREINFO;
+
 
   PBitmapFileHeader = ^TBitmapFileHeader;
-
   tagBITMAPFILEHEADER = packed record
     bfType: Word;
     bfSize: DWORD;
@@ -833,8 +888,8 @@ type
   TBitmapFileHeader = tagBITMAPFILEHEADER;
   BITMAPFILEHEADER = tagBITMAPFILEHEADER;
 
-  PDIBSection = ^TDIBSection;
 
+  PDIBSection = ^TDIBSection;
   tagDIBSECTION = packed record
     dsBm: TagBitmap;
     dsBmih: tagBITMAPINFOHEADER;
@@ -844,30 +899,6 @@ type
   end;
   TDIBSection = tagDIBSECTION;
   DIBSECTION = tagDIBSECTION;
-
-  PRGBQUAD = ^tagRGBQUAD;
-  tagRGBQUAD = packed record
-          rgbBlue : BYTE;
-          rgbGreen : BYTE;
-          rgbRed : BYTE;
-          rgbReserved : BYTE;
-       end;
-  RGBQUAD = tagRGBQUAD;
-
-  PRGBTRIPLE = ^tagRGBTRIPLE;
-  tagRGBTRIPLE = packed record
-    rgbtBlue : BYTE;
-    rgbtGreen : BYTE;
-    rgbtRed : BYTE;
-  end;
-  RGBTRIPLE = tagRGBTRIPLE;
-
-  PBITMAPINFO = ^tagBITMAPINFO;
-  tagBITMAPINFO = packed record
-          bmiHeader : tagBITMAPINFOHEADER;
-          bmiColors : array[0..0] of tagRGBQUAD;
-       end;
-  BITMAPINFO = tagBITMAPINFO;
 
 const
   TRUETYPE_FONTTYPE = 4;
@@ -1254,22 +1285,28 @@ const
 //==============================================
 // GetDeviceCaps constants
 //==============================================
+  BI_RGB        = 0;
+  BI_BITFIELDS  = 3;
+  
+  
   HORZSIZE      = 4;
   VERTSIZE      = 6;
   HORZRES       = 8;
   VERTRES       = 10;
   BITSPIXEL     = 12;
+  PLANES        = 14;
   LOGPIXELSX    = 88;
   LOGPIXELSY    = 90;
 
+
+
 type
-
   TFarProc = Pointer;
-
 
   TFNWndProc = TFarProc;
 
-
+  MakeIntResourceA = PAnsiChar;
+  MakeIntResource = MakeIntResourceA;
 
   PLogFontA = ^TLogFontA;
   PLogFontW = ^TLogFontW;
@@ -1332,6 +1369,13 @@ type
   TLogBrush = tagLOGBRUSH;
   LOGBRUSH = tagLOGBRUSH;
 
+
+  PMaxLogPalette = ^TMaxLogPalette; // not in Windows Headers
+  TMaxLogPalette = packed record
+    palVersion: Word;
+    palNumEntries: Word;
+    palPalEntry: array [Byte] of TPaletteEntry;
+  end;
 
 type
   PEnumLogFontA = ^TEnumLogFontA;
@@ -1462,7 +1506,7 @@ type
 
 
 
- PWndClassExA = ^TWndClassExA;
+  PWndClassExA = ^TWndClassExA;
   PWndClassExW = ^TWndClassExW;
   PWndClassEx = PWndClassExA;
 
@@ -1542,9 +1586,7 @@ type
   WNDCLASSW = tagWNDCLASSW;
   WNDCLASS = WNDCLASSA;
 
-
 type
-
   PMsg = ^TMsg;
   tagMSG = packed record
     hwnd: HWND;
@@ -1638,11 +1680,25 @@ const
 type
   TShortCut = Low(Word)..High(Word);   {should be moved to classes}
 
+function hiword(i: integer): word;
+function loword(i: integer): word;
 Function Char2VK(C : Char) : Word;
 function MapIrregularVirtualKey(vk: word): word;
+function MulDiv(nNumber, nNumerator, nDenominator: Integer): Integer;
 
 
 implementation
+
+
+function hiword(i: integer): word;
+begin
+  Result:=Hi(i);
+end;
+
+function loword(i: integer): word;
+begin
+  Result:=Lo(i);
+end;
 
 Function Char2VK(C : Char) : Word;
 begin
@@ -1675,11 +1731,19 @@ begin
   end;
 end;
 
+function MulDiv(nNumber, nNumerator, nDenominator: Integer): Integer;
+begin
+  Result:=(int64(nNumber)*int64(nNumerator)) div nDenominator;
+end;
+
 
 end.
 
 {
   $Log$
+  Revision 1.28  2002/12/12 17:47:45  mattias
+  new constants for compatibility
+
   Revision 1.27  2002/12/05 22:16:28  mattias
   double byte char font started
 

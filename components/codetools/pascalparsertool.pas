@@ -2498,7 +2498,7 @@ begin
   // read all constants
   repeat
     ReadNextAtom;  // identifier or number
-    if not AtomIsIdentifier(false) or AtomIsNumber then begin
+    if (not AtomIsIdentifier(false)) and (not AtomIsNumber) then begin
       RaiseStringExpectedButAtomFound(ctsIdentifier);
     end;
     CreateChildNode;

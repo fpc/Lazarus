@@ -70,6 +70,9 @@ function CleanAndExpandDirectory(const Filename: string): string;
 function SearchFileInPath(const Filename, BasePath, SearchPath,
                           Delimiter: string; SearchLoUpCase: boolean): string;
 
+// file read
+function ReadFileToString(const Filename: string): string;
+
 implementation
 
 {$IFNDEF win32}
@@ -101,6 +104,9 @@ end.
 
 {
   $Log$
+  Revision 1.6  2002/12/12 17:47:44  mattias
+  new constants for compatibility
+
   Revision 1.5  2002/12/09 16:48:36  mattias
   added basic file handling functions to filectrl
 

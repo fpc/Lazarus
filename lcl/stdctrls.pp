@@ -424,6 +424,7 @@ type
     FEchoMode : TEchoMode;
     FMaxLength : Integer;
     FModified : Boolean;
+    FPasswordChar: Char;
     FReadOnly : Boolean;
     FOnChange : TNotifyEvent;
     FSelLength : integer;
@@ -432,6 +433,7 @@ type
     procedure SetCharCase(Value : TEditCharCase);
     procedure SetMaxLength(Value : Integer);
     procedure SetModified(Value : Boolean);
+    procedure SetPasswordChar(const AValue: Char);
     procedure SetReadOnly(Value : Boolean);
   Protected
     Procedure DoAutoSize; Override;
@@ -460,6 +462,7 @@ type
     property SelStart: integer read GetSelStart write SetSelStart;
     property SelText: String read GetSelText write SetSelText;
     property Modified : Boolean read GetModified write SetModified;
+    property PasswordChar: Char read FPasswordChar write SetPasswordChar default #0;
     property Text;
   published
     property PopupMenu;
@@ -514,6 +517,7 @@ type
     property OnKeyPress;
     Property OnKeyDown;
     Property OnKeyUp;
+    property PasswordChar;
   end;
   
   
@@ -1382,6 +1386,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.69  2002/12/12 17:47:45  mattias
+  new constants for compatibility
+
   Revision 1.68  2002/11/27 14:37:37  mattias
   added form editor options for rubberband and colors
 

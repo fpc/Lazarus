@@ -17,28 +17,6 @@
  *****************************************************************************
 }
 
-const
-  FontCharsets: array[0..18] of TIdentMapEntry = (
-    (Value: ANSI_CHARSET;        Name: 'ANSI_CHARSET'),
-    (Value: DEFAULT_CHARSET;     Name: 'DEFAULT_CHARSET'),
-    (Value: SYMBOL_CHARSET;      Name: 'SYMBOL_CHARSET'),
-    (Value: MAC_CHARSET;         Name: 'MAC_CHARSET'),
-    (Value: SHIFTJIS_CHARSET;    Name: 'SHIFTJIS_CHARSET'),
-    (Value: HANGEUL_CHARSET;     Name: 'HANGEUL_CHARSET'),
-    (Value: JOHAB_CHARSET;       Name: 'JOHAB_CHARSET'),
-    (Value: GB2312_CHARSET;      Name: 'GB2312_CHARSET'),
-    (Value: CHINESEBIG5_CHARSET; Name: 'CHINESEBIG5_CHARSET'),
-    (Value: GREEK_CHARSET;       Name: 'GREEK_CHARSET'),
-    (Value: TURKISH_CHARSET;     Name: 'TURKISH_CHARSET'),
-    (Value: VIETNAMESE_CHARSET;  Name: 'VIETNAMESE_CHARSET'),
-    (Value: HEBREW_CHARSET;      Name: 'HEBREW_CHARSET'),
-    (Value: ARABIC_CHARSET;      Name: 'ARABIC_CHARSET'),
-    (Value: BALTIC_CHARSET;      Name: 'BALTIC_CHARSET'),
-    (Value: RUSSIAN_CHARSET;     Name: 'RUSSIAN_CHARSET'),
-    (Value: THAI_CHARSET;        Name: 'THAI_CHARSET'),
-    (Value: EASTEUROPE_CHARSET;  Name: 'EASTEUROPE_CHARSET'),
-    (Value: OEM_CHARSET;         Name: 'OEM_CHARSET'));
-
 procedure GetCharsetValues(Proc: TGetStrProc);
 var
   I: Integer;
@@ -855,6 +833,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.11  2002/12/12 17:47:46  mattias
+  new constants for compatibility
+
   Revision 1.10  2002/12/07 08:42:08  mattias
   improved ExtTxtOut: support for char dist array
 

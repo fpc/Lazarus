@@ -571,9 +571,34 @@ begin
   Result:='';
 end;
 
+{------------------------------------------------------------------------------
+  function ReadFileToString(const Filename: string): string;
+ ------------------------------------------------------------------------------}
+function ReadFileToString(const Filename: string): string;
+var
+  fs: TFileStream;
+begin
+  Result:='';
+  try
+    fs:=TFileStream.Create(Filename,fmOpenRead);
+    try
+      Setlength(Result,fs.Size);
+      if Result<>'' then
+        fs.Read(Result,length(Result));
+    finally
+      fs.Free;
+    end;
+  except
+    Result:='';
+  end;
+end;
+
 
 {
   $Log$
+  Revision 1.5  2002/12/12 17:47:46  mattias
+  new constants for compatibility
+
   Revision 1.4  2002/12/09 16:48:36  mattias
   added basic file handling functions to filectrl
 

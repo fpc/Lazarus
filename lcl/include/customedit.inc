@@ -172,13 +172,14 @@ End;
  ------------------------------------------------------------------------------}
 Procedure TCustomEdit.SetCharCase(Value : TEditCharCase);
 Begin
-if FCharCase <> value then
-   Begin
+  if FCharCase <> value then
+  Begin
     FCharCase := Value;
-    if FCharCase = ecUpperCase then Text := Uppercase(Text)
-       else
-    if FCharCase = ecLowerCase then Text := Lowercase(Text);
-   end;
+    if FCharCase = ecUpperCase then
+      Text := Uppercase(Text)
+    else if FCharCase = ecLowerCase then
+      Text := Lowercase(Text);
+  end;
 End;
 
 {------------------------------------------------------------------------------
@@ -188,8 +189,10 @@ End;
  ------------------------------------------------------------------------------}
 procedure TCustomEdit.SetMaxLength(Value : Integer);
 begin
+  if Value=MaxLength then exit;
   FMaxLength := Value;
-  CNSendMessage(LM_SETPROPERTIES, Self, nil);
+  if HandleAllocated then
+    CNSendMessage(LM_SETPROPERTIES, Self, nil);
 end;
 
 {------------------------------------------------------------------------------
@@ -202,6 +205,14 @@ begin
   FModified := Value;
 end;
 
+procedure TCustomEdit.SetPasswordChar(const AValue: Char);
+begin
+  if FPasswordChar=AValue then exit;
+  FPasswordChar:=AValue;
+  if HandleAllocated then
+    CNSendMessage(LM_SETPROPERTIES, Self, nil);
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCustomEdit.SetEchoMode
   Params:  Value to set FModified to
@@ -211,7 +222,8 @@ procedure TCustomEdit.SetEchoMode(Val : TEchoMode);
 begin
   if (Val <> FEchoMode) then begin
     FEchoMode:= Val;
-    CNSendMessage(LM_SETPROPERTIES, Self, nil);
+    if HandleAllocated then
+      CNSendMessage(LM_SETPROPERTIES, Self, nil);
   end;
 end;
 
@@ -224,7 +236,8 @@ procedure TCustomEdit.SetReadOnly(Value : Boolean);
 begin
   if FreadOnly <> Value then begin
     FReadOnly := Value;
-    CNSendMessage(LM_SETPROPERTIES, Self, nil);
+    if HandleAllocated then
+      CNSendMessage(LM_SETPROPERTIES, Self, nil);
   end;  
 end;
 
@@ -290,6 +303,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.14  2002/12/12 17:47:46  mattias
+  new constants for compatibility
+
   Revision 1.13  2002/11/16 11:22:57  mbukovjan
   Fixes to MaxLength. TCustomMemo now has MaxLength, too.
 

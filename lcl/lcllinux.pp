@@ -60,10 +60,20 @@ function PredefinedClipboardFormat(
 function CharLower(c: char): char;
 function CharUpper(c: char): char;
 
+{$IFDEF win32}
+function GetTickCount: DWord; cdecl; external;
+{$ELSE}
+function GetTickCount: DWord;
+{$ENDIF}
+
 implementation
 
 uses
-  Strings, Math;
+  Strings, Math
+  {$IFNDEF Win32}
+  , {$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}
+  {$ENDIF}
+  ;
 
 var
   FPredefinedClipboardFormats:
@@ -71,6 +81,15 @@ var
   LowerCaseChars: array[char] of char;
   UpperCaseChars: array[char] of char;
 
+{$IFNDEF Win32}
+function GetTickCount: DWord;
+var
+  hour, minutes, secs, msecs, usecs: word;
+begin
+  GetTime(hour, minutes, secs, msecs, usecs);
+  Result:=(((hour*60)+minutes)*60+secs)*1000+msecs;
+end;
+{$ENDIF}
 
 function MakeLong(A,B : Word) : LongInt;
 begin
@@ -124,6 +143,9 @@ end.
 
 {
   $Log$
+  Revision 1.24  2002/12/12 17:47:45  mattias
+  new constants for compatibility
+
   Revision 1.23  2002/11/23 09:34:12  mattias
   fixed compiling errors for synregexpr.pas
 

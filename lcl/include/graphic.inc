@@ -38,6 +38,11 @@ begin
   Filer.DefineBinaryProperty('Data', @ReadData, @WriteData, DoWrite);
 end;
 
+function TGraphic.GetPalette: HPALETTE;
+begin
+  Result:=0;
+end;
+
 procedure TGraphic.Changed(Sender: TObject);
 begin
   FModified := True;
@@ -81,6 +86,11 @@ end;
 procedure TGraphic.ReadData(Stream: TStream);
 begin
   LoadFromStream(Stream);
+end;
+
+procedure TGraphic.SetPalette(Value: HPALETTE);
+begin
+
 end;
 
 procedure TGraphic.SaveToFile(const Filename: string);

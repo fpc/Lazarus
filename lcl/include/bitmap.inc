@@ -85,10 +85,27 @@ begin
   Result := FImage.FHandle;
 end;
 
+function TBitmap.GetHandleType: TBitmapHandleType;
+begin
+  // ToDo:
+  Result:=bmDIB;
+end;
+
 function TBitmap.GetMaskHandle: HBITMAP;
 begin
   MaskHandleNeeded;
   Result := FImage.FMaskHandle;
+end;
+
+function TBitmap.GetScanline(Row: Integer): Pointer;
+begin
+  // ToDo:
+  Result:=nil;
+end;
+
+procedure TBitmap.SetHandleType(Value: TBitmapHandleType);
+begin
+
 end;
 
 procedure TBitMap.HandleNeeded;
@@ -415,6 +432,12 @@ Begin
   FImage.FHandle := 0;
 end;
 
+function TBitmap.ReleasePalette: HPALETTE;
+begin
+  // ToDo
+  Result := 0;
+end;
+
 function TBitmap.GetEmpty: boolean;
 begin
   with FImage do
@@ -425,6 +448,11 @@ function TBitmap.GetHeight: Integer;
 begin
   with FImage do
     Result := FDIB.dsbm.bmHeight;
+end;
+
+function TBitmap.GetPalette: HPALETTE;
+begin
+  Result:=inherited GetPalette;
 end;
 
 function TBitmap.GetWidth: Integer;
@@ -474,12 +502,25 @@ begin
     end;
 end;
 
+procedure TBitmap.SetPalette(Value: HPALETTE);
+begin
+  inherited SetPalette(Value);
+end;
+
+procedure TBitmap.SetTransparentMode(Value: TTransparentMode);
+begin
+
+end;
+
 // included by graphics.pp
 
 
 { =============================================================================
 
   $Log$
+  Revision 1.24  2002/12/12 17:47:46  mattias
+  new constants for compatibility
+
   Revision 1.23  2002/11/12 10:16:16  lazarus
   MG: fixed TMainMenu creation
 
