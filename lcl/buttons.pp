@@ -90,6 +90,7 @@ type
     property TabOrder;
     property PopupMenu;
     property ShowHint;
+    property ParentShowHint;
     property Visible;
     property OnClick;
     property OnEnter;
@@ -163,6 +164,8 @@ type
     property Visible;
     property OnEnter;
     property OnExit;
+    property ShowHint;
+    property ParentShowHint;
   end;
    
    
@@ -232,6 +235,8 @@ type
     property Transparent: Boolean read FTransparent write SetTransparent default false;
     property Visible;
     property OnClick;
+    property ShowHint;
+    property ParentShowHint;
   end;
 
 
@@ -284,6 +289,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.29  2002/10/01 18:00:02  lazarus
+  AJ: Initial TUpDown, minor property additions to improve reading Delphi created forms.
+
   Revision 1.28  2002/09/27 20:52:20  lazarus
   MWE: Applied patch from "Andrew Johnson" <aj_genius@hotmail.com>
 

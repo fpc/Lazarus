@@ -136,6 +136,17 @@ begin
   Result:= CNSendMessage(LM_GETSELCOUNT, Self, nil);
 end;
 
+function TCustomListBox.GetItemHeight: Integer;
+begin
+  Result := FItemHeight;
+end;
+
+procedure TCustomListBox.SetItemHeight(Value: Integer);
+begin
+  if (FItemHeight <> Value) and (Value > 0) then
+    FItemHeight := Value;
+end;
+
 {------------------------------------------------------------------------------}
 { procedure TCustomListBox.SetSorted                                          }
 {------------------------------------------------------------------------------}
