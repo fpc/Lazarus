@@ -163,7 +163,7 @@ type
     eoAutoSizeMaxScrollWidth,  //TODO Automatically resizes the MaxScrollWidth property when inserting text
     eoDisableScrollArrows,     //TODO Disables the scroll bar arrow buttons when you can't scroll in that direction any more
     eoDragDropEditing,         // Allows you to select a block of text and drag it within the document to another location
-    eoDropFiles,               //TODO Allows the editor accept OLE file drops
+    eoDropFiles,               //TODO Allows the editor accept file drops
     eoEnhanceHomeKey,          //TODO enhances home key positioning, similar to visual studio
     eoGroupUndo,               //TODO When undoing/redoing actions, handle all continous changes of the same kind in one call instead undoing/redoing each command separately
     eoHalfPageScroll,          // When scrolling with page-up and page-down commands, only scroll a half page at a time
@@ -171,7 +171,7 @@ type
     eoKeepCaretX,              // When moving through lines w/o Cursor Past EOL, keeps the X position of the cursor
     eoNoCaret,                 // Makes it so the caret is never visible
     eoNoSelection,             // Disables selecting text
-    eoRightMouseMovesCursor,   //TODO When clicking with the right mouse for a popup menu, move the cursor to that location
+    eoRightMouseMovesCursor,   // When clicking with the right mouse for a popup menu, move the cursor to that location
     eoScrollByOneLess,         // Forces scrolling to be one less
     eoScrollHintFollows,       //TODO The scroll hint follows the mouse when scrolling vertically
     eoScrollPastEof,           // Allows the cursor to go past the end of file marker
@@ -181,7 +181,7 @@ type
     eoSmartTabDelete,          //TODO similar to Smart Tabs, but when you delete characters
     eoSmartTabs,               // When tabbing, the cursor will go to the next non-white space character of the previous line
     eoSpecialLineDefaultFg,    //TODO disables the foreground text color override when using the OnSpecialLineColor event
-    eoTabIndent,               //TODO When active <Tab> and <Shift><Tab> act as block indent, unindent when text is selected
+    eoTabIndent,               // When active <Tab> and <Shift><Tab> act as block indent, unindent when text is selected
     eoTabsToSpaces,            // Converts a tab character to a specified number of space characters
     eoTrimTrailingSpaces,      // Spaces at the end of lines will be trimmed and not saved
     {$IFDEF SYN_LAZARUS}
@@ -2058,10 +2058,13 @@ begin
     Include(fStateFlags, sfWaitForDragging)
   else begin
     {$IFDEF SYN_LAZARUS}
-    if ([sfDblClicked,sfTripleClicked,sfQuadClicked]*fStateFlags=[]) then begin
+    if ((Button=mbLeft)
+        or ((eoRightMouseMovesCursor in Options) and (Button=mbRight)))
+    and ([sfDblClicked,sfTripleClicked,sfQuadClicked]*fStateFlags=[])
     {$ELSE}
-    if (sfDblClicked in fStateFlags) then begin
+    if (sfDblClicked in fStateFlags)
     {$ENDIF}
+    then begin
       if ssShift in Shift then
         SetBlockEnd({$IFDEF SYN_LAZARUS}LogCaretXY
                     {$ELSE}CaretXY{$ENDIF})
@@ -2078,23 +2081,25 @@ begin
         end;
 {end}                                                                           //mh 2000-11-20
       end;
-      {$IFDEF SYN_LAZARUS}
-      if Button=mbMiddle then begin
-        if SelAvail then begin
-          fUndoList.AddChange(crDelete, fBlockBegin, fBlockEnd, SelText,
-            SelectionMode);
-        end;
-        StartOfBlock := minPoint(fBlockBegin, fBlockEnd);
-        EndOfBlock := maxPoint(fBlockBegin, fBlockEnd);
-        fBlockBegin := StartOfBlock;
-        fBlockEnd := EndOfBlock;
-        LockUndo;
-        SelText := PrimarySelText;
-        UnlockUndo;
-        fUndoList.AddChange(crPaste, StartOfBlock, BlockEnd, SelText, smNormal);
-      end;
-      {$ENDIF}
     end;
+    {$IFDEF SYN_LAZARUS}
+    if (Button=mbMiddle)
+    and ([sfDblClicked,sfTripleClicked,sfQuadClicked]*fStateFlags=[])
+    then begin
+      if SelAvail then begin
+        fUndoList.AddChange(crDelete, fBlockBegin, fBlockEnd, SelText,
+          SelectionMode);
+      end;
+      StartOfBlock := minPoint(fBlockBegin, fBlockEnd);
+      EndOfBlock := maxPoint(fBlockBegin, fBlockEnd);
+      fBlockBegin := StartOfBlock;
+      fBlockEnd := EndOfBlock;
+      LockUndo;
+      SelText := PrimarySelText;
+      UnlockUndo;
+      fUndoList.AddChange(crPaste, StartOfBlock, BlockEnd, SelText, smNormal);
+    end;
+    {$ENDIF}
   end;
   {$IFDEF SYN_LAZARUS}
   if (X < fGutterWidth) then
@@ -6824,22 +6829,23 @@ begin
       ecLineStart, ecSelLineStart:
         begin
           {$IFDEF SYN_LAZARUS}
-          MoveCaretAndSelectionPhysical
+          MoveCaretAndSelectionPhysical(CaretXY,Point(1, CaretY),
+                                        Command = ecSelLineStart);
           {$ELSE}
-          MoveCaretAndSelection
+          MoveCaretAndSelection(CaretXY,Point(1, CaretY), Command = ecSelLineStart);
           {$ENDIF}
-            (CaretXY,Point(1, CaretY), Command = ecSelLineStart);
           fLastCaretX := fCaretX;
         end;
       ecLineEnd, ecSelLineEnd:
         begin
           {$IFDEF SYN_LAZARUS}
-          MoveCaretAndSelectionPhysical
-          {$ELSE}
-          MoveCaretAndSelection
-          {$ENDIF}
-            (CaretXY, Point(1 + Length(LineText), CaretY),
+          MoveCaretAndSelectionPhysical(CaretXY,
+             LogicalToPhysicalPos(Point(1 + Length(LineText), CaretY)),
              Command = ecSelLineEnd);
+          {$ELSE}
+          MoveCaretAndSelection(CaretXY, Point(1 + Length(LineText), CaretY),
+             Command = ecSelLineEnd);
+          {$ENDIF}
           fLastCaretX := fCaretX;
         end;
 {end}                                                                           //mh 2000-10-19
@@ -7336,7 +7342,11 @@ begin
       ecTab:
         if not ReadOnly then DoTabKey;
       ecShiftTab:
-        if not ReadOnly then { ??? };
+        if not ReadOnly then
+          {$IFDEF SYN_LAZARUS}
+          if SelAvail and (eoTabIndent in Options) then
+            DoBlockUnindent
+          {$ENDIF};
       ecMatchBracket:
         FindMatchingBracket;
       ecChar:
@@ -8547,6 +8557,7 @@ end;
 procedure TCustomSynEdit.MoveCaretAndSelection(
   {$IFDEF SYN_LAZARUS}const {$ENDIF}ptBefore, ptAfter: TPoint;
   SelectionCommand: boolean);
+// ptBefore and ptAfter are logical (byte)
 begin
   IncPaintLock;
   if SelectionCommand then begin
@@ -8645,6 +8656,12 @@ var
   NewCaretX: integer;                                                           //mh 2000-10-01
   ChangeScroll: boolean;                                                        //mh 2000-10-01
 begin
+  {$IFDEF SYN_LAZARUS}
+  if (eoTabIndent in Options) and SelAvail then begin
+    DoBlockIndent;
+    exit;
+  end;
+  {$ENDIF}
   i := 0;
   if eoSmartTabs in fOptions then begin
     iLine := CaretY - 1;
