@@ -2175,7 +2175,7 @@ begin
     Result:=MessageDlg('Rebuild Lazarus?',
       'The package "'+APackage.IDAsString+'" was marked for installation.'#13
       +'Currently lazarus only supports static linked packages. The real '
-      +'installation needs rebuilding of lazarus.'#13
+      +'installation needs rebuilding and restarting of lazarus.'#13
       +#13
       +'Should lazarus now be rebuilt?',
       mtConfirmation,[mbYes,mbNo],0);
@@ -2240,7 +2240,7 @@ begin
     Result:=MessageDlg('Rebuild Lazarus?',
       'The package "'+APackage.IDAsString+'" was marked.'#13
       +'Currently lazarus only supports static linked packages. The real '
-      +'un-installation needs rebuilding of lazarus.'#13
+      +'un-installation needs rebuilding and restarting of lazarus.'#13
       +#13
       +'Should lazarus now be rebuilt?',
       mtConfirmation,[mbYes,mbNo],0);
