@@ -1130,6 +1130,7 @@ begin
   FDestinationDirectory:=XMLConfig.GetValue(APath+'DestinationDirectory/Value',
                                             DestinationDirectory);
   FCommandAfter:=XMLConfig.GetValue(APath+'CommandAfter/Value',CommandAfter);
+  IgnoreBinaries:=XMLConfig.GetValue(APath+'IgnoreBinaries/Value',IgnoreBinaries);
   UseIncludeFileFilter:=XMLConfig.GetValue(APath+'UseIncludeFileFilter/Value',
                                             UseIncludeFileFilter);
   IncludeFilterSimpleSyntax:=
@@ -1159,6 +1160,7 @@ begin
   XMLConfig.SetValue(APath+'Version/Value',PublishProjectOptsVersion);
   XMLConfig.SetValue(APath+'DestinationDirectory/Value',DestinationDirectory);
   XMLConfig.SetValue(APath+'CommandAfter/Value',CommandAfter);
+  XMLConfig.SetValue(APath+'IgnoreBinaries/Value',IgnoreBinaries);
   XMLConfig.SetValue(APath+'UseIncludeFileFilter/Value',UseIncludeFileFilter);
   XMLConfig.SetValue(APath+'IncludeFilterSimpleSyntax/Value',IncludeFilterSimpleSyntax);
   XMLConfig.SetValue(APath+'IncludeFileFilter/Value',IncludeFileFilter);
