@@ -292,17 +292,19 @@ type
   TAcceptDateEvent = Procedure (Sender : TObject; Var ADate : TDateTime;
     Var AcceptDate: Boolean) of Object;
 
-  TDateEdit=class(TEditButton)
+  { TDateEdit }
+
+  TDateEdit = class(TEditButton)
   private
-    FDialogTitle:TCaption;
+    FDialogTitle: TCaption;
     FDisplaySettings: TDisplaySettings;
     FOnAcceptDate: TAcceptDateEvent;
 
-    FOKCaption:TCaption;
-    FCancelCaption:TCaption;
+    FOKCaption: TCaption;
+    FCancelCaption: TCaption;
     FDate: TDateTime;
     function IsStoreTitle: boolean;
-    procedure SetDate(Value:TDateTime);
+    procedure SetDate(const Value: TDateTime);
   protected
     procedure DoButtonClick (Sender: TObject); override;
     procedure Change; override;
@@ -310,6 +312,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure DateFormatChanged; virtual;
   published
     property DialogTitle:TCaption Read FDialogTitle Write FDialogTitle Stored IsStoreTitle;
     Property CalendarDisplaySettings : TDisplaySettings Read FDisplaySettings Write FDisplaySettings;
@@ -317,6 +320,7 @@ type
     property OKCaption:TCaption Read FOKCaption Write FOKCaption;
     property CancelCaption:TCaption Read FCancelCaption Write FCancelCaption;
     property Date: TDateTime Read FDate Write SetDate;
+    property ReadOnly default true;
   end;
 
   
@@ -820,6 +824,11 @@ begin
   inherited Destroy;
 end;
 
+procedure TDateEdit.DateFormatChanged;
+begin
+  Text:=DateToStr(FDate);
+end;
+
 procedure TDateEdit.DoButtonClick(Sender:TObject);//or onClick
 var CD:TCalendarDialog;
     B:Boolean;
@@ -852,14 +861,16 @@ begin
 end;
 
 procedure TDateEdit.Change;//(Sender:TObject);
-var Datetmp:TDate;
+var Datetmp: TDate;
 begin
   inherited Change;//(Sender);
+  //debugln('TDateEdit.Change Text="',Text,'"');
   try
     Datetmp:=StrToDate(Text);
+    // if this worked, then adjust it to current format
     Date:=Datetmp;
   except
-    //inherited Change(Sender)
+    // invalid date: the user is probably currently editing
   end;
 end;
 
@@ -875,7 +886,7 @@ begin
   Result:=DialogTitle<>rsPickDate;
 end;
 
-procedure TDateEdit.SetDate(Value:TDateTime);
+procedure TDateEdit.SetDate(const Value:TDateTime);
 begin
   if FDate=Value then exit;
   FDate:=Value;
