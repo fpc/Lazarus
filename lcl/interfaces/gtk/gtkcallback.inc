@@ -553,9 +553,9 @@ begin
     if ssLeft in ShiftState then MessI.Keys := MessI.Keys or MK_LBUTTON;
     if ssRight in ShiftState then MessI.Keys := MessI.Keys or MK_RBUTTON;
     if ssMiddle in ShiftState then MessI.Keys := MessI.Keys or MK_MBUTTON;
-    if MessI.Msg <> LM_NULL then Result := DeliverPostMessage(Data, MessI);
+    if MessI.Msg <> LM_NULL then Result := DeliverPostMessage(Data, MessI)
+    else Result:= false;
   end;
-  Result := not(Result);
 end;
 
 function gtkMouseBtnRelease( widget: PGtkWidget; event : pgdkEventButton; data: gPointer) : GBoolean; cdecl;
@@ -571,26 +571,26 @@ begin
 
   case event^.Button of
     1 : if not(LMouseButtonDown) then
-           Exit
-           else
-             Begin
-                MessI.Msg := LM_LBUTTONUP;
-                LMouseButtonDown := False;
-             end;
+ Exit
+        else
+ begin
+          MessI.Msg := LM_LBUTTONUP;
+          LMouseButtonDown := False;
+        end;
     2 : if not(MMouseButtonDown) then
-           Exit
-           else
-             Begin
-                MessI.Msg := LM_MBUTTONUP;
-                MMouseButtonDown := False;
-             end;
+ Exit
+        else
+ begin
+          MessI.Msg := LM_MBUTTONUP;
+          MMouseButtonDown := False;
+        end;
     3 : if not(RMouseButtonDown) then
-           Exit
-           else
-             Begin
-                MessI.Msg := LM_RBUTTONUP;
-                RMouseButtonDown := False;
-             end
+ Exit
+        else
+ begin
+          MessI.Msg := LM_RBUTTONUP;
+          RMouseButtonDown := False;
+        end
     else MessI.Msg := LM_NULL;
   end;
   MessI.XPos := Trunc(Event^.X);
@@ -603,11 +603,8 @@ begin
   if ssMiddle in ShiftState then MessI.Keys := MessI.Keys or MK_MBUTTON;
 
   if MessI.Msg <> LM_NULL 
-  then Result := DeliverPostMessage(Data, MessI)
-  else Result := True;
-
-  Result := not(Result);
-
+then Result := DeliverPostMessage(Data, MessI)
+  else Result := false;
 end;
 
 function gtkclickedCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
@@ -1151,7 +1148,7 @@ function gtkTimerCB(Data: gPointer): gint; cdecl;
 var
   Mess : TLMessage;
 begin
-  EventTrace ('TimerCB', data);
+  EventTrace ('TimerCB', nil);
   Result := 1;  // assume: timer will continue
   if PGtkITimerinfo(Data)^.TimerFunc <> nil
   then begin    // Call users timer function
@@ -1574,6 +1571,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.61  2002/03/14 18:12:46  lazarus
+  Mouse events fixes.
+
   Revision 1.60  2002/03/13 22:48:16  lazarus
   Constraints implementation (first cut) and sizig - moving system rework to
   better match Delphi/Kylix way of doing things (the existing implementation
