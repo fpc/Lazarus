@@ -277,7 +277,7 @@ type
 
     // ObjectInspector + PropertyEditorHook events
     procedure OIOnSelectComponents(Sender: TObject);
-    procedure OIOnShowOptions(AComponent:TComponent);
+    procedure OIOnShowOptions(Sender: TObject);
     procedure OnPropHookGetMethods(TypeData:PTypeData; Proc:TGetStringProc);
     function OnPropHookMethodExists(const AMethodName:ShortString;
        TypeData: PTypeData;
@@ -912,7 +912,7 @@ begin
   TheControlSelection.AssignSelection(ObjectInspector1.Selections);
 end;
 
-procedure TMainIDE.OIOnShowOptions(AComponent: TComponent);
+procedure TMainIDE.OIOnShowOptions(Sender: TObject);
 begin
   DoShowEnvGeneralOptions(eodpObjectInspector);
 end;
@@ -9925,6 +9925,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.659  2003/10/23 16:15:29  micha
+  compatibility with new 1.1
+
   Revision 1.658  2003/10/22 17:50:16  mattias
   updated rpm scripts
 

@@ -29,7 +29,13 @@ unit lMessages;
 
 interface
 
-uses Classes, SysUtils, vclGlobals, LCLType, GraphType;
+uses Classes, SysUtils, vclGlobals, LCLType, GraphType
+{$ifdef win32}
+{$ifndef ver1_0}
+,messages
+{$endif ver1_0}
+{$endif win32}
+;
 
 const
   //-------------
@@ -388,11 +394,15 @@ type
     Result : LongInt;
   end;
 
+{$if defined(ver1_0) or not(defined(win32))}
   TLMNoParams = record
     Msg: Cardinal;
     Unused: array[0..3] of Word;
     Result: Longint;
   end;
+{$else}
+  TLMNoParams = TWMNoParams;
+{$endif}
 
   TLMScreenInit = record
     PixelsPerInchX : Integer;
@@ -400,6 +410,7 @@ type
     ColorDepth : Integer;
   end;
 
+{$if defined(ver1_0) or not(defined(win32))}
   TLMSETCURSOR = record
     Msg : Cardinal;
     CursorWnd : HWND;
@@ -407,6 +418,9 @@ type
     MouseMsg : Word;
     Result : Longint;
   end;
+{$else}
+  TLMSetCursor = TWMSetCursor;
+{$endif}
 
   PLMScreenInit = ^TLMScreenInit;
 
@@ -484,7 +498,6 @@ type
   TLMSysChar = TLMKey;
   TLMSysKeyDown = TLMKey;
   TLMSysKeyUp = TLMKey;
-
 
 
   TLMMouse = packed record
@@ -733,6 +746,7 @@ type
     PixColor : TGraphicsColor;
   end;
 
+{$if defined(ver1_0) or not(defined(win32))}
   TLMSize = packed record
     Msg: Cardinal;
     SizeType: LongInt; // see LCLType.pp (e.g. Size_Restored)
@@ -740,12 +754,16 @@ type
     Height : Word;
     Result : LongInt;
   End;
+{$else}
+  TLMSize = TWMSize;
+{$endif}
 
   TLMNoPara = packed record
     Msg : Cardinal;
   end;
 
   PLMessage = ^TLMessage;
+{$if defined(ver1_0) or not(defined(win32))}
   TLMessage = packed record
     Msg : Cardinal;
     case Integer of
@@ -761,10 +779,14 @@ type
       	ResultLo: Word;
       	ResultHi: Word);
     end;
+{$else}
+  TLMessage = TMessage;
+{$endif}
 
   TLMEnter = TLMNoPara;
   TLMExit  = TLMNoPara;
 
+{$if defined(ver1_0) or not(defined(win32))}
   TLMScroll = record
     Msg : Cardinal;
     ScrollCode : SmallInt; // SB_xxx
@@ -775,20 +797,33 @@ type
 
   TLMHScroll = TLMScroll;
   TLMVScroll = TLMScroll;
+{$else}
+  TLMScroll = TWMScroll;
+  TLMHScroll = TWMScroll;
+  TLMVScroll = TWMScroll;
+{$endif}
 
+{$if defined(ver1_0) or not(defined(win32))}
   TLMShowWindow = record
     Msg: Cardinal;
     Show: LongBool;
     Status: Longint;
     Result: Longint;
   end;
+{$else}
+  TLMShowWindow = TWMShowWindow;
+{$endif}
 
+{$if defined(ver1_0) or not(defined(win32))}
   TLMKILLFOCUS = packed Record
      Msg : Cardinal;
      FocusedWnd: HWND;
      UnUsed : LongInt;
      Result : LongInt;
     End;
+{$else}
+  TLMKillFocus = TWMKillFocus;
+{$endif}
 
   TLMNCHITTEST = packed record
     Msg : cardinal;
@@ -1057,6 +1092,9 @@ end.
 
 {
   $Log$
+  Revision 1.55  2003/10/23 16:15:30  micha
+  compatibility with new 1.1
+
   Revision 1.54  2003/10/16 23:54:27  marc
   Implemented new gtk keyevent handling
 

@@ -2160,12 +2160,18 @@ begin
   if (cardinal(p)>=$40000) and (p<=HeapOrg) then
     goto _exit;
   { inside stack ? }
+{$ifdef ver1_0}
   asm
      movl %ebp,get_ebp
   end;
   if (cardinal(p)>get_ebp) and
      (cardinal(p)<Win32StackTop) then
     goto _exit;
+{$else ver1_0}
+  if (p>get_frame) and
+     (p<pointer(Win32StackTop)) then
+    goto _exit;
+{$endif ver1_0}
 {$endif win32}
 
   { first try valid list faster }
@@ -2561,6 +2567,9 @@ end.
 
 {
   $Log$
+  Revision 1.23  2003/10/23 16:15:30  micha
+  compatibility with new 1.1
+
   Revision 1.22  2003/07/16 20:35:42  mattias
   accelerated TLazXPMReader
 

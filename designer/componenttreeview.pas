@@ -58,6 +58,7 @@ type
                                                  write SetSelections;
     property PropertyEditorHook: TPropertyEditorHook
                            read FPropertyEditorHook write SetPropertyEditorHook;
+    property OnSelectionChanged;
   end;
 
 implementation

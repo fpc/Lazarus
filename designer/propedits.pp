@@ -1739,7 +1739,11 @@ end;
 Function CallSingleFunc(s : Pointer; Address : Pointer;
   Index, IValue : Longint) : Single; assembler;
 {$asmmode att}
+  var
+     saveedi,saveesi : dword;
   asm
+     movl %edi,saveedi
+     movl %esi,saveesi
      movl S,%esi
      movl Address,%edi
      // ? Indexed Function
@@ -1752,11 +1756,17 @@ Function CallSingleFunc(s : Pointer; Address : Pointer;
      push %esi
      call %edi
      //
+     movl saveedi,%edi
+     movl saveesi,%esi
   end;
 
 Function CallDoubleFunc(s : Pointer; Address : Pointer;
   Index, IValue : Longint) : Double; assembler;
+  var
+     saveedi,saveesi : dword;
   asm
+     movl %edi,saveedi
+     movl %esi,saveesi
      movl S,%esi
      movl Address,%edi
      // ? Indexed Function
@@ -1769,11 +1779,17 @@ Function CallDoubleFunc(s : Pointer; Address : Pointer;
      push %esi
      call %edi
      //
+     movl saveedi,%edi
+     movl saveesi,%esi
   end;
 
 Function CallExtendedFunc(s : Pointer; Address : Pointer;
   Index, IValue : Longint) : Extended; assembler;
+  var
+     saveedi,saveesi : dword;
   asm
+     movl %edi,saveedi
+     movl %esi,saveesi
      movl S,%esi
      movl Address,%edi
      // ? Indexed Function
@@ -1786,6 +1802,8 @@ Function CallExtendedFunc(s : Pointer; Address : Pointer;
      push %esi
      call %edi
      //
+     movl saveedi,%edi
+     movl saveesi,%esi
   end;
 
 Function MyGetFloatProp(Instance : TObject;PropInfo : PPropInfo) : Extended;
@@ -2193,7 +2211,7 @@ begin
     ShowPrefix := True;
     WordBreak := False;
     SingleLine := True;
-    SystemFont := True;
+    SystemFont := False;
   end;
   If (pedsInComboList in AState) and not (pedsInEdit in AState)
   then begin
@@ -2235,7 +2253,8 @@ begin
     ShowPrefix := False;
     WordBreak := False;
     SingleLine := True;
-    SystemFont := true;
+    ExpandTabs := True;
+    SystemFont := False;
   end;
   ACanvas.TextRect(ARect, 2,0,GetName, Style);
 end;
@@ -2254,7 +2273,8 @@ begin
     ShowPrefix := True;
     WordBreak := False;
     SingleLine := True;
-    SystemFont := true;
+    ExpandTabs := True;
+    SystemFont := False;
   end;
   ACanvas.TextRect(ARect, 3,0,GetVisualValue, Style);
 end;

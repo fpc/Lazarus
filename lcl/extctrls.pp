@@ -170,7 +170,6 @@ type
     procedure ReadState(Reader: TAbstractReader); override;
     procedure ShowControl(APage: TControl); override;
     procedure UpdateTabProperties; virtual;
-    property Page[Index: Integer]: TCustomPage read GetPage;
     property ActivePageComponent: TCustomPage read GetActivePageComponent
                                               write SetActivePageComponent;
     property ActivePage: String read GetActivePage write SetActivePage
@@ -185,6 +184,7 @@ type
     function CustomPage(Index: integer): TCustomPage;
   public
     //property MultiLine: boolean read fMultiLine write SetMultiLine default false;
+    property Page[Index: Integer]: TCustomPage read GetPage;
     property PageCount: integer read GetPageCount;
     property Pages: TStrings read fAccess write SetPages;
     property PageIndex: Integer read GetPageIndex write SetPageIndex default -1;
@@ -834,6 +834,9 @@ end.
 
  {
   $Log$
+  Revision 1.82  2003/10/23 16:15:30  micha
+  compatibility with new 1.1
+
   Revision 1.81  2003/10/15 18:01:10  mattias
   implemented extract proc, check lfm and convert delphi unit
 

@@ -45,11 +45,15 @@ interface
   {$ASSERTIONS ON}
 {$endif}
 
-uses VCLGlobals, Classes;
+uses
+{$ifdef win32}
+  windows,
+{$endif win32}
+  VCLGlobals, Classes;
 
 type
   //TODO: check this against vclglobals
-  
+
   PLongInt = ^LongInt;
   PInteger = ^Integer;
   PSmallInt = ^SmallInt;
@@ -63,6 +67,7 @@ type
   TCriticalSection = longint;
   PCriticalSection = ^TCriticalSection;
 
+{$if defined(VER1_0) or not(defined(win32))}
   { Provided for compatibility with Windows registry ONLY }
   HKEY = Integer;
   PHKEY = ^HKEY;
@@ -76,31 +81,39 @@ type
   HICON = type LongWord;
   HCURSOR = HICON;
   Bool = LongBool;
-  pByte = ^byte;
   HGLOBAL = THAndle;
-
-  TgComponentStyle = LongInt;
-  AnsiChar = Char;  //Should be moved
-  WideChar = Char;
   Short = SmallInt;
-  THAndle = Integer;
   hwnd    = THandle;
-  TCaption = string;
-  //TMessage = Pointer;
   HMENU = type LongWord;
   HBitmap = type LongWord;
   HPalette = type LongWord;
 
   HBRUSH = type LongWord;
+{$else}
+  HKEY = Windows.HKEY;
+  PHKEY = ^HKEY;
+  HDC = Windows.HDC;
+  HHOOK = Windows.HHOOK;
+  HFONT = Windows.HFont;
+  HGDIOBJ = Windows.HGDIOBJ;
+  HPEN = Windows.HPEN;
+  HRGN = Windows.HRGN;
+  HINST = Windows.HINST;
+  HICON = Windows.HICON;
+  HCURSOR = HICON;
+  Bool = Windows.Bool;
+  HGLOBAL = Windows.HGLOBAL;
+  Short = Windows.Short;
+  hwnd    = Windows.hwnd;
+  HMENU = Windows.HMENU;
+  HBitmap = Windows.HBitmap;
+  HPalette = Windows.HPalette;
 
-  // from Delphis sysutils.pas
-  PByteArray = ^TByteArray;
-  TByteArray = array[0..32767] of Byte;
-  
+  HBRUSH = Windows.HBrush;
+{$endif}
 
 var
   hInstance :HINST;
-
 
 const
   INVALID_HANDLE_VALUE  = 0;
@@ -129,7 +142,7 @@ type
   LRESULT = LongInt;
 
   TKeyBoardState = array[0..255] of byte;
-  
+
   PABC = ^TABC;
 
   _ABC = packed record
@@ -194,24 +207,24 @@ const
   DFCS_BUTTONRADIO = 4;
   DFCS_BUTTON3STATE = 8;
   DFCS_BUTTONPUSH = 16;
-  
+
   DFCS_CAPTIONCLOSE = 0;
   DFCS_CAPTIONMIN = 1;
   DFCS_CAPTIONMAX = 2;
   DFCS_CAPTIONRESTORE = 3;
   DFCS_CAPTIONHELP = 4;
-  
+
   DFCS_MENUARROW = 0;
   DFCS_MENUCHECK = 1;
   DFCS_MENUBULLET = 2;
-  
+
   DFCS_SCROLLDOWN = 1;
   DFCS_SCROLLLEFT = 2;
   DFCS_SCROLLRIGHT = 3;
   DFCS_SCROLLCOMBOBOX = 5;
   DFCS_SCROLLSIZEGRIP = 8;
   DFCS_SCROLLUP = 0;
-  
+
   DFCS_ADJUSTRECT = 8192;
   DFCS_CHECKED = 1024;
   DFCS_FLAT = 16384;
@@ -354,7 +367,7 @@ PM_Remove = 1;
   VK_APPS       = $5D;
   // $5E reserved
   VK_SLEEP      = $5F;
-  
+
   VK_NUMPAD0    = 96; // $60
   VK_NUMPAD1    = 97;
   VK_NUMPAD2    = 98;
@@ -395,15 +408,15 @@ PM_Remove = 1;
   VK_F22        = 133;
   VK_F23        = 134;
   VK_F24        = 135; // $87
-  
+
   // $88-$8F unassigned
-  
+
   VK_NUMLOCK    = $90;
   VK_SCROLL     = $91;
-  
+
   // $92-$96  OEM specific
   // $97-$9F  Unassigned
-  
+
   // not in VCL defined:
   //MWE: And should not be used.
   //     The keys they are on map to another VK
@@ -425,7 +438,7 @@ PM_Remove = 1;
   VK_RCONTROL   = $A3;
   VK_LMENU      = $A4;
   VK_RMENU      = $A5;
-  
+
   VK_BROWSER_BACK        = $A6;
   VK_BROWSER_FORWARD     = $A7;
   VK_BROWSER_REFRESH     = $A8;
@@ -436,48 +449,48 @@ PM_Remove = 1;
   VK_VOLUME_MUTE         = $AD;
   VK_VOLUME_DOWN         = $AE;
   VK_VOLUME_UP           = $AF;
-  VK_MEDIA_NEXT_TRACK    = $B0; 
-  VK_MEDIA_PREV_TRACK    = $B1; 
-  VK_MEDIA_STOP          = $B2; 
-  VK_MEDIA_PLAY_PAUSE    = $B3; 
+  VK_MEDIA_NEXT_TRACK    = $B0;
+  VK_MEDIA_PREV_TRACK    = $B1;
+  VK_MEDIA_STOP          = $B2;
+  VK_MEDIA_PLAY_PAUSE    = $B3;
   VK_LAUNCH_MAIL         = $B4;
-  VK_LAUNCH_MEDIA_SELECT = $B5; 
-  VK_LAUNCH_APP1         = $B6; 
-  VK_LAUNCH_APP2         = $B7; 
+  VK_LAUNCH_MEDIA_SELECT = $B5;
+  VK_LAUNCH_APP1         = $B6;
+  VK_LAUNCH_APP2         = $B7;
   // $B8-$B9 Reserved
-  VK_OEM_1               = $BA; // Used for miscellaneous characters; it can vary by keyboard. 
-                                // For the US standard keyboard, the ';:' key 
-  VK_OEM_PLUS            = $BB; // For any country/region, the '+' key 
-  VK_OEM_COMMA           = $BC; // For any country/region, the ',' key 
-  VK_OEM_MINUS           = $BD; // For any country/region, the '-' key 
-  VK_OEM_PERIOD          = $BE; // For any country/region, the '.' key 
-  VK_OEM_2               = $BF; // Used for miscellaneous characters; it can vary by keyboard. 
-                                // For the US standard keyboard, the '/?' key 
-  VK_OEM_3               = $C0; // Used for miscellaneous characters; it can vary by keyboard. 
-                                // For the US standard keyboard, the '`~' key 
-  // $C1-$D7 Reserved 
-  // $D8-$DA Unassigned 
-  VK_OEM_4               = $DB; // Used for miscellaneous characters; it can vary by keyboard. 
-                                // For the US standard keyboard, the '[{' key 
-  VK_OEM_5               = $DC; // Used for miscellaneous characters; it can vary by keyboard. 
-                                // For the US standard keyboard, the '\|' key 
-  VK_OEM_6               = $DD; // Used for miscellaneous characters; it can vary by keyboard. 
-                                // For the US standard keyboard, the ']}' key 
-  VK_OEM_7               = $DE; // Used for miscellaneous characters; it can vary by keyboard. 
-                                // For the US standard keyboard, the 'single-quote/double-quote' key 
-  VK_OEM_8               = $DF; // Used for miscellaneous characters; it can vary by keyboard. 
-  
-  // $E0 Reserved 
-  // $E1 OEM specific 
-  VK_OEM_102             = $E2; // Either the angle bracket key or the backslash key on the RT 102-key keyboard 
-                 
+  VK_OEM_1               = $BA; // Used for miscellaneous characters; it can vary by keyboard.
+                                // For the US standard keyboard, the ';:' key
+  VK_OEM_PLUS            = $BB; // For any country/region, the '+' key
+  VK_OEM_COMMA           = $BC; // For any country/region, the ',' key
+  VK_OEM_MINUS           = $BD; // For any country/region, the '-' key
+  VK_OEM_PERIOD          = $BE; // For any country/region, the '.' key
+  VK_OEM_2               = $BF; // Used for miscellaneous characters; it can vary by keyboard.
+                                // For the US standard keyboard, the '/?' key
+  VK_OEM_3               = $C0; // Used for miscellaneous characters; it can vary by keyboard.
+                                // For the US standard keyboard, the '`~' key
+  // $C1-$D7 Reserved
+  // $D8-$DA Unassigned
+  VK_OEM_4               = $DB; // Used for miscellaneous characters; it can vary by keyboard.
+                                // For the US standard keyboard, the '[{' key
+  VK_OEM_5               = $DC; // Used for miscellaneous characters; it can vary by keyboard.
+                                // For the US standard keyboard, the '\|' key
+  VK_OEM_6               = $DD; // Used for miscellaneous characters; it can vary by keyboard.
+                                // For the US standard keyboard, the ']}' key
+  VK_OEM_7               = $DE; // Used for miscellaneous characters; it can vary by keyboard.
+                                // For the US standard keyboard, the 'single-quote/double-quote' key
+  VK_OEM_8               = $DF; // Used for miscellaneous characters; it can vary by keyboard.
+
+  // $E0 Reserved
+  // $E1 OEM specific
+  VK_OEM_102             = $E2; // Either the angle bracket key or the backslash key on the RT 102-key keyboard
+
   // $E3-$E4 OEM specific
-  
+
   VK_PROCESSKEY          = $E7; // IME Process key
-  
+
   // $E8 Unassigned
   // $E9-$F5 OEM specific
-  
+
   VK_ATTN       = $F6;
   VK_CRSEL      = $F7;
   VK_EXSEL      = $F8;
@@ -487,7 +500,7 @@ PM_Remove = 1;
   VK_NONAME     = $FC;
   VK_PA1        = $FD;
   VK_OEM_CLEAR  = $FE;
-  
+
   // all other keys with no virtual key code are mapped to
   // VK_IRREGULAR + KeyCode
   // MWE: Obsolete
@@ -660,7 +673,7 @@ const
   SIZEFULLSCREEN = Size_Maximized;
   SIZEZOOMSHOW = Size_MaxShow;
   SIZEZOOMHIDE = Size_MaxHide;
-  
+
 { WMMove Message Constants }
   Move_Default = 0;
   Move_SourceIsInterface = 128; // this is flag. Can be combined with the above
@@ -789,7 +802,7 @@ type
   end;
   TDrawItemStruct = tagDrawItemStruct;
   DrawItemStruct = tagDrawItemStruct;
-  
+
 
   TOwnerDrawStateType = (
     odSelected, odGrayed, odDisabled, odChecked,
@@ -1397,8 +1410,8 @@ const
 //==============================================
   BI_RGB        = 0;
   BI_BITFIELDS  = 3;
-  
-  
+
+
   HORZSIZE      = 4;   { Horizontal size in millimeters           }
   VERTSIZE      = 6;   { Vertical size in millimeters             }
   HORZRES       = 8;   { Horizontal width in pixels               }
@@ -1423,19 +1436,19 @@ const
   TA_BASELINE   = $18;
   TA_RTLREADING = $100;
   TA_MASK       = (TA_BASELINE+TA_CENTER+TA_UPDATECP+TA_RTLREADING);
-  
+
   { PolyFill() Modes }
   ALTERNATE     = 1;
   WINDING       = 2;
   POLYFILL_LAST = 2;
-  
+
   { StretchBlt() Modes }
   BLACKONWHITE      = 1;
   WHITEONBLACK      = 2;
   COLORONCOLOR      = 3;
   HALFTONE          = 4;
   MAXSTRETCHBLTMODE = 4;
-  
+
   { constants for CreateDIBitmap }
 
   CBM_INIT = 4;     { initialize bitmap  }
@@ -1751,12 +1764,12 @@ type
 type
   TClipboardFormat = cardinal;
   PClipboardFormat = ^TClipboardFormat;
-  
+
   TClipboardRequestEvent = procedure(const RequestedFormatID: TClipboardFormat;
     Data: TStream) of object;
-    
+
   TClipboardType = (ctPrimarySelection, ctSecondarySelection, ctClipboard);
-  
+
 const
   ClipboardTypeName : array[TClipboardType] of string = (
       'primary selection', 'secondary selection', 'clipboard'
@@ -1864,6 +1877,9 @@ end.
 
 {
   $Log$
+  Revision 1.45  2003/10/23 16:15:30  micha
+  compatibility with new 1.1
+
   Revision 1.44  2003/10/16 23:54:27  marc
   Implemented new gtk keyevent handling
 

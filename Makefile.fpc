@@ -42,6 +42,7 @@ ifeq ($(OS_TARGET),win32)
 LCL_PLATFORM=win32
 else
 LCL_PLATFORM=gtk
+override COMPILER_UNITDIR+=lcl/nonwin32
 endif
 endif
 export LCL_PLATFORM
