@@ -1280,7 +1280,6 @@ var
    num : LongInt;                                          // example assume value := $00FF2510
 
 begin
-ReportNotObsolete('TColortoTgdkColor');
    NewColor.pixel := 0;
                                                            // value - $00FF2510
    num := (value shr 8) shl 8;                             //   num - $00FF2500
@@ -1638,6 +1637,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.52  2002/07/09 17:18:23  lazarus
+  MG: fixed parser for external vars
+
   Revision 1.51  2002/06/26 15:11:10  lazarus
   MG: added new tool: Guess misplaced $IFDEF/$ENDIF
 
