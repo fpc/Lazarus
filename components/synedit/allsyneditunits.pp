@@ -23,6 +23,7 @@ uses
   SynEditRegexSearch, SynHighlighterPosition, SynHighlighterJava,
   SynHighlighterUNIXShellScript, SynHighlighterCss, SynHighlighterPHP,
   SynHighlighterTeX, SynHighlighterHashEntries, SynHighlighterSQL,
+  SynhighlighterPython,
   SynEditLazDsgn;
 
 implementation
@@ -32,6 +33,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.3  2004/07/04 15:58:02  mattias
+  added python highlighter
+
   Revision 1.2  2004/03/02 23:04:11  mattias
   added sql, php, tex, css synedit highlighter
 

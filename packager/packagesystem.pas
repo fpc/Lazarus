@@ -975,6 +975,7 @@ begin
     AddFile('synhighlighterphp.pas','SynHighlighterPHP',pftUnit,[],cpBase);
     AddFile('synhighlightertex.pas','SynHighlighterTeX',pftUnit,[],cpBase);
     AddFile('synhighlightersql.pas','SynHighlighterSQL',pftUnit,[],cpBase);
+    AddFile('synhighlighterpython.pas','SynHighlighterPython',pftUnit,[],cpBase);
 
     // add unit paths
     UsageOptions.UnitPath:=SetDirSeparators(

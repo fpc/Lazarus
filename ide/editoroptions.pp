@@ -44,6 +44,7 @@ uses
   SynEdit, SynEditHighlighter, SynEditAutoComplete, SynEditKeyCmds,
   SynHighlighterPas, SynHighlighterHTML, SynHighlighterCPP, SynHighlighterXML,
   SynHighlighterLFM, SynHighlighterPerl, SynHighlighterJava,
+  SynHighlighterPython,
   SynHighlighterUNIXShellScript, Laz_XMLCfg,
   IDECommands, CodeTemplateDialog, KeyMapping, InputHistory, IDEOptionDefs,
   LazarusIDEStrConsts, KeymapSchemeDlg;
@@ -57,7 +58,7 @@ type
 
   TLazSyntaxHighlighter =
     (lshNone, lshText, lshFreePascal, lshDelphi, lshLFM, lshXML, lshHTML,
-     lshCPP, lshPerl, lshJava, lshBash);
+     lshCPP, lshPerl, lshJava, lshBash, lshPython);
 
   TAdditionalHilightAttribute = (ahaNone, ahaTextBlock, ahaExecutionPoint,
     ahaEnabledBreakpoint, ahaDisabledBreakpoint,
@@ -81,7 +82,8 @@ const
   
   LazSyntaxHighlighterClasses: array[TLazSyntaxHighlighter] of TCustomSynClass =
     (nil, nil, TSynPasSyn, TSynPasSyn, TSynLFMSyn, TSynXMLSyn, TSynHTMLSyn,
-     TSynCPPSyn, TSynPerlSyn, TSynJavaSyn, TSynUNIXShellScriptSyn);
+     TSynCPPSyn, TSynPerlSyn, TSynJavaSyn, TSynUNIXShellScriptSyn,
+     TSynPythonSyn);
     
 
   { Comments }
@@ -97,7 +99,8 @@ const
       comtCPP,   // lshCPP
       comtPerl,  // lshPerl
       comtCPP,   // lshJava
-      comtPerl   // lshBash
+      comtPerl,  // lshBash
+      comtPerl   // lshPython
     );
     
 const
@@ -517,7 +520,8 @@ const
      'C++',
      'Perl',
      'Java',
-     'Bash'
+     'Bash',
+     'Python'
    );
 
 var
@@ -540,8 +544,18 @@ const
   // highlighter
   CompatibleLazSyntaxHilighter:
     array[TLazSyntaxHighlighter] of TLazSyntaxHighlighter= (
-        lshNone, lshText, lshFreePascal, lshFreePascal, lshLFM, lshXML, lshHTML,
-        lshCPP, lshPerl, lshJava, lshBash
+        lshNone,
+        lshText,
+        lshFreePascal,
+        lshFreePascal,
+        lshLFM,
+        lshXML,
+        lshHTML,
+        lshCPP,
+        lshPerl,
+        lshJava,
+        lshBash,
+        lshPython
       );
       
   DefaultColorScheme = 'Default';
@@ -998,6 +1012,41 @@ begin
       Add('Symbol=Symbol');
     end;
   end;
+
+  // create info for Python
+  NewInfo:=TEditOptLanguageInfo.Create;
+  with NewInfo do begin
+    TheType:=CompatibleLazSyntaxHilighter[lshPython];
+    DefaultCommentType:=DefaultCommentTypes[TheType];
+    SynClass:=LazSyntaxHighlighterClasses[TheType];
+    FileExtensions:='py';
+    SampleSource:=
+            '# Python syntax highlighting'#13#10 +
+            'import math'#13#10 +
+            #13#10 +
+            '""" Documentation """'#13#10 +
+            'def DoSomething(Liste1,Liste2,param3=3):'#13#10 +
+            '  for i in Liste1:'#13#10 +
+            '    if i in Liste2:'#13#10 +
+            '      Liste1.remove(i)'#13#10 +
+            '/* Text Block */'#13#10 +
+            #13#10;
+    AddAttrSampleLines[ahaTextBlock]:=9;
+    MappedAttributes:=TStringList.Create;
+    with MappedAttributes do begin
+      Add('Comment=Comment');
+      Add('Identifier=Identifier');
+      Add('Documentation=Comment');
+      Add('Reserved_word=Reserved_word');
+      Add('Number=Number');
+      Add('Space=Space');
+      Add('String=String');
+      Add('Symbol=Symbol');
+    end;
+  end;
+  Add(NewInfo);
+
+
   Add(NewInfo);
 end;
 

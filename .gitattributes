@@ -193,6 +193,7 @@ components/synedit/synhighlighterpas.pp svneol=native#text/pascal
 components/synedit/synhighlighterperl.pas svneol=native#text/pascal
 components/synedit/synhighlighterphp.pas svneol=native#text/pascal
 components/synedit/synhighlighterposition.pas svneol=native#text/pascal
+components/synedit/synhighlighterpython.pas svneol=native#text/pascal
 components/synedit/synhighlightersql.pas svneol=native#text/pascal
 components/synedit/synhighlightertex.pas svneol=native#text/pascal
 components/synedit/synhighlighterunixshellscript.pas svneol=native#text/pascal
