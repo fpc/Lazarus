@@ -555,8 +555,12 @@ end;
 procedure TColorPropertyEditor.PropDrawValue(ACanvas:TCanvas; const ARect:TRect;
   AState:TPropEditDrawState);
 begin
-  if GetVisualValue <> '' then
-    ListDrawValue(GetVisualValue, -1, ACanvas, ARect, [pedsInComboList])
+  if GetVisualValue <> '' then begin
+    If pedsInEdit in AState then
+      ListDrawValue(GetVisualValue, -1, ACanvas, ARect, [pedsInEdit])
+    else
+      ListDrawValue(GetVisualValue, -1, ACanvas, ARect, [pedsInComboList]);
+  end
   else
     inherited PropDrawValue(ACanvas, ARect, AState);
 end;
@@ -578,10 +582,18 @@ procedure TColorPropertyEditor.ListDrawValue(const CurValue:ansistring;
        (TColorQuad(AColor).Green > 192) or
        (TColorQuad(AColor).Blue > 192) then
       Result := clBlack
-    else if pedsSelected in AState then
-      Result := clWhite
     else
-      Result := AColor;
+      if pedsInEdit in AState then begin
+        if pedsSelected in AState then
+          Result := clWindow
+        else
+         Result := AColor;
+      end else begin
+        if pedsSelected in AState then
+          Result := clHighlight
+        else
+         Result := clWindow;
+      end;
   end;
 var
   vRight,vBottom: Integer;
