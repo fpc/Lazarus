@@ -1,0 +1,126 @@
+[arrayd | array declaration (var)]
+array[0..|] of ;
+[arrayc | array declaration (const)]
+array[0..|] of = ();
+[cases | case statement]
+case | of
+  : ;
+  : ;
+end;
+[casee | case statement (with else)]
+case | of
+  : ;
+  : ;
+else ;
+end;
+[classf | class declaration (all parts)]
+T| = class(T)
+private
+
+public
+  constructor Create;
+  destructor Destroy; override;
+end;
+[classd | class declaration (no parts)]
+T| = class(T)
+
+end;
+[classc | class declaration (with Create/Destroy overrides)]
+T| = class(T)
+private
+
+protected
+
+public
+  constructor Create; override;
+  destructor Destroy; override;
+published 
+
+end;
+[fors | for (no begin/end)]
+for | :=  to  do
+[forb | for statement]
+for | :=  to  do
+begin
+
+end;
+[function | function declaration]
+function |(): ;
+begin
+
+end;
+[ifs | if (no begin/end)]
+if | then
+[ifb | if statement]
+if | then begin
+
+end;
+[ife | if then (no begin/end) else (no begin/end)]
+if | then
+
+else
+[ifeb | if then else]
+if | then begin
+
+end
+else begin
+
+end;
+[procedure | procedure declaration]
+procedure |();
+begin
+
+end;
+[trye | try except]
+try
+  | 
+except
+
+end;
+[tryf | try finally]
+try
+  | 
+finally
+
+end;
+[trycf | try finally (with Create/Free)]
+|variable := typename.Create; 
+try
+
+finally
+  variable.Free;
+end;
+[whileb | while statement]
+while | do begin
+
+end;
+[whiles | while (no begin)]
+while | do
+[withb | with statement]
+with | do begin
+
+end;
+[b | begin end]
+begin
+  |
+end;
+[withs | with (no begin)]
+with | do
+[hexc | HexStr(Cardinal(),8)]
+HexStr(Cardinal(|),8)
+[be | begin end else begin end]
+begin
+  |
+end else begin
+
+end;
+[withc | with for components]
+with | do begin
+  Name:='';
+  Parent:=;
+  Left:=;
+  Top:=;
+  Width:=;
+  Height:=;
+  Caption:='';
+end;
