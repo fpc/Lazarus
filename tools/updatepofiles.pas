@@ -56,6 +56,44 @@ begin
   Result:=AnsiCompareText(MsgItem1^.ID,MsgItem2^.ID);
 end;
 
+procedure DisposeMsgTree(var Tree: TAVLTree);
+var
+  Node: TAVLTreeNode;
+  MsgItem: PMsgItem;
+begin
+  Node:=Tree.FindLowest;
+  while Node<>nil do begin
+    MsgItem:=PMsgItem(Node.Data);
+    Dispose(MsgItem);
+    Node:=Tree.FindSuccessor(Node);
+  end;
+  Tree.Free;
+  Tree:=nil;
+end;
+
+type
+  TPoFile = class
+  public
+    Tree: TAVLTree;
+    Header: TStringList;
+    constructor Create;
+    destructor Destroy; override;
+  end;
+
+{ TPoFile }
+
+constructor TPoFile.Create;
+begin
+  Tree:=TAVLTree.Create(@CompareMsgItems);
+  Header:=TStringList.Create;
+end;
+
+destructor TPoFile.Destroy;
+begin
+  DisposeMsgTree(Tree);
+  Header.Free;
+  inherited Destroy;
+end;
 
 //==============================================================================
 var
@@ -113,7 +151,7 @@ begin
   CommentStarted:=false;
   while Line<SrcFile.Count do begin
     s:=SrcFile[Line];
-    if (LeftStr(s,7)='msgid "') and (length(s)>8) then begin
+    if (LeftStr(s,7)='msgid "') then begin
       Result^.ID:=copy(s,8,length(s)-8);
       inc(Line);
       if Line<SrcFile.Count then begin
@@ -145,36 +183,48 @@ begin
   DestFile.Add('');
 end;
 
-function ReadPoTree(const Filename: string): TAVLTree;
+function ReadPoFile(const Filename: string): TPoFile;
 var
   SrcFile: TStringList;
   MsgItem: PMsgItem;
   Line: Integer;
 begin
-  Result:=TAVLTree.Create(@CompareMsgItems);
+  Result:=TPoFile.Create;
 
   // read source .po file
   //writeln(Prefix,'Loading ',Filename,' ...');
   SrcFile:=TStringList.Create;
   SrcFile.LoadFromFile(Filename);
-
+  
   Line:=0;
   while Line<SrcFile.Count do begin
-    MsgItem:=ReadMessageItem(SrcFile,Line);
-    // ignore doubles
-    if (MsgItem^.ID='')
-    or (Result.FindKey(MsgItem,@CompareMsgItems)<>nil) then begin
-      Dispose(MsgItem);
-      continue;
+    if (SrcFile[Line]='') then begin
+      // empty line
+      inc(Line);
+    end
+    else if (length(SrcFile[Line])>=2) and (SrcFile[Line][1]='"') then begin
+      // header line
+      Result.Header.Add(SrcFile[Line]);
+      inc(Line);
+    end
+    else begin
+      // message
+      MsgItem:=ReadMessageItem(SrcFile,Line);
+      // ignore doubles
+      if (MsgItem^.ID='')
+      or (Result.Tree.FindKey(MsgItem,@CompareMsgItems)<>nil) then begin
+        Dispose(MsgItem);
+        continue;
+      end;
+      // add message
+      Result.Tree.Add(MsgItem);
     end;
-    // add message
-    Result.Add(MsgItem);
   end;
 
   SrcFile.Free;
 end;
 
-procedure WritePoTree(Tree: TAVLTree; const Filename: string);
+procedure WritePoFile(PoFile: TPoFile; const Filename: string);
 var
   DestFile: TStringList;
   Node: TAVLTreeNode;
@@ -182,11 +232,17 @@ var
 begin
   //writeln(Prefix,'Saving ',Filename,' ...');
   DestFile:=TStringList.Create;
-  Node:=Tree.FindLowest;
+  if (PoFile.Header.Count>0) then begin
+    DestFile.Add('msgid ""');
+    DestFile.Add('msgstr ""');
+    DestFile.AddStrings(PoFile.Header);
+    DestFile.Add('');
+  end;
+  Node:=PoFile.Tree.FindLowest;
   while Node<>nil do begin
     MsgItem:=PMsgItem(Node.Data);
     WriteMessageItem(MsgItem,DestFile);
-    Node:=Tree.FindSuccessor(Node);
+    Node:=PoFile.Tree.FindSuccessor(Node);
   end;
   DestFile.SaveToFile(Filename);
   DestFile.Free;
@@ -254,43 +310,28 @@ begin
   end;
 end;
 
-procedure DisposeMsgTree(var Tree: TAVLTree);
-var
-  Node: TAVLTreeNode;
-  MsgItem: PMsgItem;
-begin
-  Node:=Tree.FindLowest;
-  while Node<>nil do begin
-    MsgItem:=PMsgItem(Node.Data);
-    Dispose(MsgItem);
-    Node:=Tree.FindSuccessor(Node);
-  end;
-  Tree.Free;
-  Tree:=nil;
-end;
-
 procedure UpdatePoFile(const Filename: string);
 var
-  SrcTree, DestTree: TAVLTree;
+  SrcFile, DestFile: TPoFile;
   DestFiles: TStringList;
   i: Integer;
 begin
   writeln('Loading ',Filename,' ...');
-  SrcTree:=ReadPoTree(Filename);
+  SrcFile:=ReadPoFile(Filename);
   DestFiles:=FindAllTranslatedPoFiles(Filename);
   IncPrefix;
   for i:=0 to DestFiles.Count-1 do begin
     writeln(Prefix,'Updating ',DestFiles[i]);
     IncPrefix;
-    DestTree:=ReadPoTree(DestFiles[i]);
-    MergePoTrees(SrcTree,DestTree);
-    WritePoTree(DestTree,DestFiles[i]);
-    DisposeMsgTree(DestTree);
+    DestFile:=ReadPoFile(DestFiles[i]);
+    MergePoTrees(SrcFile.Tree,DestFile.Tree);
+    WritePoFile(DestFile,DestFiles[i]);
+    DestFile.Free;
     DecPrefix;
   end;
   DecPrefix;
   DestFiles.Free;
-  DisposeMsgTree(SrcTree);
+  SrcFile.Free;
 end;
 
 procedure UpdateAllPoFiles;
