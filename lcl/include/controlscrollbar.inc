@@ -253,22 +253,18 @@ begin
       ScrollInfo.nPage := FPage;
 
       // range
-      if Visible then begin
-        OtherScrollbar:=GetOtherScrollBar;
-        If OtherScrollbar.FVisible then
-          SBSize := OtherScrollbar.Size
-        else
-          SBSize := 0;
-        if Kind=sbVertical then
-          FAutoRange := (FRange - ClientHeight)
-                        *Shortint(FRange >= ClientHeight + SBSize)
-        else
-          FAutoRange := (FRange - ClientWidth)
-                        *Shortint(FRange >= ClientWidth + SBSize);
-        ScrollInfo.nMax := FRange;
-      end
+      OtherScrollbar:=GetOtherScrollBar;
+      If OtherScrollbar.FVisible then
+        SBSize := OtherScrollbar.Size
       else
-        ScrollInfo.nMax := 0;
+        SBSize := 0;
+      if Kind=sbVertical then
+        FAutoRange := (FRange - ClientHeight)
+                      *Shortint(FRange >= ClientHeight + SBSize)
+      else
+        FAutoRange := (FRange - ClientWidth)
+                      *Shortint(FRange >= ClientWidth + SBSize);
+      ScrollInfo.nMax := FRange;
 
       // visible
       if Kind=sbVertical then
