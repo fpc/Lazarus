@@ -998,6 +998,18 @@ end;
   Reads the system colors.
  ------------------------------------------------------------------------------}
 procedure UpdateSysColorMap(Widget: PGtkWidget);
+{ $DEFINE VerboseUpdateSysColorMap}
+{$IFDEF VerboseUpdateSysColorMap}
+  function GdkColorAsString(c: TgdkColor): string;
+  begin
+    Result:='LCL='+HexStr(Cardinal(TGDKColorToTColor(c)),8)
+             +' Pixel='+HexStr(Cardinal(c.Pixel),8)
+             +' Red='+HexStr(Cardinal(c.Red),8)
+             +' Green='+HexStr(Cardinal(c.Green),8)
+             +' Blue='+HexStr(Cardinal(c.Blue),8)
+             ;
+  end;
+{$ENDIF}
 var
   MainStyle: PGtkStyle;
 begin
@@ -1006,79 +1018,80 @@ begin
   MainStyle:=pGtkStyle(Widget^.TheStyle);
   if MainStyle=nil then exit;
   with MainStyle^ do begin
-
+  
     {$IFDEF VerboseUpdateSysColorMap}
     if rc_style<>nil then begin
       with rc_style^ do begin
         writeln('rc_style:');
-        writeln(' FG GTK_STATE_NORMAL ',HexStr(Cardinal(TGDKColorToTColor(fg[GTK_STATE_NORMAL])),8));
-        writeln(' FG GTK_STATE_ACTIVE ',HexStr(Cardinal(TGDKColorToTColor(fg[GTK_STATE_ACTIVE])),8));
-        writeln(' FG GTK_STATE_PRELIGHT ',HexStr(Cardinal(TGDKColorToTColor(fg[GTK_STATE_PRELIGHT])),8));
-        writeln(' FG GTK_STATE_SELECTED ',HexStr(Cardinal(TGDKColorToTColor(fg[GTK_STATE_SELECTED])),8));
-        writeln(' FG GTK_STATE_INSENSITIVE ',HexStr(Cardinal(TGDKColorToTColor(fg[GTK_STATE_INSENSITIVE])),8));
+        writeln(' FG GTK_STATE_NORMAL ',GdkColorAsString(fg[GTK_STATE_NORMAL]));
+        writeln(' FG GTK_STATE_ACTIVE ',GdkColorAsString(fg[GTK_STATE_ACTIVE]));
+        writeln(' FG GTK_STATE_PRELIGHT ',GdkColorAsString(fg[GTK_STATE_PRELIGHT]));
+        writeln(' FG GTK_STATE_SELECTED ',GdkColorAsString(fg[GTK_STATE_SELECTED]));
+        writeln(' FG GTK_STATE_INSENSITIVE ',GdkColorAsString(fg[GTK_STATE_INSENSITIVE]));
         writeln('');
-        writeln(' BG GTK_STATE_NORMAL ',HexStr(Cardinal(TGDKColorToTColor(bg[GTK_STATE_NORMAL])),8));
-        writeln(' BG GTK_STATE_ACTIVE ',HexStr(Cardinal(TGDKColorToTColor(bg[GTK_STATE_ACTIVE])),8));
-        writeln(' BG GTK_STATE_PRELIGHT ',HexStr(Cardinal(TGDKColorToTColor(bg[GTK_STATE_PRELIGHT])),8));
-        writeln(' BG GTK_STATE_SELECTED ',HexStr(Cardinal(TGDKColorToTColor(bg[GTK_STATE_SELECTED])),8));
-        writeln(' BG GTK_STATE_INSENSITIVE ',HexStr(Cardinal(TGDKColorToTColor(bg[GTK_STATE_INSENSITIVE])),8));
+        writeln(' BG GTK_STATE_NORMAL ',GdkColorAsString(bg[GTK_STATE_NORMAL]));
+        writeln(' BG GTK_STATE_ACTIVE ',GdkColorAsString(bg[GTK_STATE_ACTIVE]));
+        writeln(' BG GTK_STATE_PRELIGHT ',GdkColorAsString(bg[GTK_STATE_PRELIGHT]));
+        writeln(' BG GTK_STATE_SELECTED ',GdkColorAsString(bg[GTK_STATE_SELECTED]));
+        writeln(' BG GTK_STATE_INSENSITIVE ',GdkColorAsString(bg[GTK_STATE_INSENSITIVE]));
         writeln('');
-        writeln(' TEXT GTK_STATE_NORMAL ',HexStr(Cardinal(TGDKColorToTColor(text[GTK_STATE_NORMAL])),8));
-        writeln(' TEXT GTK_STATE_ACTIVE ',HexStr(Cardinal(TGDKColorToTColor(text[GTK_STATE_ACTIVE])),8));
-        writeln(' TEXT GTK_STATE_PRELIGHT ',HexStr(Cardinal(TGDKColorToTColor(text[GTK_STATE_PRELIGHT])),8));
-        writeln(' TEXT GTK_STATE_SELECTED ',HexStr(Cardinal(TGDKColorToTColor(text[GTK_STATE_SELECTED])),8));
-        writeln(' TEXT GTK_STATE_INSENSITIVE ',HexStr(Cardinal(TGDKColorToTColor(text[GTK_STATE_INSENSITIVE])),8));
+        writeln(' TEXT GTK_STATE_NORMAL ',GdkColorAsString(text[GTK_STATE_NORMAL]));
+        writeln(' TEXT GTK_STATE_ACTIVE ',GdkColorAsString(text[GTK_STATE_ACTIVE]));
+        writeln(' TEXT GTK_STATE_PRELIGHT ',GdkColorAsString(text[GTK_STATE_PRELIGHT]));
+        writeln(' TEXT GTK_STATE_SELECTED ',GdkColorAsString(text[GTK_STATE_SELECTED]));
+        writeln(' TEXT GTK_STATE_INSENSITIVE ',GdkColorAsString(text[GTK_STATE_INSENSITIVE]));
         writeln('');
       end;
     end;
 
     writeln('MainStyle:');
-    writeln(' FG GTK_STATE_NORMAL ',HexStr(Cardinal(TGDKColorToTColor(fg[GTK_STATE_NORMAL])),8));
-    writeln(' FG GTK_STATE_ACTIVE ',HexStr(Cardinal(TGDKColorToTColor(fg[GTK_STATE_ACTIVE])),8));
-    writeln(' FG GTK_STATE_PRELIGHT ',HexStr(Cardinal(TGDKColorToTColor(fg[GTK_STATE_PRELIGHT])),8));
-    writeln(' FG GTK_STATE_SELECTED ',HexStr(Cardinal(TGDKColorToTColor(fg[GTK_STATE_SELECTED])),8));
-    writeln(' FG GTK_STATE_INSENSITIVE ',HexStr(Cardinal(TGDKColorToTColor(fg[GTK_STATE_INSENSITIVE])),8));
+    writeln(' FG GTK_STATE_NORMAL ',GdkColorAsString(fg[GTK_STATE_NORMAL]));
+    writeln(' FG GTK_STATE_ACTIVE ',GdkColorAsString(fg[GTK_STATE_ACTIVE]));
+    writeln(' FG GTK_STATE_PRELIGHT ',GdkColorAsString(fg[GTK_STATE_PRELIGHT]));
+    writeln(' FG GTK_STATE_SELECTED ',GdkColorAsString(fg[GTK_STATE_SELECTED]));
+    writeln(' FG GTK_STATE_INSENSITIVE ',GdkColorAsString(fg[GTK_STATE_INSENSITIVE]));
     writeln('');
-    writeln(' BG GTK_STATE_NORMAL ',HexStr(Cardinal(TGDKColorToTColor(bg[GTK_STATE_NORMAL])),8));
-    writeln(' BG GTK_STATE_ACTIVE ',HexStr(Cardinal(TGDKColorToTColor(bg[GTK_STATE_ACTIVE])),8));
-    writeln(' BG GTK_STATE_PRELIGHT ',HexStr(Cardinal(TGDKColorToTColor(bg[GTK_STATE_PRELIGHT])),8));
-    writeln(' BG GTK_STATE_SELECTED ',HexStr(Cardinal(TGDKColorToTColor(bg[GTK_STATE_SELECTED])),8));
-    writeln(' BG GTK_STATE_INSENSITIVE ',HexStr(Cardinal(TGDKColorToTColor(bg[GTK_STATE_INSENSITIVE])),8));
+    writeln(' BG GTK_STATE_NORMAL ',GdkColorAsString(bg[GTK_STATE_NORMAL]));
+    writeln(' BG GTK_STATE_ACTIVE ',GdkColorAsString(bg[GTK_STATE_ACTIVE]));
+    writeln(' BG GTK_STATE_PRELIGHT ',GdkColorAsString(bg[GTK_STATE_PRELIGHT]));
+    writeln(' BG GTK_STATE_SELECTED ',GdkColorAsString(bg[GTK_STATE_SELECTED]));
+    writeln(' BG GTK_STATE_INSENSITIVE ',GdkColorAsString(bg[GTK_STATE_INSENSITIVE]));
     writeln('');
-    writeln(' TEXT GTK_STATE_NORMAL ',HexStr(Cardinal(TGDKColorToTColor(text[GTK_STATE_NORMAL])),8));
-    writeln(' TEXT GTK_STATE_ACTIVE ',HexStr(Cardinal(TGDKColorToTColor(text[GTK_STATE_ACTIVE])),8));
-    writeln(' TEXT GTK_STATE_PRELIGHT ',HexStr(Cardinal(TGDKColorToTColor(text[GTK_STATE_PRELIGHT])),8));
-    writeln(' TEXT GTK_STATE_SELECTED ',HexStr(Cardinal(TGDKColorToTColor(text[GTK_STATE_SELECTED])),8));
-    writeln(' TEXT GTK_STATE_INSENSITIVE ',HexStr(Cardinal(TGDKColorToTColor(text[GTK_STATE_INSENSITIVE])),8));
+    writeln(' TEXT GTK_STATE_NORMAL ',GdkColorAsString(text[GTK_STATE_NORMAL]));
+    writeln(' TEXT GTK_STATE_ACTIVE ',GdkColorAsString(text[GTK_STATE_ACTIVE]));
+    writeln(' TEXT GTK_STATE_PRELIGHT ',GdkColorAsString(text[GTK_STATE_PRELIGHT]));
+    writeln(' TEXT GTK_STATE_SELECTED ',GdkColorAsString(text[GTK_STATE_SELECTED]));
+    writeln(' TEXT GTK_STATE_INSENSITIVE ',GdkColorAsString(text[GTK_STATE_INSENSITIVE]));
     writeln('');
-    writeln(' LIGHT GTK_STATE_NORMAL ',HexStr(Cardinal(TGDKColorToTColor(light[GTK_STATE_NORMAL])),8));
-    writeln(' LIGHT GTK_STATE_ACTIVE ',HexStr(Cardinal(TGDKColorToTColor(light[GTK_STATE_ACTIVE])),8));
-    writeln(' LIGHT GTK_STATE_PRELIGHT ',HexStr(Cardinal(TGDKColorToTColor(light[GTK_STATE_PRELIGHT])),8));
-    writeln(' LIGHT GTK_STATE_SELECTED ',HexStr(Cardinal(TGDKColorToTColor(light[GTK_STATE_SELECTED])),8));
-    writeln(' LIGHT GTK_STATE_INSENSITIVE ',HexStr(Cardinal(TGDKColorToTColor(light[GTK_STATE_INSENSITIVE])),8));
+    writeln(' LIGHT GTK_STATE_NORMAL ',GdkColorAsString(light[GTK_STATE_NORMAL]));
+    writeln(' LIGHT GTK_STATE_ACTIVE ',GdkColorAsString(light[GTK_STATE_ACTIVE]));
+    writeln(' LIGHT GTK_STATE_PRELIGHT ',GdkColorAsString(light[GTK_STATE_PRELIGHT]));
+    writeln(' LIGHT GTK_STATE_SELECTED ',GdkColorAsString(light[GTK_STATE_SELECTED]));
+    writeln(' LIGHT GTK_STATE_INSENSITIVE ',GdkColorAsString(light[GTK_STATE_INSENSITIVE]));
     writeln('');
-    writeln(' DARK GTK_STATE_NORMAL ',HexStr(Cardinal(TGDKColorToTColor(dark[GTK_STATE_NORMAL])),8));
-    writeln(' DARK GTK_STATE_ACTIVE ',HexStr(Cardinal(TGDKColorToTColor(dark[GTK_STATE_ACTIVE])),8));
-    writeln(' DARK GTK_STATE_PRELIGHT ',HexStr(Cardinal(TGDKColorToTColor(dark[GTK_STATE_PRELIGHT])),8));
-    writeln(' DARK GTK_STATE_SELECTED ',HexStr(Cardinal(TGDKColorToTColor(dark[GTK_STATE_SELECTED])),8));
-    writeln(' DARK GTK_STATE_INSENSITIVE ',HexStr(Cardinal(TGDKColorToTColor(dark[GTK_STATE_INSENSITIVE])),8));
+    writeln(' DARK GTK_STATE_NORMAL ',GdkColorAsString(dark[GTK_STATE_NORMAL]));
+    writeln(' DARK GTK_STATE_ACTIVE ',GdkColorAsString(dark[GTK_STATE_ACTIVE]));
+    writeln(' DARK GTK_STATE_PRELIGHT ',GdkColorAsString(dark[GTK_STATE_PRELIGHT]));
+    writeln(' DARK GTK_STATE_SELECTED ',GdkColorAsString(dark[GTK_STATE_SELECTED]));
+    writeln(' DARK GTK_STATE_INSENSITIVE ',GdkColorAsString(dark[GTK_STATE_INSENSITIVE]));
     writeln('');
-    writeln(' MID GTK_STATE_NORMAL ',HexStr(Cardinal(TGDKColorToTColor(mid[GTK_STATE_NORMAL])),8));
-    writeln(' MID GTK_STATE_ACTIVE ',HexStr(Cardinal(TGDKColorToTColor(mid[GTK_STATE_ACTIVE])),8));
-    writeln(' MID GTK_STATE_PRELIGHT ',HexStr(Cardinal(TGDKColorToTColor(mid[GTK_STATE_PRELIGHT])),8));
-    writeln(' MID GTK_STATE_SELECTED ',HexStr(Cardinal(TGDKColorToTColor(mid[GTK_STATE_SELECTED])),8));
-    writeln(' MID GTK_STATE_INSENSITIVE ',HexStr(Cardinal(TGDKColorToTColor(mid[GTK_STATE_INSENSITIVE])),8));
+    writeln(' MID GTK_STATE_NORMAL ',GdkColorAsString(mid[GTK_STATE_NORMAL]));
+    writeln(' MID GTK_STATE_ACTIVE ',GdkColorAsString(mid[GTK_STATE_ACTIVE]));
+    writeln(' MID GTK_STATE_PRELIGHT ',GdkColorAsString(mid[GTK_STATE_PRELIGHT]));
+    writeln(' MID GTK_STATE_SELECTED ',GdkColorAsString(mid[GTK_STATE_SELECTED]));
+    writeln(' MID GTK_STATE_INSENSITIVE ',GdkColorAsString(mid[GTK_STATE_INSENSITIVE]));
     writeln('');
-    writeln(' BASE GTK_STATE_NORMAL ',HexStr(Cardinal(TGDKColorToTColor(base[GTK_STATE_NORMAL])),8));
-    writeln(' BASE GTK_STATE_ACTIVE ',HexStr(Cardinal(TGDKColorToTColor(base[GTK_STATE_ACTIVE])),8));
-    writeln(' BASE GTK_STATE_PRELIGHT ',HexStr(Cardinal(TGDKColorToTColor(base[GTK_STATE_PRELIGHT])),8));
-    writeln(' BASE GTK_STATE_SELECTED ',HexStr(Cardinal(TGDKColorToTColor(base[GTK_STATE_SELECTED])),8));
-    writeln(' BASE GTK_STATE_INSENSITIVE ',HexStr(Cardinal(TGDKColorToTColor(base[GTK_STATE_INSENSITIVE])),8));
+    writeln(' BASE GTK_STATE_NORMAL ',GdkColorAsString(base[GTK_STATE_NORMAL]));
+    writeln(' BASE GTK_STATE_ACTIVE ',GdkColorAsString(base[GTK_STATE_ACTIVE]));
+    writeln(' BASE GTK_STATE_PRELIGHT ',GdkColorAsString(base[GTK_STATE_PRELIGHT]));
+    writeln(' BASE GTK_STATE_SELECTED ',GdkColorAsString(base[GTK_STATE_SELECTED]));
+    writeln(' BASE GTK_STATE_INSENSITIVE ',GdkColorAsString(base[GTK_STATE_INSENSITIVE]));
     writeln('');
-    writeln(' BLACK ',HexStr(Cardinal(TGDKColorToTColor(black)),8));
-    writeln(' WHITE ',HexStr(Cardinal(TGDKColorToTColor(white)),8));
+    writeln(' BLACK ',GdkColorAsString(black));
+    writeln(' WHITE ',GdkColorAsString(white));
     {$ENDIF}
-
+    
+    {$IFDEF NewSysColors}
     SysColorMap[COLOR_SCROLLBAR] := TGDKColorToTColor(bg[GTK_STATE_ACTIVE]);
     SysColorMap[COLOR_BACKGROUND] := TGDKColorToTColor(bg[GTK_STATE_PRELIGHT]);
     SysColorMap[COLOR_ACTIVECAPTION] := TGDKColorToTColor(text[GTK_STATE_ACTIVE]);
@@ -1107,6 +1120,7 @@ begin
     SysColorMap[COLOR_HOTLIGHT] := TGDKColorToTColor(fg[GTK_STATE_NORMAL]);
     SysColorMap[COLOR_GRADIENTACTIVECAPTION] := TGDKColorToTColor(bg[GTK_STATE_NORMAL]);
     SysColorMap[COLOR_GRADIENTINACTIVECAPTION] := TGDKColorToTColor(bg[GTK_STATE_NORMAL]);
+    {$ENDIF}
   end;
 (*
     $C0C0C0,     {COLOR_SCROLLBAR}
@@ -1310,6 +1324,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.42  2002/05/31 06:45:23  lazarus
+  MG: deactivated new system colors, till we got a consistent solution
+
   Revision 1.41  2002/05/30 14:11:13  lazarus
   MG: added filters and history to TOpenDialog
 
