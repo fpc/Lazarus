@@ -239,6 +239,7 @@ type
     FOnCloseClicked : TNotifyEvent;
     FOnDeleteLastJumpPoint: TNotifyEvent;
     FOnEditorVisibleChanged: TNotifyEvent;
+    FOnEditorChanged : TNotifyEvent;
     FOnJumpToHistoryPoint: TOnJumpToHistoryPoint;
     FOnNewClicked : TNotifyEvent;
     FOnOpenClicked : TNotifyEvent;
@@ -376,6 +377,8 @@ type
        read FOnDeleteLastJumpPoint write FOnDeleteLastJumpPoint;
     property OnEditorVisibleChanged: TNotifyEvent
        read FOnEditorVisibleChanged write FOnEditorVisibleChanged;
+    property OnEditorChanged: TNotifyEvent
+       read FOnEditorChanged write FOnEditorChanged;
     property OnJumpToHistoryPoint: TOnJumpToHistoryPoint
        read FOnJumpToHistoryPoint write FOnJumpToHistoryPoint;
     property OnNewClicked : TNotifyEvent read FOnNewClicked write FOnNewClicked;
@@ -2209,6 +2212,8 @@ Procedure TSourceNotebook.EditorChanged(sender : TObject);
 Begin
   ClearUnUsedEditorComponents(false);
   UpdateStatusBar;
+  if Assigned(OnEditorChanged) then
+      OnEditorChanged(sender);
 End;
 
 Function TSourceNotebook.NewSE(PageNum : Integer) : TSourceEditor;
@@ -3032,6 +3037,11 @@ var
   WIndow : TWInControl;
   Caret : TPoint;
 begin
+  //leave this in.
+  //I am using this to determine why Lazarus crashes once in a while.
+  //Shane
+  Writeln('HINTTIMER in UNITEDITOR.PP');
+  
   FHintTimer.Enabled := False;
 
   cPosition := Mouse.CursorPos;
@@ -3045,10 +3055,6 @@ begin
   if (window <> Self) then Exit;
   
   cPosition := ScreenToClient(cPosition);
-  //Check to see if we are in the windows bounds
-  if ((cPosition.X <=EditorOpts.GutterWidth) or (cPosition.X >= Width) 
-  or (cPosition.Y <= 25) or (cPosition.Y >= Height)) then
-    Exit;
 
   //Get the active SourceEditor
   Se := GetActiveSE;
@@ -3081,8 +3087,9 @@ begin
   Rect.Top := Rect.Top + 25;
   Rect.Right := Rect.Left + Rect.Right+3;
   Rect.Bottom := Rect.Top + Rect.Bottom+3;
-
+  Writeln('Activating hint');
   FHintWindow.ActivateHint(Rect,AHint);
+  Writeln('DEActivating hint');
 
 end;
 

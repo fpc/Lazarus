@@ -219,6 +219,10 @@ type
       APageIndex: integer; DeleteForwardHistory: boolean);
     Procedure OnSrcNotebookDeleteLastJumPoint(Sender: TObject);
     Procedure OnSrcNotebookEditorVisibleChanged(Sender : TObject);
+
+    //this is fired when the editor is focused, changed, ?.  Anything that causes the status change
+    Procedure OnSrcNotebookEditorChanged(Sender : TObject);
+    
     Procedure OnSrcNotebookFileNew(Sender : TObject);
     Procedure OnSrcNotebookFileOpen(Sender : TObject);
     Procedure OnSrcNotebookFileOpenAtCursor(Sender : TObject);
@@ -632,6 +636,7 @@ begin
   SourceNotebook.OnCloseClicked := @OnSrcNotebookFileClose;
   SourceNotebook.OnDeleteLastJumpPoint := @OnSrcNotebookDeleteLastJumPoint;
   SourceNotebook.OnEditorVisibleChanged := @OnSrcNotebookEditorVisibleChanged;
+  SourceNotebook.OnEditorChanged := @OnSrcNotebookEditorChanged;
   SourceNotebook.OnJumpToHistoryPoint := @OnSrcNotebookJumpToHistoryPoint;
   SourceNotebook.OnNewClicked := @OnSrcNotebookFileNew;
   SourceNotebook.OnOpenClicked := @ OnSrcNotebookFileOpen;
@@ -887,7 +892,7 @@ begin
   OpenFileArrowSpeedBtn.Width := 12;
   ButtonLeft := n+12+1;
   
-  SaveSpeedBtn          := CreateButton('SaveSpeedBtn'         , 'btn_save'      , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuSaveClicked, 'Save');
+  SaveSpeedBtn          := CreateButton('SaveSpeedBtn'         , 'btn_save'      , 2, ButtonLeft, ButtonTop, [mfLeft], @mnuSaveClicked, 'Save');
   SaveAllSpeedBtn       := CreateButton('SaveAllSpeedBtn'      , 'btn_saveall'   , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuSaveAllClicked, 'Save all');
   NewFormSpeedBtn       := CreateButton('NewFormSpeedBtn'      , 'btn_newform'   , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuNewFormClicked, 'New Form');
   ToggleFormSpeedBtn    := CreateButton('ToggleFormSpeedBtn'   , 'btn_toggleform', 2, ButtonLeft, ButtonTop, [mfLeft, mfTop], @mnuToggleFormUnitCLicked, 'Toggle Form/Unit');
@@ -4996,6 +5001,7 @@ begin
     Project.UnitWithEditorIndex(SourceNotebook.Notebook.Pageindex);
   if ActiveUnitInfo = nil then Exit;
 
+  SaveSpeedBtn.Enabled := SourceNotebook.GetActiveSe.MOdified;
   ToggleFormSpeedBtn.Enabled := Assigned(ActiveUnitInfo.Form);
 end;
 
@@ -5242,6 +5248,14 @@ begin
 
 end;
 
+//this is fired when the editor is focused, changed, ?.  Anything that causes the status change
+Procedure TMainIDE.OnSrcNotebookEditorChanged(Sender : TObject);
+begin
+  if SourceNotebook.Notebook = nil then Exit;
+
+  SaveSpeedBtn.Enabled := SourceNotebook.GetActiveSe.Modified;
+end;
+
 //-----------------------------------------------------------------------------
 
 initialization
@@ -5256,6 +5270,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.178  2001/12/12 16:49:14  lazarus
+  Added code to disable save button when the active unit is not "modified".
+  Shane
+
   Revision 1.177  2001/12/12 15:12:31  lazarus
   MG: added file path to files in TOpenDialog
 
