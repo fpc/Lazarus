@@ -277,9 +277,16 @@ const
      'ofRegularFile',
      'ofVirtualFile'
     );
+    
+  SaveFlagNames: array[TSaveFlag] of string = (
+     'sfSaveAs',
+     'sfSaveToTestDir',
+     'sfProjectSaving',
+     'sfCheckAmbigiousFiles'
+    );
 
 function OpenFlagsToString(Flags: TOpenFlags): string;
-
+function SaveFlagsToString(Flags: TSaveFlags): string;
 
 implementation
 
@@ -294,6 +301,21 @@ begin
       if Result<>'' then
         Result:=Result+',';
       Result:=Result+OpenFlagNames[Flag];
+    end;
+  end;
+  Result:='['+Result+']';
+end;
+
+function SaveFlagsToString(Flags: TSaveFlags): string;
+var
+  Flag: TSaveFlag;
+begin
+  Result:='';
+  for Flag:=Low(TSaveFlag) to High(TSaveFlag) do begin
+    if Flag in Flags then begin
+      if Result<>'' then
+        Result:=Result+',';
+      Result:=Result+SaveFlagNames[Flag];
     end;
   end;
   Result:='['+Result+']';
