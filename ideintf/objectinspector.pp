@@ -2194,7 +2194,7 @@ begin
   FHeight:=400;
   FPropertyGridSplitterX:=110;
   FEventGridSplitterX:=110;
-  FDefaultItemHeight:=0;
+  FDefaultItemHeight:=20;
   FShowComponentTree:=true;
   FComponentTreeHeight:=100;
 
@@ -2230,15 +2230,15 @@ begin
        'ObjectInspectorOptions/Bounds/EventGridSplitterX',110);
     if FEventGridSplitterX<10 then FEventGridSplitterX:=10;
     FDefaultItemHeight:=XMLConfig.GetValue(
-       'ObjectInspectorOptions/Bounds/DefaultItemHeight',0);
-    if FDefaultItemHeight<0 then FDefaultItemHeight:=0;
+       'ObjectInspectorOptions/Bounds/DefaultItemHeight',20);
+    if FDefaultItemHeight<0 then FDefaultItemHeight:=20;
     FShowComponentTree:=XMLConfig.GetValue(
        'ObjectInspectorOptions/ComponentTree/Show/Value',true);
     FComponentTreeHeight:=XMLConfig.GetValue(
        'ObjectInspectorOptions/ComponentTree/Height/Value',100);
 
     FGridBackgroundColor:=XMLConfig.GetValue(
-         'ObjectInspectorOptions/GridBackgroundColor',clBackground);
+         'ObjectInspectorOptions/GridBackgroundColor',clBtnFace);
     FShowHints:=XMLConfig.GetValue(
          'ObjectInspectorOptions/ShowHints',false);
   except
@@ -2265,9 +2265,12 @@ begin
       XMLConfig.SetValue('ObjectInspectorOptions/Bounds/Width',FWidth);
       XMLConfig.SetValue('ObjectInspectorOptions/Bounds/Height',FHeight);
     end;
-    XMLConfig.SetValue('ObjectInspectorOptions/Bounds/PropertyGridSplitterX',
-                       110);
-    XMLConfig.SetValue('ObjectInspectorOptions/Bounds/EventGridSplitterX',110);
+    XMLConfig.SetDeleteValue(
+      'ObjectInspectorOptions/Bounds/PropertyGridSplitterX',
+      FPropertyGridSplitterX, 110);
+    XMLConfig.SetDeleteValue(
+      'ObjectInspectorOptions/Bounds/EventGridSplitterX',
+      FEventGridSplitterX, 110);
     XMLConfig.SetDeleteValue('ObjectInspectorOptions/Bounds/DefaultItemHeight',
                              FDefaultItemHeight,20);
     XMLConfig.SetDeleteValue('ObjectInspectorOptions/ComponentTree/Show/Value',
