@@ -1023,6 +1023,7 @@ type
     Procedure CMDrag(var Message : TCMDrag); message CM_DRAG;
     procedure CMShowingChanged(var Message: TLMessage); message CM_SHOWINGCHANGED;
     procedure CMVisibleChanged(var TheMessage: TLMessage); message CM_VISIBLECHANGED;
+    function  ContainsControl(Control: TControl): Boolean;
     procedure ControlsAligned; virtual;
     procedure DoSendBoundsToInterface; virtual;
     procedure RealizeBounds; virtual;
@@ -1852,6 +1853,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.160  2003/12/23 16:50:45  micha
+  fix defocus control when destroying it
+
   Revision 1.159  2003/12/14 19:18:03  micha
   hint fixes: parentfont, font itself, showing/hiding + more
 

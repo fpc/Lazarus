@@ -458,6 +458,20 @@ begin
 End;
 
 {------------------------------------------------------------------------------
+  Method: TCustomForm.DefocusControl
+  Params:   Control: the control which is to be defocused
+            Removing: is it to be defocused because it is being removed?
+  Returns:  nothing
+
+  Updates ActiveControl if it is to be defocused
+ ------------------------------------------------------------------------------}
+procedure TCustomForm.DefocusControl(Control: TWinControl; Removing: Boolean);
+begin
+  if Control.ContainsControl(FActiveControl) then
+    ActiveControl := nil;
+end;
+
+{------------------------------------------------------------------------------
   Method: TCustomForm.DoCreate
   Params:   none
   Returns:  nothing
@@ -1453,6 +1467,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.122  2003/12/23 16:50:45  micha
+  fix defocus control when destroying it
+
   Revision 1.121  2003/12/18 08:50:13  micha
   attachmenutowindow cleanup
 

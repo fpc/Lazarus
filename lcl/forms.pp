@@ -431,6 +431,7 @@ type
     procedure ShowOnTop;
     function WantChildKey(Child : TControl;
                           var Message : TLMessage): Boolean; virtual;
+    procedure DefocusControl(Control: TWinControl; Removing: Boolean);
     procedure SetFocus; override;
     function SetFocusedControl(Control: TWinControl): Boolean ; Virtual;
     procedure FocusControl(WinControl: TWinControl);

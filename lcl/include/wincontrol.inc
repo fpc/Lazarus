@@ -2045,7 +2045,7 @@ var
   Form: TCustomForm;
 begin
   Form := GetParentForm(Self);
-  if Form <> nil then ;//Form.DefocusControl(Self, Removing);
+  if Form <> nil then Form.DefocusControl(Self, Removing);
 end;
 
 {------------------------------------------------------------------------------}
@@ -2154,6 +2154,19 @@ begin
     EnableAlign;
   end;
 End;
+
+{------------------------------------------------------------------------------
+  Method: TWinControl.ContainsControl
+  Params:  Control: the control to be checked
+  Returns: Self is a (super)parent of Control
+
+  Checks if Control is a child of Self
+ ------------------------------------------------------------------------------}
+function TWinControl.ContainsControl(Control: TControl): Boolean;
+begin
+  while (Control <> nil) and (Control <> Self) do Control := Control.Parent;
+  Result := Control = Self;
+end;
 
 {------------------------------------------------------------------------------
   TWinControl GetBrush
@@ -2279,6 +2292,9 @@ var
   Control: TControl;
 begin
   //writeln('[TWinControl.Destroy] A  ',Name,':',ClassName);
+  // prevent parent to try to focus a to be destroyed control
+  if Parent <> nil then
+    RemoveFocus(true);
   if HandleAllocated then
     DestroyHandle;
   //writeln('[TWinControl.Destroy] B  ',Name,':',ClassName);
@@ -3150,6 +3166,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.182  2003/12/23 16:50:45  micha
+  fix defocus control when destroying it
+
   Revision 1.181  2003/12/14 19:18:04  micha
   hint fixes: parentfont, font itself, showing/hiding + more
 
