@@ -26,7 +26,7 @@ msgstr " Выбранный рисунок "
 
 #: objinspstrconsts:oisitemsselected
 msgid "%u items selected"
-msgstr ""
+msgstr "%u элементов выбрано"
 
 #: objinspstrconsts:oiscadd
 msgid "&Add"
@@ -62,7 +62,7 @@ msgstr "Добавить..."
 
 #: objinspstrconsts:oisall
 msgid "All"
-msgstr ""
+msgstr "Все"
 
 #: objinspstrconsts:oiscategory
 msgid "Category"
@@ -86,7 +86,7 @@ msgstr ""
 
 #: objinspstrconsts:oiserror
 msgid "Error"
-msgstr ""
+msgstr "Ошибка"
 
 #: objinspstrconsts:oisevents
 msgid "Events"
@@ -122,11 +122,11 @@ msgstr "Свойства"
 
 #: objinspstrconsts:oissettodefaultvalue
 msgid "Set to default value"
-msgstr ""
+msgstr "Установить в значение по умолчанию"
 
 #: objinspstrconsts:oissettodefault
 msgid "Set to default: %s"
-msgstr ""
+msgstr "Установить по умолчанию: %s"
 
 #: objinspstrconsts:cesstringgrideditor2
 msgid "StringGrid Editor"
@@ -146,5 +146,5 @@ msgstr "Неизвестный"
 
 #: objinspstrconsts:oisvalue
 msgid "Value:"
-msgstr ""
+msgstr "Значение:"
 

@@ -2718,10 +2718,6 @@ msgstr ""
 msgid "Unit output directory:"
 msgstr ""
 
-#: lazarusidestrconsts:dlglclwidgettype
-msgid "LCL Widget Type"
-msgstr ""
-
 #: lazarusidestrconsts:liscodefault
 msgid "default (%s)"
 msgstr ""

@@ -26,7 +26,7 @@ msgstr " Выбранный рисунок "
 
 #: objinspstrconsts:oisitemsselected
 msgid "%u items selected"
-msgstr ""
+msgstr "%u элементов выбрано"
 
 #: objinspstrconsts:oiscadd
 msgid "&Add"
@@ -38,23 +38,23 @@ msgstr "&Удалить"
 
 #: objinspstrconsts:cactionlisteditorallcategory
 msgid "(All)"
-msgstr ""
+msgstr "(Все)"
 
 #: objinspstrconsts:cactionlisteditorunknowncategory
 msgid "(Unknown)"
-msgstr ""
+msgstr "(Неизв.)"
 
 #: objinspstrconsts:oisaction
 msgid "Action"
-msgstr ""
+msgstr "Действие"
 
 #: objinspstrconsts:oisactionlisteditor
 msgid "Action List Editor"
-msgstr ""
+msgstr "Редактор списка действий"
 
 #: objinspstrconsts:oisadd
 msgid "Add"
-msgstr ""
+msgstr "Добавить"
 
 #: objinspstrconsts:sccsilbtnadd
 msgid "Add ..."
@@ -62,11 +62,11 @@ msgstr "Добавить..."
 
 #: objinspstrconsts:oisall
 msgid "All"
-msgstr ""
+msgstr "Все"
 
 #: objinspstrconsts:oiscategory
 msgid "Category"
-msgstr ""
+msgstr "Категория"
 
 #: objinspstrconsts:sccsilbtnclear
 msgid "Clear"
@@ -82,11 +82,11 @@ msgstr "Удалить"
 
 #: objinspstrconsts:oiseditactionlist
 msgid "Edit action list..."
-msgstr ""
+msgstr "Правка списка действий..."
 
 #: objinspstrconsts:oiserror
 msgid "Error"
-msgstr ""
+msgstr "Ошибка"
 
 #: objinspstrconsts:oisevents
 msgid "Events"
@@ -122,11 +122,11 @@ msgstr "Свойства"
 
 #: objinspstrconsts:oissettodefaultvalue
 msgid "Set to default value"
-msgstr ""
+msgstr "Установить в значение по умолчанию"
 
 #: objinspstrconsts:oissettodefault
 msgid "Set to default: %s"
-msgstr ""
+msgstr "Установить по умолчанию: %s"
 
 #: objinspstrconsts:cesstringgrideditor2
 msgid "StringGrid Editor"
@@ -146,5 +146,5 @@ msgstr "Неизвестный"
 
 #: objinspstrconsts:oisvalue
 msgid "Value:"
-msgstr ""
+msgstr "Значение:"
 

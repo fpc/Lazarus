@@ -156,7 +156,7 @@ msgstr "Пользовательский"
 
 #: lclstrconsts:rsfddirectorymustexist
 msgid "Directory must exist"
-msgstr ""
+msgstr "Каталог должен существовать"
 
 #: lclstrconsts:sduplicatemenus
 msgid "Duplicate menus"
@@ -356,7 +356,7 @@ msgstr "Подменю не в меню"
 
 #: lclstrconsts:rsfddirectorynotexist
 msgid "The directory \"%s\" does not exist."
-msgstr ""
+msgstr "Каталог \"%s\" не существует."
 
 #: lclstrconsts:rsfdfilealreadyexists
 msgid "The file \"%s\" already exists.\015Overwrite ?"

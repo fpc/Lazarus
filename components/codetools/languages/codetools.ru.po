@@ -112,7 +112,7 @@ msgstr "Класс %s не найден"
 
 #: codetoolsstrconsts:ctsclassnotfound
 msgid "class %s%s%s not found"
-msgstr ""
+msgstr "класс %s%s%s не найден"
 
 #: codetoolsstrconsts:ctsclassidentifierexpected
 msgid "class identifier expected"
@@ -136,7 +136,7 @@ msgstr "Не найден конец комментария"
 
 #: codetoolsstrconsts:ctscompiledsrcpath
 msgid "Compiled SrcPath"
-msgstr ""
+msgstr "Путь исх.компилятора"
 
 #: codetoolsstrconsts:ctscompiler
 msgid "Compiler"
@@ -288,7 +288,7 @@ msgstr "файл \"%s\" не существует"
 
 #: codetoolsstrconsts:ctsfileisreadonly
 msgid "file is read only"
-msgstr ""
+msgstr "файл только для чтения"
 
 #: codetoolsstrconsts:ctsforward
 msgid "Forward"
@@ -412,11 +412,11 @@ msgstr "раздел описаний (interface) не найден"
 
 #: codetoolsstrconsts:ctsinvalidclassname2
 msgid "invalid class name %s%s%s"
-msgstr ""
+msgstr "неправильное имя класса %s%s%s"
 
 #: codetoolsstrconsts:ctsinvalidclassname
 msgid "invalid class name=%s%s%s"
-msgstr ""
+msgstr "неправильное имя класса=%s%s%s"
 
 #: codetoolsstrconsts:ctsinvalidflagvaluefordirective
 msgid "invalid flag value \"%s\" for directive %s"
@@ -436,11 +436,11 @@ msgstr "неверный тип"
 
 #: codetoolsstrconsts:ctsinvalidvariablename
 msgid "invalid variable name %s%s%s"
-msgstr ""
+msgstr "неправильное имя переменной %s%s%s"
 
 #: codetoolsstrconsts:ctsinvalidvariabletype
 msgid "invalid variable type %s%s%s"
-msgstr ""
+msgstr "неправильный тип переменной %s%s%s"
 
 #: codetoolsstrconsts:ctsjitformdirectory
 msgid "JITForm Directory"
@@ -588,7 +588,7 @@ msgstr "исходник - не модуль"
 
 #: codetoolsstrconsts:ctssourcenotfoundunit
 msgid "source not found: unit %s"
-msgstr ""
+msgstr "исходник не найден?: модуль %s"
 
 #: codetoolsstrconsts:ctssrcpathforcompiledunits
 msgid "src path for compiled units"
@@ -608,7 +608,7 @@ msgstr "Ошибка синтаксиса в выражении \"%s\""
 
 #: codetoolsstrconsts:ctstermnotsimple
 msgid "Term has no simple type"
-msgstr ""
+msgstr "Определение не имеет простого типа"
 
 #: codetoolsstrconsts:ctstoolsdirectory
 msgid "Tools Directory"

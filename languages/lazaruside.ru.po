@@ -212,7 +212,7 @@ msgstr "(неизвестный макрос: %s)"
 
 #: lazarusidestrconsts:lislazarusversionstring
 msgid "0.9.1 beta"
-msgstr ""
+msgstr "0.9.1 бета"
 
 #: lazarusidestrconsts:lisa2pchooseanexistingfile
 msgid "<choose an existing file>"
@@ -1360,7 +1360,7 @@ msgstr "Ошибка отладчика%sОп, отладчик находится в нерабочем состоянии%sСохранит
 
 #: lazarusidestrconsts:lisdebuggerinvalid
 msgid "Debugger invalid"
-msgstr ""
+msgstr "Неправильный отладчик"
 
 #: lazarusidestrconsts:lismendebuggeroptions
 msgid "Debugger Options"
@@ -1776,7 +1776,7 @@ msgstr "Ошибка создания файла"
 
 #: lazarusidestrconsts:liserrorcreatinglrs
 msgid "Error creating lrs"
-msgstr ""
+msgstr "Ошибка создания lrs"
 
 #: lazarusidestrconsts:liserrordeletingfile
 msgid "Error deleting file"
@@ -1832,7 +1832,7 @@ msgstr "Ошибка записи пакета"
 
 #: lazarusidestrconsts:liserror
 msgid "Error: "
-msgstr ""
+msgstr "Ошибка:"
 
 #: lazarusidestrconsts:liscompilererrorinvalidcompiler
 msgid "Error: invalid compiler: %s"
@@ -1840,7 +1840,7 @@ msgstr "Ошибка: неправильный компилятор:%s"
 
 #: lazarusidestrconsts:liserrors
 msgid "Errors"
-msgstr ""
+msgstr "Ошибки"
 
 #: lazarusidestrconsts:srvk_escape
 msgid "Escape"
@@ -2116,7 +2116,7 @@ msgstr "Найти текст под курсором"
 
 #: lazarusidestrconsts:rslanguagefinnish
 msgid "Finnish"
-msgstr ""
+msgstr "Финский"
 
 #: lazarusidestrconsts:srkmecjumptoeditor
 msgid "Focus to source editor"
@@ -2408,7 +2408,7 @@ msgstr "Home"
 
 #: lazarusidestrconsts:dlggridxhint
 msgid "Horizontal grid step size"
-msgstr ""
+msgstr "Шаг сетки по горизонтали"
 
 #: lazarusidestrconsts:dlghostapplication
 msgid "Host application"
@@ -3076,7 +3076,7 @@ msgstr "Опции LCL, зависящие от интерфейса:"
 
 #: lazarusidestrconsts:lislclunitpathmissing
 msgid "LCL unit path missing"
-msgstr ""
+msgstr "Отсутствует путь модуля LCL"
 
 #: lazarusidestrconsts:lislclwidgettype
 msgid "LCL Widget Type"
@@ -3096,7 +3096,7 @@ msgstr "Слева:"
 
 #: lazarusidestrconsts:dlglevelnoneopt
 msgid "Level 0 (no extra Optimizations)"
-msgstr ""
+msgstr "Уровень 0 (без особой оптимизации)"
 
 #: lazarusidestrconsts:dlglevel1opt
 msgid "Level 1 (Quick Optimizations)"
@@ -3116,7 +3116,7 @@ msgstr "LFM - текст формы Lazarus"
 
 #: lazarusidestrconsts:lislfmfile
 msgid "LFM file"
-msgstr ""
+msgstr "Файл LFM"
 
 #: lazarusidestrconsts:lismenuinsertlgplnotice
 msgid "LGPL notice"
@@ -3612,7 +3612,7 @@ msgstr "Ничего не выбрано"
 
 #: lazarusidestrconsts:dlgconormal
 msgid "Normal Code"
-msgstr ""
+msgstr "Нормальный код"
 
 #: lazarusidestrconsts:srkmecnormalselect
 msgid "Normal selection mode"
@@ -4052,15 +4052,15 @@ msgstr "Точка"
 
 #: lazarusidestrconsts:rslanguagepolish
 msgid "Polish"
-msgstr ""
+msgstr "Польский"
 
 #: lazarusidestrconsts:rslanguagepolishwin
 msgid "Polish(CP1250)"
-msgstr ""
+msgstr "Польский(CP1250)"
 
 #: lazarusidestrconsts:rslanguagepolishiso
 msgid "Polish(ISO 8859-2)"
-msgstr ""
+msgstr "Польский(ISO 8859-2)"
 
 #: lazarusidestrconsts:dlgwrdpreview
 msgid "Preview"
@@ -4132,7 +4132,7 @@ msgstr "Пути включений проекта"
 
 #: lazarusidestrconsts:lisedtdefprojectincpath
 msgid "Project IncPath"
-msgstr ""
+msgstr "Путь вкл.проекта"
 
 #: lazarusidestrconsts:lisprojectinfofiledetected
 msgid "Project info file detected"
@@ -4300,7 +4300,7 @@ msgstr "Релиз"
 
 #: lazarusidestrconsts:lisdiskdiffrevertall
 msgid "Reload from disk"
-msgstr ""
+msgstr "Перегрузить с диска"
 
 #: lazarusidestrconsts:lisexttoolremove
 msgid "Remove"
@@ -4308,7 +4308,7 @@ msgstr "Удалить"
 
 #: lazarusidestrconsts:lisremoveallinvalidproperties
 msgid "Remove all invalid properties"
-msgstr ""
+msgstr "Удалить все некорректные свойства"
 
 #: lazarusidestrconsts:lispckeditremovedependency
 msgid "Remove dependency"
@@ -4708,7 +4708,7 @@ msgstr "сек"
 
 #: lazarusidestrconsts:lisseemessages
 msgid "See messages."
-msgstr ""
+msgstr "См. сообщения."
 
 #: lazarusidestrconsts:lismenuselect
 msgid "Select"
@@ -5176,7 +5176,7 @@ msgstr "Останов после числа ошибок"
 
 #: lazarusidestrconsts:lisstopdebugging
 msgid "Stop Debugging?"
-msgstr ""
+msgstr "Остановить отладку?"
 
 #: lazarusidestrconsts:srkmecstopprogram
 msgid "stop program"
@@ -5184,7 +5184,7 @@ msgstr "остановить программу"
 
 #: lazarusidestrconsts:lisstopthedebugging
 msgid "Stop the debugging?"
-msgstr ""
+msgstr "Остановить отладку?"
 
 #: lazarusidestrconsts:dlgcdtstoredpostfix
 msgid "Stored postfix"
@@ -5424,11 +5424,11 @@ msgstr "Файл компилятора для пакета %s - недопустимый исполняемый:%s%s"
 
 #: lazarusidestrconsts:listhecurrentunitpathforthefileisthepathtothelclunits
 msgid "The current unit path for the file%s%s%s%s is%s%s%s%s.%s%sThe path to the LCL units %s%s%s is missing.%s%sHint for newbies:%sCreate a lazarus application and put the file into the project directory."
-msgstr ""
+msgstr "Текущий путь модуля для файла %s%s%s%s - %s%s%s%s.%s%sПуть к модулям LCL %s%s%s отсутствует.%s%sПодсказка для новичков:%sСоздайте приложение lazarus и поместите файл в каталог проекта."
 
 #: lazarusidestrconsts:listhedebuggerdoesnotexistsorisnotexecutableseeenviro
 msgid "The debugger %s%s%s%sdoes not exists or is not executable.%s%sSee Environment -> Debugger Options"
-msgstr ""
+msgstr "Отладчик %s%s%s%sне существует или не является исполняемым.%s%sСм. Окружение -> Параметры отладчика"
 
 #: lazarusidestrconsts:lisenvoptdlginvaliddebuggerfilenamemsg
 msgid "The debugger file \"%s\" is not an executable."
@@ -5544,7 +5544,7 @@ msgstr "LCL - Библиотека компонентов Lazarus - содержит все основные компоненты 
 
 #: lazarusidestrconsts:listhelfmlazarusformfilecontainsinvalidpropertiesthis
 msgid "The LFM (Lazarus form) file contains invalid properties. This means for example it contains some properties/classes, which do not exist in the current LCL. The normal fix is to remove these properties from the lfm and fix the pascal code manually."
-msgstr ""
+msgstr "LFM-файл (файл формы Lazarus) содержит некорректные свойства. Это значит, например, что он содержит некоторые свойства/классы, которых нет в текущей версии LCL. Обычно следует убрать эти свойства из lfm и (если надо) исправить код паскаля вручную."
 
 #: lazarusidestrconsts:lisprojaddthemaximumversionisinvalid
 msgid "The Maximum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
@@ -5892,7 +5892,7 @@ msgstr "Не могу перевести файл %s%s%s%sОшибка: %s"
 
 #: lazarusidestrconsts:lisunabletoconvertlfmtolrsandwritelrsfile
 msgid "Unable to convert lfm to lrs and write lrs file."
-msgstr ""
+msgstr "Невозможно преобразовать lfm в lrs и записать lrs-файл."
 
 #: lazarusidestrconsts:lisunabletoconverttextformdataoffileintobinarystream
 msgid "Unable to convert text form data of file %s%s%s%s%sinto binary stream. (%s)"
@@ -6036,7 +6036,7 @@ msgstr "Не могу переименовать файл %s%s%s в %s%s%s!"
 
 #: lazarusidestrconsts:lisunabletorenameforminsource
 msgid "Unable to rename form in source."
-msgstr ""
+msgstr "Невозможно переименовать форму в исходнике"
 
 #: lazarusidestrconsts:lisunabletorenamemethodplzfixtheerrorshowninthemessag
 msgid "Unable to rename method. Plz fix the error shown in the message window."
@@ -6044,7 +6044,7 @@ msgstr "Не могу переименовать метод. Исправьте ошибку, см. окно сообщений."
 
 #: lazarusidestrconsts:lisunabletorenamevariableinsource
 msgid "Unable to rename variable in source."
-msgstr ""
+msgstr "Невозможно переименовать переменную в исходнике."
 
 #: lazarusidestrconsts:lisexttoolunabletorunthetool
 msgid "Unable to run the tool %s%s%s:%s%s"
@@ -6068,7 +6068,7 @@ msgstr "Не могу перевести двоичный компонент потока %s:T%s в текст."
 
 #: lazarusidestrconsts:lisunabletoupdatecreateformstatementinprojectsource
 msgid "Unable to update CreateForm statement in project source"
-msgstr ""
+msgstr "Невозможно обновить выражение CreateForm в исходнике проекта"
 
 #: lazarusidestrconsts:lisunabletowrite
 msgid "Unable to write %s%s%s%s%s."
@@ -6360,7 +6360,7 @@ msgstr "Версия"
 
 #: lazarusidestrconsts:dlggridyhint
 msgid "Vertical grid step size"
-msgstr ""
+msgstr "Вертикальный шаг сетки"
 
 #: lazarusidestrconsts:srkmectogglebreakpoints
 msgid "View breakpoints"
