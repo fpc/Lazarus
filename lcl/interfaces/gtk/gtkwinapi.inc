@@ -163,7 +163,8 @@ begin
   if Result then begin
     GdkWindow:=GetControlWindow(PgtkWidget(hwnd));
     gdk_window_raise(GdkWindow);
-    // how to the keyboard focus to the raised window?
+    // how to set the keyboard focus to the raised window?
+    gtk_window_activate_focus(PGtkWindow(hWnd));
   end;
 end;
 
@@ -7484,6 +7485,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.175  2002/10/29 19:33:42  lazarus
+  MG: removed interfaces
+
   Revision 1.174  2002/10/29 12:30:45  lazarus
   AJ: fixed initial result in clipping/region routines
 
