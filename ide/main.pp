@@ -6107,6 +6107,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.230  2002/02/22 17:39:40  lazarus
+  MG: improved LinkScanner error messages
+
   Revision 1.229  2002/02/22 14:25:00  lazarus
   MG: fixed completion box for templates and identifiers
 

@@ -489,14 +489,11 @@ function TCodeToolManager.HandleException(AnException: Exception): boolean;
 var ErrorSrcTool: TCustomCodeTool;
 begin
   fErrorMsg:=AnException.Message;
-  if (AnException is ELinkScannerError)
-  and (FCurCodeTool<>nil) and (FCurCodeTool.Scanner<>nil)
-  and (FCurCodeTool.Scanner.Code<>nil)
-  and (FCurCodeTool.Scanner.LinkCount>0) then begin
-    fErrorCode:=TCodeBuffer(FCurCodeTool.Scanner.Code);
+  if (AnException is ELinkScannerError) then begin
+    fErrorCode:=TCodeBuffer(ELinkScannerError(AnException).Sender.Code);
     if fErrorCode<>nil then
       fErrorCode.AbsoluteToLineCol(
-        FCurCodeTool.Scanner.SrcPos,fErrorLine,fErrorColumn);
+        ELinkScannerError(AnException).Sender.SrcPos,fErrorLine,fErrorColumn);
   end else if (AnException is ECodeToolError) then begin
     ErrorSrcTool:=ECodeToolError(AnException).Sender;
     fErrorCode:=ErrorSrcTool.ErrorPosition.Code;

@@ -169,6 +169,8 @@ type
     procedure BuildDirectiveFuncList;
     procedure PushIncludeLink(ACleanedPos, ASrcPos: integer; ACode: Pointer);
     function PopIncludeLink: TSourceLink;
+  protected
+    procedure RaiseException(const AMessage: string);
   public
     // current values, positions, source, flags
     CleanedLen: integer;
@@ -240,7 +242,10 @@ type
     destructor Destroy; override;
   end;
 
-  ELinkScannerError = class(Exception);
+  ELinkScannerError = class(Exception)
+    Sender: TLinkScanner;
+    constructor Create(ASender: TLinkScanner; const AMessage: string);
+  end;
 
 //----------------------------------------------------------------------------
 // compiler switches
@@ -376,7 +381,7 @@ end;
 function TLinkScanner.LinkSize(Index: integer): integer;
 begin
   if (Index<0) or (Index>=LinkCount) then
-    raise ELinkScannerError.Create('TLinkScanner.LinkSize  index '
+    RaiseException('TLinkScanner.LinkSize  index '
        +IntToStr(Index)+' out of bounds: 0-'+IntToStr(LinkCount));
   if Index<LinkCount-1 then
     Result:=Links[Index+1].CleanedPos-Links[Index].CleanedPos
@@ -422,8 +427,7 @@ begin
   if Assigned(FOnGetSource) then begin
     SrcLog:=FOnGetSource(Self,ACode);
     if SrcLog=nil then
-      raise ELinkScannerError.Create('unable to get source with Code='
-         +HexStr(Cardinal(Code),8));
+      RaiseException('unable to get source with Code='+HexStr(Cardinal(Code),8));
     AddSourceChangeStep(ACode,SrcLog.ChangeStep);
     Src:=SrcLog.Source;
     UpperSrc:=UpperCaseStr(SrcLog.Source);
@@ -433,8 +437,7 @@ begin
     SrcLen:=length(Src);
     LastCleanSrcPos:=0;
   end else begin
-    raise ELinkScannerError.Create('unable to get source with Code='
-       +HexStr(Cardinal(Code),8));
+    RaiseException('unable to get source with Code='+HexStr(Cardinal(Code),8));
   end;
 end;
 
@@ -748,7 +751,7 @@ var l,r,m: integer;
 begin
 //writeln('[TLinkScanner.AddSourceChangeStep] ',HexStr(Cardinal(ACode),8));
   if ACode=nil then
-    raise ELinkScannerError.Create('TLinkScanner.AddSourceChangeStep ACode=nil');
+    RaiseException('TLinkScanner.AddSourceChangeStep ACode=nil');
   l:=0;
   r:=FSourceChangeSteps.Count-1;
   m:=0;
@@ -1011,7 +1014,7 @@ begin
   else if (ValueStr='PRELOAD') and (FDirectiveName='ASSERTIONS') then
     Values.Variables[FDirectiveName]:=ValueStr
   else
-    raise ELinkScannerError.Create(
+    RaiseException(
       'invalid flag value "'+ValueStr+'" for directive '+FDirectiveName);
   Result:=ReadNextSwitchDirective;
 end;
@@ -1047,7 +1050,7 @@ begin
         break;
       end;
     if not ModeValid then
-      raise ELinkScannerError.Create('invalid mode "'+ValueStr+'"');
+      RaiseException('invalid mode "'+ValueStr+'"');
   end;
   Result:=true;
 end;
@@ -1134,7 +1137,7 @@ function TLinkScanner.EndifDirective: boolean;
 begin
   dec(IfLevel);
   if IfLevel<0 then
-    raise ELinkScannerError.Create('$ENDIF without $IF')
+    RaiseException('$ENDIF without $IF')
   else if IfLevel<FSkipIfLevel then
     FSkippingTillEndif:=false;
   Result:=true;
@@ -1144,7 +1147,7 @@ function TLinkScanner.ElseDirective: boolean;
 // {$else comment}
 begin
   if IfLevel=0 then
-    raise ELinkScannerError.Create('$ELSE without $IF');
+    RaiseException('$ELSE without $IF');
   if not FSkippingTillEndif then
     SkipTillEndifElse
   else if IfLevel=FSkipIfLevel then
@@ -1351,7 +1354,7 @@ begin
     AddLink(CleanedLen+1,SrcPos,Code);
   end else begin
     if (not IgnoreMissingIncludeFiles) then begin
-      raise ELinkScannerError.Create('include file not found "'+AFilename+'"')
+      RaiseException('include file not found "'+AFilename+'"')
     end;
   end;
 end;
@@ -1365,7 +1368,7 @@ begin
   Expr:=UpperCaseStr(copy(Src,SrcPos,CommentInnerEndPos-SrcPos));
   ResultStr:=Values.Eval(Expr);
   if Values.ErrorPosition>=0 then
-    raise ELinkScannerError.Create('in directive expression ')
+    RaiseException('in directive expression ')
   else if ResultStr='0' then
     SkipTillEndifElse
   else
@@ -1405,7 +1408,7 @@ var NewLink: PSourceLink;
 begin
   for i:=0 to FIncludeStack.Count-1 do
     if PSourceLink(FIncludeStack[i])^.Code=ACode then
-      raise ELinkScannerError.Create('Include circle detected');
+      RaiseException('Include circle detected');
   New(NewLink);
   with NewLink^ do begin
     CleanedPos:=ACleanedPos;
@@ -1674,6 +1677,20 @@ end;
 procedure TLinkScanner.DeactivateGlobalWriteLock;
 begin
   if Assigned(OnSetGlobalWriteLock) then OnSetGlobalWriteLock(false);
+end;
+
+procedure TLinkScanner.RaiseException(const AMessage: string);
+begin
+  raise ELinkScannerError.Create(Self,AMessage);
+end;
+
+{ ELinkScannerError }
+
+constructor ELinkScannerError.Create(ASender: TLinkScanner;
+  const AMessage: string);
+begin
+  inherited Create(AMessage);
+  Sender:=ASender;
 end;
 
 

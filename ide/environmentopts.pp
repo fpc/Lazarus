@@ -287,8 +287,8 @@ type
 
     // object inspector
     ObjectInspectorGroupBox: TGroupBox;
-    BackgroundColorLabel: TLabel;
-    BackgroundColorButton: TColorButton;
+    OIBackgroundColorLabel: TLabel;
+    OIBackgroundColorButton: TColorButton;
     
     // hints
     ShowHintsForComponentPaletteCheckBox: TCheckBox;
@@ -1221,9 +1221,9 @@ begin
     Visible:=true;
   end;
 
-  BackgroundColorButton:=TColorButton.Create(Self);
-  with BackgroundColorButton do begin
-    Name:='BackgroundColorButton';
+  OIBackgroundColorButton:=TColorButton.Create(Self);
+  with OIBackgroundColorButton do begin
+    Name:='OIBackgroundColorButton';
     Parent:=ObjectInspectorGroupBox;
     Left:=5;
     Top:=2;
@@ -1232,12 +1232,12 @@ begin
     Visible:=true;
   end;
 
-  BackgroundColorLabel:=TLabel.Create(Self);
-  with BackgroundColorLabel do begin
-    Name:='BackgroundColorLabel';
+  OIBackgroundColorLabel:=TLabel.Create(Self);
+  with OIBackgroundColorLabel do begin
+    Name:='OIBackgroundColorLabel';
     Parent:=ObjectInspectorGroupBox;
-    Left:=BackgroundColorButton.Left+BackgroundColorButton.Width+5;
-    Top:=BackgroundColorButton.Top;
+    Left:=OIBackgroundColorButton.Left+OIBackgroundColorButton.Width+5;
+    Top:=OIBackgroundColorButton.Top;
     Width:=ObjectInspectorGroupBox.ClientWidth-Left-5;
     Height:=23;
     Caption:='Background color';
@@ -1923,7 +1923,7 @@ begin
     SaveWindowPositionsCheckBox.Checked:=SaveWindowPositions;
 
     // object inspector
-    BackgroundColorButton.ButtonColor:=
+    OIBackgroundColorButton.ButtonColor:=
        ObjectInspectorOptions.GridBackgroundColor;
 
     // hints
@@ -2023,8 +2023,7 @@ begin
 
     // object inspector
     ObjectInspectorOptions.GridBackgroundColor:=
-       BackgroundColorButton.ButtonColor;
-
+       OIBackgroundColorButton.ButtonColor;
     // hints
     ShowHintsForComponentPalette:=ShowHintsForComponentPaletteCheckBox.Checked;
     ShowHintsForMainSpeedButtons:=ShowHintsForMainSpeedButtonsCheckBox.Checked;

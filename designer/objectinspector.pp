@@ -191,6 +191,7 @@ type
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
     procedure WMMouseMove(var Msg: TWMMouseMove); message WM_MOUSEMOVE;
     procedure SetBorderStyle(Value: TBorderStyle);
+    procedure SetBackgroundColor(const AValue: TColor);
     procedure UpdateScrollBar;
   protected
     procedure CreateParams(var Params: TCreateParams); override;
@@ -216,7 +217,7 @@ type
     property SplitterX:integer read FSplitterX write SetSplitterX;
     property Indent:integer read FIndent write FIndent;
     property BackgroundColor:TColor
-       read FBackgroundColor write FBackgroundColor default clBtnFace;
+       read FBackgroundColor write SetBackgroundColor default clBtnFace;
     property NameFont:TFont read FNameFont write FNameFont;
     property ValueFont:TFont read FValueFont write FValueFont;
     property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle
@@ -431,7 +432,7 @@ procedure TOIPropertyGrid.SetBorderStyle(Value: TBorderStyle);
 begin
   if fBorderStyle <> Value then begin
     fBorderStyle := Value;
-    RecreateWnd;
+    Invalidate;
   end;
 end;
 
@@ -1414,6 +1415,13 @@ begin
      end;
 end;
 
+procedure TOIPropertyGrid.SetBackgroundColor(const AValue: TColor);
+begin
+  if FBackgroundColor=AValue then exit;
+  FBackgroundColor:=AValue;
+  Invalidate;
+end;
+
 //------------------------------------------------------------------------------
 
 { TOIPropertyGridRow }
@@ -1581,11 +1589,12 @@ end;
 procedure TOIOptions.AssignTo(AnObjInspector: TObjectInspector);
 begin
   if FSaveBounds then begin
-//writeln('[TOIOptions.AssignTo] ',AnObjInspector.Name,' ',FLeft,',',FTop,',',FWidth,',',FHeight);
+writeln('[TOIOptions.AssignTo] ',AnObjInspector.Name,' ',FLeft,',',FTop,',',FWidth,',',FHeight);
     AnObjInspector.SetBounds(FLeft,FTop,FWidth,FHeight);
     AnObjInspector.PropertyGrid.SplitterX:=FPropertyGridSplitterX;
     AnObjInspector.EventGrid.SplitterX:=FEventGridSplitterX;
   end;
+writeln(' RRRR ',FGridBackgroundColor);
   AnObjInspector.PropertyGrid.BackgroundColor:=FGridBackgroundColor;
   AnObjInspector.PropertyGrid.ShowHint:=FShowHints;
   AnObjInspector.EventGrid.BackgroundColor:=FGridBackgroundColor;
