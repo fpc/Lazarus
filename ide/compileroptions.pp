@@ -1383,16 +1383,23 @@ end;
 ------------------------------------------------------------------------------}
 function TBaseCompilerOptions.CreateTargetFilename(
   const MainSourceFileName: string): string;
+  
+  procedure AppendDefaultExt;
+  begin
+    if CompareText(fTargetOS, 'win32') = 0 then
+      Result:=Result+'.exe';
+  end;
+  
 begin
   if (TargetFilename <> '') then begin
     Result:=ExtractFilePath(MainSourceFileName)+TargetFilename;
+    AppendDefaultExt;
   end else begin
     // fpc creates lowercase executables as default
     Result:=lowercase(ExtractFileNameOnly(MainSourceFileName));
     if Result<>'' then begin
       Result:=ExtractFilePath(MainSourceFileName)+Result;
-      if CompareText(fTargetOS, 'win32') = 0 
-      then Result:=Result+'.exe';
+      AppendDefaultExt;
     end else
       Result:='';
   end;
