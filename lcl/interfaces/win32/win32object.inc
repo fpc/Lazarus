@@ -1493,8 +1493,12 @@ Begin
 
   If (Sender Is TWinControl) And ((Sender As TWinControl).Parent <> Nil) Then
   Begin
-    Assert(False, Format('Trace: %S parent --> %S', [Sender.ClassName, TWinControl(Sender).Parent.ClassName]));
-    Parent := (Sender As TWinControl).Parent.Handle;
+    Assert(False, Format('Trace:TWin32Object.CreateComponent - %S parent --> %S', [Sender.ClassName, TWinControl(Sender).Parent.ClassName]));
+    If Not ((Sender As TWinControl).Parent Is TPage) Then
+      Parent := (Sender As TWinControl).Parent.Handle
+    Else
+      Parent :=((Sender As TWinControl).Parent As TPage).Parent.Handle;
+    Assert(False, Format('Trace:TWin32Object.CreateComponent - parent handle --> 0x%X', [Parent]));
     Assert(False, 'Trace:Setting parent');
   End
   Else
@@ -1923,7 +1927,7 @@ Begin
       SetName(Window, StrTemp);
     End;
   End; {Case}
- 
+
   If (Sender Is TWinControl) Or (CompStyle = csImage) Then 
   Begin
     TWinControl(Sender).Handle := Window;
@@ -2886,10 +2890,12 @@ End;
 
 {
   $Log$
+  Revision 1.7  2002/01/18 00:02:45  lazarus
+  Keith: TPage can now be a parent
+
   Revision 1.6  2002/01/17 03:17:44  lazarus
   Keith: Fixed TPage creation
 
-  
   Revision 1.4  2002/01/05 13:16:09  lazarus
   MG: win32 interface update from Keith Bowes
 
