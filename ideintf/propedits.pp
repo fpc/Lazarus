@@ -2900,7 +2900,7 @@ begin
   if CompareText(NewValue, 'False') = 0 then
     I := 0
   else if CompareText(NewValue, 'True') = 0 then
-    I := -1
+    I := 1
   else
     I := StrToInt(NewValue);
   SetOrdValue(I);
