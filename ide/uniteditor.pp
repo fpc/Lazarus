@@ -356,7 +356,6 @@ type
     FOnUserCommandProcessed: TOnProcessUserCommand;
     FOnViewJumpHistory: TNotifyEvent;
 
-
     // colors for the completion form (popup form, e.g. word completion)
     FActiveEditDefaultFGColor: TColor;
     FActiveEditDefaultBGColor: TColor;
