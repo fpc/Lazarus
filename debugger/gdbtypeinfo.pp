@@ -66,6 +66,7 @@ type
   protected
   public
     constructor Create;
+    destructor Destroy; override;
     property Name: String read FName;
     property GDBType: TGDBType read FGDBType;
     property Location: TGDBFieldLocation read FLocation;
@@ -112,6 +113,7 @@ type
   public
     constructor Create;
     constructor CreateFromValues(const AValues: String);
+    destructor Destroy; override;
     property Ancestor: String read FAncestor;
     property Arguments: TGDBTypes read FArguments;
     property Fields: TGDBFields read FFields;
@@ -309,6 +311,12 @@ begin
   FFlags := [];
   FGDBType := nil;
   FLocation := flPublic;
+end;
+
+destructor TGDBField.Destroy;
+begin
+  if FGDBType<>nil then FreeAndNil(FGDBType);
+  inherited Destroy;
 end;
 
 { TGDBFields }
@@ -550,8 +558,17 @@ begin
   end;
 end;
 
+destructor TGDBType.Destroy;
+begin
+  if FResult<>nil then FreeAndNil(FResult);
+  if FArguments<>nil then FreeAndNil(FArguments);
+  if FFields<>nil then FreeAndNil(FFields);
+  if FMembers<>nil then FreeAndNil(FMembers);
 
-{ TGDBPType }
+  inherited;
+end;
+
+{ TGDBPTypes }
 
 constructor TGDBTypes.Create;
 begin
@@ -598,6 +615,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.3  2003/12/05 08:39:53  mattias
+  fixed memleak in debugger  from Vincent
+
   Revision 1.2  2003/05/23 14:12:51  mattias
   implemented restoring breakpoints
 

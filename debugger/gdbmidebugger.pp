@@ -627,20 +627,23 @@ begin
 
   // Check for strings
   ResultInfo := GetGDBTypeInfo(S);
-  if (ResultInfo = nil)
-  or (ResultInfo.Kind <> skPointer)
-  then Exit;
+  if (ResultInfo = nil) then Exit;
   
-  Val(AResult, addr, e);
-  if e <> 0 then Exit;
+  try
+    if (ResultInfo.Kind <> skPointer) then Exit;
+    Val(AResult, addr, e);
+    if e <> 0 then Exit;
 
-  if Addr = 0
-  then AResult := 'nil';
+    if Addr = 0
+    then AResult := 'nil';
 
-  S := Lowercase(ResultInfo.TypeName);
-  if (S = 'character')
-  or (S = 'ansistring')
-  then AResult := '''' + GetText(Pointer(addr)) + '''';
+    S := Lowercase(ResultInfo.TypeName);
+    if (S = 'character')
+    or (S = 'ansistring')
+    then AResult := '''' + GetText(Pointer(addr)) + '''';
+  finally
+    ResultInfo.Free;
+  end;
 end;
 
 function TGDBMIDebugger.GDBJumpTo(const ASource: String;
@@ -2066,6 +2069,9 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.39  2003/12/05 08:39:53  mattias
+  fixed memleak in debugger  from Vincent
+
   Revision 1.38  2003/08/15 14:28:48  mattias
   clean up win32 ifdefs
 

@@ -23,7 +23,7 @@ end;
 
 procedure TGraphicsObject.Changing;
 begin
-  Assert(False, Format('Trace:[TgraphicsObject.Changed] %s', [ClassName]));
+  Assert(False, Format('Trace:[TgraphicsObject.Changing] %s', [ClassName]));
   if Assigned(FOnChanging) then FOnChanging(Self);
 end;
 
@@ -46,6 +46,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.5  2003/12/05 08:39:53  mattias
+  fixed memleak in debugger  from Vincent
+
   Revision 1.4  2003/12/02 12:25:17  micha
   try: gdi memory leak fix for pen
 
