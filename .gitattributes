@@ -1537,6 +1537,7 @@ lcl/interfaces/gtk2/gtk2wschecklst.pp svneol=native#text/pascal
 lcl/interfaces/gtk2/gtk2wsclistbox.pp svneol=native#text/pascal
 lcl/interfaces/gtk2/gtk2wscomctrls.pp svneol=native#text/pascal
 lcl/interfaces/gtk2/gtk2wscontrols.pp svneol=native#text/pascal
+lcl/interfaces/gtk2/gtk2wscustomlistview.inc svneol=native#text/pascal
 lcl/interfaces/gtk2/gtk2wsdbctrls.pp svneol=native#text/pascal
 lcl/interfaces/gtk2/gtk2wsdbgrids.pp svneol=native#text/pascal
 lcl/interfaces/gtk2/gtk2wsdialogs.pp svneol=native#text/pascal
