@@ -59,10 +59,13 @@ type
     FTargetPID: Integer;
     FBreakErrorBreakID: Integer;
     FExceptionBreakID: Integer;
+    FVersion: String;
     function  FindBreakpoint(const ABreakpoint: Integer): TDBGBreakPoint;
     function  GDBEvaluate(const AExpression: String; var AResult: String): Boolean;
     function  GDBGetText(const ALocation: Pointer): String; overload;
-    function  GDBGetText(const AExpression: String): String; overload;
+    function  GDBGetText(const AExpression: String; AValues: array of const): String; overload;
+    function  GDBGetData(const ALocation: Pointer): Pointer; overload;
+    function  GDBGetData(const AExpression: String; AValues: array of const): Pointer; overload;
     function  GDBRun: Boolean;
     function  GDBPause: Boolean;
     function  GDBStart(const AContinueRunning: Boolean): Boolean;
@@ -478,21 +481,36 @@ begin
   ResultList.Free;
 end;
 
-function TGDBMIDebugger.GDBGetText(const ALocation: Pointer): String;
+function TGDBMIDebugger.GDBGetData(const ALocation: Pointer): Pointer;
 begin
-  Result := GDBGetText(Format('%d', [Integer(ALocation)]));
+  Result := GDBGetData('%u', [Integer(ALocation)]);
 end;
 
-function TGDBMIDebugger.GDBGetText(const AExpression: String ): String;
+function TGDBMIDebugger.GDBGetData(const AExpression: String; AValues: array of const): Pointer;
+var
+  S: String;
+  n: Integer;
+begin
+  if not ExecuteCommand('x/d ' + AExpression, AValues, S, True)
+  then Result := nil
+  else Result := Pointer(StrToIntDef(StripLN(GetPart('\t', '', S)), 0));
+end;
+
+function TGDBMIDebugger.GDBGetText(const ALocation: Pointer): String;
+begin
+  Result := GDBGetText('%d', [Integer(ALocation)]);
+end;
+
+function TGDBMIDebugger.GDBGetText(const AExpression: String; AValues: array of const): String;
 var
   S: String;
 begin
-  if not ExecuteCommand('x/s %s', [AExpression], S, True)
+  if not ExecuteCommand('x/s ' + AExpression, AValues, S, True)
   then begin
     Result := '';
   end
   else begin
-    WriteLN('GetText: ', S);
+    WriteLN('GetText: "', S, '"');
     Result := GetPart('\t ''', '', S);
   end;
 end;
@@ -545,6 +563,8 @@ begin
   then begin
     if FHasSymbols
     then begin
+      // Maske sure we are talking pascal
+      ExecuteCommand('-gdb-set language pascal', False);
       if Arguments <>''
       then ExecuteCommand('-exec-arguments %s', [Arguments], False);
       ExecuteCommand('-break-insert -t main', False);
@@ -700,6 +720,14 @@ begin
     then MessageDlg('Debugger', 'Initialization output: ' + LINE_END + S, mtInformation, [mbOK], 0);
 
     ExecuteCommand('-gdb-set confirm off', False);
+    
+    // try to find the debugger version
+    if ExecuteCommand('-gdb-version', [], S, True)
+    then FVersion := GetPart('(', ')', S)
+    else FVersion := '';
+    WriteLN('Running GDB version: ', FVersion);
+
+    
     inherited Init;
   end
   else begin
@@ -880,33 +908,34 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String): Boolean;
     ExceptionName, ExceptionMessage: String;
     ResultList: TStringList;
     Location: TDBGLocationRec;
+    CompactMode: Boolean;
   begin
     ExceptionName := 'Unknown';
-    if ExecuteCommand('-data-evaluate-expression pshortstring(^pointer(^pointer(^pointer($fp+8)^)^+12)^)^', [], S, False)
+
+    CompactMode := FVersion >= '5.3';
+    
+    if (CompactMode and ExecuteCommand('-data-evaluate-expression ^^shortstring(^^pointer($fp+8)^^+12)^^', [], S, False))
+    or (not CompactMode and ExecuteCommand('-data-evaluate-expression pshortstring(%u)^', [Integer(GDBGetData(GDBGetData(GDBGetData('$fp+8', []))+12))], S, False))
     then begin
       ResultList := CreateMIValueList(S);
       ExceptionName := ResultList.Values['value'];
       ExceptionName := GetPart('''', '''', ExceptionName);
       ResultList.Free;
     end;
-    
-    ExceptionMessage := GDBGetText('Exception(^pointer(^pointer($fp+8)^)^).FMessage');
+
+    if CompactMode
+    then ExceptionMessage := GDBGetText('^^Exception($fp+8)^^.FMessage', [])
+    else ExceptionMessage := '### Not supported on GDB < 5.3 ###';
 
     Location.SrcLine := -1;
     Location.SrcFile := '';
-    Location.Adress := nil;
     Location.FuncName := '';
-    if ExecuteCommand('info line * ^pointer($fp+12)^', [], S, True)
+    Location.Adress := GDBGetData('$fp+12', []);
+    
+    if ExecuteCommand('info line * pointer(%d)', [Integer(Location.Adress)], S, True)
     then begin
       Location.SrcLine := StrToIntDef(GetPart('Line ', ' of', S), -1);
       Location.SrcFile := GetPart('\"', '\"', S);
-    end;
-
-    if ExecuteCommand('-data-evaluate-expression ^pointer($fp+12)^', [], S, False)
-    then begin
-      ResultList := CreateMIValueList(S);
-      Location.Adress := Pointer(StrToIntDef(ResultList.Values['value'], 0));
-      ResultList.Free;
     end;
 
     DoException(-1, Format('%s: %s', [ExceptionName, ExceptionMessage]));
@@ -920,29 +949,16 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String): Boolean;
     ResultList: TStringList;
     Location: TDBGLocationRec;
   begin
-    ErrorNo := -1;
-    if ExecuteCommand('-data-evaluate-expression ^pointer($fp+12)^', [], S, False)
-    then begin
-      ResultList := CreateMIValueList(S);
-      ErrorNo := StrToIntDef(ResultList.Values['value'], 0);
-      ResultList.Free;
-    end;
-
+    ErrorNo := Integer(GDBGetData('$fp+8', []));
+    
     Location.SrcLine := -1;
     Location.SrcFile := '';
-    Location.Adress := nil;
+    Location.Adress := GDBGetData('$fp+12', []);
     Location.FuncName := '';
-    if ExecuteCommand('info line * ^pointer($fp+12)^', [], S, True)
+    if ExecuteCommand('info line * pointer(%d)', [Integer(Location.Adress)], S, True)
     then begin
       Location.SrcLine := StrToIntDef(GetPart('Line ', ' of', S), -1);
       Location.SrcFile := GetPart('\"', '\"', S);
-    end;
-
-    if ExecuteCommand('-data-evaluate-expression ^pointer($fp+12)^', [], S, False)
-    then begin
-      ResultList := CreateMIValueList(S);
-      Location.Adress := Pointer(StrToIntDef(ResultList.Values['value'], 0));
-      ResultList.Free;
     end;
 
     DoException(ErrorNo, Format('RunError(%d)', [ErrorNo]));
@@ -1731,6 +1747,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.17  2003/05/29 02:32:52  marc
+  MWE: + Added GDB version check to exception parser
+
   Revision 1.16  2003/05/28 17:40:55  mattias
   recuced update notifications
 
