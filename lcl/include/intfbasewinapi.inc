@@ -282,7 +282,7 @@ var
   begin
     If not Assigned(Breaks) then
       exit;
-    Result := Breaks.IndexOf(Pointer(Index)) <> -1;
+    Result := Breaks.IndexOf(Pointer(PtrInt(Index))) <> -1;
   end;
 
   Function NextBreakable(Breaks : TList; Index : Integer) : Integer;
@@ -292,9 +292,9 @@ var
       (not Breakable(Breaks,Index))
     then
       exit;
-    If Breaks.IndexOf(Pointer(Index)) >= Breaks.Count - 1 then
+    If Breaks.IndexOf(Pointer(PtrInt(Index))) >= Breaks.Count - 1 then
       exit;
-    Result := Longint(Breaks[Breaks.IndexOf(Pointer(Index)) + 1]);
+    Result := Longint(Breaks[Breaks.IndexOf(Pointer(PtrInt(Index))) + 1]);
   end;
 
   Function GetBreakablePoints(const Source : String) : TList;
@@ -309,7 +309,7 @@ var
         If not Breakable(Result, I) then
           Result.Add(Pointer(I));
     If not Breakable(Result, Length(Source)) then
-      Result.Add(Pointer(Length(Source)));
+      Result.Add(Pointer(PtrInt(Length(Source))));
     If not Breakable(Result, 0) then
       Result.Insert(0,nil);
   end;
@@ -1404,6 +1404,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.14  2004/12/19 19:26:05  marc
+  * x86_64 fix: Conversion if integer to pointer
+
   Revision 1.13  2004/08/10 22:09:02  mattias
   fixed uninitialised LogFont
 
