@@ -1116,7 +1116,7 @@ var
   Shift: TShiftState;
   SenderParentForm: TCustomForm;
   RubberBandWasActive: boolean;
-  ParentClientOrigin: TPoint;
+  ParentClientOrigin, PopupPos: TPoint;
   SelectedCompClass: TRegisteredComponent;
   SelectionChanged, NewRubberbandSelection: boolean;
 
@@ -1346,7 +1346,8 @@ Begin
       PointSelect;
     PopupMenuComponentEditor:=GetComponentEditorForSelection;
     BuildPopupMenu;
-    FPopupMenu.Popup(MouseUpPos.X,MouseUpPos.Y);
+    PopupPos := Form.ClientToScreen(MouseUpPos);
+    FPopupMenu.Popup(PopupPos.X,PopupPos.Y);
   end;
 
   DisableRubberBand;
