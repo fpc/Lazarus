@@ -129,7 +129,6 @@ Begin
   Canvas.Line(X+1,Top,X+1,Top+Height-1);
 End;
 
-
 Procedure TStatusBar.WMPaint(var Msg: TLMPaint);
 var
   I : Integer;
@@ -138,20 +137,20 @@ var
   PW : Longint;
 Begin
   inherited;
-  Style := Canvas.TextStyle;
+  FillChar(Style, SizeOf(Style),0);
   With Style do begin
     Layout := tlCenter;
     Alignment := taLeftJustify;
     WordBreak := False;
     SingleLine := True;
-    Clipping := True;
     ShowPrefix := False;
-    Opaque := True;
   end;
   Canvas.Color := Color;
   R := Rect(Left, Top, Left + ClientWidth, Top + ClientHeight);
   if SimplePanel = False then
   Begin
+    Style.Opaque := True;
+    Style.Clipping := True;
     if Panels.Count = 0 then exit;
     For I := 0 to Panels.Count-1 do
       Begin
@@ -173,6 +172,7 @@ Begin
   end
   else begin
     Style.Clipping := False;
+    Style.Opaque := False;
     InflateRect(R, -2, -2);
     Canvas.FillRect(R);
     InflateRect(R, 2, 2);
