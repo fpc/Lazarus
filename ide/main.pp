@@ -10995,9 +10995,9 @@ begin
   Result:=false;
   if (not (AParent is TControl))
   and (APersistentClass.InheritsFrom(TControl)) then begin
-    MessageDlg('Invalid parent',
-      'A '+AParent.ClassName+' can not hold TControls.'#13
-      +'You can only put non visual components on it.',
+    MessageDlg(lisCodeToolsDefsInvalidParent,
+      Format(lisACanNotHoldTControlsYouCanOnlyPutNonVisualComponen, [
+        AParent.ClassName, #13]),
       mtError,[mbCancel],0);
     UpdateIDEComponentPalette;
     exit;
@@ -11402,6 +11402,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.847  2005/02/25 20:19:46  mattias
+  added RTTI check for unitname of design components
+
   Revision 1.846  2005/02/18 18:08:20  mattias
   project dependencies are now added/removed/renamed in the project main uses section
 

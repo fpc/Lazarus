@@ -1676,6 +1676,8 @@ resourcestring
   lisCodeToolsDefsprojectSpecific = '%s, project specific';
   lisCodeToolsDefsnoneSelected = 'none selected';
   lisCodeToolsDefsInvalidParent = 'Invalid parent';
+  lisACanNotHoldTControlsYouCanOnlyPutNonVisualComponen = 'A %s can not hold '
+    +'TControls.%sYou can only put non visual components on it.';
   lisCodeToolsDefsAutoCreatedNodesReadOnly = 'Auto created nodes can not be '
     +'edited,%snor can they have non auto created child nodes.';
   lisCodeToolsDefsInvalidParentNode = 'Invalid parent node';

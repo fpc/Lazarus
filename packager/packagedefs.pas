@@ -48,8 +48,9 @@ uses
   Classes, SysUtils, LCLProc, LResources, Graphics,
   {$IFNDEF VER1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF}, Laz_XMLCfg,
   DefineTemplates, CodeToolManager, EditDefineTree, CompilerOptions, Forms,
-  FileUtil, LazarusIDEStrConsts, IDEProcs, ComponentReg, TransferMacros,
-  FileReferenceList, PublishModule;
+  FileUtil, PropEdits,
+  LazarusIDEStrConsts, IDEProcs, ComponentReg,
+  TransferMacros, FileReferenceList, PublishModule;
 
 type
   TLazPackage = class;
@@ -2918,8 +2919,16 @@ begin
 end;
 
 function TPkgComponent.GetUnitName: string;
+var
+  TIUnitName: String;
 begin
   Result:=PkgFile.UnitName;
+  // compare with RTTI unit name
+  if ComponentClass<>nil then begin
+    TIUnitName:=GetClassUnitName(ComponentClass);
+    if CompareText(TIUnitName,Result)<>0 then
+      Result:=TIUnitName;
+  end;
 end;
 
 function TPkgComponent.GetPriority: TComponentPriority;

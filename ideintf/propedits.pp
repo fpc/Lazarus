@@ -1384,6 +1384,7 @@ var
   GlobalDesignHook: TPropertyEditorHook;
 
 function ClassTypeInfo(Value: TClass): PTypeInfo;
+function GetClassUnitName(Value: TClass): string;
 procedure CreateComponentEvent(AComponent: TComponent; const EventName: string);
 
 
@@ -1410,7 +1411,7 @@ type
     FColumns: TListColumns;
     FModalResult:TModalResult;
   public
-    function PTypeInfos(const PropName:shortstring):PTypeInfo;
+    function PTypeInfos(const PropName:shortstring): PTypeInfo;
     constructor Create;
     destructor Destroy;  override;
   published
@@ -6181,6 +6182,20 @@ begin
   if (Result<>nil) and (Result is TComponent)
   and (TComponent(Result).Owner<>nil) then
     Result:=TComponent(Result).Owner;
+end;
+
+function GetClassUnitName(Value: TClass): string;
+var
+  TheTypeInfo: PTypeInfo;
+  TheTypeData: PTypeData;
+begin
+  Result:='';
+  TheTypeInfo:=ClassTypeInfo(Value);
+  if TheTypeInfo=nil then exit;
+  TheTypeData:=GetTypeData(TheTypeInfo);
+  if TheTypeData=nil then exit;
+  Result:=TheTypeData^.UnitName;
+  //debugln('GetClassUnitName A Result="',Result,'"');
 end;
 
 procedure CreateComponentEvent(AComponent: TComponent; const EventName: string);
