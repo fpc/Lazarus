@@ -321,7 +321,7 @@ type
   TOnInitIdentCompletion = procedure(Sender: TObject;
     var Handled, Abort: boolean) of object;
 
-  TSourceNotebookState = (snIncrementalFind);
+  TSourceNotebookState = (snIncrementalFind, snIncrementalSearching);
   TSourceNotebookStates = set of TSourceNotebookState;
 
   { TSourceNotebook }
@@ -384,8 +384,9 @@ type
     fAutoFocusLock: integer;
     FCodeTemplateModul: TSynEditAutoComplete;
     fCustomPopupMenuItems: TList;
-    fIncrementalSearchStartPos: TPoint;
-    fIncrementalSearchCancelPos: TPoint;
+    FIncrementalSearchPos: TPoint; // last set position
+    fIncrementalSearchStartPos: TPoint; // position where to start searching
+    fIncrementalSearchCancelPos: TPoint;// position where to jump on cancel
     FIncrementalSearchStr: string;
     FKeyStrokes: TSynEditKeyStrokes;
     FLastCodeBuffer: TCodeBuffer;
@@ -3555,6 +3556,7 @@ begin
   Include(States,snIncrementalFind);
   fIncrementalSearchStartPos:=TempEditor.EditorComponent.LogicalCaretXY;
   fIncrementalSearchCancelPos:=fIncrementalSearchStartPos;
+  FIncrementalSearchPos:=fIncrementalSearchStartPos;
   IncrementalSearchStr:='';
   UpdateStatusBar;
 end;
@@ -4262,15 +4264,28 @@ var
   PanelCharMode: string;
   PanelXY: string;
   PanelFileMode: string;
+  CurEditor: TSynEdit;
 begin
   if not Visible then exit;
   TempEditor := GetActiveSE;
   if TempEditor = nil then Exit;
-  if (TempEditor.EditorComponent.CaretY<>TempEditor.ErrorLine)
-  or (TempEditor.EditorComponent.CaretX<>TempEditor.fErrorColumn) then
+  CurEditor:=TempEditor.EditorComponent;
+  
+  if (snIncrementalFind in States)
+  and (CompareCaret(CurEditor.LogicalCaretXY,FIncrementalSearchPos)<>0) then
+  begin
+    // some action has changed the cursor during incremental search
+    // -> end incremental search
+    EndIncrementalFind;
+    exit;
+  end;
+
+  if (CurEditor.CaretY<>TempEditor.ErrorLine)
+  or (CurEditor.CaretX<>TempEditor.fErrorColumn) then
     TempEditor.ErrorLine:=-1;
 
   Statusbar.BeginUpdate;
+
   if snIncrementalFind in States then begin
     Statusbar.SimplePanel:=true;
     Statusbar.SimpleText:=Format(lisUESearching, [IncrementalSearchStr]);
@@ -4657,6 +4672,7 @@ var
   CurEdit: TSynEdit;
 begin
   if snIncrementalFind in States then begin
+    Include(States,snIncrementalSearching);
     // search string
     CurEdit:=GetActiveSE.EditorComponent;
     CurEdit.BeginUpdate;
@@ -4672,7 +4688,9 @@ begin
       CurEdit.BlockBegin:=CurEdit.LogicalCaretXY;
       CurEdit.BlockEnd:=CurEdit.BlockBegin;
     end;
+    FIncrementalSearchPos:=CurEdit.LogicalCaretXY;
     CurEdit.EndUpdate;
+    Exclude(States,snIncrementalSearching);
   end;
   UpdateStatusBar;
 end;
