@@ -297,6 +297,11 @@ type
     procedure OnControlSelectionPropsChanged(Sender: TObject);
     procedure OnControlSelectionFormChanged(Sender: TObject; OldForm,
           NewForm: TCustomForm);
+          
+    // project inspector
+    procedure ProjInspectorOpen(Sender: TObject);
+    function ProjInspectorAddUnitToProject(Sender: TObject;
+      AnUnitInfo: TUnitInfo): TModalresult;
 
     // unit dependencies events
     procedure UnitDependenciesViewAccessingSources(Sender: TObject);
@@ -469,9 +474,6 @@ type
     function DoSaveProjectToTestDirectory: TModalResult;
     function DoShowToDoList: TModalResult;
     
-    // package(s)
-    function DoNewPackage: TModalResult;
-
     // edit menu
     procedure DoEditMenuCommand(EditorCommand: integer);
     
@@ -4005,7 +4007,7 @@ begin
     niiFPCProject: DoNewProject(ptProgram);
     niiCustomProject: DoNewProject(ptCustomProgram);
     // packages
-    niiPackage: DoNewPackage;
+    niiPackage: PkgBoss.DoNewPackage;
     else
       MessageDlg('Not implemented yet',
                  'Sorry, this type is not yet implemented',
@@ -4208,6 +4210,7 @@ var
   NewBuf: TCodeBuffer;
   OtherUnitIndex: Integer;
   FilenameNoPath: String;
+  LoadBufferFlags: TLoadBufferFlags;
 begin
   {$IFDEF IDE_VERBOSE}
   writeln('');
@@ -4237,10 +4240,9 @@ begin
     EnvironmentOptions.AddToRecentOpenFiles(AFilename);
 
   // check if this is a hidden unit:
-  // if this is a virtual (new, unsaved) project, the main unit is already
+  // if this is the main unit, it is already
   // loaded and needs only to be shown in the sourceeditor/formeditor
   if (not (ofRevert in Flags))
-  and (Project1.IsVirtual)
   and (CompareFilenames(Project1.MainFilename,AFilename,true)=0)
   then begin
     Result:=DoOpenMainUnit(ofProjectLoading in Flags);
@@ -4331,10 +4333,12 @@ begin
     // project knows this file => all the meta data is known
     // -> just load the source
     NewUnitInfo:=Project1.Units[UnitIndex];
-    Result:=DoLoadCodeBuffer(NewBuf,AFileName,
-                             [lbfCheckIfText,lbfUpdateFromDisk,lbfRevert]);
+    LoadBufferFlags:=[lbfCheckIfText,lbfUpdateFromDisk];
+    if ofRevert in Flags then Include(LoadBufferFlags,lbfRevert);
+    Result:=DoLoadCodeBuffer(NewBuf,AFileName,LoadBufferFlags);
     if Result<>mrOk then exit;
     NewUnitInfo.Source:=NewBuf;
+    NewUnitInfo.Modified:=NewUnitInfo.Source.FileOnDiskNeedsUpdate;
     if FilenameIsPascalUnit(NewUnitInfo.Filename) then
       NewUnitInfo.ReadUnitNameFromSource;
   end else begin
@@ -4346,8 +4350,9 @@ begin
   end;
 
   // check readonly
-  NewUnitInfo.FileReadOnly:=(not FileIsWritable(NewUnitInfo.Filename));
-
+  NewUnitInfo.FileReadOnly:=FileExists(NewUnitInfo.Filename)
+                            and (not FileIsWritable(NewUnitInfo.Filename));
+  
   {$IFDEF IDE_DEBUG}
   writeln('[TMainIDE.DoOpenEditorFile] B');
   {$ENDIF}
@@ -5159,6 +5164,10 @@ function TMainIDE.DoShowProjectInspector: TModalResult;
 begin
   if ProjInspector=nil then begin
     ProjInspector:=TProjectInspectorForm.Create(Self);
+    ProjInspector.OnOpen:=@ProjInspectorOpen;
+    ProjInspector.OnShowOptions:=@mnuProjectOptionsClicked;
+    ProjInspector.OnAddUnitToProject:=@ProjInspectorAddUnitToProject;
+    
     ProjInspector.LazProject:=Project1;
   end;
   ProjInspector.ShowOnTop;
@@ -5254,7 +5263,7 @@ var
   s, ShortUnitName: string;
 begin
   Result:=mrCancel;
-  GetCurrentUnit(ActiveSourceEditor,ActiveUnitInfo);
+  BeginCodeTool(ActiveSourceEditor,ActiveUnitInfo,[]);
   if ActiveUnitInfo<>nil then begin
     if ActiveUnitInfo.IsPartOfProject=false then begin
       if not ActiveUnitInfo.IsVirtual then
@@ -5410,11 +5419,6 @@ begin
 
   frmToDo.ShowOnTop;
   Result:=mrOk;
-end;
-
-function TMainIDE.DoNewPackage: TModalResult;
-begin
-  Result:=PkgBoss.DoNewPackage;
 end;
 
 function TMainIDE.DoBuildProject(BuildAll: boolean): TModalResult;
@@ -7867,6 +7871,43 @@ begin
   EnvironmentOptions.ExternalTools.FreeStoppedProcesses;
 end;
 
+function TMainIDE.ProjInspectorAddUnitToProject(Sender: TObject;
+  AnUnitInfo: TUnitInfo): TModalresult;
+var
+  ActiveSourceEditor: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+  ShortUnitName: String;
+  Dummy: Boolean;
+begin
+  Result:=mrOk;
+  BeginCodeTool(ActiveSourceEditor,ActiveUnitInfo,[]);
+  AnUnitInfo.IsPartOfProject:=true;
+  if FilenameIsPascalUnit(AnUnitInfo.Filename)
+  and (Project1.ProjectType in [ptProgram, ptApplication]) then begin
+    AnUnitInfo.ReadUnitNameFromSource;
+    ShortUnitName:=AnUnitInfo.UnitName;
+    if (ShortUnitName<>'') then begin
+      Dummy:=CodeToolBoss.AddUnitToMainUsesSection(
+         Project1.MainUnitInfo.Source,ShortUnitName,'');
+      ApplyCodeToolChanges;
+      if not Dummy then begin
+        DoJumpToCodeToolBossError;
+        Result:=mrCancel;
+      end;
+    end;
+  end;
+  Project1.Modified:=true;
+end;
+
+procedure TMainIDE.ProjInspectorOpen(Sender: TObject);
+var
+  CurUnitInfo: TUnitInfo;
+begin
+  CurUnitInfo:=ProjInspector.GetSelectedFile;
+  if CurUnitInfo=nil then exit;
+  DoOpenEditorFile(CurUnitInfo.Filename,-1,[ofRegularFile]);
+end;
+
 procedure TMainIDE.OnExtToolNeedsOutputFilter(var OutputFilter: TOutputFilter;
   var Abort: boolean);
 begin
@@ -8367,6 +8408,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.528  2003/04/20 07:36:28  mattias
+  fixed loading form name
+
   Revision 1.527  2003/04/19 17:54:37  mattias
   improved new menueditor from Martin Patik
 
