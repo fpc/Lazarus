@@ -807,7 +807,8 @@ begin
     DoWriteOriginal;
     exit;
   end;
-  DebugLn('TBitmap.WriteStream A Warning: creating BMP does not always work ',FImage.SaveStream<>nil,' ',ord(FImage.SaveStreamType),'. Please use FPImage.');
+  DebugLn('TBitmap.WriteStream A Warning: creating BMP does not always work ',
+    dbgs(FImage.SaveStream<>nil),' ',dbgs(ord(FImage.SaveStreamType)),'. Please use FPImage.');
 
   // write image in BMP format to temporary stream
   MemStream:=TMemoryStream.Create;
@@ -1200,6 +1201,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.88  2004/05/14 14:32:49  mattias
+  fix for fpc 1.0.10
+
   Revision 1.87  2004/05/11 11:42:26  mattias
   replaced writeln by debugln
 
