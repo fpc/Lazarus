@@ -2531,26 +2531,10 @@ End;
   for a properties-enumeration function that's called when the program is quit.
  ------------------------------------------------------------------------------}
 Function TWin32Object.SetProp(Handle: HWND; Str: PChar; Data: Pointer): Boolean;
-Var
-  C: Cardinal;
-  WndListed: Boolean;
 Begin
   Assert(False, 'Trace:TWin32Object.SetProp - Start');
-  WndListed := False;
-
-  If WndList.Count > 0 Then
-    For C := 0 To WndList.Count - 1 Do
-      If HWND(WndList[C]) = Handle Then
-        WndListed := True;
-
-  If Not WndListed Then
-  Begin
-    WndList.Capacity := WndList.Count;
-    WndList.Add(Pointer(Handle));
-  End;
-
-  Result := Windows.SetProp(Handle, Str, Integer(Data));
-  Assert(False, Format('Trace:TWin32Object.SetProp --> Window handle: 0x%X, Propery to set: %S, Data to set: 0x%P, Window was previously in list: %S, Property was successfully set: %S', [Handle, String(Str), Data, BOOL_RESULT[WndListed], BOOL_RESULT[Result]]));
+  Result := Windows.SetProp(Handle, Str, LongInt(Data));
+  Assert(False, Format('Trace:TWin32Object.SetProp --> Window handle: 0x%X, Propery to set: %S, Data to set: 0x%P, Property was successfully set: %S', [Handle, String(Str), Data, BOOL_RESULT[Result]]));
 End;
 
 {------------------------------------------------------------------------------
@@ -2842,6 +2826,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.83  2003/12/18 10:17:00  micha
+  remove non-useful variable wndlist (thx vincent)
+
   Revision 1.82  2003/12/16 08:33:31  micha
   UINT(-1) fix causing "Out of bounds." exception
 

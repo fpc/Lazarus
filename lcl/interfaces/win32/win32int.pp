@@ -165,9 +165,6 @@ Const
   ClsName : array[0..20] of char = 'LazarusForm'#0;
   ToolBtnClsName : array[0..20] of char = 'ToolbarButton'#0;
 
-Var
-  WndList: TList;
-
 {$I win32proc.inc}
 {$I win32listsl.inc}
 {$I win32callback.inc}
@@ -178,19 +175,19 @@ Var
 Initialization
 
 Assert(False, 'Trace:win32int.pp - Initialization');
-WndList := TList.Create;
 
 Finalization
 
 Assert(False, 'Trace:win32int.pp - Finalization');
-WndList.Free;
-WndList := Nil;
 
 End.
 
 { =============================================================================
 
   $Log$
+  Revision 1.62  2003/12/18 10:17:00  micha
+  remove non-useful variable wndlist (thx vincent)
+
   Revision 1.61  2003/12/18 08:51:01  micha
   fix accelerators: now registered per window
 

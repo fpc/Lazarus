@@ -1345,12 +1345,6 @@ Begin
 
   SendMessage(Window, Msg, Limit, 0);
   SetProp(Window, 'LIMIT_TEXT', @Limit);
-
-  If WndList.IndexOf(Pointer(Window)) = -1 Then
-  Begin
-    WndList.Capacity := WndList.Count;
-    WndList.Add(Pointer(Window));
-  End;
 End;
 
 {------------------------------------------------------------------------------
@@ -2893,6 +2887,9 @@ End;
 
 {
   $Log$
+  Revision 1.144  2003/12/18 10:17:00  micha
+  remove non-useful variable wndlist (thx vincent)
+
   Revision 1.143  2003/12/18 08:51:01  micha
   fix accelerators: now registered per window
 
