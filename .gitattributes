@@ -1014,6 +1014,7 @@ images/unitdependencies/srctype_unit_22x22.xpm -text svneol=native#image/x-xpixm
 images/unitdependencies/srctype_unknown_22x22.xpm -text svneol=native#image/x-xpixmap
 images/uparrow.ico -text svneol=unset#image/x-icon
 images/uparrow.xpm -text svneol=native#image/x-xpixmap
+images/vase_trans.xpm -text svneol=native#image/x-xpixmap
 install/debian/install.sh -text svneol=native#application/x-sh
 languages/lazaruside.ar.po svneol=native#text/plain
 languages/lazaruside.ca.po svneol=native#text/plain

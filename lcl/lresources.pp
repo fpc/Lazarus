@@ -1271,7 +1271,7 @@ procedure LRSObjectBinaryToText(Input, Output: TStream);
         lbuf: array[0..31] of Byte;
         s: String;
       begin
-        ToDo := Input.ReadDWord;
+        ToDo := ReadLRSCardinal(Input);
         OutLn('{');
         while ToDo > 0 do begin
           DoNow := ToDo;
@@ -1439,6 +1439,7 @@ procedure LRSObjectBinaryToText(Input, Output: TStream);
   end;
 
 begin
+  // Endian note: comparing 2 cardinals is endian independent
   if Input.ReadDWord <> PCardinal(@FilerSignature[1])^ then
     raise EReadError.Create('Illegal stream image' {###SInvalidImage});
   ReadObject('');
