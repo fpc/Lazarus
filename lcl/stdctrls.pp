@@ -302,6 +302,7 @@ type
     property OnChange;
     property OnClick;
     property OnCloseUp;
+    property OnDrawItem;
     property OnDropDown;
     property OnEnter;
     property OnExit;
@@ -1521,6 +1522,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.56  2002/10/20 21:54:03  lazarus
+  MG: fixes for 1.1
+
   Revision 1.55  2002/10/18 16:08:09  lazarus
   AJ: Partial HintWindow Fix; Added Screen.Font & Font.Name PropEditor; Started to fix ComboBox DropDown size/pos
 

@@ -369,6 +369,7 @@ type
     property ScrollBars;
     property SmallImages;
     property SortColumn;
+    property SortType;
     property Visible;
     property ViewStyle;
     property OnMouseMove;
@@ -507,7 +508,7 @@ type
     procedure ChangeBounds(ALeft, ATop, AWidth, AHeight: Integer); Override;
     function CanChange: Boolean; dynamic;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    procedure Click(Button: TUDBtnType); dynamic;
+    procedure ClickUpDown(Button: TUDBtnType); virtual;
     property AlignButton: TUDAlignButton read FAlignButton write SetAlignButton default udRight;
     property ArrowKeys: Boolean read FArrowKeys write SetArrowKeys default True;
     property Associate: TWinControl read FAssociate write SetAssociate;
@@ -1699,6 +1700,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.53  2002/10/20 21:54:02  lazarus
+  MG: fixes for 1.1
+
   Revision 1.52  2002/10/20 19:03:56  lazarus
   AJ: minor fixes for FPC 1.1
 

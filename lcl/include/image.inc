@@ -41,7 +41,7 @@ begin
   FPicture.Assign(AValue);  //the onchange of the picture gets called and notifies that something changed.
 end;
 
-procedure TImage.SetAutoSize(Value : Boolean);
+procedure TImage.SetAutoSize(const Value : Boolean);
 var
   ModifyWidth,
   ModifyHeight : Boolean;

@@ -269,7 +269,7 @@ type
     procedure SetBounds(aLeft,aTop,aWidth,aHeight:integer); override;
     procedure Paint;  override;
     procedure Clear;
-    constructor Create(AnOwner:TComponent;
+    constructor CreateWithParams(AnOwner:TComponent;
        APropertyEditorHook:TPropertyEditorHook;  TypeFilter:TTypeKinds);
     destructor Destroy;  override;
   end;
@@ -344,7 +344,7 @@ end;
 
 { TOIPropertyGrid }
 
-constructor TOIPropertyGrid.Create(AnOwner:TComponent;
+constructor TOIPropertyGrid.CreateWithParams(AnOwner:TComponent;
   APropertyEditorHook:TPropertyEditorHook;  TypeFilter:TTypeKinds);
 begin
   inherited Create(AnOwner);
@@ -1943,7 +1943,7 @@ begin
   end;
 
   // property grid
-  PropertyGrid:=TOIPropertyGrid.Create(Self,PropertyEditorHook
+  PropertyGrid:=TOIPropertyGrid.CreateWithParams(Self,PropertyEditorHook
       ,[tkUnknown, tkInteger, tkChar, tkEnumeration, tkFloat, tkSet{, tkMethod}
       , tkSString, tkLString, tkAString, tkWString, tkVariant
       {, tkArray, tkRecord, tkInterface}, tkClass, tkObject, tkWChar, tkBool
@@ -1962,7 +1962,8 @@ begin
   end;
 
   // event grid
-  EventGrid:=TOIPropertyGrid.Create(Self,PropertyEditorHook,[tkMethod]);
+  EventGrid:=TOIPropertyGrid.CreateWithParams(Self,PropertyEditorHook,
+                                              [tkMethod]);
   with EventGrid do begin
     Name:='EventGrid';
     Parent:=NoteBook.Page[1];

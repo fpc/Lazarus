@@ -14,7 +14,7 @@ unit AllCodeToolUnits;
 interface
 
 uses
-  MemCheck,
+  {$IFDEF VER1_0}MemCheck,{$ENDIF}
   CodeToolManager, CustomCodeTool, PascalParserTool, FindDeclarationTool,
   StdCodeTools, MethodJumpTool, EventCodeTool, CodeCompletionTool, LinkScanner,
   FindDeclarationCache, BasicCodeTools, CodeTree, CodeAtom, SourceChanger,
@@ -30,6 +30,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.11  2002/10/20 21:54:02  lazarus
+  MG: fixes for 1.1
+
   Revision 1.10  2002/04/28 14:10:30  lazarus
   MG: fixes for saving resource files
 

@@ -62,7 +62,8 @@ type
     FWatch: TDBGWatch;
     FDebugger: TDebugger;
   public
-    constructor Create(AOWner: TCOmponent; const AWatch: TDBGWatch; const ADebugger: TDebugger); //reintroduce;
+    constructor Create(AOWner: TComponent; const AWatch: TDBGWatch;
+      const ADebugger: TDebugger); //reintroduce;
     destructor Destroy; override;
   published
     // publish some properties until fpcbug #1888 is fixed

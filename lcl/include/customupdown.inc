@@ -29,7 +29,8 @@ Type
     Procedure ButtonMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
   Public
-    constructor Create(UpDown : TCustomUpDown; ButtonType : TUDBtnType);
+    constructor CreateWithParams(UpDown : TCustomUpDown;
+      ButtonType : TUDBtnType);
 
     Procedure Paint; Override;
   end;
@@ -92,11 +93,12 @@ begin
         end;
         
     end;
-    FUpDown.Click(FButtonType);
+    FUpDown.ClickUpDown(FButtonType);
   end;
 end;
 
-constructor TUpDownButton.Create(UpDown : TCustomUpDown; ButtonType : TUDBtnType);
+constructor TUpDownButton.CreateWithParams(UpDown : TCustomUpDown;
+  ButtonType : TUDBtnType);
 begin
   Inherited Create(UpDown);
   FUpDown := UpDown;
@@ -173,8 +175,8 @@ begin
   fCompStyle := csPanel;
   ControlStyle := ControlStyle  - [csDoubleClicks] +
     [csClickEvents, csOpaque,  csReplicatable, csNoFocus];
-  MinBtn := TUpDownButton.Create(Self, btPrev);
-  MaxBtn := TUpDownButton.Create(Self, btNext);
+  MinBtn := TUpDownButton.CreateWithParams(Self, btPrev);
+  MaxBtn := TUpDownButton.CreateWithParams(Self, btNext);
   InheritedChangeBounds := True;
   SetBounds(0,0,17,31);
   InheritedChangeBounds := False;
@@ -227,7 +229,7 @@ begin
     FOnChanging(Self, Result);
 end;
 
-procedure TCustomUpDown.Click(Button: TUDBtnType);
+procedure TCustomUpDown.ClickUpDown(Button: TUDBtnType);
 begin
   if Assigned(FOnClick) then FOnClick(Self, Button);
 end;
