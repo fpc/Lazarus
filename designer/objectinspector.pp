@@ -29,12 +29,12 @@ interface
 
 uses
   Forms, SysUtils, Buttons, Classes, Graphics, GraphType, StdCtrls, LCLType,
-  LCLLinux, LMessages, Controls, ComCtrls, ExtCtrls, PropEdits, TypInfo, Messages,
-  LResources, XMLCfg, Menus, Dialogs;
+  LCLLinux, LMessages, Controls, ComCtrls, ExtCtrls, PropEdits, TypInfo,
+  Messages, LResources, XMLCfg, Menus, Dialogs;
 
 type
 
-  EGenException = class(Exception);
+  EObjectInspectorException = class(Exception);
   
   TObjectInspector = class;
 
@@ -1754,37 +1754,34 @@ end;
 
 function TObjectInspector.ComponentToString(c:TComponent):string;
 begin
-Try
-  Result:=c.GetNamePath+': '+c.ClassName;
-except
-  Result := '';
-  Raise EGEnException.Create('Exception in ObjectInspector ComponentToString');
-end;
-
+  Try
+    Result:=c.GetNamePath+': '+c.ClassName;
+  except
+    Result := '';
+    Raise EObjectInspectorException.Create(
+      'Exception in ObjectInspector ComponentToString');
+  end;
 end;
 
 procedure TObjectInspector.AddComponentToAvailComboBox(AComponent:TComponent);
 var Allowed:boolean;
 begin
-try
-  Allowed:=true;
-  if Assigned(FOnAddAvailableComponent) then
-    FOnAddAvailableComponent(AComponent,Allowed);
-  if Allowed then
-    AvailCompsComboBox.Items.AddObject(
-      ComponentToString(AComponent),AComponent);
-except
-  raise EGenException.Create('Exception: ObjectInspector AddComponentToAvailComboBox');
-end;
+  try
+    Allowed:=true;
+    if Assigned(FOnAddAvailableComponent) then
+      FOnAddAvailableComponent(AComponent,Allowed);
+    if Allowed then
+      AvailCompsComboBox.Items.AddObject(
+        ComponentToString(AComponent),AComponent);
+  except
+    raise EObjectInspectorException.Create(
+      'Exception: ObjectInspector AddComponentToAvailComboBox');
+  end;
 end;
 
 procedure TObjectInspector.PropEditLookupRootChange;
 begin
-try
   FillComponentComboBox;
-except
-  raise EGenException.Create('Exception: ObjectInspector PropEditLookupRootCHange');
-end;
 end;
 
 procedure TObjectInspector.FillComponentComboBox;
@@ -1794,7 +1791,6 @@ var a:integer;
 begin
 //writeln('[TObjectInspector.FillComponentComboBox] A ',FUpdatingAvailComboBox
 //,' ',FPropertyEditorHook<>nil,'  ',FPropertyEditorHook.LookupRoot<>nil);
-try
   if FUpdatingAvailComboBox then exit;
   FUpdatingAvailComboBox:=true;
   AvailCompsComboBox.Items.BeginUpdate;
@@ -1818,9 +1814,6 @@ try
       AvailCompsComboBox.Text:='';
   end else
     AvailCompsComboBox.ItemIndex:=a;
-except
-    raise EGenException.Create('Exception: ObjectInspector FillComponentComboBox');
-end;
 end;
 
 procedure TObjectInspector.SetSelections(
@@ -1841,6 +1834,8 @@ procedure TObjectInspector.RefreshSelections;
 begin
   PropertyGrid.Selections:=FComponentList;
   EventGrid.Selections:=FComponentList;
+  if (not Visible) and (FComponentList.Count>0) then
+    Visible:=true;
 end;
 
 procedure TObjectInspector.RefreshPropertyValues;

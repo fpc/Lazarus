@@ -900,7 +900,6 @@ begin
   ObjectInspector1.PropertyEditorHook:=PropertyEditorHook1;
   EnvironmentOptions.IDEWindowLayoutList.Apply(TForm(ObjectInspector1),
                                                DefaultObjectInspectorName);
-  ObjectInspector1.Show;
 end;
 
 procedure TMainIDE.SetupCompilerInterface;
@@ -6175,6 +6174,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.262  2002/03/28 09:34:06  lazarus
+  MG: show objectinspector only if needed
+
   Revision 1.261  2002/03/28 00:11:04  lazarus
   MG: removed unused
 
