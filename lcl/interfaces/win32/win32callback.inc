@@ -395,7 +395,13 @@ Begin
     End;
     WM_CLOSE:
     Begin
-      LMessage.Msg := LM_CLOSEQUERY;
+      if (Window = TWin32WidgetSet(InterfaceObject).FAppHandle) and 
+        (Application.MainForm <> nil) then
+      begin
+        Windows.SendMessage(Application.MainForm.Handle, WM_CLOSE, 0, 0);
+      end else begin
+        LMessage.Msg := LM_CLOSEQUERY;
+      end;
       // default is to destroy window, inhibit
       WinProcess := false;
     End;
@@ -1307,6 +1313,9 @@ end;
 
 {
   $Log$
+  Revision 1.135  2004/08/27 15:13:03  micha
+  fix choosing taskbar button "close" to close app
+
   Revision 1.134  2004/08/25 15:04:44  micha
   use new lcl interface methods instead of messages (for win32; twsbitbtn)
 
