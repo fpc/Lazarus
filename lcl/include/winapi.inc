@@ -660,6 +660,13 @@ begin
   Result := InterfaceObject.SetBkMode(DC, bkMode);
 end;
 
+Function SetComboMinDropDownSize(Handle: HWND;
+  MinItemsWidth, MinItemsHeight, MinItemCount: integer): boolean;
+begin
+  Result := InterfaceObject.SetComboMinDropDownSize(Handle,
+                                   MinItemsWidth, MinItemsHeight, MinItemCount);
+end;
+
 Function SetCapture(value : Longint): Longint;
 Begin
   Result := InterfaceObject.SetCapture(Value);
@@ -1292,6 +1299,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.52  2002/10/03 14:47:31  lazarus
+  MG: added TComboBox.OnPopup+OnCloseUp+ItemWidth
+
   Revision 1.51  2002/09/27 20:52:23  lazarus
   MWE: Applied patch from "Andrew Johnson" <aj_genius@hotmail.com>
 
