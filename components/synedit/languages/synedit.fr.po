@@ -72,7 +72,7 @@ msgstr "Fichiers Galaxy (*.gtv,*.galrep,*.txt)|*.gtv;*.galrep;*.txt"
 
 #: syneditstrconst:syns_filterhp
 msgid "HP48 Files (*.s,*.sou,*.a,*.hp)|*.S;*.SOU;*.A;*.HP"
-msgstr ""
+msgstr "Fichiers HP48 (*.s,*.sou,*.a,*.hp)|*.S;*.SOU;*.A;*.HP"
 
 #: syneditstrconst:syns_filterhp48
 msgid "HP48 Files (*.s,*.sou,*.a,*.hp)|*.s;*.sou;*.a;*.hp"
@@ -92,7 +92,7 @@ msgstr "Fichiers INI (*.ini)|*.ini"
 
 #: syneditstrconst:syns_filterinno
 msgid "Inno Setup Script Files (*.iss)|*.iss"
-msgstr "Fichier Inno Setup (*.iss)|*.iss"
+msgstr "Fichiers Inno Setup (*.iss)|*.iss"
 
 #: syneditstrconst:syns_filterjava
 msgid "Java Files (*.java)|*.java"
@@ -100,7 +100,7 @@ msgstr "Fichiers Java (*.java)|*.java"
 
 #: syneditstrconst:syns_filterjscript
 msgid "Javascript Files (*.js)|*.js"
-msgstr "Fichier Javascript (*.js)|*.js"
+msgstr "Fichiers Javascript (*.js)|*.js"
 
 #: syneditstrconst:syns_filterkix
 msgid "KiXtart scripts (*.kix)|*.kix"
@@ -180,7 +180,7 @@ msgstr "Fichiers Tcl/Tk (*.tcl)|*.tcl"
 
 #: syneditstrconst:syns_filtertex
 msgid "TeX Files (*.tex)|*.tex"
-msgstr ""
+msgstr "Fichiers TeX (*.tex)|*.tex"
 
 #: syneditstrconst:syns_duplicateshortcutmsg
 msgid "The keystroke \"%s\" is already assigned to another editor command. (%s)"
@@ -192,7 +192,7 @@ msgstr "Haut de ligne: %d"
 
 #: syneditstrconst:syns_filterunixshellscript
 msgid "UNIX Shell Scripts (*.sh)|*.sh"
-msgstr ""
+msgstr "Scripts shell UNIX (*.sh)|*.sh"
 
 #: syneditstrconst:syns_filtervbscript
 msgid "VBScript Files (*.vbs)|*.vbs"
@@ -204,9 +204,9 @@ msgstr "Fichiers VB (*.bas)|*.bas"
 
 #: syneditstrconst:syns_filterxml
 msgid "XML Document (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd"
-msgstr "Document XML (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd"
+msgstr "Documents XML (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd"
 
 #: syneditstrconst:syns_filterx86asm
 msgid "x86 Assembly Files (*.asm)|*.ASM"
-msgstr "Fichiers asm x85 (*.asm)|*.ASM"
+msgstr "Fichiers asm x86 (*.asm)|*.ASM"
 

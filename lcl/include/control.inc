@@ -847,7 +847,8 @@ end;
 {------------------------------------------------------------------------------
        TControl.DoConstrainedResize
 ------------------------------------------------------------------------------}
-procedure TControl.DoConstrainedResize(var NewLeft, NewTop, NewWidth, NewHeight: integer);
+procedure TControl.DoConstrainedResize(var NewLeft, NewTop,
+  NewWidth, NewHeight: integer);
 var MinWidth, MinHeight, MaxWidth, MaxHeight : TConstraintSize;
 begin
   MinWidth:= Constraints.EffectiveMinWidth;
@@ -3499,6 +3500,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.252  2005/03/19 08:55:32  mattias
+  updated french translation  from Robert Calmas
+
   Revision 1.251  2005/03/18 07:40:18  micha
   fix combobox placement issue in OI (strengthen condition to check for left or top resizing)
 

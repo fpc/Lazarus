@@ -1,6 +1,6 @@
 #: synmacrorecorder:scannotpause
 msgid "Can only pause when recording"
-msgstr "Peut seulement pendant l'enregistrement"
+msgstr "Pause possible seulement pendant l'enregistrement"
 
 #: synmacrorecorder:scannotresume
 msgid "Can only resume when paused"
