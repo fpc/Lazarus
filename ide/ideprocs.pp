@@ -204,9 +204,9 @@ procedure SaveStringList(XMLConfig: TXMLConfig; List: TStringList;
   const Path: string);
 var i: integer;
 begin
-  XMLConfig.SetValue(Path+'Count',List.Count);
+  XMLConfig.SetDeleteValue(Path+'Count',List.Count,0);
   for i:=0 to List.Count-1 do
-    XMLConfig.SetValue(Path+'Item'+IntToStr(i+1)+'/Value',List[i]);
+    XMLConfig.SetDeleteValue(Path+'Item'+IntToStr(i+1)+'/Value',List[i],'');
 end;
 
 procedure LoadRect(XMLConfig: TXMLConfig; const Path:string; var ARect:TRect);
@@ -219,10 +219,10 @@ end;
 
 procedure SaveRect(XMLConfig: TXMLConfig; const Path:string; var ARect:TRect);
 begin
-  XMLConfig.SetValue(Path+'Left',ARect.Left);
-  XMLConfig.SetValue(Path+'Top',ARect.Top);
-  XMLConfig.SetValue(Path+'Right',ARect.Right);
-  XMLConfig.SetValue(Path+'Bottom',ARect.Bottom);
+  XMLConfig.SetDeleteValue(Path+'Left',ARect.Left,0);
+  XMLConfig.SetDeleteValue(Path+'Top',ARect.Top,0);
+  XMLConfig.SetDeleteValue(Path+'Right',ARect.Right,0);
+  XMLConfig.SetDeleteValue(Path+'Bottom',ARect.Bottom,0);
 end;
 
 function CompareFilenames(const Filename1, Filename2: string): integer;
