@@ -754,7 +754,7 @@ implementation
 
 
 uses
-  Controls, ClipBrd, TypInfo;
+  Controls, TypInfo;
 
 const
   GraphicsFinalized: boolean = false;
@@ -906,6 +906,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.51  2002/10/24 10:05:51  lazarus
+  MG: broke graphics.pp <-> clipbrd.pp circle
+
   Revision 1.50  2002/10/14 06:39:12  lazarus
   MG: fixed storing TFont.Size
 
