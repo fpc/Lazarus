@@ -113,6 +113,7 @@ type
     
     {$IFDEF ClientRectBugFix}
     procedure SetResizeRequest(Widget: PGtkWidget);
+    procedure UnsetResizeRequest(Widget: PGtkWidget);
     {$ENDIF}
     
     procedure SendCachedLCLMessages;
@@ -391,6 +392,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.46  2002/06/06 07:23:24  lazarus
+  MG: small fixes to reduce form repositioing
+
   Revision 1.45  2002/05/30 14:11:12  lazarus
   MG: added filters and history to TOpenDialog
 
