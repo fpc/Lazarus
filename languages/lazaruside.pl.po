@@ -130,7 +130,7 @@ msgstr "%sTen pakiet jest zainstalowany, ale nie znalaz³em jego pliku lpk"
 
 #: lazarusidestrconsts:lisoipthispackagewasautomaticallycreated
 msgid "%sThis package was automatically created"
-msgstr "%sTen pakiet zosta³ utworzony automagicznie"
+msgstr "%sTen pakiet zosta³ utworzony automatycznie"
 
 #: lazarusidestrconsts:uemaddbreakpoint
 msgid "&Add Breakpoint"
@@ -298,7 +298,7 @@ msgstr "Dodaj szablon kodu"
 
 #: lazarusidestrconsts:lismenuaddtoproject
 msgid "Add editor file to Project"
-msgstr ""
+msgstr "Dodaj plik do projektu"
 
 #: lazarusidestrconsts:lisa2paddfile
 msgid "Add File"
@@ -338,7 +338,7 @@ msgstr "dodaj opcje do zale¿nych pakietów i projektów"
 
 #: lazarusidestrconsts:lispckoptsaddpathstodependentpackagesprojects
 msgid "Add paths to dependent packages/projects"
-msgstr "Dodaj ¶cie¿ki do zale¿nuch pakietów/projektów"
+msgstr "Dodaj ¶cie¿ki do zale¿nych pakietów/projektów"
 
 #: lazarusidestrconsts:lisa2paddtopackage
 msgid "Add to package"
@@ -502,23 +502,23 @@ msgstr "auto zainstalowany statycznie"
 
 #: lazarusidestrconsts:lispckoptsautorebuildwhenrebuildingall
 msgid "Auto rebuild when rebuilding all"
-msgstr "Automagicznie przebuduj przy Przebuduj wszystkie"
+msgstr "Automatycznie przebuduj przy Przebuduj wszystkie"
 
 #: lazarusidestrconsts:dlgautoren
 msgid "Auto rename file"
-msgstr "Automagicznie zmieñ nazwê pliku"
+msgstr "Automatycznie zmieñ nazwê pliku"
 
 #: lazarusidestrconsts:dlgautosave
 msgid "Auto save"
-msgstr "Automagiczne zapisywanie"
+msgstr "Automatyczne zapisywanie"
 
 #: lazarusidestrconsts:dlgautocreateforms
 msgid "Auto-create forms:"
-msgstr "Automagicznie twórz:"
+msgstr "Automatycznie twórz:"
 
 #: lazarusidestrconsts:lispckexplautocreated
 msgid "AutoCreated"
-msgstr "Automagicznie utworzony"
+msgstr "Automatycznie utworzony"
 
 #: lazarusidestrconsts:rslanguageautomatic
 msgid "Automatic (or english)"
@@ -526,15 +526,15 @@ msgstr "Automatic (or english)"
 
 #: lazarusidestrconsts:lispckoptsautomaticallyincrementversiononbuild
 msgid "Automatically increment version on build"
-msgstr "Automagicznie zwiêksz numer wersji przy budowaniu"
+msgstr "Automatycznie zwiêksz numer wersji przy budowaniu"
 
 #: lazarusidestrconsts:lispkgmangautomaticallyinstalledpackages
 msgid "Automatically installed packages"
-msgstr "Automagicznie zainstalowane pakiety"
+msgstr "Automatycznie zainstalowane pakiety"
 
 #: lazarusidestrconsts:lispckoptsautomaticallyrebuildasneeded
 msgid "Automatically rebuild as needed"
-msgstr "Automagicznie przebuduj gdy trzeba"
+msgstr "Automatycznie przebuduj gdy trzeba"
 
 #: lazarusidestrconsts:dlgavailableforms
 msgid "Available forms:"
@@ -558,7 +558,7 @@ msgstr "Kopia zapasowa"
 
 #: lazarusidestrconsts:lisbackupfilefailed
 msgid "Backup file failed"
-msgstr "Nie moge utworzyæ kopii zapasowej pliku"
+msgstr "Nie mo¿na utworzyæ kopii zapasowej pliku"
 
 #: lazarusidestrconsts:dlgbehindmethods
 msgid "Behind methods"
@@ -610,11 +610,11 @@ msgstr "Poka¿"
 
 #: lazarusidestrconsts:lisa2pbrokendependencies
 msgid "Broken Dependencies"
-msgstr "Z³amane zale¿no¶ci"
+msgstr "Zerwane zale¿no¶ci"
 
 #: lazarusidestrconsts:lispkgmangbrokendependency
 msgid "Broken dependency"
-msgstr "Z³±mana zale¿no¶æ"
+msgstr "Zerwane zale¿no¶æ"
 
 #: lazarusidestrconsts:lispatheditbrowse
 msgid "Browse"
