@@ -209,8 +209,8 @@ procedure TCodeCompletionCodeTool.AddClassInsertion(PosNode: TCodeTreeNode;
 { add an insert request entry to the list of insertions
   For example: a request to insert a new variable or a new method to the class
 
-  PosNode:   The node, to which the request belongs. e.g. the property node, if
-             the insert is the auto created private variable
+  PosNode:   optional. The node, to which the request belongs. e.g. the
+             property node, if the insert is the auto created private variable.
   CleanDef:  The skeleton of the new insertion. e.g. the variablename or the
              method header without parameter names.
   Def:       The insertion code.
@@ -842,7 +842,7 @@ var ANodeExt: TCodeTreeNodeExtension;
   ClassSectionNode, ANode, InsertNode: TCodeTreeNode;
   Indent, InsertPos: integer;
   CurCode: string;
-  IsVariable: boolean;
+  IsVariable, InsertBehind: boolean;
 begin
   ANodeExt:=FirstInsert;
   // insert all nodes of specific type
@@ -877,61 +877,105 @@ begin
         InsertPos:=NewPrivatSectionInsertPos;
       end else begin
         // there is an existing class section to insert into
+        
+        // find a nice insert position
         InsertNode:=nil; // the new part will be inserted after this node
                          //   nil means insert as first
+        InsertBehind:=true;
         ANode:=ClassSectionNode.FirstChild;
+        
+        // skip the class GUID
         if (ANode<>nil) and (ANode.Desc=ctnClassGUID) then
           ANode:=ANode.NextBrother;
+
+        // insert methods behind variables
         if not IsVariable then begin
-          // insert procs after variables
           while (ANode<>nil) and (ANode.Desc=ctnVarDefinition) do begin
             InsertNode:=ANode;
             ANode:=ANode.NextBrother;
           end;
         end;
+        
+        // find a nice position between similar siblings
         case ASourceChangeCache.BeautifyCodeOptions.ClassPartInsertPolicy of
-          cpipAlphabetically:
-            begin
-              while ANode<>nil do begin
-                if (IsVariable) then begin
-                  if (ANode.Desc<>ctnVarDefinition)
-                  or (CompareNodeIdentChars(ANode,ANodeExt.Txt)<0) then
-                    break;
-                end else begin
-                  case ANode.Desc of
-                    ctnProcedure:
-                      begin
-                        CurCode:=ExtractProcName(ANode,[]);
-                        if AnsiCompareStr(CurCode,ANodeExt.ExtTxt2)>0 then
-                          break;
-                      end;
-                    ctnProperty:
+        
+        cpipAlphabetically:
+          begin
+            while ANode<>nil do begin
+              if (IsVariable) then begin
+                // the insertion is a new variable
+                if (ANode.Desc<>ctnVarDefinition)
+                or (CompareNodeIdentChars(ANode,ANodeExt.Txt)<0) then
+                  break;
+              end else begin
+                // the insertion is a new method
+                case ANode.Desc of
+                  ctnProcedure:
+                    begin
+                      CurCode:=ExtractProcName(ANode,[]);
+                      if AnsiCompareStr(CurCode,ANodeExt.ExtTxt2)>0 then
+                        break;
+                    end;
+                  ctnProperty:
+                    begin
+                      if ASourceChangeCache.BeautifyCodeOptions
+                          .MixMethodsAndPorperties then
                       begin
                         CurCode:=ExtractPropName(ANode,false);
                         if AnsiCompareStr(CurCode,ANodeExt.ExtTxt2)>0 then
                           break;
-                      end;
-                  end;
+                      end else
+                        break;
+                    end;
                 end;
-                InsertNode:=ANode;
-                ANode:=ANode.NextBrother;
               end;
+              InsertNode:=ANode;
+              ANode:=ANode.NextBrother;
             end;
+          end;
+          
         else
           // cpipLast
           begin
             while ANode<>nil do begin
-              if (IsVariable) and (ANode.Desc<>ctnVarDefinition) then
-                break;
+              if (IsVariable) then begin
+                // the insertion is a variable
+                if (ANode.Desc<>ctnVarDefinition) then
+                  break;
+              end else begin
+                // the insertion is a method
+                if (not ASourceChangeCache.BeautifyCodeOptions
+                   .MixMethodsAndPorperties)
+                and (ANode.Desc=ctnProperty) then
+                  break;
+              end;
               InsertNode:=ANode;
               ANode:=ANode.NextBrother;
             end;
           end
         end;
+        
         if InsertNode<>nil then begin
-          // insert after InsertNode
+        
+          if (not IsVariable) and (InsertNode.Desc=ctnVarDefinition)
+          and (InsertNode.NextBrother<>nil) then begin
+            // insertion is a new method and it should be inserted behind
+            // variables. Because methods and variables should be separated
+            // there is a next node, insert the new method in front of the next
+            // node, instead of inserting it right behind the variable.
+            // This makes sure to use existing separation comments/empty lines.
+            InsertNode:=InsertNode.NextBrother;
+            InsertBehind:=false;
+          end;
+          
           Indent:=GetLineIndent(Src,InsertNode.StartPos);
-          InsertPos:=FindFirstLineEndAfterInCode(InsertNode.EndPos);
+          if InsertBehind then begin
+            // insert behind InsertNode
+            InsertPos:=FindFirstLineEndAfterInCode(InsertNode.EndPos);
+          end else begin
+            // insert in front of InsertNode
+            InsertPos:=InsertNode.StartPos;
+          end;
         end else begin
           // insert as first variable/proc
           Indent:=GetLineIndent(Src,ClassSectionNode.StartPos)
