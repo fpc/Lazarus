@@ -5678,23 +5678,28 @@ begin
     Result := DebugBoss.RunDebugger;
     if Result<>mrOk then exit;
   end else begin
-    if FRunProcess = nil then Exit;
+    writeln('NOTE: No debugger defined. Starting program without debugging ...');
+    // no debugger, just start the program
     try
-      Writeln('  EXECUTING "',FRunProcess.CommandLine,'"');
-      Writeln('    WorkingDir "',FRunProcess.CurrentDirectory,'"');
-      // just run the program and don't care (no watch, no debugging)
-      // just check from time to time, if it has terminated and clean up
-      GetDefaultProcessList.Add(FRunProcess);
-      FRunProcess.Execute;
+      if FRunProcess = nil then Exit;
+      try
+        Writeln('  EXECUTING "',FRunProcess.CommandLine,'"');
+        Writeln('    WorkingDir "',FRunProcess.CurrentDirectory,'"');
+        // just run the program and don't care (no watch, no debugging)
+        // just check from time to time, if it has terminated and clean up
+        GetDefaultProcessList.Add(FRunProcess);
+        FRunProcess.Execute;
+        Result := mrOk;
+      except
+        on e: Exception do
+          MessageDlg(Format(lisErrorInitializingProgramSErrorS,
+            [#13, '"', FRunProcess.CommandLine, '"', #13, e.Message]),
+            mtError, [mbOk], 0);
+      end;
+    finally
       ToolStatus:=itNone;
-      Result := mrOk;
-    except
-      on e: Exception do 
-        MessageDlg(Format(lisErrorInitializingProgramSErrorS,
-          [#13, '"', FRunProcess.CommandLine, '"', #13, e.Message]),
-          mtError, [mbOk], 0);
     end;
-  end;   
+  end;
   Writeln('[TMainIDE.DoRunProject] END');
 end;
 
@@ -9368,6 +9373,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.631  2003/08/08 10:41:34  mattias
+  fixed no debugger run
+
   Revision 1.630  2003/08/08 10:24:47  mattias
   fixed initialenabled, debuggertype, linkscaner open string constant
 
