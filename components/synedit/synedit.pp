@@ -1187,32 +1187,36 @@ begin
       TSynEditPlugin(fPlugins[i]).Free;
     fPlugins.Free;
   end;
+  {$IFNDEF SYN_LAZARUS}
   fScrollTimer.Free; 
-  {$IFDEF SYN_LAZARUS}fScrollTimer:=nil;{$ENDIF}
   fTSearch.Free;
-  {$IFDEF SYN_LAZARUS}fTSearch:=nil;{$ENDIF}
   fMarkList.Free;
-  {$IFDEF SYN_LAZARUS}fMarkList:=nil;{$ENDIF}
   fBookMarkOpt.Free;
   fBookMarkOpt := nil;
   fKeyStrokes.Free;
-  {$IFDEF SYN_LAZARUS}fKeyStrokes:=nil;{$ENDIF}
   fSelectedColor.Free;
-  {$IFDEF SYN_LAZARUS}fSelectedColor:=nil;{$ENDIF}
   fUndoList.Free;
-  {$IFDEF SYN_LAZARUS}fUndoList:=nil;{$ENDIF}
   fRedoList.Free;
-  {$IFDEF SYN_LAZARUS}fRedoList:=nil;{$ENDIF}
   fGutter.Free;
-  {$IFDEF SYN_LAZARUS}fGutter:=nil;{$ENDIF}
   fTextDrawer.Free;
-  {$IFDEF SYN_LAZARUS}fTextDrawer:=nil;{$ENDIF}
   fInternalImage.Free;
-  {$IFDEF SYN_LAZARUS}fInternalImage:=nil;{$ENDIF}
   fFontDummy.Free;
-  {$IFDEF SYN_LAZARUS}fFontDummy:=nil;{$ENDIF}
   Lines.Free;
-  {$IFDEF SYN_LAZARUS}fLines:=nil;{$ENDIF}
+  {$ELSE}
+  FreeAndNil(fScrollTimer);
+  FreeAndNil(fTSearch);
+  FreeAndNil(fMarkList);
+  FreeAndNil(fBookMarkOpt);
+  FreeAndNil(fKeyStrokes);
+  FreeAndNil(fSelectedColor);
+  FreeAndNil(fUndoList);
+  FreeAndNil(fRedoList);
+  FreeAndNil(fGutter);
+  FreeAndNil(fTextDrawer);
+  FreeAndNil(fInternalImage);
+  FreeAndNil(fFontDummy);
+  FreeAndNil(fLines);
+  {$ENDIF}
   inherited Destroy;
 end;
 

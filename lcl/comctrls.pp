@@ -1304,8 +1304,11 @@ type
     function GetLastNode: TTreeNode; // last top level node
     function GetLastSubNode: TTreeNode; // absolute last node
     function GetLastExpandedSubNode: TTreeNode; // absolute last node
-    function Insert(Node: TTreeNode; const S: string): TTreeNode;
+    function Insert(NextNode: TTreeNode; const S: string): TTreeNode;
     function InsertObject(NextNode: TTreeNode; const S: string;
+      Data: Pointer): TTreeNode;
+    function InsertBehind(PrevNode: TTreeNode; const S: string): TTreeNode;
+    function InsertObjectBehind(PrevNode: TTreeNode; const S: string;
       Data: Pointer): TTreeNode;
     function ConsistencyCheck: integer;
     procedure WriteDebugReport(const Prefix: string; AllNodes: boolean);
@@ -1751,6 +1754,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.22  2002/03/04 07:28:53  lazarus
+  MG: find declaration: fixed function in with context
+
   Revision 1.21  2002/03/02 17:03:19  lazarus
   MG: fixed TTreeView resize update
 

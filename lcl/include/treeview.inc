@@ -1554,9 +1554,9 @@ begin
   end;
 end;
 
-function TTreeNodes.Insert(Node: TTreeNode; const S: string): TTreeNode;
+function TTreeNodes.Insert(NextNode: TTreeNode; const S: string): TTreeNode;
 begin
-  Result := InsertObject(Node, S, nil);
+  Result := InsertObject(NextNode, S, nil);
 end;
 
 function TTreeNodes.InsertObject(NextNode: TTreeNode; const S: string;
@@ -1565,6 +1565,23 @@ function TTreeNodes.InsertObject(NextNode: TTreeNode; const S: string;
 // NextNode (as sibling with same parent).
 begin
   Result:=InternalAddObject(NextNode,S,Data,taInsert);
+end;
+
+function TTreeNodes.InsertBehind(PrevNode: TTreeNode; const S: string
+  ): TTreeNode;
+begin
+  Result := InsertObjectBehind(PrevNode, S, nil);
+end;
+
+function TTreeNodes.InsertObjectBehind(PrevNode: TTreeNode; const S: string;
+  Data: Pointer): TTreeNode;
+// create a new node with Text=S and Data=Data and insert in front of
+// NextNode (as sibling with same parent).
+begin
+  if (PrevNode<>nil) and (PrevNode.GetNextSibling<>nil) then
+    Result:=InternalAddObject(PrevNode.GetNextSibling,S,Data,taInsert)
+  else
+    Result:=AddObject(nil,S,Data);
 end;
 
 function TTreeNodes.InternalAddObject(Node: TTreeNode; const S: string;

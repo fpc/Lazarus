@@ -452,6 +452,7 @@ begin
       ReleaseFontsInfo(APheSharedFontsInfo);
     end;
     FFontsInfo.Free;
+    FFontsInfo:=nil;
   end;
 
   inherited Destroy;
@@ -638,6 +639,7 @@ end;
 
 constructor TheFontStock.Create(InitialFont: TFont);
 begin
+  writeln(' AAA TheFontStock.Create Self=',HexStr(Cardinal(Self),8));
   inherited Create;
 
   SetBaseFont(InitialFont);
@@ -645,6 +647,8 @@ end;
 
 destructor TheFontStock.Destroy;
 begin
+  writeln(' AAA TheFontStock.Destroy Self=',HexStr(Cardinal(Self),8));
+  
   ReleaseFontsInfo;
   ASSERT(FDCRefCount = 0);
 
@@ -741,6 +745,8 @@ end;
 
 procedure TheFontStock.ReleaseFontsInfo;
 begin
+  writeln(' AAA TheFontStock.ReleaseFontsInfo Self=',HexStr(Cardinal(Self),8));
+  
   if Assigned(FpInfo) then
     with GetFontsInfoManager do
     begin
@@ -847,10 +853,14 @@ begin
   SetBaseFont(ABaseFont);
   FColor := clWindowText;
   FBkColor := clWindow;
+  
+  writeln(' AAA TheTextDrawer.Create Self=',HexStr(Cardinal(Self),8));
 end;
 
 destructor TheTextDrawer.Destroy;
 begin
+  writeln(' AAA TheTextDrawer.Destroy Self=',HexStr(Cardinal(Self),8));
+  
   FFontStock.Free;
   ReleaseETODist;
 

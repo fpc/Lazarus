@@ -43,15 +43,30 @@ type
     EditMenuItem: TMenuItem;
     MoveNodeUpMenuItem: TMenuItem;
     MoveNodeDownMenuItem: TMenuItem;
-    InsertDefineMenuItem: TMenuItem;
-    InsertDefineAllMenuItem: TMenuItem;
-    InsertUndefineMenuItem: TMenuItem;
-    InsertBlockMenuItem: TMenuItem;
-    InsertDirectoryMenuItem: TMenuItem;
-    InsertIfMenuItem: TMenuItem;
-    InsertIfDefMenuItem: TMenuItem;
-    InsertIfNotDefMenuItem: TMenuItem;
-    InsertElseMenuItem: TMenuItem;
+    MoveNodeLvlUpMenuItem: TMenuItem;
+    MoveNodeLvlDownMenuItem: TMenuItem;
+    InsertBehindMenuItem: TMenuItem;
+    InsertBehindDefineMenuItem: TMenuItem;
+    InsertBehindDefineAllMenuItem: TMenuItem;
+    InsertBehindUndefineMenuItem: TMenuItem;
+    InsertBehindBlockMenuItem: TMenuItem;
+    InsertBehindDirectoryMenuItem: TMenuItem;
+    InsertBehindIfMenuItem: TMenuItem;
+    InsertBehindIfDefMenuItem: TMenuItem;
+    InsertBehindIfNotDefMenuItem: TMenuItem;
+    InsertBehindElseIfMenuItem: TMenuItem;
+    InsertBehindElseMenuItem: TMenuItem;
+    InsertAsChildMenuItem: TMenuItem;
+    InsertAsChildDefineMenuItem: TMenuItem;
+    InsertAsChildDefineAllMenuItem: TMenuItem;
+    InsertAsChildUndefineMenuItem: TMenuItem;
+    InsertAsChildBlockMenuItem: TMenuItem;
+    InsertAsChildDirectoryMenuItem: TMenuItem;
+    InsertAsChildIfMenuItem: TMenuItem;
+    InsertAsChildIfDefMenuItem: TMenuItem;
+    InsertAsChildIfNotDefMenuItem: TMenuItem;
+    InsertAsChildElseIfMenuItem: TMenuItem;
+    InsertAsChildElseMenuItem: TMenuItem;
     DeleteNodeMenuItem: TMenuItem;
     CopyToClipbrdMenuItem: TMenuItem;
     PasteFromClipbrdMenuItem: TMenuItem;
@@ -88,9 +103,14 @@ type
     procedure SaveAndExitMenuItemClick(Sender: TObject);
     procedure DontSaveAndExitMenuItemClick(Sender: TObject);
     procedure FormResize(Sender: TObject);
-    procedure DefineTreeViewMouseUp(Sender:TObject; Button:TMouseButton;
-                                    Shift:TShiftState;  X,Y:integer);
-    procedure ValueNoteBookPageChanged(Sender:TObject);
+    procedure DefineTreeViewMouseUp(Sender: TObject; Button: TMouseButton;
+                                    Shift: TShiftState;  X,Y: integer);
+    procedure ValueNoteBookPageChanged(Sender: TObject);
+    procedure MoveFilePathUpBitBtnClick(Sender: TObject);
+    procedure MoveFilePathDownBitBtnClick(Sender: TObject);
+    procedure DeleteFilePathBitBtnClick(Sender: TObject);
+    procedure InsertFilePathBitBtnClick(Sender: TObject);
+    procedure InsertNodeMenuItemClick(Sender: TObject);
   private
     FDefineTree: TDefineTree;
     FLastSelectedNode: TTreeNode;
@@ -104,6 +124,7 @@ type
     procedure SaveSelectedValues;
     procedure ShowSelectedValues;
     function ValueToFilePathText(const AValue: string): string;
+    procedure InsertNewNode(Behind: boolean; Action: TDefineAction);
   public
     procedure Assign(ACodeToolBoss: TCodeToolManager;
       Options: TCodeToolsOptions);
@@ -268,6 +289,70 @@ begin
   if ValueNoteBook.PageIndex=0 then ValueAsPathToValueAsText;
 end;
 
+procedure TCodeToolsDefinesEditor.MoveFilePathUpBitBtnClick(Sender: TObject);
+var y: integer;
+begin
+  if ValueAsFilePathsSynEdit.ReadOnly then exit;
+  y:=ValueAsFilePathsSynEdit.CaretY;
+  if (y>1) and (y<=ValueAsFilePathsSynEdit.Lines.Count) then
+    ValueAsFilePathsSynEdit.Lines.Move(y,y-1);
+end;
+
+procedure TCodeToolsDefinesEditor.MoveFilePathDownBitBtnClick(Sender: TObject);
+var y: integer;
+begin
+  if ValueAsFilePathsSynEdit.ReadOnly then exit;
+  y:=ValueAsFilePathsSynEdit.CaretY;
+  if (y>=1) and (y<ValueAsFilePathsSynEdit.Lines.Count) then
+    ValueAsFilePathsSynEdit.Lines.Move(y,y+1);
+end;
+
+procedure TCodeToolsDefinesEditor.DeleteFilePathBitBtnClick(Sender: TObject);
+var y: integer;
+begin
+  if ValueAsFilePathsSynEdit.ReadOnly then exit;
+  y:=ValueAsFilePathsSynEdit.CaretY;
+  if (y>=1) and (y<=ValueAsFilePathsSynEdit.Lines.Count) then
+    ValueAsFilePathsSynEdit.Lines.Delete(y);
+end;
+
+procedure TCodeToolsDefinesEditor.InsertFilePathBitBtnClick(Sender: TObject);
+var y: integer;
+begin
+  if ValueAsFilePathsSynEdit.ReadOnly then exit;
+  y:=ValueAsFilePathsSynEdit.CaretY;
+  if (y>=1) and (y<=ValueAsFilePathsSynEdit.Lines.Count) then
+    ValueAsFilePathsSynEdit.Lines.Insert(y,'');
+end;
+
+procedure TCodeToolsDefinesEditor.InsertNodeMenuItemClick(Sender: TObject);
+var Behind: boolean;
+  Action: TDefineAction;
+begin
+  Behind:=(TMenuItem(Sender).Parent=InsertBehindMenuItem);
+  if Sender=InsertBehindDefineMenuItem then Action:=da_Define
+  else if Sender=InsertBehindDefineAllMenuItem then Action:=da_DefineAll
+  else if Sender=InsertBehindUndefineMenuItem then Action:=da_Undefine
+  else if Sender=InsertBehindBlockMenuItem then Action:=da_Block
+  else if Sender=InsertBehindDirectoryMenuItem then Action:=da_Directory
+  else if Sender=InsertBehindIfMenuItem then Action:=da_If
+  else if Sender=InsertBehindIfDefMenuItem then Action:=da_IfDef
+  else if Sender=InsertBehindIfNotDefMenuItem then Action:=da_IfNDef
+  else if Sender=InsertBehindElseIfMenuItem then Action:=da_ElseIf
+  else if Sender=InsertBehindElseMenuItem then Action:=da_Else
+  else if Sender=InsertAsChildDefineMenuItem then Action:=da_Define
+  else if Sender=InsertAsChildDefineAllMenuItem then Action:=da_DefineAll
+  else if Sender=InsertAsChildUndefineMenuItem then Action:=da_Undefine
+  else if Sender=InsertAsChildBlockMenuItem then Action:=da_Block
+  else if Sender=InsertAsChildDirectoryMenuItem then Action:=da_Directory
+  else if Sender=InsertAsChildIfMenuItem then Action:=da_If
+  else if Sender=InsertAsChildIfDefMenuItem then Action:=da_IfDef
+  else if Sender=InsertAsChildIfNotDefMenuItem then Action:=da_IfNDef
+  else if Sender=InsertAsChildElseIfMenuItem then Action:=da_ElseIf
+  else if Sender=InsertAsChildElseMenuItem then Action:=da_Else;
+  InsertNewNode(Behind,Action);
+end;
+
 procedure TCodeToolsDefinesEditor.CreateComponents;
 
   procedure CreateWinControl(var AWinControl: TWinControl;
@@ -303,6 +388,7 @@ procedure TCodeToolsDefinesEditor.CreateComponents;
     TheImageList.Add(Pixmap,nil)
   end;
 
+var i: integer;
 begin
   TheImageList:=TImageList.Create(Self);
   with TheImageList do begin
@@ -346,24 +432,14 @@ begin
               EditMenuItem);
   AddMenuItem(MoveNodeDownMenuItem,'MoveNodeDownMenuItem','Move node down',
               EditMenuItem);
+  AddMenuItem(MoveNodeLvlUpMenuItem,'MoveNodeLvlUpMenuItem','Move node one level up',
+              EditMenuItem);
+  AddMenuItem(MoveNodeLvlDownMenuItem,'MoveNodeLvlDownMenuItem','Move node one level down',
+              EditMenuItem);
   EditMenuItem.Add(CreateSeperator);
-  AddMenuItem(InsertDefineMenuItem,'InsertDefineMenuItem','Insert Define',
+  AddMenuItem(InsertBehindMenuItem,'InsertBehindMenuItem','Insert node behind',
               EditMenuItem);
-  AddMenuItem(InsertDefineAllMenuItem,'InsertDefineAllMenuItem','Insert Define All',
-              EditMenuItem);
-  AddMenuItem(InsertUndefineMenuItem,'InsertUndefineMenuItem','Insert Undefine',
-              EditMenuItem);
-  AddMenuItem(InsertBlockMenuItem,'InsertBlockMenuItem','Insert Block',
-              EditMenuItem);
-  AddMenuItem(InsertDirectoryMenuItem,'InsertDirectoryMenuItem','Insert Directory',
-              EditMenuItem);
-  AddMenuItem(InsertIfMenuItem,'InsertIfMenuItem','Insert If',
-              EditMenuItem);
-  AddMenuItem(InsertIfDefMenuItem,'InsertIfDefMenuItem','Insert IfDef',
-              EditMenuItem);
-  AddMenuItem(InsertIfNotDefMenuItem,'InsertIfNotDefMenuItem','Insert IfNDef',
-              EditMenuItem);
-  AddMenuItem(InsertElseMenuItem,'InsertElseMenuItem','Insert Else',
+  AddMenuItem(InsertAsChildMenuItem,'InsertAsChildMenuItem','Insert node as child',
               EditMenuItem);
   EditMenuItem.Add(CreateSeperator);
   AddMenuItem(DeleteNodeMenuItem,'DeleteNodeMenuItem','Delete node',
@@ -373,6 +449,60 @@ begin
               EditMenuItem);
   AddMenuItem(PasteFromClipbrdMenuItem,'PasteFromClipbrdMenuItem',
               'Paste from clipboard',EditMenuItem);
+
+  // insert node behind submenu
+  AddMenuItem(InsertBehindDefineMenuItem,'InsertBehindDefineMenuItem','Define',
+              InsertBehindMenuItem);
+  AddMenuItem(InsertBehindDefineAllMenuItem,'InsertBehindDefineAllMenuItem','Define All',
+              InsertBehindMenuItem);
+  AddMenuItem(InsertBehindUndefineMenuItem,'InsertBehindUndefineMenuItem','Undefine',
+              InsertBehindMenuItem);
+  InsertBehindMenuItem.Add(CreateSeperator);
+  AddMenuItem(InsertBehindBlockMenuItem,'InsertBehindBlockMenuItem','Block',
+              InsertBehindMenuItem);
+  AddMenuItem(InsertBehindDirectoryMenuItem,'InsertBehindDirectoryMenuItem','Directory',
+              InsertBehindMenuItem);
+  InsertBehindMenuItem.Add(CreateSeperator);
+  AddMenuItem(InsertBehindIfMenuItem,'InsertBehindIfMenuItem','If',
+              InsertBehindMenuItem);
+  AddMenuItem(InsertBehindIfDefMenuItem,'InsertBehindIfDefMenuItem','IfDef',
+              InsertBehindMenuItem);
+  AddMenuItem(InsertBehindIfNotDefMenuItem,'InsertBehindIfNotDefMenuItem','IfNDef',
+              InsertBehindMenuItem);
+  AddMenuItem(InsertBehindElseIfMenuItem,'InsertBehindElseIfMenuItem','ElseIf',
+              InsertBehindMenuItem);
+  AddMenuItem(InsertBehindElseMenuItem,'InsertBehindElseMenuItem','Else',
+              InsertBehindMenuItem);
+  for i:=0 to InsertBehindMenuItem.Count-1 do
+    if InsertBehindMenuItem[i].Caption<>'-' then
+      InsertBehindMenuItem[i].OnClick:=@InsertNodeMenuItemClick;
+
+  // insert node as child submenu
+  AddMenuItem(InsertAsChildDefineMenuItem,'InsertAsChildDefineMenuItem','Define',
+              InsertAsChildMenuItem);
+  AddMenuItem(InsertAsChildDefineAllMenuItem,'InsertAsChildDefineAllMenuItem','Define All',
+              InsertAsChildMenuItem);
+  AddMenuItem(InsertAsChildUndefineMenuItem,'InsertAsChildUndefineMenuItem','Undefine',
+              InsertAsChildMenuItem);
+  InsertAsChildMenuItem.Add(CreateSeperator);
+  AddMenuItem(InsertAsChildBlockMenuItem,'InsertAsChildBlockMenuItem','Block',
+              InsertAsChildMenuItem);
+  AddMenuItem(InsertAsChildDirectoryMenuItem,'InsertAsChildDirectoryMenuItem','Directory',
+              InsertAsChildMenuItem);
+  InsertAsChildMenuItem.Add(CreateSeperator);
+  AddMenuItem(InsertAsChildIfMenuItem,'InsertAsChildIfMenuItem','If',
+              InsertAsChildMenuItem);
+  AddMenuItem(InsertAsChildIfDefMenuItem,'InsertAsChildIfDefMenuItem','IfDef',
+              InsertAsChildMenuItem);
+  AddMenuItem(InsertAsChildIfNotDefMenuItem,'InsertAsChildIfNotDefMenuItem','IfNDef',
+              InsertAsChildMenuItem);
+  AddMenuItem(InsertAsChildElseIfMenuItem,'InsertAsChildElseIfMenuItem','ElseIf',
+              InsertAsChildMenuItem);
+  AddMenuItem(InsertAsChildElseMenuItem,'InsertAsChildElseMenuItem','Else',
+              InsertAsChildMenuItem);
+  for i:=0 to InsertAsChildMenuItem.Count-1 do
+    if InsertAsChildMenuItem[i].Caption<>'-' then
+      InsertAsChildMenuItem[i].OnClick:=@InsertNodeMenuItemClick;
 
   // tools
   AddMenuItem(ToolsMenuItem,'ToolsMenuItem','Tools',nil);
@@ -447,19 +577,23 @@ begin
 
   CreateWinControl(MoveFilePathUpBitBtn,TBitBtn,'MoveFilePathUpBitBtn',
                    ValueNoteBook.Page[1]);
-  MoveFilePathUpBitBtn.Caption:='Move path up';
+  MoveFilePathUpBitBtn.Caption:='Up';
+  MoveFilePathUpBitBtn.OnClick:=@MoveFilePathUpBitBtnClick;
                    
   CreateWinControl(MoveFilePathDownBitBtn,TBitBtn,'MoveFilePathDownBitBtn',
                    ValueNoteBook.Page[1]);
-  MoveFilePathDownBitBtn.Caption:='Move path down';
+  MoveFilePathDownBitBtn.Caption:='Down';
+  MoveFilePathDownBitBtn.OnClick:=@MoveFilePathDownBitBtnClick;
                    
   CreateWinControl(DeleteFilePathBitBtn,TBitBtn,'DeleteFilePathBitBtn',
                    ValueNoteBook.Page[1]);
-  DeleteFilePathBitBtn.Caption:='Delete path';
+  DeleteFilePathBitBtn.Caption:='Delete';
+  DeleteFilePathBitBtn.OnClick:=@DeleteFilePathBitBtnClick;
                    
   CreateWinControl(InsertFilePathBitBtn,TBitBtn,'InsertFilePathBitBtn',
                    ValueNoteBook.Page[1]);
-  InsertFilePathBitBtn.Caption:='Insert path';
+  InsertFilePathBitBtn.Caption:='Insert';
+  InsertFilePathBitBtn.OnClick:=@InsertFilePathBitBtnClick;
 end;
 
 function TCodeToolsDefinesEditor.CreateSeperator : TMenuItem;
@@ -644,6 +778,84 @@ begin
   Result:=AValue;
   for i:=1 to length(Result) do
     if Result[i]=';' then Result[i]:=#13;
+end;
+
+procedure TCodeToolsDefinesEditor.InsertNewNode(Behind: boolean;
+  Action: TDefineAction);
+var SelTreeNode, NodeInFront, ParentNode, ANode, FirstNode,
+  NewTreeNode: TTreeNode;
+  NewDefNode: TDefineTemplate;
+  NewName, NewDescription, NewVariable, NewValue: string;
+  i: integer;
+begin
+  SelTreeNode:=DefineTreeView.Selected;
+  NodeInFront:=nil;
+  ParentNode:=nil;
+  if SelTreeNode<>nil then begin
+    // there is an selected node
+    if Behind then
+      // insert behind selected node
+      NodeInFront:=SelTreeNode
+    else begin
+      // insert as last child of selected node
+      ParentNode:=SelTreeNode;
+      NodeInFront:=ParentNode.GetFirstChild;
+      if NodeInFront<>nil then begin
+        while NodeInFront.GetNextSibling<>nil do
+          NodeInFront:=NodeInFront.GetNextSibling;
+      end;
+    end;
+  end else begin
+    // no node selected, add as last root node
+    NodeInFront:=DefineTreeView.Items.GetLastNode;
+    if NodeInFront<>nil then begin
+      while NodeInFront.GetNextSibling<>nil do
+        NodeInFront:=NodeInFront.GetNextSibling;
+    end;
+  end;
+  // find a unique name
+  if ParentNode<>nil then
+    FirstNode:=ParentNode.GetFirstChild
+  else
+    FirstNode:=nil;
+  if FirstNode=nil then FirstNode:=NodeInFront;
+  if FirstNode<>nil then begin
+    while FirstNode.GetPrevSibling<>nil do
+      FirstNode:=FirstNode.GetPrevSibling;
+  end;
+  i:=0;
+  repeat
+    inc(i);
+    ANode:=FirstNode;
+    while ANode<>nil do begin
+      if TDefineTemplate(ANode.Data).Name='NewNode'+IntToStr(i) then break;
+      ANode:=ANode.GetNextSibling;
+    end;
+  until ANode=nil;
+  NewName:='NewNode'+IntToStr(i);
+  NewDescription:=NewName;
+  NewVariable:='';
+  NewValue:='';
+  NewDefNode:=TDefineTemplate.Create(NewName,NewDescription,NewVariable,
+                                     NewValue,Action);
+  // add node to treeview
+  if ParentNode<>nil then
+    // add as last child
+    NewTreeNode:=DefineTreeView.Items.AddChildObject(ParentNode,NewName,
+                                                     NewDefNode)
+  else if (NodeInFront<>nil) and (NodeInFront.GetNextSibling<>nil) then
+    // insert in front
+    NewTreeNode:=DefineTreeView.Items.InsertObjectBehind(
+                  NodeInFront,NewName,NewDefNode);
+  SetNodeImages(NewTreeNode);
+
+  // add node to define tree
+  if NodeInFront<>nil then
+    NewDefNode.InsertAfter(TDefineTemplate(NodeInFront.Data))
+  else if ParentNode<>nil then
+    TDefineTemplate(ParentNode.Data).AddChild(NewDefNode)
+  else
+    FDefineTree.Add(NewDefNode);
 end;
 
 procedure TCodeToolsDefinesEditor.Assign(ACodeToolBoss: TCodeToolManager;

@@ -1564,22 +1564,23 @@ writeln('');
         Params.Load(OldInput);
       end;
       if Result.Node<>nil then begin
-        Result:=Result.Tool.FindBaseTypeOfNode(Params,Result.Node);
-        if (Result.Node<>nil) and (Result.Node.Desc=ctnProcedure) then begin
+        if (Result.Node<>nil)
+        and (Result.Node.Desc in [ctnProcedure,ctnProcedureHead]) then begin
           Result.Tool.BuildSubTreeForProcHead(Result.Node,FuncResultNode);
           if FuncResultNode<>nil then begin
             // this is function
             if (NextAtomType in [atSpace,atRoundBracketClose]) then begin
               // In Delphi Mode or if there is a @ qualifier return the
-              // function
+              // function and not the result type
               
               // ToDo:
 
             end;
             // Otherwise return the result type
-            Result:=Result.Tool.FindBaseTypeOfNode(Params,FuncResultNode);
+            Include(Params.Flags,fdfFunctionResult);
           end;
         end;
+        Result:=Result.Tool.FindBaseTypeOfNode(Params,Result.Node);
       end;
     end;
     
@@ -2338,6 +2339,7 @@ end;
 function TFindDeclarationTool.FindIdentifierInAncestors(
   ClassNode: TCodeTreeNode; Params: TFindDeclarationParams): boolean;
 { this function is internally used by FindIdentifierInContext
+  and FindBaseTypeOfNode
 }
 var AncestorAtom: TAtomPosition;
   OldInput: TFindDeclarationInput;
