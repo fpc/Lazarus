@@ -159,6 +159,7 @@ type
   public
     FCompStyle : LongInt;
     procedure Add(Item: TMenuItem);
+    procedure AddSeparator;
     constructor Create(TheOwner: TComponent); override;
     procedure Delete(Index: Integer);
     destructor Destroy; override;
@@ -361,6 +362,9 @@ end.
 
 {
   $Log$
+  Revision 1.37  2003/02/23 10:42:06  mattias
+  implemented changing TMenuItem.GroupIndex at runtime
+
   Revision 1.36  2003/01/04 11:58:32  mattias
   added Windows menu to IDE
 

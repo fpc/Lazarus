@@ -35,6 +35,18 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  procedure TMenuItem.AddSeparator;
+ ------------------------------------------------------------------------------}
+procedure TMenuItem.AddSeparator;
+var
+  Item: TMenuItem;
+begin
+  Item:=TMenuItem.Create(Self);
+  Item.Caption:='-';
+  Add(Item);
+end;
+
+{------------------------------------------------------------------------------
   Method: TMenuItem.Create
   Params:  TheOwner: the owner of the class
   Returns: Nothing
@@ -447,7 +459,7 @@ procedure TMenuItem.Insert(Index: Integer; Item: TMenuItem);
 begin
   if (Item = nil) then exit;
   if Item.Parent <> nil then
-    raise EMenuError.Create('Menu inserted twice');
+    RaiseGDBException('Menu inserted twice');
   
   // create Items if needed
   if FItems = nil then FItems := TList.Create;
@@ -906,7 +918,7 @@ begin
                                 +'menu item''s GroupIndex')
     end
     else
-      { Ripple change to menu items at Position and after }
+      // Ripple change to menu items at Position and after
       if (Items[i].GroupIndex<>0) and (Items[i].GroupIndex<Value) then
         Items[i].FGroupIndex:=Value;
 end;
@@ -917,6 +929,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.30  2003/02/23 10:42:06  mattias
+  implemented changing TMenuItem.GroupIndex at runtime
+
   Revision 1.29  2002/10/26 15:15:48  lazarus
   MG: broke LCL<->interface circles
 
@@ -1032,6 +1047,9 @@ end;
 
 
   $Log$
+  Revision 1.30  2003/02/23 10:42:06  mattias
+  implemented changing TMenuItem.GroupIndex at runtime
+
   Revision 1.29  2002/10/26 15:15:48  lazarus
   MG: broke LCL<->interface circles
 
