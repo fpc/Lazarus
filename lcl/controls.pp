@@ -522,9 +522,7 @@ type
     procedure SetName(const Value: TComponentName); override;
     procedure SetParent(AParent : TWinControl); virtual;
     Procedure SetParentComponent(Value : TComponent); override;
-    procedure SetCallback(Msg : LongInt);
     Procedure SetZOrder(Topmost: Boolean) ; dynamic;
-    procedure RemoveCallbacks;
     function GetText: TCaption; virtual;
     procedure SetText(const Value: TCaption); virtual;
     procedure WndProc(var Message : TLMessage); virtual;
@@ -727,8 +725,6 @@ type
     procedure CreateHandle; virtual;
     procedure CreateWnd; virtual; //creates the window
     procedure InitializeWnd; virtual; //gets called after the window is created
-    procedure AttachSignals; virtual;
-    procedure DetachSignals; virtual;
     procedure DestroyWnd; virtual;
     procedure UpdateShowing; virtual;
     Procedure SetZOrder(Topmost: Boolean); override;
@@ -1206,6 +1202,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.35  2002/03/25 17:59:19  lazarus
+  GTK Cleanup
+  Shane
+
   Revision 1.34  2002/03/16 21:40:54  lazarus
   MG: reduced size+move messages between lcl and interface
 

@@ -40,28 +40,6 @@ begin
    FBarTextFormat    := '%v from [%l-%u] (=%p%%)';
 end;   
 
-
-{------------------------------------------------------------------------------
-  Method:  TProgressBar.AttachSignals
-  Params:  None
-  Returns: Nothing
-
-  Set specific callback for this component.
- ------------------------------------------------------------------------------}
-procedure TProgressbar.AttachSignals;
-begin
-   inherited AttachSignals;	
-   Assert(False, 'Trace:[TProgressBar.AttachSignals] Assign Callback Signals');  
-
-{  SetCallback(LM_CLICKED);
-  SetCallback(LM_PRESSED);
-  SetCallback(LM_RELEASED);
-  SetCallback(LM_ENTER);
-  SetCallback(LM_LEAVE);
-  SetCallback(LM_CHECKRESIZE);
-}  
-end;
-
 {------------------------------------------------------------------------------
   Method: TProgressBar.InitializeWnd
   Params: none
@@ -308,6 +286,10 @@ end;
 
 {
   $Log$
+  Revision 1.2  2002/03/25 17:59:20  lazarus
+  GTK Cleanup
+  Shane
+
   Revision 1.1  2000/07/13 10:28:27  michael
   + Initial import
 

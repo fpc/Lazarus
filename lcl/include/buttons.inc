@@ -2,21 +2,6 @@
                                    TButton
  ******************************************************************************)
 
-{------------------------------------------------------------------------------
-  Method:  TButton.AttachSignals
-  Params:  none
-  Returns: Nothing
-
-  Gets called after the window is created but before the controls are created 
-  and the cached propeties are set. 
-  This is the only place where a call to SetCallBack is made.
- ------------------------------------------------------------------------------}
-procedure TButton.AttachSignals;
-begin
-  inherited AttachSignals;
-  SetCallback(LM_CLICKED);
-end;
-
 {------------------------------------------------------------------------------}
 {       TButton Constructor                                                    }
 {------------------------------------------------------------------------------}
@@ -125,6 +110,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.7  2002/03/25 17:59:20  lazarus
+  GTK Cleanup
+  Shane
+
   Revision 1.6  2001/11/21 19:32:32  lazarus
   TComboBox can now be moved in FormEditor
   Shane

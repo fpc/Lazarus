@@ -41,21 +41,6 @@ begin
   FItems:= NewStrings;
 end;
 
-{------------------------------------------------------------------------------
-  Method:  TCustomComboBox.AttachSignals
-  Params:  none
-  Returns: Nothing
-
-  Gets called after the window is created but before the controls are created 
-  and the cached propeties are set. 
-  This is the only place where a call to SetCallBack is made.
- ------------------------------------------------------------------------------}
-procedure TCustomComboBox.AttachSignals; 
-begin
-   inherited AttachSignals;
-   Assert(False, Format('Trace:[TCustomComboBox.AttachSignals] %s', [ClassName]));
-   SetCallback (LM_CHANGED);
-end;
 
 {------------------------------------------------------------------------------
   Method: TCustomComboBox.DestroyHandle
@@ -323,6 +308,10 @@ end;
 
 {
   $Log$
+  Revision 1.6  2002/03/25 17:59:20  lazarus
+  GTK Cleanup
+  Shane
+
   Revision 1.5  2001/06/04 09:32:17  lazarus
   MG: fixed bugs and cleaned up messages
 

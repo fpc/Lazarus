@@ -53,7 +53,6 @@ Type
     procedure SetArrowType(const AValue: TArrowType);
     procedure SetProps;
   protected
-    procedure AttachSignals; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -71,11 +70,6 @@ implementation
 
 
 { TArrow }
-
-procedure TArrow.AttachSignals;
-begin
-   inherited;
-end;
 
 constructor TArrow.Create(AOwner: TComponent);
 begin

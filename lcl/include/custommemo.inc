@@ -70,23 +70,14 @@ begin
 //TODO:Call sendmessage
 end;
 
-{------------------------------------------------------------------------------
-  Method:  TCustomMemo.AttachSignals
-  Params:  none
-  Returns: Nothing
-
-  Gets called after the window is created but before the controls are created 
-  and the cached propeties are set. 
-  This is the only place where a call to SetCallBack is made.
- ------------------------------------------------------------------------------}
-{procedure TCustomMemo.AttachSignals;
-begin
-  inherited AttachSignals;
-end; }
 
 { =============================================================================
 
   $Log$
+  Revision 1.4  2002/03/25 17:59:20  lazarus
+  GTK Cleanup
+  Shane
+
   Revision 1.3  2001/11/12 07:56:56  lazarus
   MG: free FFont on destroy
 

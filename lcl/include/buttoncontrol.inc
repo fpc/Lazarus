@@ -15,6 +15,7 @@ end;
 constructor TButtonControl.Create(AOwner: TComponent);
 begin
    inherited Create(AOwner);
+
 end;
 
 {------------------------------------------------------------------------------}

@@ -64,22 +64,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TTrackBar.AttachSignals
-  Params:  none
-  Returns: Nothing
-
-  Gets called after the window is created but before the controls are created 
-  and the cached propeties are set. 
-  This is the only place where a call to SetCallBack is made.
- ------------------------------------------------------------------------------}
-procedure TTrackBar.AttachSignals; 
-begin
-   inherited AttachSignals;
-   Assert(False, Format('Trace:[TTrackBar.AttachSignals] %s', [ClassName]));
-   SetCallback (LM_CHANGED);
-end;
-
-{------------------------------------------------------------------------------
   Method: TTrackBar.InitializeWnd
   Params: none
   Returns: Nothing
@@ -383,6 +367,10 @@ end;
 
 {
   $Log$
+  Revision 1.4  2002/03/25 17:59:20  lazarus
+  GTK Cleanup
+  Shane
+
   Revision 1.3  2002/01/04 21:07:49  lazarus
   MG: added TTreeView
 

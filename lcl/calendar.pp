@@ -62,7 +62,6 @@ Type
     function GetDate: String;
     procedure SetDate(const AValue: String);
   protected
-    procedure AttachSignals; override;
     procedure LMMonthChanged(var Message: TLMessage); message LM_MONTHCHANGED;
     procedure LMYEARChanged(var Message: TLMessage); message LM_YEARCHANGED;
     procedure LMDAYChanged(var Message: TLMessage); message LM_DAYCHANGED;
@@ -169,14 +168,6 @@ begin
         CNSendMessage(LM_SETVALUE, Self, @temp);	// Get the info
       End;
 
-end;
-
-procedure TCalendar.AttachSignals;
-begin
-  inherited;
-  SetCallback(LM_MONTHCHANGED);
-  SetCallback(LM_YEARCHANGED);
-  SetCallback(LM_DAYCHANGED);
 end;
 
 procedure TCalendar.LMDAYChanged(var Message: TLMessage);
