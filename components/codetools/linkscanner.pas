@@ -1112,7 +1112,7 @@ begin
     finally
       if not FSkippingTillEndif then begin
         {$IFDEF ShowUpdateCleanedSrc}
-        DebugLn('TLinkScanner.Scan UpdatePos=',SrcPos-1);
+        DebugLn('TLinkScanner.Scan UpdatePos=',DbgS(SrcPos-1));
         {$ENDIF}
         UpdateCleanedSource(SrcPos-1);
       end;
@@ -1231,7 +1231,8 @@ begin
     FCleanedSrc[CleanedLen]:=Src[i];
   end;
   {$IFDEF ShowUpdateCleanedSrc}
-  DebugLn('TLinkScanner.UpdateCleanedSource A ',LastCleanSrcPos,'-',SourcePos,'="',
+  DebugLn('TLinkScanner.UpdateCleanedSource A ',
+    DbgS(LastCleanSrcPos),'-',DbgS(SourcePos),'="',
     StringToPascalConst(copy(Src,LastCleanSrcPos+1,20)),
     '".."',StringToPascalConst(copy(Src,SourcePos-19,20)),'"');
   {$ENDIF}
@@ -2278,7 +2279,7 @@ begin
         IncFilename:=IncFilename+'.pas';
     end;
     {$IFDEF ShowUpdateCleanedSrc}
-    DebugLn('TLinkScanner.IncludeDirective A IncFilename=',IncFilename,' UpdatePos=',CommentEndPos-1);
+    DebugLn('TLinkScanner.IncludeDirective A IncFilename=',IncFilename,' UpdatePos=',DbgS(CommentEndPos-1));
     {$ENDIF}
     UpdateCleanedSource(CommentEndPos-1);
     // put old position on stack
@@ -2587,7 +2588,7 @@ var OldPos: TSourceLink;
 begin
   if not FSkippingTillEndif then begin
     {$IFDEF ShowUpdateCleanedSrc}
-    DebugLn('TLinkScanner.ReturnFromIncludeFile A UpdatePos=',SrcPos-1);
+    DebugLn('TLinkScanner.ReturnFromIncludeFile A UpdatePos=',DbgS(SrcPos-1));
     {$ENDIF}
     UpdateCleanedSource(SrcPos-1);
   end;
@@ -2640,7 +2641,7 @@ var OldDirectiveFuncList: TKeyWordFunctionList;
 begin
   SrcPos:=CommentEndPos;
   {$IFDEF ShowUpdateCleanedSrc}
-  DebugLn('TLinkScanner.SkipTillEndifElse A UpdatePos=',SrcPos-1);
+  DebugLn('TLinkScanner.SkipTillEndifElse A UpdatePos=',DbgS(SrcPos-1));
   {$ENDIF}
   UpdateCleanedSource(SrcPos-1);
   OldDirectiveFuncList:=FDirectiveFuncList;
