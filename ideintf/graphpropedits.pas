@@ -400,6 +400,7 @@ begin
       end
       else if ABitmap<>nil then begin
         ABitmap.FreeImage;
+        Modified;
       end;
     end;
   finally
