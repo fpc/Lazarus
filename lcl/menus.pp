@@ -257,14 +257,20 @@ type
   TPopupMenu = class(TMenu)
   private
     FAutoPopup : Boolean;
+    FOnPopup: TNotifyEvent;
     FPopupComponent : TComponent;
+    FPopupPoint: TPoint;
+  protected
+    procedure DoPopup(Sender: TObject); virtual;
   public
     constructor Create(AOwner: TComponent); override;
     procedure PopUp(X, Y : Integer);
     property PopupComponent : TComponent
       read FPopupComponent write FPopupComponent;
+    property PopupPoint: TPoint read FPopupPoint;
   published
     property AutoPopup : Boolean read FAutoPopup write FAutoPopup default True;
+    property OnPopup: TNotifyEvent read FOnPopup write FOnPopup;
   end;
 
 
@@ -457,6 +463,9 @@ end.
 
 {
   $Log$
+  Revision 1.25  2002/08/17 07:57:05  lazarus
+  MG: added TPopupMenu.OnPopup and SourceEditor PopupMenu checks
+
   Revision 1.24  2002/08/16 20:13:09  lazarus
   MG: custom external tools are now shown in the menu
 

@@ -15,6 +15,17 @@
  *                                                                           *
  *****************************************************************************
 }
+
+{------------------------------------------------------------------------------
+  procedure TPopupMenu.DoPopup(Sender: TObject);
+
+  Creates the popup window and shows it.
+ ------------------------------------------------------------------------------}
+procedure TPopupMenu.DoPopup(Sender: TObject);
+begin
+  if Assigned(FOnPopup) then FOnPopup(Sender);
+end;
+
 {------------------------------------------------------------------------------
   Method: TPopupMenu.Create
   Params:  AOwner: the owner of the class
@@ -30,18 +41,19 @@ begin
 end;
 
 Procedure TPopupMenu.PopUp(X,Y : Integer);
-var
-  P : TPoint;
 begin
-  P.X := X;
-  P.Y := Y;
+  FPopupPoint := Point(X, Y);
+  DoPopup(Self);
   HandleNeeded;
- InterfaceObject.IntSendMessage3(LM_POPUPSHOW, Self, @P);
+  InterfaceObject.IntSendMessage3(LM_POPUPSHOW, Self, @FPopupPoint);
 end;
 
 
 {
   $Log$
+  Revision 1.5  2002/08/17 07:57:05  lazarus
+  MG: added TPopupMenu.OnPopup and SourceEditor PopupMenu checks
+
   Revision 1.4  2002/05/10 06:05:55  lazarus
   MG: changed license to LGPL
 

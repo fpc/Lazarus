@@ -277,6 +277,23 @@ type
     APageIndex: integer; DeleteForwardHistory: boolean) of object;
 
   TSourceNotebook = class(TForm)
+    ReadOnlyMenuItem: TMenuItem;
+    ShowLineNumbersMenuItem: TMenuItem;
+  
+    procedure SrcPopUpMenuPopup(Sender: TObject);
+    Procedure BookMarkClicked(Sender : TObject);
+    Procedure BookMarkGotoClicked(Sender : TObject);
+    Procedure ReadOnlyClicked(Sender : TObject);
+    Procedure ShowUnitInfo(Sender : TObject);
+    Procedure ToggleBreakpointClicked(Sender : TObject);
+    Procedure AddWatchAtCursor(Sender : TObject);
+    Procedure ToggleLineNumbersClicked(Sender : TObject);
+    Procedure OpenAtCursorClicked(Sender : TObject);
+    Procedure FindDeclarationClicked(Sender : TObject);
+    Procedure BookmarkGoTo(Index: Integer);
+    Procedure BookMarkSet(Value : Integer);
+    Procedure BookMarkToggle(Value : Integer);
+    procedure EditorPropertiesClicked(Sender: TObject);
   private
     FMainIDE : TComponent;
     FFormEditor : TFormEditor;
@@ -322,20 +339,6 @@ type
 
     // PopupMenu
     Procedure BuildPopupMenu;
-
-    Procedure BookMarkClicked(Sender : TObject);
-    Procedure BookMarkGotoClicked(Sender : TObject);
-    Procedure ReadOnlyClicked(Sender : TObject);
-    Procedure ShowUnitInfo(Sender : TObject);
-    Procedure ToggleBreakpointClicked(Sender : TObject);
-    Procedure AddWatchAtCursor(Sender : TObject);
-    Procedure ToggleLineNumbersClicked(Sender : TObject);
-    Procedure OpenAtCursorClicked(Sender : TObject);
-    Procedure FindDeclarationClicked(Sender : TObject);
-    Procedure BookmarkGoTo(Index: Integer);
-    Procedure BookMarkSet(Value : Integer);
-    Procedure BookMarkToggle(Value : Integer);
-    procedure EditorPropertiesClicked(Sender: TObject);
 
     Procedure BreakPointCreated(Sender : TObject; Line : Integer);
     Procedure BreakPointDeleted(Sender : TObject; Line : Integer);
@@ -389,6 +392,8 @@ type
     function EditorCount:integer;
     function FindSourceEditorWithPageIndex(PageIndex:integer):TSourceEditor;
     function FindPageWithEditor(ASourceEditor: TSourceEditor):integer;
+    function FindSourceEditorWithEditorComponent(
+      EditorComp: TComponent): TSourceEditor;
     Function GetActiveSE : TSourceEditor;
     procedure LockAllEditorsInSourceChangeCache;
     procedure UnlockAllEditorsInSourceChangeCache;
@@ -748,7 +753,7 @@ end;
 
 Function TSourceEditor.GetReadOnly : Boolean;
 Begin
-  Result :=  FEditor.ReadOnly;
+  Result:=FEditor.ReadOnly;
 End;
 
 procedure TSourceEditor.SetReadOnly(NewValue: boolean);
@@ -2274,6 +2279,18 @@ begin
     FOnEditorPropertiesClicked(Sender);
 end;
 
+procedure TSourceNotebook.SrcPopUpMenuPopup(Sender: TObject);
+var
+  ASrcEdit: TSourceEditor;
+begin
+  if not (Sender is TPopupMenu) then exit;
+  ASrcEdit:=FindSourceEditorWithEditorComponent(TPopupMenu(Sender).PopupComponent);
+  if ASrcEdit=nil then exit;
+  ReadOnlyMenuItem.Checked:=ASrcEdit.ReadOnly;
+  ShowLineNumbersMenuItem.Checked:=
+    ASrcEdit.EditorComponent.Gutter.ShowLineNumbers;
+end;
+
 Procedure TSourceNotebook.BuildPopupMenu;
 
   Function Seperator : TMenuItem;
@@ -2289,6 +2306,7 @@ var
 Begin
   SrcPopupMenu := TPopupMenu.Create(Self);
   SrcPopupMenu.AutoPopup := True;
+  SrcPopupMenu.OnPopup :=@SrcPopUpMenuPopup;
 
   MenuItem := TMenuItem.Create(Self);
   MenuItem.Name:='FindDeclarationMenuItem';
@@ -2342,17 +2360,19 @@ Begin
 
   SrcPopupMenu.Items.Add(Seperator);
 
-  MenuItem := TMenuItem.Create(Self);
-  MenuItem.Name:='ReadOnlyMenuItem';
-  MenuItem.Caption := 'Read Only';
-  MenuItem.OnClick := @ReadOnlyClicked;
-  SrcPopupMenu.Items.Add(MenuItem);
+  ReadOnlyMenuItem := TMenuItem.Create(Self);
+  ReadOnlyMenuItem.Name:='ReadOnlyMenuItem';
+  ReadOnlyMenuItem.Caption := 'Read Only';
+  ReadOnlyMenuItem.OnClick := @ReadOnlyClicked;
+  ReadOnlyMenuItem.ShowAlwaysCheckable:=true;
+  SrcPopupMenu.Items.Add(ReadOnlyMenuItem);
 
-  MenuItem := TMenuItem.Create(Self);
-  MenuItem.Name := 'ShowLineNumbersMenuItem';
-  MenuItem.Caption := 'Show Line Numbers';
-  menuItem.OnClick := @ToggleLineNumbersClicked;
-  SrcPopupMenu.Items.Add(MenuItem);
+  ShowLineNumbersMenuItem := TMenuItem.Create(Self);
+  ShowLineNumbersMenuItem.Name := 'ShowLineNumbersMenuItem';
+  ShowLineNumbersMenuItem.Caption := 'Show Line Numbers';
+  ShowLineNumbersMenuItem.OnClick := @ToggleLineNumbersClicked;
+  ShowLineNumbersMenuItem.ShowAlwaysCheckable:=true;
+  SrcPopupMenu.Items.Add(ShowLineNumbersMenuItem);
 
   SrcPopupMenu.Items.Add(Seperator);
 
@@ -2394,6 +2414,7 @@ Begin
   MenuItem.Caption := 'Editor properties';
   MenuItem.OnClick :=@EditorPropertiesClicked;
   SrcPopupMenu.Items.Add(MenuItem);
+
 
 end;
 
@@ -2728,6 +2749,7 @@ end;
 Procedure TSourceNotebook.ReadOnlyClicked(Sender : TObject);
 var ActEdit:TSourceEditor;
 begin
+writeln('DDD1');
   ActEdit:=GetActiveSE;
   if ActEdit.ReadOnly and (ActEdit.CodeBuffer<>nil) 
   and (not ActEdit.CodeBuffer.IsVirtual) 
@@ -3076,6 +3098,19 @@ begin
       dec(Result);
     end;
   end;
+end;
+
+function TSourceNotebook.FindSourceEditorWithEditorComponent(
+  EditorComp: TComponent): TSourceEditor;
+var i: integer;
+begin
+  for i:=0 to EditorCount-1 do begin
+    if Editors[i].EditorComponent=EditorComp then begin
+      Result:=Editors[i];
+      exit;
+    end;
+  end;
+  Result:=nil;
 end;
 
 Procedure TSourceNotebook.NotebookPageChanged(Sender : TObject);

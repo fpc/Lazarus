@@ -208,20 +208,23 @@ var
   Mess : TLMessage;
   LCLMenuItem: TMenuItem;
 begin
+  Result:=true;
   EventTrace('activate', data);
   if GTK_IS_CHECK_MENU_ITEM(widget) then begin
     LCLMenuItem:=TMenuItem(GetLCLObject(Widget));
     if LCLMenuItem<>nil then begin
-      if (not LCLMenuItem.AutoCheck) then begin
-        // restore 'checked' flag
-        if ((PGtkCheckMenuItem(Widget)^.flag0 and bm_checkmenuitem_active)<>0)
-          <>LCLMenuItem.Checked
-        then begin
-          gtk_check_menu_item_set_active(PGtkCheckMenuItem(Widget),
-                                         LCLMenuItem.Checked);
-          Result:=true;
-          exit;
+      if ((PGtkCheckMenuItem(Widget)^.flag0 and bm_checkmenuitem_active)<>0)
+        <>LCLMenuItem.Checked
+      then begin
+        if (not LCLMenuItem.AutoCheck) then begin
+          // the gtk always toggles the check flag
+          // restore 'checked' flag
+          PGtkCheckMenuItem(Widget)^.flag0:=
+            PGtkCheckMenuItem(Widget)^.flag0 and not bm_checkmenuitem_active;
         end;
+      end else begin
+        // menuitem is already in sync -> don't send a change event
+        exit;
       end;
     end;
   end;
@@ -2139,6 +2142,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.98  2002/08/17 07:57:05  lazarus
+  MG: added TPopupMenu.OnPopup and SourceEditor PopupMenu checks
+
   Revision 1.97  2002/08/15 13:37:57  lazarus
   MG: started menuitem icon, checked, radio and groupindex
 
