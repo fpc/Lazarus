@@ -495,6 +495,21 @@ begin
   end else Result := DefWindowProc(window_hwnd, Msg, WParam, LParam);
 end;
 
+{------------------------------------------------------------------------------
+ Function: ToolBtnWindowProc
+ Params: Window_hwnd - The window that receives a message for the timer window
+         Msg         - The message received
+         WParam      - Word parameter
+         LParam      - Long-integer parameter
+  Returns: non-zero long-integer
+
+  Handles the messages sent to the toolbar button by Windows
+ ------------------------------------------------------------------------------}
+Function ToolBtnWindowProc(window_hwnd : hwnd; msg : DWORD; wParam : WPARAM; lParam : LPARAM) : LRESULT;
+begin
+  Result := DefWindowProc(window_hwnd, Msg, WParam, LParam);
+end;
+
 {$IFDEF ASSERT_IS_ON}
   {$UNDEF ASSERT_IS_ON}
   {$C-}
@@ -502,6 +517,9 @@ end;
 
 {
   $Log$
+  Revision 1.22  2002/12/28 09:42:12  mattias
+  toolbutton patch from Martin Smat
+
   Revision 1.21  2002/12/16 09:02:27  mattias
   applied win32 notebook patch from Vincent
 

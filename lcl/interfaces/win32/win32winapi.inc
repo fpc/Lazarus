@@ -649,7 +649,7 @@ End;
 Function TWin32Object.CreatePolygonRgn(Points: PPoint; NumPts: Integer;
   FillMode: integer): HRGN;
 Begin
-  Result := Windows.CreatePolygonRgn(LPPOINT(Points)^, NumPts, fm);
+  Result := Windows.CreatePolygonRgn(LPPOINT(Points)^, NumPts, FillMode);
 End;
 
 {------------------------------------------------------------------------------
@@ -1277,7 +1277,7 @@ End;
  ------------------------------------------------------------------------------}
 Function TWin32Object.GetWindowOrgEx(DC: HDC; P: PPoint): Integer;
 Begin
-  Result := Integer(Windows.GetWindowOrgEx(DC, P));
+  Result := Integer(Windows.GetWindowOrgEx(DC, LPPoint(P)));
 End;
 
 {------------------------------------------------------------------------------
@@ -2039,7 +2039,7 @@ End;
 Function TWin32Object.SetWindowOrgEx(DC: HDC; NewX, NewY: Integer;
   OldPoint: PPoint): Boolean;
 Begin
-  Result := Windows.SetWindowOrgEx(DC, NewX, NewY, OldPoint);
+  Result := Windows.SetWindowOrgEx(DC, NewX, NewY, LPPoint(OldPoint));
 End;
 
 {------------------------------------------------------------------------------
@@ -2266,6 +2266,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.28  2002/12/28 09:42:12  mattias
+  toolbutton patch from Martin Smat
+
   Revision 1.27  2002/12/27 17:12:38  mattias
   added more Delphi win32 compatibility functions
 

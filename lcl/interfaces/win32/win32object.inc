@@ -106,7 +106,12 @@ Begin
     Assert(False, 'Trace:Win32Object.Init - LCLTimerWindow Register Failed');
     Exit;
   End;
-
+  If Not ToolBtnWinRegister then
+  Begin
+    Assert(False, 'Trace:Win32Object.Init - Toolbar button Register Failed');
+    Exit;
+  End;
+  
   FToolTipWindow := CreateWindowEx(WS_EX_TOPMOST, TOOLTIPS_CLASS, NULL, WS_POPUP Or TTS_NOPREFIX Or TTS_ALWAYSTIP, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, FParentWindow, HMENU(NULL), HInstance, NULL);
   Windows.SendMessage(FParentWindow, TTM_ACTIVATE, WPARAM(True), 0);
 
@@ -280,7 +285,7 @@ Begin
     csToolButton:
     Begin
       Data := StrCat(Data, TermChar);
-      SendMessage(Handle, TB_ADDSTRING, 0, MakeLong(Word(Integer(Data)), 0));
+      SendMessage(TControl(Sender).Parent.Handle, TB_ADDSTRING, 0, MakeLong(Word(Integer(Data)), 0));
     End;
     Else
       SetWindowText(Handle, Data);
@@ -321,7 +326,7 @@ Var
   PStr, PStr2: PChar;
   R, R2: TRECT;
   SelectionMode: DWORD; // currently only used for listboxes
-  TBB: Array[0..1] Of TBBUTTON; // Limited to 2 buttons at present
+  TBB: TBBUTTON; // Limited to 2 buttons at present
   WindowStyle: Integer; //used by LM_SETTABPOSITION
   OldPageIndex: Integer; //used by LM_SETITEMINDEX of a csNotebook
 Begin
@@ -649,48 +654,52 @@ activate_time :	the time at which the activation event occurred.
         End;
         LM_INSERTTOOLBUTTON:
         Begin
-          Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!!!!!!!!');
-          Assert(False, 'Trace:Toolbutton being inserted');
-          Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!!!!!!!!');
-          If (Sender is TWinControl) Then
-          Begin
-            PStr := StrAlloc(Length(TToolButton(Sender).Caption) + 1);
-            StrPCopy(PStr, TToolButton(Sender).Caption);
-            PStr2 := StrAlloc(Length(TControl(Sender).Hint) + 1);
-            StrPCopy(PStr2, TControl(Sender).Hint);
-          End 
-          Else
-          Begin
-            Raise Exception.Create('Can not assign this control to the toolbar');
-            Exit;
-          End;
+          if Sender is TToolButton then
+          begin
+            Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!!!!!!!!');
+            Assert(False, 'Trace:Toolbutton being inserted');
+            Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!!!!!!!!');
+            If (Sender is TWinControl) Then
+            Begin
+              PStr := StrAlloc(Length(TToolButton(Sender).Caption) + 1);
+              StrPCopy(PStr, TToolButton(Sender).Caption);
+              PStr2 := StrAlloc(Length(TControl(Sender).Hint) + 1);
+              StrPCopy(PStr2, TControl(Sender).Hint);
+            End 
+            Else
+            Begin
+              Raise Exception.Create('Can not assign this control to the toolbar');
+              Exit;
+            End;
     
-          Num := TToolbar(TWinControl(Sender).Parent).Buttonlist.IndexOf(TControl(Sender));
-          If Num < 0 Then
-            Num := TToolbar(TWinControl(Sender).Parent).Buttonlist.Count + 1;
-          Assert(False, Format('Trace:Num = %d in LM_INSERTTOOLBUTTON', [Num]));
+            Num := TToolbar(TWinControl(Sender).Parent).Buttonlist.IndexOf(TControl(Sender));
+            If Num < 0 Then
+              Num := TToolbar(TWinControl(Sender).Parent).Buttonlist.Count + 1;
+            Assert(False, Format('Trace:Num = %d in LM_INSERTTOOLBUTTON', [Num]));
 
-          {Make sure it's created!!}
-          If Handle = 0 Then
-            IntSendMessage3(LM_CREATE, Sender, Nil);
+            {Make sure it's created!!}
+            If Handle = 0 Then
+              IntSendMessage3(LM_CREATE, Sender, Nil);
 
-          With tbb[Num] Do
-          Begin
-            iBitmap := Num;
-            idCommand := Num;
-            fsState := TBSTATE_ENABLED;
-            iString := Integer(PStr);
-          End;
+            With tbb Do
+            Begin
+              iBitmap := Num;
+              idCommand := Num;
+              fsState := TBSTATE_ENABLED;
+              fsStyle := TBSTYLE_BUTTON;
+              iString := Integer(PStr);
+            End;
 
-          SendMessage(Handle, TB_BUTTONSTRUCTSIZE, SizeOf(tbb), 0);
-          SendMessage(Handle, TB_ADDBUTTONS, WParam(UInt(IntSendMessage3(LM_TB_BUTTONCOUNT, Sender, Nil) + 1)), LParam(LPTBButton(@tbb)));
-          StrDispose(pStr);
-          StrDispose(pStr2);
-          Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!!!!!!!!');
+            SendMessage((Sender as TWinControl).Parent.Handle, TB_BUTTONSTRUCTSIZE, SizeOf(TBBUTTON), 0);
+            SendMessage((Sender as TWinControl).Parent.Handle, TB_ADDBUTTONS, 1, LParam(LPTBButton(@tbb)));
+            StrDispose(pStr);
+            StrDispose(pStr2);
+            Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!!!!!!!!');
+          end;
         End;
         LM_DELETETOOLBUTTON:
         Begin
-          SendMessage((Sender As TToolbar).Parent.Handle, TB_DELETEBUTTON, WParam(Data^), 0); // Assuming Data is the button to remove
+          SendMessage((Sender As TWinControl).Parent.Handle, TB_DELETEBUTTON, 0, 0);
         End;
         LM_INVALIDATE: 
         Begin 
@@ -1155,6 +1164,24 @@ begin
     hIconSm := LoadIcon(0, IDI_APPLICATION);
   end;
   result := RegisterClassEx(@WinClass) <> 0;
+end;
+
+Function TWin32Object.ToolBtnWinRegister: boolean;
+var WinClass: WndClass;
+begin
+  with WinClass do begin
+    Style := CS_HRedraw or CS_VRedraw;
+    lpfnWndProc := WndProc(@ToolBtnWindowProc);
+    cbClsExtra := 40;
+    cbWndExtra := 40;
+    hInstance := System.HInstance;
+    hIcon := LoadIcon(0, IDI_Application);
+    hCursor := LoadCursor(0, IDC_Arrow);
+    hbrBackground := GetStockObject(WHITE_BRUSH);
+    lpszMenuName := HMenu(nil);
+    lpszClassName := @ToolBtnClsName;
+  end;
+  Result := Windows.RegisterClass(@WinClass) <> 0;
 end;
 
 {------------------------------------------------------------------------------
@@ -1968,7 +1995,7 @@ Begin
     End;
     csToolButton:
     Begin
-      Window := IntSendMessage3(LM_INSERTTOOLBUTTON, Sender, Pointer((Sender As TToolButton).Index));
+      Window := CreateWindow(@ToolBtnClsName, LPSTR(nil), 0, Left, Top, Width, Height, {TControl(Sender).}Parent{.Handle}, HMENU(nil), HInstance, nil);
       SetProp(Window, 'Lazarus', Sender);
       SetName(Window, StrTemp);
     End;
@@ -2082,8 +2109,8 @@ Procedure TWin32Object.ShowHide(Sender: TObject);
 Var
   Handle: HWND;
 Begin
+  If (TControl(Sender).FCompStyle = csPage) or (TControl(Sender).FCompStyle = csToolButton) then exit;
   Handle := ObjectToHWND(Sender);
-  If TControl(Sender).FCompStyle = csPage then exit;
   If TControl(Sender).Visible Then
   Begin
     Assert(False, 'Trace: [TWin32Object.ShowHide] Showing the window');
@@ -2589,6 +2616,9 @@ End;
 
 {
   $Log$
+  Revision 1.36  2002/12/28 09:42:12  mattias
+  toolbutton patch from Martin Smat
+
   Revision 1.35  2002/12/20 19:08:24  mattias
   notebook patch from vincent
 

@@ -99,6 +99,7 @@ Type
 
     Function WinRegister: Boolean;
     Function TimerWinRegister: Boolean;
+    Function ToolBtnWinRegister: Boolean;
     Procedure SetName(Window: HWND; Value: PChar);
     Procedure SetOwner(Window: HWND; Owner: TObject);
     Procedure PaintPixmap(Surface: TObject; PixmapData: Pointer);
@@ -162,7 +163,8 @@ Const
   BOOL_RESULT: Array[Boolean] Of String = ('False', 'True');
   ClsName : array[0..20] of char = 'LazarusForm'#0;
   TimerClsName : array[0..20] of char = 'LCLTimerWindow'#0;
-
+  ToolBtnClsName : array[0..20] of char = 'ToolbarButton'#0;
+  
 Var
   WndList: TList;
 
@@ -187,6 +189,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.26  2002/12/28 09:42:12  mattias
+  toolbutton patch from Martin Smat
+
   Revision 1.25  2002/12/16 09:02:27  mattias
   applied win32 notebook patch from Vincent
 
