@@ -2910,38 +2910,52 @@ var MenuInfo: MENUITEMINFO;
 
   function GetCheckBitmap(checked: boolean): HBitmap;
   {TODO: create "checked" icon}
-  var hbmpCheck: HBitmap;
-      OldCheckMark: HBitmap;
-      OldOrigBitmap: HBitmap;
-      hdcNewBitmap: HDC;
-      hdcOrigBitmap: HDC;
+  var hbmpCheck, hbmpTrans, hbmpMask: HBITMAP;
+      hbrTrans: HBRUSH;
+      OldCheckMark, OldOrigBitmap, OldTransBitmap: HBITMAP;
+      hdcNewBitmap, hdcOrigBitmap, hdcTransBitmap: HDC;
       hdcScreen: HDC;
-      maxWidth: integer;
-      maxHeight: integer;
-      newWidth: integer;
-      newHeight: integer;
+      maxWidth, newWidth, bmpWidth: integer;
+      maxHeight, newHeight, bmpHeight: integer;
   begin
     maxWidth:=GetSystemMetrics(SM_CXMENUCHECK);
     maxHeight:=GetSystemMetrics(SM_CYMENUCHECK);
     if (maxWidth>=AMenuItem.Bitmap.Width) and (maxHeight>=AMenuItem.Bitmap.Height) then Result:=AMenuItem.Bitmap.Handle
     else
     begin
-      newWidth:=min(maxWidth, AMenuItem.Bitmap.Width);
-      newHeight:=min(maxHeight, AMenuItem.Bitmap.Height);
-      hdcScreen:=GetDC(GetDesktopWindow);
-      hdcOrigBitmap:=CreateCompatibleDC(hdcScreen);
-      hdcNewBitmap:=CreateCompatibleDC(hdcScreen);
-      hbmpCheck:=CreateCompatibleBitmap(hdcScreen, newWidth, newHeight);
+      bmpWidth := AMenuItem.Bitmap.Width;
+      bmpHeight := AMenuItem.Bitmap.Height;
+      newWidth := min(maxWidth, bmpWidth);
+      newHeight := min(maxHeight, bmpHeight);
+      hdcScreen := GetDC(GetDesktopWindow);
+      hdcOrigBitmap  := CreateCompatibleDC(hdcScreen);
+      hdcNewBitmap   := CreateCompatibleDC(hdcScreen);
+      hdcTransBitmap := CreateCompatibleDC(hdcScreen);
+      hbmpCheck := CreateCompatibleBitmap(hdcScreen, newWidth, newHeight);
+      hbmpTrans := CreateCompatibleBitmap(hdcScreen, bmpWidth, bmpHeight);
+      hbmpMask  := AMenuItem.Bitmap.MaskHandle;
       ReleaseDC(GetDesktopWindow, hdcScreen);
-      OldOrigBitmap:=SelectObject(hdcOrigBitmap, AMenuItem.Bitmap.Handle);
-      OldCheckmark:=SelectObject(hdcNewBitmap, hbmpCheck);
-      StretchBlt(hdcNewBitmap, 0, 0, newWidth, newHeight, hdcOrigBitmap, 0, 0, AMenuItem.Bitmap.Width, AMenuItem.Bitmap.Height, SRCCOPY);
+      hbrTrans := CreateSolidBrush(GetSysColor(COLOR_MENU));
+      OldOrigBitmap  := SelectObject(hdcOrigBitmap, AMenuItem.Bitmap.Handle);
+      OldCheckmark   := SelectObject(hdcNewBitmap, hbmpCheck);
+      OldTransBitmap := SelectObject(hdcTransBitmap, hbmpTrans);
+      // fill transparent-bitmap with transparent color
+      FillRect(hdcTransBitmap, RECT(0, 0, bmpWidth, bmpHeight), hbrTrans);
+      // blit menu icon transparently
+      MaskBlt(hdcTransBitmap, 0, 0, bmpWidth, bmpHeight, hdcOrigBitmap, 0, 0, hbmpMask, 0, 0);
+      // scale to correct size
+      StretchBlt(hdcNewBitmap, 0, 0, newWidth, newHeight, hdcTransBitmap, 0, 0, bmpWidth, bmpHeight, SRCCOPY);
+      // free mem
       SelectObject(hdcOrigBitmap, OldOrigBitmap);
-      hbmpCheck:=SelectObject(hdcNewBitmap, OldCheckmark);
-      DeleteDC(hdcNewBitmap);
+      SelectObject(hdcTransBitmap, OldTransBitmap);
+      SelectObject(hdcNewBitmap, OldCheckmark);
       DeleteDC(hdcOrigBitmap);
+      DeleteDC(hdcTransBitmap);
+      DeleteDC(hdcNewBitmap);
+      DeleteObject(hbmpTrans);
+      DeleteObject(hbrTrans);
       {TODO: Add hbmpCheck into a list of object they must be deleted}
-      Result:=hbmpCheck;
+      Result := hbmpCheck;
     end;
   end;
 
@@ -3021,6 +3035,9 @@ End;
 
 {
   $Log$
+  Revision 1.177  2004/02/28 14:38:47  micha
+  fix transparent images for menuitems
+
   Revision 1.176  2004/02/27 00:42:41  marc
   * Interface CreateComponent splitup
   * Implemented CreateButtonHandle on GTK interface
