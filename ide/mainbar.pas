@@ -62,17 +62,27 @@ type
   TIDEToolStatus = (itNone, itBuilder, itDebugger, itCustom);
 
 
-  TSaveFlag = (sfSaveAs, sfSaveToTestDir, sfProjectSaving);
+  TSaveFlag = (sfSaveAs,
+               sfSaveToTestDir,
+               sfProjectSaving
+               );
   TSaveFlags = set of TSaveFlag;
   
-  TOpenFlag = (ofProjectLoading, ofOnlyIfExists, ofRevert, ofQuiet,
-               ofAddToRecent);
+  TOpenFlag = (ofProjectLoading,// this open is part of opening a whole project
+               ofOnlyIfExists,  // do not auto create non existing files
+               ofRevert,        // reload file if already open
+               ofQuiet,         // less messages
+               ofAddToRecent,   // add file to recent files
+               ofRegularFile,   // open as regular file (e.g. not a whole project)
+               ofVirtualFile    // open the virtual file
+               );
   TOpenFlags = set of TOpenFlag;
   
   TRevertFlag = (rfQuiet);
   TRevertFlags = set of TRevertFlag;
   
-  TCloseFlag = (cfSaveFirst, cfProjectClosing);
+  TCloseFlag = (cfSaveFirst, // check if modified and save
+                cfProjectClosing);
   TCloseFlags = set of TCloseFlag;
   
   TLoadBufferFlag = (lbfUpdateFromDisk, lbfRevert, lbfCheckIfText);
@@ -231,7 +241,9 @@ type
     procedure GetCurrentUnit(var ActiveSourceEditor:TSourceEditor;
       var ActiveUnitInfo:TUnitInfo); virtual; abstract;
       
+    function GetTestBuildDir: string; virtual; abstract;
     function GetTestUnitFilename(AnUnitInfo: TUnitInfo): string; virtual; abstract;
+    function IsTestUnitFilename(const AFilename: string): boolean; virtual; abstract;
     function GetRunCommandLine: string; virtual; abstract;
 
     function DoOpenEditorFile(AFileName:string; PageIndex: integer;
@@ -249,9 +261,37 @@ var
   SourceNotebook : TSourceNotebook;
   Project1: TProject;
 
+const
+  OpenFlagNames: array[TOpenFlag] of string = (
+     'ofProjectLoading',
+     'ofOnlyIfExists',
+     'ofRevert',
+     'ofQuiet',
+     'ofAddToRecent',
+     'ofRegularFile',
+     'ofVirtualFile'
+    );
+
+function OpenFlagsToString(Flags: TOpenFlags): string;
+
 
 implementation
 
+
+function OpenFlagsToString(Flags: TOpenFlags): string;
+var
+  Flag: TOpenFlag;
+begin
+  Result:='';
+  for Flag:=Low(TOpenFlag) to High(TOpenFlag) do begin
+    if Flag in Flags then begin
+      if Result<>'' then
+        Result:=Result+',';
+      Result:=Result+OpenFlagNames[Flag];
+    end;
+  end;
+  Result:='['+Result+']';
+end;
 
 function LoadPixmap(const ResourceName:string): TPixmap;
 begin

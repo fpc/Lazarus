@@ -438,9 +438,11 @@ type
       FocusEditor: boolean): boolean;
     procedure DoShowMessagesView;
     procedure DoArrangeSourceEditorAndMessageView;
+    function GetTestBuildDir: string; override;
     function GetProjectTargetFilename: string;
     function GetTestProjectFilename: string;
     function GetTestUnitFilename(AnUnitInfo: TUnitInfo): string; override;
+    function IsTestUnitFilename(const AFilename: string): boolean; override;
     function GetRunCommandLine: string; override;
     procedure OnMacroSubstitution(TheMacro: TTransferMacro; var s:string;
       var Handled, Abort: boolean);
@@ -2839,7 +2841,7 @@ begin
   Handled:=false;
   Ext:=lowercase(ExtractFileExt(AFilename));
 
-  if (not (ofProjectLoading in Flags)) and (ToolStatus=itNone)
+  if ([ofProjectLoading,ofRegularFile]*Flags<>[]) and (ToolStatus=itNone)
   and (Ext='.lpi') then begin
     // this is a project info file -> load whole project
     Result:=DoOpenProjectFile(AFilename);
@@ -2854,7 +2856,7 @@ begin
   NewUnitInfo:=nil;
 
   // check if unit is a program
-  if (not (ofProjectLoading in Flags))
+  if ([ofProjectLoading,ofRegularFile]*Flags<>[])
   and FilenameIsPascalSource(AFilename)
   and (CodeToolBoss.GetSourceType(PreReadBuf,false)='PROGRAM') then begin
     NewProgramName:=CodeToolBoss.GetSourceName(PreReadBuf,false);
@@ -3592,7 +3594,7 @@ var
 begin
   {$IFDEF IDE_VERBOSE}
   writeln('');
-  writeln('*** TMainIDE.DoOpenEditorFile START "',AFilename,'"');
+  writeln('*** TMainIDE.DoOpenEditorFile START "',AFilename,'" ',OpenFlagsToString(Flags));
   {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
   Result:=mrCancel;
@@ -3601,7 +3603,8 @@ begin
   and (ExtractFilenameOnly(AFilename)='') then
     exit;
 
-  if (ofAddToRecent in Flags) and (AFilename<>'') then
+  if ([ofAddToRecent,ofRevert,ofVirtualFile]*Flags=[ofAddToRecent])
+  and (AFilename<>'') then
     EnvironmentOptions.AddToRecentOpenFiles(AFilename);
 
   // check if this is a hidden unit:
@@ -5291,6 +5294,7 @@ var MaxMessages: integer;
   TopLine: integer;
   MsgType: TErrorType;
   SrcEdit: TSourceEditor;
+  OpenFlags: TOpenFlags;
 begin
   Result:=false;
   MaxMessages:=MessagesView.MessageView.Items.Count;
@@ -5312,12 +5316,20 @@ begin
   end;
   if TheOutputFilter.GetSourcePosition(MessagesView.MessageView.Items[Index],
         Filename,CaretXY,MsgType) then begin
-    SearchedFilename := FindUnitFile(Filename);
+        
+    OpenFlags:=[ofOnlyIfExists,ofRegularFile];
+    if not IsTestUnitFilename(Filename) then
+      SearchedFilename := FindUnitFile(Filename)
+    else begin
+      SearchedFilename := ExtractFileName(Filename);
+      Include(OpenFlags,ofVirtualFile);
+    end;
+    
     if SearchedFilename<>'' then begin
       // open the file in the source editor
       Ext:=lowercase(ExtractFileExt(SearchedFilename));
       if (not FilenameIsFormText(SearchedFilename)) and (Ext<>'.lpi') then begin
-        Result:=(DoOpenEditorFile(SearchedFilename,-1,[ofOnlyIfExists])=mrOk);
+        Result:=(DoOpenEditorFile(SearchedFilename,-1,OpenFlags)=mrOk);
         if Result then begin
           // set caret position
           SourceNotebook.AddJumpPointClicked(Self);
@@ -5382,6 +5394,13 @@ begin
        MessagesView.Top-SourceNotebook.Top));
 end;
 
+function TMainIDE.GetTestBuildDir: string;
+begin
+  Result:=EnvironmentOptions.TestBuildDirectory;
+  if (Result='') then exit;
+  Result:=AppendPathDelim(Result);
+end;
+
 function TMainIDE.GetProjectTargetFilename: string;
 begin
   Result:='';
@@ -5413,13 +5432,22 @@ var TestDir: string;
 begin
   Result:='';
   if AnUnitInfo=nil then exit;
-  TestDir:=EnvironmentOptions.TestBuildDirectory;
-  if (TestDir='') then exit;
-  if TestDir[length(TestDir)]<>PathDelim then
-    TestDir:=TestDir+PathDelim;
+  TestDir:=GetTestBuildDir;
+  if TestDir='' then exit;
   Result:=ExtractFilename(AnUnitInfo.Filename);
   if Result='' then exit;
   Result:=TestDir+Result;
+end;
+
+function TMainIDE.IsTestUnitFilename(const AFilename: string): boolean;
+var
+  TestDir: string;
+begin
+  Result:=false;
+  if Project1.IsVirtual then begin
+    TestDir:=GetTestBuildDir;
+    Result:=CompareFileNames(TestDir,ExtractFilePath(AFilename))=0;
+  end;
 end;
 
 function TMainIDE.GetRunCommandLine: string;
@@ -6703,6 +6731,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.356  2002/08/29 00:07:00  lazarus
+  MG: fixed TComboBox and InvalidateControl
+
   Revision 1.355  2002/08/28 10:44:43  lazarus
   MG: implemented run param environment variables
 
