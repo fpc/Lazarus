@@ -4175,6 +4175,7 @@ begin
         ScrollInfo.nPage := CharsInWindow;
         ScrollInfo.nPos := LeftChar;
         {$IFDEF SYN_LAZARUS}
+	{ for win32 target, need to call showscrollbar before setscrollinfo }
         ShowScrollBar(Handle, SB_HORZ, True); 
         {$ENDIF}
         SetScrollInfo(Handle, SB_HORZ, ScrollInfo, True);
@@ -4203,6 +4204,7 @@ begin
           ScrollInfo.nPos := MulDiv(MAX_SCROLL, TopLine, nMaxScroll);
         end;
         {$IFDEF SYN_LAZARUS}
+	{ for win32 target, need to call showscrollbar before setscrollinfo }
         ShowScrollBar(Handle, SB_VERT, True);
         {$ENDIF}
         SetScrollInfo(Handle, SB_VERT, ScrollInfo, True);
