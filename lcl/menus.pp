@@ -121,6 +121,8 @@ type
   TMenu = class(TComponent) //TWinControl)
   private
     FItems: TMenuItem;
+    FParent: TComponent;
+    procedure SetParent(const AValue: TComponent);
   protected
     procedure CreateHandle; virtual;
     function GetHandle: HMENU; virtual;
@@ -133,6 +135,7 @@ type
     Function IsRightToLeft: Boolean;
     procedure HandleNeeded;
     property Handle: HMenu read GetHandle;
+    property Parent: TComponent read FParent write SetParent;
   published
     property Items: TMenuItem read FItems;
   end;
@@ -206,6 +209,9 @@ end.
 
 {
   $Log$
+  Revision 1.11  2002/05/15 05:58:17  lazarus
+  MG: added TMainMenu.Parent
+
   Revision 1.10  2002/05/10 06:05:50  lazarus
   MG: changed license to LGPL
 

@@ -55,20 +55,19 @@ uses
 
 begin
   Application.Initialize;
-    // calls InitProcedure which starts up the interface (e.g. GTK)
-   
+
   // Show splashform
   SplashForm := TSplashForm.Create(nil);
   with SplashForm do begin
     Show;
     Paint;
   end;
-  Application.ProcessMessages; // process splash paint messages
+  Application.ProcessMessages; // process splash paint message
 
   Application.CreateForm(TMainIDE, MainIDE);
-{$IFDEF IDE_MEM_CHECK}
-CheckHeap('TMainIDE created');
-{$ENDIF}
+  {$IFDEF IDE_MEM_CHECK}
+  CheckHeap('TMainIDE created');
+  {$ENDIF}
   Application.CreateForm(TMessagesView, MessagesView);
 
   Application.CreateForm(TLazFindReplaceDialog, FindReplaceDlg);
@@ -77,13 +76,16 @@ CheckHeap('TMainIDE created');
   SplashForm.StartTimer;
   Application.Run;
   SplashForm.Free;
-  
-writeln('LAZARUS END');
+
+  writeln('LAZARUS END');
 end.
 
 
 {
   $Log$
+  Revision 1.33  2002/05/15 05:58:16  lazarus
+  MG: added TMainMenu.Parent
+
   Revision 1.32  2002/05/10 06:57:42  lazarus
   MG: updated licenses
 

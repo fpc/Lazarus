@@ -32,6 +32,11 @@ begin
   FItems.FMenu := Self;
 end;
 
+procedure TMenu.SetParent(const AValue: TComponent);
+begin
+  FParent:=AValue;
+end;
+
 {------------------------------------------------------------------------------
   Method:  TMenu.CreateHandle
   Params:  None
@@ -128,6 +133,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.6  2002/05/15 05:58:17  lazarus
+  MG: added TMainMenu.Parent
+
   Revision 1.5  2002/05/10 06:05:53  lazarus
   MG: changed license to LGPL
 

@@ -628,8 +628,11 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TCustomForm.SetMenu(Value : TMainMenu);
 Begin
-//TODO: Finish SETMenu
-FMenu := Value;
+  //TODO: Finish SETMenu
+  if FMenu=Value then exit;
+  if FMenu<>nil then FMenu.Parent:=nil;
+  FMenu := Value;
+  if FMenu<>nil then FMenu.Parent:=Self;
 end;
 
 {------------------------------------------------------------------------------}
@@ -637,8 +640,8 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TCustomForm.SetBorderStyle(Value : TFormBorderStyle);
 Begin
-//TODO: Finish SETBORDERSTYLE
-FBorderStyle := Value;
+  //TODO: Finish SETBORDERSTYLE
+  FBorderStyle := Value;
 end;
 
 {------------------------------------------------------------------------------}
@@ -1031,6 +1034,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.46  2002/05/15 05:58:17  lazarus
+  MG: added TMainMenu.Parent
+
   Revision 1.45  2002/05/13 15:26:13  lazarus
   MG: fixed form positioning when show, hide, show
 
