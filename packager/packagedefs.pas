@@ -140,6 +140,7 @@ type
     function ComponentCount: integer;
     procedure AddPkgComponent(APkgComponent: TPkgComponent);
     procedure RemovePkgComponent(APkgComponent: TPkgComponent);
+    function GetResolvedFilename: string;
   public
     property Filename: string read FFilename write SetFilename;
     property FileType: TPkgFileType read FFileType write SetFileType;
@@ -318,6 +319,7 @@ type
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     function IsVirtual: boolean;
+    function HasDirectory: boolean;
     procedure CheckInnerDependencies;
     procedure ShortenFilename(var ExpandedFilename: string);
     procedure LongenFilename(var AFilename: string);
@@ -325,6 +327,8 @@ type
                                       WithUsedPackages: boolean);
     procedure ConsistencyCheck;
     function IndexOfPkgComponent(PkgComponent: TPkgComponent): integer;
+    function FindPkgFile(const AFilename: string;
+      ResolveLinks: boolean): TPkgFile;
     function FindUnit(const TheUnitName: string): TPkgFile;
     function NameAndVersion: string;
     function AddFile(const NewFilename, NewUnitName: string;
@@ -637,6 +641,11 @@ begin
     FComponents.Remove(APkgComponent);
   if LazPackage<>nil then
     LazPackage.RemovePkgComponent(APkgComponent);
+end;
+
+function TPkgFile.GetResolvedFilename: string;
+begin
+  Result:=ReadAllLinks(Filename,false);
 end;
 
 { TPkgDependency }
@@ -1235,6 +1244,11 @@ begin
   Result:=not FilenameIsAbsolute(Filename);
 end;
 
+function TLazPackage.HasDirectory: boolean;
+begin
+  Result:=(FDirectory<>'') and (FDirectory[length(FDirectory)]=PathDelim);
+end;
+
 procedure TLazPackage.CheckInnerDependencies;
 begin
   // ToDo: make some checks like deactivating double requirements
@@ -1245,8 +1259,8 @@ var
   PkgDir: String;
   CurPath: String;
 begin
+  if not HasDirectory then exit;
   PkgDir:=FDirectory;
-  if (PkgDir='') or (PkgDir[length(PkgDir)]<>PathDelim) then exit;
   CurPath:=copy(ExtractFilePath(ExpandedFilename),1,length(PkgDir));
   if CompareFilenames(PkgDir,CurPath)=0 then begin
     ExpandedFilename:=copy(ExpandedFilename,length(CurPath)+1,
@@ -1256,7 +1270,7 @@ end;
 
 procedure TLazPackage.LongenFilename(var AFilename: string);
 begin
-  if (FDirectory='') or (FDirectory[length(FDirectory)]<>PathDelim) then exit;
+  if not HasDirectory then exit;
   if not FilenameIsAbsolute(AFilename) then
     AFilename:=TrimFilename(Directory+AFilename);
 end;
@@ -1293,6 +1307,25 @@ end;
 function TLazPackage.IndexOfPkgComponent(PkgComponent: TPkgComponent): integer;
 begin
   Result:=FComponents.IndexOf(PkgComponent);
+end;
+
+function TLazPackage.FindPkgFile(const AFilename: string; ResolveLinks: boolean
+  ): TPkgFile;
+var
+  TheFilename: String;
+  Cnt: Integer;
+  i: Integer;
+begin
+  Result:=nil;
+  TheFilename:=AFilename;
+  if ResolveLinks then TheFilename:=ReadAllLinks(TheFilename,false);
+  Cnt:=FileCount;
+  for i:=0 to Cnt-1 do begin
+    if CompareFilenames(Files[i].GetResolvedFilename,TheFilename)=0 then begin
+      Result:=Files[i];
+      exit;
+    end;
+  end;
 end;
 
 function TLazPackage.FindUnit(const TheUnitName: string): TPkgFile;

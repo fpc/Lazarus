@@ -130,6 +130,7 @@ type
     function CreateNewPage(const NewPageName: string;
       const Priority: TComponentPriority): TIDEComponentPage;
     function FindComponent(const CompClassName: string): TIDEComponent;
+    function CreateNewClassName(const Prefix: string): string;
   public
     property Items[Index: integer]: TIDEComponentPage read GetItems; default;
   end;
@@ -364,6 +365,20 @@ begin
     if Result<>nil then exit;
   end;
   Result:=nil;
+end;
+
+function TIDEComponentPalette.CreateNewClassName(const Prefix: string): string;
+var
+  i: Integer;
+begin
+  if FindComponent(Prefix)=nil then begin
+    Result:=Prefix;
+  end else begin
+    i:=1;
+    repeat
+      Result:=Prefix+IntToStr(i);
+    until FindComponent(Result)=nil;
+  end;
 end;
 
 

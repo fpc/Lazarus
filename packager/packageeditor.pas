@@ -51,6 +51,7 @@ type
   { TPackageEditorForm }
 
   TPackageEditorForm = class(TBasePackageEditor)
+    SaveBitBtn: TBitBtn;
     CompileBitBtn: TBitBtn;
     AddBitBtn: TBitBtn;
     RemoveBitBtn: TBitBtn;
@@ -145,6 +146,9 @@ begin
   y:=0;
   w:=75;
   h:=25;
+  SaveBitBtn.SetBounds(x,y,w,h);
+  inc(x,w+2);
+
   CompileBitBtn.SetBounds(x,y,w,h);
   inc(x,w+2);
 
@@ -302,7 +306,7 @@ begin
   // find a nice position for the editor
   ARect:=FLazPackage.EditorRect;
   if (ARect.Bottom<ARect.Top+50) or (ARect.Right<ARect.Left+50) then
-    ARect:=CreateNiceWindowPosition(400,400);
+    ARect:=CreateNiceWindowPosition(500,400);
   SetBounds(ARect.Left,ARect.Top,
             ARect.Right-ARect.Left,ARect.Bottom-ARect.Top);
   // update components
@@ -345,12 +349,18 @@ begin
     AddResImg('pkg_binary');
   end;
   
+  SaveBitBtn:=TBitBtn.Create(Self);
+  with SaveBitBtn do begin
+    Name:='SaveBitBtn';
+    Parent:=Self;
+    Caption:='Save';
+  end;
+
   CompileBitBtn:=TBitBtn.Create(Self);
   with CompileBitBtn do begin
     Name:='CompileBitBtn';
     Parent:=Self;
     Caption:='Compile';
-    //LoadBitBtnGlyph(CompileBitBtn,'pkg_compile');
   end;
   
   AddBitBtn:=TBitBtn.Create(Self);
@@ -358,7 +368,6 @@ begin
     Name:='AddBitBtn';
     Parent:=Self;
     Caption:='Add';
-    //LoadBitBtnGlyph(AddBitBtn,'pkg_add');
     OnClick:=@AddBitBtnClick;
   end;
 
@@ -468,6 +477,8 @@ end;
 
 procedure TPackageEditorForm.UpdateButtons;
 begin
+  SaveBitBtn.Enabled:=(not LazPackage.ReadOnly)
+                              and (LazPackage.IsVirtual or LazPackage.Modified);
   CompileBitBtn.Enabled:=(not LazPackage.IsVirtual);
   AddBitBtn.Enabled:=not LazPackage.ReadOnly;
   RemoveBitBtn.Enabled:=(not LazPackage.ReadOnly)

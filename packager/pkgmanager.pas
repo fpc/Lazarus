@@ -156,8 +156,6 @@ begin
   NewPackage:=PackageGraph.NewPackage('NewPackage');
   NewPackage.AddRequiredDependency(
     PackageGraph.FCLPackage.CreateDependencyForThisPkg);
-  NewPackage.AddRequiredDependency(
-    PackageGraph.LCLPackage.CreateDependencyForThisPkg);
 
   // open a package editor
   CurEditor:=PackageEditors.OpenEditor(NewPackage);

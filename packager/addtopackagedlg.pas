@@ -58,6 +58,7 @@ type
     // new component page
     AncestorTypeLabel: TLabel;
     AncestorComboBox: TComboBox;
+    AncestorShowAllCheckBox: TCheckBox;
     ClassNameLabel: TLabel;
     ClassNameEdit: TEdit;
     PalettePageLabel: TLabel;
@@ -81,13 +82,18 @@ type
     procedure AddUnitButtonClick(Sender: TObject);
     procedure AddUnitFileBrowseButtonClick(Sender: TObject);
     procedure AddUnitPageResize(Sender: TObject);
+    procedure AncestorComboBoxCloseUp(Sender: TObject);
+    procedure AncestorShowAllCheckBoxClick(Sender: TObject);
     procedure CancelAddUnitButtonClick(Sender: TObject);
     procedure CancelNewComponentButtonClick(Sender: TObject);
+    procedure ClassNameEditChange(Sender: TObject);
     procedure ComponentUnitButtonClick(Sender: TObject);
     procedure NewComponentButtonClick(Sender: TObject);
     procedure NewComponentPageResize(Sender: TObject);
     procedure NewDependPageResize(Sender: TObject);
   private
+    fLastNewComponentAncestorType: string;
+    fLastNewComponentClassName: string;
     FLazPackage: TLazPackage;
     fPkgComponents: TAVLTree;// tree of TPkgComponent
     fPackages: TAVLTree;// tree of  TLazPackage or TPackageLink
@@ -95,6 +101,8 @@ type
     procedure SetupComponents;
     procedure OnIterateComponentClasses(PkgComponent: TPkgComponent);
     procedure OnIteratePackages(APackageID: TLazPackageID);
+    procedure AutoCompleteNewComponent;
+    procedure AutoCompleteNewComponentUnitName;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -132,19 +140,59 @@ end;
 procedure TAddToPackageDlg.AddUnitButtonClick(Sender: TObject);
 var
   AFilename: String;
+  AnUnitName: String;
+  PkgFile: TPkgFile;
+  Msg: String;
 begin
+  // normalize filename
   AFilename:=CleanAndExpandFilename(AddUnitFilenameEdit.Text);
+  // check if file exists
   if not FileExists(AFilename) then begin
     MessageDlg('File not found',
       'File "'+AFilename+'" not found.',mtError,[mbCancel],0);
     exit;
   end;
+  // check file extension
   if not FilenameIsPascalUnit(AFilename) then begin
-    if MessageDlg('File not unit',
-      'The file "'+AFilename+'"'#13
-      +'does not look like a pascal unit (.pp or .pas).',
-      mtWarning,[mbCancel,mbIgnore],0)<>mrIgnore then exit;
+    MessageDlg('File not unit',
+      'Pascal units must have the extension .pp or .pas',
+      mtWarning,[mbCancel],0);
+    exit;
   end;
+  // check unitname
+  AnUnitName:=ExtractFileNameOnly(AFilename);
+  if not IsValidIdent(AnUnitName) then begin
+    MessageDlg('File not unit',
+      +'"'+AnUnitName+'" is not a valid unit name.',
+      mtWarning,[mbCancel],0);
+    exit;
+  end;
+  // check if unitname already exists in package
+  PkgFile:=PackageGraph.FindUnit(LazPackage,AnUnitName,true);
+  if PkgFile<>nil then begin
+    if PkgFile.LazPackage=LazPackage then begin
+      MessageDlg('Unitname already exists',
+        'The unitname "'+AnUnitName+'" already exists in this package.',
+        mtError,[mbCancel],0);
+      exit;
+    end else begin
+      if MessageDlg('Unitname already exists',
+        'The unitname "'+AnUnitName+'" already exists in the package:'#13
+        +PkgFile.LazPackage.IDAsString,
+        mtWarning,[mbCancel,mbIgnore],0)<>mrIgnore then exit;
+    end;
+  end;
+  // check if file already exists in package
+  PkgFile:=LazPackage.FindPkgFile(AFilename,true);
+  if PkgFile<>nil then begin
+    Msg:='File "'+AFilename+'" already exists in the project.';
+    if PkgFile.Filename<>AFilename then
+      Msg:=#13+'Existing file: "'+PkgFile.Filename+'"';
+    MessageDlg('File already exists',Msg,mtError,[mbCancel],0);
+    exit;
+  end;
+  
+  // add it ...
   ModalResult:=mrOk;
 end;
 
@@ -199,6 +247,17 @@ begin
     SetBounds(x,y,80,Height);
 end;
 
+procedure TAddToPackageDlg.AncestorComboBoxCloseUp(Sender: TObject);
+begin
+  if fLastNewComponentAncestorType<>AncestorComboBox.Text then
+    AutoCompleteNewComponent;
+end;
+
+procedure TAddToPackageDlg.AncestorShowAllCheckBoxClick(Sender: TObject);
+begin
+  UpdateAvailableAncestorTypes;
+end;
+
 procedure TAddToPackageDlg.CancelAddUnitButtonClick(Sender: TObject);
 begin
   ModalResult:=mrCancel;
@@ -207,6 +266,11 @@ end;
 procedure TAddToPackageDlg.CancelNewComponentButtonClick(Sender: TObject);
 begin
   ModalResult:=mrCancel;
+end;
+
+procedure TAddToPackageDlg.ClassNameEditChange(Sender: TObject);
+begin
+  AutoCompleteNewComponentUnitName;
 end;
 
 procedure TAddToPackageDlg.ComponentUnitButtonClick(Sender: TObject);
@@ -256,6 +320,10 @@ begin
 
   with AncestorComboBox do
     SetBounds(x,y,200,Height);
+  inc(x,AncestorComboBox.Width+5);
+    
+  with AncestorShowAllCheckBox do
+    SetBounds(x,y,100,Height);
   x:=5;
   inc(y,AncestorComboBox.Height+5);
 
@@ -423,6 +491,16 @@ begin
     Name:='AncestorComboBox';
     Parent:=NewComponentPage;
     Text:='';
+    OnCloseUp:=@AncestorComboBoxCloseUp;
+  end;
+
+  AncestorShowAllCheckBox:=TCheckBox.Create(Self);
+  with AncestorShowAllCheckBox do begin
+    Name:='AncestorShowAllCheckBox';
+    Parent:=NewComponentPage;
+    Text:='Show all';
+    Checked:=true;
+    OnClick:=@AncestorShowAllCheckBoxClick;
   end;
 
   ClassNameLabel:=TLabel.Create(Self);
@@ -437,6 +515,7 @@ begin
     Name:='ClassNameEdit';
     Parent:=NewComponentPage;
     Text:='';
+    OnChange:=@ClassNameEditChange;
   end;
 
   PalettePageLabel:=TLabel.Create(Self);
@@ -576,6 +655,54 @@ begin
     fPackages.Add(APackageID);
 end;
 
+procedure TAddToPackageDlg.AutoCompleteNewComponent;
+var
+  PkgComponent: TPkgComponent;
+begin
+  fLastNewComponentAncestorType:=AncestorComboBox.Text;
+  if not IsValidIdent(fLastNewComponentAncestorType) then exit;
+  PkgComponent:=TPkgComponent(
+    IDEComponentPalette.FindComponent(fLastNewComponentAncestorType));
+  if PkgComponent=nil then exit;
+  
+  // create unique classname
+  ClassNameEdit.Text:=IDEComponentPalette.CreateNewClassName(
+                                                 fLastNewComponentAncestorType);
+  // choose the same page name
+  PalettePageCombobox.Text:=PkgComponent.Page.PageName;
+  // filename
+  AutoCompleteNewComponentUnitName;
+end;
+
+procedure TAddToPackageDlg.AutoCompleteNewComponentUnitName;
+var
+  CurClassName: String;
+  NewUnitName: String;
+  NewFileName: String;
+begin
+  CurClassName:=ClassNameEdit.Text;
+  if fLastNewComponentClassName=CurClassName then exit;
+  fLastNewComponentClassName:=CurClassName;
+  if not IsValidIdent(CurClassName) then exit;
+  // create unitname
+  NewUnitName:=CurClassName;
+  if NewUnitName[1]='T' then
+    NewUnitName:=copy(NewUnitName,2,length(NewUnitName)-1);
+  NewUnitName:=PackageGraph.CreateUniqueUnitName(NewUnitName);
+  // create filename
+  NewFileName:=NewUnitName;
+  if EnvironmentOptions.PascalFileAutoLowerCase
+  or EnvironmentOptions.PascalFileAskLowerCase then
+    NewFileName:=lowercase(NewFileName);
+  // append pascal file extension
+  NewFileName:=NewFileName+
+       +EnvironmentOpts.PascalExtension[EnvironmentOptions.PascalFileExtension];
+  // prepend path
+  if LazPackage.HasDirectory then
+    NewFileName:=LazPackage.Directory+NewFileName;
+  ComponentUnitEdit.Text:=NewFileName;
+end;
+
 constructor TAddToPackageDlg.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
@@ -598,11 +725,16 @@ procedure TAddToPackageDlg.UpdateAvailableAncestorTypes;
 var
   ANode: TAVLTreeNode;
   sl: TStringList;
+  OldAncestorType: String;
 begin
   // get all available registered components
   fPkgComponents.Clear;
-  PackageGraph.IterateComponentClasses(LazPackage,@OnIterateComponentClasses,
-                                       true,true);
+  if AncestorShowAllCheckBox.Checked then begin
+    PackageGraph.IterateAllComponentClasses(@OnIterateComponentClasses);
+  end else begin
+    PackageGraph.IterateComponentClasses(LazPackage,@OnIterateComponentClasses,
+                                         true,true);
+  end;
   // put them into the combobox
   sl:=TStringList.Create;
   ANode:=fPkgComponents.FindLowest;
@@ -610,7 +742,9 @@ begin
     sl.Add(TPkgComponent(ANode.Data).ComponentClass.ClassName);
     ANode:=fPkgComponents.FindSuccessor(ANode);
   end;
+  OldAncestorType:=AncestorComboBox.Text;
   AncestorComboBox.Items.Assign(sl);
+  AncestorComboBox.Text:=OldAncestorType;
   sl.Free;
 end;
 

@@ -91,6 +91,10 @@ type
     function FindNextSameName(ANode: TAVLTreeNode): TAVLTreeNode;
     function FindWithDependency(Dependency: TPkgDependency;
       Flags: TFindPackageFlags): TAVLTreeNode;
+    function FindUnit(StartPackage: TLazPackage;
+      const TheUnitName: string; WithRequiredPackages: boolean): TPkgFile;
+    function FindUnitInAllPackages(const TheUnitName: string): TPkgFile;
+    function CreateUniqueUnitName(const Prefix: string): string;
     function PackageNameExists(const PkgName: string;
       IgnorePackage: TLazPackage): boolean;
     function CreateUniquePkgName(const Prefix: string;
@@ -110,6 +114,7 @@ type
     procedure IterateComponentClasses(APackage: TLazPackage;
       Event: TIterateComponentClassesEvent;
       WithUsedPackages, WithRequiredPackages: boolean);
+    procedure IterateAllComponentClasses(Event: TIterateComponentClassesEvent);
     procedure IteratePackages(Flags: TFindPackageFlags;
       Event: TIteratePackagesEvent);
   public
@@ -265,6 +270,59 @@ begin
     if (fpfSearchInPckgsWithEditor in Flags) and (CurPkg.Editor<>nil) then exit;
     // search next package node with same name
     Result:=FindNextSameName(Result);
+  end;
+end;
+
+function TLazPackageGraph.FindUnit(StartPackage: TLazPackage;
+  const TheUnitName: string; WithRequiredPackages: boolean): TPkgFile;
+var
+  Cnt: Integer;
+  i: Integer;
+  ADependency: TPkgDependency;
+  ARequiredPackage: TLazPackage;
+begin
+  Result:=StartPackage.FindUnit(TheUnitName);
+  if Result<>nil then exit;
+  // search also in all required packages
+  if WithRequiredPackages then begin
+    Cnt:=StartPackage.RequiredPkgCount;
+    for i:=0 to Cnt-1 do begin
+      ADependency:=StartPackage.RequiredPkgs[i];
+      if OpenDependency(ADependency,[fpfSearchInInstalledPckgs],ARequiredPackage)
+         =lprSuccess
+      then begin
+        Result:=ARequiredPackage.FindUnit(TheUnitName);
+        if Result<>nil then exit;
+      end;
+    end;
+  end;
+end;
+
+function TLazPackageGraph.FindUnitInAllPackages(
+  const TheUnitName: string): TPkgFile;
+var
+  Cnt: Integer;
+  i: Integer;
+begin
+  Cnt:=Count;
+  for i:=0 to Cnt-1 do begin
+    Result:=FindUnit(Packages[i],TheUnitName,false);
+    if Result<>nil then exit;
+  end;
+  Result:=nil;
+end;
+
+function TLazPackageGraph.CreateUniqueUnitName(const Prefix: string): string;
+var
+  i: Integer;
+begin
+  if FindUnitInAllPackages(Prefix)=nil then
+    Result:=Prefix
+  else begin
+    i:=1;
+    repeat
+      Result:=Prefix+IntToStr(i);
+    until FindUnitInAllPackages(Result)=nil;
   end;
 end;
 
@@ -588,6 +646,17 @@ begin
       end;
     end;
   end;
+end;
+
+procedure TLazPackageGraph.IterateAllComponentClasses(
+  Event: TIterateComponentClassesEvent);
+var
+  Cnt: Integer;
+  i: Integer;
+begin
+  Cnt:=Count;
+  for i:=0 to Cnt-1 do
+    IterateComponentClasses(Packages[i],Event,false,false);
 end;
 
 procedure TLazPackageGraph.IteratePackages(Flags: TFindPackageFlags;
