@@ -1383,19 +1383,41 @@ begin
     if CurPos.EndPos-CurPos.StartPos=1 then begin
       c:=Src[CurPos.StartPos];
       case c of
-        '(','[':
+        '(':
           begin
             // open bracket + ? + close bracket
             if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
             if not ReadConstant(ExceptionOnError,Extract,Attr) then exit;
             if (c='(') and (CurPos.Flag<>cafRoundBracketClose) then
               if ExceptionOnError then
-                SaveRaiseExceptionFmt(ctsStrExpectedButAtomFound,['(',GetAtom])
+                SaveRaiseExceptionFmt(ctsStrExpectedButAtomFound,[')',GetAtom])
               else exit;
-            if (c='[') and (CurPos.Flag<>cafEdgedBracketClose) then
-              if ExceptionOnError then
-                SaveRaiseExceptionFmt(ctsStrExpectedButAtomFound,['[',GetAtom])
-              else exit;
+            if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
+            if WordIsTermOperator.DoItUpperCase(UpperSrc,
+                 CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
+            then begin
+              // open bracket + ? + close bracket + operator + ?
+              if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
+              Result:=ReadConstant(ExceptionOnError,Extract,Attr);
+              exit;
+            end;
+          end;
+        '[':
+          begin
+            // open bracket + ? + close bracket
+            repeat
+              if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
+              if not ReadConstant(ExceptionOnError,Extract,Attr) then exit;
+              if (CurPos.Flag=cafComma) or AtomIs('..') then begin
+                // continue
+              end else if (CurPos.Flag=cafEdgedBracketClose) then begin
+                break;
+              end else begin
+                if ExceptionOnError then
+                  SaveRaiseExceptionFmt(ctsStrExpectedButAtomFound,[']',GetAtom])
+                else exit;
+              end;
+            until false;
             if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
             if WordIsTermOperator.DoItUpperCase(UpperSrc,
                  CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
@@ -2324,8 +2346,10 @@ begin
         and (not IsKeyWordInConstAllowed.DoItUppercase(UpperSrc,
           CurPos.StartPos,CurPos.EndPos-CurPos.StartPos))
         and AtomIsKeyWord then
-          SaveRaiseExceptionFmt(ctsStrExpectedButAtomFound,['constant',GetAtom]);
-      until CurPos.Flag=cafSemicolon;
+          SaveRaiseExceptionFmt(ctsStrExpectedButAtomFound,
+                                ['constant',GetAtom]);
+      until (CurPos.Flag in
+                      [cafSemicolon,cafRoundBracketClose,cafEdgedBracketClose]);
       CurNode.EndPos:=CurPos.EndPos;
       EndChildNode;
     end else begin
