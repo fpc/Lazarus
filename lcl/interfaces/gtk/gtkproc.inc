@@ -510,9 +510,61 @@ begin
   if (ADialog=nil) or (ADialog.Handle=0) then exit;
   DlgWindow:=PGtkWidget(ADialog.Handle);
   if DlgWindow^.Allocation.Width>0 then
-    ADialog.InitialWidth:=DlgWindow^.Allocation.Width;
+    ADialog.Width:=DlgWindow^.Allocation.Width;
   if DlgWindow^.Allocation.Height>0 then
-    ADialog.InitialHeight:=DlgWindow^.Allocation.Height;
+    ADialog.Height:=DlgWindow^.Allocation.Height;
+end;
+
+{------------------------------------------------------------------------------
+  Procedure: DestroyCommonDialogAddOns
+  Params:    ADialog: TCommonDialog
+  Returns:   none
+
+  Free the memory of additional data of a TCommonDialog
+ ------------------------------------------------------------------------------}
+procedure DestroyCommonDialogAddOns(ADialog: TCommonDialog);
+var
+  DlgWindow: PGtkWidget;
+  HistoryList: TList; // list of TFileSelHistoryListEntry
+  FilterList: TList; // list of TFileSelFilterListEntry
+  AHistoryEntry: PFileSelHistoryEntry;
+  AFilterEntry: PFileSelFilterEntry;
+  i: integer;
+begin
+  if (ADialog=nil) or (ADialog.Handle=0) then exit;
+  DlgWindow:=PGtkWidget(ADialog.Handle);
+  if ADialog is TOpenDialog then begin
+  
+    // free history
+    HistoryList:=TList(gtk_object_get_data(PGtkObject(DlgWindow),
+                                           'LCLHistoryList'));
+    if HistoryList<>nil then begin
+      for i:=0 to HistoryList.Count-1 do begin
+        AHistoryEntry:=PFileSelHistoryEntry(HistoryList[i]);
+        StrDispose(AHistoryEntry^.Filename);
+        AHistoryEntry^.Filename:=nil;
+        Dispose(AHistoryEntry);
+      end;
+      HistoryList.Free;
+      gtk_object_set_data(PGtkObject(DlgWindow),'LCLHistoryList',nil);
+    end;
+
+    // free filter
+    FilterList:=TList(gtk_object_get_data(PGtkObject(DlgWindow),
+                                          'LCLFilterList'));
+    if FilterList<>nil then begin
+      for i:=0 to FilterList.Count-1 do begin
+        AFilterEntry:=PFileSelFilterEntry(FilterList[i]);
+        StrDispose(AFilterEntry^.Description);
+        AFilterEntry^.Description:=nil;
+        StrDispose(AFilterEntry^.Mask);
+        AFilterEntry^.Mask:=nil;
+        Dispose(AFilterEntry);
+      end;
+      FilterList.Free;
+      gtk_object_set_data(PGtkObject(DlgWindow),'LCLFilterList',nil);
+    end;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1249,6 +1301,7 @@ begin
 end;
 
 
+
 {$IFDEF ASSERT_IS_ON}
   {$UNDEF ASSERT_IS_ON}
   {$C-}
@@ -1257,6 +1310,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.41  2002/05/30 14:11:13  lazarus
+  MG: added filters and history to TOpenDialog
+
   Revision 1.40  2002/05/29 21:44:39  lazarus
   MG: improved TCommon/File/OpenDialog, fixed TListView scrolling and broder
 
