@@ -99,6 +99,8 @@ type
     procedure InstallBitBtnClick(Sender: TObject);
     procedure MaxVersionEditChange(Sender: TObject);
     procedure MinVersionEditChange(Sender: TObject);
+    procedure MoveDependencyUpClick(Sender: TObject);
+    procedure MoveDependencyDownClick(Sender: TObject);
     procedure OpenFileMenuItemClick(Sender: TObject);
     procedure OptionsBitBtnClick(Sender: TObject);
     procedure PackageEditorFormClose(Sender: TObject; var Action: TCloseAction);
@@ -282,6 +284,8 @@ procedure TPackageEditorForm.FilesPopupMenuPopup(Sender: TObject);
 var
   CurNode: TTreeNode;
   ItemCnt: Integer;
+  CurDependency: TPkgDependency;
+  Removed: boolean;
   
   procedure AddPopupMenuItem(const ACaption: string; AnEvent: TNotifyEvent;
     EnabledFlag: boolean);
@@ -302,14 +306,19 @@ var
 begin
   CurNode:=FilesTreeView.Selected;
   ItemCnt:=0;
+  CurDependency:=GetCurrentDependency(Removed);
   if CurNode<>nil then begin
     if CurNode.Parent<>nil then begin
       if CurNode.Parent=FilesNode then begin
         AddPopupMenuItem('Open file',@OpenFileMenuItemClick,true);
         AddPopupMenuItem('Remove file',@RemoveBitBtnClick,true);
-      end else if (CurNode.Parent=RequiredPackagesNode) then begin
+      end else if (CurDependency<>nil) and (not Removed) then begin
         AddPopupMenuItem('Open package',@OpenFileMenuItemClick,true);
         AddPopupMenuItem('Remove dependency',@RemoveBitBtnClick,true);
+        AddPopupMenuItem('Move dependency up',@MoveDependencyUpClick,
+                         CurDependency.PrevRequiresDependency<>nil);
+        AddPopupMenuItem('Move dependency down',@MoveDependencyDownClick,
+                         CurDependency.NextRequiresDependency<>nil);
       end else if (CurNode.Parent=RemovedFilesNode) then begin
         AddPopupMenuItem('Open file',@OpenFileMenuItemClick,true);
         AddPopupMenuItem('Add file',@ReAddMenuItemClick,true);
@@ -363,6 +372,26 @@ begin
   UpdateApplyDependencyButton;
 end;
 
+procedure TPackageEditorForm.MoveDependencyUpClick(Sender: TObject);
+var
+  CurDependency: TPkgDependency;
+  Removed: boolean;
+begin
+  CurDependency:=GetCurrentDependency(Removed);
+  if (CurDependency=nil) or Removed then exit;
+  PackageGraph.MoveRequiredDependencyUp(CurDependency);
+end;
+
+procedure TPackageEditorForm.MoveDependencyDownClick(Sender: TObject);
+var
+  CurDependency: TPkgDependency;
+  Removed: boolean;
+begin
+  CurDependency:=GetCurrentDependency(Removed);
+  if (CurDependency=nil) or Removed then exit;
+  PackageGraph.MoveRequiredDependencyDown(CurDependency);
+end;
+
 procedure TPackageEditorForm.OpenFileMenuItemClick(Sender: TObject);
 var
   CurNode: TTreeNode;
@@ -393,6 +422,9 @@ end;
 procedure TPackageEditorForm.OptionsBitBtnClick(Sender: TObject);
 begin
   ShowPackageOptionsDlg(LazPackage);
+  UpdateButtons;
+  UpdateTitle;
+  UpdateStatusBar;
 end;
 
 procedure TPackageEditorForm.PackageEditorFormClose(Sender: TObject;
@@ -705,7 +737,7 @@ begin
   with CompilerOptsDlg do begin
     GetCompilerOptions;
     Caption:='Compiler Options for Package '+LazPackage.IDAsString;
-    ReadOnly:=true;
+    ReadOnly:=LazPackage.ReadOnly;
     ShowModal;
     Free;
   end;

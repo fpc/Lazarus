@@ -41,9 +41,10 @@ unit CompilerOptions;
 interface
 
 uses
-  Forms, Classes, SysUtils, ComCtrls, Buttons, StdCtrls, ExtCtrls,
-  Laz_XMLCfg, FileCtrl, Dialogs, Controls, PathEditorDlg, IDEProcs, LazConf,
-  IDEOptionDefs, LazarusIDEStrConsts;
+  Forms, Classes, SysUtils, ComCtrls, Buttons, StdCtrls, ExtCtrls, Graphics,
+  LResources, Laz_XMLCfg, FileCtrl, Dialogs, Controls,
+  PathEditorDlg, IDEProcs, LazConf, IDEOptionDefs, LazarusIDEStrConsts,
+  TransferMacros;
 
 type
   TInheritedCompilerOption = (
@@ -60,19 +61,30 @@ type
   { TParsedCompilerOptions }
   
   TParsedCompilerOptString = (
-    pcosBaseDir,
-    pcosUnitPath,
-    pcosIncludePath,
-    pcosObjectPath,
-    pcosLibraryPath,
-    pcosLinkerOptions,
-    pcosCustomOptions,
-    pcosOutputDir,
-    pcosCompilerPath
+    pcosBaseDir,      // the base directory for the relative paths
+    pcosUnitPath,     // search path for pascal units
+    pcosIncludePath,  // search path for pascal include files
+    pcosObjectPath,   // search path for .o files
+    pcosLibraryPath,  // search path for libraries
+    pcosLinkerOptions,// additional linker options
+    pcosCustomOptions,// additional options
+    pcosOutputDir,    // the output directory
+    pcosCompilerPath  // the filename of the compiler
     );
   TParsedCompilerOptStrings = set of TParsedCompilerOptString;
   
+const
+  ParsedCompilerSearchPaths = [pcosUnitPath,pcosIncludePath,
+                               pcosObjectPath,pcosLibraryPath];
+  ParsedCompilerFilenames = [pcosOutputDir,pcosCompilerPath];
+  ParsedCompilerFiles = ParsedCompilerSearchPaths+ParsedCompilerFilenames;
+
+type
+  TLocalSubstitutionEvent = function(const s: string): string of object;
+
   TParsedCompilerOptions = class
+  private
+    FOnLocalSubstitute: TLocalSubstitutionEvent;
   public
     UnparsedValues: array[TParsedCompilerOptString] of string;
     ParsedValues: array[TParsedCompilerOptString] of string;
@@ -82,6 +94,10 @@ type
     procedure SetUnparsedValue(Option: TParsedCompilerOptString;
                                const NewValue: string);
     procedure Clear;
+    procedure InvalidateAll;
+    procedure InvalidateFiles;
+    property OnLocalSubstitute: TLocalSubstitutionEvent read FOnLocalSubstitute
+                                                       write FOnLocalSubstitute;
   end;
 
   TParseStringEvent =
@@ -93,16 +109,19 @@ type
 
   TBaseCompilerOptions = class
   private
-    fOwner: TObject;
+    FBaseDirectory: string;
+    fInheritedOptions: array[TInheritedCompilerOption] of string;
+    fInheritedOptParseStamps: integer;
+    fInheritedOptGraphStamps: integer;
+    fLoaded: Boolean;
     FModified: boolean;
     FOnModified: TNotifyEvent;
     fOptionsString: String;
+    fOwner: TObject;
     FParsedOpts: TParsedCompilerOptions;
-    xmlconfig: TXMLConfig;
-
-    fXMLFile: String;
     fTargetFilename: string;
-    fLoaded: Boolean;
+    fXMLFile: String;
+    xmlconfig: TXMLConfig;
 
     // Search Paths:
     fIncludeFiles: String;
@@ -111,6 +130,7 @@ type
     fCompilerPath: String;
     fUnitOutputDir: string;
     fLCLWidgetType: string;
+    FObjectPath: string;
 
     // Parsing:
     // style
@@ -181,17 +201,21 @@ type
     fAdditionalConfigFile: Boolean;
     fConfigFilePath: String;
     fCustomOptions: string;
-    procedure SetCompilerPath(const AValue: String);
-    procedure SetCustomOptions(const AValue: string);
-    procedure SetIncludeFiles(const AValue: String);
-    procedure SetLibraries(const AValue: String);
-    procedure SetLinkerOptions(const AValue: String);
-    procedure SetOtherUnitFiles(const AValue: String);
-    procedure SetUnitOutputDir(const AValue: string);
+  protected
+    procedure SetBaseDirectory(const AValue: string); virtual;
+    procedure SetCompilerPath(const AValue: String); virtual;
+    procedure SetCustomOptions(const AValue: string); virtual;
+    procedure SetIncludeFiles(const AValue: String); virtual;
+    procedure SetLibraries(const AValue: String); virtual;
+    procedure SetLinkerOptions(const AValue: String); virtual;
+    procedure SetOtherUnitFiles(const AValue: String); virtual;
+    procedure SetUnitOutputDir(const AValue: string); virtual;
+    procedure SetObjectPath(const AValue: string); virtual;
   protected
     procedure LoadTheCompilerOptions(const Path: string); virtual;
     procedure SaveTheCompilerOptions(const Path: string); virtual;
     procedure SetModified(const AValue: boolean); virtual;
+    procedure ClearInheritedOptions;
   public
     constructor Create(TheOwner: TObject);
     destructor Destroy; override;
@@ -214,13 +238,16 @@ type
     function CreateTargetFilename(const MainSourceFileName: string): string; virtual;
     procedure GetInheritedCompilerOptions(var OptionsList: TList); virtual;
     function GetOwnerName: string; virtual;
-    function GetBaseDirectory: string; virtual;
+    function GetInheritedOption(Option: TInheritedCompilerOption): string; virtual;
+    function MergeLinkerOptions(const OldOptions, AddOptions: string): string;
+    function MergeCustomOptions(const OldOptions, AddOptions: string): string;
   public
     { Properties }
     property Owner: TObject read fOwner write fOwner;
     property Modified: boolean read FModified write SetModified;
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
     property ParsedOpts: TParsedCompilerOptions read FParsedOpts;
+    property BaseDirectory: string read FBaseDirectory write SetBaseDirectory;
 
     property XMLFile: String read fXMLFile write fXMLFile;
     property TargetFilename: String read fTargetFilename write fTargetFilename;
@@ -234,6 +261,7 @@ type
     property CompilerPath: String read fCompilerPath write SetCompilerPath;
     property UnitOutputDirectory: string read fUnitOutputDir write SetUnitOutputDir;
     property LCLWidgetType: string read fLCLWidgetType write fLCLWidgetType;
+    property ObjectPath: string read FObjectPath write SetObjectPath;
 
     // parsing:
     property Style: Integer read fStyle write fStyle;
@@ -317,6 +345,7 @@ type
   
   TAdditionalCompilerOptions = class
   private
+    FBaseDirectory: string;
     FCustomOptions: string;
     FIncludePath: string;
     FLibraryPath: string;
@@ -325,12 +354,14 @@ type
     fOwner: TObject;
     FParsedOpts: TParsedCompilerOptions;
     FUnitPath: string;
-    procedure SetCustomOptions(const AValue: string);
-    procedure SetIncludePath(const AValue: string);
-    procedure SetLibraryPath(const AValue: string);
-    procedure SetLinkerOptions(const AValue: string);
-    procedure SetObjectPath(const AValue: string);
-    procedure SetUnitPath(const AValue: string);
+  protected
+    procedure SetBaseDirectory(const AValue: string); virtual;
+    procedure SetCustomOptions(const AValue: string); virtual;
+    procedure SetIncludePath(const AValue: string); virtual;
+    procedure SetLibraryPath(const AValue: string); virtual;
+    procedure SetLinkerOptions(const AValue: string); virtual;
+    procedure SetObjectPath(const AValue: string); virtual;
+    procedure SetUnitPath(const AValue: string); virtual;
   public
     constructor Create(TheOwner: TObject);
     destructor Destroy; override;
@@ -338,7 +369,6 @@ type
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     function GetOwnerName: string; virtual;
-    function GetBaseDirectory: string; virtual;
   public
     property Owner: TObject read fOwner;
     property UnitPath: string read FUnitPath write SetUnitPath;
@@ -347,6 +377,7 @@ type
     property LibraryPath: string read FLibraryPath write SetLibraryPath;
     property LinkerOptions: string read FLinkerOptions write SetLinkerOptions;
     property CustomOptions: string read FCustomOptions write SetCustomOptions;
+    property BaseDirectory: string read FBaseDirectory write SetBaseDirectory;
     property ParsedOpts: TParsedCompilerOptions read FParsedOpts;
   end;
 
@@ -363,6 +394,7 @@ type
   
   TfrmCompilerOptions = class(TForm)
     nbMain: TNotebook;
+    ImageList: TImageList;
 
     { Search Paths Controls }
     PathPage: TPage;
@@ -528,6 +560,8 @@ type
     procedure SetupButtonBar;
   private
     FReadOnly: boolean;
+    ImageIndexPackage: integer;
+    ImageIndexRequired: integer;
     function GetOtherSourcePath: string;
     procedure SetOtherSourcePath(const AValue: string);
     procedure SetReadOnly(const AValue: boolean);
@@ -549,10 +583,12 @@ type
 
 var
   frmCompilerOptions: TfrmCompilerOptions;
-  ParseStamp: integer;
+  CompilerParseStamp: integer;
+  CompilerGraphStamp: integer;
   OnParseString: TParseStringEvent;
   
-procedure IncreaseParseStamp;
+procedure IncreaseCompilerParseStamp;
+procedure IncreaseCompilerGraphStamp;
 function ParseString(Options: TParsedCompilerOptions;
                      const UnparsedValue: string): string;
 
@@ -560,16 +596,24 @@ implementation
 
 const
   Config_Filename = 'compileroptions.xml';
-  MaxParsedStamp = $7fffffff;
-  MinParsedStamp = -$7fffffff;
-  InvalidParsedStamp = MinParsedStamp-1;
+  MaxParseStamp = $7fffffff;
+  MinParseStamp = -$7fffffff;
+  InvalidParseStamp = MinParseStamp-1;
 
-procedure IncreaseParseStamp;
+procedure IncreaseCompilerParseStamp;
 begin
-  if ParseStamp<MaxParsedStamp then
-    inc(ParseStamp)
+  if CompilerParseStamp<MaxParseStamp then
+    inc(CompilerParseStamp)
   else
-    ParseStamp:=MinParsedStamp;
+    CompilerParseStamp:=MinParseStamp;
+end;
+
+procedure IncreaseCompilerGraphStamp;
+begin
+  if CompilerGraphStamp<MaxParseStamp then
+    inc(CompilerGraphStamp)
+  else
+    CompilerGraphStamp:=MinParseStamp;
 end;
 
 function ParseString(Options: TParsedCompilerOptions;
@@ -665,6 +709,13 @@ begin
   ParsedOpts.SetUnparsedValue(pcosCompilerPath,fCompilerPath);
 end;
 
+procedure TBaseCompilerOptions.SetBaseDirectory(const AValue: string);
+begin
+  if FBaseDirectory=AValue then exit;
+  FBaseDirectory:=AValue;
+  ParsedOpts.SetUnparsedValue(pcosBaseDir,FBaseDirectory);
+end;
+
 procedure TBaseCompilerOptions.SetCustomOptions(const AValue: string);
 begin
   if fCustomOptions=AValue then exit;
@@ -700,6 +751,13 @@ begin
   ParsedOpts.SetUnparsedValue(pcosOutputDir,fUnitOutputDir);
 end;
 
+procedure TBaseCompilerOptions.SetObjectPath(const AValue: string);
+begin
+  if FObjectPath=AValue then exit;
+  FObjectPath:=AValue;
+  ParsedOpts.SetUnparsedValue(pcosObjectPath,FObjectPath);
+end;
+
 {------------------------------------------------------------------------------
   TfrmCompilerOptions LoadTheCompilerOptions
 ------------------------------------------------------------------------------}
@@ -724,6 +782,7 @@ begin
   CompilerPath := XMLConfigFile.GetValue(p+'CompilerPath/Value', '$(CompPath)');
   UnitOutputDirectory := XMLConfigFile.GetValue(p+'UnitOutputDirectory/Value', '');
   LCLWidgetType := XMLConfigFile.GetValue(p+'LCLWidgetType/Value', 'gtk');
+  ObjectPath := XMLConfigFile.GetValue(p+'ObjectPath/Value', '');
 
   { Parsing }
   p:='CompilerOptions/Parsing/';
@@ -851,6 +910,7 @@ begin
   XMLConfigFile.SetDeleteValue(p+'CompilerPath/Value', CompilerPath,'');
   XMLConfigFile.SetDeleteValue(p+'UnitOutputDirectory/Value', UnitOutputDirectory,'');
   XMLConfigFile.SetDeleteValue(p+'LCLWidgetType/Value', LCLWidgetType,'');
+  XMLConfigFile.SetDeleteValue(p+'ObjectPath/Value', ObjectPath,'');
 
   { Parsing }
   p:='CompilerOptions/Parsing/';
@@ -936,6 +996,16 @@ begin
     OnModified(Self);
 end;
 
+procedure TBaseCompilerOptions.ClearInheritedOptions;
+var
+  i: TInheritedCompilerOption;
+begin
+  fInheritedOptParseStamps:=InvalidParseStamp;
+  fInheritedOptGraphStamps:=InvalidParseStamp;
+  for i:=Low(TInheritedCompilerOption) to High(TInheritedCompilerOption) do
+    fInheritedOptions[i]:='';
+end;
+
 {------------------------------------------------------------------------------
   TBaseCompilerOptions CreateTargetFilename
 ------------------------------------------------------------------------------}
@@ -971,11 +1041,88 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function TBaseCompilerOptions.GetBaseDirectory: string;
+  function TBaseCompilerOptions.GetInheritedOption(
+    Option: TInheritedCompilerOption): string;
 ------------------------------------------------------------------------------}
-function TBaseCompilerOptions.GetBaseDirectory: string;
+function TBaseCompilerOptions.GetInheritedOption(
+  Option: TInheritedCompilerOption): string;
+var
+  OptionsList: TList;
+  i: Integer;
+  AddOptions: TAdditionalCompilerOptions;
 begin
-  Result:='';
+  if (fInheritedOptParseStamps<>CompilerParseStamp)
+  or (fInheritedOptGraphStamps<>CompilerGraphStamp)
+  then begin
+    // update inherited options
+    ClearInheritedOptions;
+    OptionsList:=nil;
+    GetInheritedCompilerOptions(OptionsList);
+    if OptionsList<>nil then begin
+      for i:=0 to OptionsList.Count-1 do begin
+        AddOptions:=TAdditionalCompilerOptions(OptionsList[i]);
+        if (not (AddOptions is TAdditionalCompilerOptions)) then continue;
+        // unit search path
+        fInheritedOptions[icoUnitPath]:=
+          MergeSearchPaths(fInheritedOptions[icoUnitPath],AddOptions.UnitPath);
+        // include search path
+        fInheritedOptions[icoIncludePath]:=
+          MergeSearchPaths(fInheritedOptions[icoIncludePath],
+                           AddOptions.IncludePath);
+        // object search path
+        fInheritedOptions[icoObjectPath]:=
+          MergeSearchPaths(fInheritedOptions[icoObjectPath],
+                           AddOptions.ObjectPath);
+        // library search path
+        fInheritedOptions[icoLibraryPath]:=
+          MergeSearchPaths(fInheritedOptions[icoLibraryPath],
+                           AddOptions.LibraryPath);
+        // linker options
+        fInheritedOptions[icoLinkerOptions]:=
+          MergeLinkerOptions(fInheritedOptions[icoLinkerOptions],
+                             AddOptions.LinkerOptions);
+        // custom options
+        fInheritedOptions[icoCustomOptions]:=
+          MergeCustomOptions(fInheritedOptions[icoCustomOptions],
+                             AddOptions.CustomOptions);
+      end;
+    end;
+    fInheritedOptParseStamps:=CompilerParseStamp;
+    fInheritedOptGraphStamps:=CompilerGraphStamp;
+  end;
+  Result:=fInheritedOptions[Option];
+end;
+
+{------------------------------------------------------------------------------
+  function TBaseCompilerOptions.MergeLinkerOptions(const OldOptions,
+    AddOptions: string): string;
+------------------------------------------------------------------------------}
+function TBaseCompilerOptions.MergeLinkerOptions(const OldOptions,
+  AddOptions: string): string;
+begin
+  Result:=OldOptions;
+  if AddOptions='' then exit;
+  if (OldOptions[length(OldOptions)]<>' ')
+  and (AddOptions[1]<>' ') then
+    Result:=Result+' '+AddOptions
+  else
+    Result:=Result+AddOptions;
+end;
+
+{------------------------------------------------------------------------------
+  function TBaseCompilerOptions.MergeCustomOptions(const OldOptions,
+    AddOptions: string): string;
+------------------------------------------------------------------------------}
+function TBaseCompilerOptions.MergeCustomOptions(const OldOptions,
+  AddOptions: string): string;
+begin
+  Result:=OldOptions;
+  if AddOptions='' then exit;
+  if (OldOptions[length(OldOptions)]<>' ')
+  and (AddOptions[1]<>' ') then
+    Result:=Result+' '+AddOptions
+  else
+    Result:=Result+AddOptions;
 end;
 
 {------------------------------------------------------------------------------
@@ -986,6 +1133,10 @@ begin
   Result:=MakeOptionsString('')
 end;
 
+{------------------------------------------------------------------------------
+  function TBaseCompilerOptions.MakeOptionsString(
+    const MainSourceFilename: string): String;
+------------------------------------------------------------------------------}
 function TBaseCompilerOptions.MakeOptionsString(
   const MainSourceFilename: string): String;
 var
@@ -1576,6 +1727,7 @@ begin
   OtherUnitFiles := '';
   CompilerPath := '$(CompPath)';
   UnitOutputDirectory := '';
+  ObjectPath:='';
   fLCLWidgetType := 'gtk';
   
   // parsing
@@ -1643,6 +1795,9 @@ begin
   fAdditionalConfigFile := false;
   fConfigFilePath := './fpc.cfg';
   CustomOptions := '';
+  
+  // inherited
+  ClearInheritedOptions;
 end;
 
 procedure TBaseCompilerOptions.Assign(CompOpts: TBaseCompilerOptions);
@@ -1657,6 +1812,7 @@ begin
   CompilerPath := CompOpts.fCompilerPath;
   UnitOutputDirectory := CompOpts.fUnitOutputDir;
   fLCLWidgetType := CompOpts.fLCLWidgetType;
+  ObjectPath := CompOpts.FObjectPath;
 
   // Parsing
   fStyle := CompOpts.fStyle;
@@ -1736,6 +1892,7 @@ begin
     and (fOtherUnitFiles = CompOpts.fOtherUnitFiles)
     and (fCompilerPath = CompOpts.fCompilerPath)
     and (fUnitOutputDir = CompOpts.fUnitOutputDir)
+    and (FObjectPath = CompOpts.FObjectPath)
 
     and (fLCLWidgetType = CompOpts.fLCLWidgetType)
 
@@ -1813,6 +1970,16 @@ end;
 {  TfrmCompilerOptions Constructor                                             }
 {------------------------------------------------------------------------------}
 constructor TfrmCompilerOptions.Create(TheOwner: TComponent);
+
+  procedure AddResImg(const ResName: string);
+  var Pixmap: TPixmap;
+  begin
+    Pixmap:=TPixmap.Create;
+    Pixmap.TransparentColor:=clWhite;
+    Pixmap.LoadFromLazarusResource(ResName);
+    ImageList.Add(Pixmap,nil)
+  end;
+
 var Page: integer;
 begin
   inherited Create(TheOwner);
@@ -1821,6 +1988,17 @@ begin
 
   Position:=poScreenCenter;
   IDEDialogLayoutList.ApplyLayout(Self,550,450);
+  
+  ImageList:=TImageList.Create(Self);
+  with ImageList do begin
+    Width:=17;
+    Height:=17;
+    Name:='ImageList';
+    ImageIndexPackage:=Count;
+    AddResImg('pkg_package');
+    ImageIndexRequired:=Count;
+    AddResImg('pkg_required');
+  end;
 
   nbMain := TNotebook.Create(Self);
   nbMain.Parent := Self;
@@ -2218,19 +2396,50 @@ var
   i: Integer;
   AncestorOptions: TAdditionalCompilerOptions;
   AncestorNode: TTreeNode;
+  
+  procedure AddChildNode(const NewNodeName, Value: string);
+  var
+    VisibleValue: String;
+    ChildNode: TTreeNode;
+  begin
+    if Value='' then exit;
+    if length(Value)>100 then
+      VisibleValue:=copy(Value,1,100)+'[...]'
+    else
+      VisibleValue:=Value;
+    ChildNode:=InhTreeView.Items.AddChild(AncestorNode,
+                                           NewNodeName+' = "'+VisibleValue+'"');
+    ChildNode.ImageIndex:=ImageIndexRequired;
+    ChildNode.SelectedIndex:=ChildNode.ImageIndex;
+  end;
+  
 begin
   CompilerOpts.GetInheritedCompilerOptions(OptionsList);
   InhTreeView.BeginUpdate;
   InhTreeView.Items.Clear;
+  // add All node
+
+  // ToDo
+
   if OptionsList<>nil then begin
     for i:=0 to OptionsList.Count-1 do begin
       AncestorOptions:=TAdditionalCompilerOptions(OptionsList[i]);
       AncestorNode:=InhTreeView.Items.Add(nil,'');
       AncestorNode.Text:=AncestorOptions.GetOwnerName;
-
-      // ToDo
-      
+      AncestorNode.ImageIndex:=ImageIndexPackage;
+      AncestorNode.SelectedIndex:=AncestorNode.ImageIndex;
+      with AncestorOptions.ParsedOpts do begin
+        AddChildNode('unit path',GetParsedValue(pcosUnitPath));
+        AddChildNode('include path',GetParsedValue(pcosIncludePath));
+        AddChildNode('object path',GetParsedValue(pcosObjectPath));
+        AddChildNode('library path',GetParsedValue(pcosLibraryPath));
+        AddChildNode('linker options',GetParsedValue(pcosLinkerOptions));
+        AddChildNode('custom options',GetParsedValue(pcosCustomOptions));
+      end;
+      AncestorNode.Expanded:=true;
     end;
+  end else begin
+    InhTreeView.Items.Add(nil,'No compiler options inherited.');
   end;
   InhTreeView.EndUpdate;
 end;
@@ -3209,6 +3418,7 @@ begin
     Parent:=InheritedPage;
     Options:=Options+[tvoReadOnly, tvoRightClickSelect, tvoShowRoot,
                       tvoKeepCollapsedNodes];
+    Images:=ImageList;
     Align:=alClient;
   end;
 end;
@@ -3615,6 +3825,13 @@ begin
   ParsedOpts.SetUnparsedValue(pcosCustomOptions,fCustomOptions);
 end;
 
+procedure TAdditionalCompilerOptions.SetBaseDirectory(const AValue: string);
+begin
+  if FBaseDirectory=AValue then exit;
+  FBaseDirectory:=AValue;
+  ParsedOpts.SetUnparsedValue(pcosBaseDir,FBaseDirectory);
+end;
+
 procedure TAdditionalCompilerOptions.SetIncludePath(const AValue: string);
 begin
   if FIncludePath=AValue then exit;
@@ -3677,12 +3894,12 @@ procedure TAdditionalCompilerOptions.LoadFromXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
 begin
   Clear;
-  fCustomOptions:=XMLConfig.GetValue(Path+'CustomOptions/Value','');
-  FIncludePath:=XMLConfig.GetValue(Path+'IncludePath/Value','');
-  FLibraryPath:=XMLConfig.GetValue(Path+'LibraryPath/Value','');
-  fLinkerOptions:=XMLConfig.GetValue(Path+'LinkerOptions/Value','');
-  FObjectPath:=XMLConfig.GetValue(Path+'ObjectPath/Value','');
-  FUnitPath:=XMLConfig.GetValue(Path+'UnitPath/Value','');
+  CustomOptions:=XMLConfig.GetValue(Path+'CustomOptions/Value','');
+  IncludePath:=XMLConfig.GetValue(Path+'IncludePath/Value','');
+  LibraryPath:=XMLConfig.GetValue(Path+'LibraryPath/Value','');
+  LinkerOptions:=XMLConfig.GetValue(Path+'LinkerOptions/Value','');
+  ObjectPath:=XMLConfig.GetValue(Path+'ObjectPath/Value','');
+  UnitPath:=XMLConfig.GetValue(Path+'UnitPath/Value','');
 end;
 
 procedure TAdditionalCompilerOptions.SaveToXMLConfig(XMLConfig: TXMLConfig;
@@ -3704,18 +3921,6 @@ begin
     Result:='Has no owner';
 end;
 
-function TAdditionalCompilerOptions.GetBaseDirectory: string;
-begin
-  Result:='';
-end;
-
-{ TCompilerOptions }
-
-procedure TCompilerOptions.Clear;
-begin
-  inherited Clear;
-end;
-
 { TParsedCompilerOptions }
 
 constructor TParsedCompilerOptions.Create;
@@ -3725,33 +3930,92 @@ end;
 
 function TParsedCompilerOptions.GetParsedValue(Option: TParsedCompilerOptString
   ): string;
+var
+  BaseDirectory: String;
+  s: String;
 begin
-  if ParsedStamp[Option]<>ParseStamp then begin
-    ParsedValues[Option]:=ParseString(Self,UnparsedValues[Option]);
-    // make filename absolute
-    // ToDo
-    ParsedStamp[Option]:=ParseStamp;
+  if ParsedStamp[Option]<>CompilerParseStamp then begin
+    s:=ParseString(Self,UnparsedValues[Option]);
+    if Option=pcosBaseDir then
+      // base directory (append path)
+      s:=AppendPathDelim(TrimFilename(s))
+    else if Option in ParsedCompilerFilenames then begin
+      // make filename absolute
+      s:=TrimFilename(s);
+      BaseDirectory:=GetParsedValue(pcosBaseDir);
+      if (BaseDirectory<>'') and (not FilenameIsAbsolute(s)) then
+        s:=BaseDirectory+s;
+    end
+    else if Option in ParsedCompilerSearchPaths then begin
+      // make search paths absolute
+      BaseDirectory:=GetParsedValue(pcosBaseDir);
+      s:=TrimSearchPath(s,BaseDirectory);
+    end;
+    ParsedValues[Option]:=s;
+    ParsedStamp[Option]:=CompilerParseStamp;
   end;
   Result:=ParsedValues[Option];
 end;
 
 procedure TParsedCompilerOptions.SetUnparsedValue(
   Option: TParsedCompilerOptString; const NewValue: string);
+var
+  PreParsedValue: String;
 begin
-  ParsedStamp[Option]:=InvalidParsedStamp;
-  UnparsedValues[Option]:=NewValue;
+  if Assigned(OnLocalSubstitute) then begin
+    PreParsedValue:=OnLocalSubstitute(NewValue);
+  end else begin
+    PreParsedValue:=NewValue;
+  end;
+  if PreParsedValue=UnparsedValues[Option] then exit;
+  
+  IncreaseCompilerGraphStamp;
+  if Option=pcosBaseDir then
+    InvalidateFiles
+  else
+    ParsedStamp[Option]:=InvalidParseStamp;
+  UnparsedValues[Option]:=PreParsedValue;
 end;
 
 procedure TParsedCompilerOptions.Clear;
 var
   Option: TParsedCompilerOptString;
 begin
+  InvalidateAll;
   for Option:=Low(TParsedCompilerOptString) to High(TParsedCompilerOptString) do
-    ParsedStamp[Option]:=InvalidParsedStamp;
+  begin
+    ParsedValues[Option]:='';
+    UnparsedValues[Option]:='';
+  end;
+end;
+
+procedure TParsedCompilerOptions.InvalidateAll;
+var
+  Option: TParsedCompilerOptString;
+begin
+  for Option:=Low(TParsedCompilerOptString) to High(TParsedCompilerOptString) do
+    ParsedStamp[Option]:=InvalidParseStamp;
+end;
+
+procedure TParsedCompilerOptions.InvalidateFiles;
+var
+  Option: TParsedCompilerOptString;
+begin
+  for Option:=Low(TParsedCompilerOptString) to High(TParsedCompilerOptString) do
+    if (Option in ParsedCompilerFiles) then
+      ParsedStamp[Option]:=InvalidParseStamp;
+end;
+
+{ TCompilerOptions }
+
+procedure TCompilerOptions.Clear;
+begin
+  inherited Clear;
 end;
 
 initialization
-  ParseStamp:=0;
+  CompilerParseStamp:=1;
+  CompilerGraphStamp:=1;
 
 end.
 

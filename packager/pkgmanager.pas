@@ -49,7 +49,7 @@ uses
   LazarusIDEStrConsts, KeyMapping, EnvironmentOpts, IDEProcs, ProjectDefs,
   InputHistory, IDEDefs, UComponentManMain, Project, ComponentReg,
   PackageEditor, AddToPackageDlg, PackageDefs, PackageLinks, PackageSystem,
-  OpenInstalledPkgDlg, PkgGraphExplorer, BrokenDependenciesDlg,
+  OpenInstalledPkgDlg, PkgGraphExplorer, BrokenDependenciesDlg, CompilerOptions,
   BasePkgManager, MainBar;
 
 type
@@ -284,6 +284,7 @@ end;
 
 procedure TPkgManager.PkgManagerEndUpdate(Sender: TObject; GraphChanged: boolean);
 begin
+  if GraphChanged then IncreaseCompilerGraphStamp;
   if PackageGraphExplorer<>nil then begin
     if GraphChanged then PackageGraphExplorer.UpdateAll;
     PackageGraphExplorer.EndUpdate;

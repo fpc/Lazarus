@@ -209,7 +209,6 @@ type
   public
     constructor Create(TheProject: TProject);
     function GetOwnerName: string; override;
-    function GetBaseDirectory: string; override;
   public
     property OwnerProject: TProject read FOwnerProject;
   end;
@@ -254,6 +253,7 @@ type
     fOnFileBackup: TOnFileBackup;
     fOutputDirectory: String;
     fProjectInfoFile: String;  // the lpi filename
+    fProjectDirectory: string;
     fProjectType: TProjectType;
     fPublishOptions: TPublishProjectOptions;
     fRunParameterOptions: TRunParamsOptions;
@@ -281,6 +281,7 @@ type
     function JumpHistoryCheckPosition(
                                 APosition:TProjectJumpHistoryPosition): boolean;
     procedure SetSrcPath(const NewSrcPath: string);
+    procedure UpdateProjectDirectory;
   protected
     procedure AddToEditorWithIndexList(AnUnitInfo: TUnitInfo);
     procedure RemoveFromEditorWithIndexList(AnUnitInfo: TUnitInfo);
@@ -349,7 +350,6 @@ type
 
     function IsVirtual: boolean;
     function RemoveProjectPathFromFilename(const AFilename: string): string;
-    function ProjectDirectory: string;
     function FileIsInProjectDir(const AFilename: string): boolean;
     procedure GetVirtualDefines(DefTree: TDefineTree; DirDef: TDirectoryDefines);
     function SearchFile(const Filename,SearchPaths,InitialDir:string):string;
@@ -368,20 +368,21 @@ type
                                    read fCompilerOptions write fCompilerOptions;
     property FirstAutoRevertLockedUnit: TUnitInfo read fFirstAutoRevertLockedUnit;
     property FirstLoadedUnit: TUnitInfo read fFirstLoadedUnit;
-    property FirstUnitWithEditorIndex: TUnitInfo read fFirstUnitWithEditorIndex;
-    property FirstUnitWithForm: TUnitInfo read fFirstUnitWithForm;
     property FirstPartOfProject: TUnitInfo read fFirstPartOfProject;
 
+    property FirstUnitWithEditorIndex: TUnitInfo read fFirstUnitWithEditorIndex;
+    property FirstUnitWithForm: TUnitInfo read fFirstUnitWithForm;
     property Flags: TProjectFlags read FFlags write SetFlags;
     property IconPath: String read fIconPath write fIconPath;
     property JumpHistory: TProjectJumpHistory
                                            read fJumpHistory write fJumpHistory;
+    property MainFilename: String read GetMainFilename;
     property MainUnitID: Integer read fMainUnitID write SetMainUnitID;
     property MainUnitInfo: TUnitInfo read GetMainUnitInfo;
     property Modified: boolean read fModified write fModified;
     property OnFileBackup: TOnFileBackup read fOnFileBackup write fOnFileBackup;
     property OutputDirectory: String read fOutputDirectory write fOutputDirectory;
-    property MainFilename: String read GetMainFilename;
+    property ProjectDirectory: string read fProjectDirectory;
     property ProjectInfoFile: string
                                read GetProjectInfoFile write SetProjectInfoFile;
     property ProjectType: TProjectType read fProjectType write fProjectType;
@@ -1066,6 +1067,7 @@ begin
   fModified := false;
   fOutputDirectory := '.';
   fProjectInfoFile := '';
+  UpdateProjectDirectory;
   fPublishOptions:=TPublishProjectOptions.Create;
   fRunParameterOptions:=TRunParamsOptions.Create;
   fSrcPath := '';
@@ -1482,6 +1484,7 @@ begin
   fModified := false;
   fOutputDirectory := '.';
   fProjectInfoFile := '';
+  UpdateProjectDirectory;
   fPublishOptions.Clear;
   fSrcPath := '';
   fTargetFileExt := DefaultTargetFileExt;
@@ -1912,13 +1915,18 @@ begin
 end;
 
 procedure TProject.SetProjectInfoFile(const NewFilename:string);
+var
+  NewProjectInfoFile: String;
 begin
-  if NewFilename='' then exit;
+  NewProjectInfoFile:=TrimFilename(NewFilename);
+  if NewProjectInfoFile='' then exit;
+  DoDirSeparators(NewProjectInfoFile);
   if (AnsiCompareText(fTitle,ExtractFileNameOnly(fProjectInfoFile))=0)
-  or (fProjectInfoFile='') or (fTitle='') then
-    fTitle:=ExtractFileNameOnly(NewFilename);
-  fProjectInfoFile:=NewFilename;
-
+  or (fProjectInfoFile='') or (fTitle='') then begin
+    fTitle:=ExtractFileNameOnly(NewProjectInfoFile);
+  end;
+  fProjectInfoFile:=NewProjectInfoFile;
+  UpdateProjectDirectory;
   Modified:=true;
 end;
 
@@ -1966,11 +1974,6 @@ begin
   then
     Result:=copy(Result,length(ProjectPath)+1,
          length(Result)-length(ProjectPath));
-end;
-
-function TProject.ProjectDirectory: string;
-begin
-  Result:=ExtractFilePath(ProjectInfoFile);
 end;
 
 function TProject.FileIsInProjectDir(const AFilename: string): boolean;
@@ -2161,6 +2164,12 @@ begin
   fSrcPath:=NewSrcPath;
 end;
 
+procedure TProject.UpdateProjectDirectory;
+begin
+  fProjectDirectory:=ExtractFilePath(fProjectInfoFile);
+  CompilerOptions.BaseDirectory:=fProjectDirectory;
+end;
+
 procedure TProject.AddToEditorWithIndexList(AnUnitInfo: TUnitInfo);
 begin
   // add to list if AnUnitInfo is not in list
@@ -2321,17 +2330,15 @@ begin
   if Result='' then Result:=ExtractFilename(OwnerProject.ProjectInfoFile);
 end;
 
-function TProjectCompilerOptions.GetBaseDirectory: string;
-begin
-  Result:=OwnerProject.ProjectDirectory;
-end;
-
 end.
 
 
 
 {
   $Log$
+  Revision 1.106  2003/04/15 17:58:28  mattias
+  implemented inherited Compiler Options View
+
   Revision 1.105  2003/04/15 08:54:27  mattias
   fixed TMemo.WordWrap
 

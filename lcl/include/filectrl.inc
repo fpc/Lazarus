@@ -96,16 +96,56 @@ end;
 function TrimFilename(const AFilename: string): string;
 // trim double path delims, heading and trailing spaces
 // and special dirs . and ..
+
+  function FilenameIsTrimmed(const TheFilename: string): boolean;
+  var
+    l: Integer;
+    i: Integer;
+  begin
+    Result:=false;
+    if TheFilename='' then begin
+      Result:=true;
+      exit;
+    end;
+    l:=length(TheFilename);
+    // check heading spaces
+    if TheFilename[1]=' ' then exit;
+    // check trailing spaces
+    if TheFilename[l]=' ' then exit;
+    i:=1;
+    while i<=l do begin
+      case TheFilename[i] of
+      
+      PathDelim:
+        // check for double path delimiter
+        if (i<l) and (TheFilename[i+1]=PathDelim) then exit;
+        
+      '.':
+        if (i=1) or (TheFilename[i-1]=PathDelim) then begin
+          // check for . and .. directories
+          if (i=l) or (TheFilename[i+1]=PathDelim) then exit;
+          if (TheFilename[i+1]='.')
+          and ((i=l-1) or (TheFilename[i+2]=PathDelim)) then exit;
+        end;
+        
+      end;
+      inc(i);
+    end;
+    Result:=true;
+  end;
+
 var SrcPos, DestPos, l, DirStart: integer;
   c: char;
 begin
   Result:=AFilename;
+  if FilenameIsTrimmed(Result) then exit;
+
   l:=length(AFilename);
   SrcPos:=1;
   DestPos:=1;
 
   // skip trailing spaces
-  while (l>=1) and (AFilename[SrcPos]=' ') do dec(l);
+  while (l>=1) and (AFilename[l]=' ') do dec(l);
 
   // skip heading spaces
   while (SrcPos<=l) and (AFilename[SrcPos]=' ') do inc(SrcPos);
@@ -132,7 +172,8 @@ begin
     // check for special dirs . and ..
     if (c='.') then begin
       if (SrcPos<l) then begin
-        if (AFilename[SrcPos+1]=PathDelim) then begin
+        if (AFilename[SrcPos+1]=PathDelim)
+        and ((DestPos=1) or (AFilename[SrcPos-1]=PathDelim)) then begin
           // special dir ./
           // -> skip
           inc(SrcPos,2);
@@ -850,6 +891,9 @@ end;
 
 {
   $Log$
+  Revision 1.23  2003/04/15 17:58:28  mattias
+  implemented inherited Compiler Options View
+
   Revision 1.22  2003/03/30 20:37:15  mattias
   ipro now shows simple HTML pages
 

@@ -73,9 +73,11 @@ type
   TTransferMacroList = class
   private
     fItems: TList;  // list of TTransferMacro
+    FMarkUnhandledMacros: boolean;
     fOnSubstitution: TOnSubstitution;
     function GetItems(Index: integer): TTransferMacro;
     procedure SetItems(Index: integer; NewMacro: TTransferMacro);
+    procedure SetMarkUnhandledMacros(const AValue: boolean);
   protected
     function MF_Ext(const Filename:string; var Abort: boolean):string; virtual;
     function MF_Path(const Filename:string; var Abort: boolean):string; virtual;
@@ -98,6 +100,7 @@ type
     property OnSubstitution: TOnSubstitution
        read fOnSubstitution write fOnSubstitution;
     function FindByName(const MacroName: string): TTransferMacro; virtual;
+    property MarkUnhandledMacros: boolean read FMarkUnhandledMacros write SetMarkUnhandledMacros;
   end;
 
 
@@ -124,6 +127,7 @@ constructor TTransferMacroList.Create;
 begin
   inherited Create;
   fItems:=TList.Create;
+  FMarkUnhandledMacros:=true;
   Add(TTransferMacro.Create('Ext','','Function: extract file extension',@MF_Ext,[]));
   Add(TTransferMacro.Create('Path','','Function: extract file path',@MF_Path,[]));
   Add(TTransferMacro.Create('Name','','Function: extract file name+extension',
@@ -152,6 +156,12 @@ procedure TTransferMacroList.SetItems(Index: integer;
   NewMacro: TTransferMacro);
 begin
   fItems[Index]:=NewMacro;
+end;
+
+procedure TTransferMacroList.SetMarkUnhandledMacros(const AValue: boolean);
+begin
+  if FMarkUnhandledMacros=AValue then exit;
+  FMarkUnhandledMacros:=AValue;
 end;
 
 procedure TTransferMacroList.SetValue(const MacroName, NewValue: string);
@@ -197,6 +207,7 @@ var MacroStart,MacroEnd: integer;
   InFrontOfMacroLen: Integer;
   NewStringLen: Integer;
   NewStringPos: Integer;
+  sLen: Integer;
 
   function SearchBracketClose(Position:integer): integer;
   var BracketClose:char;
@@ -216,25 +227,25 @@ var MacroStart,MacroEnd: integer;
 
 begin
   Result:=true;
+  sLen:=length(s);
   MacroStart:=1;
   repeat
-    while (MacroStart<=length(s)) do begin
+    while (MacroStart<sLen) do begin
       if (s[MacroStart]='$') and ((MacroStart=1) or (s[MacroStart-1]<>'\')) then
         break
       else
         inc(MacroStart);
     end;
-    if MacroStart>length(s) then break;
+    if MacroStart>=sLen then break;
     
     MacroEnd:=MacroStart+1;
-    while (MacroEnd<=length(s)) 
-    and (IsIdentCHar[s[MacroEnd]]) do
+    while (MacroEnd<=sLen) and (IsIdentChar[s[MacroEnd]]) do
       inc(MacroEnd);
-    MacroName:=copy(s,MacroStart+1,MacroEnd-MacroStart-1);
-    
-    if (MacroEnd<length(s)) and (s[MacroEnd] in ['(','{']) then begin
+
+    if (MacroEnd<sLen) and (s[MacroEnd] in ['(','{']) then begin
+      MacroName:=copy(s,MacroStart+1,MacroEnd-MacroStart-1);
       MacroEnd:=SearchBracketClose(MacroEnd)+1;
-      if MacroEnd>length(s)+1 then break;
+      if MacroEnd>sLen+1 then break;
       OldMacroLen:=MacroEnd-MacroStart;
       MacroStr:=copy(s,MacroStart,OldMacroLen);
       // Macro found
@@ -263,13 +274,14 @@ begin
             Result:=false;
             exit;
           end;
+          Handled:=true;
         end;  
       end else begin
         // Macro variable
         MacroStr:=copy(s,MacroStart+2,OldMacroLen-3);
         AMacro:=FindByName(MacroStr);
         if Assigned(fOnSubstitution) then
-          fOnSubstitution(AMacro,MacroStr,Handled,ABort);
+          fOnSubstitution(AMacro,MacroStr,Handled,Abort);
         if Abort then begin
           Result:=false;
           exit;
@@ -279,33 +291,41 @@ begin
           MacroStr:=AMacro.Value;
           Handled:=true;
         end;
-        if not Handled then
-          MacroStr:='(unknown macro: '+MacroStr+')';
       end;
-      NewMacroEnd:=MacroStart+length(MacroStr);
-      NewMacroLen:=length(MacroStr);
-      InFrontOfMacroLen:=MacroStart-1;
-      BehindMacroLen:=length(s)-MacroEnd+1;
-      NewString:='';
-      NewStringLen:=InFrontOfMacroLen+NewMacroLen+BehindMacroLen;
-      if NewStringLen>0 then begin
-        SetLength(NewString,NewStringLen);
-        NewStringPos:=1;
-        if InFrontOfMacroLen>0 then begin
-          Move(s[1],NewString[NewStringPos],InFrontOfMacroLen);
-          inc(NewStringPos,InFrontOfMacroLen);
-        end;
-        if NewMacroLen>0 then begin
-          Move(MacroStr[1],NewString[NewStringPos],NewMacroLen);
-          inc(NewStringPos,NewMacroLen);
-        end;
-        if BehindMacroLen>0 then begin
-          Move(s[MacroEnd],NewString[NewStringPos],BehindMacroLen);
-          inc(NewStringPos,BehindMacroLen);
-        end;
+      // mark unhandled macros
+      if not Handled and MarkUnhandledMacros then begin
+        MacroStr:='(unknown macro: '+MacroStr+')';
+        Handled:=true;
       end;
-      s:=NewString;
-      MacroEnd:=NewMacroEnd;
+      // replace macro with new value
+      if Handled then begin
+        NewMacroLen:=length(MacroStr);
+        NewMacroEnd:=MacroStart+NewMacroLen;
+        InFrontOfMacroLen:=MacroStart-1;
+        BehindMacroLen:=sLen-MacroEnd+1;
+        NewString:='';
+        NewStringLen:=InFrontOfMacroLen+NewMacroLen+BehindMacroLen;
+        if NewStringLen>0 then begin
+          SetLength(NewString,NewStringLen);
+          NewStringPos:=1;
+          if InFrontOfMacroLen>0 then begin
+            Move(s[1],NewString[NewStringPos],InFrontOfMacroLen);
+            inc(NewStringPos,InFrontOfMacroLen);
+          end;
+          if NewMacroLen>0 then begin
+            Move(MacroStr[1],NewString[NewStringPos],NewMacroLen);
+            inc(NewStringPos,NewMacroLen);
+          end;
+          if BehindMacroLen>0 then begin
+            Move(s[MacroEnd],NewString[NewStringPos],BehindMacroLen);
+            inc(NewStringPos,BehindMacroLen);
+          end;
+        end;
+        s:=NewString;
+        sLen:=length(s);
+        // continue after the replacement
+        MacroEnd:=NewMacroEnd;
+      end;
     end;
     MacroStart:=MacroEnd;
   until false;

@@ -164,11 +164,7 @@ begin
   AnEdit:=GetEditForPathButton(AButton);
   OldPath:=AnEdit.Text;
   if AButton=UnitPathButton then begin
-    Templates:=
-          '$(LazarusDir)/lcl/units'
-        +';$(LazarusDir)/lcl/units/$(LCLWidgetType)'
-        +';$(LazarusDir)/components/units'
-        +';$(LazarusDir)/components/custom';
+    Templates:='$(PkgOutDir)';
   end;
   if AButton=IncludePathButton then begin
     Templates:='include';
@@ -386,6 +382,8 @@ begin
     LinkerOptions:=LinkerOptionsMemo.Text;
     CustomOptions:=CustomOptionsMemo.Text;
   end;
+  
+  ModalResult:=mrOk;
 end;
 
 procedure TPackageOptionsDialog.PackageOptionsDialogClose(Sender: TObject;

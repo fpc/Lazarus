@@ -158,6 +158,8 @@ type
     procedure ChangeDependency(Dependency, NewDependency: TPkgDependency);
     function OpenDependency(Dependency: TPkgDependency;
                             var APackage: TLazPackage): TLoadPackageResult;
+    procedure MoveRequiredDependencyUp(ADependency: TPkgDependency);
+    procedure MoveRequiredDependencyDown(ADependency: TPkgDependency);
     procedure IterateComponentClasses(APackage: TLazPackage;
                                Event: TIterateComponentClassesEvent;
                                WithUsedPackages, WithRequiredPackages: boolean);
@@ -754,10 +756,12 @@ begin
     Author:='FPC team';
     AutoInstall:=pitStatic;
     AutoUpdate:=false;
-    Description:='The FCL - FreePascal Component Library provides the base classes for object pascal.';
+    Description:='The FCL - FreePascal Component Library '
+                 +'provides the base classes for object pascal.';
     PackageType:=lptDesignTime;
     Installed:=pitStatic;
     CompilerOptions.UnitOutputDirectory:='';
+    UsageOptions.UnitPath:='';
 
     // add files
     AddFile('inc/process.pp','Process',pftUnit,[pffHasRegisterProc],cpBase);
@@ -778,7 +782,8 @@ begin
     Author:='Lazarus';
     AutoInstall:=pitStatic;
     AutoUpdate:=false;
-    Description:='The LCL - Lazarus Component Library contains all base components for form editing.';
+    Description:='The LCL - Lazarus Component Library '
+                 +'contains all base components for form editing.';
     PackageType:=lptDesignTime;
     Installed:=pitStatic;
     CompilerOptions.UnitOutputDirectory:='';
@@ -1133,6 +1138,30 @@ begin
   Result:=Dependency.LoadPackageResult;
 end;
 
+procedure TLazPackageGraph.MoveRequiredDependencyUp(
+  ADependency: TPkgDependency);
+begin
+  if (ADependency=nil) or (ADependency.Removed) or (ADependency.Owner=nil)
+  or (ADependency.PrevRequiresDependency=nil)
+  or (not (ADependency.Owner is TLazPackage))
+  then exit;
+  BeginUpdate(true);
+  TLazPackage(ADependency.Owner).MoveRequiredDependencyUp(ADependency);
+  EndUpdate;
+end;
+
+procedure TLazPackageGraph.MoveRequiredDependencyDown(
+  ADependency: TPkgDependency);
+begin
+  if (ADependency=nil) or (ADependency.Removed) or (ADependency.Owner=nil)
+  or (ADependency.NextRequiresDependency=nil)
+  or (not (ADependency.Owner is TLazPackage))
+  then exit;
+  BeginUpdate(true);
+  TLazPackage(ADependency.Owner).MoveRequiredDependencyDown(ADependency);
+  EndUpdate;
+end;
+
 procedure TLazPackageGraph.IterateComponentClasses(APackage: TLazPackage;
   Event: TIterateComponentClassesEvent; WithUsedPackages,
   WithRequiredPackages: boolean);
@@ -1228,6 +1257,9 @@ var
           RequiredPackage.Flags:=RequiredPackage.Flags+[lpfVisited];
           PkgStack[StackPtr]:=RequiredPackage;
           inc(StackPtr);
+          // add package to list
+          if List=nil then List:=TList.Create;
+          List.Add(RequiredPackage);
         end;
       end;
       CurDependency:=CurDependency.NextRequiresDependency;
@@ -1247,9 +1279,6 @@ begin
     // get required package from stack
     dec(StackPtr);
     Pkg:=PkgStack[StackPtr];
-    // add package to list
-    if List=nil then List:=TList.Create;
-    List.Add(Pkg);
     // put all required packages on stack
     PutPackagesFromDependencyListOnStack(Pkg.FirstRequiredDependency);
   end;

@@ -46,7 +46,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Graphics, Laz_XMLCfg, AVL_Tree,
-  CompilerOptions, Forms, FileCtrl, IDEProcs, ComponentReg;
+  CompilerOptions, Forms, FileCtrl, IDEProcs, ComponentReg, TransferMacros;
 
 type
   TLazPackage = class;
@@ -231,6 +231,10 @@ type
       ListType: TPkgDependencyList);
     procedure RemoveFromList(var FirstDependency: TPkgDependency;
       ListType: TPkgDependencyList);
+    procedure MoveUpInList(var FirstDependency: TPkgDependency;
+      ListType: TPkgDependencyList);
+    procedure MoveDownInList(var FirstDependency: TPkgDependency;
+      ListType: TPkgDependencyList);
   public
     property PackageName: string read FPackageName write SetPackageName;
     property Flags: TPkgDependencyFlags read FFlags write SetFlags;
@@ -251,26 +255,39 @@ type
   protected
     procedure SetLazPackage(const AValue: TLazPackage);
     procedure SetModified(const NewValue: boolean); override;
+    procedure SetCustomOptions(const AValue: string); override;
+    procedure SetIncludeFiles(const AValue: string); override;
+    procedure SetLibraries(const AValue: string); override;
+    procedure SetLinkerOptions(const AValue: string); override;
+    procedure SetObjectPath(const AValue: string); override;
+    procedure SetOtherUnitFiles(const AValue: string); override;
   public
     constructor Create(ThePackage: TLazPackage);
     procedure Clear; override;
     procedure GetInheritedCompilerOptions(var OptionsList: TList); override;
     function GetOwnerName: string; override;
+    procedure InvalidateOptions;
   public
     property LazPackage: TLazPackage read FLazPackage write SetLazPackage;
   end;
   
   
-  { TPkgAdditinoalCompilerOptions }
+  { TPkgAdditionalCompilerOptions }
   
   TPkgAdditionalCompilerOptions = class(TAdditionalCompilerOptions)
   private
     FLazPackage: TLazPackage;
     procedure SetLazPackage(const AValue: TLazPackage);
+  protected
+    procedure SetCustomOptions(const AValue: string); override;
+    procedure SetIncludePath(const AValue: string); override;
+    procedure SetLibraryPath(const AValue: string); override;
+    procedure SetLinkerOptions(const AValue: string); override;
+    procedure SetObjectPath(const AValue: string); override;
+    procedure SetUnitPath(const AValue: string); override;
   public
     constructor Create(ThePackage: TLazPackage);
     function GetOwnerName: string; override;
-    function GetBaseDirectory: string; override;
   public
     property LazPackage: TLazPackage read FLazPackage write SetLazPackage;
   end;
@@ -350,6 +367,7 @@ type
     FFlags: TLazPackageFlags;
     FIconFile: string;
     FInstalled: TPackageInstallType;
+    FMacros: TTransferMacroList;
     FModifiedLock: integer;
     FPackageEditor: TBasePackageEditor;
     FPackageType: TLazPackageType;
@@ -383,10 +401,13 @@ type
     procedure SetPackageEditor(const AValue: TBasePackageEditor);
     procedure SetPackageType(const AValue: TLazPackageType);
     procedure SetReadOnly(const AValue: boolean);
+    procedure OnMacroListSubstitution(TheMacro: TTransferMacro; var s: string;
+      var Handled, Abort: boolean);
+    function SubstitutePkgMacro(const s: string): string;
+    procedure Clear;
   public
     constructor Create;
     destructor Destroy; override;
-    procedure Clear;
     procedure LockModified;
     procedure UnlockModified;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
@@ -419,6 +440,8 @@ type
     procedure DeleteRemoveRequiredPkg(Dependency: TPkgDependency);
     procedure AddRequiredDependency(Dependency: TPkgDependency);
     procedure RemoveRequiredDependency(Dependency: TPkgDependency);
+    procedure MoveRequiredDependencyUp(Dependency: TPkgDependency);
+    procedure MoveRequiredDependencyDown(Dependency: TPkgDependency);
     function CreateDependencyForThisPkg: TPkgDependency;
     function AddComponent(PkgFile: TPkgFile; const Page: string;
                           TheComponentClass: TComponentClass): TPkgComponent;
@@ -461,6 +484,7 @@ type
     property ReadOnly: boolean read FReadOnly write SetReadOnly;
     property RemovedFilesCount: integer read GetRemovedCount;
     property RemovedFiles[Index: integer]: TPkgFile read GetRemovedFiles;
+    property Macros: TTransferMacroList read FMacros;
     property UsageOptions: TPkgAdditionalCompilerOptions
       read FUsageOptions;
   end;
@@ -1108,6 +1132,42 @@ begin
   PrevDependency[ListType]:=nil;
 end;
 
+procedure TPkgDependency.MoveUpInList(var FirstDependency: TPkgDependency;
+  ListType: TPkgDependencyList);
+var
+  OldPrev: TPkgDependency;
+begin
+  if (FirstDependency=Self) or (PrevDependency[ListType]=nil) then exit;
+  OldPrev:=PrevDependency[ListType];
+  if OldPrev.PrevDependency[ListType]<>nil then
+    OldPrev.PrevDependency[ListType].NextDependency[ListType]:=Self;
+  if NextDependency[ListType]<>nil then
+    NextDependency[ListType].PrevDependency[ListType]:=OldPrev;
+  OldPrev.NextDependency[ListType]:=NextDependency[ListType];
+  PrevDependency[ListType]:=OldPrev.PrevDependency[ListType];
+  NextDependency[ListType]:=OldPrev;
+  OldPrev.PrevDependency[ListType]:=Self;
+  if FirstDependency=OldPrev then FirstDependency:=Self;
+end;
+
+procedure TPkgDependency.MoveDownInList(var FirstDependency: TPkgDependency;
+  ListType: TPkgDependencyList);
+var
+  OldNext: TPkgDependency;
+begin
+  if (NextDependency[ListType]=nil) then exit;
+  OldNext:=NextDependency[ListType];
+  if OldNext.NextDependency[ListType]<>nil then
+    OldNext.NextDependency[ListType].PrevDependency[ListType]:=Self;
+  if PrevDependency[ListType]<>nil then
+    PrevDependency[ListType].NextDependency[ListType]:=OldNext;
+  OldNext.PrevDependency[ListType]:=PrevDependency[ListType];
+  NextDependency[ListType]:=OldNext.NextDependency[ListType];
+  PrevDependency[ListType]:=OldNext;
+  OldNext.NextDependency[ListType]:=Self;
+  if FirstDependency=Self then FirstDependency:=OldNext;
+end;
+
 { TPkgVersion }
 
 procedure TPkgVersion.Clear;
@@ -1214,6 +1274,25 @@ begin
 end;
 
 { TLazPackage }
+
+procedure TLazPackage.OnMacroListSubstitution(TheMacro: TTransferMacro;
+  var s: string; var Handled, Abort: boolean);
+begin
+  if AnsiCompareText(s,'PkgOutDir')=0 then begin
+    Handled:=true;
+    s:=CompilerOptions.UnitOutputDirectory;
+  end
+  else if AnsiCompareText(s,'PkgDir')=0 then begin
+    Handled:=true;
+    s:=FDirectory;
+  end;
+end;
+
+function TLazPackage.SubstitutePkgMacro(const s: string): string;
+begin
+  Result:=s;
+  FMacros.SubstituteStr(Result);
+end;
 
 function TLazPackage.GetAutoIncrementVersionOnBuild: boolean;
 begin
@@ -1324,6 +1403,8 @@ begin
     FDirectory:=FFilename
   else
     FDirectory:=ExtractFilePath(FFilename);
+  FUsageOptions.BaseDirectory:=FDirectory;
+  FCompilerOptions.BaseDirectory:=FDirectory;
   Modified:=true;
 end;
 
@@ -1399,19 +1480,26 @@ begin
   FComponents:=TList.Create;
   FFiles:=TList.Create;
   FRemovedFiles:=TList.Create;
+  FMacros:=TTransferMacroList.Create;
+  FMacros.MarkUnhandledMacros:=false;
+  FMacros.OnSubstitution:=@OnMacroListSubstitution;
   FCompilerOptions:=TPkgCompilerOptions.Create(Self);
+  FCompilerOptions.ParsedOpts.OnLocalSubstitute:=@SubstitutePkgMacro;
   FUsageOptions:=TPkgAdditionalCompilerOptions.Create(Self);
+  FUsageOptions.ParsedOpts.OnLocalSubstitute:=@SubstitutePkgMacro;
   Clear;
 end;
 
 destructor TLazPackage.Destroy;
 begin
+  Include(FFlags,lpfDestroying);
   Clear;
   FreeAndNil(FRemovedFiles);
   FreeAndNil(FFiles);
   FreeAndNil(FComponents);
   FreeAndNil(FCompilerOptions);
   FreeAndNil(FUsageOptions);
+  FreeAndNil(FMacros);
   inherited Destroy;
 end;
 
@@ -1437,7 +1525,6 @@ begin
   for i:=FComponents.Count-1 downto 0 do Components[i].Free;
   FComponents.Clear;
   FCompilerOptions.Clear;
-  fCompilerOptions.UnitOutputDirectory:='lib'+PathDelim;
   FDescription:='';
   FDirectory:='';
   FVersion.Clear;
@@ -1446,13 +1533,20 @@ begin
   FRemovedFiles.Clear;
   for i:=FFiles.Count-1 downto 0 do Files[i].Free;
   FFiles.Clear;
-  FFlags:=[lpfAutoIncrementVersionOnBuild,lpfAutoUpdate];
   FIconFile:='';
   FInstalled:=pitNope;
   FName:='';
   FPackageType:=lptRunAndDesignTime;
   FRegistered:=false;
   FUsageOptions.Clear;
+  // set some nice start values
+  if not (lpfDestroying in FFlags) then begin
+    FFlags:=[lpfAutoIncrementVersionOnBuild,lpfAutoUpdate];
+    fCompilerOptions.UnitOutputDirectory:='lib'+PathDelim;
+    FUsageOptions.UnitPath:='$(PkgOutDir)';
+  end else begin
+    FFlags:=[lpfDestroying];
+  end;
 end;
 
 procedure TLazPackage.LockModified;
@@ -1856,6 +1950,16 @@ begin
   Modified:=true;
 end;
 
+procedure TLazPackage.MoveRequiredDependencyUp(Dependency: TPkgDependency);
+begin
+  Dependency.MoveUpInList(FFirstRequiredDependency,pdlRequires);
+end;
+
+procedure TLazPackage.MoveRequiredDependencyDown(Dependency: TPkgDependency);
+begin
+  Dependency.MoveDownInList(FFirstRequiredDependency,pdlRequires);
+end;
+
 function TLazPackage.CreateDependencyForThisPkg: TPkgDependency;
 begin
   Result:=TPkgDependency.Create;
@@ -2089,6 +2193,42 @@ begin
   if Modified and (LazPackage<>nil) then LazPackage.Modified:=true;
 end;
 
+procedure TPkgCompilerOptions.SetCustomOptions(const AValue: string);
+begin
+  if CustomOptions<>AValue then InvalidateOptions;
+  inherited SetCustomOptions(AValue);
+end;
+
+procedure TPkgCompilerOptions.SetIncludeFiles(const AValue: string);
+begin
+  if IncludeFiles<>AValue then InvalidateOptions;
+  inherited SetIncludeFiles(AValue);
+end;
+
+procedure TPkgCompilerOptions.SetLibraries(const AValue: string);
+begin
+  if Libraries<>AValue then InvalidateOptions;
+  inherited SetLibraries(AValue);
+end;
+
+procedure TPkgCompilerOptions.SetLinkerOptions(const AValue: string);
+begin
+  if LinkerOptions<>AValue then InvalidateOptions;
+  inherited SetLinkerOptions(AValue);
+end;
+
+procedure TPkgCompilerOptions.SetObjectPath(const AValue: string);
+begin
+  if ObjectPath<>AValue then InvalidateOptions;
+  inherited SetObjectPath(AValue);
+end;
+
+procedure TPkgCompilerOptions.SetOtherUnitFiles(const AValue: string);
+begin
+  if OtherUnitFiles<>AValue then InvalidateOptions;
+  inherited SetOtherUnitFiles(AValue);
+end;
+
 constructor TPkgCompilerOptions.Create(ThePackage: TLazPackage);
 begin
   inherited Create(ThePackage);
@@ -2111,6 +2251,11 @@ begin
   Result:=LazPackage.IDAsString;
 end;
 
+procedure TPkgCompilerOptions.InvalidateOptions;
+begin
+  LazPackage.UsageOptions.ParsedOpts.InvalidateAll;
+end;
+
 { TPkgAdditionalCompilerOptions }
 
 procedure TPkgAdditionalCompilerOptions.SetLazPackage(const AValue: TLazPackage
@@ -2118,6 +2263,48 @@ procedure TPkgAdditionalCompilerOptions.SetLazPackage(const AValue: TLazPackage
 begin
   if FLazPackage=AValue then exit;
   FLazPackage:=AValue;
+end;
+
+procedure TPkgAdditionalCompilerOptions.SetCustomOptions(const AValue: string);
+begin
+  if AValue=CustomOptions then exit;
+  inherited SetCustomOptions(AValue);
+  LazPackage.Modified:=true;
+end;
+
+procedure TPkgAdditionalCompilerOptions.SetIncludePath(const AValue: string);
+begin
+  if AValue=IncludePath then exit;
+  inherited SetIncludePath(AValue);
+  LazPackage.Modified:=true;
+end;
+
+procedure TPkgAdditionalCompilerOptions.SetLibraryPath(const AValue: string);
+begin
+  if AValue=LibraryPath then exit;
+  inherited SetLibraryPath(AValue);
+  LazPackage.Modified:=true;
+end;
+
+procedure TPkgAdditionalCompilerOptions.SetLinkerOptions(const AValue: string);
+begin
+  if AValue=LinkerOptions then exit;
+  inherited SetLinkerOptions(AValue);
+  LazPackage.Modified:=true;
+end;
+
+procedure TPkgAdditionalCompilerOptions.SetObjectPath(const AValue: string);
+begin
+  if AValue=ObjectPath then exit;
+  inherited SetObjectPath(AValue);
+  LazPackage.Modified:=true;
+end;
+
+procedure TPkgAdditionalCompilerOptions.SetUnitPath(const AValue: string);
+begin
+  if AValue=UnitPath then exit;
+  inherited SetUnitPath(AValue);
+  LazPackage.Modified:=true;
 end;
 
 constructor TPkgAdditionalCompilerOptions.Create(ThePackage: TLazPackage);
@@ -2129,11 +2316,6 @@ end;
 function TPkgAdditionalCompilerOptions.GetOwnerName: string;
 begin
   Result:=LazPackage.IDAsString;
-end;
-
-function TPkgAdditionalCompilerOptions.GetBaseDirectory: string;
-begin
-  Result:=LazPackage.Directory;
 end;
 
 initialization
