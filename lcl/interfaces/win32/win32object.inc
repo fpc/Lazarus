@@ -213,14 +213,14 @@ Begin
     csPage:
     Begin
       Assert(False, 'Trace:TWin32Object.GetText - csPage: Start');
-      Ctrl := ((Sender As TPage).Parent As TNotebook);
+      Ctrl := (TPage(Sender).Parent As TNotebook);
       Caption := StrAlloc(MAX_PATH);
       try
         TCI.mask := TCIF_TEXT;
         TCI.cchTextMax := MAX_PATH;
         TCI.pszText := Caption;
         Assert(False, 'Trace:TWin32Object.GetText - Getting the text');
-        Result := (Windows.Sendmessage(Ctrl.Handle, TCM_GETITEM, (Sender as TPage).PageIndex, LPARAM(@TCI))<>0);
+        Result := (Windows.Sendmessage(Ctrl.Handle, TCM_GETITEM, TPage(Sender).PageIndex, LPARAM(@TCI))<>0);
         if Result
           then Data := StrPas(Caption);
         Assert(False, Format('Trace:TWin32Object.GetText - Returning the text --> %S', [Data]));
@@ -248,7 +248,7 @@ Procedure TWin32Object.SetLabel(Sender: TObject; Data: Pointer);
   var MenuInfo: MENUITEMINFO;
       Style: integer;
   Begin
-    if (Sender as TMenuItem).Caption = '-' then Style := MFT_SEPARATOR
+    if TMenuItem(Sender).Caption = '-' then Style := MFT_SEPARATOR
     else Style := MFT_STRING;
     with MenuInfo do
     begin
@@ -256,17 +256,17 @@ Procedure TWin32Object.SetLabel(Sender: TObject; Data: Pointer);
       {In Win32 Menu items that are created without a initial caption default to disabled,
        the next three lines are to counter that.}
       fMask:=MIIM_STATE;
-      GetMenuItemInfo((Sender as TMenuItem).Parent.Handle,
-                      (Sender as TMenuItem).Command, false, @MenuInfo);
-      if (Sender as TMenuItem).Enabled then
+      GetMenuItemInfo(TMenuItem(Sender).Parent.Handle,
+                      TMenuItem(Sender).Command, false, @MenuInfo);
+      if TMenuItem(Sender).Enabled then
         fState := fState and (not (MFS_DISABLED or MFS_GRAYED));
 
       fMask:=MIIM_TYPE or MIIM_STATE;
       fType:=Style;
       dwTypeData:=Data;
     end;
-    SetMenuItemInfo((Sender as TMenuItem).Parent.Handle,
-                    (Sender as TMenuItem).Command, false, @MenuInfo);
+    SetMenuItemInfo(TMenuItem(Sender).Parent.Handle,
+                    TMenuItem(Sender).Command, false, @MenuInfo);
     // owner could be a popupmenu too
     if (TMenuItem(Sender).Owner is TWinControl) and
         TWinControl(TMenuItem(Sender).Owner).HandleAllocated then
@@ -305,9 +305,9 @@ Begin
       Assert(False, 'Trace:TWin32Object.SetLabel - I''m not sure if this''ll work');
       Assert(False, Format('Trace:Is Sender a TCommonDialog - %S', [BOOL_RESULT[Sender Is TCommonDialog]]));
       If Sender Is TCommonDialog Then
-        (Sender As TCommonDialog).Title := StrPas(Data)
+        TCommonDialog(Sender).Title := StrPas(Data)
       Else
-        (Sender As TWinControl).Caption := StrPas(Data);
+        TWinControl(Sender).Caption := StrPas(Data);
       Assert(False, Format('Trace:TWin32Object.SetLabel - Leaving %S', [CS_To_String(TControl(Sender).FCompStyle)]));
     End;
     csComboBox:
@@ -332,19 +332,19 @@ Begin
         TCI.mask := TCIF_TEXT;
         Assert(False, Format('Trace:TWin32Object.SetLabel - label --> %S', [Str]));
         TCI.pszText := PChar(Str);
-        Windows.SendMessage((Sender As TCustomNotebook).Handle, TCM_SETITEM, Page, LPARAM(@TCI));
+        Windows.SendMessage(TCustomNotebook(Sender).Handle, TCM_SETITEM, Page, LPARAM(@TCI));
       end
     End;
     csPage:
     begin
       Assert(False, 'Trace: TWin32Object.SetLabel - Got csPage');
       // We can't set label of a page not yet added
-      if (Sender As TPage).PageIndex < Windows.SendMessage((Sender As TPage).Parent.Handle, TCM_GETITEMCOUNT,0,0) then
+      if TPage(Sender).PageIndex < Windows.SendMessage(TPage(Sender).Parent.Handle, TCM_GETITEMCOUNT,0,0) then
       begin
         Assert(False, Format('Trace:TWin32Object.SetLabel - label --> %S', [String(PChar(Data))]));
         TCI.mask := TCIF_TEXT;
         TCI.pszText := Data;
-        Windows.SendMessage((Sender As TPage).Parent.Handle, TCM_SETITEM, (Sender As TPage).PageIndex, LPARAM(@TCI));
+        Windows.SendMessage(TPage(Sender).Parent.Handle, TCM_SETITEM, TPage(Sender).PageIndex, LPARAM(@TCI));
       end;
     End;
     csToolButton:
@@ -728,7 +728,7 @@ activate_time :	the time at which the activation event occurred.
             ReDraw(Sender)
           Else If Sender Is TSpeedButton Then
             If TSpeedbutton(Sender).Visible Then
-              (Sender As TSpeedButton).Perform(LM_PAINT, 0, 0)
+              TSpeedButton(Sender).Perform(LM_PAINT, 0, 0)
             Else
             Begin
               R2 := TSpeedButton(sender).BoundsRect;
@@ -766,7 +766,7 @@ activate_time :	the time at which the activation event occurred.
               tpRight:
                 WindowStyle := WindowStyle or (TCS_VERTICAL or TCS_RIGHT or TCS_MULTILINE);
             End;
-            Windows.SetWindowLong((Sender As TWinControl).Handle, GWL_STYLE, WindowStyle);
+            Windows.SetWindowLong(TWinControl(Sender).Handle, GWL_STYLE, WindowStyle);
           End;
         End;
         LM_INSERTTOOLBUTTON:
@@ -807,8 +807,8 @@ activate_time :	the time at which the activation event occurred.
               iString := Integer(PStr);
             End;
 
-            SendMessage((Sender as TWinControl).Parent.Handle, TB_BUTTONSTRUCTSIZE, SizeOf(TBBUTTON), 0);
-            SendMessage((Sender as TWinControl).Parent.Handle, TB_ADDBUTTONS, 1, LParam(LPTBButton(@tbb)));
+            SendMessage(TWinControl(Sender).Parent.Handle, TB_BUTTONSTRUCTSIZE, SizeOf(TBBUTTON), 0);
+            SendMessage(TWinControl(Sender).Parent.Handle, TB_ADDBUTTONS, 1, LParam(LPTBButton(@tbb)));
             StrDispose(pStr);
             StrDispose(pStr2);
             Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!!!!!!!!');
@@ -891,9 +891,9 @@ activate_time :	the time at which the activation event occurred.
                 OldPageIndex := SendMessage(Handle,TCM_GETCURSEL,0,0);
                 SendMessage(Handle,TCM_SETCURSEL,WPARAM(Page),0);
                 if (Page>=0) And ((Parent As TCustomNotebook).Page[Page].HandleAllocated)
-                  then ShowWindow((Parent As TCustomNotebook).Page[Page].Handle, SW_SHOW);
-                if (OldPageIndex>=0) and (OldPageIndex<>Page) and ((Parent As TCustomNotebook).Page[OldPageIndex].HandleAllocated)
-                  then ShowWindow((Parent As TCustomNotebook).Page[OldPageIndex].Handle, SW_HIDE);
+                  then ShowWindow(TCustomNotebook(Parent).Page[Page].Handle, SW_SHOW);
+                if (OldPageIndex>=0) and (OldPageIndex<>Page) and (TCustomNotebook(Parent).Page[OldPageIndex].HandleAllocated)
+                  then ShowWindow(TCustomNotebook(Parent).Page[OldPageIndex].Handle, SW_HIDE);
               end;
             End;
           End;
@@ -1004,7 +1004,7 @@ activate_time :	the time at which the activation event occurred.
         Begin
           If Sender is TMenuItem Then
           Begin
-            SetLabel(Sender, LPSTR((Sender as TMenuItem).Caption+#9+ShortCutToText(ShortCut(TLMShortCut(Data^).NewKey, TLMShortCut(Data^).NewModifier))));
+            SetLabel(Sender, LPSTR(TMenuItem(Sender).Caption+#9+ShortCutToText(ShortCut(TLMShortCut(Data^).NewKey, TLMShortCut(Data^).NewModifier))));
             SetAccelKey(TLMShortCut(Data^).Handle, TLMShortCut(Data^).NewKey, TLMShortCut(Data^).NewModifier, FAccelGroup);
           End;
         End;
@@ -1035,11 +1035,11 @@ Begin
   Assert(False, Format('Trace:TWin32Object.SetCallback - Class Name --> %S', [Sender.ClassName]));
   Assert(False, Format('Trace:TWin32Object.SetCallback - Message Name --> %S', [GetMessageName(Msg)]));
   If Sender Is TControlCanvas Then
-    Window := (Sender As TControlCanvas).Handle
+    Window := TControlCanvas(Sender).Handle
   Else If Sender Is TCustomForm Then
-    Window := (Sender As TCustomForm).Handle
+    Window := TCustomForm(Sender).Handle
   Else
-    Window := (Sender as TWinControl).Handle;
+    Window := TWinControl(Sender).Handle;
   if Window=0 then exit;
 
   {$IFDEF VER1_1}
@@ -1067,9 +1067,9 @@ Var
   Window: HWnd;
 Begin
   If Sender Is TControlCanvas Then
-    Window := (Sender As TControlCanvas).Handle
+    Window := TControlCanvas(Sender).Handle
   Else If Sender Is TCustomForm Then
-    Window := (Sender As TCustomForm).Handle
+    Window := TCustomForm(Sender).Handle
   Else
     Window := (Sender as TWinControl).Handle;
   if Window=0 then exit;
@@ -1303,8 +1303,8 @@ Var
 Begin
   DC := GetDC((Surface As TWinControl).Handle);
   Pixmap := CreatePixmapIndirect(PixmapData, 0);
-  DrawIcon(DC, (Surface As TWinControl).Left, (Surface As TWinControl).Top, Pixmap);
-  ReleaseDC((Surface As TWinControl).Handle, DC);
+  DrawIcon(DC, TWinControl(Surface).Left, TWinControl(Surface).Top, Pixmap);
+  ReleaseDC(TWinControl(Surface).Handle, DC);
 End;
 
 {------------------------------------------------------------------------------
@@ -1471,9 +1471,9 @@ Var
   function GetOwnerHandle: HWND;
   begin
     if (Sender As TComponent).Owner Is TWinControl then
-      Result := ((Sender As TComponent).Owner As TWinControl).Handle
-    else if (Sender AS TComponent).Owner Is TApplication then
-      Result := ((Sender As TComponent).Owner As TApplication).Handle
+      Result := TWinControl(TComponent(Sender).Owner).Handle
+    else if TComponent(Sender).Owner Is TApplication then
+      Result := TApplication(TComponent(Sender).Owner).Handle
     else Result := 0;
   end;
 
@@ -1495,7 +1495,7 @@ Begin
     Begin
       LStructSize := SizeOf(TChooseColor);
       HWndOwner := GetOwnerHandle;
-      RGBResult := (Sender As TColorDialog).Color;
+      RGBResult := TColorDialog(Sender).Color;
       LPCustColors := @CustomColors;
       Flags := CC_FullOpen Or CC_RGBInit;
     End;
@@ -1506,8 +1506,8 @@ Begin
     {TODO: set correctly Sender.FileName and Sender.Files when more files are selected}
     If Sender Is TOpenDialog Then
     Begin
-      FName:=(Sender As TOpenDialog).FileName+#0;
-      FFilter := (Sender As TOpenDialog).Filter;
+      FName := TOpenDialog(Sender).FileName+#0;
+      FFilter := TOpenDialog(Sender).Filter;
       ReplacePipe(FFilter);
       FFilter := FFilter+#0#0;
       ZeroMemory(@OpenFile, SizeOf(OpenFileName));
@@ -1517,10 +1517,10 @@ Begin
         HWndOwner := GetOwnerHandle;
         LPStrFilter := PChar(FFilter);
         LPStrFile := @FName;
-        LPStrTitle := PChar((Sender As TOpenDialog).Title);
-        LPStrInitialDir := PChar((Sender As TOpenDialog).InitialDir);
+        LPStrTitle := PChar(TOpenDialog(Sender).Title);
+        LPStrInitialDir := PChar(TOpenDialog(Sender).InitialDir);
         NMaxFile := Max_path;
-        Flags := GetFlagsFromOptions((Sender As TOpenDialog).Options);
+        Flags := GetFlagsFromOptions(TOpenDialog(Sender).Options);
       End;
       If Sender Is TSaveDialog Then {must be before TOpenDialog because TSaveDialog IS TOpenDialog}
       Begin
@@ -1530,7 +1530,7 @@ Begin
       Begin
         Ret := GetOpenFileName(@OpenFile);
       End;
-      If Ret Then (Sender As TOpenDialog).FileName := StrPas(FName);
+      If Ret Then TOpenDialog(Sender).FileName := StrPas(FName);
     End
   End
   Else If Sender Is TFontDialog Then
@@ -1539,22 +1539,22 @@ Begin
     ZeroMemory(@LF, SizeOf(LogFont));
     With LF Do
     Begin
-      LFHeight := (Sender As TFontDialog).Font.Height;
-      LFFaceName := TFontDataName((Sender As TFontDialog).Font.Name);
-      If (fsBold In (Sender As TFontDialog).Font.Style) then LFWeight:= FW_BOLD;
-      LFItalic := Byte(fsItalic In (Sender As TFontDialog).Font.Style);
-      LFStrikeOut := Byte(fsStrikeOut In (Sender As TFontDialog).Font.Style);
-      LFUnderline := Byte(fsUnderline In (Sender As TFontDialog).Font.Style);
-      LFCharSet := (Sender As TFontDialog).Font.CharSet;
+      LFHeight := TFontDialog(Sender).Font.Height;
+      LFFaceName := TFontDataName(TFontDialog(Sender).Font.Name);
+      If (fsBold In TFontDialog(Sender).Font.Style) then LFWeight:= FW_BOLD;
+      LFItalic := Byte(fsItalic In TFontDialog(Sender).Font.Style);
+      LFStrikeOut := Byte(fsStrikeOut In TFontDialog(Sender).Font.Style);
+      LFUnderline := Byte(fsUnderline In TFontDialog(Sender).Font.Style);
+      LFCharSet := TFontDialog(Sender).Font.CharSet;
     End;
     With CF Do
     Begin
       LStructSize := SizeOf(TChooseFont);
       HWndOwner := GetOwnerHandle;
       LPLogFont := @LF;
-      Flags := GetFlagsFromOptions((Sender As TFontDialog).Options);
+      Flags := GetFlagsFromOptions(TFontDialog(Sender).Options);
       Flags := Flags Or CF_INITTOLOGFONTSTRUCT Or CF_BOTH;
-      RGBColors := (Sender As TFontDialog).Font.Color;
+      RGBColors := TFontDialog(Sender).Font.Color;
     End;
     Ret := ChooseFont(@CF);
   End;
@@ -1563,15 +1563,15 @@ Begin
   Begin
     If Sender Is TFontDialog then
     Begin
-      (Sender As TFontDialog).Font.Assign(LF);
-      (Sender As TFontDialog).Font.Color := CF.RGBColors;
+      TFontDialog(Sender).Font.Assign(LF);
+      TFontDialog(Sender).Font.Color := CF.RGBColors;
     End;
     If Sender Is TColorDialog then
-      (Sender As TColorDialog).Color := CC.RGBResult;
-    (Sender As TCommonDialog).UserChoice := mrOK;
+      TColorDialog(Sender).Color := CC.RGBResult;
+    Sender.UserChoice := mrOK;
   End
   Else
-    (Sender As TCommonDialog).UserChoice := mrCancel;
+    Sender.UserChoice := mrCancel;
 
   Assert(False, 'Trace:TWin32Object.CreateCommonDialog - Exit');
 End;
@@ -1819,10 +1819,10 @@ Begin
   Window := HWND(Nil);
   Assert(False, 'Trace:Setting window');
 
-  If (Sender Is TWinControl) And ((Sender As TWinControl).Parent <> Nil) Then
+  If (Sender Is TWinControl) And (TWinControl(Sender).Parent <> Nil) Then
   Begin
     Assert(False, Format('Trace:TWin32Object.CreateComponent - %S parent --> %S', [Sender.ClassName, TWinControl(Sender).Parent.ClassName]));
-    Parent := (Sender As TWinControl).Parent.Handle;
+    Parent := TWinControl(Sender).Parent.Handle;
     Assert(False, Format('Trace:TWin32Object.CreateComponent - parent handle --> 0x%X', [Parent]));
 
     Assert(False, 'Trace:Setting parent');
@@ -1899,7 +1899,7 @@ Begin
     csButton:
     Begin
       Assert(False, 'Trace:CreateComponent - Creating Button');
-      If Not (Sender As TButton).Default Then
+      If Not TButton(Sender).Default Then
         Flags := Flags Or BS_PUSHBUTTON
       Else
         Flags := Flags Or BS_DEFPUSHBUTTON;
@@ -1939,7 +1939,7 @@ Begin
     End;
     csListBox:
     Begin
-      With Sender As TCustomListBox do
+      With TCustomListBox(Sender) do
       Begin
         If Sorted Then
           Flags:= Flags or LBS_SORT;
@@ -1953,7 +1953,7 @@ Begin
     End;
     csCListBox:
     Begin
-      With Sender As TCustomListBox do
+      With TCustomListBox(Sender) do
       Begin
         If Sorted Then
           Flags:= Flags or LBS_SORT;
@@ -1964,7 +1964,7 @@ Begin
             Flags:= Flags or LBS_MULTIPLESEL;
       End;
       Window := CreateWindowEx(WS_EX_CLIENTEDGE,'LISTBOX', Nil, Flags Or LBS_MULTICOLUMN or WS_HSCROLL, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
-      SendMessage(Window, LB_SETCOLUMNWIDTH, WPARAM((Sender As TCListBox).Width Div ((Sender As TCListBox).ListColumns)), 0);
+      SendMessage(Window, LB_SETCOLUMNWIDTH, WPARAM(TCListBox(Sender).Width Div (TCListBox(Sender).ListColumns)), 0);
     End;
     csEdit:
     Begin
@@ -2078,9 +2078,9 @@ Begin
     Begin
       Assert(False, 'Trace:TWin32Object.CreateComponent - Creating a MEMO...');
       Flags := Flags Or ES_AUTOHSCROLL Or ES_AUTOVSCROLL Or ES_MULTILINE;
-      If (Sender As TMemo).ReadOnly Then
+      If TMemo(Sender).ReadOnly Then
         Flags := Flags Or ES_ReadOnly;
-      Case (Sender As TCustomMemo).ScrollBars Of
+      Case TCustomMemo(Sender).ScrollBars Of
         ssHorizontal:
           Flags := Flags Or WS_HSCROLL;
         ssVertical:
@@ -2094,8 +2094,8 @@ Begin
     Begin
       Window := CreateMenu;
       FMenu := Window;
-      Assert(False, Format('Trace:Main menu owner --> %S', [((Sender As TComponent).Owner As TWinControl).ClassName]));
-      Windows.SetMenu(((Sender As TComponent).Owner As TWinControl).Handle, Window);
+      Assert(False, Format('Trace:Main menu owner --> %S', [(TComponent(Sender).Owner As TWinControl).ClassName]));
+      Windows.SetMenu(TWinControl(TComponent(Sender).Owner).Handle, Window);
     End;
     csMenuItem:
     Begin
@@ -2131,7 +2131,7 @@ Begin
       //this needs to be created in the actual code because it requires a gtkadjustment Win32Control
       Inc(FControlIndex);
       Buddy := CreateWindowEx(WS_EX_CLIENTEDGE, 'EDIT', StrTemp, Flags Or ES_AUTOHSCROLL, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
-      Window := CreateUpDownControl(Flags Or WS_Border, Left + Width + 10, Top, 10, Height, Parent, FControlIndex, HInstance, Buddy, 0, 100, Trunc((Sender As TSpinEdit).Value));
+      Window := CreateUpDownControl(Flags Or WS_Border, Left + Width + 10, Top, 10, Height, Parent, FControlIndex, HInstance, Buddy, 0, 100, Trunc(TSpinEdit(Sender).Value));
       Assert(False, 'TRACE:Spin edit control not created');
     End;
     csStatusBar:
@@ -2230,12 +2230,12 @@ Begin
       If (Sender Is TControlCanvas) Then
       Begin
         Assert(False, 'Trace:CreateComponent - Assigning window to TControlCanvas');
-        (Sender As TControlCanvas).Handle := Window;
+        TControlCanvas(Sender).Handle := Window;
       End
       Else If (Sender Is TFont) Then
       Begin
         Assert(False, 'Trace:CreateComponent - Assigning P to TFont');
-        (Sender As TFont).Handle := Window;
+        TFont(Sender).Handle := Window;
       End;
   End;
 
@@ -2749,48 +2749,48 @@ Begin
 
   {Following part fixes the case when an item is added in runtime
   but the parent item has not defined the submenu flag (hSubmenu=0) }
-  if (Sender as TMenuItem).Parent.Parent<>nil then
+  if TMenuItem(Sender).Parent.Parent<>nil then
   begin
-    ParentOfParent := (Sender as TMenuItem).Parent.Parent.Handle;
+    ParentOfParent := TMenuItem(Sender).Parent.Parent.Handle;
     with MenuInfo do begin
       cbSize:=sizeof(MENUITEMINFO);
       fMask:=MIIM_SUBMENU;
     end;
-    GetMenuItemInfo(ParentOfParent, (Sender as TMenuItem).Parent.Command,
+    GetMenuItemInfo(ParentOfParent, TMenuItem(Sender).Parent.Command,
                     false, @MenuInfo);
     if MenuInfo.hSubmenu=0 then // the parent menu item is not yet defined with submenu flag
     begin
       MenuInfo.hSubmenu:=ParentMenuHandle;
-      SetMenuItemInfo(ParentOfParent, (Sender as TMenuItem).Parent.Command,
+      SetMenuItemInfo(ParentOfParent, TMenuItem(Sender).Parent.Command,
                       false, MenuInfo);
     end;
   end;
 
   Mask := MIIM_ID or MIIM_DATA;
   Style:=0;
-  if ((Sender as TMenuItem).Count > 0) then Mask := Mask or MIIM_SUBMENU;
-  MenuHandle := (Sender as TMenuItem).Handle;
+  if (TMenuItem(Sender).Count > 0) then Mask := Mask or MIIM_SUBMENU;
+  MenuHandle := TMenuItem(Sender).Handle;
   with MenuInfo do begin
     cbsize:=sizeof(MENUITEMINFO);
     fMask:=Mask;
     fType:=Style;
     {fState:=MFS_ENABLED;} {not needed}
-    wID:=(Sender as TMenuItem).Command; {value may only be 16 bit wide!}
+    wID:=TMenuItem(Sender).Command; {value may only be 16 bit wide!}
     hSubmenu:=MenuHandle;
     {hbmpChecked:=0;
     hbmpUnchecked:=0;} {not needed}
     dwItemData:=integer(Sender);
-    {dwTypeData:=LPSTR((Sender as TmenuItem).Caption);}
-    {cch:=length((Sender as TMenuItem).Caption);} {not needed}
+    {dwTypeData:=LPSTR(TMenuItem(Sender).Caption);}
+    {cch:=length(TMenuItem(Sender).Caption);} {not needed}
   end;
   InsertMenuItem(ParentMenuHandle, -1, true, @MenuInfo);
-  if (Sender as TMenuItem).ShortCut <> 0 then
+  if TMenuItem(Sender).ShortCut <> 0 then
   begin
     Msg.Handle:=MenuHandle;
-    ShortCutToKey((Sender as TMenuItem).ShortCut, Msg.NewKey, Msg.NewModifier);
+    ShortCutToKey(TMenuItem(Sender).ShortCut, Msg.NewKey, Msg.NewModifier);
     IntSendMessage3(LM_SETSHORTCUT, Sender, @Msg);
   end
-  else SetLabel(Sender, LPSTR((Sender as TMenuItem).Caption));
+  else SetLabel(Sender, LPSTR(TMenuItem(Sender).Caption));
 End;
 
 
@@ -2815,6 +2815,9 @@ End;
 
 {
   $Log$
+  Revision 1.103  2003/08/31 14:48:15  mattias
+  replaced some  as  from Micha
+
   Revision 1.102  2003/08/30 18:55:42  mattias
   implemented sticked windows from Micha
 
