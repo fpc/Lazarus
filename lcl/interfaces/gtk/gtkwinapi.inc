@@ -2746,7 +2746,7 @@ end;
 
   Draws a 3d border in GTK native style.
  ------------------------------------------------------------------------------}
-function TGtkObject.Frame3d(DC : HDC; var Rect : TRect;
+function TGtkObject.Frame3d(DC : HDC; var ARect : TRect;
   const FrameWidth : integer; const Style : TBevelCut) : boolean;
   
 const GTKShadowType: array[TBevelCut] of integer =
@@ -2772,11 +2772,11 @@ begin
         DCOrigin:=GetDCOffset(PDeviceContext(DC));
         for i:= 1 to FrameWidth do begin
           gtk_draw_shadow(ClientWidget^.thestyle,
-                          GetControlWindow(Widget), GTK_STATE_NORMAL,
+                          GetControlWindow(ClientWidget), GTK_STATE_NORMAL,
                           GtkShadowType[Style],
-                          Rect.Left+DCOrigin.X, Rect.Top+DCOrigin.Y,
-                          Rect.Right - Rect.Left-1, Rect.Bottom - Rect.Top-1);
-          InflateRect(Rect, -1, -1);
+                          ARect.Left+DCOrigin.X, ARect.Top+DCOrigin.Y,
+                          ARect.Right - ARect.Left-1, ARect.Bottom-ARect.Top-1);
+          InflateRect(ARect, -1, -1);
         end;
       end;
     end;
@@ -7182,6 +7182,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.137  2002/09/20 13:11:13  lazarus
+  MG: fixed TPanel and Frame3D
+
   Revision 1.136  2002/09/19 19:56:17  lazarus
   MG: accelerated designer drawings
 
