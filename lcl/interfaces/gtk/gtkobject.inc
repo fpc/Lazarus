@@ -1448,25 +1448,19 @@ begin
       end;
 
 //SH: think of TCanvas.handle!!!!
-      LM_ReDraw : 
+      LM_REDRAW: 
       begin 
         Assert(False, Format('Trace:  [TgtkObject.IntSendMessage3] %s --> Redraw', [Sender.ClassName]));
         if (Sender is TCanvas) then 
           ReDraw(PgtkWidget(TCanvas(Sender).Handle))
-        else
-          if not (Sender is TSpeedbutton) then begin
-            if Sender is TWinControl then
-              ReDraw(PgtkWidget(Handle))
-          end else begin
-            // ToDo: always invalidate instead of perform
-            If TSpeedbutton(Sender).Visible then
-              TSpeedButton(Sender).Perform(LM_PAINT,0,0)
-            else
-            Begin
-              Rect := TSpeedButton(Sender).BoundsRect;
-              InvalidateRect(TSpeedButton(Sender).Parent.Handle,@Rect,True);
-            end;
-          end;
+        else begin
+          if Sender is TWinControl then
+            ReDraw(PgtkWidget(Handle))
+          else begin
+            Rect := TControl(Sender).BoundsRect;
+            InvalidateRect(TControl(Sender).Parent.Handle, @Rect, true);
+          end;  
+        end; 
       end;
 
       LM_AddPage :
@@ -5834,6 +5828,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.212  2002/09/13 11:49:47  lazarus
+  Cleanups, extended TStatusBar, graphic control cleanups.
+
   Revision 1.211  2002/09/12 05:56:16  lazarus
   MG: gradient fill, minor issues from Andrew
 
