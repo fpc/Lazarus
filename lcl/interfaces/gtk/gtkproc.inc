@@ -1188,24 +1188,26 @@ var
   AWidget, FixWidget: PGtkWidget;
   AWindow: PGdkWindow;
 begin
-//  If not (AWinControl is TWinControl)
-//  or (not AWinControl.HandleAllocated)
 
   if not ((AWinControl is TWinControl) and AWinControl.HandleAllocated)
   then exit;
   
-  AWidget:=PGtkWidget(AWinControl.Handle);
+  AWidget:= PGtkWidget(AWinControl.Handle);
 
   if csDesigning in AWinControl.ComponentState then begin
     AWindow:=AWidget^.Window;
     if AWindow=nil then exit;
     SetDesigningCursor(AWindow);
   end else begin
-    FixWidget:=GetFixedWidget(AWidget);
-    if FixWidget<>nil then
-      AWindow:=FixWidget^.Window
-    else
-      AWindow:=AWidget^.Window;
+//    FixWidget:=GetFixedWidget(AWidget);
+//    if FixWidget<>nil then
+//      AWindow:=FixWidget^.Window
+//    else
+//      AWindow:=AWidget^.Window;
+//    FixWidget:= GetWidgetInfo(AWidget, true)^.ImplementationWidget;
+    FixWidget:= GetMainWidget(AWidget);
+    AWindow:= FixWidget^.Window;
+    
     if AWindow=nil then exit;
 
     case AWinControl.Cursor of
@@ -1213,6 +1215,7 @@ begin
     crArrow    : DoSetCursor (AWindow, Cursor_Arrow);
     crCross    : DoSetCursor (AWindow, Cursor_Cross);
     crHandPoint: DoSetCursor (AWindow, Cursor_hand1);
+    crHelp     : DoSetCursor (AWindow, Cursor_Help);
     crIBeam    : DoSetCursor (AWindow, Cursor_XTerm);
     crHourGlass: DoSetCursor (AWindow, Cursor_Watch);
     crDefault  : DoSetCursor (AWindow, Cursor_StdArrow);
@@ -1222,12 +1225,9 @@ begin
     crSizeNS   : DoSetCursor (AWindow, Cursor_SizeNS);
     crSizeNESW : DoSetCursor (AWindow, Cursor_SizeNESW);
     crSizeWE   : DoSetCursor (AWindow, Cursor_SizeWE);
-    else
-      Exit;
     end;
   end;
 end;
-
 
 {-------------------------------------------------------------------------------
   procedure ConnectSignal(const AnObject:gtk_Object; const ASignal: PChar;
@@ -2742,6 +2742,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.93  2002/09/06 22:32:21  lazarus
+  Enabled cursor property + property editor.
+
   Revision 1.92  2002/09/06 19:45:11  lazarus
   Cleanups plus a fix to TPanel parent/drawing problem.
 
