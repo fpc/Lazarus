@@ -364,8 +364,10 @@ end;
 procedure TBitmap.UnshareImage;
 var
   NewImage: TBitmapImage;
-  IntfImage: TLazIntfImage;
   OldImage: TBitmapImage;
+  {$IFNDEF DisableFPImage}
+  IntfImage: TLazIntfImage;
+  {$ENDIF}
 begin
   if (FImage.RefCount>1) then begin
     //writeln('TBitmap.UnshareImage ',ClassName,' ',Width,',',Height,' ',HexStr(Cardinal(Self),8));
@@ -375,6 +377,7 @@ begin
       NewImage.Reference;
       if FImage.HandleAllocated and (Width>0) and (Height>0) then begin
         // copy content
+        {$IFNDEF DisableFPImage}
         IntfImage:=TLazIntfImage.Create(0,0);
         try
           IntfImage.LoadFromBitmap(FImage.FHandle,FImage.FMaskHandle);
@@ -385,6 +388,7 @@ begin
         finally
           IntfImage.Free;
         end;
+        {$ENDIF}
       end;
       FreeCanvasContext;
       OldImage:=FImage;
@@ -1054,6 +1058,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.63  2004/02/11 11:34:15  mattias
+  started new TToolBar
+
   Revision 1.62  2004/02/10 00:05:03  mattias
   TSpeedButton now uses MaskBlt
 

@@ -363,7 +363,7 @@ begin
   UpdateState(false);
   if FGlyph=nil then exit;
 
-  PaintRect:= ClientRect;
+  PaintRect:=ClientRect;
 
   {if Transparent and not (csDesigning in ComponentState) then
     BrushStyle:= bsClear
@@ -404,7 +404,7 @@ begin
   else
     S:= Spacing;
 
-  { Calculate caption and glyph layout }
+  // Calculate caption and glyph layout
 
   if Margin = -1 then begin
     if S = -1 then begin
@@ -773,6 +773,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.48  2004/02/11 11:34:15  mattias
+  started new TToolBar
+
   Revision 1.47  2004/02/10 00:05:03  mattias
   TSpeedButton now uses MaskBlt
 

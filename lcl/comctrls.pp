@@ -747,6 +747,310 @@ type
   end;
 
 
+  {$IFDEF NewToolBar}
+
+  { TToolButton }
+
+const
+  CN_DROPDOWNCLOSED = LM_USER + $1000;
+
+type
+  TToolButtonStyle = (
+    tbsButton,    // button (can be clicked)
+    tbsCheck,     // check item (click to toggle state, can be grouped)
+    tbsDropDown,  // button with dropdown button to show a popup menu
+    tbsSeparator, // space holder
+    tbsDivider    // space holder with line
+    );
+  TToolButtonState = (
+    tbsChecked,
+    tbsPressed,
+    tbsEnabled,
+    tbsHidden,
+    tbsIndeterminate,
+    tbsWrap,
+    tbsEllipses,
+    tbsMarked
+    );
+
+  { TToolButtonActionLink }
+
+  TToolButtonActionLink = class(TControlActionLink)
+  protected
+    procedure AssignClient(AClient: TObject); override;
+    function IsCheckedLinked: Boolean; override;
+    function IsImageIndexLinked: Boolean; override;
+    procedure SetChecked(Value: Boolean); override;
+    procedure SetImageIndex(Value: Integer); override;
+  end;
+
+  TToolButtonActionLinkClass = class of TToolButtonActionLink;
+  
+  TToolBar = class;
+
+  TToolButton = class(TGraphicControl)
+  private
+    FAllowAllUp: Boolean;
+    FDown: Boolean;
+    FDropdownMenu: TPopupMenu;
+    FGrouped: Boolean;
+    FImageIndex: Integer;
+    FIndeterminate: Boolean;
+    FLastButtonDrawFlags: Integer;
+    FMarked: Boolean;
+    FMenuItem: TMenuItem;
+    FStyle: TToolButtonStyle;
+    FUpdateCount: Integer;
+    FWrap: Boolean;
+    function CalculateButtonState: Word;
+    function GetIndex: Integer;
+    function IsCheckedStored: Boolean;
+    function IsImageIndexStored: Boolean;
+    function IsWidthStored: Boolean;
+    procedure SetAutoSize(const Value: Boolean); Override;
+    procedure SetButtonState(State: Word);
+    procedure SetDown(Value: Boolean);
+    procedure SetDropdownMenu(Value: TPopupMenu);
+    procedure SetGrouped(Value: Boolean);
+    procedure SetImageIndex(Value: Integer);
+    procedure SetIndeterminate(Value: Boolean);
+    procedure SetMarked(Value: Boolean);
+    procedure SetMenuItem(Value: TMenuItem);
+    procedure SetStyle(Value: TToolButtonStyle);
+    procedure SetWrap(Value: Boolean);
+    procedure CMHitTest(var Message: TCMHitTest); message CM_HITTEST;
+    procedure CMVisibleChanged(var Message: TLMessage); message CM_VISIBLECHANGED;
+  protected
+    FToolBar: TToolBar;
+    function GetActionLinkClass: TControlActionLinkClass; override;
+    procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
+    procedure AssignTo(Dest: TPersistent); override;
+    procedure BeginUpdate; virtual;
+    procedure EndUpdate; virtual;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    procedure Paint; override;
+    procedure RefreshControl; virtual;
+    procedure SetToolBar(NewToolBar: TToolBar);
+    procedure UpdateControl; virtual;
+    procedure ValidateContainer(AComponent: TComponent); override;
+    function GetButtonDrawFlags: integer; virtual;
+  public
+    constructor Create(TheOwner: TComponent); override;
+    function CheckMenuDropdown: Boolean; dynamic;
+    procedure ChangeBounds(NewLeft, NewTop, NewWidth, NewHeight: Integer); override;
+    property Index: Integer read GetIndex;
+  published
+    property Action;
+    property AllowAllUp: Boolean read FAllowAllUp write FAllowAllUp default False;
+    property AutoSize default False;
+    property Caption;
+    property Down: Boolean read FDown write SetDown stored IsCheckedStored default False;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property DropdownMenu: TPopupMenu read FDropdownMenu write SetDropdownMenu;
+    property Enabled;
+    property Grouped: Boolean read FGrouped write SetGrouped default False;
+    property Height stored False;
+    property ImageIndex: Integer read FImageIndex write SetImageIndex stored IsImageIndexStored default -1;
+    property Indeterminate: Boolean read FIndeterminate write SetIndeterminate default False;
+    property Marked: Boolean read FMarked write SetMarked default False;
+    property MenuItem: TMenuItem read FMenuItem write SetMenuItem;
+    property ParentShowHint;
+    property PopupMenu;
+    property Wrap: Boolean read FWrap write SetWrap default False;
+    property ShowHint;
+    property Style: TToolButtonStyle read FStyle write SetStyle default tbsButton;
+    property Visible;
+    property Width stored IsWidthStored;
+    property OnClick;
+    property OnContextPopup;
+    property OnDragDrop;
+    property OnDragOver;
+    //property OnEndDock;
+    property OnEndDrag;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    //property OnStartDock;
+    property OnStartDrag;
+  end;
+
+
+  { TToolBar }
+
+  TToolBar = class(TToolWindow)
+  private
+    FButtonWidth: Integer;
+    FButtonHeight: Integer;
+    FButtons: TList;
+    FCaption: string;
+    FShowCaptions: Boolean;
+    FList: Boolean;
+    FFlat: Boolean;
+    FTransparent: Boolean;
+    FWrapable: Boolean;
+    FImages: TCustomImageList;
+    FDisabledImages: TCustomImageList;
+    FHotImages: TCustomImageList;
+    FIndent: Integer;
+    FNewStyle: Boolean;
+    FOldHandle: HBitmap;
+    FUpdateCount: Integer;
+    FHeightMargin: Integer;
+    FCaptureChangeCancels: Boolean;
+    FInMenuLoop: Boolean;
+    FTempMenu: TPopupMenu;
+    FButtonMenu: TMenuItem;
+    FMenuButton: TToolButton;
+    FRowCount: integer;
+    FMenuResult: Boolean;
+    function ButtonIndex(OldIndex, ALeft, ATop: Integer): Integer;
+    procedure LoadImages(AImages: TCustomImageList);
+    function GetButton(Index: Integer): TToolButton;
+    function GetButtonCount: Integer;
+    procedure SetList(Value: Boolean);
+    procedure SetShowCaptions(Value: Boolean);
+    procedure SetFlat(Value: Boolean);
+    procedure SetTransparent(Value: Boolean);
+    procedure SetWrapable(Value: Boolean);
+    procedure InsertButton(Control: TControl);
+    procedure RemoveButton(Control: TControl);
+    function RefreshButton(Index: Integer): Boolean;
+    procedure UpdateButton(Index: Integer);
+    procedure UpdateButtons;
+    procedure ToolButtonDown(AButton: TToolButton; NewDown: Boolean);
+    function UpdateItem(Message, FromIndex, ToIndex: Integer): Boolean;
+    function UpdateItem2(Message, FromIndex, ToIndex: Integer): Boolean;
+    procedure ClearTempMenu;
+    procedure CreateButtons(NewWidth, NewHeight: Integer);
+    procedure SetButtonWidth(Value: Integer);
+    procedure SetButtonHeight(Value: Integer);
+    procedure UpdateImages;
+    procedure ImageListChange(Sender: TObject);
+    //procedure SetImageList(Value: HImageList);
+    procedure SetImages(Value: TCustomImageList);
+    procedure DisabledImageListChange(Sender: TObject);
+    //procedure SetDisabledImageList(Value: HImageList);
+    procedure SetDisabledImages(Value: TCustomImageList);
+    procedure HotImageListChange(Sender: TObject);
+    //procedure SetHotImageList(Value: HImageList);
+    procedure SetHotImages(Value: TCustomImageList);
+    procedure SetIndent(Value: Integer);
+    procedure AdjustControl(Control: TControl);
+    procedure RecreateButtons;
+    procedure BeginUpdate;
+    procedure EndUpdate;
+    procedure ResizeButtons;
+    function InternalButtonCount: Integer;
+    function ReorderButton(OldIndex, ALeft, ATop: Integer): Integer;
+    procedure WMEraseBkgnd(var Message: TLMEraseBkgnd); message LM_ERASEBKGND;
+    procedure WMGetDlgCode(var Message: TLMessage); message LM_GETDLGCODE;
+    procedure WMGetText(var Message: TLMGetText); message LM_GETTEXT;
+    procedure WMGetTextLength(var Message: TLMGetTextLength); message LM_GETTEXTLENGTH;
+    procedure WMKeyDown(var Message: TLMKeyDown); message LM_KEYDOWN;
+    procedure WMNotifyFormat(var Message: TLMessage); message LM_NOTIFYFORMAT;
+    procedure WMSetText(var Message: TLMSetText); message LM_SETTEXT;
+    procedure WMSize(var Message: TLMSize); message LM_SIZE;
+    procedure WMSysChar(var Message: TLMSysChar); message LM_SYSCHAR;
+    procedure WMSysCommand(var Message: TLMSysCommand); message LM_SYSCOMMAND;
+    procedure WMWindowPosChanged(var Message: TLMWindowPosChanged); message LM_WINDOWPOSCHANGED;
+    procedure WMWindowPosChanging(var Message: TLMWindowPosChanging); message LM_WINDOWPOSCHANGING;
+    procedure CMColorChanged(var Message: TLMessage); message CM_COLORCHANGED;
+    procedure CMControlChange(var Message: TCMControlChange); message CM_CONTROLCHANGE;
+    procedure CMDialogChar(var Message: TCMDialogChar); message CM_DIALOGCHAR;
+    procedure CMEnabledChanged(var Message: TLMessage); message CM_ENABLEDCHANGED;
+    procedure CMParentColorChanged(var Message: TLMessage); message CM_PARENTCOLORCHANGED;
+    procedure CNChar(var Message: TLMChar); message CN_CHAR;
+    procedure CNSysKeyDown(var Message: TLMSysKeyDown); message CN_SYSKEYDOWN;
+    procedure CMSysFontChanged(var Message: TLMessage); message CM_SYSFONTCHANGED;
+    procedure CNDropDownClosed(var Message: TLMessage); message CN_DROPDOWNCLOSED;
+    procedure CNNotify(var Message: TLMNotify); message CN_NOTIFY;
+  protected
+    procedure AlignControls(AControl: TControl; var Rect: TRect); override;
+    function CanAutoSize(var NewWidth, NewHeight: Integer): Boolean; override;
+    procedure CancelMenu; dynamic;
+    procedure ChangeScale(M, D: Integer); override;
+    function CheckMenuDropdown(Button: TToolButton): Boolean; dynamic;
+    procedure ClickButton(Button: TToolButton); dynamic;
+    procedure CreateParams(var Params: TCreateParams); override;
+    procedure CreateWnd; override;
+    function FindButtonFromAccel(Accel: Word): TToolButton;
+    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
+    procedure InitMenu(Button: TToolButton); dynamic;
+    procedure Loaded; override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    procedure RepositionButton(Index: Integer);
+    procedure RepositionButtons(Index: Integer);
+    procedure WndProc(var Message: TLMessage); override;
+    function WrapButtons(var NewWidth, NewHeight: Integer): Boolean;
+  public
+    constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure FlipChildren(AllLevels: Boolean); override;
+    function TrackMenu(Button: TToolButton): Boolean; dynamic;
+    property ButtonCount: Integer read GetButtonCount;
+    property Buttons[Index: Integer]: TToolButton read GetButton;
+    property ButtonList: TList read FButtons;
+    property RowCount: Integer read FRowCount;
+  published
+    property Align default alTop;
+    property AutoSize;
+    property BorderWidth;
+    property ButtonHeight: Integer read FButtonHeight write SetButtonHeight default 22;
+    property ButtonWidth: Integer read FButtonWidth write SetButtonWidth default 23;
+    property Caption;
+    property Color;
+    property Ctl3D;
+    property DisabledImages: TCustomImageList read FDisabledImages write SetDisabledImages;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property EdgeBorders default [ebTop];
+    property EdgeInner;
+    property EdgeOuter;
+    property Enabled;
+    property Flat: Boolean read FFlat write SetFlat default False;
+    property Font;
+    property Height default 32;
+    //property HideClippedButtons: Boolean read FHideClippedButtons write SetHideClippedButtons default False;
+    property HotImages: TCustomImageList read FHotImages write SetHotImages;
+    property Images: TCustomImageList read FImages write SetImages;
+    property Indent: Integer read FIndent write SetIndent default 0;
+    property List: Boolean read FList write SetList default False;
+    //property Menu: TMainMenu read FMenu write SetMenu;
+    property ParentColor;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowCaptions: Boolean read FShowCaptions write SetShowCaptions default False;
+    property ShowHint;
+    property TabOrder;
+    property TabStop;
+    property Transparent: Boolean read FTransparent write SetTransparent default False;
+    property Visible;
+    property Wrapable: Boolean read FWrapable write SetWrapable default True;
+    property OnClick;
+    property OnContextPopup;
+    property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
+    property OnEnter;
+    property OnExit;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnResize;
+    property OnChangeBounds;
+    property OnStartDrag;
+  end;
+  
+  {$ELSE}
+
   { TToolBar }
 
 const
@@ -773,8 +1077,8 @@ type
   end;
 
   TToolButtonActionLinkClass = class of TToolButtonActionLink;
-  
-  
+
+
   TToolButton = class(TButtonControl)
   private
     FAllowAllUp: Boolean;
@@ -1027,6 +1331,8 @@ type
     property OnResize;
     property OnStartDrag;
   end;
+
+  {$ENDIF}
 
 
   { TTrackBar }
@@ -1972,6 +2278,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.107  2004/02/11 11:34:15  mattias
+  started new TToolBar
+
   Revision 1.106  2004/02/04 12:59:07  mattias
   added TToolButton.Action and published some props
 

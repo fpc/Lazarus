@@ -3395,9 +3395,11 @@ begin
         end;
       end;
 
-
       LM_INSERTTOOLBUTTON:
       begin
+        {$IFDEF NewToolBar}
+        writeln('tgtkobject.IntSendMessage3  LM_INSERTTOOLBUTTON');
+        {$ELSE}
          If (SENDER is TWINCONTROL) Then
          Begin
             pStr := StrAlloc(Length(TToolbutton(SENDER).Caption)+1);
@@ -3417,25 +3419,25 @@ begin
          if num < 0 then Num := TToolbar(TWinControl(Sender).parent).Buttonlist.Count+1;
          Assert(False, Format('Trace:NUM = %d in INSERTBUTTON',[num]));
 
-         {Make sure it's created!!}
-         if handle = 0
-            then IntSendMessage3(LM_CREATE,Sender,nil);
-
          gtk_toolbar_insert_widget(pGTKToolbar(TWinControl(sender).parent.Handle),
               pgtkwidget(handle),pstr,pStr2,Num);
          StrDispose(pStr);
          StrDispose(pStr2);
-      Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!!!!!!!!');
+        {$ENDIF}
       end;
 
       LM_DELETETOOLBUTTON:
       Begin
+        {$IFDEF NewToolBar}
+        writeln('tgtkobject.IntSendMessage3  LM_DELETETOOLBUTTON');
+        {$ELSE}
          with pgtkToolbar(TToolbar(TWinControl(Sender).parent).handle)^ do
             children := g_list_remove(pgList(children), sender);
   // Next 3 lines: should be same as above, remove when above lines are proofed
   //         pgtkToolbar(TToolbar(TWinControl(Sender).parent).handle)^.children :=
   //            g_list_remove(pgList(pgtkToolbar(TToolbar(TWinControl(Sender).parent).handle)^.children),
   //               sender);
+        {$ENDIF}
       end;
 
       LM_Invalidate :
@@ -4222,8 +4224,8 @@ begin
   case TControl(Sender).fCompStyle of
   csBitBtn      : IntSendMessage3(LM_IMAGECHANGED,Sender,nil);
 
-  csButton,
-  csToolButton  :
+  csButton
+  {$IFNDEF NewToolBar},csToolButton{$ENDIF}  :
     with PgtkButton(P)^ do
     begin
       //aLabel := StrAlloc(Length(AnsiString(PLabel)) + 1);
@@ -6663,7 +6665,7 @@ begin
 
   csSpeedButton:
     Begin
-     p := gtk_button_new_with_label(StrTemp);
+      p := gtk_button_new_with_label(StrTemp);
     end;
 
   csSpinEdit :
@@ -6690,12 +6692,15 @@ begin
 
   csToolButton:
     begin
+      {$IFDEF NewToolBar}
+      writeln('ToDo TGTKObject.CreateComponent csToolButton');
+      p := gtk_button_new_with_label(StrTemp);
+      {$ELSE}
       AccelText := Ampersands2Underscore(StrTemp);
       //p := gtk_button_new_with_label(StrTemp);
       p := gtk_button_new_with_label(AccelText);
       if TToolButton(Sender).Style = tbsButton then
       Begin
-        //If Accel <> -1 then
         AccelKey:=gtk_label_parse_uline(PGtkLabel(gtk_bin_get_child(P)),
                                         AccelText);
         Accelerate(TComponent(Sender),PGtkWidget(P),AccelKey,0,'clicked');
@@ -6703,6 +6708,7 @@ begin
       StrDispose(AccelText);
       WidgetInfo:=GetWidgetInfo(P,true);
       Include(WidgetInfo^.Flags,wwiNotOnParentsClientArea);
+      {$ENDIF}
       gtk_widget_show (P);
     end;
 
@@ -9192,6 +9198,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.466  2004/02/11 11:34:16  mattias
+  started new TToolBar
+
   Revision 1.465  2004/02/10 00:05:03  mattias
   TSpeedButton now uses MaskBlt
 

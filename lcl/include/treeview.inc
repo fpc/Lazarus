@@ -3233,7 +3233,6 @@ begin
 end;
 
 function TCustomTreeView.GetNodeAt(X, Y: Integer): TTreeNode;
-//var HitTest: TTVHitTestInfo;
 begin
   Result:=nil;
   if (X>=BorderWidth) and (X<ClientWidth-BorderWidth) then begin
@@ -3244,14 +3243,6 @@ begin
         Result:=nil;
     end;
   end;
-  {with HitTest do begin
-    pt.X := X;
-    pt.Y := Y;
-    if TreeView_HitTest(Handle, HitTest) <> nil then
-      Result := Items.GetNode(HitTest.hItem)
-    else
-    Result := nil;
-  end;}
 end;
 
 procedure TCustomTreeView.GetInsertMarkAt(X, Y: Integer;
