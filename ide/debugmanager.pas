@@ -231,7 +231,10 @@ begin
     BlockEnd:=CaretXY;
     TopLine:=ALocation.SrcLine-(LinesInWindow div 2);
   end;
-  ActiveSrcEdit.ErrorLine:=ALocation.SrcLine;
+  SourceNotebook.ClearExecutionLines;
+  SourceNotebook.ClearErrorLines;
+  ActiveSrcEdit.ExecutionLine:=ALocation.SrcLine;
+  // ActiveSrcEdit.ErrorLine:=ALocation.SrcLine;
 end;
 
 //-----------------------------------------------------------------------------
@@ -504,6 +507,7 @@ end;
 function TDebugManager.DoStopProject: TModalResult;
 begin
   Result := mrCancel;
+  SourceNotebook.ClearExecutionLines;
   if (MainIDE.ToolStatus <> itDebugger)
   or (FDebugger=nil)
   then Exit;

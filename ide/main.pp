@@ -5491,11 +5491,8 @@ begin
         if CodeToolBoss.ErrorTopLine>0 then
           TopLine:=CodeToolBoss.ErrorTopLine;
       end;
+      SourceNotebook.ClearErrorLines;
       ActiveSrcEdit.ErrorLine:=CodeToolBoss.ErrorLine;
-      
-      // ToDo: clear all other errorlines
-      
-      //SourceNotebook.BringToFront;
       BringWindowToTop(SourceNoteBook.Handle);
     end;
   end;
@@ -6244,6 +6241,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.285  2002/04/26 12:53:29  lazarus
+  MG: fixed debug line coloring
+
   Revision 1.284  2002/04/26 12:27:26  lazarus
   MG: added Delphi6 Templates
 

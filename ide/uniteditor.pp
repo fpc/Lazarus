@@ -372,6 +372,7 @@ type
     procedure UpdateStatusBar;
     Procedure ClearUnUsedEditorComponents(Force: boolean);
     procedure ClearErrorLines;
+    procedure ClearExecutionLines;
 
     //Procedure DisplayCodefromUnitName(const UnitName : String);
 
@@ -3277,6 +3278,13 @@ var i: integer;
 begin
   for i:=0 to EditorCount-1 do
     Editors[i].ErrorLine:=-1;
+end;
+
+procedure TSourceNotebook.ClearExecutionLines;
+var i: integer;
+begin
+  for i:=0 to EditorCount-1 do
+    Editors[i].ExecutionLine:=-1;
 end;
 
 
