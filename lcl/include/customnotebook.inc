@@ -26,7 +26,7 @@
 constructor TNBPages.Create(thePageList: TList; theNotebook: TCustomNotebook);
 begin
   inherited Create;
-  { Create the page list and a notebook }
+  // Create the page list and a notebook
   fPageList := thePageList;
   fNotebook := theNotebook;
 end;
@@ -657,7 +657,7 @@ end;
 
 function TCustomNotebook.ChildClassAllowed(ChildClass: TClass): boolean;
 begin
-  Result:=(ChildClass<>nil) and (ChildClass=PageClass);
+  Result:=(ChildClass<>nil) and (ChildClass.InheritsFrom(PageClass));
 end;
 
 {------------------------------------------------------------------------------
@@ -792,6 +792,9 @@ end;}
 { =============================================================================
 
   $Log$
+  Revision 1.48  2004/05/25 21:50:32  mattias
+  TCustomNotebook now allows pageclass descendents
+
   Revision 1.47  2004/05/11 11:42:27  mattias
   replaced writeln by debugln
 

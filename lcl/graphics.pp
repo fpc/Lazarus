@@ -4,7 +4,7 @@
                                 graphics.pp
                                 -----------
                              Graphic Controls
-                   Initial Revision  : Mon Jul 26 0:02:58 1999
+                   Initial Revision : Mon Jul 26 0:02:58 1999
 
  ***************************************************************************/
 
@@ -61,42 +61,42 @@ type
   TFontStylesbase = set of TFontStyle;
 
   TFontData = record
-    Handle : HFont;
-    Height : Integer;
-    Pitch : TFontPitch;
-    Style : TFontStylesBase;
-    CharSet : TFontCharSet;
-    Name : TFontDataName;
+    Handle: HFont;
+    Height: Integer;
+    Pitch: TFontPitch;
+    Style: TFontStylesBase;
+    CharSet: TFontCharSet;
+    Name: TFontDataName;
   end;
 
   { Reflects text style when drawn in a rectangle }
 
   TTextLayout = (tlTop, tlCenter, tlBottom);
   TTextStyle = packed record
-    Alignment  : TAlignment;  // TextRect Only : horizontal alignment
+    Alignment : TAlignment;  // TextRect Only: horizontal alignment
 
-    Layout     : TTextLayout; // TextRect Only : vertical alignment
+    Layout    : TTextLayout; // TextRect Only: vertical alignment
 
-    SingleLine : boolean;     // If WordBreak is false then process #13, #10 as
+    SingleLine: boolean;     // If WordBreak is false then process #13, #10 as
                               // standard chars and perform no Line breaking.
 
-    Clipping   : boolean;     // TextRect Only : Clip Text to passed Rectangle
+    Clipping  : boolean;     // TextRect Only: Clip Text to passed Rectangle
 
-    ExpandTabs : boolean;     // currently ignored
+    ExpandTabs: boolean;     // currently ignored
 
-    ShowPrefix : boolean;     // TextRect Only : Process first single '&' per
+    ShowPrefix: boolean;     // TextRect Only: Process first single '&' per
                               //    line as an underscore and draw '&&' as '&'
 
-    Wordbreak  : boolean;     // TextRect Only : If line of text is too long
+    Wordbreak : boolean;     // TextRect Only: If line of text is too long
                               //    too fit between left and right boundaries
                               //    try to break into multiple lines between
                               //    words
 
-    Opaque     : boolean;     // TextRect : Fills background with current Brush
-                              // TextOut  : Fills background with current
+    Opaque    : boolean;     // TextRect: Fills background with current Brush
+                              // TextOut : Fills background with current
                               //            foreground color
 
-    SystemFont : Boolean;     // Use the system font instead of Canvas Font
+    SystemFont: Boolean;     // Use the system font instead of Canvas Font
   end;
 
   TPenStyle = (psSolid, psDash, psDot, psDashDot, psDashDotDot, psClear,
@@ -107,10 +107,10 @@ type
              );
 
   TPenData = record
-    Handle : HPen;
-    Color : TColor;
-    Width : Integer;
-    Style : TPenStyle;
+    Handle: HPen;
+    Color: TColor;
+    Width: Integer;
+    Style: TPenStyle;
   end;
 
   TBrushStyle = (bsSolid, bsClear, bsHorizontal, bsVertical, bsFDiagonal,
@@ -357,7 +357,7 @@ const
     Height: 0;
     Pitch: fpDefault;
     Style: [];
-    Charset : DEFAULT_CHARSET;
+    Charset: DEFAULT_CHARSET;
     Name: 'default'
     );
 
@@ -399,7 +399,7 @@ type
 
   TFont = class(TGraphicsObject)
   private
-    FColor : TColor;
+    FColor: TColor;
     FFontData: TFontData;
     FPixelsPerInch: Integer;
     FFontName: string;
@@ -414,45 +414,45 @@ type
     function  GetCharSet: TFontCharSet;
     function  GetHandle: HFONT;
     function  GetHeight: Integer;
-    function  GetName : TFontName;
+    function  GetName: TFontName;
     function  GetPitch: TFontPitch;
-    function  GetSize : Integer;
+    function  GetSize: Integer;
     function  GetStyle: TFontStyles;
     procedure SetCharSet(const AValue: TFontCharSet);
-    procedure SetColor(Value : TColor);
+    procedure SetColor(Value: TColor);
     procedure SetHandle(const Value: HFONT);
-    procedure SetHeight(value : Integer);
-    procedure SetName(const AValue : TFontName);
-    procedure SetPitch(Value : TFontPitch);
-    procedure SetSize(value : Integer);
+    procedure SetHeight(value: Integer);
+    procedure SetName(const AValue: TFontName);
+    procedure SetPitch(Value: TFontPitch);
+    procedure SetSize(value: Integer);
     procedure SetStyle(Value: TFontStyles);
   public
     constructor Create;
     destructor Destroy; override;
-    procedure Assign(Source : TPersistent); override;
+    procedure Assign(Source: TPersistent); override;
     procedure Assign(const ALogFont: TLogFont);
     procedure BeginUpdate;
     procedure EndUpdate;
     function HandleAllocated: boolean;
     // Extra properties
     // TODO: implement them though GetTextMetrics, not here
-    //Function GetWidth(Value : String) : Integer;
+    //Function GetWidth(Value: String): Integer;
     // Extra properties
     // TODO: implement them though GetTextMetrics, not here
-    //property Width : Integer read FWidth write FWidth;
-    //property XBias : Integer read FXBias write FXBias;
-    //property YBias : Integer read FYBias write FYBias;
+    //property Width: Integer read FWidth write FWidth;
+    //property XBias: Integer read FXBias write FXBias;
+    //property YBias: Integer read FYBias write FYBias;
     //-----------------
-    property Handle : HFONT read GetHandle write SetHandle;
-    property PixelsPerInch : Integer read FPixelsPerInch;
+    property Handle: HFONT read GetHandle write SetHandle;
+    property PixelsPerInch: Integer read FPixelsPerInch;
   published
     property CharSet: TFontCharSet read GetCharSet write SetCharSet default DEFAULT_CHARSET;
-    property Color : TColor read FColor write SetColor default clWindowText;
-    property Height : Integer read GetHeight write SetHeight;
-    property Name : TFontName read GetName write SetName stored IsNameStored;
+    property Color: TColor read FColor write SetColor default clWindowText;
+    property Height: Integer read GetHeight write SetHeight;
+    property Name: TFontName read GetName write SetName stored IsNameStored;
     property Pitch: TFontPitch read GetPitch write SetPitch default fpDefault;
     property Size: Integer read GetSize write SetSize stored false;
-    property Style : TFontStyles read GetStyle write SetStyle;
+    property Style: TFontStyles read GetStyle write SetStyle;
   end;
 
 
@@ -460,16 +460,16 @@ type
 
   TPen = class(TGraphicsObject)
   private
-    FPenData : TPenData;
-    FMode : TPenMode;
+    FPenData: TPenData;
+    FMode: TPenMode;
     procedure FreeHandle;
   protected
     function GetHandle: HPEN;
     procedure SetHandle(const Value: HPEN);
-    procedure SetColor(Value : TColor);
-    procedure SetMode(Value : TPenMode);
-    procedure SetStyle(Value : TPenStyle);
-    procedure Setwidth(value : Integer);
+    procedure SetColor(Value: TColor);
+    procedure SetMode(Value: TPenMode);
+    procedure SetStyle(Value: TPenStyle);
+    procedure Setwidth(value: Integer);
   public
     constructor Create;
     destructor Destroy; override;
@@ -486,30 +486,30 @@ type
   { TBrush }
 
   TBrushData = record
-    Handle : HBrush;
-    Color : TColor;
-    Bitmap : TBitmap;
-    Style : TBrushStyle;
+    Handle: HBrush;
+    Color: TColor;
+    Bitmap: TBitmap;
+    Style: TBrushStyle;
   end;
 
   TBrush = class(TGraphicsObject)
   private
-    FBrushData : TBrushData;
+    FBrushData: TBrushData;
     procedure FreeHandle;
   protected
     function GetHandle: HBRUSH;
-    Procedure SetBitmap(Value : TBitmap);
-    Procedure SetColor(Value : TColor);
+    Procedure SetBitmap(Value: TBitmap);
+    Procedure SetColor(Value: TColor);
     procedure SetHandle(const Value: HBRUSH);
-    Procedure SetStyle(value : TBrushStyle);
+    Procedure SetStyle(value: TBrushStyle);
   public
-    procedure Assign(Source : TPersistent); override;
+    procedure Assign(Source: TPersistent); override;
     constructor Create;
     destructor Destroy; override;
     property Bitmap: TBitmap read FBrushData.Bitmap write SetBitmap;
     property Handle: HBRUSH read GetHandle write SetHandle;
   published
-    property Color : TColor read FBrushData.Color write SetColor default clWhite;
+    property Color: TColor read FBrushData.Color write SetColor default clWhite;
     property Style: TBrushStyle read FBrushData.Style write SetStyle default bsSolid;
   end;
 
@@ -517,30 +517,30 @@ type
   { TRegion }
 
   TRegionData = record
-    Handle : HRgn;
-    Rect : TRect;
+    Handle: HRgn;
+    Rect: TRect;
 
     {Polygon Region Info - not used yet}
-    Polygon : PPoint;//Polygon Points
-    NumPoints : Longint;//Number of Points
-    Winding : Boolean;//Use Winding mode
+    Polygon: PPoint;//Polygon Points
+    NumPoints: Longint;//Number of Points
+    Winding: Boolean;//Use Winding mode
   end;
 
   TRegion = class(TGraphicsObject)
   private
-    FRegionData : TRegionData;
+    FRegionData: TRegionData;
     procedure FreeHandle;
   protected
     function GetHandle: HRGN;
     procedure SetHandle(const Value: HRGN);
-    procedure SetClipRect(value : TRect);
-    Function GetClipRect : TRect;
+    procedure SetClipRect(value: TRect);
+    Function GetClipRect: TRect;
   public
     constructor Create;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
-    property Handle : HRGN read GetHandle write SetHandle;
-    property ClipRect : TRect read GetClipRect write SetClipRect;
+    property Handle: HRGN read GetHandle write SetHandle;
+    property ClipRect: TRect read GetClipRect write SetClipRect;
   end;
 
 
@@ -750,7 +750,7 @@ type
 
   TCanvas = class(TPersistent)
   private
-    FAutoReDraw : Boolean;
+    FAutoReDraw: Boolean;
     FState: TCanvasState;
     FFont: TFont;
     FSavedFontHandle: HFont;
@@ -776,17 +776,17 @@ type
     procedure DeselectHandles;
     function GetCanvasClipRect: TRect;
     Function GetColor: TColor;
-    function GetHandle : HDC;
+    function GetHandle: HDC;
     Function GetPenPos: TPoint;
-    Function GetPixel(X,Y : Integer) : TColor;
-    Procedure SetAutoReDraw(Value : Boolean);
+    Function GetPixel(X,Y: Integer): TColor;
+    Procedure SetAutoReDraw(Value: Boolean);
     Procedure SetColor(c: TColor);
-    Procedure SetBrush(value : TBrush);
-    Procedure SetFont(value : TFont);
-    Procedure SetPen(value : TPen);
-    Procedure SetPenPos(Value : TPoint);
-    Procedure SetPixel(X,Y : Integer; Value : TColor);
-    Procedure SetRegion(value : TRegion);
+    Procedure SetBrush(value: TBrush);
+    Procedure SetFont(value: TFont);
+    Procedure SetPen(value: TPen);
+    Procedure SetPenPos(Value: TPoint);
+    Procedure SetPixel(X,Y: Integer; Value: TColor);
+    Procedure SetRegion(value: TRegion);
   protected
     procedure CreateFont; virtual;
     procedure CreateBrush; virtual;
@@ -804,8 +804,8 @@ type
     procedure Changing; virtual;
     procedure Changed; virtual;
 
-    procedure Arc(x,y,width,height,angle1,angle2 : Integer);
-    procedure Arc(x,y,width,height,SX,SY,EX,EY : Integer);
+    procedure Arc(x,y,width,height,angle1,angle2: Integer);
+    procedure Arc(x,y,width,height,SX,SY,EX,EY: Integer);
     Procedure BrushCopy(Dest: TRect; InternalImages: TBitmap; Src: TRect;
                         TransparentColor: TColor);
     procedure Chord(x, y, width, height, angle1, angle2: Integer);
@@ -815,19 +815,19 @@ type
     procedure StretchDraw(const DestRect: TRect; SrcGraphic: TGraphic);
     procedure Ellipse(const ARect: TRect);
     procedure Ellipse(x1, y1, x2, y2: Integer);
-    Procedure FillRect(const ARect : TRect);
-    Procedure FillRect(X1,Y1,X2,Y2 : Integer);
+    Procedure FillRect(const ARect: TRect);
+    Procedure FillRect(X1,Y1,X2,Y2: Integer);
     procedure FloodFill(X, Y: Integer; FillColor: TColor; FillStyle: TFillStyle);
-    procedure Frame3d(var ARect : TRect; const FrameWidth : integer;
+    procedure Frame3d(var ARect: TRect; const FrameWidth: integer;
                       const Style: TGraphicsBevelCut);
     procedure Frame(const ARect: TRect);        // border using pen
-    procedure Frame(X1,Y1,X2,Y2 : Integer);     // border using pen
+    procedure Frame(X1,Y1,X2,Y2: Integer);     // border using pen
     procedure FrameRect(const ARect: TRect);    // border using brush
-    procedure FrameRect(X1,Y1,X2,Y2 : Integer); // border using brush
-    Procedure Line(X1,Y1,X2,Y2 : Integer); // short for MoveTo();LineTo();
-    Procedure LineTo(X1,Y1 : Integer);
-    Procedure MoveTo(X1,Y1 : Integer);
-    procedure RadialPie(x,y,width,height,angle1,angle2 : Integer);
+    procedure FrameRect(X1,Y1,X2,Y2: Integer); // border using brush
+    Procedure Line(X1,Y1,X2,Y2: Integer); // short for MoveTo();LineTo();
+    Procedure LineTo(X1,Y1: Integer);
+    Procedure MoveTo(X1,Y1: Integer);
+    procedure RadialPie(x,y,width,height,angle1,angle2: Integer);
     procedure RadialPie(x,y,width,height,sx,sy,ex,ey: Integer);
     procedure Pie(EllipseX1,EllipseY1,EllipseX2,EllipseY2,
                   StartX,StartY,EndX,EndY: Integer);
@@ -837,9 +837,9 @@ type
     procedure PolyBezier(const Points: array of TPoint;
                          Filled: boolean{$IFNDEF VER1_0} = False{$ENDIF};
                          Continuous: boolean{$IFNDEF VER1_0} = False{$ENDIF});
-{$ifdef VER1_0}
+    {$ifdef VER1_0}
     procedure PolyBezier(const Points: array of TPoint);
-{$endif}
+    {$endif}
     procedure Polygon(const Points: array of TPoint;
                       Winding: Boolean;
                       StartIndex: Integer{$IFNDEF VER1_0} = 0{$ENDIF};
@@ -852,14 +852,14 @@ type
                        NumPts: Integer {$IFNDEF VER1_0} = -1{$ENDIF});
     procedure Polyline(Points: PPoint; NumPts: Integer);
     procedure Polyline(const Points: array of TPoint);
-    Procedure Rectangle(X1,Y1,X2,Y2 : Integer);
+    Procedure Rectangle(X1,Y1,X2,Y2: Integer);
     Procedure Rectangle(const Rect: TRect);
-    Procedure RoundRect(X1, Y1, X2, Y2: Integer; RX,RY : Integer);
-    Procedure RoundRect(const Rect : TRect; RX,RY : Integer);
+    Procedure RoundRect(X1, Y1, X2, Y2: Integer; RX,RY: Integer);
+    Procedure RoundRect(const Rect: TRect; RX,RY: Integer);
     procedure TextOut(X,Y: Integer; const Text: String);
-    procedure TextRect(ARect: TRect; X, Y: integer; const Text : string);
-    procedure TextRect(ARect: TRect; X, Y: integer; const Text : string;
-                       const Style : TTextStyle);
+    procedure TextRect(ARect: TRect; X, Y: integer; const Text: string);
+    procedure TextRect(ARect: TRect; X, Y: integer; const Text: string;
+                       const Style: TTextStyle);
     function TextExtent(const Text: string): TSize;
     function TextHeight(const Text: string): Integer;
     function TextWidth(const Text: string): Integer;
@@ -870,17 +870,17 @@ type
     property PenPos: TPoint read GetPenPos write SetPenPos;
     property Pixels[X, Y: Integer]: TColor read GetPixel write SetPixel;
     property Handle: HDC read GetHandle write SetHandle;
-    property TextStyle : TTextStyle read FTextStyle write FTextStyle;
+    property TextStyle: TTextStyle read FTextStyle write FTextStyle;
     property LockCount:Integer read FLockCount;
   published
-    property AutoRedraw : Boolean read FAutoReDraw write SetAutoReDraw;
+    property AutoRedraw: Boolean read FAutoReDraw write SetAutoReDraw;
     property Brush: TBrush read FBrush write SetBrush;
     property CopyMode: TCopyMode read FCopyMode write FCopyMode default cmSrcCopy;
     property Font: TFont read FFont write SetFont;
     property Pen: TPen read FPen write SetPen;
     property Region: TRegion read FRegion write SetRegion;
     property Color: TColor read GetColor write SetColor;
-    property OnChange : TNotifyEvent read FOnChange write FOnChange;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnChanging: TNotifyEvent read FOnChanging write FOnChanging;
   end;
 
@@ -961,7 +961,7 @@ type
   TBitmap = class(TGraphic)
   private
     FCanvas: TCanvas;
-    FImage : TBitmapImage;
+    FImage: TBitmapImage;
     FPalette: HPALETTE;
     FPixelFormat: TPixelFormat;
     FTransparentColor: TColor;
@@ -1176,9 +1176,9 @@ function ColorToString(Color: TColor): AnsiString;
 function StringToColor(const S: shortstring): TColor;
 procedure GetColorValues(Proc: TGetColorStringProc);
 
-Function Blue(rgb: TColor) : BYTE;
-Function Green(rgb: TColor) : BYTE;
-Function Red(rgb: TColor) : BYTE;
+Function Blue(rgb: TColor): BYTE;
+Function Green(rgb: TColor): BYTE;
+Function Red(rgb: TColor): BYTE;
 procedure RedGreenBlue(rgb: TColor; var Red, Green, Blue: Byte);
 
 // fonts
@@ -1222,7 +1222,7 @@ function ReadXPMSize(XPM: PPChar; var Width, Height, ColorCount: integer
 
 var
   { Stores information about the current screen }
-  ScreenInfo : TLMScreenInit;
+  ScreenInfo: TLMScreenInit;
 
 const
   FontCharsets: array[0..18] of TIdentMapEntry = (
@@ -1251,8 +1251,8 @@ const
  ***************************************************************************)
 implementation
 
-function SendIntfMessage(LM_Message : integer; Sender : TObject;
-  Data : pointer) : integer;
+function SendIntfMessage(LM_Message: integer; Sender: TObject;
+  Data: pointer): integer;
 begin
   result := SendMsgToInterface(LM_Message, Sender, Data);
 end;
@@ -1272,7 +1272,7 @@ type
   protected
     procedure CreateHandle; override;
   public
-    constructor Create(ABitmap : TBitmap);
+    constructor Create(ABitmap: TBitmap);
     destructor Destroy; override;
   end;
 
@@ -1465,17 +1465,17 @@ begin
   for I := Low(Colors) to High(Colors) do Proc(Colors[I].Name);
 end;
 
-Function Blue(rgb : TColor) : BYTE;
+Function Blue(rgb: TColor): BYTE;
 begin
   Result := (rgb shr 16) and $000000ff;
 end;
 
-Function Green(rgb : TColor) : BYTE;
+Function Green(rgb: TColor): BYTE;
 begin
   Result := (rgb shr 8) and $000000ff;
 end;
 
-Function Red(rgb : TColor) : BYTE;
+Function Red(rgb: TColor): BYTE;
 begin
   Result := rgb and $000000ff;
 end;
@@ -1701,6 +1701,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.139  2004/05/25 21:50:32  mattias
+  TCustomNotebook now allows pageclass descendents
+
   Revision 1.138  2004/05/23 21:30:10  mattias
   added build date to About box  from vincent
 
