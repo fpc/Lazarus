@@ -2160,19 +2160,26 @@ end;
 
 function TLinkScanner.LoadSourceCaseSensitive(
   const AFilename: string): pointer;
-var Path, FileNameOnly: string;
+var
+  Path, FileNameOnly: string;
+  SecondaryFileNameOnly: String;
 begin
   Path:=ExtractFilePath(AFilename);
   if Path<>'' then Path:=ExpandFilename(Path);
   FileNameOnly:=ExtractFilename(AFilename);
   Result:=nil;
   Result:=FOnLoadSource(Self,Path+FileNameOnly,true);
-  FileNameOnly:=lowercase(FileNameOnly);
-  if (Result=nil) then
-    Result:=FOnLoadSource(Self,Path+FileNameOnly,true);
-  FileNameOnly:=UpperCaseStr(FileNameOnly);
-  if (Result=nil) then
-    Result:=FOnLoadSource(Self,Path+FileNameOnly,true);
+  if (Result<>nil) then exit;
+  SecondaryFileNameOnly:=lowercase(FileNameOnly);
+  if (SecondaryFileNameOnly<>FileNameOnly) then begin
+    Result:=FOnLoadSource(Self,Path+SecondaryFileNameOnly,true);
+    if (Result<>nil) then exit;
+  end;
+  SecondaryFileNameOnly:=UpperCaseStr(FileNameOnly);
+  if (SecondaryFileNameOnly<>FileNameOnly) then begin
+    Result:=FOnLoadSource(Self,Path+SecondaryFileNameOnly,true);
+    if (Result<>nil) then exit;
+  end;
 end;
 
 function TLinkScanner.SearchIncludeFile(const AFilename: string;
@@ -2180,6 +2187,7 @@ function TLinkScanner.SearchIncludeFile(const AFilename: string;
 var PathStart, PathEnd: integer;
   IncludePath, PathDivider, CurPath: string;
   ExpFilename: string;
+  SecondaryFilename: String;
 
   function SearchPath(const APath: string): boolean;
   begin
@@ -2229,10 +2237,16 @@ begin
   end else begin
     // main source has relative filename (= virtual)
     NewCode:=FOnLoadSource(Self,AFilename,true);
-    if NewCode=nil then
-      NewCode:=FOnLoadSource(Self,lowercase(AFilename),true);
-    if NewCode=nil then
-      NewCode:=FOnLoadSource(Self,UpperCaseStr(AFilename),true);
+    if NewCode=nil then begin
+      SecondaryFilename:=lowercase(AFilename);
+      if SecondaryFilename<>AFilename then
+        NewCode:=FOnLoadSource(Self,SecondaryFilename,true);
+    end;
+    if NewCode=nil then begin
+      SecondaryFilename:=UpperCaseStr(AFilename);
+      if SecondaryFilename<>AFilename then
+        NewCode:=FOnLoadSource(Self,SecondaryFilename,true);
+    end;
     Result:=(NewCode<>nil);
     if Result then exit;
   end;
@@ -2257,17 +2271,22 @@ begin
           and (IsWordChar[IncludePath[PathEnd-1]])))
     {$ENDIF}
     then begin
-      CurPath:=Trim(copy(IncludePath,PathStart,PathEnd-PathStart));
-      Result:=SearchPath(CurPath);
-      if Result then exit;
+      if PathEnd>PathStart then begin
+        CurPath:=TrimFilename(copy(IncludePath,PathStart,PathEnd-PathStart));
+        Result:=SearchPath(CurPath);
+        if Result then exit;
+      end;
       PathStart:=PathEnd+1;
       PathEnd:=PathStart;
     end else
       inc(PathEnd);
   end;
-  CurPath:=Trim(copy(IncludePath,PathStart,PathEnd-PathStart));
-  Result:=SearchPath(CurPath);
-  if not Result then SetMissingIncludeFile;
+  if PathEnd>PathStart then begin
+    CurPath:=TrimFilename(copy(IncludePath,PathStart,PathEnd-PathStart));
+    Result:=SearchPath(CurPath);
+    if Result then exit;
+  end;
+  SetMissingIncludeFile;
 end;
 
 function TLinkScanner.IncludeFile(const AFilename: string): boolean;

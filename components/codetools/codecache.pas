@@ -247,33 +247,41 @@ function TCodeCache.LoadFile(const AFilename: string): TCodeBuffer;
 // search file in cache
 begin
   Result:=FindFile(AFilename);
-  if Result=nil then begin
-    // load new buffer
-    Result:=TCodeBuffer.Create;
-    if (not FileExists(AFilename)) then begin
-      Result.Free;
-      Result:=nil;
-      exit;
+  if FilenameIsAbsolute(AFilename) then begin
+    if Result=nil then begin
+      // load new buffer
+      Result:=TCodeBuffer.Create;
+      if (not FileExists(AFilename)) then begin
+        Result.Free;
+        Result:=nil;
+        exit;
+      end;
+      Result.Filename:=GetFilenameOnDisk(AFilename);
+      if (not Result.LoadFromFile(Result.Filename)) then
+      begin
+        Result.Free;
+        Result:=nil;
+        exit;
+      end;
+      FItems.Add(Result);
+      with Result do begin
+        FCodeCache:=Self;
+        LastIncludedByFile:=FindIncludeLink(Result.Filename);
+        ReadOnly:=not FileIsWritable(Result.Filename);
+      end;
+    end else if Result.IsDeleted then begin
+      // file in cache, but marked as deleted -> load from disk
+      if (not FileExists(AFilename))
+      or (not Result.LoadFromFile(AFilename)) then
+      begin
+        Result:=nil;
+      end;
     end;
-    Result.Filename:=GetFilenameOnDisk(AFilename);
-    if (not Result.LoadFromFile(Result.Filename)) then
-    begin
-      Result.Free;
+  end else begin
+    // virtual file
+    if Result.IsDeleted then begin
+      // file in cache, but marked as deleted -> no virtual file
       Result:=nil;
-      exit;
-    end;
-    FItems.Add(Result);
-    with Result do begin
-      FCodeCache:=Self;
-      LastIncludedByFile:=FindIncludeLink(Result.Filename);
-      ReadOnly:=not FileIsWritable(Result.Filename);
-    end;
-  end else if Result.IsDeleted then begin
-    // file in cache, but marked as deleted -> load from disk
-    if (not FileExists(AFilename)) or (not Result.LoadFromFile(AFilename)) then
-    begin
-      Result:=nil;
-      exit;
     end;
   end;
 end;
@@ -392,7 +400,8 @@ end;
 function TCodeCache.OnScannerLoadSource(Sender: TObject;
   const AFilename: string; OnlyIfExists: boolean): pointer;
 begin
-  if OnlyIfExists and (not FileExists(AFilename)) then
+  if OnlyIfExists
+  and FilenameIsAbsolute(AFilename) and (not FileExists(AFilename)) then
     Result:=FindFile(AFilename)
   else
     Result:=LoadFile(AFilename);

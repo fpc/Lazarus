@@ -245,6 +245,11 @@ resourcestring
   lisSaveSpace = 'Save ';
   lisSelectDFMFiles = 'Select Delphi form files (*.dfm)';
   lisChooseDirectory = 'Choose directory';
+  lisChooseLazarusSourceDirectory = 'Choose Lazarus Directory';
+  lisChooseCompilerPath = 'Choose compiler filename (ppc386)';
+  lisChooseFPCSourceDir = 'Choose FPC source directory';
+  lisChooseDebuggerPath = 'Choose debugger filename';
+  lisChooseTestBuildDir = 'Choose the directory for tests';
 
   // dialogs
   lisSaveChangesToProject = 'Save changes to project %s?';
