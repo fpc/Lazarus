@@ -1631,7 +1631,7 @@ end;
   Pos is relative to the ClientOrigin.
   If AllowDisabled is true it will also search in disabled controls.
   If AllowWinControls is true it will also search in the child wincontrols.
-  If OnlyClientAreas is true then the only the client areas are compared.
+  If OnlyClientAreas is true then only the client areas are compared.
 ------------------------------------------------------------------------------}
 function TWinControl.ControlAtPos(const Pos: TPoint; AllowDisabled,
   AllowWinControls, OnlyClientAreas: Boolean): TControl;
@@ -1664,7 +1664,9 @@ var
              (
               (csDesigning in ComponentState)
               and
-              (Visible or not (csNoDesignVisible in ControlStyle))
+              (Visible
+               and  // VCL bug, VCL has here an 'or'
+               not (csNoDesignVisible in ControlStyle))
              )
              or
              (
@@ -3657,6 +3659,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.241  2004/06/28 18:47:30  mattias
+  further fixed GetControlAtPos
+
   Revision 1.240  2004/06/28 17:41:26  mattias
   fixed GetControlAtPos
 

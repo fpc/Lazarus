@@ -244,7 +244,7 @@ type
   TWndMethod = procedure(var TheMessage : TLMessage) of Object;
 
   TControlStyleType = (
-    csAcceptsControls, // can have childs
+    csAcceptsControls, // can have childs in the designer
     csCaptureMouse,
     csDesignInteractive, // wants mouse events in design mode
     csClickEvents,
@@ -2323,6 +2323,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.214  2004/06/28 18:47:30  mattias
+  further fixed GetControlAtPos
+
   Revision 1.213  2004/06/28 08:54:19  mattias
   fixed ord ptr conversion hints
 
