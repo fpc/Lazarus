@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Package Version="2">
+    <Name Value="pqconnectionlaz"/>
+    <Author Value="Joost van der SLuis"/>
+    <CompilerOptions>
+      <Version Value="3"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib/"/>
+      </SearchPaths>
+      <CodeGeneration>
+        <Generate Value="Faster"/>
+      </CodeGeneration>
+      <Other>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="Lazarus package for the FCL SQLdb PostgreSQL connection"/>
+    <License Value="Modified LGPL"/>
+    <Version Minor="9" Release="5"/>
+    <Files Count="2">
+      <Item1>
+        <Filename Value="pqconnection.pp"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="pqconnection"/>
+      </Item1>
+      <Item2>
+        <Filename Value="registerpqconnection.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="registerpqconnection"/>
+      </Item2>
+    </Files>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="2">
+      <Item1>
+        <PackageName Value="Sqldblaz"/>
+        <MinVersion Minor="9" Release="5" Valid="True"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="FCL"/>
+        <MinVersion Major="1" Valid="True"/>
+      </Item2>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)/"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>
