@@ -90,6 +90,9 @@ implementation
   Method:  DrawText
   Params:  DC, Str, Count, Rect, Flags
   Returns: If the string was drawn, or CalcRect run
+  
+  inherited routine apears to work fine so, turned off for now. Doesn't work
+  properly, and needs to take & into account before its fully useable....
  ------------------------------------------------------------------------------}
 function TGTK2Object.DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer;
 
@@ -124,6 +127,10 @@ var
   X, Y, Width, Height : Integer;
   DCOrigin: TPoint;
 begin
+  result :=  inherited DrawText(DC, Str, Count, Rect, Flags);
+
+  exit;
+
   if (Str=nil) or (Str[0]=#0) then exit;
   Assert(False, Format('trace:> [Tgtk2Object.DrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
     [DC, Str, Count, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, Flags]));
@@ -1046,6 +1053,9 @@ end.
 
 {
   $Log$
+  Revision 1.16  2003/09/18 14:06:30  ajgenius
+  fixed Tgtkobject.drawtext for Pango till the native pango one works better
+
   Revision 1.15  2003/09/18 09:21:03  mattias
   renamed LCLLinux to LCLIntf
 

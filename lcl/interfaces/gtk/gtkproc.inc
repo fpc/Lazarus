@@ -301,6 +301,64 @@ begin
   result := gdk_region_copy(source1);
   GDK2.gdk_region_xor(result, source2);
 end;
+
+Procedure gdk_text_extents(FontDesc : PPangoFontDescription; Str : PChar;
+  LineLength : Longint; lbearing, rbearing, width, ascent, descent : Pgint);
+var
+  Layout : PPangoLayout;
+  AttrList : PPangoAttrList;
+  Attr : PPangoAttribute;
+  Extents : TPangoRectangle;
+begin
+  GetStyle('default');
+  Layout := gtk_widget_create_pango_layout (GetStyleWidget('default'), nil);
+  pango_layout_set_font_description(Layout, FontDesc);
+  AttrList := pango_layout_get_attributes(Layout);
+
+  If (AttrList = nil) then
+    AttrList := pango_attr_list_new();
+
+  Attr := pango_attr_underline_new(PANGO_UNDERLINE_NONE);
+
+  pango_attr_list_change(AttrList,Attr);
+
+  Attr := pango_attr_strikethrough_new(False);
+  pango_attr_list_change(AttrList,Attr);
+
+  pango_layout_set_attributes(Layout, AttrList);
+
+  pango_layout_set_single_paragraph_mode(Layout, TRUE);
+  pango_layout_set_width(Layout, -1);
+
+  pango_layout_set_alignment(Layout, PANGO_ALIGN_LEFT);
+
+  //fix me... and what about UTF-8 conversion?
+  //this could be a massive problem since we
+  //will need to know before hand what the current
+  //locale is, and if we stored UTF-8 string this would break
+  //cross-compatibility with GTK1.2 and win32 interfaces.....
+
+  pango_layout_set_text(Layout,  Str, Linelength);
+
+  if Assigned(width) then
+    pango_layout_get_pixel_size(Layout, width, nil);
+
+  pango_layout_get_extents(Layout, nil, @Extents);
+  g_object_unref(Layout);
+
+  if Assigned(lbearing) then
+    lbearing^ := PANGO_LBEARING(extents) div PANGO_SCALE;
+
+  if Assigned(rbearing) then
+    rBearing^ := PANGO_RBEARING(extents) div PANGO_SCALE;
+
+  if Assigned(ascent) then
+    ascent^ := PANGO_ASCENT(extents) div PANGO_SCALE;
+
+  if Assigned(descent) then
+    descent^ := PANGO_DESCENT(extents) div PANGO_SCALE;
+end;
+
 {$EndIf}
 
 {------------------------------------------------------------------------------
@@ -4510,19 +4568,18 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  Function GetTextExtentIgnoringAmpersands(Font : PGDKFont; Str : PChar; 
+  Function GetTextExtentIgnoringAmpersands(Font : PGDKFont; Str : PChar;
                     LineLength : Longint; lbearing, rbearing, width, ascent, descent : Pgint);
 
   Gets text extent of a string, ignoring escaped Ampersands.
 -------------------------------------------------------------------------------}
-{$Ifdef USE_PANGO} // we should implement pango for gtk2 soon
+{$Ifdef USE_PANGO}
 Procedure GetTextExtentIgnoringAmpersands(FontDesc : PPangoFontDescription; Str : PChar;
   LineLength : Longint; lbearing, rbearing, width, ascent, descent : Pgint);
-begin
-end;
 {$Else}
 Procedure GetTextExtentIgnoringAmpersands(Font : PGDKFont; Str : PChar;
   LineLength : Longint; lbearing, rbearing, width, ascent, descent : Pgint);
+{$EndIf}
 var
   NewStr : PChar;
   i: integer;
@@ -4537,12 +4594,16 @@ begin
       LineLength:=StrLen(NewStr);
     end;
   end;
+{$Ifdef USE_PANGO}
+  gdk_text_extents(FontDesc, NewStr, LineLength,
+                   lbearing, rBearing, width, ascent, descent);
+{$Else}
   gdk_text_extents(Font, NewStr, LineLength,
                    lbearing, rBearing, width, ascent, descent);
+{$EndIf}
   if NewStr<>Str then
     StrDispose(NewStr);
 end;
-{$EndIf}
 
 {------------------------------------------------------------------------------
   function FontIsDoubleByteCharsFont(TheFont: PGdkFont): boolean;
@@ -4743,6 +4804,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.208  2003/09/18 14:06:30  ajgenius
+  fixed Tgtkobject.drawtext for Pango till the native pango one works better
+
   Revision 1.207  2003/09/17 19:40:46  ajgenius
   Initial DoubleBuffering Support for GTK2
 

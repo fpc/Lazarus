@@ -2645,7 +2645,6 @@ var
     else begin
       If (Flags and DT_WordBreak) <> DT_WordBreak then
         MaxLength := Count*TM.tmMaxCharWidth;
-
       Self.WordWrap(DC, Str, MaxLength, Lines, NumLines);
       
       If (Lines = nil) or (NumLines = 0) then
@@ -8796,6 +8795,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.286  2003/09/18 14:06:30  ajgenius
+  fixed Tgtkobject.drawtext for Pango till the native pango one works better
+
   Revision 1.285  2003/09/18 12:15:01  mattias
   fixed is checks for TCustomXXX controls
 

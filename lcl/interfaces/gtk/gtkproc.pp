@@ -434,7 +434,7 @@ Function DeleteAmpersands(var Str : String) : Longint;
 function Ampersands2Underscore(Src: PChar) : PChar;
 function RemoveAmpersands(Src: PChar; LineLength : Longint) : PChar;
 
-{$Ifdef USE_PANGO} // we should implement pango for gtk2 soon
+{$Ifdef USE_PANGO}
 Procedure GetTextExtentIgnoringAmpersands(FontDesc : PPangoFontDescription; Str : PChar;
   LineLength : Longint; lbearing, rbearing, width, ascent, descent : Pgint);
 {$Else}
@@ -590,6 +590,9 @@ function gtk_widget_get_ythickness(Style : PGTKWidget) : gint; overload;
   Function gdk_region_union(source1:PGdkRegion; source2:PGdkRegion) : PGdkRegion;
   Function gdk_region_subtract(source1:PGdkRegion; source2:PGdkRegion) : PGdkRegion;
   Function gdk_region_xor(source1:PGdkRegion; source2:PGdkRegion) : PGdkRegion;
+
+  //mimic GDKFont Routines With Pango -->
+  Procedure gdk_text_extents(FontDesc : PPangoFontDescription; Str : PChar; LineLength : Longint; lbearing, rbearing, width, ascent, descent : Pgint);
 {$EndIf}
 
 implementation
