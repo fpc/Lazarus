@@ -508,7 +508,7 @@ type
     procedure ChangeBounds(ALeft, ATop, AWidth, AHeight: Integer); Override;
     function CanChange: Boolean; dynamic;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    procedure ClickUpDown(Button: TUDBtnType); virtual;
+    procedure Click(Button: TUDBtnType); dynamic;
     property AlignButton: TUDAlignButton read FAlignButton write SetAlignButton default udRight;
     property ArrowKeys: Boolean read FArrowKeys write SetArrowKeys default True;
     property Associate: TWinControl read FAssociate write SetAssociate;
@@ -1700,6 +1700,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.54  2002/10/21 14:40:51  lazarus
+  MG: fixes for 1.1
+
   Revision 1.53  2002/10/20 21:54:02  lazarus
   MG: fixes for 1.1
 

@@ -2997,8 +2997,7 @@ begin
     MoveCursorToNodeStart(Tree.Root);
     ReadNextAtom;
     ReadNextAtom;
-    if Scanner.InitialValues.IsDefined('VER1_0')
-    and (Scanner.PascalCompiler<>pcDelphi)
+    if (Scanner.PascalCompiler<>pcDelphi)
     and Scanner.InitialValues.IsDefined('LINUX')
     then
       // ToDo: other OS than linux
@@ -3049,7 +3048,7 @@ begin
           Params.SetIdentifier(Self,PChar(SystemAlias),nil);
           Result:=FindIdentifierInUsedUnit(SystemAlias,Params);
         finally
-          // always reset input, because the string SystemAlias is freed
+          // ! always reset input, because the string SystemAlias is freed !
           Params.Load(OldInput);
         end;
       end;

@@ -1,3 +1,4 @@
+// included by comctrls.pp
 { TCustomUpDown
 
  *****************************************************************************
@@ -93,7 +94,7 @@ begin
         end;
         
     end;
-    FUpDown.ClickUpDown(FButtonType);
+    FUpDown.Click(FButtonType);
   end;
 end;
 
@@ -229,7 +230,7 @@ begin
     FOnChanging(Self, Result);
 end;
 
-procedure TCustomUpDown.ClickUpDown(Button: TUDBtnType);
+procedure TCustomUpDown.Click(Button: TUDBtnType);
 begin
   if Assigned(FOnClick) then FOnClick(Self, Button);
 end;
@@ -424,3 +425,6 @@ begin
   if Value <> FWrap then
     FWrap := Value;
 end;
+
+// included by comctrls.pp
+
