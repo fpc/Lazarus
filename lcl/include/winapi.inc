@@ -1205,18 +1205,7 @@ end;
  ------------------------------------------------------------------------------}
 function OffSetRect(var Rect: TRect; dx,dy: Integer): Boolean;
 Begin
-  with Rect do
-  begin
-    Left := Left + dx;
-    Right := Right + dx;
-    Top := Top + dy;
-    bottom := bottom + dy;
-  end;
-  if (rect.Left >= 0) and (Rect.Top >= 0) then
-  Result := True
-  else
-  result := False;
-
+  Result:=LCLProc.OffsetRect(Rect,dx,dy);
 end;
 
 {------------------------------------------------------------------------------
@@ -1386,6 +1375,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.59  2002/10/26 15:15:48  lazarus
+  MG: broke LCL<->interface circles
+
   Revision 1.58  2002/10/23 14:36:52  lazarus
   AJ:Fixes to PromptUser;Switched ShowMessage* to use NotifyUser*;
      fixed TGraphicPropertyEditor for when Property is nil.
