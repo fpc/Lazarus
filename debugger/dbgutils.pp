@@ -42,7 +42,7 @@ function GetPart(const ASkipTo, AnEnd: array of String; var ASource: String): St
 function GetPart(const ASkipTo, AnEnd: array of String; var ASource: String; const AnIgnoreCase: Boolean): String; overload;
 function GetPart(const ASkipTo, AnEnd: array of String; var ASource: String; const AnIgnoreCase, AnUpdateSource: Boolean): String; overload;
 function ConvertToCString(const AText: String): String;
-function DeleteBackSlashes(const AText: String): String;
+function DeleteEscapeChars(const AText: String; const AEscapeChar: Char): String;
 
 const
 {$IFDEF WIN32}
@@ -202,16 +202,19 @@ begin
   end;
 end;
 
-function DeleteBackSlashes(const AText: String): String;
+function DeleteEscapeChars(const AText: String; const AEscapeChar: Char): String;
 var
   i: Integer;
   l: Integer;
+  Escape: Boolean;
 begin
   Result:=AText;
+  Escape := False;
   i:=1;
   l:=length(Result);
   while i<l do begin
-    if Result[i]='\' then
+    Escape := not Escape and (Result[i]=AEscapeChar);
+    if Escape then
       System.Delete(Result,i,1);
     inc(i);
   end;
@@ -220,6 +223,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.6  2003/06/10 23:48:26  marc
+  MWE: * Enabled modification of breakpoints while running
+
   Revision 1.5  2003/06/09 15:58:05  mattias
   implemented view call stack key and jumping to last stack frame with debug info
 

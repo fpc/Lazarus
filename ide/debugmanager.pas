@@ -82,7 +82,6 @@ type
       var Filename: string; AskUserIfNotFound: boolean): TModalresult;
   private
     FDebugger: TDebugger;
-    FDebuggerUpdateLock: integer;
     FBreakpointsNotification: TIDEBreakPointsNotification;// Notification for
       // our BreakPoints
 
@@ -137,8 +136,6 @@ type
     function DoStepOverProject: TModalResult; override;
     function DoRunToCursor: TModalResult; override;
     function DoStopProject: TModalResult; override;
-    function DoBeginChangeDebugger: TModalResult;
-    function DoEndChangeDebugger: TModalResult;
     procedure DoToggleCallStack; override;
 
     procedure RunDebugger; override;
@@ -537,10 +534,14 @@ begin
 end;
 
 procedure TDebugManager.mnuResetDebuggerClicked(Sender: TObject);
+var
+  OldState: TDBGState;
 begin
-  if State = dsNone then Exit;
+  OldState := State;
+  if OldState = dsNone then Exit;
 
   EndDebugging;
+  OnDebuggerChangeState(FDebugger, OldState);
   DoInitDebugger;
 end;
 
@@ -1237,48 +1238,6 @@ begin
   Result := mrOk;
 end;
 
-function TDebugManager.DoBeginChangeDebugger: TModalResult;
-begin
-  Result:=mrCancel;
-  inc(FDebuggerUpdateLock);
-  if FDebuggerUpdateLock=1 then begin
-    // the update begins
-    if FDebugger<>nil then begin
-      // switch the debugger into a state, where the IDE can change its items
-
-      // quick hack: simply forbid editing during run
-      if FDebugger.State in dsRunStates then begin
-        Result:=mrCancel;
-        MessageDlg('Program is running',
-          'You can not change any debugger item while the program is running.'#13
-          +'Pause or Stop it first.',mtError,[mbCancel],0);
-      end else
-        Result:=mrOk;
-      if Result<>mrOk then begin
-        dec(FDebuggerUpdateLock);
-        exit;
-      end;
-    end;
-  end;
-  Result:=mrOk;
-end;
-
-function TDebugManager.DoEndChangeDebugger: TModalResult;
-begin
-  if FDebuggerUpdateLock<=0 then
-    RaiseException('TDebugManager.DoEndChangeDebugger');
-  dec(FDebuggerUpdateLock);
-  if FDebuggerUpdateLock=0 then begin
-    // the update has ended -> restore the debugger state
-    if FDebugger<>nil then begin
-      Result:=mrOk;
-      
-      if Result<>mrOk then exit;
-    end;
-  end;
-  Result:=mrOk;
-end;
-
 procedure TDebugManager.DoToggleCallStack;
 begin
   ViewDebugDialog(ddtCallStack);
@@ -1308,10 +1267,8 @@ end;
 function TDebugManager.DoCreateBreakPoint(const AFilename: string;
   ALine: integer): TModalResult;
 begin
-  Result:=DoBeginChangeDebugger;
-  if Result<>mrOk then exit;
   FBreakPoints.Add(AFilename, ALine);
-  Result:=DoEndChangeDebugger;
+  Result := mrOK
 end;
 
 function TDebugManager.DoDeleteBreakPoint(const AFilename: string;
@@ -1319,13 +1276,11 @@ function TDebugManager.DoDeleteBreakPoint(const AFilename: string;
 var
   OldBreakPoint: TIDEBreakPoint;
 begin
-  Result:=DoBeginChangeDebugger;
-  if Result<>mrOk then exit;
   OldBreakPoint:=FBreakPoints.Find(AFilename,ALine);
   if OldBreakPoint=nil then exit;
   OldBreakPoint.Free;
   Project1.Modified:=true;
-  Result:=DoEndChangeDebugger;
+  Result := mrOK
 end;
 
 function TDebugManager.DoDeleteBreakPointAtMark(const ASourceMark: TSourceMark
@@ -1339,13 +1294,11 @@ begin
     RaiseException('TDebugManager.DoDeleteBreakPointAtMark');
   
 writeln('TDebugManager.DoDeleteBreakPointAtMark A ',ASourceMark.GetFilename,' ',ASourceMark.Line);
-  Result:=DoBeginChangeDebugger;
-  if Result<>mrOk then exit;
   OldBreakPoint:=TIDEBreakPoint(ASourceMark.Data);
 writeln('TDebugManager.DoDeleteBreakPointAtMark B ',OldBreakPoint.ClassName,' ',OldBreakPoint.Source,' ',OldBreakPoint.Line);
   OldBreakPoint.Free;
   Project1.Modified:=true;
-  Result:=DoEndChangeDebugger;
+  Result := mrOK
 end;
 
 function TDebugManager.DoViewBreakPointProperties(ABreakpoint: TIDEBreakPoint
@@ -1359,13 +1312,11 @@ function TDebugManager.DoCreateWatch(const AExpression: string): TModalResult;
 var
   NewWatch: TDBGWatch;
 begin
-  Result:=DoBeginChangeDebugger;
-  if Result<>mrOk then exit;
   NewWatch := FWatches.Add(AExpression);
   NewWatch.Enabled := True;
   NewWatch.InitialEnabled := True;
   Project1.Modified:=true;
-  Result:=DoEndChangeDebugger;
+  Result := mrOK
 end;
 
 function TDebugManager.DoRunToCursor: TModalResult;
@@ -1420,6 +1371,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.51  2003/06/10 23:48:26  marc
+  MWE: * Enabled modification of breakpoints while running
+
   Revision 1.50  2003/06/09 15:58:05  mattias
   implemented view call stack key and jumping to last stack frame with debug info
 
