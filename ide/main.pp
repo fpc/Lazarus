@@ -42,21 +42,36 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, LazarusIDEStrConsts, LCLType, LclLinux, Compiler, StdCtrls, Forms,
-  Buttons, Menus, ComCtrls, Spin, Project, SysUtils, FileCtrl, Controls,
-  Graphics, GraphType, ExtCtrls, Dialogs, LazConf, CompReg, CodeToolManager,
-  CodeCache, DefineTemplates, MsgView, NewProjectDlg, IDEComp,
-  AbstractFormEditor, Designer, FormEditor, CustomFormEditor,
-  ObjectInspector, PropEdits, ControlSelection, UnitEditor, CompilerOptions,
-  EditorOptions, EnvironmentOpts, TransferMacros, SynEditKeyCmds, KeyMapping,
-  ProjectOpts, IDEProcs, Process, UnitInfoDlg, Debugger, DBGOutputForm,
-  GDBMIDebugger, RunParamsOpts, ExtToolDialog, ExtToolEditDlg, MacroPromptDlg,
-  LMessages, ProjectDefs, Watchesdlg, BreakPointsdlg, ColumnDlg, OutputFilter,
-  BuildLazDialog, MiscOptions, EditDefineTree, CodeToolsOptions, TypInfo,
-  IDEOptionDefs, CodeToolsDefines, LocalsDlg, DebuggerDlg, InputHistory,
-  DiskDiffsDialog, UnitDependencies, PublishProjectDlg, ClipBoardHistory,
-  ProcessList, InitialSetupDlgs, NewDialog, MakeResStrDlg, DiffDialog,
-  ToDoList,
+  // fpc packages
+  Classes, SysUtils, Process, TypInfo,
+  // lcl
+  LCLType, LclLinux, LMessages, StdCtrls, Forms, Buttons, Menus, ComCtrls, Spin,
+  FileCtrl, Controls, Graphics, GraphType, ExtCtrls, Dialogs,
+  // codetools
+  CodeToolManager, CodeCache, DefineTemplates,
+  // synedit
+  SynEditKeyCmds,
+  // compile
+  Compiler, CompilerOptions,
+  // projects
+  Project, ProjectDefs, NewProjectDlg, ProjectOpts, PublishProjectDlg,
+  // designer
+  CompReg, IDEComp, AbstractFormEditor, Designer, FormEditor, CustomFormEditor,
+  ObjectInspector, PropEdits, ControlSelection, ColumnDlg,
+  // debugger
+  Debugger, DBGOutputForm, GDBMIDebugger, RunParamsOpts, Watchesdlg,
+  BreakPointsdlg, DebuggerDlg, LocalsDlg,
+  // packager
+  PackageDefs, PackageEditor,
+  // source editing
+  UnitEditor, EditDefineTree, CodeToolsOptions, IDEOptionDefs, CodeToolsDefines,
+  DiffDialog, DiskDiffsDialog, UnitInfoDlg, EditorOptions,
+  // rest ide
+  LazarusIDEStrConsts, LazConf, MsgView, EnvironmentOpts,
+  TransferMacros, KeyMapping, IDEProcs, ExtToolDialog, ExtToolEditDlg,
+  MacroPromptDlg, OutputFilter, BuildLazDialog, MiscOptions,
+  InputHistory, UnitDependencies, ClipBoardHistory, ProcessList,
+  InitialSetupDlgs, NewDialog, MakeResStrDlg, ToDoList,
   // main ide
   BaseDebugManager, DebugManager, MainBar;
 
@@ -449,6 +464,9 @@ type
     function DoCreateProjectForProgram(ProgramBuf: TCodeBuffer): TModalResult;
     function DoSaveProjectToTestDirectory: TModalResult;
     function DoShowToDoList: TModalResult;
+    
+    // package(s)
+    function DoNewPackage: TModalResult;
     
     // edit menu
     procedure DoEditMenuCommand(EditorCommand: integer);
@@ -3872,12 +3890,16 @@ begin
   try
     if Result<>mrOk then exit;
     case NewIDEItem.TheType of
+    // files
     niiText: Result:=DoNewEditorFile(nuText,'',[]);
     niiUnit: Result:=DoNewEditorFile(nuUnit,'',[]);
     niiForm: Result:=DoNewEditorFile(nuForm,'',[]);
+    // projects
     niiApplication: DoNewProject(ptApplication);
     niiFPCProject: DoNewProject(ptProgram);
     niiCustomProject: DoNewProject(ptCustomProgram);
+    // packages
+    niiPackage: DoNewPackage;
     else
       MessageDlg('Not implemented yet',
                  'Sorry, this type is not yet implemented',
@@ -5216,6 +5238,14 @@ begin
   Result:=mrOk;
 end;
 
+function TMainIDE.DoNewPackage: TModalResult;
+begin
+  Result:=mrCancel;
+
+  
+  Result:=mrOk;
+end;
+
 function TMainIDE.DoBuildProject(BuildAll: boolean): TModalResult;
 var
   DefaultFilename: string;
@@ -6483,6 +6513,7 @@ var CompilerUnitSearchPath, CompilerUnitLinks: string;
 begin
   FOpenEditorsOnCodeToolChange:=false;
   
+  CodeToolBoss.SourceCache.ExpirationTimeInDays:=365;
   CodeToolBoss.DefineTree.OnGetVirtualDirectoryAlias:=
     @CodeToolBossGetVirtualDirectoryAlias;
   CodeToolBoss.DefineTree.OnGetVirtualDirectoryDefines:=
@@ -8069,6 +8100,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.502  2003/04/01 16:25:45  mattias
+  started packageeditor and packagelinks
+
   Revision 1.501  2003/03/29 21:41:19  mattias
   fixed path delimiters for environment directories
 

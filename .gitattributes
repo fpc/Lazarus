@@ -722,6 +722,7 @@ packager/addfiletoapackagedlg.pas svneol=native#text/pascal
 packager/brokendependenciesdlg.pas svneol=native#text/pascal
 packager/lazaruspackageintf.pas svneol=native#text/pascal
 packager/packagedefs.pas svneol=native#text/pascal
+packager/packageeditor.pas svneol=native#text/pascal
 packager/pkggraphexporer.pas svneol=native#text/pascal
 tools/RunAndWait.sh -text svneol=native#application/x-sh
 tools/apiwizz/apiwizard.pp svneol=native#text/pascal

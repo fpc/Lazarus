@@ -1,0 +1,10 @@
+This directory is used for global "package links".
+
+"Package links" are used by the IDE whenever it searches the .lpk file of a
+required package. The files should have filenames with the format
+<pkgname>-<version>.lpl.
+Where <pkgname> is a valid pascal identifier in lowercase and <version> is for
+example 1.2.3.4 (four integers divided by point).
+Each file should contain a single absolute filename.
+
+
