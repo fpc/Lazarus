@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Last-Translator: Mazen NEIFER <m.neifer@enertecgroup.com>\n"
-"PO-Revision-Date: 2004-07-05 11:27+0200\n"
+"PO-Revision-Date: 2004-07-06 19:46+0200\n"
 "Language-Team: Arabic <fr@li.org>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -53,7 +53,7 @@ msgstr "%sبصدد ترميم  "
 
 #: lazarusidestrconsts:lisnewproject
 msgid "%s - (new project)"
-msgstr ""
+msgstr "%s - مشروع جديد"
 
 #: lazarusidestrconsts:lisuidbytes
 msgid "%s bytes"
@@ -133,7 +133,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisoipthispackageisinstalledbutthelpkfilewasnotfound
 msgid "%sThis package is installed, but the lpk file was not found"
-msgstr ""
+msgstr "%sهذا ال"
 
 #: lazarusidestrconsts:lisoipthispackagewasautomaticallycreated
 msgid "%sThis package was automatically created"
@@ -145,15 +145,15 @@ msgstr ""
 
 #: lazarusidestrconsts:uemclosepage
 msgid "&Close Page"
-msgstr ""
+msgstr "أ&غلق الصفحة"
 
 #: lazarusidestrconsts:lismenucomponents
 msgid "&Components"
-msgstr ""
+msgstr "&عناصر"
 
 #: lazarusidestrconsts:lismenuedit
 msgid "&Edit"
-msgstr ""
+msgstr "&إصدار"
 
 #: lazarusidestrconsts:lismenufile
 msgid "&File"
@@ -161,7 +161,7 @@ msgstr "&جذاذة"
 
 #: lazarusidestrconsts:uemfinddeclaration
 msgid "&Find Declaration"
-msgstr ""
+msgstr "إبحث عن الإصدار"
 
 #: lazarusidestrconsts:uemgotobookmark
 msgid "&Goto Bookmark"
@@ -169,31 +169,31 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuhelp
 msgid "&Help"
-msgstr ""
+msgstr "م&عونة"
 
 #: lazarusidestrconsts:uemopenfileatcursor
 msgid "&Open file at cursor"
-msgstr ""
+msgstr "إفتح الجذاذة التي تحت المؤشرة"
 
 #: lazarusidestrconsts:lismenuproject
 msgid "&Project"
-msgstr ""
+msgstr "&مشروع"
 
 #: lazarusidestrconsts:dlgreplacewith
 msgid "&Replace With"
-msgstr ""
+msgstr "أبدل بـ..."
 
 #: lazarusidestrconsts:lismenurun
 msgid "&Run"
-msgstr ""
+msgstr "&تشغيل"
 
 #: lazarusidestrconsts:uemruntocursor
 msgid "&Run to Cursor"
-msgstr ""
+msgstr "تشغيل حتى بلوغ المؤشرة"
 
 #: lazarusidestrconsts:lismenusearch
 msgid "&Search"
-msgstr ""
+msgstr "&بحث"
 
 #: lazarusidestrconsts:uemsetbookmark
 msgid "&Set Bookmark"
@@ -205,15 +205,15 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenutools
 msgid "&Tools"
-msgstr ""
+msgstr "أ&دوات"
 
 #: lazarusidestrconsts:lismenuview
 msgid "&View"
-msgstr ""
+msgstr "&هيأة"
 
 #: lazarusidestrconsts:lismenuwindows
 msgid "&Windows"
-msgstr ""
+msgstr "&نوافذ"
 
 #: lazarusidestrconsts:dlgbakdirectory
 msgid "(no subdirectoy)"
@@ -1701,7 +1701,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuenvironent
 msgid "E&nvironment"
-msgstr ""
+msgstr "ب&يئة"
 
 #: lazarusidestrconsts:liscodetoolsdefsedit
 msgid "Edit"
@@ -3545,11 +3545,11 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecnew
 msgid "New"
-msgstr ""
+msgstr "جذاذة &جديدة"
 
 #: lazarusidestrconsts:lismenunewother
 msgid "New ..."
-msgstr ""
+msgstr "إصنع"
 
 #: lazarusidestrconsts:lisa2pnewclassname
 msgid "New class name:"
@@ -3561,11 +3561,11 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenunewform
 msgid "New Form"
-msgstr ""
+msgstr "&شكل جديد"
 
 #: lazarusidestrconsts:lismenunewproject
 msgid "New Project"
-msgstr ""
+msgstr "مش"
 
 #: lazarusidestrconsts:lismenunewprojectfromfile
 msgid "New Project from file"
@@ -4257,7 +4257,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuquit
 msgid "Quit"
-msgstr ""
+msgstr "&خروج من البرنامج"
 
 #: lazarusidestrconsts:dlgcorange
 msgid "Range"
