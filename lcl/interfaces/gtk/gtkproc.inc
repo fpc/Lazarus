@@ -3309,8 +3309,8 @@ end;
 {-------------------------------------------------------------------------------
   Function Ampersands2Underscore(Src: PChar) : PChar;
 
-  Creates a new PChar. Deletes escaping ampersands and replaces the first
-  single ampersand with an underscore.
+  Creates a new PChar. Deletes escaping ampersands, replaces the first single
+  ampersand with an underscore and deleting all other single ampersands.
 -------------------------------------------------------------------------------}
 function Ampersands2Underscore(Src: PChar) : PChar;
 var
@@ -3318,7 +3318,7 @@ var
   ShortenChars, FirstAmpersand, NewLength, SrcLength: integer;
 begin
   // count ampersands and find first ampersand
-  ShortenChars:= 0;
+  ShortenChars:= 0;  // chars to delete
   FirstAmpersand:= -1;
   SrcLength:= StrLen(Src);
 
@@ -3327,7 +3327,6 @@ begin
   i:=0;
   while i<SrcLength do begin
     if Src[i] = '&' then begin
-
       if (i < SrcLength - 1) and (Src[i+1] = '&') then begin
         // escaping ampersand found
         inc(ShortenChars);
@@ -3335,9 +3334,12 @@ begin
         Continue;
       end else begin
         // single ampersand found
-        if (FirstAmpersand < 0) then begin
-          FirstAmpersand:= i;
-        end;
+        if (FirstAmpersand < 0) then
+          // the first will be replaced ...
+          FirstAmpersand:= i
+        else
+          // ... and all others will be deleted
+          inc(ShortenChars);
       end;	
     end;
     inc(i);
@@ -3366,8 +3368,8 @@ begin
           // replace first single ampersand with underscore
           Result[j]:='_';
         end else begin
-          // copy ampersand
-          Result[j]:='&';
+          // delete single ampersand
+          dec(j);
         end;
       end;
     end;
@@ -3476,6 +3478,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.110  2002/10/03 14:47:32  lazarus
+  MG: added TComboBox.OnPopup+OnCloseUp+ItemWidth
+
   Revision 1.109  2002/10/03 06:55:45  lazarus
   MG: fixed Ampersands2Underscore
 
