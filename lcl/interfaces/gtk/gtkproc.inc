@@ -3405,6 +3405,50 @@ begin
   gdk_error_trap_pop;
 end;
 
+Function GetWindowDecorations(Form : TCustomForm) : Longint;
+begin
+  Case Form.BorderStyle of
+    bsNone : Result := 0;
+
+    bsSingle : Result := GDK_DECOR_BORDER or GDK_DECOR_TITLE or
+                 GDK_DECOR_MENU or GDK_DECOR_MINIMIZE or
+                 GDK_DECOR_MAXIMIZE;
+
+    bsSizeable : Result := GDK_DECOR_ALL;
+
+    bsDialog : Result := GDK_DECOR_BORDER or GDK_DECOR_TITLE or
+                 GDK_DECOR_MENU or GDK_DECOR_MINIMIZE;
+
+    bsToolWindow : Result := GDK_DECOR_BORDER or GDK_DECOR_TITLE or
+                 GDK_DECOR_MENU or GDK_DECOR_MINIMIZE;
+
+    bsSizeToolWin :Result := GDK_DECOR_BORDER or GDK_DECOR_TITLE or
+                   GDK_DECOR_MENU or GDK_DECOR_MINIMIZE;
+  end;
+end;
+
+Function GetWindowFunction(Form : TCustomForm) : Longint;
+begin
+  Case Form.BorderStyle of
+    bsNone : Result := GDK_FUNC_MOVE or GDK_FUNC_CLOSE;
+
+    bsSingle : Result := GDK_FUNC_RESIZE or GDK_FUNC_MOVE or
+                GDK_FUNC_MINIMIZE or GDK_FUNC_CLOSE;
+
+    bsSizeable : Result := GDK_FUNC_ALL;
+
+    bsDialog : Result := GDK_FUNC_CLOSE or GDK_FUNC_MINIMIZE or
+                GDK_FUNC_MOVE;
+
+    bsToolWindow : Result := GDK_FUNC_RESIZE or GDK_FUNC_MOVE or
+                GDK_FUNC_MINIMIZE or GDK_FUNC_CLOSE;
+
+    bsSizeToolWin : Result := GDK_FUNC_RESIZE or GDK_FUNC_MOVE or
+                GDK_FUNC_MINIMIZE or GDK_FUNC_CLOSE or
+                GDK_FUNC_RESIZE;
+  end;
+end;
+
 {$IFDEF ASSERT_IS_ON}
   {$UNDEF ASSERT_IS_ON}
   {$C-}
@@ -3413,6 +3457,13 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.105  2002/09/29 15:08:43  lazarus
+  MWE: Applied patch from "Andrew Johnson" <aj_genius@hotmail.com>
+    Patch includes:
+      -fixes Problems with hiding modal forms
+      -temporarily fixes TCustomForm.BorderStyle in bsNone
+      -temporarily fixes problems with improper tabbing in TSynEdit
+
   Revision 1.104  2002/09/27 20:52:24  lazarus
   MWE: Applied patch from "Andrew Johnson" <aj_genius@hotmail.com>
 
