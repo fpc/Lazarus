@@ -1278,7 +1278,7 @@ Begin
   Begin
     CF := LPChooseFont(@Sender)^;
     ZeroMemory(@CF, SizeOf(TChooseFont));
-    LF.LFFaceName := (Sender As TFontDialog).FontName;
+    LF.LFFaceName := (Sender As TFontDialog).Font.Name;
     With CF Do
     Begin
       LStructSize := SizeOf(TChooseFont);
@@ -2496,6 +2496,9 @@ End;
 
 {
   $Log$
+  Revision 1.21  2002/06/08 19:18:34  lazarus
+  Keith: Fixed some bugs that were brought to my attention; fixed compilation problem.
+
   Revision 1.20  2002/05/10 07:43:48  lazarus
   MG: updated licenses
 
