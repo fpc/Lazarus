@@ -33,6 +33,7 @@ type
     FCachedCount: integer;
     FCachedItems: PPGtkListItem;
     FUpdateCount: integer;
+    FWithCheckBox: Boolean;
   protected
     function GetCount : integer; override;
     function Get(Index : Integer) : string; override;
@@ -46,7 +47,7 @@ type
     procedure RemoveAllCallbacks; virtual;
     procedure UpdateItemCache;
   public
-    constructor Create(List : PGtkList; TheOwner: TWinControl);
+    constructor Create(List : PGtkList; TheOwner: TWinControl; const AWithCheckBox: Boolean);
     destructor Destroy; override;
     function Add(const S: string): Integer; override;
     procedure Assign(Source : TPersistent); override;
@@ -86,6 +87,9 @@ type
 { =============================================================================
 
   $Log$
+  Revision 1.7  2003/06/20 01:37:47  marc
+  + Added TCheckListBox component
+
   Revision 1.6  2002/11/17 11:10:04  mattias
   TComboBox and TListBox accelerated and now supports objects
 

@@ -56,7 +56,7 @@ uses
   // LCL
   StdCtrls, Forms, Buttons, Menus, ComCtrls, Arrow,
   Spin, SysUtils, Controls, CompReg, Graphics, ExtCtrls, Dialogs, Calendar,
-  ImgList, Grids, LResources, MaskEdit,
+  ImgList, Grids, LResources, MaskEdit, CheckLst,
   // synedit
   SynEditLazDsgn, SynEdit, SynCompletion, SynExportHTML, SynMacroRecorder,
    SynMemo, SynHighlighterPas, SynHighlighterCPP, SynHighlighterJava,
@@ -350,6 +350,7 @@ begin
   RegisterComponents('Additional','Forms',[TScrollBox]);
   RegisterComponents('Additional','Grids',[TStringGrid,TDrawGrid]);
   RegisterComponents('Additional','MaskEdit',[TMaskEdit]);
+  RegisterComponents('Additional','CheckLst',[TCheckListBox]);
 
   // Common
   RegisterComponents('Common Controls','Controls',[TImageList]);
