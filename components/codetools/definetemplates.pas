@@ -2110,12 +2110,12 @@ var
     end;
     
     function BuildMacroFilename(const AFilename: string;
-      var SrcOSMakroUsed: boolean): string;
+      var SrcOSMacroUsed: boolean): string;
     // replace Operating System and Processor Type with macros
     var DirStart, DirEnd, i: integer;
       DirName: string;
     begin
-      SrcOSMakroUsed:=false;
+      SrcOSMacroUsed:=false;
       Result:=copy(AFilename,length(FPCSrcDir)+1,
                    length(AFilename)-length(FPCSrcDir));
       DirStart:=1;
@@ -2148,7 +2148,7 @@ var
                       copy(Result,DirEnd,length(Result)-DirEnd+1);
               inc(DirEnd,length(SrcOS)-length(DirName));
               DirName:=SrcOS;
-              SrcOSMakroUsed:=true;
+              SrcOSMacroUsed:=true;
               break;
             end;
           // replace processor type
@@ -2173,10 +2173,10 @@ var
           'demo', 'docs', 'template', 'fakertl'
         );
     var
-      AFilename, Ext, UnitName, MakroFileName: string;
+      AFilename, Ext, UnitName, MacroFileName: string;
       FileInfo: TSearchRec;
       NewUnitLink, OldUnitLink: TUnitNameLink;
-      SrcOSMakroUsed: boolean;
+      SrcOSMacroUsed: boolean;
       i: integer;
     begin
       //  writeln('%%%Browse ',ADirPath);
@@ -2201,12 +2201,12 @@ var
               UnitName:=copy(UnitName,1,length(UnitName)-length(Ext));
               if UnitName<>'' then begin
                 OldUnitLink:=FindUnitLink(UnitName);
-                MakroFileName:=BuildMacroFileName(AFilename,SrcOSMakroUsed);
+                MacroFileName:=BuildMacroFileName(AFilename,SrcOSMacroUsed);
                 if OldUnitLink=nil then begin
                   // first unit with this name
                   NewUnitLink:=TUnitNameLink.Create;
                   NewUnitLink.UnitName:=UnitName;
-                  NewUnitLink.FileName:=MakroFileName;
+                  NewUnitLink.FileName:=MacroFileName;
                   UnitTree.Add(NewUnitLink);
                 end else begin
                   { there is another unit with this name
@@ -2234,9 +2234,9 @@ var
                         $(#FPCSrcDir)/fcl/$(#TargetOS)/classes.pp
                   }
                   if (FileNameMacroCount(OldUnitLink.Filename)=0)
-                  or (SrcOSMakroUsed) then begin
+                  or (SrcOSMacroUsed) then begin
                     // old filename has no macros -> take the macro filename
-                    OldUnitLink.Filename:=MakroFileName;
+                    OldUnitLink.Filename:=MacroFileName;
                   end;
                 end;
               end;
@@ -2664,39 +2664,39 @@ begin
   DefTempl.AddChild(TDefineTemplate.Create('Reset',
       ctsResetAllDefines,
       '','',da_UndefineAll));
-  DefTempl.AddChild(TDefineTemplate.Create('Define makro DELPHI',
-      Format(ctsDefineMakroName,['DELPHI']),
+  DefTempl.AddChild(TDefineTemplate.Create('Define macro DELPHI',
+      Format(ctsDefineMacroName,['DELPHI']),
       'DELPHI','',da_DefineRecurse));
-  DefTempl.AddChild(TDefineTemplate.Create('Define makro FPC_DELPHI',
-      Format(ctsDefineMakroName,['FPC_DELPHI']),
+  DefTempl.AddChild(TDefineTemplate.Create('Define macro FPC_DELPHI',
+      Format(ctsDefineMacroName,['FPC_DELPHI']),
       'FPC_DELPHI','',da_DefineRecurse));
-  DefTempl.AddChild(TDefineTemplate.Create('Define makro MSWINDOWS',
-      Format(ctsDefineMakroName,['MSWINDOWS']),
+  DefTempl.AddChild(TDefineTemplate.Create('Define macro MSWINDOWS',
+      Format(ctsDefineMacroName,['MSWINDOWS']),
       'MSWINDOWS','',da_DefineRecurse));
 
   // version
   case DelphiVersion of
   3:
-    DefTempl.AddChild(TDefineTemplate.Create('Define makro VER_110',
-        Format(ctsDefineMakroName,['VER_110']),
+    DefTempl.AddChild(TDefineTemplate.Create('Define macro VER_110',
+        Format(ctsDefineMacroName,['VER_110']),
         'VER_130','',da_DefineRecurse));
   4:
-    DefTempl.AddChild(TDefineTemplate.Create('Define makro VER_125',
-        Format(ctsDefineMakroName,['VER_125']),
+    DefTempl.AddChild(TDefineTemplate.Create('Define macro VER_125',
+        Format(ctsDefineMacroName,['VER_125']),
         'VER_130','',da_DefineRecurse));
   5:
-    DefTempl.AddChild(TDefineTemplate.Create('Define makro VER_130',
-        Format(ctsDefineMakroName,['VER_130']),
+    DefTempl.AddChild(TDefineTemplate.Create('Define macro VER_130',
+        Format(ctsDefineMacroName,['VER_130']),
         'VER_130','',da_DefineRecurse));
   else
     // else define Delphi 6
-    DefTempl.AddChild(TDefineTemplate.Create('Define makro VER_140',
-        Format(ctsDefineMakroName,['VER_140']),
+    DefTempl.AddChild(TDefineTemplate.Create('Define macro VER_140',
+        Format(ctsDefineMacroName,['VER_140']),
         'VER_140','',da_DefineRecurse));
   end;
 
   DefTempl.AddChild(TDefineTemplate.Create(
-     Format(ctsDefineMakroName,[ExternalMacroStart+'Compiler']),
+     Format(ctsDefineMacroName,[ExternalMacroStart+'Compiler']),
      'Define '+ExternalMacroStart+'Compiler variable',
      ExternalMacroStart+'Compiler','DELPHI',da_DefineRecurse));
 
@@ -2733,7 +2733,7 @@ begin
   MainDirTempl.AddChild(CreateDelphiCompilerDefinesTemplate(DelphiVersion));
   MainDirTempl.AddChild(TDefineTemplate.Create(
      'Define '+ExternalMacroStart+'DelphiDir',
-     Format(ctsDefineMakroName,[ExternalMacroStart+'DelphiDir']),
+     Format(ctsDefineMacroName,[ExternalMacroStart+'DelphiDir']),
      ExternalMacroStart+'DelphiDir',DelphiDirectory,da_DefineRecurse));
   MainDirTempl.AddChild(TDefineTemplate.Create('SrcPath',
       Format(ctsAddsDirToSourcePath,['Delphi RTL+VCL']),

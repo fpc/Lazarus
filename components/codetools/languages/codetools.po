@@ -375,7 +375,7 @@ msgid "Default ppc386 target processor"
 msgstr ""
 
 #: codetoolsstrconsts:ctsfreepascalcompilerinitialmacros
-msgid "Free Pascal Compiler initial makros"
+msgid "Free Pascal Compiler initial macros"
 msgstr ""
 
 #: codetoolsstrconsts:ctsfreepascalsourcesplusdesc
@@ -480,10 +480,6 @@ msgstr ""
 
 #: codetoolsstrconsts:ctsresetalldefines
 msgid "Reset all defines"
-msgstr ""
-
-#: codetoolsstrconsts:ctsdefinemakroname
-msgid "Define Makro %s"
 msgstr ""
 
 #: codetoolsstrconsts:ctsnamedproject

@@ -153,7 +153,7 @@ ResourceString
   ctsDefaultppc386TargetOperatingSystem = 'Default ppc386 target Operating System';
   ctsDefaultppc386SourceOperatingSystem = 'Default ppc386 source Operating System';
   ctsDefaultppc386TargetProcessor = 'Default ppc386 target processor';
-  ctsFreePascalCompilerInitialMacros = 'Free Pascal Compiler initial makros';
+  ctsFreePascalCompilerInitialMacros = 'Free Pascal Compiler initial macros';
   ctsFreePascalSourcesPlusDesc = 'Free Pascal Sources, %s';
   ctsSourceFilenamesForStandardFPCUnits =
                                   'Source filenames for the standard fpc units';
@@ -188,7 +188,7 @@ ResourceString
   ctsAnLCLProject = 'an LCL project';
   ctsOtherCompilerDefines = '%s Compiler Defines';
   ctsResetAllDefines = 'Reset all defines';
-  ctsDefineMakroName = 'Define Makro %s';
+  ctsDefineMacroName = 'Define Macro %s';
   ctsNamedProject = '%s Project';
   
   // eventcodetool
