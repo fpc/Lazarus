@@ -60,7 +60,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TButton.DoSendBtnDefault;
 begin
-  if HandleAllocated and (not (csDesigning in ComponentState)) then
+  if HandleAllocated then
     CNSendMessage(LM_BTNDEFAULT_CHANGED,Self,nil);
 end;
 
@@ -157,6 +157,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.27  2004/06/29 14:38:28  micha
+  fix default button notification win32 intf
+
   Revision 1.26  2004/05/22 14:35:32  mattias
   fixed button return key
 

@@ -588,8 +588,12 @@ Begin
       End;
       LM_BTNDEFAULT_CHANGED:
       Begin
-        If (TButton(Sender).Default) And (SendMessage(Handle, BM_GETSTATE, 0, 0) = BST_FOCUS) Then
-          Windows.SendMessage(Handle, BM_SETSTATE, Windows.WPARAM(True), 0);
+        WindowStyle := Windows.GetWindowLong(Handle, GWL_STYLE) and not (BS_DEFPUSHBUTTON or BS_PUSHBUTTON);
+        If TButton(Sender).Default then
+          WindowStyle := WindowStyle or BS_DEFPUSHBUTTON
+        else
+          WindowStyle := WindowStyle or BS_PUSHBUTTON;
+        Windows.SendMessage(Handle, BM_SETSTYLE, WindowStyle, 1);
       End;
       LM_DESTROY:
       Begin
@@ -3311,6 +3315,9 @@ End;
 
 {
   $Log$
+  Revision 1.216  2004/06/29 14:38:28  micha
+  fix default button notification win32 intf
+
   Revision 1.215  2004/06/29 08:03:08  micha
   fix showtabs for win32 interface
 

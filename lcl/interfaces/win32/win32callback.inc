@@ -547,11 +547,7 @@ Begin
     WM_GETDLGCODE:
     Begin
       LMessage.Msg := LM_GETDLGCODE;
-      if OwnerObject is TEdit then
-      begin
-        WinProcess := false;
-        LMessage.Result := DLGC_WANTALLKEYS;
-      end;
+      WinProcess := false;
     End;
     WM_KEYDOWN:
     Begin
@@ -1057,6 +1053,12 @@ Begin
         WinProcess := LMKey.CharCode <> VK_UNKNOWN;
       end;
     end;
+
+    WM_GETDLGCODE:
+    begin
+      // user didn't set wanted special keys, do default processing
+      WinProcess := LMessage.Result = 0;
+    end;
   end;
 
   if WinProcess then
@@ -1253,6 +1255,9 @@ end;
 
 {
   $Log$
+  Revision 1.122  2004/06/29 14:38:28  micha
+  fix default button notification win32 intf
+
   Revision 1.121  2004/06/29 10:23:00  micha
   fix cnkeydown to check wm_getdlgcode result
   fix win32 intf to also send wm_keydown of cn_keydown wasn't processed
