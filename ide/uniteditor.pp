@@ -1504,6 +1504,8 @@ begin
 
 
   MarksImgList := TImageList.Create(AOwner);
+  MarksImgList.Width:=11;
+  MarksImgList.Height:=11;
 
   //load 10 bookmark images
   for I := 0 to 9 do Begin
