@@ -1345,6 +1345,18 @@ begin
   Result:=FAnchorSides[Kind];
 end;
 
+function TControl.GetAnchorSideIndex(Index: integer): TAnchorSide;
+begin
+  case Index of
+  0: Result:=FAnchorSides[akLeft];
+  1: Result:=FAnchorSides[akTop];
+  2: Result:=FAnchorSides[akRight];
+  3: Result:=FAnchorSides[akBottom];
+  else
+  Result:=nil;
+  end;
+end;
+
 {------------------------------------------------------------------------------
        TControl GetClientRect
 ------------------------------------------------------------------------------}
@@ -1550,6 +1562,12 @@ begin
   if not (csNoStdEvents in ControlStyle)
   then with Message do
     MouseUp(Button, KeysToShiftState(Keys), XPos, YPos);
+end;
+
+procedure TControl.SetAnchorSideIndex(Index: integer; const AValue: TAnchorSide
+  );
+begin
+  GetAnchorSideIndex(Index).Assign(AValue);
 end;
 
 procedure TControl.SetBorderSpacing(const AValue: TControlBorderSpacing);
@@ -3476,6 +3494,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.238  2005/01/21 10:34:56  mattias
+  implemented streaming of anchorsides
+
   Revision 1.237  2005/01/17 17:49:27  mattias
   fixed constraints for forms under gtk
 

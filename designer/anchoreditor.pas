@@ -280,7 +280,7 @@ begin
     exit;
   NewValue:=TCheckBox(Sender).Checked;
   CurSide:=Values.Sides[Kind];
-  debugln('TAnchorDesigner.AnchorEnabledCheckBoxChange CurSide.AmbigiousEnabled=',dbgs(CurSide.AmbigiousEnabled),' CurSide.Enabled=',dbgs(CurSide.Enabled),' NewValue=',dbgs(NewValue));
+  //debugln('TAnchorDesigner.AnchorEnabledCheckBoxChange CurSide.AmbigiousEnabled=',dbgs(CurSide.AmbigiousEnabled),' CurSide.Enabled=',dbgs(CurSide.Enabled),' NewValue=',dbgs(NewValue));
   if CurSide.AmbigiousEnabled or (CurSide.Enabled<>NewValue) then begin
     debugln('TAnchorDesigner.AnchorEnabledCheckBoxChange ',DbgSName(Sender),' NewValue=',dbgs(NewValue));
     // user changed an anchor
@@ -293,6 +293,7 @@ begin
       else
         CurControl.Anchors:=CurControl.Anchors-[Kind];
     end;
+    GlobalDesignHook.Modified(Self);
     GlobalDesignHook.RefreshPropertyValues;
   end;
 end;
@@ -341,7 +342,7 @@ begin
       else
         CurControl.BorderSpacing.Space[Kind]:=NewValue;
     end;
-    //GlobalDesignHook.Modified(Self);
+    GlobalDesignHook.Modified(Self);
     GlobalDesignHook.RefreshPropertyValues;
   end;
 end;
@@ -386,6 +387,7 @@ begin
       CurControl:=TControl(SelectedControls[i]);
       CurControl.AnchorSide[Kind].Control:=NewSibling;
     end;
+    GlobalDesignHook.Modified(Self);
     GlobalDesignHook.RefreshPropertyValues;
   end;
 end;
@@ -461,6 +463,7 @@ begin
       CurControl:=TControl(SelectedControls[i]);
       CurControl.AnchorSide[Kind].Side:=Side;
     end;
+    GlobalDesignHook.Modified(Self);
     GlobalDesignHook.RefreshPropertyValues;
   end;
 end;
@@ -562,14 +565,11 @@ begin
       TopBorderSpaceSpinEdit.ValueEmpty:=CurSide.AmbigiousBorderSpace;
       Sibling:=CurSide.Sibling;
       TopSiblingComboBox.Text:=Sibling;
-      debugln('TAnchorDesigner.Refresh A TopSiblingComboBox.Text=',TopSiblingComboBox.Text,' Sibling=',Sibling);
+      //debugln('TAnchorDesigner.Refresh A TopSiblingComboBox.Text=',TopSiblingComboBox.Text,' Sibling=',Sibling);
       FillComboBoxWithSiblings(TopSiblingComboBox);
-      debugln('TAnchorDesigner.Refresh B TopSiblingComboBox.Text=',TopSiblingComboBox.Text,' Sibling=',Sibling);
-      TopRefBottomSpeedButton.Enabled:=Sibling<>'';
+      //debugln('TAnchorDesigner.Refresh B TopSiblingComboBox.Text=',TopSiblingComboBox.Text,' Sibling=',Sibling);
       TopRefBottomSpeedButton.Down:=(CurSide.Side=asrBottom);
-      TopRefCenterSpeedButton.Enabled:=Sibling<>'';
       TopRefCenterSpeedButton.Down:=(CurSide.Side=asrCenter);
-      TopRefTopSpeedButton.Enabled:=Sibling<>'';
       TopRefTopSpeedButton.Down:=(CurSide.Side=asrTop);
 
       // Bottom
@@ -588,11 +588,8 @@ begin
       Sibling:=CurSide.Sibling;
       BottomSiblingComboBox.Text:=Sibling;
       FillComboBoxWithSiblings(BottomSiblingComboBox);
-      BottomRefBottomSpeedButton.Enabled:=Sibling<>'';
       BottomRefBottomSpeedButton.Down:=(CurSide.Side=asrBottom);
-      BottomRefCenterSpeedButton.Enabled:=Sibling<>'';
       BottomRefCenterSpeedButton.Down:=(CurSide.Side=asrCenter);
-      BottomRefTopSpeedButton.Enabled:=Sibling<>'';
       BottomRefTopSpeedButton.Down:=(CurSide.Side=asrTop);
 
       // Left
@@ -611,11 +608,8 @@ begin
       Sibling:=CurSide.Sibling;
       LeftSiblingComboBox.Text:=Sibling;
       FillComboBoxWithSiblings(LeftSiblingComboBox);
-      LeftRefRightSpeedButton.Enabled:=Sibling<>'';
       LeftRefRightSpeedButton.Down:=(CurSide.Side=asrBottom);
-      LeftRefCenterSpeedButton.Enabled:=Sibling<>'';
       LeftRefCenterSpeedButton.Down:=(CurSide.Side=asrCenter);
-      LeftRefLeftSpeedButton.Enabled:=Sibling<>'';
       LeftRefLeftSpeedButton.Down:=(CurSide.Side=asrTop);
 
       // Right
@@ -634,11 +628,8 @@ begin
       Sibling:=CurSide.Sibling;
       RightSiblingComboBox.Text:=Sibling;
       FillComboBoxWithSiblings(RightSiblingComboBox);
-      RightRefRightSpeedButton.Enabled:=Sibling<>'';
       RightRefRightSpeedButton.Down:=(CurSide.Side=asrBottom);
-      RightRefCenterSpeedButton.Enabled:=Sibling<>'';
       RightRefCenterSpeedButton.Down:=(CurSide.Side=asrCenter);
-      RightRefLeftSpeedButton.Enabled:=Sibling<>'';
       RightRefLeftSpeedButton.Down:=(CurSide.Side=asrTop);
     end;
   finally

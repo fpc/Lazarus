@@ -1984,6 +1984,23 @@ begin
   AControl.SetZOrderPosition(NewIndex);
 end;
 
+function TWinControl.ControlByName(const ControlName: string): TControl;
+var
+  i: Integer;
+begin
+  if FControls<>nil then
+    for i:=0 to FControls.Count-1 do begin
+      Result:=TControl(FControls[i]);
+      if CompareText(Result.Name,ControlName)=0 then exit;
+    end;
+  if FWinControls<>nil then
+    for i:=0 to FWinControls.Count-1 do begin
+      Result:=TControl(FWinControls[i]);
+      if CompareText(Result.Name,ControlName)=0 then exit;
+    end;
+  Result:=nil;
+end;
+
 {------------------------------------------------------------------------------}
 {  TWinControl DestroyHandle                                                   }
 {------------------------------------------------------------------------------}
@@ -4313,6 +4330,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.302  2005/01/21 10:34:56  mattias
+  implemented streaming of anchorsides
+
   Revision 1.301  2005/01/18 18:46:59  mattias
   improved invert assignment tool by multilines   from Andrew Haines
 

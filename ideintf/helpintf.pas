@@ -725,10 +725,12 @@ var
   i: Integer;
 begin
   Result:=Filename;
+  {$warnings off}
   if PathDelim<>'/' then
     for i:=1 to length(Result) do
       if Result[i]=PathDelim then
         Result[i]:='/';
+  {$warnings on}
   if Result<>'' then
     Result:='file://'+Result;
 end;
@@ -773,10 +775,12 @@ end;
 
 function URLFilenameIsAbsolute(const Filename: string): boolean;
 begin
+  {$warnings off}
   if PathDelim='/' then
     Result:=FilenameIsAbsolute(Filename)
   else
     Result:=FilenameIsAbsolute(SetDirSeparators(Filename));
+  {$warnings on}
 end;
 
 function FindURLPathStart(const URL: string): integer;

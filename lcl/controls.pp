@@ -40,7 +40,7 @@ interface
 {$ENDIF}
 
 uses
-  Classes, SysUtils, DynHashArray, LCLStrConsts, LCLType, LCLProc,
+  Classes, SysUtils, TypInfo, DynHashArray, LCLStrConsts, LCLType, LCLProc,
   GraphType, Graphics, LMessages, LCLIntf, InterfaceBase, ImgList, UTrace,
   PropertyStorage, Menus, ActnList, LCLClasses;
 
@@ -713,6 +713,7 @@ type
     constructor Create(TheOwner: TControl; TheKind: TAnchorKind);
     procedure GetSidePosition(var ReferenceControl: TControl;
                 var ReferenceSide: TAnchorSideReference; var Position: Integer);
+    procedure Assign(Source: TPersistent); override;
   public
     property Owner: TControl read FOwner;
     property Kind: TAnchorKind read FKind;
@@ -870,6 +871,7 @@ type
     FWindowProc: TWndMethod;
     procedure DoActionChange(Sender: TObject);
     function GetAnchorSide(Kind: TAnchorKind): TAnchorSide;
+    function GetAnchorSideIndex(Index: integer): TAnchorSide;
     function GetBoundsRect: TRect;
     function GetClientHeight: Integer;
     function GetClientWidth: Integer;
@@ -896,6 +898,7 @@ type
     procedure DoMouseDown(var Message: TLMMouse; Button: TMouseButton;
                           Shift:TShiftState);
     procedure DoMouseUp(var Message: TLMMouse; Button: TMouseButton);
+    procedure SetAnchorSideIndex(Index: integer; const AValue: TAnchorSide);
     procedure SetBorderSpacing(const AValue: TControlBorderSpacing);
     procedure SetBoundsRect(const ARect: TRect);
     procedure SetBoundsRectForNewParent(const AValue: TRect);
@@ -1216,6 +1219,10 @@ type
     property UndockHeight: Integer read GetUndockHeight write FUndockHeight;
     property UndockWidth: Integer read GetUndockWidth write FUndockWidth;
   published
+    property AnchorSideLeft: TAnchorSide index 0 read GetAnchorSideIndex write SetAnchorSideIndex;
+    property AnchorSideTop: TAnchorSide index 1 read GetAnchorSideIndex write SetAnchorSideIndex;
+    property AnchorSideRight: TAnchorSide index 2 read GetAnchorSideIndex write SetAnchorSideIndex;
+    property AnchorSideBottom: TAnchorSide index 3 read GetAnchorSideIndex write SetAnchorSideIndex;
     property Cursor: TCursor read FCursor write SetCursor default crDefault;
     property Left: Integer read FLeft write SetLeft;
     property Height: Integer read FHeight write SetHeight;
@@ -1393,6 +1400,8 @@ type
     wcfCreatingChildHandles // Set while constructing the handles of the childs
     );
   TWinControlFlags = set of TWinControlFlag;
+
+  { TWinControl }
 
   TWinControl = class(TControl)
   private
@@ -1666,6 +1675,7 @@ type
     Function CanFocus: Boolean;
     function GetControlIndex(AControl: TControl): integer;
     procedure SetControlIndex(AControl: TControl; NewIndex: integer);
+    function ControlByName(const ControlName: string): TControl;
     Function Focused: Boolean; override;
     procedure SelectNext(CurControl: TWinControl;
                          GoForward, CheckTabStop: Boolean);
@@ -2772,6 +2782,18 @@ begin
   end;
 end;
 
+procedure TAnchorSide.Assign(Source: TPersistent);
+var
+  Src: TAnchorSide;
+begin
+  if Source is TAnchorSide then begin
+    Src:=TAnchorSide(Source);
+    Side:=Src.Side;
+    Control:=Src.Control;
+  end else
+    inherited Assign(Source);
+end;
+
 {$IFNDEF VER1_0}
 { TControlPropertyStorage }
 
@@ -2834,6 +2856,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.271  2005/01/21 10:34:56  mattias
+  implemented streaming of anchorsides
+
   Revision 1.270  2005/01/20 20:51:06  mattias
   implementing anchor editor, setting sibling and reference sides
 

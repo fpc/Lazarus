@@ -977,8 +977,10 @@ begin
   // set vmtTypeInfo
   TypeDataSize:=SizeOf(TTypeData)+2; // TTypeData + one word for new prop count
   TypeInfoSize:=SizeOf(TTypeKind)+1+length(NewClassName)+TypeDataSize;
+  {$warnings off}
   if SizeOf(TTypeKind)<>1 then
     raise Exception.Create('CreateNewClass SizeOf(TTypeInfo^.Kind)<>1');
+  {$warnings on}
   GetMem(NewTypeInfo,TypeInfoSize);
   FillChar(NewTypeInfo^,TypeInfoSize,0);
   Pointer(Pointer(NewVMT+vmtTypeInfo)^):=NewTypeInfo;

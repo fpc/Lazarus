@@ -1391,8 +1391,12 @@ procedure CreateComponentEvent(AComponent: TComponent; const EventName: string);
 // XXX
 // This class is a workaround for the broken typeinfo function
 type
+
+  { TDummyClassForPropTypes }
+
   TDummyClassForPropTypes = class(TPersistent)
   private
+    FAnchorSide: TAnchorSide;
     FDateTime: TDateTime;
     FList:PPropList;
     FCount:integer;
@@ -1421,6 +1425,7 @@ type
     property ModalResult:TModalResult read FModalResult;
     property ShortCut: TShortCut read FShortCut;
     property DateTime: TDateTime read FDateTime;
+    property AnchorSide: TAnchorSide read FAnchorSide;
   end;
 
 
@@ -6185,6 +6190,14 @@ begin
     TFileDialog, 'Filter', TFileDlgFilterProperty);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('AnsiString'),
     TFileNameEdit, 'Filter', TFileDlgFilterProperty);
+  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TAnchorSide'),
+    nil, 'AnchorSideLeft', THiddenPropertyEditor);
+  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TAnchorSide'),
+    nil, 'AnchorSideTop', THiddenPropertyEditor);
+  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TAnchorSide'),
+    nil, 'AnchorSideRight', THiddenPropertyEditor);
+  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TAnchorSide'),
+    nil, 'AnchorSideBottom', THiddenPropertyEditor);
   {$IFDEF EnableSessionProps}
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('AnsiString'),
     TCustomPropertyStorage, 'Filename', TFileNamePropertyEditor);
