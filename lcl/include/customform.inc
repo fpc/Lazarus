@@ -56,6 +56,9 @@ begin
     end;
 end;
 
+{------------------------------------------------------------------------------
+  procedure TCustomForm.CloseModal;
+ ------------------------------------------------------------------------------}
 procedure TCustomForm.CloseModal;
 var
   CloseAction: TCloseAction;
@@ -969,7 +972,7 @@ begin
       if not MDIChildren[i].CloseQuery then begin
         Result:= false;
 	Exit;
-      end;	
+       end;
     end;}
   end;    
   Result:= true;
@@ -981,7 +984,7 @@ end;
 {------------------------------------------------------------------------------}
 procedure TCustomForm.WMCloseQuery(var Message : TLMessage);
 begin
-  if CloseQuery then Close;
+  Close;
   { Always return 0, because we destroy the window ourselves }
   Message.Result:= 0;
 end;
@@ -1260,6 +1263,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.81  2002/12/28 21:06:37  mattias
+  fixed TCustomForm.WMCloseQuery
+
   Revision 1.80  2002/12/28 12:42:38  mattias
   focus fixes, reduced lpi size
 

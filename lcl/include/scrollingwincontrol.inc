@@ -236,9 +236,8 @@ begin
 
   SetPosition(ScrollInfo.nTrackPos);
 
-  //I am not positive that this is right
-  //but it apeared to be when I compared
-  //results to Delphi 4
+  // I am not positive that this is right, but it apeared to be when I compared
+  // results to Delphi 4
   if Smooth then
     Increment := Page div 10;
 end;
@@ -253,6 +252,7 @@ begin
   with Message do
   begin
     NewPos := FPosition;
+writeln('TControlScrollBar.ScrollHandler A ',FControl.Name,':',FControl.ClassName,' FPosition=',FPosition);
     case ScrollCode of
       SB_LINEUP:
         Dec(NewPos, FIncrement);
@@ -271,6 +271,7 @@ begin
     end;
     if NewPos < 0 then NewPos := 0;
     if NewPos > Range then NewPos := Range;
+writeln('TControlScrollBar.ScrollHandler B ',FControl.Name,':',FControl.ClassName,' NewPos=',NewPos);
     SetPosition(NewPos);
   end;
 end;
