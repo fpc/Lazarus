@@ -825,8 +825,9 @@ begin
     and (CaptureControl.Parent = Self) 
     then Control := CaptureControl;
   end
-  else Control := ControlAtPos(SmallPointtoPoint(TheMessage.Pos),
-                               False,True,False);
+  else
+    Control := ControlAtPos(SmallPointToPoint(TheMessage.Pos),
+                            False,True,False);
 
   Result := False;
   if Control <> nil then
@@ -2459,6 +2460,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.93  2002/10/09 10:22:54  lazarus
+  MG: fixed client origin coordinates
+
   Revision 1.92  2002/10/08 22:32:27  lazarus
   MG: fixed cool little bug (menu double attaching bug)
 
