@@ -30,7 +30,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, CompilerOptions, Project, Process,
-  IDEProcs, FileCtrl;
+  IDEProcs, FileCtrl, LazConf;
 
 type
   TOnOutputString = procedure(const Msg, Directory: String) of Object;
@@ -743,14 +743,16 @@ const
   LeavingDirPattern = ']: Leaving directory `';
   MakeMsgPattern = ']: *** [';
 var
+  MakeBeginPattern: string;
   i: integer;
   BracketEnd: Integer;
   MsgStartPos: Integer;
   MakeMsg: String;
 begin
   Result:=false;
-  i:=length('make[');
-  if copy(s,1,i)<>'make[' then exit;
+  MakeBeginPattern:= 'make' + GetDefaultExecutableExt + '[';
+  i:=length(MakeBeginPattern);
+  if copy(s,1,i)<>MakeBeginPattern then exit;
   Result:=true;
   
   inc(i);

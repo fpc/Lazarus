@@ -348,7 +348,7 @@ begin
       Tool.Title:=CurItem.Description;
       if (CurItem=Options.ItemIDE) and (blfWithoutLinkingIDE in Flags) then
         Tool.Title:=lisCompileIDEWithoutLinking;
-      Tool.WorkingDirectory:='$(LazarusDir)/'+CurItem.Directory;
+      Tool.WorkingDirectory:='$(LazarusDir)'+PathDelim+CurItem.Directory;
       Tool.CmdLineParams:=CurItem.Commands[CurMakeMode];
       // append extra options
       ExtraOptions:='';
