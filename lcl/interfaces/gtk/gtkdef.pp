@@ -109,6 +109,7 @@ type
     Style: Integer;                   
     ExStyle: Integer;
     UserData: Integer;
+    EventMask: TGdkEventMask;
   end;
   
 // clipboard
@@ -141,6 +142,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.9  2002/06/09 14:00:41  lazarus
+  MG: fixed persistent caret and implemented Form.BorderStyle=bsNone
+
   Revision 1.8  2002/06/04 15:17:23  lazarus
   MG: improved TFont for XLFD font names
 

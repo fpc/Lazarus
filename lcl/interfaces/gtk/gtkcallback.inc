@@ -82,13 +82,26 @@ end;
   is used for the second part of the initialization of a widget.
 -------------------------------------------------------------------------------}
 function GTKRealizeCB(Widget: PGtkWidget; Data: Pointer): GBoolean; cdecl;
+var
+  WinWidgetInfo: PWinWidgetInfo;
 begin
   EventTrace('realize', nil);
   // set extra signal masks after the widget window is created
   // define extra events we're interrested in
+  WinWidgetInfo:=GetWidgetInfo(Widget,true);
   gdk_window_set_events(Widget^.Window,
-                  gdk_window_get_events(Widget^.Window) or TGdkEventMask(Data));
-                  
+             gdk_window_get_events(Widget^.Window) or WinWidgetInfo^.EventMask);
+
+  if Data<>nil then begin
+    if TObject(Data) is TWinControl then begin
+      if TWinControl(Data) is TCustomForm then begin
+        if TCustomForm(Data).BorderStyle=bsNone then begin
+          gdk_window_set_decorations(Widget^.Window,0);
+        end;
+      end;
+    end;
+  end;
+  
   Result := True;
 end;
 
@@ -1910,6 +1923,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.83  2002/06/09 14:00:41  lazarus
+  MG: fixed persistent caret and implemented Form.BorderStyle=bsNone
+
   Revision 1.82  2002/06/09 07:08:43  lazarus
   MG: fixed window jumping
 

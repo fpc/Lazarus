@@ -5082,7 +5082,7 @@ begin
   SaveCurCodeTemplate;
   
   // save all values
-  SynOptions:=PreviewEdits[1].Options;
+  SynOptions:=PreviewEdits[1].Options-[eoNoSelection,eoNoCaret];
   if BracketHighlightCheckBox.Checked then
     Include(SynOptions,eoBracketHighlight)
   else

@@ -1811,7 +1811,7 @@ begin
       BeginDrag(false);
     end;
   end else if (ssLeft in Shift) and MouseCapture then begin
-//writeln('AAA TCustomSynEdit.MouseMove CAPTURE Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y,' Client=',ClientWidth-ScrollBarWidth,',',ClientHeight-ScrollBarWidth);
+//writeln(' TCustomSynEdit.MouseMove CAPTURE Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y,' Client=',ClientWidth-ScrollBarWidth,',',ClientHeight-ScrollBarWidth);
     if (X >= fGutterWidth)
       and (X < ClientWidth{$IFDEF SYN_LAZARUS}-ScrollBarWidth{$ENDIF})
       and (Y >= 0) 
@@ -3601,16 +3601,17 @@ end;
 
 procedure TCustomSynEdit.ShowCaret;
 begin
+//writeln(' [TCustomSynEdit.ShowCaret] ShowCaret ',Name,' ',sfCaretVisible in fStateFlags);
   if not (eoNoCaret in Options) and not (sfCaretVisible in fStateFlags) then
   begin
-    if {$IFDEF SYN_LAZARUS}LCLLinux{$ELSE}Windows{$ENDIF}.ShowCaret(Handle) then
-    begin
-//writeln('[TCustomSynEdit.ShowCaret] A ',Name);
-      Include(fStateFlags, sfCaretVisible)
-    end;
     {$IFDEF SYN_LAZARUS}
     SetCaretRespondToFocus(Handle,not (eoPersistentCaret in fOptions));
     {$ENDIF}
+    if {$IFDEF SYN_LAZARUS}LCLLinux{$ELSE}Windows{$ENDIF}.ShowCaret(Handle) then
+    begin
+//writeln('[TCustomSynEdit.ShowCaret] A ',Name);
+      Include(fStateFlags, sfCaretVisible);
+    end;
   end;
 end;
 
@@ -3637,10 +3638,10 @@ begin
       {$ELSE}
       SetCaretPos(CX, CY);
       {$ENDIF}
-//writeln('[TCustomSynEdit.UpdateCaret] ShowCaret ',Name);
+//writeln(' [TCustomSynEdit.UpdateCaret] ShowCaret ',Name);
       ShowCaret;
     end else begin
-//writeln('[TCustomSynEdit.UpdateCaret] HideCaret ',Name);
+//writeln(' [TCustomSynEdit.UpdateCaret] HideCaret ',Name);
       HideCaret;
       {$IFDEF SYN_LAZARUS}
       SetCaretPosEx(Handle,CX, CY);

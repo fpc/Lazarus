@@ -469,7 +469,11 @@ begin
   Canvas.Draw(1, 1, bitmap);
   // draw a rectangle around the window
   {$ENDIF}
-  Canvas.Pen.Color := ClBlack;
+  {$IFDEF SYN_LAZARUS}
+  Canvas.Pen.Color := TextColor;
+  {$ELSE}
+  Canvas.Pen.Color := clBlack;
+  {$ENDIF}
   Canvas.Moveto(0, 0);
   Canvas.LineTo(Width - 1, 0);
   Canvas.LineTo(Width - 1, Height - 1);
