@@ -1287,7 +1287,6 @@ begin
   Show;
   BringToFront;
   //DebugLn('TCustomForm.ShowOnTop ',Name,':',ClassName,' ',Visible,' ',HandleAllocated,' ',csDesigning in ComponentState);
-  LCLIntf.ShowWindow(Handle,SW_SHOWNORMAL);
 end;
 
 {------------------------------------------------------------------------------
@@ -1641,6 +1640,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.144  2004/07/07 15:31:47  micha
+  fix code editor restoring when maximized upon ctrl+shift+up
+
   Revision 1.143  2004/07/04 20:07:08  micha
   form notifies control of new role
 
