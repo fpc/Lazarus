@@ -98,7 +98,7 @@ end;
 Begin
   msg.X := x;
   msg.Y := Y;
-  CNSendMessage(LM_GetPixel, Self, @msg);
+  SendIntfMessage(LM_GetPixel, Self, @msg);
   Result := msg.PixColor;
 end;
 
@@ -112,7 +112,7 @@ Begin
   Msg.X := X;
   msg.Y := Y;
   MSg.PixColor := ColorToRGB(Value);
-  CNSendMessage(LM_SetPixel, Self, @msg);
+  SendIntfMessage(LM_SetPixel, Self, @msg);
 end;
 
 {------------------------------------------------------------------------------
@@ -199,7 +199,7 @@ procedure TCanvas.SetAutoReDraw(Value : Boolean);
 begin
   FAutoRedraw := Value;
   If FAutoReDraw then
-    CNSendMessage(LM_ReDraw, Self, nil);
+    SendIntfMessage(LM_ReDraw, Self, nil);
 end;
 
 {------------------------------------------------------------------------------
@@ -1096,6 +1096,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.32  2002/10/25 10:42:08  lazarus
+  MG: broke minor circles
+
   Revision 1.31  2002/10/14 14:29:50  lazarus
   AJ: Improvements to TUpDown; Added TStaticText & GNOME DrawText
 
