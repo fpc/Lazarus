@@ -796,7 +796,6 @@ procedure TApplication.CreateForm(InstanceClass: TComponentClass;
   var Reference);
 var
   Instance: TComponent;
-var
   ok: boolean;
 begin
   // Allocate the form instance, without calling the constructor
@@ -838,6 +837,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.37  2002/11/15 23:40:39  mattias
+  added combobox createhandle old list assign
+
   Revision 1.36  2002/11/15 22:43:28  mattias
   added Delphis trick to set the form reference before the constructor is called
 
