@@ -1360,7 +1360,7 @@ end;
 
 procedure FinalizeCups;
 begin
-  writeln('* FinalizeCups');
+  //debugln('* FinalizeCups');
   if RefCount>0 then
     Dec(RefCount);
     

@@ -788,15 +788,19 @@ var
   ok: Boolean;
   CurParams: TAddToPkgResult;
 begin
-  ok:=true;
+  ok:=false;
   try
     LastParams:=nil;
     for i:=0 to FilesListView.Items.Count-1 do begin
       Filename:=FilesListView.Items[i].Caption;
       LazPackage.LongenFilename(Filename);
+
+      // skip directories
+      if DirPathExists(Filename) then continue;
+      
       NewFileType:=FileNameToPkgFileType(Filename);
 
-      if not FileExists(Filename) then begin
+      if (not FileExists(Filename)) then begin
         MessageDlg(lisFileNotFound,
           Format(lisPkgMangFileNotFound, ['"', Filename, '"']),
           mtError,[mbCancel],0);
@@ -837,7 +841,7 @@ begin
         end;
 
         // check unitname
-        if AnsiCompareText(CurParams.UnitName,
+        if CompareText(CurParams.UnitName,
           ExtractFileNameOnly(CurParams.UnitFilename))<>0
         then begin
           MessageDlg(lisA2PInvalidUnitName,
@@ -848,8 +852,12 @@ begin
       end;
       LastParams:=CurParams;
     end;
+    ok:=LastParams<>nil;
   finally
     if not ok then Params.Clear;
+  end;
+  if LastParams=nil then begin
+    exit;
   end;
   ModalResult:=mrOk;
 end;

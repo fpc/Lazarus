@@ -95,11 +95,11 @@ const
   FPCOperatingSystemAlternative2Names: array[1..1] of shortstring =(
       'bsd' // see GetDefaultSrcOS2ForTargetOS
     );
-  FPCProcessorNames: array[1..4] of shortstring =(
-      'i386', 'powerpc', 'm68k', 'x86_64'
+  FPCProcessorNames: array[1..5] of shortstring =(
+      'i386', 'powerpc', 'm68k', 'x86_64', 'sparc'
     );
 
-  Lazarus_CPU_OS_Widget_Combinations: array[1..21] of string = (
+  Lazarus_CPU_OS_Widget_Combinations: array[1..25] of string = (
     'i386-linux-gtk',
     'i386-linux-gnome',
     'i386-linux-gtk2',
@@ -120,7 +120,11 @@ const
     'i386-win32-gtk',
     'powerpc-darwin-gtk',
     'powerpc-darwin-gtk2',
-    'powerpc-darwin-carbon'
+    'powerpc-darwin-carbon',
+    'powerpc-linux-gtk',
+    'powerpc-linux-gtk2',
+    'sparc-linux-gtk',
+    'sparc-linux-gtk2'
     );
 
 type

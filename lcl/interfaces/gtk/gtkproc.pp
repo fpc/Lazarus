@@ -1071,7 +1071,7 @@ var
   XDisplay: PDisplay;
   XScreen: PScreen;
   XWindow: TWindow;
-  AtomType: TAtom;
+  AtomType: x.TAtom;
   Format: gint;
   nitems: gulong;
   bytes_after: gulong;
@@ -1101,13 +1101,12 @@ var
   xdisplay: PDisplay;
   xwindow: TWindow;
 
- atomtype: TAtom;
- format: gint;
- nitems: gulong;
- bytes_after: gulong;
- current_desktop: pguint;
+  atomtype: x.TAtom;
+  format: gint;
+  nitems: gulong;
+  bytes_after: gulong;
+  current_desktop: pguint;
 begin
-
   Result := -1;
   XWindow := GDK_WINDOW_XWINDOW (Window);
   XDisplay := GDK_WINDOW_XDISPLAY (Window);

@@ -61,7 +61,8 @@ type
     cpsDefaultPaperNameValid,
     cpsOrientationValid,
     cpsPaperNameValid,
-    cpsCopiesValid
+    cpsCopiesValid,
+    cpsPaperRectValid
     );
   TCUPSPrinterStates = set of TCUPSPrinterState;
 
@@ -79,6 +80,10 @@ type
      fCachedOrientation: TPrinterOrientation;
      fCachedPaperName: string;
      fCachedCopies: integer;
+     fCachePaperRectName: string;
+     fCachePaperRect: TPaperRect;
+     fCachePaperRectResult: Integer;
+     FBeginDocCount: Integer;
 
      function GetCupsRequest : Pipp_t;
      procedure DoCupsConnect;
@@ -102,7 +107,8 @@ type
      function DoGetDefaultPaperName: string; override;
      function DoGetPaperName: string; override;
      procedure DoSetPaperName(aName : string); override;
-     function DoGetPaperRect(aName : string; var aPaperRc: TPaperRect): Integer; override;
+     function DoGetPaperRect(aName : string;
+                             var aPaperRc: TPaperRect): Integer; override;
      function DoGetPrinterState: TPrinterState; override;
      
      function GetPrinterType : TPrinterType; override;

@@ -422,7 +422,10 @@ var
 var
   NewOutputFileName: String;
 begin
+  if FBeginDocCount>0 then
+    raise Exception.Create('TCUPSPrinter.DoBeginDoc already called. Maybe you forgot an EndDoc?');
   inherited DoBeginDoc;
+  inc(FBeginDocCount);
 
   if (not TryTemporaryPath('~/tmp/'))
   and (not TryTemporaryPath('/tmp/'))
@@ -440,10 +443,14 @@ end;
 procedure TCUPSPrinter.DoEndDoc(aAborded: Boolean);
 begin
   inherited DoEndDoc(aAborded);
+  dec(FBeginDocCount);
+  Exclude(FStates,cpsPaperRectValid);
+
+  //exit;
   
   if not aAborded then
     PrintFile(TPostscriptPrinterCanvas(Canvas).OutPutFileName);
-    
+
   DeleteFile(TPostscriptPrinterCanvas(Canvas).OutPutFileName);
   TPostscriptPrinterCanvas(Canvas).OutPutFileName:='';
 end;
@@ -575,7 +582,9 @@ begin
     fCachedCopies:=GetAttributeInteger('copies-default',fCachedCopies);
     //Get Copies in options or return default value
     fCachedCopies:=StrToIntdef(cupsGetOption('copies'),fCachedCopies);
-    //TODO Include(FStates,cpsCopiesValid);
+    {$IFDEF UseCache}
+    Include(FStates,cpsCopiesValid);
+    {$ENDIF}
   end;
   Result:=fCachedCopies;
 end;
@@ -583,13 +592,16 @@ end;
 procedure TCUPSPrinter.DoSetCopies(aValue: Integer);
 var i : Integer;
 begin
-  //if aValue=DoGetCopies then exit;
+  {$IFDEF UseCache}
+  if aValue=DoGetCopies then exit;
+  Exclude(FStates,cpsCopiesValid);
+  {$ENDIF}
   inherited DoSetCopies(aValue);
 
   if Printers.Count>0 then
   begin
     if not Assigned(fcupsOptions) then
-         SetOptionsOfPrinter;
+      SetOptionsOfPrinter;
     i:=aValue;
     if i<1 then i:=1;
     cupsAddOption('copies',IntToStr(i));
@@ -611,7 +623,9 @@ begin
       //Calc result
       fCachedOrientation:=TPrinterOrientation(i-3);
     end;
-    //TODO Include(FStates,cpsOrientationValid);
+    {$IFDEF UseCache}
+    Include(FStates,cpsOrientationValid);
+    {$ENDIF}
   end;
   Result:=fCachedOrientation;
 end;
@@ -619,7 +633,10 @@ end;
 procedure TCUPSPrinter.DoSetOrientation(aValue: TPrinterOrientation);
 var St : String;
 begin
-  //if aValue=DoGetOrientation then exit;
+  {$IFDEF UseCache}
+  if aValue=DoGetOrientation then exit;
+  Exclude(FStates,cpsOrientationValid);
+  {$ENDIF}
   inherited DoSetOrientation(aValue);
 
   if Printers.Count>0 then
@@ -638,7 +655,9 @@ begin
     fCachedGetDefaultPaperName:=inherited DoGetDefaultPaperName;
     fCachedGetDefaultPaperName:=
                  GetAttributeString('media-default',fCachedGetDefaultPaperName);
-    //TODO Include(FStates,cpsDefaultPaperNameValid);
+    {$IFDEF UseCache}
+    Include(FStates,cpsDefaultPaperNameValid);
+    {$ENDIF}
   end;
   Result:=fCachedGetDefaultPaperName;
 end;
@@ -647,13 +666,19 @@ function TCUPSPrinter.DoGetPaperName: string;
 begin
   if not (cpsPaperNameValid in FStates) then begin
     fCachedPaperName:=cupsGetOption('PageSize');
-    //TODO Include(FStates,cpsPaperNameValid);
+    {$IFDEF UseCache}
+    Include(FStates,cpsPaperNameValid);
+    {$ENDIF}
   end;
   Result:=fCachedPaperName;
 end;
 
 procedure TCUPSPrinter.DoSetPaperName(aName: string);
 begin
+  {$IFDEF UseCache}
+  if aName=DoGetPaperName then exit;
+  Exclude(FStates,cpsPaperNameValid);
+  {$ENDIF}
   inherited DoSetPaperName(aName);
   cupsAddOption('PageSize',aName)
 end;
@@ -664,31 +689,53 @@ end;
 //          1 aPaperRc.WorkRect is really the work rect
 function TCUPSPrinter.DoGetPaperRect(aName: string;
   var aPaperRc: TPaperRect): Integer;
-var P : Pppd_size_t;
-begin
-  Result:=inherited DoGetPaperRect(aName, aPaperRc);
-
-  FillChar(aPaperRc,SizeOf(aPaperRc),0);
-  if not CUPSLibInstalled then Exit;
-
-  if Assigned(fcupsPPD) then
+  
+  procedure SortInts(var a, b: Integer);
+  var
+    h: LongInt;
   begin
-    P:=nil;
-    P:=ppdPageSize(fcupsPPD,PChar(aName));
-    if Assigned(P) then
-    begin
-      Result:=0; //CUPS return margins
-      
-      aPaperRc. PhysicalRect.Right:=Trunc(P^.Width);
-      aPaperRc.PhysicalRect.Bottom:=Trunc(P^.Length);
-
-      //Margings
-      aPaperRc.WorkRect.Left:=Trunc(P^.Left);
-      aPaperRc.WorkRect.Right:=Trunc(P^.Right);
-      aPaperRc.WorkRect.Top:=Trunc(P^.Top);
-      aPaperRc.WorkRect.Bottom:=Trunc(P^.Bottom);
+    if b<a then begin
+      h:=a;
+      a:=b;
+      b:=h;
     end;
   end;
+  
+var P : Pppd_size_t;
+begin
+  if (not (cpsPaperRectValid in FStates))
+  or (fCachePaperRectName<>aName) then begin
+    fCachePaperRectName:=aName;
+    FillChar(fCachePaperRect,SizeOf(fCachePaperRect),0);
+    fCachePaperRectResult:=inherited DoGetPaperRect(aName, aPaperRc);
+    {$IFDEF UseCache}
+    Include(FStates,cpsPaperRectValid);
+    {$ENDIF}
+
+    if CUPSLibInstalled and Assigned(fcupsPPD) then
+    begin
+      P:=nil;
+      P:=ppdPageSize(fcupsPPD,PChar(aName));
+      if Assigned(P) then
+      begin
+        fCachePaperRectResult:=1; //CUPS return margins
+
+        fCachePaperRect.PhysicalRect.Right:=Trunc(P^.Width);
+        fCachePaperRect.PhysicalRect.Bottom:=Trunc(P^.Length);
+
+        //Margings
+        fCachePaperRect.WorkRect.Left:=Trunc(P^.Left);
+        fCachePaperRect.WorkRect.Right:=Trunc(P^.Right);
+        fCachePaperRect.WorkRect.Top:=Trunc(P^.Top);
+        fCachePaperRect.WorkRect.Bottom:=Trunc(P^.Bottom);
+        SortInts(fCachePaperRect.WorkRect.Top,fCachePaperRect.WorkRect.Bottom);
+        SortInts(fCachePaperRect.WorkRect.Left,fCachePaperRect.WorkRect.Right);
+        //debugln('TCUPSPrinter.DoGetPaperRect PhysicalRect=',dbgs(fCachePaperRect.PhysicalRect),' WorkRect=',dbgs(fCachePaperRect.WorkRect));
+      end;
+    end;
+  end;
+  Result:=fCachePaperRectResult;
+  aPaperRc:=fCachePaperRect;
 end;
 
 
