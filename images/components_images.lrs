@@ -2673,20 +2673,19 @@ LazarusResources.Add('tupdown','XPM',[
   +'",'#10'"  PzMwwwwwwwwwwwMiU  ",'#10'"                     "};'
 ]);
 LazarusResources.Add('txmlpropstorage','XPM',[
-  '/* XPM */'#10'static char *txmlstorage[] = {'#10'/* columns rows colors char'
-  +'s-per-pixel */'#10'"24 24 8 1",'#10'"  c black",'#10'". c navy",'#10'"X c c'
-  +'yan",'#10'"o c red",'#10'"O c transparent",'#10'"+ c #808080",'#10'"@ c #C0'
-  +'C0C0",'#10'"# c gray100",'#10'/* pixels */'#10'"OOOOOOOOOOOOOOOOOOOOOOOO",'
-  +#10'"OOOOOOOOOOOOOOOOOOOOOOOO",'#10'"O+++++++++++++++++++++ O",'#10'"O+@@@@@'
-  +'@@@@@@@@@@@@@@@ O",'#10'"O+@............# # # @ O",'#10'"O+@............   '
-  +'   @ O",'#10'"O+@@@@@@@@@@@@@@@@@@@@ O",'#10'"O+@##################@ O",'#10
-  +'"O+@#######+  +#######@ O",'#10'"O+@###  #+ ## +#  ###@ O",'#10'"O+@##     '
-  +'         ##@ O",'#10'"O+@## ###      ### ##@ O",'#10'"O+@## ##  ++++  ## ##'
-  +'@ O",'#10'"O+@## ++ +X#+++ ++ ##@ O",'#10'"O+@## ++ +#++++ ++ ##@ O",'#10'"'
-  +'O+@## ++ ++++++ ++ ##@ O",'#10'"O+@ooo+ooo++ooo ooo##@ O",'#10'"O+@#o+  oo '
-  +'  o   o+##@ O",'#10'"O+@#o###oo+  o###o###@ O",'#10'"O+@#o###o#o##o###o###@'
-  +' O",'#10'"O+@@o@@@o@@o@o@@@o@@@@ O",'#10'"O   o   o   oo   o     O",'#10'"O'
-  +'OOOoOOOoOOOooOOOoOOOOOO",'#10'"OOOoooOoooOOoooOoooOOOOO"'#10'};'#10
+  '/* XPM */'#10'static char *txmlstorage[]={'#10'"24 24 8 1",'#10'". c None",'
+  +#10'"d c #000000",'#10'"b c #000080",'#10'"f c #00ff00",'#10'"e c #00ffff",'
+  +#10'"# c #808080",'#10'"a c #c0c0c0",'#10'"c c #ffffff",'#10'"..############'
+  +'#########.",'#10'"..#aaaaaaaaaaaaaaaaaaaa.",'#10'"..#abbbbbbbbbbbbcdcdcda."'
+  +','#10'"..#abbbbbbbbbbbbdddddda.",'#10'"..#aaaaaaaaaaaaaaaaaaaa.",'#10'"..#a'
+  +'cccccccccccccccccca.",'#10'"..#accccccc#dd#ccccccca.",'#10'"..#acccddc#dccd'
+  +'#cddccca.",'#10'"..#accddddddddddddddcca.",'#10'"..#accdcccddddddcccdcca.",'
+  +#10'"..#accdccdd####ddccdcca.",'#10'"..#accd##d#ec###d##dcca.",'#10'"..#accd'
+  +'##d#c####d##dcca.",'#10'"..#accd##d######d##dcca.",'#10'"..#accd##dd####dd#'
+  +'#dcca.",'#10'"..fffc#dfffdfdddddf#fca.",'#10'"..#ffcccffc#fffcfffcfca.",'#10
+  +'"..#afcccfcccfcfffcfcfca.",'#10'"..#aafafaaaafaafaafafaa.",'#10'"......f...'
+  +'..f.....f.f...",'#10'".....f.f....f.....f.f...",'#10'"....f...f...f.....f.f'
+  +'...",'#10'"...ff...ff..f.....f.f...",'#10'"..fff...fff.f.....f.ffff"};'#10
 ]);
 LazarusResources.Add('unregisteredcomponent','XPM',[
   '/* XPM */'#10'static char * unregisteredcomponent_xpm[] = {'#10'"13 17 18 1"'
