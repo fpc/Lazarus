@@ -168,7 +168,8 @@ type
     procedure SetColor_NoPalette_RGBA_NoAlpha(x, y: integer; const Value: TFPColor);
     procedure SetColor_NoPalette_Gray(x, y: integer; const Value: TFPColor);
     procedure SetColor_NULL(x, y: integer; const Value: TFPColor);
-    procedure SetColor_BPP32_R8G8B8_A1_BIO_LSB_TTB(x, y: integer; const Value: TFPColor);
+    procedure SetColor_BPP32_R8G8B8_A1_BIO_TTB(x, y: integer; const Value: TFPColor);
+    procedure SetColor_BPP32_R8G8B8_A1_BIO_TTB_RBO(x, y: integer; const Value: TFPColor);
   public
     constructor Create(AWidth, AHeight: integer); override;
     destructor Destroy; override;
@@ -985,13 +986,16 @@ procedure TLazIntfImage.ChooseGetSetColorFunctions;
           OnSetInternalColor:=@SetColor_NoPalette_RGBA_Alpha_Sep_Mask;
           with FDataDescription do begin
             if (BitsPerPixel=32) and (Depth=24) and (BitOrder=riboBitsInOrder)
-            and (ByteOrder=riboLSBFirst) and (LineOrder=riloTopToBottom)
+            and (ByteOrder=DefaultByteOrder) and (LineOrder=riloTopToBottom)
             and (LineEnd=rileDWordBoundary)
             and (RedPrec=8) and (RedShift=16)
             and (GreenPrec=8) and (GreenShift=8)
             and (BluePrec=8) and (BlueShift=0)
             then begin
-              OnSetInternalColor:=@SetColor_BPP32_R8G8B8_A1_BIO_LSB_TTB;
+              if ByteOrder=DefaultByteOrder then
+                OnSetInternalColor:=@SetColor_BPP32_R8G8B8_A1_BIO_TTB
+              else
+                OnSetInternalColor:=@SetColor_BPP32_R8G8B8_A1_BIO_TTB_RBO;
             end;
           end;
         end else begin
@@ -1357,10 +1361,11 @@ begin
   // NULL, not implemented
 end;
 
-procedure TLazIntfImage.SetColor_BPP32_R8G8B8_A1_BIO_LSB_TTB(x, y: integer;
+procedure TLazIntfImage.SetColor_BPP32_R8G8B8_A1_BIO_TTB(x, y: integer;
   const Value: TFPColor);
 // Format=ricfRGBA HasPalette=false Depth=24 PaletteColorCount=0
-// BitOrder=riboBitsInOrder ByteOrder=riboLSBFirst LineOrder=riloTopToBottom
+// BitOrder=riboBitsInOrder ByteOrder=DefaultByteOrder
+// LineOrder=riloTopToBottom
 // BitsPerPixel=32 LineEnd=rileDWordBoundary
 // RedPrec=8 RedShift=16 GreenPrec=8 GreenShift=8 BluePrec=8 BlueShift=0
 // AlphaSeparate=true
@@ -1373,6 +1378,32 @@ begin
   Pixel:=((Value.Red shr 8) shl 16)
          +((Value.Green shr 8) shl 8)
          +(Value.Blue shr 8);
+  Position^:=Pixel;
+
+  GetXYMaskPostion(x,y,MaskPosition);
+  FAlphaWriteRawImageBits(FMaskData,MaskPosition,
+                FDataDescription.AlphaPrec,
+                FDataDescription.AlphaShift,
+                Value.Alpha);
+end;
+
+procedure TLazIntfImage.SetColor_BPP32_R8G8B8_A1_BIO_TTB_RBO(x, y: integer;
+  const Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=24 PaletteColorCount=0
+// BitOrder=riboBitsInOrder ByteOrder=not DefaultByteOrder
+// LineOrder=riloTopToBottom
+// BitsPerPixel=32 LineEnd=rileDWordBoundary
+// RedPrec=8 RedShift=16 GreenPrec=8 GreenShift=8 BluePrec=8 BlueShift=0
+// AlphaSeparate=true
+var
+  MaskPosition: TRawImagePosition;
+  Position: PCardinal;
+  Pixel: Cardinal;
+begin
+  Position:=PCardinal(FPixelData+FLineStarts[y].Byte+(x shl 2));
+  Pixel:=(Value.Red shr 8)
+         +((Value.Green shr 8) shl 8)
+         +((Value.Blue shr 8) shl 16);
   Position^:=Pixel;
 
   GetXYMaskPostion(x,y,MaskPosition);

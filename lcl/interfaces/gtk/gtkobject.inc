@@ -2161,7 +2161,7 @@ begin
   // LineEnd
   case Desc^.Depth of
   0..8:   Desc^.LineEnd:=rileByteBoundary;
-  9..32:  Desc^.LineEnd:=rileDWordBoundary; //TODO MWE: Isn't there a word boundary (9..16) ?
+  9..32:  Desc^.LineEnd:=rileDWordBoundary; // On X11 i386 lines are never aligned to words, only to dwords
   else    Desc^.LineEnd:=rileQWordBoundary;
   end;
   // Precisions and Shifts
@@ -9239,6 +9239,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.526  2004/08/13 21:46:31  mattias
+  added TLazIntfImage.SetColor_BPP32_R8G8B8_A1_BIO_TTB_RBO
+
   Revision 1.525  2004/08/13 20:40:27  mattias
   fixed DebugLn for VerboseRawImage
 
