@@ -151,7 +151,7 @@ type
   TSynStateFlag = (sfCaretChanged, sfScrollbarChanged, sfLinesChanging,
     sfIgnoreNextChar, sfCaretVisible, sfDblClicked, sfPossibleGutterClick,
     {$IFDEF SYN_LAZARUS}
-    sfTripleClicked, sfQuadClicked,
+    sfTripleClicked, sfQuadClicked, sfPainting,
     {$ENDIF}
     sfWaitForDragging, sfInsideRedo
     );                                           //mh 2000-10-30
@@ -287,6 +287,9 @@ type
     fBlockIndent: integer;
     fCaretX: Integer;
     {$IFDEF SYN_LAZARUS}
+    fBracketHighlightCaret: TPoint;
+    fBracketHighlightPos: TPoint;
+    fBracketHighlightAntiPos: TPoint;
     fCtrlMouseActive: boolean;
     {$ENDIF}
     fLastCaretX: integer;                                                       //mh 2000-10-19
@@ -482,8 +485,13 @@ type
       State: TDragState; var Accept: Boolean); override;
     procedure FindMatchingBracket; virtual;
     {$IFDEF SYN_LAZARUS}
-    function FindMatchingBracket(StartIncludeNeigborChars,
-      MoveCaret, SelectBrackets: boolean): TPoint; virtual;
+    function FindMatchingBracket(StartBracket: TPoint;
+                                 StartIncludeNeighborChars, MoveCaret,
+                                 SelectBrackets, OnlyVisible: boolean
+                                 ): TPoint; virtual;
+    procedure FindMatchingBracketPair(const ACaret: TPoint;
+                                      var StartBracket, EndBracket: TPoint;
+                                      OnlyVisible: boolean);
     {$ENDIF}
     function GetReadOnly: boolean; virtual;
     procedure HideCaret;
@@ -493,6 +501,9 @@ type
     // note: FirstLine and LastLine don't need to be in correct order
     procedure InvalidateGutterLines(FirstLine, LastLine: integer);
     procedure InvalidateLines(FirstLine, LastLine: integer);
+    {$IFDEF SYN_LAZARUS}
+    procedure InvalidateBracketHighlight(OnlyIfCaretMoved: boolean);
+    {$ENDIF}
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
     {$IFDEF SYN_LAZARUS}
@@ -1605,6 +1616,9 @@ procedure TCustomSynEdit.InvalidateGutterLines(FirstLine, LastLine: integer);
 var
   rcInval: TRect;
 begin
+  {$IFDEF SYN_LAZARUS}
+  if sfPainting in fStateFlags then exit;
+  {$ENDIF}
   if Visible and HandleAllocated then
     if (FirstLine = -1) and (LastLine = -1) then begin
       rcInval := Rect(0, 0, fGutterWidth
@@ -1634,6 +1648,9 @@ procedure TCustomSynEdit.InvalidateLines(FirstLine, LastLine: integer);
 var
   rcInval: TRect;
 begin
+  {$IFDEF SYN_LAZARUS}
+  if sfPainting in fStateFlags then exit;
+  {$ENDIF}
   if Visible and HandleAllocated then
     if (FirstLine = -1) and (LastLine = -1) then begin
       rcInval := ClientRect;
@@ -1659,6 +1676,57 @@ begin
       end;
     end;
 end;
+
+{$IFDEF SYN_LAZARUS}
+procedure TCustomSynEdit.InvalidateBracketHighlight(OnlyIfCaretMoved: boolean);
+begin
+  if OnlyIfCaretMoved
+  and (CaretX=fBracketHighlightCaret.X)
+  and (CaretY=fBracketHighlightCaret.Y) then
+    exit;
+  fBracketHighlightCaret:=CaretXY;
+  // invalidate old bracket highlighting
+  if fBracketHighlightPos.Y>0 then begin
+    //writeln('TCustomSynEdit.InvalidateBracketHighlight A Y=',fBracketHighlightPos.Y,' X=',fBracketHighlightPos.X);
+    InvalidateLines(fBracketHighlightPos.Y,fBracketHighlightPos.Y);
+  end;
+  if (fBracketHighlightAntiPos.Y>0)
+  and (fBracketHighlightPos.Y<>fBracketHighlightAntiPos.Y) then
+    InvalidateLines(fBracketHighlightAntiPos.Y,fBracketHighlightAntiPos.Y);
+  fBracketHighlightPos.Y:=0;
+  fBracketHighlightAntiPos.Y:=0;
+  if eoBracketHighlight in Options then begin
+    FindMatchingBracketPair(CaretXY,
+                            fBracketHighlightPos,fBracketHighlightAntiPos,true);
+
+    // invalidate new bracket highlighting
+    if fBracketHighlightPos.Y>0 then begin
+      //writeln('TCustomSynEdit.InvalidateBracketHighlight C ',
+      //  ' Y=',fBracketHighlightPos.Y,' X=',fBracketHighlightPos.X,
+      //  ' Y=',fBracketHighlightAntiPos.Y,' X=',fBracketHighlightAntiPos.X,
+      //  '');
+      InvalidateLines(fBracketHighlightPos.Y,fBracketHighlightPos.Y);
+      if fBracketHighlightPos.Y<>fBracketHighlightAntiPos.Y then
+        InvalidateLines(fBracketHighlightAntiPos.Y,fBracketHighlightAntiPos.Y);
+    end;
+  end;
+end;
+
+procedure TCustomSynEdit.FindMatchingBracketPair(const ACaret: TPoint;
+  var StartBracket, EndBracket: TPoint; OnlyVisible: boolean);
+var
+  StartLine: string;
+begin
+  StartBracket.Y:=-1;
+  EndBracket.Y:=-1;
+  if (ACaret.Y<1) or (ACaret.Y>Lines.Count) or (ACaret.X<1) then exit;
+  StartLine := TSynEditStringList(Lines).ExpandedStrings[ACaret.Y - 1];
+  if (length(StartLine)<ACaret.X)
+  or (not (StartLine[ACaret.X] in ['(',')','{','}','[',']'])) then exit;
+  StartBracket:=ACaret;
+  EndBracket:=FindMatchingBracket(ACaret,false,false,false,OnlyVisible);
+end;
+{$ENDIF}
 
 procedure TCustomSynEdit.KeyDown(var Key: Word; Shift: TShiftState);
 var
@@ -2101,6 +2169,7 @@ begin
   // Get the invalidated rect. Compute the invalid area in lines / columns.
   {$IFDEF SYN_LAZARUS}
   rcClip:=Rect(0,0,Width,Height);
+  Include(fStateFlags,sfPainting);
   {$ELSE}
   rcClip := Canvas.ClipRect;
   {$ENDIF}
@@ -2134,6 +2203,9 @@ begin
     DoOnPaint;
   finally
     UpdateCaret;
+    {$IFDEF SYN_LAZARUS}
+    Exclude(fStateFlags,sfPainting);
+    {$ENDIF}
   end;
 end;
 
@@ -2300,7 +2372,7 @@ var
   colFG, colBG: TColor;
   colSelFG, colSelBG: TColor;
   colEditorBG: TColor;                                                  
-    // info about selction of the current line
+    // info about selection of the current line
   nSelStart, nSelEnd: integer;
   bComplexLine: boolean;
     // painting the background and the text
@@ -3258,7 +3330,7 @@ end;
 {$IFDEF SYN_LAZARUS}
 procedure TCustomSynEdit.SelectToBrace;
 begin
-  FindMatchingBracket(true,true,true);
+  FindMatchingBracket(CaretXY,true,true,true,false);
 end;
 
 procedure TCustomSynEdit.SelectLine;
@@ -3949,6 +4021,9 @@ begin
       SetCaretPos(CX, CY);
       {$ENDIF}
     end;
+    {$IFDEF SYN_LAZARUS}
+    InvalidateBracketHighlight(true);
+    {$ENDIF}
 {$IFDEF SYN_MBCSSUPPORT}
     if HandleAllocated then begin
       cf.dwStyle := CFS_POINT;
@@ -5640,30 +5715,18 @@ begin
       ecLeft, ecSelLeft:
         begin
           MoveCaretHorz(-1, Command = ecSelLeft);
-          {$IFDEF SYN_LAZARUS}
-          if eoBracketHighlight in fOptions then Update;
-          {$ENDIF}
         end;
       ecRight, ecSelRight:
         begin
           MoveCaretHorz(1, Command = ecSelRight);
-          {$IFDEF SYN_LAZARUS}
-          if eoBracketHighlight in fOptions then Update;
-          {$ENDIF}
         end;
       ecPageLeft, ecSelPageLeft:
         begin
           MoveCaretHorz(-CharsInWindow, Command = ecSelPageLeft);
-          {$IFDEF SYN_LAZARUS}
-          if eoBracketHighlight in fOptions then Update;
-          {$ENDIF}
         end;
       ecPageRight, ecSelPageRight:
         begin
           MoveCaretHorz(CharsInWindow, Command = ecSelPageRight);
-          {$IFDEF SYN_LAZARUS}
-          if eoBracketHighlight in fOptions then Update;
-          {$ENDIF}
         end;
 {begin}                                                                         //mh 2000-10-19
       ecLineStart, ecSelLineStart:
@@ -5671,18 +5734,12 @@ begin
           MoveCaretAndSelection(CaretXY, Point(1, CaretY),
             Command = ecSelLineStart);
           fLastCaretX := fCaretX;
-          {$IFDEF SYN_LAZARUS}
-          if eoBracketHighlight in fOptions then Update;
-          {$ENDIF}
         end;
       ecLineEnd, ecSelLineEnd:
         begin
           MoveCaretAndSelection(CaretXY, Point(1 + Length(LineText), CaretY),
             Command = ecSelLineEnd);
           fLastCaretX := fCaretX;
-          {$IFDEF SYN_LAZARUS}
-          if eoBracketHighlight in fOptions then Update;
-          {$ENDIF}
         end;
 {end}                                                                           //mh 2000-10-19
 // vertical caret movement or selection
@@ -7531,7 +7588,7 @@ var
 {$ENDIF}
 begin
   {$IFDEF SYN_LAZARUS}
-  FindMatchingBracket(false,true,false);
+  FindMatchingBracket(CaretXY,false,true,false,false);
   {$ELSE}
   // get char at caret
   PosX := CaretX;
@@ -7605,14 +7662,16 @@ begin
 end;
 
 {$IFDEF SYN_LAZARUS}
-function TCustomSynEdit.FindMatchingBracket(StartIncludeNeigborChars,
-  MoveCaret, SelectBrackets: boolean): TPoint;
+function TCustomSynEdit.FindMatchingBracket(StartBracket: TPoint;
+  StartIncludeNeighborChars, MoveCaret, SelectBrackets, OnlyVisible: boolean
+  ): TPoint;
 const
   Brackets: array[0..5] of char = ('(', ')', '[', ']', '{', '}');
 var
   Line: string;
   PosX, PosY: integer;
   StartPt: TPoint;
+  LogicalStart: TPoint;
 
   procedure DoMatchingBracketFound;
   var
@@ -7667,6 +7726,9 @@ var
         // get previous line if possible
         if PosY = 1 then break;
         Dec(PosY);
+        if OnlyVisible and ((PosY<TopLine) or (PosY>=TopLine+LinesInWindow))
+        then
+          break;
         Line := Lines[PosY - 1];
         PosX := Length(Line) + 1;
       until FALSE;
@@ -7691,6 +7753,9 @@ var
         // get next line if possible
         if PosY = Lines.Count then break;
         Inc(PosY);
+        if OnlyVisible and ((PosY<TopLine) or (PosY>=TopLine+LinesInWindow))
+        then
+          break;
         Line := Lines[PosY - 1];
         PosX := 0;
       until FALSE;
@@ -7720,22 +7785,35 @@ begin
   Result.Y:=-1;
   
   // get char at caret
-  PosX := CaretX;
-  PosY := CaretY;
+  LogicalStart:=PhysicalToLogicalPos(StartBracket);
+  PosX := LogicalStart.X;
+  PosY := LogicalStart.Y;
+  if (PosY<1) or (PosY>Lines.Count) then exit;
+  if OnlyVisible and ((PosY<TopLine) or (PosY>=TopLine+LinesInWindow)) then
+   exit;
+
   Line := LineText;
   DoCheckBracket;
-  if Result.Y>0 then exit;
-  if StartIncludeNeigborChars then begin
-    if PosX>1 then begin
-      dec(PosX);
-      DoCheckBracket;
-      if Result.Y>0 then exit;
-      inc(PosX);
+  try
+    if Result.Y>0 then exit;
+    if StartIncludeNeighborChars then begin
+      if PosX>1 then begin
+        // search in front
+        dec(PosX);
+        DoCheckBracket;
+        if Result.Y>0 then exit;
+        inc(PosX);
+      end;
+      if PosX<Length(Line) then begin
+        // search behind
+        inc(PosX);
+        DoCheckBracket;
+        if Result.Y>0 then exit;
+      end;
     end;
-    if PosX<Length(Line) then begin
-      inc(PosX);
-      DoCheckBracket;
-      if Result.Y>0 then exit;
+  finally
+    if Result.Y>0 then begin
+      Result:=PhysicalToLogicalPos(Result);
     end;
   end;
 end;

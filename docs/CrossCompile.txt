@@ -63,10 +63,20 @@ You should now be able to cross compile simple pascal programs with
 'ppc386 -Twin32 pascalfile.pas'
 
 
-4. Compiling the LCL
+4. Cross compiling the LCL
 4.1 Command line: cd lazarus/lcl; make OS_TARGET=win32
 4.2 In the IDE: Set LCL to Clean+Build, set LCL interface to win32 and
-    set 'Target OS' to win32. Then build lazarus.
+    set 'Target OS' to win32. Then 'build lazarus'. The win32 interface is not
+    complete enough for the IDE, but a many of the components already work.
 
+
+5. Cross compiling a project
+Set in Run->Compiler Options->Code the Target OS to 'win32' and the in
+Paths the 'LCL Widget Type' to win32. That's all. The next time you build, you
+will create a win32 executable.
+The IDE will rescan for win32 units, so that 'Find declaration' and code
+completion features will now work with the win32 rtl instead of the linux rtl.
+Of course, when you open another project or reopen this project the IDE will
+automatically switch.
 
 
