@@ -191,9 +191,9 @@ type
     FEndOfTokenChr: string;
     FOnCodeCompletion: TCodeCompletionEvent;
     procedure SetEditor(const Value: TCustomSynEdit);
-    procedure backspace(Senter: TObject);
-    procedure Cancel(Senter: TObject);
-    procedure Validate(Senter: TObject; Shift: TShiftState);
+    procedure backspace(Sender: TObject);
+    procedure Cancel(Sender: TObject);
+    procedure Validate(Sender: TObject; Shift: TShiftState);
     procedure KeyPress(Sender: TObject; var Key: Char);
     procedure EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure EditorKeyPress(Sender: TObject; var Key: char);
@@ -816,11 +816,11 @@ type
   end;
   PRecordUsedToStoreEachEditorVars = ^TRecordUsedToStoreEachEditorVars;
 
-procedure TSynCompletion.Backspace(Senter: TObject);
+procedure TSynCompletion.Backspace(Sender: TObject);
 var
   F: TSynBaseCompletionForm;
 begin
-  F := Senter as TSynBaseCompletionForm;
+  F := Sender as TSynBaseCompletionForm;
   if F.CurrentEditor <> nil then begin
     (F.CurrentEditor as TCustomSynEdit).CommandProcessor(ecDeleteLastChar, #0,
       nil);
@@ -834,11 +834,11 @@ begin
 //writeln('TSynCompletion.OnFormShow END');
 end;
 
-procedure TSynCompletion.Cancel(Senter: TObject);
+procedure TSynCompletion.Cancel(Sender: TObject);
 var
   F: TSynBaseCompletionForm;
 begin
-  F := Senter as TSynBaseCompletionForm;
+  F := Sender as TSynBaseCompletionForm;
   if F.CurrentEditor <> nil then begin
     if (F.CurrentEditor as TCustomSynEdit).Owner is TWinControl then
       TWinControl((F.CurrentEditor as TCustomSynEdit).Owner).SetFocus;
@@ -846,7 +846,7 @@ begin
   end;
 end;
 
-procedure TSynCompletion.Validate(Senter: TObject; Shift: TShiftState);
+procedure TSynCompletion.Validate(Sender: TObject; Shift: TShiftState);
 var
   F: TSynBaseCompletionForm;
   Value: string;
@@ -854,17 +854,19 @@ var
   Pos: TPoint;
   {$ENDIF}
 begin
-  F := Senter as TSynBaseCompletionForm;
+  F := Sender as TSynBaseCompletionForm;
   if F.CurrentEditor <> nil then
     with F.CurrentEditor as TCustomSynEdit do begin
       BlockBegin := Point(CaretX - length(CurrentString), CaretY);
       BlockEnd := Point(CaretX, CaretY);
-      if Assigned(FOnCodeCompletion) then begin
-        Value := ItemList[position];
-        FOnCodeCompletion(Value, Shift);
-        SelText := Value;
-      end else
-        SelText := ItemList[position];
+      if Position>=0 then begin
+        if Assigned(FOnCodeCompletion) then begin
+          Value := ItemList[Position];
+          FOnCodeCompletion(Value, Shift);
+          SelText := Value;
+        end else
+          SelText := ItemList[Position];
+      end;       
       {$IFNDEF SYN_LAZARUS}
       with Editor do begin
         Pos.x := CaretX;
