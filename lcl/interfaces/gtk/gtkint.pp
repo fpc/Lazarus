@@ -117,7 +117,8 @@ type
     procedure UpdateNotebookPageTab(ANoteBook, APage: TObject);
     procedure AddNBPage(ANoteBook, APage: TObject; Index: Integer);
     procedure RemoveNBPage(ANoteBook: TObject; Index: Integer);
-    
+    procedure MoveNBPage(ANoteBook, APage: TObject; NewIndex: Integer);
+
     procedure SetText(Child,Data : Pointer);
     procedure SetColor(Sender : TObject);
     Procedure SetPixel(Sender : TObject; Data : Pointer);
@@ -481,6 +482,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.70  2002/09/05 12:11:44  lazarus
+  MG: TNotebook is now streamable
+
   Revision 1.69  2002/09/03 08:07:20  lazarus
   MG: image support, TScrollBox, and many other things from Andrew
 
