@@ -131,6 +131,12 @@ begin
   Result := ERROR;
 end;
 
+constructor TInterfaceBase.Create;
+begin
+  inherited Create;
+  SendMsgToInterface:=@IntSendMessage3;
+end;
+
 function TInterfaceBase.CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP;
 begin
   Result := 0;
@@ -198,6 +204,12 @@ end;
 function TInterfaceBase.DeleteObject(GDIObject: HGDIOBJ): Boolean;
 begin
   Result := False;
+end;
+
+destructor TInterfaceBase.Destroy;
+begin
+  inherited Destroy;
+  SendMsgToInterface:=nil;
 end;
 
 function TInterfaceBase.DestroyCaret(Handle : HWND): Boolean;
@@ -441,7 +453,7 @@ var
   var
     J, wT,hT : Integer;
   begin
-    CopyRect(theRect, Rect);
+    Rect:=theRect;
     {Initialize text width/height}
     wT := Tm.tmAveCharWidth*StrLen(Str);
     hT := TM.tmHeight;
@@ -537,7 +549,7 @@ begin
 
   {If just calculating rect, finish up here}
   If CalcRect then begin
-    CopyRect(Rect,theRect);
+    theRect:=Rect;
     Lines.Free;
     exit;
   end;
@@ -1440,6 +1452,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.63  2002/10/26 15:15:48  lazarus
+  MG: broke LCL<->interface circles
+
   Revision 1.62  2002/10/25 10:10:40  lazarus
   MG: reduced output
 
