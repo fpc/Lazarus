@@ -5544,9 +5544,8 @@ begin
   if not FileExists(ProgramFilename)
   then begin
     MessageDlg(lisFileNotFound,
-      Format(Format(lisNoProgramFileSFound, ['"', '"']), [ProgramFilename]),
-        mtError,
-      [mbCancel], 0);
+      Format(lisNoProgramFileSFound, ['"', ProgramFilename, '"']),
+      mtError,[mbCancel], 0);
     Exit;
   end;
 
@@ -5577,8 +5576,8 @@ begin
       FRunProcess.ShowWindow := swoNone;
     except
       on e: Exception do 
-        MessageDlg(Format(Format(lisErrorInitializingProgramSErrorS, [#13, '"',
-          '"', #13]), [ProgramFilename, e.Message]), mterror, [mbok], 0);
+        MessageDlg(Format(lisErrorInitializingProgramSErrorS,
+          [#13, '"', ProgramFilename, '"', #13, e.Message]), mterror,[mbok], 0);
     end;
   end;   
   
@@ -5615,10 +5614,9 @@ begin
       Result := mrOk;
     except
       on e: Exception do 
-        MessageDlg(Format(Format(lisErrorInitializingProgramSErrorS2, [#13,
-          '"', '"', #13]),
-                          [FRunProcess.CommandLine, e.Message]), mtError,
-                          [mbOk], 0);
+        MessageDlg(Format(lisErrorInitializingProgramSErrorS,
+          [#13, '"', FRunProcess.CommandLine, '"', #13, e.Message]),
+          mtError, [mbOk], 0);
     end;
   end;   
   Writeln('[TMainIDE.DoRunProject] END');
@@ -8664,6 +8662,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.572  2003/05/22 06:32:03  mattias
+  fixed double formats
+
   Revision 1.571  2003/05/21 16:19:12  mattias
   implemented saving breakpoints and watches
 
