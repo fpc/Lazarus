@@ -2400,6 +2400,8 @@ Begin
       SetOwner(Window, Sender);
     csPage:
       ShowWindow(Window, SW_HIDE);
+    csStatusBar:
+      StatusBarUpdate(Sender);
   end;
 
   Assert(False, 'Trace:Leaving CreateComponent');
@@ -2994,6 +2996,9 @@ End;
 
 {
   $Log$
+  Revision 1.163  2004/02/01 09:58:21  mattias
+  fixed showing statusbar at designtime  from vincent
+
   Revision 1.162  2004/01/22 18:22:37  mattias
   applied patch for dir dlgs from Vincent
 
