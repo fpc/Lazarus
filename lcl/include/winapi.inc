@@ -354,6 +354,11 @@ begin
   Result := InterfaceObject.GetDIBits(DC, Bitmap, StartScan, NumScans, Bits, BitInfo, Usage);
 end;
 
+function GetDeviceCaps(DC: HDC; Index: Integer): Integer;
+begin
+  Result := InterfaceObject.GetDeviceCaps(DC, Index);
+end;
+
 function GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint;
 begin
   Result := InterfaceObject.GetBitmapBits(Bitmap, Count, Bits);
@@ -443,6 +448,12 @@ end;
 Function GetWindowOrgEx(dc : hdc; var P : TPoint): Integer;
 begin
  Result := InterfaceObject.GetWindowOrgEx(dc,P);
+end;
+
+function GradientFill(DC: HDC; Vertices: PTriVertex; NumVertices : Longint;
+  Meshes: Pointer; NumMeshes : Longint; Mode : Longint): Boolean;
+begin
+  Result := InterfaceObject.GradientFill(DC, Vertices, NumVertices, Meshes, NumMeshes, Mode);
 end;
 
 function HideCaret(hWnd: HWND): Boolean;
@@ -1242,10 +1253,33 @@ begin
   DestRect.Bottom := Max(SrcRect1.Bottom, SrcRect2.Bottom);
 end;
 
+Function GetRValue(RGB : DWORD) : BYTE;
+begin
+  Result := RGB and $ff;
+end;
+
+Function GetGValue(RGB : DWORD) : BYTE;
+begin
+  Result := (RGB shr 8) and $ff;
+end;
+
+Function GetBValue(RGB : DWORD) : BYTE;
+begin
+  Result := (RGB shr 16) and $ff;
+end;
+
+Function RGB(R, G, B : Byte) : TColorRef;
+begin
+  Result := R or (G shl 8) or (B Shl 16);
+end;
+
 //##apiwiz##epi##   // Do not remove
 { =============================================================================
 
   $Log$
+  Revision 1.48  2002/09/12 05:56:15  lazarus
+  MG: gradient fill, minor issues from Andrew
+
   Revision 1.47  2002/09/10 06:49:19  lazarus
   MG: scrollingwincontrol from Andrew
 
