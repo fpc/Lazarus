@@ -448,7 +448,7 @@ resourcestring
   dlgEdBold = 'Bold';
   dlgEdItal = 'Italic';
   dlgEdUnder = 'Underline';
-  dlgEdIdComlet = 'Identfier completion';
+  dlgEdIdComlet = 'Identifier completion';
   dlgEdCodeParams = 'Code parameters';
   dlgTooltipEval = 'Tooltip expression evaluation';
   dlgTooltipTools = 'Tooltip symbol Tools';

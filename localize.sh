@@ -9,7 +9,7 @@ for lang in de ru es; do
 done
 
 # objectinspector
-for lang in de; do
+for lang in de es; do
   msgfmt languages/objinspstrconsts.$lang.po \
     -o languages/objinspstrconsts.$lang.mo
 done
@@ -21,7 +21,7 @@ for lang in de; do
 done
 
 # LCL
-for lang in de; do
+for lang in de es; do
   msgfmt lcl/languages/lcl.$lang.po -o lcl/languages/lcl.$lang.mo
 done
 

@@ -891,7 +891,7 @@ begin
 end;
 
 function TPascalParserTool.KeyWordFuncClassVarTypeIdent: boolean;
-// read variable type <identfier>
+// read variable type <identifier>
 begin
   if CurPos.StartPos>SrcLen then
     SaveRaiseException(ctsMissingTypeIdentifier);
@@ -1573,7 +1573,7 @@ function TPascalParserTool.ReadSubRange(ExceptionOnError: boolean): boolean;
     number..number
     identifier
     Low(identifier)..High(identifier)
-    Pred(identifier)..Succ(identfier)
+    Pred(identifier)..Succ(identifier)
 }
 var RangeOpFound: boolean;
 begin
@@ -2894,7 +2894,7 @@ begin
 end;
 
 function TPascalParserTool.KeyWordFuncTypePointer: boolean;
-// '^Identfier'
+// '^Identifier'
 begin
   CreateChildNode;
   CurNode.Desc:=ctnPointerType;
