@@ -3889,6 +3889,7 @@ begin
   UpdateCaption;
   EnvironmentOptions.LastSavedProjectFile:=Project1.ProjectInfoFile;
   EnvironmentOptions.Save(false);
+  
   // load required packages
   PkgBoss.OpenProjectDependencies(Project1);
 
@@ -9073,6 +9074,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.585  2003/05/26 21:03:27  mattias
+  added README, describing how to create a gtk2 lcl application
+
   Revision 1.584  2003/05/26 20:05:21  mattias
   made compiling gtk2 interface easier
 

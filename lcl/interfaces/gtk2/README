@@ -1,0 +1,38 @@
+The gtk2 interface for lazarus
+==============================
+
+The gtk2 interface for lazarus is a descendent of the gtk interface. It is not
+yet complete and does not even compile. For those who want to help us here are
+some hints:
+
+1. The gtk2 interface needs the gtk2 bindings 'gtk2forpascal' from
+http://sourceforge.net/projects/gtk2forpascal/.
+Please download the latest cvs in a directory of your choice. It contains the
+package gtk2forlazarus.lpk.
+
+2. Open this package.
+The package contains all the needed search paths and compiler options to
+compile a 'gtk2 application' in lazarus. A gtk2 application is a program, that
+uses the gtk2 libs. Don't confuse this with a 'LCL application using the gtk2
+interface'.
+
+3. Open the package <lazarusdir>/lcl/interfaces/gtk2/gtk2interface.lpk.
+This package contains all the needed compiler options to compile the gtk2
+interface for the LCL.
+
+4. Create a new lazarus application. This project will be used to test the gtk2
+interface and to store all configuration steps. Open the project inspector and
+add 'GTK2Interface' as required package to the project.
+Then open the compiler options and set as widget type 'gtk2'.
+
+
+When you compile your program, the IDE will automatically compile the
+bindings and the gtk2 interface. Because the interface is not complete the
+compilation will fail with some errors.
+The next step is to fix the compiler errors by adding {$IFDEF GTK2} directives.
+
+
+
+
+
+
