@@ -1,0 +1,64 @@
+#: lclstrconsts:rsmbyes
+msgid "Yes"
+msgstr ""
+
+#: lclstrconsts:rsmbno
+msgid "No"
+msgstr ""
+
+#: lclstrconsts:rsmbok
+msgid "OK"
+msgstr ""
+
+#: lclstrconsts:rsmbcancel
+msgid "Cancel"
+msgstr ""
+
+#: lclstrconsts:rsmbabort
+msgid "Abort"
+msgstr ""
+
+#: lclstrconsts:rsmbretry
+msgid "Retry"
+msgstr ""
+
+#: lclstrconsts:rsmbignore
+msgid "Ignore"
+msgstr ""
+
+#: lclstrconsts:rsmball
+msgid "All?"
+msgstr ""
+
+#: lclstrconsts:rsmbnotoall
+msgid "No to all"
+msgstr ""
+
+#: lclstrconsts:rsmbyestoall
+msgid "Yes to all"
+msgstr ""
+
+#: lclstrconsts:rsmbhelp
+msgid "Help"
+msgstr ""
+
+#: lclstrconsts:rsmtwarning
+msgid "Warning"
+msgstr ""
+
+#: lclstrconsts:rsmterror
+msgid "Error"
+msgstr ""
+
+#: lclstrconsts:rsmtinformation
+msgid "Information"
+msgstr ""
+
+#: lclstrconsts:rsmtconfirmation
+msgid "Confirmation"
+msgstr ""
+
+#: lclstrconsts:rsmtcustom
+msgid "Custom"
+msgstr ""
+
