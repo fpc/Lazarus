@@ -37,7 +37,7 @@ interface
 
 uses
   Classes, LCLType, LCLLinux, Forms, Controls, LMessages, GraphType, Graphics,
-  Dialogs, ControlSelection, CustomFormEditor, UnitEditor, Menus,
+  Dialogs, IDEProcs, ControlSelection, CustomFormEditor, UnitEditor, Menus,
   {$IFDEF DisablePkgs}
   CompReg,
   {$ELSE}
@@ -143,6 +143,8 @@ type
     PopupMenuComponentEditor: TBaseComponentEditor;
     LastFormCursor: TCursor;
     DeletingComponents: TList;
+    
+    LastPaintSender: TControl;
 
     // event handlers for designed components
     function PaintControl(Sender: TControl; TheMessage: TLMPaint):boolean;
@@ -440,14 +442,13 @@ var
 begin
   Result:=true;
   
-//writeln('TDesigner.PaintControl A ',Sender.Name);
-  //writeln('***  LM_PAINT A ',Sender.Name,':',Sender.ClassName,' DC=',HexStr(Message.DC,8));
+  //writeln('***  TDesigner.PaintControl A ',Sender.Name);
   // Set flag
   OldDuringPaintControl:=dfDuringPaintControl in FFlags;
   Include(FFlags,dfDuringPaintControl);
   
   // send the Paint message to the control, so that it paints itself
-//writeln('TDesigner.PaintControl B ',Sender.Name);
+  //writeln('TDesigner.PaintControl B ',Sender.Name);
   Sender.Dispatch(TheMessage);
   //writeln('TDesigner.PaintControl C ',Sender.Name,' DC=',HexStr(Cardinal(TheMessage.DC),8));
 
@@ -460,28 +461,39 @@ begin
       ' DC=',HexStr(DDC.DC,8),
       ' FormOrigin=',DDC.FormOrigin.X,',',DDC.FormOrigin.Y,
       ' DCOrigin=',DDC.DCOrigin.X,',',DDC.DCOrigin.Y,
-      ' FormClientOrigin=',DDC.FormClientOrigin.X,',',DDC.FormClientOrigin.Y
+      ' FormClientOrigin=',DDC.FormClientOrigin.X,',',DDC.FormClientOrigin.Y,
+      ' Internal=',InternalPaint
       );
     {$ENDIF}
+    if LastPaintSender=Sender then begin
+      writeln('NOTE: TDesigner.PaintControl E control painted twice: ',Sender.Name,':',Sender.ClassName);
+      //RaiseException('');
+    end;
+    LastPaintSender:=Sender;
+    // client grid
     if (not InternalPaint) and (Sender is TWinControl)
     and (csAcceptsControls in Sender.ControlStyle) then begin
       PaintClientGrid(TWinControl(Sender),DDC);
     end;
+    // marker
     if (ControlSelection.SelectionForm=Form)
     and (ControlSelection.IsSelected(Sender)) then begin
-      // writeln('***  LM_PAINT ',Sender.Name,':',Sender.ClassName,' DC=',HexStr(Message.DC,8));
       ControlSelection.DrawMarker(Sender,DDC);
     end;
+    // non visual component icons
     DrawNonVisualComponents(DDC);
+    // guidelines and grabbers
     if (ControlSelection.SelectionForm=Form) then begin
       ControlSelection.DrawGuideLines(DDC);
       ControlSelection.DrawGrabbers(DDC);
     end;
+    // rubberband
     if ControlSelection.RubberBandActive
     and ((ControlSelection.SelectionForm=Form)
     or (ControlSelection.SelectionForm=nil)) then begin
       ControlSelection.DrawRubberBand(DDC);
     end;
+    // clean up
     DDC.Clear;
   end;
 //writeln('TDesigner.PaintControl END ',Sender.Name);
