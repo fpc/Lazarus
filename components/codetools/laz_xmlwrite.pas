@@ -79,7 +79,11 @@ end;
 type
   TOutputProc = procedure(const Buffer; Count: Longint);
 
+{$IFNDEF VER1_0}
 threadvar
+{$ELSE}
+var
+{$ENDIF}
   f: ^Text;
   stream: TStream;
   wrt, wrtln: TOutputProc;
@@ -146,7 +150,11 @@ end;
 //   Indent handling
 // -------------------------------------------------------------------
 
+{$IFNDEF VER1_0}
 threadvar
+{$ELSE}
+var
+{$ENDIF}
   Indent: String;
   IndentCount: integer;
 
@@ -594,6 +602,9 @@ end;
 end.
 {
   $Log$
+  Revision 1.9  2005/01/30 21:53:26  vincents
+  fpc 1.0.x doesn't have threadvar
+
   Revision 1.8  2005/01/29 14:36:04  mattias
   reactivated fast xml units without widestrings
 
