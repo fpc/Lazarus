@@ -1167,35 +1167,39 @@ Begin
   if (lWinControl <> nil) and (PLMsg^.Msg <> LM_NULL) then
     DeliverMessage(lWinControl, PLMsg^);
 
-  case Msg of
-    WM_SETCURSOR:
+  // respond to result of LCL handling the message
+  case LMessage.Msg of
+    LM_ERASEBKGND, LM_SETCURSOR:
     begin
       if LMessage.Result = 0 then
         WinProcess := true;
     end;
-   
-    WM_NCDESTROY:
-    begin
-      // free our own data associated with window
-      if Windows.RemoveProp(Window, PChar(dword(WindowInfoAtom))) <> 0 then
-      begin
-        Dispose(WindowInfo);
-        WindowInfo := nil;
-      end;
-    end;
 
-    WM_CHAR:
+    CN_CHAR:
     begin
       // if key not yet processed, let windows process it
       WinProcess := LMChar.CharCode <> VK_UNKNOWN;
     end;
    
-    WM_KEYDOWN, WM_KEYUP:
+    CN_KEYDOWN, CN_KEYUP:
     begin
       // if key not yet processed, let windows process it
       WinProcess := LMKey.CharCode <> VK_UNKNOWN;
     end;
-  end;
+    
+  else
+    case Msg of
+      WM_NCDESTROY:
+      begin
+        // free our own data associated with window
+        if Windows.RemoveProp(Window, PChar(dword(WindowInfoAtom))) <> 0 then
+        begin
+          Dispose(WindowInfo);
+          WindowInfo := nil;
+        end;
+      end;
+    end;
+  end; 
 
   if WinProcess then
   begin    
@@ -1436,6 +1440,9 @@ end;
 
 {
   $Log$
+  Revision 1.154  2004/11/04 09:19:34  micha
+  respond to LCL result of handling the message (fixes black background in listbox)
+
   Revision 1.153  2004/11/03 16:32:54  micha
   fix drawing of listbox, combobox, edit to be non-transparent even in winxp tabpage (fixes black background upon scroll)
 
