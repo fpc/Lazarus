@@ -1584,7 +1584,7 @@ begin
       ctnFinalization,ctnProgram])
     then begin
       ReadNextAtom;
-      SaveRaiseException(ctsUnexpectedEndOfSource);
+      SaveRaiseException(ctsUnexpectedEndOfSource+' 1');
     end;
   end else if UpAtomIs('END') then begin
     if LastAtomIs(0,'@') then
@@ -3600,22 +3600,26 @@ begin
   CurrentPhase:=CodeToolPhaseParse;
   try
     if ProcNode.Desc=ctnProcedureHead then ProcNode:=ProcNode.Parent;
+writeln('BBB1');
     if (ProcNode=nil) or (ProcNode.Desc<>ctnProcedure)
     or (ProcNode.FirstChild=nil) then
       SaveRaiseException('[TPascalParserTool.BuildSubTreeForProcHead] '
         +'internal error: invalid ProcNode');
+writeln('BBB2');
     if (ProcNode.FirstChild.SubDesc and ctnsNeedJITParsing)=0 then exit;
     IsMethod:=ProcNode.HasParentOfType(ctnClass);
     MoveCursorToNodeStart(ProcNode);
     ReadNextAtom;
     if UpAtomIs('CLASS') then
       ReadNextAtom;
+writeln('BBB3 ',GetAtom);
     IsFunction:=UpAtomIs('FUNCTION');
     IsOperator:=UpAtomIs('OPERATOR');
     // read procedure head (= name + parameterlist + resulttype;)
     CurNode:=ProcNode.FirstChild;
     ReadNextAtom;// read first atom of head
-    if not IsOperator then AtomIsIdentifier(true);
+writeln('BBB4 ',GetAtom);
+    if IsOperator then AtomIsIdentifier(true);
     ReadNextAtom;
     if AtomIsChar('.') then begin
       // read procedure name of a class method (the name after the . )
@@ -3623,13 +3627,16 @@ begin
       AtomIsIdentifier(true);
       ReadNextAtom;
     end;
+writeln('BBB5');
     // read rest of procedure head and build nodes
     HasForwardModifier:=false;
     ParseAttr:=[pphCreateNodes];
     if IsMethod then Include(ParseAttr,pphIsMethod);
     if IsFunction then Include(ParseAttr,pphIsFunction);
     if IsOperator then Include(ParseAttr,pphIsOperator);
+writeln('BBB6');
     ReadTilProcedureHeadEnd(ParseAttr,HasForwardModifier);
+writeln('BBB7');
     ProcNode.FirstChild.SubDesc:=ctnsNone;
   finally
     CurrentPhase:=OldPhase;

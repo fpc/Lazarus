@@ -43,7 +43,7 @@ interface
 
 {$I codetools.inc}
 
-{ $DEFINE CTDEBUG}
+{$DEFINE CTDEBUG}
 
 uses
   {$IFDEF MEM_CHECK}
@@ -177,6 +177,7 @@ begin
       TrimmedIdentifier:=GetIdentifier(Params.Identifier);
     end;
   end;
+  //writeln('RRR ',TrimmedIdentifier);
   FullTopLvlName:=FullTopLvlName+TrimmedIdentifier;
   Result:=ifrSuccess;
 end;

@@ -62,6 +62,7 @@ interface
 { $DEFINE ShowInterfaceCache}
 { $DEFINE ShowNodeCache}
 { $DEFINE ShowBaseTypeCache}
+{ $DEFINE ShowCacheDependencies}
 
 uses
   {$IFDEF MEM_CHECK}
@@ -394,6 +395,7 @@ type
     function GetFirstParameterNode(Node: TCodeTreeNode): TCodeTreeNode;
     function PredefinedIdentToTypeDesc(Identifier: PChar): TExpressionTypeDesc;
   public
+    procedure BuildTree(OnlyInterfaceNeeded: boolean); override;
     destructor Destroy; override;
     function FindDeclaration(CursorPos: TCodeXYPosition;
       var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
@@ -574,7 +576,6 @@ begin
     {$IFDEF CTDEBUG}
     writeln(DebugPrefix,'TFindDeclarationTool.FindDeclaration A CursorPos=',CursorPos.X,',',CursorPos.Y);
     {$ENDIF}
-    CheckDependsOnNodeCaches;
     BuildTreeAndGetCleanPos(false,CursorPos,CleanCursorPos);
     {$IFDEF CTDEBUG}
     writeln(DebugPrefix,'TFindDeclarationTool.FindDeclaration C CleanCursorPos=',CleanCursorPos);
@@ -1104,7 +1105,8 @@ var
     FindIdentifierInContext:=NewResult;
     Result:=NewResult;
     if NewResult then begin
-      if CallOnIdentifierFound then DoOnIdentifierFound(Params,ContextNode);
+      if CallOnIdentifierFound then
+        Params.NewCodeTool.DoOnIdentifierFound(Params,Params.NewNode);
       exit;
     end;
     if not (fdfExceptionOnNotFound in Params.Flags) then exit;
@@ -1409,7 +1411,7 @@ begin
       if not (fdfIgnoreCurContextNode in Params.Flags) then begin
         // search in cache
         if FindInNodeCache then begin
-          SetResultBeforeExit(Params.NewNode<>nil,true);
+          SetResultBeforeExit(Params.NewNode<>nil,Params.NewNode<>nil);
           exit;
         end;
         if FirstSearchedNode=nil then FirstSearchedNode:=ContextNode;
@@ -3021,6 +3023,8 @@ begin
   
   // build tree for pascal source
   BuildTree(true);
+  if (AskingTool<>Self) and (AskingTool<>nil) then
+    AskingTool.AddToolDependency(Self);
 
   // search identifier in cache
   if FInterfaceIdentifierCache<>nil then begin
@@ -3161,7 +3165,6 @@ begin
     Params.Flags:=[fdfIgnoreUsedUnits]+(fdfGlobalsSameIdent*Params.Flags)
                  -[fdfExceptionOnNotFound];
     Result:=NewCodeTool.FindIdentifierInInterface(Self,Params);
-    AddToolDependency(NewCodeTool);
     if Result then
       // do not reload param input, so that find next is possible
       exit
@@ -3183,6 +3186,12 @@ begin
   else
     WordIsPredefinedIdentifier:=WordIsPredefinedFPCIdentifier;
   end;
+end;
+
+procedure TFindDeclarationTool.BuildTree(OnlyInterfaceNeeded: boolean);
+begin
+  CheckDependsOnNodeCaches;
+  inherited BuildTree(OnlyInterfaceNeeded);
 end;
 
 function TFindDeclarationTool.FindIdentifierInHiddenUsedUnits(
@@ -3631,7 +3640,9 @@ begin
     if (Result.Desc=ctnProperty) then
       Result:=Result.FirstChild
     else if Result.Desc in [ctnProcedure,ctnProcedureHead] then begin
+writeln('AAA3');
       BuildSubTreeForProcHead(Result);
+writeln('AAA4');
       if Result.Desc=ctnProcedure then
         Result:=Result.FirstChild;
       if Result.Desc=ctnProcedureHead then
@@ -3643,7 +3654,9 @@ end;
 function TFindDeclarationTool.GetFirstParameterNode(Node: TCodeTreeNode
   ): TCodeTreeNode;
 begin
+writeln('AAA1');
   Result:=GetParameterNode(Node);
+writeln('AAA2');
   if Result<>nil then Result:=Result.FirstChild;
 end;
 
@@ -3651,7 +3664,7 @@ function TFindDeclarationTool.CheckSrcIdentifier(
   Params: TFindDeclarationParams;
   FoundContext: TFindContext): TIdentifierFoundResult;
 // this is a TOnIdentifierFound function
-//   if identifier is founda proc it searches for the best overloaded proc
+//   if identifier found is a proc it searches for the best overloaded proc
 var FirstParameterNode: TCodeTreeNode;
   ExprInputList: TExprTypeList;
   ParamCompatibility, NewComp: TTypeCompatibility;
@@ -3663,6 +3676,7 @@ begin
   // the search has found an identifier with the right name
   {$IFDEF ShowFoundIdentifier}
   writeln('[TFindDeclarationTool.CheckSrcIdentifier]',
+  ' Indent=',GetIdentifier(Params.Identifier),
   ' FoundContext=',FoundContext.Node.DescAsString
   );
   {$ENDIF}
@@ -3702,14 +3716,18 @@ begin
         end;
         try
           // check the first proc for compatibility
+  writeln('[TFindDeclarationTool.CheckSrcIdentifier] A');
           CurFoundContext:=FoundContext;
+  writeln('[TFindDeclarationTool.CheckSrcIdentifier] B ',FoundContext.Tool.MainFilename);
           FirstParameterNode:=FoundContext.Tool.GetFirstParameterNode(
             FoundContext.Node);
+  writeln('[TFindDeclarationTool.CheckSrcIdentifier] C');
           ParamCompatibility:=FoundContext.Tool.IsParamListCompatible(
             FirstParameterNode,
             ExprInputList,fdfIgnoreMissingParams in Params.Flags,
             Params,BestCompatibilityList);
           FoundContext:=CurFoundContext;
+  writeln('[TFindDeclarationTool.CheckSrcIdentifier] D');
           if ParamCompatibility=tcExact then begin
             // the first proc fits exactly -> stop the search
             Result:=ifrSuccess;
@@ -3721,6 +3739,7 @@ begin
           Include(Params.Flags,fdfFirstIdentFound);
           Params.SetResult(FoundContext);
           Params.ContextNode:=FoundContext.Node;
+  writeln('[TFindDeclarationTool.CheckSrcIdentifier] E');
           repeat
             {$IFDEF ShowFoundIdentifier}
             writeln('[TFindDeclarationTool.CheckSrcIdentifier] Search next overloaded proc ',
@@ -4165,6 +4184,7 @@ var
   GlobalWriteLockIsSet: boolean;
   GlobalWriteLockStep: integer;
 begin
+  Result:=false;
   if Assigned(OnGetGlobalWriteLockInfo) then begin
     OnGetGlobalWriteLockInfo(GlobalWriteLockIsSet,GlobalWriteLockStep);
     if GlobalWriteLockIsSet then begin
@@ -4174,7 +4194,6 @@ begin
       if (FLastNodeCachesGlobalWriteLockStep=GlobalWriteLockStep) then begin
         // source and values did not change since last NodeCache check
         Result:=true;
-        exit;
       end else begin
         // this is the first check in this GlobalWriteLockStep
         FLastNodeCachesGlobalWriteLockStep:=GlobalWriteLockStep;
@@ -4182,7 +4201,9 @@ begin
       end;
     end;
   end;
-  Result:=false;
+  {$IFDEF ShowCacheDependencies}
+  writeln('[TFindDeclarationTool.NodeCacheGlobalWriteLockStepDidNotChange] Result=',Result,' ',MainFilename);
+  {$ENDIF}
 end;
 
 function TFindDeclarationTool.CheckDependsOnNodeCaches: boolean;
@@ -4196,6 +4217,9 @@ begin
   then exit;
 
   FCheckingNodeCacheDependencies:=true;
+  {$IFDEF ShowCacheDependencies}
+  writeln('[TFindDeclarationTool.CheckDependsOnNodeCaches] START ',MainFilename);
+  {$ENDIF}
   try
     ANode:=FDependsOnCodeTools.FindLowest;
     while ANode<>nil do begin
@@ -4206,6 +4230,9 @@ begin
     end;
     Result:=UpdateNeeded(Scanner.ScanTillInterfaceEnd);
   finally
+    {$IFDEF ShowCacheDependencies}
+    writeln('[TFindDeclarationTool.CheckDependsOnNodeCaches] Result=',Result,' ',MainFilename);
+    {$ENDIF}
     FCheckingNodeCacheDependencies:=false;
     if Result then ClearNodeCaches(true);
   end;
@@ -4229,8 +4256,13 @@ var
 begin
   // check if there is something in cache to delete
   if (FFirstNodeCache=nil) and (FFirstBaseTypeCache=nil)
-  and (FRootNodeCache=nil) then
+  and (FRootNodeCache=nil)
+  and ((FDependentCodeTools=nil) or (FDependentCodeTools.Count=0))
+  and ((FDependsOnCodeTools=nil) or (FDependsOnCodeTools.Count=0)) then
     exit;
+  {$IFDEF ShowCacheDependencies}
+  writeln('[TFindDeclarationTool.ClearNodeCaches] Force=',Force,' ',MainFilename);
+  {$ENDIF}
     
   // quick check: check if in the same GlobalWriteLockStep
   if (not Force) and NodeCacheGlobalWriteLockStepDidNotChange then
@@ -4260,16 +4292,18 @@ end;
 procedure TFindDeclarationTool.ClearDependentNodeCaches;
 var
   ANode: TAVLTreeNode;
-  ATool: TFindDeclarationTool;
+  DependentTool: TFindDeclarationTool;
 begin
   if (FDependentCodeTools=nil) or FClearingDependentNodeCaches then exit;
   FClearingDependentNodeCaches:=true;
+  {$IFDEF ShowCacheDependencies}
+  writeln('[TFindDeclarationTool.ClearDependentNodeCaches] ',MainFilename);
+  {$ENDIF}
   try
     ANode:=FDependentCodeTools.FindLowest;
     while ANode<>nil do begin
-      ATool:=TFindDeclarationTool(ANode.Data);
-      ATool.ClearNodeCaches(true);
-      FDependsOnCodeTools.Remove(ATool);
+      DependentTool:=TFindDeclarationTool(ANode.Data);
+      DependentTool.ClearNodeCaches(true);
       ANode:=FDependentCodeTools.FindSuccessor(ANode);
     end;
     FDependentCodeTools.Clear;
@@ -4281,14 +4315,17 @@ end;
 procedure TFindDeclarationTool.ClearDependsOnToolRelationships;
 var
   ANode: TAVLTreeNode;
-  ATool: TFindDeclarationTool;
+  DependOnTool: TFindDeclarationTool;
 begin
   if FDependsOnCodeTools=nil then exit;
+  {$IFDEF ShowCacheDependencies}
+  writeln('[TFindDeclarationTool.ClearDependsOnToolRelationships] ',MainFilename);
+  {$ENDIF}
   ANode:=FDependsOnCodeTools.FindLowest;
   while ANode<>nil do begin
-    ATool:=TFindDeclarationTool(ANode.Data);
-    if not ATool.FClearingDependentNodeCaches then
-      ATool.FDependentCodeTools.Remove(Self);
+    DependOnTool:=TFindDeclarationTool(ANode.Data);
+    if not DependOnTool.FClearingDependentNodeCaches then
+      DependOnTool.FDependentCodeTools.Remove(Self);
     ANode:=FDependsOnCodeTools.FindSuccessor(ANode);
   end;
   FDependsOnCodeTools.Clear;
@@ -4296,17 +4333,19 @@ end;
 
 procedure TFindDeclarationTool.AddToolDependency(
   DependOnTool: TFindDeclarationTool);
-// this tool depends on DependOnTool
+// build a relationship: this tool depends on DependOnTool
 begin
+  {$IFDEF ShowCacheDependencies}
+  writeln('[TFindDeclarationTool.AddToolDependency] "',MainFilename,'" depends on "',DependOnTool.MainFilename,'"');
+  {$ENDIF}
   if DependOnTool.FDependentCodeTools=nil then
     DependOnTool.FDependentCodeTools:=TAVLTree.Create;
   if DependOnTool.FDependentCodeTools.Find(Self)=nil then
     DependOnTool.FDependentCodeTools.Add(Self);
   if FDependsOnCodeTools=nil then
     FDependsOnCodeTools:=TAVLTree.Create;
-  if FDependsOnCodeTools.Find(DependOnTool)=nil then begin
+  if FDependsOnCodeTools.Find(DependOnTool)=nil then
     FDependsOnCodeTools.Add(DependOnTool);
-  end;
 end;
 
 function TFindDeclarationTool.ConsistencyCheck: integer;
@@ -4411,8 +4450,7 @@ begin
       CleanEndPos:=SrcLen+1;
   end;
   {$IFDEF ShowNodeCache}
-  beVerbose:=CompareSrcIdentifiers(Identifier,'ReadParamType')
-            and (ExtractFileName(MainFilename)='pascalparsertool.pas');
+  beVerbose:=CompareSrcIdentifiers(Identifier,'FONT');
   if beVerbose then begin
     writeln('(((((((((((((((((((((((((((==================');
     
