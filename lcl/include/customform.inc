@@ -66,6 +66,7 @@ end;
 destructor TCustomForm.Destroy;
 begin
   Assert(False, Format('Trace: [TCustomForm.Destroy] %s', [ClassName]));
+  FMenu.Free;
   inherited Destroy;
 end;
 
@@ -492,6 +493,7 @@ begin
   fCompStyle:= csForm;
 
   FFormState := [];
+  FMenu	:= nil;	
 
   {apply a drawing surface}
   FCanvas := TControlCanvas.Create;
@@ -728,6 +730,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.2  2000/07/23 19:01:33  lazarus
+  menus will be destroyed now, stoppok
+
   Revision 1.1  2000/07/13 10:28:25  michael
   + Initial import
 

@@ -111,7 +111,16 @@ end;
   Destructor for the class.
  ------------------------------------------------------------------------------}
 destructor TMenuItem.Destroy;
+var
+   i : integer;	
 begin
+  i := 0;
+  if assigned (FItems) then
+     while i < FItems.Count do
+     begin
+        TMenuItem(FItems [i]).Free;
+        inc (i);
+     end;
   FItems.Free;
   inherited Destroy;
 end;
@@ -394,6 +403,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.2  2000/07/23 19:01:33  lazarus
+  menus will be destroyed now, stoppok
+
   Revision 1.1  2000/07/13 10:28:26  michael
   + Initial import
 
@@ -419,6 +431,9 @@ end;
 
 
   $Log$
+  Revision 1.2  2000/07/23 19:01:33  lazarus
+  menus will be destroyed now, stoppok
+
   Revision 1.1  2000/07/13 10:28:26  michael
   + Initial import
 
