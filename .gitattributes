@@ -874,7 +874,6 @@ lcl/interfaces/gnome/gnomewinapi.inc svneol=native#text/pascal
 lcl/interfaces/gnome/gnomewinapih.inc svneol=native#text/pascal
 lcl/interfaces/gnome/interfaces.pp svneol=native#text/pascal
 lcl/interfaces/gtk/dragicons.inc svneol=native#text/pascal
-lcl/interfaces/gtk/gdkpixbuf.pp svneol=native#text/pascal
 lcl/interfaces/gtk/gtkcallback.inc svneol=native#text/pascal
 lcl/interfaces/gtk/gtkcomboboxcallback.inc svneol=native#text/pascal
 lcl/interfaces/gtk/gtkdef.pp svneol=native#text/pascal
