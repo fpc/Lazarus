@@ -1783,6 +1783,7 @@ procedure TMainIDE.OnSrcNoteBookShowUnitInfo(Sender: TObject);
 var ActiveSrcEdit:TSourceEditor;
   ActiveUnitInfo:TUnitInfo;
   ShortUnitName, AFilename: string;
+  ClearIncludedByFile: boolean;
 begin
   GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
   if (ActiveSrcEdit=nil) or (ActiveUnitInfo=nil) then exit;
@@ -1791,7 +1792,12 @@ begin
   ShowUnitInfoDlg(ShortUnitName,
     LazSyntaxHighlighterNames[ActiveUnitInfo.SyntaxHighlighter],
     ActiveUnitInfo.IsPartOfProject, length(ActiveSrcEdit.Source.Text),
-    ActiveSrcEdit.Source.Count,AFilename);
+    ActiveSrcEdit.Source.Count,
+    Project1.RemoveProjectPathFromFilename(AFilename),
+    Project1.RemoveProjectPathFromFilename(ActiveUnitInfo.Source.LastIncludedByFile),
+    ClearIncludedByFile);
+  if ClearIncludedByFile then
+    ActiveUnitInfo.Source.LastIncludedByFile:='';
 end;
 
 {------------------------------------------------------------------------------}
@@ -7520,6 +7526,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.443  2002/12/26 11:00:14  mattias
+  added included by to unitinfo and a few win32 functions
+
   Revision 1.442  2002/12/25 13:30:36  mattias
   added more windows funcs and fixed jump to compiler error end of file
 
