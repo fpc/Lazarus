@@ -142,7 +142,6 @@ End;
  ------------------------------------------------------------------------------}
 Procedure TWin32WidgetSet.CallDefaultWndHandler(Sender: TObject; var Message);
 var
-  PrevWndProc: pointer;
   Handle: HWND;
 
   procedure CallWin32PaintHandler;
@@ -2996,6 +2995,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.114  2004/05/21 11:20:26  micha
+  remove unused variable; fixes compiler warning
+
   Revision 1.113  2004/05/21 11:13:18  micha
   add measureitem to tcustomlistbox just like tcustomcombobox has
 
