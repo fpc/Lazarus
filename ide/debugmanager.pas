@@ -1767,6 +1767,7 @@ begin
   ecRunToCursor: DoRunToCursor;
   ecStopProgram: DoStopProject;
   ecToggleCallStack:   DoToggleCallStack;
+  ecEvaluate:          ViewDebugDialog(ddtEvaluate);
   ecToggleWatches:     ViewDebugDialog(ddtWatches);
   ecToggleBreakPoints: ViewDebugDialog(ddtBreakpoints);
   ecToggleDebuggerOut: ViewDebugDialog(ddtOutput);
@@ -1946,6 +1947,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.85  2005/02/10 21:06:45  micha
+  map evaluate command to show evaluate dialog
+
   Revision 1.84  2005/01/29 14:36:02  mattias
   reactivated fast xml units without widestrings
 
