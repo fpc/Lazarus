@@ -114,6 +114,14 @@ resourcestring
   oisHelpHelpContextNotFoundInDatabase = 'Help context %s not found in '
     +'Database %s%s%s.';
   oisHelpHelpContextNotFound = 'Help context %s not found.';
+  oisLoadImageDialog = 'Load Image Dialog';
+  oisOK = '&OK';
+  oisCancel = '&Cancel';
+  oisLoad = '&Load';
+  oisSave = '&Save';
+  oisCLear = 'C&lear';
+  oisErrorLoadingImage = 'Error loading image';
+  oisErrorLoadingImage2 = 'Error loading image %s%s%s:%s%s';
 
 implementation
 

@@ -1117,6 +1117,7 @@ var
 begin
   if Sender is TWinControl then begin
     AControl:=TWinControl(Sender);
+    //debugln('TApplication.ControlKeyDown A ',Acontrol.Name);
 
     // handle tab keys
     if (Key=VK_Tab) and ((Shift-[ssShift])=[])
@@ -1131,6 +1132,7 @@ begin
     if (Shift = []) and ((Key = VK_RETURN) or (Key = VK_ESCAPE)) then
     begin
       Form := GetParentForm(AControl);
+      //debugln('TApplication.ControlKeyDown B ',Acontrol.Name,' ',dbgs(Form<>nil),' ',dbgs(anoEscapeForCancelControl in Navigation));
       if Form<>nil then begin
         case Key of
           VK_RETURN:
@@ -1142,11 +1144,13 @@ begin
             end;
 
           VK_ESCAPE:
-            if (anoEscapeForCancelControl in Navigation)
-            and (Form.CancelControl <> nil) then
-            begin
-              Form.CancelControl.ExecuteCancelAction;
-              Key := VK_UNKNOWN;
+            if (anoEscapeForCancelControl in Navigation) then begin
+              if (Form.CancelControl <> nil) then
+              begin
+                //debugln('TApplication.ControlKeyDown C ',Acontrol.Name);
+                Form.CancelControl.ExecuteCancelAction;
+                Key := VK_UNKNOWN;
+              end;
             end;
             
         end;
@@ -1323,6 +1327,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.88  2004/08/26 22:12:39  mattias
+  localized graphprop editor form and replaced opensavedialog with opensavepicturedialog
+
   Revision 1.87  2004/08/26 19:09:34  mattias
   moved navigation key handling to TApplication and added options for custom navigation
 

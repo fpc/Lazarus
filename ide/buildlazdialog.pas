@@ -181,8 +181,6 @@ type
     CancelButton: TButton;
     ImageList: TImageList;
     procedure BuildAllButtonClick(Sender: TObject);
-    procedure ConfigureBuildLazarusDlgKeyDown(Sender: TObject; var Key: Word;
-                                              Shift: TShiftState);
     procedure ConfigureBuildLazarusDlgResize(Sender: TObject);
     procedure ItemsListBoxDrawItem(Control: TWinControl; Index: Integer;
                                    ARect: TRect; State: TOwnerDrawState);
@@ -530,8 +528,7 @@ begin
   Position:=poScreenCenter;
   Caption:=Format(lisConfigureBuildLazarus, ['"', '"']);
   OnResize:=@ConfigureBuildLazarusDlgResize;
-  OnKeyDown:=@ConfigureBuildLazarusDlgKeyDown;
-  
+
   SetupComponents;
   OnResize(nil);
 end;
@@ -547,13 +544,6 @@ begin
   Save(Options);
   Options.SetBuildAll;
   Load(Options);
-end;
-
-procedure TConfigureBuildLazarusDlg.ConfigureBuildLazarusDlgKeyDown(
-  Sender: TObject; var Key: Word; Shift: TShiftState);
-begin
-  if Key=VK_Escape then
-    ModalResult:=mrCancel;
 end;
 
 procedure TConfigureBuildLazarusDlg.ConfigureBuildLazarusDlgResize(
@@ -938,6 +928,7 @@ begin
     Name:='OkButton';
     Caption:=lisLazBuildOk;
     OnClick:=@OkButtonClick;
+    Default:=true;
   end;
 
   CancelButton:=TButton.Create(Self);
@@ -946,6 +937,7 @@ begin
     Name:='CancelButton';
     Caption:=lisLazBuildCancel;
     OnClick:=@CancelButtonClick;
+    Cancel:=true;
   end;
 
 end;

@@ -920,7 +920,7 @@ begin
     AddFile('arrow.pp','Arrow',pftUnit,[pffHasRegisterProc],cpBase);
     AddFile('calendar.pp','Calendar',pftUnit,[pffHasRegisterProc],cpBase);
     AddFile('pairsplitter.pas','PairSplitter',pftUnit,[pffHasRegisterProc],cpBase);
-    AddFile('extdlgs.pp','ExtDlgs',pftUnit,[pffHasRegisterProc],cpBase);
+    AddFile('extdlgs.pas','ExtDlgs',pftUnit,[pffHasRegisterProc],cpBase);
     AddFile('dbctrls.pp','DBCtrls',pftUnit,[pffHasRegisterProc],cpBase);
     AddFile('dbgrids.pas','DBGrids',pftUnit,[pffHasRegisterProc],cpBase);
     AddFile('editbtn.pas','EditBtn',pftUnit,[pffHasRegisterProc],cpBase);

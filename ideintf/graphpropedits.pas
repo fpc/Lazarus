@@ -23,7 +23,8 @@ interface
 
 uses
   Classes, TypInfo, SysUtils, Forms, Controls, LCLType, GraphType, Graphics,
-  StdCtrls, Buttons, ComCtrls, Menus, ExtCtrls, Dialogs, LCLIntf, PropEdits;
+  StdCtrls, Buttons, ComCtrls, Menus, ExtCtrls, Dialogs, LCLIntf, ExtDlgs,
+  ObjInspStrConsts, PropEdits;
 
 type
  {TGraphicPropertyEditor
@@ -164,8 +165,8 @@ type
     FModified: boolean;
     procedure SetModified(const AValue: boolean);
   protected
-    Opendlg: TOPENDIALOG;
-    Savedlg: TSAVEDIALOG;
+    Opendlg: TOpenPictureDialog;
+    Savedlg: TSavePictureDialog;
 
     OKBTN: TBITBTN;
     CANCELBTN: TBITBTN;
@@ -195,24 +196,14 @@ begin
   FileName := '';
   Position := poDesktopCenter;
 
-  Caption := 'Load Image Dialog';
+  Caption := oisLoadImageDialog;
 
   HEIGHT := 419;
   WIDTH  := 403;
 
-  Opendlg := TOPENDIALOG.Create(Self);
-  With Opendlg do begin
-    OPTIONS := [ofextensiondifferent, ofpathmustexist, offilemustexist, ofenablesizing];
-    DEFAULTEXT := 'xpm';
-    FILTER := 'All Image formats (*.bmp;*.xpm)|*.bmp;*.xpm|Bitmaps (*.bmp)|*.bmp|XPM images (*.xpm)|*.xpm';
-  end;
+  Opendlg := TOpenPictureDialog.Create(Self);
 
-  Savedlg := TSAVEDIALOG.Create(Self);
-  With Savedlg do begin
-    OPTIONS := [ofextensiondifferent, ofpathmustexist, offilemustexist, ofenablesizing];
-    DEFAULTEXT := 'xpm';
-    FILTER := Opendlg.Filter;
-  end;
+  Savedlg := TSavePictureDialog.Create(Self);
 
   OKBTN := TBITBTN.Create(Self);
   With OKBTN do begin
@@ -220,7 +211,7 @@ begin
     KIND := bkok;
     SPACING := 3;
     MODALRESULT := mrOK;
-    CAPTION := '&OK';
+    CAPTION := oisOK;
   end;
 
   ScrollBox := TScrollBox.Create(Self);
@@ -246,13 +237,13 @@ begin
     KIND := bkcancel;
     SPACING := 3;
     MODALRESULT := mrCancel;
-    CAPTION := '&Cancel';
+    CAPTION := oisCancel;
   end;
 
   LoadBTN := TBUTTON.Create(Self);
   With LoadBTN do begin
     Parent := Self;
-    CAPTION := '&Load';
+    CAPTION := oisLoad;
     ONCLICK := @LoadBTNCLICK;
   end;
 
@@ -260,14 +251,14 @@ begin
   With SaveBTN do begin
     Parent := Self;
     ENABLED := False;
-    CAPTION := '&Save';
+    CAPTION := oisSave;
     ONCLICK := @SaveBTNCLICK;
   end;
 
   ClearBTN := TBUTTON.Create(Self);
   With ClearBTN do begin
     Parent := Self;
-    CAPTION := 'C&lear';
+    CAPTION := oisCLear;
     ONCLICK := @ClearBTNCLICK;
   end;
   
@@ -325,9 +316,8 @@ begin
       Modified:=true;
     except
       on E: Exception do begin
-        MessageDlg('Error loading image',
-          'Error loading image "'+FileName+'":'#13+
-          E.Message,
+        MessageDlg(oisErrorLoadingImage,
+          Format(oisErrorLoadingImage2, ['"', FileName, '"', #13, E.Message]),
           mtError,[mbOk],0);
       end;
     end;
@@ -515,49 +505,12 @@ end;
 procedure TColorPropertyEditor.Edit;
 var
   ColorDialog: TColorDialog;
-  {IniFile: TRegIniFile;
-
-  procedure GetCustomColors;
-  begin
-    if BaseRegistryKey = '' then Exit;
-    IniFile := TRegIniFile.Create(BaseRegistryKey);
-    try
-      IniFile.ReadSectionValues(SCustomColors, ColorDialog.CustomColors);
-    except
-      // Ignore errors reading values
-    end;
-  end;
-
-  procedure SaveCustomColors;
-  var
-    I, P: Integer;
-    S: ansistring;
-  begin
-    if IniFile <> nil then
-      with ColorDialog do
-        for I := 0 to CustomColors.Count - 1 do
-        begin
-          S := CustomColors.Strings[I];
-          P := Pos('=', S);
-          if P <> 0 then
-          begin
-            S := Copy(S, 1, P - 1);
-            IniFile.WriteString(SCustomColors, S,
-              CustomColors.Values[S]);
-          end;
-        end;
-  end;
-  }
 begin
-  {IniFile := nil;}
   ColorDialog := TColorDialog.Create(Application);
   try
-    {GetCustomColors;}
     ColorDialog.Color := GetOrdValue;
     if ColorDialog.Execute then SetOrdValue(ColorDialog.Color);
-    {SaveCustomColors;}
   finally
-    {IniFile.Free;}
     ColorDialog.Free;
   end;
 end;
@@ -869,7 +822,8 @@ initialization
   RegisterPropertyEditor(ClassTypeInfo(TFont), nil,'',TFontPropertyEditor);
   RegisterPropertyEditor(ClassTypeInfo(TGraphic), nil,'',TGraphicPropertyEditor);
   RegisterPropertyEditor(ClassTypeInfo(TPicture), nil,'',TPicturePropertyEditor);
-  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('AnsiString'), TFont,'Name', TFontNamePropertyEditor);
+  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('AnsiString'),
+    TFont,'Name', TFontNamePropertyEditor);
   RegisterPropertyEditor(ClassTypeInfo(TBitmap), TSpeedButton,'Glyph',
     TButtonGlyphPropEditor);
   RegisterPropertyEditor(ClassTypeInfo(TBitmap), TBitBtn,'Glyph',
