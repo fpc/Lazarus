@@ -641,7 +641,7 @@ type
     FStyle: TBrushStyle;
     {$ENDIF}
     procedure FreeHandle;
-    Procedure DoChange(var Msg); message LM_CHANGED;
+    procedure DoChange(var Msg); message LM_CHANGED;
   protected
     {$IFDEF UseFPCanvas}
     procedure DoAllocateResources; override;
@@ -676,7 +676,6 @@ type
   TRegionData = record
     Handle: HRgn;
     Rect: TRect;
-
     {Polygon Region Info - not used yet}
     Polygon: PPoint;//Polygon Points
     NumPoints: Longint;//Number of Points
@@ -951,12 +950,6 @@ type
     function DoCreateDefaultFont: TFPCustomFont; override;
     function DoCreateDefaultPen: TFPCustomPen; override;
     function DoCreateDefaultBrush: TFPCustomBrush; override;
-    procedure SetFont(AValue: TFPCustomFont); override;
-    procedure SetBrush(AValue: TFPCustomBrush); override;
-    procedure SetPen(AValue: TFPCustomPen); override;
-    function  DoAllowFont(AFont: TFPCustomFont): boolean; override;
-    function  DoAllowPen(APen: TFPCustomPen): boolean; override;
-    function  DoAllowBrush(ABrush: TFPCustomBrush): boolean; override;
     procedure SetColor(x, y: integer; const Value: TFPColor); override;
     function  GetColor(x, y: integer): TFPColor; override;
     procedure SetHeight(AValue: integer); override;
@@ -984,14 +977,14 @@ type
     procedure DoMoveTo(x, y: integer); override;
     procedure DoLineTo(x, y: integer); override;
     procedure DoLine(x1, y1, x2, y2: integer); override;
-    procedure DoCopyRect(x, y: integer; Canvas: TFPCustomCanvas;
+    procedure DoCopyRect(x, y: integer; SrcCanvas: TFPCustomCanvas;
                          const SourceRect: TRect); override;
     procedure DoDraw(x, y: integer; const Image: TFPCustomImage); override;
     procedure CheckHelper(AHelper: TFPCanvasHelper); override;
     {$ELSE}
     {$ENDIF}
   protected
-    function GetCanvasClipRect: TRect; virtual;
+    function GetClipRect: TRect; {$IFDEF UseFPCanvas}override;{$ELSE}virtual;{$ENDIF}
     Function GetPixel(X,Y: Integer): TColor; virtual;
     procedure CreateBrush; virtual;
     procedure CreateFont; virtual;
@@ -1014,6 +1007,7 @@ type
     procedure Changing; virtual;
     procedure Changed; virtual;
 
+    // extra drawing methods (there are more in the ancestor TFPCustomCanvas)
     procedure Arc(x, y, AWidth, AHeight, angle1, angle2: Integer); virtual;
     procedure Arc(x, y, AWidth, AHeight, SX, SY, EX, EY: Integer); virtual;
     Procedure BrushCopy(Dest: TRect; InternalImages: TBitmap; Src: TRect;
@@ -1025,8 +1019,8 @@ type
                        const Source: TRect); virtual;
     Procedure Draw(X,Y: Integer; SrcGraphic: TGraphic); virtual;
     procedure StretchDraw(const DestRect: TRect; SrcGraphic: TGraphic); virtual;
-    procedure Ellipse(const ARect: TRect);
-    procedure Ellipse(x1, y1, x2, y2: Integer); virtual;
+    procedure Ellipse(const ARect: TRect); // already in fpcanvas
+    procedure Ellipse(x1, y1, x2, y2: Integer); virtual; // already in fpcanvas
     Procedure FillRect(const ARect: TRect); virtual;
     Procedure FillRect(X1,Y1,X2,Y2: Integer);
     procedure FloodFill(X, Y: Integer; FillColor: TColor;
@@ -1037,9 +1031,9 @@ type
     procedure Frame(X1,Y1,X2,Y2: Integer);     // border using pen
     procedure FrameRect(const ARect: TRect); virtual; // border using brush
     procedure FrameRect(X1,Y1,X2,Y2: Integer); // border using brush
-    Procedure Line(X1,Y1,X2,Y2: Integer); virtual; // short for MoveTo();LineTo();
-    Procedure LineTo(X1,Y1: Integer); virtual;
-    Procedure MoveTo(X1,Y1: Integer); virtual;
+    Procedure Line(X1,Y1,X2,Y2: Integer); virtual; // short for MoveTo();LineTo(); // already in fpcanvas
+    Procedure LineTo(X1,Y1: Integer); virtual; // already in fpcanvas
+    Procedure MoveTo(X1,Y1: Integer); virtual; // already in fpcanvas
     procedure RadialPie(x,y,AWidth, AHeight,
                         StartAngle16Deg, EndAngle16Deg: Integer); virtual;
     procedure RadialPie(x, y, AWidth, AHeight, sx, sy, ex, ey: Integer); virtual;
@@ -1060,17 +1054,17 @@ type
                       NumPts: Integer {$IFNDEF VER1_0} = -1{$ENDIF});
     procedure Polygon(Points: PPoint; NumPts: Integer;
                       Winding: boolean{$IFNDEF VER1_0} = False{$ENDIF}); virtual;
-    Procedure Polygon(const Points: array of TPoint);
+    Procedure Polygon(const Points: array of TPoint); // already in fpcanvas
     procedure Polyline(const Points: array of TPoint;
                        StartIndex: Integer;
                        NumPts: Integer {$IFNDEF VER1_0} = -1{$ENDIF});
     procedure Polyline(Points: PPoint; NumPts: Integer); virtual;
-    procedure Polyline(const Points: array of TPoint);
-    Procedure Rectangle(X1,Y1,X2,Y2: Integer); virtual;
-    Procedure Rectangle(const Rect: TRect);
+    procedure Polyline(const Points: array of TPoint); // already in fpcanvas
+    Procedure Rectangle(X1,Y1,X2,Y2: Integer); virtual; // already in fpcanvas
+    Procedure Rectangle(const ARect: TRect); // already in fpcanvas
     Procedure RoundRect(X1, Y1, X2, Y2: Integer; RX,RY: Integer); virtual;
     Procedure RoundRect(const Rect: TRect; RX,RY: Integer);
-    procedure TextOut(X,Y: Integer; const Text: String); virtual;
+    procedure TextOut(X,Y: Integer; const Text: String); virtual; // already in fpcanvas
     procedure TextRect(const ARect: TRect; X, Y: integer; const Text: string);
     procedure TextRect(ARect: TRect; X, Y: integer; const Text: string;
                        const Style: TTextStyle); virtual;
@@ -1080,8 +1074,8 @@ type
     function HandleAllocated: boolean; virtual;
     function GetUpdatedHandle(ReqState: TCanvasState): HDC; virtual;
   public
-    property ClipRect: TRect read GetCanvasClipRect;
     {$IFNDEF UseFPCanvas}
+    property ClipRect: TRect read GetClipRect;
     property PenPos: TPoint read FPenPos write SetPenPos;
     {$ENDIF}
     property Pixels[X, Y: Integer]: TColor read GetPixel write SetPixel;
@@ -1952,6 +1946,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.171  2005/01/10 18:44:44  mattias
+  implemented the fpCanvas support for the LCL - Compile with -dUseFPCanvas
+
   Revision 1.170  2005/01/08 15:06:06  mattias
   fixed TabOrder dialog for new TabOrder
 

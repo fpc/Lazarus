@@ -54,9 +54,9 @@ begin
 end;
 
 {-----------------------------------------------}
-{--  TCanvas.GetCanvasClipRect --}
+{--  TCanvas.GetClipRect --}
 {-----------------------------------------------}
-function TCanvas.GetCanvasClipRect: TRect;
+function TCanvas.GetClipRect: TRect;
 begin
   If GetClipBox(FHandle, @Result) = ERROR then
     Result := Rect(0,0,2000,2000);{Just in Case}
@@ -231,6 +231,7 @@ end;
 procedure TCanvas.SetPenPos(const AValue: TPoint);
 begin
   MoveTo(AValue.X,AValue.Y);
+  // fpcanvas TODO
 end;
 
 {------------------------------------------------------------------------------
@@ -282,124 +283,124 @@ begin
   Result:=TBrush.Create;
 end;
 
-procedure TCanvas.SetFont(AValue: TFPCustomFont);
-begin
-  inherited SetFont(AValue);
-end;
-
-procedure TCanvas.SetBrush(AValue: TFPCustomBrush);
-begin
-  inherited SetBrush(AValue);
-end;
-
-procedure TCanvas.SetPen(AValue: TFPCustomPen);
-begin
-  inherited SetPen(AValue);
-end;
-
-function TCanvas.DoAllowFont(AFont: TFPCustomFont): boolean;
-begin
-  Result:=inherited DoAllowFont(AFont);
-end;
-
-function TCanvas.DoAllowPen(APen: TFPCustomPen): boolean;
-begin
-  Result:=inherited DoAllowPen(APen);
-end;
-
-function TCanvas.DoAllowBrush(ABrush: TFPCustomBrush): boolean;
-begin
-  Result:=inherited DoAllowBrush(ABrush);
-end;
-
 procedure TCanvas.SetColor(x, y: integer; const Value: TFPColor);
 begin
-  inherited SetColor(x, y, Value);
+  Pixels[x,y]:=FPColorToTColor(Value);
 end;
 
 function TCanvas.GetColor(x, y: integer): TFPColor;
 begin
-  Result:=inherited GetColor(x, y);
+  Result:=TColorToFPColor(Pixels[x,y]);
 end;
 
 procedure TCanvas.SetHeight(AValue: integer);
 begin
-  inherited SetHeight(AValue);
+  RaiseGDBException('TCanvas.SetHeight not allowed for LCL canvas');
 end;
 
 function TCanvas.GetHeight: integer;
+var
+  w: Integer;
 begin
-  Result:=inherited GetHeight;
+  if HandleAllocated then
+    GetWindowSize(Handle,w,Result)
+  else
+    Result:=0;
 end;
 
 procedure TCanvas.SetWidth(AValue: integer);
 begin
-  inherited SetWidth(AValue);
+  RaiseGDBException('TCanvas.SetWidth not allowed for LCL canvas');
 end;
 
 function TCanvas.GetWidth: integer;
+var
+  h: Integer;
 begin
-  Result:=inherited GetWidth;
-end;
-
-procedure TCanvas.SetPenPos(const AValue: TPoint);
-begin
-  inherited SetPenPos(AValue);
+  if HandleAllocated then
+    GetWindowSize(Handle,Result,h)
+  else
+    Result:=0;
 end;
 
 procedure TCanvas.DoLockCanvas;
 begin
+  if FLock=0 then InitializeCriticalSection(FLock);
+  EnterCriticalSection(FLock);
   inherited DoLockCanvas;
 end;
 
 procedure TCanvas.DoUnlockCanvas;
 begin
+  LeaveCriticalSection(FLock);
   inherited DoUnlockCanvas;
 end;
 
 procedure TCanvas.DoTextOut(x, y: integer; Text: string);
 begin
-  inherited DoTextOut(x, y, Text);
+  TextOut(X,Y,Text);
 end;
 
 procedure TCanvas.DoGetTextSize(Text: string; var w, h: integer);
+var
+  TxtSize: tagSIZE;
 begin
-  inherited DoGetTextSize(Text, w, h);
+  TxtSize:=TextExtent(Text);
+  w:=TxtSize.cx;
+  h:=TxtSize.cy;
 end;
 
 function TCanvas.DoGetTextHeight(Text: string): integer;
 begin
-  Result:=inherited DoGetTextHeight(Text);
+  Result:=TextHeight(Text);
 end;
 
 function TCanvas.DoGetTextWidth(Text: string): integer;
 begin
-  Result:=inherited DoGetTextWidth(Text);
+  Result:=TextWidth(Text);
 end;
 
 procedure TCanvas.DoRectangle(const Bounds: TRect);
 begin
-  inherited DoRectangle(Bounds);
+  Frame(Bounds);
 end;
 
 procedure TCanvas.DoRectangleFill(const Bounds: TRect);
 begin
-  inherited DoRectangleFill(Bounds);
+  FillRect(Bounds);
 end;
 
 procedure TCanvas.DoRectangleAndFill(const Bounds: TRect);
 begin
-  inherited DoRectangleAndFill(Bounds);
+  Rectangle(Bounds);
 end;
 
 procedure TCanvas.DoEllipse(const Bounds: TRect);
+var
+  x: Integer;
+  y: Integer;
+  w: Integer;
+  h: Integer;
 begin
-  inherited DoEllipse(Bounds);
+  x:=(Bounds.Left+Bounds.Right) div 2;
+  y:=(Bounds.Top+Bounds.Bottom) div 2;
+  w:=Abs(Bounds.Right-Bounds.Left) div 2;
+  h:=Abs(Bounds.Bottom-Bounds.Top) div 2;
+  Arc(x,y,w,h,0,360*16);
 end;
 
 procedure TCanvas.DoEllipseFill(const Bounds: TRect);
+var
+  x: Integer;
+  y: Integer;
+  w: Integer;
+  h: Integer;
 begin
-  inherited DoEllipseFill(Bounds);
+  x:=(Bounds.Left+Bounds.Right) div 2;
+  y:=(Bounds.Top+Bounds.Bottom) div 2;
+  w:=Abs(Bounds.Right-Bounds.Left) div 2;
+  h:=Abs(Bounds.Bottom-Bounds.Top) div 2;
+  Chord(x,y,w,h,0,360*16);
 end;
 
 procedure TCanvas.DoEllipseAndFill(const Bounds: TRect);
@@ -409,12 +410,12 @@ end;
 
 procedure TCanvas.DoPolygon(const Points: array of TPoint);
 begin
-  inherited DoPolygon(Points);
+  Polyline(Points);
 end;
 
 procedure TCanvas.DoPolygonFill(const Points: array of TPoint);
 begin
-  inherited DoPolygonFill(Points);
+  Polygon(Points);
 end;
 
 procedure TCanvas.DoPolygonAndFill(const Points: array of TPoint);
@@ -424,43 +425,86 @@ end;
 
 procedure TCanvas.DoPolyline(const Points: array of TPoint);
 begin
-  inherited DoPolyline(Points);
+  Polyline(Points);
 end;
 
 procedure TCanvas.DoFloodFill(x, y: integer);
 begin
-  inherited DoFloodFill(x, y);
+  FloodFill(x,y,Color,fsSurface);
 end;
 
 procedure TCanvas.DoMoveTo(x, y: integer);
 begin
-  inherited DoMoveTo(x, y);
+  MoveTo(X,Y);
 end;
 
 procedure TCanvas.DoLineTo(x, y: integer);
 begin
-  inherited DoLineTo(x, y);
+  LineTo(X,Y);
 end;
 
 procedure TCanvas.DoLine(x1, y1, x2, y2: integer);
 begin
-  inherited DoLine(x1, y1, x2, y2);
+  Line(x1,y1,x2,y2);
 end;
 
-procedure TCanvas.DoCopyRect(x, y: integer; Canvas: TFPCustomCanvas;
+procedure TCanvas.DoCopyRect(x, y: integer; SrcCanvas: TFPCustomCanvas;
   const SourceRect: TRect);
-begin
-  inherited DoCopyRect(x, y, Canvas, SourceRect);
+  
+  Procedure WarnNotSupported;
+  begin
+    debugln('WARNING: TCanvas.DoCopyRect from ',DbgSName(SrcCanvas));
+  end;
+  
+var
+  SH: Integer;
+  SW: Integer;
+Begin
+  if SrcCanvas=nil then exit;
+  if SrcCanvas is TCanvas then begin
+    SW := SourceRect.Right - SourceRect.Left;
+    SH := SourceRect.Bottom - SourceRect.Top;
+    if (SH=0) or (SW=0) then exit;
+    CopyRect(Rect(x,y,x+SW,y+SH),TCanvas(SrcCanvas),SourceRect);
+  end else begin
+    WarnNotSupported;
+  end;
 end;
 
 procedure TCanvas.DoDraw(x, y: integer; const Image: TFPCustomImage);
+var
+  LazImg: TLazIntfImage;
+  BitmapHnd, MaskHnd: HBitmap;
 begin
-  inherited DoDraw(x, y, Image);
+  if Image=nil then exit;
+  LazImg:=TLazIntfImage(Image);
+  BitmapHnd:=0;
+  MaskHnd:=0;
+  try
+    if not (LazImg is TLazIntfImage) then begin
+      LazImg:=TLazIntfImage.Create(0,0);
+      RequiredState([csHandleValid]);
+      LazImg.GetDescriptionFromDevice(Handle);
+      LazImg.Assign(Image);
+    end;
+    LazImg.CreateBitmap(BitmapHnd,MaskHnd,false);
+    if BitmapHnd=0 then exit;
+
+    Changing;
+    RequiredState([csHandleValid]);
+    StretchBlt(FHandle,x,y,LazImg.Width,LazImg.Height,
+      BitmapHnd, 0,0,LazImg.Width,LazImg.Height, CopyMode);
+    Changed;
+  finally
+    if Image<>LazImg then LazImg.Free;
+    if BitmapHnd<>0 then DeleteDC(BitmapHnd);
+    if MaskHnd<>0 then DeleteDC(MaskHnd);
+  end;
 end;
 
 procedure TCanvas.CheckHelper(AHelper: TFPCanvasHelper);
 begin
-  inherited CheckHelper(AHelper);
+  debugln('TCanvas.CheckHelper ignored for ',DbgSName(AHelper));
 end;
 {$ENDIF}
 
@@ -874,9 +918,9 @@ end;
   Returns:  Nothing
 
  ------------------------------------------------------------------------------}
-procedure TCanvas.Rectangle(const Rect: TRect);
+procedure TCanvas.Rectangle(const ARect: TRect);
 begin
-  Rectangle(Rect.Left, Rect.Top, Rect.Right, Rect.Bottom);
+  Rectangle(ARect.Left, ARect.Top, ARect.Right, ARect.Bottom);
 end;
 
 {------------------------------------------------------------------------------
@@ -1178,25 +1222,32 @@ end;
 constructor TCanvas.Create;
 begin
   FHandle := 0;
+  {$IFDEF UseFPCanvas}
+  ManageResources := true;
+  {$ENDIF}
   inherited Create;
+  {$IFDEF UseFPCanvas}
+  FFont := TFont(inherited Font);
+  FPen := TPen(inherited Pen);
+  FBrush := TBrush(inherited Brush);
+  {$ELSE}
   FFont := TFont.Create;
+  FPen := TPen.Create;
+  FBrush := TBrush.Create;
+  FPenPos := Point(0, 0);
+  FLockCount := 0;
+  {$ENDIF}
   FFont.OnChange := @FontChanged;
   FSavedFontHandle := 0;
-  FPen := TPen.Create;
   FPen.OnChanging := @PenChanging;
   FPen.OnChange := @PenChanged;
   FSavedPenHandle := 0;
-  FBrush := TBrush.Create;
   FBrush.OnChange := @BrushChanged;
   FSavedBrushHandle := 0;
   FRegion := TRegion.Create;
   FRegion.OnChange := @RegionChanged;
   FSavedRegionHandle := 0;
   FCopyMode := cmSrcCopy;
-  {$IFNDEF UseFPCanvas}
-  FPenPos := Point(0, 0);
-  FLockCount := 0;
-  {$ENDIF}
   // FLock will be initialized on demand, because most canvas don't use it
   With FTextStyle do begin
     Alignment := taLeftJustify;
@@ -1258,13 +1309,21 @@ destructor TCanvas.Destroy;
 begin
 //DebugLn('[TCanvas.Destroy] ',ClassName,'  Self=',HexStr(Cardinal(Pointer(Self)),8));
   Handle := 0;
+  {$IFNDEF UseFPCanvas}
   FreeThenNil(FFont);
   FreeThenNil(FPen);
   FreeThenNil(FBrush);
+  {$ENDIF}
   FreeThenNil(FRegion);
   if FLock <> 0 then
     DeleteCriticalSection(FLock);
   inherited Destroy;
+  {$IFDEF UseFPCanvas}
+  // set resources to nil, so that dangling pointers are spotted early
+  FFont:=nil;
+  FPen:=nil;
+  FBrush:=nil;
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -1276,7 +1335,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCanvas.GetHandle : HDC;
 begin
-//DebugLn('[TCanvas.GetHandle] ',ClassName);
+  //DebugLn('[TCanvas.GetHandle] ',ClassName);
   RequiredState(csAllValid);
   Result := FHandle;
 end;
@@ -1473,6 +1532,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.88  2005/01/10 18:44:44  mattias
+  implemented the fpCanvas support for the LCL - Compile with -dUseFPCanvas
+
   Revision 1.87  2005/01/08 15:06:06  mattias
   fixed TabOrder dialog for new TabOrder
 

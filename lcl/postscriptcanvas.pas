@@ -126,9 +126,9 @@ Type
                       Winding: boolean{$IFNDEF VER1_0}=False{$ENDIF}); override;
 
     procedure Ellipse(x1, y1, x2, y2: Integer); override;
-    procedure Arc(x,y,width,height,angle1,angle2: Integer); override;
-    procedure RadialPie(x,y,width,height,angle1,angle2: Integer); override;
-    procedure Chord(x, y, width, height, angle1, angle2: Integer); override;
+    procedure Arc(x,y,AWidth,AHeight,angle1,angle2: Integer); override;
+    procedure RadialPie(x,y,AWidth,AHeight,angle1,angle2: Integer); override;
+    procedure Chord(x, y, AWidth, AHeight, angle1, angle2: Integer); override;
 
     procedure TextOut(X,Y: Integer; const Text: String); override;
     function TextExtent(const Text: string): TSize; override;
@@ -144,11 +144,11 @@ Type
                         TransparentColor: TColor); override;
 
     //** Methods not implemented
-    procedure Arc(x,y,width,height,SX,SY,EX,EY: Integer); override;
-    procedure Chord(x, y, width, height, SX, SY, EX, EY: Integer); override;
+    procedure Arc(x,y,AWidth,AHeight,SX,SY,EX,EY: Integer); override;
+    procedure Chord(x, y, AWidth, AHeight, SX, SY, EX, EY: Integer); override;
     procedure Frame3d(var ARect: TRect; const FrameWidth: integer;
                       const Style: TGraphicsBevelCut); override;
-    procedure RadialPie(x,y,width,height,sx,sy,ex,ey: Integer); override;
+    procedure RadialPie(x,y,AWidth,AHeight,sx,sy,ex,ey: Integer); override;
     procedure Pie(EllipseX1,EllipseY1,EllipseX2,EllipseY2,
                   StartX,StartY,EndX,EndY: Integer); override;
     procedure TextRect(ARect: TRect; X, Y: integer; const Text: string;
@@ -1591,7 +1591,7 @@ begin
 end;
 
 //Draw an Arc
-procedure TPostscriptPrinterCanvas.Arc(x, y, width, height, angle1,
+procedure TPostscriptPrinterCanvas.Arc(x, y, AWidth, AHeight, angle1,
   angle2: Integer);
 var xScale : Real;
     yScale : Real;
@@ -1603,14 +1603,14 @@ begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
 
-  writecomment(Format('Arc(%d,%d,%d,%d,%d,%d)',[x,y,Width,Height,Angle1,Angle2]));
+  writecomment(Format('Arc(%d,%d,%d,%d,%d,%d)',[x,y,AWidth,AHeight,Angle1,Angle2]));
   TranslateCoord(X,Y);
 
   //calculate centre of ellipse
   cx:=x;
   cy:=y;
-  rx:=Width;
-  ry:=Height;
+  rx:=AWidth;
+  ry:=AHeight;
 
   if Angle2>=0 then
     Ang:='arc'
@@ -1642,7 +1642,7 @@ begin
   Changed;
 end;
 
-procedure TPostscriptPrinterCanvas.RadialPie(x, y, width, height, angle1,
+procedure TPostscriptPrinterCanvas.RadialPie(x, y, AWidth, AHeight, angle1,
   angle2: Integer);
 var xScale : Real;
     yScale : Real;
@@ -1654,14 +1654,14 @@ begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
 
-  writecomment(Format('RadialPie(%d,%d,%d,%d,%d,%d)',[x,y,Width,Height,Angle1,Angle2]));
+  writecomment(Format('RadialPie(%d,%d,%d,%d,%d,%d)',[x,y,AWidth,AHeight,Angle1,Angle2]));
   TranslateCoord(X,Y);
 
   //calculate centre of ellipse
   cx:=x;
   cy:=y;
-  rx:=Width;
-  ry:=Height;
+  rx:=AWidth;
+  ry:=AHeight;
 
   if Angle2>=0 then
     Ang:='arc'
@@ -1824,13 +1824,13 @@ begin
   Changed;
 end;
 
-procedure TPostscriptPrinterCanvas.Arc(x, y, width, height, SX, SY, EX,
+procedure TPostscriptPrinterCanvas.Arc(x, y, AWidth, AHeight, SX, SY, EX,
   EY: Integer);
 begin
   //Not implemented
 end;
 
-procedure TPostscriptPrinterCanvas.Chord(x, y, width, height, angle1,angle2: Integer);
+procedure TPostscriptPrinterCanvas.Chord(x, y, AWidth, AHeight, angle1,angle2: Integer);
 var xScale : Real;
     yScale : Real;
     cX, cY : Real;
@@ -1841,14 +1841,14 @@ begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
 
-  writecomment(Format('Chord(%d,%d,%d,%d,%d,%d)',[x,y,Width,Height,Angle1,Angle2]));
+  writecomment(Format('Chord(%d,%d,%d,%d,%d,%d)',[x,y,AWidth,AHeight,Angle1,Angle2]));
   TranslateCoord(X,Y);
 
   //calculate centre of ellipse
   cx:=x;
   cy:=y;
-  rx:=Width;
-  ry:=Height;
+  rx:=AWidth;
+  ry:=AHeight;
 
   if Angle2>=0 then
     Ang:='arc'
@@ -1875,7 +1875,7 @@ begin
   Changed;
 end;
 
-procedure TPostscriptPrinterCanvas.Chord(x, y, width, height, SX, SY, EX, EY: Integer);
+procedure TPostscriptPrinterCanvas.Chord(x, y, AWidth, AHeight, SX, SY, EX, EY: Integer);
 begin
   //Not implemented
 end;
@@ -1886,7 +1886,7 @@ begin
   //Not implemented
 end;
 
-procedure TPostscriptPrinterCanvas.RadialPie(x, y, width, height, sx, sy, ex,
+procedure TPostscriptPrinterCanvas.RadialPie(x, y, AWidth, AHeight, sx, sy, ex,
   ey: Integer);
 begin
   //Not implemented

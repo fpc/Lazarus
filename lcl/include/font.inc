@@ -534,6 +534,7 @@ begin
   FPitch:=DefFontData.Pitch;
   FCharSet:=DefFontData.CharSet;
   {$IFDEF UseFPCanvas}
+  DelayAllocate:=true;
   inherited SetName(DefFontData.Name);
   inherited SetFPColor(colBlack);
   {$ELSE}
@@ -1099,6 +1100,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.28  2005/01/10 18:44:44  mattias
+  implemented the fpCanvas support for the LCL - Compile with -dUseFPCanvas
+
   Revision 1.27  2005/01/08 15:06:06  mattias
   fixed TabOrder dialog for new TabOrder
 

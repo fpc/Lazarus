@@ -105,6 +105,7 @@ begin
   FHandle := 0;
   FColor := clWhite;
   {$IFDEF UseFPCanvas}
+  DelayAllocate:=true;
   inherited SetStyle(bsSolid);
   {$ELSE}
   FStyle := bsSolid;
@@ -281,6 +282,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.16  2005/01/10 18:44:44  mattias
+  implemented the fpCanvas support for the LCL - Compile with -dUseFPCanvas
+
   Revision 1.15  2005/01/08 15:06:06  mattias
   fixed TabOrder dialog for new TabOrder
 

@@ -50,8 +50,8 @@ type
   private
     fPrinter      : TPrinter;
     fTitle        : String;
-    fHeight       : Integer;
-    fWidth        : Integer;
+    fPageHeight   : Integer;
+    fPageWidth    : Integer;
     fPageNum      : Integer;
     fTopMarging   : Integer;
     fLeftMarging  : Integer;
@@ -739,28 +739,28 @@ end;
 
 function TPrinterCanvas.GetPageHeight: Integer;
 begin
-  if Assigned(fPrinter) and (fHeight=0) then
+  if Assigned(fPrinter) and (fPageHeight=0) then
      Result:=fPrinter.PageHeight
   else
-    Result:=fHeight;
+    Result:=fPageHeight;
 end;
 
 function TPrinterCanvas.GetPageWidth: Integer;
 begin
-  if Assigned(fPrinter) and (fWidth=0) then
+  if Assigned(fPrinter) and (fPageWidth=0) then
      Result:=fPrinter.PageWidth
   else
-    Result:=fWidth;
+    Result:=fPageWidth;
 end;
 
 procedure TPrinterCanvas.SetPageHeight(const AValue: Integer);
 begin
-  fHeight:=aValue;
+  fPageHeight:=aValue;
 end;
 
 procedure TPrinterCanvas.SetPageWidth(const AValue: Integer);
 begin
-  fWidth:=aValue;
+  fPageWidth:=aValue;
 end;
 
 procedure TPrinterCanvas.SetTitle(const AValue: string);
@@ -774,8 +774,8 @@ end;
 constructor TPrinterCanvas.Create(APrinter: TPrinter);
 begin
   Inherited Create;
-  fWidth      :=0;
-  fHeight     :=0;
+  fPageWidth      :=0;
+  fPageHeight     :=0;
   fTopMarging :=0;
   fLeftMarging:=0;
   fPrinter:=aPrinter;
