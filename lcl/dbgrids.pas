@@ -153,6 +153,10 @@ type
     function GetDefaultReadOnly: boolean;
     function GetDefaultWidth: Integer;
   protected
+  {$ifdef ver1_0}
+  // workaround to access protected procedure in base class
+    procedure Changed(AllItems: Boolean);
+  {$endif}
     function  CreateTitle: TColumnTitle; virtual;
     function  GetDisplayName: string; override;
     procedure FieldChanged;
@@ -244,6 +248,9 @@ type
     procedure DoLayoutChanged;
     procedure WriteColumns(Writer: TWriter);
   protected
+  {$ifdef ver1_0}
+    property FixedColor;
+  {$endif}
     procedure LinkActive(Value: Boolean); virtual;
     procedure LayoutChanged; virtual;
     procedure Loaded; override;
@@ -354,9 +361,11 @@ procedure Register;
   
 implementation
 
+{$ifndef ver1_0}
 const
   NoValidColor = TColor(-791);
   NoValidAlignment = TAlignment(-791);
+{$endif}
   
 procedure Register;
 begin
@@ -758,7 +767,20 @@ end;
 
 type
   TProtFields=class(TFields)
+  {$ifdef ver1_0}
+   // workaround to access protected procedure in base class
+   Procedure SetFieldIndex (Field : TField;Value : Integer);
+  {$endif}
   end;
+
+{$ifdef ver1_0}
+{ TProtFields }
+
+procedure TProtFields.SetFieldIndex(Field: TField; Value: Integer);
+begin
+  inherited SetFieldIndex(Field, Value);
+end;
+{$endif}
 
 procedure TCustomDbGrid.ColRowMoved(IsColumn: Boolean; FromIndex,
   ToIndex: Integer);
@@ -1588,6 +1610,13 @@ begin
     result := 64;
 end;
 
+{$ifdef ver1_0}
+procedure TColumn.Changed(AllItems: Boolean);
+begin
+  inherited Changed(AllItems);
+end;
+{$endif}
+
 procedure TColumn.LinkField;
 var
   TheGrid: TCustomDbGrid;
@@ -1737,6 +1766,8 @@ end;
 end.
 
 {
-  the_log:
-  
+  $Log$
+  Revision 1.9  2004/08/03 15:38:53  vincents
+  fix 1.0.x compilation.
+
 }
