@@ -585,9 +585,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomForm.DoCreate;
 begin
-  BeginUpdateBounds;
+  LockRealizeBounds;
   if Assigned(FOnCreate) then FOnCreate(Self);
-  EndUpdateBounds;
+  UnlockRealizeBounds;
 end;
 
 {------------------------------------------------------------------------------
@@ -1828,6 +1828,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.171  2005/01/18 18:46:59  mattias
+  improved invert assignment tool by multilines   from Andrew Haines
+
   Revision 1.170  2005/01/04 11:26:26  micha
   let canfocus imply that setfocus can be called
 

@@ -43,6 +43,7 @@ function TCustomImage.GetCanvas: TCanvas;
 var
   TempBitmap: TBitmap;
 begin
+  //debugln('TCustomImage.GetCanvas A ',DbgSName(Self),' ',DbgSName(FPicture.Graphic));
   if not FUseParentCanvas and (FPicture.Graphic = nil) then
   begin
     // make a new bitmap to draw on
@@ -55,6 +56,7 @@ begin
       TempBitmap.Free;
     end;
   end;
+  //debugln('TCustomImage.GetCanvas B ',DbgSName(Self),' ',DbgSName(FPicture.Graphic));
   // try draw on the bitmap, not on the form's canvas
   if not FUseParentCanvas and (FPicture.Graphic is TBitmap) then
     Result := TBitmap(FPicture.Graphic).Canvas

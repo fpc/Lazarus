@@ -3860,10 +3860,17 @@ end;
   decreases the BoundsLockCount
  ------------------------------------------------------------------------------}
 procedure TWinControl.EndUpdateBounds;
+
+  procedure RaiseTooManyEndUpdates;
+  begin
+    raise Exception.Create('TWinControl.EndUpdateBounds '+DbgSName(Self)
+      +' too many calls.');
+  end;
+
 begin
-  if BoundsLockCount<=0 then exit;
+  if FBoundsLockCount<=0 then RaiseTooManyEndUpdates;
   dec(FBoundsLockCount);
-  if BoundsLockCount=0 then begin
+  if FBoundsLockCount=0 then begin
     SetBounds(Left,Top,Width,Height);
   end;
 end;
@@ -4306,6 +4313,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.301  2005/01/18 18:46:59  mattias
+  improved invert assignment tool by multilines   from Andrew Haines
+
   Revision 1.300  2005/01/17 17:49:27  mattias
   fixed constraints for forms under gtk
 

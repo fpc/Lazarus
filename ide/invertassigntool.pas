@@ -19,18 +19,12 @@
  ***************************************************************************
 
   Author: Sérgio Marcelo S. Gomes <smace at smace.com.br>
+  Modified by Andrew Haines
 
   Abstract: Invert Assignment Code.
 
   Example: AValue := BValue  ->  BValue := AValue;
-  
-  To-Do:
-    - Redo everything. It was baldy coded.
-      I am one of those stupid Drag and Drop programmers ;-)
-    - Add blank spaces at left here and Keep identation..
-    - Add multi-lines support.
-      // like: xx :=
-      //         ola;
+           AValue := True    ->  AValue := False;
 
 }
 unit InvertAssignTool;
@@ -46,99 +40,161 @@ function InvertAssignment(ALines:TStrings):TStrings;
 
 implementation
 
-// This function inverts all Assignments operation.
-// like valuea := valueb; to valueb := valuea;
-function InvertAssignment(ALines:TStrings):TStrings;
-var iLeft, iSize : integer; //for identation purpose only
 
-    function clearline(s:String):String;
-    //Removing all ";" of the line.
-    begin
-      Result := trim(s);
-      repeat
-        if length(Result)= 0 then exit;
-        if Result[length(Result)] = ';' then
-          Result := Copy(Result,0, length(Result)-1);
-        Result := TrimRight(Result);
-      until Result[length(Result)] <> ';';
-    end;
+function GetIndent(ALine: String):Integer;
+begin
+  Result :=Length(Aline) - Length(TrimLeft(ALine));
+end;
 
-  function InvertAssignLine(s:String):String;
-  //it Inverts one Single Line
-
-    function AddSpaces(iChar:Integer):String;
-    var i : integer;
-    begin
-      Result := '';
-      for i := 0 to iChar-1 do  Result := Result+' ';
-    end;
-
-  var iPos: integer;
-      s_Right, s_Left, s_Comment : String;
-  begin
-
-    if trim(s) = '' then
-    begin
-      Result := '';
-      exit;
-    end;
-
-    // Extrating Comments
-    iPos := Pos('//',s);
-    if iPos > 0 then
-    begin
-      s_Comment := Copy(s,iPos,Length(s)-iPos+1);
-      s         := Copy(s,0,iPos-1);
-    end;
-
-    iPos := Pos('{',s);
-    if iPos > 0 then
-    begin
-      s_Comment := s_Comment+Copy(s,iPos,Length(s)-iPos+1);
-      s         := trim( Copy(s,0,iPos-1) );
-    end;
-
-    if Pos(':=',s) > 0 then
-    begin
-      if s_Comment <> '' then s_Comment := ' '+s_Comment;
-
-      // Inverting
-      iPos    := Pos(':=', s );
-      s_Right := ClearLine( Copy(s,iPos+2, Length(s)-iPos) );
-      s_Left  := trim( Copy(s,0,iPos-1) );
-
-      Result := AddSpaces(iLeft) + s_Right + AddSpaces(iSize-length(s_Right))+' := '+s_Left+';'+s_Comment;
-
-   end else Result := s+s_Comment; //Does not exist assignment
-
-  end; //function end
-
+procedure DivideLines(Lines: TStrings; var AList: TStrings; var BList: TStrings);
 var
-  s : String;
-  i, iPos : integer;
+X: Integer;
+ALine: String;
+fPos: Integer;
+TrueFalse: String;
+begin
+  AList.Clear;
+  BList.Clear;
+  for X := 0 to Lines.Count-1 do begin
+    ALine := Trim(Lines.Strings[X]);
+
+    fPos := Pos(':=', ALine);
+    if (fPos > 0) and (Pos(';',ALine) > 0)  then begin
+      AList.Add(Trim(Copy(ALine, 1, fPos-1)));
+      BList.Add(Trim(Copy(ALine, fPos+2, (Pos(';', ALine)-3)-(fPos-1))));
+    end
+    else begin  // not a valid line
+      AList.Add(ALine);
+      Blist.Add('');
+    end;
+    // Check if is being assigned true or false
+    if CompareText(BList.Strings[X], 'True') = 0 then begin
+      TrueFalse := AList.Strings[X];
+      AList.Strings[X] := 'False';
+      BList.Strings[X] := TrueFalse;
+    end;
+    if CompareText(BList.Strings[X], 'False') = 0 then begin
+      TrueFalse := AList.Strings[X];
+      AList.Strings[X] := 'True';
+      BList.Strings[X] := TrueFalse;
+    end;
+  end;
+
+end;
+
+function InvertLine(VarA, VarB: String; LineStart, EqualPosition: Integer): String;
+var
+fLength: Integer;
+X: Integer;
 
 begin
+  Result := '';
 
-  Result := TStringList.Create;
-
-  // Let's find the Bigest Words at Right for Identation
-  iSize := 0;
-  for i := 0 to ALines.Count-1 do
-  begin
-    s    := trim(ALines[i]);
-    iPos := Pos(':=', s );
-    iPos := length( ClearLine( Copy(s,iPos+2, Length(s)-iPos) ) );
-    if iPos > iSize then iSize := iPos;
+  for X := 1 to LineStart do begin
+    Result := Result + ' ';
   end;
 
-  iLeft := length(ALines[0]) - length(TrimLeft(ALines[0]));
-
-  // We must get a valid line to invert and call InvertLine function.
-  for i := 0 to ALines.Count-1 do
-  begin
-    Result.Add( InvertAssignLine( trim(ALines[i]) ) );
+  if Length(Trim(VarB)) = 0 then begin // is not a line with a ':='
+    Result := Result + VarA;
+    Exit;
   end;
 
+  Result := Result + VarB;
+
+  fLength := Length(Trim(Result));
+  if fLength < EqualPosition then begin
+    for X := fLength+1 to EqualPosition do begin
+      Result := Result + ' ';
+    end;
+  end;
+  Result := Result + ' := ' + VarA + ';';
+end;
+
+function IsAWholeLine(ALine: String): Boolean;
+begin
+  // This function is usefull for when the text is put back
+  // in the synedit, things like this don't happen:
+  // begin
+  //   if CallSomeFunction > 0
+  //   then
+  //     DoThis
+  //   else
+  //     Exit;
+  // end;
+  //
+  // Would otherwise become this
+  //
+  // begin if CallSomeFunction > 0 then DoThis else exit;
+  // end;
+  Result := False;
+  ALine := LowerCase(ALine);
+  if (Pos(';', ALine) > 0)
+  or (Pos('if ', ALine) > 0)
+  or (Pos('begin', ALine) > 0)
+  or (Pos('end', ALine) > 0)
+  or (Pos('then', ALine) > 0)
+  or (Pos('else', ALine) > 0)
+  or (Pos('and', ALine) > 0)
+  or (Pos('or', ALine) > 0)
+  then Result := True;
+end;
+
+
+// This function inverts all Assignments operation.
+// like valuea := valueb; to valueb := valuea;
+// or valuea := False; to valuea := True;
+function InvertAssignment(ALines:TStrings):TStrings;
+var
+Lines: TStringList;
+AList,
+BList: TStringList;
+Indents: array of Integer;
+X, Y: Integer;
+EqPos: Integer;
+ALine: String;
+begin
+  Lines := TStringList.Create;
+  SetLength(Indents, ALines.Count);
+
+  // Put a line on multiple lines, on one line
+  ALine := '';
+  for X := 0 to ALines.Count-1 do begin
+    ALine := ALine + ALines.Strings[X];
+    if IsAWholeLine(ALine) then begin
+      Indents[Lines.Add(ALine)] := GetIndent(ALine);
+      ALine := '';
+    end;
+  end;
+  
+  // exited the loop without finding the end of a line
+  if Length(ALine) > 0 then begin
+    X := Lines.Add(ALine);
+    Indents[X] := GetIndent(ALine);
+  end;
+  
+  ALines.Clear;
+  
+  AList := TStringList.Create;
+  BList := TStringList.Create;
+  
+  DivideLines(Lines, AList, BList);
+  Lines.Free;
+  
+  //Find where the ':=' should be
+  EqPos := 0;
+  for X := 0 to BList.Count-1 do begin
+    Y := Length(BList.Strings[X]);
+    if Y > EqPos then EqPos := Y;
+  end;
+
+  for X := 0 to AList.Count-1 do begin
+    ALines.Add(InvertLine(Alist.Strings[X], BList.Strings[X], Indents[X], EqPos));
+  end;
+  AList.Free;
+  BList.Free;
+
+  Result := ALines;
+  // TODO: How do you stop this from adding a new line at the end of the last item
 end;
 //////////////////////////////////////////////////////////////////////
 
