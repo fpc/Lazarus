@@ -963,7 +963,7 @@ begin
   FMenu := Value;
   if FMenu<>nil then begin
     FMenu.Parent:=Self;
-    if HandleAllocated and (not (csLoading in ComponentState)) then
+    if HandleAllocated then
     begin
       FMenu.HandleNeeded;
       InterfaceObject.AttachMenuToWindow(FMenu);
@@ -1592,6 +1592,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.130  2004/03/06 14:39:50  micha
+  although loading, attach menu to form if handle already created, if this is not wanted, then prevent creation of handle somehow
+  fixes bug #197
+
   Revision 1.129  2004/02/28 00:34:35  mattias
   fixed CreateComponent for buttons, implemented basic Drag And Drop
 
