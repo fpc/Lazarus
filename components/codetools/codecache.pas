@@ -396,13 +396,11 @@ begin
       if GlobalWriteLockStep<>Buf.GlobalWriteLockStepOnLastLoad then begin
         Buf.GlobalWriteLockStepOnLastLoad:=GlobalWriteLockStep;
         if Buf.FileOnDiskHasChanged then
-          writeln('   UpdateFromDisk 1 ',Buf.Filename);
-          //Buf.Revert;
+          Buf.Revert;
       end;
     end else begin
       if Buf.FileOnDiskHasChanged then
-        writeln('   UpdateFromDisk 2 ',Buf.Filename);
-        //Buf.Revert;
+        Buf.Revert;
     end;
   end;
   Result:=true;
