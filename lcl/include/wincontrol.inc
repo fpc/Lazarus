@@ -985,7 +985,8 @@ begin
             Clip := ExcludeClipRect(DC, Left, Top, Left + Width, Top + Height);
             if Clip = NullRegion then Break;
           end;
-      if Clip <> NullRegion then PaintWindow(DC);
+      if Clip <> NullRegion then
+        PaintWindow(DC);
       RestoreDC(DC, SaveIndex);
     end;
     // paint controls
@@ -2594,6 +2595,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.131  2003/06/01 21:09:09  mattias
+  implemented datamodules
+
   Revision 1.130  2003/05/24 08:51:41  mattias
   implemented designer close query
 

@@ -191,8 +191,8 @@ type
     procedure BeforeDestruction; override;
     property DesignOffset: TPoint read FDesignOffset write FDesignOffset;
     property DesignSize: TPoint read FDesignSize write FDesignSize;
-  published
     property OldCreateOrder: Boolean read FOldCreateOrder write FOldCreateOrder;
+  published
     property OnCreate: TNotifyEvent read FOnCreate write FOnCreate;
     property OnDestroy: TNotifyEvent read FOnDestroy write FOnDestroy;
   end;
@@ -1486,7 +1486,7 @@ begin
         raise EResNotFound.CreateFmt(lisLCLResourceSNotFound, [ClassName]);
       if OldCreateOrder then DoCreate;
     end;
-  writeln('TDataModule.Create END');
+    writeln('TDataModule.Create END');
   finally
     //GlobalNameSpace.EndWrite;
   end;
@@ -1713,6 +1713,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.120  2003/06/01 21:09:09  mattias
+  implemented datamodules
+
   Revision 1.119  2003/05/30 16:25:47  mattias
   started datamodule
 
