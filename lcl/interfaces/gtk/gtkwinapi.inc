@@ -3545,7 +3545,8 @@ const
   
 begin
   Result:=
-     b(rsgtkOptionModule)
+     b(rsgtkOptionNoTransient)
+    +b(rsgtkOptionModule)
     +b(rsgOptionFatalWarnings)
     +b(rsgtkOptionDebug)
     +b(rsgtkOptionNoDebug)
@@ -7953,6 +7954,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.224  2003/03/26 19:25:27  mattias
+  added transient deactivation option and updated localization
+
   Revision 1.223  2003/03/26 00:21:25  mattias
   implemented build lazarus extra options -d
 
