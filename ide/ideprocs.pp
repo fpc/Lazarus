@@ -285,13 +285,28 @@ var
   p, StartPos, l: integer;
   CurPath, Base: string;
 begin
-  if (Filename='')
-  or (FilenameIsAbsolute(Filename) and FileExists(Filename))
-  then begin
+//writeln('[SearchFileInPath] Filename="',Filename,'" BasePath="',BasePath,'" SearchPath="',SearchPath,'" Delimiter="',Delimiter,'"');
+  if (Filename='') then begin
     Result:=Filename;
     exit;
   end;
+  // check if filename absolute
+  if FilenameIsAbsolute(Filename) then begin
+    if FileExists(Filename) then begin
+      Result:=Filename;
+      exit;
+    end else begin
+      Result:='';
+      exit;
+    end;
+  end;
   Base:=ExpandFilename(AppendPathDelim(BasePath));
+  // search in current directory
+  if FileExists(Base+Filename) then begin
+    Result:=Base+Filename;
+    exit;
+  end;
+  // search in search path
   StartPos:=1;
   l:=length(SearchPath);
   while StartPos<=l do begin

@@ -142,7 +142,7 @@ type
     fModified: boolean;
     fOnFileBackup: TOnFileBackup;
     fOutputDirectory: String;
-    fProjectFile: String;  // the lpi filename
+    fProjectInfoFile: String;  // the lpi filename
     fProjectType: TProjectType;
     fSrcPath: string; // source path addition for units in ProjectDir
     fTargetFileExt: String;
@@ -150,12 +150,13 @@ type
     fUnitList: TList;  // list of TUnitInfo
     fUnitOutputDirectory: String;
     fRunParameterOptions: TRunParamsOptions;
-
+    
+    function GetMainFilename: String;
+    function GetMainUnitInfo: TUnitInfo;
     function GetProjectInfoFile: string;
     function GetTargetFilename: string;
     function GetUnits(Index:integer):TUnitInfo;
     procedure SetUnits(Index:integer; AUnitInfo: TUnitInfo);
-    procedure SetProjectFile(const NewProjectFilename: string);
     procedure SetProjectInfoFile(const NewFilename:string);
     procedure SetTargetFilename(const NewTargetFilename: string);
     procedure OnLoadSaveFilename(var AFilename:string; Load:boolean);
@@ -215,10 +216,11 @@ type
        read fJumpHistory write fJumpHistory;
     property MainUnit: Integer //this is the unit index of the program file
        read fMainUnit write fMainUnit;
+    property MainUnitInfo: TUnitInfo read GetMainUnitInfo;
     property Modified: boolean read fModified write fModified;
     property OnFileBackup: TOnFileBackup read fOnFileBackup write fOnFileBackup;
     property OutputDirectory: String read fOutputDirectory write fOutputDirectory;
-    property ProjectFile: String read fProjectFile write SetProjectFile;
+    property MainFilename: String read GetMainFilename;
     property ProjectInfoFile: string
        read GetProjectInfoFile write SetProjectInfoFile;
     property ProjectType: TProjectType read fProjectType write fProjectType;
@@ -243,6 +245,7 @@ const
       'Application'#13
       +'A graphical lcl/freepascal program. The program file is '
       +'automatically maintained by lazarus.'#13
+      +#13
       +#13
       +'WARNING:'#13
       +'Form editing is under development and should not be used.'
@@ -629,7 +632,7 @@ begin
   fMainUnit := -1;
   fModified := false;
   fOutputDirectory := '.';
-  fProjectFile := '';
+  fProjectInfoFile := '';
   fRunParameterOptions:=TRunParamsOptions.Create;
   fSrcPath := '';
   fTargetFileExt := DefaultTargetFileExt;
@@ -707,7 +710,7 @@ var
 begin
   Result := mrCancel;
 
-  confPath := ChangeFileExt(ProjectFile,'.lpi');
+  confPath := ProjectInfoFile;
   if Assigned(fOnFileBackup) then begin
     Result:=fOnFileBackup(confPath,true);
     if Result=mrAbort then exit;
@@ -816,7 +819,7 @@ begin
 
     // Load the compiler options
     CompilerOptions.XMLConfigFile := xmlconfig;
-    CompilerOptions.ProjectFile := ProjectFile;
+    CompilerOptions.ProjectFile := MainFilename;
     CompilerOptions.LoadCompilerOptions(true);
     CreateProjectDefineTemplate(CompilerOptions,FSrcPath);
 
@@ -824,7 +827,7 @@ begin
     RunParameterOptions.Load(xmlconfig,'ProjectOptions/');
     
     CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'ProjectDir']:=
-      ExtractFilePath(ProjectFile);
+          ProjectDirectory;
     CodeToolBoss.DefineTree.ClearCache;
   finally
     xmlconfig.Free;
@@ -915,7 +918,7 @@ begin
   fMainUnit := -1;
   fModified := false;
   fOutputDirectory := '.';
-  fProjectFile := '';
+  fProjectInfoFile := '';
   fSrcPath := '';
   fTargetFileExt := {$IFDEF win32}'.exe'{$ELSE}''{$ENDIF};
   fTitle := '';
@@ -941,11 +944,8 @@ end;
 function TProject.NewUniqueUnitName(NewUnitType:TNewUnitType):string;
 
   function ExpandedUnitname(const AnUnitName:string):string;
-  var Ext:string;
   begin
-    Result:=uppercase(ExtractFileName(AnUnitName));
-    Ext:=ExtractFileExt(Result);
-    Result:=copy(Result,1,length(Result)-length(Ext));
+    Result:=uppercase(ExtractFileNameOnly(AnUnitName));
   end;
 
   function UnitNameExists(const AnUnitName:string):boolean;
@@ -954,7 +954,7 @@ function TProject.NewUniqueUnitName(NewUnitType:TNewUnitType):string;
   begin
     Result:=true;
     ExpName:=ExpandedUnitName(AnUnitName);
-    if ExpandedUnitname(fProjectFile)=Expname then exit;
+    if ExtractFileNameOnly(fProjectInfoFile)=Expname then exit;
     for i:=0 to UnitCount-1 do
       if (Units[i].IsPartOfProject) 
       and (ExpandedUnitName(Units[i].FileName)=ExpName) then
@@ -1189,26 +1189,31 @@ begin
   fCompilerOptions.TargetFilename:=NewTargetFilename;
 end;
 
-procedure TProject.SetProjectFile(const NewProjectFilename: string);
+function TProject.GetMainFilename: String;
 begin
-  if (AnsiCompareText(fTitle,ExtractFileNameOnly(fProjectFile))=0)
-  or (fProjectFile='') then
-    fTitle:=ExtractFileNameOnly(NewProjectFilename);
-  fProjectFile:=NewProjectFilename;
-  
-  Modified:=true;
+  if MainUnit>=0 then Result:=Units[MainUnit].Filename
+  else Result:='';
+end;
+
+function TProject.GetMainUnitInfo: TUnitInfo;
+begin
+  if MainUnit>=0 then Result:=Units[MainUnit] else Result:=nil;
 end;
 
 function TProject.GetProjectInfoFile:string;
 begin
-  Result:=fProjectFile;
-  if Result<>'' then Result:=ChangeFileExt(Result,'.lpi');
+  Result:=fProjectInfoFile;
 end;
 
 procedure TProject.SetProjectInfoFile(const NewFilename:string);
 begin
   if NewFilename='' then exit;
-  ProjectFile:=ChangeFileExt(NewFilename,ProjectDefaultExt[ProjectType]);
+  fProjectInfoFile:=NewFilename;
+  if (AnsiCompareText(fTitle,ExtractFileNameOnly(fProjectInfoFile))=0)
+  or (fProjectInfoFile='') then
+    fTitle:=ExtractFileNameOnly(NewFilename);
+
+  Modified:=true;
 end;
 
 function TProject.OnUnitFileBackup(const Filename:string;
@@ -1223,7 +1228,7 @@ end;
 procedure TProject.OnLoadSaveFilename(var AFilename:string; Load:boolean);
 var ProjectPath:string;
 begin
-  ProjectPath:=ExtractFilePath(ProjectFile);
+  ProjectPath:=ProjectDirectory;
   if ProjectPath='' then ProjectPath:=GetCurrentDir;
   DoDirSeparators(AFilename);
   if Load then begin
@@ -1244,7 +1249,7 @@ function TProject.RemoveProjectPathFromFilename(
   const AFilename: string): string;
 var ProjectPath:string;
 begin
-  ProjectPath:=ExtractFilePath(ProjectFile);
+  ProjectPath:=ProjectDirectory;
   if ProjectPath='' then ProjectPath:=GetCurrentDir;
   Result:=AFilename;
   DoDirSeparators(Result);
@@ -1258,7 +1263,7 @@ end;
 
 function TProject.ProjectDirectory: string;
 begin
-  Result:=ExtractFilePath(ProjectFile);
+  Result:=ExtractFilePath(ProjectInfoFile);
 end;
 
 function TProject.FileIsInProjectDir(const AFilename: string): boolean;
@@ -1350,6 +1355,9 @@ end.
 
 {
   $Log$
+  Revision 1.56  2002/03/25 16:48:26  lazarus
+  MG: clean ups for main.pp, many minor fixes
+
   Revision 1.55  2002/03/25 07:29:23  lazarus
   MG: added TOpen/SaveFlags and splittet some methods
 
