@@ -151,9 +151,10 @@ const
   ecViewUnits            = ecUserFirst + 309;
   ecViewForms            = ecUserFirst + 310;
   ecViewUnitDependencies = ecUserFirst + 311;
-  ecToggleLocals         = ecUserFirst + 312;
-  ecToggleCallStack      = ecUserFirst + 313;
-  ecToggleSearchResults  = ecUserFirst + 314;
+  ecViewUnitInfo         = ecUserFirst + 312;
+  ecToggleLocals         = ecUserFirst + 313;
+  ecToggleCallStack      = ecUserFirst + 314;
+  ecToggleSearchResults  = ecUserFirst + 315;
 
   // sourcenotebook commands
   ecNextEditor           = ecUserFirst + 330;
@@ -620,6 +621,7 @@ begin
   ecViewUnits: SetResult(VK_F12,[ssCtrl],VK_UNKNOWN,[]);
   ecViewForms: SetResult(VK_F12,[ssShift],VK_UNKNOWN,[]);
   ecViewUnitDependencies: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecViewUnitInfo: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecJumpToEditor: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleFormUnit: SetResult(VK_F12,[],VK_UNKNOWN,[]);
 
@@ -1150,6 +1152,7 @@ begin
     ecViewUnits             : Result:= srkmecViewUnits;
     ecViewForms             : Result:= srkmecViewForms;
     ecViewUnitDependencies  : Result:= srkmecViewUnitDependencies;
+    ecViewUnitInfo          : Result:= srkmecViewUnitInfo;
 
     // codetools
     ecWordCompletion        : Result:= srkmecWordCompletion;
@@ -2024,6 +2027,7 @@ begin
   AddDefault(C,'View Units',ecViewUnits);
   AddDefault(C,'View Forms',ecViewForms);
   AddDefault(C,'View Unit Dependencies',ecViewUnitDependencies);
+  AddDefault(C,'View Unit Info',ecViewUnitInfo);
   AddDefault(C,'Focus to source editor',ecJumpToEditor);
   AddDefault(C,'Toggle between Unit and Form',ecToggleFormUnit);
 

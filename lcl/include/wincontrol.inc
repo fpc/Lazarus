@@ -2114,22 +2114,24 @@ begin
   if (Shift = []) and ((Key = VK_RETURN) or (Key = VK_ESCAPE)) then
   begin
     Form := GetParentForm(Self);
-    case Key of
-      VK_RETURN:
-      begin
-        if Form.DefaultControl <> nil then
+    if Form<>nil then begin
+      case Key of
+        VK_RETURN:
         begin
-          Form.DefaultControl.ExecuteDefaultAction;
-          Key := VK_UNKNOWN;
+          if Form.DefaultControl <> nil then
+          begin
+            Form.DefaultControl.ExecuteDefaultAction;
+            Key := VK_UNKNOWN;
+          end;
         end;
-      end;
-      
-      VK_ESCAPE:
-      begin
-        if Form.CancelControl <> nil then 
+
+        VK_ESCAPE:
         begin
-          Form.CancelControl.ExecuteCancelAction;
-          Key := VK_UNKNOWN;
+          if Form.CancelControl <> nil then
+          begin
+            Form.CancelControl.ExecuteCancelAction;
+            Key := VK_UNKNOWN;
+          end;
         end;
       end;
     end;
@@ -3825,6 +3827,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.265  2004/08/25 22:22:39  mattias
+  added unit info to View menu
+
   Revision 1.264  2004/08/18 22:56:11  mattias
   implemented basic manual docking
 

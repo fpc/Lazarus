@@ -163,19 +163,20 @@ type
     // view menu
     itmViewInspector: TMenuItem;
     itmViewSourceEditor: TMenuItem;
-    itmViewUnits : TMenuItem;
     itmViewCodeExplorer : TMenuItem;
+    itmViewUnits : TMenuItem;
     itmViewForms : TMenuItem;
     itmViewUnitDependencies : TMenuItem;
+    itmViewUnitInfo: TMenuItem;
     itmViewMessage : TMenuItem;
     itmViewSearchResults : TMenuItem;
+    itmViewToggleFormUnit: TMenuItem;
     itmViewDebugWindows: TMenuItem;
     itmViewWatches: TMenuItem;
     itmViewBreakpoints: TMenuItem;
     itmViewLocals: TMenuItem;
     itmViewCallStack: TMenuItem;
     itmViewDebugOutput: TMenuItem;
-    itmViewToggleFormUnit: TMenuItem;
 
     // project menu
     itmProjectNew: TMenuItem;

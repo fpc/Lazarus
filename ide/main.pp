@@ -189,6 +189,7 @@ type
     procedure mnuViewUnitsClicked(Sender : TObject);
     procedure mnuViewFormsClicked(Sender : TObject);
     procedure mnuViewUnitDependenciesClicked(Sender : TObject);
+    procedure mnuViewUnitInfoClicked(Sender : TObject);
     procedure mnuViewCodeExplorerClick(Sender : TObject);
     procedure mnuViewMessagesClick(Sender : TObject);
     procedure mnuViewSearchResultsClick(Sender : TObject);
@@ -544,6 +545,7 @@ type
     function DoRevertMainUnit: TModalResult;
     function DoViewUnitsAndForms(OnlyForms: boolean): TModalResult;
     procedure DoViewUnitDependencies;
+    procedure DoViewUnitInfo;
     procedure DoShowCodeExplorer;
 
     // project(s)
@@ -1611,6 +1613,7 @@ begin
     itmViewUnits.OnClick := @mnuViewUnitsClicked;
     itmViewForms.OnClick := @mnuViewFormsClicked;
     itmViewUnitDependencies.OnClick := @mnuViewUnitDependenciesClicked;
+    itmViewUnitInfo.OnClick := @mnuViewUnitInfoClicked;
     itmViewToggleFormUnit.OnClick := @mnuToggleFormUnitClicked;
     itmViewMessage.OnClick := @mnuViewMessagesClick;
     itmViewSearchResults.OnClick := @mnuViewSearchResultsClick;
@@ -2103,29 +2106,8 @@ begin
 end;
 
 procedure TMainIDE.OnSrcNoteBookShowUnitInfo(Sender: TObject);
-var ActiveSrcEdit:TSourceEditor;
-  ActiveUnitInfo:TUnitInfo;
-  ShortUnitName, AFilename, FileDir: string;
-  ClearIncludedByFile: boolean;
 begin
-  GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
-  if (ActiveSrcEdit=nil) or (ActiveUnitInfo=nil) then exit;
-  ShortUnitName:=ActiveSrcEdit.PageName;
-  AFilename:=ActiveUnitInfo.Filename;
-  FileDir:=ExtractFilePath(AFilename);
-  ShowUnitInfoDlg(ShortUnitName,
-    LazSyntaxHighlighterNames[ActiveUnitInfo.SyntaxHighlighter],
-    ActiveUnitInfo.IsPartOfProject, length(ActiveSrcEdit.Source.Text),
-    ActiveSrcEdit.Source.Count,
-    Project1.RemoveProjectPathFromFilename(AFilename),
-    Project1.RemoveProjectPathFromFilename(ActiveUnitInfo.Source.LastIncludedByFile),
-    ClearIncludedByFile,
-    TrimSearchPath(CodeToolBoss.GetUnitPathForDirectory(FileDir),FileDir),
-    TrimSearchPath(CodeToolBoss.GetIncludePathForDirectory(FileDir),FileDir),
-    TrimSearchPath(CodeToolBoss.GetSrcPathForDirectory(FileDir),FileDir)
-    );
-  if ClearIncludedByFile then
-    ActiveUnitInfo.Source.LastIncludedByFile:='';
+  DoViewUnitInfo;
 end;
 
 {------------------------------------------------------------------------------}
@@ -2366,6 +2348,11 @@ end;
 Procedure TMainIDE.mnuViewUnitDependenciesClicked(Sender : TObject);
 begin
   DoViewUnitDependencies;
+end;
+
+procedure TMainIDE.mnuViewUnitInfoClicked(Sender: TObject);
+begin
+  DoViewUnitInfo;
 end;
 
 Procedure TMainIDE.mnuViewCodeExplorerClick(Sender : TObject);
@@ -4969,6 +4956,32 @@ begin
   ALayout.Apply;
   if not WasVisible then
     UnitDependenciesView.ShowOnTop;
+end;
+
+procedure TMainIDE.DoViewUnitInfo;
+var ActiveSrcEdit:TSourceEditor;
+  ActiveUnitInfo:TUnitInfo;
+  ShortUnitName, AFilename, FileDir: string;
+  ClearIncludedByFile: boolean;
+begin
+  GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
+  if (ActiveSrcEdit=nil) or (ActiveUnitInfo=nil) then exit;
+  ShortUnitName:=ActiveSrcEdit.PageName;
+  AFilename:=ActiveUnitInfo.Filename;
+  FileDir:=ExtractFilePath(AFilename);
+  ShowUnitInfoDlg(ShortUnitName,
+    LazSyntaxHighlighterNames[ActiveUnitInfo.SyntaxHighlighter],
+    ActiveUnitInfo.IsPartOfProject, length(ActiveSrcEdit.Source.Text),
+    ActiveSrcEdit.Source.Count,
+    Project1.RemoveProjectPathFromFilename(AFilename),
+    Project1.RemoveProjectPathFromFilename(ActiveUnitInfo.Source.LastIncludedByFile),
+    ClearIncludedByFile,
+    TrimSearchPath(CodeToolBoss.GetUnitPathForDirectory(FileDir),FileDir),
+    TrimSearchPath(CodeToolBoss.GetIncludePathForDirectory(FileDir),FileDir),
+    TrimSearchPath(CodeToolBoss.GetSrcPathForDirectory(FileDir),FileDir)
+    );
+  if ClearIncludedByFile then
+    ActiveUnitInfo.Source.LastIncludedByFile:='';
 end;
 
 procedure TMainIDE.DoShowCodeExplorer;
@@ -10581,6 +10594,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.759  2004/08/25 22:22:39  mattias
+  added unit info to View menu
+
   Revision 1.758  2004/08/23 17:05:21  mattias
   implemented help jump for messages and classes
 

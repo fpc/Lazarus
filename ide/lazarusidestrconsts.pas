@@ -178,6 +178,7 @@ resourcestring
   lisMenuViewUnits = 'Units...';
   lisMenuViewForms = 'Forms...';
   lisMenuViewUnitDependencies = 'View Unit Dependencies';
+  lisMenuViewUnitInfo = 'View Unit Information';
   lisMenuViewToggleFormUnit = 'Toggle form/unit view';
   lisMenuViewMessages = 'Messages';
   lisMenuViewSearchResults = 'Search Results';
@@ -1237,7 +1238,8 @@ resourcestring
   srkmecViewUnits                 = 'View units';
   srkmecViewForms                 = 'View forms';
   srkmecViewUnitDependencies      = 'View unit dependencies';
-  
+  srkmecViewUnitInfo              = 'View unit information';
+
   // codetools
   srkmecWordCompletion            = 'Word completion';
   srkmecCompletecode              = 'Complete code';

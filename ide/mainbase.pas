@@ -556,6 +556,7 @@ begin
     CreateMenuItem(ParentMI,itmViewUnits,'itmViewUnits',lisMenuViewUnits);
     CreateMenuItem(ParentMI,itmViewForms,'itmViewForms',lisMenuViewForms);
     CreateMenuItem(ParentMI,itmViewUnitDependencies,'itmViewUnitDependencies',lisMenuViewUnitDependencies);
+    CreateMenuItem(ParentMI,itmViewUnitInfo,'itmViewUnitInfo',lisMenuViewUnitInfo);
     ParentMI.Add(CreateMenuSeparator);
 
     CreateMenuItem(ParentMI,itmViewToggleFormUnit,'itmViewToggleFormUnit',lisMenuViewToggleFormUnit);
@@ -813,6 +814,7 @@ begin
     itmViewUnits.ShortCut:=CommandToShortCut(ecViewUnits);
     itmViewCodeExplorer.ShortCut:=CommandToShortCut(ecToggleCodeExpl);
     itmViewUnitDependencies.ShortCut:=CommandToShortCut(ecViewUnitDependencies);
+    itmViewUnitInfo.ShortCut:=CommandToShortCut(ecViewUnitInfo);
     itmViewForms.ShortCut:=CommandToShortCut(ecViewForms);
     itmViewToggleFormUnit.ShortCut:=CommandToShortCut(ecToggleFormUnit);
     itmViewMessage.ShortCut:=CommandToShortCut(ecToggleMessages);
