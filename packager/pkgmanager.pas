@@ -522,7 +522,7 @@ begin
       mtError,[mbCancel,mbAbort],0);
     exit;
   end;
-
+  
   // add to graph
   PackageGraph.AddPackage(APackage);
 
@@ -614,7 +614,7 @@ begin
         end;
       end;
       APackage.Modified:=false;
-
+      
       Result:=AddPackageToGraph(APackage);
     finally
       if Result<>mrOk then APackage.Free;

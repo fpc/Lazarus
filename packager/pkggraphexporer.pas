@@ -38,9 +38,10 @@ unit PkgGraphExporer;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Buttons, ComCtrls, StdCtrls,
-  ExtCtrls, Menus, Dialogs, Graphics, AVL_Tree, LazarusIDEStrConsts, IDEProcs,
-  IDEOptionDefs, EnvironmentOpts, PackageDefs, PackageSystem;
+  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Buttons, ComCtrls,
+  StdCtrls, ExtCtrls, Menus, Dialogs, Graphics, FileCtrl, AVL_Tree,
+  LazarusIDEStrConsts, IDEProcs, IDEOptionDefs, EnvironmentOpts,
+  Project, PackageDefs, PackageSystem;
   
 type
   TPkgGraphExplorer = class(TForm)
@@ -54,6 +55,7 @@ type
     procedure PkgGraphExplorerShow(Sender: TObject);
     procedure PkgTreeViewExpanding(Sender: TObject; Node: TTreeNode;
       var AllowExpansion: Boolean);
+    procedure PkgTreeViewSelectionChanged(Sender: TObject);
   private
     fSortedPackages: TAVLTree;
     procedure SetupComponents;
@@ -169,7 +171,7 @@ begin
       else
         ViewNode.Text:=NodeText;
       ViewNode.ImageIndex:=NodeImgIndex;
-      ViewNode.StateIndex:=ViewNode.ImageIndex;
+      ViewNode.SelectedIndex:=ViewNode.ImageIndex;
       ViewNode.Expanded:=false;
       ViewNode.HasChildren:=
             (ChildPackage<>nil) and (ChildPackage.FirstRequiredDependency<>nil);
@@ -183,6 +185,12 @@ begin
       ViewNode:=NextViewNode;
     end;
   end;
+end;
+
+procedure TPkgGraphExplorer.PkgTreeViewSelectionChanged(Sender: TObject);
+begin
+  UpdateInfo;
+  UpdateList;
 end;
 
 procedure TPkgGraphExplorer.SetupComponents;
@@ -228,6 +236,7 @@ begin
     Options:=Options+[tvoRightClickSelect];
     Images:=Self.ImageList;
     OnExpanding:=@PkgTreeViewExpanding;
+    OnSelectionChanged:=@PkgTreeViewSelectionChanged;
   end;
 
   PkgListLabel:=TLabel.Create(Self);
@@ -273,6 +282,7 @@ begin
   // keep in mind, that packages can be deleted and the node is outdated
   Pkg:=nil;
   Dependency:=nil;
+  if ANode=nil then exit;
   NodePackageID:=TLazPackageID.Create;
   try
     // try to find a package
@@ -367,7 +377,7 @@ begin
       ViewNode.Text:=CurPkg.IDAsString;
     ViewNode.HasChildren:=CurPkg.FirstRequiredDependency<>nil;
     ViewNode.ImageIndex:=GetPackageImageIndex(CurPkg);
-    ViewNode.StateIndex:=ViewNode.ImageIndex;
+    ViewNode.SelectedIndex:=ViewNode.ImageIndex;
     ViewNode:=ViewNode.GetNextSibling;
     HiddenNode:=fSortedPackages.FindSuccessor(HiddenNode);
     inc(CurIndex);
@@ -381,13 +391,79 @@ begin
 end;
 
 procedure TPkgGraphExplorer.UpdateList;
+var
+  Pkg: TLazPackage;
+  Dependency: TPkgDependency;
+  UsedByDep: TPkgDependency;
+  sl: TStringList;
+  DepOwner: TObject;
+  NewItem: String;
 begin
-
+  GetDependency(PkgTreeView.Selected,Pkg,Dependency);
+  if Dependency<>nil then begin
+    PkgListBox.Items.Clear;
+  end else if Pkg<>nil then begin
+    UsedByDep:=Pkg.FirstUsedByDependency;
+    sl:=TStringList.Create;
+    while UsedByDep<>nil do begin
+      DepOwner:=UsedByDep.Owner;
+      if (DepOwner<>nil) then begin
+        if DepOwner is TLazPackage then begin
+          NewItem:='Package: '+TLazPackage(DepOwner).IDAsString;
+        end else if DepOwner is TProject then begin
+          NewItem:='Project: '
+                       +ExtractFileNameOnly(TProject(DepOwner).ProjectInfoFile);
+        end else begin
+          NewItem:=DepOwner.ClassName
+        end;
+      end else begin
+        NewItem:='Dependency without Owner: '+UsedByDep.AsString;
+      end;
+      sl.Add(NewItem);
+      UsedByDep:=UsedByDep.NextUsedByDependency;
+    end;
+    PkgListBox.Items.Assign(sl);
+    sl.Free;
+  end;
 end;
 
 procedure TPkgGraphExplorer.UpdateInfo;
-begin
+var
+  Pkg: TLazPackage;
+  Dependency: TPkgDependency;
+  InfoStr: String;
 
+  procedure AddState(const NewState: string);
+  begin
+    if (InfoStr<>'') and (InfoStr[length(InfoStr)]<>' ') then
+      InfoStr:=InfoStr+', ';
+    InfoStr:=InfoStr+NewState;
+  end;
+
+begin
+  InfoStr:='';
+  GetDependency(PkgTreeView.Selected,Pkg,Dependency);
+  if Dependency<>nil then begin
+    InfoStr:='Package '+Dependency.AsString+' not found';
+  end else if Pkg<>nil then begin
+    // filename and title
+    InfoStr:=
+       'Filename:  '+Pkg.Filename+EndOfLine
+      +'Title:  '+Pkg.Title;
+    // state
+    InfoStr:=InfoStr+EndOfLine+'State: ';
+    if Pkg.AutoCreated then
+      AddState('AutoCreated');
+    if Pkg.Installed<>pitNope then
+      AddState('Installed');
+    if (Pkg.AutoInstall<>pitNope) and (Pkg.Installed=pitNope) then
+      AddState('Install on next start');
+    if (Pkg.AutoInstall=pitNope) and (Pkg.Installed<>pitNope) then
+      AddState('Uninstall on next start');
+    InfoStr:=InfoStr+EndOfLine+'Description:  '
+                    +BreakString(Pkg.Description,60,length('Description:  '));
+  end;
+  InfoMemo.Text:=InfoStr;
 end;
 
 procedure TPkgGraphExplorer.UpdatePackageName(Pkg: TLazPackage;

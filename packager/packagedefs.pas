@@ -170,6 +170,13 @@ type
     );
   TPkgDependencyFlags = set of TPkgDependencyFlag;
   
+  TLoadPackageResult = (
+    lprUndefined,
+    lprSuccess,
+    lprNotFound,
+    lprLoadError
+    );
+
   TPkgDependencyList = (
     pdlUsedBy,
     pdlRequires
@@ -178,6 +185,7 @@ type
   TPkgDependency = class
   private
     FFlags: TPkgDependencyFlags;
+    FLoadPackageResult: TLoadPackageResult;
     FOwner: TObject;
     FMaxVersion: TPkgVersion;
     FMinVersion: TPkgVersion;
@@ -185,6 +193,7 @@ type
     FRemoved: boolean;
     FRequiredPackage: TLazPackage;
     procedure SetFlags(const AValue: TPkgDependencyFlags);
+    procedure SetLoadPackageResult(const AValue: TLoadPackageResult);
     procedure SetMaxVersion(const AValue: TPkgVersion);
     procedure SetMinVersion(const AValue: TPkgVersion);
     procedure SetPackageName(const AValue: string);
@@ -223,6 +232,7 @@ type
     property Removed: boolean read FRemoved write SetRemoved;
     property Owner: TObject read FOwner write FOwner;
     property RequiredPackage: TLazPackage read FRequiredPackage write SetRequiredPackage;
+    property LoadPackageResult: TLoadPackageResult read FLoadPackageResult write SetLoadPackageResult;
   end;
   
   
@@ -751,6 +761,13 @@ begin
   FFlags:=AValue;
 end;
 
+procedure TPkgDependency.SetLoadPackageResult(const AValue: TLoadPackageResult
+  );
+begin
+  if FLoadPackageResult=AValue then exit;
+  FLoadPackageResult:=AValue;
+end;
+
 procedure TPkgDependency.SetMaxVersion(const AValue: TPkgVersion);
 begin
   if FMaxVersion=AValue then exit;
@@ -780,6 +797,7 @@ begin
   if FRequiredPackage=AValue then exit;
   if FRequiredPackage<>nil then
     FRequiredPackage.RemoveUsedByDependency(Self);
+  fLoadPackageResult:=lprUndefined;
   FRequiredPackage:=AValue;
   if FRequiredPackage<>nil then
     FRequiredPackage.AddUsedByDependency(Self);
@@ -1309,8 +1327,10 @@ var
       List.Add(PkgDependency);
     end;
     SortDependencyList(List);
-    for i:=0 to List.Count-1 do
+    for i:=0 to List.Count-1 do begin
       TPkgDependency(List[i]).AddToList(First,ListType);
+      TPkgDependency(List[i]).Owner:=Self;
+    end;
     List.Free;
   end;
 

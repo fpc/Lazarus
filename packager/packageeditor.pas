@@ -968,7 +968,7 @@ begin
       RemovedRequiredNode:=
         FilesTreeView.Items.Add(nil,'Removed required packages (are not saved)');
       RemovedRequiredNode.ImageIndex:=ImageIndexRemovedRequired;
-      RemovedRequiredNode.StateIndex:=RemovedRequiredNode.ImageIndex;
+      RemovedRequiredNode.SelectedIndex:=RemovedRequiredNode.ImageIndex;
     end;
     CurNode:=RemovedRequiredNode.GetFirstChild;
     while CurDependency<>nil do begin

@@ -50,13 +50,6 @@ uses
   ComponentReg, RegisterLCL, RegisterFCL;
   
 type
-  TLoadPackageResult = (
-    lprUndefined,
-    lprSuccess,
-    lprNotFound,
-    lprLoadError
-    );
-    
   TFindPackageFlag = (
     fpfSearchInInstalledPckgs,
     fpfSearchInAutoInstallPckgs,
@@ -706,33 +699,32 @@ var
   ANode: TAVLTreeNode;
   PkgLink: TPackageLink;
 begin
-  Result:=lprUndefined;
-  APackage:=Dependency.RequiredPackage;
-  if APackage<>nil then begin
-    Result:=lprSuccess;
-    exit;
-  end;
-  // search in opened packages
-  ANode:=FindWithDependency(Dependency,Flags);
-  if (ANode=nil) then begin
-    // package not yet open
-    if (fpfSearchInPkgLinks in Flags) then begin
-      PkgLinks.UpdateAll;
-      PkgLink:=PkgLinks.FindLinkWithDependency(Dependency);
-      if PkgLink<>nil then begin
-      
-        // ToDo
-        
+  if Dependency.LoadPackageResult=lprUndefined then begin
+    // search in opened packages
+    ANode:=FindWithDependency(Dependency,Flags);
+    if (ANode=nil) then begin
+      // package not yet open
+      if (fpfSearchInPkgLinks in Flags) then begin
+        PkgLinks.UpdateAll;
+        PkgLink:=PkgLinks.FindLinkWithDependency(Dependency);
+        if PkgLink<>nil then begin
+
+          // ToDo
+
+        end;
       end;
     end;
+    // save result
+    if ANode<>nil then begin
+      Dependency.RequiredPackage:=TLazPackage(ANode.Data);
+      Dependency.LoadPackageResult:=lprSuccess;
+    end else begin
+      Dependency.RequiredPackage:=nil;
+      Dependency.LoadPackageResult:=lprNotFound;
+    end;
   end;
-  if ANode<>nil then begin
-    APackage:=TLazPackage(ANode.Data);
-    Dependency.RequiredPackage:=APackage;
-    Result:=lprSuccess;
-  end else begin
-    Result:=lprSuccess;
-  end;
+  APackage:=Dependency.RequiredPackage;
+  Result:=Dependency.LoadPackageResult;
 end;
 
 procedure TLazPackageGraph.IterateComponentClasses(APackage: TLazPackage;
