@@ -281,7 +281,7 @@ Var
 Begin
   Assert(False, 'Trace:WindowProc - Start');
 
-  Result := 0;
+  LMessage.Result := 0;
   LMessage.Msg := LM_NULL;
   PLMsg := @LMessage;
   WinProcess := True;
@@ -399,7 +399,7 @@ Begin
       begin
         Windows.SetTextColor(HDC(WParam), Windows.COLORREF(ColorToRGB(TWinControl(MsgObject).Font.Color)));
         Windows.SetBkColor(HDC(WParam), Windows.COLORREF(ColorToRGB(TWinControl(MsgObject).Brush.Color)));
-        Result := LResult(TWinControl(MsgObject).Brush.Handle);
+        LMessage.Result := LResult(TWinControl(MsgObject).Brush.Handle);
         // Override default handling
         WinProcess := false;
       end;
@@ -474,8 +474,12 @@ Begin
       LMessage.Msg := LM_ERASEBKGND;
       LMessage.WParam := WParam;
       LMessage.LParam := LParam;
-      Result := 1;
+      LMessage.Result := 1;
       WinProcess := false;
+    End;
+    WM_GETDLGCODE:
+    Begin
+      LMessage.Msg := LM_GETDLGCODE;
     End;
     WM_KEYDOWN:
     Begin
@@ -630,7 +634,7 @@ Begin
       begin
         if TControl(OwnerObject).FCompStyle = csHintWindow then
         begin
-          Result := HTTRANSPARENT;
+          LMessage.Result := HTTRANSPARENT;
           WinProcess := false;
         end;
       end;
@@ -703,7 +707,7 @@ Begin
         XPos := SmallInt(Lo(LParam));
         YPos := SmallInt(Hi(LParam));
         Keys := WParam;
-        Result := 0;
+        LMMouse.Result := 0;
       End;
     End;
     WM_SETFOCUS:
@@ -789,9 +793,9 @@ Begin
   begin
     PrevWndProc := GetProp(Window, 'DefWndProc');
     if PrevWndProc = nil then
-      Result := Windows.DefWindowProc(Window, Msg, WParam, LParam)
+      PLMsg^.Result := Windows.DefWindowProc(Window, Msg, WParam, LParam)
     else
-      Result := Windows.CallWindowProc(Windows.WNDPROC(PrevWndProc), Window, Msg, WParam, LParam);
+      PLMsg^.Result := Windows.CallWindowProc(Windows.WNDPROC(PrevWndProc), Window, Msg, WParam, LParam);
   end;
 
   Case Msg Of
@@ -903,6 +907,17 @@ Begin
     End;
   {$ENDIF VER1_1_MSG}
 
+  { LMMouseEvent and LMInsertText have no Result field }
+
+  if 	  PLMsg = @LMScroll 	then Result := LMScroll.Result 
+  else if PLMsg = @LMKey 	then Result := LMKey.Result 
+  else if PLMsg = @LMChar 	then Result := LMChar.Result
+  else if PLMsg = @LMMouse 	then Result := LMMouse.Result
+  else if PLMsg = @LMMouseMove 	then Result := LMMouseMove.Result
+  else if PLMsg = @LMMove 	then Result := LMMove.Result
+  else if PLMsg = @LMNotify 	then Result := LMNotify.Result
+  else 				     Result := PLMsg^.Result;
+  
   Assert(False, 'Trace:WindowProc - Exit');
 End;
 
@@ -976,6 +991,9 @@ end;
 
 {
   $Log$
+  Revision 1.91  2004/01/29 20:57:57  micha
+  fixed: use result of message passed to lcl (fixes synedit editing)
+
   Revision 1.90  2004/01/20 22:14:27  micha
   REVERTED: "try register globally unique properties"; implemented new WindowFromPoint not returning window if from different process (tip from vincent)
 
