@@ -59,7 +59,7 @@ end;
   Result: GBoolean
 
   gtkNoteBookCloseBtnClicked is called by the gtk, whenever a close button in
-  the tab of notebook page is clicked.
+  the tab of a notebook page is clicked.
 -------------------------------------------------------------------------------}
 function gtkNoteBookCloseBtnClicked(Widget: PGtkWidget;
   Data: Pointer): GBoolean; cdecl;
@@ -915,6 +915,7 @@ begin
   ShiftState := GTKEventState2ShiftState(Event^.State);
   MappedXY:=TranslateGdkPointToClientArea(Event^.Window,EventXY,
                                          PGtkWidget(AWinControl.Handle));
+  //writeln('BBB1 MouseDown ',AWinControl.Name,':',AWinControl.ClassName,' Mapped=',MappedXY.X,',',MappedXY.Y,' Event=',EventXY.X,',',EventXY.Y);
 
   if event^.Button in [4,5] then begin
     // this is a mouse wheel event
@@ -927,8 +928,6 @@ begin
     MessE.Button := 0;
 
     // send the message directly to the LCL
-    // (Posting the message via queue
-    //  has the risk of getting out of sync with the gtk)
     DeliverMessage(AWinControl, MessE);
   end
   else begin
@@ -969,8 +968,6 @@ begin
 
     MessI.Result:=0;
     // send the message directly to the LCL
-    // (Posting the message via queue
-    //  has the risk of getting out of sync with the gtk)
     DeliverMessage(AWinControl, MessI);
   end;
 end;
@@ -2467,6 +2464,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.143  2002/10/09 10:22:54  lazarus
+  MG: fixed client origin coordinates
+
   Revision 1.142  2002/10/07 07:00:03  lazarus
   MG: fixed stopping keypress event if handled by LCL
 
