@@ -49,8 +49,8 @@ uses
   // codetools
   CodeToolsStructs, CodeToolManager, CodeCache, DefineTemplates,
   // lcl
-  LCLType, LclLinux, LMessages, LResources, StdCtrls, Forms, Buttons, Menus,
-  FileCtrl, Controls, Graphics, GraphType, ExtCtrls, Dialogs,
+  LCLType, LclLinux, LCLproc, LMessages, LResources, StdCtrls, Forms, Buttons,
+  Menus, FileCtrl, Controls, Graphics, GraphType, ExtCtrls, Dialogs,
   // synedit
   SynEditKeyCmds,
   // compile
@@ -729,12 +729,22 @@ begin
   if (ParamCount>0)
   and ((AnsiCompareText(ParamStr(1),'--help')=0)
     or (AnsiCompareText(ParamStr(1),'-help')=0)
-    or (AnsiCompareText(ParamStr(1),'-?')=0)) then
+    or (AnsiCompareText(ParamStr(1),'-?')=0)
+    or (AnsiCompareText(ParamStr(1),'-h')=0)) then
   begin
     TranslateResourceStrings(ProgramDirectory,'');
-    writeln(lisCmdLineHlpHeader);
-    writeln(Format(lisCmdLinePrimaryConfigPathDesc,[GetPrimaryConfigPath]));
-    writeln(Format(lisCmdLineSecondaryConfigPathDesc,[GetSecondaryConfigPath]));
+    writeln(lislazarusOptionsProjectFilename);
+    writeln('');
+    writeln(lisIDEOptions);
+    writeln('');
+    writeln('--help or -?             ', listhisHelpMessage);
+    writeln('');
+    writeln('--primary-config-path <path>');
+    writeln(BreakString(lisprimaryConfigDirectoryWhereLazarusStoresItsConfig,
+        75, 22), GetPrimaryConfigPath);
+    writeln('--secondary-config-path <path>');
+    writeln(BreakString(lissecondaryConfigDirectoryWhereLazarusSearchesFor,
+        75, 22), GetSecondaryConfigPath);
     writeln('');
     writeln(lisCmdLineLCLInterfaceSpecificOptions);
     writeln('');
@@ -2965,7 +2975,8 @@ begin
     if Project1.IndexOfUnitWithName(NewUnitName,true,AnUnitInfo)>=0 then
     begin
       Result:=MessageDlg(lisUnitNameAlreadyExistsCap,
-         Format(lisUnitNameAlreadyExistsText,[NewUnitName]),
+         Format(lisTheUnitAlreadyExistsIgnoreWillForceTheRenaming, ['"',
+           NewUnitName, '"', #13, #13, #13]),
           mtConfirmation,[mbIgnore,mbCancel,mbAbort],0);
       if Result=mrIgnore then
         Result:=mrCancel
@@ -8657,6 +8668,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.559  2003/05/07 18:55:43  mattias
+  fixed localization
+
   Revision 1.558  2003/05/07 17:41:27  mattias
   fixed create project for program
 
