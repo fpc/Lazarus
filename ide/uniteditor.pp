@@ -1176,6 +1176,7 @@ end;
 procedure TSourceEditor.UpperCaseSelection;
 var OldBlockBegin, OldBlockEnd: TPoint;
 begin
+  if ReadOnly then exit;
   if not EditorComponent.SelAvail then exit;
   OldBlockBegin:=FEditor.BlockBegin;
   OldBlockEnd:=FEditor.BlockEnd;
@@ -1196,6 +1197,7 @@ end;
 procedure TSourceEditor.LowerCaseSelection;
 var OldBlockBegin, OldBlockEnd: TPoint;
 begin
+  if ReadOnly then exit;
   if not EditorComponent.SelAvail then exit;
   OldBlockBegin:=FEditor.BlockBegin;
   OldBlockEnd:=FEditor.BlockEnd;
@@ -1216,6 +1218,7 @@ end;
 procedure TSourceEditor.TabsToSpacesInSelection;
 var OldBlockBegin, OldBlockEnd: TPoint;
 begin
+  if ReadOnly then exit;
   if not EditorComponent.SelAvail then exit;
   OldBlockBegin:=FEditor.BlockBegin;
   OldBlockEnd:=FEditor.BlockEnd;
@@ -1232,6 +1235,7 @@ end;
 procedure TSourceEditor.CommentSelection;
 var OldBlockBegin, OldBlockEnd: TPoint;
 begin
+  if ReadOnly then exit;
   if not EditorComponent.SelAvail then exit;
   OldBlockBegin:=FEditor.BlockBegin;
   OldBlockEnd:=FEditor.BlockEnd;
@@ -1248,6 +1252,7 @@ end;
 procedure TSourceEditor.UncommentSelection;
 var OldBlockBegin, OldBlockEnd: TPoint;
 begin
+  if ReadOnly then exit;
   if not EditorComponent.SelAvail then exit;
   OldBlockBegin:=FEditor.BlockBegin;
   OldBlockEnd:=FEditor.BlockEnd;
@@ -1267,6 +1272,7 @@ var
   i: Integer;
   P: TPoint;
 begin
+  if ReadOnly then exit;
   FEditor.BeginUpdate;
   FEditor.BeginUndoBlock;
   if not EditorComponent.SelAvail then begin
@@ -1286,11 +1292,11 @@ begin
   FEditor.EndUpdate;
 end;
 
-
 procedure TSourceEditor.SortSelection;
 var
   OldSelText, NewSortedText: string;
 begin
+  if ReadOnly then exit;
   OldSelText:=EditorComponent.SelText;
   if OldSelText='' then exit;
   if ShowSortSelectionDialog(OldSelText,EditorComponent.Highlighter,
@@ -1303,6 +1309,7 @@ procedure TSourceEditor.BreakLinesInSelection;
 var
   OldSelection: String;
 begin
+  if ReadOnly then exit;
   if not EditorComponent.SelAvail then exit;
   FEditor.BeginUpdate;
   FEditor.BeginUndoBlock;
@@ -1788,6 +1795,7 @@ var
   NewSelection: string;
   NewCaretXY: TPoint;
 begin
+  if ReadOnly then exit;
   if not FEditor.SelAvail then begin
     FEditor.BlockBegin:=FEditor.CaretXY;
     FEditor.BlockEnd:=FEditor.CaretXY;
