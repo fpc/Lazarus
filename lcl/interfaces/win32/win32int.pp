@@ -35,8 +35,8 @@ Interface
 }
 Uses
   Windows, Classes, ComCtrls, Controls, Dialogs, DynHashArray, ExtCtrls, Forms,
-  GraphType, InterfaceBase, LCLLinux, LCLType, LMessages, StdCtrls, SysUtils,
-  VCLGlobals, Win32Def;
+  GraphicsMath, GraphType, InterfaceBase, LCLLinux, LCLType, LMessages,
+  StdCtrls, SysUtils, VCLGlobals, Win32Def;
 
 Type
   { Virtual alignment-control record }
@@ -192,6 +192,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.16  2002/08/08 18:05:48  lazarus
+  MG: added graphics extensions from Andrew Johnson
+
   Revision 1.15  2002/05/31 13:10:49  lazarus
   Keith: Code cleanup.
 
