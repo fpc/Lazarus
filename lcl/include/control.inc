@@ -1970,6 +1970,7 @@ begin
   //FFont.OnChange := @FontChanged;
   FIsControl := False;
   FEnabled := True;
+  FHelpType := htContext;
   TabStop := False;
   //writeln('TControl.Create END ',Name,':',ClassName);
 end;
@@ -2107,6 +2108,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.125  2003/05/28 08:46:24  mattias
+  break;points dialog now gets the items without debugger
+
   Revision 1.124  2003/05/24 08:51:41  mattias
   implemented designer close query
 
