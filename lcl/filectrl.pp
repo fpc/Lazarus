@@ -69,6 +69,7 @@ function ChompPathDelim(const Path: string): string;
 function TrimFilename(const AFilename: string): string;
 function CleanAndExpandFilename(const Filename: string): string;
 function CleanAndExpandDirectory(const Filename: string): string;
+function CopyFile(const SrcFilename, DestFilename: string): boolean;
 
 // file search
 function SearchFileInPath(const Filename, BasePath, SearchPath,
@@ -108,6 +109,9 @@ end.
 
 {
   $Log$
+  Revision 1.9  2002/12/23 13:20:46  mattias
+  fixed backuping symlinks
+
   Revision 1.8  2002/12/23 10:12:40  mattias
   added symlink test and unit types
 

@@ -46,7 +46,7 @@ interface
 {$endif}
 
 uses
-  SysUtils, Classes, FileProcs, IDEProcs;
+  SysUtils, Classes, FileCtrl, IDEProcs;
 
   { Config Path Functions }
 
@@ -78,6 +78,9 @@ end.
 
 {
   $Log$
+  Revision 1.10  2002/12/23 13:20:45  mattias
+  fixed backuping symlinks
+
   Revision 1.9  2002/12/20 11:08:47  mattias
   method resolution clause, class ancestor find declaration, 1.1. makros
 

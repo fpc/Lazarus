@@ -584,6 +584,32 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function CopyFile(const SrcFilename, DestFilename: string): boolean;
+ ------------------------------------------------------------------------------}
+function CopyFile(const SrcFilename, DestFilename: string): boolean;
+var
+  SrcFS: TFileStream;
+  DestFS: TFileStream;
+begin
+  try
+    SrcFS:=TFileStream.Create(SrcFilename,fmOpenRead);
+    try
+      DestFS:=TFileStream.Create(DestFilename,fmCreate);
+      try
+        DestFS.CopyFrom(SrcFS,SrcFS.Size);
+      finally
+        DestFS.Free;
+      end;
+    finally
+      SrcFS.Free;
+    end;
+    Result:=true;
+  except
+    Result:=false;
+  end;
+end;
+
+{------------------------------------------------------------------------------
   function SearchFileInPath(const Filename, BasePath, SearchPath,
     Delimiter: string; SearchLoUpCase: boolean): string;
  ------------------------------------------------------------------------------}
@@ -674,6 +700,9 @@ end;
 
 {
   $Log$
+  Revision 1.8  2002/12/23 13:20:46  mattias
+  fixed backuping symlinks
+
   Revision 1.7  2002/12/23 10:12:40  mattias
   added symlink test and unit types
 
