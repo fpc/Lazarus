@@ -201,7 +201,7 @@ resourcestring
   lisMenuBuildLazarus = 'Build Lazarus';
   lisMenuConfigureBuildLazarus = 'Configure "Build Lazarus"';
   
-  lisMenuGeneralOptions = 'General options';
+  lisMenuGeneralOptions = 'Environment options';
   lisMenuEditorOptions = 'Editor options';
   lisMenuCodeToolsOptions = 'CodeTools options';
   lisMenuCodeToolsDefinesEditor = 'CodeTools defines editor';
