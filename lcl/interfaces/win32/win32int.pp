@@ -70,7 +70,6 @@ Type
     FStatusFont: HFONT;
     FMessageFont: HFONT;
 
-    Function  CreateComponent(Sender: TObject): THandle;
     Function  RecreateWnd(Sender: TWinControl): Integer; virtual;
     Function  GetOwnerHandle(ADialog : TCommonDialog): HWND;
     Function  GetText(Sender: TComponent; Handle: HWND; var Data: String): Boolean; virtual;
@@ -130,6 +129,8 @@ Type
     Function  InitHintFont(HintFont: TObject): Boolean; Override;
     Procedure AttachMenuToWindow(AMenuObject: TComponent); Override;
 
+    // create and destroy
+    function CreateComponent(Sender : TObject): THandle; override;
     function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc) : integer; override;
     function DestroyTimer(TimerHandle: Integer) : boolean; override;
 
@@ -223,6 +224,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.74  2004/03/19 00:53:34  marc
+  * Removed all ComponentCreateHandle routines
+
   Revision 1.73  2004/03/17 19:59:56  marc
   * Fixes some typos and changes uses clause cases
 

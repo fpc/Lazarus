@@ -53,6 +53,8 @@ type
     function  InitHintFont(HintFont: TObject): Boolean; virtual;
     function  IntSendMessage3(LM_Message: Integer; Sender: TObject; Data: pointer): integer; virtual; abstract;
 
+    // create and destroy
+    function CreateComponent(Sender : TObject): THandle; virtual; abstract;
     function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc): integer; virtual; abstract;
     function DestroyTimer(TimerHandle: integer): boolean; virtual; abstract;
 
@@ -111,6 +113,9 @@ end.
 
 {
   $Log$
+  Revision 1.46  2004/03/19 00:53:34  marc
+  * Removed all ComponentCreateHandle routines
+
   Revision 1.45  2004/03/05 00:14:02  marc
   * Renamed TInterfaceBase to TWidgetSet
 

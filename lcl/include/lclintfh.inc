@@ -35,16 +35,9 @@
  ******************************************************************************}
 //##apiwiz##sps##    // Do not remove
 
-function AlignmentCreateHandle(const AAlignment: TObject; const AParams: TCreateParams): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function ArrowCreateHandle(const AArrow: TObject; const AParams: TCreateParams): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 procedure AttachMenuToWindow(AMenuObject: TComponent); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
-function BitBtnCreateHandle(const ABitBtn: TObject; const AParams: TCreateParams): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-
-function CalendarCreateHandle(const ACalendar: TObject; const AParams: TCreateParams): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 procedure CallDefaultWndHandler(Sender: TObject; var Message); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function CheckboxCreateHandle(const ACheckBox: TObject; const AParams: TCreateParams): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function CheckListBoxCreateHandle(const ACheckListBox: TObject; const AParams: TCreateParams): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function ClipboardFormatToMimeType(FormatID: TClipboardFormat): string; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function ClipboardGetData(ClipboardType: TClipboardType;
   FormatID: TClipboardFormat; Stream: TStream): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -55,9 +48,6 @@ function ClipboardGetOwnerShip(ClipboardType: TClipboardType;
   OnRequestProc: TClipboardRequestEvent;  FormatCount: integer;
   Formats: PClipboardFormat): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function ClipboardRegisterFormat(const AMimeType: string): TClipboardFormat; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function CListBoxCreateHandle(const ACListBox: TObject; const AParams: TCreateParams): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function ColorDialogCreateHandle(const AColorDialog: TObject): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function ComboBoxCreateHandle(const AComboBox: TObject; const AParams: TCreateParams): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function ComboBoxDropDown(Handle: HWND; DropDown: boolean): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function CreateBitmapFromRawImage(const RawImage: TRawImage; var Bitmap, MaskBitmap: HBitmap; AlwaysCreateMask: boolean): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function CreateEmptyRegion: hRGN; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -67,11 +57,6 @@ function CreateRegionCopy(SrcRGN: hRGN): hRGN; {$IFDEF IF_BASE_MEMBER}virtual;{$
 function DCClipRegionValid(DC: HDC): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 procedure DrawArrow(Arrow: TComponent; Canvas: TPersistent); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
-function EditCreateHandle(const AEdit: TObject; const AParams: TCreateParams): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-
-function FileDialogCreateHandle(const AFileDialog: TObject): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function FontDialogCreateHandle(const AFontDialog: TObject): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function FormCreateHandle(const AForm: TObject; const AParams: TCreateParams): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function Frame(DC: HDC; const ARect: TRect): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function Frame3d(DC: HDC; var ARect: TRect; const FrameWidth : integer; const Style : TGraphicsBevelCut): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
@@ -94,42 +79,19 @@ function GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP; const SrcRect:
 function GetScrollBarSize(Handle: HWND; SBStyle: Integer): integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetScrollbarVisible(Handle: HWND; SBStyle: Integer): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetWindowRelativePosition(Handle : hwnd; var Left, Top: integer): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function GroupBoxCreateHandle(const AGroupBox: TObject; const AParams: TCreateParams): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
-function HintWindowCreateHandle(const AHintWindow: TObject; const AParams: TCreateParams): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-
-function ImageCreateHandle(const AImage: TObject; const AParams: TCreateParams): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function IntfCreateHandle(const AObject: TObject; const AParams: TCreateParams): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function InvalidateFrame(aHandle : HWND; ARect : pRect; bErase : Boolean; BorderWidth: integer) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
-function LabelCreateHandle(const ALabel: TObject; const AParams: TCreateParams): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function ListBoxCreateHandle(const AListBox: TObject; const AParams: TCreateParams): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function ListViewCreateHandle(const AListView: TObject; const AParams: TCreateParams): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function LoadStockPixmap(StockID: longint) : HBitmap; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
-function MainMenuCreateHandle(const AMainMenu: TObject): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function MemoCreateHandle(const AMemo: TObject; const AParams: TCreateParams): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function MenuItemCreateHandle(const AMenuItem: TObject): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function MenuItemSetCheck(AMenuItem: TComponent): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function MenuItemSetEnable(AMenuItem: TComponent): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function MoveWindowOrgEx(dc : hdc; dX,dY : Integer): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
-function NotebookCreateHandle(const ANotebook: TObject; const AParams: TCreateParams): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-
-function OpenFileDialogCreateHandle(const AOpenFileDialog: TObject): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-
-function PageCreateHandle(const APage: TObject; const AParams: TCreateParams): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function PairSplitterAddSide(SplitterHandle, SideHandle: hWnd; Side: integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function PairSplitterCreateHandle(const APairSplitter: TObject; const AParams: TCreateParams): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function PairSplitterGetInterfaceInfo: boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function PairSplitterRemoveSide(SplitterHandle, SideHandle: hWnd; Side: integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function PairSplitterSetPosition(SplitterHandle: hWnd; var NewPosition: integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function PairSplitterSideCreateHandle(const APairSplitterSide: TObject; const AParams: TCreateParams): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function PanelCreateHandle(const APanel: TObject; const AParams: TCreateParams): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function PopupMenuCreateHandle(const APopupMenu: TObject): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function PreviewFileControlCreateHandle(const APreviewFileControl: TObject): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function PreviewFileDialogCreateHandle(const APreviewFileDialog: TObject): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function ProgressBarCreateHandle(const AProgressBar: TObject; const AParams: TCreateParams): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function PromptUser(const DialogCaption, DialogMessage : String; DialogType : longint; Buttons : PLongint; ButtonCount, DefaultIndex, EscapeResult : Longint) : Longint;{$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function PromptUserAtXY(const DialogCaption, DialogMessage : String; DialogType : longint; Buttons : PLongint; ButtonCount, DefaultIndex, EscapeResult : Longint; X, Y : Longint) : Longint;{$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
@@ -137,39 +99,21 @@ function RadialArc(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean; {$
 function RadialChord(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function RadialPie(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function RadialPieWithAngles(DC: HDC; X,Y,Width,Height,Angle1,Angle2: Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function RadioButtonCreateHandle(const ARadioButton: TObject; const AParams: TCreateParams): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function RadioMenuItemGroup(hndMenu: HMENU; bRadio: Boolean): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function RegroupMenuItem(hndMenu: HMENU; GroupIndex: integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function ReleaseDesignerDC(hWnd: HWND; DC: HDC): Integer;  {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function RequestInput(const InputCaption, InputPrompt : String; MaskInput : Boolean; var Value : String) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function RightJustifyMenuItem(HndMenu: HMenu; bRightJustify: boolean): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
-function SaveFileDialogCreateHandle(const ASaveFileDialog: TObject): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function ScrollBarCreateHandle(const AScrollBar: TObject; const AParams: TCreateParams): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function ScrollBoxCreateHandle(const AScrollBox: TObject; const AParams: TCreateParams): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function ScrolledWindowCreateHandle(const AScrolledWindow: TObject; const AParams: TCreateParams): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function SelectDirectoryDialogCreateHandle(const ASelectDirectoryDialog: TObject): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 procedure SendCachedLCLMessages; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function DrawSplitter(DC: HDC; const ARect: TRect; Horizontal: boolean): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetCaretRespondToFocus(handle: HWND; ShowHideOnFocus: boolean): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetComboMinDropDownSize(Handle: HWND; MinItemsWidth, MinItemsHeight, MinItemCount: integer): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function SpeedButtonCreateHandle(const ASpeedButton: TObject; const AParams: TCreateParams): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function SpineditCreateHandle(const ASpinEdit: TObject; const AParams: TCreateParams): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function StatusBarCreateHandle(const AStatusBar: TObject; const AParams: TCreateParams): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 procedure StatusBarPanelUpdate(StatusBar: TObject; PanelIndex: integer); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 procedure StatusBarSetText(StatusBar: TObject; PanelIndex: integer); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 procedure StatusBarUpdate(StatusBar: TObject); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
-
-
-function ToggleBoxCreateHandle(const AToggleBox: TObject; const AParams: TCreateParams): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-
-function ToolbarCreateHandle(const AToolbar: TObject; const AParams: TCreateParams): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function ToolButtonCreateHandle(const AToolButton: TObject; const AParams: TCreateParams): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function TrackBarCreateHandle(const ATrackBar: TObject; const AParams: TCreateParams): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-
-function WincontrolCreateHandle(const AFixed: TObject; const AParams: TCreateParams): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 //##apiwiz##eps##    // Do not remove
 
 {******************************************************************************
@@ -204,6 +148,9 @@ procedure RaiseLastOSError;
 { =============================================================================
 
   $Log$
+  Revision 1.22  2004/03/19 00:53:34  marc
+  * Removed all ComponentCreateHandle routines
+
   Revision 1.21  2004/03/19 00:03:15  marc
   * Moved the implementation of (GTK)ButtonCreateHandle to the new
     (GTK)WSButton class

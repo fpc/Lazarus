@@ -96,7 +96,7 @@ function TWSLCLComponent.CreateHandle(const AComponent: TComponent;
   const AParams: TCreateParams): THandle;
 begin
   // For now default to the old creation routines
-  Result := InterfaceObject.IntfCreateHandle(AComponent, AParams);
+  Result := InterfaceObject.CreateComponent(AComponent);
 end;
   
 initialization

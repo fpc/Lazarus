@@ -25,48 +25,12 @@
 }
 //##apiwiz##sps##   // Do not remove
 
-function TWidgetSet.AlignmentCreateHandle(const AAlignment: TObject; const AParams: TCreateParams): THandle;
-begin
-  // Your default here
-  Result:=0;
-end;
-
-function TWidgetSet.ArrowCreateHandle(const AArrow: TObject; const AParams: TCreateParams): THandle;
-begin
-  // Your default here
-  Result:=0;
-end;
-
 procedure TWidgetSet.AttachMenuToWindow(AMenuObject: TComponent);
 begin
 end;
 
-function TWidgetSet.BitBtnCreateHandle(const ABitBtn: TObject; const AParams: TCreateParams): THandle;
-begin
-  // Your default here
-  Result:=0;
-end;
-
-function TWidgetSet.CalendarCreateHandle(const ACalendar: TObject; const AParams: TCreateParams): THandle;
-begin
-  // Your default here
-  Result:=0;
-end;
-
 procedure TWidgetSet.CallDefaultWndHandler(Sender: TObject; var Message);
 begin
-end;
-
-function TWidgetSet.CheckboxCreateHandle(const ACheckBox: TObject; const AParams: TCreateParams): THandle;
-begin
-  // Your default here
-  Result:=0;
-end;
-
-function TWidgetSet.CheckListBoxCreateHandle(const ACheckListBox: TObject; const AParams: TCreateParams): THandle;
-begin
-  // Your default here
-  Result:=0;
 end;
 
 // the clipboard functions are internally used by TClipboard
@@ -101,24 +65,6 @@ function TWidgetSet.ClipboardRegisterFormat(
   const AMimeType: string): TClipboardFormat;
 begin
   Result := 0;
-end;
-
-function TWidgetSet.CListBoxCreateHandle(const ACListBox: TObject; const AParams: TCreateParams): THandle;
-begin
-  // Your default here
-  Result:=0;
-end;
-
-function TWidgetSet.ColorDialogCreateHandle(const AColorDialog: TObject): THandle;
-begin
-  // Your default here
-  Result:=0;
-end;
-
-function TWidgetSet.ComboBoxCreateHandle(const AComboBox: TObject; const AParams: TCreateParams): THandle;
-begin
-  // Your default here
-  Result:=0;
 end;
 
 function TWidgetSet.ComboBoxDropDown(Handle: HWND;
@@ -165,30 +111,6 @@ end;
 
 procedure TWidgetSet.DrawArrow(Arrow: TComponent; Canvas: TPersistent);
 begin
-end;
-
-function TWidgetSet.EditCreateHandle(const AEdit: TObject; const AParams: TCreateParams): THandle;
-begin
-  // Your default here
-  Result:=0;
-end;
-
-function TWidgetSet.FileDialogCreateHandle(const AFileDialog: TObject): THandle;
-begin
-  // Your default here
-  Result:=0;
-end;
-
-function TWidgetSet.FontDialogCreateHandle(const AFontDialog: TObject): THandle;
-begin
-  // Your default here
-  Result:=0;
-end;
-
-function TWidgetSet.FormCreateHandle(const AForm: TObject; const AParams: TCreateParams): THandle;
-begin
-  // Your default here
-  Result:=0;
 end;
 
 function TWidgetSet.Frame(DC: HDC; const ARect: TRect) : integer;
@@ -426,30 +348,6 @@ begin
   Result:=false;
 end;
 
-function TWidgetSet.GroupBoxCreateHandle(const AGroupBox: TObject; const AParams: TCreateParams): THandle;
-begin
-  // Your default here
-  Result:=0;
-end;
-
-function TWidgetSet.HintWindowCreateHandle(const AHintWindow: TObject; const AParams: TCreateParams): THandle;
-begin
-  // Your default here
-  Result:=0;
-end;
-
-function TWidgetSet.ImageCreateHandle(const AImage: TObject; const AParams: TCreateParams): THandle;
-begin
-  // Your default here
-  Result:=0;
-end;
-
-function TWidgetSet.IntfCreateHandle(const AObject: TObject; const AParams: TCreateParams): THandle;
-begin
-  // Your default here
-  Result:=0;
-end;
-
 Function TWidgetSet.InvalidateFrame(aHandle : HWND; ARect : pRect;
   bErase : Boolean; BorderWidth: integer) : Boolean;
 
@@ -484,42 +382,6 @@ begin
   BorderRect.Top:=Max(BorderRect.Top,BorderRect.Bottom-BorderWidth);
   if not InvalidateRect(aHandle,@BorderRect,bErase) then exit;
   Result:=true;
-end;
-
-function TWidgetSet.LabelCreateHandle(const ALabel: TObject; const AParams: TCreateParams): THandle;
-begin
-  // Your default here
-  Result:=0;
-end;
-
-function TWidgetSet.ListBoxCreateHandle(const AListBox: TObject; const AParams: TCreateParams): THandle;
-begin
-  // Your default here
-  Result:=0;
-end;
-
-function TWidgetSet.ListViewCreateHandle(const AListView: TObject; const AParams: TCreateParams): THandle;
-begin
-  // Your default here
-  Result:=0;
-end;
-
-function TWidgetSet.MainMenuCreateHandle(const AMainMenu: TObject): THandle;
-begin
-  // Your default here
-  Result:=0;
-end;
-
-function TWidgetSet.MemoCreateHandle(const AMemo: TObject; const AParams: TCreateParams): THandle;
-begin
-  // Your default here
-  Result:=0;
-end;
-
-function TWidgetSet.MenuItemCreateHandle(const AMenuItem: TObject): THandle;
-begin
-  // Your default here
-  Result:=0;
 end;
 
 function TWidgetSet.MenuItemSetCheck(AMenuItem: TComponent): Boolean;
@@ -582,34 +444,10 @@ Begin
   Result:=SetWindowOrgEx(dc, P.x-dX, P.y-dY, @P);
 end;
 
-function TWidgetSet.NotebookCreateHandle(const ANotebook: TObject; const AParams: TCreateParams): THandle;
-begin
-  // Your default here
-  Result:=0;
-end;
-
-function TWidgetSet.OpenFileDialogCreateHandle(const AOpenFileDialog: TObject): THandle;
-begin
-  // Your default here
-  Result:=0;
-end;
-
-function TWidgetSet.PageCreateHandle(const APage: TObject; const AParams: TCreateParams): THandle;
-begin
-  // Your default here
-  Result:=0;
-end;
-
 function TWidgetSet.PairSplitterAddSide(SplitterHandle, SideHandle: hWnd;
   Side: integer): Boolean;
 begin
   Result:=false;
-end;
-
-function TWidgetSet.PairSplitterCreateHandle(const APairSplitter: TObject; const AParams: TCreateParams): THandle;
-begin
-  // Your default here
-  Result:=0;
 end;
 
 function TWidgetSet.PairSplitterGetInterfaceInfo: boolean;
@@ -627,42 +465,6 @@ function TWidgetSet.PairSplitterSetPosition(SplitterHandle: hWnd;
   var NewPosition: integer): Boolean;
 begin
   Result:=false;
-end;
-
-function TWidgetSet.PairSplitterSideCreateHandle(const APairSplitterSide: TObject; const AParams: TCreateParams): THandle;
-begin
-  // Your default here
-  Result:=0;
-end;
-
-function TWidgetSet.PanelCreateHandle(const APanel: TObject; const AParams: TCreateParams): THandle;
-begin
-  // Your default here
-  Result:=0;
-end;
-
-function TWidgetSet.PopupMenuCreateHandle(const APopupMenu: TObject): THandle;
-begin
-  // Your default here
-  Result:=0;
-end;
-
-function TWidgetSet.PreviewFileControlCreateHandle(const APreviewFileControl: TObject): THandle;
-begin
-  // Your default here
-  Result:=0;
-end;
-
-function TWidgetSet.PreviewFileDialogCreateHandle(const APreviewFileDialog: TObject): THandle;
-begin
-  // Your default here
-  Result:=0;
-end;
-
-function TWidgetSet.ProgressBarCreateHandle(const AProgressBar: TObject; const AParams: TCreateParams): THandle;
-begin
-  // Your default here
-  Result:=0;
 end;
 
 Function TWidgetSet.PromptUser(const DialogCaption, DialogMessage : String;
@@ -735,12 +537,6 @@ begin
   Result := True;
 end;
 
-function TWidgetSet.RadioButtonCreateHandle(const ARadioButton: TObject; const AParams: TCreateParams): THandle;
-begin
-  // Your default here
-  Result:=0;
-end;
-
 function TWidgetSet.RadioMenuItemGroup(hndMenu: HMENU; bRadio: Boolean): Boolean;
 begin
   Result := false;
@@ -771,36 +567,6 @@ begin
   Result := False;
 end;
 
-function TWidgetSet.SaveFileDialogCreateHandle(const ASaveFileDialog: TObject): THandle;
-begin
-  // Your default here
-  Result:=0;
-end;
-
-function TWidgetSet.ScrollBarCreateHandle(const AScrollBar: TObject; const AParams: TCreateParams): THandle;
-begin
-  // Your default here
-  Result:=0;
-end;
-
-function TWidgetSet.ScrollBoxCreateHandle(const AScrollBox: TObject; const AParams: TCreateParams): THandle;
-begin
-  // Your default here
-  Result:=0;
-end;
-
-function TWidgetSet.ScrolledWindowCreateHandle(const AScrolledWindow: TObject; const AParams: TCreateParams): THandle;
-begin
-  // Your default here
-  Result:=0;
-end;
-
-function TWidgetSet.SelectDirectoryDialogCreateHandle(const ASelectDirectoryDialog: TObject): THandle;
-begin
-  // Your default here
-  Result:=0;
-end;
-
 procedure TWidgetSet.SendCachedLCLMessages;
 begin
 end;
@@ -826,24 +592,6 @@ begin
   Result := false;
 end;
 
-function TWidgetSet.SpeedButtonCreateHandle(const ASpeedButton: TObject; const AParams: TCreateParams): THandle;
-begin
-  // Your default here
-  Result:=0;
-end;
-
-function TWidgetSet.SpineditCreateHandle(const ASpinEdit: TObject; const AParams: TCreateParams): THandle;
-begin
-  // Your default here
-  Result:=0;
-end;
-
-function TWidgetSet.StatusBarCreateHandle(const AStatusBar: TObject; const AParams: TCreateParams): THandle;
-begin
-  // Your default here
-  Result:=0;
-end;
-
 procedure TWidgetSet.StatusBarPanelUpdate(StatusBar: TObject;
   PanelIndex: integer);
 begin
@@ -866,40 +614,13 @@ begin
   Result := False;
 end;
 
-function TWidgetSet.ToggleBoxCreateHandle(const AToggleBox: TObject; const AParams: TCreateParams): THandle;
-begin
-  // Your default here
-  Result:=0;
-end;
-
-function TWidgetSet.ToolbarCreateHandle(const AToolbar: TObject; const AParams: TCreateParams): THandle;
-begin
-  // Your default here
-  Result:=0;
-end;
-
-function TWidgetSet.ToolButtonCreateHandle(const AToolButton: TObject; const AParams: TCreateParams): THandle;
-begin
-  // Your default here
-  Result:=0;
-end;
-
-function TWidgetSet.TrackBarCreateHandle(const ATrackBar: TObject; const AParams: TCreateParams): THandle;
-begin
-  // Your default here
-  Result:=0;
-end;
-
-function TWidgetSet.WincontrolCreateHandle(const AFixed: TObject; const AParams: TCreateParams): THandle;
-begin
-  // Your default here
-  Result:=0;
-end;
-
 //##apiwiz##eps##   // Do not remove
 { =============================================================================
 
   $Log$
+  Revision 1.26  2004/03/19 00:53:34  marc
+  * Removed all ComponentCreateHandle routines
+
   Revision 1.25  2004/03/19 00:03:15  marc
   * Moved the implementation of (GTK)ButtonCreateHandle to the new
     (GTK)WSButton class

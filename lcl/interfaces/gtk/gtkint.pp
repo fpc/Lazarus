@@ -145,7 +145,6 @@ type
     function CreateStatusBarPanel(StatusBar: TObject; Index: integer): PGtkWidget;
     function CreateSimpleClientAreaWidget(Sender: TObject;
       NotOnParentsClientArea: boolean): PGtkWidget;
-    function CreateComponent(Sender : TObject): THandle; virtual;
     function CreateToolBar(ToolBarObject: TObject): PGtkWidget;
     procedure DestroyEmptySubmenu(Sender: TObject);virtual;
     procedure DestroyLCLComponent(Sender: TObject);virtual;
@@ -310,6 +309,8 @@ type
     procedure AppTerminate; override;
     procedure AppInit; override;
 
+    // create and destroy
+    function CreateComponent(Sender : TObject): THandle; override;
     function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc) : integer; override;
     function DestroyTimer(TimerHandle: integer) : boolean; override;
 
@@ -460,6 +461,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.177  2004/03/19 00:53:34  marc
+  * Removed all ComponentCreateHandle routines
+
   Revision 1.176  2004/03/19 00:03:15  marc
   * Moved the implementation of (GTK)ButtonCreateHandle to the new
     (GTK)WSButton class
