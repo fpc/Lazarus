@@ -1551,7 +1551,7 @@ var
   
   procedure CacheResult(Found: boolean);
   begin
-    if Found and (not (fdfDoNotCache in Params.NewFlags))
+    if Found and ([fdfDoNotCache,fdfCollect]*Params.NewFlags=[])
     and (FirstSearchedNode<>nil) then begin
       // cache result
       if (Params.NewNode<>nil) and (Params.NewNode.Desc=ctnProcedure) then begin
@@ -3120,7 +3120,8 @@ begin
     AskingTool.AddToolDependency(Self);
 
   // search identifier in cache
-  if FInterfaceIdentifierCache<>nil then begin
+  if (FInterfaceIdentifierCache<>nil)
+  and (not (fdfCollect in Params.Flags)) then begin
     CacheEntry:=FInterfaceIdentifierCache.FindIdentifier(Params.Identifier);
     if CacheEntry<>nil then begin
       // identifier in cache found
@@ -3167,7 +3168,7 @@ begin
   // save result in cache
   if FInterfaceIdentifierCache=nil then
     FInterfaceIdentifierCache:=TInterfaceIdentifierCache.Create(Self);
-  if Result then begin
+  if Result and (not (fdfCollect in Params.Flags)) then begin
     // identifier exists in interface
     if (Params.NewNode.Desc<>ctnProcedure) then begin
       FInterfaceIdentifierCache.Add(OldInput.Identifier,Params.NewNode,
