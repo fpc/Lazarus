@@ -172,7 +172,7 @@ type
     constructor Create(const AName, ADescription, AVariable, AValue: string;
       AnAction: TDefineAction);
     destructor Destroy; override;
-    function ConsistencyCheck: integer; // 0 = ok
+    function  ConsistencyCheck: integer; // 0 = ok
     procedure WriteDebugReport;
   end;
 
@@ -2474,6 +2474,7 @@ begin
       +';..'+ds+'lcl'+ds+'interfaces'+ds+WidgetType
       +';'+SrcPath
     ,da_DefineRecurse));
+  MainDir.AddChild(DirTempl);
 
   if MainDir<>nil then begin
     Result:=TDefineTemplate.Create(StdDefTemplLazarusSources,

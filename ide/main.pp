@@ -626,6 +626,7 @@ begin
   FreeThenNil(MiscellaneousOptions);
   FreeThenNil(EditorOpts);
   FreeThenNil(EnvironmentOptions);
+  FreeThenNil(InputHistories);
   FreeThenNil(HintTimer1);
   FreeThenNil(HintWindow1);
 
@@ -4603,7 +4604,9 @@ var
   ACaption,AText:string;
 begin
   repeat
-writeln('[TMainIDE.DoLoadCodeBuffer] A ',AFilename);
+    {$IFDEF IDE_DEBUG}
+    writeln('[TMainIDE.DoLoadCodeBuffer] A ',AFilename);
+    {$ENDIF}
     if (lbfCheckIfText in Flags)
     and FileExists(AFilename) and (not FileIsText(AFilename))
     then begin
@@ -4619,7 +4622,9 @@ writeln('[TMainIDE.DoLoadCodeBuffer] A ',AFilename);
                                        lbfRevert in Flags);
     if ACodeBuffer<>nil then begin
       Result:=mrOk;
-writeln('[TMainIDE.DoLoadCodeBuffer] ',ACodeBuffer.SourceLength,' ',ACodeBuffer.Filename);
+      {$IFDEF IDE_DEBUG}
+      writeln('[TMainIDE.DoLoadCodeBuffer] ',ACodeBuffer.SourceLength,' ',ACodeBuffer.Filename);
+      {$ENDIF}
     end else begin
       ACaption:='Read Error';
       AText:='Unable to read file "'+AFilename+'"!';
@@ -5198,7 +5203,7 @@ end;
 
 procedure TMainIDE.InitCodeToolBoss;
 // initialize the CodeToolBoss, which is the frontend for the codetools.
-// - sets a basic set of compiler macros
+//  - sets a basic set of compiler macros
 // ToDo: build a frontend for the codetools and save the settings
 
   procedure AddTemplate(ADefTempl: TDefineTemplate; AddToPool: boolean; 
@@ -6200,6 +6205,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.270  2002/04/03 18:20:49  lazarus
+  MG: fixed mem leaks
+
   Revision 1.269  2002/04/03 10:34:05  lazarus
   MG: fixed crash on open project
 

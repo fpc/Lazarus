@@ -449,8 +449,6 @@ end;
 destructor TheFontsInfoManager.Destroy;
 var APheSharedFontsInfo:PheSharedFontsInfo;
 begin
-  gFontsInfoManager := nil;
-  
   if Assigned(FFontsInfo) then
   begin
     while FFontsInfo.Count > 0 do
@@ -464,6 +462,7 @@ begin
   end;
 
   inherited Destroy;
+  gFontsInfoManager := nil;
 end;
 
 procedure TheFontsInfoManager.DestroyFontHandles(
@@ -534,12 +533,10 @@ begin
       // free all objects
       BaseFont.Free;
       Dispose(pFontsInfo);
-      {$IFDEF SYN_LAZARUS}
-      pFontsInfo:=nil;
-      {$ENDIF}
     end;
   end;
   {$IFDEF SYN_LAZARUS}
+  pFontsInfo:=nil;
   if SynTextDrawerFinalization and (FFontsInfo.Count=0) then
     // the program is in the finalization phase
     // and this object is not used anymore -> destroy it
@@ -779,7 +776,11 @@ begin
   begin
     pInfo := GetFontsInfoManager.GetFontsInfo(Value);
     if pInfo = FpInfo then begin
-      GetFontsInfoManager.ReleaseFontsInfo(FpInfo);
+      {$IFDEF SYN_LAZARUS}
+      // GetFontsInfo has increased the refcount, but we already have the font
+      // -> decrease the refcount
+      {$ENDIF}
+      GetFontsInfoManager.ReleaseFontsInfo(pInfo);
     end else begin
       ReleaseFontsInfo;
       FpInfo := pInfo;
@@ -1303,6 +1304,9 @@ finalization
   //     So, the flag SynTextDrawerFinalization is set and the gFontsInfoManager
   //     will destroy itself, as soon, as it is not used anymore.
   SynTextDrawerFinalization:=true;
+  if Assigned(gFontsInfoManager) and (gFontsInfoManager.FFontsInfo.Count=0)
+  then
+    FreeAndNil(gFontsInfoManager);
 {$ELSE}
   FreeAndNil(gFontsInfoManager);
 {$ENDIF}
