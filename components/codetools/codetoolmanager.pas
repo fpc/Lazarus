@@ -208,6 +208,7 @@ type
     function GetCompilerModeForDirectory(const Directory: string): TCompilerMode;
     function GetCompiledSrcExtForDirectory(const Directory: string): string;
     function FindUnitInUnitLinks(const Directory, UnitName: string): string;
+    function GetUnitLinksForDirectory(const Directory: string): string;
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -704,15 +705,24 @@ end;
 function TCodeToolManager.FindUnitInUnitLinks(const Directory, UnitName: string
   ): string;
 var
-  Evaluator: TExpressionEvaluator;
   UnitLinks: string;
   UnitLinkStart, UnitLinkEnd: integer;
 begin
   Result:='';
+  UnitLinks:=GetUnitLinksForDirectory(Directory);
+  if UnitLinks='' then exit;
+  SearchUnitInUnitLinks(UnitLinks,UnitName,UnitLinkStart,UnitLinkEnd,Result);
+end;
+
+function TCodeToolManager.GetUnitLinksForDirectory(const Directory: string
+  ): string;
+var
+  Evaluator: TExpressionEvaluator;
+begin
+  Result:='';
   Evaluator:=DefineTree.GetDefinesForDirectory(Directory,true);
   if Evaluator=nil then exit;
-  UnitLinks:=Evaluator[ExternalMacroStart+'UnitLinks'];
-  SearchUnitInUnitLinks(UnitLinks,UnitName,UnitLinkStart,UnitLinkEnd,Result);
+  Result:=Evaluator[ExternalMacroStart+'UnitLinks'];
 end;
 
 function TCodeToolManager.InitCurCodeTool(Code: TCodeBuffer): boolean;

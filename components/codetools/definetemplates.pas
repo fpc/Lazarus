@@ -395,6 +395,7 @@ function DefineTemplateFlagsToString(Flags: TDefineTemplateFlags): string;
 function SearchUnitInUnitLinks(const UnitLinks, TheUnitName: string;
   var UnitLinkStart, UnitLinkEnd: integer; var Filename: string): boolean;
 
+
 implementation
 
 

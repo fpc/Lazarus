@@ -145,6 +145,13 @@ type
     );
   TCodeToolsFlags = set of TCodeToolsFlag;
   
+  // find source flags
+  TFindSourceFlag = (
+    fsfSearchForProject,
+    fsfUseIncludePaths
+    );
+  TFindSourceFlags = set of TFindSourceFlag;
+  
   { TMainIDEBar }
 
   TMainIDEBar = class(TForm)
@@ -370,7 +377,8 @@ type
     procedure CreateOftenUsedForms; virtual; abstract;
 
     function FindUnitFile(const AFilename: string): string; virtual; abstract;
-    function FindSourceFile(const AFilename: string): string; virtual; abstract;
+    function FindSourceFile(const AFilename, BaseDirectory: string;
+                            Flags: TFindSourceFlags): string; virtual; abstract;
     procedure GetCurrentUnit(var ActiveSourceEditor:TSourceEditor;
       var ActiveUnitInfo:TUnitInfo); virtual; abstract;
       

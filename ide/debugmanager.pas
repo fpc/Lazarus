@@ -318,7 +318,8 @@ begin
     Exit;
   end;
 
-  SrcFile := MainIDE.FindSourceFile(ALocation.SrcFile);
+  SrcFile := MainIDE.FindSourceFile(ALocation.SrcFile,Project1.ProjectDirectory,
+                                    [fsfSearchForProject,fsfUseIncludePaths]);
   if SrcFile = '' then SrcFile := ALocation.SrcFile;
   
   if not FilenameIsAbsolute(SrcFile)
@@ -936,6 +937,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.25  2003/05/25 15:31:11  mattias
+  implemented searching for indirect include files
+
   Revision 1.24  2003/05/25 12:12:36  mattias
   added TScreen handlers, implemented TMainIDE.UnHideIDE
 
