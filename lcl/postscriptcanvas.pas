@@ -1805,7 +1805,7 @@ begin
   WriteB(Format('/scanline %d 3 mul string def',[ImgWidth]));
   WriteB(Format('%d %d %d',[ImgWidth,ImgHeight,8]));
   WriteB(Format('[%d %d %d %d %d %d]',[ImgWidth,0,0,-ImgHeight,0,ImgHeight]));
-  WriteB('{ currentfile scanline readDbgSing pop } false 3');
+  WriteB('{ currentfile scanline readhexstring pop } false 3');
   WriteB('colorimage');
 
   GetRGBImage(SrcGraphic,fBuffer);
