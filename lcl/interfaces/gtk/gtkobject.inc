@@ -2259,7 +2259,7 @@ begin
             end
             else if TControl(Sender).fCompStyle = csCListBox then
             begin
-              if TListBox(Sender).BorderStyle = TBorderStyle(bsSingle)
+              if TCListBox(Sender).BorderStyle = TBorderStyle(bsSingle)
               then
                 gtk_viewport_set_shadow_type(
                   PGtkViewPort(PGtkBin(Handle)^.Child), GTK_SHADOW_NONE)
@@ -6824,6 +6824,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.314  2002/12/28 21:44:51  mattias
+  further cleanup
+
   Revision 1.313  2002/12/28 12:42:38  mattias
   focus fixes, reduced lpi size
 
