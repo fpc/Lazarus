@@ -14,9 +14,10 @@
                    bosses/managers like debugmanager, pkgmanager.
   mainintf.pas - TMainIDEInterface = class(TComponent)
                    The interface class of the top level functions of the IDE.
-                   This class is used by all cross boss units (e.g. units that
-                   work with the source editor, the codetools and the form
-                   editor)
+                   TMainIDEInterface is used by functions/units, that uses
+                   several different parts of the IDE (designer, source editor,
+                   codetools), so they can't be assigned to a specific boss and
+                   which are yet too small to become a boss of their own.
 
 
                  Initial Revision  : Sun Mar 28 23:15:32 CST 1999
@@ -10530,6 +10531,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.746  2004/08/08 18:20:41  mattias
+  added main IDe hints
+
   Revision 1.745  2004/08/08 18:02:44  mattias
   splitted TMainIDE (main control instance) and TMainIDEBar (IDE menu and palette), added mainbase.pas and mainintf.pas
 
