@@ -625,7 +625,7 @@ type
     property Constraints : TSizeConstraints read FConstraints write SetConstraints;
     property ControlState: TControlState read FControlState write FControlState;
     property ControlStyle : TControlStyle read FControlStyle write FControlStyle;
-    property Color : TColor read FCOlor write SetColor;  {should change the WRITE to do something eventually}
+    property Color : TColor read FColor write SetColor;  {should change the WRITE to do something eventually}
     property Ctl3D : Boolean read FCtl3D write FCtl3D;  //Is this needed for anything other than compatability?
     property Cursor: TCursor read FCursor write SetCursor default crDefault;
     property Enabled: Boolean read GetEnabled write SetEnabled default True;
@@ -1236,6 +1236,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.54  2002/07/09 17:18:22  lazarus
+  MG: fixed parser for external vars
+
   Revision 1.53  2002/06/21 15:41:56  lazarus
   MG: moved RectVisible, ExcludeClipRect and IntersectClipRect to interface dependent functions
 
