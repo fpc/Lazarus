@@ -2409,6 +2409,7 @@ var
   s: String;
   NeedSaving: Boolean;
   RequiredPackage: TLazPackage;
+  BuildIDEFlags: TBuildLazarusFlags;
 begin
   PackageGraph.BeginUpdate(true);
   PkgList:=nil;
@@ -2443,7 +2444,8 @@ begin
       if RequiredPackage.AutoInstall<>pitNope then
         PkgList.Delete(i);
     end;
-    // now PkgList contains only the required packages that are added to the
+    
+    // now PkgList contains only the required packages that were added to the
     // list of installation packages
     if PkgList.Count>0 then begin
       s:='';
@@ -2474,6 +2476,11 @@ begin
     if NeedSaving then
       SaveAutoInstallDependencies(true);
 
+    // save IDE build configs, so user can build IDE on command line
+    BuildIDEFlags:=[blfWithStaticPackages,blfQuick,blfOnlyIDE];
+    Result:=MainIDE.DoSaveBuildIDEConfigs(BuildIDEFlags);
+    if Result<>mrOk then exit;
+
     // ask user to rebuilt Lazarus now
     Result:=MessageDlg(lisPkgMangRebuildLazarus,
       Format(lisPkgMangThePackageWasMarkedForInstallationCurrentlyLazarus, [
@@ -2485,7 +2492,7 @@ begin
     end;
     
     // rebuild Lazarus
-    Result:=MainIDE.DoBuildLazarus([blfWithStaticPackages,blfQuick,blfOnlyIDE]);
+    Result:=MainIDE.DoBuildLazarus(BuildIDEFlags);
     if Result<>mrOk then exit;
 
   finally
@@ -2500,6 +2507,7 @@ var
   DependencyPath: TList;
   ParentPackage: TLazPackage;
   Dependency: TPkgDependency;
+  BuildIDEFlags: TBuildLazarusFlags;
 begin
   if (APackage.Installed=pitNope) and (APackage.AutoInstall=pitNope) then exit;
   
@@ -2541,6 +2549,11 @@ begin
       SaveAutoInstallDependencies(true);
     end;
 
+    // save IDE build configs, so user can build IDE on command line
+    BuildIDEFlags:=[blfWithStaticPackages,blfQuick,blfOnlyIDE];
+    Result:=MainIDE.DoSaveBuildIDEConfigs(BuildIDEFlags);
+    if Result<>mrOk then exit;
+
     // ask user to rebuilt Lazarus now
     Result:=MessageDlg(lisPkgMangRebuildLazarus,
       Format(lisPkgMangThePackageWasMarkedCurrentlyLazarus, ['"',
@@ -2552,7 +2565,7 @@ begin
     end;
 
     // rebuild Lazarus
-    Result:=MainIDE.DoBuildLazarus([blfWithStaticPackages,blfOnlyIDE,blfQuick]);
+    Result:=MainIDE.DoBuildLazarus(BuildIDEFlags);
     if Result<>mrOk then exit;
 
   finally
@@ -2692,7 +2705,7 @@ begin
   MainIDE.MacroList.SubstituteStr(TargetDir);
   // ToDo write a function in lazconf for this
   //if TargetDir<>'' then
-    AddOption('-FE'+TargetDir);}
+    AddOption('-FE'+TargetFilename);}
 end;
 
 function TPkgManager.DoPublishPackage(APackage: TLazPackage;

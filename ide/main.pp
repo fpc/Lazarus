@@ -546,6 +546,7 @@ type
     // external tools
     function PrepareForCompile: TModalResult; override;
     function DoRunExternalTool(Index: integer): TModalResult;
+    function DoSaveBuildIDEConfigs(Flags: TBuildLazarusFlags): TModalResult; override;
     function DoBuildLazarus(Flags: TBuildLazarusFlags): TModalResult; override;
     function DoExecuteCompilationTool(Tool: TCompilationTool;
                                       const WorkingDir, ToolTitle: string
@@ -6005,6 +6006,38 @@ begin
   DoCheckFilesOnDisk;
 end;
 
+function TMainIDE.DoSaveBuildIDEConfigs(Flags: TBuildLazarusFlags
+  ): TModalResult;
+var
+  PkgOptions: string;
+  InheritedOptionStrings: TInheritedCompOptsStrings;
+  FPCVersion, FPCRelease, FPCPatch: integer;
+  IDEBuildFlags: TBuildLazarusFlags;
+begin
+  // create uses section addition for lazarus.pp
+  Result:=PkgBoss.DoSaveAutoInstallConfig;
+  if Result<>mrOk then exit;
+  
+  // prepare static auto install packages
+  PkgOptions:='';
+  if (blfWithStaticPackages in Flags)
+  or MiscellaneousOptions.BuildLazOpts.WithStaticPackages then begin
+    // create inherited compiler options
+    PkgOptions:=PkgBoss.DoGetIDEInstallPackageOptions(InheritedOptionStrings);
+
+    // check ambigious units
+    CodeToolBoss.GetFPCVersionForDirectory(
+                               EnvironmentOptions.LazarusDirectory,
+                               FPCVersion,FPCRelease,FPCPatch);
+  end;
+
+  // save extra options
+  IDEBuildFlags:=Flags+[blfOnlyIDE];
+  Result:=SaveIDEMakeOptions(MiscellaneousOptions.BuildLazOpts,
+                             MacroList,PkgOptions,IDEBuildFlags);
+  if Result<>mrOk then exit;
+end;
+
 function TMainIDE.DoBuildLazarus(Flags: TBuildLazarusFlags): TModalResult;
 var
   PkgOptions: string;
@@ -10268,6 +10301,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.703  2004/01/24 16:09:10  mattias
+  IDE build configs are now saved on every install/uninstall
+
   Revision 1.702  2004/01/22 15:24:17  mattias
   view multiple forms now open all designer forms
 
