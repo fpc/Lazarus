@@ -564,8 +564,10 @@ type
     property CharCase;
     property DragMode;
     property EchoMode;
+    property Enabled;
     property MaxLength;
     property OnChange;
+    property OnChangeBounds;
     property OnClick;
     property OnEnter;
     property OnExit;
@@ -573,8 +575,9 @@ type
     property OnKeyPress;
     Property OnKeyUp;
     Property OnMouseDown;
-    property OnMouseUp;
     Property OnMouseMove;
+    property OnMouseUp;
+    property OnResize;
     property ParentFont;
     property ParentShowHint;
     property PasswordChar;
@@ -1463,6 +1466,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.113  2004/01/03 20:36:29  mattias
+  published TEdit.Enabled
+
   Revision 1.112  2003/11/28 23:24:57  mattias
   implemented Clean Directories
 
