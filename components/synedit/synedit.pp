@@ -34,7 +34,6 @@ located at http://SynEdit.SourceForge.net
 
 Known Issues:
 
-  -ClientWidth/Height with scrollbar
   -TForm.Deactivate
   -Registry
   -mouse wheel

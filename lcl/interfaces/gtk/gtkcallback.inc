@@ -97,6 +97,7 @@ begin
           gdk_window_set_decorations(Widget^.Window,0);
         end;
       end;
+      SetCursor(TWinControl(Data));
     end;
   end;
   
@@ -411,31 +412,9 @@ end;
   widget (mostly a gtkfixed widget), then 0,0 is send.
   If the mouse is on the top-left pixel of the container widget then the
   coordinates can be negative, if there is frame around the client area.
-  
-  The algorithm:
-  1. the gdkwindow of the message is determined (MsgGdkWindow).
-  2. the gdkwindow of the client area is determined (=ClientGdkWindow).
-  3. the relative position of the client gdkwindow and the message gdkwindow
-     is calculated (MsgClientRelPos).
-  4. Substracting the MsgClientRelPos from the mouse coordinates results in
-     the mouse coordinates relative to the client gdkwindow.
 -------------------------------------------------------------------------------}
 function GTKMotionNotify(widget:PGTKWidget; event: PGDKEventMotion;
   data: gPointer): GBoolean; cdecl;
-  
-  function GetGdkWindowOfClientArea(AWinControl: TWinControl): PGdkWindow;
-  var
-    MainWidget, FixedWidget: PGtkWidget;
-  begin
-    MainWidget:=PGtkWidget(AWinControl.Handle);
-    FixedWidget:=GetFixedWidget(MainWidget);
-    if FixedWidget<>nil then begin
-      Result:=FixedWidget^.Window;
-    end else begin
-      Result:=MainWidget^.Window;
-    end;
-  end;
-
 var
   Msg: TLMMouseMove;
   ShiftState: TShiftState;
@@ -448,6 +427,11 @@ begin
     ' Event^.X=',trunc(Event^.X),' Event^.Y=',trunc(Event^.Y)
     );
   {$ENDIF}
+
+  if csDesigning in TControl(Data).ComponentState then begin
+    // stop the signal, so that the widget does not auto react
+    gtk_signal_emit_stop_by_name(PGTKObject(Widget),'motion-notify-event');
+  end;
 
   MappedXY:=TranslateGdkPointToClientArea(Event^.Window,
                                          Point(trunc(Event^.X),trunc(Event^.Y)),
@@ -527,6 +511,13 @@ begin
 
   EventTrace('Mouse button Press', data);
   Assert(False, Format('Trace:[gtkMouseBtnPress] ', []));
+
+  if csDesigning in TControl(Data).ComponentState then begin
+    // stop the signal, so that the widget does not auto react
+    if TControl(Data).FCompStyle<>csNotebook then
+      gtk_signal_emit_stop_by_name(PGTKObject(Widget),'button-press-event');
+  end;
+
   ShiftState := GTKEventState2ShiftState(Event^.State);
   MappedXY:=TranslateGdkPointToClientArea(Event^.Window,
                                          Point(trunc(Event^.X),trunc(Event^.Y)),
@@ -726,9 +717,12 @@ begin
     Trunc(Event^.X),',',Trunc(Event^.Y));
   {$ENDIF}
 
-  // stop the signal, so that it is not sent to the parent widgets
-  //gtk_signal_emit_stop_by_name(PGTKObject(Widget),'button-release-event');
-  
+  if csDesigning in TControl(Data).ComponentState then begin
+    // stop the signal, so that the widget does not auto react
+    if TControl(Data).FCompStyle<>csNotebook then
+      gtk_signal_emit_stop_by_name(PGTKObject(Widget),'button-release-event');
+  end;
+
   EventTrace('Mouse button release', data);
   Assert(False, Format('Trace:[gtkMouseBtnRelease] ', []));
   MappedXY:=TranslateGdkPointToClientArea(Event^.Window,
@@ -1265,22 +1259,34 @@ begin
   Result := DeliverMessage(Data, Mess) = 0;
 end;
 
-function gtkenterCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
+function gtkenterCB(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
    Mess : TLMessage;
 begin
-   Result := True;
-   EventTrace('enter', data);
-   Mess.msg := LM_ENTER;
-   Result := DeliverMessage(Data, Mess) = 0;
+  Result := True;
+  EventTrace('enter', data);
+
+  if csDesigning in TControl(Data).ComponentState then begin
+    // stop the signal, so that the widget does not auto react
+    gtk_signal_emit_stop_by_name(PGTKObject(Widget),'enter');
+  end;
+
+  Mess.msg := LM_ENTER;
+  Result := DeliverMessage(Data, Mess) = 0;
 end;
 
-function gtkleaveCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
+function gtkleaveCB(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
 begin
   Result := True;
   EventTrace('leave', data);
+
+  if csDesigning in TControl(Data).ComponentState then begin
+    // stop the signal, so that the widget does not auto react
+    gtk_signal_emit_stop_by_name(PGTKObject(Widget),'leave');
+  end;
+
   Mess.msg := LM_LEAVE;
   Result := DeliverMessage(Data, Mess) = 0;
 end;
@@ -1597,6 +1603,12 @@ var
 begin
 //writeln('[gtkFocusInNotifyCB] ',TObject(data).ClassName);
   EventTrace ('FocusInNotify (alias Enter)', data);
+  
+  if csDesigning in TControl(Data).ComponentState then begin
+    // stop the signal, so that the widget does not auto react
+    gtk_signal_emit_stop_by_name(PGTKObject(Widget),'focus-in-event');
+  end;
+
   MessI.msg := LM_Enter;
   Result:= DeliverMessage(Data, MessI) = 0;
 end;
@@ -1608,6 +1620,12 @@ var
 begin
 //writeln('[gtkFocusOutNotifyCB] ',TObject(data).ClassName);
   EventTrace ('FocusOutNotify (alias Exit)', data);
+
+  if csDesigning in TControl(Data).ComponentState then begin
+    // stop the signal, so that the widget does not auto react
+    gtk_signal_emit_stop_by_name(PGTKObject(Widget),'focus-out-event');
+  end;
+
   MessI.msg := LM_Exit;
   Result:= DeliverMessage(Data, MessI) = 0;
 end;
@@ -2017,6 +2035,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.86  2002/06/21 16:59:15  lazarus
+  MG: TControl.Cursor is now set, reduced auto reaction of widgets in design mode
+
   Revision 1.85  2002/06/19 19:46:09  lazarus
   MG: Form Editing: snapping, guidelines, modified on move/resize, creating components in csDesigning, ...
 
