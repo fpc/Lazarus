@@ -398,6 +398,8 @@ type
     FActiveEditKeyBGColor: TColor;
     FActiveEditSymbolFGColor: TColor;
     FActiveEditSymbolBGColor: TColor;
+    
+    fAutoFocusLock: integer;
 
     // PopupMenu
     Procedure BuildPopupMenu;
@@ -455,7 +457,10 @@ type
     function FindBookmark(BookmarkID: integer): TSourceEditor;
     function GetEditors(Index:integer):TSourceEditor;
     
-    procedure KeyDown(var Key : Word; Shift : TShiftState); override;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+    
+    procedure BeginAutoFocusLock;
+    procedure EndAutoFocusLock;
   public
     FindReplaceDlgHistoryIndex: array[TFindDlgComponent] of integer;
     FindReplaceDlgUserText: array[TFindDlgComponent] of string;
@@ -774,7 +779,6 @@ begin
   FindReplaceDlg.Top:=ATop;
   
   if (FindReplaceDlg.ShowModal = mrCancel) then begin
-    FEditor.SetFocus;
     exit;
   end;
   
@@ -874,7 +878,13 @@ end;
 
 Procedure TSourceEditor.FocusEditor;
 Begin
+  {$IFDEF VerboseFocus}
+  writeln('TSourceEditor.FocusEditor A ',PageName,' ',FEditor.Name);
+  {$ENDIF}
   FEditor.SetFocus;
+  {$IFDEF VerboseFocus}
+  writeln('TSourceEditor.FocusEditor END ',PageName,' ',FEditor.Name);
+  {$ENDIF}
 end;
 
 Function TSourceEditor.GetReadOnly : Boolean;
@@ -3121,7 +3131,6 @@ Begin
     Notebook.PageIndex := Notebook.PageIndex+1
   else
     NoteBook.PageIndex := 0;
-  FocusEditor;
 End;
 
 Procedure TSourceNotebook.PrevEditor;
@@ -3131,7 +3140,6 @@ Begin
     Notebook.PageIndex := Notebook.PageIndex-1
   else
     NoteBook.PageIndex := NoteBook.PageCount-1;
-  FocusEditor;
 End;
 
 procedure TSourceNotebook.MoveEditor(OldPageIndex, NewPageIndex: integer);
@@ -3520,9 +3528,9 @@ procedure TSourceNotebook.FocusEditor;
 var
   SrcEdit: TSourceEditor;
 begin
-  if NoteBook=nil then exit;
-  SrcEdit:=FindSourceEditorWithPageIndex(NoteBook.PageIndex);
-  if SrcEdit<>nil then exit;
+  if (NoteBook=nil) or (fAutoFocusLock>0) then exit;
+  SrcEdit:=GetActiveSE;
+  if SrcEdit=nil then exit;
   SrcEdit.FocusEditor;
 end;
 
@@ -3720,17 +3728,19 @@ Begin
   TempEditor:=GetActiveSE;
   if TempEditor <> nil then
   begin
-    {$IFDEF VerboseFocus}
-    writeln('TSourceNotebook.NotebookPageChanged BEFORE SetFocus ',
-      TempEditor.EditorComponent.Name,' ',
-      NoteBook.Pages[FindPageWithEditor(TempEditor)]);
-    {$ENDIF}
-    TempEditor.FocusEditor;
-    {$IFDEF VerboseFocus}
-    writeln('TSourceNotebook.NotebookPageChanged AFTER SetFocus ',
-      TempEditor.EditorComponent.Name,' ',
-      NoteBook.Pages[FindPageWithEditor(TempEditor)]);
-    {$ENDIF}
+    if fAutoFocusLock=0 then begin
+      {$IFDEF VerboseFocus}
+      writeln('TSourceNotebook.NotebookPageChanged BEFORE SetFocus ',
+        TempEditor.EditorComponent.Name,' ',
+        NoteBook.Pages[FindPageWithEditor(TempEditor)]);
+      {$ENDIF}
+      TempEditor.FocusEditor;
+      {$IFDEF VerboseFocus}
+      writeln('TSourceNotebook.NotebookPageChanged AFTER SetFocus ',
+        TempEditor.EditorComponent.Name,' ',
+        NoteBook.Pages[FindPageWithEditor(TempEditor)]);
+      {$ENDIF}
+    end;
     UpdateStatusBar;
     UpdateActiveEditColors;
     if Assigned(FOnEditorVisibleChanged) then
@@ -3873,6 +3883,16 @@ Begin
         end;
     end;
   end;
+end;
+
+procedure TSourceNotebook.BeginAutoFocusLock;
+begin
+  inc(fAutoFocusLock);
+end;
+
+procedure TSourceNotebook.EndAutoFocusLock;
+begin
+  dec(fAutoFocusLock);
 end;
 
 Procedure TSourceNotebook.EditorMouseMove(Sender : TObject; Shift: TShiftstate;
