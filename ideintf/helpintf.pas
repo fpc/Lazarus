@@ -12,9 +12,6 @@
 
   Author: Mattias Gaertner
   
-  !!! UNDER CONSTRUCTION !!!
-  !!! ONLY A DESIGN STUDY !!!
-
   Abstract:
     This unit defines various base classes for the Help System used by the IDE.
 }

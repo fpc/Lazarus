@@ -29,6 +29,7 @@ implicitunits=actionseditor \
   objinspstrconsts \
   propedits \
   helpintf \
+  helphtml \
   texttools \
   actionseditor \
   formeditingintf \

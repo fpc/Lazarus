@@ -1009,7 +1009,7 @@ begin
   //      TODO: check if we still need to pass the args in gtk1
   Result := gtk_widget_new(GTKAPIWidget_GetType, nil);
 {$ELSE}
-  FillChar(Args,SizeOf(TGTKArg)*(High(Args)-Low(Args)),0);
+  FillChar(Args[0],SizeOf(TGTKArg)*(High(Args)-Low(Args)+1),0);
   Args[0].theType:=GTK_ADJUSTMENT_TYPE;
   Args[0].name:='hadjustment';
   Args[1].theType:=GTK_ADJUSTMENT_TYPE;
@@ -1135,6 +1135,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.60  2004/08/13 17:41:18  mattias
+  fixed initialization of GTKAPIWidget_new
+
   Revision 1.59  2004/08/13 12:41:54  mattias
   fixed uninitialized argument
 

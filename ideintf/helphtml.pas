@@ -9,20 +9,20 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
  *                                                                           *
  *****************************************************************************
- 
-  Dummy unit to compile all IDE interface units.
+
+  Author: Mattias Gaertner
+
+  Abstract:
+    Methods and types for HTML help.
 }
-unit AllIDEIntf;
+unit HelpHTML;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  IDECommands, PropEdits, ObjInspStrConsts, ObjectInspector, ColumnDlg,
-  ComponentEditors, GraphPropEdits, ListViewPropEdit, ImageListEditor,
-  ComponentTreeView, ActionsEditor, HelpIntf, TextTools, FormEditingIntf,
-  SrcEditorIntf, ComponentReg, PackageIntf, HelpHTML;
+  Classes, SysUtils, HelpIntf;
 
 implementation
 
