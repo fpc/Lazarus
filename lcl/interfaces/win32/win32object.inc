@@ -1239,8 +1239,12 @@ end;
 
 procedure TWin32Object.AttachMenuToWindow(AMenuObject: TComponent);
 begin
-  Windows.SetMenu(TWinControl(AMenuObject.Owner).Handle,
-                  (AMenuObject as TMenu).Handle);
+  // popup menu's don't have an owner
+  if AMenuObject.Owner <> nil then
+  begin
+    Windows.SetMenu(TWinControl(AMenuObject.Owner).Handle,
+                    (AMenuObject as TMenu).Handle);
+  end;
 end;
 
 { Private methods (in no significant order) }
@@ -2804,6 +2808,9 @@ End;
 
 {
   $Log$
+  Revision 1.124  2003/10/29 15:24:28  micha
+  fix popupmenu av
+
   Revision 1.123  2003/10/29 14:24:21  micha
   amenuobject compilation fix
 
