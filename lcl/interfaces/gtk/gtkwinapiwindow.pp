@@ -35,7 +35,7 @@ unit GTKWinapiWindow;
 interface
 
 uses
-  glib,gdk,gtk;
+  glib, gdk, gtk;
 
 type
   PGTKAPIWidget = ^TGTKAPIWidget;
@@ -190,8 +190,11 @@ end;
 function GTKAPIWidgetClient_ButtonPress(Widget: PGTKWidget;
   Event: PGDKEventButton): gint; cdecl;
 begin
-  if not gtk_widget_has_focus(Widget)
-  then gtk_widget_grab_focus(Widget);
+  {$IFDEF VerboseFocus}
+  writeln('GTKAPIWidgetClient_ButtonPress ',HexStr(Cardinal(Widget),8));
+  {$ENDIF}
+  if not gtk_widget_has_focus(Widget) then
+    gtk_widget_grab_focus(Widget);
   
   Result := gtk_False;
 end;
@@ -199,6 +202,9 @@ end;
 function GTKAPIWidgetClient_FocusIn(Widget: PGTKWidget;
   Event: PGdkEventFocus): gint; cdecl;
 begin
+  {$IFDEF VerboseFocus}
+  writeln('GTKAPIWidgetClient_FocusIn ',HexStr(Cardinal(Widget),8),' ',event^.thein);
+  {$ENDIF}
   gtk_widget_set_flags(Widget, GTK_HAS_FOCUS);
   GTKAPIWidgetClient_DrawCaret(PGTKAPIWidgetClient(Widget));
   Result := gtk_False;
@@ -207,6 +213,9 @@ end;
 function GTKAPIWidgetClient_FocusOut(Widget: PGTKWidget;
   Event: PGdkEventFocus): gint; cdecl;
 begin
+  {$IFDEF VerboseFocus}
+  writeln('GTKAPIWidgetClient_FocusOut ',HexStr(Cardinal(Widget),8),' ',event^.thein);
+  {$ENDIF}
   gtk_widget_unset_flags(Widget, GTK_HAS_FOCUS);
   GTKAPIWidgetClient_DrawCaret(PGTKAPIWidgetClient(Widget));
   Result := gtk_False;
@@ -272,6 +281,7 @@ procedure GTKAPIWidgetClient_Init(Client, theClass: Pointer); cdecl;
 // theClass: PGTKAPIWidgetClientClass
 begin
   gtk_widget_set_flags(PGTKWidget(Client), GTK_CAN_FOCUS);
+  gtk_widget_set_flags(PGTKWidget(Client), GTK_CAN_DEFAULT);
 
   with PGTKAPIWidgetClient(Client)^.Caret do 
   begin
@@ -722,6 +732,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.35  2002/10/21 22:12:49  lazarus
+  MG: fixed frmactivate
+
   Revision 1.34  2002/10/21 00:17:33  lazarus
   AJ:fix for FPC 1.0
 
