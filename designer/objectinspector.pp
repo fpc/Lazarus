@@ -2157,7 +2157,6 @@ begin
   FComponentTreeHeight:=100;
   FShowComponentTree:=true;
   FUsePairSplitter:=TPairSplitter.IsSupportedByInterface;
-  BorderStyle:=bsSizeToolWin;
 
   // StatusBar
   StatusBar:=TStatusBar.Create(Self);
