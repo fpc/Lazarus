@@ -288,8 +288,8 @@ begin
     while I < ControlList.Count do
     begin
       Control := TControl(ControlList[I]);
-      if Control.TabStop and Control.IsVisible and Control.Enabled and
-        (Control is TWinControl) then
+      if Control.TabStop and Control.Enabled and
+        (Control is TWinControl) and TWinControl(Control).CanFocus then
       begin
         TWinControl(Control).SetFocus;
         break;
