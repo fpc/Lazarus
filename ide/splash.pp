@@ -67,12 +67,12 @@ begin
   BorderStyle  := bsNone;
   FormStyle := fsStayOnTop;
   Caption := 'Lazarus';
-  Width := 429;
-  Height := 341;
-  Position:= poScreenCenter;
 
   FPixmap := TPixmap.Create;
   FPixmap.LoadFromLazarusResource('splash_logo');
+  Width := FPixmap.Width;
+  Height := FPixmap.Height;
+  Position:= poScreenCenter;
 
   FTimer := TTimer.Create(self);
   with FTimer do
@@ -142,6 +142,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.21  2005/01/14 15:24:51  mattias
+  using logo size for splashform
+
   Revision 1.20  2005/01/14 14:46:35  mattias
   fixed freeing brush handle on SetColor and fixed freeing splashform
 
