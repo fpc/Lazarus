@@ -1809,7 +1809,7 @@ var
 begin
   inherited Create(AOwner);
   Name:=DefaultSourceNoteBookName;
-  Caption := 'Lazarus Source Editor';
+  Caption := locwndSrcEditor;
   FProcessingCommand := false;
 
   FMainIDE := AOwner;
