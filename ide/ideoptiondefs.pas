@@ -129,7 +129,7 @@ type
     fHeight: integer;
     fWindowState: TIDEWindowState;
     fWindowStatesAllowed: TIDEWindowStates;
-    fForm: TForm;
+    fForm: TCustomForm;
     fDockParent: string;
     fDockChilds: TStringList;
     fDockMode: TIDEWindowDockMode;
@@ -148,7 +148,7 @@ type
     procedure SetWindowStatesAllowed(const AValue: TIDEWindowStates);
     procedure SetDockMode(const AValue: TIDEWindowDockMode);
     procedure SetDockParent(const AValue: string);
-    procedure SetForm(const AValue: TForm);
+    procedure SetForm(const AValue: TCustomForm);
     procedure SetWindowState(const AValue: TIDEWindowState);
     procedure SetLeft(const AValue: integer);
     procedure SetTop(const AValue: integer);
@@ -184,7 +184,7 @@ type
       read fWindowState write SetWindowState;
     property WindowStatesAllowed: TIDEWindowStates
       read fWindowStatesAllowed write SetWindowStatesAllowed;
-    property Form: TForm read fForm write SetForm;
+    property Form: TCustomForm read fForm write SetForm;
     property DockParent: string
       read fDockParent write SetDockParent; // for format see GetFormId
     property DockMode: TIDEWindowDockMode read fDockMode write SetDockMode;
@@ -205,14 +205,14 @@ type
     procedure Clear; override;
     procedure Delete(Index: Integer);
     procedure ApplyAll;
-    procedure Apply(AForm: TForm; const ID: string);
+    procedure Apply(AForm: TCustomForm; const ID: string);
     procedure StoreWindowPositions;
     procedure Assign(SrcList: TIDEWindowLayoutList);
     function IndexOf(const FormID: string): integer;
-    function ItemByForm(AForm: TForm): TIDEWindowLayout;
+    function ItemByForm(AForm: TCustomForm): TIDEWindowLayout;
     function ItemByFormID(const FormID: string): TIDEWindowLayout;
     function ItemByEnum(ID: TNonModalIDEWindow): TIDEWindowLayout;
-    procedure CloseForm(AForm: TForm);
+    procedure CloseForm(AForm: TCustomForm);
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
   public
@@ -542,7 +542,7 @@ begin
   Form:=nil;
 end;
 
-procedure TIDEWindowLayout.SetForm(const AValue: TForm);
+procedure TIDEWindowLayout.SetForm(const AValue: TCustomForm);
 begin
   if fForm=AValue then exit;
   fForm:=AValue;
@@ -737,7 +737,7 @@ begin
     Items[i].SaveToXMLConfig(XMLConfig,Path);
 end;
 
-function TIDEWindowLayoutList.ItemByForm(AForm: TForm): TIDEWindowLayout;
+function TIDEWindowLayoutList.ItemByForm(AForm: TCustomForm): TIDEWindowLayout;
 var i: integer;
 begin
   i:=Count-1;
@@ -766,7 +766,7 @@ begin
   Result:=ItemByFormID(NonModalIDEWindowNames[ID]);
 end;
 
-procedure TIDEWindowLayoutList.CloseForm(AForm: TForm);
+procedure TIDEWindowLayoutList.CloseForm(AForm: TCustomForm);
 var
   ALayout: TIDEWindowLayout;
 begin
@@ -782,7 +782,7 @@ begin
     Items[i].Apply;
 end;
 
-procedure TIDEWindowLayoutList.Apply(AForm: TForm; const ID: string);
+procedure TIDEWindowLayoutList.Apply(AForm: TCustomForm; const ID: string);
 var ALayout: TIDEWindowLayout;
 begin
   ALayout:=ItemByFormID(ID);
