@@ -128,27 +128,27 @@ type
     constructor Create(ACodeBuffer: TCodeBuffer);
     destructor Destroy; override;
 
+    function ChangedOnDisk(CompareOnlyLoadSaveTime: boolean): boolean;
+    function IsAutoRevertLocked: boolean;
+    function IsMainUnit: boolean;
+    function IsVirtual: boolean;
+    function NeedsSaveToDisk: boolean;
+    function ReadOnly: boolean;
     function ReadUnitSource(ReadUnitName:boolean): TModalResult;
-    procedure ReadUnitNameFromSource;
+    function ShortFilename: string;
     function WriteUnitSource: TModalResult;
     function WriteUnitSourceToFile(const AFileName: string): TModalResult;
-    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
-    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure Clear;
     procedure CreateStartCode(NewUnitType: TNewUnitType;
          const NewUnitName: string);
-    function IsVirtual: boolean;
-    function IsMainUnit: boolean;
-    procedure IncreaseAutoRevertLock;
     procedure DecreaseAutoRevertLock;
-    function IsAutoRevertLocked: boolean;
-    function ChangedOnDisk(CompareOnlyLoadSaveTime: boolean): boolean;
     procedure IgnoreCurrentFileDateOnDisk;
-    function ShortFilename: string;
-    function NeedsSaveToDisk: boolean;
+    procedure IncreaseAutoRevertLock;
+    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    procedure ReadUnitNameFromSource;
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure UpdateUsageCount(Min, IfBelowThis, IncIfBelow: extended);
     procedure UpdateUsageCount(TheUsage: TUnitUsage; Factor: extended);
-    function ReadOnly: boolean;
 
     { Properties }
   public
@@ -209,6 +209,7 @@ type
   public
     constructor Create(TheProject: TProject);
     function GetOwnerName: string; override;
+    function GetDefaultMainSourceFileName: string; override;
   public
     property OwnerProject: TProject read FOwnerProject;
   end;
@@ -334,6 +335,7 @@ type
 
     procedure Clear;
     function SomethingModified: boolean;
+    procedure MainSourceFilenameChanged;
     
     // Application.CreateForm statements
     function AddCreateFormToProjectFile(const AClassName, AName:string):boolean;
@@ -870,6 +872,8 @@ begin
     if IsAutoRevertLocked then
       fSource.LockAutoDiskRevert;
     fFileName:=fSource.FileName;
+    if (fProject<>nil) and (fProject.MainUnitInfo=Self) then
+      fProject.MainSourceFilenameChanged;
   end;
 end;
 
@@ -2089,6 +2093,11 @@ begin
   Result:=Result or CompilerOptions.Modified;
 end;
 
+procedure TProject.MainSourceFilenameChanged;
+begin
+
+end;
+
 Function TProject.UnitWithForm(AForm : TComponent) : TUnitInfo;
 begin
   Result:=fFirstUnitWithForm;
@@ -2330,12 +2339,26 @@ begin
   if Result='' then Result:=ExtractFilename(OwnerProject.ProjectInfoFile);
 end;
 
+function TProjectCompilerOptions.GetDefaultMainSourceFileName: string;
+var
+  MainUnitInfo: TUnitInfo;
+begin
+  MainUnitInfo:=FOwnerProject.MainUNitInfo;
+  if (MainUnitInfo<>nil) then
+    Result:=ExtractFileName(MainUnitInfo.Filename);
+  if Result='' then
+    Result:=inherited GetDefaultMainSourceFileName;
+end;
+
 end.
 
 
 
 {
   $Log$
+  Revision 1.107  2003/04/16 13:48:10  mattias
+  implemented creating compiler option string for packages
+
   Revision 1.106  2003/04/15 17:58:28  mattias
   implemented inherited Compiler Options View
 

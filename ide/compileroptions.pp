@@ -57,7 +57,11 @@ type
     );
   TInheritedCompilerOptions = set of TInheritedCompilerOption;
   
+const
+  icoAllSearchPaths = [icoUnitPath,icoIncludePath,icoObjectPath,icoLibraryPath];
+  
 
+type
   { TParsedCompilerOptions }
   
   TParsedCompilerOptString = (
@@ -84,6 +88,7 @@ type
 
   TParsedCompilerOptions = class
   private
+    FInvalidateGraphOnChange: boolean;
     FOnLocalSubstitute: TLocalSubstitutionEvent;
   public
     UnparsedValues: array[TParsedCompilerOptString] of string;
@@ -96,8 +101,11 @@ type
     procedure Clear;
     procedure InvalidateAll;
     procedure InvalidateFiles;
+  public
     property OnLocalSubstitute: TLocalSubstitutionEvent read FOnLocalSubstitute
                                                        write FOnLocalSubstitute;
+    property InvalidateGraphOnChange: boolean read FInvalidateGraphOnChange
+                                              write FInvalidateGraphOnChange;
   end;
 
   TParseStringEvent =
@@ -241,6 +249,7 @@ type
     function GetInheritedOption(Option: TInheritedCompilerOption): string; virtual;
     function MergeLinkerOptions(const OldOptions, AddOptions: string): string;
     function MergeCustomOptions(const OldOptions, AddOptions: string): string;
+    function GetDefaultMainSourceFileName: string; virtual;
   public
     { Properties }
     property Owner: TObject read fOwner write fOwner;
@@ -248,9 +257,9 @@ type
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
     property ParsedOpts: TParsedCompilerOptions read FParsedOpts;
     property BaseDirectory: string read FBaseDirectory write SetBaseDirectory;
+    property TargetFilename: String read fTargetFilename write fTargetFilename;
 
     property XMLFile: String read fXMLFile write fXMLFile;
-    property TargetFilename: String read fTargetFilename write fTargetFilename;
     property XMLConfigFile: TXMLConfig read xmlconfig write xmlconfig;
     property Loaded: Boolean read fLoaded write fLoaded;
 
@@ -530,6 +539,7 @@ type
     InheritedPage: TPage;
     InhNoteLabel: TLabel;
     InhTreeView: TTreeView;
+    InhItemMemo: TMemo;
 
     { Buttons }
     btnTest: TButton;
@@ -542,7 +552,8 @@ type
     procedure ButtonCancelClicked(Sender: TObject);
     procedure ButtonApplyClicked(Sender: TObject);
     procedure ButtonTestClicked(Sender: TObject);
-
+    procedure InhTreeViewSelectionChanged(Sender: TObject);
+    procedure InheritedPageResize(Sender: TObject);
     procedure chkAdditionalConfigFileClick(Sender: TObject);
     procedure PathEditBtnClick(Sender: TObject);
     procedure PathEditBtnExecuted(Sender: TObject);
@@ -562,10 +573,13 @@ type
     FReadOnly: boolean;
     ImageIndexPackage: integer;
     ImageIndexRequired: integer;
+    ImageIndexInherited: integer;
+    InheritedChildDatas: TList; // list of PInheritedNodeData
     function GetOtherSourcePath: string;
     procedure SetOtherSourcePath(const AValue: string);
     procedure SetReadOnly(const AValue: boolean);
     procedure UpdateInheritedTab;
+    procedure ClearInheritedTree;
   public
     CompilerOpts: TBaseCompilerOptions;
 
@@ -599,6 +613,13 @@ const
   MaxParseStamp = $7fffffff;
   MinParseStamp = -$7fffffff;
   InvalidParseStamp = MinParseStamp-1;
+  
+type
+  TInheritedNodeData = record
+    FullText: string;
+    Option: TInheritedCompilerOption;
+  end;
+  PInheritedNodeData = ^TInheritedNodeData;
 
 procedure IncreaseCompilerParseStamp;
 begin
@@ -1062,29 +1083,31 @@ begin
       for i:=0 to OptionsList.Count-1 do begin
         AddOptions:=TAdditionalCompilerOptions(OptionsList[i]);
         if (not (AddOptions is TAdditionalCompilerOptions)) then continue;
+
         // unit search path
         fInheritedOptions[icoUnitPath]:=
-          MergeSearchPaths(fInheritedOptions[icoUnitPath],AddOptions.UnitPath);
+          MergeSearchPaths(fInheritedOptions[icoUnitPath],
+                       AddOptions.ParsedOpts.GetParsedValue(pcosUnitPath));
         // include search path
         fInheritedOptions[icoIncludePath]:=
           MergeSearchPaths(fInheritedOptions[icoIncludePath],
-                           AddOptions.IncludePath);
+                       AddOptions.ParsedOpts.GetParsedValue(pcosIncludePath));
         // object search path
         fInheritedOptions[icoObjectPath]:=
           MergeSearchPaths(fInheritedOptions[icoObjectPath],
-                           AddOptions.ObjectPath);
+                       AddOptions.ParsedOpts.GetParsedValue(pcosObjectPath));
         // library search path
         fInheritedOptions[icoLibraryPath]:=
           MergeSearchPaths(fInheritedOptions[icoLibraryPath],
-                           AddOptions.LibraryPath);
+                       AddOptions.ParsedOpts.GetParsedValue(pcosLibraryPath));
         // linker options
         fInheritedOptions[icoLinkerOptions]:=
           MergeLinkerOptions(fInheritedOptions[icoLinkerOptions],
-                             AddOptions.LinkerOptions);
+                       AddOptions.ParsedOpts.GetParsedValue(pcosLinkerOptions));
         // custom options
         fInheritedOptions[icoCustomOptions]:=
           MergeCustomOptions(fInheritedOptions[icoCustomOptions],
-                             AddOptions.CustomOptions);
+                       AddOptions.ParsedOpts.GetParsedValue(pcosCustomOptions));
       end;
     end;
     fInheritedOptParseStamps:=CompilerParseStamp;
@@ -1102,7 +1125,7 @@ function TBaseCompilerOptions.MergeLinkerOptions(const OldOptions,
 begin
   Result:=OldOptions;
   if AddOptions='' then exit;
-  if (OldOptions[length(OldOptions)]<>' ')
+  if (OldOptions<>'') and (OldOptions[length(OldOptions)]<>' ')
   and (AddOptions[1]<>' ') then
     Result:=Result+' '+AddOptions
   else
@@ -1118,11 +1141,16 @@ function TBaseCompilerOptions.MergeCustomOptions(const OldOptions,
 begin
   Result:=OldOptions;
   if AddOptions='' then exit;
-  if (OldOptions[length(OldOptions)]<>' ')
+  if (OldOptions<>'') and (OldOptions[length(OldOptions)]<>' ')
   and (AddOptions[1]<>' ') then
     Result:=Result+' '+AddOptions
   else
     Result:=Result+AddOptions;
+end;
+
+function TBaseCompilerOptions.GetDefaultMainSourceFileName: string;
+begin
+  Result:='';
 end;
 
 {------------------------------------------------------------------------------
@@ -1130,7 +1158,7 @@ end;
 ------------------------------------------------------------------------------}
 function TBaseCompilerOptions.MakeOptionsString: String;
 begin
-  Result:=MakeOptionsString('')
+  Result:=MakeOptionsString(GetDefaultMainSourceFileName)
 end;
 
 {------------------------------------------------------------------------------
@@ -1141,7 +1169,27 @@ function TBaseCompilerOptions.MakeOptionsString(
   const MainSourceFilename: string): String;
 var
   switches, tempsw: String;
+  InhLinkerOpts: String;
+  InhIncludePath: String;
+  InhLibraryPath: String;
+  InhUnitPath: String;
+  InhCustomOptions: String;
+  NewTargetFilename: String;
+  CurIncludePath: String;
+  CurLibraryPath: String;
+  CurUnitPath: String;
+  CurOutputDir: String;
+  CurCustomOptions: String;
+  CurLinkerOptions: String;
+  InhObjectPath: String;
+  CurObjectPath: String;
+  CurMainSrcFile: String;
 begin
+  if MainSourceFileName='' then
+    CurMainSrcFile:=GetDefaultMainSourceFileName
+  else
+    CurMainSrcFile:=MainSourceFileName;
+
   switches := '';
 
   { Get all the options and create a string that can be passed to the compiler }
@@ -1437,7 +1485,7 @@ Processor specific options:
        ... }
   { Only linux and win32 are in the dialog at this moment}
   if TargetOS<>'' then
-     switches := switches + ' -T' + TargetOS;
+    switches := switches + ' -T' + TargetOS;
   { --------------- Linking Tab ------------------- }
   
   { Debugging }
@@ -1476,9 +1524,17 @@ Processor specific options:
     3:  switches := switches + ' -XX';
   end;
 
+  // additional Linker options
+  if PassLinkerOptions then begin
+    CurLinkerOptions:=ParsedOpts.GetParsedValue(pcosLinkerOptions);
+    if (CurLinkerOptions<>'') then
+      switches := switches + ' ' + ParseOptions(' ','-k', CurLinkerOptions);
+  end;
 
-  if PassLinkerOptions and (LinkerOptions<>'') then
-    switches := switches + ' ' + ParseOptions(' ','-k', LinkerOptions);
+  // inherited Linker options
+  InhLinkerOpts:=GetInheritedOption(icoLinkerOptions);
+  if InhLinkerOpts<>'' then
+    switches := switches + ' ' + ParseOptions(' ','-k', InhLinkerOpts);
 
   { ---------------- Other Tab -------------------- }
 
@@ -1540,21 +1596,59 @@ Processor specific options:
   if (AdditionalConfigFile) and (ConfigFilePath<>'') then
     switches := switches + ' ' + PrepareCmdLineOption('@' + ConfigFilePath);
 
-  { ------------- Search Paths Tab ---------------- }
-  if (IncludeFiles <> '') then
-    switches := switches + ' ' + ParseSearchPaths('-Fi', IncludeFiles);
 
-  if (Libraries <> '') then
-    switches := switches + ' ' + ParseSearchPaths('-Fl', Libraries);
+  { ------------- Search Paths ---------------- }
+  
+  // include path
+  CurIncludePath:=ParsedOpts.GetParsedValue(pcosIncludePath);
+  if (CurIncludePath <> '') then
+    switches := switches + ' ' + ParseSearchPaths('-Fi', CurIncludePath);
+    
+  // inherited include path
+  InhIncludePath:=GetInheritedOption(icoIncludePath);
+  if (InhIncludePath <> '') then
+    switches := switches + ' ' + ParseSearchPaths('-Fi', InhIncludePath);
 
-  if (OtherUnitFiles <> '') then
-    switches := switches + ' ' + ParseSearchPaths('-Fu', OtherUnitFiles);
+  // library path
+  CurLibraryPath:=ParsedOpts.GetParsedValue(pcosLibraryPath);
+  if (CurLibraryPath <> '') then
+    switches := switches + ' ' + ParseSearchPaths('-Fl', CurLibraryPath);
+    
+  // inherited library path
+  InhLibraryPath:=GetInheritedOption(icoLibraryPath);
+  if (InhLibraryPath <> '') then
+    switches := switches + ' ' + ParseSearchPaths('-Fl', InhLibraryPath);
+
+  // object path
+  CurObjectPath:=ParsedOpts.GetParsedValue(pcosObjectPath);
+  if (CurObjectPath <> '') then
+    switches := switches + ' ' + ParseSearchPaths('-Fo', CurObjectPath);
+
+  // inherited object path
+  InhObjectPath:=GetInheritedOption(icoObjectPath);
+  if (InhObjectPath <> '') then
+    switches := switches + ' ' + ParseSearchPaths('-Fo', InhObjectPath);
+
+  // unit path
+  CurUnitPath:=ParsedOpts.GetParsedValue(pcosUnitPath);
+  if (CurUnitPath <> '') then
+    switches := switches + ' ' + ParseSearchPaths('-Fu', CurUnitPath);
+
+  // inherited unit path
+  InhUnitPath:=GetInheritedOption(icoUnitPath);
+  if (InhUnitPath <> '') then
+    switches := switches + ' ' + ParseSearchPaths('-Fu', InhUnitPath);
+
 
   { CompilerPath - Nothing needs to be done with this one }
   
   { Unit output directory }
   if UnitOutputDirectory<>'' then
-    switches := switches + ' '+PrepareCmdLineOption('-FU'+UnitOutputDirectory);
+    CurOutputDir:=ParsedOpts.GetParsedValue(pcosOutputDir)
+  else
+    CurOutputDir:='';
+  if CurOutputDir<>'' then
+    switches := switches + ' '+PrepareCmdLineOption('-FU'+CurOutputDir);
 
   { TODO: Implement the following switches. They need to be added
           to the dialog. }
@@ -1602,17 +1696,25 @@ Processor specific options:
   -Xc = Link with C library (LINUX only)
        
 }
-  if (TargetFilename<>'') or (MainSourceFilename<>'') 
-  or (UnitOutputDirectory<>'') then begin
-    tempsw:=CreateTargetFilename(MainSourceFilename);
-    if (tempsw <> ChangeFileExt(MainSourceFilename,''))
-    or (UnitOutputDirectory<>'') then
-      switches := switches + ' '+PrepareCmdLineOption('-o' + tempsw);
+  if (TargetFilename<>'') or (CurMainSrcFile<>'') or (CurOutputDir<>'') then
+  begin
+    NewTargetFilename:=CreateTargetFilename(CurMainSrcFile);
+    if (NewTargetFilename<>'')
+    and ((CompareFileNames(NewTargetFilename,ChangeFileExt(CurMainSrcFile,''))<>0)
+     or (CurOutputDir<>'')) then
+      switches := switches + ' '+PrepareCmdLineOption('-o' + NewTargetFilename);
   end;
-  
-  tempsw:=CustomOptionsAsString;
-  if tempsw<>'' then
-    Switches:=Switches+' '+tempsw;
+
+  // custom options
+  CurCustomOptions:=ParsedOpts.GetParsedValue(pcosCustomOptions);
+  if CurCustomOptions<>'' then
+    Switches:=Switches+' '+CurCustomOptions;
+    
+  // inherited custom options
+  InhCustomOptions:=GetInheritedOption(icoCustomOptions);
+  if InhCustomOptions<>'' then
+    Switches:=Switches+' '+InhCustomOptions;
+
 
   fOptionsString := switches;
   Result := fOptionsString;
@@ -1998,6 +2100,8 @@ begin
     AddResImg('pkg_package');
     ImageIndexRequired:=Count;
     AddResImg('pkg_required');
+    ImageIndexInherited:=Count;
+    AddResImg('pkg_inherited');
   end;
 
   nbMain := TNotebook.Create(Self);
@@ -2062,6 +2166,7 @@ end;
 {------------------------------------------------------------------------------}
 destructor TfrmCompilerOptions.Destroy;
 begin
+  ClearInheritedTree;
   inherited Destroy;
 end;
 
@@ -2095,8 +2200,6 @@ end;
 procedure TfrmCompilerOptions.ButtonApplyClicked(Sender: TObject);
 begin
   // Apply any changes
-  Assert(False, 'Trace:Apply compiler options changes');
-
   PutCompilerOptions;
 end;
 
@@ -2130,9 +2233,44 @@ begin
     [mbOk],0);
 end;
 
-{------------------------------------------------------------------------------}
-{  TfrmCompilerOptions GetCompilerOptions                                      }
-{------------------------------------------------------------------------------}
+procedure TfrmCompilerOptions.InhTreeViewSelectionChanged(Sender: TObject);
+var
+  ANode: TTreeNode;
+  ChildData: PInheritedNodeData;
+  sl: TStringList;
+begin
+  ANode:=InhTreeView.Selected;
+  if (ANode=nil) or (ANode.Data=nil) then begin
+    InhItemMemo.Lines.Text:='Select a node';
+  end else begin
+    ChildData:=PInheritedNodeData(ANode.Data);
+    if ChildData^.Option in icoAllSearchPaths then begin
+      sl:=SplitString(ChildData^.FullText,';');
+      InhItemMemo.Lines.Assign(sl);
+      sl.Free;
+    end else
+      InhItemMemo.Lines.Text:=ChildData^.FullText;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  procedure TfrmCompilerOptions.InheritedPageResize(Sender: TObject);
+------------------------------------------------------------------------------}
+procedure TfrmCompilerOptions.InheritedPageResize(Sender: TObject);
+var
+  y: Integer;
+begin
+  InhNoteLabel.SetBounds(3,3,InheritedPage.ClientWidth-6,20);
+  InhTreeView.SetBounds(0,25,
+                      InheritedPage.ClientWidth,InheritedPage.ClientHeight-100);
+  y:=InhTreeView.Top+InhTreeView.Height;
+  InhItemMemo.SetBounds(0,y,
+                        InheritedPage.ClientWidth,InheritedPage.ClientHeight-y);
+end;
+
+{------------------------------------------------------------------------------
+  TfrmCompilerOptions GetCompilerOptions
+------------------------------------------------------------------------------}
 procedure TfrmCompilerOptions.GetCompilerOptions;
 var i: integer;
 begin
@@ -2397,18 +2535,26 @@ var
   AncestorOptions: TAdditionalCompilerOptions;
   AncestorNode: TTreeNode;
   
-  procedure AddChildNode(const NewNodeName, Value: string);
+  procedure AddChildNode(const NewNodeName, Value: string;
+    Option: TInheritedCompilerOption);
   var
     VisibleValue: String;
     ChildNode: TTreeNode;
+    ChildData: PInheritedNodeData;
   begin
     if Value='' then exit;
+    New(ChildData);
+    ChildData^.FullText:=Value;
+    ChildData^.Option:=Option;
+    if InheritedChildDatas=nil then InheritedChildDatas:=TList.Create;
+    InheritedChildDatas.Add(ChildData);
+
     if length(Value)>100 then
       VisibleValue:=copy(Value,1,100)+'[...]'
     else
       VisibleValue:=Value;
-    ChildNode:=InhTreeView.Items.AddChild(AncestorNode,
-                                           NewNodeName+' = "'+VisibleValue+'"');
+    ChildNode:=InhTreeView.Items.AddChildObject(AncestorNode,
+                                 NewNodeName+' = "'+VisibleValue+'"',ChildData);
     ChildNode.ImageIndex:=ImageIndexRequired;
     ChildNode.SelectedIndex:=ChildNode.ImageIndex;
   end;
@@ -2416,12 +2562,32 @@ var
 begin
   CompilerOpts.GetInheritedCompilerOptions(OptionsList);
   InhTreeView.BeginUpdate;
-  InhTreeView.Items.Clear;
-  // add All node
-
-  // ToDo
-
+  ClearInheritedTree;
   if OptionsList<>nil then begin
+    // add All node
+    AncestorNode:=InhTreeView.Items.Add(nil,'All inherited options');
+    AncestorNode.ImageIndex:=ImageIndexInherited;
+    AncestorNode.SelectedIndex:=AncestorNode.ImageIndex;
+    with CompilerOpts do begin
+      AddChildNode('unit path',
+        CreateRelativeSearchPath(GetInheritedOption(icoUnitPath),
+        BaseDirectory),icoUnitPath);
+      AddChildNode('include path',
+        CreateRelativeSearchPath(GetInheritedOption(icoIncludePath),
+        BaseDirectory),icoIncludePath);
+      AddChildNode('object path',
+        CreateRelativeSearchPath(GetInheritedOption(icoObjectPath),
+        BaseDirectory),icoObjectPath);
+      AddChildNode('library path',
+        CreateRelativeSearchPath(GetInheritedOption(icoLibraryPath),
+        BaseDirectory),icoLibraryPath);
+      AddChildNode('linker options',GetInheritedOption(icoLinkerOptions),
+        icoLinkerOptions);
+      AddChildNode('custom options',GetInheritedOption(icoCustomOptions),
+        icoCustomOptions);
+    end;
+    AncestorNode.Expanded:=true;
+    // add detail nodes
     for i:=0 to OptionsList.Count-1 do begin
       AncestorOptions:=TAdditionalCompilerOptions(OptionsList[i]);
       AncestorNode:=InhTreeView.Items.Add(nil,'');
@@ -2429,18 +2595,46 @@ begin
       AncestorNode.ImageIndex:=ImageIndexPackage;
       AncestorNode.SelectedIndex:=AncestorNode.ImageIndex;
       with AncestorOptions.ParsedOpts do begin
-        AddChildNode('unit path',GetParsedValue(pcosUnitPath));
-        AddChildNode('include path',GetParsedValue(pcosIncludePath));
-        AddChildNode('object path',GetParsedValue(pcosObjectPath));
-        AddChildNode('library path',GetParsedValue(pcosLibraryPath));
-        AddChildNode('linker options',GetParsedValue(pcosLinkerOptions));
-        AddChildNode('custom options',GetParsedValue(pcosCustomOptions));
+        AddChildNode('unit path',
+          CreateRelativeSearchPath(GetParsedValue(pcosUnitPath),
+          CompilerOpts.BaseDirectory),icoUnitPath);
+        AddChildNode('include path',
+          CreateRelativeSearchPath(GetParsedValue(pcosIncludePath),
+          CompilerOpts.BaseDirectory),icoIncludePath);
+        AddChildNode('object path',
+          CreateRelativeSearchPath(GetParsedValue(pcosObjectPath),
+          CompilerOpts.BaseDirectory),icoObjectPath);
+        AddChildNode('library path',
+          CreateRelativeSearchPath(GetParsedValue(pcosLibraryPath),
+          CompilerOpts.BaseDirectory),icoLibraryPath);
+        AddChildNode('linker options',GetParsedValue(pcosLinkerOptions),
+          icoLinkerOptions);
+        AddChildNode('custom options',GetParsedValue(pcosCustomOptions),
+          icoCustomOptions);
       end;
       AncestorNode.Expanded:=true;
     end;
   end else begin
     InhTreeView.Items.Add(nil,'No compiler options inherited.');
   end;
+  InhTreeView.EndUpdate;
+end;
+
+procedure TfrmCompilerOptions.ClearInheritedTree;
+var
+  i: Integer;
+  ChildData: PInheritedNodeData;
+begin
+  InhTreeView.BeginUpdate;
+  // dispose all child data
+  if InheritedChildDatas<>nil then begin
+    for i:=0 to InheritedChildDatas.Count-1 do begin
+      ChildData:=PInheritedNodeData(InheritedChildDatas[i]);
+      Dispose(ChildData);
+    end;
+    InheritedChildDatas.Free;
+  end;
+  InhTreeView.Items.Clear;
   InhTreeView.EndUpdate;
 end;
 
@@ -3404,6 +3598,7 @@ end;
 procedure TfrmCompilerOptions.SetupInheritedTab(Page: integer);
 begin
   InheritedPage:=nbMain.Page[Page];
+  InheritedPage.OnResize:=@InheritedPageResize;
   
   InhNoteLabel:=TLabel.Create(Self);
   with InhNoteLabel do begin
@@ -3419,7 +3614,17 @@ begin
     Options:=Options+[tvoReadOnly, tvoRightClickSelect, tvoShowRoot,
                       tvoKeepCollapsedNodes];
     Images:=ImageList;
-    Align:=alClient;
+    OnSelectionChanged:=@InhTreeViewSelectionChanged;
+  end;
+  
+  InhItemMemo:=TMemo.Create(Self);
+  with InhItemMemo do begin
+    Name:='InhItemMemo';
+    Parent:=InheritedPage;
+    ReadOnly:=true;
+    WordWrap:=true;
+    ScrollBars:=ssAutoVertical;
+    Text:='Select a node';
   end;
 end;
 
@@ -3935,7 +4140,14 @@ var
   s: String;
 begin
   if ParsedStamp[Option]<>CompilerParseStamp then begin
-    s:=ParseString(Self,UnparsedValues[Option]);
+    // parse locally
+    if Assigned(OnLocalSubstitute) then
+      s:=OnLocalSubstitute(UnparsedValues[Option])
+    else
+      s:=UnparsedValues[Option];
+    // parse globally
+    s:=ParseString(Self,s);
+    // improve
     if Option=pcosBaseDir then
       // base directory (append path)
       s:=AppendPathDelim(TrimFilename(s))
@@ -3959,22 +4171,14 @@ end;
 
 procedure TParsedCompilerOptions.SetUnparsedValue(
   Option: TParsedCompilerOptString; const NewValue: string);
-var
-  PreParsedValue: String;
 begin
-  if Assigned(OnLocalSubstitute) then begin
-    PreParsedValue:=OnLocalSubstitute(NewValue);
-  end else begin
-    PreParsedValue:=NewValue;
-  end;
-  if PreParsedValue=UnparsedValues[Option] then exit;
-  
-  IncreaseCompilerGraphStamp;
+  if NewValue=UnparsedValues[Option] then exit;
+  if InvalidateGraphOnChange then IncreaseCompilerGraphStamp;
   if Option=pcosBaseDir then
     InvalidateFiles
   else
     ParsedStamp[Option]:=InvalidParseStamp;
-  UnparsedValues[Option]:=PreParsedValue;
+  UnparsedValues[Option]:=NewValue;
 end;
 
 procedure TParsedCompilerOptions.Clear;

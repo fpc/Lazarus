@@ -216,9 +216,7 @@ var MacroStart,MacroEnd: integer;
     else BracketClose:='}';
     inc(Position);
     while (Position<=length(s)) and (s[Position]<>BracketClose) do begin
-      if s[Position]='\' then
-        inc(Position)
-      else if (s[Position] in ['(','{']) then
+      if (s[Position] in ['(','{']) then
         Position:=SearchBracketClose(Position);
       inc(Position);
     end;
@@ -231,10 +229,14 @@ begin
   MacroStart:=1;
   repeat
     while (MacroStart<sLen) do begin
-      if (s[MacroStart]='$') and ((MacroStart=1) or (s[MacroStart-1]<>'\')) then
-        break
-      else
-        inc(MacroStart);
+      if (s[MacroStart]<>'$') then
+        inc(MacroStart)
+      else begin
+        if (s[MacroStart+1]='$') then // skip $$
+          inc(MacroStart,2)
+        else
+          break;
+      end;
     end;
     if MacroStart>=sLen then break;
     
@@ -330,13 +332,14 @@ begin
     MacroStart:=MacroEnd;
   until false;
   
-  // convert \$ chars
+  // convert $$ chars
   MacroStart:=2;
-  while (MacroStart<=length(s)) do begin
-    if (s[MacroStart]='$') and (s[MacroStart-1]='\') then begin
-      System.Delete(s,MacroStart-1,1);
-    end else
-      inc(MacroStart);
+  while (MacroStart<sLen) do begin
+    if (s[MacroStart]='$') and (s[MacroStart+1]='$') then begin
+      System.Delete(s,MacroStart,1);
+      dec(sLen);
+    end;
+    inc(MacroStart);
   end;
 end;
 

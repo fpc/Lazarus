@@ -686,6 +686,8 @@ begin
     Result:=MessageDlg('Invalid file extension',
       'The file "'+AFilename+'" is not a lazarus package.',
       mtError,[mbCancel,mbAbort],0);
+    RemoveFromRecentList(AFilename,EnvironmentOptions.RecentPackageFiles);
+    SetRecentPackagesMenu;
     exit;
   end;
   
@@ -697,7 +699,16 @@ begin
       'The package file name "'+AlternativePkgName+'" in'#13
       +'"'+AFilename+'" is not a valid lazarus package name.',
       mtError,[mbCancel,mbAbort],0);
+    RemoveFromRecentList(AFilename,EnvironmentOptions.RecentPackageFiles);
+    SetRecentPackagesMenu;
     exit;
+  end;
+
+  // add to recent packages
+  if pofAddToRecent in Flags then begin
+    AddToRecentList(AFilename,EnvironmentOptions.RecentPackageFiles,
+                    EnvironmentOptions.MaxRecentPackageFiles);
+    SetRecentPackagesMenu;
   end;
 
   // check if package is already loaded

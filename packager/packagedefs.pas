@@ -261,12 +261,15 @@ type
     procedure SetLinkerOptions(const AValue: string); override;
     procedure SetObjectPath(const AValue: string); override;
     procedure SetOtherUnitFiles(const AValue: string); override;
+    procedure SetUnitOutputDir(const AValue: string); override;
   public
     constructor Create(ThePackage: TLazPackage);
     procedure Clear; override;
     procedure GetInheritedCompilerOptions(var OptionsList: TList); override;
     function GetOwnerName: string; override;
     procedure InvalidateOptions;
+    function GetDefaultMainSourceFileName: string; override;
+    function CreateTargetFilename(const MainSourceFileName: string): string; override;
   public
     property LazPackage: TLazPackage read FLazPackage write SetLazPackage;
   end;
@@ -454,6 +457,7 @@ type
     procedure UpdateEditorRect;
     procedure GetAllRequiredPackages(var List: TList);
     procedure GetInheritedCompilerOptions(var OptionsList: TList);
+    function GetCompileSourceFilenname: string;
   public
     property Author: string read FAuthor write SetAuthor;
     property AutoCreated: boolean read FAutoCreated write SetAutoCreated;
@@ -1485,6 +1489,7 @@ begin
   FMacros.OnSubstitution:=@OnMacroListSubstitution;
   FCompilerOptions:=TPkgCompilerOptions.Create(Self);
   FCompilerOptions.ParsedOpts.OnLocalSubstitute:=@SubstitutePkgMacro;
+  FCompilerOptions.ParsedOpts.InvalidateGraphOnChange:=true;
   FUsageOptions:=TPkgAdditionalCompilerOptions.Create(Self);
   FUsageOptions.ParsedOpts.OnLocalSubstitute:=@SubstitutePkgMacro;
   Clear;
@@ -2033,12 +2038,16 @@ begin
     OptionsList:=TList.Create;
     Cnt:=PkgList.Count;
     for i:=0 to Cnt-1 do begin
-writeln('TLazPackage.GetInheritedCompilerOptions A ');
       OptionsList.Add(TLazPackage(PkgList[i]).UsageOptions);
     end;
   end else begin
     OptionsList:=nil;
   end;
+end;
+
+function TLazPackage.GetCompileSourceFilenname: string;
+begin
+  Result:=ChangeFileExt(ExtractFilename(Filename),'.pas');
 end;
 
 { TPkgComponent }
@@ -2195,38 +2204,51 @@ end;
 
 procedure TPkgCompilerOptions.SetCustomOptions(const AValue: string);
 begin
-  if CustomOptions<>AValue then InvalidateOptions;
+  if CustomOptions=AValue then exit;
+  InvalidateOptions;
   inherited SetCustomOptions(AValue);
 end;
 
 procedure TPkgCompilerOptions.SetIncludeFiles(const AValue: string);
 begin
-  if IncludeFiles<>AValue then InvalidateOptions;
+  if IncludeFiles=AValue then exit;
+  InvalidateOptions;
   inherited SetIncludeFiles(AValue);
 end;
 
 procedure TPkgCompilerOptions.SetLibraries(const AValue: string);
 begin
-  if Libraries<>AValue then InvalidateOptions;
+  if Libraries=AValue then exit;
+  InvalidateOptions;
   inherited SetLibraries(AValue);
 end;
 
 procedure TPkgCompilerOptions.SetLinkerOptions(const AValue: string);
 begin
-  if LinkerOptions<>AValue then InvalidateOptions;
+  if LinkerOptions=AValue then exit;
+  InvalidateOptions;
   inherited SetLinkerOptions(AValue);
 end;
 
 procedure TPkgCompilerOptions.SetObjectPath(const AValue: string);
 begin
-  if ObjectPath<>AValue then InvalidateOptions;
+  if ObjectPath=AValue then exit;
+  InvalidateOptions;
   inherited SetObjectPath(AValue);
 end;
 
 procedure TPkgCompilerOptions.SetOtherUnitFiles(const AValue: string);
 begin
-  if OtherUnitFiles<>AValue then InvalidateOptions;
+  if OtherUnitFiles=AValue then exit;
+  InvalidateOptions;
   inherited SetOtherUnitFiles(AValue);
+end;
+
+procedure TPkgCompilerOptions.SetUnitOutputDir(const AValue: string);
+begin
+  if UnitOutputDirectory=AValue then exit;
+  InvalidateOptions;
+  inherited SetUnitOutputDir(AValue);
 end;
 
 constructor TPkgCompilerOptions.Create(ThePackage: TLazPackage);
@@ -2254,6 +2276,19 @@ end;
 procedure TPkgCompilerOptions.InvalidateOptions;
 begin
   LazPackage.UsageOptions.ParsedOpts.InvalidateAll;
+end;
+
+function TPkgCompilerOptions.GetDefaultMainSourceFileName: string;
+begin
+  Result:=LazPackage.GetCompileSourceFilenname;
+  if Result='' then
+    Result:=inherited GetDefaultMainSourceFileName;
+end;
+
+function TPkgCompilerOptions.CreateTargetFilename(
+  const MainSourceFileName: string): string;
+begin
+  Result:='';
 end;
 
 { TPkgAdditionalCompilerOptions }

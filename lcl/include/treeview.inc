@@ -2891,7 +2891,8 @@ begin
       NewDefItemHeight:=StateImages.Height;
     if NewDefItemHeight<>FDefItemHeight then begin
       FDefItemHeight:=NewDefItemHeight;
-      Include(FStates,tvsTopsNeedsUpdate);
+      FStates:=FStates+[tvsTopsNeedsUpdate,tvsTopItemNeedsUpdate,
+                        tvsBottomItemNeedsUpdate];
       Invalidate;
     end;
   end;
