@@ -116,15 +116,17 @@ Var
   procedure ShowHideTabPage(NotebookHandle: HWnd; Showing: boolean);
   var
     NoteBook: TCustomNotebook;
-    PageIndex: integer;
+    PageIndex, Flags: Integer;
     PageHandle: HWND;
   begin
     Notebook := TObject(GetProp(NotebookHandle, 'Lazarus')) as TCustomNotebook;
-    PageIndex := SendMessage(NotebookHandle, TCM_GETCURSEL, 0, 0);
+    PageIndex := Windows.SendMessage(NotebookHandle, TCM_GETCURSEL, 0, 0);
     PageHandle := Notebook.CustomPage(PageIndex).Handle;
-    if Showing
-      then ShowWindow(PageHandle, SW_SHOW)
-      else ShowWindow(PageHandle, SW_HIDE);
+    if Showing then
+      Flags := SW_SHOW
+    else
+      Flags := SW_HIDE;
+    Windows.ShowWindow(PageHandle, Flags)
   end;
 
   function GetMenuItemObject: TObject;
@@ -212,15 +214,15 @@ Var
   procedure CheckListBoxLButtonDown;
   var
     I: Integer;
-    ItemRect: TRect;
-    MousePos: TPoint;
+    ItemRect: Windows.Rect;
+    MousePos: Windows.Point;
   begin
     MousePos.X := LMMouse.Pos.X;
     MousePos.Y := LMMouse.Pos.Y;
     for I := 0 to Windows.SendMessage(Window, LB_GETCOUNT, 0, 0) - 1 do
     begin
       Windows.SendMessage(Window, LB_GETITEMRECT, I, LongInt(@ItemRect));
-      if Windows.PtInRect(@ItemRect, MousePos) then
+      if Windows.PtInRect(ItemRect, MousePos) then
       begin
         // item clicked: toggle
         if I < TCheckListBox(OwnerObject).Items.Count then
@@ -560,7 +562,7 @@ Begin
           TCN_SELCHANGE:
           begin
             ShowHideTabPage(HWndFrom, True);
-            idFrom := SendMessage(HWndFrom, TCM_GETCURSEL, 0, 0);
+            idFrom := Windows.SendMessage(HWndFrom, TCM_GETCURSEL, 0, 0);
           end;
         end;
       End;
@@ -885,6 +887,9 @@ end;
 
 {
   $Log$
+  Revision 1.73  2003/11/28 19:54:42  micha
+  fpc 1.0.10 compatibility
+
   Revision 1.72  2003/11/25 21:20:38  micha
   implement tchecklistbox
 

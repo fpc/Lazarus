@@ -241,9 +241,11 @@ Procedure TWin32Object.SetLabel(Sender: TObject; Data: Pointer);
     SetMenuItemInfo(TMenuItem(Sender).Parent.Handle,
                     TMenuItem(Sender).Command, false, @MenuInfo);
     // owner could be a popupmenu too
+{
     if (TMenuItem(Sender).Owner is TWinControl) and
         TWinControl(TMenuItem(Sender).Owner).HandleAllocated then
       DrawMenuBar(TWinControl(TMenuItem(Sender).Owner).Handle);
+}
   End;
 
 Var
@@ -1183,13 +1185,12 @@ begin
 end;
 
 procedure TWin32Object.AttachMenuToWindow(AMenuObject: TComponent);
+var
+  AMenu: TMenu;
 begin
-  // popup menu's don't have an owner
-  if AMenuObject.Owner <> nil then
-  begin
-    Windows.SetMenu(TWinControl(AMenuObject.Owner).Handle,
-                    (AMenuObject as TMenu).Handle);
-  end;
+  AMenu := AMenuObject as TMenu;
+  if AMenu.FCompStyle = csMainMenu then
+    Windows.SetMenu(TWinControl(AMenu.Owner).Handle, AMenu.Handle);
 end;
 
 { Private methods (in no significant order) }
@@ -2786,7 +2787,7 @@ Begin
        implemented in LCL}
     end;
   end;
-  InsertMenuItem(ParentMenuHandle, High(UINT), true, @MenuInfo);
+  InsertMenuItem(ParentMenuHandle, MenuInfo.wID, false, @MenuInfo);
   if TMenuItem(Sender).ShortCut <> 0 then
   begin
     Msg.Handle:=MenuHandle;
@@ -2818,6 +2819,9 @@ End;
 
 {
   $Log$
+  Revision 1.136  2003/11/28 19:54:42  micha
+  fpc 1.0.10 compatibility
+
   Revision 1.135  2003/11/25 21:20:38  micha
   implement tchecklistbox
 

@@ -225,7 +225,8 @@ Procedure TWin32Object.CallDefaultWndHandler(Sender: TObject; var Message);
       end;
     end;
     Windows.BitBlt(Data^._HDC, xDestBitmap, yDestBitmap, BitmapBuf.bmWidth, BitmapBuf.bmHeight, hdcBitmap, 0, 0, SRCCOPY);
-    Windows.DrawText(Data^._HDC, LPSTR(TBitBtn(Sender).Caption), -1, Data^.rcItem, TextPosFlags);
+    Windows.DrawText(Data^._HDC, LPSTR(TBitBtn(Sender).Caption), -1,
+        {$ifdef VER1_0}Windows.Rect({$endif}Data^.rcItem{$ifdef VER1_0}){$endif}, TextPosFlags);
     if OldBitmapHandle <> 0 then
       Windows.SelectObject(hdcBitmap, OldBitmapHandle);
     Windows.DeleteDC(hdcBitmap);
@@ -234,12 +235,12 @@ Procedure TWin32Object.CallDefaultWndHandler(Sender: TObject; var Message);
   procedure DrawCheckListBoxItem(Checked: Boolean; Text: PChar; Data: PDrawItemStruct);
   var
     Flags: Cardinal;
-    Rect: TRect;
+    Rect: Windows.Rect;
   begin
     Flags := DFCS_BUTTONCHECK;
     if Checked then
       Flags := Flags or DFCS_CHECKED;
-    Rect := Data^.rcItem;
+    Rect := Windows.Rect(Data^.rcItem);
     WriteLn('DrawItem rect:',Rect.Left,',',Rect.Top,';',Rect.Right,',',Rect.Bottom);
     Rect.Right := Rect.Bottom-Rect.Top;
     Windows.DrawFrameControl(Data^._HDC, Rect, DFC_BUTTON, Flags);
@@ -2847,6 +2848,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.79  2003/11/28 19:54:42  micha
+  fpc 1.0.10 compatibility
+
   Revision 1.78  2003/11/28 11:25:49  mattias
   added BitOrder for RawImages
 
