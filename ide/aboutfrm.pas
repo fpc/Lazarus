@@ -44,10 +44,23 @@ type
     destructor Destroy; override;
   end; 
 
-var
-  AboutForm: TAboutForm; 
+
+function ShowAboutForm: TModalResult;
+  
 
 implementation
+
+
+function ShowAboutForm: TModalResult;
+var
+  AboutForm: TAboutForm;
+begin
+  AboutForm:=TAboutForm.Create(Application);
+  Result:=AboutForm.ShowModal;
+  AboutForm.Free;
+end;
+
+{ TAboutForm }
 
 constructor TAboutForm.Create(AOwner: TComponent);
 begin

@@ -2371,11 +2371,7 @@ end;
 
 procedure TMainIDE.mnuHelpAboutLazarusClicked(Sender : TObject);
 begin
-
-AboutForm.ShowModal;
-
-//  MessageDlg(lisAboutLazarus,'Lazarus '+Version_String+#13+lisAboutLazarusMsg
-//    ,mtInformation, [mbOk], 0);
+  ShowAboutForm;
 end;
 
 //------------------------------------------------------------------------------
@@ -6416,6 +6412,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.308  2002/06/09 07:08:41  lazarus
+  MG: fixed window jumping
+
   Revision 1.307  2002/06/08 17:15:59  lazarus
   MG: added close buttons and images to TNoteBook and close buttons to source editor
 

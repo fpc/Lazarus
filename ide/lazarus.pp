@@ -73,7 +73,6 @@ begin
 
   Application.CreateForm(TLazFindReplaceDialog, FindReplaceDlg);
   Application.CreateForm(TLazFindInFilesDialog, FindInFilesDialog);
-  Application.CreateForm(TAboutForm, AboutForm);
   SplashForm.StartTimer;
   Application.Run;
   SplashForm.Free;
@@ -84,6 +83,9 @@ end.
 
 {
   $Log$
+  Revision 1.35  2002/06/09 07:08:41  lazarus
+  MG: fixed window jumping
+
   Revision 1.34  2002/05/27 17:58:40  lazarus
   MG: added command line help
 

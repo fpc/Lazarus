@@ -22,18 +22,20 @@ LazarusResources.Add('TAbout_frm','FORMDATA',[
   'TPF0'#10'TAboutForm'#9'About_frm'#7'CAPTION'#6#13'About Lazarus'#5'COLOR'#4
   +#15#0#0#128#12'CLIENTHEIGHT'#3#245#0#11'CLIENTWIDTH'#3'A'#2#8'POSITION'#7#14
   +'poscreencenter'#4'LEFT'#3'_'#1#6'HEIGHT'#3#245#0#3'TOP'#3#133#1#5'WIDTH'#3
-  +'A'#2#0#5'TMEMO'#5'Memo1'#10'FONT.COLOR'#4#8#0#0#128#13'LINES.Strings'#1#6#17
-  +'License: GPL/LGPL'#6#1' '#6'4Lazarus are the class libraries for Free Pasca'
-  +'l that'#6'8emulate Delphi. Free Pascal is a (L)GPL''ed compiler that'#6'5ru'
-  +'ns on Linux, Win32, OS/2, 68K and more. Free Pascal'#6'7is designed to be a'
-  +'ble to understand and compile Delphi'#6#31'syntax, which is of course OOP.'
-  +#6#1' '#6'9Lazarus is the missing part of the puzzle that will allow'#6'7you'
-  +' to develop Delphi like programs in all of the above'#6'9platforms. The IDE'
-  +' will eventually become a RAD tool like'#6#7'Delphi.'#6#1' '#6'.As Lazarus '
-  +'is growing we need more developers.'#0#4'LEFT'#3#225#0#6'HEIGHT'#3#219#0#3
-  +'TOP'#2#14#5'WIDTH'#3'S'#1#0#0#7'TBUTTON'#7'Button1'#11'MODALRESULT'#2#1#7'C'
-  +'APTION'#6#5'Close'#10'FONT.COLOR'#4#8#0#0#128#4'LEFT'#2'N'#6'HEIGHT'#2#25#3
-  +'TOP'#3#184#0#5'WIDTH'#2'K'#0#0#6'TLABEL'#6'Label1'#9'ALIGNMENT'#7#8'tacente'
-  +'r'#7'CAPTION'#6#10'Version #:'#10'FONT.COLOR'#4#8#0#0#128#4'LEFT'#2#14#6'HE'
-  +'IGHT'#2#17#3'TOP'#2#6#5'WIDTH'#3#200#0#0#0#0
+  +'A'#2#0#5'TMEMO'#5'Memo1'#12'FONT.CHARSET'#2#1#10'FONT.COLOR'#4#8#0#0#128#9
+  +'FONT.NAME'#6#7'default'#13'LINES.Strings'#1#6#17'License: GPL/LGPL'#6#1' '#6
+  +'4Lazarus are the class libraries for Free Pascal that'#6'8emulate Delphi. F'
+  +'ree Pascal is a (L)GPL''ed compiler that'#6'5runs on Linux, Win32, OS/2, 68'
+  +'K and more. Free Pascal'#6'7is designed to be able to understand and compil'
+  +'e Delphi'#6#31'syntax, which is of course OOP.'#6#1' '#6'9Lazarus is the mi'
+  +'ssing part of the puzzle that will allow'#6'7you to develop Delphi like pro'
+  +'grams in all of the above'#6'9platforms. The IDE will eventually become a R'
+  +'AD tool like'#6#7'Delphi.'#6#1' '#6'.As Lazarus is growing we need more dev'
+  +'elopers.'#0#4'LEFT'#3#225#0#6'HEIGHT'#3#219#0#3'TOP'#2#14#5'WIDTH'#3'S'#1#0
+  +#0#7'TBUTTON'#7'Button1'#11'MODALRESULT'#2#1#7'CAPTION'#6#5'Close'#12'FONT.C'
+  +'HARSET'#2#1#10'FONT.COLOR'#4#8#0#0#128#9'FONT.NAME'#6#7'default'#4'LEFT'#2
+  +'N'#6'HEIGHT'#2#25#3'TOP'#3#184#0#5'WIDTH'#2'K'#0#0#6'TLABEL'#6'Label1'#9'AL'
+  +'IGNMENT'#7#8'tacenter'#7'CAPTION'#6#10'Version #:'#12'FONT.CHARSET'#2#1#10
+  +'FONT.COLOR'#4#8#0#0#128#9'FONT.NAME'#6#7'default'#4'LEFT'#2#14#6'HEIGHT'#2
+  +#17#3'TOP'#2#6#5'WIDTH'#3#200#0#0#0#0
 ]);

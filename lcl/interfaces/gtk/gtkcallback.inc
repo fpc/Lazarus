@@ -1169,17 +1169,6 @@ end;
 
 function gtksize_allocateCB(widget: PGtkWidget; size :pGtkAllocation;
   data: gPointer) : GBoolean; cdecl;
-var
-  PosMsg : TLMWindowPosChanged;
-  SizeMsg: TLMSize;
-  MoveMsg: TLMMove;
-  Dummy: TPoint;
-  OldLeft, OldTop, OldWidth, OldHeight: integer;
-  TopLeftChanged, WidthHeightChanged: boolean;
-  {$IFDEF VerboseSizeMsg}
-  DummyWidget: PGtkWidget;
-  {$ENDIF}
-//  DummyW, DummyH, DummyD: integer;
 begin
   Result:=false;
   
@@ -1194,13 +1183,12 @@ begin
     exit;
   end;
   
-  {$IFDEF ClientRectBugFix}
   { The gtk sends the size messages after the resizing. Therefore the parent
     widget is already resized, but the parent resize message will be emitted
     after all its childs. So, the gtk resizes in top-bottom order, just like the
     LCL. But it sends size messages in bottom-top order, which results in
     many resizes in the LCL.
-    The next lines repairs this, by updating the parents first
+    Therefore all resize messages between lcl and gtk are cached.
   }
   {$IFDEF VerboseSizeMsg}
   writeln('gtksize_allocateCB: ',
@@ -1209,135 +1197,16 @@ begin
     ' fixwidget=',HexStr(Cardinal(GetFixedWidget(Widget)),8),
     ' OldPos=',TControl(Data).Left,',',TControl(Data).Top,',',TControl(Data).Width,',',TControl(Data).Height);
   {$ENDIF}
-  {$IFDEF VerboseClientRectBugFix}
+  {$IFDEF VerboseFormPositioning}
   if TControl(Data) is TCustomForm then
-    writeln('gtksize_allocateCB: ',TControl(Data).ClassName,' ',Size^.X,',',Size^.Y);
+    writeln('VFP gtksize_allocateCB: ',TControl(Data).ClassName,' ',Size^.X,',',Size^.Y);
   {$ENDIF}
-  //if TControl(Data) is TCustomForm then
-  //  writeln('gtksize_allocateCB: ',TControl(Data).Name,':',TControl(Data).ClassName);
   SaveSizeNotification(Widget);
   Result:=true;
-  exit;
-  {$ENDIF}
-
-  OldLeft:=TControl(Data).Left;
-  OldTop:=TControl(Data).Top;
-  OldWidth:=TControl(Data).Width;
-  OldHeight:=TControl(Data).Height;
-
-
-  PosMsg.msg := LM_WINDOWPOSCHANGED; //LM_SIZEALLOCATE;
-  PosMsg.Result := -1;
-  SizeMsg.Result := -1;
-  MoveMsg.Result := -1;
-
-  New(PosMsg.WindowPos);
-  try
-    with PosMsg.WindowPos^ do
-    begin
-      if TObject(data) is TWinControl then begin
-        hWnd := TWinControl(data).Handle;
-        if TObject(data) is TCustomForm then begin
-{          writeln('[gtksize_allocateCB]  CUSTOMFORM  AAA1 ************ ',
-                 TCustomForm(Data).Name,' Widget=',HexStr(Cardinal(Widget),8),
-                 ' ',TControl(Data).Left,',',TControl(Data).Top,'  ',Size^.X,',',Size^.Y);}
-          Dummy.X:=TControl(Data).Left;
-          Dummy.Y:=TControl(Data).Top;
-          if widget^.window<>nil then
-            try
-              gdk_window_get_root_origin(widget^.window, @Dummy.X, @Dummy.Y);
-            except
-              on E: Exception do writeln('This was gdk_window_get_root_origin: ',E.Message);
-            end;
-          Size^.X:=Dummy.X;
-          Size^.Y:=Dummy.Y;
-{          writeln('[gtksize_allocateCB]  CUSTOMFORM  AAA2 ************ ',
-                 TCustomForm(Data).Name,' Widget=',HexStr(Cardinal(Widget),8),
-                 ' ',TControl(Data).Left,',',TControl(Data).Top,'  ',Size^.X,',',Size^.Y);}
-{if widget^.window<>nil then begin
-  gdk_window_get_Position(widget^.window, @Dummy.X, @Dummy.Y);
-  writeln('  Position=',Dummy.X,',',Dummy.Y);
-  gdk_window_get_geometry(widget^.window, @Dummy.X, @Dummy.Y, @DummyW, @DummyH, @DummyD);
-  writeln('  Geometry=',Dummy.X,',',Dummy.Y,',',DummyW,',',DummyH,',',DummyD);
-  gdk_window_get_origin(widget^.window, @Dummy.X, @Dummy.Y);
-  writeln('  Origin=',Dummy.X,',',Dummy.Y);
-  gdk_window_get_deskrelative_origin(widget^.window, @Dummy.X, @Dummy.Y);
-  writeln('  deskrelative_Origin=',Dummy.X,',',Dummy.Y);
-end;}
-                 
-        end;
-      end else
-        hWnd := 0;
-      hWndInsertAfter := 0;
-      x := Size^.X;
-      y := Size^.Y;
-      cx := Size^.Width;
-      cy := Size^.Height;
-      flags := 0;
-    end;
-    TopLeftChanged:=(OldLeft<>Size^.X) or (OldTop<>Size^.Y);
-    WidthHeightChanged:=(OldWidth<>Size^.Width) or (OldHeight<>Size^.Height);
-    {$IFDEF VerboseSizeMsg}
-    if PosMsg.WindowPos^.hWnd<>0 then begin
-      DummyWidget:=pgtkwidget(PosMsg.WindowPos^.hWnd);
-      DummyWidget := GetFixedWidget(DummyWidget);
-      if (DummyWidget = nil) then DummyWidget := pgtkwidget(PosMsg.WindowPos^.hWnd);
-      if (DummyWidget <> nil) and (DummyWidget^.Window<>nil) then begin
-        gdk_window_get_size(DummyWidget^.Window, @Dummy.X, @Dummy.Y);
-        writeln('   GGG1 ',TControl(Data).Name,':',TControl(Data).ClassName,
-          ' SizeMsg=',Size^.Width,',',Size^.Height,
-          ' FixWidSize=',Dummy.X,',',Dummy.Y);
-      end;
-    end;
-    {$ENDIF}
-    if TopLeftChanged or WidthHeightChanged then begin
-      Assert(False, 'Trace:[gtksize_allocateCB] DeliverMessage LM_WINDOWPOSCHANGED');
-//writeln('[gtksize_allocateCB] Sending LM_WINDOWPOSCHANGED message: Target=',TObject(Data).ClassName,' Left=',Size^.X,' Top=',Size^.Y,' Width=',Size^.Width,' Height=',Size^.Height);
-      Result := DeliverMessage(Data, PosMsg) = 0;
-    end;
-  finally
-    Dispose(PosMsg.WindowPos);
-  end;
-
-  { If the message is not handled. A LM_SIZE and LM_MOVE should be sent
- }
-  
-  if (PosMsg.Result = 0) then 
-  begin
-    if WidthHeightChanged then begin
-      with SizeMsg do
-      begin
-        Msg := LM_SIZE;
-        SizeType := Size_SourceIsInterface;
-        Width := Size^.Width;
-        Height := Size^.Height;
-      end;
-      Assert(False, 'Trace:[gtksize_allocateCB] DeliverMessage LM_SIZE');
-      Result := (DeliverMessage(Data, SizeMsg) = 0) or Result;
-    end;
-    
-    if TopLeftChanged then begin
-      with MoveMsg do
-      begin
-        Msg := LM_MOVE;
-        MoveType := Move_SourceIsInterface;
-        XPos := Size^.X;
-        YPos := Size^.Y;
-      end;
-      Assert(False, 'Trace:[gtksize_allocateCB] DeliverMessage LM_MOVE');
-      Result := (DeliverMessage(Data,  MoveMsg) = 0) or Result;
-    end;
-  end;
-  
-  if not (TopLeftChanged or WidthHeightChanged)
-  and (TObject(Data) is TWinControl) then
-    TWinControl(Data).DoAdjustClientRectChange;
 end;
 
-{$IFDEF ClientRectBugFix}
 function gtksize_allocate_client(widget: PGtkWidget; size :pGtkAllocation;
   data: gPointer) : GBoolean; cdecl;
-var AWinControl: TWinControl;
 begin
   if (TObject(Data) is TWinControl) then begin
     {$IFDEF VerboseSizeMsg}
@@ -1353,27 +1222,13 @@ begin
     // owner is not TWinControl -> ignore
     writeln('WARNING: gtksize_allocate_client: Data is not TWinControl. Data=',
             HexStr(Cardinal(Data),8));
+    Result:=false;
     exit;
   end;
   
   SaveClientSizeNotification(Widget);
   Result:=true;
-  exit;
-
-  // the gtk has resized this fixed widget, that means all parent widgets are
-  // also valid
-  // -> Update LCL parents.
-  AWinControl:=TWinControl(Data);
-  while AWinControl<>nil do begin
-    AWinControl.InvalidateClientRectCache;
-    AWinControl:=AWinControl.Parent;
-  end;
-  AWinControl:=TWinControl(Data);
-  AWinControl.DoAdjustClientRectChange;
-  
-  Result:=true;
 end;
-{$ENDIF}
 
 function gtkswitchpage(widget: PGtkWidget; page: Pgtkwidget; pagenum : integer;
   data: gPointer) : GBoolean; cdecl;
@@ -2055,6 +1910,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.82  2002/06/09 07:08:43  lazarus
+  MG: fixed window jumping
+
   Revision 1.81  2002/06/08 17:16:02  lazarus
   MG: added close buttons and images to TNoteBook and close buttons to source editor
 

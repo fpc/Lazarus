@@ -9,7 +9,9 @@ object About_frm: TAboutForm
   TOP = 389
   WIDTH = 577
   object Memo1: TMEMO
+    FONT.CHARSET = 1
     FONT.COLOR = -2147483640
+    FONT.NAME = 'default'
     LINES.Strings = (
       'License: GPL/LGPL'
       ' '
@@ -34,7 +36,9 @@ object About_frm: TAboutForm
   object Button1: TBUTTON
     MODALRESULT = 1
     CAPTION = 'Close'
+    FONT.CHARSET = 1
     FONT.COLOR = -2147483640
+    FONT.NAME = 'default'
     LEFT = 78
     HEIGHT = 25
     TOP = 184
@@ -43,7 +47,9 @@ object About_frm: TAboutForm
   object Label1: TLABEL
     ALIGNMENT = tacenter
     CAPTION = 'Version #:'
+    FONT.CHARSET = 1
     FONT.COLOR = -2147483640
+    FONT.NAME = 'default'
     LEFT = 14
     HEIGHT = 17
     TOP = 6
