@@ -1663,10 +1663,9 @@ var
         and (
              (
               (csDesigning in ComponentState)
-              and
-              (Visible
-               and  // VCL bug, VCL has here an 'or'
-               not (csNoDesignVisible in ControlStyle))
+               and not (csNoDesignVisible in ControlStyle)
+               // Here was a VCL bug: VCL checks if control is Visible,
+               // which should be ignored at designtime
              )
              or
              (
@@ -3659,6 +3658,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.242  2004/06/28 18:54:27  mattias
+  further fixed GetControlAtPos
+
   Revision 1.241  2004/06/28 18:47:30  mattias
   further fixed GetControlAtPos
 
