@@ -41,6 +41,8 @@ type
     FCursorBeyondEOL: boolean;
 
     // CodeCreation
+    FAddInheritedCodeToOverrideMethod: boolean;
+    FCompleteProperties: boolean;
     FLineLength: integer;
     FClassPartInsertPolicy: TClassPartInsertPolicy;
     FMethodInsertPolicy: TMethodInsertPolicy;
@@ -79,6 +81,10 @@ type
       read FCursorBeyondEOL write FCursorBeyondEOL;
     
     // CodeCreation
+    property CompleteProperties: boolean
+      read FCompleteProperties write FCompleteProperties;
+    property AddInheritedCodeToOverrideMethod: boolean
+      read FAddInheritedCodeToOverrideMethod write FAddInheritedCodeToOverrideMethod;
     property LineLength: integer read FLineLength write FLineLength;
     property ClassPartInsertPolicy: TClassPartInsertPolicy
       read FClassPartInsertPolicy write FClassPartInsertPolicy;
@@ -124,7 +130,8 @@ type
     MethodInsertPolicyRadioGroup: TRadioGroup;
     KeyWordPolicyRadioGroup: TRadioGroup;
     IdentifierPolicyRadioGroup: TRadioGroup;
-    PropertyPrePostfixesGroupBox: TGroupBox;
+    PropertyCompletionGroupBox: TGroupBox;
+    PropertyCompletionCheckBox: TCheckBox;
     PropertyReadIdentPrefixLabel: TLabel;
     PropertyReadIdentPrefixEdit: TEdit;
     PropertyWriteIdentPrefixLabel: TLabel;
@@ -149,9 +156,6 @@ type
     DoInsertSpaceAfterGroupBox: TGroupBox;
     SpacePreviewGroupBox: TGroupBox;
     SpacePreviewSynEdit: TSynEdit;
-
-    // Defines
-    // ToDo
 
     // buttons at bottom
     OkButton: TButton;
@@ -309,6 +313,10 @@ begin
       'CodeToolsOptions/CursorBeyondEOL/Value',true);
     
     // CodeCreation
+    FAddInheritedCodeToOverrideMethod:=XMLConfig.GetValue(
+      'CodeToolsOptions/AddInheritedCodeToOverrideMethod/Value',true);
+    FCompleteProperties:=XMLConfig.GetValue(
+      'CodeToolsOptions/CompleteProperties/Value',true);
     FLineLength:=XMLConfig.GetValue(
       'CodeToolsOptions/LineLengthXMLConfig/Value',80);
     FClassPartInsertPolicy:=ClassPartPolicyNameToPolicy(XMLConfig.GetValue(
@@ -368,6 +376,11 @@ begin
       FCursorBeyondEOL);
 
     // CodeCreation
+    XMLConfig.SetValue(
+      'CodeToolsOptions/AddInheritedCodeToOverrideMethod/Value',
+      AddInheritedCodeToOverrideMethod);
+    XMLConfig.SetValue(
+      'CodeToolsOptions/CompleteProperties/Value',CompleteProperties);
     XMLConfig.SetValue(
       'CodeToolsOptions/LineLengthXMLConfig/Value',FLineLength);
     XMLConfig.SetValue('CodeToolsOptions/ClassPartInsertPolicy/Value',
@@ -431,6 +444,8 @@ begin
     FAdjustTopLineDueToComment:=CodeToolsOpts.FAdjustTopLineDueToComment;
     FJumpCentered:=CodeToolsOpts.FJumpCentered;
     FCursorBeyondEOL:=CodeToolsOpts.FCursorBeyondEOL;
+    FAddInheritedCodeToOverrideMethod:=CodeToolsOpts.AddInheritedCodeToOverrideMethod;
+    FCompleteProperties:=CodeToolsOpts.CompleteProperties;
 
     // CodeCreation
     FLineLength:=CodeToolsOpts.FLineLength;
@@ -462,6 +477,8 @@ begin
   FCursorBeyondEOL:=true;
 
   // CodeCreation
+  FAddInheritedCodeToOverrideMethod:=true;
+  FCompleteProperties:=true;
   FLineLength:=80;
   FClassPartInsertPolicy:=cpipLast;
   FMethodInsertPolicy:=mipClassOrder;
@@ -486,6 +503,8 @@ begin
     and (FAdjustTopLineDueToComment=CodeToolsOpts.FAdjustTopLineDueToComment)
     and (FJumpCentered=CodeToolsOpts.FJumpCentered)
     and (FCursorBeyondEOL=CodeToolsOpts.FCursorBeyondEOL)
+    and (AddInheritedCodeToOverrideMethod=CodeToolsOpts.AddInheritedCodeToOverrideMethod)
+    and (CompleteProperties=CodeToolsOpts.CompleteProperties)
 
     // CodeCreation
     and (FLineLength=CodeToolsOpts.FLineLength)
@@ -519,6 +538,8 @@ begin
   Boss.AdjustTopLineDueToComment:=AdjustTopLineDueToComment;
   Boss.JumpCentered:=JumpCentered;
   Boss.CursorBeyondEOL:=CursorBeyondEOL;
+  Boss.AddInheritedCodeToOverrideMethod:=AddInheritedCodeToOverrideMethod;
+  Boss.CompleteProperties:=CompleteProperties;
 
   // CreateCode - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   with Boss.SourceChangeCache do begin
@@ -743,22 +764,33 @@ begin
     Visible:=true;
   end;
   
-  PropertyPrePostfixesGroupBox:=TGroupBox.Create(Self);
-  with PropertyPrePostfixesGroupBox do begin
-    Name:='PropertyPrePostfixesGroupBox';
+  PropertyCompletionGroupBox:=TGroupBox.Create(Self);
+  with PropertyCompletionGroupBox do begin
+    Name:='PropertyCompletionGroupBox';
     Parent:=NoteBook.Page[1];
     SetBounds(KeyWordPolicyRadioGroup.Left,
       KeyWordPolicyRadioGroup.Top+KeyWordPolicyRadioGroup.Height+7,
-      Self.ClientWidth-20,100);
-    Caption:='Property completion identifiers';
+      Self.ClientWidth-20,125);
+    Caption:='Property completion';
+    Visible:=true;
+  end;
+
+  PropertyCompletionCheckBox:=TCheckBox.Create(Self);
+  with PropertyCompletionCheckBox do begin
+    Name:='PropertyCompletionCheckBox';
+    Parent:=PropertyCompletionGroupBox;
+    SetBounds(6,5,200,Height);
+    Caption:='Complete properties';
     Visible:=true;
   end;
 
   PropertyReadIdentPrefixLabel:=TLabel.Create(Self);
   with PropertyReadIdentPrefixLabel do begin
     Name:='PropertyReadIdentPrefixLabel';
-    Parent:=PropertyPrePostfixesGroupBox;
-    SetBounds(6,5,100,Height);
+    Parent:=PropertyCompletionGroupBox;
+    SetBounds(PropertyCompletionCheckBox.Left,
+      PropertyCompletionCheckBox.Top+PropertyCompletionCheckBox.Height+5,
+      100,Height);
     Caption:='Read prefix';
     Visible:=true;
   end;
@@ -766,7 +798,7 @@ begin
   PropertyReadIdentPrefixEdit:=TEdit.Create(Self);
   with PropertyReadIdentPrefixEdit do begin
     Name:='PropertyReadIdentPrefixEdit';
-    Parent:=PropertyPrePostfixesGroupBox;
+    Parent:=PropertyCompletionGroupBox;
     SetBounds(110,PropertyReadIdentPrefixLabel.Top,80,Height);
     Visible:=true;
   end;
@@ -774,7 +806,7 @@ begin
   PropertyWriteIdentPrefixLabel:=TLabel.Create(Self);
   with PropertyWriteIdentPrefixLabel do begin
     Name:='PropertyWriteIdentPrefixLabel';
-    Parent:=PropertyPrePostfixesGroupBox;
+    Parent:=PropertyCompletionGroupBox;
     SetBounds(6,PropertyReadIdentPrefixLabel.Top
       +PropertyReadIdentPrefixLabel.Height+5,
       PropertyReadIdentPrefixLabel.Width,Height);
@@ -785,7 +817,7 @@ begin
   PropertyWriteIdentPrefixEdit:=TEdit.Create(Self);
   with PropertyWriteIdentPrefixEdit do begin
     Name:='PropertyWriteIdentPrefixEdit';
-    Parent:=PropertyPrePostfixesGroupBox;
+    Parent:=PropertyCompletionGroupBox;
     SetBounds(PropertyReadIdentPrefixEdit.Left,
       PropertyWriteIdentPrefixLabel.Top,80,Height);
     Visible:=true;
@@ -794,7 +826,7 @@ begin
   PropertyStoredIdentPostfixLabel:=TLabel.Create(Self);
   with PropertyStoredIdentPostfixLabel do begin
     Name:='PropertyStoredIdentPostfixLabel';
-    Parent:=PropertyPrePostfixesGroupBox;
+    Parent:=PropertyCompletionGroupBox;
     SetBounds(6,PropertyWriteIdentPrefixLabel.Top
       +PropertyWriteIdentPrefixLabel.Height+5,
       PropertyReadIdentPrefixLabel.Width,Height);
@@ -805,7 +837,7 @@ begin
   PropertyStoredIdentPostfixEdit:=TEdit.Create(Self);
   with PropertyStoredIdentPostfixEdit do begin
     Name:='PropertyStoredIdentPostfixEdit';
-    Parent:=PropertyPrePostfixesGroupBox;
+    Parent:=PropertyCompletionGroupBox;
     SetBounds(PropertyReadIdentPrefixEdit.Left,
       PropertyStoredIdentPostfixLabel.Top,80,Height);
     Visible:=true;
@@ -814,8 +846,8 @@ begin
   PrivatVariablePrefixLabel:=TLabel.Create(Self);
   with PrivatVariablePrefixLabel do begin
     Name:='PrivatVariablePrefixLabel';
-    Parent:=PropertyPrePostfixesGroupBox;
-    SetBounds((PropertyPrePostfixesGroupBox.ClientWidth-20) div 2,
+    Parent:=PropertyCompletionGroupBox;
+    SetBounds((PropertyCompletionGroupBox.ClientWidth-20) div 2,
       PropertyReadIdentPrefixLabel.Top,120,Height);
     Caption:='Variable prefix';
     Visible:=true;
@@ -824,7 +856,7 @@ begin
   PrivatVariablePrefixEdit:=TEdit.Create(Self);
   with PrivatVariablePrefixEdit do begin
     Name:='PrivatVariablePrefixEdit';
-    Parent:=PropertyPrePostfixesGroupBox;
+    Parent:=PropertyCompletionGroupBox;
     SetBounds(PrivatVariablePrefixLabel.Left+150,PrivatVariablePrefixLabel.Top,
       80,Height);
     Visible:=true;
@@ -833,7 +865,7 @@ begin
   SetPropertyVariablenameLabel:=TLabel.Create(Self);
   with SetPropertyVariablenameLabel do begin
     Name:='SetPropertyVariablenameLabel';
-    Parent:=PropertyPrePostfixesGroupBox;
+    Parent:=PropertyCompletionGroupBox;
     SetBounds(PrivatVariablePrefixLabel.Left,
       PrivatVariablePrefixLabel.Top+PrivatVariablePrefixLabel.Height+5,
       120,Height);
@@ -844,7 +876,7 @@ begin
   SetPropertyVariablenameEdit:=TEdit.Create(Self);
   with SetPropertyVariablenameEdit do begin
     Name:='SetPropertyVariablenameEdit';
-    Parent:=PropertyPrePostfixesGroupBox;
+    Parent:=PropertyCompletionGroupBox;
     SetBounds(PrivatVariablePrefixEdit.Left,
       PrivatVariablePrefixLabel.Top+PrivatVariablePrefixLabel.Height+5,
       80,Height);
@@ -1087,6 +1119,7 @@ begin
   SetAtomCheckBoxes(Options.DoNotSplitLineAfter,DoNotSplitLineAfterGroupBox);
   SetAtomCheckBoxes(Options.DoInsertSpaceInFront,DoInsertSpaceInFrontGroupBox);
   SetAtomCheckBoxes(Options.DoInsertSpaceAfter,DoInsertSpaceAfterGroupBox);
+  PropertyCompletionCheckBox.Checked:=Options.CompleteProperties;
   PropertyReadIdentPrefixEdit.Text:=Options.PropertyReadIdentPrefix;
   PropertyWriteIdentPrefixEdit.Text:=Options.PropertyWriteIdentPrefix;
   PropertyStoredIdentPostfixEdit.Text:=Options.PropertyStoredIdentPostfix;
@@ -1131,6 +1164,7 @@ begin
   Options.DoNotSplitLineAfter:=ReadAtomCheckBoxes(DoNotSplitLineAfterGroupBox);
   Options.DoInsertSpaceInFront:=ReadAtomCheckBoxes(DoInsertSpaceInFrontGroupBox);
   Options.DoInsertSpaceAfter:=ReadAtomCheckBoxes(DoInsertSpaceAfterGroupBox);
+  Options.CompleteProperties:=PropertyCompletionCheckBox.Checked;
   Options.PropertyReadIdentPrefix:=
     ReadIdentifier(PropertyReadIdentPrefixEdit.Text,'Get');
   Options.PropertyWriteIdentPrefix:=

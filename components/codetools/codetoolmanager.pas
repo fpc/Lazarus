@@ -53,9 +53,11 @@ type
 
   TCodeToolManager = class
   private
+    FAddInheritedCodeToOverrideMethod: boolean;
     FAdjustTopLineDueToComment: boolean;
     FCatchExceptions: boolean;
     FCheckFilesOnDisk: boolean;
+    FCompleteProperties: boolean;
     FCurCodeTool: TCodeCompletionCodeTool; // current codetool
     FCursorBeyondEOL: boolean;
     FErrorCode: TCodeBuffer;
@@ -83,7 +85,9 @@ type
     function FindCodeToolForSource(Code: TCodeBuffer): TCustomCodeTool;
     function GetCodeToolForSource(Code: TCodeBuffer;
       ExceptionOnError: boolean): TCustomCodeTool;
+    procedure SetAddInheritedCodeToOverrideMethod(const AValue: boolean);
     procedure SetCheckFilesOnDisk(NewValue: boolean);
+    procedure SetCompleteProperties(const AValue: boolean);
     procedure SetIndentSize(NewValue: integer);
     procedure SetVisibleEditorLines(NewValue: integer);
     procedure SetJumpCentered(NewValue: boolean);
@@ -140,6 +144,10 @@ type
       read FSetPropertyVariablename write FSetPropertyVariablename;
     property VisibleEditorLines: integer
           read FVisibleEditorLines write SetVisibleEditorLines;
+    property CompleteProperties: boolean
+      read FCompleteProperties write SetCompleteProperties;
+    property AddInheritedCodeToOverrideMethod: boolean
+      read FAddInheritedCodeToOverrideMethod write SetAddInheritedCodeToOverrideMethod;
 
     // source changing
     procedure BeginUpdate;
@@ -300,8 +308,10 @@ begin
   SourceChangeCache.OnBeforeApplyChanges:=@BeforeApplyingChanges;
   SourceChangeCache.OnAfterApplyChanges:=@AfterApplyingChanges;
   GlobalValues:=TExpressionEvaluator.Create;
+  FAddInheritedCodeToOverrideMethod:=true;
   FAdjustTopLineDueToComment:=true;
   FCatchExceptions:=true;
+  FCompleteProperties:=true;
   FCursorBeyondEOL:=true;
   FIndentSize:=2;
   FJumpCentered:=true;
@@ -1278,6 +1288,14 @@ begin
     FCurCodeTool.CheckFilesOnDisk:=NewValue;
 end;
 
+procedure TCodeToolManager.SetCompleteProperties(const AValue: boolean);
+begin
+  if CompleteProperties=AValue then exit;
+  FCompleteProperties:=AValue;
+  if FCurCodeTool<>nil then
+    FCurCodeTool.CompleteProperties:=AValue;
+end;
+
 procedure TCodeToolManager.SetIndentSize(NewValue: integer);
 begin
   if NewValue=FIndentSize then exit;
@@ -1374,8 +1392,11 @@ begin
     Result.Scanner:=Code.Scanner;
     FSourceTools.Add(Result);
   end;
-  TCodeCompletionCodeTool(Result).AdjustTopLineDueToComment:=
-    FAdjustTopLineDueToComment;
+  with TCodeCompletionCodeTool(Result) do begin
+    AdjustTopLineDueToComment:=Self.AdjustTopLineDueToComment;
+    AddInheritedCodeToOverrideMethod:=Self.AddInheritedCodeToOverrideMethod;
+    CompleteProperties:=Self.CompleteProperties;
+  end;
   Result.CheckFilesOnDisk:=FCheckFilesOnDisk;
   Result.IndentSize:=FIndentSize;
   Result.VisibleEditorLines:=FVisibleEditorLines;
@@ -1384,6 +1405,15 @@ begin
   TFindDeclarationTool(Result).OnGetCodeToolForBuffer:=@OnGetCodeToolForBuffer;
   Result.OnSetGlobalWriteLock:=@OnToolSetWriteLock;
   Result.OnGetGlobalWriteLockInfo:=@OnToolGetWriteLockInfo;
+end;
+
+procedure TCodeToolManager.SetAddInheritedCodeToOverrideMethod(
+  const AValue: boolean);
+begin
+  if FAddInheritedCodeToOverrideMethod=AValue then exit;
+  FAddInheritedCodeToOverrideMethod:=AValue;
+  if FCurCodeTool<>nil then
+    FCurCodeTool.AddInheritedCodeToOverrideMethod:=AValue;
 end;
 
 function TCodeToolManager.OnGetCodeToolForBuffer(Sender: TObject;

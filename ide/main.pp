@@ -1838,15 +1838,18 @@ Procedure TMainIDE.OnSrcNotebookProcessCommand(Sender: TObject;
 begin
   Handled:=true;
   case Command of
-    ecBuild, 
-    ecBuildAll:    DoBuildProject(Command=ecBuildAll);
+   ecSaveAll:
+     DoSaveAll;
+  
+   ecBuild,
+   ecBuildAll:    DoBuildProject(Command=ecBuildAll);
     
-    ecRun:         DoRunProject;
-    ecPause:       DoPauseProject;
-    ecStepInto:    DoStepIntoProject;
-    ecStepOver:    DoStepOverProject;
-    ecRunToCursor: DoRunToCursor;
-    ecStopProgram: DoStopProject;
+   ecRun:         DoRunProject;
+   ecPause:       DoPauseProject;
+   ecStepInto:    DoStepIntoProject;
+   ecStepOver:    DoStepOverProject;
+   ecRunToCursor: DoRunToCursor;
+   ecStopProgram: DoStopProject;
     
    ecFindProcedureDefinition,ecFindProcedureMethod:
      DoJumpToProcedureSection;
@@ -6285,6 +6288,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.246  2002/03/18 12:29:53  lazarus
+  MG: added complete properties checkbox and ecSaveAll
+
   Revision 1.245  2002/03/14 14:39:39  lazarus
   MG: implemented run parameters: wd, launching app, sys vars
 
