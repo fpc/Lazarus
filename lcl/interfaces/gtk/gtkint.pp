@@ -163,7 +163,7 @@ type
     constructor Create; 
     destructor Destroy; override;
     function  GetText(Sender: TControl; var Text: String): Boolean; override;
-    procedure SetLabel(Sender : TObject; Data : Pointer);
+    procedure SetLabel(Sender : TObject; Data : Pointer); virtual;
     function  IntSendMessage3(LM_Message : Integer; Sender : TObject;
                               data : pointer) : integer; override;
     procedure HandleEvents; override;
@@ -257,6 +257,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.87  2002/10/14 14:29:50  lazarus
+  AJ: Improvements to TUpDown; Added TStaticText & GNOME DrawText
+
   Revision 1.86  2002/10/10 19:43:16  lazarus
   MG: accelerated GetTextMetrics
 
