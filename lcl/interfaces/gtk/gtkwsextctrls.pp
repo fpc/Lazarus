@@ -29,7 +29,7 @@ interface
 uses
   LCLProc, Controls,
 {$IFDEF GTK2}
-  gtk2, gdk2, gdk2PixBuf, glib2;
+  gtk2, gdk2, gdk2PixBuf, glib2,
 {$ELSE GTK2}
   gtk, gdk,
 {$ENDIF GTK2}
