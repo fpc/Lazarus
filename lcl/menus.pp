@@ -309,17 +309,6 @@ procedure Register;
 implementation
 
 
-{ Menu command managment }
-
-{var
-  CommandPool: TBits;
-
-function UniqueCommand: Word;
-begin
-  Result := CommandPool.OpenBit;
-  CommandPool[Result] := True;
-end;
-}
 function ShortCutToText(ShortCut: TShortCut): string;
 begin
   Result:=ShortCutToShortCutText(ShortCut);
@@ -374,6 +363,9 @@ end.
 
 {
   $Log$
+  Revision 1.47  2003/06/24 15:23:10  mattias
+  deleted unused code
+
   Revision 1.46  2003/06/23 12:33:55  mattias
   implemented TPairSplitter streaming
 

@@ -33,6 +33,11 @@
        so options specified here could be overridden by hardcoded
        options in the unit source file.}
 
+{$IFDEF FPC}
+{$DEFINE IP_LAZARUS}
+{$ENDIF}
+
+
 {$IFDEF IP_LAZARUS}
 
 {$MODE DELPHI}{$H+}

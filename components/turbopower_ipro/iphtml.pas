@@ -2865,6 +2865,10 @@ function MinI2(const I1, I2: Integer) : Integer;
 function CalcMultiLength(const List: TIpHtmlMultiLengthList;
   Avail: Integer; var Sections: Integer): TIntArr;                     {!!.10}
 
+{$IFDEF IP_LAZARUS}
+procedure Register;
+{$ENDIF}
+
 implementation
 
 uses
@@ -2911,6 +2915,13 @@ var
   ScaleBitmaps : Boolean = False;                                      {!!.02}
   BWPrinter: Boolean;                                                  {!!.10}
   Aspect : double;                                                     {!!.02}
+
+{$IFDEF IP_LAZARUS}
+procedure Register;
+begin
+  RegisterComponents('IPro', [TIpHtmlPanel]);
+end;
+{$ENDIF}
 
 {!!.14 new}
 {$IFNDEF VERSION3ONLY}
@@ -17558,6 +17569,9 @@ initialization
   InitScrollProcs;
 {
   $Log$
+  Revision 1.8  2003/06/24 15:23:10  mattias
+  deleted unused code
+
   Revision 1.7  2003/03/31 20:25:18  mattias
   fixed scrollbars of TIpHtmlPanel
 
