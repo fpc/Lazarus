@@ -901,20 +901,23 @@ writeln('[TgtkObject.IntSendMessage3] LM_SETFOCUS ',TObject(Sender).ClassName);
         case (Sender as TControl).fCompStyle of
            csListBox: 
              begin
-                if TListBox(Sender).MultiSelect then 
+               if Handle<>0 then begin
+                 if TListBox(Sender).MultiSelect then 
                    Widget:= PGtkList(
                       GetCoreChildWidget(PGtkWidget(Handle)))^.last_focus_child
-                else begin
+                 else begin
                    GList:= PGtkList(
                       GetCoreChildWidget(PGtkWidget(Handle)))^.selection;
                    if GList = nil 
                       then Widget:= nil
                       else Widget:= PGtkWidget(GList^.data);
-                end;  
-                if Widget = nil 
+                 end;  
+                 if Widget = nil 
                    then Result:= -1
                    else Result:= gtk_list_child_position(
                      PGtkList(GetCoreChildWidget(PGtkWidget(Handle))), Widget);
+                end else
+                  Result:=-1;
              end;
            csCListBox:
              begin
@@ -3115,6 +3118,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.67  2001/11/09 14:33:41  lazarus
+  MG: fixed GetItemIndex-Handle-NotAllocated-Crash bug
+
   Revision 1.66  2001/11/05 18:18:19  lazarus
   added popupmenu+arrows to notebooks, added target filename
 
