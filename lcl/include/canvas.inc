@@ -190,11 +190,11 @@ end;
   Returns:  Nothing
 
  ------------------------------------------------------------------------------}
-procedure TCanvas.SetAutoReDraw(Value : Boolean);
+procedure TCanvas.SetAutoRedraw(Value : Boolean);
 begin
   FAutoRedraw := Value;
-  If FAutoReDraw then
-    SendIntfMessage(LM_ReDraw, Self, nil);
+  If FAutoRedraw then
+    SendIntfMessage(LM_REDRAW, Self, nil);
 end;
 
 {------------------------------------------------------------------------------
@@ -1244,6 +1244,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.77  2004/09/13 15:33:07  micha
+  rename AutoReDraw to AutoRedraw, as "Re" is not a word
+
   Revision 1.76  2004/09/12 13:11:50  micha
   convert LM_GETPIXEL and LM_SETPIXEL to interface methods (of twidgetset, DCGetPixel and DCSetPixel)
 

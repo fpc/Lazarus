@@ -792,7 +792,7 @@ type
 
   TCanvas = class(TPersistent)
   private
-    FAutoReDraw: Boolean;
+    FAutoRedraw: Boolean;
     FState: TCanvasState;
     FFont: TFont;
     FSavedFontHandle: HFont;
@@ -821,7 +821,7 @@ type
     function GetHandle: HDC;
     Function GetPenPos: TPoint;
     Function GetPixel(X,Y: Integer): TColor;
-    Procedure SetAutoReDraw(Value: Boolean);
+    Procedure SetAutoRedraw(Value: Boolean);
     Procedure SetColor(c: TColor);
     Procedure SetBrush(value: TBrush);
     Procedure SetFont(value: TFont);
@@ -915,7 +915,7 @@ type
     property TextStyle: TTextStyle read FTextStyle write FTextStyle;
     property LockCount:Integer read FLockCount;
   published
-    property AutoRedraw: Boolean read FAutoReDraw write SetAutoReDraw;
+    property AutoRedraw: Boolean read FAutoRedraw write SetAutoRedraw;
     property Brush: TBrush read FBrush write SetBrush;
     property CopyMode: TCopyMode read FCopyMode write FCopyMode default cmSrcCopy;
     property Font: TFont read FFont write SetFont;
@@ -1747,6 +1747,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.148  2004/09/13 15:33:07  micha
+  rename AutoReDraw to AutoRedraw, as "Re" is not a word
+
   Revision 1.147  2004/09/12 13:11:50  micha
   convert LM_GETPIXEL and LM_SETPIXEL to interface methods (of twidgetset, DCGetPixel and DCSetPixel)
 
