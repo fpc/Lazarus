@@ -74,20 +74,17 @@ begin
       // Draw outline
       SelectGDKPenProps(DC);
 
-      If not IsValidGDIObject(hPen(CurrentPen)) then
-        exit;//cowardly refuse to continue
+      If (dcfPenSelected in DCFlags) then begin
+        Result := True;
+        if (CurrentPen^.IsNullPen) then exit;
 
-      If CurrentPen^.IsNullPen then begin
-        Result := True;//not an error
-        Exit;//Skip out.
-      end;
-
-      DCOrigin:=GetDCOffset(TDeviceContext(DC));
-      inc(X,DCOrigin.X);
-      inc(Y,DCOrigin.Y);
-      gdk_draw_arc(Drawable, GC, 0, X, Y, Width, Height,
-                   Angle1 shl 2, Angle2 shl 2);
-      Result := True;
+        DCOrigin:=GetDCOffset(TDeviceContext(DC));
+        inc(X,DCOrigin.X);
+        inc(Y,DCOrigin.Y);
+        gdk_draw_arc(Drawable, GC, 0, X, Y, Width, Height,
+                     Angle1 shl 2, Angle2 shl 2);
+      end else
+        Result:=false;
     end;
   end;
 end;
@@ -2347,7 +2344,8 @@ end;
   Returns: If the string was drawn, or CalcRect run
 
  ------------------------------------------------------------------------------}
-function TgtkObject.DrawText(DC : hDC; Str: PChar; Count : Integer; var Rect: TRect; Flags : Cardinal): Integer;
+function TgtkObject.DrawText(DC : hDC; Str: PChar; Count : Integer;
+  var Rect: TRect; Flags : Cardinal): Integer;
 begin
   Assert(False, Format('trace:> [TgtkObject.DrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
     [DC, Str, Count, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, Flags]));
@@ -2461,21 +2459,17 @@ begin
       DCOrigin:=GetDCOffset(TDeviceContext(DC));
       gdk_draw_arc(Drawable, GC, 1, x+DCOrigin.X, y+DCOrigin.Y, Width, Height,
                    0, 360 shl 6);
-      // Draw outline
 
+      // Draw outline
       SelectGDKPenProps(DC);
 
-      If not IsValidGDIObject(hPen(CurrentPen)) then
-        exit;//cowardly refuse to continue
-
-      If CurrentPen^.IsNullPen then begin
-        Result := True;//not an error
-        Exit;//Skip out.
-      end;
-
-      gdk_draw_arc(Drawable, GC, 0, x+DCOrigin.X, y+DCOrigin.Y, Width, Height,
-                   0, 360 shl 6);
-      Result := True;
+      If (dcfPenSelected in DCFlags) then begin
+        Result := True;
+        if (CurrentPen^.IsNullPen) then exit;
+        gdk_draw_arc(Drawable, GC, 0, x+DCOrigin.X, y+DCOrigin.Y, Width, Height,
+                     0, 360 shl 6);
+      end else
+        Result := False;
     end;
   end;
 end;
@@ -4537,21 +4531,18 @@ begin
   then with TDeviceContext(DC) do
   begin
     if GC <> nil then begin
-      DCOrigin:=GetDCOffset(TDeviceContext(DC));
       SelectGDKPenProps(DC);
 
-      If not IsValidGDIObject(hPen(CurrentPen)) then
-        exit;//cowardly refuse to continue
+      If (dcfPenSelected in DCFlags) then begin
+        Result := True;
+        if (CurrentPen^.IsNullPen) then exit;
 
-      If CurrentPen^.IsNullPen then begin
-        Result := True;//not an error
-        Exit;//Skip out.
-      end;
-
-      gdk_draw_line(Drawable, GC, PenPos.X+DCOrigin.X, PenPos.Y+DCOrigin.Y,
-                    X+DCOrigin.X, Y+DCOrigin.Y);
-      PenPos:= Point(X, Y);
-      Result := True;
+        DCOrigin:=GetDCOffset(TDeviceContext(DC));
+        gdk_draw_line(Drawable, GC, PenPos.X+DCOrigin.X, PenPos.Y+DCOrigin.Y,
+                      X+DCOrigin.X, Y+DCOrigin.Y);
+        PenPos:= Point(X, Y);
+      end else
+        Result := False;
     end else begin
       WriteLn('WARNING: [TgtkObject.LineTo] Uninitialized GC');
       Result := False;
@@ -4911,18 +4902,13 @@ begin
 
       SelectGDKPenProps(DC);
 
-      If not IsValidGDIObject(hPen(CurrentPen)) then begin
-        FreeMem(PointArray); //don't forget too free
-        exit;//cowardly refuse to continue
-      end;
-
-      If CurrentPen^.IsNullPen then begin
-        Result := True;//not an error
-        FreeMem(PointArray); //don't forget too free
-        Exit;//Skip out.
-      end;
-
-      gdk_draw_polygon(Drawable, GC, 0, PointArray, NumPts);
+      If (dcfPenSelected in DCFlags) then begin
+        Result := True;
+        if (not CurrentPen^.IsNullPen) then begin
+          gdk_draw_polygon(Drawable, GC, 0, PointArray, NumPts);
+        end;
+      end else
+        Result:=false;
 
       FreeMem(PointArray);
 
@@ -4957,21 +4943,14 @@ begin
       // draw outline
       SelectGDKPenProps(DC);
 
-      If not IsValidGDIObject(hPen(CurrentPen)) then begin
-        FreeMem(PointArray); //don't forget too free
-        exit;//cowardly refuse to continue
-      end;
-
-      If CurrentPen^.IsNullPen then begin
-        Result := True;//not an error
-        FreeMem(PointArray); //don't forget too free
-        Exit;//Skip out.
-      end;
-
-      gdk_draw_lines(Drawable, GC, PointArray, NumPts);
+      If (dcfPenSelected in DCFlags) then begin
+        Result := True;
+        if (not CurrentPen^.IsNullPen) then
+          gdk_draw_lines(Drawable, GC, PointArray, NumPts);
+      end else
+        Result:=false;
+        
       FreeMem(PointArray);
-      
-      Result := True;
     end;
   end;
 end;
@@ -5226,17 +5205,14 @@ begin
       // Draw outline
       SelectGDKPenProps(DC);
 
-      If not IsValidGDIObject(hPen(CurrentPen)) then
-        exit;//cowardly refuse to continue
-
-      If CurrentPen^.IsNullPen then begin
-        Result := True;//not an error
-        Exit;//Skip out.
-      end;
-
-      gdk_draw_rectangle(Drawable, GC, 0, Left+DCOrigin.X, Top+DCOrigin.Y,
-                         Width, Height);
-      Result := True;
+      If (dcfPenSelected in DCFlags) then begin
+        Result := True;
+        if (not CurrentPen^.IsNullPen) then
+          gdk_draw_rectangle(Drawable, GC, 0, Left+DCOrigin.X, Top+DCOrigin.Y,
+                             Width, Height);
+      end else
+        Result:=false;
+        
     end;
   end;
   Assert(False, Format('trace:< [TgtkObject.Rectangle] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d', [DC, X1, Y1, X2, Y2]));
@@ -5316,8 +5292,11 @@ begin
         then aDC.CurrentBitmap := nil;
         if pSavedDC.CurrentFont = aDC.CurrentFont
         then aDC.CurrentFont := nil;
-        if pSavedDC.CurrentPen = aDC.CurrentPen
-        then aDC.CurrentPen := nil;
+        if (pSavedDC.CurrentPen = aDC.CurrentPen)
+        and (aDC.CurrentPen<>nil) then begin
+          aDC.CurrentPen := nil;
+          aDC.DCFlags:=aDC.DCFlags-[dcfPenSelected,dcfPenInvalid];
+        end;
         if pSavedDC.CurrentBrush = aDC.CurrentBrush
         then aDC.CurrentBrush := nil;
         {if pSavedDC.CurrentPalette = aDC.CurrentPalette
@@ -5408,8 +5387,11 @@ begin
     then pSavedDC.CurrentBitmap := nil;
     if pSavedDC.CurrentFont = aDC.CurrentFont
     then pSavedDC.CurrentFont := nil;
-    if pSavedDC.CurrentPen = aDC.CurrentPen
-    then pSavedDC.CurrentPen := nil;
+    if (pSavedDC.CurrentPen = aDC.CurrentPen)
+    and (pSavedDC.CurrentPen<>nil) then begin
+      pSavedDC.CurrentPen := nil;
+      pSavedDC.DCFlags:=pSavedDC.DCFlags-[dcfPenInvalid,dcfPenSelected];
+    end;
     if pSavedDC.CurrentBrush = aDC.CurrentBrush
     then pSavedDC.CurrentBrush := nil;
     if pSavedDC.CurrentBrush = aDC.CurrentBrush
@@ -5686,6 +5668,7 @@ begin
         begin
           Result := HPEN(CurrentPen);
           CurrentPen := PGDIObject(GDIObj);
+          DCFlags:=DCFlags-[dcfPenSelected,dcfPenInvalid];
           if GC <> nil then SelectGDKPenProps(DC);
         end;
       gdiRegion:
@@ -7227,6 +7210,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.145  2002/10/07 20:50:59  lazarus
+  MG: accelerated SelectGDKPenProps
+
   Revision 1.144  2002/10/07 10:55:18  lazarus
   MG: accelerated TDynHashArray
 
