@@ -47,10 +47,14 @@ interface
 {off $Define Disable_GC_SysColors}
 
 uses
-  InterfaceBase, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf} gtk, gdk,
-  glib, SysUtils, LMessages, Classes, Controls, Forms, VclGlobals, 
-  LCLLinux, LCLType, gtkDef, DynHashArray, LazQueue, GraphType, 
-  GraphMath;
+  InterfaceBase,
+  {$IFDEF gtk2}
+  glib2, gdk2pixbuf, gdk2, gtk2,
+  {$ELSE}
+  glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf}
+  {$ENDIF}
+  SysUtils, LMessages, Classes, Controls, Forms, VclGlobals,
+  LCLLinux, LCLType, gtkDef, DynHashArray, LazQueue, GraphType, GraphMath;
 
 
 type
@@ -306,6 +310,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.112  2002/12/15 11:52:28  mattias
+  started gtk2 interface
+
   Revision 1.111  2002/02/09 01:48:23  mattias
   renamed TinterfaceObject.Init to AppInit and TWinControls can now contain childs in gtk
 
