@@ -90,13 +90,12 @@ begin
  Result:= False;
  if Dir <> '' then
  begin
+   FCurrentDir:= Dir;
+   FileCtrl.AppendPathDelim(FCurrentDir);
    i:= length(Dir);
-   if Dir[i] = PathDelim then
-     FCurrentDir:= Dir + FindMask
-   else
-     FCurrentDir:= Dir + PathDelim + FindMask;
+   FCurrentDir:= Dir + FindMask;
    Try
-     if SysUtils.FindFirst(FCurrentDir, faAnyFile,FileInfo)=0 then
+     if SysUtils.FindFirst(FCurrentDir, (faAnyFile),FileInfo)=0 then
      begin
        repeat
          // check if special file
@@ -127,11 +126,10 @@ var
 begin
   if Dir <> '' then
   begin
-    i:= length(Dir);
-    if Dir[i] = PathDelim then
-      FCurrentDir:= Dir + FindMask
-    else
-      FCurrentDir:= Dir + PathDelim + FindMask;
+    FCurrentDir:= Dir;
+    FileCtrl.AppendPathDelim(FCurrentDir);
+    i:= length(FCurrentDir);
+    FCurrentDir:= Dir + FindMask;
     Try
       if SysUtils.FindFirst(FCurrentDir, faAnyFile,FileInfo)=0 then
       begin
