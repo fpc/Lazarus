@@ -4374,49 +4374,52 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.GetValue (Sender : TObject; data : pointer) : integer;
 var
-   Handle    : Pointer;
-   Year,Month,Day : Integer;  //used for csCalendar
+  Handle    : Pointer;
+  Year,Month,Day : Integer;  //used for csCalendar
 begin
-   Result := 0;     // default if nobody sets it
+  Result := 0;     // default if nobody sets it
 
-   if Sender is TWinControl 
-     then Assert(False, Format('Trace:  [TgtkObject.GetValue] %s', [Sender.ClassName]))
-     else Assert(False, Format('Trace:WARNING: [TgtkObject.GetValue] %s --> No Decendant of TWinControl', [Sender.ClassName]));
+  if Sender is TWinControl then
+    Assert(False, Format('Trace:  [TgtkObject.GetValue] %s', [Sender.ClassName]))
+  else
+    Assert(False, Format('Trace:WARNING: [TgtkObject.GetValue] %s --> No Decendant of TWinControl', [Sender.ClassName]));
 
-   Handle    := Pointer(TWinControl(Sender).Handle);
-   Assert (Handle = nil, 'WARNING: [TgtkObject.GetValue] --> got nil pointer (no gtkobject)');
+  Handle    := Pointer(TWinControl(Sender).Handle);
+  Assert (Handle = nil, 'WARNING: [TgtkObject.GetValue] --> got nil pointer (no gtkobject)');
    
-   case TControl(Sender).fCompStyle of
-      csTrackbar   :
-          if (handle <> nil) then begin
-            integer(data^) := round(gtk_range_get_adjustment(
-                    GTK_RANGE (handle))^.value);
-          end else
-            integer(data^) := 0;
+  case TControl(Sender).fCompStyle of
+  csTrackbar   :
+    if (handle <> nil) then begin
+      integer(data^) := round(gtk_range_get_adjustment(
+              GTK_RANGE (handle))^.value);
+    end else
+      integer(data^) := 0;
 
 
-      csRadiobutton,
-      csCheckbox   : if gtk_toggle_button_get_active (PGtkToggleButton (handle))
-                        then TCheckBoxState (data^) := cbChecked
-                        else TCheckBoxState (data^) := cbUnChecked;
-                        
-      csCalendar :Begin
-                    gtk_calendar_get_date(PgtkCalendar(handle),@Year, @Month, @Day);
-                    //TODO:  account for local settings like date format
-                    //Form some reason, the month is zero based.
-                    TLMCalendar(data^).Date := StrtoDate(Inttostr(Day)+'-'+Inttostr(Month+1)+'-'+Inttostr(Year));
+  csRadiobutton,
+  csCheckbox   :
+    if gtk_toggle_button_get_active (PGtkToggleButton (handle))
+    then TCheckBoxState (data^) := cbChecked
+    else TCheckBoxState (data^) := cbUnChecked;
                     
+  csCalendar :
+    Begin
+      gtk_calendar_get_date(PgtkCalendar(handle),@Year, @Month, @Day);
+      //TODO:  account for local settings like date format
+      //Form some reason, the month is zero based.
+      TLMCalendar(data^).Date :=
+        StrtoDate(Inttostr(Day)+'-'+Inttostr(Month+1)+'-'+Inttostr(Year));
+    end;
 
-                  end;
+  csSpinEdit :
+    Begin
+      Single(Data^):=gtk_spin_button_get_value_As_Float(PgtkSpinButton(Handle));
 
-      csSpinEdit : Begin
-                     Single(Data^) := gtk_spin_button_get_value_As_Float(PgtkSpinButton(Handle));
+    end;
 
-                   end;
-
-   else
-      Assert (true, Format ('WARNING:[TgtkObject.GetValue] failed for %s', [Sender.ClassName]));
-   end;
+  else
+    Assert (true, Format ('WARNING:[TgtkObject.GetValue] failed for %s', [Sender.ClassName]));
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -5347,6 +5350,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.165  2002/08/17 15:45:34  lazarus
+  MG: removed ClientRectBugfix defines
+
   Revision 1.164  2002/08/16 17:47:38  lazarus
   MG: added some IDE menuicons, fixed submenu indicator bug
 
