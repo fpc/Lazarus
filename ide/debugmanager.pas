@@ -40,7 +40,7 @@ uses
   MemCheck,
 {$ENDIF}
   Classes, SysUtils, Forms, Controls, Dialogs, Menus, FileCtrl, Laz_XMLCfg,
-  SynEdit, CodeCache, CodeToolManager,
+  SynEdit, CodeCache, CodeToolManager, DebugOptionsFrm,
   CompilerOptions, EditorOptions, EnvironmentOpts, KeyMapping, UnitEditor,
   Project, IDEProcs, InputHistory, Debugger, RunParamsOpts, ExtToolDialog,
   IDEOptionDefs, LazarusIDEStrConsts, ProjectDefs, BaseDebugManager, MainBar,
@@ -61,7 +61,8 @@ type
   TDebugManager = class(TBaseDebugManager)
     // Menu events
     procedure mnuViewDebugDialogClick(Sender: TObject);
-    procedure mnuResetDebuggerClicked(Sender : TObject);
+    procedure mnuResetDebuggerClicked(Sender: TObject);
+    procedure mnuDebuggerOptionsClick(Sender: TObject);
 
     // SrcNotebook events
     function OnSrcNotebookAddWatchesAtCursor(Sender: TObject): boolean;
@@ -690,6 +691,17 @@ begin
   DoInitDebugger;
 end;
 
+procedure TDebugManager.mnuDebuggerOptionsClick (Sender: TObject );
+var
+  Form: TDebuggerOptionsForm;
+begin
+  Form := TDebuggerOptionsForm.Create(Application);
+  Form.ShowModal;
+  Form.Free;
+end;
+
+
+
 //-----------------------------------------------------------------------------
 // ScrNoteBook events
 //-----------------------------------------------------------------------------
@@ -1065,6 +1077,8 @@ begin
     itmViewDebugOutput.Tag := Ord(ddtOutput);
 
     itmProjectResetDebugger.OnClick := @mnuResetDebuggerClicked;
+    
+    itmEnvDebuggerOptions.OnClick := @mnuDebuggerOptionsClick;
   end;
 end;
 
@@ -1526,6 +1540,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.53  2003/06/14 02:24:34  marc
+  MWE: + Added DebuggerOptionDialog
+
   Revision 1.52  2003/06/13 19:21:31  marc
   MWE: + Added initial signal and exception handling
 

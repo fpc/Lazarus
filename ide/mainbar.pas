@@ -329,6 +329,7 @@ type
     // environment menu
     itmEnvGeneralOptions: TMenuItem;
     itmEnvEditorOptions: TMenuItem;
+    itmEnvDebuggerOptions: TMenuItem;
     itmEnvCodeToolsOptions: TMenuItem;
     itmEnvCodeToolsDefinesEditor: TMenuItem;
 
@@ -1297,6 +1298,12 @@ begin
   itmEnvEditorOptions.Caption := lisMenuEditorOptions;
   itmEnvEditorOptions.Graphic:=LoadPixmap('menu_editoroptions');
   mnuEnvironment.Add(itmEnvEditorOptions);
+
+  itmEnvDebuggerOptions := TMenuItem.Create(Self);
+  itmEnvDebuggerOptions.Name:='itmEnvDebuggerOptions';
+  itmEnvDebuggerOptions.Caption := lisMenDebuggerOptions;
+//  itmEnvDebuggerOptions.Graphic:=LoadPixmap('menu_editoroptions');
+  mnuEnvironment.Add(itmEnvDebuggerOptions);
 
   itmEnvCodeToolsOptions := TMenuItem.Create(Self);
   itmEnvCodeToolsOptions.Name:='itmEnvCodeToolsOptions';

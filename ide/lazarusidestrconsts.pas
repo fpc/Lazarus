@@ -223,6 +223,7 @@ resourcestring
   
   lisMenuGeneralOptions = 'Environment options';
   lisMenuEditorOptions = 'Editor options';
+  lisMenDebuggerOptions = 'Debugger Options';
   lisMenuCodeToolsOptions = 'CodeTools options';
   lisMenuCodeToolsDefinesEditor = 'CodeTools defines editor';
   
