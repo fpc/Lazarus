@@ -145,7 +145,7 @@ begin
     with FHiddenButton do begin
       FHiddenButton.Visible:=false;
       Parent:=Self;
-      FHiddenButton.CreateHandle;
+      FHiddenButton.HandleNeeded;
     end;
     
     DoPositionButtons;
@@ -395,6 +395,9 @@ end;
 
 {
   $Log$
+  Revision 1.24  2003/11/15 13:38:21  mattias
+  fixed using protected member
+
   Revision 1.23  2003/10/15 18:01:10  mattias
   implemented extract proc, check lfm and convert delphi unit
 
