@@ -56,9 +56,9 @@ type
   end;
   
   TGDIColor = record
-    ColorRef : TColorRef;//Color passed - can be a SYSCOLOR or RGB
-    Color : TGDKColor;//Actual GDK Color(If any) for use with GC's
-    COlormap : PGDKColormap;//Colormap GDKColor was allocated with
+    ColorRef : TColorRef;    //Color passed - can be a SYSCOLOR or RGB
+    Color : TGDKColor;       //Actual GDK Color(If any) for use with GC's
+    Colormap : PGDKColormap; //Colormap GDKColor was allocated with
   end;
 
   PGDIObject = ^TGDIObject;
@@ -116,9 +116,8 @@ type
   end;
 
 
-  // move to class ??
-  PDeviceContext = ^TDeviceContext;
-  TDeviceContext = record
+  TDeviceContext = class
+  public
     hWnd: HWND; 
     GC: pgdkGC;
     Drawable: PGDKDrawable;
@@ -133,7 +132,8 @@ type
     CurrentTextColor: TGDIColor;
     CurrentBackColor: TGDIColor;
     ClipRegion : hRGN;
-    SavedContext: PDeviceContext; // linked list of saved DCs
+    SavedContext: TDeviceContext; // linked list of saved DCs
+    procedure Clear;
   end;
   
 
@@ -175,8 +175,8 @@ const
 function NewPGDIObject: PGDIObject;
 procedure DisposePGDIObject(GDIObject: PGdiObject);
 
-function NewPDeviceContext: PDeviceContext;
-procedure DisposePDeviceContext(DeviceContext: PDeviceContext);
+function NewDeviceContext: TDeviceContext;
+procedure DisposeDeviceContext(DeviceContext: TDeviceContext);
 
 
 implementation
@@ -270,14 +270,14 @@ type
   protected
     procedure FreeFirstItem; override;
   public
-    procedure DisposeDeviceContext(ADeviceContext: PDeviceContext);
-    function NewDeviceContext: PDeviceContext;
+    procedure DisposeDeviceContext(ADeviceContext: TDeviceContext);
+    function NewDeviceContext: TDeviceContext;
   end;
 
 const
   DeviceContextMemManager: TDeviceContextMemManager = nil;
 
-function NewPDeviceContext: PDeviceContext;
+function NewDeviceContext: TDeviceContext;
 begin
   if DeviceContextMemManager=nil then begin
     DeviceContextMemManager:=TDeviceContextMemManager.Create;
@@ -286,7 +286,7 @@ begin
   Result:=DeviceContextMemManager.NewDeviceContext;
 end;
 
-procedure DisposePDeviceContext(DeviceContext: PDeviceContext);
+procedure DisposeDeviceContext(DeviceContext: TDeviceContext);
 begin
   DeviceContextMemManager.DisposeDeviceContext(DeviceContext);
 end;
@@ -294,30 +294,30 @@ end;
 { TDeviceContextMemManager }
 
 procedure TDeviceContextMemManager.FreeFirstItem;
-var ADeviceContext: PDeviceContext;
+var ADeviceContext: TDeviceContext;
 begin
-  ADeviceContext:=PDeviceContext(FFirstFree);
-  PDeviceContext(FFirstFree):=ADeviceContext^.SavedContext;
+  ADeviceContext:=TDeviceContext(FFirstFree);
+  TDeviceContext(FFirstFree):=ADeviceContext.SavedContext;
   //writeln('TDeviceContextMemManager.FreeFirstItem FFreedCount=',FFreedCount);
-  Dispose(ADeviceContext);
+  ADeviceContext.Free;
   {$R-}
   inc(FFreedCount);
   {$IfDef RangeChecksOn}{$R+}{$Endif}
 end;
 
 procedure TDeviceContextMemManager.DisposeDeviceContext(
-  ADeviceContext: PDeviceContext);
+  ADeviceContext: TDeviceContext);
 begin
   if (FFreeCount<FMinFree) or (FFreeCount<((FCount shr 3)*FMaxFreeRatio)) then
   begin
     // add ADeviceContext to Free list
-    ADeviceContext^.SavedContext:=PDeviceContext(FFirstFree);
-    PDeviceContext(FFirstFree):=ADeviceContext;
+    ADeviceContext.SavedContext:=TDeviceContext(FFirstFree);
+    TDeviceContext(FFirstFree):=ADeviceContext;
     inc(FFreeCount);
   end else begin
     // free list full -> free the ANode
     //writeln('TDeviceContextMemManager.DisposeDeviceContext FFreedCount=',FFreedCount);
-    Dispose(ADeviceContext);
+    ADeviceContext.Free;
     {$R-}
     inc(FFreedCount);
     {$IfDef RangeChecksOn}{$R+}{$Endif}
@@ -325,27 +325,51 @@ begin
   dec(FCount);
 end;
 
-function TDeviceContextMemManager.NewDeviceContext: PDeviceContext;
+function TDeviceContextMemManager.NewDeviceContext: TDeviceContext;
 begin
   if FFirstFree<>nil then begin
     // take from free list
-    Result:=PDeviceContext(FFirstFree);
-    PDeviceContext(FFirstFree):=Result^.SavedContext;
+    Result:=TDeviceContext(FFirstFree);
+    TDeviceContext(FFirstFree):=Result.SavedContext;
     dec(FFreeCount);
   end else begin
     // free list empty -> create new node
-    New(Result);
+    Result:=TDeviceContext.Create;
     //writeln('TDeviceContextMemManager.NewDeviceContext FAllocatedCount=',FAllocatedCount);
     {$R-}
     inc(FAllocatedCount);
     {$IfDef RangeChecksOn}{$R+}{$Endif}
   end;
-  FillChar(Result^, SizeOf(TDeviceContext), 0);
+  Result.Clear;
   inc(FCount);
 end;
 
 
 //------------------------------------------------------------------------------
+
+{ TDeviceContext }
+
+procedure TDeviceContext.Clear;
+begin
+  hWnd:=0;
+  GC:=nil;
+  Drawable:=nil;
+  Origin.X:=0;
+  Origin.Y:=0;
+  SpecialOrigin:=false;
+  PenPos.X:=0;
+  PenPos.Y:=0;
+  CurrentBitmap:=nil;
+  CurrentFont:=nil;
+  CurrentPen:=nil;
+  CurrentBrush:=nil;
+  CurrentPalette:=nil;
+  FillChar(CurrentTextColor,SizeOf(CurrentTextColor),0);
+  FillChar(CurrentBackColor,SizeOf(CurrentBackColor),0);
+  ClipRegion:=0;
+  SavedContext:=nil;
+end;
+
 finalization
   GDIObjectMemManager.Free;
   GDIObjectMemManager:=nil;
@@ -357,6 +381,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.20  2002/10/01 10:05:48  lazarus
+  MG: changed PDeviceContext into class TDeviceContext
+
   Revision 1.19  2002/09/18 17:07:28  lazarus
   MG: added patch from Andrew
 
