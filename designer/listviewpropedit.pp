@@ -204,7 +204,7 @@ begin
         finally
           LV.EndUpdate;
           if Assigned(Hook) then
-             Hook.Modified;
+            Hook.Modified(Self);
         end;
       end;
     end;

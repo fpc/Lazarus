@@ -437,7 +437,7 @@ begin
 
         //not work :o( aImg.AddImages(Dlg.fImgL);
         if Assigned(Hook) then
-             Hook.Modified;
+          Hook.Modified(Self);
       end;
     end;
   finally

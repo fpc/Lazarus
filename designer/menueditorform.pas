@@ -44,6 +44,7 @@ type
 
   TMainMenuEditorForm = class(TForm)
     procedure OnComponentDeleting(AComponent: TComponent);
+    procedure OnComponentsModified(Sender: TObject);
   private
     fDesignerMainMenu: TDesignerMainMenu;
     fPanel: TPanel;
@@ -86,11 +87,35 @@ implementation
 procedure TMainMenuEditorForm.OnComponentDeleting(AComponent: TComponent);
 begin
   if (AComponent=nil) then exit;
-  writeln('TMainMenuEditorForm.OnComponentDeleting ',AComponent.Name,':',AComponent.ClassName);
   if AComponent is TMenu then begin
+    writeln('TMainMenuEditorForm.OnComponentDeleting ',AComponent.Name,':',AComponent.ClassName);
 
   end else if AComponent is TMenuItem then begin
+    writeln('TMainMenuEditorForm.OnComponentDeleting ',AComponent.Name,':',AComponent.ClassName);
 
+  end;
+end;
+
+procedure TMainMenuEditorForm.OnComponentsModified(Sender: TObject);
+var
+  i: Integer;
+  SelectedComponents: TComponentSelectionList;
+begin
+  if GlobalDesignHook.LookupRoot=nil then exit;
+  SelectedComponents:=TComponentSelectionList.Create;
+  try
+    GlobalDesignHook.GetSelectedComponents(SelectedComponents);
+    for i:=0 to SelectedComponents.Count-1 do begin
+      if (SelectedComponents[i] is TMenu) then begin
+        writeln('TMainMenuEditorForm.OnComponentsModified ',SelectedComponents[i].Name,':',SelectedComponents[i].ClassName);
+
+      end else if (SelectedComponents[i] is TMenuItem) then begin
+        writeln('TMainMenuEditorForm.OnComponentsModified ',SelectedComponents[i].Name,':',SelectedComponents[i].ClassName);
+
+      end;
+    end;
+  finally
+    SelectedComponents.Free;
   end;
 end;
 
@@ -115,7 +140,8 @@ begin
   
   DesignerMainMenu:=TDesignerMainMenu.CreateWithMenu(Self, fMenu, fEditor);
 
-  GlobalHook.AddHandlerComponentDeleting(@OnComponentDeleting);
+  GlobalDesignHook.AddHandlerComponentDeleting(@OnComponentDeleting);
+  GlobalDesignHook.AddHandlerModified(@OnComponentsModified);
 
   //PopupMenu:=DesignerPopupMenu;
   
@@ -194,7 +220,7 @@ end;
 
 destructor TMainMenuEditorForm.Destroy;
 begin
-  GlobalHook.RemoveHandlerComponentDeleting(@OnComponentDeleting);
+  GlobalDesignHook.RemoveAllHandlersForObject(Self);
   inherited Destroy;
 end;
 

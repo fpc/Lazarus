@@ -215,9 +215,7 @@ type
     Name property
       Returns the name of the property returned by GetName
     PrivateEditory property
-      It is either the .EXE or the "working editory" as specified in
-      the registry under the key:
-        "HKEY_CURRENT_USER\Software\Borland\Delphi\*\Globals\PrivateDir"
+      This is the configuration directory of lazarus.
       If the property editor needs auxiliary or state files (templates,
       examples, etc) they should be stored in this editory.
     Value property
@@ -262,8 +260,8 @@ type
     PropInfo:PPropInfo;
   end;
 
-  PInstPropList=^TInstPropList;
-  TInstPropList=array[0..1023] of TInstProp;
+  TInstPropList = array[0..1023] of TInstProp;
+  PInstPropList = ^TInstPropList;
 
   TGetPropEditProc=procedure(Prop:TPropertyEditor) of object;
 
@@ -277,9 +275,9 @@ type
   private
     FComponents:TComponentSelectionList;
     FOnSubPropertiesChanged: TNotifyEvent;
-    FPropertyHook:TPropertyEditorHook;
-    FPropCount:Integer;
-    FPropList:PInstPropList;
+    FPropertyHook: TPropertyEditorHook;
+    FPropCount: Integer;
+    FPropList: PInstPropList;
     function GetPrivateDirectory:ansistring;
   protected
     function GetPropInfo:PPropInfo;
@@ -304,40 +302,42 @@ type
     procedure Modified;
   public
     constructor Create(Hook:TPropertyEditorHook;
-      ComponentList: TComponentSelectionList;  APropCount:Integer); virtual;
+                       ComponentList: TComponentSelectionList;
+                       APropCount:Integer); virtual;
     destructor Destroy; override;
     procedure Activate; virtual;
     procedure Deactivate; virtual;
-    function AllEqual:Boolean; virtual;
-    function AutoFill:Boolean; virtual;
+    function AllEqual: Boolean; virtual;
+    function AutoFill: Boolean; virtual;
     procedure Edit; virtual;
-    function GetAttributes:TPropertyAttributes; virtual;
-    function GetComponent(Index:Integer):TPersistent;
-    function GetEditLimit:Integer; virtual;
-    function GetName:shortstring; virtual;
-    procedure GetProperties(Proc:TGetPropEditProc); virtual;
-    function GetPropType:PTypeInfo;
-    function GetValue:ansistring; virtual;
-    function GetVisualValue:ansistring;
-    procedure GetValues(Proc:TGetStringProc); virtual;
+    function GetAttributes: TPropertyAttributes; virtual;
+    function GetComponent(Index: Integer):TPersistent;
+    function GetEditLimit: Integer; virtual;
+    function GetName: shortstring; virtual;
+    procedure GetProperties(Proc: TGetPropEditProc); virtual;
+    function GetPropType: PTypeInfo;
+    function GetValue: ansistring; virtual;
+    function GetVisualValue: ansistring;
+    procedure GetValues(Proc: TGetStringProc); virtual;
     procedure Initialize; virtual;
     procedure Revert;
     procedure SetValue(const NewValue:ansistring); virtual;
-    procedure SetPropEntry(Index:Integer; AInstance:TPersistent;
-      APropInfo:PPropInfo);
-    function ValueAvailable:Boolean;
-    procedure ListMeasureWidth(const AValue:ansistring; Index:integer;
-      ACanvas:TCanvas;  var AWidth:Integer); dynamic;
-    procedure ListMeasureHeight(const AValue:ansistring; Index:integer;
-      ACanvas:TCanvas;  var AHeight:Integer); dynamic;
-    procedure ListDrawValue(const AValue:ansistring; Index:integer;
-      ACanvas:TCanvas;  const ARect:TRect; AState: TPropEditDrawState); dynamic;
-    procedure PropMeasureHeight(const NewValue:ansistring;  ACanvas:TCanvas;
-      var AHeight:Integer); dynamic;
+    procedure SetPropEntry(Index: Integer; AnInstance: TPersistent;
+                           APropInfo: PPropInfo);
+    function ValueAvailable: Boolean;
+    procedure ListMeasureWidth(const AValue: ansistring; Index:integer;
+                               ACanvas:TCanvas; var AWidth: Integer); dynamic;
+    procedure ListMeasureHeight(const AValue: ansistring; Index:integer;
+                                ACanvas:TCanvas; var AHeight: Integer); dynamic;
+    procedure ListDrawValue(const AValue: ansistring; Index:integer;
+                            ACanvas:TCanvas; const ARect: TRect;
+                            AState: TPropEditDrawState); dynamic;
+    procedure PropMeasureHeight(const NewValue: ansistring;  ACanvas:TCanvas;
+                                var AHeight:Integer); dynamic;
     procedure PropDrawName(ACanvas:TCanvas; const ARect:TRect;
-      AState:TPropEditDrawState); dynamic;
+                           AState:TPropEditDrawState); dynamic;
     procedure PropDrawValue(ACanvas:TCanvas; const ARect:TRect;
-      AState:TPropEditDrawState); dynamic;
+                            AState:TPropEditDrawState); dynamic;
     procedure UpdateSubProperties; virtual;
     function SubPropertiesNeedsUpdate: boolean; virtual;
     property PropertyHook:TPropertyEditorHook read FPropertyHook;
@@ -854,21 +854,25 @@ procedure UpdateListPropertyEditors(AnObject: TObject);
 }
 type
   TComponentSelectionList = class
-  private
-    FComponents:TList;
+  protected
+    FUpdateLock: integer;
+    FComponents: TList;
     function GetItems(Index: integer): TComponent;
     procedure SetItems(Index: integer; const CompValue: TComponent);
     function GetCount: integer;
     function GetCapacity:integer;
     procedure SetCapacity(const NewCapacity:integer);
   public
+    procedure BeginUpdate;
+    procedure EndUpdate;
+    function UpdateLock: integer;
     procedure Clear;
-    function IsEqual(SourceSelectionList:TComponentSelectionList):boolean;
+    function IsEqual(SourceSelectionList: TComponentSelectionList): boolean;
     property Count:integer read GetCount;
     property Capacity:integer read GetCapacity write SetCapacity;
-    function Add(c:TComponent):integer;
-    procedure Assign(SourceSelectionList:TComponentSelectionList);
-    property Items[Index:integer]:TComponent read GetItems write SetItems; default;
+    function Add(AComponent: TComponent): integer;
+    procedure Assign(SourceSelectionList: TComponentSelectionList);
+    property Items[Index: integer]: TComponent read GetItems write SetItems; default;
     constructor Create;
     destructor Destroy;  override;
   end;
@@ -899,18 +903,22 @@ type
   TPropHookGetComponent = function(const Name:ShortString):TComponent of object;
   TPropHookGetComponentName = function(AComponent:TComponent):ShortString of object;
   TPropHookGetComponentNames = procedure(TypeData:PTypeData;
-    Proc:TGetStringProc) of object;
+                                         Proc:TGetStringProc) of object;
   TPropHookGetRootClassName = function:ShortString of object;
   TPropHookComponentRenamed = procedure(AComponent: TComponent) of object;
-  TPropHookComponentAdded = procedure(AComponent: TComponent; Select: boolean) of object;
+  TPropHookComponentAdded = procedure(AComponent: TComponent; Select: boolean
+                                      ) of object;
   TPropHookComponentDeleting = procedure(AComponent: TComponent) of object;
   TPropHookDeleteComponent = procedure(var AComponent: TComponent) of object;
+  TPropHookGetSelectedComponents = procedure(Selection: TComponentSelectionList
+                                             ) of object;
   // persistent objects
   TPropHookGetObject = function(const Name:ShortString):TPersistent of object;
   TPropHookGetObjectName = function(Instance:TPersistent):ShortString of object;
-  TPropHookGetObjectNames = procedure(TypeData:PTypeData; Proc:TGetStringProc) of object;
+  TPropHookGetObjectNames = procedure(TypeData:PTypeData;
+                                      Proc:TGetStringProc) of object;
   // modifing
-  TPropHookModified = procedure of object;
+  TPropHookModified = procedure(Sender: TObject) of object;
   TPropHookRevert = procedure(Instance:TPersistent; PropInfo:PPropInfo) of object;
   TPropHookRefreshPropertyValues = procedure of object;
   
@@ -935,6 +943,7 @@ type
     htComponentAdded,
     htComponentDeleting,
     htDeleteComponent,
+    htGetSelectedComponents,
     // persistent objects
     htGetObject,
     htGetObjectName,
@@ -955,14 +964,15 @@ type
     procedure AddHandler(HookType: TPropHookType; const Handler: TMethod);
     procedure RemoveHandler(HookType: TPropHookType; const Handler: TMethod);
     function GetHandlerCount(HookType: TPropHookType): integer;
-    function GetNextHandlerIndex(HookType: TPropHookType; var i: integer): boolean;
+    function GetNextHandlerIndex(HookType: TPropHookType;
+                                 var i: integer): boolean;
   public
-    GetPrivateDirectory:AnsiString;
+    GetPrivateDirectory: AnsiString;
     constructor Create;
     destructor Destroy; override;
 
     // lookup root
-    property LookupRoot:TComponent read FLookupRoot write SetLookupRoot;
+    property LookupRoot: TComponent read FLookupRoot write SetLookupRoot;
     // methods
     function CreateMethod(const Name:ShortString; ATypeInfo:PTypeInfo): TMethod;
     function GetMethodName(const Method:TMethod): ShortString;
@@ -983,16 +993,18 @@ type
     procedure ComponentAdded(AComponent: TComponent; Select: boolean);
     procedure ComponentDeleting(AComponent: TComponent);
     procedure DeleteComponent(var AComponent: TComponent);
+    procedure GetSelectedComponents(Selection: TComponentSelectionList);
     // persistent objects
     function GetObject(const Name: ShortString):TPersistent;
     function GetObjectName(Instance: TPersistent):ShortString;
     procedure GetObjectNames(TypeData: PTypeData; const Proc:TGetStringProc);
     // modifing
-    procedure Modified;
+    procedure Modified(Sender: TObject);
     procedure Revert(Instance:TPersistent; PropInfo:PPropInfo);
     procedure RefreshPropertyValues;
   public
     // Handlers
+    procedure RemoveAllHandlersForObject(HandlerObject: TObject);
 
     // lookup root
     procedure AddHandlerChangeLookupRoot(
@@ -1049,6 +1061,10 @@ type
                                    OnDeleteComponent: TPropHookDeleteComponent);
     procedure RemoveHandlerDeleteComponent(
                                    OnDeleteComponent: TPropHookDeleteComponent);
+    procedure AddHandlerGetSelectedComponents(
+                       OnGetSelectedComponents: TPropHookGetSelectedComponents);
+    procedure RemoveHandlerGetSelectedComponents(
+                       OnGetSelectedComponents: TPropHookGetSelectedComponents);
     // persistent object events
     procedure AddHandlerGetObject(OnGetObject: TPropHookGetObject);
     procedure RemoveHandlerGetObject(OnGetObject: TPropHookGetObject);
@@ -1143,7 +1159,7 @@ type
   Function ClassTypeInfo(Value: TClass): PTypeInfo;
   
 var
-  GlobalHook: TPropertyEditorHook;
+  GlobalDesignHook: TPropertyEditorHook;
 
 implementation
 
@@ -1593,7 +1609,7 @@ end;
 { TPropertyEditor }
 
 constructor TPropertyEditor.Create(Hook: TPropertyEditorHook;
-  ComponentList: TComponentSelectionList;  APropCount:Integer);
+  ComponentList: TComponentSelectionList; APropCount:Integer);
 begin
   FPropertyHook:=Hook;
   FComponents:=ComponentList;
@@ -1810,7 +1826,7 @@ begin
        ftcomp:
           PComp(Pointer(Instance)+Longint(PropInfo^.SetProc))^:=Comp(Value);
 {$endif m68k}
-        { Uncommenting this code results in a internal error!!
+        { Uncommenting this code results in an internal error!!
        ftFixed16:
          PFixed16(Pointer(Instance)+Longint(PropInfo^.SetProc))^:=Value;
        ftfixed32:
@@ -1950,9 +1966,8 @@ end;
 procedure TPropertyEditor.Modified;
 begin
   if PropertyHook<>nil then
-    PropertyHook.Modified;
+    PropertyHook.Modified(Self);
 end;
-
 
 procedure TPropertyEditor.SetFloatValue(const NewValue:Extended);
 var
@@ -2006,10 +2021,10 @@ begin
 end;
 
 procedure TPropertyEditor.SetPropEntry(Index:Integer;
-  AInstance:TPersistent; APropInfo:PPropInfo);
+  AnInstance:TPersistent; APropInfo:PPropInfo);
 begin
   with FPropList^[Index] do begin
-    Instance:=AInstance;
+    Instance:=AnInstance;
     PropInfo:=APropInfo;
   end;
 end;
@@ -2104,7 +2119,7 @@ begin
 end;
 
 { these three procedures implement the default render behavior of the
-  object/property inspector's drop down list editor. You don't need to
+  object inspector's drop down list editor. You don't need to
   override the two measure procedures if the default width or height don't
   need to be changed. }
 procedure TPropertyEditor.ListMeasureHeight(const AValue:ansistring;
@@ -2154,8 +2169,8 @@ begin
 end;
 
 { these three procedures implement the default render behavior of the
-  object/property inspector. You don't need to override the measure procedure
-  if the default width or height don't need to be changed.  }
+  object inspector's property row. You don't need to override the measure
+  procedure if the default width or height don't need to be changed.  }
 procedure TPropertyEditor.PropMeasureHeight(const NewValue:ansistring;
   ACanvas:TCanvas;  var AHeight:Integer);
 begin
@@ -2443,9 +2458,9 @@ end;
 
 procedure TFloatPropertyEditor.SetValue(const NewValue: ansistring);
 begin
-writeln('TFloatPropertyEditor.SetValue A ',NewValue,'  ',StrToFloat(NewValue));
+  //writeln('TFloatPropertyEditor.SetValue A ',NewValue,'  ',StrToFloat(NewValue));
   SetFloatValue(StrToFloat(NewValue));
-writeln('TFloatPropertyEditor.SetValue B ',GetValue);
+  //writeln('TFloatPropertyEditor.SetValue B ',GetValue);
 end;
 
 { TStringPropertyEditor }
@@ -4080,9 +4095,9 @@ end;
 
 { TComponentSelectionList }
 
-function TComponentSelectionList.Add(c: TComponent): integer;
+function TComponentSelectionList.Add(AComponent: TComponent): integer;
 begin
-  Result:=FComponents.Add(c);
+  Result:=FComponents.Add(AComponent);
 end;
 
 procedure TComponentSelectionList.Clear;
@@ -4126,6 +4141,21 @@ end;
 procedure TComponentSelectionList.SetCapacity(const NewCapacity:integer);
 begin
   FComponents.Capacity:=NewCapacity;
+end;
+
+procedure TComponentSelectionList.BeginUpdate;
+begin
+  inc(FUpdateLock);
+end;
+
+procedure TComponentSelectionList.EndUpdate;
+begin
+  dec(FUpdateLock);
+end;
+
+function TComponentSelectionList.UpdateLock: integer;
+begin
+  Result:=FUpdateLock;
 end;
 
 procedure TComponentSelectionList.Assign(
@@ -4391,6 +4421,21 @@ begin
     FreeThenNil(AComponent);
 end;
 
+procedure TPropertyEditorHook.GetSelectedComponents(
+  Selection: TComponentSelectionList);
+var
+  i: Integer;
+  Handler: TPropHookGetSelectedComponents;
+begin
+  if Selection=nil then exit;
+  Selection.Clear;
+  i:=GetHandlerCount(htGetSelectedComponents);
+  while GetNextHandlerIndex(htGetSelectedComponents,i) do begin
+    Handler:=TPropHookGetSelectedComponents(FHandlers[htGetSelectedComponents][i]);
+    Handler(Selection);
+  end;
+end;
+
 function TPropertyEditorHook.GetObject(const Name:Shortstring):TPersistent;
 var
   i: Integer;
@@ -4425,15 +4470,14 @@ begin
     TPropHookGetObjectNames(FHandlers[htGetObjectNames][i])(TypeData,Proc);
 end;
 
-procedure TPropertyEditorHook.Modified;
+procedure TPropertyEditorHook.Modified(Sender: TObject);
 var
   i: Integer;
 begin
   i:=GetHandlerCount(htModified);
-  if i>0 then begin
-    while GetNextHandlerIndex(htModified,i) do
-      TPropHookModified(FHandlers[htModified][i])();
-  end else if FLookupRoot<>nil then begin
+  while GetNextHandlerIndex(htModified,i) do
+    TPropHookModified(FHandlers[htModified][i])(Sender);
+  if FLookupRoot<>nil then begin
     if (FLookupRoot is TCustomForm)
     and (TCustomForm(FLookupRoot).Designer<>nil) then
       TCustomForm(FLookupRoot).Designer.Modified;
@@ -4457,6 +4501,16 @@ begin
   i:=GetHandlerCount(htRefreshPropertyValues);
   while GetNextHandlerIndex(htRefreshPropertyValues,i) do
     TPropHookRefreshPropertyValues(FHandlers[htRefreshPropertyValues][i])();
+end;
+
+procedure TPropertyEditorHook.RemoveAllHandlersForObject(HandlerObject: TObject
+  );
+var
+  HookType: TPropHookType;
+begin
+  for HookType:=Low(TPropHookType) to High(TPropHookType) do
+    if FHandlers[HookType]<>nil then
+      FHandlers[HookType].RemoveAllMethodsOfObject(HandlerObject);
 end;
 
 procedure TPropertyEditorHook.AddHandlerChangeLookupRoot(
@@ -4661,6 +4715,18 @@ procedure TPropertyEditorHook.RemoveHandlerDeleteComponent(
   OnDeleteComponent: TPropHookDeleteComponent);
 begin
   RemoveHandler(htDeleteComponent,TMethod(OnDeleteComponent));
+end;
+
+procedure TPropertyEditorHook.AddHandlerGetSelectedComponents(
+  OnGetSelectedComponents: TPropHookGetSelectedComponents);
+begin
+  AddHandler(htGetSelectedComponents,TMethod(OnGetSelectedComponents));
+end;
+
+procedure TPropertyEditorHook.RemoveHandlerGetSelectedComponents(
+  OnGetSelectedComponents: TPropHookGetSelectedComponents);
+begin
+  RemoveHandler(htGetSelectedComponents,TMethod(OnGetSelectedComponents));
 end;
 
 procedure TPropertyEditorHook.AddHandlerGetObject(

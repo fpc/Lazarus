@@ -155,7 +155,7 @@ TCustomFormEditor
 //    Function CreateComponent(CI : TIComponentInterface; TypeName : String;
     Function CreateComponentInterface(AComponent: TComponent): TIComponentInterface;
     Function CreateComponent(ParentCI : TIComponentInterface;
-      TypeClass : TComponentClass;  X,Y,W,H : Integer): TIComponentInterface; override;
+      TypeClass: TComponentClass;  X,Y,W,H : Integer): TIComponentInterface; override;
     Function CreateFormFromStream(BinStream: TStream): TIComponentInterface; override;
     Procedure SetFormNameAndClass(CI: TIComponentInterface; 
       const NewFormName, NewClassName: shortstring);
@@ -165,7 +165,7 @@ TCustomFormEditor
   public
     property SelectedComponents: TComponentSelectionList
       read FSelectedComponents write SetSelectedComponents;
-    property Obj_Inspector : TObjectInspector
+    property Obj_Inspector: TObjectInspector
       read FObj_Inspector write SetObj_Inspector;
     property PropertyEditorHook: TPropertyEditorHook read GetPropertyEditorHook;
   end;

@@ -312,7 +312,7 @@ type
     procedure OnBackgroundColPopupMenuItemClick(Sender :TObject);
     procedure OnShowHintPopupMenuItemClick(Sender :TObject);
     procedure OnShowOptionsPopupMenuItemClick(Sender :TObject);
-    procedure PropEditRefreshPropertyValues;
+    procedure HookRefreshPropertyValues;
   private
     FComponentList: TComponentSelectionList;
     FDefaultItemHeight: integer;
@@ -330,9 +330,10 @@ type
     procedure SetPropertyEditorHook(NewValue:TPropertyEditorHook);
     procedure SetSelections(const NewSelections:TComponentSelectionList);
     procedure AddComponentToList(AComponent:TComponent; List: TStrings);
-    procedure PropEditLookupRootChange;
+    procedure HookLookupRootChange;
     procedure OnGridModified(Sender: TObject);
     procedure SetAvailComboBoxText;
+    procedure HookGetSelectedComponents(Selection: TComponentSelectionList);
   public
     constructor Create(AnOwner: TComponent); override;
     destructor Destroy; override;
@@ -343,15 +344,16 @@ type
     procedure BeginUpdate;
     procedure EndUpdate;
   public
-    property DefaultItemHeight: integer read FDefaultItemHeight write SetDefaultItemHeight;
-    property Selections:TComponentSelectionList 
-      read FComponentList write SetSelections;
-    property OnAddAvailComponent:TOnAddAvailableComponent
-      read FOnAddAvailableComponent write FOnAddAvailableComponent;
-    property OnSelectComponentInOI:TOnSelectComponentInOI
-      read FOnSelectComponentInOI write FOnSelectComponentInOI;
-    property PropertyEditorHook:TPropertyEditorHook 
-      read FPropertyEditorHook write SetPropertyEditorHook;
+    property DefaultItemHeight: integer read FDefaultItemHeight
+                                        write SetDefaultItemHeight;
+    property Selections: TComponentSelectionList
+                                        read FComponentList write SetSelections;
+    property OnAddAvailComponent: TOnAddAvailableComponent
+                   read FOnAddAvailableComponent write FOnAddAvailableComponent;
+    property OnSelectComponentInOI: TOnSelectComponentInOI
+                       read FOnSelectComponentInOI write FOnSelectComponentInOI;
+    property PropertyEditorHook: TPropertyEditorHook
+                           read FPropertyEditorHook write SetPropertyEditorHook;
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
     property OnShowOptions: TNotifyEvent read FOnShowOptions write SetOnShowOptions;
   end;
@@ -2187,11 +2189,17 @@ end;
 
 procedure TObjectInspector.SetPropertyEditorHook(NewValue:TPropertyEditorHook);
 begin
-  if FPropertyEditorHook<>NewValue then begin
-    FPropertyEditorHook:=NewValue;
-    FPropertyEditorHook.AddHandlerChangeLookupRoot(@PropEditLookupRootChange);
+  if FPropertyEditorHook=NewValue then exit;
+  if FPropertyEditorHook<>nil then begin
+    FPropertyEditorHook.RemoveAllHandlersForObject(Self);
+  end;
+  FPropertyEditorHook:=NewValue;
+  if FPropertyEditorHook<>nil then begin
+    FPropertyEditorHook.AddHandlerChangeLookupRoot(@HookLookupRootChange);
     FPropertyEditorHook.AddHandlerRefreshPropertyValues(
-                                                @PropEditRefreshPropertyValues);
+                                                @HookRefreshPropertyValues);
+    FPropertyEditorHook.AddHandlerGetSelectedComponents(
+                                                    @HookGetSelectedComponents);
     // select root component
     FComponentList.Clear;
     if (FPropertyEditorHook<>nil) and (FPropertyEditorHook.LookupRoot<>nil) then
@@ -2246,7 +2254,7 @@ begin
     List.AddObject(ComponentToString(AComponent),AComponent);
 end;
 
-procedure TObjectInspector.PropEditLookupRootChange;
+procedure TObjectInspector.HookLookupRootChange;
 begin
   PropertyGrid.PropEditLookupRootChange;
   EventGrid.PropEditLookupRootChange;
@@ -2415,6 +2423,13 @@ begin
     AvailCompsComboBox.Text:='';
 end;
 
+procedure TObjectInspector.HookGetSelectedComponents(
+  Selection: TComponentSelectionList);
+begin
+  if Selection=nil then exit;
+  Selection.Assign(FComponentList);
+end;
+
 procedure TObjectInspector.OnShowHintPopupMenuItemClick(Sender : TObject);
 begin
   PropertyGrid.ShowHint:=not PropertyGrid.ShowHint;
@@ -2426,7 +2441,7 @@ begin
   if Assigned(FOnShowOptions) then FOnShowOptions(Sender);
 end;
 
-procedure TObjectInspector.PropEditRefreshPropertyValues;
+procedure TObjectInspector.HookRefreshPropertyValues;
 begin
   RefreshPropertyValues;
 end;
