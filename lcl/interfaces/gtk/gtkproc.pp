@@ -47,9 +47,6 @@ uses
       gdkdll = gdklib;
   {$ENDIF}
   
-procedure laz_gdk_gc_set_dashes(gc:PGdkGC; dash_offset:gint;
-  dashlist:Pgint8; n:gint); cdecl; external gdkdll name 'gdk_gc_set_dashes';
-
 
 {$IFNDEF GTK2}
   function  GTK_TYPE_CONTAINER : TGTKType; cdecl; external gtkdll name 'gtk_container_get_type';
@@ -60,7 +57,11 @@ procedure laz_gdk_gc_set_dashes(gc:PGdkGC; dash_offset:gint;
   function  GTK_TYPE_MENU  : TGTKType; cdecl; external gtkdll name 'gtk_menu_get_type';
 {$ENDIF}
 
-(* GTKCallback.inc headers *)
+procedure laz_gdk_gc_set_dashes(gc:PGdkGC; dash_offset:gint;
+  dashlist:Pgint8; n:gint); cdecl; external gdkdll name 'gdk_gc_set_dashes';
+
+
+// GTKCallback.inc headers
 procedure EventTrace(const TheMessage : string; data : pointer);
 function gtkNoteBookCloseBtnClicked(Widget: PGtkWidget;
   Data: Pointer): GBoolean; cdecl;
@@ -180,7 +181,7 @@ Procedure GTKStyleChanged(Widget: PGtkWidget; previous_style : PGTKStyle; Data: 
 function DeliverPostMessage(const Target: Pointer; var TheMessage): GBoolean;
 function DeliverMessage(const Target: Pointer; var AMessage): Integer;
 
-(* gtkDragCallback.inc headers *)
+// gtkDragCallback.inc headers
 Function edit_drag_data_received(widget : pgtkWidget;
 			          Context : pGdkDragContext;
 			          X : Integer;
@@ -199,7 +200,7 @@ Function Edit_source_drag_data_delete (widget : pGtkWidget;
 			                context : pGdkDragContext;
 			                data : gpointer): gBoolean ; cdecl;
 
-(* gtkListViewCallback.inc headers *)
+// gtkListViewCallback.inc headers
 
 function gtkLVHScroll(AList: PGTKCList; AData: gPointer): GBoolean; cdecl;
 function gtkLVVScroll(AList: PGTKCList; AData: gPointer): GBoolean; cdecl;
@@ -214,7 +215,7 @@ function gtkLVSelectAll(AList: PGTKCList; AData: gPointer): GBoolean; cdecl;
 function gtkLVUnSelectAll(AList: PGTKCList; AData: gPointer): GBoolean; cdecl;
 function gtkLVEndSelection(AList: PGTKCList; AData: gPointer): GBoolean; cdecl;
 
-(* gtkComboBoxCallback.inc headers *)
+// gtkComboBoxCallback.inc headers
 function gtkComboBoxShowCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtkComboBoxHideCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 
