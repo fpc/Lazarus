@@ -737,7 +737,9 @@ Type
     FLink: TPropertyLink;
     FLinkValueFalse: string;
     FLinkValueTrue: string;
+    FPropertyNameAsCaption: boolean;
     procedure SetLink(const AValue: TPropertyLink);
+    procedure SetPropertyNameAsCaption(const AValue: boolean);
   protected
     procedure LinkLoadFromProperty(Sender: TObject); virtual;
     procedure LinkSaveToProperty(Sender: TObject); virtual;
@@ -750,6 +752,8 @@ Type
     property LinkValueTrue: string read FLinkValueTrue;
     property LinkValueFalse: string read FLinkValueFalse;
     property Link: TPropertyLink read FLink write SetLink;
+    property PropertyNameAsCaption: boolean read FPropertyNameAsCaption
+                                            write SetPropertyNameAsCaption;
   end;
 
 
@@ -786,6 +790,7 @@ Type
     property OnStartDrag;
     property ParentShowHint;
     property PopupMenu;
+    property PropertyNameAsCaption;
     property ShowHint;
     property State;
     property TabOrder;
@@ -2309,11 +2314,21 @@ begin
   FLink.Assign(AValue);
 end;
 
+procedure TTICustomCheckBox.SetPropertyNameAsCaption(const AValue: boolean);
+begin
+  if FPropertyNameAsCaption=AValue then exit;
+  FPropertyNameAsCaption:=AValue;
+  if FPropertyNameAsCaption and (FLink.Editor<>nil) then
+    Caption:=FLink.Editor.GetName;
+end;
+
 procedure TTICustomCheckBox.LinkLoadFromProperty(Sender: TObject);
 begin
   if Sender=nil then ;
   if (FLink.Editor=nil) then exit;
   Checked:=FLink.GetAsText<>FLinkValueFalse;
+  if FPropertyNameAsCaption then
+    Caption:=FLink.Editor.GetName;
 end;
 
 procedure TTICustomCheckBox.LinkSaveToProperty(Sender: TObject);

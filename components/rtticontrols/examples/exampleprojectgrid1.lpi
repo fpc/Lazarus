@@ -9,7 +9,7 @@
         <SaveOnlyProjectUnits Value="True"/>
       </Flags>
       <MainUnit Value="0"/>
-      <ActiveEditorIndexAtStart Value="1"/>
+      <ActiveEditorIndexAtStart Value="2"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
       <Title Value="exampleprojectgrid1"/>
@@ -19,7 +19,7 @@
         <Filename Value="exampleprojectgrid1.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="ExampleProjectGrid1"/>
-        <UsageCount Value="22"/>
+        <UsageCount Value="23"/>
       </Unit0>
       <Unit1>
         <CursorPos X="18" Y="59"/>
@@ -31,7 +31,7 @@
         <ResourceFilename Value="examplegrid1.lrs"/>
         <TopLine Value="39"/>
         <UnitName Value="ExampleGrid1"/>
-        <UsageCount Value="22"/>
+        <UsageCount Value="23"/>
       </Unit1>
     </Units>
     <PublishOptions>

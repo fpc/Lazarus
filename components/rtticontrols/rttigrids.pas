@@ -589,14 +589,14 @@ end;
 procedure TTICustomGrid.BeforeMoveSelection(const DCol, DRow: Integer);
 begin
   inherited BeforeMoveSelection(DCol, DRow);
-  if (FExtraBtnEditor<>nil)and(FExtraBtnEditor.Visible) then begin
+  if (FExtraBtnEditor<>nil) and (FExtraBtnEditor.Visible) then begin
     {$IFDEF DebugEditor}
     DebugEditor('BeforeMoveSelection: ', FExtraBtnEditor);
     {$ENDIF}
     EditorHiding := True;
+    FExtraBtnEditor.Parent := nil;
     UnlinkPropertyEditor(FExtraBtnEditor);
     FExtraBtnEditor.Visible := false;
-    FExtraBtnEditor.Parent := nil;
     EditorHiding := false;
   end;
 end;
@@ -693,7 +693,7 @@ begin
       PropName:=CurProp.PropName;
       PropLink.SetObjectAndProperty(CurObject,PropName);
     end;
-    if FExtraBtnEditor<>nil then begin
+    if (FExtraBtnEditor<>nil) then begin
       PropLink:=GetPropertyLinkOfComponent(FExtraBtnEditor);
       if PropLink<>nil then begin
         CurObject:=GetTIObject(ObjectIndex);
@@ -775,6 +775,7 @@ begin
   DebugEditor('doEditorHide', Editor);
   {$ENDIF}
   UnlinkPropertyEditor(Editor);
+  UnlinkPropertyEditor(FExtraBtnEditor);
   inherited DoEditorHide;
 end;
 
@@ -808,11 +809,9 @@ procedure TTICustomGrid.UnlinkPropertyEditor(aEditor: TWinControl);
 var
   PropLink: TCustomPropertyLink;
 begin
-  if not (csDestroying in componentState) then begin
-    PropLink:=GetPropertyLinkOfComponent(aEditor);
-    if PropLink<>nil then
-      PropLink.SetObjectAndProperty(nil,'');
-  end;
+  PropLink:=GetPropertyLinkOfComponent(aEditor);
+  if PropLink<>nil then
+    PropLink.SetObjectAndProperty(nil,'');
 end;
 
 constructor TTICustomGrid.Create(TheOwner: TComponent);
@@ -1240,7 +1239,7 @@ end;
 
 function TTIGridProperty.GetButtonEditorControl: TWinControl;
 begin
-  result := FButtonEditorControl;
+  Result := FButtonEditorControl;
 end;
 
 function TTIGridProperty.PropName: string;
