@@ -147,26 +147,35 @@ type
     bpaDisableGroup
     );
   TDBGBreakPointActions = set of TDBGBreakPointAction;
+  
+  TDBGBreakPointFlag = (
+    dbpfChanged,
+    dbpfAllChanged
+    );
+  TDBGBreakPointFlags = set of TDBGBreakPointFlag;
 
   TDBGBreakPoint = class(TCollectionItem)
   private
-    FGroup: TDBGBreakPointGroup;
-    FInitialEnabled: Boolean;
-    FLoading: Boolean;
-    FValid: TValidState;
-    FEnabled: Boolean;
-    FHitCount: Integer;
-    FExpression: String;
-    FSource: String;
-    FLine: Integer;
-    FFirstRun: Boolean;
     FActions: TDBGBreakPointActions;
     FDisableGroupList: TList;
-    FEnableGroupList: TList;                                  
+    FEnabled: Boolean;
+    FEnableGroupList: TList;
+    FExpression: String;
+    FFirstRun: Boolean;
+    FFlags: TDBGBreakPointFlags;
+    FGroup: TDBGBreakPointGroup;
+    FHitCount: Integer;
+    FInitialEnabled: Boolean;
+    FLine: Integer;
+    FLoading: Boolean;
+    FSource: String;
+    fUpdateLock: integer;
+    FValid: TValidState;
     function GetDebugger: TDebugger;
   protected
     procedure AssignTo(Dest: TPersistent); override;
     procedure DisableGroups;
+    procedure Changed(AllItems: boolean);
     procedure DoActionChange; virtual;
     procedure DoEnableChange; virtual;
     procedure DoExpressionChange; virtual;
@@ -199,6 +208,8 @@ type
     procedure SetExpression(const AValue: String); virtual;
     procedure SetGroup(const AValue: TDBGBreakPointGroup); virtual;
     procedure SetInitialEnabled(const AValue: Boolean); virtual;
+    procedure DoBeginUpdate; virtual;
+    procedure DoEndUpdate; virtual;
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
@@ -211,6 +222,9 @@ type
                       const OnGetGroup: TOnGetGroupByName); virtual;
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                       const OnSaveFilename: TOnSaveFilenameToConfig); virtual;
+    procedure BeginUpdate;
+    procedure EndUpdate;
+    function UpdateLockCount: integer;
   public
     property Actions: TDBGBreakPointActions read GetActions write SetActions;
     property Enabled: Boolean read GetEnabled write SetEnabled;
@@ -1017,6 +1031,16 @@ begin
     TDBGBreakPointGroup(FDisableGroupList[n]).Enabled := False;
 end;
 
+procedure TDBGBreakPoint.Changed(AllItems: boolean);
+begin
+  if fUpdateLock>0 then begin
+    Include(FFlags,dbpfChanged);
+    if AllItems then
+      Include(FFlags,dbpfAllChanged);
+  end else
+    inherited Changed(AllItems);
+end;
+
 procedure TDBGBreakPoint.DoActionChange;
 begin
   Changed(False);
@@ -1214,6 +1238,24 @@ begin
   SaveGroupList(FEnableGroupList,Path+'EnableGroups/');
 end;
 
+procedure TDBGBreakPoint.BeginUpdate;
+begin
+  inc(fUpdateLock);
+  if fUpdateLock=1 then DoBeginUpdate;
+end;
+
+procedure TDBGBreakPoint.EndUpdate;
+begin
+  dec(fUpdateLock);
+  if fUpdateLock<0 then RaiseException('TDBGBreakPoint.EndUpdate');
+  if fUpdateLock=0 then DoEndUpdate;
+end;
+
+function TDBGBreakPoint.UpdateLockCount: integer;
+begin
+  Result:=fUpdateLock;
+end;
+
 procedure TDBGBreakPoint.SetActions(const AValue: TDBGBreakPointActions);
 begin
   if FActions <> AValue
@@ -1268,6 +1310,23 @@ procedure TDBGBreakPoint.SetInitialEnabled(const AValue: Boolean);
 begin
   if FInitialEnabled=AValue then exit;
   FInitialEnabled:=AValue;
+end;
+
+procedure TDBGBreakPoint.DoBeginUpdate;
+begin
+
+end;
+
+procedure TDBGBreakPoint.DoEndUpdate;
+begin
+  if (dbpfAllChanged in FFlags) then begin
+    Exclude(FFlags,dbpfAllChanged);
+    Changed(true);
+  end;
+  if (dbpfChanged in FFlags) then begin
+    Exclude(FFlags,dbpfChanged);
+    Changed(false);
+  end;
 end;
 
 procedure TDBGBreakPoint.SetHitCount(const AValue: Integer);
@@ -2228,6 +2287,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.32  2003/05/28 17:40:55  mattias
+  recuced update notifications
+
   Revision 1.31  2003/05/28 17:27:29  mattias
   recuced update notifications
 
