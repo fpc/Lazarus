@@ -146,8 +146,7 @@ end;
 procedure TPromptDialog.Paint;
 begin
   Inherited Paint;
-  Canvas.Brush.Color := clForm;
-  Canvas.Brush.Style := bsSolid;
+  Canvas.Brush := Self.Brush;
   Canvas.TextRect(TextBox, 0, 0, MSG, TextStyle);
   if assigned (FBitmap) then
     Canvas.CopyRect(Bounds(cBitmapX, cBitmapY,FBitmap.Width,FBitmap.Height),
@@ -378,6 +377,9 @@ end;
 
 {
    $Log$
+   Revision 1.10  2003/10/16 16:43:57  ajgenius
+   fix opaque brush
+
    Revision 1.9  2003/10/15 20:33:37  ajgenius
    add csForm, start fixing Style matching for syscolors and fonts
 
