@@ -25,7 +25,8 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Buttons, XMLCfg, ObjectInspector,
-  ExtCtrls, StdCtrls, EditorOptions, LResources, LazConf, Dialogs, ExtToolDialog;
+  ExtCtrls, StdCtrls, EditorOptions, LResources, LazConf, Dialogs,
+  ExtToolDialog, IDEProcs;
 
 const
   EnvOptsVersion: integer = 101;
@@ -49,11 +50,15 @@ type
   end;
   
   TDebuggerType = (dtNone, dtGnuDebugger);
-  
+
+  TPascalExtType = (petNone, petPAS, petPP);
+
 const
   DebuggerName : array[TDebuggerType] of string = (
     '(None)','GNU debugger (gdb)'
   );
+  
+  PascalExtension: array[TPascalExtType] of string = ('', '.pas', '.pp');
 
 type
 
@@ -110,6 +115,9 @@ type
     
     // external tools
     fExternalTools: TExternalToolList;
+    
+    // naming conventions
+    fPascalFileExtension: TPascalExtType;
 
     procedure SetFileName(const NewFilename: string);
     procedure AddToRecentList(const AFilename: string; RecentList: TStringList;
@@ -199,6 +207,9 @@ type
     // external tools
     property ExternalTools: TExternalToolList
        read fExternalTools write fExternalTools;
+       
+    property PascalFileExtension: TPascalExtType 
+       read fPascalFileExtension write fPascalFileExtension;
   end;
 
   //----------------------------------------------------------------------------
@@ -216,6 +227,7 @@ type
     procedure SetupDesktopPage;
     procedure SetupBackupPage;
     procedure SetupFilesPage;
+    procedure SetupNamingPage;
     procedure SetComboBoxText(AComboBox:TComboBox; const AText:AnsiString);
 
   published
@@ -290,6 +302,9 @@ type
     BakOtherMaxCounterComboBox: TComboBox;
     BakOtherSubDirLabel: TLabel;
     BakOtherSubDirComboBox: TComboBox;
+    
+    // naming conventions
+    PascalFileExtRadiogroup: TRadioGroup;
 
     // buttons at bottom
     OkButton: TButton;
@@ -317,7 +332,7 @@ var
   EnvironmentOptions: TEnvironmentOptions;
 
 function DebuggerNameToType(const s: string): TDebuggerType;
-
+function PascalExtToType(const Ext: string): TPascalExtType;
 
 implementation
 
@@ -328,6 +343,13 @@ begin
   Result:=dtNone;
 end;
 
+function PascalExtToType(const Ext: string): TPascalExtType;
+begin
+  if Ext<>'' then
+    for Result:=Low(TPascalExtType) to High(TPascalExtType) do
+      if CompareFilenames(Ext,PascalExtension[Result])=0 then exit;
+  Result:=petNone;
+end;
 
 { TEnvironmentOptions }
 
@@ -400,6 +422,8 @@ begin
   
   // external tools
   fExternalTools:=TExternalToolList.Create;
+  
+  fPascalFileExtension:=petPAS;
 end;
 
 destructor TEnvironmentOptions.Destroy;
@@ -441,7 +465,7 @@ var XMLConfig: TXMLConfig;
     ARect.Bottom:=XMLConfig.GetValue(AKey+'/Bottom',ARect.Bottom);
   end;
 
-  procedure LoadBackupInfo(var BackupInfo: TBackupInfo; Path:string);
+  procedure LoadBackupInfo(var BackupInfo: TBackupInfo; const Path:string);
   var i:integer;
   begin
     with BackupInfo do begin
@@ -464,7 +488,7 @@ var XMLConfig: TXMLConfig;
     end;
   end;
 
-  procedure LoadRecentList(List: TStringList; Path: string);
+  procedure LoadRecentList(List: TStringList; const Path: string);
   var i,Count: integer;
     s: string;
   begin
@@ -476,7 +500,8 @@ var XMLConfig: TXMLConfig;
     end;
   end;
   
-  procedure LoadDebuggerType(var ADebuggerType: TDebuggerType; Path: string);
+  procedure LoadDebuggerType(var ADebuggerType: TDebuggerType; 
+    const Path: string);
   var i:integer;
   begin
     i:=XMLConfig.GetValue(Path+'DebuggerType/Value',5);
@@ -485,6 +510,14 @@ var XMLConfig: TXMLConfig;
     else
       ADebuggerType:=dtNone;
     end;
+  end;
+  
+  procedure LoadPascalFileExt(const Path: string);
+  begin
+    fPascalFileExtension:=PascalExtToType(XMLConfig.GetValue(
+      Path+'Naming/PascalFileExtension',PascalExtension[petPAS]));
+    if fPascalFileExtension=petNone then
+      fPascalFileExtension:=petPAS;
   end;
 
 begin
@@ -572,6 +605,9 @@ begin
        
     // external tools
     fExternalTools.Load(XMLConfig,'EnvironmentOptions/ExternalTools/');
+    
+    // naming
+    LoadPascalFileExt('EnvironmentOptions/');
 
     XMLConfig.Free;
 
@@ -713,6 +749,10 @@ begin
     // external tools
     fExternalTools.Save(XMLConfig,'EnvironmentOptions/ExternalTools/');
 
+    // naming
+    XMLConfig.SetValue('EnvironmentOptions/Naming/PascalFileExtension',
+      PascalExtension[fPascalFileExtension]);
+
     XMLConfig.Flush;
     XMLConfig.Free;
 
@@ -772,11 +812,13 @@ begin
       Pages[0]:='Desktop';
       Pages.Add('Files');
       Pages.Add('Backup');
+      Pages.Add('Naming');
     end;
 
     SetupDesktopPage;
     SetupFilesPage;
     SetupBackupPage;
+    SetupNamingPage;
     
     NoteBook.Show;
 
@@ -790,7 +832,7 @@ begin
       Top:=Self.ClientHeight-Height-15;
       Caption:='Cancel';
       OnClick:=@CancelButtonClick;
-      Show;
+      Visible:=true;
     end;
 
     OkButton:=TButton.Create(Self);
@@ -803,7 +845,7 @@ begin
       Top:=CancelButton.Top;
       Caption:='Ok';
       OnClick:=@OkButtonClick;
-      Show;
+      Visible:=true;
     end;
 
   end;
@@ -831,7 +873,7 @@ begin
     Width:=(MaxX div 2) - 15;
     Height:=108;
     Caption:='Auto save';
-    Show;
+    Visible:=true;
   end;
   
   AutoSaveEditorFilesCheckBox:=TCheckBox.Create(Self);
@@ -844,7 +886,7 @@ begin
     Height:=20;
     Caption:='Editor files';
     Enabled:=false;
-    Show;
+    Visible:=true;
   end;
   
   AutoSaveProjectCheckBox:=TCheckBox.Create(Self);
@@ -857,7 +899,7 @@ begin
     Height:=20;
     Caption:='Project';
     Enabled:=false;
-    Show;
+    Visible:=true;
   end;
 
   AutoSaveIntervalInSecsLabel:=TLabel.Create(Self);
@@ -870,7 +912,7 @@ begin
     Height:=23;
     Caption:='Interval in secs';
     Enabled:=false;
-    Show;
+    Visible:=true;
   end;
 
   AutoSaveIntervalInSecsComboBox:=TComboBox.Create(Self);
@@ -890,7 +932,7 @@ begin
       EndUpdate;
     end;
     Enabled:=false;
-    Show;
+    Visible:=true;
   end;
 
 
@@ -904,7 +946,7 @@ begin
     Width:=AutoSaveGroupBox.Width;
     Height:=50;
     Caption:='Windows';
-    Show;
+    Visible:=true;
   end;
   
   SaveWindowPositionsCheckBox:=TCheckBox.Create(Self);
@@ -916,7 +958,7 @@ begin
     Width:=WindowsGroupBox.ClientWidth-2*Left;
     Height:=23;
     Caption:='Save window positions';
-    Show;
+    Visible:=true;
   end;
 
   // desktop files
@@ -929,7 +971,7 @@ begin
     Width:=WindowsGroupBox.Width;
     Height:=90;
     Caption:='Desktop files';
-    Show;
+    Visible:=true;
   end;
 
   SaveDesktopSettingsToFileButton:=TButton.Create(Self);
@@ -942,7 +984,7 @@ begin
     Height:=25;
     Caption:='Save desktop settings to file';
     OnClick:=@SaveDesktopSettingsToFileButtonClick;
-    Show;
+    Visible:=true;
   end;
 
   LoadDesktopSettingsFromFileButton:=TButton.Create(Self);
@@ -955,7 +997,7 @@ begin
     Height:=25;
     Caption:='Load desktop settings from file';
     OnClick:=@LoadDesktopSettingsFromFileButtonClick;
-    Show;
+    Visible:=true;
   end;
   
 
@@ -969,7 +1011,7 @@ begin
     Width:=AutoSaveGroupBox.Width;
     Height:=203;
     Caption:='Form editor';
-    Show;
+    Visible:=true;
   end;
   
   DisplayGridCheckBox:=TCheckBox.Create(Self);
@@ -982,7 +1024,7 @@ begin
     Height:=23;
     Caption:='Display grid';
     Enabled:=false;
-    Show;
+    Visible:=true;
   end;
   
   SnapToGridCheckBox:=TCheckBox.Create(Self);
@@ -995,7 +1037,7 @@ begin
     Height:=23;
     Caption:='Snap to grid';
     Enabled:=false;
-    Show;
+    Visible:=true;
   end;
 
   ShowComponentCaptionsCheckBox:=TCheckBox.Create(Self);
@@ -1008,7 +1050,7 @@ begin
     Height:=23;
     Caption:='Show component captions';
     Enabled:=false;
-    Show;
+    Visible:=true;
   end;
 
   ShowEditorHintsCheckBox:=TCheckBox.Create(Self);
@@ -1021,7 +1063,7 @@ begin
     Height:=23;
     Caption:='Show editor hints';
     Enabled:=false;
-    Show;
+    Visible:=true;
   end;
 
   AutoCreateFormsCheckBox:=TCheckBox.Create(Self);
@@ -1034,7 +1076,7 @@ begin
     Height:=23;
     Caption:='Auto create forms';
     Enabled:=false;
-    Show;
+    Visible:=true;
   end;
 
   GridSizeXLabel:=TLabel.Create(Self);
@@ -1047,7 +1089,7 @@ begin
     Height:=20;
     Caption:='Grid size X';
     Enabled:=false;
-    Show;
+    Visible:=true;
   end;
   
   GridSizeXComboBox:=TComboBox.Create(Self);
@@ -1067,7 +1109,7 @@ begin
       EndUpdate;
     end;
     Enabled:=false;
-    Show;
+    Visible:=true;
   end;
   
   GridSizeYLabel:=TLabel.Create(Self);
@@ -1080,7 +1122,7 @@ begin
     Height:=20;
     Caption:='Grid size Y';
     Enabled:=false;
-    Show;
+    Visible:=true;
   end;
 
   GridSizeYComboBox:=TComboBox.Create(Self);
@@ -1100,7 +1142,7 @@ begin
       EndUpdate;
     end;
     Enabled:=false;
-    Show;
+    Visible:=true;
   end;
 
   // object inspector
@@ -1113,7 +1155,7 @@ begin
     Width:=FormEditorGroupBox.Width;
     Height:=50;
     Caption:='Object inspector';
-    Show;
+    Visible:=true;
   end;
 
   BackgroundColorButton:=TColorButton.Create(Self);
@@ -1124,7 +1166,7 @@ begin
     Top:=2;
     Width:=50;
     Height:=25;
-    Show;
+    Visible:=true;
   end;
 
   BackgroundColorLabel:=TLabel.Create(Self);
@@ -1136,7 +1178,7 @@ begin
     Width:=ObjectInspectorGroupBox.ClientWidth-Left-5;
     Height:=23;
     Caption:='Background color';
-    Show;
+    Visible:=true;
   end;
 
 end;
@@ -1155,7 +1197,7 @@ begin
     Width:=MaxX-Left*2;
     Height:=23;
     Caption:='Notes: ';
-    Show;
+    Visible:=true;
   end;
 
   BackupProjectGroupBox:=TGroupBox.Create(Self);
@@ -1167,7 +1209,7 @@ begin
     Width:=(MaxX div 2) - 11;
     Height:=260;
     Caption:='Project files';
-    Show;
+    Visible:=true;
   end;
 
   BakProjTypeRadioGroup:=TRadioGroup.Create(Self);
@@ -1190,7 +1232,7 @@ begin
       EndUpdate;
     end;
     OnClick:=@BakTypeRadioGroupClick;
-    Show;
+    Visible:=true;
   end;
 
   BakProjAddExtLabel:=TLabel.Create(Self);
@@ -1202,7 +1244,7 @@ begin
     Width:=BakProjTypeRadioGroup.Width-62;
     Height:=23;
     Caption:='User defined extension';
-    Show;
+    Visible:=true;
   end;
 
   BakProjAddExtComboBox:=TComboBox.Create(Self);
@@ -1219,7 +1261,7 @@ begin
       Add('old');
       EndUpdate;
     end;
-    Show;
+    Visible:=true;
   end;
 
   BakProjMaxCounterLabel:=TLabel.Create(Self);
@@ -1231,7 +1273,7 @@ begin
     Width:=110;
     Height:=23;
     Caption:='Maximum counter';
-    Show;
+    Visible:=true;
   end;
 
   BakProjMaxCounterComboBox:=TComboBox.Create(Self);
@@ -1252,7 +1294,7 @@ begin
       Add(BakMaxCounterInfiniteTxt);
       EndUpdate;
     end;
-    Show;
+    Visible:=true;
   end;
 
   BakProjSubDirLabel:=TLabel.Create(Self);
@@ -1264,7 +1306,7 @@ begin
     Width:=110;
     Height:=23;
     Caption:='Sub directory';
-    Show;
+    Visible:=true;
   end;
 
   BakProjSubDirComboBox:=TComboBox.Create(Self);
@@ -1281,7 +1323,7 @@ begin
       Add('backup');
       EndUpdate;
     end;
-    Show;
+    Visible:=true;
   end;
 
   BackupOtherGroupBox:=TGroupBox.Create(Self);
@@ -1293,7 +1335,7 @@ begin
     Width:=(MaxX div 2) - 11;
     Height:=260;
     Caption:='Other files';
-    Show;
+    Visible:=true;
   end;
 
   BakOtherTypeRadioGroup:=TRadioGroup.Create(Self);
@@ -1316,7 +1358,7 @@ begin
       EndUpdate;
     end;
     OnClick:=@BakTypeRadioGroupClick;
-    Show;
+    Visible:=true;
   end;
 
   BakOtherAddExtLabel:=TLabel.Create(Self);
@@ -1328,7 +1370,7 @@ begin
     Width:=BakOtherTypeRadioGroup.Width-62;
     Height:=23;
     Caption:='User defined extension';
-    Show;
+    Visible:=true;
   end;
 
   BakOtherAddExtComboBox:=TComboBox.Create(Self);
@@ -1345,7 +1387,7 @@ begin
       Add('old');
       EndUpdate;
     end;
-    Show;
+    Visible:=true;
   end;
 
   BakOtherMaxCounterLabel:=TLabel.Create(Self);
@@ -1357,7 +1399,7 @@ begin
     Width:=110;
     Height:=23;
     Caption:='Maximum counter';
-    Show;
+    Visible:=true;
   end;
 
   BakOtherMaxCounterComboBox:=TComboBox.Create(Self);
@@ -1378,7 +1420,7 @@ begin
       Add(BakMaxCounterInfiniteTxt);
       EndUpdate;
     end;
-    Show;
+    Visible:=true;
   end;
 
   BakOtherSubDirLabel:=TLabel.Create(Self);
@@ -1390,7 +1432,7 @@ begin
     Width:=110;
     Height:=23;
     Caption:='Sub directory';
-    Show;
+    Visible:=true;
   end;
 
   BakOtherSubDirComboBox:=TComboBox.Create(Self);
@@ -1407,7 +1449,7 @@ begin
       Add('backup');
       EndUpdate;
     end;
-    Show;
+    Visible:=true;
   end;
 end;
 
@@ -1426,7 +1468,7 @@ begin
     Width:=150;
     Height:=23;
     Caption:='Max recent files';
-    Show;
+    Visible:=true;
   end;
 
   MaxRecentOpenFilesComboBox:=TComboBox.Create(Self);
@@ -1447,7 +1489,7 @@ begin
       Add('30');
       EndUpdate;
     end;
-    Show;
+    Visible:=true;
   end;
 
   MaxRecentProjectFilesLabel:=TLabel.Create(Self);
@@ -1459,7 +1501,7 @@ begin
     Width:=MaxRecentOpenFilesLabel.Width;
     Height:=MaxRecentOpenFilesLabel.Height;
     Caption:='Max recent project files';
-    Show;
+    Visible:=true;
   end;
 
   MaxRecentProjectFilesComboBox:=TComboBox.Create(Self);
@@ -1480,7 +1522,7 @@ begin
       Add('30');
       EndUpdate;
     end;
-    Show;
+    Visible:=true;
   end;
   
   OpenLastProjectAtStartCheckBox:=TCheckBox.Create(Self);
@@ -1492,7 +1534,7 @@ begin
     Width:=MaxX-10;
     Height:=23;
     Caption:='Open last project at start';
-    Show;
+    Visible:=true;
   end;
 
   LazarusDirLabel:=TLabel.Create(Self);
@@ -1505,7 +1547,7 @@ begin
     Width:=MaxX-10;
     Height:=23;
     Caption:='Lazarus directory (default for all projects)';
-    Show;
+    Visible:=true;
   end;
 
   LazarusDirComboBox:=TComboBox.Create(Self);
@@ -1521,7 +1563,7 @@ begin
       Add(ExtractFilePath(ParamStr(0)));
       EndUpdate;
     end;
-    Show;
+    Visible:=true;
   end;
 
   CompilerPathLabel:=TLabel.Create(Self);
@@ -1533,7 +1575,7 @@ begin
     Width:=LazarusDirLabel.Width;
     Height:=25;
     Caption:='Compiler path (ppc386)';
-    Show;
+    Visible:=true;
   end;
 
   CompilerPathComboBox:=TComboBox.Create(Self);
@@ -1550,7 +1592,7 @@ begin
       Add('/opt/fpc/ppc386');
       EndUpdate;
     end;
-    Show;
+    Visible:=true;
   end;
 
   FPCSourceDirLabel:=TLabel.Create(Self);
@@ -1562,7 +1604,7 @@ begin
     Width:=LazarusDirLabel.Width;
     Height:=23;
     Caption:='FPC source directory';
-    Show;
+    Visible:=true;
   end;
 
   FPCSourceDirComboBox:=TComboBox.Create(Self);
@@ -1578,7 +1620,7 @@ begin
       Add('');
       EndUpdate;
     end;
-    Show;
+    Visible:=true;
   end;
   
   DebuggerPathLabel:=TLabel.Create(Self);
@@ -1590,7 +1632,7 @@ begin
     Width:=FPCSourceDirLabel.Width;
     Height:=25;
     Caption:='Debugger type and path';
-    Show;
+    Visible:=true;
   end;
 
   DebuggerTypeComboBox:=TComboBox.Create(Self);
@@ -1607,7 +1649,7 @@ begin
         Add(DebuggerName[ADebuggerType]);
       EndUpdate;
     end;
-    Show;
+    Visible:=true;
   end;
 
   DebuggerPathComboBox:=TComboBox.Create(Self);
@@ -1625,7 +1667,7 @@ begin
       Add('/opt/fpc/gdb');
       EndUpdate;
     end;
-    Show;
+    Visible:=true;
   end;
 
   TestBuildDirLabel:=TLabel.Create(Self);
@@ -1637,7 +1679,7 @@ begin
     Width:=LazarusDirLabel.Width;
     Height:=23;
     Caption:='Directory for building test projects';
-    Show;
+    Visible:=true;
   end;
 
   TestBuildDirComboBox:=TComboBox.Create(Self);
@@ -1656,8 +1698,35 @@ begin
       Add('c:/windows/temp');
       EndUpdate;
     end;
-    Show;
+    Visible:=true;
   end;
+end;
+
+procedure TEnvironmentOptionsDialog.SetupNamingPage;
+var //MaxX:integer;
+  pe: TPascalExtType;
+begin
+  //MaxX:=ClientWidth-5;
+
+  PascalFileExtRadiogroup:=TRadioGroup.Create(Self);
+  with PascalFileExtRadiogroup do begin
+    Name:='PascalFileExtRadiogroup';
+    Parent:=NoteBook.Page[3];
+    Left:=5;
+    Top:=4;
+    Width:=150;
+    Height:=80;
+    Caption:='Default pascal extension';
+    with Items do begin
+      BeginUpdate;
+      for pe:=Low(TPascalExtType) to High(TPascalExtType) do
+        if pe<>petNone then
+          Add(PascalExtension[pe]);
+      EndUpdate;
+    end;
+    Visible:=true;
+  end;
+
 end;
 
 procedure TEnvironmentOptionsDialog.BakTypeRadioGroupClick(Sender: TObject);
@@ -1753,6 +1822,7 @@ end;
 
 procedure TEnvironmentOptionsDialog.ReadSettings(
   AnEnvironmentOptions: TEnvironmentOptions);
+var i: integer;
 begin
   with AnEnvironmentOptions do begin
     // auto save
@@ -1831,6 +1901,11 @@ begin
         SetComboBoxText(BakOtherSubDirComboBox,BakNoSubDirTxt);      
     end;
     BakTypeRadioGroupClick(BakOtherTypeRadioGroup);
+    
+    // naming
+    for i:=0 to PascalFileExtRadiogroup.Items.Count-1 do
+      if PascalFileExtRadiogroup.Items[i]=PascalExtension[PascalFileExtension]
+      then PascalFileExtRadiogroup.ItemIndex:=i;
   end;
 end;
 
@@ -1914,6 +1989,13 @@ begin
       else
         SubDirectory:=BakOtherSubDirComboBox.Text;
     end;
+    
+    // naming
+    if PascalFileExtRadiogroup.ItemIndex>=0 then
+      PascalFileExtension:=PascalExtToType(
+        PascalFileExtRadiogroup.Items[PascalFileExtRadiogroup.ItemIndex])
+    else
+      PascalFileExtension:=petPAS;
   end;
 end;
 

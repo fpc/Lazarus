@@ -70,7 +70,7 @@ const
   
   LazSyntaxHighlighterClasses: array[TLazSyntaxHighlighter] of TCustomSynClass =
     ( nil, nil, TSynPasSyn, TSynPasSyn, nil, nil, TSynHTMLSyn, TSynCPPSyn);
-
+    
 type
   { TEditOptLanguageInfo stores lazarus IDE additional information
     of a highlighter, such as samplesource, which sample lines are special
@@ -94,6 +94,7 @@ type
     MappedAttributes: TStringList; // map attributes to pascal
     constructor Create;
     destructor Destroy; override;
+    function GetDefaultFilextension: string;
     function SampleLineToAddAttr(Line: integer): TAdditionalHilightAttribute;
   end;
 
@@ -108,6 +109,7 @@ type
     function FindByName(const Name: string): integer;
     function FindByClass(CustomSynClass: TCustomSynClass): integer;
     function FindByType(AType: TLazSyntaxHighlighter): integer;
+    function GetDefaultFilextension(AType: TLazSyntaxHighlighter): string;
     property Items[Index: integer]: TEditOptLanguageInfo read GetInfos; default;
   end;
 
@@ -639,6 +641,19 @@ begin
   Result:=ahaNone;
 end;
 
+function TEditOptLanguageInfo.GetDefaultFilextension: string;
+var p: integer;
+begin
+  // read the first file extension
+  p:=1;
+  while (p<=length(FileExtensions)) and (FileExtensions[p]<>';') do
+    inc(p);
+  if p>1 then
+    Result:='.'+copy(FileExtensions,1,p-1)
+  else
+    Result:='';
+end;
+
 { TEditOptLangList }
 
 function TEditOptLangList.GetInfos(
@@ -802,6 +817,17 @@ begin
   Result:=Count-1;
   while (Result>=0) and (Items[Result].TheType<>AType) do
     dec(Result);
+end;
+
+function TEditOptLangList.GetDefaultFilextension(
+  AType: TLazSyntaxHighlighter): string;
+var i: integer;
+begin
+  i:=FindByType(AType);
+  if i>=0 then
+    Result:=Items[i].GetDefaultFilextension
+  else
+    Result:='';
 end;
 
 { TEditorOptions }

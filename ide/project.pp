@@ -616,7 +616,8 @@ begin
   case fProjectType of
    ptProgram, ptApplication, ptCustomProgram:
     begin
-      NewPrgBuf:=CodeToolBoss.CreateFile('project1.pas');
+      NewPrgBuf:=CodeToolBoss.CreateFile(
+        'project1'+ProjectDefaultExt[fProjectType]);
       PrgUnitInfo:=TUnitInfo.Create(NewPrgBuf);
       PrgUnitInfo.IsPartOfProject:=true;
       PrgUnitInfo.SyntaxHighlighter:=
@@ -1268,6 +1269,9 @@ end.
 
 {
   $Log$
+  Revision 1.44  2001/12/02 11:03:36  lazarus
+  MG: added default pascal file extension option
+
   Revision 1.43  2001/12/01 22:17:26  lazarus
   MG: added jump-history
 

@@ -346,6 +346,7 @@ type
     procedure DoCompleteCodeAtCursor;
     function DoInitDebugger: TModalResult;
     function DoCheckSyntax: TModalResult;
+    procedure UpdateDefaultPascalFileExtensions;
 
     procedure LoadMainMenu;
     procedure LoadSpeedbuttons;
@@ -463,6 +464,7 @@ begin
     SetLazarusDefaultFilename;
     Load(false);
   end;
+  UpdateDefaultPascalFileExtensions;
 
   EditorOpts:=TEditorOptions.Create;
   EditorOpts.Load;
@@ -1984,18 +1986,6 @@ end;
 
 procedure TMainIDE.LoadDesktopSettings(
   TheEnvironmentOptions: TEnvironmentOptions);
-var
-  MacroValueChanged: boolean;
-  
-  procedure ChangeMacroValue(const MacroName, NewValue: string);
-  begin
-    with CodeToolBoss.GlobalValues do begin
-      if Variables[ExternalMacroStart+MacroName]=NewValue then exit;
-      Variables[ExternalMacroStart+MacroName]:=NewValue;
-    end;
-    MacroValueChanged:=true;
-  end;
-  
 begin
   with TheEnvironmentOptions do begin
     if WindowPositionsValid then begin
@@ -2009,13 +1999,21 @@ begin
       ObjectInspectorOptions.AssignTo(ObjectInspector1);
     end;
   end;
-  // set global variables
-  ChangeMacroValue('LazarusSrcDir',TheEnvironmentOptions.LazarusDirectory);
-  ChangeMacroValue('FPCSrcDir',TheEnvironmentOptions.FPCSourceDirectory);
-  if MacroValueChanged then CodeToolBoss.DefineTree.ClearCache;
-  // ToDo:
-  //  - rescan compiler
-  //  - rescan fpc source directory
+end;
+
+procedure TMainIDE.UpdateDefaultPascalFileExtensions;
+var nut: TNewUnitType;
+  npt: TProjectType;
+  DefPasExt: string;
+begin
+  // change default pascal file extensions
+  DefPasExt:=PascalExtension[EnvironmentOptions.PascalFileExtension];
+  for nut:=Low(TNewUnitType) to High(TNewUnitType) do
+    if (UnitTypeDefaultExt[nut]='.pas') or (UnitTypeDefaultExt[nut]='.pp')
+    then UnitTypeDefaultExt[nut]:=DefPasExt;
+  for npt:=Low(TProjectType) to High(TProjectType) do
+    if (ProjectDefaultExt[npt]='.pas') or (ProjectDefaultExt[npt]='.pp')
+    then ProjectDefaultExt[npt]:=DefPasExt;
 end;
 
 procedure TMainIDE.OnLoadEnvironmentSettings(Sender: TObject; 
@@ -2032,6 +2030,17 @@ end;
 
 procedure TMainIDE.mnuEnvGeneralOptionsClicked(Sender : TObject);
 var EnvironmentOptionsDialog: TEnvironmentOptionsDialog;
+  MacroValueChanged: boolean;
+  
+  procedure ChangeMacroValue(const MacroName, NewValue: string);
+  begin
+    with CodeToolBoss.GlobalValues do begin
+      if Variables[ExternalMacroStart+MacroName]=NewValue then exit;
+      Variables[ExternalMacroStart+MacroName]:=NewValue;
+    end;
+    MacroValueChanged:=true;
+  end;
+  
 Begin
   EnvironmentOptionsDialog:=TEnvironmentOptionsDialog.Create(Application);
   try
@@ -2045,6 +2054,15 @@ Begin
       if ShowModal=mrOk then begin
         // load settings from EnvironmentOptionsDialog to EnvironmentOptions
         WriteSettings(EnvironmentOptions);
+        UpdateDefaultPascalFileExtensions;
+        // set global variables
+        ChangeMacroValue('LazarusSrcDir',EnvironmentOptions.LazarusDirectory);
+        ChangeMacroValue('FPCSrcDir',EnvironmentOptions.FPCSourceDirectory);
+        if MacroValueChanged then CodeToolBoss.DefineTree.ClearCache;
+        // ToDo:
+        //  - rescan compiler
+        //  - rescan fpc source directory
+        
         // save to disk
         EnvironmentOptions.Save(false);
       end;
@@ -2216,6 +2234,7 @@ var ActiveSrcEdit:TSourceEditor;
   SaveDialog:TSaveDialog;
   NewUnitName,NewFilename,NewPageName:string;
   AText,ACaption,CompResourceCode,TestFilename: string;
+  SaveAsFileExt, SaveAsFilename: string;
   MemStream,BinCompStream,TxtCompStream:TMemoryStream;
   Driver: TAbstractObjectWriter;
   Writer:TWriter;
@@ -2282,14 +2301,29 @@ writeln('TMainIDE.DoSaveEditorUnit B2 ',ResourceCode<>nil);
     // let user choose a filename
     SaveDialog:=TSaveDialog.Create(Application);
     try
-      SaveDialog.Title:='Save '+ActiveUnitInfo.UnitName+' (*.pas)';
-      SaveDialog.FileName:=lowercase(ActiveUnitInfo.UnitName)+'.pas';
+      // try to keep the old filename and extension
+      SaveAsFileExt:=ExtractFileExt(ActiveUnitInfo.FileName);
+      if SaveAsFileExt='' then begin
+        if ActiveSrcEdit.SyntaxHighlighterType in [lshFreePascal, lshDelphi]
+        then
+          SaveAsFileExt:=PascalExtension[EnvironmentOptions.PascalFileExtension]
+        else
+          SaveAsFileExt:=EditorOpts.HighlighterList.GetDefaultFilextension(
+            ActiveSrcEdit.SyntaxHighlighterType);
+      end;
+      SaveAsFilename:=CodeToolBoss.GetSourceName(ActiveUnitInfo.Source);
+      if SaveAsFilename='' then
+        SaveAsFilename:=ActiveUnitInfo.UnitName;
+      if SaveAsFilename='' then
+        SaveAsFilename:='noname';
+      SaveDialog.Title:='Save '+SaveAsFilename+' (*'+SaveAsFileExt+')';
+      SaveDialog.FileName:=SaveAsFilename+SaveAsFileExt;
       SaveDialog.InitialDir:=EnvironmentOptions.LastOpenDialogDir;
       if SaveDialog.Execute then begin
         NewFilename:=ExpandFilename(SaveDialog.Filename);
         EnvironmentOptions.LastOpenDialogDir:=ExtractFilePath(NewFilename);
         if ExtractFileExt(NewFilename)='' then
-          NewFilename:=NewFilename+'.pas';
+          NewFilename:=NewFilename+SaveAsFileExt;
         if FileExists(NewFilename) then begin
           ACaption:='Overwrite file?';
           AText:='A file "'+NewFilename+'" already exists.'#13'Replace it?';
@@ -4923,6 +4957,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.161  2001/12/02 11:03:35  lazarus
+  MG: added default pascal file extension option
+
   Revision 1.160  2001/12/01 22:17:26  lazarus
   MG: added jump-history
 
