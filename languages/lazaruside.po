@@ -234,6 +234,10 @@ msgstr ""
 msgid "Quit"
 msgstr ""
 
+#: lazarusidestrconsts:lismenucleandirectory
+msgid "Clean directory"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuundo
 msgid "Undo"
 msgstr ""
@@ -518,11 +522,11 @@ msgstr ""
 msgid "Project Inspector"
 msgstr ""
 
-#: lazarusidestrconsts:lismenuaddunittoproject
-msgid "Add active unit to Project"
+#: lazarusidestrconsts:lismenuaddtoproject
+msgid "Add editor file to Project"
 msgstr ""
 
-#: lazarusidestrconsts:lismenuremoveunitfromproject
+#: lazarusidestrconsts:lismenuremovefromproject
 msgid "Remove from Project"
 msgstr ""
 
@@ -2514,6 +2518,10 @@ msgstr ""
 msgid "Pass Options To The Linker (Delimiter is space)"
 msgstr ""
 
+#: lazarusidestrconsts:liscotargetosspecificoptions
+msgid "Target OS specific options"
+msgstr ""
+
 #: lazarusidestrconsts:dlgverbosity
 msgid "Verbosity:"
 msgstr ""
@@ -3706,6 +3714,10 @@ msgstr ""
 msgid "Codetools defines editor"
 msgstr ""
 
+#: lazarusidestrconsts:lismenurescanfpcsourcedirectory
+msgid "Rescan FPC source directory"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecmakeresourcestring
 msgid "Make resource string"
 msgstr ""
@@ -4108,6 +4120,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lislazbuildok
 msgid "Ok"
+msgstr ""
+
+#: lazarusidestrconsts:liscldirkeepalltextfiles
+msgid "Keep all text files"
 msgstr ""
 
 #: lazarusidestrconsts:lislazbuildcancel
@@ -6832,5 +6848,25 @@ msgstr ""
 
 #: lazarusidestrconsts:lisctdefvariablename
 msgid "Variable Name"
+msgstr ""
+
+#: lazarusidestrconsts:liscldircleansubdirectories
+msgid "Clean sub directories"
+msgstr ""
+
+#: lazarusidestrconsts:liscldirremovefilesmatchingfilter
+msgid "Remove files matching filter"
+msgstr ""
+
+#: lazarusidestrconsts:liscldirsimplesyntaxeginsteadof
+msgid "Simple Syntax (e.g. * instead of .*)"
+msgstr ""
+
+#: lazarusidestrconsts:liscldirkeepfilesmatchingfilter
+msgid "Keep files matching filter"
+msgstr ""
+
+#: lazarusidestrconsts:liscldircleandirectory
+msgid "Clean Directory"
 msgstr ""
 

@@ -278,10 +278,6 @@ msgstr "Добавить &наблюдение у курсора"
 msgid "Add active unit to a package"
 msgstr "Добавить активный модуль к проекту"
 
-#: lazarusidestrconsts:lismenuaddunittoproject
-msgid "Add active unit to Project"
-msgstr "Добавить текущий модуль к проекту"
-
 #: lazarusidestrconsts:lispckeditaddanitem
 msgid "Add an item"
 msgstr "Добавить элемент"
@@ -289,6 +285,10 @@ msgstr "Добавить элемент"
 #: lazarusidestrconsts:liscodetempladdcodetemplate
 msgid "Add code template"
 msgstr "Добавить шаблон кода"
+
+#: lazarusidestrconsts:lismenuaddtoproject
+msgid "Add editor file to Project"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2paddfile
 msgid "Add File"
@@ -834,9 +834,17 @@ msgstr "Политика вставки частей класса"
 msgid "Clean all"
 msgstr "Очистить всё"
 
+#: lazarusidestrconsts:lismenucleandirectory
+msgid "Clean directory"
+msgstr ""
+
 #: lazarusidestrconsts:liscleanlazarussource
 msgid "Clean Lazarus Source"
 msgstr "Очистить исходники Lazarus"
+
+#: lazarusidestrconsts:liscldircleansubdirectories
+msgid "Clean sub directories"
+msgstr ""
 
 #: lazarusidestrconsts:lislazbuildcleanbuild
 msgid "Clean+Build"
@@ -2914,6 +2922,10 @@ msgstr "Junja"
 msgid "Kana"
 msgstr "Kana"
 
+#: lazarusidestrconsts:liscldirkeepalltextfiles
+msgid "Keep all text files"
+msgstr ""
+
 #: lazarusidestrconsts:dlgkeepcaretx
 msgid "Keep Caret X"
 msgstr "Сохранять курсор по X"
@@ -2921,6 +2933,10 @@ msgstr "Сохранять курсор по X"
 #: lazarusidestrconsts:dlgcokeepvarsreg
 msgid "Keep certain variables in registers"
 msgstr "Хранить нек. переменные в регистрах"
+
+#: lazarusidestrconsts:liscldirkeepfilesmatchingfilter
+msgid "Keep files matching filter"
+msgstr ""
 
 #: lazarusidestrconsts:dlgforwardprocskeeporder
 msgid "Keep order of procedures"
@@ -4242,7 +4258,11 @@ msgstr "Удалить файл %s%s%s%s из пакета %s%s%s?"
 msgid "Remove file?"
 msgstr "Удалить файл?"
 
-#: lazarusidestrconsts:lismenuremoveunitfromproject
+#: lazarusidestrconsts:liscldirremovefilesmatchingfilter
+msgid "Remove files matching filter"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuremovefromproject
 msgid "Remove from Project"
 msgstr "Убрать из проекта"
 
@@ -4309,6 +4329,10 @@ msgstr "Отчет"
 #: lazarusidestrconsts:lispckeditrequiredpackages
 msgid "Required Packages"
 msgstr "Требуемые пакеты"
+
+#: lazarusidestrconsts:lismenurescanfpcsourcedirectory
+msgid "Rescan FPC source directory"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuresetdebugger
 msgid "Reset debugger"
@@ -4914,6 +4938,10 @@ msgstr "Использованные файлы"
 msgid "Show Warnings"
 msgstr "Показать предупреждения"
 
+#: lazarusidestrconsts:liscldirsimplesyntaxeginsteadof
+msgid "Simple Syntax (e.g. * instead of .*)"
+msgstr ""
+
 #: lazarusidestrconsts:fdmsizeword
 msgid "Size"
 msgstr "Размер"
@@ -5169,6 +5197,10 @@ msgstr "Имя файла бинарника проекта"
 #: lazarusidestrconsts:dlgtargetos
 msgid "Target OS"
 msgstr "Для какой ОС"
+
+#: lazarusidestrconsts:liscotargetosspecificoptions
+msgid "Target OS specific options"
+msgstr ""
 
 #: lazarusidestrconsts:lislazbuildtargetos
 msgid "Target OS:"

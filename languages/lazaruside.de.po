@@ -288,16 +288,16 @@ msgstr ""
 msgid "Add active unit to a package"
 msgstr ""
 
-#: lazarusidestrconsts:lismenuaddunittoproject
-msgid "Add active unit to Project"
-msgstr "Fuege Unit zum Projekt hinzu"
-
 #: lazarusidestrconsts:lispckeditaddanitem
 msgid "Add an item"
 msgstr ""
 
 #: lazarusidestrconsts:liscodetempladdcodetemplate
 msgid "Add code template"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuaddtoproject
+msgid "Add editor file to Project"
 msgstr ""
 
 #: lazarusidestrconsts:lisa2paddfile
@@ -844,8 +844,16 @@ msgstr ""
 msgid "Clean all"
 msgstr ""
 
+#: lazarusidestrconsts:lismenucleandirectory
+msgid "Clean directory"
+msgstr ""
+
 #: lazarusidestrconsts:liscleanlazarussource
 msgid "Clean Lazarus Source"
+msgstr ""
+
+#: lazarusidestrconsts:liscldircleansubdirectories
+msgid "Clean sub directories"
 msgstr ""
 
 #: lazarusidestrconsts:lislazbuildcleanbuild
@@ -2924,12 +2932,20 @@ msgstr ""
 msgid "Kana"
 msgstr ""
 
+#: lazarusidestrconsts:liscldirkeepalltextfiles
+msgid "Keep all text files"
+msgstr ""
+
 #: lazarusidestrconsts:dlgkeepcaretx
 msgid "Keep Caret X"
 msgstr ""
 
 #: lazarusidestrconsts:dlgcokeepvarsreg
 msgid "Keep certain variables in registers"
+msgstr ""
+
+#: lazarusidestrconsts:liscldirkeepfilesmatchingfilter
+msgid "Keep files matching filter"
 msgstr ""
 
 #: lazarusidestrconsts:dlgforwardprocskeeporder
@@ -4252,7 +4268,11 @@ msgstr ""
 msgid "Remove file?"
 msgstr ""
 
-#: lazarusidestrconsts:lismenuremoveunitfromproject
+#: lazarusidestrconsts:liscldirremovefilesmatchingfilter
+msgid "Remove files matching filter"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuremovefromproject
 msgid "Remove from Project"
 msgstr "Entferne aus Projekt"
 
@@ -4318,6 +4338,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lispckeditrequiredpackages
 msgid "Required Packages"
+msgstr ""
+
+#: lazarusidestrconsts:lismenurescanfpcsourcedirectory
+msgid "Rescan FPC source directory"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuresetdebugger
@@ -4924,6 +4948,10 @@ msgstr ""
 msgid "Show Warnings"
 msgstr ""
 
+#: lazarusidestrconsts:liscldirsimplesyntaxeginsteadof
+msgid "Simple Syntax (e.g. * instead of .*)"
+msgstr ""
+
 #: lazarusidestrconsts:fdmsizeword
 msgid "Size"
 msgstr ""
@@ -5178,6 +5206,10 @@ msgstr "Zieldateiname des Projekts"
 
 #: lazarusidestrconsts:dlgtargetos
 msgid "Target OS"
+msgstr ""
+
+#: lazarusidestrconsts:liscotargetosspecificoptions
+msgid "Target OS specific options"
 msgstr ""
 
 #: lazarusidestrconsts:lislazbuildtargetos

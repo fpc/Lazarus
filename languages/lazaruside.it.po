@@ -287,10 +287,6 @@ msgstr "Aggiungi &watch al cursore"
 msgid "Add active unit to a package"
 msgstr "Aggiungi unit ad un pacchetto"
 
-#: lazarusidestrconsts:lismenuaddunittoproject
-msgid "Add active unit to Project"
-msgstr "Aggiungi unit al progetto"
-
 #: lazarusidestrconsts:lispckeditaddanitem
 msgid "Add an item"
 msgstr "Aggiungi una voce"
@@ -298,6 +294,10 @@ msgstr "Aggiungi una voce"
 #: lazarusidestrconsts:liscodetempladdcodetemplate
 msgid "Add code template"
 msgstr "Aggiungi template di codice"
+
+#: lazarusidestrconsts:lismenuaddtoproject
+msgid "Add editor file to Project"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2paddfile
 msgid "Add File"
@@ -843,9 +843,17 @@ msgstr "Criterio di inserimento classi"
 msgid "Clean all"
 msgstr "Cancella tutto"
 
+#: lazarusidestrconsts:lismenucleandirectory
+msgid "Clean directory"
+msgstr ""
+
 #: lazarusidestrconsts:liscleanlazarussource
 msgid "Clean Lazarus Source"
 msgstr "Pulisci sorgenti Lazarus"
+
+#: lazarusidestrconsts:liscldircleansubdirectories
+msgid "Clean sub directories"
+msgstr ""
 
 #: lazarusidestrconsts:lislazbuildcleanbuild
 msgid "Clean+Build"
@@ -2923,6 +2931,10 @@ msgstr "Junia"
 msgid "Kana"
 msgstr "Kana"
 
+#: lazarusidestrconsts:liscldirkeepalltextfiles
+msgid "Keep all text files"
+msgstr ""
+
 #: lazarusidestrconsts:dlgkeepcaretx
 msgid "Keep Caret X"
 msgstr "Mantieni apice X"
@@ -2930,6 +2942,10 @@ msgstr "Mantieni apice X"
 #: lazarusidestrconsts:dlgcokeepvarsreg
 msgid "Keep certain variables in registers"
 msgstr "Mantieni certi valori nei registri"
+
+#: lazarusidestrconsts:liscldirkeepfilesmatchingfilter
+msgid "Keep files matching filter"
+msgstr ""
 
 #: lazarusidestrconsts:dlgforwardprocskeeporder
 msgid "Keep order of procedures"
@@ -4251,7 +4267,11 @@ msgstr "Rimuovere il file %s%s%s%sdal pacchetto %s%s%s?"
 msgid "Remove file?"
 msgstr "Rimuovere il file?"
 
-#: lazarusidestrconsts:lismenuremoveunitfromproject
+#: lazarusidestrconsts:liscldirremovefilesmatchingfilter
+msgid "Remove files matching filter"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuremovefromproject
 msgid "Remove from Project"
 msgstr "Togli dal progetto"
 
@@ -4318,6 +4338,10 @@ msgstr "Rapporto"
 #: lazarusidestrconsts:lispckeditrequiredpackages
 msgid "Required Packages"
 msgstr "Pacchetto richiesto"
+
+#: lazarusidestrconsts:lismenurescanfpcsourcedirectory
+msgid "Rescan FPC source directory"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuresetdebugger
 msgid "Reset debugger"
@@ -4923,6 +4947,10 @@ msgstr "Mostra i file utilizzati"
 msgid "Show Warnings"
 msgstr "Mostra gli avvertimenti (warning)"
 
+#: lazarusidestrconsts:liscldirsimplesyntaxeginsteadof
+msgid "Simple Syntax (e.g. * instead of .*)"
+msgstr ""
+
 #: lazarusidestrconsts:fdmsizeword
 msgid "Size"
 msgstr "Ampiezza"
@@ -5178,6 +5206,10 @@ msgstr "Nome file obiettivo del progetto"
 #: lazarusidestrconsts:dlgtargetos
 msgid "Target OS"
 msgstr "SO obiettivo"
+
+#: lazarusidestrconsts:liscotargetosspecificoptions
+msgid "Target OS specific options"
+msgstr ""
 
 #: lazarusidestrconsts:lislazbuildtargetos
 msgid "Target OS:"
