@@ -46,7 +46,7 @@ Type
   private
     FArrowType : TArrowType;
     FShadowType : TShadowType;
-    FArrowChanged: TNotifyEvent;
+    //FArrowChanged: TNotifyEvent;
     function GetShadowType: TShadowType;
     procedure SetShadowType(const AValue: TShadowType);
     function GetArrowType: TArrowType;
