@@ -783,7 +783,8 @@ begin
     if DesignOnlySignal then exit;
   end else begin
     // stop the signal, so that the widget does not auto react
-    if TControl(Data).FCompStyle<>csNotebook then
+    if (TControl(Data).FCompStyle<>csNotebook)
+    or (event^.Button<>1) then
       gtk_signal_emit_stop_by_name(PGTKObject(Widget),'button-press-event');
   end;
 
@@ -2256,7 +2257,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.122  2002/09/05 12:11:43  lazarus
+  MG: TNotebook is now streamable
+
   Revision 1.121  2002/09/05 10:12:07  lazarus
+
   New dialog for multiline caption of TCustomLabel.
   Prettified TStrings property editor.
   Memo now has automatic scrollbars (not fully working), WordWrap and Scrollbars property
