@@ -776,6 +776,7 @@ begin
     ConnectMainBarEvents;
   end;
 
+  // initialize the other IDE manager
   DebugBoss:=TDebugManager.Create(Self);
   DebugBoss.ConnectMainBarEvents;
 
@@ -790,8 +791,14 @@ begin
   SetupControlSelection;
 
   UpdateWindowsMenu;
+  
+  // Main IDE bar created and setup completed -> Show it
+  Show;
+  
+  // Now load a project
   SetupStartProject;
   
+  // set OnIdle handlers
   Application.AddOnUserInputHandler(@OnApplicationUserInput);
   Application.AddOnIdleHandler(@OnApplicationIdle);
   SetupHints;
@@ -7995,6 +8002,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.493  2003/03/17 13:00:35  mattias
+  improved but not fixed transient windows
+
   Revision 1.492  2003/03/16 11:07:41  mattias
   fixed insert text GPL and LGPL
 
