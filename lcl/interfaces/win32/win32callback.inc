@@ -1352,48 +1352,46 @@ Begin
   if WinProcess then
   begin    
     PLMsg^.Result := CallDefaultWindowProc(Window, Msg, WParam, LParam); 
-    if PLMsg^.Result = 0 then
-    begin
-      case Msg of
-        WM_CHAR, WM_KEYDOWN, WM_KEYUP,
-        WM_SYSCHAR, WM_SYSKEYDOWN, WM_SYSKEYUP:
-        begin
-          case Msg of
-            WM_CHAR: 
-            begin
-              LMChar.CharCode := Word(WParam);
-              LMChar.Msg := LM_CHAR;
-            end;
-            WM_SYSCHAR: 
-            begin
-              LMChar.CharCode := Word(WParam);
-              LMChar.Msg := LM_SYSCHAR;
-            end;
-            WM_KEYDOWN:
-            begin
-              LMKey.CharCode := Word(WParam);
-              LMKey.Msg := LM_KEYDOWN;
-            end;
-            WM_KEYUP: 
-            begin
-              LMKey.CharCode := Word(WParam);
-              LMKey.Msg := LM_KEYUP;
-            end;
-            WM_SYSKEYDOWN:
-            begin
-              LMKey.CharCode := Word(WParam);
-              LMKey.Msg := LM_SYSKEYDOWN;
-            end;
-            WM_SYSKEYUP: 
-            begin
-              LMKey.CharCode := Word(WParam);
-              LMKey.Msg := LM_SYSKEYUP;
-            end;
+    case Msg of
+      WM_CHAR, WM_KEYDOWN, WM_KEYUP,
+      WM_SYSCHAR, WM_SYSKEYDOWN, WM_SYSKEYUP:
+      begin
+        case Msg of
+          WM_CHAR: 
+          begin
+            LMChar.CharCode := Word(WParam);
+            LMChar.Msg := LM_CHAR;
           end;
-
-          // windows didn't want the key
-          DeliverMessage(lWinControl, PLMsg^);
+          WM_SYSCHAR: 
+          begin
+            LMChar.CharCode := Word(WParam);
+            LMChar.Msg := LM_SYSCHAR;
+          end;
+          WM_KEYDOWN:
+          begin
+            LMKey.CharCode := Word(WParam);
+            LMKey.Msg := LM_KEYDOWN;
+          end;
+          WM_KEYUP: 
+          begin
+            LMKey.CharCode := Word(WParam);
+            LMKey.Msg := LM_KEYUP;
+          end;
+          WM_SYSKEYDOWN:
+          begin
+            LMKey.CharCode := Word(WParam);
+            LMKey.Msg := LM_SYSKEYDOWN;
+          end;
+          WM_SYSKEYUP: 
+          begin
+            LMKey.CharCode := Word(WParam);
+            LMKey.Msg := LM_SYSKEYUP;
+          end;
         end;
+
+        // we cannot tell for sure windows didn't want the key
+        // winapi too inconsistent about return value
+        DeliverMessage(lWinControl, PLMsg^);
       end;
     end;
   end;
@@ -1522,6 +1520,9 @@ end;
 
 {
   $Log$
+  Revision 1.195  2005/03/14 22:11:03  micha
+  return value too inconsistent to be used, fixes 775 (by uberto)
+
   Revision 1.194  2005/03/03 13:13:51  vincents
   fixed thread synchronize support for fpc 1.9.9 using WakeMainThread
 
