@@ -37,8 +37,8 @@ interface
 
 uses
   Classes, LCLType, LCLLinux, Forms, Controls, LMessages, GraphType, Graphics,
-  ControlSelection, CustomFormEditor, FormEditor, UnitEditor, CompReg, Menus,
-  AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg, ExtCtrls, EnvironmentOpts,
+  Dialogs, ControlSelection, CustomFormEditor, FormEditor, UnitEditor, CompReg,
+  Menus, AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg, ExtCtrls, EnvironmentOpts,
   DesignerProcs, PropEdits, ComponentEditors;
 
 type
@@ -67,9 +67,7 @@ type
     FFormEditor : TFormEditor;
     FSourceEditor : TSourceEditor;
     FFlags: TDesignerFlags;
-    //FHasSized: boolean;
     FGridColor: TColor;
-    //FDuringPaintControl: boolean;
     FOnAddComponent: TOnAddComponent;
     FOnComponentListChanged: TNotifyEvent;
     FOnGetSelectedComponentClass: TOnGetSelectedComponentClass;
@@ -89,11 +87,11 @@ type
     FSizeMenuItem: TMenuItem;
     FBringToFrontMenuItem: TMenuItem;
     FSendToBackMenuItem: TMenuItem;
-    //FShowHints: boolean;
 
     //hint stuff
     FHintTimer : TTimer;
     FHintWIndow : THintWindow;
+    
     function GetGridColor: TColor;
     function GetShowGrid: boolean;
     function GetGridSizeX: integer;
@@ -117,6 +115,7 @@ type
     MouseDownClickCount: integer;
     MouseUpPos: TPoint;
     LastMouseMovePos: TPoint;
+    PopupMenuComponentEditor: TBaseComponentEditor;
 
     function PaintControl(Sender: TControl; TheMessage: TLMPaint):boolean;
     function SizeControl(Sender: TControl; TheMessage: TLMSize):boolean;
@@ -143,7 +142,8 @@ type
     procedure OnBringToFrontMenuClick(Sender: TObject);
     procedure OnSendToBackMenuClick(Sender: TObject);
     Procedure OnFormActivated;
-    
+    procedure OnComponentEditorVerbMenuItemClick(Sender: TObject);
+
     function GetPropertyEditorHook: TPropertyEditorHook; override;
   public
     ControlSelection : TControlSelection;
@@ -161,6 +161,9 @@ type
     function NonVisualComponentLeftTop(AComponent: TComponent): TPoint;
     function NonVisualComponentAtPos(x,y: integer): TComponent;
     function GetDesignedComponent(AComponent: TComponent): TComponent;
+    function GetComponentEditorForSelection: TBaseComponentEditor;
+    procedure AddComponentEditorMenuItems(
+      AComponentEditor: TBaseComponentEditor; AParentMenuItem: TMenuItem);
 
     function IsDesignMsg(Sender: TControl;
        var TheMessage: TLMessage): Boolean; override;
@@ -343,11 +346,11 @@ begin
   except
     on E: Exception do begin
       writeln('TDesigner.InvokeComponentEditor ERROR: ',E.Message);
-      {MessageDlg('Error in '+CompEditor.ClassName,
+      MessageDlg('Error in '+CompEditor.ClassName,
         'The component editor of class "'+CompEditor.ClassName+'"'
-        +'has created an error:'#13
+        +'has created the error:'#13
         +'"'+E.Message+'"',
-        mtError,[mbOk],0);}
+        mtError,[mbOk],0);
     end;
   end;
 end;
@@ -815,6 +818,7 @@ begin
   SetCaptureControl(nil);
 
   MouseUpPos:=GetFormRelativeMousePosition(Form);
+  PopupMenuComponentEditor:=GetComponentEditorForSelection;
   BuildPopupMenu;
   FPopupMenu.Popup(MouseUpPos.X,MouseUpPos.Y);
 end;
@@ -953,6 +957,7 @@ Begin
     writeln('[TDesigner.Notification] opRemove ',
             AComponent.Name,':',AComponent.ClassName);
     {$ENDIF}
+    PopupMenuComponentEditor:=nil;
     ControlSelection.Remove(AComponent);
   end;
 end;
@@ -1043,6 +1048,32 @@ Begin
     writeln('WARNING: TDesigner.ValidateRename: OldComponentName="',CurName,'"');
   if Assigned(OnRenameComponent) then
     OnRenameComponent(Self,AComponent,NewName);
+end;
+
+procedure TDesigner.OnComponentEditorVerbMenuItemClick(Sender: TObject);
+var
+  Verb: integer;
+  VerbCaption: string;
+  AMenuItem: TMenuItem;
+begin
+  if (PopupMenuComponentEditor=nil) or (Sender=nil) then exit;
+  if not (Sender is TMenuItem) then exit;
+  AMenuItem:=TMenuItem(Sender);
+  Verb:=AMenuItem.MenuIndex;
+  VerbCaption:=AMenuItem.Caption;
+  try
+    PopupMenuComponentEditor.ExecuteVerb(Verb);
+  except
+    on E: Exception do begin
+      writeln('TDesigner.OnComponentEditorVerbMenuItemClick ERROR: ',E.Message);
+      MessageDlg('Error in '+PopupMenuComponentEditor.ClassName,
+        'The component editor of class "'+PopupMenuComponentEditor.ClassName+'"'#13
+        +'invoked with verb #'+IntToStr(Verb)+' "'+VerbCaption+'"'#13
+        +'has created the error:'#13
+        +'"'+E.Message+'"',
+        mtError,[mbOk],0);
+    end;
+  end;
 end;
 
 function TDesigner.GetGridColor: TColor;
@@ -1181,6 +1212,37 @@ begin
     Result:=TControl(Result).Parent;
 end;
 
+function TDesigner.GetComponentEditorForSelection: TBaseComponentEditor;
+begin
+  Result:=nil;
+  if ControlSelection.Count<>1 then exit;
+  Result:=FormEditor1.GetComponentEditor(ControlSelection[0].Component);
+end;
+
+procedure TDesigner.AddComponentEditorMenuItems(
+  AComponentEditor: TBaseComponentEditor; AParentMenuItem: TMenuItem);
+var
+  VerbCount, i: integer;
+  NewMenuItem: TMenuItem;
+begin
+  if (AComponentEditor=nil) or (AParentMenuItem=nil) then exit;
+  VerbCount:=AComponentEditor.GetVerbCount;
+  for i:=0 to VerbCount-1 do begin
+    NewMenuItem:=TMenuItem.Create(AParentMenuItem);
+    NewMenuItem.Name:='ComponentEditorVerMenuItem'+IntToStr(i);
+    NewMenuItem.Caption:=AComponentEditor.GetVerb(i);
+    NewMenuItem.OnClick:=@OnComponentEditorVerbMenuItemClick;
+    AParentMenuItem.Add(NewMenuItem);
+    AComponentEditor.PrepareItem(i,NewMenuItem);
+  end;
+  if VerbCount>0 then begin
+    // Add seperator
+    NewMenuItem:=TMenuItem.Create(AParentMenuItem);
+    NewMenuItem.Caption:='-';
+    AParentMenuItem.Add(NewMenuItem);
+  end;
+end;
+
 function TDesigner.NonVisualComponentAtPos(x,y: integer): TComponent;
 var i: integer;
   LeftTop: TPoint;
@@ -1216,6 +1278,8 @@ begin
   CompsAreSelected:=ControlSelIsNotEmpty and not FormIsSelected;
 
   FPopupMenu:=TPopupMenu.Create(nil);
+
+  AddComponentEditorMenuItems(PopupMenuComponentEditor,FPopupMenu.Items);
 
   FAlignMenuItem := TMenuItem.Create(FPopupMenu);
   with FAlignMenuItem do begin
