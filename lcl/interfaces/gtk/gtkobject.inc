@@ -2689,6 +2689,149 @@ var
     then
       UpdateSysColorMap(AWidget);
   end;
+  
+  procedure InitializeOpenDialog;
+  var
+    OpenDialog: TOpenDialog;
+    FileDetailLabel, HBox, Frame, LabelWidget, HistoryPullDownWidget,
+    FilterPullDownWidget, MenuWidget, MenuItemWidget: PGtkWidget;
+    i: integer;
+    s: string;
+  begin
+    //writeln('ZZZ1 ',HexStr(Cardinal(Sender),8));
+    OpenDialog:=TOpenDialog(Sender);
+
+    // Multiselection
+    if ofAllowMultiSelect in OpenDialog.Options then
+    begin
+      LastFileSelectRow := -1;
+      gtk_signal_connect(gtk_object(PGtkCList(
+        PGtkFileSelection(P)^.file_list)),
+        'select-row',
+        gtk_signal_func(@gtkOpenDialogRowSelectCB), Sender);
+      gtk_clist_set_selection_mode(
+        PGtkCList(PGtkFileSelection(P)^.file_list),GTK_SELECTION_MULTIPLE);
+    end;
+    
+    // Help button
+    if (ofShowHelp in OpenDialog.Options)
+    and (GTK_FILE_SELECTION(p)^.Help_Button<>nil) then begin
+      gtk_widget_show(GTK_FILE_SELECTION(p)^.Help_Button);
+      gtk_signal_connect( gtk_object((PGtkFileSelection(P))^.help_button),
+        'clicked', gtk_signal_func(@gtkDialogHelpclickedCB), Sender);
+    end;
+    
+    // connect selection entry (edit field for filename)
+    if (GTK_FILE_SELECTION(p)^.selection_entry<>nil) then begin
+      SetLCLObject(GTK_FILE_SELECTION(p)^.selection_entry,Sender);
+      gtk_signal_connect(gtk_object((PGtkFileSelection(P))^.selection_entry),
+        'key-press-event', gtk_signal_func(@GTKDialogKeyUpDownCB), Sender);
+      gtk_signal_connect(gtk_object((PGtkFileSelection(P))^.selection_entry),
+        'focus-in-event', gtk_signal_func(@GTKDialogFocusInCB), Sender);
+      //gdk_window_set_events(Widget^.Window, gdk_window_get_events(Widget^.Window)
+      //  or GDK_KEY_RELEASE_MASK or GDK_KEY_PRESS_MASK);
+    end;
+    
+    // connect dir list (list of directories)
+    if (GTK_FILE_SELECTION(p)^.dir_list<>nil) then begin
+      SetLCLObject(GTK_FILE_SELECTION(p)^.dir_list,Sender);
+      gtk_signal_connect(gtk_object((PGtkFileSelection(P))^.dir_list),
+        'select-row', gtk_signal_func(@GTKDialogSelectRowCB), Sender);
+    end;
+    
+    // connect file list (list of files in current directory)
+    if (GTK_FILE_SELECTION(p)^.file_list<>nil) then begin
+      SetLCLObject(GTK_FILE_SELECTION(p)^.file_list,Sender);
+      gtk_signal_connect(gtk_object((PGtkFileSelection(P))^.file_list),
+        'select-row', gtk_signal_func(@GTKDialogSelectRowCB), Sender);
+    end;
+
+    // History List - a frame with an option menu
+    if OpenDialog.HistoryList.Count>0 then begin
+      HBox:=gtk_hbox_new(false,0);
+      gtk_box_pack_start(GTK_BOX(GTK_FILE_SELECTION(p)^.main_vbox),
+                         HBox,false,false,0);
+      LabelWidget:=gtk_label_new('History:');
+      gtk_box_pack_start(GTK_BOX(HBox),LabelWidget,false,false,5);
+      gtk_widget_show(LabelWidget);
+      HistoryPullDownWidget:=gtk_option_menu_new;
+      gtk_object_set_data(p, 'HistoryPullDown', HistoryPullDownWidget);
+      gtk_box_pack_start(GTK_BOX(HBox),HistoryPullDownWidget,false,false,5);
+      gtk_widget_show(HistoryPullDownWidget);
+      gtk_widget_show(HBox);
+      MenuWidget:=gtk_menu_new;
+      for i:=0 to OpenDialog.HistoryList.Count-1 do begin
+        s:=OpenDialog.HistoryList[i];
+        MenuItemWidget:=gtk_menu_item_new_with_label(PChar(s));
+        SetLCLObject(MenuItemWidget,Sender);
+        gtk_object_set_data(PGtkObject(MenuItemWidget), 'IsHistoryMenuItem',
+          Sender);
+        gtk_signal_connect(GTK_OBJECT(MenuItemWidget), 'activate',
+                           gtk_signal_func(@GTKDialogMenuActivateCB),
+                           Sender);
+        gtk_menu_append(GTK_MENU(MenuWidget), MenuItemWidget);
+        gtk_widget_show(MenuItemWidget);
+      end;
+      gtk_widget_show(MenuWidget);
+      gtk_option_menu_set_menu(GTK_OPTION_MENU(HistoryPullDownWidget),
+                               MenuWidget);
+    end;
+    
+    // Filter - a frame with an option menu
+    if OpenDialog.Filter<>'' then begin
+      HBox:=gtk_hbox_new(false,0);
+      gtk_box_pack_start(GTK_BOX(GTK_FILE_SELECTION(p)^.main_vbox),
+                         HBox,false,false,0);
+      LabelWidget:=gtk_label_new('Filter:');
+      gtk_box_pack_start(GTK_BOX(HBox),LabelWidget,false,false,5);
+      gtk_widget_show(LabelWidget);
+      FilterPullDownWidget:=gtk_option_menu_new;
+      gtk_object_set_data(p, 'FilterPullDown', FilterPullDownWidget);
+      gtk_box_pack_start(GTK_BOX(HBox),FilterPullDownWidget,false,false,5);
+      gtk_widget_show(FilterPullDownWidget);
+      gtk_widget_show(HBox);
+    end;
+
+    // Details - a frame with a label
+    if (ofViewDetail in OpenDialog.Options) then begin
+      Frame:=gtk_frame_new('File information');
+      gtk_box_pack_start(GTK_BOX(GTK_FILE_SELECTION(p)^.main_vbox),
+                         Frame,false,false,0);
+      gtk_widget_show(Frame);
+      HBox:=gtk_hbox_new(false,0);
+      gtk_container_add(GTK_CONTAINER(Frame), HBox);
+      FileDetailLabel:=gtk_label_new('permissions user group size date time');
+      gtk_box_pack_start(GTK_BOX(HBox),FileDetailLabel,false,false,5);
+      gtk_widget_show(HBox);
+      gtk_widget_show(FileDetailLabel);
+    end else
+      FileDetailLabel:=nil;
+    gtk_object_set_data(p, 'FileDetailLabel', FileDetailLabel);
+  end;
+  
+  procedure InitializeFileDialog;
+  begin
+    P := gtk_file_selection_new(StrTemp);
+
+    {****This is a major hack put by Cliff Baeseman to solve
+     a gtk win32 dll implementation problem where the headers implementation
+     does not match the linux version**** }
+    {$IFNDEF WIN32}
+      gtk_signal_connect(gtk_object(PGtkFileSelection(P)^.ok_button),
+        'clicked', gtk_signal_func(@gtkDialogOKclickedCB), Sender);
+      gtk_signal_connect(gtk_object(PGtkFileSelection(P)^.cancel_button),
+        'clicked', gtk_signal_func(@gtkDialogCancelclickedCB), Sender);
+    {$ELSE}
+      gtk_signal_connect(gtk_object(PGtkFileSelection(P)^.cancel_button),
+        'clicked', gtk_signal_func(@gtkDialogOKclickedCB), Sender);
+      gtk_signal_connect(gtk_object(PGtkFileSelection(P)^.help_button),
+        'clicked', gtk_signal_func(@gtkDialogCancelclickedCB), Sender);
+    {$ENDIF}
+
+    if Sender is TOpenDialog then InitializeOpenDialog;
+
+    InitializeCommonDialog(TCommonDialog(Sender),p);
+  end;
 
 begin
   Assert(False, 'Trace:In CreateComponet');
@@ -2808,11 +2951,15 @@ begin
     csColorDialog :
     begin
       P := gtk_color_selection_dialog_new(StrTemp);
-      // We will only add this line if we see problem in the future with the color dialog  MAH 7-31-99
-      // gtk_color_selection_set_update_policy(GTK_COLOR_SELECTION((GTK_COLOR_SELECTION_DIALOG(P))^.colorsel), GTK_UPDATE_DISCONTINUOUS);
-      gtk_signal_connect( gtk_object((GTK_COLOR_SELECTION_DIALOG(P))^.ok_button), 'clicked', gtk_signal_func(@gtkDialogOKclickedCB), Sender);
-      gtk_signal_connect( gtk_object((GTK_COLOR_SELECTION_DIALOG(P))^.cancel_button), 'clicked', gtk_signal_func(@gtkDialogCancelclickedCB), Sender);
-      gtk_signal_connect( gtk_object(P), 'destroy', gtk_Signal_Func(@gtkDialogDestroyCB), Sender);
+      // We will only add this line if we see problem in the future with the
+      // color dialog
+      // gtk_color_selection_set_update_policy(GTK_COLOR_SELECTION(
+      //   GTK_COLOR_SELECTION_DIALOG(P)^.colorsel), GTK_UPDATE_DISCONTINUOUS);
+      gtk_signal_connect( gtk_object((GTK_COLOR_SELECTION_DIALOG(P))^.ok_button),
+        'clicked', gtk_signal_func(@gtkDialogOKclickedCB), Sender);
+      gtk_signal_connect( gtk_object((GTK_COLOR_SELECTION_DIALOG(P))^.cancel_button),
+        'clicked', gtk_signal_func(@gtkDialogCancelclickedCB), Sender);
+      InitializeCommonDialog(TCommonDialog(Sender),p);
     end;
 
     csComboBox :
@@ -2827,42 +2974,16 @@ begin
     end;
 
     csFileDialog :
-    begin
-       P := gtk_file_selection_new(StrTemp);
-
-       {****This is a major hack put by Cliff Baeseman to solve
-        a gtk win32 dll implementation problem where the headers implementation
-        does not match the linux version**** }
-       {$ifdef LINUX}
-          gtk_signal_connect( gtk_object((PGtkFileSelection(P))^.ok_button), 'clicked', gtk_signal_func(@gtkDialogOKclickedCB), Sender);
-          gtk_signal_connect( gtk_object((PGtkFileSelection(P))^.cancel_button), 'clicked', gtk_signal_func(@gtkDialogCancelclickedCB), Sender);
-       {$endif}
-
-       {$ifdef WIN32}
-          gtk_signal_connect( gtk_object((PGtkFileSelection(P))^.cancel_button), 'clicked', gtk_signal_func(@gtkDialogOKclickedCB), Sender);
-          gtk_signal_connect( gtk_object((PGtkFileSelection(P))^.help_button), 'clicked', gtk_signal_func(@gtkDialogCancelclickedCB), Sender);
-       {$endif}
-       gtk_signal_connect( gtk_object(P), 'destroy', gtk_Signal_Func(@gtkDialogDestroyCB), Sender);
-
-       if Sender is TOpenDialog then
-       begin
-         // set extra options
-         if ofAllowMultiSelect in TOpenDialog(Sender).Options then
-         begin
-           LastFileSelectRow := -1;
-           gtk_signal_connect( gtk_object(PGtkCList(PGtkFileSelection(P)^.file_list)), 'select-row', gtk_signal_func(@gtkOpenDialogRowSelectCB), Sender);
-           gtk_clist_set_selection_mode(
-           PGtkCList(PGtkFileSelection(P)^.file_list),GTK_SELECTION_MULTIPLE);
-         end;
-       end;
-    end;
+      InitializeFileDialog;
 
     csFontDialog :
     begin
-       P := gtk_Font_selection_dialog_new(StrTemp);
-       gtk_signal_connect( gtk_object((GTK_FONT_SELECTION_DIALOG(P))^.ok_button), 'clicked', gtk_signal_func(@gtkDialogOKclickedCB), Sender);
-       gtk_signal_connect( gtk_object((GTK_FONT_SELECTION_DIALOG(P))^.cancel_button), 'clicked', gtk_signal_func(@gtkDialogCancelclickedCB), Sender);
-       gtk_signal_connect( gtk_object(P), 'destroy', gtk_Signal_Func(@gtkDialogDestroyCB), Sender);
+      P := gtk_Font_selection_dialog_new(StrTemp);
+      gtk_signal_connect( gtk_object((GTK_FONT_SELECTION_DIALOG(P))^.ok_button),
+        'clicked', gtk_signal_func(@gtkDialogOKclickedCB), Sender);
+      gtk_signal_connect( gtk_object((GTK_FONT_SELECTION_DIALOG(P))^.cancel_button),
+        'clicked', gtk_signal_func(@gtkDialogCancelclickedCB), Sender);
+      InitializeCommonDialog(TCommonDialog(Sender),p);
     end;
 
     csFixed: //used for TWinControl, maybe change this to csWinControl
@@ -3000,19 +3121,14 @@ begin
     csListView :
     Begin
       p:= gtk_scrolled_window_new(nil, nil);
-      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.hscrollbar, GTK_CAN_FOCUS);
-      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.vscrollbar, GTK_CAN_FOCUS);
-      gtk_scrolled_window_set_policy(PGtkScrolledWindow(p),
-                                     GTK_POLICY_AUTOMATIC,
-                                     GTK_POLICY_AUTOMATIC);
-      gtk_widget_show(p);
-      
+
       with TListView(Sender)
       do begin
         TempInt:=Columns.Count;
         if TempInt<1 then TempInt:=1;
         TempWidget:= gtk_clist_new(TempInt);
-        gtk_clist_set_shadow_type(PGtkCList(TempWidget),GTK_SHADOW_NONE);
+        gtk_clist_set_shadow_type(PGtkCList(TempWidget),GTK_SHADOW_IN);
+        gtk_clist_column_titles_passive (GTK_CLIST (TempWidget));
 
         //gtk_container_add(PGtkContainer(p), TempWidget);
         for TempInt := 0 to Columns.Count - 1 do begin
@@ -3042,12 +3158,20 @@ begin
           end;
         end;
       end;
-      gtk_scrolled_window_add_with_viewport(PGtkScrolledWindow(p), TempWidget);
+      gtk_clist_column_titles_passive (GTK_CLIST (TempWidget));
+      
+      gtk_container_add(GTK_CONTAINER(p),TempWidget);
+      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.hscrollbar, GTK_CAN_FOCUS);
+      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.vscrollbar, GTK_CAN_FOCUS);
+      gtk_scrolled_window_set_policy(PGtkScrolledWindow(p),
+                                     GTK_POLICY_AUTOMATIC,
+                                     GTK_POLICY_AUTOMATIC);
       gtk_container_set_focus_vadjustment(PGtkContainer(TempWidget),
                     gtk_scrolled_window_get_vadjustment(PGtkScrolledWindow(p)));
       gtk_container_set_focus_hadjustment(PGtkContainer(TempWidget),
                     gtk_scrolled_window_get_hadjustment(PGtkScrolledWindow(p)));
       gtk_widget_show(TempWidget);
+      gtk_widget_show(p);
 
       //--------------------------
       // MWE: will be obsoleted
@@ -3312,6 +3436,40 @@ begin
 
   StrDispose(StrTemp);
   if P <> nil then HookSignals(Sender);
+end;
+
+{------------------------------------------------------------------------------
+  TGtkObject InitializeCommonDialog
+  Params: ADialog: TCommonDialog; AWindow: PGtkWidget
+  Result: none
+       
+  Initializes a TCommonDialog window.
+------------------------------------------------------------------------------}
+procedure TgtkObject.InitializeCommonDialog(ADialog: TObject;
+  AWindow: PGtkWidget);
+var NewWidth, NewHeight: integer;
+begin
+  SetLCLObject(AWindow,ADialog);
+
+  // connect events
+  gtk_signal_connect(gtk_object(AWindow),
+    'destroy', gtk_Signal_Func(@gtkDialogDestroyCB), ADialog);
+  gtk_signal_connect(gtk_object(AWindow),
+    'delete-event', gtk_Signal_Func(@gtkDialogCloseQueryCB), ADialog);
+  gtk_signal_connect(gtk_object(AWindow),
+    'key-press-event', gtk_Signal_Func(@GTKDialogKeyUpDownCB), ADialog);
+  gtk_signal_connect(gtk_object(AWindow),
+    'key-release-event', gtk_Signal_Func(@GTKDialogKeyUpDownCB), ADialog);
+  gtk_signal_connect(gtk_object(AWindow),
+    'realize', gtk_Signal_Func(@GTKDialogRealizeCB), ADialog);
+
+  // set default size
+  NewWidth:=TCommonDialog(ADialog).InitialWidth;
+  if NewWidth<=0 then NewWidth:=-2; // -2 = let the window manager decide
+  NewHeight:=TCommonDialog(ADialog).InitialHeight;
+  if NewHeight<=0 then NewHeight:=-2; // -2 = let the window manager decide
+  if (NewWidth>0) or (NewHeight>0) then
+    gtk_window_set_default_size(PgtkWindow(AWindow),NewWidth,NewHeight);
 end;
 
 {------------------------------------------------------------------------------}
@@ -4512,6 +4670,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.129  2002/05/29 21:44:38  lazarus
+  MG: improved TCommon/File/OpenDialog, fixed TListView scrolling and broder
+
   Revision 1.128  2002/05/28 19:39:45  lazarus
   MG: added gtk rc file support and started stule dependent syscolors
 
@@ -4966,3 +5127,4 @@ end;
   + Initial import
 
 }
+
