@@ -616,6 +616,9 @@ Begin
 
      end;
 
+  if not Result then
+     Application.MessageBox('Search String not found.','Not Found',mb_OK);
+
 End;
 
 {--------------------------F I N D  A G A I N -----------------------}
@@ -669,6 +672,10 @@ if (StartX < 0) or (StartLine < 0) then
           StartX := 1;
 
            end;
+if not Result then
+   if (Application.MessageBox('Search String not found.Start from the top?','Not Found',mb_YesNo) = mryes) then
+       FindAgain(1,0);
+
 End;
 
 
@@ -712,6 +719,8 @@ Procedure TSourceEditor.ProcessUserCommand(Sender: TObject; var Command: TSynEdi
 var
   Y,I : Integer;
   Texts,Texts2,TheName : String;
+  Continue : Boolean;
+  Found : Boolean;
 Begin
 Writeln('[ProcessUserCommand]  --------------');
 if Command >= ecFirstParent then
@@ -729,9 +738,8 @@ if Command >= ecFirstParent then
                    if FindText = '' then
                       StartFind
                    else
-                      if not(FindAgain(CurrentCursorXLine-1,CurrentCursorYLine-1)) then
-                         if Application.MessageBox('Search String not found.  Start from the beginning?','Not Found',mb_YesNo) = mrYEs then
-                            FindAgain(1,0);
+                      FindAgain(CurrentCursorXLine-1,CurrentCursorYLine-1);
+
                   end;
 
     ecFindProcedureMethod :  Begin
