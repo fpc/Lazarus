@@ -26,6 +26,45 @@
  *                                                                         *
  ***************************************************************************
 }
+(*
+ Abstract:
+   This is the worker unit of the 'startlazarus' application.
+   It waits for any already running lazarus to stop.
+   Then it searches the new lazarus executable.
+     1. open the build lazarus options and look for a custom target directory
+     2. look in the directory of startlazarus (the lazarus main directory)
+        and in $(ConfigDir)/bin/ and use the newest lazarus executable.
+   On systems which lock executables on run it renames the
+     lazarus to lazarus.old and lazarus.new to lazarus.
+   Then it starts lazarus.
+   Finally it stops itself.
+
+    
+  Why that?
+   - To install a package into the IDE statically, it must be relinked.
+     This creates a new lazarus[.exe] executable. With the help of startlazarus
+     the IDE can then automatically restart itself.
+   - Some platforms like windows locks there executable while running.
+     This means the new executable created needs another name.
+   - If the IDE is installed as root/administrator the whole lazarus directory
+     is readonly for users. This means the new executable created will be
+     created in another directory.
+   - Building can result in a broken IDE. Therefore backups are created.
+   - Copying is slow (especially the huge IDE). So only 'rename' is used for
+     backup.
+   - The IDE calls 'make' to rebuild itself. This deletes the old lazarus
+     executable on some systems. So, the backup must be made before building
+     for these systems.
+   - When the original directory can't be used (readonly), the build directory
+     is <primary config path>/bin/, which results in ~/.lazarus/bin/ on unix
+     style systems like linux, bsd, macosx and {AppData}\Lazarus\bin on windows.
+   - For debugging purposes you can work without startlazarus.
+   - To not confuse the user, the running IDE executable is 'lazarus' or
+     'lazarus.exe', not 'lazarus.new' or 'lazarus.old'.
+   - The user can define the Target Directory.
+   - The IDE can be cross compiled. The resulting executable will be created
+     in <primary config path>/bin/<TargetOS>
+*)
 unit LazarusManager;
 
 {$mode objfpc}{$H+}
@@ -262,6 +301,9 @@ end;
 end.
 {
   $Log$
+  Revision 1.14  2004/12/04 01:17:41  mattias
+  implemented Target Directory for IDE
+
   Revision 1.13  2004/11/23 18:11:18  vincents
   fixed hiding splash screen for gtk
 

@@ -60,6 +60,9 @@ function CreateEmptyFile(const Filename: string;
   ErrorButtons: TMsgDlgButtons): TModalResult;
 function CheckFileIsWritable(const Filename: string;
   ErrorButtons: TMsgDlgButtons): TModalResult;
+function ForceDirectoryInteractive(Directory: string;
+  ErrorButtons: TMsgDlgButtons): TModalResult;
+
 
 implementation
 
@@ -169,6 +172,31 @@ begin
       mtError,ErrorButtons+[mbCancel],0);
     if Result<>mrRetry then exit;
   end;
+end;
+
+function ForceDirectoryInteractive(Directory: string;
+  ErrorButtons: TMsgDlgButtons): TModalResult;
+var i: integer;
+  Dir: string;
+begin
+  DoDirSeparators(Directory);
+  Directory:=AppendPathDelim(Directory);
+  i:=1;
+  while i<=length(Directory) do begin
+    if Directory[i]=PathDelim then begin
+      Dir:=copy(Directory,1,i-1);
+      if not DirPathExists(Dir) then begin
+        while not CreateDir(Dir) do begin
+          Result:=MessageDlg('Unable to create directory',
+            'Unable to create directory "'+Dir+'"',
+            mtError,ErrorButtons+[mbCancel],0);
+          if Result<>mrRetry then exit;
+        end;
+      end;
+    end;
+    inc(i);
+  end;
+  Result:=mrOk;
 end;
 
 end.

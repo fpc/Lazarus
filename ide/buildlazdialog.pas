@@ -37,7 +37,8 @@ uses
   Classes, SysUtils, Math, LCLProc, Forms, Controls, LCLType, LCLIntf,
   Graphics, GraphType, StdCtrls, ExtCtrls, Buttons, FileUtil, Dialogs,
   LResources, Laz_XMLCfg, LazarusIDEStrConsts, TransferMacros, LazConf,
-  IDEProcs, InputHistory, ExtToolDialog, ExtToolEditDlg, CompilerOptions;
+  IDEProcs, DialogProcs, InputHistory, ExtToolDialog, ExtToolEditDlg,
+  CompilerOptions;
 
 type
   { TBuildLazarusItem }
@@ -50,12 +51,11 @@ type
   TMakeModes = set of TMakeMode;
     
   TBuildLazarusFlag = (
-    blfWithoutLinkingIDE,
-    blfOnlyIDE,
-    blfQuick,
-    blfWithStaticPackages,
-    blfUseMakeIDECfg,
-    blfDontClean
+    blfWithoutLinkingIDE, // skip linking stage of IDE
+    blfOnlyIDE,           // skip all but IDE
+    blfDontClean,         // ignore clean up
+    blfWithStaticPackages,// build with IDE static design time packages
+    blfUseMakeIDECfg
     );
   TBuildLazarusFlags = set of TBuildLazarusFlag;
   
@@ -229,7 +229,7 @@ const
       'None', 'Build', 'Clean+Build'
     );
 
-  DefaultTargetDirectory = ''; //'$(ConfDir)/bin';
+  DefaultTargetDirectory = ''; // empty will be replaced by '$(ConfDir)/bin';
 
 function GetTranslatedMakeModes(MakeMode: TMakeMode): string;
 begin
@@ -310,7 +310,7 @@ begin
     
     // clean up
     if Options.CleanAll
-    and ([blfQuick,blfOnlyIDE]*Flags=[]) then begin
+    and ([blfDontClean,blfOnlyIDE]*Flags=[]) then begin
       // clean lazarus source directories
       Tool.Title:=lisCleanLazarusSource;
       Tool.WorkingDirectory:='$(LazarusDir)';
@@ -334,10 +334,8 @@ begin
         end else
           CurMakeMode:=mmNone;
       end;
-      if (blfQuick in Flags) and (CurMakeMode=mmCleanBuild) then
-        CurMakeMode:=mmBuild;
       if CurMakeMode=mmNone then continue;
-      if (CurMakeMode=mmCleanBuild) and (blfDontClean in Flags) then
+      if (blfDontClean in Flags) and (CurMakeMode=mmCleanBuild) then
         CurMakeMode:=mmBuild;
       Tool.Title:=CurItem.Description;
       if (CurItem=Options.ItemIDE) and (blfWithoutLinkingIDE in Flags) then
@@ -387,16 +385,26 @@ function CreateBuildLazarusOptions(Options: TBuildLazarusOptions;
     end;
   end;
   
-  procedure AppendExtraOption(const AddOption: string);
+  procedure AppendExtraOption(const AddOption: string; EncloseIfSpace: boolean);
   begin
     if AddOption='' then exit;
     if ExtraOptions<>'' then ExtraOptions:=ExtraOptions+' ';
-    ExtraOptions:=ExtraOptions+AddOption;
+    if EncloseIfSpace and (Pos(' ',AddOption)>0) then
+      ExtraOptions:=ExtraOptions+'"'+AddOption+'"'
+    else
+      ExtraOptions:=ExtraOptions+AddOption;
+  end;
+
+  procedure AppendExtraOption(const AddOption: string);
+  begin
+    AppendExtraOption(AddOption,true);
   end;
 
 var
   CurItem: TBuildLazarusItem;
   MakeIDECfgFilename: String;
+  NewTargetFilename: String;
+  NewTargetDirectory: String;
 begin
   Result:=mrOk;
   CurItem:=Options.Items[ItemIndex];
@@ -420,13 +428,102 @@ begin
     if blfWithoutLinkingIDE in Flags then begin
       AppendExtraOption('-Cn');
     end;
-    //TODO: Maybe only if running executable is lazarus and
-    //      we are not cross compiling.
+    
+    // set target filename and target directory:
+    // 1. the user has set a target directory
+    // 2. For crosscompiling the IDE it needs a different directory
+    // 3. If lazarus is installed as root/administrator, the lazarus executable
+    //    is readonly and needs a different name and directory
+    //    (e.g. ~/.lazarus/bin/lazarus).
+    // 4. Platforms like windows locks executables, so lazarus can not replace
+    //    itself. They need a different name (e.g. lazarus.new.exe).
+    //    The target directory is writable, the lazarus.o file can be created.
+    // 5. If the user uses the startlazarus utility, then we need a backup.
+    //    Under non locking platforms 'make' cleans the lazarus executable, so
+    //    the IDE will rename the old file first (e.g. to lazarus.old).
+    //    Renaming is not needed.
+    // Otherwise: Don't touch the target filename.
 
-    AppendExtraOption('-olazarus.new'+GetDefaultExecutableExt);
+    NewTargetFilename:='';
+    NewTargetDirectory:='';
+    if (Options.TargetDirectory<>'') then begin
+      // Case 1. the user has set a target directory
+      NewTargetDirectory:=Options.TargetDirectory;
+      if not Macros.SubstituteStr(NewTargetDirectory) then begin
+        debugln('CreateBuildLazarusOptions macro aborted Options.TargetDirectory=',Options.TargetDirectory);
+        Result:=mrAbort;
+        exit;
+      end;
+      NewTargetDirectory:=CleanAndExpandDirectory(NewTargetDirectory);
+      debugln('CreateBuildLazarusOptions Options.TargetDirectory=',NewTargetDirectory);
+      Result:=ForceDirectoryInteractive(NewTargetDirectory,[]);
+      if Result<>mrOk then exit;
+    end else begin
+      // no user defined target directory
+      // => find it automatically
+      
+      if (Options.TargetOS<>'') and (Options.TargetOS<>{$I %FPCTARGETOS%}) then
+      begin
+        // Case 2. crosscompiling the IDE
+        // create directory <primary config dir>/bin/<TargetOS>
+        NewTargetDirectory:=AppendPathDelim(GetPrimaryConfigPath)+'bin'
+                            +PathDelim+Options.TargetOS;
+        debugln('CreateBuildLazarusOptions Options.TargetOS=',Options.TargetOS);
+        Result:=ForceDirectoryInteractive(NewTargetDirectory,[]);
+        if Result<>mrOk then exit;
+      end else begin
+        // -> normal compile for this platform
+      
+        // get lazarus directory
+        if Macros<>nil then begin
+          NewTargetDirectory:='$(LazarusDir)';
+          Macros.SubstituteStr(NewTargetDirectory);
+        end;
+
+        if (NewTargetDirectory<>'') and DirPathExists(NewTargetDirectory) then
+        begin
+          if not DirectoryIsWritable(NewTargetDirectory) then begin
+            // Case 3. the lazarus directory is not writable
+            // create directory <primary config dir>/bin/
+            NewTargetDirectory:=AppendPathDelim(GetPrimaryConfigPath)+'bin';
+            debugln('CreateBuildLazarusOptions LazDir readonly NewTargetDirectory=',NewTargetDirectory);
+            Result:=ForceDirectoryInteractive(NewTargetDirectory,[]);
+            if Result<>mrOk then exit;
+          end else begin
+            // the lazarus directory is writable
+            if OSLocksExecutables then begin
+              // Case 4. the current executable is locked
+              // => use a different output name
+              NewTargetFilename:='lazarus.new'+GetDefaultExecutableExt;
+              debugln('CreateBuildLazarusOptions exe locked NewTargetFilename=',NewTargetFilename);
+            end else begin
+              // Case 5. or else: => just compile to current directory
+              NewTargetDirectory:='';
+            end;
+          end;
+        end else begin
+          // lazarus dir is not valid (probably someone is experimenting)
+          // -> just compile to current directory
+          NewTargetDirectory:='';
+        end;
+      end;
+    end;
+    
+    if NewTargetDirectory<>'' then
+      AppendExtraOption('-FE'+NewTargetDirectory);
+
+    if NewTargetFilename<>'' then begin
+      // FPC automatically changes the last extension (append or replace)
+      // For example under linux, where executable don't need any extension
+      // fpc removes the last extension of the -o option.
+      // Trick fpc:
+      if GetDefaultExecutableExt='' then
+        NewTargetFilename:=NewTargetFilename+'.dummy';
+      AppendExtraOption('-o'+NewTargetFilename);
+    end;
 
     // add package options for IDE
-    AppendExtraOption(PackageOptions);
+    AppendExtraOption(PackageOptions,false);
   end;
 end;
 
@@ -724,19 +821,20 @@ end;
 
 procedure TConfigureBuildLazarusDlg.TargetDirectoryButtonClick(Sender: TObject);
 var
-  OpenDialog: TOpenDialog;
   AFilename: String;
+  DirDialog: TSelectDirectoryDialog;
 begin
-  OpenDialog:=TOpenDialog.Create(Application);
+  DirDialog:=TSelectDirectoryDialog.Create(Application);
   try
-    OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist];
-    OpenDialog.Title:='Choose output directory of the IDE executable (lazarus)';
-    if OpenDialog.Execute then begin
-      AFilename:=CleanAndExpandDirectory(OpenDialog.Filename);
+    DirDialog.Options:=DirDialog.Options+[ofPathMustExist];
+    DirDialog.Title:='Choose output directory of the IDE executable '
+                    +'(lazarus'+GetDefaultExecutableExt+')';
+    if DirDialog.Execute then begin
+      AFilename:=CleanAndExpandDirectory(DirDialog.Filename);
       TargetDirectoryComboBox.AddHistoryItem(AFilename,10,true,true);
     end;
   finally
-    OpenDialog.Free;
+    DirDialog.Free;
   end;
 end;
 
@@ -767,6 +865,7 @@ begin
   WithStaticPackagesCheckBox.Checked:=Options.WithStaticPackages;
   RestartAfterBuildCheckBox.Checked:=Options.RestartAfterBuild;
   TargetOSEdit.Text:=Options.TargetOS;
+  TargetDirectoryComboBox.Text:=Options.TargetDirectory;
   
   Invalidate;
 end;
@@ -781,7 +880,8 @@ begin
   Options.WithStaticPackages:=WithStaticPackagesCheckBox.Checked;
   Options.RestartAfterBuild:=RestartAfterBuildCheckBox.Checked;
   Options.TargetOS:=TargetOSEdit.Text;
-  
+  Options.TargetDirectory:=TargetDirectoryComboBox.Text;
+
   DestOptions.Assign(Options);
 end;
 
@@ -886,15 +986,17 @@ begin
     Name:='TargetDirectoryLabel';
     Parent:=Self;
     Caption:=lisLazBuildTargetDirectory;
-    Enabled:=false;
   end;
 
   TargetDirectoryComboBox:=TComboBox.Create(Self);
   with TargetDirectoryComboBox do begin
     Name:='TargetDirectoryComboBox';
     Parent:=Self;
-    Enabled:=false;
     Text:='';
+    with Items do begin
+      Add('(automatic)');
+      Add(SetDirSeparators('$(ConfDir)/bin'));
+    end;
   end;
 
   TargetDirectoryButton:=TButton.Create(Self);
@@ -903,7 +1005,6 @@ begin
     Parent:=Self;
     Caption:='...';
     OnClick:=@TargetDirectoryButtonClick;
-    Enabled:=false;
   end;
 
   LCLInterfaceRadioGroup:=TRadioGroup.Create(Self);

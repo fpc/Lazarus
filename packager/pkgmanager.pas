@@ -861,8 +861,7 @@ begin
   AutoPackages:=PackageGraph.GetAutoCompilationOrder(APackage,FirstDependency,
                                                      Policies);
   if AutoPackages<>nil then begin
-    DebugLn('TPkgManager.CompileRequiredPackages B Count=',
-      IntToStr(AutoPackages.Count));
+    //DebugLn('TPkgManager.CompileRequiredPackages B Count=',IntToStr(AutoPackages.Count));
     try
       i:=0;
       while i<AutoPackages.Count do begin
@@ -3100,7 +3099,7 @@ begin
     end;
 
     // save IDE build configs, so user can build IDE on command line
-    BuildIDEFlags:=[blfWithStaticPackages,blfQuick,blfOnlyIDE];
+    BuildIDEFlags:=[blfWithStaticPackages,blfDontClean,blfOnlyIDE];
     Result:=MainIDE.DoSaveBuildIDEConfigs(BuildIDEFlags);
     if Result<>mrOk then exit;
 
@@ -3174,7 +3173,7 @@ begin
     end;
 
     // save IDE build configs, so user can build IDE on command line
-    BuildIDEFlags:=[blfWithStaticPackages,blfQuick,blfOnlyIDE];
+    BuildIDEFlags:=[blfWithStaticPackages,blfDontClean,blfOnlyIDE];
     Result:=MainIDE.DoSaveBuildIDEConfigs(BuildIDEFlags);
     if Result<>mrOk then exit;
 

@@ -98,6 +98,8 @@ const
   
   // returns the standard file extension for compiled units (e.g '.ppu')
   function GetDefaultCompiledUnitExt(FPCVersion, FPCRelease: integer): string;
+  
+  function OSLocksExecutables: boolean;
 
   procedure GetDefaultCompilerFilenames(List: TStrings);
   procedure GetDefaultMakeFilenames(List: TStrings);
@@ -220,6 +222,9 @@ end.
 
 {
   $Log$
+  Revision 1.34  2004/12/04 01:17:41  mattias
+  implemented Target Directory for IDE
+
   Revision 1.33  2004/11/05 22:05:41  vincents
   Use symbolic constant for restart exitcode.
 

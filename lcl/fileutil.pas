@@ -51,6 +51,7 @@ function ForceDirectory(DirectoryName: string): boolean;
 function DeleteDirectory(const DirectoryName: string;
   OnlyChilds: boolean): boolean;
 function ProgramDirectory: string;
+function DirectoryIsWritable(const DirectoryName: string): boolean;
 
 // filename parts
 function ExtractFileNameOnly(const AFilename: string): string;
@@ -115,6 +116,9 @@ end.
 
 {
   $Log$
+  Revision 1.3  2004/12/04 01:17:41  mattias
+  implemented Target Directory for IDE
+
   Revision 1.2  2004/09/27 22:16:04  vincents
   renamed filectrl.inc to fileutil.inc
 

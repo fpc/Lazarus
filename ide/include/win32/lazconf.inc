@@ -152,6 +152,11 @@ begin
     Result:='.ppu';
 end;
 
+function OSLocksExecutables: boolean;
+begin
+  Result:=true;
+end;
+
 function GetDefaultTestBuildDirectory: string;
 begin
   Result:=GetEnvironmentVariable('TEMP');
@@ -195,6 +200,9 @@ end;
 
 {
   $Log$
+  Revision 1.25  2004/12/04 01:17:41  mattias
+  implemented Target Directory for IDE
+
   Revision 1.24  2004/08/20 09:47:36  mattias
   added darwin libpaths to Makefile and LCL Usage lib paths
 

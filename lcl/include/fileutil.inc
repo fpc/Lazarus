@@ -776,6 +776,25 @@ begin
   Result:=ExpandFilename(ExtractFilePath(Result));
 end;
 
+function DirectoryIsWritable(const DirectoryName: string): boolean;
+var
+  TempFilename: String;
+  fs: TFileStream;
+  s: String;
+begin
+  TempFilename:=GetTempFilename(DirectoryName,'tstperm');
+  Result:=false;
+  try
+    fs:=TFileStream.Create(TempFilename,fmCreate);
+    s:='WriteTest';
+    fs.Write(s[1],length(s));
+    fs.Free;
+    DeleteFile(TempFilename);
+    Result:=true;
+  except
+  end;
+end;
+
 {------------------------------------------------------------------------------
   function CleanAndExpandFilename(const Filename: string): string;
  ------------------------------------------------------------------------------}
@@ -1074,6 +1093,9 @@ end;
 
 {
   $Log$
+  Revision 1.6  2004/12/04 01:17:41  mattias
+  implemented Target Directory for IDE
+
   Revision 1.5  2004/11/15 22:58:13  mattias
   implemented Multi mask for TFileListBox
 

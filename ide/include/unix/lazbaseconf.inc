@@ -158,6 +158,11 @@ begin
   Result:='.ppu';
 end;
 
+function OSLocksExecutables: boolean;
+begin
+  Result:=false;
+end;
+
 function GetDefaultTestBuildDirectory: string;
 begin
   Result:='/tmp/';
