@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <EnvironmentOptions>
+    <Version Value="102"/>
+    <LazarusDirectory Value="%LazDir%">
+    </LazarusDirectory>
+    <CompilerFilename Value="%FpcBinDir%\ppc386.exe">
+    </CompilerFilename>
+    <FPCSourceDirectory Value="%FpcSrcDir%">
+    </FPCSourceDirectory>
+    <MakeFilename Value="%FpcBinDir%\make.exe">
+    </MakeFilename>
+    <TestBuildDirectory Value="%Temp%">
+    </TestBuildDirectory>
+    <DebuggerFilename Value="%FpcBinDir%\gdb.exe">
+    </DebuggerFilename>
+  </EnvironmentOptions>
+</CONFIG>
