@@ -41,7 +41,8 @@ begin
     idButtonHelp : StockName := GNOME_STOCK_BUTTON_HELP;
     idButtonAbort : StockName := GNOME_STOCK_BUTTON_CANCEL;
     idButtonClose : StockName := GNOME_STOCK_PIXMAP_QUIT;
-    else begin
+    idButtonAll : StockName := LAZARUS_STOCK_BUTTON_ALL;
+   else begin
       Result := inherited LoadStockPixmap(StockID);
       exit;
     end;
@@ -54,8 +55,194 @@ begin
   Result := HBitmap(Pixmap);
 end;
 
-//----------------------------------------------------------------------------//
-//-------------------------TGnomeObject.RequestInput--------------------------//
+{------------------------------------------------------------------------------
+  Method: TGnomeObject.PromptUser
+  Params:
+         DialogCaption - Dialog Caption to use if is a Custom Dialog
+         DialogMessage - Message/Error/Question to display
+         DialogType - type of dialog (warning/error/question/inform/custom)
+         Buttons - array of what Buttons to include
+
+   Returns: the Button clicked, or -1 if window was closed
+
+   this routine produces a dialog for the purpose of prompting the user to make
+   a choice, aka a Dialog consisting of an icon, a message, and several buttons
+   such as OK/Cancel Yes/No etc.. It can be used to display errors, warnings,
+   or other information, or to ask questions.
+ ------------------------------------------------------------------------------}
+Function PromptUserWidget(const DialogCaption, DialogMessage : String;
+  DialogType : longint; Buttons : Array of Longint) : Pointer;
+var
+  BoxType : PChar;
+  MainWidget : Pointer;
+  MsgTitle : PChar;
+  BTNArray : PPgChar;
+  StockName : PgChar;
+  I : Longint;
+begin
+  MsgTitle := nil;
+  If (Application.MainForm <> nil) and
+    (Application.MainForm.HandleAllocated)
+  then
+    MainWidget := Pointer(Application.MainForm.Handle)
+  else
+    MainWidget := nil;
+  Case DialogType of
+    idDialogInfo :
+      BoxType := GNOME_MESSAGE_BOX_INFO;
+    idDialogWarning:
+      BoxType := GNOME_MESSAGE_BOX_WARNING;
+    idDialogError:
+      BoxType := GNOME_MESSAGE_BOX_ERROR;
+    idDialogConfirm:
+      BoxType := GNOME_MESSAGE_BOX_QUESTION;
+    else begin
+      BoxType := GNOME_MESSAGE_BOX_GENERIC;
+      MsgTitle := PChar(DialogCaption);
+    end;
+  end;
+  BTNArray := nil;
+  ReallocMem(BTNArray, SizeOf(PgChar)*(High(Buttons) - Low(Buttons) + 2));
+  For I := Low(Buttons) to High(Buttons) do begin
+    Case Buttons[I] Of
+      idButtonOk : StockName := GNOME_STOCK_BUTTON_OK;
+      idButtonCancel : StockName := GNOME_STOCK_BUTTON_CANCEL;
+      idButtonYes : StockName := GNOME_STOCK_BUTTON_YES;
+      idButtonNo : StockName := GNOME_STOCK_BUTTON_NO;
+      idButtonHelp : StockName := GNOME_STOCK_BUTTON_HELP;
+      idButtonClose : StockName := GNOME_STOCK_BUTTON_CLOSE;
+      idButtonAll : StockName := LAZARUS_STOCK_BUTTON_ALL;
+      idButtonYesToAll : StockName := LAZARUS_STOCK_BUTTON_YESALL;
+      idButtonNoToAll : StockName := LAZARUS_STOCK_BUTTON_NOALL;
+      idButtonAbort : StockName := LAZARUS_STOCK_BUTTON_ABORT;
+      idButtonRetry : StockName := LAZARUS_STOCK_BUTTON_RETRY;
+      idButtonIgnore : StockName := LAZARUS_STOCK_BUTTON_IGNORE;
+      else
+        StockName := '';
+    end;
+    BTNArray[I - Low(Buttons)] := StockName;
+  end;
+  BTNArray[High(Buttons) - Low(Buttons) + 1] := nil;
+
+  Result := gnome_message_box_newv(PgChar(DialogMessage), BoxType, BTNArray);
+
+  If MsgTitle <> nil then
+    gtk_window_set_title(Result, PgChar(MsgTitle));
+
+  If MainWidget <> nil then
+    gnome_dialog_set_parent(Result, MainWidget);
+
+  ReallocMem(BTNArray, 0);
+end;
+
+Function TGnomeObject.PromptUser(const DialogCaption, DialogMessage : String;
+  DialogType : longint; Buttons : Array of Longint) : Longint;
+var
+  MsgBox : Pointer;
+  MSGResult : Longint;
+begin
+  MsgBox := PromptUserWidget(DialogCaption, DialogMessage, DialogType, Buttons);
+  MSGResult := gnome_dialog_run_and_close(MsgBox);
+  Case MSGResult of
+    -1 : Result := -1;
+    else
+      Result := Buttons[MSGResult + Low(Buttons)]
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TGnomeObject.PromptUserAtXY
+  Params:
+         DialogCaption - Dialog Caption to use if is a Custom Dialog
+         DialogMessage - Message/Error/Question to display
+         DialogType - type of dialog (warning/error/question/inform/custom)
+         Buttons - array of what Buttons to include
+         X, Y - Position to display dialog at
+
+   Returns: the Button clicked, or -1 if window was closed
+
+   this routine produces a dialog, at a given position on screen, for the
+   purpose of prompting the user to make a choice, aka a Dialog consisting of
+   an icon, a message, and several buttons such as OK/Cancel Yes/No etc.. It
+   can be used to display errors, warnings, or other information, or to ask
+   questions.
+ ------------------------------------------------------------------------------}
+Function TGnomeObject.PromptUserAtXY(const DialogCaption, DialogMessage : String;
+   DialogType : longint; Buttons : Array of Longint; X, Y : Longint) : Longint;
+var
+  MsgBox : Pointer;
+  MSGResult : Longint;
+begin
+  MsgBox := PromptUserWidget(DialogCaption, DialogMessage, DialogType, Buttons);
+  gtk_widget_set_uposition(MsgBox, X, Y);
+  MSGResult := gnome_dialog_run_and_close(MsgBox);
+  Case MSGResult of
+    -1 : Result := -1;
+    else
+      Result := Buttons[MSGResult + Low(Buttons)]
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TGnomeObject.NotifyUser
+  Params:
+         DialogCaption - Dialog Caption to use if is a Custom Dialog
+         DialogMessage - Message/Error/Question to display
+         DialogType - type of dialog (warning/error/question/inform/custom)
+
+   Returns: Nothing
+
+   this routines produces a notification dialog, aka a Dialog consisting of
+   an icon, a message, and an Ok Button. It really only makes sense to use
+   with an Error, Info or Custom Dialog Type.
+ ------------------------------------------------------------------------------}
+Procedure TGnomeObject.NotifyUser(const DialogCaption, DialogMessage : String; DialogType : longint);
+var
+  MsgBox : Pointer;
+begin
+  MsgBox := PromptUserWidget(DialogCaption, DialogMessage, DialogType, [idButtonOk]);
+  gnome_dialog_run_and_close(MsgBox);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TGnomeObject.NotifyUserAtXY
+  Params:
+         DialogCaption - Dialog Caption to use if is a Custom Dialog
+         DialogMessage - Message/Error/Question to display
+         DialogType - type of dialog (warning/error/question/inform/custom)
+         X, Y - Position to display dialog at
+
+   Returns: Nothing
+
+   this routines produces a notification dialog at a given position on screen,
+   aka a Dialog consisting of an icon, a message, and an Ok Button. It really
+   only makes sense to use with an Error, Info or Custom Dialog Type.
+ ------------------------------------------------------------------------------}
+Procedure TGnomeObject.NotifyUserAtXY(const DialogCaption, DialogMessage : String; DialogType : longint; X, Y : Longint);
+var
+  MsgBox : Pointer;
+begin
+  MsgBox := PromptUserWidget(DialogCaption, DialogMessage, DialogType, [idButtonOk]);
+  gtk_widget_set_uposition(MsgBox, X, Y);
+  gnome_dialog_run_and_close(MsgBox);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TGnomeObject.RequestInput
+  Params:
+         InputCaption - Dialog Caption
+         InputPrompt - caption of input label
+         MaskInput - hide input(AKA Password)
+         Value - default/return value
+
+   Returns: If User clicked OK
+
+   this routines produces a input dialog consisting of an Edit field,
+   an Ok button, and a Cancel Button. If MaskInput is set, the Edit's
+   text is hidden like in a Password prompt. The initial Value is used
+   as the default value of the edit, and if result is true, is replaced
+   with the new value the user has typed in(if any).
+ ------------------------------------------------------------------------------}
 Type
   PRequestInputObject = ^TRequestInputObject;
   TRequestInputObject = Record
@@ -119,6 +306,9 @@ end;
 
 {
   $Log$
+  Revision 1.4  2002/10/12 16:36:40  lazarus
+  AJ: added new QueryUser/NotifyUser
+
   Revision 1.3  2002/10/11 16:00:39  lazarus
   AJ: made InputQuery Interface Dependant
 

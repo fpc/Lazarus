@@ -17,6 +17,11 @@
  *                                                                           *
  *****************************************************************************
 }
+Procedure NotifyUser(const DialogCaption, DialogMessage : String; DialogType : longint); override;
+Procedure NotifyUserAtXY(const DialogCaption, DialogMessage : String; DialogType : longint; X, Y : Longint); override;
+
+Function PromptUser(const DialogCaption, DialogMessage : String; DialogType : longint; Buttons : Array of Longint) : Longint; override;
+Function PromptUserAtXY(const DialogCaption, DialogMessage : String; DialogType : longint; Buttons : Array of Longint; X, Y : Longint) : Longint; override;
 
 Function LoadStockPixmap(StockID: longint) : HBitmap; override;
 
@@ -24,6 +29,9 @@ Function RequestInput(const InputCaption, InputPrompt : String; MaskInput : Bool
 
 {
   $Log$
+  Revision 1.4  2002/10/12 16:36:40  lazarus
+  AJ: added new QueryUser/NotifyUser
+
   Revision 1.3  2002/10/11 16:00:39  lazarus
   AJ: made InputQuery Interface Dependant
 

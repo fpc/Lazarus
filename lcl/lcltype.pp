@@ -1158,6 +1158,8 @@ const
   idButtonRetry = idButtonBase + 8;
   idButtonIgnore = idButtonBase + 9;
   idButtonAll = idButtonBase + 10;
+  idButtonYesToAll = idButtonBase + 11;
+  idButtonNoToAll = idButtonBase + 12;
 
   idDialogBase = $FF;
   idDialogWarning = idDialogBase + 1;
@@ -1619,6 +1621,9 @@ end.
 
 {
   $Log$
+  Revision 1.21  2002/10/12 16:36:39  lazarus
+  AJ: added new QueryUser/NotifyUser
+
   Revision 1.20  2002/10/10 13:29:08  lazarus
   AJ: added LoadStockPixmap routine & minor fixes to/for GNOMEInt
 
