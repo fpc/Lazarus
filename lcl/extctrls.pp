@@ -46,7 +46,7 @@ interface
 
 uses
   SysUtils, Classes, Controls, stdCtrls, vclGlobals, lMessages, GraphType,
-  Graphics, LCLLinux;
+  Graphics, LCLLinux, CustomTimer;
 
 type
   { workaround problem with fcl }
@@ -215,26 +215,7 @@ type
     @abstract(A free running timer.)
     Introduced and (currently) maintained by Stefan Hille (stoppok@osibisa.ms.sub.org)
   }
-  TTimer = class (TComponent)
-  private
-    FInterval     : Cardinal;
-    FTimerHandle  : integer;
-    FOnTimer      : TNotifyEvent;
-    FEnabled      : Boolean;
-    procedure UpdateTimer;
-    procedure SetEnabled(Value: Boolean);
-    procedure SetInterval(Value: Cardinal);
-    procedure SetOnTimer(Value: TNotifyEvent);
-    procedure KillTimer;
-  protected
-    procedure Timer (var msg); message LM_Timer;
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-  published
-    property Enabled: Boolean read FEnabled write SetEnabled default True;
-    property Interval: Cardinal read FInterval write SetInterval default 1000;
-    property OnTimer: TNotifyEvent read FOnTimer write SetOnTimer;
+  TTimer = class (TCustomTimer)
   end;
 
 
@@ -509,6 +490,9 @@ end.
 
  {
   $Log$
+  Revision 1.39  2002/10/24 10:27:52  lazarus
+  MG: broke extctrls.pp <-> forms.pp circle
+
   Revision 1.38  2002/10/24 08:56:30  lazarus
   MG: fixed TnoteBook AddPage and double creation of MeinMenu
 
