@@ -176,16 +176,11 @@ begin
   if (CleanPosToCaret(CurPos.StartPos,CaretXY))
   and (CaretXY.Code<>nil) then begin
     ErrorPosition:=CaretXY;
-    raise ECodeToolError.Create('"'+CaretXY.Code.Filename+'"'
-      +' at Line '+IntToStr(CaretXY.Y)+', Column'+IntToStr(CaretXY.X)
-      +' '+AMessage);
   end else if (Scanner<>nil) and (Scanner.MainCode<>nil) then begin
     ErrorPosition.Code:=TCodeBuffer(Scanner.MainCode);
     ErrorPosition.Y:=-1;
-    raise ECodeToolError.Create('"'+TCodeBuffer(Scanner.MainCode).Filename+'" '
-      +AMessage)
-  end else
-    raise ECodeToolError.Create(AMessage);
+  end;
+  raise ECodeToolError.Create(AMessage);
 end;
 
 procedure TCustomCodeTool.SetScanner(NewScanner: TLinkScanner);

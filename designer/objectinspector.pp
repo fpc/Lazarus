@@ -1338,7 +1338,7 @@ end;
 
 PRocedure TOIPropertyGrid.CurrentEditDblClick(Sender : TObject);
 var
-  Rect : TRect;
+  //Rect : TRect;
   Position : TPoint;
   Index: integer;
   PointedRow:TOIpropertyGridRow;

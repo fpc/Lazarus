@@ -52,16 +52,21 @@ type
 
   TCodeToolManager = class
   private
-    FCodeTool: TCodeCompletionCodeTool;
-    FSourceExtensions: string; // default is '.pp;.pas;.lpr;.dpr;.dpk'
-    FCheckFilesOnDisk: boolean;
-    FIndentSize: integer;
-    FVisibleEditorLines: integer;
-    FJumpCentered: boolean;
-    FCursorBeyondEOL: boolean;
-    FOnBeforeApplyChanges: TOnBeforeApplyChanges;
-    FOnAfterApplyChanges: TOnAfterApplyChanges;
     FCatchExceptions: boolean;
+    FCheckFilesOnDisk: boolean;
+    FCodeTool: TCodeCompletionCodeTool;
+    FCursorBeyondEOL: boolean;
+    FErrorCode: TCodeBuffer;
+    FErrorColumn: integer;
+    FErrorLine: integer;
+    FErrorMsg: string;
+    FErrorTopLine: integer;
+    FIndentSize: integer;
+    FJumpCentered: boolean;
+    FOnAfterApplyChanges: TOnAfterApplyChanges;
+    FOnBeforeApplyChanges: TOnBeforeApplyChanges;
+    FSourceExtensions: string; // default is '.pp;.pas;.lpr;.dpr;.dpk'
+    FVisibleEditorLines: integer;
     FWriteExceptions: boolean;
     function OnScannerGetInitValues(Code: Pointer): TExpressionEvaluator;
     procedure OnDefineTreeReadValue(Sender: TObject; const VariableName: string;
@@ -78,7 +83,7 @@ type
     procedure AfterApplyingChanges;
     function HandleException(AnException: Exception): boolean;
   public
-    DefinePool: TDefinePool; // definitions for all directories (rules)
+    DefinePool: TDefinePool; // definition templates (rules)
     DefineTree: TDefineTree; // cache for defines (e.g. initial compiler values)
     SourceCache: TCodeCache; // cache for source (units, include files, ...)
     SourceChangeCache: TSourceChangeCache; // cache for write accesses
@@ -103,6 +108,11 @@ type
           read FCatchExceptions write FCatchExceptions;
     property WriteExceptions: boolean
           read FWriteExceptions write FWriteExceptions;
+    property ErrorCode: TCodeBuffer read fErrorCode;
+    property ErrorColumn: integer read fErrorColumn;
+    property ErrorLine: integer read fErrorLine;
+    property ErrorMessage: string read fErrorMsg;
+    property ErrorTopLine: integer read fErrorTopLine;
 
     // tool settings
     property CheckFilesOnDisk: boolean
@@ -379,8 +389,14 @@ function TCodeToolManager.InitCodeTool(Code: TCodeBuffer): boolean;
 var MainCode: TCodeBuffer;
 begin
   Result:=false;
+  fErrorMsg:='';
+  fErrorCode:=nil;
+  fErrorLine:=-1;
   MainCode:=GetMainCode(Code);
-  if MainCode=nil then exit;
+  if MainCode=nil then begin
+    fErrorMsg:='TCodeToolManager.InitCodeTool MainCode=nil';
+    exit;
+  end;
   if FCodeTool=nil then begin
     FCodeTool:=TCodeCompletionCodeTool.Create;
     FCodeTool.CheckFilesOnDisk:=FCheckFilesOnDisk;
@@ -389,35 +405,49 @@ begin
     FCodeTool.JumpCentered:=FJumpCentered;
     FCodeTool.CursorBeyondEOL:=FCursorBeyondEOL;
   end;
+  FCodeTool.ErrorPosition.Code:=nil;
   FCodeTool.Scanner:=MainCode.Scanner;
 {$IFDEF CTDEBUG}
 writeln('[TCodeToolManager.InitCodeTool] ',Code.Filename,' ',Code.SourceLength);
 {$ENDIF}
   Result:=(FCodeTool.Scanner<>nil);
+  if not Result then begin
+    fErrorCode:=MainCode;
+    fErrorMsg:='No scanner available';
+  end;
 end;
 
 function TCodeToolManager.HandleException(AnException: Exception): boolean;
-var
-  ACode: TCodeBuffer;
-  Line, Column: integer;
 begin
+  fErrorMsg:=AnException.Message;
+  if FCodeTool<>nil then begin
+    fErrorCode:=FCodeTool.ErrorPosition.Code;
+    fErrorColumn:=FCodeTool.ErrorPosition.X;
+    fErrorLine:=FCodeTool.ErrorPosition.Y;
+    fErrorTopLine:=fErrorLine;
+    if JumpCentered then begin
+      dec(fErrorTopLine,VisibleEditorLines div 2);
+      if fErrorTopLine<1 then fErrorTopLine:=1;
+    end;
+  end;
   if (AnException is ELinkScannerError)
   and (FCodeTool<>nil) and (FCodeTool.Scanner<>nil)
   and (FCodeTool.Scanner.Code<>nil)
   and (FCodeTool.Scanner.LinkCount>0) then begin
-    ACode:=TCodeBuffer(FCodeTool.Scanner.Code);
-    ACode.AbsoluteToLineCol(FCodeTool.Scanner.SrcPos,Line,Column);
-    if Line>=0 then begin
-      AnException.Message:='"'+ACode.Filename+'"'
-        +' at Line '+IntToStr(Line)+', Column'+IntToStr(Column)
-        +' '+AnException.Message;
-    end;
+    fErrorCode:=TCodeBuffer(FCodeTool.Scanner.Code);
+    if fErrorCode<>nil then
+      fErrorCode.AbsoluteToLineCol(
+        FCodeTool.Scanner.SrcPos,fErrorLine,fErrorColumn);
   end;
   if FWriteExceptions then begin
 {$IFDEF CTDEBUG}
 WriteDebugReport(true,false,false,false,false);
 {$ENDIF}
-    writeln('### TCodeToolManager.HandleException: '+AnException.Message);
+    write('### TCodeToolManager.HandleException: "'+ErrorMessage+'"');
+    if ErrorLine>0 then write(' at Line=',ErrorLine);
+    if ErrorColumn>0 then write(' Col=',ErrorColumn);
+    if ErrorCode<>nil then write(' in "',ErrorCode.Filename,'"');
+    writeln('');
   end;
   if not FCatchExceptions then raise AnException;
   Result:=false;
@@ -427,38 +457,21 @@ function TCodeToolManager.CheckSyntax(Code: TCodeBuffer;
   var NewCode: TCodeBuffer; var NewX, NewY, NewTopLine: integer;
   var ErrorMsg: string): boolean;
 // returns true on syntax correct
-var OldCatchExceptions: boolean;
 begin
   Result:=false;
-  NewCode:=nil;
-  OldCatchExceptions:=FCatchExceptions;
-  FCatchExceptions:=false;
   try
-    try
-      ErrorMsg:='init code tool failed';
-      if not InitCodeTool(Code) then exit;
-      FCodeTool.ErrorPosition.Code:=nil;
-      ErrorMsg:='internal build code tree error';
+    if InitCodeTool(Code) then begin
       FCodeTool.BuildTree(false);
       Result:=true;
-    except
-      on e: Exception do begin
-        ErrorMsg:=e.Message;
-        if FCodeTool<>nil then begin
-          NewCode:=FCodeTool.ErrorPosition.Code;
-          NewX:=FCodeTool.ErrorPosition.X;
-          NewY:=FCodeTool.ErrorPosition.Y;
-          NewTopLine:=NewY;
-          if JumpCentered then begin
-            dec(NewTopLine,VisibleEditorLines div 2);
-            if NewTopLine<1 then NewTopLine:=1;
-          end;
-        end;
-      end;
     end;
-  finally
-    FCatchExceptions:=OldCatchExceptions;
+  except
+    on e: Exception do Result:=HandleException(e);
   end;
+  NewCode:=ErrorCode;
+  NewX:=ErrorColumn;
+  NewY:=ErrorLine;
+  NewTopLine:=ErrorTopLine;
+  ErrorMsg:=ErrorMessage;
 end;
 
 function TCodeToolManager.JumpToMethod(Code: TCodeBuffer; X,Y: integer;

@@ -624,7 +624,7 @@ end;
 
 destructor TEditOptLanguageInfo.Destroy;
 begin
-
+  MappedAttributes.Free;
   inherited Destroy;
 end;
 
