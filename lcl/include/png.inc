@@ -58,6 +58,7 @@ begin
   PNGReader:=nil;
   try
     IntfImg:=TLazIntfImage.Create(0,0);
+    IntfImg.GetDescriptionFromDevice(0);
     PNGReader:=TFPReaderPNG.Create;
     FImage.SaveStream.Position:=0;
     IntfImg.LoadFromStream(FImage.SaveStream,PNGReader);

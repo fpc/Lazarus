@@ -36,6 +36,7 @@ uses
   LCLStrConsts, vclGlobals, LMessages, LCLType, LCLProc, LCLLinux, LResources,
   GraphType, GraphMath
   {$IFDEF UseFPImage}, FPReadPNG, IntfGraphics{$ENDIF}
+  {$IFDEF HasPNGWriter}, FPWritePNG{$ENDIF}
   ;
 
 type
@@ -1179,6 +1180,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.85  2003/09/02 16:08:19  mattias
+  implemented TPortableNetworkGraphic reading
+
   Revision 1.84  2003/09/02 15:12:21  mattias
   TBitmap.Assign now shares image data
 

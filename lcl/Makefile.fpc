@@ -16,7 +16,7 @@ implicitunits=arrow actnlist buttons calendar clipbrd clistbox comctrls \
         imglist interfacebase lazqueue lclmemmanager lcllinux lclstrconsts \
         lcltype lmessages lresources maskedit menus messages registry spin \
         stdctrls stringhashlist toolwin utrace vclglobals printers \
-        postscriptprinter
+        postscriptprinter intfgraphics
 # and do not add allunits. It is just a dummy unit used for compiling.
 
 rsts=dialogs
