@@ -1212,6 +1212,7 @@ begin
   try
     NewRow:=Rows[FItemIndex];
     NewValue:=NewRow.Editor.GetVisualValue;
+    debugln('TOICustomPropertyGrid.FillComboboxItems A ',NewRow.Editor.ClassName,' ',NewRow.Editor.GetName,' NewValue="',NewValue,'"');
     ValueComboBox.MaxLength:=NewRow.Editor.GetEditLimit;
     ValueComboBox.Sorted:=paSortList in NewRow.Editor.GetAttributes;
     ValueComboBox.Enabled:=not NewRow.IsReadOnly;
