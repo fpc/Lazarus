@@ -66,20 +66,21 @@ begin
   Result:=FCount-1;
   while (Result>=0) and (FData[Result].FormatID<>FormatID) do dec(Result);
   if (Result<0) and CreateIfNotExists then begin
-    inc(FCount);
-    NewSize:=SizeOf(TClipboardData)*FCount;
-    if FData<>nil then
-      ReallocMem(FData,NewSize)
-    else
-      GetMem(FData,NewSize);
-    Result:=FCount-1;
-    FData[Result].FormatID:=FormatID;
-    FData[Result].Stream:=TMemoryStream.Create;
-    FSupportedFormatsChanged:=true;
-    if (not GetOwnerShip) then begin
+    if not GetOwnerShip then begin
       Result:=-1;
       raise Exception.Create('Unable to get clipboard ownership for '+
         ClipboardTypeName[ClipboardType]);
+    end else begin
+      inc(FCount);
+      NewSize:=SizeOf(TClipboardData)*FCount;
+      if FData<>nil then
+        ReallocMem(FData,NewSize)
+      else
+        GetMem(FData,NewSize);
+      Result:=FCount-1;
+      FData[Result].FormatID:=FormatID;
+      FData[Result].Stream:=TMemoryStream.Create;
+      FSupportedFormatsChanged:=true;
     end;
   end;
   //DebugLn('[TClipboard.IndexOfCachedFormatID] END ',ClipboardTypeName[ClipboardType]
@@ -691,6 +692,9 @@ end;
 
 {
   $Log$
+  Revision 1.19  2005/01/03 16:32:13  micha
+  always request ownership when about to modify buffer
+
   Revision 1.18  2004/08/15 14:39:36  mattias
   implemented platform independent binary object streamer
 
