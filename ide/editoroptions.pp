@@ -151,7 +151,7 @@ type
     fHighlighterList: TEditOptLangList;
 
     // Code tools options (MG: these will move to an unit of their own)
-    fAutoCodeCompletion:boolean;
+    fAutoIdentifierCompletion:boolean;
     fAutoCodeParameters:boolean;
     fAutoToolTipExprEval:boolean;
     fAutoToolTipSymbTools:boolean;
@@ -237,8 +237,8 @@ type
        read fHighlighterList write fHighlighterList;
 
     // Code Tools options
-    property AutoCodeCompletion:boolean
-       read fAutoCodeCompletion write fAutoCodeCompletion default true;
+    property AutoIdentifierCompletion:boolean
+       read fAutoIdentifierCompletion write fAutoIdentifierCompletion default true;
     property AutoCodeParameters:boolean
        read fAutoCodeParameters write fAutoCodeParameters default true;
     property AutoToolTipExprEval:boolean
@@ -370,7 +370,7 @@ type
 
     // Code Tools options
     AutomaticFeaturesGroupBox:TGroupBox;
-    AutoCodeCompletionCheckBox:TCheckBox;
+    AutoIdentifierCompletionCheckBox:TCheckBox;
     AutoCodeParametersCheckBox:TCheckBox;
     AutoToolTipExprEvalCheckBox:TCheckBox;
     AutoToolTipSymbToolsCheckBox:TCheckBox;
@@ -1105,8 +1105,8 @@ begin
     end;
 
     // Code Tools options
-    fAutoCodeCompletion:=
-      XMLConfig.GetValue('EditorOptions/CodeTools/AutoCodeCompletion',true);
+    fAutoIdentifierCompletion:=
+      XMLConfig.GetValue('EditorOptions/CodeTools/AutoIdentifierCompletion',true);
     fAutoCodeParameters:=
       XMLConfig.GetValue('EditorOptions/CodeTools/AutoCodeParameters',true);
     fAutoToolTipExprEval:=
@@ -1216,8 +1216,8 @@ begin
     end;
 
     // Code Tools options
-    XMLConfig.SetValue('EditorOptions/CodeTools/AutoCodeCompletion'
-      ,fAutoCodeCompletion);
+    XMLConfig.SetValue('EditorOptions/CodeTools/AutoIdentifierCompletion'
+      ,fAutoIdentifierCompletion);
     XMLConfig.SetValue('EditorOptions/CodeTools/AutoCodeParameters'
       ,fAutoCodeParameters);
     XMLConfig.SetValue('EditorOptions/CodeTools/AutoToolTipExprEval'
@@ -2414,19 +2414,17 @@ var i:integer;
   ARelation: TKeyCommandRelation;
   ANode: TTreeNode;
 begin
-  if Button=mbRight then begin
-    ANode:=KeyMappingTreeView.GetNodeAt(X,Y);
-    if (ANode<>nil) and (ANode.Data<>nil)
-    and (TObject(ANode.Data) is TKeyCommandRelation) then begin
-      ARelation:=TKeyCommandRelation(ANode.Data);
-      i:=EditorOpts.KeyMap.IndexOf(ARelation);
-      if (i>=0)
-      and (ShowKeyMappingEditForm(i,EditorOpts.KeyMap)=mrOk) then begin
-        ANode.Text:=KeyMappingRelationToString(ARelation);
-        for i:=Low(PreviewEdits) to High(PreviewEdits) do
-          if PreviewEdits[i]<>nil then
-            EditorOpts.KeyMap.AssignTo(PreviewEdits[i].KeyStrokes);
-      end;
+  ANode:=KeyMappingTreeView.GetNodeAt(X,Y);
+  if (ANode<>nil) and (ANode.Data<>nil)
+  and (TObject(ANode.Data) is TKeyCommandRelation) then begin
+    ARelation:=TKeyCommandRelation(ANode.Data);
+    i:=EditorOpts.KeyMap.IndexOf(ARelation);
+    if (i>=0)
+    and (ShowKeyMappingEditForm(i,EditorOpts.KeyMap)=mrOk) then begin
+      ANode.Text:=KeyMappingRelationToString(ARelation);
+      for i:=Low(PreviewEdits) to High(PreviewEdits) do
+        if PreviewEdits[i]<>nil then
+          EditorOpts.KeyMap.AssignTo(PreviewEdits[i].KeyStrokes);
     end;
   end;
 end;
@@ -4044,16 +4042,16 @@ begin
     Visible:=true;
   end;
 
-  AutoCodeCompletionCheckBox:=TCheckBox.Create(Self);
-  with AutoCodeCompletionCheckBox do begin
-    Name:='AutoCodeCompletionCheckBox';
+  AutoIdentifierCompletionCheckBox:=TCheckBox.Create(Self);
+  with AutoIdentifierCompletionCheckBox do begin
+    Name:='AutoIdentifierCompletionCheckBox';
     Parent:=AutomaticFeaturesGroupBox;
     Top:=2;
     Left:=5;
     Width:=200;
     Height:=20;
-    Caption:='Code completion';
-    Checked:=EditorOpts.AutoCodeCompletion;
+    Caption:='Identfier completion';
+    Checked:=EditorOpts.AutoIdentifierCompletion;
     Enabled:=false;
     Visible:=true;
   end;
@@ -4062,10 +4060,11 @@ begin
   with AutoCodeParametersCheckBox do begin
     Name:='AutoCodeParametersCheckBox';
     Parent:=AutomaticFeaturesGroupBox;
-    Top:=AutoCodeCompletionCheckBox.Top+AutoCodeCompletionCheckBox.Height;
-    Left:=AutoCodeCompletionCheckBox.Left;
-    Width:=AutoCodeCompletionCheckBox.Width;
-    Height:=AutoCodeCompletionCheckBox.Height;
+    Top:=AutoIdentifierCompletionCheckBox.Top
+        +AutoIdentifierCompletionCheckBox.Height;
+    Left:=AutoIdentifierCompletionCheckBox.Left;
+    Width:=AutoIdentifierCompletionCheckBox.Width;
+    Height:=AutoIdentifierCompletionCheckBox.Height;
     Caption:='Code parameters';
     Checked:=EditorOpts.AutoCodeParameters;
     Enabled:=false;
@@ -4077,9 +4076,9 @@ begin
     Name:='AutoToolTipExprEvalCheckBox';
     Parent:=AutomaticFeaturesGroupBox;
     Top:=AutoCodeParametersCheckBox.Top+AutoCodeParametersCheckBox.Height;
-    Left:=AutoCodeCompletionCheckBox.Left;
-    Width:=AutoCodeCompletionCheckBox.Width;
-    Height:=AutoCodeCompletionCheckBox.Height;
+    Left:=AutoIdentifierCompletionCheckBox.Left;
+    Width:=AutoIdentifierCompletionCheckBox.Width;
+    Height:=AutoIdentifierCompletionCheckBox.Height;
     Caption:='Tooltip expression evaluation';
     Checked:=EditorOpts.AutoToolTipExprEval;
     Enabled:=false;
@@ -4091,9 +4090,9 @@ begin
     Name:='AutoToolTipSymbToolsCheckBox';
     Parent:=AutomaticFeaturesGroupBox;
     Top:=AutoToolTipExprEvalCheckBox.Top+AutoToolTipExprEvalCheckBox.Height;
-    Left:=AutoCodeCompletionCheckBox.Left;
-    Width:=AutoCodeCompletionCheckBox.Width;
-    Height:=AutoCodeCompletionCheckBox.Height;
+    Left:=AutoIdentifierCompletionCheckBox.Left;
+    Width:=AutoIdentifierCompletionCheckBox.Width;
+    Height:=AutoIdentifierCompletionCheckBox.Height;
     Caption:='Tooltip symbol Tools';
     Checked:=EditorOpts.AutoToolTipSymbTools;
     Visible:=true;
@@ -4104,7 +4103,8 @@ begin
     Name:='AutoDelayLabel';
     Parent:=AutomaticFeaturesGroupBox;
     Top:=10;
-    Left:=AutoCodeCompletionCheckBox.Left+AutoCodeCompletionCheckBox.Width+17;
+    Left:=AutoIdentifierCompletionCheckBox.Left
+          +AutoIdentifierCompletionCheckBox.Width+17;
     Width:=70;
     Caption:='Delay';
     Visible:=true;
@@ -4115,7 +4115,8 @@ begin
     Name:='AutoDelayTrackBar';
     Parent:=AutomaticFeaturesGroupBox;
     Top:=32;
-    Left:=AutoCodeCompletionCheckBox.Left+AutoCodeCompletionCheckBox.Width+15;
+    Left:=AutoIdentifierCompletionCheckBox.Left
+         +AutoIdentifierCompletionCheckBox.Width+15;
     Width:=150;
     Min:=2;
     Max:=6;
@@ -4130,7 +4131,8 @@ begin
     Name:='AutoDelayMinLabel';
     Parent:=AutomaticFeaturesGroupBox;
     Top:=AutoDelayTrackBar.Top+AutoDelayTrackBar.Height+5;
-    Left:=AutoCodeCompletionCheckBox.Left+AutoCodeCompletionCheckBox.Width+15;
+    Left:=AutoIdentifierCompletionCheckBox.Left
+         +AutoIdentifierCompletionCheckBox.Width+15;
     Width:=70;
     Caption:='0.5 sec';
     Visible:=true;
@@ -4385,7 +4387,7 @@ begin
   SaveAllHighlighters;
 
   // code Tools
-  EditorOpts.AutoCodeCompletion:=AutoCodeCompletionCheckBox.Checked;
+  EditorOpts.AutoIdentifierCompletion:=AutoIdentifierCompletionCheckBox.Checked;
   EditorOpts.AutoCodeParameters:=AutoCodeParametersCheckBox.Checked;
   EditorOpts.AutoToolTipSymbTools:=AutoToolTipSymbToolsCheckBox.Checked;
   EditorOpts.AutoToolTipExprEval:=AutoToolTipExprEvalCheckBox.Checked;

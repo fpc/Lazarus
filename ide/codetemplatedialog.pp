@@ -98,7 +98,7 @@ begin
   inherited Create(AOwner);
   if LazarusResources.Find(ClassName)=nil then begin
     Width:=300;
-    Height:=140;
+    Height:=150;
     Position:=poScreenCenter;
 
     TokenLabel:=TLabel.Create(Self);
@@ -129,7 +129,7 @@ begin
       Parent:=Self;
       Caption:='Comment:';
       Left:=12;
-      Top:=TokenEdit.Top+TokenEdit.Height+23;
+      Top:=TokenEdit.Top+TokenEdit.Height+10;
       Width:=Self.ClientWidth-Left-Left;
       Show;
     end;

@@ -164,7 +164,7 @@ type
   TSynStateFlags = set of TSynStateFlag;
 
   TSynEditorOption = (eoAltSetsColumnMode, eoAutoIndent,
-    {$IFDEF SYN_LAZARUS}eoBracketHighlight,{$ENDIF}
+    {$IFDEF SYN_LAZARUS}eoBracketHighlight, eoHideRightMargin,{$ENDIF}
     eoDragDropEditing,     //mh 2000-11-20
     eoDropFiles, eoHalfPageScroll, eoKeepCaretX, eoNoCaret, eoNoSelection,
     eoScrollByOneLess, eoScrollPastEof, eoScrollPastEol, eoShowScrollHint,
@@ -2595,8 +2595,10 @@ var
       // calls to ExtTextOut.
       if bDoRightEdge then begin
         {$IFDEF SYN_LAZARUS}
-        LCLLinux.MoveToEx(dc, nRightEdge, rcLine.Top, nil);
-        LCLLinux.LineTo(dc, nRightEdge, rcLine.Bottom + 1);
+        if (not (eoHideRightMargin in Options)) then begin
+          LCLLinux.MoveToEx(dc, nRightEdge, rcLine.Top, nil);
+          LCLLinux.LineTo(dc, nRightEdge, rcLine.Bottom + 1);
+        end;
         {$ELSE}
         Windows.MoveToEx(dc, nRightEdge, rcLine.Top, nil);
         Windows.LineTo(dc, nRightEdge, rcLine.Bottom + 1);

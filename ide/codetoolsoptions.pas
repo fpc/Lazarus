@@ -168,7 +168,6 @@ type
     procedure SetupCodeCreationPage;
     procedure SetupLineSplittingPage;
     procedure SetupSpacePage;
-    procedure SetupDefinesPage;
     procedure CreateAtomCheckBoxes(ParentGroupBox: TGroupBox;
       AtomTypes: TAtomTypes; Columns: integer);
     procedure SetAtomCheckBoxes(AtomTypes: TAtomTypes;
@@ -558,14 +557,12 @@ begin
       Pages.Add('Code Creation');
       Pages.Add('Line Splitting');
       Pages.Add('Space');
-      Pages.Add('Defines');
     end;
 
     SetupGeneralPage;
     SetupCodeCreationPage;
     SetupLineSplittingPage;
     SetupSpacePage;
-    SetupDefinesPage;
 
     NoteBook.Show;
 
@@ -603,11 +600,6 @@ destructor TCodeToolsOptsDlg.Destroy;
 begin
   BeautifyCodeOptions.Free;
   inherited Destroy;
-end;
-
-procedure TCodeToolsOptsDlg.SetupDefinesPage;
-begin
-
 end;
 
 procedure TCodeToolsOptsDlg.SetupGeneralPage;

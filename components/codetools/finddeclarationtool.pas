@@ -43,7 +43,7 @@ interface
 { $DEFINE ShowSearchPaths}
 { $DEFINE ShowTriedFiles}
 { $DEFINE ShowTriedContexts}
-{ $DEFINE ShowExprEval}
+{$DEFINE ShowExprEval}
 { $DEFINE ShowFoundIdentifier}
 { $DEFINE ShowCachedIdentifiers}
 { $DEFINE ShowNodeCache}
@@ -3007,6 +3007,10 @@ writeln('[TFindDeclarationTool.ReadOperandTypeAtCursor] A Atom=',GetAtom);
     Result:=FindExpressionTypeOfVariable(CurPos.StartPos,Params,EndPos);
     MoveCursorToCleanPos(EndPos);
   end
+  else if UpAtomIs('NIL') then begin
+    Result.Desc:=xtNil;
+    ReadNextAtom;
+  end
   else if AtomIsChar('(') then begin
     // read til bracket end  and find the result of the inner expression
     // this algo is not very fast, but expressions are almost always small
@@ -3677,6 +3681,9 @@ writeln('[TFindDeclarationTool.IsCompatible] B ',
       and (ExpressionType.Desc in xtAllBooleanConvertibles))
     or ((TargetType.Desc in xtAllPointerTypes)
       and (ExpressionType.Desc in xtAllPointerConvertibles))
+    or ((TargetType.Desc=xtContext)
+      and (TargetType.Context.Node.Desc in [ctnClass,ctnProcedure])
+      and (ExpressionType.Desc=xtNil))
     then
       Result:=tcCompatible
     else if (ExpressionType.Desc=xtContext) then begin

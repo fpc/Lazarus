@@ -42,7 +42,7 @@ uses
   Debugger, DBGOutputForm, GDBDebugger, RunParamsOpts, ExtToolDialog,
   MacroPromptDlg, LMessages, ProjectDefs, Watchesdlg, BreakPointsdlg, ColumnDlg,
   OutputFilter, BuildLazDialog, MiscOptions, EditDefineTree, CodeToolsOptions,
-  TypInfo, IDEOptionDefs;
+  TypInfo, IDEOptionDefs{, CodeToolsDefines};
 
 const
   Version_String = '0.8.2 alpha';
@@ -6212,6 +6212,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.237  2002/03/01 15:51:06  lazarus
+  MG: added selection keys and nil operand
+
   Revision 1.236  2002/02/28 12:09:07  lazarus
   MG: fixes, code creation policies, keymap categories, menu shortcuts
 

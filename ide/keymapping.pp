@@ -1031,7 +1031,12 @@ begin
   fExtToolCount:=0;
 
   // create default keymapping
-  
+
+  // selection
+  C:=Categories[AddCategory('CursorMoving','Cursor moving commands')];
+  Add(C,'Move cursor to absolute beginning',ecEditorTop,VK_HOME,[ssCtrl],VK_UNKNOWN,[]);
+  Add(C,'Move cursor to absolute end',ecEditorBottom,VK_END,[ssCtrl],VK_UNKNOWN,[]);
+
   // selection
   C:=Categories[AddCategory('Selection','Text selection commands')];
   Add(C,'Select All',ecSelectAll,VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1041,6 +1046,14 @@ begin
   Add(C,'Normal selection mode',ecNormalSelect,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Column selection mode',ecColumnSelect,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Line selection mode',ecLineSelect,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Select word left',ecSelWordLeft,VK_LEFT,[ssCtrl,ssShift],VK_UNKNOWN,[]);
+  Add(C,'Select word right',ecSelWordRight,VK_RIGHT,[ssCtrl,ssShift],VK_UNKNOWN,[]);
+  Add(C,'Select line start',ecSelLineStart,VK_HOME,[ssShift],VK_UNKNOWN,[]);
+  Add(C,'Select line end',ecSelLineEnd,VK_END,[ssShift],VK_UNKNOWN,[]);
+  Add(C,'Select page top',ecSelPageTop,VK_PRIOR, [ssShift,ssCtrl],VK_UNKNOWN,[]);
+  Add(C,'Select page bottom',ecSelPageBottom,VK_NEXT, [ssShift,ssCtrl],VK_UNKNOWN,[]);
+  Add(C,'Select to absolute beginning',ecSelEditorTop,VK_HOME, [ssShift,ssCtrl],VK_UNKNOWN,[]);
+  Add(C,'Select to absolute end',ecSelEditorBottom,VK_END, [ssShift,ssCtrl],VK_UNKNOWN,[]);
 
   // simple tools
   C:=Categories[AddCategory('SimpleTools','Simple tools commands')];
