@@ -3260,6 +3260,31 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function GetDeviceSize(DC: HDC; var p: TPoint): boolean;
+
+  Retrieves the width and height of the device context in pixels.
+ ------------------------------------------------------------------------------}
+function TgtkObject.GetDeviceSize(DC: HDC; var p: TPoint): boolean;
+begin
+  Result := false;
+  P := Point(0,0);
+  If IsValidDC(DC) then
+  with PDeviceContext(DC)^ do begin
+    if Drawable<>nil then begin
+      gdk_window_get_size(PGdkWindow(Drawable), @P.X, @P.Y);
+      Result := true;
+    end else begin
+      {$IFDEF RaiseExceptionOnNilPointers}
+      RaiseException('TGTKObject.GetDeviceSize Window=nil');
+      {$ENDIF}
+      writeln('TgtkObject.GetDeviceSize:',
+        ' WARNING: DC ',HexStr(Cardinal(DC),8),' without gdkwindow.',
+        ' Widget=',HexStr(Cardinal(hwnd),8));
+    end;
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Function: GetFocus
   Params:  none
   Returns: The handle of the window with focus
@@ -7157,6 +7182,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.136  2002/09/19 19:56:17  lazarus
+  MG: accelerated designer drawings
+
   Revision 1.135  2002/09/19 16:45:54  lazarus
   MG: fixed Menu.Free and gdkwindow=nil bug
 
