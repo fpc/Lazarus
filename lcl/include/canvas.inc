@@ -955,7 +955,7 @@ begin
   FreeThenNil(FBrush);
   FreeThenNil(FRegion);
   if FLock <> 0 then
-     DeleteCriticalSection(FLock);
+    DeleteCriticalSection(FLock);
   inherited Destroy;
 end;
 
@@ -1155,6 +1155,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.40  2003/02/26 12:44:52  mattias
+  readonly flag is now only saved if user set
+
   Revision 1.39  2003/02/06 06:39:02  mattias
   implemented TCanvas.Refresh
 

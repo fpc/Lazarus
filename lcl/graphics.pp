@@ -494,8 +494,8 @@ type
     FHandle : HDC;
     FOnChange: TNotifyEvent;
     FOnChanging: TNotifyEvent;
-    FTextStyle : TTextStyle;
-    FLock  :TCriticalSection;
+    FTextStyle: TTextStyle;
+    FLock: TCriticalSection;
     FLockCount: Integer;
     procedure BrushChanged(ABrush: TObject);
     procedure FontChanged(AFont: TObject);
@@ -962,6 +962,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.63  2003/02/26 12:44:52  mattias
+  readonly flag is now only saved if user set
+
   Revision 1.62  2003/02/06 06:39:02  mattias
   implemented TCanvas.Refresh
 
