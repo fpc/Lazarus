@@ -1412,8 +1412,6 @@ var
   end;
 
 
-var
-  AText, ACaption: string;
 begin
   Result := mrCancel;
 
@@ -1426,23 +1424,25 @@ begin
     if Result=mrAbort then exit;
   end;
   confPath:=SetDirSeparators(confPath);
-  try
-    xmlconfig := TXMLConfig.CreateClean(confPath);
-  except
-    on E: Exception do begin
-      writeln('ERROR: ',E.Message);
-      MessageDlg('Write error',
-        'Unable to write the project info file'#13
-        +'"'+ProjectInfoFile+'".'#13
-        +'Error: '+E.Message
-        ,mtError,[mbOk],0);
-      Result:=mrCancel;
-      exit;
-    end;
-  end;
+  
   UpdateUsageCounts;
 
   repeat
+    try
+      xmlconfig := TXMLConfig.CreateClean(confPath);
+    except
+      on E: Exception do begin
+        writeln('ERROR: ',E.Message);
+        MessageDlg('Write error',
+          'Unable to write the project info file'#13
+          +'"'+ProjectInfoFile+'".'#13
+          +'Error: '+E.Message
+          ,mtError,[mbOk],0);
+        Result:=mrCancel;
+        exit;
+      end;
+    end;
+
     try
       Path:='ProjectOptions/';
       xmlconfig.SetValue(Path+'Version/Value',ProjectInfoFileVersion);
@@ -1483,17 +1483,16 @@ begin
 
       xmlconfig.Flush;
       Modified:=false;
+      Result:=mrOk;
     except
-      ACaption:='Write error';
-      AText:='Unable to write to file "'+confPath+'".';
-      Result:=Application.MessageBox(PChar(ACaption),PChar(AText),MB_ABORTRETRYIGNORE);
-      if Result=mrIgnore then Result:=mrOk;
-      if Result=mrAbort then exit;
+      on E: Exception do begin
+        Result:=MessageDlg('Write error','Unable to write to file "'+confPath+'".',
+          mtError,[mbRetry,mbAbort],0);
+      end;
     end;
+    xmlconfig.Free;
+    xmlconfig:=nil;
   until Result<>mrRetry;
-  xmlconfig.Free;
-  xmlconfig:=nil;
-  Result := mrOk;
 end;
 
 {------------------------------------------------------------------------------
@@ -2824,6 +2823,9 @@ end.
 
 {
   $Log$
+  Revision 1.149  2004/02/22 15:39:43  mattias
+  fixed error handling on saving lpi file
+
   Revision 1.148  2004/02/17 22:17:39  mattias
   accelerated conversion from data to lrs
 

@@ -1418,10 +1418,11 @@ begin
     if DesignOnlySignal then exit;
     if not ControlGetsMouseDownBefore(TControl(Data)) then exit;
 
-    // grabbing for TSplitter -> Maybe ths is the key for drag&drop
+    // grabbing for TSplitter and our special widgets -> Maybe ths is the key for drag&drop
     CaptureWidget:=PGtkWidget(TWinControl(Data).Handle);
     if (GtkWidgetIsA(CaptureWidget,GTKAPIWidget_GetType))
-    or (TWinControl(Data) is TCustomSplitter) then begin
+    or (TWinControl(Data) is TCustomSplitter)
+    or (TWinControl(Data) is TToolButton) then begin
       CaptureWidget:=GetWidgetInfo(CaptureWidget,true)^.ImplementationWidget;
       if not gtk_widget_has_focus(CaptureWidget) then
         gtk_widget_grab_focus(CaptureWidget);
@@ -1589,7 +1590,9 @@ begin
     
     CaptureWidget:=PGtkWidget(TWinControl(Data).Handle);
     if GtkWidgetIsA(CaptureWidget,GTKAPIWidget_GetType)
-    or (TWinControl(Data) is TCustomSplitter) then begin
+    or (TWinControl(Data) is TCustomSplitter)
+    or (TWinControl(Data) is TToolButton)
+    then begin
       CaptureWidget:=GetWidgetInfo(CaptureWidget,true)^.ImplementationWidget;
       if Event^.button=1 then
         gtk_grab_remove(CaptureWidget);
@@ -3071,6 +3074,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.220  2004/02/22 15:39:44  mattias
+  fixed error handling on saving lpi file
+
   Revision 1.219  2004/02/13 15:49:54  mattias
   started advanced LCL auto sizing
 

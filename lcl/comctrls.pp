@@ -762,16 +762,11 @@ type
     tbsSeparator, // space holder
     tbsDivider    // space holder with line
     );
-  TToolButtonState = (
-    tbsChecked,
-    tbsPressed,
-    tbsEnabled,
-    tbsHidden,
-    tbsIndeterminate,
-    tbsWrap,
-    tbsEllipses,
-    tbsMarked
+    
+  TToolButtonFlag = (
+    tbfPressed // set while mouse is pressed on button
     );
+  TToolButtonFlags = set of TToolButtonFlag;
 
   { TToolButtonActionLink }
 
@@ -801,9 +796,10 @@ type
     FMenuItem: TMenuItem;
     FMouseInControl: boolean;
     FStyle: TToolButtonStyle;
-    FState: TToolButtonState;
+    FToolButtonFlags: TToolButtonFlags;
     FUpdateCount: Integer;
     FWrap: Boolean;
+    procedure GetGroupBounds(var StartIndex, EndIndex: integer);
     function GetIndex: Integer;
     function IsCheckedStored: Boolean;
     function IsImageIndexStored: Boolean;
@@ -840,6 +836,7 @@ type
     function GetButtonDrawFlags: integer; virtual;
     procedure SetParent(AParent: TWinControl); override;
     procedure UpdateVisibleToolbar;
+    function GroupAllUpAllowed: boolean;
   public
     constructor Create(TheOwner: TComponent); override;
     function CheckMenuDropdown: Boolean; dynamic;
@@ -887,27 +884,21 @@ type
   { TToolBar }
   
   TToolBarFlag = (
-    tbfUpdateVisibleBarNeeded
+    tbfUpdateVisibleBarNeeded,
+    tbfPlacingControls
     );
   
   TToolBarFlags = set of TToolBarFlag;
   
-  TToolBarButtonStyle = (
-    tbbsText,
-    tbbsIcon,
-    tbbsIconLeftOfText,
-    tbbsIconAboveText
-    );
-
   TToolBar = class(TToolWindow)
   private
     FButtonHeight: Integer;
     FButtons: TList;
-    FButtonStyle: TToolBarButtonStyle;
     FButtonWidth: Integer;
     FDisabledImageChangeLink: TChangeLink;
     FDisabledImages: TCustomImageList;
     FDropDownWidth: integer;
+    FDropDownButton: TToolButton;
     FFlat: Boolean;
     FHotImageChangeLink: TChangeLink;
     FHotImages: TCustomImageList;
@@ -919,6 +910,9 @@ type
     FRowCount: integer;
     FShowCaptions: Boolean;
     FCurrentMenu: TPopupMenu;
+    FCurrentMenuAutoFree: boolean;
+    FSrcMenu: TMenu;
+    FSrcMenuItem: TMenuItem;
     FToolBarFlags: TToolBarFlags;
     FTransparent: Boolean;
     FUpdateCount: Integer;
@@ -926,7 +920,6 @@ type
     function GetButton(Index: Integer): TToolButton;
     function GetButtonCount: Integer;
     procedure SetButtonHeight(const AValue: Integer);
-    procedure SetButtonStyle(const AValue: TToolBarButtonStyle);
     procedure SetButtonWidth(const AValue: Integer);
     procedure SetDisabledImages(const AValue: TCustomImageList);
     procedure SetFlat(const AValue: Boolean);
@@ -942,17 +935,18 @@ type
     procedure DisabledImageListChange(Sender: TObject);
     procedure HotImageListChange(Sender: TObject);
     procedure UpdateVisibleBar;
+    procedure OnTemporaryPopupMenuClose(Sender: TObject);
+    procedure MoveSubMenuItems(SrcMenuItem, DestMenuItem: TMenuItem);
+    procedure AddButton(Button: TToolButton);
+    procedure RemoveButton(Button: TToolButton);
   protected
     function CanAutoSize(var NewWidth, NewHeight: Integer): Boolean; override;
-    procedure CancelMenu; dynamic;
-    //procedure ChangeScale(M, D: Integer); override;
     function CheckMenuDropdown(Button: TToolButton): Boolean; dynamic;
     procedure ClickButton(Button: TToolButton); dynamic;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
     procedure ControlsAligned; override;
     function FindButtonFromAccel(Accel: Word): TToolButton;
-    procedure InitMenu(Button: TToolButton); dynamic;
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure RepositionButton(Index: Integer);
@@ -962,7 +956,6 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure FlipChildren(AllLevels: Boolean); override;
-    function TrackMenu(Button: TToolButton): Boolean; dynamic;
     procedure BeginUpdate; virtual;
     procedure EndUpdate; virtual;
   public
@@ -976,10 +969,11 @@ type
     property BorderWidth;
     property ButtonHeight: Integer read FButtonHeight write SetButtonHeight default 22;
     property ButtonWidth: Integer read FButtonWidth write SetButtonWidth default 23;
-    property ButtonStyle: TToolBarButtonStyle read FButtonStyle write SetButtonStyle default tbbsIcon;
     property Caption;
+    property Constraints;
     property Color;
     property Ctl3D;
+    //property Customizable: Boolean read FCustomizable write SetCustomizable default False;
     property DisabledImages: TCustomImageList read FDisabledImages write SetDisabledImages;
     property DragCursor;
     property DragKind;
@@ -994,7 +988,7 @@ type
     //property HideClippedButtons: Boolean read FHideClippedButtons write SetHideClippedButtons default False;
     property HotImages: TCustomImageList read FHotImages write SetHotImages;
     property Images: TCustomImageList read FImages write SetImages;
-    property Indent: Integer read FIndent write SetIndent default 0;
+    property Indent: Integer read FIndent write SetIndent default 1;
     property List: Boolean read FList write SetList default False;
     //property Menu: TMainMenu read FMenu write SetMenu;
     property ParentColor;
@@ -2197,13 +2191,6 @@ procedure Register;
 Implementation
 
 const
-  ButtonStates: array[TToolButtonState] of Word = (TBSTATE_CHECKED,
-    TBSTATE_PRESSED, TBSTATE_ENABLED, TBSTATE_HIDDEN, TBSTATE_INDETERMINATE,
-    TBSTATE_WRAP, TBSTATE_ELLIPSES, TBSTATE_MARKED);
-
-  ButtonStyles: array[TToolButtonStyle] of Byte = (TBSTYLE_BUTTON, TBSTYLE_CHECK,
-    TBSTYLE_DROPDOWN, TBSTYLE_SEP, TBSTYLE_SEP);
-
   ScrollBarWidth=0;
 
 { Toolbar menu support }
@@ -2249,6 +2236,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.112  2004/02/22 15:39:43  mattias
+  fixed error handling on saving lpi file
+
   Revision 1.111  2004/02/22 10:43:20  mattias
   added child-parent checks
 

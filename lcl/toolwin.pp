@@ -2,7 +2,7 @@
  /***************************************************************************
                                Toolwin.pp
                                ----------
-                             Component Library ToolWindow Controls
+                     Component Library ToolWindow Controls
                    Initial Revision  : THU Dec 9th 11:00am CST
 
 
@@ -24,12 +24,11 @@
 
 {
 @author(TToolWindow - Author Name <smiller@lakefield.net>)                       
-@author(TMyOtherClass - Other Author Name <otherauthor@emailaddress.com>)                       
 @created(08-DEC-1999)
 @lastmod(08-DEC-1999)
 
 Detailed description of the Unit.
-} 
+}
 
 unit Toolwin;
 
@@ -45,7 +44,6 @@ uses
   Classes, Controls, SysUtils, stdCtrls, GraphType, Graphics, vclGlobals,
   LMessages, LCLType, LCLIntf;
 
-
 type
 
   { TToolWindow }
@@ -55,7 +53,7 @@ type
 
   TEdgeStyle = (esNone, esRaised, esLowered);
 
-  TToolWindow = class(TWinControl)
+  TToolWindow = class(TCustomControl)
   private
     FEdgeBorders: TEdgeBorders;
     FEdgeInner: TEdgeStyle;
@@ -63,12 +61,12 @@ type
     procedure SetEdgeBorders(Value: TEdgeBorders);
     procedure SetEdgeInner(Value: TEdgeStyle);
     procedure SetEdgeOuter(Value: TEdgeStyle);
-    procedure LMNCCalcSize(var Message: TLMNCCalcSize); message LM_NCCALCSIZE;
-    procedure LMNCPaint(var Message: TLMessage); message LM_NCPAINT;
-    procedure CMBorderChanged(var Message: TLMessage); message CM_BORDERCHANGED;
-    procedure CMCtl3DChanged(var Message: TLMessage); message CM_CTL3DCHANGED;
+  protected
+    procedure Paint; override;
   public
-    constructor Create(AOwner: TComponent); override;
+    constructor Create(TheOwner: TComponent); override;
+    procedure AdjustClientRect(var ARect: TRect); override;
+  public
     property EdgeBorders: TEdgeBorders read FEdgeBorders write SetEdgeBorders default [ebLeft, ebTop, ebRight, ebBottom];
     property EdgeInner: TEdgeStyle read FEdgeInner write SetEdgeInner default esRaised;
     property EdgeOuter: TEdgeStyle read FEdgeOuter write SetEdgeOuter default esLowered;
@@ -77,11 +75,6 @@ type
 implementation
 
 {$I toolwindow.inc}
-
-
-initialization
-
-finalization
 
 end.
 

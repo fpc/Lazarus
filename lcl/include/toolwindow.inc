@@ -1,3 +1,5 @@
+// included by toolwin.pp
+
 {******************************************************************************
                                   TToolWindow
  ******************************************************************************
@@ -18,108 +20,78 @@
 
 { TToolWindow }
 
-constructor TToolWindow.Create(AOwner: TComponent);
+constructor TToolWindow.Create(TheOwner: TComponent);
 begin
-  inherited Create(AOwner);
+  inherited Create(TheOwner);
   FEdgeBorders := [ebLeft, ebTop, ebRight, ebBottom];
   FEdgeInner := esRaised;
   FEdgeOuter := esLowered;
 end;
 
+procedure TToolWindow.AdjustClientRect(var ARect: TRect);
+var
+  EdgeWidth: Integer;
+begin
+  EdgeWidth:=0;
+  if FEdgeOuter<>esNone then inc(EdgeWidth);
+  if FEdgeInner<>esNone then inc(EdgeWidth);
+  if ebLeft in FEdgeBorders then
+    inc(ARect.Left,EdgeWidth);
+  if ebTop in FEdgeBorders then
+    inc(ARect.Top,EdgeWidth);
+  if ebRight in FEdgeBorders then
+    dec(ARect.Right,EdgeWidth);
+  if ebBottom in FEdgeBorders then
+    inc(ARect.Bottom,EdgeWidth);
+end;
+
 procedure TToolWindow.SetEdgeBorders(Value: TEdgeBorders);
 begin
-  if FEdgeBorders <> Value then
-  begin
+  if FEdgeBorders <> Value then begin
     FEdgeBorders := Value;
-    RecreateWnd;
+    Invalidate;
   end;
 end;
 
 procedure TToolWindow.SetEdgeInner(Value: TEdgeStyle);
 begin
-  if FEdgeInner <> Value then
-  begin
+  if FEdgeInner <> Value then begin
     FEdgeInner := Value;
-    RecreateWnd;
+    Invalidate;
   end;
 end;
 
 procedure TToolWindow.SetEdgeOuter(Value: TEdgeStyle);
 begin
-  if FEdgeOuter <> Value then
-  begin
+  if FEdgeOuter <> Value then begin
     FEdgeOuter := Value;
-    RecreateWnd;
+    Invalidate;
   end;
 end;
 
-procedure TToolWindow.LMNCCalcSize(var Message: TLMNCCalcSize);
-var
-  EdgeSize: Integer;
-begin
-  with Message.CalcSize_Params^ do
-  begin
-    InflateRect(rgrc[0], -BorderWidth, -BorderWidth);
-    EdgeSize := 0;
-    if EdgeInner <> esNone then Inc(EdgeSize, 1);
-    if EdgeOuter <> esNone then Inc(EdgeSize, 1);
-    with rgrc[0] do
-    begin
-      if ebLeft in FEdgeBorders then Inc(Left, EdgeSize);
-      if ebTop in FEdgeBorders then Inc(Top, EdgeSize);
-      if ebRight in FEdgeBorders then Dec(Right, EdgeSize);
-      if ebBottom in FEdgeBorders then Dec(Bottom, EdgeSize);
-    end;
-  end;
-end;
-
-procedure TToolWindow.LMNCPaint(var Message: TLMessage);
+procedure TToolWindow.Paint;
 const
   InnerStyles: array[TEdgeStyle] of Integer = (0, BDR_RAISEDINNER, BDR_SUNKENINNER);
   OuterStyles: array[TEdgeStyle] of Integer = (0, BDR_RAISEDOUTER, BDR_SUNKENOUTER);
-  //Ctl3DStyles: array[Boolean] of Integer = (BF_MONO, 0);
 var
-  DC: HDC;
-  RW: TRect;
   FEdgeBorderType : Cardinal;
+  ARect: TRect;
 begin
-Assert(False, 'Trace:********************');
-Assert(False, 'Trace:********************');
-Assert(False, 'Trace:********************');
+  FEdgeBorderType := 0;
+  if (ebTOP in FEdgeBorders)  then
+  FEdgeBorderType := FEdgeBorderType or longint(ebTOP);
+  if (ebBottom in FEdgeBorders)  then
+  FEdgeBorderType := FEdgeBorderType or longint(ebBottom);
+  if (ebLeft in FEdgeBorders)  then
+  FEdgeBorderType := FEdgeBorderType or longint(ebLeft);
+  if (ebRight in FEdgeBorders)  then
+  FEdgeBorderType := FEdgeBorderType or longint(ebRight);
+  ARect:=ClientRect;
+  DrawEdge(Canvas.Handle,ARect,
+           InnerStyles[FEdgeInner] or OuterStyles[FEdgeOuter],FEdgeBorderType);
 
- DC := GetDC(Handle);
-  try
-//    GetClientRect(Handle, RC);
-    GetWindowRect(Handle, RW);
-//    MapWindowPoints(0, Handle, RW, 2);
-//    OffsetRect(RC, -RW.Left, -RW.Top);
-//    ExcludeClipRect(DC, RC.Left, RC.Top, RC.Right, RC.Bottom);
-    { Draw borders in non-client area }
-//    OffsetRect(RW, -RW.Left, -RW.Top);
-     FEdgeBorderType := 0;
-    if (ebTOP in FEdgeBorders)  then
-    FEdgeBorderType := FEdgeBorderType or longint(ebTOP);
-    if (ebBottom in FEdgeBorders)  then
-    FEdgeBorderType := FEdgeBorderType or longint(ebBottom);
-    if (ebLeft in FEdgeBorders)  then
-    FEdgeBorderType := FEdgeBorderType or longint(ebLeft);
-    if (ebRight in FEdgeBorders)  then
-    FEdgeBorderType := FEdgeBorderType or longint(ebRight);
-    DrawEdge(DC,RW,InnerStyles[FEdgeInner] or OuterStyles[FEdgeOuter],FEdgeBorderType);
-//    FillRect(DC, RW, Brush.Handle);
-  finally
-    ReleaseDC(Handle, DC);
-  end;
-
+  inherited Paint;
 end;
 
-procedure TToolWindow.CMBorderChanged(var Message: TLMessage);
-begin
-//TODO: FiNISH CMBORDERCHANGED in toolwindow.inc
-end;
-
-procedure TToolWindow.CMCtl3DChanged(var Message: TLMessage);
-begin
-//TODO: FiNISH CMCTL3DCHANGED in toolwindow.inc
-end;
+// included by toolwin.pp
 

@@ -39,7 +39,7 @@ end;
 {------------------------------------------------------------------------------
   TWinControl AdjustClientRect
 ------------------------------------------------------------------------------}
-Procedure TWinControl.AdjustClientRect(var Rect: TRect);
+Procedure TWinControl.AdjustClientRect(var ARect: TRect);
 Begin
   //Not used.  It's a virtual procedure that should be overriden.
 end;
@@ -3388,6 +3388,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.204  2004/02/22 15:39:43  mattias
+  fixed error handling on saving lpi file
+
   Revision 1.203  2004/02/22 10:43:20  mattias
   added child-parent checks
 

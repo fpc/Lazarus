@@ -34,12 +34,13 @@ begin
     csDoubleClicks, csMenuEvents, csSetCaption];
   FButtonWidth := 23;
   FButtonHeight := 22;
-  FButtonStyle := tbbsIcon;
   FDropDownWidth := 10;
   FNewStyle := True;
   FWrapable := True;
   FButtons := TList.Create;
   fCompStyle := csToolbar;
+  FIndent := 1;
+  FList:=false;
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := @ImageListChange;
   FDisabledImageChangeLink := TChangeLink.Create;
@@ -47,7 +48,7 @@ begin
   FHotImageChangeLink := TChangeLink.Create;
   FHotImageChangeLink.OnChange := @HotImageListChange;
   EdgeBorders := [ebTop];
-  SetInitialBounds(1,1,150,29);
+  SetInitialBounds(1,1,150,32);
   Align := alTop;
 end;
 
@@ -132,30 +133,18 @@ end;
 
 procedure TToolBar.ControlsAligned;
 var
-  i: Integer;
-  CurControl: TControl;
-  NewLeft: Integer;
-  NewTop: Integer;
-  NewWidth: Integer;
-  NewHeight: Integer;
+  NewWidth, NewHeight: integer;
 begin
   if FUpdateCount>0 then begin
     UpdateVisibleBar;
     exit;
   end;
-  //writeln('TToolBar.ControlsAligned START');
-  // ToDo
-  // hack: stupid put in a row
-  for i:=0 to ControlCount-1 do begin
-    CurControl:=Controls[i];
-    NewLeft:=i*ButtonWidth;
-    NewTop:=0;
-    NewWidth:=ButtonWidth;
-    NewHeight:=ButtonHeight;
-    //writeln('TToolBar.ControlsAligned ',CurControl.Name,
-    //  ' Old=',CurControl.Left,',',CurControl.Top,',',CurControl.Width,',',CurControl.Height,
-    //  ' New=',NewLeft,',',NewTop,',',NewWidth,',',NewHeight);
-    CurControl.SetBoundsKeepBase(NewLeft,NewTop,NewWidth,NewHeight,true);
+  if tbfPlacingControls in FToolBarFlags then exit;
+  Include(FToolBarFlags,tbfPlacingControls);
+  try
+    WrapButtons(NewWidth,NewHeight);
+  finally
+    Exclude(FToolBarFlags,tbfPlacingControls);
   end;
 end;
 
@@ -185,13 +174,6 @@ begin
   finally
     EndUpdate;
   end;
-end;
-
-procedure TToolBar.SetButtonStyle(const AValue: TToolBarButtonStyle);
-begin
-  if FButtonStyle=AValue then exit;
-  FButtonStyle:=AValue;
-  UpdateVisibleBar;
 end;
 
 procedure TToolBar.SetButtonWidth(const AValue: Integer);
@@ -237,6 +219,40 @@ begin
   if FShowCaptions = AValue then exit;
   FShowCaptions := AValue;
   UpdateVisibleBar;
+end;
+
+procedure TToolBar.OnTemporaryPopupMenuClose(Sender: TObject);
+begin
+  // move menu items back
+  if FSrcMenuItem=nil then exit;
+  MoveSubMenuItems(FCurrentMenu.Items,FSrcMenuItem);
+  if FDropDownButton<>nil then
+    FDropDownButton.Down:=false;
+end;
+
+procedure TToolBar.MoveSubMenuItems(SrcMenuItem, DestMenuItem: TMenuItem);
+var
+  i: Integer;
+  MovingMenuItem: TMenuItem;
+begin
+  if (SrcMenuItem=nil) or (DestMenuItem=nil) or (SrcMenuItem=DestMenuItem) then
+    exit;
+  for i := SrcMenuItem.Count - 1 downto 0 do begin
+    MovingMenuItem:=SrcMenuItem.Items[i];
+    SrcMenuItem.Delete(i);
+    DestMenuItem.Insert(0, MovingMenuItem);
+  end;
+end;
+
+procedure TToolBar.AddButton(Button: TToolButton);
+begin
+  FButtons.Add(Button);
+end;
+
+procedure TToolBar.RemoveButton(Button: TToolButton);
+begin
+  if FDropDownButton=Button then FDropDownButton:=nil;
+  FButtons.Remove(Button);
 end;
 
 function TToolBar.GetButton(Index: Integer): TToolButton;
@@ -385,10 +401,63 @@ begin
   Result := WrapButtons(NewWidth, NewHeight);
 end;
 
+{------------------------------------------------------------------------------
+  function TToolBar.WrapButtons(var NewWidth, NewHeight: Integer): Boolean;
+  
+  Position all controls, that have Align=alNone.
+  The controls are put from left to right.
+  If the controls don't fit in a row and Wrapable=true, then the next row is
+  started.
+  If Wrapable=false, then the row is wrapped after the first button with
+  Wrap=true.
+
+  Wrapable
+  Indent
+  EdgeInner
+  EdgeOuter
+  EdgeBorders
+  BorderWidth
+  Button.Wrap
+
+------------------------------------------------------------------------------}
 function TToolBar.WrapButtons(var NewWidth, NewHeight: Integer): Boolean;
+var
+  i: Integer;
+  ARect: TRect;
+  x: Integer;
+  y: Integer;
+  CurControl: TControl;
+  AlignedControls: TList;
 begin
   Result:=true;
-  // ToDo
+  NewWidth:=0;
+  NewHeight:=0;
+  BeginUpdate;
+  AlignedControls:=TList.Create;
+  try
+    for i:=0 to ControlCount-1 do begin
+      CurControl:=Controls[i];
+      if CurControl.Align<>alNone then
+        AlignedControls.Add(CurControl);
+      ARect:=ClientRect;
+      AdjustClientRect(ARect);
+      x:=ARect.Left+Indent;
+      y:=ARect.Top;
+      i:=0;
+      while i<ControlCount do begin
+        CurControl:=Controls[i];
+        if CurControl.Align=alNone then begin
+          // wrap
+          CurControl.SetBounds(x,y,CurControl.Width,CurControl.Height);
+          inc(x,CurControl.Width);
+        end;
+        inc(i);
+      end;
+    end;
+  finally
+    AlignedControls.Free;
+    EndUpdate;
+  end;
 end;
 
 function TToolBar.FindButtonFromAccel(Accel: Word): TToolButton;
@@ -398,7 +467,7 @@ begin
   for i := 0 to FButtons.Count - 1 do
     if TControl(FButtons[i]) is TToolButton then
     begin
-      Result := TToolButton(FButtons[i]);
+      Result := Buttons[i];
       if Result.Visible and Result.Enabled
       and IsAccel(Accel, Result.Caption) then
         Exit;
@@ -409,51 +478,45 @@ end;
 function TToolBar.CheckMenuDropdown(Button: TToolButton): Boolean;
 var
   APoint: TPoint;
-  MenuIsTemporary: Boolean;
 begin
   Result := False;
   if Button = nil then Exit;
-  MenuIsTemporary:=false;
-  try
-    if Button.DropdownMenu <> nil then
-      FCurrentMenu := Button.DropdownMenu
-    else if Button.MenuItem <> nil then begin
-      // ToDo
-      MenuIsTemporary:=true;
-      exit;
-    end
-    else
-      Exit;
-    FCurrentMenu.PopupComponent := Self;
-    APoint := Button.ClientToScreen(Point(0, Button.ClientHeight));
-    if FCurrentMenu.IsRightToLeft then Inc(APoint.X, Button.Width);
-    FCurrentMenu.Popup(APoint.X, APoint.Y);
-    Result := True;
-  finally
-    if MenuIsTemporary then
-      FCurrentMenu.Free;
-  end;
+  if FCurrentMenu<>nil then
+    FCurrentMenu.Close;
+  if FCurrentMenuAutoFree then FCurrentMenu.Free;
+  FCurrentMenu:=nil;
+  FCurrentMenuAutoFree:=false;
+  FSrcMenuItem:=nil;
+  FSrcMenu:=nil;
+  FDropDownButton:=Button;
+  if Button.DropdownMenu <> nil then
+    // the button has a popupenu
+    FCurrentMenu := Button.DropdownMenu
+  else if Button.MenuItem <> nil then begin
+    // the button has a menuitem
+    // -> create a temporary TPopupMenu and move all child menuitems
+    FCurrentMenuAutoFree:=true;
+    FCurrentMenu := TPopupMenu.Create(Self);
+    FSrcMenuItem:=Button.MenuItem;
+    FSrcMenu := FSrcMenuItem.GetParentMenu;
+    FCurrentMenu.Items.HelpContext := FSrcMenuItem.HelpContext;
+    if FSrcMenu <> nil then
+      FCurrentMenu.Images := FSrcMenu.Images;
+    MoveSubMenuItems(FSrcMenuItem,FCurrentMenu.Items);
+    FCurrentMenu.OnClose:=@OnTemporaryPopupMenuClose;
+  end
+  else
+    Exit;
+  FCurrentMenu.PopupComponent := Self;
+  APoint := Button.ClientToScreen(Point(0, Button.ClientHeight));
+  if FCurrentMenu.IsRightToLeft then Inc(APoint.X, Button.Width);
+  FCurrentMenu.Popup(APoint.X, APoint.Y);
+  Result := True;
 end;
 
 procedure TToolBar.ClickButton(Button: TToolButton);
 begin
   Button.Click;
-end;
-
-procedure TToolBar.InitMenu(Button: TToolButton);
-begin
-  // ToDo
-end;
-
-procedure TToolBar.CancelMenu;
-begin
-  // ToDo
-end;
-
-function TToolBar.TrackMenu(Button: TToolButton): Boolean;
-begin
-  // ToDo
-  Result:=false;
 end;
 
 {$ELSE NewToolBar}
@@ -1938,6 +2001,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.21  2004/02/22 15:39:43  mattias
+  fixed error handling on saving lpi file
+
   Revision 1.20  2004/02/22 10:43:20  mattias
   added child-parent checks
 

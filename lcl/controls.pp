@@ -1270,7 +1270,7 @@ type
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
     function GetActionLinkClass: TControlActionLinkClass; override;
     procedure AdjustSize; override;
-    procedure AdjustClientRect(var Rect: TRect); virtual;
+    procedure AdjustClientRect(var ARect: TRect); virtual;
     procedure AlignControls(AControl: TControl; var ARect: TRect); virtual;
     function DoAlignChildControls(TheAlign: TAlign; AControl: TControl;
                         AControlList: TList; var ARect: TRect): Boolean; virtual;
@@ -2366,6 +2366,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.179  2004/02/22 15:39:43  mattias
+  fixed error handling on saving lpi file
+
   Revision 1.178  2004/02/22 10:43:20  mattias
   added child-parent checks
 

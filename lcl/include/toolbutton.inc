@@ -55,7 +55,6 @@ begin
   fCompStyle := csToolButton;
   FImageIndex := -1;
   FStyle := tbsButton;
-  FState:=tbsEnabled;
   ControlStyle := [csCaptureMouse, csSetCaption];
   SetInitialBounds(0,0,23,22);
 end;
@@ -63,18 +62,21 @@ end;
 procedure TToolButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
+  writeln('TToolButton.MouseDown ',Name,':',ClassName,' ',ord(Button),' ',X,',',Y);
   SetMouseInControl(true);
+  if (Button=mbLeft) and (not (tbfPressed in FToolButtonFlags)) then begin
+    Include(FToolButtonFlags,tbfPressed);
+    Invalidate;
+  end;
   if (Style=tbsDropDown) and (Button=mbLeft) and Enabled then
     // switch
     Down := not Down;
-  if (Style=tbsCheck) and (Button=mbLeft) and Enabled then begin
-    ;
-  end;
   inherited MouseDown(Button,Shift,X,Y);
 end;
 
 procedure TToolButton.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
+  //writeln('TToolButton.MouseMove ',Name,':',ClassName,' ',X,',',Y);
   SetMouseInControl((X>=0) and (X<ClientWidth) and (Y>=0) and (Y<ClientHeight));
   inherited MouseMove(Shift, X, Y);
   if (Style=tbsDropDown) and MouseCapture then
@@ -85,13 +87,20 @@ end;
 procedure TToolButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
+  writeln('TToolButton.MouseUp ',Name,':',ClassName,' ',ord(Button),' ',X,',',Y);
+  if (Button=mbLeft) and (tbfPressed in FToolButtonFlags) then begin
+    Exclude(FToolButtonFlags,tbfPressed);
+    Invalidate;
+  end;
   SetMouseInControl(true);
   inherited MouseUp(Button, Shift, X, Y);
   if (Button=mbLeft) and FMouseInControl then begin
+  writeln('TToolButton.MouseUp ',Name,':',ClassName,' ',Style=tbsCheck);
     if Style=tbsDropDown then Down:=False;
-    if Style=tbsCheck then Down:=false;
+    if Style=tbsCheck then Down:=not Down;
     Click;
   end;
+  Invalidate;
 end;
 
 procedure TToolButton.Notification(AComponent: TComponent;
@@ -147,18 +156,17 @@ begin
     ButtonRect:=PaintRect;
     if Style=tbsDropDown then begin
       DropDownButtonRect:=ButtonRect;
-      DropDownButtonRect.Left:=Max(0,DropDownButtonRect.Right-10);// ToDo replace 10 by const
+      DropDownButtonRect.Left:=
+                        Max(0,DropDownButtonRect.Right-FToolBar.FDropDownWidth);
       ButtonRect.Right:=DropDownButtonRect.Left;
     end;
 
     // calculate text size
     TextSize.cx:=0;
     TextSize.cy:=0;
-    if Style in [tbsButton,tbsDropDown,tbsCheck] then begin
-      if (Caption<>'')
-      and (FToolBar.ButtonStyle
-        in [tbbsText,tbbsIconAboveText,tbbsIconLeftOfText])
-      then begin
+    if (Style in [tbsButton,tbsDropDown,tbsCheck])
+    and (FToolBar.ShowCaptions) then begin
+      if (Caption<>'') then begin
         TextSize:=Canvas.TextExtent(Caption);
       end;
     end;
@@ -166,42 +174,38 @@ begin
     // calculate icon size
     IconSize:=Point(0,0);
     GetCurrentIcon(ImgList,ImgIndex);
-    if (ImgList<>nil) then
+    if (ImgList<>nil) then begin
       IconSize:=Point(ImgList.Width,ImgList.Height);
+      if IconSize.y<=0 then IconSize.X:=0;
+    end;
 
     // calculate text and icon position
     TextPos:=Point(0,0);
     IconPos:=Point(0,0);
-    case FToolBar.ButtonStyle of
-    
-    tbbsText:
-      begin
+    if TextSize.cx>0 then begin
+      if IconSize.X>0 then begin
+        if FToolBar.List then begin
+          // icon left of text
+          IconPos.X:=(ButtonRect.Left+ButtonRect.Right-IconSize.x-TextSize.cy-2) div 2;
+          IconPos.Y:=(ButtonRect.Top+ButtonRect.Bottom-IconSize.y) div 2;
+          TextPos.X:=IconPos.X+2;
+          TextPos.Y:=(ButtonRect.Top+ButtonRect.Bottom-TextSize.cy) div 2;
+        end else begin
+          // icon above text
+          IconPos.X:=(ButtonRect.Left+ButtonRect.Right-IconSize.x) div 2;
+          IconPos.Y:=(ButtonRect.Top+ButtonRect.Bottom-IconSize.y-TextSize.cy-2) div 2;
+          TextPos.X:=(ButtonRect.Left+ButtonRect.Right-TextSize.cx) div 2;
+          TextPos.Y:=IconPos.Y+IconSize.Y+2;
+        end;
+      end else begin
+        // only text
         TextPos.X:=(ButtonRect.Left+ButtonRect.Right-TextSize.cx) div 2;
         TextPos.Y:=(ButtonRect.Top+ButtonRect.Bottom-TextSize.cy) div 2;
       end;
-
-    tbbsIcon:
-      begin
-        IconPos.X:=(ButtonRect.Left+ButtonRect.Right-IconSize.x) div 2;
-        IconPos.Y:=(ButtonRect.Top+ButtonRect.Bottom-IconSize.y) div 2;
-      end;
-
-    tbbsIconLeftOfText:
-      begin
-        IconPos.X:=(ButtonRect.Left+ButtonRect.Right-IconSize.x-TextSize.cy-2) div 2;
-        IconPos.Y:=(ButtonRect.Top+ButtonRect.Bottom-IconSize.y) div 2;
-        TextPos.X:=IconPos.X+2;
-        TextPos.Y:=(ButtonRect.Top+ButtonRect.Bottom-TextSize.cy) div 2;
-      end;
-      
-    tbbsIconAboveText:
-      begin
-        IconPos.X:=(ButtonRect.Left+ButtonRect.Right-IconSize.x) div 2;
-        IconPos.Y:=(ButtonRect.Top+ButtonRect.Bottom-IconSize.y-TextSize.cy-2) div 2;
-        TextPos.X:=(ButtonRect.Left+ButtonRect.Right-TextSize.cx) div 2;
-        TextPos.Y:=IconPos.Y+IconSize.Y+2;
-      end;
-
+    end else if IconSize.x>0 then begin
+      // only icon
+      IconPos.X:=(ButtonRect.Left+ButtonRect.Right-IconSize.x) div 2;
+      IconPos.Y:=(ButtonRect.Top+ButtonRect.Bottom-IconSize.y) div 2;
     end;
 
     // draw button
@@ -269,9 +273,9 @@ begin
   inherited ActionChange(Sender, CheckDefaults);
   if Sender is TCustomAction then begin
     NewAction:=TCustomAction(Sender);
-    if not CheckDefaults or (not Down) then
+    if (not CheckDefaults) or (not Down) then
       Down := NewAction.Checked;
-    if not CheckDefaults or (ImageIndex = -1) then
+    if (not CheckDefaults) or (ImageIndex<0) then
       ImageIndex := NewAction.ImageIndex;
   end;
 end;
@@ -300,12 +304,43 @@ begin
 end;
 
 procedure TToolButton.SetDown(Value: Boolean);
+var
+  StartIndex, EndIndex: integer;
+  i: Integer;
+  CurButton: TToolButton;
 begin
   if Value = FDown then exit;
+  if (csLoading in ComponentState) then begin
+    FDown:=Value;
+    exit;
+  end;
+  
+  writeln('TToolButton.SetDown ',Style=tbsCheck,',',FDown,',',GroupAllUpAllowed);
+  if (Style=tbsCheck) and FDown and (not GroupAllUpAllowed) then
+    exit;
+
   FDown := Value;
+  
+  if (Style=tbsCheck) and FDown and Grouped then begin
+    writeln('TToolButton.SetDown B ');
+    // uncheck all other in the group
+    GetGroupBounds(StartIndex,EndIndex);
+    if StartIndex>=0 then begin
+      for i:=StartIndex to EndIndex do begin
+        CurButton:=FToolBar.Buttons[i];
+        if (CurButton<>Self) and (CurButton.FDown) then begin
+          CurButton.FDown:=false;
+          CurButton.Invalidate;
+        end;
+      end;
+    end;
+  end;
+
   Invalidate;
   if FToolBar <> nil then
     FToolBar.ToolButtonDown(Self,FDown);
+  if (Style=tbsDropDown) and Down and Enabled then
+    CheckMenuDropdown;
 end;
 
 procedure TToolButton.SetDropdownMenu(Value: TPopupMenu);
@@ -316,10 +351,38 @@ begin
 end;
 
 procedure TToolButton.SetGrouped(Value: Boolean);
+var
+  StartIndex, EndIndex: integer;
+  CheckedIndex: Integer;
+  i: Integer;
+  CurButton: TToolButton;
 begin
   if FGrouped = Value then exit;
   FGrouped := Value;
-  UpdateControl;
+  if csLoading in ComponentState then exit;
+  
+  // make sure, that only one button in a group is checked
+  while FGrouped and (Style=tbsCheck) and (FToolBar<>nil) do begin
+    GetGroupBounds(StartIndex,EndIndex);
+    if StartIndex>=0 then begin
+      CheckedIndex:=-1;
+      i:=StartIndex;
+      while i<=EndIndex do begin
+        CurButton:=FToolBar.Buttons[i];
+        if CurButton.Down then begin
+          if CheckedIndex<0 then
+            CheckedIndex:=i
+          else begin
+            CurButton.Down:=false;
+            // the last operation can change everything -> restart
+            break;
+          end;
+        end;
+        inc(i);
+      end;
+      if i>EndIndex then break;
+    end;
+  end;
 end;
 
 procedure TToolButton.SetImageIndex(Value: Integer);
@@ -356,6 +419,7 @@ begin
     BeginUpdate;
     if FMenuItem <> Value then
       Value.FreeNotification(Self);
+    Action := Value.Action;
     Caption := Value.Caption;
     Down := Value.Checked;
     Enabled := Value.Enabled;
@@ -400,6 +464,38 @@ begin
   Dec(FUpdateCount);
 end;
 
+{------------------------------------------------------------------------------
+  procedure TToolButton.GetGroupBounds(var StartIndex, EndIndex: integer);
+  
+  Return the index of the first and the last ToolButton in the group.
+  If no ToolBar then negative values are returned.
+  If not in a group then StartIndex=EndIndex.
+------------------------------------------------------------------------------}
+procedure TToolButton.GetGroupBounds(var StartIndex, EndIndex: integer);
+var
+  CurButton: TToolButton;
+begin
+  StartIndex:=Index;
+  EndIndex:=StartIndex;
+  if (Style<>tbsCheck) or (not Grouped) then exit;
+  while (StartIndex>0) do begin
+    CurButton:=FToolBar.Buttons[StartIndex-1];
+    if (CurButton<>nil) and (CurButton.Style=tbsCheck) and (CurButton.Grouped)
+    then
+      dec(StartIndex)
+    else
+      break;
+  end;
+  while (EndIndex<FToolBar.FButtons.Count-1) do begin
+    CurButton:=FToolBar.Buttons[EndIndex+1];
+    if (CurButton<>nil) and (CurButton.Style=tbsCheck) and (CurButton.Grouped)
+    then
+      inc(EndIndex)
+    else
+      break;
+  end;
+end;
+
 function TToolButton.GetIndex: Integer;
 begin
   if FToolBar <> nil then
@@ -425,10 +521,12 @@ end;
 
 function TToolButton.CheckMenuDropdown: Boolean;
 begin
-  Result := not (csDesigning in ComponentState)
+  Result := (not (csDesigning in ComponentState))
             and (((DropdownMenu<>nil) and (DropdownMenu.AutoPopup))
                  or (MenuItem<>nil))
-            and (FToolBar <> nil) and FToolBar.CheckMenuDropdown(Self);
+            and (FToolBar <> nil);
+  if Result then
+    Result:=FToolBar.CheckMenuDropdown(Self);
 end;
 
 procedure TToolButton.GetCurrentIcon(var ImageList: TCustomImageList;
@@ -439,23 +537,20 @@ begin
   if (ImageIndex<0) or (FToolBar=nil) then exit;
   
   if Style in [tbsButton,tbsDropDown,tbsCheck] then begin
-    if (FToolBar.ButtonStyle in [tbbsText,tbbsIconAboveText,tbbsIconLeftOfText])
-    then begin
-      Index:=ImageIndex;
-      if Enabled and FMouseInControl then
-        // if mouse over button then use HotImages
-        ImageList:=FToolBar.HotImages
-      else if not Enabled then
-        // if button disabled then use HotImages
-        ImageList:=FToolBar.DisabledImages;
+    Index:=ImageIndex;
+    if Enabled and FMouseInControl then
+      // if mouse over button then use HotImages
+      ImageList:=FToolBar.HotImages
+    else if not Enabled then
+      // if button disabled then use HotImages
+      ImageList:=FToolBar.DisabledImages;
+    if (ImageList=nil) or (ImageList.Count<=ImageIndex) then begin
+      // if no special icon available, then try the default Images
+      ImageList:=FToolBar.Images;
       if (ImageList=nil) or (ImageList.Count<=ImageIndex) then begin
-        // if no special icon available, then try the default Images
-        ImageList:=FToolBar.Images;
-        if (ImageList=nil) or (ImageList.Count<=ImageIndex) then begin
-          // no icon available
-          ImageList:=nil;
-          Index:=-1;
-        end;
+        // no icon available
+        ImageList:=nil;
+        Index:=-1;
       end;
     end;
   end;
@@ -485,9 +580,11 @@ end;
 function TToolButton.GetButtonDrawFlags: integer;
 begin
   Result:=DFCS_BUTTONPUSH;
-  if FDown then inc(Result,DFCS_PUSHED);
+  if FDown or (tbfPressed in FToolButtonFlags) then inc(Result,DFCS_PUSHED);
   if not Enabled then inc(Result,DFCS_INACTIVE);
-  if (not (csDesigning in ComponentState)) and (not FMouseInControl)
+
+  if (FToolBar<>nil) and FToolBar.Flat
+  and (not (csDesigning in ComponentState)) and (not FMouseInControl)
   and (not FDown) then
     inc(Result,DFCS_FLAT);
 end;
@@ -500,10 +597,8 @@ begin
   if AParent=Parent then exit;
   
   // remove from old button list
-  i:=Index;
-  //writeln('TToolButton.SetParent A ',Name,' OldIndex=',Index);
-  if i>=0 then
-    FToolBar.FButtons.Delete(i);
+  if FToolBar<>nil then
+    FToolBar.RemoveButton(Self);
   FToolBar:=nil;
   
   // inherited
@@ -514,7 +609,7 @@ begin
     FToolBar:=TToolBar(Parent);
     i:=Index;
     if i<0 then
-      FToolBar.FButtons.Add(Self);
+      FToolBar.AddButton(Self);
     UpdateVisibleToolbar;
   end;
   //writeln('TToolButton.SetParent A ',Name,' NewIndex=',Index);
@@ -525,6 +620,29 @@ begin
   //writeln('TToolButton.UpdateVisibleToolbar ',Parent is TToolBar);
   if Parent is TToolBar then
     TToolBar(Parent).UpdateVisibleBar;
+end;
+
+function TToolButton.GroupAllUpAllowed: boolean;
+var
+  StartIndex, EndIndex: integer;
+  i: Integer;
+  CurButton: TToolButton;
+begin
+  Result:=true;
+  if (Style=tbsCheck) and Grouped then begin
+    GetGroupBounds(StartIndex,EndIndex);
+    if (StartIndex>=0) then begin
+      // allow all up, if one button has AllowAllUp
+      Result:=false;
+      for i:=StartIndex to EndIndex do begin
+        CurButton:=FToolBar.Buttons[i];
+        if CurButton.AllowAllUp then begin
+          Result:=true;
+          break;
+        end;
+      end;
+    end;
+  end;
 end;
 
 {$ELSE NewToolBar}
@@ -993,6 +1111,9 @@ end;
 
 {
   $Log$
+  Revision 1.11  2004/02/22 15:39:43  mattias
+  fixed error handling on saving lpi file
+
   Revision 1.10  2004/02/22 10:43:20  mattias
   added child-parent checks
 
