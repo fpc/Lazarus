@@ -953,7 +953,7 @@ type
     procedure ValidateRename(AComponent: TComponent;
       const CurName, NewName: string); virtual; abstract;
     function GetShiftState: TShiftState; virtual; abstract;
-    Procedure SelectOnlyThisComponent(AComponent:TComponent); virtual; abstract;
+    Procedure SelectOnlyThisComponent(AComponent: TComponent); virtual; abstract;
     function UniqueName(const BaseName: string): string; virtual; abstract;
   end;
 

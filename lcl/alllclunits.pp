@@ -37,13 +37,18 @@ uses
   // base types and base functions
   LCLProc, LCLType, GraphMath, VCLGlobals, FileCtrl, LMessages,
   // the interface base
-  InterfaceBase, {$IFNDEF DisableFPImage}IntfGraphics,{$ENDIF}
+  InterfaceBase,
+  {$IFNDEF DisableFPImage}IntfGraphics,{$ENDIF}
   // components and functions
   StdActns, Buttons, Extctrls, Calendar, Clipbrd, Forms, LCLIntf, Spin,
   Comctrls, Graphics, StdCtrls, Arrow, Controls, ImgList, Menus, Toolwin,
   Dialogs, Messages, Clistbox, ActnList, Grids, MaskEdit,
   Printers, PostScriptPrinter, CheckLst, PairSplitter, ExtDlgs,
   DBCtrls, DBGrids, EditBtn, ExtGraphics,
+  {$IFDEF EnableSessionProps}
+  // Remember: add units to Makefile.fpc when they became default
+  PropertyStorage, IniPropStorage, XMLPropStorage,
+  {$ENDIF}
   // widgetset skeleton
   WSActnList, WSArrow, WSButtons, WSCalendar,
   WSCheckLst, WSCListBox, WSComCtrls, WSControls,
@@ -61,6 +66,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.15  2004/07/23 22:06:56  mattias
+  started propertystorage enable with -dEnableSessionProps
+
   Revision 1.14  2004/05/16 23:24:41  marc
   + Added WSBitBtn interface
   + Implemented WSBitBtn interface for gtk
