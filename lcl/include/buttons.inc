@@ -135,7 +135,7 @@ var
   AccelIndex : Longint;
 begin
   Inherited SetText(Value);
-  If not HandleAllocated then exit;
+  If (not HandleAllocated) or (csDesigning in ComponentState) then exit;
   ParseStr := Value;
   AccelIndex := DeleteAmpersands(ParseStr);
   If AccelIndex > -1 then begin
@@ -150,6 +150,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.10  2002/09/06 15:57:34  lazarus
+  MG: fixed notebook client area, send messages and minor bugs
+
   Revision 1.9  2002/08/27 06:40:50  lazarus
   MG: ShortCut support for buttons from Andrew
 

@@ -1309,12 +1309,11 @@ begin
   or IsSelected(FCustomForm) then exit;
   
   Diff:=DC.FormOrigin;
-{
-writeln('[DrawGrabbers] Form=',FormOrigin.X,',',FormOrigin.Y
-   ,' DC=',DCOrigin.X,',',DCOrigin.Y
-   ,' Grabber1=',FGrabbers[0].Left,',',FGrabbers[0].Top
-   ,' Selection=',FLeft,',',FTop);
-}
+
+  {writeln('[DrawGrabbers] '
+   ,' DC=',Diff.X,',',Diff.Y
+   ,' Grabber1=',FGrabbers[0].Left,',',FGrabbers[0].Top);}
+
   DC.Save;
   with DC.Canvas do begin
     OldBrushColor:=Brush.Color;
