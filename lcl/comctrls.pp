@@ -186,6 +186,7 @@ type
     procedure ItemChanged(sender : TObject);  //called by TListItem in response to SubItems changing
   public
     function Add: TListItem;
+    procedure Clear;
     constructor Create(AOwner : TCustomListView);
     destructor Destroy; override;
     procedure Delete(const AIndex : Integer);
@@ -1698,6 +1699,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.58  2002/11/13 18:21:04  lazarus
+  MG: added TListItems.Clear
+
   Revision 1.57  2002/10/30 13:20:10  lazarus
   MG: fixed example
 
