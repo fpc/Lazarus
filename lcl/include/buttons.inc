@@ -222,9 +222,21 @@ begin
   Result:=false;
 end;
 
+
+{ TButton }
+
+procedure TButton.Click;
+begin
+  inherited Click;
+end;
+
+
 { =============================================================================
 
   $Log$
+  Revision 1.42  2005/03/18 01:18:44  marc
+  * Delphi compat, TButton.Click is public
+
   Revision 1.41  2005/02/21 13:54:26  mattias
   added navigation key check for up/down already handled
 

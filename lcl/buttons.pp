@@ -97,6 +97,8 @@ type
   { TButton }
   
   TButton = class(TCustomButton)
+  public
+    procedure Click; override;
   published
     property Action;
     property Align;
@@ -397,6 +399,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.92  2005/03/18 01:18:44  marc
+  * Delphi compat, TButton.Click is public
+
   Revision 1.91  2005/03/07 00:52:51  mattias
   various Delphi compatibilities  from C Western
 
