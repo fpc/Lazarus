@@ -129,6 +129,7 @@ type
     function KeyWordFuncVar: boolean;
     function KeyWordFuncConst: boolean;
     function KeyWordFuncResourceString: boolean;
+    function KeyWordFuncExports: boolean;
     function KeyWordFuncLabel: boolean;
     function KeyWordFuncProperty: boolean;
     // types
@@ -326,6 +327,7 @@ begin
     Add('THREADVAR',@KeyWordFuncVar);
     Add('CONST',@KeyWordFuncConst);
     Add('RESOURCESTRING',@KeyWordFuncResourceString);
+    Add('EXPORTS',@KeyWordFuncExports);
     Add('LABEL',@KeyWordFuncLabel);
     Add('PROPERTY',@KeyWordFuncProperty);
 
@@ -1711,7 +1713,7 @@ begin
     if CurNode.Desc in [ctnInterface] then
       RaiseStringExpectedButAtomFound('"implementation"');
     if not (CurNode.Desc in [ctnImplementation,ctnInitialization,
-      ctnFinalization,ctnProgram])
+      ctnFinalization,ctnProgram,ctnLibrary])
     then begin
       ReadNextAtom;
       SaveRaiseException(ctsUnexpectedEndOfSource+' 1');
@@ -2258,7 +2260,9 @@ var
   ChildNodeCreated: boolean;
 begin
   if (CurNode<>nil)
-  and (not (CurNode.Desc in [ctnProcedure,ctnProgram,ctnImplementation])) then
+  and (not (CurNode.Desc in
+    [ctnProcedure,ctnProgram,ctnLibrary,ctnImplementation]))
+  then
     RaiseStringExpectedButAtomFound('end');
   ChildNodeCreated:=(CurPos.Flag=cafBEGIN) or UpAtomIs('ASM');
   if ChildNodeCreated then begin
@@ -2285,7 +2289,8 @@ begin
       SaveRaiseExceptionWithHint;
     UndoReadNextAtom;
     EndChildNode;
-  end else if (CurNode.Desc in [ctnProgram,ctnImplementation]) then begin
+  end else if (CurNode.Desc in [ctnProgram,ctnLibrary,ctnImplementation]) then
+  begin
     ReadNextAtom;
     if (CurPos.Flag<>cafPoint) then
       SaveRaiseException(ctsMissingPointAfterEnd);
@@ -2310,7 +2315,8 @@ function TPascalParserTool.KeyWordFuncType: boolean;
     type d=e;
 }
 begin
-  if not (CurSection in [ctnProgram,ctnInterface,ctnImplementation]) then
+  if not (CurSection in [ctnProgram,ctnLibrary,ctnInterface,ctnImplementation])
+  then
     RaiseUnexpectedKeyWord;
   CreateChildNode;
   CurNode.Desc:=ctnTypeSection;
@@ -2360,7 +2366,8 @@ function TPascalParserTool.KeyWordFuncVar: boolean;
       f:g=h;
 }
 begin
-  if not (CurSection in [ctnProgram,ctnInterface,ctnImplementation]) then
+  if not (CurSection in [ctnProgram,ctnLibrary,ctnInterface,ctnImplementation])
+  then
     RaiseUnexpectedKeyWord;
   CreateChildNode;
   CurNode.Desc:=ctnVarSection;
@@ -2409,7 +2416,8 @@ function TPascalParserTool.KeyWordFuncConst: boolean;
     const d=2;
 }
 begin
-  if not (CurSection in [ctnProgram,ctnInterface,ctnImplementation]) then
+  if not (CurSection in [ctnProgram,ctnLibrary,ctnInterface,ctnImplementation])
+  then
     RaiseUnexpectedKeyWord;
   CreateChildNode;
   CurNode.Desc:=ctnConstSection;
@@ -2464,7 +2472,8 @@ function TPascalParserTool.KeyWordFuncResourceString: boolean;
     ResourceString b='';
 }
 begin
-  if not (CurSection in [ctnProgram,ctnInterface,ctnImplementation]) then
+  if not (CurSection in [ctnProgram,ctnLibrary,ctnInterface,ctnImplementation])
+  then
     RaiseUnexpectedKeyWord;
   CreateChildNode;
   CurNode.Desc:=ctnResStrSection;
@@ -2499,13 +2508,53 @@ begin
   Result:=true;
 end;
 
+function TPascalParserTool.KeyWordFuncExports: boolean;
+{ exports keyword  - only allowed in library
+
+  examples:
+  
+  exports i, j index 3+4, k name 'StrConst', l index 0 name 's';
+}
+
+  procedure RaiseExportsOnlyAllowedInLibraries;
+  begin
+    SaveRaiseException(ctsExportsClauseOnlyAllowedInLibraries);
+  end;
+
+begin
+  if not (CurSection in [ctnLibrary]) then
+    RaiseExportsOnlyAllowedInLibraries;
+  CreateChildNode;
+  CurNode.Desc:=ctnExportsSection;
+  repeat
+    ReadNextAtom;
+    AtomIsIdentifier(true);
+    ReadNextAtom;
+    if UpAtomIs('INDEX') then begin
+      ReadNextAtom;
+      ReadConstant(true,false,[]);
+    end;
+    if UpAtomIs('NAME') then begin
+      ReadNextAtom;
+      ReadConstant(true,false,[]);
+    end;
+    if (CurPos.Flag=cafSemicolon) then break;
+    if (CurPos.Flag<>cafComma) then
+      RaiseCharExpectedButAtomFound(';');
+  until false;
+  CurNode.EndPos:=CurPos.EndPos;
+  EndChildNode;
+  Result:=true;
+end;
+
 function TPascalParserTool.KeyWordFuncLabel: boolean;
 {
   examples:
     label a, 23, b;
 }
 begin
-  if not (CurSection in [ctnProgram,ctnInterface,ctnImplementation]) then
+  if not (CurSection in [ctnProgram,ctnLibrary,ctnInterface,ctnImplementation])
+  then
     RaiseUnexpectedKeyWord;
   CreateChildNode;
   CurNode.Desc:=ctnLabelSection;
@@ -2539,7 +2588,8 @@ function TPascalParserTool.KeyWordFuncProperty: boolean;
      A2 : Integer Read GetA2 Write SetA2;
 }
 begin
-  if not (CurSection in [ctnProgram,ctnInterface,ctnImplementation]) then
+  if not (CurSection in [ctnProgram,ctnLibrary,ctnInterface,ctnImplementation])
+  then
     RaiseUnexpectedKeyWord;
   CreateChildNode;
   CurNode.Desc:=ctnPropertySection;

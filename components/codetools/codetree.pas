@@ -69,6 +69,7 @@ const
   ctnLabelSection    = 14;
   ctnPropertySection = 15;
   ctnUsesSection     = 16;
+  ctnExportsSection  = 17;
 
   ctnTypeDefinition  = 20;
   ctnVarDefinition   = 21;
@@ -312,6 +313,7 @@ begin
   ctnResStrSection: Result:='Resource String Section';
   ctnPropertySection: Result:='Property Section';
   ctnUsesSection: Result:='Uses Section';
+  ctnExportsSection: Result:='Exports Section';
 
   ctnTypeDefinition: Result:='Type';
   ctnVarDefinition: Result:='Var';

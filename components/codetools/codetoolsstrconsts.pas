@@ -99,6 +99,7 @@ ResourceString
   ctsEndForClassNotFound = '"end" for class/object not found';
   ctsUnexpectedSubRangeOperatorFound = 'unexpected subrange operator ''..'' found';
   ctsInvalidSubrange = 'invalid subrange';
+  ctsExportsClauseOnlyAllowedInLibraries = 'exports clause only allowed in libraries';
 
   // find declaration
   ctsUnitNotFound = 'unit not found: %s';
