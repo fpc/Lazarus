@@ -986,7 +986,7 @@ begin
   try
     Show;
     try
-      CNSendMessage(LM_ShowModal, Self, nil);
+      CNSendMessage(LM_SHOWMODAL, Self, nil);
       Repeat
         { Delphi calls Application.HandleMessage
           But HandleMessage processes all pending events and then calls idle,
@@ -1025,6 +1025,14 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.55  2002/09/03 11:32:49  lazarus
+  Added shortcut keys to labels
+  Support for alphabetically sorting the properties
+  Standardize message and add shortcuts ala Kylix
+  Published BorderStyle, unpublished BorderWidth
+  ShowAccelChar and FocusControl
+  ShowAccelChar and FocusControl for TLabel, escaped ampersands now work.
+
   Revision 1.54  2002/09/03 08:07:19  lazarus
   MG: image support, TScrollBox, and many other things from Andrew
 

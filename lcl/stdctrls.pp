@@ -423,13 +423,21 @@ type
     FAlignment : TAlignment;
     FWordWrap : Boolean;
     FLayout : TTextLayout;
+    FFocusControl : TWinControl;
+    FShowAccelChar : boolean;
     procedure SetAlignment(Value : TAlignment);
     procedure SetLayout(Value : TTextLayout);
     procedure SetWordWrap(Value : Boolean);
+    procedure WMActivate(var Message: TLMActivate); message LM_ACTIVATE;
   protected
     function GetLabelText: String ; virtual;
+    procedure Notification(AComponent : TComponent; Operation : TOperation); override;
+    procedure SetFocusControl(Val : TWinControl); virtual;
+    procedure SetShowAccelChar(Val : boolean); virtual;
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
+    property FocusControl : TWinControl read FFocusControl write SetFocusControl;
     property Layout: TTextLayout read FLayout write SetLayout default tlBottom;
+    property ShowAccelChar : boolean read FShowAccelChar write SetShowAccelChar default true;
     property WordWrap: Boolean read FWordWrap write SetWordWrap default false;
   public
     constructor Create(AOwner : TComponent); override;
@@ -445,9 +453,11 @@ type
     property Anchors;
     property Caption;
     property Color;
+    property FocusControl;
     property Font;
     property Visible;
     property Layout;
+    property ShowAccelChar;
     property WordWrap;
   end;
 
@@ -612,7 +622,7 @@ Function DeleteAmpersands(var Str : String) : Longint;
 
 implementation
 
-uses LCLLinux, LCLType;
+uses LCLLinux, LCLType, Interfaces;
 
 
 type
@@ -711,6 +721,14 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.40  2002/09/03 11:32:49  lazarus
+  Added shortcut keys to labels
+  Support for alphabetically sorting the properties
+  Standardize message and add shortcuts ala Kylix
+  Published BorderStyle, unpublished BorderWidth
+  ShowAccelChar and FocusControl
+  ShowAccelChar and FocusControl for TLabel, escaped ampersands now work.
+
   Revision 1.39  2002/09/03 08:07:19  lazarus
   MG: image support, TScrollBox, and many other things from Andrew
 

@@ -63,7 +63,6 @@ type
 
   TIDesigner = class;
 
-    
   TCloseEvent = procedure(Sender: TObject; var Action: TCloseAction) of object;
   TCloseQueryEvent = procedure(Sender : TObject; var CanClose : boolean) of object;
   TFormState = set of (fsCreating, fsVisible, fsShowing, fsModal, fsCreatedMDIChild);
@@ -77,6 +76,7 @@ type
     FCanvas : TControlCanvas;
     FDesigner : TIDesigner;
     FFormStyle : TFormStyle;
+    FFormState: TFormState;
     FIcon: TIcon;
     FKeyPreview: Boolean;
     FMenu : TMainMenu;
@@ -92,46 +92,45 @@ type
     FOnCloseQuery : TCloseQueryEvent;
     FPosition : TPosition;
     FWindowState : TWindowState;
-    Procedure ClientWndProc(var Message: TLMessage);
+    procedure ClientWndProc(var Message: TLMessage);
     procedure CloseModal;
     procedure DoCreate;
     procedure DoDestroy;
-    Procedure SetActiveControl(Value : TWinControl);
-    Procedure SetBorderStyle(Value : TFORMBorderStyle);
-    Procedure SetDesigner(Value : TIDesigner);
-    Procedure SetMenu(Value : TMainMenu);
-    Procedure SetFormStyle(Value : TFormStyle);
+    procedure SetActiveControl(Value : TWinControl);
+    procedure SetBorderStyle(Value : TFORMBorderStyle);
+    procedure SetDesigner(Value : TIDesigner);
+    procedure SetMenu(Value : TMainMenu);
+    procedure SetFormStyle(Value : TFormStyle);
     procedure SetIcon(AValue: TIcon);
-    Procedure SetPosition(Value : TPosition);
-    Procedure SetVisible(Value: boolean);
-    Procedure SetWindowState(Value : TWIndowState);
-    Function GetCanvas: TControlCanvas;
-    Function IsForm : Boolean;
+    procedure SetPosition(Value : TPosition);
+    procedure SetVisible(Value: boolean);
+    procedure SetWindowState(Value : TWIndowState);
+    function GetCanvas: TControlCanvas;
+    function IsForm : Boolean;
     procedure IconChanged(Sender: TObject);
     function IsIconStored: Boolean;
     { events }
-    Procedure WMActivate(var Message : TLMActivate); message LM_Activate;
+    procedure WMActivate(var Message : TLMActivate); message LM_Activate;
     procedure WMPaint(var message: TLMPaint); message LM_PAINT;
     procedure WMSize(var message: TLMSize); message LM_Size;
     procedure WMShowWindow(var message: TLMShowWindow); message LM_SHOWWINDOW;
     procedure WMCloseQuery(var message: TLMessage); message LM_CLOSEQUERY;
     procedure WMDestroy(var message: TLMDestroy); message LM_DESTROY;
   protected
-    FFormState: TFormState;
     function CloseQuery : boolean; virtual;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
-    Procedure DeActivate; dynamic;
+    procedure DeActivate; dynamic;
     procedure DoClose(var Action: TCloseAction); dynamic;
     procedure DoHide; dynamic;
     procedure DoShow; dynamic;
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     // Delphi needed GetClientRect for window specific things, LCL not
     // Function GetClientRect : TRect ; Override;
-    Procedure Notification(AComponent: TComponent; Operation : TOperation);override;
+    procedure Notification(AComponent: TComponent; Operation : TOperation);override;
     procedure Paint; dynamic;
-    Procedure PaintWindow(dc : Hdc); override;
-    Procedure RequestAlign; override;
+    procedure PaintWindow(dc : Hdc); override;
+    procedure RequestAlign; override;
     procedure UpdateShowing; override;
     procedure UpdateWindowState;
     procedure ValidateRename(AComponent: TComponent;
@@ -140,7 +139,6 @@ type
     {events}
     property ActiveControl : TWinControl read FActiveControl write SetActiveControl;
     property Icon: TIcon read FIcon write SetIcon stored IsIconStored;
-    property FormStyle : TFormStyle read FFormStyle write SetFormStyle default fsNormal;
     property OnActivate: TNotifyEvent read FOnActivate write FOnActivate;
     property OnClose: TCloseEvent read FOnClose write FOnClose stored IsForm;
     property OnCloseQuery : TCloseQueryEvent
@@ -162,16 +160,17 @@ type
     procedure Close;
     procedure Hide;
     function WantChildKey(Child : TControl; var MEssage : TLMessage): Boolean; virtual;
-    Procedure SetFocus; override;
+    procedure SetFocus; override;
     function SetFocusedControl(Control : TWinControl): Boolean ; Virtual;
-    Procedure FocusControl(WinControl : TWinControl);
-    Function ShowModal : Integer;
+    procedure FocusControl(WinControl : TWinControl);
+    function ShowModal : Integer;
     property Active : Boolean read FActive;
     property BorderStyle : TFormBorderStyle
       read FBorderStyle write SetBorderStyle default bsSizeable;
     property Canvas: TControlCanvas read GetCanvas;
     property Caption stored IsForm;
     property Designer : TIDesigner read FDesigner write SetDesigner;
+    property FormStyle : TFormStyle read FFormStyle write SetFormStyle default fsNormal;
     property FormState : TFormState read FFormState;
     property KeyPreview: Boolean read FKeyPreview write FKeyPreview;
     property Menu : TMainMenu read FMenu write SetMenu;
@@ -181,67 +180,67 @@ type
   end;
 
   TForm = class(TCustomForm)
-   private
-      FClientHandle: HWND;
-   public
-      constructor Create(AOwner: TComponent); override;
-      destructor Destroy; override;
-      property ClientHandle: HWND read FClientHandle;
-   published
-      property ActiveCOntrol;
-      property Align;
-      property AutoSize;
-      property BorderWidth;
-      property Caption;
-      property Color;
-      property ClientHeight;
-      property ClientWidth;
-      property Constraints;
-      property Enabled;
-      property FormStyle;
-      property Icon;
-      property Menu;
-      property PopupMenu;
-      property Position;
-      property ShowHint;
-      property Visible;
-//      property WindowState;
-      property OnActivate;
-      property OnCreate;
-      property OnClose;
-      property OnCloseQuery;
-      property OnDeactivate;
-      property OnDestroy;
-      property OnShow;
-      property OnHide;
-      property OnPaint;
-      property OnResize;
-   end;
+  private
+    FClientHandle: HWND;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    property ClientHandle: HWND read FClientHandle;
+  published
+    property ActiveCOntrol;
+    property Align;
+    property AutoSize;
+    property BorderStyle;
+    property Caption;
+    property Color;
+    property ClientHeight;
+    property ClientWidth;
+    property Constraints;
+    property Enabled;
+    property FormStyle;
+    property Icon;
+    property Menu;
+    property PopupMenu;
+    property Position;
+    property ShowHint;
+    property Visible;
+    property WindowState;
+    property OnActivate;
+    property OnCreate;
+    property OnClose;
+    property OnCloseQuery;
+    property OnDeactivate;
+    property OnDestroy;
+    property OnShow;
+    property OnHide;
+    property OnPaint;
+    property OnResize;
+  end;
 
   TFormClass = class of TForm;
   
-  
-   {THintWindow}
-  THintWindow = class(TCustomForm)
-    private
-      FActivating: Boolean;
-      FAutoHide : Boolean;
-      FAutoHideTimer : TComponent;
-      FHideInterval : Integer;
-      Procedure SetAutoHide(Value : Boolean);
-      Procedure AutoHideHint(Sender : TObject);
-      Procedure SetHideInterval(Value : Integer);
-    protected
-      procedure Paint; override;
-    public
-      constructor Create(AOwner: TComponent); override;
-      destructor Destroy; override;
-      procedure ActivateHint(Rect: TRect; const AHint: String); virtual;
-      function CalcHintRect(MaxWidth: Integer; const AHint: String; AData: Pointer): TRect; virtual;
-      property Color;
-      property AutoHide : Boolean read FAutoHide write SetAutoHide;
-      property HideInterval : Integer read FHideInterval write SetHideInterval;
 
+  {THintWindow}
+  
+  THintWindow = class(TCustomForm)
+  private
+    FActivating: Boolean;
+    FAutoHide : Boolean;
+    FAutoHideTimer : TComponent;
+    FHideInterval : Integer;
+    procedure SetAutoHide(Value : Boolean);
+    procedure AutoHideHint(Sender : TObject);
+    procedure SetHideInterval(Value : Integer);
+  protected
+    procedure Paint; override;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure ActivateHint(Rect: TRect; const AHint: String); virtual;
+    function CalcHintRect(MaxWidth: Integer; const AHint: String; AData: Pointer): TRect; virtual;
+    property Color;
+    property AutoHide : Boolean read FAutoHide write SetAutoHide;
+    property HideInterval : Integer read FHideInterval write SetHideInterval;
   end;
 
 
@@ -250,15 +249,15 @@ type
     FFormList: TList;
     FHintFont : TFont;
     FPixelsPerInch : integer;
-    Function GetFormCount: Integer;
-    Function GetForms(IIndex: Integer): TForm;
+    function GetFormCount: Integer;
+    function GetForms(IIndex: Integer): TForm;
     function GetHeight : Integer;
     function GetWidth : Integer;
     procedure AddForm(FForm: TCustomForm);
     procedure RemoveForm(FForm: TCustomForm);
   public
     constructor Create(AOwner : TComponent); override;
-    Destructor Destroy; Override;
+    destructor Destroy; Override;
     property FormCount: Integer read GetFormCount;
     property Forms[Index: Integer]: TForm read GetForms;
     property PixelsPerInch : integer read FPixelsPerInch;

@@ -19,68 +19,6 @@
 }
 
 {------------------------------------------------------------------------------
-  Method: TCustomLabel.SetLayout
-  Params: None
-  Returns: Nothing
-
- ------------------------------------------------------------------------------}
-procedure TCustomLabel.SetLayout(Value : TTextLayout);
-begin
-   if FLayout <> Value then
-   begin
-     FLayout := Value;
-     CNSendMessage(LM_SETPROPERTIES,Self,nil);
-   end;
-end;
-
-{------------------------------------------------------------------------------
-  Method: TCustomLabel.SetAlignment
-  Params: None
-  Returns: Nothing
-
- ------------------------------------------------------------------------------}
-procedure TCustomLabel.SetAlignment(Value : TAlignment);
-begin
-   if fAlignment <> value then
-     Begin
-      fAlignment := value;
-      handleneeded;
-      invalidate;
-      CNSendMessage(LM_SETPROPERTIES,Self,nil);
-     end;
-
-end;
-
-{------------------------------------------------------------------------------
-  Method: TCustomLabel.SetWordWrap
-  Params: None
-  Returns: Nothing
-
- ------------------------------------------------------------------------------}
-procedure TCustomLabel.SetWordWrap(Value : Boolean);
-Begin
-   if fWordWrap <> value then
-     Begin
-      fWordWrap := value;
-      HandleNeeded;
-      invalidate;
-      CNSendMessage(LM_SETPROPERTIES,Self,nil);
-     end;
-
-end;
-
-{------------------------------------------------------------------------------
-  Method: TCustomLabel.GetLabelText
-  Params: None
-  Returns: Nothing
-
- ------------------------------------------------------------------------------}
-function TCustomLabel.GetLabelText: String;
-begin
-   GetLabelText := Caption;
-end;
-
-{------------------------------------------------------------------------------
   Method: TCustomLabel.Create
   Params:  AOwner: the owner of the class
   Returns: Nothing
@@ -92,8 +30,113 @@ begin
   inherited Create(AOwner);
   fCompStyle := csLabel;
   FLayout := tlTop;
+  FShowAccelChar:= true;
   ControlStyle := ControlStyle + [csOpaque, csReplicatable];
   SetBounds(0, 0, 65, 17);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TCustomLabel.GetLabelText
+  Params: None
+  Returns: Nothing
+
+ ------------------------------------------------------------------------------}
+function TCustomLabel.GetLabelText: String;
+begin
+  GetLabelText:= Caption;
+end;
+
+procedure TCustomLabel.Notification(AComponent : TComponent; Operation : TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if (AComponent = FFocusControl) and (Operation = opRemove) then FFocusControl:= nil;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TCustomLabel.SetAlignment
+  Params: Value - new proterty value
+  Returns: Nothing
+
+ ------------------------------------------------------------------------------}
+procedure TCustomLabel.SetAlignment(Value : TAlignment);
+begin
+  if fAlignment <> value then begin
+    fAlignment:= value;
+    HandleNeeded;
+    Invalidate;
+    CNSendMessage(LM_SETPROPERTIES, Self, nil);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TCustomLabel.SetFocusControl
+  Params: Val - new property value
+  Returns: Nothing
+
+ ------------------------------------------------------------------------------}
+procedure TCustomLabel.SetFocusControl(Val : TWinControl);
+begin
+  if Val <> FFocusControl then begin
+    FFocusControl:= Val;
+    if Val <> nil then Val.FreeNotification(Self);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TCustomLabel.SetLayout
+  Params: None
+  Returns: Nothing
+
+ ------------------------------------------------------------------------------}
+procedure TCustomLabel.SetLayout(Value : TTextLayout);
+begin
+  if FLayout <> Value then begin
+    FLayout:= Value;
+    CNSendMessage(LM_SETPROPERTIES, Self, nil);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TCustomLabel.SetShowAccelChar
+  Params: Val - new property value
+  Returns: Nothing
+
+ ------------------------------------------------------------------------------}
+procedure TCustomLabel.SetShowAccelChar(Val : boolean);
+begin
+  if Val <> FShowAccelChar then begin
+    FShowAccelChar:= Val;
+    CNSendMessage(LM_SETLABEL, Self, PChar(Caption));
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TCustomLabel.SetWordWrap
+  Params: None
+  Returns: Nothing
+
+ ------------------------------------------------------------------------------}
+procedure TCustomLabel.SetWordWrap(Value : Boolean);
+begin
+  if fWordWrap <> value then begin
+    fWordWrap:= value;
+    HandleNeeded;
+    Invalidate;
+    CNSendMessage(LM_SETPROPERTIES, Self, nil);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TCustomLabel.WMActivate
+  Params: Message: Activation message
+  Returns: Nothing
+
+  Received when the label has a registered activation shortcut for focuscontrol.
+ ------------------------------------------------------------------------------}
+procedure TCustomLabel.WMActivate(var Message: TLMActivate);
+begin
+  if (FFocusControl <> nil) and (FFocusControl.CanFocus) then
+    FFocusControl.SetFocus;
 end;
 
 // included by stdctrls.pp
@@ -101,6 +144,14 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.5  2002/09/03 11:32:49  lazarus
+  Added shortcut keys to labels
+  Support for alphabetically sorting the properties
+  Standardize message and add shortcuts ala Kylix
+  Published BorderStyle, unpublished BorderWidth
+  ShowAccelChar and FocusControl
+  ShowAccelChar and FocusControl for TLabel, escaped ampersands now work.
+
   Revision 1.4  2002/08/30 10:06:07  lazarus
   Fixed alignment of multiline TLabel.
   Simplified and prettified MessageBoxen.

@@ -132,8 +132,9 @@ begin
       Left:=8;
       Top:=8;
       Width:= 100;
-      Caption:='Text to Find';
+      Caption:='&Text to Find';
       Visible:=true;
+      FocusControl:= TextToFindComboBox;
     end;
 
     ReplaceTextComboBox:=TComboBox.Create(Self);
@@ -156,8 +157,9 @@ begin
       Left:=8;
       Top:=32;
       Width:= 100;
-      Caption:='Replace With';
+      Caption:='&Replace With';
       Visible:=true;
+      FocusControl:= ReplaceTextComboBox;
     end;
 
     OptionsGroupBox:=TGroupBox.Create(Self);

@@ -316,6 +316,12 @@ implementation
 const
   ScrollBarWidth=0;
 
+function SortGridRows(Item1, Item2 : pointer) : integer; 
+begin
+  Result:= AnsiCompareText(TOIPropertyGridRow(Item1).Name, TOIPropertyGridRow(Item2).Name);
+end;
+
+
 { TOIPropertyGrid }
 
 constructor TOIPropertyGrid.Create(AnOwner:TComponent;
@@ -754,6 +760,8 @@ begin
   FRows.Clear;
   GetComponentProperties(FPropertyEditorHook,FComponentList,FFilter,
     @AddPropertyEditor);
+    
+  FRows.Sort(@SortGridRows);
   SetItemsTops;
   for a:=FExpandedProperties.Count-1 downto 0 do begin
     CurRow:=GetRowByPath(FExpandedProperties[a]);
