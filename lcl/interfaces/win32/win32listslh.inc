@@ -52,6 +52,7 @@ Type
     Function GetObject(Index: Integer): TObject; Override;
     Procedure PutObject(Index: Integer; AObject: TObject); Override;
     Procedure SetSorted(Val: Boolean); Virtual;
+    function GetComboHeight: integer;
   Public
     Constructor Create(List : HWND; TheOwner: TWinControl);
     Procedure Assign(Source: TPersistent); Override;
@@ -60,6 +61,7 @@ Type
     Procedure Insert(Index: Integer; Const S: String); Override;
     Procedure Sort; Virtual;
     Property Sorted: Boolean Read FSorted Write SetSorted;
+    property ComboHeight: integer read GetComboHeight;
   End;
 
   PWin32CheckListBoxItemRecord = ^TWin32CheckListBoxItemRecord;
@@ -117,6 +119,9 @@ Type
 { =============================================================================
 
   $Log$
+  Revision 1.16  2004/05/08 12:32:32  micha
+  fix combobox height; whatever the lcl passes as height for combobox, always calculate our own
+
   Revision 1.15  2003/12/29 14:22:22  micha
   fix a lot of range check errors win32
 

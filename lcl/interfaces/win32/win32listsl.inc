@@ -168,11 +168,7 @@ Begin
 
     if FSender.FCompStyle=csComboBox Then
     begin
-      if Count = 0 then
-        SetComboHeight(FSender,FSender.Left,FSender.Top,FSender.Width,FEditHeight + FItemHeight + 2)
-      else
-        SetComboHeight(FSender,FSender.Left,FSender.Top,FSender.Width,FEditHeight + FDDownCount*FItemHeight + 2);
-
+      SetComboHeight(FSender, FSender.Left, FSender.Top, FSender.Width, ComboHeight);
       // restore text in edit box
       CNSendMessage(LM_SETLABEL, FSender, PChar(EditText));
     end;
@@ -180,6 +176,16 @@ Begin
   Else
     inherited Assign(Source);
 End;
+
+function TWin32ListStringList.GetComboHeight: integer;
+begin
+  if Count = 0 then
+  begin
+    Result := FEditHeight + FItemHeight + 2;
+  end else begin
+    Result := FEditHeight + FDDownCount*FItemHeight + 2;
+  end;
+end;
 
 {------------------------------------------------------------------------------
   Method: TWin32ListStringList.Get
@@ -543,6 +549,9 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.30  2004/05/08 12:32:32  micha
+  fix combobox height; whatever the lcl passes as height for combobox, always calculate our own
+
   Revision 1.29  2004/02/23 08:19:04  micha
   revert intf split
 

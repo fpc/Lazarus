@@ -838,6 +838,7 @@ activate_time :	the time at which the activation event occurred.
             Then Data := TWin32CheckListBoxStrings.Create(Handle,TWinControl(Sender))
           Else Data := TWin32ListStringList.Create(Handle,TWinControl(Sender));
         Result := Integer(Data);
+	Windows.SetProp(Handle, 'List', Result);
       End;
       LM_GETTEXT :
       Begin
@@ -1756,6 +1757,7 @@ Var
   OldTop: Integer;
 {$ENDIF}
   WinHandle, BuddyHandle: HWND;
+  StringList: TWin32ListStringList;
 Begin
   // if not Sender.HandleAllocated then exit; --> Already checked (LM_SETSIZE and LM_RECREATEWND)
   {$IFDEF VerboseSizeMsg}
@@ -1778,6 +1780,12 @@ Begin
     // reattach
     Windows.SendMessage(WinHandle, UDM_SETBUDDY, BuddyHandle, 0);
   end else begin
+    if Sender is TCustomComboBox then
+    begin
+      StringList := TWin32ListStringList(Windows.GetProp(WinHandle, 'List'));
+      if StringList <> nil then
+	Height := StringList.ComboHeight;
+    end;
     MoveWindow(WinHandle, Left, Top, Width, Height, True);
   end;
   LCLControlSizeNeedsUpdate(Sender,False);
@@ -2968,6 +2976,9 @@ End;
 
 {
   $Log$
+  Revision 1.188  2004/05/08 12:32:32  micha
+  fix combobox height; whatever the lcl passes as height for combobox, always calculate our own
+
   Revision 1.187  2004/04/18 20:11:08  micha
   fix label alignment left, center, right
 
