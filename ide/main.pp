@@ -2911,7 +2911,7 @@ begin
     FileWithoutPath:=ExtractFileName(NewFilename);
     // check if file should be auto renamed
     if EnvironmentOptions.PascalFileAskLowerCase then begin
-      if CompareFilenames(lowercase(FileWithoutPath),FileWithoutPath)<>0
+      if lowercase(FileWithoutPath)<>FileWithoutPath
       then begin
         Result:=MessageDlg('Rename file?',
            'This looks like a pascal file.'#13
@@ -8131,6 +8131,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.510  2003/04/07 12:12:12  mattias
+  implemented auto completion for add new component to package
+
   Revision 1.509  2003/04/06 22:39:47  mattias
   implemented searching packages
 
