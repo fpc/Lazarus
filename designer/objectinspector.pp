@@ -207,7 +207,11 @@ type
     procedure ValueComboBoxExit(Sender: TObject);
     procedure ValueComboBoxChange(Sender: TObject);
     procedure ValueComboBoxKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure ValueComboBoxCloseUp(Sender: TObject);
+    procedure ValueComboBoxDropDown(Sender: TObject);
     procedure ValueButtonClick(Sender: TObject);
+    procedure ValueComboBoxDrawItem(Control: TWinControl; Index: Integer;
+          ARect: TRect; State: TOwnerDrawState);
 
     procedure WMVScroll(var Msg: TWMScroll); message WM_VSCROLL;
     procedure WMMouseMove(var Msg: TWMMouseMove); message WM_MOUSEMOVE;
@@ -397,6 +401,9 @@ begin
     //OnChange:=@ValueComboBoxChange; the on change event is called even,
                                    // if the user is editing
     OnKeyDown:=@ValueComboBoxKeyDown;
+    OnDropDown:=@ValueComboBoxDropDown;
+    OnCloseUp:=@ValueComboBoxCloseUp;
+    OnDrawItem:=@ValueComboBoxDrawItem;
   end;
 
   ValueButton:=TButton.Create(Self);
@@ -1304,6 +1311,66 @@ begin
   Result:=TOIPropertyGridRow(FRows[Index]);
 end;
 
+procedure TOIPropertyGrid.ValueComboBoxCloseUp(Sender: TObject);
+begin
+  SetRowValue;
+end;
+
+procedure TOIPropertyGrid.ValueComboBoxDropDown(Sender: TObject);
+var
+  CurRow: TOIPropertyGridRow;
+  MaxItemWidth, CurItemWidth, i, Cnt: integer;
+  ItemValue: string;
+begin
+  if (FItemIndex>=0) and (FItemIndex<FRows.Count) then begin
+    CurRow:=Rows[FItemIndex];
+    MaxItemWidth:=ValueComboBox.Width;
+    Cnt:=ValueComboBox.Items.Count;
+    for i:=0 to Cnt-1 do begin
+      ItemValue:=ValueComboBox.Items[i];
+      CurItemWidth:=ValueComboBox.Canvas.TextWidth(ItemValue);
+      CurRow.Editor.ListMeasureWidth(ItemValue,i,ValueComboBox.Canvas,
+                                     CurItemWidth);
+      if MaxItemWidth<CurItemWidth then
+        MaxItemWidth:=CurItemWidth;
+    end;
+    ValueComboBox.ItemWidth:=MaxItemWidth;
+  end;
+end;
+
+procedure TOIPropertyGrid.ValueComboBoxDrawItem(Control: TWinControl;
+  Index: Integer; ARect: TRect; State: TOwnerDrawState);
+var
+  CurRow: TOIPropertyGridRow;
+  ItemValue: string;
+  AState: TPropEditDrawState;
+begin
+  if (FItemIndex>=0) and (FItemIndex<FRows.Count) then begin
+    CurRow:=Rows[FItemIndex];
+    if (Index>=0) and (Index<ValueComboBox.Items.Count) then
+      ItemValue:=ValueComboBox.Items[Index]
+    else
+      ItemValue:='';
+    AState:=[];
+    if odPainted in State then Include(AState,pedsPainted);
+    if odSelected in State then Include(AState,pedsSelected);
+    if odFocused in State then Include(AState,pedsFocused);
+    if odComboBoxEdit in State then
+      Include(AState,pedsInEdit)
+    else
+      Include(AState,pedsInComboList);
+      
+    // clear background
+    with ValueComboBox.Canvas do begin
+      Brush.Color:=clWhite;
+      Pen.Color:=clBlack;
+      Font.Color:=Pen.Color;
+      FillRect(ARect);
+    end;
+    CurRow.Editor.ListDrawValue(ItemValue,Index,ValueComboBox.Canvas,ARect,
+                                AState);
+  end;
+end;
 
 Procedure TOIPropertyGrid.HintTimer(sender : TObject);
 var
