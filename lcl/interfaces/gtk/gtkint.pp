@@ -35,6 +35,7 @@ interface
  
 {$DEFINE ClientRectBugFix}
 {$IFDEF ClientRectBugFix}
+  { $DEFINE VerboseFormPositioning}
   { $DEFINE VerboseClientRectBugFix}
   { $DEFINE VerboseResizeChild}
   { $DEFINE VerboseSizeMsg}
@@ -119,6 +120,8 @@ type
     procedure SetResizeRequest(Widget: PGtkWidget);
     procedure UnsetResizeRequest(Widget: PGtkWidget);
 
+    procedure SetWindowSizeAndPosition(Window: PGtkWindow;
+      AWinControl: TWinControl);
     procedure SendCachedLCLMessages;
     function  LCLtoGtkMessagePending: boolean;
     procedure SendCachedGtkMessages;
@@ -384,6 +387,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.49  2002/06/09 07:08:43  lazarus
+  MG: fixed window jumping
+
   Revision 1.48  2002/06/08 17:16:04  lazarus
   MG: added close buttons and images to TNoteBook and close buttons to source editor
 
