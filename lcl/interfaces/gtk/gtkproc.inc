@@ -725,8 +725,8 @@ end;
  { =============================================================================
 
   $Log$
-  Revision 1.13  2001/03/21 14:26:00  lazarus
-  MG: Bugfixes + changed ide closing
+  Revision 1.14  2001/03/21 23:48:29  lazarus
+  MG: fixed window positions
 
   Revision 1.12  2001/03/19 14:44:22  lazarus
   MG: fixed many unreleased DC and GDIObj bugs

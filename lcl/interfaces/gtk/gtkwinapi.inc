@@ -2120,6 +2120,7 @@ begin
          Begin
            gdk_window_get_origin(Widget^.Window, @X, @Y);
            gdk_window_get_size(Widget^.Window, @W, @H);
+writeln('[TgtkObject.GetWindowRect] ',x,',',y,',',w,',',h);
          end
          else
          Begin
@@ -2684,6 +2685,7 @@ Begin
         gdk_window_get_origin(Widget^.Window, @X, @Y);
    end;
 
+writeln('[TGTKObject.ScreenToClient] ',x,',',y,' P=',P.X,',',P.Y);
   dec(P.X, X);
   dec(P.Y, Y);
   Result := -1;
@@ -3423,8 +3425,8 @@ end;
 { =============================================================================
 
   $Log$
-  Revision 1.29  2001/03/21 14:26:00  lazarus
-  MG: Bugfixes + changed ide closing
+  Revision 1.30  2001/03/21 23:48:29  lazarus
+  MG: fixed window positions
 
   Revision 1.26  2001/03/19 18:51:57  lazarus
   MG: added dynhasharray and renamed tsynautocompletion

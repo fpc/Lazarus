@@ -584,7 +584,7 @@ begin
       ObjectInspector1.SetBounds(Left,Top,Width,Height);
   end else begin
     ObjectInspector1.SetBounds(
-      0,Top+Height+30,230,Max(Screen.Height-Top-Height-100,50));
+      0,Top+Height+30,230,Max(Screen.Height-Top-Height-120,50));
   end;
   ObjectInspector1.OnAddAvailComponent:=@OIOnAddAvailableComponent;
   ObjectInspector1.OnSelectComponentInOI:=@OIOnSelectComponent;
@@ -1582,8 +1582,7 @@ writeln('TMainIDE.DoNewEditorUnit 1');
     // create jitform
     CInterface := TComponentInterface(
       FormEditor1.CreateComponent(nil,TForm,
-        ObjectInspector1.Left+ObjectInspector1.Width+15,ObjectInspector1.Top+15,
-        400,300));
+        ObjectInspector1.Left+ObjectInspector1.Width+40,Top+Height+50,400,300));
     TempForm:=TForm(CInterface.Control);
     NewUnitInfo.Form:=TempForm;
     SetDefaultsForForm(TempForm);
@@ -2949,8 +2948,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.78  2001/03/21 14:25:59  lazarus
-  MG: Bugfixes + changed ide closing
+  Revision 1.79  2001/03/21 23:48:28  lazarus
+  MG: fixed window positions
 
   Revision 1.75  2001/03/19 14:00:46  lazarus
   MG: fixed many unreleased DC and GDIObj bugs

@@ -560,11 +560,13 @@ begin
   Result := DeliverMessage(Data, Mess) = 0;
 end;
 
-function gtksize_allocateCB( widget: PGtkWidget; size :pGtkAllocation; data: gPointer) : GBoolean; cdecl;
+function gtksize_allocateCB( widget: PGtkWidget; size :pGtkAllocation;
+  data: gPointer) : GBoolean; cdecl;
 var
   PosMsg : TLMWindowPosChanged;
   SizeMsg: TLMSize;
   MoveMsg: TLMMove;
+  Dummy: TPoint;
 begin
   EventTrace('size-allocate', data);
 
@@ -579,9 +581,19 @@ begin
   try
     with PosMsg.WindowPos^ do
     begin
-      if TObject(data) is TWinControl 
-      then hWnd := TWinControl(data).Handle
-      else hWnd := 0;
+      if TObject(data) is TWinControl then begin
+        hWnd := TWinControl(data).Handle;
+        if TObject(data) is TCustomForm then begin
+          //writeln('[gtksize_allocateCB]  CUSTOMFORM  ************'
+          //       ,TControl(Data).Left,',',TControl(Data).Top,'  ',Size^.X,',',Size^.Y);
+          Dummy.X:=TControl(Data).Left;
+          Dummy.Y:=TControl(Data).Top;
+          gdk_window_get_root_origin(widget^.window, @Dummy.X, @Dummy.Y);
+          Size^.X:=Dummy.X;
+          Size^.Y:=Dummy.Y;
+        end;
+      end else
+        hWnd := 0;
       hWndInsertAfter := 0;
       x := Size^.X;
       y := Size^.Y;
@@ -617,6 +629,7 @@ Writeln('***********************');
       Height := Size^.Height;
     end;
     Assert(False, 'Trace:[gtksize_allocateCB] DeliverMessage LM_SIZE');
+
     Result := DeliverPostMessage(Data, SizeMsg) or Result;
     
     with MoveMsg do
@@ -1091,6 +1104,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.27  2001/03/21 23:48:29  lazarus
+  MG: fixed window positions
+
   Revision 1.26  2001/03/19 14:44:22  lazarus
   MG: fixed many unreleased DC and GDIObj bugs
 

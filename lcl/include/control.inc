@@ -14,6 +14,7 @@
 {------------------------------------------------------------------------------}
 procedure TControl.Adjustsize;
 begin
+//writeln('[TControl.Adjustsize] ',Name,':',ClassName);
   if not (csLoading in ComponentState) then SetBounds(Left, Top, Width, Height);
 end;
 
@@ -677,6 +678,7 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TControl.SetBoundsRect(const Rect : TRect);
 Begin
+//writeln('[TControl.SetBoundsRect] ',Name,':',ClassName);
   with Rect do
     SetBounds(Left,Top,Right - Left, Bottom - Top);
 end;
@@ -718,7 +720,7 @@ const
   BOOLTXT: array[Boolean] of String = ('False', 'True');
 begin
 
-Writeln('SetMOuseCapture '+Self.Classname);
+Writeln('SetMouseCapture '+Self.Classname);
   if MouseCapture <> Value 
   then begin
     if Value 
@@ -857,7 +859,8 @@ end;
 {------------------------------------------------------------------------------}
 procedure TControl.SetBounds(ALeft, ATop, AWidth, AHeight : integer);
 begin
-  if (ALeft = Left) and (ATop = Top) and (AWidth = Width) and (AHeight = Height) then Exit;
+  if (ALeft = Left) and (ATop = Top) and (AWidth = Width) and (AHeight = Height)
+  then Exit;
   IsResizing := True;
   try
     FLeft := ALeft;
@@ -1198,9 +1201,12 @@ end;
  ------------------------------------------------------------------------------}
 destructor TControl.Destroy;
 begin
+//writeln('[TControl.Destroy] A ',Name,':',ClassName);
   SetParent(nil);
   FFont.Free;
+//writeln('[TControl.Destroy] B ',Name,':',ClassName);
   inherited Destroy;
+//writeln('[TControl.Destroy] END ',Name,':',ClassName);
 end;
 
 {------------------------------------------------------------------------------
@@ -1296,6 +1302,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.17  2001/03/21 23:48:29  lazarus
+  MG: fixed window positions
+
   Revision 1.16  2001/03/19 14:00:50  lazarus
   MG: fixed many unreleased DC and GDIObj bugs
 

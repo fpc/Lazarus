@@ -557,7 +557,8 @@ activate_time :	the time at which the activation event occurred.
       LM_SetSize :
       begin
          Assert(False, Format('Trace:  [TgtkObject.IntSendMessage3] %s --> LM_SetSize(%d, %d, %d, %d)', [Sender.ClassNAme, PRect(Data)^.Left,PRect(Data)^.Top,PRect(Data)^.Right,PRect(Data)^.Bottom]));
-         ResizeChild(Sender,PRect(Data)^.Left,PRect(Data)^.Top,PRect(Data)^.Right,PRect(Data)^.Bottom);
+         ResizeChild(Sender,PRect(Data)^.Left,PRect(Data)^.Top,
+             PRect(Data)^.Right,PRect(Data)^.Bottom);
       end;
 
       LM_ShowModal :
@@ -2757,8 +2758,8 @@ end;
  { =============================================================================
 
   $Log$
-  Revision 1.38  2001/03/21 14:26:00  lazarus
-  MG: Bugfixes + changed ide closing
+  Revision 1.39  2001/03/21 23:48:29  lazarus
+  MG: fixed window positions
 
   Revision 1.36  2001/03/19 18:51:57  lazarus
   MG: added dynhasharray and renamed tsynautocompletion

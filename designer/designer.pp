@@ -188,8 +188,8 @@ begin
   Result:=true;
   Sender.Dispatch(Message);
   if (ControlSelection.IsSelected(Sender)) then begin
-//    writeln('***  LM_Size ',Sender.Name,':',Sender.ClassName,' Type=',Message.SizeType
-// ,' ',Message.Width,',',Message.Height);
+    writeln('***  LM_Size ',Sender.Name,':',Sender.ClassName,' Type=',Message.SizeType
+ ,' ',Message.Width,',',Message.Height,' Pos=',Sender.Left,',',Sender.Top);
     ControlSelection.AdjustSize;
     if Assigned(FOnPropertiesChanged) then
       FOnPropertiesChanged(Self);
