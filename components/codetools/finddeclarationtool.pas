@@ -1676,6 +1676,7 @@ begin
         end;
         Params.Load(OldInput);
       end;}
+      
       // find sub identifier
       Params.Save(OldInput);
       try
@@ -1804,7 +1805,8 @@ begin
             2. dynamic array
             3. indexed pointer
             4. default property
-            5. string character
+            5. indexed property
+            6. string character
       }
       if not (NextAtomType in [atSpace,atPoint,atAs,atUp,atRoundBracketClose,
         atRoundBracketOpen,atEdgedBracketClose,atEdgedBracketOpen]) then
@@ -1852,6 +1854,13 @@ begin
                 RaiseExceptionFmt(ctsIllegalQualifier,[GetAtom]);
               end;
             end;
+          end;
+          
+        ctnProperty:
+          begin
+            // indexed property without base type
+            // => property type is predefined
+            // -> completed
           end;
           
         else
@@ -3196,11 +3205,12 @@ var
 begin
   OldInputFlags:=Params.Flags;
   IsPredefinedIdentifier:=WordIsPredefinedIdentifier.DoIt(@Src[StartPos]);
+  EndPos:=FindEndOfVariable(StartPos);
   {$IFDEF ShowExprEval}
   writeln('[TFindDeclarationTool.FindExpressionTypeOfVariable] ',
-  ' IsPredefinedIdentifier=',IsPredefinedIdentifier);
+  ' IsPredefinedIdentifier=',IsPredefinedIdentifier,
+  ' Var="',copy(Src,StartPos,EndPos-StartPos),'"');
   {$ENDIF}
-  EndPos:=FindEndOfVariable(StartPos);
   CouldBeStringChar:=AtomIsChar(']');
   MoveCursorToCleanPos(EndPos);
   Include(Params.Flags,fdfNoExceptionOnStringChar);
@@ -3364,6 +3374,7 @@ begin
   end
   else
     RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsIdentifier,GetAtom]);
+    
   {$IFDEF ShowExprEval}
   write('[TFindDeclarationTool.ReadOperandTypeAtCursor] END ',
   ExpressionTypeDescNames[Result.Desc]);
