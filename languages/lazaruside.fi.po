@@ -280,7 +280,7 @@ msgstr "Tietoja Lazarus:sta"
 
 #: lazarusidestrconsts:srvk_accept
 msgid "Accept"
-msgstr ""
+msgstr "Hyväksy"
 
 #: lazarusidestrconsts:liscodetoolsdefsaction
 msgid "Action: %s"
@@ -892,7 +892,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lischoosestructuretoencloseselection
 msgid "Choose structure to enclose selection"
-msgstr "Lisää, alla olevasta listasta valitun, rakenteen valitun lohkon ympärille"
+msgstr "Lisää, alla olevasta listasta valittu, rakenne. Valitun lohkon ympärille"
 
 #: lazarusidestrconsts:lischoosetestbuilddir
 msgid "Choose the directory for tests"
@@ -1860,7 +1860,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuencloseselection
 msgid "Enclose selection"
-msgstr "Tietorakenteen lisäys"
+msgstr "Lauserakenteen lisäys"
 
 #: lazarusidestrconsts:srvk_end
 msgid "End"
@@ -2088,7 +2088,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisfiledoesnotlooklikeatextfileopenitanyway
 msgid "File %s%s%s%sdoes not look like a text file.%sOpen it anyway?"
-msgstr ""
+msgstr "Tiedosto %s%s%s%s ei näyttäisi olevan tekstitiedosto.%s Yritetäänkö se silti avata?"
 
 #: lazarusidestrconsts:lisa2pfilealreadyexists
 msgid "File already exists"
@@ -2148,7 +2148,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisfilenottext
 msgid "File not text"
-msgstr ""
+msgstr "Tiedosto ei ole tekstitiedosto"
 
 #: lazarusidestrconsts:lisa2pfilenotunit
 msgid "File not unit"
@@ -5332,7 +5332,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgshowlinenumbers
 msgid "Show line numbers"
-msgstr ""
+msgstr "Näytä rivinumerot"
 
 #: lazarusidestrconsts:dlgshownotes
 msgid "Show Notes"
