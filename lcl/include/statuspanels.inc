@@ -26,7 +26,7 @@ end;
 function TStatusPanels.Add: TStatusPanel;
 begin
   Result := TStatusPanel(inherited Add);
-  TWSStatusBarClass(StatusBar.WidgetSetClass).Update(StatusBar);
+  StatusBar.UpdateHandleObject(-1);
 end;
 
 function TStatusPanels.GetItem(Index: Integer): TStatusPanel;
