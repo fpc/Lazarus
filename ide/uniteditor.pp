@@ -2490,21 +2490,7 @@ Begin
         NewValue:=GetIdentCompletionValue(aCompletion,ValueType,CursorToLeft);
         // insert value plus special chars like brackets, semicolons, ...
         SrcEdit:=GetActiveSE;
-        {Line:=SrcEdit.EditorComponent.LineText;
-        CaretXY:=SrcEdit.EditorComponent.BlockBegin;
-        case ValueType of
-        icvProcWithParams:
-          if (CharBehindIdent(Line,CaretXY.X)<>'(')
-          and (CharInFrontOfIdent(Line,CaretXY.X)<>'@')
-          then
-            NewValue:=NewValue+'()';
-        icvIndexedProp:
-          if (CharBehindIdent(Line,CaretXY.X)<>'[')
-          then
-            NewValue:=NewValue+'[]';
-        end;}
         SrcEdit.EditorComponent.SelText:=NewValue;
-        //if (NewValue<>'') and (NewValue[length(NewValue)] in [')',']']) then
         if CursorToLeft>0 then
         begin
           CaretXY:=SrcEdit.EditorComponent.BlockEnd;
