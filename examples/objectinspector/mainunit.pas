@@ -95,13 +95,13 @@ end;
 
 procedure TForm1.SetObjectInspectorRoot(AComponent: TComponent);
 var
-  Selection: TComponentSelectionList;
+  Selection: TPersistentSelectionList;
 begin
   ThePropertyEditorHook.LookupRoot:=AComponent;
-  Selection:=TComponentSelectionList.Create;
+  Selection:=TPersistentSelectionList.Create;
   Selection.Add(AComponent);
-  TheObjectInspector.Selections:=Selection;
-  PropertyGrid.Selections:=Selection;
+  TheObjectInspector.Selection:=Selection;
+  PropertyGrid.Selection:=Selection;
   Selection.Free;
 end;
 
