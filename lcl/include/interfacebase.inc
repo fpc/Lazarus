@@ -398,6 +398,12 @@ begin
   // Result := 
 end;
 
+Function TInterfaceBase.UnionRect(DestRect, SrcRect1, SrcRect2 : pRect): Boolean;
+begin
+  // Your default here
+  // Result := 
+end;
+
 Function TInterfaceBase.WindowFromPoint(Point : TPoint) : HWND;
 begin
   // Your default here
@@ -408,6 +414,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.9  2001/01/23 19:01:10  lazarus
+  Fixxed bug in RestoreDC
+  Shane
+
   Revision 1.8  2001/01/23 18:42:10  lazarus
   Added InvalidateRect to gtkwinapi.inc
   Shane

@@ -2406,7 +2406,9 @@ begin
       pDC^.SavedContext := pSaved^.SavedContext;
       pSaved^.SavedContext := nil;
       
-      //prevent deleting of copied objects; 
+      Result := CopyDCData(pDC, pSaved);
+
+      //prevent deleting of copied objects;
       if pSaved^.CurrentBitmap = pDC^.CurrentBitmap 
       then pSaved^.CurrentBitmap := nil;  
       if pSaved^.CurrentFont = pDC^.CurrentFont 
@@ -2416,7 +2418,6 @@ begin
       if pSaved^.CurrentBrush = pDC^.CurrentBrush 
       then pSaved^.CurrentBrush := nil;   
       
-      Result := CopyDCData(pDC, pSaved);
 
       DeleteDC(HGDIOBJ(pSaved)); 
       // fornow  unref GC
@@ -3141,8 +3142,8 @@ end;
 { =============================================================================
 
   $Log$
-  Revision 1.14  2001/01/23 18:43:12  lazarus
-  Slight modification to Invalidaterect.
+  Revision 1.15  2001/01/23 19:01:10  lazarus
+  Fixxed bug in RestoreDC
   Shane
 
   Revision 1.12  2001/01/12 18:46:50  lazarus
