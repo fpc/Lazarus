@@ -26,7 +26,7 @@
 @abstract(A GTK widget to support controls derived from a wincontrol)
 @author(TGTKWinapiWindow - Marc Weustink <marc@@freepascal.org>)
 @created(2000)
-@lastmod(2003)
+@lastmod(2004)
 }
 unit GTKWinapiWindow;
 
@@ -54,7 +54,7 @@ type
   
   PGTKAPIWidgetClass = ^TGTKAPIWidgetClass;
   TGTKAPIWidgetClass = record
-    parent_class: TGTKScrolledWindowClass;
+    ParentClass: TGTKScrolledWindowClass;
   end;
 
 function GTKAPIWidget_GetType: guint;
@@ -98,31 +98,43 @@ type
     // ! the Widget must be the first attribute of the record !
     Widget: TGtkFixed;
     Caret: TCaretInfo;
+    {$IFNDEF gtk2}
+    // the IC is only implemented for GKT1. GTK2 needs different code.
+    ic: TGdkIC;
+    ic_attr: PGdkICAttr;
+    {$ENDIF}
   end;
   
   PGTKAPIWidgetClientClass = ^TGTKAPIWidgetClientClass;
   TGTKAPIWidgetClientClass = record
-    ParentClass: TGTKWidgetClass;
+    ParentClass: TGTKFixedClass;
+//    ParentClass: TGTKWidgetClass;
+   
     set_scroll_adjustments: procedure(Widget: PGTKWidget;
                                HAdjustment, VAdjustment: PGTKAdjustment); cdecl;
   end;
 
 {$IFDEF gtk2}                                                                                
-//==============================================                                                                                
-//==============================================                                                                                
+////////////////////////////////////////////////////                                                                            
 // TEMP solution until gtkmarshal.inc is implemeted
 //      to get this compiled
-//==============================================                                                                                
-//==============================================                                                                                
+////////////////////////////////////////////////////                                                                            
 procedure gtk_marshal_VOID__POINTER_POINTER (closure: PGClosure; 
                                              return_value: PGValue;
                                              n_param_values: guint;
                                              param_values: PGValue;
                                              invocation_hint: gpointer;
                                              marshal_data: gpointer); cdecl; external gtklib;
-// #define gtk_marshal_NONE__POINTER_POINTER       gtk_marshal_VOID__POINTER_POINTE  
-//==============================================                                                                                
-//==============================================                                                                                
+////////////////////////////////////////////////////                                                                            
+{$ELSE}
+////////////////////////////////////////////////////                                                                            
+// TEMP solution until attr is defined as PGdkICAttr 
+////////////////////////////////////////////////////                                                                            
+function  _gdk_ic_new(attr:PGdkICAttr; mask:TGdkICAttributesType):TGdkIC;cdecl;external gdkdll name 'gdk_ic_new';
+function  _gdk_ic_attr_new:PGdkICAttr;cdecl;external gdkdll name 'gdk_ic_attr_new';
+procedure _gdk_ic_attr_destroy(attr:PGdkICAttr);cdecl;external gdkdll name 'gdk_ic_attr_destroy';
+function  _gdk_ic_set_attr(ic:TGdkIC; attr:PGdkICAttr; mask:TGdkICAttributesType):TGdkICAttributesType;cdecl;external gdkdll name 'gdk_ic_set_attr';
+////////////////////////////////////////////////////                                                                            
 {$ENDIF}
 
 type
@@ -131,18 +143,23 @@ type
   {$ELSE}
   GTKEventResult = gint;
   {$ENDIF}
-   
+
+var
+  MParentClass: PGtkFixedClass = nil;   
 
 function GTKAPIWidgetClient_Timer(Client: Pointer): GTKEventResult; cdecl; forward;
-procedure GTKAPIWidgetClient_Realize(Widget: PGTKWidget); cdecl; forward;
-procedure GTKAPIWidgetClient_UnRealize(Widget: PGTKWidget); cdecl; forward;
+procedure GTKAPIWidgetClient_Realize(AWidget: PGTKWidget); cdecl; forward;
+procedure GTKAPIWidgetClient_UnRealize(AWidget: PGTKWidget); cdecl; forward;
+procedure GTKAPIWidgetClient_SizeAllocate (AWidget: PGTKWidget; AAllocation: PGtkAllocation); cdecl; forward;
+
+
 function GTKAPIWidgetClient_KeyPress(Widget: PGTKWidget; 
   Event: PGDKEventKey): GTKEventResult; cdecl; forward;
 function GTKAPIWidgetClient_ButtonPress(Widget: PGTKWidget;
   Event: PGDKEventButton): GTKEventResult; cdecl; forward;
-function GTKAPIWidgetClient_FocusIn(Widget: PGTKWidget;
+function GTKAPIWidgetClient_FocusIn(AWidget: PGTKWidget;
   Event: PGdkEventFocus): GTKEventResult; cdecl; forward;
-function GTKAPIWidgetClient_FocusOut(Widget: PGTKWidget;
+function GTKAPIWidgetClient_FocusOut(AWidget: PGTKWidget;
   Event: PGdkEventFocus): GTKEventResult; cdecl; forward;
 
 procedure GTKAPIWidgetClient_ClassInit(theClass: Pointer);cdecl; forward;
@@ -166,138 +183,39 @@ procedure GTKAPIWidgetClient_SetCaretRespondToFocus(Client: PGTKAPIWidgetClient;
 procedure GTKAPIWidgetClient_GetCaretRespondToFocus(Client: PGTKAPIWidgetClient;
   var ShowHideOnFocus: boolean); forward;
 
+//-----------------------------
+
 function GTK_APIWIDGETCLIENT_TYPE: Guint;
 begin
   GTK_APIWIDGETCLIENT_TYPE := GTKAPIWidgetClient_GetType;
 end;
 
-function GTKAPIWidgetClient_Timer(Client: Pointer): GTKEventResult; cdecl;
-// returning 0 would stop the timer, 1 will restart it
+
+function GTKAPIWidgetClient_GetType: Guint;
+const 
+  TYPE_NAME = 'LCLWinapiClient';
+  TheType: Guint = 0;
+  Info: TGTKTypeInfo = (
+    type_name: TYPE_NAME;
+    object_size: SizeOf(TGTKAPIWidgetClient){+100};
+    class_size:  SizeOf(TGTKAPIWidgetClientClass){+100};
+    class_init_func:  @GTKAPIWidgetClient_ClassInit;
+    object_init_func: @GTKAPIWidgetClient_Init;
+    reserved_1: nil;
+    reserved_2: nil;
+    base_class_init_func: nil;
+  );
 begin
-  if PGTKAPIWidgetClient(Client)^.Caret.Timer<=0 then begin
-    Result := gtk_False;
-    exit;
+  if (TheType = 0)
+  then begin
+    TheType := gtk_type_from_name(TYPE_NAME);
+    {$IFDEF gtk2}
+    if TheType = 0 then TheType := gtk_type_unique(GTK_TYPE_FIXED, @Info);
+    {$ELSE}
+    if TheType = 0 then TheType := gtk_type_unique(gtk_fixed_type, @Info);
+    {$ENDIF}
   end;
-  GTKAPIWidgetClient_DrawCaret(Client,true);
-  if PGTKAPIWidgetClient(Client)^.Caret.Timer<>0 then
-    Result := gtk_True
-  else
-    Result := gtk_False;
-end;
-
-procedure GTKAPIWidgetClient_Realize(Widget: PGTKWidget); cdecl;
-var
-  Attributes: TGdkWindowAttr;
-  AttributesMask: gint;
-begin
-//  Assert(False, 'Trace:[GTKAPIWidgetClient_Realize]');
-  gtk_widget_set_flags(Widget, GTK_REALIZED);
-  {$Ifdef GTK2}
-  gtk_widget_set_double_buffered(Widget, False);
-  gtk_widget_set_redraw_on_allocate(Widget, False);
-  {$EndIf}
-  with Attributes do
-  begin
-    Window_type := gdk_window_child;
-    X := Widget^.allocation.x;
-    Y := Widget^.allocation.y;
-    Width := Widget^.allocation.width;
-    Height := Widget^.allocation.height;
-    WClass := GDK_INPUT_OUTPUT;
-    Visual := gtk_widget_get_visual(Widget);
-    Colormap := gtk_widget_get_colormap(Widget);
-    Event_mask := gtk_widget_get_events(Widget)
-      or GDK_EXPOSURE_MASK or GDK_BUTTON_PRESS_MASK or GDK_BUTTON_RELEASE_MASK
-      or GDK_BUTTON_MOTION_MASK or GDK_ENTER_NOTIFY_MASK or GDK_LEAVE_NOTIFY_MASK
-      or GDK_KEY_PRESS_MASK or GDK_KEY_RELEASE_MASK;
-  end;
-  AttributesMask := GDK_WA_X or GDK_WA_Y or GDK_WA_VISUAL or GDK_WA_COLORMAP;
-
-  Widget^.Window := gdk_window_new(gtk_widget_get_parent_window(Widget),
-                                   @Attributes, AttributesMask);
-
-  gdk_window_set_user_data(Widget^.Window, Widget);
-
-(*
-  // Not used here anymore ??
-  
-  with Attributes do
-  begin
-    X := PGTKStyle(Widget^.theStyle)^.Klass^.XThickness;
-    Y := PGTKStyle(Widget^.theStyle)^.Klass^.YThickness;
-    Width := Widget^.Allocation.Width - Attributes.X * 2;
-    Height := Widget^.Allocation.Height - Attributes.Y * 2;
-//    Cursor := gdk_cursor_new(GDK_XTERM);
-  end;
-//  AttributesMask := AttributesMask or GDK_WA_CURSOR;
-
-*)
-  {$IFDEF gtk2}
-  Widget^.Style := gtk_style_attach(Widget^.Style, Widget^.Window);
-  gtk_style_set_background (Widget^.Style, Widget^.Window, GTK_STATE_NORMAL);
-  gdk_window_set_back_pixmap(Widget^.Window, nil, False);
-  {$ELSE}
-  Widget^.theStyle := gtk_style_attach(Widget^.theStyle, Widget^.Window);
-  gtk_style_set_background (Widget^.theStyle, Widget^.Window, GTK_STATE_NORMAL);
-//  gdk_window_set_background(Widget^.Window, @PGTKStyle(Widget^.theStyle)^.Base[gtk_widget_state(Widget)]);
-//  gdk_window_set_background (Client^.OtherWindow, @PGTKStyle(Widget^.theStyle)^.Base[gtk_widget_state(Widget)]);
-  gdk_window_set_back_pixmap(Widget^.Window, nil, 0);
-  {$ENDIF}
-
-end;
-
-procedure GTKAPIWidgetClient_UnRealize(Widget: PGTKWidget); cdecl;
-begin
-  with PGTKAPIWidgetClient(Widget)^.Caret do 
-    if Timer <> 0 then begin
-      gtk_timeout_remove(Timer);
-      Timer:=0;
-    end;
-end;
-  
-function GTKAPIWidgetClient_KeyPress(Widget: PGTKWidget;
-  Event: PGDKEventKey): GTKEventResult; cdecl;
-begin
-  if (Widget=nil) or (Event=nil) then ;
-  // supress further processing
-  Result := gtk_True;
-end;
-
-function GTKAPIWidgetClient_ButtonPress(Widget: PGTKWidget;
-  Event: PGDKEventButton): GTKEventResult; cdecl;
-begin
-  {$IFDEF VerboseFocus}
-  writeln('GTKAPIWidgetClient_ButtonPress ',HexStr(Cardinal(Widget),8));
-  {$ENDIF}
-  if Event=nil then ;
-  if not gtk_widget_has_focus(Widget) then
-    gtk_widget_grab_focus(Widget);
-  
-  Result := gtk_False;
-end;
-
-function GTKAPIWidgetClient_FocusIn(Widget: PGTKWidget;
-  Event: PGdkEventFocus): GTKEventResult; cdecl;
-begin
-  {$IFDEF VerboseFocus}
-  writeln('GTKAPIWidgetClient_FocusIn ',HexStr(Cardinal(Widget),8),' ',event^.thein);
-  {$ENDIF}
-  if Event=nil then ;
-  gtk_widget_set_flags(Widget, GTK_HAS_FOCUS);
-  GTKAPIWidgetClient_DrawCaret(PGTKAPIWidgetClient(Widget),false);
-  Result := gtk_False;
-end;
-
-function GTKAPIWidgetClient_FocusOut(Widget: PGTKWidget;
-  Event: PGdkEventFocus): GTKEventResult; cdecl;
-begin
-  {$IFDEF VerboseFocus}
-  writeln('GTKAPIWidgetClient_FocusOut ',HexStr(Cardinal(Widget),8),' ',event^.thein);
-  {$ENDIF}
-  if Event=nil then ;
-  gtk_widget_unset_flags(Widget, GTK_HAS_FOCUS);
-  GTKAPIWidgetClient_DrawCaret(PGTKAPIWidgetClient(Widget),false);
-  Result := gtk_False;
+  Result := TheType;
 end;
 
 procedure GTKAPIWidgetClient_ClassInit(theClass: Pointer);cdecl;
@@ -326,6 +244,8 @@ begin
   ObjectClass := PGTKObjectClass(theClass);
   WidgetClass := PGTKWidgetClass(theClass);
   ClientClass := PGTKAPIWidgetClientClass(theClass);
+  
+  MParentClass := gtk_type_class(gtk_fixed_get_type);
 
   {$IFNDEF VER1_0}
   AdjustParams.Param1 := gtk_adjustment_get_type;
@@ -355,18 +275,20 @@ begin
     [gtk_adjustment_get_type, gtk_adjustment_get_type]
     {$ENDIF}
   );
+  
+  ClientClass^.set_scroll_adjustments := nil;
 
   with WidgetClass^ do
   begin
     set_scroll_adjustments_signal := SignalID;
-    Realize := @GTKAPIWidgetClient_Realize;
-    Button_Press_Event := @GTKAPIWidgetClient_ButtonPress;
-    Key_Press_Event := @GTKAPIWidgetClient_KeyPress;
+    realize := @GTKAPIWidgetClient_Realize;
+    unrealize := @GTKAPIWidgetClient_UnRealize;
+    size_allocate := @GTKAPIWidgetClient_SizeAllocate;
+    button_press_event := @GTKAPIWidgetClient_ButtonPress;
+    key_press_event := @GTKAPIWidgetClient_KeyPress;
     focus_in_event := @GTKAPIWidgetClient_FocusIn;
     focus_out_event := @GTKAPIWidgetClient_FocusOut;
   end;
-
-  ClientClass^.set_scroll_adjustments := nil;
 end;
 
 procedure GTKAPIWidgetClient_Init(Client, theClass: Pointer); cdecl;
@@ -399,36 +321,280 @@ begin
   {$ENDIF}
 end;
 
-function GTKAPIWidgetClient_GetType: Guint;
-const 
-  TYPE_NAME = 'LCLWinapiClient';
-  TheType: Guint = 0;
-  Info: TGTKTypeInfo = (
-    type_name: TYPE_NAME;
-    object_size: SizeOf(TGTKAPIWidgetClient)+100;
-    class_size: SizeOf(TGTKAPIWidgetClientClass)+100;
-    class_init_func: @GTKAPIWidgetClient_ClassInit;
-    object_init_func : @GTKAPIWidgetClient_Init;
-    reserved_1: nil;
-    reserved_2: nil;
-    base_class_init_func: nil;
-  );
-begin
-  if (TheType = 0)
-  then begin
-    TheType := gtk_type_from_name(TYPE_NAME);
-    {$IFDEF gtk2}
-    if TheType = 0 then TheType := gtk_type_unique(GTK_TYPE_FIXED, @Info);
-    {$ELSE}
-    if TheType = 0 then TheType := gtk_type_unique(gtk_fixed_type, @Info);
-    {$ENDIF}
-  end;
-  Result := TheType;
-end;
-
 function GTKAPIWidgetClient_New: PGTKWidget;
 begin
   Result := PGTKWidget(gtk_type_new(GTKAPIWidgetClient_GetType()));
+end;
+
+
+function GTKAPIWidgetClient_Timer(Client: Pointer): GTKEventResult; cdecl;
+// returning 0 would stop the timer, 1 will restart it
+begin
+  if PGTKAPIWidgetClient(Client)^.Caret.Timer<=0 then begin
+    Result := gtk_False;
+    exit;
+  end;
+  GTKAPIWidgetClient_DrawCaret(Client,true);
+  if PGTKAPIWidgetClient(Client)^.Caret.Timer<>0 then
+    Result := gtk_True
+  else
+    Result := gtk_False;
+end;
+
+procedure GTKAPIWidgetClient_Realize(AWidget: PGTKWidget); cdecl;
+{$IFNDEF gtk2}
+  procedure RealizeIC;
+  var
+    width, height: GInt;
+    mask: TGdkEventMask;
+    colormap: PGdkColormap;  
+    attrmask: TGdkICAttributesType;
+    style, supported_style: TGdkIMStyle;
+    ic: PGdkIC;
+    ic_attr: PGdkICAttr;
+  begin
+    // Note: code is based on gtkentry implementation
+    // don't know if all is needed
+    // MWE
+    
+    if gdk_im_ready = 0 then Exit;
+  
+    ic_attr := _gdk_ic_attr_new;
+    PGTKAPIWidgetClient(AWidget)^.ic_attr := ic_attr;
+    if ic_attr = nil then Exit;
+    
+    attrmask := GDK_IC_ALL_REQ;
+    supported_style := GDK_IM_PREEDIT_NONE or
+                       GDK_IM_PREEDIT_NOTHING or
+                       GDK_IM_PREEDIT_POSITION or
+                       GDK_IM_STATUS_NONE or
+                       GDK_IM_STATUS_NOTHING;
+  
+    if  (AWidget^.thestyle <> nil) 
+    and (PGtkStyle(AWidget^.thestyle)^.font^.theType <> GDK_FONT_FONTSET)
+    then supported_style := supported_style and not GDK_IM_PREEDIT_POSITION;
+                     
+    style := gdk_im_decide_style(supported_style);
+    ic_attr^.style := style;
+    ic_attr^.client_window := AWidget^.window;
+         
+    colormap := gtk_widget_get_colormap(AWidget);
+    if colormap <> gtk_widget_get_default_colormap
+    then begin
+      attrmask := attrmask or GDK_IC_PREEDIT_COLORMAP;
+      ic_attr^.preedit_colormap := colormap;
+    end;
+    attrmask := attrmask or GDK_IC_PREEDIT_FOREGROUND or GDK_IC_PREEDIT_BACKGROUND;
+    ic_attr^.preedit_foreground := PGtkStyle(AWidget^.thestyle)^.fg[GTK_STATE_NORMAL];
+    ic_attr^.preedit_background := PGtkStyle(AWidget^.thestyle)^.base[GTK_STATE_NORMAL];
+
+    if (style and GDK_IM_PREEDIT_MASK) = GDK_IM_PREEDIT_POSITION
+    then begin
+      if  (AWidget^.thestyle <> nil) 
+      and (PGtkStyle(AWidget^.thestyle)^.font^.thetype <> GDK_FONT_FONTSET)
+      then begin
+        WriteLN('[WAWc] over-the-spot style requires fontset');
+      end
+      else begin
+        gdk_window_get_size(AWidget^.window, @width, @height);
+
+        attrmask := attrmask or GDK_IC_PREEDIT_POSITION_REQ;
+        ic_attr^.spot_location.x := 0;
+        ic_attr^.spot_location.y := height;
+        ic_attr^.preedit_area.x := 0;
+        ic_attr^.preedit_area.y := 0;
+        ic_attr^.preedit_area.width := width;
+        ic_attr^.preedit_area.height := height;
+        ic_attr^.preedit_fontset := PGtkStyle(AWidget^.thestyle)^.font;
+      end;
+    end;                         
+
+    ic := _gdk_ic_new(ic_attr, attrmask);
+    PGTKAPIWidgetClient(AWidget)^.ic := ic;
+    if ic = nil
+    then begin
+      WriteLN('[WAWc] Can''t create input context.')
+    end
+    else begin
+      mask := gdk_window_get_events(AWidget^.Window);
+      mask := mask or gdk_ic_get_events(ic);
+      gdk_window_set_events(AWidget^.Window, mask);
+  
+      if GTK_WIDGET_HAS_FOCUS(Awidget)
+      then gdk_im_begin(ic, AWidget^.Window);
+    end;
+  end;
+{$ENDIF}
+
+// All //@ marked lines are already set by the inherited realize
+// we only have to (re)set the event mask
+
+//@var
+//@  Attributes: TGdkWindowAttr;
+//@  AttributesMask: gint;
+begin
+  PGTKWidgetClass(MParentClass)^.realize(AWidget);
+  
+//@  gtk_widget_set_flags(AWidget, GTK_REALIZED);
+  
+{$Ifdef GTK2}
+  gtk_widget_set_double_buffered(AWidget, False);
+  gtk_widget_set_redraw_on_allocate(AWidget, False);
+{$EndIf}
+
+//@  with Attributes do
+//@  begin
+//@    Window_type := gdk_window_child;
+//@    X := AWidget^.allocation.x;
+//@    Y := AWidget^.allocation.y;
+//@    Width := AWidget^.allocation.width;
+//@    Height := AWidget^.allocation.height;
+//@    WClass := GDK_INPUT_OUTPUT;
+//@    Visual := gtk_widget_get_visual(AWidget);
+//@    Colormap := gtk_widget_get_colormap(AWidget);
+//@    Event_mask := gtk_widget_get_events(AWidget)
+//@      or GDK_EXPOSURE_MASK or GDK_BUTTON_PRESS_MASK or GDK_BUTTON_RELEASE_MASK
+//@      or GDK_BUTTON_MOTION_MASK or GDK_ENTER_NOTIFY_MASK or GDK_LEAVE_NOTIFY_MASK
+//@      or GDK_KEY_PRESS_MASK or GDK_KEY_RELEASE_MASK;
+//@  end;
+//@  AttributesMask := GDK_WA_X or GDK_WA_Y or GDK_WA_VISUAL or GDK_WA_COLORMAP;
+//@
+//@  AWidget^.Window := gdk_window_new(gtk_widget_get_parent_window(AWidget),
+//@                                    @Attributes, AttributesMask);
+//@
+//@  gdk_window_set_user_data(AWidget^.Window, AWidget);
+
+  gdk_window_set_events(AWidget^.Window, gdk_window_get_events(AWidget^.Window)
+    or GDK_EXPOSURE_MASK or GDK_BUTTON_PRESS_MASK or GDK_BUTTON_RELEASE_MASK
+    or GDK_BUTTON_MOTION_MASK or GDK_ENTER_NOTIFY_MASK or GDK_LEAVE_NOTIFY_MASK
+    or GDK_KEY_PRESS_MASK or GDK_KEY_RELEASE_MASK);
+
+{$IFDEF gtk2}
+//@  AWidget^.Style := gtk_style_attach(AWidget^.Style, AWidget^.Window);
+//@  gtk_style_set_background(AWidget^.Style, AWidget^.Window, GTK_STATE_NORMAL);
+  gdk_window_set_back_pixmap(AWidget^.Window, nil, False);
+
+{$ELSE gtk2}
+//@  AWidget^.theStyle := gtk_style_attach(AWidget^.theStyle, AWidget^.Window);
+//@  gtk_style_set_background(AWidget^.theStyle, AWidget^.Window, GTK_STATE_NORMAL);
+  gdk_window_set_back_pixmap(AWidget^.Window, nil, 0);
+  
+  RealizeIC;
+{$ENDIF gtk2}
+  
+end;
+
+procedure GTKAPIWidgetClient_UnRealize(AWidget: PGTKWidget); cdecl;
+begin
+  with PGTKAPIWidgetClient(AWidget)^.Caret do 
+  begin
+    if Timer <> 0 
+    then begin
+      gtk_timeout_remove(Timer);
+      Timer := 0;
+    end;
+  end;
+    
+{$IFNDEF GTK2}
+  with PGTKAPIWidgetClient(AWidget)^ do
+  begin
+    if ic <> nil
+    then begin
+      gdk_ic_destroy(ic);
+      ic := nil;
+    end;
+    if ic_attr <> nil
+    then begin
+      _gdk_ic_attr_destroy(ic_attr);
+      ic_attr := nil;
+    end;
+  end;
+{$ENDIF}    
+                          
+  PGTKWidgetClass(MParentClass)^.unrealize(AWidget);
+end;                        
+
+procedure GTKAPIWidgetClient_SizeAllocate(AWidget: PGTKWidget; 
+  AAllocation: PGtkAllocation); cdecl; 
+{$IFNDEF GTK2}
+var
+  width, height: GInt;
+  ic: PGdkIC;
+  ic_attr: PGdkICAttr;
+{$ENDIF}    
+begin         
+  PGTKWidgetClass(MParentClass)^.size_allocate(AWidget, AAllocation);
+  
+{$IFNDEF GTK2}
+  ic := PGTKAPIWidgetClient(AWidget)^.ic;
+  ic_attr := PGTKAPIWidgetClient(AWidget)^.ic_attr;
+
+  if  (ic <> nil) 
+  and (gdk_ic_get_style(ic) and GDK_IM_PREEDIT_POSITION <> 0)
+  then begin
+    gdk_window_get_size(AWidget^.Window, @width, @height);
+    ic_attr^.preedit_area.width := width;
+    ic_attr^.preedit_area.height := height;
+    _gdk_ic_set_attr(ic, ic_attr, GDK_IC_PREEDIT_AREA);
+  end;
+{$ENDIF}    
+end;  
+
+  
+function GTKAPIWidgetClient_KeyPress(Widget: PGTKWidget;
+  Event: PGDKEventKey): GTKEventResult; cdecl;
+begin
+  if (Widget=nil) or (Event=nil) then ;
+  // supress further processing
+  Result := gtk_True;
+end;
+
+function GTKAPIWidgetClient_ButtonPress(Widget: PGTKWidget;
+  Event: PGDKEventButton): GTKEventResult; cdecl;
+begin
+  {$IFDEF VerboseFocus}
+  writeln('GTKAPIWidgetClient_ButtonPress ',HexStr(Cardinal(Widget),8));
+  {$ENDIF}
+  if Event=nil then ;
+  if not gtk_widget_has_focus(Widget) then
+    gtk_widget_grab_focus(Widget);
+  
+  Result := gtk_False;
+end;
+
+function GTKAPIWidgetClient_FocusIn(AWidget: PGTKWidget;
+  Event: PGdkEventFocus): GTKEventResult; cdecl;
+begin
+  {$IFDEF VerboseFocus}
+  writeln('GTKAPIWidgetClient_FocusIn ',HexStr(Cardinal(AWidget),8),' ',event^.thein);
+  {$ENDIF}
+  
+  gtk_widget_set_flags(AWidget, GTK_HAS_FOCUS);
+  GTKAPIWidgetClient_DrawCaret(PGTKAPIWidgetClient(AWidget), False);
+
+{$IFNDEF GTK2}
+  if PGTKAPIWidgetClient(AWidget)^.ic <> nil
+  then gdk_im_begin(PGTKAPIWidgetClient(AWidget)^.ic, AWidget^.Window);
+{$ENDIF}
+  
+  Result := gtk_False;
+end;
+
+function GTKAPIWidgetClient_FocusOut(AWidget: PGTKWidget;
+  Event: PGdkEventFocus): GTKEventResult; cdecl;
+begin
+  {$IFDEF VerboseFocus}
+  writeln('GTKAPIWidgetClient_FocusOut ',HexStr(Cardinal(AWidget),8),' ',event^.thein);
+  {$ENDIF}
+  
+  gtk_widget_unset_flags(AWidget, GTK_HAS_FOCUS);
+  GTKAPIWidgetClient_DrawCaret(PGTKAPIWidgetClient(AWidget), False);
+
+{$IFNDEF GTK2}
+  gdk_im_end;
+{$ENDIF}
+
+  Result := gtk_False;
 end;
 
 procedure GTKAPIWidgetClient_HideCaret(Client: PGTKAPIWidgetClient;
@@ -971,6 +1137,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.53  2004/04/02 00:07:51  marc
+  * Implemented IM to get composed keyevents
+
   Revision 1.52  2004/03/09 15:30:15  peter
     * fixed gtk2 compilation
 
