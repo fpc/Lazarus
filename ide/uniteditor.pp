@@ -927,12 +927,11 @@ Begin
   ecIdentCompletion :
     if not TCustomSynEdit(Sender).ReadOnly then begin
       CurrentCompletionType:=ctIdentCompletion;
-      TextS := FEditor.LineText;
+      TextS := FEditor.LineTextExtended;
       i := FEditor.CaretX - 1;
       if i > length(TextS) then
         TextS2 := ''
       else begin
-        dec(i);
         while (i > 0) and (TextS[i] in ['a'..'z','A'..'Z','0'..'9','_']) do
           dec(i);
         TextS2 := Trim(copy(TextS, i + 1, FEditor.CaretX - i - 1));
@@ -947,7 +946,7 @@ Begin
   ecWordCompletion :
     if TCustomSynEdit(Sender).ReadOnly=false then begin
       CurrentCompletionType:=ctWordCompletion;
-      TextS := FEditor.LineText;
+      TextS := FEditor.LineTextExtended;
       i := FEditor.CaretX - 1;
       if i > length(TextS) then
         TextS2 := ''
@@ -1947,7 +1946,7 @@ begin
         AutoCompleteList.LoadFromFile('lazarus.dci');
     IndentToTokenStart:=EditorOpts.CodeTemplateIndentToTokenStart;
     OnTokenNotFound:=@OnCodeTemplateTokenNotFound;
-    EndOfTokenChr:='()[]{},.;:"+-*^@$\<>=''';
+    EndOfTokenChr:=' ()[]{},.;:"+-*^@$\<>=''';
   end;
   if aWordCompletion=nil then begin
     aWordCompletion:=TWordCompletion.Create;
@@ -2242,7 +2241,7 @@ begin
       // add one entry per item
       CodeToolBoss.IdentifierList.Prefix:=Prefix;
       ItemCnt:=CodeToolBoss.IdentifierList.GetFilteredCount;
-writeln('CurCompletionControl.CurrentString=',CurCompletionControl.CurrentString,' ItemCnt=',ItemCnt);
+      writeln('InitIdentCompletion: Prefix=',Prefix,' ItemCnt=',ItemCnt);
       CurCompletionControl.CurrentString:='';
       CurCompletionControl.Position:=0;
       for i:=0 to ItemCnt-1 do
