@@ -177,10 +177,14 @@ type
     TimerFunc: TFNTimerProc;
   end;
 
+var
+  // FTimerData contains the currently running timers
+  // and FOldTimerData contains the old and to be disposed timers
+  FTimerData : TList;   // list of PGtkITimerinfo
+  FOldTimerData: TList; // list of PGtkITimerinfo
 
 var
   gtk_handler_quark: TGQuark;
-  FOldTimerData: TList; // list of PGtkITimerinfo
 
 
 // Internal Paint message:
