@@ -88,14 +88,30 @@ ResourceString
   ctsEndForClassNotFound = '"end" for class/object not found';
   ctsUnexpectedSubRangeOperatorFound = 'unexpected subrange operator ''..'' found';
   ctsInvalidSubrange = 'invalid subrange';
-  ctsInvalidType = 'invalid type';
-  
+
   // find declaration
   ctsUnitNotFound = 'unit not found: %s';
   ctsIdentifierNotFound = 'identifier not found: %s';
   ctsExprTypeIsNotVariable = 'expression type is not a variable';
   ctsInheritedKeywordOnlyAllowedInMethods =
      'inherited keyword only allowed in methods';
+  ctsCircleInDefinitions = 'circle in definitions';
+  ctsForwardClassDefinitionNotResolved = 'Forward class definition not resolved: %s';
+  ctsTypeIdentifier = 'type identifier';
+  ctsAncestorIsNotProperty = 'ancestor of untyped property is not a property';
+  ctsBaseTypeOfNotFound = 'base type of "%s" not found';
+  ctsClassIdentifierExpected = 'class identifier expected';
+  ctsDefaultClassAncestorTObjectNotFound = 'default class ancestor TObject not found';
+  ctsExprTypeMustBeClassOrRecord = 'expression type must be class or record type';
+  ctsClassWithoutName = 'class without name';
+  ctsBinaryOperator = 'binary operator';
+  ctsInvalidType = 'invalid type';
+  ctsKeywordIn = 'keyword "in"';
+  ctsIllegalCircleInUsedUnits = 'illegal circle using unit: %s';
+  ctsSourceIsNotUnit = 'source is not unit';
+  ctsInterfaceSectionNotFound = 'interface section not found';
+  ctsUsedUnitIsNotAPascalUnit = 'used unit is not a pascal unit';
+  ctsDuplicateIdentifier = 'duplicate identifier: %s';
 
   // codecompletion
   ctsPropertySpecifierAlreadyDefined = 'property specifier already defined: %s';
@@ -173,7 +189,6 @@ ResourceString
   ctsInsufficientMemory = 'insufficient memory';
   ctsFileHasCircularSymLink = '%s has a circular symbolic link';
   ctsFileIsNotExecutable = '%s is not executable';
-
 
 implementation
 
