@@ -101,13 +101,15 @@ function FilenameIsPascalSource(const Filename: string): boolean;
 function FilenameIsFormText(const Filename: string): boolean;
 function MergeSearchPaths(const OldSearchPath, AddSearchPath: string): string;
 function RemoveSearchPaths(const SearchPath, RemoveSearchPath: string): string;
+function CreateRelativeSearchPath(const SearchPath, BaseDirectory: string): string;
+function ShortenSearchPath(const SearchPath, BaseDirectory, ChompDirectory: string): string;
 function GetNextDirectoryInSearchPath(const SearchPath: string;
                                       var NextStartPos: integer): string;
 function SearchDirectoryInSearchPath(const SearchPath, Directory: string;
                                      DirStartPos: integer): integer;
 function CreateRelativePath(const Filename, BaseDirectory: string): string;
-function CreateRelativeSearchPath(const SearchPath, BaseDirectory: string): string;
 function CreateAbsolutePath(const SearchPath, BaseDirectory: string): string;
+function SwitchPathDelims(const Filename: string; Switch: boolean): string;
 
 // XMLConfig
 procedure LoadRecentList(XMLConfig: TXMLConfig; List: TStringList;
@@ -366,6 +368,71 @@ begin
   SetLength(Result,ResultStartPos-1);
 end;
 
+function ShortenSearchPath(const SearchPath, BaseDirectory,
+  ChompDirectory: string): string;
+// every search path that is a subdirectory of ChompDirectory will be shortened
+// before the test relative paths are expanded by BaseDirectory
+var
+  BaseEqualsChompDir: boolean;
+
+  function Normalize(var ADirectory: string): boolean;
+  begin
+    if FilenameIsAbsolute(ADirectory) then begin
+      Result:=true;
+      ADirectory:=ADirectory;
+    end else begin
+      if BaseEqualsChompDir then
+        Result:=false
+      else begin
+        Result:=true;
+        ADirectory:=AppendPathDelim(BaseDirectory)+ADirectory;
+      end;
+    end;
+    if Result then
+      ADirectory:=AppendPathDelim(TrimFilename(ADirectory));
+  end;
+
+var
+  PathLen: Integer;
+  EndPos: Integer;
+  StartPos: Integer;
+  CurDir: String;
+  NewCurDir: String;
+  DiffLen: Integer;
+begin
+  Result:=SearchPath;
+  if (SearchPath='') or (ChompDirectory='') then exit;
+
+  PathLen:=length(Result);
+  EndPos:=1;
+  BaseEqualsChompDir:=CompareFilenames(BaseDirectory,ChompDirectory)=0;
+  while EndPos<=PathLen do begin
+    StartPos:=EndPos;
+    while (Result[StartPos]=';') do begin
+      inc(StartPos);
+      if StartPos>PathLen then exit;
+    end;
+    EndPos:=StartPos;
+    while (EndPos<=PathLen) and (Result[EndPos]<>';') do inc(EndPos);
+    CurDir:=copy(Result,StartPos,EndPos-StartPos);
+    NewCurDir:=CurDir;
+    if Normalize(NewCurDir) then begin
+      if CompareFilenames(NewCurDir,ChompDirectory)=0 then
+        NewCurDir:='.'
+      else if FileIsInPath(NewCurDir,ChompDirectory) then
+        NewCurDir:=AppendPathDelim(CreateRelativePath(NewCurDir,BaseDirectory));
+      if NewCurDir<>CurDir then begin
+        DiffLen:=length(NewCurDir)-length(CurDir);
+        Result:=copy(Result,1,StartPos-1)+NewCurDir
+                +copy(Result,EndPos,PathLen-EndPos+1);
+        inc(EndPos,DiffLen);
+        inc(PathLen,DiffLen);
+      end;
+    end;
+    StartPos:=EndPos;
+  end;
+end;
+
 function GetNextDirectoryInSearchPath(const SearchPath: string;
                                       var NextStartPos: integer): string;
 var
@@ -582,6 +649,13 @@ begin
     end;
     StartPos:=EndPos;
   end;
+end;
+
+function SwitchPathDelims(const Filename: string; Switch: boolean): string;
+begin
+  Result:=Filename;
+  if Switch then
+    DoDirSeparators(Result);
 end;
 
 function FindFirstFileWithExt(const Directory, Ext: string): string;
