@@ -512,7 +512,7 @@ End;
 
   Handles the messages sent to the timer window by Windows
  ------------------------------------------------------------------------------}
-FUNCTION TimerWindowProc(window_hwnd : hwnd; msg : DWORD; wParam : WPARAM; lParam : LPARAM) : LRESULT;
+FUNCTION TimerWindowProc(window_hwnd : hwnd; msg : DWORD; wParam : WPARAM; lParam : LPARAM) : LRESULT; stdcall;
 Var
   TimerInfo: PWin32TimerInfo;
 begin
@@ -533,7 +533,7 @@ end;
 
   Handles the messages sent to the toolbar button by Windows
  ------------------------------------------------------------------------------}
-Function ToolBtnWindowProc(window_hwnd : hwnd; msg : DWORD; wParam : WPARAM; lParam : LPARAM) : LRESULT;
+Function ToolBtnWindowProc(window_hwnd : hwnd; msg : DWORD; wParam : WPARAM; lParam : LPARAM) : LRESULT; stdcall;
 begin
   Result := DefWindowProc(window_hwnd, Msg, WParam, LParam);
 end;
@@ -545,6 +545,9 @@ end;
 
 {
   $Log$
+  Revision 1.27  2003/06/25 15:27:18  mattias
+  fixed timer calling conventions from Micha
+
   Revision 1.26  2003/03/25 08:12:39  mattias
   patch from Martin Smat for menu items and default messages
 

@@ -1190,7 +1190,7 @@ begin
   with WinClass do begin
     cbSize := Sizeof(WndClassEx);
     Style := 0{CS_HRedraw or CS_VRedraw};
-    lpfnWndProc := WndProc(@TimerWindowProc);
+    lpfnWndProc := @TimerWindowProc;
     cbClsExtra := 0;
     cbWndExtra := 0;
     hInstance := System.HInstance;
@@ -2666,6 +2666,9 @@ End;
 
 {
   $Log$
+  Revision 1.55  2003/06/25 15:27:18  mattias
+  fixed timer calling conventions from Micha
+
   Revision 1.54  2003/06/24 21:40:23  mattias
   fixed menu
 
