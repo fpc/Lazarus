@@ -65,6 +65,12 @@ type
     function BeginPaint(Handle: hWnd; Var PS : TPaintStruct) : hdc; override;
     Function EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer; override;
 
+    procedure CreateComponent(Sender : TObject); override;
+    function IntSendMessage3(LM_Message : Integer; Sender : TObject; data : pointer) : integer; override;
+    procedure AppendText(Sender: TObject; Str: PChar); override;
+    function GetText(Sender: TComponent; var Text: String): Boolean; override;
+    procedure SetLabel(Sender : TObject; Data : Pointer); override;
+    
     function GetCursorPos(var lpPoint: TPoint ): Boolean; override;
     function LoadStockPixmap(StockID: longint) : HBitmap; override;
   end;
@@ -945,6 +951,305 @@ begin
   result := Inherited EndPaint(Handle, PS);
 end;
 
+procedure Tgtk2Object.CreateComponent(Sender : TObject);
+var
+  Caption : ansistring;          // the caption of "Sender"
+  StrTemp : PChar;               // same as "caption" but as PChar
+  TempWidget,
+  TempWidget2 : PGTKWidget;      // pointer to gtk-widget (local use when neccessary)
+  p          : pointer;          // ptr to the newly created GtkWidget
+  CompStyle,                     // componentstyle (type) of GtkWidget which will be created
+  TempInt   : Integer;           // local use when neccessary
+  // - for csBitBtn
+  Box       : Pointer;           // currently only used for TBitBtn
+  pixmapwid : pGtkWidget;        // currently only used for TBitBtn
+  label1    : pgtkwidget;        // currently only used for TBitBtn
+  ParentForm: TCustomForm;
+  AccelText : PChar;
+  AccelKey  : guint;
+  SetupProps : boolean;
+  AWindow: PGdkWindow;
+begin
+  p := nil;
+  SetupProps:= false;
+
+  CompStyle := GetCompStyle(Sender);
+  Caption   := GetCaption(Sender);
+
+  strTemp := StrAlloc(length(Caption) + 1);
+  StrPCopy(strTemp, Caption);
+
+  case CompStyle of
+  csMemo :
+    begin
+      P := gtk_scrolled_window_new(nil, nil);
+      TempWidget := gtk_text_view_new();
+      gtk_container_add(p, TempWidget);
+
+      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.hscrollbar, GTK_CAN_FOCUS);
+      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.vscrollbar, GTK_CAN_FOCUS);
+      gtk_scrolled_window_set_policy(PGtkScrolledWindow(p),
+                                     GTK_POLICY_AUTOMATIC,
+                                     GTK_POLICY_AUTOMATIC);
+      gtk_scrolled_window_set_shadow_type(PGtkScrolledWindow(p),GTK_SHADOW_IN);
+      SetMainWidget(p, TempWidget);
+      GetWidgetInfo(p, True)^.ImplementationWidget := TempWidget;
+
+      gtk_text_view_set_editable (PGtkTextView(TempWidget), not TCustomMemo(Sender).ReadOnly);
+      if TCustomMemo(Sender).WordWrap then
+        gtk_text_view_set_wrap_mode(PGtkTextView(TempWidget), GTK_WRAP_WORD)
+      else
+        gtk_text_view_set_wrap_mode(PGtkTextView(TempWidget), GTK_WRAP_NONE);
+
+      gtk_widget_show_all(P);
+
+      SetupProps:= true;
+    end;
+    else begin
+      StrDispose(StrTemp);
+      Inherited CreateComponent(Sender);
+      Exit;
+    end;
+  end; //end case
+  StrDispose(StrTemp);
+  FinishComponentCreate(Sender, P, SetupProps);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TGtk2Object.IntSendMessage3
+  Params:  LM_Message - message to be processed by GTK2
+           Sender     - sending control
+           data       - pointer to (optional)
+  Returns: depends on the message and the sender
+
+  Processes messages from different components.
+
+  WARNING: the result of this function sometimes is not always really an
+           integer!!!!!
+ ------------------------------------------------------------------------------}
+function Tgtk2Object.IntSendMessage3(LM_Message : Integer; Sender : TObject;
+  data : pointer) : integer;
+var
+  handle      : hwnd;                  // handle of sender
+  pStr        : PChar;                 // temporary string pointer, must be allocated/disposed when used!
+  Widget      : PGtkWidget;            // pointer to gtk-widget (local use when neccessary)
+  ChildWidget : PGtkWidget;            // generic pointer to a child gtk-widget (local use when neccessary)
+  aTextIter1  : TGtkTextIter;
+  aTextIter2  : TGtkTextIter;
+  aTextBuffer : PGtkTextBuffer;
+begin
+  Result := 0;   //default value just in case nothing sets it
+
+  Assert(False, 'Trace:Message received');
+  if Sender <> nil then
+    Assert(False, Format('Trace:  [Tgtk2Object.IntSendMessage3] %s --> Sent LM_Message: $%x (%s); Data: %d', [Sender.ClassName, LM_Message, GetMessageName(LM_Message), Integer(data)]));
+
+  // The following case is now split into 2 separate parts:
+  //   1st part should contain all messages which don't need the "handle" variable
+  //   2nd part has to contain all parts which need the handle
+  // Reason for this split are performance issues since we need RTTI to
+  // retrieve the handle
+{  case LM_Message of
+  else}
+    begin
+      handle := hwnd(ObjectToGtkObject(Sender));
+      Case LM_Message of
+      
+      LM_GETSELSTART :
+      begin
+        if (Sender is TControl) then begin
+          case TControl(Sender).fCompStyle of
+            csMemo:
+              begin
+    	        Widget:= GetWidgetInfo(Pointer(Handle), true)^.ImplementationWidget;
+                aTextBuffer := gtk_text_view_get_buffer(GTK_TEXT_VIEW(Widget));
+                gtk_text_buffer_get_selection_bounds(aTextBuffer, @aTextIter1, nil);
+                result := gtk_text_iter_get_offset(@aTextIter1);
+              end;
+            else begin
+              result := inherited  IntSendMessage3(LM_Message, Sender, data);
+              exit;
+            end;
+            end
+          end
+        else
+          Result:= 0;
+      end;
+
+      LM_GETSELLEN :
+      begin
+        if (Sender is TControl) then begin
+          case TControl(Sender).fCompStyle of
+            csMemo:
+    	      begin
+    	        Widget:= GetWidgetInfo(Pointer(Handle), true)^.ImplementationWidget;
+                aTextBuffer := gtk_text_view_get_buffer(GTK_TEXT_VIEW(Widget));
+                gtk_text_buffer_get_selection_bounds(aTextBuffer, @aTextIter1, @aTextIter2);
+                result:= Abs(gtk_text_iter_get_offset(@aTextIter2) - gtk_text_iter_get_offset(@aTextIter1));
+  	      end;
+            else begin
+              result := inherited  IntSendMessage3(LM_Message, Sender, data);
+              exit;
+            end;
+          end;
+          end;
+      end;
+
+      LM_SETSELSTART:
+      begin
+        if (Sender is TControl) then begin
+          case TControl(Sender).fCompStyle of
+            csMemo:
+              begin
+    	        Widget:= GetWidgetInfo(Pointer(Handle), true)^.ImplementationWidget;
+                aTextBuffer := gtk_text_view_get_buffer(GTK_TEXT_VIEW(Widget));
+                Writeln('TODO(GTK2): IntSendMessage3, LM_SETSELSTART, csMemo');
+                {gtk_text_buffer_get_selection_bounds(aTextBuffer, @aTextIter1, nil);
+                result := gtk_text_iter_get_offset(@aTextIter1);}
+              end;
+            else begin
+              result := inherited  IntSendMessage3(LM_Message, Sender, data);
+              exit;
+            end;
+          end;
+        end
+        else
+          Result:= 0;
+      end;
+
+      LM_SETSELLEN :
+      begin
+        if (Sender is TControl) then begin
+          case TControl(Sender).fCompStyle of
+            csMemo:
+    	      begin
+    	        Widget:= GetWidgetInfo(Pointer(Handle), true)^.ImplementationWidget;
+                aTextBuffer := gtk_text_view_get_buffer(GTK_TEXT_VIEW(Widget));
+                Writeln('TODO(GTK2): IntSendMessage3, LM_SETSELLEN, csMemo');
+                {gtk_text_buffer_get_selection_bounds(aTextBuffer, @aTextIter1, @aTextIter2);
+                result:= Abs(gtk_text_iter_get_offset(@aTextIter2) - gtk_text_iter_get_offset(@aTextIter1));}
+  	      end;
+            else begin
+              result := inherited  IntSendMessage3(LM_Message, Sender, data);
+              exit;
+            end;
+          end;
+        end;
+      end;
+
+      else begin
+        result := inherited  IntSendMessage3(LM_Message, Sender, data);
+        exit;
+      end; // end of else-part of 2nd case
+      end; // end of 2nd case
+    end;   // end of else-part of 1st case
+//  end;   // end of 1st case
+end;
+
+function TGtk2Object.GetText(Sender: TComponent; var Text: String): Boolean;
+var
+  CS: PChar;
+  Widget : PGtkWidget;
+  aTextBuffer : PGtkTextBuffer;
+  aTextIter1  : TGtkTextIter;
+  aTextIter2  : TGtkTextIter;
+begin
+  Result := True;
+  case TControl(Sender).fCompStyle of
+   csMemo    : begin
+      	          Widget:= GetWidgetInfo(Pointer(TWinControl(Sender).Handle), True)^.ImplementationWidget;
+                  aTextBuffer := gtk_text_view_get_buffer(GTK_TEXT_VIEW(Widget));
+                  gtk_text_buffer_get_bounds(aTextBuffer, @aTextIter1, @aTextIter2);
+                  CS := gtk_text_buffer_get_text(aTextBuffer, @aTextIter1, @aTextIter2, True);
+                  Text := StrPas(CS);
+                  g_free(CS);
+               end;
+  else
+    Result := inherited GetText(Sender, Text);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  procedure Tgtk2Object.AppendText(Sender: TObject; Str: PChar);
+ ------------------------------------------------------------------------------}
+procedure Tgtk2Object.AppendText(Sender: TObject; Str: PChar);
+var
+  Widget : PGtkWidget;
+  aTextBuffer : PGtkTextBuffer;
+  aTextIter1  : TGtkTextIter;
+  aTextIter2  : TGtkTextIter;
+begin
+  if Str=nil then exit;
+
+  if (Sender is TWinControl) then begin
+    case TWinControl(Sender).fCompStyle of
+      csMemo:
+      begin
+      	Widget:= GetWidgetInfo(Pointer(TWinControl(Sender).Handle), True)^.ImplementationWidget;
+        aTextBuffer := gtk_text_view_get_buffer(GTK_TEXT_VIEW(Widget));
+        gtk_text_buffer_begin_user_action(aTextBuffer);
+        gtk_text_buffer_get_bounds(aTextBuffer, @aTextIter1, @aTextIter2);
+        gtk_text_buffer_insert(aTextBuffer, @aTextIter2, str, StrLen(str));
+        gtk_text_buffer_end_user_action(aTextBuffer);
+      end;
+      else
+        inherited AppendText(Sender, Str);
+    end;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TGtk2Object.SetLabel
+  Params:  sender - the calling object
+           data   - String (PChar) to be set as label for a control
+  Returns: Nothing
+
+  Sets the label text on a widget
+ ------------------------------------------------------------------------------}
+procedure Tgtk2Object.SetLabel(Sender : TObject; Data : Pointer);
+var
+  Widget : PGtkWidget;
+  aTextBuffer : PGtkTextBuffer;
+  aTextIter1  : TGtkTextIter;
+  aTextIter2  : TGtkTextIter;
+  pLabel : PChar;
+begin
+  if Sender is TMenuItem then begin
+    inherited SetLabel(Sender, Data);
+    exit;
+  end;
+
+  if Sender is TWinControl
+  then Assert(False, Format('Trace:  [Tgtk2Object.SetLabel] %s --> label %s', [Sender.ClassName, TControl(Sender).Caption]))
+  else begin
+    Assert(False, Format('Trace:WARNING: [Tgtk2Object.SetLabel] %s --> No Decendant of TWinControl', [Sender.ClassName]));
+    RaiseException('[Tgtk2Object.SetLabel] ERROR: Sender ('+Sender.Classname+')'
+        +' is not TWinControl ');
+  end;
+
+  Widget := PGtkWidget(TWinControl(Sender).Handle);
+  Assert(Widget = nil, 'Trace:WARNING: [Tgtk2Object.SetLabel] --> got nil pointer');
+  Assert(False, 'Trace:Setting Str1 in SetLabel');
+  pLabel := pchar(Data);
+
+  case TControl(Sender).fCompStyle of
+  csMemo        : begin
+                    Widget:= PGtkWidget(GetWidgetInfo(Widget, True)^.ImplementationWidget);
+                    aTextBuffer := gtk_text_view_get_buffer(GTK_TEXT_VIEW(Widget));
+                    gtk_text_buffer_begin_user_action(aTextBuffer);
+                    gtk_text_buffer_get_bounds(aTextBuffer, @aTextIter1, @aTextIter2);
+                    gtk_text_buffer_delete(aTextBuffer, @aTextIter1, @aTextIter2);
+                    gtk_text_buffer_get_bounds(aTextBuffer, @aTextIter1, @aTextIter2);
+                    gtk_text_buffer_insert(aTextBuffer, @aTextIter1, pLabel, StrLen(pLabel));
+                    gtk_text_buffer_end_user_action(aTextBuffer);
+                  end;
+
+  else
+    inherited SetLabel(Sender, Data);
+  end;
+  Assert(False, Format('trace:  [Tgtk2Object.SetLabel] %s --> END', [Sender.ClassName]));
+end;
+
 {------------------------------------------------------------------------------
   Function: GetCursorPos
   Params:  lpPoint: The cursorposition
@@ -1053,6 +1358,9 @@ end.
 
 {
   $Log$
+  Revision 1.17  2003/09/18 17:23:05  ajgenius
+  start using GtkTextView for Gtk2 Memo
+
   Revision 1.16  2003/09/18 14:06:30  ajgenius
   fixed Tgtkobject.drawtext for Pango till the native pango one works better
 

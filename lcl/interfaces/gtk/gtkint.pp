@@ -219,7 +219,7 @@ type
     Function GetCaption(Sender : TObject) : String; virtual;
     function  GetText(Sender: TComponent; var Text: String): Boolean; virtual;
     procedure SetText(Child,Data : Pointer);virtual;
-    procedure AppendText(Sender: TObject; Str: PChar);
+    procedure AppendText(Sender: TObject; Str: PChar); virtual;
     procedure SetLabel(Sender : TObject; Data : Pointer); virtual;
     procedure SetColor(Sender : TObject);virtual;
     Procedure SetPixel(Sender : TObject; Data : Pointer);virtual;
@@ -372,6 +372,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.148  2003/09/18 17:23:04  ajgenius
+  start using GtkTextView for Gtk2 Memo
+
   Revision 1.147  2003/09/18 09:21:03  mattias
   renamed LCLLinux to LCLIntf
 
