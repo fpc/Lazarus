@@ -1964,21 +1964,22 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGTKObject.SetCallback(Msg : LongInt; Sender : TObject);
 
-  procedure ConnectSignal(const AObject:gtk_Object; const ASignal: PChar; 
+  procedure ConnectSignal(const AnObject:gtk_Object; const ASignal: PChar;
     const ACallBackProc: Pointer; const ReqSignalMask: TGdkEventMask);
   var
     RealizeHandler, Handler: PGTKHandler;
     RealizeID, SignalID: guint;
     //OldReqSignalMask: PGdkEventMask;
+    WinWidgetInfo: PWinWidgetInfo;
   begin
     if ACallBackProc <> nil then
     begin
       // first loop though the handlers to:
       // - check if a handler already exists
       // - Find the realize handler to change data
-      Handler := gtk_object_get_data_by_id (AObject, gtk_handler_quark);
-      SignalID := gtk_signal_lookup(ASignal, GTK_OBJECT_TYPE(AObject));
-      RealizeID := gtk_signal_lookup('realize', GTK_OBJECT_TYPE(AObject));
+      Handler := gtk_object_get_data_by_id (AnObject, gtk_handler_quark);
+      SignalID := gtk_signal_lookup(ASignal, GTK_OBJECT_TYPE(AnObject));
+      RealizeID := gtk_signal_lookup('realize', GTK_OBJECT_TYPE(AnObject));
       RealizeHandler := nil;
 
       while (Handler <> nil) do
@@ -2003,17 +2004,15 @@ procedure TGTKObject.SetCallback(Msg : LongInt; Sender : TObject);
       // if we are here no handler was defined yet
       // -> register handler
       Assert(False, Format('trace:  [TGTKObject.SetCallback] %s signal <%s>', [Sender.ClassName, ASignal]));
-      gtk_signal_connect(AObject, ASignal, TGTKSignalFunc(ACallBackProc), Sender);
+      gtk_signal_connect(AnObject, ASignal, TGTKSignalFunc(ACallBackProc), Sender);
       
       // -> register realize handler
-      //OldReqSignalMask:=get_
       if ReqSignalMask <> 0 then begin
+        WinWidgetInfo:=GetWidgetInfo(PGtkWidget(AnObject),true);
+        WinWidgetInfo^.EventMask:=WinWidgetInfo^.EventMask or ReqSignalMask;
         if RealizeHandler = nil then begin
-          gtk_signal_connect(AObject, 'realize',
-            TGTKSignalFunc(@GTKRealizeCB), Pointer(ReqSignalMask));
-        end else begin
-          TGdkEventMask(RealizeHandler^.func_data) :=
-            TGdkEventMask(RealizeHandler^.func_data) or ReqSignalMask;
+          gtk_signal_connect(AnObject, 'realize',
+            TGTKSignalFunc(@GTKRealizeCB), Sender);
         end;
       end;
     end;
@@ -5253,6 +5252,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.140  2002/06/09 14:00:41  lazarus
+  MG: fixed persistent caret and implemented Form.BorderStyle=bsNone
+
   Revision 1.139  2002/06/09 07:08:43  lazarus
   MG: fixed window jumping
 
