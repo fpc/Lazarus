@@ -261,22 +261,21 @@ begin
   Result:= True;
   EventTrace('activate', data);
   
-  if GTK_IS_CHECK_MENU_ITEM(widget) then begin
+  if LockOnChange(PgtkObject(Widget),0)>0 then exit;
+
+  if GtkWidgetIsA(widget,GTK_MENU_ITEM_TYPE) then begin
     LCLMenuItem:=TMenuItem(GetLCLObject(Widget));
-    if (LCLMenuItem<>nil) and LCLMenuItem.IsCheckItem then begin
+    if (LCLMenuItem<>nil) and LCLMenuItem.IsCheckItem
+    and (GtkWidgetIsA(widget,GTK_CHECK_MENU_ITEM_TYPE)) then begin
       if ((PGtkCheckMenuItem(Widget)^.flag0 and bm_checkmenuitem_active)<>0)
         <>LCLMenuItem.Checked
       then begin
         if (not LCLMenuItem.AutoCheck) then begin
           // the gtk always toggles the check flag
-          // restore 'checked' flag
-          if LCLMenuItem.Checked then
-            PGtkCheckMenuItem(Widget)^.flag0:=
-              PGtkCheckMenuItem(Widget)^.flag0 xor bm_checkmenuitem_active;
+          // -> restore 'checked' flag
+          PGtkCheckMenuItem(Widget)^.flag0:=
+            PGtkCheckMenuItem(Widget)^.flag0 xor bm_checkmenuitem_active;
         end;
-      end else begin
-        // menuitem is already in sync -> don't send a change event
-        exit;
       end;
     end;
   end;
@@ -1248,24 +1247,20 @@ begin
   DeliverMouseUpMessage(Widget,Event,TWinControl(Data));
 end;
 
-
-
-function gtkclickedCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
+function gtkclickedCB(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
    Mess : TLMessage;
 begin
   //writeln('[gtkclickedCB] ',TObject(Data).ClassName);
   EventTrace('clicked', data);
-  Assert(False, Format('Trace:OBSOLETE: [gtkclickedCB] ', []));
+  if (LockOnChange(PgtkObject(Widget),0)>0) then exit;
   Mess.Msg := LM_CLICKED;
   Result:= DeliverMessage(Data, Mess) = 0;
 
   Result := True;
 end;
 
-
-
-function gtkOpenDialogRowSelectCB( widget : PGtkWidget; row : gint;
+function gtkOpenDialogRowSelectCB(widget : PGtkWidget; row : gint;
   column : gint; event : pgdkEventButton; data : gPointer ) : GBoolean; cdecl;
 var
   ShiftState: TShiftState;
@@ -2542,6 +2537,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.170  2003/03/16 09:41:06  mattias
+  fixed checking menuitems
+
   Revision 1.169  2003/03/09 21:13:32  mattias
   localized gtk interface
 
