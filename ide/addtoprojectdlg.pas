@@ -140,25 +140,25 @@ begin
   and (pdfMaxVersion in NewDependency.Flags)
   and (NewDependency.MaxVersion.Compare(NewDependency.MinVersion)<0) then
   begin
-    MessageDlg('Invalid Min-Max version',
-      'The Maximum Version is lower than the Minimim Version.',
+    MessageDlg(lisProjAddInvalidMinMaxVersion,
+      lisProjAddTheMaximumVersionIsLowerThanTheMinimimVersion,
       mtError,[mbCancel],0);
     exit;
   end;
 
   // check packagename
   if (NewPkgName='') or (not IsValidIdent(NewPkgName)) then begin
-    MessageDlg('Invalid packagename',
-      'The package name "'+NewPkgName+'" is invalid.'#13
-      +'Plase choose an existing package.',
+    MessageDlg(lisProjAddInvalidPackagename,
+      Format(lisProjAddThePackageNameIsInvalidPlaseChooseAnExistingPackag, [
+        '"', NewPkgName, '"', #13]),
       mtError,[mbCancel],0);
     exit;
   end;
 
   // check if package is already required
   if LazProject.FindDependencyByName(NewPkgName)<>nil then begin
-    MessageDlg('Dependency already exists',
-      'The project has already a dependency for the package "'+NewPkgName+'".',
+    MessageDlg(lisProjAddDependencyAlreadyExists,
+      Format(lisProjAddTheProjectHasAlreadyADependency, ['"', NewPkgName, '"']),
       mtError,[mbCancel],0);
     exit;
   end;
@@ -166,9 +166,9 @@ begin
   // check if required package exists
   if not PackageGraph.DependencyExists(NewDependency,fpfSearchPackageEverywhere)
   then begin
-    MessageDlg('Package not found',
-      'The dependency "'+NewDependency.AsString+'" was not found.'#13
-      +'Please choose an existing package.',
+    MessageDlg(lisProjAddPackageNotFound,
+      Format(lisProjAddTheDependencyWasNotFound, ['"', NewDependency.AsString,
+        '"', #13]),
       mtError,[mbCancel],0);
     exit;
   end;
@@ -218,10 +218,9 @@ begin
     if DependMinVersionEdit.Text<>'' then begin
       if not NewDependency.MinVersion.ReadString(DependMinVersionEdit.Text) then
       begin
-        MessageDlg('Invalid version',
-          'The Minimum Version "'+DependMinVersionEdit.Text+'" is invalid.'#13
-          +'Please use the format major.minor.release.build'#13
-          +'For exmaple: 1.0.20.10',
+        MessageDlg(lisProjAddInvalidVersion,
+          Format(lisProjAddTheMinimumVersionIsInvalid, ['"',
+            DependMinVersionEdit.Text, '"', #13, #13]),
           mtError,[mbCancel],0);
         exit;
       end;
@@ -231,10 +230,9 @@ begin
     if DependMaxVersionEdit.Text<>'' then begin
       if not NewDependency.MaxVersion.ReadString(DependMaxVersionEdit.Text) then
       begin
-        MessageDlg('Invalid version',
-          'The Maximum Version "'+DependMaxVersionEdit.Text+'" is invalid.'#13
-          +'Please use the format major.minor.release.build'#13
-          +'For exmaple: 1.0.20.10',
+        MessageDlg(lisProjAddInvalidVersion,
+          Format(lisProjAddTheMaximumVersionIsInvalid, ['"',
+            DependMaxVersionEdit.Text, '"', #13, #13]),
           mtError,[mbCancel],0);
         exit;
       end;
@@ -284,17 +282,18 @@ begin
         // check unitname is valid pascal identifier
         NewUnitName:=ExtractFileNameOnly(NewFilename);
         if (NewUnitName='') or not (IsValidIdent(NewUnitName)) then begin
-          MessageDlg('Invalid pascal unit name',
-            'The unit name "'+NewUnitName+'" is not a valid pascal identifier.',
+          MessageDlg(lisProjAddInvalidPascalUnitName,
+            Format(lisProjAddTheUnitNameIsNotAValidPascalIdentifier, ['"',
+              NewUnitName, '"']),
             mtWarning,[mbIgnore,mbCancel],0);
           exit;
         end;
         // check if unitname already exists in project
         ConflictFile:=TheProject.UnitWithUnitname(NewUnitName);
         if ConflictFile<>nil then begin
-          MessageDlg('Unit name already exists',
-            'The unit name "'+NewUnitName+'" already exists in the project'#13
-            +'with file: "'+ConflictFile.Filename+'".',
+          MessageDlg(lisProjAddUnitNameAlreadyExists,
+            Format(lisProjAddTheUnitNameAlreadyExistsInTheProject, ['"',
+              NewUnitName, '"', #13, '"', ConflictFile.Filename, '"']),
             mtWarning,[mbCancel],0);
           exit;
         end;
@@ -304,9 +303,9 @@ begin
           if FilenameIsPascalUnit(OtherFile.Filename) then begin
             OtherUnitName:=ExtractFileNameOnly(OtherFile.Filename);
             if AnsiCompareText(OtherUnitName,NewUnitName)=0 then begin
-              MessageDlg('Unit name already exists',
-                'The unit name "'+NewUnitName+'" already exists in the selection'#13
-                +'with file: "'+OtherFile.Filename+'".',
+              MessageDlg(lisProjAddUnitNameAlreadyExists,
+                Format(lisProjAddTheUnitNameAlreadyExistsInTheSelection, ['"',
+                  NewUnitName, '"', #13, '"', OtherFile.Filename, '"']),
                 mtWarning,[mbCancel],0);
               exit;
             end;
@@ -371,7 +370,7 @@ begin
     Parent:=Self;
     Pages.Add('Add File');
     AddFilePage:=Page[0];
-    Pages.Add('New Requirement');
+    Pages.Add(lisProjAddNewRequirement);
     NewDependPage:=Page[1];
     PageIndex:=0;
     Align:=alClient;
@@ -384,7 +383,7 @@ begin
   with AddFileLabel do begin
     Name:='AddFileLabel';
     Parent:=AddFilePage;
-    Caption:='Add file to project:';
+    Caption:=lisProjAddAddFileToProject;
   end;
 
   AddFileListBox:=TListBox.Create(Self);
@@ -398,7 +397,7 @@ begin
   with AddFileButton do begin
     Name:='AddFileButton';
     Parent:=AddFilePage;
-    Caption:='Ok';
+    Caption:=lisLazBuildOk;
     OnClick:=@AddFileButtonClick;
   end;
 
@@ -406,7 +405,7 @@ begin
   with CancelAddFileButton do begin
     Name:='CancelAddFileButton';
     Parent:=AddFilePage;
-    Caption:='Cancel';
+    Caption:=dlgCancel;
     ModalResult:=mrCancel;
   end;
 
@@ -417,7 +416,7 @@ begin
   with DependPkgNameLabel do begin
     Name:='DependPkgNameLabel';
     Parent:=NewDependPage;
-    Caption:='Package Name:';
+    Caption:=lisProjAddPackageName;
   end;
 
   DependPkgNameComboBox:=TComboBox.Create(Self);
@@ -431,7 +430,7 @@ begin
   with DependMinVersionLabel do begin
     Name:='DependMinVersionLabel';
     Parent:=NewDependPage;
-    Caption:='Minimum Version (optional):';
+    Caption:=lisProjAddMinimumVersionOptional;
   end;
 
   DependMinVersionEdit:=TEdit.Create(Self);
@@ -445,7 +444,7 @@ begin
   with DependMaxVersionLabel do begin
     Name:='DependMaxVersionLabel';
     Parent:=NewDependPage;
-    Caption:='Maximum Version (optional):';
+    Caption:=lisProjAddMaximumVersionOptional;
   end;
 
   DependMaxVersionEdit:=TEdit.Create(Self);
@@ -459,7 +458,7 @@ begin
   with NewDependButton do begin
     Name:='NewDependButton';
     Parent:=NewDependPage;
-    Caption:='Ok';
+    Caption:=lisLazBuildOk;
     OnClick:=@NewDependButtonClick;
   end;
 
@@ -467,7 +466,7 @@ begin
   with CancelDependButton do begin
     Name:='CancelDependButton';
     Parent:=NewDependPage;
-    Caption:='Cancel';
+    Caption:=dlgCancel;
     ModalResult:=mrCancel;
   end;
 end;

@@ -34,7 +34,7 @@ interface
 
 uses
   Classes, SysUtils, IDEProcs, Forms, Controls, Buttons, ExtCtrls, StdCtrls,
-  LResources, Project, SynEdit, LCLType, DiffPatch;
+  LResources, Project, SynEdit, LCLType, DiffPatch, LazarusIDEStrConsts;
 
 type
   PDiffItem = ^TDiffItem;
@@ -187,7 +187,7 @@ begin
     Result^.Diff:=CreateTextDiff(AnUnitInfo.Source.Source,Result^.TxtOnDisk,[]);
   except
     On E: Exception do
-      Result^.Diff:='\ Error reading file: '+E.Message;
+      Result^.Diff:='\ '+Format(lisDiskDiffErrorReadingFile, [E.Message]);
   end;
   FCachedDiffs.Add(Result);
 end;
@@ -213,7 +213,7 @@ constructor TDiskDiffsDlg.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   if LazarusResources.Find(ClassName)=nil then begin
-    Caption:='Some files have changed on disk:';
+    Caption:=lisDiskDiffSomeFilesHaveChangedOnDisk;
     Position:=poScreenCenter;
     Width:=600;
     Height:=300;
@@ -226,7 +226,7 @@ begin
       Top:=5;
       Width:=Self.ClientWidth-2*Left;
       Height:=Self.ClientHeight-50-Top;
-      Caption:='Changed files:';
+      Caption:=lisDiskDiffChangedFiles;
       Visible:=true;
       OnResize:=@MainGroupBoxResize;
     end;
@@ -253,7 +253,7 @@ begin
       Height:=MainGroupBox.ClientHeight-Top;
       ReadOnly:=true;
       Gutter.Visible:=false;
-      Lines.Text:='Click on one of the above items to see the diff';
+      Lines.Text:=lisDiskDiffClickOnOneOfTheAboveItemsToSeeTheDiff;
       Visible:=true;
     end;
     
@@ -264,7 +264,7 @@ begin
       Left:=50;
       Top:=Self.ClientHeight-40;
       Width:=150;
-      Caption:='Revert All';
+      Caption:=lisDiskDiffRevertAll;
       ModalResult:=mrYesToAll;
       Default:=true;
       Visible:=true;
@@ -277,7 +277,7 @@ begin
       Left:=RevertAllButton.Left+RevertAllButton.Width+10;
       Top:=RevertAllButton.Top;
       Width:=150;
-      Caption:='Ignore disk changes';
+      Caption:=lisDiskDiffIgnoreDiskChanges;
       ModalResult:=mrIgnore;
       Visible:=true;
     end;

@@ -210,7 +210,7 @@ begin
   OpenPackageMenuItem:=TMenuItem.Create(PopupMenu);
   with OpenPackageMenuItem do begin
     Name:='OpenPackageMenuItem';
-    Caption:='Open package';
+    Caption:=lisCompPalOpenPackage;
     OnClick:=@OpenPackageClicked;
   end;
   PopupMenu.Items.Add(OpenPackageMenuItem);

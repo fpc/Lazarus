@@ -44,7 +44,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, LCLType, Controls, Forms, Buttons, StdCtrls, ComCtrls,
   Dialogs, ExtCtrls, LResources, Laz_XMLCfg, KeyMapping, TransferMacros,
-  IDEProcs;
+  IDEProcs, LazarusIDEStrConsts;
 
 { The xml format version:
     When the format changes (new values, changed formats) we can distinguish old
@@ -278,7 +278,7 @@ begin
   if LazarusResources.Find(ClassName)=nil then begin
     Width:=560;
     Height:=450;
-    Caption:='Edit Tool';
+    Caption:=lisEdtExtToolEditTool;
     Position:=poScreenCenter;
 
     TitleLabel:=TLabel.Create(Self);
@@ -286,7 +286,7 @@ begin
       Name:='TitleLabel';
       Parent:=Self;
       SetBounds(5,5,110,22);
-      Caption:='Title:';
+      Caption:=dlgPOTitle;
       Visible:=true; 
     end;
     
@@ -307,7 +307,7 @@ begin
       Parent:=Self;
       SetBounds(TitleLabel.Left,TitleLabel.Top+TitleLabel.Height+10,
         TitleLabel.Width,TitleLabel.Height);
-      Caption:='Programfilename:';
+      Caption:=lisEdtExtToolProgramfilename;
       Visible:=true; 
     end;
     
@@ -326,7 +326,7 @@ begin
       Parent:=Self;
       SetBounds(FilenameLabel.Left,FilenameLabel.Top+FilenameLabel.Height+10,
         FilenameLabel.Width,FilenameLabel.Height);
-      Caption:='Parameters:';
+      Caption:=lisEdtExtToolParameters;
       Visible:=true; 
     end;
     
@@ -346,7 +346,7 @@ begin
       SetBounds(ParametersLabel.Left,
         ParametersLabel.Top+ParametersLabel.Height+10,ParametersLabel.Width,
         ParametersLabel.Height);
-      Caption:='Working Directory:';
+      Caption:=lisEdtExtToolWorkingDirectory;
       Visible:=true; 
     end;
     
@@ -363,7 +363,7 @@ begin
     with OptionsGroupBox do begin
       Name:='OptionsGroupBox';
       Parent:=Self;
-      Caption:='Options:';
+      Caption:=lisLazBuildOptions;
       Left:=5;
       Top:=WorkingDirLabel.Top+WorkingDirLabel.Height+12;
       Width:=Self.ClientWidth-Left-Left;
@@ -376,7 +376,7 @@ begin
       Name:='OptionScanOutputForFPCMessagesCheckBox';
       Parent:=OptionsGroupBox;
       SetBounds(5,2,400,20);
-      Caption:='Scan output for Free Pascal Compiler messages';
+      Caption:=lisEdtExtToolScanOutputForFreePascalCompilerMessages;
       Visible:=true;
     end;
 
@@ -386,7 +386,7 @@ begin
       Parent:=OptionsGroupBox;
       SetBounds(5,OptionScanOutputForFPCMessagesCheckBox.Top
                 +OptionScanOutputForFPCMessagesCheckBox.Height+4,400,20);
-      Caption:='Scan output for make messages';
+      Caption:=lisEdtExtToolScanOutputForMakeMessages;
       Visible:=true;
     end;
 
@@ -394,7 +394,7 @@ begin
     with KeyGroupBox do begin
       Name:='KeyGroupBox';
       Parent:=Self;
-      Caption:='Key';
+      Caption:=lisEdtExtToolKey;
       Left:=5;
       Top:=OptionsGroupBox.Top+OptionsGroupBox.Height+12;
       Width:=Self.ClientWidth-Left-Left;
@@ -406,7 +406,7 @@ begin
     with KeyCtrlCheckBox do begin
       Name:='KeyCtrlCheckBox';
       Parent:=KeyGroupBox;
-      Caption:='Ctrl';
+      Caption:=lisEdtExtToolCtrl;
       Left:=5;
       Top:=2;
       Width:=50;
@@ -418,7 +418,7 @@ begin
     with KeyAltCheckBox do begin
       Name:='KeyAltCheckBox';
       Parent:=KeyGroupBox;
-      Caption:='Alt';
+      Caption:=lisEdtExtToolAlt;
       Left:=KeyCtrlCheckBox.Left+KeyCtrlCheckBox.Width+10;
       Top:=KeyCtrlCheckBox.Top;
       Height:=20;
@@ -430,7 +430,7 @@ begin
     with KeyShiftCheckBox do begin
       Name:='KeyShiftCheckBox';
       Parent:=KeyGroupBox;
-      Caption:='Shift';
+      Caption:=lisEdtExtToolShift;
       Left:=KeyAltCheckBox.Left+KeyAltCheckBox.Width+10;
       Top:=KeyCtrlCheckBox.Top;
       Height:=20;
@@ -464,7 +464,7 @@ begin
       Top:=KeyCtrlCheckBox.Top;
       Width:=150;
       Height:=25;
-      Caption:='Grab Key';
+      Caption:=srkmGrabKey;
       Name:='KeyGrabButton';
       OnClick:=@KeyGrabButtonClick;
       Visible:=true; 
@@ -478,7 +478,7 @@ begin
       Top:=KeyGroupBox.Top+KeyGroupBox.Height+10;
       Width:=KeyGroupBox.Width;
       Height:=Self.ClientHeight-50-Top;
-      Caption:='Macros';
+      Caption:=lisEdtExtToolMacros;
       OnResize:=@MacrosGroupboxResize;
       Visible:=true; 
     end;
@@ -498,7 +498,7 @@ begin
       Name:='MacrosInsertButton';
       Parent:=MacrosGroupbox;
       SetBounds(MacrosGroupbox.ClientWidth-90,5,70,25);
-      Caption:='Insert';
+      Caption:=lisEdtExtToolInsert;
       OnClick:=@MacrosInsertButtonClick;
       Enabled:=false;
       Visible:=true; 
@@ -509,7 +509,7 @@ begin
       Name:='OkButton';
       Parent:=Self;
       SetBounds(270,Self.ClientHeight-40,100,25);
-      Caption:='Ok';
+      Caption:=lisLazBuildOk;
       OnClick:=@OkButtonClick;
       Visible:=true;
     end;
@@ -519,7 +519,7 @@ begin
       Name:='CancelButton';
       Parent:=Self;
       SetBounds(390,OkButton.Top,100,25);
-      Caption:='Cancel';
+      Caption:=dlgCancel;
       OnClick:=@CancelButtonClick;
       Visible:=true;
     end;
@@ -575,8 +575,8 @@ end;
 procedure TExternalToolOptionDlg.OkButtonClick(Sender: TObject);
 begin
   if (TitleEdit.Text='') or (FilenameEdit.Text='') then begin
-    MessageDlg('Title and Filename required',
-                  'A valid tool needs at least a title and a filename.',
+    MessageDlg(lisEdtExtToolTitleAndFilenameRequired,
+                  lisEdtExtToolAValidToolNeedsAtLeastATitleAndAFilename,
                   mtError, [mbCancel], 0);
     exit;
   end;
@@ -781,7 +781,7 @@ begin
       TWinControl(Components[i]).Enabled:=true;
   end;
   if GrabbingKey=1 then
-    KeyGrabButton.Caption:='Grab Key';
+    KeyGrabButton.Caption:=srkmGrabKey;
   GrabbingKey:=0;
 end;
 
@@ -800,7 +800,7 @@ begin
     end;
   end;
   if GrabbingKey=1 then
-    KeyGrabButton.Caption:='Please press a key ...'
+    KeyGrabButton.Caption:=srkmPressKey
 end;
 
 procedure TExternalToolOptionDlg.FormKeyUp(Sender: TObject; var Key: Word;

@@ -1322,6 +1322,175 @@ resourcestring
   lisProjOptsUnableToChangeTheAutoCreateFormList = 'Unable to change the auto '
     +'create form list in the program source.%sPlz fix errors first.';
   lisProjOptsError = 'Error';
+  
+  // path edit dialog
+  lisPathEditSelectDirectory = 'Select directory';
+  lisPathEditSearchPaths = 'Search paths:';
+  lisPathEditMovePathDown = 'Move path down';
+  lisPathEditMovePathUp = 'Move path up';
+  lisPathEditBrowse = 'Browse';
+  lisPathEditPathTemplates = 'Path templates';
+  
+  // new dialog
+  lisNewDlgNoItemSelected = 'No item selected';
+  lisNewDlgPleaseSelectAnItemFirst = 'Please select an item first.';
+  lisNewDlgCreateANewEditorFileChooseAType = 'Create a new editor file.%'
+    +'sChoose a type.';
+  lisNewDlgCreateANewProjectChooseAType = 'Create a new project.%sChoose a '
+    +'type.';
+  lisNewDlgCreateANewPascalUnit = 'Create a new pascal unit.';
+  lisNewDlgCreateANewUnitWithALCLForm = 'Create a new unit with a LCL form.';
+  lisNewDlgCreateANewEmptyTextFile = 'Create a new empty text file.';
+  lisNewDlgCreateANewGraphicalApplicationTheProgramFileIsMain = 'Create a new '
+    +'graphical application.%sThe program file is maintained by Lazarus.';
+  lisNewDlgCreateANewProgramTheProgramFileIsMaintainedByLazar = 'Create a new '
+    +'program.%sThe program file is maintained by Lazarus.';
+  lisNewDlgCreateANewProgram = 'Create a new program.';
+  lisNewDlgCreateANewStandardPackageAPackageIsACollectionOfUn = 'Create a new '
+    +'standard package.%sA package is a collection of units and components.';
+
+  // file checks
+  lisUnableToCreateFile = 'Unable to create file';
+  lisUnableToCreateFilename = 'Unable to create file %s%s%s.';
+  lisUnableToWriteFile = 'Unable to write file';
+  lisUnableToWriteFilename = 'Unable to write file %s%s%s.';
+  lisUnableToReadFile = 'Unable to read file';
+  lisUnableToReadFilename = 'Unable to read file %s%s%s.';
+  lisErrorDeletingFile = 'Error deleting file';
+  lisUnableToDeleteAmbigiousFile = 'Unable to delete ambigious file %s%s%s';
+  lisErrorRenamingFile = 'Error renaming file';
+  lisUnableToRenameAmbigiousFileTo = 'Unable to rename ambigious file %s%s%s%'
+    +'sto %s%s%s';
+  lisWarningAmbigiousFileFoundSourceFileIs = 'Warning: ambigious file found: %'
+    +'s%s%s. Source file is: %s%s%s';
+  lisAmbigiousFileFound = 'Ambigious file found';
+  lisThereIsAFileWithTheSameNameAndASimilarExtension = 'There is a file with '
+    +'the same name and a similar extension ond disk%sFile: %s%sAmbigious '
+    +'File: %s%s%sDelete ambigious file?';
+
+  // add to project dialog
+  lisProjAddInvalidMinMaxVersion = 'Invalid Min-Max version';
+  lisProjAddTheMaximumVersionIsLowerThanTheMinimimVersion = 'The Maximum '
+    +'Version is lower than the Minimim Version.';
+  lisProjAddInvalidPackagename = 'Invalid packagename';
+  lisProjAddThePackageNameIsInvalidPlaseChooseAnExistingPackag = 'The package '
+    +'name %s%s%s is invalid.%sPlase choose an existing package.';
+  lisProjAddDependencyAlreadyExists = 'Dependency already exists';
+  lisProjAddTheProjectHasAlreadyADependency = 'The project has already a '
+    +'dependency for the package %s%s%s.';
+  lisProjAddPackageNotFound = 'Package not found';
+  lisProjAddTheDependencyWasNotFound = 'The dependency %s%s%s was not found.%'
+    +'sPlease choose an existing package.';
+  lisProjAddInvalidVersion = 'Invalid version';
+  lisProjAddTheMinimumVersionIsInvalid = 'The Minimum Version %s%s%s is '
+    +'invalid.%sPlease use the format major.minor.release.build%sFor '
+    +'exmaple: 1.0.20.10';
+  lisProjAddTheMaximumVersionIsInvalid = 'The Maximum Version %s%s%s is '
+    +'invalid.%sPlease use the format major.minor.release.build%sFor '
+    +'exmaple: 1.0.20.10';
+  lisProjAddInvalidPascalUnitName = 'Invalid pascal unit name';
+  lisProjAddTheUnitNameIsNotAValidPascalIdentifier = 'The unit name %s%s%s is '
+    +'not a valid pascal identifier.';
+  lisProjAddUnitNameAlreadyExists = 'Unit name already exists';
+  lisProjAddTheUnitNameAlreadyExistsInTheProject = 'The unit name %s%s%s '
+    +'already exists in the project%swith file: %s%s%s.';
+  lisProjAddTheUnitNameAlreadyExistsInTheSelection = 'The unit name %s%s%s '
+    +'already exists in the selection%swith file: %s%s%s.';
+  lisProjAddNewRequirement = 'New Requirement';
+  lisProjAddAddFileToProject = 'Add file to project:';
+  lisProjAddPackageName = 'Package Name:';
+  lisProjAddMinimumVersionOptional = 'Minimum Version (optional):';
+  lisProjAddMaximumVersionOptional = 'Maximum Version (optional):';
+  
+  // component palette
+  lisCompPalOpenPackage = 'Open package';
+  
+  // macro promp dialog
+  lisMacroPromptEnterData = 'Enter data';
+  lisMacroPromptEnterRunParameters = 'Enter run parameters';
+  
+  // debugger
+  lisDebuggerError = 'Debugger error';
+  lisDebuggerErrorOoopsTheDebuggerEnteredTheErrorState = 'Debugger error%'
+    +'sOoops, the debugger entered the error state%sSave your work now !%sHit '
+    +'Stop, and hope the best, we''re pulling the plug.';
+  lisExecutionStopped = 'Execution stopped';
+  lisExecutionStoppedOn = 'Execution stopped%s';
+  lisExecutionPaused = 'Execution paused';
+  lisExecutionPausedAdress = 'Execution paused%s  Adress: $%p%s  Procedure: %'
+    +'s%s  File: %s%s(Some day an assembler window might popup here :)%s';
+  lisFileNotFound = 'File not found';
+  lisTheFileWasNotFoundDoYouWantToLocateItYourself = 'The file %s%s%s%swas '
+    +'not found.%sDo you want to locate it yourself ?%s';
+  lisRunToFailed = 'Run-to failed';
+  lisPleaseOpenAUnitBeforeRun = 'Please open a unit before run.';
+  
+  // disk diff dialog
+  lisDiskDiffErrorReadingFile = 'Error reading file: %s';
+  lisDiskDiffSomeFilesHaveChangedOnDisk = 'Some files have changed on disk:';
+  lisDiskDiffChangedFiles = 'Changed files:';
+  lisDiskDiffClickOnOneOfTheAboveItemsToSeeTheDiff = 'Click on one of the '
+    +'above items to see the diff';
+  lisDiskDiffRevertAll = 'Revert All';
+  lisDiskDiffIgnoreDiskChanges = 'Ignore disk changes';
+  
+  // edit define tree
+  lisEdtDefCurrentProject = 'Current Project';
+  lisEdtDefCurrentProjectDirectory = 'Current Project Directory';
+  lisEdtDefProjectSrcPath = 'Project SrcPath';
+  lisEdtDefProjectIncPath = 'Project IncPath';
+  lisEdtDefProjectUnitPath = 'Project UnitPath';
+  lisEdtDefAllPackages = 'All packages';
+  lisEdtDefsetFPCModeToDELPHI = 'set FPC mode to DELPHI';
+  lisEdtDefsetFPCModeToTP = 'set FPC mode to TP';
+  lisEdtDefsetFPCModeToGPC = 'set FPC mode to GPC';
+  lisEdtDefsetIOCHECKSOn = 'set IOCHECKS on';
+  lisEdtDefsetRANGECHECKSOn = 'set RANGECHECKS on';
+  lisEdtDefsetOVERFLOWCHECKSOn = 'set OVERFLOWCHECKS on';
+  lisEdtDefuseLineInfoUnit = 'use LineInfo unit';
+  lisEdtDefuseHeapTrcUnit = 'use HeapTrc unit';
+  lisEdtDefGlobalSourcePathAddition = 'Global Source Path addition';
+  
+  // external tools
+  lisExtToolFailedToRunTool = 'Failed to run tool';
+  lisExtToolUnableToRunTheTool = 'Unable to run the tool %s%s%s:%s%s';
+  lisExtToolExternalTools = 'External Tools';
+  lisExtToolRemove = 'Remove';
+  lisExtToolMoveUp = 'Move Up';
+  lisExtToolMoveDown = 'Move Down';
+  lisExtToolMaximumToolsReached = 'Maximum Tools reached';
+  lisExtToolThereIsAMaximumOfTools = 'There is a maximum of %s tools.';
+  
+  // edit external tools
+  lisEdtExtToolEditTool = 'Edit Tool';
+  lisEdtExtToolProgramfilename = 'Programfilename:';
+  lisEdtExtToolParameters = 'Parameters:';
+  lisEdtExtToolWorkingDirectory = 'Working Directory:';
+  lisEdtExtToolScanOutputForFreePascalCompilerMessages = 'Scan output for '
+    +'Free Pascal Compiler messages';
+  lisEdtExtToolScanOutputForMakeMessages = 'Scan output for make messages';
+  lisEdtExtToolKey = 'Key';
+  lisEdtExtToolCtrl = 'Ctrl';
+  lisEdtExtToolAlt = 'Alt';
+  lisEdtExtToolShift = 'Shift';
+  lisEdtExtToolMacros = 'Macros';
+  lisEdtExtToolInsert = 'Insert';
+  lisEdtExtToolTitleAndFilenameRequired = 'Title and Filename required';
+  lisEdtExtToolAValidToolNeedsAtLeastATitleAndAFilename = 'A valid tool needs '
+    +'at least a title and a filename.';
+    
+  // find in files dialog
+  lisFindFileTextToFind = 'Text to find:';
+  lisFindFileCaseSensitive = 'Case sensitive';
+  lisFindFileWholeWordsOnly = 'Whole words only';
+  lisFindFileRegularExpressions = 'Regular expressions';
+  lisFindFileWhere = 'Where';
+  lisFindFilesearchAllFilesInProject = 'search all files in project';
+  lisFindFilesearchAllOpenFiles = 'search all open files';
+  lisFindFilesearchInDirectories = 'search in directories';
+  lisFindFileDirectoryOptions = 'Directory options';
+  lisFindFileFileMaskBak = 'File mask (*, *.*, *.bak?)';
+  lisFindFileIncludeSubDirectories = 'Include sub directories';
 
 implementation
 end.

@@ -41,7 +41,8 @@ uses
   {$ENDIF}
   Classes, SysUtils, LCLType, Controls, Forms, Buttons, StdCtrls, ComCtrls, 
   Dialogs, ExtCtrls, LResources, Laz_XMLCfg, ExtToolEditDlg, Process,
-  KeyMapping, TransferMacros, IDEProcs, OutputFilter, FileCtrl;
+  KeyMapping, TransferMacros, IDEProcs, OutputFilter, FileCtrl,
+  LazarusIDEStrConsts;
 
 const
   MaxExtTools = ecExtToolLast-ecExtToolFirst+1;
@@ -338,8 +339,9 @@ begin
       end;
     except
       on e: Exception do begin
-        Result:=MessageDlg('Failed to run tool',
-          'Unable to run the tool "'+Title+'":'#13+e.Message,
+        Result:=MessageDlg(lisExtToolFailedToRunTool,
+          Format(lisExtToolUnableToRunTheTool, ['"', Title, '"', #13, e.Message]
+            ),
           mtError,[mbCancel,mbAbort],0);
         exit;
       end;
@@ -421,7 +423,7 @@ begin
     Width:=400;
     Height:=400;
     Position:=poScreenCenter;
-    Caption:='External Tools';
+    Caption:=lisExtToolExternalTools;
     OnResize:=@ExternalToolDialogResize;
 
     Listbox:=TListbox.Create(Self);
@@ -438,7 +440,7 @@ begin
       Name:='AddButton';
       Parent:=Self;
       SetBounds(Self.ClientWidth-100,5,80,25);
-      Caption:='Add';
+      Caption:=lisCodeTemplAdd;
       OnClick:=@AddButtonClick;
       Visible:=true; 
     end;
@@ -448,7 +450,7 @@ begin
       Name:='RemoveButton';
       Parent:=Self;
       SetBounds(Self.ClientWidth-100,AddButton.Top+AddButton.Height+10,80,25);
-      Caption:='Remove';
+      Caption:=lisExtToolRemove;
       OnClick:=@RemoveButtonClick;
       Visible:=true; 
     end;
@@ -459,7 +461,7 @@ begin
       Parent:=Self;
       SetBounds(Self.ClientWidth-100,RemoveButton.Top+RemoveButton.Height+10,
                    80,25);
-      Caption:='Edit';
+      Caption:=lisCodeToolsDefsEdit;
       OnClick:=@EditButtonClick;
       Visible:=true; 
     end;
@@ -470,7 +472,7 @@ begin
       Parent:=Self;
       SetBounds(Self.ClientWidth-100,EditButton.Top+EditButton.Height+50,
                    80,25);
-      Caption:='Move Up';
+      Caption:=lisExtToolMoveUp;
       OnClick:=@MoveUpButtonClick;
       Visible:=true; 
     end;
@@ -481,7 +483,7 @@ begin
       Parent:=Self;
       SetBounds(Self.ClientWidth-100,MoveUpButton.Top+MoveUpButton.Height+10,
                    80,25);
-      Caption:='Move Down';
+      Caption:=lisExtToolMoveDown;
       OnClick:=@MoveDownButtonClick;
       Visible:=true; 
     end;
@@ -491,7 +493,7 @@ begin
       Name:='OkButton';
       Parent:=Self;
       SetBounds(Self.ClientWidth-200, Self.ClientHeight-40,80,25);
-      Caption:='Ok';
+      Caption:=lisLazBuildOk;
       OnClick:=@OkButtonClick;
       Visible:=true; 
     end;
@@ -501,7 +503,7 @@ begin
       Name:='CancelButton';
       Parent:=Self;
       SetBounds(Self.ClientWidth-100, Self.ClientHeight-40,80,25);
-      Caption:='Cancel';
+      Caption:=dlgCancel;
       OnClick:=@CancelButtonClick;
       Visible:=true; 
     end;
@@ -597,8 +599,9 @@ procedure TExternalToolDialog.AddButtonClick(Sender: TObject);
 var NewTool: TExternalToolOptions;
 begin
   if fExtToolList.Count>=MaxExtTools then begin
-    MessageDlg('Maximum Tools reached',
-                  'There is a maximum of '+IntToStr(MaxExtTools)+' tools.',
+    MessageDlg(lisExtToolMaximumToolsReached,
+                  Format(lisExtToolThereIsAMaximumOfTools, [IntToStr(MaxExtTools
+                    )]),
                   mtInformation,[mbCancel],0);
     exit;
   end;

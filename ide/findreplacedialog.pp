@@ -404,7 +404,7 @@ begin
       RegExpr.Exec('test');
     except
       on E: ERegExpr do begin
-        MessageDlg('Error in regular expression',
+        MessageDlg(lisUEErrorInRegularExpression,
           E.Message,mtError,[mbCancel],0);
         exit;
       end;
@@ -414,7 +414,7 @@ begin
         RegExpr.Substitute(ReplaceText);
       except
         on E: ERegExpr do begin
-          MessageDlg('Error in regular expression',
+          MessageDlg(lisUEErrorInRegularExpression,
             E.Message,mtError,[mbCancel],0);
           exit;
         end;

@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, SysUtils, Controls, StdCtrls, Forms, LResources, IDEProcs,
-  IDEOptionDefs, EnvironmentOpts;
+  IDEOptionDefs, EnvironmentOpts, LazarusIDEStrConsts;
 
 type
 
@@ -89,7 +89,7 @@ var ALayout: TIDEWindowLayout;
 Begin
   inherited Create(TheOwner);
   if LazarusResources.Find(ClassName)=nil then begin
-    Caption:='Messages';
+    Caption:=lisMenuViewMessages;
     MessageView := TListBox.Create(Self);
     With MessageView do Begin
       Parent:= Self;

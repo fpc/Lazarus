@@ -246,8 +246,8 @@ begin
   if (ANode=nil) or (ANode.Data=nil)
   or (not (TObject(ANode.Data) is TNewIDEItemTemplate))
   then begin
-    MessageDlg('No item selected',
-      'Please select an item first.',mtInformation,[mbOk],0);
+    MessageDlg(lisNewDlgNoItemSelected,
+      lisNewDlgPleaseSelectAnItemFirst, mtInformation, [mbOk], 0);
     exit;
   end;
   Template:=TNewIDEItemTemplate(ANode.Data);
@@ -315,7 +315,7 @@ begin
     Parent:=Self;
     Left:=5;
     Top:=5;
-    Caption:='Description';
+    Caption:=lisToDoLDescription;
   end;
   
   DescriptionLabel:=TLabel.Create(Self);
@@ -333,7 +333,7 @@ begin
     Parent:=Self;
     Left:=100;
     Top:=100;
-    Caption:='Ok';
+    Caption:=lisLazBuildOk;
     OnClick:=@OkButtonClick;
   end;
   
@@ -343,7 +343,7 @@ begin
     Parent:=Self;
     Left:=150;
     Top:=100;
-    Caption:='Cancel';
+    Caption:=dlgCancel;
     OnClick:=@CancelButtonClick;
   end;
 end;
@@ -458,9 +458,9 @@ end;
 function TNewIDEItemCategory.Description: string;
 begin
   if Name='File' then begin
-    Result:='Create a new editor file.'#13'Choose a type.';
+    Result:=Format(lisNewDlgCreateANewEditorFileChooseAType, [#13]);
   end else if Name='Project' then begin
-    Result:='Create a new project.'#13'Choose a type.';
+    Result:=Format(lisNewDlgCreateANewProjectChooseAType, [#13]);
   end else
     Result:='';
 end;
@@ -494,28 +494,28 @@ begin
       Result:='';
       
     niiUnit:
-      Result:='Create a new pascal unit.';
+      Result:=lisNewDlgCreateANewPascalUnit;
       
     niiForm:
-      Result:='Create a new unit with a LCL form.';
+      Result:=lisNewDlgCreateANewUnitWithALCLForm;
 
     niiText:
-      Result:='Create a new empty text file.';
+      Result:=lisNewDlgCreateANewEmptyTextFile;
       
     niiApplication:
-      Result:='Create a new graphical application.'#13#13
-             +'The program file is maintained by Lazarus.';
+      Result:=Format(
+        lisNewDlgCreateANewGraphicalApplicationTheProgramFileIsMain, [#13#13]);
 
     niiFPCProject:
-      Result:='Create a new program.'#13#13
-             +'The program file is maintained by Lazarus.';
+      Result:=Format(
+        lisNewDlgCreateANewProgramTheProgramFileIsMaintainedByLazar, [#13#13]);
 
     niiCustomProject:
-      Result:='Create a new program.';
+      Result:=lisNewDlgCreateANewProgram;
 
     niiPackage:
-      Result:='Create a new standard package.'#13#13
-             +'A package is a collection of units and components.';
+      Result:=Format(
+        lisNewDlgCreateANewStandardPackageAPackageIsACollectionOfUn, [#13#13]);
 
   else
     Result:=''

@@ -29,7 +29,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, SynEdit, Buttons, StdCtrls, ExtCtrls,
-  Dialogs, IDEProcs, LResources, FileCtrl;
+  Dialogs, IDEProcs, LResources, FileCtrl, LazarusIDEStrConsts;
 
 type
   TPathEditorDialog = class(TForm)
@@ -122,7 +122,7 @@ var y: integer;
 begin
   if OpenDialog=nil then OpenDialog:=TOpenDialog.Create(Self);
   with OpenDialog do begin
-    Title:='Select directory';
+    Title:=lisPathEditSelectDirectory;
     if (not Execute) then exit;
     NewPath:=ExtractFilePath(Trim(Filename));
     if (not DirectoryExists(NewPath)) then exit;
@@ -267,7 +267,7 @@ begin
   with PathGroupBox do begin
     Name:='PathGroupBox';
     Parent:=Self;
-    Caption:='Search paths:';
+    Caption:=lisPathEditSearchPaths;
     Visible:=true;
   end;
   
@@ -286,7 +286,7 @@ begin
   with MoveUpButton do begin
     Name:='MoveUpButton';
     Parent:=PathGroupBox;
-    Caption:='Move path up';
+    Caption:=lisPathEditMovePathUp;
     OnClick:=@MoveUpButtonClick;
     Visible:=true;
   end;
@@ -295,7 +295,7 @@ begin
   with MoveDownButton do begin
     Name:='MoveDownButton';
     Parent:=PathGroupBox;
-    Caption:='Move path down';
+    Caption:=lisPathEditMovePathDown;
     OnClick:=@MoveDownButtonClick;
     Visible:=true;
   end;
@@ -304,7 +304,7 @@ begin
   with BrowseButton do begin
     Name:='BrowseButton';
     Parent:=PathGroupBox;
-    Caption:='Browse';
+    Caption:=lisPathEditBrowse;
     OnClick:=@BrowseButtonClick;
     Visible:=true;
   end;
@@ -313,7 +313,7 @@ begin
   with DeleteButton do begin
     Name:='DeleteButton';
     Parent:=PathGroupBox;
-    Caption:='Delete';
+    Caption:=dlgEdDelete;
     OnClick:=@DeleteButtonClick;
     Visible:=true;
   end;
@@ -322,7 +322,7 @@ begin
   with TemplateGroupBox do begin
     Name:='TemplateGroupBox';
     Parent:=Self;
-    Caption:='Path templates';
+    Caption:=lisPathEditPathTemplates;
     Visible:=true;
   end;
   
@@ -338,7 +338,7 @@ begin
   with AddTemplateButton do begin
     Name:='AddTemplateButton';
     Parent:=TemplateGroupBox;
-    Caption:='Add';
+    Caption:=lisCodeTemplAdd;
     OnClick:=@AddTemplateButtonClick;
     Visible:=true;
   end;
@@ -347,7 +347,7 @@ begin
   with OkButton do begin
     Name:='OkButton';
     Parent:=Self;
-    Caption:='Ok';
+    Caption:=lisLazBuildOk;
     OnClick:=@OkButtonClick;
     Visible:=true;
   end;
@@ -356,7 +356,7 @@ begin
   with CancelButton do begin
     Name:='CancelButton';
     Parent:=Self;
-    Caption:='Cancel';
+    Caption:=dlgCancel;
     OnClick:=@CancelButtonClick;
     Visible:=true;
   end;

@@ -1435,8 +1435,9 @@ begin
       fs:=TFileStream.Create(AFilename,fmCreate);
       fs.Free;
     except
-      Result:=MessageDlg('Unable to create file',
-        'Unable to create file "'+AFilename+'".',mtError,[mbCancel,mbAbort],0);
+      Result:=MessageDlg(lisUnableToCreateFile,
+        Format(lisUnableToCreateFilename, ['"', AFilename, '"']), mtError, [
+          mbCancel, mbAbort], 0);
       exit;
     end;
   end;
@@ -1453,8 +1454,9 @@ begin
       fs.Free;
     end;
   except
-    Result:=MessageDlg('Unable to write file',
-      'Unable to write file "'+AFilename+'".',mtError,[mbCancel,mbAbort],0);
+    Result:=MessageDlg(lisUnableToWriteFile,
+      Format(lisUnableToWriteFilename, ['"', AFilename, '"']), mtError, [
+        mbCancel, mbAbort], 0);
     exit;
   end;
   // check readable
@@ -1467,8 +1469,9 @@ begin
       fs.Free;
     end;
   except
-    Result:=MessageDlg('Unable to read file',
-      'Unable to read file "'+AFilename+'".',mtError,[mbCancel,mbAbort],0);
+    Result:=MessageDlg(lisUnableToReadFile,
+      Format(lisUnableToReadFilename, ['"', AFilename, '"']), mtError, [
+        mbCancel, mbAbort], 0);
     exit;
   end;
   Result:=mrOk;
@@ -1488,8 +1491,8 @@ function TMainIDEBar.DoCheckAmbigiousSources(const AFilename: string;
   function DeleteAmbigiousFile(const AmbigiousFilename: string): TModalResult;
   begin
     if not DeleteFile(AmbigiousFilename) then begin
-      Result:=MessageDlg('Error deleting file',
-       'Unable to delete ambigious file "'+AmbigiousFilename+'"',
+      Result:=MessageDlg(lisErrorDeletingFile,
+       Format(lisUnableToDeleteAmbigiousFile, ['"', AmbigiousFilename, '"']),
        mtError,[mbOk,mbAbort],0);
     end else
       Result:=mrOk;
@@ -1502,9 +1505,9 @@ function TMainIDEBar.DoCheckAmbigiousSources(const AFilename: string;
     NewFilename:=AmbigiousFilename+'.ambigious';
     if not RenameFile(AmbigiousFilename,NewFilename) then
     begin
-      Result:=MessageDlg('Error renaming file',
-       'Unable to rename ambigious file "'+AmbigiousFilename+'"'#13
-       +'to "'+NewFilename+'"',
+      Result:=MessageDlg(lisErrorRenamingFile,
+       Format(lisUnableToRenameAmbigiousFileTo, ['"', AmbigiousFilename, '"',
+         #13, '"', NewFilename, '"']),
        mtError,[mbOk,mbAbort],0);
     end else
       Result:=mrOk;
@@ -1514,8 +1517,8 @@ function TMainIDEBar.DoCheckAmbigiousSources(const AFilename: string;
   begin
     Result:=mrOk;
     if Compiling then begin
-      TheOutputFilter.ReadLine('Warning: ambigious file found: "'+AmbigiousFilename+'"'
-        +'. Source file is: "'+AFilename+'"',true);
+      TheOutputFilter.ReadLine(Format(lisWarningAmbigiousFileFoundSourceFileIs,
+        ['"', AmbigiousFilename, '"', '"', AFilename, '"']), true);
     end;
   end;
 
@@ -1529,12 +1532,9 @@ function TMainIDEBar.DoCheckAmbigiousSources(const AFilename: string;
     case EnvironmentOptions.AmbigiousFileAction of
     afaAsk:
       begin
-        Result:=MessageDlg('Ambigious file found',
-          'There is a file with the same name and a similar extension ond disk'#13
-          +'File: '+AFilename+#13
-          +'Ambigious File: '+AmbigiousFilename+#13
-          +#13
-          +'Delete ambigious file?',
+        Result:=MessageDlg(lisAmbigiousFileFound,
+          Format(lisThereIsAFileWithTheSameNameAndASimilarExtension, [#13,
+            AFilename, #13, AmbigiousFilename, #13, #13]),
           mtWarning,[mbYes,mbIgnore,mbAbort],0);
         case Result of
         mrYes:    Result:=DeleteAmbigiousFile(AmbigiousFilename);

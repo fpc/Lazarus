@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, BuildLazDialog, CodeToolsStructs, LazConf, IDEProcs,
-  Laz_XMLCfg;
+  Laz_XMLCfg, LazarusIDEStrConsts;
 
 type
   TSortDirection = (sdAscending, sdDescending);

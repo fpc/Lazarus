@@ -215,16 +215,14 @@ begin
   case FDebugger.State of 
     dsError: begin
       WriteLN('Ooops, the debugger entered the error state');
-      MessageDlg('Debugger error',
-        'Debugger error'#13#13 + 
-        'Ooops, the debugger entered the error state'#13 + 
-        'Save your work now !'#13#13 + 
-        'Hit Stop, and hope the best, we''re pulling the plug.', 
+      MessageDlg(lisDebuggerError,
+        Format(lisDebuggerErrorOoopsTheDebuggerEnteredTheErrorState, [#13#13,
+          #13, #13#13]),
         mtError, [mbOK],0);
     end;
     dsStop: begin
-      MessageDlg('Execution stopped',
-        'Execution stopped'#13#13, 
+      MessageDlg(lisExecutionStopped,
+        Format(lisExecutionStoppedOn, [#13#13]),
         mtInformation, [mbOK],0);
     end;
   end;
@@ -247,12 +245,9 @@ begin
   //TODO: Show assembler window if no source can be found.
   if ALocation.SrcLine = -1 
   then begin
-    MessageDlg('Execution paused',
-      Format('Execution paused'#13#13 + 
-             '  Adress: $%p'#13 + 
-             '  Procedure: %s'#13 + 
-             '  File: %s'#13#13#13 + 
-             '(Some day an assembler window might popup here :)'#13,  
+    MessageDlg(lisExecutionPaused,
+      Format(Format(lisExecutionPausedAdress, [#13#13, #13, #13, #13#13#13, #13]
+        ),
         [ALocation.Adress, ALocation.FuncName, ALocation.SrcFile]),
       mtInformation, [mbOK],0);
     
@@ -283,10 +278,9 @@ begin
     then begin
       UnitFile := ALocation.SrcFile;
       repeat
-        if MessageDlg('File not found',
-          'The file "'+UnitFile+'"'#13
-          +'was not found.'#13
-          +'Do you want to locate it yourself ?'#13
+        if MessageDlg(lisFileNotFound,
+          Format(lisTheFileWasNotFoundDoYouWantToLocateItYourself, ['"',
+            UnitFile, '"', #13, #13, #13])
           ,mtConfirmation, [mbYes, mbNo], 0) <> mrYes   
         then Exit;
         
@@ -640,7 +634,7 @@ begin
   MainIDE.GetCurrentUnit(ActiveSrcEdit, ActiveUnitInfo);
   if (ActiveSrcEdit=nil) or (ActiveUnitInfo=nil)
   then begin
-    MessageDlg('Run to failed','Please open a unit before run.',mtError,
+    MessageDlg(lisRunToFailed, lisPleaseOpenAUnitBeforeRun, mtError,
       [mbCancel],0);
     Exit;
   end;
@@ -672,6 +666,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.13  2003/05/03 23:00:33  mattias
+  localization
+
   Revision 1.12  2003/04/02 17:06:27  mattias
   improved deb creation
 
