@@ -1048,7 +1048,6 @@ begin
     // (or something like that)
     CNSendMessage(LM_SetCursor,Self,Nil);
   end;
-
 end;
 
 procedure TControl.SetFont(Value: TFont);
@@ -1806,6 +1805,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.81  2002/09/06 22:32:21  lazarus
+  Enabled cursor property + property editor.
+
   Revision 1.80  2002/09/06 13:58:13  lazarus
   MG: added try for invalidate control
 
