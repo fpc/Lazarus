@@ -8142,16 +8142,20 @@ var
 begin
   ADesigner:=TDesigner(Sender);
   GetDesignerUnit(ADesigner,ASrcEdit,AnUnitInfo);
-  if AnUnitInfo.NeedsSaveToDisk then begin
-    if MessageDlg('Save changes?',
-      'Save file "'+AnUnitInfo.Filename+'"'#13
-      +'before closing form "'+ADesigner.LookupRoot.Name+'"?',
-      mtConfirmation,[mbYes,mbCancel,mbAbort],0)<>mrYes
-    then
-      exit;
-    if DoSaveEditorFile(AnUnitInfo.EditorIndex,[sfCheckAmbigiousFiles])<>mrOk
-    then
-      exit;
+  if AnUnitInfo.NeedsSaveToDisk 
+  then begin
+    case MessageDlg('Save changes?',
+                    'Save file "'+AnUnitInfo.Filename+'"'#13
+                   +'before closing form "'+ADesigner.LookupRoot.Name+'"?',
+                   mtConfirmation,[mbYes,mbNo,mbCancel],0) of
+      mrYes: begin
+        if DoSaveEditorFile(AnUnitInfo.EditorIndex,[sfCheckAmbigiousFiles])<>mrOk
+        then Exit;
+      end;
+      mrNo:;
+    else
+      Exit;
+    end;
   end;
   CloseDesignerForm(AnUnitInfo);
 end;
@@ -9022,6 +9026,10 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.596  2003/06/03 23:45:26  marc
+  MWE: Fixed close confirmation on changed designer form
+       ([Yes][No][Cancel] instead of [Yes][Cancel][Abort])
+
   Revision 1.595  2003/06/03 16:12:14  mattias
   fixed loading bookmarks for editor index 0
 
