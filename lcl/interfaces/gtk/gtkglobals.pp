@@ -31,8 +31,10 @@ uses
 {$I dragicons.inc}
 
 var
-//  target_table : array[0..TARGET_ENTRYS - 1] of TgtkTargetEntry;
+  // gtk-interface options
+  UseTransientForModalWindows: boolean;
 
+var
   //drag icons
   //TrashCan_Open : PgdkPixmap;
   //TrashCan_Open_Mask : PGdkPixmap;
@@ -283,6 +285,7 @@ implementation
 
 initialization
   ModalWindows:=nil;
+  UseTransientForModalWindows:=true;
 
 end.
 

@@ -38,7 +38,7 @@ uses
   {$ELSE}
   glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf}
   {$ENDIF}
-  LCLLinux, LCLType, VclGlobals, Classes, LCLMemManager, DynHashArray,
+  Classes, LCLLinux, LCLType, VclGlobals, LCLMemManager, DynHashArray,
   GraphType;
 
 type
@@ -435,6 +435,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.35  2003/03/26 19:25:27  mattias
+  added transient deactivation option and updated localization
+
   Revision 1.34  2003/03/15 18:32:38  mattias
   implemented transient windows for all cases
 
