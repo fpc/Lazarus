@@ -1601,7 +1601,10 @@ end;
 
 procedure TProject.SetProjectFile(const NewProjectFilename: string);
 begin
+  if AnsiCompareText(fTitle,ExtractFileNameOnly(fProjectFile))=0 then
+    fTitle:=ExtractFileNameOnly(NewProjectFilename);
   fProjectFile:=NewProjectFilename;
+  
   Modified:=true;
 end;
 
@@ -1692,6 +1695,9 @@ end.
 
 {
   $Log$
+  Revision 1.41  2001/11/15 13:49:50  lazarus
+  MG: fixed open non existing file and unitname in save project as
+
   Revision 1.40  2001/11/14 17:46:57  lazarus
   Changes to make toggling between form and unit work.
   Added BringWindowToTop
