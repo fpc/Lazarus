@@ -4078,13 +4078,13 @@ begin
     AButton:=TPathEditorButton(Sender);
     if AButton=OtherUnitsPathEditBtn then begin
       OldPath:=edtOtherUnits.Text;
-      Templates:=
+      Templates:=SetDirSeparators(
             '$(LazarusDir)/lcl/units'
           +';$(LazarusDir)/lcl/units/$(LCLWidgetType)'
           +';$(LazarusDir)/components/units'
           +';$(LazarusDir)/components/custom'
           +';$(LazarusDir)/packager/units'
-          ;
+          );
     end else
     if AButton=IncludeFilesPathEditBtn then begin
       OldPath:=edtIncludeFiles.Text;

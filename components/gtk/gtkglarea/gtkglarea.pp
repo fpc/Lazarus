@@ -20,27 +20,40 @@ unit GTKGLArea;
 interface
 
 uses
-  Classes, SysUtils, Controls, Graphics, LMessages, VCLGlobals,
-  InterfaceBase, GTKInt, LResources, GLib, NVGL, NVGLX, GTKGLArea_Int;
+  Classes, SysUtils, {$IFDEF VER1_0}Linux{$ELSE}Unix{$ENDIF}, Forms,
+  Controls, Graphics, LMessages, VCLGlobals, InterfaceBase, GTKInt, LResources,
+  GLib, NVGL, NVGLX, GTKGLArea_Int;
   
 type
+  { TCustomGTKGLAreaControl }
+
   TCustomGTKGLAreaControl = class(TWinControl)
   private
     FCanvas: TCanvas; // only valid at designtime
     FOnPaint: TNotifyEvent;
+    FCurrentFrameTime: integer; // in msec
+    FLastFrameTime: integer; // in msec
+    FFrameDiffTime: integer; // in msec
+    FPaintOnIdle: boolean;
   protected
     procedure WMPaint(var Message: TLMPaint); message LM_PAINT;
     function GetWidget: PGtkGLArea;
     procedure CreateComponent(TheOwner: TComponent); override;
+    procedure UpdateFrameTimeDiff;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     Procedure Paint; virtual;
     procedure DoOnResize; override;
+    procedure DoOnPaint; virtual;
   public
     property Widget: PGtkGLArea read GetWidget;
     property OnPaint: TNotifyEvent read FOnPaint write FOnPaint;
+    property FrameDiffTimeInMSecs: integer read FFrameDiffTime;
   end;
+  
+  
+  { TGTKGLAreaControl }
   
   TGTKGLAreaControl = class(TCustomGTKGLAreaControl)
   published
@@ -75,7 +88,6 @@ procedure Register;
 
 
 implementation
-
 
 const
   InitAttrList: array [1..11] of LongInt = (
@@ -116,14 +128,24 @@ end;
 
 procedure TCustomGTKGLAreaControl.Paint;
 begin
-  if Assigned(OnPaint) then OnPaint(Self);
+  if (not (csDesigning in ComponentState))
+  and Enabled and Visible and HandleAllocated
+  and (gint(True) = gtk_gl_area_make_current(Widget)) then begin
+    UpdateFrameTimeDiff;
+    DoOnPaint;
+  end;
 end;
 
 procedure TCustomGTKGLAreaControl.DoOnResize;
 begin
-  if (gint(True) = gtk_gl_area_make_current(Widget)) then
+  if HandleAllocated and (gint(True) = gtk_gl_area_make_current(Widget)) then
     glViewport (0, 0, Width, Height);
   inherited DoOnResize;
+end;
+
+procedure TCustomGTKGLAreaControl.DoOnPaint;
+begin
+  if Assigned(OnPaint) then OnPaint(Self);
 end;
 
 procedure TCustomGTKGLAreaControl.WMPaint(var Message: TLMPaint);
@@ -141,9 +163,7 @@ begin
       LineTo(Width,0);
     end;
   end else begin
-    if (Widget<>nil)
-    and (gint(True) = gtk_gl_area_make_current(Widget)) then
-      Paint;
+    Paint;
   end;
   Exclude(FControlState, csCustomPaint);
 end;
@@ -167,6 +187,20 @@ begin
     Handle := longint(NewWidget);
     TGtkObject(InterfaceObject).FinishComponentCreate(Self,NewWidget,true);
   end;
+end;
+
+procedure TCustomGTKGLAreaControl.UpdateFrameTimeDiff;
+var
+  hour, minutes, secs, msecs, usecs: word;
+begin
+  GetTime(hour, minutes, secs, msecs, usecs);
+  FCurrentFrameTime:=(((minutes*60)+secs) * 1000)+msecs;
+  if FLastFrameTime=0 then
+    FLastFrameTime:=FCurrentFrameTime;
+  // calculate time since last call:
+  FFrameDiffTime:=FCurrentFrameTime-FLastFrameTime;
+  // if the hour changed, the minutes restarts:
+  if (FFrameDiffTime<0) then inc(FFrameDiffTime,60*60*1000);
 end;
 
 initialization

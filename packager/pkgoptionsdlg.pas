@@ -166,7 +166,14 @@ begin
   AnEdit:=GetEditForPathButton(AButton);
   OldPath:=AnEdit.Text;
   if AButton=UnitPathButton then begin
-    Templates:='$(PkgOutDir)';
+    Templates:=SetDirSeparators(
+           '$(PkgOutDir)'
+          +';$(LazarusDir)/lcl/units'
+          +';$(LazarusDir)/lcl/units/$(LCLWidgetType)'
+          +';$(LazarusDir)/components/units'
+          +';$(LazarusDir)/components/custom'
+          +';$(LazarusDir)/packager/units'
+          );
   end;
   if AButton=IncludePathButton then begin
     Templates:='include';
