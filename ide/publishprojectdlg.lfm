@@ -1,278 +1,260 @@
 object PublishProjectDialog: TPublishProjectDialog
-  CAPTION = 'Publish Project'
-  CLIENTHEIGHT = 462
-  CLIENTWIDTH = 469
-  POSITION = poscreencenter
-  ONRESIZE = PublishProjectDialogRESIZE
-  HORZSCROLLBAR.PAGE = 470
-  VERTSCROLLBAR.PAGE = 463
-  LEFT = 307
-  HEIGHT = 462
-  TOP = 165
-  WIDTH = 469
-  object OkButton: TBUTTON
-    ANCHORS = [aktop, akright]
-    MODALRESULT = 1
-    CAPTION = 'Ok'
-    TABSTOP = True
-    ONCLICK = OkButtonCLICK
-    LEFT = 72
-    HEIGHT = 25
-    TOP = 432
-    WIDTH = 75
+  Caption = 'Publish Project'
+  ClientHeight = 462
+  ClientWidth = 469
+  OnResize = PublishProjectDialogRESIZE
+  Position = poscreencenter
+  HorzScrollBar.Page = 470
+  VertScrollBar.Page = 463
+  Left = 307
+  Height = 462
+  Top = 165
+  Width = 469
+  object OkButton: TButton
+    Anchors = [aktop, akright]
+    ModalResult = 1
+    Caption = 'Ok'
+    TabStop = True
+    TabOrder = 0
+    OnClick = OkButtonCLICK
+    Left = 72
+    Height = 25
+    Top = 432
+    Width = 75
   end
-  object CancelButton: TBUTTON
-    ANCHORS = [aktop, akright]
-    MODALRESULT = 2
-    CAPTION = 'Cancel'
-    TABSTOP = True
-    TABORDER = 1
-    LEFT = 371
-    HEIGHT = 25
-    TOP = 432
-    WIDTH = 75
+  object CancelButton: TButton
+    Anchors = [aktop, akright]
+    ModalResult = 2
+    Caption = 'Cancel'
+    TabStop = True
+    TabOrder = 1
+    Left = 371
+    Height = 25
+    Top = 432
+    Width = 75
   end
-  object DestDirGroupBox: TGROUPBOX
-    ANCHORS = [aktop, akleft]
-    CAPTION = 'Destination directory'
-    COLOR = -2147483643
-    PARENTCTL3D = False
-    TABORDER = 2
-    ONRESIZE = DestDirGroupBoxRESIZE
-    LEFT = 8
-    HEIGHT = 111
-    TOP = 8
-    WIDTH = 450
-    object DestDirComboBox: TCOMBOBOX
-      ANCHORS = [aktop, akleft]
-      MAXLENGTH = 0
-      PARENTCTL3D = False
-      TABSTOP = True
-      TEXT = 'DestDirComboBox'
-      LEFT = 6
-      HEIGHT = 25
-      TOP = 1
-      WIDTH = 350
+  object DestDirGroupBox: TGroupBox
+    Caption = 'Destination directory'
+    ClientHeight = 94
+    ClientWidth = 446
+    ParentCtl3D = False
+    TabOrder = 2
+    OnResize = DestDirGroupBoxRESIZE
+    Left = 8
+    Height = 111
+    Top = 8
+    Width = 450
+    object DestDirComboBox: TComboBox
+      MaxLength = 0
+      ParentCtl3D = False
+      TabOrder = 0
+      TabStop = True
+      Text = 'DestDirComboBox'
+      Left = 6
+      Height = 25
+      Top = 1
+      Width = 350
     end
-    object BrowseDestDirBitBtn: TBITBTN
-      GLYPH.Data = {
+    object BrowseDestDirBitBtn: TBitBtn
+      Glyph.Data = {
         3A000000424D3A00000000000000360000002800000001000000010000000100
         100000000000040000005A00000060000000400000004000000000000000
       }
-      SPACING = 3
-      ANCHORS = [aktop, akleft]
-      CAPTION = 'Browse'
-      TABSTOP = True
-      TABORDER = 1
-      ONCLICK = BrowseDestDirBitBtnCLICK
-      LEFT = 366
-      HEIGHT = 25
-      TOP = 1
-      WIDTH = 72
+      Spacing = 3
+      Caption = 'Browse'
+      TabStop = True
+      TabOrder = 1
+      OnClick = BrowseDestDirBitBtnCLICK
+      Left = 366
+      Height = 25
+      Top = 1
+      Width = 72
     end
-    object CommandAfterCombobox: TCOMBOBOX
-      ANCHORS = [aktop, akleft]
-      MAXLENGTH = 0
-      PARENTCTL3D = False
-      TABORDER = 2
-      TABSTOP = True
-      TEXT = 'CommandAfterCombobox'
-      LEFT = 6
-      HEIGHT = 25
-      TOP = 58
-      WIDTH = 430
+    object CommandAfterCombobox: TComboBox
+      MaxLength = 0
+      ParentCtl3D = False
+      TabOrder = 2
+      TabStop = True
+      Text = 'CommandAfterCombobox'
+      Left = 6
+      Height = 25
+      Top = 58
+      Width = 430
     end
-    object CommandAfterLabel: TLABEL
-      ANCHORS = [aktop, akleft]
-      CAPTION = 'Command after:'
-      COLOR = -2147483643
-      LAYOUT = tltop
-      LEFT = 6
-      HEIGHT = 17
-      TOP = 33
-      WIDTH = 428
+    object CommandAfterLabel: TLabel
+      Caption = 'Command after:'
+      Layout = tltop
+      Left = 6
+      Height = 17
+      Top = 33
+      Width = 428
     end
   end
-  object FilesGroupbox: TGROUPBOX
-    ANCHORS = [aktop, akleft]
-    CAPTION = 'Files'
-    COLOR = -2147483643
-    PARENTCTL3D = False
-    TABORDER = 3
-    ONRESIZE = FilesGroupboxRESIZE
-    LEFT = 8
-    HEIGHT = 44
-    TOP = 128
-    WIDTH = 450
-    object IgnoreBinariesCheckbox: TCHECKBOX
-      AUTOSIZE = True
-      ALLOWGRAYED = True
-      ANCHORS = [aktop, akleft]
-      CAPTION = 'Ignore binaries'
-      DRAGCURSOR = 0
-      TABSTOP = True
-      TABSTOP = True
-      LEFT = 6
-      HEIGHT = 20
-      TOP = 1
-      WIDTH = 161
+  object FilesGroupbox: TGroupBox
+    Caption = 'Files'
+    ClientHeight = 27
+    ClientWidth = 446
+    ParentCtl3D = False
+    TabOrder = 3
+    OnResize = FilesGroupboxRESIZE
+    Left = 8
+    Height = 44
+    Top = 128
+    Width = 450
+    object IgnoreBinariesCheckbox: TCheckBox
+      AllowGrayed = True
+      AutoSize = True
+      Caption = 'Ignore binaries'
+      DragCursor = crDefault
+      TabOrder = 0
+      TabStop = True
+      Left = 6
+      Height = 20
+      Top = 1
+      Width = 161
     end
   end
-  object ProjectInfoGroupbox: TGROUPBOX
-    ANCHORS = [aktop, akleft]
-    CAPTION = 'Project Information'
-    COLOR = -2147483643
-    PARENTCTL3D = False
-    TABORDER = 4
-    ONRESIZE = ProjectInfoGroupboxRESIZE
-    LEFT = 8
-    HEIGHT = 69
-    TOP = 344
-    WIDTH = 450
-    object SaveClosedEditorFilesInfoCheckbox: TCHECKBOX
-      AUTOSIZE = True
-      ALLOWGRAYED = True
-      ANCHORS = [aktop, akleft]
-      CAPTION = 'Save editor info of closed files'
-      DRAGCURSOR = 0
-      TABSTOP = True
-      TABSTOP = True
-      LEFT = 4
-      HEIGHT = 20
-      TOP = 1
-      WIDTH = 432
+  object ProjectInfoGroupbox: TGroupBox
+    Caption = 'Project Information'
+    ClientHeight = 52
+    ClientWidth = 446
+    ParentCtl3D = False
+    TabOrder = 4
+    OnResize = ProjectInfoGroupboxRESIZE
+    Left = 8
+    Height = 69
+    Top = 344
+    Width = 450
+    object SaveClosedEditorFilesInfoCheckbox: TCheckBox
+      AllowGrayed = True
+      AutoSize = True
+      Caption = 'Save editor info of closed files'
+      DragCursor = crDefault
+      TabOrder = 0
+      TabStop = True
+      Left = 4
+      Height = 20
+      Top = 1
+      Width = 432
     end
-    object SaveEditorInfoOfNonProjectFilesCheckbox: TCHECKBOX
-      AUTOSIZE = True
-      ALLOWGRAYED = True
-      ANCHORS = [aktop, akleft]
-      CAPTION = 'Save editor info of non project files'
-      DRAGCURSOR = 0
-      TABORDER = 1
-      TABSTOP = True
-      TABORDER = 1
-      TABSTOP = True
-      LEFT = 4
-      HEIGHT = 20
-      TOP = 26
-      WIDTH = 432
+    object SaveEditorInfoOfNonProjectFilesCheckbox: TCheckBox
+      AllowGrayed = True
+      AutoSize = True
+      Caption = 'Save editor info of non project files'
+      DragCursor = crDefault
+      TabOrder = 1
+      TabStop = True
+      Left = 4
+      Height = 20
+      Top = 26
+      Width = 432
     end
   end
-  object SaveSettingsButton: TBUTTON
-    ANCHORS = [aktop, akright]
-    CAPTION = 'Save settings'
-    TABSTOP = True
-    TABORDER = 5
-    ONCLICK = SaveSettingsButtonCLICK
-    LEFT = 198
-    HEIGHT = 25
-    TOP = 432
-    WIDTH = 120
+  object SaveSettingsButton: TButton
+    Anchors = [aktop, akright]
+    Caption = 'Save settings'
+    TabStop = True
+    TabOrder = 5
+    OnClick = SaveSettingsButtonCLICK
+    Left = 198
+    Height = 25
+    Top = 432
+    Width = 120
   end
-  object IncludeFilterGroupbox: TGROUPBOX
-    ANCHORS = [aktop, akleft]
-    CAPTION = 'Include Filter'
-    COLOR = -2147483643
-    PARENTCTL3D = False
-    TABORDER = 6
-    TABSTOP = True
-    ONRESIZE = IncludeFilterGroupboxRESIZE
-    LEFT = 8
-    HEIGHT = 75
-    TOP = 176
-    WIDTH = 450
-    object UseIncludeFilterCheckbox: TCHECKBOX
-      AUTOSIZE = True
-      ALLOWGRAYED = True
-      ANCHORS = [aktop, akleft]
-      CAPTION = 'Use Include Filter'
-      DRAGCURSOR = 0
-      TABSTOP = True
-      TABSTOP = True
-      LEFT = 6
-      HEIGHT = 20
-      TOP = 1
-      WIDTH = 171
+  object IncludeFilterGroupbox: TGroupBox
+    Caption = 'Include Filter'
+    ClientHeight = 58
+    ClientWidth = 446
+    ParentCtl3D = False
+    TabOrder = 6
+    TabStop = True
+    OnResize = IncludeFilterGroupboxRESIZE
+    Left = 8
+    Height = 75
+    Top = 176
+    Width = 450
+    object UseIncludeFilterCheckbox: TCheckBox
+      AllowGrayed = True
+      AutoSize = True
+      Caption = 'Use Include Filter'
+      DragCursor = crDefault
+      TabOrder = 0
+      TabStop = True
+      Left = 6
+      Height = 20
+      Top = 1
+      Width = 171
     end
-    object IncFilterSimpleSyntaxCheckbox: TCHECKBOX
-      AUTOSIZE = True
-      ALLOWGRAYED = True
-      ANCHORS = [aktop, akleft]
-      CAPTION = 'Simple Syntax'
-      DRAGCURSOR = 0
-      TABORDER = 1
-      TABSTOP = True
-      TABORDER = 1
-      TABSTOP = True
-      LEFT = 196
-      HEIGHT = 20
-      TOP = 2
-      WIDTH = 201
+    object IncFilterSimpleSyntaxCheckbox: TCheckBox
+      AllowGrayed = True
+      AutoSize = True
+      Caption = 'Simple Syntax'
+      DragCursor = crDefault
+      TabOrder = 1
+      TabStop = True
+      Left = 196
+      Height = 20
+      Top = 2
+      Width = 201
     end
-    object IncludeFilterCombobox: TCOMBOBOX
-      ANCHORS = [aktop, akleft]
-      MAXLENGTH = 0
-      PARENTCTL3D = False
-      TABORDER = 2
-      TABSTOP = True
-      TEXT = 'IncludeFilterCombobox'
-      LEFT = 6
-      HEIGHT = 25
-      TOP = 25
-      WIDTH = 430
+    object IncludeFilterCombobox: TComboBox
+      MaxLength = 0
+      ParentCtl3D = False
+      TabOrder = 2
+      TabStop = True
+      Text = 'IncludeFilterCombobox'
+      Left = 6
+      Height = 25
+      Top = 25
+      Width = 430
     end
   end
-  object ExcludeFilterGroupbox: TGROUPBOX
-    ANCHORS = [aktop, akleft]
-    CAPTION = 'Exclude Filter'
-    COLOR = -2147483643
-    PARENTCTL3D = False
-    TABORDER = 7
-    TABSTOP = True
-    ONRESIZE = ExcludeFilterGroupboxRESIZE
-    LEFT = 8
-    HEIGHT = 79
-    TOP = 256
-    WIDTH = 448
-    object UseExcludeFilterCheckbox: TCHECKBOX
-      AUTOSIZE = True
-      ALLOWGRAYED = True
-      ANCHORS = [aktop, akleft]
-      CAPTION = 'Use Exclude Filter'
-      DRAGCURSOR = 0
-      TABSTOP = True
-      TABSTOP = True
-      LEFT = 6
-      HEIGHT = 20
-      TOP = 5
-      WIDTH = 151
+  object ExcludeFilterGroupbox: TGroupBox
+    Caption = 'Exclude Filter'
+    ClientHeight = 62
+    ClientWidth = 444
+    ParentCtl3D = False
+    TabOrder = 7
+    TabStop = True
+    OnResize = ExcludeFilterGroupboxRESIZE
+    Left = 8
+    Height = 79
+    Top = 256
+    Width = 448
+    object UseExcludeFilterCheckbox: TCheckBox
+      AllowGrayed = True
+      AutoSize = True
+      Caption = 'Use Exclude Filter'
+      DragCursor = crDefault
+      TabOrder = 0
+      TabStop = True
+      Left = 6
+      Height = 20
+      Top = 5
+      Width = 151
     end
-    object ExcFilterSimpleSyntaxCheckbox: TCHECKBOX
-      AUTOSIZE = True
-      ALLOWGRAYED = True
-      ANCHORS = [aktop, akleft]
-      CAPTION = 'Simple Syntax'
-      DRAGCURSOR = 0
-      TABORDER = 1
-      TABSTOP = True
-      TABORDER = 1
-      TABSTOP = True
-      LEFT = 199
-      HEIGHT = 20
-      TOP = 6
-      WIDTH = 212
+    object ExcFilterSimpleSyntaxCheckbox: TCheckBox
+      AllowGrayed = True
+      AutoSize = True
+      Caption = 'Simple Syntax'
+      DragCursor = crDefault
+      TabOrder = 1
+      TabStop = True
+      Left = 199
+      Height = 20
+      Top = 6
+      Width = 212
     end
-    object ExcludeFilterCombobox: TCOMBOBOX
-      ANCHORS = [aktop, akleft]
-      MAXLENGTH = 0
-      PARENTCTL3D = False
-      TABORDER = 2
-      TABSTOP = True
-      TEXT = 'ExcludeFilterCombobox'
-      LEFT = 6
-      HEIGHT = 25
-      TOP = 30
-      WIDTH = 430
+    object ExcludeFilterCombobox: TComboBox
+      MaxLength = 0
+      ParentCtl3D = False
+      TabOrder = 2
+      TabStop = True
+      Text = 'ExcludeFilterCombobox'
+      Left = 6
+      Height = 25
+      Top = 30
+      Width = 430
     end
   end
 end

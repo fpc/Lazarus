@@ -14,7 +14,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
   Width = 480
   object nbDebugOptions: TNotebook
     Align = altop
-    PageIndex = 0
+    PageIndex = 3
     Height = 398
     Width = 480
     object pgGeneral: TPage
@@ -29,8 +29,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         Caption = 'Debugger type and path'
         ClientHeight = 69
         ClientWidth = 468
-        Color = clBtnFace
-        ParentColor = True
         ParentCtl3D = False
         TabOrder = 0
         Left = 2
@@ -73,8 +71,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         Caption = 'Additional search path'
         ClientHeight = 35
         ClientWidth = 468
-        Color = clBtnFace
-        ParentColor = True
         ParentCtl3D = False
         TabOrder = 1
         Left = 2
@@ -103,8 +99,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         Caption = 'Debugger specific options (depends on type of debugger)'
         ClientHeight = 187
         ClientWidth = 468
-        Color = clBtnFace
-        ParentColor = True
         ParentCtl3D = False
         TabOrder = 2
         Left = 2
@@ -125,8 +119,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         Caption = 'General'
         ClientHeight = 115
         ClientWidth = 226
-        Color = clBtnFace
-        ParentColor = True
         ParentCtl3D = False
         TabOrder = 0
         Left = 4
@@ -173,9 +165,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         Caption = 'Messages'
         ClientHeight = 171
         ClientWidth = 228
-        Color = clBtnFace
         Enabled = False
-        ParentColor = True
         ParentCtl3D = False
         TabOrder = 1
         Left = 242
@@ -280,8 +270,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         Caption = 'Ignore these exceptions'
         ClientHeight = 311
         ClientWidth = 464
-        Color = clBtnFace
-        ParentColor = True
         ParentCtl3D = False
         TabOrder = 0
         Left = 4
@@ -345,8 +333,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         Caption = 'Signals'
         ClientHeight = 337
         ClientWidth = 464
-        Color = clBtnFace
-        ParentColor = True
         ParentCtl3D = False
         TabOrder = 0
         Left = 4
@@ -373,7 +359,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           Width = 75
         end
         object lvSignals: TListView
-          Color = clBtnFace
           Columns = <          
             item
               Caption = 'Name'

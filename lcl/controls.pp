@@ -888,7 +888,7 @@ type
     property Constraints: TSizeConstraints read FConstraints write SetConstraints;
     property ControlState: TControlState read FControlState write FControlState;
     property ControlStyle: TControlStyle read FControlStyle write FControlStyle;
-    property Color: TColor read FColor write SetColor stored ColorIsStored;
+    property Color: TColor read FColor write SetColor stored ColorIsStored default clWindow;
     property Ctl3D: Boolean read FCtl3D write FCtl3D;//Is this needed for anything other than compatability?
     property Enabled: Boolean read GetEnabled write SetEnabled default True;
     property Font: TFont read FFont write SetFont;
@@ -1853,6 +1853,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.162  2003/12/27 20:15:15  mattias
+  set some colors to default
+
   Revision 1.161  2003/12/25 14:17:07  mattias
   fixed many range check warnings
 
