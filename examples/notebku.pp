@@ -25,7 +25,7 @@ unit notebku;
 
 interface
 
-uses Classes, SysUtils, Controls, Forms, ExtCtrls, Buttons;
+uses Classes, SysUtils, Controls, Forms, ExtCtrls, Buttons, StdCtrls;
 
 type
    TForm1 = class(TForm)
@@ -40,6 +40,11 @@ type
      fButton4: TButton;
      fButton5: TButton;
      fButton6: TButton;
+     FRadButton: TRadioButton;
+     FCheckBox: TCheckBox;
+     FComboBox: TComboBox;
+     FLabel: TLabel;
+     FGroupbox1, FGroupbox2: TGroupBox;
      constructor Create(AOwner: TComponent); override;
      procedure Button1Click(Sender: TObject);
      procedure Button2Click(Sender: TObject);
@@ -138,6 +143,79 @@ begin
       left := (fNotebk.Width - Width) div 2;
       top := 20;
       Caption := 'Goto Last Page';
+      Show; 
+   end;
+
+   fGroupBox1 := TGroupBox.Create(Self);
+   with fGroupBox1 do
+   begin
+      Parent := fNotebk.Page[0];
+      Width := 250;
+      Height := 250;
+      left := (fNotebk.Width - Width) div 2;
+      top := 50;
+      Caption := 'Groupbox 1';
+      Show; 
+   end;
+
+   fGroupBox2 := TGroupBox.Create(Self);
+   with fGroupBox2 do
+   begin
+      Parent := fGroupBox1;
+      Width := 220;
+      Height := 210;
+      left := 10;
+      top := 10;
+      Caption := 'Groupbox 2';
+      Show; 
+   end;
+
+   fRadButton := TRadioButton.Create(Self);
+   with fRadButton do
+   begin
+      Parent := fGroupBox2;
+      Width := 150;
+      Height := 23;
+      left := 10;
+      top := 10;
+      Caption := 'Radiobutton 1';
+      Show; 
+   end;
+
+   fCheckBox := TCheckBox.Create(Self);
+   with fCheckBox do
+   begin
+      Parent := fGroupBox2;
+      Width := 150;
+      Height := 23;
+      left := 10;
+      top := 40;
+      Caption := 'Checkbox 1';
+      Show; 
+   end;
+
+   fComboBox := TComboBox.Create(Self);
+   with fComboBox do
+   begin
+      Parent := fGroupBox2;
+      Width := 150;
+      Height := 23;
+      left := 10;
+      top := 70;
+      Caption := 'Combobox 1';
+      Show; 
+   end;
+
+   fLabel := TLabel.Create(Self);
+   with fLabel do
+   begin
+      Parent := fGroupbox2;
+      OnClick := @Button2Click;
+      Width := 150;
+      Height := 23;
+      left := 10;
+      top := 100;
+      Caption := 'Label 1';
       Show; 
    end;
 
@@ -263,6 +341,9 @@ end.
 
 {
   $Log$
+  Revision 1.7  2004/11/05 10:47:57  micha
+  extend with more controls to test painting interactions
+
   Revision 1.6  2003/07/25 08:52:43  mattias
   fixed nested notebook example
 

@@ -98,7 +98,7 @@ procedure TForm1.LoadMainMenu;
 begin
   { set the height and width }
   Height := 350;
-  Width := 700;
+  Width := 350;
 
   { Create a groupbox }
   grpTst := TGroupBox.Create(Self);
@@ -117,6 +117,15 @@ begin
   begin
     Button2 := TButton.Create(grpTst);
     Button2.Parent := grpTst;
+
+    Checkbox1 := TCheckBox.Create(grpTst);
+    Checkbox1.Parent := grpTst;
+    Checkbox1.Name:='Checkbox1';
+    Checkbox1.Left := 200;
+    Checkbox1.Top := 100;
+    Checkbox1.Width := 80;
+    Checkbox1.Height := 30;
+    Checkbox1.Caption := 'Checkbox 1';
   end
   else begin
     Button2 := TButton.Create(Self);
