@@ -371,7 +371,7 @@ begin
    Font.Pitch     := fpDefault;
    Font.Size      := 10;
  //Font.Style     := Form1.Font.Style+[fsBold];           //Access violation
-   FormStyle      := fsStayOnTop;
+   FormStyle      := fsNormal;
  //Height         := 300;
  //HelpContext    := 0;
  //HelpFile
@@ -2585,6 +2585,9 @@ END.
 
 {
   $Log$
+  Revision 1.17  2004/09/11 20:22:18  vincents
+  set form style to fsNormal, so that it becomes the mainform
+
   Revision 1.16  2004/02/19 09:45:40  mattias
   fixed compilation   from Vincent
 
