@@ -3766,19 +3766,19 @@ begin
     VK_LCONTROL: nVirtKey := VK_CONTROL;
     VK_LMENU:    nVirtKey := VK_MENU;
   end;
-  Result := KEYSTATE[FKeyStateList.IndexOf(Pointer(nVirtKey)) <> -1];
+  Result := KEYSTATE[FKeyStateList.IndexOf(Pointer(nVirtKey)) >=0];
 
   // try extended keys
   if Result = 0 
   then begin
     nVirtKey := nVirtKey or KEYMAP_EXTENDED;
-    Result := KEYSTATE[FKeyStateList.IndexOf(Pointer(nVirtKey)) <> -1];
+    Result := KEYSTATE[FKeyStateList.IndexOf(Pointer(nVirtKey)) >=0];
   end;
   
   // add toggle
   if Result <> 0 then
     Result := Result or TOGGLESTATE[FKeyStateList.IndexOf(Pointer(
-                                             nVirtKey or KEYMAP_TOGGLE)) <> -1];
+                                             nVirtKey or KEYMAP_TOGGLE)) >=0];
 
   //Assert(False, Format('Trace:[TgtkObject.GetKeyState] %d -> 0x%x', [nVirtKey, Result]));
 end;
@@ -8078,6 +8078,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.236  2003/04/26 10:45:34  mattias
+  fixed right control release
+
   Revision 1.235  2003/04/16 22:11:35  mattias
   fixed codetools Makefile, fixed default prop not found error
 

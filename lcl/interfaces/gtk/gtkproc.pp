@@ -262,7 +262,7 @@ Procedure InitializePalette(Pal : PGDIObject; Entries : PPALETTEENTRY; RGBCount 
 function GTKEventState2ShiftState(KeyState: Word): TShiftState;
 function KeyToListCode(KeyCode, VirtKeyCode: Word; Extended: boolean): integer;
 procedure GetGTKKeyInfo(const Event: PGDKEventKey; var KeyCode,VirtualKey: Word;
-  var SysKey, Extended, Toggle: Boolean);
+  var SysKey, Extended, Toggle: Boolean; var ShiftState: TShiftState);
 procedure StoreCommonDialogSetup(ADialog: TCommonDialog);
 procedure DestroyCommonDialogAddOns(ADialog: TCommonDialog);
 function ObjectToGTKObject(const AObject: TObject): PGtkObject;
