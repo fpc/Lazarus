@@ -76,7 +76,11 @@ begin
   {$ENDIF}
 
   SplashForm.StartTimer;
-  Application.Run;
+  try
+    Application.Run;
+  except
+    writeln('lazarus.pp - unhandled exception');
+  end;
   SplashForm.Free;
   SplashForm:=nil;
 
@@ -90,6 +94,9 @@ end.
 
 {
   $Log$
+  Revision 1.45  2003/05/30 12:41:46  mattias
+  added checks and texts for mixing gtk1 and gtk2
+
   Revision 1.44  2003/05/30 08:10:51  mattias
   added try except to Application.Run, message on changing debugger items during compile
 

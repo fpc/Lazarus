@@ -1,0 +1,21 @@
+Package GtkOpenGL
+
+Contains the lcl component TGTKGLAreaControl, which wraps the gtkglarea, a
+gtk widget for opengl. This component works only with the gtk interface.
+
+There is an example in examples/gtkglarea/.
+
+
+WARNING:
+Make sure your program links to libgtkgl, not to libgtkgl-2.0. Linking to
+libgtkgl-2.0 will result in mixing gtk1 and gtk2 in your program/IDE, which
+will result in al kinds of strange errors, including freezing your
+windowmanager.
+You can find out, what libs were linked to your program with the ldd program:
+
+[]$ ldd yourprogram
+
+
+ToDo:
+Add an example using the package.
+
