@@ -43,13 +43,14 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomLabel.GetLabelText: String;
 begin
-  GetLabelText:= Caption;
+  Result := Caption;
 end;
 
 procedure TCustomLabel.Notification(AComponent : TComponent; Operation : TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if (AComponent = FFocusControl) and (Operation = opRemove) then FFocusControl:= nil;
+  if (AComponent = FFocusControl) and (Operation = opRemove) then
+    FFocusControl:= nil;
 end;
 
 {------------------------------------------------------------------------------
@@ -62,9 +63,10 @@ procedure TCustomLabel.SetAlignment(Value : TAlignment);
 begin
   if fAlignment <> value then begin
     fAlignment:= value;
-    HandleNeeded;
-    Invalidate;
-    CNSendMessage(LM_SETPROPERTIES, Self, nil);
+    if HandleAllocated then begin
+      Invalidate;
+      CNSendMessage(LM_SETPROPERTIES, Self, nil);
+    end;
   end;
 end;
 
@@ -114,7 +116,8 @@ procedure TCustomLabel.SetLayout(Value : TTextLayout);
 begin
   if FLayout <> Value then begin
     FLayout:= Value;
-    CNSendMessage(LM_SETPROPERTIES, Self, nil);
+    if HandleAllocated then
+      CNSendMessage(LM_SETPROPERTIES, Self, nil);
   end;
 end;
 
@@ -142,9 +145,10 @@ procedure TCustomLabel.SetWordWrap(Value : Boolean);
 begin
   if fWordWrap <> value then begin
     fWordWrap:= value;
-    HandleNeeded;
-    Invalidate;
-    CNSendMessage(LM_SETPROPERTIES, Self, nil);
+    if HandleAllocated then begin
+      Invalidate;
+      CNSendMessage(LM_SETPROPERTIES, Self, nil);
+    end;
   end;
 end;
 
@@ -166,6 +170,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.8  2002/10/16 17:06:33  lazarus
+  MG: fixed handle allocating in TLabel
+
   Revision 1.7  2002/10/03 00:08:50  lazarus
   AJ: TCustomLabel Autosize, TCustomCheckbox '&' shortcuts started
 
