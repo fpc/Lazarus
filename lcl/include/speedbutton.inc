@@ -292,8 +292,8 @@ begin
   end;
   if FGlyph=nil then exit;
 
-  PaintRect := Bounds(Left, Top, Width, Height);
 //  PaintRect := Rect(0, 0, Width, Height);
+  PaintRect:= ClientRect;
 
   {if Transparent and not (csDesigning in ComponentState) then
     BrushStyle:= bsClear
@@ -657,6 +657,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.28  2002/09/13 11:49:47  lazarus
+  Cleanups, extended TStatusBar, graphic control cleanups.
+
   Revision 1.27  2002/09/12 15:53:10  lazarus
   MG: small bugfixes
 
