@@ -93,6 +93,7 @@ type
     GC: pgdkGC;
     Drawable: PGDKDrawable;
     Origin: TPoint;
+    SpecialOrigin: boolean;
     PenPos: TPoint;
     CurrentBitmap: PGdiObject;
     CurrentFont: PGdiObject;
@@ -325,6 +326,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.16  2002/09/06 16:38:25  lazarus
+  MG: added GetDCOffset
+
   Revision 1.15  2002/08/30 12:32:22  lazarus
   MG: MoveWindowOrgEx, Splitted FWinControls/FControls, TControl drawing, Better DesignerDrawing, ...
 
