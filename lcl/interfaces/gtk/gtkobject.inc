@@ -1317,7 +1317,7 @@ begin
           ReDraw(PgtkWidget(TCanvas(Sender).Handle))
         else
           if not (Sender is TSpeedbutton) then begin
-            if Sender is TControl then
+            if Sender is TWinControl then
               ReDraw(PgtkWidget(Handle))
           end else begin
             // ToDo: always invalidate instead of perform
@@ -5724,6 +5724,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.200  2002/09/05 13:46:19  lazarus
+  MG: activated InvalidateControl for TWinControls
+
   Revision 1.199  2002/09/05 12:11:44  lazarus
   MG: TNotebook is now streamable
 
