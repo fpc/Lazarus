@@ -36,7 +36,7 @@ program UpdatePoFiles;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, FileCtrl, AVL_Tree;
+  Classes, SysUtils, FileUtil, AVL_Tree;
   
 type
   TMsgItem = record
