@@ -833,7 +833,7 @@ begin
       FindReplaceDlg.FindText,FindReplaceDlg.ReplaceText,FindReplaceDlg.Options);
   except
     on E: ERegExpr do begin
-      MessageDlg('Error in regular expression',
+      MessageDlg(lisUEErrorInRegularExpression,
         E.Message,mtError,[mbCancel],0);
       exit;
     end;
@@ -841,8 +841,8 @@ begin
   if (OldCaretXY.X=EditorComponent.CaretX)
   and (OldCaretXY.Y=EditorComponent.CaretY)
   and not (ssoReplaceAll in FindReplaceDlg.Options) then begin
-    ACaption:='Not found';
-    AText:='Search string '''+FindReplaceDlg.FindText+''' not found!';
+    ACaption:=lisUENotFound;
+    AText:=Format(lisUESearchStringNotFound, [FindReplaceDlg.FindText]);
     MessageDlg(ACaption,AText,mtInformation,[mbOk],0);
     TSourceNotebook(Owner).DeleteLastJumpPointClicked(Self);
   end else begin
@@ -859,8 +859,8 @@ var a,x,y:integer;
 begin
   if FAOwner<>nil then
     TSourceNotebook(FAOwner).UpdateStatusBar;
-  AText:='Replace this occurrence of "'+ASearch+'"'#13
-         +' with "'+AReplace+'"?';
+  AText:=Format(lisUEReplaceThisOccurrenceOfWith, ['"', ASearch, '"', #13, '"',
+    AReplace, '"']);
 
   GetDialogPosition(300,150,X,Y);
   a:=MessageDlgPos(AText,mtconfirmation,
@@ -3640,7 +3640,7 @@ begin
     
   if snIncrementalFind in States then begin
     Statusbar.SimplePanel:=true;
-    Statusbar.SimpleText:='Searching: '+IncrementalSearchStr;
+    Statusbar.SimpleText:=Format(lisUESearching, [IncrementalSearchStr]);
     
   end else begin
     Statusbar.SimplePanel:=false;
@@ -3653,7 +3653,8 @@ begin
 
     If TempEditor.ReadOnly then
       if StatusBar.Panels[1].Text <> '' then
-        StatusBar.Panels[1].Text := StatusBar.Panels[1].Text + '/ReadOnly'
+        StatusBar.Panels[1].Text := Format(lisUEReadOnly, [StatusBar.Panels[1
+          ].Text])
       else
         StatusBar.Panels[1].Text := uepReadonly;
 
@@ -4087,7 +4088,7 @@ begin
     Position := poScreenCenter;
     Width := 250;
     Height := 100;
-    Caption := 'Goto line';
+    Caption := lisMenuGotoLine;
     BorderStyle:= bsDialog;
 
     Label1 := TLabel.Create(self);
@@ -4096,7 +4097,7 @@ begin
       Parent := self;
       Top := 10;
       Left := 5;
-      Caption := 'Goto line :';
+      Caption := lisUEGotoLine;
       Visible := True;
     end;
 
