@@ -63,7 +63,12 @@ type
   private
   protected
   public
+    // Internal public
     class procedure SetCallbacks(const AGTKObject: PGTKObject; const AComponent: TComponent);
+  public
+    class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
+    class procedure SetSize(const AWinControl: TWinControl; const AWidth, AHeight: Integer); override;
+    class procedure SetPos(const AWinControl: TWinControl; const ALeft, ATop: Integer); override;
     class procedure SetCursor(const AControl: TControl; const ACursor: TCursor); override;
   end;
 
@@ -99,6 +104,17 @@ uses
 
 { TGtkWSWinControl }
   
+procedure TGtkWSWinControl.SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); 
+var
+  Allocation: TGTKAllocation;
+begin                
+  Allocation.X := ALeft;
+  Allocation.Y := ATop;
+  Allocation.Width := AWidth;
+  Allocation.Height := AHeight;
+  gtk_widget_size_allocate(PGtkWidget(AWinControl.Handle), @Allocation);
+end;
+
 procedure TGtkWSWinControl.SetCallbacks(const AGTKObject: PGTKObject; const AComponent: TComponent);
 //TODO: Remove ALCLObject when the creation splitup is finished
 begin
@@ -124,6 +140,32 @@ end;
 procedure TGtkWSWinControl.SetCursor(const AControl: TControl; const ACursor: TCursor);
 begin
   GtkProc.SetCursor(AControl as TWinControl, ACursor); 
+end;
+
+procedure TGtkWSWinControl.SetPos(const AWinControl: TWinControl; const ALeft, ATop: Integer); 
+var
+  Widget: PGtkWidget;
+  Allocation: TGTKAllocation;
+begin                
+  Widget := PGtkWidget(AWinControl.Handle);
+  Allocation.X := ALeft;
+  Allocation.Y := ATop;
+  Allocation.Width := Widget^.Allocation.Width;
+  Allocation.Height := Widget^.Allocation.Height;
+  gtk_widget_size_allocate(Widget, @Allocation);
+end;
+
+procedure TGtkWSWinControl.SetSize(const AWinControl: TWinControl; const AWidth, AHeight: Integer); 
+var
+  Widget: PGtkWidget;
+  Allocation: TGTKAllocation;
+begin                
+  Widget := PGtkWidget(AWinControl.Handle);
+  Allocation.X := Widget^.Allocation.X;
+  Allocation.Y := Widget^.Allocation.Y;
+  Allocation.Width := AWidth;
+  Allocation.Height := AHeight;
+  gtk_widget_size_allocate(Widget, @Allocation);
 end;
 
 

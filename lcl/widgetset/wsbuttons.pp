@@ -44,7 +44,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-//  Buttons,
+  Buttons, Graphics, 
 ////////////////////////////////////////////////////
   WSLCLClasses, WSStdCtrls, WSControls;
 
@@ -54,9 +54,14 @@ type
   TWSButton = class(TWSButtonControl)
   end;
 
-  { TWSBitBtn }
-
+  { TWSBitBtn } 
+  
+  TWSBitBtnClass = class of TWSBitBtn;
   TWSBitBtn = class(TWSButton)
+    class procedure SetGlyph(const ABitBtn: TBitBtn; const AValue: TBitmap); virtual;
+    class procedure SetLayout(const ABitBtn: TBitBtn; const AValue: TButtonLayout); virtual;
+    class procedure SetMargin(const ABitBtn: TBitBtn; const AValue: Integer); virtual;
+    class procedure SetSpacing(const ABitBtn: TBitBtn; const AValue: Integer); virtual;
   end;
 
   { TWSSpeedButton }
@@ -65,7 +70,40 @@ type
   end;
 
 
-implementation
+implementation 
+
+uses       
+  // TODO: remove when TWSBitBtn is implemented for win32 
+  Controls, LMessages;
+
+
+  { TWSBitBtn }
+  
+procedure TWSBitBtn.SetGlyph(const ABitBtn: TBitBtn; const AValue: TBitmap); 
+begin
+  //TODO: remove when implemented for win32
+  CNSendMessage(LM_IMAGECHANGED, ABitBtn, nil);
+  ABitBtn.Invalidate;
+end;
+
+procedure TWSBitBtn.SetLayout(const ABitBtn: TBitBtn; const AValue: TButtonLayout); 
+begin
+  //TODO: remove when implemented for win32
+  CNSendMessage(LM_LAYOUTCHANGED, ABitBtn, nil);
+end;
+
+procedure TWSBitBtn.SetMargin(const ABitBtn: TBitBtn; const AValue: Integer); 
+begin
+  //TODO: remove when implemented for win32
+  CNSendMessage(LM_LAYOUTCHANGED, ABitBtn, nil);
+end;
+
+procedure TWSBitBtn.SetSpacing(const ABitBtn: TBitBtn; const AValue: Integer); 
+begin   
+  //TODO: remove when implemented for win32
+  CNSendMessage(LM_LAYOUTCHANGED, ABitBtn, nil);
+end;
+
 
 initialization
 
@@ -74,7 +112,7 @@ initialization
 // which actually implement something
 ////////////////////////////////////////////////////
 //  RegisterWSComponent(TButton, TWSButton);
-//  RegisterWSComponent(TBitBtn, TWSBitBtn);
+  RegisterWSComponent(TBitBtn, TWSBitBtn);
 //  RegisterWSComponent(TSpeedButton, TWSSpeedButton);
 ////////////////////////////////////////////////////
 end.

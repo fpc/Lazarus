@@ -3086,16 +3086,16 @@ begin
   end;
 end;
 
-function CreateWidgetInfo(const AHandle: THandle; const AObject: TObject;
+function CreateWidgetInfo(const AWidget: Pointer; const AObject: TObject;
   const AParams: TCreateParams): PWidgetInfo;
 begin
-  Result := CreateWidgetInfo(Pointer(AHandle));
+  Result := CreateWidgetInfo(AWidget);
   if Result = nil then Exit;
   
   Result^.LCLObject := AObject;
   // in most cases the created widget is the core widget
   // so default to it
-  Result^.CoreWidget := Pointer(AHandle);
+  Result^.CoreWidget := AWidget;
   Result^.Style := AParams.Style;
   Result^.ExStyle := AParams.ExStyle;
   Result^.WndProc := Integer(AParams.WindowClass.lpfnWndProc);
@@ -6778,6 +6778,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.280  2004/05/16 23:24:41  marc
+  + Added WSBitBtn interface
+  + Implemented WSBitBtn interface for gtk
+
   Revision 1.279  2004/05/14 12:53:25  mattias
   improved grids e.g. OnPrepareCanvas   patch from Jesus
 

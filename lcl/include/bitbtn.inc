@@ -75,10 +75,8 @@ end;
 
 procedure TBitBtn.GlyphChanged(Sender: TObject);
 begin
-  if HandleAllocated then begin
-    CNSendMessage(LM_IMAGECHANGED,Self,nil);
-    Invalidate;
-  end;
+  if HandleAllocated 
+  then TWSBitBtnClass(WidgetSetClass).SetGlyph(Self, Glyph);
 end;
 
 procedure TBitBtn.ActionChange(Sender: TObject; CheckDefaults: Boolean);
@@ -109,55 +107,55 @@ begin
   end;
 end;
 
-Procedure TBitBtn.SetKind(AValue: TBitBtnKind);
+procedure TBitBtn.SetKind(AValue: TBitBtnKind);
 Begin
-  if FKind=AValue then exit;
+  if FKind = AValue then Exit;
   FKind := AValue;
   if FKind = bkCustom then Exit;
   
   RealizeKind;
 end;
 
-Procedure TBitBtn.SetLayout(AValue: TButtonLayout);
+procedure TBitBtn.SetLayout(AValue: TButtonLayout);
 Begin
   if FLayout = AValue then Exit;
   FLayout := AValue;
-  if HandleAllocated then
-    CNSendMessage(LM_LAYOUTCHANGED,Self,nil);
+  if HandleAllocated 
+  then TWSBitBtnClass(WidgetSetClass).SetLayout(Self, FLayout);
 end;
 
 procedure TBitBtn.SetMargin(const AValue: integer);
 begin
-  if FMargin=AValue then exit;
-  FMargin:=AValue;
-  if HandleAllocated then
-    //still send the layout message because it still calls the same procedure
-    CNSendMessage(LM_LAYOUTCHANGED,Self,nil);
+  if FMargin = AValue then Exit;
+  FMargin := AValue;
+  if HandleAllocated 
+  then TWSBitBtnClass(WidgetSetClass).SetMargin(Self, FMargin);
 end;
 
 Procedure TBitBtn.SetSpacing(AValue: Integer);
 Begin
   if (FSpacing = AValue) or (AValue < 0) then Exit;
   FSpacing := AValue;
-  if HandleAllocated then
-    //still send the layout message because it still calls the same procedure
-    CNSendMessage(LM_LAYOUTCHANGED,Self,nil);
+  if HandleAllocated 
+  then TWSBitBtnClass(WidgetSetClass).SetSpacing(Self, FSpacing);
 end;
 
 procedure TBitBtn.RealizeKind;
 var
   ABitmap: TBitmap;
 begin
-  if (Kind<>bkCustom) then begin
-    ABitmap:=Glyph;
-    if ABitmap=nil then
-      ABitmap := TBitmap.Create;
+  if (Kind<>bkCustom) 
+  then begin
+    ABitmap := Glyph;
+    if ABitmap = nil 
+    then ABitmap := TBitmap.Create;
     ABitmap.Handle := LoadStockPixmap(BitBtnImages[FKind]);
     Glyph := ABitmap;
   end;
 
-  if not (csLoading in ComponentState) then begin
-    Caption :=GetCaptionOfKind(fKind);
+  if not (csLoading in ComponentState) 
+  then begin
+    Caption := GetCaptionOfKind(fKind);
     ModalResult := BitBtnModalResults[FKind];
     Default := FKind in [bkOk,bkYes];
   end;
@@ -169,7 +167,7 @@ end;
 function TBitBtn.GetCaptionOfKind(aKind: TBitBtnKind): String;
 begin
   Result:='';
-  Case aKind of
+  case aKind of
     bkOK       : Result:=rsmbOK;
     bkCancel   : Result:=rsmbCancel;
     bkHelp     : Result:=rsmbHelp;
@@ -180,14 +178,18 @@ begin
     bkRetry    : Result:=rsmbRetry;
     bkIgnore   : Result:=rsmbIgnore;
     bkAll      : Result:=rsmbAll;
+    bkNoToAll  : Result:=rsmbNoToAll;
+    bkYesToAll : Result:=rsmbYesToAll;
   end;
 end;
 
 procedure TBitBtn.InitializeWnd;
 begin
   inherited;
-  // temp hack to force glyp creation 
-  CNSendMessage(LM_IMAGECHANGED,Self,nil);
+  TWSBitBtnClass(WidgetSetClass).SetGlyph(Self, Glyph);
+  TWSBitBtnClass(WidgetSetClass).SetLayout(Self, FLayout);  
+  TWSBitBtnClass(WidgetSetClass).SetMargin(Self, FMargin);  
+  TWSBitBtnClass(WidgetSetClass).SetSpacing(Self, FSpacing);  
 end;
 
 // included by buttons.pp

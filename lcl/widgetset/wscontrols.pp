@@ -67,7 +67,11 @@ type
   TWSWinControl = class(TWSControl)
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; virtual;
     class function  GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean; virtual;
+
+    class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); virtual;
     class procedure SetCursor(const AControl: TControl; const ACursor: TCursor); override;
+    class procedure SetPos(const AWinControl: TWinControl; const ALeft, ATop: Integer); virtual;
+    class procedure SetSize(const AWinControl: TWinControl; const AWidth, AHeight: Integer); virtual;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); virtual;
   end;       
   TWSWinControlClass = class of TWSWinControl;
@@ -115,9 +119,21 @@ begin
   then ALength := Length(S);
 end;
   
+procedure TWSWinControl.SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); 
+begin
+end;
+
 procedure TWSWinControl.SetCursor(const AControl: TControl; const ACursor: TCursor);
 begin
   //TODO: add default
+end;
+
+procedure TWSWinControl.SetPos(const AWinControl: TWinControl; const ALeft, ATop: Integer); 
+begin
+end;
+
+procedure TWSWinControl.SetSize(const AWinControl: TWinControl; const AWidth, AHeight: Integer); 
+begin
 end;
 
 procedure TWSWinControl.SetText(const AWinControl: TWinControl; const AText: String); 

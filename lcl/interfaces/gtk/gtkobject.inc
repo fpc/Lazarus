@@ -3143,10 +3143,6 @@ var
   Widget      : PGtkWidget;            // pointer to gtk-widget (local use when neccessary)
   ChildWidget : PGtkWidget;            // generic pointer to a child gtk-widget (local use when neccessary)
   AParent     : TWinControl;           // only used twice, replace with typecasts!
-  Pixmap      : pgdkPixMap;
-  box1        : pgtkWidget;            // currently only used for TBitBtn
-  pixmapwid   : pGtkWidget;            // currently only used for TBitBtn, possibly replace with pixmap!!!!
-  pLabel      : PgtkWidget;            // currently only used as extra label-widget for TBitBtn
   Num         : Integer;               // currently only used for LM_INSERTTOOLBUTTON and LM_ADDITEM
   pStr2       : PChar;                 // currently only used for LM_INSERTTOOLBUTTON
   GList       : pGList;                // Only used for listboxes, replace with widget!!!!!
@@ -3383,70 +3379,10 @@ begin
       end;
 
       //TBitBtn
-      LM_IMAGECHANGED, LM_LAYOUTCHANGED :
-      begin
-         box1 := gtk_object_get_data(pgtkObject(handle),'HBox');
-         if box1 <> nil then
-         begin
-            gtk_container_remove(PgtkContainer(box1),
-              gtk_object_get_data(pgtkObject(handle),'Label'));
-            PixMapWid:=gtk_object_get_data(pgtkObject(handle),'Pixmap');
-            if PixMapWid<>nil then
-              gtk_container_remove(PgtkContainer(box1),PixMapWid);
-            gtk_container_remove(PgtkContainer(handle),box1);
-            // gtk_container_remove automatically destroys box1 if ref count=0
-            //  so we dont need gtk_widget_destroy(box1);
-         end;
-
-         pixmap := pgdkPixmap(
-                     PgdiObject(TBitBtn(Sender).Glyph.Handle)^.GDIBitmapObject);
-         if (TBitBtn(Sender).Glyph.Width>0)
-         or (TBitBtn(Sender).Glyph.Height>0) then begin
-           if PgdiObject(TBitBtn(Sender).Glyph.handle)^.GDIBitmapMaskObject <> nil
-           then begin
-             PixMapWid := gtk_pixmap_new(pixmap,
-               PgdiObject(TBitBtn(Sender).Glyph.handle)^.GDIBitmapMaskObject)
-           end else begin
-             PixMapWid := gtk_pixmap_new(pixmap,nil);
-           end;
-         end else begin
-           PixMapWid:=nil;
-         end;
-
-         pLabel := gtk_label_new('bitbtn'); // the real text is set later
-
-         if (TBitBtn(Sender).Layout in [blGlyphLeft,blGlyphRight]) 
-         then box1 := gtk_hbox_new(False,0)
-         else box1 := gtk_vbox_new(False,0);
-
-         if (TBitBtn(Sender).Layout in [blGlyphLeft,blGlyphTop]) then
-         begin
-           if PixMapWid<>nil then
-             gtk_box_pack_start(pGTKBox(Box1),PixMapWid,false,false,
-               TBitBtn(Sender).Spacing);
-           gtk_box_pack_start(pGTKBox(Box1),pLabel,PixMapWid=nil,PixMapWid=nil,
-             TBitBtn(Sender).Spacing);
-         end
-         else begin
-           gtk_box_pack_start(pGTKBox(Box1),pLabel,PixMapWid=nil,PixMapWid=nil,
-             TBitBtn(Sender).Spacing);
-           if PixMapWid<>nil then
-             gtk_box_pack_start(pGTKBox(Box1),PixMapWid,False,False,
-               TBitBtn(Sender).Spacing);
-         end;
-         gtk_object_set_data(pgtkObject(handle),'HBox',Box1);
-         gtk_object_set_data(pgtkObject(handle),'Label',pLabel);
-         gtk_object_set_data(pgtkObject(handle),'Pixmap',PixMapWid);
-
-         if PixMapWid<>nil then
-           gtk_widget_show(pixmapwid);
-         gtk_widget_show(pLabel);
-         gtk_container_add(PgtkContainer(handle),box1);
-         gtk_widget_show(box1);
-                              
-         // Set the text for the new created label                     
-         TGtkWSBitBtn.SetText(TBitBtn(Sender), TBitBtn(Sender).Caption);
-      end;
+      LM_IMAGECHANGED:
+        DebugLn('[WARNING] Obsolete messagecall to LM_IMAGECHANGED for ', Sender.ClassName); 
+      LM_LAYOUTCHANGED:
+        DebugLn('[WARNING] Obsolete messagecall to LM_LAYOUTCHANGED for ', Sender.ClassName); 
 
   //SH: think of TBitmap.handle!!!!
      LM_LOADXPM:
@@ -6475,10 +6411,8 @@ var
   p          : pointer;          // ptr to the newly created GtkWidget
   CompStyle,                     // componentstyle (type) of GtkWidget which will be created
   TempInt   : Integer;           // local use when neccessary
-  // - for csBitBtn
-  Box       : Pointer;           // currently only used for TBitBtn
-  pixmapwid : pGtkWidget;        // currently only used for TBitBtn
-  label1    : pgtkwidget;        // currently only used for TBitBtn
+
+  Box       : Pointer;           // currently only used for MainMenu
   ParentForm: TCustomForm;
   AccelText : PChar;
   AccelKey  : guint;
@@ -6509,29 +6443,7 @@ begin
       p := gtk_arrow_new(gtk_arrow_left,gtk_shadow_etched_in);
     end;
 
-  csBitBtn :
-    begin
-      p := gtk_button_new;
-      if ((Sender as TBitBtn).Layout in [blGlyphLeft, blGlyphRight]) then
-        Box := gtk_hbox_new(False,0)
-      else
-        Box := gtk_vbox_new(False,0);
-
-      gtk_container_set_border_width(PgtkContainer(Box),2);
-
-      PixMapWid := nil;
-      Label1 := gtk_label_new(StrTemp);
-
-      gtk_box_pack_start(pGTkBox(Box), Label1, FALSE, FALSE, 3);
-      gtk_widget_show(Label1);
-      gtk_Container_add(PgtkContainer(p),Box);
-      gtk_widget_show(Box);
-
-      gtk_object_set_data(pgtkObject(p),'HBox',Box);
-      gtk_object_set_data(pgtkObject(p),'Pixmap',PixMapwid);
-      gtk_object_set_data(pgtkObject(p),'Label',Label1);
-    end;
-
+  csBitBtn,
   csButton: DebugLn('[WARNING] Obsolete call to TGTKOBject.CreateComponent for ', Sender.ClassName);
 
   csCalendar :
@@ -6634,12 +6546,7 @@ begin
       SetMainWidget(p, TempWidget);
       gtk_widget_show (P);
     end;
-(*
-  csGTKTable  :
-    begin
-      P := gtk_table_new(2,2,False);
-    end;
-*)
+
   csHintWindow :
     Begin
        p := gtk_window_new(gtk_window_popup);
@@ -9416,6 +9323,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.502  2004/05/16 23:24:41  marc
+  + Added WSBitBtn interface
+  + Implemented WSBitBtn interface for gtk
+
   Revision 1.501  2004/05/14 12:53:25  mattias
   improved grids e.g. OnPrepareCanvas   patch from Jesus
 

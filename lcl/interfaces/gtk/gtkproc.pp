@@ -298,7 +298,7 @@ procedure SetFixedWidget(const ParentWidget, FixedWidget: Pointer);
 Function GetControlWindow(Widget: Pointer): PGDKWindow;
 
 function CreateWidgetInfo(const AWidget: Pointer): PWidgetInfo;
-function CreateWidgetInfo(const AHandle: THandle; const AObject: TObject; const AParams: TCreateParams): PWidgetInfo;
+function CreateWidgetInfo(const AWidget: Pointer; const AObject: TObject; const AParams: TCreateParams): PWidgetInfo;
 function GetWidgetInfo(const AWidget: Pointer {; const ACreate: Boolean = False}): PWidgetInfo;
 function GetWidgetInfo(const AWidget: Pointer; const ACreate: Boolean): PWidgetInfo;
 procedure FreeWidgetInfo(AWidget: Pointer);

@@ -131,7 +131,8 @@ type
 
 
   { TBitBtn }
-
+                 
+  // when adding items here, also update TBitBtn.GetCaptionOfKind               
   TBitBtnKind = (bkCustom, bkOK, bkCancel, bkHelp, bkYes, bkNo,
                  bkClose, bkAbort, bkRetry, bkIgnore, bkAll,
                  bkNoToAll, bkYesToAll);
@@ -290,7 +291,10 @@ type
 
 procedure Register;
 
-implementation
+implementation  
+
+uses
+  WSButtons;
 
 
 const
@@ -330,6 +334,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.65  2004/05/16 23:24:41  marc
+  + Added WSBitBtn interface
+  + Implemented WSBitBtn interface for gtk
+
   Revision 1.64  2004/04/18 23:55:39  marc
   * Applied patch from Ladislav Michl
   * Changed the way TControl.Text is resolved

@@ -227,7 +227,8 @@ type
     DoubleBuffer: PGdkPixmap;
     Flags: TWidgetInfoFlags;
     ChangeLock: Integer;              // lock events
-    UserData: Integer;
+    DataOwner: Boolean;               // Set if the UserData should be freed when the info is freed
+    UserData: Pointer;
   end;
   
   //TODO: remove
@@ -574,6 +575,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.61  2004/05/16 23:24:41  marc
+  + Added WSBitBtn interface
+  + Implemented WSBitBtn interface for gtk
+
   Revision 1.60  2004/05/11 12:16:47  mattias
   replaced writeln by debugln
 

@@ -51,7 +51,8 @@ uses
   WSEditBtn, WSExtCtrls, WSExtDlgs, WSFileCtrl,
   WSForms, WSGrids, WSImgList, WSMaskEdit,
   WSMenus, WSPairSplitter, WSSpin, WSStdCtrls,
-  WSToolwin;
+  WSToolwin,
+  WSProc;
 
 implementation
 
@@ -60,6 +61,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.14  2004/05/16 23:24:41  marc
+  + Added WSBitBtn interface
+  + Implemented WSBitBtn interface for gtk
+
   Revision 1.13  2004/05/01 23:24:19  mattias
   fixed range check error and added extgraphics.pas
 
