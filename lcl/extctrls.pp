@@ -64,9 +64,9 @@ type
     procedure DestroyHandle; override;
     function GetPageIndex: integer;
     procedure SetPageIndex(AValue: Integer);
-    property TabVisible: Boolean read GetTabVisible write SetTabVisible default True;
   public
     property PageIndex: Integer read GetPageIndex write SetPageIndex;
+    property TabVisible: Boolean read GetTabVisible write SetTabVisible default True;
     constructor Create(TheOwner: TComponent); override;
     procedure AdjustClientRect(var ARect: TRect); override;
     function CanTab: boolean; override;
@@ -986,6 +986,9 @@ end.
 
  {
   $Log$
+  Revision 1.128  2005/01/10 16:35:35  vincents
+  made TabVisible public
+
   Revision 1.127  2005/01/09 23:28:18  mattias
   fixed loading no unit at start
 
