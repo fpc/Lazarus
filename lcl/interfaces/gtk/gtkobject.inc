@@ -2254,7 +2254,8 @@ begin
     
   csComboBox    :
     begin
-      //writeln('SetLabel: ',PLabel);
+      //writeln('SetLabel: ',TComboBox(Sender).Name,':',TComboBox(Sender).ClassName,
+      //  ' ',HexStr(Cardinal(TComboBox(Sender).Handle),8),' "',PLabel,'"');
       SetComboBoxText(PGtkCombo(TComboBox(Sender).Handle), PLabel);
     end;
 
@@ -5907,6 +5908,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.232  2002/10/05 10:37:21  lazarus
+  MG: fixed TComboBox.ItemIndex on CreateWnd
+
   Revision 1.231  2002/10/04 20:46:52  lazarus
   MG: improved TComboBox.SetItemIndex
 
