@@ -3206,11 +3206,10 @@ begin
       Result := RegionType(PGDIObject(ClipRegion)^.GDIRegionObject);
       gdk_region_get_clipbox(PGDIObject(ClipRegion)^.GDIRegionObject, 
         @CRect);
-      // the gdk_region_get_clipbox has already added the gtk scrollbar values
-      // Therefore we must here only add our own DC Offset
-      DCOrigin:=Origin;
-      lpRect^.Left   := CRect.X - DCOrigin.X;
-      lpRect^.Top    := CRect.Y - DCOrigin.Y;
+      // the GDIRegionObject is not mapped by the DCOrigin, so we don't need
+      // subtract the DCOffset.
+      lpRect^.Left   := CRect.X;
+      lpRect^.Top    := CRect.Y;
       lpRect^.Right  := lpRect^.Left + CRect.Width;
       lpRect^.Bottom := lpRect^.Top + CRect.Height;
     end;
@@ -7534,6 +7533,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.184  2002/11/01 17:26:45  lazarus
+  MG: fixed GetClipBox
+
   Revision 1.183  2002/11/01 14:40:31  lazarus
   MG: fixed mouse coords on scrolling wincontrols
 
