@@ -32,7 +32,8 @@ uses
   LCLLinux,       Spin,          Comctrls,      Graphics,
   LMessages,      StdCtrls,      Arrow,         Controls,
   Imglist,        Menus,         Toolwin,       Dialogs,
-  Messages,       UTrace,        Clistbox,      ActnList;
+  Messages,       UTrace,        Clistbox,      ActnList,
+  DynamicArray,   Grids;
 
 implementation
 
@@ -41,6 +42,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.18  2003/01/04 20:46:32  mattias
+  added grids.pas from Jesus Reyes A.
+
   Revision 1.17  2002/10/26 15:15:44  lazarus
   MG: broke LCL<->interface circles
 
