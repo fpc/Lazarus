@@ -126,7 +126,7 @@ const
   ); {end _SysColors}
 
 const
-  FormStyleMap : array[TFormBorderStyle] of integer = (
+  FormStyleMap : array[TFormBorderStyle] of TGtkWindowType = (
     GTK_WINDOW_DIALOG,  // bsNone
     GTK_WINDOW_TOPLEVEL,// bsSingle
     GTK_WINDOW_TOPLEVEL,// bsSizeable
