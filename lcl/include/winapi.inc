@@ -349,6 +349,22 @@ begin
   Result := InterfaceObject.GetDC(hWnd);
 end;
 
+function GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer;
+begin
+  Result := InterfaceObject.GetDIBits(DC, Bitmap, StartScan, NumScans, Bits, BitInfo, Usage);
+end;
+
+function GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint;
+begin
+  Result := InterfaceObject.GetBitmapBits(Bitmap, Count, Bits);
+end;
+
+function CreateDIBSection(DC: HDC; const p2: tagBitmapInfo; p3: UINT;
+  var p4: Pointer; p5: THandle; p6: DWORD): HBITMAP;
+begin
+  Result := InterfaceObject.CreateDIBSection(DC, p2,  p3, p4, p5, p6)
+end;
+
 function GetFocus: HWND;
 begin
   Result := InterfaceObject.GetFocus;
@@ -1230,6 +1246,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.47  2002/09/10 06:49:19  lazarus
+  MG: scrollingwincontrol from Andrew
+
   Revision 1.46  2002/09/09 14:01:06  lazarus
   MG: improved TScreen and ShowModal
 
