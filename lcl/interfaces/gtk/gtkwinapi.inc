@@ -3006,6 +3006,34 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function Frame(DC: HDC; const ARect: TRect): Integer; override;
+  
+  Draws the border of a rectangle.
+ ------------------------------------------------------------------------------}
+function TGtkObject.Frame(DC: HDC; const ARect: TRect): Integer;
+var
+  DCOrigin: TPoint;
+begin
+  Result:=0;
+  if IsValidDC(DC) and (TDeviceContext(DC).GC<>nil) then begin
+    with TDeviceContext(DC) do
+    begin
+      // Draw outline
+      SelectGDKPenProps(DC);
+      If (dcfPenSelected in DCFlags) then begin
+        Result := 1;
+        if (not CurrentPen^.IsNullPen) then begin
+          DCOrigin:=GetDCOffset(TDeviceContext(DC));
+          gdk_draw_rectangle(Drawable, GC, 0,
+                             ARect.Left+DCOrigin.X, ARect.Top+DCOrigin.Y,
+                             ARect.Right-ARect.Left, ARect.Bottom-ARect.Top);
+        end;
+      end;
+    end;
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Function: Frame3d
   Params: -
   Returns: Nothing
@@ -3050,6 +3078,34 @@ begin
         end;
       end;
     end;
+end;
+
+{------------------------------------------------------------------------------
+  function TGtkObject.FrameRect(DC: HDC; const ARect: TRect;
+    hBr: HBRUSH): Integer;
+ ------------------------------------------------------------------------------}
+function TGtkObject.FrameRect(DC: HDC; const ARect: TRect;
+  hBr: HBRUSH): Integer;
+var
+  DCOrigin: TPoint;
+begin
+  Result:=0;
+  if IsValidDC(DC) and (TDeviceContext(DC).GC<>nil)
+  and IsValidGDIObject(hBr) then begin
+    // Draw outline
+    Result := 1;
+    if (not PGdiObject(hBr)^.IsNullBrush) then begin
+      with TDeviceContext(DC) do
+      begin
+        SelectedColors:=dcscCustom;
+        EnsureGCColor(DC, dccGDIBrushColor, True, False);//Brush Color
+        DCOrigin:=GetDCOffset(TDeviceContext(DC));
+        gdk_draw_rectangle(Drawable, GC, 0,
+                           ARect.Left+DCOrigin.X, ARect.Top+DCOrigin.Y,
+                           ARect.Right-ARect.Left, ARect.Bottom-ARect.Top);
+      end;
+    end;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -5557,20 +5613,7 @@ begin
       Result := False;
     end
     else begin
-      if X1<=X2 then begin
-        Left:=X1;
-        Width:=X2 - X1;
-      end else begin
-        Left:=X2;
-        Width:=X1 - X2;
-      end;
-      if Y1<=Y2 then begin
-        Top:=Y1;
-        Height:=Y2 - Y1;
-      end else begin
-        Top:=Y2;
-        Height:=Y1 - Y2;
-      end;
+      CalculateLeftTopWidthHeight(X1,Y1,X2,Y2,Left,Top,Width,Height);
       // first draw interior in brush color
       SelectGDKBrushProps(DC);
       DCOrigin:=GetDCOffset(TDeviceContext(DC));
@@ -7660,6 +7703,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.208  2003/01/27 13:49:16  mattias
+  reduced speedbutton invalidates, added TCanvas.Frame
+
   Revision 1.207  2003/01/24 11:58:01  mattias
   fixed clipboard waiting and kwrite targets
 
