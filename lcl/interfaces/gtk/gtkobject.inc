@@ -599,6 +599,10 @@ begin
   DeleteAndNilBrush(FStockDkGrayBrush);
   DeleteAndNilBrush(FStockWhiteBrush);
    
+  DeleteAndNilBrush(FStockNullPen);
+  DeleteAndNilBrush(FStockBlackPen);
+  DeleteAndNilBrush(FStockWhitePen);
+   
   // MG: using gtk_main_quit is not a clean way to close
   //gtk_main_quit;
 end;
@@ -613,6 +617,7 @@ end;
 procedure TGtkObject.Init;
 var
   LogBrush: TLogBrush;
+  logPen : TLogPen;
   //Attributes: TGdkWindowAttr;
   //AttributesMask: gint;
   FG,BG : TgdkColor;  //foreground and background
@@ -670,6 +675,15 @@ begin
   FStockDkGrayBrush := CreateBrushIndirect(LogBrush);
   LogBrush.lbColor := $FFFFFF;
   FStockWhiteBrush := CreateBrushIndirect(LogBrush);
+
+  LogPen.lopnStyle := PS_NULL; 
+  LogPen.lopnWidth.X := 1;
+  LogPen.lopnColor := $FFFFFF;
+  FStockNullPen := CreatePenIndirect(LogPen);
+  LogPen.lopnStyle := PS_SOLID; 
+  FStockWhitePen := CreatePenIndirect(LogPen);
+  LogPen.lopnColor := $000000;
+  FStockBlackPen := CreatePenIndirect(LogPen);
 
   // clipboard
   ClipboardTypeAtoms[ctPrimarySelection]:=GDK_SELECTION_PRIMARY;
@@ -4934,7 +4948,7 @@ begin
         gdiBrush  : Result := True; //Result := GDIBrushPixmap <> nil; //GDIBrushPixmap may be nil
         gdiFont   : Result := GDIFontObject <> nil;
         gdiPen    : Result := True;
-//        gdiRegion :
+        gdiRegion : Result := True;
       else
         Result := False; 
       end;
@@ -4981,6 +4995,7 @@ begin
     CurrentFont := nil;
     CurrentPen := nil;
     CurrentBrush := nil;
+    ClipRegion := 0;
     SavedContext := nil;
     gdk_color_black(gdk_colormap_get_system, @CurrentTextColor);
     gdk_color_white(gdk_colormap_get_system, @CurrentBackColor);
@@ -5332,6 +5347,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.163  2002/08/15 15:46:49  lazarus
+  MG: added changes from Andrew (Clipping)
+
   Revision 1.162  2002/08/15 13:37:57  lazarus
   MG: started menuitem icon, checked, radio and groupindex
 
@@ -5888,4 +5906,3 @@ end;
   + Initial import
 
 }
-
