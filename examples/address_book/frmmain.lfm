@@ -1,0 +1,547 @@
+object MainForm: TMainForm
+  ActiveControl = GDBA
+  Caption = 'Addressbook'
+  ClientHeight = 496
+  ClientWidth = 734
+  Font.Height = -13
+  Font.Name = 'MS Sans Serif'
+  Menu = MMain
+  OnClose = FormClose
+  OnCloseQuery = FormCloseQuery
+  TextHeight = 16
+  HorzScrollBar.Page = 735
+  VertScrollBar.Page = 497
+  Left = 319
+  Height = 522
+  Top = 165
+  Width = 734
+  object PTop: TPanel
+    Align = alTop
+    BevelOuter = bvLowered
+    ClientHeight = 33
+    ClientWidth = 734
+    FullRepaint = False
+    TabOrder = 0
+    Height = 33
+    Width = 734
+    object DBNavigator1: TDBNavigator
+      Anchors = [akTop, akRight]
+      BevelOuter = bvNone
+      ClientHeight = 25
+      ClientWidth = 260
+      DataSource = DSAddress
+      TabOrder = 0
+      Left = 456
+      Height = 25
+      Top = 4
+      Width = 260
+    end
+  end
+  object GDBA: TdbGrid
+    Align = alClient
+    Color = clWhite
+    DataSource = DSAddress
+    FixedColor = clBtnFace
+    ReadOnly = True
+    TabOrder = 1
+    Height = 203
+    Top = 33
+    Width = 734
+    Columns = <    
+      item
+        FieldName = 'FirstName'
+        Title.Caption = 'First name'
+        Width = 117
+      end    
+      item
+        FieldName = 'LastName'
+        Title.Caption = 'Last name'
+        Width = 127
+      end    
+      item
+        FieldName = 'Street'
+        Title.Caption = 'Street '
+        Width = 131
+      end    
+      item
+        FieldName = 'Zip'
+        Title.Caption = 'Zip '
+      end    
+      item
+        FieldName = 'Town'
+        Title.Caption = 'Town '
+        Width = 100
+      end    
+      item
+        FieldName = 'Country'
+        Title.Caption = 'Country '
+      end    
+      item
+        FieldName = 'Telephone'
+        Title.Caption = 'Telephone '
+      end    
+      item
+        FieldName = 'Fax'
+        Title.Caption = 'Fax '
+      end    
+      item
+        FieldName = 'Mobile'
+        Title.Caption = 'Mobile '
+      end    
+      item
+        FieldName = 'Email'
+        Title.Caption = 'Email '
+      end    
+      item
+        FieldName = 'WWW'
+        Title.Caption = 'WWW '
+      end>
+  end
+  object PBottom: TPanel
+    Align = alBottom
+    BevelOuter = bvLowered
+    ClientHeight = 260
+    ClientWidth = 734
+    FullRepaint = False
+    TabOrder = 2
+    Height = 260
+    Top = 236
+    Width = 734
+    object LELastName: TLabel
+      Alignment = taRightJustify
+      Caption = '&Last name'
+      FocusControl = ELastName
+      Layout = tlCenter
+      Left = 8
+      Height = 24
+      Top = 8
+      Width = 144
+    end
+    object LEFirstName: TLabel
+      Alignment = taRightJustify
+      Caption = '&First name'
+      FocusControl = EFirstName
+      Layout = tlCenter
+      Left = 8
+      Height = 24
+      Top = 32
+      Width = 144
+    end
+    object LEStreet: TLabel
+      Alignment = taRightJustify
+      Caption = '&Street'
+      FocusControl = EStreet
+      Layout = tlCenter
+      Left = 8
+      Height = 24
+      Top = 64
+      Width = 144
+    end
+    object LEZip: TLabel
+      Alignment = taRightJustify
+      Caption = '&Zip'
+      FocusControl = EZip
+      Layout = tlCenter
+      Left = 8
+      Height = 24
+      Top = 88
+      Width = 144
+    end
+    object LETown: TLabel
+      Alignment = taRightJustify
+      Caption = 'T&own'
+      FocusControl = ETown
+      Layout = tlCenter
+      Left = 264
+      Height = 24
+      Top = 88
+      Width = 41
+    end
+    object LETelephone: TLabel
+      Alignment = taRightJustify
+      Caption = '&Telephone'
+      FocusControl = ETelephone
+      Layout = tlCenter
+      Left = 8
+      Height = 24
+      Top = 144
+      Width = 144
+    end
+    object LECountry: TLabel
+      Alignment = taRightJustify
+      Caption = 'Countr&y'
+      FocusControl = ECountry
+      Layout = tlCenter
+      Left = 8
+      Height = 24
+      Top = 112
+      Width = 144
+    end
+    object LEFax: TLabel
+      Alignment = taRightJustify
+      Caption = 'Fa&x'
+      FocusControl = EFax
+      Layout = tlCenter
+      Left = 288
+      Height = 24
+      Top = 144
+      Width = 41
+    end
+    object LEMobile: TLabel
+      Alignment = taRightJustify
+      Caption = '&Mobile'
+      FocusControl = EMobile
+      Layout = tlCenter
+      Left = 472
+      Height = 24
+      Top = 144
+      Width = 41
+    end
+    object LEEmail: TLabel
+      Alignment = taRightJustify
+      Caption = '&Email'
+      FocusControl = EEmail
+      Layout = tlCenter
+      Left = 8
+      Height = 24
+      Top = 176
+      Width = 144
+    end
+    object LEWWW: TLabel
+      Alignment = taRightJustify
+      Caption = '&WWW'
+      FocusControl = EWWW
+      Layout = tlCenter
+      Left = 8
+      Height = 24
+      Top = 200
+      Width = 144
+    end
+    object ELastName: TDBEdit
+      DataField = 'LastName'
+      DataSource = DSAddress
+      DragCursor = 65524
+      TabOrder = 0
+      TabOrder = 0
+      Left = 160
+      Height = 24
+      Top = 8
+      Width = 361
+    end
+    object EFirstName: TDBEdit
+      DataField = 'FirstName'
+      DataSource = DSAddress
+      DragCursor = 65524
+      TabOrder = 1
+      TabOrder = 1
+      Left = 160
+      Height = 24
+      Top = 32
+      Width = 361
+    end
+    object EStreet: TDBEdit
+      DataField = 'Street'
+      DataSource = DSAddress
+      DragCursor = 65524
+      TabOrder = 2
+      TabOrder = 2
+      Left = 160
+      Height = 24
+      Top = 64
+      Width = 361
+    end
+    object EZip: TDBEdit
+      DataField = 'Zip'
+      DataSource = DSAddress
+      DragCursor = 65524
+      TabOrder = 3
+      TabOrder = 3
+      Left = 160
+      Height = 24
+      Top = 88
+      Width = 89
+    end
+    object ECountry: TDBEdit
+      DataField = 'Country'
+      DataSource = DSAddress
+      DragCursor = 65524
+      TabOrder = 5
+      TabOrder = 5
+      Left = 160
+      Height = 24
+      Top = 112
+      Width = 361
+    end
+    object EWWW: TDBEdit
+      DataField = 'WWW'
+      DataSource = DSAddress
+      DragCursor = 65524
+      TabOrder = 10
+      TabOrder = 10
+      Left = 160
+      Height = 24
+      Top = 200
+      Width = 361
+    end
+    object ETelephone: TDBEdit
+      DataField = 'Telephone'
+      DataSource = DSAddress
+      DragCursor = 65524
+      TabOrder = 6
+      TabOrder = 6
+      Left = 160
+      Height = 24
+      Top = 144
+      Width = 121
+    end
+    object EFax: TDBEdit
+      DataField = 'Fax'
+      DataSource = DSAddress
+      DragCursor = 65524
+      TabOrder = 7
+      TabOrder = 7
+      Left = 336
+      Height = 24
+      Top = 144
+      Width = 121
+    end
+    object EMobile: TDBEdit
+      DataField = 'Mobile'
+      DataSource = DSAddress
+      DragCursor = 65524
+      TabOrder = 8
+      TabOrder = 8
+      Left = 520
+      Height = 24
+      Top = 144
+      Width = 121
+    end
+    object EEmail: TDBEdit
+      DataField = 'Email'
+      DataSource = DSAddress
+      DragCursor = 65524
+      TabOrder = 9
+      TabOrder = 9
+      Left = 160
+      Height = 24
+      Top = 176
+      Width = 361
+    end
+    object ETown: TDBEdit
+      DataField = 'Town'
+      DataSource = DSAddress
+      DragCursor = 65524
+      TabOrder = 4
+      TabOrder = 4
+      Left = 312
+      Height = 24
+      Top = 88
+      Width = 209
+    end
+  end
+  object MMain: TMainMenu
+    left = 64
+    top = 72
+    object MFile: TMenuItem
+      Caption = '&File'
+      object MINew: TMenuItem
+        Action = ANew
+        OnClick = ANewExecute
+      end
+      object MIOpen: TMenuItem
+        Action = AOpen
+        OnClick = AOpenExecute
+      end
+      object MIClose: TMenuItem
+        Action = AClose
+        OnClick = ACloseExecute
+      end
+      object N1: TMenuItem
+        Caption = '-'
+      end
+      object MIQuit: TMenuItem
+        Action = AQuit
+        OnClick = AQuitExecute
+      end
+    end
+    object Record1: TMenuItem
+      Caption = '&Record'
+      object MIFirst: TMenuItem
+        Action = AFirst
+      end
+      object MILAst: TMenuItem
+        Action = ALast
+      end
+      object MIPrior: TMenuItem
+        Action = APrior
+      end
+      object MINext: TMenuItem
+        Action = ANext
+      end
+      object N2: TMenuItem
+        Caption = '-'
+      end
+      object MIInsert: TMenuItem
+        Action = AInsert
+      end
+      object MIEdit: TMenuItem
+        Action = AEdit
+      end
+      object MIDelete: TMenuItem
+        Action = ADelete
+      end
+      object MIPost: TMenuItem
+        Action = APost
+      end
+      object MICancel: TMenuItem
+        Action = ACancel
+      end
+      object MIRefresh: TMenuItem
+        Action = ARefresh
+      end
+    end
+  end
+  object ALMain: TActionList
+    left = 64
+    top = 112
+    object ANew: TAction
+      Caption = '&New'
+      HelpType = htKeyword
+      OnExecute = ANewExecute
+    end
+    object AOpen: TAction
+      Caption = '&Open'
+      HelpType = htKeyword
+      OnExecute = AOpenExecute
+      ShortCut = 16463
+    end
+    object AClose: TAction
+      Caption = '&Close'
+      HelpType = htKeyword
+      OnExecute = ACloseExecute
+      OnUpdate = ACloseUpdate
+    end
+    object AQuit: TAction
+      Caption = '&Quit'
+      HelpType = htKeyword
+      OnExecute = AQuitExecute
+      ShortCut = 16465
+    end
+    object AFirst: TAction
+      Caption = '&First'
+      HelpType = htKeyword
+      OnExecute = DoDataAction
+      OnUpdate = DataOpen
+      ShortCut = 16454
+      Category = 'Dataset'
+    end
+    object APrior: TAction
+      Caption = '&Prior'
+      HelpType = htKeyword
+      OnExecute = DoDataAction
+      OnUpdate = DataOpen
+      Category = 'Dataset'
+      Tag = 1
+    end
+    object ANext: TAction
+      Caption = '&Next'
+      HelpType = htKeyword
+      OnExecute = DoDataAction
+      OnUpdate = DataOpen
+      Category = 'Dataset'
+      Tag = 2
+    end
+    object ALast: TAction
+      Caption = '&Last'
+      HelpType = htKeyword
+      OnExecute = DoDataAction
+      OnUpdate = DataOpen
+      ShortCut = 16460
+      Category = 'Dataset'
+      Tag = 3
+    end
+    object AInsert: TAction
+      Caption = '&Insert'
+      HelpType = htKeyword
+      OnExecute = DoDataAction
+      OnUpdate = DataOpen
+      ShortCut = 16462
+      Category = 'Dataset'
+      Tag = 4
+    end
+    object ADelete: TAction
+      Caption = '&Delete'
+      HelpType = htKeyword
+      OnExecute = DoDataAction
+      OnUpdate = HaveDataNotEmpty
+      ShortCut = 16452
+      Category = 'Dataset'
+      Tag = 5
+    end
+    object AEdit: TAction
+      Caption = '&Edit'
+      HelpType = htKeyword
+      OnExecute = DoDataAction
+      OnUpdate = HaveDataNotEmpty
+      ShortCut = 113
+      Category = 'Dataset'
+      Tag = 6
+    end
+    object APost: TAction
+      Caption = 'P&ost'
+      HelpType = htKeyword
+      OnExecute = DoDataAction
+      OnUpdate = InEditMode
+      ShortCut = 16467
+      Category = 'Dataset'
+      Tag = 7
+    end
+    object ACancel: TAction
+      Caption = '&Cancel'
+      HelpType = htKeyword
+      OnExecute = DoDataAction
+      OnUpdate = InEditMode
+      Category = 'Dataset'
+      Tag = 8
+    end
+    object ARefresh: TAction
+      Caption = '&Refresh'
+      HelpType = htKeyword
+      OnExecute = DoDataAction
+      OnUpdate = DataOpen
+      ShortCut = 116
+      Category = 'Dataset'
+    end
+  end
+  object DBA: TDbf
+    IndexDefs = <>
+    StoreDefs = True
+    TableLevel = 4
+    AfterInsert = DBAAfterInsert
+    left = 96
+    top = 112
+  end
+  object SDDBA: TSaveDialog
+    Options = [ofHideReadOnly, ofPathMustExist, ofEnableSizing]
+    Title = 'Save file as'
+    DefaultExt = '.dbf'
+    Filter = 'DBF files|*.dbf|All files|*.*'
+    FilterIndex = 0
+    left = 96
+    top = 144
+  end
+  object ODDBA: TOpenDialog
+    Options = [ofHideReadOnly, ofFileMustExist, ofEnableSizing]
+    Title = 'Open existing file'
+    DefaultExt = '.dbf'
+    Filter = 'DBF files|*.dbf|All files|*.*'
+    FilterIndex = 0
+    left = 64
+    top = 144
+  end
+  object DSAddress: TDatasource
+    DataSet = DBA
+    left = 128
+    top = 112
+  end
+end
