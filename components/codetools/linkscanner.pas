@@ -537,8 +537,8 @@ begin
           exit;
         end;
         LastIndex:=Result;
-      end else
-        dec(Result);
+      end;
+      dec(Result);
     end;
   end;
 end;
