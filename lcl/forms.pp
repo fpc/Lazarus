@@ -1345,7 +1345,7 @@ begin
     CreateNew(TheOwner,0);
     if (ClassType <> TDataModule) and not (csDesigning in ComponentState) then
     begin
-      if not InitResourceComponent(Self, TForm) then begin
+      if not InitResourceComponent(Self, TDataModule) then begin
         raise EResNotFound.CreateFmt(lisLCLResourceSNotFound, [ClassName]);
       end;
       if OldCreateOrder then DoCreate;

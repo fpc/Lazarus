@@ -1124,7 +1124,7 @@ var
   ok: boolean;
   OldFindGlobalComponent: TFindGlobalComponent;
 begin
-  // Allocate the form instance, without calling the constructor
+  // Allocate the instance, without calling the constructor
   Instance := TComponent(InstanceClass.NewInstance);
   // set the Reference before the constructor is called, so that
   // events and constructors can refer to it
@@ -1152,6 +1152,11 @@ begin
       FList.Add(TForm(Instance));
     end;
   end;
+  {$IFNDEF AfterConstructionDataModuleNotWorking}
+  if (Instance is TDataModule) then begin
+    TDataModule(instance).AfterConstruction;
+  end;
+  {$ENDIF}
 end;
 
 function TApplication.ExecuteAction(ExeAction: TBasicAction): Boolean;
@@ -1181,6 +1186,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.83  2004/08/04 10:35:38  mattias
+  added workaround for not working TDataModule.AfterConstruction
+
   Revision 1.82  2004/07/25 01:04:45  mattias
   TXMLPropStorage basically working
 
