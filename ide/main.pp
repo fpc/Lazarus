@@ -468,6 +468,7 @@ type
     function GetProjectTargetFilename: string;
     function GetTestProjectFilename: string;
     function GetTestUnitFilename(AnUnitInfo: TUnitInfo): string;
+    function GetRunCommandLine: string;
     procedure OnMacroSubstitution(TheMacro: TTransferMacro; var s:string;
       var Handled, Abort: boolean);
     function OnMacroPromptFunction(const s:string; var Abort: boolean):string;
@@ -666,7 +667,7 @@ begin
         Glyph := SelectionPointerPixmap;
         Visible := True;
         Flat := True;
-	GroupIndex:= 1;
+        GroupIndex:= 1;
         Down := True;
         Name := 'GlobalMouseSpeedButton'+IntToStr(PageCount);
         Hint := 'Selection tool';
@@ -824,6 +825,10 @@ begin
                     'save all modified files',nil,[tmfInteractive]));
   MacroList.Add(TTransferMacro.Create('TargetFile','',
                     'Target filename of project',nil,[]));
+  MacroList.Add(TTransferMacro.Create('TargetCmdLine','',
+                    'Target filename + params',nil,[]));
+  MacroList.Add(TTransferMacro.Create('RunCmdLine','',
+                    'Launching target command line',nil,[]));
   MacroList.OnSubstitution:=@OnMacroSubstitution;
   
   // TWatchesDlg
@@ -4063,7 +4068,8 @@ end;
 
 function TMainIDE.DoInitProjectRun: TModalResult;
 var
-  ProgramFilename: String;
+  ProgramFilename, LaunchingCmdLine, LaunchingApplication,
+  LaunchingParams: String;
 begin
   if ToolStatus = itDebugger
   then begin
@@ -4088,9 +4094,12 @@ begin
   ProgramFilename := GetProjectTargetFilename;
   if not FileExists(ProgramFilename)
   then begin
-    MessageDlg('File not found', Format('No program file "%s" found!', [ProgramFilename]), mtError, [mbCancel], 0);
+    MessageDlg('File not found',
+      Format('No program file "%s" found!', [ProgramFilename]), mtError,
+      [mbCancel], 0);
     Exit;
   end;
+  LaunchingCmdLine:=GetRunCommandLine;
 
   // Setup debugger
   case EnvironmentOptions.DebuggerType of
@@ -4098,16 +4107,20 @@ begin
       if (FDebugger = nil)
       and (DoInitDebugger <> mrOk)
       then Exit;
-      FDebugger.FileName := ProgramFilename;
-      FDebugger.Arguments := ''; //TODO: get arguments
+      SplitCmdLine(LaunchingCmdLine,LaunchingApplication,LaunchingParams);
+      FDebugger.FileName := LaunchingApplication;
+      FDebugger.Arguments := LaunchingParams;
+      // ToDo: set working directory
     end;
   else 
-    // Temp solution, in futer it will be run by dummy debugger
+    // Temp solution, in future it will be run by dummy debugger
     try
       CheckIfFileIsExecutable(ProgramFilename);
       FRunProcess := TProcess.Create(nil);
-      FRunProcess.CommandLine := ProgramFilename;
-      FRunProcess.Options:= [poUsePipes, poNoConsole];
+      FRunProcess.CommandLine := LaunchingCmdLine;
+      FRunProcess.CurrentDirectory:=
+                                   Project.RunParameterOptions.WorkingDirectory;
+      FRunProcess.Options:= [poNoConsole];
       FRunProcess.ShowWindow := swoNone;
     except
       on e: Exception do 
@@ -4795,6 +4808,16 @@ begin
   end else if MacroName='targetfile' then begin
     Handled:=true;
     s:=GetProjectTargetFilename;
+  end else if MacroName='targetcmdline' then begin
+    Handled:=true;
+    s:=Project.RunParameterOptions.CmdLineParams;
+    if s='' then
+      s:=GetProjectTargetFilename
+    else
+      s:=GetProjectTargetFilename+' '+s;
+  end else if MacroName='runcmdline' then begin
+    Handled:=true;
+    s:=GetRunCommandLine;
   end;
 end;
 
@@ -4930,13 +4953,16 @@ function TMainIDE.GetProjectTargetFilename: string;
 begin
   Result:='';
   if Project=nil then exit;
-  if Project.IsVirtual then
-    Result:=GetTestProjectFilename
-  else begin
-    if Project.MainUnit>=0 then begin
-      Result:=
-        Project.CompilerOptions.CreateTargetFilename(
-            Project.Units[Project.MainUnit].Filename)
+  Result:=Project.RunParameterOptions.HostApplicationFilename;
+  if Result='' then begin
+    if Project.IsVirtual then
+      Result:=GetTestProjectFilename
+    else begin
+      if Project.MainUnit>=0 then begin
+        Result:=
+          Project.CompilerOptions.CreateTargetFilename(
+              Project.Units[Project.MainUnit].Filename)
+      end;
     end;
   end;
 end;
@@ -4962,7 +4988,24 @@ begin
   Result:=ExtractFilename(AnUnitInfo.Filename);
   if Result='' then exit;
   Result:=TestDir+Result;
-end;                                       
+end;
+
+function TMainIDE.GetRunCommandLine: string;
+begin
+  Result:=Project.RunParameterOptions.LaunchingApplicationPathPlusParams;
+  if Result='' then begin
+    Result:=Project.RunParameterOptions.CmdLineParams;
+    if MacroList.SubstituteStr(Result) then begin
+      if Result='' then
+        Result:=GetProjectTargetFilename
+      else
+        Result:=GetProjectTargetFilename+' '+Result;
+    end else
+      Result:='';
+  end else begin
+    if not MacroList.SubstituteStr(Result) then Result:='';
+  end;
+end;
 
 function TMainIDE.FindUnitFile(const AFilename: string): string;
 var 
@@ -6242,6 +6285,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.245  2002/03/14 14:39:39  lazarus
+  MG: implemented run parameters: wd, launching app, sys vars
+
   Revision 1.244  2002/03/12 23:55:34  lazarus
   MWE:
     * More delphi compatibility added/updated to TListView

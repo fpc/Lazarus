@@ -457,7 +457,7 @@ begin
   end;
 end;
 
-procedure TOIPropertyGrid.WMSize(var Msg: TLMSize);
+procedure TOIPropertyGrid.WMSize(var Msg: TWMSize);
 begin
   inherited;
   UpdateScrollBar;

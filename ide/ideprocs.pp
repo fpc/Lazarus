@@ -32,6 +32,8 @@ function CompareFilenames(const Filename1, Filename2: string): integer;
 function AppendPathDelim(const Path: string): string;
 function SearchFileInPath(const Filename, BasePath, SearchPath,
                           Delimiter: string): string;
+procedure SplitCmdLine(const CmdLine: string;
+                       var ProgramFilename, Params: string);
 
 // XMLConfig
 procedure LoadRecentList(XMLConfig: TXMLConfig; List: TStringList; 
@@ -302,6 +304,23 @@ begin
     StartPos:=p+1;
   end;
   Result:='';
+end;
+
+procedure SplitCmdLine(const CmdLine: string;
+                       var ProgramFilename, Params: string);
+var p: integer;
+begin
+  p:=1;
+  while (p<=length(CmdLine)) and (CmdLine[p]>' ') do begin
+    if (CmdLine[p] in ['/','\']) and (CmdLine[p]<>PathDelim) then begin
+      // skip special char
+      inc(p);
+    end;
+    inc(p);
+  end;
+  ProgramFilename:=LeftStr(CmdLine,p-1);
+  while (p<=length(CmdLine)) and (CmdLine[p]<=' ') do inc(p);
+  Params:=RightStr(CmdLine,length(CmdLine)-p+1);
 end;
 
 end.

@@ -38,13 +38,13 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, Controls, Forms, Buttons, StdCtrls, ComCtrls, Dialogs,
-  ExtCtrls, LResources, XMLCfg, DOS, IDEProcs;
+  ExtCtrls, LResources, XMLCfg, DOS, IDEProcs, SysVarUserOverrideDlg;
 
 { The xml format version:
     When the format changes (new values, changed formats) we can distinguish old
     files and are able to convert them.
 } 
-const RunParamsOptionsVersion = '1.0';
+const RunParamsOptionsVersion = '1';
 
 type
   {
@@ -119,7 +119,7 @@ type
     CancelButton: TButton;
     procedure OkButtonClick(Sender: TObject);
     procedure CancelButtonClick(Sender: TObject);
-    procedure HostApplicationEditClick(Sender: TObject);
+    procedure HostApplicationBrowseBtnClick(Sender: TObject);
     procedure WorkingDirectoryBtnClick(Sender: TObject);
     procedure UserOverridesAddButtonClick(Sender: TObject);
     procedure UserOverridesEditButtonClick(Sender: TObject);
@@ -143,6 +143,11 @@ function ShowRunParamsOptsDlg(RunParamsOptions: TRunParamsOptions):TModalResult;
 
 implementation
 
+
+const
+  DefaultLauncherApplication =
+    '/usr/X11R6/bin/xterm -T ''Lazarus Run Output'''
+    +' -e bash -i -c ''$(TargetCmdLine)''';
 
 function ShowRunParamsOptsDlg(RunParamsOptions: TRunParamsOptions):TModalResult;
 var
@@ -181,7 +186,7 @@ begin
   fHostApplicationFilename:='';
   fCmdLineParams:='';
   fUseLaunchingApplication:=false;
-  fLaunchingApplicationPathPlusParams:='';
+  fLaunchingApplicationPathPlusParams:=DefaultLauncherApplication;
   fWorkingDirectory:='';
   fDisplay:=':0';
     
@@ -219,6 +224,8 @@ begin
   fLaunchingApplicationPathPlusParams:=XMLConfig.GetValue(
     Path+'RunParams/local/LaunchingApplication/PathPlusParams',
       fLaunchingApplicationPathPlusParams);
+  if (fLaunchingApplicationPathPlusParams='') then
+    fLaunchingApplicationPathPlusParams:=DefaultLauncherApplication;
   fWorkingDirectory:=XMLConfig.GetValue(
     Path+'RunParams/local/WorkingDirectory/Value',
       fWorkingDirectory);
@@ -358,7 +365,7 @@ begin
     Parent:=HostApplicationGroupBox;
     SetBounds(HostApplicationEdit.Left+HostApplicationEdit.Width+2,5,25,25);
     Caption:='...';
-    HostApplicationEdit.OnClick:=@HostApplicationEditClick;
+    HostApplicationBrowseBtn.OnClick:=@HostApplicationBrowseBtnClick;
     Visible:=true;
   end;
   
@@ -482,12 +489,14 @@ begin
     Top:=5;
     Width:=Parent.ClientWidth-17;
     Height:=Parent.ClientHeight-28;
+    Columns.BeginUpdate;
     Columns.Clear;
-    Columns.Updating := true;
-    Columns.Add('Variable');
-    Columns.Add('Value');
+    Columns.Add;
+    Columns.Add;
+    Columns[0].Caption:='Variable';
     Columns[0].Width:=130;
-    Columns.Updating := False;
+    Columns[0].Width:=130;
+    Columns.EndUpdate;
     ViewStyle := vsReport;
     Sorted := true;
     Visible:=true;
@@ -511,12 +520,14 @@ begin
     Top:=5;
     Width:=Parent.ClientWidth-17;
     Height:=Parent.ClientHeight-68;
+    Columns.BeginUpdate;
     Columns.Clear;
-    Columns.Updating := true;
-    Columns.Add('Variable');
-    Columns.Add('Value');
+    Columns.Add;
+    Columns.Add;
+    Columns[0].Caption:='Variable';
     Columns[0].Width:=130;
-    Columns.Updating := False;
+    Columns[1].Caption:='Value';
+    Columns.EndUpdate;
     ViewStyle := vsReport;
     Sorted := true;
     Visible:=true;
@@ -527,10 +538,11 @@ begin
     Name:='UserOverridesAddButton';
     Parent:=UserOverridesGroupBox;
     Left:=5;
-    Top:=Parent.ClientWidth-Height-28;
+    Top:=Parent.ClientHeight-Height-28;
     Width:=100;
     Caption:='Add';
     OnClick:=@UserOverridesAddButtonClick;
+    Enabled:=false;
     Visible:=true;
   end;
 
@@ -543,6 +555,7 @@ begin
     Width:=100;
     Caption:='Edit';
     OnClick:=@UserOverridesEditButtonClick;
+    Enabled:=false;
     Visible:=true;
   end;
 
@@ -555,6 +568,7 @@ begin
     Width:=100;
     Caption:='Delete';
     OnClick:=@UserOverridesDeleteButtonClick;
+    Enabled:=false;
     Visible:=true;
   end;
 
@@ -580,7 +594,7 @@ begin
   ModalResult:=mrCancel;
 end;
 
-procedure TRunParamsOptsDlg.HostApplicationEditClick(Sender: TObject);
+procedure TRunParamsOptsDlg.HostApplicationBrowseBtnClick(Sender: TObject);
 var OpenDialog: TOpenDialog;
 begin
   OpenDialog:=TOpenDialog.Create(Self);
@@ -621,8 +635,14 @@ begin
 end;
 
 procedure TRunParamsOptsDlg.UserOverridesAddButtonClick(Sender: TObject);
+var Variable, Value: string;
 begin
+  Variable:='';
+  Value:='';
+  if ShowSysVarUserOverrideDialog(Variable,Value)=mrOk then begin
 
+    
+  end;
 end;
 
 procedure TRunParamsOptsDlg.UserOverridesEditButtonClick(Sender: TObject);
@@ -638,12 +658,13 @@ end;
 procedure TRunParamsOptsDlg.SaveToOptions;
 begin
   // local
-  fOptions.HostApplicationFilename:=HostApplicationEdit.Text;
-  fOptions.CmdLineParams:=CmdLineParametersEdit.Text;
+  fOptions.HostApplicationFilename:=Trim(HostApplicationEdit.Text);
+  fOptions.CmdLineParams:=Trim(CmdLineParametersEdit.Text);
   fOptions.UseLaunchingApplication:=UseLaunchingApplicationCheckBox.Checked;
-  fOptions.LaunchingApplicationPathPlusParams:=UseLaunchingApplicationEdit.Text;
-  fOptions.WorkingDirectory:=WorkingDirectoryEdit.Text;
-  fOptions.Display:=DisplayEdit.Text;
+  fOptions.LaunchingApplicationPathPlusParams:=
+                                      Trim(UseLaunchingApplicationEdit.Text);
+  fOptions.WorkingDirectory:=Trim(WorkingDirectoryEdit.Text);
+  fOptions.Display:=Trim(DisplayEdit.Text);
   
   // environment
 
