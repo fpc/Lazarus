@@ -324,6 +324,8 @@ type
   TSourceNotebookState = (snIncrementalFind);
   TSourceNotebookStates = set of TSourceNotebookState;
 
+  { TSourceNotebook }
+
   TSourceNotebook = class(TForm)
     AddBreakpointMenuItem: TMenuItem;
     AddWatchAtCursorMenuItem: TMenuItem;
@@ -383,6 +385,7 @@ type
     FCodeTemplateModul: TSynEditAutoComplete;
     fCustomPopupMenuItems: TList;
     fIncrementalSearchStartPos: TPoint;
+    fIncrementalSearchCancelPos: TPoint;
     FIncrementalSearchStr: string;
     FKeyStrokes: TSynEditKeyStrokes;
     FLastCodeBuffer: TCodeBuffer;
@@ -432,6 +435,7 @@ type
 
     procedure UpdateActiveEditColors;
     procedure SetIncrementalSearchStr(const AValue: string);
+    procedure DoIncrementalSearch;
   protected
     ccSelection: String;
     States: TSourceNotebookStates;
@@ -816,12 +820,18 @@ End;
 
 {------------------------------F I N D  A G A I N ----------------------------}
 procedure TSourceEditor.FindNext;
-var OldOptions: TSynSearchOptions;
+var
+  OldOptions: TSynSearchOptions;
 Begin
-  OldOptions:=FindReplaceDlg.Options;
-  FindReplaceDlg.Options:=FindReplaceDlg.Options-[ssoEntireScope];
-  DoFindAndReplace;
-  FindReplaceDlg.Options:=OldOptions;
+  if snIncrementalFind in FSourceNoteBook.States then begin
+    FSourceNoteBook.fIncrementalSearchStartPos:=FEditor.LogicalCaretXY;
+    FSourceNoteBook.DoIncrementalSearch;
+  end else begin
+    OldOptions:=FindReplaceDlg.Options;
+    FindReplaceDlg.Options:=FindReplaceDlg.Options-[ssoEntireScope];
+    DoFindAndReplace;
+    FindReplaceDlg.Options:=OldOptions;
+  end;
 End;
 
 {---------------------------F I N D   P R E V I O U S ------------------------}
@@ -3544,6 +3554,7 @@ begin
   if TempEditor = nil then exit;
   Include(States,snIncrementalFind);
   fIncrementalSearchStartPos:=TempEditor.EditorComponent.LogicalCaretXY;
+  fIncrementalSearchCancelPos:=fIncrementalSearchStartPos;
   IncrementalSearchStr:='';
   UpdateStatusBar;
 end;
@@ -4635,21 +4646,29 @@ begin
 end;
 
 procedure TSourceNotebook.SetIncrementalSearchStr(const AValue: string);
-var
-  CurEdit: TSynEdit;
 begin
   if FIncrementalSearchStr=AValue then exit;
   FIncrementalSearchStr:=AValue;
+  DoIncrementalSearch;
+end;
+
+procedure TSourceNotebook.DoIncrementalSearch;
+var
+  CurEdit: TSynEdit;
+begin
   if snIncrementalFind in States then begin
     // search string
     CurEdit:=GetActiveSE.EditorComponent;
     CurEdit.BeginUpdate;
-    CurEdit.LogicalCaretXY:=fIncrementalSearchStartPos;
     if fIncrementalSearchStr<>'' then begin
+      // search from search start position
+      CurEdit.LogicalCaretXY:=fIncrementalSearchStartPos;
       CurEdit.SearchReplace(fIncrementalSearchStr,'',[]);
       CurEdit.LogicalCaretXY:=CurEdit.BlockEnd;
       FIncrementalSearchStr:=CurEdit.SelText;
     end else begin
+      // go to start
+      CurEdit.LogicalCaretXY:=fIncrementalSearchCancelPos;
       CurEdit.BlockBegin:=CurEdit.LogicalCaretXY;
       CurEdit.BlockEnd:=CurEdit.BlockBegin;
     end;
