@@ -47,7 +47,8 @@ type
     procedure RemoveAllCallbacks; virtual;
     procedure UpdateItemCache;
   public
-    constructor Create(List : PGtkList; TheOwner: TWinControl; const AWithCheckBox: Boolean);
+    constructor Create(List : PGtkList; TheOwner: TWinControl;
+                       const AWithCheckBox: Boolean);
     destructor Destroy; override;
     function Add(const S: string): Integer; override;
     procedure Assign(Source : TPersistent); override;
@@ -87,6 +88,9 @@ type
 { =============================================================================
 
   $Log$
+  Revision 1.8  2003/08/28 09:10:00  mattias
+  listbox and comboboxes now set sort and selection at handle creation
+
   Revision 1.7  2003/06/20 01:37:47  marc
   + Added TCheckListBox component
 

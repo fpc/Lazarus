@@ -506,107 +506,6 @@ Begin
     Assert (False, 'Trace:[ObjectToHWND]****** Warning: handle = 0 *******');
 End;
 
-{------------------------------------------------------------------------------
-  Procedure: RecreateListControl
-  Params:  ListHandle - Handle of window
-           ListControl - TListBox, TCListBox or TComboBox
-           ToSort - Sort the list? 
-  
-  Returns: nothing 
- ------------------------------------------------------------------------------}
-Procedure RecreateListControl(const ListHandle:HWND;const ListControl:TControl; ToSort:Boolean);
-var 
-  List:TCustomListBox; //TLocalCustomListBox;
-  Combo:TCustomComboBox; //TLocalCustomComboBox;
-  TempStrList:TStringList;
-  CurrentList:TStrings;
-  ParentHandle,NewHandle,Main_WndProc:HWND;
-  ListFlags: DWORD;
-begin
-  TempStrList:=TStringList.Create;
-  ParentHandle:=ListControl.Parent.Handle;
-  // Get current flags
-  ListFlags:=GetWindowLong(ListHandle, GWL_STYLE);
-  // Stores WindowProc and reset to default to avoid LM_DESTROY
-  Main_WndProc:=SetWindowLong(ListHandle, GWL_WNDPROC,Integer(GetProp(ListHandle,'DefWndProc')));
-
-  Writeln(CS_TO_STRING(ListControl.FCompStyle),' being recreated');
-  WriteLn('DefWndProc : ',Integer(GetProp(ListHandle, 'DefWndProc')));
-  WriteLn('MainWindow proc: ',Main_WndProc);
-  // Remove Prop before destroy the window
-  RemoveProp(ListHandle,'Lazarus');
-  RemoveProp(ListHandle,'DefWndProc');
-  RemoveProp(ListHandle,'Sender');
-
-  If ListControl.FCompStyle = csComboBox then begin
-    Combo:=TCustomComboBox(ListControl);
-    with Combo do
-    begin
-      CurrentList:=Items;
-      TempStrList.Assign(Items);
-
-      If ToSort Then
-        ListFlags:=ListFlags or CBS_SORT
-      Else
-        ListFlags:=ListFlags and (not CBS_SORT);
-
-      DestroyWindow(ListHandle);
-      NewHandle:= CreateWindow('COMBOBOX', Nil, ListFlags or WS_VSCROLL, Left, Top, Width, Height, ParentHandle, HMENU(Nil), HInstance, Nil);
-    end;
-  end
-  Else Begin {csListBox or csCListBox}
-    List:=TCustomListBox(ListControl);
-    with List do
-    begin
-      CurrentList:=Items;
-      TempStrList.Assign(Items);
-      If MultiSelect Then begin
-        if ExtendedSelect then
-          ListFlags:=ListFlags or LBS_EXTENDEDSEL
-        else
-          ListFlags:=(ListFlags or LBS_MULTIPLESEL) and (not LBS_EXTENDEDSEL);
-      end
-      else
-        ListFlags:=ListFlags and (not (LBS_MULTIPLESEL or LBS_EXTENDEDSEL));
-
-      If ToSort Then
-        ListFlags:=ListFlags or LBS_SORT
-      Else
-        ListFlags:=ListFlags and (not LBS_SORT);
-
-      DestroyWindow(ListHandle);
-
-      If FCompStyle = csListBox then
-        ListFlags:= ListFlags or WS_VSCROLL or WS_HSCROLL
-      Else
-        ListFlags:= ListFlags Or LBS_MULTICOLUMN or WS_HSCROLL;
-
-      If BorderStyle = TBorderStyle(bsSingle) Then
-        NewHandle:= CreateWindowEx(WS_EX_CLIENTEDGE,'LISTBOX', Nil, ListFlags, Left, Top, Width, Height, ParentHandle, HMENU(Nil), HInstance, Nil)
-      Else
-        NewHandle:= CreateWindowEx(WS_EX_CLIENTEDGE,'LISTBOX', Nil, ListFlags, Left, Top, Width, Height, ParentHandle, HMENU(Nil), HInstance, Nil);
-    end;
-  end;
-  // Set the properties in the same order as in CreateComponent
-  Windows.SetProp(NewHandle, 'Lazarus', Integer(ListControl));
-  TWinControl(ListControl).Handle:=NewHandle;
-  Windows.SetProp(NewHandle, 'DefWndProc',SetWindowLong (NewHandle, GWL_WNDPROC, Main_WndProc));
-  SendMessage(NewHandle, WM_SETFONT, GetStockObject(DEFAULT_GUI_FONT), 0);
-
-  //Change Window handle at TWin32ListStringList
-  If ListControl.FCompStyle = csListBox then begin
-  TWin32ListStringList(CurrentList).FWin32List:=NewHandle;
-  TWin32ListStringList(CurrentList).Assign(TempStrList);
-end
-Else begin
- TWin32CListStringList(CurrentList).FWin32CList:=NewHandle;
- TWin32CListStringList(CurrentList).Assign(TempStrList);
-  end;
-  WriteLn('Values after handle Recreation');
-  WriteLn('DefWndProc: ',Integer(GetProp(NewHandle, 'DefWndProc')));
-  WriteLn('New WNDPROC Style: ',GetWindowLong(NewHandle, GWL_WNDPROC));
-  TempStrList.Free;
-end;
 
 (***********************************************************************
   Widget member Functions
@@ -774,6 +673,9 @@ End;
  { =============================================================================
 
   $Log$
+  Revision 1.24  2003/08/28 09:10:01  mattias
+  listbox and comboboxes now set sort and selection at handle creation
+
   Revision 1.23  2003/08/27 15:15:42  mattias
   improved setprop from Micha
 

@@ -70,9 +70,6 @@ begin
   FItems:= NewStrings;
   FCacheValid := False;
 
-  UpdateSelectionMode;
-  UpdateSorted;
-
   CNSendMessage(LM_SETITEMINDEX, Self, Pointer(FItemIndex));
 
   // copy items attributes

@@ -181,6 +181,8 @@ type
     function GetTopIndex(Sender: TObject): integer;
     function SetTopIndex(Sender: TObject; NewTopIndex: integer): integer;
     function GetIndexAtY(Sender: TObject; PointerToY: Pointer): integer;
+    procedure SetSelectionMode(Sender: TObject; Widget: PGtkWidget;
+                               MultiSelect, ExtendedSelect: boolean);
 
     // forms and dialogs
     procedure BringFormToFront(Sender: TObject);
@@ -347,6 +349,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.140  2003/08/28 09:10:00  mattias
+  listbox and comboboxes now set sort and selection at handle creation
+
   Revision 1.139  2003/08/19 12:23:23  mattias
   moved types from graphtype.pp back to graphics.pp
 

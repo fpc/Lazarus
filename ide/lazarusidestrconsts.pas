@@ -727,6 +727,7 @@ resourcestring
   dlgEdEdit = 'Edit...';
   dlgEdDelete = 'Delete';
   lisA2PAddFilesToPackage = 'Add files to package';
+  lisA2PAddToPackage = 'Add to package';
   dlgIndentCodeTo = 'Indent code to';
   dlgCodeToolsTab = 'Code Tools';
   

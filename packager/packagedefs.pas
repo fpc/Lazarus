@@ -159,7 +159,7 @@ type
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure ConsistencyCheck;
     function IsVirtual: boolean;
-    function GetShortFilename: string;
+    function GetShortFilename(RelativePaths: boolean): string;
     function ComponentCount: integer;
     procedure AddPkgComponent(APkgComponent: TPkgComponent);
     procedure RemovePkgComponent(APkgComponent: TPkgComponent);
@@ -1177,10 +1177,13 @@ begin
   Result:=FilenameIsAbsolute(FFilename);
 end;
 
-function TPkgFile.GetShortFilename: string;
+function TPkgFile.GetShortFilename(RelativePaths: boolean): string;
 begin
   Result:=FFilename;
   LazPackage.ShortenFilename(Result);
+  if RelativePaths and FilenameIsAbsolute(Result)
+  and LazPackage.HasDirectory then
+    Result:=CreateRelativePath(Result,LazPackage.Directory);
 end;
 
 function TPkgFile.ComponentCount: integer;

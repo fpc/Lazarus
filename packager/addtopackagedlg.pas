@@ -86,6 +86,7 @@ type
     AddUnitFilenameLabel: TLabel;
     AddUnitFilenameEdit: TEdit;
     AddUnitFileBrowseButton: TButton;
+    AddUnitFileShortenButton: TButton;
     AddUnitSrcNameLabel: TLabel;
     AddUnitSrcNameEdit: TEdit;
     AddUnitHasRegisterCheckBox: TCheckBox;
@@ -104,7 +105,8 @@ type
     PalettePageCombobox: TCombobox;
     ComponentUnitFileLabel: TLabel;
     ComponentUnitFileEdit: TEdit;
-    ComponentUnitFileButton: TButton;
+    ComponentUnitFileBrowseButton: TButton;
+    ComponentUnitFileShortenButton: TButton;
     ComponentUnitNameLabel: TLabel;
     ComponentUnitNameEdit: TEdit;
     NewComponentButton: TButton;
@@ -122,12 +124,14 @@ type
     AddFilenameLabel: TLabel;
     AddFilenameEdit: TEdit;
     AddFileBrowseButton: TButton;
+    AddFileShortenButton: TButton;
     AddFileTypeRadioGroup: TRadioGroup;
     AddFileButton: TButton;
     CancelAddFileButton: TButton;
     // add files page
     FilesListView: TListView;
     FilesBrowseButton: TButton;
+    FilesShortenButton: TButton;
     FilesDeleteButton: TButton;
     FilesAddButton: TButton;
     procedure AddFileBrowseButtonClick(Sender: TObject);
@@ -146,7 +150,7 @@ type
     procedure CancelAddUnitButtonClick(Sender: TObject);
     procedure CancelNewComponentButtonClick(Sender: TObject);
     procedure ClassNameEditChange(Sender: TObject);
-    procedure ComponentUnitFileButtonClick(Sender: TObject);
+    procedure ComponentUnitFileBrowseButtonClick(Sender: TObject);
     procedure FilesAddButtonClick(Sender: TObject);
     procedure FilesBrowseButtonClick(Sender: TObject);
     procedure FilesDeleteButtonClick(Sender: TObject);
@@ -701,7 +705,7 @@ begin
   AutoCompleteNewComponentUnitName;
 end;
 
-procedure TAddToPackageDlg.ComponentUnitFileButtonClick(Sender: TObject);
+procedure TAddToPackageDlg.ComponentUnitFileBrowseButtonClick(Sender: TObject);
 var
   OpenDialog: TOpenDialog;
   AFilename: string;
@@ -1013,7 +1017,7 @@ begin
     SetBounds(x,y,Parent.ClientWidth-x-Height-5,Height);
   inc(x,ComponentUnitFileEdit.Width+2);
 
-  with ComponentUnitFileButton do
+  with ComponentUnitFileBrowseButton do
     SetBounds(x,y,ComponentUnitFileEdit.Height,ComponentUnitFileEdit.Height);
   x:=5;
   inc(y,ComponentUnitFileEdit.Height+5);
@@ -1316,12 +1320,12 @@ begin
     Text:='';
   end;
 
-  ComponentUnitFileButton:=TButton.Create(Self);
-  with ComponentUnitFileButton do begin
-    Name:='ComponentUnitFileButton';
+  ComponentUnitFileBrowseButton:=TButton.Create(Self);
+  with ComponentUnitFileBrowseButton do begin
+    Name:='ComponentUnitFileBrowseButton';
     Parent:=NewComponentPage;
     Caption:='...';
-    OnClick:=@ComponentUnitFileButtonClick;
+    OnClick:=@ComponentUnitFileBrowseButtonClick;
   end;
 
   ComponentUnitNameLabel:=TLabel.Create(Self);
@@ -1640,6 +1644,7 @@ constructor TAddToPackageDlg.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   Name:='AddToPackageDlg';
+  Caption:=lisA2PAddToPackage;
   fPkgComponents:=TAVLTree.Create(@CompareIDEComponentByClassName);
   fPackages:=TAVLTree.Create(@CompareLazPackageID);
   Params:=TAddToPkgResult.Create;

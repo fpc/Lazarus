@@ -129,7 +129,9 @@ End;
  ------------------------------------------------------------------------------}
 Procedure TWin32ListStringList.Sort;
 Begin
-  //RecreateListControl(FWin32List,FSender,FSorted);
+  // The win api doesn't allow to change the sort on the fly,
+  // so is needed to recreate the window 
+  CNSendMessage(LM_RECREATEWND,FSender,Nil);
 End;
 
 {------------------------------------------------------------------------------
@@ -151,7 +153,7 @@ Begin
       CNSendMessage(LM_GETTEXT, FSender, @EditText);
 
     Windows.SendMessage(FWin32List, FFlagResetContent, 0, 0);
-    For Counter := TStrings(Source).Count - 1 DownTo 0 Do 
+    For Counter := 0 To (TStrings(Source).Count - 1) Do 
       Windows.SendMessage(FWin32List, FFlagAddString, 0, LPARAM(PChar(TStrings(Source)[Counter]))); //Insert
 
     if FSender.FCompStyle=csComboBox Then
@@ -291,8 +293,9 @@ End;
  ------------------------------------------------------------------------------}
 Procedure TWin32CListStringList.Sort;
 Begin
-  // The win api doesn't allow to change the sort on the fly, so is needed to recreate the window 
-  //RecreateListControl(FWin32CList,FSender,FSorted);
+  // The win api doesn't allow to change the sort on the fly,
+  // so is needed to recreate the window 
+  CNSendMessage(LM_RECREATEWND,FSender,Nil);
 End;
 
 {------------------------------------------------------------------------------
@@ -309,7 +312,7 @@ Begin
   If Source Is TStrings Then
   Begin
     Clear;
-    For Counter := TStrings(Source).Count - 1 DownTo 0 Do 
+    For Counter :=  0 To (TStrings(Source).Count - 1) Do 
       InsertObject(0, TStrings(Source)[Counter], TStrings(Source).Objects[Counter]);
   End 
   Else
@@ -415,6 +418,9 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.18  2003/08/28 09:10:01  mattias
+  listbox and comboboxes now set sort and selection at handle creation
+
   Revision 1.17  2003/08/27 09:33:26  mattias
   implements SET_LABEL from Micha
 

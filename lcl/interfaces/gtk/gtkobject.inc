@@ -2329,6 +2329,46 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  procedure TgtkObject.SetSelectionMode(Sender: TObject; Widget: PGtkWidget;
+    MultiSelect, ExtendedSelect: boolean);
+------------------------------------------------------------------------------}
+procedure TgtkObject.SetSelectionMode(Sender: TObject; Widget: PGtkWidget;
+  MultiSelect, ExtendedSelect: boolean);
+var
+  AControl: TWinControl;
+  SelectionMode: TGtkSelectionMode;
+begin
+  AControl:=TWinControl(Sender);
+  if (AControl is TWinControl) and
+    (AControl.fCompStyle in [csListBox, csCheckListBox, csCListBox]) then
+  begin
+    if MultiSelect then
+    begin
+       if ExtendedSelect
+          then SelectionMode:= GTK_SELECTION_EXTENDED
+          else SelectionMode:= GTK_SELECTION_MULTIPLE;
+    end
+    else
+      SelectionMode:= GTK_SELECTION_BROWSE;
+    case AControl.fCompStyle of
+  
+    csListBox, csCheckListBox:
+      gtk_list_set_selection_mode(PGtkList(
+        GetWidgetInfo(Widget, True)^.ImplementationWidget),
+        SelectionMode);
+        
+    csCListBox:
+      gtk_clist_set_selection_mode(PGtkCList(
+        GetWidgetInfo(Widget, True)^.ImplementationWidget),
+          SelectionMode);
+
+    else
+      Assert (true, 'WARNING:[TgtkObject.IntSendMessage3] usage of LM_SETSELMODE unimplemented for actual component');
+    end;
+  end;
+end;
+
+{------------------------------------------------------------------------------
   procedure TgtkObject.BringFormToFront(Sender: TObject);
 ------------------------------------------------------------------------------}
 procedure TgtkObject.BringFormToFront(Sender: TObject);
@@ -2369,7 +2409,6 @@ var
   Num         : Integer;               // currently only used for LM_INSERTTOOLBUTTON and LM_ADDITEM
   pStr2       : PChar;                 // currently only used for LM_INSERTTOOLBUTTON
   GList       : pGList;                // Only used for listboxes, replace with widget!!!!!
-  SelectionMode : TGtkSelectionMode; // currently only used for listboxes
   ListItem    : PGtkListItem;          // currently only used for listboxes
   Rect        : TRect;
   FormIconGdiObject: PGdiObject;     // currently only used by LM_SETFORMICON
@@ -2389,55 +2428,56 @@ begin
   // Reason for this split are performance issues since we need RTTI to
   // retrieve the handle
   case LM_Message of
-    LM_Create   : CreateComponent(Sender);
+  LM_Create   : CreateComponent(Sender);
 
-    LM_SETCOLOR : SetColor(Sender);
+  LM_SETCOLOR : SetColor(Sender);
 
-    LM_SETPixel : SetPixel(Sender,Data); 
+  LM_SETPixel : SetPixel(Sender,Data); 
 
-    LM_GETPixel : GetPixel(Sender,Data); 
+  LM_GETPixel : GetPixel(Sender,Data); 
 
-    LM_ShowHide :
-      begin
-        //writeln('LM_ShowHide');
-        ShowHide(Sender);
-      end;
+  LM_ShowHide :
+    begin
+      //writeln('LM_ShowHide');
+      ShowHide(Sender);
+    end;
 
-    LM_SetCursor : gtkproc.SetCursor(TWinControl(Sender), Data);
+  LM_SetCursor : gtkproc.SetCursor(TWinControl(Sender), Data);
 
-    LM_SetLabel  : SetLabel(Sender,Data);
+  LM_SetLabel  : SetLabel(Sender,Data);
 
-    LM_GETVALUE  : Result := GetValue(Sender, data);
+  LM_GETVALUE  : Result := GetValue(Sender, data);
 
-    LM_SETVALUE  : Result := SetValue(Sender, data);
-   
-    LM_SETPROPERTIES: Result := SetProperties(Sender);
-    
-    LM_SETDESIGNING :
-      // Used by the form editor to set anything specifically needed
-      // when setting controls to Designing.
-      begin
-        // change cursor
-        if Sender is TWinControl then
-          gtkproc.SetCursor(TWinControl(Sender), Data);
-      end;
+  LM_SETVALUE  : Result := SetValue(Sender, data);
+ 
+  LM_SETPROPERTIES: Result := SetProperties(Sender);
+  
+  LM_SETDESIGNING :
+    // Used by the form editor to set anything specifically needed
+    // when setting controls to Designing.
+    begin
+      // change cursor
+      if Sender is TWinControl then
+        gtkproc.SetCursor(TWinControl(Sender), Data);
+    end;
 
-    LM_RECREATEWND : Result := RecreateWnd(sender);
-    
-    LM_ATTACHMENU: AttachMenu(Sender);
-    
-    LM_NB_UpdateTab: UpdateNotebookPageTab(nil,TPage(Sender));
-    
-    LM_LB_GETTOPINDEX: Result:=GetTopIndex(Sender);
-    LM_LB_SETTOPINDEX: Result:=SetTopIndex(Sender,integer(Data));
-    LM_LB_GETINDEXAT:  Result:=GetIndexAtY(Sender,Data);
+  LM_RECREATEWND : Result := RecreateWnd(sender);
+  
+  LM_ATTACHMENU: AttachMenu(Sender);
+  
+  LM_NB_UpdateTab: UpdateNotebookPageTab(nil,TPage(Sender));
+  
+  LM_LB_GETTOPINDEX: Result:=GetTopIndex(Sender);
+  LM_LB_SETTOPINDEX: Result:=SetTopIndex(Sender,integer(Data));
+  LM_LB_GETINDEXAT:  Result:=GetIndexAtY(Sender,Data);
 
-  else begin
-    handle := hwnd(ObjectToGtkObject(Sender));
-    //???   if handle = nil then assert (false, Format ('Trace:  [TgtkObject.IntSendMessage3] %s --> got handle=nil',[Sender.ClassName]));
-    Case LM_Message of
+  else
+    begin
+      handle := hwnd(ObjectToGtkObject(Sender));
+      //???   if handle = nil then assert (false, Format ('Trace:  [TgtkObject.IntSendMessage3] %s --> got handle=nil',[Sender.ClassName]));
+      Case LM_Message of
 
-      LM_SetText  : SetText(PgtkWidget(Handle), Data); 
+      LM_SetText  : SetText(PgtkWidget(Handle), Data);
 
       LM_AddChild :
       begin
@@ -2459,7 +2499,7 @@ begin
           end;
         end;
       end;
-      
+
       LM_LV_DELETEITEM :
       begin
         if (Sender is TListView) then
@@ -2469,7 +2509,7 @@ begin
           gtk_clist_remove(PgtkCList(Widget),Num);
         end;
       end;
-      
+
       LM_LV_CHANGEITEM :
         if (Sender is TListView) then
           ListViewChangeItem(Sender,Integer(data^));
@@ -2489,16 +2529,16 @@ begin
         if Data<>nil then
           gtk_clist_select_row(PGtkCList(Widget),TListItem(Data).Index,0);
       end;
-      
+
       LM_BRINGTOFRONT:
       begin
-{         Assert(False, 'Trace:TODO:bringtofront');
+  {         Assert(False, 'Trace:TODO:bringtofront');
          //For now just hide and show again.
-	 if (Sender is TControl) then begin
-	   TControl(Sender).Parent.RemoveControl(TControl(Sender));
-	   writeln('Removed control ', TControl(Sender).Name);
-	   TControl(Sender).Parent.InsertControl(TControl(Sender));
-	   writeln('Inserted control ', TControl(Sender).Name);
+  	 if (Sender is TControl) then begin
+  	   TControl(Sender).Parent.RemoveControl(TControl(Sender));
+  	   writeln('Removed control ', TControl(Sender).Name);
+  	   TControl(Sender).Parent.InsertControl(TControl(Sender));
+  	   writeln('Inserted control ', TControl(Sender).Name);
     end;
     }
         if (Sender is TCustomForm) then
@@ -2606,12 +2646,12 @@ begin
          try
            pLabel := gtk_label_new(pStr);
            Accel:= gtk_label_parse_uline(PGtkLabel(pLabel), pStr);
-           
+
            Accelerate(TBitBtn(Sender),PGtkWidget(TBitBtn(Sender).Handle),
              Accel,0,'clicked');
          finally
            StrDispose(pStr);
-         end;  
+         end;
 
          if (TBitBtn(Sender).Layout = blGlyphLeft)
          or (TBitBtn(Sender).Layout = blGlyphRight) then
@@ -2649,7 +2689,7 @@ begin
          gtk_widget_show(box1);
       end;
 
-//SH: think of TBitmap.handle!!!!
+  //SH: think of TBitmap.handle!!!!
      LM_LOADXPM:
          Begin
            if (sender is TBitmap) then
@@ -2663,7 +2703,7 @@ begin
 
 
       LM_POPUPSHOW :
-        Begin 
+        Begin
           gtk_menu_popup(PgtkMenu(TPopupMenu(Sender).Handle),
                          nil,
                          nil,
@@ -2689,31 +2729,31 @@ begin
         end;
 
       LM_SETFILTER :
-      begin 
+      begin
         { ToDo:
         if Sender is TFileDialog then begin
-          pStr := StrAlloc(length(TFileDialog(Sender).Filter) + 1); 
+          pStr := StrAlloc(length(TFileDialog(Sender).Filter) + 1);
           try
-            StrPCopy(pStr, TFileDialog(Sender).Filter); 
+            StrPCopy(pStr, TFileDialog(Sender).Filter);
             gtk_file_selection_complete(PGtkFileSelection(Handle), pstr);
           finally
-            StrDispose(pStr); 
+            StrDispose(pStr);
           end;
         end;}
-      end; 
- 
-      LM_SETFILENAME : 
-      begin 
+      end;
+
+      LM_SETFILENAME :
+      begin
         if Sender is TFileDialog then begin
-          pStr := StrAlloc(length(TFileDialog(Sender).Filename) + 1); 
+          pStr := StrAlloc(length(TFileDialog(Sender).Filename) + 1);
           try
-            StrPCopy(pStr, TFileDialog(Sender).Filename); 
+            StrPCopy(pStr, TFileDialog(Sender).Filename);
             gtk_file_selection_set_filename( PGtkFileSelection(Handle), pStr);
           finally
-            StrDispose(pStr); 
+            StrDispose(pStr);
           end;
         end;
-      end; 
+      end;
 
       LM_SETFOCUS:
       begin
@@ -2734,7 +2774,7 @@ begin
       end;
 
       LM_ShowModal: ShowModal(Sender);
-      
+
       LM_TB_BUTTONCOUNT:
       begin
         if (Sender is TToolbar)
@@ -2742,11 +2782,11 @@ begin
         else Result := -1;
       end;
 
-//SH: think of TCanvas.handle!!!!
-      LM_REDRAW: 
-      begin 
+  //SH: think of TCanvas.handle!!!!
+      LM_REDRAW:
+      begin
         Assert(False, Format('Trace:  [TgtkObject.IntSendMessage3] %s --> Redraw', [Sender.ClassName]));
-        if (Sender is TCanvas) then 
+        if (Sender is TCanvas) then
           ReDraw(PgtkWidget(TCanvas(Sender).Handle))
         else begin
           if Sender is TWinControl then
@@ -2754,8 +2794,8 @@ begin
           else begin
             Rect := TControl(Sender).BoundsRect;
             InvalidateRect(TControl(Sender).Parent.Handle, @Rect, true);
-          end;  
-        end; 
+          end;
+        end;
       end;
 
       LM_AddPage :
@@ -2803,18 +2843,18 @@ begin
             finally
               StrPCopy(pStr2,TControl(Sender).Hint);
             end;
-         end 
+         end
          else Begin
            RaiseException('Can not assign this control to the toolbar');
            exit;
          end;
-    
+
          num := TToolbar(TWinControl(Sender).parent).Buttonlist.IndexOf(TControl(Sender));
          if num < 0 then Num := TToolbar(TWinControl(Sender).parent).Buttonlist.Count+1;
          Assert(False, Format('Trace:NUM = %d in INSERTBUTTON',[num]));
 
          {Make sure it's created!!}
-         if handle = 0 
+         if handle = 0
             then IntSendMessage3(LM_CREATE,Sender,nil);
 
          gtk_toolbar_insert_widget(pGTKToolbar(TWinControl(sender).parent.Handle),
@@ -2828,17 +2868,17 @@ begin
       Begin
          with pgtkToolbar(TToolbar(TWinControl(Sender).parent).handle)^ do
             children := g_list_remove(pgList(children), sender);
-// Next 3 lines: should be same as above, remove when above lines are proofed
-//         pgtkToolbar(TToolbar(TWinControl(Sender).parent).handle)^.children := 
-//            g_list_remove(pgList(pgtkToolbar(TToolbar(TWinControl(Sender).parent).handle)^.children),
-//               sender);
+  // Next 3 lines: should be same as above, remove when above lines are proofed
+  //         pgtkToolbar(TToolbar(TWinControl(Sender).parent).handle)^.children :=
+  //            g_list_remove(pgList(pgtkToolbar(TToolbar(TWinControl(Sender).parent).handle)^.children),
+  //               sender);
       end;
 
-      LM_Invalidate : 
-      begin 
+      LM_Invalidate :
+      begin
          Assert(False, 'Trace:Trying to invalidate window... !!!');
    //THIS DOESN'T WORK YET....
-{
+  {
          Event.thetype := GDK_EXPOSE;
      Event.window := PgtkWidget(Handle)^.Window;
      Event.Send_Event := 0;
@@ -2848,10 +2888,10 @@ begin
      Event.Height := PgtkWidget(Handle)^.Allocation.Height;
          gtk_Signal_Emit_By_Name(PgtkObject(Handle),'expose_event',[(Sender as TWinControl).Handle,Sender,@Event]);
      Assert(False, 'Trace:Signal Emitted - invalidate window');
-}
+  }
         gtk_widget_queue_draw(PGtkWidget(Handle));
-      end; 
-      
+      end;
+
       LM_SETFORMICON :
       begin
         if Sender is TCustomForm then begin
@@ -2873,35 +2913,39 @@ begin
       LM_SCREENINIT :
       begin
         { Compute pixels per inch variable }
-        PLMScreenInit(Data)^.PixelsPerInchX:= 
+        PLMScreenInit(Data)^.PixelsPerInchX:=
           Round(gdk_screen_width / (gdk_screen_width_mm / 25.4));
-        PLMScreenInit(Data)^.PixelsPerInchY:= 
+        PLMScreenInit(Data)^.PixelsPerInchY:=
           Round(gdk_screen_height / (gdk_screen_height_mm / 25.4));
         PLMScreenInit(Data)^.ColorDepth:= gdk_visual_get_system^.depth;
-      end;  
+      end;
 
       LM_GETITEMS :
       begin
         case TControl(Sender).fCompStyle of
-          csComboBox :
+          csComboBox:
             Result:=longint(gtk_object_get_data(PGtkObject(Handle),'LCLList'));
-            
+
           csCListBox:
             begin
               Widget:= GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
 
               Data := TGtkCListStringList.Create(PGtkCList(Widget));
+              if Sender is TCustomListBox then
+                TGtkCListStringList(Data).Sorted:=TCustomListBox(Sender).Sorted;
               Result := integer(Data);
             end;
-            
+
           csCheckListBox, csListBox:
             begin
               Widget:= GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
               Data:= TGtkListStringList.Create(PGtkList(Widget),
                 TWinControl(Sender), TControl(Sender).fCompStyle = csCheckListBox);
+              if Sender is TCustomListBox then
+                TGtkListStringList(Data).Sorted:=TCustomListBox(Sender).Sorted;
               Result:= Integer(Data);
             end;
-        else 
+        else
           raise Exception.Create('Message LM_GETITEMS - Not implemented');
         end;
       end;
@@ -2921,14 +2965,14 @@ begin
              begin
                if Handle<>0 then begin
                  Widget:=nil;
-                 if TListBox(Sender).MultiSelect then 
+                 if TListBox(Sender).MultiSelect then
                    Widget:= PGtkList(GetWidgetInfo(Pointer(Handle), True)^.
                                         ImplementationWidget)^.last_focus_child;
                  if Widget=nil then begin
                    GList:= PGtkList(GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget)^.selection;
                    if GList <> nil then
                      Widget:= PGtkWidget(GList^.data);
-                 end;  
+                 end;
                  if Widget = nil then
                    Result:= -1
                  else
@@ -2938,7 +2982,7 @@ begin
                end else
                  Result:=-1;
              end;
-             
+
            csCListBox:
              begin
                GList:= PGtkCList(GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget)^.selection;
@@ -2947,21 +2991,21 @@ begin
                else
                  Result := integer(GList^.Data);
              end;
-             
+
            csNotebook:
              begin
-               TLMNotebookEvent(Data^).Page := 
+               TLMNotebookEvent(Data^).Page :=
                  gtk_notebook_get_current_page(PGtkNotebook(Handle));
                UpdateNoteBookClientWidget(Sender);
              end;
-             
+
         end;
       end;
-          
+
       LM_SETITEMINDEX:
         if Handle<>0 then begin
           case TControl(Sender).fCompStyle of
-        
+
           csComboBox:
             SetComboBoxItemIndex(TComboBox(Sender),Integer(Data));
 
@@ -2980,7 +3024,7 @@ begin
             gtk_clist_select_row(PGtkCList(GetWidgetInfo(Pointer(Handle),
                                    True)^.ImplementationWidget),
                                  Integer(Data), 1);    // column
-              
+
           csNotebook:
             if Data<>nil then begin
               gtk_notebook_set_page(PGtkNotebook(Handle),
@@ -2989,7 +3033,7 @@ begin
             end;
           end;
         end;
-          
+
       LM_GETSELSTART :
       begin
         if (Sender is TControl) then begin
@@ -2998,20 +3042,20 @@ begin
             Widget:= PGtkWidget(PGtkCombo(Handle)^.entry);
           csEdit, csMemo:
   	    Widget:= GetWidgetInfo(Pointer(Handle), true)^.ImplementationWidget;
-	  else
-	    Widget:= nil;  
+  	  else
+  	    Widget:= nil;
           end;
-	  if Widget <> nil then begin
+  	  if Widget <> nil then begin
             if PGtkEditable(Widget)^.selection_start_pos
                < PGtkEditable(Widget)^.selection_end_pos
             then
               Result:= PGtkEditable(Widget)^.selection_start_pos
-	    else
-	      Result:= PGtkEditable(Widget)^.current_pos;// selection_end_pos
+  	    else
+  	      Result:= PGtkEditable(Widget)^.current_pos;// selection_end_pos
           end else Result:= 0;
         end;
       end;
-          
+
       LM_GETSELLEN :
       begin
         if (Sender is TControl) then begin
@@ -3020,14 +3064,14 @@ begin
             Result:= Abs(PGtkEditable(PGtkCombo(Handle)^.entry)^.selection_end_pos
                      - PGtkEditable(PGtkCombo(Handle)^.entry)^.selection_start_pos);
           csEdit, csMemo:
-	    begin
-	      Widget:= GetWidgetInfo(Pointer(Handle), true)^.ImplementationWidget;
+  	    begin
+  	      Widget:= GetWidgetInfo(Pointer(Handle), true)^.ImplementationWidget;
               Result:= Abs(PGtkEditable(Widget)^.selection_end_pos - PGtkEditable(Widget)^.selection_start_pos);
-	    end;
+  	    end;
           end;
         end;
       end;
-  
+
       LM_GETLIMITTEXT :
       begin
         if (Sender is TControl)
@@ -3066,19 +3110,19 @@ begin
 
             csEdit, csMemo:
               Widget:=GetWidgetInfo(Pointer(Handle), true)^.ImplementationWidget;
-              
+
           else
             Widget:=nil;
       	  end;
-         
+
           if Widget<>nil then begin
             gtk_editable_select_region(PGtkEditable(Widget),
               gtk_editable_get_position(PGtkEditable(Widget)),
               gtk_editable_get_position(PGtkEditable(Widget)) + Integer(Data));
       	  end;
       	end;
-      end;  
- 
+      end;
+
       LM_GetLineCount :
       begin
         writeln('ToDo: LM_GetLineCount');
@@ -3095,7 +3139,7 @@ begin
                                True)^.ImplementationWidget)^.selection);
         end;
       end;
-  
+
       LM_GETSEL :
       begin
         Result := 0;      { assume: nothing found }
@@ -3146,7 +3190,7 @@ begin
           end;
         end;
       end;
-      
+
       LM_CLB_SETCHECKED :
       begin
         if Assigned(Data)
@@ -3168,26 +3212,26 @@ begin
 
       LM_SETLIMITTEXT :
       begin
-         if (Sender is TControl) and (TControl(Sender).fCompStyle = csComboBox) 
-         then gtk_entry_set_max_length(PGtkEntry(PGtkCombo(Handle)^.entry),
-                                       Integer(Data^));
+        if (Sender is TControl) and (TControl(Sender).fCompStyle = csComboBox)
+        then gtk_entry_set_max_length(PGtkEntry(PGtkCombo(Handle)^.entry),
+                                      Integer(Data^));
       end;
- 
-      LM_SORT :
+
+      LM_SORT:
       begin
-         if  (Sender is TControl) and assigned (data) then
-         begin
-            case TControl(Sender).fCompStyle of
-               csComboBox, 
-               csListBox,
-               csCheckListBox   : TGtkListStringList(TLMSort(Data^).List).Sorted:=
-                                  TLMSort(Data^).IsSorted;
-               csCListBox  : TGtkCListStringList(TLMSort(Data^).List).Sorted :=
-                                  TLMSort(Data^).IsSorted;
-            end
-         end
+        if  (Sender is TControl) and assigned (data) then
+        begin
+          case TControl(Sender).fCompStyle of
+          csComboBox,
+          csListBox,
+          csCheckListBox: TGtkListStringList(TLMSort(Data^).List).Sorted:=
+                              TLMSort(Data^).IsSorted;
+          csCListBox: TGtkCListStringList(TLMSort(Data^).List).Sorted :=
+                              TLMSort(Data^).IsSorted;
+          end
+        end
       end;
- 
+
       LM_SETSEL:
       begin
         if (Sender is TControl)
@@ -3209,33 +3253,14 @@ begin
             end;
         end;
       end;
- 
-      LM_SETSELMODE :
-      begin
-         if (Sender is TControl) and 
-            (TControl(Sender).fCompStyle in [csListBox, csCheckListBox, csCListBox]) and
-            assigned (data) then 
-         begin
-            if TLMSetSelMode(Data^).MultiSelect then 
-            begin
-               if TLMSetSelMode(Data^).ExtendedSelect 
-                  then SelectionMode:= GTK_SELECTION_EXTENDED
-                  else SelectionMode:= GTK_SELECTION_MULTIPLE;
-            end 
-            else 
-              SelectionMode:= GTK_SELECTION_BROWSE;
-            case TControl(Sender).fCompStyle of
-              csListBox, csCheckListBox  : gtk_list_set_selection_mode(PGtkList(
-                GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget), SelectionMode);
-              csCListBox : gtk_clist_set_selection_mode(PGtkCList(
-                GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget),SelectionMode);
-            else
-              Assert (true, 'WARNING:[TgtkObject.IntSendMessage3] usage of LM_SETSELMODE unimplemented for actual component');
-            end;
-         end;
-      end;
- 
-      LM_SETBORDER :
+
+      LM_SETSELMODE:
+        if Data<>nil then
+          SetSelectionMode(Sender,PGtkWidget(Handle),
+                           TLMSetSelMode(Data^).MultiSelect,
+                           TLMSetSelMode(Data^).ExtendedSelect);
+
+      LM_SETBORDER:
       begin
         if (Sender is TControl) then
         begin
@@ -3261,7 +3286,7 @@ begin
             end;
          end;
       end;
-      
+
       LM_SETSHORTCUT :
       begin
         with TLMShortcut(data^) do begin
@@ -3313,7 +3338,7 @@ begin
           end;
         end;
       end;
-      
+
       LM_APPENDTEXT:
         AppendText(Sender,PChar(Data));
 
@@ -5419,6 +5444,8 @@ begin
 
       SetMainWidget(p, TempWidget);
       GetWidgetInfo(p, True)^.ImplementationWidget := TempWidget;
+      SetSelectionMode(Sender,p,TCListBox(Sender).MultiSelect,
+                       TCListBox(Sender).ExtendedSelect)
     end;
 
   csColorDialog :
@@ -5529,6 +5556,9 @@ begin
 
       SetMainWidget(p, TempWidget);
       GetWidgetInfo(p, True)^.ImplementationWidget := TempWidget;
+      if Sender is TCustomListBox then
+        SetSelectionMode(Sender,p,TCustomListBox(Sender).MultiSelect,
+                         TCustomListBox(Sender).ExtendedSelect);
     end;
 
   csListView :
@@ -7970,6 +8000,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.400  2003/08/28 09:10:00  mattias
+  listbox and comboboxes now set sort and selection at handle creation
+
   Revision 1.399  2003/08/18 13:21:23  mattias
   renamed lazqueue to lazlinkedlist, patch from Jeroen
 

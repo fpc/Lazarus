@@ -96,13 +96,11 @@ Type
     Function GetValue (Sender: TObject; Data: Pointer): Integer;
     Function SetValue (Sender: TObject; Data: Pointer): Integer;
     Function SetProperties(Sender: TObject): Integer;
-    procedure SetSelectionMode(Sender: TObject);
     Procedure AttachMenu(Sender: TObject);
 
     Function WinRegister: Boolean;
     Function TimerWinRegister: Boolean;
     Function ToolBtnWinRegister: Boolean;
-    Procedure SetName(Window: HWND; Value: PChar);
     Procedure SetOwner(Window: HWND; Owner: TObject);
     Procedure PaintPixmap(Surface: TObject; PixmapData: Pointer);
     Procedure NormalizeIconName(Var IconName: String);
@@ -191,6 +189,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.37  2003/08/28 09:10:01  mattias
+  listbox and comboboxes now set sort and selection at handle creation
+
   Revision 1.36  2003/08/27 09:33:26  mattias
   implements SET_LABEL from Micha
 

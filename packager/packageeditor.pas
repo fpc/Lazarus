@@ -1390,7 +1390,7 @@ begin
     if CurNode=nil then
       CurNode:=FilesTreeView.Items.AddChild(FilesNode,'');
     CurFile:=LazPackage.Files[i];
-    CurNode.Text:=CurFile.GetShortFilename;
+    CurNode.Text:=CurFile.GetShortFilename(true);
     SetImageIndex(CurNode,CurFile);
     CurNode:=CurNode.GetNextSibling;
   end;
@@ -1416,7 +1416,7 @@ begin
       if CurNode=nil then
         CurNode:=FilesTreeView.Items.AddChild(RemovedFilesNode,'');
       CurFile:=LazPackage.RemovedFiles[i];
-      CurNode.Text:=CurFile.GetShortFilename;
+      CurNode.Text:=CurFile.GetShortFilename(true);
       SetImageIndex(CurNode,CurFile);
       CurNode:=CurNode.GetNextSibling;
     end;

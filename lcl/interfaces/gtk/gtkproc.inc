@@ -2056,6 +2056,7 @@ procedure ConnectInternalWidgetsSignals(AWidget: PGtkWidget;
       // this is a container widget -> connect all childs
       ContainerWidget:=PGtkContainer(TheWidget);
       {$IfDef GTK2}
+      ChildEntry:=nil;
       {$else}
       ChildEntry:=ContainerWidget^.resize_widgets;
       {$endif}
@@ -2626,6 +2627,16 @@ end;
   Set 'checked' for all menuitems in the group
  ------------------------------------------------------------------------------}
 procedure UpdateRadioGroupChecks(RadioGroup: PGSList);
+
+  function GtkMenuItemChecked(AnMenuItem: PGtkCheckMenuItem): boolean;
+  begin
+    {$IFDEF Gtk2}
+    Result;=gtk_check_menu_item_get_active(AnMenuItem);
+    {$ELSE}
+    Result:=((AnMenuItem^.flag0 and bm_checkmenuitem_active) = 0);
+    {$ENDIF}
+  end;
+
 var
   CurListItem: PGSList;
   MenuItem: PGtkCheckMenuItem;
@@ -2647,7 +2658,7 @@ begin
       then begin
         LCLMenuItem := TMenuItem(GetLCLObject(MenuItem));
         if  (LCLMenuItem <> nil)
-        and (((MenuItem^.flag0 and bm_checkmenuitem_active) = 0) = LCLMenuItem.Checked)
+        and (GtkMenuItemChecked(MenuItem) = LCLMenuItem.Checked)
         then gtk_check_menu_item_set_active(MenuItem, LCLMenuItem.Checked);
       end;
       CurListItem := CurListItem^.Next;
@@ -2819,9 +2830,14 @@ var
     if IconImg<>nil then begin
       // set the toggle width
       GTK_MENU_ITEM(MenuItemWidget)^.toggle_size:=IconWidth;
+      
       GTK_MENU_ITEM(MenuItemWidget)^.flag0:=
-        PGtkMenuItem(MenuItemWidget)^.flag0
-          or bm_show_toggle_indicator;
+        PGtkMenuItem(MenuItemWidget)^.flag0 or
+          {$IFDEF Gtk2}
+          bm_TGtkCheckMenuItem_always_show_toggle;
+          {$ELSE}
+          bm_show_toggle_indicator;
+          {$ENDIF}
 
       // set our own draw handler
       if OldCheckMenuItemDrawProc=nil then
@@ -4294,6 +4310,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.190  2003/08/28 09:10:00  mattias
+  listbox and comboboxes now set sort and selection at handle creation
+
   Revision 1.189  2003/08/27 21:14:42  mattias
   fixed a few things for gtk2 intf
 

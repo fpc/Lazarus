@@ -374,24 +374,24 @@ type
     procedure SetStyle(Val : TListBoxStyle); virtual;
     procedure DrawItem(Index: Integer; ARect: TRect;
       State: TOwnerDrawState); virtual;
-  protected
-    property ExtendedSelect : boolean read FExtendedSelect write SetExtendedSelect;
-    property Sorted: boolean read FSorted write SetSorted;
-    property Style: TListBoxStyle read FStyle write SetStyle;
-    property ItemHeight: Integer read GetItemHeight write SetItemHeight;
-    property OnDrawItem: TDrawItemEvent read FOnDrawItem write FOnDrawItem;
   public
     constructor Create(AOwner : TComponent); override;
     destructor Destroy; override;
-    procedure Clear;
     function GetIndexAtY(Y: integer): integer;
+    procedure Clear;
+  public
     property BorderStyle : TBorderStyle read FBorderStyle write SetBorderStyle default bsSingle;
     property Canvas: TCanvas read FCanvas;
+    property ExtendedSelect : boolean read FExtendedSelect write SetExtendedSelect;
+    property ItemHeight: Integer read GetItemHeight write SetItemHeight;
     property ItemIndex : integer read GetItemIndex write SetItemIndex;
     property Items : TStrings read FItems write SetItems;
     property MultiSelect: boolean read FMultiSelect write SetMultiSelect;
+    property OnDrawItem: TDrawItemEvent read FOnDrawItem write FOnDrawItem;
     property SelCount : integer read GetSelCount;
     property Selected[Index: integer]: boolean read GetSelected write SetSelected;
+    property Sorted: boolean read FSorted write SetSorted;
+    property Style: TListBoxStyle read FStyle write SetStyle;
     property TopIndex: Integer read GetTopIndex write SetTopIndex;
   end;
   
@@ -1464,6 +1464,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.103  2003/08/28 09:10:00  mattias
+  listbox and comboboxes now set sort and selection at handle creation
+
   Revision 1.102  2003/08/26 08:12:33  mattias
   applied listbox/combobox patch from Karl
 

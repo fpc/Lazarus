@@ -982,8 +982,10 @@ activate_time :	the time at which the activation event occurred.
           End;
         End;
         LM_SETSELMODE:
-          SetSelectionMode(Sender);
-
+        Begin
+        If Sender Is TCustomListBox Then
+          RecreateWnd(Sender);
+        End;
         LM_SETBORDER:
         Begin
           If Sender is TControl Then
@@ -1923,6 +1925,8 @@ Begin
     csComboBox:
     Begin
       Flags := Flags or ComboBoxStyles[TCustomComboBox(Sender).Style];
+      If TComboBox(Sender).Sorted Then
+        Flags:= Flags or CBS_SORT;
       Window := CreateWindow('COMBOBOX', Nil, Flags or WS_VSCROLL or CBS_AUTOHSCROLL or CBS_HASSTRINGS, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
     End;
     csImage:
@@ -1935,11 +1939,31 @@ Begin
     End;
     csListBox:
     Begin
-      Window := CreateWindow('LISTBOX', Nil, Flags or WS_VSCROLL, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
+      With Sender As TCustomListBox do
+      Begin
+        If Sorted Then
+          Flags:= Flags or LBS_SORT;
+        If MultiSelect Then 
+          if ExtendedSelect then
+            Flags:= Flags or LBS_EXTENDEDSEL
+          else
+            Flags:= Flags or LBS_MULTIPLESEL;
+       end;
+      Window := CreateWindowEx(WS_EX_CLIENTEDGE,'LISTBOX', Nil, Flags or WS_VSCROLL or LBS_NOINTEGRALHEIGHT, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
     End;
     csCListBox:
     Begin
-      Window := CreateWindow('LISTBOX', Nil, Flags Or LBS_MULTICOLUMN or WS_HSCROLL, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
+      With Sender As TCustomListBox do
+      Begin
+        If Sorted Then
+          Flags:= Flags or LBS_SORT;
+        If MultiSelect Then 
+          if ExtendedSelect then
+            Flags:= Flags or LBS_EXTENDEDSEL
+          else
+            Flags:= Flags or LBS_MULTIPLESEL;
+      End;
+      Window := CreateWindowEx(WS_EX_CLIENTEDGE,'LISTBOX', Nil, Flags Or LBS_MULTICOLUMN or WS_HSCROLL, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       SendMessage(Window, LB_SETCOLUMNWIDTH, WPARAM((Sender As TCListBox).Width Div ((Sender As TCListBox).ListColumns)), 0);
     End;
     csEdit:
@@ -2766,40 +2790,6 @@ Begin
   else SetLabel(Sender, LPSTR((Sender as TMenuItem).Caption));
 End;
 
-{------------------------------------------------------------------------------
-  Method: TWin32Object.SetSelectionMode
-  Params: Sender - a LCL control
-  Returns: Nothing
-
-  Sets multiselect.
- ------------------------------------------------------------------------------}
-procedure TWin32Object.SetSelectionMode(Sender: TObject);
-begin
-  If (Sender is TCustomListBox) then begin
-    //The win32 api doesn't change the selection mode on the fly: it needs recreate the window
-
-    //RecreateWnd(Sender); -> cause endless loop
-    //Recreates the window step by step
-
-    //If TCustomListBox(Sender).FCompStyle = csListBox Then
-    //  RecreateListControl(Handle,TControl(Sender),TListBox(Sender).Sorted)
-    //Else
-    //  RecreateListControl(Handle,TControl(Sender),TCListBox(Sender).Sorted);
-  End;
-end;
-
-{------------------------------------------------------------------------------
-  Method: TWin32Object.SetName
-  Params: Window - The window to which to assign a name
-          Value  - The value to assign
-  Returns: Nothing
-
-  Assigns a name to a window
- ------------------------------------------------------------------------------}
-Procedure TWin32Object.SetName(Window: HWND; Value: PChar);
-Begin
-  SetProp(Window, 'Name', Value);
-End;
 
 {------------------------------------------------------------------------------
   Method: TWin32Object.SetOwner
@@ -2822,6 +2812,9 @@ End;
 
 {
   $Log$
+  Revision 1.101  2003/08/28 09:10:01  mattias
+  listbox and comboboxes now set sort and selection at handle creation
+
   Revision 1.100  2003/08/28 08:14:10  mattias
   implementation of win32 intf borderstyle from Karl
 

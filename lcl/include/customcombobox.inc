@@ -42,7 +42,6 @@ begin
   // and use the interface based list
   FItems:= NewStrings;
 
-  UpdateSorted;
   if FItemIndex <> -1 then
     CNSendMessage(LM_SETITEMINDEX, Self, Pointer(FItemIndex));
   CNSendMessage(LM_SETPROPERTIES, Self, nil);
@@ -789,6 +788,9 @@ end;
 
 {
   $Log$
+  Revision 1.31  2003/08/28 09:10:00  mattias
+  listbox and comboboxes now set sort and selection at handle creation
+
   Revision 1.30  2003/08/27 09:20:44  mattias
   added TFrame definition, no implementation
 
