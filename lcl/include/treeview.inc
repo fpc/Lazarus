@@ -4891,7 +4891,7 @@ begin
   writeln('TCustomTreeView.WMLButtonDown A ',Name,':',ClassName,' ');
   {$ENDIF}
   Exclude(FStates,tvsDragged);
-  inherited;
+  inherited WMLButtonDown(AMessage);
   {$IFDEF VerboseDrag}
   writeln('TCustomTreeView.WMLButtonDown END ',Name,':',ClassName,' ');
   {$ENDIF}

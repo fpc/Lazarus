@@ -1341,7 +1341,7 @@ begin
   ShiftState := GTKEventState2ShiftState(Event^.State);
   MappedXY:=TranslateGdkPointToClientArea(Event^.Window,EventXY,
                                          PGtkWidget(AWinControl.Handle));
-  //writeln('BBB1 MouseDown ',AWinControl.Name,':',AWinControl.ClassName,' Mapped=',MappedXY.X,',',MappedXY.Y,' Event=',EventXY.X,',',EventXY.Y);
+  //writeln('DeliverMouseDownMessage ',AWinControl.Name,':',AWinControl.ClassName,' Mapped=',MappedXY.X,',',MappedXY.Y,' Event=',EventXY.X,',',EventXY.Y);
 
   if event^.Button in [4,5] then begin
     // this is a mouse wheel event
@@ -3192,6 +3192,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.208  2003/12/21 15:36:47  mattias
+  workaround for inherited bug in fpc 1.9
+
   Revision 1.207  2003/12/21 13:58:06  mattias
   renamed DirectoryExists to DirPathExists to reduce ambigiousity
 
