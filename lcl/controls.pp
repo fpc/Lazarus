@@ -543,7 +543,7 @@ type
     Procedure MouseUp(Button: TMOuseButton; Shift:TShiftState; X,Y:Integer); dynamic;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     Function CanAutoSize(var NewWidth, NewHeight : Integer): Boolean; virtual;
-    Function GetCLientOrigin : TPoint; virtual;
+    Function GetClientOrigin : TPoint; virtual;
     Function GetClientRect: TRect; virtual;
     function GetDeviceContext(var WindowHandle: HWnd): HDC; virtual;
     Function GetEnabled: Boolean; virtual;
@@ -1219,6 +1219,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.41  2002/04/21 06:53:54  lazarus
+  MG: fixed save lrs to test dir
+
   Revision 1.40  2002/04/18 08:13:36  lazarus
   MG: added include comments
 
