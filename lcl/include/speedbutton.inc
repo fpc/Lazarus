@@ -272,6 +272,9 @@ var
   ClientSize, TotalSize, TextSize: TSize;
   //BrushStyle : TBrushStyle;
   M, S : integer;
+  TXTStyle : TTextStyle;
+  SIndex : Longint;
+  TMP : String;
 
 begin
   if not Enabled then begin
@@ -342,8 +345,15 @@ begin
   ClientSize.cx:= PaintRect.Right - PaintRect.Left;
   ClientSize.cy:= PaintRect.Bottom - PaintRect.Top;
   
-  if Caption <> '' then
-    TextSize:= Canvas.TextExtent(Caption)
+  if Caption <> '' then begin
+    TMP := Caption;
+    SIndex := DeleteAmpersands(TMP);
+    TextSize:= Canvas.TextExtent(TMP);
+    If SIndex > 0 then
+      If SIndex <= Length(TMP) then begin
+        FShortcut := Ord(TMP[SIndex]);
+      end;
+  end
   else begin
     TextSize.cx:= 0;
     TextSize.cy:= 0;
@@ -416,8 +426,15 @@ begin
   //Assert(False,'Trace:TODO: DRAWTEXTBIDIMODEFLAGS');
 
   FGlyph.Draw(Canvas, PaintRect, Offset, FState, Transparent, 0);
-  if Caption <> '' then
-    Canvas.TextOut(PaintRect.Left + OffsetCap.X, PaintRect.Top + OffsetCap.Y, Caption);
+  if Caption <> '' then begin
+    TXTStyle := Canvas.TextStyle;
+    TXTStyle.Opaque := False;
+    TXTStyle.Clipping := False;
+    TXTStyle.ShowPrefix := True;
+    TXTStyle.Alignment := taLeftJustify;
+    TXTStyle.Layout := tlTop;
+    Canvas.TextRect(PaintRect, OffsetCap.X, OffsetCap.Y, Caption, TXTStyle);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -675,6 +692,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.16  2002/08/19 20:34:47  lazarus
+  MG: improved Clipping, TextOut, Polygon functions
+
   Revision 1.15  2002/06/01 08:41:28  lazarus
   MG: DrawFramControl now uses gtk style, transparent STrechBlt
 
