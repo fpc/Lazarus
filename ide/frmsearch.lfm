@@ -80,12 +80,4 @@ object SearchForm: TSearchForm
       Width = 75
     end
   end
-  object Label3: TLabel
-    Caption = 'Search Text:'
-    Layout = tltop
-    Left = 8
-    Height = 17
-    Top = 56
-    Width = 80
-  end
 end

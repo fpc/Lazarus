@@ -45,7 +45,6 @@ type
     btnCancel: TBUTTON;
     Label1: TLABEL;
     Label2: TLABEL;
-    Label3: TLABEL;
     Label4: TLABEL;
     lblMatches: TLABEL;
     lblProgress: TLABEL;
@@ -63,7 +62,7 @@ type
     fTheDirectory: string;
     fmask: string;
     frecursive: boolean;
-    fParsedMasks: TStringList; //Holds the pasrsed masks.
+    fParsedMasks: TStringList; //Holds the parsed masks.
     fMatches: longint;
     fAbort: boolean;
     fAbortString: string;

@@ -20,7 +20,5 @@ LazarusResources.Add('TSearchForm','FORMDATA',[
   +'blSearchText'#6'Layout'#7#5'tltop'#4'Left'#2'`'#6'Height'#2#17#3'Top'#2#16#5
   +'Width'#3'@'#1#0#0#7'TButton'#9'btnCancel'#7'Default'#9#7'Caption'#6#6'Cance'
   +'l'#7'TabStop'#9#8'TabOrder'#2#6#7'OnClick'#7#13'btnAbortCLICK'#4'Left'#3#177
-  +#0#6'Height'#2#25#3'Top'#2'p'#5'Width'#2'K'#0#0#0#6'TLabel'#6'Label3'#7'Capt'
-  +'ion'#6#12'Search Text:'#6'Layout'#7#5'tltop'#4'Left'#2#8#6'Height'#2#17#3'T'
-  +'op'#2'8'#5'Width'#2'P'#0#0#0
+  +#0#6'Height'#2#25#3'Top'#2'p'#5'Width'#2'K'#0#0#0#0
 ]);
