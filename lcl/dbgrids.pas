@@ -1048,14 +1048,29 @@ end;
 // Workaround: dataset is not EOF after Append!
 type
   TMyDs=class(TDataSet)
+  {$IFDEF VER1_0}
+    //fpc 1.0 can't call the protected method GetBookmarkFlag outside the class.
+    function DoGetBookmarkFlag(Buffer: PChar): TBookmarkFlag;
+  {$ENDIF}
   end;
+
+{$IFDEF VER1_0}
+function TMyDs.DoGetBookmarkFlag(Buffer: PChar): TBookmarkFlag;
+begin
+  Result := GetBookmarkFlag(Buffer);
+end;
+{$ENDIF}
 
 function TCustomDbGrid.IsEOF: boolean;
 begin
   with FDatalink do
     result :=
       Active and
+{$IFNDEF VER1_0}
       (TMyDS(Dataset).GetBookmarkFlag(DataSet.ActiveBuffer) = bfEOF);
+{$ELSE}
+      (TMyDS(Dataset).DoGetBookmarkFlag(DataSet.ActiveBuffer) = bfEOF);
+{$ENDIF}
 end;
 
 function TCustomDbGrid.GetColumnTitle(Column: Integer): string;
@@ -2688,6 +2703,9 @@ end.
 
 {
   $Log$
+  Revision 1.20  2004/10/09 18:08:52  vincents
+  Fix fpc 1.0.x compilation.
+
   Revision 1.19  2004/10/09 12:16:20  mattias
   From Jesus: Ctrl+HOME does dataset.first, ctrl+END does dataSet.Last and fixes
 
