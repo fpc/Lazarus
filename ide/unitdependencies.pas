@@ -46,7 +46,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, Controls, Forms, Dialogs, Buttons, ComCtrls, StdCtrls,
   CodeToolManager, CodeCache, EnvironmentOpts, LResources, IDEOptionDefs,
-  LazarusIDEStrConsts, InputHistory, IDEProcs, Graphics;
+  LazarusIDEStrConsts, InputHistory, IDEProcs, Graphics, LCLType;
   
 type
 
@@ -153,6 +153,8 @@ type
 
 
   { TUnitDependenciesView }
+  
+  TOnGetProjectMainFilename = function(Sender: TObject): string of object;
 
   TUnitDependenciesView = class(TForm)
     SrcTypeImageList: TImageList;
@@ -160,8 +162,14 @@ type
     SelectUnitButton: TBitBtn;
     UnitTreeView: TTreeView;
     RefreshButton: TBitBtn;
+    ShowProjectButton: TBitBtn;
     procedure RefreshButtonClick(Sender: TObject);
+    procedure SelectUnitButtonClick(Sender: TObject);
+    procedure ShowProjectButtonClick(Sender: TObject);
     procedure UnitDependenciesViewResize(Sender: TObject);
+    procedure UnitHistoryListChange(Sender: TObject);
+    procedure UnitHistoryListKeyUp(Sender: TObject; var Key: Word;
+          Shift: TShiftState);
     procedure UnitTreeViewAdvancedCustomDrawItem(Sender: TCustomTreeView;
           Node: TTreeNode; State: TCustomDrawState; Stage: TCustomDrawStage;
           var PaintImages, DefaultDraw: Boolean);
@@ -171,6 +179,7 @@ type
           var AllowExpansion: Boolean);
   private
     FOnAccessingSources: TNotifyEvent;
+    FOnGetProjectMainFilename: TOnGetProjectMainFilename;
     FRootCodeBuffer: TCodeBuffer;
     FRootFilename: string;
     FRootNode: TUnitNode;
@@ -188,9 +197,12 @@ type
     procedure BeginUpdate;
     procedure EndUpdate;
     procedure Refresh;
+    procedure RefreshHistoryList;
     function RootValid: boolean;
     property OnAccessingSources: TNotifyEvent
       read FOnAccessingSources write FOnAccessingSources;
+    property OnGetProjectMainFilename: TOnGetProjectMainFilename
+      read FOnGetProjectMainFilename write FOnGetProjectMainFilename;
     property RootFilename: string read FRootFilename write SetRootFilename;
     property RootShortFilename: string read FRootShortFilename write SetRootShortFilename;
   end;
@@ -208,9 +220,55 @@ begin
   Refresh;
 end;
 
+procedure TUnitDependenciesView.SelectUnitButtonClick(Sender: TObject);
+var
+  OpenDialog: TOpenDialog;
+begin
+  OpenDialog:=TOpenDialog.Create(Application);
+  try
+    InputHistories.ApplyFileDialogSettings(OpenDialog);
+    OpenDialog.Title:=lisOpenFile;
+    OpenDialog.Options:=OpenDialog.Options+[ofFileMustExist];
+    if OpenDialog.Execute then begin
+      RootFilename:=ExpandFilename(OpenDialog.Filename);
+    end;
+    InputHistories.StoreFileDialogSettings(OpenDialog);
+  finally
+    OpenDialog.Free;
+  end;
+end;
+
+procedure TUnitDependenciesView.ShowProjectButtonClick(Sender: TObject);
+var
+  NewFilename: string;
+begin
+  if Assigned(OnGetProjectMainFilename) then begin
+    NewFilename:=OnGetProjectMainFilename(Self);
+    if NewFilename<>'' then
+      RootFilename:=NewFilename;
+  end;
+end;
+
 procedure TUnitDependenciesView.UnitDependenciesViewResize(Sender: TObject);
 begin
   DoResize;
+end;
+
+procedure TUnitDependenciesView.UnitHistoryListChange(Sender: TObject);
+begin
+  if UnitHistoryList.Items.IndexOf(UnitHistoryList.Text)<0 then exit;
+  //RootFilename:=ExpandFilename(UnitHistoryList.Text);
+end;
+
+procedure TUnitDependenciesView.UnitHistoryListKeyUp(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+var
+  NewFilename: string;
+begin
+  if (Key=VK_RETURN) and (Shift=[]) then begin
+    NewFilename:=ExpandFilename(UnitHistoryList.Text);
+    RootFilename:=NewFilename;
+  end;
 end;
 
 procedure TUnitDependenciesView.UnitTreeViewAdvancedCustomDrawItem(
@@ -264,12 +322,17 @@ begin
   end;
 
   with SelectUnitButton do begin
-    SetBounds(0,UnitHistoryList.Top+UnitHistoryList.Height+2,25,Height);
+    SetBounds(0,UnitHistoryList.Top+UnitHistoryList.Height+2,70,Height);
   end;
 
   with RefreshButton do begin
     SetBounds(SelectUnitButton.Left+SelectUnitButton.Width+5,
-              SelectUnitButton.Top,100,SelectUnitButton.Height);
+              SelectUnitButton.Top,70,SelectUnitButton.Height);
+  end;
+
+  with ShowProjectButton do begin
+    SetBounds(RefreshButton.Left+RefreshButton.Width+5,
+              RefreshButton.Top,70,RefreshButton.Height);
   end;
 
   with UnitTreeView do begin
@@ -303,9 +366,11 @@ procedure TUnitDependenciesView.SetRootFilename(const AValue: string);
 begin
   if FRootFilename=AValue then exit;
   FRootFilename:=AValue;
-  FRootCodeBuffer:=CodeToolBoss.FindFile(FRootFilename);
+  FRootCodeBuffer:=CodeToolBoss.LoadFile(FRootFilename,false,false);
   FRootShortFilename:=FRootFilename;
+  FRootValid:=FRootCodeBuffer<>nil;
   RebuildTree;
+  RefreshHistoryList;
 end;
 
 procedure TUnitDependenciesView.SetRootShortFilename(const AValue: string);
@@ -327,9 +392,9 @@ constructor TUnitDependenciesView.Create(TheOwner: TComponent);
   var Pixmap: TPixmap;
   begin
     Pixmap:=TPixmap.Create;
-    //Pixmap.TransparentColor:=clWhite;
     if LazarusResources.Find(ResName)=nil then
-      writeln('TUnitDependenciesView.Create: WARNING: icon not found: "',ResName,'"');
+      writeln('TUnitDependenciesView.Create: ',
+        ' WARNING: icon not found: "',ResName,'"');
     Pixmap.LoadFromLazarusResource(ResName);
     ImgList.Add(Pixmap,nil)
   end;
@@ -368,7 +433,9 @@ begin
       Left:=0;
       Top:=0;
       Width:=Parent.ClientWidth-Left;
-      Enabled:=false;
+      RefreshHistoryList;
+      OnKeyUp:=@UnitHistoryListKeyUp;
+      OnChange:=@UnitHistoryListChange;
       Visible:=true;
     end;
     
@@ -378,9 +445,9 @@ begin
       Parent:=Self;
       Left:=0;
       Top:=UnitHistoryList.Top+UnitHistoryList.Height+2;
-      Width:=25;
-      Caption:='...';
-      Enabled:=false;
+      Width:=70;
+      Caption:='Browse';
+      OnClick:=@SelectUnitButtonClick;
       Visible:=true;
     end;
     
@@ -390,10 +457,23 @@ begin
       Parent:=Self;
       Left:=SelectUnitButton.Left+SelectUnitButton.Width+5;
       Top:=SelectUnitButton.Top;
-      Width:=100;
+      Width:=70;
       Height:=SelectUnitButton.Height;
       Caption:='Refresh';
       OnClick:=@RefreshButtonClick;
+      Visible:=true;
+    end;
+    
+    ShowProjectButton:=TBitBtn.Create(Self);
+    with ShowProjectButton do begin
+      Name:='ShowProjectButton';
+      Parent:=Self;
+      Left:=RefreshButton.Left+RefreshButton.Width+5;
+      Top:=RefreshButton.Top;
+      Width:=70;
+      Height:=RefreshButton.Height;
+      Caption:='Project';
+      OnClick:=@ShowProjectButtonClick;
       Visible:=true;
     end;
 
@@ -449,6 +529,18 @@ begin
   ExpandState.AssignTo(FRootNode);
   ExpandState.Free;
   EndUpdate;
+end;
+
+procedure TUnitDependenciesView.RefreshHistoryList;
+begin
+  if RootFilename<>'' then
+    if not InputHistories.AddToUnitDependenciesHistory(RootFilename) then
+      exit;
+  UnitHistoryList.Items.Assign(InputHistories.UnitDependenciesHistory);
+  if UnitHistoryList.Items.Count>0 then
+    UnitHistoryList.Text:=UnitHistoryList.Items[0]
+  else
+    UnitHistoryList.Text:=RootFilename;
 end;
 
 { TUnitNode }

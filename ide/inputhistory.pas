@@ -75,11 +75,11 @@ type
     procedure SetLazarusDefaultFilename;
 
     // Find- and replace-history
-    procedure AddToFindHistory(const AFindStr: string);
-    procedure AddToReplaceHistory(const AReplaceStr: String);
+    function AddToFindHistory(const AFindStr: string): boolean;
+    function AddToReplaceHistory(const AReplaceStr: String): boolean;
     
     // Unit dependencies
-    procedure AddToUnitDependenciesHistory(const ARootFilename: String);
+    function AddToUnitDependenciesHistory(const ARootFilename: String): boolean;
 
     function LastFPCUnitLinksValid: boolean;
     function LastFPCUnitLinksNeedsUpdate(const SearchPath: string): boolean;
@@ -262,20 +262,20 @@ begin
   end;
 end;
 
-procedure TInputHistories.AddToFindHistory(const AFindStr: string);
+function TInputHistories.AddToFindHistory(const AFindStr: string): boolean;
 begin
-  AddToRecentList(AFindStr,FFindHistory,FMaxFindHistory);
+  Result:=AddToRecentList(AFindStr,FFindHistory,FMaxFindHistory);
 end;
 
-procedure TInputHistories.AddToReplaceHistory(const AReplaceStr: String);
+function TInputHistories.AddToReplaceHistory(const AReplaceStr: String): boolean;
 begin
-  AddToRecentList(AReplaceStr,FReplaceHistory,FMaxFindHistory);
+  Result:=AddToRecentList(AReplaceStr,FReplaceHistory,FMaxFindHistory);
 end;
 
-procedure TInputHistories.AddToUnitDependenciesHistory(
-  const ARootFilename: String);
+function TInputHistories.AddToUnitDependenciesHistory(
+  const ARootFilename: String): boolean;
 begin
-  AddToRecentList(ARootFilename,FUnitDependenciesHistory,
+  Result:=AddToRecentList(ARootFilename,FUnitDependenciesHistory,
                   FMaxUnitDependeciesHistory);
 end;
 

@@ -76,8 +76,8 @@ procedure LoadRecentList(XMLConfig: TXMLConfig; List: TStringList;
   const Path: string);
 procedure SaveRecentList(XMLConfig: TXMLConfig; List: TStringList; 
   const Path: string);
-procedure AddToRecentList(const s: string; RecentList: TStringList;
-  Max: integer);
+function AddToRecentList(const s: string; RecentList: TStringList;
+  Max: integer): boolean;
 procedure RemoveFromRecentList(const s: string; RecentList: TStringList);
 procedure LoadRect(XMLConfig: TXMLConfig; const Path:string; var ARect:TRect);
 procedure SaveRect(XMLConfig: TXMLConfig; const Path:string; var ARect:TRect);
@@ -110,9 +110,15 @@ uses
   ;
 {$ENDIF}
 
-procedure AddToRecentList(const s: string; RecentList: TStringList;
-  Max: integer);
+function AddToRecentList(const s: string; RecentList: TStringList;
+  Max: integer): boolean;
 begin
+  if (RecentList.Count>0) and (RecentList[0]=s) then begin
+    Result:=false;
+    exit;
+  end else begin
+    Result:=true;
+  end;
   RemoveFromRecentList(s,RecentList);
   RecentList.Insert(0,s);
   if Max>0 then
