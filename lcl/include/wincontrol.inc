@@ -629,15 +629,17 @@ end;
 Procedure TWinControl.SetZOrder(Topmost: Boolean);
 const
   WindowPos: array[Boolean] of Word = (HWND_BOTTOM, HWND_TOP);
-//var i: integer;
+var
+  i: integer;
 begin
   if FParent <> nil then
   begin
-//    if TopMost then i := FParent.FWinControls.Count - 1
-//    else i := 0;
-//    if FParent.FControls <> nil then inc(i, FParent.FControls.Count);
-//    SetZOrderPosition(i);
-    inherited SetZOrder(TopMost);
+    if TopMost then
+      i := FParent.FWinControls.Count - 1
+    else
+      i := 0;
+    if FParent.FControls <> nil then inc(i, FParent.FControls.Count);
+    SetZOrderPosition(i);
   end
   else if FHandle <> 0 then begin
     InterfaceObject.SetWindowPos(FHandle, WindowPos[TopMost], 0, 0, 0, 0,
@@ -694,6 +696,46 @@ begin
   end;
 
 end;
+
+{-------------------------------------------------------------------------------
+  procedure TWinControl.SetZOrderPosition(Position: Integer);
+  
+-------------------------------------------------------------------------------}
+procedure TWinControl.SetZOrderPosition(Position: Integer);
+var
+  I, Count: Integer;
+  Pos: HWND;
+begin
+  if FParent <> nil then
+  begin
+    if FParent.FControls <> nil then
+      Dec(Position, FParent.FControls.Count);
+    I := FParent.FWinControls.IndexOf(Self);
+    if I >= 0 then
+    begin
+      Count := FParent.FWinControls.Count;
+      if Position < 0 then Position := 0;
+      if Position >= Count then Position := Count - 1;
+      if Position <> I then
+      begin
+        FParent.FWinControls.Delete(I);
+        FParent.FWinControls.Insert(Position, Self);
+      end;
+    end;
+    if FHandle <> 0 then
+    begin
+      if Position = 0 then Pos := HWND_BOTTOM
+      else if Position = FParent.FWinControls.Count - 1 then Pos := HWND_TOP
+      else if Position > I then
+        Pos := TWinControl(FParent.FWinControls[Position + 1]).Handle
+      else if Position < I then
+        Pos := TWinControl(FParent.FWinControls[Position]).Handle
+      else Exit;
+      SetWindowPos(FHandle, Pos, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE);
+    end;
+  end;
+end;
+
 {------------------------------------------------------------------------------}
 {  TWinControl UpdateTabOrder                                                  }
 {------------------------------------------------------------------------------}
@@ -993,6 +1035,35 @@ begin
       if GetControlAtPos(TControl(FControls[I])) then
         Break;
   Result := LControl;
+end;
+
+{-------------------------------------------------------------------------------
+  function TWinControl.GetControlIndex(AControl: TControl): integer;
+  
+  
+-------------------------------------------------------------------------------}
+function TWinControl.GetControlIndex(AControl: TControl): integer;
+begin
+  if FControls<>nil then
+    Result:=FControls.IndexOf(AControl)
+  else
+    Result:=-1;
+  if (Result<0) and (FWinControls<>nil) then begin
+    Result:=FWinControls.IndexOf(AControl);
+    if (Result>=0) and (FControls<>nil) then
+      inc(Result,FControls.Count);
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  function TWinControl.GetControlIndex(AControl: TControl): integer;
+
+
+-------------------------------------------------------------------------------}
+procedure TWinControl.SetControlIndex(AControl: TControl; NewIndex: integer);
+begin
+  if AControl<>nil then
+    AControl.SetZOrderPosition(NewIndex);
 end;
 
 {------------------------------------------------------------------------------}
@@ -2338,6 +2409,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.85  2002/09/05 12:11:43  lazarus
+  MG: TNotebook is now streamable
+
   Revision 1.84  2002/09/03 08:07:20  lazarus
   MG: image support, TScrollBox, and many other things from Andrew
 
