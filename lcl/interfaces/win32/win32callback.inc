@@ -809,7 +809,8 @@ Begin
     WM_SETCURSOR:
     begin
       if (TheWinControl <> nil) and (TheWinControl.Cursor <> crDefault) and
-        not (csDesigning in TheWinControl.ComponentState) then
+        not (csDesigning in TheWinControl.ComponentState) and
+        (Lo(LParam) = HTCLIENT) then
       begin
         Windows.SetCursor(Windows.LoadCursor(0, LclCursorToWin32CursorMap[TheWinControl.Cursor]));
         LMessage.Result := 1;
@@ -1255,6 +1256,9 @@ end;
 
 {
   $Log$
+  Revision 1.123  2004/06/30 10:38:51  micha
+  fix setcursor to only change cursor within client area, not on scrollbars etc.
+
   Revision 1.122  2004/06/29 14:38:28  micha
   fix default button notification win32 intf
 
