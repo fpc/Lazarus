@@ -288,6 +288,14 @@ var
   FFixWidgetsResized: TDynHashArray;
   {$ENDIF}
 
+const
+  aGtkJustification: array[TAlignment] of TGTKJustification =
+    (GTK_JUSTIFY_LEFT,GTK_JUSTIFY_RIGHT,GTK_JUSTIFY_CENTER);
+    
+  aGtkSelectionMode: Array[Boolean] of TGtkSelectionMode =
+    (GTK_SELECTION_SINGLE,GTk_SELECTION_EXTENDED);
+    
+
 {$I dragicons.inc}
 {$I gtkproc.inc}
 {$I gtkcallback.inc}
@@ -361,6 +369,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.42  2002/05/28 14:58:30  lazarus
+  MG: added scrollbars for TListView
+
   Revision 1.41  2002/05/20 14:19:03  lazarus
   MG: activated the clientrect bugfixes
 
