@@ -1598,27 +1598,26 @@ begin
 
       LM_GETITEMS :
       begin
-        if TControl(Sender).fCompStyle = csCListBox
-        then begin
-          Widget:= GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
-          
-          Data := TGtkCListStringList.Create(PGtkCList(Widget));
-          Result := integer(Data);
-        end 
-        else begin
-          case TControl(Sender).fCompStyle of
-            csComboBox :
-              Result:=longint(gtk_object_get_data(PGtkObject(Handle),'LCLList'));
+        case TControl(Sender).fCompStyle of
+          csComboBox :
+            Result:=longint(gtk_object_get_data(PGtkObject(Handle),'LCLList'));
+            
+          csCListBox:
+            begin
+              Widget:= GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
 
-            csListBox :
-              begin
-                Widget:= GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
-                Data:= TGtkListStringList.Create(PGtkList(Widget));
-                Result:= Integer(Data);
-              end;
-          else 
-            raise Exception.Create('Message LM_GETITEMS - Not implemented');
-          end;
+              Data := TGtkCListStringList.Create(PGtkCList(Widget));
+              Result := integer(Data);
+            end;
+            
+          csListBox :
+            begin
+              Widget:= GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
+              Data:= TGtkListStringList.Create(PGtkList(Widget));
+              Result:= Integer(Data);
+            end;
+        else 
+          raise Exception.Create('Message LM_GETITEMS - Not implemented');
         end;
       end;
 
@@ -5836,6 +5835,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.214  2002/09/16 15:42:17  lazarus
+  MG: fixed calling DestroyHandle if not HandleAllocated
+
   Revision 1.213  2002/09/13 16:58:27  lazarus
   MG: removed the 1x1 bitmap from TBitBtn
 
