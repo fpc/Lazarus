@@ -106,6 +106,56 @@ begin
   end;
 end;
 
+procedure TGraphic.LoadFromMimeStream(Stream: TStream; const MimeType: string);
+var
+  DefMimeType: String;
+begin
+  DefMimeType:=GetDefaultMimeType;
+  if (DefMimeType<>'') and (MimeType=GetDefaultMimeType) then
+    LoadFromStream(Stream)
+  else
+    raise Exception.Create(ClassName+': Unsupported MimeType: '+MimeType);
+end;
+
+procedure TGraphic.LoadFromClipboardFormat(FormatID: TClipboardFormat);
+begin
+  LoadFromClipboardFormatID(ctClipboard,FormatID);
+end;
+
+procedure TGraphic.LoadFromClipboardFormatID(ClipboardType: TClipboardType;
+  FormatID: TClipboardFormat);
+begin
+  if Assigned(OnLoadGraphicFromClipboardFormat) then
+    OnLoadGraphicFromClipboardFormat(Self,ClipboardType,FormatID);
+end;
+
+procedure TGraphic.SaveToClipboardFormat(FormatID: TClipboardFormat);
+begin
+  SaveToClipboardFormatID(ctClipboard,FormatID);
+end;
+
+procedure TGraphic.SaveToClipboardFormatID(ClipboardType: TClipboardType;
+  FormatID: TClipboardFormat);
+begin
+  if Assigned(OnSaveGraphicToClipboardFormat) then
+    OnSaveGraphicToClipboardFormat(Self,ClipboardType,FormatID);
+end;
+
+procedure TGraphic.GetSupportedSourceMimeTypes(List: TStrings);
+var
+  DefMimeType: String;
+begin
+  List.Clear;
+  DefMimeType:=GetDefaultMimeType;
+  if DefMimeType<>'' then
+    List.Add(DefMimeType);
+end;
+
+function TGraphic.GetDefaultMimeType: string;
+begin
+  Result:='';
+end;
+
 procedure TGraphic.LoadFromFile(const Filename: string);
 var
   Stream: TStream;

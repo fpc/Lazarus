@@ -295,14 +295,30 @@ begin
   writeln('ToDo: TBitMap.LoadFromResourceID');
 end;
 
-procedure TBitmap.LoadFromClipboardFormat(FormatID: TClipboardFormat);
+procedure TBitmap.GetSupportedSourceMimeTypes(List: TStrings);
 begin
-  writeln('ToDo: TBitMap.LoadFromClipboardFormat');
+  if (ClassType=TBitmap) or (ClassType=TPixmap) then begin
+    List.Clear;
+    List.Add(PredefinedClipboardMimeTypes[pcfBitmap]);
+    List.Add(PredefinedClipboardMimeTypes[pcfDelphiBitmap]);
+    List.Add(PredefinedClipboardMimeTypes[pcfPixmap]);
+  end else
+    inherited GetSupportedSourceMimeTypes(List);
 end;
 
-procedure TBitmap.SaveToClipboardFormat(FormatID: TClipboardFormat);
+function TBitmap.GetDefaultMimeType: string;
 begin
-  writeln('ToDo: TBitmap.SaveToClipboardFormat');
+  if (ClassType=TBitmap) or (ClassType=TPixmap) then begin
+    if FImage.SaveStream<>nil then begin
+      case FImage.SaveStreamType of
+      bnXPixmap: Result:=PredefinedClipboardMimeTypes[pcfPixmap];
+      else
+        Result:=PredefinedClipboardMimeTypes[pcfBitmap];
+      end;
+    end else
+      Result:=PredefinedClipboardMimeTypes[pcfBitmap];
+  end else
+    Result:=inherited GetDefaultMimeType;
 end;
 
 Procedure TBitmap.LoadFromXPMFile(const Filename : String);
@@ -478,6 +494,20 @@ begin
   else
     RaiseInvalidBitmapHeader;
   end;
+end;
+
+procedure TBitmap.LoadFromMimeStream(Stream: TStream; const MimeType: string);
+begin
+  if (ClassType=TBitmap) or (ClassType=TPixmap) then begin
+    if (AnsiCompareText(MimeType,PredefinedClipboardMimeTypes[pcfBitmap])=0)
+    or (AnsiCompareText(MimeType,PredefinedClipboardMimeTypes[pcfDelphiBitmap])=0)
+    or (AnsiCompareText(MimeType,PredefinedClipboardMimeTypes[pcfPixmap])=0) then
+    begin
+      LoadFromStream(Stream);
+      exit;
+    end;
+  end;
+  inherited LoadFromMimeStream(Stream, MimeType);
 end;
 
 procedure TBitmap.SetWidthHeight(NewWidth, NewHeight: integer);
@@ -888,6 +918,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.46  2003/09/10 19:15:15  mattias
+  implemented copying graphics from/to clipboard
+
   Revision 1.45  2003/09/08 13:07:17  mattias
   TBitmap now uses fpImage for writing bitmaps
 

@@ -1717,8 +1717,8 @@ type
 const
   PredefinedClipboardMimeTypes : array[TPredefinedClipboardFormat] of string = (
      'text/plain',
-     'image/lcl.bitmap',
-     'image/lcl.pixmap',
+     'image/bmp',
+     'image/xpm',
      'image/lcl.icon',
      'image/lcl.picture',
      'application/lcl.object',
@@ -1813,6 +1813,9 @@ end.
 
 {
   $Log$
+  Revision 1.42  2003/09/10 19:15:15  mattias
+  implemented copying graphics from/to clipboard
+
   Revision 1.41  2003/09/10 16:29:13  mattias
   added Kylix 3 specials
 

@@ -194,8 +194,10 @@ constructor TPicClipboardFormats.Create;
 begin
   inherited Create;
   Add(PredefinedClipboardFormat(pcfBitmap), TBitmap);
+  Add(PredefinedClipboardFormat(pcfDelphiBitmap), TBitmap);
   Add(PredefinedClipboardFormat(pcfPixmap), TPixmap);
-  Add(PredefinedClipboardFormat(pcfIcon), TIcon);
+  //Add(PredefinedClipboardFormat(pcfIcon), TIcon);
+  Add('image/png', TPortableNetworkGraphic);
 end;
 
 procedure TPicClipboardFormats.Clear;
@@ -221,6 +223,7 @@ procedure TPicClipboardFormats.Add(AFormatID: TClipboardFormat;
   AClass: TGraphicClass);
 var NewFormat: PPicClipboardFormat;
 begin
+  if AFormatID=0 then exit;
   New(NewFormat);
   with NewFormat^ do begin
     GraphicClass:=AClass;
@@ -238,7 +241,7 @@ begin
   for I := Count-1 downto 0 do begin
     P:=GetFormats(i);
     if P^.FormatID=FormatID then begin
-      Result := P^.GraphicClass;
+      Result:=P^.GraphicClass;
       Exit;
     end;
   end;
@@ -427,7 +430,6 @@ begin
     raise EInvalidGraphic.CreateFmt(rsUnknownPictureExtension, [Ext]);
 
   NewGraphic := GraphicClass.Create;
-
   ok:=false;
   try
     NewGraphic.OnProgress := @Progress;
@@ -438,8 +440,7 @@ begin
     // not alter the error backtrace output
     if not ok then NewGraphic.Free;
   end;
-  If FGraphic <> nil then
-    FGraphic.Free;
+  FGraphic.Free;
   FGraphic := NewGraphic;
   FGraphic.OnChange := @Changed;
   Changed(Self);
@@ -451,6 +452,12 @@ begin
 end;
 
 procedure TPicture.LoadFromClipboardFormat(FormatID: TClipboardFormat);
+begin
+  LoadFromClipboardFormatID(ctClipboard,FormatID);
+end;
+
+procedure TPicture.LoadFromClipboardFormatID(ClipboardType: TClipboardType;
+  FormatID: TClipboardFormat);
 var
   NewGraphic: TGraphic;
   GraphicClass: TGraphicClass;
@@ -465,7 +472,7 @@ begin
   ok:=false;
   try
     NewGraphic.OnProgress := @Progress;
-    NewGraphic.LoadFromClipboardFormat(FormatID);
+    NewGraphic.LoadFromClipboardFormatID(ClipboardType,FormatID);
     ok:=true;
   finally
     if not ok then NewGraphic.Free;

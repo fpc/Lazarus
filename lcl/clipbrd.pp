@@ -165,10 +165,10 @@ type
     FOnRequest: TClipboardRequestEvent;
     FOpenRefCount: Integer; // reference count for Open and Close (not used yet)
     procedure AssignGraphic(Source: TGraphic);
+    procedure AssignGraphic(Source: TGraphic; FormatID: TClipboardFormat);
     procedure AssignPicture(Source: TPicture);
-    procedure AssignToBitmap(Dest: TBitmap);
-    procedure AssignToPixmap(Dest: TPixmap);
-    procedure AssignToIcon(Dest: TIcon);
+    function AssignToGraphic(Dest: TGraphic): boolean;
+    function AssignToGraphic(Dest: TGraphic; FormatID: TClipboardFormat): boolean;
     //procedure AssignToMetafile(Dest: TMetafile);
     procedure AssignToPicture(Dest: TPicture);
     function GetAsText: string;
@@ -182,18 +182,18 @@ type
     procedure SetAsText(const Value: string);
     procedure SetBuffer(FormatID: TClipboardFormat; var Buffer; Size: Integer);
     procedure SetOnRequest(AnOnRequest: TClipboardRequestEvent);
-  protected
-    procedure AssignTo(Dest: TPersistent); override;
   public
     function AddFormat(FormatID: TClipboardFormat; Stream: TStream): Boolean;
     function AddFormat(FormatID: TClipboardFormat; var Buffer; Size: Integer): Boolean;
     procedure Assign(Source: TPersistent); override;
+    procedure AssignTo(Dest: TPersistent); override;
     procedure Clear;
     procedure Close; // dummy for delphi compatibility only
     constructor Create;
     constructor Create(AClipboardType: TClipboardType);
     destructor Destroy; override;
     function FindPictureFormatID: TClipboardFormat;
+    function FindFormatID(const FormatName: string): TClipboardFormat;
     //function GetAsHandle(Format: integer): THandle;
     function GetComponent(Owner, Parent: TComponent): TComponent;
     function GetFormat(FormatID: TClipboardFormat; Stream: TStream): Boolean;
@@ -202,6 +202,7 @@ type
                                var FormatList: PClipboardFormat);
     function GetTextBuf(Buffer: PChar; BufSize: Integer): Integer;
     function HasFormat(FormatID: TClipboardFormat): Boolean;
+    function HasFormatName(const FormatName: string): Boolean;
     function HasPictureFormat: boolean;
     procedure Open; // dummy for delphi compatibility only
     //procedure SetAsHandle(Format: integer; Value: THandle);
@@ -319,12 +320,27 @@ begin
     FreeAndNil(FClipboards[AClipboardType]);
 end;
 
+procedure LoadGraphicFromClipboardFormat(Dest: TGraphic;
+  ClipboardType: TClipboardType; FormatID: TClipboardFormat);
+begin
+  Clipboard(ClipboardType).AssignToGraphic(Dest,FormatID);
+end;
+
+procedure SaveGraphicToClipboardFormat(Src: TGraphic;
+  ClipboardType: TClipboardType; FormatID: TClipboardFormat);
+begin
+  Clipboard(ClipboardType).AssignGraphic(Src,FormatID);
+end;
+
 //-----------------------------------------------------------------------------
 
 procedure InternalInit;
 var
   AClipboardType: TClipboardType;
 begin
+  OnLoadGraphicFromClipboardFormat:=@LoadGraphicFromClipboardFormat;
+  OnSaveGraphicToClipboardFormat:=@SaveGraphicToClipboardFormat;
+
   for AClipboardType:=Low(TClipboardType) to High(TClipboardType) do
     FClipboards[AClipboardType]:=nil;
 end;
@@ -344,6 +360,9 @@ end.
 
 {
   $Log$
+  Revision 1.13  2003/09/10 19:15:15  mattias
+  implemented copying graphics from/to clipboard
+
   Revision 1.12  2003/09/10 16:29:13  mattias
   added Kylix 3 specials
 

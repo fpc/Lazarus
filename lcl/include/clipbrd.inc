@@ -403,45 +403,63 @@ begin
 end;
 
 function TClipboard.FindPictureFormatID: TClipboardFormat;
-const
-  PicFormats: set of TPredefinedClipboardFormat = [
-      pcfBitmap,
-      pcfPixmap,
-      pcfIcon,
-      pcfPicture,
-      pcfDelphiBitmap,
-      pcfDelphiPicture,
-      //pcfDelphiMetaFilePict,  (unsupported yet)
-      pcfKylixPicture,
-      pcfKylixBitmap
-      //pcfKylixDrawing  (unsupported yet)
-    ];
 var
-  f: TPredefinedClipboardFormat;
   List: PClipboardFormat;
   cnt, i: integer;
 begin
   //writeln('[TClipboard.FindPictureFormatID]');
   List:=nil;
+  Result:=0;
+  cnt:=0;
   if not FAllocated then begin
-    if not ClipboardGetFormats(ClipboardType,cnt,List) then begin
-      Result:=0;
+    if not ClipboardGetFormats(ClipboardType,cnt,List) then
       exit;
-    end;
-  end else begin
-    cnt:=0;
   end;
   try
-    for f:=Low(TPredefinedClipboardFormat) to High(TPredefinedClipboardFormat) do
-    begin
-      Result:=PredefinedClipboardFormat(f);
-      if (Result<>0) and (f in PicFormats) then begin
-        if not FAllocated then begin
-          for i:=0 to cnt-1 do
-            if (List[i]=Result) then exit;
-        end else begin
-          if IndexOfCachedFormatID(Result,false)>=0 then exit;
-        end;
+    if not FAllocated then begin
+      for i:=0 to cnt-1 do begin
+        Result:=List[i];
+        if TPicture.SupportsClipboardFormat(Result) then
+          exit;
+      end;
+    end else begin
+      for i:=FCount-1 downto 0 do begin
+        Result:=FData[i].FormatID;
+        if TPicture.SupportsClipboardFormat(Result) then
+          exit;
+      end;
+    end;
+  finally
+    if List<>nil then FreeMem(List);
+  end;
+  Result:=0;
+end;
+
+function TClipboard.FindFormatID(const FormatName: string): TClipboardFormat;
+var
+  List: PClipboardFormat;
+  cnt, i: integer;
+begin
+  //writeln('[TClipboard.FindPictureFormatID]');
+  List:=nil;
+  Result:=0;
+  cnt:=0;
+  if not FAllocated then begin
+    if not ClipboardGetFormats(ClipboardType,cnt,List) then
+      exit;
+  end;
+  try
+    if not FAllocated then begin
+      for i:=0 to cnt-1 do begin
+        Result:=List[i];
+        if AnsiCompareText(ClipboardFormatToMimeType(Result),FormatName)=0 then
+          exit;
+      end;
+    end else begin
+      for i:=FCount-1 downto 0 do begin
+        Result:=FData[i].FormatID;
+        if AnsiCompareText(ClipboardFormatToMimeType(Result),FormatName)=0 then
+          exit;
       end;
     end;
   finally
@@ -487,40 +505,90 @@ begin
   //writeln('[TClipboard.HasFormat] END ',ClipboardTypeName[ClipboardType],' FormatID=',FormatID,' Result=',Result);
 end;
 
+function TClipboard.HasFormatName(const FormatName: string): Boolean;
+begin
+  Result:=FindFormatID(FormatName)<>0;
+end;
+
 procedure TClipboard.AssignToPicture(Dest: TPicture);
+var
+  FormatID: TClipboardFormat;
 begin
-  // ToDo
-  raise Exception.Create('TClipboard.AssignToPicture not implemented yet');
-end;
-
-procedure TClipboard.AssignToBitmap(Dest: TBitmap);
-begin
-  // ToDo
-  raise Exception.Create('TClipboard.AssignToBitmap not implemented yet');
-end;
-
-procedure TClipboard.AssignToPixmap(Dest: TPixmap);
-begin
-  // ToDo
-  raise Exception.Create('TClipboard.AssignToPixmap not implemented yet');
-end;
-
-procedure TClipboard.AssignToIcon(Dest: TIcon);
-begin
-  // ToDo
-  raise Exception.Create('TClipboard.AssignToIcon not implemented yet');
+  FormatID:=FindPictureFormatID;
+  if FormatID=0 then exit;
+  Dest.LoadFromClipboardFormatID(ClipboardType,FormatID);
 end;
 
 procedure TClipboard.AssignPicture(Source: TPicture);
 begin
-  // ToDo
-  raise Exception.Create('TClipboard.AssignPicture not implemented yet');
+  AssignGraphic(Source.Graphic);
+end;
+
+function TClipboard.AssignToGraphic(Dest: TGraphic): boolean;
+var
+  MimeTypes: TStringList;
+  i: Integer;
+  GraphicFormatID: TClipboardFormat;
+begin
+  Result:=false;
+  MimeTypes:=TStringList.Create;
+  try
+    Dest.GetSupportedSourceMimeTypes(MimeTypes);
+    for i:=0 to MimeTypes.Count-1 do begin
+      GraphicFormatID:=FindFormatID(MimeTypes[i]);
+      if GraphicFormatID<>0 then begin
+        AssignToGraphic(Dest,GraphicFormatID);
+        Result:=true;
+        exit;
+      end;
+    end;
+  finally
+    MimeTypes.Free;
+  end;
+end;
+
+function TClipboard.AssignToGraphic(Dest: TGraphic; FormatID: TClipboardFormat
+  ): boolean;
+var
+  MemStream: TMemoryStream;
+begin
+  Result:=false;
+  if FormatID=0 then exit;
+  MemStream:=TMemoryStream.Create;
+  try
+    if not GetFormat(FormatID,MemStream) then exit;
+    MemStream.Position:=0;
+    Dest.LoadFromMimeStream(MemStream,ClipboardFormatToMimeType(FormatID));
+  finally
+    MemStream.Free;
+  end;
+  Result:=true;
 end;
 
 procedure TClipboard.AssignGraphic(Source: TGraphic);
+var
+  MimeType: String;
+  FormatID: TClipboardFormat;
 begin
-  // ToDo
-  raise Exception.Create('TClipboard.AssignGraphic not implemented yet');
+  MimeType:=Source.GetDefaultMimeType;
+  FormatID:=ClipboardRegisterFormat(MimeType);
+  if FormatID<>0 then
+    AssignGraphic(Source,FormatID);
+end;
+
+procedure TClipboard.AssignGraphic(Source: TGraphic; FormatID: TClipboardFormat
+  );
+var
+  MemStream: TMemoryStream;
+begin
+  MemStream:=TMemoryStream.Create;
+  try
+    Source.SaveToStream(MemStream);
+    MemStream.Position:=0;
+    SetFormat(FormatID,MemStream);
+  finally
+    MemStream.Free;
+  end;
 end;
 
 procedure TClipboard.Assign(Source: TPersistent);
@@ -537,10 +605,8 @@ procedure TClipboard.AssignTo(Dest: TPersistent);
 begin
   if Dest is TPicture then
     AssignToPicture(TPicture(Dest))
-  else if Dest is TBitmap then
-    AssignToBitmap(TBitmap(Dest))
-  else if Dest is TPixmap then
-    AssignToPixmap(TPixmap(Dest))
+  else if Dest is TGraphic then
+    AssignToGraphic(TGraphic(Dest))
   else
     inherited AssignTo(Dest);
 end;
@@ -607,6 +673,9 @@ end;
 
 {
   $Log$
+  Revision 1.14  2003/09/10 19:15:16  mattias
+  implemented copying graphics from/to clipboard
+
   Revision 1.13  2003/09/10 16:33:51  mattias
   added clipboard checks
 

@@ -45,6 +45,11 @@ begin
 {$ENDIF}
 end;
 
+function TPortableNetworkGraphic.GetDefaultMimeType: string;
+begin
+  Result:='image/png';
+end;
+
 
 // included by graphics.pp
 

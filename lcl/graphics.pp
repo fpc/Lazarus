@@ -504,9 +504,16 @@ type
     procedure SaveToFile(const Filename: string); virtual;
     procedure LoadFromStream(Stream: TStream); virtual; abstract;
     procedure SaveToStream(Stream: TStream); virtual; abstract;
+    procedure LoadFromMimeStream(Stream: TStream; const MimeType: string); virtual;
     procedure LoadFromLazarusResource(const ResName: String); virtual; abstract;
-    procedure LoadFromClipboardFormat(FormatID: TClipboardFormat); virtual; abstract;
-    procedure SaveToClipboardFormat(FormatID: TClipboardFormat); virtual; abstract;
+    procedure LoadFromClipboardFormat(FormatID: TClipboardFormat); virtual;
+    procedure LoadFromClipboardFormatID(ClipboardType: TClipboardType;
+      FormatID: TClipboardFormat); virtual;
+    procedure SaveToClipboardFormat(FormatID: TClipboardFormat); virtual;
+    procedure SaveToClipboardFormatID(ClipboardType: TClipboardType;
+      FormatID: TClipboardFormat); virtual;
+    procedure GetSupportedSourceMimeTypes(List: TStrings); virtual;
+    function GetDefaultMimeType: string; virtual;
   public
     property Empty: Boolean read GetEmpty;
     property Height: Integer read GetHeight write SetHeight;
@@ -559,10 +566,11 @@ type
       Graphic - The TGraphic object contained by the TPicture
       Bitmap - Returns a bitmap.  If the contents is not already a bitmap, the
         contents are thrown away and a blank bitmap is returned.
-      Icon - Returns an icon.  If the contents is not already an icon, the
-        contents are thrown away and a blank icon is returned.
       Pixmap - Returns a pixmap.  If the contents is not already a pixmap, the
         contents are thrown away and a blank pixmap is returned.
+      PNG - Returns a png.  If the contents is not already a png, the
+        contents are thrown away and a blank png (TPortableNetworkGraphic) is
+        returned.
       }
 
   TPicture = class(TPersistent)
@@ -598,6 +606,8 @@ type
     procedure LoadFromFile(const Filename: string);
     procedure SaveToFile(const Filename: string);
     procedure LoadFromClipboardFormat(FormatID: TClipboardFormat);
+    procedure LoadFromClipboardFormatID(ClipboardType: TClipboardType;
+      FormatID: TClipboardFormat);
     procedure SaveToClipboardFormat(FormatID: TClipboardFormat);
     class function SupportsClipboardFormat(FormatID: TClipboardFormat): Boolean;
     procedure Assign(Source: TPersistent); override;
@@ -903,13 +913,15 @@ type
     procedure LoadFromLazarusResource(const ResName: String); override;
     procedure LoadFromResourceName(Instance: THandle; const ResName: String); virtual;
     procedure LoadFromResourceID(Instance: THandle; ResID: Integer); virtual;
-    procedure LoadFromClipboardFormat(FormatID: TClipboardFormat); override;
-    procedure SaveToClipboardFormat(FormatID: TClipboardFormat); override;
+    procedure LoadFromMimeStream(Stream: TStream; const MimeType: string); override;
+    procedure GetSupportedSourceMimeTypes(List: TStrings); override;
+    function GetDefaultMimeType: string; override;
     Procedure LoadFromXPMFile(const Filename : String);
     procedure Mask(ATransparentColor: TColor);
     procedure SaveToStream(Stream: TStream); override;
     Function ReleaseHandle: HBITMAP;
     function ReleasePalette: HPALETTE;
+  public
     property Canvas: TCanvas read GetCanvas write FCanvas;
     property Handle: HBITMAP read GetHandle write SetHandle;
     property HandleType: TBitmapHandleType read GetHandleType write SetHandleType;
@@ -939,6 +951,7 @@ type
     function LazarusResourceTypeValid(const ResourceType: string): boolean; override;
     procedure ReadStream(Stream: TStream; Size: Longint); override;
     procedure WriteStream(Stream: TStream; WriteSize: Boolean); override;
+    function GetDefaultMimeType: string; override;
   end;
   
   { TIcon }
@@ -956,13 +969,14 @@ type
   end;
 
 
-  // Color / Identifier mapping
-  TGetColorStringProc = procedure(const s:ansistring) of object;
-  
 function GraphicFilter(GraphicClass: TGraphicClass): string;
 function GraphicExtension(GraphicClass: TGraphicClass): string;
 function GraphicFileMask(GraphicClass: TGraphicClass): string;
 
+type
+  // Color / Identifier mapping
+  TGetColorStringProc = procedure(const s:ansistring) of object;
+  
 function ColorToIdent(Color: Longint; var Ident: String): Boolean;
 function IdentToColor(const Ident: string; var Color: Longint): Boolean;
 function ColorToRGB(Color: TColor): Longint;
@@ -975,6 +989,7 @@ Function Green(rgb: TColor) : BYTE;
 Function Red(rgb: TColor) : BYTE;
 procedure RedGreenBlue(rgb: TColor; Red, Green, Blue: Byte);
 
+// fonts
 procedure GetCharsetValues(Proc: TGetStrProc);
 function CharsetToIdent(Charset: Longint; var Ident: string): Boolean;
 function IdentToCharset(const Ident: string; var Charset: Longint): Boolean;
@@ -988,6 +1003,19 @@ function ClearXLFDItem(const LongFontName: string; Index: integer): string;
 function ClearXLFDHeight(const LongFontName: string): string;
 function ClearXLFDPitch(const LongFontName: string): string;
 function ClearXLFDStyle(const LongFontName: string): string;
+
+// graphics
+type
+  TOnLoadGraphicFromClipboardFormat =
+    procedure(Dest: TGraphic; ClipboardType: TClipboardType;
+              FormatID: TClipboardFormat);
+  TOnSaveGraphicToClipboardFormat =
+    procedure(Src: TGraphic; ClipboardType: TClipboardType;
+              FormatID: TClipboardFormat);
+
+var
+  OnLoadGraphicFromClipboardFormat: TOnLoadGraphicFromClipboardFormat;
+  OnSaveGraphicToClipboardFormat: TOnSaveGraphicToClipboardFormat;
 
 function TestStreamBitmapNativeType(Stream: TMemoryStream): TBitmapNativeType;
 function TestStreamIsBMP(Stream: TMemoryStream): boolean;
@@ -1185,11 +1213,15 @@ end;
 initialization
   PicClipboardFormats:=nil;
   PicFileFormats:=nil;
+  OnLoadGraphicFromClipboardFormat:=nil;
+  OnSaveGraphicToClipboardFormat:=nil;
   RegisterIntegerConsts(TypeInfo(TColor), @IdentToColor, @ColorToIdent);
   RegisterIntegerConsts(TypeInfo(TFontCharset), @IdentToCharset, @CharsetToIdent);
 
 finalization
   GraphicsFinalized:=true;
+  OnLoadGraphicFromClipboardFormat:=nil;
+  OnSaveGraphicToClipboardFormat:=nil;
   FreeAndNil(PicClipboardFormats);
   FreeAndNil(PicFileFormats);
 
@@ -1199,6 +1231,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.90  2003/09/10 19:15:15  mattias
+  implemented copying graphics from/to clipboard
+
   Revision 1.89  2003/09/08 13:07:17  mattias
   TBitmap now uses fpImage for writing bitmaps
 
