@@ -177,7 +177,7 @@ type
   end;
 
   TCMHitTest = TLMNCHitTest;
-
+  
   TCMControlChange = record
     Msg : Cardinal;
     Control : TControl;
@@ -1442,6 +1442,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.90  2002/11/09 15:02:06  lazarus
+  MG: fixed LM_LVChangedItem, OnShowHint, small bugs
+
   Revision 1.89  2002/11/06 15:59:24  lazarus
   MG: fixed codetools abort
 
