@@ -181,6 +181,11 @@ Begin
   Perform(CM_CHANGED, 0, LParam(self));
 End;
 
+procedure TControl.FontChanged(Sender: TObject);
+begin
+  Invalidate;
+end;
+
 {------------------------------------------------------------------------------
        TControl.ChangeBounds
 ------------------------------------------------------------------------------}
@@ -2456,7 +2461,7 @@ begin
   FWindowProc := @WndProc;
   FCursor := crDefault;
   FFont := TFont.Create;
-  //FFont.OnChange := @FontChanged;
+  FFont.OnChange := @FontChanged;
   FIsControl := False;
   FEnabled := True;
   FHelpType := htContext;
@@ -2613,6 +2618,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.165  2004/01/27 21:32:11  mattias
+  improved changing style of controls
+
   Revision 1.164  2004/01/10 18:00:42  mattias
   fixed GetWindowOrgEx, added GetDCOriginRelativeToWindow
 

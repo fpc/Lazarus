@@ -32,8 +32,9 @@ begin
   inherited Create (TheOwner);
   FCompStyle:= csPanel;
   ControlStyle := ControlStyle + [csAcceptsControls, csCaptureMouse,
-    csClickEvents, csSetCaption, csOpaque, csDoubleClicks, csReplicatable,
-    csNoFocus];
+    csClickEvents, csSetCaption, csDoubleClicks, csReplicatable,
+    csNoFocus]
+    - [csOpaque]; // we need the default background
   FBevelOuter := bvRaised;
   FBevelInner := bvNone;
   FBevelWidth := 1;

@@ -767,6 +767,7 @@ type
     procedure InvalidateControl(IsVisible, IsOpaque : Boolean);
     procedure InvalidateControl(IsVisible, IsOpaque, IgnoreWinControls: Boolean);
     procedure SendDockNotification(Msg: Cardinal; WParam: WParam; LParam: LParam); virtual;
+    procedure FontChanged(Sender: TObject); virtual;
     procedure SetColor(Value : TColor); virtual;
     procedure SetDragMode (Value: TDragMode); virtual;
     procedure SetEnabled(Value: Boolean); virtual;
@@ -958,6 +959,7 @@ type
   TWinControlFlag = (
     wcfClientRectNeedsUpdate,
     wcfColorChanged,
+    wcfFontChanged,
     wcfReAlignNeeded,
     wcfAligningControls,
     wcfEraseBackground
@@ -1110,6 +1112,7 @@ type
     function  GetChildsRect(Scrolled: boolean): TRect; override;
     function  GetDeviceContext(var WindowHandle: HWnd): HDC; override;
     function  IsControlMouseMsg(var TheMessage : TLMMouse): Boolean;
+    procedure FontChanged(Sender: TObject); override;
     procedure SetColor(Value : TColor); override;
     procedure SetZOrderPosition(Position: Integer); override;
     procedure SetZOrder(Topmost: Boolean); override;
@@ -1859,6 +1862,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.168  2004/01/27 21:32:11  mattias
+  improved changing style of controls
+
   Revision 1.167  2004/01/07 18:05:46  micha
   add TWinControl.DoubleBuffered property which is a hint for the interface to do double-buffering for this control
 

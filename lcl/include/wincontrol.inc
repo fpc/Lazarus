@@ -1218,9 +1218,21 @@ begin
       {$ENDIF}
     end;
     Control.Perform(TheMessage.Msg, WParam(TheMessage.Keys),
-                    LParam(PointtoSmallPoint(P)));
+                    LParam(PointToSmallPoint(P)));
     Result := True;
   end;
+end;
+
+procedure TWinControl.FontChanged(Sender: TObject);
+begin
+  if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then
+  begin
+    // ToDo: replace with correct intf call
+    CNSendMessage(LM_SETCOLOR, Self, nil);
+    Exclude(FFlags,wcfFontChanged);
+    //NotifyControls(CM_ ...);
+  end else
+    Include(FFlags,wcfFontChanged);
 end;
 
 procedure TWinControl.SetColor(Value: TColor);
@@ -1229,9 +1241,10 @@ begin
   inherited SetColor(Value);
   if FBrush <> nil then
     FBrush.Color := Color;
-  if HandleAllocated and (not (csLoading in ComponentState)) then
+  if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then
   begin
     CNSendMessage(LM_SETCOLOR, Self, nil);
+    Exclude(FFlags,wcfColorChanged);
     NotifyControls(CM_PARENTCOLORCHANGED);
   end else
     Include(FFlags,wcfColorChanged);
@@ -2806,6 +2819,7 @@ begin
   if HandleAllocated then
     RaiseError('Handle already created');
   CNSendMessage(LM_CREATE, Self, nil);
+  FFlags:=FFlags-[wcfColorChanged,wcfFontChanged];
   if not HandleAllocated then
     RaiseError('Handle creation failed');
 end;
@@ -2815,6 +2829,8 @@ end;
 ------------------------------------------------------------------------------}
 procedure TWinControl.DestroyComponent;
 begin
+  if not HandleAllocated then
+    RaiseGDBException('TWinControl.DestroyComponent Handle already destroyed');
   CNSendMessage(LM_DESTROY, Self, nil);
 end;
 
@@ -2837,8 +2853,11 @@ begin
 //writeln('[TWinControl.InitializeWnd] ',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height);
   DoSendBoundsToInterface;
   CNSendMessage(LM_SHOWHIDE, Self, nil);
-  CNSendMessage(LM_SETCOLOR, Self, nil);
-  Exclude(FFlags,wcfColorChanged);
+  if [wcfColorChanged,wcfFontChanged]*FFLags<>[] then begin
+    // replace by update style call
+    CNSendMessage(LM_SETCOLOR, Self, nil);
+    FFlags:=FFlags-[wcfColorChanged,wcfFontChanged];
+  end;
 
   EnableWindow(Handle, Enabled);
 
@@ -2860,9 +2879,11 @@ begin
   inherited Loaded;
   RealizeBounds;
   FixupTabList;
-  if wcfColorChanged in FFlags then begin
+  if ([wcfColorChanged,wcfFontChanged]*FFlags<>[]) and HandleAllocated then
+  begin
+    // ToDo: replace by update style call
     CNSendMessage(LM_SETCOLOR, Self, nil);
-    Exclude(FFlags,wcfColorChanged);
+    FFlags:=FFlags-[wcfColorChanged,wcfFontChanged];
   end;
   // align the childs
   if wcfReAlignNeeded in FFlags then
@@ -3153,7 +3174,7 @@ end;
 procedure TWinControl.CMShowingChanged(var Message: TLMessage);
 begin
   // ToDo: do not send this while loading, send it after loading.
-  if HandleAllocated then
+  if HandleAllocated and ([csDestroying]*ComponentState=[])then
     CNSendMessage(LM_ShowHide, Self, nil);
 //  SetWindowPos(Handle, 0, 0, 0, 0, 0, ShowFlags[FShowing]);
 end;
@@ -3179,6 +3200,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.192  2004/01/27 21:32:11  mattias
+  improved changing style of controls
+
   Revision 1.191  2004/01/13 16:39:01  mattias
   changed consistency stops during var renaming to errors
 

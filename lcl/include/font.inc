@@ -615,7 +615,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TFont.SetColor(Value : TColor);
 begin
-  if FColor <> Value 
+  if FColor <> Value
   then begin
     FColor := Value;
     Changed;
@@ -833,6 +833,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.12  2004/01/27 21:32:11  mattias
+  improved changing style of controls
+
   Revision 1.11  2002/12/12 17:47:46  mattias
   new constants for compatibility
 

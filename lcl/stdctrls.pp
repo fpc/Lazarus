@@ -647,7 +647,7 @@ type
     procedure SetShowAccelChar(Val : boolean); virtual;
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property FocusControl: TWinControl read FFocusControl write SetFocusControl;
-    property Layout: TTextLayout read FLayout write SetLayout default tlBottom;
+    property Layout: TTextLayout read FLayout write SetLayout default tlTop;
     property ShowAccelChar : boolean read FShowAccelChar write SetShowAccelChar default true;
     property WordWrap: Boolean read FWordWrap write SetWordWrap default false;
   public
@@ -690,6 +690,7 @@ type
     procedure SetChecked(Value: Boolean); virtual;
     procedure DoOnChange; virtual;
     procedure Click; override;
+    function ColorIsStored: boolean; override;
   protected
     property Checked: Boolean read GetChecked write SetChecked stored IsCheckedStored default False;
     property ClicksDisabled: Boolean read FClicksDisabled write FClicksDisabled;
@@ -1474,6 +1475,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.118  2004/01/27 21:32:11  mattias
+  improved changing style of controls
+
   Revision 1.117  2004/01/21 10:19:16  micha
   enable tabstops for controls; implement tabstops in win32 intf
 

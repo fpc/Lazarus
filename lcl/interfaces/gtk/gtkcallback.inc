@@ -150,11 +150,12 @@ begin
       Decor := GetWindowDecorations(TheForm);
       Func := GetWindowFunction(TheForm);
 
-      BeginGDKErrorTrap;
       gdk_window_set_decorations(TheWindow, decor);
       gdk_window_set_functions(TheWindow, func);
-      EndGDKErrorTrap;
     end;
+
+    if (TObject(Data) is TWinControl) then
+      UpdateWidgetStyleOfControl(TWinControl(Data));
     
     if not (csDesigning in TComponent(Data).ComponentState) then
       RealizeAccelerator(TComponent(Data),Widget);
@@ -3224,6 +3225,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.216  2004/01/27 21:32:11  mattias
+  improved changing style of controls
+
   Revision 1.215  2004/01/23 13:55:30  mattias
   style widgets are now realized, so all values are initialized
 

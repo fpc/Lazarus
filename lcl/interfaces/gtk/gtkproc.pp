@@ -579,6 +579,7 @@ Function GetStyleWidget(aStyle: TLazGtkStyle) : PGTKWidget;
 Function GetStyleWidgetWithName(const WName : String) : PGTKWidget;
 Procedure StyleFillRectangle(drawable : PGDKDrawable; GC : PGDKGC; Color : TColorRef; x, y, width, height : gint);
 Function StyleForegroundColor(Color : TColorRef; DefaultColor : PGDKColor): PGDKColor;
+procedure UpdateWidgetStyleOfControl(AWinControl: TWinControl);
 
 // fonts
 {$Ifdef GTK2}

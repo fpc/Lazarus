@@ -4342,49 +4342,9 @@ end;
 {       *Note: Changes the form's default background color                                 }
 {------------------------------------------------------------------------------}
 procedure TgtkObject.SetColor(Sender : TObject);
-var
-  RCStyle : PGtkRCStyle;
-  Widget, FixWidget : PGTKWidget;
 begin
-  {$IFDEF NoStyle}
-  exit;
-  {$ENDIF}
-  if Sender is TWinControl
-  then with TWinControl(Sender) do
-  begin
-    // Temphack to set backcolor, till better solution
-    if HandleAllocated then begin
-      Widget:=PGtkWidget(Handle);
-      FixWidget:=GetFixedWidget(Widget);
-      If FixWidget <> Widget then Widget := FixWidget;
-
-      // set default background
-      if (Color=clNone) and (FixWidget^.Window<>nil) then begin
-        BeginGDKErrorTrap;
-        gdk_window_set_back_pixmap(FixWidget^.Window,nil,GdkFalse);
-        EndGDKErrorTrap;
-      end
-      else
-      if ColorIsStored
-      and ((Color and SYS_COLOR_BASE)=0) then begin
-        // don't set background for custom controls (to prevent flickering)
-        if GtkWidgetIsA(PGtkWidget(Handle),GTKAPIWidget_GetType) then exit;
-
-        RCStyle:=gtk_rc_style_new;
-        RCStyle^.bg[GTK_STATE_NORMAL]:=TColorToTGDKColor(Color);
-
-        // Indicate which colors the GtkRcStyle will affect;
-        // unflagged colors will follow the theme
-        RCStyle^.color_flags[GTK_STATE_NORMAL]:=
-          RCStyle^.color_flags[GTK_STATE_NORMAL] or GTK_RC_BG;
-
-        gtk_widget_modify_style(Widget,RCStyle);
-        gtk_rc_style_unref(RCStyle);
-
-        //SetBKColor(Handle, ColorToRGB(Color));
-      end;
-    end;
-  end;
+  if Sender is TWinControl then
+    UpdateWidgetStyleOfControl(TWinControl(Sender));
 end;
 
 {------------------------------------------------------------------------------
@@ -6841,9 +6801,14 @@ var FormIconGdiObject: PGDIObject;
   LCLControl: TWinControl;
   Decor, Func : Longint;
   AWindow: PGdkWindow;
+  ACustomForm: TCustomForm;
 begin
   if not (Sender is TWinControl) then
     RaiseWrongClass;
+  if Sender is TCustomForm then
+    ACustomForm:=TCustomForm(Sender)
+  else
+    ACustomForm:=nil;
 
   LCLControl:=TWinControl(Sender);
   if not LCLControl.HandleAllocated then exit;
@@ -6864,16 +6829,16 @@ begin
 
     // before making the widget visible, set the position and size
     if FWidgetsWithResizeRequest.Contains(SenderWidget) then begin
-      if (LCLControl is TCustomForm) and (LCLControl.Parent=nil) then begin
+      if (ACustomForm<>nil) and (LCLControl.Parent=nil) then begin
         // top level control (a form without parent)
         {$IFDEF VerboseFormPositioning}
         writeln('VFP [TgtkObject.ShowHide] A set bounds ',
           LCLControl.Name,':',LCLControl.ClassName,
           ' Window=',GetControlWindow(SenderWidget)<>nil,
-          ' ',TControl(Sender).Left,',',TControl(Sender).Top,
-          ',',TControl(Sender).Width,',',TControl(Sender).Height);
+          ' ',LCLControl.Left,',',LCLControl.Top,
+          ',',LCLControl.Width,',',LCLControl.Height);
         {$ENDIF}
-        SetWindowSizeAndPosition(PgtkWindow(SenderWidget),TWinControl(Sender));
+        SetWindowSizeAndPosition(PgtkWindow(SenderWidget),LCLControl);
       end else if (LCLControl.Parent<>nil) then begin
         // resize widget
         //if AnsiCompareText(Sender.ClassName,'TScrollBar')=0 then
@@ -6894,35 +6859,32 @@ begin
       UnsetResizeRequest(SenderWidget);
     end;
 
-    if (Sender is TCustomForm) then begin
-      If (TCustomForm(Sender).BorderStyle <> bsSizeable) or
-        (TCustomForm(Sender).FormStyle = fsStayOnTop)
+    if (ACustomForm<>nil) then begin
+      If (ACustomForm.BorderStyle <> bsSizeable) or
+        (ACustomForm.FormStyle = fsStayOnTop)
       then begin
-        Decor := GetWindowDecorations(TCustomForm(Sender));
-        Func := GetWindowFunction(TCustomForm(Sender));
+        Decor := GetWindowDecorations(ACustomForm);
+        Func := GetWindowFunction(ACustomForm);
         gtk_widget_realize(SenderWidget);
         AWindow:=GetControlWindow(SenderWidget);
-        BeginGDKErrorTrap;
         gdk_window_set_decorations(AWindow, decor);
         gdk_window_set_functions(AWindow, func);
-        EndGDKErrorTrap;
       end;
       ShareWindowAccelGroups(SenderWidget);
     end;
 
     gtk_widget_show(SenderWidget);
 
-    SetColor(Sender);
-    if (Sender is TCustomForm) then begin
+    UpdateWidgetStyleOfControl(LCLControl);
+
+    if (ACustomForm<>nil) then begin
       AWindow:=GetControlWindow(SenderWidget);
-      if (AWindow<>nil) then begin
-        FormIconGdiObject:=PGDIObject(TCustomForm(Sender).GetIconHandle);
+      if (AWindow<>nil) and (ACustomForm.Icon<>nil) then begin
+        FormIconGdiObject:=PGDIObject(ACustomForm.GetIconHandle);
         if (FormIconGdiObject<>nil) then begin
-          BeginGDKErrorTrap;
           gdk_window_set_icon(AWindow, nil,
                   FormIconGdiObject^.GDIBitmapObject,
                   FormIconGdiObject^.GDIBitmapMaskObject);
-          EndGDKErrorTrap;
         end;
       end;
     end;
@@ -6930,7 +6892,7 @@ begin
   end
   else Begin
   
-    if (Sender is TCustomForm) then begin
+    if (ACustomForm<>nil) then begin
       UnshareWindowAccelGroups(SenderWidget);
     end;
 
@@ -9224,6 +9186,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.457  2004/01/27 21:32:11  mattias
+  improved changing style of controls
+
   Revision 1.456  2004/01/27 10:09:44  mattias
   fixed renaming of DFM to LFM
 

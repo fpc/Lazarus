@@ -5792,6 +5792,93 @@ begin
     gdk_draw_rectangle(drawable, GC, 1, x, y, width, height);
 end;
 
+procedure UpdateWidgetStyleOfControl(AWinControl: TWinControl);
+var
+  RCStyle : PGtkRCStyle;
+  Widget, FixWidget : PGTKWidget;
+  NewColor: TGdkColor;
+  MainWidget: PGtkWidget;
+
+  procedure CreateRCStyle;
+  begin
+    if RCStyle=nil then begin
+      RCStyle:=gtk_rc_style_new;
+    end;
+  end;
+
+begin
+  {$IFDEF NoStyle}
+  exit;
+  {$ENDIF}
+
+  if not AWinControl.HandleAllocated then exit;
+
+  MainWidget:=PGtkWidget(AWinControl.Handle);
+  FixWidget:=GetFixedWidget(MainWidget);
+  If FixWidget <> MainWidget then
+    Widget := FixWidget
+  else
+    Widget := MainWidget;
+
+  if not GTK_WIDGET_REALIZED(Widget) then exit;
+
+  RCStyle:=nil;
+  try
+    // set default background
+    if (AWinControl.Color=clNone) then begin
+      // default not needed background -> remove default background
+      if (FixWidget^.Window<>nil) then begin
+        gdk_window_set_back_pixmap(FixWidget^.Window,nil,GdkFalse);
+      end;
+    end
+    else
+    if AWinControl.ColorIsStored
+    and ((AWinControl.Color and SYS_COLOR_BASE)=0) then begin
+      // set background to user defined color
+
+      // don't set background for custom controls, which paint themselves
+      // (this prevents flickering)
+      if (csOpaque in AWinControl.ControlStyle)
+      and GtkWidgetIsA(MainWidget,GTKAPIWidget_GetType) then exit;
+
+      NewColor:=TColorToTGDKColor(AWinControl.Color);
+
+      CreateRCStyle;
+      RCStyle^.bg[GTK_STATE_NORMAL]:=NewColor;
+
+      // Indicate which colors the GtkRcStyle will affect;
+      // unflagged colors will follow the theme
+      RCStyle^.color_flags[GTK_STATE_NORMAL]:=
+        RCStyle^.color_flags[GTK_STATE_NORMAL] or GTK_RC_BG;
+
+      //writeln('UpdateWidgetStyleOfControl Color=',HexStr(Cardinal(AWinControl.Color),8));
+
+    end;
+    
+    // set font color
+    if (AWinControl.Font.Color and SYS_COLOR_BASE)=0 then begin
+      NewColor:=TColorToTGDKColor(AWinControl.Font.Color);
+      CreateRCStyle;
+
+      RCStyle^.text[GTK_STATE_NORMAL]:=NewColor;
+      
+      // Indicate which colors the GtkRcStyle will affect;
+      // unflagged colors will follow the theme
+      RCStyle^.color_flags[GTK_STATE_NORMAL]:=
+        RCStyle^.color_flags[GTK_STATE_NORMAL] or GTK_RC_TEXT;
+
+      //writeln('UpdateWidgetStyleOfControl Font=',AWinControl.Font.Name,' ',AWinControl.Font.Size,' ',HexStr(Cardinal(AWinControl.Font.Color),8));
+    end;
+    
+  finally
+    if RCStyle<>nil then begin
+      //writeln('UpdateWidgetStyleOfControl Apply Modifications ',AWinControl.Name,' ',GetWidgetClassName(Widget));
+      gtk_widget_modify_style(Widget,RCStyle);
+      gtk_rc_style_unref(RCStyle);
+    end;
+  end;
+end;
+
 Function DeleteAmpersands(var Str : String) : Longint;
 // convert double ampersands to single & and delete single &
 // return the position of the letter after the first deleted single ampersand
@@ -6213,6 +6300,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.251  2004/01/27 21:32:11  mattias
+  improved changing style of controls
+
   Revision 1.250  2004/01/27 10:09:44  mattias
   fixed renaming of DFM to LFM
 
