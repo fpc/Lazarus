@@ -73,6 +73,7 @@ type
   }
   TCustomImageList = Class(TComponent)
   private
+    FImageList : TList;  //shane
     FBitmap: TBitmap;
     FMaskBitmap: TBitmap;
     FHeight: Integer;
@@ -90,6 +91,9 @@ type
     procedure SetBkColor(const Value: TColor);
     procedure SetHeight(const Value: Integer);
     procedure SetWidth(const Value: Integer);
+
+    Function GetCount: Integer;
+
     procedure ShiftImages(const Source: TCanvas; Start, Shift: Integer);
   protected
     procedure GetImages(Index: Integer; const Image, Mask: TBitmap);
@@ -122,7 +126,7 @@ type
     property AllocBy: Integer read FAllocBy write FAllocBy default 4;
     property BlendColor: TColor read FBlendColor write FBlendColor default clNone;
     property BkColor: TColor read FBkColor write SetBkColor default clNone;
-    property Count: Integer read FCount;
+    property Count: Integer read GetCount;
     property Handle: THandle read FHandle;
     property Height: Integer read FHeight write SetHeight default 16;
     property Width: Integer read FWidth write SetWidth default 16;
@@ -145,6 +149,12 @@ end.
 
 {
   $Log$
+  Revision 1.2  2001/01/11 20:16:47  lazarus
+  Added some TImageList code.
+  Added a bookmark resource with 10 resource images.
+  Removed some of the IFDEF's in mwCustomEdit around the inherited code.
+  Shane
+
   Revision 1.1  2000/07/13 10:28:24  michael
   + Initial import
 

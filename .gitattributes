@@ -72,6 +72,7 @@ designer/abstractdebugger.pp svneol=native#text/pascal
 designer/abstracteditor.pp svneol=native#text/pascal
 designer/abstractfilesystem.pp svneol=native#text/pascal
 designer/abstractformeditor.pp svneol=native#text/pascal
+designer/bookmark.lrs svneol=native#text/pascal
 designer/controlselection.pp svneol=native#text/pascal
 designer/customeditor.pp svneol=native#text/pascal
 designer/designer.pp svneol=native#text/pascal

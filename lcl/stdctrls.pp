@@ -180,7 +180,6 @@ type
     Procedure SetMaxLength(Value : Integer);
     Procedure SetModified(Value : Boolean);
     Procedure SetReadOnly(Value : Boolean);
-//    Procedure CMTextChanged(Var Message : TLMessage); message CM_TextChanged;
   protected
     Procedure CMTextChanged(Var Message : TLMessage); message CM_TextChanged;
     Procedure Change; dynamic;
@@ -493,8 +492,10 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.9  2001/01/10 20:12:29  lazarus
-  Added the Nudge feature to the IDE.
+  Revision 1.10  2001/01/11 20:16:47  lazarus
+  Added some TImageList code.
+  Added a bookmark resource with 10 resource images.
+  Removed some of the IFDEF's in mwCustomEdit around the inherited code.
   Shane
 
   Revision 1.8  2001/01/05 17:44:37  lazarus

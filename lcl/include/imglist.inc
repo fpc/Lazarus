@@ -177,6 +177,7 @@ end;
 procedure TCustomImageList.Clear;
 begin
   FCount := 0;
+  FImageList.Clear;
   NotifyChangeLink;
 end;
 
@@ -192,6 +193,7 @@ begin
   inherited Create(AOwner);
   FHeight := 16;
   FWidth := 16;
+  FImageList := TList.Create;  //shane
   Initialize;
 end;
 
@@ -226,8 +228,10 @@ begin
   if Index = -1
   then Clear
   else begin
-    ShiftImages(FBitmap.Canvas, Index, 1);
-    ShiftImages(FMaskBitmap.Canvas, Index, 1);
+
+//    ShiftImages(FBitmap.Canvas, Index, 1);
+//    ShiftImages(FMaskBitmap.Canvas, Index, 1);
+  FImageList.Delete(Index);  //shane
   end;
 end;
 
@@ -243,6 +247,7 @@ begin
   FBitmap.Free;
   FMaskBitmap.Free;
   FChangeLinkList.Free;
+  FImageList.Destroy;  //shane
   inherited Destroy;
 end;
 
@@ -255,16 +260,21 @@ end;
                     False, draws the image disabled (embossed)
   Returns: Nothing
 
-  Draws he requested image on the given canvas.
+  Draws the requested image on the given canvas.
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.Draw(Canvas: TCanvas; X, Y, Index: Integer; Enabled: Boolean);
+var
+
+Bitmap : TBitmap;
 begin
   if (FCount = 0) or (Index >= FCount) then Exit;
+  Bitmap := TBitmap(FImageList[Index]);
 
   Canvas.CopyRect(
     Rect(X, Y, X + FWidth, Y + FHeight),
-    FBitmap.Canvas,
-    Rect(0, Index * FHeight, FWidth, (Index + 1) * FHeight)
+    Bitmap.Canvas,
+    Rect(0, 0, FWidth, FHeight)
+//    Rect(0, 0, 16,16)
   );
 end;
 
@@ -288,6 +298,20 @@ begin
   end;
 
 end;
+
+{------------------------------------------------------------------------------
+  Method:  TCustomImageList.GetCount
+  Params:
+  Returns: Count
+
+  Fetches the index'th image into an icon.
+ ------------------------------------------------------------------------------}
+Function TCustomImageList.GetCount;
+begin
+Result := FImageList.Count;
+FCount := Result;
+end;
+
 
 {------------------------------------------------------------------------------
   Function: TCustomImageList.GetHotspot
@@ -401,14 +425,16 @@ var
   I, M: TBitmap;
   DR, SR: TRect;
 begin
-  if (Index > FCount)
+  if (Index > Count)
   then raise EInvalidOperation.Create(SInvalidIndex);
 
   if (Index < 0) then Index := 0;
 
   if (Image <> nil)
   then begin
-    nCount := Image.Width div FWidth;
+    FImageList.Insert(Index,Image);
+
+ {   nCount := Image.Width div FWidth;
     if nCount > 0
     then begin
       AllocBitmap(nCount);
@@ -460,6 +486,8 @@ begin
         I.Free;
       end;
     end;
+}
+
   end;
 end;
 
@@ -786,6 +814,12 @@ end;
 {
 
   $Log$
+  Revision 1.2  2001/01/11 20:16:47  lazarus
+  Added some TImageList code.
+  Added a bookmark resource with 10 resource images.
+  Removed some of the IFDEF's in mwCustomEdit around the inherited code.
+  Shane
+
   Revision 1.1  2000/07/13 10:28:26  michael
   + Initial import
 

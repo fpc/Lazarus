@@ -62,8 +62,9 @@ type
     //pulled out of the editor by the Function Getxxx
     FCurrentCursorYLine : Integer;
     FFileName : String;
-    FPopUpMenu : TPopupMenu;
     FModified : Boolean;
+
+    FPopUpMenu : TPopupMenu;
 
     //pulled out of the editor by getting it's TStrings
     FSource : TStringList;
@@ -89,6 +90,7 @@ type
     Procedure CreateEditor(AOwner : TComponent; AParent: TWinControl);
 
   protected
+    ToggleMenuItem : TMenuItem;
     Procedure DisplayControl;
     Procedure ReParent(AParent : TWinControl);
 
@@ -97,6 +99,10 @@ type
     Procedure ReadOnlyClicked(Sender : TObject);
     Procedure ToggleBreakpointClicked(Sender : TObject);
     Procedure OpenAtCursorClicked(Sender : TObject);
+
+    Procedure BookMarkToggle(Value : Integer);
+    Procedure BookMarkGoto(Value : Integer);
+
 
     property Editor : TmwCustomEdit read FEditor;
 
@@ -148,6 +154,7 @@ type
     Function GetActiveSE : TSourceEditor;
     Function DisplayPage(SE : TSourceEditor) : Boolean;
     Function NewSE(Pagenum : Integer) : TSourceEditor;
+    Bookmarks : TImageList;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -166,6 +173,8 @@ type
 
     Procedure OpenFile(FileName: String);
 
+    Procedure ToggleBookmark(Value : Integer);
+    Procedure GoToBookmark(Value: Integer);
 
     property OnCloseFile : TNotifyFileEvent read FOnCloseFile write FOnCloseFile;
     property OnOpenFile : TNotifyFileEvent read FOnOPenFile write FOnOPenFile;
@@ -176,8 +185,7 @@ type
 
 implementation
 uses
-  LCLLinux,TypInfo;
-
+  LCLLinux,TypInfo,LResources;
 
 { TSourceEditor }
 
@@ -234,9 +242,9 @@ Begin
 
   FPopupMenu.Items.Add(Seperator);
 
-  MenuItem := TMenuItem.Create(FAOwner);
-  MenuItem.Caption := '&Toggle Bookmark';
-  FPopupMenu.Items.Add(MenuItem);
+  ToggleMenuItem := TMenuItem.Create(FAOwner);
+  ToggleMenuItem.Caption := '&Toggle Bookmark';
+  FPopupMenu.Items.Add(ToggleMenuItem);
 
   for I := 0 to 9 do
      Begin
@@ -244,7 +252,7 @@ Begin
       SubMenuItem.Caption := 'Bookmark '+inttostr(i);
       SubMenuItem.OnClick := @BookmarkClicked;
       SubMenuItem.Tag := I;
-      MenuItem.Add(SubMenuItem);
+      ToggleMenuItem.Add(SubMenuItem);
      end;
 
   MenuItem := TMenuItem.Create(FAOwner);
@@ -289,19 +297,7 @@ var
   MenuItem : TMenuItem;
 Begin
   MenuItem := TMenuItem(sender);
-  MenuItem.Checked := not(MenuItem.Checked);
-  if MenuItem.Checked then
-     Begin
-        FEditor.SetBookMark(MenuItem.Tag,GetCurrentCursorXLine,GetCurrentCursorYLine);
-        MenuItem.Caption := MenuItem.Caption + '*';
-     end
-     else
-     begin
-     FEditor.ClearBookMark(MenuItem.Tag);
-     MenuItem.Caption := copy(MenuItem.Caption,1,Length(MenuItem.Caption)-1);
-     end;
-
-
+  BookMarkToggle(MenuItem.Tag);
 end;
 
 Procedure TSourceEditor.BookMarkGotoClicked(Sender : TObject);
@@ -309,9 +305,35 @@ var
   MenuItem : TMenuItem;
 Begin
   MenuItem := TMenuItem(sender);
-  FEditor.GotoBookMark(Menuitem.Tag);
+  BookMarkGoto(MenuItem.Tag);
 end;
 
+
+Procedure TSourceEditor.BookMarkToggle(Value : Integer);
+var
+   MenuItem : TmenuItem;
+Begin
+  MenuItem := TmenuItem(ToggleMenuItem.Items[Value]);
+  MenuItem.Checked := not(MenuItem.Checked);
+
+  if MenuItem.Checked then
+     Begin
+        FEditor.SetBookMark(Value,GetCurrentCursorXLine,GetCurrentCursorYLine);
+        MenuItem.Caption := MenuItem.Caption + '*';
+     end
+     else
+     begin
+     FEditor.ClearBookMark(Value);
+     MenuItem.Caption := copy(MenuItem.Caption,1,Length(MenuItem.Caption)-1);
+     end;
+
+
+End;
+
+Procedure TSourceEditor.BookMarkGoto(Value : Integer);
+Begin
+  FEditor.GotoBookMark(Value);
+End;
 
 Procedure TSourceEditor.OpenAtCursorClicked(Sender : TObject);
 var
@@ -369,8 +391,8 @@ Procedure TSourceEditor.CreateEditor(AOwner : TComponent; AParent: TWinControl);
 Begin
 if assigned(FEditor) then
    Begin
-   FSource.Assign(FEditor.Lines);
-   FEditor.Free;
+      FSource.Assign(FEditor.Lines);
+      FEditor.Free;
    end;
 
 FEditor := TmwCustomEdit.Create(FAOwner);
@@ -716,6 +738,34 @@ end;
                       { TSourceNotebook }
 
 constructor TSourceNotebook.Create(AOwner: TComponent);
+
+
+function LoadResource(ResourceName:string; PixMap:TPixMap):boolean;
+  var
+    ms:TMemoryStream;
+    res:LResource;
+  begin
+    Result:=false;
+    res:=LazarusResources.Find(ResourceName);
+    if (res.Value<>'') then begin
+      if res.ValueType='XPM' then begin
+        ms:=TMemoryStream.Create;
+        try
+          ms.Write(res.Value[1],length(res.Value));
+          ms.Position:=0;
+          PixMap.LoadFromStream(ms);
+          Result:=true;
+        finally
+          ms.Free;
+        end;
+      end;
+    end;
+  end;
+
+
+var
+Pixmap1 : TPixmap;
+I : Integer;
 begin
   inherited Create(AOwner);
   Caption := 'Lazarus Editor';
@@ -727,6 +777,27 @@ begin
   FSourceEditorList := TList.Create;
   FSaveDialog := TSaveDialog.Create(Self);
   FOpenDialog := TOpenDialog.Create(Self);
+
+  Writeln('Creating TImageList');
+  Bookmarks := TImageList.Create(AOwner);
+  Writeln('1');
+
+  //load 10 images
+  for I := 0 to 9 do
+  Begin
+  Pixmap1:=TPixMap.Create;
+  Pixmap1.TransparentColor:=clBtnFace;
+
+    if not LoadResource('bookmark'+inttostr(i),Pixmap1) then
+           LoadResource('default',Pixmap1);
+    Bookmarks.Add(Pixmap1,nil);
+  end;
+
+  Writeln('2');
+
+  Writeln('3');
+
+
 end;
 
 destructor TSourceNotebook.Destroy;
@@ -793,6 +864,8 @@ if Pagenum = -1 then //add a new page
   Result := TSourceEditor.Create(Self,Notebook1.Page[PageNum]);
   Notebook1.Pageindex := Pagenum;
   FSourceEditorList.Add(Result);
+  Writeln('Assigning bookmark images');
+  Result.Editor.BookmarkImages := Bookmarks;
 
 end;
 
@@ -924,6 +997,29 @@ Begin
    end;
 end;
 
+
+
+{This is called from outside to toggle a bookmark of the active TSourceEditor}
+Procedure TSourceNotebook.ToggleBookmark(Value : Integer);
+Begin
+   GetActiveSE.BookMarkToggle(Value);
+End;
+
+
+{This is called from outside to Goto a bookmark on the active TSourceEditor}
+Procedure TSourceNotebook.GoToBookmark(Value: Integer);
+Begin
+   GetActiveSE.BookMarkGoto(Value);
+End;
+
+
+
+
+
+
+
+
+
 Procedure TSourceNotebook.OpenFile(FileName: String);
 Var
     TempEditor : TSourceEditor;
@@ -1034,5 +1130,8 @@ Begin
         end;
 end;
 
+initialization
+
+{$I designer/bookmark.lrs}
 
 end.

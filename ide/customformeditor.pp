@@ -93,11 +93,13 @@ TCustomFormEditor
    FSelectedComponents : TComponentSelectionList;
    FObj_Inspector : TObjectInspector;
   protected
+    Procedure RemoveFromComponentInterfaceList(Value :TIComponentInterface);
   public
     constructor Create;
     destructor Destroy; override;
 
     Function AddSelected(Value : TComponent) : Integer;
+    Procedure DeleteControl(Value : TComponent);
     Function Filename : String; override;
     Function FormModified : Boolean; override;
     Function FindComponentByName(const Name : String) : TIComponentInterface; override;
@@ -448,8 +450,8 @@ end;
 
 Function TComponentInterface.Delete : Boolean;
 Begin
-  // XXX Todo:
-
+   Control.Destroy;
+   Destroy;
 end;
 
 
@@ -476,6 +478,21 @@ Begin
   // call the OI to update it's selected.
   writeln('[TCustomFormEditor.AddSelected] '+Value.Name);
   Obj_Inspector.Selections := FSelectedComponents;
+end;
+
+Procedure TCustomFormEditor.DeleteControl(Value : TComponent);
+var
+  Temp : TComponentInterface;
+Begin
+  Temp := TComponentInterface(FindComponent(Value));
+  if Temp <> nil then
+     begin
+       Writeln('1');
+       RemoveFromComponentInterfaceList(Temp);
+       Writeln('2');
+       Temp.Delete;
+       Writeln('3');
+     end;
 end;
 
 
@@ -650,6 +667,14 @@ Writeln('5');
 
   Result := Temp;
 end;
+
+Procedure TCustomFormEditor.RemoveFromComponentInterfaceList(Value :TIComponentInterface);
+Begin
+  if (FComponentInterfaceList.IndexOf(Value) <> -1) then
+      FComponentInterfaceList.Delete(FComponentInterfaceList.IndexOf(Value));
+
+end;
+
 
 Function TCustomFormEditor.GetFormComponent : TIComponentInterface;
 Begin

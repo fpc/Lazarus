@@ -4,7 +4,9 @@
 //  {$DEFINE ASSERT_IS_ON}
 {$ENDIF}
 
+var
 
+MCaptureHandle : LongInt;
 
 // temp solution to fill msgqueue
 function DeliverPostMessage(const Target: Pointer; var Message): GBoolean;
@@ -1107,6 +1109,12 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.14  2001/01/11 20:16:47  lazarus
+  Added some TImageList code.
+  Added a bookmark resource with 10 resource images.
+  Removed some of the IFDEF's in mwCustomEdit around the inherited code.
+  Shane
+
   Revision 1.13  2001/01/10 23:53:30  lazarus
   MWE:
     ~ minor change

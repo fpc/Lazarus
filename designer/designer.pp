@@ -129,8 +129,11 @@ Procedure TDesigner.RemoveControl(Control : TComponent);
 Begin
     Writeln('RemoveControl called');
     FSourceEditor.RemoveControlCode(Control);
-    FCustomForm.Remove(TCOntrol(Control));  //this send a message to notification and removes it from the controlselection
-    Control.Destroy;
+    Writeln('1');
+    FCustomForm.RemoveControl(TCOntrol(Control));  //this send a message to notification and removes it from the controlselection
+    Writeln('2');
+    FFormEditor.DeleteControl(Control);
+    Writeln('3');
 end;
 
 Procedure TDesigner.NudgeControl(Value1,Value2 : Integer);
@@ -399,6 +402,7 @@ end;
 Procedure TDesigner.KeyDown(Sender : TControl; Message:TLMKEY);
 var
   I : Integer;
+  Continue : Boolean;
 Begin
 Writeln('KEYDOWN');
 with MEssage do
@@ -418,15 +422,22 @@ if Message.CharCode = 17 then //CTRL
 else
 if Message.CharCode = 46 then //DEL KEY
    begin
+   Continue := True;
+   While Continue do
+    Begin
+    Continue := False;
     for  I := 0 to FCustomForm.ComponentCount-1 do
       Begin
         Writeln('I = '+inttostr(i));
         if (FCustomForm.Components[i] is TControl) and
            ControlSelection.IsSelected(TControl(FCustomForm.Components[i])) then
            Begin
+              Continue := True;
               RemoveControl(TControl(FCustomForm.Components[i]));
+              Break;
            end;
       end;
+      End;
      SelectOnlythisComponent(FCustomForm);
 
    end
