@@ -239,7 +239,7 @@ begin
     Flags := BorderStyleToWin32Flags(BorderStyle);
     FlagsEx := BorderStyleToWin32FlagsEx(BorderStyle);
     if (lForm.FormStyle in fsAllStayOnTop) and 
-        (not (csDesigning in lForm.ComponentState)) then
+        not (csDesigning in lForm.ComponentState) then
       FlagsEx := FlagsEx or WS_EX_TOPMOST;
     Flags := Flags or CalcBorderIconsFlags(lForm);
     pClassName := @ClsName;

@@ -1404,7 +1404,7 @@ begin
 
   if (Instance is TForm) then begin
     AForm:=TForm(Instance);
-    if (FMainForm = nil) and (AForm.FormStyle=fsNormal) then begin
+    if (FMainForm = nil) and not (AForm.FormStyle in [fsMDIChild, fsSplash]) then begin
       FMainForm := AForm;
       AForm.HandleNeeded;
     end else begin
@@ -1453,6 +1453,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.113  2005/03/31 20:07:44  micha
+  mainform may also be an MDI form, or a stay on top form (fixes bug 656)
+
   Revision 1.112  2005/03/26 11:24:55  micha
   remove TApplication.Handle (not cross-platform)
 
