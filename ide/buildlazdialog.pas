@@ -279,9 +279,9 @@ begin
         Tool.CmdLineParams:= 'OS_TARGET='+Options.TargetOS+' '
                              +Tool.CmdLineParams;
       if Options.BuildIDE=mmBuild then
-        Tool.CmdLineParams:=Tool.CmdLineParams+'ide'
+        Tool.CmdLineParams:='' + Tool.CmdLineParams+'ide'
       else
-        Tool.CmdLineParams:=Tool.CmdLineParams+'cleanide ide';
+        Tool.CmdLineParams:='' + Tool.CmdLineParams+'cleanide ide';
       Result:=ExternalTools.Run(Tool,Macros);
       if Result<>mrOk then exit;
     end;
