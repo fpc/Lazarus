@@ -638,7 +638,7 @@ type
   TCallStackEntry = class(TObject)
   private
     FIndex: Integer;
-    FAdress: Pointer;
+    FAdress: TDbgPtr;
     FFunctionName: String;
     FLine: Integer;
     FArguments: TStrings;
@@ -648,12 +648,12 @@ type
     function GetArgumentValue(const AnIndex: Integer): String;
   protected
   public
-    constructor Create(const AIndex:Integer; const AnAdress: Pointer;
+    constructor Create(const AIndex:Integer; const AnAdress: TDbgPtr;
                        const AnArguments: TStrings; const AFunctionName: String;
                        const ASource: String; const ALine: Integer);
     constructor CreateCopy(const ASource: TCallStackEntry);
     destructor Destroy; override;
-    property Adress: Pointer read FAdress;
+    property Adress: TDbgPtr read FAdress;
     property ArgumentCount: Integer read GetArgumentCount;
     property ArgumentNames[const AnIndex: Integer]: String read GetArgumentName;
     property ArgumentValues[const AnIndex: Integer]: String read GetArgumentValue;
@@ -2954,7 +2954,7 @@ end;
 { =========================================================================== }
 
 constructor TCallStackEntry.Create(const AIndex: Integer;
-  const AnAdress: Pointer; const AnArguments: TStrings;
+  const AnAdress: TDbgPtr; const AnArguments: TStrings;
   const AFunctionName: String; const ASource: String; const ALine: Integer);
 begin
   inherited Create;   
@@ -3055,9 +3055,9 @@ end;
 
 function TBaseCallStack.GetStackEntry(const AIndex: Integer): TCallStackEntry;
 var
-  idx: Integer;
+  idx: PtrInt;
 begin
-  idx := Integer(FEntryIndex[AIndex]);
+  idx := PtrInt(FEntryIndex[AIndex]);
   if idx = -1
   then begin
     // not created yet
@@ -3576,6 +3576,9 @@ finalization
 end.
 { =============================================================================
   $Log$
+  Revision 1.70  2005/03/17 00:09:36  marc
+  * 64bit patch (partial) from Peter Vreman
+
   Revision 1.69  2005/02/05 14:06:13  marc
   * Applied (modified) patch from Colin Western
 

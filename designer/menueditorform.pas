@@ -344,7 +344,7 @@ var
   Component: TComponent;
   AMenu: TMenu;
 begin
-  Component:=TComponent(GetOrdValue);
+  Component:=TComponent(GetPtrValue);
   if (Component=nil) or (not (Component is TMenuItem)) then exit;
   AMenu:=TMenuItem(Component).GetParentMenu;
   if AMenu=nil then exit;

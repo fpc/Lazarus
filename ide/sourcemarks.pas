@@ -361,7 +361,7 @@ end;
 
 function TSourceMark.Compare(OtherMark: TSourceMark): integer;
 begin
-  Result:=integer(fSynEdit)-integer(OtherMark.fSynEdit);
+  Result:=PtrInt(fSynEdit)-PtrInt(OtherMark.fSynEdit);
   if Result<>0 then exit;
   Result:=Line-OtherMark.Line;
   if Result<>0 then exit;
@@ -371,7 +371,7 @@ end;
 function TSourceMark.CompareEditorAndLine(ASynEdit: TCustomSynEdit;
   ALine: integer): integer;
 begin
-  Result:=integer(fSynEdit)-integer(ASynEdit);
+  Result:=PtrInt(fSynEdit)-PtrInt(ASynEdit);
   if Result<>0 then exit;
   Result:=Line-ALine;
 end;

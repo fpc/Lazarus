@@ -779,7 +779,7 @@ begin
     Result := GetClassName('^pointer(' + AExpression + ')^', AValues);
   end
   else begin
-    Result := GetClassName(Int64(GetData(AExpression, AValues)));
+    Result := GetClassName(GetData(AExpression, AValues));
   end;
 end;
 
@@ -2327,8 +2327,9 @@ end;
 
 function TGDBMICallStack.CreateStackEntry(const AIndex: Integer): TCallStackEntry;
 var                 
-  n: Integer;
+  n, e: Integer;
   S: String;
+  addr: TDbgPtr;
   Arguments, ArgList, List: TStrings;
 begin
   if Debugger = nil then Exit;
@@ -2363,10 +2364,12 @@ begin
   List := CreateMIValueList(S);   
   S := List.Values['frame'];
   FreeAndNil(List);
-  List := CreateMIValueList(S);   
+  List := CreateMIValueList(S);
+  addr := 0;
+  Val(List.Values['addr'], addr, e);
   Result := TCallStackEntry.Create(
     AIndex, 
-    Pointer(StrToIntDef(List.Values['addr'], 0)),
+    addr,
     Arguments,
     List.Values['func'],
     List.Values['file'],
@@ -2651,6 +2654,9 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.61  2005/03/17 00:09:36  marc
+  * 64bit patch (partial) from Peter Vreman
+
   Revision 1.60  2005/03/05 14:42:01  mattias
   Click events are now created after MouseUp  from C Western
 

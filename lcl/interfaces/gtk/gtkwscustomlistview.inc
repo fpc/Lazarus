@@ -578,7 +578,7 @@ begin
 
     lisSelected: begin 
       AIsSet := (CListWidget^.selection <> nil)
-            and (g_list_find(CListWidget^.selection, Pointer(Aindex)) <> nil);
+            and (g_list_find(CListWidget^.selection, Pointer(PtrInt(Aindex))) <> nil);
       Result := True;
     end;
   end;
@@ -965,7 +965,7 @@ begin
   if CListWidget=nil then exit;
   
   
-  if TLVHack(ALV).ViewStyle in [vsIcon, vsSmallIcon]
+  if {TLVHack}(ALV).ViewStyle in [vsIcon, vsSmallIcon]
   then begin
     // TODO: implement
   end

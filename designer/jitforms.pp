@@ -464,7 +464,7 @@ begin
   // read property count
   CurCount:=PWord(PropInfo)^;
   Result:=Result+' CurPropCnt='+IntToStr(CurCount);
-  inc(Longint(PropInfo),SizeOf(Word));
+  inc(PropInfo,SizeOf(Word));
 
   // read properties
   Result:=Result+' Properties={';
@@ -992,8 +992,8 @@ begin
   FillChar(NewVMT^,vmtSize,0);
 
   // set vmtInstanceSize
-  PInteger(NewVMT+vmtInstanceSize)^:=ParentClass.InstanceSize;
-  PInteger(NewVMT+vmtInstanceSizeNeg)^:=-ParentClass.InstanceSize;
+  PPtrInt(NewVMT+vmtInstanceSize)^:=ParentClass.InstanceSize;
+  PPtrInt(NewVMT+vmtInstanceSizeNeg)^:=-ParentClass.InstanceSize;
 
   // set vmtParent
   TClass(Pointer(NewVMT+vmtParent)^):=ParentClass;
@@ -1135,7 +1135,7 @@ begin
   {$R-}
   //for a:=0 to NewMethodTable^.Count-2 do
   //  writeln(a,'=',NewMethodTable^.Entries[a].Name^,' $'
-  //    ,DbgS(Integer(NewMethodTable^.Entries[a].Name),8));
+  //    ,DbgS(PtrInt(NewMethodTable^.Entries[a].Name),8));
   with NewMethodTable^.Entries[NewMethodTable^.Count-1] do begin
     GetMem(Name,256);
     Name^:=AName;
@@ -1143,7 +1143,7 @@ begin
   end;
   //for a:=0 to NewMethodTable^.Count-1 do
   //  writeln(a,'=',NewMethodTable^.Entries[a].Name^,' $'
-  //    ,DbgS(Integer(NewMethodTable^.Entries[a].Name),8));
+  //    ,DbgS(PtrInt(NewMethodTable^.Entries[a].Name),8));
   {$IFDEF RangeCheckOn}{$R+}{$ENDIF}
   PMethodNameTable((Pointer(JITClass)+vmtMethodTable)^):=NewMethodTable;
   if Assigned(OldMethodTable) then

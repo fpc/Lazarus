@@ -284,7 +284,7 @@ var
 begin
   CompIntf1:=TComponentInterface(Data1);
   CompIntf2:=TComponentInterface(Data2);
-  Result:=integer(CompIntf1.Component)-integer(CompIntf2.Component);
+  Result:=PtrInt(CompIntf1.Component)-PtrInt(CompIntf2.Component);
 end;
 
 function CompareComponentAndInterface(Key, Data: Pointer): integer;
@@ -294,7 +294,7 @@ var
 begin
   AComponent:=TComponent(Key);
   CompIntf:=TComponentInterface(Data);
-  Result:=integer(AComponent)-integer(CompIntf.Component);
+  Result:=PtrInt(AComponent)-PtrInt(CompIntf.Component);
 end;
 
 function CompareDefPropCacheItems(Item1, Item2: TDefinePropertiesCacheItem

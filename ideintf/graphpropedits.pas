@@ -353,7 +353,7 @@ var
   ABitmap: TBitmap;
   Ext : String;
 begin
-  ABitmap := TBitmap(GetOrdValue);
+  ABitmap := TBitmap(GetPtrValue);
   TheDialog := TGraphicPropertyEditorForm.Create(nil);
   try
     If (ABitmap <> nil) and not ABitmap.Empty then begin
@@ -387,7 +387,7 @@ begin
               Draw(0, 0, TheDialog.Preview.Picture.Graphic);
             end;
           end;
-          SetOrdValue(longint(ABitmap));
+          SetPtrValue(ABitmap);
           Modified;
         end;
       end
@@ -413,7 +413,7 @@ var
   TheDialog: TGraphicPropertyEditorForm;
   Picture : TPicture;
 begin
-  Picture := TPicture(GetOrdValue);
+  Picture := TPicture(GetPtrValue);
   TheDialog := TGraphicPropertyEditorForm.Create(nil);
   If (Picture.Graphic <> nil) and (Picture.Graphic is TBitmap) then begin
     TheDialog.Preview.Picture.Bitmap.Width := Picture.Width;
@@ -470,7 +470,7 @@ var
   end;
   
 begin
-  ABitmap := TBitmap(GetOrdValue);
+  ABitmap := TBitmap(GetPtrValue);
   TheDialog := TGraphicPropertyEditorForm.Create(nil);
   try
     If not ABitmap.Empty then begin
@@ -486,7 +486,7 @@ begin
       If TheDialog.Preview.Picture.Graphic <> nil then begin
         if TheDialog.Modified then begin
           LoadBitmap;
-          SetOrdValue(Longint(ABitmap));
+          SetPtrValue(ABitmap);
         end;
       end
       else begin
@@ -786,10 +786,10 @@ var FontDialog: TFontDialog;
 begin
   FontDialog := TFontDialog.Create(nil);
   try
-    FontDialog.Font := TFont(GetOrdValue);
+    FontDialog.Font := TFont(GetPtrValue);
     FontDialog.Options := FontDialog.Options + [fdShowHelp, fdForceFontExist];
     if FontDialog.Execute then
-      SetOrdValue(Longint(FontDialog.Font));
+      SetPtrValue(FontDialog.Font);
   finally
     FontDialog.Free;
   end;

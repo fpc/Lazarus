@@ -455,6 +455,9 @@ type
     Msg: Cardinal;
     CharCode: Word;
     Unused: Word;
+{$ifdef cpu64}    
+    Unused2 : Longint;
+{$endif cpu64}    
     KeyData: PtrInt;
     Result: LRESULT;
   end;
@@ -502,6 +505,9 @@ type
     Msg: Cardinal;
     Active: WordBool;
     Minimized: WordBool;
+{$ifdef cpu64}    
+    Unused : Longint;
+{$endif cpu64}    
     ActiveWindow: HWND;
     Result: LRESULT;
   end;
@@ -509,6 +515,9 @@ type
   TLMNCActivate = record
     Msg: Cardinal;
     Active: LongBool;
+{$ifdef cpu64}    
+    Unused2 : Longint;
+{$endif cpu64}    
     Unused: LPARAM;
     Result: LRESULT;
   end;
@@ -584,8 +593,11 @@ type
   TLMNCCalcSize = record
     Msg: Cardinal;
     CalcValidRects: LongBool;
+{$ifdef cpu64}    
+    Unused : Longint;
+{$endif cpu64}    
     CalcSize_Params: PNCCalcSizeParams;
-    Result: Longint;
+    Result: LResult;
   end;
 
   TLMSysColorChange = TLMNoParams;
@@ -609,6 +621,9 @@ type
     Msg: Cardinal;
     CharCode: Word;
     Unused: Word;
+{$ifdef cpu64}    
+    Unused2 : Longint;
+{$endif cpu64}    
     KeyData: LPARAM;
     Result: LRESULT;
   end;
@@ -617,6 +632,10 @@ type
   TLMSystemError = record
     Msg: Cardinal;
     ErrSpec: Word;
+    Unused1 : Word;
+{$ifdef cpu64}    
+    Unused2 : Longint;
+{$endif cpu64}    
     Unused: LPARAM;
     Result: LRESULT;
   end;
@@ -695,6 +714,9 @@ type
     SizeType: PtrInt; // see LCLType.pp (e.g. Size_Restored)
     Width: Word;
     Height: Word;
+{$ifdef cpu64}    
+    Unused : Longint;
+{$endif cpu64}    
     Result: LResult;
   End;
 {$else}
@@ -737,6 +759,9 @@ type
     Msg: Cardinal;
     ScrollCode: SmallInt; // SB_xxx
     Pos: SmallInt;
+{$ifdef cpu64}    
+    Unused : Longint;
+{$endif cpu64}    
     ScrollBar: HWND;
     Result: LRESULT;
   end;
@@ -753,6 +778,9 @@ type
   TLMShowWindow = record
     Msg: Cardinal;
     Show: LongBool;
+{$ifdef cpu64}    
+    Unused : Longint;
+{$endif cpu64}    
     Status: LPARAM;
     Result: LRESULT;
   end;
@@ -786,6 +814,9 @@ type
     Msg: Cardinal;
     ItemID: Word;
     NotifyCode: Word;
+{$ifdef cpu64}    
+    Unused : Longint;
+{$endif cpu64}    
     Ctl: HWND;
     Result: LRESULT;
   end;
@@ -905,6 +936,9 @@ end.
 
 {
   $Log$
+  Revision 1.128  2005/03/17 00:09:37  marc
+  * 64bit patch (partial) from Peter Vreman
+
   Revision 1.127  2005/03/11 14:40:37  mattias
   moved CM_ message constants from crontrols.pp to lmessages.pp to break circles and clean up controls.pp
 

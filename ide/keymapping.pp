@@ -407,7 +407,7 @@ end;
 
 function EditorKeyStringToVKCode(const s: string): word;
 var
-  i: integer;
+  i: PtrInt;
   Data: Pointer;
 begin
   Result:=VK_UNKNOWN;

@@ -149,7 +149,7 @@ end;
 
 procedure TDebuggerOptionsForm.FetchDebuggerClass;
 var
-  n: Integer;
+  n: PtrInt;
   AClass: TDebuggerClass;
   S: String;
 begin
@@ -211,13 +211,13 @@ end;
 
 function TDebuggerOptionsForm.GetDebuggerClass: TDebuggerClass;
 var
-  idx: Integer;
+  idx: PtrInt;
 begin
   Result := nil;
 
   idx := cmbDebuggerType.ItemIndex;
   if idx = -1 then Exit;
-  idx := Integer(cmbDebuggerType.Items.Objects[idx]);
+  idx := PtrInt(cmbDebuggerType.Items.Objects[idx]);
 
   if idx = -1 then Exit;
   Result := DebugBoss.Debuggers[idx];

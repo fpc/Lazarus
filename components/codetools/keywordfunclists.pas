@@ -586,7 +586,7 @@ begin
   if i>=0 then begin
     i:=FBucketStart[i];
     if i>=0 then begin
-      KeyWordEnd:=PChar(integer(Start)+Len-1);
+      KeyWordEnd:=PChar(Pointer(Start)+Len-1);
       repeat
         KeyWordFuncItem:=@FItems[i];
         if length(KeyWordFuncItem^.KeyWord)=Len then begin

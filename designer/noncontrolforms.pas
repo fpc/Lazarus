@@ -75,7 +75,7 @@ var
 begin
   Form1:=TNonFormDesignerForm(Data1);
   Form2:=TNonFormDesignerForm(Data2);
-  Result:=integer(Form1.LookupRoot)-integer(Form2.LookupRoot);
+  Result:=PtrInt(Form1.LookupRoot)-PtrInt(Form2.LookupRoot);
 end;
 
 function CompareLookupRootAndNonControlForm(Key, Data: Pointer): integer;
@@ -85,7 +85,7 @@ var
 begin
   LookupRoot:=TComponent(Key);
   Form:=TNonFormDesignerForm(Data);
-  Result:=integer(LookupRoot)-integer(Form.LookupRoot);
+  Result:=PtrInt(LookupRoot)-PtrInt(Form.LookupRoot);
 end;
 
 { TNonFormDesignerForm }

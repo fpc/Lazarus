@@ -321,6 +321,8 @@ type
     function GetMethodValueAt(Index: Integer): TMethod;
     function GetOrdValue: Longint;
     function GetOrdValueAt(Index: Integer): Longint;
+    function GetPtrValue: Pointer;
+    function GetPtrValueAt(Index: Integer): Pointer;
     function GetObjectValue: TObject;
     function GetObjectValueAt(Index: Integer): TObject;
     function GetDefaultOrdValue: Longint;
@@ -342,6 +344,7 @@ type
     procedure SetMethodValue(const NewValue: TMethod);
     procedure SetInt64Value(const NewValue: Int64);
     procedure SetOrdValue(const NewValue: Longint);
+    procedure SetPtrValue(const NewValue: Pointer);
     procedure SetStrValue(const NewValue: AnsiString);
     procedure SetVarValue(const NewValue: Variant);
     procedure Modified;
@@ -2350,6 +2353,16 @@ begin
   with FPropList^[Index] do Result:=GetOrdProp(Instance,PropInfo);
 end;
 
+function TPropertyEditor.GetPtrValue:Pointer;
+begin
+  Result:=GetPtrValueAt(0);
+end;
+
+function TPropertyEditor.GetPtrValueAt(Index:Integer):Pointer;
+begin
+  with FPropList^[Index] do Result:=Pointer(GetOrdProp(Instance,PropInfo));
+end;
+
 function TPropertyEditor.GetObjectValue: TObject;
 begin
   Result:=GetObjectValueAt(0);
@@ -2534,6 +2547,22 @@ begin
   if Changed then begin
     for I:=0 to FPropCount-1 do
       with FPropList^[I] do SetOrdProp(Instance,PropInfo,NewValue);
+    Modified;
+  end;
+end;
+
+procedure TPropertyEditor.SetPtrValue(const NewValue:Pointer);
+var
+  I:Integer;
+  Changed: boolean;
+begin
+  Changed:=false;
+  for I:=0 to FPropCount-1 do
+    with FPropList^[I] do
+      Changed:=Changed or (GetOrdProp(Instance,PropInfo)<>PtrInt(NewValue));
+  if Changed then begin
+    for I:=0 to FPropCount-1 do
+      with FPropList^[I] do SetOrdProp(Instance,PropInfo,PtrInt(NewValue));
     Modified;
   end;
 end;
