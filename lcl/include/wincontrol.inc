@@ -2996,7 +2996,7 @@ begin
     Constraints.UpdateInterfaceConstraints;
     FFlags:=FFlags-[wcfColorChanged,wcfFontChanged];
     if not HandleAllocated then
-      RaiseGDBException('Handle creation failed');
+      RaiseGDBException('Handle creation failed creating '+CS_To_String(FCompStyle));
   finally
     FCreatingHandle := False;
   end;
@@ -3484,6 +3484,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.223  2004/04/28 06:50:21  micha
+  more detailed error message req. by ML
+
   Revision 1.222  2004/04/26 10:01:27  mattias
   fixed TSynEdit.RealGetText
 
