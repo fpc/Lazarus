@@ -130,6 +130,7 @@ type
     function KeyWordFuncConst: boolean;
     function KeyWordFuncResourceString: boolean;
     function KeyWordFuncLabel: boolean;
+    function KeyWordFuncGlobalProperty: boolean;
     // types
     function KeyWordFuncClass: boolean;
     function KeyWordFuncClassInterface: boolean;
@@ -308,36 +309,37 @@ procedure TPascalParserTool.BuildDefaultKeyWordFunctions;
 begin
   inherited BuildDefaultKeyWordFunctions;
   with KeyWordFuncList do begin
-    Add('PROGRAM',{$ifdef FPC}@{$endif}KeyWordFuncSection);
-    Add('LIBRARY',{$ifdef FPC}@{$endif}KeyWordFuncSection);
-    Add('PACKAGE',{$ifdef FPC}@{$endif}KeyWordFuncSection);
-    Add('UNIT',{$ifdef FPC}@{$endif}KeyWordFuncSection);
-    Add('INTERFACE',{$ifdef FPC}@{$endif}KeyWordFuncSection);
-    Add('IMPLEMENTATION',{$ifdef FPC}@{$endif}KeyWordFuncSection);
-    Add('INITIALIZATION',{$ifdef FPC}@{$endif}KeyWordFuncSection);
-    Add('FINALIZATION',{$ifdef FPC}@{$endif}KeyWordFuncSection);
+    Add('PROGRAM',@KeyWordFuncSection);
+    Add('LIBRARY',@KeyWordFuncSection);
+    Add('PACKAGE',@KeyWordFuncSection);
+    Add('UNIT',@KeyWordFuncSection);
+    Add('INTERFACE',@KeyWordFuncSection);
+    Add('IMPLEMENTATION',@KeyWordFuncSection);
+    Add('INITIALIZATION',@KeyWordFuncSection);
+    Add('FINALIZATION',@KeyWordFuncSection);
 
-    Add('END',{$ifdef FPC}@{$endif}KeyWordFuncEndPoint);
-    Add('.',{$ifdef FPC}@{$endif}KeyWordFuncEndPoint);
+    Add('END',@KeyWordFuncEndPoint);
+    Add('.',@KeyWordFuncEndPoint);
 
-    Add('TYPE',{$ifdef FPC}@{$endif}KeyWordFuncType);
-    Add('VAR',{$ifdef FPC}@{$endif}KeyWordFuncVar);
-    Add('THREADVAR',{$ifdef FPC}@{$endif}KeyWordFuncVar);
-    Add('CONST',{$ifdef FPC}@{$endif}KeyWordFuncConst);
-    Add('RESOURCESTRING',{$ifdef FPC}@{$endif}KeyWordFuncResourceString);
-    Add('LABEL',{$ifdef FPC}@{$endif}KeyWordFuncLabel);
+    Add('TYPE',@KeyWordFuncType);
+    Add('VAR',@KeyWordFuncVar);
+    Add('THREADVAR',@KeyWordFuncVar);
+    Add('CONST',@KeyWordFuncConst);
+    Add('RESOURCESTRING',@KeyWordFuncResourceString);
+    Add('LABEL',@KeyWordFuncLabel);
+    Add('PROPERTY',@KeyWordFuncGlobalProperty);
 
-    Add('PROCEDURE',{$ifdef FPC}@{$endif}KeyWordFuncProc);
-    Add('FUNCTION',{$ifdef FPC}@{$endif}KeyWordFuncProc);
-    Add('CONSTRUCTOR',{$ifdef FPC}@{$endif}KeyWordFuncProc);
-    Add('DESTRUCTOR',{$ifdef FPC}@{$endif}KeyWordFuncProc);
-    Add('OPERATOR',{$ifdef FPC}@{$endif}KeyWordFuncProc);
-    Add('CLASS',{$ifdef FPC}@{$endif}KeyWordFuncProc);
+    Add('PROCEDURE',@KeyWordFuncProc);
+    Add('FUNCTION',@KeyWordFuncProc);
+    Add('CONSTRUCTOR',@KeyWordFuncProc);
+    Add('DESTRUCTOR',@KeyWordFuncProc);
+    Add('OPERATOR',@KeyWordFuncProc);
+    Add('CLASS',@KeyWordFuncProc);
 
-    Add('BEGIN',{$ifdef FPC}@{$endif}KeyWordFuncBeginEnd);
-    Add('ASM',{$ifdef FPC}@{$endif}KeyWordFuncBeginEnd);
+    Add('BEGIN',@KeyWordFuncBeginEnd);
+    Add('ASM',@KeyWordFuncBeginEnd);
     
-    DefaultKeyWordFunction:={$ifdef FPC}@{$endif}EndOfSourceExpected;
+    DefaultKeyWordFunction:=@EndOfSourceExpected;
   end;
 end;
 
@@ -345,22 +347,22 @@ procedure TPascalParserTool.BuildTypeKeyWordFunctions;
 // KeyWordFunctions for parsing types
 begin
   with TypeKeyWordFuncList do begin
-    Add('CLASS',{$ifdef FPC}@{$endif}KeyWordFuncClass);
-    Add('OBJECT',{$ifdef FPC}@{$endif}KeyWordFuncClass);
-    Add('INTERFACE',{$ifdef FPC}@{$endif}KeyWordFuncClassInterface);
-    Add('DISPINTERFACE',{$ifdef FPC}@{$endif}KeyWordFuncClassInterface);
-    Add('PACKED',{$ifdef FPC}@{$endif}KeyWordFuncTypePacked);
-    Add('ARRAY',{$ifdef FPC}@{$endif}KeyWordFuncTypeArray);
-    Add('PROCEDURE',{$ifdef FPC}@{$endif}KeyWordFuncTypeProc);
-    Add('FUNCTION',{$ifdef FPC}@{$endif}KeyWordFuncTypeProc);
-    Add('SET',{$ifdef FPC}@{$endif}KeyWordFuncTypeSet);
-    Add('LABEL',{$ifdef FPC}@{$endif}KeyWordFuncTypeLabel);
-    Add('TYPE',{$ifdef FPC}@{$endif}KeyWordFuncTypeType);
-    Add('FILE',{$ifdef FPC}@{$endif}KeyWordFuncTypeFile);
-    Add('RECORD',{$ifdef FPC}@{$endif}KeyWordFuncTypeRecord);
-    Add('^',{$ifdef FPC}@{$endif}KeyWordFuncTypePointer);
+    Add('CLASS',@KeyWordFuncClass);
+    Add('OBJECT',@KeyWordFuncClass);
+    Add('INTERFACE',@KeyWordFuncClassInterface);
+    Add('DISPINTERFACE',@KeyWordFuncClassInterface);
+    Add('PACKED',@KeyWordFuncTypePacked);
+    Add('ARRAY',@KeyWordFuncTypeArray);
+    Add('PROCEDURE',@KeyWordFuncTypeProc);
+    Add('FUNCTION',@KeyWordFuncTypeProc);
+    Add('SET',@KeyWordFuncTypeSet);
+    Add('LABEL',@KeyWordFuncTypeLabel);
+    Add('TYPE',@KeyWordFuncTypeType);
+    Add('FILE',@KeyWordFuncTypeFile);
+    Add('RECORD',@KeyWordFuncTypeRecord);
+    Add('^',@KeyWordFuncTypePointer);
     
-    DefaultKeyWordFunction:={$ifdef FPC}@{$endif}KeyWordFuncTypeDefault;
+    DefaultKeyWordFunction:=@KeyWordFuncTypeDefault;
   end;
 end;
 
@@ -368,23 +370,23 @@ procedure TPascalParserTool.BuildInnerClassKeyWordFunctions;
 // KeyWordFunctions for parsing in a class/object
 begin
   with InnerClassKeyWordFuncList do begin
-    Add('PUBLIC',{$ifdef FPC}@{$endif}KeyWordFuncClassSection);
-    Add('PRIVATE',{$ifdef FPC}@{$endif}KeyWordFuncClassSection);
-    Add('PUBLISHED',{$ifdef FPC}@{$endif}KeyWordFuncClassSection);
-    Add('PROTECTED',{$ifdef FPC}@{$endif}KeyWordFuncClassSection);
+    Add('PUBLIC',@KeyWordFuncClassSection);
+    Add('PRIVATE',@KeyWordFuncClassSection);
+    Add('PUBLISHED',@KeyWordFuncClassSection);
+    Add('PROTECTED',@KeyWordFuncClassSection);
 
-    Add('PROCEDURE',{$ifdef FPC}@{$endif}KeyWordFuncClassMethod);
-    Add('FUNCTION',{$ifdef FPC}@{$endif}KeyWordFuncClassMethod);
-    Add('CONSTRUCTOR',{$ifdef FPC}@{$endif}KeyWordFuncClassMethod);
-    Add('DESTRUCTOR',{$ifdef FPC}@{$endif}KeyWordFuncClassMethod);
-    Add('CLASS',{$ifdef FPC}@{$endif}KeyWordFuncClassMethod);
-    Add('STATIC',{$ifdef FPC}@{$endif}KeyWordFuncClassMethod);
+    Add('PROCEDURE',@KeyWordFuncClassMethod);
+    Add('FUNCTION',@KeyWordFuncClassMethod);
+    Add('CONSTRUCTOR',@KeyWordFuncClassMethod);
+    Add('DESTRUCTOR',@KeyWordFuncClassMethod);
+    Add('CLASS',@KeyWordFuncClassMethod);
+    Add('STATIC',@KeyWordFuncClassMethod);
 
-    Add('PROPERTY',{$ifdef FPC}@{$endif}KeyWordFuncClassProperty);
+    Add('PROPERTY',@KeyWordFuncClassProperty);
     
-    Add('END',{$ifdef FPC}@{$endif}AllwaysFalse);
+    Add('END',@AllwaysFalse);
 
-    DefaultKeyWordFunction:={$ifdef FPC}@{$endif}KeyWordFuncClassIdentifier;
+    DefaultKeyWordFunction:=@KeyWordFuncClassIdentifier;
   end;
 end;
 
@@ -392,16 +394,16 @@ procedure TPascalParserTool.BuildClassVarTypeKeyWordFunctions;
 // KeywordFunctions for parsing the type of a variable in a class/object
 begin
   with ClassVarTypeKeyWordFuncList do begin
-    Add('CLASS',{$ifdef FPC}@{$endif}KeyWordFuncClassVarTypeClass);
-    Add('OBJECT',{$ifdef FPC}@{$endif}KeyWordFuncClassVarTypeClass);
-    Add('PACKED',{$ifdef FPC}@{$endif}KeyWordFuncClassVarTypePacked);
-    Add('RECORD',{$ifdef FPC}@{$endif}KeyWordFuncClassVarTypeRecord);
-    Add('ARRAY',{$ifdef FPC}@{$endif}KeyWordFuncClassVarTypeArray);
-    Add('SET',{$ifdef FPC}@{$endif}KeyWordFuncClassVarTypeSet);
-    Add('PROCEDURE',{$ifdef FPC}@{$endif}KeyWordFuncClassVarTypeProc);
-    Add('FUNCTION',{$ifdef FPC}@{$endif}KeyWordFuncClassVarTypeProc);
+    Add('CLASS',@KeyWordFuncClassVarTypeClass);
+    Add('OBJECT',@KeyWordFuncClassVarTypeClass);
+    Add('PACKED',@KeyWordFuncClassVarTypePacked);
+    Add('RECORD',@KeyWordFuncClassVarTypeRecord);
+    Add('ARRAY',@KeyWordFuncClassVarTypeArray);
+    Add('SET',@KeyWordFuncClassVarTypeSet);
+    Add('PROCEDURE',@KeyWordFuncClassVarTypeProc);
+    Add('FUNCTION',@KeyWordFuncClassVarTypeProc);
 
-    DefaultKeyWordFunction:={$ifdef FPC}@{$endif}KeyWordFuncClassVarTypeIdent;
+    DefaultKeyWordFunction:=@KeyWordFuncClassVarTypeIdent;
   end;
 end;
 
@@ -409,12 +411,12 @@ procedure TPascalParserTool.BuildClassInterfaceKeyWordFunctions;
 // KeyWordFunctions for parsing in a class interface, dispinterface
 begin
   with ClassInterfaceKeyWordFuncList do begin
-    Add('PROCEDURE',{$ifdef FPC}@{$endif}KeyWordFuncClassMethod);
-    Add('FUNCTION',{$ifdef FPC}@{$endif}KeyWordFuncClassMethod);
-    Add('PROPERTY',{$ifdef FPC}@{$endif}KeyWordFuncClassProperty);
-    Add('END',{$ifdef FPC}@{$endif}AllwaysFalse);
+    Add('PROCEDURE',@KeyWordFuncClassMethod);
+    Add('FUNCTION',@KeyWordFuncClassMethod);
+    Add('PROPERTY',@KeyWordFuncClassProperty);
+    Add('END',@AllwaysFalse);
 
-    DefaultKeyWordFunction:={$ifdef FPC}@{$endif}AllwaysFalse;
+    DefaultKeyWordFunction:=@AllwaysFalse;
   end;
 end;
 
@@ -2521,6 +2523,32 @@ begin
       RaiseCharExpectedButAtomFound(';');
     end;
   until false;
+  CurNode.EndPos:=CurPos.EndPos;
+  EndChildNode;
+  Result:=true;
+end;
+
+function TPascalParserTool.KeyWordFuncGlobalProperty: boolean;
+{
+  examples:
+   property errno : cint read fpgeterrno write fpseterrno;
+}
+begin
+  // create class method node
+  CreateChildNode;
+  CurNode.Desc:=ctnProperty;
+  // read property Name
+  ReadNextAtom;
+  AtomIsIdentifier(true);
+  ReadNextAtom;
+  if CurPos.Flag=cafEdgedBracketOpen then begin
+    // read parameter list
+    ReadTilBracketClose(true);
+    ReadNextAtom;
+  end;
+  while (CurPos.StartPos<=SrcLen) and (CurPos.Flag<>cafSemicolon) do
+    ReadNextAtom;
+  // close property
   CurNode.EndPos:=CurPos.EndPos;
   EndChildNode;
   Result:=true;
