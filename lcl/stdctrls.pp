@@ -819,6 +819,7 @@ type
     FAlignment: TAlignment;
     FBorderStyle: TStaticBorderStyle;
     FShowAccelChar: Boolean;
+    Procedure FontChange(Sender : TObject);
   protected
     Procedure DoAutoSize; Override;
     Procedure CMTextChanged(var Message: TLMSetText); message CM_TEXTCHANGED;
@@ -868,7 +869,7 @@ Function DeleteAmpersands(var Str : String) : Longint;
 
 implementation
 
-uses LCLLinux, Interfaces;
+uses LCLLinux, Interfaces, Math, GraphicsMath;
 
 
 type
@@ -1462,6 +1463,7 @@ end;
 constructor TCustomStaticText.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  Font.OnChange := @FontChange;
   ControlStyle := [csSetCaption, csOpaque, csClickEvents, csDoubleClicks, csReplicatable];
   Width := 65;
   Height := 17;
@@ -1508,11 +1510,20 @@ begin
   end;
 end;
 
+Procedure TCustomStaticText.FontChange(Sender : TObject);
+begin
+  If Caption > '' then
+    Invalidate;
+end;
+
 end.
 
 { =============================================================================
 
   $Log$
+  Revision 1.55  2002/10/18 16:08:09  lazarus
+  AJ: Partial HintWindow Fix; Added Screen.Font & Font.Name PropEditor; Started to fix ComboBox DropDown size/pos
+
   Revision 1.54  2002/10/14 14:29:50  lazarus
   AJ: Improvements to TUpDown; Added TStaticText & GNOME DrawText
 

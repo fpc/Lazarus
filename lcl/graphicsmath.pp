@@ -124,6 +124,9 @@ Operator / (Dividend : TPoint; Divisor : TFloatPoint) : TFloatPoint;
 Operator = (Compare1, Compare2  : TPoint) : Boolean;
 Operator = (Compare1, Compare2  : TFloatPoint) : Boolean;
 
+Operator := (Value : TFloatPoint) : TPoint;
+Operator := (Value : TPoint) : TFloatPoint;
+
 Operator = (Compare1, Compare2  : TRect) : Boolean;
 
 implementation
@@ -268,6 +271,22 @@ end;
 Operator = (Compare1, Compare2  : TFloatPoint) : Boolean;
 begin
   Result := (Compare1.X = Compare2.X) and (Compare1.Y = Compare2.Y);
+end;
+
+Operator := (Value : TFloatPoint) : TPoint;
+begin
+  With Result do begin
+    X := Round(Value.X);
+    Y := Round(Value.Y);
+  end;
+end;
+
+Operator := (Value : TPoint) : TFloatPoint;
+begin
+  With Result do begin
+    X := Value.X;
+    Y := Value.Y;
+  end;
 end;
 
 Operator = (Compare1, Compare2  : TRect) : Boolean;
@@ -1061,6 +1080,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.8  2002/10/18 16:08:09  lazarus
+  AJ: Partial HintWindow Fix; Added Screen.Font & Font.Name PropEditor; Started to fix ComboBox DropDown size/pos
+
   Revision 1.7  2002/09/27 20:52:21  lazarus
   MWE: Applied patch from "Andrew Johnson" <aj_genius@hotmail.com>
 

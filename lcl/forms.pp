@@ -398,6 +398,9 @@ type
     FHintFont : TFont;
     FPixelsPerInch : integer;
     FSaveFocusedList: TList;
+    FFonts : TStrings;
+
+    function GetFonts : TStrings;
     function GetFormCount: Integer;
     function GetForms(IIndex: Integer): TForm;
     function GetHeight : Integer;
@@ -409,6 +412,7 @@ type
     destructor Destroy; Override;
     property FormCount: Integer read GetFormCount;
     property Forms[Index: Integer]: TForm read GetForms;
+    property Fonts : TStrings read GetFonts;
     property PixelsPerInch : integer read FPixelsPerInch;
     property HintFont : TFont read FHintFont;
     property Height : Integer read Getheight;

@@ -26,6 +26,8 @@
 constructor TScreen.Create(AOwner : TComponent);
 begin
   inherited Create(AOwner);
+  FFonts := TStringlist.Create;
+  TStringlist(FFonts).Sorted := True;
   FFormList := TList.Create;
   FPixelsPerInch:= ScreenInfo.PixelsPerInchX;
   FHintFont := TFont.Create;
@@ -52,6 +54,8 @@ begin
   FFormList:=nil;
   FSaveFocusedList.Free;
   FSaveFocusedList:=nil;
+  FFonts.Free;
+  FFonts := nil;
   inherited Destroy;
 end;
 {
@@ -62,6 +66,10 @@ end;
 
 }
 
+function TScreen.GetFonts : TStrings;
+begin
+  Result := FFonts;
+end;
 
 {------------------------------------------------------------------------------
   Function: TScreen.AddForm
