@@ -2909,8 +2909,13 @@ begin
 end;
 
 function TListPropertyEditor.ReadElement(Index: integer): TPersistent;
+var
+  obj: TObject;
 begin
-  Result:=TPersistent(TList(GetOrdValue).Items[Index]);
+  obj := TObject(TList(GetOrdValue).Items[Index]);
+  if obj is TPersistent
+  then Result:=TPersistent(obj)
+  else raise EInvalidOperation.CreateFmt('List element %d is not a TPersistent decendant', [Index]);
 end;
 
 function TListPropertyEditor.CreateElementPropEditor(Index: integer
