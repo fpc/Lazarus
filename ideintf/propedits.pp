@@ -285,16 +285,13 @@ type
 
   TPropertyEditor=class
   private
-    FComponents: TPersistentSelectionList;
     FOnSubPropertiesChanged: TNotifyEvent;
     FPropertyHook: TPropertyEditorHook;
     FPropCount: Integer;
     FPropList: PInstPropList;
     function GetPrivateDirectory: ansistring;
   public
-    constructor Create(Hook:TPropertyEditorHook;
-                       APersistentList: TPersistentSelectionList;
-                       APropCount:Integer); virtual;
+    constructor Create(Hook:TPropertyEditorHook; APropCount:Integer); virtual;
     destructor Destroy; override;
     procedure Activate; virtual;
     procedure Deactivate; virtual;
@@ -365,7 +362,6 @@ type
     property FirstValue:ansistring read GetValue write SetValue;
     property OnSubPropertiesChanged: TNotifyEvent
       read FOnSubPropertiesChanged write FOnSubPropertiesChanged;
-    property ComponentList: TPersistentSelectionList read FComponents;
   end;
 
   TPropertyEditorClass=class of TPropertyEditor;
@@ -862,8 +858,7 @@ type
     procedure SetElementValue(Element: TListElementPropertyEditor;
       NewValue: ansistring); virtual;
   public
-    constructor Create(Hook:TPropertyEditorHook;
-      APersistentList: TPersistentSelectionList;  APropCount:Integer); override;
+    constructor Create(Hook:TPropertyEditorHook; APropCount:Integer); override;
     destructor Destroy; override;
     function GetAttributes: TPropertyAttributes; override;
     function GetElementCount: integer;
@@ -1863,7 +1858,7 @@ begin
       end;
 
       // create a test property editor for the property
-      PropEditor := EdClass.Create(AHook,ASelection,1);
+      PropEditor := EdClass.Create(AHook,1);
       PropEditor.SetPropEntry(0, Instance, PropInfo);
       PropEditor.Initialize;
 //      with PropInfo^ do begin
@@ -1900,7 +1895,7 @@ begin
       begin
         EdClass := GetEditorClass(Candidates[I], Instance);
         if EdClass = nil then Continue;
-        PropEditor := EdClass.Create(AHook, ASelection, SelCount);
+        PropEditor := EdClass.Create(AHook, SelCount);
         AddEditor := True;
         for J := 0 to SelCount - 1 do
         begin
@@ -1960,12 +1955,11 @@ end;
 { TPropertyEditor }
 
 constructor TPropertyEditor.Create(Hook: TPropertyEditorHook;
-  APersistentList: TPersistentSelectionList; APropCount:Integer);
+  APropCount:Integer);
 var
   PropListSize: Integer;
 begin
   FPropertyHook:=Hook;
-  FComponents:=APersistentList;
   PropListSize:=APropCount * SizeOf(TInstProp);
   GetMem(FPropList,PropListSize);
   FillChar(FPropList^,PropListSize,0);
@@ -3038,7 +3032,6 @@ constructor TNestedPropertyEditor.Create(Parent: TPropertyEditor);
 begin
   FParentEditor:=Parent;
   FPropertyHook:=Parent.PropertyHook;
-  FComponents:=Parent.FComponents;
   FPropList:=Parent.FPropList;
   FPropCount:=Parent.PropCount;
 end;
@@ -3371,9 +3364,9 @@ begin
 end;
 
 constructor TListPropertyEditor.Create(Hook: TPropertyEditorHook;
-  APersistentList: TPersistentSelectionList; APropCount: Integer);
+  APropCount: Integer);
 begin
-  inherited Create(Hook, APersistentList, APropCount);
+  inherited Create(Hook, APropCount);
   SavedElements:=TList.Create;
   SavedPropertyEditors:=TList.Create;
 end;
@@ -6116,7 +6109,7 @@ begin
     PersistentList:=TPersistentSelectionList.Create;
     PersistentList.Add(AComponent);
     Hook:=GlobalDesignHook;
-    MethodPropEditor:=TMethodPropertyEditor.Create(Hook,PersistentList,1);
+    MethodPropEditor:=TMethodPropertyEditor.Create(Hook,1);
     MethodPropEditor.SetPropEntry(0, AComponent, PropInfo);
     MethodPropEditor.Initialize;
     MethodPropEditor.Edit;
