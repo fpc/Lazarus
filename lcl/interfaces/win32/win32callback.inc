@@ -56,6 +56,7 @@ Var
   C: Cardinal;
   List: TMsgArray;
   LMessage: TLMessage;
+  R: TRect;
   OwnerObject: TObject;
   WinProcess: Boolean;
 Begin
@@ -300,12 +301,14 @@ Begin
     End;
     WM_MOVE:
     Begin
+      Windows.GetWindowRect(Window, @R);
       With TLMMove(LMessage) Do
       Begin
         Msg := LM_MOVE;
-        MoveType := WParam;
-        XPos := Lo(LParam);
-        YPos := Hi(LParam);
+        // MoveType := WParam;   WParam is not defined!
+        MoveType := 0;
+        XPos := R.Left;
+        YPos := R.Top;
       End;
     End;
     //TODO:LM_MOVEPAGE,LM_MOVETOROW,LM_MOVETOCOLUMN
@@ -382,12 +385,13 @@ Begin
     End;
     WM_SIZE:
     Begin
+      Windows.GetWindowRect(Window, @R);
       With TLMSize(LMessage) Do
       Begin
         Msg := LM_SIZE;
         SizeType := WParam;
-        Width := Lo(LParam);
-        Height := Hi(LParam);
+        Width := R.Right - R.Left;
+        Height := R.Bottom - R.Top;
       End;
     End;
     WM_SYSKEYDOWN:
@@ -464,6 +468,9 @@ End;
 
 {
   $Log$
+  Revision 1.15  2002/08/28 17:28:11  lazarus
+  Keith: Win32 fixes.  Much appreciation to Markus Lüdin.
+
   Revision 1.14  2002/08/13 07:08:25  lazarus
   MG: added gdkpixbuf.pp and changes from Andrew Johnson
 
