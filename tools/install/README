@@ -1,40 +1,96 @@
 Installation tools
 ==================
 
-1. creating the fpcsrc tgz:
+This document describes how to create the various packages for lazarus
+including freepascal packages.
+
+--------------------------------------------------------------------------------
+TGZ
+
+Creating the fpcsrc tgz:
 
   The script create_fpc_snapshot_tgz.sh makes a cvs export of the
   fpc FIXES_1_0_0 branch and compress it to fpcsrc-1.0.7.tgz.
-  
-  
-2. creating the fpcsrc rpm:
+
+
+Creating the lazarus tgz:
+
+  The script create_lazarus_snapshot_tgz.sh makes a cvs export of lazarus and
+  compress it to lazarus-0.8.5.tgz.
+
+--------------------------------------------------------------------------------
+
+RPM:
+
+Creating the fpc rpm:
+
+  Install the latest fpc package you can get. You will need it to compile the
+  compiler itself. Then download the fpc cvs of the FIXES_1_0_0 branch and
+  compile the RTL and the compiler with 'make rtl' and 'make compiler'.
+  The RPMs (fpc and fpcdoc) can be created with 'make rpm'. If you just want to
+  create the fpc rpm, then use 'make rpm NODOCS=1'. The lazarus rpm uses a
+  special release tag by changing the release line in install/fpc.spec.
+
+
+Creating the fpcsrc rpm:
 
   As root:
-  Put the fpcsrc-1.0.7.tgz of step 1. into /usr/src/redhat/SOURCES/ and
-  run 'rpm -ba fpcsrc-1.0.7-1.spec'. This will create the src rpm and the
-  rpm for the current system (e.g. redhat 7.3). The src rpm can be used to
-  create rpms for any system by building it on the destination system.
+  Create the fpcsrc-1.0.7.tgz of 'Creating the fpcsrc tgz' and put it into
+  /usr/src/redhat/SOURCES/. Then run 'rpm -ba fpcsrc-1.0.7-1.spec'. This will
+  create the src rpm and the rpm for the current system (e.g. redhat 7.3).
+  The src rpm can be used to create rpms for any system by building it on the
+  destination system.
   The fpcsrc rpm will simply copy the files into /usr/share/fpcsrc. It does
   not contain any binaries, so all rpms are system independent. The lazarus
   IDE searches the fpc src automatically in /usr/share/fpcsrc and so the user
   does not need to setup this path.
   
   
-3. creating the lazarus tgz:
-
-  The script create_lazarus_snapshot_tgz.sh makes a cvs export of lazarus and
-  compress it to lazarus-0.8.5.tgz.
-
-
-4. creating the lazarus rpm:
+Creating the lazarus rpm:
 
   As root:
-  Put the lazarus-0.8.5.tgz of step 3. into /usr/src/redhat/SOURCES/ and
-  run 'rpm -ba lazarus-0.8.5-1.spec'. This will create the src rpm and the
-  rpm for the current system (e.g. redhat 7.3). The src rpm can be used to
-  create rpms for any system by building it on the destination system (see 5.).
+  Create the lazarus-0.8.5.tgz of 'Creating the lazarus tgz' and put it into
+  /usr/src/redhat/SOURCES/. Then run 'rpm -ba lazarus-0.8.5-1.spec'. This will
+  create the src rpm and the rpm for the current system (e.g. redhat 7.3).
+  The src rpm can be used to create rpms for any system by building it on the
+  destination system (see 5.).
   The package depends on 'fpc >= 1.0.7' and 'fpcsrc >= 1.0.7'.
 
 
-5. To create other system specific rpms:
+Creating other system specific rpms:
+
   rpm --rebuild lazarus-0.8.5-1.src.rpm
+
+
+--------------------------------------------------------------------------------
+
+Debian:
+
+Creating the debian fpc packages:
+
+  You need the debhelper, tetex-bin, tetex-extra, awk, dvipdfm, latex2html
+  packages.
+  See install/debian/README.debian for changing /etc/texmf/texmf.cnf.
+  Install the latest fpc package you can get. You will need it to compile the
+  compiler itself. Then download the fpc cvs of the FIXES_1_0_0 branch and
+  compile the RTL and the compiler with 'make rtl' and 'make compiler'.
+  The deb packages are created with 'make deb'. This will create a lot of debs
+  in /usr/src. The lazarus debs are created by changing the version in
+  Makefile.fpc, Makefile and prepending a message to install/debian/changelog.
+
+
+Creating the debian fpcsrc package:
+
+  You need the fakeroot package.
+  Create the fpcsrc-1.0.7.tgz of 'Creating the fpcsrc tgz' and put it into
+  tools/install. If you have no permissions for that, just copy the directory
+  somwhere (e.g. cp -R <lazarusdir>/tools/install /tmp/fpcsrc).
+  The cd into the tools/install directory and executed the script
+  create_fpcsrc_deb.sh. It will create /tmp/fpcsrc_temp/ and and will build the
+  deb there.
+  
+  
+Creating the debian lazarus package:
+
+  ToDo ...
+  

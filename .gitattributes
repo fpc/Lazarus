@@ -814,6 +814,7 @@ tools/install/create_fpc_export_tgz.sh -text svneol=native#application/x-sh
 tools/install/create_fpc_rpm.sh -text svneol=native#application/x-sh
 tools/install/create_fpc_snapshot_tgz.sh -text svneol=native#application/x-sh
 tools/install/create_fpcsrc-1.1_rpm.sh -text svneol=native#application/x-sh
+tools/install/create_fpcsrc_deb.sh -text svneol=native#application/x-sh
 tools/install/create_lazarus_snapshot_tgz.sh -text svneol=native#application/x-sh
 tools/install/create_lazarus_tgz_from_local_dir.sh -text svneol=native#application/x-sh
 tools/lazarusmake.ini svneol=native#text/plain
