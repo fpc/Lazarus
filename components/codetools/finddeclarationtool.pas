@@ -27,6 +27,7 @@
 
   ToDo:
     - many things, search for 'ToDo'
+    - Param with edged brackets: Filenames[]
     - @ operator
         + Func -> FuncResult Type
            OR in Delphi  -> Func type

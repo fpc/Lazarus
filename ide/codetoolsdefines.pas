@@ -37,7 +37,7 @@ uses
   Classes, SysUtils, LCLLinux, Forms, Controls, Buttons, StdCtrls, ComCtrls,
   ExtCtrls, Menus, LResources, Graphics, Dialogs, ImgList, SynEdit, XMLCfg,
   DefineTemplates, CodeToolManager, CodeToolsOptions, CodeToolsDefPreview,
-  InputFileDialog;
+  TransferMacros, InputFileDialog;
 
 type
   TCodeToolsDefinesEditor = class(TForm)
@@ -105,10 +105,13 @@ type
 
     // templates
     InsertTemplateMenuItem: TMenuItem;
+    InsertFPCProjectDefinesTemplateMenuItem: TMenuItem;
+    InsertFPCompilerDefinesTemplateMenuItem: TMenuItem;
+    InsertFPCSourceDirTemplateMenuItem: TMenuItem;
+    InsertLazarusSourceTemplateMenuItem: TMenuItem;
     InsertDelphi5CompilerDefinesTemplateMenuItem: TMenuItem;
     InsertDelphi5DirectoryTemplateMenuItem: TMenuItem;
     InsertDelphi5ProjectTemplateMenuItem: TMenuItem;
-    
 
     // define tree
     DefineTreeView: TTreeView;
@@ -165,6 +168,10 @@ type
     procedure OpenPreviewMenuItemClick(Sender: TObject);
     
     // template menu
+    procedure InsertFPCProjectDefinesTemplateMenuItemClick(Sender: TObject);
+    procedure InsertFPCompilerDefinesTemplateMenuItemClick(Sender: TObject);
+    procedure InsertFPCSourceDirDefinesTemplateMenuItemClick(Sender: TObject);
+    procedure InsertLazarusSourceDefinesTemplateMenuItemClick(Sender: TObject);
     procedure InsertDelphi5CompilerDefinesTemplateMenuItemClick(Sender: TObject);
     procedure InsertDelphi5DirectoryTemplateMenuItemClick(Sender: TObject);
     procedure InsertDelphi5ProjectTemplateMenuItemClick(Sender: TObject);
@@ -172,12 +179,14 @@ type
     FDefineTree: TDefineTree;
     FLastSelectedNode: TTreeNode;
     FBoss: TCodeToolManager;
+    FTransferMacros: TTransferMacroList;
     procedure CreateComponents;
     function CreateSeperator : TMenuItem;
     procedure RebuildDefineTreeView;
     procedure AddDefineNodes(ANode: TDefineTemplate; AParent: TTreeNode;
       WithChilds,WithNextSiblings: boolean);
     procedure SetNodeImages(ANode: TTreeNode; WithSubNodes: boolean);
+    procedure SetTransferMacros(const AValue: TTransferMacroList);
     procedure ValueAsPathToValueAsText;
     procedure SaveSelectedValues;
     procedure ShowSelectedValues;
@@ -195,10 +204,12 @@ type
     destructor Destroy; override;
     property DefineTree: TDefineTree read FDefineTree;
     property Boss: TCodeToolManager read FBoss write FBoss;
+    property Macros: TTransferMacroList
+      read FTransferMacros write SetTransferMacros;
   end;
 
 function ShowCodeToolsDefinesEditor(ACodeToolBoss: TCodeToolManager;
-  Options: TCodeToolsOptions): TModalResult;
+  Options: TCodeToolsOptions; Macros: TTransferMacroList): TModalResult;
 function SaveGlobalCodeToolsDefines(ACodeToolBoss: TCodeToolManager;
   Options: TCodeToolsOptions): TModalResult;
 function SaveProjectSpecificCodeToolsDefines(ACodeToolBoss: TCodeToolManager;
@@ -329,11 +340,12 @@ begin
 end;
 
 function ShowCodeToolsDefinesEditor(ACodeToolBoss: TCodeToolManager;
-  Options: TCodeToolsOptions): TModalResult;
+  Options: TCodeToolsOptions; Macros: TTransferMacroList): TModalResult;
 var CodeToolsDefinesEditor: TCodeToolsDefinesEditor;
 begin
   CodeToolsDefinesEditor:=TCodeToolsDefinesEditor.Create(Application);
   CodeToolsDefinesEditor.Assign(ACodeToolBoss,Options);
+  CodeToolsDefinesEditor.Macros:=Macros;
   Result:=CodeToolsDefinesEditor.ShowModal;
   if Result=mrOk then begin
     if not CodeToolsDefinesEditor.DefineTree.IsEqual(ACodeToolBoss.DefineTree)
@@ -363,9 +375,9 @@ procedure TCodeToolsDefinesEditor.FormResize(Sender: TObject);
 var MaxX, MaxY, SelGrpBoxTop, SelItemMaxX, SelItemMaxY,
   ValNoteBookMaxX, ValNoteBookMaxY: integer;
 begin
-  MaxX:=ClientWidth-2;
-  MaxY:=ClientHeight-2;
-  SelGrpBoxTop:=MaxY-300;
+  MaxX:=ClientWidth;
+  MaxY:=ClientHeight;
+  SelGrpBoxTop:=MaxY-310;
 
   // define tree ---------------------------------------------------------------
   with DefineTreeView do begin
@@ -394,9 +406,19 @@ begin
     Top:=TypeLabel.Top+TypeLabel.Height+5;
     Width:=SelItemMaxX-2*Left;
   end;
-  with DescriptionLabel do begin
+  with NameLabel do begin
     Left:=ProjectSpecificCheckBox.Left;
-    Top:=ProjectSpecificCheckBox.Top+ProjectSpecificCheckBox.Height+5;
+    Top:=ProjectSpecificCheckBox.Top+ProjectSpecificCheckBox.Height+7;
+    Width:=70;
+  end;
+  with NameEdit do begin
+    Left:=NameLabel.Left+NameLabel.Width+5;
+    Top:=NameLabel.Top;
+    Width:=SelItemMaxX-Left-5;
+  end;
+  with DescriptionLabel do begin
+    Left:=NameLabel.Left;
+    Top:=NameLabel.Top+NameLabel.Height+7;
     Width:=70;
   end;
   with DescriptionEdit do begin
@@ -404,19 +426,9 @@ begin
     Top:=DescriptionLabel.Top;
     Width:=SelItemMaxX-Left-5;
   end;
-  with NameLabel do begin
-    Left:=DescriptionLabel.Left;
-    Top:=DescriptionLabel.Top+DescriptionLabel.Height+5;
-    Width:=70;
-  end;
-  with NameEdit do begin
-    Left:=NameLabel.Left+NameLabel.Width+5;
-    Top:=NameLabel.Top;
-    Width:=150;
-  end;
   with VariableLabel do begin
-    Left:=NameEdit.Left+NameEdit.Width+30;
-    Top:=NameLabel.Top;
+    Left:=DescriptionLabel.Left;
+    Top:=DescriptionLabel.Top+DescriptionLabel.Height+7;
     Width:=70;
   end;
   with VariableEdit do begin
@@ -709,6 +721,229 @@ begin
   BringWindowToTop(DefinePreview.Handle);
 end;
 
+procedure TCodeToolsDefinesEditor.InsertFPCProjectDefinesTemplateMenuItemClick(
+  Sender: TObject);
+var InputFileDlg: TInputFileDialog;
+  UnitSearchPath, UnitLinkList, DefaultFPCSrcDir, DefaultCompiler,
+  CompilerPath, FPCSrcDIr: string;
+  DirTemplate, FPCTemplate, FPCSrcTemplate: TDefineTemplate;
+begin
+  InputFileDlg:=GetInputFileDialog;
+  InputFileDlg.Macros:=Macros;
+  with InputFileDlg do begin
+  
+    DefaultFPCSrcDir:='$(FPCSrcDir)';
+    DefaultCompiler:='$(CompPath)';
+    UnitSearchPath:='';
+    UnitLinkList:='';
+    
+    BeginUpdate;
+    Caption:='Create FPC Macros and paths for a fpc project directory';
+
+    FileCount:=3;
+
+    FileTitles[0]:='Project directory';
+    FileDescs[0]:='The Free Pascal project directory.';
+    FileNames[0]:='';
+    FileFlags[0]:=[iftDirectory,iftNotEmpty,iftMustExist];
+
+    FileTitles[1]:='compiler path';
+    FileDescs[1]:='The path to the free pascal compiler for this project.'#13
+                  +'Only required if you set the FPC CVS source below.'#13
+                  +'Used to autocreate macros.';
+    FileNames[1]:=DefaultCompiler;
+    FileFlags[1]:=[iftFilename];
+
+    FileTitles[2]:='FPC CVS source directory';
+    FileDescs[2]:='The Free Pascal CVS source directory.'#13
+                  +'Not required. This will improve find declaration'#13
+                  +'and debugging.';
+    FileNames[2]:=DefaultFPCSrcDir;
+    FileFlags[2]:=[iftDirectory];
+
+    EndUpdate;
+    if ShowModal=mrCancel then exit;
+
+    // ask the compiler for Macros
+    CompilerPath:=FileNames[1];
+    if Macros<>nil then Macros.SubstituteStr(CompilerPath);
+    writeln('  CompilerPath="',CompilerPath,'"');
+    if (CompilerPath<>'') and (CompilerPath<>DefaultCompiler) then
+      FPCTemplate:=Boss.DefinePool.CreateFPCTemplate(CompilerPath,
+                                                     UnitSearchPath)
+    else
+      FPCTemplate:=nil;
+
+    // create path defines
+    FPCSrcDir:=FileNames[2];
+    if Macros<>nil then Macros.SubstituteStr(FPCSrcDir);
+    writeln('  FPCSrcDir="',FPCSrcDir,'"');
+    if (FPCSrcDir<>'') and (FPCSrcDir<>DefaultFPCSrcDir)
+    and (UnitSearchPath<>'') then
+      FPCSrcTemplate:=Boss.DefinePool.CreateFPCSrcTemplate(FPCSrcDir,
+                                                  UnitSearchPath, UnitLinkList)
+    else
+      FPCSrcTemplate:=nil;
+
+    // create directory defines
+    DirTemplate:=TDefineTemplate.Create('FPC Project ('+FileNames[0]+')',
+       'Free Pascal Project Directory','',FileNames[0],da_Directory);
+       
+    if (DefaultFPCSrcDir=Filenames[2]) and (DefaultCompiler=Filenames[1]) then
+    begin
+      // a normal fpc project -> nothing special needed
+      FPCTemplate.Free;
+      FPCSrcTemplate.Free;
+    end else begin
+      // a special fpc project -> create a world of its own
+      DirTemplate.AddChild(TDefineTemplate.Create('Reset All',
+         'Reset all values','','',da_UndefineAll));
+      if FPCTemplate<>nil then
+        DirTemplate.AddChild(FPCTemplate);
+      if UnitLinkList<>'' then begin
+        DirTemplate.AddChild(TDefineTemplate.Create('FPC Unit Links',
+          'Source filenames for standard FPC units',
+          ExternalMacroStart+'UnitLinks',UnitLinkList,da_DefineRecurse));
+      end;
+      FPCSrcTemplate.Free;
+    end;
+
+    InsertTemplate(DirTemplate);
+  end;
+end;
+
+procedure TCodeToolsDefinesEditor.InsertFPCompilerDefinesTemplateMenuItemClick(
+  Sender: TObject);
+var InputFileDlg: TInputFileDialog;
+  s, CompilerPath, DefaultCompiler: string;
+  FPCTemplate: TDefineTemplate;
+begin
+  InputFileDlg:=GetInputFileDialog;
+  InputFileDlg.Macros:=Macros;
+  with InputFileDlg do begin
+    DefaultCompiler:='$(CompPath)';
+    
+    BeginUpdate;
+    Caption:='Create Defines for Free Pascal Compiler';
+    FileCount:=1;
+
+    FileTitles[0]:='compiler path';
+    FileDescs[0]:='The path to the free pascal compiler.'#13
+           +'For example /usr/bin/ppc386 or /usr/local/bin/fpc.';
+    FileNames[0]:=DefaultCompiler;
+    FileFlags[0]:=[iftFilename,iftNotEmpty,iftMustExist];
+
+    EndUpdate;
+    if ShowModal=mrCancel then exit;
+    
+    CompilerPath:=FileNames[0];
+    if Macros<>nil then Macros.SubstituteStr(CompilerPath);
+    writeln('  CompilerPath="',CompilerPath,'"');
+    
+    FPCTemplate:=Boss.DefinePool.CreateFPCTemplate(CompilerPath,s);
+    if FPCTemplate=nil then exit;
+    FPCTemplate.Name:='Free Pascal Compiler ('+CompilerPath+')';
+    InsertTemplate(FPCTemplate);
+  end;
+end;
+
+procedure TCodeToolsDefinesEditor.InsertFPCSourceDirDefinesTemplateMenuItemClick
+  (Sender: TObject);
+var InputFileDlg: TInputFileDialog;
+  UnitSearchPath, UnitLinks, DefaultCompiler, CompilerPath, FPCSrcDir: string;
+  ResetAllTemplate, FPCSrcTemplate, FPCSrcDirTemplate,
+  FPCTemplate: TDefineTemplate;
+begin
+  InputFileDlg:=GetInputFileDialog;
+  InputFileDlg.Macros:=Macros;
+  with InputFileDlg do begin
+    DefaultCompiler:='$(CompPath)';
+    UnitSearchPath:='';
+
+    BeginUpdate;
+    Caption:='Create Defines for Free Pascal CVS Sources';
+    FileCount:=2;
+
+    FileTitles[0]:='FPC CVS source directory';
+    FileDescs[0]:='The Free Pascal CVS source directory.';
+    FileNames[0]:='~/fpc_sources/1.1/fpc';
+    FileFlags[0]:=[iftDirectory,iftNotEmpty,iftMustExist];
+
+    FileTitles[1]:='compiler path';
+    FileDescs[1]:='The path to the free pascal compiler for this source.'#13
+                  +'Used to autocreate macros.';
+    FileNames[1]:=DefaultCompiler;
+    FileFlags[1]:=[iftFilename];
+
+    EndUpdate;
+    if ShowModal=mrCancel then exit;
+    
+    // ask the compiler for Macros
+    CompilerPath:=FileNames[1];
+    if Macros<>nil then Macros.SubstituteStr(CompilerPath);
+    writeln('  CompilerPath="',CompilerPath,'"');
+
+    FPCTemplate:=Boss.DefinePool.CreateFPCTemplate(CompilerPath,UnitSearchPath);
+    if FPCTemplate=nil then begin
+      writeln('ERROR: unable to get FPC Compiler Macros from "',CompilerPath,'"');
+      exit;
+    end;
+      
+    // create FPC CVS Source defines
+    FPCSrcDir:=FileNames[0];
+    if Macros<>nil then Macros.SubstituteStr(FPCSrcDir);
+    writeln('  FPCSrcDir="',FPCSrcDir,'"');
+    UnitSearchPath:='';
+    FPCSrcTemplate:=Boss.DefinePool.CreateFPCSrcTemplate(FPCSrcDir,
+                                           UnitSearchPath, UnitLinks);
+    if FPCSrcTemplate=nil then begin
+      writeln('ERROR: unable to create FPC CVS Src defines for "',FPCSrcDir,'"');
+      FPCTemplate.Free;
+      exit;
+    end;
+
+    // create directory defines
+    FPCSrcDirTemplate:=FPCSrcTemplate.FirstChild.Next;
+    FPCSrcDirTemplate.UnBind;
+    FPCSrcTemplate.Free;
+    FPCSrcDirTemplate.Name:='FPC CVS Sources ('+FileNames[0]+')';
+    ResetAllTemplate:=TDefineTemplate.Create('Reset All','Reset all values',
+                  '','',da_UndefineAll);
+    ResetAllTemplate.InsertInFront(FPCSrcDirTemplate.FirstChild);
+    FPCTemplate.InsertBehind(ResetAllTemplate);
+
+    InsertTemplate(FPCSrcDirTemplate);
+  end;
+end;
+
+procedure TCodeToolsDefinesEditor.InsertLazarusSourceDefinesTemplateMenuItemClick
+  (Sender: TObject);
+var
+  InputFileDlg: TInputFileDialog;
+  LazTemplate: TDefineTemplate;
+begin
+  InputFileDlg:=GetInputFileDialog;
+  InputFileDlg.Macros:=Macros;
+  with InputFileDlg do begin
+    BeginUpdate;
+    Caption:='Create Defines for Lazarus Directory';
+    FileCount:=1;
+
+    FileTitles[0]:='Lazarus Directory';
+    FileDescs[0]:='The Lazarus main directory.';
+    FileNames[0]:=ExpandFilename(ExtractFilePath(ParamStr(0)));
+    FileFlags[0]:=[iftDirectory,iftNotEmpty,iftMustExist];
+
+    EndUpdate;
+    if ShowModal=mrCancel then exit;
+    LazTemplate:=Boss.DefinePool.CreateLazarusSrcTemplate(FileNames[0],
+                                     '$('+ExternalMacroStart+'LCLWidgetType)');
+    if LazTemplate=nil then exit;
+    LazTemplate.Name:='Lazarus Directory ('+FileNames[0]+')';
+    InsertTemplate(LazTemplate);
+  end;
+end;
+
 procedure TCodeToolsDefinesEditor.InsertDelphi5CompilerDefinesTemplateMenuItemClick
   (Sender: TObject);
 begin
@@ -718,8 +953,10 @@ end;
 procedure TCodeToolsDefinesEditor.InsertDelphi5DirectoryTemplateMenuItemClick(
   Sender: TObject);
 var InputFileDlg: TInputFileDialog;
+  DirTemplate: TDefineTemplate;
 begin
   InputFileDlg:=GetInputFileDialog;
+  InputFileDlg.Macros:=Macros;
   with InputFileDlg do begin
     BeginUpdate;
     Caption:='Create Defines for Delphi5 Directory';
@@ -730,20 +967,25 @@ begin
           +'where Borland has installed all Delphi5 sources.'#13
           +'For example: C:/Programme/Borland/Delphi5';
     FileNames[0]:=SetDirSeparators('C:/Programme/Borland/Delphi5');
-    FileFlags[0]:=[iftDirectory,iftNotEmpty];
+    FileFlags[0]:=[iftDirectory,iftNotEmpty,iftMustExist];
     
     EndUpdate;
     if ShowModal=mrCancel then exit;
-    InsertTemplate(Boss.DefinePool.CreateDelphi5DirectoryTemplate(
-                     FileNames[0]));
+    DirTemplate:=Boss.DefinePool.CreateDelphi5DirectoryTemplate(FileNames[0]);
+    if DirTemplate=nil then exit;
+    DirTemplate.Name:='Delphi5 ('+FileNames[0]+')';
+    InsertTemplate(DirTemplate);
   end;
 end;
 
 procedure TCodeToolsDefinesEditor.InsertDelphi5ProjectTemplateMenuItemClick(
   Sender: TObject);
-var InputFileDlg: TInputFileDialog;
+var
+  InputFileDlg: TInputFileDialog;
+  ProjTemplate: TDefineTemplate;
 begin
   InputFileDlg:=GetInputFileDialog;
+  InputFileDlg.Macros:=Macros;
   with InputFileDlg do begin
     BeginUpdate;
     Caption:='Create Defines for Delphi5 Project';
@@ -754,20 +996,23 @@ begin
     FileDescs[0]:='The Delphi5 project directory,'#13
           +'which contains the .dpr, dpk file.';
     FileNames[0]:=SetDirSeparators('C:/Programme/Borland/Delphi5/YourProject');
-    FileFlags[0]:=[iftDirectory,iftNotEmpty];
+    FileFlags[0]:=[iftDirectory,iftNotEmpty,iftMustExist];
     
     FileTitles[1]:='Delphi5 directory';
     FileDescs[1]:='The Delphi5 main directory,'#13
           +'where Borland has installed all Delphi5 sources,'#13
-          +'which are used by the Delphi5 project.'#13
+          +'which are used by this Delphi5 project.'#13
           +'For example: C:/Programme/Borland/Delphi5';
     FileNames[1]:=SetDirSeparators('C:/Programme/Borland/Delphi5');
-    FileFlags[1]:=[iftDirectory,iftNotEmpty];
+    FileFlags[1]:=[iftDirectory,iftNotEmpty,iftMustExist];
 
     EndUpdate;
     if ShowModal=mrCancel then exit;
-    InsertTemplate(Boss.DefinePool.CreateDelphi5ProjectTemplate(FileNames[0],
-                                                                Filenames[1]));
+    ProjTemplate:=Boss.DefinePool.CreateDelphi5ProjectTemplate(FileNames[0],
+                                                               FileNames[1]);
+    if ProjTemplate=nil then exit;
+    ProjTemplate.Name:='Delphi5 Project ('+FileNames[0]+')';
+    InsertTemplate(ProjTemplate);
   end;
 end;
 
@@ -1037,9 +1282,39 @@ begin
   AddMenuItem(InsertTemplateMenuItem,'InsertTemplateMenuItem',
               'Insert Template',nil);
               
+  AddMenuItem(InsertFPCProjectDefinesTemplateMenuItem,
+              'InsertFPCProjectDefinesTemplateMenuItem',
+              'Insert Free Pascal Project Template',
+              InsertTemplateMenuItem);
+  InsertFPCProjectDefinesTemplateMenuItem.OnClick:=
+              @InsertFPCProjectDefinesTemplateMenuItemClick;
+
+  AddMenuItem(InsertFPCompilerDefinesTemplateMenuItem,
+              'InsertFPCompilerDefinesTemplateMenuItem',
+              'Insert Free Pascal Compiler Template',
+              InsertTemplateMenuItem);
+  InsertFPCompilerDefinesTemplateMenuItem.OnClick:=
+              @InsertFPCompilerDefinesTemplateMenuItemClick;
+              
+  AddMenuItem(InsertFPCSourceDirTemplateMenuItem,
+              'InsertFPCSourceDirTemplateMenuItem',
+              'Insert Free Pascal CVS Source Template',
+              InsertTemplateMenuItem);
+  InsertFPCSourceDirTemplateMenuItem.OnClick:=
+              @InsertFPCSourceDirDefinesTemplateMenuItemClick;
+              
+  InsertTemplateMenuItem.Add(CreateSeperator);
+  AddMenuItem(InsertLazarusSourceTemplateMenuItem,
+              'InsertLazarusSourceTemplateMenuItem',
+              'Insert Lazarus Directory Template',
+              InsertTemplateMenuItem);
+  InsertLazarusSourceTemplateMenuItem.OnClick:=
+              @InsertLazarusSourceDefinesTemplateMenuItemClick;
+
+  InsertTemplateMenuItem.Add(CreateSeperator);
   AddMenuItem(InsertDelphi5CompilerDefinesTemplateMenuItem,
               'InsertDelphi5CompilerDefinesTemplateMenuItem',
-              'Insert Delphi 5 Compiler Defines Template',
+              'Insert Delphi 5 Compiler Template',
               InsertTemplateMenuItem);
   InsertDelphi5CompilerDefinesTemplateMenuItem.OnClick:=
               @InsertDelphi5CompilerDefinesTemplateMenuItemClick;
@@ -1213,6 +1488,12 @@ begin
       ANode:=ANode.GetNextSibling;
     end;
   end;
+end;
+
+procedure TCodeToolsDefinesEditor.SetTransferMacros(
+  const AValue: TTransferMacroList);
+begin
+  FTransferMacros:=AValue;
 end;
 
 procedure TCodeToolsDefinesEditor.ValueAsPathToValueAsText;
@@ -1443,6 +1724,7 @@ var
 begin
   SaveSelectedValues;
   if NewTemplate=nil then exit;
+  NewTemplate.RemoveFlags([dtfAutoGenerated]);
   FLastSelectedNode:=nil;
   SelTreeNode:=DefineTreeView.Selected;
   if SelTreeNode<>nil then begin
@@ -1574,7 +1856,7 @@ constructor TCodeToolsDefinesEditor.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   if LazarusResources.Find(ClassName)=nil then begin
-    SetBounds((Screen.Width-480) div 2,(Screen.Height-430) div 2, 485, 435);
+    SetBounds((Screen.Width-500) div 2,(Screen.Height-460) div 2, 500, 460);
     Caption:='CodeTools Defines Editor';
     OnResize:=@FormResize;
     

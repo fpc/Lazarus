@@ -19,7 +19,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Dialogs, Buttons, StdCtrls, IDEProcs,
-  LResources;
+  LResources, TransferMacros;
 
 type
   TInputFileFlag = (iftDirectory, iftFilename, iftNotEmpty, iftMustExist);
@@ -44,6 +44,7 @@ type
     FInputDescs: TStringList;
     FInputEdits: TList;  // list of TEdit
     FInputFileDlgButtons: TList; // list of TButton
+    FTransferMacros: TTransferMacroList;
     FUpdateCount: integer;
     FForceUpdate: boolean;
     function GetFileDescriptions(Index: integer): string;
@@ -55,6 +56,7 @@ type
     procedure SetFileTitles(Index: integer; const AValue: string);
     procedure SetFileFlags(Index: integer; const AValue: TInputFileFlags);
     procedure SetFilenames(Index: integer; const AValue: string);
+    procedure SetTransferMacros(const AValue: TTransferMacroList);
     function UpdateNeeded: boolean;
     function GetInputEdit(Index: integer): TEdit;
     function GetInputFileDlgButton(Index: integer): TButton;
@@ -90,6 +92,8 @@ type
       read GetFileDescriptions write SetFileDescriptions;
     property FileFlags[Index: integer]: TInputFileFlags
       read GetFileFlags write SetFileFlags;
+    property Macros: TTransferMacroList
+      read FTransferMacros write SetTransferMacros;
   end;
 
 function GetInputFileDialog: TInputFileDialog;
@@ -118,7 +122,7 @@ var i: integer;
 begin
   for i:=0 to FileCount-1 do begin
     CurEdit:=GetInputEdit(i);
-    CurEdit.Text:=SetDirSeparators(CurEdit.Text);
+    CurEdit.Text:=CurEdit.Text;
     if not FilenameIsValidForFileIndex(CurEdit.Text,i) then begin
       if MessageDlg('Invalid file',
         'The file "'+CurEdit.Text+'"'#13
@@ -236,6 +240,11 @@ begin
   Update;
 end;
 
+procedure TInputFileDialog.SetTransferMacros(const AValue: TTransferMacroList);
+begin
+  FTransferMacros:=AValue;
+end;
+
 procedure TInputFileDialog.Update;
 begin
   if (FUpdateCount<>0) or (not UpdateNeeded) then exit;
@@ -250,7 +259,10 @@ begin
   Result:=false;
   CurFileFlags:=FileFlags[Index];
   if (iftNotEmpty in CurFileFlags) and (Filename='') then exit;
-  if (iftMustExist in CurFileFlags) then begin
+  if (iftMustExist in CurFileFlags) and (Filename<>'') then begin
+    if FTransferMacros<>nil then
+      Macros.SubstituteStr(Filename);
+    Filename:=ExpandFileName(Filename);
     if (not (iftDirectory in CurFileFlags)) and DirectoryExists(Filename)
     then
       exit;
@@ -404,24 +416,35 @@ var
 begin
   LabelsAsText:=TStringList.Create;
   // add new TLabels
-  while FInputLabels.Count<FFileCount do begin
-    ListIndex:=FInputLabels.Count;
+  for ListIndex:=0 to FFileCount-1 do begin
     // create TLabel list
-    NewLabelList:=TList.Create;
+    if FInputLabels.Count<=ListIndex then begin
+      NewLabelList:=TList.Create;
+      FInputLabels.Add(NewLabelList);
+    end else
+      NewLabelList:=GetLabelList(ListIndex);
     LabelsAsText.Text:=FFileDescs[ListIndex];
     // create one TLabel for every line
     for i:=0 to LabelsAsText.Count-1 do begin
-      NewLabel:=TLabel.Create(Self);
+      // create TLabel
+      if NewLabelList.Count<=i then begin
+        NewLabel:=TLabel.Create(Self);
+        NewLabelList.Add(NewLabel);
+      end else
+        NewLabel:=GetLabel(ListIndex,i);
       with NewLabel do begin
-        Name:='NewLabel'+IntToStr(FInputLabels.Count)+'_'+IntToStr(i);
+        Name:='NewLabel'+IntToStr(ListIndex)+'_'+IntToStr(i);
         Parent:=GetGroupBox(ListIndex);
         Visible:=true;
       end;
-      NewLabelList.Add(NewLabel);
     end;
-    FInputLabels.Add(NewLabelList);
+    // remove unused TLabels
+    while NewLabelList.Count>LabelsAsText.Count do begin
+      GetLabel(ListIndex,NewLabelList.Count-1).Free;
+      NewLabelList.Delete(NewLabelList.Count-1);
+    end;
   end;
-  // remove unused TLabels
+  // remove unused LabelLists
   while FInputLabels.Count>FFileCount do begin
     DeleteLabelList(FInputLabels.Count-1);
   end;

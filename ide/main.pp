@@ -2194,7 +2194,7 @@ end;
 procedure TMainIDE.mnuEnvGeneralOptionsClicked(Sender : TObject);
 var EnvironmentOptionsDialog: TEnvironmentOptionsDialog;
   MacroValueChanged, FPCSrcDirChanged, FPCCompilerChanged: boolean;
-  OldCompilerFilename, CompilerUnitSearchPath: string;
+  OldCompilerFilename, CompilerUnitSearchPath, CompilerUnitLinks: string;
   CompilerTemplate, FPCSrcTemplate: TDefineTemplate;
   
   procedure ChangeMacroValue(const MacroName, NewValue: string);
@@ -2242,7 +2242,7 @@ Begin
           // create compiler macros to simulate the Makefiles of the FPC sources
           FPCSrcTemplate:=CodeToolBoss.DefinePool.CreateFPCSrcTemplate(
             CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'FPCSrcDir'],
-            CompilerUnitSearchPath);
+            CompilerUnitSearchPath, CompilerUnitLinks);
           if FPCSrcTemplate<>nil then begin
             CodeToolBoss.DefineTree.RemoveRootDefineTemplateByName(
                                                            FPCSrcTemplate.Name);
@@ -2287,7 +2287,7 @@ end;
 
 procedure TMainIDE.mnuEnvCodeToolsDefinesEditorClicked(Sender : TObject);
 begin
-  ShowCodeToolsDefinesEditor(CodeToolBoss,CodeToolsOpts);
+  ShowCodeToolsDefinesEditor(CodeToolBoss,CodeToolsOpts,MacroList);
 end;
 
 procedure TMainIDE.SaveEnvironment;
@@ -5217,7 +5217,7 @@ procedure TMainIDE.InitCodeToolBoss;
     end;
   end;
 
-var CompilerUnitSearchPath: string;
+var CompilerUnitSearchPath, CompilerUnitLinks: string;
   ADefTempl: TDefineTemplate;
   c: integer;
   AFilename: string;
@@ -5261,7 +5261,7 @@ begin
     // create compiler macros to simulate the Makefiles of the FPC sources
     ADefTempl:=CreateFPCSrcTemplate(
             CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'FPCSrcDir'],
-            CompilerUnitSearchPath);
+            CompilerUnitSearchPath,CompilerUnitLinks);
     AddTemplate(ADefTempl,false,
         'NOTE: Could not create Define Template for Free Pascal Sources');
         
@@ -6203,6 +6203,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.274  2002/04/06 11:20:41  lazarus
+  MG: added fpc define templates
+
   Revision 1.273  2002/04/05 18:17:59  lazarus
   MG: fixed removing virtual units
 
