@@ -37,13 +37,48 @@ interface
 
 uses
   Classes, LCLProc, Graphics, SysUtils, LCLType, stdctrls, DB, LMessages, Grids,
-  Controls;
+  Controls, Buttons;
 
 type
-  TDataSetScrolledEvent = procedure(DataSet: TDataSet; Distance: Integer) of object;
-  TColumnNotifyEvent = procedure(Sender:TObject; Field: TField) of object;
   TCustomDbGrid = class;
   TColumn = class;
+  TDataSetScrolledEvent = procedure(DataSet: TDataSet; Distance: Integer) of object;
+  TDBGridClickEvent = procedure(Column: TColumn) of object;
+  TMovedEvent = procedure(Sender: TObject; FromIndex, ToIndex: Integer) of object;
+  TDrawColumnCellEvent = procedure(Sender: TObject; const Rect: TRect;
+    DataCol: Integer; Column: TColumn; State: TGridDrawState) of object;
+  TGetDbEditMaskEvent =
+    procedure (Sender: TObject; const Field: TField; var Value: string) of object;
+
+
+
+  TColumnButtonStyle = (cbsAuto, cbsEllipsis, cbsNone);
+  TDBGridOption = (
+    dgEditing,                          // Ya
+    dgTitles,                           // Ya
+    dgIndicator,                        // Ya
+    dgColumnResize,                     // Ya
+    dgColLines,                         // Ya
+    dgRowLines,                         // Ya
+    dgTabs,                             // Ya
+    dgAlwaysShowEditor,                 // Ya
+    dgRowSelect,                        // Ya
+    dgAlwaysShowSelection,              // Ya
+    dgConfirmDelete,
+    dgCancelOnExit,                     // Ya
+    dgMultiselect
+  );
+  TDbGridOptions = set of TDbGridOption;
+
+type
+  TCellButton = class(TButton)
+  private
+    FGrid: TCustomGrid;
+  protected
+    Procedure msg_SetGrid(Var Msg: TGridMessage); Message GM_SETGRID;
+    Procedure msg_SetPos(Var Msg: TGridMessage); Message GM_SETPOS;
+  end;
+  
 type
   TComponentDataLink=class(TDatalink)
   private
@@ -54,11 +89,14 @@ type
     fOnDataSetClose: TDataSetNotifyEvent;
     fOnDataSetOpen: TDataSetNotifyEvent;
     FOnDataSetScrolled: TDataSetScrolledEvent;
+    FOnEditingChanged: TDataSetNotifyEvent;
     fOnInvalidDataSet: TDataSetNotifyEvent;
     fOnInvalidDataSource: TDataSetNotifyEvent;
     FOnLayoutChanged: TDataSetNotifyEvent;
     fOnNewDataSet: TDataSetNotifyEvent;
     FOnRecordChanged: TFieldNotifyEvent;
+    FOnUpdateData: TDataSetNotifyEvent;
+    
     function GetDataSetName: string;
     function GetFields(Index: Integer): TField;
     procedure SetDataSetName(const AValue: string);
@@ -84,8 +122,10 @@ type
     property OnInvalidDataSource: TDataSetNotifyEvent read fOnInvalidDataSource write fOnInvalidDataSource;
     property OnLayoutChanged: TDataSetNotifyEvent read FOnLayoutChanged write FOnLayoutChanged;
     property OnDataSetClose: TDataSetNotifyEvent read fOnDataSetClose write fOnDataSetClose;
-    Property OnDataSetScrolled: TDataSetScrolledEvent read FOnDataSetScrolled write FOnDataSetScrolled;
-    Property DataSetName:string read GetDataSetName write SetDataSetName;
+    property OnDataSetScrolled: TDataSetScrolledEvent read FOnDataSetScrolled write FOnDataSetScrolled;
+    property OnEditingChanged: TDataSetNotifyEvent read FOnEditingChanged write FOnEditingChanged;
+    property OnUpdateData: TDataSetNotifyEvent read FOnUpdateData write FOnUpdateData;
+    property DataSetName:string read GetDataSetName write SetDataSetName;
     Property Fields[Index: Integer]: TField read GetFields;
     Property VisualControl;
   end;
@@ -93,57 +133,89 @@ type
   TColumnTitle = class(TPersistent)
   private
     FColumn: TColumn;
-    FCaption: PString;
+    FCaption: PChar;
     FColor: ^TColor;
     FAlignment: ^TAlignment;
+    FFont: TFont;
+    FIsDefaultTitleFont: boolean;
+    FLayout: ^TTextLayout;
+    procedure FontChanged(Sender: TObject);
     function GetAlignment: TAlignment;
     function GetCaption: string;
     function GetColor: TColor;
+    function GetFont: TFont;
+    function GetLayout: TTextLayout;
     function IsAlignmentStored: boolean;
     function IsCaptionStored: boolean;
     function IsColorStored: boolean;
+    function IsFontStored: boolean;
+    function IsLayoutStored: boolean;
     procedure SetAlignment(const AValue: TAlignment);
     procedure SetCaption(const AValue: string);
     procedure SetColor(const AValue: TColor);
+    procedure SetFont(const AValue: TFont);
+    procedure SetLayout(const AValue: TTextLayout);
+    property IsDefaultFont: boolean read FIsDefaultTitleFont;
   public
     constructor Create(TheColumn: TColumn); virtual;
     destructor Destroy; override;
-    property Column: TColumn read FColumn;
+    procedure FillTitleDefaultFont;
     function IsDefault: boolean;
+    property Column: TColumn read FColumn;
   published
     property Alignment: TAlignment read GetAlignment write SetAlignment stored IsAlignmentStored;
+    property Layout: TTextLayout read GetLayout write SetLayout stored IsLayoutStored;
     property Caption: string read GetCaption write SetCaption stored IsCaptionStored;
     property Color: TColor read GetColor write SetColor stored IsColorStored;
+    property Font: TFont read GetFont write SetFont stored IsFontStored;
   end;
 
   TColumn = class(TCollectionItem)
   private
+    FButtonStyle: TColumnButtonStyle;
+    FDropDownRows: Longint;
     FFieldName: String;
     FTitle: TColumnTitle;
     FField: TField;
     
     FAlignment: ^TAlignment;
     FColor: ^TColor;
+    FLayout: ^TTextLayout;
     FVisible: ^Boolean;
     FReadOnly: ^Boolean;
     FWidth: ^Integer;
+    FFont: TFont;
+    FisDefaultFont: Boolean;
+    FPickList: TStrings;
     
+    procedure FontChanged(Sender: TObject);
     function GetAlignment: TAlignment;
     function GetColor: TColor;
+    function GetExpanded: Boolean;
     function GetField: TField;
+    function GetFont: TFont;
     function GetGrid: TCustomDBGrid;
+    function GetLayout: TTextLayout;
+    function GetPickList: TStrings;
     function GetReadOnly: Boolean;
     function GetVisible: Boolean;
     function GetWidth: Integer;
     function IsAlignmentStored: boolean;
     function IsColorStored: boolean;
+    function IsFontStored: boolean;
+    function IsLayoutStored: boolean;
     function IsReadOnlyStored: boolean;
     function IsVisibleStored: boolean;
     function IsWidthStored: boolean;
     procedure SetAlignment(const AValue: TAlignment);
+    procedure SetButtonStyle(const AValue: TColumnButtonStyle);
     procedure SetColor(const AValue: TColor);
+    procedure SetExpanded(const AValue: Boolean);
     procedure SetField(const AValue: TField);
     procedure SetFieldName(const AValue: String);
+    procedure SetFont(const AValue: TFont);
+    procedure SetLayout(const AValue: TTextLayout);
+    procedure SetPickList(const AValue: TStrings);
     procedure SetReadOnly(const AValue: Boolean);
     procedure SetTitle(const AValue: TColumnTitle);
     procedure SetVisible(const AValue: Boolean);
@@ -161,20 +233,29 @@ type
     function  GetDisplayName: string; override;
     procedure FieldChanged;
     procedure LinkField;
+    property IsDefaultFont: boolean read FIsDefaultFont;
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
+    procedure FillDefaultFont;
     function  IsDefault: boolean;
-    property  Grid: TCustomDBGrid read GetGrid;
-    property  Field: TField read GetField write SetField;
+    property Grid: TCustomDBGrid read GetGrid;
+    property Field: TField read GetField write SetField;
+
   published
-    property  Alignment: TAlignment read GetAlignment write SetAlignment stored IsAlignmentStored;
-    property  Color: TColor read GetColor write SetColor stored IsColorStored;
-    property  FieldName: String read FFieldName write SetFieldName;
-    property  ReadOnly: Boolean read GetReadOnly write SetReadOnly stored IsReadOnlyStored;
-    property  Title: TColumnTitle read FTitle write SetTitle;
-    property  Width: Integer read GetWidth write SetWidth stored IsWidthStored;
-    property  Visible: Boolean read GetVisible write SetVisible stored IsVisibleStored;
+    property Alignment: TAlignment read GetAlignment write SetAlignment stored IsAlignmentStored;
+    property ButtonStyle: TColumnButtonStyle read FButtonStyle write SetButtonStyle default cbsAuto;
+    property Color: TColor read GetColor write SetColor stored IsColorStored;
+    property DropDownRows: Longint read FDropDownRows write FDropDownRows default 7;
+    property Expanded: Boolean read GetExpanded write SetExpanded default True;
+    property FieldName: String read FFieldName write SetFieldName;
+    property Font: TFont read GetFont write SetFont stored IsFontStored;
+    property Layout: TTextLayout read GetLayout write SetLayout stored IsLayoutStored;
+    property PickList: TStrings read GetPickList write SetPickList;
+    property ReadOnly: Boolean read GetReadOnly write SetReadOnly stored IsReadOnlyStored;
+    property Title: TColumnTitle read FTitle write SetTitle;
+    property Width: Integer read GetWidth write SetWidth stored IsWidthStored;
+    property Visible: Boolean read GetVisible write SetVisible stored IsVisibleStored;
   end;
 
   TDbGridColumns = class(TCollection)
@@ -187,6 +268,8 @@ type
   protected
     procedure Update(Item: TCollectionItem); override;
     function ColumnFromField(Field: TField): TColumn;
+    procedure TitleFontChanged;
+    procedure FontChanged;
   public
     constructor Create(TheGrid: TCustomDBGrid);
     function  Add: TColumn;
@@ -202,7 +285,14 @@ type
   TCustomDbGrid=class(TCustomGrid)
   private
     FDataLink: TComponentDataLink;
-    FOnColEnter,FOnColExit: TColumnNotifyEvent;
+    FOnCellClick: TDBGridClickEvent;
+    FOnColEnter,FOnColExit: TNotifyEvent;
+    FOnColumnMoved: TMovedEvent;
+    FOnDrawColumnCell: TDrawColumnCellEvent;
+    FOnEditButtonClick: TNotifyEvent;
+    FOnFieldEditMask: TGetDbEditMaskEvent;
+    FOnTitleClick: TDBGridClickEvent;
+    FOptions: TDbGridOptions;
     FReadOnly: Boolean;
     FColEnterPending: Boolean;
     FNumRecords: Integer;
@@ -210,31 +300,44 @@ type
     FLayoutChangedCount: integer;
     FVisualChangeCount: Integer;
     FSelectionLock: Boolean;
-    FNormalViewLocked: Boolean;
-    FCanBrowse: Boolean;
+    //FNormalViewLocked: Boolean;
+    FTitleFont,FLastFont: TFont;
+    FButtonEditor: TCellButton;
+    FStringEditor: TStringCellEditor;
+    FTempText : string;
+    FDrawingActiveRecord: Boolean;
+    FEditingColumn: Integer;
     function GetCurrentField: TField;
     function GetDataSource: TDataSource;
     procedure OnRecordChanged(Field:TField);
     procedure OnDataSetChanged(aDataSet: TDataSet);
     procedure OnDataSetOpen(aDataSet: TDataSet);
     procedure OnDataSetClose(aDataSet: TDataSet);
+    procedure OnEditingChanged(aDataSet: TDataSet);
     procedure OnInvalidDataSet(aDataSet: TDataSet);
     procedure OnInvalidDataSource(aDataSet: TDataset);
     procedure OnLayoutChanged(aDataSet: TDataSet);
     procedure OnNewDataSet(aDataSet: TDataset);
     procedure OnDataSetScrolled(aDataSet:TDataSet; Distance: Integer);
+    procedure OnUpdateData(aDataSet: TDataSet);
     procedure ReadColumns(Reader: TReader);
     procedure SetColumns(const AValue: TDBGridColumns);
     procedure SetCurrentField(const AValue: TField);
     procedure SetDataSource(const AValue: TDataSource);
+    procedure SetOptions(const AValue: TDbGridOptions);
+    procedure SetTitleFont(const AValue: TFont);
     procedure UpdateBufferCount;
+    procedure UpdateData;
     
     // Temporal
     function GetColumnAlignment(Column: Integer; ForTitle: Boolean): TAlignment;
     function GetColumnColor(Column: Integer; ForTitle: Boolean): TColor;
     function GetColumnCount: Integer;
+    function GetColumnFont(Column: Integer; ForTitle: Boolean): TFont;
+    function GetColumnLayout(Column: Integer; ForTitle: boolean): TTextLayout;
     function GetColumnTitle(Column: Integer): string;
     function GetColumnWidth(Column: Integer): Integer;
+    function GetColumnReadOnly(Column: Integer): boolean;
     function DefaultFieldColWidth(F: TField): Integer;
     
     function GetDsFieldFromGridColumn(Column: Integer): TField;
@@ -247,49 +350,71 @@ type
     procedure EndVisualChange;
     procedure DoLayoutChanged;
     procedure WriteColumns(Writer: TWriter);
+    procedure WMSize(var Msg: TLMSize); message LM_SIZE;
+    
+    procedure OnTitleFontChanged(Sender: TObject);
+    procedure RestoreEditor;
   protected
   {$ifdef ver1_0}
     property FixedColor;
   {$endif}
-    procedure LinkActive(Value: Boolean); virtual;
-    procedure LayoutChanged; virtual;
-    procedure Loaded; override;
-    procedure CheckBrowse;
-    procedure ClearGrid;
+    procedure BeforeMoveSelection(const DCol,DRow: Integer); override;
+    procedure BeginLayout;
+    procedure EditingColumn(aCol: Integer; Ok: boolean);
+    procedure EditorCancelEditing;
+    procedure CellClick(const aCol,aRow: Integer); override;
     procedure ColRowMoved(IsColumn: Boolean; FromIndex,ToIndex: Integer); override;
     function  CreateColumns: TDBGridColumns;
     function  ColumnIndexFromGridColumn(Column: Integer): Integer;
     function  ColumnFromGridColumn(Column: Integer): TColumn;
+    procedure CreateWnd; override;
     procedure DefineProperties(Filer: TFiler); override;
+    procedure DefaultDrawCell(aCol,aRow: Integer; aRect: TRect; aState: TGridDrawState);
     procedure DrawByRows; override;
     procedure DrawRow(ARow: Integer); override;
     procedure DrawCell(aCol,aRow: Integer; aRect: TRect; aState:TGridDrawState); override;
-    procedure HeaderSized(IsColumn: Boolean; Index: Integer); override;
-    
-    procedure MoveSelection; override;
-    procedure BeforeMoveSelection(const DCol,DRow: Integer); override;
+    procedure EditButtonClicked(Sender: TObject);
+    function  EditorCanAcceptKey(const ch: Char): boolean; override;
+    function  EditorIsReadOnly: boolean; override;
+    procedure EndLayout;
+    procedure DoExit; override;
+    function  GetEditMask(aCol, aRow: Longint): string; override;
+    function  GetEditText(aCol, aRow: Longint): string; override;
     procedure HeaderClick(IsColumn: Boolean; index: Integer); override;
+    procedure HeaderSized(IsColumn: Boolean; Index: Integer); override;
     procedure KeyDown(var Key : Word; Shift : TShiftState); override;
-    
+    procedure LinkActive(Value: Boolean); virtual;
+    procedure LayoutChanged; virtual;
+    procedure Loaded; override;
+    procedure MoveSelection; override;
     procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
     procedure PrepareCanvas(aCol,aRow: Integer; aState:TGridDrawState); override;
+    procedure SelectEditor; override;
+    procedure SetEditText(ACol, ARow: Longint; const Value: string); override;
     function  ScrollBarAutomatic(Which: TScrollStyle): boolean; override;
     function  SelectCell(aCol, aRow: Integer): boolean; override;
-    procedure BeginLayout;
-    procedure EndLayout;
-    procedure VisualChange; override;
-
-    procedure WMVScroll(var Message : TLMVScroll); message LM_VScroll;
-
     procedure UpdateActive;
-    function  UpdateGridCounts(const ViewLocking: boolean ): Integer;
+    function  UpdateGridCounts: Integer;
+    procedure VisualChange; override;
+    procedure WMVScroll(var Message : TLMVScroll); message LM_VScroll;
+    
     property Columns: TDBGridColumns read FColumns write SetColumns;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
-    Property ReadOnly: Boolean read FReadOnly write FReadOnly;
-    property OnColEnter: TColumnNotifyEvent read FOnColEnter write FOnColEnter;
-    property OnColExit: TColumnNotifyEvent read FOnColExit write FOnColExit;
+    property Options: TDbGridOptions read FOptions write SetOptions;
+    property ReadOnly: Boolean read FReadOnly write FReadOnly default false;
+    property TitleFont: TFont read FTitleFont write SetTitleFont;
+    
+    property OnCellClick: TDBGridClickEvent read FOnCellClick write FOnCellClick;
+    property OnColEnter: TNotifyEvent read FOnColEnter write FOnColEnter;
+    property OnColExit: TNotifyEvent read FOnColExit write FOnColExit;
+    property OnColumnMoved: TMovedEvent read FOnColumnMoved write FOnColumnMoved;
+    property OnDrawColumnCell: TDrawColumnCellEvent read FOnDrawColumnCell write FOnDrawColumnCell;
+    property OnEditButtonClick: TNotifyEvent read FOnEditButtonClick write FOnEditButtonClick;
+    property OnFieldEditMask: TGetDbEditMaskEvent read FOnFieldEditMask write FOnFieldEditMask;
+    property OnTitleClick: TDBGridClickEvent read FOnTitleClick write FOnTitleClick;
   public
     constructor Create(AOwner: TComponent); override;
+    procedure DefaultDrawColumnCell(const Rect: TRect; DataCol: Integer; Column: TColumn; State: TGridDrawState);
     destructor Destroy; override;
     property SelectedField: TField read GetCurrentField write SetCurrentField;
   end;
@@ -303,23 +428,25 @@ type
   
     property Align;
     property Anchors;
+    property AutoAdvance;
     //property BiDiMode;
-    //property BorderStyle;
+    property BorderStyle;
     property Color;
     property Columns stored false;
     property Constraints;
-    //property Ctl3D;
     property DataSource;
     property DefaultDrawing;
+    property DefaultRowHeight;
     //property DragCursor;
     //property DragKind;
     //property DragMode;
     property Enabled;
     property FixedColor;
+    property Flat;
     property Font;
     //property ImeMode;
     //property ImeName;
-    //property Options;
+    property Options;
     //property ParentBiDiMode;
     property ParentColor;
     //property ParentCtl3D;
@@ -330,18 +457,17 @@ type
     property ShowHint;
     property TabOrder;
     property TabStop;
-    //property TitleFont;
+    property TitleFont;
     property Visible;
-    //property OnCellClick;
+    property OnCellClick;
     property OnColEnter;
     property OnColExit;
-    //property OnColumnMoved;
-    //property OnDrawDataCell;  { obsolete }
-    //property OnDrawColumnCell;
+    property OnColumnMoved;
+    property OnDrawColumnCell;
     property OnDblClick;
     //property OnDragDrop;
     //property OnDragOver;
-    //property OnEditButtonClick;
+    property OnEditButtonClick;
     //property OnEndDock;
     //property OnEndDrag;
     property OnEnter;
@@ -352,40 +478,81 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
+    property OnPrepareCanvas;
     //property OnStartDock;
     //property OnStartDrag;
-    //property OnTitleClick;
+    property OnTitleClick;
   end;
 
 procedure Register;
   
 implementation
 
-{$ifndef ver1_0}
-const
-  NoValidColor = TColor(-791);
-  NoValidAlignment = TAlignment(-791);
-{$endif}
-  
 procedure Register;
 begin
   RegisterComponents('Data Controls',[TDBGrid]);
 end;
 
+procedure DrawArrow(Canvas: TCanvas; R: TRect; Opt: TDataSetState);
+var
+  dx,dy, x, y: Integer;
+  procedure DrawEdit(clr: Tcolor);
+  begin
+    Canvas.Pen.Color := clr;
+    y := R.Top + (R.Bottom-R.Top) div 2 - 1;
+    X := R.Left + (R.Right-R.Left) div 2 - 1;
+    Canvas.MoveTo(X-2, Y-Dy-1);
+    Canvas.LineTo(X+3, Y-Dy-1);
+    Canvas.MoveTo(X, Y-Dy);
+    Canvas.LineTo(X, Y+Dy);
+    Canvas.MoveTo(X-2, Y+Dy);
+    Canvas.LineTo(X+3, Y+Dy);
+  end;
+begin
+  dx := 6;
+  dy := 6;
+  case Opt of
+    dsBrowse:
+      begin //
+        Canvas.Brush.Color:=clBlack;
+        Canvas.Pen.Color:=clBlack;
+        y:= R.top+ (R.Bottom-R.Top) div 2;
+        x:= R.Left+2;
+        Canvas.Polygon([point(x,y-dy),point(x+dx,y),point(x, y+dy),point(x,y-dy)]);
+       end;
+    dsEdit:
+      DrawEdit(clBlack);
+    dsInsert:
+      DrawEdit(clGreen);
+   end;
+end;
+
 function CalcCanvasCharWidth(Canvas:TCanvas): integer;
 begin
-  result := Canvas.TextWidth('W l') div 3;
+  //result := Canvas.TextWidth('W l') div 3;
+  result := Canvas.TextWidth('MX') div 2;
 end;
 
 { TCustomdbGrid }
 
 procedure TCustomDbGrid.OnRecordChanged(Field: TField);
+var
+  c: Integer;
 begin
   {$IfDef dbgdbgrid}
   DBGOut('('+name+') ','TCustomDBGrid.OnRecordChanged(Field=');
   if Field=nil then DebugLn('nil)')
   else              DebugLn(Field.FieldName,')');
   {$Endif}
+  if Field=nil then
+    UpdateActive
+  else begin
+    c := GetGridColumnFromField(Field);
+    if c>0 then
+      InvalidateCell(C, Row)
+    else
+      UpdateActive;
+  end;
 end;
 
 function TCustomDbGrid.GetDataSource: TDataSource;
@@ -405,7 +572,9 @@ begin
   if aDataSet=nil then DebugLn('nil)')
   else DebugLn(aDataSet.Name,')');
   {$endif}
+  LayoutChanged;
   UpdateActive;
+  RestoreEditor;
 end;
 
 procedure TCustomDbGrid.OnDataSetOpen(aDataSet: TDataSet);
@@ -423,6 +592,16 @@ begin
   DebugLn('(',name,') ','TCustomDBGrid.OnDataSetClose');
   {$endif}
   LinkActive(False);
+end;
+
+procedure TCustomDbGrid.OnEditingChanged(aDataSet: TDataSet);
+begin
+  {$ifdef dbgdbgrid}
+  DebugLn('(',name,') ','TCustomDBGrid.OnEditingChanged');
+  {$endif}
+  UpdateActive;
+  WriteLn('Editing=',(dsEdit = aDataSet.State));
+  WriteLn('Inserting=',(dsInsert = aDataSet.State));
 end;
 
 procedure TCustomDbGrid.OnInvalidDataSet(aDataSet: TDataSet);
@@ -467,6 +646,11 @@ begin
   if Distance<>0 then Invalidate;
 end;
 
+procedure TCustomDbGrid.OnUpdateData(aDataSet: TDataSet);
+begin
+  UpdateData;
+end;
+
 procedure TCustomDbGrid.ReadColumns(Reader: TReader);
 begin
   FColumns.Clear;
@@ -497,16 +681,99 @@ begin
   UpdateActive;
 end;
 
+procedure TCustomDbGrid.SetOptions(const AValue: TDbGridOptions);
+var
+  OldOptions: TGridOptions;
+begin
+  if FOptions<>AValue then begin
+    FOptions:=AValue;
+    OldOptions := inherited Options;
+    
+   if dgRowSelect in FOptions then
+    FOptions := FOptions - [dgEditing, dgAlwaysShowEditor];
+    
+    BeginLayout;
+    
+    if dgRowLines in fOptions then
+      Include(OldOptions, goHorzLine)
+    else
+      Exclude(OldOptions, goHorzLine);
+      
+    if dgColLines in fOptions then
+      Include(OldOptions, goVertLine)
+    else
+      Include(OldOptions, goVertLine);
+    
+    if dgColumnResize in fOptions then
+      Include(OldOptions, goColSizing)
+    else
+      Exclude(OldOptions, goColSizing);
+
+    if dgAlwaysShowEditor in FOptions then
+      Include(OldOptions, goAlwaysShowEditor)
+    else
+      Exclude(OldOptions, goAlwaysShowEditor);
+
+    if dgRowSelect in FOptions then
+      Include(OldOptions, goRowSelect)
+    else
+      Exclude(OldOptions, goRowSelect);
+
+    if dgAlwaysShowSelection in FOptions then
+      Include(OldOptions, goDrawFocusSelected)
+    else
+      Exclude(OldOptions, goDrawFocusSelected);
+
+    if dgEditing in FOptions then
+      Include(OldOptions, goEditing)
+    else
+      Exclude(OldOptions, goediting);
+
+
+    if dgTabs in FOptions then
+      Include(OldOptions, goTabs)
+    else
+      Exclude(OldOptions, goTabs);
+      
+    inherited Options := OldOptions;
+    
+    EndLayout;
+  end;
+end;
+
+procedure TCustomDbGrid.SetTitleFont(const AValue: TFont);
+begin
+  FTitleFont.Assign(AValue);
+  LayoutChanged;
+end;
+
 procedure TCustomDbGrid.UpdateBufferCount;
+var
+  BuffCount: Integer;
 begin
   if FDataLink.Active then begin
     //if FGCache.ValidGrid then
-      FDataLink.BufferCount:= ClientHeight div DefaultRowHeight - 1;
+    BuffCount := ClientHeight div DefaultRowHeight;
+    if dgTitles in Options then Dec(BuffCount, 1);
+    FDataLink.BufferCount:= BuffCount;
     //else
     //  FDataLink.BufferCount:=0;
     {$ifdef dbgdbgrid}
     DebugLn(ClassName, ' (',name,')', ' FdataLink.BufferCount=' + IntToStr(Fdatalink.BufferCount));
     {$endif}
+  end;
+end;
+
+procedure TCustomDbGrid.UpdateData;
+var
+  selField,edField: TField;
+begin
+  // get Editor text and update field content
+  if FDatalink.Editing then begin
+    SelField := SelectedField;
+    edField := GetFieldFromGridColumn(FEditingColumn);
+    if (edField<>nil) and (edField = SelField) then
+      edField.AsString := FTempText;
   end;
 end;
 
@@ -551,11 +818,47 @@ begin
   if FColumns.Enabled then
     result := FColumns.VisibleCount
   else
-    for i:=0 to FDataLink.DataSet.FieldCount-1 do begin
-      F:= FDataLink.DataSet.Fields[i];
-      if (F<>nil) and F.Visible then
-        Inc(Result);
-    end;
+    if FDataLink.Active then
+      for i:=0 to FDataLink.DataSet.FieldCount-1 do begin
+        F:= FDataLink.DataSet.Fields[i];
+        if (F<>nil) and F.Visible then
+          Inc(Result);
+      end;
+end;
+
+function TCustomDbGrid.GetColumnFont(Column: Integer; ForTitle: Boolean
+  ): TFont;
+var
+  C: TColumn;
+begin
+  C := ColumnFromGridColumn(Column);
+  if C<>nil then
+    if ForTitle then
+      Result := C.Title.Font
+    else
+      Result := C.Font
+  else begin
+    if ForTitle then
+      Result := TitleFont
+    else
+      Result := Self.Font;
+  end;
+end;
+
+function TCustomDbGrid.GetColumnLayout(Column: Integer; ForTitle: boolean
+  ): TTextLayout;
+var
+  F: Tfield;
+  C: TColumn;
+begin
+  C := ColumnFromGridColumn(Column);
+  if C<>nil then
+    if ForTitle then
+      Result := C.Title.Layout
+    else
+      Result := C.Layout
+  else
+    result := tlCenter;
 end;
 
 // Get the visible field (from dataset fields) that corresponds to given column
@@ -631,12 +934,30 @@ begin
     Result := DefaultFieldColWidth(GetDsFieldFromGridColumn(Column));
 end;
 
+function TCustomDbGrid.GetColumnReadOnly(Column: Integer): boolean;
+var
+  F: Tfield;
+  C: TColumn;
+begin
+  result := true;
+  if not Self.ReadOnly and (FDataLink.Active and not FDatalink.ReadOnly) then begin
+    C := ColumnFromGridColumn(Column);
+    if c<>nil then
+      result := C.ReadOnly
+    else begin
+      F := GetDsFieldFromGridColumn(Column);
+      result := (F<>nil) and F.ReadOnly;
+    end;
+  end;
+end;
+
 procedure TCustomDbGrid.UpdateGridColumnSizes;
 var
   i: Integer;
 begin
-  ColWidths[0]:=12;
-  for i:=1 to ColCount-1 do
+  if dgIndicator in Options then
+    ColWidths[0]:=12;
+  for i:=FixedCols to ColCount-1 do
     ColWidths[i] := GetColumnWidth(i);
 end;
 
@@ -655,20 +976,21 @@ end;
 procedure TCustomDbGrid.doLayoutChanged;
 var
   Count: Integer;
+  NumRows: Integer;
 begin
   if csDestroying in ComponentState then
     exit;
-  if FDataLink.Active then begin
-    FNumRecords:= FDataLink.DataSet.RecordCount;
-    UpdateBufferCount;
-    Count := UpdateGridCounts(false);
-    if Count>0 then begin
-      ScrollBarRange(SB_HORZ, GridWidth + 2);
-      ScrollBarRange(SB_VERT, (FNumRecords + FixedRows) * DefaultRowHeight + 2);
-      Exit;
-    end;
+  Count := UpdateGridCounts;
+  if Count=0 then
+    Clear
+  else begin
+    if FDataLink.Active then
+      NumRows := FDataLink.DataSet.RecordCount + FixedRows
+    else
+      NumRows := RowCount;
+    ScrollBarRange(SB_HORZ, GridWidth + 2);
+    ScrollBarRange(SB_VERT, NumRows * DefaultRowHeight + 2);
   end;
-  ClearGrid;
 end;
 
 procedure TCustomDbGrid.WriteColumns(Writer: TWriter);
@@ -677,6 +999,30 @@ begin
     Writer.WriteCollection(nil)
   else
     Writer.WriteCollection(FColumns);
+end;
+
+procedure TCustomDbGrid.WMSize(var Msg: TLMSize);
+begin
+  BeginVisualChange;
+  inherited WMSize(Msg);
+  LayoutChanged;
+  EndVisualChange;
+end;
+
+procedure TCustomDbGrid.OnTitleFontChanged(Sender: TObject);
+begin
+  if FColumns.Enabled then
+    FColumns.TitleFontChanged
+  else
+    LayoutChanged;
+end;
+
+procedure TCustomDbGrid.RestoreEditor;
+begin
+  if EditorMode then begin
+    EditorMode := False;
+    EditorMode := True;
+  end;
 end;
 
 function TCustomDbGrid.GetColumnTitle(Column: Integer): string;
@@ -759,12 +1105,6 @@ begin
   inherited Loaded;
 end;
 
-procedure TCustomDbGrid.CheckBrowse;
-begin
-  FCanBrowse := FDataLink.Active and not FNormalViewLocked;
-end;
-
-
 type
   TProtFields=class(TFields)
   {$ifdef ver1_0}
@@ -799,7 +1139,7 @@ begin
     else if (FDataLink.DataSet<>nil)and FDatalink.Active then begin
       F := GetDsFieldFromGridColumn(FromIndex);
       if F<>nil then begin
-        {$IFNDEF VER1_0}
+        {$IFNDEF VER1_0_10}
         TProtFields(FDatalink.DataSet.Fields).SetFieldIndex( F, ToIndex - FixedCols );
         {$ENDIF}
       end;
@@ -814,6 +1154,8 @@ begin
         FSelectionLock := False;
       end;
     end;
+    if Assigned(OnColumnMoved) then
+      OnColumnMoved(Self, FromIndex, ToIndex);
   end;
 end;
 
@@ -838,6 +1180,12 @@ begin
     result := nil;
 end;
 
+procedure TCustomDbGrid.CreateWnd;
+begin
+  inherited CreateWnd;
+  LayoutChanged;
+end;
+
 procedure TCustomDbGrid.DefineProperties(Filer: TFiler);
   function HasColumns: boolean;
   var
@@ -858,27 +1206,74 @@ begin
   end;
 end;
 
+procedure TCustomDbGrid.DefaultDrawCell(aCol, aRow: Integer; aRect: TRect;
+  aState: TGridDrawState);
+  function GetDatasetState: TDataSetState;
+  begin
+    if FDatalink.Active then
+      result := FDataLink.DataSet.State
+    else
+      result := dsInactive;
+  end;
+var
+  S: string;
+  F: TField;
+begin
+  if gdFixed in aState then begin
+    if (ACol=0) and FDrawingActiveRecord then
+      DrawArrow(Canvas, aRect, GetDataSetState)
+    else
+    if (aRow=0)and(ACol>=FixedCols) then begin
+      Canvas.TextRect(ARect, 2, 2,  GetColumnTitle(aCol));
+    end;
+  end else begin
+    F := GetFieldFromGridColumn(aCol);
+    if F<>nil then begin
+      S := F.DisplayText;
+    end else
+      S := '';
+    Canvas.TextRect(Arect, 2, 2, S);
+    //Canvas.TextOut(aRect.Left+2,ARect.Top+2, S);
+  end;
+end;
+
 procedure TCustomDbGrid.BeforeMoveSelection(const DCol,DRow: Integer);
 begin
   if FSelectionLock then
     exit;
   inherited BeforeMoveSelection(DCol, DRow);
-  FDatalink.UpdateData;
+  if FDataLink.Active then begin
+    if FDataLink.Editing then
+      FDataLink.UpdateData;
+    {
+    if dgCancelOnExit in Options then
+      FDataLink.DataSet.Cancel
+    else
+      FDatalink.UpdateData;
+    }
+  end;
   if DCol<>Col then begin
-     if assigned(OnColExit) then
-      OnColExit(Self, GetFieldFromGridColumn(Col));
-     FColEnterPending:=True;
+    if assigned(OnColExit) then
+      OnColExit(Self);
+    FColEnterPending:=True;
   end;
 end;
 
 procedure TCustomDbGrid.HeaderClick(IsColumn: Boolean; index: Integer);
 begin
-  inherited HeaderClick(IsColumn, index);
+  if IsColumn and Assigned(OnTitleClick) then
+    OnTitleClick(ColumnFromGridColumn(Index));
 end;
 
 procedure TCustomDbGrid.KeyDown(var Key: Word; Shift: TShiftState);
+  procedure DoOnKeyDown;
+  begin
+    if Assigned(OnKeyDown) then
+      OnKeyDown(Self, Key, Shift);
+  end;
   procedure MoveBy(Delta: Integer);
   begin
+    doOnKeyDown;
     FDatalink.MoveBy(Delta);
   end;
 begin
@@ -887,7 +1282,17 @@ begin
     VK_UP: MoveBy(-1);
     VK_NEXT: MoveBy( VisibleRowCount );
     VK_PRIOR: MoveBy( -VisibleRowCount );
-    else inherited;
+    VK_ESCAPE:
+      begin
+        doOnKeyDown;
+        if EditorMode then
+          EditorCancelEditing
+        else
+          if FDataLink.Active then
+            FDataLink.DataSet.Cancel;
+      end;
+    else
+      inherited;
   end;
 end;
 
@@ -908,6 +1313,7 @@ begin
         P:=MouseToCell(Point(X,Y));
         if P.Y=Row then inherited MouseDown(Button, Shift, X, Y)
         else begin
+          if assigned(OnMouseDown) then OnMouseDown(Self, Button, Shift, X,Y);
           BeginUpdate;
           FDatalink.MoveBy(P.Y - Row);
           Col:=P.X;
@@ -923,6 +1329,7 @@ var
   OldOnEvent: TOnPrepareCanvasEvent;
   ForTitle: boolean;
   TheAlignment: TAlignment;
+  aFont: TFont;
 begin
   OldOnEvent := OnPrepareCanvas;
   OnPrepareCanvas := nil;
@@ -931,21 +1338,61 @@ begin
   // now, modify canvas according to column values
   if gdSelected in aState then begin
     // what to do in selected state?
-    if FNormalViewLocked then
-      Canvas.Brush.Color := GetColumnColor(ACol, false);
+    //Canvas.Brush.Color := GetColumnColor(ACol, false);
   end else begin
     ForTitle := gdFixed in aState;
     Canvas.Brush.Color := GetColumnColor(ACol, ForTitle);
     TheAlignment := GetColumnAlignment(ACol, ForTitle);
+    aFont := GetColumnFont(ACol, ForTitle);
+    if aFont<>FLastFont then begin
+      Canvas.Font := aFont;
+      FLastFont := aFont;
+    end;
     case TheAlignment of
       taRightJustify: Canvas.TextStyle.Alignment := Classes.taRightJustify;
       taCenter: Canvas.TextStyle.Alignment := Classes.taCenter;
       taLeftJustify: Canvas.TextStyle.Alignment := classes.taLeftJustify;
     end;
+    Canvas.TextStyle.Layout := GetColumnLayout(aCol, ForTitle);
   end;
   OnPrepareCanvas := OldOnEvent;
   if Assigned(OnPrepareCanvas) then
     OnPrepareCanvas(Self, aCol, aRow, aState);
+end;
+
+procedure TCustomDbGrid.SelectEditor;
+var
+  C: TColumn;
+  Ed: TWinControl;
+begin
+  if not (dgEditing in Options) then
+    exit;
+    
+  Ed := FStringEditor;
+  C := ColumnFromGridColumn(Col);
+  if C<>nil then begin
+    case C.ButtonStyle of
+      cbsAuto:
+        begin
+          if C.PickList.Count>0 then begin
+            // Ed := FComboEditor;
+          end;
+        end;
+      cbsEllipsis:
+        begin
+          Ed := FButtonEditor;
+        end;
+    end;
+  end;
+  
+  Editor := Ed;
+  inherited SelectEditor;
+end;
+
+procedure TCustomDbGrid.SetEditText(ACol, ARow: Longint; const Value: string);
+begin
+  //SelectedField.AsString := AValue; // Delayed to avoid frequent updates
+  FTempText := Value;
 end;
 
 function TCustomDbGrid.ScrollBarAutomatic(Which: TScrollStyle): boolean;
@@ -966,11 +1413,75 @@ begin
   inc(FLayoutChangedCount);
 end;
 
+procedure TCustomDbGrid.EditingColumn(aCol: Integer; Ok: Boolean);
+begin
+  if Ok then
+    FEditingColumn := aCol
+  else
+    FEditingColumn := -1;
+end;
+
+procedure TCustomDbGrid.EditorCancelEditing;
+begin
+  if EditorMode then begin
+    EditorMode := False;
+    if dgAlwaysShowEditor in Options then
+      EditorMode := True;
+  end;
+  EditingColumn(FEditingColumn, EditorMode);
+end;
+
+procedure TCustomDbGrid.CellClick(const aCol, aRow: Integer);
+begin
+  if Assigned(OnCellClick) then
+    OnCellClick(ColumnFromGridColumn(aCol));
+end;
+
 procedure TCustomDbGrid.EndLayout;
 begin
   dec(FLayoutChangedCount);
   if FLayoutChangedCount = 0 then
     DoLayoutChanged;
+end;
+
+procedure TCustomDbGrid.DoExit;
+begin
+  if FDataLink.Active then begin
+    if (FDataLink.DataSet.State=dsInsert) and (dgCancelOnExit in Options)
+    then begin
+      FDataLink.DataSet.Cancel;
+      EditorCancelEditing;
+    end;
+  end;
+  inherited DoExit;
+end;
+
+function TCustomDbGrid.GetEditMask(aCol, aRow: Longint): string;
+var
+  aField: TField;
+begin
+  Result := '';
+  if FDataLink.Active then begin
+    aField := GetFieldFromGridColumn(aCol);
+    if (aField<>nil) then begin
+      // enable following line if TField gets in the future a MaskEdit property
+      //Result := aField.EditMask;
+      if assigned(OnFieldEditMask) then
+        OnFieldEditMask(Self, AField, Result);
+    end;
+  end;
+end;
+
+function TCustomDbGrid.GetEditText(aCol, aRow: Longint): string;
+var
+  aField: TField;
+begin
+  if FDataLink.Active then begin
+    aField := GetFieldFromGridColumn(aCol);
+    if aField<>nil then begin
+      Result := aField.AsString;
+    end;
+  end;
 end;
 
 procedure TCustomDbGrid.MoveSelection;
@@ -979,7 +1490,7 @@ begin
     exit;
   inherited MoveSelection;
   if FColEnterPending and Assigned(OnColEnter) then begin
-    OnColEnter(Self, GetFieldFromGridColumn(Col));
+    OnColEnter(Self);
   end;
   FColEnterPending:=False;
   UpdateActive;
@@ -989,94 +1500,67 @@ procedure TCustomDbGrid.DrawByRows;
 var
   CurActiveRecord: Integer;
 begin
-  CheckBrowse;
-  if FCanBrowse then begin
+  //CheckBrowse;
+  if FDataLink.Active then begin
+  //if FCanBrowse then begin
     CurActiveRecord:=FDataLink.ActiveRecord;
     //PrimerRecord:=FDataLink.FirstRecord;
   end;
   try
     inherited DrawByRows;
   finally
-    if FCanBrowse then
+    if FDataLink.Active then
+    //if FCanBrowse then
       FDataLink.ActiveRecord:=CurActiveRecord;
   end;
 end;
 // 33 31 21 29 80 90 4 3
 procedure TCustomDbGrid.DrawRow(ARow: Integer);
 begin
-  if (Arow>=FixedRows) and FCanBrowse then
+  if (ARow>=FixedRows) and FDataLink.Active then begin
+    //if (Arow>=FixedRows) and FCanBrowse then
     FDataLink.ActiveRecord:=ARow-FixedRows;
+    FDrawingActiveRecord := ARow = Row;
+  end else
+    FDrawingActiveRecord := False;
   inherited DrawRow(ARow);
-end;
-
-procedure DrawArrow(Canvas: TCanvas; R: TRect; Opt: TDataSetState);
-var
-  dx,dy, x, y: Integer;
-begin
-  case Opt of
-    dsBrowse:
-      begin //
-          Canvas.Brush.Color:=clBlack;
-          Canvas.Pen.Color:=clBlack;
-          Dx:=6;
-          Dy:=6;
-          y:= R.top+ (R.Bottom-R.Top) div 2;
-          x:= R.Left+2;
-          Canvas.Polygon([point(x,y-dy),point(x+dx,y),point(x, y+dy),point(x,y-dy)]);
-       end;
-    dsEdit:
-      begin // Normal
-          Canvas.Brush.Color:=clRed;
-          Canvas.Pen.Color:=clRed;
-          Dx:=6;
-          Dy:=6;
-          y:= R.top+ (R.Bottom-R.Top) div 2;
-          x:= R.Left+2;
-          Canvas.Polygon([point(x,y-dy),point(x+dx,y),point(x, y+dy),point(x,y-dy)]);
-       end;
-    dsInsert:
-      begin // Normal
-          Canvas.Brush.Color:=clGreen;
-          Canvas.Pen.Color:=clGreen;
-          Dx:=6;
-          Dy:=6;
-          y:= R.top+ (R.Bottom-R.Top) div 2;
-          x:= R.Left+2;
-          Canvas.Polygon([point(x,y-dy),point(x+dx,y),point(x, y+dy),point(x,y-dy)]);
-       end;
-   end;
 end;
 
 procedure TCustomDbGrid.DrawCell(aCol, aRow: Integer; aRect: TRect;
   aState: TGridDrawState);
-  function GetDatasetState: TDataSetState;
-  begin
-    if FDatalink.Active then
-      result := FDataLink.DataSet.State
-    else
-      result := dsInactive;
-  end;
-var
-  S: string;
-  F: TField;
 begin
   inherited DrawCell(aCol, aRow, aRect, aState);
-  
-  if gdFixed in aState then begin
-    if (aRow=0)and(ACol>=FixedCols) then begin
-      Canvas.TextRect(ARect, 2, 2,  GetColumnTitle(aCol));
-    end else
-    if (aCol=0)and(aRow=Row) then
-      DrawArrow(Canvas, aRect, GetDataSetState)
-  end else begin
-    F := GetFieldFromGridColumn(aCol);
-    if F<>nil then begin
-      if not F.Visible then exit;
-      S := F.AsString;
-    end else
-      S := '';
-    Canvas.TextRect(Arect, 2, 2, S);
-    //Canvas.TextOut(aRect.Left+2,ARect.Top+2, S);
+  if Assigned(OnDrawColumnCell) and not(CsDesigning in ComponentState) then
+    OnDrawColumnCell(Self, aRect, aCol, ColumnFromGridColumn(aCol), aState)
+  else
+    DefaultDrawCell(aCol, aRow, aRect, aState);
+end;
+
+procedure TCustomDbGrid.EditButtonClicked(Sender: TObject);
+begin
+  if Assigned(OnEditButtonClick) then
+    OnEditButtonClick(Self);
+end;
+
+function TCustomDbGrid.EditorCanAcceptKey(const ch: Char): boolean;
+var
+  aField: TField;
+begin
+  result := False;
+  if FDataLink.Active then begin
+    aField := SelectedField;
+    if aField<>nil then begin
+      Result := aField.IsValidChar(Ch);
+    end;
+  end;
+end;
+
+function TCustomDbGrid.EditorIsReadOnly: boolean;
+begin
+  Result := GetColumnReadOnly(Col);
+  if not Result then begin
+    Result := not FDataLink.Edit;
+    EditingColumn(Col, not Result);
   end;
 end;
 
@@ -1098,28 +1582,38 @@ begin
     if not Active then exit;
     //if not GCache.ValidGrid then Exit;
     //if DataSource=nil then Exit;
-    DebugLn('(',Name,') ActiveRecord=', dbgs(ActiveRecord), ' FixedRows=',dbgs(FixedRows), ' Row=', dbgs(Row));
+    DebugLn(Name,'.UpdateActive: ActiveRecord=', dbgs(ActiveRecord), ' FixedRows=',dbgs(FixedRows), ' Row=', dbgs(Row));
     Row:= FixedRows + ActiveRecord;
   end;
-  Invalidate;
+  //Invalidate;
+  InvalidateRow(Row);
 end;
 
-function TCustomDbGrid.UpdateGridCounts(const ViewLocking: boolean): Integer;
+function TCustomDbGrid.UpdateGridCounts: Integer;
+var
+  RecCount: Integer;
+  FRCount, FCCount: Integer;
 begin
+  // find out the column count, if result=0 then
+  // there are no visible columns defined or dataset is inactive
+  // or there are no visible fields, ie the grid is blank
   Result := GetColumnCount;
-  if Result >0 then begin
+  if Result > 0 then begin
     BeginVisualChange;
-    ColCount := Result + 1;
-    if ViewLocking then
-      RowCount:= 2
-    else
-      RowCount := FDataLink.RecordCount+1;
-    FixedRows:=1;
-    FixedCols:=1;
+    if dgTitles in Options then FRCount := 1 else FRCount := 0;
+    if dgIndicator in Options then FCCount := 1 else FCCount := 0;
+    ColCount := Result + FCCount;
+    if FDataLink.Active then begin
+      UpdateBufferCount;
+      RecCount := FDataLink.RecordCount + FRCount;
+      if RecCount<2 then RecCount:=2;
+      RowCount := RecCount;
+    end else
+      RowCount := 2;
+    FixedRows := FRCount;
+    FixedCols := FCCount;
     UpdateGridColumnSizes;
     EndVisualChange;
-    //Invalidate;
-    exit;
   end;
 end;
 
@@ -1144,28 +1638,86 @@ begin
   FDataLink.OnInvalidDataSource:=@OnInvalidDataSource;
   FDataLink.OnDataSetScrolled:=@OnDataSetScrolled;
   FDataLink.OnLayoutChanged:=@OnLayoutChanged;
+  FDataLink.OnEditingChanged:=@OnEditingChanged;
+  FDataLink.OnUpdateData:=@OnUpdateData;
   FDataLink.VisualControl:= True;
 
   FColumns := CreateColumns;
 
-  FReadOnly:=True;
-  Options:=Options + [goColMoving, goColSizing, goDrawFocusSelected];
+  FOptions := [dgColumnResize, dgTitles, dgIndicator, dgRowLines, dgColLines,
+    dgConfirmDelete, dgCancelOnExit, dgTabs, dgEditing];
+    
+  inherited Options :=
+    [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect,
+     goSmoothScroll, goColMoving, goTabs, goEditing ];
+
+  
   // What a dilema!, we need ssAutoHorizontal and ssVertical!!!
   ScrolLBars:=ssBoth;
   DefaultTextStyle.Wordbreak := false;
   
-  ClearGrid;
+  FTitleFont := TFont.Create;
+  FTitleFont.OnChange := @OnTitleFontChanged;
+  
+  FButtonEditor := TCellButton.Create(nil);
+  FButtonEditor.Visible:=False;
+  FButtonEditor.Name:='EditButton';
+  FButtonEditor.Caption:='...';
+  FButtonEditor.OnClick := @EditButtonClicked;
+  
+  FStringEditor := TStringCellEditor.Create(nil);
+  FStringEditor.Visible:=False;
+  FStringEditor.name :='EditString';
+  FStringEditor.Text:='';
+  FStringEditor.Align:=alNone;
+
+
+  //ClearGrid;
+end;
+
+procedure TCustomDbGrid.DefaultDrawColumnCell(const Rect: TRect;
+  DataCol: Integer; Column: TColumn; State: TGridDrawState);
+  function GetDatasetState: TDataSetState;
+  begin
+    if FDatalink.Active then
+      result := FDataLink.DataSet.State
+    else
+      result := dsInactive;
+  end;
+var
+  S: string;
+  F: TField;
+begin
+  if gdFixed in State then begin
+    if (DataCol=0)and FDrawingActiveRecord then
+      DrawArrow(Canvas, Rect, GetDataSetState)
+    else
+    if (DataCol>=FixedCols) then begin
+      Canvas.TextRect(Rect, 2, 2,  GetColumnTitle(DataCol));
+    end;
+  end else begin
+    F := GetFieldFromGridColumn(DataCol);
+    if F<>nil then begin
+      S := F.DisplayText;
+    end else
+      S := '';
+    Canvas.TextRect(Rect, 2, 2, S);
+    //Canvas.TextOut(aRect.Left+2,ARect.Top+2, S);
+  end;
 end;
 
 destructor TCustomDbGrid.Destroy;
 begin
+  FStringEditor.Free;
+  FButtonEditor.Free;
+  FTitleFont.Free;
   FColumns.Free;
   FDataLink.OnDataSetChanged:=nil;
   FDataLink.OnRecordChanged:=nil;
   FDataLink.Free;
   inherited Destroy;
 end;
-
+{
 procedure TCustomDbGrid.ClearGrid;
 begin
   FNormalViewLocked := False;
@@ -1177,7 +1729,7 @@ begin
   else
     Clear;
 end;
-
+}
 { TComponentDataLink }
 
 function TComponentDataLink.GetFields(Index: Integer): TField;
@@ -1201,7 +1753,8 @@ begin
   {$ifdef dbgdbgrid}
   DebugLn('TComponentDataLink.RecordChanged');
   {$endif}
-  if Assigned(OnRecordChanged) then OnRecordChanged(Field);
+  if Assigned(OnRecordChanged) then
+    OnRecordChanged(Field);
 end;
 
 procedure TComponentDataLink.DataSetChanged;
@@ -1209,7 +1762,9 @@ begin
   {$ifdef dbgdbgrid}
   DebugLn('TComponentDataLink.DataSetChanged');
   {$Endif}
-  if Assigned(OnDataSetChanged) then OnDataSetChanged(DataSet);
+  // todo: improve this routine, for example: OnDatasetInserted
+  if Assigned(OnDataSetChanged) then
+    OnDataSetChanged(DataSet);
 end;
 
 procedure TComponentDataLink.ActiveChanged;
@@ -1270,11 +1825,9 @@ end;
 
 procedure TComponentDataLink.CheckBrowseMode;
 begin
-  (*
   {$ifdef dbgdbgrid}
   DebugLn(ClassName,'.CheckBrowseMode');
   {$endif}
-  *)
   inherited CheckBrowseMode;
 end;
 
@@ -1283,17 +1836,17 @@ begin
   {$ifdef dbgdbgrid}
   DebugLn(ClassName,'.EditingChanged');
   {$endif}
-  inherited EditingChanged;
+  if Assigned(OnEditingChanged) then
+    OnEditingChanged(DataSet);
 end;
 
 procedure TComponentDataLink.UpdateData;
 begin
-  (*
   {$ifdef dbgdbgrid}
   DebugLn(ClassName,'.UpdateData');
   {$endif}
-  *)
-  inherited UpdateData;
+  if Assigned(OnUpdatedata) then
+    OnUpdateData(DataSet);
 end;
 
 function TComponentDataLink.MoveBy(Distance: Integer): Integer;
@@ -1353,6 +1906,30 @@ begin
       exit;
   end;
   result:=nil;
+end;
+
+procedure TDbGridColumns.TitleFontChanged;
+var
+  c: TColumn;
+  i: Integer;
+begin
+  for i:=0 to Count-1 do begin
+    c := Items[i];
+    if (c<>nil)and(c.Title.IsDefaultFont) then
+      c.Title.FillTitleDefaultFont;
+  end;
+end;
+
+procedure TDbGridColumns.FontChanged;
+var
+  c: TColumn;
+  i: Integer;
+begin
+  for i:=0 to Count-1 do begin
+    c := Items[i];
+    if (c<>nil)and(c.IsDefaultFont) then
+      c.FillDefaultFont;
+  end;
 end;
 
 constructor TDbGridColumns.Create(TheGrid: TCustomDBGrid);
@@ -1416,6 +1993,12 @@ end;
 
 { TColumn }
 
+procedure TColumn.FontChanged(Sender: TObject);
+begin
+  FisDefaultFont := False;
+  FieldChanged;
+end;
+
 function TColumn.GetAlignment: TAlignment;
 begin
   if FAlignment=nil then
@@ -1441,11 +2024,21 @@ begin
     result := FColor^
 end;
 
+function TColumn.GetExpanded: Boolean;
+begin
+  result := True;
+end;
+
 function TColumn.GetField: TField;
 begin
   if (FFieldName<>'') and (FField<>nil) then
     LinkField;
   result := FField;
+end;
+
+function TColumn.GetFont: TFont;
+begin
+  result := FFont;
 end;
 
 function TColumn.GetGrid: TCustomDBGrid;
@@ -1454,6 +2047,19 @@ begin
     result := (Collection as TDbGridColumns).Grid
   else
     result := nil;
+end;
+
+function TColumn.GetLayout: TTextLayout;
+begin
+  if FLayout=nil then
+    result := tlCenter
+  else
+    result := FLayout^;
+end;
+
+function TColumn.GetPickList: TStrings;
+begin
+  Result := FPickList;
 end;
 
 function TColumn.GetReadOnly: Boolean;
@@ -1493,6 +2099,16 @@ begin
   result := FColor <> nil;
 end;
 
+function TColumn.IsFontStored: boolean;
+begin
+  result := not FisDefaultFont;
+end;
+
+function TColumn.IsLayoutStored: boolean;
+begin
+  result := FLayout <> nil;
+end;
+
 function TColumn.IsReadOnlyStored: boolean;
 begin
   result := FReadOnly <> nil;
@@ -1518,6 +2134,13 @@ begin
   FieldChanged;
 end;
 
+procedure TColumn.SetButtonStyle(const AValue: TColumnButtonStyle);
+begin
+  if FButtonStyle=AValue then exit;
+  FButtonStyle:=AValue;
+  FieldChanged;
+end;
+
 procedure TColumn.SetColor(const AValue: TColor);
 begin
   if FColor = nil then
@@ -1528,6 +2151,11 @@ begin
   FieldChanged;
 end;
 
+procedure TColumn.SetExpanded(const AValue: Boolean);
+begin
+  // Todo
+end;
+
 procedure TColumn.SetField(const AValue: TField);
 begin
   if FField <> AValue then begin
@@ -1536,7 +2164,6 @@ begin
       FFieldName := FField.FieldName;
     FieldChanged;
   end;
-  
 end;
 
 procedure TColumn.SetFieldName(const AValue: String);
@@ -1545,6 +2172,31 @@ begin
   FFieldName:=AValue;
   LinkField;
   FieldChanged;
+end;
+
+procedure TColumn.SetFont(const AValue: TFont);
+begin
+  if AValue.Handle<>FFont.Handle then begin
+    FFont.Assign(AValue);
+  end;
+end;
+
+procedure TColumn.SetLayout(const AValue: TTextLayout);
+begin
+  if FLayout = nil then
+    New(FLayout)
+  else if FLayout^ = AValue then
+    exit;
+  FLayout^ := AValue;
+  FieldChanged;
+end;
+
+procedure TColumn.SetPickList(const AValue: TStrings);
+begin
+  if AValue=nil then
+    FPickList.Clear
+  else
+    FPickList.Assign(AValue);
 end;
 
 procedure TColumn.SetReadOnly(const AValue: Boolean);
@@ -1559,8 +2211,7 @@ end;
 
 procedure TColumn.SetTitle(const AValue: TColumnTitle);
 begin
-  if FTitle=AValue then exit;
-  FTitle:=AValue;
+  FTitle.Assign(AValue);
 end;
 
 procedure TColumn.SetVisible(const AValue: Boolean);
@@ -1613,6 +2264,16 @@ begin
     result := 64;
 end;
 
+procedure TColumn.FillDefaultFont;
+var
+  TheGrid: TCustomDbGrid;
+begin
+  TheGrid := Grid;
+  if (theGrid<>nil) then begin
+    FFont.Assign(TheGrid.Font);
+  end;
+end;
+
 {$ifdef ver1_0}
 procedure TColumn.Changed(AllItems: Boolean);
 begin
@@ -1651,6 +2312,15 @@ constructor TColumn.Create(ACollection: TCollection);
 begin
   inherited Create(ACollection);
   FTitle := CreateTitle;
+  
+  FIsDefaultFont := True;
+  FFont := TFont.Create;
+  FillDefaultFont;
+  FFont.OnChange := @FontChanged;
+  
+  FPickList:= TStringList.Create;
+  FButtonStyle := cbsAuto;
+  FDropDownRows := 7;
 end;
 
 destructor TColumn.Destroy;
@@ -1660,6 +2330,8 @@ begin
   if FVisible<>nil then Dispose(FVisible);
   if FReadOnly<>nil then Dispose(FReadOnly);
   if FWidth<>nil then Dispose(FWidth);
+  if FLayout<>nil then Dispose(FLayout);
+  FFont.Free;
   FTitle.Free;
   inherited Destroy;
 end;
@@ -1667,10 +2339,17 @@ end;
 function TColumn.IsDefault: boolean;
 begin
   result := FTitle.IsDefault and (FAlignment=nil) and (FColor=nil)
-    and (FVisible=nil) and (FReadOnly=nil) and (FWidth=nil);
+    and (FVisible=nil) and (FReadOnly=nil) and (FWidth=nil) and FIsDefaultFont
+    and (FLayout=nil);
 end;
 
 { TColumnTitle }
+
+procedure TColumnTitle.FontChanged(Sender: TObject);
+begin
+  FisDefaultTitleFont := False;
+  FColumn.FieldChanged;
+end;
 
 function TColumnTitle.GetAlignment: TAlignment;
 begin
@@ -1688,7 +2367,7 @@ begin
     else
       result := FColumn.FieldName
   else
-    result := FCaption^;
+    result := FCaption;
 end;
 
 function TColumnTitle.GetColor: TColor;
@@ -1700,6 +2379,30 @@ begin
       result := clBtnFace
   else
     result := FColor^;
+end;
+
+procedure TColumnTitle.FillTitleDefaultFont;
+var
+  TheGrid: TCustomDbGrid;
+begin
+  TheGrid :=  FColumn.Grid;
+  if TheGrid<>nil then
+    FFont.Assign( TheGrid.TitleFont )
+  else
+    FFont.Assign( FColumn.Font );
+end;
+
+function TColumnTitle.GetFont: TFont;
+begin
+  Result := FFont;
+end;
+
+function TColumnTitle.GetLayout: TTextLayout;
+begin
+  if FLayout = nil then
+    result := tlCenter
+  else
+    result := FLayout^;
 end;
 
 function TColumnTitle.IsAlignmentStored: boolean;
@@ -1717,6 +2420,16 @@ begin
   result := FColor <> nil;
 end;
 
+function TColumnTitle.IsFontStored: boolean;
+begin
+  result := FFont <> nil;
+end;
+
+function TColumnTitle.IsLayoutStored: boolean;
+begin
+  result := FLayout <> nil;
+end;
+
 procedure TColumnTitle.SetAlignment(const AValue: TAlignment);
 begin
   if Falignment = nil then
@@ -1724,16 +2437,18 @@ begin
   else if FAlignment^ = AValue then
     exit;
   FAlignment^ := AValue;
-  FColumn.Changed(False);
+  FColumn.FieldChanged;
 end;
 
 procedure TColumnTitle.SetCaption(const AValue: string);
 begin
   if (FCaption=nil)or(CompareText(AValue, FCaption^)<>0) then begin
     if FCaption<>nil then
-      DisposeStr(FCaption);
-    FCaption := NewStr(AValue);
-    FColumn.Changed(False);
+      StrDispose(FCaption);
+      //DisposeStr(FCaption);
+    FCaption := StrNew(PChar(AValue));
+    //FCaption := NewStr(AValue);
+    FColumn.FieldChanged;
   end;
 end;
 
@@ -1747,31 +2462,85 @@ begin
   FColumn.FieldChanged;
 end;
 
+procedure TColumnTitle.SetFont(const AValue: TFont);
+begin
+  if AValue.Handle<>FFont.Handle then begin
+    FFont.Assign(AValue);
+  end;
+end;
+
+procedure TColumnTitle.SetLayout(const AValue: TTextLayout);
+begin
+  if FLayout = nil then
+    New(FLayout)
+  else if FLayout^ = AValue then
+    exit;
+  FLayout^ := AValue;
+  FColumn.FieldChanged;
+end;
+
 constructor TColumnTitle.Create(TheColumn: TColumn);
 begin
   inherited Create;
   FColumn := TheColumn;
+  
+  FIsDefaultTitleFont := True;
+  FFont := TFont.Create;
+  FillTitleDefaultFont;
+  FFont.OnChange := @FontChanged;
 end;
 
 destructor TColumnTitle.Destroy;
 begin
+  if FFont<>nil then FFont.Free;
   if FAlignment<>nil then Dispose(FAlignment);
   if FColor<>nil then Dispose(FColor);
-  if FCaption<>nil then DisposeStr(FCaption);
+  if FCaption<>nil then StrDispose(FCaption); //DisposeStr(FCaption);
+  if FLayout<>nil then Dispose(FLayout);
   inherited Destroy;
 end;
 
 function TColumnTitle.IsDefault: boolean;
 begin
-  result :=  (FAlignment=nil) and (FColor=nil) and (FCaption=nil);
+  result :=  (FAlignment=nil) and (FColor=nil) and (FCaption=nil) and
+    IsDefaultFont and (FLayout=nil);
+end;
+
+
+{ TCellButton }
+
+procedure TCellButton.msg_SetGrid(var Msg: TGridMessage);
+begin
+  FGrid:=Msg.Grid;
+  Msg.Options:=EO_HOOKKEYDOWN or EO_HOOKEXIT or EO_HOOKKEYPRESS or EO_HOOKKEYUP;
+end;
+
+procedure TCellButton.msg_SetPos(var Msg: TGridMessage);
+begin
+  With Msg.CellRect do begin
+    If Right-Left>25 Then Left:=Right-25;
+    SetBounds(Left, Top, Right-Left, Bottom-Top);
+  End;
 end;
 
 end.
 
 {
   $Log$
-  Revision 1.13  2004/08/17 19:21:37  vincents
-  fixed for compilation with fpc 1.0.11 too
+  Revision 1.14  2004/09/01 20:18:03  micha
+  from jesus reyes:
+  grids:
+   + bug 388 fixed
+   + focused cell rectangle redesign
+   + many internal changes
+
+  dbgrids:
+   + font support, still the object inspector doesnt allow main/title
+  font changes but it works in the column/column.title font.
+   + column/column.title text layout (tltop, tlcenter, tlbottom)
+   + editing support
+   + fixed resize designtime problems
+   + options
 
   Revision 1.12  2004/08/07 07:03:29  mattias
   implemented virtual temporary ct files
