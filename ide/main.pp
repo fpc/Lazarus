@@ -1784,6 +1784,8 @@ begin
    ecStepOver:    DebugBoss.DoStepOverProject;
    ecRunToCursor: DebugBoss.DoRunToCursor;
    ecStopProgram: DebugBoss.DoStopProject;
+   ecToggleCallStack: DebugBoss.DoToggleCallStack;
+   
     
    ecFindProcedureDefinition,
    ecFindProcedureMethod:
@@ -9130,6 +9132,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.602  2003/06/09 15:58:05  mattias
+  implemented view call stack key and jumping to last stack frame with debug info
+
   Revision 1.601  2003/06/08 11:05:45  mattias
   implemented filename case check before adding to project
 
