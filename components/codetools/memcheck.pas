@@ -51,7 +51,7 @@ const
 {$ifdef EXTRA}
   tracesize = 16;
 {$else EXTRA}
-  tracesize = 8;
+  tracesize = 32;
 {$endif EXTRA}
   quicktrace : boolean=true;
   { calls halt() on error by default !! }
