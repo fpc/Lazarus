@@ -46,7 +46,8 @@ uses
   Compiler, MsgView, WordCompletion, CodeToolManager, CodeCache, SourceLog,
   SynEdit, SynEditHighlighter, SynHighlighterPas, SynEditAutoComplete,
   SynEditKeyCmds, SynCompletion, GraphType, Graphics, Extctrls, Menus, Splash,
-  FindInFilesDlg, LMessages, IDEProcs, IDEOptionDefs, InputHistory;
+  FindInFilesDlg, LMessages, IDEProcs, IDEOptionDefs, InputHistory,
+  LazarusIDEStrConsts;
 
 type
   // --------------------------------------------------------------------------
@@ -222,6 +223,8 @@ type
     procedure SelectCodeBlock;
     procedure SelectLine;
     procedure SelectParagraph;
+    function CommentText(const Txt: string; CommentType: TCommentType): string;
+    procedure InsertGPLNotice(CommentType: TCommentType);
 
 
     // editor commands
@@ -909,6 +912,9 @@ Begin
 
   ecSelectParagraph:
     SelectParagraph;
+    
+  ecInsertGPLNotice:
+    InsertGPLNotice(comtDefault);
 
   else
     begin
@@ -1103,7 +1109,7 @@ end;
 procedure TSourceEditor.SelectCodeBlock;
 begin
   // ToDo:
-  
+  writeln('TSourceEditor.SelectCodeBlock: not implemented yet');
 end;
 
 procedure TSourceEditor.SelectLine;
@@ -1114,6 +1120,32 @@ end;
 procedure TSourceEditor.SelectParagraph;
 begin
   EditorComponent.SelectParagraph;
+end;
+
+function TSourceEditor.CommentText(const Txt: string; CommentType: TCommentType
+  ): string;
+var
+  i: integer;
+begin
+  Result:=Txt;
+  case CommentType of
+    comtNone: exit;
+    comtDefault:
+      begin
+        i:=EditorOpts.HighlighterList.FindByHighlighter(FEditor.Highlighter);
+        if i>=0 then
+          CommentType:=EditorOpts.HighlighterList[i].DefaultCommentType;
+      end;
+  end;
+  Result:=IDEProcs.CommentText(Txt,CommentType);
+end;
+
+procedure TSourceEditor.InsertGPLNotice(CommentType: TCommentType);
+var
+  Txt: string;
+begin
+  Txt:=CommentText(lisGPLNotice,CommentType);
+  FEditor.SelText:=Txt;
 end;
 
 procedure TSourceEditor.RemoveBreakPoint(const ABreakPointMark: TSynEditMark);
