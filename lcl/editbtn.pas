@@ -288,7 +288,8 @@ type
   
   { TDateEdit }
   
-  TAcceptDateEvent = Procedure (Sender : TObject; Var ADate : TDateTime; Var Action : Boolean) of Object;
+  TAcceptDateEvent = Procedure (Sender : TObject; Var ADate : TDateTime;
+    Var AcceptDate: Boolean) of Object;
   TDateEdit = Class(TCustomEditButton)
   private
     FDialogTitle: String;

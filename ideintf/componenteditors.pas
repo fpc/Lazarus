@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, TypInfo,
-  LCLProc, Forms, Controls, Menus, ExtCtrls, Grids, Buttons, ComCtrls,
+  LCLProc, Forms, Controls, Menus, ExtCtrls, Graphics, Grids, Buttons, ComCtrls,
   PropEdits, ObjInspStrConsts;
 
 
@@ -259,7 +259,7 @@ type
   TStringGridComponentEditor = class(TDefaultComponentEditor)
   protected
     procedure DoShowEditor;
-    procedure AssignGrid(dstGrid, srcGrid: TStringGrid);
+    procedure AssignGrid(dstGrid, srcGrid: TStringGrid; Full: boolean);
   public
     procedure ExecuteVerb(Index: Integer); override;
     function GetVerb(Index: Integer): string; override;
@@ -301,7 +301,6 @@ type
 
 
 implementation
-
 
 
 { RegisterComponentEditor }
@@ -742,12 +741,19 @@ Type
   TStringGridEditorDlg=Class(TForm)
   private
     FGrid: TStringGrid;
-    procedure OnFixedRows(Sender: TObject);
-    procedure OnFixedCols(Sender: TObject);
+    FFixedColor: TColor;
+    FFixedRows,FFixedCols: Integer;
+    //procedure OnFixedRows(Sender: TObject);
+    //procedure OnFixedCols(Sender: TObject);
+    procedure OnPrepareCanvas(Sender: TObject; Col,Row:Integer; aState: TGridDrawState);
   public
     constructor create(AOwner: TComponent); override;
+    property Grid: TStringGrid read FGrid write FGrid;
+    property FixedColor: TColor read FFixedColor write FFixedColor;
+    property FixedRows: Integer read FFixedRows write FFixedRows;
+    property FixedCols: Integer read FFixedCols write FFixedCols;
   end;
-
+{
 procedure TStringGridEditorDlg.OnFixedRows(Sender: TObject);
 begin
   FGrid.FixedRows := FGrid.FixedRows + 1 - 2 * (Sender as TComponent).Tag;
@@ -756,6 +762,13 @@ end;
 procedure TStringGridEditorDlg.OnFixedCols(Sender: TObject);
 begin
   FGrid.FixedCols := FGrid.FixedCols + 1 - 2 * (Sender as TComponent).Tag;
+end;
+}
+procedure TStringGridEditorDlg.OnPrepareCanvas(Sender: TObject;
+  Col,Row: Integer; aState: TGridDrawState);
+begin
+  if (Col<FFixedCols) or (Row<FFixedRows) then
+    FGrid.Canvas.Brush.Color := FFixedColor
 end;
 
 constructor TStringGridEditorDlg.create(AOwner: TComponent);
@@ -772,7 +785,9 @@ begin
   FGrid.FixedCols:=0;
   FGrid.FixedRows:=0;
   FGrid.Options:=Fgrid.Options + [goEditing,goColSizing,goRowSizing];
-
+  FGrid.OnPrepareCanvas := @OnPrepareCanvas;
+  FGrid.ExtendedColSizing := True;
+  {
   With TButton.Create(Self) do begin
     parent:=self;
     SetBounds(5, FGrid.Top + Fgrid.Height + 10, 80, 18);
@@ -802,7 +817,7 @@ begin
     Caption:='- FixedCols';
     OnClick:=@OnFixedCols;
   end;
-
+  }
   //Bnt Ok
   With TBitBtn.Create(self) do
   begin
@@ -829,23 +844,27 @@ end;
 { TStringGridComponentEditor }
 
 procedure TStringGridComponentEditor.DoShowEditor;
-Var Dlg : TStringGridEditorDlg;
+var Dlg : TStringGridEditorDlg;
     Hook: TPropertyEditorHook;
     aGrid: TStringGrid;
 begin
   Dlg:=TStringGridEditorDlg.Create(nil);
   try
-    If GetComponent is TStringGrid then
-    begin
+    if GetComponent is TStringGrid then begin
       aGrid:=TStringGrid(GetComponent);
       GetHook(Hook);
-      AssignGrid(Dlg.FGrid, aGrid);
 
+      Dlg.FixedRows :=  AGrid.FixedRows;
+      Dlg.FixedCols :=  AGrid.FixedCols;
+      Dlg.FixedColor := AGrid.FixedColor;
+      
+      AssignGrid(Dlg.FGrid, aGrid, true);
+      
       //ShowEditor
       if Dlg.ShowModal=mrOK then
       begin
         //Apply the modifications
-        AssignGrid(aGrid, Dlg.FGrid);
+        AssignGrid(aGrid, Dlg.FGrid, false);
         //not work :o( aImg.AddImages(Dlg.fGrid);
         Modified;
       end;
@@ -855,22 +874,31 @@ begin
   end;
 end;
 
-procedure TStringGridComponentEditor.AssignGrid(dstGrid, srcGrid: TStringGrid);
+procedure TStringGridComponentEditor.AssignGrid(dstGrid, srcGrid: TStringGrid;
+ Full: boolean);
 var
   i,j: integer;
 begin
   DstGrid.BeginUpdate;
-  DstGrid.Clear;
-  Dstgrid.ColCount:=srcGrid.ColCount;
-  DstGrid.RowCount:=srcGrid.RowCount;
-  DstGrid.FixedRows:=srcGrid.FixedRows;
-  Dstgrid.FixedCols:=srcGrid.FixedCols;
-  for i:=0 to srcGrid.RowCount-1 do DstGrid.RowHeights[i]:=srcGrid.RowHeights[i];
-  for i:=0 to srcGrid.ColCount-1 do DstGrid.ColWidths[i]:=srcGrid.ColWidths[i];
-  for i:=0 to srcGrid.ColCount-1 do
-    for j:=0 to srcGrid.RowCount-1 do
-      if srcGrid.Cells[i,j]<>'' then dstGrid.Cells[i,j]:=srcGrid.Cells[i,j];
-  DstGrid.EndUpdate(uoFull);
+  try
+    if Full then begin
+      DstGrid.Clear;
+      Dstgrid.ColCount:=srcGrid.ColCount;
+      DstGrid.RowCount:=srcGrid.RowCount;
+      //DstGrid.FixedRows:=srcGrid.FixedRows;
+      //Dstgrid.FixedCols:=srcGrid.FixedCols;
+    end;
+    for i:=0 to srcGrid.RowCount-1 do
+      DstGrid.RowHeights[i]:=srcGrid.RowHeights[i];
+    for i:=0 to srcGrid.ColCount-1 do
+      DstGrid.ColWidths[i]:=srcGrid.ColWidths[i];
+    for i:=0 to srcGrid.ColCount-1 do
+      for j:=0 to srcGrid.RowCount-1 do
+        if srcGrid.Cells[i,j]<>'' then
+          dstGrid.Cells[i,j]:=srcGrid.Cells[i,j];
+  finally
+    Dstgrid.EndUpdate(uoFull);
+  end;
 end;
 
 procedure TStringGridComponentEditor.ExecuteVerb(Index: Integer);

@@ -43,7 +43,7 @@ interface
 uses
   Classes, SysUtils, LCLStrConsts, LCLProc, LCLType, LCLIntf, Controls,
   GraphType, Graphics, Forms, DynamicArray, LMessages, XMLCfg, StdCtrls,
-  LResources, MaskEdit;
+  LResources, MaskEdit, Buttons;
 
 const
   //GRIDFILEVERSION = 1; // Original
@@ -122,6 +122,8 @@ type
 
   TGridStatus = (stNormal, stEditorHiding, stEditorShowing, stFocusing);
   TItemType = (itNormal,itCell,itColumn,itRow,itFixed,itFixedColumn,itFixedRow,itSelected);
+  
+  TColumnButtonStyle = (cbsAuto, cbsEllipsis, cbsNone);
 
 const
   soAll: TSaveOptions = [soDesign, soAttributes, soContent, soPosition];
@@ -130,6 +132,7 @@ const
 type
 
   TCustomGrid = class;
+  TGridColumn = class;
 
 
   PCellProps= ^TCellProps;
@@ -173,6 +176,13 @@ type
     procedure msg_SelectAll(var Msg: TGridMessage); message GM_SELECTALL;
   end;
 
+  TButtonCellEditor = class(TButton)
+  private
+    FGrid: TCustomGrid;
+  protected
+    Procedure msg_SetGrid(Var Msg: TGridMessage); Message GM_SETGRID;
+    Procedure msg_SetPos(Var Msg: TGridMessage); Message GM_SETPOS;
+  end;
 
 
   TOnDrawCell =
@@ -240,6 +250,173 @@ type
       property Rows[Row: Integer]: PColRowProps read GetRows write SetRows;
   end;
 
+  TColumnTitle = class(TPersistent)
+  private
+    FColumn: TGridColumn;
+    FCaption: PChar;
+    FColor: ^TColor;
+    FAlignment: ^TAlignment;
+    FFont: TFont;
+    FIsDefaultTitleFont: boolean;
+    FLayout: ^TTextLayout;
+    procedure FontChanged(Sender: TObject);
+    function GetAlignment: TAlignment;
+    function GetCaption: string;
+    function GetColor: TColor;
+    function GetFont: TFont;
+    function GetLayout: TTextLayout;
+    function IsAlignmentStored: boolean;
+    function IsCaptionStored: boolean;
+    function IsColorStored: boolean;
+    function IsFontStored: boolean;
+    function IsLayoutStored: boolean;
+    procedure SetAlignment(const AValue: TAlignment);
+    procedure SetCaption(const AValue: string);
+    procedure SetColor(const AValue: TColor);
+    procedure SetFont(const AValue: TFont);
+    procedure SetLayout(const AValue: TTextLayout);
+    property IsDefaultFont: boolean read FIsDefaultTitleFont;
+  public
+    constructor Create(TheColumn: TGridColumn); virtual;
+    destructor Destroy; override;
+    procedure FillTitleDefaultFont;
+    function IsDefault: boolean;
+    property Column: TGridColumn read FColumn;
+  published
+    property Alignment: TAlignment read GetAlignment write SetAlignment stored IsAlignmentStored;
+    property Layout: TTextLayout read GetLayout write SetLayout stored IsLayoutStored;
+    property Caption: string read GetCaption write SetCaption stored IsCaptionStored;
+    property Color: TColor read GetColor write SetColor stored IsColorStored;
+    property Font: TFont read GetFont write SetFont stored IsFontStored;
+  end;
+
+  TGridColumn = class(TCollectionItem)
+  private
+    FButtonStyle: TColumnButtonStyle;
+    FDropDownRows: Longint;
+    FTitle: TColumnTitle;
+    FWidthChanged: boolean;
+
+    FAlignment: ^TAlignment;
+    FColor: ^TColor;
+    FLayout: ^TTextLayout;
+    FVisible: ^Boolean;
+    FReadOnly: ^Boolean;
+    FWidth: ^Integer;
+    FFont: TFont;
+    FisDefaultFont: Boolean;
+    FPickList: TStrings;
+    FMinSize, FMaxSize, FSizePriority: ^Integer;
+
+    procedure FontChanged(Sender: TObject);
+    function GetAlignment: TAlignment;
+    function GetColor: TColor;
+    function GetExpanded: Boolean;
+    function GetFont: TFont;
+    function GetGrid: TCustomGrid;
+    function GetLayout: TTextLayout;
+    function GetMaxSize: Integer;
+    function GetMinSize: Integer;
+    function GetSizePriority: Integer;
+    function GetPickList: TStrings;
+    function GetReadOnly: Boolean;
+    function GetVisible: Boolean;
+    function GetWidth: Integer;
+    function IsAlignmentStored: boolean;
+    function IsColorStored: boolean;
+    function IsFontStored: boolean;
+    function IsLayoutStored: boolean;
+    function IsMinSizeStored: boolean;
+    function IsMaxSizeStored: boolean;
+    function IsReadOnlyStored: boolean;
+    function IsSizePriorityStored: boolean;
+    function IsVisibleStored: boolean;
+    function IsWidthStored: boolean;
+    procedure SetAlignment(const AValue: TAlignment);
+    procedure SetButtonStyle(const AValue: TColumnButtonStyle);
+    procedure SetColor(const AValue: TColor);
+    procedure SetExpanded(const AValue: Boolean);
+    procedure SetFont(const AValue: TFont);
+    procedure SetLayout(const AValue: TTextLayout);
+    procedure SetMaxSize(const AValue: Integer);
+    procedure SetMinSize(const Avalue: Integer);
+    procedure SetPickList(const AValue: TStrings);
+    procedure SetReadOnly(const AValue: Boolean);
+    procedure SetSizePriority(const AValue: Integer);
+    procedure SetTitle(const AValue: TColumnTitle);
+    procedure SetVisible(const AValue: Boolean);
+    procedure SetWidth(const AValue: Integer);
+
+    function GetDefaultSizePriority: Integer;
+  protected
+  {$ifdef ver1_0}
+  // workaround to access protected procedure in base class
+    procedure Changed(AllItems: Boolean);
+  {$endif}
+    function  GetDisplayName: string; override;
+    function  InternalAlignment(var AValue: TAlignment): boolean; virtual;
+    function  InternalDefaultMaxSize: Integer; virtual;
+    function  InternalDefaultMinSize: Integer; virtual;
+    function  InternalDefaultReadOnly: boolean; virtual;
+    function  InternalDefaultWidth: Integer; virtual;
+    function  InternalVisible(var AValue: boolean): boolean; virtual;
+    procedure ColumnChanged;
+    procedure AllColumnsChange;
+    function  CreateTitle: TColumnTitle; virtual;
+    
+    property  IsDefaultFont: boolean read FIsDefaultFont;
+  public
+    constructor Create(ACollection: TCollection); override;
+    destructor Destroy; override;
+    procedure FillDefaultFont;
+    function  IsDefault: boolean;
+    property Grid: TCustomGrid read GetGrid;
+    property WidthChanged: boolean read FWidthChanged;
+
+  published
+    property Alignment: TAlignment read GetAlignment write SetAlignment stored IsAlignmentStored;
+    property ButtonStyle: TColumnButtonStyle read FButtonStyle write SetButtonStyle default cbsAuto;
+    property Color: TColor read GetColor write SetColor stored IsColorStored;
+    property DropDownRows: Longint read FDropDownRows write FDropDownRows default 7;
+    property Expanded: Boolean read GetExpanded write SetExpanded default True;
+    property Font: TFont read GetFont write SetFont stored IsFontStored;
+    property Layout: TTextLayout read GetLayout write SetLayout stored IsLayoutStored;
+    property MinSize: Integer read GetMinSize write SetMinSize stored IsMinSizeStored;
+    property MaxSize: Integer read GetMaxSize write SetMaxSize stored isMaxSizeStored;
+    property PickList: TStrings read GetPickList write SetPickList;
+    property ReadOnly: Boolean read GetReadOnly write SetReadOnly stored IsReadOnlyStored;
+    property SizePriority: Integer read GetSizePriority write SetSizePriority stored IsSizePriorityStored;
+    property Title: TColumnTitle read FTitle write SetTitle;
+    property Width: Integer read GetWidth write SetWidth stored IsWidthStored default 64;
+    property Visible: Boolean read GetVisible write SetVisible stored IsVisibleStored default true;
+  end;
+  
+  TGridColumns = class(TCollection)
+  private
+    FGrid: TCustomGrid;
+    function GetColumn(Index: Integer): TGridColumn;
+    function GetEnabled: Boolean;
+    procedure SetColumn(Index: Integer; Value: TGridColumn);
+    function GetVisibleCount: Integer;
+  protected
+    procedure Update(Item: TCollectionItem); override;
+    //function ColumnFromField(Field: TField): TColumn;
+    procedure TitleFontChanged;
+    procedure FontChanged;
+  public
+    constructor Create(TheGrid: TCustomGrid);
+    constructor Create(TheGrid: TCustomGrid; aItemClass: TCollectionItemClass);
+    function  Add: TGridColumn;
+    //procedure LinkFields;
+    function RealIndex(Index: Integer): Integer;
+    function IndexOf(Column: TGridColumn): Integer;
+    function IsDefault: boolean;
+    property Grid: TCustomGrid read FGrid;
+    property Items[Index: Integer]: TGridColumn read GetColumn write SetColumn; default;
+    property VisibleCount: Integer read GetVisibleCount;
+    property Enabled: Boolean read GetEnabled;
+  end;
+
   type
     TGridCoord = TPoint;
     TGridRect  = TRect;
@@ -281,6 +458,7 @@ type
     FGridLineWidth: Integer;
     FDefColWidth, FDefRowHeight: Integer;
     FCol,FRow, FFixedCols, FFixedRows: Integer;
+    FOnEditButtonClick: TNotifyEvent;
     FOnPrepareCanvas: TOnPrepareCanvasEvent;
     FOnSelectEditor: TSelectEditorEvent;
     FGridLineColor: TColor;
@@ -307,16 +485,23 @@ type
     FVSbVisible, FHSbVisible: boolean;
     FDefaultTextStyle: TTextStyle;
     FLastWidth: Integer;
+    FTitleFont, FLastFont: TFont;
+    FColumns: TGridColumns;
+    FButtonEditor: TButtonCellEditor;
+    FStringEditor: TStringCellEditor;
+    FExtendedColSizing: boolean;
+    FExtendedRowSizing: boolean;
 
     procedure AdjustCount(IsColumn:Boolean; OldValue, NewValue:Integer);
     procedure CacheVisibleGrid;
-    function  CalcColumnWidth(Index: Integer): Integer;
     procedure CheckFixedCount(aCol,aRow,aFCol,aFRow: Integer);
     procedure CheckCount(aNewColCount, aNewRowCount: Integer);
     function  CheckTopLeft(aCol,aRow: Integer; CheckCols,CheckRows: boolean): boolean;
     procedure SetAutoFillColumns(const AValue: boolean);
+    procedure SetColumns(const AValue: TGridColumns);
     procedure SetFlat(const AValue: Boolean);
     procedure SetFocusRectVisible(const AValue: Boolean);
+    procedure SetTitleFont(const AValue: TFont);
     function  doColSizing(X,Y: Integer): Boolean;
     function  doRowSizing(X,Y: Integer): Boolean;
     procedure doColMoving(X,Y: Integer);
@@ -335,6 +520,7 @@ type
     function  GetLeftCol: Integer;
     function  GetColCount: Integer;
     function  GetColWidths(Acol: Integer): Integer;
+    function  GetColumns: TGridColumns;
     function  GetRowCount: Integer;
     function  GetRowHeights(Arow: Integer): Integer;
     function  GetSelection: TGridRect;
@@ -344,7 +530,12 @@ type
     function  GetVisibleGrid: TRect;
     function  GetVisibleRowCount: Integer;
     procedure InternalAutoFillColumns;
+    procedure InternalSetColWidths(aCol,aValue: Integer);
+    procedure InternalSetFixedCols(const AValue: Integer);
+    procedure InternalUpdateColumnWidths;
     procedure MyTextRect(R: TRect; Offx,Offy:Integer; S:string; Clipping: boolean);
+    procedure OnTitleFontChanged(Sender: TObject);
+    procedure ReadColumns(Reader: TReader);
     procedure ReadColWidths(Reader: TReader);
     procedure ReadRowHeights(Reader: TReader);
     function  ScrollToCell(const aCol,aRow: Integer): Boolean;
@@ -375,6 +566,7 @@ type
     procedure TryScrollTo(aCol,aRow: integer);
     procedure UpdateScrollBarPos(Which: TScrollStyle);
     procedure UpdateSelectionRange;
+    procedure WriteColumns(Writer: TWriter);
     procedure WriteColWidths(Writer: TWriter);
     procedure WriteRowHeights(Writer: TWriter);
     procedure WMEraseBkgnd(var message: TLMEraseBkgnd); message LM_ERASEBKGND;
@@ -395,7 +587,11 @@ type
     procedure ColRowExchanged(IsColumn: Boolean; index,WithIndex: Integer); dynamic;
     procedure ColRowMoved(IsColumn: Boolean; FromIndex,ToIndex: Integer); dynamic;
     function  ColRowToOffset(IsCol,Fisical:Boolean; index: Integer; var Ini,Fin:Integer): Boolean;
+    function  ColumnIndexFromGridColumn(Column: Integer): Integer;
+    function  ColumnFromGridColumn(Column: Integer): TGridColumn;
+    procedure ColumnsChanged(aColumn: TGridColumn);
     procedure ColWidthsChanged; dynamic;
+    function  CreateColumns: TGridColumns; virtual;
     procedure CreateWnd; override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure DblClick; override;
@@ -417,6 +613,7 @@ type
     procedure DrawFocusRect(aCol,aRow:Integer; ARect:TRect); virtual;
     //procedure DrawInteriorCells; virtual;
     procedure DrawRow(aRow: Integer); virtual;
+    procedure EditButtonClicked(Sender: TObject);
     procedure EditordoGetValue; virtual;
     procedure EditordoSetValue; virtual;
     function  EditorCanAcceptKey(const ch: Char): boolean; virtual;
@@ -426,9 +623,23 @@ type
     function  GetSelectedColor: TColor; virtual;
     function  GetEditMask(ACol, ARow: Longint): string; dynamic;
     function  GetEditText(ACol, ARow: Longint): string; dynamic;
+    function  GetColumnAlignment(Column: Integer; ForTitle: Boolean): TAlignment;
+    function  GetColumnColor(Column: Integer; ForTitle: Boolean): TColor;
+    function  GetColumnFont(Column: Integer; ForTitle: Boolean): TFont;
+    function  GetColumnLayout(Column: Integer; ForTitle: boolean): TTextLayout;
+    function  GetColumnReadOnly(Column: Integer): boolean;
+    function  GetColumnTitle(Column: Integer): string;
+    function  GetColumnWidth(Column: Integer): Integer;
+    function  GetDefaultAlignment(Column: Integer): TAlignment; virtual;
+    function  GetDefaultEditor(Column: Integer): TWinControl;
+    function  GetDefaultColumnWidth(Column: Integer): Integer; virtual;
+    function  GetDefaultLayout(Column: Integer): TTextLayout; virtual;
+    function  GetDefaultReadOnly(Column: Integer): boolean; virtual;
+    function  GetDefaultTitle(Column: Integer): string; virtual;
     procedure SetEditText(ACol, ARow: Longint; const Value: string); dynamic;
     procedure HeaderClick(IsColumn: Boolean; index: Integer); dynamic;
     procedure HeaderSized(IsColumn: Boolean; index: Integer); dynamic;
+    procedure InternalSetColCount(ACount: Integer);
     procedure InvalidateCell(aCol, aRow: Integer); overload;
     procedure InvalidateCell(aCol, aRow: Integer; Redraw: Boolean); overload;
     procedure InvalidateCol(ACol: Integer);
@@ -460,6 +671,7 @@ type
     function  ScrollBarAutomatic(Which: TScrollStyle): boolean; virtual;
     procedure SelectEditor; virtual;
     function  SelectCell(ACol, ARow: Integer): Boolean; virtual;
+    procedure SetCanvasFont(aFont: TFont);
     procedure SetBorderStyle(NewStyle: TBorderStyle); override;
     procedure SetFixedcolor(const AValue: TColor); virtual;
     procedure SetSelectedColor(const AValue: TColor); virtual;
@@ -479,6 +691,7 @@ type
     property BorderStyle default bsSingle;
     property Col: Integer read FCol write SetCol;
     property ColCount: Integer read GetColCount write SetColCount;
+    property Columns: TGridColumns read GetColumns write SetColumns;
     property ColWidths[aCol: Integer]: Integer read GetColWidths write SetColWidths;
     property DefaultColWidth: Integer read FDefColWidth write SetDefColWidth;
     property DefaultRowHeight: Integer read FDefRowHeight write SetDefRowHeight;
@@ -489,6 +702,8 @@ type
     property EditorMode: Boolean read FEditorMode write EditorSetMode;
     property EditorKey: boolean read FEditorKey write FEditorKey;
     property EditorShowing: boolean read FEditorShowing;
+    property ExtendedColSizing: boolean read FExtendedColSizing write FExtendedColSizing;
+    property ExtendedRowSizing: boolean read FExtendedRowSizing write FExtendedRowSizing;
     property FixedCols: Integer read FFixedCols write SetFixedCols default 1;
     property FixedRows: Integer read FFixedRows write SetFixedRows default 1;
     property FixedColor: TColor read GetFixedColor write SetFixedcolor;
@@ -511,6 +726,7 @@ type
     property SelectedColor: TColor read GetSelectedColor write SetSelectedColor;
     property Selection: TGridRect read GetSelection write SetSelection;
     property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars;
+    property TitleFont: TFont read FTitleFont write SetTitleFont;
     property TopRow: Integer read GetTopRow write SetTopRow;
     property VisibleColCount: Integer read GetVisibleColCount;
     property VisibleRowCount: Integer read GetVisibleRowCount;
@@ -519,6 +735,7 @@ type
     property OnCompareCells: TOnCompareCells read FOnCompareCells write FOnCompareCells;
     property OnPrepareCanvas: TOnPrepareCanvasEvent read FOnPrepareCanvas write FOnPrepareCanvas;
     property OnDrawCell: TOnDrawCell read FOnDrawCell write FOnDrawCell;
+    property OnEditButtonClick: TNotifyEvent read FOnEditButtonClick write FOnEditButtonClick;
     property OnSelection: TOnSelectEvent read fOnSelection write fOnSelection;
     property OnSelectEditor: TSelectEditorEvent read FOnSelectEditor write FOnSelectEditor;
     property OnTopLeftChanged: TNotifyEvent read FOnTopLeftChanged write FOnTopLeftChanged;
@@ -534,6 +751,7 @@ type
     function  CellRect(ACol, ARow: Integer): TRect;
     procedure Clear;
     procedure DeleteColRow(IsColumn: Boolean; index: Integer);
+    function  EditorByStyle(Style: TColumnButtonStyle): TWinControl;
     procedure EditorExit(Sender: TObject);
     procedure EditorKeyDown(Sender: TObject; var Key:Word; Shift:TShiftState);
     procedure EditorKeyPress(Sender: TObject; var Key: Char);
@@ -597,6 +815,7 @@ type
     property ColWidths;
     property Editor;
     property EditorMode;
+    property ExtendedColSizing;
     property FocusColor;
     property FocusRectVisible;
     property GridHeight;
@@ -615,11 +834,12 @@ type
     property Align;
     property Anchors;
     property AutoAdvance;
-    property BorderSpacing;
+    property AutoFillColumns;
     //property BiDiMode;
     property BorderStyle;
     property Color default clWindow;
     property ColCount;
+    property Columns;
     //property Constraints;
     //property Ctl3D; // Deprecated
     property DefaultColWidth;
@@ -660,6 +880,7 @@ type
     property OnCompareCells;
     property OnDblClick;
     property OnDrawCell;
+    property OnEditButtonClick;
     property OnEnter;
     property OnExit;
     property OnGetEditMask: TGetEditEvent read FOnGetEditMask write FOnGetEditMask;
@@ -694,7 +915,7 @@ type
 
   TStringGrid = class(TDrawGrid)
     private
-      FDefEditor: TStringCellEditor;
+      //FDefEditor: TStringCellEditor;
       function  GetCells(ACol, ARow: Integer): string;
       function  GetCols(index: Integer): TStrings;
       function  GetObjects(ACol, ARow: Integer): TObject;
@@ -716,12 +937,12 @@ type
       procedure LoadContent(cfg: TXMLConfig; Version: Integer); override;
       procedure SaveContent(cfg: TXMLConfig); override;
       //procedure DrawInteriorCells; override;
-      procedure SelectEditor; override;
+      //procedure SelectEditor; override;
       procedure SetEditText(aCol, aRow: Longint; const aValue: string); override;
 
     public
       constructor Create(AOWner: TComponent); override;
-      destructor Destroy; override;
+      //destructor Destroy; override;
       procedure AutoSizeColumns;
       property Cells[ACol, ARow: Integer]: string read GetCells write SetCells;
       property Cols[index: Integer]: TStrings read GetCols write SetCols;
@@ -972,7 +1193,7 @@ begin
   end else
     ForcedIndex := -1;
 
-  AvailableSize := Width - FixedSizeWidth;
+  AvailableSize := ClientWidth - FixedSizeWidth - Integer(BorderStyle);
   if AvailableSize<0 then begin
     // There is no space available to fill with
     // Variable Size Columns, what to do?
@@ -983,17 +1204,72 @@ begin
     for i:=0 to ColCount-1 do begin
       GetAutoFillColumnInfo(i, aMin, aMax, aPriority);
       if aPriority>0 then
-        SetRawColWidths(i,0);
+        SetColWidths(i,0);
+        //SetRawColWidths(i,0);
     end;
   end else begin
     // Simpler case: There is actually available space to
     //     to be shared for variable size columns.
+    FixedSizeWidth := AvailableSize mod Count; // space left after filling columns
     AvailableSize := AvailableSize div Count;
     for i:=0 to ColCount-1 do begin
       GetAutoFillColumnInfo(i, aMin, aMax, aPriority);
       if (APriority>0) or (i=ForcedIndex) then
-        SetRawColWidths(i, AvailableSize);
+        if i=ColCount-1 then
+          // the last column gets all space left
+          SetColWidths(i, AvailableSize + FixedSizeWidth)
+        else
+          SetColWidths(i, AvailableSize)
+        //SetRawColWidths(i, AvailableSize);
     end;
+  end;
+end;
+
+procedure TCustomGrid.InternalSetColCount(ACount: Integer);
+var
+  OldC: Integer;
+begin
+  if ACount=FCols.Count then Exit;
+  if ACount<1 then
+    Clear
+  else begin
+    OldC:=FCols.Count;
+    CheckFixedCount(ACount, RowCount, FFixedCols, FFixedRows);
+    CheckCount(ACount, RowCount);
+    AdjustCount(True, OldC, ACount);
+  end;
+end;
+
+procedure TCustomGrid.InternalSetColWidths(aCol, aValue: Integer);
+begin
+  if AValue<0 then Avalue:=-1;
+  if Avalue<>Integer(FCols[ACol]) then begin
+    SetRawColWidths(ACol, Avalue);
+    VisualChange;
+    if (FEditor<>nil)and(Feditor.Visible)and(ACol<=FCol) then EditorPos;
+    ColWidthsChanged;
+  end;
+end;
+
+procedure TCustomGrid.InternalSetFixedCols(const AValue: Integer);
+begin
+  if FFixedCols=AValue then exit;
+  CheckFixedCount(ColCount, RowCount, AValue, FFixedRows);
+  FFixedCols:=AValue;
+  fTopLeft.x:=AValue;
+  fCol:=Avalue;
+  if not (csLoading in componentState) then doTopleftChange(true);
+end;
+
+procedure TCustomGrid.InternalUpdateColumnWidths;
+var
+  i: Integer;
+  C: TGridColumn;
+begin
+  for i:= FixedCols to ColCount-1 do begin
+    C := ColumnFromGridColumn(i);
+    if C<>nil then
+      SetRawColWidths(i, C.Width);
   end;
 end;
 
@@ -1013,13 +1289,23 @@ begin
 end;
 
 function TCustomGrid.GetColWidths(Acol: Integer): Integer;
+var
+  C: TGridColumn;
 begin
-  if (aCol<ColCount) and (aCol>=0) then
-    Result:=Integer(FCols[aCol])
-  else
-    Result:=-1;
-  if result<0 then
-    Result:=fDefColWidth;
+  if not Columns.Enabled or (aCol<FixedCols) then begin
+    if (aCol<ColCount) and (aCol>=0) then
+      Result:=Integer(FCols[aCol])
+    else
+      Result:=-1;
+    if result<0 then
+      Result:=fDefColWidth;
+  end else begin
+    C := ColumnFromGridColumn(Acol);
+    if C<>nil then
+      Result := C.Width
+    else
+      result := FDefColWidth;
+  end;
 end;
 
 procedure TCustomGrid.SetEditor(AValue: TWinControl);
@@ -1070,12 +1356,16 @@ end;
 
 procedure TCustomGrid.SetFixedCols(const AValue: Integer);
 begin
-  if FFixedCols=AValue then exit;
-  CheckFixedCount(ColCount, RowCount, AValue, FFixedRows);
-  FFixedCols:=AValue;
-  fTopLeft.x:=AValue;
-  fCol:=Avalue;
-  if not (csLoading in componentState) then doTopleftChange(true);
+  if Columns.Enabled then begin
+    if FFixedCols=Avalue then Exit;
+    CheckFixedCount(ColCount, RowCount, AValue, FFixedRows);
+    FFixedCols:=AValue;
+    fTopLeft.x:=AValue;
+    fCol:=Avalue;
+    if not (csLoading in componentState) then TopLeftChanged;
+    ColumnsChanged(nil);
+  end else
+    InternalSetFixedCols(AValue);
 end;
 
 procedure TCustomGrid.SetFixedRows(const AValue: Integer);
@@ -1142,13 +1432,15 @@ begin
 end;
 
 procedure TCustomGrid.Setcolwidths(Acol: Integer; Avalue: Integer);
+var
+  c: TGridColumn;
 begin
-  if AValue<0 then Avalue:=-1;
-  if Avalue<>Integer(FCols[ACol]) then begin
-    SetRawColWidths(ACol, Avalue);
-    VisualChange;
-    if (FEditor<>nil)and(Feditor.Visible)and(ACol<=FCol) then EditorPos;
-    ColWidthsChanged;
+  if not Columns.Enabled or (aCol<FFixedCols) then
+    internalSetColWidths(aCol, aValue)
+  else begin
+    C := ColumnFromGridColumn(ACol);
+    if C<>nil then
+      C.Width := AValue;
   end;
 end;
 
@@ -1228,18 +1520,10 @@ begin
 end;
 
 procedure TCustomGrid.SetColCount(Valor: Integer);
-var
-  OldC: Integer;
 begin
-  if Valor=FCols.Count then Exit;
-  if Valor<1 then
-    Clear
-  else begin
-    OldC:=FCols.Count;
-    CheckFixedCount(Valor, RowCount, FFixedCols, FFixedRows);
-    CheckCount(Valor, RowCount);
-    AdjustCount(True, OldC, Valor);
-  end;
+  if Columns.Enabled then
+    raise EGridException.Create('Use Columns property to add/remove columns');
+  InternalSetColCount(Valor);
 end;
 
 procedure TCustomGrid.SetRowCount(Valor: Integer);
@@ -1600,7 +1884,7 @@ var
   MaxRight: Integer;
   MaxBottom: Integer;
 begin
-  if (FTopLeft.X<0)or(FTopLeft.y<0) then begin
+  if (FTopLeft.X<0)or(FTopLeft.y<0)or(csLoading in ComponentState) then begin
     Result:=Rect(-1,-1,-1,-1);
     Exit;
   end;
@@ -1741,17 +2025,26 @@ begin
   end;
 end;
 
-procedure TCustomGrid.PrepareCanvas(aCol, aRow: Integer; aState: TGridDrawState
-  );
+procedure TCustomGrid.PrepareCanvas(aCol, aRow: Integer; aState: TGridDrawState);
 begin
-  Canvas.TextStyle := DefaultTextStyle;
   if DefaultDrawing then begin
-    if gdSelected in aState then  Canvas.Brush.color:= SelectedColor else
-    if gdFixed in aState then     Canvas.Brush.color:= FixedColor
-    else                          Canvas.Brush.color:= Color;
-    if gdSelected in aState then  Canvas.Font.Color := clWindow
-    else                          Canvas.Font.Color := Self.Font.Color; //clWindowText;
+    //if gdSelected in aState then  Canvas.Brush.color:= SelectedColor else
+    //if gdFixed in aState then     Canvas.Brush.color:= FixedColor
+    //else                          Canvas.Brush.color:= Color;
+    //if gdSelected in aState then  Canvas.Font.Color := clWindow
+    //else                          Canvas.Font.Color := Self.Font.Color; //clWindowText;
+    if gdSelected in aState then begin
+      Canvas.Brush.Color := SelectedColor;
+      SetCanvasFont(GetColumnFont(aCol, False));
+      Canvas.Font.Color := clWindow;
+    end else begin
+      Canvas.Brush.Color := GetColumnColor(aCol, gdFixed in AState);
+      SetCanvasFont(GetColumnFont(aCol, gdFixed in aState));
+    end;
+    Canvas.TextStyle.Alignment := GetColumnAlignment(aCol, gdFixed in AState);
+    Canvas.TextStyle.Layout := GetColumnLayout(aCol, gdFixed in AState);
   end else begin
+    Canvas.TextStyle := DefaultTextStyle;
     Canvas.Brush.Color := clWindow;
     Canvas.Font.Color := clWindowText;
   end;
@@ -1781,6 +2074,15 @@ begin
   Result:=true;
   //Result:=MoveExtend(False, aCol, aRow);
 end;
+
+procedure TCustomGrid.SetCanvasFont(aFont: TFont);
+begin
+  if aFont<>FLastFont then begin
+    Canvas.Font := aFont;
+    FLastFont := AFont;
+  end;
+end;
+
 
 procedure TCustomGrid.DrawBackGround;
 begin
@@ -1985,6 +2287,12 @@ begin
   end;
 end;
 
+procedure TCustomGrid.EditButtonClicked(Sender: TObject);
+begin
+  if Assigned(OnEditButtonClick) then
+    OnEditButtonClick(Self);
+end;
+
 procedure TCustomGrid.DrawEdges;
 var
   P:  TPoint;
@@ -2103,6 +2411,23 @@ begin
     //DebugRect('end Rect = ', Rtmp);
     DeleteObject(tmpRGN);
   end;
+end;
+
+procedure TCustomGrid.OnTitleFontChanged(Sender: TObject);
+begin
+  if FColumns.Enabled then
+    FColumns.TitleFontChanged;
+  ColumnsChanged(nil);
+  //else
+  //  VisualChange;
+  //  LayoutChanged;
+end;
+
+procedure TCustomGrid.ReadColumns(Reader: TReader);
+begin
+  Columns.Clear;
+  Reader.ReadValue;
+  Reader.ReadCollection(Columns);
 end;
 
 procedure TCustomGrid.ReadColWidths(Reader: TReader);
@@ -2312,13 +2637,7 @@ begin
     end;
   end;
 end;
-{
-procedure TCustomGrid.WMSize(var Msg: TLMSize);
-begin
-  Inherited;
-  visualChange;
-end;
-}
+
 procedure TCustomGrid.WMChar(var message: TLMChar);
 var
   Ch: Char;
@@ -2330,10 +2649,6 @@ begin
   {$Endif}
   if (goEditing in Options) and (Ch in [^H, #32..#255]) then
     EditorShowChar(Ch);
-  {
-  else
-    inherited;
-  }
 end;
 
 
@@ -2410,6 +2725,14 @@ begin
   end
   else
     FRange:=Rect(FCol,FRow,FCol,FRow);
+end;
+
+procedure TCustomGrid.WriteColumns(Writer: TWriter);
+begin
+  if Columns.IsDefault then
+    Writer.WriteCollection(nil)
+  else
+    Writer.WriteCollection(Columns);
 end;
 
 procedure TCustomGrid.WriteColWidths(Writer: TWriter);
@@ -2499,11 +2822,26 @@ begin
     doTopleftChange(False)
 end;
 
+function TCustomGrid.GetColumns: TGridColumns;
+begin
+  result := FColumns;
+end;
+
+function TCustomGrid.CreateColumns: TGridColumns;
+begin
+  result := TGridColumns.Create(Self);
+end;
+
 procedure TCustomGrid.SetAutoFillColumns(const AValue: boolean);
 begin
   FAutoFillColumns := AValue;
   if FAutoFillColumns then
     VisualChange;
+end;
+
+procedure TCustomGrid.SetColumns(const AValue: TGridColumns);
+begin
+  FColumns.Assign(Avalue);
 end;
 
 procedure TCustomGrid.SetFlat(const AValue: Boolean);
@@ -2519,6 +2857,12 @@ begin
     FFocusRectVisible := AValue;
     Invalidate;
   end;
+end;
+
+procedure TCustomGrid.SetTitleFont(const AValue: TFont);
+begin
+  FTitleFont.Assign(AValue);
+  VisualChange;
 end;
 
 procedure TCustomGrid.SetBorderStyle(NewStyle: TBorderStyle);
@@ -2552,18 +2896,6 @@ begin
       R:=CellRect(VisibleGrid.Right, VisibleGrid.Bottom);
       MaxClientXY:=R.BottomRight;
     end;
-  end;
-end;
-
-function TCustomGrid.CalcColumnWidth(Index: Integer): Integer;
-var
-  AMin,AMax,APriority: Integer;
-begin
-  CalcAutoSizeColumn(Index, aMin, aMax, aPriority);
-  if aPriority=0 then
-    Result := GetColWidths(Index)
-  else begin
-
   end;
 end;
 
@@ -2630,8 +2962,10 @@ begin
       if ColWidths[FSplitter.x]>0 then ColWidths[FSplitter.X]:=0;
     Result:=True;
   end else
-  if (fGridState=gsNormal)and(Y<FGCache.FixedHeight)and(X>FGCache.FixedWidth) then
-  begin
+  if (fGridState=gsNormal) and
+     ((Y<FGCache.FixedHeight) or (FExtendedColSizing and (Y<FGCache.MaxClientXY.Y))) and
+     (X>FGCache.FixedWidth)
+  then begin
     FSplitter.X:= OffsetToColRow(True, True, X, Loc);
     FSplitter.Y:=0;
     if FSplitter.X>=0 then begin
@@ -2663,7 +2997,9 @@ begin
       if RowHeights[FSplitter.y]>0 then RowHeights[FSplitter.Y]:=0;
     Result:=True;
   end else
-  if (fGridState=gsNormal)and(X<FGCache.FixedWidth)and(Y>FGCache.FixedHeight) then
+  if (fGridState=gsNormal) and
+     ((X<FGCache.FixedWidth) or (FExtendedRowSizing and (X<FGCache.MaxClientXY.X))) and
+     (Y>FGCache.FixedHeight) then
   begin
     fSplitter.Y:=OffsetToColRow(False, True, Y, OffTop{dummy});
     if Fsplitter.Y>=0 then begin
@@ -2803,6 +3139,45 @@ begin
   Result:=true;
 end;
 
+function TCustomGrid.ColumnIndexFromGridColumn(Column: Integer): Integer;
+begin
+  Result := Columns.RealIndex( Column - FixedCols );
+end;
+
+function TCustomGrid.ColumnFromGridColumn(Column: Integer): TGridColumn;
+var
+  ColIndex: Integer;
+begin
+  ColIndex := Columns.RealIndex( Column - FixedCols );
+  if ColIndex>=0 then
+    result := Columns[ColIndex]
+  else
+    result := nil;
+end;
+
+procedure TCustomGrid.ColumnsChanged(aColumn: TGridColumn);
+var
+  aCol: Integer;
+begin
+  if csDestroying in ComponentState then
+    exit;
+    
+  if AColumn=nil then
+    if Columns.Enabled then begin
+      InternalSetColCount( FixedCols + Columns.VisibleCount )
+    end else
+      ColCount := FixedCols + 1
+  else begin
+    aCol := Columns.IndexOf(AColumn);
+    if ACol>=0 then begin
+      if aColumn.WidthChanged then
+        VisualChange
+      else
+        InvalidateCol(FixedCols + ACol);
+    end;
+  end;
+end;
+
 function TCustomGrid.MouseToGridZone(X, Y: Integer; CellCoords: Boolean): TGridZone;
 begin
   Result:=gzNormal;
@@ -2866,7 +3241,17 @@ begin
   VisualChange;
 end;
 
-
+function TCustomGrid.EditorByStyle(Style: TColumnButtonStyle): TWinControl;
+begin
+  case Style of
+    cbsNone: Result := nil;
+    cbsEllipsis: Result := FButtonEditor;
+    cbsAuto:
+      begin
+        Result := FStringEditor;
+      end;
+  end;
+end;
 
 procedure TCustomGrid.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
   Y: Integer);
@@ -2912,37 +3297,37 @@ begin
       end;
     gzNormal:
       if not (csDesigning in componentState) then begin
-        fGridState:=gsSelecting;
-        FSplitter:=MouseToCell(Point(X,Y));
-        if not Focused then setFocus;
-
-        if not (goEditing in Options) then begin
-          if ssShift in Shift then begin
-            SelectActive:=(goRangeSelect in Options);
-          end else begin
-            if not SelectACtive then begin
-              FPivot:=FSplitter;
-              FSelectActive:=true;
+        if FExtendedColSizing and
+          (Cursor=crHSplit) and
+          (goColSizing in Options) then begin
+          // extended column sizing
+          R:=CellRect(FSplitter.x, FTopLeft.y);
+          FSplitter.y:=R.Left;
+          fGridState:= gsColSizing;
+        end else begin
+          // normal selecting
+          fGridState:=gsSelecting;
+          FSplitter:=MouseToCell(Point(X,Y));
+          if not Focused then setFocus;
+          if not (goEditing in Options) then begin
+            if ssShift in Shift then begin
+              SelectActive:=(goRangeSelect in Options);
+            end else begin
+              if not SelectACtive then begin
+                FPivot:=FSplitter;
+                FSelectActive:=true;
+              end;
             end;
           end;
-        end;
-
-        if not MoveExtend(False, FSplitter.X, FSplitter.Y) then begin
-          if EditorAlwaysShown then begin
-            SelectEditor;
-            EditorShow(true);
+          if not MoveExtend(False, FSplitter.X, FSplitter.Y) then begin
+            if EditorAlwaysShown then begin
+              SelectEditor;
+              EditorShow(true);
+            end;
+            MoveSelection;
           end;
-          // user clicked on selected cell
-          // -> fire an OnSelection event
-          MoveSelection;
-          // Click();
+          
         end;
-        (*
-        if (GoEditing in Options)and(FEditor=nil) and not Focused then begin
-          {$IfDef dbgFocus} DebugLn('  AUTO-FOCUSING '); {$Endif}
-          LCLIntf.SetFocus(Self.Handle);
-        end;
-        *)
       end;
   end;
   {$ifDef dbgFocus} DebugLn('MouseDown END'); {$Endif}
@@ -3082,9 +3467,23 @@ procedure TCustomGrid.DefineProperties(Filer: TFiler);
     else
       Result := not SonDefault(false, FRows);
   end;
+  function HasColumns: boolean;
+  var
+    C: TGridColumns;
+  begin
+    if Filer.Ancestor <> nil then
+      C := TCustomGrid(Filer.Ancestor).Columns
+    else
+      C := Columns;
+    if C<>nil then
+      result := not C.IsDefault
+    else
+      result := false;
+  end;
 begin
   inherited DefineProperties(Filer);
   with Filer do begin
+    //DefineProperty('Columns',    @ReadColumns,    @WriteColumns,    HasColumns);
     DefineProperty('ColWidths',  @ReadColWidths,  @WriteColWidths,  NeedWidths);
     DefineProperty('RowHeights', @ReadRowHeights, @WriteRowHeights, NeedHeights);
   end;
@@ -3780,12 +4179,25 @@ end;
 
 function TCustomGrid.EditorIsReadOnly: boolean;
 begin
-  result := false;
+  result := GetColumnReadOnly(Col);
 end;
 
 procedure TCustomGrid.GetAutoFillColumnInfo(const Index: Integer; var aMin,aMax,aPriority: Integer);
+var
+  C: TGridColumn;
 begin
-  aPriority := 0;
+  if Index<FixedCols then
+    APriority := 0
+  else if Columns.Enabled then begin
+    C := ColumnFromGridColumn(Index);
+    if C<>nil then begin
+      aMin := C.MinSize;
+      aMax := C.MaxSize;
+      aPriority := C.SizePriority;
+    end else
+      APriority := 1;
+  end else
+    APriority := 1;
 end;
 
 procedure TCustomGrid.EditorExit(Sender: TObject);
@@ -3827,60 +4239,8 @@ begin
           if EditorAlwaysShown then
             EditorShow(True);
         end;
-
-        {
-        case FAutoAdvance of
-          aaRight: Key:=VK_RIGHT * Integer( FCol<ColCount-1 );
-          aaDown : Key:=VK_DOWN * Integer( FRow<RowCount-1 );
-          aaLeft : Key:=VK_LEFT * Integer( FCol>FixedCols );
-          else Key := 0;
-        end;
-        if Key=0 then begin
-          EditorGetValue;
-          if EditorAlwaysShown then
-            EditorShow(true);
-        end;
-        }
       end;
   end;
-  (*
-  case Key of
-    VK_LEFT, VK_RIGHT, VK_UP, VK_DOWN,
-    VK_PRIOR, VK_NEXT:
-    begin
-      if not(ssShift in Shift) then
-        KeyDown(Key, Shift);
-    end;
-    VK_RETURN{, VK_TAB}:
-    begin
-      {
-      if (Key=VK_TAB) and not (goTabs in Options) then begin
-          // let the focus go
-          KeyDown(Key, Shift);
-          //DebugLn('Editor KeyTab Pressed, Focus Should leave the grid');
-          Exit;
-      end;
-      }
-      //Key:=0;
-      case FAutoAdvance of
-        aaRight: Key:=VK_RIGHT * Integer( FCol<ColCount-1 );
-        aaDown : Key:=VK_DOWN * Integer( FRow<RowCount-1 );
-        aaLeft : Key:=VK_LEFT * Integer( FCol>FixedCols );
-        else Key := 0;
-      end;
-      
-      if Key=0 then begin
-        EditorGetValue;
-        if EditorAlwaysShown then
-          EditorShow(true);
-      end else
-        KeyDown(Key, Shift);
-    end;
-    
-    else
-      KeyDown(Key, Shift);
-  end;
-  *)
   FEditorKey:=False;
 end;
 
@@ -3910,10 +4270,11 @@ procedure TCustomGrid.SelectEditor;
 var
   aEditor: TWinControl;
 begin
-  aEditor:= Editor;
+  aEditor := GetDefaultEditor(Col);
   if (goEditing in Options) and Assigned(OnSelectEditor) then
     OnSelectEditor(Self, fCol,FRow, aEditor);
-  if aEditor<>Editor then Editor:=aEditor;
+  if aEditor<>Editor then
+    Editor:=aEditor;
 end;
 
 function TCustomGrid.EditorAlwaysShown: Boolean;
@@ -3972,6 +4333,145 @@ end;
 function TCustomGrid.GetEditText(ACol, ARow: Longint): string;
 begin
   result:='';
+end;
+
+function TCustomGrid.GetColumnAlignment(Column: Integer; ForTitle: Boolean): TAlignment;
+var
+  C: TGridColumn;
+begin
+  C := ColumnFromGridColumn(Column);
+  if C<>nil then
+    if ForTitle then
+      Result := C.Title.Alignment
+    else
+      Result := C.Alignment
+  else
+    result := GetDefaultAlignment(Column);
+end;
+
+function TCustomGrid.GetColumnColor(Column: Integer; ForTitle: Boolean): TColor;
+var
+  C: TGridColumn;
+begin
+  C := ColumnFromGridColumn(Column);
+  if C<>nil then
+    if ForTitle then
+      result := C.Title.Color
+    else
+      result := C.Color
+  else
+    if ForTitle then
+      result := FixedColor
+    else
+      result := Self.Color;
+end;
+
+function TCustomGrid.GetColumnFont(Column: Integer; ForTitle: Boolean): TFont;
+var
+  C: TGridColumn;
+begin
+  C := ColumnFromGridColumn(Column);
+  if C<>nil then
+    if ForTitle then
+      Result := C.Title.Font
+    else
+      Result := C.Font
+  else begin
+    if ForTitle then
+      Result := TitleFont
+    else
+      Result := Self.Font;
+  end;
+end;
+
+function TCustomGrid.GetColumnLayout(Column: Integer; ForTitle: boolean): TTextLayout;
+var
+  C: TGridColumn;
+begin
+  C := ColumnFromGridColumn(Column);
+  if C<>nil then
+    if ForTitle then
+      Result := C.Title.Layout
+    else
+      Result := C.Layout
+  else
+    result := GetDefaultLayout(Column);
+end;
+
+function TCustomGrid.GetColumnReadOnly(Column: Integer): boolean;
+var
+  C: TGridColumn;
+begin
+  C := ColumnFromGridColumn(Column);
+  if C<>nil then
+    result := C.ReadOnly
+  else
+    result := GetDefaultReadOnly(Column);
+end;
+
+function TCustomGrid.GetColumnTitle(Column: Integer): string;
+var
+  C: TGridColumn;
+begin
+  C := ColumnFromGridColumn(Column);
+  if C<>nil then
+    Result := C.Title.Caption
+  else
+    result := GetDefaultTitle(Column);
+end;
+
+function TCustomGrid.GetColumnWidth(Column: Integer): Integer;
+var
+  C: TGridColumn;
+begin
+  C := ColumnFromGridColumn(Column);
+  if C<>nil then
+    Result := C.Width
+  else
+    Result := GetDefaultColumnWidth(Column);
+end;
+
+function TCustomGrid.GetDefaultAlignment(Column: Integer): TAlignment;
+begin
+  result := DefaultTextStyle.Alignment;
+end;
+
+function TCustomGrid.GetDefaultEditor(Column: Integer): TWinControl;
+var
+  C: TGridColumn;
+  bs: TColumnButtonStyle;
+begin
+  result := nil;
+  if (goEditing in Options) then begin
+    C := ColumnFromGridColumn(Column);
+    if C<>nil then bs := C.ButtonStyle
+    else           bs := cbsAuto;
+    result := EditorByStyle( Bs );
+    {
+    if (result is TPickListCellEditor)and(C<>nil)and(C.PickList<>nil) then
+      TPickListCellEditor(Result).Items.Assign(C.PickList);
+    }
+  end;
+end;
+
+function TCustomGrid.GetDefaultColumnWidth(Column: Integer): Integer;
+begin
+  result := FDefColWidth;
+end;
+
+function TCustomGrid.GetDefaultLayout(Column: Integer): TTextLayout;
+begin
+  result := DefaultTextStyle.Layout;
+end;
+
+function TCustomGrid.GetDefaultReadOnly(Column: Integer): boolean;
+begin
+  result := false;
+end;
+
+function TCustomGrid.GetDefaultTitle(Column: Integer): string;
+begin
+  result := '';
 end;
 
 procedure TCustomGrid.SetEditText(ACol, ARow: Longint; const Value: string);
@@ -4195,6 +4695,12 @@ begin
   FGSMVBar := GetSystemMetrics(SM_CXVSCROLL) + GetSystemMetricsGapSize(SM_CXVSCROLL);
   //DebugLn('FGSMHBar= ', FGSMHBar, ' FGSMVBar= ', FGSMVBar);
   inherited Create(AOwner);
+  
+  FColumns := CreateColumns;
+  
+  FTitleFont := TFont.Create;
+  FTitleFont.OnChange := @OnTitleFontChanged;
+
   FAutoAdvance := aaRight;
   FFocusRectVisible := True;
   FDefaultDrawing := True;
@@ -4221,15 +4727,30 @@ begin
   BorderStyle := bsSingle;
   Color:=clWhite;
   FDefaultTextStyle := Canvas.TextStyle;
+  
+  FButtonEditor := TButtonCellEditor.Create(nil);
+  FButtonEditor.Name:='ButtonEditor';
+  FButtonEditor.Caption:='...';
+  FButtonEditor.Visible:=False;
+  FButtonEditor.OnClick := @EditButtonClicked;
+
+  FStringEditor := TStringCellEditor.Create(nil);
+  FStringEditor.name :='StringEditor';
+  FStringEditor.Text:='';
+  FStringEditor.Visible:=False;
+  FStringEditor.Align:=alNone;
+
 end;
 
 destructor TCustomGrid.Destroy;
 begin
   {$Ifdef dbg}DebugLn('TCustomGrid.Destroy');{$Endif}
+  FreeThenNil(FColumns);
   FreeThenNil(FGCache.AccumWidth);
   FreeThenNil(FGCache.AccumHeight);
   FreeThenNil(FCols);
   FreeThenNil(FRows);
+  FreeThenNil(FTitleFont);
   inherited Destroy;
 end;
 
@@ -4622,7 +5143,7 @@ begin
         exit;
       end;
     VK_BACK, VK_INSERT:;
-    
+
     else begin
       IntSel:= ((Key=VK_LEFT) and not AtStart) or ((Key=VK_RIGHT) and not AtEnd);
       if not IntSel then begin
@@ -5050,45 +5571,6 @@ begin
   end;
 end;
 
-{
-procedure TStringGrid.EditordoGetValue;
-var
-  msg: TGridMessage;
-begin
-  if (FEditor<>nil) and FEditor.Visible then begin
-    Msg.MsgID:=GM_GETVALUE;
-    Msg.grid:=Self;
-    Msg.Col:=FCol;
-    Msg.Row:=FRow;
-    Msg.Value:=Cells[FCol,FRow]; // default value
-    FEditor.Dispatch(Msg);
-    SetEditText(FCol, FRow, msg.Value);
-    //Cells[FCol,FRow]:=msg.Value;
-  end;
-end;
-
-procedure TStringGrid.EditordoSetValue;
-var
-  msg: TGridMessage;
-begin
-  if FEditor<>nil then begin
-    // Set the editor mask
-    Msg.MsgID:=GM_SETMASK;
-    Msg.Grid:=Self;
-    Msg.Col:=FCol;
-    Msg.Row:=FRow;
-    Msg.Value:=GetEditMask(FCol, FRow);
-    FEditor.Dispatch(Msg);
-    // Set the editor value
-    Msg.MsgID:=GM_SETVALUE;
-    Msg.Grid:=Self;
-    Msg.Col:=FCol;
-    Msg.Row:=FRow;
-    Msg.Value:=GetEditText(Fcol, FRow); //Cells[FCol,FRow];
-    FEditor.Dispatch(Msg);
-  end;
-end;
-}
 function TStringGrid.GetEditText(aCol, aRow: Integer): string;
 begin
   Result:=Cells[aCol, aRow];
@@ -5188,13 +5670,6 @@ begin
   end else inherited DrawInteriorCells;
 end;
 *)
-
-procedure TStringGrid.SelectEditor;
-begin
-  if goEditing in Options then Editor:=fDefEditor;
-  inherited SelectEditor;
-end;
-
 procedure TStringGrid.SetEditText(aCol, aRow: Longint; const aValue: string);
 begin
   if Cells[aCol, aRow]<>aValue then Cells[aCol, aRow]:= aValue;
@@ -5204,31 +5679,12 @@ end;
 constructor TStringGrid.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  if not (csDesigning in componentState) then begin
-    FDefEditor:=TStringCellEditor.Create(nil);
-    FDefEditor.Name:='Default_StringCellEditor';
-    FDefEditor.Text:='';
-    FDefEditor.Visible:=False;
-    FDefEditor.Align:=alNone;
-  end else begin
-    FDefEditor:=nil;
-  end;
   with DefaultTextStyle do begin
     Alignment := taLeftJustify;
     Layout := tlCenter;
     Clipping := True;
     //WordBreak := False
   end;
-end;
-
-destructor TStringGrid.Destroy;
-begin
-  {$Ifdef dbg}DebugLn('TStringGrid.Destroy');{$Endif}
-  if FdefEditor<>nil then begin
-    FDefEDitor.Parent:=nil;
-    FreeThenNil(FDefEditor);
-  end;
-  inherited Destroy;
 end;
 
 procedure TStringGrid.AutoSizeColumns;
@@ -5243,6 +5699,695 @@ end;
 procedure Register;
 begin
   RegisterComponents('Additional',[TStringGrid,TDrawGrid]);
+end;
+
+
+{ TColumnTitle }
+
+procedure TColumnTitle.FontChanged(Sender: TObject);
+begin
+  FisDefaultTitleFont := False;
+  FColumn.ColumnChanged;
+end;
+
+function TColumnTitle.GetAlignment: TAlignment;
+begin
+  if FAlignment = nil then
+    result := taLeftJustify
+  else
+    result := FAlignment^;
+end;
+
+function TColumnTitle.GetCaption: string;
+begin
+  if FCaption = nil then
+    Result := 'Title'
+  else
+    result := FCaption;
+end;
+
+function TColumnTitle.GetColor: TColor;
+begin
+  if FColor = nil then
+    if FColumn.Grid <> nil then
+      result := FColumn.Grid.FixedColor
+    else
+      result := clBtnFace
+  else
+    result := FColor^;
+end;
+
+procedure TColumnTitle.FillTitleDefaultFont;
+var
+  TheGrid: TCustomGrid;
+begin
+  TheGrid :=  FColumn.Grid;
+  if TheGrid<>nil then
+    FFont.Assign( TheGrid.TitleFont )
+    //FFont.Assign( TheGrid.Font )
+  else
+    FFont.Assign( FColumn.Font );
+end;
+
+function TColumnTitle.GetFont: TFont;
+begin
+  Result := FFont;
+end;
+
+function TColumnTitle.GetLayout: TTextLayout;
+begin
+  if FLayout = nil then
+    result := tlCenter
+  else
+    result := FLayout^;
+end;
+
+function TColumnTitle.IsAlignmentStored: boolean;
+begin
+  result := FAlignment <> nil;
+end;
+
+function TColumnTitle.IsCaptionStored: boolean;
+begin
+  result := FCaption <> nil;
+end;
+
+function TColumnTitle.IsColorStored: boolean;
+begin
+  result := FColor <> nil;
+end;
+
+function TColumnTitle.IsFontStored: boolean;
+begin
+  result := FFont <> nil;
+end;
+
+function TColumnTitle.IsLayoutStored: boolean;
+begin
+  result := FLayout <> nil;
+end;
+
+procedure TColumnTitle.SetAlignment(const AValue: TAlignment);
+begin
+  if Falignment = nil then
+    New(Falignment)
+  else if FAlignment^ = AValue then
+    exit;
+  FAlignment^ := AValue;
+  FColumn.ColumnChanged;
+end;
+
+procedure TColumnTitle.SetCaption(const AValue: string);
+begin
+  if (FCaption=nil)or(CompareText(AValue, FCaption^)<>0) then begin
+    if FCaption<>nil then
+      StrDispose(FCaption);
+      //DisposeStr(FCaption);
+    FCaption := StrNew(PChar(AValue));
+    //FCaption := NewStr(AValue);
+    FColumn.ColumnChanged;
+  end;
+end;
+
+procedure TColumnTitle.SetColor(const AValue: TColor);
+begin
+  if FColor=nil then
+    New(FColor)
+  else if FColor^=AValue then
+    exit;
+  FColor^ := AValue;
+  FColumn.ColumnChanged;
+end;
+
+procedure TColumnTitle.SetFont(const AValue: TFont);
+begin
+  if AValue.Handle<>FFont.Handle then begin
+    FFont.Assign(AValue);
+  end;
+end;
+
+procedure TColumnTitle.SetLayout(const AValue: TTextLayout);
+begin
+  if FLayout = nil then
+    New(FLayout)
+  else if FLayout^ = AValue then
+    exit;
+  FLayout^ := AValue;
+  FColumn.ColumnChanged;
+end;
+
+constructor TColumnTitle.Create(TheColumn: TGridColumn);
+begin
+  inherited Create;
+  FColumn := TheColumn;
+
+  FIsDefaultTitleFont := True;
+  FFont := TFont.Create;
+  FillTitleDefaultFont;
+  FFont.OnChange := @FontChanged;
+end;
+
+destructor TColumnTitle.Destroy;
+begin
+  if FFont<>nil then FFont.Free;
+  if FAlignment<>nil then Dispose(FAlignment);
+  if FColor<>nil then Dispose(FColor);
+  if FCaption<>nil then StrDispose(FCaption); //DisposeStr(FCaption);
+  if FLayout<>nil then Dispose(FLayout);
+  inherited Destroy;
+end;
+
+function TColumnTitle.IsDefault: boolean;
+begin
+  result :=  (FAlignment=nil) and (FColor=nil) and (FCaption=nil) and
+    IsDefaultFont and (FLayout=nil);
+end;
+
+{ TGridColumn }
+
+procedure TGridColumn.FontChanged(Sender: TObject);
+begin
+  FisDefaultFont := False;
+  ColumnChanged;
+end;
+
+function TGridColumn.GetAlignment: TAlignment;
+begin
+  if FAlignment=nil then begin
+    if not InternalAlignment(Result) then
+      result := taLeftJustify;
+  end else
+    result := FAlignment^;
+end;
+
+function TGridColumn.GetColor: TColor;
+var
+  TmpGrid: TCustomGrid;
+begin
+  TmpGrid := Grid;
+  if FColor=nil then
+    if TmpGrid<>nil then
+      result := TmpGrid.Color
+    else
+      result := clWhite
+  else
+    result := FColor^
+end;
+
+function TGridColumn.GetExpanded: Boolean;
+begin
+  result := True;
+end;
+
+function TGridColumn.GetFont: TFont;
+begin
+  result := FFont;
+end;
+
+function TGridColumn.GetGrid: TCustomGrid;
+begin
+  if Collection is TGridColumns then
+    result := (Collection as TGridColumns).Grid
+  else
+    result := nil;
+end;
+
+function TGridColumn.GetLayout: TTextLayout;
+begin
+  if FLayout=nil then
+    result := tlCenter
+  else
+    result := FLayout^;
+end;
+
+function TGridColumn.GetMaxSize: Integer;
+begin
+  if FMaxSize=nil then
+    result := InternalDefaultMaxSize
+  else
+    result := FMaxSize^;
+end;
+
+function TGridColumn.GetMinSize: Integer;
+begin
+  if FMinSize=nil then
+    result := InternalDefaultMinSize
+  else
+    result := FMinSize^;
+end;
+
+function TGridColumn.GetSizePriority: Integer;
+begin
+  if FMaxSize=nil then
+    result := GetDefaultSizePriority
+  else
+    result := FSizePriority^;
+end;
+
+function TGridColumn.GetPickList: TStrings;
+begin
+  Result := FPickList;
+end;
+
+function TGridColumn.GetReadOnly: Boolean;
+begin
+  if FReadOnly=nil then
+    result := InternalDefaultReadOnly
+  else
+    result := FReadOnly^;
+end;
+
+function TGridColumn.GetVisible: Boolean;
+begin
+  if FVisible=nil then begin
+    if not InternalVisible(result) then
+      result := True
+  end else
+    result := FVisible^;
+end;
+
+function TGridColumn.GetWidth: Integer;
+begin
+  if FWidth=nil then
+    result := InternalDefaultWidth
+  else
+    result := FWidth^;
+end;
+
+function TGridColumn.IsAlignmentStored: boolean;
+begin
+  result := FAlignment <> nil;
+end;
+
+function TGridColumn.IsColorStored: boolean;
+begin
+  result := FColor <> nil;
+end;
+
+function TGridColumn.IsFontStored: boolean;
+begin
+  result := not FisDefaultFont;
+end;
+
+function TGridColumn.IsLayoutStored: boolean;
+begin
+  result := FLayout <> nil;
+end;
+
+function TGridColumn.IsMinSizeStored: boolean;
+begin
+  result := FMinSize <> nil;
+end;
+
+function TGridColumn.IsMaxSizeStored: boolean;
+begin
+  result := FMaxSize <> nil;
+end;
+
+function TGridColumn.IsReadOnlyStored: boolean;
+begin
+  result := FReadOnly <> nil;
+end;
+
+function TGridColumn.IsSizePriorityStored: boolean;
+begin
+  result := FSizePriority <> nil;
+end;
+
+function TGridColumn.IsVisibleStored: boolean;
+begin
+  result := (FVisible<>nil) and not FVisible^;
+end;
+
+function TGridColumn.IsWidthStored: boolean;
+begin
+  result := FWidth <> nil;
+end;
+
+procedure TGridColumn.SetAlignment(const AValue: TAlignment);
+begin
+  if FAlignment = nil then
+    New(FAlignment)
+  else if FAlignment^ = AValue then
+    exit;
+  FAlignment^ := AValue;
+  ColumnChanged;
+end;
+
+procedure TGridColumn.SetButtonStyle(const AValue: TColumnButtonStyle);
+begin
+  if FButtonStyle=AValue then exit;
+  FButtonStyle:=AValue;
+  ColumnChanged;
+end;
+
+procedure TGridColumn.SetColor(const AValue: TColor);
+begin
+  if FColor = nil then
+    New(FColor)
+  else if FColor^ = AValue then
+   exit;
+  FColor^ := AValue;
+  ColumnChanged;
+end;
+
+procedure TGridColumn.SetExpanded(const AValue: Boolean);
+begin
+  //todo
+end;
+
+procedure TGridColumn.SetFont(const AValue: TFont);
+begin
+  if AValue.Handle<>FFont.Handle then begin
+    FFont.Assign(AValue);
+  end;
+end;
+
+procedure TGridColumn.SetLayout(const AValue: TTextLayout);
+begin
+  if FLayout = nil then
+    New(FLayout)
+  else if FLayout^ = AValue then
+    exit;
+  FLayout^ := AValue;
+  ColumnChanged;
+end;
+
+procedure TGridColumn.SetMaxSize(const AValue: Integer);
+begin
+  if FMaxSize = nil then
+    New(FMaxSize)
+  else if FMaxSize^ = AVAlue then
+    exit;
+  FMaxSize^ := AValue;
+  ColumnChanged;
+end;
+
+procedure TGridColumn.SetMinSize(const Avalue: Integer);
+begin
+  if FMinSize = nil then
+    New(FMinSize)
+  else if FMinSize^ = AVAlue then
+    exit;
+  FMinSize^ := AValue;
+  ColumnChanged;
+end;
+
+procedure TGridColumn.SetPickList(const AValue: TStrings);
+begin
+  if AValue=nil then
+    FPickList.Clear
+  else
+    FPickList.Assign(AValue);
+end;
+
+procedure TGridColumn.SetReadOnly(const AValue: Boolean);
+begin
+  if FReadOnly = nil then
+    New(FReadOnly)
+  else if FReadOnly^ = AValue then
+    exit;
+  FReadOnly^ := Avalue;
+  ColumnChanged;
+end;
+
+procedure TGridColumn.SetSizePriority(const AValue: Integer);
+begin
+  if FSizePriority = nil then
+    New(FSizePriority)
+  else if FSizePriority^ = AVAlue then
+    exit;
+  FSizePriority^ := AValue;
+  ColumnChanged;
+end;
+
+procedure TGridColumn.SetTitle(const AValue: TColumnTitle);
+begin
+  FTitle.Assign(AValue);
+end;
+
+procedure TGridColumn.SetVisible(const AValue: Boolean);
+begin
+  if FVisible = nil then
+    New(FVisible)
+  else if FVisible^ = AValue then
+    exit;
+  FVisible^ := AValue;
+  AllColumnsChange;
+end;
+
+procedure TGridColumn.SetWidth(const AValue: Integer);
+begin
+  if FWidth = nil then
+    New(FWidth)
+  else if FWidth^ = AVAlue then
+    exit;
+  FWidth^ := AValue;
+  FWidthChanged:=true;
+  ColumnChanged;
+end;
+
+function TGridColumn.InternalDefaultReadOnly: boolean;
+begin
+  result := false;
+end;
+
+function TGridColumn.InternalVisible(var AValue: boolean): boolean;
+begin
+  result := true;
+end;
+
+function TGridColumn.InternalDefaultWidth: Integer;
+begin
+  result := 64;
+end;
+
+function TGridColumn.InternalDefaultMaxSize: Integer;
+begin
+  // get a better default
+  Result := 200;
+end;
+
+function TGridColumn.InternalDefaultMinSize: Integer;
+begin
+  // get a better default
+  result := 10;
+end;
+
+function TGridColumn.GetDefaultSizePriority: Integer;
+begin
+  Result := 1;
+end;
+
+function TGridColumn.GetDisplayName: string;
+begin
+  Result := 'GridColumn';
+end;
+
+function TGridColumn.Internalalignment(var AValue: TAlignment
+  ): boolean;
+begin
+  result := false;
+end;
+
+procedure TGridColumn.ColumnChanged;
+begin
+  Changed(False);
+  FWidthChanged := False;
+end;
+
+procedure TGridColumn.AllColumnsChange;
+begin
+  Changed(True);
+  FWidthChanged := False;
+end;
+
+{$ifdef ver1_0}
+procedure TGridColumn.Changed(AllItems: Boolean);
+begin
+  inherited Changed(AllItems);
+end;
+{$endif}
+
+function TGridColumn.CreateTitle: TColumnTitle;
+begin
+  result := TColumnTitle.Create(Self);
+end;
+
+constructor TGridColumn.Create(ACollection: TCollection);
+begin
+  inherited Create(ACollection);
+  FTitle := CreateTitle;
+
+  FIsDefaultFont := True;
+  FFont := TFont.Create;
+  FillDefaultFont;
+  FFont.OnChange := @FontChanged;
+
+  FPickList:= TStringList.Create;
+  FButtonStyle := cbsAuto;
+  FDropDownRows := 7;
+end;
+
+destructor TGridColumn.Destroy;
+begin
+  if FAlignment<>nil then Dispose(FAlignment);
+  if FColor<>nil then Dispose(FColor);
+  if FVisible<>nil then Dispose(FVisible);
+  if FReadOnly<>nil then Dispose(FReadOnly);
+  if FWidth<>nil then Dispose(FWidth);
+  if FLayout<>nil then Dispose(FLayout);
+  FFont.Free;
+  FTitle.Free;
+  inherited Destroy;
+end;
+
+procedure TGridColumn.FillDefaultFont;
+var
+  TheGrid: TCustomGrid;
+begin
+  TheGrid := Grid;
+  if (theGrid<>nil) then begin
+    FFont.Assign(TheGrid.Font);
+  end;
+end;
+
+function TGridColumn.IsDefault: boolean;
+begin
+  result := FTitle.IsDefault and (FAlignment=nil) and (FColor=nil)
+    and (FVisible=nil) and (FReadOnly=nil) and (FWidth=nil) and FIsDefaultFont
+    and (FLayout=nil) and (FMaxSize=nil) and (FMinSize=nil)
+    and (FSizePriority=nil);
+end;
+
+{ TGridColumns }
+
+function TGridColumns.GetColumn(Index: Integer): TGridColumn;
+begin
+  result := TGridColumn( inherited Items[Index] );
+end;
+
+function TGridColumns.GetEnabled: Boolean;
+begin
+  result := VisibleCount > 0;
+end;
+
+procedure TGridColumns.SetColumn(Index: Integer; Value: TGridColumn
+  );
+begin
+  Items[Index].Assign( Value );
+end;
+
+function TGridColumns.GetVisibleCount: Integer;
+var
+  i: Integer;
+begin
+  result := 0;
+  for i:=0 to Count-1 do
+    if Items[i].Visible then
+      inc(result);
+end;
+
+procedure TGridColumns.Update(Item: TCollectionItem);
+begin
+  //if (FGrid<>nil) and not (csLoading in FGrid.ComponentState) then
+    FGrid.ColumnsChanged(TGridColumn(Item));
+end;
+
+procedure TGridColumns.TitleFontChanged;
+var
+  c: TGridColumn;
+  i: Integer;
+begin
+  for i:=0 to Count-1 do begin
+    c := Items[i];
+    if (c<>nil)and(c.Title.IsDefaultFont) then
+      c.Title.FillTitleDefaultFont;
+  end;
+end;
+
+procedure TGridColumns.FontChanged;
+var
+  c: TGridColumn;
+  i: Integer;
+begin
+  for i:=0 to Count-1 do begin
+    c := Items[i];
+    if (c<>nil)and(c.IsDefaultFont) then
+      c.FillDefaultFont;
+  end;
+end;
+
+constructor TGridColumns.Create(TheGrid: TCustomGrid);
+begin
+  inherited Create( TGridColumn );
+  FGrid := Thegrid;
+end;
+
+constructor TGridColumns.Create(TheGrid: TCustomGrid;
+  aItemClass: TCollectionItemClass);
+begin
+  inherited Create( aItemClass );
+  FGrid := TheGrid;
+end;
+
+function TGridColumns.Add: TGridColumn;
+begin
+  result := TGridColumn( inherited add );
+end;
+
+function TGridColumns.RealIndex(Index: Integer): Integer;
+var
+  i: Integer;
+begin
+  result := -1;
+  if Index>=0 then
+    for i:=0 to Count-1 do begin
+      if Items[i].Visible then begin
+        Dec(index);
+        if Index<0 then begin
+          result := i;
+          exit;
+        end;
+      end;
+    end;
+end;
+
+function TGridColumns.IndexOf(Column: TGridColumn): Integer;
+var
+  i: Integer;
+begin
+  result := -1;
+  for i:=0 to Count-1 do
+    if Items[i]=Column then begin
+      result := i;
+      break;
+    end;
+end;
+
+function TGridColumns.IsDefault: boolean;
+var
+  i: Integer;
+begin
+  result := True;
+  for i:=0 to Count-1 do
+    result := Result and Items[i].IsDefault;
+end;
+
+{ TButtonCellEditor }
+
+procedure TButtonCellEditor.msg_SetGrid(var Msg: TGridMessage);
+begin
+  FGrid:=Msg.Grid;
+  Msg.Options:=EO_HOOKKEYDOWN or EO_HOOKEXIT or EO_HOOKKEYPRESS or EO_HOOKKEYUP;
+end;
+
+procedure TButtonCellEditor.msg_SetPos(var Msg: TGridMessage);
+begin
+  with Msg.CellRect do begin
+    if Right-Left>25 then Left:=Right-25;
+    SetBounds(Left, Top, Right-Left, Bottom-Top);
+  End;
 end;
 
 end.
