@@ -291,6 +291,51 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  procedure CheckIfFileIsSymlink(const AFilename: string);
+ ------------------------------------------------------------------------------}
+
+procedure CheckIfFileIsSymlink(const AFilename: string);
+{$IFNDEF win32}
+var
+  AText: string;
+{$ENDIF}
+begin
+  // to get good error messages consider the OS
+  if not FileExists(AFilename) then begin
+    raise Exception.Create('file "'+AFilename+'" does not exist');
+  end;
+  {$IFNDEF win32}
+  if {$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.ReadLink(AFilename)='' then begin
+    AText:='"'+AFilename+'"';
+    case LinuxError of
+    sys_eacces: AText:='read access denied for '+AText;
+    sys_enoent: AText:='a directory component in '+AText
+                          +' does not exist or is a dangling symlink';
+    sys_enotdir: AText:='a directory component in '+Atext+' is not a directory';
+    sys_enomem: AText:='insufficient memory';
+    sys_eloop: AText:=AText+' has a circular symbolic link';
+    else
+      AText:=AText+' is not a symbolic link';
+    end;
+    raise Exception.Create(AText);
+  end;
+  {$ENDIF}
+end;
+
+{------------------------------------------------------------------------------
+  function FileIsSymlink(const AFilename: string): boolean;
+ ------------------------------------------------------------------------------}
+function FileIsSymlink(const AFilename: string): boolean;
+begin
+  try
+    CheckIfFileIsSymlink(AFilename);
+    Result:=true;
+  except
+    Result:=false;
+  end;
+end;
+
+{------------------------------------------------------------------------------
   function FileIsReadable(const AFilename: string): boolean;
  ------------------------------------------------------------------------------}
 function FileIsReadable(const AFilename: string): boolean;
@@ -462,8 +507,6 @@ begin
     raise Exception.Create(AText);
   end;
   {$ENDIF}
-
-  // ToDo: windows and xxxbsd
 end;
 
 {------------------------------------------------------------------------------
@@ -631,6 +674,9 @@ end;
 
 {
   $Log$
+  Revision 1.7  2002/12/23 10:12:40  mattias
+  added symlink test and unit types
+
   Revision 1.6  2002/12/17 19:49:34  mattias
   finished publish project
 

@@ -46,10 +46,12 @@ uses
 // file attributes and states
 function FilenameIsAbsolute(TheFilename: string):boolean;
 procedure CheckIfFileIsExecutable(const AFilename: string);
+procedure CheckIfFileIsSymlink(const AFilename: string);
 function FileIsReadable(const AFilename: string): boolean;
 function FileIsWritable(const AFilename: string): boolean;
 function FileIsText(const AFilename: string): boolean;
 function FileIsExecutable(const AFilename: string): boolean;
+function FileIsSymlink(const AFilename: string): boolean;
 function GetFileDescription(const AFilename: string): string;
 
 // directories
@@ -106,6 +108,9 @@ end.
 
 {
   $Log$
+  Revision 1.8  2002/12/23 10:12:40  mattias
+  added symlink test and unit types
+
   Revision 1.7  2002/12/17 19:49:34  mattias
   finished publish project
 

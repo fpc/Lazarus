@@ -156,13 +156,16 @@ procedure GTKAPIWidgetClient_Realize(Widget: PGTKWidget); cdecl;
 var
   Attributes: TGdkWindowAttr;
   AttributesMask: gint;
-
+  {$IFNDEF WinAPIChilds}
   Client: PGTKAPIWidgetClient;
+  {$ENDIF}
 begin
 //  Assert(False, 'Trace:[GTKAPIWidgetClient_Realize]');
   gtk_widget_set_flags(Widget, GTK_REALIZED);
 
+  {$IFNDEF WinAPIChilds}
   Client := PGTKAPIWidgetClient(Widget);
+  {$ENDIF}
 
   with Attributes do
   begin
@@ -774,6 +777,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.40  2002/12/23 10:12:40  mattias
+  added symlink test and unit types
+
   Revision 1.39  2002/12/22 22:42:55  mattias
   custom controls now support child wincontrols
 

@@ -2134,10 +2134,12 @@ function TFindDeclarationTool.FindBaseTypeOfNode(Params: TFindDeclarationParams;
     RaiseExceptionFmt(ctsBaseTypeOfNotFound,[GetIdentifier(Params.Identifier)]);
   end;
   
-var OldInput: TFindDeclarationInput;
+var
+  OldInput: TFindDeclarationInput;
   ClassIdentNode, DummyNode: TCodeTreeNode;
   NodeStack: TCodeTreeNodeStack;
   OldPos: integer;
+  TypeFound: boolean;
   
   procedure RaiseForwardNotResolved;
   begin
@@ -2237,7 +2239,24 @@ begin
         if Params.ContextNode.Desc=ctnProcedureHead then
           // skip search in proc parameters
           Params.ContextNode:=Params.ContextNode.Parent;
-        if FindIdentifierInContext(Params) then begin
+        TypeFound:=FindIdentifierInContext(Params);
+        if TypeFound and (Params.NewNode.Desc in [ctnUnit,ctnLibrary,ctnPackage])
+        then begin
+          // unitname.typename
+          MoveCursorToNodeStart(Result.Node);
+          ReadNextAtom; // read unitname
+          ReadNextAtomIsChar('.');
+          ReadNextAtom; // read type identifier
+          Params.Load(OldInput);
+          Params.SetIdentifier(Self,@Src[CurPos.StartPos],
+                               @CheckSrcIdentifier);
+          Params.Flags:=[fdfExceptionOnNotFound]
+                        +(fdfGlobals*OldInput.Flags)
+                        +[fdfIgnoreUsedUnits];
+          Params.ContextNode:=Params.NewCodeTool.FindInterfaceNode;
+          TypeFound:=Params.NewCodeTool.FindIdentifierInContext(Params);
+        end;
+        if TypeFound then begin
           if Params.NewNode.Desc in [ctnTypeDefinition] then begin
             if NodeExistsInStack(@NodeStack,Params.NewNode) then begin
               // circle detected
