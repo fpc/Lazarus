@@ -5109,7 +5109,9 @@ begin
        with TLabel(Sender) do
        begin
          gtk_label_set_justify(PGtkLabel(Handle), cLabelAlign[Alignment]);
-         gtk_misc_set_alignment(PGTKMISC(Handle), cLabelAlignX[Alignment], cLabelAlignY[Layout]);
+         gtk_misc_set_alignment(PGtkMisc(Handle), cLabelAlignX[Alignment],
+                                cLabelAlignY[Layout]);
+         gtk_label_set_line_wrap(PGtkLabel(Handle), WordWrap);
        end;
        
     csListView :
@@ -5825,6 +5827,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.210  2002/09/10 17:30:16  lazarus
+  MG: added TLabel.WordWrap for gtk-interface from Vincent
+
   Revision 1.209  2002/09/10 10:00:27  lazarus
   MG: TListView now works handleless and SetSelection implemented
 
