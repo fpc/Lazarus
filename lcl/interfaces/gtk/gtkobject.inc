@@ -482,7 +482,8 @@ begin
     ParentTransientWindow:=nil;
     for i:=0 to AllWindows.Count-1 do begin
       ATransientWindow:=PTransientWindow(AllWindows[i]);
-      if ATransientWindow^.Component<>nil then begin
+      if (ATransientWindow^.Component<>nil)
+      and GTK_WIDGET_VISIBLE(PgtkWidget(ATransientWindow^.GtkWindow)) then begin
         if ParentTransientWindow<>nil then begin
           //writeln('Set TRANSIENT Parent=',ParentTransientWindow^.Component.Name,':',ParentTransientWindow^.Component.ClassName,' ',ParentTransientWindow^.SortIndex,
           //' Child=',ATransientWindow^.Component.Name,':',ATransientWindow^.Component.ClassName,' ',ATransientWindow^.SortIndex);
@@ -7111,6 +7112,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.344  2003/03/27 22:16:01  mattias
+  implemented findeclaration gdb exceptions
+
   Revision 1.343  2003/03/26 19:25:27  mattias
   added transient deactivation option and updated localization
 
