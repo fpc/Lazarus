@@ -286,6 +286,10 @@ msgstr "Puntos de Rotura"
 msgid "Bring to front"
 msgstr "Traer al frente"
 
+#: lazarusidestrconsts:dlgunitdepbrowse
+msgid "Browse..."
+msgstr ""
+
 #: lazarusidestrconsts:lismenubuild
 msgid "Build"
 msgstr "Construir"
@@ -413,6 +417,10 @@ msgstr ""
 #: lazarusidestrconsts:dlgedcodetempl
 msgid "Code templates"
 msgstr "Plantillas de Código"
+
+#: lazarusidestrconsts:dlgcodetoolstab
+msgid "Code Tools"
+msgstr ""
 
 #: lazarusidestrconsts:srkmcatcodetools
 msgid "CodeTools commands"
@@ -620,6 +628,10 @@ msgstr "Depurando:"
 
 #: lazarusidestrconsts:rsiwpdefault
 msgid "Default"
+msgstr ""
+
+#: lazarusidestrconsts:dlgdefaulteditorfont
+msgid "Default editor font"
 msgstr ""
 
 #: lazarusidestrconsts:dlgpasext
@@ -1986,6 +1998,10 @@ msgstr "Sólo lectura"
 msgid "Redo"
 msgstr "Rehacer"
 
+#: lazarusidestrconsts:dlgunitdeprefresh
+msgid "Refresh"
+msgstr ""
+
 #: lazarusidestrconsts:dlgregularexpressions
 msgid "Regular Expressions"
 msgstr "Expresiones Regulares"
@@ -2717,6 +2733,10 @@ msgstr ""
 #: lazarusidestrconsts:lismenuunindentselection
 msgid "Unindent selection"
 msgstr "Desangrar selección"
+
+#: lazarusidestrconsts:dlgunitdepcaption
+msgid "Unit dependencies"
+msgstr ""
 
 #: lazarusidestrconsts:uemunitinfo
 msgid "Unit Info"

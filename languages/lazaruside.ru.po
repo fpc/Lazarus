@@ -286,6 +286,10 @@ msgstr "Точки останова"
 msgid "Bring to front"
 msgstr "Перенесть наверх"
 
+#: lazarusidestrconsts:dlgunitdepbrowse
+msgid "Browse..."
+msgstr ""
+
 #: lazarusidestrconsts:lismenubuild
 msgid "Build"
 msgstr "Собрать"
@@ -413,6 +417,10 @@ msgstr ""
 #: lazarusidestrconsts:dlgedcodetempl
 msgid "Code templates"
 msgstr "Шаблоны кода"
+
+#: lazarusidestrconsts:dlgcodetoolstab
+msgid "Code Tools"
+msgstr ""
 
 #: lazarusidestrconsts:srkmcatcodetools
 msgid "CodeTools commands"
@@ -620,6 +628,10 @@ msgstr "Отладка:"
 
 #: lazarusidestrconsts:rsiwpdefault
 msgid "Default"
+msgstr ""
+
+#: lazarusidestrconsts:dlgdefaulteditorfont
+msgid "Default editor font"
 msgstr ""
 
 #: lazarusidestrconsts:dlgpasext
@@ -1986,6 +1998,10 @@ msgstr "Только чтение"
 msgid "Redo"
 msgstr "Вернуть"
 
+#: lazarusidestrconsts:dlgunitdeprefresh
+msgid "Refresh"
+msgstr ""
+
 #: lazarusidestrconsts:dlgregularexpressions
 msgid "Regular Expressions"
 msgstr "Определенные выражения"
@@ -2717,6 +2733,10 @@ msgstr ""
 #: lazarusidestrconsts:lismenuunindentselection
 msgid "Unindent selection"
 msgstr "Сдвинуть блок влево"
+
+#: lazarusidestrconsts:dlgunitdepcaption
+msgid "Unit dependencies"
+msgstr ""
 
 #: lazarusidestrconsts:uemunitinfo
 msgid "Unit Info"

@@ -286,6 +286,10 @@ msgstr "Haltepunkte"
 msgid "Bring to front"
 msgstr ""
 
+#: lazarusidestrconsts:dlgunitdepbrowse
+msgid "Browse..."
+msgstr ""
+
 #: lazarusidestrconsts:lismenubuild
 msgid "Build"
 msgstr "Kompiliere"
@@ -412,6 +416,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgedcodetempl
 msgid "Code templates"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcodetoolstab
+msgid "Code Tools"
 msgstr ""
 
 #: lazarusidestrconsts:srkmcatcodetools
@@ -620,6 +628,10 @@ msgstr ""
 
 #: lazarusidestrconsts:rsiwpdefault
 msgid "Default"
+msgstr ""
+
+#: lazarusidestrconsts:dlgdefaulteditorfont
+msgid "Default editor font"
 msgstr ""
 
 #: lazarusidestrconsts:dlgpasext
@@ -1986,6 +1998,10 @@ msgstr ""
 msgid "Redo"
 msgstr "Wiederholen"
 
+#: lazarusidestrconsts:dlgunitdeprefresh
+msgid "Refresh"
+msgstr ""
+
 #: lazarusidestrconsts:dlgregularexpressions
 msgid "Regular Expressions"
 msgstr ""
@@ -2717,6 +2733,10 @@ msgstr ""
 #: lazarusidestrconsts:lismenuunindentselection
 msgid "Unindent selection"
 msgstr "Block rausruecken"
+
+#: lazarusidestrconsts:dlgunitdepcaption
+msgid "Unit dependencies"
+msgstr ""
 
 #: lazarusidestrconsts:uemunitinfo
 msgid "Unit Info"

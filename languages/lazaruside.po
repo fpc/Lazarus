@@ -1050,10 +1050,6 @@ msgstr ""
 msgid "Test directory \"%s\" not found."
 msgstr ""
 
-#: lazarusidestrconsts:dlgedoptscap
-msgid "Editor Options"
-msgstr ""
-
 #: lazarusidestrconsts:dlgeddisplay
 msgid "Display"
 msgstr ""
@@ -1226,6 +1222,10 @@ msgstr ""
 msgid "Editor font"
 msgstr ""
 
+#: lazarusidestrconsts:dlgdefaulteditorfont
+msgid "Default editor font"
+msgstr ""
+
 #: lazarusidestrconsts:dlgeditorfontheight
 msgid "Editor font height"
 msgstr ""
@@ -1340,6 +1340,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgindentcodeto
 msgid "Indent code to"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcodetoolstab
+msgid "Code Tools"
 msgstr ""
 
 #: lazarusidestrconsts:dlgcodetoolsopts
@@ -3088,5 +3092,17 @@ msgstr ""
 
 #: lazarusidestrconsts:rslanguagefrench
 msgid "French"
+msgstr ""
+
+#: lazarusidestrconsts:dlgunitdepcaption
+msgid "Unit dependencies"
+msgstr ""
+
+#: lazarusidestrconsts:dlgunitdepbrowse
+msgid "Browse..."
+msgstr ""
+
+#: lazarusidestrconsts:dlgunitdeprefresh
+msgid "Refresh"
 msgstr ""
 

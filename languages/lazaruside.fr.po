@@ -295,6 +295,10 @@ msgstr "Points d'arrêt"
 msgid "Bring to front"
 msgstr "Mettre au premier plan"
 
+#: lazarusidestrconsts:dlgunitdepbrowse
+msgid "Browse..."
+msgstr ""
+
 #: lazarusidestrconsts:lismenubuild
 msgid "Build"
 msgstr "Construire"
@@ -422,6 +426,10 @@ msgstr "Complèter avec le modèle de code"
 #: lazarusidestrconsts:dlgedcodetempl
 msgid "Code templates"
 msgstr "Modèles de code"
+
+#: lazarusidestrconsts:dlgcodetoolstab
+msgid "Code Tools"
+msgstr ""
 
 #: lazarusidestrconsts:srkmcatcodetools
 msgid "CodeTools commands"
@@ -630,6 +638,10 @@ msgstr "Débugueur"
 #: lazarusidestrconsts:rsiwpdefault
 msgid "Default"
 msgstr "Défaut"
+
+#: lazarusidestrconsts:dlgdefaulteditorfont
+msgid "Default editor font"
+msgstr ""
 
 #: lazarusidestrconsts:dlgpasext
 msgid "Default pascal extension"
@@ -1995,6 +2007,10 @@ msgstr "Lecture seule"
 msgid "Redo"
 msgstr "Refaire"
 
+#: lazarusidestrconsts:dlgunitdeprefresh
+msgid "Refresh"
+msgstr ""
+
 #: lazarusidestrconsts:dlgregularexpressions
 msgid "Regular Expressions"
 msgstr "Expression régulière:"
@@ -2726,6 +2742,10 @@ msgstr "Désindenté le bloque"
 #: lazarusidestrconsts:lismenuunindentselection
 msgid "Unindent selection"
 msgstr "Désindenter la sélection"
+
+#: lazarusidestrconsts:dlgunitdepcaption
+msgid "Unit dependencies"
+msgstr ""
 
 #: lazarusidestrconsts:uemunitinfo
 msgid "Unit Info"
