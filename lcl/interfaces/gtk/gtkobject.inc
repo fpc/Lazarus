@@ -389,157 +389,166 @@ var
   ParentTransientWindow: PTransientWindow;
   OldTransientParent: PGtkWindow;
 begin
-  if not UseTransientForModalWindows then exit;
-  {$IFDEF VerboseTransient}
-  writeln('TgtkObject.UpdateTransientWindows');
-  {$ENDIF}
-  AllWindows:=nil;
+  if (not UseTransientForModalWindows) then exit;
+  if UpdatingTransientWindows then begin
+    writeln('TgtkObject.UpdateTransientWindows already updating');
+    exit;
+  end;
+  UpdatingTransientWindows:=true;
+  try
+    {$IFDEF VerboseTransient}
+    writeln('TgtkObject.UpdateTransientWindows');
+    {$ENDIF}
+    AllWindows:=nil;
 
-  // find all currently visible gtkwindows
-  List := gdk_window_get_toplevels;
-  while List <> nil do
-  begin
-    if (List^.Data <> nil)
-    then begin
-      gdk_window_get_user_data(PGDKWindow(List^.Data), @Window);
-      if GtkWidgetIsA(PGtkWidget(Window),GTK_WINDOW_TYPE)
+    // find all currently visible gtkwindows
+    List := gdk_window_get_toplevels;
+    while List <> nil do
+    begin
+      if (List^.Data <> nil)
       then begin
-        // visible window found -> add to list
-        New(ATransientWindow);
-        FillChar(ATransientWindow^,SizeOf(TTransientWindow),0);
-        ATransientWindow^.GtkWindow:=Window;
-        LCLObject:=GetLCLObject(Window);
-        if (LCLObject<>nil) and (LCLObject is TComponent) then begin
-          LCLComponent:=TComponent(LCLObject);
-          ATransientWindow^.Component:=LCLComponent;
+        gdk_window_get_user_data(PGDKWindow(List^.Data), @Window);
+        if GtkWidgetIsA(PGtkWidget(Window),GTK_WINDOW_TYPE)
+        then begin
+          // visible window found -> add to list
+          New(ATransientWindow);
+          FillChar(ATransientWindow^,SizeOf(TTransientWindow),0);
+          ATransientWindow^.GtkWindow:=Window;
+          LCLObject:=GetLCLObject(Window);
+          if (LCLObject<>nil) and (LCLObject is TComponent) then begin
+            LCLComponent:=TComponent(LCLObject);
+            ATransientWindow^.Component:=LCLComponent;
+          end;
+          if (ModalWindows<>nil) then
+            ATransientWindow^.SortIndex:=ModalWindows.IndexOf(Window)
+          else
+            ATransientWindow^.SortIndex:=-1;
+          ATransientWindow^.IsModal:=(ATransientWindow^.SortIndex>=0)
+            and (GTK_WIDGET_VISIBLE(PGtkWidget(Window)));
+          if not ATransientWindow^.IsModal then begin
+            if LCLObject is TCustomForm then
+              ATransientWindow^.SortIndex:=
+                Screen.CustomFormIndex(TCustomForm(LCLObject));
+          end;
+          if AllWindows=nil then AllWindows:=TList.Create;
+          AllWindows.Add(ATransientWindow);
         end;
-        if (ModalWindows<>nil) then
-          ATransientWindow^.SortIndex:=ModalWindows.IndexOf(Window)
-        else
-          ATransientWindow^.SortIndex:=-1;
-        ATransientWindow^.IsModal:=(ATransientWindow^.SortIndex>=0)
-          and (GTK_WIDGET_VISIBLE(PGtkWidget(Window)));
-        if not ATransientWindow^.IsModal then begin
-          if LCLObject is TCustomForm then
-            ATransientWindow^.SortIndex:=
-              Screen.CustomFormIndex(TCustomForm(LCLObject));
-        end;
-        if AllWindows=nil then AllWindows:=TList.Create;
-        AllWindows.Add(ATransientWindow);
       end;
+      list := g_list_next(list);
     end;
-    list := g_list_next(list);
-  end;
 
-  if AllWindows=nil then exit;
+    if AllWindows=nil then exit;
 
-  // sort
-  // move all modal windows at the end of the window list
-  i:=AllWindows.Count-1;
-  FirstModal:=AllWindows.Count;
-  while i>=0 do begin
-    ATransientWindow:=PTransientWindow(AllWindows[i]);
-    if ATransientWindow^.IsModal
-    and (i<FirstModal) then begin
-      dec(FirstModal);
-      if i<FirstModal then
-        AllWindows.Exchange(i,FirstModal);
-    end;
-    dec(i);
-  end;
-  
-  if FirstModal=AllWindows.Count then begin
-    // there is no modal window
-    // -> break all transient window relation ships
-    for i:=0 to AllWindows.Count-1 do begin
+    // sort
+    // move all modal windows at the end of the window list
+    i:=AllWindows.Count-1;
+    FirstModal:=AllWindows.Count;
+    while i>=0 do begin
       ATransientWindow:=PTransientWindow(AllWindows[i]);
-      {$IFDEF VerboseTransient}
-      write('TgtkObject.UpdateTransientWindows  Untransient ',i);
-      if ATransientWindow^.Component<>nil then
-        write(' ',ATransientWindow^.Component.Name,':',ATransientWindow^.Component.ClassName);
-      writeln('');
-      {$ENDIF}
-      gtk_window_set_transient_for(ATransientWindow^.GtkWindow,nil);
-    end;
-  end else begin
-    // there are modal windows
-    // -> sort windows in z order and setup transient relationships
-    
-    // sort modal windows (bubble sort)
-    for i:=FirstModal to AllWindows.Count-2 do begin
-      for j:=i+1 to AllWindows.Count-1 do begin
-        ATransientWindow1:=PTransientWindow(AllWindows[i]);
-        ATransientWindow2:=PTransientWindow(AllWindows[j]);
-        if ATransientWindow1^.SortIndex>ATransientWindow2^.SortIndex then
-          AllWindows.Exchange(i,j);
+      if ATransientWindow^.IsModal
+      and (i<FirstModal) then begin
+        dec(FirstModal);
+        if i<FirstModal then
+          AllWindows.Exchange(i,FirstModal);
       end;
-    end;
-    
-    // sort non modal windows for z order
-    // ToDo: How do we get the z order?
-    // For now, just use the inverse order in the Screen object
-    // that means: the lower in the Screen object, the later in the transient list
-    for i:=0 to FirstModal-2 do begin
-      for j:=i+1 to FirstModal-1 do begin
-        ATransientWindow1:=PTransientWindow(AllWindows[i]);
-        ATransientWindow2:=PTransientWindow(AllWindows[j]);
-        if ATransientWindow1^.SortIndex<ATransientWindow2^.SortIndex then
-          AllWindows.Exchange(i,j);
-      end;
-    end;
-    
-    // set all transient relationships for LCL windows
-    ParentTransientWindow:=nil;
-    for i:=0 to AllWindows.Count-1 do begin
-      ATransientWindow:=PTransientWindow(AllWindows[i]);
-      if (ATransientWindow^.Component<>nil)
-      and GTK_WIDGET_VISIBLE(PgtkWidget(ATransientWindow^.GtkWindow)) then begin
-        if ParentTransientWindow<>nil then begin
-          {$IFDEF VerboseTransient}
-          writeln('Set TRANSIENT Parent=',
-            ParentTransientWindow^.Component.Name,':',
-              ParentTransientWindow^.Component.ClassName,
-            ' Index=',ParentTransientWindow^.SortIndex,
-            ' Wnd=',HexStr(Cardinal(ParentTransientWindow^.GtkWindow),8),
-          ' Child=',ATransientWindow^.Component.Name,':',
-                             ATransientWindow^.Component.ClassName,
-            ' Index=',ATransientWindow^.SortIndex,
-            ' Wnd=',HexStr(Cardinal(ATransientWindow^.GtkWindow),8),
-            '');
-          {$ENDIF}
-          ATransientWindow^.TransientParent:=ParentTransientWindow^.GtkWindow;
-        end;
-        ParentTransientWindow:=ATransientWindow;
-      end;
+      dec(i);
     end;
 
-    // Each transient relationship can reorder the visible forms
-    // To reduce flickering and creation of temporary circles
-    // do the setup in two separate steps:
-
-    // break unneeded transient relationships
-    for i:=0 to AllWindows.Count-1 do begin
-      ATransientWindow:=PTransientWindow(AllWindows[i]);
-      OldTransientParent:=ATransientWindow^.GtkWindow^.transient_parent;
-      if (OldTransientParent<>ATransientWindow^.TransientParent) then
+    if FirstModal=AllWindows.Count then begin
+      // there is no modal window
+      // -> break all transient window relation ships
+      for i:=0 to AllWindows.Count-1 do begin
+        ATransientWindow:=PTransientWindow(AllWindows[i]);
+        {$IFDEF VerboseTransient}
+        write('TgtkObject.UpdateTransientWindows  Untransient ',i);
+        if ATransientWindow^.Component<>nil then
+          write(' ',ATransientWindow^.Component.Name,':',ATransientWindow^.Component.ClassName);
+        writeln('');
+        {$ENDIF}
         gtk_window_set_transient_for(ATransientWindow^.GtkWindow,nil);
+      end;
+    end else begin
+      // there are modal windows
+      // -> sort windows in z order and setup transient relationships
+
+      // sort modal windows (bubble sort)
+      for i:=FirstModal to AllWindows.Count-2 do begin
+        for j:=i+1 to AllWindows.Count-1 do begin
+          ATransientWindow1:=PTransientWindow(AllWindows[i]);
+          ATransientWindow2:=PTransientWindow(AllWindows[j]);
+          if ATransientWindow1^.SortIndex>ATransientWindow2^.SortIndex then
+            AllWindows.Exchange(i,j);
+        end;
+      end;
+
+      // sort non modal windows for z order
+      // ToDo: How do we get the z order?
+      // For now, just use the inverse order in the Screen object
+      // that means: the lower in the Screen object, the later in the transient list
+      for i:=0 to FirstModal-2 do begin
+        for j:=i+1 to FirstModal-1 do begin
+          ATransientWindow1:=PTransientWindow(AllWindows[i]);
+          ATransientWindow2:=PTransientWindow(AllWindows[j]);
+          if ATransientWindow1^.SortIndex<ATransientWindow2^.SortIndex then
+            AllWindows.Exchange(i,j);
+        end;
+      end;
+
+      // set all transient relationships for LCL windows
+      ParentTransientWindow:=nil;
+      for i:=0 to AllWindows.Count-1 do begin
+        ATransientWindow:=PTransientWindow(AllWindows[i]);
+        if (ATransientWindow^.Component<>nil)
+        and GTK_WIDGET_VISIBLE(PgtkWidget(ATransientWindow^.GtkWindow)) then begin
+          if ParentTransientWindow<>nil then begin
+            {$IFDEF VerboseTransient}
+            writeln('Set TRANSIENT Parent=',
+              ParentTransientWindow^.Component.Name,':',
+                ParentTransientWindow^.Component.ClassName,
+              ' Index=',ParentTransientWindow^.SortIndex,
+              ' Wnd=',HexStr(Cardinal(ParentTransientWindow^.GtkWindow),8),
+            ' Child=',ATransientWindow^.Component.Name,':',
+                               ATransientWindow^.Component.ClassName,
+              ' Index=',ATransientWindow^.SortIndex,
+              ' Wnd=',HexStr(Cardinal(ATransientWindow^.GtkWindow),8),
+              '');
+            {$ENDIF}
+            ATransientWindow^.TransientParent:=ParentTransientWindow^.GtkWindow;
+          end;
+          ParentTransientWindow:=ATransientWindow;
+        end;
+      end;
+
+      // Each transient relationship can reorder the visible forms
+      // To reduce flickering and creation of temporary circles
+      // do the setup in two separate steps:
+
+      // break unneeded transient relationships
+      for i:=0 to AllWindows.Count-1 do begin
+        ATransientWindow:=PTransientWindow(AllWindows[i]);
+        OldTransientParent:=ATransientWindow^.GtkWindow^.transient_parent;
+        if (OldTransientParent<>ATransientWindow^.TransientParent) then
+          gtk_window_set_transient_for(ATransientWindow^.GtkWindow,nil);
+      end;
+
+      // setup transient relationships
+      for i:=0 to AllWindows.Count-1 do begin
+        ATransientWindow:=PTransientWindow(AllWindows[i]);
+        if ATransientWindow^.TransientParent=nil then continue;
+        gtk_window_set_transient_for(ATransientWindow^.GtkWindow,
+                                     ATransientWindow^.TransientParent);
+      end;
     end;
 
-    // setup transient relationships
+    // clean up
     for i:=0 to AllWindows.Count-1 do begin
       ATransientWindow:=PTransientWindow(AllWindows[i]);
-      if ATransientWindow^.TransientParent=nil then continue;
-      gtk_window_set_transient_for(ATransientWindow^.GtkWindow,
-                                   ATransientWindow^.TransientParent);
+      Dispose(ATransientWindow);
     end;
+    AllWindows.Free;
+  finally
+    UpdatingTransientWindows:=false;
   end;
-
-  // clean up
-  for i:=0 to AllWindows.Count-1 do begin
-    ATransientWindow:=PTransientWindow(AllWindows[i]);
-    Dispose(ATransientWindow);
-  end;
-  AllWindows.Free;
 end;
 
 {------------------------------------------------------------------------------
@@ -7173,6 +7182,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.348  2003/04/04 16:35:24  mattias
+  started package registration
+
   Revision 1.347  2003/04/03 17:42:13  mattias
   added exception handling for createpixmapindirect
 
