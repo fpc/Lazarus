@@ -25,6 +25,10 @@
   {$UNDEF H_PLUS}
 {$ENDIF} 
 
+const
+  GtkListItemGtkListTag = 'GtkList';
+  GtkListItemLCLListTag = 'LCLList';
+
 {*************************************************************}
 {                      Default compare function               }
 {*************************************************************}
@@ -47,21 +51,60 @@ end;
 function gtkListItemDrawAfterCB(Widget: PGtkWidget; area: PGDKRectangle;
   data: gPointer) : GBoolean; cdecl;
 var
-  Msg: TLMDrawItems;
+  Msg: TLMDrawListItem;
+  ItemIndex: integer;
+  GtkList: PGtkList;
+  AreaRect: TRect;
+  State: TOwnerDrawState;
+  LCLList: TGtkListStringList;
 begin
   Result:=true;
   
-  exit;
+  //writeln('gtkListItemDrawCB ');
+
+  // get context
+  GtkList:=PGtkList(gtk_object_get_data(PGtkObject(Data),GtkListItemGtkListTag));
+  if GtkList=nil then
+    RaiseException('gtkListItemDrawAfterCB GtkList=nil');
+  LCLList:=TGtkListStringList(gtk_object_get_data(PGtkObject(Data),
+                              GtkListItemLCLListTag));
+  if LCLList=nil then
+    RaiseException('gtkListItemDrawAfterCB LCLList=nil');
+
+  // get itemindex and area
+  ItemIndex:=g_list_index(GtkList^.children,Data);
+  AreaRect:=Bounds(Area^.x,Area^.y,Area^.Width,Area^.Height);
   
-  writeln('gtkListItemDrawCB ');
+  // collect state flags
+  State:=[odPainted];
+  if g_list_index(GtkList^.selection,Widget)>=0 then
+    Include(State,odSelected);
+  if not GTK_WIDGET_SENSITIVE(Widget) then
+    Include(State,odInactive);
+  if GTK_WIDGET_HAS_DEFAULT(Widget) then
+    Include(State,odDefault);
+  if GTK_WIDGET_HAS_FOCUS(Widget) then
+    Include(State,odFocused);
+
+  // create message and deliver
   FillChar(Msg,SizeOf(Msg),0);
-  Msg.Msg:=CN_DrawItem;
-  New(Msg.DrawItemStruct);
+  Msg.Msg:=LM_DrawListItem;
+  New(Msg.DrawListItemStruct);
   try
-  
-    Result := DeliverMessage(Data, Msg)=0;
+    FillChar(Msg.DrawListItemStruct^,SizeOf(TDrawListItemStruct),0);
+    with Msg.DrawListItemStruct^ do begin
+      ItemID:=ItemIndex;
+      Area:=AreaRect;
+      DC:=GetDC(HWnd(Widget));
+      ItemState:=State;
+    end;
+    //writeln('gtkListItemDrawCB A LCLList=',HexStr(Cardinal(LCLList),8),' Widget=',HexStr(Cardinal(Widget),8),' ',HexStr(Cardinal(Data),8));
+    //writeln('gtkListItemDrawCB B ',LCLList.ClassName,' ',HexStr(Cardinal(LCLList.Owner),8));
+    //writeln('gtkListItemDrawCB C ',LCLList.Owner.ClassName);
+    Result := DeliverMessage(LCLList.Owner, Msg)=0;
+    ReleaseDC(HWnd(Widget),Msg.DrawListItemStruct^.DC);
   finally
-    Dispose(Msg.DrawItemStruct);
+    Dispose(Msg.DrawListItemStruct);
   end;
 end;
 
@@ -82,7 +125,19 @@ begin
   if List = nil then RaiseException(
     'TGtkListStringList.Create Unspecified list widget');
   FGtkList:= List;
+  if TheOwner = nil then RaiseException(
+    'TGtkListStringList.Create Unspecified owner');
   FOwner:=TheOwner;
+  //writeln('TGtkListStringList.Create Self=',HexStr(Cardinal(Self),8),' List=',HexStr(Cardinal(List),8),' Owner=',HexStr(Cardinal(Owner),8));
+  ConnectAllCallbacks;
+end;
+
+destructor TGtkListStringList.Destroy;
+begin
+  // don't destroy the widgets
+  RemoveAllCallbacks;
+  //writeln('TGtkListStringList.Destroy Self=',HexStr(Cardinal(Self),8),' List=',HexStr(Cardinal(FGtkList),8),' Owner=',HexStr(Cardinal(Owner),8));
+  inherited Destroy;
 end;
 
 {------------------------------------------------------------------------------
@@ -100,13 +155,82 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  procedure TGtkListStringList.ConnectItemCallbacks(Index: integer);
+
+ ------------------------------------------------------------------------------}
+procedure TGtkListStringList.ConnectItemCallbacks(Index: integer);
+var
+  li: PGtkListItem;
+begin
+  li:=g_list_nth_data(FGtkList^.children, Index);
+  ConnectItemCallbacks(li);
+end;
+
+{------------------------------------------------------------------------------
+  procedure TGtkListStringList.ConnectItemCallbacks(Li: PGtkListItem);
+
+ ------------------------------------------------------------------------------}
+procedure TGtkListStringList.ConnectItemCallbacks(Li: PGtkListItem);
+begin
+  gtk_object_set_data(PGtkObject(li),GtkListItemLCLListTag,Self);
+  gtk_object_set_data(PGtkObject(li),GtkListItemGtkListTag,FGtkList);
+  //writeln('TGtkListStringList.ConnectItemCallbacks Self=',HexStr(Cardinal(Self),8),
+  //' GtkList=',HexStr(Cardinal(FGtkList),8),
+  //' Owner=',HexStr(Cardinal(Owner),8),'=',Owner.ClassName,
+  //' LI=',HexStr(Cardinal(LI),8),
+  //' ');
+  gtk_signal_connect_after(PGtkObject(li), 'draw',
+                           TGTKSignalFunc(@gtkListItemDrawAfterCB),li);
+end;
+
+{------------------------------------------------------------------------------
+  procedure TGtkListStringList.ConnectAllCallbacks;
+ ------------------------------------------------------------------------------}
+procedure TGtkListStringList.ConnectAllCallbacks;
+var
+  i, Cnt: integer;
+begin
+  Cnt:=Count-1;
+  for i:=0 to Cnt-1 do
+    ConnectItemCallbacks(i);
+end;
+
+{------------------------------------------------------------------------------
+  procedure TGtkListStringList.RemoveItemCallbacks(Index: integer);
+
+ ------------------------------------------------------------------------------}
+procedure TGtkListStringList.RemoveItemCallbacks(Index: integer);
+var
+  ListItem: PGtkListItem;
+begin
+  ListItem:=g_list_nth_data(FGtkList^.children, Index);
+  gtk_object_set_data(PGtkObject(ListItem),GtkListItemLCLListTag,nil);
+  gtk_object_set_data(PGtkObject(ListItem),GtkListItemGtkListTag,nil);
+  gtk_signal_disconnect_by_func(
+    PGtkObject(ListItem), TGTKSignalFunc(@gtkListItemDrawAfterCB),ListItem);
+end;
+
+{------------------------------------------------------------------------------
+  procedure TGtkListStringList.RemoveAllCallbacks;
+
+ ------------------------------------------------------------------------------}
+procedure TGtkListStringList.RemoveAllCallbacks;
+var
+  i: integer;
+begin
+  for i:=0 to Count-1 do
+    RemoveItemCallbacks(i);
+end;
+
+{------------------------------------------------------------------------------
   Method: TGtkListStringList.Sort
   Params: 
   Returns: 
 
  ------------------------------------------------------------------------------}
 procedure TGtkListStringList.Sort;
-var sl: TStringList;
+var
+  sl: TStringList;
 begin
   // sort internally (sorting in the widget would be slow and unpretty ;)
   sl:=TStringList.Create;
@@ -128,9 +252,11 @@ end;
 procedure TGtkListStringList.Assign(Source : TPersistent);
 var Counter : integer;
 begin
-  if (Source=Self) or (Source=nil) 
-  or ((Source is TGtkListStringList) 
-  and (TGtkListStringList(Source).FGtkList=FGtkList)) then exit;
+  if (Source=Self) or (Source=nil) then exit;
+  if ((Source is TGtkListStringList)
+    and (TGtkListStringList(Source).FGtkList=FGtkList))
+  then
+    RaiseException('TGtkListStringList.Assign: There 2 lists with the same FGtkList');
 //writeln('[TGtkListStringList.Assign] A ',Source.Classname,' Self=',HexStr(Cardinal(Self),8),' Source=',HexStr(Cardinal(Source),8));
   { Do not call inherited Assign as it does things we do not want to happen }
   if Source is TStrings then begin
@@ -154,7 +280,8 @@ var Item : PChar;
       ListItem : PGtkListItem;
 begin
 //writeln('[TGtkListStringList.Get] Index=',Index,' Count=',Count);
-  if (Index < 0) or (Index >= Count) then raise Exception.Create('Out of bounds.')
+  if (Index < 0) or (Index >= Count) then
+    RaiseException('TGtkListStringList.Get Out of bounds.')
   else begin
     if FGtkList=nil then begin
       Result:='';
@@ -194,6 +321,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGtkListStringList.Clear;
 begin
+  RemoveAllCallbacks;
   gtk_list_clear_items(FGtkList, 0, Count);
 end;  
 
@@ -205,6 +333,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGtkListStringList.Delete(Index : integer);
 begin
+  RemoveItemCallbacks(Index);
   gtk_list_clear_items(FGtkList, Index, Index + 1);
 end;
 
@@ -240,6 +369,8 @@ begin
   if (Index < 0) or (Index > Count) then 
     RaiseException('TGtkListStringList.Insert: Index '+IntToStr(Index)
       +' out of bounds. Count='+IntToStr(Count));
+  if Owner = nil then RaiseException(
+    'TGtkListStringList.Insert Unspecified owner');
 
   // ToDo:
   //  - CustomDraw needs expose/draw events
@@ -247,8 +378,7 @@ begin
   //  - measure item
   
   li:=gtk_list_item_new_with_label(PChar(S));
-  gtk_signal_connect_after(PGtkObject(li), 'draw',
-                           TGTKSignalFunc(@gtkListItemDrawAfterCB),Owner);
+  ConnectItemCallbacks(PGtkListItem(li));
   gtk_widget_show(li);
   gtk_list_insert_items(FGtkList, g_list_append(nil, li), Index);
 //writeln('[TGtkListStringList.Insert] END Index=',Index,' Count=',Count,' ',S,',',Count);
@@ -436,6 +566,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.10  2002/10/04 14:24:15  lazarus
+  MG: added DrawItem to TComboBox/TListBox
+
   Revision 1.9  2002/10/03 18:04:46  lazarus
   MG: started customdrawitem
 
