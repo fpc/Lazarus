@@ -1,0 +1,88 @@
+Remote Debugging
+================
+
+* Remote debugging is under construction *
+
+Remote debugging means you work on your local computer and you want to start
+and debug a program on another computer, the remote machine. In the following
+examples the name of the local computer is 'localcomp' and the name of the
+remote computer is 'remotecomp'.
+
+
+1. Using ssh (secure shell)
+
+  ssh (SSH client) is a program for logging into a remote machine and for
+  executing commands on a remote machine.  It is intended to replace rlogin
+  and rsh, and provide secure encrypted communications between two
+  untrusted hosts over an insecure network.  X11 connections and arbitrary
+  TCP/IP ports can also be forwarded over the secure channel.
+  See the ssh man page for details.
+  
+  This text only handles ssh protocol 2. For differences for protocol 1 see the
+  ssh man page.
+  
+  
+  Requirements for lazarus:
+  You must be able to log in via ssh to the remote machine (the computer where
+  the program will run). This means the remote machine has an installed and
+  running ssh server and you have an account allowed to login from your
+  local machine (the computer where the lazarus IDE is running).
+  You can test this by doing:
+  
+  []$ ssh username@remotecomp ls -la
+  
+  This will create a ssh connection to 'remotecomp' with the username
+  'username' and after authentification it will print out a directory listing
+  and return.
+  
+  
+  Configuring ssh:
+  The IDE needs a ssh connection without prompting for a password. There are a
+  lot of possibilities to achieve this. This text only describes a few. For
+  security reasons it is strongly recommended that you read the ssh manpage.
+
+  Solution 1: User based authentification.
+    This will allow one specific user on the local computer to establish a ssh
+    connection to the remote computer as a specific user without prompting for
+    password.
+    ToDo: describe the server settings. On redhat this works without any change.
+    
+    Step 1: create the rsa key on the local machine
+
+      This will create two files on the local machine:
+        ~/.ssh/id_rsa and ~/.ssh/id_rsa.pub
+      If you already have these files, skip this step.
+    
+      []$ ssh-keygen -t rsa
+
+      Keep the default and leave the passphrase empty.
+      
+      
+    Step 2: copy the public rsa key of the local machine to the remote machine
+
+      []$ scp ~/.ssh/id_rsa.pub user@remotecomp:remote.pub
+      
+
+    Step 3: create on the remote machine the file ~/.ssh/authorized_keys2
+
+      []$ ssh user@remotecomp
+      []$ touch ~/.ssh/authorized_keys2
+      []$ chmod 600 ~/.ssh/authorized_keys2
+      
+      The chmod will set the permissions to only allow yourself to read the
+      file. ssh wants this.
+      
+      []$ cat remote.pub >> ~/.ssh/authorized_keys2
+      []$ rm remote.pub
+      []$ exit
+
+
+    Step 4: Test. You should now be able to login without password.
+
+      []$ ssh user@remotecomp
+
+      
+    Step 5: Setup the ssh debugger in the IDE
+      ToDo
+      
+      

@@ -4658,7 +4658,8 @@ begin
     CurMultiMask:=copy(Filter,CurMultiMaskStart,CurMultiMaskEnd-CurMultiMaskStart);
     if CurDesc='' then CurDesc:=CurMultiMask;
     // add filter(s)
-    AddEntries(CurDesc,CurMultiMask);
+    if (CurMultiMask<>'') or (CurDesc<>'') then
+      AddEntries(CurDesc,CurMultiMask);
     // next filter
     CurDescStart:=CurMultiMaskEnd+1;
   end;
@@ -7945,6 +7946,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.394  2003/07/23 10:23:56  mattias
+  started README about remote debugging
+
   Revision 1.393  2003/07/07 23:58:43  marc
   + Implemented TCheckListBox.Checked[] property
 
