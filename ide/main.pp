@@ -2944,7 +2944,7 @@ begin
     Result:=MessageDlg('File not found',
       'The file "'+AFilename+'"'#13
       +'was not found.'#13
-      +'Ignore  will go on loading the project,'#13
+      +'Ignore will go on loading the project,'#13
       +'Abort  will stop the loading.',
       mtError, [mbIgnore, mbAbort], 0);
     exit;
@@ -3462,6 +3462,9 @@ begin
                               and NewUnitInfo.IsPartOfProject);
   if NewUnitType in [nuForm, nuUnit] then begin
     NewUnitInfo.SyntaxHighlighter:=lshFreePascal;
+  end else begin
+    NewUnitInfo.SyntaxHighlighter:=
+      ExtensionToLazSyntaxHighlighter(ExtractFileExt(NewFilename))
   end;
 
   if NewUnitType in [nuForm] then begin
@@ -6565,6 +6568,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.323  2002/07/05 12:54:27  lazarus
+  MG: syntax highlighter is now set on open non existing file
+
   Revision 1.322  2002/07/05 10:32:44  lazarus
   MG: added  handling of invalid programnamnes on save project
 
