@@ -42,13 +42,18 @@ type
     function(Msg: Cardinal; WParam, LParam: Longint):Longint;
   TOwnerFormDesignerModifiedProc =
     procedure(AComponent: TComponent);
+  TSendMessageToInterfaceFunction =
+    function(LM_Message: Integer; Sender: TObject; data: pointer): integer
+    of object;
 
 var
   SendApplicationMessageFunction: TSendApplicationMessageFunction;
   OwnerFormDesignerModifiedProc: TOwnerFormDesignerModifiedProc;
+  SendMsgToInterface: TSendMessageToInterfaceFunction;
 
 function SendApplicationMessage(Msg: Cardinal; WParam, LParam: Longint):Longint;
 procedure OwnerFormDesignerModified(AComponent: TComponent);
+function OffSetRect(var ARect: TRect; dx,dy: Integer): Boolean;
 
 
 implementation
@@ -222,6 +227,21 @@ procedure OwnerFormDesignerModified(AComponent: TComponent);
 begin
   if OwnerFormDesignerModifiedProc<>nil then
     OwnerFormDesignerModifiedProc(AComponent);
+end;
+
+function OffSetRect(var ARect: TRect; dx,dy: Integer): Boolean;
+Begin
+  with ARect do
+  begin
+    Left := Left + dx;
+    Right := Right + dx;
+    Top := Top + dy;
+    Bottom := Bottom + dy;
+  end;
+  if (ARect.Left >= 0) and (ARect.Top >= 0) then
+    Result := True
+  else
+    Result := False;
 end;
 
 initialization
