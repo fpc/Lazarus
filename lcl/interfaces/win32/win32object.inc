@@ -1480,6 +1480,38 @@ Begin
   Assert(False, 'Trace:TWin32Object.CreateCommonDialog - Exit');
 End;
 
+const
+
+  IDC_ARROW     = MakeIntResource(32512);
+  IDC_IBEAM     = MakeIntResource(32513);
+  IDC_WAIT      = MakeIntResource(32514);
+  IDC_CROSS     = MakeIntResource(32515);
+  IDC_UPARROW   = MakeIntResource(32516);
+  IDC_SIZE      = MakeIntResource(32640);
+  IDC_ICON      = MakeIntResource(32641);
+  IDC_SIZENWSE  = MakeIntResource(32642);
+  IDC_SIZENESW  = MakeIntResource(32643);
+  IDC_SIZEWE    = MakeIntResource(32644);
+  IDC_SIZENS    = MakeIntResource(32645);
+  IDC_SIZEALL   = MakeIntResource(32646);
+  IDC_NO        = MakeIntResource(32648);
+  IDC_HAND      = MakeIntResource(32649);
+  IDC_APPSTARTING = MakeIntResource(32650);
+  IDC_HELP      = MakeIntResource(32651);
+  IDC_NODROP    = MakeIntResource(32767);
+  IDC_DRAG      = MakeIntResource(32766);
+  IDC_HSPLIT    = MakeIntResource(32765);
+  IDC_VSPLIT    = MakeIntResource(32764);
+  IDC_MULTIDRAG = MakeIntResource(32763);
+  IDC_SQLWAIT   = MakeIntResource(32762);
+  IDC_HANDPT    = MakeIntResource(32761);
+
+  LclCursorToWin32CursorMap: array[crLow..crHigh] of PChar = (
+     IDC_SIZEALL, IDC_HANDPT, IDC_HELP, IDC_APPSTARTING, IDC_NO, IDC_SQLWAIT,
+     IDC_MULTIDRAG, IDC_VSPLIT, IDC_HSPLIT, IDC_NODROP, IDC_DRAG, IDC_WAIT,
+     IDC_UPARROW, IDC_SIZEWE, IDC_SIZENWSE, IDC_SIZENS, IDC_SIZENESW, IDC_SIZE,
+     IDC_IBEAM, IDC_CROSS, IDC_ARROW, IDC_ARROW, IDC_ARROW);
+
 {------------------------------------------------------------------------------
   Method: TWin32Object.SetCursor
   Params:  Sender - the control which invoked this method
@@ -1498,7 +1530,7 @@ Begin
   Assert(False, Format('Trace:TWin32Object.SetCursor - Sender --> %S', [Sender.ClassName]));
   Assert(False, 'Trace:TWin32Object.SetCursor - Getting the window');
   Assert(False, 'Trace:TWin32Object.SetCursor - Getting the cursor');
-  Cursor := MakeIntResource(Integer(TControl(Self).Cursor));
+  Cursor := LclCursorToWin32CursorMap[TControl(Sender).Cursor];
   Assert(False, 'Trace:TWin32Object.SetCursor - Loading the cursor');
   Res := LoadCursor(0, Cursor);
   Assert(False, Format('Trace:Cursor handle --> 0x%X', [Res]));
@@ -2672,6 +2704,9 @@ End;
 
 {
   $Log$
+  Revision 1.66  2003/07/02 15:57:04  mattias
+  added LCL to win32 cursor mapping from Micha
+
   Revision 1.65  2003/07/02 15:56:15  mattias
   fixed win32 painting and started creating bitmaps from rawimages
 
