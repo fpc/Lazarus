@@ -43,6 +43,7 @@ uses
 type
   TCodeToolsOptions = class
   private
+    FClassHeaderComments: boolean;
     FFilename: string;
     
     // General
@@ -117,6 +118,8 @@ type
       read FForwardProcBodyInsertPolicy write FForwardProcBodyInsertPolicy;
     property KeepForwardProcOrder: boolean
       read FKeepForwardProcOrder write FKeepForwardProcOrder;
+    property ClassHeaderComments: boolean
+      read FClassHeaderComments write FClassHeaderComments;
     property MethodInsertPolicy: TMethodInsertPolicy
       read FMethodInsertPolicy write FMethodInsertPolicy;
     property KeyWordPolicy : TWordPolicy
@@ -143,6 +146,9 @@ type
       read FSetPropertyVariablename write FSetPropertyVariablename;
   end;
 
+
+  { TCodeToolsOptsDlg }
+
   TCodeToolsOptsDlg = class(TForm)
     NoteBook: TNoteBook;
     
@@ -160,6 +166,7 @@ type
     MethodInsertPolicyRadioGroup: TRadioGroup;
     ForwardProcsInsertPolicyRadioGroup: TRadioGroup;
     ForwardProcsKeepOrderCheckBox: TCheckBox;
+    ClassHeaderCommentsCheckBox: TCheckBox;
     PropertyCompletionGroupBox: TGroupBox;
     PropertyCompletionCheckBox: TCheckBox;
     PropertyReadIdentPrefixLabel: TLabel;
@@ -408,6 +415,8 @@ begin
         ForwardProcBodyInsertPolicyNames[fpipInFrontOfMethods]));
     FKeepForwardProcOrder:=XMLConfig.GetValue(
       'CodeToolsOptions/KeepForwardProcOrder/Value',true);
+    FClassHeaderComments:=XMLConfig.GetValue(
+      'CodeToolsOptions/ClassHeaderComments/Value',true);
 
     FMethodInsertPolicy:=MethodInsertPolicyNameToPolicy(XMLConfig.GetValue(
       'CodeToolsOptions/MethodInsertPolicy/Value',
@@ -487,6 +496,8 @@ begin
       ForwardProcBodyInsertPolicyNames[fpipInFrontOfMethods]);
     XMLConfig.SetDeleteValue(
       'CodeToolsOptions/KeepForwardProcOrder/Value',FKeepForwardProcOrder,true);
+    XMLConfig.SetDeleteValue(
+      'CodeToolsOptions/ClassHeaderComments/Value',FClassHeaderComments,true);
     XMLConfig.SetDeleteValue('CodeToolsOptions/MethodInsertPolicy/Value',
       MethodInsertPolicyNames[FMethodInsertPolicy],
       MethodInsertPolicyNames[mipClassOrder]);
@@ -566,6 +577,7 @@ begin
     FMixMethodsAndProperties:=CodeToolsOpts.MixMethodsAndProperties;
     FForwardProcBodyInsertPolicy:=CodeToolsOpts.ForwardProcBodyInsertPolicy;
     FKeepForwardProcOrder:=CodeToolsOpts.KeepForwardProcOrder;
+    FClassHeaderComments:=CodeToolsOpts.ClassHeaderComments;
     FMethodInsertPolicy:=CodeToolsOpts.FMethodInsertPolicy;
     FKeyWordPolicy:=CodeToolsOpts.FKeyWordPolicy;
     FIdentifierPolicy:=CodeToolsOpts.FIdentifierPolicy;
@@ -603,6 +615,7 @@ begin
   FMixMethodsAndProperties:=false;
   FForwardProcBodyInsertPolicy:=fpipInFrontOfMethods;
   FKeepForwardProcOrder:=true;
+  FClassHeaderComments:=true;
   FMethodInsertPolicy:=mipClassOrder;
   FKeyWordPolicy:=wpLowerCase;
   FIdentifierPolicy:=wpNone;
@@ -647,6 +660,7 @@ begin
     and (FMixMethodsAndProperties=CodeToolsOpts.MixMethodsAndProperties)
     and (FForwardProcBodyInsertPolicy=CodeToolsOpts.ForwardProcBodyInsertPolicy)
     and (FKeepForwardProcOrder=CodeToolsOpts.KeepForwardProcOrder)
+    and (FClassHeaderComments=CodeToolsOpts.ClassHeaderComments)
     and (FMethodInsertPolicy=CodeToolsOpts.FMethodInsertPolicy)
     and (FKeyWordPolicy=CodeToolsOpts.FKeyWordPolicy)
     and (FIdentifierPolicy=CodeToolsOpts.FIdentifierPolicy)
@@ -697,6 +711,7 @@ begin
     BeautifyCodeOptions.MixMethodsAndProperties:=MixMethodsAndProperties;
     BeautifyCodeOptions.ForwardProcBodyInsertPolicy:=ForwardProcBodyInsertPolicy;
     BeautifyCodeOptions.KeepForwardProcOrder:=KeepForwardProcOrder;
+    BeautifyCodeOptions.ClassHeaderComments:=ClassHeaderComments;
     BeautifyCodeOptions.MethodInsertPolicy:=MethodInsertPolicy;
     BeautifyCodeOptions.KeyWordPolicy:=KeyWordPolicy;
     BeautifyCodeOptions.IdentifierPolicy:=IdentifierPolicy;
@@ -806,7 +821,6 @@ begin
     Parent:=NoteBook.Page[PageID];
     SetBounds(8,7,Self.ClientWidth-20,51);
     Caption:=dlgAdditionalSrcPath ;
-    Visible:=true;
   end;
   
   SrcPathEdit:=TEdit.Create(Self);
@@ -814,7 +828,6 @@ begin
     Name:='SrcPathEdit';
     Parent:=SrcPathGroupBox;
     SetBounds(5,6,Parent.ClientWidth-14,Height);
-    Visible:=true;
   end;
   
   JumpingGroupBox:=TGroupBox.Create(Self);
@@ -822,9 +835,8 @@ begin
     Name:='JumpingGroupBox';
     Parent:=NoteBook.Page[PageID];
     SetBounds(8,SrcPathGroupBox.Top+SrcPathGroupBox.Height+7,
-      SrcPathGroupBox.Width,95);
+      SrcPathGroupBox.Width,105);
     Caption:=dlgJumpingETC;
-    Visible:=true;
   end;
 
   AdjustTopLineDueToCommentCheckBox:=TCheckBox.Create(Self);
@@ -833,7 +845,6 @@ begin
     Parent:=JumpingGroupBox;
     SetBounds(5,6,Parent.ClientWidth-10,Height);
     Caption:=dlgAdjustTopLine;
-    Visible:=true;
   end;
 
   JumpCenteredCheckBox:=TCheckBox.Create(Self);
@@ -845,7 +856,6 @@ begin
       +AdjustTopLineDueToCommentCheckBox.Height,
       AdjustTopLineDueToCommentCheckBox.Width,Height);
     Caption:=dlgcentercursorline;
-    Visible:=true;
   end;
 
   CursorBeyondEOLCheckBox:=TCheckBox.Create(Self);
@@ -856,7 +866,6 @@ begin
       JumpCenteredCheckBox.Top+JumpCenteredCheckBox.Height+2,
       JumpCenteredCheckBox.Width,Height);
     Caption:=dlgcursorbeyondeol;
-    Visible:=true;
   end;
 end;
 
@@ -874,7 +883,6 @@ begin
       Add(dlgCDTLast);
       EndUpdate;
     end;
-    Visible:=true;
   end;
   
   MixMethodsAndPropertiesCheckBox:=TCheckBox.Create(Self);
@@ -885,7 +893,6 @@ begin
        ClassPartInsertPolicyRadioGroup.Top+ClassPartInsertPolicyRadioGroup.Height+5,
        ClassPartInsertPolicyRadioGroup.Width,Height);
     Caption:=dlgMixMethodsAndProperties;
-    Visible:=true;
   end;
 
   MethodInsertPolicyRadioGroup:=TRadioGroup.Create(Self);
@@ -905,7 +912,6 @@ begin
       Add(dlgCDTClassOrder );
       EndUpdate;
     end;
-    Visible:=true;
   end;
 
   ForwardProcsInsertPolicyRadioGroup:=TRadioGroup.Create(Self);
@@ -924,7 +930,6 @@ begin
       Add(dlgBehindMethods);
       EndUpdate;
     end;
-    Visible:=true;
   end;
   
   ForwardProcsKeepOrderCheckBox:=TCheckBox.Create(Self);
@@ -936,7 +941,17 @@ begin
          +ForwardProcsInsertPolicyRadioGroup.Height+5,
        ForwardProcsInsertPolicyRadioGroup.Width,Height);
     Caption:=dlgForwardProcsKeepOrder;
-    Visible:=true;
+  end;
+
+  ClassHeaderCommentsCheckBox:=TCheckBox.Create(Self);
+  with ClassHeaderCommentsCheckBox do begin
+    Name:='ClassHeaderCommentsCheckBox';
+    Parent:=NoteBook.Page[PageID];;
+    SetBounds(ForwardProcsKeepOrderCheckBox.Left,
+       ForwardProcsKeepOrderCheckBox.Top
+         +ForwardProcsKeepOrderCheckBox.Height+5,
+       ForwardProcsKeepOrderCheckBox.Width,Height);
+    Caption:=lisHeaderCommentForClass;
   end;
 
   PropertyCompletionGroupBox:=TGroupBox.Create(Self);
@@ -947,7 +962,6 @@ begin
       MethodInsertPolicyRadioGroup.Top+MethodInsertPolicyRadioGroup.Height+7,
       Self.ClientWidth-20,125);
     Caption:=dlgPropertyCompletion;
-    Visible:=true;
   end;
 
   PropertyCompletionCheckBox:=TCheckBox.Create(Self);
@@ -956,7 +970,6 @@ begin
     Parent:=PropertyCompletionGroupBox;
     SetBounds(6,5,200,Height);
     Caption:=dlgCompleteProperties ;
-    Visible:=true;
   end;
 
   PropertyReadIdentPrefixLabel:=TLabel.Create(Self);
@@ -967,7 +980,6 @@ begin
       PropertyCompletionCheckBox.Top+PropertyCompletionCheckBox.Height+5,
       100,Height);
     Caption:=dlgCDTReadPrefix ;
-    Visible:=true;
   end;
 
   PropertyReadIdentPrefixEdit:=TEdit.Create(Self);
@@ -975,7 +987,6 @@ begin
     Name:='PropertyReadIdentPrefixEdit';
     Parent:=PropertyCompletionGroupBox;
     SetBounds(110,PropertyReadIdentPrefixLabel.Top,80,Height);
-    Visible:=true;
   end;
 
   PropertyWriteIdentPrefixLabel:=TLabel.Create(Self);
@@ -986,7 +997,6 @@ begin
       +PropertyReadIdentPrefixLabel.Height+5,
       PropertyReadIdentPrefixLabel.Width,Height);
     Caption:=dlgCDTWritePrefix ;
-    Visible:=true;
   end;
 
   PropertyWriteIdentPrefixEdit:=TEdit.Create(Self);
@@ -995,7 +1005,6 @@ begin
     Parent:=PropertyCompletionGroupBox;
     SetBounds(PropertyReadIdentPrefixEdit.Left,
       PropertyWriteIdentPrefixLabel.Top,80,Height);
-    Visible:=true;
   end;
 
   PropertyStoredIdentPostfixLabel:=TLabel.Create(Self);
@@ -1006,7 +1015,6 @@ begin
       +PropertyWriteIdentPrefixLabel.Height+5,
       PropertyReadIdentPrefixLabel.Width,Height);
     Caption:=dlgCDTStoredPostfix;
-    Visible:=true;
   end;
 
   PropertyStoredIdentPostfixEdit:=TEdit.Create(Self);
@@ -1015,7 +1023,6 @@ begin
     Parent:=PropertyCompletionGroupBox;
     SetBounds(PropertyReadIdentPrefixEdit.Left,
       PropertyStoredIdentPostfixLabel.Top,80,Height);
-    Visible:=true;
   end;
 
   PrivateVariablePrefixLabel:=TLabel.Create(Self);
@@ -1025,7 +1032,6 @@ begin
     SetBounds((PropertyCompletionGroupBox.ClientWidth-20) div 2,
       PropertyReadIdentPrefixLabel.Top,120,Height);
     Caption:=dlgCDTVariablePrefix ;
-    Visible:=true;
   end;
 
   PrivateVariablePrefixEdit:=TEdit.Create(Self);
@@ -1034,7 +1040,6 @@ begin
     Parent:=PropertyCompletionGroupBox;
     SetBounds(PrivateVariablePrefixLabel.Left+150,PrivateVariablePrefixLabel.Top,
       80,Height);
-    Visible:=true;
   end;
 
   SetPropertyVariablenameLabel:=TLabel.Create(Self);
@@ -1045,7 +1050,6 @@ begin
       PrivateVariablePrefixLabel.Top+PrivateVariablePrefixLabel.Height+5,
       120,Height);
     Caption:=dlgSetPropertyVariable ;
-    Visible:=true;
   end;
 
   SetPropertyVariablenameEdit:=TEdit.Create(Self);
@@ -1055,7 +1059,6 @@ begin
     SetBounds(PrivateVariablePrefixEdit.Left,
       PrivateVariablePrefixLabel.Top+PrivateVariablePrefixLabel.Height+5,
       80,Height);
-    Visible:=true;
   end;
 end;
 
@@ -1077,7 +1080,6 @@ begin
       EndUpdate;
     end;
     OnClick:=@UpdateExamples;
-    Visible:=true;
   end;
 
   IdentifierPolicyRadioGroup:=TRadioGroup.Create(Self);
@@ -1097,7 +1099,6 @@ begin
       EndUpdate;
     end;
     OnClick:=@UpdateExamples;
-    Visible:=true;
   end;
 end;
 
@@ -1109,7 +1110,6 @@ begin
     Parent:=NoteBook.Page[PageID];
     SetBounds(8,7,Canvas.TextWidth(dlgMaxLineLength),Height);
     Caption:=dlgMaxLineLength;
-    Visible:=true;
   end;
 
   LineLengthEdit:=TEdit.Create(Self);
@@ -1120,7 +1120,6 @@ begin
     Top:=LineLengthLabel.Top-2;
     Width:=50;
     OnChange:=@UpdateExamples;
-    Visible:=true;
   end;
 
   DoNotSplitLineInFrontGroupBox:=TGroupBox.Create(Self);
@@ -1132,7 +1131,6 @@ begin
     Caption:=dlgNotSplitLineFront ;
     CreateAtomCheckBoxes(DoNotSplitLineInFrontGroupBox,DoNotSplitAtoms,2);
     OnClick:=@UpdateExamples;
-    Visible:=true;
   end;
 
   DoNotSplitLineAfterGroupBox:=TGroupBox.Create(Self);
@@ -1146,7 +1144,6 @@ begin
     Caption:=dlgNotSplitLineAfter ;
     CreateAtomCheckBoxes(DoNotSplitLineAfterGroupBox,DoNotSplitAtoms,2);
     OnClick:=@UpdateExamples;
-    Visible:=true;
   end;
   
   SplitPreviewGroupBox:=TGroupBox.Create(Self);
@@ -1159,7 +1156,6 @@ begin
     Width:=Self.ClientWidth-10-Left;
     Height:=Self.ClientHeight-92-Top;
     Caption:=dlgCDTPreview;
-    Visible:=true;
   end;
   
   SplitPreviewSynEdit:=TSynEdit.Create(Self);
@@ -1167,7 +1163,6 @@ begin
     Name:='SplitPreviewSynEdit';
     Parent:=SplitPreviewGroupBox;
     Align:=alClient;
-    Visible:=true;
   end;
 end;
 
@@ -1182,7 +1177,6 @@ begin
     Caption:=dlgInsSpaceFront ;
     CreateAtomCheckBoxes(DoInsertSpaceInFrontGroupBox,DoInsertSpaceAtoms,2);
     OnClick:=@UpdateExamples;
-    Visible:=true;
   end;
 
   DoInsertSpaceAfterGroupBox:=TGroupBox.Create(Self);
@@ -1197,7 +1191,6 @@ begin
     Caption:=dlgInsSpaceAfter ;
     CreateAtomCheckBoxes(DoInsertSpaceAfterGroupBox,DoInsertSpaceAtoms,2);
     OnClick:=@UpdateExamples;
-    Visible:=true;
   end;
   
   SpacePreviewGroupBox:=TGroupBox.Create(Self);
@@ -1209,7 +1202,6 @@ begin
     Width:=Self.ClientWidth-10-Left;
     Height:=Self.ClientHeight-92-Top;
     Caption:=dlgWRDPreview ;
-    Visible:=true;
   end;
 
   SpacePreviewSynEdit:=TSynEdit.Create(Self);
@@ -1217,7 +1209,6 @@ begin
     Name:='SpacePreviewSynEdit';
     Parent:=SpacePreviewGroupBox;
     Align:=alClient;
-    Visible:=true;
   end;
 end;
 
@@ -1233,7 +1224,7 @@ begin
 
   with JumpingGroupBox do begin
     SetBounds(8,SrcPathGroupBox.Top+SrcPathGroupBox.Height+7,
-      SrcPathGroupBox.Width,95);
+      SrcPathGroupBox.Width,105);
   end;
 
   with AdjustTopLineDueToCommentCheckBox do begin
@@ -1287,6 +1278,13 @@ begin
        ForwardProcsInsertPolicyRadioGroup.Top
          +ForwardProcsInsertPolicyRadioGroup.Height+5,
        ForwardProcsInsertPolicyRadioGroup.Width,Height);
+  end;
+
+  with ClassHeaderCommentsCheckBox do begin
+    SetBounds(ForwardProcsKeepOrderCheckBox.Left,
+       ForwardProcsKeepOrderCheckBox.Top
+         +ForwardProcsKeepOrderCheckBox.Height+5,
+       ForwardProcsKeepOrderCheckBox.Width,Height);
   end;
 
   with PropertyCompletionGroupBox do begin
@@ -1542,6 +1540,7 @@ begin
     ForwardProcsInsertPolicyRadioGroup.ItemIndex:=2;
   end;
   ForwardProcsKeepOrderCheckBox.Checked:=Options.KeepForwardProcOrder;
+  ClassHeaderCommentsCheckBox.Checked:=Options.ClassHeaderComments;
   case Options.MethodInsertPolicy of
   mipAlphabetically:
     MethodInsertPolicyRadioGroup.ItemIndex:=0;
@@ -1608,6 +1607,7 @@ begin
   2: Options.ForwardProcBodyInsertPolicy:=fpipBehindMethods;
   end;
   Options.KeepForwardProcOrder:=ForwardProcsKeepOrderCheckBox.Checked;
+  Options.ClassHeaderComments:=ClassHeaderCommentsCheckBox.Checked;
   case MethodInsertPolicyRadioGroup.ItemIndex of
   0: Options.MethodInsertPolicy:=mipAlphabetically;
   1: Options.MethodInsertPolicy:=mipLast;
@@ -1718,6 +1718,7 @@ begin
   2: Options.ForwardProcBodyInsertPolicy:=fpipBehindMethods;
   end;
   Options.KeepForwardProcOrder:=ForwardProcsKeepOrderCheckBox.Checked;
+  Options.ClassHeaderComments:=ClassHeaderCommentsCheckBox.Checked;
   case MethodInsertPolicyRadioGroup.ItemIndex of
   0: Options.MethodInsertPolicy:=mipAlphabetically;
   1: Options.MethodInsertPolicy:=mipLast;

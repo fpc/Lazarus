@@ -842,6 +842,7 @@ resourcestring
   dlg1UP2low = 'Lowercase, first letter up';
   dlgIdentifierPolicy = 'Identifier policy';
   dlgPropertyCompletion = 'Property completion';
+  lisHeaderCommentForClass = 'Header comment for class';
   dlgCompleteProperties = 'Complete properties';
   dlgCDTReadPrefix = 'Read prefix';
   dlgCDTWritePrefix = 'Write prefix';

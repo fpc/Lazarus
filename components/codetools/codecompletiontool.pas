@@ -32,9 +32,10 @@
       - add missing forward proc bodies
       - complete event assignments
       - complete local variables
+      -
 
   ToDo:
-    -add missing method definitions
+    -insert header comment for classes
     -ProcExists: search procs in ancestors too
     -VarExists: search vars in ancestors too
 }
@@ -75,7 +76,7 @@ type
   private
     ASourceChangeCache: TSourceChangeCache;
     FCodeCompleteClassNode: TCodeTreeNode; // the class that is to be completed
-    CompletingStartNode: TCodeTreeNode; // the first variable/method/GUID node in FCodeCompleteClassNode
+    FCompletingStartNode: TCodeTreeNode; // the first variable/method/GUID node in FCodeCompleteClassNode
     FAddInheritedCodeToOverrideMethod: boolean;
     FCompleteProperties: boolean;
     FirstInsert: TCodeTreeNodeExtension; // list of insert requests
@@ -93,7 +94,8 @@ type
     function OnTopLvlIdentifierFound(Params: TFindDeclarationParams;
         const FoundContext: TFindContext): TIdentifierFoundResult;
   protected
-    function ProcExistsInCodeCompleteClass(const NameAndParams: string): boolean;
+    function ProcExistsInCodeCompleteClass(
+                                          const NameAndParams: string): boolean;
     function VarExistsInCodeCompleteClass(const UpperName: string): boolean;
     procedure AddClassInsertion(PosNode: TCodeTreeNode;
         const CleanDef, Def, IdentifierName, Body: string;
@@ -101,6 +103,7 @@ type
     procedure FreeClassInsertionList;
     procedure InsertNewClassParts(PartType: TNewClassPart);
     function InsertAllNewClassParts: boolean;
+    function InsertClassHeaderComment: boolean;
     function CreateMissingProcBodies: boolean;
     function NodeExtIsVariable(ANodeExt: TCodeTreeNodeExtension): boolean;
     function NodeExtHasVisibilty(ANodeExt: TCodeTreeNodeExtension;
@@ -124,7 +127,7 @@ type
                        SourceChangeCache: TSourceChangeCache): boolean;
   protected
     property CodeCompleteClassNode: TCodeTreeNode
-                        read FCodeCompleteClassNode write SetCodeCompleteClassNode;
+                     read FCodeCompleteClassNode write SetCodeCompleteClassNode;
     property CodeCompleteSrcChgCache: TSourceChangeCache
                        read ASourceChangeCache write SetCodeCompleteSrcChgCache;
   public
@@ -169,7 +172,7 @@ begin
   if not Result then begin
     // ToDo: check ancestor procs too
     // search in current class
-    Result:=(FindProcNode(CompletingStartNode,NameAndParams,[phpInUpperCase])<>nil);
+    Result:=(FindProcNode(FCompletingStartNode,NameAndParams,[phpInUpperCase])<>nil);
   end;
 end;
 
@@ -179,10 +182,10 @@ begin
   FreeClassInsertionList;
   FCodeCompleteClassNode:=AClassNode;
   BuildSubTreeForClass(FCodeCompleteClassNode);
-  CompletingStartNode:=FCodeCompleteClassNode.FirstChild;
-  while (CompletingStartNode<>nil) and (CompletingStartNode.FirstChild=nil) do
-    CompletingStartNode:=CompletingStartNode.NextBrother;
-  if CompletingStartNode<>nil then CompletingStartNode:=CompletingStartNode.FirstChild;
+  FCompletingStartNode:=FCodeCompleteClassNode.FirstChild;
+  while (FCompletingStartNode<>nil) and (FCompletingStartNode.FirstChild=nil) do
+    FCompletingStartNode:=FCompletingStartNode.NextBrother;
+  if FCompletingStartNode<>nil then FCompletingStartNode:=FCompletingStartNode.FirstChild;
   JumpToProcName:='';
 end;
 
@@ -235,7 +238,7 @@ begin
   if not Result then begin
     // ToDo: check ancestor vars too
     // search in current class
-    Result:=(FindVarNode(CompletingStartNode,UpperName)<>nil);
+    Result:=(FindVarNode(FCompletingStartNode,UpperName)<>nil);
   end;
 end;
 
@@ -1642,6 +1645,9 @@ var
   end;
 
 begin
+  Result:=InsertClassHeaderComment;
+  if not Result then exit;
+
   if FirstInsert=nil then begin
     Result:=true;
     exit;
@@ -1671,6 +1677,36 @@ begin
   InsertNewClassParts(ncpPublishedProcs);
 
   Result:=true;
+end;
+
+function TCodeCompletionCodeTool.InsertClassHeaderComment: boolean;
+var
+  ClassNode: TCodeTreeNode;
+  ClassIdentifierNode: TCodeTreeNode;
+  NonSpacePos: LongInt;
+  Code: String;
+  InsertPos: LongInt;
+  Indent: LongInt;
+begin
+  Result:=true;
+  if not ASourceChangeCache.BeautifyCodeOptions.ClassHeaderComments then exit;
+  // check if there is already a comment in front of the class
+  ClassNode:=CodeCompleteClassNode;
+  if ClassNode=nil then exit;
+  ClassIdentifierNode:=ClassNode.Parent;
+  if ClassIdentifierNode=nil then exit;
+  NonSpacePos:=FindPrevNonSpace(Src,ClassIdentifierNode.StartPos-1);
+  if IsCommentEnd(Src,NonSpacePos) then begin
+    // there is already a comment in front
+    exit;
+  end;
+  // insert comment in front
+  InsertPos:=ClassIdentifierNode.StartPos;
+  Indent:=GetLineIndent(Src,InsertPos);
+  Code:=GetIndentStr(Indent)
+        +'{ '+ExtractIdentifier(ClassIdentifierNode.StartPos)+' }';
+  ASourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,
+                             InsertPos,InsertPos,Code);
 end;
 
 procedure TCodeCompletionCodeTool.AddNewPropertyAccessMethodsToClassProcs(
@@ -1920,7 +1956,7 @@ var
     end;
   end;
   
-  procedure InsertClassComment;
+  procedure InsertClassMethodsComment;
   begin
     // insert class comment
     if ClassProcs.Count>0 then begin
@@ -1949,7 +1985,7 @@ begin
     TheClassName:=ExtractClassName(FCodeCompleteClassNode,false);
 
     // gather existing class proc definitions
-    ClassProcs:=GatherProcNodes(CompletingStartNode,
+    ClassProcs:=GatherProcNodes(FCompletingStartNode,
        [phpInUpperCase,phpAddClassName],
        ExtractClassName(FCodeCompleteClassNode,true));
 
@@ -2017,7 +2053,7 @@ begin
       DebugLn('TCodeCompletionCodeTool.CreateMissingProcBodies Starting class in implementation ');
       {$ENDIF}
       FindInsertPointForNewClass;
-      InsertClassComment;
+      InsertClassMethodsComment;
 
       // insert all proc bodies
       MissingNode:=ClassProcs.FindHighest;

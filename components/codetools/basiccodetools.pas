@@ -41,8 +41,11 @@ uses
 // comments
 function FindNextNonSpace(const ASource: string; StartPos: integer
     ): integer;
+function FindPrevNonSpace(const ASource: string; StartPos: integer
+    ): integer;
 function FindCommentEnd(const ASource: string; StartPos: integer;
     NestedComments: boolean): integer;
+function IsCommentEnd(const ASource: string; EndPos: integer): boolean;
 function FindNextCompilerDirective(const ASource: string; StartPos: integer;
     NestedComments: boolean): integer;
 function FindNextCompilerDirectiveWithName(const ASource: string;
@@ -999,6 +1002,50 @@ begin
   until false;
 end;
 
+function IsCommentEnd(const ASource: string; EndPos: integer): boolean;
+// return true if EndPos on } or on *) or in a // comment
+var
+  l: Integer;
+  LineStart: LongInt;
+begin
+  Result:=false;
+  if EndPos<1 then exit;
+  l:=length(ASource);
+  if EndPos>l then exit;
+  if ASource[EndPos]='}' then begin
+    // delphi comment end
+    Result:=true;
+    exit;
+  end;
+  if (EndPos>1) and (ASource[EndPos]=')') and (ASource[EndPos-1]='*') then begin
+    // TP comment end
+    Result:=true;
+    exit;
+  end;
+  // test for Delphi comment
+  // skip line end
+  LineStart:=EndPos;
+  if ASource[LineStart] in [#10,#13] then begin
+    dec(LineStart);
+    if (LineStart>=1) and (ASource[LineStart] in [#10,#13])
+    and (ASource[LineStart]<>ASource[LineStart+1]) then
+      dec(LineStart);
+    if LineStart<1 then exit;
+  end;
+  // find line start
+  while (LineStart>1) and (not (ASource[LineStart-1] in [#10,#13])) do
+    dec(LineStart);
+  // find first non space char in line
+  while (LineStart<=EndPos) and (ASource[LineStart] in [' ',#9]) do
+    inc(LineStart);
+  if (LineStart<EndPos)
+  and (ASource[LineStart]='/') and (ASource[LineStart+1]='/') then begin
+    // Delphi comment end
+    Result:=true;
+    exit;
+  end;
+end;
+
 function FindNextCompilerDirective(const ASource: string; StartPos: integer;
   NestedComments: boolean): integer;
 var
@@ -1098,6 +1145,17 @@ begin
   Result:=StartPos;
   while (Result<=SrcLen) and (ASource[Result] in [' ',#9,#10,#13]) do
     inc(Result);
+end;
+
+function FindPrevNonSpace(const ASource: string; StartPos: integer
+    ): integer;
+var
+  SrcLen: integer;
+begin
+  SrcLen:=length(ASource);
+  Result:=StartPos;
+  while (Result>=1) and (ASource[Result] in [' ',#9,#10,#13]) do
+    dec(Result);
 end;
 
 function FindCommentEnd(const ASource: string; StartPos: integer;

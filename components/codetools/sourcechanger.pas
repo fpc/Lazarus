@@ -100,6 +100,7 @@ type
     MethodInsertPolicy: TMethodInsertPolicy;
     ForwardProcBodyInsertPolicy: TForwardProcBodyInsertPolicy;
     KeepForwardProcOrder: boolean;
+    ClassHeaderComments: boolean;
     KeyWordPolicy: TWordPolicy;
     IdentifierPolicy: TWordPolicy;
     DoNotSplitLineInFront: TAtomTypes;
@@ -927,6 +928,7 @@ begin
   MethodInsertPolicy:=mipClassOrder;
   ForwardProcBodyInsertPolicy:=fpipBehindMethods;
   KeepForwardProcOrder:=true;
+  ClassHeaderComments:=true;
   KeyWordPolicy:=wpLowerCase;
   IdentifierPolicy:=wpNone;
   DoNotSplitLineInFront:=DefaultDoNotSplitLineInFront;
