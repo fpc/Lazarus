@@ -4598,6 +4598,18 @@ procedure TGtkWidgetSet.SetCallback(const AMsg: LongInt; const AGTKObject: PGTKO
     ConnectSenderSignal(AnObject, 'focus-out-event', @gtkKillFocusCB);
     ConnectSenderSignalAfter(AnObject, 'focus-out-event', @gtkKillFocusCBAfter);
   end;
+  
+  procedure ConnectKeyPressReleaseEvents(const AnObject: PGTKObject);
+  begin
+    ConnectSenderSignal(AnObject,
+      'key-press-event', @GTKKeyUpDown, GDK_KEY_PRESS_MASK);
+    ConnectSenderSignalAfter(AnObject,
+      'key-press-event', @GTKKeyUpDownAfter, GDK_KEY_PRESS_MASK);
+    ConnectSenderSignal(AnObject,
+      'key-release-event', @GTKKeyUpDown, GDK_KEY_RELEASE_MASK);
+    ConnectSenderSignalAfter(AnObject,
+      'key-release-event', @GTKKeyUpDownAfter, GDK_KEY_RELEASE_MASK);
+  end;
 
 var
   gObject, gFixed, gCore, Scroll: PGTKObject;
@@ -4717,21 +4729,12 @@ begin
     LM_SYSKEYUP:
     begin
       if (ALCLObject is TCustomComboBox) then begin
-        ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.entry),
-          'key-press-event', @GTKKeyUpDown, GDK_KEY_PRESS_MASK);
-        ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.entry),
-          'key-release-event', @GTKKeyUpDown, GDK_KEY_RELEASE_MASK);
+        ConnectKeyPressReleaseEvents(PgtkObject(PgtkCombo(gObject)^.entry));
       end
       else if (ALCLObject is TCustomForm) then begin
-        ConnectSenderSignal(gObject, 'key-press-event', @GTKKeyUpDown,
-                            GDK_KEY_PRESS_MASK);
-        ConnectSenderSignal(gObject, 'key-release-event', @GTKKeyUpDown,
-                            GDK_KEY_RELEASE_MASK);
+        ConnectKeyPressReleaseEvents(gObject);
       end;
-      ConnectSenderSignal(gCore, 'key-press-event', @GTKKeyUpDown,
-                          GDK_KEY_PRESS_MASK);
-      ConnectSenderSignal(gCore, 'key-release-event', @GTKKeyUpDown,
-                          GDK_KEY_RELEASE_MASK);
+      ConnectKeyPressReleaseEvents(gCore);
     end;
 
     LM_MONTHCHANGED:  //calendar
@@ -9402,6 +9405,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.499  2004/05/11 09:49:47  mattias
+  started sending CN_KEYUP
+
   Revision 1.498  2004/05/01 10:23:04  mattias
   fixed progessbar position
 

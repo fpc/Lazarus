@@ -530,8 +530,8 @@ begin
   EventTrace('map', data);
 end;
 
-function GTKKeyUpDown(Widget: PGtkWidget; Event: PGdkEventKey;
-  Data: gPointer) : GBoolean; cdecl;
+function HandleGTKKeyUpDown(Widget: PGtkWidget; Event: PGdkEventKey;
+  Data: gPointer; BeforeEvent: boolean) : GBoolean; cdecl;
 var
   Msg: TLMKey;
   EventStopped: Boolean;
@@ -595,7 +595,7 @@ var
   CommonKeyData: Integer;
   Flags: Integer;
   SysKey: Boolean;
-  TopLevel: PGtkWidget;
+  //TopLevel: PGtkWidget;
   FocusedWidget: PGtkWidget;
   LCLObject: TObject;
   FocusedWinControl: TWinControl;
@@ -605,12 +605,12 @@ var
 begin
   Result := True;
   EventStopped := False;
-  HandledByLCL:=KeyEventWasHandledByLCL(Event);
+  HandledByLCL:=KeyEventWasHandledByLCL(Event,BeforeEvent);
 
   {$IFDEF VerboseKeyboard}
-  writeln('[GTKKeyUpDown] ',TControl(Data).Name,':',TControl(Data).ClassName,
+  writeln('[HandleGTKKeyUpDown] ',TControl(Data).Name,':',TControl(Data).ClassName,
     ' ',Event^.theType,' Widget=',GetWidgetClassName(Widget),
-    ' HandledByLCL=',HandledByLCL);
+    ' Before=',BeforeEvent,' HandledByLCL=',HandledByLCL);
   {$ENDIF}
 
   // handle every key event only once
@@ -632,7 +632,7 @@ begin
         FocusedWinControl:=TWinControl(LCLObject);
         if FocusedWidget<>Widget then begin
           {$IFDEF VerboseKeyboard}
-          writeln('[GTKKeyUpDown] REDIRECTING ',
+          writeln('[HandleGTKKeyUpDown] REDIRECTING ',
             ' FocusedWidget=',GetWidgetClassName(FocusedWidget),
             ' Control=',FocusedWinControl.Name,':',FocusedWinControl.ClassName);
           {$ENDIF}
@@ -645,7 +645,9 @@ begin
   end;
 
   // remember this event
-  RememberKeyEventWasHandledByLCL(Event);
+  RememberKeyEventWasHandledByLCL(Event,BeforeEvent);
+  
+  if TargetWidget=nil then exit;
 
   gdk_event_key_get_string(Event, EventString);
   FillChar(Msg,SizeOf(Msg),0);
@@ -676,13 +678,19 @@ begin
   GDK_KEY_RELEASE:
     begin
       {$IFDEF VerboseKeyboard}
-      writeln('[GTKKeyUpDown] GDK_KEY_RELEASE VKey=',VKey.VKey);
+      writeln('[HandleGTKKeyUpDown] GDK_KEY_RELEASE VKey=',VKey.VKey);
       {$ENDIF}
 
       Msg.CharCode := VKey.VKey;
-      if SysKey
-      then Msg.msg := LM_SYSKEYUP
-      else Msg.msg := LM_KEYUP;
+      if BeforeEvent then begin
+        if SysKey
+        then Msg.msg := CN_SYSKEYUP
+        else Msg.msg := CN_KEYUP;
+      end else begin
+        if SysKey
+        then Msg.msg := LM_SYSKEYUP
+        else Msg.msg := LM_KEYUP;
+      end;
 
       Flags := Flags or KF_UP or KF_REPEAT;
 
@@ -703,14 +711,20 @@ begin
   GDK_KEY_PRESS:
     begin
       {$IFDEF VerboseKeyboard}
-      writeln('[GTKKeyUpDown] GDK_KEY_PRESS VKey=',VKey.VKey);
+      writeln('[HandleGTKKeyUpDown] GDK_KEY_PRESS VKey=',VKey.VKey);
       {$ENDIF}
 
       Msg.CharCode := VKey.VKey;
 
-      if SysKey
-      then Msg.msg := LM_SYSKEYDOWN
-      else Msg.msg := LM_KEYDOWN;
+      if BeforeEvent then begin
+        if SysKey
+        then Msg.msg := CN_SYSKEYDOWN
+        else Msg.msg := CN_KEYDOWN;
+      end else begin
+        if SysKey
+        then Msg.msg := LM_SYSKEYDOWN
+        else Msg.msg := LM_KEYDOWN;
+      end;
 
       // todo  repeat
       // Flags := Flags or KF_REPEAT;
@@ -734,9 +748,15 @@ begin
 
         Msg.KeyData := CommonKeyData;
 
-        if SysKey
-        then Msg.msg := LM_SYSCHAR
-        else Msg.msg := LM_CHAR;
+        if BeforeEvent then begin
+          if SysKey
+          then Msg.msg := CN_SYSCHAR
+          else Msg.msg := CN_CHAR;
+        end else begin
+          if SysKey
+          then Msg.msg := LM_SYSCHAR
+          else Msg.msg := LM_CHAR;
+        end;
 
         if Event^.Length = 0
         then Msg.CharCode := 0 // ^@ was pressed
@@ -756,7 +776,7 @@ begin
         end;
       end;
       
-      if  (Msg.CharCode = VK_TAB)
+      {if  (Msg.CharCode = VK_TAB)
       and (TObject(Data) is TControl)
       then begin
         TopLevel := gtk_widget_get_toplevel(TargetWidget);
@@ -768,10 +788,22 @@ begin
           Result := TControl(TargetData).PerformTab(
                       (Event^.State and GDK_SHIFT_MASK) = 0);
         end;
-      end;
+      end;}
     end;
   end;
-//writeln('[GTKKeyUpDown] ',TControl(Data).Name,':',TControl(Data).ClassName,' Result=',Result);
+//writeln('[HandleGTKKeyUpDown] ',TControl(Data).Name,':',TControl(Data).ClassName,' Result=',Result);
+end;
+
+function GTKKeyUpDown(Widget: PGtkWidget; Event: PGdkEventKey;
+  Data: gPointer) : GBoolean; cdecl;
+begin
+  Result:=HandleGtkKeyUpDown(Widget,Event,Data,true);
+end;
+
+function GTKKeyUpDownAfter(Widget: PGtkWidget; Event: pgdkeventkey;
+  Data: gPointer): GBoolean; cdecl;
+begin
+  Result:=HandleGtkKeyUpDown(Widget,Event,Data,false);
 end;
 
 function GTKFocusCB( widget: PGtkWidget; event:PGdkEventFocus;
@@ -3066,6 +3098,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.229  2004/05/11 09:49:46  mattias
+  started sending CN_KEYUP
+
   Revision 1.228  2004/04/23 11:18:28  mattias
   fixed unsetting csFocusing
 

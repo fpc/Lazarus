@@ -1800,11 +1800,11 @@ type
     FBottomItem: TTreeNode;
     FExpandSignType: TTreeViewExpandSignType;
     FExpandSignSize: integer;
-    FDefEditProc: Pointer;
+    //FDefEditProc: Pointer;
     FDefItemHeight: integer;
     FDragImage: TDragImageList;
     FDragNode: TTreeNode;
-    FEditHandle: THandle;
+    //FEditHandle: THandle;
     FIndent: integer;
     FImageChangeLink: TChangeLink;
     FImages: TCustomImageList;
@@ -1854,7 +1854,7 @@ type
     FUpdateCount: integer;
     procedure CanvasChanged(Sender: TObject);
     procedure CMDrag(var AMessage: TCMDrag); message CM_DRAG;
-    procedure EditWndProc(var Message: TLMessage);
+    //procedure EditWndProc(var Message: TLMessage);
     function GetAutoExpand: boolean;
     function GetBottomItem: TTreeNode;
     function GetChangeDelay: Integer;
@@ -2249,6 +2249,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.122  2004/05/11 09:49:46  mattias
+  started sending CN_KEYUP
+
   Revision 1.121  2004/04/04 17:10:05  marc
   Patch from Andrew Haines
 

@@ -82,31 +82,46 @@ begin
   {$EndIF}
 end;
 
-procedure RememberKeyEventWasHandledByLCL(Event: PGdkEventKey);
+procedure RememberKeyEventWasHandledByLCL(Event: PGdkEventKey;
+  BeforeEvent: boolean);
 var
   HandledEvent: TLCLHandledKeyEvent;
+  EventList: TList;
 begin
-  if KeyEventWasHandledByLCL(Event) then exit;
-  if LCLHandledKeyEvents=nil then
-    LCLHandledKeyEvents:=TList.Create;
+  if KeyEventWasHandledByLCL(Event,BeforeEvent) then exit;
+  if BeforeEvent then begin
+    if LCLHandledKeyEvents=nil then
+      LCLHandledKeyEvents:=TList.Create;
+    EventList:=LCLHandledKeyEvents;
+  end else begin
+    if LCLHandledKeyAfterEvents=nil then
+      LCLHandledKeyAfterEvents:=TList.Create;
+    EventList:=LCLHandledKeyAfterEvents;
+  end;
   HandledEvent:=TLCLHandledKeyEvent.Create(Event);
-  LCLHandledKeyEvents.Add(HandledEvent);
-  while LCLHandledKeyEvents.Count>10 do begin
-    HandledEvent:=TLCLHandledKeyEvent(LCLHandledKeyEvents[0]);
+  EventList.Add(HandledEvent);
+  while EventList.Count>10 do begin
+    HandledEvent:=TLCLHandledKeyEvent(EventList[0]);
     HandledEvent.Free;
-    LCLHandledKeyEvents.Delete(0);
+    EventList.Delete(0);
   end;
 end;
 
-function KeyEventWasHandledByLCL(Event: PGdkEventKey): boolean;
+function KeyEventWasHandledByLCL(Event: PGdkEventKey; BeforeEvent: boolean
+  ): boolean;
 var
   i: Integer;
   HandledEvent: TLCLHandledKeyEvent;
+  EventList: TList;
 begin
   Result:=false;
-  if LCLHandledKeyEvents=nil then exit;
-  for i:=0 to LCLHandledKeyEvents.Count-1 do begin
-    HandledEvent:=TLCLHandledKeyEvent(LCLHandledKeyEvents[i]);
+  if BeforeEvent then
+    EventList:=LCLHandledKeyEvents
+  else
+    EventList:=LCLHandledKeyAfterEvents;
+  if EventList=nil then exit;
+  for i:=0 to EventList.Count-1 do begin
+    HandledEvent:=TLCLHandledKeyEvent(EventList[i]);
     if HandledEvent.IsEqual(Event) then begin
       Result:=true;
       exit;
@@ -2490,6 +2505,10 @@ begin
       TObject(LCLHandledKeyEvents[i]).Free;
     LCLHandledKeyEvents.Free;
     LCLHandledKeyEvents:=nil;
+    for i:=0 to LCLHandledKeyAfterEvents.Count-1 do
+      TObject(LCLHandledKeyAfterEvents[i]).Free;
+    LCLHandledKeyAfterEvents.Free;
+    LCLHandledKeyAfterEvents:=nil;
   end;
 end;
 
@@ -6742,6 +6761,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.277  2004/05/11 09:49:47  mattias
+  started sending CN_KEYUP
+
   Revision 1.276  2004/04/19 09:30:04  marc
   * Fixed compilation for gtk2
 

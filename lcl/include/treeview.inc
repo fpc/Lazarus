@@ -2686,7 +2686,7 @@ begin
     TControlCanvas(Canvas).FreeHandle;
 end;
 
-procedure TCustomTreeView.EditWndProc(var Message: TLMessage);
+{procedure TCustomTreeView.EditWndProc(var Message: TLMessage);
 begin
   with Message do
   begin
@@ -2707,7 +2707,7 @@ begin
     Result := CallWindowProc(FDefEditProc, FEditHandle, Msg, WParam, LParam);
   end;
 end;
-
+}
 procedure TCustomTreeView.BeginUpdate;
 begin
   inc(FUpdateCount);

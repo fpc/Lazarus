@@ -137,6 +137,7 @@ const
   CN_KEYDOWN           = CN_BASE + LM_KEYDOWN;
   CN_KEYUP             = CN_BASE + LM_KEYUP;
   CN_CHAR              = CN_BASE + LM_CHAR;
+  CN_SYSKEYUP          = CN_BASE + LM_SYSKEYUP;
   CN_SYSKEYDOWN        = CN_BASE + LM_SYSKEYDOWN;
   CN_SYSCHAR           = CN_BASE + LM_SYSCHAR;
   CN_NOTIFY            = CN_BASE + LM_NOTIFY;
@@ -1333,7 +1334,6 @@ type
     procedure WMSetFocus(var Message: TLMSetFocus); message LM_SETFOCUS;
     procedure WMKillFocus(var Message: TLMKillFocus); message LM_KILLFOCUS;
     procedure WMShowWindow(var Message: TLMShowWindow); message LM_SHOWWINDOW;
-    //move to CM
     procedure WMEnter(var Message: TLMEnter); message LM_ENTER;
     procedure WMExit(var Message: TLMExit); message LM_EXIT;
     procedure WMMouseWheel(var Message: TLMMouseEvent); message LM_MOUSEWHEEL;
@@ -1344,6 +1344,8 @@ type
     procedure WMDestroy(var Message: TLMDestroy); message LM_DESTROY;
     procedure WMMove(var Message: TLMMove); message LM_MOVE;
     procedure WMSize(var Message: TLMSize); message LM_SIZE;
+    procedure CNKeyDown(var Message: TLMKeyDown); message CN_KEYDOWN;
+    procedure CNKeyUp(var Message: TLMKeyUp); message CN_KEYUP;
 
     procedure CreateParams(var Params: TCreateParams); virtual;
     procedure DestroyHandle; virtual;
@@ -2260,6 +2262,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.199  2004/05/11 09:49:46  mattias
+  started sending CN_KEYUP
+
   Revision 1.198  2004/04/26 10:01:27  mattias
   fixed TSynEdit.RealGetText
 

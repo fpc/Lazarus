@@ -850,6 +850,18 @@ procedure TGTK2WidgetSet.SetCallback(const AMsg: LongInt; const AGTKObject: PGTK
     ConnectSenderSignalAfter(AnObject, 'focus-out-event', @gtk2KillFocusCBAfter);
   end;
 
+  procedure ConnectKeyPressReleaseEvents(const AnObject: PGTKObject);
+  begin
+    ConnectSenderSignal(AnObject,
+      'key-press-event', @GTK2KeyUpDown, GDK_KEY_PRESS_MASK);
+    //ConnectSenderSignalAfter(AnObject,
+    //  'key-press-event', @GTK2KeyUpDownAfter, GDK_KEY_PRESS_MASK);
+    ConnectSenderSignal(AnObject,
+      'key-release-event', @GTK2KeyUpDown, GDK_KEY_RELEASE_MASK);
+    //ConnectSenderSignalAfter(AnObject,
+    //  'key-release-event', @GTK2KeyUpDownAfter, GDK_KEY_RELEASE_MASK);
+  end;
+
 var
   gObject, gFixed, gCore, Scroll: PGTKObject;
 begin
@@ -883,21 +895,12 @@ begin
     LM_SYSKEYUP:
     begin
       if (ALCLObject is TCustomComboBox) then begin
-        ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.entry),
-          'key-press-event', @GTK2KeyUpDown, GDK_KEY_PRESS_MASK);
-        ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.entry),
-          'key-release-event', @GTK2KeyUpDown, GDK_KEY_RELEASE_MASK);
+        ConnectKeyPressReleaseEvents(PgtkObject(PgtkCombo(gObject)^.entry));
       end
       else if (ALCLObject is TCustomForm) then begin
-        ConnectSenderSignal(gObject, 'key-press-event', @GTK2KeyUpDown,
-                            GDK_KEY_PRESS_MASK);
-        ConnectSenderSignal(gObject, 'key-release-event', @GTK2KeyUpDown,
-                            GDK_KEY_RELEASE_MASK);
+        ConnectKeyPressReleaseEvents(gObject);
       end;
-      ConnectSenderSignal(gCore, 'key-press-event', @GTK2KeyUpDown,
-                          GDK_KEY_PRESS_MASK);
-      ConnectSenderSignal(gCore, 'key-release-event', @GTK2KeyUpDown,
-                          GDK_KEY_RELEASE_MASK);
+      ConnectKeyPressReleaseEvents(gCore);
     end;
 
 
@@ -1377,6 +1380,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.11  2004/05/11 09:49:47  mattias
+  started sending CN_KEYUP
+
   Revision 1.10  2004/04/13 14:03:29  marc
   Patch from Ladislav Michl
 

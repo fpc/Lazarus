@@ -108,6 +108,8 @@ function gtkfrmdeactivateAfter( widget: PGtkWidget; Event: PgdkEventFocus;
 function GTKMap(Widget: PGTKWidget; Data: gPointer): GBoolean; cdecl;
 function GTKKeyUpDown(Widget: PGtkWidget; Event: pgdkeventkey;
   Data: gPointer): GBoolean; cdecl;
+function GTKKeyUpDownAfter(Widget: PGtkWidget; Event: pgdkeventkey;
+  Data: gPointer): GBoolean; cdecl;
 function GTKFocusCB(widget: PGtkWidget; event:PGdkEventFocus; data: gPointer): GBoolean; cdecl;
 function GTKFocusCBAfter(widget: PGtkWidget; event:PGdkEventFocus; data: gPointer): GBoolean; cdecl;
 function GTKKillFocusCB(widget: PGtkWidget; event:PGdkEventFocus; data: gPointer): GBoolean; cdecl;
@@ -395,8 +397,10 @@ function IsToggleKey(const AVKey: Byte): Boolean;
 //function KeyToListCode_(KeyCode, VirtKeyCode: Word; Extended: boolean): integer;
 procedure gdk_event_key_get_string(Event: PGDKEventKey; var theString: Pointer);
 function gdk_event_get_type(Event: Pointer): guint;
-procedure RememberKeyEventWasHandledByLCL(Event: PGdkEventKey);
-function KeyEventWasHandledByLCL(Event: PGdkEventKey): boolean;
+procedure RememberKeyEventWasHandledByLCL(Event: PGdkEventKey;
+                                          BeforeEvent: boolean);
+function KeyEventWasHandledByLCL(Event: PGdkEventKey;
+                                 BeforeEvent: boolean): boolean;
 // ----
 
 // common dialogs
@@ -797,9 +801,10 @@ end;
   
 var
   // LCLHandledKeyEvents stores the last handled key event (handled by the LCL)
-  // Why: The gtk sends the same key event to several widgets. The gtk intf
+  // Reason: The gtk sends the same key event to several widgets. The gtk intf
   // only wants to send them once to the LCL.
   LCLHandledKeyEvents: TList; // list of TLCLHandledKeyEvent
+  LCLHandledKeyAfterEvents: TList; // list of TLCLHandledKeyEvent
 
 {$IFDEF UNIX}
 {$IFNDEF GTK2_2}
@@ -880,6 +885,7 @@ begin
   GdkTrapIsSet := False;
   GdkTrapCalls := 0;
   LCLHandledKeyEvents:=nil;
+  LCLHandledKeyAfterEvents:=nil;
 
   for lgs:=Low(TLazGtkStyle) to High(TLazGtkStyle) do
     StandardStyles[lgs]:=nil;

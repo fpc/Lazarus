@@ -1147,9 +1147,9 @@ end;
 {------------------------------------------------------------------------------}
 {  TWinControl Focused                                                         }
 {------------------------------------------------------------------------------}
-Function TWinControl.Focused : Boolean;
+Function TWinControl.Focused: Boolean;
 Begin
-  Result := CanTab and (HandleAllocated and (GetFocus = Handle));
+  Result := CanTab and (HandleAllocated and (FindOwnerControl(GetFocus)=Self));
 end;
 
 {------------------------------------------------------------------------------}
@@ -1987,7 +1987,7 @@ end;
 {------------------------------------------------------------------------------}
 {  TWinControl DoKeyDown                                                      }
 {------------------------------------------------------------------------------}
-function TWinControl.DoKeyDown(Var Message : TLMKey): Boolean;
+function TWinControl.DoKeyDown(Var Message: TLMKey): Boolean;
 var
   F: TCustomForm;
   ShiftState: TShiftState;
@@ -2004,16 +2004,29 @@ begin
     if CharCode = VK_UNKNOWN then Exit;
     ShiftState := KeyDataToShiftState(KeyData);
 
+    // let drag object handle the key
     if Dragging and (DragObject<>nil) then
       DragObject.KeyDown(CharCode, ShiftState);
+    if CharCode = VK_UNKNOWN then Exit;
 
+    // let user handle the key
     if not (csNoStdEvents in ControlStyle)
     then begin
+      // ToDo: only If WantAllKeys then
       KeyDown(CharCode, ShiftState);
       if CharCode = VK_UNKNOWN then Exit;
     end;
+
+    // let application handle the key
     if Application<>nil then
       Application.NotifyKeyDownHandler(Self, CharCode, ShiftState);
+    if CharCode = VK_UNKNOWN then Exit;
+
+    // handle tab keys
+    if (CharCode=VK_Tab) and Focused then begin
+      CharCode:=VK_UNKNOWN;
+      PerformTab(not (ssShift in ShiftState));
+    end;
   end;
 
   Result := False;
@@ -2795,6 +2808,31 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method: TWinControl.CNKeyDown
+  Params:   Msg: The message
+  Returns:  nothing
+
+  event handler.
+ ------------------------------------------------------------------------------}
+procedure TWinControl.CNKeyDown(var Message: TLMKeyDown);
+begin
+  //writeln('TWinControl.CNKeyDown ',Name,':',ClassName);
+  if not DoKeyDown(Message) then {inherited};  // there is nothing to inherit
+end;
+
+{------------------------------------------------------------------------------
+  Method: TWinControl.CNKeyUp
+  Params:   Msg: The message
+  Returns:  nothing
+
+  event handler.
+ ------------------------------------------------------------------------------}
+procedure TWinControl.CNKeyUp(var Message: TLMKeyUp);
+begin
+
+end;
+
+{------------------------------------------------------------------------------
   Method: TWinControl.WMNofity
   Params:   Msg: The message
   Returns:  nothing
@@ -2804,8 +2842,7 @@ end;
 procedure TWInControl.WMNotify(var Message: TLMNotify);
 Begin
   if not DoControlMsg(Message.NMHdr^.hwndfrom,Message) then exit;
-
-//Inherited ;
+  //Inherited;
 end;
 
 {------------------------------------------------------------------------------
@@ -2905,9 +2942,8 @@ end;
 Procedure TWinControl.WMKeyDown(Var Message : TLMKeyDown);
 begin
   //writeln('TWinControl.WMKeyDown ',Name,':',ClassName);
-  if not DoKeyDown(Message) then begin
-    {inherited} ;  // there is nothing to inherit
-  end;
+  // ToDo: If not WantAllKeys then
+  //KeyDown(CharCode, ShiftState);
 end;
 
 {------------------------------------------------------------------------------
@@ -3481,6 +3517,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.225  2004/05/11 09:49:46  mattias
+  started sending CN_KEYUP
+
   Revision 1.224  2004/05/02 17:06:01  marc
   - Removed TWSWinControl.HasText
 
