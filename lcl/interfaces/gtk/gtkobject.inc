@@ -1737,7 +1737,7 @@ begin
 
       LM_SETFOCUS:
       begin
-        writeln('[TgtkObject.IntSendMessage3] LM_SETFOCUS ',TObject(Sender).ClassName);
+        //writeln('[TgtkObject.IntSendMessage3] LM_SETFOCUS ',TObject(Sender).ClassName);
         SetFocus(Handle);
       end;
 
@@ -6824,6 +6824,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.312  2002/12/28 11:29:47  mattias
+  xmlcfg deletion, focus fixes
+
   Revision 1.311  2002/12/27 17:46:04  mattias
   fixed SetColor
 
