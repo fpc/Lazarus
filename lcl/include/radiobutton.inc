@@ -65,6 +65,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TRadioButton.SetText(const Value: TCaption);
 begin
+  if Text=Value then exit;
   Inherited SetText(Value);
   RecreateWnd;
   DoAutoSize;
@@ -105,6 +106,9 @@ end;
 
 {
   $Log$
+  Revision 1.11  2002/11/27 15:40:36  mattias
+  fixed resize request
+
   Revision 1.10  2002/11/27 14:37:37  mattias
   added form editor options for rubberband and colors
 
