@@ -2472,7 +2472,7 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  TgtkObject.HookSignals
+  TgtkObject.DestroyLCLControl
   Params: Sender: TObject
 
   Destroy the widget and all associated data
@@ -3656,7 +3656,7 @@ begin
     csProgressBar:
     with (TProgressBar (Sender)) do
     begin
-       { Create a GtkAdjusment object to hold the range of the progress bar }
+       { Create a GtkAdjustment object to hold the range of the progress bar }
        TempWidget := PGtkWidget( gtk_adjustment_new (Position, Min, Max, 0, 0, 0));
        { Create the GtkProgressBar using the adjustment }
        P := gtk_progress_bar_new_with_adjustment (PGtkAdjustment (TempWidget));
@@ -5266,6 +5266,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.151  2002/08/04 07:09:28  lazarus
+  MG: fixed client events
+
   Revision 1.150  2002/07/29 13:26:57  lazarus
   MG: source notebook pagenames are now updated more often
 
