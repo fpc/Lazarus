@@ -1217,6 +1217,7 @@ var
 var UnitSrcSearchPath: string;
   MainCodeIsVirtual: boolean;
   CompiledResult: TCodeBuffer;
+  UnitSearchPath: string;
 begin
   {$IFDEF ShowTriedFiles}
   writeln('TFindDeclarationTool.FindUnitSource A AnUnitName=',AnUnitName,' AnUnitInFilename=',AnUnitInFilename);
@@ -1281,11 +1282,19 @@ begin
         CompiledSrcExt:='.ppw';
       CompiledResult:=SearchUnitFileInDir(CurDir,AnUnitName,false);
       if CompiledResult=nil then begin
-        // search compiled unit in search path
+        // search compiled unit in src path
         {$IFDEF ShowTriedFiles}
-        writeln('TFindDeclarationTool.FindUnitSource Search Compiled unit in search path=',UnitSrcSearchPath);
+        writeln('TFindDeclarationTool.FindUnitSource Search Compiled unit in src path=',UnitSrcSearchPath);
         {$ENDIF}
         CompiledResult:=SearchUnitFileInPath(UnitSrcSearchPath,AnUnitName,false);
+      end;
+      if CompiledResult=nil then begin
+        // search compiled unit in unit path
+        UnitSearchPath:=Scanner.Values[ExternalMacroStart+'UnitPath'];
+        {$IFDEF ShowTriedFiles}
+        writeln('TFindDeclarationTool.FindUnitSource Search Compiled unit in unit path=',UnitSearchPath);
+        {$ENDIF}
+        CompiledResult:=SearchUnitFileInPath(UnitSearchPath,AnUnitName,false);
       end;
       if (CompiledResult<>nil) then begin
         // there is a compiled unit

@@ -262,6 +262,8 @@ type
     function MergeCustomOptions(const OldOptions, AddOptions: string): string;
     function GetDefaultMainSourceFileName: string; virtual;
     function NeedsLinkerOpts: boolean;
+    function GetUnitPath(RelativeToBaseDir: boolean): string;
+    function GetIncludePath(RelativeToBaseDir: boolean): string;
   public
     { Properties }
     property Owner: TObject read fOwner write fOwner;
@@ -1182,6 +1184,39 @@ begin
   Result:=not (ccloNoLinkerOpts in fDefaultMakeOptionsFlags);
 end;
 
+function TBaseCompilerOptions.GetUnitPath(RelativeToBaseDir: boolean): string;
+var
+  CurUnitPath: String;
+  InhUnitPath: String;
+begin
+  // unit path
+  CurUnitPath:=ParsedOpts.GetParsedValue(pcosUnitPath);
+  if (not RelativeToBaseDir) then
+    CreateAbsolutePath(CurUnitPath,BaseDirectory);
+
+  // inherited unit path
+  InhUnitPath:=GetInheritedOption(icoUnitPath,RelativeToBaseDir);
+
+  Result:=MergeSearchPaths(CurUnitPath,InhUnitPath);
+end;
+
+function TBaseCompilerOptions.GetIncludePath(RelativeToBaseDir: boolean
+  ): string;
+var
+  CurIncludePath: String;
+  InhIncludePath: String;
+begin
+  // include path
+  CurIncludePath:=ParsedOpts.GetParsedValue(pcosIncludePath);
+  if (not RelativeToBaseDir) then
+    CreateAbsolutePath(CurIncludePath,BaseDirectory);
+
+  // inherited include path
+  InhIncludePath:=GetInheritedOption(icoIncludePath,RelativeToBaseDir);
+  
+  Result:=MergeSearchPaths(CurIncludePath,InhIncludePath);
+end;
+
 {------------------------------------------------------------------------------
   TBaseCompilerOptions MakeOptionsString
 ------------------------------------------------------------------------------}
@@ -1200,9 +1235,7 @@ function TBaseCompilerOptions.MakeOptionsString(
 var
   switches, tempsw: String;
   InhLinkerOpts: String;
-  InhIncludePath: String;
   InhLibraryPath: String;
-  InhUnitPath: String;
   InhCustomOptions: String;
   NewTargetFilename: String;
   CurIncludePath: String;
@@ -1633,14 +1666,9 @@ Processor specific options:
   { ------------- Search Paths ---------------- }
   
   // include path
-  CurIncludePath:=ParsedOpts.GetParsedValue(pcosIncludePath);
+  CurIncludePath:=GetIncludePath(true);
   if (CurIncludePath <> '') then
     switches := switches + ' ' + ConvertSearchPathToCmdLine('-Fi', CurIncludePath);
-    
-  // inherited include path
-  InhIncludePath:=GetInheritedOption(icoIncludePath,true);
-  if (InhIncludePath <> '') then
-    switches := switches + ' ' + ConvertSearchPathToCmdLine('-Fi', InhIncludePath);
 
   // library path
   if (not (ccloNoLinkerOpts in Flags)) then begin
@@ -1667,17 +1695,11 @@ Processor specific options:
     switches := switches + ' ' + ConvertSearchPathToCmdLine('-Fo', InhObjectPath);
 
   // unit path
-  CurUnitPath:=ParsedOpts.GetParsedValue(pcosUnitPath);
+  CurUnitPath:=GetUnitPath(true);
   // always add the current directory to the unit path, so that the compiler
   // checks for changed files in the directory
   CurUnitPath:=CurUnitPath+';.';
   switches := switches + ' ' + ConvertSearchPathToCmdLine('-Fu', CurUnitPath);
-
-  // inherited unit path
-  InhUnitPath:=GetInheritedOption(icoUnitPath,true);
-  if (InhUnitPath <> '') then
-    switches := switches + ' ' + ConvertSearchPathToCmdLine('-Fu', InhUnitPath);
-
 
   { CompilerPath - Nothing needs to be done with this one }
   

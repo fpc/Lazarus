@@ -108,10 +108,13 @@ var
   SortSelectionDialog: TSortSelectionDialog;
 begin
   SortSelectionDialog:=TSortSelectionDialog.Create(Application);
+  SortSelectionDialog.BeginUpdate;
   SortSelectionDialog.TheText:=TheText;
   SortSelectionDialog.PreviewSynEdit.Highlighter:=Highlighter;
   EditorOpts.GetSynEditSelectedColor(SortSelectionDialog.PreviewSynEdit);
+writeln('');
   SortSelectionDialog.UpdatePreview;
+  SortSelectionDialog.EndUpdate;
   Result:=SortSelectionDialog.ShowModal;
   if Result=mrOk then
     SortedText:=SortSelectionDialog.SortedText;
@@ -434,8 +437,8 @@ constructor TSortSelectionDialog.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FIgnoreSpace:=true;
-  FDirection:=sdAscending;
-  FDomain:=sdLines;
+  FDirection:=MiscellaneousOptions.SortSelDirection;
+  FDomain:=MiscellaneousOptions.SortSelDomain;
   FStates:=FStates+[ssdPreviewNeedsUpdate,ssdSortedTextNeedsUpdate];
 
   Position:=poScreenCenter;
@@ -475,7 +478,7 @@ begin
       Add('Ascending');
       Add('Descending');
       Columns:=2;
-      case MiscellaneousOptions.SortSelDirection of
+      case FDirection of
       sdAscending: ItemIndex:=0;
       else         ItemIndex:=1;
       end;
@@ -498,7 +501,7 @@ begin
       Add('Lines');
       Add('Words');
       Add('Paragraphs');
-      case MiscellaneousOptions.SortSelDomain of
+      case FDomain of
       sdLines: ItemIndex:=0;
       sdWords: ItemIndex:=1;
       else     ItemIndex:=2;
@@ -576,7 +579,11 @@ end;
 procedure TSortSelectionDialog.EndUpdate;
 begin
   dec(FUpdateCount);
-  if FUpdateCount=0 then UpdatePreview;
+  if (FUpdateCount=0) then begin
+    if ssdSortedTextNeedsUpdate in FStates then
+      Include(FStates,ssdPreviewNeedsUpdate);
+    if (ssdPreviewNeedsUpdate in FStates) then UpdatePreview;
+  end;
 end;
 
 procedure TSortSelectionDialog.UpdatePreview;

@@ -83,6 +83,8 @@ type
     procedure WriteDebugListing;
     function AllwaysTrue: boolean;
     function AllwaysFalse: boolean;
+    function Count: integer;
+    function GetItem(Index: integer): TKeyWordFunctionListItem;
     constructor Create;
     destructor Destroy;  override;
   end;
@@ -508,6 +510,17 @@ begin
   Result:=false;
 end;
 
+function TKeyWordFunctionList.Count: integer;
+begin
+  Result:=FCount;
+end;
+
+function TKeyWordFunctionList.GetItem(Index: integer
+  ): TKeyWordFunctionListItem;
+begin
+  Result:=FItems[Index];
+end;
+
 function TKeyWordFunctionList.DoItCaseInsensitive(const AKeyWord: shortstring
   ): boolean;
 var i: integer;
@@ -546,14 +559,14 @@ begin
   if i>=0 then begin
     i:=FBucketStart[i];
     if i>=0 then begin
-      KeyWordEnd:=PChar(integer(Start)+Len);
+      KeyWordEnd:=PChar(integer(Start)+Len-1);
       repeat
         KeyWordFuncItem:=@FItems[i];
         if length(KeyWordFuncItem^.KeyWord)=Len then begin
           KeyPos:=Len;
           WordPos:=KeyWordEnd;
           while (KeyPos>=1)
-          and (KeyWordFuncItem^.KeyWord[KeyPos]=UpChars[WordPos[0]]) do
+          and (KeyWordFuncItem^.KeyWord[KeyPos]=UpChars[WordPos^]) do
           begin
             dec(KeyPos);
             dec(WordPos);

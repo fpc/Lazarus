@@ -55,33 +55,33 @@ uses
 
 type
   TPkgManager = class(TBasePkgManager)
-    procedure MainIDEitmPkgOpenPackageFileClick(Sender: TObject);
-    procedure MainIDEitmPkgPkgGraphClick(Sender: TObject);
     function OnPackageEditorCompilePackage(Sender: TObject;
       APackage: TLazPackage; CompileAll: boolean): TModalResult;
     function OnPackageEditorCreateFile(Sender: TObject;
                                    const Params: TAddToPkgResult): TModalResult;
-    procedure OnPackageEditorFreeEditor(APackage: TLazPackage);
-    procedure OnPackageEditorGetUnitRegisterInfo(Sender: TObject;
-                              const AFilename: string; var TheUnitName: string;
-                              var HasRegisterProc: boolean);
     function OnPackageEditorOpenPackage(Sender: TObject; APackage: TLazPackage
                                         ): TModalResult;
     function OnPackageEditorSavePackage(Sender: TObject; APackage: TLazPackage;
                                         SaveAs: boolean): TModalResult;
+    function PackageGraphExplorerOpenPackage(Sender: TObject;
+                                           APackage: TLazPackage): TModalResult;
+    procedure MainIDEitmPkgOpenPackageFileClick(Sender: TObject);
+    procedure MainIDEitmPkgPkgGraphClick(Sender: TObject);
+    procedure mnuConfigCustomCompsClicked(Sender: TObject);
+    procedure mnuOpenRecentPackageClicked(Sender: TObject);
+    procedure mnuPkgOpenPackageClicked(Sender: TObject);
+    procedure OnApplicationIdle(Sender: TObject);
+    procedure OnPackageEditorFreeEditor(APackage: TLazPackage);
+    procedure OnPackageEditorGetUnitRegisterInfo(Sender: TObject;
+                              const AFilename: string; var TheUnitName: string;
+                              var HasRegisterProc: boolean);
+    procedure PackageGraphAddPackage(Pkg: TLazPackage);
     procedure PackageGraphBeginUpdate(Sender: TObject);
     procedure PackageGraphChangePackageName(APackage: TLazPackage;
                                             const OldName: string);
     procedure PackageGraphDeletePackage(APackage: TLazPackage);
     procedure PackageGraphDependencyModified(ADependency: TPkgDependency);
-    function PackageGraphExplorerOpenPackage(Sender: TObject;
-                                           APackage: TLazPackage): TModalResult;
-    procedure PkgManagerAddPackage(Pkg: TLazPackage);
-    procedure PkgManagerEndUpdate(Sender: TObject; GraphChanged: boolean);
-    procedure mnuConfigCustomCompsClicked(Sender: TObject);
-    procedure mnuPkgOpenPackageClicked(Sender: TObject);
-    procedure mnuOpenRecentPackageClicked(Sender: TObject);
-    procedure OnApplicationIdle(Sender: TObject);
+    procedure PackageGraphEndUpdate(Sender: TObject; GraphChanged: boolean);
   private
     function DoShowSavePackageAsDialog(APackage: TLazPackage): TModalResult;
     function CompileRequiredPackages(APackage: TLazPackage): TModalResult;
@@ -92,8 +92,9 @@ type
     function DoLoadPackageCompiledState(APackage: TLazPackage;
                                         IgnoreErrors: boolean): TModalResult;
     function CheckIfPackageNeedsCompilation(APackage: TLazPackage): TModalResult;
-    procedure UpdateCodeToolsDefinesForPackage(APackage: TLazPackage);
     function MacroFunctionPkgSrcPath(Data: Pointer): boolean;
+    function MacroFunctionPkgUnitPath(Data: Pointer): boolean;
+    function MacroFunctionPkgIncPath(Data: Pointer): boolean;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -303,15 +304,15 @@ begin
   Result:=DoOpenPackage(APackage);
 end;
 
-procedure TPkgManager.PkgManagerAddPackage(Pkg: TLazPackage);
+procedure TPkgManager.PackageGraphAddPackage(Pkg: TLazPackage);
 begin
   if FileExists(Pkg.FileName) then PkgLinks.AddUserLink(Pkg);
   if PackageGraphExplorer<>nil then
     PackageGraphExplorer.UpdatePackageAdded(Pkg);
-  UpdateCodeToolsDefinesForPackage(Pkg);
 end;
 
-procedure TPkgManager.PkgManagerEndUpdate(Sender: TObject; GraphChanged: boolean);
+procedure TPkgManager.PackageGraphEndUpdate(Sender: TObject;
+  GraphChanged: boolean);
 begin
   if GraphChanged then IncreaseCompilerGraphStamp;
   if PackageGraphExplorer<>nil then begin
@@ -777,35 +778,6 @@ writeln('TPkgManager.CheckIfPackageNeedsCompilation END ',APackage.IDAsString);
   Result:=mrNo;
 end;
 
-procedure TPkgManager.UpdateCodeToolsDefinesForPackage(APackage: TLazPackage);
-var
-  PkgDefTempl: TDefineTemplate;
-  OutPutDirDefTempl, CompiledSrcPathDefTempl: TDefineTemplate;
-begin
-  if APackage.IsVirtual or APackage.AutoCreated then exit;
-  if APackage.DefineTemplate=nil then begin
-    APackage.DefineTemplate:=CreatePackageTemplateWithID(APackage.IDAsString);
-  end;
-  PkgDefTempl:=APackage.DefineTemplate;
-  PkgDefTempl.Name:=APackage.IDAsString;
-  OutPutDirDefTempl:=PkgDefTempl.FindChildByName(PkgOutputDirDefTemplName);
-  if OutPutDirDefTempl=nil then begin
-    OutPutDirDefTempl:=TDefineTemplate.Create(PkgOutputDirDefTemplName,
-      'Output directory','',APackage.GetOutputDirectory,da_Directory);
-    CompiledSrcPathDefTempl:=TDefineTemplate.Create('CompiledSrcPath',
-      'CompiledSrcPath addition',CompiledSrcPathMacroName,
-      '$PkgSrcPath('+APackage.IDAsString+');$('+CompiledSrcPathMacroName+')',
-      da_Define);
-    OutPutDirDefTempl.AddChild(CompiledSrcPathDefTempl);
-    PkgDefTempl.AddChild(OutPutDirDefTempl);
-    CodeToolBoss.DefineTree.ClearCache;
-  end else begin
-  
-    // ToDo: update Package ID if needed
-    
-  end;
-end;
-
 function TPkgManager.MacroFunctionPkgSrcPath(Data: Pointer): boolean;
 var
   FuncData: PReadFunctionData;
@@ -825,6 +797,44 @@ begin
   PkgID.Free;
 end;
 
+function TPkgManager.MacroFunctionPkgUnitPath(Data: Pointer): boolean;
+var
+  FuncData: PReadFunctionData;
+  PkgID: TLazPackageID;
+  APackage: TLazPackage;
+begin
+  FuncData:=PReadFunctionData(Data);
+  PkgID:=TLazPackageID.Create;
+  Result:=false;
+  if PkgID.StringToID(FuncData^.Param) then begin
+    APackage:=PackageGraph.FindPackageWithID(PkgID);
+    if APackage<>nil then begin
+      FuncData^.Result:=APackage.GetUnitPath(false);
+      Result:=true;
+    end;
+  end;
+  PkgID.Free;
+end;
+
+function TPkgManager.MacroFunctionPkgIncPath(Data: Pointer): boolean;
+var
+  FuncData: PReadFunctionData;
+  PkgID: TLazPackageID;
+  APackage: TLazPackage;
+begin
+  FuncData:=PReadFunctionData(Data);
+  PkgID:=TLazPackageID.Create;
+  Result:=false;
+  if PkgID.StringToID(FuncData^.Param) then begin
+    APackage:=PackageGraph.FindPackageWithID(PkgID);
+    if APackage<>nil then begin
+      FuncData^.Result:=APackage.GetIncludePath(false);
+      Result:=true;
+    end;
+  end;
+  PkgID.Free;
+end;
+
 constructor TPkgManager.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
@@ -835,11 +845,11 @@ begin
 
   PackageGraph:=TLazPackageGraph.Create;
   PackageGraph.OnChangePackageName:=@PackageGraphChangePackageName;
-  PackageGraph.OnAddPackage:=@PkgManagerAddPackage;
+  PackageGraph.OnAddPackage:=@PackageGraphAddPackage;
   PackageGraph.OnDeletePackage:=@PackageGraphDeletePackage;
   PackageGraph.OnDependencyModified:=@PackageGraphDependencyModified;
   PackageGraph.OnBeginUpdate:=@PackageGraphBeginUpdate;
-  PackageGraph.OnEndUpdate:=@PkgManagerEndUpdate;
+  PackageGraph.OnEndUpdate:=@PackageGraphEndUpdate;
 
   PackageEditors:=TPackageEditors.Create;
   PackageEditors.OnOpenFile:=@MainIDE.DoOpenMacroFile;
@@ -853,6 +863,10 @@ begin
   
   CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
     'PKGSRCPATH',nil,@MacroFunctionPkgSrcPath);
+  CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
+    'PKGUNITPATH',nil,@MacroFunctionPkgUnitPath);
+  CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
+    'PKGINCPATH',nil,@MacroFunctionPkgIncPath);
 
   Application.AddOnIdleHandler(@OnApplicationIdle);
 end;

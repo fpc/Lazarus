@@ -39,7 +39,7 @@ unit FileReferenceList;
 interface
 
 uses
-  Classes, SysUtils, AVL_Tree, FileCtrl;
+  Classes, SysUtils, AVL_Tree, FileCtrl, IDEProcs;
   
 type
   { TFileReference }
@@ -57,24 +57,35 @@ type
   { TFileReferenceList }
   
   TFileReferenceFlag = (
-    frfSearchPathValid
+    frfSearchPathValid,
+    frfChanged
     );
   TFileReferenceFlags = set of TFileReferenceFlag;
   
   TFileReferenceList = class
   private
+    FOnChanged: TNotifyEvent;
+    FTimeStamp: integer;
     FTree: TAVLTree; // tree of TFileReference sorted for filename
     FFlags: TFileReferenceFlags;
     FSearchPath: string;
+    FUpdateLock: integer;
     procedure UpdateSearchPath;
+    procedure IncreaseTimeStamp;
+    procedure Invalidate;
   public
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
+    procedure BeginUpdate;
+    procedure EndUpdate;
     procedure AddFilename(const Filename: string);
     procedure RemoveFilename(const Filename: string);
     function GetFileReference(const Filename: string): TFileReference;
     function CreateSearchPathFromAllFiles: string;
+    function CreateFileList: TStringList;
+    property TimeStamp: integer read FTimeStamp;
+    property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
   end;
 
 implementation
@@ -148,6 +159,25 @@ begin
   Include(FFlags,frfSearchPathValid);
 end;
 
+procedure TFileReferenceList.IncreaseTimeStamp;
+begin
+  if FTimeStamp<$7fffffff then
+    inc(FTimeStamp)
+  else
+    FTimeStamp:=-$7fffffff;
+end;
+
+procedure TFileReferenceList.Invalidate;
+begin
+  if frfSearchPathValid in FFlags then exit;
+  Exclude(FFlags,frfSearchPathValid);
+  IncreaseTimeStamp;
+  if FUpdateLock>0 then
+    Include(FFlags,frfChanged)
+  else if Assigned(OnChanged) then
+    OnChanged(Self);
+end;
+
 constructor TFileReferenceList.Create;
 begin
 
@@ -165,7 +195,23 @@ procedure TFileReferenceList.Clear;
 begin
   if (FTree<>nil) and (FTree.Count>0) then begin
     FTree.FreeAndClear;
-    Exclude(FFlags,frfSearchPathValid);
+    Invalidate;
+  end;
+end;
+
+procedure TFileReferenceList.BeginUpdate;
+begin
+  inc(FUpdateLock);
+end;
+
+procedure TFileReferenceList.EndUpdate;
+begin
+  if FUpdateLock=0 then RaiseException('TFileReferenceList.EndUpdate');
+  dec(FUpdateLock);
+  if (frfChanged in FFlags) then begin
+    Exclude(FFlags,frfChanged);
+    if Assigned(OnChanged) then
+      OnChanged(Self);
   end;
 end;
 
@@ -187,7 +233,7 @@ begin
   inc(NewFileRef.fReferenceCount);
   if FTree=nil then FTree:=TAVLTree.Create(@CompareFileReferences);
   FTree.Add(NewFileRef);
-  Exclude(FFlags,frfSearchPathValid);
+  Invalidate;
 end;
 
 procedure TFileReferenceList.RemoveFilename(const Filename: string);
@@ -204,7 +250,7 @@ begin
   if CurFileRef.fReferenceCount=0 then begin
     FTree.Remove(CurFileRef);
     CurFileRef.Free;
-    Exclude(FFlags,frfSearchPathValid);
+    Invalidate;
   end;
 end;
 
@@ -224,6 +270,19 @@ function TFileReferenceList.CreateSearchPathFromAllFiles: string;
 begin
   UpdateSearchPath;
   Result:=FSearchPath;
+end;
+
+function TFileReferenceList.CreateFileList: TStringList;
+var
+  ANode: TAVLTreeNode;
+begin
+  Result:=TStringList.Create;
+  if FTree=nil then exit;
+  ANode:=FTree.FindLowest;
+  while ANode<>nil do begin
+    Result.Add(TFileReference(ANode.Data).Filename);
+    ANode:=FTree.FindSuccessor(ANode);
+  end;
 end;
 
 end.

@@ -624,8 +624,7 @@ begin
   BeginUpdate(true);
   Result:=TLazPackage.Create;
   Result.Name:=CreateUniquePkgName('NewPackage',nil);
-  FItems.Add(Result);
-  FTree.Add(Result);
+  AddPackage(Result);
   EndUpdate;
 end;
 
