@@ -254,7 +254,7 @@ begin
   try
     FTargetProcess.Free;
   except
-    on E: Exception do WriteLN('Exeption while freeing target: ', E.Message);
+    on E: Exception do WriteLN('Exception while freeing target: ', E.Message);
   end;
   FTargetProcess:= nil;
 end;
@@ -389,6 +389,9 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.26  2004/01/05 15:22:42  mattias
+  improved debugger: saved log, error handling in initialization, better reinitialize
+
   Revision 1.25  2003/12/08 14:27:16  mattias
   fixed WaitForHandles
 

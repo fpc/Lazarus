@@ -51,6 +51,8 @@ type
   public
     procedure AddText(const AText: String);
     procedure Clear;
+    procedure SetLogText(Lines: TStrings);
+    procedure GetLogText(Lines: TStrings);
   end;
 
 implementation
@@ -63,6 +65,16 @@ end;
 procedure TDbgOutputForm.Clear;
 begin             
   txtOutput.Lines.Clear; 
+end;
+
+procedure TDbgOutputForm.SetLogText(Lines: TStrings);
+begin
+  txtOutput.Lines.Assign(Lines);
+end;
+
+procedure TDbgOutputForm.GetLogText(Lines: TStrings);
+begin
+  Lines.Assign(txtOutput.Lines);
 end;
 
 procedure TDbgOutputForm.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -94,6 +106,9 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.9  2004/01/05 15:22:42  mattias
+  improved debugger: saved log, error handling in initialization, better reinitialize
+
   Revision 1.8  2002/05/30 22:45:57  lazarus
   MWE:
     - Removed menucreation from loaded since streaming works

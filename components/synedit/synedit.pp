@@ -6596,7 +6596,11 @@ end;
 { Called by FMarkList if change }
 procedure TCustomSynEdit.MarkListChange(Sender: TObject);
 begin
+  {$IFDEF SYN_LAZARUS}
+  Invalidate; // marks can have special line colors
+  {$ELSE}
   InvalidateGutter;
+  {$ENDIF}
 end;
 
 procedure TCustomSynEdit.SetSelWord;

@@ -131,7 +131,7 @@ procedure TDebuggerDlg.DoClose(var Action: TCloseAction);
 begin
   Action := caFree; // we default to free
   inherited DoClose(Action);
-  EnvironmentOptions.IDEWindowLayoutList.ItemByForm(Self).GetCurrentPosition;
+  EnvironmentOptions.IDEWindowLayoutList.ItemByFormID(Name).GetCurrentPosition;
 end;
 
 procedure TDebuggerDlg.DoBeginUpdate;
@@ -146,6 +146,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.8  2004/01/05 15:22:42  mattias
+  improved debugger: saved log, error handling in initialization, better reinitialize
+
   Revision 1.7  2003/06/16 00:07:28  marc
   MWE:
     + Implemented DebuggerOptions-ExceptonAdd

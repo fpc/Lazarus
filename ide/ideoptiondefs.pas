@@ -167,6 +167,7 @@ type
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     function CustomCoordinatesAreValid: boolean;
+    procedure CloseForm;
   public
     property FormID: string read GetFormID write SetFormID;
     property WindowPlacement: TIDEWindowPlacement
@@ -211,10 +212,12 @@ type
     function ItemByForm(AForm: TForm): TIDEWindowLayout;
     function ItemByFormID(const FormID: string): TIDEWindowLayout;
     function ItemByEnum(ID: TNonModalIDEWindow): TIDEWindowLayout;
-    property Items[Index: Integer]: TIDEWindowLayout
-      read GetItems write SetItems; default;
+    procedure CloseForm(AForm: TForm);
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+  public
+    property Items[Index: Integer]: TIDEWindowLayout
+      read GetItems write SetItems; default;
   end;
   
   // ---------------------------------------------------------------------------
@@ -534,10 +537,16 @@ begin
   Result:=(Width>0) and (Height>0) and (Left>10-Width) and (Top>10-Height);
 end;
 
+procedure TIDEWindowLayout.CloseForm;
+begin
+  Form:=nil;
+end;
+
 procedure TIDEWindowLayout.SetForm(const AValue: TForm);
 begin
   if fForm=AValue then exit;
   fForm:=AValue;
+  if (Form<>nil) then fFormID:=FForm.Name;
 end;
 
 function TIDEWindowLayout.GetFormID: string;
@@ -755,6 +764,15 @@ function TIDEWindowLayoutList.ItemByEnum(ID: TNonModalIDEWindow
   ): TIDEWindowLayout;
 begin
   Result:=ItemByFormID(NonModalIDEWindowNames[ID]);
+end;
+
+procedure TIDEWindowLayoutList.CloseForm(AForm: TForm);
+var
+  ALayout: TIDEWindowLayout;
+begin
+  ALayout:=ItemByForm(AForm);
+  if ALayout<>nil then
+    ALayout.CloseForm;
 end;
 
 procedure TIDEWindowLayoutList.ApplyAll;

@@ -2240,6 +2240,8 @@ end;
 procedure TMainIDE.SetToolStatus(const AValue: TIDEToolStatus);
 begin
   inherited SetToolStatus(AValue);
+  if DebugBoss<>nil then
+    DebugBoss.UpdateButtonsAndMenuItems;
 end;
 
 function TMainIDE.DoResetToolStatus(Interactive: boolean): boolean;
@@ -2250,8 +2252,8 @@ begin
   itDebugger:
     begin
       if Interactive
-      and (MessageDlg('Stop Debugging?',
-          'Stop the debugging?',mtConfirmation,[mbYes,mbCancel],0)<>mrYes)
+      and (MessageDlg(lisStopDebugging,
+          lisStopTheDebugging, mtConfirmation, [mbYes, mbCancel], 0)<>mrYes)
       then exit;
       DebugBoss.DoStopProject;
     end;
@@ -5888,7 +5890,6 @@ begin
   if not (Project1.ProjectType in [ptProgram, ptApplication, ptCustomProgram,
     ptCGIApplication])
   or (Project1.MainUnitID < 0)
-  or (ToolStatus <> itNone)
   then Exit;
 
   // Build project first
@@ -9619,6 +9620,7 @@ end;
 procedure TMainIDE.OnScreenRemoveForm(Sender: TObject; AForm: TCustomForm);
 begin
   HiddenWindowsOnRun.Remove(AForm);
+  EnvironmentOptions.IDEWindowLayoutList.CloseForm(AForm);
 end;
 
 function TMainIDE.ProjInspectorAddUnitToProject(Sender: TObject;
@@ -10265,6 +10267,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.695  2004/01/05 15:22:41  mattias
+  improved debugger: saved log, error handling in initialization, better reinitialize
+
   Revision 1.694  2004/01/04 11:32:17  mattias
   OI support for TPersistent, PropMeasuerHeight
 

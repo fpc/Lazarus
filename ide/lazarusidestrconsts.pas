@@ -443,6 +443,8 @@ resourcestring
     +'method. Plz fix the error shown in the message window.';
   lisUnableToRenameMethodPlzFixTheErrorShownInTheMessag = 'Unable to rename '
     +'method. Plz fix the error shown in the message window.';
+  lisStopDebugging = 'Stop Debugging?';
+  lisStopTheDebugging = 'Stop the debugging?';
 
   // resource files
   lisResourceFileComment =

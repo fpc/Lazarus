@@ -332,14 +332,17 @@ end;
 function TGDBMIDebugger.ChangeFileName: Boolean;
 begin
   FHasSymbols := True; // True until proven otherwise
-  Result := ExecuteCommand('-file-exec-and-symbols %s', [FileName], [])
-            and inherited ChangeFileName;
+  Result:=false;
+  if not ExecuteCommand('-file-exec-and-symbols %s', [FileName], []) then exit;
+  if State=dsError then exit;
+  if not (inherited ChangeFileName) then exit;
+  if State=dsError then exit;
 
-  if Result and FHasSymbols
-  then begin
+  if FHasSymbols then begin
     // Force setting language
     // Setting extensions dumps GDB (bug #508)
-    ExecuteCommand('-gdb-set language pascal', []);
+    if not ExecuteCommand('-gdb-set language pascal', []) then exit;
+    if State=dsError then exit;
 (*
     ExecuteCommand('-gdb-set extension-language .lpr pascal', False);
     if not FHasSymbols then Exit; // file-exec-and-symbols not allways result in no symbols
@@ -350,6 +353,7 @@ begin
     ExecuteCommand('-gdb-set extension-language .inc pascal', False);
 *)
   end;
+  Result:=true;
 end;
 
 constructor TGDBMIDebugger.Create(const AExternalDebugger: String);
@@ -925,6 +929,7 @@ begin
           else if S = 'error'
           then begin
             Result := True;
+            writeln('TGDBMIDebugger.ProcessResult Error: ',S);
             // todo implement with values
             if  (pos('msg=', AResultValues) > 0)
             and (pos('not being run', AResultValues) > 0)
@@ -964,9 +969,11 @@ begin
           WriteLN('[Debugger] Target output: ', S);
         end;
         '&': begin // log-stream-output
-          if S='&"kill\n"' then
-            ANewState:=dsStop;
           WriteLN('[Debugger] Log output: ', S);
+          if S='&"kill\n"' then
+            ANewState:=dsStop
+          else if LeftStr(S,8)='&"Error ' then
+            ANewState:=dsError;
         end;
         '*', '+', '=': begin
           WriteLN('[WARNING] Debugger: Unexpected async-record: ', S);
@@ -1316,7 +1323,7 @@ begin
 
     if FHasSymbols
     then begin
-      // Maske sure we are talking pascal
+      // Make sure we are talking pascal
       ExecuteCommand('-gdb-set language pascal', []);
       if Arguments <>''
       then ExecuteCommand('-exec-arguments %s', [Arguments], []);
@@ -1345,35 +1352,38 @@ begin
         BkptList.Free;
       end;
 
-      // try to find PID
-      if ExecuteCommand('info program', [], ResultState, S, [cfIgnoreError, cfNoMICommand])
-      then begin
-         TargetPIDPart:=GetPart('child process ', '.', S);
-         if TargetPIDPart='' then
-           TargetPIDPart:=GetPart('child Thread ', ' ', S);
-         FTargetPID := StrToIntDef(TargetPIDPart, 0);
-
-         WriteLN('[Debugger] Target PID: ', FTargetPID);
-      end
-      else begin
-        FTargetPID := 0;
-      end;
-
-      if FTargetPID = 0
-      then begin
-        Result := False;
-        SetState(dsError);
-        Exit;
-      end;
-
-      if ResultState = dsNone
-      then begin
-        if AContinueCommand <> ''
-        then Result := ExecuteCommand(AContinueCommand, [])
-        else SetState(dsPause);
-      end
-      else SetState(ResultState);
+    end else begin
+      writeln('TGDBMIDebugger.StartDebugging Note: Target has no symbols');
     end;
+
+    // try to find PID
+    if ExecuteCommand('info program', [], ResultState, S, [cfIgnoreError, cfNoMICommand])
+    then begin
+       TargetPIDPart:=GetPart('child process ', '.', S);
+       if TargetPIDPart='' then
+         TargetPIDPart:=GetPart('child Thread ', ' ', S);
+       FTargetPID := StrToIntDef(TargetPIDPart, 0);
+
+       WriteLN('[Debugger] Target PID: ', FTargetPID);
+    end
+    else begin
+      FTargetPID := 0;
+    end;
+
+    if FTargetPID = 0
+    then begin
+      Result := False;
+      SetState(dsError);
+      Exit;
+    end;
+
+    if ResultState = dsNone
+    then begin
+      if AContinueCommand <> ''
+      then Result := ExecuteCommand(AContinueCommand, [])
+      else SetState(dsPause);
+    end
+    else SetState(ResultState);
   end;
   Result := True;
 end;
@@ -2069,6 +2079,9 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.40  2004/01/05 15:22:42  mattias
+  improved debugger: saved log, error handling in initialization, better reinitialize
+
   Revision 1.39  2003/12/05 08:39:53  mattias
   fixed memleak in debugger  from Vincent
 

@@ -43,6 +43,15 @@ uses
   Classes, SysUtils, Forms, Laz_XMLCfg, Project, SourceMarks, Debugger;
 
 type
+  { TBaseDebugManager }
+  
+  TDebugManagerState = (
+    dmsInitializingDebuggerObject,
+    dmsInitializingDebuggerObjectFailed,
+    dmsDebuggerObjectBroken  // the debugger entered the error state
+    );
+  TDebugManagerStates = set of TDebugManagerState;
+
   TBaseDebugManager = class(TComponent)
   private
     function GetDebuggerClass(const AIndex: Integer): TDebuggerClass;
@@ -52,6 +61,7 @@ type
     FExceptions: TIDEExceptions;
     FSignals: TIDESignals;
     FBreakPoints: TIDEBreakPoints;
+    FManagerStates: TDebugManagerStates;
     function  FindDebuggerClass(const Astring: String): TDebuggerClass;
     function  GetState: TDBGState; virtual; abstract;
     function  GetCommands: TDBGCommands; virtual; abstract;
@@ -59,7 +69,8 @@ type
     procedure ConnectMainBarEvents; virtual; abstract;
     procedure ConnectSourceNotebookEvents; virtual; abstract;
     procedure SetupMainBarShortCuts; virtual; abstract;
-    
+    procedure UpdateButtonsAndMenuItems; virtual; abstract;
+
     procedure LoadProjectSpecificInfo(XMLConfig: TXMLConfig); virtual; abstract;
     procedure SaveProjectSpecificInfo(XMLConfig: TXMLConfig); virtual; abstract;
     procedure DoRestoreDebuggerMarks(AnUnitInfo: TUnitInfo); virtual; abstract;
@@ -148,6 +159,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.19  2004/01/05 15:22:41  mattias
+  improved debugger: saved log, error handling in initialization, better reinitialize
+
   Revision 1.18  2003/08/08 10:24:47  mattias
   fixed initialenabled, debuggertype, linkscaner open string constant
 

@@ -95,6 +95,9 @@ type
     // When a source file is not found, the user can choose one
     // here are all choices stored
     FUserSourceFiles: TStringList;
+    
+    // when the debug output log is not open, store the debug log internally
+    fHiddenDebugOutputLog: TStringList;
 
     // Breakpoint routines
     procedure BreakpointAdded(const ASender: TIDEBreakPoints;
@@ -114,6 +117,7 @@ type
     procedure InitWatchesDlg;
     procedure InitLocalsDlg;
     procedure InitCallStackDlg;
+
   protected
     function  GetState: TDBGState; override;
     function  GetCommands: TDBGCommands; override;
@@ -123,12 +127,14 @@ type
     procedure ConnectMainBarEvents; override;
     procedure ConnectSourceNotebookEvents; override;
     procedure SetupMainBarShortCuts; override;
-    
+    procedure UpdateButtonsAndMenuItems; override;
+
     procedure LoadProjectSpecificInfo(XMLConfig: TXMLConfig); override;
     procedure SaveProjectSpecificInfo(XMLConfig: TXMLConfig); override;
     procedure DoRestoreDebuggerMarks(AnUnitInfo: TUnitInfo); override;
     procedure BeginUpdateDialogs;
     procedure EndUpdateDialogs;
+    procedure ClearDebugOutputLog;
 
     function DoInitDebugger: TModalResult; override;
     function DoPauseProject: TModalResult; override;
@@ -760,8 +766,16 @@ end;
 procedure TDebugManager.OnDebuggerOutput(Sender: TObject; const AText: String);
 begin
   if Destroying then exit;
-  if FDialogs[ddtOutput] <> nil
-  then TDbgOutputForm(FDialogs[ddtOutput]).AddText(AText);
+  if FDialogs[ddtOutput] <> nil then
+    TDbgOutputForm(FDialogs[ddtOutput]).AddText(AText)
+  else begin
+    // store it internally, and copy it to the dialog, when the user opens it
+    if fHiddenDebugOutputLog=nil then
+      fHiddenDebugOutputLog:=TStringList.Create;
+    fHiddenDebugOutputLog.Add(AText);
+    while fHiddenDebugOutputLog.Count>100 do
+      fHiddenDebugOutputLog.Delete(0);
+  end;
 end;
 
 procedure TDebugManager.OnDebuggerChangeState(ADebugger: TDebugger;
@@ -782,6 +796,12 @@ begin
     RaiseException('TDebugManager.OnDebuggerChangeState');
 
   if Destroying or (MainIDE=nil) or (MainIDE.ToolStatus=itExiting) then exit;
+  
+  if FDebugger.State=dsError then begin
+    Include(FManagerStates,dmsDebuggerObjectBroken);
+    if dmsInitializingDebuggerObject in FManagerStates then
+      Include(FManagerStates,dmsInitializingDebuggerObjectFailed);
+  end;
 
   WriteLN('[TDebugManager.OnDebuggerChangeState] state: ', STATENAME[FDebugger.State]);
 
@@ -790,26 +810,9 @@ begin
   // dcRun, dcPause, dcStop, dcStepOver, dcStepInto, dcRunTo, dcJumpto, dcBreak, dcWatch
   // -------------------
 
-  with MainIDE do begin
-    // For 'run' and 'step' bypass 'idle', so we can set the filename later
-    RunSpeedButton.Enabled := (dcRun in FDebugger.Commands) or (FDebugger.State = dsIdle);
-    itmRunMenuRun.Enabled := RunSpeedButton.Enabled;
-    PauseSpeedButton.Enabled := dcPause in FDebugger.Commands;
-    itmRunMenuPause.Enabled := PauseSpeedButton.Enabled;
-    StepIntoSpeedButton.Enabled := (dcStepInto in FDebugger.Commands) or (FDebugger.State = dsIdle);
-    itmRunMenuStepInto.Enabled := StepIntoSpeedButton.Enabled;
-    StepOverSpeedButton.Enabled := (dcStepOver in FDebugger.Commands)  or (FDebugger.State = dsIdle);
-    itmRunMenuStepOver.Enabled := StepOverSpeedButton.Enabled;
-
-    itmRunMenuRunToCursor.Enabled := dcRunTo in FDebugger.Commands;
-    itmRunMenuStop.Enabled := dcStop in FDebugger.Commands;;
-
-    // TODO: add other debugger menuitems
-    // TODO: implement by actions
-
-    if ToolStatus in [itNone,itDebugger] then
-      ToolStatus := TOOLSTATEMAP[FDebugger.State];
-  end;
+  UpdateButtonsAndMenuItems;
+  if MainIDE.ToolStatus in [itNone,itDebugger] then
+    MainIDE.ToolStatus := TOOLSTATEMAP[FDebugger.State];
 
   if (FDebugger.State in [dsRun]) then begin
     // hide IDE during run
@@ -927,10 +930,23 @@ end;
 // Common handler
 // The tag of the destroyed form contains the form variable pointing to it
 procedure TDebugManager.DebugDialogDestroy(Sender: TObject);
+var
+  DlgType: TDebugDialogType;
 begin
-  if  (TForm(Sender).Tag >= Ord(Low(TDebugDialogType)))
-  and (TForm(Sender).Tag <= Ord(High(TDebugDialogType)))
-  then FDialogs[TDebugDialogType(TForm(Sender).Tag)] := nil;
+  for DlgType:=Low(TDebugDialogType) to High(TDebugDialogType) do begin
+    if FDialogs[DlgType]<>Sender then continue;
+    case DlgType of
+    ddtOutput:
+      begin
+        if fHiddenDebugOutputLog=nil then
+          fHiddenDebugOutputLog:=TStringList.Create;
+        TDbgOutputForm(FDialogs[ddtOutput]).GetLogText(fHiddenDebugOutputLog);
+      end;
+    end;
+    FDialogs[DlgType]:=nil;
+    exit;
+  end;
+  RaiseException('Invalid debug window '+Sender.ClassName);
 end;
 
 procedure TDebugManager.ViewDebugDialog(const ADialogType: TDebugDialogType);
@@ -981,7 +997,14 @@ begin
 end;
 
 procedure TDebugManager.InitDebugOutputDlg;
+var
+  TheDialog: TDbgOutputForm;
 begin
+  TheDialog:=TDbgOutputForm(FDialogs[ddtOutput]);
+  if fHiddenDebugOutputLog<>nil then begin
+    TheDialog.SetLogText(fHiddenDebugOutputLog);
+    FreeThenNil(fHiddenDebugOutputLog);
+  end;
 end;
 
 procedure TDebugManager.InitBreakPointDlg;
@@ -1066,6 +1089,7 @@ begin
   FreeAndNil(FSignals);
 
   FreeAndNil(FUserSourceFiles);
+  FreeAndNil(fHiddenDebugOutputLog);
 
   inherited Destroy;
 end;
@@ -1104,6 +1128,35 @@ begin
     itmViewDebugOutput.ShortCut := CommandToShortCut(ecToggleDebuggerOut);
     itmViewLocals.ShortCut := CommandToShortCut(ecToggleLocals);
     itmViewCallStack.ShortCut := CommandToShortCut(ecToggleCallStack);
+  end;
+end;
+
+procedure TDebugManager.UpdateButtonsAndMenuItems;
+var
+  DebuggerInvalid: boolean;
+begin
+  DebuggerInvalid:=(FDebugger=nil) or (MainIDE.ToolStatus<>itDebugger);
+  with MainIDE do begin
+    // For 'run' and 'step' bypass 'idle', so we can set the filename later
+    RunSpeedButton.Enabled := DebuggerInvalid
+                 or (dcRun in FDebugger.Commands) or (FDebugger.State = dsIdle);
+    itmRunMenuRun.Enabled := RunSpeedButton.Enabled;
+    PauseSpeedButton.Enabled := (not DebuggerInvalid)
+                                and (dcPause in FDebugger.Commands);
+    itmRunMenuPause.Enabled := PauseSpeedButton.Enabled;
+    StepIntoSpeedButton.Enabled := DebuggerInvalid
+            or (dcStepInto in FDebugger.Commands) or (FDebugger.State = dsIdle);
+    itmRunMenuStepInto.Enabled := StepIntoSpeedButton.Enabled;
+    StepOverSpeedButton.Enabled := DebuggerInvalid or
+              (dcStepOver in FDebugger.Commands)  or (FDebugger.State = dsIdle);
+    itmRunMenuStepOver.Enabled := StepOverSpeedButton.Enabled;
+
+    itmRunMenuRunToCursor.Enabled := DebuggerInvalid
+                                     or (dcRunTo in FDebugger.Commands);
+    itmRunMenuStop.Enabled := (FDebugger<>nil); // always allow to stop
+
+    // TODO: add other debugger menuitems
+    // TODO: implement by actions
   end;
 end;
 
@@ -1235,6 +1288,14 @@ begin
   end;
 end;
 
+procedure TDebugManager.ClearDebugOutputLog;
+begin
+  if FDialogs[ddtOutput] <> nil then
+    TDbgOutputForm(FDialogs[ddtOutput]).Clear
+  else if fHiddenDebugOutputLog<>nil then
+    fHiddenDebugOutputLog.Clear;
+end;
+
 //-----------------------------------------------------------------------------
 // Debugger routines
 //-----------------------------------------------------------------------------
@@ -1242,17 +1303,6 @@ end;
 function TDebugManager.DoInitDebugger: TModalResult;
 var
   OldWatches: TDBGWatches;
-  
-  procedure ResetDialogs;
-  var
-    DialogType: TDebugDialogType;
-  begin                          
-    for DialogType := Low(TDebugDialogType) to High(TDebugDialogType) do 
-    begin
-      if FDialogs[DialogType] <> nil
-      then FDialogs[DialogType].Debugger := FDebugger;
-    end;
-  end;
   
   procedure SaveDebuggerItems;
   begin
@@ -1282,14 +1332,31 @@ var
     end;
   end;
   
+  procedure ResetDialogs;
+  var
+    DialogType: TDebugDialogType;
+  begin
+    for DialogType := Low(TDebugDialogType) to High(TDebugDialogType) do
+    begin
+      if FDialogs[DialogType] <> nil
+      then FDialogs[DialogType].Debugger := FDebugger;
+    end;
+  end;
+
   procedure FreeDebugger;
   begin
-    SaveDebuggerItems;
     TManagedBreakPoints(FBreakPoints).Master := nil;
     TManagedSignals(FSignals).Master := nil;
     TManagedExceptions(FExceptions).Master := nil;;
     FreeAndNil(FDebugger);
+    Exclude(FManagerStates,dmsDebuggerObjectBroken);
     ResetDialogs;
+  end;
+
+  procedure SaveAndFreeDebugger;
+  begin
+    SaveDebuggerItems;
+    FreeDebugger;
   end;
   
 var
@@ -1315,18 +1382,21 @@ begin
       if DebuggerClass = nil
       then begin
         if FDebugger <> nil
-        then FreeDebugger;
+        then SaveAndFreeDebugger;
         Exit;
       end;
       
+      if (dmsDebuggerObjectBroken in FManagerStates) then
+        SaveAndFreeDebugger;
+
       // check if debugger is already created with the right type
-      if  (FDebugger <> nil)
+      if (FDebugger <> nil)
       and (not (FDebugger is DebuggerClass)
             or (FDebugger.ExternalDebugger <> EnvironmentOptions.DebuggerFilename)
           )
       then begin
         // the current debugger is the wrong type -> free it
-        FreeDebugger;
+        SaveAndFreeDebugger;
       end;
 
       // create debugger object
@@ -1349,13 +1419,23 @@ begin
       if FWatches<>OldWatches then
         OldWatches.Free;
     end;
-    
+
+    ClearDebugOutputLog;
+
     FDebugger.OnState     := @OnDebuggerChangeState;
     FDebugger.OnCurrent   := @OnDebuggerCurrentLine;
     FDebugger.OnDbgOutput := @OnDebuggerOutput;
     FDebugger.OnException := @OnDebuggerException;
-    if FDebugger.State = dsNone
-    then FDebugger.Init;
+    if FDebugger.State = dsNone then begin
+      Include(FManagerStates,dmsInitializingDebuggerObject);
+      Exclude(FManagerStates,dmsInitializingDebuggerObjectFailed);
+      FDebugger.Init;
+      Exclude(FManagerStates,dmsInitializingDebuggerObject);
+      if dmsInitializingDebuggerObjectFailed in FManagerStates then begin
+        Result:=mrCancel;
+        exit;
+      end;
+    end;
 
     FDebugger.FileName := LaunchingApplication;
     FDebugger.Arguments := LaunchingParams;
@@ -1364,13 +1444,16 @@ begin
     if NewWorkingDir='' then
       NewWorkingDir:=Project1.ProjectDirectory;
     FDebugger.WorkingDir:=NewWorkingDir;
-    
-    if FDialogs[ddtOutput] <> nil
-    then TDbgOutputForm(FDialogs[ddtOutput]).Clear;
-
-    //TODO: Show/hide debug menuitems based on FDebugger.SupportedCommands
   finally
     EndUpdateDialogs;
+  end;
+
+  // check if debugging needs restart
+  if ((FDebugger=nil) or (dmsDebuggerObjectBroken in FManagerStates))
+  and (MainIDE.ToolStatus=itDebugger) then begin
+    MainIDE.ToolStatus:=itNone;
+    Result:=mrCancel;
+    exit;
   end;
 
   Result := mrOk;
@@ -1423,11 +1506,14 @@ function TDebugManager.DoStopProject: TModalResult;
 begin
   Result := mrCancel;
   SourceNotebook.ClearExecutionLines;
-  if (MainIDE.ToolStatus <> itDebugger)
-  or (FDebugger=nil) or Destroying
-  then Exit;
-
-  FDebugger.Stop;
+  if (MainIDE.ToolStatus=itDebugger) and (FDebugger<>nil) and (not Destroying)
+  then begin
+    FDebugger.Stop;
+  end;
+  if (dmsDebuggerObjectBroken in FManagerStates) then begin
+    if (MainIDE.ToolStatus=itDebugger) then
+      MainIDE.ToolStatus:=itNone;
+  end;
   Result := mrOk;
 end;
 
@@ -1443,6 +1529,13 @@ begin
   if Destroying then exit;
   if (FDebugger <> nil) then begin
     writeln('TDebugManager.RunDebugger B ',FDebugger.ClassName);
+    // check if debugging needs restart
+    if (dmsDebuggerObjectBroken in FManagerStates)
+    and (MainIDE.ToolStatus=itDebugger) then begin
+      MainIDE.ToolStatus:=itNone;
+      Result:=mrCancel;
+      exit;
+    end;
     FDebugger.Run;
     Result:=mrOk;
   end;
@@ -1575,6 +1668,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.65  2004/01/05 15:22:41  mattias
+  improved debugger: saved log, error handling in initialization, better reinitialize
+
   Revision 1.64  2003/11/10 22:29:23  mattias
   fixed searching for default debugger line
 

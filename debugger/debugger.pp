@@ -1299,8 +1299,15 @@ begin
     if (not TargetIsStarted) and (ACommand in dcRunCommands) then
       InitTargetStart;
     Result := RequestCommand(ACommand, AParams);
+    if not Result then begin
+      writeln('TDebugger.ReqCmd failed: ',DBGCommandNames[ACommand]);
+    end;
   end
-  else Result := False;
+  else begin
+    writeln('TDebugger.ReqCmd Command not supported: ',
+            DBGCommandNames[ACommand],' ClassName=',ClassName);
+    Result := False;
+  end;
 end;
 
 procedure TDebugger.Run;
@@ -1390,17 +1397,20 @@ end;
 
 procedure TDebugger.StepInto;
 begin
-  ReqCmd(dcStepInto, []);
+  if ReqCmd(dcStepInto, []) then exit;
+  writeln('TDebugger.StepInto Class=',ClassName,' failed.');
 end;
 
 procedure TDebugger.StepOver;
 begin
-  ReqCmd(dcStepOver, []);
+  if ReqCmd(dcStepOver, []) then exit;
+  writeln('TDebugger.StepOver Class=',ClassName,' failed.');
 end;
 
 procedure TDebugger.Stop;
 begin
-  ReqCmd(dcStop, []);
+  if ReqCmd(dcStop,[]) then exit;
+  writeln('TDebugger.Stop Class=',ClassName,' failed.');
 end;
 
 (******************************************************************************)
@@ -3169,6 +3179,9 @@ finalization
 end.
 { =============================================================================
   $Log$
+  Revision 1.57  2004/01/05 15:22:42  mattias
+  improved debugger: saved log, error handling in initialization, better reinitialize
+
   Revision 1.56  2004/01/04 03:53:36  marc
   * Changed TComponentSelectionList to TPersistentSelectionList
   + Added SSHdebugger property
