@@ -750,9 +750,10 @@ begin
   //writeln('CCC TControl.WndPRoc ',Name,':',ClassName);
   if (csDesigning in ComponentState) then
   begin
-      Form := GetParentForm(Self);
-      if (Form <> nil) and (Form.Designer <> nil) and
-          Form.Designer.IsDesignMsg(Self,TheMessage) then Exit;
+    Form := GetParentForm(Self);
+    if (Form <> nil) and (Form.Designer <> nil)
+    and Form.Designer.IsDesignMsg(Self,TheMessage) then
+      Exit;
   end
   else
   begin
@@ -1045,20 +1046,22 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControl.WMLButtonUp(var Message: TLMLButtonUp);
 begin
-//Writeln('TCONTROL WMLBUTTONUP A ',Name,':',ClassName,' csCaptureMouse=',csCaptureMouse in ControlStyle,' csClicked=',csClicked in ControlState);
+  //Writeln('TControl.WMLButtonUp A ',Name,':',ClassName,' csCaptureMouse=',csCaptureMouse in ControlStyle,' csClicked=',csClicked in ControlState);
   if csCaptureMouse in ControlStyle then
      MouseCapture := False;
 
   if csClicked in ControlState then
   begin
     Exclude(FControlState, csClicked);
+    //writeln('TControl.WMLButtonUp B ',ClientRect.Left,',',ClientRect.Top,',',ClientRect.Right,',',ClientRect.Bottom,' ',Message.Pos.X,',',Message.Pos.Y);
     if PtInRect(ClientRect, SmallPointToPoint(Message.Pos))
     then begin
+      //writeln('TControl.WMLButtonUp C');
       Click;
     end;
   end;
   DoMouseUp(Message, mbLeft);
-//  Writeln('TCONTROL WMLBUTTONUP END');
+  //Writeln('TControl.WMLButtonUp END');
 end;
 
 {------------------------------------------------------------------------------
@@ -1936,6 +1939,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.90  2002/10/09 10:22:54  lazarus
+  MG: fixed client origin coordinates
+
   Revision 1.89  2002/10/08 22:32:26  lazarus
   MG: fixed cool little bug (menu double attaching bug)
 
