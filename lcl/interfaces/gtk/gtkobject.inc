@@ -5398,10 +5398,15 @@ var
   
 begin
   LCLMenuItem:=TMenuItem(Sender);
+  //writeln('TGtkObject.AttachMenu START ',LCLMenuItem.Name,':',LCLMenuItem.ClassName,' Parent=',LCLMenuItem.Parent.Name,':',LCLMenuItem.Parent.ClassName);
   with LCLMenuItem do
   begin
     MenuItem := PGtkWidget(Handle);
+    if MenuItem=nil then
+      RaiseException('TGtkObject.AttachMenu Handle=0');
     ParentMenuWidget := PGtkWidget(Parent.Handle);
+    if ParentMenuWidget=nil then
+      RaiseException('TGtkObject.AttachMenu ParentMenuWidget=nil');
 
     if GtkWidgetIsA(ParentMenuWidget,GTK_MENU_BAR_TYPE) then begin
       // mainmenu
@@ -5447,6 +5452,7 @@ begin
                           'activate_item');
     end;
   end;
+  //writeln('TGtkObject.AttachMenu END ',LCLMenuItem.Name,':',LCLMenuItem.ClassName);
 end;
 
 {------------------------------------------------------------------------------
@@ -6009,6 +6015,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.241  2002/10/08 22:32:28  lazarus
+  MG: fixed cool little bug (menu double attaching bug)
+
   Revision 1.240  2002/10/08 17:51:41  lazarus
   MG: fixed settings negative widget sizes
 
