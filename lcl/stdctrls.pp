@@ -240,6 +240,7 @@ type
     procedure SetSelText(const Val : string); virtual;
     procedure SetSorted(Val : boolean); virtual;
     procedure SetStyle(Val : TComboBoxStyle); virtual;
+    procedure KeyDown(var Key : Word; Shift : TShiftState); override;
 
     property DropDownCount: Integer read
       FDropDownCount write SetDropDownCount default 8;
@@ -287,6 +288,7 @@ type
     property ItemIndex;
   published
     property Anchors;
+    property AutoDropDown;
     property Ctl3D;
     property DropDownCount;
     property Enabled;
@@ -1450,6 +1452,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.93  2003/06/10 13:35:54  mattias
+  implemented TComboBox dropdown from Yoyong
+
   Revision 1.92  2003/06/07 09:34:21  mattias
   added ambigius compiled unit test for packages
 

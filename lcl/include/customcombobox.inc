@@ -364,6 +364,20 @@ begin
   end;
 end;
 
+procedure TCustomComboBox.KeyDown(var Key: Word; Shift: TShiftState);
+begin
+  inherited KeyDown(Key, Shift);
+  if AutoDropDown then
+  begin
+    case Key of
+      VK_TAB,VK_RETURN:
+        DroppedDown := False;
+      else
+        DroppedDown := True;
+    end;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   function TCustomComboBox.SelectItem(const AnItem: String): Boolean;
 
@@ -736,6 +750,9 @@ end;
 
 {
   $Log$
+  Revision 1.27  2003/06/10 13:35:54  mattias
+  implemented TComboBox dropdown from Yoyong
+
   Revision 1.26  2003/06/07 09:34:21  mattias
   added ambigius compiled unit test for packages
 
