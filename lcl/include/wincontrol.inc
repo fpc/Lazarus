@@ -2096,22 +2096,26 @@ begin
     case Key of
       VK_RETURN:
       begin
-        if Form.DefaultButton <> nil then
+        if Form.DefaultButton <> nil then begin
           (Form.DefaultButton as TButton).Click;
+          Key:=VK_UNKNOWN;
+        end;
       end;
       
       VK_ESCAPE:
       begin
-        if Form.EscapeButton <> nil then
+        if Form.EscapeButton <> nil then begin
           (Form.EscapeButton as TButton).Click;
+          Key:=VK_UNKNOWN;
+        end;
       end;
     end;
   end;
 end;
 
-{------------------------------------------------------------------------------}
-{  TWinControl KeyPress                                                      }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TWinControl KeyPress
+------------------------------------------------------------------------------}
 Procedure TWinControl.KeyPress(var Key: Char);
 begin
   if Assigned(FOnKeyPress) then FOnKeyPress(Self, Key);
@@ -2197,9 +2201,6 @@ begin
     if Application<>nil then
       Application.NotifyKeyDownHandler(Self, CharCode, ShiftState);
     if CharCode = VK_UNKNOWN then Exit;
-
-    // let controls handle the key
-    ControlKeyDown(CharCode, ShiftState);
   end;
 
   Result := False;
@@ -3137,10 +3138,15 @@ Procedure TWinControl.WMKeyDown(Var Message: TLMKeyDown);
 var
   ShiftState: TShiftState;
 begin
+  ShiftState := KeyDataToShiftState(Message.KeyData);
+
+  // let controls handle the key
+  ControlKeyDown(Message.CharCode, ShiftState);
+  if Message.CharCode=VK_UNKNOWN then exit;
+
   //DebugLn('TWinControl.WMKeyDown ',Name,':',ClassName);
   if not (csNoStdEvents in ControlStyle) then
   begin
-    ShiftState := KeyDataToShiftState(Message.KeyData);
     KeyDownAfterInterface(Message.CharCode, ShiftState);
     // Note: Message.CharCode can now be different or even 0
   end;
@@ -3747,6 +3753,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.247  2004/07/01 17:55:55  mattias
+  LCL navigation keys are now handled after interface handles keys
+
   Revision 1.246  2004/07/01 10:08:31  mattias
   made key handling more flexible
 

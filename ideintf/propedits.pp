@@ -4270,7 +4270,6 @@ begin
     SetBounds(4, 4, 342, 213);
     Anchors:= [akLeft, akTop, akRight, akBottom];
     Shape:= bsFrame;
-    Visible:= true;
   end;
 
   Memo := TMemo.Create(self);
@@ -4279,7 +4278,6 @@ begin
     SetBounds(12, 32, 326, 176);
     Anchors:= [akLeft, akTop, akRight, akBottom];
 //    Scrollbars:= ssVertical;   // GTK 1.x does not implement horizontal scrollbars for GtkText
-    Visible:= true;
     Memo.OnChange:= @MemoChanged;
   end;
 
@@ -4288,7 +4286,6 @@ begin
     Parent:= Self;
     SetBounds(12, 12, 326, 17);
     Caption:= '0 lines, 0 chars';
-    Visible := true;
   end;
 
   OKButton := TBitBtn.Create(Self);
@@ -4298,7 +4295,6 @@ begin
     Left := 192;
     Top := 221;
     Anchors:= [akRight, akBottom];
-    Visible := true;
   end;
 
   CancelButton := TBitBtn.Create(self);
@@ -4308,7 +4304,6 @@ begin
     Left := 271;
     Top := 221;
     Anchors:= [akRight, akBottom];
-    Visible := true;
   end;
 end;
 
