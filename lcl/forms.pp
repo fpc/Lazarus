@@ -242,6 +242,8 @@ type
   TCloseEvent = procedure(Sender: TObject; var Action: TCloseAction) of object;
   TCloseQueryEvent = procedure(Sender : TObject;
                                var CanClose : boolean) of object;
+  THelpEvent = function(Command: Word; Data: Longint;
+    var CallHelp: Boolean): Boolean of object;
 
   TFormStateType = (
     fsCreating,  // initializing (form streaming)
