@@ -685,7 +685,8 @@ procedure Accelerate(const Widget : Pointer; const Msg : TLMShortCut);
 var GDKModifier : integer;
     GDKKey : word;
 begin
-  if Msg.OldKey <> 0 then gtk_widget_remove_accelerators(Widget, 'activate_item', false);
+  if Msg.OldKey <> 0 then
+    gtk_widget_remove_accelerators(Widget, 'activate_item', false);
   { Map the shift states }
   GDKModifier:= 0;
   if ssShift in Msg.NewModifier then GDKModifier:= GDK_SHIFT_MASK;
@@ -693,27 +694,27 @@ begin
   if ssCtrl in Msg.NewModifier then GDKModifier:= GDKModifier + GDK_CONTROL_MASK;
   GDKKey:= VK2GDK(Msg.NewKey);
   { Set the accelerator }
-  gtk_widget_add_accelerator(Widget, 'activate_item', gtk_accel_group_get_default(), GDKKey, GDKModifier, GTK_ACCEL_VISIBLE);
+  gtk_widget_add_accelerator(Widget, 'activate_item',
+    gtk_accel_group_get_default(), GDKKey, GDKModifier, GTK_ACCEL_VISIBLE);
 end;
 
 // ----------------------------------------------------------------------
 // OBSOLETE ???
 // ----------------------------------------------------------------------
 
-Procedure ReportnotObsolete(Texts : String);
+Procedure ReportNotObsolete(const Texts : String);
 Begin
-Writeln('*********************************************');
-Writeln('*********************************************');
-Writeln('*************Non-Obsolete report*************');
-Writeln('*********************************************');
-Writeln('*************'+Texts+'*is being used yet.****');
-Writeln('*******Please remove this function from******');
-Writeln('*******the obsolete section in gtkproc.inc***');
-Writeln('*********************************************');
-Writeln('*********************************************');
-Writeln('*********************************************');
-Writeln('*********************************************');
-
+  Writeln('*********************************************');
+  Writeln('*********************************************');
+  Writeln('*************Non-Obsolete report*************');
+  Writeln('*********************************************');
+  Writeln('*************'+Texts+'*is being used yet.****');
+  Writeln('*******Please remove this function from******');
+  Writeln('*******the obsolete section in gtkproc.inc***');
+  Writeln('*********************************************');
+  Writeln('*********************************************');
+  Writeln('*********************************************');
+  Writeln('*********************************************');
 end;
 
 function TGDKColorToTColor(value : TGDKColor) : TColor;
@@ -914,6 +915,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.33  2002/04/26 12:26:51  lazarus
+  MG: improved clean up
+
   Revision 1.32  2002/03/31 23:20:38  lazarus
   MG: fixed initial size of TPage
 
