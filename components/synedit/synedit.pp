@@ -4098,6 +4098,7 @@ end;
 
 procedure TCustomSynEdit.WMSetFocus(var Msg: TWMSetFocus);
 begin
+  LastMouseCaret:=Point(-1,-1);
 //writeln('[TCustomSynEdit.WMSetFocus] A');
   //InitializeCaret;
   //if FHideSelection and SelAvail then
