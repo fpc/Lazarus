@@ -69,6 +69,8 @@ type
      nuForm,    // unit with form
      nuCustomProgram  // program
    );
+   
+  TUnitUsage = (uuIsPartOfProject, uuIsLoaded, uuIsModified, uuNotUsed);
 
       
   TUnitInfo = class(TObject)
@@ -102,6 +104,7 @@ type
     fSyntaxHighlighter: TLazSyntaxHighlighter;
     fTopLine: integer;
     fUnitName: String;
+    fUsageCount: extended;
 
     function GetFileName: string;
     function GetHasResources:boolean;
@@ -149,6 +152,8 @@ type
     procedure IgnoreCurrentFileDateOnDisk;
     function ShortFilename: string;
     function NeedsSaveToDisk: boolean;
+    procedure UpdateUsageCount(Min, IfBelowThis, IncIfBelow: extended);
+    procedure UpdateUsageCount(TheUsage: TUnitUsage; Factor: extended);
 
     { Properties }
   public
@@ -221,6 +226,8 @@ type
     fCompilerOptions: TCompilerOptions;
     fIconPath: String;
     fJumpHistory: TProjectJumpHistory;
+    fLastReadLPIFilename: string;
+    fLastReadLPIFileDate: TDateTime;
     fMainUnit: Integer;  // only for ptApplication
     fModified: boolean;
     fOnFileBackup: TOnFileBackup;
@@ -566,6 +573,7 @@ begin
   fSyntaxHighlighter := lshText;
   fTopLine := -1;
   fUnitName := '';
+  fUsageCount:=-1;
 end;
 
 
@@ -596,6 +604,7 @@ begin
      LazSyntaxHighlighterNames[lshFreePascal]);
   XMLConfig.SetDeleteValue(Path+'TopLine/Value',fTopLine,-1);
   XMLConfig.SetDeleteValue(Path+'UnitName/Value',fUnitName,'');
+  XMLConfig.SetDeleteValue(Path+'UsageCount/Value',round(fUsageCount),-1);
   fBreakpoints.SaveToXMLConfig(XMLConfig,Path);
 end;
 
@@ -628,6 +637,12 @@ begin
        Path+'SyntaxHighlighter/Value',''));
   fTopLine:=XMLConfig.GetValue(Path+'TopLine/Value',-1);
   UnitName:=XMLConfig.GetValue(Path+'UnitName/Value','');
+  fUsageCount:=XMLConfig.GetValue(Path+'UsageCount/Value',-1);
+  if fUsageCount<1 then begin
+    UpdateUsageCount(uuIsLoaded,1);
+    if IsPartOfProject then
+      UpdateUsageCount(uuIsPartOfProject,1);
+  end;
   fBreakpoints.LoadFromXMLConfig(XMLConfig,Path);
 end;
 
@@ -778,6 +793,22 @@ begin
           or (not FileExists(Filename));
 end;
 
+procedure TUnitInfo.UpdateUsageCount(Min, IfBelowThis, IncIfBelow: extended);
+begin
+  if fUsageCount<IfBelowThis then fUsageCount:=fUsageCount+IncIfBelow;
+  if fUsageCount<Min then fUsageCount:=Min;
+end;
+
+procedure TUnitInfo.UpdateUsageCount(TheUsage: TUnitUsage; Factor: extended);
+begin
+  case TheUsage of
+  uuIsPartOfProject: UpdateUsageCount(20,200,2*Factor);
+  uuIsLoaded:        UpdateUsageCount(10,100,1*Factor);
+  uuIsModified:      UpdateUsageCount(10,0,0);
+  uuNotUsed:         fUsageCount:=fUsageCount-(Factor/5);
+  end;
+end;
+
 procedure TUnitInfo.SetSource(ABuffer: TCodeBuffer);
 begin
   if fSource=ABuffer then exit;
@@ -905,6 +936,7 @@ begin
   if fIsPartOfProject=AValue then exit;
   fIsPartOfProject:=AValue;
   UpdatePartOfProjectList;
+  if fIsPartOfProject then UpdateUsageCount(uuIsPartOfProject,0);
 end;
 
 {-------------------------------------------------------------------------------
@@ -918,10 +950,12 @@ procedure TUnitInfo.SetLoaded(const AValue: Boolean);
 begin
   if fLoaded=AValue then exit;
   fLoaded:=AValue;
-  if fLoaded then
-    IncreaseAutoRevertLock
-  else
+  if fLoaded then begin
+    IncreaseAutoRevertLock;
+    UpdateUsageCount(uuIsLoaded,0);
+  end else begin
     DecreaseAutoRevertLock;
+  end;
 end;
 
 procedure TUnitInfo.SetProject(const AValue: TProject);
@@ -1052,6 +1086,8 @@ end;
  ------------------------------------------------------------------------------}
 function TProject.WriteProject(ProjectWriteFlags: TProjectWriteFlags;
   const OverrideProjectInfoFile: string): TModalResult;
+var
+  confPath: String;
 
   procedure SaveFlags;
   var f: TProjectFlag;
@@ -1059,6 +1095,30 @@ function TProject.WriteProject(ProjectWriteFlags: TProjectWriteFlags;
     for f:=Low(TProjectFlag) to High(TProjectFlag) do begin
       xmlconfig.SetDeleteValue('ProjectOptions/General/Flags/'
             +ProjectFlagNames[f]+'/Value', f in Flags,f in DefaultProjectFlags);
+    end;
+  end;
+  
+  procedure UpdateUsageCounts;
+  var
+    UnitUsageCount: extended;
+    DiffTime: TDateTime;
+    i: Integer;
+  begin
+    UnitUsageCount:=0;
+    if CompareFileNames(confPath,fLastReadLPIFilename)=0 then begin
+      DiffTime:=Now-fLastReadLPIFileDate;
+      if DiffTime>0 then begin
+        UnitUsageCount:= DiffTime*24; // one step every hour
+      end;
+      fLastReadLPIFileDate:=Now;
+    end;
+    for i:=0 to UnitCount-1 do begin
+      if Units[i].IsPartOfProject then
+        Units[i].UpdateUsageCount(uuIsPartOfProject,UnitUsageCount)
+      else if Units[i].Loaded then
+        Units[i].UpdateUsageCount(uuIsLoaded,UnitUsageCount)
+      else
+        Units[i].UpdateUsageCount(uuNotUsed,UnitUsageCount);
     end;
   end;
   
@@ -1071,6 +1131,7 @@ function TProject.WriteProject(ProjectWriteFlags: TProjectWriteFlags;
       if (not Units[i].Loaded) then begin
         if (not (pfSaveClosedUnits in Flags)) then exit;
         if (pwfDontSaveClosedUnits in ProjectWriteFlags) then exit;
+        if Units[i].fUsageCount<=0 then exit;
       end;
     end;
     Result:=true;
@@ -1092,7 +1153,6 @@ function TProject.WriteProject(ProjectWriteFlags: TProjectWriteFlags;
 
 
 var
-  confPath: String;
   AText, ACaption: string;
 begin
   Result := mrCancel;
@@ -1105,7 +1165,9 @@ begin
     Result:=fOnFileBackup(confPath,true);
     if Result=mrAbort then exit;
   end;
-  xmlconfig := TXMLConfig.Create(SetDirSeparators(confPath));
+  confPath:=SetDirSeparators(confPath);
+  xmlconfig := TXMLConfig.Create(confPath);
+  UpdateUsageCounts;
 
   try
     repeat
@@ -1192,6 +1254,8 @@ begin
   try
     {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject A reading lpi');{$ENDIF}
     xmlconfig := TXMLConfig.Create(ProjectInfoFile);
+    fLastReadLPIFilename:=ProjectInfoFile;
+    fLastReadLPIFileDate:=Now;
     {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject B done lpi');{$ENDIF}
   except
     MessageDlg('Unable to read the project info file'#13'"'+ProjectInfoFile+'".'
@@ -2104,6 +2168,9 @@ end.
 
 {
   $Log$
+  Revision 1.89  2003/01/02 04:33:55  mattias
+  implemented incremental find and unit usage counts
+
   Revision 1.88  2002/12/28 13:26:36  mattias
   reduced lpi size
 

@@ -146,6 +146,7 @@ resourcestring
   lisMenuFindPrevious = 'Find &Previous';
   lisMenuFindInFiles = 'Find &in files';
   lisMenuReplace = 'Replace';
+  lisMenuIncrementalFind = 'Incremental Find';
   lisMenuGotoLine = 'Goto line';
   lisMenuJumpBack = 'Jump back';
   lisMenuJumpForward = 'Jump forward';

@@ -48,23 +48,24 @@ const
   ecFindAgain            = ecUserFirst + 2;
   ecFindNext             = ecFindAgain;
   ecReplace              = ecUserFirst + 3;
-  ecFindProcedureDefinition = ecUserFirst + 4;
-  ecFindProcedureMethod  = ecUserFirst + 5;
-  ecGotoLineNumber       = ecUserFirst + 6;
+  ecIncrementalFind      = ecUserFirst + 4;
+  ecFindProcedureDefinition = ecUserFirst + 5;
+  ecFindProcedureMethod  = ecUserFirst + 6;
+  ecGotoLineNumber       = ecUserFirst + 7;
 
-  ecNextEditor           = ecUserFirst + 7;
-  ecPrevEditor           = ecUserFirst + 8;
-  ecMoveEditorLeft       = ecUserFirst + 9;
-  ecMoveEditorRight      = ecUserFirst + 10;
+  ecNextEditor           = ecUserFirst + 8;
+  ecPrevEditor           = ecUserFirst + 9;
+  ecMoveEditorLeft       = ecUserFirst + 10;
+  ecMoveEditorRight      = ecUserFirst + 11;
 
-  ecPeriod               = ecUserFirst + 11;
+  ecPeriod               = ecUserFirst + 12;
 
-  ecFindPrevious         = ecUserFirst + 12;
-  ecFindInFiles          = ecUserFirst + 13;
-  ecJumpBack             = ecUserFirst + 14;
-  ecJumpForward          = ecUserFirst + 15;
-  ecAddJumpPoint         = ecUserFirst + 16;
-  ecViewJumpHistory      = ecUserFirst + 17;
+  ecFindPrevious         = ecUserFirst + 13;
+  ecFindInFiles          = ecUserFirst + 14;
+  ecJumpBack             = ecUserFirst + 15;
+  ecJumpForward          = ecUserFirst + 16;
+  ecAddJumpPoint         = ecUserFirst + 17;
+  ecViewJumpHistory      = ecUserFirst + 18;
 
   ecFindDeclaration      = ecUserFirst + 20;
   ecFindBlockOtherEnd    = ecUserFirst + 21;
@@ -553,6 +554,7 @@ begin
     ecFindPrevious: Result:= 'Find Previous';
     ecFindInFiles: Result:= 'Find in files';
     ecReplace: Result:= 'Replace text';
+    ecIncrementalFind: Result:= 'Incremental Find';
     ecFindProcedureDefinition: Result:= 'find procedure definition';
     ecFindProcedureMethod: Result:= 'find procedure method';
     ecGotoLineNumber: Result:= 'goto line number';
@@ -1302,6 +1304,7 @@ begin
   Add(C,'Find previous',ecFindPrevious,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Find in files',ecFindInFiles,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Replace text',ecReplace,VK_R,[SSCtrl],VK_UNKNOWN,[]);
+  Add(C,'Find incremental',ecIncrementalFind,VK_E,[SSCtrl],VK_UNKNOWN,[]);
   Add(C,'Go to line number',ecGotoLineNumber,VK_G,[ssCtrl],VK_UNKNOWN,[]);
   Add(C,'Jump back',ecJumpBack,VK_H,[ssCtrl],VK_UNKNOWN,[]);
   Add(C,'Jump forward',ecJumpForward,VK_H,[ssCtrl,ssShift],VK_UNKNOWN,[]);

@@ -200,6 +200,7 @@ type
     itmSearchFindPrevious: TMenuItem;
     itmSearchFindInFiles: TMenuItem;
     itmSearchReplace: TMenuItem;
+    itmIncrementalFind: TMenuItem;
     itmGotoLine: TMenuItem;
     itmJumpBack: TMenuItem;
     itmJumpForward: TMenuItem;
@@ -689,6 +690,11 @@ begin
   itmSearchReplace.Caption := lisMenuReplace;
   mnuSearch.add(itmSearchReplace);
 
+  itmIncrementalFind := TMenuItem.Create(Self);
+  itmIncrementalFind.Name:='itmIncrementalFind';
+  itmIncrementalFind.Caption := lisMenuIncrementalFind;
+  mnuSearch.add(itmIncrementalFind);
+
   mnuSearch.Add(CreateMenuSeparator);
 
   itmGotoLine := TMenuItem.Create(Self);
@@ -1087,6 +1093,7 @@ begin
     itmSearchFindPrevious.ShortCut:=CommandToShortCut(ecFindPrevious);
     itmSearchFindInFiles.ShortCut:=CommandToShortCut(ecFindInFiles);
     itmSearchReplace.ShortCut:=CommandToShortCut(ecReplace);
+    itmIncrementalFind.ShortCut:=CommandToShortCut(ecIncrementalFind);
     itmGotoLine.ShortCut:=CommandToShortCut(ecGotoLineNumber);
     itmJumpBack.ShortCut:=CommandToShortCut(ecJumpBack);
     itmJumpForward.ShortCut:=CommandToShortCut(ecJumpForward);
