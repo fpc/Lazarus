@@ -122,6 +122,7 @@ ide/main.pp svneol=native#text/pascal
 ide/project.pp svneol=native#text/pascal
 ide/splash.pp svneol=native#text/pascal
 ide/testform.pp svneol=native#text/pascal
+ide/uniteditor.pp svneol=native#text/pascal
 ide/viewform_dlg.pp svneol=native#text/pascal
 ide/viewunit_dlg.pp svneol=native#text/pascal
 images/bitbtn.xpm -text svneol=native#image/x-xpixmap
