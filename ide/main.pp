@@ -1785,7 +1785,7 @@ var ActiveSrcEdit:TSourceEditor;
 begin
   GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
   if (ActiveSrcEdit=nil) or (ActiveUnitInfo=nil) then exit;
-  ShortUnitName:=ActiveSrcEdit.ShortName;
+  ShortUnitName:=ActiveSrcEdit.PageName;
   AFilename:=ActiveUnitInfo.Filename;
   ShowUnitInfoDlg(ShortUnitName,
     LazSyntaxHighlighterNames[ActiveUnitInfo.SyntaxHighlighter],
@@ -3796,9 +3796,7 @@ begin
     else if ActiveUnitInfo.UnitName<>'' then
       AText:='Unit "'+ActiveUnitInfo.Unitname+'" has changed. Save?'
     else
-      AText:='Source of page "'+
-        SourceNotebook.NoteBook.Pages[PageIndex]
-        +'" has changed. Save?';
+      AText:='Source of page "'+ActiveSrcEdit.PageName+'" has changed. Save?';
     ACaption:='Source modified';
     if Messagedlg(ACaption, AText, mtConfirmation, [mbYes, mbNo], 0)=mrYes then
     begin
@@ -4424,7 +4422,7 @@ writeln('TMainIDE.DoSaveProject A SaveAs=',sfSaveAs in Flags,' SaveToTestDir=',s
   // save all editor files
   if (SourceNoteBook.Notebook<>nil) and (not (sfSaveToTestDir in Flags)) then
   begin
-    for i:=0 to SourceNoteBook.Notebook.Pages.Count-1 do begin
+    for i:=0 to SourceNoteBook.Notebook.PageCount-1 do begin
       if (Project1.MainUnit<0)
       or (Project1.MainUnitInfo.EditorIndex<>i) then begin
         Result:=DoSaveEditorFile(i,[sfProjectSaving]
@@ -4445,7 +4443,7 @@ begin
   // close all loaded files
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoCloseProject A');{$ENDIF}
   while SourceNotebook.NoteBook<>nil do begin
-    Result:=DoCloseEditorFile(SourceNotebook.Notebook.Pages.Count-1,
+    Result:=DoCloseEditorFile(SourceNotebook.Notebook.PageCount-1,
                               [cfProjectClosing]);
     if Result=mrAbort then exit;
   end;
@@ -4596,7 +4594,7 @@ begin
 
   // set active editor source editor
   if (SourceNoteBook.NoteBook<>nil) and (Project1.ActiveEditorIndexAtStart>=0)
-  and (Project1.ActiveEditorIndexAtStart<SourceNoteBook.NoteBook.Pages.Count)
+  and (Project1.ActiveEditorIndexAtStart<SourceNoteBook.NoteBook.PageCount)
   then
     SourceNoteBook.Notebook.PageIndex:=Project1.ActiveEditorIndexAtStart;
     
@@ -4796,8 +4794,7 @@ begin
       if not ActiveUnitInfo.IsVirtual then
         s:='"'+ActiveUnitInfo.Filename+'"'
       else
-        s:='"'+SourceNotebook.Notebook.Pages[SourceNotebook.Notebook.PageIndex]
-          +'"';
+        s:='"'+ActiveSourceEditor.PageName+'"';
       if (Project1.ProjectType in [ptProgram, ptApplication])
       and (ActiveUnitInfo.UnitName<>'')
       and (Project1.IndexOfUnitWithName(ActiveUnitInfo.UnitName,
@@ -4825,9 +4822,7 @@ begin
       if not ActiveUnitInfo.IsVirtual then
         s:='The file "'+ActiveUnitInfo.Filename+'"'
       else
-        s:='The file "'
-          +SourceNotebook.Notebook.Pages[SourceNotebook.Notebook.PageIndex]
-          +'"';
+        s:='The file "'+ActiveSourceEditor.PageName+'"';
       s:=s+' is already part of the Project1.';
       MessageDlg(s,mtInformation,[mbOk],0);
     end;
@@ -4849,7 +4844,8 @@ Begin
       if (AnUnitInfo.IsPartOfProject) and (i<>Project1.MainUnit) then begin
         AName:=AnUnitInfo.FileName;
         if (AnUnitInfo.EditorIndex>=0) then
-          AName:=SourceNotebook.NoteBook.Pages[AnUnitInfo.EditorIndex];
+          AName:=SourceNotebook.FindSourceEditorWithPageIndex(
+                                               AnUnitInfo.EditorIndex).PageName;
         UnitList.Add(TViewUnitsEntry.Create(AName,i,false));
       end;
     end;
@@ -6437,7 +6433,7 @@ begin
     end else
       SourceName:='';
     PageName:=CreateSrcEditPageName(SourceName,AnUnitInfo.Filename,PageIndex);
-    SourceNotebook.NoteBook.Pages[PageIndex]:=PageName;
+    SourceNotebook.FindSourceEditorWithPageIndex(PageIndex).PageName:=PageName;
   end;
 end;
 
@@ -7507,6 +7503,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.435  2002/11/29 17:51:04  mattias
+  star mark for modified editors and OI combo multiselection text
+
   Revision 1.434  2002/11/18 11:39:48  mattias
   improved icons, started codeexplorer
 
