@@ -4340,10 +4340,16 @@ begin
   if Widget=nil then Widget:=PgtkWidget(aHandle);
 
   if bErase then
+    gtk_widget_queue_clear_area(Widget,
+                          gdkRect.X,gdkRect.Y,gdkRect.Width,gdkRect.Height);
+
+  gtk_widget_queue_draw_area(Widget, gdkRect.X,gdkRect.Y,gdkRect.Width,gdkRect.Height);
+
+{  if bErase then
     gdk_window_clear_area(GetControlWindow(Widget),
                           gdkRect.X,gdkRect.Y,gdkRect.Width,gdkRect.Height);
 
-  gtk_widget_draw(Widget, @gdkRect);
+  gtk_widget_draw(Widget, @gdkRect);}
 end;
 
 {------------------------------------------------------------------------------
@@ -6959,6 +6965,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.132  2002/09/13 11:49:48  lazarus
+  Cleanups, extended TStatusBar, graphic control cleanups.
+
   Revision 1.131  2002/09/12 15:35:57  lazarus
   MG: small bugfixes
 
