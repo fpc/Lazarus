@@ -210,6 +210,7 @@ docs/Contributors.txt svneol=native#text/plain
 docs/CrossCompile.txt svneol=native#text/plain
 docs/ExtendingTheIDE.txt svneol=native#text/plain
 docs/ForDelphians.txt svneol=native#text/plain
+docs/LCLMessages.txt svneol=native#text/plain
 docs/LazarusIDEInternals.pdf -text svneol=unset#application/pdf
 docs/Packages.txt svneol=native#text/plain
 docs/RemoteDebugging.txt svneol=native#text/plain
