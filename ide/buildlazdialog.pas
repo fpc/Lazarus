@@ -103,9 +103,7 @@ type
     FItemJITForm: TBuildLazarusItem;
     FItemLCL: TBuildLazarusItem;
     FItemPkgReg: TBuildLazarusItem;
-    {$IFDEF UseStartLazarus}
     FItemStarter: TBuildLazarusItem;
-    {$ENDIF}
     FItemSynEdit: TBuildLazarusItem;
     FExtraOptions: string;
     FRestartAfterBuild: boolean;
@@ -143,9 +141,7 @@ type
     property ItemIDEIntf: TBuildLazarusItem read FItemIDEIntf;
     property ItemJITForm: TBuildLazarusItem read FItemJITForm;
     property ItemIDE: TBuildLazarusItem read FItemIDE;
-    {$IFDEF UseStartLazarus}
     property ItemStarter: TBuildLazarusItem read FItemStarter;
-    {$ENDIF}
     property ItemExamples: TBuildLazarusItem read FItemExamples;
     property CleanAll: boolean read FCleanAll write FCleanAll;
     property ExtraOptions: string read FExtraOptions write FExtraOptions;
@@ -287,6 +283,7 @@ var
   CurItem: TBuildLazarusItem;
   ExtraOptions: String;
   CurMakeMode: TMakeMode;
+  
 begin
   Result:=mrCancel;
   Tool:=TExternalToolOptions.Create;
@@ -423,11 +420,10 @@ begin
     if blfWithoutLinkingIDE in Flags then begin
       AppendExtraOption('-Cn');
     end;
-    {$IFDEF UseStartLazarus}
-      //TODO: Maybe only if running executable is lazarus and
-      //      we are not cross compiling.
+    //TODO: Maybe only if running executable is lazarus and
+    //      we are not cross compiling.
+
     AppendExtraOption('-olazarus.new'+GetDefaultExecutableExt);
-    {$ENDIF}
 
     // add package options for IDE
     AppendExtraOption(PackageOptions);
@@ -1017,9 +1013,7 @@ begin
   FItemIDEIntf:=FindName('IDEIntf');
   FItemJITForm:=FindName('JITForm');
   FItemIDE:=FindName('IDE');
-  {$IFDEF UseStartLazarus}
   FItemStarter:=FindName('Starter');
-  {$ENDIF}
   FItemExamples:=FindName('Examples');
 end;
 
@@ -1160,9 +1154,7 @@ begin
   FItemIDEIntf:=nil;
   FItemJITForm:=nil;
   FItemIDE:=nil;
-  {$IFDEF UseStartLazarus}
   FItemStarter:=nil;
-  {$ENDIF}
   FItemExamples:=nil;
 end;
 
@@ -1205,13 +1197,11 @@ begin
   FItemIDE.Commands[mmCleanBuild]:='cleanide ide';
   FItems.Add(FItemIDE);
 
-  {$IFDEF UseStartLazarus}
   // Starter
   FItemStarter:=TBuildLazarusItem.Create('Starter',lisBuildStarter,'',mmBuild);
   FItemStarter.Commands[mmBuild]:='starter';
   FItemStarter.Commands[mmCleanBuild]:='starter';
   FItems.Add(FItemStarter);
-  {$ENDIF}
 
   // Examples
   FItemExamples:=TBuildLazarusItem.Create(

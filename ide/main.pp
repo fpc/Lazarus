@@ -136,9 +136,7 @@ type
     procedure mnuCloseClicked(Sender: TObject);
     procedure mnuCloseAllClicked(Sender: TObject);
     procedure mnuCleanDirectoryClicked(Sender: TObject);
-    {$IFDEF UseStartLazarus}
     procedure mnuRestartClicked(Sender: TObject);
-    {$ENDIF}
     procedure mnuQuitClicked(Sender: TObject);
 
     // edit menu
@@ -558,9 +556,7 @@ type
     function DoOpenFileAndJumpToIdentifier(const AFilename, AnIdentifier: string;
         PageIndex: integer; Flags: TOpenFlags): TModalResult; override;
     function DoSaveAll(Flags: TSaveFlags): TModalResult;
-{$IFDEF UseStartLazarus}
     procedure DoRestart;
-{$ENDIF}
     function DoOpenMainUnit(ProjectLoading: boolean): TModalResult;
     function DoRevertMainUnit: TModalResult;
     function DoViewUnitsAndForms(OnlyForms: boolean): TModalResult;
@@ -1601,9 +1597,7 @@ begin
     itmFileCloseAll.Enabled := False;
     itmFileCloseAll.OnClick := @mnuCloseAllClicked;
     itmFileCleanDirectory.OnClick := @mnuCleanDirectoryClicked;
-    {$IFDEF UseStartLazarus}
     itmFileRestart.OnClick := @mnuRestartClicked;
-    {$ENDIF}
     itmFileQuit.OnClick := @mnuQuitClicked;
   end;
 end;
@@ -2377,12 +2371,10 @@ end;
 
 {------------------------------------------------------------------------------}
 
-{$IFDEF UseStartLazarus}
 procedure TMainIDE.mnuRestartClicked(Sender: TObject);
 begin
   DoRestart;
 end;
-{$ENDIF}
 
 procedure TMainIDE.mnuQuitClicked(Sender: TObject);
 var CanClose: boolean;
@@ -6232,10 +6224,8 @@ begin
   // ToDo: save package, cvs settings, ...
 end;
 
-{$IFDEF UseStartLazarus}
 procedure TMainIDE.DoRestart;
   procedure StartStarter;
-  {$IFNDEF VER1_0}
   var
     StartLazProcess: TProcess;
     ExeName: string;
@@ -6257,13 +6247,14 @@ procedure TMainIDE.DoRestart;
       StartLazProcess.Free;
     end;
   end;
-  {$ELSE}
-  begin
-    DebugLn('Restarting Lazarus not supported with fpc 1.0.x');
-  end;
-  {$ENDIF}
 
 begin
+{$IFDEF VER1_0}
+  if not StartedByStartLazarus then begin
+    DebugLn('Restarting Lazarus not supported, if compiled with fpc 1.0.x');
+    exit;
+  end;
+{$ENDIF}
   mnuQuitClicked(Self);
   if Application.Terminated then begin
     if StartedByStartLazarus then
@@ -6272,7 +6263,6 @@ begin
       StartStarter;
   end;
 end;
-{$ENDIF}
 
 //-----------------------------------------------------------------------------
 
@@ -6392,10 +6382,8 @@ begin
     DoCheckFilesOnDisk;
     MessagesView.EndBlock;
   end;
-{$IFDEF UseStartLazarus}
   if (Result=mrOK) and MiscellaneousOptions.BuildLazOpts.RestartAfterBuild then
      mnuRestartClicked(nil);
-{$ENDIF}
 end;
 
 function TMainIDE.DoExecuteCompilationTool(Tool: TCompilationTool;
@@ -10965,6 +10953,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.800  2004/11/26 16:07:12  vincents
+  removed ifdef UseStartLazarus
+
   Revision 1.799  2004/11/25 22:05:00  mattias
   implemented sorting installed packages topologically
 
