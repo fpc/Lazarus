@@ -2591,8 +2591,12 @@ begin
   // get all usage options
   AddOptionsList:=GetUsageOptionsList(PkgList);
   PkgList.Free;
-  // combine options of same type
-  GatherInheritedOptions(AddOptionsList,InheritedOptionStrings);
+  if AddOptionsList<>nil then begin
+    // combine options of same type
+    GatherInheritedOptions(AddOptionsList,InheritedOptionStrings);
+    AddOptionsList.Free;
+  end;
+
   // convert options to compiler parameters
   Result:=InheritedOptionsToCompilerParameters(InheritedOptionStrings,[]);
   
