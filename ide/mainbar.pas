@@ -847,6 +847,7 @@ begin
   itmProjectPublish := TMenuItem.Create(Self);
   itmProjectPublish.Name:='itmProjectPublish';
   itmProjectPublish.Caption := lisMenuPublishProject;
+  itmProjectPublish.Enabled:=false;
   mnuProject.Add(itmProjectPublish);
 
   mnuProject.Add(CreateMenuSeparator);
