@@ -2633,9 +2633,11 @@ begin
   end;
 
   // create source
-  HeaderSrc:=
-       Format(lisPkgMangThisFileWasAutomaticallyCreatedByLazarusDoNotEdit,
-       ['{ ', e, e, APackage.IDAsString, e+' }'+e+e]);
+  HeaderSrc:=lisPkgMangThisSourceIsOnlyUsedToCompileAndInstallThePackage;
+  HeaderSrc:= '{ '
+           +lisPkgMangThisFileWasAutomaticallyCreatedByLazarusDoNotEdit+e
+           +lisPkgMangThisSourceIsOnlyUsedToCompileAndInstallThePackage+e
+           +' }'+e+e;
   Src:='unit '+APackage.Name+';'+e
       +e
       +'interface'+e
