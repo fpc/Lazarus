@@ -147,7 +147,7 @@ type
     function IsKeyword(const AKeyword: string): boolean; virtual;               // DJLP 2000-08-09
     procedure Next; virtual; abstract;
     procedure NextToEol;
-    procedure SetLine(NewValue: String; LineNumber:Integer); virtual; abstract;
+    procedure SetLine(const NewValue: String; LineNumber:Integer); virtual; abstract;
     procedure SetRange(Value: Pointer); virtual;
     procedure ResetRange; virtual;
     function UseUserSettings(settingIndex: integer): boolean; virtual;

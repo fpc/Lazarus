@@ -218,7 +218,7 @@ type
     function GetEol: Boolean; override;
     function GetRange: Pointer; override;
     function GetTokenID: TtkTokenKind;
-    procedure SetLine(NewValue: String; LineNumber:Integer); override;
+    procedure SetLine(const NewValue: String; LineNumber:Integer); override;
     function GetToken: String; override;
     function GetTokenAttribute: TSynHighlighterAttributes; override;
     function GetTokenKind: integer; override;
@@ -787,7 +787,7 @@ begin
   fDefaultFilter := SYNS_FilterCPP;
 end; { Create }
 
-procedure TSynCppSyn.SetLine(NewValue: String; LineNumber:Integer);
+procedure TSynCppSyn.SetLine(const NewValue: String; LineNumber:Integer);
 begin
   fLine := PChar(NewValue);
   Run := 0;

@@ -417,7 +417,7 @@ type
     function GetEol: Boolean; override;
     function GetRange: Pointer; override;
     function GetTokenID: TtkTokenKind;
-    procedure SetLine(NewValue: string; LineNumber:Integer); override;
+    procedure SetLine(const NewValue: string; LineNumber:Integer); override;
     function GetToken: string; override;
     function GetTokenAttribute: TSynHighlighterAttributes; override;
     function GetTokenKind: integer; override;
@@ -1969,7 +1969,7 @@ begin
   fDefaultFilter := SYNS_FilterHTML;
 end;
 
-procedure TSynHTMLSyn.SetLine(NewValue: string; LineNumber:Integer);
+procedure TSynHTMLSyn.SetLine(const NewValue: string; LineNumber:Integer);
 begin
   fLine := PChar(NewValue);
   Run := 0;

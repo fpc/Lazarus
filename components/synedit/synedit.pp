@@ -1788,7 +1788,11 @@ var
   nL1, nL2, nC1, nC2: integer;
 begin
   // Get the invalidated rect. Compute the invalid area in lines / columns.
+  {$IFDEF SYN_LAZARUS}
+  rcClip:=Rect(0,0,Width,Height);
+  {$ELSE}
   rcClip := Canvas.ClipRect;
+  {$ENDIF}
   // columns
   nC1 := LeftChar;
   if (rcClip.Left > fGutterWidth + 2) then
@@ -1992,6 +1996,9 @@ var
     Style: TFontStyles;
   end;
   dc: HDC;
+
+m1: integer;
+
 
 { local procedures }
 
@@ -2211,6 +2218,7 @@ var
     end;
 
   begin
+  inc(m1);
     if Background = clNone then Background := colEditorBG;
     if Foreground = clNone then Foreground := Font.Color;
     // Do we have to paint the old chars first, or can we just append?
@@ -2417,6 +2425,7 @@ var
 { end local procedures }
 
 begin
+m1:=0;
   colEditorBG := Color;
   if Assigned(Highlighter) and Assigned(Highlighter.WhitespaceAttribute) then
   begin
@@ -4744,6 +4753,9 @@ begin
           CaretNew := PrevWordPos;
           MoveCaretAndSelection(Caret, CaretNew, Command = ecSelWordLeft);
           fLastCaretX := fCaretX;                                               //mh 2000-10-19
+          {$IFDEF SYN_LAZARUS}
+          Update;
+          {$ENDIF}
         end;
       ecWordRight, ecSelWordRight:
         begin
@@ -4751,6 +4763,9 @@ begin
           CaretNew := NextWordPos;
           MoveCaretAndSelection(Caret, CaretNew, Command = ecSelWordRight);
           fLastCaretX := fCaretX;                                               //mh 2000-10-19
+          {$IFDEF SYN_LAZARUS}
+          Update;
+          {$ENDIF}
         end;
       ecSelectAll:
         begin

@@ -214,7 +214,7 @@ type
     function GetTokenPos: Integer; override;
     procedure Next; override;
     procedure ResetRange; override;
-    procedure SetLine(NewValue: string; LineNumber:Integer); override;
+    procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: string; LineNumber:Integer); override;
     procedure SetRange(Value: Pointer); override;
     function UseUserSettings(settingIndex: integer): boolean; override;
     procedure EnumUserSettings(settings: TStrings); override;
@@ -990,7 +990,7 @@ begin
   fDefaultFilter := SYNS_FilterPascal;
 end; { Create }
 
-procedure TSynPasSyn.SetLine(NewValue: string; LineNumber:Integer);
+procedure TSynPasSyn.SetLine(const NewValue: string; LineNumber:Integer);
 begin
   fLine := PChar(NewValue);
   Run := 0;
