@@ -928,13 +928,15 @@ type
     procedure DoAutoSize; override;
     procedure SetText(const Value: TCaption); override;
   public
-    constructor Create(AnOwner: TComponent); override;
+    constructor Create(TheOwner: TComponent); override;
   published
+    property Align;
     property Anchors;
     property AutoSize;
     property AllowGrayed;
     property Caption;
     property Checked;
+    property Constraints;
     property State;
     property Visible;
     property Enabled;
@@ -956,6 +958,10 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
+    property OnMouseEnter;
+    property OnMouseLeave;
+    property OnChangeBounds;
+    property OnResize;
     property OnStartDrag;
   end;
 
@@ -1510,6 +1516,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.135  2004/02/24 20:26:50  mattias
+  published some TRadioButton properties
+
   Revision 1.134  2004/02/23 23:15:12  mattias
   improved FindDragTarget
 

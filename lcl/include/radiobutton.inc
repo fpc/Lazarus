@@ -49,9 +49,9 @@
 
   Create a new TRadioButton
  ------------------------------------------------------------------------------}
-constructor TRadioButton.Create(AnOwner : TComponent);
+constructor TRadioButton.Create(TheOwner : TComponent);
 begin
-  inherited Create(AnOwner);
+  inherited Create(TheOwner);
   fCompStyle := csRadioButton;
   AutoSize := True;
 end;
@@ -108,6 +108,9 @@ end;
 
 {
   $Log$
+  Revision 1.15  2004/02/24 20:26:50  mattias
+  published some TRadioButton properties
+
   Revision 1.14  2004/01/06 17:58:06  mattias
   fixed setting TRadioButton.Caption for gtk
 
