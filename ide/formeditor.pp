@@ -31,24 +31,32 @@ unit FormEditor;
 interface
 
 uses
-  classes, customformeditor,Controls, forms,buttons,sysutils,Graphics,Extctrls;
+  Classes, CustomFormEditor, Controls, Forms, Buttons, SysUtils, Graphics,
+  ExtCtrls, ObjectInspector;
 
 type
-
   TFormEditor = class(TCustomFormEditor)
-  private
-
+  protected
+    procedure SetObj_Inspector(AnObjectInspector: TObjectInspector); override;
   public
     constructor Create;
-    destructor destroy; override;
+    destructor Destroy; override;
   end;
-
 
 var
   FormEditor1 : TFormEditor;
 
+
 implementation
 
+
+procedure TFormEditor.SetObj_Inspector(AnObjectInspector: TObjectInspector);
+begin
+  if AnObjectInspector=Obj_Inspector then exit;
+  
+  inherited SetObj_Inspector(AnObjectInspector);
+  
+end;
 
 constructor TFormEditor.Create;
 Begin

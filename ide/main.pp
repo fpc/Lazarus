@@ -46,12 +46,12 @@ uses
   Buttons, Menus, ComCtrls, Spin, Project, SysUtils, FileCtrl, Controls,
   Graphics, GraphType, ExtCtrls, Dialogs, LazConf, CompReg, CodeToolManager,
   CodeCache, DefineTemplates, MsgView, NewProjectDlg, IDEComp,
-  AbstractFormEditor, Designer, FormEditor, CustomFormEditor, ObjectInspector,
-  PropEdits, ControlSelection, UnitEditor, CompilerOptions, EditorOptions,
-  EnvironmentOpts, TransferMacros, SynEditKeyCmds, KeyMapping, ProjectOpts,
-  IDEProcs, Process, UnitInfoDlg, Debugger, DBGOutputForm, GDBMIDebugger,
-  RunParamsOpts, ExtToolDialog, ExtToolEditDlg, MacroPromptDlg, LMessages,
-  ProjectDefs, Watchesdlg, BreakPointsdlg, ColumnDlg, OutputFilter,
+  AbstractFormEditor, Designer, FormEditor, CustomFormEditor,
+  ObjectInspector, PropEdits, ControlSelection, UnitEditor, CompilerOptions,
+  EditorOptions, EnvironmentOpts, TransferMacros, SynEditKeyCmds, KeyMapping,
+  ProjectOpts, IDEProcs, Process, UnitInfoDlg, Debugger, DBGOutputForm,
+  GDBMIDebugger, RunParamsOpts, ExtToolDialog, ExtToolEditDlg, MacroPromptDlg,
+  LMessages, ProjectDefs, Watchesdlg, BreakPointsdlg, ColumnDlg, OutputFilter,
   BuildLazDialog, MiscOptions, EditDefineTree, CodeToolsOptions, TypInfo,
   IDEOptionDefs, CodeToolsDefines, LocalsDlg, DebuggerDlg, InputHistory,
   DiskDiffsDialog,
@@ -190,8 +190,6 @@ type
 
     
     // ObjectInspector + PropertyEditorHook events
-    procedure OIOnAddAvailableComponent(AComponent:TComponent;
-      var Allowed:boolean);
     procedure OIOnSelectComponent(AComponent:TComponent);
     procedure OnPropHookGetMethods(TypeData:PTypeData; Proc:TGetStringProc);
     function OnPropHookMethodExists(const AMethodName:ShortString;
@@ -202,6 +200,8 @@ type
     procedure OnPropHookShowMethod(const AMethodName:ShortString);
     procedure OnPropHookRenameMethod(const CurName, NewName:ShortString);
     procedure OnPropHookComponentRenamed(AComponent: TComponent);
+    procedure OnPropHookComponentAdded(AComponent: TComponent; Select: boolean);
+    procedure OnPropHookDeleteComponent(AComponent: TComponent);
 
     // designer events
     procedure OnDesignerGetSelectedComponentClass(Sender: TObject;
@@ -211,13 +211,14 @@ type
       Value: boolean);
     procedure OnDesignerComponentListChanged(Sender: TObject);
     procedure OnDesignerPropertiesChanged(Sender: TObject);
-    procedure OnDesignerAddComponent(Sender: TObject; Component: TComponent;
-      ComponentClass: TRegisteredComponent);
-    procedure OnDesignerRemoveComponent(Sender: TObject; Component: TComponent);
+    procedure OnDesignerComponentAdded(Sender: TObject; AComponent: TComponent;
+      AComponentClass: TRegisteredComponent);
+    procedure OnDesignerRemoveComponent(Sender: TObject; AComponent: TComponent);
     procedure OnDesignerModified(Sender: TObject);
     Procedure OnDesignerActivated(Sender : TObject);
     procedure OnDesignerRenameComponent(ADesigner: TDesigner;
       AComponent: TComponent; const NewName: string);
+      
     procedure OnControlSelectionChanged(Sender: TObject);
 
     // Environment options dialog events
@@ -722,12 +723,6 @@ begin
   writeln('[TMainIDE.Destroy] END');
 end;
 
-procedure TMainIDE.OIOnAddAvailableComponent(AComponent:TComponent;
-var Allowed:boolean);
-begin
-  //Allowed:=(not (AComponent is TGrabber));
-end;
-
 procedure TMainIDE.OIOnSelectComponent(AComponent:TComponent);
 begin
   with TheControlSelection do begin
@@ -991,7 +986,6 @@ end;
 procedure TMainIDE.SetupObjectInspector;
 begin
   ObjectInspector1 := TObjectInspector.Create(Self);
-  ObjectInspector1.OnAddAvailComponent:=@OIOnAddAvailableComponent;
   ObjectInspector1.OnSelectComponentInOI:=@OIOnSelectComponent;
   PropertyEditorHook1:=TPropertyEditorHook.Create;
   PropertyEditorHook1.OnGetMethods:=@OnPropHookGetMethods;
@@ -1000,6 +994,7 @@ begin
   PropertyEditorHook1.OnShowMethod:=@OnPropHookShowMethod;
   PropertyEditorHook1.OnRenameMethod:=@OnPropHookRenameMethod;
   PropertyEditorHook1.OnComponentRenamed:=@OnPropHookComponentRenamed;
+  PropertyEditorHook1.OnComponentAdded:=@OnPropHookComponentAdded;
   ObjectInspector1.PropertyEditorHook:=PropertyEditorHook1;
   EnvironmentOptions.IDEWindowLayoutList.Apply(TForm(ObjectInspector1),
                                                DefaultObjectInspectorName);
@@ -1759,13 +1754,13 @@ Begin
   writeln('[TMainIDE.SetDefaultsforForm] B');
   {$ENDIF}
   with TDesigner(aForm.Designer) do begin
-    FormEditor := FormEditor1;
+    TheFormEditor := FormEditor1;
     OnGetSelectedComponentClass:=@OnDesignerGetSelectedComponentClass;
     OnUnselectComponentClass:=@OnDesignerUnselectComponentClass;
     OnSetDesigning:=@OnDesignerSetDesigning;
     OnComponentListChanged:=@OnDesignerComponentListChanged;
     OnPropertiesChanged:=@OnDesignerPropertiesChanged;
-    OnAddComponent:=@OnDesignerAddComponent;
+    OnComponentAdded:=@OnDesignerComponentAdded;
     OnRemoveComponent:=@OnDesignerRemoveComponent;
     OnGetNonVisualCompIconCanvas:=@IDECompList.OnGetNonVisualCompIconCanvas;
     OnModified:=@OnDesignerModified;
@@ -5518,46 +5513,42 @@ begin
   ObjectInspector1.RefreshPropertyValues;
 end;
 
-procedure TMainIDE.OnDesignerAddComponent(Sender: TObject; 
-  Component: TComponent; ComponentClass: TRegisteredComponent);
+procedure TMainIDE.OnDesignerComponentAdded(Sender: TObject;
+  AComponent: TComponent; AComponentClass: TRegisteredComponent);
 var i: integer;
   ActiveForm: TCustomForm;
   ActiveUnitInfo: TUnitInfo;
   FormClassName: string;
 begin
+  if not (Sender is TDesigner) then begin
+    writeln('TMainIDE.OnDesignerComponentAdded ERROR: Sender.ClassName=',
+            Sender.ClassName);
+    exit;
+  end;
   ActiveForm:=TDesigner(Sender).Form;
-  if ActiveForm=nil then begin
-    writeln('[TMainIDE.OnDesignerAddComponent] Error: TDesigner without a form');
-    halt;
-  end;
-  // find source for form
-  i:=Project1.UnitCount-1;
-  while (i>=0) do begin
-    if (Project1.Units[i].Loaded)
-    and (Project1.Units[i].Form=ActiveForm) then break;
-    dec(i);
-  end;
+  i:=Project1.IndexOfUnitWithForm(ActiveForm,false,nil);
   if i<0 then begin
-    writeln('[TMainIDE.OnDesignerAddComponent] Error: form without source');
-    halt;
+    raise Exception.Create('[TMainIDE.OnDesignerComponentAdded] Error: '
+                          +'form without source');
   end;
   ActiveUnitInfo:=Project1.Units[i];
+  
   // add needed unit to source
   CodeToolBoss.AddUnitToMainUsesSection(ActiveUnitInfo.Source,
-            ComponentClass.UnitName,'');
+                                        AComponentClass.UnitName,'');
   // add component definition to form source
   FormClassName:=ActiveForm.ClassName;
   if not CodeToolBoss.PublishedVariableExists(ActiveUnitInfo.Source,
-    FormClassName,Component.Name) then begin
+    FormClassName,AComponent.Name) then begin
     // ! AddPublishedVariable does not rebuild the CodeTree, so we need
     // PublishedVariableExists before !
     CodeToolBoss.AddPublishedVariable(ActiveUnitInfo.Source,FormClassName,
-      Component.Name, Component.ClassName);
+      AComponent.Name, AComponent.ClassName);
   end;
 end;
 
 procedure TMainIDE.OnDesignerRemoveComponent(Sender: TObject;
-  Component: TComponent);
+  AComponent: TComponent);
 var i: integer;
   ActiveForm: TCustomForm;
   ActiveUnitInfo: TUnitInfo;
@@ -5569,12 +5560,7 @@ begin
     halt;
   end;
   // find source for form
-  i:=Project1.UnitCount-1;
-  while (i>=0) do begin
-    if (Project1.Units[i].Loaded)
-    and (Project1.Units[i].Form=ActiveForm) then break;
-    dec(i);
-  end;
+  i:=Project1.IndexOfUnitWithForm(ActiveForm,false,nil);
   if i<0 then begin
     writeln('[TMainIDE.OnDesignerAddComponent] Error: form without source');
     halt;
@@ -5583,7 +5569,7 @@ begin
   // remove component definition to form source
   FormClassName:=ActiveForm.ClassName;
   CodeToolBoss.RemovePublishedVariable(ActiveUnitInfo.Source,FormClassName,
-    Component.Name);
+    AComponent.Name);
 end;
 
 procedure TMainIDE.OnDesignerModified(Sender: TObject);
@@ -5596,7 +5582,7 @@ begin
     if Project1.Units[i].Loaded then
       SrcEdit:=SourceNotebook.FindSourceEditorWithPageIndex(
         Project1.Units[i].EditorIndex);
-    if SrcEdit<>nil then SrcEdit.EditorComponent.Modified:=true;
+    if SrcEdit<>nil then SrcEdit.Modified:=true;
   end;
 end;
 
@@ -6595,6 +6581,56 @@ begin
   ObjectInspector1.FillComponentComboBox;
 end;
 
+{-------------------------------------------------------------------------------
+  procedure TMainIDE.OnPropHookComponentAdded(AComponent: TComponent;
+    Select: boolean);
+
+  This handler is called whenever a new component was added to a designed form
+  and should be added to form source
+-------------------------------------------------------------------------------}
+procedure TMainIDE.OnPropHookComponentAdded(AComponent: TComponent;
+  Select: boolean);
+var
+  ComponentClass: TRegisteredComponent;
+  ADesigner: TIDesigner;
+begin
+writeln('TMainIDE.OnPropHookComponentAdded A ',AComponent.Name,':',AComponent.ClassName);
+  ComponentClass:=FindRegsiteredComponentClass(AComponent.ClassName);
+  if ComponentClass=nil then begin
+    writeln('TMainIDE.OnPropHookComponentAdded ',AComponent.ClassName,
+            ' not registered');
+    exit;
+  end;
+  // create unique name
+  AComponent.Name:=FormEditor1.CreateUniqueComponentName(AComponent);
+writeln('TMainIDE.OnPropHookComponentAdded B ',AComponent.Name,':',AComponent.ClassName);
+  // create component interface
+  if FormEditor1.FindComponent(AComponent)=nil then
+    FormEditor1.CreateComponentInterface(AComponent);
+  // set component into design mode
+  SetDesigning(AComponent,true);
+writeln('TMainIDE.OnPropHookComponentAdded C ',AComponent.Name,':',AComponent.ClassName);
+  // add to source
+  ADesigner:=FindDesigner(AComponent);
+  OnDesignerComponentAdded(ADesigner,AComponent,ComponentClass);
+writeln('TMainIDE.OnPropHookComponentAdded D ',AComponent.Name,':',AComponent.ClassName,' ',Select);
+  // select component
+  if Select then begin
+    TheControlSelection.AssignComponent(AComponent);
+  end;
+writeln('TMainIDE.OnPropHookComponentAdded END ',AComponent.Name,':',AComponent.ClassName,' ',Select);
+end;
+
+procedure TMainIDE.OnPropHookDeleteComponent(AComponent: TComponent);
+var
+  ADesigner: TDesigner;
+begin
+writeln('TMainIDE.OnPropHookDeleteComponent A ',AComponent.Name,':',AComponent.ClassName);
+  ADesigner:=TDesigner(FindDesigner(AComponent));
+  if ADesigner=nil then exit;
+  ADesigner.RemoveComponent(AComponent);
+end;
+
 procedure TMainIDE.mnuEditCopyClicked(Sender: TObject);
 begin
   DoEditMenuCommand(ecCopy);
@@ -6740,6 +6776,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.361  2002/09/05 12:11:39  lazarus
+  MG: TNotebook is now streamable
+
   Revision 1.360  2002/09/04 09:32:15  lazarus
   MG: improved streaming error handling
 

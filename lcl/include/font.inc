@@ -799,6 +799,11 @@ begin
   FontData.Handle := 0;
 end;
 
+function TFont.IsNameStored: boolean;
+begin
+  Result:=DefFontData.Name<>Name;
+end;
+
 procedure TFont.SetData(const FontData: TFontData);
 begin
   if FFontData.Handle <> FontData.Handle then begin
@@ -849,6 +854,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.8  2002/09/05 12:11:43  lazarus
+  MG: TNotebook is now streamable
+
   Revision 1.7  2002/06/05 12:33:57  lazarus
   MG: fixed fonts in XLFD format and styles
 

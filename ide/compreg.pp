@@ -103,9 +103,13 @@ const
 
 procedure RegisterComponents(const Page,UnitName:ShortString;
   ComponentClasses: array of TComponentClass);
+function FindRegsiteredComponentClass(
+  const AClassName: string): TRegisteredComponent;
 
 var
   RegCompList:TRegisteredComponentList;
+  
+  
 
 implementation
 
@@ -123,6 +127,14 @@ begin
   end;
 end;
 
+function FindRegsiteredComponentClass(
+  const AClassName: string): TRegisteredComponent;
+begin
+  Result:=nil;
+  if RegCompList<>nil then begin
+    Result:=RegCompList.FindComponentClassByName(AClassName);
+  end;
+end;
 
 { TRegisteredComponent }
 
