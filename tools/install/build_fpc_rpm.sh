@@ -78,9 +78,9 @@ if [ "$PkgType" = "deb" ]; then
   File=changelog
   OldFile=changelog.old.fpc
   cp $File $OldFile
-  echo "fpc ($LazVersion-$LazRelease) unstable; urgency=low" > $File
+  echo "fpc ($LazVersion-$LazRelease) stable; urgency=low" > $File
   echo '  * Unofficial snapshot build for lazarus' >> $File
-  echo ' -- Mattias Gaertner <mattias@freepascal.org>  $Date' >> $File
+  echo " -- Mattias Gaertner <mattias@freepascal.org>  $Date" >> $File
   echo "" >> $File
   cat $OldFile >> $File
   rm $OldFile
