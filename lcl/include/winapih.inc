@@ -360,10 +360,12 @@ Function RGB(R, G, B : Byte) : TColorRef;
 
 //##apiwiz##epi##    // Do not remove
 
+{$IFDEF VER1_0}
 Procedure InitializeCriticalSection(var CritSection: TRTLCriticalSection);
 Procedure EnterCriticalSection(var CritSection: TRTLCriticalSection);
 Procedure LeaveCriticalSection(var CritSection: TRTLCriticalSection);
 Procedure DeleteCriticalSection(var CritSection: TRTLCriticalSection);
+{$ENDIF}
 
 // should go to sysutils.pp
 procedure RaiseLastOSError;
@@ -373,6 +375,9 @@ procedure RaiseLastOSError;
 { =============================================================================
 
   $Log$
+  Revision 1.68  2003/03/15 13:26:07  mattias
+  fixes for fpc 1.1
+
   Revision 1.67  2003/02/28 19:54:05  mattias
   added ShowWindow
 
