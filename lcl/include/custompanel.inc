@@ -42,6 +42,7 @@ begin
   FAlignment := taCenter;
   Height := 41;
   Width := 185;
+  Color:= clBackground;
   ParentColor := True;
 end;
 

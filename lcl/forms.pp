@@ -330,7 +330,7 @@ type
     property AutoSize;
     property BorderStyle;
     property Caption;
-    property Color;
+    property Color default clBtnFace;
     property ClientHeight;
     property ClientWidth;
     property Constraints;

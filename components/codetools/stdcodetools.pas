@@ -998,33 +998,37 @@ function TStandardCodeTool.SetAllCreateFromStatements(List: TStrings;
 }
 var Position, InsertPos, i, ColonPos, Indent: integer;
   StatementPos: TAtomPosition;
-  var MainBeginNode: TCodeTreeNode;
+  MainBeginNode: TCodeTreeNode;
   AClassName, AVarName: string;
 begin
-  Result:=false;
-  if (List=nil) or (SourceChangeCache=nil) then exit;
+  Result:= false;
+  if (List = nil) or (SourceChangeCache = nil) then exit;
   BuildTree(false);
-  // first delete all CreateForm Statements
-  SourceChangeCache.MainScanner:=Scanner;
-  MainBeginNode:=FindMainBeginEndNode;
-  if MainBeginNode=nil then exit;
-  Position:=MainBeginNode.StartPos;
-  InsertPos:=-1;
+
+  { first delete all CreateForm Statements }
+  SourceChangeCache.MainScanner:= Scanner;
+  MainBeginNode:= FindMainBeginEndNode;
+  if MainBeginNode = nil then exit;
+  Position:= MainBeginNode.StartPos;
+  InsertPos:= -1;
   repeat
-    if FindCreateFormStatement(Position,'*','*',StatementPos)=-1 then
-      break;
-    Position:=StatementPos.EndPos;
-    StatementPos.StartPos:=FindLineEndOrCodeInFrontOfPosition(
-       StatementPos.StartPos);
-    if InsertPos<1 then
-      InsertPos:=StatementPos.StartPos;
-    StatementPos.EndPos:=FindFirstLineEndAfterInCode(StatementPos.EndPos);
-    SourceChangeCache.Replace(gtNone,gtNone,
-       StatementPos.StartPos,StatementPos.EndPos,'');
+    if FindCreateFormStatement(Position, '*', '*', StatementPos) = -1 then break;
+
+    Position:= StatementPos.EndPos;
+    StatementPos.StartPos:= FindLineEndOrCodeInFrontOfPosition(StatementPos.StartPos);
+    if InsertPos < 1 then InsertPos:= StatementPos.StartPos;
+
+    StatementPos.EndPos:= FindFirstLineEndAfterInCode(StatementPos.EndPos);
+
+    SourceChangeCache.Replace(gtNone,gtNone, StatementPos.StartPos, StatementPos.EndPos, '');
   until false;
-  // then add all CreateForm Statements
-  if InsertPos<1 then begin
-    // there was no createform statement -> insert in front of Application.Run
+
+  Result:= SourceChangeCache.Apply;
+
+  { then add all CreateForm Statements }
+  if InsertPos < 1 then begin
+
+    { there was no createform statement -> insert in front of Application.Run }
     MoveCursorToCleanPos(MainBeginNode.StartPos);
     repeat
       if ReadNextUpAtomIs('APPLICATION') then begin
@@ -1036,24 +1040,27 @@ begin
         InsertPos:=-1;
       end;
     until (CurPos.StartPos>SrcLen);
-    if InsertPos<1 then exit;
+    if InsertPos < 1 then exit;
   end;
-  for i:=0 to List.Count-1 do begin
-    ColonPos:=1;
-    while (ColonPos<=length(List[i])) and (List[i][ColonPos]<>':') do
-      inc(ColonPos);
-    if (ColonPos>1) then begin
-      AVarName:=copy(List[i],1,ColonPos);
-      AClassName:=copy(List[i],ColonPos+1,length(List[i])-ColonPos);
-      if AClassName='' then AClassName:='T'+AVarName;
-      Indent:=GetLineIndent(Src,InsertPos);
-      SourceChangeCache.Replace(gtNewLine,gtNewLine,InsertPos,InsertPos,
-        SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
-          'Application.CreateForm('+AClassName+','+AVarName+');',Indent)
-        );
-    end;
+
+  for i:= 0 to List.Count - 1 do begin
+    if Length(List[i]) <= 1 then continue;
+
+    ColonPos:= Pos(List[i], ':');
+    if (ColonPos > 1) then begin
+      AVarName:= Copy(List[i], 1, ColonPos);
+      AClassName:= Copy(List[i], ColonPos + 1, Length(List[i]) - ColonPos);
+    end else begin
+      AVarName:= List[i];  
+      AClassName:= 'T' + AVarName;
+    end;  
+    Indent:= GetLineIndent(Src, InsertPos);
+
+    SourceChangeCache.Replace(gtNewLine, gtNewLine, InsertPos, InsertPos,
+      SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
+        'Application.CreateForm('+AClassName+','+AVarName+');', Indent));
   end;
-  Result:=SourceChangeCache.Apply;
+  Result:= Result and SourceChangeCache.Apply;
 end;
 
 function TStandardCodeTool.RenameForm(const OldFormName,

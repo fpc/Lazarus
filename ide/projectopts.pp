@@ -800,33 +800,29 @@ end;
 
 procedure TProjectOptionsDialog.SetAutoCreateForms;
 var i: integer;
-  OldList, NewList: TStrings;
+    OldList: TStrings;
 begin
-  if (Project.MainUnit<0) or (Project.ProjectType in [ptCustomProgram]) then
+  if (Project.MainUnit < 0) or (Project.ProjectType in [ptCustomProgram]) then
     exit;
-  OldList:=GetAutoCreatedFormsList;
-  if (OldList=nil) then exit;
+  OldList:= GetAutoCreatedFormsList;
+  if (OldList = nil) then exit;
   try
-    if OldList.Count=FormsAutoCreatedListBox.Items.Count then begin
-      i:=OldList.Count-1;
-      while (i>=0) 
-      and (AnsiCompareText(OldList[i],FormsAutoCreatedListBox.Items[i])=0) do
+    if OldList.Count = FormsAutoCreatedListBox.Items.Count then begin
+
+      { Just exit if the form list is the same }
+      i:= OldList.Count - 1;
+      while (i >= 0) 
+        and (AnsiCompareText(OldList[i], FormsAutoCreatedListBox.Items[i])=0) do
         dec(i);
-      if i<0 then begin
-        // no change
-        exit;
-      end;
+      if i < 0 then Exit;
     end;
-    NewList:=TStringList.Create;
-    for i:=0 to FormsAutoCreatedListBox.Items.Count-1 do begin
-      NewList.Add(FormsAutoCreatedListBox.Items[i]);
-    end;
+
     if not CodeToolBoss.SetAllCreateFromStatements(
-      Project.Units[Project.MainUnit].Source, NewList) then
+      Project.Units[Project.MainUnit].Source, FormsAutoCreatedListBox.Items) then
     begin
       MessageDlg('Error',
-        'Unable to change the auto create form list in the program source.'#13
-        +'Plz fix errors first.',mtError,[mbCancel],0);
+        'Unable to change the auto create form list in the program source.' + LineEnding +
+        'Plz fix errors first.', mtError, [mbCancel], 0);
     end;
   finally
     OldList.Free;
