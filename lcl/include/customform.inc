@@ -44,7 +44,7 @@ begin
       LM_ERASEBKGND:
         begin
           // Not sure if this will work real good.
-          Canvas.FillRect(ClientRect);
+          //Canvas.FillRect(ClientRect);
           Result := 1;
         end;
     else
@@ -1432,6 +1432,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.107  2003/06/30 07:00:18  mattias
+  activated EraseBckGrd messages in doublebuffer WMPaint section
+
   Revision 1.106  2003/06/23 09:42:09  mattias
   fixes for debugging lazarus
 

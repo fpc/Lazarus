@@ -2223,7 +2223,8 @@ var
   PS : TPaintStruct;
 begin
 //writeln('[TWinControl.WMPaint] ',Name,':',ClassName,'  ',HexStr(Msg.DC,8));
-  if (csDestroying in ComponentState) then exit;
+  if ([csDestroying,csLoading]*ComponentState<>[]) or (not HandleAllocated) then
+    exit;
 
   {$IFDEF VerboseDsgnPaintMsg}
   if csDesigning in ComponentState then
@@ -2241,6 +2242,7 @@ begin
       PaintHandler(Msg);
   end
   else begin
+    //writeln('TWinControl.WMPaint Painting doublebuffered ',Name,':',classname);
     DC := GetDC(0);
     MemBitmap := CreateCompatibleBitmap(DC, ClientRect.Right, ClientRect.Bottom);
     ReleaseDC(0, DC);
@@ -2248,8 +2250,7 @@ begin
     OldBitmap := SelectObject(MemDC, MemBitmap);
     try
       DC := BeginPaint(Handle, PS);
-      //ToDO:define wm_erasebkgnd
-//      Perform(WM_ERASEBKGND, MemDC, MemDC);
+      Perform(LM_ERASEBKGND, MemDC, MemDC);
       Msg.DC := MemDC;
       WMPaint(Msg);
       Msg.DC := 0;
@@ -2379,8 +2380,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.WMEraseBkgnd(var Message: TLMEraseBkgnd);
 begin            
-  Assert(False, Format('Trace: TODO: [TWinControl.LMEraseBkgnd] %s', [ClassName]));
-end;                          
+  if {not FDoubleBuffered or} (Message.DC = 0 {Message.Unused}) then
+    FillRect(Message.DC, ClientRect, FBrush.Handle);
+end;
 
 {------------------------------------------------------------------------------
   Method: TWinControl.WMExit
@@ -2871,6 +2873,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.146  2003/06/30 07:00:18  mattias
+  activated EraseBckGrd messages in doublebuffer WMPaint section
+
   Revision 1.145  2003/06/28 12:10:02  mattias
   fixed LM_SETSIZE in InitializeWnd
 

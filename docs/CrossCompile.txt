@@ -1,28 +1,37 @@
 Hints to cross compile win32 binaries under linux
 
 
-UNDER CONSTRUCTION
-
-
 Thanks to Vincent Snijders for the hints.
 
-1. Download the GNU Binary Utility Development Utilities. Some rpms, debs, tgz
-packages are outdated. The following works:
+1. Download the GNU binutils - Binary Utility Development Utilities.
+Many packages (RPM, DEB, TGZ) are outdated or not compatible. So, here is a link
+that worked for me:
   http://jrfonseca.dyndns.org/projects/gnu-win32/documentation/cross/
-Download all files into a directory. There is a small bug in xmingw32.mak.
-Search for '#$(GCC' and remove the '#'. Then do as root 'make -f xmingw.mak'.
-This will download the binutils, the gcc and the mingw32 files and will compile
-them. After installation you can etiher extend the PATH variable or link the
-following files:
+Download all files into a directory of your choice. The directory should have
+at least 250mb space which will be needed for building.
+There is a small bug in xmingw32.mak. Open the file, search for '#$(GCC' and
+remove the '#' character to uncomment.
+Then do as root 'make -f xmingw.mak'. This will download the binutils, the gcc
+and the mingw32 files and will compile them. Then it installs them under
+/usr/local/xmingw32/. You can change the target directory and compile as
+normal user by changing the script.
+
+2. The cross tools needed for FPC
+FPC needs four files: asw, ldw, windres and dltool. You can
+- link the following files:
 
 []$ ln -s /usr/local/xmingw32/bin/mingw32-as /usr/bin/asw
 []$ ln -s /usr/local/xmingw32/bin/mingw32-ld /usr/bin/ldw
 []$ ln -s /usr/local/xmingw32/bin/mingw32-windres /usr/bin/windres
 []$ ln -s /usr/local/xmingw32/bin/mingw32-dlltool /usr/bin/dlltool
 
+You can link them as normal user somewhere in your home. But then you have to
+add this directory to your PATH or add -FD/your/directory everytime you cross
+compile with fpc.
+
 
 2. Download or compile the win32 units (ppw,ow files for rtl, fcl). These files
-must be compatible (depending on the compiler probably 1.0.8 as of now).
+must be compatible (depending on the compiler probably 1.0.8/10 as of now).
 Install them next to the linux units in /usr/lib/fpc/1.0.x/units.
 
 
@@ -61,22 +70,24 @@ Make sure that your /etc/fpc.cfg contains target independent paths:
 -Fu/usr/lib/fpc/$version/units/$target/rtl
 You should now be able to cross compile simple pascal programs with
 'ppc386 -Twin32 pascalfile.pas'
+Or if you did not link the four files (asw, ldw, ...) to /usr/bin:
+'ppc386 -FD/your/directory -Twin32 pascalfile.pas'
 
 
 4. Cross compiling the LCL
 4.1 Command line: cd lazarus/lcl; make OS_TARGET=win32
 4.2 In the IDE: Set LCL to Clean+Build, set LCL interface to win32 and
     set 'Target OS' to win32. Then 'build lazarus'. The win32 interface is not
-    complete enough for the IDE, but a many of the components already work.
+    complete enough for the IDE, but many of the components already work.
 
 
 5. Cross compiling a project
-Set in Run->Compiler Options->Code the Target OS to 'win32' and the in
-Paths the 'LCL Widget Type' to win32. That's all. The next time you build, you
-will create a win32 executable.
+Set in Run->Compiler Options->Code the Target OS to 'win32' and in Paths the
+'LCL Widget Type' to win32. That's all. The next time you build, you will
+create a win32 executable.
 The IDE will rescan for win32 units, so that 'Find declaration' and code
 completion features will now work with the win32 rtl instead of the linux rtl.
-Of course, when you open another project or reopen this project the IDE will
-automatically switch.
+When you open another project or reopen this project the IDE will automatically
+switch.
 
 
