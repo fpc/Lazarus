@@ -440,7 +440,7 @@ end;
 
 procedure TPascalParserTool.BuildTree(OnlyInterfaceNeeded: boolean);
 begin
-  {$IFDEF MEM_CHECK}CheckHeap('TBasicCodeTool.BuildTree A '+IntToStr(GetMem_Cnt));{$ENDIF}
+  {$IFDEF MEM_CHECK}CheckHeap('TBasicCodeTool.BuildTree A '+IntToStr(MemCheck_GetMem_Cnt));{$ENDIF}
   {$IFDEF CTDEBUG}
   DebugLn('TPascalParserTool.BuildTree A');
   {$ENDIF}
@@ -456,7 +456,7 @@ begin
   end;
   ClearLastError;
   DebugLn('TPascalParserTool.BuildTree B OnlyIntf=',dbgs(OnlyInterfaceNeeded),'  ',TCodeBuffer(Scanner.MainCode).Filename);
-  //CheckHeap('TBasicCodeTool.BuildTree B '+IntToStr(GetMem_Cnt));
+  //CheckHeap('TBasicCodeTool.BuildTree B '+IntToStr(MemCheck_GetMem_Cnt));
   
   // scan code
   BeginParsing(true,OnlyInterfaceNeeded);
@@ -532,7 +532,7 @@ begin
   DebugLn('[TPascalParserTool.BuildTree] END');
   {$ENDIF}
   {$IFDEF MEM_CHECK}
-  CheckHeap('TBasicCodeTool.BuildTree END '+IntToStr(GetMem_Cnt));
+  CheckHeap('TBasicCodeTool.BuildTree END '+IntToStr(MemCheck_GetMem_Cnt));
   {$ENDIF}
   CurrentPhase:=CodeToolPhaseTool;
 end;

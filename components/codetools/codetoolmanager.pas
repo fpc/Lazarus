@@ -2194,7 +2194,7 @@ begin
   DebugLn('TCodeToolManager.GetSourceName A ',Code.Filename,' ',dbgs(Code.SourceLength));
   {$ENDIF}
   {$IFDEF MEM_CHECK}
-  CheckHeap(IntToStr(GetMem_Cnt));
+  CheckHeap(IntToStr(MemCheck_GetMem_Cnt));
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
@@ -2205,7 +2205,7 @@ begin
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.GetSourceName B ',Code.Filename,' ',dbgs(Code.SourceLength));
   {$IFDEF MEM_CHECK}
-  CheckHeap(IntToStr(GetMem_Cnt));
+  CheckHeap(IntToStr(MemCheck_GetMem_Cnt));
   {$ENDIF}
   DebugLn('SourceName=',Result);
   {$ENDIF}
@@ -2220,7 +2220,7 @@ begin
   DebugLn('TCodeToolManager.GetCachedSourceName A ',Code.Filename,' ',dbgs(Code.SourceLength));
   {$ENDIF}
   {$IFDEF MEM_CHECK}
-  CheckHeap(IntToStr(GetMem_Cnt));
+  CheckHeap(IntToStr(MemCheck_GetMem_Cnt));
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
@@ -2231,7 +2231,7 @@ begin
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.GetCachedSourceName B ',Code.Filename,' ',dbgs(Code.SourceLength));
   {$IFDEF MEM_CHECK}
-  CheckHeap(IntToStr(GetMem_Cnt));
+  CheckHeap(IntToStr(MemCheck_GetMem_Cnt));
   {$ENDIF}
   DebugLn('SourceName=',Result);
   {$ENDIF}
@@ -2264,7 +2264,7 @@ begin
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.GetSourceType END ',Code.Filename,',',dbgs(Code.SourceLength));
   {$IFDEF MEM_CHECK}
-  CheckHeap(IntToStr(GetMem_Cnt));
+  CheckHeap(IntToStr(MemCheck_GetMem_Cnt));
   {$ENDIF}
   DebugLn('SourceType=',Result);
   {$ENDIF}

@@ -819,7 +819,7 @@ finalization
 DebugLn('codetree.pp - finalization');
 {$ENDIF}
 {$IFDEF MEM_CHECK}
-CheckHeap(IntToStr(GetMem_Cnt));
+CheckHeap(IntToStr(MemCheck_GetMem_Cnt));
 {$ENDIF}
   InternalFinal;
 
