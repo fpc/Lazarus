@@ -529,7 +529,7 @@ function ProjectFlagsToStr(Flags: TProjectFlags): string;
 implementation
 
 const
-  ProjectInfoFileVersion = 2;
+  ProjectInfoFileVersion = 3;
 
 function ProjectFlagsToStr(Flags: TProjectFlags): string;
 var f: TProjectFlag;
@@ -1298,12 +1298,13 @@ function TProject.WriteProject(ProjectWriteFlags: TProjectWriteFlags;
   const OverrideProjectInfoFile: string): TModalResult;
 var
   confPath: String;
+  Path: String;
 
   procedure SaveFlags;
   var f: TProjectFlag;
   begin
     for f:=Low(TProjectFlag) to High(TProjectFlag) do begin
-      xmlconfig.SetDeleteValue('ProjectOptions/General/Flags/'
+      xmlconfig.SetDeleteValue(Path+'General/Flags/'
             +ProjectFlagNames[f]+'/Value', f in Flags,f in DefaultProjectFlags);
     end;
   end;
@@ -1354,11 +1355,11 @@ var
     for i:=0 to UnitCount-1 do begin
       if UnitMustBeSaved(i) then begin
         Units[i].SaveToXMLConfig(
-          xmlconfig,'ProjectOptions/Units/Unit'+IntToStr(SaveUnitCount)+'/');
+          xmlconfig,Path+'Units/Unit'+IntToStr(SaveUnitCount)+'/');
         inc(SaveUnitCount);
       end;
     end;
-    xmlconfig.SetDeleteValue('ProjectOptions/Units/Count',SaveUnitCount,0);
+    xmlconfig.SetDeleteValue(Path+'Units/Count',SaveUnitCount,0);
   end;
 
 
@@ -1394,39 +1395,39 @@ begin
 
   repeat
     try
-      xmlconfig.SetValue('ProjectOptions/Version/Value',ProjectInfoFileVersion);
-      xmlconfig.SetDeleteValue('ProjectOptions/General/ProjectType/Value',
+      Path:='ProjectOptions/';
+      xmlconfig.SetValue(Path+'Version/Value',ProjectInfoFileVersion);
+      xmlconfig.SetDeleteValue(Path+'General/ProjectType/Value',
           ProjectTypeNames[ProjectType],'');
       SaveFlags;
-      xmlconfig.SetDeleteValue('ProjectOptions/General/MainUnit/Value', MainUnitID,-1);
-      xmlconfig.SetDeleteValue('ProjectOptions/General/ActiveEditorIndexAtStart/Value'
+      xmlconfig.SetDeleteValue(Path+'General/MainUnit/Value', MainUnitID,-1);
+      xmlconfig.SetDeleteValue(Path+'General/ActiveEditorIndexAtStart/Value'
           ,ActiveEditorIndexAtStart,-1);
-      xmlconfig.SetDeleteValue('ProjectOptions/General/AutoCreateForms/Value'
+      xmlconfig.SetDeleteValue(Path+'General/AutoCreateForms/Value'
           ,AutoCreateForms,true);
-      xmlconfig.SetDeleteValue('ProjectOptions/General/IconPath/Value',
+      xmlconfig.SetDeleteValue(Path+'General/IconPath/Value',
            IconPath,'');
-      xmlconfig.SetValue('ProjectOptions/General/TargetFileExt/Value'
+      xmlconfig.SetValue(Path+'General/TargetFileExt/Value'
           ,TargetFileExt);
-      xmlconfig.SetDeleteValue('ProjectOptions/General/Title/Value', Title,'');
+      xmlconfig.SetDeleteValue(Path+'General/Title/Value', Title,'');
       if not (pfSaveOnlyProjectUnits in Flags) then begin
         fJumpHistory.DeleteInvalidPositions;
-        fJumpHistory.SaveToXMLConfig(xmlconfig,'ProjectOptions/');
+        fJumpHistory.SaveToXMLConfig(xmlconfig,Path);
       end;
 
       SaveUnits;
 
       // Save the compiler options
-      CompilerOptions.SaveToXMLConfig(XMLConfig,'');
+      CompilerOptions.SaveToXMLConfig(XMLConfig,'CompilerOptions/');
       
       // save the Publish Options
-      PublishOptions.SaveToXMLConfig(xmlconfig,
-                                     'ProjectOptions/PublishOptions/');
+      PublishOptions.SaveToXMLConfig(xmlconfig,Path+'PublishOptions/');
 
       // save the Run Parameter Options
-      RunParameterOptions.Save(xmlconfig,'ProjectOptions/');
+      RunParameterOptions.Save(xmlconfig,Path);
       
       // save dependencies
-      SavePkgDependencyList(XMLConfig,'ProjectOptions/RequiredPackages/',
+      SavePkgDependencyList(XMLConfig,Path+'RequiredPackages/',
         FFirstRequiredDependency,pdlRequires);
         
       if Assigned(OnSaveProjectInfo) then OnSaveProjectInfo(Self,XMLConfig);
@@ -1451,12 +1452,37 @@ end;
  ------------------------------------------------------------------------------}
 function TProject.ReadProject(const LPIFilename: string): TModalResult;
 
+var
+  NewUnitInfo: TUnitInfo;
+  NewUnitCount,i: integer;
+  FileVersion: Integer;
+  OldSrcPath: String;
+  Path: String;
+
+  procedure LoadCompilerOptions;
+  var
+    CompOptsPath: String;
+  begin
+    CompOptsPath:='CompilerOptions/';
+    if FileVersion<3 then begin
+      // due to an old bug, the XML path can be 'CompilerOptions/' or ''
+      if XMLConfig.GetValue('SearchPaths/CompilerPath/Value','')<>'' then
+        CompOptsPath:=''
+      else if XMLConfig.GetValue(
+        'CompilerOptions/SearchPaths/CompilerPath/Value','')<>''
+      then
+        CompOptsPath:='CompilerOptions/';
+    end;
+    CompilerOptions.LoadFromXMLConfig(xmlconfig,CompOptsPath);
+    if FileVersion<2 then CompilerOptions.SrcPath:=OldSrcPath;
+  end;
+
   procedure LoadFlags;
   var f: TProjectFlag;
   begin
     FFlags:=[];
     for f:=Low(TProjectFlag) to High(TProjectFlag) do begin
-      if xmlconfig.GetValue('ProjectOptions/General/Flags/'
+      if xmlconfig.GetValue(Path+'General/Flags/'
             +ProjectFlagNames[f]+'/Value', f in DefaultProjectFlags)
       then
         Include(FFlags,f)
@@ -1465,11 +1491,6 @@ function TProject.ReadProject(const LPIFilename: string): TModalResult;
     end;
   end;
 
-var
-  NewUnitInfo: TUnitInfo;
-  NewUnitCount,i: integer;
-  FileVersion: Integer;
-  OldSrcPath: String;
 begin
   Result := mrCancel;
   BeginUpdate(true);
@@ -1491,47 +1512,47 @@ begin
     end;
 
     try
+      Path:='ProjectOptions/';
       fPathDelimChanged:=
-        XMLConfig.GetValue('ProjectOptions/PathDelim/Value', '/')<>PathDelim;
+        XMLConfig.GetValue(Path+'PathDelim/Value', '/')<>PathDelim;
 
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject C reading values');{$ENDIF}
-      FileVersion:= XMLConfig.GetValue('ProjectOptions/Version/Value',0);
+      FileVersion:= XMLConfig.GetValue(Path+'Version/Value',0);
       ProjectType := ProjectTypeNameToType(xmlconfig.GetValue(
-         'ProjectOptions/General/ProjectType/Value', ''));
+         Path+'General/ProjectType/Value', ''));
       LoadFlags;
-      MainUnitID := xmlconfig.GetValue('ProjectOptions/General/MainUnit/Value', -1);
+      MainUnitID := xmlconfig.GetValue(Path+'General/MainUnit/Value', -1);
       ActiveEditorIndexAtStart := xmlconfig.GetValue(
-         'ProjectOptions/General/ActiveEditorIndexAtStart/Value', -1);
+         Path+'General/ActiveEditorIndexAtStart/Value', -1);
       AutoCreateForms := xmlconfig.GetValue(
-         'ProjectOptions/General/AutoCreateForms/Value', true);
-      IconPath := xmlconfig.GetValue('ProjectOptions/General/IconPath/Value', './');
+         Path+'General/AutoCreateForms/Value', true);
+      IconPath := xmlconfig.GetValue(Path+'General/IconPath/Value', './');
       TargetFileExt := xmlconfig.GetValue(
-         'ProjectOptions/General/TargetFileExt/Value', GetDefaultExecutableExt);
-      Title := xmlconfig.GetValue('ProjectOptions/General/Title/Value', '');
-      fJumpHistory.LoadFromXMLConfig(xmlconfig,'ProjectOptions/');
+         Path+'General/TargetFileExt/Value', GetDefaultExecutableExt);
+      Title := xmlconfig.GetValue(Path+'General/Title/Value', '');
+      fJumpHistory.LoadFromXMLConfig(xmlconfig,Path+'');
       if FileVersion<2 then
-        OldSrcPath := xmlconfig.GetValue('ProjectOptions/General/SrcPath/Value','');
+        OldSrcPath := xmlconfig.GetValue(Path+'General/SrcPath/Value','');
 
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject D reading units');{$ENDIF}
-      NewUnitCount:=xmlconfig.GetValue('ProjectOptions/Units/Count',0);
+      NewUnitCount:=xmlconfig.GetValue(Path+'Units/Count',0);
       for i := 0 to NewUnitCount - 1 do begin
         NewUnitInfo:=TUnitInfo.Create(nil);
         AddUnit(NewUnitInfo,false);
         NewUnitInfo.LoadFromXMLConfig(
-           xmlconfig,'ProjectOptions/Units/Unit'+IntToStr(i)+'/');
+           xmlconfig,Path+'Units/Unit'+IntToStr(i)+'/');
       end;
 
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject E reading comp sets');{$ENDIF}
       // Load the compiler options
-      CompilerOptions.LoadFromXMLConfig(xmlconfig,'');
-      if FileVersion<2 then CompilerOptions.SrcPath:=OldSrcPath;
+      LoadCompilerOptions;
 
       // load the Publish Options
       PublishOptions.LoadFromXMLConfig(xmlconfig,
-                            'ProjectOptions/PublishOptions/',fPathDelimChanged);
+                            Path+'PublishOptions/',fPathDelimChanged);
 
       // load the Run Parameter Options
-      RunParameterOptions.Load(xmlconfig,'ProjectOptions/',fPathDelimChanged);
+      RunParameterOptions.Load(xmlconfig,Path,fPathDelimChanged);
 
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject update ct boss');{$ENDIF}
       CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'ProjPath']:=
@@ -1539,7 +1560,7 @@ begin
       CodeToolBoss.DefineTree.ClearCache;
       
       // load the dependencies
-      LoadPkgDependencyList(XMLConfig,'ProjectOptions/RequiredPackages/',
+      LoadPkgDependencyList(XMLConfig,Path+'RequiredPackages/',
         FFirstRequiredDependency,pdlRequires,Self,true);
 
       if Assigned(OnLoadProjectInfo) then OnLoadProjectInfo(Self,XMLConfig);
@@ -2689,10 +2710,11 @@ end;
 
 end.
 
-
-
 {
   $Log$
+  Revision 1.136  2003/09/17 08:43:17  mattias
+  fixed loading old project compiler options
+
   Revision 1.135  2003/09/10 12:13:48  mattias
   implemented Import and Export of compiler options
 

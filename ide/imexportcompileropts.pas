@@ -83,7 +83,9 @@ function DoImportComilerOptions(CompOptsDialog: TfrmCompilerOptions;
   CompilerOpts: TBaseCompilerOptions; const Filename: string): TModalResult;
 function DoExportComilerOptions(CompOptsDialog: TfrmCompilerOptions;
   CompilerOpts: TBaseCompilerOptions; const Filename: string): TModalResult;
-function GetXMLPathForCompilerOptionsInFile(const Filename: string): string;
+function GetXMLPathForCompilerOptions(XMLConfig: TXMLConfig): string;
+function ReadIntFromXMLConfig(const Filename, Path: string;
+  DefaultValue, ValueForReadError: integer): integer;
 
 implementation
 
@@ -125,8 +127,8 @@ begin
       CompilerOpts:=TBaseCompilerOptions.Create(nil);
       FreeCompilerOpts:=true;
     end;
-    Path:=GetXMLPathForCompilerOptionsInFile(Filename);
-    CompilerOpts.LoadFromXMLConfig(XMLConfig,Path+'CompilerOptions/');
+    Path:=GetXMLPathForCompilerOptions(XMLConfig);
+    CompilerOpts.LoadFromXMLConfig(XMLConfig,Path);
     if CompOptsDialog<>nil then
       CompOptsDialog.GetCompilerOptions(CompilerOpts);
   finally
@@ -154,8 +156,8 @@ begin
     try
       XMLConfig:=TXMLConfig.Create(Filename);
       try
-        Path:=GetXMLPathForCompilerOptionsInFile(Filename);
-        CompilerOpts.SaveToXMLConfig(XMLConfig,Path+'CompilerOptions/');
+        Path:=GetXMLPathForCompilerOptions(XMLConfig);
+        CompilerOpts.SaveToXMLConfig(XMLConfig,Path);
         XMLConfig.Flush;
       finally
         XMLConfig.Free;
@@ -188,15 +190,28 @@ begin
     end;
 end;
 
-function GetXMLPathForCompilerOptionsInFile(const Filename: string): string;
+function GetXMLPathForCompilerOptions(XMLConfig: TXMLConfig): string;
 var
   FileVersion: Integer;
 begin
-  Result:='';
-  if CompareFileExt(Filename,'.lpk',false)=0 then begin
-    FileVersion:=ReadIntFromXMLConfig(Filename,'Package/Version',0,2);
-    if FileVersion>=2 then
-      Result:='Package/';
+  if XMLConfig.GetValue('SearchPaths/CompilerPath/Value','')<>'' then
+    Result:=''
+  else if XMLConfig.GetValue(
+    'CompilerOptions/SearchPaths/CompilerPath/Value','')<>''
+  then
+    Result:='CompilerOptions/'
+  else if XMLConfig.GetValue(
+    'Package/CompilerOptions/SearchPaths/CompilerPath/Value','')<>''
+  then
+    Result:='Package/CompilerOptions/'
+  else begin
+    // default: depending on file type
+    Result:='CompilerOptions/';
+    if CompareFileExt(XMLConfig.Filename,'.lpk',false)=0 then begin
+      FileVersion:=ReadIntFromXMLConfig(XMLConfig.Filename,'Package/Version',0,2);
+      if FileVersion>=2 then
+        Result:='Package/CompilerOptions/';
+    end;
   end;
 end;
 
