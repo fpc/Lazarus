@@ -54,7 +54,8 @@ uses
   BrokenDependenciesDlg, CompilerOptions, ExtToolEditDlg,
   MsgView, BuildLazDialog, DefineTemplates, LazConf,
   ProjectInspector, ComponentPalette, UnitEditor, AddFileToAPackageDlg,
-  LazarusPackageIntf, PublishProjectDlg, BasePkgManager, MainBar;
+  LazarusPackageIntf, PublishProjectDlg, BasePkgManager,
+  MainBar, MainIntf, MainBase;
 
 type
   TPkgManager = class(TBasePkgManager)
@@ -1507,7 +1508,7 @@ end;
 
 procedure TPkgManager.ConnectMainBarEvents;
 begin
-  with MainIDE do begin
+  with MainIDEBar do begin
     itmPkgOpenPackage.OnClick :=@mnuPkgOpenPackageClicked;
     itmPkgOpenPackageFile.OnClick:=@MainIDEitmPkgOpenPackageFileClick;
     itmPkgAddCurUnitToPkg.OnClick:=@MainIDEitmPkgAddCurUnitToPkgClick;
@@ -1530,7 +1531,7 @@ end;
 
 procedure TPkgManager.SetRecentPackagesMenu;
 begin
-  MainIDE.SetRecentSubMenu(MainIDE.itmPkgOpenRecent,
+  MainIDE.SetRecentSubMenu(MainIDEBar.itmPkgOpenRecent,
             EnvironmentOptions.RecentPackageFiles,@mnuOpenRecentPackageClicked);
 end;
 
@@ -1603,7 +1604,7 @@ end;
 
 procedure TPkgManager.UpdateVisibleComponentPalette;
 begin
-  TComponentPalette(IDEComponentPalette).NoteBook:=MainIDE.ComponentNotebook;
+  TComponentPalette(IDEComponentPalette).NoteBook:=MainIDEBar.ComponentNotebook;
   TComponentPalette(IDEComponentPalette).UpdateNoteBookButtons;
 end;
 
@@ -2476,7 +2477,7 @@ var
   TheUnitName: String;
   HasRegisterProc: Boolean;
 begin
-  MainIDE.GetCurrentUnit(ActiveSourceEditor,ActiveUnitInfo);
+  MainIDE.GetCurrentUnitInfo(ActiveSourceEditor,ActiveUnitInfo);
   if ActiveSourceEditor=nil then exit;
   
   Filename:=ActiveUnitInfo.Filename;
@@ -2839,8 +2840,8 @@ begin
   if Result<>mrOk then exit;
 
   // publish package
-  Result:=MainIDE.DoPublishModul(APackage.PublishOptions,APackage.Directory,
-                                 GetPublishPackageDir(APackage));
+  Result:=MainIDE.DoPublishModule(APackage.PublishOptions,APackage.Directory,
+                                  GetPublishPackageDir(APackage));
 end;
 
 function TPkgManager.OnProjectInspectorOpen(Sender: TObject): boolean;

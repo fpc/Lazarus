@@ -35,12 +35,11 @@ unit ChangeClassDialog;
 interface
 
 uses
-  // FCL, LCL
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, AVGLvlTree,
+  Buttons, AVGLvlTree, LFMTrees, CodeCache, CodeToolManager,
   // IDE
-  PropEdits, LazarusIDEStrConsts, ComponentReg, FormEditingIntf, CheckLFMDlg,
-  CodeToolManager;
+  SrcEditorIntf, PropEdits, LazarusIDEStrConsts, ComponentReg, FormEditingIntf,
+  CheckLFMDlg, Project, MainIntf;
 
 type
   TChangeClassDlg = class(TForm)
@@ -79,8 +78,8 @@ type
 
 function ShowChangeClassDialog(ADesigner: TIDesigner;
   APersistent: TPersistent): TModalResult;
-function ChangePersistentClass(ADesigner: TIDesigner; APersistent: TPersistent;
-  NewClass: TClass): TModalResult;
+function ChangePersistentClass(ADesigner: TIDesigner;
+  APersistent: TPersistent; NewClass: TClass): TModalResult;
 
 implementation
 
@@ -107,11 +106,15 @@ begin
   end;
 end;
 
-function ChangePersistentClass(ADesigner: TIDesigner; APersistent: TPersistent;
-  NewClass: TClass): TModalResult;
+function ChangePersistentClass(ADesigner: TIDesigner;
+  APersistent: TPersistent; NewClass: TClass): TModalResult;
 var
   ComponentStream: TMemoryStream;
   PersistentName: String;
+  UnitCode: TCodeBuffer;
+  LFMBuffer: TCodeBuffer;
+  LFMTree: TLFMTree;
+  UnitInfo: TUnitInfo;
 
   procedure ShowAbortMessage(const Msg: string);
   begin
@@ -121,40 +124,120 @@ var
       mtError,[mbCancel],0);
   end;
 
-begin
-  Result:=mrCancel;
-  PersistentName:=APersistent.ClassName;
-  if APersistent is TComponent then begin
-    PersistentName:=TComponent(APersistent).Name+':'+PersistentName;
-  end;
-  ComponentStream:=nil;
-  try
+  function StreamSelection: boolean;
+  begin
+    Result:=false;
     // select only this persistent
     GlobalDesignHook.SelectOnlyThis(APersistent);
+
     // stream selection
     ComponentStream:=TMemoryStream.Create;
     if not FormEditingHook.SaveSelectionToStream(ComponentStream) then begin
-      ShowAbortMessage('Unable to stream selected components');
+      ShowAbortMessage('Unable to stream selected components.');
       exit;
     end;
-    // parse
+    Result:=true;
+  end;
+
+  function ParseLFMStream: boolean;
+  var
+    SrcEdit: TSourceEditorInterface;
+  begin
+    Result:=false;
     if not CodeToolBoss.GatherExternalChanges then begin
-      ShowAbortMessage('Unable to gather editor changes');
+      ShowAbortMessage('Unable to gather editor changes.');
       exit;
     end;
-    
-    // change classname
+    MainIDEInterface.GetUnitInfoForDesigner(ADesigner,SrcEdit,UnitInfo);
+    if UnitInfo=nil then begin
+      ShowAbortMessage('Unable to get source for designer.');
+      exit;
+    end;
+    UnitCode:=UnitInfo.Source;
+    LFMBuffer:=CodeToolBoss.CreateTempFile('changeclass.lfm');
+    if LFMBuffer=nil then begin
+      ShowAbortMessage('Unable to create temporary lfm buffer.');
+      exit;
+    end;
+    if not CodeToolBoss.CheckLFM(UnitCode,LFMBuffer,LFMTree) then begin
+      if CodeToolBoss.ErrorMessage<>'' then
+        MainIDEInterface.DoJumpToCodeToolBossError
+      else
+        ShowAbortMessage('Error parsing lfm component stream.');
+      exit;
+    end;
+    Result:=true;
+  end;
 
-    // check properties
+  function ChangeClassName: boolean;
+  var
+    CurNode: TLFMTreeNode;
+    ObjectNode: TLFMObjectNode;
+  begin
+    Result:=false;
+    // find classname position
+    CurNode:=LFMTree.Root;
+    while CurNode<>nil do begin
+      if (CurNode is TLFMObjectNode) then begin
+        ObjectNode:=TLFMObjectNode(CurNode);
+        if (CompareText(ObjectNode.Name,(APersistent as TComponent).Name)=0)
+        and (CompareText(ObjectNode.TypeName,APersistent.ClassName)=0) then begin
+          // replace classname
+          LFMBuffer.Replace(ObjectNode.TypeNamePosition,length(ObjectNode.TypeName),
+            NewClass.ClassName);
+          Result:=true;
+          exit;
+        end;
+      end;
+      CurNode:=CurNode.NextSibling;
+    end;
+    ShowAbortMessage('Unable to find '+PersistentName+' in LFM Stream.');
+  end;
 
-    // delete selection
+  function CheckProperties: boolean;
+  begin
+    Result:=CheckLFMBuffer(UnitCode,LFMBuffer,nil);
+    if not Result and (CodeToolBoss.ErrorMessage<>'') then
+      MainIDEInterface.DoJumpToCodeToolBossError;
+  end;
 
-    // insert streamed selection
+  function DeleteSelection: boolean;
+  begin
+    Result:=false;
+  end;
 
+  function InsertStreamedSelection: boolean;
+  begin
+    Result:=false;
+  end;
+
+begin
+  Result:=mrCancel;
+  if CompareText(APersistent.ClassName,NewClass.ClassName)=0 then begin
+    Result:=mrOk;
+    exit;
+  end;
+  PersistentName:=APersistent.ClassName;
+  if APersistent is TComponent then begin
+    PersistentName:=TComponent(APersistent).Name+':'+PersistentName;
+  end else begin
+    ShowAbortMessage('Can only change the class of TComponents.');
+    exit;
+  end;
+  ComponentStream:=nil;
+  LFMTree:=nil;
+  try
+    if not StreamSelection then exit;
+    if not ParseLFMStream then exit;
+    if not ChangeClassName then exit;
+    if not CheckProperties then exit;
+    if not DeleteSelection then exit;
+    if not InsertStreamedSelection then exit;
   finally
     ComponentStream.Free;
+    LFMTree.Free;
   end;
-  Result:=mrCancel;
+  Result:=mrOk;
 end;
 
 { TChangeClassDlg }

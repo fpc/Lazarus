@@ -43,7 +43,8 @@ uses
   SynEdit, CodeCache, CodeToolManager, LazConf, DebugOptionsFrm,
   CompilerOptions, EditorOptions, EnvironmentOpts, KeyMapping, UnitEditor,
   Project, IDEProcs, InputHistory, Debugger,
-  IDEOptionDefs, LazarusIDEStrConsts, BaseDebugManager, MainBar,
+  IDEOptionDefs, LazarusIDEStrConsts,
+  MainBar, MainIntf, MainBase, BaseDebugManager,
   SourceMarks,
   DebuggerDlg, Watchesdlg, BreakPointsdlg, LocalsDlg, DBGOutputForm,
   GDBMIDebugger, CallStackDlg, SSHGDBMIDebugger;
@@ -613,7 +614,7 @@ function TDebugManager.DebuggerDlgJumpToCodePos(Sender: TDebuggerDlg;
   const Filename: string; Line, Column: integer): TModalresult;
 begin
   if not Destroying then
-    Result:=MainIDE.DoJumpToSourcePos(Filename,Column,Line,0,true)
+    Result:=MainIDE.DoJumpToSourcePosition(Filename,Column,Line,0,true)
   else
     Result:=mrCancel;
 end;
@@ -795,7 +796,8 @@ begin
   if (ADebugger<>FDebugger) or (ADebugger=nil) then
     RaiseException('TDebugManager.OnDebuggerChangeState');
 
-  if Destroying or (MainIDE=nil) or (MainIDE.ToolStatus=itExiting) then exit;
+  if Destroying or (MainIDE=nil) or (MainIDE.ToolStatus=itExiting) then
+    exit;
   
   if FDebugger.State=dsError then begin
     Include(FManagerStates,dmsDebuggerObjectBroken);
@@ -816,7 +818,8 @@ begin
 
   if (FDebugger.State in [dsRun]) then begin
     // hide IDE during run
-    if EnvironmentOptions.HideIDEOnRun and (MainIDE.ToolStatus=itDebugger) then
+    if EnvironmentOptions.HideIDEOnRun and (MainIDE.ToolStatus=itDebugger)
+    then
       MainIDE.HideIDE;
   end else if (OldState in [dsRun]) then begin
     // unhide IDE
@@ -1096,7 +1099,7 @@ end;
 
 procedure TDebugManager.ConnectMainBarEvents;
 begin
-  with MainIDE do begin
+  with MainIDEBar do begin
     itmViewWatches.OnClick := @mnuViewDebugDialogClick;
     itmViewWatches.Tag := Ord(ddtWatches);
     itmViewBreakPoints.OnClick := @mnuViewDebugDialogClick;
@@ -1121,7 +1124,7 @@ end;
 
 procedure TDebugManager.SetupMainBarShortCuts;
 begin
-  with MainIDE, EditorOpts.KeyMap do
+  with MainIDEBar, EditorOpts.KeyMap do
   begin
     itmViewWatches.ShortCut := CommandToShortCut(ecToggleWatches);
     itmViewBreakpoints.ShortCut := CommandToShortCut(ecToggleBreakPoints);
@@ -1136,7 +1139,7 @@ var
   DebuggerInvalid: boolean;
 begin
   DebuggerInvalid:=(FDebugger=nil) or (MainIDE.ToolStatus<>itDebugger);
-  with MainIDE do begin
+  with MainIDEBar do begin
     // For 'run' and 'step' bypass 'idle', so we can set the filename later
     RunSpeedButton.Enabled := DebuggerInvalid
                  or (dcRun in FDebugger.Commands) or (FDebugger.State = dsIdle);
@@ -1637,7 +1640,7 @@ begin
 
   Result := mrCancel;
 
-  MainIDE.GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
+  MainIDE.GetCurrentUnitInfo(ActiveSrcEdit,ActiveUnitInfo);
   if (ActiveSrcEdit=nil) or (ActiveUnitInfo=nil)
   then begin
     MessageDlg(lisRunToFailed, lisPleaseOpenAUnitBeforeRun, mtError,
@@ -1676,6 +1679,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.69  2004/08/08 18:02:44  mattias
+  splitted TMainIDE (main control instance) and TMainIDEBar (IDE menu and palette), added mainbase.pas and mainintf.pas
+
   Revision 1.68  2004/05/02 12:01:14  mattias
   removed unneeded units in uses sections
 

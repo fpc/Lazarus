@@ -55,7 +55,8 @@ uses
   MsgView, SearchResultView, InputHistory, LazarusIDEStrConsts,
   BaseDebugManager, Debugger, LResources, LazConf, EnvironmentOpts,
   SortSelectionDlg, EncloseSelectionDlg, DiffDialog, ConDef,
-  SourceEditProcs, SourceMarks, CharacterMapDlg, frmSearch;
+  SourceEditProcs, SourceMarks, CharacterMapDlg, frmSearch,
+  SrcEditorIntf;
 
 type
   TSourceNoteBook = class;
@@ -97,7 +98,7 @@ type
 {---- TSource Editor ---
   TSourceEditor is the class that controls access for the Editor.
  ---- TSource Editor ---}
-  TSourceEditor = class
+  TSourceEditor = class(TSourceEditorInterface)
   private
     //FAOwner is normally a TSourceNotebook.  This is set in the Create constructor.
     FAOwner: TComponent;
@@ -521,7 +522,7 @@ type
       read FIncrementalSearchStr write SetIncrementalSearchStr;
 
     // FindInFiles
-    procedure FindInFiles(AProject: TProject);
+    procedure FindInFilesPerDialog(AProject: TProject);
     procedure FindInFiles(AProject: TProject; const FindText: string);
     procedure ShowSearchResultsView;
     function CreateFindInFilesDialog: TLazFindInFilesDialog;
@@ -3565,8 +3566,8 @@ begin
   end;//with
 end;//FIFCreateSearchForm
 
-Procedure TSourceNotebook.FindInFiles(AProject: TProject);
-var 
+Procedure TSourceNotebook.FindInFilesPerDialog(AProject: TProject);
+var
   TempEditor: TSourceEditor;
   FindText: string;
 Begin

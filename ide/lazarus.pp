@@ -55,7 +55,7 @@ uses
   {$IFDEF AddStaticPkgs}
   {$I staticpackages.inc}
   {$ENDIF}
-  MainBar;
+  MainBase;
   
 begin
   Application.Initialize;
@@ -71,7 +71,7 @@ begin
     Application.ProcessMessages; // process splash paint message
   end;
 
-  Application.CreateForm(TMainIDE, MainIDE);
+  MainIDE:=TMainIDE.Create(Application);
   MainIDE.CreateOftenUsedForms;
   {$IFDEF IDE_MEM_CHECK}
   CheckHeapWrtMemCnt('lazarus.pp: TMainIDE created');
@@ -91,7 +91,7 @@ begin
 
   writeln('LAZARUS END - cleaning up ...');
 
-  // free the forms, so that they are freed before the finalization sections
+  // free the IDE, so everything is freed before the finalization sections
   MainIDE.Free;
   MainIDE:=nil;
 end.
@@ -99,6 +99,9 @@ end.
 
 {
   $Log$
+  Revision 1.59  2004/08/08 18:02:44  mattias
+  splitted TMainIDE (main control instance) and TMainIDEBar (IDE menu and palette), added mainbase.pas and mainintf.pas
+
   Revision 1.58  2004/04/24 21:00:41  mattias
   clean up
 

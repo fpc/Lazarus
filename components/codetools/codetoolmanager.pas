@@ -82,6 +82,7 @@ type
     FOnBeforeApplyChanges: TOnBeforeApplyChanges;
     FOnCheckAbort: TOnCodeToolCheckAbort;
     FOnGatherExternalChanges: TOnGatherExternalChanges;
+    FOnGetDefineProperties: TOnGetDefineProperties;
     FOnSearchUsedUnit: TOnSearchUsedUnit;
     FResourceTool: TResourceCodeTool;
     FSetPropertyVariablename: string;
@@ -348,9 +349,10 @@ type
           ImplementationUsesSection: TStrings): boolean;
 
     // resources
+    property OnGetDefineProperties: TOnGetDefineProperties
+                       read FOnGetDefineProperties write FOnGetDefineProperties;
     function FindLFMFileName(Code: TCodeBuffer): string;
     function CheckLFM(UnitCode, LFMBuf: TCodeBuffer;
-          OnGetDefineProperties: TOnGetDefineProperties;
           var LFMTree: TLFMTree): boolean;
     function FindNextResourceFile(Code: TCodeBuffer;
           var LinkIndex: integer): TCodeBuffer;
@@ -2029,7 +2031,6 @@ begin
 end;
 
 function TCodeToolManager.CheckLFM(UnitCode, LFMBuf: TCodeBuffer;
-  OnGetDefineProperties: TOnGetDefineProperties;
   var LFMTree: TLFMTree): boolean;
 begin
   Result:=false;

@@ -9,20 +9,22 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
  *                                                                           *
  *****************************************************************************
- 
-  Dummy unit to compile all IDE interface units.
+
+  Abstract:
+    Defines interface to source editors.
 }
-unit AllIDEIntf;
+unit SrcEditorIntf;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  IDECommands, PropEdits, ObjInspStrConsts, ObjectInspector, ColumnDlg,
-  ComponentEditors, GraphPropEdits, ListViewPropEdit, ImageListEditor,
-  ComponentTreeView, ActionsEditor, HelpIntf, TextTools, FormEditingIntf,
-  SrcEditorIntf;
+  Classes, SysUtils; 
+  
+type
+  TSourceEditorInterface = class
+  end;
 
 implementation
 

@@ -895,7 +895,7 @@ function TStandardCodeTool.CheckLFM(LFMBuf: TCodeBuffer; var LFMTree: TLFMTree;
   const OnGetDefineProperties: TOnGetDefineProperties): boolean;
 var
   RootContext: TFindContext;
-  
+
   function CheckLFMObjectValues(LFMObject: TLFMObjectNode;
     const ClassContext: TFindContext): boolean; forward;
 
@@ -1221,7 +1221,7 @@ var
     Result:=true;
   end;
 
-  function CheckLFMRoot: boolean;
+  function CheckLFMRoot(RootLFMNode: TLFMTreeNode): boolean;
   var
     LookupRootLFMNode: TLFMObjectNode;
     LookupRootTypeName: String;
@@ -1231,11 +1231,11 @@ var
     
     //DebugLn('TStandardCodeTool.CheckLFM.CheckLFMRoot checking root ...');
     // get root object node
-    if (LFMTree.Root=nil) or (not (LFMTree.Root is TLFMObjectNode)) then begin
+    if (RootLFMNode=nil) or (not (RootLFMNode is TLFMObjectNode)) then begin
       LFMTree.AddError(lfmeMissingRoot,nil,'missing root object',1);
       exit;
     end;
-    LookupRootLFMNode:=TLFMObjectNode(LFMTree.Root);
+    LookupRootLFMNode:=TLFMObjectNode(RootLFMNode);
     
     // get type name of root object
     LookupRootTypeName:=UpperCaseStr(LookupRootLFMNode.TypeName);
@@ -1259,6 +1259,8 @@ var
     Result:=CheckLFMObjectValues(LookupRootLFMNode,RootContext);
   end;
   
+var
+  CurRootLFMNode: TLFMTreeNode;
 begin
   Result:=false;
   //DebugLn('TStandardCodeTool.CheckLFM A');
@@ -1271,7 +1273,11 @@ begin
   BuildTree(true);
   // find every identifier
   //DebugLn('TStandardCodeTool.CheckLFM checking identifiers ...');
-  if not CheckLFMRoot then exit;
+  CurRootLFMNode:=LFMTree.Root;
+  while CurRootLFMNode<>nil do begin
+    if not CheckLFMRoot(CurRootLFMNode) then exit;
+    CurRootLFMNode:=CurRootLFMNode.NextSibling;
+  end;
 
   Result:=LFMTree.FirstError=nil;
 end;

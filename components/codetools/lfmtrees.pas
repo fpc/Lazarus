@@ -199,6 +199,7 @@ type
     lfmePropertyHasNoSubProperties,
     lfmeIdentifierNotPublished
     );
+  TLFMErrorTypes = set of TLFMErrorType;
 
   TLFMError = class
   public
@@ -246,6 +247,7 @@ type
       const ErrorMessage: string; ErrorPosition: integer);
     function FindErrorAtLine(Line: integer): TLFMError;
     function FindErrorAtNode(Node: TLFMTreeNode): TLFMError;
+    function FindError(ErrorTypes: TLFMErrorTypes): TLFMError;
   end;
   
 const
@@ -300,7 +302,10 @@ begin
   Parser := TParser.Create(LFMStream);
   try
     try
-      ProcessObject;
+      repeat
+        ProcessObject;
+      until (not Parser.TokenSymbolIs('OBJECT'))
+        and (not Parser.TokenSymbolIs('INHERITED'));
       Result:=true;
     except
       on E: EParserError do begin
@@ -352,6 +357,13 @@ begin
     if (Result.Node=Node) and (Node<>nil) then exit;
     Result:=Result.NextError;
   end;
+end;
+
+function TLFMTree.FindError(ErrorTypes: TLFMErrorTypes): TLFMError;
+begin
+  Result:=FirstError;
+  while (Result<>nil) and (not (Result.ErrorType in ErrorTypes)) do
+    Result:=Result.NextError;
 end;
 
 procedure TLFMTree.ProcessValue;

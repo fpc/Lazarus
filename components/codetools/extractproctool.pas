@@ -135,7 +135,6 @@ function TExtractProcTool.CheckExtractProc(const StartPos,
 var
   CleanStartPos, CleanEndPos: integer;
   CursorNode: TCodeTreeNode;
-  BlockCleanStart: Integer;
   BeginBlockNode: TCodeTreeNode;
   BlockCleanEnd: Integer;
   ANode: TCodeTreeNode;
@@ -173,7 +172,6 @@ begin
     if WordIsLogicalBlockStart.DoItUpperCase(UpperSrc,
       CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
     then begin
-      BlockCleanStart:=CurPos.StartPos;
       if not ReadTilBlockEnd(true,false) then exit;
       BlockCleanEnd:=CurPos.EndPos;
       if BlockCleanEnd<CleanEndPos then exit;

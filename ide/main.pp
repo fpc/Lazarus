@@ -1,9 +1,22 @@
 {  $Id$  }
 {
  /***************************************************************************
-                            main.pp  -  Toolbar
-                            -------------------
-                   TMainIDE is the application toolbar window.
+                    main.pp  -  the "integrated" in IDE
+                    -----------------------------------
+  TMainIDE is the main controlling and instance of the IDE, which connects the
+  various parts of the IDE.
+
+  main.pp      - TMainIDE = class(TMainIDEBase)
+                   The highest manager/boss of the IDE. Only lazarus.pp uses
+                   this unit.
+  mainbase.pas - TMainIDEBase = class(TMainIDEInterface)
+                   The ancestor class used by (and only by) the other
+                   bosses/managers like debugmanager, pkgmanager.
+  mainintf.pas - TMainIDEInterface = class(TComponent)
+                   The interface class of the top level functions of the IDE.
+                   This class is used by all cross boss units (e.g. units that
+                   work with the source editor, the codetools and the form
+                   editor)
 
 
                  Initial Revision  : Sun Mar 28 23:15:32 CST 1999
@@ -51,7 +64,7 @@ uses
   // codetools
   Laz_XMLCfg, CodeToolsStructs, CodeToolManager, CodeCache, DefineTemplates,
   // IDE interface
-  AllIDEIntf, ObjectInspector, PropEdits, IDECommands,
+  AllIDEIntf, ObjectInspector, PropEdits, IDECommands, SrcEditorIntf,
   // synedit
   SynEditKeyCmds,
   // compile
@@ -88,10 +101,10 @@ uses
   FindReplaceDialog, FindInFilesDlg, CodeExplorer, BuildFileDlg, ExtractProcDlg,
   DelphiUnit2Laz, CleanDirDlg,
   // main ide
-  MainBar;
+  MainBar, MainIntf, MainBase;
 
 type
-  TMainIDE = class(TMainIDEBar)
+  TMainIDE = class(TMainIDEBase)
     // event handlers
 
     //procedure FormShow(Sender : TObject);
@@ -241,7 +254,7 @@ type
     procedure OpenFileDownArrowClicked(Sender : TObject);
     procedure mnuOpenFilePopupClick(Sender : TObject);
 
-  published
+  public
     // Global IDE events
     procedure OnProcessIDECommand(Sender: TObject; Command: word;
       var Handled: boolean);
@@ -399,8 +412,6 @@ type
     FOpenEditorsOnCodeToolChange: boolean;
 
     FRunProcess: TProcess; // temp solution, will be replaced by dummydebugger
-    procedure CreateMainMenuItem(MainMenu:TMainMenu;MenuItem:TMenuItem;MenuItemName,MenuItemCaption:String);
-
 
   protected
     procedure SetToolStatus(const AValue: TIDEToolStatus); override;
@@ -412,7 +423,7 @@ type
 
     // methods for start
     procedure LoadGlobalOptions;
-    procedure SetupMainMenu;
+    procedure SetupMainMenu; override;
     procedure SetRecentFilesMenu;
     procedure SetRecentProjectFilesMenu;
     procedure SetupFileMenu; override;
@@ -496,6 +507,7 @@ type
       Data: TObject);
     procedure OnCopyError(const ErrorData: TCopyErrorData;
       var Handled: boolean; Data: TObject);
+
   public
     CustomExtToolMenuSeparator: TMenuItem;
     CurDefinesCompilerFilename: String;
@@ -503,9 +515,10 @@ type
     class procedure ParseCmdLineOptions;
 
     constructor Create(TheOwner: TComponent); override;
-    destructor Destroy; override;
     procedure CreateOftenUsedForms; override;
+    destructor Destroy; override;
     procedure CreateSearchResultWindow;
+    procedure UpdateDefaultPascalFileExtensions;
 
     // files/units
     function DoNewEditorFile(NewUnitType: TNewUnitType;
@@ -579,17 +592,16 @@ type
     procedure GetCurrentUnit(var ActiveSourceEditor: TSourceEditor;
                              var ActiveUnitInfo: TUnitInfo); override;
     procedure GetUnitWithPageIndex(PageIndex: integer;
-          var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo);
+          var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo); override;
     procedure GetDesignerUnit(ADesigner: TDesigner;
-          var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo);
+          var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo); override;
     procedure GetObjectInspectorUnit(
-          var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo);
+          var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo); override;
     procedure GetUnitWithForm(AForm: TCustomForm;
-          var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo);
+          var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo); override;
     procedure GetUnitWithPersistent(APersistent: TPersistent;
-          var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo);
-    function GetSourceEditorForUnitInfo(AnUnitInfo: TUnitInfo): TSourceEditor;
-    procedure UpdateDefaultPascalFileExtensions;
+          var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo); override;
+    function GetSourceEditorForUnitInfo(AnUnitInfo: TUnitInfo): TSourceEditor; override;
     function CreateSrcEditPageName(const AnUnitName, AFilename: string;
       IgnorePageIndex: integer): string;
 
@@ -611,9 +623,9 @@ type
     function DoRenameUnitLowerCase(AnUnitInfo: TUnitInfo;
                                    AskUser: boolean): TModalresult;
     function DoCheckFilesOnDisk: TModalResult; override;
-    function DoPublishModul(Options: TPublishModuleOptions;
-                            const SrcDirectory, DestDirectory: string
-                            ): TModalResult; override;
+    function DoPublishModule(Options: TPublishModuleOptions;
+                             const SrcDirectory, DestDirectory: string
+                             ): TModalResult; override;
 
     // useful frontend methods
     procedure DoSwitchToFormSrc(var ActiveSourceEditor:TSourceEditor;
@@ -639,11 +651,12 @@ type
                            var ActiveSrcEdit: TSourceEditor;
                            var ActiveUnitInfo: TUnitInfo;
                            Flags: TCodeToolsFlags): boolean;
-    function DoJumpToSourcePos(const Filename: string;
+    function DoJumpToSourcePosition(const Filename: string;
                                NewX, NewY, NewTopLine: integer;
                                AddJumpPoint: boolean): TModalResult; override;
     function DoJumpToCodePos(
-                        ActiveSrcEdit: TSourceEditor; ActiveUnitInfo: TUnitInfo;
+                        ActiveSrcEdit: TSourceEditor;
+                        ActiveUnitInfo: TUnitInfo;
                         NewSource: TCodeBuffer; NewX, NewY, NewTopLine: integer;
                         AddJumpPoint: boolean): TModalResult; override;
     procedure DoJumpToCodeToolBossError; override;
@@ -882,8 +895,7 @@ end;
 constructor TMainIDE.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  Constraints.MaxHeight:=100;
-
+  
   // load options
   CreatePrimaryConfigPath;
   LoadGlobalOptions;
@@ -895,16 +907,17 @@ begin
   InitCodeToolBoss;
 
   // build and position the MainIDE form
-  Name := NonModalIDEWindowNames[nmiwMainIDEName];
-  EnvironmentOptions.IDEWindowLayoutList.Apply(Self,Name);
+  Application.CreateForm(TMainIDEBar,MainIDEBar);
+  MainIDEBar.OnDestroy:=@OnMainBarDestroy;
+  MainIDEBar.Constraints.MaxHeight:=100;
+  MainIDEBar.Name := NonModalIDEWindowNames[nmiwMainIDEName];
+  EnvironmentOptions.IDEWindowLayoutList.Apply(MainIDEBar,MainIDEBar.Name);
   HiddenWindowsOnRun:=TList.Create;
 
-  if LazarusResources.Find(ClassName)=nil then begin
-    SetupMainMenu;
-    SetupSpeedButtons;
-    SetupComponentNoteBook;
-    ConnectMainBarEvents;
-  end;
+  SetupMainMenu;
+  SetupSpeedButtons;
+  SetupComponentNoteBook;
+  ConnectMainBarEvents;
 
   // initialize the other IDE managers
   DebugBoss:=TDebugManager.Create(Self);
@@ -923,7 +936,7 @@ begin
   SetupIDEInterface;
 
   // Main IDE bar created and setup completed -> Show it
-  Show;
+  MainIDEBar.Show;
 
   // load installed packages
   PkgBoss.LoadInstalledPackages;
@@ -1117,7 +1130,7 @@ procedure TMainIDE.SetupSpeedButtons;
     with Result do
     begin
       Name := AName;
-      Parent := pnlSpeedButtons;
+      Parent := MainIDEBar.pnlSpeedButtons;
       Enabled := True;
       Top := ATop;
       Left := ALeft;
@@ -1135,10 +1148,10 @@ procedure TMainIDE.SetupSpeedButtons;
 var
   ButtonTop, ButtonLeft, n: Integer;
 begin
-  pnlSpeedButtons := TPanel.Create(Self);
-  with pnlSpeedButtons do begin
+  MainIDEBar.pnlSpeedButtons := TPanel.Create(Self);
+  with MainIDEBar.pnlSpeedButtons do begin
     Name := 'pnlSpeedButtons';
-    Parent:= Self;
+    Parent:= MainIDEBar;
     Align := alLeft;
     Top := 0;
     Left:= 0;
@@ -1150,53 +1163,53 @@ begin
 
   ButtonTop := 2;
   ButtonLeft := 2;
-  NewUnitSpeedBtn       := CreateButton('NewUnitSpeedBtn'      , 'btn_newunit'   , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuNewUnitClicked, lisHintNewUnit);
+  MainIDEBar.NewUnitSpeedBtn       := CreateButton('NewUnitSpeedBtn'      , 'btn_newunit'   , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuNewUnitClicked, lisHintNewUnit);
 
-  OpenFileSpeedBtn      := CreateButton('OpenFileSpeedBtn'     , 'btn_openfile'  , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuOpenClicked, lisHintOpen);
+  MainIDEBar.OpenFileSpeedBtn      := CreateButton('OpenFileSpeedBtn'     , 'btn_openfile'  , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuOpenClicked, lisHintOpen);
 
   // store left
   n := ButtonLeft;
-  OpenFileArrowSpeedBtn := CreateButton('OpenFileArrowSpeedBtn', 'btn_downarrow' , 1, ButtonLeft, ButtonTop, [mfLeft], @OpenFileDownArrowClicked, '');
-  OpenFileArrowSpeedBtn.Width := 12;
+  MainIDEBar.OpenFileArrowSpeedBtn := CreateButton('OpenFileArrowSpeedBtn', 'btn_downarrow' , 1, ButtonLeft, ButtonTop, [mfLeft], @OpenFileDownArrowClicked, '');
+  MainIDEBar.OpenFileArrowSpeedBtn.Width := 12;
   ButtonLeft := n+12+1;
 
-  SaveSpeedBtn          := CreateButton('SaveSpeedBtn'         , 'btn_save'      , 2, ButtonLeft, ButtonTop, [mfLeft], @mnuSaveClicked, lisHintSave);
-  SaveAllSpeedBtn       := CreateButton('SaveAllSpeedBtn'      , 'btn_saveall'   , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuSaveAllClicked, lisHintSaveAll);
-  NewFormSpeedBtn       := CreateButton('NewFormSpeedBtn'      , 'btn_newform'   , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuNewFormClicked, lisHintNewForm);
-  ToggleFormSpeedBtn    := CreateButton('ToggleFormSpeedBtn'   , 'btn_toggleform', 2, ButtonLeft, ButtonTop, [mfLeft, mfTop], @mnuToggleFormUnitCLicked, lisHintToggleFormUnit);
+  MainIDEBar.SaveSpeedBtn          := CreateButton('SaveSpeedBtn'         , 'btn_save'      , 2, ButtonLeft, ButtonTop, [mfLeft], @mnuSaveClicked, lisHintSave);
+  MainIDEBar.SaveAllSpeedBtn       := CreateButton('SaveAllSpeedBtn'      , 'btn_saveall'   , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuSaveAllClicked, lisHintSaveAll);
+  MainIDEBar.NewFormSpeedBtn       := CreateButton('NewFormSpeedBtn'      , 'btn_newform'   , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuNewFormClicked, lisHintNewForm);
+  MainIDEBar.ToggleFormSpeedBtn    := CreateButton('ToggleFormSpeedBtn'   , 'btn_toggleform', 2, ButtonLeft, ButtonTop, [mfLeft, mfTop], @mnuToggleFormUnitCLicked, lisHintToggleFormUnit);
 
   // new row
   ButtonLeft := 2;
-  ViewUnitsSpeedBtn     := CreateButton('ViewUnitsSpeedBtn'    , 'btn_viewunits' , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuViewUnitsClicked, lisHintViewUnits);
-  ViewFormsSpeedBtn     := CreateButton('ViewFormsSpeedBtn'    , 'btn_viewforms' , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuViewFormsClicked, lisHintViewForms);
+  MainIDEBar.ViewUnitsSpeedBtn     := CreateButton('ViewUnitsSpeedBtn'    , 'btn_viewunits' , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuViewUnitsClicked, lisHintViewUnits);
+  MainIDEBar.ViewFormsSpeedBtn     := CreateButton('ViewFormsSpeedBtn'    , 'btn_viewforms' , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuViewFormsClicked, lisHintViewForms);
   inc(ButtonLeft,13);
-  RunSpeedButton        := CreateButton('RunSpeedButton'       , 'btn_run'       , 2, ButtonLeft, ButtonTop, [mfLeft], @mnuRunProjectClicked, lisHintRun);
-  PauseSpeedButton      := CreateButton('PauseSpeedButton'     , 'btn_pause'       , 2, ButtonLeft, ButtonTop, [mfLeft], @mnuPauseProjectClicked, lisHintPause);
-  PauseSpeedButton.Enabled:=false;
-  StepIntoSpeedButton   := CreateButton('StepIntoSpeedButton'  , 'btn_stepinto'       , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuStepIntoProjectClicked, lisHintStepInto);
-  StepOverSpeedButton   := CreateButton('StepOverpeedButton'   , 'btn_stepover'       , 1, ButtonLeft, ButtonTop, [mfLeft, mfTop], @mnuStepOverProjectClicked, lisHintStepOver);
+  MainIDEBar.RunSpeedButton        := CreateButton('RunSpeedButton'       , 'btn_run'       , 2, ButtonLeft, ButtonTop, [mfLeft], @mnuRunProjectClicked, lisHintRun);
+  MainIDEBar.PauseSpeedButton      := CreateButton('PauseSpeedButton'     , 'btn_pause'       , 2, ButtonLeft, ButtonTop, [mfLeft], @mnuPauseProjectClicked, lisHintPause);
+  MainIDEBar.PauseSpeedButton.Enabled:=false;
+  MainIDEBar.StepIntoSpeedButton   := CreateButton('StepIntoSpeedButton'  , 'btn_stepinto'       , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuStepIntoProjectClicked, lisHintStepInto);
+  MainIDEBar.StepOverSpeedButton   := CreateButton('StepOverpeedButton'   , 'btn_stepover'       , 1, ButtonLeft, ButtonTop, [mfLeft, mfTop], @mnuStepOverProjectClicked, lisHintStepOver);
 
-  pnlSpeedButtons.Width := ButtonLeft+3;
-  pnlSpeedButtons.Height := ButtonTop+3;
+  MainIDEBar.pnlSpeedButtons.Width := ButtonLeft+3;
+  MainIDEBar.pnlSpeedButtons.Height := ButtonTop+3;
 
 
   // create the popupmenu for the OpenFileArrowSpeedBtn
-  OpenFilePopUpMenu := TPopupMenu.Create(self);
-  OpenFilePopupMenu.Name:='OpenFilePopupMenu';
-  OpenFilePopupMenu.AutoPopup := False;
+  MainIDEBar.OpenFilePopUpMenu := TPopupMenu.Create(self);
+  MainIDEBar.OpenFilePopupMenu.Name:='OpenFilePopupMenu';
+  MainIDEBar.OpenFilePopupMenu.AutoPopup := False;
 end;
 
 procedure TMainIDE.SetupComponentNoteBook;
 begin
   // Component Notebook
-  ComponentNotebook := TNotebook.Create(Self);
-  with ComponentNotebook do begin
-    Parent := Self;
+  MainIDEBar.ComponentNotebook := TNotebook.Create(Self);
+  with MainIDEBar.ComponentNotebook do begin
+    Parent := MainIDEBar;
     Name := 'ComponentNotebook';
     Align := alClient;
-    Left := pnlSpeedButtons.Left + pnlSpeedButtons.Width;
+    Left := MainIDEBar.pnlSpeedButtons.Left + MainIDEBar.pnlSpeedButtons.Width;
     Top := 0;
-    Width := Self.ClientWidth - Left;
+    Width := MainIDEBar.ClientWidth - Left;
     Height := 60; //Self.ClientHeight - ComponentNotebook.Top;
   end;
 end;
@@ -1210,16 +1223,16 @@ begin
   if EnvironmentOptions=nil then exit;
   // update all hints in the component palette
   CurShowHint:=EnvironmentOptions.ShowHintsForComponentPalette;
-  for i:=0 to ComponentNotebook.PageCount-1 do begin
-    for j:=0 to ComponentNotebook.Page[i].ControlCount-1 do begin
-      AControl:=ComponentNotebook.Page[i].Controls[j];
+  for i:=0 to MainIDEBar.ComponentNotebook.PageCount-1 do begin
+    for j:=0 to MainIDEBar.ComponentNotebook.Page[i].ControlCount-1 do begin
+      AControl:=MainIDEBar.ComponentNotebook.Page[i].Controls[j];
       AControl.ShowHint:=CurShowHint;
     end;
   end;
   // update all hints in main ide toolbars
   CurShowHint:=EnvironmentOptions.ShowHintsForMainSpeedButtons;
-  for i:=0 to pnlSpeedButtons.ControlCount-1 do begin
-    AControl:=pnlSpeedButtons.Controls[i];
+  for i:=0 to MainIDEBar.pnlSpeedButtons.ControlCount-1 do begin
+    AControl:=MainIDEBar.pnlSpeedButtons.Controls[i];
     AControl.ShowHint:=CurShowHint;
   end;
 end;
@@ -1298,21 +1311,21 @@ begin
   DebugBoss.ConnectSourceNotebookEvents;
 
   // connect search menu to sourcenotebook
-  itmSearchFind.OnClick := @SourceNotebook.FindClicked;
-  itmSearchFindNext.OnClick := @SourceNotebook.FindNextClicked;
-  itmSearchFindPrevious.OnClick := @SourceNotebook.FindPreviousClicked;
-  itmSearchFindInFiles.OnClick := @mnuSearchFindInFiles;
-  itmSearchReplace.OnClick := @SourceNotebook.ReplaceClicked;
-  itmIncrementalFind.OnClick := @SourceNotebook.IncrementalFindClicked;
-  itmGotoLine.OnClick := @SourceNotebook.GotoLineClicked;
-  itmJumpBack.OnClick := @SourceNotebook.JumpBackClicked;
-  itmJumpForward.OnClick := @SourceNotebook.JumpForwardClicked;
-  itmAddJumpPoint.OnClick := @SourceNotebook.AddJumpPointClicked;
-  itmJumpHistory.OnClick := @SourceNotebook.ViewJumpHistoryClicked;
-  itmFindBlockStart.OnClick:=@mnuSearchFindBlockStart;
-  itmFindBlockOtherEnd.OnClick:=@mnuSearchFindBlockOtherEnd;
-  itmFindDeclaration.OnClick:=@mnuSearchFindDeclaration;
-  itmOpenFileAtCursor.OnClick:=@mnuOpenFileAtCursorClicked;
+  MainIDEBar.itmSearchFind.OnClick := @SourceNotebook.FindClicked;
+  MainIDEBar.itmSearchFindNext.OnClick := @SourceNotebook.FindNextClicked;
+  MainIDEBar.itmSearchFindPrevious.OnClick := @SourceNotebook.FindPreviousClicked;
+  MainIDEBar.itmSearchFindInFiles.OnClick := @mnuSearchFindInFiles;
+  MainIDEBar.itmSearchReplace.OnClick := @SourceNotebook.ReplaceClicked;
+  MainIDEBar.itmIncrementalFind.OnClick := @SourceNotebook.IncrementalFindClicked;
+  MainIDEBar.itmGotoLine.OnClick := @SourceNotebook.GotoLineClicked;
+  MainIDEBar.itmJumpBack.OnClick := @SourceNotebook.JumpBackClicked;
+  MainIDEBar.itmJumpForward.OnClick := @SourceNotebook.JumpForwardClicked;
+  MainIDEBar.itmAddJumpPoint.OnClick := @SourceNotebook.AddJumpPointClicked;
+  MainIDEBar.itmJumpHistory.OnClick := @SourceNotebook.ViewJumpHistoryClicked;
+  MainIDEBar.itmFindBlockStart.OnClick:=@mnuSearchFindBlockStart;
+  MainIDEBar.itmFindBlockOtherEnd.OnClick:=@mnuSearchFindBlockOtherEnd;
+  MainIDEBar.itmFindDeclaration.OnClick:=@mnuSearchFindDeclaration;
+  MainIDEBar.itmOpenFileAtCursor.OnClick:=@mnuOpenFileAtCursorClicked;
 end;
 
 procedure TMainIDE.SetupTransferMacros;
@@ -1462,32 +1475,10 @@ begin
   end;
 end;
 
-procedure TMainIDE.CreateMainMenuItem(MainMenu:TMainMenu;MenuItem:TMenuItem;MenuItemName,MenuItemCaption:String);
-begin
-  MenuItem:=TMenuItem.Create(Self);
-  MenuItem.Name:=MenuItemName;
-  MenuItem.Caption := MenuItemCaption;
-  MainMenu.items.Add(MenuItem);
-end;
-
 {------------------------------------------------------------------------------}
 procedure TMainIDE.SetupMainMenu;
 begin
-  mnuMain := TMainMenu.Create(Self);
-  mnuMain.Name:='mnuMainMenu';
-  Menu := mnuMain;
-  CreateMainMenuItem(mnuMain,mnuFile,'mnuFile',lisMenuFile);
-  CreateMainMenuItem(mnuMain,mnuEdit,'mnuEdit',lisMenuEdit);
-  CreateMainMenuItem(mnuMain,mnuSearch,'mnuSearch',lisMenuSearch);
-  CreateMainMenuItem(mnuMain,mnuView,'mnuView',lisMenuView);
-  CreateMainMenuItem(mnuMain,mnuProject,'mnuProject',lisMenuProject);
-  CreateMainMenuItem(mnuMain,mnuRun,'mnuRun',lisMenuRun);
-  CreateMainMenuItem(mnuMain,mnuComponents,'mnuComponents',lisMenuComponents);
-  CreateMainMenuItem(mnuMain,mnuTools,'mnuTools',lisMenuTools);
-  CreateMainMenuItem(mnuMain,mnuEnvironment,'mnuEnvironment',lisMenuEnvironent);
-  CreateMainMenuItem(mnuMain,mnuWindows,'mnuWindows',lisMenuWindows);
-  CreateMainMenuItem(mnuMain,mnuHelp,'mnuHelp',lisMenuHelp);
-  
+  inherited SetupMainMenu;
   SetupFileMenu;
   SetupEditMenu;
   SetupSearchMenu;
@@ -1503,138 +1494,152 @@ end;
 
 procedure TMainIDE.SetRecentFilesMenu;
 begin
-  SetRecentSubMenu(itmFileRecentOpen,EnvironmentOptions.RecentOpenFiles,
-                    @mnuOpenRecentClicked);
+  SetRecentSubMenu(MainIDEBar.itmFileRecentOpen,
+                   EnvironmentOptions.RecentOpenFiles,
+                   @mnuOpenRecentClicked);
 end;
 
 procedure TMainIDE.SetRecentProjectFilesMenu;
 begin
-  SetRecentSubMenu(itmProjectRecentOpen,EnvironmentOptions.RecentProjectFiles,
+  SetRecentSubMenu(MainIDEBar.itmProjectRecentOpen,
+                   EnvironmentOptions.RecentProjectFiles,
                    @mnuOpenProjectClicked);
 end;
 
 procedure TMainIDE.SetupFileMenu;
 begin
   inherited SetupFileMenu;
-  itmFileNewUnit.OnClick := @mnuNewUnitClicked;
-  itmFileNewForm.OnClick := @mnuNewFormClicked;
-  itmFileNewOther.OnClick := @mnuNewOtherClicked;
-  itmFileOpen.OnClick := @mnuOpenClicked;
-  itmFileRevert.OnClick := @mnuRevertClicked;
-  SetRecentFilesMenu;
-  itmFileSave.OnClick := @mnuSaveClicked;
-  itmFileSaveAs.OnClick := @mnuSaveAsClicked;
-  itmFileSaveAll.OnClick := @mnuSaveAllClicked;
-  itmFileClose.Enabled := False;
-  itmFileClose.OnClick := @mnuCloseClicked;
-  itmFileCloseAll.Enabled := False;
-  itmFileCloseAll.OnClick := @mnuCloseAllClicked;
-  itmFileCleanDirectory.OnClick := @mnuCleanDirectoryClicked;
-  itmFileQuit.OnClick := @mnuQuitClicked;
+  with MainIDEBar do begin
+    itmFileNewUnit.OnClick := @mnuNewUnitClicked;
+    itmFileNewForm.OnClick := @mnuNewFormClicked;
+    itmFileNewOther.OnClick := @mnuNewOtherClicked;
+    itmFileOpen.OnClick := @mnuOpenClicked;
+    itmFileRevert.OnClick := @mnuRevertClicked;
+    SetRecentFilesMenu;
+    itmFileSave.OnClick := @mnuSaveClicked;
+    itmFileSaveAs.OnClick := @mnuSaveAsClicked;
+    itmFileSaveAll.OnClick := @mnuSaveAllClicked;
+    itmFileClose.Enabled := False;
+    itmFileClose.OnClick := @mnuCloseClicked;
+    itmFileCloseAll.Enabled := False;
+    itmFileCloseAll.OnClick := @mnuCloseAllClicked;
+    itmFileCleanDirectory.OnClick := @mnuCleanDirectoryClicked;
+    itmFileQuit.OnClick := @mnuQuitClicked;
+  end;
 end;
 
 procedure TMainIDE.SetupEditMenu;
 begin
   inherited SetupEditMenu;
-  itmEditUndo.OnClick:=@mnuEditUndoClicked;
-  itmEditRedo.OnClick:=@mnuEditRedoClicked;
-  itmEditCut.OnClick:=@mnuEditCutClicked;
-  itmEditCopy.OnClick:=@mnuEditCopyClicked;
-  itmEditPaste.OnClick:=@mnuEditPasteClicked;
-  itmEditIndentBlock.OnClick:=@mnuEditIndentBlockClicked;
-  itmEditUnindentBlock.OnClick:=@mnuEditUnindentBlockClicked;
-  itmEditEncloseBlock.OnClick:=@mnuEditEncloseBlockClicked;
-  itmEditUpperCaseBlock.OnClick:=@mnuEditUpperCaseBlockClicked;
-  itmEditLowerCaseBlock.OnClick:=@mnuEditLowerCaseBlockClicked;
-  itmEditTabsToSpacesBlock.OnClick:=@mnuEditTabsToSpacesBlockClicked;
-  itmEditCommentBlock.OnClick:=@mnuEditCommentBlockClicked;
-  itmEditUncommentBlock.OnClick:=@mnuEditUncommentBlockClicked;
-  itmEditConditionalBlock.OnClick:=@mnuEditConditionalBlockClicked;
-  itmEditSortBlock.OnClick:=@mnuEditSortBlockClicked;
-  itmEditSelectionBreakLines.OnClick:=@mnuEditSelectionBreakLinesClicked;
-  itmEditSelectAll.OnClick:=@mnuEditSelectAllClick;
-  itmEditSelectToBrace.OnClick:=@mnuEditSelectToBraceClick;
-  itmEditSelectCodeBlock.OnClick:=@mnuEditSelectCodeBlockClick;
-  itmEditSelectLine.OnClick:=@mnuEditSelectLineClick;
-  itmEditSelectParagraph.OnClick:=@mnuEditSelectParagraphClick;
-  itmEditCompleteCode.OnClick:=@mnuEditCompleteCodeClicked;
-  itmEditExtractProc.OnClick:=@mnuEditExtractProcClicked;
-  itmEditInsertCharacter.OnClick:=@mnuEditInsertCharacterClicked;
+  with MainIDEBar do begin
+    itmEditUndo.OnClick:=@mnuEditUndoClicked;
+    itmEditRedo.OnClick:=@mnuEditRedoClicked;
+    itmEditCut.OnClick:=@mnuEditCutClicked;
+    itmEditCopy.OnClick:=@mnuEditCopyClicked;
+    itmEditPaste.OnClick:=@mnuEditPasteClicked;
+    itmEditIndentBlock.OnClick:=@mnuEditIndentBlockClicked;
+    itmEditUnindentBlock.OnClick:=@mnuEditUnindentBlockClicked;
+    itmEditEncloseBlock.OnClick:=@mnuEditEncloseBlockClicked;
+    itmEditUpperCaseBlock.OnClick:=@mnuEditUpperCaseBlockClicked;
+    itmEditLowerCaseBlock.OnClick:=@mnuEditLowerCaseBlockClicked;
+    itmEditTabsToSpacesBlock.OnClick:=@mnuEditTabsToSpacesBlockClicked;
+    itmEditCommentBlock.OnClick:=@mnuEditCommentBlockClicked;
+    itmEditUncommentBlock.OnClick:=@mnuEditUncommentBlockClicked;
+    itmEditConditionalBlock.OnClick:=@mnuEditConditionalBlockClicked;
+    itmEditSortBlock.OnClick:=@mnuEditSortBlockClicked;
+    itmEditSelectionBreakLines.OnClick:=@mnuEditSelectionBreakLinesClicked;
+    itmEditSelectAll.OnClick:=@mnuEditSelectAllClick;
+    itmEditSelectToBrace.OnClick:=@mnuEditSelectToBraceClick;
+    itmEditSelectCodeBlock.OnClick:=@mnuEditSelectCodeBlockClick;
+    itmEditSelectLine.OnClick:=@mnuEditSelectLineClick;
+    itmEditSelectParagraph.OnClick:=@mnuEditSelectParagraphClick;
+    itmEditCompleteCode.OnClick:=@mnuEditCompleteCodeClicked;
+    itmEditExtractProc.OnClick:=@mnuEditExtractProcClicked;
+    itmEditInsertCharacter.OnClick:=@mnuEditInsertCharacterClicked;
 
-  // insert text->CVS keyword
-  itmEditInsertCVSAuthor.OnClick:=@mnuEditInsertCVSAuthorClick;
-  itmEditInsertCVSDate.OnClick:=@mnuEditInsertCVSDateClick;
-  itmEditInsertCVSHeader.OnClick:=@mnuEditInsertCVSHeaderClick;
-  itmEditInsertCVSID.OnClick:=@mnuEditInsertCVSIDClick;
-  itmEditInsertCVSLog.OnClick:=@mnuEditInsertCVSLogClick;
-  itmEditInsertCVSName.OnClick:=@mnuEditInsertCVSNameClick;
-  itmEditInsertCVSRevision.OnClick:=@mnuEditInsertCVSRevisionClick;
-  itmEditInsertCVSSource.OnClick:=@mnuEditInsertCVSSourceClick;
+    // insert text->CVS keyword
+    itmEditInsertCVSAuthor.OnClick:=@mnuEditInsertCVSAuthorClick;
+    itmEditInsertCVSDate.OnClick:=@mnuEditInsertCVSDateClick;
+    itmEditInsertCVSHeader.OnClick:=@mnuEditInsertCVSHeaderClick;
+    itmEditInsertCVSID.OnClick:=@mnuEditInsertCVSIDClick;
+    itmEditInsertCVSLog.OnClick:=@mnuEditInsertCVSLogClick;
+    itmEditInsertCVSName.OnClick:=@mnuEditInsertCVSNameClick;
+    itmEditInsertCVSRevision.OnClick:=@mnuEditInsertCVSRevisionClick;
+    itmEditInsertCVSSource.OnClick:=@mnuEditInsertCVSSourceClick;
 
-  // insert text->general
-  itmEditInsertGPLNotice.OnClick:=@mnuEditInsertGPLNoticeClick;
-  itmEditInsertLGPLNotice.OnClick:=@mnuEditInsertLGPLNoticeClick;
-  itmEditInsertUsername.OnClick:=@mnuEditInsertUsernameClick;
-  itmEditInsertDateTime.OnClick:=@mnuEditInsertDateTimeClick;
-  itmEditInsertChangeLogEntry.OnClick:=@mnuEditInsertChangeLogEntryClick;
+    // insert text->general
+    itmEditInsertGPLNotice.OnClick:=@mnuEditInsertGPLNoticeClick;
+    itmEditInsertLGPLNotice.OnClick:=@mnuEditInsertLGPLNoticeClick;
+    itmEditInsertUsername.OnClick:=@mnuEditInsertUsernameClick;
+    itmEditInsertDateTime.OnClick:=@mnuEditInsertDateTimeClick;
+    itmEditInsertChangeLogEntry.OnClick:=@mnuEditInsertChangeLogEntryClick;
+  end;
 end;
 
 procedure TMainIDE.SetupSearchMenu;
 begin
   inherited SetupSearchMenu;
-  itmGotoIncludeDirective.OnClick:=@mnuGotoIncludeDirectiveClicked;
+  with MainIDEBar do begin
+    itmGotoIncludeDirective.OnClick:=@mnuGotoIncludeDirectiveClicked;
+  end;
 end;
 
 procedure TMainIDE.SetupViewMenu;
 begin
   inherited SetupViewMenu;
-  itmViewInspector.OnClick := @mnuViewInspectorClicked;
-  itmViewSourceEditor.OnClick := @mnuViewSourceEditorClicked;
-  itmViewCodeExplorer.OnClick := @mnuViewCodeExplorerClick;
-  itmViewUnits.OnClick := @mnuViewUnitsClicked;
-  itmViewForms.OnClick := @mnuViewFormsClicked;
-  itmViewUnitDependencies.OnClick := @mnuViewUnitDependenciesClicked;
-  itmViewToggleFormUnit.OnClick := @mnuToggleFormUnitClicked;
-  itmViewMessage.OnClick := @mnuViewMessagesClick;
-  itmViewSearchResults.OnClick := @mnuViewSearchResultsClick;
+  with MainIDEBar do begin
+    itmViewInspector.OnClick := @mnuViewInspectorClicked;
+    itmViewSourceEditor.OnClick := @mnuViewSourceEditorClicked;
+    itmViewCodeExplorer.OnClick := @mnuViewCodeExplorerClick;
+    itmViewUnits.OnClick := @mnuViewUnitsClicked;
+    itmViewForms.OnClick := @mnuViewFormsClicked;
+    itmViewUnitDependencies.OnClick := @mnuViewUnitDependenciesClicked;
+    itmViewToggleFormUnit.OnClick := @mnuToggleFormUnitClicked;
+    itmViewMessage.OnClick := @mnuViewMessagesClick;
+    itmViewSearchResults.OnClick := @mnuViewSearchResultsClick;
+  end;
 end;
 
 procedure TMainIDE.SetupProjectMenu;
 begin
   inherited SetupProjectMenu;
-  itmProjectNew.OnClick := @mnuNewProjectClicked;
-  itmProjectNewFromFile.OnClick := @mnuNewProjectFromFileClicked;
-  itmProjectOpen.OnClick := @mnuOpenProjectClicked;
-  SetRecentProjectFilesMenu;
-  itmProjectSave.OnClick := @mnuSaveProjectClicked;
-  itmProjectSaveAs.OnClick := @mnuSaveProjectAsClicked;
-  itmProjectPublish.OnClick := @mnuPublishProjectClicked;
-  itmProjectInspector.OnClick := @mnuProjectInspectorClicked;
-  itmProjectOptions.OnClick := @mnuProjectOptionsClicked;
-  itmProjectCompilerOptions.OnClick := @mnuProjectCompilerSettingsClicked;
-  itmProjectAddTo.OnClick := @mnuAddToProjectClicked;
-  itmProjectRemoveFrom.OnClick := @mnuRemoveFromProjectClicked;
-  itmProjectViewSource.OnClick := @mnuViewProjectSourceClicked;
-  itmProjectViewToDos.OnClick := @mnuViewProjectTodosClicked;
+  with MainIDEBar do begin
+    itmProjectNew.OnClick := @mnuNewProjectClicked;
+    itmProjectNewFromFile.OnClick := @mnuNewProjectFromFileClicked;
+    itmProjectOpen.OnClick := @mnuOpenProjectClicked;
+    SetRecentProjectFilesMenu;
+    itmProjectSave.OnClick := @mnuSaveProjectClicked;
+    itmProjectSaveAs.OnClick := @mnuSaveProjectAsClicked;
+    itmProjectPublish.OnClick := @mnuPublishProjectClicked;
+    itmProjectInspector.OnClick := @mnuProjectInspectorClicked;
+    itmProjectOptions.OnClick := @mnuProjectOptionsClicked;
+    itmProjectCompilerOptions.OnClick := @mnuProjectCompilerSettingsClicked;
+    itmProjectAddTo.OnClick := @mnuAddToProjectClicked;
+    itmProjectRemoveFrom.OnClick := @mnuRemoveFromProjectClicked;
+    itmProjectViewSource.OnClick := @mnuViewProjectSourceClicked;
+    itmProjectViewToDos.OnClick := @mnuViewProjectTodosClicked;
+  end;
 end;
 
 procedure TMainIDE.SetupRunMenu;
 begin
   inherited SetupRunMenu;
-  itmRunMenuBuild.OnClick := @mnuBuildProjectClicked;
-  itmRunMenuBuildAll.OnClick := @mnuBuildAllProjectClicked;
-  itmRunMenuAbortBuild.OnClick := @mnuAbortBuildProjectClicked;
-  itmRunMenuRun.OnClick := @mnuRunProjectClicked;
-  itmRunMenuPause.Enabled := false;
-  itmRunMenuPause.OnClick := @mnuPauseProjectClicked;
-  itmRunMenuStepInto.OnClick := @mnuStepIntoProjectClicked;
-  itmRunMenuStepOver.OnClick := @mnuStepOverProjectClicked;
-  itmRunMenuRunToCursor.OnClick := @mnuRunToCursorProjectClicked;
-  itmRunMenuStop.OnClick := @mnuStopProjectClicked;
-  itmRunMenuRunParameters.OnClick := @mnuRunParametersClicked;
-  itmRunMenuBuildFile.OnClick := @mnuBuildFileClicked;
-  itmRunMenuRunFile.OnClick := @mnuRunFileClicked;
-  itmRunMenuConfigBuildFile.OnClick := @mnuConfigBuildFileClicked;
+  with MainIDEBar do begin
+    itmRunMenuBuild.OnClick := @mnuBuildProjectClicked;
+    itmRunMenuBuildAll.OnClick := @mnuBuildAllProjectClicked;
+    itmRunMenuAbortBuild.OnClick := @mnuAbortBuildProjectClicked;
+    itmRunMenuRun.OnClick := @mnuRunProjectClicked;
+    itmRunMenuPause.Enabled := false;
+    itmRunMenuPause.OnClick := @mnuPauseProjectClicked;
+    itmRunMenuStepInto.OnClick := @mnuStepIntoProjectClicked;
+    itmRunMenuStepOver.OnClick := @mnuStepOverProjectClicked;
+    itmRunMenuRunToCursor.OnClick := @mnuRunToCursorProjectClicked;
+    itmRunMenuStop.OnClick := @mnuStopProjectClicked;
+    itmRunMenuRunParameters.OnClick := @mnuRunParametersClicked;
+    itmRunMenuBuildFile.OnClick := @mnuBuildFileClicked;
+    itmRunMenuRunFile.OnClick := @mnuRunFileClicked;
+    itmRunMenuConfigBuildFile.OnClick := @mnuConfigBuildFileClicked;
+  end;
 end;
 
 procedure TMainIDE.SetupComponentsMenu;
@@ -1645,16 +1650,18 @@ end;
 procedure TMainIDE.SetupToolsMenu;
 begin
   inherited SetupToolsMenu;
-  itmToolConfigure.OnClick := @mnuToolConfigureClicked;
-  itmToolSyntaxCheck.OnClick := @mnuToolSyntaxCheckClicked;
-  itmToolGuessUnclosedBlock.OnClick := @mnuToolGuessUnclosedBlockClicked;
-  itmToolGuessMisplacedIFDEF.OnClick := @mnuToolGuessMisplacedIFDEFClicked;
-  itmToolMakeResourceString.OnClick := @mnuToolMakeResourceStringClicked;
-  itmToolDiff.OnClick := @mnuToolDiffClicked;
-  itmToolConvertDFMtoLFM.OnClick := @mnuToolConvertDFMtoLFMClicked;
-  itmToolConvertDelphiUnit.OnClick := @mnuToolConvertDelphiUnitClicked;
-  itmToolBuildLazarus.OnClick := @mnuToolBuildLazarusClicked;
-  itmToolConfigureBuildLazarus.OnClick := @mnuToolConfigBuildLazClicked;
+  with MainIDEBar do begin
+    itmToolConfigure.OnClick := @mnuToolConfigureClicked;
+    itmToolSyntaxCheck.OnClick := @mnuToolSyntaxCheckClicked;
+    itmToolGuessUnclosedBlock.OnClick := @mnuToolGuessUnclosedBlockClicked;
+    itmToolGuessMisplacedIFDEF.OnClick := @mnuToolGuessMisplacedIFDEFClicked;
+    itmToolMakeResourceString.OnClick := @mnuToolMakeResourceStringClicked;
+    itmToolDiff.OnClick := @mnuToolDiffClicked;
+    itmToolConvertDFMtoLFM.OnClick := @mnuToolConvertDFMtoLFMClicked;
+    itmToolConvertDelphiUnit.OnClick := @mnuToolConvertDelphiUnitClicked;
+    itmToolBuildLazarus.OnClick := @mnuToolBuildLazarusClicked;
+    itmToolConfigureBuildLazarus.OnClick := @mnuToolConfigBuildLazClicked;
+  end;
   CustomExtToolMenuSeparator:=nil;
   UpdateCustomToolsInMenu;
 end;
@@ -1662,11 +1669,13 @@ end;
 procedure TMainIDE.SetupEnvironmentMenu;
 begin
   inherited SetupEnvironmentMenu;
-  itmEnvGeneralOptions.OnClick := @mnuEnvGeneralOptionsClicked;
-  itmEnvEditorOptions.OnClick := @mnuEnvEditorOptionsClicked;
-  itmEnvCodeToolsOptions.OnClick := @mnuEnvCodeToolsOptionsClicked;
-  itmEnvCodeToolsDefinesEditor.OnClick := @mnuEnvCodeToolsDefinesEditorClicked;
-  itmEnvRescanFPCSrcDir.OnClick := @mnuEnvRescanFPCSrcDirClicked;
+  with MainIDEBar do begin
+    itmEnvGeneralOptions.OnClick := @mnuEnvGeneralOptionsClicked;
+    itmEnvEditorOptions.OnClick := @mnuEnvEditorOptionsClicked;
+    itmEnvCodeToolsOptions.OnClick := @mnuEnvCodeToolsOptionsClicked;
+    itmEnvCodeToolsDefinesEditor.OnClick := @mnuEnvCodeToolsDefinesEditorClicked;
+    itmEnvRescanFPCSrcDir.OnClick := @mnuEnvRescanFPCSrcDirClicked;
+  end;
 end;
 
 procedure TMainIDE.SetupWindowsMenu;
@@ -1677,7 +1686,9 @@ end;
 procedure TMainIDE.SetupHelpMenu;
 begin
   inherited SetupHelpMenu;
-  itmHelpAboutLazarus.OnClick := @mnuHelpAboutLazarusClicked;
+  with MainIDEBar do begin
+    itmHelpAboutLazarus.OnClick := @mnuHelpAboutLazarusClicked;
+  end;
 end;
 
 procedure TMainIDE.LoadMenuShortCuts;
@@ -1688,8 +1699,8 @@ end;
 
 procedure TMainIDE.ConnectMainBarEvents;
 begin
-  OnClose := @MainIDEFormClose;
-  OnCloseQuery := @MainIDEFormCloseQuery;
+  MainIDEBar.OnClose := @MainIDEFormClose;
+  MainIDEBar.OnCloseQuery := @MainIDEFormCloseQuery;
 end;
 
 {------------------------------------------------------------------------------}
@@ -2104,18 +2115,19 @@ Procedure TMainIDE.OpenFileDownArrowClicked(Sender : TObject);
 var
   CurIndex: integer;
   PopupPos: TPoint;
+  OpenMenuItem: TPopupMenu;
 
   procedure AddFile(const Filename: string);
   var
     AMenuItem: TMenuItem;
   begin
-    if OpenFilePopupMenu.Items.Count>CurIndex then
-      AMenuItem:=OpenFilePopupMenu.Items[CurIndex]
+    if MainIDEBar.OpenFilePopupMenu.Items.Count>CurIndex then
+      AMenuItem:=MainIDEBar.OpenFilePopupMenu.Items[CurIndex]
     else begin
       AMenuItem:=TMenuItem.Create(Self);
-      AMenuItem.Name:=OpenFilePopupMenu.Name+'Recent'+IntToStr(CurIndex);
+      AMenuItem.Name:=MainIDEBar.OpenFilePopupMenu.Name+'Recent'+IntToStr(CurIndex);
       AMenuItem.OnClick:=@mnuOpenFilePopupClick;
-      OpenFilePopupMenu.Items.Add(AMenuItem);
+      MainIDEBar.OpenFilePopupMenu.Items.Add(AMenuItem);
     end;
     AMenuItem.Caption:=Filename;
     inc(CurIndex);
@@ -2140,14 +2152,16 @@ Begin
   AddFile('-');
   // add 12 recent files
   AddFiles(EnvironmentOptions.RecentOpenFiles,12);
+  OpenMenuItem:=MainIDEBar.OpenFilePopupMenu;
   // remove unused menuitems
-  while OpenFilePopupMenu.Items.Count>CurIndex do
-    OpenFilePopupMenu.Items[OpenFilePopupMenu.Items.Count-1].Free;
+  while OpenMenuItem.Items.Count>CurIndex do
+    OpenMenuItem.Items[OpenMenuItem.Items.Count-1].Free;
   // calculate screen position to show menu
-  PopupPos := OpenFileSpeedBtn.ClientToScreen(Point(0, OpenFileSpeedBtn.Height));
+  PopupPos := MainIDEBar.OpenFileSpeedBtn.ClientToScreen(
+                                  Point(0, MainIDEBar.OpenFileSpeedBtn.Height));
   // display the PopupMenu
-  if OpenFilePopupMenu.Items.Count > 0 then
-    OpenFilePopupMenu.Popup(PopupPos.X, PopupPos.Y);
+  if OpenMenuItem.Items.Count > 0 then
+    OpenMenuItem.Popup(PopupPos.X, PopupPos.Y);
 end;
 
 procedure TMainIDE.mnuOpenFilePopupClick(Sender: TObject);
@@ -2160,8 +2174,9 @@ begin
   if TheMenuItem.Caption='-' then exit;
   Index:=TheMenuItem.MenuIndex;
   SeparatorIndex:=0;
-  while SeparatorIndex<OpenFilePopupMenu.Items.Count do begin
-    if OpenFilePopupMenu.Items[SeparatorIndex].Caption='-' then break;
+  while SeparatorIndex<MainIDEBar.OpenFilePopupMenu.Items.Count do begin
+    if MainIDEBar.OpenFilePopupMenu.Items[SeparatorIndex].Caption='-' then
+      break;
     inc(SeparatorIndex);
   end;
   if Index=SeparatorIndex then exit;
@@ -2296,11 +2311,11 @@ procedure TMainIDE.mnuQuitClicked(Sender : TObject);
 var CanClose: boolean;
 begin
   CanClose:=true;
-  OnCloseQuery(Sender, CanClose);
+  MainIDEBar.OnCloseQuery(Sender, CanClose);
   {$IFDEF IDE_DEBUG}
   writeln('TMainIDE.mnuQuitClicked 1');
   {$ENDIF}
-  if CanClose then Close;
+  if CanClose then MainIDEBar.Close;
   {$IFDEF IDE_DEBUG}
   writeln('TMainIDE.mnuQuitClicked 2');
   {$ENDIF}
@@ -2400,7 +2415,7 @@ var
   OpenDialog:TOpenDialog;
   AFileName: string;
 begin
-  if Sender=itmProjectOpen then begin
+  if Sender=MainIDEBar.itmProjectOpen then begin
     OpenDialog:=TOpenDialog.Create(Application);
     try
       InputHistories.ApplyFileDialogSettings(OpenDialog);
@@ -2949,7 +2964,9 @@ begin
   // create jit component
   CInterface := TComponentInterface(
     FormEditor1.CreateComponent(nil,AncestorType,
-      ObjectInspector1.Left+ObjectInspector1.Width+60,Top+Height+80,400,300));
+      ObjectInspector1.Left+ObjectInspector1.Width+60,
+      MainIDEBar.Top+MainIDEBar.Height+80,
+      400,300));
   FormEditor1.SetComponentNameAndClass(CInterface,
     NewUnitInfo.ComponentName,'T'+NewUnitInfo.ComponentName);
   NewComponent:=CInterface.Component;
@@ -4182,8 +4199,8 @@ begin
     NewSrcEdit:=SourceNotebook.GetActiveSE;
     NewSrcEdit.EditorComponent.BeginUpdate;
     NewSrcEditorCreated:=true;
-    itmFileClose.Enabled:=True;
-    itmFileCloseAll.Enabled:=True;
+    MainIDEBar.itmFileClose.Enabled:=True;
+    MainIDEBar.itmFileCloseAll.Enabled:=True;
   end else begin
     // revert code in existing source editor
     NewSrcEdit:=SourceNotebook.FindSourceEditorWithPageIndex(PageIndex);
@@ -4310,8 +4327,8 @@ begin
     SourceNotebook.NewFile(CreateSrcEditPageName(NewUnitInfo.UnitName,
                                                  NewUnitInfo.Filename,-1),
                            NewUnitInfo.Source,true);
-    itmFileClose.Enabled:=True;
-    itmFileCloseAll.Enabled:=True;
+    MainIDEBar.itmFileClose.Enabled:=True;
+    MainIDEBar.itmFileCloseAll.Enabled:=True;
     NewSrcEdit:=SourceNotebook.GetActiveSE;
     NewSrcEdit.SyntaxHighlighterType:=NewUnitInfo.SyntaxHighlighter;
     Project1.InsertEditorIndex(SourceNotebook.NoteBook.PageIndex);
@@ -4509,7 +4526,7 @@ begin
   if not (sfSaveToTestDir in Flags) then begin
     ActiveUnitInfo.Modified:=false;
     ActiveSrcEdit.Modified:=false;
-    SaveSpeedBtn.Enabled := SourceNotebook.GetActiveSe.Modified;
+    MainIDEBar.SaveSpeedBtn.Enabled := SourceNotebook.GetActiveSe.Modified;
   end;
   SourceNoteBook.UpdateStatusBar;
 
@@ -4561,8 +4578,8 @@ begin
 
   // close source editor
   SourceNoteBook.CloseFile(PageIndex);
-  itmFileClose.Enabled:=SourceNoteBook.NoteBook<>nil;
-  itmFileCloseAll.Enabled:=itmFileClose.Enabled;
+  MainIDEBar.itmFileClose.Enabled:=SourceNoteBook.NoteBook<>nil;
+  MainIDEBar.itmFileCloseAll.Enabled:=MainIDEBar.itmFileClose.Enabled;
 
   // close file in project
   Project1.CloseEditorIndex(ActiveUnitInfo.EditorIndex);
@@ -5539,8 +5556,8 @@ begin
   if Result<>mrOk then exit;
 
   // publish project
-  Result:=DoPublishModul(Project1.PublishOptions,Project1.ProjectDirectory,
-                         GetProjPublishDir);
+  Result:=DoPublishModule(Project1.PublishOptions,Project1.ProjectDirectory,
+                          GetProjPublishDir);
 end;
 
 function TMainIDE.DoImExportCompilerOptions(Sender: TObject): TModalResult;
@@ -6657,26 +6674,27 @@ var
     // add separator
     if (ToolCount>0) and (CustomExtToolMenuSeparator=nil) then begin
       CustomExtToolMenuSeparator:=CreateMenuSeparator;
-      mnuTools.Add(CustomExtToolMenuSeparator);
+      MainIDEBar.mnuTools.Add(CustomExtToolMenuSeparator);
     end;
     // add enough menuitems
     if CustomExtToolMenuSeparator=nil then exit;
     FirstIndex:=CustomExtToolMenuSeparator.MenuIndex+1;
     LastIndex:=FirstIndex;
-    while (LastIndex<mnuTools.Count) and (mnuTools[LastIndex].Caption<>'-') do
+    while (LastIndex<MainIDEBar.mnuTools.Count)
+    and (MainIDEBar.mnuTools[LastIndex].Caption<>'-') do
       inc(LastIndex);
     ExistingCount:=LastIndex-FirstIndex;
     while ExistingCount<ToolCount do begin
       CurMenuItem := TMenuItem.Create(Self);
       CurMenuItem.Name:='itmToolCustomExt'+IntToStr(ExistingCount);
       CurMenuItem.Caption:=CurMenuItem.Name;
-      mnuTools.Insert(LastIndex,CurMenuItem);
+      MainIDEBar.mnuTools.Insert(LastIndex,CurMenuItem);
       inc(LastIndex);
       inc(ExistingCount);
     end;
     // delete unneeded menuitems
     while ExistingCount>ToolCount do begin
-      mnuTools[LastIndex-1].Free;
+      MainIDEBar.mnuTools[LastIndex-1].Free;
       dec(LastIndex);
       dec(ExistingCount);
     end;
@@ -6691,8 +6709,8 @@ var
     if CustomExtToolMenuSeparator=nil then exit;
     i:=CustomExtToolMenuSeparator.MenuIndex+1;
     Index:=0;
-    while (i<mnuTools.Count) do begin
-      CurMenuItem:=mnuTools[i];
+    while (i<MainIDEBar.mnuTools.Count) do begin
+      CurMenuItem:=MainIDEBar.mnuTools[i];
       if CurMenuItem.Caption='-' then break;
       ExtTool:=EnvironmentOptions.ExternalTools[Index];
       CurMenuItem.Caption:=ExtTool.Title;
@@ -7116,7 +7134,7 @@ begin
   AnUnitList.Free;
 end;
 
-function TMainIDE.DoPublishModul(Options: TPublishModuleOptions;
+function TMainIDE.DoPublishModule(Options: TPublishModuleOptions;
   const SrcDirectory, DestDirectory: string): TModalResult;
 var
   SrcDir, DestDir: string;
@@ -7215,7 +7233,7 @@ begin
   itBuilder:  NewCaption:=Format(liscompiling, [NewCaption]);
   itDebugger: NewCaption:=Format(lisdebugging, [NewCaption]);
   end;
-  Caption:=NewCaption;
+  MainIDEBar.Caption:=NewCaption;
 end;
 
 procedure TMainIDE.HideIDE;
@@ -7233,7 +7251,7 @@ begin
   // collect all windows except the main bar
   for i:=0 to Screen.CustomFormCount-1 do begin
     AForm:=Screen.CustomForms[i];
-    if (AForm<>Self)                          // ignore the main bar
+    if (AForm<>MainIDEBar)                    // ignore the main bar
     and (AForm.Designer=nil)                  // ignore designer forms
     and (AForm.Visible)                       // ignore hidden forms
     and (not (fsModal in AForm.FormState))    // ignore modal forms
@@ -8407,13 +8425,13 @@ end;
 procedure TMainIDE.OnCodeExplorerJumpToCode(Sender: TObject;
   const Filename: string; const Caret: TPoint; TopLine: integer);
 begin
-  DoJumpToSourcePos(Filename,Caret.X,Caret.Y,TopLine,true);
+  DoJumpToSourcePosition(Filename,Caret.X,Caret.Y,TopLine,true);
 end;
 
 procedure TMainIDE.ViewProjectTodosOpenFile(Sender: TObject;
   const Filename: string; const LineNumber: integer);
 begin
-  DoJumpToSourcePos(Filename,1,LineNumber,-1,true);
+  DoJumpToSourcePosition(Filename,1,LineNumber,-1,true);
 end;
 
 procedure TMainIDE.OnCodeToolNeedsExternalChanges(Manager: TCodeToolManager;
@@ -8824,7 +8842,7 @@ begin
   end;
   if ctfSwitchToFormSource in Flags then
     DoSwitchToFormSrc(ADesigner,ActiveSrcEdit,ActiveUnitInfo)
-  else if Designer<>nil then
+  else if ADesigner<>nil then
     GetDesignerUnit(ADesigner,ActiveSrcEdit,ActiveUnitInfo)
   else
     GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
@@ -8840,7 +8858,7 @@ begin
   Result:=true;
 end;
 
-function TMainIDE.DoJumpToSourcePos(const Filename: string; NewX, NewY,
+function TMainIDE.DoJumpToSourcePosition(const Filename: string; NewX, NewY,
   NewTopLine: integer; AddJumpPoint: boolean): TModalResult;
 var
   CodeBuffer: TCodeBuffer;
@@ -9350,7 +9368,7 @@ function TMainIDE.DoFindInFiles: TModalResult;
 begin
   Result:=mrOk;
   DoArrangeSourceEditorAndMessageView(true);
-  SourceNotebook.FindInFiles(Project1);
+  SourceNotebook.FindInFilesPerDialog(Project1);
 end;
 
 procedure TMainIDE.DoCompleteCodeAtCursor;
@@ -9444,16 +9462,16 @@ begin
     Project1.UnitWithEditorIndex(SourceNotebook.Notebook.PageIndex);
   if ActiveUnitInfo = nil then Exit;
 
-  SaveSpeedBtn.Enabled := SourceNotebook.GetActiveSe.Modified;
-  ToggleFormSpeedBtn.Enabled := Assigned(ActiveUnitInfo.Component)
-                                or (ActiveUnitInfo.ComponentName<>'');
+  MainIDEBar.SaveSpeedBtn.Enabled := SourceNotebook.GetActiveSe.Modified;
+  MainIDEBar.ToggleFormSpeedBtn.Enabled := Assigned(ActiveUnitInfo.Component)
+                                          or (ActiveUnitInfo.ComponentName<>'');
 end;
 
 //this is fired when the editor is focused, changed, ?.  Anything that causes the status change
 Procedure TMainIDE.OnSrcNotebookEditorChanged(Sender : TObject);
 begin
   if SourceNotebook.Notebook = nil then Exit;
-  SaveSpeedBtn.Enabled := SourceNotebook.GetActiveSE.Modified;
+  MainIDEBar.SaveSpeedBtn.Enabled := SourceNotebook.GetActiveSE.Modified;
 end;
 
 procedure TMainIDE.OnSrcNotebookShowHintForSource(SrcEdit: TSourceEditor;
@@ -10144,7 +10162,7 @@ begin
   if (not (AParent is TControl))
   and (APersistentClass.InheritsFrom(TControl)) then begin
     MessageDlg('Invalid parent',
-      'A '+Parent.ClassName+' can not hold TControls.'#13
+      'A '+AParent.ClassName+' can not hold TControls.'#13
       +'You can only put non visual components on it.',
       mtError,[mbCancel],0);
     UpdateIDEComponentPalette;
@@ -10434,6 +10452,7 @@ end;
 procedure TMainIDE.OnApplyWindowLayout(ALayout: TIDEWindowLayout);
 var
   l: TNonModalIDEWindow;
+  BarBottom: Integer;
 begin
   if (ALayout=nil) or (ALayout.Form=nil) then exit;
   // writeln('AAA TMainIDE.OnApplyWindowLayout ',ALayout.Form.Name,' ',ALayout.Form.Classname,' ',IDEWindowPlacementNames[ALayout.WindowPlacement],' ',ALayout.CustomCoordinatesAreValid,' ',ALayout.Left,' ',ALayout.Top,' ',ALayout.Width,' ',ALayout.Height);
@@ -10445,14 +10464,15 @@ begin
   end
   else if (not (ALayout.WindowPlacement in [iwpDocked,iwpUseWindowManagerSetting]))
   then begin
+    BarBottom:=MainIDEBar.Top+MainIDEBar.Height;
     // default window positions
     l:=NonModalIDEFormIDToEnum(ALayout.FormID);
     case l of
     nmiwMainIDEName:
       ALayout.Form.SetBounds(0,0,Screen.Width-10,95);
     nmiwSourceNoteBookName:
-      ALayout.Form.SetBounds(250,Top+Height+30,Max(50,Screen.Width-300),
-        Max(50,Screen.Height-200-Top-Height));
+      ALayout.Form.SetBounds(250,BarBottom+30,Max(50,Screen.Width-300),
+        Max(50,Screen.Height-200-BarBottom));
     nmiwUnitDependenciesName:
       ALayout.Form.SetBounds(200,200,400,300);
     nmiwCodeExplorerName:
@@ -10469,7 +10489,7 @@ begin
     else
       if ALayout.FormID=DefaultObjectInspectorName then begin
         ALayout.Form.SetBounds(
-          Left,Top+Height+30,230,Max(Screen.Height-Top-Height-120,50));
+          MainIDEBar.Left,BarBottom+30,230,Max(Screen.Height-BarBottom-120,50));
       end;
     end;
   end;
@@ -10510,6 +10530,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.745  2004/08/08 18:02:44  mattias
+  splitted TMainIDE (main control instance) and TMainIDEBar (IDE menu and palette), added mainbase.pas and mainintf.pas
+
   Revision 1.744  2004/08/07 10:57:08  mattias
   fixed extract proc selection block level check
 

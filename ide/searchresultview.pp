@@ -40,7 +40,7 @@ uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs,
   ComCtrls, ExtCtrls, StdCtrls, Buttons, LCLType,
   IDEOptionDefs, LazarusIDEStrConsts, EnvironmentOpts, InputHistory,
-  FindInFilesDlg, Project;
+  FindInFilesDlg, Project, MainIntf;
 
 
  {TLazSearchMatchPos}
@@ -143,9 +143,7 @@ var
   SearchResultsView: TSearchResultsView;
 
 implementation
-uses
-  MainBar;
-  
+
 { TSearchResultsView }
 
 const
@@ -333,7 +331,7 @@ begin
       Options:= SearchObj.SearchOptions;
       FileMaskComboBox.Text:= SearchObj.SearchMask;
     end;//with
-    SourceNotebook.FindInFiles(Project1, SearchObj.SearchString);
+    MainIDEInterface.FindInFiles(Project1, SearchObj.SearchString);
   end;//if
 end;
 
