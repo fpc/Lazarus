@@ -204,10 +204,8 @@ function gtkLVEndSelection(AList: PGTKCList; AData: gPointer): GBoolean; cdecl;
 function gtkComboBoxShowCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtkComboBoxHideCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 
-(* moved from TGTKObject.CreateComponent *)
 procedure Set_RC_Name(Sender : TObject; AWidget: PGtkWidget);
 
-(* GTKProc.inc headers *)
 procedure RaiseException(const Msg: string);
 function CreatePChar(const s: string): PChar;
 function ComparePChar(P1, P2: PChar): boolean;
@@ -278,6 +276,7 @@ function TranslateGdkPointToClientArea(SourceWindow: PGdkWindow;
 procedure ReleaseMouseCapture(OnlyIfCapturedByLCL: boolean);
 procedure UpdateMouseCaptureControl;
 procedure SetCursor(AWinControl : TWinControl; Data: Pointer);
+function GtkWindowIsModal(GtkWindow: PGtkWindow): boolean;
 
 type
   TConnectSignalFlag = (
