@@ -39,7 +39,8 @@ uses
   MemCheck,
 {$ENDIF}
   Classes, AbstractFormeditor, Controls, PropEdits, TypInfo, ObjectInspector,
-  Forms, IDEComp, JITForms, Compreg, ComponentEditors, Dialogs;
+  Forms, IDEComp, JITForms, Compreg, ComponentEditors, KeyMapping,
+  EditorOptions, Dialogs;
 
 Const OrdinalTypes = [tkInteger,tkChar,tkENumeration,tkbool];
 
@@ -142,13 +143,15 @@ TCustomFormEditor
       OwnerComponent: TComponent): string;
 //    Function CreateComponent(CI : TIComponentInterface; TypeName : String;
     Function CreateComponentInterface(AComponent: TComponent): TIComponentInterface;
-
     Function CreateComponent(ParentCI : TIComponentInterface;
       TypeClass : TComponentClass;  X,Y,W,H : Integer): TIComponentInterface; override;
     Function CreateFormFromStream(BinStream: TStream): TIComponentInterface; override;
     Procedure SetFormNameAndClass(CI: TIComponentInterface; 
       const NewFormName, NewClassName: shortstring);
     Procedure ClearSelected;
+    
+    function TranslateKeyToDesignerCommand(Key: word; Shift: TShiftState): integer;
+    
     property SelectedComponents: TComponentSelectionList
       read FSelectedComponents write SetSelectedComponents;
     property Obj_Inspector : TObjectInspector
@@ -158,6 +161,7 @@ TCustomFormEditor
 
 
 implementation
+
 
 uses
   SysUtils;
@@ -895,6 +899,12 @@ end;
 Procedure TCustomFormEditor.ClearSelected;
 Begin
   FSelectedComponents.Clear;
+end;
+
+function TCustomFormEditor.TranslateKeyToDesignerCommand(Key: word;
+  Shift: TShiftState): integer;
+begin
+  Result:=EditorOpts.KeyMap.TranslateKey(Key,Shift,[caDesigner]);
 end;
 
 Function TCustomFormEditor.CreateComponentInterface(

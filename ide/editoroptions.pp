@@ -1677,7 +1677,7 @@ begin
   ASynEdit.MaxUndo:=fUndoLimit;
   GetSynEditSelectedColor(ASynEdit);
   
-  KeyMap.AssignTo(ASynEdit.KeyStrokes);
+  KeyMap.AssignTo(ASynEdit.KeyStrokes,[caSourceEditor]);
 end;
 
 procedure TEditorOptions.SetSynEditSettings(ASynEdit:TSynEdit);
@@ -1753,7 +1753,7 @@ begin
   ASynEdit.ExtraLineSpacing:=fExtraLineSpacing;
   ASynEdit.ReadOnly:=true;
 
-  KeyMap.AssignTo(ASynEdit.KeyStrokes);
+  KeyMap.AssignTo(ASynEdit.KeyStrokes,[caSourceEditor]);
 end;
 
 
@@ -1910,7 +1910,7 @@ begin
         if EditorOpts.UseSyntaxHighlight then
           Highlighter:=PreviewSyn;
         EditorOpts.GetSynEditSettings(PreviewEdits[a]);
-        EditorOpts.KeyMap.AssignTo(PreviewEdits[a].KeyStrokes);
+        EditorOpts.KeyMap.AssignTo(PreviewEdits[a].KeyStrokes,[caSourceEditor]);
         if a<>3 then begin
           Lines.Text:=EditorOpts.HighlighterList[CurLanguageID].SampleSource;
           PreviewEdits[a].Options:=PreviewEdits[a].Options
@@ -2530,7 +2530,7 @@ begin
       ANode.Text:=KeyMappingRelationToString(ARelation);
       for i:=Low(PreviewEdits) to High(PreviewEdits) do
         if PreviewEdits[i]<>nil then
-          EditorOpts.KeyMap.AssignTo(PreviewEdits[i].KeyStrokes);
+          EditorOpts.KeyMap.AssignTo(PreviewEdits[i].KeyStrokes,[caSourceEditor]);
     end;
   end;
 end;
