@@ -332,15 +332,6 @@ type
         determined by the file extension of the file.  If the file extension is
         not recognized an exception is generated.
       SaveToFile - Writes the picture to disk.
-      LoadFromClipboardFormat - Reads the picture from the handle provided in
-        the given clipboard format.  If the format is not supported, an
-        exception is generated.
-      SaveToClipboardFormats - Allocates a global handle and writes the picture
-        in its native clipboard format (CF_BITMAP for bitmaps, CF_METAFILE
-        for metafiles, etc.).  Formats will contain the formats written.
-        Returns the number of clipboard items written to the array pointed to
-        by Formats and Datas or would be written if either Formats or Datas are
-        nil.
       SupportsClipboardFormat - Returns true if the given clipboard format
         is supported by LoadFromClipboardFormat.
       Assign - Copys the contents of the given TPicture.  Used most often in
@@ -386,10 +377,6 @@ type
     destructor Destroy; override;
     procedure LoadFromFile(const Filename: string);
     procedure SaveToFile(const Filename: string);
-    //procedure LoadFromClipboardFormat(AFormat: Word; AData: THandle;
-    //  APalette: HPALETTE);
-    //procedure SaveToClipboardFormat(var AFormat: Word; var AData: THandle;
-    //  var APalette: HPALETTE);
     //class function SupportsClipboardFormat(AFormat: Word): Boolean;
     procedure Assign(Source: TPersistent); override;
     class procedure RegisterFileFormat(const AnExtension, ADescription: string;
@@ -745,6 +732,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.17  2001/11/12 22:12:57  lazarus
+  MG: fixed parser: multiple brackets, nil, string[]
+
   Revision 1.16  2001/11/09 19:14:23  lazarus
   HintWindow changes
   Shane
