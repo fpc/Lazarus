@@ -26,12 +26,12 @@ interface
 
 uses
   InterfaceBase, Interfaces,   LCLStrConsts,
-	Buttons,    Extctrls,        Registry,     VCLGlobals,   Calendar,
-	Clipbrd,    Filectrl,        Forms,        LCLLinux,     Spin,
-	Comctrls,   Graphics,        LMessages,    Stdctrls,     Arrow,
-	Controls,   Imglist,         Menus,        Toolwin,
-	Dialogs,    Messages,        UTrace,       DynHashArray,
-	Clistbox,   Lazqueue;
+	Buttons,       Extctrls,        Registry,     VCLGlobals,   Calendar,
+	Clipbrd,       Filectrl,        Forms,        LCLLinux,     Spin,
+	Comctrls,      Graphics,        LMessages,    Stdctrls,     Arrow,
+  Controls,      Imglist,         Menus,        Toolwin,      Dialogs,
+  Messages,      UTrace,          DynHashArray, Clistbox,     Lazqueue,
+  ActnList,      GraphicsMath;
 
 implementation
 
@@ -40,6 +40,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.13  2002/08/08 18:05:46  lazarus
+  MG: added graphics extensions from Andrew Johnson
+
   Revision 1.12  2002/07/04 11:46:00  lazarus
   MG: moved resourcestring to lclstrconsts.pas
 

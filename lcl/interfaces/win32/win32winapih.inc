@@ -20,6 +20,7 @@
 //##apiwiz##sps##   // Do not remove
 
 Function Arc(DC: HDC; X, Y, Width, Height, Angle1, Angle2: Integer): Boolean; Override;
+function AngleChord(DC: HDC; x,y,width,height,angle1,angle2 : Integer): Boolean; override;
 
 Function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean; Override;
 Function BringWindowToTop(HWnd: HWND): Boolean; Override;
@@ -151,6 +152,9 @@ Function WindowFromPoint(Point: TPoint): HWND; Override;
 { =============================================================================
 
   $Log$
+  Revision 1.8  2002/08/08 18:05:48  lazarus
+  MG: added graphics extensions from Andrew Johnson
+
   Revision 1.7  2002/05/13 22:00:25  lazarus
   Keith: Implemented GetWindowSize
 

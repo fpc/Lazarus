@@ -21,6 +21,7 @@
 //##apiwiz##sps##   // Do not remove
 
 function Arc(DC: HDC; x,y,width,height,angle1,angle2 : Integer): Boolean; override;
+function AngleChord(DC: HDC; x,y,width,height,angle1,angle2 : Integer): Boolean; override;
 
 function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean; override;
 Function BringWindowToTop(hWnd : HWND): Boolean; override;
@@ -161,6 +162,9 @@ Function WindowFromPoint(Point : TPoint) : HWND; override;
 { =============================================================================
 
   $Log$
+  Revision 1.37  2002/08/08 18:05:48  lazarus
+  MG: added graphics extensions from Andrew Johnson
+
   Revision 1.36  2002/08/08 17:26:40  lazarus
   MG: added property TMenuItems.RightJustify
 

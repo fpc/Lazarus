@@ -652,6 +652,22 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:   TCanvas.Chord
+  Params:   x,y,width,height,angle1,angle2
+  Returns:  Nothing
+
+  Use Chord to draw a filled Chord-shape on the canvas. The angles angle1 and
+  angle2 are 1/16th of a degree. For example, a full circle equals 5760(16*360).
+  Positive values of Angle and AngleLength mean counter-clockwise while negative
+  values mean clockwise direction. Zero degrees is at the 3'o clock position.
+
+------------------------------------------------------------------------------}
+procedure TCanvas.Chord(x,y,width,height,angle1,angle2 : Integer);
+begin
+  RequiredState([csHandleValid, csBrushValid, csPenValid]);
+  LCLLinux.AngleChord(FHandle,x,y,width,height,angle1,angle2);
+end;
+{------------------------------------------------------------------------------
   Method: TCanvas.Destroy
   Params:  None
   Returns: Nothing
@@ -834,6 +850,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.20  2002/08/08 18:05:46  lazarus
+  MG: added graphics extensions from Andrew Johnson
+
   Revision 1.19  2002/06/04 15:17:22  lazarus
   MG: improved TFont for XLFD font names
 

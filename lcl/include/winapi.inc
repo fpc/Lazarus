@@ -34,6 +34,11 @@ begin
   Result := InterfaceObject.Arc(DC,x,y,width,height,angle1,angle2);
 end;
 
+function AngleChord(DC: HDC; x,y,width,height,angle1,angle2 : Integer): Boolean;
+begin
+  Result := InterfaceObject.AngleChord(DC,x,y,width,height,angle1,angle2);
+end;
+
 function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean; 
 begin
   Result := InterfaceObject.BitBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Rop);
@@ -1115,6 +1120,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.38  2002/08/08 18:05:46  lazarus
+  MG: added graphics extensions from Andrew Johnson
+
   Revision 1.37  2002/08/08 17:26:38  lazarus
   MG: added property TMenuItems.RightJustify
 

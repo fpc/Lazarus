@@ -59,6 +59,27 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
+  Method:   AngleChord
+  Params:   DC,x,y,width,height,angle1,angle2
+  Returns:  Nothing
+
+  Use AngleChord to draw a filled Chord-shape on the canvas. The angles angle1
+  and angle2 are 1/16th of a degree. For example, a full circle equals 5760
+  16*360). Positive values of Angle and AngleLength mean counter-clockwise while
+  negative values mean clockwise direction. Zero degrees is at the 3'o clock
+  position.
+
+------------------------------------------------------------------------------}
+Function TWin32Object.AngleChord(DC: HDC; X, Y, Width, Height, Angle1,
+  Angle2: Integer): Boolean;
+var
+  SX, SY, EX, EY : Longint;
+Begin
+  Angles2Coords(X,Y,Width,Height,Angle1,Angle2, SX, SY, EX, EY);
+  Result := Windows.Chord(DC, X, Y, X+Width, Y+Height, SX,SY,EX,EY);
+End;
+
+{------------------------------------------------------------------------------
   Method:  BitBlt
   Params:  DestDC        - The destination device context
            X, Y          - The left/top corner of the destination rectangle
@@ -1215,9 +1236,14 @@ End;
 
   NOTE: This just calls Arc
  ------------------------------------------------------------------------------}
-Function TWin32Object.Pie(DC: HDC; X, Y, Width, Height, Angle1, Angle2: Integer): Boolean;
+Function TWin32Object.Pie(DC: HDC;
+  X, Y, Width, Height, Angle1, Angle2: Integer): Boolean;
+var
+  SX, SY, EX, EY : Longint;
 Begin
-  Result := Arc(DC, X, Y, Width, Height, Angle1, Angle2);
+  // Old: Result := Arc(DC, X, Y, Width, Height, Angle1, Angle2);
+  Angles2Coords(X,Y,Width,Height,Angle1,Angle2, SX, SY, EX, EY);
+  Result := Windows.Pie(DC, X, Y, X+Width, Y+Height, SX,SY,EX,EY);
 End;
 
 {------------------------------------------------------------------------------
@@ -1851,6 +1877,9 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.11  2002/08/08 18:05:48  lazarus
+  MG: added graphics extensions from Andrew Johnson
+
   Revision 1.10  2002/05/13 22:00:24  lazarus
   Keith: Implemented GetWindowSize
 

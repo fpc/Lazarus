@@ -78,6 +78,46 @@ begin
   end;
 end;
 
+ {------------------------------------------------------------------------------
+  Method:   AngleChord
+  Params:   DC,x,y,width,height,angle1,angle2
+  Returns:  Nothing
+
+  Use AngleChord to draw a filled Chord-shape on the canvas. The angles angle1
+  and angle2 are 1/16th of a degree. For example, a full circle equals 5760
+  16*360). Positive values of Angle and AngleLength mean counter-clockwise while
+  negative values mean clockwise direction. Zero degrees is at the 3'o clock
+  position.
+
+------------------------------------------------------------------------------}
+function TgtkObject.AngleChord(DC: HDC;
+  x,y,width,height,angle1,angle2 : Integer): Boolean;
+var
+  Points : PPoint;
+  Count : Longint;
+begin
+  Result := IsValidDC(DC);
+  if Result
+  then with PDeviceContext(DC)^ do
+  begin
+    if GC = nil
+    then begin
+      WriteLn('WARNING: [TgtkObject.AngleChord] Uninitialized GC');
+      Result := False;
+    end
+    else begin
+      Points := nil;
+      Count := 0;
+      PolyBezierArcPoints(X,Y,Width,Height,Angle1, Angle2, 0, Points, Count);
+      Inc(Count);
+      ReallocMem(Points, Count*SizeOf(TPoint));
+      Points[Count - 1] := Points[0];
+      Self.Polygon(DC, Points, Count, True);
+      ReallocMem(Points, 0);
+      Result := True;
+    end;
+  end;
+end;
 
 {------------------------------------------------------------------------------
   Function: BitBlt
@@ -3507,8 +3547,11 @@ end;
   Zero degrees is at the 3'o clock position. 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.Pie(DC: HDC; 
+function TgtkObject.Pie(DC: HDC;
   x,y,width,height,angle1,angle2 : Integer): Boolean;
+var
+  Points : PPoint;
+  Count : Longint;
 begin
   Result := IsValidDC(DC);
   if Result
@@ -3520,14 +3563,25 @@ begin
       Result := False;
     end
     else begin
+      Points := nil;
+      Count := 0;
+      PolyBezierArcPoints(X,Y,Width,Height,Angle1, Angle2, 0, Points, Count);
+      Inc(Count,2);
+      ReallocMem(Points, Count*SizeOf(TPoint));
+      Points[Count - 2] := CenterPoint(Rect(X,Y,X+Width,Y+Height));
+      Points[Count - 1] := Points[0];
+      Self.Polygon(DC, Points, Count, True);
+      ReallocMem(Points, 0);
+      { Old:
       // first draw interior in brush color
       SelectGDKBrushProps(DC);
-      gdk_draw_arc(Drawable, GC, 1, X, Y, Width, Height, 
+      gdk_draw_arc(Drawable, GC, 1, X, Y, Width, Height,
                    Angle1 shl 2, Angle2 shl 2);
       // Draw outline
       SelectGDKPenProps(DC);
-      gdk_draw_arc(Drawable, GC, 0, X, Y, Width, Height, 
+      gdk_draw_arc(Drawable, GC, 0, X, Y, Width, Height,
                    Angle1 shl 2, Angle2 shl 2);
+      }
       Result := True;
     end;
   end;
@@ -3614,8 +3668,7 @@ begin
 
       // draw outline
       SelectGDKPenProps(DC);
-      gdk_draw_polygon(Drawable, GC, 0, PointArray, NumPts);
-      
+      gdk_draw_lines(Drawable, GC, PointArray, NumPts);
       FreeMem(PointArray);
       
       Result := True;
@@ -4887,6 +4940,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.90  2002/08/08 18:05:47  lazarus
+  MG: added graphics extensions from Andrew Johnson
+
   Revision 1.89  2002/08/08 17:26:39  lazarus
   MG: added property TMenuItems.RightJustify
 

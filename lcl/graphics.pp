@@ -474,6 +474,7 @@ type
     Procedure BrushCopy(Dest : TRect; InternalImages: TBitmap; Src : TRect;
                         TransparentColor :TColor);
     constructor Create;
+    procedure Chord(x,y,width,height,angle1,angle2 : Integer);
     Procedure CopyRect(const Dest : TRect; Canvas : TCanvas; const Source : TRect);
     destructor Destroy; override;
     Procedure Draw(X,Y: Integer; Graphic : TGraphic);
@@ -822,6 +823,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.36  2002/08/08 18:05:46  lazarus
+  MG: added graphics extensions from Andrew Johnson
+
   Revision 1.35  2002/08/06 09:32:48  lazarus
   MG: moved TColor definition to graphtype.pp and registered TColor names
 
