@@ -45,6 +45,8 @@ type
     FCount: integer;
     function GetNewItem: PLazQueueItem;
     procedure DisposeItem(AnItem: PLazQueueItem);
+    procedure Unbind(AnItem: PLazQueueItem);
+    procedure AddAsLast(AnItem: PLazQueueItem);
   public
     property First: PLazQueueItem read FFirst;
     property Last: PLazQueueItem read FLast;
@@ -53,6 +55,7 @@ type
     property Count: integer read FCount;
     procedure AddLast(Data: Pointer);
     procedure Delete(AnItem: PLazQueueItem);
+    procedure MoveToLast(AnItem: PLazQueueItem);
     function Find(Data: Pointer): PLazQueueItem;
     procedure Clear;
     function ConsistencyCheck: integer;
@@ -104,24 +107,21 @@ var NewItem: PLazQueueItem;
 begin
   NewItem:=GetNewItem;
   NewItem^.Data:=Data;
-  NewItem^.Prior:=FLast;
-  NewItem^.Next:=nil;
-  FLast:=NewItem;
-  if NewItem^.Prior<>nil then
-    NewItem^.Prior^.Next:=NewItem;
-  if FFirst=nil then FFirst:=NewItem;
-  inc(FCount);
+  AddAsLast(NewItem);
 end;
 
 procedure TLazQueue.Delete(AnItem: PLazQueueItem);
 begin
   if AnItem=nil then exit;
-  if FFirst=AnItem then FFirst:=FFirst^.Next;
-  if FLast=AnItem then FLast:=FLast^.Prior;
-  if AnItem^.Prior<>nil then AnItem^.Prior^.Next:=AnItem^.Next;
-  if AnItem^.Next<>nil then AnItem^.Next^.Prior:=AnItem^.Prior;
+  Unbind(AnItem);
   DisposeItem(AnItem);
-  dec(FCount);
+end;
+
+procedure TLazQueue.MoveToLast(AnItem: PLazQueueItem);
+begin
+  if AnItem=nil then exit;
+  Unbind(AnItem);
+  AddAsLast(AnItem);
 end;
 
 procedure TLazQueue.Clear;
@@ -170,6 +170,30 @@ begin
       end;
     end;
   end;
+end;
+
+procedure TLazQueue.Unbind(AnItem: PLazQueueItem);
+begin
+  if AnItem=nil then exit;
+  if FFirst=AnItem then FFirst:=FFirst^.Next;
+  if FLast=AnItem then FLast:=FLast^.Prior;
+  if AnItem^.Prior<>nil then AnItem^.Prior^.Next:=AnItem^.Next;
+  if AnItem^.Next<>nil then AnItem^.Next^.Prior:=AnItem^.Prior;
+  AnItem^.Prior:=nil;
+  AnItem^.Next:=nil;
+  dec(FCount);
+end;
+
+procedure TLazQueue.AddAsLast(AnItem: PLazQueueItem);
+begin
+  AnItem^.Prior:=FLast;
+  AnItem^.Next:=nil;
+  FLast:=AnItem;
+  if AnItem^.Prior<>nil then
+    AnItem^.Prior^.Next:=AnItem
+  else
+    FFirst:=AnItem;
+  inc(FCount);
 end;
 
 function TLazQueue.Find(Data: Pointer): PLazQueueItem;

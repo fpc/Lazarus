@@ -331,7 +331,10 @@ const
   LM_RBUTTONTRIPLECLK = LM_USER+72;
   LM_RBUTTONQUADCLK = LM_USER+73;
 
-  LM_UNKNOWN = LM_User+99;
+  LM_INTERFACEFIRST = LM_User+99;
+  LM_INTERFACELAST = LM_User+199;
+
+  LM_UNKNOWN = LM_INTERFACELAST+1;
 
 
 type
@@ -840,6 +843,9 @@ end.
 
 {
   $Log$
+  Revision 1.28  2002/08/28 09:40:48  lazarus
+  MG: reduced paint messages and DC getting/releasing
+
   Revision 1.27  2002/08/06 09:32:48  lazarus
   MG: moved TColor definition to graphtype.pp and registered TColor names
 

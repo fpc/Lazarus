@@ -97,6 +97,7 @@ designer/componenteditors.pas svneol=native#text/pascal
 designer/controlselection.pp svneol=native#text/pascal
 designer/customeditor.pp svneol=native#text/pascal
 designer/designer.pp svneol=native#text/pascal
+designer/designerprocs.pas svneol=native#text/pascal
 designer/designerstr.pas svneol=native#text/pascal
 designer/filesystem.pp svneol=native#text/pascal
 designer/jitforms.pp svneol=native#text/pascal

@@ -43,6 +43,8 @@ var
 
 
 function DeliverPostMessage(const Target: Pointer; var TheMessage): GBoolean;
+var
+  PaintMsg: TLMPaint;
 begin
   if TObject(Target) is TWinControl then
   begin
@@ -51,15 +53,22 @@ begin
   end
   else
   begin
-    Result := DeliverMessage(Target, TheMessage) = 0;
+    if TLMessage(TheMessage).Msg<>LM_GtkPAINT then
+      Result := DeliverMessage(Target, TheMessage) = 0
+    else begin
+      PaintMsg:= GtkPaintMessageToPaintMessage(TLMGtkPaint(TheMessage));
+      Result := DeliverMessage(Target,PaintMsg) = 0;
+    end;
   end;
 end;
 
-procedure EventTrace(Themessage : string; data : pointer);
+procedure EventTrace(const TheMessage : string; data : pointer);
 begin
-  if Data = nil 
-  then Assert(False, Format('Trace:Event [%s] fired',[Themessage]))
-  else Assert(False, Format('Trace:Event [%s] fired for %s',[Themessage, TObject(data).Classname]));
+  if Data = nil then
+    Assert(False, Format('Trace:Event [%s] fired',[Themessage]))
+  else
+    Assert(False, Format('Trace:Event [%s] fired for %s',
+      [TheMessage, TObject(data).Classname]));
 end;
 
 {*************************************************************}
@@ -92,7 +101,7 @@ end;
   but before the widget itself got the realize signal.
   That means that the gdk window on the xserver has been created.
 -------------------------------------------------------------------------------}
-function GTKRealizeCB(Widget: PGtkWidget; Data: Pointer): GBoolean; cdecl;
+function gtkRealizeCB(Widget: PGtkWidget; Data: Pointer): GBoolean; cdecl;
 begin
   EventTrace('realize', nil);
 
@@ -119,7 +128,7 @@ end;
   has initialized the gdkwindow. This function is used for the second part of
   the initialization of a widget.
 -------------------------------------------------------------------------------}
-function GTKRealizeAfterCB(Widget: PGtkWidget; Data: Pointer): GBoolean; cdecl;
+function gtkRealizeAfterCB(Widget: PGtkWidget; Data: Pointer): GBoolean; cdecl;
 var
   WinWidgetInfo: PWinWidgetInfo;
   HiddenLCLObject, LCLObject: TObject;
@@ -267,21 +276,79 @@ begin
 //   Result := DeliverMessage(Data, MSG) = 0;
 end;
 
-function gtkdraw(Widget: PGtkWidget; area: PGDKRectangle;
+function gtkDraw(Widget: PGtkWidget; area: PGDKRectangle;
   data: gPointer) : GBoolean; cdecl;
 var
-  MSG: TLMPaint;
+  MSG: TLMGtkPaint;
 begin
   Result := True;
   EventTrace('draw', data);
-  MSG.Msg := LM_PAINT;
-  MSG.DC := GetDC(THandle(Widget));
-  MSG.Unused := 0;
+  
+  MSG.Msg := LM_GtkPAINT;
+  MSG.Widget := Widget;
+  MSG.Unused1 := 0;
+  MSG.Unused2 := 0;
+  
 
   Result := DeliverPostMessage(Data, MSG);
-//   Result := DeliverMessage(Data, MSG) = 0;
 end;
 
+function gtkDrawAfter(Widget: PGtkWidget; area: PGDKRectangle;
+  data: gPointer) : GBoolean; cdecl;
+var
+  MSG: TLMGtkPaint;
+  DesignOnlySignal: boolean;
+begin
+  Result := True;
+  EventTrace('DrawAfter', data);
+  
+  if not (csDesigning in TComponent(Data).ComponentState) then begin
+    DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstDrawAfter);
+    if DesignOnlySignal then exit;
+  end else begin
+    {$IFDEF VerboseDesignerDraw}
+    writeln('gtkDrawAfter',
+      ' Widget=',HexStr(Cardinal(Widget),8),
+      ' ',TComponent(Data).Name);
+    {$ENDIF}
+  end;
+
+  MSG.Msg := LM_GtkPAINT;
+  MSG.Widget := Widget;
+  MSG.Unused1 := 0;
+  MSG.Unused2 := 0;
+
+  Result := DeliverPostMessage(Data, MSG);
+end;
+
+function gtkExposeEventAfter(Widget: PGtkWidget; Event : PGDKEventExpose;
+  Data: gPointer): GBoolean; cdecl;
+var
+  MSG: TLMGtkPaint;
+  DesignOnlySignal: boolean;
+begin
+  Result := True;
+  EventTrace('expose-event', data);
+  if (Event^.Count > 0) then exit;
+
+  if not (csDesigning in TComponent(Data).ComponentState) then begin
+    DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstExposeAfter);
+    if DesignOnlySignal then exit;
+  end else begin
+    {$IFDEF VerboseDesignerDraw}
+    writeln('gtkExposeAfter',
+      ' Widget=',HexStr(Cardinal(Widget),8),
+      ' ',TComponent(Data).Name);
+    {$ENDIF}
+  end;
+
+  MSG.Msg := LM_GtkPAINT;
+  MSG.Widget := Widget;
+  MSG.Unused1 := 0;
+  MSG.Unused2 := 0;
+
+  Result := DeliverPostMessage(Data, MSG);
+end;
 
 function gtkfrmactivate( widget: PGtkWidget; Event : TgdkEventFocus;
   data: gPointer) : GBoolean; cdecl;
@@ -307,27 +374,6 @@ function GTKMap(Widget: PGTKWidget; Data: gPointer): GBoolean; cdecl;
 begin
   Result := True;
   EventTrace('map', data);
-end;
-
-function GTKExposeEvent(Widget: PGtkWidget; Event : PGDKEventExpose;
-  Data: gPointer): GBoolean; cdecl;
-var
-//  Mess : TLMessage;
-//  fWindow : pgdkWindow;
-//  widget2: pgtkWidget;
-//  PixMap : pgdkPixMap;
-  
-  msg: TLMPaint;
-begin
-  Result := True;
-  EventTrace('expose-event', data);
-  if (Event^.Count > 0) then exit;
-  
-  msg.msg := LM_PAINT; 
-  MSG.DC := GetDC(THandle(Widget));
-  msg.Unused := 0; 
-   
-  Result := DeliverPostMessage(Data, MSG);
 end;
 
 function GTKKeyUpDown(Widget: PGtkWidget; Event : pgdkeventkey;
@@ -519,7 +565,7 @@ end;
   If the mouse is on the top-left pixel of the container widget then the
   coordinates can be negative, if there is frame around the client area.
 -------------------------------------------------------------------------------}
-function GTKMotionNotify(Widget:PGTKWidget; Event: PGDKEventMotion;
+function gtkMotionNotify(Widget:PGTKWidget; Event: PGDKEventMotion;
   Data: gPointer): GBoolean; cdecl;
 var
   Msg: TLMMouseMove;
@@ -541,12 +587,12 @@ begin
 
   CheckMouseCaptureHandle(Widget);
 
-  if csDesigning in TControl(Data).ComponentState then begin
-    // stop the signal, so that the widget does not auto react
-    gtk_signal_emit_stop_by_name(PGTKObject(Widget),'motion-notify-event');
-  end else begin
+  if not (csDesigning in TComponent(Data).ComponentState) then begin
     DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMouseMotion);
     if DesignOnlySignal then exit;
+  end else begin
+    // stop the signal, so that the widget does not auto react
+    gtk_signal_emit_stop_by_name(PGTKObject(Widget),'motion-notify-event');
   end;
 
   MappedXY:=TranslateGdkPointToClientArea(Event^.Window,
@@ -709,7 +755,7 @@ begin
   writeln('');
   DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMousePress);
   writeln('[gtkMouseBtnPress] ',
-    TControl(Data).Name,':',TObject(Data).ClassName,
+    TComponent(Data).Name,':',TObject(Data).ClassName,
     ' Widget=',HexStr(Cardinal(Widget),8),
     ' ControlWidget=',HexStr(Cardinal(TWinControl(Data).Handle),8),
     ' DSO=',DesignOnlySignal,
@@ -730,13 +776,13 @@ begin
 
   CheckMouseCaptureHandle(Widget);
 
-  if csDesigning in TControl(Data).ComponentState then begin
+  if not (csDesigning in TComponent(Data).ComponentState) then begin
+    DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMousePress);
+    if DesignOnlySignal then exit;
+  end else begin
     // stop the signal, so that the widget does not auto react
     if TControl(Data).FCompStyle<>csNotebook then
       gtk_signal_emit_stop_by_name(PGTKObject(Widget),'button-press-event');
-  end else begin
-    DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMousePress);
-    if DesignOnlySignal then exit;
   end;
 
   EventXY:=Point(trunc(Event^.X),trunc(Event^.Y));
@@ -863,7 +909,7 @@ begin
   {$IFDEF VerboseMouseBugfix}
   DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMouseRelease);
   writeln('[gtkMouseBtnRelease] A ',
-    TControl(Data).Name,':',TObject(Data).ClassName,' ',
+    TComponent(Data).Name,':',TObject(Data).ClassName,' ',
     ' Widget=',HexStr(Cardinal(Widget),8),
     ' DSO=',DesignOnlySignal,
     ' ',Trunc(Event^.X),',',Trunc(Event^.Y),' Btn=',event^.Button);
@@ -875,13 +921,13 @@ begin
 
   CheckMouseCaptureHandle(Widget);
 
-  if csDesigning in TControl(Data).ComponentState then begin
+  if not (csDesigning in TComponent(Data).ComponentState) then begin
+    DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMouseRelease);
+    if DesignOnlySignal then exit;
+  end else begin
     // stop the signal, so that the widget does not auto react
     if TControl(Data).FCompStyle<>csNotebook then
       gtk_signal_emit_stop_by_name(PGTKObject(Widget),'button-release-event');
-  end else begin
-    DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMouseRelease);
-    if DesignOnlySignal then exit;
   end;
 
   EventTrace('Mouse button release', data);
@@ -2206,6 +2252,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.114  2002/08/28 09:40:49  lazarus
+  MG: reduced paint messages and DC getting/releasing
+
   Revision 1.113  2002/08/27 18:45:13  lazarus
   MG: propedits text improvements from Andrew, uncapturing, improved comobobox
 

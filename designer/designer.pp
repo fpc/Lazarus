@@ -37,7 +37,8 @@ interface
 uses
   Classes, LCLType, LCLLinux, Forms, Controls, LMessages, GraphType, Graphics,
   ControlSelection, CustomFormEditor, FormEditor, UnitEditor, CompReg, Menus,
-  AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg, ExtCtrls, EnvironmentOpts;
+  AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg, ExtCtrls, EnvironmentOpts,
+  DesignerProcs;
 
 type
   TDesigner = class;
@@ -134,6 +135,8 @@ type
     Procedure OnFormActivated;
   public
     ControlSelection : TControlSelection;
+    DC: TDesignerDeviceContext;
+    
     constructor Create(Customform : TCustomform;
        AControlSelection: TControlSelection);
     destructor Destroy; override;
@@ -149,7 +152,7 @@ type
     Procedure SelectOnlyThisComponent(AComponent:TComponent);
     function NonVisualComponentLeftTop(AComponent: TComponent): TPoint;
     function NonVisualComponentAtPos(x,y: integer): TComponent;
-    procedure DrawNonVisualComponents(DC: HDC);
+    procedure DrawNonVisualComponents(DDC: TDesignerDeviceContext);
     function GetDesignedComponent(AComponent: TComponent): TComponent;
 
     property ShowGrid: boolean read GetShowGrid write SetShowGrid;
@@ -220,6 +223,8 @@ begin
   FHintWindow.Caption := 'This is a hint window'#13#10'Neat huh?';
   FHintWindow.HideInterval := 4000;
   FHintWindow.AutoHide := True;
+  
+  DC:=TDesignerDeviceContext.Create;
 end;
 
 destructor TDesigner.Destroy;
@@ -229,6 +234,7 @@ Begin
     
   FHintWIndow.Free;
   FHintTimer.Free;
+  DC.Free;
   Inherited Destroy;
 end;
 
@@ -322,25 +328,34 @@ function TDesigner.PaintControl(Sender: TControl; TheMessage: TLMPaint):boolean;
 var OldDuringPaintControl: boolean;
 begin
   Result:=true;
+  
 //writeln('TDesigner.PaintControl A ',Sender.Name);
   //writeln('***  LM_PAINT A ',Sender.Name,':',Sender.ClassName,' DC=',HexStr(Message.DC,8));
+  // Set flag
   OldDuringPaintControl:=FDuringPaintControl;
   FDuringPaintControl:=true;
+  
+  // send the Paint message to the control, so that it paints itself
 //writeln('TDesigner.PaintControl B ',Sender.Name);
   Sender.Dispatch(TheMessage);
-//writeln('TDesigner.PaintControl C ',Sender.Name);
+  {$IFDEF VerboseDesignerDraw}
+  writeln('TDesigner.PaintControl C ',Sender.Name,' DC=',HexStr(Cardinal(TheMessage.DC),8));
+  {$ENDIF}
 
+  // paint the Designer stuff
   if TheMessage.DC<>0 then begin
+    DC.SetDC(Form,TheMessage.DC);
     //writeln('***  LM_PAINT B ',Sender.Name,':',Sender.ClassName,' DC=',HexStr(Message.DC,8));
     if (ControlSelection.IsSelected(Sender)) then begin
       // writeln('***  LM_PAINT ',Sender.Name,':',Sender.ClassName,' DC=',HexStr(Message.DC,8));
-      ControlSelection.DrawMarker(Sender,TheMessage.DC);
+      ControlSelection.DrawMarker(Sender,DC);
     end;
-    DrawNonVisualComponents(TheMessage.DC);
-    ControlSelection.DrawGrabbers(TheMessage.DC);
-    ControlSelection.DrawGuideLines(TheMessage.DC);
+    DrawNonVisualComponents(DC);
+    ControlSelection.DrawGrabbers(DC);
+    ControlSelection.DrawGuideLines(DC);
     if ControlSelection.RubberBandActive then
-      ControlSelection.DrawRubberBand(TheMessage.DC);
+      ControlSelection.DrawRubberBand(DC);
+    DC.Clear;
   end;
 //writeln('TDesigner.PaintControl D ',Sender.Name);
 
@@ -924,21 +939,17 @@ Begin
 
 end;
 
-procedure TDesigner.DrawNonVisualComponents(DC: HDC);
+procedure TDesigner.DrawNonVisualComponents(DDC: TDesignerDeviceContext);
 var
   i, j, ItemLeft, ItemTop, ItemRight, ItemBottom,
   IconWidth, IconHeight: integer;
-  FormOrigin, DCOrigin, Diff, ItemLeftTop: TPoint;
-  SaveIndex: HDC;
+  Diff, ItemLeftTop: TPoint;
   IconRect: TRect;
   IconCanvas: TCanvas;
 begin
-  GetWindowOrgEx(DC, DCOrigin);
-  FormOrigin:=FCustomForm.ClientOrigin;
-  Diff.X:=FormOrigin.X-DCOrigin.X;
-  Diff.Y:=FormOrigin.Y-DCOrigin.Y;
-  SaveIndex:=SaveDC(DC);
-  FCustomForm.Canvas.Handle:=DC;
+  Diff:=DC.FormOrigin;
+  DDC.Save;
+  FCustomForm.Canvas.Handle:=DDC.DC;
   for i:=0 to FCustomForm.ComponentCount-1 do begin
     if not (FCustomForm.Components[i] is TControl) then begin
       // non-visual component
@@ -985,7 +996,6 @@ begin
     end;
   end;
   FCustomForm.Canvas.Handle:=0;
-  RestoreDC(DC,SaveIndex);
 end;
 
 function TDesigner.GetDesignedComponent(AComponent: TComponent): TComponent;
