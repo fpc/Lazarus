@@ -132,7 +132,6 @@ type
     constructor Create(AOwner: TComponent); override;
     procedure ValidateEdit; virtual;
     procedure Clear;
-    function GetTextLen: Integer;
     property IsMasked: Boolean read GetMasked;
     property EditText: string read GetEditText write SetEditText;
     property Text: string read GetMaskText write SetMaskText;
@@ -669,11 +668,6 @@ end;
 function TCustomMaskEdit.GetEditText: string;
 begin
   Result := inherited Text;
-end;
-
-function TCustomMaskEdit.GetTextLen: Integer;
-begin
-  Result := Length(Text);
 end;
 
 function TCustomMaskEdit.GetMaskText: string;

@@ -183,5 +183,12 @@ begin
   end;
 end;
 
+procedure TBitBtn.InitializeWnd;
+begin
+  inherited;
+  // temp hack to force glyp creation 
+  CNSendMessage(LM_IMAGECHANGED,Self,nil);
+end;
+
 // included by buttons.pp
 

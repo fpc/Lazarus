@@ -138,16 +138,11 @@ begin
   end;
 end;
 
-function TCustomPanel.GetText: TCaption;
+procedure TCustomPanel.RealSetText(const Value: TCaption);
 begin
-  Result := FCaption;
-end;
-
-procedure TCustomPanel.SetText(const Value: TCaption);
-begin
-  if Caption <> Value then begin
-    FCaption := Value;
-//    TextChanged;
+  if Caption <> Value 
+  then begin
+    inherited RealSetText(Value);
     Invalidate;
   end;
 end;

@@ -72,7 +72,7 @@ type
     procedure DoSendBtnDefault; virtual;
 
     procedure SetParent(AParent: TWinControl); override;
-    procedure SetText(const Value: TCaption); override;
+    procedure RealSetText(const Value: TCaption); override;
     function ChildClassAllowed(ChildClass: TClass): boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -156,9 +156,10 @@ type
     //Return the caption associated with the aKind value.
     function GetCaptionOfKind(aKind: TBitBtnKind) : String;
   protected
-    Procedure Click; override;
-    procedure GlyphChanged(Sender : TObject);
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
+    procedure Click; override;
+    procedure GlyphChanged(Sender : TObject);
+    procedure InitializeWnd; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; Override;
@@ -245,7 +246,7 @@ type
     procedure SetMargin(const Value : integer);
     procedure SetNumGlyphs(Value : integer);
     procedure SetSpacing(const Value : integer);
-    procedure SetText(const Value: TCaption); override;
+    procedure RealSetText(const Value: TCaption); override;
     procedure UpdateState(InvalidateOnChange: boolean); virtual;
     function GetDrawFlags: integer; virtual;
     property MouseInControl: Boolean read FMouseInControl;
@@ -329,6 +330,11 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.64  2004/04/18 23:55:39  marc
+  * Applied patch from Ladislav Michl
+  * Changed the way TControl.Text is resolved
+  * Added setting of text to TWSWinControl
+
   Revision 1.63  2004/03/19 00:03:14  marc
   * Moved the implementation of (GTK)ButtonCreateHandle to the new
     (GTK)WSButton class

@@ -289,6 +289,7 @@ type
     procedure RemoveCallbacks(Widget: PGtkWidget); virtual;
   public
     // for gtk specific components:
+    procedure SetLabelCaption(const ALabel: PGtkLabel; const ACaption: String; const AComponent: TComponent; const ASignalWidget: PGTKWidget; const ASignal: PChar); virtual;
     procedure SetCallback(const AMsg: LongInt; const AGTKObject: PGTKObject; const ALCLObject: TObject); virtual;
     procedure SendPaintMessagesForInternalWidgets(AWinControl: TWinControl);
     function  LCLtoGtkMessagePending: boolean;virtual;
@@ -463,6 +464,11 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.181  2004/04/18 23:55:39  marc
+  * Applied patch from Ladislav Michl
+  * Changed the way TControl.Text is resolved
+  * Added setting of text to TWSWinControl
+
   Revision 1.180  2004/04/03 16:47:46  mattias
   implemented converting gdkbitmap to RawImage mask
 

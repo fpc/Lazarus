@@ -817,7 +817,7 @@ type
     FBorderWidth : TBorderWidth;
     FBorderStyle : TControlBorderStyle;
     FAlignment : TAlignment;
-    FCaption : TCaption;
+//    FCaption : TCaption;
     FFullRepaint: Boolean;
     procedure SetAlignment(const Value : TAlignment);
     procedure SetBevelInner(const Value: TPanelBevel);
@@ -827,8 +827,7 @@ type
     procedure SetBorderStyle(const Value: TControlBorderStyle);
   protected
     procedure AdjustClientRect(var Rect: TRect); override;
-    function GetText: TCaption; override;
-    procedure SetText(const Value: TCaption); override;
+    procedure RealSetText(const Value: TCaption); override;
     procedure Paint; override;
     function ParentColorIsStored: boolean;
   public
@@ -932,6 +931,11 @@ end.
 
  {
   $Log$
+  Revision 1.102  2004/04/18 23:55:39  marc
+  * Applied patch from Ladislav Michl
+  * Changed the way TControl.Text is resolved
+  * Added setting of text to TWSWinControl
+
   Revision 1.101  2004/04/02 19:39:46  mattias
   fixed checking empty mask raw image
 

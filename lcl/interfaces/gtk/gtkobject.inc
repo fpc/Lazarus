@@ -1082,7 +1082,43 @@ procedure TGtkWidgetSet.SendCachedGtkMessages;
 
 begin
   SendCachedGtkResizeNotifications;
+end;    
+
+{------------------------------------------------------------------------------
+  Method: TGtkWidgetSet.SetLabelCaption
+  Params:  ALabel: The label to set the caption for
+           ACaption: The caption to set
+           AComponent: The component the label belongs to
+           ASignalWidget: A widget to connect the accelerator to
+           ASignal: The signal to connect
+  Returns: Nothing
+
+  Sets the Caption of a gtklabel. If a accelerator is present, it is connected.
+ ------------------------------------------------------------------------------}
+procedure TGtkWidgetSet.SetLabelCaption(const ALabel: PGtkLabel; const ACaption: String; const AComponent: TComponent; const ASignalWidget: PGTKWidget; const ASignal: PChar); 
+var
+  Caption, Pattern: String;
+  AccelKey: Char;
+begin
+  Caption := ACaption;
+  LabelFromAmpersands(Caption, Pattern, AccelKey);
+
+  gtk_label_set_text(ALabel, PChar(Caption));
+  
+{$ifdef gtk1}
+  gtk_label_set_pattern(ALabel, PChar(Pattern));
+{$endif gtk1}
+  
+  if AComponent = nil then Exit;
+  if ASignalWidget = nil then Exit;
+  if ASignal = '' then Exit;
+  
+  // update the Accelerator
+  if AccelKey = #0 
+  then Accelerate(AComponent, ASignalWidget, GDK_VOIDSYMBOL, 0, ASignal)
+  else Accelerate(AComponent, ASignalWidget, Ord(AccelKey), 0, ASignal);
 end;
+
 
 {------------------------------------------------------------------------------
   procedure TGtkWidgetSet.RealizeWidgetSize(Widget: PGtkWidget; NewWidth,
@@ -3118,7 +3154,6 @@ var
   Rect        : TRect;
   FormIconGdiObject: PGdiObject;     // currently only used by LM_SETFORMICON
   Geometry    : TGdkGeometry;
-  Accel       : integer;
   AWindow     : PGdkWindow;
 begin
   Result := 0;   //default value just in case nothing sets it
@@ -3378,24 +3413,11 @@ begin
            PixMapWid:=nil;
          end;
 
-         pStr := Ampersands2Underscore(PChar(TBitBtn(Sender).Caption));
-         try
-           pLabel := gtk_label_new(pStr);
-           Accel:= gtk_label_parse_uline(PGtkLabel(pLabel), pStr);
+         pLabel := gtk_label_new('bitbtn'); // the real text is set later
 
-           Accelerate(TBitBtn(Sender),PGtkWidget(TBitBtn(Sender).Handle),
-             Accel,0,'clicked');
-         finally
-           StrDispose(pStr);
-         end;
-
-         if (TBitBtn(Sender).Layout in [blGlyphLeft,blGlyphRight]) then
-         Begin
-           box1 := gtk_hbox_new(False,0);
-         end
-         else Begin
-           box1 := gtk_vbox_new(False,0);
-         end;
+         if (TBitBtn(Sender).Layout in [blGlyphLeft,blGlyphRight]) 
+         then box1 := gtk_hbox_new(False,0)
+         else box1 := gtk_vbox_new(False,0);
 
          if (TBitBtn(Sender).Layout in [blGlyphLeft,blGlyphTop]) then
          begin
@@ -3421,6 +3443,9 @@ begin
          gtk_widget_show(pLabel);
          gtk_container_add(PgtkContainer(handle),box1);
          gtk_widget_show(box1);
+                              
+         // Set the text for the new created label                     
+         TGtkWSBitBtn.SetText(TBitBtn(Sender), TBitBtn(Sender).Caption);
       end;
 
   //SH: think of TBitmap.handle!!!!
@@ -4384,7 +4409,9 @@ begin
   end;
 
   if Sender is TWinControl
-  then Assert(False, Format('Trace:  [TGtkWidgetSet.SetLabel] %s --> label %s', [Sender.ClassName, TControl(Sender).Caption]))
+  then begin
+    Assert(False, Format('Trace:  [TGtkWidgetSet.SetLabel] %s --> label %s', [Sender.ClassName, TControl(Sender).Caption]));
+  end
   else begin
     Assert(False, Format('Trace:WARNING: [TGtkWidgetSet.SetLabel] %s --> No Decendant of TWinControl', [Sender.ClassName]));
     RaiseException('[TGtkWidgetSet.SetLabel] ERROR: Sender ('+Sender.Classname+')'
@@ -4397,10 +4424,11 @@ begin
   pLabel := pchar(Data);
 
   case TControl(Sender).fCompStyle of
-  csBitBtn      : IntSendMessage3(LM_IMAGECHANGED,Sender,nil);
-
-  csButton
-  {$IFNDEF NewToolBar},csToolButton{$ENDIF}  :
+    csBitBtn,
+    csButton: WriteLN('[WARNING] Obsolete call to TGTKOBject.SetLabel for ', Sender.ClassName); 
+  
+{$IFNDEF NewToolBar}
+  csToolButton:
     with PgtkButton(P)^ do
     begin
       //aLabel := StrAlloc(Length(AnsiString(PLabel)) + 1);
@@ -4424,6 +4452,7 @@ begin
         StrDispose(aLabel);
       end;
     end;
+{$ENDIF}
 
   csForm,
   csFileDialog, csOpenFileDialog, csSaveFileDialog, csSelectDirectoryDialog,
@@ -4508,7 +4537,7 @@ begin
     end;
 
   else
-    //writeln('WARNING: [TGtkWidgetSet.SetLabel] --> not handled for class ',Sender.ClassName);
+    // writeln('WARNING: [TGtkWidgetSet.SetLabel] --> not handled for class ',Sender.ClassName);
   end;
   Assert(False, Format('trace:  [TGtkWidgetSet.SetLabel] %s --> END', [Sender.ClassName]));
 end;
@@ -6500,14 +6529,7 @@ begin
       gtk_object_set_data(pgtkObject(p),'Label',Label1);
     end;
 
-  csButton :
-    begin
-      AccelText := Ampersands2Underscore(StrTemp);
-      p := gtk_button_new_with_label(AccelText);
-      AccelKey:=gtk_label_parse_uline(PGtkLabel(gtk_bin_get_child(P)), AccelText);
-      Accelerate(TComponent(Sender),PGtkWidget(p),AccelKey,0,'clicked');
-      StrDispose(AccelText);
-    end;
+  csButton: WriteLN('[WARNING] Obsolete call to TGTKOBject.CreateComponent for ', Sender.ClassName); 
 
   csCalendar :
     begin
@@ -9382,6 +9404,11 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.495  2004/04/18 23:55:39  marc
+  * Applied patch from Ladislav Michl
+  * Changed the way TControl.Text is resolved
+  * Added setting of text to TWSWinControl
+
   Revision 1.494  2004/04/11 18:58:25  micha
   fix (lm_)setcursor changes for gtk target
 

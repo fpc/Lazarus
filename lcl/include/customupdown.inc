@@ -226,15 +226,12 @@ begin
 end;
 
 procedure TCustomUpDown.UpdateUpDownPositionText;
-var
-  str : String;
 begin
-  if (not (csDesigning in ComponentState)) and (FAssociate <> nil) then begin
-    If Thousands then
-      Str := FloatToStrF(FPosition, ffNumber, 0, 0)
-    else
-      str := IntToStr(FPosition);
-    FAssociate.SetText(Str);
+  if (not (csDesigning in ComponentState)) and (FAssociate <> nil) 
+  then begin
+    if Thousands 
+    then FAssociate.Text := FloatToStrF(FPosition, ffNumber, 0, 0)
+    else FAssociate.Text := IntToStr(FPosition);
   end;
 end;
 
@@ -405,7 +402,7 @@ var
   InvalidNumber : Boolean;
 begin
   If Associate <> nil then begin
-    str := Associate.GetText;
+    str := Associate.Text;
     InvalidNumber := False;
     For I := Length(str) downto 1 do
       case str[I] of

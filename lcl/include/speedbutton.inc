@@ -203,12 +203,12 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure TSpeedButton.SetText(const Value: TCaption);
+  procedure TSpeedButton.RealSetText(const Value: TCaption);
  ------------------------------------------------------------------------------}
-procedure TSpeedButton.SetText(const Value: TCaption);
+procedure TSpeedButton.RealSetText(const Value: TCaption);
 begin
   if Caption=Value then exit;
-  inherited SetText(Value);
+  inherited RealSetText(Value);
   Invalidate;
 end;
 
@@ -773,6 +773,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.52  2004/04/18 23:55:39  marc
+  * Applied patch from Ladislav Michl
+  * Changed the way TControl.Text is resolved
+  * Added setting of text to TWSWinControl
+
   Revision 1.51  2004/04/10 17:58:57  mattias
   implemented mainunit hints for include files
 

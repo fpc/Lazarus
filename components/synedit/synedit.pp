@@ -401,7 +401,10 @@ type
     function GetMaxUndo: Integer;
     function GetSelAvail: Boolean;
     function GetSelText: string;
-    function GetText: string; override;
+    function SynGetText: string; 
+    {$IFDEF SYN_LAZARUS}
+    function RealGetText: string; override;
+    {$ENDIF}
     procedure GutterChanged(Sender: TObject);
     procedure InsertBlock(BB, BE: TPoint; ChangeStr: PChar);
     function IsPointInSelection(Value: TPoint): boolean;
@@ -458,7 +461,10 @@ type
     procedure SetSelText(const Value: string);
     procedure SetSelTextExternal(const Value: string);
     procedure SetTabWidth(Value: integer);
-    procedure SetText(const Value: string); override;
+    procedure SynSetText(const Value: string); 
+    {$IFDEF SYN_LAZARUS}
+    procedure RealSetText(const Value: string); override;
+    {$ENDIF}
     procedure SetTopLine(Value: Integer);
     procedure SetWantTabs(const Value: boolean);
     procedure SetWordBlock(Value: TPoint);
@@ -686,7 +692,7 @@ type
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default FALSE;
     property SelAvail: Boolean read GetSelAvail;
     property SelText: string read GetSelText write SetSelTextExternal;
-    property Text: string read GetText write SetText;
+    property Text: string read SynGetText write SynSetText;
     property TopLine: Integer read fTopLine write SetTopLine;
     {$IFDEF SYN_LAZARUS}
     procedure Update; override;
@@ -1565,10 +1571,17 @@ begin
   end;
 end;
 
-function TCustomSynEdit.GetText: string;
+function TCustomSynEdit.SynGetText: string;
 begin
   Result := Lines.Text;
 end;
+
+{$IFDEF SYN_LAZARUS}
+function TCustomSynEdit.RealGetText: string;
+begin
+  Result := Lines.Text;
+end;                                                    
+{$ENDIF}
 
 procedure TCustomSynEdit.HideCaret;
 begin
@@ -4027,10 +4040,17 @@ begin
   end;
 end;
 
-procedure TCustomSynEdit.SetText(const Value: string);
+procedure TCustomSynEdit.SynSetText(const Value: string);
 begin
   Lines.Text := Value;
 end;
+
+{$IFDEF SYN_LAZARUS}
+procedure TCustomSynEdit.RealSetText(const Value: string);
+begin
+  Lines.Text := Value;
+end;
+{$ENDIF}
 
 procedure TCustomSynEdit.SetTopLine(Value: Integer);
 var

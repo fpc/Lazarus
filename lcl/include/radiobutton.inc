@@ -57,16 +57,16 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TRadioButton.SetText
+  Method: TRadioButton.RealSetText
   Params:  Value: TCaption
   Returns: nothing
 
   Change the caption, and then recreate to update, then call to AutoSize
  ------------------------------------------------------------------------------}
-procedure TRadioButton.SetText(const Value: TCaption);
+procedure TRadioButton.RealSetText(const Value: TCaption);
 begin
   if Text=Value then exit;
-  Inherited SetText(Value);
+  Inherited RealSetText(Value);
   DoAutoSize;
 end;
 
@@ -106,6 +106,11 @@ end;
 
 {
   $Log$
+  Revision 1.18  2004/04/18 23:55:39  marc
+  * Applied patch from Ladislav Michl
+  * Changed the way TControl.Text is resolved
+  * Added setting of text to TWSWinControl
+
   Revision 1.17  2004/04/10 17:58:57  mattias
   implemented mainunit hints for include files
 

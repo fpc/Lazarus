@@ -1895,17 +1895,44 @@ end;
   TControl GetText
 ------------------------------------------------------------------------------}
 function TControl.GetText: TCaption;
+var
+  len: Integer;
 begin
-  Assert(False, 'Trace:[TControl.GetText]');
+  // Check if GetTextBuf is overridden, otherwise
+  // we can call RealGetText directly
+  if Integer(@Self.GetTextBuf) = Integer(@TControl.GetTextBuf)
+  then begin
+    Result := RealGetText;
+  end
+  else begin
+    // Bummer, we have to do it the compatible way.
+    WriteLN('Note: GetTextBuf is overridden for: ', Classname);
+    
+    len := GetTextLen;
+    if len = 0 
+    then begin
+      Result := '';
+    end
+    else begin
+      SetLength(Result, len+1); // make sure there is room for the extra #0
+      FillChar(Result[1], len, #0);
+      len := GetTextBuf(@Result[1], len+1); 
+      SetLength(Result, len);
+    end;
+  end;
+end;
 
-  if (Self is TWinControl)
-  and TWinControl(Self).HandleAllocated
-  and (not (csLoading in ComponentState))
-  and boolean(CNSendMessage(LM_GETTEXT, Self, @Result))
-  then Assert(False, Format('Trace:[TControl.GetText] %s got: "%s"', [ClassName, Result]))
-  else Result := FCaption;
+{------------------------------------------------------------------------------
+  TControl RealGetText
+------------------------------------------------------------------------------}
+function TControl.RealGetText: TCaption;
+begin
+  Result := FCaption;
+end;
 
-  Assert(False, 'Trace:<TControl.GetText> End');
+function TControl.GetTextLen: Integer; 
+begin
+  Result := Length(FCaption);
 end;
 
 function TControl.GetAction: TBasicAction;
@@ -2616,18 +2643,21 @@ end;
   Params:  None
   Returns: Nothing
 
+  Copies max bufsize-1 chars to buffer
  ------------------------------------------------------------------------------}
 function TControl.GetTextBuf(Buffer: PChar; BufSize: Integer): Integer;
 var
   S: string;
 begin
-  S := GetText;
-  if BufSize<=0 then exit;
-  if length(S) >= BufSize
+  if BufSize <= 0 then Exit;
+
+  S := RealGetText;
+  if Length(S) >= BufSize
   then begin
-    StrPCopy(Buffer, copy(S, 1, BufSize-1));
+    StrPLCopy(Buffer, S, BufSize - 1);
     Result := BufSize - 1;
-  end else begin
+  end 
+  else begin
     StrPCopy(Buffer, S);
     Result := length(S);
   end;
@@ -2637,12 +2667,41 @@ end;
   Method: TControl.SetTextBuf
   Params:  None
   Returns: Nothing
-
-
+  
  ------------------------------------------------------------------------------}
-Procedure TControl.SetTextBuf(Buffer : PChar);
-Begin
+procedure TControl.SetTextBuf(Buffer: PChar);
+begin
+  RealSetText(Buffer);
+end;
+
+{------------------------------------------------------------------------------}
+{  TControl RealSetText                                                            }
+{------------------------------------------------------------------------------}
+procedure TControl.RealSetText(const Value: TCaption);
+begin
+  if FCaption = Value then Exit;
+  FCaption := Value;
   Perform(CM_TEXTCHANGED, 0, 0);
+end;
+
+{------------------------------------------------------------------------------}
+{  TControl SetText                                                            }
+{------------------------------------------------------------------------------}
+procedure TControl.SetText(const Value: TCaption);
+begin
+  if GetText = Value then Exit;
+  
+  // Check if SetTextBuf is overridden, otherwise
+  // we can call RealSetText directly
+  if Integer(@Self.SetTextBuf) = Integer(@TControl.SetTextBuf)
+  then begin
+    RealSetText(Value);
+  end
+  else begin
+    // Bummer, we have to do it the compatible way.
+    WriteLN('Note: SetTextBuf is overridden for: ', Classname);
+    SetTextBuf(PChar(Value));
+  end;
 end;
 
 {------------------------------------------------------------------------------}
@@ -2651,17 +2710,6 @@ end;
 procedure TControl.Update;
 begin
   if Parent<>nil then Parent.Update;
-end;
-
-{------------------------------------------------------------------------------}
-{  TControl SetText                                                            }
-{------------------------------------------------------------------------------}
-procedure TControl.SetText(const Value: TCaption);
-begin
-  if GetText = Value then exit;
-  //  Need to set FCaption otherwise those components that simply
-  //  check FCaption will always be wrong.
-  FCaption := Value;
 end;
 
 {------------------------------------------------------------------------------
@@ -2875,6 +2923,11 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.183  2004/04/18 23:55:39  marc
+  * Applied patch from Ladislav Michl
+  * Changed the way TControl.Text is resolved
+  * Added setting of text to TWSWinControl
+
   Revision 1.182  2004/04/11 10:19:28  micha
   cursor management updated:
   - lcl notifies interface via WSControl.SetCursor of changes

@@ -50,7 +50,8 @@ end;
 procedure TButton.CreateWnd;
 begin
   inherited CreateWnd;
-  SetText(Caption);//To ensure shortcut is set
+  //this is done in TWinControl
+  //SetText(Caption);//To ensure shortcut is set
   DoSendBtnDefault;
 end;
 
@@ -116,12 +117,12 @@ begin
   Click;
 end;
 
-procedure TButton.SetText(const Value: TCaption);
+procedure TButton.RealSetText(const Value: TCaption);
 var
   ParseStr : String;
   AccelIndex : Longint;
 begin
-  Inherited SetText(Value);
+  Inherited RealSetText(Value);
   If (not HandleAllocated) or (csDesigning in ComponentState) then exit;
   ParseStr := Value;
   AccelIndex := DeleteAmpersands(ParseStr);
@@ -144,6 +145,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.25  2004/04/18 23:55:39  marc
+  * Applied patch from Ladislav Michl
+  * Changed the way TControl.Text is resolved
+  * Added setting of text to TWSWinControl
+
   Revision 1.24  2004/04/10 17:58:56  mattias
   implemented mainunit hints for include files
 

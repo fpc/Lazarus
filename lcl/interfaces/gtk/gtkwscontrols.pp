@@ -55,7 +55,6 @@ type
   private
   protected
   public
-    class procedure SetCursor(AControl: TControl; ACursor: TCursor); override;
   end;
 
   { TGtkWSWinControl }
@@ -65,6 +64,7 @@ type
   protected
   public
     class procedure SetCallbacks(const AGTKObject: PGTKObject; const AComponent: TComponent);
+    class procedure SetCursor(const AControl: TControl; const ACursor: TCursor); override;
   end;
 
   { TGtkWSGraphicControl }
@@ -97,14 +97,6 @@ implementation
 uses
   GtkProc, GtkDef, GtkInt;
 
-{ TGtkWSControl }
-  
-procedure TGtkWSControl.SetCursor(AControl: TControl; ACursor: TCursor);
-begin
-  { TODO: Dangerous cast here! TControl.SetCursor exists }
-  gtkproc.SetCursor(AControl as TWinControl, ACursor); 
-end;
-
 { TGtkWSWinControl }
   
 procedure TGtkWSWinControl.SetCallbacks(const AGTKObject: PGTKObject; const AComponent: TComponent);
@@ -129,6 +121,11 @@ begin
   GtkWidgetSet.SetCallback(LM_MOUSEWHEEL, AGTKObject, AComponent);
 end;
 
+procedure TGtkWSWinControl.SetCursor(const AControl: TControl; const ACursor: TCursor);
+begin
+  GtkProc.SetCursor(AControl as TWinControl, ACursor); 
+end;
+
 
 initialization
 
@@ -139,8 +136,8 @@ initialization
 // which actually implement something
 ////////////////////////////////////////////////////
 //  RegisterWSComponent(TDragImageList, TGtkWSDragImageList);
-  RegisterWSComponent(TControl, TGtkWSControl);
-//  RegisterWSComponent(TWinControl, TGtkWSWinControl);
+//  RegisterWSComponent(TControl, TGtkWSControl);
+  RegisterWSComponent(TWinControl, TGtkWSWinControl);
 //  RegisterWSComponent(TGraphicControl, TGtkWSGraphicControl);
 //  RegisterWSComponent(TCustomControl, TGtkWSCustomControl);
 //  RegisterWSComponent(TImageList, TGtkWSImageList);

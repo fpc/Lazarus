@@ -3061,13 +3061,12 @@ begin
   Assert(False, Format('Trace:[TWinControl.InitializeWnd]  %s', [ClassName]));
   // set all cached properties
 
-  // MWE:All of this should be handled to the interface create routine
-  Assert(False, 'Trace:TODO: [TWinControl.InitializeWnd] move this code to the interface');
-
 //writeln('[TWinControl.InitializeWnd] ',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height);
   DoSendBoundsToInterface;
   CNSendMessage(LM_SHOWHIDE, Self, nil);
-  if [wcfColorChanged,wcfFontChanged]*FFLags<>[] then begin
+
+  if [wcfColorChanged,wcfFontChanged]*FFLags<>[] 
+  then begin
     // replace by update style call
     CNSendMessage(LM_SETCOLOR, Self, nil);
     FFlags:=FFlags-[wcfColorChanged,wcfFontChanged];
@@ -3075,15 +3074,10 @@ begin
 
   EnableWindow(Handle, Enabled);
 
-  SetTextBuf(PChar(FCaption));
-  Assert(False, 'Trace:SETPROP**********************************************');
+  RealSetText(FCaption);
 
   SetProp(Handle,'WinControl',TWinControl(Self));
   SetProp(Handle,'Control',TControl(Self));
-
-  if (Parent=nil) then begin
-
-  end;
 
   // send pending resize event
   Resize;
@@ -3138,11 +3132,14 @@ end;
   Params:  None
   Returns: Nothing
 
-  Creates the interface object.
+  Destroys the interface object.
  ------------------------------------------------------------------------------}
 procedure TWinControl.DestroyWnd;
 begin
-  if HandleAllocated then begin
+  if HandleAllocated 
+  then begin    
+    // make sure our text is saved
+    FCaption := GetText;
     DestroyComponent;
     Handle := 0;
   end;
@@ -3176,20 +3173,8 @@ begin
   Result:=FBrush<>nil;
 end;
 
-function TWinControl.GetTextBuf(Buffer: PChar; BufSize: Integer): Integer;
-begin
-  Result:=inherited GetTextBuf(Buffer, BufSize);
-end;
-
-procedure TWinControl.SetTextBuf(Buffer: PChar);
-begin
-  if not HandleAllocated then exit;
-  CNSendMessage(LM_SetLabel, Self, Buffer);
-  inherited SetTextBuf(Buffer);
-end;
-
 {------------------------------------------------------------------------------
-  Method: TControl.BeginUpdateBounds
+  Method: TWinControl.BeginUpdateBounds
   Params:  None
   Returns: Nothing
 
@@ -3319,20 +3304,47 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TWinControl.SetText
+  Method:  TWinControl.RealGetText
+  Params:  None
+  Returns: The text
+
+  Gets the text/caption of a control
+ ------------------------------------------------------------------------------}
+function TWinControl.RealGetText: TCaption;
+begin
+  if not HandleAllocated 
+  or (csLoading in ComponentState) 
+  or not TWSWinControlClass(WidgetSetClass).GetText(Self, Result)
+  then Result := inherited RealGetText;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TWinControl.GetTextLen
+  Params:  None
+  Returns: The length of the text
+
+  Gets the length of the text/caption of a control
+ ------------------------------------------------------------------------------}
+function TWinControl.GetTextLen: Integer;
+begin
+  if not HandleAllocated 
+  or (csLoading in ComponentState) 
+  or not TWSWinControlClass(WidgetSetClass).GetTextLen(Self, Result)
+  then Result := inherited GetTextLen;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TWinControl.RealSetText
   Params:  Value: the text to be set
   Returns: Nothing
 
   Sets the text/caption of a control
  ------------------------------------------------------------------------------}
-procedure TWinControl.SetText(const Value: TCaption);
+procedure TWinControl.RealSetText(const Value: TCaption);
 begin
-  if HandleAllocated and (not (csLoading in ComponentState)) then
-    FCaption:=Text;
-  if FCaption = Value then exit;
-  FCaption := Value;
-  if HandleAllocated then
-    SetTextBuf(PChar(FCaption));
+  if HandleAllocated and (not (csLoading in ComponentState)) 
+  then TWSWinControlClass(WidgetSetClass).SetText(Self, Value);
+  inherited;
 end;
 
 {------------------------------------------------------------------------------
@@ -3448,6 +3460,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.219  2004/04/18 23:55:39  marc
+  * Applied patch from Ladislav Michl
+  * Changed the way TControl.Text is resolved
+  * Added setting of text to TWSWinControl
+
   Revision 1.218  2004/04/10 17:58:57  mattias
   implemented mainunit hints for include files
 

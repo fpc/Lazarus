@@ -812,7 +812,9 @@ begin
         gdk_pixmap_new(DefGdkWindow, Width, Height, BitCount);
       GdiObject^.Visual := gdk_window_get_visual(GdiObject^.GDIPixmapObject);
     end;
-
+    gdk_visual_ref(GdiObject^.Visual);
+    GdiObject^.SystemVisual := False;
+	    
     // the visual is created only when needed
     {If GdiObject^.Visual <> nil then
       gdk_visual_ref(GdiObject^.Visual)
@@ -970,6 +972,8 @@ begin
       end;
       GdiObject^.GDIPixmapObject := GDkWindow;
       GdiObject^.Visual := gdk_window_get_visual(GdiObject^.GDIPixmapObject);
+      gdk_visual_ref(GdiObject^.Visual);
+      GdiObject^.SystemVisual := False;
     end;
 
     // if we are here the bitmap was created successfully
@@ -1205,10 +1209,16 @@ begin
       GdiObject^.Visual := gdk_window_get_visual(GdiObject^.GDIPixmapObject);
     end;
 
-    If GdiObject^.Visual = nil then
-      GdiObject^.Visual := gdk_visual_get_best_with_depth(Depth)
-    else
+    If GdiObject^.Visual = nil then begin
+      GdiObject^.Visual := gdk_visual_get_best_with_depth(Depth);
+      If GdiObject^.Visual = nil then 
+        GdiObject^.Visual := gdk_visual_get_system;
+      GdiObject^.SystemVisual := True;
+    end
+    else begin
       gdk_visual_ref(GdiObject^.Visual);
+      GdiObject^.SystemVisual := False;
+    end;
 
     GdiObject^.Colormap := gdk_colormap_new(GdiObject^.Visual, GdkTrue);
 
@@ -1754,10 +1764,16 @@ begin
 
     GdiObject^.Visual := gdk_window_get_visual(GdiObject^.GDIPixmapObject);
 
-    If GdiObject^.Visual = nil then
-      GdiObject^.Visual := gdk_visual_get_best_with_depth(Depth)
-    else
+    If GdiObject^.Visual = nil then begin
+      GdiObject^.Visual := gdk_visual_get_best_with_depth(Depth);
+      If GdiObject^.Visual = nil then 
+        GdiObject^.Visual := gdk_visual_get_system;
+      GdiObject^.SystemVisual := True;
+    end
+    else begin
       gdk_visual_ref(GdiObject^.Visual);
+      GdiObject^.SystemVisual := False;
+    end;
 
     If GdiObject^.Colormap <> nil then
       GDK_Colormap_UnRef(GdiObject^.Colormap);
@@ -2136,9 +2152,9 @@ begin
       gdiBitmap:
         begin
           BeginGDKErrorTrap;
-          if (GDIBitmapObject <> nil)
-          then gdk_bitmap_unref(GDIBitmapObject);
-          If Visual <> nil then
+          if GDIBitmapObject <> nil then
+            gdk_bitmap_unref(GDIBitmapObject);
+          If (Visual <> nil) and (not SystemVisual) then
             gdk_visual_unref(Visual);
           If Colormap <> nil then
             gdk_colormap_unref(Colormap);
@@ -4533,10 +4549,9 @@ begin
 
               If Visual = nil then begin
                 Visual := gdk_visual_get_best_with_depth(biBitCount);
-                If Visual = nil then begin//Depth not supported?
+                If Visual = nil then  { Depth not supported }
                   Visual := gdk_visual_get_system;
-                  gdk_visual_ref(Visual);
-                end;
+                SystemVisual := True; { This visual should not be referenced }
                 If Colormap <> nil then
                   gdk_colormap_unref(Colormap);
                 ColorMap := gdk_colormap_new(Visual, GdkTrue);
@@ -8682,6 +8697,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.348  2004/04/18 23:55:39  marc
+  * Applied patch from Ladislav Michl
+  * Changed the way TControl.Text is resolved
+  * Added setting of text to TWSWinControl
+
   Revision 1.347  2004/04/15 21:27:40  marc
   * Applied patch from Ladislav Michl
 

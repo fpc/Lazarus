@@ -79,6 +79,7 @@ type
       gdiBitmap: (
         GDIBitmapMaskObject: PGdkPixmap;
         Depth: integer;
+        SystemVisual : Boolean;
         Visual : PGDKVisual;
         Colormap : PGDKColormap;
         case GDIBitmapType: TGDIBitmapType of
@@ -568,6 +569,11 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.58  2004/04/18 23:55:39  marc
+  * Applied patch from Ladislav Michl
+  * Changed the way TControl.Text is resolved
+  * Added setting of text to TWSWinControl
+
   Revision 1.57  2004/03/24 01:21:41  marc
   * Simplified signals for gtkwsbutton
 

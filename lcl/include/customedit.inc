@@ -301,16 +301,16 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TCustomEdit.SetText
+  Method:  TCustomEdit.RealSetText
   Params:  Override of text setup to watch for max length
   Returns: Nothing
  ------------------------------------------------------------------------------}
-procedure TCustomEdit.SetText(const Value: TCaption);
+procedure TCustomEdit.RealSetText(const Value: TCaption);
 begin
   if (MaxLength >= 0) and (Length(Value) > MaxLength) then
-    inherited SetText(Copy(Value, 1, MaxLength))
+    inherited RealSetText(Copy(Value, 1, MaxLength))
   else
-    inherited SetText(Value);
+    inherited RealSetText(Value);
 end;
 
 {------------------------------------------------------------------------------
@@ -371,6 +371,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.28  2004/04/18 23:55:39  marc
+  * Applied patch from Ladislav Michl
+  * Changed the way TControl.Text is resolved
+  * Added setting of text to TWSWinControl
+
   Revision 1.27  2004/04/10 17:58:57  mattias
   implemented mainunit hints for include files
 

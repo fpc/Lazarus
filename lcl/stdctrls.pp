@@ -517,7 +517,7 @@ type
     procedure SetSelLength(Val : integer); virtual;
     procedure SetSelStart(Val : integer); virtual;
     procedure SetSelText(const Val : string); virtual;
-    procedure SetText(const Value: TCaption); override;
+    procedure RealSetText(const Value: TCaption); override;
     function ChildClassAllowed(ChildClass: TClass): boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -585,7 +585,6 @@ type
     destructor Destroy; override;
     procedure Append(const Value : String);
     procedure Clear;
-    function GetTextLen: Integer;
   public
     property Lines: TStrings read FLines write SetLines;
     property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars;
@@ -777,7 +776,7 @@ type
     procedure Toggle; virtual;
     function GetChecked: Boolean; override;
     procedure SetChecked(Value: Boolean); override;
-    procedure SetText(const Value: TCaption); override;
+    procedure RealSetText(const Value: TCaption); override;
     procedure ApplyChanges; virtual;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -793,7 +792,7 @@ type
   TCheckBox = class(TCustomCheckBox)
   protected
     procedure DoAutoSize; Override;
-    procedure SetText(const Value: TCaption); Override;
+    procedure RealSetText(const Value: TCaption); Override;
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -956,7 +955,7 @@ type
   TRadioButton = class(TCustomCheckBox)
   protected
     procedure DoAutoSize; override;
-    procedure SetText(const Value: TCaption); override;
+    procedure RealSetText(const Value: TCaption); override;
   public
     constructor Create(TheOwner: TComponent); override;
   published
@@ -1547,6 +1546,11 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.141  2004/04/18 23:55:39  marc
+  * Applied patch from Ladislav Michl
+  * Changed the way TControl.Text is resolved
+  * Added setting of text to TWSWinControl
+
   Revision 1.140  2004/04/02 19:39:46  mattias
   fixed checking empty mask raw image
 

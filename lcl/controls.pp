@@ -658,6 +658,22 @@ type
     chtOnChangeBounds
     );
   TControlHandlerTypes = set of TControlHandlerType;
+  
+(*
+ * Note on TControl.Caption
+ * The VCL implementation relies on the virtual Get/SetTextBuf to 
+ * exchange text between widgets and VCL. This means a lot of 
+ * (unnecesary) text copies.
+ * The LCL uses strings for exchanging text (more efficient).
+ * To maintain VCL compatebility, the virtual RealGet/SetText is 
+ * introduced. These functions interface with the LCLInterface. The
+ * default Get/SetTextbuf implementation calls the RealGet/SetText.
+ * As long as the Get/SetTextBuf isn't overridden Get/SetText 
+ * calls RealGet/SetText to avoid PChar copiing.
+ * To keep things optimal, LCL implementations should always 
+ * override RealGet/SetText. Get/SetTextBuf is only kept for
+ * compatebility.
+ *)  
 
   TControl = class(TLCLComponent)
   private
@@ -748,7 +764,8 @@ type
     function GetLRDockWidth: Integer;
     function GetMouseCapture : Boolean;
     function GetTBDockHeight: Integer;
-    Function GetTabOrder: TTabOrder;
+    function GetTabOrder: TTabOrder;
+    function GetText: TCaption; 
     function GetUndockHeight: Integer;
     function GetUndockWidth: Integer;
     function IsCaptionStored : Boolean;
@@ -787,6 +804,7 @@ type
     procedure SetShowHint(Value : Boolean);
     Procedure SetTabOrder(Value : TTabOrder);
     procedure SetTabStop(Value : Boolean);
+    procedure SetText(const Value: TCaption); 
     procedure SetTop(Value: Integer);
     procedure SetVisible(Value: Boolean);
     procedure SetWidth(Value: Integer);
@@ -877,9 +895,10 @@ type
     procedure InvalidateControl(IsVisible, IsOpaque, IgnoreWinControls: Boolean);
     procedure SendDockNotification(Msg: Cardinal; WParam: WParam; LParam: LParam); virtual;
     procedure FontChanged(Sender: TObject); virtual;
-    function GetText: TCaption; virtual;
     function GetAction: TBasicAction; virtual;
     function GetActionLinkClass: TControlActionLinkClass; dynamic;
+    function RealGetText: TCaption; virtual;
+    procedure RealSetText(const Value: TCaption); virtual;
     procedure SetAction(Value: TBasicAction); virtual;
     procedure SetColor(Value : TColor); virtual;
     procedure SetDragMode (Value: TDragMode); virtual;
@@ -888,7 +907,6 @@ type
     procedure SetName(const Value: TComponentName); override;
     procedure SetParent(AParent: TWinControl); virtual;
     Procedure SetParentComponent(Value: TComponent); override;
-    procedure SetText(const Value: TCaption); virtual;
     procedure WndProc(var TheMessage: TLMessage); virtual;
     procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); dynamic;
     procedure MouseMove(Shift: TShiftState; X,Y: Integer); Dynamic;
@@ -978,6 +996,7 @@ type
     procedure SetBoundsKeepBase(aLeft, aTop, aWidth, aHeight: integer;
                                 Lock: boolean); virtual;
     function  GetTextBuf(Buffer: PChar; BufSize: Integer): Integer; virtual;
+    function  GetTextLen: Integer; virtual;
     Procedure SetTextBuf(Buffer : PChar); virtual;
     Function  Perform(Msg:Cardinal; WParam: WParam; LParam: LParam): LongInt;
     Function  ScreenToClient(const Point : TPoint) : TPoint;
@@ -1339,7 +1358,8 @@ type
     procedure ReAlign; // realign all childs
     procedure ReCreateWnd;
     procedure RemoveFocus(Removing: Boolean);
-    procedure SetText(const Value: TCaption); override;
+    function  RealGetText: TCaption; override;
+    procedure RealSetText(const Value: TCaption); override;
     procedure UpdateControlState;
     procedure CreateHandle; virtual;
     procedure CreateWnd; virtual; //creates the window
@@ -1438,6 +1458,7 @@ type
     procedure DefaultHandler(var Message); override;
     Procedure DisableAlign;
     Procedure EnableAlign;
+    function  GetTextLen: Integer; override;
     Procedure Invalidate; override;
     Procedure InsertControl(AControl: TControl);
     Procedure InsertControl(AControl: TControl; Index: integer);
@@ -1455,8 +1476,6 @@ type
     function HandleAllocated: Boolean;
     procedure HandleNeeded;
     function BrushCreated: Boolean;
-    function  GetTextBuf(Buffer: PChar; BufSize: Integer): Integer; override;
-    Procedure SetTextBuf(Buffer : PChar); override;
     procedure EraseBackground(DC: HDC); virtual;
   public
     property BoundsLockCount: integer read FBoundsLockCount;
@@ -1707,11 +1726,11 @@ procedure Register;
 
 implementation
 
-
 uses
+  WSControls, // Widgetset uses are allowed
+
   Forms, // the circle can't be broken without breaking Delphi compatibility
-  Math,  // Math is in RTL and only a few functions are used.
-  WSControls;
+  Math;  // Math is in RTL and only a few functions are used.
 
 var
   // The interface knows, which TWinControl has the capture. This stores
@@ -2242,6 +2261,11 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.196  2004/04/18 23:55:39  marc
+  * Applied patch from Ladislav Michl
+  * Changed the way TControl.Text is resolved
+  * Added setting of text to TWSWinControl
+
   Revision 1.195  2004/04/11 10:19:28  micha
   cursor management updated:
   - lcl notifies interface via WSControl.SetCursor of changes

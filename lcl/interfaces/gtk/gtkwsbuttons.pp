@@ -30,7 +30,7 @@ uses
   // libs
   GLib, Gtk, 
   // LCL
-  Buttons, Classes, LCLType, LMessages,
+  Buttons, Classes, LCLType, LMessages, Controls,
   // widgetset
   WSButtons, WSLCLClasses, 
   // interface
@@ -46,6 +46,8 @@ type
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   public
     class function CreateHandle(const AComponent: TComponent; const AParams: TCreateParams): THandle; override;
+    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+    class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
   end;
 
   { TGtkWSBitBtn }
@@ -54,6 +56,8 @@ type
   private
   protected
   public
+    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+    class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
   end;
 
   { TGtkWSSpeedButton }
@@ -68,6 +72,7 @@ type
 implementation
 
 uses
+  SysUtils, 
   GtkProc, GtkInt, GtkGlobals,
   GtkWSControls;
 
@@ -86,8 +91,6 @@ end;
 
 function TGtkWSButton.CreateHandle(const AComponent: TComponent; const AParams: TCreateParams): THandle; 
 var
-  Caption, Pattern: String;
-  AccelKey: Char;
   Button: TButton;
   WidgetInfo: PWidgetInfo;
   Allocation: TGTKAllocation;
@@ -96,16 +99,9 @@ begin
   
   Button := AComponent as TButton;
 
-  Caption := Button.Caption;
-  LabelFromAmpersands(Caption, Pattern, AccelKey);
-  Result := THandle(gtk_button_new_with_label(PChar(Caption)));
+  Result := THandle(gtk_button_new_with_label('button'));
   if Result = 0 then Exit;
 
-{$ifdef gtk1}
-  gtk_label_set_pattern(PGtkLabel(PGtkButton(Result)^.Child), PChar(Pattern));
-{$endif gtk1}
-  Accelerate(Button, PGtkWidget(Result), Ord(AccelKey), 0, 'clicked');
-  
   WidgetInfo := CreateWidgetInfo(Result, Button, AParams);
   WidgetInfo^.CoreWidget := PGtkWidget(Result);
   
@@ -118,11 +114,67 @@ begin
   SetCallbacks(PGtkWidget(Result), WidgetInfo);
 end;
 
+function TGtkWSButton.GetText(const AWinControl: TWinControl; var AText: String): Boolean; 
+begin             
+  // The button text is static, so let the LCL fallback to FCaption
+  Result := False;
+end;
+
 procedure TGtkWSButton.SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo);
 begin        
   TGtkWSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
 
   SignalConnect(AGtkWidget, 'clicked', @GtkWSButton_Clicked, AWidgetInfo);
+end;
+
+procedure TGtkWSButton.SetText(const AWinControl: TWinControl; const AText: String); 
+var
+  BtnWidget: PGtkButton;
+  LblWidget: PGtkLabel;
+begin          
+  if not AWinControl.HandleAllocated
+  then begin
+    Assert(False, Format('trace: [WARNING] SetText called without handle for %s(%s)', [AWinControl.Name, AWinControl.ClassName]));
+    Exit;
+  end;
+
+  BtnWidget := PGtkButton(AWinControl.Handle);
+  LblWidget := PGtkLabel(BtnWidget^.Child);
+
+  if LblWidget = nil
+  then begin
+    Assert(False, Format('trace: [WARNING] Button %s(%s) has no label', [AWinControl.Name, AWinControl.ClassName]));
+    LblWidget := PGtkLabel(gtk_label_new(''));
+    gtk_container_add(PGtkContainer(BtnWidget), PGtkWidget(LblWidget));
+  end;
+  
+  GtkWidgetSet.SetLabelCaption(LblWidget, AText, AWinControl, PGtkWidget(BtnWidget), 'clicked');   
+end;
+
+{ TGtkWSBitBtn }
+
+function TGtkWSBitBtn.GetText(const AWinControl: TWinControl; var AText: String): Boolean; 
+begin             
+  // The button text is static, so let the LCL fallback to FCaption
+  Result := False;
+end;
+
+procedure TGtkWSBitBtn.SetText(const AWinControl: TWinControl; const AText: String); 
+var
+  BtnWidget: PGtkButton;
+  LblWidget: PGtkLabel;
+begin          
+  if not AWinControl.HandleAllocated
+  then begin
+    Assert(False, Format('trace: [WARNING] SetText called without handle for %s(%s)', [AWinControl.Name, AWinControl.ClassName]));
+    Exit;
+  end;
+
+  BtnWidget := PGtkButton(AWinControl.Handle);
+  LblWidget := PGtkLabel(gtk_object_get_data(PGtkObject(BtnWidget),'Label'));
+  if LblWidget = nil then Exit;  
+
+  GtkWidgetSet.SetLabelCaption(LblWidget, AText, AWinControl, PGtkWidget(BtnWidget), 'clicked');   
 end;
 
 initialization

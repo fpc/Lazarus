@@ -73,14 +73,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure TCustomMemo.Clear;
- ------------------------------------------------------------------------------}
-function TCustomMemo.GetTextLen: Integer;
-begin
-  Result := Length(Text);
-end;
-
-{------------------------------------------------------------------------------
   procedure TCustomMemo.SetHorzScrollBar(const AValue: TMemoScrollBar);
  ------------------------------------------------------------------------------}
 procedure TCustomMemo.SetHorzScrollBar(const AValue: TMemoScrollBar);
@@ -168,6 +160,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.23  2004/04/18 23:55:39  marc
+  * Applied patch from Ladislav Michl
+  * Changed the way TControl.Text is resolved
+  * Added setting of text to TWSWinControl
+
   Revision 1.22  2004/04/10 17:58:57  mattias
   implemented mainunit hints for include files
 
