@@ -897,6 +897,7 @@ var
   Grabber: TGrabber;
   ACursor: TCursor;
   SelectedCompClass: TRegisteredComponent;
+  CurSnappedMousePos, OldSnappedMousePos: TPoint;
 begin
   SetCaptureControl(nil);
   if [dfShowEditorHints,dfShowComponentCaptionHints]*FFlags<>[] then begin
@@ -954,9 +955,13 @@ begin
           ControlSelection.SaveBounds;
           Include(FFlags,dfHasSized);
         end;
+        OldSnappedMousePos:=
+          ControlSelection.SnapGrabberMousePos(OldMouseMovePos);
+        CurSnappedMousePos:=
+          ControlSelection.SnapGrabberMousePos(LastMouseMovePos);
         ControlSelection.SizeSelection(
-          LastMouseMovePos.X-OldMouseMovePos.X,
-          LastMouseMovePos.Y-OldMouseMovePos.Y);
+          CurSnappedMousePos.X-OldSnappedMousePos.X,
+          CurSnappedMousePos.Y-OldSnappedMousePos.Y);
         if Assigned(OnModified) then OnModified(Self);
       end else begin
         // no grabber resizing
