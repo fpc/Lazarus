@@ -3077,6 +3077,9 @@ begin
 
   ecOpen :
     OpenClicked(self);
+    
+  ecOpenFileAtCursor:
+    OpenAtCursorClicked(self);
 
   ecJumpToEditor :
     Begin
