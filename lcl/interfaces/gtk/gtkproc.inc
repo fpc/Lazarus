@@ -702,7 +702,7 @@ begin
         { Assign key code}
         KeyCode := Event^.KeyVal;
         
-        //TODO: create VK_ code --> [*] and [8] have a different KeyCode but same VK_ code
+        //TODO: create VK_ code --> [*] and [8] have a different KeyCode but same VK_ code on US keyboard
         case Chr(KeyCode) of
           '@': VirtualKey:=VK_AT;
           'A'..'Z', 
@@ -3958,6 +3958,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.158  2003/01/27 13:49:16  mattias
+  reduced speedbutton invalidates, added TCanvas.Frame
+
   Revision 1.157  2003/01/24 11:58:01  mattias
   fixed clipboard waiting and kwrite targets
 
