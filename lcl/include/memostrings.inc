@@ -115,18 +115,24 @@ var
   TempStrings: TStringList;
   Cnt: Integer;
   LastLine: String;
+  CurText: String;
 begin
   If Assigned(FMemo) and (Index >= 0)
   then begin
     TempStrings := TStringList.Create;
-    TempStrings.Text := FMemo.Text;
+    CurText := FMemo.Text;
+    TempStrings.Text := CurText;
     Cnt:=TempStrings.Count;
     if Index=Cnt then begin
-      LastLine:=S+LineEnding;
-      if false and FMemo.HandleAllocated then
+      if FMemo.HandleAllocated then begin
+        LastLine:=S+LineEnding;
+        if (CurText<>'') and (not (CurText[length(CurText)] in [#10,#13])) then
+          LastLine:=LineEnding+LastLine;
         CNSendMessage(LM_APPENDTEXT, FMemo, PChar(LastLine))
-      else
-        FMemo.Text:=TempStrings.Text+LastLine;
+      end else begin
+        TempStrings.Insert(Index, S);
+        FMemo.Text:=TempStrings.Text;
+      end;
     end
     else if Index < Cnt then
     begin
@@ -142,6 +148,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.7  2003/04/16 06:27:12  mattias
+  fixed appending text to TMemo
+
   Revision 1.6  2003/04/15 08:54:27  mattias
   fixed TMemo.WordWrap
 
