@@ -493,8 +493,7 @@ end;
  ------------------------------------------------------------------------------}
 function DeliverMessage(const Target: Pointer; var Message): Integer;
 begin
-
-if Target=nil then writeln('[DeliverMessage] Target = nil');
+  if Target=nil then writeln('[DeliverMessage] Target = nil');
   if TObject(Target) is TControl then
   begin
     TControl(Target).WindowProc(TLMessage(Message));
@@ -623,15 +622,21 @@ begin
   gtk_object_set_data(ChildWidget, 'Main', ParentWidget);
 end;
 
-// ----------------------------------------------------------------------
-// the fixed widget is the container for controls. By default a widget
-// scales/places a control. with the use of a fixed we can place them.
-// ----------------------------------------------------------------------
+{ ------------------------------------------------------------------------------
+ Get the fixed widget of a widget.
+ Every LCL control with a clientarea, has at least a main widget for the control
+ and a fixed widget for the client area.
+------------------------------------------------------------------------------ }
 function GetFixedWidget(const Widget: Pointer): Pointer;
 begin
   Result := gtk_object_get_data(Widget, 'Fixed');
 end;
 
+{ ------------------------------------------------------------------------------
+ Set the fixed widget of a widget.
+ Every LCL control with a clientarea, has at least a main widget for the control
+ and a fixed widget for the client area.
+------------------------------------------------------------------------------ }
 procedure SetFixedWidget(const ParentWidget, FixedWidget: Pointer);
 begin
 //writeln('[gtkproc: SetFixedWidget] Parent=',HexStr(Cardinal(ParentWidget),8),
@@ -640,11 +645,10 @@ begin
     gtk_object_set_data(ParentWidget, 'Fixed', FixedWidget);
 end;
 
-// ----------------------------------------------------------------------
-// Some need the LCLobject which created this widget.
-// 
-// MWE: IMO this shouldn't be needed
-// ----------------------------------------------------------------------
+{ ------------------------------------------------------------------------------
+ Some need the LCLobject which created this widget.
+
+-------------------------------------------------------------------------------}
 procedure SetLCLObject(const Widget: Pointer; const AnObject: TObject);
 begin
   if (Widget <> nil) then
@@ -915,6 +919,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.35  2002/05/09 12:41:30  lazarus
+  MG: further clientrect bugfixes
+
   Revision 1.34  2002/05/06 08:50:37  lazarus
   MG: replaced logo, increased version to 0.8.3a and some clientrectbugfix
 
