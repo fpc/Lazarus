@@ -37,8 +37,8 @@ interface
 { $DEFINE VerboseDesigner}
 
 uses
-  Classes, LCLIntf, LCLType, Controls, Forms, GraphType, Graphics, SysUtils,
-  Menus, EnvironmentOpts, PropEdits, DesignerProcs;
+  Classes, SysUtils, Math, LCLIntf, LCLType, Controls, Forms, GraphType,
+  Graphics, Menus, EnvironmentOpts, PropEdits, DesignerProcs;
 
 type
   TControlSelection = class;
@@ -458,9 +458,6 @@ var TheControlSelection: TControlSelection;
 
 implementation
 
-
-uses
-  Math;
 
 const
   GRAB_CURSOR: array[TGrabIndex] of TCursor = (

@@ -24,7 +24,7 @@ interface
 
 uses
   Classes, SysUtils, LCLIntf, Controls, StdCtrls, Forms, Buttons, ExtCtrls,
-  LResources, LazarusIDEStrConsts, DirSel, Dialogs, SynEditTypes;
+  LResources, FileCtrl, LazarusIDEStrConsts, DirSel, Dialogs, SynEditTypes;
 
 type
   TLazFindInFileSearchOption = (fifMatchCase, fifWholeWord, fifRegExpr,
@@ -77,9 +77,6 @@ var FindInFilesDialog: TLazFindInFilesDialog;
 
 
 implementation
-
-uses
-  filectrl;
 
 { TLazFindInFilesDialog }
 

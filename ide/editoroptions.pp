@@ -38,8 +38,8 @@ unit EditorOptions;
 interface
 
 uses
-  LCLIntf, LCLType,
-  Forms, Classes, SysUtils, ComCtrls, Buttons, StdCtrls, ExtCtrls, LazConf,
+  Classes, SysUtils, Math, LCLIntf, LCLType,
+  Forms, ComCtrls, Buttons, StdCtrls, ExtCtrls, LazConf,
   FileCtrl, GraphType, Graphics, Controls, Dialogs, LResources, IDEProcs,
   SynEdit, SynEditHighlighter, SynEditAutoComplete, SynEditKeyCmds,
   SynHighlighterPas, SynHighlighterHTML, SynHighlighterCPP, SynHighlighterXML,
@@ -530,8 +530,6 @@ function ExtensionToLazSyntaxHighlighter(Ext:string): TLazSyntaxHighlighter;
 
 implementation
 
-
-uses Math;
 
 const
   ValidAttribChars = ['a'..'z','A'..'Z','_','0'..'9'];

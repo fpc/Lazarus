@@ -38,7 +38,7 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, AbstractFormeditor, Controls, PropEdits, TypInfo,
+  Classes, SysUtils, Math, AbstractFormeditor, Controls, PropEdits, TypInfo,
   Forms, Menus, Dialogs, AVL_Tree, ObjectInspector, JITForms, NonControlForms,
   ComponentReg, IDEProcs, ComponentEditors, KeyMapping, EditorOptions,
   Designerprocs;
@@ -187,9 +187,6 @@ function CompareComponentAndInterface(Key, Data: Pointer): integer;
 
 implementation
 
-
-uses
-  Math;
 
 function CompareComponentInterfaces(Data1, Data2: Pointer): integer;
 var

@@ -39,9 +39,9 @@ unit DiffDialog;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Buttons, ExtCtrls, StdCtrls, SynEdit,
-  LResources, LazarusIDEStrConsts, EditorOptions, IDEOptionDefs, InputHistory,
-  DiffPatch;
+  Classes, SysUtils, Math, Forms, Controls, Buttons, ExtCtrls, StdCtrls,
+  SynEdit, LResources, LazarusIDEStrConsts, EditorOptions, IDEOptionDefs,
+  InputHistory, DiffPatch;
 
 type
   TOnGetDiffFile = procedure(TextID: integer; OnlySelection: boolean;
@@ -147,9 +147,6 @@ function ShowDiffDialog(Files: TDiffFiles; Text1Index: integer;
 
 
 implementation
-
-uses
-  Math;
 
 
 function ShowDiffDialog(Files: TDiffFiles; Text1Index: integer;

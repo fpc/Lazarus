@@ -55,7 +55,7 @@ uses
   MsgView, SearchResultView, InputHistory, LazarusIDEStrConsts, BaseDebugManager, Debugger,
   TypInfo, LResources, LazConf, EnvironmentOpts, Compiler,
   SortSelectionDlg, EncloseSelectionDlg, ClipBoardHistory, DiffDialog,
-  SourceEditProcs, SourceMarks, CharacterMapDlg;
+  SourceEditProcs, SourceMarks, CharacterMapDlg, frmSearch;
 
 type
   TSourceNoteBook = class;
@@ -566,6 +566,17 @@ type
     procedure EndIncrementalFind;
     property IncrementalSearchStr: string
       read FIncrementalSearchStr write SetIncrementalSearchStr;
+    //FindInFiles
+    function CreateFindInFilesDialog: TLazFindInFilesDialog;
+    procedure LoadFindInFilesHistory(ADialog: TLazFindInFilesDialog);
+    procedure SaveFindInFilesHistory(ADialog: TLazFindInFilesDialog);
+    procedure FIFSearchProject(AProject: TProject;
+                               ADialog: TLazFindInFilesDialog);
+    procedure FIFSearchOpenFiles(ADialog: TLazFindInFilesDialog);
+    procedure FIFSearchDir(ADialog: TLazFindInFilesDialog);
+    function FIFCreateSearchForm(ADialog:TLazFindInFilesDialog): TSearchForm;
+    procedure DoFindInFiles(ASearchForm: TSearchForm);
+    
   published
     property OnAddJumpPoint: TOnAddJumpPoint
                                      read FOnAddJumpPoint write FOnAddJumpPoint;
@@ -637,9 +648,6 @@ type
 
 
 implementation
-
-uses
-  frmSearch;
 
 var
   Highlighters: array[TLazSyntaxHighlighter] of TSynCustomHighlighter;
@@ -3353,98 +3361,167 @@ Begin
   if TempEditor <> nil then TempEditor.FindPrevious;
 End;
 
-Procedure TSourceNotebook.FindInFiles(AProject: TProject);
-var
-  TheFileList:     TStringList; //List of Files to be searched.
-  i:               integer;     //loop counter
-  AnUnitInfo:      TUnitInfo;
-  LocalFindText:   String;      //Text to search for
-  SearchForm:      TSearchForm; //
-Begin
-  if FindInFilesDialog=nil then
-    FindInFilesDialog:=TLazFindInFilesDialog.Create(Application);
-  with FindInFilesDialog do
+//FindInFiles
+function TSourceNotebook.CreateFindInFilesDialog: TLazFindInFilesDialog;
+begin
+    Result:=TLazFindInFilesDialog.Create(Application);
+    LoadFindInFilesHistory(Result);
+end;//CreateFindInFilesDialog
+
+procedure TSourceNotebook.LoadFindInFilesHistory(ADialog: TLazFindInFilesDialog);
+begin
+  if Assigned(ADialog) then
   begin
-    TextToFindComboBox.Items.Assign(InputHistories.FindHistory);
-    DirectoryComboBox.Items.Assign(InputHistories.FindInFilesPathHistory);
-    FileMaskComboBox.Items.Assign(InputHistories.FindInFilesMaskHistory);
-  end;//With
-  if FindInFilesDialog.ShowModal=mrOk then
+    with ADialog do
+    begin
+      TextToFindComboBox.Items.Assign(InputHistories.FindHistory);
+      DirectoryComboBox.Items.Assign(InputHistories.FindInFilesPathHistory);
+      FileMaskComboBox.Items.Assign(InputHistories.FindInFilesMaskHistory);
+    end;//With
+  end;//if
+end;//LoadFindInFilesHistory
+
+procedure TSourceNoteBook.SaveFindInFilesHistory(ADialog: TLazFindInFilesDialog);
+begin
+  if Assigned(ADialog) then
   begin
-    LocalFindText:=FindInFilesDialog.FindText;
-    with FindInFilesDialog do
+    with ADialog do
     begin
       InputHistories.AddToFindHistory(FindText);
       InputHistories.AddToFindInFilesPathHistory(DirectoryComboBox.Text);
       InputHistories.AddToFindInFilesMaskHistory(FileMaskComboBox.Text);
     end;//with
     InputHistories.Save;
-    if LocalFindText<>'' then
+  end;//if
+end;//SaveFindInFilesHistory
+
+{Search All the files in a project and add the results to the SearchResultsView
+ Dialog}
+procedure TSourceNoteBook.FIFSearchProject(AProject: TProject;
+                                           ADialog: TLazFindInFilesDialog);
+var
+  AnUnitInfo:  TUnitInfo;
+  TheFileList: TStringList;
+  SearchForm:  TSearchForm;
+begin
+  try
+    TheFileList:= TStringList.Create;
+    AnUnitInfo:=AProject.FirstPartOfProject;
+    while AnUnitInfo<>nil do begin
+      //Only if file exists on disk.
+      if FilenameIsAbsolute(AnUnitInfo.FileName) and
+                            FileExists(AnUnitInfo.FileName) then
+        TheFileList.Add(AnUnitInfo.FileName);
+      AnUnitInfo:=AnUnitInfo.NextPartOfProject;
+    end;//while
+    SearchForm:= FIFCreateSearchForm(ADialog);
+    SearchForm.SearchFileList:= TheFileList;
+    DoFindInFiles(SearchForm);
+  finally
+    FreeAndNil(TheFileList);
+    FreeAndNil(SearchForm);
+  end;//finally
+end;//FIFSearchProject
+
+procedure TSourceNoteBook.FIFSearchDir(ADialog: TLazFindInFilesDialog);
+var
+  SearchForm: TSearchForm;
+begin
+  try
+    SearchForm:= FIFCreateSearchForm(ADialog);
+    SearchForm.SearchFileList:= Nil;
+    DoFindInFiles(SearchForm);
+  finally
+    FreeAndNil(SearchForm);
+  end;
+end;//FIFSearchDir;
+
+Procedure TSourceNoteBook.DoFindInFiles(ASearchForm: TSearchForm);
+var
+  ListIndex: integer;
+begin
+  ShowSearchResultsView;
+  ListIndex:=SearchResultsView.AddResult('Search For '+ASearchForm.SearchText,
+                                          ASearchForm.SearchText,
+                                          ASearchForm.SearchDirectory,
+                                          ASearchForm.SearchMask,
+                                          ASearchForm.SearchOptions);
+                               
+  try
+    SearchResultsView.BeginUpdate(ListIndex);
+    ASearchForm.ResultsList:= SearchResultsView.Items[ListIndex];
+    SearchResultsView.Items[ListIndex].Clear;
+    ASearchForm.ResultsWindow:= ListIndex;
+    try
+      ASearchForm.Show;
+      ASearchForm.DoSearch;
+    except
+      on E: ERegExpr do
+        MessageDlg(lisUEErrorInRegularExpression, E.Message,mtError,
+                  [mbCancel],0);
+    end;//except
+  finally
+    SearchResultsView.EndUpdate(ListIndex);
+    SearchResultsView.ShowOnTop;
+  end;//finally
+end;//DoFindInFiles
+
+procedure TSourceNoteBook.FIFSearchOpenFiles(ADialog: TLazFindInFilesDialog);
+var
+  i: integer;
+  TheFileList: TStringList;
+  SearchForm:  TSearchForm;
+begin
+  try
+    TheFileList:= TStringList.Create;
+    for i:= 0 to self.EditorCount -1 do
     begin
-      try
-        TheFileList:= TStringList.Create;
-        if (FindInFilesDialog.WhereRadioGroup.ItemIndex = 1) or
-           (FindInFilesDialog.WhereRadioGroup.ItemIndex = 0) then
-        begin
-          if FindInFilesDialog.WhereRadioGroup.ItemIndex = 0 then
-          begin
-            AnUnitInfo:=AProject.FirstPartOfProject;
-            while AnUnitInfo<>nil do begin
-              //Only if file exists on disk.
-              if FilenameIsAbsolute(AnUnitInfo.FileName)
-              and FileExists(AnUnitInfo.FileName) then
-                 TheFileList.Add(AnUnitInfo.FileName);
-              AnUnitInfo:=AnUnitInfo.NextPartOfProject;
-            end;//while
-          end//if
-          else
-          begin
-            for i:= 0 to self.EditorCount -1 do
-            begin
-            //only if file exists on disk
-              if FilenameIsAbsolute(Editors[i].FileName) and
-                 FileExists(Editors[i].FileName) then
-              begin
-                TheFileList.Add(Editors[i].FileName);
-              end;//if
-            end;//for
-          end;//else
-        end;//if
-        try
-          SearchForm:= TSearchForm.Create(SearchResultsView);
-          ShowSearchResultsView;
-          with SearchForm do
-          begin
-            SearchOptions:= FindInFilesDialog.Options;
-            SearchText:= LocalFindText;
-            SearchFileList:= TheFileList;
-            ResultsList:= SearchResultsView.AddResult('Search For ' +
-                                                       LocalFindText,
-                                                       LocalFindText);
-            if Assigned(ResultsList) then
-            begin
-              ResultsList.Clear;
-              SearchMask:= FindInFilesDialog.FileMaskComboBox.Text;
-              SearchDirectory:= FindInFilesDialog.DirectoryComboBox.Text;
-            end;//if
-          end;//with
-          try
-            SearchResultsView.BeginUpdate;
-            SearchForm.Show;
-            SearchForm.DoSearch;
-          except
-            on E: ERegExpr do
-              MessageDlg(lisUEErrorInRegularExpression, E.Message,mtError,
-              [mbCancel],0);
-          end;//try-except
-        finally
-          FreeAndNil(SearchForm);
-          SearchResultsView.EndUpdate;
-          SearchResultsView.ShowOnTop;
-        end;//finally
-      finally
-        FreeAndNil(TheFileList);
-      end;//finally
+      //only if file exists on disk
+      if FilenameIsAbsolute(Editors[i].FileName) and
+         FileExists(Editors[i].FileName) then
+      begin
+         TheFileList.Add(Editors[i].FileName);
+      end;//if
+    end;//for
+    SearchForm:= FIFCreateSearchForm(ADialog);
+    SearchForm.SearchFileList:= TheFileList;
+    DoFindInFiles(SearchForm);
+  finally
+    FreeAndNil(TheFileList);
+    FreeAndNil(SearchForm);
+  end;//finally
+end;//FIFSearchOpenFiles
+
+{Creates the search form and loads the options selected in the
+ findinfilesdialog}
+function TSourceNoteBook.FIFCreateSearchForm
+                         (ADialog: TLazFindInFilesDialog): TSearchForm;
+begin
+  result:= TSearchForm.Create(SearchResultsView);
+  with result do
+  begin
+    SearchOptions:= ADialog.Options;
+    SearchText:= ADialog.FindText;
+    SearchMask:= ADialog.FileMaskComboBox.Text;
+    SearchDirectory:= ADialog.DirectoryComboBox.Text;
+  end;//with
+end;//FIFCreateSearchForm
+
+Procedure TSourceNotebook.FindInFiles(AProject: TProject);
+Begin
+  if FindInFilesDialog=nil then
+    FindInFilesDialog:=CreateFindInFilesDialog;
+  if FindInFilesDialog.ShowModal=mrOk then
+  begin
+    SaveFindInFilesHistory(FindInFilesDialog);
+    LoadFindInFilesHistory(FindInFilesDialog);
+    if FindInFilesDialog.FindText <>'' then
+    begin
+      case FindInFilesDialog.WhereRadioGroup.ItemIndex of
+        Integer(0): FIFSearchProject(AProject, FindInFilesDialog);
+        integer(1): FIFSearchOpenFiles(FindInFilesDialog);
+        integer(2): FIFSearchDir(FindInFilesDialog);
+      end;//case
     end;//if
   end;//if
 End;//FindInFilesClicked

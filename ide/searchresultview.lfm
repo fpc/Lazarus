@@ -1,21 +1,21 @@
 object SearchResultsView: TSearchResultsView
   CAPTION = 'SearchResultsView'
-  CLIENTHEIGHT = 225
+  CLIENTHEIGHT = 229
   CLIENTWIDTH = 799
   ONCREATE = Form1Create
   ONDESTROY = SearchResultsViewDestroy
   HORZSCROLLBAR.PAGE = 800
-  VERTSCROLLBAR.PAGE = 226
-  LEFT = 280
-  HEIGHT = 225
-  TOP = 389
+  VERTSCROLLBAR.PAGE = 230
+  LEFT = 151
+  HEIGHT = 229
+  TOP = 481
   WIDTH = 799
   object ResultsNoteBook: TNOTEBOOK
     ALIGN = albottom
     ANCHORS = [aktop, akleft]
     ONCLOSETABCLICKED = ResultsNoteBookClosetabclicked
     OPTIONS = [nboshowclosebuttons, nbomultiline]
-    HEIGHT = 185
+    HEIGHT = 189
     TOP = 40
     WIDTH = 799
   end

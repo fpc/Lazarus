@@ -925,7 +925,13 @@ procedure TMainIDE.CreateSearchResultWindow;
 begin
   if SearchResultsView<>nil then exit;
   Application.CreateForm(TSearchResultsView, SearchResultsView);
-  SearchResultsView.OnSelectionChanged:= @SearchResultsViewSelectionChanged;
+  with SearchResultsView do
+  begin
+//    ListBoxFont.Name:= EditorOpts.EditorFont;
+//    ListBoxFont.Size:= EditorOpts.EditorFontHeight;
+//    ListBoxFont.Style:=[];
+    OnSelectionChanged:= @SearchResultsViewSelectionChanged;
+  end;//with
 end;
 
 procedure TMainIDE.OIOnSelectComponents(Sender: TObject);
@@ -10100,6 +10106,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.671  2003/11/22 15:14:12  mattias
+  prepared IDE units for split
+
   Revision 1.670  2003/11/16 19:28:33  mattias
   build lazarus now uses custom compiler path
 

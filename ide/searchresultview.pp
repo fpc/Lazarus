@@ -39,8 +39,56 @@ interface
 uses
   Classes, SysUtils, Math, LResources, Forms, Controls, Graphics, Dialogs,
   ComCtrls, ExtCtrls, StdCtrls, Buttons, LCLType,
-  IDEOptionDefs, LazarusIDEStrConsts, EnvironmentOpts;
+  IDEOptionDefs, LazarusIDEStrConsts, EnvironmentOpts, FindInFilesDlg, Project;
 
+
+ {TLazSearchMatchPos}
+type
+  TLazSearchMatchPos = class(TObject)
+  private
+    fMatchStart: integer;
+    fMatchLen: integer;
+  public
+    property MatchStart: integer read fMatchStart write fMatchStart;
+    property MatchLen: integer read fMatchLen write fMatchLen;
+end;//TLazSearchMatchPos
+
+ {TLazSearch}
+type
+  TLazSearch = Class(TObject)
+  private
+    fSearchString: string;
+    fSearchOptions: TLazFindInFileSearchOptions;
+    fSearchDirectory: string;
+    fSearchMask: string;
+  public
+    property SearchString: string read fSearchString write fSearchString;
+    property SearchOptions: TLazFindInFileSearchOptions read fSearchOptions
+                                                        write fSearchOptions;
+    property SearchDirectory: string read fSearchDirectory
+                                     write fSearchDirectory;
+    property SearchMask: string read fSearchMask write fSearchMask;
+end;//TLazSearch
+
+ {TLazSearchResultLB}
+type
+  TLazSearchResultLB = Class(TCustomListBox)
+  private
+    fSearchObject: TLazSearch;
+    fUpdateStrings: TStrings;
+    fUpdating: boolean;
+    fUpdateCount: integer;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    property SearchObject: TLazSearch read fSearchObject write fSearchObject;
+    procedure BeginUpdate;
+    procedure EndUpdate;
+    property UpdateItems: TStrings read fUpdateStrings write fUpdateStrings;
+    property UpdateState: boolean read fUpdating;
+end;
+
+{TSearchResultsView}
 type
   TSearchResultsView = class(TForm)
     btnSearchAgain: TBUTTON;
@@ -52,42 +100,51 @@ type
     procedure btnSearchAgainClick(Sender: TObject);
     procedure ListboxDrawitem(Control: TWinControl; Index: Integer;
                               ARect: TRect; State: TOwnerDrawState);
+    procedure LazLBShowHint(Sender: TObject; HintInfo: Pointer);
+    procedure LazLBMousemove(Sender: TObject; Shift: TShiftState;
+                             X, Y: Integer);
+    Procedure LazLBMouseWheel(Sender: TObject; Shift: TShiftState;
+                   WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
   private
     { private declarations }
-    fUpdating: boolean;
-    fSearchObjectList: TStringList;
-    function PageExists(APageName: string): boolean;
+    function PageExists(const APageName: string): boolean;
     function GetPageIndex(APageName: string): integer;
-    function GetListBox(APageIndex: integer): TListBox;
+    function GetListBox(APageIndex: integer): TLazSearchResultLB;
     procedure ListBoxClicked(Sender: TObject);
     procedure ListBoxDoubleClicked(Sender: TObject);
+    procedure SetItems(Index: Integer; Value: TStrings);
+    function GetItems(Index: integer): TStrings;
     fOnSelectionChanged: TNotifyEvent;
+    fListBoxFont: TFont;
+    fMouseOverIndex: integer;
   public
     { public declarations }
-    function AddResult(const ResultsName: string; SearchText: string): TStrings;
+    function AddResult(const ResultsName: string;
+                        const SearchText: string;
+                        const ADirectory: string;
+                        const AMask: string;
+                        const TheOptions: TLazFindInFileSearchOptions): integer;
     function GetSourcePositon: TPoint;
     function GetSourceFileName: string;
     function GetSelectedText: string;
-    procedure BringResultsToFront(APageName: string);
-    procedure BeginUpdate;
-    procedure EndUpdate;
+    procedure BringResultsToFront(const APageName: string);
+    procedure AddMatch(const AIndex: integer; const TheText: string;
+                       const MatchStart: integer; const MatchLen: integer);
+    procedure BeginUpdate(AIndex: integer);
+    procedure EndUpdate(AIndex: integer);
+    property ListBoxFont: TFont read fListBoxFont write fListBoxFont;
     property OnSelectionChanged: TNotifyEvent read fOnSelectionChanged
                                               write fOnSelectionChanged;
+    property Items[Index: integer]: TStrings read GetItems write SetItems;
   end; 
-
-type
-  TLazSearch = Class(TObject)
-  private
-    fSearchString: string;
-  public
-    property SearchString: string read fSearchString write fSearchString;
-  end;
 
 var
   SearchResultsView: TSearchResultsView;
 
 implementation
-
+uses
+  MainBar;
+  
 { TSearchResultsView }
 
 const
@@ -108,8 +165,13 @@ begin
                                           ItemByEnum(nmiwSearchResultsViewName);
   ALayout.Form:=TForm(Self);
   ALayout.Apply;
-  fSearchObjectList:= TStringList.Create;
+  fListBoxFont:= TFont.Create;
+  fListBoxFont.Name:= 'courier';
+  fListBoxFont.Height:= 12;
+  fListBoxFont.Style:= [];
   fOnSelectionChanged:= nil;
+  self.ShowHint:= True;
+  fMouseOverIndex:= -1;
 end;//Create
 
 procedure TSearchResultsView.ResultsNoteBookChangebounds(Sender: TObject);
@@ -117,41 +179,89 @@ begin
 
 end;
 
-procedure TSearchResultsView.SearchResultsViewDestroy(Sender: TObject);
-var
-  i: integer;
-  TheObject: TObject;
+{Keeps track of the Index of the Item the mouse is over, Sets ShowHint to true
+if the Item length is longer than the Listbox client width.}
+procedure TSearchResultsView.LazLBMousemove(Sender: TObject; Shift: TShiftState;
+                                       X, Y: Integer);
 begin
-  try
-    if not Assigned(fSearchObjectList) then
-      Writeln('fSearchObject is not assigned');
-    for i:= 0 to fSearchObjectList.Count - 1 do
+  if Sender is TLazSearchResultLB then
+  begin
+    with Sender as TLazSearchResultLB do
     begin
-      if Assigned(fSearchObjectList.Objects[i]) then
+      fMouseOverIndex:= GetIndexAtY(Y);
+      if (fMouseOverIndex > -1) and (fMouseOverIndex < Items.Count) then
       begin
-        TheObject:= fSearchObjectList.Objects[i];
-        FreeAndNil(TheObject);
+        if (Canvas.TextWidth(Items[fMouseOverIndex]) > Width) then
+          ShowHint:= True
+        else
+          ShowHint:= False;
       end;//if
-    end;//for
-  except
-    writeln('Exception in form destroy!');
-  end;//except
-  FreeAndNil(fSearchObjectList);
+    end;//with
+  end;//
+end;//LazLBMousemove
+
+{Keep track of the mouse position over the list box when the wheel is used}
+procedure TSearchResultsView.LazLBMouseWheel(Sender: TObject;
+                                             Shift: TShiftState;
+                                             WheelDelta: Integer;
+                                             MousePos: TPoint;
+                                             var Handled: Boolean);
+begin
+  LazLBMouseMove(Sender,Shift,MousePos.X, MousePos.Y);
+  Handled:= false;
+end;//LazLBMouseWheel
+
+procedure TSearchResultsView.AddMatch(const AIndex: integer;
+                                      const TheText: string;
+                                      const MatchStart: integer;
+                                      const MatchLen: integer);
+var
+  CurrentLB: TLazSearchResultLB;
+  SearchPos: TLazSearchMatchPos;
+begin
+  CurrentLB:= GetListBox(AIndex);
+  if Assigned(CurrentLB) then
+  begin
+    SearchPos:= TLazSearchMatchPos.Create;
+    SearchPos.MatchStart:= MatchStart;
+    SearchPos.MatchLen:= MatchLen;
+    if CurrentLB.UpdateState then
+      CurrentLB.UpdateItems.AddObject(TheText, SearchPos)
+    else
+      CurrentLB.Items.AddObject(TheText, SearchPos);
+  end;//if
+end;//AddMatch
+
+procedure TSearchResultsView.SearchResultsViewDestroy(Sender: TObject);
+begin
+  fListBoxFont.free;
 end;//SearchResulstViewDestroy
 
-Procedure TSearchResultsView.BeginUpdate;
+Procedure TSearchResultsView.BeginUpdate(AIndex: integer);
+var
+  CurrentLB: TLazSearchResultLB;
 begin
-  fUpDating:= true;
+  CurrentLB:= GetListBox(AIndex);
+  if Assigned(CurrentLB) then
+    CurrentLB.BeginUpdate;
 end;//BeginUpdate
 
-procedure TSearchResultsView.EndUpdate;
+procedure TSearchResultsView.EndUpdate(AIndex: integer);
+var
+  CurrentLB: TLazSearchResultLB;
 begin
-  fUpdating:= false;
+  CurrentLB:= GetListBox(AIndex);
+  if Assigned(CurrentLB) then
+  begin
+    CurrentLB.EndUpdate;
+    CurrentLB.ItemIndex:= 0;
+    CurrentLB.TopIndex:= 0;
+  end;//if
 end;//EndUpdate
 
 {Brings the results tab named APageName to front.
  If APageName does not exist, does nothing}
-procedure TSearchResultsView.BringResultsToFront(APageName: string);
+procedure TSearchResultsView.BringResultsToFront(const APageName: string);
 begin
   if PageExists(APageName) then
   begin
@@ -159,19 +269,46 @@ begin
   end;//if
 end;//BringResultsToFront
 
-procedure TSearchResultsView.ResultsNoteBookClosetabclicked(Sender: TObject);
+{Sets the Items from the list box on the currently selected page in the
+ TNoteBook}
+procedure TSearchResultsView.SetItems(Index: integer; Value: TStrings);
 var
-  TheObject: TObject;
-  i: integer;
+  CurrentLB: TLazSearchResultLB;
+begin
+  if Index > -1 then
+  begin
+    CurrentLB:= GetListBox(Index);
+    if Assigned(CurrentLB) then
+    begin
+      if CurrentLB.UpdateState then
+        CurrentLB.UpdateItems.Assign(Value)
+      else
+        CurrentLB.Items.Assign(Value);
+    end;//if
+  end//if
+end;//SetItems
+
+function TSearchResultsView.GetItems(Index: integer): TStrings;
+var
+  CurrentLB: TLazSearchResultLB;
+begin
+  result:= nil;
+  CurrentLB:= GetListBox(Index);
+  if Assigned(CurrentLB) then
+  begin
+    if CurrentLB.UpdateState then
+      result:= CurrentLB.UpdateItems
+    else
+      result:= CurrentLB.Items;
+  end;//if
+end;//GetItems
+
+procedure TSearchResultsView.ResultsNoteBookClosetabclicked(Sender: TObject);
 begin
   if (Sender is TPage) then
   begin
     with sender as TPage do
     begin
-      i:= fSearchObjectList.IndexOf(Caption);
-      TheObject:= fSearchObjectList.Objects[i];
-      FreeAndNil(TheObject);
-      fSearchObjectList.Delete(i);
       ResultsNoteBook.Pages.Delete(PageIndex);
     end;//with
   end;//if
@@ -180,13 +317,29 @@ begin
 end;//ResultsNoteBookClosetabclicked
 
 procedure TSearchResultsView.btnSearchAgainClick(Sender: TObject);
+var
+  CurrentLB: TLazSearchResultLB;
+  SearchObj: TLazSearch;
 begin
-  MessageDlg('Working On it!', mtInformation,[mbOk],0);
+  CurrentLB:= GetListBox(ResultsNoteBook.PageIndex);
+  if not Assigned(CurrentLB) then exit;
+  SearchObj:= CurrentLB.SearchObject;
+  if Assigned(FindInFilesDialog) then
+  begin
+    with FindInFilesDialog do
+    begin
+      DirectoryComboBox.Text:= SearchObj.SearchDirectory;
+      FindText:= SearchObj.SearchString;
+      Options:= SearchObj.SearchOptions;
+      FileMaskComboBox.Text:= SearchObj.SearchMask;
+    end;//with
+    SourceNotebook.FindInFiles(Project1);
+  end;//if
 end;
 
 {Searched the notebook control for a page with APageName name, returns true if
  found}
-function TSearchResultsView.PageExists(APageName: string): boolean;
+function TSearchResultsView.PageExists(const APageName: string): boolean;
 var
   i: integer;
 begin
@@ -202,17 +355,18 @@ begin
 end;//PageExists
 
 {Add Result will create a tab in the Results view window with an new
- list box and return the Items from the new listbox to be filled in
- by the search routine.}
+ list box or focus an existing listbox and update it's searchoptions.}
 function TSearchResultsView.AddResult(const ResultsName: string;
-                                      SearchText: string ): TStrings;
+                        const SearchText: string;
+                        const ADirectory: string;
+                        const AMask: string;
+                        const TheOptions: TLazFindInFileSearchOptions): integer;
 var
-  NewListBox: TListBox;
+  NewListBox: TLazSearchResultLB;
   NewPage: LongInt;
   i: integer;
-  SearchObj: TLazSearch;
 begin
-  Result:= nil;
+  result:= -1;
   if Assigned(ResultsNoteBook) then
   begin
     With ResultsNoteBook do
@@ -226,28 +380,55 @@ begin
       else
       begin
         NewPage:= Pages.Add(ResultsName + SPACE);
-        SearchObj:= TLazSearch.Create;
-        SearchObj.SearchString:= SearchText;
-        fSearchObjectList.AddObject(ResultsName + SPACE, SearchObj);
+        ResultsNoteBook.PageIndex:= NewPage;
         if NewPage > -1 then
         begin
-          NewListBox:= TListBox.Create(Page[NewPage]);
-          NewListBox.Parent:= Page[NewPage];
-          NewListBox.Align:= alClient;
-          NewListBox.OnClick:= @ListBoxClicked;
-          NewListBox.OnDblClick:= @ListBoxDoubleClicked;
-          //NewListBox.Style:= lbOwnerDrawFixed;
-          //NewListBox.OnDrawItem:= @ListBoxDrawItem;
-          //NewListBox.Font.Name:= 'courier';
-          //NewListBox.Font.Height:= 12;
-          //NewListBox.ItemHeight:= 2 * NewListBox.Canvas.TextHeight('0');
+          NewListBox:= TLazSearchResultLB.Create(Page[NewPage]);
+          with NewListBox do
+          begin
+            Parent:= Page[NewPage];
+            Align:= alClient;
+            OnClick:= @ListBoxClicked;
+            OnDblClick:= @ListBoxDoubleClicked;
+            Style:= lbOwnerDrawFixed;
+            OnDrawItem:= @ListBoxDrawItem;
+            Font.Name:= fListBoxFont.Name;
+            Font.Height:= fListBoxFont.Height;
+            OnShowHint:= @LazLBShowHint;
+            OnMouseMove:= @LazLBMousemove;
+            OnMouseWheel:= @LazLBMouseWheel;
+            ShowHint:= true;
+            NewLIstBox.Canvas.Color:= clWhite;
+          end;//with
         end;//if
       end;//else
-    end;//
+    end;//with
+    with NewListBox.SearchObject do
+    begin
+      SearchString:= SearchText;
+      SearchDirectory:= ADirectory;
+      SearchMask:= AMask;
+      SearchOptions:= TheOptions;
+    end;//with
+    result:= ResultsNoteBook.PageIndex;
   end;//if
-  if NewListBox<>nil then
-    Result:= NewListBox.Items;
 end;//AddResult
+
+
+procedure TSearchResultsView.LazLBShowHint(Sender: TObject; HintInfo: Pointer);
+begin
+  if Sender is TLazSearchResultLB then
+  begin
+    With Sender as TLazSearchResultLB do
+    begin
+      if (fMouseOverIndex >= 0) and (fMouseOverIndex < Items.Count) then
+      begin
+        Hint:= Items[fMouseOverIndex];
+      end;//if
+    end;//with
+  end;//if
+end;//LazLBShowHint
+
 
 procedure TSearchResultsView.ListboxDrawitem(Control: TWinControl;
                                              Index: Integer; ARect: TRect;
@@ -256,56 +437,42 @@ var
   FirstPart: string;
   BoldPart: string;
   LastPart: string;
-  i: integer;
   BoldLen: integer;
-  SearchObj: TLazSearch;
   TheText: string;
-  SearchText: string;
   TheTop: integer;
+  MatchPos: TLazSearchMatchPos;
 begin
-  //if not fUpdating then
-  //begin
-    With Control as TListBox do
+  With Control as TLazSearchResultLB do
+  begin
+    Canvas.FillRect(ARect);
+    TheText:= Items[Index];
+    if Items.Objects[Index] is TLazSearchMatchPos then
+      MatchPos:= TLazSearchMatchPos(Items.Objects[Index])
+    else
+      MatchPos:= nil;
+      
+    if Assigned(MatchPos) then
     begin
-      Canvas.FillRect(ARect);
-      TheText:= Items[Index];
-      if Items.Count > 0 then
-      begin
-        i:= fSearchObjectList.IndexOf(ResultsNoteBook.ActivePage);
-        SearchObj:= TLazSearch(fSearchObjectList.Objects[i]);
-      end;
-      if Assigned(SearchObj) then
-      begin
-        SearchText:= SearchObj.SearchString;
-        TheText:= Items[Index];
-        i:= pos(SearchText,TheText);
-        if i > 0 then
-        begin
-          TheTop:= ARect.Top + 1;
-          BoldLen:= Length(SearchText);
-          FirstPart:= copy(TheText,1,i-1);
-          BoldPart:= copy(TheText,i,BoldLen + 1);
-          LastPart:= copy(TheText, i + BoldLen +1, Length(TheText) -
-                          (i + BoldLen));
-          Canvas.TextOut(ARect.Left, TheTop, FirstPart);
-          Canvas.Font.Style:= Canvas.Font.Style + [fsBold];
-          Canvas.TextOut(ARect.Left + Canvas.TextWidth(FirstPart),
-                         TheTop, BoldPart);
-          Canvas.Font.Style:= Canvas.Font.Style  - [fsBold];
-          Canvas.TextOut(ARect.Left + Canvas.TextWidth(FirstPart + BoldPart),
-                         TheTop, LastPart);
-        end//if
-        else
-        begin
-          Canvas.TextOut(ARect.Left, ARect.Top + 1, TheText);
-        end;//else
-      end
-      else
-      begin
-        Canvas.TextOut(ARect.Left, ARect.Top + 1, TheText);
-      end;//else
-    end;//with
-  //end;//if
+      TheTop:= ARect.Top;
+      BoldLen:= MatchPos.MatchLen;
+      FirstPart:= copy(TheText,1,MatchPos.MatchStart - 1);
+      BoldPart:= copy(TheText,MatchPos.MatchStart ,BoldLen);
+      LastPart:= copy(TheText, MatchPos.MatchStart + BoldLen,
+                      Length(TheText) - (MatchPos.MatchStart + BoldLen) + 2);
+      Canvas.TextOut(ARect.Left, TheTop, FirstPart);
+      Canvas.Font.Style:= Canvas.Font.Style + [fsBold];
+      {TODO: Find out why bold is 1 pixel off}
+      Canvas.TextOut(ARect.Left + Canvas.TextWidth(FirstPart),
+                     TheTop - 1, BoldPart);
+      Canvas.Font.Style:= Canvas.Font.Style  - [fsBold];
+      Canvas.TextOut(ARect.Left + Canvas.TextWidth(FirstPart + BoldPart),
+                     TheTop, LastPart);
+    end//if
+    else
+    begin
+      Canvas.TextOut(ARect.Left, ARect.Top + 1, TheText);
+    end;//else
+  end;//with
 end;//ListBoxDrawItem
 
 procedure TSearchResultsView.ListBoxClicked(Sender: TObject);
@@ -381,7 +548,7 @@ end;//GetSourceFileName
 function TSearchResultsView.GetSelectedText: string;
 var
   ThePage: TPage;
-  TheListBox: TListBox;
+  TheListBox: TLazSearchResultLB;
   i: integer;
 begin
   result:= '';
@@ -419,7 +586,7 @@ end;//GetPageIndex
 
 {Returns a the listbox control from a Tab if both the page and the listbox
  exist else returns nil}
-function TSearchResultsView.GetListBox(APageIndex: integer): TListBox;
+function TSearchResultsView.GetListBox(APageIndex: integer): TLazSearchResultLB;
 var
   i: integer;
   ThePage: TPage;
@@ -432,15 +599,85 @@ begin
     begin
       for i:= 0 to ThePage.ComponentCount - 1 do
       begin
-        if ThePage.Components[i] is TListBox then
+        if ThePage.Components[i] is TLazSearchResultLB then
         begin
-          result:= TListBox(ThePage.Components[i]);
+          result:= TLazSearchResultLB(ThePage.Components[i]);
           break;
         end;//if
       end;//for
     end;//if
   end;//if
 end;//GetListBox
+
+
+{******************************************************************************
+  TLazSearchResultLB
+******************************************************************************}
+Constructor TLazSearchResultLB.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  fSearchObject:= TLazSearch.Create;
+  fUpdating:= false;
+  fUpdateCount:= 0;
+  fUpdateStrings:= TStringList.Create;
+end;//Create
+
+Destructor TLazSearchResultLB.Destroy;
+var
+  i: integer;
+begin
+  if Assigned(fSearchObject) then
+    FreeAndNil(fSearchObject);
+  if Assigned(fUpdateStrings) then
+  begin
+    for i:= 0 to fUpdateStrings.Count -1 do
+    begin
+      if Assigned(fUpdateStrings.Objects[i]) then
+        fUpdateStrings.Objects[i].free;
+    end;//for
+    FreeAndNil(fUpdateStrings);
+  end;//if
+  
+  inherited Destroy;
+end;//Destroy
+
+procedure TLazSearchResultLB.BeginUpdate;
+begin
+  inc(fUpdateCount);
+  if (fUpdateCount = 1) then
+  begin
+    if Assigned(Items) then
+      fUpdateStrings.Assign(Items);
+    fUpdating:= true;
+  end;//if
+end;//BeginUpdate
+
+procedure TLazSearchResultLB.EndUpdate;
+var
+  i: integer;
+begin
+  dec(fUpdateCount);
+  if (fUpdateCount < 0) then
+    fUpdateCount:= 0;
+  if (fUpdateCount = 0) then
+  begin
+    fUpdating:= false;
+    for i:= 0 to Items.Count -1 do
+    begin
+      try
+        if Assigned(Items.Objects[i]) then
+        begin
+          Items.Objects[i].free;
+        end;//if
+      except
+        writeln('Exception in TLazSearchResultLB.EndUpdate,' +
+                ' Pointer assigned free failed');
+      end;//except
+    end;//for
+    Items.Assign(fUpdateStrings);
+  end;//if
+end;//EndUpdate
+
 
 initialization
   {$I searchresultview.lrs}

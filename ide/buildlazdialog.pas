@@ -34,10 +34,10 @@ unit BuildLazDialog;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, LCLType, LCLIntf, Graphics, GraphType,
-  StdCtrls, ExtCtrls, Buttons, FileCtrl, Dialogs, LResources, Laz_XMLCfg,
-  LazarusIDEStrConsts, TransferMacros, LazConf, IDEProcs, InputHistory,
-  ExtToolDialog, ExtToolEditDlg;
+  Classes, SysUtils, Math, Forms, Controls, LCLType, LCLIntf, Graphics,
+  GraphType, StdCtrls, ExtCtrls, Buttons, FileCtrl, Dialogs, LResources,
+  Laz_XMLCfg, LazarusIDEStrConsts, TransferMacros, LazConf, IDEProcs,
+  InputHistory, ExtToolDialog, ExtToolEditDlg;
 
 type
   { TBuildLazarusItem }
@@ -222,9 +222,6 @@ function GetTranslatedMakeModes(MakeMode: TMakeMode): string;
 
 implementation
 
-uses
-  Math;
-  
 const
   DefaultIDEMakeOptionFilename = 'idemake.cfg';
 

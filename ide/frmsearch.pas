@@ -31,8 +31,14 @@ unit frmSearch;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  StdCtrls, Buttons, FindInFilesDlg;
+  // LCL
+  Classes, SysUtils, LResources, LCLType, LCLIntf, Forms, Controls, Graphics,
+  Dialogs, ExtCtrls, StdCtrls, Buttons, FileCtrl,
+  // synedit
+  SynRegExpr,
+  // ide
+  LazarusIDEStrConsts, FindInFilesDlg, SearchResultView;
+
 
 type
   TSearchForm = class(TForm)
@@ -68,6 +74,7 @@ type
     fSearchFileList: TStringList;
     fSearchFiles: boolean;
     fResultsList: TStrings;
+    fResultsWindow: integer;
     fPad: string;
     procedure SearchFile(TheFileName: string);
     procedure DoFindInFiles(TheFileName: string);
@@ -89,6 +96,7 @@ type
     property ResultsList: TStrings read fResultsList write fResultsList;
     property SearchMask: string read fMask write fMask;
     property Pad: string read fPad write fPad;
+    property ResultsWindow: integer read fResultsWindow write fResultsWindow;
   end; 
 
 var
@@ -96,9 +104,6 @@ var
 
 implementation
 
-uses
-  SynRegExpr, FileCtrl, LCLType, LCLIntf, LazarusIDEStrConsts;
-  
 const
   {$IFDEF Win32}
   FindMask = '*.*';
@@ -201,6 +206,8 @@ procedure TSearchForm.SearchFile(TheFileName: string);
     EndWord:    boolean;     //Does the word end with a seperator charater?
     TheLine:    string;      //Temp Storage for the current line in the file.
     TempSearch: string;      //Temp Storage for the search string.
+    TheHeader: string;
+    MatchLen: integer;
 
  const
   WordBreakChars = ['.', ',', ';', ':', '"', '''', '!', '?', '[', ']', '(',
@@ -208,6 +215,7 @@ procedure TSearchForm.SearchFile(TheFileName: string);
   begin
     try
       ThisFile:= TStringList.Create;
+      MatchLen:= Length(fSearchFor);
       //if this is not a regular expression search
       if (Not fCaseSensitive) then
         TempSearch:= UpperCase(fSearchFor)
@@ -217,7 +225,7 @@ procedure TSearchForm.SearchFile(TheFileName: string);
       for Lines:= 0 to ThisFile.Count -1 do
       begin
         Application.ProcessMessages;
-        TheLine:= ThisFile.Strings[Lines];
+        TheLine:= Trim(ThisFile.Strings[Lines]);
         if not fCaseSensitive then
           TheLine:= UpperCase(TheLine);
         Match:= pos(TempSearch,TheLine);
@@ -239,17 +247,23 @@ procedure TSearchForm.SearchFile(TheFileName: string);
           end;//if
           if StartWord And EndWord then
           begin
-            fResultsList.Add(TheFileName +'('+IntToStr(lines+1)+ ',' +
-                                   IntToStr(match) + ')' + ' ' +
-                                   copy(ThisFile.Strings[Lines],Match,60));
+            TheHeader:= TheFileName +'('+IntToStr(lines+1)+ ','+ IntToStr(match)
+                        +')' + ' ';
+            SearchResultsView.AddMatch(fResultsWindow,
+                                      TheHeader + Trim(ThisFile.Strings[Lines]),
+                                      match + Length(TheHeader),
+                                      MatchLen);
             UpdateMatches;
           end;//if
         end;//if
         if not fWholeWord and (Match > 0) then
         begin
-          fResultsList.Add(TheFileName +'('+IntToStr(lines+1)+ ','+
-                                 IntToStr(match) +')' + ' ' +
-                                 copy(ThisFile.Strings[Lines],Match,60));
+          TheHeader:= TheFileName +'('+IntToStr(lines+1)+ ','+ IntToStr(match)
+                      +')' + ' ';
+          SearchResultsView.AddMatch(fResultsWindow,
+                                     TheHeader + Trim(ThisFile.Strings[Lines]),
+                                     match + Length(TheHeader),
+                                     MatchLen);
           UpdateMatches;
         end;//if
          if fAbort and not fAborting then
@@ -271,10 +285,12 @@ procedure TSearchForm.SearchFile(TheFileName: string);
   {DoRegExpSearch is called if the search is a regular expression}
   procedure DoRegExpSearch;
   var
-    ThisFile: TStringList;
+    ThisFile:   TStringList;
     Lines:      integer;     //Loop Counter
     Match:      integer;     //Position of match in line.
+    MatchLen:   integer;
     TheLine:    string;      //Temp Storage for the current line in the file.
+    TheHeader:  string;
     RE:         TRegExpr;    //Regular expression search engin
   begin
      try
@@ -291,13 +307,17 @@ procedure TSearchForm.SearchFile(TheFileName: string);
       for Lines:= 0 to ThisFile.Count - 1 do
       begin
         Application.ProcessMessages;
-        TheLine:= ThisFile[Lines];
+        TheLine:= Trim(ThisFile[Lines]);
         if RE.Exec(TheLine) then
         begin
           Match:= RE.MatchPos[0];
-          fResultsList.Add(TheFileName +'('+IntToStr(lines+1) +
-                                 ','+ IntToStr(Match) + ')' +
-                                 copy(TheLine,Match,60));
+          MatchLen:= Re.MatchLen[0];
+          
+          TheHeader:= TheFileName +'('+IntToStr(lines+1)+ ','+ IntToStr(match)
+                      +')' + ' ';
+          SearchResultsView.AddMatch(fResultsWindow,TheHeader + TheLine,
+                                     match + Length(TheHeader),
+                                     MatchLen);
           UpdateMatches;
         end;//if
         if fAbort and not fAborting then

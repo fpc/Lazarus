@@ -36,8 +36,8 @@ interface
 { $DEFINE VerboseDesignerDraw}
 
 uses
-  Classes, LCLType, LCLIntf, Forms, Controls, LMessages, GraphType, Graphics,
-  Dialogs, ExtCtrls, Menus, ClipBrd, IDEProcs,
+  Classes, SysUtils, Math, LCLType, LCLIntf, Forms, Controls, LMessages,
+  GraphType, Graphics, Dialogs, ExtCtrls, Menus, ClipBrd, IDEProcs,
   LazarusIDEStrConsts, EnvironmentOpts, KeyMapping, ComponentReg,
   NonControlForms, AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg, TabOrderDlg,
   DesignerProcs, PropEdits, ComponentEditors, CustomFormEditor,
@@ -301,9 +301,6 @@ type
 
 implementation
 
-
-uses
-  SysUtils, Math;
 
 const
   mk_lbutton =   1;

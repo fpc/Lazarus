@@ -28,8 +28,11 @@ unit InputFileDialog;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Dialogs, Buttons, StdCtrls, IDEProcs,
-  LResources, TransferMacros, InputHistory, FileCtrl;
+  // LCL
+  Classes, SysUtils, Math, Forms, Controls, Dialogs, Buttons, StdCtrls,
+  FileCtrl, LResources,
+  // IDE
+  IDEProcs, TransferMacros, InputHistory;
 
 type
   TInputFileFlag = (iftDirectory, iftFilename, iftCmdLine,
@@ -112,9 +115,6 @@ function GetInputFileDialog: TInputFileDialog;
   
 implementation
 
-
-uses
-  Math;
 
 var InputFileDlg: TInputFileDialog;
 

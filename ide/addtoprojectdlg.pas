@@ -35,8 +35,8 @@ unit AddToProjectDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Buttons, ComCtrls,
-  StdCtrls, ExtCtrls, Menus, Dialogs, Graphics, FileCtrl, AVL_Tree,
+  Classes, SysUtils, Math, LCLProc, LResources, Forms, Controls, Buttons,
+  ComCtrls, StdCtrls, ExtCtrls, Menus, Dialogs, Graphics, FileCtrl, AVL_Tree,
   LazarusIDEStrConsts, IDEProcs, IDEOptionDefs, EnvironmentOpts,
   Project, PackageDefs, PackageSystem;
   
@@ -101,9 +101,6 @@ function CheckAddingDependency(LazProject: TProject;
 implementation
 
 
-uses
-  Math;
-  
 function ShowAddToProjectDlg(AProject: TProject;
   var AddResult: TAddToProjectResult): TModalResult;
 var
