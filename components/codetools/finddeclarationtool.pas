@@ -43,6 +43,7 @@ interface
 { $DEFINE ShowSearchPaths}
 { $DEFINE ShowTriedFiles}
 { $DEFINE ShowTriedContexts}
+{ $DEFINE ShowTriedIdentifiers}
 { $DEFINE ShowExprEval}
 { $DEFINE ShowFoundIdentifier}
 { $DEFINE ShowCachedIdentifiers}
@@ -354,9 +355,27 @@ const
                              fdfClassPrivate];
   fdfGlobals = [fdfExceptionOnNotFound, fdfIgnoreUsedUnits];
   fdfGlobalsSameIdent = fdfGlobals+[fdfIgnoreMissingParams,fdfFirstIdentFound,
-                fdfOnlyCompatibleProc,fdfSearchInAncestors,fdfCollect];
+                fdfOnlyCompatibleProc,fdfSearchInAncestors,fdfCollect]
+                +fdfAllClassVisibilities;
   fdfDefaultForExpressions = [fdfSearchInParentNodes,fdfSearchInAncestors,
                               fdfExceptionOnNotFound]+fdfAllClassVisibilities;
+
+  FindDeclarationFlagNames: array[TFindDeclarationFlag] of string = (
+    'fdfSearchInParentNodes',
+    'fdfSearchInAncestors',
+    'fdfIgnoreCurContextNode',
+    'fdfExceptionOnNotFound',
+    'fdfIgnoreUsedUnits',
+    'fdfSearchForward',
+    'fdfIgnoreClassVisibility',
+    'fdfClassPublished','fdfClassPublic','fdfClassProtected','fdfClassPrivate',
+    'fdfIgnoreMissingParams',
+    'fdfFirstIdentFound',
+    'fdfOnlyCompatibleProc',
+    'fdfNoExceptionOnStringChar',
+    'fdfFunctionResult',
+    'fdfCollect'
+  );
 
 function ExprTypeToString(ExprType: TExpressionType): string;
 function CreateFindContext(NewTool: TFindDeclarationTool;
@@ -365,9 +384,24 @@ function CreateFindContext(Params: TFindDeclarationParams): TFindContext;
 function CreateFindContext(BaseTypeCache: TBaseTypeCache): TFindContext;
 function FindContextAreEqual(Context1, Context2: TFindContext): boolean;
 function PredefinedIdentToExprTypeDesc(Identifier: PChar): TExpressionTypeDesc;
+function FindDeclarationFlagsAsString(Flags: TFindDeclarationFlags): string;
+
 
 implementation
 
+
+function FindDeclarationFlagsAsString(Flags: TFindDeclarationFlags): string;
+var Flag: TFindDeclarationFlag;
+begin
+  Result:='';
+  for Flag:=Low(TFindDeclarationFlag) to High(TFindDeclarationFlag) do begin
+    if Flag in Flags then begin
+      if Result<>'' then
+        Result:=Result+', ';
+      Result:=Result+FindDeclarationFlagNames[Flag];
+    end;
+  end;
+end;
 
 function PredefinedIdentToExprTypeDesc(Identifier: PChar): TExpressionTypeDesc;
 begin
@@ -542,7 +576,8 @@ writeln('TFindDeclarationTool.FindDeclaration D CursorNode=',NodeDescriptionAsSt
           if not SearchAlsoInCurContext then
             Include(Params.Flags,fdfIgnoreCurContextNode);
           if SearchInAncestors then
-            Include(Params.Flags,fdfSearchInAncestors);
+            Params.Flags:=Params.Flags
+              +[fdfSearchInAncestors]+fdfAllClassVisibilities;
           Result:=FindDeclarationOfIdentifier(Params);
           if Result then begin
             Params.ConvertResultCleanPosToCaretPos;
@@ -882,7 +917,7 @@ function TFindDeclarationTool.FindIdentifierInContext(
 }
 var
   LastContextNode, StartContextNode, FirstSearchedNode, LastSearchedNode,
-  ContextNode: TCodeTreeNode;
+  ContextNode, ANode: TCodeTreeNode;
   IsForward: boolean;
   IdentifierFoundResult: TIdentifierFoundResult;
   LastNodeCache: TCodeTreeNodeCache;
@@ -946,10 +981,8 @@ begin
 {$IFDEF ShowTriedContexts}
 writeln('[TFindDeclarationTool.FindIdentifierInContext] A Ident=',
 '"',GetIdentifier(Params.Identifier),'"',
-' Context="',ContextNode.DescAsString,'" "',copy(Src,ContextNode.StartPos,8),'"',
-' P=',fdfSearchInParentNodes in Params.Flags,
-' A=',fdfSearchInAncestors in Params.Flags,
-' IUU=',fdfIgnoreUsedUnits in Params.Flags
+' Context="',ContextNode.DescAsString,'" "',copy(Src,ContextNode.StartPos,20),'"',
+' Flags=[',FindDeclarationFlagsAsString(Params.Flags),']'
 );
 if (ContextNode.Desc=ctnClass) then
   writeln('  ContextNode.LastChild=',ContextNode.LastChild<>nil);
@@ -986,6 +1019,33 @@ if (ContextNode.Desc=ctnClass) then
                 ContextNode:=ContextNode.LastChild
               else
                 ContextNode:=ContextNode.FirstChild;
+              if not (fdfIgnoreClassVisibility in Params.Flags) then begin
+                repeat
+                  case ContextNode.Desc of
+                  ctnClassPublic:
+                    if fdfClassPublic in Params.Flags then break;
+                  ctnClassPublished:
+                    if fdfClassPublished in Params.Flags then break;
+                  ctnClassPrivate:
+                    if fdfClassPrivate in Params.Flags then break;
+                  ctnClassProtected:
+                    if fdfClassProtected in Params.Flags then break;
+                  else
+                    break;
+                  end;
+                  // this context node is not visible -> search next
+                  ANode:=ContextNode.Parent;
+                  if not (fdfSearchForward in Params.Flags) then begin
+                    ContextNode:=ContextNode.PriorBrother
+                  end else begin
+                    ContextNode:=ContextNode.NextBrother
+                  end;
+                  if ContextNode=nil then begin
+                    ContextNode:=ANode;
+                    break;
+                  end;
+                until false;
+              end;
             end;
           end;
           
@@ -994,7 +1054,7 @@ if (ContextNode.Desc=ctnClass) then
             if not (fdfCollect in Params.Flags) then begin
               if CompareSrcIdentifiers(ContextNode.StartPos,Params.Identifier)
               then begin
-{$IFDEF ShowTriedContexts}
+{$IFDEF ShowTriedIdentifiers}
 writeln('  Definition Identifier found="',GetIdentifier(Params.Identifier),'"');
 {$ENDIF}
                 // identifier found
@@ -1041,7 +1101,7 @@ writeln('  Definition Identifier found="',GetIdentifier(Params.Identifier),'"');
               if CompareSrcIdentifiers(CurPos.StartPos,Params.Identifier) then
               begin
                 // identifier found
-{$IFDEF ShowTriedContexts}
+{$IFDEF ShowTriedIdentifiers}
 writeln('  Source Name Identifier found="',GetIdentifier(Params.Identifier),'"');
 {$ENDIF}
                 Result:=true;
@@ -1073,7 +1133,7 @@ writeln('  Source Name Identifier found="',GetIdentifier(Params.Identifier),'"')
                   // ToDo: identifiers after 'read', 'write' are procs with
                   //       special parameter lists
 
-{$IFDEF ShowTriedContexts}
+{$IFDEF ShowTriedIdentifiers}
 writeln('  Property Identifier found="',GetIdentifier(Params.Identifier),'"');
 {$ENDIF}
                   Result:=true;
@@ -1495,6 +1555,9 @@ writeln('');
           // predefined identifier not redefined
           Result:=CreateFindContext(Self,nil);
         end;
+        
+        // ToDo: check if identifier in 'Protected' section
+        
       finally
         Params.Load(OldInput);
       end;
@@ -1621,7 +1684,8 @@ writeln('');
             // search default property in class
             Params.Save(OldInput);
             Params.Flags:=[fdfSearchInAncestors,fdfExceptionOnNotFound]
-                          +fdfGlobals*Params.Flags;
+                          +fdfGlobals*Params.Flags
+                          +fdfAllClassVisibilities*Params.Flags;
             // special identifier for default property
             Params.SetIdentifier(Self,'[',nil);
             Params.ContextNode:=Result.Node;
@@ -1767,6 +1831,7 @@ begin
 
 {$IFDEF ShowTriedContexts}
 writeln('[TFindDeclarationTool.FindBaseTypeOfNode] LOOP Result=',Result.Node.DescAsString,' ',HexStr(Cardinal(Result.Node),8));
+writeln('  Flags=[',FindDeclarationFlagsAsString(Params.Flags),']');
 {$ENDIF}
       if (Result.Node.Desc in AllIdentifierDefinitions) then begin
         // instead of variable/const/type definition, return the type
@@ -2299,10 +2364,13 @@ begin
     end;
     // if this class is not TObject, TObject is class ancestor
     SearchTObject:=not CompareSrcIdentifier(ClassIdentNode.StartPos,'TObject');
-    if not SearchTObject then exit;
+    if not SearchTObject then begin
+      // this is 'TObject', no more ancestors -> stop search
+      exit;
+    end;
   end else begin
     ReadNextAtom;
-    if not AtomIsIdentifier(false) then exit;
+    AtomIsIdentifier(true);
     // ancestor name found
     AncestorAtom:=CurPos;
     SearchTObject:=false;
@@ -2311,6 +2379,7 @@ begin
 writeln('[TFindDeclarationTool.FindIdentifierInAncestors] ',
 ' Ident="',GetIdentifier(Params.Identifier),'"',
 ' search ancestor class = ',GetAtom);
+writeln('  Flags=[',FindDeclarationFlagsAsString(Params.Flags),']');
 {$ENDIF}
   // search ancestor class context
   CurPos.StartPos:=CurPos.EndPos;
@@ -2333,11 +2402,11 @@ writeln('[TFindDeclarationTool.FindIdentifierInAncestors] ',
   AncestorNode:=Params.NewNode;
   AncestorContext:=Params.NewCodeTool.FindBaseTypeOfNode(Params,AncestorNode);
   Params.Load(OldInput);
-  Exclude(Params.Flags,fdfExceptionOnNotFound);
   Params.ContextNode:=AncestorContext.Node;
   if (AncestorContext.Tool<>Self)
   and (not (fdfIgnoreClassVisibility in Params.Flags)) then
-    Params.Flags:=Params.Flags-[fdfClassPrivate];
+    Exclude(Params.Flags,fdfClassPrivate);
+  Exclude(Params.Flags,fdfIgnoreCurContextNode);
   Result:=AncestorContext.Tool.FindIdentifierInContext(Params);
   if not Result then
     Params.Load(OldInput)

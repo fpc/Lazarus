@@ -32,8 +32,8 @@ unit ComCtrls;
 interface
 
 uses
-  SysUtils, Classes, Controls, LclLinux, LCLType, StdCtrls, ExtCtrls, vclGlobals,
-  lMessages, Menus, ImgList, GraphType, Graphics, ToolWin;
+  SysUtils, Classes, Controls, LclLinux, LCLType, StdCtrls, ExtCtrls,
+  vclGlobals, lMessages, Menus, ImgList, GraphType, Graphics, ToolWin;
 
 
   const
@@ -1750,6 +1750,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.20  2002/03/02 13:22:27  lazarus
+  MG: fixed find declaration and inheriting class visibility flags
+
   Revision 1.19  2002/02/28 12:09:10  lazarus
   MG: fixes, code creation policies, keymap categories, menu shortcuts
 

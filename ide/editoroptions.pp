@@ -2787,7 +2787,7 @@ begin
         NewKeyNode.ImageIndex:=1;
         NewKeyNode.SelectedIndex:=NewKeyNode.ImageIndex;
       end;
-      NewCategoryNode.Expanded:=true;
+      //NewCategoryNode.Expanded:=true;
     end;
     EndUpdate;
   end;

@@ -93,7 +93,7 @@ type
     procedure CreateComponents;
     function CreateSeperator : TMenuItem;
     procedure RebuildDefineTreeView;
-    procedure AddDefineNodes(ANode, AParent: TDefineTemplate;
+    procedure AddDefineNodes(ANode: TDefineTemplate; AParent: TTreeNode;
       WithChilds,WithNextSiblings: boolean);
   public
     procedure Assign(ACodeToolBoss: TCodeToolManager;
@@ -340,6 +340,7 @@ begin
   CreateWinControl(DefineTreeView,TTreeView,'DefineTreeView',Self);
   with DefineTreeView do begin
     Images:=TheImageList;
+    StateImages:=TheImageList;
   end;
 
   // selected item
@@ -415,10 +416,21 @@ begin
 end;
 
 procedure TCodeToolsDefinesEditor.AddDefineNodes(
-  ANode, AParent: TDefineTemplate;
+  ANode: TDefineTemplate; AParent: TTreeNode;
   WithChilds, WithNextSiblings: boolean);
+var NewTreeNode: TTreeNode;
 begin
-
+  if ANode=nil then exit;
+//writeln(' AAA ',StringOfChar(' ',ANode.Level*2),' ',ANode.Name,' ',WithChilds,',',WithNextSiblings);
+  DefineTreeView.Items.BeginUpdate;
+  NewTreeNode:=DefineTreeView.Items.AddChildObject(AParent,ANode.Name,ANode);
+  if WithChilds and (ANode.FirstChild<>nil) then begin
+    AddDefineNodes(ANode.FirstChild,NewTreeNode,true,true);
+  end;
+  if WithNextSiblings and (ANode.Next<>nil) then begin
+    AddDefineNodes(ANode.Next,AParent,WithChilds,true);
+  end;
+  DefineTreeView.Items.EndUpdate;
 end;
 
 procedure TCodeToolsDefinesEditor.Assign(ACodeToolBoss: TCodeToolManager;
