@@ -7,6 +7,7 @@
 {$Define ver100_plus}
 {$Define ver120_plus}
 {$Define NoGIF}
+{$Define NoThreads}
 
 {$ELSE}
 

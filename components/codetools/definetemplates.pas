@@ -2504,6 +2504,14 @@ begin
     ,da_DefineRecurse));
   MainDir.AddChild(DirTempl);
   
+  // components/htmllite
+  SubDirTempl:=TDefineTemplate.Create('HTMLLite',
+    'HTMLLite',
+    '','htmllite',da_Directory);
+  SubDirTempl.AddChild(TDefineTemplate.Create('HL_LAZARUS',
+    'Define HL_LAZARUS','HL_LAZARUS','',da_DefineRecurse));
+  DirTempl.AddChild(SubDirTempl);
+
   // components/custom
   SubDirTempl:=TDefineTemplate.Create('Custom Components',
     ctsCustomComponentsDirectory,

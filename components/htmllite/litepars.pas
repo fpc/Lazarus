@@ -167,7 +167,7 @@ type
     Base: string;
     BaseTarget: string;
     AllowSuspend: boolean;
-    ParseThread: TThread;
+    ParseThread: {$IFDEF NoThreads}TObject{$ELSE}TThread{$ENDIF};
     CurrentStyle: TFontStyles;  {as set by <b>, <i>, etc.}
     CurrentSScript: SubSuperType;
     CurrentForm: ThtmlForm;
