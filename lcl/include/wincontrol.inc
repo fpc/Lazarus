@@ -3464,7 +3464,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.CNSysKeyUp(var Message: TLMKeyUp);
 begin
-
+  if not DoKeyUp(Message) then {inherited}; // there is nothing to inherit
 end;
 
 {------------------------------------------------------------------------------
@@ -3476,7 +3476,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.CNKeyUp(var Message: TLMKeyUp);
 begin
-
+  if not DoKeyUp(Message) then {inherited}; // there is nothing to inherit
 end;
 
 {------------------------------------------------------------------------------
@@ -3644,7 +3644,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.WMSysKeyUp(var Message: TLMKeyUp);
 begin
-  if not DoKeyUp(Message) then {inherited}; // there is nothing to inherit
+  { DoRemainingKeyUp ? }
 end;
 
 {------------------------------------------------------------------------------
@@ -3656,7 +3656,7 @@ end;
  ------------------------------------------------------------------------------}
 Procedure TWinControl.WMKeyUp(Var Message: TLMKeyUp);
 Begin
-  if not DoKeyUp(Message) then {inherited}; // there is nothing to inherit
+  { DoRemainingKeyUp ? }
 end;
 
 {------------------------------------------------------------------------------
@@ -4453,6 +4453,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.312  2005/02/07 11:04:06  micha
+  make cn_,wm_ keyup and syskeyup more symmetric with keydown
+
   Revision 1.311  2005/02/06 15:49:49  micha
   handle generic shortcuts after widgetset specific shortcuts
 
