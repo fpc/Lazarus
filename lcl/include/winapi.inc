@@ -359,6 +359,11 @@ begin
   Result := InterfaceObject.GetDeviceCaps(DC, Index);
 end;
 
+function GetDeviceSize(DC: HDC; var p: TPoint): boolean;
+begin
+  Result := InterfaceObject.GetDeviceSize(DC,p);
+end;
+
 function GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint;
 begin
   Result := InterfaceObject.GetBitmapBits(Bitmap, Count, Bits);
@@ -1282,6 +1287,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.50  2002/09/19 19:56:14  lazarus
+  MG: accelerated designer drawings
+
   Revision 1.49  2002/09/18 17:07:25  lazarus
   MG: added patch from Andrew
 
