@@ -73,7 +73,6 @@ Type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
   published
     Property Date : String read GetDate write SetDate;
     property DisplaySettings : TDisplaySettings read GetDisplaySettings write SetDisplaySettings;
@@ -100,7 +99,7 @@ begin
   SetBounds(0,0,250,150);
   fDisplaySettings := [dsShowHeadings, dsShowDayNames];
   Date := FormatDateTime('dd-mm-yyyy',Now);
-  ControlStyle:=ControlStyle-[csDoubleClicks]
+  ControlStyle:=ControlStyle-csMultiClicks-[csAcceptsControls];
 end;
 
 destructor TCalendar.Destroy;

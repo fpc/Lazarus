@@ -324,12 +324,14 @@ const
   LM_YEARCHANGED = LM_USER+66;
   LM_DAYCHANGED = LM_USER+67;
 
+  LM_MOUSEFIRST2 = LM_USER+68;
   LM_LBUTTONTRIPLECLK = LM_USER+68;
   LM_LBUTTONQUADCLK = LM_USER+69;
   LM_MBUTTONTRIPLECLK = LM_USER+70;
   LM_MBUTTONQUADCLK = LM_USER+71;
   LM_RBUTTONTRIPLECLK = LM_USER+72;
   LM_RBUTTONQUADCLK = LM_USER+73;
+  LM_MOUSELAST2 = LM_RBUTTONQUADCLK;
 
   LM_INTERFACEFIRST = LM_User+99;
   LM_INTERFACELAST = LM_User+199;
@@ -843,6 +845,9 @@ end.
 
 {
   $Log$
+  Revision 1.29  2002/09/01 16:11:21  lazarus
+  MG: double, triple and quad clicks now works
+
   Revision 1.28  2002/08/28 09:40:48  lazarus
   MG: reduced paint messages and DC getting/releasing
 
