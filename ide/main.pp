@@ -378,7 +378,8 @@ type
       var ActiveUnitInfo: TUnitInfo): boolean;
     function DoJumpToCodePos(ActiveSrcEdit: TSourceEditor;
       ActiveUnitInfo: TUnitInfo;
-      NewSource: TCodeBuffer; NewX, NewY, NewTopLine: integer): TModalResult;
+      NewSource: TCodeBuffer; NewX, NewY, NewTopLine: integer;
+      AddJumpPoint: boolean): TModalResult;
     procedure SaveSourceEditorChangesToCodeCache;
     procedure ApplyCodeToolChanges;
     procedure DoJumpToProcedureSection;
@@ -5060,11 +5061,18 @@ end;
 
 function TMainIDE.DoJumpToCodePos(ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
-  NewSource: TCodeBuffer; NewX, NewY, NewTopLine: integer): TModalResult;
+  NewSource: TCodeBuffer; NewX, NewY, NewTopLine: integer;
+  AddJumpPoint: boolean): TModalResult;
 var NewSrcEdit: TSourceEditor;
   NewUnitInfo: TUnitInfo;
 begin
   Result:=mrCancel;
+  if AddJumpPoint then begin
+    if (NewSource<>ActiveUnitInfo.Source)
+    or (ActiveSrcEdit.EditorComponent.CaretX<>NewX)
+    or (ActiveSrcEdit.EditorComponent.CaretY<>NewY) then
+      SourceNotebook.AddJumpPointClicked(Self);
+  end;
   if NewSource<>ActiveUnitInfo.Source then begin
     // jump to other file -> open it
     Result:=DoOpenEditorFile(NewSource.Filename,false);
@@ -5108,7 +5116,7 @@ writeln('[TMainIDE.DoJumpToProcedureSection] ************');
     NewSource,NewX,NewY,NewTopLine) then
   begin
     DoJumpToCodePos(ActiveSrcEdit, ActiveUnitInfo, 
-      NewSource, NewX, NewY, NewTopLine);
+      NewSource, NewX, NewY, NewTopLine, false);
   end else
     DoJumpToCodeToolBossError;
 end;
@@ -5166,7 +5174,7 @@ writeln('[TMainIDE.DoFindDeclarationAtCursor] ************');
     NewSource,NewX,NewY,NewTopLine) then
   begin
     DoJumpToCodePos(ActiveSrcEdit, ActiveUnitInfo, 
-      NewSource, NewX, NewY, NewTopLine);
+      NewSource, NewX, NewY, NewTopLine, true);
   end else 
     DoJumpToCodeToolBossError;
 end;
@@ -5188,7 +5196,7 @@ writeln('[TMainIDE.DoGoToPascalBlockEnd] ************');
     NewSource,NewX,NewY,NewTopLine) then
   begin
     DoJumpToCodePos(ActiveSrcEdit, ActiveUnitInfo, 
-      NewSource, NewX, NewY, NewTopLine);
+      NewSource, NewX, NewY, NewTopLine, false);
   end else 
     DoJumpToCodeToolBossError;
 end;
@@ -5215,7 +5223,7 @@ writeln('[TMainIDE.DoGoToPascalBlockEnd] ************');
     StartX,StartY,NewSource,NewX,NewY,NewTopLine) then
   begin
     DoJumpToCodePos(ActiveSrcEdit, ActiveUnitInfo, 
-      NewSource, NewX, NewY, NewTopLine);
+      NewSource, NewX, NewY, NewTopLine, true);
   end else 
     DoJumpToCodeToolBossError;
 end;
@@ -5240,7 +5248,7 @@ writeln('[TMainIDE.DoCompleteCodeAtCursor] ************');
     begin
       ApplyCodeToolChanges;
       DoJumpToCodePos(ActiveSrcEdit, ActiveUnitInfo, 
-        NewSource, NewX, NewY, NewTopLine);
+        NewSource, NewX, NewY, NewTopLine, true);
     end else begin
       // error: probably a syntax error or just not in a procedure head/body
       // or not in a class
@@ -5578,6 +5586,9 @@ end.
 =======
 
   $Log$
+  Revision 1.201  2002/01/15 20:21:37  lazarus
+  MG: jump history for find declaration
+
   Revision 1.200  2002/01/13 12:46:17  lazarus
   MG: fixed linker options, compiler options dialog
 
@@ -5612,6 +5623,9 @@ end.
 
 <<<<<<< main.pp
   $Log$
+  Revision 1.201  2002/01/15 20:21:37  lazarus
+  MG: jump history for find declaration
+
   Revision 1.200  2002/01/13 12:46:17  lazarus
   MG: fixed linker options, compiler options dialog
 
