@@ -117,6 +117,10 @@ type
     function GetItem(Index: Integer): TMenuItem;
     function GetParent: TMenuItem;
     function IsCaptionStored: boolean;
+    function IsCheckedStored: boolean;
+    function IsEnabledStored: boolean;
+    function IsShortCutStored: boolean;
+    function IsVisibleStored: boolean;
     procedure SetCaption(const AValue: string);
     procedure SetChecked(AValue: Boolean);
     procedure SetDefault(AValue: Boolean);
@@ -156,15 +160,15 @@ type
     property Parent: TMenuItem read GetParent;
   published
     property Caption: String read FCaption write SetCaption stored IsCaptionStored;
-    property Checked: Boolean read FChecked write SetChecked {stored IsCheckedStored} default False;
+    property Checked: Boolean read FChecked write SetChecked stored IsCheckedStored default False;
     property Default: Boolean read FDefault write SetDefault default False;
-    property Enabled: Boolean read FEnabled write SetEnabled {stored IsEnabledStored} default True;
+    property Enabled: Boolean read FEnabled write SetEnabled stored IsEnabledStored default True;
     property GroupIndex: Byte read FGroupIndex write SetGroupIndex default 0;
     property Hint : String read FHint write FHint;
     property ImageIndex : Integer read FImageIndex write SetImageIndex;
     property RadioItem: Boolean read FRadioItem write SetRadioItem default False;
-    property ShortCut: TShortCut read FShortCut write SetShortCut {stored IsShortCutStored} default 0;
-    property Visible: Boolean read FVisible write SetVisible {stored IsVisibleStored} default True;
+    property ShortCut: TShortCut read FShortCut write SetShortCut stored IsShortCutStored default 0;
+    property Visible: Boolean read FVisible write SetVisible stored IsVisibleStored default True;
     property OnClick: TNotifyEvent read FOnClick write FOnclick; 
   end;
 
@@ -397,6 +401,9 @@ end.
 
 {
   $Log$
+  Revision 1.17  2002/08/06 20:05:38  lazarus
+  MG: added stored funcitons
+
   Revision 1.16  2002/08/06 19:57:39  lazarus
   MG: added actnlist.pp
 
