@@ -38,8 +38,8 @@ Constructor TWin32ListStringList.Create(List: HWND);
 Begin
   Inherited Create;
   If List = HWND(Nil) Then
-    //Raise Exception.Create('Unspecified list window');
-    Assert(False, 'Trace:Unspecified list window');
+    Raise Exception.Create('Unspecified list window');
+    //Assert(False, 'Trace:Unspecified list window');
   FWin32List := List;
 End;
 
@@ -153,10 +153,11 @@ End;
 Procedure TWin32ListStringList.Insert(Index: Integer; Const S: String);
 Var
   Li: HWND;
-begin
+Begin
   SendMessage(FWin32List, CB_INSERTSTRING, Index, LPARAM(PChar(S)));
-  if FSorted then Sort;
-end;
+  If FSorted Then
+    Sort;
+End;
 
 {*************************************************************}
 {                      TWin32CListStringList methods            }
@@ -306,7 +307,7 @@ Var
   CSize: Integer;
   K: Integer;
 Begin
-  SendMessage(FWin32CList, CB_INSERTSTRING, Index, LPARAM(PChar(S)));
+  SendMessage(FWin32CList, CB_INSERTSTRING, Index, LPARAM(PChar(@S)));
 End;
 
 {------------------------------------------------------------------------------
@@ -329,6 +330,9 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.3  2002/02/01 10:13:09  lazarus
+  Keith: Fixes for Win32
+
   Revision 1.2  2002/01/17 03:17:44  lazarus
   Keith: Fixed TPage creation
 

@@ -88,7 +88,7 @@ Type
 
     Procedure CreateComponent(Sender: TObject);
     Procedure AddChild(Parent, Child: HWND; Left, Top: Integer);
-    Procedure ResizeChild(Window: HWND; Left, Top, Width, Height: Integer);
+    Procedure ResizeChild(Sender: TObject; Left, Top, Width, Height: Integer);
     Function GetLabel(CompStyle: Integer; Window: HWnd): String;
     Procedure AssignSelf(Window: HWnd; Data: Pointer);
     Procedure ReDraw(Child: TObject);
@@ -332,6 +332,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.9  2002/02/01 10:13:09  lazarus
+  Keith: Fixes for Win32
+
   Revision 1.8  2002/01/31 09:32:07  lazarus
   Keith:
     * Open and save dialogs can now coexist in apps (however, only one of each type of common dialog can be used per app :( )

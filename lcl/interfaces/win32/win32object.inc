@@ -148,6 +148,7 @@ End;
 Procedure TWin32Object.SetLabel(Sender: TObject; Data: Pointer);
 Var
   Handle, Wnd: HWnd;
+  I: Integer;
   P: Pointer;
   TbBI: TBBUTTONINFO;
   TCI: TC_ITEM;
@@ -185,8 +186,6 @@ Begin
       Assert(False, Format('Trace:TWin32Object.SetLabel - Got %S', [CS_To_String(TControl(Sender).FCompStyle)]));
       Assert(False, Format('Trace:TWin32Object.SetLabel - label --> %S', [String(PChar(Data))]));
       Assert(False, 'Trace:TWin32Object.SetLabel - I''m not sure if this''ll work');
-      SendMessage(Handle, CB_DELETESTRING, (Sender As TComboBox).ItemIndex, 0);
-      SendMessage(Handle, CB_INSERTSTRING, (Sender As TComboBox).ItemIndex, LPARAM(Data));
     End;
     csPage:
     Begin
@@ -535,7 +534,7 @@ activate_time :	the time at which the activation event occurred.
           If Sender Is TWinControl Then
             With (Sender As TWinControl), PRect(Data)^ Do
               If HandleAllocated Then
-                  ResizeChild(Handle, Left, Top, Right, Bottom);
+                  ResizeChild(Sender, Left, Top, Right, Bottom);
         End;
         LM_SHOWMODAL:
         Begin
@@ -703,7 +702,7 @@ activate_time :	the time at which the activation event occurred.
               Else 
                 Raise Exception.Create('Message LM_GETITEMS - Not implemented');
             End;
-            Data := TWin32ListStringList.Create(Control);
+            Data := TWin32ListStringList.Create(Handle{Control});
             Result := Integer(Data);      
           End;
         End;
@@ -1116,7 +1115,7 @@ Begin
   TWinControl(Sender).Parent := Nil;
   TWinControl(Sender).Parent := AParent;
 
-  ResizeChild(TWinControl(Sender).Handle, TWinControl(Sender).Left, TWinControl(Sender).Top, TWinControl(Sender).Width, TWinControl(Sender).Height);
+  ResizeChild(Sender, TWinControl(Sender).Left, TWinControl(Sender).Top, TWinControl(Sender).Width, TWinControl(Sender).Height);
   ShowHide(Sender);
 
   Result := 0;
@@ -1427,14 +1426,18 @@ End;
 
   Resize a window
  ------------------------------------------------------------------------------}
-Procedure TWin32Object.ResizeChild(Window: HWND; Left, Top, Width, Height: Integer);
+Procedure TWin32Object.ResizeChild(Sender: TObject; Left, Top, Width, Height: Integer);
 Var
   Handle: HWND;
   R: TRect;
 Begin
-  //Handle := (Sender As TWinControl).Handle;
+  Handle := (Sender As TWinControl).Handle;
+  If (Sender Is TButton) Then
+    Height := Height - 4;
+  If TControl(Sender).Parent Is TCustomGroupBox Then
+    Top := Top + 14;
   //If Handle <> HWND(Nil) Then
-    MoveWindow(Window, Left, Top, Width, Height, True)
+    MoveWindow(Handle, Left, Top, Width, Height, True)
   {Else
   Begin
     GetClientRect(Handle, R);
@@ -1534,6 +1537,7 @@ Type
 Var
   AccelIndex: Byte;
   AItems: TMenuItem;
+  AProcess: TProcess;
   Bottom, CompStyle, I, J, K, Left, Right, Top: Integer;
   Buddy, Handle, ParentWindow, Window: HWnd;
   Caption : String;
@@ -1573,6 +1577,7 @@ Begin
     Else
       Parent :=((Sender As TWinControl).Parent As TPage).Parent.Handle;
     Assert(False, Format('Trace:TWin32Object.CreateComponent - parent handle --> 0x%X', [Parent]));
+    
     Assert(False, 'Trace:Setting parent');
   End
   Else
@@ -1659,7 +1664,7 @@ Begin
         Flags := Flags Or BS_PUSHBUTTON
       Else
         Flags := Flags Or BS_DEFPUSHBUTTON;
-      Window := CreateWindow('BUTTON', StrTemp, Flags, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
+      Window := CreateWindow('BUTTON', StrTemp, Flags, Left, Top, Width, Height - 8, Parent, HMENU(Nil), HInstance, Nil);
       Assert(False, 'Trace:CreateComponent - Button Window Handle Value = $' + IntToHex(Window, 8));
       Assert(False, 'Trace:CreateComponent - Creating a Button - SetProp');
       If Window <> HWND(Nil) Then
@@ -1670,8 +1675,19 @@ Begin
     Begin
       Assert(False, 'Trace:TODO: TWin32Object.CreateComponent - Code style csCalendar');
       Assert(False, 'Trace:TODO: TWin32Object.CreateComponent (style csCalendar) - Opening the date/time control applet.  This will have to be good enough for now.');
-      Window := CreateWindow('CalendarWndClass', StrTemp, Flags, Left, Top, Width, Height, Parent, HMenu(Nil), HInstance, Nil);
+      {$IFDEF VER1_0_4}
+        AProcess := TProcess.Create('control timedate.cpl', [poNoConsole]);
+      {$ELSE}
+        AProcess := TProcess.Create(TComponent(Sender).Owner);
+        AProcess.CommandLine := 'control timedate.cpl';
+        AProcess.Options := [poNoConsole];
+      {$ENDIF}
+      AProcess.Execute;
+      Window := HWND(AProcess);
+      //Window := CreateWindow('CalendarWndClass', StrTemp, Flags, Left, Top, Width, Height, Parent, HMenu(Nil), HInstance, Nil);
       SetName(Window, StrTemp);
+      AProcess.Free;
+      AProcess := Nil;
     End;
     csCanvas:
     Begin
@@ -1688,8 +1704,7 @@ Begin
     End;
     csComboBox:
     Begin
-      Window := CreateWindow('COMBOBOX', Nil, Flags Or CBS_AUTOHSCROLL Or CBS_DROPDOWN, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
-      SendMessage(Window, CB_ADDSTRING, 0, LPARAM(LPCTSTR(StrTemp)));
+      Window := CreateWindow('COMBOBOX', Nil, Flags Or CBS_AUTOHSCROLL Or CBS_DROPDOWNLIST Or CBS_HASSTRINGS, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       SetProp(Window, 'Lazarus', Sender);
       SetName(Window, StrTemp);
     End;
@@ -1791,7 +1806,7 @@ Begin
     End;
     csFrame:
     Begin
-      Window := CreateWindow('BUTTON', StrTemp, Flags Or BS_GROUPBOX, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
+      Window := CreateWindow('BUTTON', StrTemp, Flags Or BS_GROUPBOX Or BS_TOP, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       SetProp(Window, 'Lazarus', Sender);
       SetName(Window, StrTemp);
     End;
@@ -2301,7 +2316,7 @@ Begin
     Assert(False, Format('Trace:WARNING: [TWin32Object.GetValue] %S --> No Decendant of TWinControl', [Sender.ClassName]));
 
   Handle := TWinControl(Sender).Handle;
-  Assert (Handle = 0, 'WARNING: TWin32Object.GetValue --> got no window');
+  Assert (Handle = 0, 'Trace:WARNING: TWin32Object.GetValue --> got no window');
    
   Case TControl(Sender).FCompStyle Of
     csTrackbar:
@@ -2418,11 +2433,13 @@ Begin
     End;
     csRadiobutton, csCheckbox:
     Begin
-      If TCheckBoxState(Data) = cbChecked Then
-        SendMessage(Handle, BM_SETCHECK, BST_CHECKED, 0)
+      If TCheckBoxState(Data^) = cbChecked Then
+        SendMessage(Handle, BM_SETCHECK, WParam(BST_CHECKED), 0)
+      Else If TCheckboxState(Data^) = cbUnchecked Then
+        SendMessage(Handle, BM_SETCHECK, WParam(BST_UNCHECKED), 0)
       Else
-        SendMessage(Handle, BM_SETCHECK, BST_UNCHECKED, 0);
-    End;
+        SendMessage(Handle, BM_SETCHECK, WParam(BST_INDETERMINATE), 0);
+    End
     Else
       Assert (True, Format('Trace:WARNING: [TWin32Object.SetValue] failed for %S', [Sender.ClassName]));
   End;
@@ -3020,6 +3037,9 @@ End;
 
 {
   $Log$
+  Revision 1.13  2002/02/01 10:13:09  lazarus
+  Keith: Fixes for Win32
+
   Revision 1.12  2002/01/31 09:32:07  lazarus
   Keith:
     * Open and save dialogs can now coexist in apps (however, only one of each type of common dialog can be used per app :( )

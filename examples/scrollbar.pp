@@ -53,6 +53,7 @@ constructor TForm1.Create(AOwner: TComponent);
 begin
    inherited Create(AOwner);
    Caption := 'Scrollbar Demo v0.1';
+   Height := 350;
 
    ScrollBar1 := TSCrollBar.Create(self);
    with SCrollbar1 do
@@ -76,34 +77,38 @@ begin
      Visible := True;
      Caption := 'Button1';
      onclick := @button1clicked;
+     Width := 65;
       end;
 
   Button2 := TButton.create(self);
   with Button2 do
       begin
      Parent := self;
-     Left := 25;
+     Left := 65;
      Visible := True;
      Caption := 'Button2';
      onclick := @button2clicked;
+     Width := 65;
       end;
   Button3 := TButton.create(self);
   with Button3 do
       begin
      Parent := self;
-     Left := 55;
+     Left := 130;
      Visible := True;
      Caption := 'Button3';
      onclick := @button3clicked;
+     Width := 65;
       end;
   Button4 := TButton.create(self);
   with Button4 do
       begin
      Parent := self;
-     Left := 100;
+     Left := 195;
      Visible := True;
      Caption := 'Button4';
      onclick := @button4clicked;
+     Width := 65;
       end;
 
 end;

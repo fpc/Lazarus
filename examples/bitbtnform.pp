@@ -90,6 +90,8 @@ begin
      left := 125;
      caption := 'Close';
      Checked := True;
+     Height := 15;
+     Width := 60;
      Show;
    end;
 
@@ -102,6 +104,8 @@ begin
      left := 125;
      caption := 'Ok';
      Checked := False;
+     Height := 15;
+     Width := 50;
      Show;
    end;
 
@@ -114,6 +118,8 @@ begin
      left := 125;
      caption := 'Cancel';
      Checked := False;
+     Height := 15;
+     Width := 65;
      Show;
    end;
 
@@ -126,6 +132,8 @@ begin
      left := 125;
      caption := 'Help';
      Checked := False;
+     Height := 15;
+     Width := 55;
      Show;
    end;
 

@@ -44,7 +44,7 @@ endif
 .SUFFIXES: .rc .res
 
 %.res: %.rc
-        windres -i $< -o $@
+        windres -i $< -o $@ --preprocessor cpp
 
 ide:
 ifeq ($(OS_TARGET), win32)

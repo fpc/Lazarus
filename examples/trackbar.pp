@@ -172,7 +172,7 @@ begin
 	Track1.Parent := Self;
 	Track1.Left := 50;
 	Track1.Top := 150;
-	Track1.Width := 200;
+	Track1.Width := 140;
 	Track1.Height := 140;
 	Track1.Min := 0;
 	Track1.Max := 100;
@@ -301,6 +301,9 @@ begin
 end.
 {
   $Log$
+  Revision 1.3  2002/02/01 10:13:09  lazarus
+  Keith: Fixes for Win32
+
   Revision 1.2  2000/07/23 19:04:42  lazarus
   enhanced examples, stoppok
 

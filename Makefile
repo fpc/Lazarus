@@ -1540,7 +1540,7 @@ endif
 .PHONY: lcl components ide tools all clean
 .SUFFIXES: .rc .res
 %.res: %.rc
-	windres -i $< -o $@
+	windres -i $< -o $@ --preprocessor cpp
 ide:
 ifeq ($(OS_TARGET), win32)
 	$(MAKE) lazarus.res
