@@ -42,6 +42,7 @@ object CodeExplorerView: TCodeExplorerView
     RIGHTCLICKSELECT = True
     SELECTIONCOLOR = -2147483635
     TABORDER = 2
+    ONDBLCLICK = CodeTreeviewDBLCLICK
     ONDELETION = CodeTreeviewDELETION
     OPTIONS = [tvoautoitemheight, tvokeepcollapsednodes, tvorightclickselect, tvoshowbuttons, tvoshowlines, tvoshowroot, tvotooltips]
     HEIGHT = 480
@@ -57,7 +58,6 @@ object CodeExplorerView: TCodeExplorerView
     top = 72
     object JumpToMenuitem: TMENUITEM
       CAPTION = 'Jump to source'
-      ENABLED = False
       ONCLICK = JumpToMenuitemCLICK
     end
     object RefreshMenuitem: TMENUITEM
