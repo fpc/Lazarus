@@ -809,7 +809,11 @@ end;
 procedure TDesigner.ValidateRename(AComponent: TComponent;
   const CurName, NewName: string);
 Begin
+  // check if contol is initialized
+  if CurName='' then exit;
+  // check if control is the form
   if AComponent=nil then AComponent:=FCustomForm;
+  // consistency check
   if CurName<>AComponent.Name then
     writeln('WARNING: TDesigner.ValidateRename: OldComponentName="',CurName,'"');
   if Assigned(OnRenameComponent) then
