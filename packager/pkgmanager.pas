@@ -87,6 +87,8 @@ type
     // package graph
     function PackageGraphExplorerOpenPackage(Sender: TObject;
                                            APackage: TLazPackage): TModalResult;
+    function PackageGraphExplorerOpenProject(Sender: TObject;
+                                             AProject: TProject): TModalResult;
     function PackageGraphExplorerUninstallPackage(Sender: TObject;
                                            APackage: TLazPackage): TModalResult;
     procedure PackageGraphAddPackage(Pkg: TLazPackage);
@@ -468,6 +470,13 @@ function TPkgManager.PackageGraphExplorerOpenPackage(Sender: TObject;
   APackage: TLazPackage): TModalResult;
 begin
   Result:=DoOpenPackage(APackage);
+end;
+
+function TPkgManager.PackageGraphExplorerOpenProject(Sender: TObject;
+  AProject: TProject): TModalResult;
+begin
+  if AProject<>Project1 then exit;
+  Result:=MainIDE.DoShowProjectInspector;
 end;
 
 procedure TPkgManager.PackageGraphAddPackage(Pkg: TLazPackage);
@@ -1935,6 +1944,7 @@ begin
   if PackageGraphExplorer=nil then begin
     PackageGraphExplorer:=TPkgGraphExplorer.Create(Application);
     PackageGraphExplorer.OnOpenPackage:=@PackageGraphExplorerOpenPackage;
+    PackageGraphExplorer.OnOpenProject:=@PackageGraphExplorerOpenProject;
     PackageGraphExplorer.OnUninstallPackage:=@PackageGraphExplorerUninstallPackage;
   end;
   PackageGraphExplorer.ShowOnTop;

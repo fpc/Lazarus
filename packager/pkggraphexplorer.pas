@@ -44,6 +44,9 @@ uses
   Project, BrokenDependenciesDlg, PackageDefs, PackageSystem, PackageEditor;
   
 type
+  TOnOpenProject =
+    function(Sender: TObject; AProject: TProject): TModalResult of object;
+
   TPkgGraphExplorer = class(TForm)
     ImageList: TImageList;
     PkgTreeLabel: TLabel;
@@ -56,6 +59,7 @@ type
     procedure PkgGraphExplorerResize(Sender: TObject);
     procedure PkgGraphExplorerShow(Sender: TObject);
     procedure PkgListBoxClick(Sender: TObject);
+    procedure PkgListBoxDblClick(Sender: TObject);
     procedure PkgPopupMenuPopup(Sender: TObject);
     procedure PkgTreeViewDblClick(Sender: TObject);
     procedure PkgTreeViewExpanding(Sender: TObject; Node: TTreeNode;
@@ -63,6 +67,7 @@ type
     procedure PkgTreeViewSelectionChanged(Sender: TObject);
     procedure UninstallMenuItemClick(Sender: TObject);
   private
+    FOnOpenProject: TOnOpenProject;
     FOnUninstallPackage: TOnUninstallPackage;
     ImgIndexPackage: integer;
     ImgIndexInstallPackage: integer;
@@ -95,10 +100,12 @@ type
     procedure UpdatePackageID(Pkg: TLazPackage);
     procedure UpdatePackageAdded(Pkg: TLazPackage);
     procedure SelectPackage(Pkg: TLazPackage);
+    procedure OpenDependencyOwner(DependencyOwner: TObject);
     function FindMainNodeWithText(const s: string): TTreeNode;
     procedure ShowPath(PathList: TList);
   public
     property OnOpenPackage: TOnOpenPackage read FOnOpenPackage write FOnOpenPackage;
+    property OnOpenProject: TOnOpenProject read FOnOpenProject write FOnOpenProject;
     property OnUninstallPackage: TOnUninstallPackage read FOnUninstallPackage
                                                     write FOnUninstallPackage;
   end;
@@ -162,6 +169,19 @@ begin
   end;
 end;
 
+procedure TPkgGraphExplorer.PkgListBoxDblClick(Sender: TObject);
+var
+  Dependency: TPkgDependency;
+begin
+  GetCurrentIsUsedBy(Dependency);
+  if (Dependency=nil) or (Dependency.Owner=nil) then begin
+    PkgListBox.ItemIndex:=-1;
+    exit;
+  end;
+  if Dependency.Owner<>nil then
+    OpenDependencyOwner(Dependency.Owner);
+end;
+
 procedure TPkgGraphExplorer.PkgPopupMenuPopup(Sender: TObject);
 var
   Pkg: TLazPackage;
@@ -169,7 +189,6 @@ var
 begin
   GetDependency(PkgTreeView.Selected,Pkg,Dependency);
   UninstallMenuItem.Visible:=(Pkg<>nil) and (Pkg.AutoInstall<>pitNope);
-writeln('TPkgGraphExplorer.PkgPopupMenuPopup ',UninstallMenuItem.Visible);
   if UninstallMenuItem.Visible then
     UninstallMenuItem.Caption:='Uninstall package '+Pkg.IDAsString;
 end;
@@ -338,6 +357,7 @@ begin
     Name:='PkgListBox';
     Parent:=Self;
     OnClick:=@PkgListBoxClick;
+    OnDblClick:=@PkgListBoxDblClick;
   end;
 
   InfoMemo:=TMemo.Create(Self);
@@ -616,6 +636,17 @@ begin
   NewNode:=FindMainNodeWithText(Pkg.IDAsString);
   if NewNode<>nil then
     PkgTreeView.Selected:=NewNode;
+end;
+
+procedure TPkgGraphExplorer.OpenDependencyOwner(DependencyOwner: TObject);
+begin
+  if DependencyOwner is TLazPackage then begin
+    if Assigned(OnOpenPackage) then
+      OnOpenPackage(Self,TLazPackage(DependencyOwner));
+  end else if DependencyOwner is TProject then begin
+    if Assigned(OnOpenProject) then
+      OnOpenProject(Self,TProject(DependencyOwner));
+  end;
 end;
 
 function TPkgGraphExplorer.FindMainNodeWithText(const s: string): TTreeNode;
