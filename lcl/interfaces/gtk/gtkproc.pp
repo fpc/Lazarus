@@ -400,7 +400,7 @@ function IndexOfStyle(const WName : String): integer;
 Procedure ReleaseStyle(const WName : String);
 function GetStyle(const WName : String) : PGTKStyle;
 Function GetStyleWidget(WName : String) : PGTKWidget;
-function GetDefaultFont : PGDKFont;
+function LoadDefaultFont: PGDKFont;
 Function GetSysGCValues(Color : TColorRef) : TGDKGCValues;
 
 Function DeleteAmpersands(var Str : String) : Longint;
