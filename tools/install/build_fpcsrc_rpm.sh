@@ -119,7 +119,9 @@ else
     
   # copy custom rpm scripts
   cp smart_strip.sh /tmp/smart_strip.sh
+  chmod a+x /tmp/smart_strip.sh
   cp do_nothing.sh /tmp/do_nothing.sh
+  chmod a+x /tmp/do_nothing.sh
 
   # build rpm
   rpmbuild -ba $SpecFile || rpm -ba $SpecFile
