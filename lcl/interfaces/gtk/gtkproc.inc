@@ -496,6 +496,25 @@ begin
   end;
 end;
 
+
+{------------------------------------------------------------------------------
+  Procedure: StoreCommonDialogSetup
+  Params:    ADialog: TCommonDialog
+  Returns:   none
+
+  Stores the size of a TCommonDialog.
+ ------------------------------------------------------------------------------}
+procedure StoreCommonDialogSetup(ADialog: TCommonDialog);
+var DlgWindow: PGtkWidget;
+begin
+  if (ADialog=nil) or (ADialog.Handle=0) then exit;
+  DlgWindow:=PGtkWidget(ADialog.Handle);
+  if DlgWindow^.Allocation.Width>0 then
+    ADialog.InitialWidth:=DlgWindow^.Allocation.Width;
+  if DlgWindow^.Allocation.Height>0 then
+    ADialog.InitialHeight:=DlgWindow^.Allocation.Height;
+end;
+
 {------------------------------------------------------------------------------
   Procedure: DeliverMessage
   Params:    Message: the message to process
@@ -671,19 +690,6 @@ end;
 function GetLCLObject(const Widget: Pointer): TObject;
 begin
   Result := TObject(gtk_object_get_data(Widget, 'Class'));
-  {$IFDEF VerboseClientRectBugFix}
-  if Result=nil then begin
-    writeln('TTT1 GetLCLObject ERROR Widget=',HexStr(Cardinal(Widget),8),' Result=nil');
-  end else begin
-    if Result is TRadioButton then
-      write('TTT2 GetLCLObject Widget=',HexStr(Cardinal(Widget),8),
-        ' Result=',HexStr(Cardinal(Result),8),' ',Result.ClassName);
-    if TControl(Result).Parent<>nil then
-      writeln(' Parent=',TControl(Result).Parent.Name,':',TControl(Result).Parent.ClassName)
-    else
-      writeln(' Parent=nil');
-  end;
-  {$ENDIF}
 end;
 
 // ----------------------------------------------------------------------
@@ -1251,6 +1257,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.40  2002/05/29 21:44:39  lazarus
+  MG: improved TCommon/File/OpenDialog, fixed TListView scrolling and broder
+
   Revision 1.39  2002/05/28 19:39:46  lazarus
   MG: added gtk rc file support and started stule dependent syscolors
 
