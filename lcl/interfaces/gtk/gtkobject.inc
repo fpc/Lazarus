@@ -1534,11 +1534,13 @@ var
   i: Integer;
   AForm: TCustomForm;
 begin
+  //debugln('TGtkWidgetSet.AppMinimize A');
   if Screen=nil then exit;
   for i:=0 to Screen.CustomFormCount-1 do begin
     AForm:=Screen.CustomForms[i];
+    //debugln('TGtkWidgetSet.AppMinimize B ',DbgSName(AForm),' AForm.Parent=',DbgSName(AForm.Parent),' AForm.HandleAllocated=',dbgs(AForm.HandleAllocated));
     if (AForm.Parent=nil) and AForm.HandleAllocated then begin
-      ShowWindow(AForm.Handle, WS_MINIMIZE);
+      ShowWindow(AForm.Handle, SW_MINIMIZE);
     end;
   end;
 end;
@@ -6895,6 +6897,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.642  2005/03/08 00:28:03  mattias
+  implemented gtk2 AppMinimize
+
   Revision 1.641  2005/03/07 21:59:45  vincents
   changed hexstr(cardinal()) for pointers to dbgs() and other 64-bits fixes   from Peter Vreman
 

@@ -338,9 +338,9 @@ end;
 
 function TGtk2WidgetSet.CreateListView(ListViewObject: TObject): PGtkWidget;
 begin
- DebugLn('Warning: deprecated call to TGtkWidgetSet.CreateListView');
+  DebugLn('Warning: deprecated call to TGtkWidgetSet.CreateListView');
+  Result:=nil;
 end;
-
 
 function TGtk2WidgetSet.GetText(Sender: TComponent; var Text: String): Boolean;
 var
@@ -1551,6 +1551,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.31  2005/03/08 00:28:03  mattias
+  implemented gtk2 AppMinimize
+
   Revision 1.30  2005/03/01 23:09:41  mattias
   gtk2 intf listview  from Andrew Haines
 

@@ -226,6 +226,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TApplication.Minimize;
 begin
+  //debugln('TApplication.Minimize');
   InterfaceObject.AppMinimize;
 end;
 
@@ -1194,7 +1195,6 @@ procedure TApplication.ControlKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 var
   AControl: TWinControl;
-  Form: TCustomForm;
 begin
   if Key=VK_UNKNOWN then exit;
   
@@ -1213,45 +1213,10 @@ begin
       exit;
     end;
 
-    // handle tab keys
-    if (Key=VK_Tab) and ((Shift-[ssShift])=[])
-    and (anoTabToSelectNext in Navigation)
-    and AControl.Focused then
-    begin
-      Key:=VK_UNKNOWN;
-      AControl.PerformTab(not (ssShift in Shift));
-    end;
-
-    // check for special actions handled ourselves
-    if (Shift = []) and ((Key = VK_RETURN) or (Key = VK_ESCAPE)) then
-    begin
-      Form := GetParentForm(AControl);
-      //debugln('TApplication.ControlKeyUp B ',DbgSName(Acontrol),' ',DbgSName(Form),' ',dbgs(anoEscapeForCancelControl in Navigation));
-      if Form<>nil then begin
-        //debugln('TApplication.ControlKeyUp C Form.DefaultControl=',dbgs(Form.DefaultControl),' Form.CancelControl=',dbgs(Form.CancelControl));
-        case Key of
-          VK_RETURN:
-            if (anoReturnForDefaultControl in Navigation)
-            and (Form.DefaultControl <> nil) then
-            begin
-              //debugln('TApplication.ControlKeyUp VK_RETURN ',Acontrol.Name);
-              Form.DefaultControl.ExecuteDefaultAction;
-              Key := VK_UNKNOWN;
-            end;
-
-          VK_ESCAPE:
-            if (anoEscapeForCancelControl in Navigation) then begin
-              if (Form.CancelControl <> nil) then
-              begin
-                //debugln('TApplication.ControlKeyUp VK_ESCAPE ',Acontrol.Name);
-                Form.CancelControl.ExecuteCancelAction;
-                Key := VK_UNKNOWN;
-              end;
-            end;
-
-        end;
-      end;
-    end;
+    // handle special navigation keys
+    DoTabKey(AControl, Shift, Key);
+    DoReturnKey(AControl, Shift, Key);
+    DoEscapeKey(AControl, Shift, Key);
   end;
 end;
 
@@ -1339,6 +1304,57 @@ begin
   //  or otherwise disabling the main form
   if Assigned(FMainForm) and IsWindowEnabled(FMainForm.Handle) then
     Result := FMainForm.IsShortcut(Message);
+end;
+
+procedure TApplication.DoEscapeKey(AControl: TWinControl; Shift: TShiftState;
+  var Key: Word);
+var
+  Form: TCustomForm;
+begin
+  if (Shift = []) and (Key = VK_ESCAPE) then begin
+    Form := GetParentForm(AControl);
+    if Form<>nil then begin
+      if (anoEscapeForCancelControl in Navigation) then begin
+        if (Form.CancelControl <> nil) then
+        begin
+          //debugln('TApplication.ControlKeyUp VK_ESCAPE ', Acontrol.Name);
+          Form.CancelControl.ExecuteCancelAction;
+          Key := VK_UNKNOWN;
+        end;
+      end;
+    end;
+  end;
+end;
+
+procedure TApplication.DoReturnKey(AControl: TWinControl; Shift: TShiftState;
+  var Key: Word);
+var
+  Form: TCustomForm;
+begin
+  if (Shift = []) and (Key = VK_RETURN) then begin
+    Form := GetParentForm(AControl);
+    if Form<>nil then begin
+      if (anoReturnForDefaultControl in Navigation)
+      and (Form.DefaultControl <> nil) then
+      begin
+        //debugln('TApplication.ControlKeyUp VK_RETURN ', Acontrol.Name);
+        Form.DefaultControl.ExecuteDefaultAction;
+        Key := VK_UNKNOWN;
+      end;
+    end;
+  end;
+end;
+
+procedure TApplication.DoTabKey(AControl: TWinControl; Shift: TShiftState;
+  var Key: Word);
+begin
+  if (Key=VK_Tab) and ((Shift-[ssShift])=[])
+  and (anoTabToSelectNext in Navigation)
+  and AControl.Focused then
+  begin
+    Key:=VK_UNKNOWN;
+    AControl.PerformTab(not (ssShift in Shift));
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1448,6 +1464,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.109  2005/03/08 00:28:03  mattias
+  implemented gtk2 AppMinimize
+
   Revision 1.108  2005/03/07 21:59:44  vincents
   changed hexstr(cardinal()) for pointers to dbgs() and other 64-bits fixes   from Peter Vreman
 

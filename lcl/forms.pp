@@ -1012,6 +1012,11 @@ type
     procedure DoBeforeMouseMessage(CurMouseControl: TControl);
     function  IsShortcut(var Message: TLMKey): boolean;
   public
+    procedure DoEscapeKey(AControl: TWinControl; Shift: TShiftState;
+                          var Key: Word);
+    procedure DoReturnKey(AControl: TWinControl; Shift: TShiftState;
+                          var Key: Word);
+    procedure DoTabKey(AControl: TWinControl; Shift: TShiftState; var Key: Word);
     property CaptureExceptions: boolean read FCaptureExceptions
                                         write SetCaptureExceptions;
     property Handle: THandle read FHandle;

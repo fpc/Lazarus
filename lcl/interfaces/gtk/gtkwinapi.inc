@@ -8551,6 +8551,7 @@ begin
     RaiseException('TGtkWidgetSet.ShowWindow  hWnd is nil');
 
   {$IFDEF Gtk2}
+  //debugln('TGtkWidgetSet.ShowWindow A ',GetWidgetDebugReport(PGtkWidget(GtkWindow)),' nCmdShow=',dbgs(nCmdShow),' SW_MINIMIZE=',dbgs(SW_MINIMIZE=nCmdShow));
 
   case nCmdShow of
 
@@ -8952,6 +8953,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.407  2005/03/08 00:28:03  mattias
+  implemented gtk2 AppMinimize
+
   Revision 1.406  2005/03/07 21:59:45  vincents
   changed hexstr(cardinal()) for pointers to dbgs() and other 64-bits fixes   from Peter Vreman
 

@@ -7840,6 +7840,9 @@ var
 begin
   //DebugLn('TMainIDE.DoPublishModule A');
   Result:=mrCancel;
+  
+  Application.Minimize;
+  exit;
 
   // to not delete project files
   DestDir:=TrimFilename(AppendPathDelim(DestDirectory));
@@ -11483,6 +11486,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.856  2005/03/08 00:28:03  mattias
+  implemented gtk2 AppMinimize
+
   Revision 1.855  2005/03/07 18:46:35  mattias
   fixed unsetting ItemIndex on changing TComboBox.Text
 
