@@ -131,7 +131,7 @@ type
     function CreateDefaultFont: PGdiObject;virtual;
     function CreateDefaultPen: PGdiObject;virtual;
     procedure UpdateDCTextMetric(DC: TDeviceContext);
-    
+
     // images
     procedure LoadXPMFromLazResource(const ResourceName: string;
       Window: PGdkWindow; var PixmapImg, PixmapMask: PGdkPixmap);virtual;
@@ -322,6 +322,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.116  2002/12/27 17:12:38  mattias
+  added more Delphi win32 compatibility functions
+
   Revision 1.115  2002/12/27 10:23:40  mattias
   implemented TListBox.TopIndex
 

@@ -113,6 +113,14 @@ begin
   Result := InterfaceObject.CreateBitmap(Width, Height, Planes, BitCount, BitmapBits);
 end;
 
+function CreateDIBitmap(DC: HDC; var InfoHeader: TBitmapInfoHeader;
+  dwUsage: DWORD; InitBits: PChar; var InitInfo: TBitmapInfo;
+  wUsage: UINT): HBITMAP;
+begin
+  Result := InterfaceObject.CreateDIBitmap(DC,InfoHeader,dwUsage,InitBits,
+                                           InitInfo,wUsage);
+end;
+
 function CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH;
 begin
   Result := InterfaceObject.CreateBrushIndirect(LogBrush);
@@ -142,6 +150,11 @@ function CreateFontIndirectEx(const LogFont: TLogFont;
   const LongFontName: string): HFONT;
 begin
   Result := InterfaceObject.CreateFontIndirectEx(LogFont,LongFontName);
+end;
+
+function CreatePalette(const LogPalette: TLogPalette): HPalette;
+begin
+  Result := InterfaceObject.CreatePalette(LogPalette);
 end;
 
 function CreatePenIndirect(const LogPen: TLogPen): HPEN;
@@ -192,6 +205,11 @@ end;
 function DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer;
 begin
   Result := InterfaceObject.DrawText(DC, Str, Count, Rect, Flags);
+end;
+
+function DPtoLP(DC: HDC; var Points; Count: Integer): BOOL;
+begin
+  Result := InterfaceObject.DPtoLP(DC,Points,Count);
 end;
 
 function EnableMenuItem(hndMenu: HMENU; uIDEnableItem: Integer; bEnable: Boolean): Boolean;
@@ -253,6 +271,11 @@ end;
 function FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean;
 begin
   Result := InterfaceObject.FillRect(DC, Rect, Brush);
+end;
+
+function FillRgn(DC: HDC; RegionHnd: HRGN; hbr: HBRUSH): BOOL;
+begin
+  Result := InterfaceObject.FillRgn(DC,RegionHnd,hbr);
 end;
 
 function FloodFill(DC: HDC; X, Y: Integer; Color: TColor;
@@ -390,6 +413,11 @@ begin
   Result := InterfaceObject.GetKeyState(nVirtKey);
 end;
 
+function GetMapMode(DC: HDC): Integer;
+begin
+  Result := InterfaceObject.GetMapMode(DC);
+end;
+
 function GetNotebookTabIndexAtPos(Handle: HWND;
   const ClientPos: TPoint): integer;
 begin
@@ -399,6 +427,13 @@ end;
 function GetObject(GDIObject: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer;
 begin
   Result := InterfaceObject.GetObject(GDIObject, BufSize, Buf);
+end;
+
+function GetPaletteEntries(Palette: HPALETTE; StartIndex, NumEntries: UINT;
+  var PaletteEntries): UINT;
+begin
+  Result := InterfaceObject.GetPaletteEntries(Palette,StartIndex,NumEntries,
+                                              PaletteEntries);
 end;
 
 Function GetParent(Handle : HWND): HWND;
@@ -441,6 +476,13 @@ begin
   Result := InterfaceObject.GetSystemMetrics(nIndex);
 end;
 
+function GetSystemPaletteEntries(DC: HDC; StartIndex, NumEntries: UINT;
+  var PaletteEntries): UINT;
+begin
+  Result := InterfaceObject.GetSystemPaletteEntries(DC,StartIndex,NumEntries,
+                                                    PaletteEntries);
+end;
+
 function GetTextColor(DC: HDC) : TColorRef;
 begin
   Result := InterfaceObject.GetTextColor(DC);
@@ -452,9 +494,16 @@ begin
   Result := InterfaceObject.GetTextExtentExPoint(DC,Str,Count,p4,p5,p6,Size);
 end;
 
-function GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean;
+function GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer;
+  var Size: TSize): Boolean;
 begin
   Result := InterfaceObject.GetTextExtentPoint(DC, Str, Count, Size);
+end;
+
+function GetTextExtentPoint32(DC: HDC; Str: PChar; Count: Integer;
+  var Size: TSize): Boolean;
+begin
+  Result := InterfaceObject.GetTextExtentPoint32(DC, Str, Count, Size);
 end;
 
 function GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;
@@ -477,7 +526,7 @@ begin
   Result := InterfaceObject.GetWindowSize(Handle, Width, Height);
 end;
 
-Function GetWindowOrgEx(dc : hdc; var P : TPoint): Integer;
+Function GetWindowOrgEx(dc : hdc; P : PPoint): Integer;
 begin
  Result := InterfaceObject.GetWindowOrgEx(dc,P);
 end;
@@ -844,10 +893,20 @@ begin
 //writeln('[winapi.inc SetFocus] END');
 end;
 
+function SetMapMode(DC: HDC; MapMode: Integer): Integer;
+begin
+  Result := InterfaceObject.SetMapMode(DC,MapMode);
+end;
+
 function SetScrollInfo(Handle : HWND; SBStyle : Integer;
   ScrollInfo: TScrollInfo; Redraw : Boolean): Integer;
 begin
   Result := InterfaceObject.SetSCrollInfo(Handle, SBStyle, ScrollInfo, Redraw)
+end;
+
+function SetStretchBltMode(DC: HDC; StretchMode: Integer): Integer;
+begin
+  Result := InterfaceObject.SetStretchBltMode(DC,StretchMode);
 end;
 
 function SetSysColors(cElements: Integer; const lpaElements; const lpaRgbValues): Boolean; 
@@ -904,6 +963,14 @@ end;
 function StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Rop: Cardinal): Boolean;
 begin
   Result := InterfaceObject.StretchBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, Rop)
+end;
+
+function StretchDIBits(DC: HDC; DestX, DestY, DestWidth, DestHeight, SrcX,
+  SrcY, SrcWidth, SrcHeight: Integer; Bits: Pointer; var BitsInfo: TBitmapInfo;
+  Usage: UINT; Rop: DWORD): Integer;
+begin
+  Result := InterfaceObject.StretchDIBits(DC,DestX,DestY,DestWidth,DestHeight,
+                          SrcX,SrcY,SrcWidth,SrcHeight,Bits,BitsInfo,Usage,Rop);
 end;
 
 function StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean; 
@@ -1448,6 +1515,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.68  2002/12/27 17:12:38  mattias
+  added more Delphi win32 compatibility functions
+
   Revision 1.67  2002/12/26 11:00:14  mattias
   added included by to unitinfo and a few win32 functions
 
