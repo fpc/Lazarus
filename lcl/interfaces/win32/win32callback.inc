@@ -135,7 +135,7 @@ Var
   NotifyUserInput: Boolean;
   OverlayWindow: HWND;
   TargetWindow: HWND;
-  DlgCode, CharCode: dword;
+  DlgCode: dword;
   eraseBkgndCommand: TEraseBkgndCommand;
   winClassName: array[0..19] of char;
   WindowInfo: PWindowInfo;
@@ -1191,12 +1191,14 @@ Begin
     begin
       // if key not yet processed, let windows process it
       WinProcess := LMChar.CharCode <> VK_UNKNOWN;
+      WParam := LMChar.CharCode;
     end;
    
     CN_KEYDOWN, CN_KEYUP:
     begin
       // if key not yet processed, let windows process it
       WinProcess := LMKey.CharCode <> VK_UNKNOWN;
+      WParam := LMChar.CharCode;
     end;
     
   else
@@ -1223,21 +1225,21 @@ Begin
         case Msg of
           WM_CHAR: 
           begin
-            CharCode := LMChar.CharCode;
+            LMChar.CharCode := Word(WParam);
             LMChar.Msg := LM_CHAR;
           end;
           WM_KEYDOWN:
           begin
-            CharCode := LMKey.CharCode;
+            LMKey.CharCode := Word(WParam);
             LMKey.Msg := LM_KEYDOWN;
           end;
           WM_KEYUP: 
           begin
-            CharCode := LMKey.CharCode;
+            LMKey.CharCode := Word(WParam);
             LMKey.Msg := LM_KEYUP;
           end;
         end;
-        case CharCode of
+        case WParam of
           VK_RETURN:
             DlgCode := DLGC_WANTALLKEYS;
           VK_TAB:
@@ -1452,6 +1454,9 @@ end;
 
 {
   $Log$
+  Revision 1.160  2004/11/12 15:33:13  vincents
+  fix changing key in OnKeyPress event.
+
   Revision 1.159  2004/11/12 15:30:30  vincents
   send CM_TEXTCHANGED for TCustomMemo
 
