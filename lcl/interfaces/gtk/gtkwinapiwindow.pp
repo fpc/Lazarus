@@ -198,7 +198,8 @@ begin
   Result := gtk_False;
 end;
 
-procedure GTKAPIWidgetClient_ClassInit(theClass: PGTKAPIWidgetClientClass);cdecl;
+procedure GTKAPIWidgetClient_ClassInit(theClass: Pointer);cdecl;
+// theClass: PGTKAPIWidgetClientClass
 var 
   ObjectClass: PGTKObjectClass;
   WidgetClass: PGTKWidgetClass;
@@ -211,7 +212,7 @@ begin
     'set_scroll_adjustments',
     GTK_RUN_FIRST,
     ObjectClass^.thetype,
-    (@theClass^.set_scroll_adjustments - Pointer(theClass)),
+    (@PGTKAPIWidgetClientClass(theClass)^.set_scroll_adjustments - Pointer(theClass)),
     @gtk_marshal_NONE__POINTER_POINTER,
     GTK_TYPE_NONE,
     2, 
@@ -228,15 +229,17 @@ begin
     focus_out_event := @GTKAPIWidgetClient_FocusOut;
   end;
 
-  theClass^.set_scroll_adjustments := nil;
+  PGTKAPIWidgetClientClass(theClass)^.set_scroll_adjustments := nil;
 end;
 
-procedure GTKAPIWidgetClient_Init(Client: PGTKAPIWidgetClient;
-  theClass: PGTKAPIWidgetClientClass); cdecl;
+procedure GTKAPIWidgetClient_Init(Client, theClass: Pointer); cdecl;
+// Client: PGTKAPIWidgetClient
+// theClass: PGTKAPIWidgetClientClass
 begin
   gtk_widget_set_flags(PGTKWidget(Client), GTK_CAN_FOCUS);
 
-  with Client^.Caret do begin
+  with PGTKAPIWidgetClient(Client)^.Caret do 
+  begin
     Visible := False;
     IsDrawn := False;
     Blinking := True;
@@ -449,37 +452,39 @@ begin
 end;
 
 
-procedure GTKAPIWidget_ClassInit(wawClass: PGTKAPIWidgetClass); cdecl;
+procedure GTKAPIWidget_ClassInit(wawClass: Pointer); cdecl;
+//wawClass: PGTKAPIWidgetClass
 var 
-//  ObjectClass: PGTKObjectClass;
   WidgetClass: PGTKWidgetClass;
 begin
-//  ObjectClass := PGTKObjectClass(wawClass);
   WidgetClass := PGTKWidgetClass(wawClass);
   
   WidgetClass^.focus_in_event := @GTKAPIWidget_FocusIn;
   WidgetClass^.focus_out_event := @GTKAPIWidget_FocusOut;
 end;
 
-procedure GTKAPIWidget_Init(waw: PGTKAPIWidget;
-  theClass: PGTKAPIWidgetClass); cdecl;
+procedure GTKAPIWidget_Init(waw, theClass: Pointer); cdecl;
+// waw: PGTKAPIWidget; 
+// theClass: PGTKAPIWidgetClass
 var
   Widget: PGTKWidget;
+  APIWidget: PGTKAPIWidget;
 begin
   Widget := PGTKWidget(waw);
+  APIWidget := PGTKAPIWidget(waw);
   
   gtk_widget_set_flags(Widget, GTK_CAN_FOCUS);
 
-  waw^.Client := GTKAPIWidgetClient_New;
-  gtk_object_set_data(PGTKObject(Widget), 'Fixed', waw^.Client);
-  gtk_object_set_data(PGTKObject(waw^.Client), 'Main', Widget);
-  gtk_widget_show(waw^.Client);
+  APIWidget^.Client := GTKAPIWidgetClient_New;
+  gtk_object_set_data(PGTKObject(Widget), 'Fixed', APIWidget^.Client);
+  gtk_object_set_data(PGTKObject(APIWidget^.Client), 'Main', Widget);
+  gtk_widget_show(APIWidget^.Client);
   
 writeln('(gtkwinapiwindow.pp) GTKAPIWidget_Init B  check this:');
 // MG: range check GTK-Critical warnings results possibly from
 // function GTKAPIwidget_new.
 // ToDo: check nil parameters
-  gtk_container_add(PGTKContainer(Widget), waw^.Client);
+  gtk_container_add(PGTKContainer(Widget), APIWidget^.Client);
 writeln('GTKAPIWidget_Init END');
 end;
 
@@ -569,6 +574,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.9  2001/06/14 23:13:30  lazarus
+  MWE:
+    * Fixed some syntax errors for the latest 1.0.5 compiler
+
   Revision 1.8  2001/06/12 18:31:01  lazarus
   MG: small bugfixes
 

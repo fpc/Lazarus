@@ -100,7 +100,7 @@ function PostMessage(hWnd: HWND; Msg: Cardinal; wParam: LongInt; lParam: LongInt
 function RealizePalette(DC: HDC): Cardinal; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function ReleaseCapture : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function ReleaseDC(hWnd: HWND; hDC: HDC): Integer;  {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function ReleaseDC(hWnd: HWND; DC: HDC): Integer;  {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function RestoreDC(DC: HDC; SavedDC: Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 function SaveDC(DC: HDC): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -126,7 +126,7 @@ Function SetTextCharacterExtra(_hdc : hdc; nCharExtra : Integer):Integer; {$IFDE
 function SetTextColor(DC: HDC; Color: TColorRef): TColorRef; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetTimer(hWnd: HWND; nIDEvent, uElapse: integer; lpTimerFunc: TFNTimerProc) : integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetWindowLong(Handle: HWND; Idx: Integer; NewLong : Longint): Longint;{$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function SetWindowOrgEx(dc : hdc; NewX, NewY : Integer; Var Point : TPoint): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function SetWindowOrgEx(dc : hdc; NewX, NewY : Integer; var Point: TPoint): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;
        X, Y, cx, cy: Integer; uFlags: UINT): Boolean;  {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function ShowCaret(hWnd: HWND): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -226,6 +226,10 @@ function UnionRect(var lprcDst: TRect; const lprcSrc1, lprcSrc2: TRect): Boolean
 { =============================================================================
 
   $Log$
+  Revision 1.11  2001/06/14 23:13:30  lazarus
+  MWE:
+    * Fixed some syntax errors for the latest 1.0.5 compiler
+
   Revision 1.10  2001/04/06 22:25:14  lazarus
   * TTimer uses winapi-interface now instead of sendmessage-interface, stoppok
 

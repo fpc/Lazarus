@@ -512,7 +512,7 @@ end;
 procedure TToolBar.UpdateButtons;
 const
   BlankButton: TTBButton = (iBitmap: 0; idCommand: 0; fsState: 0;
-    fsStyle: TBSTYLE_BUTTON; dwData: 0; iString: 0);
+    fsStyle: TBSTYLE_BUTTON; bReserved: (0, 0); dwData: 0; iString: 0);
 var
   I: Integer;
   Count: Integer;
@@ -1465,6 +1465,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.4  2001/06/14 23:13:30  lazarus
+  MWE:
+    * Fixed some syntax errors for the latest 1.0.5 compiler
+
   Revision 1.3  2001/06/14 14:57:58  lazarus
   MG: small bugfixes and less notes
 

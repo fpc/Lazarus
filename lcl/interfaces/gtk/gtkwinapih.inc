@@ -73,7 +73,7 @@ function PostMessage(hWnd: HWND; Msg: Cardinal; wParam: LongInt; lParam: LongInt
 function RealizePalette(DC: HDC): Cardinal; override;
 function Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean; override;
 Function ReleaseCapture : Boolean; override;
-function ReleaseDC(hWnd: HWND; hDC: HDC): Integer; override;
+function ReleaseDC(hWnd: HWND; DC: HDC): Integer; override;
 function RestoreDC(DC: HDC; SavedDC: Integer): Boolean; override;
 
 function SaveDC(DC: HDC): Integer; override;
@@ -94,7 +94,7 @@ Function SetTextCharacterExtra(_hdc : hdc; nCharExtra : Integer):Integer; overri
 function SetTextColor(DC: HDC; Color: TColorRef): TColorRef; override;
 function SetTimer(hWnd: HWND; nIDEvent, uElapse: integer; lpTimerFunc: TFNTimerProc) : integer; override;
 function SetWindowLong(Handle: HWND; Idx: Integer; NewLong : Longint): LongInt;
-function SetWindowOrgEx(dc : hdc; NewX, NewY : Integer; Var lpPoint : TPoint) : Boolean; override;
+function SetWindowOrgEx(dc : hdc; NewX, NewY : Integer; var Point: TPoint) : Boolean; override;
 function SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;
       X, Y, cx, cy: Integer; uFlags: UINT): Boolean;  override;
 function ShowCaret(hWnd: HWND): Boolean; override;
@@ -111,6 +111,10 @@ Function WindowFromPoint(Point : TPoint) : HWND; override;
 { =============================================================================
 
   $Log$
+  Revision 1.15  2001/06/14 23:13:30  lazarus
+  MWE:
+    * Fixed some syntax errors for the latest 1.0.5 compiler
+
   Revision 1.14  2001/04/06 22:25:15  lazarus
   * TTimer uses winapi-interface now instead of sendmessage-interface, stoppok
 

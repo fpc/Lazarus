@@ -3295,13 +3295,13 @@ begin
   Assert(False, Format('Trace:< [TgtkObject.SETWINDOWLONG] HWND: 0x%x, idx: 0x%x(%d), Value: 0x%x(%d) --> 0x%x(%d)', [Handle, idx, idx, newlong, newlong, Result, Result]));
 end;
 
-Function TgtkObject.SetWindowOrgEx(dc : hdc; NewX, NewY : Integer; Var lpPoint : TPoint) : Boolean;
+Function TgtkObject.SetWindowOrgEx(dc : hdc; NewX, NewY : Integer; var Point: TPoint) : Boolean;
 begin
 //writeln('[TgtkObject.SetWindowOrgEx] ',NewX,' ',NewY);
 // ToDo: move origin
 
-  lpPoint.X := NewX;
-  lpPoint.Y := NewY;
+  Point.X := NewX;
+  Point.Y := NewY;
   Result := True;
 end;
 
@@ -3520,6 +3520,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.37  2001/06/14 23:13:30  lazarus
+  MWE:
+    * Fixed some syntax errors for the latest 1.0.5 compiler
+
   Revision 1.36  2001/06/14 14:57:59  lazarus
   MG: small bugfixes and less notes
 

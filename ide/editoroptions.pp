@@ -2507,7 +2507,7 @@ begin
   with DisplayPreview do begin
     Name:='DisplayPreview';
     Parent:=MainNoteBook.Page[1];
-    BorderStyle:=bsSizeable;
+    BorderStyle:=bsSingle;
     Top:=EditorFontGroupBox.Top+EditorFontGroupBox.Height+5;
     Left:=EditorFontGroupBox.Left+2;
     Width:=EditorFontGroupBox.Width-2;

@@ -298,7 +298,7 @@ Begin
   Result := True;
 end;
 
-function TInterfaceBase.ReleaseDC(hWnd: HWND; hDC: HDC): Integer;
+function TInterfaceBase.ReleaseDC(hWnd: HWND; DC: HDC): Integer;
 begin
   Result := 0;
 end;
@@ -401,7 +401,7 @@ begin
   Result := -1;
 end;
 
-Function TInterfaceBase.SetWindowOrgEx(dc : hdc; NewX, NewY : Integer; Var lpPoint : TPoint) : Boolean;
+Function TInterfaceBase.SetWindowOrgEx(dc : hdc; NewX, NewY : Integer; var Point: TPoint) : Boolean;
 Begin
   Result := False;
 end;
@@ -448,6 +448,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.15  2001/06/14 23:13:30  lazarus
+  MWE:
+    * Fixed some syntax errors for the latest 1.0.5 compiler
+
   Revision 1.14  2001/04/06 22:25:14  lazarus
   * TTimer uses winapi-interface now instead of sendmessage-interface, stoppok
 

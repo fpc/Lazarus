@@ -352,10 +352,10 @@ end;
 {$ENDIF}
 
 {$IFNDEF HE_COMPAREMEM}
-{$IFDEF FPC}
+{$IFDEF SYN_LAZARUS}
 function CompareMem(P1, P2: Pointer; Length: Integer): Boolean;
 begin
-  Result:=CompareByte(P1^,P2^,Length)=0;
+  Result := CompareByte(P1^, P2^, Length) = 0;
 end;
 {$ELSE}
 function CompareMem(P1, P2: Pointer; Length: Integer): Boolean; assembler;
@@ -480,13 +480,8 @@ begin
   for i := 0 to FFontsInfo.Count - 1 do
   begin
     Result := PheSharedFontsInfo(FFontsInfo[i]);
-    {$IFDEF FPC}
-    if CompareByte(Result^.BaseLF, LF, SizeOf(TLogFont))=0 then
-      Exit;
-    {$ELSE}
     if CompareMem(@(Result^.BaseLF), @LF, SizeOf(TLogFont)) then
       Exit;
-    {$ENDIF}
   end;
   Result := nil;
 end;
