@@ -695,9 +695,9 @@ begin
     if not CodeToolBoss.SetAllCreateFromStatements(
       Project.MainUnitInfo.Source, FormsAutoCreatedListBox.Items) then
     begin
-      MessageDlg('Error',
-        'Unable to change the auto create form list in the program source.' + LineEnding +
-        'Plz fix errors first.', mtError, [mbCancel], 0);
+      MessageDlg(lisProjOptsError,
+        Format(lisProjOptsUnableToChangeTheAutoCreateFormList, [LineEnding]),
+          mtError, [mbCancel], 0);
     end;
   finally
     OldList.Free;

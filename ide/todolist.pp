@@ -236,7 +236,7 @@ begin
   Top := 116;
   Width := 477;
   Height := 307;
-  Caption := dlgTodoListCaption;
+  Caption := lisTodoListCaption;
   KeyPreview := True;
   Position := poScreenCenter;
   OnKeyDown  :={$IFDEF FPC}@{$ENDIF}FormKeyDown;
@@ -279,7 +279,7 @@ begin
   Bmp.Handle:=CreatePixmapIndirect(@cImg_ToDoRefresh[0], GetSysColor(COLOR_BTNFACE));
   Btn.Glyph:=Bmp;
   Btn.ShowHint:=True;
-  Btn.Hint  := dlgTodolistRefresh;
+  Btn.Hint  := lisTodolistRefresh;
   Btn.OnClick:={$IFDEF FPC}@{$ENDIF}actFileRefresh;
 
   //button Goto
@@ -294,7 +294,7 @@ begin
   Bmp:=TBitMap.Create;
   Bmp.Handle:=CreatePixmapIndirect(@cImg_ToDoGotoLine[0], GetSysColor(COLOR_BTNFACE));
   Btn.Glyph:=Bmp;
-  Btn.Hint  := dlgtodoListGotoLine;
+  Btn.Hint  := listodoListGotoLine;
   Btn.OnClick:={$IFDEF FPC}@{$ENDIF}actEditGoto;
 
   //button Print
@@ -306,7 +306,7 @@ begin
   Btn.Left  :=42;
   Btn.Top   :=0;
   Btn.ShowHint:=True;
-  Btn.Hint   :=dlgtodoListPrintList;
+  Btn.Hint   :=listodoListPrintList;
   Bmp:=TBitMap.Create;
   Bmp.Handle:=CreatePixmapIndirect(@cImg_ToDoPrint[0], GetSysColor(COLOR_BTNFACE));
   Btn.Glyph:=Bmp;
@@ -324,7 +324,7 @@ begin
   Bmp:=TBitMap.Create;
   Bmp.Handle:=CreatePixmapIndirect(@cImg_ToDoOptions[0], GetSysColor(COLOR_BTNFACE));
   Btn.Glyph:=Bmp;
-  Btn.Hint  :=  dlgToDoListOptions;
+  Btn.Hint  :=  lisToDoListOptions;
   Btn.OnClick:={$IFDEF FPC}@{$ENDIF}actOptionsCfg;
 
 
@@ -345,15 +345,15 @@ begin
     C.Width   := 15;
     //Description column
     C:=Columns.Add;
-    C.Caption := 'Description';
+    C.Caption := lisToDoLDescription;
     C.Width   := 250;
     //File column
     C:=Columns.Add;
-    C.Caption := 'File';
+    C.Caption := lisToDoLFile;
     C.Width := 150;
     //Line column
     C:=Columns.Add;
-    C.Caption := 'Line';
+    C.Caption := lisToDoLLine;
     C.Width := 28;
   end;
 

@@ -40,8 +40,8 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, SynEdit, Buttons, StdCtrls, ExtCtrls,
-  IDEOptionDefs, Dialogs, BasicCodeTools, AVL_Tree, EditorOptions,
-  MiscOptions, SynEditHighlighter;
+  IDEOptionDefs, Dialogs, BasicCodeTools, AVL_Tree, LazarusIDEStrConsts,
+  EditorOptions, MiscOptions, SynEditHighlighter;
   
 type
   TSortSelDlgState = (ssdPreviewNeedsUpdate, ssdSortedTextNeedsUpdate);
@@ -112,7 +112,6 @@ begin
   SortSelectionDialog.TheText:=TheText;
   SortSelectionDialog.PreviewSynEdit.Highlighter:=Highlighter;
   EditorOpts.GetSynEditSelectedColor(SortSelectionDialog.PreviewSynEdit);
-writeln('');
   SortSelectionDialog.UpdatePreview;
   SortSelectionDialog.EndUpdate;
   Result:=SortSelectionDialog.ShowModal;
@@ -443,7 +442,7 @@ begin
 
   Position:=poScreenCenter;
   IDEDialogLayoutList.ApplyLayout(Self,600,400);
-  Caption:='Sort Selection';
+  Caption:=lisSortSelSortSelection;
 
   PreviewGroupBox:=TGroupBox.Create(Self);
   with PreviewGroupBox do begin
@@ -453,7 +452,7 @@ begin
     Top:=5;
     Width:=Self.ClientWidth-2*Left;
     Height:=Self.ClientHeight-Top-135;
-    Caption:='Preview';
+    Caption:=lisSortSelPreview;
   end;
 
   PreviewSynEdit:=TSynEdit.Create(Self);
@@ -472,11 +471,11 @@ begin
     Top:=PreviewGroupBox.Top+PreviewGroupBox.Height+5;
     Width:=((Self.ClientWidth-5) div 2)-Left;
     Height:=40;
-    Caption:='Direction';
+    Caption:=dlgDirection;
     with Items do begin
       BeginUpdate;
-      Add('Ascending');
-      Add('Descending');
+      Add(lisSortSelAscending);
+      Add(lisSortSelDescending);
       Columns:=2;
       case FDirection of
       sdAscending: ItemIndex:=0;
@@ -495,12 +494,12 @@ begin
     Top:=DirectionRadioGroup.Top;
     Width:=DirectionRadioGroup.Width;
     Height:=DirectionRadioGroup.Height;
-    Caption:='Domain';
+    Caption:=lisSortSelDomain;
     with Items do begin
       BeginUpdate;
-      Add('Lines');
-      Add('Words');
-      Add('Paragraphs');
+      Add(lisSortSelLines);
+      Add(lisSortSelWords);
+      Add(lisSortSelParagraphs);
       case FDomain of
       sdLines: ItemIndex:=0;
       sdWords: ItemIndex:=1;
@@ -520,7 +519,7 @@ begin
     Top:=DirectionRadioGroup.Top+DirectionRadioGroup.Height+5;
     Width:=DirectionRadioGroup.Width;
     Height:=DirectionRadioGroup.Height;
-    Caption:='Options';
+    Caption:=lisSortSelOptions;
   end;
   
   CaseSensitiveCheckBox:=TCheckBox.Create(Self);
@@ -530,7 +529,7 @@ begin
     Left:=2;
     Top:=2;
     Width:=120;
-    Caption:='Case Sensitive';
+    Caption:=lisSortSelCaseSensitive;
     OnClick:=@CaseSensitiveCheckBoxClick;
   end;
 
@@ -541,7 +540,7 @@ begin
     Left:=125;
     Top:=2;
     Width:=120;
-    Caption:='Ignore Space';
+    Caption:=lisSortSelIgnoreSpace;
     Checked:=true;
     OnClick:=@IgnoreSpaceCheckBoxClick;
   end;
@@ -552,7 +551,7 @@ begin
     Parent:=Self;
     Left:=Self.ClientWidth-200;
     Top:=Self.ClientHeight-35;
-    Caption:='Sort';
+    Caption:=lisSortSelSort;
     ModalResult:=mrOk;
     Default:=true;
   end;
@@ -563,7 +562,7 @@ begin
     Parent:=Self;
     Left:=Self.ClientWidth-100;
     Top:=OkButton.Top;
-    Caption:='Cancel';
+    Caption:=lisSortSelCancel;
     ModalResult:=mrCancel;
   end;
   

@@ -278,12 +278,14 @@ begin
   Result:=false;
   if Options<>nil then begin
     if not Options.IncludeFilterValid then begin
-      if MessageDlg('Invalid Include filter',mtError,[mbIgnore,mbCancel],0)
+      if MessageDlg(lisPublProjInvalidIncludeFilter, mtError, [mbIgnore,
+        mbCancel], 0)
         =mrCancel
       then exit;
     end;
     if not Options.ExcludeFilterValid then begin
-      if MessageDlg('Invalid Exclude filter',mtError,[mbIgnore,mbCancel],0)
+      if MessageDlg(lisPublProjInvalidExcludeFilter, mtError, [mbIgnore,
+        mbCancel], 0)
         =mrCancel
       then exit;
     end;

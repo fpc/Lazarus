@@ -751,8 +751,9 @@ begin
     OpenDialog.Filename:=HostApplicationEdit.Text;
     if OpenDialog.Execute then begin
       if (FileIsExecutable(OpenDialog.Filename))
-      or (MessageDlg('File not executable',
-          'The host application "'+OpenDialog.Filename+'" is not executable.',
+      or (MessageDlg(lisRunParamsFileNotExecutable,
+          Format(lisRunParamsTheHostApplicationIsNotExecutable, ['"',
+            OpenDialog.Filename, '"']),
           mtWarning,[mbCancel,mbIgnore],0)=mrIgnore) then
       begin
         HostApplicationEdit.Text:=OpenDialog.Filename;

@@ -46,7 +46,7 @@ unit TransferMacros;
 
 interface
 
-uses Classes, SysUtils, FileCtrl;
+uses Classes, SysUtils, FileCtrl, LazarusIDEStrConsts;
 
 type
   TTransferMacro = class;
@@ -131,15 +131,17 @@ begin
   inherited Create;
   fItems:=TList.Create;
   FMarkUnhandledMacros:=true;
-  Add(TTransferMacro.Create('Ext','','Function: extract file extension',@MF_Ext,[]));
-  Add(TTransferMacro.Create('Path','','Function: extract file path',@MF_Path,[]));
-  Add(TTransferMacro.Create('Name','','Function: extract file name+extension',
+  Add(TTransferMacro.Create('Ext', '', lisTMFunctionExtractFileExtension,
+    @MF_Ext, []));
+  Add(TTransferMacro.Create('Path', '', lisTMFunctionExtractFilePath, @MF_Path,
+    []));
+  Add(TTransferMacro.Create('Name', '', lisTMFunctionExtractFileNameExtension,
                                     @MF_Name,[]));
-  Add(TTransferMacro.Create('NameOnly','','Function: extract file name only',
+  Add(TTransferMacro.Create('NameOnly', '', lisTMFunctionExtractFileNameOnly,
                                     @MF_NameOnly,[]));
-  Add(TTransferMacro.Create('MakeDir','','Function: append path delimiter',
+  Add(TTransferMacro.Create('MakeDir', '', lisTMFunctionAppendPathDelimiter,
                                     @MF_MakeDir,[]));
-  Add(TTransferMacro.Create('MakeFile','','Function: chomp path delimiter',
+  Add(TTransferMacro.Create('MakeFile', '', lisTMFunctionChompPathDelimiter,
                                     @MF_MakeFile,[]));
 end;
 
@@ -324,7 +326,7 @@ begin
       end;
       // mark unhandled macros
       if not Handled and MarkUnhandledMacros then begin
-        MacroStr:='(unknown macro: '+MacroStr+')';
+        MacroStr:=Format(lisTMunknownMacro, [MacroStr]);
         Handled:=true;
       end;
       // replace macro with new value

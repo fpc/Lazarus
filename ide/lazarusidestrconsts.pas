@@ -687,6 +687,9 @@ resourcestring
   dlgRunOUserOverrides = 'User overrides';
   dlgIncludeSystemVariables = 'Include system variables';
   dlgDirectoryDoesNotExist = 'Directory does not exist';
+  lisRunParamsFileNotExecutable = 'File not executable';
+  lisRunParamsTheHostApplicationIsNotExecutable = 'The host application %s%s%'
+    +'s is not executable.';
   dlgTheDirectory = 'The directory "';
   dlgDoesNotExist = '" does not exist.';
   dlgTextToFing = '&Text to Find';
@@ -1199,7 +1202,7 @@ resourcestring
   lisCodeTemplComment = 'Comment:';
   lisCodeTemplATokenAlreadyExists = ' A token %s%s%s already exists! ';
   lisCodeTemplError = 'Error';
-  
+
   // make resource string dialog
   lisMakeResourceString = 'Make ResourceString';
   lisMakeResStrInvalidResourcestringSect = 'Invalid Resourcestring section';
@@ -1236,11 +1239,14 @@ resourcestring
   lisDiffDlgOpenDiffInEditor = 'Open Diff in editor';
 
   //todolist
-  dlgTodoListCaption='ToDo List';
-  dlgTodolistRefresh='Refresh todo items';
-  dlgTodoListGotoLine='Goto selected source line';
-  dlgTodoListPrintList='Print todo items';
-  dlgToDoListOptions='ToDo options...';
+  lisTodoListCaption='ToDo List';
+  lisTodolistRefresh='Refresh todo items';
+  lisTodoListGotoLine='Goto selected source line';
+  lisTodoListPrintList='Print todo items';
+  lisToDoListOptions='ToDo options...';
+  lisToDoLDescription = 'Description';
+  lisToDoLFile = 'File';
+  lisToDoLLine = 'Line';
   
   // packages
   lisPkgFileTypeUnit = 'Unit';
@@ -1276,6 +1282,46 @@ resourcestring
   lisUESearching = 'Searching: %s';
   lisUEReadOnly = '%s/ReadOnly';
   lisUEGotoLine = 'Goto line :';
+  
+  // Transfer Macros
+  lisTMFunctionExtractFileExtension = 'Function: extract file extension';
+  lisTMFunctionExtractFilePath = 'Function: extract file path';
+  lisTMFunctionExtractFileNameExtension = 'Function: extract file name+'
+    +'extension';
+  lisTMFunctionExtractFileNameOnly = 'Function: extract file name only';
+  lisTMFunctionAppendPathDelimiter = 'Function: append path delimiter';
+  lisTMFunctionChompPathDelimiter = 'Function: chomp path delimiter';
+  lisTMunknownMacro = '(unknown macro: %s)';
+  
+  // System Variables Override Dialog
+  lisSVUOInvalidVariableName = 'Invalid variable name';
+  lisSVUOisNotAValidIdentifier = '%s%s%s is not a valid identifier.';
+  lisSVUOOverrideSystemVariable = 'Override system variable';
+  lisSVUOOk = 'Ok';
+  
+  // sort selection dialog
+  lisSortSelSortSelection = 'Sort Selection';
+  lisSortSelPreview = 'Preview';
+  lisSortSelAscending = 'Ascending';
+  lisSortSelDescending = 'Descending';
+  lisSortSelDomain = 'Domain';
+  lisSortSelLines = 'Lines';
+  lisSortSelWords = 'Words';
+  lisSortSelParagraphs = 'Paragraphs';
+  lisSortSelOptions = 'Options';
+  lisSortSelCaseSensitive = 'Case Sensitive';
+  lisSortSelIgnoreSpace = 'Ignore Space';
+  lisSortSelSort = 'Sort';
+  lisSortSelCancel = 'Cancel';
+
+  // publish project dialog
+  lisPublProjInvalidIncludeFilter = 'Invalid Include filter';
+  lisPublProjInvalidExcludeFilter = 'Invalid Exclude filter';
+
+  // project options
+  lisProjOptsUnableToChangeTheAutoCreateFormList = 'Unable to change the auto '
+    +'create form list in the program source.%sPlz fix errors first.';
+  lisProjOptsError = 'Error';
 
 implementation
 end.

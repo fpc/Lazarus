@@ -37,7 +37,7 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, Controls, Forms, Buttons, StdCtrls, ComCtrls, Dialogs,
-  ExtCtrls, LResources, Laz_XMLCfg, DOS, IDEProcs;
+  ExtCtrls, LResources, Laz_XMLCfg, DOS, IDEProcs, LazarusIDEStrConsts;
 
 type
   TSysVarUserOverrideDialog = class(TForm)
@@ -84,8 +84,8 @@ var v: string;
 begin
   v:=Trim(VariableEdit.Text);
   if not IsValidIdent(v) then begin
-    if MessageDlg('Invalid variable name',
-      '"'+v+'" is not a valid identifier.',
+    if MessageDlg(lisSVUOInvalidVariableName,
+      Format(lisSVUOisNotAValidIdentifier, ['"', v, '"']),
       mtWarning,[mbCancel,mbIgnore],0)=mrCancel
     then exit;
   end;
@@ -133,7 +133,7 @@ begin
   inherited Create(TheOwner);
   if LazarusResources.Find(ClassName)=nil then begin
 
-    Caption:='Override system variable';
+    Caption:=lisSVUOOverrideSystemVariable;
     Width:=400;
     Height:=170;
     Position:=poScreenCenter;
@@ -144,7 +144,7 @@ begin
       Name:='VariableLabel';
       Parent:=Self;
       SetBounds(10,10,150,Height);
-      Caption:='Variable:';
+      Caption:=lisCodeToolsDefsVariable;
       Visible:=true;
     end;
     
@@ -181,7 +181,7 @@ begin
       Name:='OkButton';
       Parent:=Self;
       SetBounds(Self.ClientWidth-220,Self.ClientHeight-40,100,25);
-      Caption:='Ok';
+      Caption:=lisSVUOOk;
       OnClick:=@OkButtonClick;
       Visible:=true;
     end;
@@ -191,7 +191,7 @@ begin
       Name:='CancelButton';
       Parent:=Self;
       SetBounds(OkButton.Left+OkButton.Width+10,OkButton.Top,100,25);
-      Caption:='Cancel';
+      Caption:=dlgCancel;
       OnClick:=@CancelButtonClick;
       Visible:=true;
     end;

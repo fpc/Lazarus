@@ -2086,6 +2086,14 @@ msgstr ""
 msgid "Directory does not exist"
 msgstr ""
 
+#: lazarusidestrconsts:lisrunparamsfilenotexecutable
+msgid "File not executable"
+msgstr ""
+
+#: lazarusidestrconsts:lisrunparamsthehostapplicationisnotexecutable
+msgid "The host application %s%s%s is not executable."
+msgstr ""
+
 #: lazarusidestrconsts:dlgthedirectory
 msgid "The directory \""
 msgstr ""
@@ -3890,24 +3898,36 @@ msgstr ""
 msgid "Open Diff in editor"
 msgstr ""
 
-#: lazarusidestrconsts:dlgtodolistcaption
+#: lazarusidestrconsts:listodolistcaption
 msgid "ToDo List"
 msgstr ""
 
-#: lazarusidestrconsts:dlgtodolistrefresh
+#: lazarusidestrconsts:listodolistrefresh
 msgid "Refresh todo items"
 msgstr ""
 
-#: lazarusidestrconsts:dlgtodolistgotoline
+#: lazarusidestrconsts:listodolistgotoline
 msgid "Goto selected source line"
 msgstr ""
 
-#: lazarusidestrconsts:dlgtodolistprintlist
+#: lazarusidestrconsts:listodolistprintlist
 msgid "Print todo items"
 msgstr ""
 
-#: lazarusidestrconsts:dlgtodolistoptions
+#: lazarusidestrconsts:listodolistoptions
 msgid "ToDo options..."
+msgstr ""
+
+#: lazarusidestrconsts:listodoldescription
+msgid "Description"
+msgstr ""
+
+#: lazarusidestrconsts:listodolfile
+msgid "File"
+msgstr ""
+
+#: lazarusidestrconsts:listodolline
+msgid "Line"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgfiletypeunit
@@ -4012,5 +4032,117 @@ msgstr ""
 
 #: lazarusidestrconsts:lisuegotoline
 msgid "Goto line :"
+msgstr ""
+
+#: lazarusidestrconsts:listmfunctionextractfileextension
+msgid "Function: extract file extension"
+msgstr ""
+
+#: lazarusidestrconsts:listmfunctionextractfilepath
+msgid "Function: extract file path"
+msgstr ""
+
+#: lazarusidestrconsts:listmfunctionextractfilenameextension
+msgid "Function: extract file name+extension"
+msgstr ""
+
+#: lazarusidestrconsts:listmfunctionextractfilenameonly
+msgid "Function: extract file name only"
+msgstr ""
+
+#: lazarusidestrconsts:listmfunctionappendpathdelimiter
+msgid "Function: append path delimiter"
+msgstr ""
+
+#: lazarusidestrconsts:listmfunctionchomppathdelimiter
+msgid "Function: chomp path delimiter"
+msgstr ""
+
+#: lazarusidestrconsts:listmunknownmacro
+msgid "(unknown macro: %s)"
+msgstr ""
+
+#: lazarusidestrconsts:lissvuoinvalidvariablename
+msgid "Invalid variable name"
+msgstr ""
+
+#: lazarusidestrconsts:lissvuoisnotavalididentifier
+msgid "%s%s%s is not a valid identifier."
+msgstr ""
+
+#: lazarusidestrconsts:lissvuooverridesystemvariable
+msgid "Override system variable"
+msgstr ""
+
+#: lazarusidestrconsts:lissvuook
+msgid "Ok"
+msgstr ""
+
+#: lazarusidestrconsts:lissortselsortselection
+msgid "Sort Selection"
+msgstr ""
+
+#: lazarusidestrconsts:lissortselpreview
+msgid "Preview"
+msgstr ""
+
+#: lazarusidestrconsts:lissortselascending
+msgid "Ascending"
+msgstr ""
+
+#: lazarusidestrconsts:lissortseldescending
+msgid "Descending"
+msgstr ""
+
+#: lazarusidestrconsts:lissortseldomain
+msgid "Domain"
+msgstr ""
+
+#: lazarusidestrconsts:lissortsellines
+msgid "Lines"
+msgstr ""
+
+#: lazarusidestrconsts:lissortselwords
+msgid "Words"
+msgstr ""
+
+#: lazarusidestrconsts:lissortselparagraphs
+msgid "Paragraphs"
+msgstr ""
+
+#: lazarusidestrconsts:lissortseloptions
+msgid "Options"
+msgstr ""
+
+#: lazarusidestrconsts:lissortselcasesensitive
+msgid "Case Sensitive"
+msgstr ""
+
+#: lazarusidestrconsts:lissortselignorespace
+msgid "Ignore Space"
+msgstr ""
+
+#: lazarusidestrconsts:lissortselsort
+msgid "Sort"
+msgstr ""
+
+#: lazarusidestrconsts:lissortselcancel
+msgid "Cancel"
+msgstr ""
+
+#: lazarusidestrconsts:lispublprojinvalidincludefilter
+msgid "Invalid Include filter"
+msgstr ""
+
+#: lazarusidestrconsts:lispublprojinvalidexcludefilter
+msgid "Invalid Exclude filter"
+msgstr ""
+
+#: lazarusidestrconsts:lisprojoptsunabletochangetheautocreateformlist
+msgid "Unable to change the auto create form list in the program source.%sPlz fix errors first."
+msgstr ""
+
+#: lazarusidestrconsts:lisprojoptserror
+msgid "Error"
 msgstr ""
 
