@@ -129,7 +129,7 @@ begin
     //make sure we call edit to ensure the datset is in edit,
     //this is for where the datasource is in autoedit, so we aren't
     //read only even though the dataset isn't realy in edit
-    #32..#255:
+    #8,#32..#255:
       FDataLink.Edit;
     //cancel out of editing by reset on esc
     #27:
@@ -227,6 +227,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.5  2004/08/05 19:33:48  vincents
+  allow backspace as a valid input
+
   Revision 1.4  2004/04/10 17:58:57  mattias
   implemented mainunit hints for include files
 
