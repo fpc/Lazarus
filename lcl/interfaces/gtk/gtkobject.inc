@@ -199,11 +199,11 @@ begin
     gtk_window_set_default_size(Window,Width,Height);
     
   // resize
-  if (PGtkWidget(Window)^.allocation.Width<>Width)
-  and (PGtkWidget(Window)^.allocation.Height<>Height) then begin
+  //if (PGtkWidget(Window)^.allocation.Width<>Width)
+  //and (PGtkWidget(Window)^.allocation.Height<>Height) then begin
     gtk_widget_set_usize(PGtkWidget(Window), -1,-1);
     gtk_widget_set_usize(PGtkWidget(Window),Width,Height);
-  end;
+  //end;
   
   // reposition
   //writeln('TgtkObject.SetWindowSizeAndPosition B ',AWinControl.Name,':',AWinControl.ClassName,' ',AWinControl.Visible,' Old=',PGtkWidget(Window)^.allocation.X,',',PGtkWidget(Window)^.allocation.Y,' New=',AWinControl.Left,',',AWinControl.Top);
@@ -1095,6 +1095,55 @@ begin
     Writeln('WARNING: [TgtkObject.LoadFromPixbufData] loading data FAILED!');
 end;
 
+procedure TGtkObject.ListViewChangeItem(TheListView: TObject; Index: integer);
+var
+  ListView: TListView;
+  LVWidget: PgtkCList;
+  pStr: PChar;
+  ListItem: TListItem;
+  i, ColCount: integer;
+  Pixmap: PGdkPixmap;
+  Mask: PGdkBitmap;
+  ImageBitmap, MaskBitmap: TBitmap;
+begin
+  ListView:=TListView(TheListView);
+  LVWidget:= PgtkCList(
+           GetWidgetInfo(Pointer(ListView.Handle), True)^.ImplementationWidget);
+  ListItem := ListView.Items[Index];
+  // set caption (= first column text)
+  pStr:=PChar(ListItem.Caption);
+  if pStr=nil then pStr:=#0;
+  gtk_clist_set_text(LVWidget,Index,0,pStr);
+
+  // set image
+  if (ListView.SmallImages <> nil) and (ListItem.ImageIndex >= 0)
+  and (ListItem.ImageIndex < Listview.SmallImages.Count)
+  then begin
+    //draw image
+    ListView.SmallImages.GetInternalImage(ListItem.ImageIndex,
+      ImageBitmap, MaskBitmap);
+    Pixmap:=PgdiObject(ImageBitmap.Handle)^.GDIPixmapObject;
+    Mask:=pgdkBitmap(PgdiObject(ImageBitmap.Handle)^.GDIBitmapMaskObject);
+    {$IfNDef Win32}
+    gtk_clist_set_pixtext(LVWidget,Index,0,pStr,3,Pixmap,Mask);
+    {$EndIF}
+  end;
+
+  // set the other column texts
+  ColCount:=LVWidget^.Columns;
+  for i := 1 to ColCount-1 do
+  begin
+    if i<=ListItem.SubItems.Count then begin
+      // the first subitem is the second column
+      pStr:=PChar(ListItem.SubItems.Strings[i-1]);
+      if pStr=nil then pStr:=#0;
+    end else begin
+      pStr:=#0
+    end;
+    gtk_clist_set_text(LVWidget,Index,i,pStr);
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Method: TGtkObject.IntSendMessage3
   Params:  LM_Message - message to be processed by GTK
@@ -1123,12 +1172,9 @@ var
   GList     : pGList;                // Only used for listboxes, replace with widget!!!!!
   SelectionMode : TGtkSelectionMode; // currently only used for listboxes
   ListItem  : PGtkListItem;          // currently only used for listboxes
-  AddItemListItem : TListItem;
   Rect      : TRect;
   FormIconGdiObject: PGdiObject;     // currently only used by LM_SETFORMICON
-  Count     : Integer;               //Used in TListView LM_LV_CHANGEITEM
-  Titles    : Array [0..255] of PChar;
-  BitImage  : TBitmap;
+  Titles    : Array [0..1] of PChar;
   Geometry  : TGdkGeometry;
   Accel     : integer;
 begin
@@ -1220,66 +1266,19 @@ begin
       end;
       
       LM_LV_CHANGEITEM :
-      begin
         if (Sender is TListView) then
-        begin
-          Widget:= GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
+          ListViewChangeItem(Sender,Integer(data^));
 
-          Num := Integer(data^);
-          AddItemListItem := TListview(sender).Items[Num];
-          pStr := StrAlloc(length(AddItemListItem.Caption) + 1);
-          StrPCopy(pStr, AddItemListItem.Caption);
-          gtk_clist_set_text(PgtkCList(Widget),num,0,pStr);
-          if (TListview(Sender).SmallImages <> nil)
-          and (TListItem(TListview(sender).Items[Num]).ImageIndex > -1) 
-          then begin
-            if (TListItem(TListview(Sender).Items[Num]).ImageIndex
-              < TListview(sender).SmallImages.Count)
-            then begin
-              //draw image
-              BitImage := TBitmap.Create;
-              TListview(sender).SmallImages.GetBitmap(
-                TListItem(TListview(sender).Items[Num]).ImageIndex,BitImage);
-              {$IfNDef Win32}
-              gtk_clist_set_pixtext(Pgtkclist(Widget),Num,0,pStr,3,
-                pgdkPixmap(PgdiObject(BitImage.Handle)^.GDIBitmapObject),nil);
-              {$EndIF}
-            end;
-          end;
-          StrDispose(pStr);
-
-          for Count := 0 to AddItemListItem.SubItems.Count-1 do
-          begin
-            pStr := StrAlloc(length(AddItemListItem.SubItems.Strings[Count]) + 1);
-            StrPCopy(pStr, AddItemListItem.SubItems.Strings[Count]);
-            gtk_clist_set_text(PgtkCList(Widget),num,count+1,pStr);
-            StrDispose(pStr);
-          end;
-        end;
-      end;
-      
       LM_LV_ADDITEM :
       if (Sender is TListView) then
       begin
         Widget:= GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
 
-        //get last item and add it..
-        pStr := StrAlloc(length('Test') + 1);
-        StrPCopy(pStr, 'Test');
-        
-        // ToDo: make this dynamic
-        
-        Titles[0] := pStr;
-        for Count := 1 to 255 do
-          Titles[Count] := nil;
+        Titles[0] := #0;
+        Titles[1] := nil;
         Num := gtk_clist_append(PgtkCList(Widget),@Titles);
-        StrDispose(pStr);
 
-        AddItemListItem := TListView(sender).Items[TListView(sender).Items.Count-1];
-        if AddItemListItem <> nil then
-          Begin
-           gtk_clist_set_text(PgtkCList(Widget),num,0,@AddItemListItem.Caption);
-          end;
+        ListViewChangeItem(Sender,Num);
       end;
 
       LM_LV_SELECTITEM:
@@ -1287,9 +1286,6 @@ begin
       begin
         Widget:= GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
         gtk_clist_unselect_all(PGtkCList(Widget));
-        
-        writeln('LM_LV_SELECTITEM ',TListItem(Data).Index);
-        
         if Data<>nil then
           gtk_clist_select_row(PGtkCList(Widget),TListItem(Data).Index,0);
       end;
@@ -6546,6 +6542,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.280  2002/11/09 15:02:07  lazarus
+  MG: fixed LM_LVChangedItem, OnShowHint, small bugs
+
   Revision 1.279  2002/11/06 17:46:36  lazarus
   MG: reduced showing forms during creation
 
