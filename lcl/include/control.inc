@@ -1193,32 +1193,15 @@ end;
 {  TControl SetText                                                            }
 {------------------------------------------------------------------------------}
 procedure TControl.SetText(const Value: TCaption);
-//var
-//  pStr : PChar;
 begin
   if GetText <> value
   then begin
-    //  added on 3/21/2000.  Need to set FCaption otherwise those components that simply
+    //  Need to set FCaption otherwise those components that simply
     //  check FCaption will always be wrong.
     FCaption := Value;
 
-    if Self is TWinControl then begin
-      //{$IFOPT H+}
+    if Self is TWinControl then
       SetTextBuf(PChar(FCaption));
-      //{$ELSE}
-      //We shouldn't NEED to create our own PCHAR.  We should be able
-      //to typecast VALUE as a PCHAR but it doesn't work.
-      //
-      // MWE: that's because strings were short strings
-      {pStr := StrAlloc(length(Value) + 1);
-      try
-        StrPCopy(pStr, value);
-        SetTextBuf(pStr);
-      finally
-        strDispose(pStr);
-      end;}
-      //{$ENDIF}
-    end;
   end;
 end;
 
@@ -1345,6 +1328,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.23  2001/08/07 11:05:51  lazarus
+  MG: small bugfixes
+
   Revision 1.22  2001/06/28 18:15:03  lazarus
   MG: bugfixes for destroying controls
 

@@ -59,7 +59,7 @@ const
 
 type
   //---------------------------------------------------------------------------
-  // class for storing the keys for a single command (key-command relationship)
+  // class for storing the keys of a single command (key-command relationship)
   TKeyCommandRelation = class
   private
   public

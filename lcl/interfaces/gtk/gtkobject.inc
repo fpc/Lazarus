@@ -446,6 +446,7 @@ begin
       LM_DESTROY :
       begin
         if (Sender is TWinControl) or (Sender is TCommonDialog) then begin
+//writeln('>>> LM_DESTROY ',Sender.Classname,' Sender=',HexStr(Cardinal(Sender),8),' Handle=',HexStr(Cardinal(Handle),8));
           if Handle<>0 then
             gtk_widget_destroy(PGtkWidget(Handle));
           // remove all remaining messages to this component
@@ -886,9 +887,9 @@ activate_time :	the time at which the activation event occurred.
           csNotebook:
           begin
             Assert(False, 'Trace:Setting Page to ' + IntToStr(TLMNotebookEvent(Data^).Page));
-writeln('LM_SETITEMINDEX A ',HexStr(Cardinal(Handle),8),', ',TLMNotebookEvent(Data^).Page);
+//writeln('LM_SETITEMINDEX A ',HexStr(Cardinal(Handle),8),', ',TLMNotebookEvent(Data^).Page);
             gtk_notebook_set_page(PGtkNotebook(Handle), TLMNotebookEvent(Data^).Page);
-writeln('LM_SETITEMINDEX B ',TLMNotebookEvent(Data^).Page);
+//writeln('LM_SETITEMINDEX B ',TLMNotebookEvent(Data^).Page);
           end;
         end;
       end;
@@ -2285,16 +2286,25 @@ end;
 function TgtkObject.GetLabel(CompStyle: Integer; P : Pointer) : String;
 var
   pLabel: Pointer; 
+  aPChar: PChar;
 begin
    Result := 'Label';
    case CompStyle of
-     csLabel: gtk_label_get(PGTKLabel(p),@Result);
+     csLabel: begin
+                gtk_label_get(PGTKLabel(p),@aPChar);
+                Result:=StrPas(aPChar);
+              end;
 
-     csForm : Result := String(PgtkWindow(p)^.Title);
+     csForm : Result := StrPas(PgtkWindow(p)^.Title);
 
      csPage : begin
-                 pLabel := gtk_notebook_get_tab_label(PGTKNoteBook(TWinControl(P).Parent.Handle), PGTKWidget(TWinControl(P).Handle));
-                 if pLabel <> nil then gtk_label_get(pLabel, @Result);
+                 pLabel := gtk_notebook_get_tab_label(
+                    PGTKNoteBook(TWinControl(P).Parent.Handle),
+                    PGTKWidget(TWinControl(P).Handle));
+                 if pLabel <> nil then begin
+                   gtk_label_get(pLabel, @aPChar);
+                   Result:=StrPas(aPChar);
+                 end;
               end;
    end;
 end;
@@ -2984,6 +2994,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.55  2001/08/07 11:05:51  lazarus
+  MG: small bugfixes
+
   Revision 1.54  2001/07/01 23:33:13  lazarus
   MG: added WaitMessage and HandleEvents is now non blocking
 
@@ -2993,12 +3006,9 @@ end;
   Revision 1.52  2001/06/26 21:44:32  lazarus
   MG: reduced paint messages
 
-<<<<<<< gtkobject.inc
-=======
   Revision 1.51  2001/06/26 00:08:36  lazarus
   MG: added code for form icons from Rene E. Beszon
 
->>>>>>> 1.51
   Revision 1.49  2001/06/14 14:57:59  lazarus
   MG: small bugfixes and less notes
 

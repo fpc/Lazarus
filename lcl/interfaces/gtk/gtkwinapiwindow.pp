@@ -94,9 +94,17 @@ type
 procedure GTKAPIWidgetClient_DrawCaret(Client: PGTKAPIWidgetClient); forward;
 
 function GTKAPIWidgetClient_Timer(Client: Pointer): gint; cdecl;
+// returning 0 would stop the timer, 1 will restart it
 begin
+  if PGTKAPIWidgetClient(Client)^.Caret.Timer=0 then begin
+    Result := 0;
+    exit;
+  end;
   GTKAPIWidgetClient_DrawCaret(Client);
-  Result := 1;   { returning 0 would stop the timer, 1 will restart it }
+  if PGTKAPIWidgetClient(Client)^.Caret.Timer<>0 then
+    Result := 1
+  else
+    Result := 0;
 end;
 
 procedure GTKAPIWidgetClient_Realize(Widget: PGTKWidget); cdecl;
@@ -574,6 +582,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.11  2001/08/07 11:05:51  lazarus
+  MG: small bugfixes
+
   Revision 1.10  2001/07/02 15:17:24  lazarus
   MG: fixed wordcompletion and carettimer nonfocus bug
 

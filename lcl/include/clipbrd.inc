@@ -97,16 +97,15 @@ begin
   Result := 0;
   if FUseText then
   begin
-     if Length(AsText) > BufSize then
-     begin
-        StrPLCopy(Buffer, AsText, BufSize);
-        Result := BufSize;
+     if (Length(AsText)+1) > BufSize then begin
+        StrPLCopy(Buffer, AsText, BufSize-1);
+        Result := BufSize-1;
      end else begin
         StrPLCopy(Buffer, AsText, Length(AsText));
         Result := Length(AsText);
      end;
   end else
-     StrPLCopy(Buffer, '', BufSize);
+     StrPLCopy(Buffer, '', BufSize-1);
 end;
 
 {------------------------------------------------------------------------------
@@ -167,6 +166,9 @@ end;
 
 {
   $Log$
+  Revision 1.2  2001/08/07 11:05:51  lazarus
+  MG: small bugfixes
+
   Revision 1.1  2000/07/13 10:28:24  michael
   + Initial import
 

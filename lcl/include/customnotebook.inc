@@ -74,25 +74,28 @@ end;
 procedure TNBPages.Delete(Index: Integer);
 var
   Msg: TLMNotebookEvent;
+  NewPageIndex: integer;
 begin
-  { Make sure Index is in the range of valid pages to delete }
+  // Make sure Index is in the range of valid pages to delete 
+//writeln('TNBPages.Delete A Index=',Index,' fPageList.Count=',fPageList.Count,' fNoteBook.PageIndex=',fNoteBook.PageIndex);
   if (Index >= 0) and
      (Index < fPageList.Count) then
   begin
-    { If that page is showing, then show the previous page before deleting it }
+    // If that page is showing, then show the next page before deleting it
+    NewPageIndex:=fNoteBook.PageIndex;
     if (Index = fNoteBook.PageIndex) then begin
-      if fNoteBook.PageIndex>0 then
-        // switch current page to prior (left) page
-        fNoteBook.PageIndex := fNoteBook.PageIndex - 1
+      if NewPageIndex<fPageList.Count-1 then
+        // switch current page to next (right) page
+        inc(NewPageIndex)
       else if fPageList.Count>1 then
-        // switch to next (right) page
-        fNoteBook.PageIndex := 1
+        // switch to previous (left) page
+        dec(NewPageIndex)
       else
         // deleting last page
         // TODO: delete contents but not last page
         exit;
     end;
-
+    fNoteBook.PageIndex:=NewPageIndex;
     if FNoteBook.HandleAllocated then begin
       Msg.Parent := fNotebook;
       Msg.fCompStyle := fNotebook.fCompStyle;
@@ -101,7 +104,10 @@ begin
     end;
     TPage(fPageList[Index]).Free;
     fPageList.Delete(Index);
+    if NewPageIndex>=Index then
+      fNoteBook.PageIndex:=NewPageIndex-1;
   end;
+//writeln('TNBPages.Delete END Index=',Index,' fPageList.Count=',fPageList.Count,' fNoteBook.PageIndex=',fNoteBook.PageIndex);
 end;
 
 
@@ -434,6 +440,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.8  2001/08/07 11:05:51  lazarus
+  MG: small bugfixes
+
   Revision 1.7  2001/06/14 14:57:58  lazarus
   MG: small bugfixes and less notes
 

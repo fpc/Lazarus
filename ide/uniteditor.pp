@@ -204,9 +204,10 @@ type
   private
     FMainIDE : TComponent;
     FFormEditor : TFormEditor;
-    FCodeTemplateModul : TSynEditAutoComplete;
-
     FSourceEditorList : TList; // list of TSourceEditor
+    FCodeTemplateModul: TSynEditAutoComplete;
+    FKeyStrokes: TSynEditKeyStrokes;
+
     FSaveDialog : TSaveDialog;
     FOpenDialog : TOpenDialog;
 
@@ -258,6 +259,8 @@ type
     function FindBookmark(BookmarkID: integer): TSourceEditor;
     function FindPageWithEditor(ASourceEditor: TSourceEditor):integer;
     function GetEditors(Index:integer):TSourceEditor;
+    
+    procedure KeyDown(var Key : Word; Shift : TShiftState); override;
   public
     SearchPaths: string;
 
@@ -280,12 +283,12 @@ type
     Procedure DisplayCodeforControl(Control : TObject);
     Procedure DisplayCodefromUnitName(UnitName : String);
 
-    procedure CloseClicked(Sender : TObject);
     Procedure NewClicked(Sender: TObject);
     procedure OpenClicked(Sender : TObject);
     procedure SaveClicked(Sender : TObject);
     procedure SaveAllClicked(Sender : TObject);
     procedure SaveAsClicked(Sender : TObject);
+    procedure CloseClicked(Sender : TObject);
     procedure ToggleFormUnitClicked(Sender: TObject);
 
     procedure FindClicked(Sender : TObject);
@@ -303,7 +306,8 @@ type
        read FCodeTemplateModul write FCodeTemplateModul;
     procedure OnCodeTemplateTokenNotFound(Sender: TObject; AToken: string; 
                                 AnEditor: TCustomSynEdit; var Index:integer);
-    procedure OnWordCompletionGetSource(var Source:TStrings; SourceIndex:integer);
+    procedure OnWordCompletionGetSource(
+       var Source:TStrings; SourceIndex:integer);
 
     function Empty: boolean;
     property FormEditor : TFormEditor read FFormEditor write FFormEditor;
@@ -1350,7 +1354,9 @@ begin
   if not LoadPixmapRes('InactiveBreakPoint',Pixmap1) then
          LoadPixmapRes('default',Pixmap1);
   MarksImgList.Add(Pixmap1,nil);
-  
+
+  FKeyStrokes:=TSynEditKeyStrokes.Create(Self);
+  EditorOpts.KeyMap.AssignTo(FKeyStrokes);
 
   aHighlighter:=TSynPasSyn.Create(AOwner);
     with aHighlighter do begin
@@ -1402,9 +1408,6 @@ begin
   CodeCompletionTimer := TTimer.Create(self);
   CodeCompletionTimer.Enabled := False;
   CodeCompletionTimer.Interval := 500;
-
-
- Writeln('TSourceNotebook create exiting');
 end;
 
 destructor TSourceNotebook.Destroy;
@@ -1417,6 +1420,7 @@ writeln('[TSourceNotebook.Destroy]');
     Notebook.Free;
     NoteBook:=nil;
   end;
+  FKeyStrokes.Free;
   FCodeTemplateModul.Free;
   FSourceEditorList.Free;
   Gotodialog.free;
@@ -2477,13 +2481,8 @@ begin
     if Handled then exit;
   end;
 
-  Handled:=true;
-  case Command of
-  ecClose :
-    CloseClicked(self);
-  else
-    Handled:=false;
-  end;  //case
+  Handled:=(Command=ecClose);
+  
   if Handled then Command:=ecNone;
 end;
 
@@ -2502,6 +2501,25 @@ Begin
     else
       if FileExists('lazarus.dci') then
         AutoCompleteList.LoadFromFile('lazarus.dci');
+  end;
+  
+  EditorOpts.KeyMap.AssignTo(FKeyStrokes);
+end;
+
+procedure TSourceNotebook.KeyDown(var Key : Word; Shift : TShiftState);
+var i, Command: integer;
+Begin
+  inherited KeyDown(Key,Shift);
+  i := FKeyStrokes.FindKeycode(Key, Shift);
+  if i>=0 then begin
+    Command:=FKeyStrokes[i].Command;
+    case Command of
+      ecClose:
+        begin
+          CloseClicked(Self);
+          Key:=0;
+        end;
+    end;
   end;
 end;
 

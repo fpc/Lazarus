@@ -824,7 +824,6 @@ var
   ShiftState: TShiftState;
 begin
   Result := True;
-//  Writeln('Getting focus...');
   F := GetParentForm(Self);
   if  (F <> nil) 
   and (F <> Self) 
@@ -1678,7 +1677,6 @@ end;
 procedure TWinControl.InitializeWnd;
 var 
   R: TRect;
-  pStr: PChar;
 begin
   Assert(False, Format('Trace:[TWinControl.InitializeWnd]  %s', [ClassName]));
   // set all cached properties
@@ -1693,20 +1691,11 @@ begin
   
   EnableWindow(Handle, Enabled);
  
-  //We shouldn't NEED to create our own PCHAR.  We should be able
-  //to typecast Caption as a PCHAR but it doesn't work.
-  pStr := StrAlloc(Length(FCaption) + 1);
-  try
-    StrPCopy(pStr, FCaption);
-    SetTextBuf(pStr);
-  finally
-    strDispose(pStr);
-  end;
+  SetTextBuf(PChar(FCaption));
   Assert(False, 'Trace:SETPROP**********************************************');
 
- SetProp(Handle,'WinControl',TWinControl(Self));
- SetProp(Handle,'Control',TControl(Self));
-
+  SetProp(Handle,'WinControl',TWinControl(Self));
+  SetProp(Handle,'Control',TControl(Self));
 end;
 
 {------------------------------------------------------------------------------
@@ -1959,6 +1948,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.35  2001/08/07 11:05:51  lazarus
+  MG: small bugfixes
+
   Revision 1.34  2001/06/27 21:43:23  lazarus
   MG: added project bookmark support
 

@@ -2324,7 +2324,7 @@ begin
     Left := 10;
     Height := 55;
     Width := 350;
-    Caption := 'Other Unit Files:';
+    Caption := 'Other Unit Files (Delimiter is semicolon):';
     Visible := True;
   end;
 
