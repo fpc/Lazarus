@@ -69,6 +69,7 @@ uses
   function FindDefaultMakePath: string;
   function FindDefaultFPCSrcDirectory: string;
   function CheckFPCSourceDir(const ADirectory: string): boolean;
+  function CheckLazarusDirectory(const ADirectory: string): boolean;
 
   function CreateCompilerTestPascalFilename: string;
 
@@ -101,6 +102,21 @@ begin
   Result:='';
 end;
 
+function CheckLazarusDirectory(const ADirectory: string): boolean;
+var
+  Dir: String;
+begin
+  Result:=false;
+  if DirectoryExists(ADirectory) then begin
+    Dir:=AppendPathDelim(ADirectory);
+    Result:=DirectoryExists(Dir+'lcl')
+        and DirectoryExists(Dir+'lcl'+PathDelim+'units')
+        and DirectoryExists(Dir+'components')
+        and DirectoryExists(Dir+'designer')
+        and DirectoryExists(Dir+'debugger');
+  end;
+end;
+
 initialization
   InternalInit;
 
@@ -108,6 +124,9 @@ end.
 
 {
   $Log$
+  Revision 1.13  2003/02/19 23:17:45  mattias
+  added warnings when fpc source dir invalid
+
   Revision 1.12  2003/02/07 18:46:35  mattias
   resolving lazarus directory even if started with search path
 

@@ -3522,11 +3522,7 @@ function TEnvironmentOptionsDialog.CheckValues: boolean;
 
     // lazarus directory specific tests
     NewLazarusDir:=AppendPathDelim(NewLazarusDir);
-    if not DirectoryExists(NewLazarusDir+'lcl')
-    or not DirectoryExists(NewLazarusDir+'lcl'+PathDelim+'units')
-    or not DirectoryExists(NewLazarusDir+'components')
-    or not DirectoryExists(NewLazarusDir+'debugger')
-    or not DirectoryExists(NewLazarusDir+'designer')
+    if not CheckLazarusDirectory(NewLazarusDir)
     then begin
       Result:=(MessageDlg(Format(lisEnvOptDlgInvalidLazarusDir,[NewLazarusDir]),
                  mtWarning,[mbIgnore,mbCancel],0)=mrIgnore);
