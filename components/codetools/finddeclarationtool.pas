@@ -2173,7 +2173,7 @@ begin
     Result:=FindIdentifierInContext(Params);
     if not Result then begin
       Params.Load(OldInput);
-      Include(Params.Flags,fdfSearchForward);
+      Params.Flags:=Params.Flags+[fdfSearchForward,fdfIgnoreCurContextNode];
       Result:=FindIdentifierInContext(Params);
       IsForward:=true;
     end else begin

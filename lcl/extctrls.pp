@@ -440,12 +440,12 @@ type
     
 
 const
-TCN_First = 0-550;
-TCN_SELCHANGE = TCN_FIRST - 1;
+  TCN_First = 0-550;
+  TCN_SELCHANGE = TCN_FIRST - 1;
 
 implementation
 
- uses interfaces;
+uses Interfaces;
 
 {$I page.inc}
 {$I customnotebook.inc}
@@ -463,6 +463,9 @@ end.
 
  {
   $Log$
+  Revision 1.26  2002/07/27 15:38:01  lazarus
+  MG: fixed search forward
+
   Revision 1.25  2002/06/08 17:16:02  lazarus
   MG: added close buttons and images to TNoteBook and close buttons to source editor
 
