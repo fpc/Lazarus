@@ -552,6 +552,8 @@ const
   VK_NONAME     = $FC;
   VK_PA1        = $FD;
   VK_OEM_CLEAR  = $FE;
+  
+  VK_HIGHESTVALUE = $FE;
 
 //==============================================
 //
@@ -1941,7 +1943,6 @@ const
 type
   TShortCut = Low(Word)..High(Word);   {should be moved to classes}
 
-
 function HiWord(i: integer): word;
 function LoWord(i: integer): word;
 Function Char2VK(C : Char) : Word;
@@ -1982,6 +1983,9 @@ end.
 
 {
   $Log$
+  Revision 1.57  2004/02/04 13:40:19  mattias
+  ShortCutToText now deletes any modifier
+
   Revision 1.56  2004/02/04 12:48:17  mattias
   added CLX colors
 

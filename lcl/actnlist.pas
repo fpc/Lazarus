@@ -332,6 +332,7 @@ end;
 procedure Register;
 begin
   RegisterComponents('Standard',[TActionList]);
+  RegisterNoIcon([TAction]);
 end;
 
 {$I containedaction.inc}

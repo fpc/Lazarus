@@ -3737,6 +3737,7 @@ begin
                                                             AncestorType,true));
       if CInterface=nil then begin
         // error streaming component -> examine lfm file
+        writeln('ERROR: streaming failed lfm="',LFMBuf.Filename,'"');
         NewComponent:=nil;
         AnUnitInfo.Component:=NewComponent;
         // open lfm file in editor
@@ -10315,6 +10316,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.709  2004/02/04 13:40:18  mattias
+  ShortCutToText now deletes any modifier
+
   Revision 1.708  2004/02/04 11:09:40  mattias
   added DefineProperties check for check lfm
 

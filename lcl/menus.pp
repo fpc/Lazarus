@@ -151,7 +151,7 @@ type
     function GetHandle: HMenu;
     Procedure SetImageIndex(value : Integer);
     procedure SetGroupIndex(AValue: Byte);
-    procedure SetShortCut(AValue : TShortCut);
+    procedure SetShortCut(const AValue : TShortCut);
     procedure SetVisible(AValue: Boolean);
     procedure MenuChanged(Rebuild : Boolean);
     procedure SetChildOrder(Child: TComponent; Order: Integer); override;
@@ -305,8 +305,6 @@ type
     property OnClose: TNotifyEvent read FOnClose write FOnClose;
   end;
 
-
-
 function ShortCut(const Key: Word; const Shift : TShiftState) : TShortCut;
 procedure ShortCutToKey(const ShortCut : TShortCut; var Key: Word;
                         var Shift : TShiftState);
@@ -370,14 +368,14 @@ Begin
   if ssAlt in Shift then Inc(Result,scAlt);
 end;
 
-Procedure ShortCutToKey(const ShortCut : TShortCut; var Key: Word;
+Procedure ShortCutToKey(const ShortCut: TShortCut; var Key: Word;
   var Shift : TShiftState);
 begin
-  key := ShortCut and not(scShift+scAlt+scCtrl);
+  Key := ShortCut and $FF;
   Shift := [];
-  if ShortCut and scShift <> 0 then Include(shift,ssShift);
-  if ShortCut and scAlt <> 0 then Include(shift,ssAlt);
-  if ShortCut and scCtrl <> 0 then Include(shift,ssCtrl);
+  if ShortCut and scShift <> 0 then Include(Shift,ssShift);
+  if ShortCut and scAlt <> 0 then Include(Shift,ssAlt);
+  if ShortCut and scCtrl <> 0 then Include(Shift,ssCtrl);
 end;
 
 
@@ -393,6 +391,9 @@ end.
 
 {
   $Log$
+  Revision 1.60  2004/02/04 13:40:19  mattias
+  ShortCutToText now deletes any modifier
+
   Revision 1.59  2004/02/02 18:09:41  mattias
   added TMenuItem.Action
 

@@ -166,7 +166,8 @@ type
     ofEnableSizing,    // dialog can be resized, e.g. via the mouse
     ofDontAddToRecent, // do not add the path to the history list
     ofForceShowHidden, // show hidden files
-    ofViewDetail       // details are OS and interface dependent
+    ofViewDetail,      // details are OS and interface dependent
+    ofAutoPreview      // details are OS and interface dependent
     );
   TOpenOptions = set of TOpenOption;
   
@@ -410,6 +411,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.44  2004/02/04 13:40:19  mattias
+  ShortCutToText now deletes any modifier
+
   Revision 1.43  2004/02/04 00:21:40  mattias
   added SelectDirectory and TListBox.ItemVisible
 

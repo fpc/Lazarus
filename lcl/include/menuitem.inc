@@ -945,11 +945,13 @@ end;
 
   Set the shortcut
  ------------------------------------------------------------------------------}
-Procedure TMenuItem.SetShortCut(AValue : TShortCut);
+Procedure TMenuItem.SetShortCut(const AValue : TShortCut);
+var
+  NewKey: Word;
+  NewShift: TShiftState;
 Begin
-  if FShortCut <> AValue then
-  begin
-    ShortCutChanged(FShortcut, AValue);
+  if FShortCut <> AValue then begin
+    ShortCutChanged(FShortCut, AValue);
     FShortCut := AValue;
   end;
 end;
@@ -1079,6 +1081,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.47  2004/02/04 13:40:19  mattias
+  ShortCutToText now deletes any modifier
+
   Revision 1.46  2004/02/02 18:09:41  mattias
   added TMenuItem.Action
 
@@ -1248,6 +1253,9 @@ end;
 
 
   $Log$
+  Revision 1.47  2004/02/04 13:40:19  mattias
+  ShortCutToText now deletes any modifier
+
   Revision 1.46  2004/02/02 18:09:41  mattias
   added TMenuItem.Action
 
