@@ -1920,7 +1920,7 @@ writeln('TMainIDE.DoSaveEditorUnit A PageIndex=',PageIndex);
   end;
   ActiveUnitInfo.Modified:=false;
   ActiveSrcEdit.Modified:=false;
-writeln('TMainIDE.DoSaveCurUnit END');
+writeln('TMainIDE.DoSaveEditorUnit END');
   Result:=mrOk;
 end;
 
@@ -2390,7 +2390,7 @@ begin
     exit;
   end;
 writeln('TMainIDE.DoSaveProject A');
-  // check that all new units are saved first
+  // check that all new units are saved first to get valid filenames
   for i:=0 to Project.UnitCount-1 do begin
     if (Project.Units[i].Loaded) and (Project.Units[i].Filename='')
     and (Project.MainUnit<>i) then begin
@@ -2509,6 +2509,7 @@ writeln('TMainIDE.DoSaveProject A');
     end;
   end;
   Result:=Project.WriteProject;
+  if Result=mrAbort then exit;
   // save source
   if MainUnitInfo<>nil then begin
     if MainUnitInfo.Loaded then begin
@@ -2527,6 +2528,17 @@ writeln('TMainIDE.DoSaveProject A');
   end;
   UpdateMainUnitSrcEdit;
   UpdateCaption;
+
+  // save editor files
+  if (SourceNoteBook.Notebook<>nil) then begin
+    for i:=0 to SourceNoteBook.Notebook.Pages.Count-1 do begin
+      if (Project.MainUnit<0) 
+      or (Project.Units[Project.MainUnit].EditorIndex<>i) then begin
+        Result:=DoSaveEditorUnit(i,false);
+        if Result=mrAbort then exit;
+      end;
+    end;
+  end;
 writeln('TMainIDE.DoSaveProject End');
 end;
 
@@ -2891,24 +2903,14 @@ end;
 function TMainIDE.SomethingOfProjectIsModified: boolean;
 begin
   Result:=(Project<>nil) 
-       and (Project.SomethingModified or SourceNotebook.SomethingModified);
+      and (Project.SomethingModified or SourceNotebook.SomethingModified);
 end;
 
 function TMainIDE.DoSaveAll: TModalResult;
-var i:integer;
 begin
 writeln('TMainIDE.DoSaveAll');
   Result:=DoSaveProject(false);
-  if Result=mrAbort then exit;
-  if (SourceNoteBook.Notebook<>nil) then begin
-    for i:=0 to SourceNoteBook.Notebook.Pages.Count-1 do begin
-      if (Project.MainUnit<0) 
-      or (Project.Units[Project.MainUnit].EditorIndex<>i) then begin
-        Result:=DoSaveEditorUnit(i,false);
-        if Result=mrAbort then exit;
-      end;
-    end;
-  end;
+  // ToDo: save package, cvs settings, ...
 end;
 
 procedure TMainIDE.GetCurrentUnit(var ActiveSourceEditor:TSourceEditor;
@@ -3493,8 +3495,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.107  2001/07/06 22:04:27  lazarus
-  MG: fixed Programfilename under win32
+  Revision 1.108  2001/07/08 07:09:34  lazarus
+  MG: save project now also saves editor files
 
   Revision 1.105  2001/07/01 15:55:43  lazarus
   MG: JumpToCompilerMessage now centered in source editor
