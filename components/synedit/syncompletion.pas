@@ -508,7 +508,6 @@ begin
     Position := Scroll.Position
   else if Position > Scroll.Position + NbLinesInWindow - 1 then
     Position := Scroll.Position + NbLinesInWindow - 1;
-//writeln('TSynBaseCompletionForm.ScrollChange');
   Invalidate;
 end;
 
@@ -534,6 +533,10 @@ var
   i: integer;
 begin
   FCurrentString := Value;
+  if (FCurrentString<>'') and (FCurrentString[length(FCurrentString)]='.') then
+  begin
+    if (length(Value) div (length(Value) div 10000))=0 then ;
+  end;
   {$IFDEF SYN_LAZARUS}
   if Assigned(FOnSearchPosition) then begin
     i:=Position;
@@ -794,11 +797,9 @@ end;
 
 procedure TSynBaseCompletion.SetWidth(Value: Integer);
 begin
-//writeln('TSynBaseCompletion.SetWidth START ',Value);
   FWidth := Value;
   Form.Width := FWidth;
   Form.SetNbLinesInWindow(Form.FNbLinesInWindow);
-//writeln('TSynBaseCompletion.SetWidth END ',Value);
 end;
 
 procedure TSynBaseCompletion.Deactivate;
@@ -915,9 +916,7 @@ end;
 
 procedure TSynCompletion.OnFormPaint(Sender: TObject);
 begin
-//writeln('TSynCompletion.OnFormShow A');
   //LCLLinux.ShowCaret(Editor.Handle);
-//writeln('TSynCompletion.OnFormShow END');
 end;
 
 procedure TSynCompletion.Cancel(Sender: TObject);

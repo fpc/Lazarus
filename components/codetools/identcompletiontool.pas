@@ -44,7 +44,7 @@ interface
 {$DEFINE CTDEBUG}
 { $DEFINE ShowFoundIdents}
 { $DEFINE ShowFilteredIdents}
-{$DEFINE ShowHistory}
+{ $DEFINE ShowHistory}
 
 // new features
 { $DEFINE IgnoreErrorAfterCursor}
@@ -279,6 +279,9 @@ begin
   if not (ilfFilteredListNeedsUpdate in FFlags) then exit;
   if FFilteredList=nil then FFilteredList:=TList.Create;
   FFilteredList.Clear;
+  {$IFDEF CTDEBUG}
+  writeln('TIdentifierList.UpdateFilteredList Prefix="',Prefix,'"');
+  {$ENDIF}
   AnAVLNode:=FItems.FindLowest;
   while AnAVLNode<>nil do begin
     CurItem:=TIdentifierListItem(AnAVLNode.Data);
@@ -507,8 +510,10 @@ begin
       Params.ContextNode:=GatherContext.Node;
       Params.SetIdentifier(Self,nil,@CollectAllIdentifiers);
       Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,
-                     fdfCollect,fdfFindVariable,fdfIgnoreCurContextNode]
+                     fdfCollect,fdfFindVariable]
                     +fdfAllClassVisibilities;
+      if Params.ContextNode.Desc in [ctnClass,ctnClassInterface] then
+        Exclude(Params.Flags,fdfSearchInParentNodes);
       {$IFDEF CTDEBUG}
       writeln('TIdentCompletionTool.GatherIdentifiers F');
       {$ENDIF}
