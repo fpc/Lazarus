@@ -724,6 +724,9 @@ implementation
 
 uses
   Math;
+  
+var
+  SkipAutoLoadingLastProject: boolean;
 
 //==============================================================================
 
@@ -743,6 +746,7 @@ const
   SecondaryConfPathOptShort='--scp=';
   NoSplashScreenOptLong='--no-splash-screen';
   NoSplashScreenOptShort='--nsc';
+  SkipLastProjectOpt='--skip-last-project';
 
   function ParamIsOption(ParamIndex: integer;
     const Option: string): boolean;
@@ -767,6 +771,7 @@ var
   i: integer;
   AValue: string;
 begin
+  SkipAutoLoadingLastProject:=false;
   if (ParamCount>0)
   and ((AnsiCompareText(ParamStr(1),'--help')=0)
     or (AnsiCompareText(ParamStr(1),'-help')=0)
@@ -794,6 +799,9 @@ begin
     writeln('or ',NoSplashScreenOptShort);
     writeln(BreakString(lisDoNotShowSplashScreen,75, 22));
     writeln('');
+    writeln(SkipLastProjectOpt);
+    writeln(BreakString(lisSkipLoadingLastProject, 75, 22));
+    writeln('');
     writeln('');
     writeln('');
     writeln(lisCmdLineLCLInterfaceSpecificOptions);
@@ -819,6 +827,8 @@ begin
     or ParamIsOption(i,NoSplashScreenOptShort) then begin
       ShowSplashScreen:=false;
     end;
+    if ParamIsOption(i,SkipLastProjectOpt) then
+      SkipAutoLoadingLastProject:=true;
   end;
 end;
 
@@ -1401,6 +1411,7 @@ begin
 
   // try loading last project
   if (not ProjectLoaded)
+  and (not SkipAutoLoadingLastProject)
   and (EnvironmentOptions.OpenLastProjectAtStart)
   and (FileExists(EnvironmentOptions.LastSavedProjectFile)) then begin
     ProjectLoaded:=
@@ -10475,6 +10486,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.739  2004/07/25 22:43:18  mattias
+  added IDE cmd line option --skip-last-project
+
   Revision 1.738  2004/07/25 01:04:44  mattias
   TXMLPropStorage basically working
 

@@ -54,6 +54,7 @@ resourcestring
   lisCmdLineLCLInterfaceSpecificOptions =
     'LCL Interface specific options:';
   lisDoNotShowSplashScreen = '                      Do not show splash screen';
+  lisSkipLoadingLastProject = '                      Skip loading last project';
   lissecondaryConfigDirectoryWhereLazarusSearchesFor =
     '                      secondary config '
     +'directory, where Lazarus searches for config template files. Default is ';
