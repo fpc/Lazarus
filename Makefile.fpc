@@ -45,7 +45,7 @@ endif
         windres -i $< -o $@
 
 
-.PHONY: examples lcl components ide tools all win32
+.PHONY: examples lcl components ide tools all win32 win32clean makefile makefiles
 
 lcl: lcl_all
 
@@ -63,6 +63,10 @@ all: lcl components ide
 win32:
         $(MAKE) lazarus.res
         $(MAKE) all LCLPLATFORM=win32 OPT=-dSUPPORTS_RESOURCES
+
+win32clean:
+        $(MAKE) clean LCLPLATFORM=win32
+        $(DEL) $(wildcard *$(EXEEXT) $(wildcard *.ow*) $(wildcard *.res) $(wildcard ./*$(PPUEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./designer/*$(PPUEXT))
 
 # MWE: moved to a more generic rule
 #lazarus.res: lazarus.rc

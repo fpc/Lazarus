@@ -29,7 +29,7 @@ unit win32def;
 interface
 
 uses
-  Windows, WinExt, LCLLinux, VclGlobals, Classes;
+  Windows, VclGlobals, Classes;
 
 type
   TGDIType = (gdiBitmap, gdiBrush, gdiFont, gdiPen, gdiRegion);
@@ -84,7 +84,7 @@ type
   TDeviceContext = record
     hWnd: HWND;
     GC: HDC {pgdkGC}; // Not sure of Win32 equiv.
-    Drawable: PHandle {PGDKDrawable}; // Not sure of Win32 equiv.
+    Drawable: PHANDLE {PGDKDrawable}; // Not sure of Win32 equiv.
     PenPos: TPoint;
     CurrentBitmap: PGdiObject;
     CurrentFont: PGdiObject;
@@ -114,6 +114,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.2  2001/11/01 22:40:13  lazarus
+  MG: applied Keith Bowes win32 interface updates
+
   Revision 1.1  2001/08/02 12:58:35  lazarus
   MG: win32 interface patch from Keith Bowes
 

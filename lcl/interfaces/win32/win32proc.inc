@@ -368,6 +368,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.2  2001/11/01 22:40:14  lazarus
+  MG: applied Keith Bowes win32 interface updates
+
   Revision 1.1  2001/08/02 12:58:35  lazarus
   MG: win32 interface patch from Keith Bowes
 
@@ -494,7 +497,7 @@ end;
     Fixed TEdit text bug (thanks to hans-joachim ott <hjott@compuserve.com>)
     Finished GetKeyState
     Added changes from Peter Dyson <peter@skel.demon.co.uk>
-    - a new GetSysColor
+   - a new GetSysColor
     - some improvements on ExTextOut
 
   Revision 1.7  2000/03/03 22:58:26  lazarus

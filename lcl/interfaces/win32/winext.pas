@@ -1,19 +1,26 @@
+{ 
+  Extra Win32 code that's not in the RTL.
+  Copyright (C) 2001 Keith Bowes.
+
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 2.1 of the License, or (at your option) any later version.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+}
+
 Unit WinExt;
 
-{ winext.pas: Extra Win32 code that's not in the RTL. }
-{ Copyright (C) 2001 Keith Bowes. }
-{ This unit is licensed under the GNU LGPL.
-  See http://www.gnu.org/copyleft/lesser.html for details. }
-
-{$LONGSTRINGS ON}
-{$MODE OBJFPC}
 {$PACKRECORDS C}
 {$SMARTLINK ON}
-{$TYPEDADDRESS ON}
 
 Interface
 
-Uses SysUtils, Windows;
+Uses Windows;
 
 { Types not included in system.pp }
 Type
@@ -37,11 +44,11 @@ Const
   DSC_MODAL = WS_POPUP Or WS_SYSMENU Or WS_CAPTION Or DS_MODALFRAME;
   { Recommended modeless-dialog style }
   DSC_MODELESS = WS_POPUP Or WS_CAPTION Or WS_BORDER Or WS_SYSMENU;
-  { The windows' direct parent window }
+  { The window's direct parent window }
   GA_PARENT = 1;
-  { The windows' root window }
+  { The window's root window }
   GA_ROOT = 2;
-  { The windows' owner }
+  { The window's owner }
   GA_ROOTOWNER = 3;
   { Application starting cursor }
   IDC_APPSTARTING = 32650;
@@ -68,46 +75,26 @@ Function StrToPChar(Const Str: String): PChar;
 
 Implementation
 
+Uses SysUtils;
+
 {$PACKRECORDS NORMAL}
 
-Type
-  TStrArray = Array[1..2] Of Char;
-  PStrArray = ^TStrArray;
-
 Var
-  ArLen: Cardinal;
-  StrArray: PStrArray;
+  TmpStr: PChar;
 
-{ Function StrToPChar: Converts a String to a PChar without using a
-  buffer.
-  Parameters:
-    * Str: String to convert.
-  Returns: A PChar equivalent of the input string.
-}
 Function StrToPChar(Const Str: String): PChar;
-Var
-  I: Cardinal;
 Begin
-  StrArray := Nil;
-  ArLen := SizeOf(Str) * Length(Str);
-  GetMem(StrArray, ArLen);
-
-  For I := 1 To Length(Str) Do
-    StrArray^[I] := Str[I];
-
-  Result := PChar(StrArray);
+  TmpStr := PChar(Str);
+  Result := TmpStr;
 End;
 
 Initialization
 
-ArLen := 0;
-StrArray := Nil;
+TmpStr := StrNew('');
 
 Finalization
 
-If ArLen <> 0 Then
-  FreeMem(StrArray, ArLen);
-
-StrArray := Nil;
+StrDispose(TmpStr);
+TmpStr := Nil;
 
 End.

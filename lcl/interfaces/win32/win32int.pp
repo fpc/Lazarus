@@ -18,7 +18,9 @@
 } 
  
 unit Win32Int;
- 
+
+{$I checkcompiler.inc}
+
 {$mode objfpc} 
 {$LONGSTRINGS ON}
 
@@ -29,9 +31,9 @@ interface
 {$endif}
  
 uses
-  Windows, Strings, WinExt, InterfaceBase, sysutils, lmessages,
-  Classes, Controls, extctrls, forms, dialogs, VclGlobals,
-  stdctrls, comctrls, LCLLinux, win32def, DynHashArray;
+  Windows, InterfaceBase, SysUtils, LMessages, Classes, Controls, ExtCtrls,
+  Forms, Dialogs, VclGlobals, StdCtrls, ComCtrls, LclLinux, Win32Def,
+  DynHashArray;
  
 Var AppName : PChar;
     FormClassName : PChar;
@@ -119,21 +121,25 @@ Type
    public
       constructor Create;
       destructor Destroy; override;
-      procedure SetLabel(Sender : TObject; Data : Pointer);
       Function  GetText(Sender: TControl; Var Data: String): Boolean; Override;
+      procedure SetLabel(Sender : TObject; Data : Pointer);
+      procedure IntSendMessage(LM_Message : Integer; CompStyle : Integer; Var P : Pointer; Val1 : Integer; Var Str1 : String);
+      function  IntSendMessage2( LM_Message : Integer; Parent,Child, Data : Pointer) : Integer;
       function  IntSendMessage3(LM_Message : Integer; Sender : TObject; data : pointer) : integer; override;
       procedure SetCallback(Msg : LongInt; Sender : TObject); override;
-      procedure DoEvents; override;
+      procedure RemoveCallbacks(Sender : TObject); override;
       procedure HandleEvents; override;
+      procedure DoEvents; override;
+      Procedure WaitMessage; Override;
       procedure AppTerminate; override;
       procedure Init; override;
       function  UpdateHint(Sender: TObject): Integer; override;
       function  RecreateWnd(Sender: TObject): Integer; override;
       Procedure MessageBox(Message, Title: String; Flags: Cardinal);
-      procedure IntSendMessage(LM_Message : Integer; CompStyle : Integer; Var P : Pointer; Val1 : Integer; Var Str1 : String);
-      function  IntSendMessage2( LM_Message : Integer; Parent,Child, Data : Pointer) : Integer;
-      procedure RemoveCallbacks(Sender : TControl);
+      {$I win32winapih.inc}
    end;
+   
+   {$I win32listslh.inc}
 
        wPointer = Pointer;
        PWin32Control = ^TWin32Control;
@@ -166,14 +172,6 @@ Type
      TheType: TWin32KeyType;
      Window: HWND;
    End;
-
-   TWin32ListStringList = Class(TList)
-     Constructor Create(Wnd: TObject);
-     Sorted: Boolean;
-   End;
-
-   TWin32CListStringList = Class(TWin32ListStringList)
-   End;
    
    TEventProc = record
       Name : String[25];
@@ -181,7 +179,7 @@ Type
       Data : Pointer;
    End;
 
-   CallbackProcedure = Procedure (Data : Pointer);
+   CallbackProcedure = Function: Boolean;
    TCbFunc = Function(Win32Control: PWin32Control; Event: Pointer; Data: Pointer): Boolean;
    PCbFunc = ^TCbFunc;
 
@@ -192,8 +190,25 @@ Type
 
 Implementation
 
-uses Graphics, buttons, Menus, CListBox;
+uses WinExt, Graphics, buttons, Menus, CListBox;
 
+{$I win32listsl.inc}
+
+Type
+  { Lazarus Message structure for call backs }
+  TLazMsg = Record
+    Window: HWND;
+    WinMsg: UINT;
+    LParam: LPARAM;
+    WParam: WPARAM;
+    Win32Control: PWin32Control;
+    Event: Pointer;
+    Draw: Record
+      X, Y: Integer;
+    End;
+    ExtData: Pointer;
+    Reserved: Pointer;
+  End;
 
 Const
   IcoExt: String = '.ico';
@@ -201,6 +216,8 @@ Const
 Var
   FromCBProc: Boolean;
   LMessage: Integer;
+  signalFunc: Pointer;
+  LazMsg: TLazMsg;
   
 const
 
@@ -216,16 +233,11 @@ type
     IDEvent  : Integer;
     TimerFunc: TFNTimerProc;
   end;
-  
-   Constructor TWin32ListStringList.Create(Wnd: TObject);
-   Begin
-     Inherited Create;
-   End;
-
 
 {$I win32proc.inc}
 {$I win32callback.inc}
 {$I win32object.inc}
+{$I win32winapi.inc}
 
 
 

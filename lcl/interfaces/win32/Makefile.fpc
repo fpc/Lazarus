@@ -2,26 +2,29 @@
 #
 #   Makefile.fpc for Lazarus for Free Pascal
 #
-
+     
 [package]
-name=lazarus-win32
+name=lazarus
 version=0.7a
 
 [require]
 packages=rtl fcl
 
 [target]
-units=interfaces
+units=winext win32def win32int interfaces
 
 [compiler]
-options=-gl -Or -S2h
+options=-gl -S2 -Sh
 unittargetdir=../../units/win32
 unitdir=$(COMPILER_UNITTARGETDIR) ../../units 
 includedir=.
 
+[clean]
+units=$(COMPILER_UNITTARGETDIR)/*
+            
 [prerules]
 DIST_DESTDIR=$(BASEDIR)/../../../dist
-
+            
 [rules]
 .PHONY: all makefile makefiles
 
