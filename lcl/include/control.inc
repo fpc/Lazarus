@@ -675,7 +675,7 @@ end;
 
 function TControl.IsAnchorsStored: boolean;
 begin
-  Result:=(Anchors=AnchorAlign[Align]);
+  Result:=(Anchors<>AnchorAlign[Align]);
 end;
 
 function TControl.IsVisible: Boolean;
@@ -3439,6 +3439,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.226  2004/12/21 19:01:00  mattias
+  fixed saving default value of TControl.Anchors
+
   Revision 1.225  2004/12/20 00:11:24  mattias
   changed TControl.Anchors default value to AnchorAlign[Align]
 
