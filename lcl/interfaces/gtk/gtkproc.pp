@@ -45,9 +45,6 @@ uses
   {$ELSE}
   glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf}
   {$ENDIF}
-  {$IFDEF USE_UTF8BIDI_LCL}
-  utf8bidi,
-  {$ENDIF}
   LMessages, LCLProc, LCLStrConsts, LCLIntf, LCLType, DynHashArray,
   GraphType, GraphMath, Graphics, GTKWinApiWindow, LResources, Controls, Forms,
   Buttons, Menus, StdCtrls, ComCtrls, CommCtrl, ExtCtrls, Dialogs, ExtDlgs,
@@ -759,6 +756,10 @@ procedure EndGDKErrorTrap;
 
 implementation
 
+uses
+  {$IFDEF USE_UTF8BIDI_LCL}
+  utf8bidi;
+  {$ENDIF}
 
 const
   VKEY_FLAG_SHIFT    = $01;
