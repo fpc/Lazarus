@@ -48,6 +48,7 @@ type
   private
     fCurrentDirectory: string;
     fFilteredOutput: TStringList;
+    fOutput: TStringList;
     fLastErrorType: TErrorType;
     fLastMessageType: TOutputMessageType;
     fCompilingHistory: TStringList;
@@ -58,6 +59,7 @@ type
     fProject: TProject;
     fPrgSourceFilename: string;
     procedure DoAddFilteredLine(const s: string);
+    procedure DoAddLastLinkerMessages;
     function SearchIncludeFile(const ShortIncFilename: string): string;
   public
     procedure Execute(TheProcess: TProcess);
@@ -74,6 +76,7 @@ type
     function ReadMakeLine(const s: string): boolean;
     property CurrentDirectory: string read fCurrentDirectory;
     property FilteredLines: TStringList read fFilteredOutput;
+    property Lines: TStringList read fOutput;
     property LastErrorType: TErrorType read fLastErrorType;
     property LastMessageType: TOutputMessageType read fLastMessageType;
     property PrgSourceFilename: string
@@ -114,11 +117,13 @@ constructor TOutputFilter.Create;
 begin
   inherited Create;
   fFilteredOutput:=TStringList.Create;
+  fOutput:=TStringList.Create;
   Clear;
 end;
 
 procedure TOutputFilter.Clear;
 begin
+  fOutput.Clear;
   fFilteredOutput.Clear;
   if fCompilingHistory<>nil then fCompilingHistory.Clear;
   if fMakeDirHistory<>nil then fMakeDirHistory.Clear;
@@ -132,18 +137,16 @@ var
   OutputLine, Buf : String;
   ErrorExists: boolean;
 begin
+  Clear;
   TheProcess.Execute;
   fCurrentDirectory:=TheProcess.CurrentDirectory;
   if fCurrentDirectory='' then fCurrentDirectory:=GetCurrentDir;
   if (fCurrentDirectory<>'')
   and (fCurrentDirectory[length(fCurrentDirectory)]<>PathDelim) then
     fCurrentDirectory:=fCurrentDirectory+PathDelim;
-  if fCompilingHistory<>nil then fCompilingHistory.Clear;
-  if fMakeDirHistory<>nil then fMakeDirHistory.Clear;
   SetLength(Buf,BufSize);
   Application.ProcessMessages;
 
-  fFilteredOutput.Clear;
   OutputLine:='';
   ErrorExists:=false;
   repeat
@@ -179,6 +182,7 @@ begin
   writeln('TOutputFilter: "',s,'"');
   fLastMessageType:=omtNone;
   fLastErrorType:=etNone;
+  fOutput.Add(s);
   if DontFilterLine then begin
     DoAddFilteredLine(s);
   end else if (ofoSearchForFPCMessages in Options) and (ReadFPCompilerLine(s))
@@ -237,10 +241,11 @@ begin
     else if ('Fatal: '=copy(s,1,length('Fatal: '))) then
       fLastErrorType:=etFatal
     else if ('Closing script ppas.sh'=s) then begin
+      // linker error
       fLastMessageType:=omtLinker;
       fLastErrorType:=etFatal;
     end;
-    fFilteredOutput.Add(s);
+    DoAddFilteredLine(s);
     if (ofoExceptionOnError in Options) then
       raise EOutputFilterError.Create(s);
     Result:=true;
@@ -300,6 +305,9 @@ begin
           begin
             SkipMessage:=not (Project.CompilerOptions.ShowErrors
                               or Project.CompilerOptions.ShowAll);
+            if copy(s,j+2,length(s)-j-1)='Error while linking' then begin
+              DoAddLastLinkerMessages;
+            end;
           end;
 
         etWarning:
@@ -452,6 +460,21 @@ begin
     OnOutputString(s);
 end;
 
+procedure TOutputFilter.DoAddLastLinkerMessages;
+var i: integer;
+begin
+  // read back to 'Linking' message
+  i:=fOutput.Count-1;
+  while (i>=0) and (LeftStr(fOutput[i],length('Linking '))<>'Linking ') do
+    dec(i);
+  inc(i);
+  while (i<fOutput.Count) do begin
+    if (fOutput[i]<>'') and (fOutput[i][1]='-') then
+      DoAddFilteredLine(fOutput[i]);
+    inc(i);
+  end;
+end;
+
 function TOutputFilter.SearchIncludeFile(const ShortIncFilename: string
   ): string;
 // search the include file and make it relative to the current start directory
@@ -497,6 +520,7 @@ end;
 destructor TOutputFilter.Destroy;
 begin
   fFilteredOutput.Free;
+  fOutput.Free;
   fMakeDirHistory.Free;
   fCompilingHistory.Free;
   inherited Destroy;
