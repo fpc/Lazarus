@@ -2688,7 +2688,7 @@ end;
   Creates a new PChar. Replaces the first ampersand with an underscore
   and deletes all other ampersands.
 -------------------------------------------------------------------------------}
-Function Ampersands2Underscore(Src: PChar) : PChar;
+function Ampersands2Underscore(Src: PChar) : PChar;
 var
   i, j: Longint;
   ShortenChars, FirstAmpersand, NewLength, SrcLength: integer;
@@ -2752,7 +2752,11 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.87  2002/09/03 20:02:01  lazarus
+  Intermediate UI patch to show a bug.
+
   Revision 1.86  2002/09/03 11:32:51  lazarus
+
   Added shortcut keys to labels
   Support for alphabetically sorting the properties
   Standardize message and add shortcuts ala Kylix
