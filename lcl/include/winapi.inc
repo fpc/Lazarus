@@ -621,12 +621,12 @@ end;
 
 Procedure NotifyUser(const DialogMessage : String; DialogType : longint);
 begin
-  PromptUser('', DialogMessage, DialogType, [idButtonOK], -1, -1);
+  PromptUser(DialogMessage, DialogType, [idButtonOK], -1, -1);
 end;
 
 Procedure NotifyUserAtXY(const DialogMessage : String; DialogType : longint; X, Y : Longint);
 begin
-  PromptUserAtXY('', DialogMessage, DialogType, [idButtonOK], -1, -1, X, Y);
+  PromptUserAtXY(DialogMessage, DialogType, [idButtonOK], -1, -1, X, Y);
 end;
 
 Procedure NotifyUser(const DialogCaption, DialogMessage : String; DialogType : longint);
@@ -642,25 +642,53 @@ end;
 Function PromptUser(const DialogMessage : String; DialogType : longint; Buttons : Array of Longint;
   DefaultIndex, EscapeResult : Longint) : Longint;
 begin
-  Result := InterfaceObject.PromptUser('', DialogMessage, DialogType, Buttons, DefaultIndex, EscapeResult);
+  Result := PromptUser(DialogMessage, DialogType, @Buttons[Low(Buttons)],
+    High(Buttons) - Low(Buttons) + 1, DefaultIndex, EscapeResult);
+end;
+
+Function PromptUser(const DialogMessage : String; DialogType : longint; Buttons : PLongint;
+  ButtonCount, DefaultIndex, EscapeResult : Longint) : Longint;
+begin
+  Result := InterfaceObject.PromptUser('', DialogMessage, DialogType, Buttons, ButtonCount, DefaultIndex, EscapeResult);
 end;
 
 Function PromptUser(const DialogCaption, DialogMessage : String; DialogType : longint; Buttons : Array of Longint;
   DefaultIndex, EscapeResult : Longint) : Longint;
 begin
-  Result := InterfaceObject.PromptUser(DialogCaption, DialogMessage, DialogType, Buttons, DefaultIndex, EscapeResult);
+  Result := PromptUser(DialogCaption, DialogMessage, DialogType, @Buttons[Low(Buttons)],
+    High(Buttons) - Low(Buttons) + 1, DefaultIndex, EscapeResult);
+end;
+
+Function PromptUser(const DialogCaption, DialogMessage : String; DialogType : longint; Buttons : PLongint;
+  ButtonCount, DefaultIndex, EscapeResult : Longint) : Longint;
+begin
+  Result := InterfaceObject.PromptUser(DialogCaption, DialogMessage, DialogType, Buttons, ButtonCount, DefaultIndex, EscapeResult);
 end;
 
 Function PromptUserAtXY(const DialogMessage : String; DialogType : longint; Buttons : Array of Longint;
   DefaultIndex, EscapeResult : Longint; X, Y : Longint) : Longint;
 begin
-  Result := InterfaceObject.PromptUserAtXY('', DialogMessage, DialogType, Buttons, DefaultIndex, EscapeResult, X, Y);
+  Result := PromptUserAtXY(DialogMessage, DialogType, @Buttons[Low(Buttons)],
+    High(Buttons) - Low(Buttons) + 1, DefaultIndex, EscapeResult, X, Y);
+end;
+
+Function PromptUserAtXY(const DialogMessage : String; DialogType : longint; Buttons : PLongint;
+  ButtonCount, DefaultIndex, EscapeResult : Longint; X, Y : Longint) : Longint;
+begin
+  Result := InterfaceObject.PromptUserAtXY('', DialogMessage, DialogType, Buttons, ButtonCount, DefaultIndex, EscapeResult, X, Y);
 end;
 
 Function PromptUserAtXY(const DialogCaption, DialogMessage : String; DialogType : longint; Buttons : Array of Longint;
   DefaultIndex, EscapeResult : Longint; X, Y : Longint) : Longint;
 begin
-  Result := InterfaceObject.PromptUserAtXY(DialogCaption, DialogMessage, DialogType, Buttons, DefaultIndex, EscapeResult, X, Y);
+  Result := PromptUserAtXY(DialogCaption, DialogMessage, DialogType, @Buttons[Low(Buttons)],
+    High(Buttons) - Low(Buttons) + 1, DefaultIndex, EscapeResult, X, Y);
+end;
+
+Function PromptUserAtXY(const DialogCaption, DialogMessage : String; DialogType : longint; Buttons : PLongint;
+  ButtonCount, DefaultIndex, EscapeResult : Longint; X, Y : Longint) : Longint;
+begin
+  Result := InterfaceObject.PromptUserAtXY(DialogCaption, DialogMessage, DialogType, Buttons, ButtonCount, DefaultIndex, EscapeResult, X, Y);
 end;
 
 function RightJustifyMenuItem(HndMenu: HMenu;
@@ -1358,6 +1386,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.58  2002/10/23 14:36:52  lazarus
+  AJ:Fixes to PromptUser;Switched ShowMessage* to use NotifyUser*;
+     fixed TGraphicPropertyEditor for when Property is nil.
+
   Revision 1.57  2002/10/16 16:58:22  lazarus
   MG: moved SendCachedLCLMessages
 
