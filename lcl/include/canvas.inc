@@ -472,7 +472,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCanvas.Polygon(const Points: array of TPoint);
 begin
-  Polygon(Points, True, Low(Points), High(Points) - Low(Points));
+  Polygon(Points, True, Low(Points), High(Points) - Low(Points) + 1);
 end;
 
 {------------------------------------------------------------------------------
@@ -521,7 +521,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCanvas.Polyline(const Points: array of TPoint);
 begin
-  Polyline(Points, Low(Points), High(Points) - Low(Points));
+  Polyline(Points, Low(Points), High(Points) - Low(Points) + 1);
 end;
 
 {------------------------------------------------------------------------------
@@ -1254,6 +1254,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.59  2003/12/30 22:24:47  micha
+  fix number of points in polygon (form vincent)
+
   Revision 1.58  2003/12/26 10:16:54  mattias
   changed TColorRef from longword to longint
 
