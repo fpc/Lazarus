@@ -1223,8 +1223,13 @@ end;
 
 Function TInterfaceBase.SetBkMode(DC: HDC; bkMode : Integer) : Integer;
 begin
-  // Your default here
   Result := 0;
+end;
+
+Function TInterfaceBase.SetComboMinDropDownSize(Handle: HWND;
+  MinItemsWidth, MinItemsHeight, MinItemCount: integer): boolean;
+begin
+  Result := false;
 end;
 
 Function TInterfaceBase.SetCapture(value : Longint) : Longint;
@@ -1357,6 +1362,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.51  2002/10/03 14:47:31  lazarus
+  MG: added TComboBox.OnPopup+OnCloseUp+ItemWidth
+
   Revision 1.50  2002/09/27 20:52:23  lazarus
   MWE: Applied patch from "Andrew Johnson" <aj_genius@hotmail.com>
 
