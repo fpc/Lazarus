@@ -277,6 +277,7 @@ type
     procedure SetMenu(Value : TMainMenu);
     procedure SetFormStyle(Value : TFormStyle);
     procedure SetIcon(AValue: TIcon);
+    procedure SetModalResult(const AValue: TModalResult);
     procedure SetPosition(Value : TPosition);
     procedure SetVisible(Value: boolean);
     procedure SetWindowFocus;
@@ -349,10 +350,10 @@ type
     function WantChildKey(Child : TControl;
       var Message : TLMessage): Boolean; virtual;
     procedure SetFocus; override;
-    function SetFocusedControl(Control : TWinControl): Boolean ; Virtual;
-    procedure FocusControl(WinControl : TWinControl);
+    function SetFocusedControl(Control: TWinControl): Boolean ; Virtual;
+    procedure FocusControl(WinControl: TWinControl);
     function ShowModal : Integer;
-    property Active : Boolean read FActive;
+    property Active: Boolean read FActive;
     property BorderStyle : TFormBorderStyle
       read FBorderStyle write SetBorderStyle default bsSizeable;
     property Caption stored IsForm;
@@ -361,7 +362,7 @@ type
     property FormState : TFormState read FFormState;
     property KeyPreview: Boolean read FKeyPreview write FKeyPreview;
     property Menu : TMainMenu read FMenu write SetMenu;
-    property ModalResult : TModalResult read FModalResult write FModalResult;
+    property ModalResult : TModalResult read FModalResult write SetModalResult;
     property Visible write SetVisible default False;
     property WindowState: TWindowState read FWindowState write SetWindowState
       default wsNormal;

@@ -337,7 +337,7 @@ begin
     
   end;
   fReplaceAllClickedLast:=false;
-  TextToFindComboBox.SetFocus;
+  ActiveControl:=TextToFindComboBox;
 end;
 
 destructor TLazFindReplaceDialog.Destroy;
@@ -376,7 +376,7 @@ procedure TLazFindReplaceDialog.OkButtonClick(Sender:TObject);
 begin
   if not CheckInput then exit;
   fReplaceAllClickedLast:=false;
-  TextToFindComboBox.SetFocus;
+  ActiveControl:=TextToFindComboBox;
   ModalResult:=mrOk;
 end;
 
@@ -384,13 +384,13 @@ procedure TLazFindReplaceDialog.ReplaceAllButtonClick(Sender:TObject);
 begin
   if not CheckInput then exit;
   fReplaceAllClickedLast:=true;
-  TextToFindComboBox.SetFocus;
+  ActiveControl:=TextToFindComboBox;
   ModalResult:=mrAll;
 end;
 
 procedure TLazFindReplaceDialog.CancelButtonClick(Sender:TObject);
 begin
-  TextToFindComboBox.SetFocus;
+  ActiveControl:=TextToFindComboBox;
   ModalResult:=mrCancel;
 end;
 

@@ -137,7 +137,6 @@ begin
   if not WasActive then SetFocus;
 End;
 
-
 {------------------------------------------------------------------------------
   Method: TCustomForm.Notification
  ------------------------------------------------------------------------------}
@@ -196,6 +195,15 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  procedure TCustomForm.SetModalResult(const AValue: TModalResult);
+ ------------------------------------------------------------------------------}
+procedure TCustomForm.SetModalResult(const AValue: TModalResult);
+begin
+  if FModalResult=AValue then exit;
+  FModalResult:=AValue;
+end;
+
+{------------------------------------------------------------------------------
   Method: TCustomForm.IsIconStored
   Returns: if form icon should be stored in the stream
  ------------------------------------------------------------------------------}
@@ -222,16 +230,17 @@ end;
  ------------------------------------------------------------------------------}
 Procedure TCustomForm.SetFocus;
 Begin
-//writeln('[TCustomForm.SetFocus] A ',Classname);
-//if not(Visible and Enabled) then Exit;
+  {$IFDEF VerboseFocus}
+  writeln('TCustomForm.SetFocus ',Name,':',ClassName);
+  {$ENDIF}
+  if not (Visible and Enabled and HandleAllocated) then Exit;
   if HandleAllocated then
     CNSendMessage(LM_SETFOCUS,Self,nil);
-//writeln('[TCustomForm.SetFocus] END ',Classname);
 end;
 
-{------------------------------------------------------------------------------}
-{       TCustomForm SetVisible                                                 }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TCustomForm SetVisible
+------------------------------------------------------------------------------}
 Procedure TCustomForm.SetVisible(Value : boolean);
 Begin
 //writeln('[TCustomForm.SetVisible] START2 ',Name,':',ClassName,' ',Value,' ',(fsCreating in FFormState),' ',FormUpdating);
@@ -265,7 +274,10 @@ begin
     ' NewFocusControl=',NewFocusControl.Name,':',NewFocusControl.ClassName,
     ' HndAlloc=',NewFocusControl.HandleAllocated);
   {$ENDIF}
-  if not NewFocusControl.HandleAllocated then exit;
+  if (not NewFocusControl.HandleAllocated)
+  or (not NewFocusControl.Visible)
+  or (not NewFocusControl.Enabled) then
+    exit;
   LCLLinux.SetFocus(NewFocusControl.Handle);
   if GetFocus = NewFocusControl.Handle then
     NewFocusControl.Perform(CM_UIACTIVATE, 0, 0);
@@ -283,7 +295,7 @@ const
   SHOW_TEXT: array[Boolean] of string = ('Hide', 'Show');
 begin
   {$IFDEF VerboseFocus}
-  write('TCustomForm.WMShowWindow A ',Name,':',ClassName,' fsShowing in FFormState=',fsShowing in FFormState,' Message.Show=',Message.Show);
+  write('TCustomForm.WMShowWindow A ',Name,':',ClassName,' fsShowing=',fsShowing in FFormState,' Msg.Show=',Message.Show);
   if FActiveControl<>nil then begin
     write(' FActiveControl=',FActiveControl.Name,':',FActiveControl.ClassName,' HandleAllocated=',FActiveControl.HandleAllocated);
   end else begin
@@ -295,7 +307,8 @@ begin
   Include(FFormState, fsShowing);
   try
     if Message.Show then begin
-      if (FActiveControl<>nil) and FActiveControl.HandleAllocated then begin
+      if (FActiveControl<>nil) and FActiveControl.HandleAllocated
+      and (FActiveControl.Visible) and (FActiveControl.Enabled) then begin
         {$IFDEF VerboseFocus}
         writeln('TCustomForm.WMShowWindow B ',FActiveControl.Name,':',FActiveControl.ClassName);
         {$ENDIF}
@@ -320,11 +333,18 @@ end;
 procedure TCustomForm.WMActivate(var Message : TLMActivate);
 begin
   {$IFDEF VerboseFocus}
-  writeln('TCustomForm.WMActivate ',Name,':',ClassName,' ',Message.Active);
+  writeln('TCustomForm.WMActivate A ',Name,':',ClassName,' Msg.Active=',Message.Active);
   {$ENDIF}
   if (FormStyle <> fsMDIForm) or (csDesigning in ComponentState) then
     SetActive(Message.Active {<> WA_INACTIVE});
   FActive:=true;
+  if (FActiveControl<>nil) and FActiveControl.HandleAllocated
+  and (FActiveControl.Visible) and (FActiveControl.Enabled) then begin
+    {$IFDEF VerboseFocus}
+    writeln('TCustomForm.WMActivate B ',FActiveControl.Name,':',FActiveControl.ClassName);
+    {$ENDIF}
+    LCLLinux.SetFocus(FActiveControl.Handle);
+  end;
   Activate;
 end;
 
@@ -652,18 +672,20 @@ begin
           FocusHandle := 0;
           if FormStyle = fsMDIFORM 
           then begin
+            // ToDo
           end
           else begin
-            if (FActiveControl <> nil) and (FActiveControl <> Self) 
+            if (FActiveControl <> nil) and (FActiveControl <> Self)
+            and (FActiveControl.Visible) and (FActiveControl.Enabled)
             then FocusHandle := FActiveControl.Handle;
           end;
-          if FocusHandle <> 0 
+          TheMessage.Result:=0;
+          if FocusHandle <> 0
           then begin
           //writeln('[TCustomForm.WndPRoc] A ',FActiveControl.ClassName);
             LCLLinux.SetFocus(FocusHandle);
             Exit;
           end;
-          TheMessage.Result:=0;
         end;
       end;
     CM_EXIT:  
@@ -836,10 +858,10 @@ Procedure TCustomForm.SetActiveControl(AWinControl: TWinControl);
 Begin
   if FActiveControl <> AWinControl then
   begin
-    if not ((AWinControl = nil)
-    or (AWinControl <> Self)
-      and (GetParentForm(AWinControl) = Self) and ((csLoading in ComponentState)
-      or AWinControl.CanFocus))
+    if not
+      ((AWinControl = nil)
+      or (AWinControl <> Self) and (GetParentForm(AWinControl) = Self)
+        and ((csLoading in ComponentState) or AWinControl.CanFocus))
     then
       RaiseGDBException(SCannotFocus);
       // EInvalidOperation.Create(SCannotFocus);
@@ -1059,22 +1081,21 @@ begin
   Result := True;
 end;
 
-{------------------------------------------------------------------------------}
-{       TCustomForm Method SetFocusedControl                                              }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TCustomForm Method SetFocusedControl
+------------------------------------------------------------------------------}
 function TCustomForm.SetFocusedControl(Control : TWinControl): Boolean;
-{var
-  FocusHandle: HWnd;
-  TempControl: TWinControl;}
 begin
-  Result := True;
-  // ToDo:
- { Result := False;
-  Inc(FocusCount);
+  Result := False;
+
+  // update FActiveControl
   if FDesigner = nil then
     if Control <> Self then
-      FActiveControl := Control else
+      FActiveControl := Control
+    else
       FActiveControl := nil;
+      
+  // update Screen object
   Screen.FActiveControl := Control;
   Screen.FActiveCustomForm := Self;
   Screen.FCustomForms.Remove(Self);
@@ -1082,60 +1103,72 @@ begin
   if Self is TForm then
   begin
     Screen.FActiveForm := TForm(Self);
-    Screen.FForms.Remove(Self);
-    Screen.FForms.Insert(0, Self);
+    Screen.FFormList.Remove(Self);
+    Screen.FFormList.Insert(0, Self);
   end
-  else Screen.FActiveForm := nil;
-  if not (csFocusing in Control.ControlState) then
-  begin
-    Control.ControlState := Control.ControlState + [csFocusing];
-    try
-      if Screen.FFocusedForm <> Self then
+  else
+    Screen.FActiveForm := nil;
+    
+  {$IFDEF VerboseFocus}
+  write('TCustomForm.SetFocusedControl Self=',Name,':',ClassName,' ');
+  write(' Control=',Control.Name,':',Control.ClassName,' Control.HandleAllocated=',Control.HandleAllocated);
+  writeln();
+  {$ENDIF}
+    
+  {
+  Inc(FocusCount);
+  
+  // prevent looping
+  if (csFocusing in Control.ControlState) then exit;
+  Control.ControlState := Control.ControlState + [csFocusing];
+  try
+
+    if Screen.FFocusedForm <> Self then
+    begin
+      if Screen.FFocusedForm <> nil then
       begin
-        if Screen.FFocusedForm <> nil then
-        begin
-          FocusHandle := Screen.FFocusedForm.Handle;
-          Screen.FFocusedForm := nil;
-          if not SendFocusMessage(FocusHandle, CM_DEACTIVATE) then Exit;
-        end;
-        Screen.FFocusedForm := Self;
-        if not SendFocusMessage(Handle, CM_ACTIVATE) then Exit;
+        FocusHandle := Screen.FFocusedForm.Handle;
+        Screen.FFocusedForm := nil;
+        if not SendFocusMessage(FocusHandle, CM_DEACTIVATE) then Exit;
       end;
-      if FFocusedControl = nil then FFocusedControl := Self;
-      if FFocusedControl <> Control then
-      begin
-        while (FFocusedControl <> nil) and not
-          FFocusedControl.ContainsControl(Control) do
-        begin
-          FocusHandle := FFocusedControl.Handle;
-          FFocusedControl := FFocusedControl.Parent;
-          if not SendFocusMessage(FocusHandle, CM_EXIT) then Exit;
-        end;
-        while FFocusedControl <> Control do
-        begin
-          TempControl := Control;
-          while TempControl.Parent <> FFocusedControl do
-            TempControl := TempControl.Parent;
-          FFocusedControl := TempControl;
-          if not SendFocusMessage(TempControl.Handle, CM_ENTER) then Exit;
-        end;
-        TempControl := Control.Parent;
-        while TempControl <> nil do
-        begin
-          if TempControl is TScrollingWinControl then
-            TScrollingWinControl(TempControl).AutoScrollInView(Control);
-          TempControl := TempControl.Parent;
-        end;
-        Perform(CM_FOCUSCHANGED, 0, Longint(Control));
-        if (FActiveOleControl <> nil) and (FActiveOleControl <> Control) then
-          FActiveOleControl.Perform(CM_UIDEACTIVATE, 0, 0);
-      end;
-    finally
-      Control.ControlState := Control.ControlState - [csFocusing];
+      Screen.FFocusedForm := Self;
+      if not SendFocusMessage(Handle, CM_ACTIVATE) then Exit;
     end;
-    Screen.UpdateLastActive;
-    Result := True;
-  end;}
+    if FFocusedWinControl = nil then FFocusedWinControl := Self;
+    if FFocusedWinControl <> Control then
+    begin
+      while (FFocusedWinControl <> nil) and not
+        FFocusedWinControl.ContainsControl(Control) do
+      begin
+        FocusHandle := FFocusedWinControl.Handle;
+        FFocusedWinControl := FFocusedWinControl.Parent;
+        if not SendFocusMessage(FocusHandle, CM_EXIT) then Exit;
+      end;
+      while FFocusedControl <> Control do
+      begin
+        TempControl := Control;
+        while TempControl.Parent <> FFocusedControl do
+          TempControl := TempControl.Parent;
+        FFocusedControl := TempControl;
+        if not SendFocusMessage(TempControl.Handle, CM_ENTER) then Exit;
+      end;
+      TempControl := Control.Parent;
+      while TempControl <> nil do
+      begin
+        if TempControl is TScrollingWinControl then
+          TScrollingWinControl(TempControl).AutoScrollInView(Control);
+        TempControl := TempControl.Parent;
+      end;
+      Perform(CM_FOCUSCHANGED, 0, Longint(Control));
+      if (FActiveOleControl <> nil) and (FActiveOleControl <> Control) then
+        FActiveOleControl.Perform(CM_UIDEACTIVATE, 0, 0);
+    end;
+  finally
+    Control.ControlState := Control.ControlState - [csFocusing];
+  end;
+  Screen.UpdateLastActive;
+  Result := True;
+  }
 end;
 
 {------------------------------------------------------------------------------}
@@ -1166,7 +1199,8 @@ begin
 
   // activate focus if visible
   if Visible then begin
-    if (FActiveControl<>nil) and FActiveControl.HandleAllocated then begin
+    if (FActiveControl<>nil) and FActiveControl.HandleAllocated
+    and FActiveControl.Visible and FActiveControl.Enabled then begin
       {$IFDEF VerboseFocus}
       writeln('TCustomForm.CreateWnd A ',FActiveControl.Name,':',FActiveControl.ClassName);
       {$ENDIF}
@@ -1177,9 +1211,17 @@ begin
 end;
 
 procedure TCustomForm.Loaded;
+var
+  Control: TWinControl;
 begin
   inherited Loaded;
   if FMenu<>nil then FMenu.HandleNeeded;
+  if ActiveControl <> nil then
+  begin
+    Control := ActiveControl;
+    FActiveControl := nil;
+    if Control.CanFocus then SetActiveControl(Control);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1250,7 +1292,7 @@ end;
 {------------------------------------------------------------------------------}
 {  TCustomForm ShowModal                                                       }
 {------------------------------------------------------------------------------}
-Function TCustomForm.ShowModal : Integer;
+Function TCustomForm.ShowModal: Integer;
 
   procedure RaiseShowModalImpossible;
   begin
@@ -1332,6 +1374,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.91  2003/03/18 13:04:25  mattias
+  improved focus debugging output
+
   Revision 1.90  2003/03/17 13:54:34  mattias
   fixed setting activecontrol after createwnd
 
