@@ -39,6 +39,10 @@ type
     FCurrentFrameTime: integer; // in msec
     FLastFrameTime: integer; // in msec
     FFrameDiffTime: integer; // in msec
+    FSharedArea: TCustomGTKGLAreaControl;
+    FSharingAreas: TList;
+    function GetSharingAreas(Index: integer): TCustomGTKGLAreaControl;
+    procedure SetSharedArea(const AValue: TCustomGTKGLAreaControl);
   protected
     procedure WMPaint(var Message: TLMPaint); message LM_PAINT;
     function GetWidget: PGtkGLArea;
@@ -52,12 +56,15 @@ type
     procedure SwapBuffers; virtual;
     function MakeCurrent: integer; virtual;
     function RestoreOldGtkGLAreaControl: boolean;
+    function SharingAreasCount: integer;
+    property SharingAreas[Index: integer]: TCustomGTKGLAreaControl read GetSharingAreas;
   public
-    property Widget: PGtkGLArea read GetWidget;
-    property OnPaint: TNotifyEvent read FOnPaint write FOnPaint;
     property FrameDiffTimeInMSecs: integer read FFrameDiffTime;
     property OnMakeCurrent: TGtkGlAreaMakeCurrentEvent read FOnMakeCurrent
                                                        write FOnMakeCurrent;
+    property OnPaint: TNotifyEvent read FOnPaint write FOnPaint;
+    property SharedArea: TCustomGTKGLAreaControl read FSharedArea write SetSharedArea;
+    property Widget: PGtkGLArea read GetWidget;
   end;
   
   
@@ -88,6 +95,7 @@ type
     property OnResize;
     property OnShowHint;
     property PopupMenu;
+    property SharedArea;
     property ShowHint;
     property Visible;
   end;
@@ -152,6 +160,12 @@ end;
 
 destructor TCustomGTKGLAreaControl.Destroy;
 begin
+  if FSharingAreas<>nil then begin
+    while SharingAreasCount>0 do
+      SharingAreas[SharingAreasCount-1].SharedArea:=nil;
+    FreeAndNil(FSharingAreas);
+  end;
+  SharedArea:=nil;
   FCanvas.Free;
   FCanvas:=nil;
   inherited Destroy;
@@ -240,6 +254,46 @@ begin
   Result:=true;
 end;
 
+function TCustomGTKGLAreaControl.SharingAreasCount: integer;
+begin
+  if FSharingAreas=nil then
+    Result:=0
+  else
+    Result:=FSharingAreas.Count;
+end;
+
+procedure TCustomGTKGLAreaControl.SetSharedArea(
+  const AValue: TCustomGTKGLAreaControl);
+begin
+  if FSharedArea=AValue then exit;
+  if AValue=Self then
+    Raise Exception.Create('An area can not be shared by itself.');
+  // unshare old
+  if (AValue<>nil) and (AValue.SharedArea<>nil) then
+    Raise Exception.Create('Target area is sharing too. A sharing area can not be shared.');
+  if FSharedArea<>nil then FSharedArea.FSharingAreas.Remove(Self);
+  // share new
+  if (AValue<>nil) and (csDestroying in AValue.ComponentState) then
+    FSharedArea:=nil
+  else begin
+    FSharedArea:=AValue;
+    if (FSharedArea<>nil) then begin
+      if FSharedArea.FSharingAreas=nil then
+        FSharedArea.FSharingAreas:=TList.Create;
+      FSharedArea.FSharingAreas.Add(Self);
+    end;
+  end;
+  // recreate handle if needed
+  if HandleAllocated and (not (csDesigning in ComponentState)) then
+    ReCreateWnd;
+end;
+
+function TCustomGTKGLAreaControl.GetSharingAreas(Index: integer
+  ): TCustomGTKGLAreaControl;
+begin
+  Result:=TCustomGTKGLAreaControl(FSharingAreas[Index]);
+end;
+
 procedure TCustomGTKGLAreaControl.WMPaint(var Message: TLMPaint);
 begin
   Include(FControlState, csCustomPaint);
@@ -289,11 +343,18 @@ function TWSGTKGLAreaControl.CreateHandle(const AComponent: TComponent;
   const AParams: TCreateParams): THandle;
 var
   NewWidget: Pointer;
+  Area: TCustomGTKGLAreaControl;
 begin
   if csDesigning in AComponent.ComponentState then
     Result:=inherited CreateHandle(AComponent,AParams)
   else begin
-    NewWidget:=gtk_gl_area_new(Plongint(@InitAttrList));
+    Area:=AComponent as TCustomGTKGLAreaControl;
+    if (Area.SharedArea<>nil) and (not (csDestroying in Area.ComponentState))
+    then
+      NewWidget:=gtk_gl_area_share_new(Plongint(@InitAttrList),
+                                       Area.SharedArea.Widget)
+    else
+      NewWidget:=gtk_gl_area_new(Plongint(@InitAttrList));
     Result:=longint(NewWidget);
     TGTKWidgetSet(InterfaceObject).FinishComponentCreate(AComponent,NewWidget,true);
   end;
