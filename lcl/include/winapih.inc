@@ -96,6 +96,7 @@ function FloodFill(DC: HDC; X, Y: Integer; Color: TColor; FillStyle: TFillStyle;
 function Frame3d(DC: HDC; var Rect: TRect; const FrameWidth : integer; const Style : TBevelCut): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 Function GetActiveWindow : HWND; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetCapture : HWND; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetCaretPos(var lpPoint: TPoint): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 Function GetClientBounds(handle : HWND; var Rect: TRect) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -108,9 +109,9 @@ function GetCharABCWidths(DC: HDC; p2, p3: UINT; const ABCStructs): Boolean; {$I
 function GetDC(hWnd: HWND): HDC; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetDeviceCaps(DC: HDC; Index: Integer): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetDeviceSize(DC: HDC; var p: TPoint): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer;{$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetFocus: HWND; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function GetFontLanguageInfo(DC: HDC): DWord; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetKeyState(nVirtKey: Integer): Smallint; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetNotebookTabIndexAtPos(Handle: HWND; const ClientPos: TPoint): integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetObject(GDIObject: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -143,6 +144,7 @@ function IntersectClipRect(dc: hdc; Left, Top, Right,Bottom: Integer): Integer; 
 Function InvalidateFrame(aHandle : HWND; ARect : pRect; bErase : Boolean; BorderWidth: integer) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 Function InvalidateRect(aHandle : HWND; ARect : pRect; bErase : Boolean) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 //function IsCharAlphaNumeric --> independent
+function IsDBCSLeadByte(TestChar: Byte): BOOL; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 //function IsRectEmpty --> independent
 
 function LineTo(DC: HDC; X, Y: Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -334,6 +336,9 @@ Function RGB(R, G, B : Byte) : TColorRef;
 { =============================================================================
 
   $Log$
+  Revision 1.57  2002/12/05 22:16:30  mattias
+  double byte char font started
+
   Revision 1.56  2002/11/30 11:22:54  mattias
   statusbar now uses invalidaterect
 

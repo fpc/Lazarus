@@ -380,6 +380,11 @@ begin
   Result := InterfaceObject.GetFocus;
 end;
 
+function GetFontLanguageInfo(DC: HDC): DWord;
+begin
+  Result := InterfaceObject.GetFontLanguageInfo(DC);
+end;
+
 function GetKeyState(nVirtKey: Integer): Smallint;
 begin
   Result := InterfaceObject.GetKeyState(nVirtKey);
@@ -517,6 +522,11 @@ end;
 Function InvalidateRect(aHandle : HWND; ARect : pRect; bErase : Boolean) : Boolean;
 begin
   Result := InterfaceObject.InvalidateRect(aHandle, ARect, bErase);
+end;
+
+function IsDBCSLeadByte(TestChar: Byte): BOOL;
+begin
+  Result := InterfaceObject.IsDBCSLeadByte(TestChar);
 end;
 
 function LineTo(DC: HDC; X, Y: Integer): Boolean;
@@ -1387,6 +1397,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.64  2002/12/05 22:16:29  mattias
+  double byte char font started
+
   Revision 1.63  2002/11/30 11:22:53  mattias
   statusbar now uses invalidaterect
 

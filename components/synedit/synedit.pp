@@ -3433,18 +3433,25 @@ begin
     False:
       begin
         with fFontDummy do begin
+          {$IFDEF SYN_LAZARUS}
+          BeginUpdate;
+          {$ENDIF}
+          writeln('  TCustomSynEdit.SetFont C fFontDummy="',fFontDummy.Name,'"');
           Color := Value.Color;
           Pitch := fpFixed;
           Size := Value.Size;
           Style := Value.Style;
+          {$IFDEF SYN_LAZARUS}
+          EndUpdate;
+          {$ENDIF}
         end;
-  writeln('  TCustomSynEdit.SetFont C ',AveCW,',',MaxCW,' ',Value.Name,
-  ' Value.Size=',Value.Size,' Value.Height=',Value.Height,' DummyHeight=',fFontDummy.Height);
+  writeln('  TCustomSynEdit.SetFont D AveCW=',AveCW,' MaxCW=',MaxCW,
+  ' Value="',Value.Name,'" Value.Size=',Value.Size,' Value.Height=',Value.Height,
+  ' DummyHeight=',fFontDummy.Height,' fFontDummy="',fFontDummy.Name,'"');
         inherited Font := fFontDummy;
       end;
   end;
-  writeln('  TCustomSynEdit.SetFont D ',Font.Name);
-  writeln('SSS1 "',Font.Name,'" Height=',Font.Height,' AveCW=',AveCW,' MaxCW=',MaxCW);
+  writeln('  TCustomSynEdit.SetFont E "',Font.Name,'" Height=',Font.Height,' AveCW=',AveCW,' MaxCW=',MaxCW);
   if fGutter.ShowLineNumbers then GutterChanged(Self);
 end;
 
