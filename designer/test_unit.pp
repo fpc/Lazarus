@@ -78,19 +78,16 @@ type
     OIResizeButton: TButton;
     OIRefreshButton: TButton;
 	  Edit1 : TEdit;
-	  mnuMain: TMainMenu;
-	  itmFileQuit: TMenuItem;
-	  itmFile: TMenuItem;
     ComboBox1 : TComboBox;
     ComboBox2 : TComboBox;
     Memo1 : TMemo;
     WriteLFMButton:TButton;
-    constructor Create(AOwner: TComponent); override;	
+    constructor Create(AOwner: TComponent); override;
     procedure LoadMainMenu;
+    procedure LoadFromLFM;
+  published
 	  procedure FormKill(Sender : TObject);
 	  procedure FormShow(Sender : TObject);
-	  procedure mnuQuitClicked(Sender : TObject);
-	protected
 	  procedure EditToComboButtonCLick(Sender : TObject);
 	  procedure AddItemButtonCLick(Sender : TObject);
 	  procedure ComboToEditButtonCLick(Sender : TObject);
@@ -102,7 +99,22 @@ type
 	  procedure ComboOnChange (Sender:TObject);
 	  procedure ComboOnClick (Sender:TObject);
     procedure WriteLFMButtonClick(Sender:TObject);
+  private
+    procedure ReaderFindMethod(Reader: TReader; const FindMethodName: Ansistring;
+      var Address: Pointer; var Error: Boolean);
+    procedure ReaderSetName(Reader: TReader; Component: TComponent;
+      var NewName: Ansistring);
+    procedure ReaderReferenceName(Reader: TReader; var RefName: Ansistring);
+    procedure ReaderAncestorNotFound(Reader: TReader; const ComponentName: Ansistring;
+      ComponentClass: TPersistentClass; var Component: TComponent);
+    procedure ReaderError(Reader: TReader; const Message: Ansistring;
+      var Handled: Boolean);
+    procedure ReaderFindComponentClass(Reader: TReader; const FindClassName: Ansistring;
+      var ComponentClass: TComponentClass);
+    procedure ReaderCreateComponent(Reader: TReader;
+      ComponentClass: TComponentClass; var Component: TComponent);
   public
+    // some test variables
     FMyInteger:integer;
     FMyCardinal:Cardinal;
     FMyEnum:TMyEnum;
@@ -114,6 +126,7 @@ type
     FMyPen:TPen;
     FMyFont:TFont;
     FMyComponent:TMyComponent;
+    FMyEvent:TNotifyEvent;
     procedure SetMyAnsiString(const NewValue:AnsiString);
     procedure SetMyShortString(const NewValue:ShortString);
   published
@@ -124,11 +137,50 @@ type
     property MyAnsiString:AnsiString read FMyAnsiString write SetMyAnsiString;
     property MyShortString:ShortString read FMyShortString write SetMyShortString;
     property MyBool:Boolean read FMyBool write FMyBool;
-    property MyBrush:TBrush read FMyBrush write FMyBrush;
+    //property MyBrush:TBrush read FMyBrush write FMyBrush;
     property MyPen:TPen read FMyPen write FMyPen;
-    property MyFont:TFont read FMyFont write FMyFont;
-    property MyComponent:TMyComponent read FMyComponent write FMyComponent;
+    //property MyFont:TFont read FMyFont write FMyFont;
+    //property MyComponent:TMyComponent read FMyComponent write FMyComponent;
+    property MyEvent:TNotifyEvent read FMyEvent write FMyEvent;
 	end;
+
+  TMatBinaryObjectReader = class(TAbstractObjectReader)
+  private
+    FStream: TStream;
+    FBuffer: Pointer;
+    FBufSize: Integer;
+    FBufPos: Integer;
+    FBufEnd: Integer;
+    procedure Read(var Buf; Count: LongInt);
+    procedure SkipProperty;
+    procedure SkipSetBody;
+  public
+    constructor Create(Stream: TStream; BufSize: Integer);
+    destructor Destroy; override;
+
+    function NextValue: TValueType; override;
+    function ReadValue: TValueType; override;
+    procedure BeginRootComponent; override;
+    procedure BeginComponent(var Flags: TFilerFlags; var AChildPos: Integer;
+      var CompClassName, CompName: AnsiString); override;
+    function BeginProperty: AnsiString; override;
+
+    procedure ReadBinary(const DestData: TMemoryStream); override;
+    function ReadFloat: Extended; override;
+    function ReadSingle: Single; override;
+    {!!!: function ReadCurrency: Currency; override;}
+    function ReadDate: TDateTime; override;
+    function ReadIdent(ValueType: TValueType): AnsiString; override;
+    function ReadInt8: ShortInt; override;
+    function ReadInt16: SmallInt; override;
+    function ReadInt32: LongInt; override;
+    function ReadInt64: Int64; override;
+    function ReadSet(EnumType: Pointer): Integer; override;
+    function ReadStr: AnsiString; override;
+    function ReadString(StringType: TValueType): AnsiString; override;
+    procedure SkipComponent(SkipComponentInfos: Boolean); override;
+    procedure SkipValue; override;
+  end;
 
   TMatBinaryObjectWriter = class(TAbstractObjectWriter)
   private
@@ -173,6 +225,63 @@ var
 
 implementation
 
+//==============================================================================
+
+
+
+{ TMyComponent }
+
+constructor TMyComponent.Create(AOwner:TComponent);
+begin
+  inherited Create(AOwner);
+  Name:='MyComponent';
+  FMyInteger:=-1234;
+  FMyCardinal:=5678;
+  FMySet:=[MyEnum1];
+  FMyEnum:=MyEnum2;
+  FMyFloat:=3.2;
+  FMyBool:=true;
+  FMyAnsiString:='Ansi';
+  FMyShortString:='Short';
+  FMySubComponent:=TMySubComponent.Create(Self);
+  with FMySubComponent do begin
+    MyInteger:=789;
+  end;
+  FMyGraphicsObject:=nil;
+  FMyFont:=TFont.Create;
+  FMyBrush:=TBrush.Create;
+  FMyPen:=TPen.Create;
+  FMyEvent:=@DoSomething;
+
+  MySubComponent2:=TMySubComponent.Create(Self);
+  with MySubComponent2 do begin
+    MyInteger:=1928;
+  end;
+end;
+
+destructor TMyComponent.Destroy;
+begin
+  FMyPen.Free;
+  FMyBrush.Free;
+  FMyFont.Free;
+  FMySubComponent.Free;
+  inherited Destroy;
+end;
+
+procedure TMyComponent.SetMyAnsiString(const NewValue:AnsiString);
+begin
+  FMyAnsiString:=NewValue;
+end;
+
+procedure TMyComponent.SetMyShortString(const NewValue:ShortString);
+begin
+  FMyShortString:=NewValue;
+end;
+
+procedure TMyComponent.DoSomething(Sender:TObject);
+begin
+  //
+end;
 
 
 //==============================================================================
@@ -182,7 +291,7 @@ procedure ObjectBinaryToText(Input, Output: TStream);
 
   procedure OutStr(s: String);
   begin
-    writeln('OutStr '''+s+''' NewTotalLen='+IntToStr(OutPut.Size));
+    writeln('OutStr '''+s+'''');
     if Length(s) > 0 then
       Output.Write(s[1], Length(s));
   end;
@@ -287,13 +396,13 @@ procedure ObjectBinaryToText(Input, Output: TStream);
 
     var
       s: String;
-      len: LongInt;
+      //len: LongInt;
       IsFirst: Boolean;
       ext: Extended;
 
     begin
     writeln('ProcessValue Indent='''+Indent+'''');
-      OutStr('(' + IntToStr(Ord(Valuetype)) + ') ');
+//      OutStr('(' + IntToStr(Ord(Valuetype)) + ') ');
       case ValueType of
         vaList: begin
             OutStr('(');
@@ -420,64 +529,614 @@ begin
   ReadObject('');
 end;
 
+
+
 //==============================================================================
 
 
-{ TMyComponent }
 
-constructor TMyComponent.Create(AOwner:TComponent);
-begin
-  inherited Create(AOwner);
-  Name:='MyComponent';
-  FMyInteger:=-1234;
-  FMyCardinal:=5678;
-  FMySet:=[MyEnum1];
-  FMyEnum:=MyEnum2;
-  FMyFloat:=3.2;
-  FMyBool:=true;
-  FMyAnsiString:='Ansi';
-  FMyShortString:='Short';
-  FMySubComponent:=TMySubComponent.Create(Self);
-  with FMySubComponent do begin
-    MyInteger:=789;
+procedure ObjectTextToBinary(Input, Output: TStream);
+var
+  parser: TParser;
+
+  procedure WriteString(s: String);
+  begin
+    writeln('OTTB: WriteStr '''+s+'''');
+    Output.WriteByte(Length(s));
+    Output.Write(s[1], Length(s));
   end;
-  FMyGraphicsObject:=nil;
-  FMyFont:=TFont.Create;
-  FMyBrush:=TBrush.Create;
-  FMyPen:=TPen.Create;
-  FMyEvent:=@DoSomething;
 
-  MySubComponent2:=TMySubComponent.Create(Self);
-  with MySubComponent2 do begin
-    MyInteger:=1928;
+  procedure WriteInteger(value: LongInt);
+  begin
+    writeln('OTTB: WriteInteger '+IntToStr(Value));
+    if (value >= -128) and (value <= 127) then begin
+      Output.WriteByte(Ord(vaInt8));
+      Output.WriteByte(Byte(value));
+    end else if (value >= -32768) and (value <= 32767) then begin
+      Output.WriteByte(Ord(vaInt16));
+      Output.WriteWord(Word(value));
+    end else begin
+      Output.WriteByte(ord(vaInt32));
+      Output.WriteDWord(LongWord(value));
+    end;
+  end;
+
+  procedure ProcessProperty; forward;
+
+  procedure ProcessValue;
+  var
+    flt: Extended;
+    s: String;
+    stream: TMemoryStream;
+  begin
+    writeln('OTTB: ProcessValue');
+    case parser.Token of
+      toInteger:
+        begin
+          WriteInteger(parser.TokenInt);
+          parser.NextToken;
+        end;
+      toFloat:
+        begin
+          Output.WriteByte(Ord(vaExtended));
+          flt := Parser.TokenFloat;
+          Output.Write(flt, SizeOf(flt));
+          parser.NextToken;
+        end;
+      toString:
+        begin
+          s := parser.TokenString;
+          while parser.NextToken = '+' do
+          begin
+            parser.NextToken;   // Get next string fragment
+            parser.CheckToken(toString);
+            s := s + parser.TokenString;
+          end;
+          Output.WriteByte(Ord(vaString));
+          WriteString(s);
+        end;
+      toSymbol:
+        begin
+          if CompareText(parser.TokenString, 'True') = 0 then
+            Output.WriteByte(Ord(vaTrue))
+          else if CompareText(parser.TokenString, 'False') = 0 then
+            Output.WriteByte(Ord(vaFalse))
+          else if CompareText(parser.TokenString, 'nil') = 0 then
+            Output.WriteByte(Ord(vaNil))
+          else
+          begin
+            Output.WriteByte(Ord(vaIdent));
+            WriteString(parser.TokenString);
+          end;
+          Parser.NextToken;
+        end;
+      // Set
+      '[':
+        begin
+          parser.NextToken;
+          Output.WriteByte(Ord(vaSet));
+          if parser.Token <> ']' then
+            while True do
+            begin
+              parser.CheckToken(toSymbol);
+              WriteString(parser.TokenString);
+              parser.NextToken;
+              if parser.Token = ']' then
+                break;
+              parser.CheckToken(',');
+              parser.NextToken;
+            end;
+          Output.WriteByte(0);
+          parser.NextToken;
+        end;
+      // List
+      '(':
+        begin
+          parser.NextToken;
+          Output.WriteByte(Ord(vaList));
+          while parser.Token <> ')' do
+            ProcessValue;
+          Output.WriteByte(0);
+          parser.NextToken;
+        end;
+      // Collection
+      '<':
+        begin
+          parser.NextToken;
+          Output.WriteByte(Ord(vaCollection));
+          while parser.Token <> '>' do
+          begin
+            parser.CheckTokenSymbol('item');
+            parser.NextToken;
+            // ConvertOrder
+            Output.WriteByte(Ord(vaList));
+            while not parser.TokenSymbolIs('end') do
+              ProcessProperty;
+            parser.NextToken;   // Skip 'end'
+            Output.WriteByte(0);
+          end;
+          Output.WriteByte(0);
+          parser.NextToken;
+        end;
+      // Binary data
+      '{':
+        begin
+          Output.WriteByte(Ord(vaBinary));
+          stream := TMemoryStream.Create;
+          try
+            parser.HexToBinary(stream);
+            Output.WriteDWord(stream.Size);
+            Output.Write(Stream.Memory^, stream.Size);
+          finally
+            stream.Free;
+          end;
+          parser.NextToken;
+        end;
+      else
+        begin
+          writeln('Error: Invalid property');
+          halt;
+          //parser.Error(SInvalidProperty);
+        end;
+    end;
+  end;
+
+  procedure ProcessProperty;
+  var
+    name: String;
+  begin
+    writeln('OTTB: ProcessProperty');
+    // Get name of property
+    parser.CheckToken(toSymbol);
+    name := parser.TokenString;
+    while True do begin
+      parser.NextToken;
+      if parser.Token <> '.' then break;
+      parser.NextToken;
+      parser.CheckToken(toSymbol);
+      name := name + '.' + parser.TokenString;
+    end;
+    WriteString(name);
+    parser.CheckToken('=');
+    parser.NextToken;
+    ProcessValue;
+  end;
+
+  procedure ProcessObject;
+  var
+    IsInherited: Boolean;
+    ObjectName, ObjectType: String;
+  begin
+    writeln('OTTB: ProcessObject');
+    if parser.TokenSymbolIs('OBJECT') then
+      IsInherited := False
+    else begin
+      parser.CheckTokenSymbol('INHERITED');
+      IsInherited := True;
+    end;
+    parser.NextToken;
+    parser.CheckToken(toSymbol);
+    ObjectName := '';
+    ObjectType := parser.TokenString;
+    parser.NextToken;
+    if parser.Token = ':' then begin
+      parser.NextToken;
+      parser.CheckToken(toSymbol);
+      ObjectName := ObjectType;
+      ObjectType := parser.TokenString;
+      parser.NextToken;
+    end;
+    WriteString(ObjectType);
+    WriteString(ObjectName);
+
+    // Convert property list
+    while not (parser.TokenSymbolIs('END') or
+      parser.TokenSymbolIs('OBJECT') or
+      parser.TokenSymbolIs('INHERITED')) do
+      ProcessProperty;
+    Output.WriteByte(0);        // Terminate property list
+
+    // Convert child objects
+    while not parser.TokenSymbolIs('END') do ProcessObject;
+    parser.NextToken;           // Skip end token
+    Output.WriteByte(0);        // Terminate property list
+  end;
+
+const
+  signature: PChar = 'TPF0';
+begin
+  parser := TParser.Create(Input);
+  try
+    Output.Write(signature[0], 4);
+    ProcessObject;
+  finally
+    parser.Free;
   end;
 end;
 
-destructor TMyComponent.Destroy;
+
+
+//==============================================================================
+
+
+{ TMatBinaryObjectReader }
+
+constructor TMatBinaryObjectReader.Create(Stream: TStream; BufSize: Integer);
 begin
-  FMyPen.Free;
-  FMyBrush.Free;
-  FMyFont.Free;
-  FMySubComponent.Free;
+  writeln('MBOR: Create');
+  inherited Create;
+  FStream := Stream;
+  FBufSize := BufSize;
+  GetMem(FBuffer, BufSize);
+end;
+
+destructor TMatBinaryObjectReader.Destroy;
+begin
+  writeln('MBOR: Destroy');
+  { Seek back the amount of bytes that we didn't process unitl now: }
+  FStream.Seek(Integer(FBufPos) - Integer(FBufEnd), soFromCurrent);
+
+  if Assigned(FBuffer) then
+    FreeMem(FBuffer, FBufSize);
+
   inherited Destroy;
 end;
 
-procedure TMyComponent.SetMyAnsiString(const NewValue:AnsiString);
+function TMatBinaryObjectReader.ReadValue: TValueType;
 begin
-  FMyAnsiString:=NewValue;
+  writeln('MBOR: ReadValue');
+  Result := vaNull; { Necessary in FPC as TValueType is larger than 1 byte! }
+  Read(Result, 1);
 end;
 
-procedure TMyComponent.SetMyShortString(const NewValue:ShortString);
+function TMatBinaryObjectReader.NextValue: TValueType;
 begin
-  FMyShortString:=NewValue;
+  writeln('MBOR: NextValue');
+  Result := ReadValue;
+  { We only 'peek' at the next value, so seek back to unget the read value: }
+  Dec(FBufPos);
 end;
 
-procedure TMyComponent.DoSomething(Sender:TObject);
+procedure TMatBinaryObjectReader.BeginRootComponent;
+var
+  Signature: LongInt;
 begin
-  //
+  writeln('MBOR: BeginRootComponent');
+  { Read filer signature }
+  Read(Signature, 4);
+  if Signature <> LongInt(FilerSignature) then
+    raise EReadError.Create('SInvalidImage');
+    //raise EReadError.Create(SInvalidImage);
 end;
 
-//==============================================================================
+procedure TMatBinaryObjectReader.BeginComponent(var Flags: TFilerFlags;
+  var AChildPos: Integer; var CompClassName, CompName: AnsiString);
+var
+  Prefix: Byte;
+  ValueType: TValueType;
+begin
+  writeln('MBOR: BeginComponent');
+  { Every component can start with a special prefix: }
+  Flags := [];
+  if (Byte(NextValue) and $f0) = $f0 then
+  begin
+    Prefix := Byte(ReadValue);
+    Flags := TFilerFlags(Prefix and $0f);
+    if ffChildPos in Flags then
+    begin
+      ValueType := NextValue;
+      case ValueType of
+        vaInt8:
+	  AChildPos := ReadInt8;
+	vaInt16:
+	  AChildPos := ReadInt16;
+        vaInt32:
+	  AChildPos := ReadInt32;
+	else
+	  //raise EReadError.Create(SInvalidPropertyValue);
+	  raise EReadError.Create('SInvalidPropertyValue');
+      end;
+    end;
+  end;
+
+  CompClassName := ReadStr;
+  CompName := ReadStr;
+  writeln('MBOR: BeginComponent! '''+CompClassName+''','''+CompName+'''');
+end;
+
+function TMatBinaryObjectReader.BeginProperty: AnsiString;
+begin
+  writeln('MBOR: BeginProperty');
+  Result := ReadStr;
+  writeln('MBOR: BeginProperty! '''+Result+'''');
+end;
+
+procedure TMatBinaryObjectReader.ReadBinary(const DestData: TMemoryStream);
+var
+  BinSize: LongInt;
+begin
+  writeln('MBOR: ReadBinary');
+  Read(BinSize, 4);
+  DestData.Size := BinSize;
+  Read(DestData.Memory^, BinSize);
+end;
+
+function TMatBinaryObjectReader.ReadFloat: Extended;
+begin
+  writeln('MBOR: ReadFloat');
+  Read(Result, SizeOf(Extended));
+  writeln('MBOR: ReadFloat! '+FloatToStr(Result));
+end;
+
+function TMatBinaryObjectReader.ReadSingle: Single;
+begin
+  writeln('MBOR: ReadSingle');
+  Read(Result, SizeOf(Single))
+end;
+
+{!!!: function TMatBinaryObjectReader.ReadCurrency: Currency;
+begin
+  writeln('MBOR: ReadCurrency');
+  Read(Result, SizeOf(Currency))
+end;}
+
+function TMatBinaryObjectReader.ReadDate: TDateTime;
+begin
+  writeln('MBOR: ReadDate');
+  Read(Result, SizeOf(TDateTime))
+end;
+
+function TMatBinaryObjectReader.ReadIdent(ValueType: TValueType): AnsiString;
+var
+  i: Byte;
+begin
+  writeln('MBOR: ReadIdent');
+  case ValueType of
+    vaIdent:
+      begin
+        Read(i, 1);
+	SetLength(Result, i);
+        Read(Pointer(@Result[1])^, i);
+      end;
+    vaNil:
+      Result := 'nil';
+    vaFalse:
+      Result := 'False';
+    vaTrue:
+      Result := 'True';
+    vaNull:
+      Result := 'Null';
+  end;
+  writeln('MBOR: ReadIdent! '''+Result+'''');
+end;
+
+function TMatBinaryObjectReader.ReadInt8: ShortInt;
+begin
+  Read(Result, 1);
+  writeln('MBOR: ReadInt8 '+IntToStr(Result));
+end;
+
+function TMatBinaryObjectReader.ReadInt16: SmallInt;
+begin
+  Read(Result, 2);
+  writeln('MBOR: ReadInt16'+IntToStr(Result));
+end;
+
+function TMatBinaryObjectReader.ReadInt32: LongInt;
+begin
+  Read(Result, 4);
+  writeln('MBOR: ReadInt32 '+IntToStr(Result));
+end;
+
+function TMatBinaryObjectReader.ReadInt64: Int64;
+begin
+  Read(Result, 8);
+  writeln('MBOR: ReadInt64 '+IntToStr(Result));
+end;
+
+function TMatBinaryObjectReader.ReadSet(EnumType: Pointer): Integer;
+var
+  Name: String;
+  Value: Integer;
+begin
+  writeln('MBOR: ReadSet');
+  try
+    while True do
+    begin
+      Name := ReadStr;
+      if Length(Name) = 0 then
+        break;
+      Value := GetEnumValue(PTypeInfo(EnumType), Name);
+      if Value = -1 then
+        //raise EReadError.Create(SInvalidPropertyValue);
+        raise EReadError.Create('SInvalidPropertyValue');
+      Result := Result or Value;
+    end;
+  except
+    SkipSetBody;
+    raise;
+  end;
+  writeln('MBOR: ReadSet! '+IntToStr(Result));
+end;
+
+function TMatBinaryObjectReader.ReadStr: AnsiString;
+var
+  i: Byte;
+begin
+  writeln('MBOR: ReadStr');
+  Read(i, 1);
+  SetLength(Result, i);
+  Read(Pointer(@Result[1])^, i);
+  writeln('MBOR: ReadStr! '''+Result+'''');
+end;
+
+function TMatBinaryObjectReader.ReadString(StringType: TValueType): AnsiString;
+var
+  i: Integer;
+begin
+  writeln('MBOR: ReadString');
+  case StringType of
+    vaString:
+      begin
+        i := 0;
+        Read(i, 1);
+      end;
+    vaLString:
+      Read(i, 4);
+  end;
+  SetLength(Result, i);
+  if i > 0 then
+    Read(Pointer(@Result[1])^, i);
+  writeln('MBOR: ReadString! '''+Result+'''');
+end;
+
+{!!!: function TMatBinaryObjectReader.ReadWideString: WideString;
+var
+  i: Integer;
+begin
+  writeln('MBOR: ReadWideString');
+  FDriver.Read(i, 4);
+  SetLength(Result, i);
+  if i > 0 then
+    Read(PWideChar(Result), i * 2);
+end;}
+
+procedure TMatBinaryObjectReader.SkipComponent(SkipComponentInfos: Boolean);
+var
+  Flags: TFilerFlags;
+  Dummy: Integer;
+  CompClassName, CompName: AnsiString;
+begin
+  writeln('MBOR: SkipComponent Infos=',SkipComponentInfos);
+  if SkipComponentInfos then
+    { Skip prefix, component class name and component object name }
+    BeginComponent(Flags, Dummy, CompClassName, CompName);
+
+  { Skip properties }
+  while NextValue <> vaNull do
+    SkipProperty;
+  ReadValue;
+
+  { Skip children }
+  while NextValue <> vaNull do
+    SkipComponent(True);
+  ReadValue;
+end;
+
+procedure TMatBinaryObjectReader.SkipValue;
+
+  procedure SkipBytes(Count: LongInt);
+  var
+    Dummy: array[0..1023] of Byte;
+    SkipNow: Integer;
+  begin
+    while Count > 0 do
+    begin
+      if Count > 1024 then
+        SkipNow := 1024
+      else
+        SkipNow := Count;
+      Read(Dummy, SkipNow);
+      Dec(Count, SkipNow);
+    end;
+  end;
+
+var
+  Count: LongInt;
+begin
+  writeln('MBOR: SkipValue');
+  case ReadValue of
+    vaNull, vaFalse, vaTrue, vaNil: ;
+    vaList:
+      begin
+        while NextValue <> vaNull do
+          SkipValue;
+        ReadValue;
+      end;
+    vaInt8:
+      SkipBytes(1);
+    vaInt16:
+      SkipBytes(2);
+    vaInt32:
+      SkipBytes(4);
+    vaExtended:
+      SkipBytes(SizeOf(Extended));
+    vaString, vaIdent:
+      ReadStr;
+    vaBinary, vaLString, vaWString:
+      begin
+        Read(Count, 4);
+        SkipBytes(Count);
+      end;
+    vaSet:
+      SkipSetBody;
+    vaCollection:
+      begin
+        while NextValue <> vaNull do
+        begin
+	  { Skip the order value if present }
+          if NextValue in [vaInt8, vaInt16, vaInt32] then
+	    SkipValue;
+          SkipBytes(1);
+          while NextValue <> vaNull do
+	          SkipProperty;
+	        ReadValue;
+        end;
+	      ReadValue;
+      end;
+    vaSingle:
+      SkipBytes(Sizeof(Single));
+    {!!!: vaCurrency:
+      SkipBytes(SizeOf(Currency));}
+    vaDate:
+      SkipBytes(Sizeof(TDateTime));
+    vaInt64:
+      SkipBytes(8);
+  end;
+end;
+
+{ private methods }
+
+procedure TMatBinaryObjectReader.Read(var Buf; Count: LongInt);
+var
+  CopyNow: LongInt;
+  Dest: Pointer;
+begin
+  writeln('MBOR: Read Count='+IntToStr(Count));
+  Dest := @Buf;
+  while Count > 0 do
+  begin
+    if FBufPos >= FBufEnd then
+    begin
+      FBufEnd := FStream.Read(FBuffer^, FBufSize);
+      if FBufEnd = 0 then
+        //raise EReadError.Create(SReadError);
+        raise EReadError.Create('SReadError');
+      FBufPos := 0;
+    end;
+    CopyNow := FBufEnd - FBufPos;
+    if CopyNow > Count then
+      CopyNow := Count;
+    Move(PChar(FBuffer)[FBufPos], Dest^, CopyNow);
+    Inc(FBufPos, CopyNow);
+    Inc(Dest, CopyNow);
+    Dec(Count, CopyNow);
+  end;
+end;
+
+procedure TMatBinaryObjectReader.SkipProperty;
+begin
+  writeln('MBOR: SkipProperty');
+  { Skip property name, then the property value }
+  ReadStr;
+  SkipValue;
+end;
+
+procedure TMatBinaryObjectReader.SkipSetBody;
+begin
+  writeln('MBOR: SkipSetBody');
+  while Length(ReadStr) > 0 do;
+end;
 
 
 
@@ -737,6 +1396,8 @@ var
   i: Integer;
 begin
 writeln('MBOW: WriteStr '''+Value+'''');
+// Mattias: What about strings > 255 ?
+//     Delphi does it the same, but how can this work ?
   i := Length(Value);
   if i > 255 then
     i := 255;
@@ -772,21 +1433,27 @@ begin
   with FMyComponent do begin
     Name:='FMyComponent';
   end;
-
-  Name:='Form1';
-  Caption := 'Test Form';
-  OI:=nil;
-  OnShow:=@FormShow;
-  LoadMainMenu;
-  ActiveControl:=AddItemButton;
-  Left:=250;
-  Top:=50;
+  if FileExists(ClassName+'.lfm') then
+    LoadFromLFM
+  else begin
+    Name:='Form1';
+    Caption:='Test Form';
+    FMyEvent:=@WriteLFMButtonClick;
+    OnShow:=@FormShow;
+    Left:=250;
+    Top:=50;
+    LoadMainMenu;
+    ActiveControl:=Label1;
+    Show;
+  end;
   if OI=nil then begin
     OI:=TObjectInspector.Create(Application);
-    OI.Name:='OI';
-    OI.SetBounds(7,50,220,700);
-    OI.Show;
-    OI.RootComponent:=Self;
+    with OI do begin
+      Name:='ObjectInspector';
+      SetBounds(7,50,220,700);
+      RootComponent:=Self;
+      Show;
+    end;
   end;
 end;
 
@@ -800,13 +1467,19 @@ Begin
 End;
 
 procedure TForm1.WriteLFMButtonClick(Sender:TObject);
-var BinStream:TMemoryStream;
+// demonstration of LFM and LFC files
+// - streams current form to binary format (BinStream)
+// - transforms binary format to text format (TmpTxtStream)
+// - transforms text format back to binary format (TmpBinStream)
+// - transforms binary format back to txtstream and save LFM file (TxtStream)
+var BinStream,TmpTxtStream,TmpBinStream:TMemoryStream;
   Driver: TAbstractObjectWriter;
   Writer:TWriter;
   TxtStream:TFileStream;
-  s:string;
 begin
   BinStream:=TMemoryStream.Create;
+  TmpTxtStream:=TMemoryStream.Create;
+  TmpBinStream:=TMemoryStream.Create;
   try
     Driver:=TMatBinaryObjectWriter.Create(BinStream,4096);
     try
@@ -819,17 +1492,72 @@ begin
     finally
       Driver.Free;
     end;
-    TxtStream:=TFileStream.Create(Name+'.lfm',fmCreate);
+    // transform binary to text and save LFM file
+    TxtStream:=TFileStream.Create(ClassName+'.lfm',fmCreate);
     try
       BinStream.Position:=0;
       ObjectBinaryToText(BinStream,TxtStream);
     finally
       TxtStream.Free;
     end;
+    // demonstrate transformation of text back to binary
+    writeln('');
+    writeln('TRANFORMATION: binary to text  ----------------');
+    BinStream.Position:=0;
+    ObjectBinaryToText(BinStream,TmpTxtStream);
+    writeln('');
+    writeln('TRANFORMATION: text back to binary  ----------------');
+    TmpTxtStream.Position:=0;
+    ObjectTextToBinary(TmpTxtStream,TmpBinStream);
+    writeln('');
+    writeln('TRANFORMATION: binary to text file ----------------');
+    TxtStream:=TFileStream.Create(ClassName+'.lfm2',fmCreate);
+    try
+      TmpBinStream.Position:=0;
+      ObjectBinaryToText(TmpBinStream,TxtStream);
+    finally
+      TxtStream.Free;
+    end;
   finally
+    TmpBinStream.Free;
+    TmpTxtStream.Free;
     BinStream.Free;
   end;
 writeln('Object written.');
+end;
+
+procedure TForm1.LoadFromLFM;
+var
+  BinStream:TMemoryStream;
+  TxtStream:TFileStream;
+  Reader:TReader;
+begin
+  // read LFM file and convert it to binary format
+  TxtStream:=TFileStream.Create(ClassName+'.lfm',fmOpenRead);
+  try
+    BinStream:=TMemoryStream.Create;
+    ObjectTextToBinary(TxtStream,BinStream);
+  finally
+    TxtStream.Free;
+  end;
+  //
+  BinStream.Position:=0;
+  Reader:=TReader.Create(BinStream,4096);
+  try
+    Reader.OnError:=@ReaderError;
+    Reader.OnFindMethod:=@ReaderFindMethod;
+    Reader.OnSetName:=@ReaderSetName;
+    Reader.OnReferenceName:=@ReaderReferenceName;
+    Reader.OnAncestorNotFound:=@ReaderAncestorNotFound;
+    Reader.OnCreateComponent:=@ReaderCreateComponent;
+    Reader.OnFindComponentClass:=@ReaderFindComponentClass;
+    writeln('');
+    writeln('PARSING LFM ********************************************');
+    Reader.ReadRootComponent(Self);
+  finally
+    Reader.Free;
+  end;
+  BinStream.Free;
 end;
 
 procedure TForm1.FormShow(Sender: TObject);
@@ -890,35 +1618,81 @@ End;
 
 procedure TForm1.IndexButtonClick(Sender : TObject);
 var
-   s : shortstring;
+  s : shortstring;
 Begin
-   if assigned (ComboBox1) then
-   begin
-      s := Format ('%x', [ComboBox1.ItemIndex]);
-      if assigned (Memo1)
-         then Memo1.Lines.Add (s);
-   end;
+  if assigned (ComboBox1) then
+  begin
+    s := Format ('%x', [ComboBox1.ItemIndex]);
+    if assigned (Memo1)
+       then Memo1.Lines.Add (s);
+  end;
 End;
 
 procedure TForm1.ComboOnChange (Sender:TObject);
 var
-   s : shortstring;	
+  s : shortstring;
 begin
-   if sender is TEdit 
-      then s := 'TEdit'
-   else if sender is TComboBox
-      then s := 'TComboBox'
-   else
-      s := 'UNKNOWN';
-   if assigned (Memo1)
-      then Memo1.Lines.Add (s + 'ONChange');
+  if sender is TEdit
+    then s := 'TEdit'
+  else if sender is TComboBox
+    then s := 'TComboBox'
+  else
+    s := 'UNKNOWN';
+  if assigned (Memo1)
+    then Memo1.Lines.Add (s + 'ONChange');
+  if ComboBox1.Text='Create LFM' then
+    WriteLFMButtonClick(nil);
 end;
 
 procedure TForm1.ComboOnClick (Sender:TObject);
 begin
-   if assigned (Memo1)
-      then Memo1.Lines.Add ('ONClick');
+  if assigned (Memo1)
+    then Memo1.Lines.Add ('ONClick');
 end;
+
+procedure TForm1.ReaderFindMethod(Reader: TReader; const FindMethodName: Ansistring;
+  var Address: Pointer; var Error: Boolean);
+begin
+  writeln('ReaderFindMethod '''+FindMethodName+'''');
+end;
+
+procedure TForm1.ReaderSetName(Reader: TReader; Component: TComponent;
+  var NewName: Ansistring);
+begin
+  writeln('ReaderSetName OldName='''+Component.Name+''' NewName='''+NewName+'''');
+end;
+
+procedure TForm1.ReaderReferenceName(Reader: TReader; var RefName: Ansistring);
+begin
+  writeln('ReaderReferenceName Name='''+RefName+'''');
+end;
+
+procedure TForm1.ReaderAncestorNotFound(Reader: TReader; const ComponentName: Ansistring;
+  ComponentClass: TPersistentClass; var Component: TComponent);
+begin
+  writeln('ReaderAncestorNotFound ComponentName='''+ComponentName
+    +''' Component='''+Component.Name+'''');
+end;
+
+procedure TForm1.ReaderError(Reader: TReader; const Message: Ansistring;
+  var Handled: Boolean);
+begin
+  writeln('ReaderError '''+Message+'''');
+end;
+
+procedure TForm1.ReaderFindComponentClass(Reader: TReader; const FindClassName: Ansistring;
+  var ComponentClass: TComponentClass);
+begin
+  writeln('ReaderFindComponentClass ClassName='''+ClassName+'''');
+end;
+
+procedure TForm1.ReaderCreateComponent(Reader: TReader;
+  ComponentClass: TComponentClass; var Component: TComponent);
+begin
+  writeln('ReaderCreateComponent Class='''+ComponentClass.ClassName+'''');
+end;
+
+
 
 {------------------------------------------------------------------------------}
 procedure TForm1.LoadMainMenu;
@@ -930,7 +1704,7 @@ begin
    Height := 400;
    Width := 700;
 
-   OIResizeButton:=TButton.Create(Self);
+{   OIResizeButton:=TButton.Create(Self);
    with OIResizeButton do begin
      Name:='OIResizeButton';
      Parent:=Self;
@@ -960,119 +1734,131 @@ begin
      Show;
    end;
 
-   { Create 2 buttons inside the groupbox }
+   // Create 2 buttons inside the groupbox
    EditToComboButton := TButton.Create(Self);
-   EditToComboButton.Name:='EditToComboButton';
-   EditToComboButton.Parent := Self;
-   EditToComboButton.Left := 50;
-   EditToComboButton.Top := 80;
-   EditToComboButton.Width := 120;
-   EditToComboButton.Height := 30;
-   EditToComboButton.Show;
-   EditToComboButton.Caption := 'Edit->Combo';
-   EditToComboButton.OnClick := @EditToComboButtonClick;
+   with EditToComboButton do begin
+     Name:='EditToComboButton';
+     Parent := Self;
+     Left := 50;
+     Top := 80;
+     Width := 120;
+     Height := 30;
+     Caption := 'Edit->Combo';
+     OnClick := @EditToComboButtonClick;
+     Show;
+   end;
 
    AddItemButton := TButton.Create(Self);
-   AddItemButton.Name:='AddItemButton';
-   AddItemButton.Parent := Self;
-   AddItemButton.Left := 50;
-   AddItemButton.Top := 40;
-   AddItemButton.Width := 120;
-   AddItemButton.Height := 30;
-   AddItemButton.Show;
-   AddItemButton.Caption := 'Add item';
-   AddItemButton.OnClick := @AddItemButtonClick;
+   with AddItemButton do begin
+     Name:='AddItemButton';
+     Parent := Self;
+     Left := 50;
+     Top := 40;
+     Width := 120;
+     Height := 30;
+     Caption := 'Add item';
+     OnClick := @AddItemButtonClick;
+     Show;
+   end;
 
-   { Create 2 more buttons outside the groupbox }
+   // Create 2 more buttons outside the groupbox
    ComboToEditButton := TButton.Create(Self);
-   ComboToEditButton.Name:='ComboToEditButton';
-   ComboToEditButton.Parent := Self;
-   ComboToEditButton.Left := 50;
-   ComboToEditButton.Top := 120;
-   ComboToEditButton.Width := 120;
-   ComboToEditButton.Height := 30;
-   ComboToEditButton.Show;
-   ComboToEditButton.Caption := 'Combo->Edit';
-   ComboToEditButton.OnClick := @ComboToEditButtonClick;
-
+   with ComboToEditButton do begin
+     Name:='ComboToEditButton';
+     Parent := Self;
+     Left := 50;
+     Top := 120;
+     Width := 120;
+     Height := 30;
+     Caption := 'Combo->Edit';
+     OnClick := @ComboToEditButtonClick;
+     Show;
+   end;
 
    SwitchEnabledButton := TButton.Create(Self);
-   SwitchEnabledButton.Name:='SwitchEnabledButton';
-   SwitchEnabledButton.Parent := Self;
-   SwitchEnabledButton.Left := 50;
-   SwitchEnabledButton.Top := 160;
-   SwitchEnabledButton.Width := 120;
-   SwitchEnabledButton.Height := 30;
-   SwitchEnabledButton.Show;
-   SwitchEnabledButton.Caption := 'Enabled On/Off';
-   SwitchEnabledButton.OnClick := @SwitchEnabledButtonClick;
+   with SwitchEnabledButton do begin
+     Name:='SwitchEnabledButton';
+     Parent := Self;
+     Left := 50;
+     Top := 160;
+     Width := 120;
+     Height := 30;
+     Caption := 'Enabled On/Off';
+     OnClick := @SwitchEnabledButtonClick;
+     Show;
+   end;
 
    DumpButton := TButton.Create(Self);
-   DumpButton.Name:='DumpButton';
-   DumpButton.Parent := Self;
-   DumpButton.Left := 50;
-   DumpButton.Top := 200;
-   DumpButton.Width := 120;
-   DumpButton.Height := 30;
-   DumpButton.Show;
-   DumpButton.Caption := 'Dump';
-   DumpButton.OnClick := @DumpButtonClick;
+   with DumpButton do begin
+     Name:='DumpButton';
+     Parent := Self;
+     Left := 50;
+     Top := 200;
+     Width := 120;
+     Height := 30;
+     Caption := 'Dump';
+     OnClick := @DumpButtonClick;
+     Show;
+   end;
 
    IndexButton := TButton.Create(Self);
-   IndexButton.Name:='IndexButton';
-   IndexButton.Parent := Self;
-   IndexButton.Left := 50;
-   IndexButton.Top := 240;
-   IndexButton.Width := 120;
-   IndexButton.Height := 30;
-   IndexButton.Show;
-   IndexButton.Caption := 'Index ?';
-   IndexButton.OnClick := @IndexButtonClick;
+   with IndexButton do begin
+     Name:='IndexButton';
+     Parent := Self;
+     Left := 50;
+     Top := 240;
+     Width := 120;
+     Height := 30;
+     Caption := 'Index ?';
+     OnClick := @IndexButtonClick;
+     Show;
+   end;
 
-
-   { Create a label for the edit field }
-   label1 := TLabel.Create(Self);
-   Label1.Name:='Label1';
-   label1.Parent := self;
-   label1.top	 := 50;
-   label1.left	 := 320;
-   label1.Height := 20;
-   label1.Width  := 130;
-   label1.Show;
-   label1.Caption := 'TEdit :';
+}
+   // Create a label for the edit field
+   Label1 := TLabel.Create(Self);
+   with Label1 do begin
+     Name:='Label1';
+     Parent := self;
+     top	 := 50;
+     left	 := 320;
+     Height := 20;
+     Width  := 130;
+     Caption := 'TEdit :';
+     Show;
+   end;
 
 
    Edit1 := TEdit.Create (self);
    with Edit1 do begin
-      Name   := 'Edit1';
-      Parent := self;
-      Left   := 500;
-      Top    := 50;
-      Width  := 70;
-      Height := 20;
-      OnChange := @ComboOnChange;	
-      OnClick  := @ComboOnClick;	
-      Show;	
+     Name   := 'Edit1';
+     Parent := self;
+     Left   := 500;
+     Top    := 50;
+     Width  := 70;
+     Height := 20;
+     OnChange := @ComboOnChange;
+     OnClick  := @ComboOnClick;
+     Show;
    end;
 
-   { Create a label for the 1st combobox }
-   label2 := TLabel.Create(Self);
-   Label2.Name:='Label2';
-   label2.Parent := self;
-   label2.top	 := 100;
-   label2.left	 := 320;
-   label2.Height := 20;
-   label2.Width  := 130;
-   label2.Enabled:= true;
-   label2.Show;
-   label2.Caption := 'Combo (unsorted)';
-   label2.Enabled:= true;
+   // Create a label for the 1st combobox
+   Label2 := TLabel.Create(Self);
+   with Label2 do begin
+     Name:='Label2';
+     Parent := self;
+     top	 := 100;
+     left	 := 320;
+     Height := 20;
+     Width  := 130;
+     Caption := 'Combo (unsorted)';
+     Show;
+   end;
 
-
-   { Create the menu now }
+   // Create the menu now
    { WARNING: If you do it after creation of the combo, the menu will not 
      appear. Reason is unknown by now!!!!!!}
-   mnuMain := TMainMenu.Create(Self);
+   {mnuMain := TMainMenu.Create(Self);
    mnuMain.Name:='mnuMain';
    Menu := mnuMain;
    itmFile := TMenuItem.Create(Self);
@@ -1083,7 +1869,7 @@ begin
    itmFileQuit.Name:='itmFileQuit';
    itmFileQuit.Caption := '&Quit';
    itmFileQuit.OnClick := @mnuQuitClicked;
-   itmFile.Add(itmFileQuit);
+   itmFile.Add(itmFileQuit);}
 
    ComboBox1 := TComboBox.Create (self);
    with ComboBox1 do
@@ -1100,6 +1886,7 @@ begin
      ItemIndex := 1;
      Items.Add ('33333!');
      Items.Add ('abcde!');
+     Items.Add ('Create LFM');
      OnChange := @ComboOnChange;
      OnClick  := @ComboOnClick;
      Show;
@@ -1107,15 +1894,17 @@ begin
 
 
    { Create a label for the 2nd combobox }
-   label3 := TLabel.Create(Self);
-   Label3.Name:='Label3';
-   label3.Parent := self;
-   label3.top	 := 150;
-   label3.left	 := 320;
-   label3.Height := 20;
-   label3.Width  := 130;
-   label3.Show;
-   label3.Caption := 'Combo (sorted)';
+   Label3 := TLabel.Create(Self);
+   with Label3 do begin
+     Name:='Label3';
+     Parent := self;
+     top	 := 150;
+     left	 := 320;
+     Height := 20;
+     Width  := 130;
+     Caption := 'Combo (sorted)';
+     Show;
+   end;
 
 
    ComboBox2 := TComboBox.Create (self);
@@ -1149,10 +1938,10 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-procedure TForm1.mnuQuitClicked(Sender : TObject);
+{procedure TForm1.mnuQuitClicked(Sender : TObject);
 begin
   Application.Terminate;
-end;
+end; }
 {------------------------------------------------------------------------------}
 
 

@@ -1634,6 +1634,7 @@ Begin
 
       ObjectInspector1.FillComponentComboBox;
       TDesigner(TForm(NewCI.Control.Owner).Designer).AddControlCode(NewCI.Control);
+
       if NewCI.Control is TControl then begin
         // set the OnMouseDown and OnMouseUp event so we know when the control
         // is selected or a new control is dropped
@@ -1648,67 +1649,7 @@ writeln('NewComponent is TControl');
 
   MouseDownControl:=nil;
   ControlClick(Notebook1);  //this resets it to the mouse.
-exit;
-//see if the mouse moved or there was simply a click on the form
-{  if (X >= 0) and (X <= TControl(sender).Width) and
-  (Y >= 0) and (Y <= TControl(sender).Height) then
-  begin
-    // mouse was down and up on the form.
-    // We clicked on the form.  Let's see what the active selection is in the
-    // IDE control bar. If it's the pointer, then we set the
-    // FormEditor1.SelectedComponents to Sender,
-    // otherwise we drop a control and call the CreateComponent function.
-    if BPressed = 1 then
-      Begin // mouse pointer button pressed.
-        FormEditor1.ClearSelected;
-        Writeln('Clicked on the form!!!!!  Forms name is '+TForm(Sender).Name);
-        FormEditor1.AddSelected(TComponent(Sender));
-      end
-    else
-      Begin
-        // add a new control
-
-        // check to see if the mouse moved between clicks.
-        // If so then they sized the control
-        if (MouseUpPos.X <> MouseDownPos.X) or (MouseUpPos.Y <> MouseDownPos.Y) then begin
-
-          //  CInterface := TComponentInterface(FormEditor1.CreateComponent(nil,
-          //    TComponentClass(TIdeComponent(
-          //       ideComplist.items[bpressed-1]).ClassType)
-          //       ,NewLeft1,NewTop1,NewLeft2,NewTop2));
-        end
-        else begin
-
-        end;
-
-        CInterface := TComponentInterface(FormEditor1.CreateComponent(nil,
-                         TComponentClass(TIdeComponent(
-                         ideComplist.items[bpressed-1]).ClassType),
-                         MouseDownPos.X,MouseDownPos.Y,-1,-1));
-
-     //Set up some default values for the control here
-     //    CInterface is a TComponentInterface defined in CustomFormEditor.pp
-     CInterface.SetPropByName('VISIBLE',True);
-//     CInterface.SetPropByName('NAME','PLEASEWORK1');
-//     CInterface.SetPropbyName('CAPTION','Click me!');
-     CInterface.SetPropByName('HINT','Click');
-     CInterface.SetPropByName('TOP',10);
-     CInterface.SetPropByName('ONCLICK',@ClickOnControl);
-
-     //set the ONCLICK event so we know when the control is selected;
-//     TControl(CInterface.Control).OnClick := @ClickOnControl;
-      FormEditor1.ClearSelected;
-      FormEditor1.AddSelected(TComponent(Cinterface.Control));
-   end;
-//TIdeComponent(ideComplist.items[bpressed-1]).
-
-   end;
-     ControlClick(Notebook1);  //this resets it to the mouse.
-}
-Writeln('MouseuponControl');
 end;
-
-
 
 {------------------------------------------------------------------------------}
 procedure TForm1.mnuNewFormClicked(Sender : TObject);
@@ -2319,9 +2260,9 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.17  2000/12/15 15:29:09  lazarus
-  Changes my Mattias for dropping controls.
-  Changes by Shane for adding code to the form source.
+  Revision 1.18  2000/12/15 18:25:16  lazarus
+  Changes from Mattias and I.
+  Shane
 
   Revision 1.16  2000/12/01 20:23:34  lazarus
   renamed Object_Inspector and Prop_edits by removing the underline.

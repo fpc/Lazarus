@@ -70,14 +70,6 @@ uses
 var
   GridPoints : TGridPoint;
 
-Function TDesigner.GetFormAncestor : String;
-var
-  PI : PTypeInfo;
-begin
-  PI := FCustomForm.ClassInfo;
-  Result := PI^.Name;
-  Delete(Result,1,1);
-end;
 
 constructor TDesigner.Create(CustomForm : TCustomForm);
 var
@@ -119,6 +111,16 @@ Begin
 
   Inherited;
 end;
+
+Function TDesigner.GetFormAncestor : String;
+var
+  PI : PTypeInfo;
+begin
+  PI := FCustomForm.ClassInfo;
+  Result := PI^.Name;
+  Delete(Result,1,1);
+end;
+
 
 procedure TDesigner.CreateNew(FileName : string);
 begin
@@ -215,13 +217,11 @@ For I := 0 to FSource.Count-1 do
 
 end;
 
-
 procedure TDesigner.Notification(AComponent: TComponent; Operation: TOperation);
 Begin
-  if Operation = opInsert then
-  Begin
-//  AddControlCode(AComponent);
-  end
+ if Operation = opInsert then
+   begin
+   end
   else
   if Operation = opRemove then
     begin
