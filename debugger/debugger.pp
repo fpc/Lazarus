@@ -191,6 +191,7 @@ type
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
     procedure EndUpdate;
+    function GetSourceLine: integer; virtual;
     property Enabled: Boolean read GetEnabled write SetEnabled;
     property Expression: String read GetExpression write SetExpression;
     property HitCount: Integer read GetHitCount;
@@ -1000,9 +1001,9 @@ begin
   ReqCmd(dcStop, []);
 end;
 
-{ =========================================================================== }
-{ TBaseBreakPoint }
-{ =========================================================================== }
+{ ===========================================================================
+  TBaseBreakPoint
+  =========================================================================== }
 
 procedure TBaseBreakPoint.AssignTo (Dest: TPersistent );
 var
@@ -1083,6 +1084,11 @@ begin
     inherited Changed(False);
     FChangedWhileLocked := False
   end;
+end;
+
+function TBaseBreakPoint.GetSourceLine: integer;
+begin
+  Result:=Line;
 end;
 
 function TBaseBreakPoint.GetEnabled: Boolean;
@@ -2438,6 +2444,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.37  2003/06/03 08:02:33  mattias
+  implemented showing source lines in breakpoints dialog
+
   Revision 1.36  2003/06/03 01:35:39  marc
   MWE: = Splitted TDBGBreakpoint into TBaseBreakPoint, TIDEBreakpoint and
          TDBGBreakPoint

@@ -353,7 +353,7 @@ begin
   
   // line
   if ABreakpoint.Line > 0
-  then AnItem.SubItems[1] := IntToStr(ABreakpoint.Line)
+  then AnItem.SubItems[1] := IntToStr(ABreakpoint.GetSourceLine)
   else AnItem.SubItems[1] := '';
   
   // expression
@@ -402,6 +402,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.18  2003/06/03 08:02:33  mattias
+  implemented showing source lines in breakpoints dialog
+
   Revision 1.17  2003/06/03 01:35:39  marc
   MWE: = Splitted TDBGBreakpoint into TBaseBreakPoint, TIDEBreakpoint and
          TDBGBreakPoint

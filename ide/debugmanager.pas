@@ -94,7 +94,7 @@ type
     FDialogs: array[TDebugDialogType] of TDebuggerDlg;
 
     // When a source file is not found, the user can choose one
-    // Here are all choises stored
+    // here are all choices stored
     FUserSourceFiles: TStringList;
 
     // Breakpoint routines
@@ -154,9 +154,9 @@ type
     function DoCreateWatch(const AExpression: string): TModalResult; override;
   end;
   
-  
 
 implementation
+
 
 const
   DebugDlgIDEWindow: array[TDebugDialogType] of TNonModalIDEWindow = (
@@ -185,6 +185,7 @@ type
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
     procedure ResetMaster;
+    function GetSourceLine: integer; override;
     property SourceMark: TSourceMark read FSourceMark write SetSourceMark;
   end;
   
@@ -252,6 +253,7 @@ end;
 
 procedure TManagedBreakPoint.OnSourceMarkPositionChanged(Sender: TObject);
 begin
+  Changed;
 end;
 
 procedure TManagedBreakPoint.OnSourceMarkBeforeFree(Sender: TObject);
@@ -316,8 +318,17 @@ begin
   Changed;
 end;
 
+function TManagedBreakPoint.GetSourceLine: integer;
+begin
+  if FSourceMark<>nil then
+    Result:=FSourceMark.Line
+  else
+    Result:=inherited GetSourceLine;
+end;
+
 procedure TManagedBreakPoint.SetEnabled(const AValue: Boolean);
 begin
+writeln('TManagedBreakPoint.SetEnabled ',Line);
   if Enabled = AValue then exit;
   inherited SetEnabled(AValue);
   if FMaster <> nil then FMaster.Enabled := AValue;
@@ -1345,6 +1356,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.42  2003/06/03 08:02:32  mattias
+  implemented showing source lines in breakpoints dialog
+
   Revision 1.41  2003/06/03 01:35:39  marc
   MWE: = Splitted TDBGBreakpoint into TBaseBreakPoint, TIDEBreakpoint and
          TDBGBreakPoint
