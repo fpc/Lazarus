@@ -80,6 +80,8 @@ type
     function CanTab: boolean; override;
   published
     property Caption;
+    property ClientWidth;
+    property ClientHeight;
     property ImageIndex: integer read FImageIndex write SetImageIndex default -1;
     // property TabOrder; This property needs to be created in TWinControl
     property Left stored False;
@@ -746,6 +748,9 @@ end.
 
  {
   $Log$
+  Revision 1.63  2003/06/13 15:36:32  mattias
+  fixed popupmenu on menueditor
+
   Revision 1.62  2003/06/13 14:38:01  mattias
   fixed using streamed clientwith/height for child anchors
 
