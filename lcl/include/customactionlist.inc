@@ -154,6 +154,26 @@ begin
   if Assigned(FOnUpdate) then FOnUpdate(Action, Result);
 end;
 
+function TCustomActionList.IndexOfName(const ActionName: string): integer;
+begin
+  Result:=FActions.Count-1;
+  while (Result>=0)
+  and (AnsiCompareText(TAction(FActions[Result]).Name,ActionName)<>0) do
+    dec(Result);
+end;
+
+function TCustomActionList.ActionByName(const ActionName: string
+  ): TContainedAction;
+var
+  i: Integer;
+begin
+  i:=IndexOfName(ActionName);
+  if i>=0 then
+    Result:=Actions[i]
+  else
+    Result:=nil;
+end;
+
 procedure TCustomActionList.SetState(const Value: TActionListState);
 var
   I: Integer;

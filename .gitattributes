@@ -503,6 +503,7 @@ ide/viewunit_dlg.lfm svneol=native#text/plain
 ide/viewunit_dlg.pp svneol=native#text/pascal
 ide/viewunits1.lrs svneol=native#text/pascal
 ide/wordcompletion.pp svneol=native#text/pascal
+ideintf/actionseditor.pas svneol=native#text/pascal
 ideintf/allideintf.pas svneol=native#text/pascal
 ideintf/columndlg.pp svneol=native#text/pascal
 ideintf/componenteditors.pas svneol=native#text/pascal

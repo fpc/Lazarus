@@ -60,7 +60,7 @@ uses
   // designer
   ComponentPalette, ComponentReg,
   AbstractFormEditor, Designer, FormEditor, CustomFormEditor,
-  ObjectInspector, PropEdits, ControlSelection, ColumnDlg,
+  ObjectInspector, PropEdits, ControlSelection, AllIDEIntf,
   {$DEFINE UseNewMenuEditor}
   {$IFDEF UseNewMenuEditor}
   MenuEditorForm,
@@ -10337,6 +10337,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.714  2004/02/28 11:03:37  mattias
+  added TActionList editor from Radek
+
   Revision 1.713  2004/02/22 18:33:03  mattias
   added write check
 

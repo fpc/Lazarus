@@ -83,8 +83,8 @@ type
     procedure SetAction(Index: Integer; Value: TContainedAction);
     procedure SetState(const Value: TActionListState);
   protected
-    procedure AddAction(Action: TContainedAction);
-    procedure RemoveAction(Action: TContainedAction);
+    procedure AddAction(Action: TContainedAction); virtual;
+    procedure RemoveAction(Action: TContainedAction); virtual;
     procedure Change; virtual;
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     procedure Notification(AComponent: TComponent;
@@ -100,6 +100,8 @@ type
     function ExecuteAction(Action: TBasicAction): Boolean; override;
     //function IsShortCut(var Message: TWMKey): Boolean;
     function UpdateAction(Action: TBasicAction): Boolean; override;
+    function IndexOfName(const ActionName: string): integer;
+    function ActionByName(const ActionName: string): TContainedAction;
     property Actions[Index: Integer]: TContainedAction
       read GetAction write SetAction; default;
     property ActionCount: Integer read GetActionCount;

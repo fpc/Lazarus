@@ -21,7 +21,7 @@ interface
 uses
   IDECommands, PropEdits, ObjInspStrConsts, ObjectInspector, ColumnDlg,
   ComponentEditors, GraphPropEdits, ListViewPropEdit, ImageListEditor,
-  ComponentTreeView;
+  ComponentTreeView, ActionsEditor;
 
 implementation
 

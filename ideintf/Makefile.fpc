@@ -17,7 +17,7 @@ options=-gl
 units=allideintf
 implicitunits=idecommands propedits objinspstrconsts objectinspector columndlg \
   componenteditors graphpropedits listviewpropedit imagelisteditor \
-  componenttreeview
+  componenttreeview actionseditor
 
 [clean]
 files=$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT)) \

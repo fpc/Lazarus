@@ -44,6 +44,8 @@ resourcestring
   sccsLvEdtImgIndexCaption= 'Image index';
   sccsLvEdtBtnAdd         = 'New';
   sccsLvEdtBtnDel         = 'Delete';
+  oisCategory = 'Category';
+  oisAction = 'Action';
   sccsLvEdtBtnAddSub      = 'Sub item';
 
   //Image editor strings
@@ -58,6 +60,12 @@ resourcestring
   cesStringGridEditor = 'StringGrid Editor ...';
   cesStringGridEditor2 = 'StringGrid Editor';
 
+  // Actions Editor
+  cActionListEditorUnknownCategory='(Unknown)';
+  oisEditActionList = 'Edit action list...';
+  oisActionListEditor = 'Action List Editor';
+  oisAdd = 'Add';
+  cActionListEditorAllCategory='(All)';
 
 implementation
 
