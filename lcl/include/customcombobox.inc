@@ -708,8 +708,7 @@ begin
   I := FItems.IndexOf(AValue);
   if I >= 0 then
     ItemIndex := I
-  else
-    inherited;
+  inherited;
 end;
 
 {------------------------------------------------------------------------------
@@ -797,6 +796,9 @@ end;
 
 {
   $Log$
+  Revision 1.55  2005/02/15 21:51:32  micha
+  always call inherited to set text, setitemindex sets text by indirectly calling RealSetText
+
   Revision 1.54  2005/02/11 16:26:26  micha
   select index of item in list, if text occurs in list
 
