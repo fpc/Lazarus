@@ -1461,10 +1461,10 @@ begin
   if (window <> FCustomForm) then Exit;
 
   BW := 0;
-  if (FCustomForm is TForm) then
-     BW := TForm(FCustomForm).BorderWidth;
+//  if (FCustomForm is TForm) then
+//     BW := TForm(FCustomForm).BorderWidth;
 
-  if ((Position.X < (FCustomForm.LEft +BW)) or (Position.X > (FCustomForm.Left+FCustomForm.Width - BW)) or (Position.Y < FCustomForm.Top+22) or (Position.Y > (FCustomForm.Top+FCustomForm.Height - BW))) then Exit;
+  if ((Position.X < (FCustomForm.Left + BW)) or (Position.X > (FCustomForm.Left+FCustomForm.Width - BW)) or (Position.Y < FCustomForm.Top+22) or (Position.Y > (FCustomForm.Top+FCustomForm.Height - BW))) then Exit;
 
   Position := FCustomForm.ScreenToClient(Position);
 

@@ -37,17 +37,19 @@ uses
   Classes, SysUtils;
 
 ResourceString
-   rsMbYes          = 'Yes';
-   rsMbNo           = 'No';
+   rsMbYes          = '&Yes';
+   rsMbNo           = '&No';
    rsMbOK           = 'OK';
    rsMbCancel       = 'Cancel';
    rsMbAbort        = 'Abort';
-   rsMbRetry        = 'Retry';
-   rsMbIgnore       = 'Ignore';
-   rsMbAll          = 'All?';
+   rsMbRetry        = '&Retry';
+   rsMbIgnore       = '&Ignore';
+   rsMbAll          = '&All';
    rsMbNoToAll      = 'No to all';
    rsMbYesToAll     = 'Yes to all';
-   rsMbHelp         = 'Help';
+   rsMbHelp         = '&Help';
+   rsMbClose        = '&Close';
+
    rsMtWarning      = 'Warning';
    rsMtError        = 'Error';
    rsMtInformation  = 'Information';
