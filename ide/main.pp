@@ -554,7 +554,7 @@ type
     function DoJumpToCompilerMessage(Index:integer;
       FocusEditor: boolean): boolean;
     procedure DoShowMessagesView;
-    procedure DoArrangeSourceEditorAndMessageView;
+    procedure DoArrangeSourceEditorAndMessageView(PutOnTop: boolean);
     function GetTestBuildDir: string; override;
     function GetProjectTargetFilename: string;
     function GetTestProjectFilename: string;
@@ -2731,7 +2731,7 @@ begin
   // select the new form (object inspector, formeditor, control selection)
   PropertyEditorHook1.LookupRoot := AForm;
   TDesigner(AForm.Designer).SelectOnlyThisComponent(AForm);
-  BringWindowToTop(AForm.Handle);
+  AForm.ShowOnTop;
 end;
 
 function TMainIDE.DoLoadResourceFile(AnUnitInfo: TUnitInfo;
@@ -4444,7 +4444,7 @@ Begin
         if OnlyForms and (AnUnitInfo.Form<>nil) then begin
           AForm:=TForm(AnUnitInfo.Form);
         end;
-        BringWindowToTop(AForm.Handle)
+        AForm.ShowOnTop;
       end;
     end;
   finally
@@ -4482,7 +4482,7 @@ begin
     ItemByEnum(nmiwUnitDependenciesName);
   ALayout.Apply;
   if not WasVisible then
-    BringWindowToTop(UnitDependenciesView.Handle);
+    UnitDependenciesView.ShowOnTop;
 end;
 
 function TMainIDE.DoOpenFileAtCursor(Sender: TObject):TModalResult;
@@ -5320,8 +5320,7 @@ begin
 
   frmToDo.FileName:=Project1.MainUnitInfo.Filename;
 
-  frmToDo.Show;
-  BringWindowToTop(frmToDo.Handle);
+  frmToDo.ShowOnTop;
   Result:=mrOk;
 end;
 
@@ -5368,7 +5367,7 @@ begin
     
     // show messages
     MessagesView.Clear;
-    DoArrangeSourceEditorAndMessageView;
+    DoArrangeSourceEditorAndMessageView(false);
     TheOutputFilter.OnOutputString:=@MessagesView.Add;
     TheOutputFilter.OnReadLine:=@MessagesView.ShowProgress;
 
@@ -6069,8 +6068,7 @@ begin
 
     else begin
       if ObjectInspector1=nil then exit;
-      ObjectInspector1.Show;
-      BringWindowToTop(ObjectInspector1.Handle);
+      ObjectInspector1.ShowOnTop;
       FDisplayState:= Succ(FDisplayState);
     end;
   end;
@@ -6089,8 +6087,7 @@ begin
   if AForm=nil then exit;
   FDisplayState:= dsForm;
   FLastFormActivated:=AForm;
-  AForm.Show;
-  BringWindowToTop(AForm.Handle);
+  AForm.ShowOnTop;
   if TheControlSelection.SelectionForm<>AForm then begin
     // select the new form (object inspector, formeditor, control selection)
     PropertyEditorHook1.LookupRoot := AForm;
@@ -6110,8 +6107,7 @@ begin
       SourceNotebook.Notebook.PageIndex:= ActiveUnitInfo.EditorIndex;
     end;
   end;
-  SourceNoteBook.Show;
-  BringWindowToTop(SourceNoteBook.Handle);
+  SourceNoteBook.ShowOnTop;
   FDisplayState:= dsSource;
 end;
 
@@ -6294,7 +6290,8 @@ begin
           if TopLine<1 then TopLine:=1;
           if FocusEditor then begin
             //SourceNotebook.BringToFront;
-            BringWindowToTop(SourceNoteBook.Handle);
+            MessagesView.ShowOnTop;
+            SourceNoteBook.ShowOnTop;
             SourceNotebook.FocusEditor;
           end;
           SrcEdit.EditorComponent.CaretXY:=CaretXY;
@@ -6327,19 +6324,20 @@ var
   ALayout: TIDEWindowLayout;
 begin
   WasVisible:=MessagesView.Visible;
-  MessagesView.Show;
+  MessagesView.Visible:=true;
   ALayout:=EnvironmentOptions.IDEWindowLayoutList.
     ItemByEnum(nmiwMessagesViewName);
   ALayout.Apply;
   if not WasVisible then
-    BringWindowToTop(SourceNotebook.Handle);
+    // the sourcenotebook is more interesting than the messages
+    SourceNotebook.ShowOnTop;
 
   //set the event here for the selectionchanged event
   if not assigned(MessagesView.OnSelectionChanged) then
     MessagesView.OnSelectionChanged := @MessagesViewSelectionChanged;
 end;
 
-procedure TMainIDE.DoArrangeSourceEditorAndMessageView;
+procedure TMainIDE.DoArrangeSourceEditorAndMessageView(PutOnTop: boolean);
 begin
   DoShowMessagesView;
 
@@ -6348,8 +6346,10 @@ begin
   and ((SourceNotebook.Top+SourceNotebook.Height) > MessagesView.Top) then
     SourceNotebook.Height := Max(50,Min(SourceNotebook.Height,
        MessagesView.Top-SourceNotebook.Top));
-  MessagesView.BringToFront;
-  SourceNotebook.BringToFront;
+  if PutOnTop then begin
+    MessagesView.ShowOnTop;
+    SourceNotebook.ShowOnTop;
+  end;
 end;
 
 function TMainIDE.GetTestBuildDir: string;
@@ -6934,7 +6934,7 @@ begin
     TopLine:=NewTopLine;
     LeftChar:=Max(NewX-CharsInWindow,1);
   end;
-  BringWindowToTop(SourceNoteBook.Handle);
+  SourceNoteBook.ShowOnTop;
   SourceNotebook.FocusEditor;
   UpdateSourceNames;
   Result:=mrOk;
@@ -7009,7 +7009,7 @@ begin
   end;
   // syntax error -> show error and jump
   // show error in message view
-  DoArrangeSourceEditorAndMessageView;
+  DoArrangeSourceEditorAndMessageView(false);
   MessagesView.ClearTillLastSeparator;
   MessagesView.AddSeparator;
   if CodeToolBoss.ErrorCode<>nil then begin
@@ -7029,7 +7029,8 @@ begin
     if DoOpenEditorFile(CodeToolBoss.ErrorCode.Filename,-1,[ofOnlyIfExists])=mrOk
     then begin
       ActiveSrcEdit:=SourceNoteBook.GetActiveSE;
-      BringWindowToTop(SourceNoteBook.Handle);
+      MessagesView.ShowOnTop;
+      SourceNoteBook.ShowOnTop;
       with ActiveSrcEdit.EditorComponent do begin
         CaretXY:=ErrorCaret;
         BlockBegin:=CaretXY;
@@ -7770,7 +7771,7 @@ begin
 
   ToolStatus:=itBuilder;
   MessagesView.Clear;
-  DoArrangeSourceEditorAndMessageView;
+  DoArrangeSourceEditorAndMessageView(false);
 
   TheOutputFilter.OnOutputString:=@MessagesView.Add;
   TheOutputFilter.OnReadLine:=@MessagesView.ShowProgress;
@@ -8255,6 +8256,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.519  2003/04/11 21:21:34  mattias
+  implemented closing unneeded package
+
   Revision 1.518  2003/04/10 19:42:16  mattias
   implemented package graph showing open packages
 
