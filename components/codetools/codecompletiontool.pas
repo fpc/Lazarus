@@ -2268,6 +2268,11 @@ var CleanCursorPos, Indent, insertPos: integer;
         CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
         // due to insertions in fron of the class, the cursor position could
         // have changed
+        while (CursorNode<>nil) do begin
+          if (CursorNode.Desc in [ctnTypeSection,ctnTypeDefinition,ctnClass])
+          then break;
+          CursorNode:=CursorNode.Parent;
+        end;
         FCodeCompleteClassNode:=
                               FindClassNode(CursorNode,CurClassName,true,false);
         if FCodeCompleteClassNode=nil then

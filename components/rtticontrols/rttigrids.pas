@@ -24,7 +24,7 @@ unit RTTIGrids;
 interface
 
 uses
-  Classes, SysUtils, ObjectInspector, PropEdits, RTTICtrls, Grids;
+  Classes, SysUtils, LCLProc, ObjectInspector, PropEdits, RTTICtrls, Grids;
 
 type
   { TTICustomPropertyGrid }
@@ -79,9 +79,12 @@ type
   
   TTICustomGrid =  class(TCustomGrid)
   private
+    FAutoFreeHook: boolean;
     FListDirection: TTIListDirection;
     FListObject: TObject;
+    FSaveOnChangeTIObject: boolean;
     FTIStates: TTIGridStates;
+    procedure SetAutoFreeHook(const AValue: boolean);
     procedure SetListDirection(const AValue: TTIListDirection);
     procedure SetListObject(const AValue: TObject);
   protected
@@ -94,6 +97,10 @@ type
     property ListObject: TObject read FListObject write SetListObject;
     property ListDirection: TTIListDirection read FListDirection write SetListDirection;
     property DefaultRowHeight default 20;
+    property AutoFreeHook: boolean read FAutoFreeHook write SetAutoFreeHook;
+    property SaveOnChangeTIObject: boolean read FSaveOnChangeTIObject
+                                           write FSaveOnChangeTIObject
+                                           default true;
   end;
   
   
@@ -113,6 +120,8 @@ type
     property DefaultRowHeight;
     property Enabled;
     property FixedColor;
+    property FixedCols;
+    property FixedRows;
     property Flat;
     property Font;
     property OnDblClick;
@@ -158,6 +167,12 @@ begin
   ReloadTIList;
 end;
 
+procedure TTICustomGrid.SetAutoFreeHook(const AValue: boolean);
+begin
+  if FAutoFreeHook=AValue then exit;
+  FAutoFreeHook:=AValue;
+end;
+
 procedure TTICustomGrid.SetListObject(const AValue: TObject);
 begin
   if FListObject=AValue then exit;
@@ -184,14 +199,26 @@ procedure TTICustomGrid.LoadCollection;
 var
   TheCollection: TCollection;
   ObjectCount: LongInt;
+  CurItem: TCollectionItem;
+  HeaderLines: LongInt;
 begin
   TheCollection:=FListObject as TCollection;
   ObjectCount:=TheCollection.Count;
-  if ListDirection=tldObjectsAsRows then
-    RowCount:=FixedRows+ObjectCount
-  else
-    ColCount:=FixedCols+ObjectCount;
-    
+  if ListDirection=tldObjectsAsRows then begin
+    HeaderLines:=FixedRows;
+    RowCount:=HeaderLines+ObjectCount
+  end else begin
+    HeaderLines:=FixedCols;
+    ColCount:=HeaderLines+ObjectCount;
+  end;
+  // get first object to create the grid header
+  if ObjectCount=0 then exit;
+  CurItem:=TheCollection.Items[0];
+  if not (CurItem is TPersistent) then begin
+    debugln('TTICustomGrid.LoadCollection First CollectionItem=',dbgsName(CurItem));
+    exit;
+  end;
+  
 end;
 
 constructor TTICustomGrid.Create(TheOwner: TComponent);
