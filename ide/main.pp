@@ -79,9 +79,9 @@ uses
   UnitEditor, EditDefineTree, CodeToolsOptions, IDEOptionDefs, CodeToolsDefines,
   DiffDialog, DiskDiffsDialog, UnitInfoDlg, EditorOptions, ViewUnit_dlg,
   // rest of the ide
-  IDEDefs, LazarusIDEStrConsts, LazConf, MsgView, EnvironmentOpts,
-  TransferMacros, KeyMapping, IDEProcs, ExtToolDialog, ExtToolEditDlg,
-  MacroPromptDlg, OutputFilter, BuildLazDialog, MiscOptions,
+  IDEDefs, LazarusIDEStrConsts, LazConf, MsgView, PublishModule,
+  EnvironmentOpts, TransferMacros, KeyMapping, IDEProcs, ExtToolDialog,
+  ExtToolEditDlg, MacroPromptDlg, OutputFilter, BuildLazDialog, MiscOptions,
   InputHistory, UnitDependencies, ClipBoardHistory, ProcessList,
   InitialSetupDlgs, NewDialog, MakeResStrDlg, ToDoList, AboutFrm,
   FindReplaceDialog, FindInFilesDlg,
@@ -532,6 +532,9 @@ type
     function DoBackupFile(const Filename:string;
                           IsPartOfProject:boolean): TModalResult; override;
     function DoCheckFilesOnDisk: TModalResult; override;
+    function DoPublishModul(Options: TPublishModuleOptions;
+                            const SrcDirectory, DestDirectory: string
+                            ): TModalResult; override;
 
     // useful frontend methods
     procedure DoSwitchToFormSrc(var ActiveSourceEditor:TSourceEditor;
@@ -3844,8 +3847,8 @@ procedure TMainIDE.OnCopyFile(const Filename: string; var Copy: boolean;
   Data: TObject);
 begin
   if Data=nil then exit;
-  if Data is TPublishProjectOptions then begin
-    Copy:=TPublishProjectOptions(Data).FileCanBePublished(Filename);
+  if Data is TPublishModuleOptions then begin
+    Copy:=TPublishModuleOptions(Data).FileCanBePublished(Filename);
     //writeln('TMainIDE.OnCopyFile "',Filename,'" ',Copy);
   end;
 end;
@@ -5167,23 +5170,11 @@ end;
 
 function TMainIDE.DoPublishProject(Flags: TSaveFlags;
   ShowDialog: boolean): TModalResult;
-var
-  SrcDir, DestDir: string;
-  NewProjectFilename: string;
-  Tool: TExternalToolOptions;
-  CommandAfter, CmdAfterExe, CmdAfterParams: string;
-  
-  procedure ShowErrorForCommandAfter;
-  begin
-    MessageDlg(lisInvalidCommand,
-      Format(lisTheCommandAfterIsNotExecutable, ['"', CmdAfterExe, '"']),
-      mtError,[mbCancel],0);
-  end;
-  
 begin
   // show the publish project dialog
   if ShowDialog then begin
     Result:=ShowPublishProjectDialog(Project1.PublishOptions);
+    Project1.Modified:=Project1.PublishOptions.Modified;
     if Result<>mrOk then exit;
     IncreaseCompilerParseStamp;
   end;
@@ -5192,71 +5183,9 @@ begin
   Result:=DoSaveProject(Flags);
   if Result<>mrOk then exit;
 
-  // check command after
-  CommandAfter:=Project1.PublishOptions.CommandAfter;
-  if not MacroList.SubstituteStr(CommandAfter) then begin
-    Result:=mrCancel;
-    exit;
-  end;
-  SplitCmdLine(CommandAfter,CmdAfterExe,CmdAfterParams);
-  if (CmdAfterExe<>'') and not FileIsExecutable(CmdAfterExe) then begin
-    ShowErrorForCommandAfter;
-    Result:=mrCancel;
-    exit;
-  end;
-
-  // clear destination directory
-  DestDir:=GetProjPublishDir;
-  if (DestDir='') then begin
-    MessageDlg(lisInvalidDestinationDirectory,
-      Format(lisDestinationDirectoryIsInvalidPleaseChooseAComplete, ['"',
-        DestDir, '"', #13]),
-      mtError,[mbOk],0);
-    Result:=mrCancel;
-    exit;
-  end;
-  if DirectoryExists(DestDir) and (not DeleteDirectory(DestDir,true)) then
-  begin
-    MessageDlg(lisUnableToCleanUpDestinationDirectory,
-      Format(lisUnableToCleanUpPleaseCheckPermissions, ['"', DestDir, '"', #13]
-        ),
-      mtError,[mbOk],0);
-    Result:=mrCancel;
-    exit;
-  end;
-  
-  // copy the project directory
-  SrcDir:=AppendPathDelim(Project1.ProjectDirectory);
-  if not CopyDirectoryWithMethods(SrcDir,DestDir,
-    @OnCopyFile,@OnCopyError,Project1.PublishOptions) then
-  begin
-    Result:=mrCancel;
-    exit;
-  end;
-
-  // write a filtered .lpi file
-  NewProjectFilename:=DestDir+ExtractFilename(Project1.ProjectInfoFile);
-  DeleteFile(NewProjectFilename);
-  Result:=Project1.WriteProject(Project1.PublishOptions.WriteFlags,
-                                NewProjectFilename);
-  if Result<>mrOk then exit;
-  
-  // execute 'CommandAfter'
-  if (CmdAfterExe<>'') then begin
-    if FileIsExecutable(CmdAfterExe) then begin
-      Tool:=TExternalToolOptions.Create;
-      Tool.Filename:=CmdAfterExe;
-      Tool.Title:=lisCommandAfterPublishingProject;
-      Tool.WorkingDirectory:=DestDir;
-      Tool.CmdLineParams:=CmdAfterParams;
-      Result:=EnvironmentOptions.ExternalTools.Run(Tool,MacroList);
-      if Result<>mrOk then exit;
-    end else begin
-      ShowErrorForCommandAfter;
-      Result:=mrCancel;
-      exit;
-    end;
-  end;
+  // publish project
+  Result:=DoPublishModul(Project1.PublishOptions,Project1.ProjectDirectory,
+                         GetProjPublishDir);
 end;
 
 function TMainIDE.DoShowProjectInspector: TModalResult;
@@ -6212,6 +6141,89 @@ begin
     Result:=mrOk;
   end;
   AnUnitList.Free;
+end;
+
+function TMainIDE.DoPublishModul(Options: TPublishModuleOptions;
+  const SrcDirectory, DestDirectory: string): TModalResult;
+var
+  SrcDir, DestDir: string;
+  NewProjectFilename: string;
+  Tool: TExternalToolOptions;
+  CommandAfter, CmdAfterExe, CmdAfterParams: string;
+  CurProject: TProject;
+
+  procedure ShowErrorForCommandAfter;
+  begin
+    MessageDlg(lisInvalidCommand,
+      Format(lisTheCommandAfterIsNotExecutable, ['"', CmdAfterExe, '"']),
+      mtError,[mbCancel],0);
+  end;
+
+begin
+  // check command after
+  CommandAfter:=Options.CommandAfter;
+  if not MacroList.SubstituteStr(CommandAfter) then begin
+    Result:=mrCancel;
+    exit;
+  end;
+  SplitCmdLine(CommandAfter,CmdAfterExe,CmdAfterParams);
+  if (CmdAfterExe<>'') and not FileIsExecutable(CmdAfterExe) then begin
+    Result:=mrCancel;
+    exit;
+  end;
+
+  // clear destination directory
+  DestDir:=TrimFilename(DestDirectory);
+  if (DestDir='') then begin
+    ShowErrorForCommandAfter;
+    Result:=mrCancel;
+    exit;
+  end;
+  if DirectoryExists(DestDir) and (not DeleteDirectory(DestDir,true)) then
+  begin
+    MessageDlg(lisUnableToCleanUpDestinationDirectory,
+      Format(lisUnableToCleanUpPleaseCheckPermissions, ['"', DestDir, '"', #13]
+        ),
+      mtError,[mbOk],0);
+    Result:=mrCancel;
+    exit;
+  end;
+
+  // copy the directory
+  SrcDir:=TrimFilename(AppendPathDelim(SrcDirectory));
+  if not CopyDirectoryWithMethods(SrcDir,DestDir,
+    @OnCopyFile,@OnCopyError,Options) then
+  begin
+    Result:=mrCancel;
+    exit;
+  end;
+
+  // write a filtered .lpi file
+  if Options is TPublishProjectOptions then begin
+    CurProject:=TProject(TPublishProjectOptions(Options).Owner);
+    NewProjectFilename:=DestDir+ExtractFilename(CurProject.ProjectInfoFile);
+    DeleteFile(NewProjectFilename);
+    Result:=CurProject.WriteProject(CurProject.PublishOptions.WriteFlags,
+                                    NewProjectFilename);
+    if Result<>mrOk then exit;
+  end;
+
+  // execute 'CommandAfter'
+  if (CmdAfterExe<>'') then begin
+    if FileIsExecutable(CmdAfterExe) then begin
+      Tool:=TExternalToolOptions.Create;
+      Tool.Filename:=CmdAfterExe;
+      Tool.Title:=lisCommandAfterPublishingModule;
+      Tool.WorkingDirectory:=DestDir;
+      Tool.CmdLineParams:=CmdAfterParams;
+      Result:=EnvironmentOptions.ExternalTools.Run(Tool,MacroList);
+      if Result<>mrOk then exit;
+    end else begin
+      ShowErrorForCommandAfter;
+      Result:=mrCancel;
+      exit;
+    end;
+  end;
 end;
 
 procedure TMainIDE.UpdateCaption;
@@ -8627,6 +8639,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.564  2003/05/12 13:11:34  mattias
+  implemented publish package
+
   Revision 1.563  2003/05/12 08:06:32  mattias
   small fixes for gtkopengl
 
