@@ -169,6 +169,7 @@ type
     function CompareVertCenter(Index1, Index2: integer): integer;
   protected
     procedure AdjustGrabber;
+    procedure DoApplyBounds;
   public
     constructor Create; 
     destructor Destroy; override;
@@ -182,20 +183,25 @@ type
     procedure Delete(Index:integer);
     procedure Clear;
     procedure Assign(AControlSelection:TControlSelection);
-    procedure AdjustSize;
-    property IsResizing: boolean read FIsResizing;
     function IsSelected(AComponent: TComponent): Boolean;
     procedure SaveBounds;
+    
+    property IsResizing: boolean read FIsResizing;
+    procedure BeginResizing;
+    procedure EndResizing;
+    procedure AdjustSize;
     procedure MoveSelection(dx, dy: integer);
     procedure SizeSelection(dx, dy: integer);  
+    procedure SetBounds(NewLeft,NewTop,NewWidth,NewHeight: integer);
       // size all controls depending on ActiveGrabber.
       // if ActiveGrabber=nil then Right,Bottom
-    procedure AlignComponents(HorizAlignment, VertAlignment: TComponentAlignment);
+    procedure AlignComponents(HorizAlignment,VertAlignment:TComponentAlignment);
     procedure MirrorHorizontal;
     procedure MirrorVertical;
     procedure SizeComponents(HorizSizing: TComponentSizing; AWidth: integer;
           VertSizing: TComponentSizing; AHeight: integer);
     procedure ScaleComponents(Percent: integer);
+    
     property GrabberSize:integer read FGrabberSize write SetGrabberSize;
     property GrabberColor: TColor read FGrabberColor write FGrabberColor;
     procedure DrawGrabbers(DC: HDC);
@@ -207,17 +213,20 @@ type
     procedure DrawMarker(AComponent:TComponent; DC:HDC);
     procedure DrawMarkerAt(ACanvas: TCanvas; ALeft, ATop, AWidth, AHeight: integer);
     property ActiveGrabber:TGrabber read FActiveGrabber write SetActiveGrabber;
+    
     property Left:integer read FLeft;
     property Top:integer read FTop;
     property Width:integer read FWidth;
     property Height:integer read FHeight;
+    
     property RubberbandBounds:TRect read FRubberbandBounds write SetRubberbandBounds;
     property RubberbandActive: boolean read FRubberbandActive write FRubberbandActive;
     procedure DrawRubberband(DC: HDC);
-    function OnlyNonVisualComponentsSelected: boolean;
     procedure SelectWithRubberBand(ACustomForm:TCustomForm; ExclusiveOr: boolean);
+    
     procedure Sort(SortProc: TSelectionSortCompare);
     property Visible:boolean read FVisible write SetVisible;
+    function OnlyNonVisualComponentsSelected: boolean;
   end;
 
 
@@ -449,18 +458,31 @@ end;
 
 procedure TControlSelection.EndUpdate;
 begin
-    if FUpdateLock<=0 then exit;
+  if FUpdateLock<=0 then exit;
+  dec(FUpdateLock);
+  if FUpdateLock=0 then begin
+    try
+      if FChangedDuringLock then DoChange;
+    except
+      on E: Exception do
+        raise EGenException.Create(
+          'Exception Occured in ControlSelection EndUpdate '+E.Message);
+    end;
+  end;
+end;
 
-    dec(FUpdateLock);
+procedure TControlSelection.BeginResizing;
+begin
+  BeginUpdate;
+  FIsResizing:=true;
+end;
 
-    if FUpdateLock=0 then
-      begin
-       try
-         if FChangedDuringLock then DoChange;
-       except
-          raise EGenException.Create('Exception Occured in ControlSelection EndUpdate');
-       end;
-      end;
+procedure TControlSelection.EndResizing;
+begin
+  AdjustGrabber;
+  DoApplyBounds;
+  EndUpdate;
+  FIsResizing:=false;
 end;
 
 procedure TControlSelection.SetCustomForm;
@@ -543,19 +565,64 @@ begin
   end;
 end;
 
+procedure TControlSelection.DoApplyBounds;
+var
+  i, NewLeft, NewTop, NewRight, NewBottom, NewWidth, NewHeight: integer;
+begin
+  BeginUpdate;
+  if Count=1 then begin
+    // single selection
+    NewLeft:=FLeft;
+    NewTop:=FTop;
+    NewRight:=FLeft+FWidth;
+    NewBottom:=FTop+FHeight;
+    Items[0].SetBounds(
+      Min(NewLeft,NewRight),
+      Min(NewTop,NewBottom),
+      Abs(FWidth),
+      Abs(FHeight)
+    );
+  end else if Count>1 then begin
+    // multi selection
+    if (FOldWidth<>0) and (FOldHeight<>0) then begin
+      for i:=0 to Count-1 do begin
+        NewLeft:=FLeft + (((Items[i].OldLeft-FOldLeft) * FWidth) div FOldWidth);
+        NewTop:=FTop + (((Items[i].OldTop-FOldTop) * FHeight) div FOldHeight);
+        NewWidth:=(Items[i].OldWidth*FWidth) div FOldWidth;
+        NewHeight:=(Items[i].OldHeight*FHeight) div FOldHeight;
+        if NewWidth<0 then begin
+          NewWidth:=-NewWidth;
+          dec(NewLeft,NewWidth);
+        end;
+        if NewWidth<1 then NewWidth:=1;
+        if NewHeight<0 then begin
+          NewHeight:=-NewHeight;
+          dec(NewTop,NewHeight);
+        end;
+        if NewHeight<1 then NewHeight:=1;
+        Items[i].SetBounds(NewLeft,NewTop,NewWidth,NewHeight);
+writeln('[TControlSelection.SizeSelection] i=',i,' ',Items[i].Width,' ',Items[i].Height);
+      end;
+    end;
+  end;
+  EndUpdate;
+end;
+
 procedure TControlSelection.DoChange;
 begin
-try
-  if (FUpdateLock>0) then
-       FChangedDuringLock:=true
-  else
-  begin
-    if Assigned(fOnChange) then fOnChange(Self);
-    FChangedDuringLock:=false;
+  try
+    if (FUpdateLock>0) then
+      FChangedDuringLock:=true
+    else
+    begin
+      if Assigned(fOnChange) then fOnChange(Self);
+      FChangedDuringLock:=false;
+    end;
+  except
+    on E: Exception do
+      raise EGenException.Create(
+        'Exception Occured in ControlSelection DoChange '+E.Message);
   end;
-except
-  raise EGenException.Create('Exception Occured in ControlSelection DoChange');
-end;
 end;
 
 procedure TControlSelection.SetVisible(const Value: Boolean);
@@ -626,6 +693,7 @@ begin
   if i>=0 then Delete(i);
 end;
 
+// remove a component from the selection
 procedure TControlSelection.Delete(Index:integer);
 begin
   if Index<0 then exit;
@@ -672,38 +740,23 @@ begin
 end;
 
 procedure TControlSelection.MoveSelection(dx, dy: integer);
-var i: integer;
-  g: TGrabIndex;
 begin
   if (dx=0) and (dy=0) then exit;
-  BeginUpdate;
-  FIsResizing:=true;
-  for i:=0 to FControls.Count-1 do begin
-    with Items[i] do begin
-//writeln('TControlSelection.MoveSelection ',i,'   ',OldLeft,',',OldTop,'  d=',dx,',',dy);
-      SetBounds(OldLeft+dx,OldTop+dy,Width,Height)
-    end;
-  end;
-  for g:=Low(TGrabIndex) to High(TGrabIndex) do begin
-    FGrabbers[g].Left:=FGrabbers[g].OldLeft+dx;
-    FGrabbers[g].Top:=FGrabbers[g].OldTop+dy;
-  end;
-  FIsResizing:=false;
-  SaveBounds;
-  EndUpdate;
+  BeginResizing;
+  inc(FLeft,dx);
+  inc(FTop,dy);
+  EndResizing;
 end;
 
 procedure TControlSelection.SizeSelection(dx, dy: integer);  
 // size all controls depending on ActiveGrabber.
 // if ActiveGrabber=nil then Left,Top
-var i:integer;
+var
   GrabberPos:TGrabPositions;
-  NewLeft, NewTop, NewRight, NewBottom: integer;
 begin
   if (Count=0) or (FIsResizing) then exit;
-writeln('[TControlSelection.SizeSelection] A  ',dx,',',dy);
-  BeginUpdate;
-  FIsResizing:=true;
+  writeln('[TControlSelection.SizeSelection] A  ',dx,',',dy);
+  BeginResizing;
   if FActiveGrabber<>nil then
     GrabberPos:=FActiveGrabber.Positions
   else
@@ -725,46 +778,27 @@ writeln('[TControlSelection.SizeSelection] A  ',dx,',',dy);
   if gpBottom in GrabberPos then begin
     FHeight:=FHeight+dy;
   end;
-  AdjustGrabber;
-  if Count=1 then begin
-    // single selection
-    NewLeft:=FLeft;
-    NewTop:=FTop;
-    NewRight:=FLeft+FWidth;
-    NewBottom:=FTop+FHeight;
-    Items[0].SetBounds(
-      Min(NewLeft,NewRight),
-      Min(NewTop,NewBottom),
-      Abs(FWidth),
-      Abs(FHeight)
-    );
-  end else if Count>1 then begin
-    // multi selection
-    if (FOldWidth<>0) and (FOldHeight<>0) then begin
-      for i:=0 to Count-1 do begin
-        NewLeft:=FOldLeft + (((Items[i].OldLeft-FOldLeft) * FWidth) div FOldWidth);
-        NewTop:=FOldTop + (((Items[i].OldTop-FOldTop) * FHeight) div FOldHeight);
-        NewRight:=Max(1,Abs(FOldLeft +
-                    (((Items[i].OldLeft+Items[i].OldWidth-FOldLeft) * FWidth)
-                    div FOldWidth)));
-        NewBottom:=Max(1,Abs(FOldTop +
-                    (((Items[i].OldTop+Items[i].OldHeight-FOldTop) * FHeight)
-                    div FOldHeight)));
-        Items[i].SetBounds(NewLeft,NewTop,NewRight-NewLeft,NewBottom-NewTop);
-writeln('[TControlSelection.SizeSelection] i=',i,' ',Items[i].Width,' ',Items[i].Height);
-      end;
-    end;
-  end;
-  EndUpdate;
-  FIsResizing:=false;
+  EndResizing;
+end;
+
+procedure TControlSelection.SetBounds(NewLeft, NewTop,
+  NewWidth, NewHeight: integer);
+begin
+  if (Count=0) or (FIsResizing) then exit;
+  BeginResizing;
+  FLeft:=NewLeft;
+  FTop:=NewTop;
+  FWidth:=NewWidth;
+  FHeight:=NewHeight;
+  EndResizing;
 end;
 
 function TControlSelection.GrabberAtPos(X,Y:integer):TGrabber;
 var g:TGrabIndex;
 begin
   if FControls.Count>0 then begin
-writeln('[TControlSelection.GrabberAtPos] ',x,',',y,'  '
-,FGrabbers[4].Left,',',FGrabbers[4].Top);
+    writeln('[TControlSelection.GrabberAtPos] ',x,',',y,'  '
+    ,FGrabbers[4].Left,',',FGrabbers[4].Top);
     for g:=Low(TGrabIndex) to High(TGrabIndex) do
       if (FGrabbers[g].Left<=x) and (FGrabbers[g].Top<=y)
       and (FGrabbers[g].Left+FGrabbers[g].Width>x)

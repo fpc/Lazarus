@@ -69,6 +69,7 @@ type
 
   TConfigureBuildLazarusDlg = class(TForm)
     CleanAllCheckBox: TCheckBox;
+    BuildAllButton: TButton;
     BuildLCLRadioGroup: TRadioGroup;
     BuildComponentsRadioGroup: TRadioGroup;
     BuildSynEditRadioGroup: TRadioGroup;
@@ -79,6 +80,7 @@ type
     OptionsEdit: TEdit;
     OkButton: TButton;
     CancelButton: TButton;
+    procedure BuildAllButtonClick(Sender: TObject);
     procedure ConfigureBuildLazarusDlgResize(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
     procedure CancelButtonClick(Sender: TObject);
@@ -175,22 +177,23 @@ begin
       SetMakeParams(Options.BuildComponents,Options.ExtraOptions);
       Result:=ExternalTools.Run(Tool,Macros);
       if Result<>mrOk then exit;
-    end;
-    if Options.BuildSynEdit<>mmNone then begin
-      // build SynEdit
-      Tool.Title:='Build SynEdit';
-      Tool.WorkingDirectory:='$(LazarusDir)/components/synedit';
-      SetMakeParams(Options.BuildSynEdit,Options.ExtraOptions);
-      Result:=ExternalTools.Run(Tool,Macros);
-      if Result<>mrOk then exit;
-    end;
-    if Options.BuildCodeTools<>mmNone then begin
-      // build CodeTools
-      Tool.Title:='Build CodeTools';
-      Tool.WorkingDirectory:='$(LazarusDir)/components/codetools';
-      SetMakeParams(Options.BuildCodeTools,Options.ExtraOptions);
-      Result:=ExternalTools.Run(Tool,Macros);
-      if Result<>mrOk then exit;
+    end else begin
+      if Options.BuildSynEdit<>mmNone then begin
+        // build SynEdit
+        Tool.Title:='Build SynEdit';
+        Tool.WorkingDirectory:='$(LazarusDir)/components/synedit';
+        SetMakeParams(Options.BuildSynEdit,Options.ExtraOptions);
+        Result:=ExternalTools.Run(Tool,Macros);
+        if Result<>mrOk then exit;
+      end;
+      if Options.BuildCodeTools<>mmNone then begin
+        // build CodeTools
+        Tool.Title:='Build CodeTools';
+        Tool.WorkingDirectory:='$(LazarusDir)/components/codetools';
+        SetMakeParams(Options.BuildCodeTools,Options.ExtraOptions);
+        Result:=ExternalTools.Run(Tool,Macros);
+        if Result<>mrOk then exit;
+      end;
     end;
     if Options.BuildIDE<>mmNone then begin
       // build IDE
@@ -229,7 +232,7 @@ begin
   inherited Create(AnOwner);
   if LazarusResources.Find(Classname)=nil then begin
     Width:=350;
-    Height:=385;
+    Height:=415;
     Position:=poScreenCenter;
     Caption:='Configure "Build Lazarus"';
     OnResize:=@ConfigureBuildLazarusDlgResize;
@@ -238,8 +241,20 @@ begin
     with CleanAllCheckBox do begin
       Parent:=Self;
       Name:='CleanAllCheckBox';
-      SetBounds(10,10,Self.ClientWidth-24,20);
+      SetBounds(10,10,Self.ClientWidth-20,20);
       Caption:='Clean all';
+      Visible:=true;
+    end;
+    
+    BuildAllButton:=TButton.Create(Self);
+    with BuildAllButton do begin
+      Name:='BuildAllButton';
+      Parent:=Self;
+      Left:=CleanAllCheckBox.Left;
+      Top:=CleanAllCheckBox.Top+CleanAllCheckBox.Height+5;
+      Width:=200;
+      Caption:='Set to "Build All"';
+      OnClick:=@BuildAllButtonClick;
       Visible:=true;
     end;
     
@@ -247,7 +262,7 @@ begin
     with BuildLCLRadioGroup do begin
       Parent:=Self;
       Name:='BuildLCLRadioGroup';
-      SetBounds(10,CleanAllCheckBox.Top+CleanAllCheckBox.Height+5,
+      SetBounds(10,BuildAllButton.Top+BuildAllButton.Height+5,
                 CleanAllCheckBox.Width,40);
       Caption:='Build LCL';
       for MakeMode:=Low(TMakeMode) to High(TMakeMode) do
@@ -262,7 +277,7 @@ begin
       Name:='BuildComponentsRadioGroup';
       SetBounds(10,BuildLCLRadioGroup.Top+BuildLCLRadioGroup.Height+5,
                 BuildLCLRadioGroup.Width,BuildLCLRadioGroup.Height);
-      Caption:='Build Components';
+      Caption:='Build Components (SynEdit, CodeTools)';
       for MakeMode:=Low(TMakeMode) to High(TMakeMode) do
         Items.Add(MakeModeNames[MakeMode]);
       Columns:=3;
@@ -369,12 +384,27 @@ begin
   ConfigureBuildLazarusDlgResize(nil);
 end;
 
+procedure TConfigureBuildLazarusDlg.BuildAllButtonClick(Sender: TObject);
+begin
+  CleanAllCheckBox.Checked:=true;
+  BuildLCLRadioGroup.ItemIndex:=1;
+  BuildComponentsRadioGroup.ItemIndex:=1;
+  BuildSynEditRadioGroup.ItemIndex:=0;
+  BuildCodeToolsRadioGroup.ItemIndex:=0;
+  BuildIDERadioGroup.ItemIndex:=1;
+  BuildExamplesRadioGroup.ItemIndex:=1;
+  OptionsEdit.Text:='';
+end;
+
 procedure TConfigureBuildLazarusDlg.ConfigureBuildLazarusDlgResize(
   Sender: TObject);
 begin
   CleanAllCheckBox.SetBounds(10,10,Self.ClientWidth-24,20);
+  BuildAllButton.SetBounds(CleanAllCheckBox.Left,
+                           CleanAllCheckBox.Top+CleanAllCheckBox.Height+5,
+                           200,BuildAllButton.Height);
   BuildLCLRadioGroup.SetBounds(10,
-              CleanAllCheckBox.Top+CleanAllCheckBox.Height+5,
+              BuildAllButton.Top+BuildAllButton.Height+5,
               CleanAllCheckBox.Width,40);
   BuildComponentsRadioGroup.SetBounds(10,
               BuildLCLRadioGroup.Top+BuildLCLRadioGroup.Height+5,
