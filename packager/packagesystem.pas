@@ -120,6 +120,7 @@ type
                                   IgnorePackage: TLazPackage): TLazPackage;
     function FindBrokenDependencyPath(APackage: TLazPackage): TList;
     function FindCircleDependencyPath(APackage: TLazPackage): TList;
+    function FindUnsavedDependencyPath(APackage: TLazPackage): TList;
     function FindFileInAllPackages(const TheFilename: string;
                                 ResolveLinks, IgnoreDeleted: boolean): TPkgFile;
     function FindLowestPkgNodeByName(const PkgName: string): TAVLTreeNode;
@@ -1036,6 +1037,56 @@ begin
     Pkg.Flags:=Pkg.Flags-[lpfVisited,lpfCircle];
   end;
   FindCircle(APackage,Result);
+end;
+
+function TLazPackageGraph.FindUnsavedDependencyPath(APackage: TLazPackage
+  ): TList;
+
+  procedure FindUnsaved(CurPackage: TLazPackage; var PathList: TList);
+  var
+    Dependency: TPkgDependency;
+    RequiredPackage: TLazPackage;
+  begin
+    CurPackage.Flags:=CurPackage.Flags+[lpfVisited];
+    Dependency:=CurPackage.FirstRequiredDependency;
+    while Dependency<>nil do begin
+      if Dependency.LoadPackageResult=lprSuccess then begin
+        // dependency ok
+        RequiredPackage:=Dependency.RequiredPackage;
+        if RequiredPackage.Modified then begin
+          // unsaved package detected
+          PathList:=TList.Create;
+          PathList.Add(CurPackage);
+          PathList.Add(RequiredPackage);
+          exit;
+        end;
+        if not (lpfVisited in RequiredPackage.Flags) then begin
+          FindUnsaved(RequiredPackage,PathList);
+          if PathList<>nil then begin
+            // unsaved package detected
+            // -> add current package to list
+            PathList.Insert(0,CurPackage);
+            exit;
+          end;
+        end;
+      end;
+      Dependency:=Dependency.NextRequiresDependency;
+    end;
+    CurPackage.Flags:=CurPackage.Flags-[lpfCircle];
+  end;
+
+var
+  i: Integer;
+  Pkg: TLazPackage;
+begin
+  Result:=nil;
+  if (Count=0) or (APackage=nil) then exit;
+  // mark all packages as not visited
+  for i:=FItems.Count-1 downto 0 do begin
+    Pkg:=TLazPackage(FItems[i]);
+    Pkg.Flags:=Pkg.Flags-[lpfVisited];
+  end;
+  FindUnsaved(APackage,Result);
 end;
 
 function TLazPackageGraph.GetAutoCompilationOrder(APackage: TLazPackage

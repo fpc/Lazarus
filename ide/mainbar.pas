@@ -103,7 +103,8 @@ type
     ofAddToRecent,   // add file to recent files
     ofRegularFile,   // open as regular file (e.g. do not open projects)
     ofVirtualFile,   // open the virtual file
-    ofConvertMacros  // replace macros in filename
+    ofConvertMacros, // replace macros in filename
+    ofUseCache       // do not update file from file
     );
   TOpenFlags = set of TOpenFlag;
   
@@ -395,7 +396,8 @@ const
      'ofAddToRecent',
      'ofRegularFile',
      'ofVirtualFile',
-     'ofConvertMacros'
+     'ofConvertMacros',
+     'ofUseCache'
     );
     
   SaveFlagNames: array[TSaveFlag] of string = (

@@ -210,6 +210,7 @@ type
     constructor Create(TheProject: TProject);
     function GetOwnerName: string; override;
     function GetDefaultMainSourceFileName: string; override;
+    procedure GetInheritedCompilerOptions(var OptionsList: TList); override;
   public
     property OwnerProject: TProject read FOwnerProject;
   end;
@@ -255,17 +256,14 @@ type
     FOnBeginUpdate: TNotifyEvent;
     FOnEndUpdate: TEndUpdateProjectEvent;
     fOnFileBackup: TOnFileBackup;
-    fOutputDirectory: String;
     fProjectDirectory: string;
     fProjectInfoFile: String;  // the lpi filename
     fProjectType: TProjectType;
     fPublishOptions: TPublishProjectOptions;
     fRunParameterOptions: TRunParamsOptions;
-    fSrcPath: string; // source path addition for units in ProjectDir
     fTargetFileExt: String;
     fTitle: String;
     fUnitList: TList;                      // list of _all_ units (TUnitInfo)
-    fUnitOutputDirectory: String;
     FUpdateLock: integer;
     xmlconfig: TXMLConfig;
     function GetMainFilename: String;
@@ -284,7 +282,6 @@ type
     procedure SetFlags(const AValue: TProjectFlags);
     procedure SetMainUnitID(const AValue: Integer);
     procedure SetProjectInfoFile(const NewFilename: string);
-    procedure SetSrcPath(const NewSrcPath: string);
     procedure SetTargetFilename(const NewTargetFilename: string);
     procedure SetUnits(Index:integer; AUnitInfo: TUnitInfo);
     procedure UpdateProjectDirectory;
@@ -417,7 +414,6 @@ type
     property OnBeginUpdate: TNotifyEvent read FOnBeginUpdate write FOnBeginUpdate;
     property OnEndUpdate: TEndUpdateProjectEvent read FOnEndUpdate write FOnEndUpdate;
     property OnFileBackup: TOnFileBackup read fOnFileBackup write fOnFileBackup;
-    property OutputDirectory: String read fOutputDirectory write fOutputDirectory;
     property ProjectDirectory: string read fProjectDirectory;
     property ProjectInfoFile: string
                                read GetProjectInfoFile write SetProjectInfoFile;
@@ -425,13 +421,10 @@ type
     property PublishOptions: TPublishProjectOptions
                                      read fPublishOptions write fPublishOptions;
     property RunParameterOptions: TRunParamsOptions read fRunParameterOptions;
-    property SrcPath: string read fSrcPath write fSrcPath;
     property TargetFileExt: String read fTargetFileExt write fTargetFileExt;
     property TargetFilename: string
                                  read GetTargetFilename write SetTargetFilename;
     property Title: String read fTitle write fTitle;
-    property UnitOutputDirectory: String
-                           read fUnitOutputDirectory write fUnitOutputDirectory;
     property Units[Index: integer]:TUnitInfo read GetUnits write SetUnits;
     property UpdateLock: integer read FUpdateLock;
   end;
@@ -480,6 +473,8 @@ function ProjectFlagsToStr(Flags: TProjectFlags): string;
 
 implementation
 
+const
+  ProjectInfoFileVersion = 2;
 
 function ProjectFlagsToStr(Flags: TProjectFlags): string;
 var f: TProjectFlag;
@@ -1032,9 +1027,11 @@ end;
 procedure TUnitInfo.SetIsPartOfProject(const AValue: boolean);
 begin
   if fIsPartOfProject=AValue then exit;
+  if Project<>nil then Project.BeginUpdate(true);
   fIsPartOfProject:=AValue;
   UpdatePartOfProjectList;
   if fIsPartOfProject then UpdateUsageCount(uuIsPartOfProject,0);
+  if Project<>nil then Project.EndUpdate;
 end;
 
 {-------------------------------------------------------------------------------
@@ -1105,16 +1102,13 @@ begin
   fJumpHistory.OnLoadSaveFilename:=@OnLoadSaveFilename;
   fMainUnitID := -1;
   fModified := false;
-  fOutputDirectory := '.';
   fProjectInfoFile := '';
   UpdateProjectDirectory;
   fPublishOptions:=TPublishProjectOptions.Create;
   fRunParameterOptions:=TRunParamsOptions.Create;
-  fSrcPath := '';
   fTargetFileExt := DefaultTargetFileExt;
   fTitle := '';
   fUnitList := TList.Create;  // list of TUnitInfo
-  fUnitOutputDirectory := '.';
 
   // create program source
   NewSource:=TStringList.Create;
@@ -1285,6 +1279,7 @@ begin
 
   repeat
     try
+      xmlconfig.SetValue('ProjectOptions/Version/Value',ProjectInfoFileVersion);
       xmlconfig.SetDeleteValue('ProjectOptions/General/ProjectType/Value',
           ProjectTypeNames[ProjectType],'');
       SaveFlags;
@@ -1298,14 +1293,8 @@ begin
       xmlconfig.SetValue('ProjectOptions/General/TargetFileExt/Value'
           ,TargetFileExt);
       xmlconfig.SetDeleteValue('ProjectOptions/General/Title/Value', Title,'');
-      xmlconfig.SetDeleteValue('ProjectOptions/General/OutputDirectory/Value'
-          ,OutputDirectory,'');
-      xmlconfig.SetDeleteValue('ProjectOptions/General/UnitOutputDirectory/Value'
-          ,UnitOutputDirectory,'');
       fJumpHistory.DeleteInvalidPositions;
       fJumpHistory.SaveToXMLConfig(xmlconfig,'ProjectOptions/');
-      xmlconfig.SetDeleteValue('ProjectOptions/General/SrcPath/Value',
-           fSrcPath,'');
 
       SaveUnits;
 
@@ -1361,6 +1350,8 @@ function TProject.ReadProject(const LPIFilename: string): TModalResult;
 var
   NewUnitInfo: TUnitInfo;
   NewUnitCount,i: integer;
+  FileVersion: Integer;
+  OldSrcPath: String;
 begin
   Result := mrCancel;
   BeginUpdate(true);
@@ -1383,6 +1374,7 @@ begin
 
     try
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject C reading values');{$ENDIF}
+      FileVersion:= XMLConfig.GetValue('ProjectOptions/Version/Value',0);
       ProjectType := ProjectTypeNameToType(xmlconfig.GetValue(
          'ProjectOptions/General/ProjectType/Value', ''));
       LoadFlags;
@@ -1395,12 +1387,9 @@ begin
       TargetFileExt := xmlconfig.GetValue(
          'ProjectOptions/General/TargetFileExt/Value', DefaultTargetFileExt);
       Title := xmlconfig.GetValue('ProjectOptions/General/Title/Value', '');
-      OutputDirectory := xmlconfig.GetValue(
-         'ProjectOptions/General/OutputDirectory/Value', '.');
-      UnitOutputDirectory := xmlconfig.GetValue(
-         'ProjectOptions/General/UnitOutputDirectory/Value', '.');
       fJumpHistory.LoadFromXMLConfig(xmlconfig,'ProjectOptions/');
-      FSrcPath := xmlconfig.GetValue('ProjectOptions/General/SrcPath/Value','');
+      if FileVersion<2 then
+        OldSrcPath := xmlconfig.GetValue('ProjectOptions/General/SrcPath/Value','');
 
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject D reading units');{$ENDIF}
       NewUnitCount:=xmlconfig.GetValue('ProjectOptions/Units/Count',0);
@@ -1415,7 +1404,8 @@ begin
       // Load the compiler options
       CompilerOptions.XMLConfigFile := xmlconfig;
       CompilerOptions.LoadCompilerOptions(true);
-      CreateProjectDefineTemplate(CompilerOptions,FSrcPath);
+      if FileVersion<2 then CompilerOptions.SrcPath:=OldSrcPath;
+      CreateProjectDefineTemplate(CompilerOptions);
 
       // load the Publish Options
       PublishOptions.LoadFromXMLConfig(xmlconfig,'ProjectOptions/PublishOptions/');
@@ -1550,14 +1540,11 @@ begin
   fJumpHistory.Clear;
   fMainUnitID := -1;
   fModified := false;
-  fOutputDirectory := '.';
   fProjectInfoFile := '';
   UpdateProjectDirectory;
   fPublishOptions.Clear;
-  fSrcPath := '';
   fTargetFileExt := DefaultTargetFileExt;
   fTitle := '';
-  fUnitOutputDirectory := '.';
   EndUpdate;
 end;
 
@@ -2095,7 +2082,7 @@ begin
   if (not IsVirtual) then exit;
   ExtendPath(UnitPathMacroName,CompilerOptions.OtherUnitFiles);
   ExtendPath(IncludePathMacroName,CompilerOptions.IncludeFiles);
-  ExtendPath(SrcPathMacroName,SrcPath);
+  ExtendPath(SrcPathMacroName,CompilerOptions.SrcPath);
 end;
 
 procedure TProject.GetUnitsChangedOnDisk(var AnUnitList: TList);
@@ -2366,12 +2353,6 @@ begin
   end;
 end;
 
-procedure TProject.SetSrcPath(const NewSrcPath: string);
-begin
-  if FSrcPath=NewSrcPath then exit;
-  fSrcPath:=NewSrcPath;
-end;
-
 procedure TProject.UpdateProjectDirectory;
 begin
   fProjectDirectory:=ExtractFilePath(fProjectInfoFile);
@@ -2549,12 +2530,26 @@ begin
     Result:=inherited GetDefaultMainSourceFileName;
 end;
 
+procedure TProjectCompilerOptions.GetInheritedCompilerOptions(
+  var OptionsList: TList);
+var
+  PkgList: TList;
+begin
+  PkgList:=nil;
+  OwnerProject.GetAllRequiredPackages(PkgList);
+  OptionsList:=GetUsageOptionsList(PkgList);
+  PkgList.Free;
+end;
+
 end.
 
 
 
 {
   $Log$
+  Revision 1.112  2003/04/20 23:10:03  mattias
+  implemented inherited project compiler options
+
   Revision 1.111  2003/04/20 20:32:40  mattias
   implemented removing, re-adding, updating project dependencies
 

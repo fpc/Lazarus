@@ -600,7 +600,17 @@ begin
       mtError,[mbCancel,mbAbort],0);
     exit;
   end;
-  
+
+  // check for unsaved packages
+  PathList:=PackageGraph.FindUnsavedDependencyPath(APackage);
+  if PathList<>nil then begin
+    DoShowPackageGraphPathList(PathList);
+    Result:=MessageDlg('Unsaved package',
+      'There is an unsaved package in the required packages. See package graph.',
+      mtError,[mbCancel,mbAbort],0);
+    exit;
+  end;
+
   Result:=mrOk;
 end;
 
@@ -1012,7 +1022,7 @@ begin
     begin
       // add lcl pp/pas dirs to source search path
       ds:=PathDelim;
-      AProject.SrcPath:=
+      AProject.CompilerOptions.SrcPath:=
         '$(LazarusDir)'+ds+'lcl'
        +';'+
         '$(LazarusDir)'+ds+'lcl'+ds+'interfaces'+ds+'$(LCLWidgetType)';

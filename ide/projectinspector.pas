@@ -46,6 +46,8 @@ uses
 type
   TOnAddUnitToProject =
     function(Sender: TObject; AnUnitInfo: TUnitInfo): TModalresult of object;
+  TRemoveProjInspFileEvent =
+    function(Sender: TObject; AnUnitInfo: TUnitInfo): TModalResult of object;
 
   TProjectInspectorFlag = (
     pifItemsChanged,
@@ -77,6 +79,7 @@ type
   private
     FOnAddUnitToProject: TOnAddUnitToProject;
     FOnOpen: TNotifyEvent;
+    FOnRemoveFile: TRemoveProjInspFileEvent;
     FOnShowOptions: TNotifyEvent;
     FUpdateLock: integer;
     FLazProject: TProject;
@@ -119,6 +122,8 @@ type
     property OnShowOptions: TNotifyEvent read FOnShowOptions write FOnShowOptions;
     property OnAddUnitToProject: TOnAddUnitToProject read FOnAddUnitToProject
                                                      write FOnAddUnitToProject;
+    property OnRemoveFile: TRemoveProjInspFileEvent read FOnRemoveFile
+                                                    write FOnRemoveFile;
   end;
   
 var
@@ -314,6 +319,7 @@ end;
 procedure TProjectInspectorForm.RemoveBitBtnClick(Sender: TObject);
 var
   CurDependency: TPkgDependency;
+  CurFile: TUnitInfo;
 begin
   CurDependency:=GetSelectedDependency;
   if (CurDependency<>nil) and (not CurDependency.Removed) then begin
@@ -322,6 +328,18 @@ begin
       mtConfirmation,[mbYes,mbNo],0)<>mrYes
     then exit;
     LazProject.RemoveRequiredDependency(CurDependency);
+    exit;
+  end;
+  
+  CurFile:=GetSelectedFile;
+  if CurFile<>nil then begin
+    if (not CurFile.IsPartOfProject) or (CurFile=LazProject.MainUnitInfo)
+    then exit;
+    if MessageDlg('Confirm removing file',
+      'Remove file '+CurFile.Filename+' from project?',
+      mtConfirmation,[mbYes,mbNo],0)<>mrYes
+    then exit;
+    if Assigned(OnRemoveFile) then OnRemoveFile(Self,CurFile);
   end;
 end;
 

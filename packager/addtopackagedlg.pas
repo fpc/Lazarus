@@ -332,7 +332,7 @@ begin
   if not PackageGraph.DependencyExists(NewDependency,fpfSearchPackageEverywhere)
   then begin
     MessageDlg('Package not found',
-      'The dependency "'+NewDependency.AsString+'" was not found.'#13
+      'No package found for dependency "'+NewDependency.AsString+'".'#13
       +'Please choose an existing package.',
       mtError,[mbCancel],0);
     exit;

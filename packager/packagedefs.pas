@@ -268,6 +268,7 @@ type
     procedure SetLibraries(const AValue: string); override;
     procedure SetLinkerOptions(const AValue: string); override;
     procedure SetObjectPath(const AValue: string); override;
+    procedure SetSrcPath(const AValue: string); override;
     procedure SetOtherUnitFiles(const AValue: string); override;
     procedure SetUnitOutputDir(const AValue: string); override;
   public
@@ -624,6 +625,14 @@ var
   OnGetAllRequiredPackages: TGetAllRequiredPackagesEvent;
 
 
+function CompareLazPackageID(Data1, Data2: Pointer): integer;
+function CompareNameWithPackageID(Key, Data: Pointer): integer;
+function CompareLazPackageIDNames(Data1, Data2: Pointer): integer;
+function CompareNameWithPkgDependency(Key, Data: Pointer): integer;
+function ComparePkgDependencyNames(Data1, Data2: Pointer): integer;
+
+function GetUsageOptionsList(PackageList: TList): TList;
+
 function PkgFileTypeIdentToType(const s: string): TPkgFileType;
 function LazPackageTypeIdentToType(const s: string): TLazPackageType;
 
@@ -633,12 +642,6 @@ procedure LoadPkgDependencyList(XMLConfig: TXMLConfig; const ThePath: string;
   HoldPackages: boolean);
 procedure SavePkgDependencyList(XMLConfig: TXMLConfig; const ThePath: string;
   First: TPkgDependency; ListType: TPkgDependencyList);
-
-function CompareLazPackageID(Data1, Data2: Pointer): integer;
-function CompareNameWithPackageID(Key, Data: Pointer): integer;
-function CompareLazPackageIDNames(Data1, Data2: Pointer): integer;
-function CompareNameWithPkgDependency(Key, Data: Pointer): integer;
-function ComparePkgDependencyNames(Data1, Data2: Pointer): integer;
 
 function FindDependencyByNameInList(First: TPkgDependency;
   ListType: TPkgDependencyList; const Name: string): TPkgDependency;
@@ -803,6 +806,22 @@ begin
   Dependency1:=TPkgDependency(Data1);
   Dependency2:=TPkgDependency(Data2);
   Result:=AnsiCompareText(Dependency1.PackageName,Dependency2.PackageName);
+end;
+
+function GetUsageOptionsList(PackageList: TList): TList;
+var
+  Cnt: Integer;
+  i: Integer;
+begin
+  if PackageList<>nil then begin
+    Result:=TList.Create;
+    Cnt:=PackageList.Count;
+    for i:=0 to Cnt-1 do begin
+      Result.Add(TLazPackage(PackageList[i]).UsageOptions);
+    end;
+  end else begin
+    Result:=nil;
+  end;
 end;
 
 function FindDependencyByNameInList(First: TPkgDependency;
@@ -2223,20 +2242,11 @@ end;
 procedure TLazPackage.GetInheritedCompilerOptions(var OptionsList: TList);
 var
   PkgList: TList; // list of TLazPackage
-  Cnt: Integer;
-  i: Integer;
 begin
   PkgList:=nil;
   GetAllRequiredPackages(PkgList);
-  if PkgList<>nil then begin
-    OptionsList:=TList.Create;
-    Cnt:=PkgList.Count;
-    for i:=0 to Cnt-1 do begin
-      OptionsList.Add(TLazPackage(PkgList[i]).UsageOptions);
-    end;
-  end else begin
-    OptionsList:=nil;
-  end;
+  OptionsList:=GetUsageOptionsList(PkgList);
+  PkgList.Free;
 end;
 
 function TLazPackage.GetCompileSourceFilename: string;
@@ -2473,6 +2483,13 @@ begin
   if ObjectPath=AValue then exit;
   InvalidateOptions;
   inherited SetObjectPath(AValue);
+end;
+
+procedure TPkgCompilerOptions.SetSrcPath(const AValue: string);
+begin
+  if SrcPath=AValue then exit;
+  InvalidateOptions;
+  inherited SetSrcPath(AValue);
 end;
 
 procedure TPkgCompilerOptions.SetOtherUnitFiles(const AValue: string);

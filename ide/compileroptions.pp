@@ -52,13 +52,15 @@ type
     icoIncludePath,
     icoObjectPath,
     icoLibraryPath,
+    icoSrcPath,
     icoLinkerOptions,
     icoCustomOptions
     );
   TInheritedCompilerOptions = set of TInheritedCompilerOption;
   
 const
-  icoAllSearchPaths = [icoUnitPath,icoIncludePath,icoObjectPath,icoLibraryPath];
+  icoAllSearchPaths = [icoUnitPath,icoIncludePath,icoObjectPath,icoLibraryPath,
+                       icoSrcPath];
   
 
 type
@@ -70,6 +72,7 @@ type
     pcosIncludePath,  // search path for pascal include files
     pcosObjectPath,   // search path for .o files
     pcosLibraryPath,  // search path for libraries
+    pcosSrcPath,      // additional search path for pascal source files
     pcosLinkerOptions,// additional linker options
     pcosCustomOptions,// additional options
     pcosOutputDir,    // the output directory
@@ -78,8 +81,8 @@ type
   TParsedCompilerOptStrings = set of TParsedCompilerOptString;
   
 const
-  ParsedCompilerSearchPaths = [pcosUnitPath,pcosIncludePath,
-                               pcosObjectPath,pcosLibraryPath];
+  ParsedCompilerSearchPaths = [pcosUnitPath,pcosIncludePath,pcosObjectPath,
+                               pcosLibraryPath,pcosSrcPath];
   ParsedCompilerFilenames = [pcosCompilerPath];
   ParsedCompilerDirectories = [pcosOutputDir];
   ParsedCompilerFiles =
@@ -143,10 +146,11 @@ type
     fIncludeFiles: String;
     fLibraries: String;
     fOtherUnitFiles: String;
+    FObjectPath: string;
+    FSrcPath: string;
     fCompilerPath: String;
     fUnitOutputDir: string;
     fLCLWidgetType: string;
-    FObjectPath: string;
 
     // Parsing:
     // style
@@ -217,7 +221,6 @@ type
     fAdditionalConfigFile: Boolean;
     fConfigFilePath: String;
     fCustomOptions: string;
-    procedure SetDefaultMakeOptionsFlags(const AValue: TCompilerCmdLineOptions);
   protected
     procedure SetBaseDirectory(const AValue: string); virtual;
     procedure SetCompilerPath(const AValue: String); virtual;
@@ -228,11 +231,13 @@ type
     procedure SetOtherUnitFiles(const AValue: String); virtual;
     procedure SetUnitOutputDir(const AValue: string); virtual;
     procedure SetObjectPath(const AValue: string); virtual;
+    procedure SetSrcPath(const AValue: string); virtual;
   protected
     procedure LoadTheCompilerOptions(const Path: string); virtual;
     procedure SaveTheCompilerOptions(const Path: string); virtual;
     procedure SetModified(const AValue: boolean); virtual;
     procedure ClearInheritedOptions;
+    procedure SetDefaultMakeOptionsFlags(const AValue: TCompilerCmdLineOptions);
   public
     constructor Create(TheOwner: TObject);
     destructor Destroy; override;
@@ -282,10 +287,11 @@ type
     property IncludeFiles: String read fIncludeFiles write SetIncludeFiles;
     property Libraries: String read fLibraries write SetLibraries;
     property OtherUnitFiles: String read fOtherUnitFiles write SetOtherUnitFiles;
+    property ObjectPath: string read FObjectPath write SetObjectPath;
+    property SrcPath: string read FSrcPath write SetSrcPath;
     property CompilerPath: String read fCompilerPath write SetCompilerPath;
     property UnitOutputDirectory: string read fUnitOutputDir write SetUnitOutputDir;
     property LCLWidgetType: string read fLCLWidgetType write fLCLWidgetType;
-    property ObjectPath: string read FObjectPath write SetObjectPath;
 
     // parsing:
     property Style: Integer read fStyle write fStyle;
@@ -590,8 +596,6 @@ type
     ImageIndexRequired: integer;
     ImageIndexInherited: integer;
     InheritedChildDatas: TList; // list of PInheritedNodeData
-    function GetOtherSourcePath: string;
-    procedure SetOtherSourcePath(const AValue: string);
     procedure SetReadOnly(const AValue: boolean);
     procedure UpdateInheritedTab;
     procedure ClearInheritedTree;
@@ -604,8 +608,6 @@ type
     procedure GetCompilerOptions;
     procedure PutCompilerOptions;
   public
-    property OtherSourcePath: string
-      read GetOtherSourcePath write SetOtherSourcePath;
     property ReadOnly: boolean read FReadOnly write SetReadOnly;
   end;
 
@@ -752,6 +754,13 @@ begin
   FDefaultMakeOptionsFlags:=AValue;
 end;
 
+procedure TBaseCompilerOptions.SetSrcPath(const AValue: string);
+begin
+  if FSrcPath=AValue then exit;
+  FSrcPath:=AValue;
+  ParsedOpts.SetUnparsedValue(pcosSrcPath,FSrcPath);
+end;
+
 procedure TBaseCompilerOptions.SetBaseDirectory(const AValue: string);
 begin
   if FBaseDirectory=AValue then exit;
@@ -826,6 +835,7 @@ begin
   UnitOutputDirectory := XMLConfigFile.GetValue(p+'UnitOutputDirectory/Value', '');
   LCLWidgetType := XMLConfigFile.GetValue(p+'LCLWidgetType/Value', 'gtk');
   ObjectPath := XMLConfigFile.GetValue(p+'ObjectPath/Value', '');
+  SrcPath := XMLConfigFile.GetValue(p+'SrcPath/Value', '');
 
   { Parsing }
   p:='CompilerOptions/Parsing/';
@@ -954,6 +964,7 @@ begin
   XMLConfigFile.SetDeleteValue(p+'UnitOutputDirectory/Value', UnitOutputDirectory,'');
   XMLConfigFile.SetDeleteValue(p+'LCLWidgetType/Value', LCLWidgetType,'');
   XMLConfigFile.SetDeleteValue(p+'ObjectPath/Value', ObjectPath,'');
+  XMLConfigFile.SetDeleteValue(p+'SrcPath/Value', SrcPath,'');
 
   { Parsing }
   p:='CompilerOptions/Parsing/';
@@ -1131,6 +1142,7 @@ begin
           MergeCustomOptions(fInheritedOptions[icoCustomOptions],
                        AddOptions.ParsedOpts.GetParsedValue(pcosCustomOptions));
       end;
+      OptionsList.Free;
     end;
     fInheritedOptParseStamps:=CompilerParseStamp;
     fInheritedOptGraphStamps:=CompilerGraphStamp;
@@ -1892,6 +1904,7 @@ begin
   CompilerPath := '$(CompPath)';
   UnitOutputDirectory := '';
   ObjectPath:='';
+  SrcPath:='';
   fLCLWidgetType := 'gtk';
   
   // parsing
@@ -1977,6 +1990,7 @@ begin
   UnitOutputDirectory := CompOpts.fUnitOutputDir;
   fLCLWidgetType := CompOpts.fLCLWidgetType;
   ObjectPath := CompOpts.FObjectPath;
+  SrcPath := CompOpts.SrcPath;
 
   // Parsing
   fStyle := CompOpts.fStyle;
@@ -2057,6 +2071,7 @@ begin
     and (fCompilerPath = CompOpts.fCompilerPath)
     and (fUnitOutputDir = CompOpts.fUnitOutputDir)
     and (FObjectPath = CompOpts.FObjectPath)
+    and (FSrcPath = CompOpts.FSrcPath)
 
     and (fLCLWidgetType = CompOpts.fLCLWidgetType)
 
@@ -2442,6 +2457,7 @@ begin
   edtIncludeFiles.Text := CompilerOpts.IncludeFiles;
   edtLibraries.Text := CompilerOpts.Libraries;
   grpLibraries.Enabled:=EnabledLinkerOpts;
+  edtOtherSources.Text := CompilerOpts.SrcPath;
   edtCompiler.Text := CompilerOpts.CompilerPath;
   edtUnitOutputDir.Text := CompilerOpts.UnitOutputDirectory;
   
@@ -2584,6 +2600,7 @@ begin
   CompilerOpts.IncludeFiles := edtIncludeFiles.Text;
   CompilerOpts.Libraries := edtLibraries.Text;
   CompilerOpts.OtherUnitFiles := edtOtherUnits.Text;
+  CompilerOpts.SrcPath := edtOtherSources.Text;
   CompilerOpts.CompilerPath := edtCompiler.Text;
   CompilerOpts.UnitOutputDirectory := edtUnitOutputDir.Text;
   
@@ -2632,6 +2649,7 @@ var
   end;
   
 begin
+  OptionsList:=nil;
   CompilerOpts.GetInheritedCompilerOptions(OptionsList);
   InhTreeView.BeginUpdate;
   ClearInheritedTree;
@@ -2682,6 +2700,7 @@ begin
       end;
       AncestorNode.Expanded:=true;
     end;
+    OptionsList.Free;
   end else begin
     InhTreeView.Items.Add(nil,'No compiler options inherited.');
   end;
@@ -4068,16 +4087,6 @@ begin
 
   with btnTest do
     SetBounds(x-120,y,120,Height);
-end;
-
-function TfrmCompilerOptions.GetOtherSourcePath: string;
-begin
-  Result:=edtOtherSources.Text;
-end;
-
-procedure TfrmCompilerOptions.SetOtherSourcePath(const AValue: string);
-begin
-  edtOtherSources.Text:=AValue;
 end;
 
 procedure TfrmCompilerOptions.SetReadOnly(const AValue: boolean);

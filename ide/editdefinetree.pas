@@ -38,8 +38,7 @@ uses
   Classes, SysUtils, IDEProcs, CodeToolManager, DefineTemplates,
   CompilerOptions, TransferMacros, LinkScanner, FileProcs;
 
-procedure CreateProjectDefineTemplate(CompOpts: TCompilerOptions;
-  const SrcPath: string);
+procedure CreateProjectDefineTemplate(CompOpts: TCompilerOptions);
 procedure SetAdditionalGlobalSrcPathToCodeToolBoss(const SrcPath: string);
 function FindCurrentProjectDirTemplate: TDefineTemplate;
 function FindCurrentProjectDirSrcPathTemplate: TDefineTemplate;
@@ -143,8 +142,7 @@ begin
   end;
 end;
 
-procedure CreateProjectDefineTemplate(CompOpts: TCompilerOptions;
-  const SrcPath: string);
+procedure CreateProjectDefineTemplate(CompOpts: TCompilerOptions);
 var ProjectDir, s: string;
   ProjTempl: TDefineTemplate;
 begin
@@ -234,11 +232,11 @@ begin
       da_DefineRecurse));
   end;
   // source path (unitpath + sources for the CodeTools, hidden to the compiler)
-  if (SrcPath<>'') or (s<>'') then begin
+  if (CompOpts.SrcPath<>'') or (s<>'') then begin
     // add compiled unit path
     ProjTempl.AddChild(TDefineTemplate.Create('SrcPath',
       'source path addition',ExternalMacroStart+'SrcPath',
-      ConvertTransferMacrosToExternalMacros(s+';'+SrcPath)+';'
+      ConvertTransferMacrosToExternalMacros(s+';'+CompOpts.SrcPath)+';'
       +'$('+ExternalMacroStart+'SrcPath)',
       da_DefineRecurse));
   end;
