@@ -35,6 +35,9 @@ interface
 {$IFDEF VER1_0_10}
   {$DEFINE DisableFPImage}
 {$ENDIF}
+{$IFNDEF VER1_0}
+  {$DEFINE UseFPCanvas}
+{$ENDIF}
 
 
 uses
@@ -1948,6 +1951,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.173  2005/02/25 20:29:55  mattias
+  FPCanvas is now used as default
+
   Revision 1.172  2005/01/15 11:56:13  mattias
   fixed locking TCanvas
 

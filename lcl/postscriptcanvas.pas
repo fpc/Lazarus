@@ -40,6 +40,9 @@ unit PostscriptCanvas;
 {$IFDEF VER1_0_10}
   {$DEFINE DisableFPImage}
 {$ENDIF}
+{$IFNDEF VER1_0}
+  {$DEFINE UseFPCanvas}
+{$ENDIF}
 
 interface
 
