@@ -144,8 +144,8 @@ Function RealizePalette(DC: HDC): Cardinal; Override;
 Function Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean; Override;
 function RectVisible(dc : hdc; const ARect: TRect) : Boolean; Override;
 Function ReleaseCapture: Boolean; Override;
-Function ReleaseDC(HWnd: HWND; DC: HDC): Integer; Override;
-Function ReleaseDesignerDC(HWnd: HWND; DC: HDC): Integer; Override;
+Function ReleaseDC(Window: HWND; DC: HDC): Integer; Override;
+Function ReleaseDesignerDC(Window: HWND; DC: HDC): Integer; Override;
 Function RestoreDC(DC: HDC; SavedDC: Integer): Boolean; Override;
 
 Function SaveDC(DC: HDC): Integer; Override;
@@ -190,6 +190,10 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.49  2004/03/05 12:16:09  micha
+  fix designer (overlay) window transparency issue
+  fix releasedesignerdc to use correct window
+
   Revision 1.48  2004/02/23 08:19:05  micha
   revert intf split
 

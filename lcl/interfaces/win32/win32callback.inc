@@ -389,14 +389,21 @@ Begin
     End;
     WM_CTLCOLORMSGBOX..WM_CTLCOLORSTATIC:
     Begin
-      MsgObject := TObject(GetProp(LParam, 'WinControl'));
-      if MsgObject is TWinControl then
+      if HWnd(Windows.GetProp(Window, 'Overlay')) = HWnd(LParam) then
       begin
-        Windows.SetTextColor(HDC(WParam), Windows.COLORREF(ColorToRGB(TWinControl(MsgObject).Font.Color)));
-        Windows.SetBkColor(HDC(WParam), Windows.COLORREF(ColorToRGB(TWinControl(MsgObject).Brush.Color)));
-        LMessage.Result := LResult(TWinControl(MsgObject).Brush.Handle);
-        // Override default handling
+        LMessage.Result := Windows.GetStockObject(NULL_BRUSH);
+        Windows.SetBkMode(HDC(WParam), TRANSPARENT);
         WinProcess := false;
+      end else begin
+        MsgObject := TObject(GetProp(LParam, 'WinControl'));
+        if MsgObject is TWinControl then
+        begin
+          Windows.SetTextColor(HDC(WParam), Windows.COLORREF(ColorToRGB(TWinControl(MsgObject).Font.Color)));
+          Windows.SetBkColor(HDC(WParam), Windows.COLORREF(ColorToRGB(TWinControl(MsgObject).Brush.Color)));
+          LMessage.Result := LResult(TWinControl(MsgObject).Brush.Handle);
+          // Override default handling
+          WinProcess := false;
+	end;
       end;
     End;
     WM_COPY:
@@ -936,12 +943,6 @@ begin
     begin
       Result := 1;
     end;
-    WM_PAINT:
-    begin
-      Windows.BeginPaint(Window, @PS);
-      Windows.EndPaint(Window, @PS);
-      Result := 1;
-    end;
   else
     Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
   end;
@@ -1108,6 +1109,10 @@ end;
 
 {
   $Log$
+  Revision 1.97  2004/03/05 12:16:08  micha
+  fix designer (overlay) window transparency issue
+  fix releasedesignerdc to use correct window
+
   Revision 1.96  2004/03/05 01:04:21  marc
   * Renamed TWin32Object to TWin32WidgetSet
 

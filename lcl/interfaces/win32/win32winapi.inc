@@ -2334,17 +2334,21 @@ End;
 
   Releases a device context (DC), freeing it for use by other applications.
  ------------------------------------------------------------------------------}
-Function TWin32WidgetSet.ReleaseDC(HWnd: HWND; DC: HDC): Integer;
+Function TWin32WidgetSet.ReleaseDC(Window: HWND; DC: HDC): Integer;
 Begin
   Assert(False, Format('Trace:> [TWin32WidgetSet.ReleaseDC] DC:0x%x', [DC]));
-  Result := Windows.ReleaseDC(HWnd, DC);
+  Result := Windows.ReleaseDC(Window, DC);
   Assert(False, Format('Trace:< [TWin32WidgetSet.ReleaseDC] DC:0x%x', [DC]));
 End;
 
-Function TWin32WidgetSet.ReleaseDesignerDC(HWnd: HWND; DC: HDC): Integer;
+Function TWin32WidgetSet.ReleaseDesignerDC(Window: HWND; DC: HDC): Integer;
+var
+  OverlayWindow: HWND;
 Begin
   Assert(False, Format('Trace:> [TWin32WidgetSet.ReleaseDC] DC:0x%x', [DC]));
-  Result := Windows.ReleaseDC(HWnd, DC);
+  OverlayWindow := Windows.GetProp(Window, 'Overlay');
+  if OverlayWindow <> HWND(nil) then
+    Result := Windows.ReleaseDC(OverlayWindow, DC);
   Assert(False, Format('Trace:< [TWin32WidgetSet.ReleaseDC] DC:0x%x', [DC]));
 End;
 
@@ -2917,6 +2921,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.103  2004/03/05 12:16:09  micha
+  fix designer (overlay) window transparency issue
+  fix releasedesignerdc to use correct window
+
   Revision 1.102  2004/03/05 01:04:21  marc
   * Renamed TWin32Object to TWin32WidgetSet
 

@@ -887,11 +887,11 @@ begin
   //writeln('TDesigner.PaintControl C ',Sender.Name,' DC=',HexStr(Cardinal(TheMessage.DC),8));
 
   // paint the Designer stuff
-  if TheMessage.DC<>0 then begin
+  if TheMessage.DC <> 0 then begin
     Include(FFlags,dfNeedPainting);
 
     InternalPaint:=(TheMessage.Msg=LM_INTERNALPAINT);
-    DDC.SetDC(Form,TheMessage.DC);
+    DDC.SetDC(Form, TheMessage.DC);
     {$IFDEF VerboseDesignerDraw}
     writeln('TDesigner.PaintControl D ',Sender.Name,':',Sender.ClassName,
       ' DC=',HexStr(DDC.DC,8),
