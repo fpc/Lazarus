@@ -450,6 +450,7 @@ type
     property Modified : Boolean read GetModified write SetModified;
     property Text;
   published
+    property PopupMenu;
     property TabStop;
     property TabOrder;
   end;
@@ -1522,6 +1523,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.57  2002/10/20 22:57:18  lazarus
+  AJ:switched to gtk_widget_newv to work around array of const
+
   Revision 1.56  2002/10/20 21:54:03  lazarus
   MG: fixes for 1.1
 
