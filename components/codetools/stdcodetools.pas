@@ -112,6 +112,11 @@ type
           AVarName: string; SourceChangeCache: TSourceChangeCache): boolean;
     function RemoveCreateFormStatement(const UpperVarName: string;
           SourceChangeCache: TSourceChangeCache): boolean;
+    function ChangeCreateFormStatement(StartPos: integer;
+          const OldClassName, OldVarName: string;
+          const NewClassName, NewVarName: string;
+          OnlyIfExists: boolean;
+          SourceChangeCache: TSourceChangeCache): boolean;
     function ListAllCreateFormStatements: TStrings;
     function SetAllCreateFromStatements(List: TStrings;
           SourceChangeCache: TSourceChangeCache): boolean;    
@@ -637,7 +642,9 @@ begin
       FromPos:=Scanner.Links[i].CleanedPos;
     end;
     if not SourceChangeCache.ReplaceEx(gtNewLine,gtNewLine,FromPos,FromPos,
-      ResourceCode,ResourceCode.SourceLength+1,ResourceData) then exit;
+      ResourceCode,ResourceCode.SourceLength+1,ResourceCode.SourceLength+1,
+      ResourceData)
+    then exit;
   end;
   if not SourceChangeCache.Apply then exit;
   Result:=true;
@@ -808,12 +815,14 @@ begin
        SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
          'Application.CreateForm('+AClassName+','+AVarName+');',Indent));
   end else begin
+    // it exists -> replace it
     FromPos:=FindLineEndOrCodeInFrontOfPosition(OldPosition.StartPos);
     ToPos:=FindFirstLineEndAfterInCode(OldPosition.EndPos);
     SourceChangeCache.MainScanner:=Scanner;
     SourceChangeCache.Replace(gtNewLine,gtNewLine,FromPos,ToPos,
        SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
-         'Application.CreateForm('+AClassName+','+AVarName+')',2));
+         'Application.CreateForm('+AClassName+','+AVarName+');',
+         SourceChangeCache.BeautifyCodeOptions.Indent));
   end;
   Result:=SourceChangeCache.Apply;
 end;
@@ -831,6 +840,45 @@ begin
   SourceChangeCache.MainScanner:=Scanner;
   SourceChangeCache.Replace(gtNone,gtNone,FromPos,ToPos,'');
   Result:=SourceChangeCache.Apply;
+end;
+
+function TStandardCodeTool.ChangeCreateFormStatement(StartPos: integer;
+  const OldClassName, OldVarName: string;
+  const NewClassName, NewVarName: string;
+  OnlyIfExists: boolean; SourceChangeCache: TSourceChangeCache): boolean;
+var MainBeginNode: TCodeTreeNode;
+  OldPosition: TAtomPosition;
+  FromPos, ToPos, Indent: integer;
+begin
+  Result:=false;
+  if (OldClassName='') or (length(OldClassName)>255)
+  or (OldVarName='') or (length(OldVarName)>255)
+  or (NewClassName='') or (length(NewClassName)>255)
+  or (NewVarName='') or (length(NewVarName)>255)
+  then exit;
+  BuildTree(false);
+  MainBeginNode:=FindMainBeginEndNode;
+  if MainBeginNode=nil then exit;
+  FromPos:=-1;
+  if FindCreateFormStatement(MainBeginNode.StartPos,UpperCaseStr(OldClassName),
+    UpperCaseStr(OldVarName),OldPosition)=-1 then begin
+    // does not exists
+    if OnlyIfExists then begin
+      Result:=true;
+      exit;
+    end;
+    Result:=AddCreateFormStatement(NewClassName,NewVarName,SourceChangeCache);
+  end else begin
+    // replace
+    FromPos:=FindLineEndOrCodeInFrontOfPosition(OldPosition.StartPos);
+    ToPos:=FindFirstLineEndAfterInCode(OldPosition.EndPos);
+    SourceChangeCache.MainScanner:=Scanner;
+    SourceChangeCache.Replace(gtNewLine,gtNewLine,FromPos,ToPos,
+       SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
+         'Application.CreateForm('+NewClassName+','+NewVarName+');',
+         SourceChangeCache.BeautifyCodeOptions.Indent));
+    Result:=SourceChangeCache.Apply;
+  end;
 end;
 
 function TStandardCodeTool.ListAllCreateFormStatements: TStrings;
@@ -962,13 +1010,13 @@ end;
 function TStandardCodeTool.ReplaceIdentifiers(IdentList: TStrings;
   SourceChangeCache: TSourceChangeCache): boolean;
   
-  procedure ReplaceIdentifiersInSource(Code: TCodeBuffer);
+  procedure ReplaceIdentifiersInSource(ACode: TCodeBuffer);
   var
-    StartPos, EndPos, MaxPos, IdentStart: integer;
+    StartPos, EndPos, MaxPos, IdentStart, IdentEnd: integer;
     CurSource: string;
     i: integer;
   begin
-    CurSource:=Code.Source;
+    CurSource:=ACode.Source;
     MaxPos:=length(CurSource);
     StartPos:=1;
     // go through all source parts between compiler directives
@@ -986,7 +1034,9 @@ function TStandardCodeTool.ReplaceIdentifiers(IdentList: TStrings;
                                                  @CurSource[IdentStart])=0 then
             begin
               // identifier found -> replace
-
+              IdentEnd:=IdentStart+length(IdentList[i]);
+              SourceChangeCache.ReplaceEx(gtNone,gtNone,1,1,
+                ACode,IdentStart,IdentEnd,IdentList[i+1]);
               break;
             end;
             inc(i,2);
@@ -1018,6 +1068,7 @@ begin
   or (Odd(IdentList.Count)) then exit;
   BuildTree(false);
   if Scanner=nil then exit;
+  SourceChangeCache.MainScanner:=Scanner;
   SourceList:=TList.Create;
   try
     Scanner.FindCodeInRange(1,SrcLen,SourceList);
@@ -1027,6 +1078,8 @@ begin
   finally
     SourceList.Free;
   end;
+  if not SourceChangeCache.Apply then exit;
+  Result:=true;
 end;
 
 function TStandardCodeTool.FindPublishedVariable(const UpperClassName,

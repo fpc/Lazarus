@@ -271,6 +271,10 @@ type
           const AClassName, AVarName: string): boolean;
     function RemoveCreateFormStatement(Code: TCodeBuffer;
           const AVarName: string): boolean;
+    function ChangeCreateFormStatement(Code: TCodeBuffer;
+          const OldClassName, OldVarName: string;
+          const NewClassName, NewVarName: string;
+          OnlyIfExists: boolean): boolean;
     function ListAllCreateFormStatements(Code: TCodeBuffer): TStrings;
     function SetAllCreateFromStatements(Code: TCodeBuffer; 
           List: TStrings): boolean;
@@ -1314,6 +1318,26 @@ begin
   if not InitCurCodeTool(Code) then exit;
   try
     Result:=FCurCodeTool.RemoveCreateFormStatement(UpperCaseStr(AVarName),
+                    SourceChangeCache);
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.ChangeCreateFormStatement(Code: TCodeBuffer;
+  const OldClassName, OldVarName: string; const NewClassName,
+  NewVarName: string; OnlyIfExists: boolean): boolean;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.ChangeCreateFormStatement A ',Code.Filename,
+    ' ',OldVarName.':',OldClassName,' -> ',NewVarName.':',NewClassName,
+    ' OnlyIfExists=',OnlyIfExists);
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.ChangeCreateFormStatement(-1,OldClassName,OldVarName,
+                    NewClassName,NewVarName,true,
                     SourceChangeCache);
   except
     on e: Exception do Result:=HandleException(e);

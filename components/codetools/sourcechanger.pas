@@ -115,11 +115,14 @@ type
     FrontGap, AfterGap: TGapTyp;
     FromPos, ToPos: integer;
     Text: string;
-    FromCode: TCodeBuffer;
-    FromDirectPos: integer;
+    DirectCode: TCodeBuffer; // set if change of non cleaned source
+    FromDirectPos, ToDirectPos: integer;
+    IsDirectChange: boolean;
     constructor Create(aFrontGap, anAfterGap: TGapTyp; aFromPos,
-        aToPos: integer; const aText: string; aFromCode: TCodeBuffer;
-        aFromDirectPos: integer);
+        aToPos: integer; const aText: string; aDirectCode: TCodeBuffer;
+        aFromDirectPos, AToDirectPos: integer; aIsDirectChange: boolean);
+    function IsDeleteOperation: boolean;
+    function IsAtSamePos(AnEntry: TSourceChangeCacheEntry): boolean;
   end;
   
   //----------------------------------------------------------------------------
@@ -137,7 +140,9 @@ type
     FUpdateLock: integer;
     Src: string; // current cleaned source
     SrcLen: integer; // same as length(Src)
-    procedure DeleteOldText(CleanFromPos,CleanToPos: integer);
+    procedure DeleteCleanText(CleanFromPos,CleanToPos: integer);
+    procedure DeleteDirectText(ACode: TCodeBuffer;
+        DirectFromPos,DirectToPos: integer);
     procedure InsertNewText(ACode: TCodeBuffer; DirectPos: integer;
         const InsertText: string);
     procedure SetMainScanner(NewScanner: TLinkScanner);
@@ -151,7 +156,7 @@ type
     function Replace(FrontGap, AfterGap: TGapTyp; FromPos, ToPos: integer;
         const Text: string): boolean;
     function ReplaceEx(FrontGap, AfterGap: TGapTyp; FromPos, ToPos: integer;
-        FromCode: TCodeBuffer; FromDirectPos: integer;
+        DirectCode: TCodeBuffer; FromDirectPos, ToDirectPos: integer;
         const Text: string): boolean;
     function Apply: boolean;
     function FindEntryInRange(FromPos, ToPos: integer): TSourceChangeCacheEntry;
@@ -204,6 +209,7 @@ function MethodInsertPolicyNameToPolicy(const s: string): TMethodInsertPolicy;
 function ForwardProcInsertPolicyNameToPolicy(
   const s: string): TForwardProcInsertPolicy;
 
+
 implementation
 
 
@@ -253,15 +259,21 @@ begin
     Result:=1
   else if Entry1.FromPos<Entry2.FromPos then
     Result:=-1
-  else
-    Result:=0;
+  else begin
+    if Entry1.FromDirectPos>Entry2.FromDirectPos then
+      Result:=1
+    else if Entry1.FromDirectPos<Entry2.FromDirectPos then
+      Result:=-1
+    else
+      Result:=0;
+  end;
 end;
 
 { TSourceChangeCacheEntry }
 
 constructor TSourceChangeCacheEntry.Create(aFrontGap, anAfterGap: TGapTyp;
-  aFromPos, aToPos: integer; const aText: string; aFromCode: TCodeBuffer;
-  aFromDirectPos: integer);
+  aFromPos, aToPos: integer; const aText: string; aDirectCode: TCodeBuffer;
+  aFromDirectPos, AToDirectPos: integer; aIsDirectChange: boolean);
 begin
   inherited Create;
   FrontGap:=aFrontGap;
@@ -269,8 +281,22 @@ begin
   FromPos:=aFromPos;
   ToPos:=aToPos;
   Text:=aText;
-  FromCode:=aFromCode;
+  DirectCode:=aDirectCode;
   FromDirectPos:=aFromDirectPos;
+  ToDirectPos:=aToDirectPos;
+  IsDirectChange:=aIsDirectChange;
+end;
+
+function TSourceChangeCacheEntry.IsDeleteOperation: boolean;
+begin
+  Result:=(ToPos>FromPos)
+   or ((DirectCode<>nil) and (FromDirectPos>0) and (ToDirectPos>FromDirectPos));
+end;
+
+function TSourceChangeCacheEntry.IsAtSamePos(AnEntry: TSourceChangeCacheEntry
+  ): boolean;
+begin
+  Result:=(FromPos=AnEntry.FromPos) and (FromDirectPos=AnEntry.FromDirectPos);
 end;
 
 
@@ -330,39 +356,48 @@ begin
   Result:=nil;
 end;
 
-function TSourceChangeCache.ReplaceEx(FrontGap, AfterGap: TGapTyp; 
+function TSourceChangeCache.ReplaceEx(FrontGap, AfterGap: TGapTyp;
   FromPos, ToPos: integer;
-  FromCode: TCodeBuffer; FromDirectPos: integer;
+  DirectCode: TCodeBuffer; FromDirectPos, ToDirectPos: integer;
   const Text: string): boolean;
-var ANode: TAVLTreeNode;
+var
+  ANode: TAVLTreeNode;
   NewEntry: TSourceChangeCacheEntry;
   p: pointer;
+  IsDirectChange: boolean;
 begin
   {$IFDEF CTDEBUG}
   writeln('TSourceChangeCache.ReplaceEx FrontGap=',ord(FrontGap),
-  ' AfterGap=',ord(AfterGap),' FromPos=',FromPos,' ToPos=',ToPos,
+  ' AfterGap=',ord(AfterGap),' CleanPos=',FromPos,'-',ToPos,
   ' Text="',Text,'"');
-  if FromCode<>nil then writeln('FromCode=',FromCode.Filename,' FromDirectPos=',FromDirectPos);
+  if DirectCode<>nil then
+    writeln('DirectCode=',DirectCode.Filename,' DirectPos=',FromDirectPos,'-',ToDirectPos);
   {$ENDIF}
   Result:=false;
   if (MainScanner=nil) or (FromPos>ToPos) or (FromPos<1)
   or (ToPos>MainScanner.CleanedLen+1) then
     exit;
+  IsDirectChange:=DirectCode<>nil;
   if FindEntryInRange(FromPos,ToPos)<>nil then exit;
+  
   if ToPos>FromPos then begin
     // this is a delete operation -> check the whole range for writable buffers
     if not MainScanner.WholeRangeIsWritable(FromPos,ToPos) then exit;
+  end else if (DirectCode<>nil) and (FromDirectPos<ToDirectPos) then begin
+    // this is a direct delete operation -> check if the DirectCode is writable
+    if DirectCode.ReadOnly then exit;
   end;
-  if FromCode=nil then begin
+  if DirectCode=nil then begin
     if not MainScanner.CleanedPosToCursor(FromPos,FromDirectPos,p) then
       exit;
-    FromCode:=TCodeBuffer(p);
+    DirectCode:=TCodeBuffer(p);
+    ToDirectPos:=0;
   end;
   // add entry
   NewEntry:=TSourceChangeCacheEntry.Create(FrontGap,AfterGap,FromPos,ToPos,
-                                           Text,FromCode,FromDirectPos);
+                      Text,DirectCode,FromDirectPos,ToDirectPos,IsDirectChange);
   ANode:=FEntries.Add(NewEntry);
-  if ToPos=FromPos then
+  if not NewEntry.IsDeleteOperation then
     FEntries.MoveDataLeftMost(ANode)
   else
     // the new entry is a delete operation -> put it rightmost, so that it will
@@ -379,7 +414,7 @@ end;
 function TSourceChangeCache.Replace(FrontGap, AfterGap: TGapTyp;
   FromPos, ToPos: integer; const Text: string): boolean;
 begin
-  Result:=ReplaceEx(FrontGap,AfterGap,FromPos,ToPos,nil,0,Text);
+  Result:=ReplaceEx(FrontGap,AfterGap,FromPos,ToPos,nil,0,0,Text);
 end;
 
 procedure TSourceChangeCache.Clear;
@@ -412,12 +447,108 @@ begin
 end;
 
 function TSourceChangeCache.Apply: boolean;
-var CurNode, PrecNode: TAVLTreeNode;
+var
+  CurNode, PrecNode: TAVLTreeNode;
   CurEntry, PrecEntry, FirstEntry: TSourceChangeCacheEntry;
   InsertText: string;
-  i, j, NeededLineEnds, NeededIndent, FromPosAdjustment: integer;
+  FromPosAdjustment: integer;
   BetweenGap: TGapTyp;
   Abort: boolean;
+  
+  procedure AddAfterGap(AnEntry: TSourceChangeCacheEntry);
+  var
+    ToPos, ToSrcLen: integer;
+    ToSrc: string;
+    NeededLineEnds, NeededIndent, i, j: integer;
+  begin
+    if not AnEntry.IsDirectChange then begin
+      ToPos:=AnEntry.ToPos;
+      ToSrc:=Src;
+    end else begin
+      ToPos:=AnEntry.ToDirectPos;
+      ToSrc:=AnEntry.DirectCode.Source;
+    end;
+    case AnEntry.AfterGap of
+      gtSpace:
+        begin
+          if ((ToPos>length(ToSrc))
+              or (not IsSpaceChar[ToSrc[ToPos]])) then
+            InsertText:=InsertText+' ';
+        end;
+      gtNewLine:
+        begin
+          NeededLineEnds:=CountNeededLineEndsToAddForward(ToSrc,ToPos,1);
+          if NeededLineEnds>0 then
+            InsertText:=InsertText+BeautifyCodeOptions.LineEnd;
+        end;
+      gtEmptyLine:
+        begin
+          NeededLineEnds:=CountNeededLineEndsToAddForward(ToSrc,ToPos,2);
+          for i:=1 to NeededLineEnds do
+            InsertText:=InsertText+BeautifyCodeOptions.LineEnd;
+        end;
+    end;
+    if AnEntry.AfterGap in [gtNewLine,gtEmptyLine] then begin
+      // move the rest of the line behind the insert position to the next line
+      // with auto indent
+      NeededIndent:=GetLineIndent(ToSrc,ToPos);
+      j:=ToPos;
+      ToSrcLen:=length(ToSrc);
+      while (j<=ToSrcLen) and (IsSpaceChar[ToSrc[j]]) do
+        inc(j);
+      dec(NeededIndent,j-ToPos);
+      if NeededIndent>0 then
+        InsertText:=InsertText+GetIndentStr(NeededIndent);
+    end;
+  end;
+  
+  procedure AddFrontGap(AnEntry: TSourceChangeCacheEntry);
+  var
+    NeededLineEnds: integer;
+    FromPos: integer;
+    FromSrc: string;
+    i: integer;
+  begin
+    if not AnEntry.IsDirectChange then begin
+      FromPos:=AnEntry.FromPos;
+      FromSrc:=Src;
+    end else begin
+      FromPos:=AnEntry.FromDirectPos;
+      FromSrc:=AnEntry.DirectCode.Source;
+    end;
+    NeededLineEnds:=0;
+    case CurEntry.FrontGap of
+      gtSpace:
+        begin
+          if (FromPos<=1)
+          or (not IsSpaceChar[FromSrc[FromPos-1]]) then
+            InsertText:=' '+InsertText;
+        end;
+      gtNewLine:
+        begin
+          NeededLineEnds:=CountNeededLineEndsToAddBackward(FromSrc,FromPos-1,1);
+          if NeededLineEnds>0 then
+            InsertText:=BeautifyCodeOptions.LineEnd+InsertText;
+        end;
+      gtEmptyLine:
+        begin
+          NeededLineEnds:=CountNeededLineEndsToAddBackward(FromSrc,FromPos-1,2);
+          for i:=1 to NeededLineEnds do
+            InsertText:=BeautifyCodeOptions.LineEnd+InsertText;
+        end;
+    end;
+    FromPosAdjustment:=0;
+    if (CurEntry.FrontGap in [gtNewLine,gtEmptyLine]) and (NeededLineEnds=0)
+    then begin
+      // no line end was inserted in front
+      // -> adjust the FromPos to replace the space in the existing line
+      while (FromPos+FromPosAdjustment>1)
+      and (not (FromSrc[FromPos+FromPosAdjustment-1]
+        in [#10,#13]))
+      do dec(FromPosAdjustment);
+    end;
+  end;
+  
 begin
   {$IFDEF CTDEBUG}
   writeln('TSourceChangeCache.Apply EntryCount=',FEntries.Count);
@@ -449,45 +580,13 @@ begin
       {$ENDIF}
       InsertText:=FirstEntry.Text;
       // add after gap
-      case FirstEntry.AfterGap of
-        gtSpace:
-          begin
-            if ((FirstEntry.ToPos>SrcLen)
-                or (not IsSpaceChar[Src[FirstEntry.ToPos]])) then
-              InsertText:=InsertText+' ';
-          end;
-        gtNewLine:
-          begin
-            NeededLineEnds:=CountNeededLineEndsToAddForward(Src,
-              FirstEntry.ToPos,1);
-            if NeededLineEnds>0 then
-              InsertText:=InsertText+BeautifyCodeOptions.LineEnd;
-          end;
-        gtEmptyLine:
-          begin
-            NeededLineEnds:=CountNeededLineEndsToAddForward(Src,
-              FirstEntry.ToPos,2);
-            for i:=1 to NeededLineEnds do
-              InsertText:=InsertText+BeautifyCodeOptions.LineEnd;
-          end;
-      end;
-      if FirstEntry.AfterGap in [gtNewLine,gtEmptyLine] then begin
-        // move the rest of the line behind the insert position to the next line
-        // with auto indent
-        NeededIndent:=GetLineIndent(Src,FirstEntry.ToPos);
-        j:=FirstEntry.ToPos;
-        while (j<=SrcLen) and (IsSpaceChar[Src[j]]) do
-          inc(j);
-        dec(NeededIndent,j-FirstEntry.ToPos);
-        if NeededIndent>0 then
-          InsertText:=InsertText+GetIndentStr(NeededIndent);
-      end;
+      AddAfterGap(FirstEntry);
       // add text from nodes inserted at the same position
       PrecNode:=FEntries.FindPrecessor(CurNode);
       CurEntry:=FirstEntry;
       while (PrecNode<>nil) do begin
         PrecEntry:=TSourceChangeCacheEntry(PrecNode.Data);
-        if PrecEntry.FromPos=CurEntry.FromPos then begin
+        if PrecEntry.IsAtSamePos(CurEntry) then begin
           BetweenGap:=PrecEntry.AfterGap;
           if ord(BetweenGap)<ord(CurEntry.FrontGap) then
             BetweenGap:=CurEntry.FrontGap;
@@ -508,43 +607,16 @@ begin
         PrecNode:=FEntries.FindPrecessor(CurNode);
       end;
       // add front gap
-      NeededLineEnds:=0;
-      case CurEntry.FrontGap of
-        gtSpace:
-          begin
-            if (CurEntry.FromPos=1)
-            or (not IsSpaceChar[Src[CurEntry.FromPos-1]]) then
-              InsertText:=' '+InsertText;
-          end;
-        gtNewLine:
-          begin
-            NeededLineEnds:=CountNeededLineEndsToAddBackward(Src,
-                                      CurEntry.FromPos-1,1);
-            if NeededLineEnds>0 then
-              InsertText:=BeautifyCodeOptions.LineEnd+InsertText;
-          end;
-        gtEmptyLine:
-          begin
-            NeededLineEnds:=CountNeededLineEndsToAddBackward(Src,
-                                CurEntry.FromPos-1,2);
-            for i:=1 to NeededLineEnds do
-              InsertText:=BeautifyCodeOptions.LineEnd+InsertText;
-          end;
-      end;
-      FromPosAdjustment:=0;
-      if (CurEntry.FrontGap in [gtNewLine,gtEmptyLine]) and (NeededLineEnds=0)
-      then begin
-        // no line end was inserted in front
-        // -> adjust the FromPos to replace the space in the existing line
-        while (FirstEntry.FromPos+FromPosAdjustment>1)
-        and (not (Src[FirstEntry.FromPos+FromPosAdjustment-1]
-          in [#10,#13]))
-        do dec(FromPosAdjustment);
-      end;
+      AddFrontGap(CurEntry);
       // delete old text in code buffers
-      DeleteOldText(FirstEntry.FromPos+FromPosAdjustment,FirstEntry.ToPos);
+      if not FirstEntry.IsDirectChange then
+        DeleteCleanText(FirstEntry.FromPos+FromPosAdjustment,FirstEntry.ToPos)
+      else
+        DeleteDirectText(FirstEntry.DirectCode,
+                         FirstEntry.FromDirectPos+FromPosAdjustment,
+                         FirstEntry.ToDirectPos);
       // insert new text
-      InsertNewText(FirstEntry.FromCode,
+      InsertNewText(FirstEntry.DirectCode,
                     FirstEntry.FromDirectPos+FromPosAdjustment,InsertText);
       CurNode:=PrecNode;
     end;
@@ -555,12 +627,24 @@ begin
   Result:=true;
 end;
 
-procedure TSourceChangeCache.DeleteOldText(CleanFromPos,CleanToPos: integer);
+procedure TSourceChangeCache.DeleteCleanText(CleanFromPos,CleanToPos: integer);
 begin
   {$IFDEF CTDEBUG}
-  writeln('[TSourceChangeCache.DeleteOldText] Pos=',CleanFromPos,'-',CleanToPos);
+  writeln('[TSourceChangeCache.DeleteCleanText] Pos=',CleanFromPos,'-',CleanToPos);
   {$ENDIF}
+  if CleanFromPos=CleanToPos then exit;
   MainScanner.DeleteRange(CleanFromPos,CleanToPos);
+end;
+
+procedure TSourceChangeCache.DeleteDirectText(ACode: TCodeBuffer; DirectFromPos,
+  DirectToPos: integer);
+begin
+  {$IFDEF CTDEBUG}
+  writeln('[TSourceChangeCache.DeleteDirectText] Code=',ACode.Filename,
+  ' Pos=',DirectFromPos,'-',DirectToPos);
+  {$ENDIF}
+  if DirectFromPos=DirectToPos then exit;
+  ACode.Delete(DirectFromPos,DirectToPos-DirectFromPos);
 end;
 
 procedure TSourceChangeCache.InsertNewText(ACode: TCodeBuffer;
@@ -570,6 +654,7 @@ begin
   writeln('[TSourceChangeCache.InsertNewText] Code=',ACode.Filename,
   ' Pos=',DirectPos,' Text="',InsertText,'"');
   {$ENDIF}
+  if InsertText='' then exit;
   ACode.Insert(DirectPos,InsertText);
 end;
 
