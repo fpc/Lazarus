@@ -3468,8 +3468,15 @@ end;
   
  ------------------------------------------------------------------------------}
 Function GetWindowDecorations(AForm : TCustomForm) : Longint;
+var
+  ABorderStyle: TFormBorderStyle;
 begin
-  Case AForm.BorderStyle of
+  if not (csDesigning in AForm.ComponentState) then
+    ABorderStyle:=AForm.BorderStyle
+  else
+    ABorderStyle:=bsSizeable;
+    
+  Case ABorderStyle of
     bsNone : Result := 0;
 
     bsSingle : Result := GDK_DECOR_BORDER or GDK_DECOR_TITLE or
@@ -3494,8 +3501,15 @@ end;
 
  ------------------------------------------------------------------------------}
 Function GetWindowFunction(AForm : TCustomForm) : Longint;
+var
+  ABorderStyle: TFormBorderStyle;
 begin
-  Case AForm.BorderStyle of
+  if not (csDesigning in AForm.ComponentState) then
+    ABorderStyle:=AForm.BorderStyle
+  else
+    ABorderStyle:=bsSizeable;
+
+  Case ABorderStyle of
     bsNone : Result := GDK_FUNC_MOVE or GDK_FUNC_CLOSE;
 
     bsSingle : Result := GDK_FUNC_RESIZE or GDK_FUNC_MOVE or
@@ -3523,6 +3537,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.114  2002/10/06 17:55:46  lazarus
+  MG: JITForms now sets csDesigning before creation
+
   Revision 1.113  2002/10/05 10:37:22  lazarus
   MG: fixed TComboBox.ItemIndex on CreateWnd
 
