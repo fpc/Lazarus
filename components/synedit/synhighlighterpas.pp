@@ -276,7 +276,7 @@ implementation
 
 uses
   SynEditStrConst;
-
+  
 var
   Identifiers: array[#0..#255] of ByteBool;
   mHashTable: array[#0..#255] of Integer;

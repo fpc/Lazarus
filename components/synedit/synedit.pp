@@ -2291,7 +2291,7 @@ var
     pszText: PChar;
     nX, nCharsToPaint: integer;
   const
-    ETOOptions = ETO_CLIPPED or ETO_OPAQUE;
+    ETOOptions = {$IFNDEF SYN_LAZARUS}ETO_CLIPPED or {$ENDIF}ETO_OPAQUE;
   begin
     if (Last >= First) and (rcToken.Right > rcToken.Left) then begin
       nX := ColumnToXValue(First);
