@@ -569,7 +569,7 @@ procedure TGtkObject.AppTerminate;
     Cursor:=nil;
   end;
   
-  procedure DeleteAndNilBrush(var h: HBRUSH);
+  procedure DeleteAndNilObject(var h: HGDIOBJ);
   begin
     DeleteObject(h);
     h:=0;
@@ -603,17 +603,19 @@ begin
   gtk_object_unref(PGTKObject(FGTKToolTips));
   FGTKToolTips := nil;
    
-  DeleteAndNilBrush(FStockNullBrush);
-  DeleteAndNilBrush(FStockBlackBrush);
-  DeleteAndNilBrush(FStockLtGrayBrush);
-  DeleteAndNilBrush(FStockGrayBrush);
-  DeleteAndNilBrush(FStockDkGrayBrush);
-  DeleteAndNilBrush(FStockWhiteBrush);
+  DeleteAndNilObject(FStockNullBrush);
+  DeleteAndNilObject(FStockBlackBrush);
+  DeleteAndNilObject(FStockLtGrayBrush);
+  DeleteAndNilObject(FStockGrayBrush);
+  DeleteAndNilObject(FStockDkGrayBrush);
+  DeleteAndNilObject(FStockWhiteBrush);
    
-  DeleteAndNilBrush(FStockNullPen);
-  DeleteAndNilBrush(FStockBlackPen);
-  DeleteAndNilBrush(FStockWhitePen);
+  DeleteAndNilObject(FStockNullPen);
+  DeleteAndNilObject(FStockBlackPen);
+  DeleteAndNilObject(FStockWhitePen);
    
+  DeleteAndNilObject(FStockSystemFont);
+
   // MG: using gtk_main_quit is not a clean way to close
   //gtk_main_quit;
 end;
@@ -698,6 +700,8 @@ begin
   FStockWhitePen := CreatePenIndirect(LogPen);
   LogPen.lopnColor := $000000;
   FStockBlackPen := CreatePenIndirect(LogPen);
+
+  FStockSystemFont := 0;//Styles aren't initialized yet
 
   // clipboard
   ClipboardTypeAtoms[ctPrimarySelection]:=GDK_SELECTION_PRIMARY;
@@ -797,6 +801,7 @@ var
   Titles    : Array [0..255] of PChar;
   BitImage : TBitmap;
   Geometry : TGdkGeometry;
+  Accel : Longint;
 begin
   Result := 0;   //default value just in case nothing sets it
 
@@ -1072,7 +1077,10 @@ begin
 
          pStr := StrAlloc(length(TBitBtn(Sender).Caption) + 1);
          StrPCopy(pStr, TBitBtn(Sender).Caption);
+         Accel := Ampersands2Underscore(pStr);
          pLabel := gtk_label_new(pstr);
+         If Accel <> -1 then
+           gtk_label_parse_uline(PGtkLabel(pLabel), pStr);
          StrDispose(pStr);
          if (TBitBtn(Sender).Layout = blGlyphLeft)
          or (TBitBtn(Sender).Layout = blGlyphTop) then
@@ -1645,7 +1653,18 @@ begin
         with TLMShortcut(data^) do begin
           Widget:= PGtkWidget(Handle);
         end;
-        Accelerate(Widget, TLMShortcut(data^));
+        case TControl(Sender).fCompStyle of
+          csBitBtn,
+          csButton,
+          csToolButton:
+            Try
+              AccelerateButton(Widget, TLMShortcut(data^));
+            except
+              Assert(False, Format('WARNING:[TgtkObject.IntSendMessage3] unknown error occured in LM_SETSHORTCUT',[]));
+            end;
+          else
+            Accelerate(Widget, TLMShortcut(data^));
+        end;
       end;
 
       LM_SETGEOMETRY :
@@ -1863,7 +1882,9 @@ procedure TgtkObject.SetLabel(Sender : TObject; Data : Pointer);
 
 var
   P : Pointer;
+  aLabel,
   pLabel: pchar;
+  Accel : Longint;
 begin
   if Sender is TMenuItem then begin
     SetMenuItemCaption;
@@ -1889,15 +1910,24 @@ begin
   csButton,
   csToolButton  : with PgtkButton(P)^ do
                   begin
-                     if Child = nil then 
-                     begin
+                    aLabel := StrAlloc(Length(AnsiString(PLabel)) + 1);
+                    Try
+                      StrPCopy(aLabel, AnsiString(PLabel));
+                      Accel := Ampersands2Underscore(aLabel);
+                      if Child = nil then
+                      begin
                         Assert(False, Format('trace:  [TgtkObject.SetLabel] %s has no child label', [Sender.ClassName]));
-                        child := gtk_label_new(pLabel)
-                     end
-                     else begin
+                        child := gtk_label_new(aLabel)
+                      end
+                      else begin
                         Assert(False, Format('trace:  [TgtkObject.SetLabel] %s has child label', [Sender.ClassName]));
-                        gtk_label_set_text(pgtkLabel(Child), PLabel);
-                     end;
+                        gtk_label_set_text(pgtkLabel(Child), aLabel);
+                      end;
+                      If Accel <> -1 then
+                        gtk_label_parse_uline(PGtkLabel(Child), aLabel);
+                    Finally
+                      StrDispose(aLabel);
+                    end;
                   end;
 
   csForm, 
@@ -3226,6 +3256,7 @@ var
    //TempStr   : String;            // currently only used for TBitBtn to load default pixmap
    //pStr      : PChar;             // currently only used for TBitBtn to load default pixmap
    ParentForm: TCustomForm;
+   Accel : Longint;
 
   procedure Set_RC_Name(AWidget: PGtkWidget);
   var RCName: string;
@@ -3326,7 +3357,11 @@ begin
 
   csButton :
     begin
-       p := gtk_button_new_with_label(StrTemp);
+      Accel := Ampersands2Underscore(StrTemp);
+      p := gtk_button_new_with_label(StrTemp);
+      If Accel <> -1 then
+        With PGTKButton(P)^ do
+          gtk_label_parse_uline(PGtkLabel(Child), StrTemp);
     end;
 
   csCalendar :
@@ -3754,15 +3789,20 @@ begin
 
     csToolButton:
     begin
-       if TToolButton(Sender).Style = tbsButton then
-       Begin
-          p := gtk_button_new_with_label(StrTemp);
-       end
-       else
-       Begin
-          p := gtk_button_new_with_label(StrTemp);
-       end;
-       gtk_widget_show (P);
+      Accel := Ampersands2Underscore(StrTemp);
+      p := gtk_button_new_with_label(StrTemp);
+      if TToolButton(Sender).Style = tbsButton then
+      Begin
+        p := gtk_button_new_with_label(StrTemp);
+        If Accel <> -1 then
+          With PGTKButton(P)^ do
+            gtk_label_parse_uline(PGtkLabel(Child), StrTemp);
+      end
+      else
+      Begin
+        p := gtk_button_new_with_label(StrTemp);
+      end;
+      gtk_widget_show (P);
     end;
 
     csTrackBar:
@@ -5357,6 +5397,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.180  2002/08/27 06:40:50  lazarus
+  MG: ShortCut support for buttons from Andrew
+
   Revision 1.179  2002/08/26 17:28:21  lazarus
   MG: fixed speedbutton in designmode
 
