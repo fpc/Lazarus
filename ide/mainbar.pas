@@ -334,6 +334,9 @@ type
     HintWindow1 : THintWindow;
     
     procedure mnuWindowsItemClick(Sender: TObject);
+  private
+    FToolStatus: TIDEToolStatus;
+    procedure SetToolStatus(const AValue: TIDEToolStatus);
   protected
     TheCompiler: TCompiler;
     TheOutputFilter: TOutputFilter;
@@ -353,9 +356,11 @@ type
     
     procedure LoadMenuShortCuts; virtual;
   public
-    ToolStatus: TIDEToolStatus;
     CurrentParsedCompilerOption: TParsedCompilerOptions;
     MacroList: TTransferMacroList;
+
+    property ToolStatus: TIDEToolStatus read FToolStatus write SetToolStatus;
+    procedure UpdateCaption; virtual; abstract;
 
     procedure CreateOftenUsedForms; virtual; abstract;
 
@@ -500,6 +505,13 @@ begin
     end;
     dec(i);
   end;
+end;
+
+procedure TMainIDEBar.SetToolStatus(const AValue: TIDEToolStatus);
+begin
+  if FToolStatus=AValue then exit;
+  FToolStatus:=AValue;
+  UpdateCaption;
 end;
 
 function TMainIDEBar.CreateMenuSeparator : TMenuItem;
