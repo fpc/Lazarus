@@ -941,6 +941,10 @@ begin
     
     // Function keys
     GDK_F1..GDK_F24:    VirtualKey := VK_F1 + (Event^.KeyVal - GDK_F1);
+    //By VVI - fixing cyrillic keys
+    //GDK_* is like a koi8-r, it is KOI8-R code +$600.
+    GDK_cyrillic_io..GDK_cyrillic_Capital_hardsign: 
+     KeyCode := Event^.KeyVal mod $100;
   end;
   
   if VirtualKey=VK_UNKNOWN then begin
@@ -3448,6 +3452,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.122  2002/10/10 08:57:25  lazarus
+  MG: applied cyrillic patch from vasily
+
   Revision 1.121  2002/10/10 08:51:15  lazarus
   MG: added paint messages for some gtk internal widgets
 
