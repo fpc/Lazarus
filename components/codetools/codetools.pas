@@ -6447,7 +6447,8 @@ writeln('[TCodeCompletionCodeTool.CompleteProperty] no type : found -> ignore pr
   end;
   ReadNextAtom; // read type
   if (CurPos.StartPos>PropNode.EndPos)
-  or UpAtomIs('END') or AtomIsChar(';') then begin
+  or UpAtomIs('END') or AtomIsChar(';') or (not AtomIsIdentifier(false))
+  or AtomIsKeyWord then begin
 {$IFDEF CTDEBUG}
 writeln('[TCodeCompletionCodeTool.CompleteProperty] error: no type name found');
 {$ENDIF}
@@ -6471,9 +6472,10 @@ writeln('[TCodeCompletionCodeTool.CompleteProperty] error: no type name found');
     exit;
   while (CurPos.StartPos<PropNode.EndPos) and (not AtomIsChar(';'))
   and (not UpAtomIs('END')) do begin
-    if UpAtomIs('STORED') and not ReadSimpleSpec(ppStoredWord,ppStored) then
-      exit;
-    if UpAtomIs('DEFAULT') then begin
+    if UpAtomIs('STORED') then begin
+      if not ReadSimpleSpec(ppStoredWord,ppStored) then
+        exit;
+    end else if UpAtomIs('DEFAULT') then begin
       if Parts[ppDefaultWord].StartPos>=1 then exit;
       Parts[ppDefaultWord]:=CurPos;
       ReadNextAtom;
@@ -6482,14 +6484,14 @@ writeln('[TCodeCompletionCodeTool.CompleteProperty] error: no type name found');
       Parts[ppDefault].StartPos:=CurPos.StartPos;
       if not ReadConstant(false,false,[]) then exit;
       Parts[ppDefault].EndPos:=LastAtoms.GetValueAt(0).EndPos;
-    end;
-    if UpAtomIs('IMPLEMENTS')
-    and not ReadSimpleSpec(ppImplementsWord,ppImplements) then exit;
-    if UpAtomIs('NODEFAULT') then begin
+    end else if UpAtomIs('IMPLEMENTS') then begin
+      if not ReadSimpleSpec(ppImplementsWord,ppImplements) then exit;
+    end else if UpAtomIs('NODEFAULT') then begin
       if Parts[ppNoDefaultWord].StartPos>=1 then exit;
       Parts[ppNoDefaultWord]:=CurPos;
       ReadNextAtom;
-    end;
+    end else
+      exit;
   end;
   if (CurPos.StartPos>PropNode.EndPos) then exit;
   PropType:=copy(Src,Parts[ppType].StartPos,
@@ -6880,6 +6882,7 @@ var
     ProcCode:=ANodeExt.ExtTxt1;
     ProcCode:=ASourceChangeCache.BeautifyCodeOptions.AddClassNameToProc(
                  ProcCode,TheClassName);
+writeln('>>> InsertProcBody ',TheClassName,' "',ProcCode,'"');
     ProcCode:=ASourceChangeCache.BeautifyCodeOptions.BeautifyProc(
                  ProcCode,Indent,true);
     ASourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,
@@ -6945,7 +6948,8 @@ writeln('TCodeCompletionCodeTool.CreateMissingProcBodies Gather existing method 
           with NewNodeExt do begin
             Txt:=UpperCaseStr(TheClassName)+'.'
                   +ANodeExt.Txt;       // Name+ParamTypeList
-            ExtTxt1:=ANodeExt.ExtTxt1; // complete proc head code
+            ExtTxt1:=ASourceChangeCache.BeautifyCodeOptions.AddClassNameToProc(
+               ANodeExt.ExtTxt1,TheClassName); // complete proc head code
           end;
           ClassProcs.Add(NewNodeExt);
         end;
