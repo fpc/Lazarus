@@ -315,10 +315,24 @@ function TCodeCompletionCodeTool.CompleteProperty(
      stored <id>, default <constant>
 }
 type
-  TPropPart = (ppName,ppParamList, ppType, ppIndexWord, ppIndex, ppReadWord,
-               ppRead, ppWriteWord, ppWrite, ppStoredWord, ppStored,
-               ppImplementsWord, ppImplements, ppDefaultWord, ppDefault,
-               ppNoDefaultWord);
+  TPropPart = (ppName,       // property name
+               ppParamList,  // param list
+               ppType,       // type identifier
+               ppIndexWord,  // 'index'
+               ppIndex,      // index constant
+               ppReadWord,   // 'read'
+               ppRead,       // read identifier
+               ppWriteWord,  // 'write'
+               ppWrite,      // write identifier
+               ppStoredWord, // 'stored'
+               ppStored,     // stored identifier
+               ppImplementsWord,// 'implements'
+               ppImplements, // implements identifier
+               ppDefaultWord,// 'default'  (the default value keyword,
+                             //             not the default property)
+               ppDefault,    // default constant
+               ppNoDefaultWord// 'nodefault'
+               );
 
 var Parts: array[TPropPart] of TAtomPosition;
 
@@ -328,6 +342,7 @@ var Parts: array[TPropPart] of TAtomPosition;
       RaiseExceptionFmt(ctsPropertySpecifierAlreadyDefined,[GetAtom]);
     Parts[SpecWord]:=CurPos;
     ReadNextAtom;
+    if AtomIsChar(';') then exit;
     Result:=AtomIsWord;
     if not Result then
       RaiseExceptionFmt(ctsIdentExpectedButAtomFound,[GetAtom]);
@@ -1641,13 +1656,14 @@ var CleanCursorPos, Indent, insertPos: integer;
       Result:=false;
       // find declaration of property identifier
       Params.ContextNode:=CursorNode;
-      Params.SetIdentifier(Self,@Src[PropertyAtom.StartPos],nil);
+      MoveCursorToCleanPos(PropertyAtom.StartPos);
+      Params.SetIdentifier(Self,@Src[CurPos.StartPos],nil);
       FullTopLvlName:='';
       Params.OnTopLvlIdentifierFound:=@OnTopLvlIdentifierFound;
       Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,
-                     fdfTopLvlResolving]
+                     fdfTopLvlResolving,fdfFindVariable]
                     +fdfAllClassVisibilities;
-      if (not FindDeclarationOfIdentifier(Params))
+      if (not FindDeclarationOfIdentAtCursor(Params))
       or (Params.NewNode.Desc<>ctnProperty) then exit;
       PropertyContext:=CreateFindContext(Params);
       // identifier is property

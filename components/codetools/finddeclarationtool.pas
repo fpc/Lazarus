@@ -27,18 +27,13 @@
 
   ToDo:
     - many things, search for 'ToDo'
-    - @ operator
-        + Func -> FuncResult Type
-           OR in Delphi  -> Func type
-        + @Func -> Func type
-        + @Data -> Pointer
-    - 'inherited'
+    - ignore errors behind cursor
     - variants
     - interfaces
     - Get and Set property access parameter lists
-    - ignore error after cursor position
     - predefined funcs Pred, Succ, Val, Low, High
     - find declaration in dead code
+    - make @Proc context sensitive
     - operator overloading
     - ppu, ppw, dcu files
 }
@@ -52,12 +47,12 @@ interface
 
 // activate for debug:
 
-{ $DEFINE CTDEBUG}
+{$DEFINE CTDEBUG}
 { $DEFINE ShowSearchPaths}
 { $DEFINE ShowTriedFiles}
 { $DEFINE ShowTriedContexts}
 { $DEFINE ShowTriedIdentifiers}
-{ $DEFINE ShowExprEval}
+{$DEFINE ShowExprEval}
 { $DEFINE ShowFoundIdentifier}
 { $DEFINE ShowInterfaceCache}
 { $DEFINE ShowNodeCache}
@@ -78,13 +73,11 @@ type
   TVariableAtomType = (
     vatNone, vatSpace, vatIdentifier, vatPreDefIdentifier, vatPoint, vatAS,
     vatINHERITED, vatUp, vatRoundBracketOpen, vatRoundBracketClose,
-    vatEdgedBracketOpen, vatEdgedBracketClose,
-    vatRead, vatWrite, vatAddrOp);
+    vatEdgedBracketOpen, vatEdgedBracketClose, vatAddrOp);
 const
   VariableAtomTypeNames: array[TVariableAtomType] of string =
     ('<None>','Space','Ident','PreDefIdent','Point','AS','INHERITED','Up^ ',
-     'Bracket(','Bracket)','Bracket[','Bracket]','READ','WRITE',
-     'AddrOperator@ ');
+     'Bracket(','Bracket)','Bracket[','Bracket]', 'AddrOperator@ ');
      
 type
   // searchpath delimiter is semicolon
@@ -114,11 +107,10 @@ type
     fdfFirstIdentFound,     // a first identifier was found, now searching for
                             // the a better one (used for proc overloading)
     fdfOnlyCompatibleProc,  // incompatible procs are ignored
-    fdfNoExceptionOnStringChar,// the bracket operator after a predefined string
-                            // is of type char, which is also predefined, so it
-                            // can not be resolved normally
-    fdfFunctionResult,      // if searching base type of function,
-                            //    return result type
+    fdfFunctionResult,      // if function is found, return result type
+    fdfIgnoreOverloadedProcs,// ignore param lists and take the first proc found
+    fdfFindVariable,        // do not search for the base type of a variable,
+                            //   instead return the variable declaration
     fdfCollect,             // return every reachable identifier
     fdfTopLvlResolving      // set, when searching for an identifier of the
                             //   top lvl variable
@@ -157,8 +149,8 @@ const
     'None', 'Context', 'Char', 'Real', 'Single', 'Double',
     'Extended', 'Currency', 'Comp', 'Int64', 'Cardinal', 'QWord', 'Boolean',
     'ByteBool', 'LongBool', 'String', 'AnsiString', 'ShortString', 'WideString',
-    'PChar', 'Pointer', 'ConstOrdInt', 'ConstString', 'ConstReal', 'ConstSet',
-    'ConstBoolean', '@-Operator', 'LongInt', 'Word', 'Nil'
+    'PChar', 'Pointer', 'ConstOrdInt', 'ConstString', 'ConstReal',
+    'ConstSet', 'ConstBoolean', '@-Operator', 'LongInt', 'Word', 'Nil'
   );
 
   xtAllTypes = [xtContext..High(TExpressionTypeDesc)];
@@ -340,15 +332,33 @@ type
       StartNode, EndNode: TCodeTreeNode; SearchedForward: boolean;
       Params: TFindDeclarationParams; SearchRangeFlags: TNodeCacheEntryFlags);
   protected
-    function FindDeclarationOfIdentifier(
+    // expressions, operands, variables
+    function GetCurrentAtomType: TVariableAtomType;
+    function FindEndOfVariable(StartPos: integer;
+      ExceptionIfNoVariableStart: boolean): integer;
+    function FindStartOfVariable(EndPos: integer): integer;
+    function FindExpressionTypeOfVariable(StartPos, EndPos: integer;
+      Params: TFindDeclarationParams): TExpressionType;
+    function ConvertNodeToExpressionType(Node: TCodeTreeNode;
+      Params: TFindDeclarationParams): TExpressionType;
+    function ReadOperandTypeAtCursor(
+      Params: TFindDeclarationParams): TExpressionType;
+    function CalculateBinaryOperator(LeftOperand, RightOperand: TExpressionType;
+      BinaryOperator: TAtomPosition;
+      Params: TFindDeclarationParams): TExpressionType;
+    function GetParameterNode(Node: TCodeTreeNode): TCodeTreeNode;
+    function GetFirstParameterNode(Node: TCodeTreeNode): TCodeTreeNode;
+    function PredefinedIdentToTypeDesc(Identifier: PChar): TExpressionTypeDesc;
+    function GetExpressionTypeOfTypeIdentifier(
+      Params: TFindDeclarationParams): TExpressionType;
+  protected
+    function FindDeclarationOfIdentAtCursor(
       Params: TFindDeclarationParams): boolean;
     function FindContextNodeAtCursor(
       Params: TFindDeclarationParams): TFindContext;
     function FindIdentifierInContext(Params: TFindDeclarationParams): boolean;
     function FindBaseTypeOfNode(Params: TFindDeclarationParams;
       Node: TCodeTreeNode): TFindContext;
-    function GetExpressionTypeOfTypeIdentifier(
-      Params: TFindDeclarationParams): TExpressionType;
     function FindClassOfMethod(ProcNode: TCodeTreeNode;
       Params: TFindDeclarationParams; FindClassContext: boolean): boolean;
     function FindAncestorOfClass(ClassNode: TCodeTreeNode;
@@ -371,6 +381,10 @@ type
       ExprParamList: TExprTypeList; IgnoreMissingParameters: boolean;
       Params: TFindDeclarationParams;
       CompatibilityList: TTypeCompatibilityList): TTypeCompatibility;
+    function IsParamListCompatible(FirstParameterNode1,
+      FirstParameterNode2: TCodeTreeNode;
+      Params: TFindDeclarationParams;
+      CompatibilityList: TTypeCompatibilityList): TTypeCompatibility;
     function CreateParamExprList(StartPos: integer;
       Params: TFindDeclarationParams): TExprTypeList;
     function ContextIsDescendOf(DescendContext, AncestorContext: TFindContext;
@@ -380,20 +394,6 @@ type
     function IsCompatible(TargetNode: TCodeTreeNode;
       ExpressionType: TExpressionType;
       Params: TFindDeclarationParams): TTypeCompatibility;
-    // expressions, operands, variables
-    function FindEndOfVariable(StartPos: integer): integer;
-    function FindExpressionTypeOfVariable(StartPos: integer;
-      Params: TFindDeclarationParams; var EndPos: integer): TExpressionType;
-    function ConvertNodeToExpressionType(Node: TCodeTreeNode;
-      Params: TFindDeclarationParams): TExpressionType;
-    function ReadOperandTypeAtCursor(
-      Params: TFindDeclarationParams): TExpressionType;
-    function CalculateBinaryOperator(LeftOperand, RightOperand: TExpressionType;
-      BinaryOperator: TAtomPosition;
-      Params: TFindDeclarationParams): TExpressionType;
-    function GetParameterNode(Node: TCodeTreeNode): TCodeTreeNode;
-    function GetFirstParameterNode(Node: TCodeTreeNode): TCodeTreeNode;
-    function PredefinedIdentToTypeDesc(Identifier: PChar): TExpressionTypeDesc;
   public
     procedure BuildTree(OnlyInterfaceNeeded: boolean); override;
     destructor Destroy; override;
@@ -430,12 +430,16 @@ const
     'fdfIgnoreUsedUnits',
     'fdfSearchForward',
     'fdfIgnoreClassVisibility',
-    'fdfClassPublished','fdfClassPublic','fdfClassProtected','fdfClassPrivate',
+    'fdfClassPublished',
+    'fdfClassPublic',
+    'fdfClassProtected',
+    'fdfClassPrivate',
     'fdfIgnoreMissingParams',
     'fdfFirstIdentFound',
     'fdfOnlyCompatibleProc',
-    'fdfNoExceptionOnStringChar',
     'fdfFunctionResult',
+    'fdfIgnoreOverloadedProcs',
+    'fdfFindVariable',
     'fdfCollect',
     'fdfTopLvlResolving'
   );
@@ -639,13 +643,21 @@ begin
               ReadNextAtom;
             end;
           end;
-          if CurPos.StartPos>CleanCursorPos then
+          if CurPos.StartPos>CleanCursorPos then begin
             // cursor on proc name
             // -> ignore proc name and search overloaded identifier
             SearchAlsoInCurContext:=false;
+          end;
         end;
         if CursorNode.Desc=ctnProcedureHead then
           CursorNode:=CursorNode.Parent;
+      end;
+      if CursorNode.Desc=ctnProperty then begin
+        MoveCursorToNodeStart(CursorNode);
+        ReadNextAtom; // read 'property'
+        ReadNextAtom; // read property name
+        if CleanCursorPos<CurPos.EndPos then
+          SearchAlsoInCurContext:=false;
       end;
       MoveCursorToCleanPos(CleanCursorPos);
       while (CurPos.StartPos>1) and (IsIdentChar[Src[CurPos.StartPos-1]]) do
@@ -667,7 +679,7 @@ begin
           if SearchInAncestors then
             Params.Flags:=Params.Flags
               +[fdfSearchInAncestors]+fdfAllClassVisibilities;
-          Result:=FindDeclarationOfIdentifier(Params);
+          Result:=FindDeclarationOfIdentAtCursor(Params);
           if Result then begin
             Params.ConvertResultCleanPosToCaretPos;
             NewPos:=Params.NewPos;
@@ -938,7 +950,7 @@ begin
   end;
 end;
 
-function TFindDeclarationTool.FindDeclarationOfIdentifier(
+function TFindDeclarationTool.FindDeclarationOfIdentAtCursor(
   Params: TFindDeclarationParams): boolean;
 { searches an identifier in clean code, parses code in front and after the
   identifier
@@ -953,19 +965,37 @@ function TFindDeclarationTool.FindDeclarationOfIdentifier(
   For example:
     A^.B().C[].Identifier
 }
-var OldContextNode: TCodeTreeNode;
-  NewContext: TFindContext;
-  TopLvlResolving: boolean;
+var// OldContextNode: TCodeTreeNode;
+  //NewContext: TFindContext;
+  //TopLvlResolving: boolean;
+  EndPos: integer;
+  ExprType: TExpressionType;
 begin
   {$IFDEF CTDEBUG}
-  writeln('[TFindDeclarationTool.FindDeclarationOfIdentifier] Identifier=',
+  writeln('[TFindDeclarationTool.FindDeclarationOfIdentAtCursor] Identifier=',
     '"',GetIdentifier(Params.Identifier),'"',
     ' ContextNode=',NodeDescriptionAsString(Params.ContextNode.Desc));
   {$ENDIF}
   Result:=false;
   MoveCursorToCleanPos(Params.Identifier);
   ReadNextAtom;
-  OldContextNode:=Params.ContextNode;
+  EndPos:=CurPos.EndPos;
+  Include(Params.Flags,fdfFindVariable);
+  ExprType:=FindExpressionTypeOfVariable(-1,EndPos,Params);
+  if (ExprType.Desc<>xtContext) then begin
+    Params.SetResult(CleanFindContext);
+  end;
+  {$IFDEF CTDEBUG}
+  write('[TFindDeclarationTool.FindDeclarationOfIdentAtCursor] Ident=',
+    '"',GetIdentifier(Params.Identifier),'" ');
+  if Params.NewNode<>nil then
+    writeln('Node=',Params.NewNode.DescAsString,' ',Params.NewCodeTool.MainFilename)
+  else
+    writeln('NOT FOUND');
+  {$ENDIF}
+  Result:=true;
+  
+  {OldContextNode:=Params.ContextNode;
   TopLvlResolving:=(fdfTopLvlResolving in Params.Flags);
   NewContext:=FindContextNodeAtCursor(Params);
   Params.Flags:=fdfAllClassVisibilities
@@ -993,7 +1023,7 @@ begin
 
   Params.ContextNode:=NewContext.Node;
 
-  Result:=NewContext.Tool.FindIdentifierInContext(Params);
+  Result:=NewContext.Tool.FindIdentifierInContext(Params);}
 end;
 
 function TFindDeclarationTool.FindIdentifierInContext(
@@ -1551,519 +1581,27 @@ function TFindDeclarationTool.FindContextNodeAtCursor(
   Params: TFindDeclarationParams): TFindContext;
 { searches for the context node for a specific cursor pos
   Params.Context should contain the deepest node at cursor
-  if there is no special context, then result is equal to Params.Context
-  
-
-  Examples:
-  
-  1. A.B     - CleanPos points to B: if A is a class, the context node will be
-               the class node (ctnRecordType).
-  2. A().B   - same as above
-          
-  3. inherited A - CleanPos points to A: if in a method, the context node will
-                   be the class node (ctnClass) of the current method.
-          
-  4. A[].    - CleanPos points to '.': if A is an array, the context node will
-               be the array type node (ctnArrayType).
-  
-  5. A[].B   - CleanPos points to B: if A is an array of record, the context
-               node will be the record type node (ctnRecordType).
-
-  6. A^.     - CleanPos points to '.': if A is a pointer of record, the context
-               node will be the record type node (ctnRecordType).
-               
-  7. (A).    - CleanPos points to '.': if A is a class, the context node will be
-               the class node (ctnClass).
-               
-  8. (A as B) - CleanPos points to ')': if B is a classtype, the context node
-                will be the class node (ctnClass)
-
-  9. (@A)    - CleanPos points to ')': if A is a function, not the result is
-               returned, but the function itself
-}
-  function GetCurrentAtomType: TVariableAtomType;
-  begin
-    if (CurPos.StartPos=CurPos.EndPos) then
-      Result:=vatSpace
-    else if UpAtomIs('READ') then
-      Result:=vatRead
-    else if UpAtomIs('WRITE') then
-      Result:=vatWrite
-    else if WordIsPredefinedIdentifier.DoItUpperCase(UpperSrc,CurPos.StartPos,
-      CurPos.EndPos-CurPos.StartPos) then
-      Result:=vatPreDefIdentifier
-    else if AtomIsIdentifier(false) then
-      Result:=vatIdentifier
-    else if (CurPos.StartPos>=1) and (CurPos.StartPos<=SrcLen)
-    and (CurPos.StartPos=CurPos.EndPos-1) then begin
-      case Src[CurPos.StartPos] of
-      '.': Result:=vatPoint;
-      '^': Result:=vatUp;
-      '(': Result:=vatRoundBracketOpen;
-      ')': Result:=vatRoundBracketClose;
-      '[': Result:=vatEdgedBracketOpen;
-      ']': Result:=vatEdgedBracketClose;
-      '@': Result:=vatAddrOp;
-      else Result:=vatNone;
-      end;
-    end
-    else if UpAtomIs('INHERITED') then
-      Result:=vatINHERITED
-    else if UpAtomIs('AS') then
-      Result:=vatAS
-    else
-      Result:=vatNone;
-  end;
-
-
-var CurAtom, NextAtom: TAtomPosition;
-  OldInput: TFindDeclarationInput;
-  NextAtomType, CurAtomType: TVariableAtomType;
-  ProcNode, FuncResultNode: TCodeTreeNode;
+  if there is no special context, then result is equal to Params.Context }
+var
+  EndPos: integer;
   ExprType: TExpressionType;
-
-  procedure ReadCurrentAndPriorAtom;
-  begin
-    NextAtom:=CurPos;
-    NextAtomType:=GetCurrentAtomType;
-    ReadPriorAtom;
-    CurAtom:=CurPos;
-    CurAtomType:=GetCurrentAtomType;
-  end;
-  
-  function IsStartOfVariable(var FindContext: TFindContext): boolean;
-  begin
-    Result:=true;
-    if CurAtom.StartPos<Params.ContextNode.StartPos then begin
-      // this is the start of the variable
-      FindContext:=CreateFindContext(Self,Params.ContextNode);
-      exit;
-    end;
-    if (not (CurAtomType in [vatIdentifier,vatPreDefIdentifier,vatPoint,vatUp,
-      vatEdgedBracketClose,vatRoundBracketClose]))
-    or ((CurAtomType in [vatIdentifier,vatPreDefIdentifier,vatNone])
-        and (NextAtomType in [vatIdentifier,vatPreDefIdentifier]))
-    then begin
-      // the next atom is the start of the variable
-      if (not (NextAtomType in [vatSpace,vatIdentifier,vatPreDefIdentifier,
-        vatRoundBracketOpen,vatEdgedBracketOpen,vatAddrOp])) then
-      begin
-        MoveCursorToCleanPos(NextAtom.StartPos);
-        ReadNextAtom;
-        RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsIdentifier,GetAtom]);
-      end;
-      FindContext:=CreateFindContext(Self,Params.ContextNode);
-      exit;
-    end;
-    Result:=false;
-  end;
-  
-  procedure ResolveIdentifier(var AFindContext: TFindContext);
-  begin
-    // for example  'AnObject[3]'
-    
-    // check syntax
-    if not (NextAtomType in [vatSpace,vatPoint,vatUp,vatAS,vatRoundBracketOpen,
-      vatRoundBracketClose,vatEdgedBracketOpen,vatEdgedBracketClose]) then
-    begin
-      MoveCursorToCleanPos(NextAtom.StartPos);
-      ReadNextAtom;
-      RaiseExceptionFmt(ctsIllegalQualifier,[GetAtom]);
-    end;
-    
-    // check special identifiers 'Result' and 'Self'
-    if (AFindContext.Node=Params.ContextNode) then begin
-      if CompareSrcIdentifier(CurAtom.StartPos,'SELF') then begin
-        // SELF in a method is the object itself
-        // -> check if in a proc
-        ProcNode:=Params.ContextNode;
-        while (ProcNode<>nil) do begin
-          if (ProcNode.Desc=ctnProcedure) then begin
-            // in a proc -> find the class context
-            if AFindContext.Tool.FindClassOfMethod(ProcNode,Params,true) then
-            begin
-              AFindContext:=CreateFindContext(Params);
-              exit;
-            end;
-          end;
-          ProcNode:=ProcNode.Parent;
-        end;
-      end else if CompareSrcIdentifier(CurAtom.StartPos,'RESULT') then begin
-        // RESULT has a special meaning in a function
-        // -> check if in a function
-        ProcNode:=Params.ContextNode;
-        while (ProcNode<>nil) do begin
-          if (ProcNode.Desc=ctnProcedure) then begin
-            Params.Save(OldInput);
-            Include(Params.Flags,fdfFunctionResult);
-            AFindContext:=AFindContext.Tool.FindBaseTypeOfNode(Params,ProcNode);
-            Params.Load(OldInput);
-            exit;
-          end;
-          ProcNode:=ProcNode.Parent;
-        end;
-      end;
-    end;
-    
-    { ToDo: check, if this is needed for Delphi:
-
-    if (NextAtomType in [atSpace])
-    and CompareSrcIdentifier(CurAtom.StartPos,'FREE')
-    and ((AFindContext.Node.Desc=ctnClass)
-    or NodeIsInAMethod(AFindContext.Node)) then
-    begin
-      // FREE calls the destructor of an object
-      Params.Save(OldInput);
-      Params.SetIdentifier(Self,'DESTRUCTOR',nil);
-      Exclude(Params.Flags,fdfExceptionOnNotFound);
-      if AFindContext.Tool.FindIdentifierInContext(Params) then begin
-        AFindContext:=CreateFindContext(Params);
-        exit;
-      end;
-      Params.Load(OldInput);
-    end;}
-
-    // find sub identifier
-    Params.Save(OldInput);
-    try
-      Params.Flags:=[fdfSearchInAncestors,fdfExceptionOnNotFound]
-                    +fdfAllClassVisibilities
-                    +(fdfGlobals*Params.Flags);
-      if CurAtomType=vatPreDefIdentifier then
-        Exclude(Params.Flags,fdfExceptionOnNotFound);
-      if AFindContext.Node=Params.ContextNode then begin
-        // there is no special context -> also search in parent contexts
-        Params.Flags:=Params.Flags
-                     +[fdfSearchInParentNodes,fdfIgnoreCurContextNode];
-      end else
-        // special context
-        Params.ContextNode:=AFindContext.Node;
-      Params.SetIdentifier(Self,@Src[CurAtom.StartPos],@CheckSrcIdentifier);
-      if AFindContext.Tool.FindIdentifierInContext(Params) then begin
-        AFindContext:=CreateFindContext(Params);
-      end else begin
-        // predefined identifier not redefined
-        AFindContext:=CreateFindContext(Self,nil);
-      end;
-
-      // ToDo: check if identifier in 'Protected' section
-
-    finally
-      Params.Load(OldInput);
-    end;
-    
-    // find base type
-    if AFindContext.Node<>nil then begin
-      if (AFindContext.Node<>nil)
-      and (AFindContext.Node.Desc in [ctnProcedure,ctnProcedureHead]) then begin
-        AFindContext.Tool.BuildSubTreeForProcHead(AFindContext.Node,
-                                                  FuncResultNode);
-        if FuncResultNode<>nil then begin
-          // this is function
-          if (NextAtomType in [vatSpace,vatNone,vatRoundBracketClose,
-                               vatEdgedBracketClose])
-          then begin
-            // this identifier is the end of the variable
-            
-            // In Delphi Mode or if there is a @ qualifier return the
-            // function and not the result type
-            //if (Scanner.CompilerMode=cmDelphi) or
-
-            // ToDo:
-
-          end;
-          // Otherwise return the result type
-          Include(Params.Flags,fdfFunctionResult);
-        end;
-      end;
-      AFindContext:=AFindContext.Tool.FindBaseTypeOfNode(Params,
-                                                         AFindContext.Node);
-    end;
-  end;
-  
-  procedure ResolvePoint(var AFindContext: TFindContext);
-  begin
-    // for example 'A.B'
-    if AFindContext.Node=Params.ContextNode then begin
-      MoveCursorToCleanPos(CurAtom.StartPos);
-      RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsIdentifier,'.']);
-    end;
-    if (not (NextAtomType in [vatSpace,vatIdentifier,vatPreDefIdentifier])) then
-    begin
-      MoveCursorToCleanPos(NextAtom.StartPos);
-      ReadNextAtom;
-      RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsIdentifier,GetAtom]);
-    end;
-    if (AFindContext.Node.Desc in AllUsableSourceTypes) then begin
-      // identifier in front of the point is a unit name
-      if AFindContext.Tool<>Self then begin
-        AFindContext.Node:=AFindContext.Tool.GetInterfaceNode;
-      end else begin
-        AFindContext:=CreateFindContext(Self,Params.ContextNode);
-      end;
-    end;
-    // there is no special left to do, since Result already points to
-    // the type context node.
-  end;
-  
-  procedure ResolveAs;
-  begin
-    // for example 'A as B'
-    if (not (NextAtomType in [vatSpace,vatIdentifier,vatPreDefIdentifier])) then
-    begin
-      MoveCursorToCleanPos(NextAtom.StartPos);
-      ReadNextAtom;
-      RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsIdentifier,GetAtom]);
-    end;
-    // 'as' is a type cast, so the left side is irrelevant and was already
-    // ignored in the code at the start of this proc
-    // -> context is default context
-  end;
-  
-  procedure ResolveUp(var AFindContext: TFindContext);
-  begin
-    // for example:
-    //   1. 'PInt = ^integer'  pointer type
-    //   2. a^  dereferencing
-    if not (NextAtomType in [vatSpace,vatPoint,vatUp,vatAS,vatEdgedBracketOpen])
-    then begin
-      MoveCursorToCleanPos(NextAtom.StartPos);
-      ReadNextAtom;
-      RaiseExceptionFmt(ctsIllegalQualifier,[GetAtom]);
-    end;
-    if AFindContext.Node<>Params.ContextNode then begin
-      // left side of expression has defined a special context
-      // => this '^' is a dereference
-      if (not (NextAtomType in [vatSpace,vatPoint,vatAS,vatUP,vatEdgedBracketOpen]))
-      then begin
-        MoveCursorToCleanPos(NextAtom.StartPos);
-        ReadNextAtom;
-        RaiseExceptionFmt(ctsStrExpectedButAtomFound,['.',GetAtom]);
-      end;
-      if AFindContext.Node.Desc<>ctnPointerType then begin
-        MoveCursorToCleanPos(CurAtom.StartPos);
-        RaiseExceptionFmt(ctsIllegalQualifier,['^']);
-      end;
-      AFindContext:=AFindContext.Tool.FindBaseTypeOfNode(Params,
-                                                  AFindContext.Node.FirstChild);
-    end else if NodeHasParentOfType(AFindContext.Node,ctnPointerType) then begin
-    //end else if AFindContext.Node.Parent.Desc=ctnPointerType then begin
-      // this is a pointer type definition
-      // -> the default context is ok
-    end;
-  end;
-  
-  procedure ResolveEdgedBracketClose(var AFindContext: TFindContext);
-  begin
-    { for example:  a[]
-        this could be:
-          1. ranged array
-          2. dynamic array
-          3. indexed pointer
-          4. default property
-          5. indexed property
-          6. string character
-    }
-    if not (NextAtomType in [vatSpace,vatPoint,vatAs,vatUp,vatRoundBracketClose,
-      vatRoundBracketOpen,vatEdgedBracketClose,vatEdgedBracketOpen]) then
-    begin
-      MoveCursorToCleanPos(NextAtom.StartPos);
-      ReadNextAtom;
-      RaiseExceptionFmt(ctsIllegalQualifier,[GetAtom]);
-    end;
-    if AFindContext.Node<>Params.ContextNode then begin
-      case AFindContext.Node.Desc of
-
-      ctnArrayType:
-        // the array type is the last child node
-        AFindContext:=AFindContext.Tool.FindBaseTypeOfNode(Params,
-                                                   AFindContext.Node.LastChild);
-
-      ctnPointerType:
-        // the pointer type is the only child node
-        AFindContext:=AFindContext.Tool.FindBaseTypeOfNode(Params,
-                                                  AFindContext.Node.FirstChild);
-
-      ctnClass:
-        begin
-          // search default property in class
-          Params.Save(OldInput);
-          Params.Flags:=[fdfSearchInAncestors,fdfExceptionOnNotFound]
-                        +fdfGlobals*Params.Flags
-                        +fdfAllClassVisibilities*Params.Flags;
-          // special identifier for default property
-          Params.SetIdentifier(Self,'[',nil);
-          Params.ContextNode:=AFindContext.Node;
-          AFindContext.Tool.FindIdentifierInContext(Params);
-          AFindContext:=Params.NewCodeTool.FindBaseTypeOfNode(
-                                                       Params,Params.NewNode);
-          Params.Load(OldInput);
-        end;
-
-      ctnIdentifier:
-        begin
-          MoveCursorToNodeStart(AFindContext.Node);
-          ReadNextAtom;
-          if UpAtomIs('STRING') or UpAtomIs('ANSISTRING')
-          or UpAtomIs('SHORTSTRING') then begin
-            if not (fdfNoExceptionOnStringChar in Params.Flags) then begin
-              MoveCursorToCleanPos(CurAtom.StartPos);
-              ReadNextAtom;
-              RaiseExceptionFmt(ctsIllegalQualifier,[GetAtom]);
-            end;
-          end;
-        end;
-
-      ctnProperty:
-        begin
-          // indexed property without base type
-          // => property type is predefined
-          // -> completed
-        end;
-
-      else
-        MoveCursorToCleanPos(CurAtom.StartPos);
-        ReadNextAtom;
-        RaiseExceptionFmt(ctsIllegalQualifier,[GetAtom]);
-      end;
-    end;
-  end;
-
-  procedure ResolveRoundBracketClose(var AFindContext: TFindContext);
-  begin
-    { for example:
-        (a+b)   expression bracket: the type is the result type of the
-                                    expression.
-        a()     typecast or function
-    }
-    if not (NextAtomType in [vatSpace,vatPoint,vatAs,vatUp,vatRoundBracketClose,
-      vatRoundBracketOpen,vatEdgedBracketClose,vatEdgedBracketOpen]) then
-    begin
-      MoveCursorToCleanPos(NextAtom.StartPos);
-      ReadNextAtom;
-      RaiseExceptionFmt(ctsIllegalQualifier,[GetAtom]);
-    end;
-    if AFindContext.Node<>Params.ContextNode then begin
-      // typecast or function
-    end else begin
-      // expression
-      ExprType:=FindExpressionResultType(Params,CurAtom.StartPos+1,
-                                       CurAtom.EndPos-1);
-      if (ExprType.Context.Node=nil) then begin
-        MoveCursorToCleanPos(CurAtom.StartPos);
-        ReadNextAtom;
-        RaiseException(ctsExprTypeIsNotVariable);
-      end;
-    end;
-  end;
-  
-  procedure ResolveINHERITED(var AFindContext: TFindContext);
-  begin
-    // for example: inherited A;
-    if not (NextAtomType in [vatSpace,vatIdentifier,vatPreDefIdentifier]) then
-    begin
-      MoveCursorToCleanPos(NextAtom.StartPos);
-      ReadNextAtom;
-      RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsIdentifier,GetAtom]);
-    end;
-
-    // ToDo: 'inherited' keyword
-
-    // this is a quick hack: Just ignore the current class and start
-    // searching in the ancestor
-
-    // find ancestor of class of method
-    ProcNode:=AFindContext.Node;
-    while (ProcNode<>nil) do begin
-      if not (ProcNode.Desc in [ctnProcedure,ctnProcedureHead,ctnBeginBlock,
-         ctnAsmBlock,ctnWithVariable,ctnWithStatement,ctnCaseBlock,
-         ctnCaseVariable,ctnCaseStatement]) then
-      begin
-        break;
-      end;
-      if ProcNode.Desc=ctnProcedure then begin
-        AFindContext.Tool.FindClassOfMethod(ProcNode,Params,true);
-        // find class ancestor
-        Params.NewCodeTool.FindAncestorOfClass(Params.NewNode,Params,true);
-        AFindContext:=CreateFindContext(Params);
-        exit;
-      end;
-      ProcNode:=ProcNode.Parent;
-    end;
-    MoveCursorToCleanPos(CurAtom.StartPos);
-    RaiseException(ctsInheritedKeywordOnlyAllowedInMethods);
-  end;
-
-
-// TFindDeclarationTool.FindContextNodeAtCursor
+  OldFlags: TFindDeclarationFlags;
 begin
-  // start parsing the expression from right to left
-  ReadCurrentAndPriorAtom;
-  {$IFDEF CTDEBUG}
-  write('[TFindDeclarationTool.FindContextNodeAtCursor] <<< Right->Left ',
-    ' Context=',Params.ContextNode.DescAsString,
-    ' CurAtom=',VariableAtomTypeNames[CurAtomType],
-    ' "',copy(Src,CurAtom.StartPos,CurAtom.EndPos-CurAtom.StartPos),'"',
-    ' NextAtom=',VariableAtomTypeNames[NextAtomType]
-    );
-  writeln('');
-  {$ENDIF}
-  if IsStartOfVariable(Result) then exit;
-  
-  // skip bracket content
-  if (CurAtomType in [vatRoundBracketClose,vatEdgedBracketClose]) then begin
-    ReadBackTilBracketClose(true);
-    CurAtom.StartPos:=CurPos.StartPos;
-  end;
-  
-  // find prior context
-  Result:=FindContextNodeAtCursor(Params);
-  if (Result.Node=nil) then exit;
-  
-  // the left side has been parsed and
-  // now the parsing goes from left to right
-  
-  {$IFDEF CTDEBUG}
-  write('[TFindDeclarationTool.FindContextNodeAtCursor] >>> Left->Right ',
-    ' Context=',Params.ContextNode.DescAsString,
-    ' CurAtom=',VariableAtomTypeNames[CurAtomType],
-    ' "',copy(Src,CurAtom.StartPos,CurAtom.EndPos-CurAtom.StartPos),'"',
-    ' NextAtom=',VariableAtomTypeNames[NextAtomType],
-    ' Result=');
-  if Result.Node<>nil then write(Result.Node.DescAsString) else write('NIL');
-  writeln('');
-  {$ENDIF}
-  
-  // resolve context one step deeper
-  case CurAtomType of
-  vatIdentifier, vatPreDefIdentifier:  ResolveIdentifier(Result);
-  vatPoint:             ResolvePoint(Result);
-  vatAS:                ResolveAs;
-  vatUP:                ResolveUp(Result);
-  vatEdgedBracketClose: ResolveEdgedBracketClose(Result);
-  vatRoundBracketClose: ResolveRoundBracketClose(Result);
-  vatINHERITED:         ResolveINHERITED(Result);
-  else
-    // expression start found
-    begin
-      if (not (NextAtomType in [vatSpace,vatIdentifier,vatPreDefIdentifier,
-        vatRoundBracketOpen,vatEdgedBracketOpen])) then
-      begin
-        MoveCursorToCleanPos(NextAtom.StartPos);
-        ReadNextAtom;
-        RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsIdentifier,GetAtom]);
-      end;
-      Result:=CreateFindContext(Self,Params.ContextNode);
+  EndPos:=CurPos.StartPos;
+  OldFlags:=Params.Flags;
+  Params.Flags:=Params.Flags-[fdfFindVariable];
+  ExprType:=FindExpressionTypeOfVariable(-1,EndPos,Params);
+  Params.Flags:=OldFlags;
+  if (ExprType.Desc=xtContext) then
+    Result:=ExprType.Context
+  else begin
+    if fdfExceptionOnNotFound in Params.Flags then begin
+      MoveCursorToCleanPos(EndPos);
+      RaiseException(ctsNoContextNodeFoundAtCursor);
+    end else begin
+      Result:=CleanFindContext;
     end;
   end;
-  
-  {$IFDEF CTDEBUG}
-  write('[TFindDeclarationTool.FindContextNodeAtCursor] END ',
-    Params.ContextNode.DescAsString,' CurAtom=',VariableAtomTypeNames[CurAtomType],
-    ' NextAtom=',VariableAtomTypeNames[NextAtomType],' Result=');
-  if Result.Node<>nil then write(Result.Node.DescAsString) else write('NIL');
-  writeln('');
-  {$ENDIF}
 end;
 
 function TFindDeclarationTool.FindBaseTypeOfNode(Params: TFindDeclarationParams;
@@ -2623,7 +2161,7 @@ begin
   end;
   Params.Save(OldInput);
   Params.ContextNode:=WithVarNode;
-  Include(Params.Flags,fdfExceptionOnNotFound);
+  Params.Flags:=Params.Flags+[fdfExceptionOnNotFound,fdfFunctionResult];
   WithVarContext:=FindContextNodeAtCursor(Params);
   if (WithVarContext.Node=nil) or (WithVarContext.Node=OldInput.ContextNode)
   or (not (WithVarContext.Node.Desc in [ctnClass,ctnRecordType])) then begin
@@ -2827,12 +2365,15 @@ var
     MoveCursorToCleanPos(LastPos);
   end;
   
+var OldFlags: TFindDeclarationFlags;
 begin
   {$IFDEF ShowExprEval}
   writeln('[TFindDeclarationTool.FindExpressionResultType] ',
   '"',copy(Src,StartPos,EndPos-StartPos),'"');
   {$ENDIF}
   Result:=CleanExpressionType;
+  OldFlags:=Params.Flags;
+  Exclude(Params.Flags,fdfFindVariable);
   // read the expression from left to right and calculate the type
   StackPtr:=-1;
   MoveCursorToCleanPos(StartPos);
@@ -2885,6 +2426,7 @@ begin
   until false;
   ExecuteStack;
   Result:=ExprStack[0].Operand;
+  Params.Flags:=OldFlags;
 end;
 
 function TFindDeclarationTool.FindIdentifierInUsesSection(
@@ -3271,75 +2813,601 @@ begin
 end;
 
 function TFindDeclarationTool.FindEndOfVariable(
-  StartPos: integer): integer;
+  StartPos: integer; ExceptionIfNoVariableStart: boolean): integer;
+{ a variable can have the form:
+    A
+    A.B()^.C()[]^^.D
+    (A).B
+    inherited A
+}
+var
+  FirstIdentifier: boolean;
 begin
   MoveCursorToCleanPos(StartPos);
   ReadNextAtom;
   if UpAtomIs('INHERITED') then
     ReadNextAtom;
-  repeat
-    AtomIsIdentifier(true);
+  FirstIdentifier:=true;
+  if AtomIsWord and AtomIsIdentifier(true) then begin
+    FirstIdentifier:=false;
     ReadNextAtom;
-    repeat
-      if AtomIsChar('(') or AtomIsChar('[') then begin
-        ReadTilBracketClose(true);
-        ReadNextAtom;
-      end else if AtomIsChar('^') then
-        ReadNextAtom
-      else
-        break;
-    until false;
-    if not AtomIsChar('.') then break;
+  end;
+  repeat
+    if AtomIsChar('(') then begin
+      ReadTilBracketClose(true);
+      FirstIdentifier:=false;
+    end else if AtomIsChar('.') then begin
+      if FirstIdentifier and ExceptionIfNoVariableStart then
+        RaiseExceptionFmt(ctsIdentExpectedButAtomFound,[GetAtom]);
+      ReadNextAtom;
+      AtomIsIdentifier(true);
+    end else if AtomIsChar('^') then begin
+      if FirstIdentifier and ExceptionIfNoVariableStart then
+        RaiseExceptionFmt(ctsIdentExpectedButAtomFound,[GetAtom]);
+    end else if AtomIsChar('[') then begin
+      if FirstIdentifier and ExceptionIfNoVariableStart then
+        RaiseExceptionFmt(ctsIdentExpectedButAtomFound,[GetAtom]);
+      ReadTilBracketClose(true);
+    end else
+      break;
     ReadNextAtom;
   until false;
-  UndoReadNextAtom;
+  if LastAtoms.Count>0 then
+    UndoReadNextAtom
+  else
+    MoveCursorToCleanPos(StartPos);
   Result:=CurPos.EndPos;
 end;
 
-function TFindDeclarationTool.FindExpressionTypeOfVariable(StartPos: integer;
-  Params: TFindDeclarationParams; var EndPos: integer): TExpressionType;
-var
-  OldInputFlags: TFindDeclarationFlags;
-  IsPredefinedIdentifier: boolean;
-  CouldBeStringChar: boolean;
+function TFindDeclarationTool.FindStartOfVariable(EndPos: integer): integer;
+{ a variable can be combinations of
+  1. A.B
+  2. A().B
+  3. inherited A
+  4. A[].
+  5. A[].B
+  6. A^.
+  7. (A).
+  8. (A as B)
+  9. (@A)
+}
+var CurAtom, NextAtom: TAtomPosition;
+  NextAtomType, CurAtomType: TVariableAtomType;
 begin
-  OldInputFlags:=Params.Flags;
-  IsPredefinedIdentifier:=WordIsPredefinedIdentifier.DoIt(@Src[StartPos]);
-  EndPos:=FindEndOfVariable(StartPos);
-  {$IFDEF ShowExprEval}
-  writeln('[TFindDeclarationTool.FindExpressionTypeOfVariable] ',
-  ' IsPredefinedIdentifier=',IsPredefinedIdentifier,
-  ' Var="',copy(Src,StartPos,EndPos-StartPos),'"');
-  {$ENDIF}
-  CouldBeStringChar:=AtomIsChar(']');
   MoveCursorToCleanPos(EndPos);
-  Include(Params.Flags,fdfNoExceptionOnStringChar);
-  Result.Context:=FindContextNodeAtCursor(Params);
-  Params.Flags:=OldInputFlags;
-  if Result.Context.Node<>nil then begin
-    if CouldBeStringChar then begin
-      CouldBeStringChar:=(Result.Context.Node.Desc=ctnIdentifier);
-      if CouldBeStringChar then begin
-        MoveCursorToNodeStart(Result.Context.Node);
+  NextAtom:=CurPos;
+  NextAtomType:=vatSpace;
+  repeat
+    ReadPriorAtom;
+    CurAtom:=CurPos;
+    CurAtomType:=GetCurrentAtomType;
+    if CurAtomType in [vatRoundBracketClose,vatEdgedBracketClose] then begin
+      ReadBackTilBracketOpen(true);
+      CurAtom.StartPos:=CurPos.StartPos;
+    end;
+    // check if CurAtom belongs to variable
+    if CurAtomType=vatINHERITED then begin
+      Result:=CurAtom.StartPos;
+      exit;
+    end;
+    if (not (CurAtomType in [vatIdentifier,vatPreDefIdentifier,vatPoint,vatUp,
+      vatEdgedBracketClose,vatRoundBracketClose]))
+    or ((CurAtomType in [vatIdentifier,vatPreDefIdentifier,vatNone])
+        and (NextAtomType in [vatIdentifier,vatPreDefIdentifier]))
+    then begin
+      // the next atom is the start of the variable
+      if (not (NextAtomType in [vatSpace,vatIdentifier,vatPreDefIdentifier,
+        vatRoundBracketOpen,vatEdgedBracketOpen,vatAddrOp])) then
+      begin
+        MoveCursorToCleanPos(NextAtom.StartPos);
         ReadNextAtom;
-        CouldBeStringChar:=UpAtomIs('STRING') or UpAtomIs('ANSISTRING')
-                         or UpAtomIs('SHORTSTRING');
-        if CouldBeStringChar then begin
-          Result.Context.Node:=nil;
-          Result.Desc:=xtChar;
+        RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsIdentifier,GetAtom]);
+      end;
+      Result:=NextAtom.StartPos;
+      exit;
+    end;
+    NextAtom:=CurAtom;
+    NextAtomType:=CurAtomType;
+  until false;
+end;
+
+function TFindDeclarationTool.FindExpressionTypeOfVariable(
+  StartPos, EndPos: integer;  Params: TFindDeclarationParams): TExpressionType;
+{ examples
+  1. A.B
+  2. A().B
+  3. inherited A
+  4. A[]
+  5. A[].B
+  6. A^.
+  7. (A).
+  8. (A as B)
+  9. (@A)
+}
+type
+  TIsIdentEndOfVar = (iieovYes, iieovNo, iieovUnknown);
+var
+  CurAtomType, NextAtomType: TVariableAtomType;
+  CurAtom, NextAtom: TAtomPosition;
+  CurContext, StartContext: TFindContext;
+  OldInput: TFindDeclarationInput;
+  StartFlags: TFindDeclarationFlags;
+  CurExprDesc: TExpressionTypeDesc;
+  IsIdentEndOfVar: TIsIdentEndOfVar;
+
+  procedure InitAtomQueue;
+  begin
+    if StartPos<1 then
+      StartPos:=FindStartOfVariable(EndPos)
+    else if EndPos<1 then
+      EndPos:=FindEndOfVariable(StartPos,true);
+    if (StartPos<1) then
+      RaiseException('internal codetool error: FindExpressionTypeOfVariable '
+        +' StartPos='+IntToStr(StartPos)+' EndPos='+IntToStr(EndPos));
+    {$IFDEF ShowExprEval}
+    writeln('  InitAtomQueue Expr="',copy(Src,StartPos,EndPos-StartPos),'"');
+    {$ENDIF}
+    MoveCursorToCleanPos(StartPos);
+    ReadNextAtom;
+    CurAtom:=CurPos;
+    CurAtomType:=GetCurrentAtomType;
+    if CurAtomType in [vatRoundBracketOpen,vatEdgedBracketOpen] then
+      ReadTilBracketClose(true);
+    ReadNextAtom;
+    NextAtom:=CurPos;
+    if NextAtom.EndPos<=EndPos then
+      NextAtomType:=GetCurrentAtomType
+    else
+      NextAtomType:=vatSpace;
+    MoveCursorToCleanPos(CurAtom.StartPos);
+    IsIdentEndOfVar:=iieovUnknown;
+  end;
+  
+  procedure ReadNextExpressionAtom;
+  begin
+    CurAtom:=NextAtom;
+    CurAtomType:=NextAtomType;
+    MoveCursorToCleanPos(NextAtom.StartPos);
+    ReadNextAtom;
+    if CurAtomType in [vatRoundBracketOpen,vatEdgedBracketOpen] then
+      ReadTilBracketClose(true);
+    ReadNextAtom;
+    NextAtom:=CurPos;
+    if NextAtom.EndPos<=EndPos then
+      NextAtomType:=GetCurrentAtomType
+    else
+      NextAtomType:=vatSpace;
+    MoveCursorToCleanPos(CurAtom.StartPos);
+    IsIdentEndOfVar:=iieovUnknown;
+  end;
+  
+  function IsIdentifierEndOfVariable: boolean;
+  var BehindFuncAtomType: TVariableAtomType;
+  begin
+    if IsIdentEndOfVar=iieovUnknown then begin
+      MoveCursorToCleanPos(CurAtom.EndPos);
+      ReadNextAtom;
+      if AtomIsChar('(') then begin
+        ReadTilBracketClose(true);
+        ReadNextAtom;
+      end;
+      BehindFuncAtomType:=GetCurrentAtomType;
+      if (BehindFuncAtomType in [vatPoint,vatUP,
+        vatEdgedBracketOpen,vatRoundBracketOpen])
+      then
+        IsIdentEndOfVar:=iieovNo
+      else
+        IsIdentEndOfVar:=iieovYes;
+    end;
+    Result:=(IsIdentEndOfVar=iieovYes);
+  end;
+  
+  procedure ResolveBaseTypeOfIdentifier;
+  { normally not the identifier is searched, but its type
+    but there is one exception:
+      if the identifier is a function and it is the end of the variable then
+      the the decision is based on the fdfFunctionResult flag.
+  }
+  var
+    FuncResultNode: TCodeTreeNode;
+    ExprType: TExpressionType;
+  begin
+    if (CurContext.Node<>nil) then begin
+      // check if at the end of the variable
+      if (NextAtom.EndPos>EndPos) and (fdfFindVariable in StartFlags) then
+        // the variable is wanted, not its type
+        exit;
+        
+      // find base type
+      Exclude(Params.Flags,fdfFunctionResult);
+      ExprType:=CurContext.Tool.ConvertNodeToExpressionType(CurContext.Node,
+                                                            Params);
+      CurExprDesc:=ExprType.Desc;
+      CurContext:=ExprType.Context;
+      if (CurExprDesc=xtContext)
+      and (CurContext.Node.Desc in [ctnProcedure,ctnProcedureHead]) then begin
+        // check if this is a function
+        CurContext.Tool.BuildSubTreeForProcHead(CurContext.Node,
+                                                FuncResultNode);
+        if (FuncResultNode<>nil) then begin
+          // it is function -> use the result type instead of the function
+          if IsIdentifierEndOfVariable then begin
+            // this function identifier is the end of the variable
+            if not (fdfFunctionResult in StartFlags) then
+              exit;
+          end;
+          Include(Params.Flags,fdfFunctionResult);
+          ExprType:=CurContext.Tool.ConvertNodeToExpressionType(CurContext.Node,
+                                                                Params);
+          CurExprDesc:=ExprType.Desc;
+          CurContext:=ExprType.Context;
+        end;
+      end;
+    end;
+  end;
+  
+  procedure ResolveIdentifier;
+  var
+    ProcNode: TCodeTreeNode;
+    IdentFound: boolean;
+  begin
+    // for example  'AnObject[3]'
+    // check special identifiers 'Result' and 'Self'
+    IdentFound:=false;
+    if (CurContext.Node<>nil)
+    and (CurContext.Node.Desc in AllPascalStatements) then begin
+      if CompareSrcIdentifier(CurAtom.StartPos,'SELF') then begin
+        // SELF in a method is the object itself
+        // -> check if in a proc
+        ProcNode:=CurContext.Node.GetNodeOfType(ctnProcedure);
+        if (ProcNode<>nil)
+        and FindClassOfMethod(ProcNode,Params,not IsIdentifierEndOfVariable)
+        then begin
+          CurContext:=CreateFindContext(Params);
+          IdentFound:=true;
+        end;
+      end else if CompareSrcIdentifier(CurAtom.StartPos,'RESULT') then begin
+        // RESULT has a special meaning in a function
+        // -> check if in a function
+        ProcNode:=CurContext.Node.GetNodeOfType(ctnProcedure);
+        if (ProcNode<>nil) then begin
+          if IsIdentifierEndOfVariable
+          and (fdfFindVariable in StartFlags) then begin
+            CurContext:=CreateFindContext(CurContext.Tool,ProcNode.FirstChild);
+          end else begin
+            Params.Save(OldInput);
+            Include(Params.Flags,fdfFunctionResult);
+            CurContext:=FindBaseTypeOfNode(Params,ProcNode);
+            Params.Load(OldInput);
+          end;
           exit;
         end;
       end;
     end;
-    Result:=Result.Context.Tool.ConvertNodeToExpressionType(Result.Context.Node,
-                                                          Params);
-  end else begin
-    if IsPredefinedIdentifier then begin
-      Result:=CleanExpressionType;
-      Result.Desc:=PredefinedIdentToTypeDesc(@Src[StartPos]);
-    end else
-      RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsIdentifier,GetAtom]);
+
+    // find sub identifier
+    if not IdentFound then begin
+      Params.Save(OldInput);
+      try
+        Params.Flags:=[fdfSearchInAncestors,fdfExceptionOnNotFound]
+                      +fdfAllClassVisibilities
+                      +(fdfGlobals*Params.Flags);
+        if CurContext.Node=StartContext.Node then begin
+          // there is no special context -> also search in parent contexts
+          Params.Flags:=Params.Flags
+                       +[fdfSearchInParentNodes,fdfIgnoreCurContextNode];
+        end else
+          // only search in special context
+          Params.ContextNode:=CurContext.Node;
+
+        // check identifier must be checked for overloaded procs
+        if IsIdentifierEndOfVariable
+        and (fdfIgnoreOverloadedProcs in StartFlags)
+        then
+          Include(Params.Flags,fdfIgnoreOverloadedProcs)
+        else
+          Exclude(Params.Flags,fdfIgnoreOverloadedProcs);
+
+        // search ...
+        Params.SetIdentifier(Self,@Src[CurAtom.StartPos],@CheckSrcIdentifier);
+        if CurContext.Tool.FindIdentifierInContext(Params) then begin
+          CurContext:=CreateFindContext(Params);
+        end else begin
+          // predefined identifier not redefined
+          CurContext:=CreateFindContext(Self,nil);
+        end;
+
+        // ToDo: check if identifier in 'Protected' section
+
+      finally
+        Params.Load(OldInput);
+      end;
+    end;
+    
+    ResolveBaseTypeOfIdentifier;
   end;
+
+  procedure ResolvePoint;
+  begin
+    // for example 'A.B'
+    if (not (NextAtomType in [vatSpace,vatIdentifier,vatPreDefIdentifier])) then
+    begin
+      MoveCursorToCleanPos(NextAtom.StartPos);
+      ReadNextAtom;
+      RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsIdentifier,GetAtom]);
+    end;
+    if (CurContext.Node=nil) then begin
+      MoveCursorToCleanPos(CurAtom.StartPos);
+      RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsIllegalQualifier,'.']);
+    end;
+    if (CurContext.Node.Desc in AllUsableSourceTypes) then begin
+      // identifier in front of the point is a unit name
+      if CurContext.Tool<>Self then begin
+        CurContext.Node:=CurContext.Tool.GetInterfaceNode;
+      end;
+    end;
+    // there is no special left to do, since Result already points to
+    // the type context node.
+  end;
+
+  procedure ResolveAs;
+  begin
+    // for example 'A as B'
+    if (not (NextAtomType in [vatSpace,vatIdentifier,vatPreDefIdentifier])) then
+    begin
+      MoveCursorToCleanPos(NextAtom.StartPos);
+      ReadNextAtom;
+      RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsIdentifier,GetAtom]);
+    end;
+    // 'as' is a type cast, so the left side is irrelevant
+    // -> context is default context
+    CurContext:=StartContext;
+  end;
+
+  procedure ResolveUp;
+  begin
+    // for example:
+    //   1. 'PInt = ^integer'  pointer type
+    //   2. a^  dereferencing
+    if (not (NextAtomType in [vatSpace,vatPoint,vatUp,vatAS,vatEdgedBracketOpen]))
+    or ((CurContext.Node=nil) and (CurExprDesc<>xtPointer))
+    then begin
+      MoveCursorToCleanPos(NextAtom.StartPos);
+      ReadNextAtom;
+      RaiseExceptionFmt(ctsIllegalQualifier,[GetAtom]);
+    end;
+    if (CurExprDesc=xtPointer) then exit;
+    if (CurContext.Node<>StartContext.Node) then begin
+      // left side of expression has defined a special context
+      // => this '^' is a dereference
+      if (not
+          (NextAtomType in [vatSpace,vatPoint,vatAS,vatUP,vatEdgedBracketOpen]))
+      then begin
+        MoveCursorToCleanPos(NextAtom.StartPos);
+        ReadNextAtom;
+        RaiseExceptionFmt(ctsStrExpectedButAtomFound,['.',GetAtom]);
+      end;
+      if CurContext.Node.Desc<>ctnPointerType then begin
+        MoveCursorToCleanPos(CurAtom.StartPos);
+        RaiseExceptionFmt(ctsIllegalQualifier,['^']);
+      end;
+      CurContext:=CurContext.Tool.FindBaseTypeOfNode(Params,
+                                                    CurContext.Node.FirstChild);
+    end else if NodeHasParentOfType(CurContext.Node,ctnPointerType) then begin
+      // this is a pointer type definition
+      // -> the default context is ok
+    end;
+  end;
+
+  procedure ResolveEdgedBracketOpen;
+  begin
+    { for example:  a[]
+        this could be:
+          1. ranged array
+          2. dynamic array
+          3. indexed pointer
+          4. default property
+          5. indexed property
+          6. string character
+    }
+    if not (NextAtomType in [vatSpace,vatPoint,vatAs,vatUp,vatRoundBracketClose,
+      vatRoundBracketOpen,vatEdgedBracketClose,vatEdgedBracketOpen])
+    or ((CurContext.Node=nil) and (not (CurExprDesc in xtAllStringTypes))) then
+    begin
+      MoveCursorToCleanPos(NextAtom.StartPos);
+      ReadNextAtom;
+      RaiseExceptionFmt(ctsIllegalQualifier,[GetAtom]);
+    end;
+    if CurExprDesc in xtAllStringTypes then begin
+      CurExprDesc:=xtChar;
+      CurContext.Node:=nil;
+      exit;
+    end;
+    case CurContext.Node.Desc of
+
+    ctnArrayType:
+      // the array type is the last child node
+      CurContext:=CurContext.Tool.FindBaseTypeOfNode(Params,
+                                                     CurContext.Node.LastChild);
+
+    ctnPointerType:
+      // the pointer type is the only child node
+      CurContext:=CurContext.Tool.FindBaseTypeOfNode(Params,
+                                                    CurContext.Node.FirstChild);
+
+    ctnClass:
+      begin
+        // search default property in class
+        Params.Save(OldInput);
+        Params.Flags:=[fdfSearchInAncestors,fdfExceptionOnNotFound]
+                      +fdfGlobals*Params.Flags
+                      +fdfAllClassVisibilities*Params.Flags;
+        // special identifier for default property
+        Params.SetIdentifier(Self,'[',nil);
+        Params.ContextNode:=CurContext.Node;
+        CurContext.Tool.FindIdentifierInContext(Params);
+        CurContext:=Params.NewCodeTool.FindBaseTypeOfNode(
+                                                         Params,Params.NewNode);
+        Params.Load(OldInput);
+      end;
+
+    ctnIdentifier:
+      begin
+        MoveCursorToNodeStart(CurContext.Node);
+        ReadNextAtom;
+        if UpAtomIs('STRING') or UpAtomIs('ANSISTRING')
+        or UpAtomIs('SHORTSTRING') then begin
+          CurExprDesc:=xtChar;
+          CurContext.Node:=nil;
+          exit;
+        end else begin
+          MoveCursorToCleanPos(CurAtom.StartPos);
+          ReadNextAtom;
+          RaiseExceptionFmt(ctsIllegalQualifier,[GetAtom]);
+        end;
+      end;
+
+    ctnProperty:
+      begin
+        // indexed property without base type
+        // => property type is predefined
+        // -> completed
+      end;
+
+    else
+      MoveCursorToCleanPos(CurAtom.StartPos);
+      ReadNextAtom;
+      RaiseExceptionFmt(ctsIllegalQualifier,[GetAtom]);
+    end;
+  end;
+
+  procedure ResolveRoundBracketOpen;
+  var ExprType: TExpressionType;
+  begin
+    { for example:
+        (a+b)   expression bracket: the type is the result type of the
+                                    expression.
+        a()     typecast or function
+    }
+    if not (NextAtomType in [vatSpace,vatPoint,vatAs,vatUp,vatRoundBracketClose,
+      vatRoundBracketOpen,vatEdgedBracketClose,vatEdgedBracketOpen]) then
+    begin
+      MoveCursorToCleanPos(NextAtom.StartPos);
+      ReadNextAtom;
+      RaiseExceptionFmt(ctsIllegalQualifier,[GetAtom]);
+    end;
+    if CurContext.Node<>StartContext.Node then begin
+      // typecast or function
+    end else begin
+      // expression
+      ExprType:=FindExpressionResultType(Params,CurAtom.StartPos+1,
+                                       CurAtom.EndPos-1);
+      CurExprDesc:=ExprType.Desc;
+      CurContext:=ExprType.Context;
+    end;
+  end;
+
+  procedure ResolveINHERITED;
+  var
+    ProcNode: TCodeTreeNode;
+    ClassOfMethodContext: TFindContext;
+  begin
+    // for example: inherited A;
+    // inherited skips the class and begins to search in the ancestor class
+    if (CurContext.Node<>StartContext.Node) or (CurContext.Node=nil)
+    then begin
+      MoveCursorToCleanPos(CurAtom.StartPos);
+      RaiseExceptionFmt(ctsIllegalQualifier,[GetAtom]);
+    end;
+    if (not NodeIsInAMethod(CurContext.Node)) then begin
+      MoveCursorToCleanPos(CurAtom.StartPos);
+      RaiseException(ctsInheritedKeywordOnlyAllowedInMethods);
+    end;
+    if not (NextAtomType in [vatIdentifier,vatPreDefIdentifier]) then
+    begin
+      MoveCursorToCleanPos(NextAtom.StartPos);
+      ReadNextAtom;
+      RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsIdentifier,GetAtom]);
+    end;
+
+    ReadNextExpressionAtom;
+    {$IFDEF ShowExprEval}
+    writeln('    ResolveINHERITED CurAtomType=',
+      VariableAtomTypeNames[CurAtomType],
+      ' CurAtom="',copy(Src,CurAtom.StartPos,CurAtom.EndPos-CurAtom.StartPos),'"');
+    {$ENDIF}
+
+    // find ancestor of class of method
+    ProcNode:=CurContext.Node.GetNodeOfType(ctnProcedure);
+    Params.Save(OldInput);
+    Params.Flags:=[fdfExceptionOnNotFound]
+                  +fdfGlobals*Params.Flags;
+    CurContext.Tool.FindClassOfMethod(ProcNode,Params,true);
+    ClassOfMethodContext:=CreateFindContext(Params);
+    
+    // find class ancestor
+    Params.Flags:=[fdfSearchInParentNodes,fdfExceptionOnNotFound]
+                  +fdfGlobals*Params.Flags
+                  +fdfAllClassVisibilities*Params.Flags;
+    ClassOfMethodContext.Tool.FindAncestorOfClass(ClassOfMethodContext.Node,
+                                                  Params,true);
+    
+    // search identifier only in class ancestor
+    Params.Load(OldInput);
+    Params.SetIdentifier(Self,@Src[CurAtom.StartPos],@CheckSrcIdentifier);
+    Params.ContextNode:=Params.NewNode;
+    Params.Flags:=Params.Flags-[fdfSearchInParentNodes]
+                              +[fdfExceptionOnNotFound,fdfSearchInAncestors];
+    if not Params.NewCodeTool.FindIdentifierInContext(Params) then begin
+      // there is no inherited identifier
+      MoveCursorToCleanPos(CurAtom.StartPos);
+      ReadNextAtom;
+      RaiseExceptionFmt(ctsIdentifierNotFound,[GetAtom]);
+    end;
+    CurContext:=CreateFindContext(Params);
+    Params.Load(OldInput);
+
+    ResolveBaseTypeOfIdentifier;
+  end;
+  
+begin
+  Result:=CleanExpressionType;
+  StartFlags:=Params.Flags;
+  StartContext.Node:=Params.ContextNode;
+  StartContext.Tool:=Self;
+  CurExprDesc:=xtContext;
+  CurContext:=StartContext;
+  {$IFDEF ShowExprEval}
+  writeln('[TFindDeclarationTool.FindExpressionTypeOfVariable]',
+    ' Flags=[',FindDeclarationFlagsAsString(Params.Flags),']',
+    ' StartContext=',StartContext.Node.DescAsString
+  );
+  {$ENDIF}
+  
+  InitAtomQueue;
+  repeat
+    {$IFDEF ShowExprEval}
+    writeln('  FindExpressionTypeOfVariable CurAtomType=',
+      VariableAtomTypeNames[CurAtomType],
+      ' CurAtom="',copy(Src,CurAtom.StartPos,CurAtom.EndPos-CurAtom.StartPos),'"');
+    {$ENDIF}
+    case CurAtomType of
+    vatIdentifier, vatPreDefIdentifier: ResolveIdentifier;
+    vatPoint:             ResolvePoint;
+    vatAS:                ResolveAs;
+    vatUP:                ResolveUp;
+    vatEdgedBracketOpen:  ResolveEdgedBracketOpen;
+    vatRoundBracketOpen:  ResolveRoundBracketOpen;
+    vatINHERITED:         ResolveINHERITED;
+    end;
+    ReadNextExpressionAtom;
+  until CurAtom.EndPos>EndPos;
+  
+  Result.Desc:=CurExprDesc;
+  Result.Context:=CurContext;
+  {$IFDEF ShowExprEval}
+  writeln('  FindExpressionTypeOfVariable Result=',ExprTypeToString(Result));
+  {$ENDIF}
 end;
 
 function TFindDeclarationTool.ConvertNodeToExpressionType(Node: TCodeTreeNode;
@@ -3396,35 +3464,9 @@ function TFindDeclarationTool.ReadOperandTypeAtCursor(
   after reading, the cursor will be on the next atom
 }
 var EndPos, SubStartPos: integer;
-begin
-  Result:=CleanExpressionType;
-  if CurPos.StartPos=CurPos.EndPos then ReadNextAtom;
-  // read unary operators which have no effect on the type: +, -, not
-  while AtomIsChar('+') or AtomIsChar('-') or UpAtomIs('NOT') do
-    ReadNextAtom;
-  {$IFDEF ShowExprEval}
-  writeln('[TFindDeclarationTool.ReadOperandTypeAtCursor] A Atom=',GetAtom);
-  {$ENDIF}
-  if UpAtomIs('INHERITED') or (AtomIsIdentifier(false)) then begin
-    // read variable
-    Result:=FindExpressionTypeOfVariable(CurPos.StartPos,Params,EndPos);
-    MoveCursorToCleanPos(EndPos);
-  end
-  else if UpAtomIs('NIL') then begin
-    Result.Desc:=xtNil;
-    ReadNextAtom;
-  end
-  else if AtomIsChar('(') then begin
-    // read til bracket end  and find the result of the inner expression
-    // this algo is not very fast, but expressions are almost always small
-    SubStartPos:=CurPos.EndPos;
-    ReadTilBracketClose(true);
-    EndPos:=CurPos.EndPos;
-    Result:=FindExpressionResultType(Params,SubStartPos,CurPos.StartPos);
-    if Result.Desc=xtNone then exit;
-    MoveCursorToCleanPos(EndPos);
-  end
-  else if AtomIsChar('[') then begin
+
+  procedure ReadEdgedBracketOperand;
+  begin
     // 'set' constant
     SubStartPos:=CurPos.StartPos;
     ReadNextAtom;
@@ -3455,6 +3497,32 @@ begin
     ReadNextAtom;
     ReadTilBracketClose(true);
     MoveCursorToCleanPos(CurPos.EndPos);
+  end;
+
+begin
+  Result:=CleanExpressionType;
+
+  if CurPos.StartPos=CurPos.EndPos then ReadNextAtom;
+  // read unary operators which have no effect on the type: +, -, not
+  while AtomIsChar('+') or AtomIsChar('-') or UpAtomIs('NOT') do
+    ReadNextAtom;
+  {$IFDEF ShowExprEval}
+  writeln('[TFindDeclarationTool.ReadOperandTypeAtCursor] A Atom=',GetAtom);
+  {$ENDIF}
+  if UpAtomIs('INHERITED') or (AtomIsIdentifier(false))
+  or AtomIsChar('(') then begin
+    // read variable
+    SubStartPos:=CurPos.StartPos;
+    EndPos:=FindEndOfVariable(SubStartPos,false);
+    Result:=FindExpressionTypeOfVariable(SubStartPos,EndPos,Params);
+    MoveCursorToCleanPos(EndPos);
+  end
+  else if UpAtomIs('NIL') then begin
+    Result.Desc:=xtNil;
+    ReadNextAtom;
+  end
+  else if AtomIsChar('[') then begin
+    ReadEdgedBracketOperand;
   end
   else if AtomIsStringConstant then begin
     // string or char constant
@@ -3472,9 +3540,21 @@ begin
       Result.Desc:=xtConstOrdInteger;
     MoveCursorToCleanPos(CurPos.EndPos);
   end
+  else if AtomIsChar('@') then begin
+    // a simple pointer or an event
+    Params.Flags:=Params.Flags-[fdfFunctionResult]+[fdfIgnoreOverloadedProcs];
+    MoveCursorToCleanPos(CurPos.EndPos);
+    Result:=ReadOperandTypeAtCursor(Params);
+    if (Result.Desc=xtContext) or (Result.Context.Node.Desc=ctnProcedure)
+    then
+      Result.SubDesc:=Result.Desc
+    else
+      Result.Context:=CleanFindContext;
+    Result.Desc:=xtPointer;
+  end
   else
     RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsIdentifier,GetAtom]);
-    
+
   {$IFDEF ShowExprEval}
   write('[TFindDeclarationTool.ReadOperandTypeAtCursor] END ',
   ExpressionTypeDescNames[Result.Desc]);
@@ -3524,9 +3604,18 @@ begin
   then begin
     // + - *
     if (Src[BinaryOperator.StartPos]='+')
-    and (LeftOperand.Desc in [xtAnsiString,xtShortString,xtString])
+    and (LeftOperand.Desc in [xtAnsiString,xtShortString,xtString,xtChar])
     then begin
-      Result.Desc:=xtConstString;
+      // string/char '+'
+      if (RightOperand.Desc in [xtAnsiString,xtShortString,xtString,xtChar])
+      then
+        Result.Desc:=xtConstString
+      else begin
+        MoveCursorToCleanPos(BinaryOperator.EndPos);
+        ReadNextAtom;
+        RaiseExceptionFmt(ctsIncompatibleTypesGotExpected,
+                          ['char',ExpressionTypeDescNames[RightOperand.Desc]]);
+      end;
     end else begin
       if (LeftOperand.Desc in xtAllRealTypes)
       or (RightOperand.Desc in xtAllRealTypes) then
@@ -3632,6 +3721,54 @@ begin
   {$ENDIF}
 end;
 
+function TFindDeclarationTool.IsParamListCompatible(FirstParameterNode1,
+  FirstParameterNode2: TCodeTreeNode; Params: TFindDeclarationParams;
+  CompatibilityList: TTypeCompatibilityList): TTypeCompatibility;
+var
+  CurParamNode1, CurParamNode2: TCodeTreeNode;
+  ParamCompatibility: TTypeCompatibility;
+  ExprType1, ExprType2: TExpressionType;
+  OldFlags: TFindDeclarationFlags;
+  i: integer;
+begin
+  // quick check: parameter count
+  CurParamNode1:=FirstParameterNode1;
+  CurParamNode2:=FirstParameterNode2;
+  while (CurParamNode1<>nil) and (CurParamNode2<>nil) do begin
+    CurParamNode1:=CurParamNode1.NextBrother;
+    CurParamNode2:=CurParamNode2.NextBrother;
+  end;
+  if (CurParamNode1<>nil) or (CurParamNode2<>nil) then begin
+    Result:=tcIncompatible;
+    exit;
+  end;
+  
+  // check each parameter
+  OldFlags:=Params.Flags;
+  Params.Flags:=Params.Flags-[fdfFindVariable]+[fdfIgnoreOverloadedProcs];
+  CurParamNode1:=FirstParameterNode1;
+  CurParamNode2:=FirstParameterNode2;
+  Result:=tcExact;
+  i:=0;
+  while (CurParamNode1<>nil) and (CurParamNode2<>nil) do begin
+    ExprType1:=ConvertNodeToExpressionType(CurParamNode1,Params);
+    ExprType2:=ConvertNodeToExpressionType(CurParamNode2,Params);
+    ParamCompatibility:=IsCompatible(ExprType1,ExprType2,Params);
+    if CompatibilityList<>nil then
+      CompatibilityList[i]:=ParamCompatibility;
+    if ParamCompatibility=tcIncompatible then begin
+      Result:=tcIncompatible;
+      exit;
+    end else if ParamCompatibility=tcCompatible then begin
+      Result:=tcCompatible;
+    end;
+    CurParamNode1:=CurParamNode1.NextBrother;
+    CurParamNode2:=CurParamNode2.NextBrother;
+    inc(i);
+  end;
+  Params.Flags:=OldFlags;
+end;
+
 function TFindDeclarationTool.GetParameterNode(Node: TCodeTreeNode
   ): TCodeTreeNode;
 begin
@@ -3681,7 +3818,8 @@ begin
     // Procs can be overloaded, that means there can be several procs with the
     // same name, but with different param lists.
     // The search must go on, and the most compatible proc is returned.
-    if (fdfFirstIdentFound in Params.Flags) then begin
+    if ([fdfFirstIdentFound,fdfIgnoreOverloadedProcs]*Params.Flags<>[]) then
+    begin
       // this is not the first proc found
       // -> identifier will be handled by the first call
       Result:=ifrSuccess;
@@ -3712,18 +3850,14 @@ begin
         end;
         try
           // check the first proc for compatibility
-  writeln('[TFindDeclarationTool.CheckSrcIdentifier] A');
           CurFoundContext:=FoundContext;
-  writeln('[TFindDeclarationTool.CheckSrcIdentifier] B ',FoundContext.Tool.MainFilename);
           FirstParameterNode:=FoundContext.Tool.GetFirstParameterNode(
             FoundContext.Node);
-  writeln('[TFindDeclarationTool.CheckSrcIdentifier] C');
           ParamCompatibility:=FoundContext.Tool.IsParamListCompatible(
             FirstParameterNode,
             ExprInputList,fdfIgnoreMissingParams in Params.Flags,
             Params,BestCompatibilityList);
           FoundContext:=CurFoundContext;
-  writeln('[TFindDeclarationTool.CheckSrcIdentifier] D');
           if ParamCompatibility=tcExact then begin
             // the first proc fits exactly -> stop the search
             Result:=ifrSuccess;
@@ -3735,7 +3869,6 @@ begin
           Include(Params.Flags,fdfFirstIdentFound);
           Params.SetResult(FoundContext);
           Params.ContextNode:=FoundContext.Node;
-  writeln('[TFindDeclarationTool.CheckSrcIdentifier] E');
           repeat
             {$IFDEF ShowFoundIdentifier}
             writeln('[TFindDeclarationTool.CheckSrcIdentifier] Search next overloaded proc ',
@@ -3901,9 +4034,10 @@ begin
     if (ExpressionType.Desc<>xtConstSet) then
       exit;
     // both are sets, compare type of sets
-    if ExpressionType.SubDesc<>xtNone then begin
+    if (ExpressionType.SubDesc<>xtNone) then begin
+    
       // ToDo: check if enums of expression fits into enums of target
-
+      
       // ToDo: ppu, ppw, dcu
 
       Result:=tcCompatible;
@@ -3928,6 +4062,36 @@ begin
   ' Result=',TypeCompatibilityNames[Result]
   );
   {$ENDIF}
+end;
+
+function TFindDeclarationTool.GetCurrentAtomType: TVariableAtomType;
+begin
+  if (CurPos.StartPos=CurPos.EndPos) then
+    Result:=vatSpace
+  else if WordIsPredefinedIdentifier.DoItUpperCase(UpperSrc,CurPos.StartPos,
+    CurPos.EndPos-CurPos.StartPos) then
+    Result:=vatPreDefIdentifier
+  else if AtomIsIdentifier(false) then
+    Result:=vatIdentifier
+  else if (CurPos.StartPos>=1) and (CurPos.StartPos<=SrcLen)
+  and (CurPos.StartPos=CurPos.EndPos-1) then begin
+    case Src[CurPos.StartPos] of
+    '.': Result:=vatPoint;
+    '^': Result:=vatUp;
+    '(': Result:=vatRoundBracketOpen;
+    ')': Result:=vatRoundBracketClose;
+    '[': Result:=vatEdgedBracketOpen;
+    ']': Result:=vatEdgedBracketClose;
+    '@': Result:=vatAddrOp;
+    else Result:=vatNone;
+    end;
+  end
+  else if UpAtomIs('INHERITED') then
+    Result:=vatINHERITED
+  else if UpAtomIs('AS') then
+    Result:=vatAS
+  else
+    Result:=vatNone;
 end;
 
 function TFindDeclarationTool.CreateParamExprList(StartPos: integer;

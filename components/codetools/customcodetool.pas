@@ -127,7 +127,7 @@ type
     function IsPCharInSrc(ACleanPos: PChar): boolean;
     function ReadTilSection(SectionType: TCodeTreeNodeDesc): boolean;
     function ReadTilBracketClose(ExceptionOnNotFound: boolean): boolean;
-    function ReadBackTilBracketClose(ExceptionOnNotFound: boolean): boolean;
+    function ReadBackTilBracketOpen(ExceptionOnNotFound: boolean): boolean;
     function DoAtom: boolean; virtual;
     procedure ReadNextAtom;
     procedure UndoReadNextAtom;
@@ -1156,7 +1156,7 @@ begin
   Result:=true;
 end;
 
-function TCustomCodeTool.ReadBackTilBracketClose(
+function TCustomCodeTool.ReadBackTilBracketOpen(
   ExceptionOnNotFound: boolean): boolean;
 // reads code brackets (not comment brackets)
 var CloseBracket, AntiCloseBracket: char;
@@ -1186,7 +1186,7 @@ begin
       exit;
     end;
     if (AtomIsChar(')')) or (AtomIsChar(']')) then begin
-      if not ReadBackTilBracketClose(ExceptionOnNotFound) then exit;
+      if not ReadBackTilBracketOpen(ExceptionOnNotFound) then exit;
     end;
   until false;
   Result:=true;

@@ -1395,10 +1395,10 @@ begin
         dec(CurPos.StartPos);
       end;
     end else begin
-      Result:=ReadBackTilBracketClose(false);
+      Result:=ReadBackTilBracketOpen(false);
     end;
   end else if OpenBracket=']' then begin
-    Result:=ReadBackTilBracketClose(false);
+    Result:=ReadBackTilBracketOpen(false);
   end;
 end;
 

@@ -92,7 +92,7 @@ ResourceString
   // find declaration
   ctsUnitNotFound = 'unit not found: %s';
   ctsIdentifierNotFound = 'identifier not found: %s';
-  ctsExprTypeIsNotVariable = 'expression type is not a variable';
+  ctsNoContextNodeFoundAtCursor = 'no context node found at cursor';
   ctsInheritedKeywordOnlyAllowedInMethods =
      'inherited keyword only allowed in methods';
   ctsCircleInDefinitions = 'circle in definitions';
@@ -112,6 +112,8 @@ ResourceString
   ctsInterfaceSectionNotFound = 'interface section not found';
   ctsUsedUnitIsNotAPascalUnit = 'used unit is not a pascal unit';
   ctsDuplicateIdentifier = 'duplicate identifier: %s';
+  ctsQualifierExpectedButAtomFound = 'qualifier expected but %s found';
+  ctsIncompatibleTypesGotExpected = 'incompatibles types: expected "%s" but got "%s"';
 
   // codecompletion
   ctsPropertySpecifierAlreadyDefined = 'property specifier already defined: %s';

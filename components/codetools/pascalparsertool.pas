@@ -806,6 +806,8 @@ function TPascalParserTool.KeyWordFuncClassVarTypeSet: boolean;
     set of (MyEnummy4 := 4 , MyEnummy5);
 }
 begin
+  CreateChildNode;
+  CurNode.Desc:=ctnSetType;
   ReadNextAtom;
   if not UpAtomIs('OF') then
     SaveRaiseExceptionFmt(ctsStrExpectedButAtomFound,['"of"',GetAtom]);
@@ -817,6 +819,8 @@ begin
   else if AtomIsChar('(') then
     // set of ()
     ReadTilBracketClose(true);
+  CurNode.EndPos:=CurPos.EndPos;
+  EndChildNode;
   Result:=true;
 end;
 
@@ -3449,7 +3453,7 @@ begin
       RaiseLastError;
     // check if cursor is in interface
     Dummy:=CaretToCleanPos(CursorPos, CleanCursorPos);
-    if (Dummy in [0,-1]) then
+    if (Dummy=0) or (Dummy=-1) then
       exit;
   end;
   BuildTree(TreeRange=trInterface);

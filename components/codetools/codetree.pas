@@ -131,7 +131,7 @@ const
       ctnProcedureType,ctnSetType,ctnRangeType,ctnEnumerationType,
       ctnEnumIdentifier,ctnLabelType,ctnTypeType,ctnFileType,ctnPointerType,
       ctnClassOfType,ctnVariantType];
-  AllPasclStatements = [ctnBeginBlock,ctnWithStatement,ctnCaseStatement];
+  AllPascalStatements = [ctnBeginBlock,ctnWithStatement,ctnCaseStatement];
   AllSourceTypes =
      [ctnProgram,ctnPackage,ctnLibrary,ctnUnit];
   AllUsableSourceTypes =
@@ -175,6 +175,7 @@ type
     function Prior: TCodeTreeNode;
     function HasAsParent(Node: TCodeTreeNode): boolean;
     function HasParentOfType(ParentDesc: TCodeTreeNodeDesc): boolean;
+    function GetNodeOfType(ADesc: TCodeTreeNodeDesc): TCodeTreeNode;
     function DescAsString: string;
     procedure Clear;
     constructor Create;
@@ -422,6 +423,14 @@ begin
   while (ANode<>nil) and (ANode.Desc<>ParentDesc) do
     ANode:=ANode.Parent;
   Result:=ANode<>nil;
+end;
+
+function TCodeTreeNode.GetNodeOfType(ADesc: TCodeTreeNodeDesc
+  ): TCodeTreeNode;
+begin
+  Result:=Self;
+  while (Result<>nil) and (Result.Desc<>ADesc) do
+    Result:=Result.Parent;
 end;
 
 function TCodeTreeNode.DescAsString: string;
