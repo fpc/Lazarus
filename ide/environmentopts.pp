@@ -333,12 +333,13 @@ type
     procedure CancelButtonClick(Sender: TObject);
     procedure SaveDesktopSettingsToFileButtonClick(Sender: TObject);
     procedure LoadDesktopSettingsFromFileButtonClick(Sender: TObject);
-    property OnSaveEnvironmentSettings:TOnSaveEnvironmentSettings
+    property OnSaveEnvironmentSettings: TOnSaveEnvironmentSettings
       read FOnSaveEnvironmentSettings write FOnSaveEnvironmentSettings;
-    property OnLoadEnvironmentSettings:TOnLoadEnvironmentSettings
+    property OnLoadEnvironmentSettings: TOnLoadEnvironmentSettings
       read FOnLoadEnvironmentSettings write FOnLoadEnvironmentSettings;
     procedure WindowPositionsListBoxMouseUp(Sender:TObject;
        Button:TMouseButton;  Shift:TShiftState;  X,Y:integer);
+    procedure EnvironmentOptionsDialogResize(Sender: TObject);
   private
     FLayouts: TIDEWindowLayoutList;
     procedure SetupDesktopPage(Page: integer);
@@ -347,6 +348,12 @@ type
     procedure SetupFilesPage(Page: integer);
     procedure SetupBackupPage(Page: integer);
     procedure SetupNamingPage(Page: integer);
+    procedure ResizeDesktopPage;
+    procedure ResizeFormEditorPage;
+    procedure ResizeObjectInspectorPage;
+    procedure ResizeFilesPage;
+    procedure ResizeBackupPage;
+    procedure ResizeNamingPage;
     procedure SetComboBoxText(AComboBox:TComboBox; const AText:AnsiString);
     procedure SetComboBoxText(AComboBox:TComboBox; const AText:AnsiString;
                               MaxCount: integer);
@@ -918,8 +925,11 @@ constructor TEnvironmentOptionsDialog.Create(AOwner:TComponent);
 begin
   inherited Create(AOwner);
   if LazarusResources.Find(ClassName)=nil then begin
-    SetBounds((Screen.Width-480) div 2,(Screen.Height-430) div 2, 485, 435);
+    Width:=485;
+    Height:=435;
+    Position:=poScreenCenter;
     Caption:='Environment Options';
+    OnResize:=@EnvironmentOptionsDialogResize;
     
     NoteBook:=TNoteBook.Create(Self);
     with NoteBook do begin
@@ -970,6 +980,7 @@ begin
     end;
 
   end;
+  EnvironmentOptionsDialogResize(nil);
 end;
 
 destructor TEnvironmentOptionsDialog.Destroy;
@@ -1811,11 +1822,9 @@ begin
 end;
 
 procedure TEnvironmentOptionsDialog.SetupNamingPage(Page: integer);
-var //MaxX:integer;
+var
   pe: TPascalExtType;
 begin
-  //MaxX:=ClientWidth-5;
-
   PascalFileExtRadiogroup:=TRadioGroup.Create(Self);
   with PascalFileExtRadiogroup do begin
     Name:='PascalFileExtRadiogroup';
@@ -1844,6 +1853,483 @@ begin
     Width:=300;
     Caption:='Save pascal files lowercase';
     Visible:=true;
+  end;
+end;
+
+procedure TEnvironmentOptionsDialog.ResizeDesktopPage;
+var MaxX:integer;
+begin
+  MaxX:=ClientWidth-5;
+
+  // auto save
+  with AutoSaveGroupBox do begin
+    Left:=8;
+    Top:=2;
+    Width:=(MaxX div 2) - 15;
+    Height:=108;
+  end;
+
+  with AutoSaveEditorFilesCheckBox do begin
+    Left:=2;
+    Top:=2;
+    Width:=AutoSaveGroupBox.ClientWidth-2;
+    Height:=20;
+  end;
+
+  with AutoSaveProjectCheckBox do begin
+    Left:=2;
+    Top:=27;
+    Width:=AutoSaveGroupBox.ClientWidth-2;
+    Height:=20;
+  end;
+
+  with AutoSaveIntervalInSecsLabel do begin
+    Left:=4;
+    Top:=54;
+    Width:=90;
+    Height:=23;
+  end;
+
+  with AutoSaveIntervalInSecsComboBox do begin
+    Left:=AutoSaveIntervalInSecsLabel.Left+AutoSaveIntervalInSecsLabel.Width+5;
+    Top:=AutoSaveIntervalInSecsLabel.Top+2;
+    Width:=AutoSaveGroupBox.ClientWidth-Left-10;
+    Height:=23;
+  end;
+
+  // desktop files
+  with DesktopFilesGroupBox do begin
+    Left:=AutoSaveGroupBox.Left;
+    Top:=AutoSaveGroupBox.Top+AutoSaveGroupBox.Height+5;
+    Width:=AutoSaveGroupBox.Width;
+    Height:=90;
+  end;
+
+  with SaveDesktopSettingsToFileButton do begin
+    Left:=5;
+    Top:=5;
+    Width:=DesktopFilesGroupBox.ClientWidth-15;
+    Height:=25;
+  end;
+
+  with LoadDesktopSettingsFromFileButton do begin
+    Left:=5;
+    Top:=38;
+    Width:=SaveDesktopSettingsToFileButton.Width;
+    Height:=25;
+  end;
+
+  // hints
+  with ShowHintsForComponentPaletteCheckBox do begin
+    Left:=DesktopFilesGroupBox.Left;
+    Top:=DesktopFilesGroupBox.Top+DesktopFilesGroupBox.Height+100;
+    Width:=Parent.ClientWidth-Left;
+    Height:=20;
+  end;
+
+  with ShowHintsForMainSpeedButtonsCheckBox do begin
+    Left:=ShowHintsForComponentPaletteCheckBox.Left;
+    Top:=ShowHintsForComponentPaletteCheckBox.Top
+         +ShowHintsForComponentPaletteCheckBox.Height+5;
+    Width:=Parent.ClientWidth-Left;
+    Height:=20;
+  end;
+
+  // Window Positions
+  with WindowPositionsGroupBox do begin
+    SetBounds(MaxX div 2,AutoSaveGroupBox.Top,(MaxX div 2)-5,290);
+  end;
+
+  with WindowPositionsListBox do begin
+    SetBounds(5,5,Parent.ClientWidth-15,60);
+  end;
+
+  with WindowPositionsBox do begin
+    Left:=5;
+    Top:=WindowPositionsListBox.Top+WindowPositionsListBox.Height+5;
+    Width:=WindowPositionsListBox.Width;
+    Height:=Parent.ClientHeight-Top-20;
+  end;
+end;
+
+procedure TEnvironmentOptionsDialog.ResizeFormEditorPage;
+begin
+  // form editor
+  with DisplayGridCheckBox do begin
+    Left:=6;
+    Top:=2;
+    Width:=200;
+    Height:=23;
+  end;
+
+  with SnapToGridCheckBox do begin
+    Top:=27;
+    Left:=DisplayGridCheckBox.Left;
+    Width:=DisplayGridCheckBox.Width;
+    Height:=DisplayGridCheckBox.Height;
+  end;
+
+  with ShowComponentCaptionsCheckBox do begin
+    Top:=52;
+    Left:=DisplayGridCheckBox.Left;
+    Width:=DisplayGridCheckBox.Width;
+    Height:=DisplayGridCheckBox.Height;
+  end;
+
+  with ShowEditorHintsCheckBox do begin
+    Top:=77;
+    Left:=DisplayGridCheckBox.Left;
+    Width:=DisplayGridCheckBox.Width;
+    Height:=DisplayGridCheckBox.Height;
+  end;
+
+  with AutoCreateFormsCheckBox do begin
+    Top:=102;
+    Left:=DisplayGridCheckBox.Left;
+    Width:=DisplayGridCheckBox.Width;
+    Height:=DisplayGridCheckBox.Height;
+  end;
+
+  with GridSizeXLabel do begin
+    Left:=6;
+    Top:=129;
+    Width:=80;
+    Height:=20;
+  end;
+
+  with GridSizeXComboBox do begin
+    Left:=GridSizeXLabel.Left+GridSizeXLabel.Width+5;
+    Top:=GridSizeXLabel.Top+2;
+    Width:=60;
+    Height:=23;
+  end;
+
+  with GridSizeYLabel do begin
+    Left:=6;
+    Top:=154;
+    Width:=GridSizeXLabel.Width;
+    Height:=20;
+  end;
+
+  with GridSizeYComboBox do begin
+    Left:=GridSizeYLabel.Left+GridSizeYLabel.Width+5;
+    Top:=GridSizeYLabel.Top+2;
+    Width:=60;
+    Height:=23;
+  end;
+end;
+
+procedure TEnvironmentOptionsDialog.ResizeObjectInspectorPage;
+begin
+  // object inspector
+  with ObjectInspectorGroupBox do begin
+    Left:=6;
+    Top:=2;
+    Width:=200;
+    Height:=55;
+  end;
+
+  with OIBackgroundColorButton do begin
+    Left:=6;
+    Top:=6;
+    Width:=50;
+    Height:=25;
+  end;
+
+  with OIBackgroundColorLabel do begin
+    Left:=OIBackgroundColorButton.Left+OIBackgroundColorButton.Width+5;
+    Top:=OIBackgroundColorButton.Top;
+    Width:=ObjectInspectorGroupBox.ClientWidth-Left-5;
+    Height:=23;
+  end;
+end;
+
+procedure TEnvironmentOptionsDialog.ResizeFilesPage;
+var MaxX:integer;
+begin
+  MaxX:=ClientWidth-5;
+
+  with MaxRecentOpenFilesLabel do begin
+    Left:=4;
+    Top:=4;
+    Width:=170;
+    Height:=23;
+  end;
+
+  with MaxRecentOpenFilesComboBox do begin
+    Left:=MaxRecentOpenFilesLabel.Left+MaxRecentOpenFilesLabel.Width+2;
+    Top:=MaxRecentOpenFilesLabel.Top;
+    Width:=60;
+    Height:=25;
+  end;
+
+  with MaxRecentProjectFilesLabel do begin
+    Left:=MaxRecentOpenFilesLabel.Left;
+    Top:=MaxRecentOpenFilesLabel.Top+MaxRecentOpenFilesLabel.Height+3;
+    Width:=MaxRecentOpenFilesLabel.Width;
+    Height:=MaxRecentOpenFilesLabel.Height;
+  end;
+
+  with MaxRecentProjectFilesComboBox do begin
+    Left:=MaxRecentProjectFilesLabel.Left+MaxRecentProjectFilesLabel.Width+2;
+    Top:=MaxRecentProjectFilesLabel.Top;
+    Width:=60;
+    Height:=25;
+  end;
+
+  with OpenLastProjectAtStartCheckBox do begin
+    Left:=4;
+    Top:=MaxRecentProjectFilesLabel.Top+MaxRecentProjectFilesLabel.Height+5;
+    Width:=MaxX-10;
+    Height:=23;
+  end;
+
+  with LazarusDirLabel do begin
+    Left:=4;
+    Top:=OpenLastProjectAtStartCheckBox.Top
+        +OpenLastProjectAtStartCheckBox.Height+5;
+    Width:=MaxX-10;
+    Height:=23;
+  end;
+
+  with LazarusDirComboBox do begin
+    Left:=LazarusDirLabel.Left;
+    Top:=LazarusDirLabel.Top+LazarusDirLabel.Height+2;
+    Width:=LazarusDirLabel.Width;
+    Height:=25;
+  end;
+
+  with CompilerPathLabel do begin
+    Left:=LazarusDirLabel.Left;
+    Top:=LazarusDirComboBox.Top+LazarusDirComboBox.Height;
+    Width:=LazarusDirLabel.Width;
+    Height:=25;
+  end;
+
+  with CompilerPathComboBox do begin
+    Left:=LazarusDirLabel.Left;
+    Top:=CompilerPathLabel.Top+CompilerPathLabel.Height+2;
+    Width:=LazarusDirLabel.Width;
+    Height:=25;
+  end;
+
+  with FPCSourceDirLabel do begin
+    Left:=LazarusDirLabel.Left;
+    Top:=CompilerPathComboBox.Top+CompilerPathComboBox.Height;
+    Width:=LazarusDirLabel.Width;
+    Height:=23;
+  end;
+
+  with FPCSourceDirComboBox do begin
+    Left:=LazarusDirLabel.Left;
+    Top:=FPCSourceDirLabel.Top+FPCSourceDirLabel.Height+2;
+    Width:=LazarusDirLabel.Width;
+    Height:=25;
+  end;
+
+  with DebuggerPathLabel do begin
+    Left:=LazarusDirLabel.Left;
+    Top:=FPCSourceDirComboBox.Top+FPCSourceDirComboBox.Height;
+    Width:=FPCSourceDirLabel.Width;
+    Height:=25;
+  end;
+
+  with DebuggerTypeComboBox do begin
+    Left:=FPCSourceDirLabel.Left;
+    Top:=DebuggerPathLabel.Top+DebuggerPathLabel.Height+2;
+    Width:=LazarusDirLabel.Width div 2;
+    Height:=25;
+  end;
+
+  with DebuggerPathComboBox do begin
+    Left:=DebuggerTypeComboBox.Left+DebuggerTypeComboBox.Width+10;
+    Top:=DebuggerTypeComboBox.Top;
+    Width:=LazarusDirLabel.Width-DebuggerTypeComboBox.Width-10;
+    Height:=25;
+  end;
+
+  with TestBuildDirLabel do begin
+    Left:=LazarusDirLabel.Left;
+    Top:=DebuggerTypeComboBox.Top+DebuggerTypeComboBox.Height;
+    Width:=LazarusDirLabel.Width;
+    Height:=23;
+  end;
+
+  with TestBuildDirComboBox do begin
+    Left:=LazarusDirLabel.Left;
+    Top:=TestBuildDirLabel.Top+TestBuildDirLabel.Height+2;
+    Width:=LazarusDirLabel.Width;
+    Height:=25;
+  end;
+end;
+
+procedure TEnvironmentOptionsDialog.ResizeBackupPage;
+var MaxX:integer;
+begin
+  MaxX:=ClientWidth-5;
+
+  with BackupHelpLabel do begin
+    Left:=5;
+    Top:=2;
+    Width:=MaxX-Left*2;
+    Height:=23;
+  end;
+
+  with BackupProjectGroupBox do begin
+    Left:=4;
+    Top:=BackupHelpLabel.Top+BackupHelpLabel.Height+4;
+    Width:=(MaxX div 2) - 11;
+    Height:=260;
+  end;
+
+  with BakProjTypeRadioGroup do begin
+    Left:=5;
+    Top:=4;
+    Width:=BackupProjectGroupBox.ClientWidth-Left-Left-4;
+    Height:=140;
+  end;
+
+  with BakProjAddExtLabel do begin
+    Left:=5;
+    Top:=BakProjTypeRadioGroup.Top+BakProjTypeRadioGroup.Height+5;
+    Width:=BakProjTypeRadioGroup.Width-62;
+    Height:=23;
+  end;
+
+  with BakProjAddExtComboBox do begin
+    Left:=BakProjAddExtLabel.Left+BakProjAddExtLabel.Width+2;
+    Top:=BakProjAddExtLabel.Top;
+    Width:=60;
+    Height:=25;
+  end;
+
+  with BakProjMaxCounterLabel do begin
+    Left:=5;
+    Top:=BakProjAddExtLabel.Top+BakProjAddExtLabel.Height+5;
+    Width:=BakProjTypeRadioGroup.Width-102;
+    Height:=23;
+  end;
+
+  with BakProjMaxCounterComboBox do begin
+    Left:=BakProjMaxCounterLabel.Left+BakProjMaxCounterLabel.Width+2;
+    Top:=BakProjMaxCounterLabel.Top;
+    Width:=100;
+    Height:=25;
+  end;
+
+  with BakProjSubDirLabel do begin
+    Left:=5;
+    Top:=BakProjMaxCounterLabel.Top+BakProjMaxCounterLabel.Height+5;
+    Width:=BakProjTypeRadioGroup.Width-102;
+    Height:=23;
+  end;
+
+  with BakProjSubDirComboBox do begin
+    Left:=BakProjSubDirLabel.Left+BakProjSubDirLabel.Width+2;
+    Top:=BakProjSubDirLabel.Top;
+    Width:=100;
+    Height:=25;
+  end;
+
+  with BackupOtherGroupBox do begin
+    Left:=BackupProjectGroupBox.Left+BackupProjectGroupBox.Width+10;
+    Top:=BackupHelpLabel.Top+BackupHelpLabel.Height+4;
+    Width:=(MaxX div 2) - 11;
+    Height:=260;
+  end;
+
+  with BakOtherTypeRadioGroup do begin
+    Left:=5;
+    Top:=4;
+    Width:=BackupOtherGroupBox.ClientWidth-Left-Left-4;
+    Height:=140;
+  end;
+
+  with BakOtherAddExtLabel do begin
+    Left:=5;
+    Top:=BakOtherTypeRadioGroup.Top+BakOtherTypeRadioGroup.Height+5;
+    Width:=BakOtherTypeRadioGroup.Width-62;
+    Height:=23;
+  end;
+
+  with BakOtherAddExtComboBox do begin
+    Left:=BakOtherAddExtLabel.Left+BakOtherAddExtLabel.Width+2;
+    Top:=BakOtherAddExtLabel.Top;
+    Width:=60;
+    Height:=25;
+  end;
+
+  with BakOtherMaxCounterLabel do begin
+    Left:=5;
+    Top:=BakOtherAddExtLabel.Top+BakOtherAddExtLabel.Height+5;
+    Width:=BakOtherTypeRadioGroup.Width-102;
+    Height:=23;
+  end;
+
+  with BakOtherMaxCounterComboBox do begin
+    Left:=BakOtherMaxCounterLabel.Left+BakOtherMaxCounterLabel.Width+2;
+    Top:=BakOtherMaxCounterLabel.Top;
+    Width:=100;
+    Height:=25;
+  end;
+
+  with BakOtherSubDirLabel do begin
+    Left:=5;
+    Top:=BakOtherMaxCounterLabel.Top+BakOtherMaxCounterLabel.Height+5;
+    Width:=BakOtherTypeRadioGroup.Width-102;
+    Height:=23;
+  end;
+
+  with BakOtherSubDirComboBox do begin
+    Left:=BakOtherSubDirLabel.Left+BakOtherSubDirLabel.Width+2;
+    Top:=BakOtherSubDirLabel.Top;
+    Width:=100;
+    Height:=25;
+  end;
+end;
+
+procedure TEnvironmentOptionsDialog.ResizeNamingPage;
+begin
+  with PascalFileExtRadiogroup do begin
+    Left:=5;
+    Top:=4;
+    Width:=200;
+    Height:=80;
+  end;
+
+  with PascalFileLowercaseCheckBox do begin
+    Left:=PascalFileExtRadiogroup.Left;
+    Top:=PascalFileExtRadiogroup.Top+PascalFileExtRadiogroup.Height+10;
+    Width:=300;
+  end;
+end;
+
+procedure TEnvironmentOptionsDialog.EnvironmentOptionsDialogResize(
+  Sender: TObject);
+begin
+  with NoteBook do begin
+    SetBounds(0,0,Self.ClientWidth,Self.ClientHeight-50);
+  end;
+
+  ResizeDesktopPage;
+  ResizeFormEditorPage;
+  ResizeObjectInspectorPage;
+  ResizeFilesPage;
+  ResizeBackupPage;
+  ResizeNamingPage;
+
+  with CancelButton do begin
+    Width:=70;
+    Height:=23;
+    Left:=Self.ClientWidth-Width-15;
+    Top:=Self.ClientHeight-Height-15;
+  end;
+
+  with OkButton do begin
+    Width:=CancelButton.Width;
+    Height:=CancelButton.Height;
+    Left:=CancelButton.Left-15-Width;
+    Top:=CancelButton.Top;
   end;
 end;
 

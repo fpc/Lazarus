@@ -10,10 +10,8 @@
   ToDo:
    - Code template adding does not scroll listbox
    - key mapping schemes
-   - Resizing
    - SetSynEditSettings
    - nicer TColorButton
-   - create LFM file
 }
 unit EditorOptions;
 
@@ -265,7 +263,6 @@ type
 
   { Editor Options form }
   TEditorOptionsForm = class(TForm)
-  published
     MainNoteBook:TNoteBook;
     ImageList: TImageList;
 
@@ -379,6 +376,9 @@ type
     OkButton:TButton;
     CancelButton:TButton;
 
+    // form
+    procedure EditorOptionsFormResize(Sender: TObject);
+    
     // general
     procedure GeneralCheckBoxOnClick(Sender: TObject);
     procedure ComboBoxOnChange(Sender:TObject);
@@ -430,21 +430,26 @@ type
     procedure InvalidatePreviews;
     procedure SetPreviewSynInAllPreviews;
     procedure SetupButtonBar;
-    
+    procedure ResizeButtonBar;
+
     // general
     procedure SetupGeneralPage;
+    procedure ResizeGeneralPage;
 
     // display
     procedure SetupDisplayPage;    
+    procedure ResizeDisplayPage;
 
     // keymapping
     procedure SetupKeyMappingsPage;
+    procedure ResizeKeyMappingsPage;
     function KeyMappingRelationToString(Index:integer): String;
     function KeyMappingRelationToString(KeyRelation: TKeyCommandRelation): String;
     procedure FillKeyMappingTreeView;
 
     // color
     procedure SetupColorPage;
+    procedure ResizeColorPage;
     procedure ShowCurAttribute;
     procedure FindCurHighlightElement;
     function GetHighlighter(SynClass: TCustomSynClass;
@@ -462,6 +467,7 @@ type
 
     // code tools
     procedure SetupCodeToolsPage;
+    procedure ResizeCodeToolsPage;
     procedure FillCodeTemplateListBox;
     procedure ShowCurCodeTemplate;
     procedure SaveCurCodeTemplate;
@@ -1812,8 +1818,12 @@ begin
   FormCreating:=true;
 
   if LazarusResources.Find(ClassName)=nil then begin  
-    SetBounds((Screen.Width-490) div 2,(Screen.Height-480) div 2, 480,459);
+    Width:=480;
+    Height:=459;
+    Position:=poScreenCenter;
     Caption:='Editor Options';
+    OnResize:=@EditorOptionsFormResize;
+    
     SynAutoComplete:=TSynEditAutoComplete.Create(Self);
 
     MainNoteBook:=TNoteBook.Create(Self);
@@ -1919,6 +1929,8 @@ begin
     
   MainNoteBook.PageIndex:=0;
   FormCreating:=false;
+  
+  EditorOptionsFormResize(nil);
 end;
 
 destructor TEditorOptionsForm.Destroy;
@@ -1931,6 +1943,24 @@ end;
 
 
 // general
+
+procedure TEditorOptionsForm.EditorOptionsFormResize(Sender: TObject);
+begin
+  with MainNoteBook do begin
+    Top:=0;
+    Left:=0;
+    Width:=Self.Width;
+    Height:=Self.Height-50;
+  end;
+
+  ResizeGeneralPage;
+  ResizeDisplayPage;
+  ResizeKeyMappingsPage;
+  ResizeColorPage;
+  ResizeCodeToolsPage;
+
+  ResizeButtonBar;
+end;
 
 procedure TEditorOptionsForm.GeneralCheckBoxOnClick(Sender: TObject);
 var a:integer;
@@ -3305,6 +3335,200 @@ begin
   end;
 end;
 
+procedure TEditorOptionsForm.ResizeGeneralPage;
+var MaxX,ChkBoxW:integer;
+begin
+  MaxX:=Width-5;
+  ChkBoxW:=(MaxX-20) div 2;
+
+  with EditorOptionsGroupBox do begin
+    Top:=5;
+    Left:=5;
+    Width:=MaxX-10;
+    Height:=24*10;
+  end;
+
+  // many, many checkboxes ...
+
+  with AltSetsColumnModeCheckBox do begin
+    Top:=5;
+    Left:=5;
+    Width:=ChkBoxW;
+    Height:=16;
+  end;
+
+  with AutoIndentCheckBox do begin
+    Top:=AltSetsColumnModeCheckBox.Top+AltSetsColumnModeCheckBox.Height+5;
+    Left:=AltSetsColumnModeCheckBox.Left;
+    Width:=ChkBoxW;
+    Height:=AltSetsColumnModeCheckBox.Height;
+  end;
+
+  with BracketHighlightCheckBox do begin
+    Top:=AutoIndentCheckBox.Top+AutoIndentCheckBox.Height+5;
+    Left:=AutoIndentCheckBox.Left;
+    Width:=ChkBoxW;
+    Height:=AltSetsColumnModeCheckBox.Height;
+  end;
+
+  with DragDropEditingCheckBox do begin
+    Top:=BracketHighlightCheckBox.Top+BracketHighlightCheckBox.Height+5;
+    Left:=BracketHighlightCheckBox.Left;
+    Width:=ChkBoxW;
+    Height:=AltSetsColumnModeCheckBox.Height;
+  end;
+
+  with DropFilesCheckBox do begin
+    Top:=DragDropEditingCheckBox.Top+DragDropEditingCheckBox.Height+5;
+    Left:=AltSetsColumnModeCheckBox.Left;
+    Width:=ChkBoxW;
+    Height:=AltSetsColumnModeCheckBox.Height;
+  end;
+
+  with HalfPageScrollCheckBox do begin
+    Top:=DropFilesCheckBox.Top+DropFilesCheckBox.Height+5;
+    Left:=AltSetsColumnModeCheckBox.Left;
+    Width:=ChkBoxW;
+    Height:=AltSetsColumnModeCheckBox.Height;
+  end;
+
+  with KeepCaretXCheckBox do begin
+    Top:=HalfPageScrollCheckBox.Top+HalfPageScrollCheckBox.Height+5;
+    Left:=AltSetsColumnModeCheckBox.Left;
+    Width:=ChkBoxW;
+    Height:=AltSetsColumnModeCheckBox.Height;
+  end;
+
+  with NoCaretCheckBox do begin
+    Top:=KeepCaretXCheckBox.Top+KeepCaretXCheckBox.Height+5;
+    Left:=AltSetsColumnModeCheckBox.Left;
+    Width:=ChkBoxW;
+    Height:=AltSetsColumnModeCheckBox.Height;
+  end;
+
+  with NoSelectionCheckBox do begin
+    Top:=NoCaretCheckBox.Top+NoCaretCheckBox.Height+5;
+    Left:=AltSetsColumnModeCheckBox.Left;
+    Width:=ChkBoxW;
+    Height:=AltSetsColumnModeCheckBox.Height;
+  end;
+
+  with ScrollByOneLessCheckBox do begin
+    Top:=NoSelectionCheckBox.Top+NoSelectionCheckBox.Height+5;
+    Left:=AltSetsColumnModeCheckBox.Left;
+    Width:=ChkBoxW;
+    Height:=AltSetsColumnModeCheckBox.Height;
+  end;
+
+  with ScrollPastEoFCheckBox do begin
+    Top:=5;
+    Left:=AltSetsColumnModeCheckBox.Left+(MaxX div 2)+5;
+    Width:=ChkBoxW;
+    Height:=AltSetsColumnModeCheckBox.Height;
+  end;
+
+  with ScrollPastEoLCheckBox do begin
+    Top:=ScrollPastEoFCheckBox.Top+ScrollPastEoFCheckBox.Height+5;
+    Left:=ScrollPastEoFCheckBox.Left;
+    Width:=ChkBoxW;
+    Height:=AltSetsColumnModeCheckBox.Height;
+  end;
+
+  with ShowScrollHintCheckBox do begin
+    Top:=ScrollPastEoLCheckBox.Top+ScrollPastEoLCheckBox.Height+5;
+    Left:=ScrollPastEoLCheckBox.Left;
+    Width:=ChkBoxW;
+    Height:=AltSetsColumnModeCheckBox.Height;
+  end;
+
+  with SmartTabsCheckBox do begin
+    Top:=ShowScrollHintCheckBox.Top+ShowScrollHintCheckBox.Height+5;
+    Left:=ShowScrollHintCheckBox.Left;
+    Width:=ChkBoxW;
+    Height:=AltSetsColumnModeCheckBox.Height;
+  end;
+
+  with TabsToSpacesCheckBox do begin
+    Top:=SmartTabsCheckBox.Top+SmartTabsCheckBox.Height+5;
+    Left:=ShowScrollHintCheckBox.Left;
+    Width:=ChkBoxW;
+    Height:=AltSetsColumnModeCheckBox.Height;
+  end;
+
+  with TrimTrailingSpacesCheckBox do begin
+    Top:=TabsToSpacesCheckBox.Top+TabsToSpacesCheckBox.Height+5;
+    Left:=ShowScrollHintCheckBox.Left;
+    Width:=ChkBoxW;
+    Height:=AltSetsColumnModeCheckBox.Height;
+  end;
+
+  with UndoAfterSaveCheckBox do begin
+    Top:=TrimTrailingSpacesCheckBox.Top+TrimTrailingSpacesCheckBox.Height+5;
+    Left:=ShowScrollHintCheckBox.Left;
+    Width:=ChkBoxW;
+    Height:=AltSetsColumnModeCheckBox.Height;
+  end;
+
+  with DoubleClickLineCheckBox do begin
+    Top:=UndoAfterSaveCheckBox.Top+UndoAfterSaveCheckBox.Height+5;
+    Left:=ShowScrollHintCheckBox.Left;
+    Width:=ChkBoxW;
+    Height:=AltSetsColumnModeCheckBox.Height;
+  end;
+
+  with FindTextAtCursorCheckBox do begin
+    Top:=DoubleClickLineCheckBox.Top+DoubleClickLineCheckBox.Height+5;
+    Left:=ShowScrollHintCheckBox.Left;
+    Width:=ChkBoxW;
+    Height:=AltSetsColumnModeCheckBox.Height;
+  end;
+
+  with UseSyntaxHighlightCheckBox do begin
+    Top:=FindTextAtCursorCheckBox.Top+FindTextAtCursorCheckBox.Height+5;
+    Left:=ShowScrollHintCheckBox.Left;
+    Width:=ChkBoxW;
+    Height:=AltSetsColumnModeCheckBox.Height;
+  end;
+
+  //
+
+  with BlockIndentComboBox do begin
+    Top:=EditorOptionsGroupBox.Top+EditorOptionsGroupBox.Height+8;
+    Left:=120;
+    Width:=70;
+  end;
+
+  with BlockIndentLabel do begin
+    Top:=BlockIndentComboBox.Top+2;
+    Left:=EditorOptionsGroupBox.Left+2;
+    Width:=BlockIndentComboBox.Left-2-Left;
+  end;
+
+  with UndoLimitComboBox do begin
+    Top:=BlockIndentComboBox.Top+BlockIndentComboBox.Height+5;
+    Left:=BlockIndentComboBox.Left;
+    Width:=70;
+  end;
+
+  with UndoLimitLabel do begin
+    Top:=UndoLimitComboBox.Top+2;
+    Left:=EditorOptionsGroupBox.Left+2;
+    Width:=UndoLimitComboBox.Left-Left-2;
+  end;
+
+  with TabWidthsComboBox do begin
+    Top:=UndoLimitComboBox.Top+UndoLimitComboBox.Height+5;
+    Left:=BlockIndentComboBox.Left;
+    Width:=70;
+  end;
+
+  with TabWidthsLabel do begin
+    Top:=TabWidthsComboBox.Top+2;
+    Left:=EditorOptionsGroupBox.Left+2;
+    Width:=TabWidthsComboBox.Left-Left-2;
+  end;
+end;
+
 procedure TEditorOptionsForm.SetupDisplayPage;
 var MaxX,MaxY,ChkBoxW:integer;
 begin
@@ -3608,6 +3832,149 @@ begin
   end;
 end;
 
+procedure TEditorOptionsForm.ResizeDisplayPage;
+var MaxX,MaxY,ChkBoxW:integer;
+begin
+  MaxX:=Width-5;
+  MaxY:=ClientHeight-80;
+  ChkBoxW:=140;
+
+  with MarginAndGutterGroupBox do begin
+    Top:=5;
+    Left:=5;
+    Width:=MaxX-10;
+    Height:=109;
+  end;
+
+  with VisibleRightMarginCheckBox do begin
+    Top:=5;
+    Left:=5;
+    Width:=ChkBoxW;
+  end;
+
+  with VisibleGutterCheckBox do begin
+    Top:=VisibleRightMarginCheckBox.Top+VisibleRightMarginCheckBox.Height+7;
+    Left:=VisibleRightMarginCheckBox.Left;
+    Width:=ChkBoxW;
+    Height:=VisibleRightMarginCheckBox.Height;
+  end;
+
+  with ShowLineNumbersCheckBox do begin
+    Top:=VisibleGutterCheckBox.Top+VisibleGutterCheckBox.Height+7;
+    Left:=VisibleGutterCheckBox.Left;
+    Width:=ChkBoxW;
+    Height:=VisibleRightMarginCheckBox.Height;
+  end;
+
+  with RightMarginComboBox do begin
+    Top:=20;
+    Left:=180;
+    Width:=70;
+  end;
+
+  with RightMarginLabel do begin
+    Top:=2;
+    Left:=RightMarginComboBox.Left+2;
+    Width:=150;
+  end;
+
+  with RightMarginColorButton do begin
+    Top:=RightMarginComboBox.Top+RightMarginComboBox.Height+20;
+    Left:=RightMarginComboBox.Left;
+    Width:=35;
+    Height:=20;
+  end;
+
+  with RightMarginColorLabel do begin
+    Top:=RightMarginComboBox.Top+RightMarginComboBox.Height;
+    Left:=RightMarginComboBox.Left+2;
+    Width:=150;
+  end;
+
+  with GutterWidthComboBox do begin
+    Top:=RightMarginComboBox.Top;
+    Left:=RightMarginComboBox.Left+RightMarginComboBox.Width+80;
+    Width:=RightMarginComboBox.Width;
+    Height:=RightMarginComboBox.Height;
+  end;
+
+  with GutterWidthLabel do begin
+    Top:=2;
+    Left:=GutterWidthComboBox.Left+2;
+    Width:=130;
+  end;
+
+  with GutterColorButton do begin
+    Top:=GutterWidthComboBox.Top+GutterWidthComboBox.Height+20;
+    Left:=GutterWidthComboBox.Left;
+    Width:=35;
+    Height:=20;
+  end;
+
+  with GutterColorLabel do begin
+    Top:=GutterWidthComboBox.Top+GutterWidthComboBox.Height;
+    Left:=GutterWidthComboBox.Left+2;
+    Width:=130;
+  end;
+
+  with EditorFontGroupBox do begin
+    Top:=MarginAndGutterGroupBox.Left+MarginAndGutterGroupBox.Height+5;
+    Left:=MarginAndGutterGroupBox.Left;
+    Width:=MarginAndGutterGroupBox.Width;
+    Height:=120;
+  end;
+
+  with EditorFontComboBox do begin
+    Top:=23;
+    Left:=5;
+    Width:=EditorFontGroupBox.Width-15-Height;
+  end;
+
+  with EditorFontButton do begin
+    Top:=EditorFontComboBox.Top+2;
+    Left:=EditorFontComboBox.Left+EditorFontComboBox.Width+3;
+    Width:=EditorFontComboBox.Height-5;
+    Height:=Width;
+  end;
+
+  with EditorFontLabel do begin
+    Top:=5;
+    Left:=EditorFontComboBox.Left+2;
+    Width:=130;
+  end;
+
+  with EditorFontHeightComboBox do begin
+    Top:=EditorFontComboBox.Top+EditorFontComboBox.Height+23;
+    Left:=EditorFontComboBox.Left;
+    Width:=60;
+  end;
+
+  with EditorFontHeightLabel do begin
+    Top:=EditorFontHeightComboBox.Top-18;
+    Left:=EditorFontHeightComboBox.Left+2;
+    Width:=150;
+  end;
+
+  with ExtraLineSpacingComboBox do begin
+    Top:=EditorFontHeightComboBox.Top;
+    Left:=EditorFontHeightComboBox.Left+EditorFontHeightComboBox.Width+100;
+    Width:=60;
+  end;
+
+  with ExtraLineSpacingLabel do begin
+    Top:=ExtraLineSpacingComboBox.Top-18;
+    Left:=ExtraLineSpacingComboBox.Left+2;
+    Width:=150;
+  end;
+
+  with DisplayPreview do begin
+    Top:=EditorFontGroupBox.Top+EditorFontGroupBox.Height+5;
+    Left:=EditorFontGroupBox.Left+2;
+    Width:=EditorFontGroupBox.Width-2;
+    Height:=MaxY-Top-2;
+  end;
+end;
+
 procedure TEditorOptionsForm.SetupKeyMappingsPage;
 var MaxX,MaxY:integer;
 begin
@@ -3678,6 +4045,49 @@ begin
     OnMouseUp:=@KeyMappingTreeViewMouseUp;
     Images:=Self.ImageList;
     Visible:=true;
+  end;
+end;
+
+procedure TEditorOptionsForm.ResizeKeyMappingsPage;
+var MaxX,MaxY:integer;
+begin
+  MaxX:=Width-9;
+  MaxY:=ClientHeight-82;
+
+  with KeyMappingSchemeComboBox do begin
+    Top:=5;
+    Left:=170;
+    Width:=100;
+    Height:=16;
+  end;
+
+  with KeyMappingSchemeLabel do begin
+    Top:=5;
+    Left:=5;
+    Width:=KeyMappingSchemeComboBox.Left-Left;
+    Height:=16;
+  end;
+
+  with KeyMappingConsistencyCheckButton do begin
+    Top:=5;
+    Left:=Max(KeyMappingSchemeComboBox.Left+KeyMappingSchemeComboBox.Width
+            ,MaxX-150);
+    Width:=130;
+    Height:=23;
+  end;
+
+  with KeyMappingHelpLabel do begin
+    Top:=KeyMappingSchemeComboBox.Top+KeepCaretXCheckBox.Height+10;
+    Left:=5;
+    Width:=MaxX-Left-Left;
+    Height:=16;
+  end;
+
+  with KeyMappingTreeView do begin
+    Top:=KeyMappingHelpLabel.Top+KeyMappingHelpLabel.Height+2;
+    Left:=0;
+    Width:=MaxX-Left-Left;
+    Height:=MaxY-Top;
   end;
 end;
 
@@ -3983,6 +4393,160 @@ begin
   end; 
 end;
 
+procedure TEditorOptionsForm.ResizeColorPage;
+var MaxX,MaxY:integer;
+begin
+  MaxX:=Width-5;
+  MaxY:=ClientHeight-76;
+
+  with LanguageComboBox do begin
+    Top:=5;
+    Left:=75;
+    Width:=170;
+    Height:=20;
+  end;
+
+  with LanguageLabel do begin
+    Top:=7;
+    Left:=5;
+    Width:=LanguageComboBox.Left-Left;
+    Height:=16;
+  end;
+
+  with ColorSchemeComboBox do begin
+    Top:=LanguageComboBox.Top;
+    Left:=LanguageComboBox.Left+LanguageComboBox.Width+110;
+    Width:=100;
+    Height:=20;
+  end;
+
+  with ColorSchemeLabel do begin
+    Top:=ColorSchemeComboBox.Top+2;
+    Left:=ColorSchemeComboBox.Left-90;
+    Width:=ColorSchemeComboBox.Left-Left;
+    Height:=16;
+  end;
+
+  with FileExtensionsComboBox do begin
+    Top:=ColorSchemeComboBox.Top+ColorSchemeComboBox.Height+4;
+    Left:=103;
+    Width:=310;
+    Height:=20;
+  end;
+
+  with FileExtensionsLabel do begin
+    Top:=FileExtensionsComboBox.Top+2;
+    Left:=5;
+    Width:=FileExtensionsComboBox.Left-Left-2;
+  end;
+
+  with ColorElementLabel do begin
+    Top:=FileExtensionsComboBox.Top+FileExtensionsComboBox.Height+12;
+    Left:=5;
+    Width:=180;
+    Height:=16;
+  end;
+
+  with ColorElementListBox do begin
+    Top:=ColorElementLabel.Top+ColorElementLabel.Height+2;
+    Left:=ColorElementLabel.Left;
+    Width:=ColorElementLabel.Width;
+    Height:=170;
+  end;
+
+  with SetAttributeToDefaultButton do begin
+    Top:=ColorElementLabel.Top;
+    Left:=ColorElementListBox.Left+ColorElementListBox.Width+12;
+    Width:=MaxX-5-Left;
+    Height:=23;
+  end;
+
+  with SetAllAttributesToDefaultButton do begin
+    Top:=SetAttributeToDefaultButton.Top+SetAttributeToDefaultButton.Height+2;
+    Left:=SetAttributeToDefaultButton.Left;
+    Width:=SetAttributeToDefaultButton.Width;
+    Height:=SetAttributeToDefaultButton.Height;
+  end;
+
+  with ForeGroundGroupBox do begin
+    Top:=SetAllAttributesToDefaultButton.Top
+        +SetAllAttributesToDefaultButton.Height+4;
+    Left:=ColorElementListBox.Left+ColorElementListBox.Width+12;
+    Width:=MaxX-5-Left;
+    Height:=43;
+  end;
+
+  with ForegroundColorButton do begin
+    Top:=2;
+    Left:=5;
+    Width:=70;
+    Height:=20;
+  end;
+
+  with ForeGroundUseDefaultCheckBox do begin
+    Top:=ForeGroundColorButton.Top;
+    Left:=ForegroundColorButton.Left+ForegroundColorButton.Width+5;
+    Width:=ForeGroundGroupBox.Width-Left-Left;
+    Height:=16;
+  end;
+
+  with BackGroundGroupBox do begin
+    Top:=ForeGroundGroupBox.Top+ForeGroundGroupBox.Height+5;
+    Left:=ForeGroundGroupBox.Left;
+    Width:=ForeGroundGroupBox.Width;
+    Height:=ForeGroundGroupBox.Height;
+  end;
+
+  with BackgroundColorButton do begin
+    Top:=2;
+    Left:=5;
+    Width:=70;
+    Height:=20;
+  end;
+
+  with BackGroundUseDefaultCheckBox do begin
+    Top:=BackGroundColorButton.Top;
+    Left:=BackgroundColorButton.Left+BackgroundColorButton.Width+5;
+    Width:=ForeGroundGroupBox.Width-Left-Left;
+    Height:=16;
+  end;
+
+  with TextAttributesGroupBox do begin
+    Top:=BackGroundGroupBox.Top+BackGroundGroupBox.Height+5;
+    Left:=ForeGroundGroupBox.Left;
+    Width:=ForeGroundGroupBox.Width;
+    Height:=43;
+  end;
+
+  with TextBoldCheckBox do begin
+    Top:=5;
+    Left:=5;
+    Width:=50;
+    Height:=16;
+  end;
+
+  with TextItalicCheckBox do begin
+    Top:=TextBoldCheckBox.Top;
+    Left:=TextBoldCheckBox.Left+TextBoldCheckBox.Width+5;
+    Width:=50;
+    Height:=TextBoldCheckBox.Height;
+  end;
+
+  with TextUnderlineCheckBox do begin
+    Top:=TextBoldCheckBox.Top;
+    Left:=TextItalicCheckBox.Left+TextItalicCheckBox.Width+5;
+    Width:=75;
+    Height:=TextItalicCheckBox.Height;
+  end;
+
+  with ColorPreview do begin
+    Left:=5;
+    Top:=TextAttributesGroupBox.Top+TextAttributesGroupBox.Height+7;
+    Width:=MaxX-Left-Left;
+    Height:=MaxY-Top-Left;
+  end;
+end;
+
 procedure TEditorOptionsForm.SetupCodeToolsPage;
 var MaxX:integer;
 begin
@@ -4265,6 +4829,158 @@ begin
   CurCodeTemplate:=-1;
 end;
 
+procedure TEditorOptionsForm.ResizeCodeToolsPage;
+var MaxX, MaxY:integer;
+begin
+  MaxX:=Width-5;
+  MaxY:=ClientHeight-76;
+
+  with AutomaticFeaturesGroupBox do begin
+    Top:=5;
+    Left:=5;
+    Width:=MaxX-Left-Left;
+    Height:=110;
+  end;
+
+  with AutoIdentifierCompletionCheckBox do begin
+    Top:=2;
+    Left:=5;
+    Width:=200;
+    Height:=20;
+  end;
+
+  with AutoCodeParametersCheckBox do begin
+    Top:=AutoIdentifierCompletionCheckBox.Top
+        +AutoIdentifierCompletionCheckBox.Height;
+    Left:=AutoIdentifierCompletionCheckBox.Left;
+    Width:=AutoIdentifierCompletionCheckBox.Width;
+    Height:=AutoIdentifierCompletionCheckBox.Height;
+  end;
+
+  with AutoToolTipExprEvalCheckBox do begin
+    Top:=AutoCodeParametersCheckBox.Top+AutoCodeParametersCheckBox.Height;
+    Left:=AutoIdentifierCompletionCheckBox.Left;
+    Width:=AutoIdentifierCompletionCheckBox.Width;
+    Height:=AutoIdentifierCompletionCheckBox.Height;
+  end;
+
+  with AutoToolTipSymbToolsCheckBox do begin
+    Top:=AutoToolTipExprEvalCheckBox.Top+AutoToolTipExprEvalCheckBox.Height;
+    Left:=AutoIdentifierCompletionCheckBox.Left;
+    Width:=AutoIdentifierCompletionCheckBox.Width;
+    Height:=AutoIdentifierCompletionCheckBox.Height;
+  end;
+
+  with AutoDelayLabel do begin
+    Top:=10;
+    Left:=AutoIdentifierCompletionCheckBox.Left
+          +AutoIdentifierCompletionCheckBox.Width+17;
+    Width:=70;
+  end;
+
+  with AutoDelayTrackBar do begin
+    Top:=32;
+    Left:=AutoIdentifierCompletionCheckBox.Left
+         +AutoIdentifierCompletionCheckBox.Width+15;
+    Width:=150;
+    Height:=10;
+  end;
+
+  with AutoDelayMinLabel do begin
+    Top:=AutoDelayTrackBar.Top+AutoDelayTrackBar.Height+5;
+    Left:=AutoIdentifierCompletionCheckBox.Left
+         +AutoIdentifierCompletionCheckBox.Width+15;
+    Width:=70;
+  end;
+
+  with AutoDelayMaxLabel do begin
+    Top:=AutoDelayMinLabel.Top;
+    Left:=AutoDelayTrackBar.Left+AutoDelayTrackBar.Width-30;
+    Width:=70;
+  end;
+
+  with CodeTemplatesGroupBox do begin
+    Top:=AutomaticFeaturesGroupBox.Top+AutomaticFeaturesGroupBox.Height+5;
+    Left:=AutomaticFeaturesGroupBox.Left;
+    Width:=AutomaticFeaturesGroupBox.Width;
+    Height:=MaxY-Top-10;
+  end;
+
+  with CodeTemplateFileNameLabel do begin
+    Top:=5;
+    Left:=7;
+    Width:=110;
+  end;
+
+  with CodeTemplateFileNameComboBox do begin
+    Top:=3;
+    Left:=CodeTemplateFileNameLabel.Left+CodeTemplateFileNameLabel.Width+2;
+    Width:=CodeTemplatesGroupBox.Width-12-Left-Height;
+  end;
+
+  with CodeTemplateFileNameButton do begin
+    Top:=CodeTemplateFileNameComboBox.Top+2;
+    Width:=CodeTemplateFileNameComboBox.Height-5;
+    Left:=CodeTemplatesGroupBox.Width-9-Width;
+    Height:=Width;
+  end;
+
+  with CodeTemplateAddButton do begin
+    Top:=CodeTemplateFileNameComboBox.Top+CodeTemplateFileNameComboBox.Height+10;
+    Width:=50;
+    Left:=CodeTemplateFileNameLabel.Left;
+    Height:=23;
+  end;
+
+  with CodeTemplateEditButton do begin
+    Top:=CodeTemplateAddButton.Top+CodeTemplateAddButton.Height+5;
+    Left:=CodeTemplateAddButton.Left;
+    Width:=CodeTemplateAddButton.Width;
+    Height:=CodeTemplateAddButton.Height;
+  end;
+
+  with CodeTemplateDeleteButton do begin
+    Top:=CodeTemplateEditButton.Top+CodeTemplateEditButton.Height+5;
+    Left:=CodeTemplateAddButton.Left;
+    Width:=CodeTemplateAddButton.Width;
+    Height:=CodeTemplateAddButton.Height;
+  end;
+
+  with CodeTemplatesLabel do begin
+    Top:=CodeTemplateFileNameLabel.Top+CodeTemplateFileNameLabel.Height+12;
+    Left:=CodeTemplateAddButton.Left+CodeTemplateAddButton.Width+5;
+    Width:=60;
+  end;
+
+  with CodeTemplateListBox do begin
+    Top:=CodeTemplatesLabel.Top;
+    Left:=CodeTemplatesLabel.Left+CodeTemplatesLabel.Width+5;
+    Width:=Parent.ClientWidth-8-Left;
+    Height:=80;
+  end;
+
+  with CodeTemplateCodeLabel do begin
+    Top:=CodeTemplateListBox.Top+CodeTemplateListBox.Height+5;
+    Left:=CodeTemplatesLabel.Left;
+    Width:=CodeTemplatesLabel.Width;
+    Height:=CodeTemplatesLabel.Height;
+  end;
+
+  with CodeTemplateCodePreview do begin
+    Top:=CodeTemplateCodeLabel.Top;
+    Left:=CodeTemplateCodeLabel.Left+CodeTemplateCodeLabel.Width+5;
+    Width:=CodeTemplateListBox.Width;
+    Height:=CodeTemplatesGroupBox.ClientHeight-20-Top;
+  end;
+
+  with CodeTemplateIndentTypeRadioGroup do begin
+    Left:=CodeTemplateAddButton.Left;
+    Top:=CodeTemplateCodeLabel.Top+CodeTemplateCodeLabel.Height+15;
+    Width:=CodeTemplateCodePreview.Left-Left-8;
+    Height:=70;
+  end;
+end;
+
 procedure TEditorOptionsForm.SetupButtonBar;
 begin
   CancelButton:=TButton.Create(Self);
@@ -4291,6 +5007,23 @@ begin
     Caption:='Ok';
     OnClick:=@OkButtonClick;
     Show;
+  end;
+end;
+
+procedure TEditorOptionsForm.ResizeButtonBar;
+begin
+  with CancelButton do begin
+    Width:=70;
+    Height:=23;
+    Top:=Self.Height-Height-15;
+    Left:=Self.Width-Width-10;
+  end;
+
+  with OkButton do begin
+    Width:=70;
+    Height:=23;
+    Top:=Self.Height-Height-15;
+    Left:=CancelButton.Left-10-Width;
   end;
 end;
 
