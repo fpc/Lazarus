@@ -383,7 +383,7 @@ type
     //FIndex   : Integer;
     FCaption : String;
     Procedure SetCaption(const Value : String);
-    Procedure SetSubItems(Value : TStrings);
+//    Procedure SetSubItems(Value : TStrings);
     Function GetIndex : Integer;
   public
     constructor Create(AOwner : TListItems);
@@ -392,7 +392,7 @@ type
     property Caption : String read FCaption write SetCaption;
     property Index : Integer read GetIndex;
     property Owner : TListItems read FOwner;
-    property SubItems : TStrings read FSubItems write SetSubItems;
+    property SubItems : TStrings read FSubItems write FSubItems;//SetSubItems;
   end;
 
  TListItems = class(TPersistent)
@@ -449,12 +449,12 @@ type
     Procedure ItemDeleted(Index : Integer);  //called by TListItems
     Procedure ColumnsChanged; //called by TListItems
     Procedure ItemAdded;  //called by TListItems
-    property Items : TListItems read FListItems write SetItems;
   public
     constructor Create(Aowner: TComponent); override;
     destructor Destroy; override;
     property Columns : TViewColumns read FColumns write FColumns;
     property ViewStyle : TViewStyle read FViewStyle write SetViewStyle;
+    property Items : TListItems read FListItems write SetItems;
     property Sorted : Boolean read FSorted write SetSorted;
     property SortColumn : Integer read FSortColumn write SetSortColumn;
   end;
@@ -976,6 +976,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.7  2001/12/14 19:51:48  lazarus
+  More changes to TListView
+  Shane
+
   Revision 1.6  2001/12/14 18:38:55  lazarus
   Changed code for TListView
   Added a generic Breakpoints dialog

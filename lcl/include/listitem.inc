@@ -31,12 +31,12 @@ end;
 {------------------------------------------------------------------------------}
 {   TListItem SetSubItems                                                      }
 {------------------------------------------------------------------------------}
-procedure TListItem.SetSubItems(Value : TStrings);
+{procedure TListItem.SetSubItems(Value : TStrings);
 begin
   SubItems.Assign(Value);
   //call itemchanged here r does the onchange event fire for each?
 end;
-
+ }
 {------------------------------------------------------------------------------}
 {   TListItem Delete                                                           }
 {------------------------------------------------------------------------------}

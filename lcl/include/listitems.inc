@@ -39,8 +39,6 @@ end;
 {   TListItems Add                                                             }
 {------------------------------------------------------------------------------}
 function TListItems.Add:TListItem;
-var
-  I : Integer;
 begin
   Result := TListItem.Create(self);
   FItems.Add(Result);
@@ -81,6 +79,7 @@ Procedure TListItems.ItemChanged(Sender : TObject);  //called by the onchange of
 var
   Index : Integer;
 begin
+  Writeln('ITEM CHANGED');
   Index := FItems.IndexOf(TListItem(sender));
   if Index > -1 then
   FOwner.ItemChanged(Index);

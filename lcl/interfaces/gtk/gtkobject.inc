@@ -380,7 +380,8 @@ var
   QueueItem, OldQueueItem: PLazQueueItem; // currently only used by LM_DESTROY
   MsgPtr    : PMsg;                  // currently only used by LM_DESTROY
   Count     : Integer;               //Used in TListView LM_LV_CHANGEITEM
-
+  titles    : PPgchar;
+  Title1     : Pchar;
 begin
   Result := 0;   //default value just in case nothing sets it
 
@@ -478,13 +479,21 @@ begin
       end;
       LM_LV_CHANGEITEM :
       begin
+        writeln('IN LM_LV_CHANGEITEM');
         if (Sender is TListView) then
         begin
           Num := Integer(data^);
-          if Num <= PGTKCList(Handle)^.rows-1 then
-             Begin
+          Writeln('NUM,Rows = ',num,',',PGTKCList(Handle)^.rows);
+
              AddItemListItem := TListView(sender).Items[Num];
-             gtk_clist_set_text(PgtkCList(handle),num,0,@AddItemListItem.Caption);
+             pStr := StrAlloc(length(AddItemListItem.Caption) + 1);
+             StrPCopy(pStr, AddItemListItem.Caption);
+             Writeln('Additesm..caption = ',AddItemListItem.Caption);
+             if PgtkCList(handle)^.rows-1 < Num then
+                gtk_clist_append(PgtkCList(handle),PPGChar([pStr]))
+                else
+                gtk_clist_set_text(PgtkCList(handle),num,0,pStr);
+             StrDispose(pStr);
              //redo every column text
              for Count := 1 to PgtkCList(Handle)^.Columns-1 do
                  begin
@@ -497,8 +506,7 @@ begin
 
                  end;
                  
-             end;
-             
+
         
         end;
       end;
@@ -508,14 +516,20 @@ begin
         if (Sender is TListView) then
         begin
           //get last item and add it..
-          Num := gtk_clist_append(PgtkCList(handle),nil);
+          Writeln('LV_AddItem');
+          Writeln('1');
+          Num := gtk_clist_append(PgtkCList(handle),@[@AddItemListItem.Caption]);
+          Writeln('2');
+
           AddItemListItem := TListView(sender).Items[TListView(sender).Items.Count];
           if AddItemListItem <> nil then
             Begin
              gtk_clist_set_text(PgtkCList(handle),num,0,@AddItemListItem.Caption);
              
             end;
+        Writeln('LV_AddItem DONE');
         end;
+        
       end;
       LM_BRINGTOFRONT:
       begin
@@ -2125,11 +2139,7 @@ begin
       
       csListView :
       Begin
-         P := PgtkWidget(gtk_clist_new(6));
-
-         gtk_clist_set_column_title(PgtkCList(P),0,'Column1');
-         gtk_clist_set_column_title(PgtkCList(P),1,'Column2');
-         gtk_clist_column_titles_show(PgtkCList(P));
+         P := PgtkWidget(gtk_clist_new(TCustomListView(sender).Columns.Count));
          gtk_widget_show(P);
       end;
       
@@ -2992,9 +3002,10 @@ var
    Widget    : PGtkWidget;
    xAlign    : gfloat;
    yAlign    : gfloat;
-   I         : Integer;
+   I,X         : Integer;
    ColName   : String;
    pColName : PChar;
+   pRowText : PChar;
 begin
    result := 0;     // default if nobody sets it
 
@@ -3105,7 +3116,6 @@ begin
             Begin
                //set up columns..
                //
-               Writeln('in SetPRoperties for ListView.  Columns is ',PgtkcList(handle)^.columns);
                gtk_clist_freeze(PgtkCList(handle));
                for I := 0 to Columns.Count-1 do
                  Begin
@@ -3113,17 +3123,9 @@ begin
                    GetMem(pColName,Length(colname)+1);
                    pColName := StrPcopy(pColName,ColName);
                    gtk_clist_set_column_title(Pgtkclist(handle),I,pColName);
-//                   if (i+1) > PgtkcList(handle)^.Columns-1 then
-//                      gtk_clist_append(PgtkCList(handle),@pColName)
-//                      else
-//                      gtk_clist_Set_Column_title(PgtkcList(handle),I,pColName);
-                   freemem(pColName);
+                   Dispose(pColName);
                  end;
-                 while I <= PgtkcList(handle)^.Columns-1 do
-                    begin
-                      inc(i);
-                      //delete a column...
-                    end;
+
                  if (TCustomListView(sender).ViewStyle = vsReport) then
                  gtk_clist_column_titles_show(PgtkCList(handle))
                  else
@@ -3134,6 +3136,30 @@ begin
                //
                //do items...
                //
+               for I := 0 to TCustomListView(sender).Items.Count-1 do
+                 Begin
+
+                   GetMem(pRowText,Length(TListItem(TCustomListView(sender).Items[i]).Caption)+1);
+                   pRowText := StrPcopy(pRowText,TListItem(TCustomListView(sender).Items[i]).Caption);
+                   gtk_clist_set_text(Pgtkclist(handle),0,I+1,pRowText);
+                   freemem(pRowText);
+
+                   if (TCustomListView(sender).ViewStyle = vsReport) then //columns showing
+                   For X := 1 to Columns.Count-1 do
+                      begin
+                        if ( X <= TListItem(TCustomListView(sender).Items[i]).SubItems.Count) then
+                        Begin
+                          GetMem(pRowText,Length(TListItem(TCustomListView(sender).Items[i]).SubItems.Strings[X-1])+1);
+                          pRowText := StrPcopy(pRowText,TListItem(TCustomListView(sender).Items[i]).SubItems.Strings[X-1]);
+                          gtk_clist_set_text(Pgtkclist(handle),X,I+1,pRowText);
+                          freemem(pRowText);
+                        end;
+                      end;  //for loop
+
+
+
+                 end;
+                 
                gtk_clist_thaw(PgtkCList(handle));
             end;
       else
@@ -3590,6 +3616,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.89  2001/12/14 19:51:48  lazarus
+  More changes to TListView
+  Shane
+
   Revision 1.88  2001/12/14 18:38:56  lazarus
   Changed code for TListView
   Added a generic Breakpoints dialog

@@ -50,6 +50,8 @@ var
 implementation
 
 constructor TBreakPointsdlg.Create(AOwner : TComponent);
+var
+LI : TListItem;
 Begin
   inherited;
   if LazarusResources.Find(Classname)=nil then
@@ -69,6 +71,29 @@ Begin
       Columns.Add('Pass Count');
       Columns.Add('Group');
       ViewStyle := vsReport;
+{      LI := Items.Add;
+      LI.Caption := 'col1';
+      Li.SubItems.add('Col2');
+      Li.SubItems.add('Col3');
+      Li.SubItems.add('Col4');
+      Li.SubItems.add('Col5');
+      Li.SubItems.add('Col6');
+      Li.SubItems.add('Col7');
+
+      LI := Items.Add;
+      LI.Caption := 'col1 2';
+      Li.SubItems.add('Col2 2');
+      Li.SubItems.add('Col3 2');
+      Li.SubItems.add('Col4 2');
+
+      LI := Items.Add;
+      LI.Caption := 'col1 3';
+      Li.SubItems.add('Col2 3');
+      Li.SubItems.add('Col3 3');
+      Li.SubItems.add('Col4 3');
+      Li.SubItems.add('Col5 3');
+ }
+
     end;
   Caption := 'Breakpoints';
   Name := 'BreakPointsDlg';

@@ -9,13 +9,13 @@ begin
  ParentWindow.Show;
  {fix this call it is a hack}
 
+ Columns := TViewColumns.Create(self);
+ FListItems := TListITems.Create(self);
  fCompStyle := csListView;
  fViewStyle := vsList;
  fSorted := False;
  fSortColumn := 0;
  Setbounds(2,2,300,300);
- Columns := TViewColumns.Create(self);
- FListItems := TListITems.Create(self);
 // Columns.Add('Column1');
 // Columns.Add('Column2');
 
@@ -28,6 +28,7 @@ end;
 Procedure TCustomListView.ColumnsChanged;
 Begin
   //notify the interface....
+  RecreateWnd;
   CNSendMessage(LM_SETPROPERTIES,self,nil);
 End;
 
