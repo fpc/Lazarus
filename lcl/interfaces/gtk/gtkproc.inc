@@ -1611,6 +1611,12 @@ begin
   end;
 end;
 
+function GtkWindowIsModal(GtkWindow: PGtkWindow): boolean;
+begin
+writeln('GtkWindowIsModal  This test is buggy');
+  Result:=(GtkWindow^.flag0 and bm_modal)<>0;
+end;
+
 {-------------------------------------------------------------------------------
   procedure ConnectSignal(const AnObject:gtk_Object; const ASignal: PChar;
     const ACallBackProc: Pointer; const ReqSignalMask: TGdkEventMask;
@@ -3993,6 +3999,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.163  2003/03/17 13:00:35  mattias
+  improved but not fixed transient windows
+
   Revision 1.162  2003/03/15 09:42:50  mattias
   fixed transient windows
 
