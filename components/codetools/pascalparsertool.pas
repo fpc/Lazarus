@@ -60,6 +60,7 @@ type
       phpWithDefaultValues,  // extract default values
       phpWithResultType,     // extract colon + result type
       phpWithOfObject,       // extract 'of object'
+      phpWithCallingSpecs,   // extract cdecl; inline;
       phpWithComments,       // extract comments
       phpInUpperCase,        // turn to uppercase
       phpCommentsToSpace,    // replace comments with a single space
@@ -81,7 +82,7 @@ type
   TParseProcHeadAttributes =  set of TParseProcHeadAttribute;
   
   TProcHeadExtractPos = (phepNone, phepStart, phepName, phepParamList,
-    phepResultType);
+    phepResultType, phepSpecifiers);
     
   TTreeRange = (trInterface, trAll, trTillCursor);
   
@@ -282,6 +283,7 @@ const
       'phpWithDefaultValues',
       'phpWithResultType',
       'phpWithOfObject',
+      'phpWithCallingSpecs',
       'phpWithComments',
       'phpInUpperCase',
       'phpCommentsToSpace',
@@ -3469,12 +3471,30 @@ begin
       ExtractNextAtom(phpWithOfObject in Attr,Attr);
       if not UpAtomIs('OBJECT') then exit;
       ExtractNextAtom(phpWithOfObject in Attr,Attr);
-    end else begin
-      exit;
     end;
   end;
+  // read semicolon
   if CurPos.Flag=cafSemicolon then
     ExtractNextAtom(true,Attr);
+  // read specifiers
+  if phpWithCallingSpecs in Attr then begin
+    while (CurPos.StartPos<=ProcNode.FirstChild.EndPos) do begin
+      if CurPos.Flag=cafSemicolon then begin
+        ExtractNextAtom(false,Attr);
+      end else begin
+        if (UpAtomIs('INLINE') or UpAtomIs('CDECL')) then begin
+          ExtractNextAtom(phpWithCallingSpecs in Attr,Attr);
+          ExtractMemStream.Write(';',1);
+        end
+        else if (CurPos.Flag=cafEdgedBracketOpen) then begin
+          ReadTilBracketClose(false);
+          ExtractNextAtom(false,Attr);
+        end else begin
+          ExtractNextAtom(false,Attr);
+        end;
+      end;
+    end;
+  end;
   
   // copy memorystream to Result string
   Result:=GetExtraction;
