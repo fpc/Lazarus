@@ -4077,6 +4077,7 @@ var
   ReOpen, Handled:boolean;
   NewUnitInfo:TUnitInfo;
   NewBuf: TCodeBuffer;
+  OtherUnitIndex: Integer;
 begin
   {$IFDEF IDE_VERBOSE}
   writeln('');
@@ -4098,13 +4099,13 @@ begin
   // loaded and needs only to be shown in the sourceeditor/formeditor
   if (not (ofRevert in Flags))
   and (Project1.IsVirtual)
-  and (CompareFilenames(Project1.MainFilename,AFilename)=0)
+  and (CompareFilenames(Project1.MainFilename,AFilename,true)=0)
   then begin
     Result:=DoOpenMainUnit(ofProjectLoading in Flags);
     exit;
   end;
   
-  // check
+  // check for .lpi files
   if ([ofRegularFile,ofRevert,ofProjectLoading]*Flags=[]) then begin
     if CompareFileExt(AFilename,'.lpi',false)=0 then begin
       if MessageDlg('Open Project?',
@@ -4122,6 +4123,13 @@ begin
   if (not (ofRevert in Flags)) then begin
     UnitIndex:=Project1.IndexOfFilename(AFilename);
     ReOpen:=(UnitIndex>=0);
+    // check if there is already a symlinked file open in the editor
+    OtherUnitIndex:=Project1.IndexOfFilename(AFilename,
+                                  [pfsfOnlyEditorFiles,pfsfResolveFileLinks]);
+    if (OtherUnitIndex>=0) and (OtherUnitIndex<>UnitIndex) then begin
+      // There is another file open in the editor symlinked to the same file
+      // ToDo
+    end;
     if ReOpen then begin
       NewUnitInfo:=Project1.Units[UnitIndex];
       if (not (ofProjectLoading in Flags)) and NewUnitInfo.Loaded then begin
@@ -8059,6 +8067,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.500  2003/03/29 17:20:04  mattias
+  added TMemoScrollBar
+
   Revision 1.499  2003/03/27 08:50:47  mattias
   find declaration: implemented file type
 

@@ -1,0 +1,32 @@
+// included by stdctrls.pp
+
+{
+ *****************************************************************************
+ *                                                                           *
+ *  This file is part of the Lazarus Component Library (LCL)                 *
+ *                                                                           *
+ *  See the file COPYING.LCL, included in this distribution,                 *
+ *  for details about the copyright.                                         *
+ *                                                                           *
+ *  This program is distributed in the hope that it will be useful,          *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
+ *                                                                           *
+ *****************************************************************************
+}
+
+{ TMemoScrollbar }
+
+function TMemoScrollbar.GetHorzScrollBar: TControlScrollBar;
+begin
+  Result:=TCustomMemo(FControl).HorzScrollBar;
+end;
+
+function TMemoScrollbar.GetVertScrollBar: TControlScrollBar;
+begin
+  Result:=TCustomMemo(FControl).VertScrollBar;
+end;
+
+
+// included by stdctrls.pp
+
