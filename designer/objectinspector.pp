@@ -696,7 +696,7 @@ var
   CurRow:TOIPropertyGridRow;
   OldChangeStep: integer;
 begin
-writeln('#################### TOIPropertyGrid.DoCallEdit');
+  //writeln('#################### TOIPropertyGrid.DoCallEdit ...');
   if (FStates*[pgsChangingItemIndex,pgsApplyingValue]<>[])
   or (FCurrentEdit=nil)
   or (FItemIndex<0)
@@ -712,6 +712,7 @@ writeln('#################### TOIPropertyGrid.DoCallEdit');
   CurRow:=Rows[FItemIndex];
   if paDialog in CurRow.Editor.GetAttributes then begin
     try
+      writeln('#################### TOIPropertyGrid.DoCallEdit for ',CurRow.Editor.ClassName);
       CurRow.Editor.Edit;
     except
       on E: Exception do begin

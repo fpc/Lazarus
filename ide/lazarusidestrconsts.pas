@@ -316,6 +316,7 @@ resourcestring
   dlgDesktopFiles = 'Desktop files';
   dlgSaveDFile = 'Save desktop settings to file';
   dlgLoadDFile = 'Load desktop settings from file';
+  dlgMinimizeAllOnMinimizeMain = 'Minimize all on minimize main';
   dlgPalHints = 'Hints for component palette';
   dlgSpBHints = 'Hints for main speed buttons (open, save, ...)';
   dlgWinPos = 'Window Positions';

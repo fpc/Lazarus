@@ -398,17 +398,24 @@ end;
   Resize event handler.
  ------------------------------------------------------------------------------}
 procedure TCustomForm.WMSize(var Message: TLMSize);
+var
+  OldState: TWindowState;
 begin
 {$IFDEF CHECK_POSITION}
 Writeln('[TCustomForm.WMSize] Name=',Name,' Class=',ClassName,' Message.Width=',Message.Width,' Message.Height=',Message.Height);
 {$ENDIF}
   Assert(False, 'Trace:WMSIZE in TCustomForm');
-  if not (csDesigning in ComponentState) then
+  if not (csDesigning in ComponentState) then begin
+    OldState:=FWindowState;
     Case Message.SizeType of
-       SIZENORMAL : FWindowState := wsNormal;
-       SIZEICONIC : FWIndowState := wsMinimized;
-       SIZEFULLSCREEN : FWindowstate := wsMaximized;
-      end;
+      SIZENORMAL : FWindowState := wsNormal;
+      SIZEICONIC : FWindowState := wsMinimized;
+      SIZEFULLSCREEN : FWindowState := wsMaximized;
+    end;
+    if OldState<>FWindowState then begin
+      //if Assigned(OnWindowStateChanged) then OnWindowStateChanged(Self);
+    end;
+  end;
 
   inherited WMSize(Message);
 End;
@@ -1289,6 +1296,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.85  2003/02/04 11:44:13  mattias
+  fixed modified and loading xpms for button glyphs
+
   Revision 1.84  2003/01/06 12:00:16  mattias
   implemented fsStayOnTop+bsNone for forms under gtk (useful for splash)
 

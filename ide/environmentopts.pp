@@ -145,6 +145,7 @@ type
     // window layout
     FIDEWindowLayoutList: TIDEWindowLayoutList;
     FIDEDialogLayoutList: TIDEDialogLayoutList;
+    FMinimizeAllOnMinimizeMain: boolean;
 
     // form editor
     FShowGrid: boolean;
@@ -232,12 +233,14 @@ type
        read FAutoSaveProject write FAutoSaveProject;
     property AutoSaveIntervalInSecs: integer
        read FAutoSaveIntervalInSecs write FAutoSaveIntervalInSecs;
-
+       
     // windows
     property IDEWindowLayoutList: TIDEWindowLayoutList
         read FIDEWindowLayoutList write FIDEWindowLayoutList;
     property IDEDialogLayoutList: TIDEDialogLayoutList
         read FIDEDialogLayoutList write FIDEDialogLayoutList;
+    property MinimizeAllOnMinimizeMain: boolean
+        read FMinimizeAllOnMinimizeMain write FMinimizeAllOnMinimizeMain;
 
     // form editor
     property ShowGrid: boolean read FShowGrid write FShowGrid;
@@ -373,6 +376,7 @@ type
     WindowPositionsGroupBox: TGroupBox;
     WindowPositionsListBox: TListBox;
     WindowPositionsBox: TIDEWindowSetupLayoutComponent;
+    MinimizeAllOnMinimizeMainCheckBox: TCheckBox;
 
     // form editor
     GridGroupBox: TGroupBox;
@@ -601,6 +605,7 @@ begin
   InitLayoutList;
   FIDEDialogLayoutList:=TIDEDialogLayoutList.Create;
   IDEOptionDefs.IDEDialogLayoutList:=FIDEDialogLayoutList;
+  FMinimizeAllOnMinimizeMain:=true;
 
   // form editor
   FShowGrid:=true;
@@ -791,6 +796,9 @@ begin
       'EnvironmentOptions/Desktop/');
     FIDEDialogLayoutList.LoadFromXMLConfig(XMLConfig,
       'EnvironmentOptions/Desktop/Dialogs');
+    FMinimizeAllOnMinimizeMain:=XMLConfig.GetValue(
+      'EnvironmentOptions/Desktop/MinimizeAllOnMinimizeMain/Value',
+      FMinimizeAllOnMinimizeMain);
 
     // form editor
     FShowGrid:=XMLConfig.GetValue(
@@ -993,6 +1001,9 @@ begin
       'EnvironmentOptions/Desktop/');
     FIDEDialogLayoutList.SaveToXMLConfig(XMLConfig,
       'EnvironmentOptions/Desktop/Dialogs');
+    XMLConfig.SetValue(
+      'EnvironmentOptions/Desktop/MinimizeAllOnMinimizeMain/Value',
+      FMinimizeAllOnMinimizeMain);
 
     // form editor
     XMLConfig.SetValue(
@@ -1417,6 +1428,18 @@ begin
     Caption:=dlgLoadDFile;
     OnClick:=@LoadDesktopSettingsFromFileButtonClick;
     Visible:=true;
+  end;
+  
+  // windows
+  MinimizeAllOnMinimizeMainCheckBox:=TCheckBox.Create(Self);
+  with MinimizeAllOnMinimizeMainCheckBox do begin
+    Name:='MinimizeAllOnMinimizeMainCheckBox';
+    Parent:=NoteBook.Page[Page];
+    Left:=DesktopFilesGroupBox.Left;
+    Top:=DesktopFilesGroupBox.Top+DesktopFilesGroupBox.Height+20;
+    Width:=Parent.ClientWidth-Left;
+    Height:=20;
+    Caption:=dlgMinimizeAllOnMinimizeMain;
   end;
 
   // hints
@@ -2500,6 +2523,14 @@ begin
     Height:=25;
   end;
 
+  // window minimizing
+  with MinimizeAllOnMinimizeMainCheckBox do begin
+    Left:=DesktopFilesGroupBox.Left;
+    Top:=DesktopFilesGroupBox.Top+DesktopFilesGroupBox.Height+75;
+    Width:=Max(10,Parent.ClientWidth-Left);
+    Height:=20;
+  end;
+
   // hints
   with ShowHintsForComponentPaletteCheckBox do begin
     Left:=DesktopFilesGroupBox.Left;
@@ -3100,6 +3131,9 @@ begin
     // object inspector
     OIBackgroundColorButton.ButtonColor:=
        ObjectInspectorOptions.GridBackgroundColor;
+       
+    // window minimizing
+    MinimizeAllOnMinimizeMainCheckBox.Checked:=MinimizeAllOnMinimizeMain;
 
     // hints
     ShowHintsForComponentPaletteCheckBox.Checked:=
@@ -3223,6 +3257,9 @@ begin
     // object inspector
     ObjectInspectorOptions.GridBackgroundColor:=
        OIBackgroundColorButton.ButtonColor;
+       
+    // window minimizing
+    MinimizeAllOnMinimizeMain:=MinimizeAllOnMinimizeMainCheckBox.Checked;
 
     // hints
     ShowHintsForComponentPalette:=ShowHintsForComponentPaletteCheckBox.Checked;

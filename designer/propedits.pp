@@ -40,9 +40,9 @@ interface
 {$DEFINE NewListPropEdit}
 
 uses 
-  Classes, TypInfo, SysUtils, Forms, Controls, GraphType, Graphics, StdCtrls,
-  Buttons, ComCtrls, Menus, LCLType, ExtCtrls, LCLLinux, Dialogs, ColumnDlg,
-  ObjInspStrConsts;
+  Classes, TypInfo, SysUtils, LCLProc, Forms, Controls, GraphType, Graphics,
+  StdCtrls, Buttons, ComCtrls, Menus, LCLType, ExtCtrls, LCLLinux, Dialogs,
+  ColumnDlg, ObjInspStrConsts;
 
 const
   MaxIdentLength: Byte = 63;
@@ -1686,28 +1686,52 @@ end;
 procedure TPropertyEditor.SetFloatValue(NewValue:Extended);
 var
   I:Integer;
+  Changed: boolean;
 begin
+  Changed:=false;
   for I:=0 to FPropCount-1 do
-    with FPropList^[I] do SetFloatProp(Instance,PropInfo,NewValue);
-  Modified;
+    with FPropList^[I] do
+      Changed:=Changed or (GetFloatProp(Instance,PropInfo)<>NewValue);
+  if Changed then begin
+    for I:=0 to FPropCount-1 do
+      with FPropList^[I] do SetFloatProp(Instance,PropInfo,NewValue);
+    Modified;
+  end;
 end;
 
 procedure TPropertyEditor.SetMethodValue(const NewValue:TMethod);
 var
   I:Integer;
+  Changed: boolean;
+  AMethod: TMethod;
 begin
+  Changed:=false;
   for I:=0 to FPropCount-1 do
-    with FPropList^[I] do SetMethodProp(Instance,PropInfo,NewValue);
-  Modified;
+    with FPropList^[I] do begin
+      AMethod:=GetMethodProp(Instance,PropInfo);
+      Changed:=Changed or CompareMem(@AMethod,@NewValue,SizeOf(TMethod));
+    end;
+  if Changed then begin
+    for I:=0 to FPropCount-1 do
+      with FPropList^[I] do SetMethodProp(Instance,PropInfo,NewValue);
+    Modified;
+  end;
 end;
 
 procedure TPropertyEditor.SetOrdValue(NewValue:Longint);
 var
   I:Integer;
+  Changed: boolean;
 begin
+  Changed:=false;
   for I:=0 to FPropCount-1 do
-    with FPropList^[I] do SetOrdProp(Instance,PropInfo,NewValue);
-  Modified;
+    with FPropList^[I] do
+      Changed:=Changed or (GetOrdProp(Instance,PropInfo)<>NewValue);
+  if Changed then begin
+    for I:=0 to FPropCount-1 do
+      with FPropList^[I] do SetOrdProp(Instance,PropInfo,NewValue);
+    Modified;
+  end;
 end;
 
 procedure TPropertyEditor.SetPropEntry(Index:Integer;
@@ -1722,19 +1746,31 @@ end;
 procedure TPropertyEditor.SetStrValue(const NewValue:AnsiString);
 var
   I:Integer;
+  Changed: boolean;
 begin
   for I:=0 to FPropCount-1 do
-    with FPropList^[I] do SetStrProp(Instance,PropInfo,NewValue);
-  Modified;
+    with FPropList^[I] do
+      Changed:=Changed or (GetStrProp(Instance,PropInfo)<>NewValue);
+  if Changed then begin
+    for I:=0 to FPropCount-1 do
+      with FPropList^[I] do SetStrProp(Instance,PropInfo,NewValue);
+    Modified;
+  end;
 end;
 
 procedure TPropertyEditor.SetVarValue(const NewValue:Variant);
 var
   I:Integer;
+  Changed: boolean;
 begin
   for I:=0 to FPropCount-1 do
-    with FPropList^[I] do SetVariantProp(Instance,PropInfo,NewValue);
-  Modified;
+    with FPropList^[I] do
+      Changed:=Changed or (GetVariantProp(Instance,PropInfo)<>NewValue);
+  if Changed then begin
+    for I:=0 to FPropCount-1 do
+      with FPropList^[I] do SetVariantProp(Instance,PropInfo,NewValue);
+    Modified;
+  end;
 end;
 
 procedure TPropertyEditor.Revert;
@@ -1783,10 +1819,17 @@ end;
 procedure TPropertyEditor.SetInt64Value(NewValue:Int64);
 var
   I:Integer;
+  Changed: boolean;
 begin
+  Changed:=false;
   for I:=0 to FPropCount-1 do
-    with FPropList^[I] do SetInt64Prop(Instance,PropInfo,NewValue);
-  Modified;
+    with FPropList^[I] do
+      Changed:=Changed or (GetInt64Prop(Instance,PropInfo)<>NewValue);
+  if Changed then begin
+    for I:=0 to FPropCount-1 do
+      with FPropList^[I] do SetInt64Prop(Instance,PropInfo,NewValue);
+    Modified;
+  end;
 end;
 
 { these three procedures implement the default render behavior of the
@@ -4031,8 +4074,13 @@ end;
 
 procedure TPropertyEditorHook.Modified;
 begin
-  if Assigned(FOnModified) then
+  if Assigned(FOnModified) then begin
     FOnModified();
+  end else if FLookupRoot<>nil then begin
+    if (FLookupRoot is TCustomForm)
+    and (TCustomForm(FLookupRoot).Designer<>nil) then
+      TCustomForm(FLookupRoot).Designer.Modified;
+  end;
 end;
 
 procedure TPropertyEditorHook.Revert(Instance:TPersistent;

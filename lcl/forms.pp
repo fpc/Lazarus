@@ -219,13 +219,14 @@ type
     property OnPaint;
   end;
 
-  TIDesigner = class;
-
 
   { TCustomForm }
 
+  TIDesigner = class;
+
   TCloseEvent = procedure(Sender: TObject; var Action: TCloseAction) of object;
-  TCloseQueryEvent = procedure(Sender : TObject; var CanClose : boolean) of object;
+  TCloseQueryEvent = procedure(Sender : TObject;
+                               var CanClose : boolean) of object;
 
   TFormStateType = (
     fsCreating,  // initializing (form streaming)
@@ -242,28 +243,29 @@ type
 
   TCustomForm = class(TScrollingWinControl)
   private
-    FActive : Boolean;
-    FActiveControl : TWinControl;
-    FBorderStyle : TFormBorderStyle;
-    FDesigner : TIDesigner;
-    FFormStyle : TFormStyle;
+    FActive: Boolean;
+    FActiveControl: TWinControl;
+    FBorderStyle: TFormBorderStyle;
+    FDesigner: TIDesigner;
+    FFormStyle: TFormStyle;
     FFormState: TFormState;
     FFormUpdateCount: integer;
     FIcon: TIcon;
     FKeyPreview: Boolean;
-    FMenu : TMainMenu;
-    FModalResult : TModalResult;
+    FMenu: TMainMenu;
+    FModalResult: TModalResult;
     FOnActivate: TNotifyEvent;
     FOnCreate: TNotifyEvent;
-    FOnDeactivate : TNotifyEvent;
+    FOnDeactivate: TNotifyEvent;
     FOnDestroy: TNotifyEvent;
     FOnHide: TNotifyEvent;
     FOnShow: TNotifyEvent;
     FOnClose: TCloseEvent;
-    FOnCloseQuery : TCloseQueryEvent;
-    FPosition : TPosition;
-    FWindowState : TWindowState;
-    FDummyTextHeight : Longint;
+    FOnCloseQuery: TCloseQueryEvent;
+    FOnWindowStateChanged: TNotifyEvent;
+    FPosition: TPosition;
+    FWindowState: TWindowState;
+    FDummyTextHeight: Longint;
     procedure ClientWndProc(var Message: TLMessage);
     procedure CloseModal;
     procedure DoCreate;
@@ -329,8 +331,11 @@ type
     property OnHide: TNotifyEvent read FOnHide write FOnHide;
     property OnShow: TNotifyEvent read FOnShow write FOnShow;
     property OnResize stored IsForm;
+    property OnWindowStateChanged: TNotifyEvent
+      read fOnWindowStateChanged write fOnWindowStateChanged;
     property Position : TPosition read FPosition write SetPosition default poDesigned;
-    property TextHeight : Longint read FDummyTextHeight write FDummyTextHeight stored False;
+    property TextHeight : Longint read FDummyTextHeight write FDummyTextHeight
+      stored False;
   public
     constructor Create(AOwner: TComponent); override;
     constructor CreateNew(AOwner: TComponent; Num : Integer); virtual;
@@ -340,7 +345,8 @@ type
     procedure Close;
     procedure Release;
     procedure Hide;
-    function WantChildKey(Child : TControl; var MEssage : TLMessage): Boolean; virtual;
+    function WantChildKey(Child : TControl;
+      var Message : TLMessage): Boolean; virtual;
     procedure SetFocus; override;
     function SetFocusedControl(Control : TWinControl): Boolean ; Virtual;
     procedure FocusControl(WinControl : TWinControl);
@@ -348,7 +354,6 @@ type
     property Active : Boolean read FActive;
     property BorderStyle : TFormBorderStyle
       read FBorderStyle write SetBorderStyle default bsSizeable;
-    //property Canvas: TControlCanvas read GetCanvas;
     property Caption stored IsForm;
     property Designer : TIDesigner read FDesigner write SetDesigner;
     property FormStyle : TFormStyle read FFormStyle write SetFormStyle default fsNormal;
@@ -357,7 +362,8 @@ type
     property Menu : TMainMenu read FMenu write SetMenu;
     property ModalResult : TModalResult read FModalResult write FModalResult;
     property Visible write SetVisible default False;
-    property WindowState: TWindowState read FWindowState write SetWindowState default wsNormal;
+    property WindowState: TWindowState read FWindowState write SetWindowState
+      default wsNormal;
   end;
   
   
