@@ -49,8 +49,8 @@ Destructor TScreen.Destroy;
 var
   HandlerType: TScreenNotification;
 begin
-  for HandlerType:=Low(FHandlers) to High(FHandlers) do
-    FreeThenNil(FHandlers[HandlerType]);
+  for HandlerType:=Low(FScreenHandlers) to High(FScreenHandlers) do
+    FreeThenNil(FScreenHandlers[HandlerType]);
   FreeThenNil(FHintFont);
   FreeThenNil(FFormList);
   FreeThenNil(FCustomForms);
@@ -116,9 +116,10 @@ begin
   ReleaseDC(0,DC);
 end;
 
-procedure TScreen.AddHandlerFormAdded(OnFormAdded: TScreenFormEvent);
+procedure TScreen.AddHandlerFormAdded(OnFormAdded: TScreenFormEvent;
+  AsLast: Boolean);
 begin
-  AddHandler(snFormAdded,TMethod(OnFormAdded));
+  AddHandler(snFormAdded,TMethod(OnFormAdded),AsLast);
 end;
 
 procedure TScreen.RemoveHandlerFormAdded(OnFormAdded: TScreenFormEvent);
@@ -126,9 +127,10 @@ begin
   RemoveHandler(snFormAdded,TMethod(OnFormAdded));
 end;
 
-procedure TScreen.AddHandlerRemoveForm(OnRemoveForm: TScreenFormEvent);
+procedure TScreen.AddHandlerRemoveForm(OnRemoveForm: TScreenFormEvent;
+  AsLast: Boolean);
 begin
-  AddHandler(snRemoveForm,TMethod(OnRemoveForm));
+  AddHandler(snRemoveForm,TMethod(OnRemoveForm),AsLast);
 end;
 
 procedure TScreen.RemoveHandlerRemoveForm(OnRemoveForm: TScreenFormEvent);
@@ -137,9 +139,9 @@ begin
 end;
 
 procedure TScreen.AddHandlerActiveControlChanged(
-  OnActiveControlChanged: TScreenControlEvent);
+  OnActiveControlChanged: TScreenControlEvent; AsLast: Boolean);
 begin
-  AddHandler(snActiveControlChanged,TMethod(OnActiveControlChanged));
+  AddHandler(snActiveControlChanged,TMethod(OnActiveControlChanged),AsLast);
 end;
 
 procedure TScreen.RemoveHandlerActiveControlChanged(
@@ -149,9 +151,9 @@ begin
 end;
 
 procedure TScreen.AddHandlerActiveFormChanged(
-  OnActiveFormChanged: TScreenActiveFormChangedEvent);
+  OnActiveFormChanged: TScreenActiveFormChangedEvent; AsLast: Boolean);
 begin
-  AddHandler(snActiveFormChanged,TMethod(OnActiveFormChanged));
+  AddHandler(snActiveFormChanged,TMethod(OnActiveFormChanged),AsLast);
 end;
 
 procedure TScreen.RemoveHandlerActiveFormChanged(
@@ -282,9 +284,9 @@ begin
     FFormList.Add(AForm);
     Application.UpdateVisible;
   end;
-  i:=GetHandlerCount(snFormAdded);
-  while GetNextHandlerIndex(snFormAdded,i) do
-    TScreenFormEvent(FHandlers[snFormAdded][i])(Self,AForm);
+  i:=FScreenHandlers[snFormAdded].Count;
+  while FScreenHandlers[snFormAdded].NextDownIndex(i) do
+    TScreenFormEvent(FScreenHandlers[snFormAdded][i])(Self,AForm);
 end;
 
 {------------------------------------------------------------------------------
@@ -359,9 +361,9 @@ procedure TScreen.RemoveForm(AForm: TCustomForm);
 var
   i: Integer;
 begin
-  i:=GetHandlerCount(snRemoveForm);
-  while GetNextHandlerIndex(snRemoveForm,i) do
-    TScreenFormEvent(FHandlers[snRemoveForm][i])(Self,AForm);
+  i:=FScreenHandlers[snRemoveForm].Count;
+  while FScreenHandlers[snRemoveForm].NextDownIndex(i) do
+    TScreenFormEvent(FScreenHandlers[snRemoveForm][i])(Self,AForm);
   FCustomForms.Remove(AForm);
   FCustomFormsZOrdered.Remove(AForm);
   FFormList.Remove(AForm);
@@ -410,9 +412,9 @@ procedure TScreen.UpdateLastActive;
     Handler: TScreenFormEvent;
   begin
     if Assigned(FOnActiveFormChange) then FOnActiveFormChange(Self);
-    i:=GetHandlerCount(snActiveFormChanged);
-    while GetNextHandlerIndex(snActiveFormChanged,i) do begin
-      Handler:=TScreenFormEvent(FHandlers[snActiveFormChanged][i]);
+    i:=FScreenHandlers[snActiveFormChanged].Count;
+    while FScreenHandlers[snActiveFormChanged].NextDownIndex(i) do begin
+      Handler:=TScreenFormEvent(FScreenHandlers[snActiveFormChanged][i]);
       Handler(Self,FLastActiveCustomForm);
     end;
   end;
@@ -423,9 +425,9 @@ procedure TScreen.UpdateLastActive;
     Handler: TScreenControlEvent;
   begin
     if Assigned(FOnActiveControlChange) then FOnActiveControlChange(Self);
-    i:=GetHandlerCount(snActiveControlChanged);
-    while GetNextHandlerIndex(snActiveControlChanged,i) do begin
-      Handler:=TScreenControlEvent(FHandlers[snActiveControlChanged][i]);
+    i:=FScreenHandlers[snActiveControlChanged].Count;
+    while FScreenHandlers[snActiveControlChanged].NextDownIndex(i) do begin
+      Handler:=TScreenControlEvent(FScreenHandlers[snActiveControlChanged][i]);
       Handler(Self,FLastActiveControl);
     end;
   end;
@@ -448,29 +450,18 @@ end;
     const Handler: TMethod);
  ------------------------------------------------------------------------------}
 procedure TScreen.AddHandler(HandlerType: TScreenNotification;
-  const Handler: TMethod);
+  const Handler: TMethod; AsLast: Boolean);
 begin
   if Handler.Code=nil then RaiseGDBException('TScreen.AddHandler');
-  if FHandlers[HandlerType]=nil then
-    FHandlers[HandlerType]:=TMethodList.Create;
-  FHandlers[HandlerType].Add(Handler);
+  if FScreenHandlers[HandlerType]=nil then
+    FScreenHandlers[HandlerType]:=TMethodList.Create;
+  FScreenHandlers[HandlerType].Add(Handler,AsLast);
 end;
 
 procedure TScreen.RemoveHandler(HandlerType: TScreenNotification;
   const Handler: TMethod);
 begin
-  FHandlers[HandlerType].Remove(Handler);
-end;
-
-function TScreen.GetHandlerCount(HandlerType: TScreenNotification): integer;
-begin
-  Result:=FHandlers[HandlerType].Count;
-end;
-
-function TScreen.GetNextHandlerIndex(HandlerType: TScreenNotification;
-  var i: integer): boolean;
-begin
-  Result:=FHandlers[HandlerType].NextDownIndex(i);
+  FScreenHandlers[HandlerType].Remove(Handler);
 end;
 
 // included by forms.pp

@@ -583,7 +583,7 @@ begin
   FHintWindow.HideInterval := 4000;
   FHintWindow.AutoHide := True;
   
-  Application.AddOnUserInputHandler(@OnUserInput);
+  Application.AddOnUserInputHandler(@OnUserInput,true);
 end;
 
 procedure TOICustomPropertyGrid.UpdateScrollBar;

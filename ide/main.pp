@@ -925,9 +925,9 @@ begin
   ReOpenIDEWindows;
 
   // set OnIdle handlers
-  Application.AddOnUserInputHandler(@OnApplicationUserInput);
-  Application.AddOnIdleHandler(@OnApplicationIdle);
-  Screen.AddHandlerRemoveForm(@OnScreenRemoveForm);
+  Application.AddOnUserInputHandler(@OnApplicationUserInput,true);
+  Application.AddOnIdleHandler(@OnApplicationIdle,true);
+  Screen.AddHandlerRemoveForm(@OnScreenRemoveForm,true);
   SetupHints;
 end;
 
@@ -10475,6 +10475,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.738  2004/07/25 01:04:44  mattias
+  TXMLPropStorage basically working
+
   Revision 1.737  2004/07/24 11:23:55  mattias
   Designer can now handle TPersistent selections, TCollectionPropertyEditor basically working
 

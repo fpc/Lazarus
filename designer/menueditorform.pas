@@ -49,8 +49,8 @@ type
     fDesigner: TComponentEditorDesigner;
     List_menus: TListBox;
     Label_menus: TLabel;
-    procedure OnPersistentDeleting(AComponent: TComponent);
-    procedure OnPersistentAdded(AComponent: TComponent; Select: boolean);
+    procedure OnPersistentDeleting(APersistent: TPersistent);
+    procedure OnPersistentAdded(APersistent: TPersistent; Select: boolean);
     procedure CreateDesignerMenu;
     procedure UpdateListOfMenus;
   public
@@ -115,19 +115,23 @@ end;
 
 { TMainMenuEditorForm }
 
-procedure TMainMenuEditorForm.OnPersistentDeleting(AComponent: TComponent);
+procedure TMainMenuEditorForm.OnPersistentDeleting(APersistent: TPersistent);
 var
   i: Integer;
+  AComponent: TComponent;
 begin
-  if FindRootDesigner(AComponent)<>fDesigner then exit;
-  i:=List_menus.Items.IndexOf(AComponent.Name);
-  if i>=0 then List_menus.Items.Delete(i);
+  if APersistent is TComponent then begin
+    AComponent:=TComponent(APersistent);
+    if FindRootDesigner(AComponent)<>fDesigner then exit;
+    i:=List_menus.Items.IndexOf(AComponent.Name);
+    if i>=0 then List_menus.Items.Delete(i);
+  end;
 end;
 
-procedure TMainMenuEditorForm.OnPersistentAdded(AComponent: TComponent;
+procedure TMainMenuEditorForm.OnPersistentAdded(APersistent: TPersistent;
   Select: boolean);
 begin
-  if AComponent is TMenu then
+  if APersistent is TMenu then
     UpdateListOfMenus;
 end;
 

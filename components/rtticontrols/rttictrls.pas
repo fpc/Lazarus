@@ -1432,7 +1432,7 @@ begin
   and ((ploReadOnIdle in Options)<>FIdleHandlerConnected) then begin
     if ploReadOnIdle in Options then begin
       FIdleHandlerConnected:=true;
-      Application.AddOnIdleHandler(@OnApplicationIdle);
+      Application.AddOnIdleHandler(@OnApplicationIdle,true);
     end else begin
       FIdleHandlerConnected:=false;
       Application.RemoveOnIdleHandler(@OnApplicationIdle);

@@ -310,18 +310,6 @@ procedure TCustomUpDown.SetAssociate(Value: TWinControl);
 var
   I: Integer;
   OtherControl: TControl;
-
-  {function IsClass(ClassType: TClass; const Name: string): Boolean;
-  begin
-    Result := True;
-    while ClassType <> nil do
-    begin
-      if ClassType.ClassNameIs(Name) then Exit;
-      ClassType := ClassType.ClassParent;
-    end;
-    Result := False;
-  end;}
-
 begin
   // check that no other updown component is associated to the new Associate
   if (Value <> FAssociate) and (Value<>nil) then
@@ -336,7 +324,7 @@ begin
   // disconnect old Associate
   if FAssociate <> nil then
   begin
-    FAssociate.RemoveAllControlHandlersOfObject(Self);
+    FAssociate.RemoveAllHandlersOfObject(Self);
     FAssociate.OnKeyDown := OldKeyDown;
     OldKeyDown := nil;
     FAssociate := nil;

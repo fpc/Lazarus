@@ -1225,21 +1225,21 @@ type
                            const OnComponentRenamed: TPropHookComponentRenamed);
     // persistent selection
     procedure AddHandlerBeforeAddPersistent(
-                       const OnBeforeAddPersistent: TPropHookBeforeAddPersistent);
+                     const OnBeforeAddPersistent: TPropHookBeforeAddPersistent);
     procedure RemoveHandlerBeforeAddPersistent(
-                       const OnBeforeAddPersistent: TPropHookBeforeAddPersistent);
+                     const OnBeforeAddPersistent: TPropHookBeforeAddPersistent);
     procedure AddHandlerPersistentAdded(
-                               const OnPersistentAdded: TPropHookPersistentAdded);
+                             const OnPersistentAdded: TPropHookPersistentAdded);
     procedure RemoveHandlerPersistentAdded(
-                               const OnPersistentAdded: TPropHookPersistentAdded);
+                             const OnPersistentAdded: TPropHookPersistentAdded);
     procedure AddHandlerPersistentDeleting(
-                         const OnPersistentDeleting: TPropHookPersistentDeleting);
+                       const OnPersistentDeleting: TPropHookPersistentDeleting);
     procedure RemoveHandlerPersistentDeleting(
-                         const OnPersistentDeleting: TPropHookPersistentDeleting);
+                       const OnPersistentDeleting: TPropHookPersistentDeleting);
     procedure AddHandlerDeletePersistent(
-                             const OnDeletePersistent: TPropHookDeletePersistent);
+                           const OnDeletePersistent: TPropHookDeletePersistent);
     procedure RemoveHandlerDeletePersistent(
-                             const OnDeletePersistent: TPropHookDeletePersistent);
+                           const OnDeletePersistent: TPropHookDeletePersistent);
     procedure AddHandlerGetSelection(
                                    const OnGetSelection: TPropHookGetSelection);
     procedure RemoveHandlerGetSelection(

@@ -30,7 +30,7 @@ type
     Procedure DeleteSubNodes (const ARootNode : String);
   end;
   
-  TXMLPropStorage = class(TCustomPropertyStorage)
+  TCustomXMLPropStorage = class(TFormPropertyStorage)
   private
     FCount : Integer;
     FFileName: String;
@@ -44,13 +44,23 @@ type
     Function RootSection : String; Override;
     Function FixPath(const APath : String) : String; virtual;
     Property XMLConfig: TPropStorageXMLConfig Read FXML;
-  Public
+  public
     function  DoReadString(const Section, Ident, Default: string): string; override;
     procedure DoWriteString(const Section, Ident, Value: string); override;
     Procedure DoEraseSections(const ARootSection: String);override;
+  public
+    property FileName : String Read FFileName Write FFileName;
+    property RootNodePath : String Read FRootNode Write FRootNodePath;
+  end;
+  
+  TXMLPropStorage = class(TCustomXMLPropStorage)
   Published
-    Property FileName : String Read FFileName Write FFileName;
-    Property RootNodePath : String Read FRootNode Write FRootNodePath;
+    property FileName;
+    property RootNodePath;
+    property Active;
+    property StoredValues;
+    property OnSaveProperties;
+    property OnRestoreProperties;
   end;
 
 procedure Register;
@@ -64,16 +74,16 @@ begin
   RegisterComponents('Misc',[TXMLPropStorage]);
 end;
 
-{ TXMLPropStorage }
+{ TCustomXMLPropStorage }
 
-procedure TXMLPropStorage.StorageNeeded(ReadOnly: Boolean);
+procedure TCustomXMLPropStorage.StorageNeeded(ReadOnly: Boolean);
 begin
   If (FXML=Nil) then
     FXML:=TPropStorageXMLConfig.Create(GetXMLFileName);
   Inc(FCount);
 end;
 
-procedure TXMLPropStorage.FreeStorage;
+procedure TCustomXMLPropStorage.FreeStorage;
 begin
   Dec(FCount);
   If (FCount<=0) then
@@ -83,7 +93,7 @@ begin
     end;
 end;
 
-function TXMLPropStorage.GetXMLFileName: string;
+function TCustomXMLPropStorage.GetXMLFileName: string;
 begin
   if (FFileName<>'') then
     Result:=FFIleName
@@ -97,13 +107,13 @@ begin
 {$endif}
 end;
 
-function TXMLPropStorage.FixPath(const APath : String) : String;
+function TCustomXMLPropStorage.FixPath(const APath : String) : String;
 
 begin
   Result:=StringReplace(APath,'.','/',[rfReplaceAll]);
 end;
 
-function TXMLPropStorage.RootSection: String;
+function TCustomXMLPropStorage.RootSection: String;
 begin
   If (FRootNode<>'') then
     Result:=FRootNode
@@ -112,18 +122,20 @@ begin
   Result:=FixPath(Result);
 end;
 
-function TXMLPropStorage.DoReadString(const Section, Ident, Default: string
+function TCustomXMLPropStorage.DoReadString(const Section, Ident, Default: string
   ): string;
 begin
   Result:=FXML.GetValue(FixPath(Section)+'/'+Ident, Default);
+  writeln('TCustomXMLPropStorage.DoReadString Section=',Section,' Ident=',Ident,' Result=',Result);
 end;
 
-procedure TXMLPropStorage.DoWriteString(const Section, Ident, Value: string);
+procedure TCustomXMLPropStorage.DoWriteString(const Section, Ident, Value: string);
 begin
+  writeln('TCustomXMLPropStorage.DoWriteString Section=',Section,' Ident=',Ident,' Value=',Value);
   FXML.SetValue(FixPath(Section)+'/'+Ident, Value);
 end;
 
-procedure TXMLPropStorage.DoEraseSections(const ARootSection: String);
+procedure TCustomXMLPropStorage.DoEraseSections(const ARootSection: String);
 begin
   FXML.DeleteSubNodes(FixPath(ARootSection));
 end;

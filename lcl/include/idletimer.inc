@@ -83,9 +83,9 @@ begin
   and ([csDesigning,csLoading]*ComponentState=[]) then begin
     // connect handlers
     if FHandlersConnected or (Application=nil) then exit;
-    Application.AddOnIdleHandler(@DoOnIdle);
-    Application.AddOnIdleEndHandler(@DoOnIdleEnd);
-    Application.AddOnUserInputHandler(@DoOnUserInput);
+    Application.AddOnIdleHandler(@DoOnIdle,true);
+    Application.AddOnIdleEndHandler(@DoOnIdleEnd,true);
+    Application.AddOnUserInputHandler(@DoOnUserInput,true);
     FHandlersConnected:=true;
   end else begin
     // disconnect handlers

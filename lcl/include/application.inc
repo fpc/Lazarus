@@ -96,6 +96,8 @@ end;
 {       TApplication Destructor                                                }
 {------------------------------------------------------------------------------}
 destructor TApplication.Destroy;
+var
+  HandlerType: TApplicationHandlerType;
 begin
   // shutting down
   CancelHint;
@@ -105,10 +107,10 @@ begin
   ApplicationActionComponent:=nil;
   FreeThenNil(FIcon);
   FreeThenNil(FList);
-  FreeThenNil(FOnIdleHandler);
-  FreeThenNil(FOnIdleEndHandler);
-  FreeThenNil(FOnUserInputHandler);
-  FreeThenNil(FOnKeyDownHandler);
+  
+  for HandlerType:=Low(TApplicationHandlerType) to High(TApplicationHandlerType)
+  do
+    FreeThenNil(FApplicationHandlers[HandlerType]);
   inherited Destroy;
 
   // restore exception handling
@@ -439,14 +441,9 @@ procedure TApplication.NotifyIdleHandler;
 var
   i: integer;
 begin
-  if FOnIdleHandler=nil then exit;
-  i:=FOnIdleHandler.Count-1;
-  while (i>=0) and (FOnIdleHandler<>nil) do begin
-    TNotifyEvent(FOnIdleHandler[i])(Self);
-    dec(i);
-    if (FOnIdleHandler<>nil) and (i>FOnIdleHandler.Count-1) then
-      i:=FOnIdleHandler.Count-1;
-  end;
+  i:=FApplicationHandlers[ahtIdle].Count;
+  while FApplicationHandlers[ahtIdle].NextDownIndex(i) do
+    TNotifyEvent(FApplicationHandlers[ahtIdle][i])(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -457,14 +454,9 @@ procedure TApplication.NotifyIdleEndHandler;
 var
   i: integer;
 begin
-  if FOnIdleEndHandler=nil then exit;
-  i:=FOnIdleHandler.Count-1;
-  while (i>=0) and (FOnIdleEndHandler<>nil) do begin
-    TNotifyEvent(FOnIdleEndHandler[i])(Self);
-    dec(i);
-    if (FOnIdleEndHandler<>nil) and (i>FOnIdleEndHandler.Count-1) then
-      i:=FOnIdleEndHandler.Count-1;
-  end;
+  i:=FApplicationHandlers[ahtIdleEnd].Count;
+  while FApplicationHandlers[ahtIdleEnd].NextDownIndex(i) do
+    TNotifyEvent(FApplicationHandlers[ahtIdleEnd][i])(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -923,6 +915,21 @@ begin
     TCustomAction(Action).Enabled := Assigned(Action.OnExecute);
 end;
 
+procedure TApplication.AddHandler(HandlerType: TApplicationHandlerType;
+  const Handler: TMethod; AsLast: Boolean);
+begin
+  if Handler.Code=nil then RaiseGDBException('TApplication.AddHandler');
+  if FApplicationHandlers[HandlerType]=nil then
+    FApplicationHandlers[HandlerType]:=TMethodList.Create;
+  FApplicationHandlers[HandlerType].Add(Handler,AsLast);
+end;
+
+procedure TApplication.RemoveHandler(HandlerType: TApplicationHandlerType;
+  const Handler: TMethod);
+begin
+  FApplicationHandlers[HandlerType].Remove(Handler);
+end;
+
 function TApplication.GetConsoleApplication: boolean;
 begin
   Result:=false;
@@ -1025,14 +1032,9 @@ begin
   else          CancelHint;
   end;
 
-  if FOnUserInputHandler=nil then exit;
-  i:=FOnUserInputHandler.Count-1;
-  while (i>=0) and (FOnUserInputHandler<>nil) do begin
-    TOnUserInputEvent(FOnUserInputHandler[i])(Self,Msg);
-    dec(i);
-    if (FOnUserInputHandler<>nil) and (i>FOnUserInputHandler.Count-1) then
-      i:=FOnUserInputHandler.Count-1;
-  end;
+  i:=FApplicationHandlers[ahtUserInput].Count;
+  while FApplicationHandlers[ahtUserInput].NextDownIndex(i) do
+    TOnUserInputEvent(FApplicationHandlers[ahtUserInput][i])(Self,Msg);
 end;
 
 procedure TApplication.NotifyKeyDownHandler(Sender: TObject;
@@ -1040,68 +1042,61 @@ procedure TApplication.NotifyKeyDownHandler(Sender: TObject;
 var
   i: Integer;
 begin
-  if FOnKeyDownHandler=nil then exit;
-  i:=FOnKeyDownHandler.Count-1;
-  while (i>=0) and (FOnKeyDownHandler<>nil) and (Key<>VK_UNKNOWN) do begin
-    TKeyEvent(FOnKeyDownHandler[i])(Sender,Key,Shift);
-    dec(i);
-    if (FOnKeyDownHandler<>nil) and (i>FOnKeyDownHandler.Count-1) then
-      i:=FOnKeyDownHandler.Count-1;
-  end;
+  i:=FApplicationHandlers[ahtKeyDown].Count;
+  while FApplicationHandlers[ahtKeyDown].NextDownIndex(i) do
+    TKeyEvent(FApplicationHandlers[ahtKeyDown][i])(Self,Key,Shift);
 end;
 
-procedure TApplication.AddOnIdleHandler(AnOnIdleHandler: TNotifyEvent);
+procedure TApplication.AddOnIdleHandler(Handler: TNotifyEvent;
+  AsLast: Boolean);
 begin
-  if FOnIdleHandler=nil then
-    FOnIdleHandler:=TMethodList.Create;
-  FOnIdleHandler.Add(TMethod(AnOnIdleHandler));
+  AddHandler(ahtIdle,TMethod(Handler),AsLast);
 end;
 
-procedure TApplication.RemoveOnIdleHandler(AnOnIdleHandler: TNotifyEvent);
+procedure TApplication.RemoveOnIdleHandler(Handler: TNotifyEvent);
 begin
-  if FOnIdleHandler<>nil then
-    FOnIdleHandler.Remove(TMethod(AnOnIdleHandler));
+  RemoveHandler(ahtIdle,TMethod(Handler));
 end;
 
-procedure TApplication.AddOnIdleEndHandler(AnOnIdleEndHandler: TNotifyEvent);
+procedure TApplication.AddOnIdleEndHandler(Handler: TNotifyEvent;
+  AsLast: Boolean);
 begin
-  if FOnIdleEndHandler=nil then
-    FOnIdleEndHandler:=TMethodList.Create;
-  FOnIdleEndHandler.Add(TMethod(AnOnIdleEndHandler));
+  AddHandler(ahtIdleEnd,TMethod(Handler),AsLast);
 end;
 
-procedure TApplication.RemoveOnIdleEndHandler(AnOnIdleEndHandler: TNotifyEvent);
+procedure TApplication.RemoveOnIdleEndHandler(Handler: TNotifyEvent);
 begin
-  if FOnIdleEndHandler<>nil then
-    FOnIdleEndHandler.Remove(TMethod(AnOnIdleEndHandler));
+  RemoveHandler(ahtIdleEnd,TMethod(Handler));
 end;
 
-procedure TApplication.AddOnUserInputHandler(
-  AnOnUserInputHandler: TOnUserInputEvent);
+procedure TApplication.AddOnUserInputHandler(Handler: TOnUserInputEvent;
+  AsLast: Boolean);
 begin
-  if FOnUserInputHandler=nil then
-    FOnUserInputHandler:=TMethodList.Create;
-  FOnUserInputHandler.Add(TMethod(AnOnUserInputHandler));
+  AddHandler(ahtUserInput,TMethod(Handler),AsLast);
 end;
 
-procedure TApplication.RemoveOnUserInputHandler(
-  AnOnUserInputHandler: TOnUserInputEvent);
+procedure TApplication.RemoveOnUserInputHandler(Handler: TOnUserInputEvent);
 begin
-  if FOnUserInputHandler<>nil then
-    FOnUserInputHandler.Remove(TMethod(AnOnUserInputHandler));
+  RemoveHandler(ahtUserInput,TMethod(Handler));
 end;
 
-procedure TApplication.AddOnKeyDownHandler(AnOnKeyDownHandler: TKeyEvent);
+procedure TApplication.AddOnKeyDownHandler(Handler: TKeyEvent; AsLast: Boolean);
 begin
-  if FOnKeyDownHandler=nil then
-    FOnKeyDownHandler:=TMethodList.Create;
-  FOnKeyDownHandler.Add(TMethod(AnOnKeyDownHandler));
+  AddHandler(ahtKeyDown,TMethod(Handler),AsLast);
 end;
 
-procedure TApplication.RemoveOnKeyDownHandler(AnOnKeyDownHandler: TKeyEvent);
+procedure TApplication.RemoveOnKeyDownHandler(Handler: TKeyEvent);
 begin
-  if FOnKeyDownHandler<>nil then
-    FOnKeyDownHandler.Remove(TMethod(AnOnKeyDownHandler));
+  RemoveHandler(ahtKeyDown,TMethod(Handler));
+end;
+
+procedure TApplication.RemoveAllHandlersOfObject(AnObject: TObject);
+var
+  HandlerType: TApplicationHandlerType;
+begin
+  for HandlerType:=Low(TApplicationHandlerType) to High(TApplicationHandlerType)
+  do
+    FApplicationHandlers[HandlerType].RemoveAllMethodsOfObject(AnObject);
 end;
 
 {------------------------------------------------------------------------------
@@ -1181,9 +1176,14 @@ begin
   Result:=FHandle<>0;
 end;
 
+// included by forms.pp
+
 { =============================================================================
 
   $Log$
+  Revision 1.82  2004/07/25 01:04:45  mattias
+  TXMLPropStorage basically working
+
   Revision 1.81  2004/07/10 18:17:30  mattias
   added Delphi ToDo support, Application.WndProc, small bugfixes  from Colin
 

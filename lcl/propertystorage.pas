@@ -126,13 +126,14 @@ Type
     function  GetStoredValue(const AName: string): TStoredType;
     procedure SetStoredValue(const AName: string; Value: TStoredType);
   protected
-    function GetRoot: TPersistent; virtual;
+    function GetRoot: TComponent; virtual;
     procedure StorageNeeded(ReadOnly: Boolean);Virtual;
     procedure FreeStorage; Virtual;
-    Function  RootSection : String; Virtual;
+    Function  RootSection: String; Virtual;
     procedure SaveProperties; virtual;
     procedure RestoreProperties; virtual;
-    Procedure GetPropertyList(List : TStrings); virtual;
+    Procedure GetPropertyList(List: TStrings); virtual; abstract;
+    procedure FinishPropertyList(List: TStrings); virtual;
     function  DoReadInteger(const Section, Ident : String; Default: Integer): Integer; Virtual;
     function  DoReadString(const Section, Ident, Default: string): string; Virtual; Abstract;
     procedure DoWriteString(const Section, Ident, Value: string); Virtual; Abstract;
@@ -151,19 +152,13 @@ Type
     procedure EraseSections;
   public
     property StoredValue[const AName: string]: TStoredType read GetStoredValue write SetStoredValue;
-    property  Root: TPersistent read GetRoot;
-  published
+    property Root: TComponent read GetRoot;
     property Active: Boolean read FActive write FActive default True;
     property StoredValues: TStoredValues read FStoredValues write SetStoredValues;
     property OnSaveProperties : TNotifyEvent read FOnSaveProperties write FOnSaveProperties;
     property OnRestoreProperties : TNotifyEvent read FOnRestoreProperties  write FOnRestoreProperties;
   end;
   
-type
-  TGetStorageProperties = procedure(APersistent: TPersistent; List: TStrings);
-
-var
-  GetStorageProperties: TGetStorageProperties;
 
 implementation
 
@@ -485,7 +480,7 @@ begin
   FLinks.Remove(ALink);
 end;
 
-function TCustomPropertyStorage.GetRoot: TPersistent;
+function TCustomPropertyStorage.GetRoot: TComponent;
 begin
   Result:=Owner;
 end;
@@ -546,44 +541,15 @@ begin
   end;
 end;
 
-procedure TCustomPropertyStorage.GetPropertyList(List : TStrings);
-
-  procedure AddProperties(const Path: string; P: TPersistent);
-  var
-    OldListCount: LongInt;
-    i: LongInt;
-  begin
-    OldListCount:=List.Count;
-    GetStorageProperties(P,List);
-    for i:=OldListCount to List.Count-1 do
-      List[i]:=Path+List[i];
-  end;
-
-Var
-  O : TPersistent;
-  C : TComponent;
-  I : Integer;
-begin
-  O:=Root;
-  if (O=nil) or (List=nil) or (GetStorageProperties=nil) then exit;
-  AddProperties('',O);
-  if O is TComponent then begin
-    C:=TComponent(O);
-    For i:=0 to C.ComponentCount-1 do
-      AddProperties(C.Name+':',C.Components[i]);
-  end;
-end;
-
 procedure TCustomPropertyStorage.SaveProperties;
 
 Var
-  L : TStringList;
-  
+  AStoredList : TStringList;
 begin
-  L:=TstringList.Create;
+  AStoredList:=TStringList.Create;
   Try
-    L.Sorted:=True;
-    GetPropertyList(L);
+    GetPropertyList(AStoredList);
+    FinishPropertyList(AStoredList);
     StorageNeeded(False);
     Try
       with TPropsStorage.Create do
@@ -591,9 +557,11 @@ begin
           Section := RootSection;
           OnWriteString := @DoWriteString;
           try
-            StoreObjectsProps(Owner,L);
+            StoreObjectsProps(Owner,AStoredList);
           except
             { ignore any exceptions }
+            // even unable to write file?
+            // not even giving the user a small hint?
           end;
         finally
           Free;
@@ -602,7 +570,7 @@ begin
       FreeStorage;
     end;
   finally
-    L.Free;
+    AStoredList.Free;
   end;
 end;
 
@@ -612,29 +580,66 @@ Var
   L : TStringList;
 
 begin
-  L:=TstringList.Create;
+  L:=TStringList.Create;
   Try
-    L.Sorted:=True;
+  writeln('TCustomPropertyStorage.RestoreProperties A');
     GetPropertyList(L);
+  writeln('TCustomPropertyStorage.RestoreProperties B ',L.Text);
+    FinishPropertyList(L);
+  writeln('TCustomPropertyStorage.RestoreProperties C ',L.Text);
     StorageNeeded(True);
+  writeln('TCustomPropertyStorage.RestoreProperties D ');
     Try
       with TPropsStorage.Create do
         try
           Section := RootSection;
           OnReadString := @DoReadString;
           try
+  writeln('TCustomPropertyStorage.RestoreProperties E ');
             LoadObjectsProps(Owner,L);
+  writeln('TCustomPropertyStorage.RestoreProperties F ');
           except
             { ignore any exceptions }
           end;
         finally
+  writeln('TCustomPropertyStorage.RestoreProperties G ');
           Free;
         end;
     Finally
+  writeln('TCustomPropertyStorage.RestoreProperties H ');
       FreeStorage;
     end;
   finally
+  writeln('TCustomPropertyStorage.RestoreProperties I ');
     L.Free;
+  end;
+  writeln('TCustomPropertyStorage.RestoreProperties END ');
+end;
+
+procedure TCustomPropertyStorage.FinishPropertyList(List: TStrings);
+var
+  i: Integer;
+  CompName: string;
+  PropName: string;
+  ARoot: TComponent;
+  AComponent: TComponent;
+begin
+  // set Objects (i.e. the component of each property)
+  ARoot:=Root;
+  for i:=List.Count-1 downto 0 do begin
+    if ParseStoredItem(List[I], CompName, PropName) then begin
+      if CompareText(ARoot.Name,CompName)=0 then
+        List.Objects[i]:=ARoot
+      else begin
+        AComponent:=Root.FindComponent(CompName);
+        if AComponent<>nil then
+          List.Objects[i]:=AComponent
+        else
+          List.Delete(i);
+      end;
+    end else begin
+      List.Delete(i);
+    end;
   end;
 end;
 
@@ -715,8 +720,5 @@ begin
   StoredValues.StoredValue[AName] := Value;
 end;
 
-
-initialization
-  GetStorageProperties:=nil;
 end.
 

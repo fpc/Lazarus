@@ -165,7 +165,7 @@ end;
 constructor TCheckCompilerOptsDlg.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  Application.AddOnIdleHandler(@ApplicationOnIdle);
+  Application.AddOnIdleHandler(@ApplicationOnIdle,true);
 end;
 
 destructor TCheckCompilerOptsDlg.Destroy;

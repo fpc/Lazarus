@@ -103,6 +103,8 @@ end;
   Destructor for the class.
  ------------------------------------------------------------------------------}
 destructor TCustomForm.Destroy;
+var
+  HandlerType: TFormHandlerType;
 begin
   //DebugLn('[TCustomForm.Destroy] A ',Name,':',ClassName);
   if not (csDestroying in ComponentState) then ;//GlobalNameSpace.BeginWrite;
@@ -116,6 +118,8 @@ begin
     FreeThenNil(FIcon);
     Screen.RemoveForm(Self);
     FreeThenNil(FActionLists);
+    for HandlerType:=Low(FFormHandlers) to High(FFormHandlers) do
+      FreeThenNil(FFormHandlers[HandlerType]);
     //DebugLn('[TCustomForm.Destroy] B ',Name,':',ClassName);
     inherited Destroy;
     //DebugLn('[TCustomForm.Destroy] END ',Name,':',ClassName);
@@ -491,6 +495,21 @@ begin
   inherited WMSize(Message);
 End;
 
+procedure TCustomForm.AddHandler(HandlerType: TFormHandlerType;
+  const Handler: TMethod; AsLast: Boolean);
+begin
+  if Handler.Code=nil then RaiseGDBException('TCustomForm.AddHandler');
+  if FFormHandlers[HandlerType]=nil then
+    FFormHandlers[HandlerType]:=TMethodList.Create;
+  FFormHandlers[HandlerType].Add(Handler,AsLast);
+end;
+
+procedure TCustomForm.RemoveHandler(HandlerType: TFormHandlerType;
+  const Handler: TMethod);
+begin
+  FFormHandlers[HandlerType].Remove(Handler);
+end;
+
 {------------------------------------------------------------------------------
   Method: TCustomForm.DefocusControl
   Params:   Control: the control which is to be defocused
@@ -527,8 +546,13 @@ end;
   Calls user handler
  ------------------------------------------------------------------------------}
 procedure TCustomForm.DoClose(var CloseAction: TCloseAction);
+var
+  i: LongInt;
 begin
   if Assigned(FOnClose) then FOnClose(Self, CloseAction);
+  i:=FFormHandlers[fhtClose].Count;
+  while FFormHandlers[fhtClose].NextDownIndex(i) do
+    TCloseEvent(FFormHandlers[fhtClose][i])(Self,CloseAction);
 end;
 
 {------------------------------------------------------------------------------
@@ -675,7 +699,8 @@ Begin
 end;
 
 {------------------------------------------------------------------------------
-       TCustomForm ValidateRename
+  TCustomForm ValidateRename
+  
   if AComponent is nil, then the name of Self is changed
 ------------------------------------------------------------------------------}
 procedure TCustomForm.ValidateRename(AComponent: TComponent;
@@ -1140,6 +1165,7 @@ end;
 ------------------------------------------------------------------------------}
 constructor TCustomForm.CreateNew(AOwner: TComponent; Num : Integer);
 Begin
+  Include(FFormState,fsFirstShow);
   //DebugLn('[TCustomForm.CreateNew] Class=',Classname);
   BeginFormUpdate;
   // set border style before handle is allocated
@@ -1166,12 +1192,11 @@ Begin
   //  FDefaultMonitor := dmActiveForm;
   FIcon := TIcon.Create;
   //  FInCMParentBiDiModeChanged := False;
-  {apply a drawing surface}
   FKeyPreview :=  False;
   Color := clBtnFace;
   //  FPixelsPerInch := Screen.PixelsPerInch;
   //  FPrintScale := poProportional;
-  //  FloatingDockSiteClass := TWinControlClass(ClassType);
+  FloatingDockSiteClass := TWinControlClass(ClassType);
   Screen.AddForm(Self);
   EndFormUpdate;
 End;
@@ -1215,11 +1240,12 @@ begin
         CloseAction := caHide;
       end;
       DoClose(CloseAction);
-      if CloseAction <> caNone then
+      if CloseAction <> caNone then begin
         if Application.MainForm = Self then Application.Terminate
         else if CloseAction = caHide then Hide
         else if CloseAction = caMinimize then WindowState := wsMinimized
         else Release;
+      end;
     end;
   end;
 end;
@@ -1251,13 +1277,13 @@ begin
   if Assigned(FOnCloseQuery) then FOnCloseQuery(Self, Result);
 end;
 
-{------------------------------------------------------------------------------}
-{       TCustomForm Method WMCloseQuery                                        }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TCustomForm Method WMCloseQuery
+------------------------------------------------------------------------------}
 procedure TCustomForm.WMCloseQuery(var Message: TLMessage);
 begin
   Close;
-  { Always return 0, because we destroy the window ourselves }
+  // Always return 0, because we destroy the window ourselves
   Message.Result:= 0;
 end;
 
@@ -1537,6 +1563,11 @@ begin
     if X < 0 then X := 0;
     if Y < 0 then Y := 0;
     SetBounds(X, Y, Width, Height);
+    
+    if (fsFirstShow in FFormState) then begin
+      Exclude(FFormState,fsFirstShow);
+      DoFirstShow;
+    end;
   end;
   {$IFDEF CHECK_POSITION}
   DebugLn('[TCustomForm.UpdateShowing] B  ',Name,':',Classname,' Pos=',Left,',',Top);
@@ -1545,6 +1576,15 @@ begin
   {$IFDEF CHECK_POSITION}
   DebugLn('[TCustomForm.UpdateShowing] END  ',Name,':',Classname,' Pos=',Left,',',Top);
   {$ENDIF}
+end;
+
+procedure TCustomForm.DoFirstShow;
+var
+  i: LongInt;
+begin
+  i:=FFormHandlers[fhtFirstShow].Count;
+  while FFormHandlers[fhtFirstShow].NextDownIndex(i) do
+    TNotifyEvent(FFormHandlers[fhtFirstShow][i])(Self);
 end;
 
 {------------------------------------------------------------------------------}
@@ -1645,9 +1685,43 @@ begin
   if CancelControl=AControl then Include(Result,crffCancel);
 end;
 
+procedure TCustomForm.RemoveAllHandlersOfObject(AnObject: TObject);
+var
+  HandlerType: TFormHandlerType;
+begin
+  inherited RemoveAllHandlersOfObject(AnObject);
+  for HandlerType:=Low(TFormHandlerType) to High(TFormHandlerType) do
+    FFormHandlers[HandlerType].RemoveAllMethodsOfObject(AnObject);
+end;
+
+procedure TCustomForm.AddHandlerFirstShow(OnFirstShowHandler: TNotifyEvent;
+  AsLast: Boolean);
+begin
+  AddHandler(fhtFirstShow,TMethod(OnFirstShowHandler),AsLast);
+end;
+
+procedure TCustomForm.RemoveHandlerFirstShow(OnFirstShowHandler: TNotifyEvent);
+begin
+  RemoveHandler(fhtFirstShow,TMethod(OnFirstShowHandler));
+end;
+
+procedure TCustomForm.AddHandlerClose(OnCloseHandler: TCloseEvent;
+  AsLast: Boolean);
+begin
+  AddHandler(fhtClose,TMethod(OnCloseHandler),AsLast);
+end;
+
+procedure TCustomForm.RemoveHandlerClose(OnCloseHandler: TCloseEvent);
+begin
+  RemoveHandler(fhtClose,TMethod(OnCloseHandler));
+end;
+
 { =============================================================================
 
   $Log$
+  Revision 1.146  2004/07/25 01:04:45  mattias
+  TXMLPropStorage basically working
+
   Revision 1.145  2004/07/11 13:03:54  mattias
   extended RolesForForm to manage multiple roles for on control
 

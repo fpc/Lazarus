@@ -32,6 +32,8 @@ uses
   Classes, SysUtils, LCLStrConsts, LCLType;
 
 type
+  { TMethodList - array of TMethod }
+
   TMethodList = class
   private
     FItems: ^TMethod;

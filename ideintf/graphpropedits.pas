@@ -71,6 +71,9 @@ type
       AState:TPropEditDrawState); override;
   end;
 
+{ TFontNamePropertyEditor
+  PropertyEditor editor for TFont.Name. Simply provides listing font names. }
+
   TFontNamePropertyEditor = class(TStringPropertyEditor)
   public
     function GetAttributes: TPropertyAttributes; override;
@@ -78,7 +81,7 @@ type
   end;
 
 { TBrushStylePropertyEditor
-  PropertyEditor editor for TBrush's Style. Simply provides for custom render. }
+  PropertyEditor editor for TBrush's Style. Provides custom render. }
 
   TBrushStylePropertyEditor = class(TEnumPropertyEditor)
   public
@@ -92,7 +95,7 @@ type
   end;
 
 { TPenStylePropertyEditor
-  PropertyEditor editor for TPen's Style. Simply provides for custom render. }
+  PropertyEditor editor for TPen's Style. Simply provides custom render. }
 
   TPenStylePropertyEditor = class(TEnumPropertyEditor)
   public

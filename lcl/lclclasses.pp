@@ -41,6 +41,7 @@ type
   public             
     procedure BeforeDestruction; override; // fixes missing call to Destroying in FPC
     class function NewInstance: TObject; override;
+    procedure RemoveAllHandlersOfObject(AnObject: TObject); virtual;
   end;
 
 implementation                    
@@ -57,6 +58,11 @@ begin
   TLCLComponent(Result).FWidgetSetClass := FindWSComponentClass(Self);
   if TLCLComponent(Result).FWidgetSetClass = nil
   then TLCLComponent(Result).FWidgetSetClass := TWSLCLComponent; 
+end;
+
+procedure TLCLComponent.RemoveAllHandlersOfObject(AnObject: TObject);
+begin
+
 end;
 
 end.

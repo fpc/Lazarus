@@ -2177,7 +2177,7 @@ begin
     AutoHide := False;
   end;
 
-  Application.AddOnUserInputHandler(@OnApplicationUserInput);
+  Application.AddOnUserInputHandler(@OnApplicationUserInput,true);
 end;
 
 destructor TSourceNotebook.Destroy;

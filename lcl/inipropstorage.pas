@@ -25,7 +25,7 @@ uses
 Type
   TIniFileClass = Class of TCustomIniFile;
   
-  TIniPropStorage = Class(TCustomPropertyStorage)
+  TIniPropStorage = Class(TFormPropertyStorage)
   private
     FCount : Integer;
     FReadOnly : Boolean;
@@ -44,8 +44,12 @@ Type
     procedure DoWriteString(const Section, Ident, Value: string); override;
     Procedure DoEraseSections(const ARootSection : String);override;
   Published
-    Property IniFileName : String Read FIniFileName Write FIniFileName;
-    Property IniSection : String Read FIniSection Write FIniSection;
+    property IniFileName : String Read FIniFileName Write FIniFileName;
+    property IniSection : String Read FIniSection Write FIniSection;
+    property Active;
+    property StoredValues;
+    property OnSaveProperties;
+    property OnRestoreProperties;
   end;
 
 Procedure Register;

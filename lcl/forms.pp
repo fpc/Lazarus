@@ -40,6 +40,10 @@ interface
 { $DEFINE UseFCLDataModule}
 {$ENDIF}
 
+{$IFNDEF VER1_0}
+{$DEFINE HasDefaultValues}
+{$ENDIF}
+
 uses
   Classes, Controls, LCLStrConsts, VCLGlobals, SysUtils, LCLType, LCLProc,
   LCLIntf, InterfaceBase, LResources, GraphType, Graphics, Menus, LMessages,
@@ -326,11 +330,17 @@ type
     fsModal,     // form is modal
     fsCreatedMDIChild,
     fsBorderStyleChanged,
-    fsFormStyleChanged
+    fsFormStyleChanged,
+    fsFirstShow  // form is shown for the first time
     );
   TFormState = set of TFormStateType;
 
   TModalResult = low(Integer)..high(Integer);
+  
+  TFormHandlerType = (
+    fhtFirstShow,
+    fhtClose
+    );
 
   TCustomForm = class(TScrollingWinControl)
   private
@@ -343,6 +353,7 @@ type
     FFormState: TFormState;
     FFormStyle: TFormStyle;
     FFormUpdateCount: integer;
+    FFormHandlers: array[TFormHandlerType] of TMethodList;
     FHelpFile: string;
     FIcon: TIcon;
     FKeyPreview: Boolean;
@@ -390,10 +401,14 @@ type
     procedure WMPaint(var message: TLMPaint); message LM_PAINT;
     procedure WMShowWindow(var message: TLMShowWindow); message LM_SHOWWINDOW;
     procedure WMSize(var message: TLMSize); message LM_Size;
+    procedure AddHandler(HandlerType: TFormHandlerType;
+                         const Handler: TMethod; AsLast: Boolean);
+    procedure RemoveHandler(HandlerType: TFormHandlerType;
+                            const Handler: TMethod);
   protected
     FFormBorderStyle: TFormBorderStyle;
     FActionLists: TList;
-    function CloseQuery : boolean; virtual;
+    function CloseQuery: boolean; virtual;
     function FormUpdating: boolean;
     procedure Activate; dynamic;
     procedure ActiveChanged; dynamic;
@@ -408,13 +423,12 @@ type
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     procedure Loaded; override;
     procedure InitializeWnd; override;
-    // Delphi needs GetClientRect for win32 specific things, LCL not
-    // Function GetClientRect : TRect ; Override;
     procedure Notification(AComponent: TComponent; Operation : TOperation);override;
     procedure PaintWindow(dc : Hdc); override;
     procedure RequestAlign; override;
     procedure SetZOrder(Topmost: Boolean); override;
     procedure UpdateShowing; override;
+    procedure DoFirstShow; virtual;
     procedure UpdateWindowState;
     procedure ValidateRename(AComponent: TComponent;
                              const CurName, NewName: string); override;
@@ -422,6 +436,8 @@ type
     procedure WndProc(var TheMessage : TLMessage); override;
     function VisibleIsStored: boolean;
     function ColorIsStored: boolean; override;
+  protected
+    // actions
     procedure CMActionExecute(var Message: TLMessage); message CM_ACTIONEXECUTE;
     procedure CMActionUpdate(var Message: TLMessage); message CM_ACTIONUPDATE;
     function DoExecuteAction(ExeAction: TBasicAction): boolean;
@@ -444,8 +460,14 @@ type
     procedure SetFocus; override;
     function SetFocusedControl(Control: TWinControl): Boolean ; Virtual;
     procedure FocusControl(WinControl: TWinControl);
-    function ShowModal : Integer;
+    function ShowModal: Integer;
     function GetRolesForControl(AControl: TControl): TControlRolesForForm;
+    procedure RemoveAllHandlersOfObject(AnObject: TObject); override;
+    procedure AddHandlerFirstShow(OnFirstShowHandler: TNotifyEvent;
+                                  AsLast: Boolean);
+    procedure RemoveHandlerFirstShow(OnFirstShowHandler: TNotifyEvent);
+    procedure AddHandlerClose(OnCloseHandler: TCloseEvent; AsLast: Boolean);
+    procedure RemoveHandlerClose(OnCloseHandler: TCloseEvent);
   public
     property Active: Boolean read FActive;
     property ActiveControl: TWinControl read FActiveControl write SetActiveControl;
@@ -609,7 +631,7 @@ type
     FFocusedForm: TCustomForm;
     FFonts : TStrings;
     FFormList: TList;
-    FHandlers: array[TScreenNotification] of TMethodList;
+    FScreenHandlers: array[TScreenNotification] of TMethodList;
     FLastActiveControl: TWinControl;
     FLastActiveCustomForm: TCustomForm;
     FOnActiveControlChange: TNotifyEvent;
@@ -634,12 +656,9 @@ type
     procedure SetCursors(Index: Integer; const AValue: HCURSOR);
     procedure UpdateLastActive;
     procedure AddHandler(HandlerType: TScreenNotification;
-                         const Handler: TMethod);
+                         const Handler: TMethod; AsLast: Boolean);
     procedure RemoveHandler(HandlerType: TScreenNotification;
                             const Handler: TMethod);
-    function GetHandlerCount(HandlerType: TScreenNotification): integer;
-    function GetNextHandlerIndex(HandlerType: TScreenNotification;
-                                 var i: integer): boolean;
   protected
     function GetHintFont: TFont; virtual;
   public
@@ -652,16 +671,20 @@ type
     procedure MoveFormToZFront(ACustomForm: TCustomForm);
     procedure UpdateScreen;
     // handler
-    procedure AddHandlerFormAdded(OnFormAdded: TScreenFormEvent);
+    procedure AddHandlerFormAdded(OnFormAdded: TScreenFormEvent;
+                         AsLast: Boolean{$IFDEF HasDefaultValues}=true{$ENDIF});
     procedure RemoveHandlerFormAdded(OnFormAdded: TScreenFormEvent);
-    procedure AddHandlerRemoveForm(OnRemoveForm: TScreenFormEvent);
+    procedure AddHandlerRemoveForm(OnRemoveForm: TScreenFormEvent;
+                         AsLast: Boolean{$IFDEF HasDefaultValues}=true{$ENDIF});
     procedure RemoveHandlerRemoveForm(OnRemoveForm: TScreenFormEvent);
     procedure AddHandlerActiveControlChanged(
-                                   OnActiveControlChanged: TScreenControlEvent);
+                         OnActiveControlChanged: TScreenControlEvent;
+                         AsLast: Boolean{$IFDEF HasDefaultValues}=true{$ENDIF});
     procedure RemoveHandlerActiveControlChanged(
                                    OnActiveControlChanged: TScreenControlEvent);
     procedure AddHandlerActiveFormChanged(
-                            OnActiveFormChanged: TScreenActiveFormChangedEvent);
+                         OnActiveFormChanged: TScreenActiveFormChangedEvent;
+                         AsLast: Boolean{$IFDEF HasDefaultValues}=true{$ENDIF});
     procedure RemoveHandlerActiveFormChanged(
                             OnActiveFormChanged: TScreenActiveFormChangedEvent);
   public
@@ -743,9 +766,17 @@ type
     AppNoExceptionMessages
     );
   TApplicationFlags = set of TApplicationFlag;
+  
+  TApplicationHandlerType = (
+    ahtIdle,
+    ahtIdleEnd,
+    ahtKeyDown,
+    ahtUserInput
+    );
 
   TApplication = class(TCustomApplication)
   private
+    FApplicationHandlers: array[TApplicationHandlerType] of TMethodList;
     FCaptureExceptions: boolean;
     FFlags: TApplicationFlags;
     FHandle : THandle;
@@ -769,13 +800,9 @@ type
     FOnHelp: THelpEvent;
     FOnHint: TNotifyEvent;
     FOnIdle: TIdleEvent;
-    FOnIdleHandler: TMethodList;
     FOnIdleEnd: TNotifyEvent;
-    FOnIdleEndHandler: TMethodList;
-    FOnKeyDownHandler: TMethodList;
     FOnShowHint: TShowHintEvent;
     FOnUserInput: TOnUserInputEvent;
-    FOnUserInputHandler: TMethodList;
     FShowHint: Boolean;
     procedure DoOnIdleEnd;
     function GetCurrentHelpFile: string;
@@ -797,6 +824,10 @@ type
     function  ValidateHelpSystem: Boolean;
     procedure WndProc(var AMessage : TLMessage);
     function DispatchAction(Msg: Longint; Action: TBasicAction): Boolean;
+    procedure AddHandler(HandlerType: TApplicationHandlerType;
+                         const Handler: TMethod; AsLast: Boolean);
+    procedure RemoveHandler(HandlerType: TApplicationHandlerType;
+                            const Handler: TMethod);
   protected
     Function GetConsoleApplication: boolean; override;
     procedure NotifyIdleHandler;
@@ -840,14 +871,19 @@ type
     procedure NotifyUserInputHandler(Msg: Cardinal);
     procedure NotifyKeyDownHandler(Sender: TObject;
                                    var Key : Word; Shift : TShiftState);
-    procedure AddOnIdleHandler(AnOnIdleHandler: TNotifyEvent);
-    procedure RemoveOnIdleHandler(AnOnIdleHandler: TNotifyEvent);
-    procedure AddOnIdleEndHandler(AnOnIdleEndHandler: TNotifyEvent);
-    procedure RemoveOnIdleEndHandler(AnOnIdleEndHandler: TNotifyEvent);
-    procedure AddOnUserInputHandler(AnOnUserInputHandler: TOnUserInputEvent);
-    procedure RemoveOnUserInputHandler(AnOnUserInputHandler: TOnUserInputEvent);
-    procedure AddOnKeyDownHandler(AnOnKeyDownHandler: TKeyEvent);
-    procedure RemoveOnKeyDownHandler(AnOnKeyDownHandler: TKeyEvent);
+    procedure AddOnIdleHandler(Handler: TNotifyEvent;
+                         AsLast: Boolean{$IFDEF HasDefaultValues}=true{$ENDIF});
+    procedure RemoveOnIdleHandler(Handler: TNotifyEvent);
+    procedure AddOnIdleEndHandler(Handler: TNotifyEvent;
+                         AsLast: Boolean{$IFDEF HasDefaultValues}=true{$ENDIF});
+    procedure RemoveOnIdleEndHandler(Handler: TNotifyEvent);
+    procedure AddOnUserInputHandler(Handler: TOnUserInputEvent;
+                         AsLast: Boolean{$IFDEF HasDefaultValues}=true{$ENDIF});
+    procedure RemoveOnUserInputHandler(Handler: TOnUserInputEvent);
+    procedure AddOnKeyDownHandler(Handler: TKeyEvent;
+                         AsLast: Boolean{$IFDEF HasDefaultValues}=true{$ENDIF});
+    procedure RemoveOnKeyDownHandler(Handler: TKeyEvent);
+    procedure RemoveAllHandlersOfObject(AnObject: TObject); virtual;
     procedure DoBeforeMouseMessage(CurMouseControl: TControl);
   public
     property CaptureExceptions: boolean read FCaptureExceptions
@@ -956,6 +992,21 @@ type
     Procedure SelectOnlyThisComponent(AComponent: TComponent); virtual; abstract;
     function UniqueName(const BaseName: string): string; virtual; abstract;
   end;
+  
+  
+{$IFDEF EnableSessionProps}
+  { TFormPropertyStorage }
+  
+  TFormPropertyStorage = class(TControlPropertyStorage)
+  private
+    procedure FormFirstShow(Sender: TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+  public
+    constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
+  end;
+{$ENDIF}
+  
 
 {$IFNDEF UseFCLDataModule}
 type
@@ -1494,178 +1545,41 @@ end;
 {$I customform.inc}
 {$I screen.inc}
 {$I application.inc}
+{$I applicationproperties.inc}
+
 //==============================================================================
-Procedure TApplicationProperties.SetCaptureExceptions(Const AValue : boolean);
-begin
-  FCaptureExceptions := AValue;
+{$IFDEF EnableSessionProps}
+{ TFormPropertyStorage }
 
-  If not (csDesigning in ComponentState) then
-    Application.CaptureExceptions := AValue;
+procedure TFormPropertyStorage.FormFirstShow(Sender: TObject);
+begin
+  if Sender=nil then ;
+  Restore;
 end;
 
-Procedure TApplicationProperties.SetHelpFile(Const AValue : string);
+procedure TFormPropertyStorage.FormClose(Sender: TObject;
+  var CloseAction: TCloseAction);
 begin
-  FHelpFile := AValue;
-
-  If not (csDesigning in ComponentState) then
-    Application.HelpFile := AValue;
+  if Sender=nil then ;
+  Save;
 end;
 
-Procedure TApplicationProperties.SetHint(Const AValue : string);
+constructor TFormPropertyStorage.Create(TheOwner: TComponent);
 begin
-  FHint := AValue;
-
-  If not (csDesigning in ComponentState) then
-    Application.Hint := AValue;
-end;
-
-Procedure TApplicationProperties.SetHintColor(Const AValue : TColor);
-begin
-  FHintColor := AValue;
-
-  If not (csDesigning in ComponentState) then
-    Application.HintColor := AValue;
-end;
-
-Procedure TApplicationProperties.SetHintHidePause(Const AValue : Integer);
-begin
-  FHintHidePause := AValue;
-
-  If not (csDesigning in ComponentState) then
-    Application.HintHidePause := AValue;
-end;
-
-Procedure TApplicationProperties.SetHintPause(Const AValue : Integer);
-begin
-  FHintPause := AValue;
-
-  If not (csDesigning in ComponentState) then
-    Application.HintPause := AValue;
-end;
-
-Procedure TApplicationProperties.SetHintShortCuts(Const AValue : Boolean);
-begin
-  FHintShortCuts := AValue;
-
-  If not (csDesigning in ComponentState) then
-    Application.HintShortCuts := AValue;
-end;
-
-Procedure TApplicationProperties.SetHintShortPause(Const AValue : Integer);
-begin
-  FHintShortPause := AValue;
-
-  If not (csDesigning in ComponentState) then
-    Application.HintShortPause := AValue;
-end;
-
-Procedure TApplicationProperties.SetShowHint(Const AValue : Boolean);
-begin
-  FShowHint := AValue;
-
-  If not (csDesigning in ComponentState) then
-    Application.ShowHint := AValue;
-end;
-
-Procedure TApplicationProperties.SetTitle(Const AValue : String);
-begin
-  FTitle := AValue;
-
-  If not (csDesigning in ComponentState) then
-    Application.Title := AValue;
-end;
-
-Procedure TApplicationProperties.SetOnException(Const AValue : TExceptionEvent);
-begin
-  FOnException := AValue;
-
-  If not (csDesigning in ComponentState) then
-    Application.OnException := AValue;
-end;
-
-Procedure TApplicationProperties.SetOnIdle(Const AValue : TIdleEvent);
-begin
-  FOnIdle := AValue;
-
-  If not (csDesigning in ComponentState) then
-    Application.OnIdle := AValue;
-end;
-
-Procedure TApplicationProperties.SetOnIdleEnd(Const AValue : TNotifyEvent);
-begin
-  FOnIdleEnd := AValue;
-
-  If not (csDesigning in ComponentState) then
-    Application.OnIdleEnd := AValue;
-end;
-
-Procedure TApplicationProperties.SetOnHelp(Const AValue : THelpEvent);
-begin
-  FOnHelp := AValue;
-
-  If not (csDesigning in ComponentState) then
-    Application.OnHelp := AValue;
-end;
-
-Procedure TApplicationProperties.SetOnHint(Const AValue : TNotifyEvent);
-begin
-  FOnHint := AValue;
-
-  If not (csDesigning in ComponentState) then
-    Application.OnHint := AValue;
-end;
-
-Procedure TApplicationProperties.SetOnShowHint(Const AValue : TShowHintEvent);
-begin
-  FOnShowHint := AValue;
-
-  If not (csDesigning in ComponentState) then
-    Application.OnShowHint := AValue;
-end;
-
-Procedure TApplicationProperties.SetOnUserInput(Const AValue : TOnUserInputEvent);
-begin
-  FOnUserInput := AValue;
-
-  If not (csDesigning in ComponentState) then
-    Application.OnUserInput := AValue;
-end;
-
-constructor TApplicationProperties.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-
-  If (csDesigning in ComponentState) then begin
-    FCaptureExceptions:=true;
-    FHintColor := DefHintColor;
-    FHintPause := DefHintPause;
-    FHintShortCuts := True;
-    FHintShortPause := DefHintShortPause;
-    FHintHidePause := DefHintHidePause;
-    FShowHint := true;
-  end
-  else begin
-    FCaptureExceptions := Application.CaptureExceptions;
-    FHelpFile := Application.HelpFile;
-    FHint := Application.Hint;
-    FHintColor := Application.HintColor;
-    FHintHidePause := Application.HintHidePause;
-    FHintPause := Application.HintPause;
-    FHintShortCuts := Application.HintShortCuts;
-    FHintShortPause := Application.HintShortPause;
-    FShowHint := Application.ShowHint;
-    FTitle := Application.Title;
+  inherited Create(TheOwner);
+  if Owner is TCustomForm then begin
+    TCustomForm(Owner).AddHandlerFirstShow(@FormFirstShow,true);
+    TCustomForm(Owner).AddHandlerClose(@FormClose,true);
   end;
-
-  FOnIdle := nil;
-  FOnException := nil;
-  FOnIdle := nil;
-  FOnIdleEnd := nil;
-  FOnHelp := nil;
-  FOnHint := nil;
-  FOnShowHint := nil;
-  FOnUserInput := nil;
 end;
+
+destructor TFormPropertyStorage.Destroy;
+begin
+  if Owner is TControl then
+    TControl(Owner).RemoveAllHandlersOfObject(Self);
+  inherited Destroy;
+end;
+{$ENDIF EnableSessionProps}
 
 //==============================================================================
 

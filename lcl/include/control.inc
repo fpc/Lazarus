@@ -1299,16 +1299,16 @@ begin
 
 end;
 
-procedure TControl.AddControlHandler(HandlerType: TControlHandlerType;
-  AMethod: TMethod; AsLast: boolean);
+procedure TControl.AddHandler(HandlerType: TControlHandlerType;
+  const AMethod: TMethod; AsLast: boolean);
 begin
   if FControlHandlers[HandlerType]=nil then
     FControlHandlers[HandlerType]:=TMethodList.Create;
   FControlHandlers[HandlerType].Add(AMethod);
 end;
 
-procedure TControl.RemoveControlHandler(HandlerType: TControlHandlerType;
-  AMethod: TMethod);
+procedure TControl.RemoveHandler(HandlerType: TControlHandlerType;
+  const AMethod: TMethod);
 begin
   FControlHandlers[HandlerType].Remove(AMethod);
 end;
@@ -2883,30 +2883,31 @@ end;
 procedure TControl.AddHandlerOnResize(OnResizeEvent: TNotifyEvent;
   AsLast: boolean);
 begin
-  AddControlHandler(chtOnResize,TMethod(OnResizeEvent),AsLast);
+  AddHandler(chtOnResize,TMethod(OnResizeEvent),AsLast);
 end;
 
 procedure TControl.RemoveHandlerOnResize(OnResizeEvent: TNotifyEvent);
 begin
-  RemoveControlHandler(chtOnResize,TMethod(OnResizeEvent));
+  RemoveHandler(chtOnResize,TMethod(OnResizeEvent));
 end;
 
 procedure TControl.AddHandlerOnChangeBounds(OnChangeBoundsEvent: TNotifyEvent;
   AsLast: boolean);
 begin
-  AddControlHandler(chtOnChangeBounds,TMethod(OnChangeBoundsEvent),AsLast);
+  AddHandler(chtOnChangeBounds,TMethod(OnChangeBoundsEvent),AsLast);
 end;
 
 procedure TControl.RemoveHandlerOnChangeBounds(OnChangeBoundsEvent: TNotifyEvent
   );
 begin
-  RemoveControlHandler(chtOnChangeBounds,TMethod(OnChangeBoundsEvent));
+  RemoveHandler(chtOnChangeBounds,TMethod(OnChangeBoundsEvent));
 end;
 
-procedure TControl.RemoveAllControlHandlersOfObject(AnObject: TObject);
+procedure TControl.RemoveAllHandlersOfObject(AnObject: TObject);
 var
   HandlerType: TControlHandlerType;
 begin
+  inherited RemoveAllHandlersOfObject(AnObject);
   for HandlerType:=Low(TControlHandlerType) to High(TControlHandlerType) do
     FControlHandlers[HandlerType].RemoveAllMethodsOfObject(AnObject);
 end;
@@ -3219,6 +3220,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.206  2004/07/25 01:04:45  mattias
+  TXMLPropStorage basically working
+
   Revision 1.205  2004/07/17 15:08:36  mattias
   fixed tab for TPanel and TPage
 

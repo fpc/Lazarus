@@ -1483,7 +1483,7 @@ begin
     'PKGINCPATH',nil,@MacroFunctionPkgIncPath);
 
   // idle handler
-  Application.AddOnIdleHandler(@OnApplicationIdle);
+  Application.AddOnIdleHandler(@OnApplicationIdle,true);
 end;
 
 destructor TPkgManager.Destroy;

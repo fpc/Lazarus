@@ -42,6 +42,7 @@ interface
 uses
   Classes, SysUtils, DynHashArray, LCLStrConsts, vclglobals, LCLType, LCLProc,
   GraphType, Graphics, LMessages, LCLIntf, InterfaceBase, ImgList, UTrace,
+  {$IFDEF EnableSessionProps}PropertyStorage, RTTIUtils,{$ENDIF}
   Menus, ActnList, LCLClasses;
 
 
@@ -671,8 +672,7 @@ type
     chtOnResize,
     chtOnChangeBounds
     );
-  TControlHandlerTypes = set of TControlHandlerType;
-  
+
 (*
  * Note on TControl.Caption
  * The VCL implementation relies on the virtual Get/SetTextBuf to 
@@ -758,6 +758,7 @@ type
     FParentFont: Boolean;
     FParentShowHint : Boolean;
     FPopupMenu: TPopupMenu;
+    FSessionProperties: string;
     FShowHint: Boolean;
     FSizeLock: integer;
     FTabOrder: integer;
@@ -954,10 +955,10 @@ type
     Function GetPopupMenu: TPopupMenu; dynamic;
     procedure DoOnShowHint(HintInfo: Pointer);
     procedure VisibleChanging; dynamic;
-    procedure AddControlHandler(HandlerType: TControlHandlerType;
-                                AMethod: TMethod; AsLast: boolean);
-    procedure RemoveControlHandler(HandlerType: TControlHandlerType;
-                                   AMethod: TMethod);
+    procedure AddHandler(HandlerType: TControlHandlerType;
+                         const AMethod: TMethod; AsLast: boolean);
+    procedure RemoveHandler(HandlerType: TControlHandlerType;
+                            const AMethod: TMethod);
     procedure DoContextPopup(const MousePos: TPoint; var Handled: Boolean); virtual;
   protected
     // actions
@@ -975,6 +976,7 @@ type
     property ParentFont: Boolean  read FParentFont write FParentFont;
     property ParentColor: Boolean  read FParentColor write SetParentColor;
     property ParentShowHint: Boolean read FParentShowHint write SetParentShowHint default True;
+    property SessionProperties: string read FSessionProperties write FSessionProperties;
     property Text: TCaption read GetText write SetText;
     property OnConstrainedResize: TConstrainedResizeEvent read FOnConstrainedResize write FOnConstrainedResize;
     property OnContextPopup: TContextPopupEvent read FOnContextPopup write FOnContextPopup;
@@ -1054,7 +1056,7 @@ type
     property MouseEntered: Boolean read FMouseEntered;
   public
     // Event lists
-    procedure RemoveAllControlHandlersOfObject(AnObject: TObject);
+    procedure RemoveAllHandlersOfObject(AnObject: TObject); override;
     procedure AddHandlerOnResize(OnResizeEvent: TNotifyEvent; AsLast: boolean);
     procedure RemoveHandlerOnResize(OnResizeEvent: TNotifyEvent);
     procedure AddHandlerOnChangeBounds(OnChangeBoundsEvent: TNotifyEvent;
@@ -1192,7 +1194,7 @@ type
         Enlarge space between childs equally.
         Childs are resized to their normal/adviced size. If there is some space
         left in the client area of the parent, then the space between the childs
-        if expanded.
+        is expanded.
         For example: 3 child controls A, B, C with A.Width=10, B.Width=20 and
         C.Width=30 (total=60). If the Parent's client area has a ClientWidth of
         120, then there will be 60/2=30 space between A and B and between
@@ -1607,7 +1609,17 @@ type
   end;
 
 
-{ TDockZone }
+{$IFDEF EnableSessionProps}
+  { TControlPropertyStorage }
+
+  TControlPropertyStorage = class(TCustomPropertyStorage)
+  protected
+    procedure GetPropertyList(List : TStrings); override;
+  end;
+{$ENDIF EnableSessionProps}
+
+
+  { TDockZone }
 
   TDockTree = class;
 
@@ -2326,10 +2338,41 @@ begin
   if Assigned(FOnChange) then FOnChange(Self);
 end;
 
+{$IFDEF EnableSessionProps}
+{ TControlPropertyStorage }
+
+procedure TControlPropertyStorage.GetPropertyList(List: TStrings);
+var
+  ARoot: TPersistent;
+  PropsAsStr: String;
+  StartPos: Integer;
+  EndPos: LongInt;
+  PropertyStr: String;
+  AControl: TControl;
+begin
+  ARoot:=Root;
+  if ARoot is TControl then begin
+    AControl:=TControl(ARoot);
+    PropsAsStr:=AControl.SessionProperties;
+    StartPos:=1;
+    while (StartPos<=length(PropsAsStr)) do begin
+      EndPos:=StartPos;
+      while (EndPos<=length(PropsAsStr)) and (PropsAsStr[EndPos]<>';') do
+        inc(EndPos);
+      if (EndPos>StartPos) then begin
+        PropertyStr:=copy(PropsAsStr,StartPos,EndPos-StartPos);
+        List.Add(PropertyStr);
+      end;
+      StartPos:=EndPos+1;
+    end;
+  end;
+end;
+{$ENDIF EnableSessionProps}
+
 initialization
 
   //DebugLn('controls.pp - initialization');
-  Mouse := TMouse.create;
+  Mouse := TMouse.Create;
   DragControl := nil;
   CaptureControl := nil;
   DefaultDockTreeClass := TDockTree;
@@ -2339,13 +2382,16 @@ initialization
 
 finalization
   FreeThenNil(DockSiteHash);
-  Mouse.Free;
+  FreeThenNil(Mouse);
 
 end.
 
 { =============================================================================
 
   $Log$
+  Revision 1.228  2004/07/25 01:04:45  mattias
+  TXMLPropStorage basically working
+
   Revision 1.227  2004/07/23 22:14:22  mattias
   fixed compilation for fpc 1.0.10
 
