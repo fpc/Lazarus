@@ -317,38 +317,47 @@ procedure RegisterStandardComponents;
 begin
   //RegisterComponentsProc:=@RegisterComponents;
   
+  // Standard
   RegisterComponents('Standard','Menus',[TMainMenu,TPopupMenu]);
   RegisterComponents('Standard','StdCtrls',[TLabel,TEdit,TMemo]);
   RegisterComponents('Standard','Buttons',[TButton]);
   RegisterComponents('Standard','StdCtrls',[TToggleBox, TCheckBox,
-          TRadioButton, TListBox,TComboBox,TScrollBar,TGroupBox]);
+          TRadioButton, TListBox,TComboBox,TScrollBar,TGroupBox,TStaticText]);
   RegisterComponents('Standard','ExtCtrls',[TRadioGroup,TPanel]);
 
+  // Additional
   RegisterComponents('Additional','Buttons',[TBitBtn,TSpeedButton]);
-  RegisterComponents('Additional','ExtCtrls',[TImage, TShape, TBevel, TPaintBox]);
-  RegisterComponents('Additional','ComCtrls',[TStaticText, TScrollBox]);
-  RegisterComponents('Additional','ExtCtrls',[TNoteBook]);
+  RegisterComponents('Additional','ExtCtrls',[TImage, TShape, TBevel, TPaintBox,
+                                              TNoteBook]);
+  RegisterComponents('Additional','Forms',[TScrollBox]);
   RegisterComponents('Additional','Grids',[TStringGrid,TDrawGrid]);
 
+  // Common
   RegisterComponents('Common Controls','ImgList',[TImageList]);
   RegisterComponents('Common Controls','ComCtrls',[TTrackbar, TProgressBar,
     TTreeView, TListView, TStatusBar, TToolBar, TUpDown]);
 
+  // Misc
   RegisterComponents('Misc','Calendar',[TCalendar]);
   RegisterComponents('Misc','Arrow',[TArrow]);
 
+  // System
   RegisterComponents('System','ExtCtrls',[TTimer,TIdleTimer]);
   RegisterComponents('System','Process',[TProcess]);
 
+  // Dialogs
   RegisterComponents('Dialogs','Dialogs',[TOpenDialog,TSaveDialog,
           TColorDialog,TFontDialog]);
 
+  // Samples
   RegisterComponents('Samples','Spin',[TSpinEdit]);
 
+  // Data Access
   {$IFDEF DATABASE}
   RegisterComponents('Data Access','Db',[TDatasource,TDatabase]);
   {$ENDIF}
 
+  // Interbase Data Access
   {$IFDEF INTERBASE}
   RegisterComponents('Interbase Data Access','Interbase',[TIBStoredProc,
           TIBQuery,TIBDatabase]);
