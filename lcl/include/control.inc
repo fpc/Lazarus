@@ -116,18 +116,18 @@ begin
     RequestAlign;
     if not (csLoading in ComponentState) then Resize;
     Perform(LM_WindowposChanged, 0, 0);
-    
+
     { TODO : Replace this with LCL functions eventually.
         Right now we have to call these messages as some
-	descendents incorrectly depend on it, so force it
-	down their throat }
+        descendents incorrectly depend on it, so force it
+        down their throat }
 	
     if SizeChanged then begin
       with SizeMsg do begin
         Msg:= LM_SIZE;
-	SizeType:= 6; // force realign
-	Width:= AWidth;
-	Height:= AHeight;
+        SizeType:= 6; // force realign
+        Width:= AWidth;
+        Height:= AHeight;
       end;
       WindowProc(TLMessage(SizeMsg));
     end;
@@ -135,9 +135,9 @@ begin
     if PosChanged then begin
       with MoveMsg do begin
         Msg:= LM_MOVE;
-	MoveType:= 1;
-	XPos:= ALeft;
-	YPos:= ATop;
+        MoveType:= 1;
+        XPos:= ALeft;
+        YPos:= ATop;
       end;
       WindowProc(TLMessage(MoveMsg));
     end;
@@ -597,7 +597,7 @@ end;
 {------------------------------------------------------------------------------}
 procedure TControl.Invalidate;
 Begin
-InvalidateControl(Visible, csOpaque in ControlStyle);
+  InvalidateControl(Visible, csOpaque in ControlStyle);
 end;
 
 
@@ -911,15 +911,14 @@ procedure TControl.InvalidateControl(IsVisible, IsOpaque : Boolean);
 //var
 //  Rect : TRect;
 begin
-//Writeln('[INVALIDATECONTROL]');
-  if (IsVisible or (csDesigning in ComponentState) and not (csNoDesignVisible in ControlStyle)) and
-     (Parent <> nil) and (Parent.HandleAllocated) then
+  if (IsVisible or (csDesigning in ComponentState)
+  and not (csNoDesignVisible in ControlStyle))
+  and (Parent <> nil) and (Parent.HandleAllocated) then
     Begin
      CNSendMessage(LM_REDRAW,Self,Nil);
 //    Rect := BoundsRect;
 //    InvalidateRect(parent.handle,@Rect, True);
     end;
-//Writeln('[INVALIDATECONTROL] Done');
 end;
 
 {------------------------------------------------------------------------------}
@@ -1507,6 +1506,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.37  2002/03/14 23:25:52  lazarus
+  MG: fixed TBevel.Create and TListView.Destroy
+
   Revision 1.36  2002/03/14 18:12:46  lazarus
   Mouse events fixes.
 
