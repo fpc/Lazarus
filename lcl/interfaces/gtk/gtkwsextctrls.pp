@@ -214,6 +214,9 @@ type
 
 implementation
 
+uses
+  gdk2PixBuf, glib2;
+
 var
   {$IFDef GTK1}
   NoteBookCloseBtnPixmapImg: PGdkPixmap {$ifndef VER1_0} = nil {$endif};

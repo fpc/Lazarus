@@ -4671,6 +4671,34 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
+  method TGtkWidgetSet LoadPixbufFromLazResource
+  Params: const ResourceName: string;
+          var Pixbuf: PGdkPixbuf
+  Result: none
+
+  Loads a pixbuf from a lazarus resource. The resource must be a XPM file.
+-------------------------------------------------------------------------------}
+{$IfNDef NoGdkPixbufLib}
+procedure LoadPixbufFromLazResource(const ResourceName: string;
+  var Pixbuf: PGdkPixbuf);
+var
+  ImgData: PPChar;
+begin
+  Pixbuf:=nil;
+  try
+    ImgData:=LazResourceXPMToPPChar(ResourceName);
+  except
+    on e: Exception do
+      DebugLn('WARNING: TGtkWidgetSet.LoadXPMFromLazResource: '+e.Message);
+  end;
+  {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
+  pixbuf:=gdk_pixbuf_new_from_xpm_data(ImgData);
+  {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
+  FreeMem(ImgData);
+end;
+{$EndIF}
+
+{-------------------------------------------------------------------------------
   method LoadXPMFromLazResource
   Params: const ResourceName: string;
           Window: PGdkWindow;
@@ -7337,6 +7365,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.312  2004/09/30 10:35:50  mazen
+  * Fix compile probelem under GTK2 related to
+    THandle <--> Pointer conversion
+
   Revision 1.311  2004/09/25 15:05:39  mattias
   implemented Rename Identifier
 

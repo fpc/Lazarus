@@ -64,7 +64,7 @@ var
   wHandle: HWND;
 begin
   wHandle := ACustomSpinEdit.Handle;
-  AnAdjustment:=gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(wHandle));
+  AnAdjustment:=gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(Pointer(wHandle)));
   if (AnAdjustment^.lower<>ACustomSpinEdit.MinValue)
   or (AnAdjustment^.upper<>ACustomSpinEdit.MaxValue) then
   begin
@@ -72,11 +72,11 @@ begin
     AnAdjustment^.upper:=ACustomSpinEdit.MaxValue;
     gtk_adjustment_changed(AnAdjustment);
   end;
-  gtk_spin_button_set_digits(GTK_SPIN_BUTTON(wHandle),
+  gtk_spin_button_set_digits(GTK_SPIN_BUTTON(Pointer(wHandle)),
                              ACustomSpinEdit.Decimal_Places);
-  gtk_spin_button_set_value(GTK_SPIN_BUTTON(wHandle),
+  gtk_spin_button_set_value(GTK_SPIN_BUTTON(Pointer(wHandle)),
                             ACustomSpinEdit.Value);
-  GTK_SPIN_BUTTON(wHandle)^.climb_rate:=ACustomSpinEdit.Climb_Rate;
+  GTK_SPIN_BUTTON(Pointer(wHandle))^.climb_rate:=ACustomSpinEdit.Climb_Rate;
 end;
 
 initialization

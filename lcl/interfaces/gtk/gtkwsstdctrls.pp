@@ -304,7 +304,7 @@ begin
   with AScrollBar do
   begin
     //set properties for the range
-    Widget := GTK_WIDGET(gtk_range_get_adjustment (GTK_RANGE(Handle)));
+    Widget := GTK_WIDGET(gtk_range_get_adjustment (GTK_RANGE(Pointer(Handle))));
     GTK_ADJUSTMENT(Widget)^.lower := Min;
     GTK_ADJUSTMENT(Widget)^.Upper := Max;
     GTK_ADJUSTMENT(Widget)^.Value := Position;
@@ -790,7 +790,7 @@ end;
 procedure TGtkWSCustomLabel.SetWordWrap(const ACustomLabel: TCustomLabel;
   const NewWordWrap: boolean);
 begin
-  gtk_label_set_line_wrap(GTK_LABEL(ACustomLabel.Handle), NewWordWrap);
+  gtk_label_set_line_wrap(GTK_LABEL(Pointer(ACustomLabel.Handle)), NewWordWrap);
 end;
 
 { TGtkWSCustomCheckBox }

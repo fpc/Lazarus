@@ -403,7 +403,7 @@ end;
   WARNING: the result of this function sometimes is not always really an
            integer!!!!!
  ------------------------------------------------------------------------------}
-function TGtk2WidgetSet.IntSendMessage3(LM_Message : Integer; Sender : TObject;
+(*function TGtk2WidgetSet.IntSendMessage3(LM_Message : Integer; Sender : TObject;
   data : pointer) : integer;
 var
   handle      : hwnd;                  // handle of sender
@@ -438,7 +438,7 @@ begin
       handle := hwnd(ObjectToGtkObject(Sender));
       {Case LM_Message of}
 
-(*      LM_CLB_GETCHECKED :
+      LM_CLB_GETCHECKED :
       begin
         Result := 0;
         if Assigned(Data)
@@ -457,9 +457,9 @@ begin
                result := 1;
           end;
         end;
-      end; *)
+      end;
 
-      (*LM_CLB_SETCHECKED :
+      LM_CLB_SETCHECKED :
       begin
         if Assigned(Data)
         and (Sender is TControl)
@@ -474,9 +474,9 @@ begin
           then
               gtk_list_store_set(GTK_LIST_STORE(aTreeModel), @aTreeIter, [0, TLMSetChecked(Data^).Checked, -1]);
         end;
-      end;*)
+      end;
 
-      (*LM_GETITEMINDEX :
+      LM_GETITEMINDEX :
       begin
         case TControl(Sender).fCompStyle of
            csListBox, csCheckListBox:
@@ -514,9 +514,9 @@ begin
               exit;
             end;
         end;
-      end;*)
+      end;
 
-      (*LM_GETITEMS :
+      LM_GETITEMS :
       begin
         case TControl(Sender).fCompStyle of
           csComboBox:
@@ -539,9 +539,9 @@ begin
         else
           raise Exception.Create('Message LM_GETITEMS - Not implemented');
         end;
-      end;*)
+      end;
 
-      (*LM_GETSEL :
+      LM_GETSEL :
       begin
         Result := 0;      { assume: nothing found }
         if (Sender is TControl)
@@ -565,8 +565,8 @@ begin
               exit;
             end;
           end;
-      end;*)
-{
+      end;
+
       LM_GETSELSTART :
       begin
         if (Sender is TControl) then begin
@@ -593,8 +593,8 @@ begin
         else
           Result:= 0;
       end;
-}
-      (*LM_GETSELCOUNT :
+
+      LM_GETSELCOUNT :
       begin
         case (Sender as TControl).fCompStyle of
           csListBox, csCheckListBox :
@@ -613,8 +613,8 @@ begin
             exit;
           end;
         end;
-      end;*)
-{
+      end;
+
       LM_GETSELLEN :
       begin
         if (Sender is TControl) then begin
@@ -641,8 +641,8 @@ begin
           end;
           end;
       end;
-}
-      (*LM_SETBORDER:
+
+      LM_SETBORDER:
       begin
         if (Sender is TWinControl) then
         begin
@@ -656,9 +656,9 @@ begin
                 gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(Widget), GTK_SHADOW_NONE);
             end
          end;
-      end;*)
+      end;
 
-      (*LM_SETITEMINDEX:
+      LM_SETITEMINDEX:
         if Handle<>0 then begin
           case TControl(Sender).fCompStyle of
 
@@ -683,9 +683,9 @@ begin
               exit;
             end;
           end;
-        end;*)
+        end;
 
-      (*LM_SETSEL:
+      LM_SETSEL:
       begin
         if (Sender is TControl)
         and Assigned (data)
@@ -710,8 +710,8 @@ begin
               exit;
             end;
         end;
-      end;*)
-(*
+      end;
+
       LM_SETSELSTART:
       begin
         if (Sender is TControl) then begin
@@ -742,8 +742,8 @@ begin
         else
           Result:= 0;
       end;
-*)
-(*      LM_SETSELLEN :
+
+      LM_SETSELLEN :
       begin
         if (Sender is TControl) then begin
           case TControl(Sender).fCompStyle of
@@ -773,8 +773,8 @@ begin
           end;
         end;
       end;
-*)
-      (*LM_SORT:
+
+      LM_SORT:
       begin
         if  (Sender is TControl) and assigned (data) then
         begin
@@ -789,16 +789,16 @@ begin
             end;
           end
         end
-      end;*)
+      end;
       
-      {else} begin
+      else begin
         result := inherited  IntSendMessage3(LM_Message, Sender, data);
         exit;
       end; // end of else-part of 2nd case
       {end;} // end of 2nd case
     end;   // end of else-part of 1st case
 //  end;   // end of 1st case
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Function: TGtk2WidgetSet.SetCallback
@@ -1068,7 +1068,7 @@ end;
   Depending on the compStyle, this function will apply all properties of
   the calling object to the corresponding GTK2 object.
  ------------------------------------------------------------------------------}
-function TGtk2WidgetSet.SetProperties(Sender : TObject) : integer;
+(*function TGtk2WidgetSet.SetProperties(Sender : TObject) : integer;
 const
   cLabelAlignX : array[TAlignment] of gfloat = (0.0, 1.0, 0.5);
   cLabelAlignY : array[TTextLayout] of gfloat = (0.0, 0.5, 1.0);
@@ -1164,7 +1164,7 @@ begin
   else
     Result := inherited SetProperties(Sender);
   end;
-end;
+end; *)
 
 {------------------------------------------------------------------------------
   procedure TGtk2WidgetSet.SetSelectionMode(Sender: TObject; Widget: PGtkWidget;
@@ -1375,6 +1375,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.19  2004/09/30 10:35:50  mazen
+  * Fix compile probelem under GTK2 related to
+    THandle <--> Pointer conversion
+
   Revision 1.18  2004/09/28 16:41:54  mazen
   * Fix GTK2 compilation problem
 

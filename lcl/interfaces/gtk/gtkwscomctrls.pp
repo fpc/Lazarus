@@ -893,39 +893,39 @@ begin
   with AProgressBar do
   begin
     if Smooth
-    then gtk_progress_bar_set_bar_style (GTK_PROGRESS_BAR(whandle),
+    then gtk_progress_bar_set_bar_style (GTK_PROGRESS_BAR(Pointer(Pointer(wHandle))),
                                          GTK_PROGRESS_CONTINUOUS)
-    else gtk_progress_bar_set_bar_style (GTK_PROGRESS_BAR(whandle),
+    else gtk_progress_bar_set_bar_style (GTK_PROGRESS_BAR(Pointer(Pointer(wHandle))),
                                          GTK_PROGRESS_DISCRETE);
     case Orientation of
     pbVertical   : gtk_progress_bar_set_orientation(
-                                  GTK_PROGRESS_BAR(whandle),
+                                  GTK_PROGRESS_BAR(Pointer(Pointer(wHandle))),
                                   GTK_PROGRESS_BOTTOM_TO_TOP);
     pbRightToLeft: gtk_progress_bar_set_orientation(
-                                  GTK_PROGRESS_BAR(whandle),
+                                  GTK_PROGRESS_BAR(Pointer(Pointer(wHandle))),
                                   GTK_PROGRESS_RIGHT_TO_LEFT);
     pbTopDown    : gtk_progress_bar_set_orientation(
-                                  GTK_PROGRESS_BAR(whandle),
+                                  GTK_PROGRESS_BAR(Pointer(Pointer(wHandle))),
                                   GTK_PROGRESS_TOP_TO_BOTTOM);
     else { pbHorizontal is default }
-      gtk_progress_bar_set_orientation(GTK_PROGRESS_BAR(wHandle),
+      gtk_progress_bar_set_orientation(GTK_PROGRESS_BAR(Pointer(Pointer(wHandle))),
                                         GTK_PROGRESS_LEFT_TO_RIGHT);
     end;
     if BarShowText then
     begin
-       gtk_progress_set_format_string (GTK_PROGRESS(wHandle),
+       gtk_progress_set_format_string (GTK_PROGRESS(Pointer(Pointer(wHandle))),
                                        '%v from [%l-%u] (=%p%%)');
-       gtk_progress_set_show_text (GTK_PROGRESS(wHandle), GdkTrue);
+       gtk_progress_set_show_text (GTK_PROGRESS(Pointer(Pointer(wHandle))), GdkTrue);
     end
     else
-       gtk_progress_set_show_text (GTK_PROGRESS(wHandle), GDKFalse);
-    gtk_progress_configure(GTK_PROGRESS(wHandle),Position,Min,Max);
+       gtk_progress_set_show_text (GTK_PROGRESS(Pointer(Pointer(wHandle))), GDKFalse);
+    gtk_progress_configure(GTK_PROGRESS(Pointer(Pointer(wHandle))),Position,Min,Max);
   end;
 end;
 
 procedure TGtkWSProgressBar.SetPosition(const AProgressBar: TProgressBar; const NewPosition: integer);
 begin
-  gtk_progress_set_value(GTK_PROGRESS(AProgressBar.Handle), NewPosition);
+  gtk_progress_set_value(GTK_PROGRESS(Pointer(AProgressBar.Handle)), NewPosition);
 end;
 
 { TGtkWSToolbar }
@@ -992,7 +992,7 @@ begin
   with ATrackBar do
   begin
     wHandle := Handle;
-    Widget := GTK_WIDGET(gtk_range_get_adjustment (GTK_RANGE(wHandle)));
+    Widget := GTK_WIDGET(gtk_range_get_adjustment (GTK_RANGE(Pointer(wHandle))));
     GTK_ADJUSTMENT(Widget)^.lower := Min;
     GTK_ADJUSTMENT(Widget)^.Upper := Max;
     GTK_ADJUSTMENT(Widget)^.Value := Position;
@@ -1001,16 +1001,16 @@ begin
     { now do some of the more sophisticated features }
     { Hint: For some unknown reason we have to disable the draw_value first,
       otherwise it's set always to true }
-    gtk_scale_set_draw_value (GTK_SCALE (wHandle), false);
+    gtk_scale_set_draw_value (GTK_SCALE (Pointer(wHandle)), false);
 
     if ShowScale then
     begin
-       gtk_scale_set_draw_value (GTK_SCALE (wHandle), ShowScale);
+       gtk_scale_set_draw_value (GTK_SCALE (Pointer(wHandle)), ShowScale);
        case ScalePos of
-          trLeft  : gtk_scale_set_value_pos (GTK_SCALE (wHandle), GTK_POS_LEFT);
-          trRight : gtk_scale_set_value_pos (GTK_SCALE (wHandle), GTK_POS_RIGHT);
-          trTop   : gtk_scale_set_value_pos (GTK_SCALE (wHandle), GTK_POS_TOP);
-          trBottom: gtk_scale_set_value_pos (GTK_SCALE (wHandle), GTK_POS_BOTTOM);
+          trLeft  : gtk_scale_set_value_pos (GTK_SCALE (Pointer(wHandle)), GTK_POS_LEFT);
+          trRight : gtk_scale_set_value_pos (GTK_SCALE (Pointer(wHandle)), GTK_POS_RIGHT);
+          trTop   : gtk_scale_set_value_pos (GTK_SCALE (Pointer(wHandle)), GTK_POS_TOP);
+          trBottom: gtk_scale_set_value_pos (GTK_SCALE (Pointer(wHandle)), GTK_POS_BOTTOM);
        end;
     end;
     //Not here (Delphi compatibility):  gtk_signal_emit_by_name (GTK_Object (Widget), 'value_changed');
@@ -1022,7 +1022,7 @@ begin
   if ATrackBar.HandleAllocated then 
   begin
     Result := RoundToInt(gtk_range_get_adjustment(
-      GTK_RANGE(ATrackBar.Handle))^.value);
+      GTK_RANGE(Pointer(ATrackBar.Handle)))^.value);
   end else
     Result := 0;
 end;
@@ -1032,9 +1032,9 @@ var
   Handle: HWND;
 begin
   Handle := ATrackBar.Handle;
-  gtk_range_get_adjustment(GTK_RANGE(Handle))^.value := NewPosition;
+  gtk_range_get_adjustment(GTK_RANGE(Pointer(Handle)))^.value := NewPosition;
   g_signal_emit_by_name(PGtkObject(
-    gtk_range_get_adjustment(GTK_RANGE(Handle))), 'value_changed');
+    gtk_range_get_adjustment(GTK_RANGE(Pointer(Handle)))), 'value_changed');
 end;
 
 initialization

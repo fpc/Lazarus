@@ -53,11 +53,11 @@ type
     function CreateComponent(Sender : TObject): THandle; override;
     function GetText(Sender: TComponent; var Text: String): Boolean;
     procedure HookSignals(const AGTKObject: PGTKObject; const ALCLObject: TObject); override;
-    function IntSendMessage3(LM_Message : Integer; Sender : TObject; data : pointer) : integer; override;
+    //function IntSendMessage3(LM_Message : Integer; Sender : TObject; data : pointer) : integer; override;
     function LoadStockPixmap(StockID: longint) : HBitmap; override;
     procedure SetCallback(const AMsg: LongInt; const AGTKObject: PGTKObject; const ALCLObject: TObject);override;
     procedure SetLabel(Sender : TObject; Data : Pointer);
-    function SetProperties(Sender : TObject) : integer; override;
+    //function SetProperties(Sender : TObject) : integer; override;
     procedure SetSelectionMode(Sender: TObject; Widget: PGtkWidget;
       MultiSelect, ExtendedSelect: boolean); override;
     function SetTopIndex(Sender: TObject; NewTopIndex: integer): integer; override;
@@ -594,6 +594,10 @@ end.
 
 {
   $Log$
+  Revision 1.35  2004/09/30 10:35:50  mazen
+  * Fix compile probelem under GTK2 related to
+    THandle <--> Pointer conversion
+
   Revision 1.34  2004/09/12 19:08:35  mazen
   * Fix compilation problem with GTK2
 

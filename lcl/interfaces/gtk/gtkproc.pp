@@ -580,6 +580,8 @@ procedure Accelerate(Component: TComponent; const Widget: PGtkWidget;
 procedure ShareWindowAccelGroups(AWindow: PGtkWidget);
 procedure UnshareWindowAccelGroups(AWindow: PGtkWidget);
 
+procedure LoadPixbufFromLazResource(const ResourceName: string;
+  var Pixbuf: PGdkPixbuf);
 procedure LoadXPMFromLazResource(const ResourceName: string;
   Window: PGdkWindow; var PixmapImg, PixmapMask: PGdkPixmap);
 
