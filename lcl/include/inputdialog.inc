@@ -47,7 +47,7 @@ begin
     ClientHeight := (58*AVG.Y) div 8;
     ButtonTop := (39*AVG.Y) div 8;
     ButtonWidth := (50*AVG.X) div 4;
-    ButtonHeight := (13*AVG.Y) div 8;
+    ButtonHeight := 2*AVG.Y;
     Edit := TEdit.Create(Form);
     With Edit do begin
       Parent := Form;
@@ -90,8 +90,8 @@ begin
       TabOrder := 2;
     end;
 
-// Cant set focus here, since the form isn't visible yet.
-//    Edit.SetFocus;
+    // upon show, focus the edit control so people can start typing
+    ActiveControl := Edit;
     If ShowModal = mrOk then
     begin
       Value := Edit.Text;
