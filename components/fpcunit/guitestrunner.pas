@@ -40,10 +40,10 @@ type
     ActionList1: TActionList;
     btnClose: TBitBtn;
     btnRun: TBitBtn;
-    ComboBox1: TComboBox;
     ImageList1: TImageList;
     ImageList2: TImageList;
     Label1: TLabel;
+    lblSelectedTest: TLabel;
     Memo1: TMemo;
     MenuItem1: TMenuItem;
     MenuItem2: TMenuItem;
@@ -67,7 +67,6 @@ type
     TestTree: TTreeView;
     procedure BtnCloseClick(Sender: TObject);
     procedure GUITestRunnerCreate(Sender: TObject);
-    procedure GUITestRunnerDestroy(Sender: TObject);
     procedure GUITestRunnerShow(Sender: TObject);
     procedure MenuItem3Click(Sender: TObject);
     procedure TestTreeSelectionChanged(Sender: TObject);
@@ -76,14 +75,14 @@ type
     procedure actCutExecute(Sender: TObject);
     procedure btnRunClick(Sender: TObject);
   private
-    { private declarations }
-    suiteList: TStringList;
-    currentTestNode: TTreeNode;
     failureCounter: Integer;
     errorCounter: Integer;
     testsCounter: Integer;
     barColor: TColor;
     testSuite: TTest;
+    procedure BuildTree(rootNode: TTreeNode; aSuite: TTestSuite);
+    function FindNode(aTest: TTest): TTreeNode;
+    procedure ResetNodeColors;
   protected
     { IInterface }
     function QueryInterface(const IID: TGUID; out Obj): HResult; virtual; stdcall;
@@ -118,21 +117,14 @@ procedure TGUITestRunner.GUITestRunnerCreate(Sender: TObject);
 var
   i: integer;
 begin
-  suiteList := TStringList.Create;
   barColor := clGray;
-  for i := 0 to GetTestRegistry.Tests.Count - 1 do
-    ComboBox1.Items.Add(GetTestRegistry.Test[i].TestName);
-  ComboBox1.ItemIndex := 0;
+  TestTree.Items.Clear;
+  BuildTree(TestTree.Items.AddObject(nil, 'All Tests', GetTestRegistry), GetTestRegistry);
 end;
 
 procedure TGUITestRunner.BtnCloseClick(Sender: TObject);
 begin
   Close;
-end;
-
-procedure TGUITestRunner.GUITestRunnerDestroy(Sender: TObject);
-begin
-  suiteList.Free;
 end;
 
 procedure TGUITestRunner.GUITestRunnerShow(Sender: TObject);
@@ -147,9 +139,14 @@ begin
 end;
 
 procedure TGUITestRunner.TestTreeSelectionChanged(Sender: TObject);
+var
+  i: integer;
 begin
   if (Sender as TTreeView).Selected <> nil then
-    Memo1.Lines.Text := (Sender as TTreeview).Selected.Text
+  begin
+    Memo1.Lines.Text := (Sender as TTreeview).Selected.Text;
+    lblSelectedTest.Caption := (Sender as TTreeview).Selected.Text;
+  end;
 end;
 
 procedure TGUITestRunner.pbBarPaint(Sender: TObject);
@@ -186,13 +183,11 @@ var
   testResult: TTestResult;
 begin
   barcolor := clGray;
-  TestTree.items.Clear;
-  suiteList.Clear;
-  currentTestNode := nil;
-  if ComboBox1.ItemIndex = 0 then
-    testSuite := GetTestRegistry
+  ResetNodeColors;
+  if (TestTree.Selected <> nil) and (TestTree.Selected.Data <> nil) then
+    testSuite := TTest(TestTree.Selected.Data)
   else
-    testSuite := GetTestRegistry[ComboBox1.itemindex - 1];
+    testSuite := GetTestRegistry;
   failureCounter := 0;
   errorCounter := 0;
   testsCounter := 0;
@@ -209,21 +204,65 @@ begin
   pbBar1.invalidate;
 end;
 
-procedure TGUITestRunner.AddFailure(ATest: TTest; AFailure: TTestFailure);
+procedure TGUITestRunner.BuildTree(rootNode: TTreeNode; aSuite: TTestSuite);
 var
   node: TTreeNode;
+  i: integer;
 begin
-  node := TestTree.Items.AddChild(currentTestNode, 'Message: ' + AFailure.ExceptionMessage);
-  node.ImageIndex := 4;
-  node.SelectedIndex := 4;
-  node := TestTree.Items.AddChild(currentTestNode, 'Exception: ' + AFailure.ExceptionClassName);
-  node.ImageIndex := 4;
-  node.SelectedIndex := 4;
-  currentTestNode.ImageIndex := 3;
-  currentTestNode.SelectedIndex := 3;
-  node := TTreeNode(suiteList.Objects[suiteList.IndexOf(ATest.TestSuiteName)]);
-  node.ImageIndex := 3;
-  node.SelectedIndex := 3;
+  for i := 0 to ASuite.Tests.Count - 1 do
+  begin
+    node := TestTree.Items.AddChildObject(rootNode, ASuite.Test[i].TestName, ASuite.Test[i]);
+    if ASuite.Test[i] is TTestSuite then
+      BuildTree(Node, ASuite.Test[i] as TTestSuite);
+    node.ImageIndex := -1;
+    node.SelectedIndex := -1;
+  end;
+end;
+
+function TGUITestRunner.FindNode(aTest: TTest): TTreeNode;
+var
+  i: integer;
+begin
+  Result := nil;
+  for i := 0 to TestTree.Items.Count -1 do
+    if (TTest(TestTree.Items[i].data) = aTest) then
+    begin
+      Result :=  TestTree.Items[i];
+      Exit;
+    end;
+end;
+
+procedure TGUITestRunner.ResetNodeColors;
+var
+  i: integer;
+begin
+  for i := 0 to TestTree.Items.Count - 1 do
+  begin
+    TestTree.Items[i].ImageIndex := -1;
+    TestTree.Items[i].SelectedIndex := -1;
+  end;
+end;
+
+procedure TGUITestRunner.AddFailure(ATest: TTest; AFailure: TTestFailure);
+var
+  FailureNode, node: TTreeNode;
+begin
+  FailureNode := FindNode(ATest);
+  if Assigned(FailureNode) then
+  begin
+    FailureNode.DeleteChildren;
+    node := TestTree.Items.AddChild(FailureNode, 'Message: ' + AFailure.ExceptionMessage);
+    node.ImageIndex := 4;
+    node.SelectedIndex := 4;
+    node := TestTree.Items.AddChild(FailureNode, 'Exception: ' + AFailure.ExceptionClassName);
+    node.ImageIndex := 4;
+    node.SelectedIndex := 4;
+    FailureNode.ImageIndex := 3;
+    FailureNode.SelectedIndex := 3;
+    node := FailureNode.Parent;
+    node.ImageIndex := 3;
+    node.SelectedIndex := 3;
+  end;
   Inc(failureCounter);
   if errorCounter = 0 then
     barColor := clFuchsia;
@@ -231,51 +270,52 @@ end;
 
 procedure TGUITestRunner.AddError(ATest: TTest; AError: TTestFailure);
 var
-  node: TTreeNode;
+  ErrorNode, node: TTreeNode;
 begin
-  node := TestTree.Items.AddChild(currentTestNode, 'Exception message: ' + AError.ExceptionMessage);
-  node.ImageIndex := 4;
-  node.SelectedIndex := 4;
-  node := TestTree.Items.AddChild(currentTestNode, 'Exception class: ' + AError.ExceptionClassName);
-  node.ImageIndex := 4;
-  node.SelectedIndex := 4;
-  node := TestTree.Items.AddChild(currentTestNode, 'Unit name: ' + AError.SourceUnitName);
-  node.ImageIndex := 11;
-  node.SelectedIndex := 11;
-  node := TestTree.Items.AddChild(currentTestNode, 'Method name: ' + AError.MethodName);
-  node.ImageIndex := 11;
-  node.SelectedIndex := 11;
-  node := TestTree.Items.AddChild(currentTestNode, 'Line number: ' + IntToStr(AError.LineNumber));
-  node.ImageIndex := 11;
-  node.SelectedIndex := 11;
-  currentTestNode.ImageIndex := 2;
-  currentTestNode.SelectedIndex := 2;
-  node := TTreeNode(suiteList.Objects[suiteList.IndexOf(ATest.TestSuiteName)]);
-  node.ImageIndex := 2;
-  node.SelectedIndex := 2;
+  ErrorNode := FindNode(ATest);
+  if Assigned(ErrorNode) then
+  begin
+    ErrorNode.DeleteChildren;
+    node := TestTree.Items.AddChild(ErrorNode, 'Exception message: ' + AError.ExceptionMessage);
+    node.ImageIndex := 4;
+    node.SelectedIndex := 4;
+    node := TestTree.Items.AddChild(ErrorNode, 'Exception class: ' + AError.ExceptionClassName);
+    node.ImageIndex := 4;
+    node.SelectedIndex := 4;
+    node := TestTree.Items.AddChild(ErrorNode, 'Unit name: ' + AError.SourceUnitName);
+    node.ImageIndex := 11;
+    node.SelectedIndex := 11;
+    node := TestTree.Items.AddChild(ErrorNode, 'Method name: ' + AError.MethodName);
+    node.ImageIndex := 11;
+    node.SelectedIndex := 11;
+    node := TestTree.Items.AddChild(ErrorNode, 'Line number: ' + IntToStr(AError.LineNumber));
+    node.ImageIndex := 11;
+    node.SelectedIndex := 11;
+    ErrorNode.ImageIndex := 2;
+    ErrorNode.SelectedIndex := 2;
+    node := ErrorNode.Parent;
+    node.ImageIndex := 2;
+    node.SelectedIndex := 2;
+  end;
   Inc(errorCounter);
   barColor := clRed;
 end;
 
 procedure TGUITestRunner.StartTest(ATest: TTest);
 var
-  parentNode: TTreeNode;
+  Node: TTreeNode;
 begin
-  if suiteList.IndexOf(ATest.TestSuiteName) <> -1 then
+  Node := FindNode(ATest);
+  if Assigned(Node) then
   begin
-    parentNode := TTreeNode(suiteList.Objects[suiteList.IndexOf(ATest.TestSuiteName)]);
-  end
-  else
+    Node.ImageIndex := 0;
+    Node.SelectedIndex := 0;
+    if Assigned(Node.Parent) and (Node.Parent.ImageIndex = -1) then
     begin
-      if TestTree.Items.Count = 0 then
-      begin
-        parentNode := TestTree.Items.AddFirst(nil, ATest.TestSuiteName);
-      end
-      else
-        parentNode := TestTree.Items.Add(TTreeNode(suiteList.Objects[SuiteList.Count - 1]), ATest.TestSuiteName);
-      suiteList.AddObject(ATest.TestSuiteName, parentNode);
+      Node.Parent.ImageIndex := 0;
+      Node.Parent.SelectedIndex := 0;
     end;
-  currentTestNode := TestTree.Items.AddChild(parentNode, ATest.TestName);
+  end;
   Application.ProcessMessages;
 end;
 
@@ -284,6 +324,25 @@ begin
   Inc(testsCounter);
   pbBar.invalidate;
   pbBar1.invalidate;
+  if TestsCounter = GetTestRegistry.CountTestCases then
+  begin
+    if (ErrorCounter = 0) and (FailureCounter = 0) then
+    begin
+      TestTree.items[0].ImageIndex := 0;
+      TestTree.items[0].SelectedIndex := 0;
+    end
+    else
+      if (ErrorCounter > 0) then
+      begin
+        TestTree.items[0].ImageIndex := 2;
+        TestTree.items[0].SelectedIndex := 2;
+      end
+      else
+      begin
+        TestTree.items[0].ImageIndex := 3;
+        TestTree.items[0].SelectedIndex := 3;
+      end;
+  end;
   Application.ProcessMessages;
 end;
 
