@@ -343,7 +343,8 @@ begin
 
   FLastDrawFlags:=GetDrawFlags;
   //writeln('TSpeedbutton.Paint ',Name,':',ClassName,' Parent.Name=',Parent.Name);
-  DrawFrameControl(Canvas.Handle, PaintRect, DFC_BUTTON, FLastDrawFlags);
+  DrawFrameControl(Canvas.GetUpdatedHandle([csBrushValid,csPenValid]),
+    PaintRect, DFC_BUTTON, FLastDrawFlags);
 
   GlyphWidth:= TButtonGlyph(FGlyph).Glyph.Width;
   if TButtonGlyph(FGlyph).NumGlyphs > 1 then
@@ -703,6 +704,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.37  2003/04/02 13:23:23  mattias
+  fixed default font
+
   Revision 1.36  2003/03/11 07:46:44  mattias
   more localization for gtk- and win32-interface and lcl
 
