@@ -6,7 +6,9 @@ Lazarus provides two main parts:
 - IDE - the RAD tool
 
 What is required for lazarus:
-- FreePascal - the FreePascal Compiler plus packages plus sources.
+- FreePascal - the FreePascal Compiler plus packages plus fpc sources.
+               IMPORTANT: try to get the same version of the sources and the
+                          installed compiler.
 - Under Linux/xxxBSD: gtk libaries - Most distributions already install them.
      See www.gtk.org. You need gtk 1.x. The new gtk2 is not yet supported.
 
