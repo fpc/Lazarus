@@ -69,19 +69,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  TPage ReadState
- ------------------------------------------------------------------------------}
-procedure TPage.ReadState(Reader: TAbstractReader);
-begin
-  inherited ReadState(Reader);
-
-  if Reader.Parent is TNoteBook then begin
-    with TNBPages(TNoteBook(Reader.Parent).fAccess) do
-      InsertPage(Count,Self);
-  end;
-end;
-
-{------------------------------------------------------------------------------
   TPage Paint
  ------------------------------------------------------------------------------}
 {procedure TPage.Paint;
@@ -104,6 +91,36 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  procedure TPage.SetParent(AParent: TWinControl);
+  
+  Set parent wincontrol.
+ ------------------------------------------------------------------------------}
+procedure TPage.SetParent(AParent: TWinControl);
+var
+  OldParent: TWinControl;
+  ParentNotebook: TCustomNotebook;
+begin
+  OldParent:=Parent;
+  if (OldParent<>AParent) and (OldParent<>nil)
+  and (OldParent is TCustomNotebook) then begin
+    // remove from old pagelist
+    ParentNotebook:=TCustomNotebook(OldParent);
+    if ParentNotebook.PageList.IndexOf(Self)>=0 then
+      TNBPages(ParentNotebook.fAccess).RemovePage(PageIndex);
+  end;
+
+  inherited SetParent(AParent);
+  
+  if (OldParent<>AParent) and (Parent<>nil)
+  and (Parent is TCustomNotebook) then begin
+    // add to new pagelist
+    ParentNotebook:=TCustomNotebook(Parent);
+    if ParentNotebook.PageList.IndexOf(Self)<0 then
+      TNBPages(ParentNotebook.fAccess).InsertPage(ParentNotebook.PageCount,Self);
+  end;
+end;
+
+{------------------------------------------------------------------------------
   TPage Destroy
  ------------------------------------------------------------------------------}
 destructor TPage.Destroy;
@@ -120,9 +137,23 @@ begin
   ARect:=GetClientRect;
 end;
 
+{------------------------------------------------------------------------------
+  function TPage.PageIndex: integer;
+  
+  Returns the index of the page in the notebook.
+ ------------------------------------------------------------------------------}
+function TPage.PageIndex: integer;
+begin
+  if (Parent<>nil) and (Parent is TCustomNotebook) then
+    Result:=TCustomNotebook(Parent).PageList.IndexOf(Self);
+end;
+
 // included by extctrls.pp
 {
   $Log$
+  Revision 1.11  2002/09/05 12:11:43  lazarus
+  MG: TNotebook is now streamable
+
   Revision 1.10  2002/09/02 19:10:28  lazarus
   MG: TNoteBook now starts with no Page and TPage has no auto names
 
