@@ -3736,9 +3736,12 @@ begin
               end;
             end;
           end else if (FSplitter.X=Col) and (FSplitter.Y=Row) then begin
-            SelectEditor;
-            EditorShow(True);
-            exit;
+            //if WasFocused then begin
+              SelectEditor;
+              EditorShow(True);
+              {$ifDef dbgGrid} DebugLn('MouseDown (autoedit) END'); {$Endif}
+              exit;
+            //end;
           end;
           
           if not MoveExtend(False, FSplitter.X, FSplitter.Y) then begin
