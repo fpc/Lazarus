@@ -38,16 +38,29 @@ interface
 
 uses
   Classes, Controls, VCLGlobals, SysUtils, GraphType, Graphics, Menus,
-  LCLLinux, LCLType, LMessages, CustomTimer, StdCtrls;
+  LCLLinux, LCLType, LMessages, CustomTimer{, StdCtrls};
 
 type
-  TPosition = (poDesigned, poDefault, poDefaultPosOnly, poDefaultSizeOnly,
-          poScreenCenter, poDesktopCenter, poMainFormCenter, poOwnerFormCenter);
+  // form position policies:
+  TPosition = (
+    poDesigned,        // bounds from the designer
+    poDefault,         // LCL decision (normally window manager)
+    poDefaultPosOnly,  // designed size and LCL position
+    poDefaultSizeOnly, // designed position and LCL size
+    poScreenCenter,    // center form on screen
+    poDesktopCenter,   // center form on desktop
+    poMainFormCenter,  // center form on main form
+    poOwnerFormCenter  // center form on owner form
+    );
 
   TWindowState = (wsNormal, wsMinimized, wsMaximized);
   TCloseAction = (caNone, caHide, caFree, caMinimize);
 
   TScrollingWinControl = class;
+
+  TScrollBarKind = (sbHorizontal, sbVertical);
+  TScrollBarInc = 1..32768;
+  TScrollBarStyle = (ssRegular, ssFlat, ssHotTrack);
 
   TControlScrollBar = class(TPersistent)
   private

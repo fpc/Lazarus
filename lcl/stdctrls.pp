@@ -38,21 +38,29 @@ interface
 
 uses
   VCLGlobals, Classes, SysUtils, LCLType, Graphics, GraphType, LMessages,
-  Controls, ExtendedStrings, LCLLinux, GraphicsMath;
+  Controls, ExtendedStrings, LCLLinux, GraphicsMath, Forms;
 
 
 type
 
   { TScrollBar }
-  TScrollBarKind = (sbHorizontal, sbVertical);
-  TScrollBarInc = 1..32768;
-  TScrollBarStyle = (ssRegular, ssFlat, ssHotTrack);
 
   TScrollStyle = (ssNone, ssHorizontal, ssVertical, ssBoth,
     ssAutoHorizontal, ssAutoVertical, ssAutoBoth);
 
-  TScrollCode = (scLineUp, scLineDown, scPageUp, scPageDown, scPosition,
-                 scTrack, scTop, scBottom, scEndScroll);
+  TScrollCode = (
+    // !!! Beware. The position of these enums must correspond to the SB_xxx
+    // values in LCLType  (Delphi compatibility, not our decision)
+    scLineUp,   // = SB_LINEUP
+    scLineDown, // = SB_LINEDOWN
+    scPageUp,   // = SB_PAGEUP
+    scPageDown, // = SB_PAGEDOWN
+    scPosition, // = SB_THUMBPOSITION
+    scTrack,    // = SB_THUMBTRACK
+    scTop,      // = SB_TOP
+    scBottom,   // = SB_BOTTOM
+    scEndScroll // = SB_ENDSCROLL
+    );
 
   TScrollEvent = procedure(Sender: TObject; ScrollCode: TScrollCode;
                            var ScrollPos: Integer) of object;
@@ -1409,6 +1417,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.62  2002/10/25 08:25:43  lazarus
+  MG: broke circle stdctrls.pp <-> forms.pp
+
   Revision 1.61  2002/10/24 19:35:34  lazarus
   AJ: Fixed forms <-> stdctrls circular uses
 

@@ -743,7 +743,7 @@ type
 
   TLMScroll = record
     Msg : Cardinal;
-    ScrollCode : SmallInt;
+    ScrollCode : SmallInt; // SB_xxx
     Pos : SmallInt;
     ScrollBar : HWND;
     Result : LongInt;
@@ -884,6 +884,9 @@ end.
 
 {
   $Log$
+  Revision 1.37  2002/10/25 08:25:43  lazarus
+  MG: broke circle stdctrls.pp <-> forms.pp
+
   Revision 1.36  2002/10/10 08:51:13  lazarus
   MG: added paint messages for some gtk internal widgets
 

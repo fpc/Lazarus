@@ -207,24 +207,25 @@ var
   NewPos: Longint;
 begin
   If (csDesigning in FControl.ComponentState) then
-    exit;//prevent wierdness in IDE.
+    exit; //prevent wierdness in IDE.
+    
   with Message do
   begin
     NewPos := FPosition;
-    case TScrollCode(ScrollCode) of
-      scLineUp:
+    case ScrollCode of
+      SB_LINEUP:
         Dec(NewPos, FIncrement);
-      scLineDown:
+      SB_LINEDOWN:
         Inc(NewPos, FIncrement);
-      scPageUp:
+      SB_PAGEUP:
         Dec(NewPos, FPage);
-      scPageDown:
+      SB_PAGEDOWN:
         Inc(NewPos, FPage);
-      scPosition, scTrack:
+      SB_THUMBPOSITION, SB_THUMBTRACK:
         NewPos := Pos;
-      scTop:
+      SB_TOP:
         NewPos := 0;
-      scBottom:
+      SB_BOTTOM:
         NewPos := Range;
     end;
     if NewPos < 0 then NewPos := 0;
