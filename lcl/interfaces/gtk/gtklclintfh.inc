@@ -38,6 +38,7 @@ function GetListBoxItemRect(ListBox: TComponent; Index: integer; var ARect: TRec
 function MenuItemSetCheck(BaseMenuItem: TComponent): Boolean; override;
 function MenuItemSetEnable(BaseMenuItem: TComponent): Boolean; override;
 
+function DrawSplitter(DC: HDC; const ARect: TRect; Horizontal: boolean): boolean; override;
 procedure StatusBarPanelUpdate(StatusBar: TObject; Index: integer); override;
 procedure StatusBarSetText(StatusBar: TObject; PanelIndex: integer); override;
 procedure StatusBarUpdate(StatusBar: TObject); override;
@@ -46,6 +47,9 @@ procedure StatusBarUpdate(StatusBar: TObject); override;
 { =============================================================================
 
   $Log$
+  Revision 1.11  2004/02/02 15:46:19  mattias
+  implemented basic TSplitter, still many ToDos
+
   Revision 1.10  2004/02/02 12:44:45  mattias
   implemented interface constraints
 

@@ -80,7 +80,7 @@ function ExtSelectClipRGN(dc: hdc; rgn : hrgn; Mode : Longint) : Integer;  overr
 
 function FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean; override;
 function Frame(DC: HDC; const ARect: TRect): Integer; override;
-function Frame3d(DC: HDC; var ARect: TRect; const FrameWidth : integer; const Style : TBevelCut): Boolean; override;
+function Frame3d(DC: HDC; const ARect: TRect; const FrameWidth : integer; const Style : TBevelCut): Boolean; override;
 function FrameRect(DC: HDC; const ARect: TRect; hBr: HBRUSH): Integer; override;
 
 Function GetActiveWindow : HWND; override;
@@ -214,6 +214,9 @@ Function WindowFromPoint(Point : TPoint) : HWND; override;
 { =============================================================================
 
   $Log$
+  Revision 1.85  2004/02/02 15:46:19  mattias
+  implemented basic TSplitter, still many ToDos
+
   Revision 1.84  2004/01/22 11:23:36  mattias
   started MaskBlt for gtkIF and applied patch for dir dlg in env opts from Vincent
 

@@ -595,7 +595,7 @@ end;
   Returns:  Nothing
 
  ------------------------------------------------------------------------------}
-procedure TCanvas.Frame3d(var ARect: TRect; const FrameWidth : integer;
+procedure TCanvas.Frame3d(const ARect: TRect; const FrameWidth : integer;
   const Style : TGraphicsBevelCut);
 begin
   Changing;
@@ -1257,6 +1257,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.63  2004/02/02 15:46:19  mattias
+  implemented basic TSplitter, still many ToDos
+
   Revision 1.62  2004/01/31 15:29:55  mattias
   added icons for synhighlighter
 

@@ -3365,7 +3365,7 @@ end;
 
   Draws a 3d border in GTK native style.
  ------------------------------------------------------------------------------}
-function TGtkObject.Frame3d(DC : HDC; var ARect : TRect;
+function TGtkObject.Frame3d(DC : HDC; const ARect : TRect;
   const FrameWidth : integer; const Style : TBevelCut) : boolean;
 
 const GTKThinShadowType: array[TBevelCut] of integer =
@@ -3381,6 +3381,7 @@ var
   Area: TGdkRectangle;
   ShadowType: Integer;
   AWindow: PGdkWindow;
+  CurRect: TRect;
 begin
   Result := IsValidDC(DC);
   if not Result then exit;
@@ -3433,6 +3434,7 @@ begin
     //' light_gc=',HexStr(Cardinal(TheStyle^.light_gc[GTK_STATE_NORMAL]),8),
     //'');
 
+    CurRect:=ARect;
 
     for i:= 1 to FrameWidth do begin
      { // left edge
@@ -3461,9 +3463,9 @@ begin
                        @Area,
                        ClientWidget,
                        'button',
-                       ARect.Left+DCOrigin.X, ARect.Top+DCOrigin.Y,
-                       ARect.Right-ARect.Left, ARect.Bottom-ARect.Top);
-      InflateRect(ARect, -1, -1);
+                       CurRect.Left+DCOrigin.X, CurRect.Top+DCOrigin.Y,
+                       CurRect.Right-CurRect.Left, CurRect.Bottom-CurRect.Top);
+      InflateRect(CurRect, -1, -1);
     end;
   end;
 end;
@@ -3488,11 +3490,9 @@ begin
         SelectedColors:=dcscCustom;
         EnsureGCColor(DC, dccGDIBrushColor, True, False);//Brush Color
         DCOrigin:=GetDCOffset(TDeviceContext(DC));
-        BeginGDKErrorTrap;
         gdk_draw_rectangle(Drawable, GC, 0,
                            ARect.Left+DCOrigin.X, ARect.Top+DCOrigin.Y,
                            ARect.Right-ARect.Left, ARect.Bottom-ARect.Top);
-        EndGDKErrorTrap;
       end;
     end;
   end;
@@ -7643,7 +7643,7 @@ begin
     // mouse captures at any time and X can freeze, when a grab is not realeased
     // and the window is destroyed.
     // -> remove all grabs
-    ReleaseMouseCapture(false);
+    ReleaseMouseCapture(true);
 
     // grab
     if (Value<>0) then begin
@@ -8693,6 +8693,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.324  2004/02/02 15:46:19  mattias
+  implemented basic TSplitter, still many ToDos
+
   Revision 1.323  2004/02/02 12:44:45  mattias
   implemented interface constraints
 

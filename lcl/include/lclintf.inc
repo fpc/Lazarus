@@ -110,7 +110,7 @@ begin
   Result:= InterfaceObject.Frame(DC, ARect);
 end;
 
-function Frame3d(DC : HDC; var ARect : TRect; const FrameWidth : integer;
+function Frame3d(DC : HDC; const ARect : TRect; const FrameWidth : integer;
   const Style: TGraphicsBevelCut) : boolean;
 begin
   Result:= InterfaceObject.Frame3d(DC, ARect, FrameWidth, Style);
@@ -378,6 +378,11 @@ procedure SendCachedLCLMessages;
 begin
 end;
 
+function DrawSplitter(DC: HDC; const ARect: TRect; Horizontal: boolean): boolean;
+begin
+  Result := InterfaceObject.DrawSplitter(DC,ARect,Horizontal);
+end;
+
 function SetCaretRespondToFocus(Handle: hWnd; ShowHideOnFocus: boolean):Boolean;
 begin
   Result := InterfaceObject.SetCaretRespondToFocus(Handle,ShowHideOnFocus);
@@ -501,6 +506,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.13  2004/02/02 15:46:19  mattias
+  implemented basic TSplitter, still many ToDos
+
   Revision 1.12  2004/02/02 12:44:45  mattias
   implemented interface constraints
 

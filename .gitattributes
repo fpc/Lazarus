@@ -664,6 +664,7 @@ images/components/tspeedbutton.ico -text svneol=unset#image/x-icon
 images/components/tspeedbutton.xpm -text svneol=native#image/x-xpixmap
 images/components/tspinedit.ico -text svneol=unset#image/x-icon
 images/components/tspinedit.xpm -text svneol=native#image/x-xpixmap
+images/components/tsplitter.xpm -text svneol=native#image/x-xpixmap
 images/components/tstatictext.xpm -text svneol=native#image/x-xpixmap
 images/components/tstatusbar.ico -text svneol=unset#image/x-icon
 images/components/tstatusbar.xpm -text svneol=native#image/x-xpixmap

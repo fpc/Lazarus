@@ -84,8 +84,8 @@ var
 // styles -------------------------------------------------------------------
 type
   TLazGtkStyle = (
-    lgsGTK_Default,
-    lgsDefault,
+    lgsGTK_Default, // without anything
+    lgsDefault,     // with rc file
     lgsButton,
     lgsWindow,
     lgsCheckbox,
@@ -96,6 +96,9 @@ type
     lgsVerticalScrollbar,
     lgsHorizontalScrollbar,
     lgsTooltip,
+    lgsVerticalPaned,
+    lgsHorizontalPaned,
+    // user defined
     lgsUserDefined
     );
 
@@ -113,6 +116,8 @@ const
     'vertical scrollbar',
     'horizontal scrollbar',
     'tooltip',
+    'vertical paned',
+    'horizontal paned',
     ''
     );
 

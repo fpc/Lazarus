@@ -77,7 +77,7 @@ function ExtSelectClipRGN(dc: hdc; rgn : hrgn; Mode : Longint) : Integer; overri
 
 Function FillRect(DC: HDC; Const Rect: TRect; Brush: HBRUSH): Boolean; Override;
 { Draws a 3D border in GTK native style. }
-Function Frame3D(DC: HDC; Var Rect: TRect; Const FrameWidth: Integer; Const Style: TBevelCut): Boolean; Override;
+Function Frame3D(DC: HDC; const Rect: TRect; Const FrameWidth: Integer; Const Style: TBevelCut): Boolean; Override;
 
 function GetBitmapRawImageDescription(Bitmap: HBITMAP; Desc: PRawImageDescription): Boolean; Override;
 function GetDeviceRawImageDescription(DC: HDC; Desc: PRawImageDescription): boolean; Override;
@@ -190,6 +190,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.44  2004/02/02 15:46:19  mattias
+  implemented basic TSplitter, still many ToDos
+
   Revision 1.43  2003/12/29 14:22:22  micha
   fix a lot of range check errors win32
 

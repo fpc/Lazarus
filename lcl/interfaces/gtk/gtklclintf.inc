@@ -77,6 +77,22 @@ begin
                                               MinWidth,MinHeight);
     end;
     
+    // TCustomSplitter
+    if SizeConstraints.Control is TCustomSplitter then begin
+      MinWidth := 0;
+      MinHeight := 0;
+      if TCustomSplitter(SizeConstraints.Control).Align in [alTop,alBottom] then
+      begin
+        Widget:=GetStyleWidget(lgsHorizontalPaned);
+        MinHeight:=Widget^.requisition.Height;
+      end else begin
+        Widget:=GetStyleWidget(lgsVerticalPaned);
+        MinWidth:=Widget^.requisition.Width;
+      end;
+      SizeConstraints.SetInterfaceConstraints(MinWidth,MinHeight,
+                                              MinWidth,MinHeight);
+    end;
+
   end;
 end;
 
@@ -273,6 +289,53 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function TGTKObject.DrawSplitter(DC: HDC; const ARect: TRect;
+    Horizontal: boolean): Integer;
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.DrawSplitter(DC: HDC; const ARect: TRect;
+  Horizontal: boolean): boolean;
+var
+  Widget: PGtkWidget;
+  ClientWidget: Pointer;
+  DCOrigin: TPoint;
+  Detail: PChar;
+  Area: TGdkRectangle;
+  Style: PGtkStyle;
+  AWindow: PGdkWindow;
+begin
+  Result := False;
+  if not IsValidDC(DC) then exit;
+  
+  Widget:=PGtkWidget(TDeviceContext(DC).Wnd);
+  ClientWidget:=GetFixedWidget(Widget);
+  if ClientWidget<>nil then
+    Widget:=ClientWidget;
+  AWindow:=TDeviceContext(DC).Drawable;
+  
+  Style:=GetStyle(lgsButton);
+  if Horizontal then begin
+    Detail:='hpaned';
+  end else begin
+    Detail:='vpaned';
+  end;
+
+  DCOrigin:=GetDCOffset(TDeviceContext(DC));
+  Area.X:=ARect.Left+DCOrigin.X;
+  Area.Y:=ARect.Top+DCOrigin.Y;
+  Area.Width:=ARect.Right-ARect.Left;
+  Area.Height:=ARect.Bottom-ARect.Top;
+
+  gtk_paint_box(Style, AWindow,
+    GTK_WIDGET_STATE(Widget),
+    GTK_SHADOW_OUT,
+    @Area, Widget, Detail,
+    Area.X,Area.Y,Area.Width,Area.Height);
+
+  Result:=true;
+end;
+
+{------------------------------------------------------------------------------
   Procedure: StatusBarPanelUpdate
   Params: StatusBar:
           index:
@@ -332,6 +395,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.14  2004/02/02 15:46:19  mattias
+  implemented basic TSplitter, still many ToDos
+
   Revision 1.13  2004/02/02 12:44:45  mattias
   implemented interface constraints
 

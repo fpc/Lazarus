@@ -353,6 +353,78 @@ type
   end;
 
 
+  { TCustomSplitter }
+
+  TResizeStyle = (rsLine,rsNone,rsPattern,rsUpdate);
+
+  TCanResizeEvent = procedure(Sender: TObject; var NewSize: Integer;
+    var Accept: Boolean) of object;
+
+  TCustomSplitter = class(TCustomControl)
+  private
+    FAutoSnap: boolean;
+    FBeveled: boolean;
+    FMinSize: integer;
+    FOnCanResize: TCanResizeEvent;
+    FOnMoved: TNotifyEvent;
+    FResizeStyle: TResizeStyle;
+    FSplitDragging: Boolean;
+    fSplitterStartXY: TPoint;
+    procedure SetAutoSnap(const AValue: boolean);
+    procedure SetBeveled(const AValue: boolean);
+    procedure SetMinSize(const AValue: integer);
+    procedure SetResizeStyle(const AValue: TResizeStyle);
+  protected
+    procedure StartSplitterMove(Restart: boolean; const MouseXY: TPoint);
+    procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
+    procedure MouseMove(Shift: TShiftState; X,Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
+    function FindAlignControl: TControl;
+    procedure SetAlign(Value: TAlign); override;
+    procedure SetAnchors(const AValue: TAnchors); override;
+    procedure CheckAlignment;
+    function CheckNewSize(var NewSize: integer): boolean; virtual;
+    procedure Paint; override;
+  public
+    constructor Create(TheOwner: TComponent); override;
+  public
+    property Align default alLeft;
+    property ResizeStyle: TResizeStyle read FResizeStyle write SetResizeStyle default rsLine;
+    property AutoSnap: boolean read FAutoSnap write SetAutoSnap default true;
+    property Beveled: boolean read FBeveled write SetBeveled default false;
+    property MinSize: integer read FMinSize write SetMinSize default 30;
+    property OnCanResize: TCanResizeEvent read FOnCanResize write FOnCanResize;
+    property OnMoved: TNotifyEvent read FOnMoved write FOnMoved;
+    property Width default 5;
+    property Cursor default crHSplit;
+  end;
+
+
+  { TSplitter }
+
+  TSplitter = class(TCustomSplitter)
+  published
+    property Align;
+    property Anchors;
+    property AutoSnap;
+    property Beveled;
+    property Color;
+    property Constraints;
+    property Cursor;
+    property Height;
+    property MinSize;
+    property ParentColor;
+    property ParentShowHint;
+    property ResizeStyle;
+    property ShowHint;
+    property Visible;
+    property Width;
+    property OnCanResize;
+    property OnChangeBounds;
+    property OnMoved;
+  end;
+
+
   { TPaintBox }
 
   TPaintBox = class(TGraphicControl)
@@ -797,7 +869,6 @@ type
   end;
 
 
-
 const
   TCN_First = 0-550;
   TCN_SELCHANGE = TCN_FIRST - 1;
@@ -812,7 +883,7 @@ procedure Register;
 begin
   RegisterComponents('Standard',[TRadioGroup,TCheckGroup,TPanel]);
   RegisterComponents('Additional',[TImage,TShape,TBevel,TPaintBox,TNotebook,
-                                   TLabeledEdit]);
+                                   TLabeledEdit,TSplitter]);
   RegisterComponents('System',[TTimer,TIdleTimer]);
   RegisterNoIcon([TPage]);
 end;
@@ -824,6 +895,7 @@ end;
 {$I timer.inc}
 {$I idletimer.inc}
 {$I shape.inc}
+{$I customsplitter.inc}
 {$I paintbox.inc}
 {$I customcheckgroup.inc}
 {$I customradiogroup.inc}
@@ -838,6 +910,9 @@ end.
 
  {
   $Log$
+  Revision 1.91  2004/02/02 15:46:19  mattias
+  implemented basic TSplitter, still many ToDos
+
   Revision 1.90  2004/01/21 10:19:16  micha
   enable tabstops for controls; implement tabstops in win32 intf
 

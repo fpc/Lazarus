@@ -1156,7 +1156,7 @@ End;
   Draws a 3D border in GTK native style.
   NOTE: This function is mapped to DrawEdge on Windows.
 ------------------------------------------------------------------------------}
-Function TWin32Object.Frame3D(DC: HDC; Var Rect: TRect; Const FrameWidth: Integer; Const Style: TBevelCut): Boolean;
+Function TWin32Object.Frame3D(DC: HDC; const Rect: TRect; Const FrameWidth: Integer; Const Style: TBevelCut): Boolean;
 Const
   Edge: Array[TBevelCut] Of Integer = (0, EDGE_ETCHED, EDGE_RAISED);
 Begin
@@ -2911,6 +2911,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.97  2004/02/02 15:46:19  mattias
+  implemented basic TSplitter, still many ToDos
+
   Revision 1.96  2004/01/29 20:58:23  micha
   fixed: calling of nil proc when destroying clipboard
 

@@ -1212,7 +1212,7 @@ begin
   g_signal_stop_emission_by_name(PGTKObject(Widget),'motion-notify-event');
 
   UpdateMouseCaptureControl;
-  
+
   if (csDesigning in TComponent(Data).ComponentState) then exit;
   if ControlGetsMouseMoveBefore(TControl(Data)) then exit;
 
@@ -1442,6 +1442,7 @@ function gtkMouseBtnPress(widget: PGtkWidget; event : pgdkEventButton;
   data: gPointer) : GBoolean; cdecl;
 var
   DesignOnlySignal: boolean;
+  CaptureWidget: PGtkWidget;
 begin
   {$IFDEF GTK1}
   Result := True;
@@ -1478,6 +1479,17 @@ begin
     DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMousePress);
     if DesignOnlySignal then exit;
     if not ControlGetsMouseDownBefore(TControl(Data)) then exit;
+
+    // grabbing for TSplitter -> Maybe ths is the key for drag&drop
+    if TWinControl(Data) is TCustomSplitter then begin
+      CaptureWidget:=PGtkWidget(TCustomSplitter(Data).Handle);
+      CaptureWidget:=GetWidgetInfo(CaptureWidget,true)^.ImplementationWidget;
+      if not gtk_widget_has_focus(CaptureWidget) then
+        gtk_widget_grab_focus(CaptureWidget);
+      if Event^.button=1 then
+        gtk_grab_add(CaptureWidget);
+    end;
+
   end else begin
     // stop the signal, so that the widget does not auto react
     if (TControl(Data).FCompStyle<>csNotebook)
@@ -1618,6 +1630,7 @@ function gtkMouseBtnRelease(widget: PGtkWidget; event : pgdkEventButton;
   data: gPointer) : GBoolean; cdecl;
 var
   DesignOnlySignal: boolean;
+  CaptureWidget: PGtkWidget;
 begin
   {$IFDEF GTK1}
   Result := True;
@@ -1642,9 +1655,17 @@ begin
 
   if not (csDesigning in TComponent(Data).ComponentState) then begin
     DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMouseRelease);
+    
+    if TWinControl(Data) is TCustomSplitter then begin
+      CaptureWidget:=PGtkWidget(TCustomSplitter(Data).Handle);
+      CaptureWidget:=GetWidgetInfo(CaptureWidget,true)^.ImplementationWidget;
+      if Event^.button=1 then
+        gtk_grab_remove(CaptureWidget);
+    end;
+
     if DesignOnlySignal or (not ControlGetsMouseUpBefore(TControl(Data))) then
     begin
-      ReleaseMouseCapture(true);
+      ReleaseMouseCapture(false);
       exit;
     end;
   end else begin
@@ -3225,6 +3246,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.217  2004/02/02 15:46:19  mattias
+  implemented basic TSplitter, still many ToDos
+
   Revision 1.216  2004/01/27 21:32:11  mattias
   improved changing style of controls
 

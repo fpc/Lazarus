@@ -3116,7 +3116,7 @@ procedure ReleaseMouseCapture(OnlyIfCapturedByLCL: boolean);
 var
   OldCaptureWidget: PGtkWidget;
 begin
-  if OnlyIfCapturedByLCL and not MouseCapureByLCL then exit;
+  if OnlyIfCapturedByLCL and (not MouseCapureByLCL) then exit;
   {$IfNDef ActivateMouseCapture}
   exit;
   {$EndIf}
@@ -3141,25 +3141,21 @@ procedure SetCursor(AWinControl : TWinControl; Data: Pointer);
   procedure DoSetCursor(AWindow: PGdkWindow; Cursor: pGDKCursor);
   begin
     if Cursor <> nil then begin
-      BeginGDKErrorTrap;
       gdk_window_set_cursor(AWindow, Cursor);
-      EndGDKErrorTrap;
     end;
   end;
 
-  procedure SetDesigningCursor(AWindow: PGdkWindow; Cursor: PGdkCursor);
+  procedure SetCursorRecursive(AWindow: PGdkWindow; Cursor: PGdkCursor);
   var
     ChildWindows, ListEntry: PGList;
   begin
     DoSetCursor(AWindow, Cursor);
     
-    BeginGDKErrorTrap;
     ChildWindows:=gdk_window_get_children(AWindow);
-    EndGDKErrorTrap;
 
     ListEntry:=ChildWindows;
     while ListEntry<>nil do begin
-      SetDesigningCursor(PGdkWindow(ListEntry^.Data), Cursor);
+      SetCursorRecursive(PGdkWindow(ListEntry^.Data), Cursor);
       ListEntry:=ListEntry^.Next;
     end;
     g_list_free(ChildWindows);
@@ -3180,10 +3176,10 @@ begin
     AWindow:=GetControlWindow(AWidget);
     if AWindow = nil then exit;
     if Data = nil then
-      SetDesigningCursor(AWindow, GetGDKMouseCursor(crDefault))
+      SetCursorRecursive(AWindow, GetGDKMouseCursor(crDefault))
     else begin
       NewCursor:= GetGDKMouseCursor(Integer(Data));
-      if NewCursor <> nil then SetDesigningCursor(AWindow, NewCursor);
+      if NewCursor <> nil then SetCursorRecursive(AWindow, NewCursor);
     end;  
     
   end else begin
@@ -3194,7 +3190,6 @@ begin
     
     NewCursor:= GetGDKMouseCursor(AWinControl.Cursor);
     if NewCursor <> nil then DoSetCursor(AWindow, NewCursor);
-
   end;
 end;
 
@@ -5155,6 +5150,16 @@ begin
         StyleObject^.Widget := gtk_hscrollbar_new(nil);
       end
     else
+      If AnsiCompareText(WName,LazGtkStyleNames[lgsVerticalPaned])=0 then begin
+        lgs:=lgsVerticalPaned;
+        StyleObject^.Widget := gtk_vpaned_new;
+      end
+    else
+      If AnsiCompareText(WName,LazGtkStyleNames[lgsHorizontalPaned])=0 then begin
+        lgs:=lgsHorizontalPaned;
+        StyleObject^.Widget := gtk_hpaned_new;
+      end
+    else
       If AnsiCompareText(WName,LazGtkStyleNames[lgsTooltip])=0 then begin
         lgs:=lgsTooltip;
         AddToStyleWindow:=false;
@@ -6309,6 +6314,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.254  2004/02/02 15:46:19  mattias
+  implemented basic TSplitter, still many ToDos
+
   Revision 1.253  2004/02/02 12:44:45  mattias
   implemented interface constraints
 

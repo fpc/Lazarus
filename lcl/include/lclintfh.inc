@@ -75,7 +75,7 @@ function GetScrollbarVisible(Handle: HWND; SBStyle: Integer): boolean; {$IFDEF I
 function GetWindowRelativePosition(Handle : hwnd; var Left, Top: integer): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 function Frame(DC: HDC; const ARect: TRect): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function Frame3d(DC: HDC; var ARect: TRect; const FrameWidth : integer; const Style : TGraphicsBevelCut): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function Frame3d(DC: HDC; const ARect: TRect; const FrameWidth : integer; const Style : TGraphicsBevelCut): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 function GetAcceleratorString(const AVKey: Byte; const AShiftState: TShiftState): String; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
@@ -105,6 +105,7 @@ function RequestInput(const InputCaption, InputPrompt : String; MaskInput : Bool
 function RightJustifyMenuItem(HndMenu: HMenu; bRightJustify: boolean): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 procedure SendCachedLCLMessages; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function DrawSplitter(DC: HDC; const ARect: TRect; Horizontal: boolean): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetCaretRespondToFocus(handle: HWND; ShowHideOnFocus: boolean): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetComboMinDropDownSize(Handle: HWND; MinItemsWidth, MinItemsHeight, MinItemCount: integer): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 procedure StatusBarPanelUpdate(StatusBar: TObject; PanelIndex: integer); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -147,6 +148,9 @@ procedure RaiseLastOSError;
 { =============================================================================
 
   $Log$
+  Revision 1.13  2004/02/02 15:46:19  mattias
+  implemented basic TSplitter, still many ToDos
+
   Revision 1.12  2004/02/02 12:44:45  mattias
   implemented interface constraints
 

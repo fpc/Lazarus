@@ -720,7 +720,7 @@ type
     Procedure FillRect(const ARect : TRect);
     Procedure FillRect(X1,Y1,X2,Y2 : Integer);
     procedure FloodFill(X, Y: Integer; FillColor: TColor; FillStyle: TFillStyle);
-    procedure Frame3d(var ARect : TRect; const FrameWidth : integer;
+    procedure Frame3d(const ARect : TRect; const FrameWidth : integer;
                       const Style: TGraphicsBevelCut);
     procedure Frame(const ARect: TRect);        // border using pen
     procedure Frame(X1,Y1,X2,Y2 : Integer);     // border using pen
@@ -1261,6 +1261,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.105  2004/02/02 15:46:19  mattias
+  implemented basic TSplitter, still many ToDos
+
   Revision 1.104  2004/01/05 01:18:15  mattias
   implemented Double Buffering for synedit and deactivated multi buffering in TGTKObject.ExtTextOut
 
