@@ -51,11 +51,11 @@ end;
 
 procedure TGraphic.Progress(Sender: TObject; Stage: TProgressStage;
   PercentDone: Byte; RedrawNow: Boolean; const R: TRect; const Msg: string;
-  var Continue: boolean);
+  var DoContinue: boolean);
 begin
-  Continue:=true;
+  DoContinue:=true;
   if Assigned(FOnProgress) then
-    FOnProgress(Sender, Stage, PercentDone, RedrawNow, R, Msg, Continue);
+    FOnProgress(Sender, Stage, PercentDone, RedrawNow, R, Msg, DoContinue);
 end;
 
 function TGraphic.Equals(Graphic: TGraphic): Boolean;

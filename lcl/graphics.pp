@@ -154,7 +154,7 @@ type
   TProgressStage = (psStarting, psRunning, psEnding);
   TProgressEvent = procedure (Sender: TObject; Stage: TProgressStage;
                           PercentDone: Byte; RedrawNow: Boolean; const R: TRect;
-                          const Msg: string; var Continue : Boolean) of object;
+                          const Msg: string; var DoContinue: Boolean) of object;
 
   TBevelCut = TGraphicsBevelCut;
 
@@ -267,10 +267,13 @@ const  // New TFont instances are initialized with the values in this structure:
 
 
 type
+  TCanvas = class;
+
+  // standard LCL graphic formats
   TBitmap = class;
   TPixmap = class;
   TIcon = class;
-  TCanvas = class;
+  TPortableNetworkGraphic = class;
 
 
   { TGraphicsObject }
@@ -486,7 +489,7 @@ type
     function GetWidth: Integer; virtual; abstract;
     procedure Progress(Sender: TObject; Stage: TProgressStage;
       PercentDone: Byte;  RedrawNow: Boolean; const R: TRect;
-      const Msg: string; var Continue: boolean); dynamic;
+      const Msg: string; var DoContinue: boolean); dynamic;
     procedure ReadData(Stream: TStream); virtual;
     procedure SetHeight(Value: Integer); virtual; abstract;
     procedure SetPalette(Value: HPALETTE); virtual;
@@ -569,12 +572,14 @@ type
     FOnProgress: TProgressEvent;
     procedure ForceType(GraphicType: TGraphicClass);
     function GetBitmap: TBitmap;
+    function GetPNG: TPortableNetworkGraphic;
     function GetPixmap: TPixmap;
     function GetIcon: TIcon;
     function GetHeight: Integer;
     function GetWidth: Integer;
     procedure ReadData(Stream: TStream);
     procedure SetBitmap(Value: TBitmap);
+    procedure SetPNG(const AValue: TPortableNetworkGraphic);
     procedure SetPixmap(Value: TPixmap);
     procedure SetIcon(Value: TIcon);
     procedure SetGraphic(Value: TGraphic);
@@ -585,7 +590,7 @@ type
     procedure DefineProperties(Filer: TFiler); override;
     procedure Progress(Sender: TObject; Stage: TProgressStage;
                        PercentDone: Byte; RedrawNow: Boolean; const R: TRect;
-                       const Msg: string; var Continue: boolean); dynamic;
+                       const Msg: string; var DoContinue: boolean); dynamic;
   public
     constructor Create;
     destructor Destroy; override;
@@ -602,6 +607,7 @@ type
     class procedure UnregisterGraphicClass(AClass: TGraphicClass);
     property Bitmap: TBitmap read GetBitmap write SetBitmap;
     property Pixmap: TPixmap read GetPixmap write SetPixmap;
+    property PNG: TPortableNetworkGraphic read GetPNG write SetPNG;
     property Icon: TIcon read GetIcon write SetIcon;
     property Graphic: TGraphic read FGraphic write SetGraphic;
     //property PictureAdapter: IChangeNotifier read FNotify write FNotify;
@@ -1173,6 +1179,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.84  2003/09/02 15:12:21  mattias
+  TBitmap.Assign now shares image data
+
   Revision 1.83  2003/08/25 16:43:32  mattias
   moved many graphics types form graphtype.pp to graphics.pp
 

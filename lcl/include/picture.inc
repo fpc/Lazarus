@@ -32,7 +32,7 @@ type
     procedure Delete(Index: Integer);
     procedure Add(const Ext, Desc: String; AClass: TGraphicClass);
     function GetFormat(Index: integer): PPicFileFormat;
-    function FindExt(Ext: string): TGraphicClass;
+    function FindExt(const Ext: string): TGraphicClass;
     function FindClassName(const AClassname: string): TGraphicClass;
     procedure Remove(AClass: TGraphicClass);
     procedure BuildFilterStrings(GraphicClass: TGraphicClass;
@@ -44,15 +44,12 @@ begin
   inherited Create;
   Add('bmp', 'Bitmaps', TBitmap);
   Add('xpm', 'Pixmap', TPixmap);
+  {$IFDEF UseFPImage}
+  Add('png', 'Portable Network Graphic', TPortableNetworkGraphic);
+  {$ENDIF}
+  {$IFDEF HasIconGraphic}
   Add('ico', 'Icon', TIcon);
-{      ('.xpm',
-     '.bmp',
-     '.png',
-     '.gif',
-     '.jpg',
-     '.jpeg',
-     '.tiff');}
-
+  {$ENDIF}
 end;
 
 procedure TPicFileFormatsList.Clear;
@@ -93,14 +90,13 @@ begin
   Result:=PPicFileFormat(Items[Index]);
 end;
 
-function TPicFileFormatsList.FindExt(Ext: string): TGraphicClass;
+function TPicFileFormatsList.FindExt(const Ext: string): TGraphicClass;
 var
   I: Integer;
 begin
-  Ext := AnsiLowerCase(Ext);
   for I := Count-1 downto 0 do
     with PPicFileFormat(Items[I])^ do
-      if Extension = Ext then
+      if AnsiCompareText(Extension,Ext)=0 then
       begin
         Result := GraphicClass;
         Exit;
@@ -116,14 +112,14 @@ begin
   // search backwards so that new formats will be found first
   for I := Count-1 downto 0 do begin
     Result := GetFormat(I)^.GraphicClass;
-    if AnsiLowerCase(Result.ClassName) = AnsiLowerCase(AClassname) then
+    if AnsiCompareText(Result.ClassName,AClassname)=0 then
       Exit;
   end;
   Result := nil;
 end;
 
 procedure TPicFileFormatsList.Remove(AClass: TGraphicClass);
-// remove all file formats which inherits from ACLass
+// remove all file formats which inherits from AClass
 var
   I: Integer;
   P: PPicFileFormat;
@@ -317,6 +313,12 @@ begin
   Result := TBitmap(Graphic);
 end;
 
+function TPicture.GetPNG: TPortableNetworkGraphic;
+begin
+  ForceType(TPixmap);
+  Result := TPortableNetworkGraphic(Graphic);
+end;
+
 function TPicture.GetPixmap: TPixmap;
 begin
   ForceType(TPixmap);
@@ -334,6 +336,11 @@ begin
   SetGraphic(Value);
 end;
 
+procedure TPicture.SetPNG(const AValue: TPortableNetworkGraphic);
+begin
+  SetGraphic(AValue);
+end;
+
 procedure TPicture.SetPixmap(Value: TPixmap);
 begin
   SetGraphic(Value);
@@ -347,27 +354,27 @@ end;
 procedure TPicture.SetGraphic(Value: TGraphic);
 var
   NewGraphic: TGraphic;
-  //ok: boolean;
+  ok: boolean;
 begin
+  if (Value=FGraphic) or (Value=nil) then exit;
   NewGraphic := nil;
-  if Value <> nil then begin
-    //NewGraphic := TGraphicClass(Value.ClassType).Create;
-    //NewGraphic.Assign(Value);
-    NewGraphic := Value;//Assign Doesn't Work yet
-    NewGraphic.OnChange := @Changed;
-    NewGraphic.OnProgress := @Progress;
-  end;
-  //ok:=false;
+  ok:=false;
   try
+    if Value <> nil then begin
+      NewGraphic := TGraphicClass(Value.ClassType).Create;
+      NewGraphic.Assign(Value);
+      NewGraphic.OnChange := @Changed;
+      NewGraphic.OnProgress := @Progress;
+    end;
     FGraphic.Free;
     FGraphic := NewGraphic;
     Changed(Self);
-    //ok:=true;
+    ok:=true;
   finally
     // this try..finally construction will in case of an exception
     // not alter the error backtrace output
-
-    //if not ok then NewGraphic.Free;
+    if not ok then
+      NewGraphic.Free;
   end;
 end;
 
@@ -485,11 +492,11 @@ end;
 
 procedure TPicture.Progress(Sender: TObject; Stage: TProgressStage;
   PercentDone: Byte; RedrawNow: Boolean; const R: TRect; const Msg: string;
-  var Continue: boolean);
+  var DoContinue: boolean);
 begin
-  Continue:=true;
+  DoContinue:=true;
   if Assigned(FOnProgress) then
-    FOnProgress(Sender, Stage, PercentDone, RedrawNow, R, Msg, Continue);
+    FOnProgress(Sender, Stage, PercentDone, RedrawNow, R, Msg, DoContinue);
 end;
 
 procedure TPicture.ReadData(Stream: TStream);

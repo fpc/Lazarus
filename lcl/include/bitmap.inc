@@ -45,15 +45,28 @@ procedure TBitMap.Assign(Source: TPersistent);
 var
  SrcBitmap: TBitmap;
 begin
-  //TODO: Finish TBITMAP ASSIGN
   if Source=Self then exit;
   if Source is TBitmap then begin
-    UnshareImage;
+    writeln('TBitMap.Assign ',ClassName,' ',Source.ClassName);
+    // TBitmap can share image data
+    // -> check if already shared
     SrcBitmap:=TBitmap(Source);
+    if SrcBitmap.FImage=FImage then exit;
+    
+    // image is not shared => new image data
+    // -> free canvas (interface handles)
+    FreeCanvasContext;
+    // release old FImage
+    FImage.Release;
+    // share FImage with assign graphic
+    FImage:=SrcBitmap.FImage;
+    FImage.Reference;
+    {Old way:
+    UnshareImage;
     SetWidthHeight(SrcBitmap.Width,SrcBitmap.Height);
     Canvas.Brush.Color:=clWhite;
     Canvas.FillRect(Rect(0,0,Width,Height));
-    SrcBitmap.Draw(Canvas,Rect(0,0,Width,Height));
+    SrcBitmap.Draw(Canvas,Rect(0,0,Width,Height));}
   end else
     inherited;
 end;
@@ -299,7 +312,7 @@ end;
 procedure TBitmap.UnshareImage;
 begin
   if (FImage.RefCount>1) then begin
-    writeln('TBitmap.UnshareImage');
+    writeln('TBitmap.UnshareImage ',ClassName);
     // release old FImage and create a new one
     FreeCanvasContext;
     FImage.Release;
@@ -738,6 +751,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.41  2003/09/02 15:12:21  mattias
+  TBitmap.Assign now shares image data
+
   Revision 1.40  2003/08/20 17:03:48  mattias
   implemented TPixmap and TPortableNetworkGraphic with fpImage
 
