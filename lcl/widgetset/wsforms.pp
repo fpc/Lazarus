@@ -25,10 +25,21 @@ unit WSForms;
 {$mode objfpc}{$H+}
 
 interface
-
-uses
 ////////////////////////////////////////////////////
 // I M P O R T A N T                                
+////////////////////////////////////////////////////
+// 1) Only class methods allowed
+// 2) Class methods have to be published and virtual
+// 3) To get as little as posible circles, the uses
+//    clause should contain only those LCL units 
+//    needed for registration. WSxxx units are OK
+// 4) To improve speed, register only classes in the 
+//    initialization section which actually 
+//    implement something
+// 5) To enable your XXX widgetset units, look at
+//    the uses clause of the XXXintf.pp
+////////////////////////////////////////////////////
+uses
 ////////////////////////////////////////////////////
 // To get as little as posible circles,
 // uncomment only when needed for registration
@@ -38,77 +49,49 @@ uses
   WSLCLClasses, WSControls;
 
 type
-
   { TWSScrollingWinControl }
 
   TWSScrollingWinControl = class(TWSWinControl)
-  private
-  protected
-  public
   end;
 
   { TWSScrollBox }
 
   TWSScrollBox = class(TWSScrollingWinControl)
-  private
-  protected
-  public
   end;
 
   { TWSCustomFrame }
 
   TWSCustomFrame = class(TWSScrollingWinControl)
-  private
-  protected
-  public
   end;
 
   { TWSFrame }
 
   TWSFrame = class(TWSCustomFrame)
-  private
-  protected
-  public
   end;
 
   { TWSCustomForm }
 
   TWSCustomForm = class(TWSScrollingWinControl)
-  private
-  protected
-  public
   end;
 
   { TWSForm }
 
   TWSForm = class(TWSCustomForm)
-  private
-  protected
-  public
   end;
 
   { TWSHintWindow }
 
   TWSHintWindow = class(TWSCustomForm)
-  private
-  protected
-  public
   end;
 
   { TWSScreen }
 
   TWSScreen = class(TWSLCLComponent)
-  private
-  protected
-  public
   end;
 
   { TWSApplicationProperties }
 
   TWSApplicationProperties = class(TWSLCLComponent)
-  private
-  protected
-  public
   end;
 
 
@@ -116,8 +99,6 @@ implementation
 
 initialization
 
-////////////////////////////////////////////////////
-// I M P O R T A N T
 ////////////////////////////////////////////////////
 // To improve speed, register only classes
 // which actually implement something

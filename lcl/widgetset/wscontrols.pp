@@ -25,10 +25,21 @@ unit WSControls;
 {$mode objfpc}{$H+}
 
 interface
-
-uses
 ////////////////////////////////////////////////////
 // I M P O R T A N T                                
+////////////////////////////////////////////////////
+// 1) Only class methods allowed
+// 2) Class methods have to be published and virtual
+// 3) To get as little as posible circles, the uses
+//    clause should contain only those LCL units 
+//    needed for registration. WSxxx units are OK
+// 4) To improve speed, register only classes in the 
+//    initialization section which actually 
+//    implement something
+// 5) To enable your XXX widgetset units, look at
+//    the uses clause of the XXXintf.pp
+////////////////////////////////////////////////////
+uses
 ////////////////////////////////////////////////////
 // To get as little as posible circles,
 // uncomment only when needed for registration
@@ -38,21 +49,14 @@ uses
   WSLCLClasses, WSImgList;
 
 type
-
   { TWSDragImageList }
 
   TWSDragImageList = class(TWSCustomImageList)
-  private
-  protected
-  public
   end;
 
   { TWSControl }
 
   TWSControl = class(TWSLCLComponent)
-  private
-  protected
-  public
     class procedure SetCursor(const AControl: TControl; const ACursor: TCursor); virtual;
   end;
 
@@ -61,9 +65,6 @@ type
   { TWSWinControl }
 
   TWSWinControl = class(TWSControl)
-  private
-  protected
-  public    
     class function  HasText(const AWinControl: TWinControl): Boolean; virtual;
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; virtual;
     class function  GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean; virtual;
@@ -75,25 +76,16 @@ type
   { TWSGraphicControl }
 
   TWSGraphicControl = class(TWSControl)
-  private
-  protected
-  public
   end;
 
   { TWSCustomControl }
 
   TWSCustomControl = class(TWSWinControl)
-  private
-  protected
-  public
   end;
 
   { TWSImageList }
 
   TWSImageList = class(TWSDragImageList)
-  private
-  protected
-  public
   end;
 
 
@@ -141,8 +133,6 @@ end;
 
 initialization
 
-////////////////////////////////////////////////////
-// I M P O R T A N T
 ////////////////////////////////////////////////////
 // To improve speed, register only classes
 // which actually implement something

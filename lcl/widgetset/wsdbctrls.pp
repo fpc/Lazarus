@@ -25,10 +25,21 @@ unit WSDbCtrls;
 {$mode objfpc}{$H+}
 
 interface
-
-uses
 ////////////////////////////////////////////////////
 // I M P O R T A N T                                
+////////////////////////////////////////////////////
+// 1) Only class methods allowed
+// 2) Class methods have to be published and virtual
+// 3) To get as little as posible circles, the uses
+//    clause should contain only those LCL units 
+//    needed for registration. WSxxx units are OK
+// 4) To improve speed, register only classes in the 
+//    initialization section which actually 
+//    implement something
+// 5) To enable your XXX widgetset units, look at
+//    the uses clause of the XXXintf.pp
+////////////////////////////////////////////////////
+uses
 ////////////////////////////////////////////////////
 // To get as little as posible circles,
 // uncomment only when needed for registration
@@ -39,109 +50,69 @@ uses
   WSCalendar, WSButtons;
 
 type
-
   { TWSDBEdit }
 
   TWSDBEdit = class(TWSCustomMaskEdit)
-  private
-  protected
-  public
   end;
 
   { TWSDBText }
 
   TWSDBText = class(TWSLabel)
-  private
-  protected
-  public
   end;
 
   { TWSDBListBox }
 
   TWSDBListBox = class(TWSCustomListBox)
-  private
-  protected
-  public
   end;
 
   { TWSDBRadioGroup }
 
   TWSDBRadioGroup = class(TWSCustomRadioGroup)
-  private
-  protected
-  public
   end;
 
   { TWSDBCheckBox }
 
   TWSDBCheckBox = class(TWSCustomCheckBox)
-  private
-  protected
-  public
   end;
 
   { TWSDBComboBox }
 
   TWSDBComboBox = class(TWSCustomComboBox)
-  private
-  protected
-  public
   end;
 
   { TWSDBMemo }
 
   TWSDBMemo = class(TWSCustomMemo)
-  private
-  protected
-  public
   end;
 
   { TWSDBGroupBox }
 
   TWSDBGroupBox = class(TWSCustomGroupBox)
-  private
-  protected
-  public
   end;
 
   { TWSDBImage }
 
   TWSDBImage = class(TWSCustomImage)
-  private
-  protected
-  public
   end;
 
   { TWSDBCalendar }
 
   TWSDBCalendar = class(TWSCalendar)
-  private
-  protected
-  public
   end;
 
   { TWSDBCustomNavigator }
 
   TWSDBCustomNavigator = class(TWSCustomPanel)
-  private
-  protected
-  public
   end;
 
   { TWSDBNavButton }
 
   TWSDBNavButton = class(TWSSpeedButton)
-  private
-  protected
-  public
   end;
 
   { TWSDBNavigator }
 
   TWSDBNavigator = class(TWSDBCustomNavigator)
-  private
-  protected
-  public
   end;
 
 
@@ -149,8 +120,6 @@ implementation
 
 initialization
 
-////////////////////////////////////////////////////
-// I M P O R T A N T
 ////////////////////////////////////////////////////
 // To improve speed, register only classes
 // which actually implement something

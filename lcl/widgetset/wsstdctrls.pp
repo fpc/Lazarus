@@ -25,10 +25,21 @@ unit WSStdCtrls;
 {$mode objfpc}{$H+}
 
 interface
-
-uses
 ////////////////////////////////////////////////////
 // I M P O R T A N T                                
+////////////////////////////////////////////////////
+// 1) Only class methods allowed
+// 2) Class methods have to be published and virtual
+// 3) To get as little as posible circles, the uses
+//    clause should contain only those LCL units 
+//    needed for registration. WSxxx units are OK
+// 4) To improve speed, register only classes in the 
+//    initialization section which actually 
+//    implement something
+// 5) To enable your XXX widgetset units, look at
+//    the uses clause of the XXXintf.pp
+////////////////////////////////////////////////////
+uses
 ////////////////////////////////////////////////////
 // To get as little as posible circles,
 // uncomment only when needed for registration
@@ -38,165 +49,104 @@ uses
   WSLCLClasses, WSControls;
 
 type
-
   { TWSScrollBar }
 
   TWSScrollBar = class(TWSWinControl)
-  private
-  protected
-  public
   end;
 
   { TWSCustomGroupBox }
 
   TWSCustomGroupBox = class(TWSCustomControl)
-  private
-  protected
-  public
   end;
 
   { TWSGroupBox }
 
   TWSGroupBox = class(TWSCustomGroupBox)
-  private
-  protected
-  public
   end;
 
   { TWSCustomComboBox }
 
   TWSCustomComboBox = class(TWSWinControl)
-  private
-  protected
-  public
   end;
 
   { TWSComboBox }
 
   TWSComboBox = class(TWSCustomComboBox)
-  private
-  protected
-  public
   end;
 
   { TWSCustomListBox }
 
   TWSCustomListBox = class(TWSWinControl)
-  private
-  protected
-  public
   end;
 
   { TWSListBox }
 
   TWSListBox = class(TWSCustomListBox)
-  private
-  protected
-  public
   end;
 
   { TWSCustomEdit }
 
   TWSCustomEdit = class(TWSWinControl)
-  private
-  protected
-  public
   end;
 
   { TWSCustomMemo }
 
   TWSCustomMemo = class(TWSCustomEdit)
-  private
-  protected
-  public
   end;
 
   { TWSEdit }
 
   TWSEdit = class(TWSCustomEdit)
-  private
-  protected
-  public
   end;
 
   { TWSMemo }
 
   TWSMemo = class(TWSCustomMemo)
-  private
-  protected
-  public
   end;
 
   { TWSCustomLabel }
 
   TWSCustomLabel = class(TWSWinControl)
-  private
-  protected
-  public
   end;
 
   { TWSLabel }
 
   TWSLabel = class(TWSCustomLabel)
-  private
-  protected
-  public
   end;
 
   { TWSButtonControl }
 
   TWSButtonControl = class(TWSWinControl)
-  private
-  protected
-  public
   end;
 
   { TWSCustomCheckBox }
 
   TWSCustomCheckBox = class(TWSButtonControl)
-  private
-  protected
-  public
   end;
 
   { TWSCheckBox }
 
   TWSCheckBox = class(TWSCustomCheckBox)
-  private
-  protected
-  public
   end;
 
   { TWSToggleBox }
 
   TWSToggleBox = class(TWSCustomCheckBox)
-  private
-  protected
-  public
   end;
 
   { TWSRadioButton }
 
   TWSRadioButton = class(TWSCustomCheckBox)
-  private
-  protected
-  public
   end;
 
   { TWSCustomStaticText }
 
   TWSCustomStaticText = class(TWSCustomControl)
-  private
-  protected
-  public
   end;
 
   { TWSStaticText }
 
   TWSStaticText = class(TWSCustomStaticText)
-  private
-  protected
-  public
   end;
 
 
@@ -204,8 +154,6 @@ implementation
 
 initialization
 
-////////////////////////////////////////////////////
-// I M P O R T A N T
 ////////////////////////////////////////////////////
 // To improve speed, register only classes
 // which actually implement something

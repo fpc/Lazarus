@@ -60,6 +60,7 @@ type
   private
   protected
   public
+    class function CreateHandle(const AComponent: TComponent; const AParams: TCreateParams): THandle; override;
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
   end;
@@ -160,6 +161,13 @@ begin
 end;
 
 { TGtkWSBitBtn }
+
+function TGtkWSBitBtn.CreateHandle(const AComponent: TComponent; const AParams: TCreateParams): THandle; 
+begin
+  // TODO
+  // for now, use default
+  Result := TWSBitBtn.CreateHandle(AComponent, AParams);  
+end;
 
 function TGtkWSBitBtn.GetText(const AWinControl: TWinControl; var AText: String): Boolean; 
 begin             

@@ -25,10 +25,21 @@ unit WSGrids;
 {$mode objfpc}{$H+}
 
 interface
-
-uses
 ////////////////////////////////////////////////////
 // I M P O R T A N T                                
+////////////////////////////////////////////////////
+// 1) Only class methods allowed
+// 2) Class methods have to be published and virtual
+// 3) To get as little as posible circles, the uses
+//    clause should contain only those LCL units 
+//    needed for registration. WSxxx units are OK
+// 4) To improve speed, register only classes in the 
+//    initialization section which actually 
+//    implement something
+// 5) To enable your XXX widgetset units, look at
+//    the uses clause of the XXXintf.pp
+////////////////////////////////////////////////////
+uses
 ////////////////////////////////////////////////////
 // To get as little as posible circles,
 // uncomment only when needed for registration
@@ -38,37 +49,24 @@ uses
   WSLCLClasses, WSMaskEdit, WSControls;
 
 type
-
   { TWSStringCellEditor }
 
   TWSStringCellEditor = class(TWSCustomMaskEdit)
-  private
-  protected
-  public
   end;
 
   { TWSCustomGrid }
 
   TWSCustomGrid = class(TWSCustomControl)
-  private
-  protected
-  public
   end;
 
   { TWSDrawGrid }
 
   TWSDrawGrid = class(TWSCustomGrid)
-  private
-  protected
-  public
   end;
 
   { TWSStringGrid }
 
   TWSStringGrid = class(TWSDrawGrid)
-  private
-  protected
-  public
   end;
 
 
@@ -76,8 +74,6 @@ implementation
 
 initialization
 
-////////////////////////////////////////////////////
-// I M P O R T A N T
 ////////////////////////////////////////////////////
 // To improve speed, register only classes
 // which actually implement something

@@ -25,10 +25,21 @@ unit WSExtCtrls;
 {$mode objfpc}{$H+}
 
 interface
-
-uses
 ////////////////////////////////////////////////////
 // I M P O R T A N T                                
+////////////////////////////////////////////////////
+// 1) Only class methods allowed
+// 2) Class methods have to be published and virtual
+// 3) To get as little as posible circles, the uses
+//    clause should contain only those LCL units 
+//    needed for registration. WSxxx units are OK
+// 4) To improve speed, register only classes in the 
+//    initialization section which actually 
+//    implement something
+// 5) To enable your XXX widgetset units, look at
+//    the uses clause of the XXXintf.pp
+////////////////////////////////////////////////////
+uses
 ////////////////////////////////////////////////////
 // To get as little as posible circles,
 // uncomment only when needed for registration
@@ -38,165 +49,104 @@ uses
   WSLCLClasses, WSControls, WSStdCtrls;
 
 type
-
   { TWSCustomPage }
 
   TWSCustomPage = class(TWSWinControl)
-  private
-  protected
-  public
   end;
 
   { TWSCustomNotebook }
 
   TWSCustomNotebook = class(TWSWinControl)
-  private
-  protected
-  public
   end;
 
   { TWSPage }
 
   TWSPage = class(TWSCustomPage)
-  private
-  protected
-  public
   end;
 
   { TWSNotebook }
 
   TWSNotebook = class(TWSCustomNotebook)
-  private
-  protected
-  public
   end;
 
   { TWSShape }
 
   TWSShape = class(TWSGraphicControl)
-  private
-  protected
-  public
   end;
 
   { TWSCustomSplitter }
 
   TWSCustomSplitter = class(TWSCustomControl)
-  private
-  protected
-  public
   end;
 
   { TWSSplitter }
 
   TWSSplitter = class(TWSCustomSplitter)
-  private
-  protected
-  public
   end;
 
   { TWSPaintBox }
 
   TWSPaintBox = class(TWSGraphicControl)
-  private
-  protected
-  public
   end;
 
   { TWSCustomImage }
 
   TWSCustomImage = class(TWSGraphicControl)
-  private
-  protected
-  public
   end;
 
   { TWSImage }
 
   TWSImage = class(TWSCustomImage)
-  private
-  protected
-  public
   end;
 
   { TWSBevel }
 
   TWSBevel = class(TWSGraphicControl)
-  private
-  protected
-  public
   end;
 
   { TWSCustomRadioGroup }
 
   TWSCustomRadioGroup = class(TWSCustomGroupBox)
-  private
-  protected
-  public
   end;
 
   { TWSRadioGroup }
 
   TWSRadioGroup = class(TWSCustomRadioGroup)
-  private
-  protected
-  public
   end;
 
   { TWSCustomCheckGroup }
 
   TWSCustomCheckGroup = class(TWSCustomGroupBox)
-  private
-  protected
-  public
   end;
 
   { TWSCheckGroup }
 
   TWSCheckGroup = class(TWSCustomCheckGroup)
-  private
-  protected
-  public
   end;
 
   { TWSBoundLabel }
 
   TWSBoundLabel = class(TWSCustomLabel)
-  private
-  protected
-  public
   end;
 
   { TWSCustomLabeledEdit }
 
   TWSCustomLabeledEdit = class(TWSCustomEdit)
-  private
-  protected
-  public
   end;
 
   { TWSLabeledEdit }
 
   TWSLabeledEdit = class(TWSCustomLabeledEdit)
-  private
-  protected
-  public
   end;
 
   { TWSCustomPanel }
 
   TWSCustomPanel = class(TWSCustomControl)
-  private
-  protected
-  public
   end;
 
   { TWSPanel }
 
   TWSPanel = class(TWSCustomPanel)
-  private
-  protected
-  public
   end;
 
 
@@ -204,8 +154,6 @@ implementation
 
 initialization
 
-////////////////////////////////////////////////////
-// I M P O R T A N T
 ////////////////////////////////////////////////////
 // To improve speed, register only classes
 // which actually implement something

@@ -25,10 +25,21 @@ unit WSComCtrls;
 {$mode objfpc}{$H+}
 
 interface
-
-uses
 ////////////////////////////////////////////////////
 // I M P O R T A N T                                
+////////////////////////////////////////////////////
+// 1) Only class methods allowed
+// 2) Class methods have to be published and virtual
+// 3) To get as little as posible circles, the uses
+//    clause should contain only those LCL units 
+//    needed for registration. WSxxx units are OK
+// 4) To improve speed, register only classes in the 
+//    initialization section which actually 
+//    implement something
+// 5) To enable your XXX widgetset units, look at
+//    the uses clause of the XXXintf.pp
+////////////////////////////////////////////////////
+uses
 ////////////////////////////////////////////////////
 // To get as little as posible circles,
 // uncomment only when needed for registration
@@ -39,109 +50,69 @@ uses
   WSToolwin;
 
 type
-
   { TWSStatusBar }
 
   TWSStatusBar = class(TWSWinControl)
-  private
-  protected
-  public
   end;
 
   { TWSTabSheet }
 
   TWSTabSheet = class(TWSCustomPage)
-  private
-  protected
-  public
   end;
 
   { TWSPageControl }
 
   TWSPageControl = class(TWSCustomNotebook)
-  private
-  protected
-  public
   end;
 
   { TWSCustomListView }
 
   TWSCustomListView = class(TWSWinControl)
-  private
-  protected
-  public
   end;
 
   { TWSListView }
 
   TWSListView = class(TWSCustomListView)
-  private
-  protected
-  public
   end;
 
   { TWSProgressBar }
 
   TWSProgressBar = class(TWSWinControl)
-  private
-  protected
-  public
   end;
 
   { TWSCustomUpDown }
 
   TWSCustomUpDown = class(TWSCustomControl)
-  private
-  protected
-  public
   end;
 
   { TWSUpDown }
 
   TWSUpDown = class(TWSCustomUpDown)
-  private
-  protected
-  public
   end;
 
   { TWSToolButton }
 
   TWSToolButton = class(TWSCustomControl)
-  private
-  protected
-  public
   end;
 
   { TWSToolBar }
 
   TWSToolBar = class(TWSToolWindow)
-  private
-  protected
-  public
   end;
 
   { TWSTrackBar }
 
   TWSTrackBar = class(TWSWinControl)
-  private
-  protected
-  public
   end;
 
   { TWSCustomTreeView }
 
   TWSCustomTreeView = class(TWSCustomControl)
-  private
-  protected
-  public
   end;
 
   { TWSTreeView }
 
   TWSTreeView = class(TWSCustomTreeView)
-  private
-  protected
-  public
   end;
 
 
@@ -149,8 +120,6 @@ implementation
 
 initialization
 
-////////////////////////////////////////////////////
-// I M P O R T A N T
 ////////////////////////////////////////////////////
 // To improve speed, register only classes
 // which actually implement something
