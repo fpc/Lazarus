@@ -1192,25 +1192,17 @@ end;
   UpdateNoteBookClientWidget
   Params: ANoteBook: TObject
 
-  The client widget of a notebook is the fixed widget of the current page.
   This procedure updates the 'Fixed' object data.
+  * obsolete *
 ------------------------------------------------------------------------------}
 procedure UpdateNoteBookClientWidget(ANoteBook: TObject);
-var //Index: integer;
-  {PanelWidget, }ClientWidget: PGtkWidget;
+var
+  ClientWidget: PGtkWidget;
   NoteBookWidget: PGtkNotebook;
 begin
   if not TCustomNotebook(ANoteBook).HandleAllocated then exit;
   NoteBookWidget:=PGtkNotebook(TCustomNotebook(ANoteBook).Handle);
   ClientWidget:=nil;
-  {if GetGtkNoteBookDummyPage(NoteBookWidget)=nil then begin
-    Index:=gtk_notebook_get_current_page(NoteBookWidget);
-    if Index>=0 then begin
-      PanelWidget:=gtk_notebook_get_nth_page(NoteBookWidget,Index);
-      if PanelWidget<>nil then
-        ClientWidget:=GetFixedWidget(PanelWidget);
-    end;
-  end;}
   SetFixedWidget(NoteBookWidget,ClientWidget);
 end;
 
@@ -3254,6 +3246,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.102  2002/09/20 13:11:13  lazarus
+  MG: fixed TPanel and Frame3D
+
   Revision 1.101  2002/09/19 16:45:54  lazarus
   MG: fixed Menu.Free and gdkwindow=nil bug
 
