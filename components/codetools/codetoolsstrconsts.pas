@@ -161,6 +161,7 @@ ResourceString
   ctsSrcPathInitialization = 'SrcPath Initialization';
   ctsNestedCommentsOn = 'Nested Comments On';
   ctsCompiler = 'Compiler';
+  ctsDefineProzessorType = 'Define processor type';
   ctsRuntimeLibrary = 'Runtime library';
   ctsProcessorSpecific = 'processor specific';
   ctsFreePascalComponentLibrary = 'Free Pascal Component Library';

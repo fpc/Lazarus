@@ -1244,10 +1244,11 @@ end;
 constructor TEnvironmentOptionsDialog.Create(AOwner:TComponent);
 begin
   inherited Create(AOwner);
-  if LazarusResources.Find(ClassName)=nil then begin
+  if LazarusResources.Find(ClassName)=nil then
+  begin
     Position:=poScreenCenter;
     IDEDialogLayoutList.ApplyLayout(Self,485,435);
-    Caption:=dlgEnvOpts;
+    Caption:=lisMenuGeneralOptions;
     OnResize:=@EnvironmentOptionsDialogResize;
     
     NoteBook:=TNoteBook.Create(Self);
@@ -2432,7 +2433,7 @@ begin
     Top:=FormEditMiscGroupBox.Top+FormEditMiscGroupBox.Height+5;
     Width:=GridGroupBox.Width;
     Height:=120;
-    Caption:='Rubberband';
+    Caption:=dlgRubberBandGroup;
   end;
 
   SetupRubberbandBox;

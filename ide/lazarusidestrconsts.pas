@@ -304,7 +304,7 @@ resourcestring
   //Environment dialog
   dlgBakDirectory='(no subdirectoy)';
   
-  dlgEnvOpts = 'Environment Options';
+  //dlgEnvOpts = 'Environment Options';  = lisMenuGeneralOptions
   dlgDesktop = 'Desktop';
   dlgFrmEditor = 'Form Editor';
   dlgObjInsp = 'Object Inspector';
@@ -367,6 +367,7 @@ resourcestring
   dlgRuberbandSelectionColor = 'Selection';
   dlgRuberbandCreationColor = 'Creation';
   dlgRubberbandSelectsGrandChilds = 'Select grand childs';
+  dlgRubberBandGroup='Rubber band';
   dlgPasExt = 'Default pascal extension';
   dlgPasLower = 'Save pascal files lowercase';
   dlgAmbigFileAct = 'Ambigious file action:';
@@ -656,6 +657,19 @@ resourcestring
   dlgDownWord = 'Down';
   dlgReplaceAll = 'Replace All';
   
+  //IDEOptionDefs
+  dlgGetPosition = 'Get position';
+  dlgLeftPos     = 'Left:';
+  dlgWidthPos    = 'Width:';
+  dlgTopPos      = 'Top:';
+  DlgHeightPos   = 'Height:';
+  rsiwpUseWindowManagerSetting = 'Use windowmanager setting';
+  rsiwpDefault                 = 'Default';
+  rsiwpRestoreWindowGeometry   = 'Restore window geometry';
+  rsiwpDocked                  = 'Docked';
+  rsiwpCustomPosition          = 'Custom position';
+  rsiwpRestoreWindowSize       = 'Restore window size';
+
   // Code Explorer
   lisCodeExplorer = 'Code Explorer';
 

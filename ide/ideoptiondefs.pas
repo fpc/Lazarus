@@ -33,7 +33,8 @@ unit IDEOptionDefs;
 interface
 
 uses
-  Classes, SysUtils, Laz_XMLCfg, Forms, Controls, StdCtrls, Buttons;
+  Classes, SysUtils, Laz_XMLCfg, Forms, Controls, StdCtrls, Buttons,
+  LazarusIDEStrConsts;
 
 const
   // form names for non modal IDE windows:
@@ -698,41 +699,49 @@ var
     end;
   end;
 
-const
-  RadioBtnCaptions: array[TIDEWindowPlacement] of string = (
-      'Use windowmanager setting',
-      'Default',
-      'Restore window geometry',
-      'Docked',
-      'Custom position',
-      'Restore window size'
-    );
+  function GetRadioBtnCaptions(aPos : TIDEWindowPlacement) : String;
+  begin
+    Result:='?';
+    Case aPos of
+      iwpUseWindowManagerSetting : Result:= rsiwpUseWindowManagerSetting;
+      iwpDefault                 : Result:= rsiwpDefault;
+      iwpRestoreWindowGeometry   : Result:= rsiwpRestoreWindowGeometry;
+      iwpDocked                  : Result:= rsiwpDocked;
+      iwpCustomPosition          : Result:= rsiwpCustomPosition;
+      iwpRestoreWindowSize       : Result:= rsiwpRestoreWindowSize;
+    end;
+  end;
+  
 begin
   if AnLayout=nil then exit;
   CurY:=5;
-  for APlacement:=Low(TIDEWindowPlacement) to High(TIDEWindowPlacement) do begin
-    if APlacement in AnLayout.WindowPlacementsAllowed then begin
+  for APlacement:=Low(TIDEWindowPlacement) to High(TIDEWindowPlacement) do
+  begin
+    if APlacement in AnLayout.WindowPlacementsAllowed then
+    begin
       if PlacementRadioButtons[APlacement]=nil then
         PlacementRadioButtons[APlacement]:=TRadioButton.Create(Self);
-      with PlacementRadioButtons[APlacement] do begin
+      with PlacementRadioButtons[APlacement] do
+      begin
         Parent:=Self;
         SetBounds(5,CurY,Self.ClientWidth-Left,Height);
         inc(CurY,Height+2);
         OnClick:=@RadioButtonClick;
-        Caption:=RadioBtnCaptions[APlacement];
+        Caption:=GetRadioBtnCaptions(APlacement);
         Checked:=(APlacement=AnLayout.WindowPlacement);
         Visible:=true;
       end;
+      
       case APlacement of
       iwpCustomPosition:
         begin
           // custom window position
-          SetLabelAndEdit(LeftLabel,LeftEdit,'Left:',15,CurY);
-          SetLabelAndEdit(TopLabel,TopEdit,'Top:',
+          SetLabelAndEdit(LeftLabel,LeftEdit,dlgLeftPos,15,CurY);
+          SetLabelAndEdit(TopLabel,TopEdit,dlgTopPos,
             LeftEdit.Left+LeftEdit.Width+15,CurY);
           inc(CurY,LeftEdit.Height+3);
-          SetLabelAndEdit(WidthLabel,WidthEdit,'Width:',15,CurY);
-          SetLabelAndEdit(HeightLabel,HeightEdit,'Height:',
+          SetLabelAndEdit(WidthLabel,WidthEdit,dlgWidthPos,15,CurY);
+          SetLabelAndEdit(HeightLabel,HeightEdit,DlgHeightPos,
             WidthEdit.Left+WidthEdit.Width+15,CurY);
           inc(CurY,WidthEdit.Height+3);
           if AnLayout.CustomCoordinatesAreValid then begin
@@ -748,30 +757,38 @@ begin
           end;
         end;
       end;
-    end else begin
-      if PlacementRadioButtons[APlacement]<>nil then begin
-        PlacementRadioButtons[APlacement].Free;
-        PlacementRadioButtons[APlacement]:=nil;
-      end;
+    end else
+        begin
+          if PlacementRadioButtons[APlacement]<>nil then
+          begin
+              PlacementRadioButtons[APlacement].Free;
+              PlacementRadioButtons[APlacement]:=nil;
+          end;
+        end;
     end;
-  end;
-  inc(CurY,2);
-  if ApplyButton=nil then ApplyButton:=TButton.Create(Self);
-  with ApplyButton do begin
+    
+    inc(CurY,2);
+    if ApplyButton=nil then
+       ApplyButton:=TButton.Create(Self);
+       
+    with ApplyButton do
+    begin
     Parent:=Self;
     SetBounds(5,CurY,70,Height);
     OnClick:=@ApplyButtonClick;
-    Caption:='Apply';
+    Caption:=dlgButApply;
     Visible:=true;
   end;
-  if iwpCustomPosition in AnLayout.WindowPlacementsAllowed then begin
+  if iwpCustomPosition in AnLayout.WindowPlacementsAllowed then
+  begin
     if GetWindowPositionButton=nil then
       GetWindowPositionButton:=TButton.Create(Self);
-    with GetWindowPositionButton do begin
+    with GetWindowPositionButton do
+    begin
       Parent:=Self;
       SetBounds(85,CurY,110,Height);
       OnClick:=@GetWindowPositionButtonClick;
-      Caption:='Get position';
+      Caption:=dlgGetPosition;
       Visible:=true;
     end;
   end;

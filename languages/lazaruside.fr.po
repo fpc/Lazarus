@@ -587,6 +587,10 @@ msgstr "Commandes de déplacements"
 msgid "Cursor row in current editor"
 msgstr "Ligne du curseur dans l'éditeur courant"
 
+#: lazarusidestrconsts:rsiwpcustomposition
+msgid "Custom position"
+msgstr "Position personnalisée"
+
 #: lazarusidestrconsts:lismenucut
 msgid "Cut"
 msgstr "Couper"
@@ -622,6 +626,10 @@ msgstr "Type de débuggeur et chemin"
 #: lazarusidestrconsts:dlgcodebugging
 msgid "Debugging:"
 msgstr "Débugueur"
+
+#: lazarusidestrconsts:rsiwpdefault
+msgid "Default"
+msgstr "Défaut"
 
 #: lazarusidestrconsts:dlgpasext
 msgid "Default pascal extension"
@@ -734,6 +742,10 @@ msgstr "Pas de ligne de séparation après"
 #: lazarusidestrconsts:dlgnotsplitlinefront
 msgid "Do not split line In front of:"
 msgstr "Pas de ligne de séparation devant "
+
+#: lazarusidestrconsts:rsiwpdocked
+msgid "Docked"
+msgstr ""
 
 #: lazarusidestrconsts:dlgdoubleclickline
 msgid "Double click line"
@@ -1007,6 +1019,10 @@ msgstr "Générer des infos pour le débugueur GDB (compilation lente)"
 msgid "Generate:"
 msgstr "Vous produisez"
 
+#: lazarusidestrconsts:dlggetposition
+msgid "Get position"
+msgstr "Récupérer"
+
 #: lazarusidestrconsts:dlgglobal
 msgid "Global"
 msgstr "Globale"
@@ -1073,7 +1089,7 @@ msgstr "Grille"
 
 #: lazarusidestrconsts:dlggridcolor
 msgid "Grid color"
-msgstr "Couleur de la grille"
+msgstr "Couleur"
 
 #: lazarusidestrconsts:dlggridx
 msgid "Grid size X"
@@ -1118,6 +1134,10 @@ msgstr ""
 #: lazarusidestrconsts:dlgheapsize
 msgid "Heap Size"
 msgstr "Taille de tas"
+
+#: lazarusidestrconsts:dlgheightpos
+msgid "Height:"
+msgstr "Hauteur:"
 
 #: lazarusidestrconsts:srvk_help
 msgid "Help"
@@ -1423,6 +1443,10 @@ msgstr "Gauche"
 msgid "left windows key"
 msgstr "Touche Windows gauche"
 
+#: lazarusidestrconsts:dlgleftpos
+msgid "Left:"
+msgstr "Gauche:"
+
 #: lazarusidestrconsts:dlglevel1opt
 msgid "Level 1 (Quick Optimizations)"
 msgstr "Niveau 1 (Optimisation rapide)"
@@ -1657,7 +1681,7 @@ msgstr "Les composants sélectionnés doivent être d'une même fiche."
 
 #: lazarusidestrconsts:dlgnaming
 msgid "Naming"
-msgstr "Extension"
+msgstr "Appellation"
 
 #: lazarusidestrconsts:srkmecnew
 msgid "New"
@@ -1995,6 +2019,14 @@ msgstr ""
 msgid "Report"
 msgstr "Rapport"
 
+#: lazarusidestrconsts:rsiwprestorewindowgeometry
+msgid "Restore window geometry"
+msgstr "Restaurer les dimensions"
+
+#: lazarusidestrconsts:rsiwprestorewindowsize
+msgid "Restore window size"
+msgstr "Restaurer les dimensions"
+
 #: lazarusidestrconsts:srvk_return
 msgid "Return"
 msgstr "Entrée"
@@ -2018,6 +2050,10 @@ msgstr "Couleur de la marge droite"
 #: lazarusidestrconsts:srvk_rwin
 msgid "right windows key"
 msgstr "Touche Windows droite"
+
+#: lazarusidestrconsts:dlgrubberbandgroup
+msgid "Rubber band"
+msgstr "Bande élastique"
 
 #: lazarusidestrconsts:lismenuprojectrun
 msgid "Run"
@@ -2173,7 +2209,7 @@ msgstr "Sélection en XY"
 
 #: lazarusidestrconsts:dlgrubberbandselectsgrandchilds
 msgid "Select grand childs"
-msgstr "Choisir les grands enfants"
+msgstr "Choisir les grands"
 
 #: lazarusidestrconsts:lismenuselectline
 msgid "Select line"
@@ -2643,6 +2679,10 @@ msgstr "ToolTip d'évaluation d'expression"
 msgid "Tooltip symbol Tools"
 msgstr "Tooltip d'identification des symboles"
 
+#: lazarusidestrconsts:dlgtoppos
+msgid "Top:"
+msgstr "Haut:"
+
 #: lazarusidestrconsts:dlgbp7cptb
 msgid "TP/BP 7.0 Compatible"
 msgstr "Compatibilité TB/BP 7.0"
@@ -2758,6 +2798,10 @@ msgstr "Utilise le démarrage de l'application"
 #: lazarusidestrconsts:dlgusesyntaxhighlight
 msgid "Use syntax highlight"
 msgstr "Mise en évidence de la syntaxe"
+
+#: lazarusidestrconsts:rsiwpusewindowmanagersetting
+msgid "Use windowmanager setting"
+msgstr "Utiliser le gestionnaire de fenêtre"
 
 #: lazarusidestrconsts:dlgedcustomext
 msgid "User defined extension"
@@ -2878,6 +2922,10 @@ msgstr "Points de suivi"
 #: lazarusidestrconsts:dlgwholewordsonly
 msgid "Whole Words Only"
 msgstr "Mots entiers seulement"
+
+#: lazarusidestrconsts:dlgwidthpos
+msgid "Width:"
+msgstr "Largeur:"
 
 #: lazarusidestrconsts:dlgwinpos
 msgid "Window Positions"

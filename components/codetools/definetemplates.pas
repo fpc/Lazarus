@@ -2370,6 +2370,10 @@ begin
   CompilerDir:=TDefineTemplate.Create('Compiler',ctsCompiler,'','compiler',
      da_Directory);
   MainDir.AddChild(CompilerDir);
+  // define 'i386'   ToDo: other types like m68k
+  DefTempl:=TDefineTemplate.Create('Define i386',
+    ctsDefineProzessorType,'i386','',da_DefineRecurse);
+  CompilerDir.AddChild(DefTempl);
 
   // rtl
   RTLDir:=TDefineTemplate.Create('RTL',ctsRuntimeLibrary,'','rtl',da_Directory);
@@ -2385,6 +2389,10 @@ begin
     Format(ctsIncludeDirectoriesPlusDirs,
     ['objpas, inc,'+TargetProcessor+','+SrcOS]),
     ExternalMacroStart+'IncPath',s,da_DefineRecurse));
+  // define 'i386'   ToDo: other types like m68k
+  DefTempl:=TDefineTemplate.Create('Define i386',
+    ctsDefineProzessorType,'i386','',da_DefineRecurse);
+  RTLDir.AddChild(DefTempl);
 
   // fcl
   FCLDir:=TDefineTemplate.Create('FCL',ctsFreePascalComponentLibrary,'','fcl',
