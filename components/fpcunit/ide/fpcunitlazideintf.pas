@@ -134,7 +134,9 @@ begin
   AProject.AddPackageDependency('FCL');
   AProject.AddPackageDependency('LCL');
   AProject.AddPackageDependency('FPCUnitTestRunner');
-
+  
+  // compiler options
+  AProject.LazCompilerOptions.UseLineInfoUnit:=true;
 end;
 
 procedure TFPCUnitApplicationDescriptor.CreateStartFiles(AProject: TLazProject);
