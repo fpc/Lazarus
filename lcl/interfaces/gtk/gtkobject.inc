@@ -2071,10 +2071,8 @@ begin
           AccelKey:= gtk_label_parse_uline(pGtkLabel(p), aLabel);
 	  SetAccelKey(p, AccelKey);
 	  if AccelKey <> 0 then
-writeln('Calling Accel group 2');
 	    gtk_widget_add_accelerator(p, 'grab_focus', gtk_accel_group_get_default(),
 	      AccelKey, GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
-writeln('Called Accel group 2');
         finally
 	  StrDispose(aLabel);
 	end;
@@ -2749,18 +2747,9 @@ begin
   then
     DestroyCaret(Handle);
     
-  if Sender is TControl then begin
-    case TControl(Sender).fCompStyle of
-    csComboBox:
-      SetComboBoxText(PGtkCombo(Handle),nil);
-      
-    end;
-    
-  end
-  else if Sender is TCommonDialog then begin
+  if Sender is TCommonDialog then begin
     DestroyCommonDialogAddOns(TCommonDialog(Sender));
   end;
-
 
   // destroy the widget
   DestroyWidget(Widget);
@@ -3470,6 +3459,7 @@ var
    //pStr      : PChar;             // currently only used for TBitBtn to load default pixmap
    ParentForm: TCustomForm;
    Accel : PChar;
+   SetupProps : boolean;
 
   procedure Set_RC_Name(AWidget: PGtkWidget);
   var RCName: string;
@@ -3504,6 +3494,7 @@ var
 begin
   Assert(False, 'Trace:In CreateComponet');
   p := nil;
+  SetupProps:= false;
 
   CompStyle := csNone;
   Caption   := Sender.ClassName;
@@ -3748,8 +3739,7 @@ begin
   csLabel :
     begin
       P := gtk_label_new(StrTemp);
-      gtk_label_set_justify(PGtkLabel(P), GTK_JUSTIFY_LEFT);
-      gtk_misc_set_alignment(PGTKMISC(P), 0.0 , 0.0);
+      SetupProps:= true;
     end;
 
   csListBox :
@@ -3859,25 +3849,20 @@ begin
     begin
       P := gtk_scrolled_window_new(nil, nil);
       TempWidget := gtk_text_new(nil, nil);
-      gtk_text_set_editable (PGtkText(TempWidget), not (Sender as TMemo).ReadOnly);
-      gtk_text_set_word_wrap(PGtkText(TempWidget), Integer((Sender as TCustomMemo).WordWrap));
-      gtk_widget_show(TempWidget);
-
       gtk_container_add(p, TempWidget);
-      case (Sender as TCustomMemo).Scrollbars of
-        ssHorizontal: gtk_scrolled_window_set_policy(p, GTK_POLICY_ALWAYS, GTK_POLICY_NEVER);
-        ssVertical:   gtk_scrolled_window_set_policy(p, GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
-        ssBoth:       gtk_scrolled_window_set_policy(p, GTK_POLICY_ALWAYS, GTK_POLICY_ALWAYS);
-      else
-        gtk_scrolled_window_set_policy(p, GTK_POLICY_NEVER, GTK_POLICY_NEVER);
-      end;
+      gtk_text_set_adjustments(PGtkText(TempWidget), PGtkAdjustment(PGtkScrolledWindow(P)^.hscrollbar),
+        PGtkAdjustment(PGtkScrolledWindow(P)^.vscrollbar));
 
       //--------------------------
       // MWE: will be obsoleted
       SetCoreChildWidget(p, TempWidget);
       //--------------------------
       GetWidgetInfo(p, True)^.ImplementationWidget := TempWidget;
+
       gtk_widget_show(P);
+      gtk_widget_show(TempWidget);
+      
+      SetupProps:= true;
     end;
 
   csMenuBar :
@@ -4087,7 +4072,10 @@ begin
   if (Sender is TCommonDialog) then
     TCommonDialog(Sender).Handle:= THandle(p);
 
+
   Set_RC_Name(p);
+
+  if SetupProps then SetProperties(Sender);
 
   StrDispose(StrTemp);
   if P <> nil then begin
@@ -4886,11 +4874,13 @@ end;
   the calling object to the corresponding GTK object.
  ------------------------------------------------------------------------------}
 function TgtkObject.SetProperties (Sender : TObject) : integer;
+const
+  cLabelAlignX : array[TAlignment] of gfloat = (0.0, 1.0, 0.5);
+  cLabelAlignY : array[TTextLayout] of gfloat = (0.0, 0.5, 1.0);
+  cLabelAlign : array[TAlignment] of TGtkJustification = (GTK_JUSTIFY_LEFT, GTK_JUSTIFY_RIGHT, GTK_JUSTIFY_CENTER);
 var
    Handle    : Pointer;
-   Widget    : PGtkWidget;
-   xAlign    : gfloat;
-   yAlign    : gfloat;
+   Widget, ImplWidget   : PGtkWidget;
    I,X         : Integer;
    pRowText : PChar;
    Image : PgdkImage;
@@ -4902,8 +4892,9 @@ begin
   then Assert(False, Format('Trace:  [TgtkObject.SetProperties] %s', [Sender.ClassName]))
   else Assert(False, Format('Trace:WARNING: [TgtkObject.SetProperties] %s --> No Decendant of TWinControl', [Sender.ClassName]));
 
-  Handle    := Pointer(TWinControl(Sender).Handle);
-  Assert (Handle = nil, 'WARNING: [TgtkObject.SetProperties] --> got nil pointer');
+  Handle:= Pointer(TWinControl(Sender).Handle);
+  Assert(Handle = nil, 'WARNING: [TgtkObject.SetProperties] --> got nil pointer');
+  Widget:= PGtkWidget(Handle);
    
   case TControl(Sender).fCompStyle of
     csEdit :
@@ -4981,24 +4972,8 @@ begin
     csLabel :
        with TLabel(Sender) do
        begin
-         case Alignment of
-           taLeftJustify  : xAlign := 0.0;
-           taCenter       : xAlign := 0.5;
-           taRightJustify : xAlign := 1.0;
-         else 
-           xAlign := 0.0; // default, shouldn't happen
-         end;
-
-         case Layout of
-           tlTop    : yAlign := 0.0;
-           tlCenter : yAlign := 0.5;
-           tlBottom : yAlign := 1.0;
-         else 
-           yAlign := 1.0; //default, shouldn't happen
-         end;
-
-         gtk_misc_set_alignment(PGTKMISC(Handle), xAlign, yAlign);
-         gtk_label_set_line_wrap(PGTKLABEL(Handle),WordWrap);
+         gtk_label_set_justify(PGtkLabel(Handle), cLabelAlign[Alignment]);
+         gtk_misc_set_alignment(PGTKMISC(Handle), cLabelAlignX[Alignment], cLabelAlignY[Layout]);
        end;
        
     csListView :
@@ -5113,6 +5088,26 @@ begin
           end;
         end;
         gtk_clist_thaw(PgtkCList(Widget));
+      end;
+
+    csMemo:
+      begin
+        ImplWidget:= GetWidgetInfo(Widget, true)^.ImplementationWidget;
+      
+        gtk_text_set_editable (PGtkText(ImplWidget), not (Sender as TMemo).ReadOnly);
+        gtk_text_set_line_wrap(PGtkText(ImplWidget), Integer((Sender as TCustomMemo).WordWrap));
+        gtk_text_set_word_wrap(PGtkText(ImplWidget), 1);
+        
+        case (Sender as TCustomMemo).Scrollbars of
+          ssHorizontal: gtk_scrolled_window_set_policy(PGtkScrolledWindow(Widget), GTK_POLICY_ALWAYS, GTK_POLICY_NEVER);
+          ssVertical:   gtk_scrolled_window_set_policy(PGtkScrolledWindow(Widget), GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
+          ssBoth:       gtk_scrolled_window_set_policy(PGtkScrolledWindow(Widget), GTK_POLICY_ALWAYS, GTK_POLICY_ALWAYS);
+          ssAutoHorizontal: gtk_scrolled_window_set_policy(PGtkScrolledWindow(Widget), GTK_POLICY_AUTOMATIC, GTK_POLICY_NEVER);
+          ssAutoVertical:   gtk_scrolled_window_set_policy(PGtkScrolledWindow(Widget), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+          ssAutoBoth:       gtk_scrolled_window_set_policy(PGtkScrolledWindow(Widget), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+        else
+          gtk_scrolled_window_set_policy(PGtkScrolledWindow(Widget), GTK_POLICY_NEVER, GTK_POLICY_NEVER);
+        end;
       end;
            
     csImage: 
@@ -5705,7 +5700,14 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.198  2002/09/05 10:12:07  lazarus
+  New dialog for multiline caption of TCustomLabel.
+  Prettified TStrings property editor.
+  Memo now has automatic scrollbars (not fully working), WordWrap and Scrollbars property
+  Removed saving of old combo text (it broke things and is not needed). Cleanups.
+
   Revision 1.197  2002/09/04 12:57:31  lazarus
+
   Workaround GTK accelerator bug.
 
   Revision 1.196  2002/09/04 09:32:17  lazarus
