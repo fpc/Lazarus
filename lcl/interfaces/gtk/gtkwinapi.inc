@@ -986,15 +986,14 @@ begin
                        RawImage.Description.Width, RawImage.Description.Height);
     end;
 
-    Result:=true;
-  finally
-    if not Result then begin
-      if Bitmap<>0 then DeleteObject(Bitmap);
-      Bitmap:=0;
-      if MaskBitmap<>0 then DeleteObject(MaskBitmap);
-      MaskBitmap:=0;
-    end;
+  except
+    if Bitmap<>0 then DeleteObject(Bitmap);
+    Bitmap:=0;
+    if MaskBitmap<>0 then DeleteObject(MaskBitmap);
+    MaskBitmap:=0;
+    exit;
   end;
+  Result:=true;
 end;
 
 {------------------------------------------------------------------------------
@@ -1016,12 +1015,9 @@ const
   HATCH_VERTICAL  : array[0..7] of Byte = ($08, $08, $08, $08, $08, $08, $08, $08);
 var
   GObject: PGdiObject;
-  ok: Boolean;
 begin
   Assert(False, Format('Trace:> [TGtkWidgetSet.CreateBrushIndirect]  Style: %d, Color: %8x', [LogBrush.lbStyle, LogBrush.lbColor]));
 
-  ok:=false;
-  
   {$IFDEF DebugGDKTraps}
   BeginGDKErrorTrap;
   {$ENDIF}
@@ -1109,13 +1105,10 @@ begin
         SetGDIColorRef(GObject^.GDIBrushColor,lbColor);
     end;
     Result := HBRUSH(GObject);
-    ok:=true;
-  finally
-    if not ok then begin
-      Result:=0;
-      DisposeGDIObject(GObject);
-      writeln('TGtkWidgetSet.CreateBrushIndirect failed');
-    end;
+  except
+    Result:=0;
+    DisposeGDIObject(GObject);
+    writeln('TGtkWidgetSet.CreateBrushIndirect failed');
   end;
   Assert(False, Format('Trace:< [TGtkWidgetSet.CreateBrushIndirect] Got --> %x', [Result]));
 end;
@@ -1732,7 +1725,6 @@ var
   ColorMap: PGdkColormap;
   P: Pointer;
   Depth : Longint;
-  ok: Boolean;
 begin
   GdiObject := NewGDIObject(gdiBitmap);
   if TransColor >= 0 then begin
@@ -1750,7 +1742,7 @@ begin
     ColorMap:=gdk_window_get_colormap(Window)
   else
     ColorMap:=gdk_colormap_get_system;
-  ok:=false;
+
   try
     GdiObject^.GDIPixmapObject :=
       gdk_pixmap_colormap_create_from_xpm_d(Window,Colormap,
@@ -1773,16 +1765,14 @@ begin
     GdiObject^.Colormap := gdk_colormap_new(GdiObject^.Visual, GdkFalse);
 
     GdiObject^.GDIBitmapType:=gbPixmap;
-    ok:=true;
-  finally
-    if not ok then begin
-      DisposeGDIObject(GdiObject);
-      GdiObject:=nil;
-    end;
-    {$IFDEF DebugGDKTraps}
-    EndGDKErrorTrap;
-    {$ENDIF}
+  except
+    DisposeGDIObject(GdiObject);
+    GdiObject:=nil;
   end;
+  {$IFDEF DebugGDKTraps}
+  EndGDKErrorTrap;
+  {$ENDIF}
+  
   Result := HBITMAP(GdiObject);
 end;
 
@@ -4754,12 +4744,10 @@ begin
       exit;
     end;
 
-    Result:=true;
-  finally
-    if not Result then begin
-      FreeRawImageData(@NewRawImage);
-    end;
+  except
+    FreeRawImageData(@NewRawImage);
   end;
+  Result:=true;
 end;
 
 {------------------------------------------------------------------------------
@@ -8694,6 +8682,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.347  2004/04/15 21:27:40  marc
+  * Applied patch from Ladislav Michl
+
   Revision 1.346  2004/04/12 22:36:29  mattias
   made TIcon more independent of TBitmap  from Colin
 
