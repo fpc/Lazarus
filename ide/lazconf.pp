@@ -183,7 +183,7 @@ begin
   Result:='undefined';
   
   {$IFDEF CPUi386}
-    {$IFDEF windows}
+    {$IFDEF win32}
     Result:='ppc386.exe';
     {$ELSE}
     Result:='ppc386';
@@ -255,6 +255,9 @@ end.
 
 {
   $Log$
+  Revision 1.38  2005/03/18 09:51:04  vincents
+  fixed default compiler name for windows
+
   Revision 1.37  2005/02/27 16:21:53  marc
   + Added extra cpus
 
