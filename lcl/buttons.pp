@@ -237,10 +237,12 @@ implementation
 uses lclstrconsts;
 
 const
-  BitBtnModalResults : array[TBitBtnKind] of TModalResult = (0, mrOK, mrCancel, 0, mrYes, mrNo,
+  BitBtnModalResults : array[TBitBtnKind] of TModalResult = (
+    0, mrOK, mrCancel, 0, mrYes, mrNo,
     0, mrAbort, mrRetry, mrIgnore, mrAll);
 
-  BitbtnCaption : array[TBitBtnKind] of String = ('', rsmbOK, rsmbCancel, rsmbHelp, rsmbYes, rsmbNo, 
+  BitbtnCaption : array[TBitBtnKind] of String = (
+    '', rsmbOK, rsmbCancel, rsmbHelp, rsmbYes, rsmbNo,
     rsmbClose, rsmbAbort, rsmbRetry, rsmbIgnore, rsmbAll);
 
 
@@ -269,7 +271,11 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.24  2002/09/04 09:32:17  lazarus
+  MG: improved streaming error handling
+
   Revision 1.23  2002/09/03 11:32:49  lazarus
+
   Added shortcut keys to labels
   Support for alphabetically sorting the properties
   Standardize message and add shortcuts ala Kylix
