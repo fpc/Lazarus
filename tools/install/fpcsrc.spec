@@ -35,7 +35,7 @@ fi
 mkdir -p %{destdir}
 cp -a fpc/* %{destdir}/
 # the palmos libcrt.a archive is making trouble
-rm %{destdir}/rtl/palmos/libcrt.a
+rm -f %{destdir}/rtl/palmos/libcrt.a
 
 %clean
 if [ %{buildroot} != "/" ]; then
