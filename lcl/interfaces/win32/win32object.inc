@@ -360,6 +360,7 @@ Var
   TBB: TBBUTTON;
   WindowStyle: Integer; //used by LM_SETTABPOSITION
   OldPageIndex: Integer; //used by LM_SETITEMINDEX of a csNotebook
+  AMenu: TMenu;
 Begin
   Result := 0;   //default value just in case nothing sets it
   Assert(False, 'Trace:IntSendMessage3 - Start, Received (' + GetMessageName(LM_Message) + ')');
@@ -538,7 +539,10 @@ Begin
             { not assigned when this the menuitem of a TMenu; handle is destroyed above }
             if Assigned(TMenuItem(Sender).Parent) then
               DeleteMenu((Sender as TMenuItem).Parent.Handle, TMenuItem(Sender).Command, MF_BYCOMMAND);
-            DrawMenuBar(((Sender as TMenuItem).Owner as TWinControl).Handle);
+            AMenu:=TMenuItem(Sender).GetParentMenu;
+            if (AMenu<>nil) and (AMenu.Parent<>nil)
+            and (AMenu.Parent is TCustomForm) then
+              DrawMenuBar(TCustomForm(AMenu.Parent).Handle);
           End
           Else
             Assert(False, Format('Trace:I don''t know how to destroy component %S', [Sender.ClassName]));
@@ -2660,6 +2664,9 @@ End;
 
 {
   $Log$
+  Revision 1.59  2003/06/26 14:46:24  mattias
+  fixed menu attaching from Micha
+
   Revision 1.58  2003/06/26 14:24:50  mattias
   fixed progressbar SET_PROPERTIES from Micha
 
