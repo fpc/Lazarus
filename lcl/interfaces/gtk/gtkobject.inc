@@ -2298,17 +2298,21 @@ begin
            csListBox:
              begin
                if Handle<>0 then begin
+                 Widget:=nil;
                  if TListBox(Sender).MultiSelect then 
-                   Widget:= PGtkList(GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget)^.last_focus_child
-                 else begin
+                   Widget:= PGtkList(GetWidgetInfo(Pointer(Handle), True)^.
+                                        ImplementationWidget)^.last_focus_child;
+                 if Widget=nil then begin
                    GList:= PGtkList(GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget)^.selection;
-                   if GList = nil then
-                     Widget:= nil
-                   else
+                   if GList <> nil then
                      Widget:= PGtkWidget(GList^.data);
                  end;  
-                 if Widget = nil then Result:= -1
-                 else Result:= gtk_list_child_position(PGtkList(GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget), Widget);
+                 if Widget = nil then
+                   Result:= -1
+                 else
+                   Result:= gtk_list_child_position(PGtkList(
+                                 GetWidgetInfo(Pointer(Handle), True)^.
+                                               ImplementationWidget), Widget);
                end else
                  Result:=-1;
              end;
@@ -2332,14 +2336,15 @@ begin
         end;
       end;
           
-      LM_SETITEMINDEX :
+      LM_SETITEMINDEX:
         if Handle<>0 then begin
           case TControl(Sender).fCompStyle of
         
           csComboBox:
             SetComboBoxItemIndex(TComboBox(Sender),Integer(Data));
 
-          csListBox :
+          csListBox:
+          begin
             if Integer(Data)>=0 then
               gtk_list_select_item(
                 PGtkList(GetWidgetInfo(Pointer(Handle),True)^.ImplementationWidget),
@@ -2347,6 +2352,7 @@ begin
             else
               gtk_list_unselect_all(
                 PGtkList(GetWidgetInfo(Pointer(Handle),True)^.ImplementationWidget));
+          end;
 
           csCListBox:
             gtk_clist_select_row(PGtkCList(GetWidgetInfo(Pointer(Handle),
@@ -2518,7 +2524,7 @@ begin
          end
       end;
  
-      LM_SETSEL :
+      LM_SETSEL:
       begin
         if (Sender is TControl)
         and (TControl(Sender).fCompStyle in [csListBox, csCListBox])
@@ -7259,6 +7265,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.362  2003/05/14 13:06:00  mattias
+  fixed setting TListBox.Selected before createhandle
+
   Revision 1.361  2003/05/01 11:44:03  mattias
   fixed changing menuitem separator and normal
 
