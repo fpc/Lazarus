@@ -18,11 +18,6 @@
 
 constructor TGraphic.Create;
 begin
-  VirtualCreate;
-end;
-
-constructor TGraphic.VirtualCreate;
-begin
   Inherited Create;
 end;
 

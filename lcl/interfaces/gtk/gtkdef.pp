@@ -97,7 +97,7 @@ type
         Underline : gboolean;//instead of an additional AttributeList
       {$else}
         GDIFontObject: PGdkFont;
-        LogFont: TLogFont;// for now font info is stored as well, later query font params
+        LogFont: TLogFont;// for now font info is stored as well, for later query font params
       {$EndIf}
       );
       gdiPen: (
@@ -548,6 +548,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.53  2004/02/04 22:17:09  mattias
+  removed workaround VirtualCreate
+
   Revision 1.52  2004/01/12 23:56:10  mattias
   improved double buffering, only one issue left: parent gdkwindow paint messages
 

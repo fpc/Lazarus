@@ -345,6 +345,7 @@ type
     FBorderStyle: TBorderStyle;
     FCanvas: TCanvas;
     FExtendedSelect, FMultiSelect : boolean;
+    FIntegralHeight: boolean;
     FItems: TStrings;
     FItemHeight: Integer;
     FItemIndex: integer;
@@ -394,6 +395,7 @@ type
     property BorderStyle : TBorderStyle read FBorderStyle write SetBorderStyle default bsSingle;
     property Canvas: TCanvas read FCanvas;
     property ExtendedSelect : boolean read FExtendedSelect write SetExtendedSelect;
+    property IntegralHeight: boolean read FIntegralHeight write FIntegralHeight; // not implemented
     property ItemHeight: Integer read GetItemHeight write SetItemHeight;
     property ItemIndex : integer read GetItemIndex write SetItemIndex;
     property Items : TStrings read FItems write SetItems;
@@ -419,6 +421,7 @@ type
     property Constraints;
     property ExtendedSelect;
     property Font;
+    property IntegralHeight;
     property Items;
     property ItemHeight;
     property MultiSelect;
@@ -1485,6 +1488,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.125  2004/02/04 22:17:09  mattias
+  removed workaround VirtualCreate
+
   Revision 1.124  2004/02/04 12:59:07  mattias
   added TToolButton.Action and published some props
 

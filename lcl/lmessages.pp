@@ -815,12 +815,7 @@ type
 {$endif}
 
 {$if defined(ver1_0) or not(defined(win32))}
-  TLMKILLFOCUS = packed Record
-     Msg : Cardinal;
-     FocusedWnd: HWND;
-     UnUsed : LongInt;
-     Result : LongInt;
-    End;
+  TLMKILLFOCUS = TLMSetFocus;
 {$else}
   TLMKillFocus = TWMKillFocus;
 {$endif}
@@ -1092,6 +1087,9 @@ end.
 
 {
   $Log$
+  Revision 1.60  2004/02/04 22:17:09  mattias
+  removed workaround VirtualCreate
+
   Revision 1.59  2004/01/03 11:57:47  mattias
   applied implementation for LM_LB_GETINDEXAT  from Vincent
 

@@ -93,9 +93,9 @@ begin
     ACanvas.CopyRect(ARect, Self.Canvas, Rect(0, 0, Width, Height));
 end;
 
-constructor TBitmap.VirtualCreate;
+constructor TBitmap.Create;
 begin
-  inherited VirtualCreate;
+  inherited Create;
   FPixelFormat := pfDevice;
   FImage := TBitmapImage.Create;
   FImage.Reference;
@@ -1011,6 +1011,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.58  2004/02/04 22:17:09  mattias
+  removed workaround VirtualCreate
+
   Revision 1.57  2004/02/02 22:01:51  mattias
   fpImage is now used as default, deactivate it with -dDisableFPImage
 

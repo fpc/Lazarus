@@ -85,6 +85,7 @@ type
     FCurSize: integer;
     FFirstSize: integer;
   public
+    ClearOnCreate: boolean;
     property ItemSize: integer read FItemSize;
     procedure Clear;
     constructor Create(TheItemSize: integer);
@@ -224,6 +225,8 @@ begin
   if (FCurItem=FEndItem) then begin
     inc(FCurSize,FCurSize);
     GetMem(FCurItem,FCurSize);
+    if ClearOnCreate then
+      FillChar(FCurItem^,FCurSize,0);
     if FItems=nil then FItems:=TList.Create;
     FItems.Add(FCurItem);
     FEndItem:=Pointer(integer(FCurItem)+FCurSize);
@@ -241,12 +244,14 @@ var
   Last: Pointer;
 begin
   if FItems<>nil then begin
-    Cnt:=FItems.Count-1;
+    Cnt:=FItems.Count;
     Size:=FFirstSize;
     for i:=0 to Cnt-1 do begin
       inc(Size,Size);
       p:=FItems[i];
       Last:=Pointer(integer(p)+Size);
+      if i=Cnt-1 then
+        Last:=FEndItem;
       while p<>Last do begin
         Method(p);
         inc(integer(p),FItemSize);

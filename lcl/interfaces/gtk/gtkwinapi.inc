@@ -1313,6 +1313,16 @@ var
     Result:=GetDefaultFontName;
     if Result='' then Result:='*';
   end;
+  
+  function FamilyNameExists: boolean;
+  var
+    AFont: PGdkFont;
+  begin
+    S := '*-*-'+FamilyName+'*-*-*-*-*-*-*-*-*-*-*-*-*';
+    AFont:=gdk_font_load(PChar(s));
+    Result:=AFont<>nil;
+    if Result then gdk_font_unref(AFont);
+  end;
 
 begin
   // For info about xlfd see:
@@ -1383,6 +1393,12 @@ begin
       end;
 
       FamilyName := StrPas(lfFaceName); //StringReplace(FaceName, ' ', '*');
+      
+      if (AnsiCompareText(FamilyName,'default')<>0)
+      and (not FamilyNameExists) then begin
+        FamilyName:='default';
+      end;
+      
       if AnsiCompareText(FamilyName,'default')=0 then begin
         {$IFDEF VerboseFonts}
         writeln('TgtkObject.CreateFontIndirectEx FamilyName="',FamilyName,'" PixelSize=',PixelSize,' LogFont.lfHeight=',LogFont.lfHeight);
@@ -1392,6 +1408,7 @@ begin
           exit;
         end else begin
           FamilyName:=GetDefaultFontFamilyName;
+          Foundry:='*';
         end;
       end;
 
@@ -1566,7 +1583,7 @@ begin
       LoadFont;
     end;
 
-    if GdiObject^.GDIFontObject = nil
+    if (GdiObject^.GDIFontObject = nil) and (Foundry<>'*')
     then begin
       // try all Familys
       PixelSize := IntToStr(Abs(LogFont.lfHeight));
@@ -1576,9 +1593,8 @@ begin
 
     if GdiObject^.GDIFontObject = nil
     then begin
-      // try all Foundrys
-      Foundry := '*';
-      LoadFont;
+      // nothing exists -> use default
+      LoadDefaultFont;
     end;
 
   finally
@@ -8691,6 +8707,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.327  2004/02/04 22:17:09  mattias
+  removed workaround VirtualCreate
+
   Revision 1.326  2004/02/04 12:48:17  mattias
   added CLX colors
 

@@ -810,6 +810,7 @@ type
     FBorderStyle : TControlBorderStyle;
     FAlignment : TAlignment;
     FCaption : TCaption;
+    FFullRepaint: Boolean;
     procedure SetAlignment(const Value : TAlignment);
     procedure SetBevelInner(const Value: TPanelBevel);
     procedure SetBevelOuter(const Value: TPanelBevel);
@@ -832,6 +833,7 @@ type
     property BorderStyle: TControlBorderStyle read FBorderStyle write SetBorderStyle default bsNone;
     property Color default clBtnFace;
     property Caption read GetText write SetText;
+    property FullRepaint: Boolean read FFullRepaint write FFullRepaint default True;
     property ParentColor stored ParentColorIsStored;
   end;
 
@@ -857,6 +859,7 @@ type
     property DragMode;
     property Enabled;
     property Font;
+    property FullRepaint;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
@@ -921,6 +924,9 @@ end.
 
  {
   $Log$
+  Revision 1.95  2004/02/04 22:17:08  mattias
+  removed workaround VirtualCreate
+
   Revision 1.94  2004/02/04 11:09:40  mattias
   added DefineProperties check for check lfm
 

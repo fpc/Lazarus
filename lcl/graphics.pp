@@ -587,8 +587,7 @@ type
     procedure SetModified(Value: Boolean);
     procedure WriteData(Stream: TStream); virtual;
   public
-    constructor Create;
-    constructor VirtualCreate; virtual;
+    constructor Create; virtual;
     procedure LoadFromFile(const Filename: string); virtual;
     procedure SaveToFile(const Filename: string); virtual;
     procedure LoadFromStream(Stream: TStream); virtual; abstract;
@@ -1000,7 +999,7 @@ type
     procedure FinalizeFPImageWriter(ImgWriter: TFPCustomImageWriter); virtual;
     {$ENDIF}
   public
-    constructor VirtualCreate; override;
+    constructor Create; override;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     procedure FreeImage;
@@ -1447,6 +1446,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.110  2004/02/04 22:17:09  mattias
+  removed workaround VirtualCreate
+
   Revision 1.109  2004/02/04 12:48:17  mattias
   added CLX colors
 
