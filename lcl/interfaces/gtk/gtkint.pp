@@ -184,6 +184,7 @@ type
     Function GetCaption(Sender : TObject) : String; virtual;
     function  GetText(Sender: TComponent; var Text: String): Boolean; virtual;
     procedure SetText(Child,Data : Pointer);virtual;
+    procedure AppendText(Sender: TObject; Str: PChar);
     procedure SetLabel(Sender : TObject; Data : Pointer); virtual;
     procedure SetColor(Sender : TObject);virtual;
     Procedure SetPixel(Sender : TObject; Data : Pointer);virtual;
@@ -336,6 +337,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.125  2003/04/08 00:09:03  mattias
+  added LM_APPENDTEXT from hernan
+
   Revision 1.124  2003/04/03 17:42:13  mattias
   added exception handling for createpixmapindirect
 
