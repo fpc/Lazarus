@@ -751,10 +751,18 @@ begin
     Result:=Result+'nil'
   else begin
     Result:=Result+'name="'+AStyle^.name+'" ';
+{$IFDEF GTK1}
     Result:=Result+'font_name="'+AStyle^.font_name+'" ';
     Result:=Result+'fontset_name="'+AStyle^.fontset_name+'" ';
+{$ELSE GTK1}
+    {$WARNING TODO find GTK2 font naming}
+{$ENDIF GTK1}
     Result:=Result+'bg_pixmap_name[N]="'+AStyle^.bg_pixmap_name[GTK_STATE_NORMAL]+'" ';
+{$IFDEF GTK1}
     Result:=Result+'engine='+HexStr(Cardinal(AStyle^.engine),8);
+{$ELSE GTK1}
+    {$WARNING TODO find GTK2 theme engine}
+{$ENDIF GTK1}
   end;
   Result:=Result+']';
 end;
@@ -7190,6 +7198,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.298  2004/08/30 15:46:22  mazen
+  * Fix a compile problem, still need to find the correct way to fix that.
+
   Revision 1.297  2004/08/30 10:49:20  mattias
   fixed focus catch for combobox csDropDownList
 
