@@ -459,8 +459,9 @@ begin
       JITForm.ClassName);
   OldCode:=JITForm.MethodAddress(AName);
   if OldCode<>nil then begin
-    Result.Code:=OldCode;
     Result.Data:=JITForm;
+    Result.Code:=OldCode;
+    exit;
   end;
   CodeTemplate:=MethodAddress('DoNothing');
   CodeSize:=100; // !!! what is the real codesize of DoNothing? !!!
