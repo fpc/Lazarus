@@ -452,6 +452,7 @@ type
        X, Y: integer; ItemSelected: boolean; Index: integer): boolean;
     procedure OnSynCompletionSearchPosition(var APosition: integer);
     procedure OnSynCompletionCompletePrefix(Sender: TObject);
+    procedure OnSynCompletionKeyPress(Sender: TObject; var Key: Char);
     procedure DeactivateCompletionForm;
     procedure InitIdentCompletion(S: TStrings);
 
@@ -2193,7 +2194,7 @@ begin
   aCompletion := TSynCompletion.Create(nil);
     with aCompletion do
       Begin
-        EndOfTokenChr:='()[]';
+        EndOfTokenChr:='()[].,;:-+=^*<>/';
         Width:=400;
         OnExecute := @ccExecute;
         OnCancel := @ccCancel;
@@ -2201,6 +2202,7 @@ begin
         OnPaintItem:=@OnSynCompletionPaintItem;
         OnSearchPosition:=@OnSynCompletionSearchPosition;
         OnKeyCompletePrefix:=@OnSynCompletionCompletePrefix;
+        OnKeyPress:=@OnSynCompletionKeyPress;
         ShortCut:=Menus.ShortCut(VK_UNKNOWN,[]);
       end;
 
@@ -2445,6 +2447,18 @@ begin
   end;
 end;
 
+procedure TSourceNotebook.OnSynCompletionKeyPress(Sender: TObject;
+  var Key: Char);
+begin
+  if CurCompletionControl=nil then exit;
+  if (System.Pos(Key,CurCompletionControl.EndOfTokenChr)>0) then begin
+    // identifier completed
+    //debugln('TSourceNotebook.OnSynCompletionKeyPress A');
+    CurCompletionControl.TheForm.OnValidate(Sender,[]);
+    //debugln('TSourceNotebook.OnSynCompletionKeyPress B');
+  end;
+end;
+
 procedure TSourceNotebook.DeactivateCompletionForm;
 var ActSE: TSourceEditor;
 begin
@@ -2459,27 +2473,7 @@ begin
 end;
 
 procedure TSourceNotebook.InitIdentCompletion(S: TStrings);
-{type
-  TMethodRec = record
-    Flags: TParamFlags;
-    ParamName: ShortString;
-    TypeName: ShortString;
-  end;}
-
 var
-  {CompInt: TComponentInterface;
-  propKind: TTypeKind;
-  TypeInfo: PTypeInfo;
-  TypeData: PTypeData;
-  MethodRec: TMethodRec;
-  CompName: String;
-  CurLine: String;
-  X1, X2: Integer;
-  ParamStr: String;
-  PropName: String;
-  Count,Offset,Len: Integer;
-  ActiveEditor: TSynEdit;
-  NewStr: string;}
   i: integer;
   Handled: boolean;
   Abort: boolean;
@@ -2501,105 +2495,6 @@ begin
       exit;
     end;
   end;
-  {CompInt := nil;
-  ccSelection := Prefix;
-  ActiveEditor:=GetActiveSE.EditorComponent;
-  with ActiveEditor do begin
-    CurLine:=LineText;
-    X1:=CaretX-1;
-  end;
-  if X1>length(CurLine) then X1:=length(CurLine);
-  while (X1>0) and (CurLine[X1]<>'.') do dec(X1);
-  X2:=X1-1;
-  while (X2>0) and (CurLine[X2] in ['A'..'Z','a'..'z','0'..'9','_']) do dec(X2);
-  CompName:=copy(CurLine,X2+1,X1-X2-1);
-  CompInt := TComponentInterface(FormEditor1.FindComponentByName(CompName));
-  if CompInt = nil then begin
-    ccSelection:='';
-  end else begin
-    //get all methods
-    NewStr := '';
-    for I := 0 to CompInt.GetPropCount-1 do
-    Begin
-      PropName:=#3'B'+CompInt.GetPropName(I)+#3'b';
-      PropKind := CompInt.GetPropType(i);
-      case PropKind of
-        tkMethod :
-          Begin
-            TypeInfo := CompInt.GetPropTypeInfo(I);
-            TypeData :=  GetTypeData(TypeInfo);
-
-            //check for parameters
-            if TypeData^.ParamCount > 0 then
-            Begin
-              ParamStr := '';
-              Offset:=0;
-              for Count := 0 to TypeData^.ParamCount-1 do
-              begin
-                Len:=1;  // strange: SizeOf(TParamFlags) is 4, but the data is only 1 byte
-                Move(TypeData^.ParamList[Offset],MethodRec.Flags,Len);
-                inc(Offset,Len);
-
-                Len:=ord(TypeData^.ParamList[Offset]);
-                inc(Offset);
-                SetLength(MethodRec.ParamName,Len);
-                Move(TypeData^.ParamList[Offset],MethodRec.ParamName[1],Len);
-                inc(Offset,Len);
-
-                Len:=ord(TypeData^.ParamList[Offset]);
-                inc(Offset);
-                SetLength(MethodRec.TypeName,Len);
-                Move(TypeData^.ParamList[Offset],MethodRec.TypeName[1],Len);
-                inc(Offset,Len);
-
-                if ParamStr<>'' then ParamStr:=';'+ParamStr;
-                if MethodRec.ParamName='' then
-                  ParamStr:=MethodRec.TypeName+ParamStr
-                else
-                  ParamStr:=MethodRec.ParamName+':'+MethodRec.TypeName+ParamStr;
-                if (pfVar in MethodRec.Flags) then ParamStr := 'var '+ParamStr;
-                if (pfConst in MethodRec.Flags) then ParamStr := 'const '+ParamStr;
-                if (pfOut in MethodRec.Flags) then ParamStr := 'out '+ParamStr;
-              end;
-              NewStr:='('+ParamStr+')';
-            end else NewStr:='';
-            case TypeData^.MethodKind of
-              mkProcedure :
-                NewStr := 'procedure   '+PropName+' :'+CompInt.GetPropTypeName(I);
-              mkFunction  :
-                NewStr := 'function    '+PropName+' :'+CompInt.GetPropTypeName(I);
-              mkClassFunction :
-                NewStr := 'function    '+PropName+' :'+'Function '+NewStr;
-              mkClassProcedure :
-                NewStr := 'procedure   '+PropName+' :'+'Procedure '+NewStr;
-              mkConstructor :
-                NewStr := 'constructor '+PropName+' '+'procedure ';
-              mkDestructor :
-                NewStr := 'destructor  '+PropName+' '+'procedure ';
-            end;
-          end;
-
-
-        tkObject :
-           NewStr := 'object      '+PropName+' :'+CompInt.GetPropTypeName(I);
-        tkInteger,tkChar,tkEnumeration,tkWChar :
-           NewStr := 'var         '+PropName+' :'+CompInt.GetPropTypeName(I);
-        tkBool :
-           NewStr := 'var         '+PropName+' :'+CompInt.GetPropTypeName(I);
-        tkClass :
-           NewStr := 'class       '+PropName+' :'+CompInt.GetPropTypeName(I);
-        tkFloat :
-           NewStr := 'var         '+PropName+' :'+CompInt.GetPropTypeName(I);
-        tkSString :
-           NewStr := 'var         '+PropName+' :'+CompInt.GetPropTypeName(I);
-        tkUnknown,tkLString,tkWString,tkAString,tkVariant :
-           NewStr := 'var         '+PropName+' :'+CompInt.GetPropTypeName(I);
-      end;
-
-      if NewStr <> '' then S.Add(NewStr);
-      NewStr := '';
-    end;  // end for
-  end;}
 end;
 
 procedure TSourceNotebook.ccComplete(var Value: ansistring; Shift: TShiftState);

@@ -42,7 +42,7 @@ interface
 
 uses
   {$IFDEF SYN_LAZARUS}
-  LCLIntf, LCLType, SynEditTextBuffer,
+  LCLProc, LCLIntf, LCLType, SynEditTextBuffer,
   {$ELSE}
   Windows, SynEditTypes, Messages,
   {$ENDIF}
@@ -135,6 +135,8 @@ type
     {$ENDIF}
   end;
 
+  { TSynBaseCompletion }
+
   TSynBaseCompletion = class(TComponent)
   private
     Form: TSynBaseCompletionForm;
@@ -165,6 +167,8 @@ type
     procedure SetOnKeyDelete(const Value: TNotifyEvent);
     procedure SetWidth(Value: Integer);
     {$IFDEF SYN_LAZARUS}
+    function GetOnUTF8KeyPress: TUTF8KeyPressEvent;
+    procedure SetOnUTF8KeyPress(const AValue: TUTF8KeyPressEvent);
     function GetFontHeight:integer;
     procedure SetFontHeight(NewFontHeight :integer);
     function GetOnSearchPosition:TSynBaseCompletionSearchPosition;
@@ -180,6 +184,8 @@ type
     {$IFDEF SYN_LAZARUS}
     function IsActive: boolean;
     function TheForm: TSynBaseCompletionForm;
+    property OnUTF8KeyPress: TUTF8KeyPressEvent read GetOnUTF8KeyPress
+                                                write SetOnUTF8KeyPress;
     {$ENDIF}
     property OnKeyPress: TKeyPressEvent read GetOnKeyPress write SetOnKeyPress;
     property OnKeyDelete: TNotifyEvent read GetOnKeyDelete write SetOnKeyDelete;
@@ -412,7 +418,10 @@ begin
     #33..'z': begin
         if Assigned(OnKeyPress) then
           OnKeyPress(self, Key);
-        CurrentString := CurrentString + key;
+        {$ifdef SYN_LAZARUS}
+        if Key<>#0 then
+        {$ENDIF}
+          CurrentString := CurrentString + key;
       end;
     #8:
       if Assigned(OnKeyPress) then OnKeyPress(self, Key); 
@@ -657,6 +666,17 @@ begin
 end;
 
 {$IFDEF SYN_LAZARUS}
+function TSynBaseCompletion.GetOnUTF8KeyPress: TUTF8KeyPressEvent;
+begin
+  Result:=Form.OnUTF8KeyPress;
+end;
+
+procedure TSynBaseCompletion.SetOnUTF8KeyPress(
+  const AValue: TUTF8KeyPressEvent);
+begin
+  Form.OnUTF8KeyPress:=AValue;
+end;
+
 function TSynBaseCompletion.GetFontHeight:integer;
 begin
   Result:=Form.FontHeight;
@@ -972,6 +992,7 @@ var
   Pos: TPoint;
   {$ENDIF}
 begin
+  //debugln('TSynCompletion.Validate ',dbgsName(Sender),' ',dbgs(Shift),' Position=',dbgs(Position));
   F := Sender as TSynBaseCompletionForm;
   if F.CurrentEditor is TCustomSynEdit then
     with TCustomSynEdit(F.CurrentEditor) do begin
@@ -1000,6 +1021,7 @@ begin
       BlockBegin := Point(CaretX - length(CurrentString), CaretY);
       BlockEnd := Point(CaretX, CaretY);
       {$ENDIF}
+      //debugln('TSynCompletion.Validate B Position=',dbgs(Position));
       if Position>=0 then begin
         if Assigned(FOnCodeCompletion) then begin
           Value := ItemList[Position];
