@@ -3302,8 +3302,9 @@ var
   TheFileList:     TStringList; //List of Files to be searched.
   TheMatchedFiles: TStringList; //List of files that contain a match
   i:               integer;     //loop counter
-  AnUnitInfo: TUnitInfo;
-  FindText: String;
+  AnUnitInfo:      TUnitInfo;
+  FindText:        String;      //Text to search for
+  AText:           string;      //Formated message string
 Begin
   if FindInFilesDialog=nil then
     FindInFilesDialog:=TLazFindInFilesDialog.Create(Application);
@@ -3314,7 +3315,6 @@ Begin
     FindText:=FindInFilesDialog.FindText;
     InputHistories.AddToFindHistory(FindInFilesDialog.FindText);
     InputHistories.Save;
-    
     if FindText<>'' then
     begin
       try
@@ -3324,7 +3324,10 @@ Begin
         begin
           AnUnitInfo:=AProject.FirstPartOfProject;
           while AnUnitInfo<>nil do begin
-            TheFileList.Add(AnUnitInfo.FileName);
+            //Only if file exists on disk.
+            if FilenameIsAbsolute(AnUnitInfo.FileName)
+            and FileExists(AnUnitInfo.FileName) then
+              TheFileList.Add(AnUnitInfo.FileName);
             AnUnitInfo:=AnUnitInfo.NextPartOfProject;
           end;
         end;//if
@@ -3332,7 +3335,10 @@ Begin
         if FindInFilesDialog.WhereRadioGroup.ItemIndex = 1 then
         begin
           for i:= 0 to self.EditorCount -1 do
-            TheFileList.Add(Editors[i].FileName);
+            //only if file exist on disk
+            if FilenameIsAbsolute(Editors[i].FileName)
+            and FileExists(Editors[i].FileName) then
+              TheFileList.Add(Editors[i].FileName);
         end;//if
         //Find in Directories
         if FindInFilesDialog.WhereRadioGroup.ItemIndex = 2 then
@@ -3360,17 +3366,14 @@ Begin
               MessagesView.AddSeparator;
               for i:= 0 to TheMatchedFiles.Count -1 do
               begin
-                MessagesView.Add(TheMatchedFiles.Strings[i],
-                                 '',false);
+                MessagesView.Add(TheMatchedFiles.Strings[i],'',false);
               end;//for
               //Hand off the search to the FindAndReplace Function in the
               //unit editor.
               with FindReplaceDlg do
               begin
                 TextToFindComboBox.Text:=FindText;
-                Options:= Options-[ssoReplace];
-                Options:= Options-[ssoReplaceAll];
-                Options:= Options-[ssoBackwards];
+                Options:= Options-[ssoReplace,ssoReplaceAll,ssoBackwards];
                 Options:= Options+[ssoEntireScope];
                 //Whole Words ?
                 if FindInFilesDialog.WholeWordsOnlyCheckBox.Checked then
@@ -3390,15 +3393,38 @@ Begin
                 //Multiline RegExpr?
                   Options:= Options-[ssoRegExprMultiLine];
               end;//with
-            end;//if
+            end//if
+            else
+            begin
+              MessagesView.Clear;
+              MessagesView.ShowOnTop;
+              MessagesView.AddSeparator;
+              AText:=Format(lisUESearchStringNotFound,[FindText]);
+              MessagesView.Add(AText,'',false);
+            end;//else
           finally
             TheMatchedFiles.Free;
           end;//try-finally
-        end;//if
+        end//if
+        else
+        begin
+          MessagesView.Clear;
+          MessagesView.ShowOnTop;
+          MessagesView.AddSeparator;
+          MessagesView.Add(lisFileNotFound,'',false);
+        end;//else
       finally
         TheFileList.Free;
       end;//try-finally
-    end;//if
+    end//if
+    else
+    begin
+      MessagesView.Clear;
+      MessagesView.ShowOnTop;
+      MessagesView.AddSeparator;
+      AText:=Format(lisUESearchStringNotFound,[FindText]);
+      MessagesView.Add(AText,'',false);
+    end;//else
   end;//if
 End;//FindInFilesClicked
 

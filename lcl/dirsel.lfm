@@ -1,0 +1,119 @@
+object DirSelDlg: TDirSelDlg
+  ACTIVECONTROL = TV
+  BORDERSTYLE = bsdialog
+  CAPTION = 'Select Directory'
+  CLIENTHEIGHT = 330
+  CLIENTWIDTH = 335
+  COLOR = -2147483647
+  FORMSTYLE = fsstayontop
+  ONCREATE = FormCreate
+  ONSHOW = FormShow
+  POSITION = poscreencenter
+  HORZSCROLLBAR.PAGE = 336
+  HORZSCROLLBAR.RANGE = 14
+  VERTSCROLLBAR.PAGE = 331
+  VERTSCROLLBAR.RANGE = 63
+  LEFT = 432
+  HEIGHT = 330
+  TOP = 234
+  WIDTH = 335
+  object Panel1: TPANEL
+    ALIGN = albottom
+    BEVELOUTER = bvnone
+    CLIENTHEIGHT = 41
+    CLIENTWIDTH = 335
+    TABORDER = 0
+    TABSTOP = True
+    HEIGHT = 41
+    TOP = 289
+    WIDTH = 335
+    object Button1: TBUTTON
+      ANCHORS = [akright, akbottom]
+      MODALRESULT = 1
+      CAPTION = 'OK'
+      TABSTOP = True
+      TABORDER = 0
+      LEFT = 169
+      HEIGHT = 25
+      TOP = 9
+      WIDTH = 75
+    end
+    object Button2: TBUTTON
+      ANCHORS = [akright, akbottom]
+      MODALRESULT = 2
+      CANCEL = True
+      CAPTION = 'Cancel'
+      TABSTOP = True
+      TABORDER = 1
+      LEFT = 253
+      HEIGHT = 25
+      TOP = 9
+      WIDTH = 75
+    end
+  end
+  object Panel2: TPANEL
+    ALIGN = alleft
+    BEVELOUTER = bvnone
+    CLIENTHEIGHT = 265
+    CLIENTWIDTH = 7
+    TABORDER = 1
+    TABSTOP = True
+    HEIGHT = 265
+    TOP = 24
+    WIDTH = 7
+  end
+  object Panel3: TPANEL
+    ALIGN = altop
+    BEVELOUTER = bvnone
+    CLIENTHEIGHT = 24
+    CLIENTWIDTH = 335
+    TABORDER = 2
+    TABSTOP = True
+    HEIGHT = 24
+    WIDTH = 335
+    object Label1: TLABEL
+      CAPTION = '&Directory'
+      FOCUSCONTROL = TV
+      LAYOUT = tlcenter
+      LEFT = 140
+      HEIGHT = 15
+      TOP = 4
+      WIDTH = 54
+    end
+  end
+  object Panel4: TPANEL
+    ALIGN = alright
+    BEVELOUTER = bvnone
+    CLIENTHEIGHT = 265
+    CLIENTWIDTH = 7
+    TABORDER = 3
+    TABSTOP = True
+    LEFT = 328
+    HEIGHT = 265
+    TOP = 24
+    WIDTH = 7
+  end
+  object TV: TTREEVIEW
+    ALIGN = alclient
+    BACKGROUNDCOLOR = 16777215
+    BORDERWIDTH = 2
+    CONSTRAINTS.MINHEIGHT = 100
+    CONSTRAINTS.MINWIDTH = 100
+    DEFAULTITEMHEIGHT = 15
+    DRAGCURSOR = 0
+    INDENT = 15
+    PARENTCOLOR = True
+    PARENTCTL3D = False
+    PARENTFONT = True
+    SCROLLBARS = ssvertical
+    SELECTIONCOLOR = -2147483635
+    TABORDER = 4
+    ONDBLCLICK = TVItemDoubleClick
+    ONEXPANDED = TVExpanded
+    OPTIONS = [tvoautoitemheight, tvohideselection, tvokeepcollapsednodes, tvoshowbuttons, tvoshowlines, tvoshowroot, tvotooltips]
+    LEFT = 7
+    HEIGHT = 265
+    TOP = 24
+    WIDTH = 321
+  end
+end
