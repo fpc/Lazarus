@@ -86,6 +86,7 @@ Function GetCharABCWidths(DC: HDC; P2, P3: UINT; Const ABCStructs): Boolean; Ove
 Function GetClientRect(Handle: HWND; Var Rect: TRect): Boolean; Override;
 Function GetClipBox(DC : hDC; lpRect : PRect) : Longint; Override;
 Function GetClipRGN(DC : hDC; RGN : hRGN) : Longint; override;
+function GetCursorPos(var LPPoint: TPoint): Boolean; override;
 Function GetDC(HWnd: HWND): HDC; Override;
 function GetDeviceCaps(DC: HDC; Index: Integer): Integer; Override;
 function GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer; Override;
@@ -179,6 +180,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.29  2003/07/29 07:38:09  marc
+  + Added GetCursorPos
+
   Revision 1.28  2003/07/26 10:30:44  mattias
   rewritten WM_COMMAND by Micha
 

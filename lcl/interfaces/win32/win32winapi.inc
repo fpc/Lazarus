@@ -1137,6 +1137,18 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  GetCursorPos
+  Params:  LPPoint - record to receive coordinates
+  Returns: True if the function succeeds
+
+  Gets the cursor position, in screen coordinates.
+ ------------------------------------------------------------------------------}
+Function TWin32Object.GetCursorPos(Var LPPoint: TPoint): Boolean;
+Begin
+  Result := Windows.GetCursorPos(@LPPoint);
+End;
+
+{------------------------------------------------------------------------------
   Method:  GetDC
   Params:  HWND - handle of window
   Returns: value identifying the device context for the given window's client
@@ -2373,6 +2385,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.47  2003/07/29 07:38:09  marc
+  + Added GetCursorPos
+
   Revision 1.46  2003/07/26 10:30:44  mattias
   rewritten WM_COMMAND by Micha
 
