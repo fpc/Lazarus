@@ -141,7 +141,7 @@ begin
   then begin
     for n := 0 to Count do   
       if  (AHandles[n] <> 0) 
-      and ({$IFDEF Ver1_0}FD_ISSET{$ELSE}FpFD_ISSET{$ENDIF}(AHandles[n], FDSWait){$IFNDEF Ver1_0}=0{$ENDIF})
+      and ({$IFDEF Ver1_0}FD_ISSET{$ELSE}(FpFD_ISSET{$ENDIF}(AHandles[n], FDSWait){$IFNDEF Ver1_0}=0){$ENDIF})
       then begin
         Result := Result or 1 shl n;
         Dec(R);
@@ -371,6 +371,9 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.24  2003/10/31 15:14:43  mazen
+  + added some paranthesis to avoid operators precedence problems
+
   Revision 1.23  2003/10/31 14:25:59  mazen
   * Fixing VER1_1 compile problem to allow using 1.1 compiler
   * Most of oldlinux unit calls are now in BaseUnix unit with prefix Fp

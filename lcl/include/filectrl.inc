@@ -421,7 +421,7 @@ begin
   Result:=true;
   {$ELSE}
   Result:={$IFDEF Ver1_0}Linux.Access({$ELSE}BaseUnix.FpAccess({$ENDIF}
-    AFilename,{$IFDEF Ver1_0}Linux{$ELSE}BaseUnix{$ENDIF}.R_OK){$IFNDEF Ver1_0}=0{$ENDIF};
+    AFilename,{$IFDEF Ver1_0}Linux{$ELSE}(BaseUnix{$ENDIF}.R_OK){$IFNDEF Ver1_0}=0){$ENDIF};
   {$ENDIF}
 end;
 
@@ -434,7 +434,7 @@ begin
   Result:=((FileGetAttr(AFilename) and faReadOnly)=0);
   {$ELSE}
   Result:={$IFDEF Ver1_0}Linux.Access{$ELSE}BaseUnix.FpAccess{$ENDIF}(
-    AFilename,{$IFDEF Ver1_0}Linux{$ELSE}BaseUnix{$ENDIF}.W_OK){$IFNDEF Ver1_0}=0{$ENDIF};
+    AFilename,{$IFDEF Ver1_0}Linux{$ELSE}(BaseUnix{$ENDIF}.W_OK){$IFNDEF Ver1_0}=0){$ENDIF};
   {$ENDIF}
 end;
 
@@ -458,7 +458,7 @@ begin
   {$IFDEF win32}
 
   {$ELSE}
-  if not {$IFDEF Ver1_0}FStat{$ELSE}FpStat{$ENDIF}(AFilename,info){$IFNDEF Ver1_0}=0{$ENDIF} then exit;
+  if not {$IFDEF Ver1_0}FStat{$ELSE}(FpStat{$ENDIF}(AFilename,info){$IFNDEF Ver1_0}=0){$ENDIF} then exit;
   
   // permissions
   // file type
@@ -604,7 +604,7 @@ begin
   Result:=true;
   {$ELSE}
   Result:={$IFDEF Ver1_0}Linux.Access{$ELSE}BaseUnix.FpAccess{$ENDIF}(
-    AFilename,{$IFDEF Ver1_0}Linux{$ELSE}BaseUnix{$ENDIF}.X_OK){$IFNDEF Ver1_0}=0{$ENDIF};
+    AFilename,{$IFDEF Ver1_0}Linux{$ELSE}(BaseUnix{$ENDIF}.X_OK){$IFNDEF Ver1_0}=0){$ENDIF};
   {$ENDIF}
 end;
 
@@ -626,7 +626,7 @@ begin
   end;
   {$IFNDEF win32}
   if not{$IFDEF Ver1_0}Linux.Access{$ELSE}BaseUnix.FpAccess{$ENDIF}(
-    AFilename,{$IFDEF Ver1_0}Linux{$ELSE}BaseUnix{$ENDIF}.X_OK){$IFNDEF Ver1_0}=0{$ENDIF} then
+    AFilename,{$IFDEF Ver1_0}Linux{$ELSE}(BaseUnix{$ENDIF}.X_OK){$IFNDEF Ver1_0}=0){$ENDIF} then
   begin
     AText:='"'+AFilename+'"';
     case LinuxError of
@@ -886,6 +886,9 @@ end;
 
 {
   $Log$
+  Revision 1.31  2003/10/31 15:14:43  mazen
+  + added some paranthesis to avoid operators precedence problems
+
   Revision 1.30  2003/10/31 14:25:59  mazen
   * Fixing VER1_1 compile problem to allow using 1.1 compiler
   * Most of oldlinux unit calls are now in BaseUnix unit with prefix Fp
