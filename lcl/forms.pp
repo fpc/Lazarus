@@ -42,6 +42,9 @@ uses
   ClipBrd;
 
 type
+  TProcedure = procedure;
+  TProcedureOfObject = procedure of object;
+
   // form position policies:
   TPosition = (
     poDesigned,        // bounds from the designer
@@ -222,7 +225,14 @@ type
 
   TCloseEvent = procedure(Sender: TObject; var Action: TCloseAction) of object;
   TCloseQueryEvent = procedure(Sender : TObject; var CanClose : boolean) of object;
-  TFormState = set of (fsCreating, fsVisible, fsShowing, fsModal, fsCreatedMDIChild);
+  TFormStateType = (
+    fsCreating,
+    fsVisible,
+    fsShowing,
+    fsModal,
+    fsCreatedMDIChild
+    );
+  TFormState = set of TFormStateType;
   TModalResult = low(Integer)..high(Integer);
 
   TCustomForm = class(TScrollingWinControl)
@@ -283,7 +293,7 @@ type
     procedure DoHide; dynamic;
     procedure DoShow; dynamic;
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
-    // Delphi needed GetClientRect for window specific things, LCL not
+    // Delphi needed GetClientRect for win32 specific things, LCL not
     // Function GetClientRect : TRect ; Override;
     procedure Notification(AComponent: TComponent; Operation : TOperation);override;
     procedure PaintWindow(dc : Hdc); override;
@@ -347,7 +357,7 @@ type
     property ClientHandle: HWND read FClientHandle;
   published
     property PixelsPerInch : Longint read FDummyPPI write FDummyPPI stored False;
-    property ActiveCOntrol;
+    property ActiveControl;
     property Align;
     property AutoSize;
     property BorderStyle;
@@ -535,9 +545,6 @@ type
     function GetShiftState: TShiftState; virtual; abstract;
     Procedure SelectOnlyThisComponent(AComponent:TComponent); virtual; abstract;
   end;
-
-
-  TProcedure = procedure;
 
 
 function KeysToShiftState(Keys:Word): TShiftState;
