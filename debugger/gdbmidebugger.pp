@@ -558,24 +558,50 @@ var
   ResultState: TDBGState;
   S, ResultValues: String;
   ResultList: TStringList;
-  Expression: TGDBMIExpression;
+  ResultInfo: TGDBType;
+  addr, e: Integer;
+//  Expression: TGDBMIExpression;
 begin
+// TGDBMIExpression was an attempt to make expression evaluation on Objects possible for GDB <= 5.2
+// It is not completed and buggy. Since 5.3 expression evaluation is OK, so maybe in future the
+// TGDBMIExpression will be completed to support older gdb versions
+(*
   Expression := TGDBMIExpression.Create(Self, AExpression);
   if not Expression.GetExpression(S)
   then S := AExpression;
   WriteLN('[GDBEval] AskExpr: ', AExpression, ' EvalExp:', S ,' Dump: ',
           Expression.DumpExpression);
   Expression.Free;
-  
+*)
+  S := AExpression;
+
   Result := ExecuteCommand('-data-evaluate-expression %s', [S], ResultState,
-                           ResultValues, [cfIgnoreError, cfExternal])
-            and (ResultState <> dsError);
+                           ResultValues, [cfIgnoreError, cfExternal]);
 
   ResultList := CreateMIValueList(ResultValues);
   if ResultState = dsError
   then AResult := ResultList.Values['msg']
   else AResult := ResultList.Values['value'];
   ResultList.Free;
+  if ResultState = dsError
+  then Exit;
+
+  // Check for strings
+  ResultInfo := GetGDBTypeInfo(S);
+  if (ResultInfo = nil)
+  or (ResultInfo.Kind <> skPointer)
+  then Exit;
+  
+  Val(AResult, addr, e);
+  if e <> 0 then Exit;
+
+  if Addr = 0
+  then AResult := 'nil';
+
+  S := Lowercase(ResultInfo.TypeName);
+  if (S = 'character')
+  or (S = 'ansistring')
+  then AResult := '''' + GetText(Pointer(addr)) + '''';
 end;
 
 function TGDBMIDebugger.GDBJumpTo(const ASource: String;
@@ -734,7 +760,7 @@ function TGDBMIDebugger.GetText(const AExpression: String;
 var
   S: String;
 begin
-  if not ExecuteCommand('x/s ' + AExpression, AValues, S, [cfNoMICommand])
+  if not ExecuteCommand('x/s ' + AExpression, AValues, S, [cfNoMICommand, cfIgnoreError])
   then begin
     Result := '';
   end
@@ -1960,6 +1986,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.31  2002/08/18 08:57:49  marc
+  * Improved hint evaluation
+
   Revision 1.30  2003/06/13 19:21:31  marc
   MWE: + Added initial signal and exception handling
 

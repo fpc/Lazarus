@@ -139,8 +139,6 @@ type
           Shift: TShiftState; X,Y: Integer);
     Procedure EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     Procedure EditorStatusChanged(Sender: TObject; Changes: TSynStatusChanges);
-    function GetWordFromCaretEx(const ACaretPos: TPoint;
-      const ALeftLimit, ARightLimit: TCharSet): String;
     procedure SetCodeBuffer(NewCodeBuffer: TCodeBuffer);
     Function GetSource : TStrings;
     procedure SetPageName(const AValue: string);
@@ -254,7 +252,11 @@ type
     // used to get the word at the mouse cursor
     Function GetWordAtPosition(Position : TPoint) : String;
     function GetWordFromCaret(const ACaretPos: TPoint) : String;
+    function GetWordFromCaretEx(const ACaretPos: TPoint;
+      const ALeftLimit, ARightLimit: TCharSet): String;
     Function GetWordAtCurrentCaret: String;
+    function CaretInSelection(const ACaretPos: TPoint): Boolean;
+    function PositionInSelection(const APosition: TPoint): Boolean;
 
     // cursor
     Function GetCaretPosFromCursorPos(CursorPos : TPoint) : TPoint;
@@ -1902,6 +1904,17 @@ begin
     Result:=FSourceNoteBook.FindPageWithEditor(Self)
   else
     Result:=-1;
+end;
+
+function TSourceEditor.CaretInSelection(const ACaretPos: TPoint): Boolean;
+begin
+  Result := (CompareCaret(EditorComponent.BlockBegin, ACaretpos) >= 0)
+        and (CompareCaret(ACaretPos, EditorComponent.BlockEnd) >= 0);
+end;
+
+function TSourceEditor.PositionInSelection(const APosition: TPoint): Boolean;
+begin
+  Result := CaretInSelection(GetCaretPosfromCursorPos(APosition));
 end;
 
 function TSourceEditor.IsActiveOnNoteBook: boolean;

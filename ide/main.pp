@@ -8334,31 +8334,55 @@ var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
   Identifier, SmartHintStr: string;
-  DebugEval: string;
+  Expression, DebugEval: string;
 begin
   if (SrcEdit=nil) then exit;
-  if (ToolStatus<>itNone) and (ToolStatus<>itDebugger) then exit;
+
   // check if there is an identifier
-  Identifier:=SrcEdit.GetWordFromCaret(CaretPos);
-  if (Identifier='') or (not IsValidIdent(Identifier)) then exit;
+  case ToolStatus of
+    itNone: begin
+      Identifier := SrcEdit.GetWordFromCaret(CaretPos);
+      if (Identifier='') or (not IsValidIdent(Identifier)) then exit;
+    end;
+    itDebugger: begin
+//      Identifier := SrcEdit.GetWordFromCaretEx(CaretPos,
+//        ['A'..'Z', 'a'..'z', '0'..'9', '(', '[', '.', ''''],
+//        ['A'..'Z', 'a'..'z', '0'..'9', ')', ']', '^', '''']);
+      Identifier := SrcEdit.GetWordFromCaret(CaretPos);
+      if Identifier = '' then Exit;
+    end;
+  else
+    Exit;
+  end;
   SourceNotebook.SetActiveSE(SrcEdit);
 
   if not BeginCodeTool(ActiveSrcEdit, ActiveUnitInfo,
     [{ctfActivateAbortMode}]) then exit;
-  {$IFDEF IDE_DEBUG}
-  writeln('');
-  writeln('[TMainIDE.OnSrcNotebookShowHintForSource] ************ ',ActiveUnitInfo.Source.Filename,' X=',CaretPos.X,' Y=',CaretPos.Y);
-  {$ENDIF}
-  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.OnSrcNotebookShowHintForSource A');{$ENDIF}
-  SmartHintStr:=CodeToolBoss.FindSmartHint(ActiveUnitInfo.Source,
-    CaretPos.X,CaretPos.Y);
-  CodeToolBoss.Abortable:=false;
-  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.OnSrcNotebookShowHintForSource B');{$ENDIF}
-
-  if (ToolStatus=itDebugger)
-  and DebugBoss.Evaluate(Identifier,DebugEval) then begin
-    if (DebugEval<>'') then
-      SmartHintStr:=SmartHintStr+' = '+DebugEval;
+    
+  case ToolStatus of
+    itNone: begin
+      {$IFDEF IDE_DEBUG}
+      writeln('');
+      writeln('[TMainIDE.OnSrcNotebookShowHintForSource] ************ ',ActiveUnitInfo.Source.Filename,' X=',CaretPos.X,' Y=',CaretPos.Y);
+      {$ENDIF}
+      {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.OnSrcNotebookShowHintForSource A');{$ENDIF}
+      SmartHintStr:=CodeToolBoss.FindSmartHint(ActiveUnitInfo.Source,
+        CaretPos.X,CaretPos.Y);
+      CodeToolBoss.Abortable:=false;
+      {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.OnSrcNotebookShowHintForSource B');{$ENDIF}
+    end;
+    itDebugger: begin
+      if SrcEdit.SelectionAvailable
+      and SrcEdit.CaretInSelection(CaretPos)
+      then Expression := SrcEdit.GetText(True)
+      else Expression := Identifier;
+      if not DebugBoss.Evaluate(Expression, DebugEval)
+      or (DebugEval = '')
+      then DebugEval := '???';
+      SmartHintStr := Expression + ' = ' + DebugEval;
+    end;
+  else
+    Exit;
   end;
 
   if SmartHintStr<>'' then
@@ -9270,6 +9294,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.614  2002/08/18 08:57:49  marc
+  * Improved hint evaluation
+
   Revision 1.613  2003/06/20 13:24:46  mattias
   implemented jump to source for code explorer
 
