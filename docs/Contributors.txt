@@ -23,6 +23,7 @@ Jason King
 Jeffrey A. Wormsley
 Jeroen van Idekinge
 Jesus Reyes
+Joerg Braun - german translation
 Joost van der Sluis
 Karl Brandt
 Keith Bowes
@@ -48,7 +49,7 @@ Razvan Adrian Bogdan
 Reimar Grabowski
 Salvatore Coppola
 Samuel Liddicott
-Seppo Suutarla
+Seppo Suutarla - finnish translation
 Sérgio Marcelo
 Shane Miller
 Stefan Hille
