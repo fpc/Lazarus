@@ -114,7 +114,6 @@ Type
 
     { Constructor of the class }
     Constructor Create;
-    class function CreateVirtual: TInterfaceBase; override;
     { Destructor of the class }
     Destructor Destroy; Override;
     { Initialize the API }
@@ -187,6 +186,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.39  2003/09/08 13:24:17  mattias
+  removed class function
+
   Revision 1.38  2003/09/08 12:21:48  mattias
   added fpImage reader/writer hooks to TBitmap
 
