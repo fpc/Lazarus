@@ -1621,7 +1621,8 @@ begin
           csListBox :
             begin
               Widget:= GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
-              Data:= TGtkListStringList.Create(PGtkList(Widget));
+              Data:= TGtkListStringList.Create(PGtkList(Widget),
+                                               TWinControl(Sender));
               Result:= Integer(Data);
             end;
         else 
@@ -1683,7 +1684,7 @@ begin
           case TControl(Sender).fCompStyle of
         
           csComboBox:
-            gtk_list_select_item(PGTKLIST(PGTKCOMBO(Handle)^.list), Integer(Data));
+            gtk_list_select_item(PGtkList(PGTKCOMBO(Handle)^.list), Integer(Data));
                                  
           csListBox :
             begin
@@ -2302,19 +2303,6 @@ begin
   {$Else}
     Writeln('WARNING: [TgtkObject.SetColor] NOT Support under Win32 GTK')
   {$EndIf}
-
-
-  // OBSOLETE
-  
-   //NOT USED RIGHT NOW..........CAUSES ALL FORMS TO USE THESE COLORS!!!!!!
-   {
-   widget := TCustomForm(Sender).handle;
-   TheStyle := pgtkWidget(widget)^.thestyle;
-   NewColor := ConvertTogdk(TCustomForm(Sender).Color);
-   gdk_color_alloc (gdk_colormap_get_system (), @NewColor);
-   gdk_gc_set_foreground (TheStyle^.fg_gc[GTK_STATE_NORMAL], @NewColor);
-   gdk_gc_set_background (TheStyle^.fg_gc[GTK_STATE_NORMAL], @NewColor);
-   }
 end;
 
 {------------------------------------------------------------------------------
@@ -2387,8 +2375,8 @@ begin
     LM_ACTIVATE :
     begin
       if (Sender is TCustomForm) then begin
-         ConnectSenderSignal(gObject, 'focus-in-event', @gtkfrmactivate);
-         ConnectSenderSignal(gObject, 'focus-out-event', @gtkfrmdeactivate);
+        ConnectSenderSignal(gObject, 'focus-in-event', @gtkfrmactivate);
+        ConnectSenderSignal(gObject, 'focus-out-event', @gtkfrmdeactivate);
       end else
         ConnectSenderSignal(gObject, 'activate', @gtkactivateCB);
     end;
@@ -2786,6 +2774,16 @@ begin
       ConnectSenderSignal(gCore, 'end-selection', @gtkLVEndSelection);
     end;
     
+    LM_COMMAND:
+    begin
+      if Sender is TComboBox then begin
+        ConnectSenderSignalAfter(PgtkObject(PgtkCombo(gObject)^.popwin),
+          'show', @gtkComboBoxShowCB);
+        ConnectSenderSignalAfter(PgtkObject(PgtkCombo(gObject)^.popwin),
+          'hide', @gtkComboBoxHideCB);
+      end;
+    end;
+    
 (*
     LM_WINDOWPOSCHANGED:
     begin
@@ -2974,7 +2972,13 @@ begin
           SetCallback(LM_DAYCHANGED,Sender);
         End;
 
-        csComboBox,csNotebook,csTrackBar :
+        csComboBox:
+        Begin
+          SetCallback(LM_CHANGED,Sender);
+          SetCallback(LM_COMMAND,Sender);
+        End;
+
+        csNotebook,csTrackBar :
         Begin
           SetCallback(LM_CHANGED,Sender);
         End;
@@ -3544,9 +3548,9 @@ begin
   
   gtk_combo_disable_activate(Widget);
   gtk_combo_set_case_sensitive(Widget, 1);
-    
+  
   // Items
-  ItemList:= TGtkListStringList.Create(PGtkList(Widget^.List));
+  ItemList:= TGtkListStringList.Create(PGtkList(Widget^.List),ComboBox);
   gtk_object_set_data(PGtkObject(Widget), 'LCLList', ItemList);
   ItemList.Assign(ComboBox.Items);
   ItemList.Sorted:= ComboBox.Sorted;
@@ -5895,6 +5899,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.228  2002/10/03 14:47:31  lazarus
+  MG: added TComboBox.OnPopup+OnCloseUp+ItemWidth
+
   Revision 1.227  2002/10/03 00:08:50  lazarus
   AJ: TCustomLabel Autosize, TCustomCheckbox '&' shortcuts started
 
