@@ -113,6 +113,7 @@ type
   TEnvironmentOptions = class
   private
     FDebuggerSearchPath: string;
+    FDesignerPaintLazy: boolean;
     FFilename: string;
     FFileAge: longint;
     FFileHasChangedOnDisk: boolean;
@@ -280,6 +281,8 @@ type
     property RubberbandSelectsGrandChilds: boolean
                                             read FRubberbandSelectsGrandChilds
                                             write FRubberbandSelectsGrandChilds;
+    property DesignerPaintLazy: boolean read FDesignerPaintLazy
+                                        write FDesignerPaintLazy;
 
     // object inspector
     property ObjectInspectorOptions: TOIOptions read FObjectInspectorOptions
@@ -450,6 +453,7 @@ type
     RubberbandCreateColorLabel: TLabel;
     RubberbandCreateColorButton: TColorButton;
     RubberbandSelectsGrandChildsCheckBox: TCheckBox;
+    DesignerPaintLazyCheckBox: TCheckBox;
 
     // object inspector
     ObjectInspectorColorsGroupBox: TGroupBox;
@@ -774,6 +778,7 @@ begin
   FRubberbandSelectionColor:=clNavy;
   FRubberbandCreationColor:=clMaroon;
   FRubberbandSelectsGrandChilds:=true;
+  FDesignerPaintLazy:=true;
 
   // object inspector
   FObjectInspectorOptions:=TOIOptions.Create;
@@ -1002,6 +1007,8 @@ begin
     FRubberbandSelectsGrandChilds:=XMLConfig.GetValue(
        Path+'FormEditor/Rubberband/SelectsGrandChilds/Value',
        false);
+    FDesignerPaintLazy:=XMLConfig.GetValue(
+       Path+'FormEditor/DesignerPaint/Lazy/Value',true);
 
     if not OnlyDesktop then begin
       // files
@@ -1222,6 +1229,8 @@ begin
     XMLConfig.SetDeleteValue(
        Path+'FormEditor/Rubberband/SelectsGrandChilds/Value',
        FRubberbandSelectsGrandChilds,false);
+    XMLConfig.SetDeleteValue(
+       Path+'FormEditor/DesignerPaint/Lazy/Value',FDesignerPaintLazy,true);
 
     if not OnlyDesktop then begin
       // files
@@ -2442,9 +2451,7 @@ procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
     ShowComponentCaptionsCheckBox:=TCheckBox.Create(Self);
     with ShowComponentCaptionsCheckBox do begin
       Name:='ShowComponentCaptionsCheckBox';
-      Left:=x;
-      Top:=y;
-      Width:=w;
+      SetBounds(x,y,w,Height);
       Parent:=FormEditMiscGroupBox;
       Caption:=dlgShowCaps;
       inc(y,Height+5);
@@ -2453,9 +2460,7 @@ procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
     ShowEditorHintsCheckBox:=TCheckBox.Create(Self);
     with ShowEditorHintsCheckBox do begin
       Name:='ShowEditorHintsCheckBox';
-      Left:=x;
-      Top:=y;
-      Width:=w;
+      SetBounds(x,y,w,Height);
       Parent:=FormEditMiscGroupBox;
       Caption:=dlgShowEdrHints;
       inc(y,Height+5);
@@ -2464,9 +2469,7 @@ procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
     AutoCreateFormsOnOpenCheckBox:=TCheckBox.Create(Self);
     with AutoCreateFormsOnOpenCheckBox do begin
       Name:='AutoCreateFormsOnOpenCheckBox';
-      Left:=x;
-      Top:=y;
-      Width:=w;
+      SetBounds(x,y,w,Height);
       Parent:=FormEditMiscGroupBox;
       Caption:=dlgAutoForm;
       inc(y,Height+5);
@@ -2475,9 +2478,7 @@ procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
     RightClickSelectsCheckBox:=TCheckBox.Create(Self);
     with RightClickSelectsCheckBox do begin
       Name:='RightClickSelectsCheckBox';
-      Left:=x;
-      Top:=y;
-      Width:=w;
+      SetBounds(x,y,w,Height);
       Parent:=FormEditMiscGroupBox;
       Caption:=dlgRightClickSelects;
       inc(y,Height+5);
@@ -2486,19 +2487,16 @@ procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
     GrabberColorButton:=TColorButton.Create(Self);
     with GrabberColorButton do begin
       Name:='GrabberColorButton';
-      Left:=x;
-      Top:=y;
-      Width:=50;
-      Height:=25;
+      SetBounds(x,y,50,25);
       Parent:=FormEditMiscGroupBox;
+      inc(y,Height+5);
     end;
 
     GrabberColorLabel:=TLabel.Create(Self);
     with GrabberColorLabel do begin
       Name:='GrabberColorLabel';
-      Left:=GrabberColorButton.Left+GrabberColorButton.Width+5;
-      Top:=GrabberColorButton.Top+5;
-      Width:=110;
+      SetBounds(GrabberColorButton.Left+GrabberColorButton.Width+5,
+                GrabberColorButton.Top+5,110,Height);
       Parent:=FormEditMiscGroupBox;
       Caption:=dlgGrabberColor;
     end;
@@ -2506,21 +2504,28 @@ procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
     MarkerColorButton:=TColorButton.Create(Self);
     with MarkerColorButton do begin
       Name:='MarkerColorButton';
-      Left:=GrabberColorButton.Left;
-      Top:=GrabberColorButton.Top+GrabberColorButton.Height+5;
-      Width:=50;
-      Height:=25;
+      SetBounds(x,y,50,25);
       Parent:=FormEditMiscGroupBox;
+      inc(y,Height+5);
     end;
 
     MarkerColorLabel:=TLabel.Create(Self);
     with MarkerColorLabel do begin
       Name:='MarkerColorLabel';
-      Left:=MarkerColorButton.Left+MarkerColorButton.Width+5;
-      Top:=MarkerColorButton.Top+5;
-      Width:=110;
+      SetBounds(MarkerColorButton.Left+MarkerColorButton.Width+5,
+                MarkerColorButton.Top+5,110,Height);
       Parent:=FormEditMiscGroupBox;
       Caption:=dlgMarkerColor;
+    end;
+
+    DesignerPaintLazyCheckBox:=TCheckBox.Create(Self);
+    with DesignerPaintLazyCheckBox do begin
+      Name:='DesignerPaintLazyCheckBox';
+      SetBounds(x,y,Width,Height);
+      Parent:=FormEditMiscGroupBox;
+      Caption:=lisFEPaintDesignerItemsOnIdle;
+      Hint:=lisFEPaintDesignerItemsOnIdleReduceOverheadForSlowCompu;
+      ShowHint:=true;
     end;
   end;
   
@@ -2577,17 +2582,23 @@ procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
     end;
   end;
 
+var
+  x: Integer;
+  y: Integer;
+  w: Integer;
+  h: Integer;
 begin
   // form editor page
   NoteBook.Page[Page].OnResize:=@OnFormEditorPageResize;
 
+  x:=5;
+  y:=5;
+  w:=(Notebook.Page[Page].ClientWidth-3*Left) div 2;
+  h:=170;
   GridGroupBox:=TGroupBox.Create(Self);
   with GridGroupBox do begin
     Name:='GridGroupBox';
-    Left:=5;
-    Top:=5;
-    Width:=((Notebook.Page[Page].ClientWidth-3*Left) div 2);
-    Height:=170;
+    SetBounds(x,y,w,h);
     Parent:=Notebook.Page[Page];
     Caption:=dlgEnvGrid;
     OnResize:=@GridGroupBoxResize;
@@ -2596,8 +2607,11 @@ begin
   SetupGridGroupBox;
   
   GuideLinesGroupBox:=TGroupBox.Create(Self);
+  inc(y,h+5);
+  h:=Notebook.Page[Page].ClientHeight-5-y;
   with GuideLinesGroupBox do begin
     Name:='GuideLinesGroupBox';
+    SetBounds(x,y,w,h);
     Left:=GridGroupBox.Left+GridGroupBox.Width+5;
     Top:=GridGroupBox.Top;
     Width:=GridGroupBox.Width;
@@ -2609,33 +2623,32 @@ begin
   
   SetupGuideLinesGroupBox;
 
-  FormEditMiscGroupBox:=TGroupBox.Create(Self);
-  with FormEditMiscGroupBox do begin
-    Name:='FormEditMiscGroupBox';
-    Left:=5;
-    Top:=GridGroupBox.Top+GridGroupBox.Height+5;
-    Width:=GridGroupBox.Width;
-    Height:=Notebook.Page[Page].ClientHeight-Top-5;
-    Parent:=Notebook.Page[Page];
-    Caption:=dlgEnvMisc;
-    OnResize:=@FormEditMiscGroupBoxResize;
-  end;
-  
-  SetupMiscGroupBox;
-  
   RubberbandGroupBox:=TGroupBox.Create(Self);
+  inc(x,w);
+  y:=5;
+  h:=120;
   with RubberbandGroupBox do begin
     Name:='RubberbandGroupBox';
-    Left:=GuideLinesGroupBox.Left;
-    Top:=GuideLinesGroupBox.Top+GuideLinesGroupBox.Height+5;
-    Width:=GuideLinesGroupBox.Width;
-    Height:=Notebook.Page[Page].ClientHeight-5-Top;
+    SetBounds(x,y,w,h);
     Parent:=Notebook.Page[Page];
     Caption:=dlgRubberBandGroup;
     OnResize:=@RubberbandGroupBoxResize;
   end;
 
   SetupRubberbandBox;
+
+  FormEditMiscGroupBox:=TGroupBox.Create(Self);
+  inc(y,h+5);
+  h:=Notebook.Page[Page].ClientHeight-5-y;
+  with FormEditMiscGroupBox do begin
+    Name:='FormEditMiscGroupBox';
+    SetBounds(x,y,w,h);
+    Parent:=Notebook.Page[Page];
+    Caption:=dlgEnvMisc;
+    OnResize:=@FormEditMiscGroupBoxResize;
+  end;
+
+  SetupMiscGroupBox;
 end;
 
 procedure TEnvironmentOptionsDialog.SetupNamingPage(Page: integer);
@@ -2832,24 +2845,28 @@ end;
 procedure TEnvironmentOptionsDialog.ResizeFormEditorPage;
 var
   y: Integer;
+  x: Integer;
+  w: Integer;
+  h: Integer;
+  CurParent: TWinControl;
 begin
   // form editor page
-  with GridGroupBox do begin
-    SetBounds(5,5,((Parent.ClientWidth-3*Left) div 2),170);
-  end;
-  with GuideLinesGroupBox do begin
-    SetBounds(GridGroupBox.Left+GridGroupBox.Width+5,GridGroupBox.Top,
-              GridGroupBox.Width,GridGroupBox.Height);
-  end;
-  y:=GridGroupBox.Top+GridGroupBox.Height+5;
-  with FormEditMiscGroupBox do begin
-    SetBounds(5,y,
-              GridGroupBox.Width,Parent.ClientHeight-5-y);
-  end;
-  with RubberbandGroupBox do begin
-    SetBounds(FormEditMiscGroupBox.Left+FormEditMiscGroupBox.Width+5,y,
-              GuideLinesGroupBox.Width,Parent.ClientHeight-5-y);
-  end;
+  CurParent:=GridGroupBox.Parent;
+  x:=5;
+  y:=5;
+  w:=(CurParent.ClientWidth-3*x) div 2;
+  h:=170;
+  with GridGroupBox do SetBounds(x,y,w,h);
+  inc(y,h+5);
+  h:=CurParent.ClientHeight-y-5;
+  with GuideLinesGroupBox do SetBounds(x,y,w,h);
+  inc(x,w+5);
+  y:=5;
+  h:=120;
+  with RubberbandGroupBox do SetBounds(x,y,w,h);
+  inc(y,h+5);
+  h:=CurParent.ClientHeight-y-5;
+  with FormEditMiscGroupBox do SetBounds(x,y,w,h);
 end;
 
 procedure TEnvironmentOptionsDialog.ResizeObjectInspectorPage;
@@ -3630,6 +3647,7 @@ begin
     RubberbandSelectColorButton.ButtonColor:=RubberbandSelectionColor;
     RubberbandCreateColorButton.ButtonColor:=RubberbandCreationColor;
     RubberbandSelectsGrandChildsCheckBox.Checked:=RubberbandSelectsGrandChilds;
+    DesignerPaintLazyCheckBox.Checked:=DesignerPaintLazy;
 
     // files
     LazarusDirComboBox.Items.Assign(LazarusDirHistory);
@@ -3762,6 +3780,7 @@ begin
     RubberbandSelectionColor:=RubberbandSelectColorButton.ButtonColor;
     RubberbandCreationColor:=RubberbandCreateColorButton.ButtonColor;
     RubberbandSelectsGrandChilds:=RubberbandSelectsGrandChildsCheckBox.Checked;
+    DesignerPaintLazy:=DesignerPaintLazyCheckBox.Checked;
 
     // files
     LazarusDirectory:=LazarusDirComboBox.Text;

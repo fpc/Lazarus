@@ -695,6 +695,9 @@ resourcestring
   dlgrightClickSelects = 'Right Click selects';
   dlgGrabberColor = 'Grabber color';
   dlgMarkerColor = 'Marker color';
+  lisFEPaintDesignerItemsOnIdle = 'Reduce designer painting';
+  lisFEPaintDesignerItemsOnIdleReduceOverheadForSlowCompu = 'Paint designer '
+    +'items only on idle (reduce overhead for slow computers)';
   dlgEnvGrid = 'Grid';
   dlgEnvLGuideLines = 'Guide lines';
   dlgEnvMisc = 'Miscellaneous';

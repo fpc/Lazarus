@@ -36,12 +36,13 @@ procedure TColorButton.Paint;
 var
   ARect: TRect;
 begin
+  ARect:=Bounds(0, 0, Width, Height);
   with Canvas do begin
-    ARect:=Bounds(0, 0, Width, Height);
     Frame3d(ARect,FBorderWidth,bvRaised);
     InflateRect(ARect,-FBorderWidth,-FBorderWidth);
     Brush.Color:=ButtonColor;
     FillRect(ARect);
+    FillRect(Rect(-100,-100,300,300));
   end;
   inherited Paint;
 end;

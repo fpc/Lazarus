@@ -969,6 +969,9 @@ begin
     and (csAcceptsControls in Sender.ControlStyle) then begin
       PaintClientGrid(TWinControl(Sender),DDC);
     end;
+    
+    if not EnvironmentOptions.DesignerPaintLazy then
+      DoPaintDesignerItems;
 
     // clean up
     DDC.Clear;
@@ -1805,7 +1808,7 @@ end;
 
 procedure TDesigner.PaintGrid;
 begin
-  // This is done in PaintControls
+  // This is normally done in PaintControls
   if FLookupRoot<>FForm then begin
     // this is a special designer form -> lets draw itself
     FForm.Paint;

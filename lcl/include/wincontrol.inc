@@ -1741,6 +1741,7 @@ var
   I, Count, SaveIndex: Integer;
 //  FrameBrush: HBRUSH;
   TempControl : TControl;
+  {off $Define VerboseControlDCOrigin}
   {$IFDEF VerboseControlDCOrigin}
   P: TPoint;
   {$ENDIF}
@@ -1791,6 +1792,9 @@ begin
           debugln('  DCOrigin=',dbgs(P));
           {$ENDIF}
           Perform(LM_PAINT, WParam(DC), 0);
+          {$IFDEF VerboseControlDCOrigin}
+          DebugLn('TWinControl.PaintControls D TempControl=',DbgSName(TempControl));
+          {$ENDIF}
           RestoreDC(DC, SaveIndex);
           Exclude(FControlState, csPaintCopy);
         end;
@@ -4378,6 +4382,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.304  2005/01/21 19:18:35  mattias
+  implemented option to reduce designer painting
+
   Revision 1.303  2005/01/21 11:52:01  micha
   cleanup focus; fix tabbing
 
