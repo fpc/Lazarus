@@ -144,38 +144,37 @@ type
 
   TBitBtn = class(TButton)
   private
-    FCanvas : TCanvas;
-    FGlyph  : TButtonGlyph;
-    FKind   : TBitBtnKind;
-    FLayout : TButtonLayout;
-    FSpacing : Integer;
-    Function GetGlyph : TBitmap;
-    Function IsCustom : Boolean;
-    Function IsGlyphStored : Boolean;
-    Procedure SetGlyph(Value : TBitmap);
-    Procedure SetKind(Value : TBitBtnKind);
-    Procedure SetLayout(Value : TButtonLayout);
-    Procedure SetSpacing(Value : Integer);
+    FButtonGlyph: TButtonGlyph;
+    FKind: TBitBtnKind;
+    FLayout: TButtonLayout;
+    FSpacing: Integer;
+    Function GetGlyph: TBitmap;
+    Function IsGlyphStored: Boolean;
+    Procedure SetGlyph(AValue: TBitmap);
+    Procedure SetKind(AValue: TBitBtnKind);
+    Procedure SetLayout(AValue: TButtonLayout);
+    Procedure SetSpacing(AValue: Integer);
+    procedure RealizeKind;
 
     //Return the caption associated with the aKind value.
-    function GetCaptionOfKind(aKind :TBitBtnKind) : String;
+    function GetCaptionOfKind(aKind: TBitBtnKind) : String;
   protected
     Procedure Click; override;
     procedure GlyphChanged(Sender : TObject);
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
   public
-    constructor Create(AOwner : TComponent); override;
+    constructor Create(TheOwner: TComponent); override;
     destructor Destroy; Override;
   published
     property Action;
     property Align;
     property Anchors;
     property Constraints;
-    property Default stored IsCustom;
-    property Glyph : TBitmap read GetGlyph write SetGlyph stored IsGlyphStored;
-    property Kind : TBitBtnKind read FKind write SetKind;
-    property Layout: TButtonLayout read FLayout write SetLayout;
-    property ModalResult stored IsCustom;
+    property Default;
+    property Glyph: TBitmap read GetGlyph write SetGlyph stored IsGlyphStored;
+    property Kind: TBitBtnKind read FKind write SetKind default bkCustom;
+    property Layout: TButtonLayout read FLayout write SetLayout default blGlyphLeft;
+    property ModalResult;
     property OnChangeBounds;
     property OnClick;
     property OnEnter;
@@ -187,7 +186,7 @@ type
     property ParentShowHint;
     property PopupMenu;
     property ShowHint;
-    property Spacing : Integer read FSpacing write SetSpacing;
+    property Spacing : Integer read FSpacing write SetSpacing default 3;
     property Visible;
   end;
 
@@ -332,6 +331,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.57  2004/02/07 20:25:37  mattias
+  fixed saving custom TBitBtn kind
+
   Revision 1.56  2004/02/02 18:01:31  mattias
   added TSpeedButton.Action and TBitBtn.Action
 

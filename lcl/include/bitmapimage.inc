@@ -87,7 +87,8 @@ end;
 
 function TBitmapImage.IsEmpty: boolean;
 begin
-  Result := (FHandle = 0) and (FDIBHandle = 0);
+  Result := (FHandle = 0) and (FDIBHandle = 0)
+            and (SaveStream=nil);
 end;
 
 function TBitmapImage.GetPixelFormat: TPixelFormat;

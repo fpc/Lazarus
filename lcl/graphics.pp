@@ -906,8 +906,6 @@ type
     FDIBHandle: HBITMAP;// output device independent handle
     FSaveStream: TMemoryStream;
     FSaveStreamType: TBitmapNativeType;
-    //FOS2Format: Boolean;
-    //FHalftone: Boolean;
   protected
     procedure FreeHandle; override;
     function ReleaseHandle: HBITMAP;
@@ -925,14 +923,14 @@ type
 
   { TBitmap }
 
-  { Not completed!
-    TBitmap is the data of an image. The image can be loaded from a file,
+  { TBitmap is the data of an image. The image can be loaded from a file,
     stream or resource in .bmp (windows bitmap format) or .xpm (XPixMap format)
-    The loading routine automatically recognizes the format, so it also load
-    the streams of Delphi form streams (e.g. .dfm files).
+    The loading routine automatically recognizes the format, so it is also used
+    to load the imagess from Delphi form streams (e.g. .dfm files).
     When the handle is created, it is up to the interface (gtk, win32, ...)
     to convert it automatically to the best internal format. That is why the
-    Handle is interface dependent. }
+    Handle is interface dependent.
+    To access the raw data, see TLazIntfImage in IntfGraphics.pas }
 
   TBitmapInternalStateFlag = (
     bmisCreatingCanvas
@@ -1444,6 +1442,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.112  2004/02/07 20:25:37  mattias
+  fixed saving custom TBitBtn kind
+
   Revision 1.111  2004/02/05 16:28:38  mattias
   fixed unsharing TBitmap
 

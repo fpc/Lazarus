@@ -429,7 +429,6 @@ begin
     else
       RaiseInvalidBitmapHeader;
     end;
-    //writeln('TBitmap.ReadStream ',ClassName,' Size=',Size,' Reader=',ReaderClass.ClassName,' Stream=',Stream.ClassName);
     ReadStreamWithFPImage(MemStream,Size,ReaderClass);
   finally
     if MemStream<>Stream then
@@ -903,8 +902,9 @@ procedure TBitmap.SetHandle(Value: HBITMAP);
 begin
   if FImage.FHandle = Value then exit;
   if FImage.FHandle<>0 then begin
-    UnshareImage;
+    // free old handles
     FreeCanvasContext;
+    UnshareImage;
   end;
   // TODO: get the properties from new bitmap
   with FImage do begin
@@ -1038,6 +1038,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.60  2004/02/07 20:25:37  mattias
+  fixed saving custom TBitBtn kind
+
   Revision 1.59  2004/02/05 16:28:38  mattias
   fixed unsharing TBitmap
 

@@ -16,30 +16,28 @@
 }
 
 {------------------------------------------------------------------------------}
-{       TBitbtn Constructor                                                    }
+{       TBitBtn Constructor                                                    }
 {------------------------------------------------------------------------------}
-constructor TBitBtn.Create(AOwner: TComponent);
+constructor TBitBtn.Create(TheOwner: TComponent);
 begin
-  Inherited Create(AOwner);
+  inherited Create(TheOwner);
   FCompStyle := csBitBtn;
-  FGlyph := TButtonGlyph.Create;
-  TButtonGlyph(FGlyph).OnChange := @GlyphChanged;
-  {set default alignment}
-  Align := alNone;
-  FCanvas := TCanvas.Create;
   FKind := bkCustom;
   FLayout := blGlyphLeft;
   FSpacing := 3;
-  Setbounds(1,1,75,25);
+  FButtonGlyph := TButtonGlyph.Create;
+  FButtonGlyph.OnChange := @GlyphChanged;
+  Align := alNone;
+  SetInitialBounds(1,1,75,25);
+  RealizeKind;
 end;
 
 {------------------------------------------------------------------------------}
-{       TBitbtn destructor                                                    }
+{       TBitBtn destructor                                                     }
 {------------------------------------------------------------------------------}
-destructor TBitbtn.Destroy;
+destructor TBitBtn.Destroy;
 Begin
-  FreeThenNil(FCanvas);
-  FreeThenNil(FGlyph);
+  FreeThenNil(FButtonGlyph);
   inherited Destroy;
 end;
 
@@ -57,29 +55,21 @@ Begin
   inherited Click;
 End;
 
-Function TBitbtn.GetGlyph : TBitmap;
+Function TBitBtn.GetGlyph : TBitmap;
 Begin
-  Result := TButtonGlyph(FGlyph).Glyph;
+  Result := FButtonGlyph.Glyph;
 end;
 
-Function TBitBtn.IsCustom : Boolean;
-Begin
-  Result := Kind = bkCustom;
-end;
-
-Function TBitbtn.IsGlyphStored : Boolean;
+Function TBitBtn.IsGlyphStored: Boolean;
 begin
-  Result := IsCustom;
-  If Result then
-    Result := TButtonGlyph(FGlyph).Glyph <> nil;
-  If Result then
-    Result := not TButtonGlyph(FGlyph).Glyph.Empty;
+  Result := (Kind = bkCustom) and (FButtonGlyph.Glyph <> nil)
+            and (not FButtonGlyph.Glyph.Empty)
+            and (FButtonGlyph.Glyph.Width>0) and (FButtonGlyph.Glyph.Height>0);
 end;
 
-Procedure TBitbtn.SetGlyph(Value : TBitmap);
+Procedure TBitBtn.SetGlyph(AValue: TBitmap);
 Begin
-  Assert(False, 'Trace:SETGLYPH');
-  TButtonGlyph(FGlyph).Glyph := Value;
+  FButtonGlyph.Glyph := AValue;
 end;
 
 procedure TBitBtn.GlyphChanged(Sender: TObject);
@@ -93,14 +83,17 @@ end;
 procedure TBitBtn.ActionChange(Sender: TObject; CheckDefaults: Boolean);
 
   procedure CopyImage(ImageList: TCustomImageList; Index: Integer);
+  var
+    CurGlyph: TBitmap;
   begin
-    with Glyph do
-    begin
+    CurGlyph:=Glyph;
+    with CurGlyph do begin
+      // ToDo: transparency
       Width := ImageList.Width;
       Height := ImageList.Height;
       Canvas.Brush.Color := clMaroon; // whatever
-      Canvas.FillRect(Rect(0,0, Width, Height));
-      ImageList.Draw(Canvas, 0, 0, Index,true);
+      Canvas.FillRect(Rect(0,0,Width, Height));
+      ImageList.Draw(Canvas,0,0,Index,true);
     end;
   end;
 
@@ -115,44 +108,54 @@ begin
   end;
 end;
 
-Procedure TBitBtn.SetKind(Value : TBitBtnKind);
-var
-  Bitmap1 : TBitmap;
+Procedure TBitBtn.SetKind(AValue: TBitBtnKind);
 Begin
-  FKind := Value;
-
+  if FKind=AValue then exit;
+  FKind := AValue;
   if FKind = bkCustom then Exit;
-
-  Bitmap1 := TBitmap.Create;
-  Bitmap1.Handle := LoadStockPixmap(BitBtnImages[Value]);
-  Glyph := Bitmap1;
-
-  Caption :=GetCaptionOfKind(fKind);
-  ModalResult := BitBtnModalResults[Value];
-  if not (csLoading in ComponentState) then
-    Default := FKind in [bkOk,bkYes];
+  
+  RealizeKind;
 end;
 
-Procedure TBitBtn.SetLayout(Value : TButtonLayout);
+Procedure TBitBtn.SetLayout(AValue: TButtonLayout);
 Begin
-  if FLayout = Value then Exit;
-  FLayout := Value;
+  if FLayout = AValue then Exit;
+  FLayout := AValue;
   if HandleAllocated then
     CNSendMessage(LM_LAYOUTCHANGED,Self,nil);
 end;
 
-Procedure TBitBtn.SetSpacing(Value : Integer);
+Procedure TBitBtn.SetSpacing(AValue: Integer);
 Begin
-  if (FSpacing = Value) or (Value < 0) then Exit;
-  FSpacing := Value;
+  if (FSpacing = AValue) or (AValue < 0) then Exit;
+  FSpacing := AValue;
   if HandleAllocated then
     //still send the layout message because it still calls the same procedure
     CNSendMessage(LM_LAYOUTCHANGED,Self,nil);
 end;
 
-//Return the caption associed with the akind value.
-//This function replace BitBtnCaption const because the localizing
-//dont work with an const (optimisation of FPC i supose)
+procedure TBitBtn.RealizeKind;
+var
+  ABitmap: TBitmap;
+begin
+  if (Kind<>bkCustom) then begin
+    ABitmap:=Glyph;
+    if ABitmap=nil then
+      ABitmap := TBitmap.Create;
+    ABitmap.Handle := LoadStockPixmap(BitBtnImages[FKind]);
+    Glyph := ABitmap;
+  end;
+
+  if not (csLoading in ComponentState) then begin
+    Caption :=GetCaptionOfKind(fKind);
+    ModalResult := BitBtnModalResults[FKind];
+    Default := FKind in [bkOk,bkYes];
+  end;
+end;
+
+{ Return the caption associated with the akind value.
+  This function replaces BitBtnCaption const because the localizing
+  dont work with an const array }
 function TBitBtn.GetCaptionOfKind(aKind: TBitBtnKind): String;
 begin
   Result:='';
