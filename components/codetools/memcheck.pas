@@ -764,10 +764,10 @@ procedure CheckPointer(p : pointer);[saveregisters,public, alias : 'FPC_CHECKPOI
 var
   i  : ptrint;
   pp : pheap_mem_info;
-{$IF go32v2 or win32}
+{$if defined(go32v2) or defined(win32)}
   get_ebp,stack_top : longword;
   data_end : longword;
-{$ENDIF}
+{$endif}
 label
   _exit;
 begin
@@ -2318,6 +2318,9 @@ end.
 
 {
   $Log$
+  Revision 1.33  2004/07/15 17:29:59  vincents
+  fix compilation for win32
+
   Revision 1.32  2004/07/13 21:57:53  vincents
   fix typos in defines
 
