@@ -217,6 +217,7 @@ type
   public
   end;
 
+procedure NotebookTabChanged(Notebook: TCustomNotebook; NewIndex: integer);
 
 implementation
 
@@ -270,6 +271,38 @@ begin
   for I := 0 to Notebook.PageCount - 1 do
     TWin32WidgetSet(InterfaceObject).ResizeChild(Notebook.Page[I], R.Left, R.Top, R.Right, R.Bottom);
 end;
+
+{ sets focus to a control on the newly focused tab page }
+procedure NotebookTabChanged(Notebook: TCustomNotebook; NewIndex: integer);
+var
+  Page: TCustomPage;
+  ControlList: TList;
+  Control: TControl;
+  I: integer;
+begin
+  Page := Notebook.CustomPage(NewIndex);
+  ControlList := TList.Create;
+  try
+    Page.GetTabOrderList(ControlList);
+    I := 0;
+    while I < ControlList.Count do
+    begin
+      Control := TControl(ControlList[I]);
+      if Control.TabStop and Control.IsVisible and Control.Enabled and
+        (Control is TWinControl) then
+      begin
+        TWinControl(Control).SetFocus;
+        break;
+      end;
+      Inc(I);
+    end;
+    if I = ControlList.Count then
+      Windows.SetFocus(Page.Handle);
+  finally
+    ControlList.Free;
+  end;
+end;
+
 
 { TWin32WSCustomPage }
 
@@ -399,6 +432,7 @@ begin
     begin
       PageHandle := ANotebook.CustomPage(AIndex).Handle;
       SetWindowPos(PageHandle, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW);
+      NotebookTabChanged(ANotebook, AIndex);
     end;
     if (OldPageIndex >= 0) and (OldPageIndex<>AIndex)
     and (OldPageIndex < ANotebook.PageCount)

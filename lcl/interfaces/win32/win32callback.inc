@@ -156,7 +156,9 @@ Var
       Flags := SW_SHOW
     else
       Flags := SW_HIDE;
-    Windows.ShowWindow(PageHandle, Flags)
+    Windows.ShowWindow(PageHandle, Flags);
+    if Showing then
+      NotebookTabChanged(Notebook, PageIndex);
   end;
 
   function GetMenuItemObject: TObject;
@@ -1470,6 +1472,9 @@ end;
 
 {
   $Log$
+  Revision 1.175  2004/12/27 12:08:54  micha
+  set focus to a control on the newly focussed tabpage of a notebook (fixes bug 501)
+
   Revision 1.174  2004/12/27 10:18:21  micha
   implement support for tthread.synchronize
 
