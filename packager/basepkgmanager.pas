@@ -108,6 +108,8 @@ type
                       Flags: TPkgCompileFlags): TModalResult; virtual; abstract;
     function OnRenameFile(const OldFilename,
                           NewFilename: string): TModalResult; virtual; abstract;
+    function FindIncludeFileInProjectDependencies(Project1: TProject;
+                          const Filename: string): string; virtual; abstract;
 
     function OnProjectInspectorOpen(Sender: TObject): boolean; virtual; abstract;
     function DoCompileAutoInstallPackages(Flags: TPkgCompileFlags

@@ -392,7 +392,8 @@ const
   
 function DefineActionNameToAction(const s: string): TDefineAction;
 function DefineTemplateFlagsToString(Flags: TDefineTemplateFlags): string;
-
+function SearchUnitInUnitLinks(const UnitLinks, TheUnitName: string;
+  var UnitLinkStart, UnitLinkEnd: integer; var Filename: string): boolean;
 
 implementation
 
@@ -403,7 +404,6 @@ type
     UnitName: string;
     Filename: string;
   end;
-
 
 // some useful functions
 
@@ -442,6 +442,69 @@ begin
   Result:=CompareFilenames(DirDef1.Path,DirDef2.Path);
 end;
 
+function SearchUnitInUnitLinks(const UnitLinks, TheUnitName: string;
+  var UnitLinkStart, UnitLinkEnd: integer; var Filename: string): boolean;
+var
+  UnitLinkLen: integer;
+begin
+  Result:=false;
+  Filename:='';
+  if TheUnitName='' then exit;
+  {$IFDEF ShowTriedFiles}
+  writeln('TFindDeclarationTool.FindUnitSource.SearchUnitInUnitLinks length(UnitLinks)=',length(UnitLinks));
+  {$ENDIF}
+  if UnitLinkStart<1 then
+    UnitLinkStart:=1;
+  while UnitLinkStart<=length(UnitLinks) do begin
+    while (UnitLinkStart<=length(UnitLinks))
+    and (UnitLinks[UnitLinkStart] in [#10,#13]) do
+      inc(UnitLinkStart);
+    UnitLinkEnd:=UnitLinkStart;
+    while (UnitLinkEnd<=length(UnitLinks)) and (UnitLinks[UnitLinkEnd]<>' ')
+    do
+      inc(UnitLinkEnd);
+    UnitLinkLen:=UnitLinkEnd-UnitLinkStart;
+    if UnitLinkLen>0 then begin
+      {$IFDEF ShowTriedFiles}
+      writeln('  unit "',copy(UnitLinks,UnitLinkStart,UnitLinkEnd-UnitLinkStart),'" ',CompareSubStrings(TheUnitName,UnitLinks,1,
+        UnitLinkStart,UnitLinkLen,false));
+      {$ENDIF}
+      if (UnitLinkLen=length(TheUnitName))
+      and (AnsiStrLIComp(PChar(TheUnitName),@UnitLinks[UnitLinkStart],
+           UnitLinkLen)=0)
+      then begin
+        // unit found -> parse filename
+        UnitLinkStart:=UnitLinkEnd+1;
+        UnitLinkEnd:=UnitLinkStart;
+        while (UnitLinkEnd<=length(UnitLinks))
+        and (not (UnitLinks[UnitLinkEnd] in [#10,#13])) do
+          inc(UnitLinkEnd);
+        if UnitLinkEnd>UnitLinkStart then begin
+          Filename:=copy(UnitLinks,UnitLinkStart,UnitLinkEnd-UnitLinkStart);
+          if FileExists(Filename) then begin
+            Result:=true;
+            exit;
+          end;
+          // try also different extensions
+          if CompareFileExt(Filename,'.pp',false)=0 then
+            Filename:=ChangeFileExt(Filename,'.pas')
+          else
+            Filename:=ChangeFileExt(Filename,'.pp');
+          if FileExists(Filename) then begin
+            Result:=true;
+            exit;
+          end;
+        end;
+      end else begin
+        UnitLinkStart:=UnitLinkEnd+1;
+        while (UnitLinkStart<=length(UnitLinks))
+        and (not (UnitLinks[UnitLinkStart] in [#10,#13])) do
+          inc(UnitLinkStart);
+      end;
+    end else
+      break;
+  end;
+end;
 
 { TDefineTemplate }
 

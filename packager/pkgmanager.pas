@@ -154,6 +154,8 @@ type
     function GetPublishPackageDir(APackage: TLazPackage): string;
     function OnRenameFile(const OldFilename,
                           NewFilename: string): TModalResult; override;
+    function FindIncludeFileInProjectDependencies(Project1: TProject;
+                          const Filename: string): string; override;
 
     // package graph
     function AddPackageToGraph(APackage: TLazPackage; Replace: boolean): TModalResult;
@@ -2095,6 +2097,40 @@ begin
   OldPackage.Modified:=true;
 
   Result:=mrOk;
+end;
+
+{------------------------------------------------------------------------------
+  function TPkgManager.FindIncludeFileInProjectDependencies(Project1: TProject;
+    const Filename: string): string;
+    
+  Search filename in the include paths of all required packages
+------------------------------------------------------------------------------}
+function TPkgManager.FindIncludeFileInProjectDependencies(Project1: TProject;
+  const Filename: string): string;
+var
+  APackage: TLazPackage;
+  IncPath: String;
+  PkgList: Tlist;
+  i: Integer;
+begin
+  Result:='';
+  if FilenameIsAbsolute(Filename) then begin
+    Result:=Filename;
+    exit;
+  end;
+  PkgList:=nil;
+  PackageGraph.GetAllRequiredPackages(Project1.FirstRequiredDependency,PkgList);
+  if PkgList=nil then exit;
+  try
+    for i:=0 to PkgList.Count-1 do begin
+      APackage:=TLazPackage(PkgList[i]);
+      IncPath:=APackage.CompilerOptions.IncludeFiles;
+      Result:=SearchFileInPath(Filename,APackage.Directory,IncPath,';',[]);
+      if Result<>'' then exit;
+    end;
+  finally
+    PkgList.Free;
+  end;
 end;
 
 function TPkgManager.DoAddActiveUnitToAPackage: TModalResult;

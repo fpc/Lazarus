@@ -207,6 +207,7 @@ type
     function GetPascalCompilerForDirectory(const Directory: string): TPascalCompiler;
     function GetCompilerModeForDirectory(const Directory: string): TCompilerMode;
     function GetCompiledSrcExtForDirectory(const Directory: string): string;
+    function FindUnitInUnitLinks(const Directory, UnitName: string): string;
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -698,6 +699,20 @@ begin
   if Evaluator=nil then exit;
   if Evaluator.IsDefined('WIN32') then
     Result:='.ppw';
+end;
+
+function TCodeToolManager.FindUnitInUnitLinks(const Directory, UnitName: string
+  ): string;
+var
+  Evaluator: TExpressionEvaluator;
+  UnitLinks: string;
+  UnitLinkStart, UnitLinkEnd: integer;
+begin
+  Result:='';
+  Evaluator:=DefineTree.GetDefinesForDirectory(Directory,true);
+  if Evaluator=nil then exit;
+  UnitLinks:=Evaluator[ExternalMacroStart+'UnitLinks'];
+  SearchUnitInUnitLinks(UnitLinks,UnitName,UnitLinkStart,UnitLinkEnd,Result);
 end;
 
 function TCodeToolManager.InitCurCodeTool(Code: TCodeBuffer): boolean;
