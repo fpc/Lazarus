@@ -139,13 +139,15 @@ End;
   functions for the message.
  ------------------------------------------------------------------------------}
 Procedure TWin32Object.CallDefaultWndHandler(Sender: TObject; var Message);
+var
+  Handle: HWND;
 begin
+  Handle := ObjectToHwnd(Sender);
   case TLMessage(Message).Msg of
   
   LM_PAINT:
-      begin
-        Result := CallWindowProc(GetProp(Handle, 'DefWndProc'), Handle, WM_PAINT, Message.WParam, Message.LParam);
-      end;
+    CallWindowProc(GetProp(Handle, 'DefWndProc'), Handle, WM_PAINT,
+                          TLMessage(Message).WParam, TLMessage(Message).LParam);
 
   end;
 end;
@@ -2336,6 +2338,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.43  2003/07/04 17:46:27  mattias
+  fixed notebook positioning from Micha
+
   Revision 1.42  2003/07/04 11:12:27  mattias
   improved default handler from Micha
 

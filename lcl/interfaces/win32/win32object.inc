@@ -636,6 +636,8 @@ activate_time :	the time at which the activation event occurred.
                 begin
                   Windows.GetClientRect((Sender As TWinControl).Parent.Handle,@R);
                   Windows.SendMessage((Sender As TWinControl).Parent.Handle, TCM_AdjustRect, 0, LPARAM(@R));
+                  Left := R.Left;
+                  Top := R.Top;
                 end
               end;
               R := Rect(Left, Top, R.Right - R.Left, R.Bottom - R.Top);
@@ -1716,10 +1718,7 @@ Begin
   If (Sender Is TWinControl) And ((Sender As TWinControl).Parent <> Nil) Then
   Begin
     Assert(False, Format('Trace:TWin32Object.CreateComponent - %S parent --> %S', [Sender.ClassName, TWinControl(Sender).Parent.ClassName]));
-    If Not ((Sender As TWinControl).Parent Is TPage) Then
-      Parent := (Sender As TWinControl).Parent.Handle
-    Else
-      Parent :=((Sender As TWinControl).Parent As TPage).Parent.Handle;
+    Parent := (Sender As TWinControl).Parent.Handle;
     Assert(False, Format('Trace:TWin32Object.CreateComponent - parent handle --> 0x%X', [Parent]));
 
     Assert(False, 'Trace:Setting parent');
@@ -1891,7 +1890,7 @@ Begin
     Begin
       Assert(False, 'Trace:CreateComponent - Creating a Form Window');
       try
-        Window := CreateWindow(ClsName, StrTemp, WS_OVERLAPPEDWINDOW or WS_CLIPSIBLINGS or WS_CLIPCHILDREN, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, Parent, HMENU(Nil), HInstance, Nil);
+        Window := CreateWindow(ClsName, StrTemp, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, Parent, HMENU(Nil), HInstance, Nil);
       except
         writeln('Exception occured creating window');
       end;
@@ -2087,7 +2086,7 @@ Begin
     csPage:
     Begin
       Assert(False, 'Trace:Create a csPage component.');
-      Window := CreateWindowEx(WS_EX_CONTROLPARENT, @ClsName, Nil, WS_CHILD or WS_CLIPCHILDREN or WS_CLIPSIBLINGS, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
+      Window := CreateWindowEx(WS_EX_CONTROLPARENT, @ClsName, Nil, Flags and not WS_VISIBLE, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       ShowWindow(Window, SW_HIDE);
       SetProp(Window, 'Lazarus', Sender);
       DoSubClass := false;
@@ -2745,6 +2744,9 @@ End;
 
 {
   $Log$
+  Revision 1.74  2003/07/04 17:46:27  mattias
+  fixed notebook positioning from Micha
+
   Revision 1.73  2003/07/04 11:12:27  mattias
   improved default handler from Micha
 
