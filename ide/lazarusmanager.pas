@@ -9,6 +9,9 @@ uses
 {$IFDEF win32}
   Windows,
 {$ENDIF}
+{$IFDEF unix}
+  BaseUnix,
+{$ENDIF}
   Classes, SysUtils, Process,
   LCLProc, FileUtil, Forms,
   LazConf,
@@ -134,10 +137,21 @@ procedure TLazarusManager.WaitForLazarus;
     WaitForSingleObject(ProcessHandle, INFINITE);
   end;
   {$ELSE}
+  {$IFDEF UNIX}
+  var
+    Result: integer;
+  begin
+    repeat
+      Sleep(100);
+      Result := fpKill(PID, 0);
+    until Result<>0;
+  end;
+  {$ELSE}
   begin
     DebugLn('WaitForPid not implemented for this OS. We just wait 5 seconds');
     Sleep(5000);
   end;
+  {$ENDIF}
   {$ENDIF}
 begin
   if FLazarusPID<>0 then begin
@@ -209,6 +223,10 @@ end;
 end.
 {
   $Log$
+  Revision 1.7  2004/10/31 21:17:34  vincents
+  - Implemented restarting by starting startlazarus on unix (for 1.9.x only).
+  - Add Restart After Succesfull Build CheckBox to the Configure Build Lazarus dialog.
+
   Revision 1.6  2004/10/27 20:49:26  vincents
   Lazarus can be restarted, even if not started by startlazarus (only win32 implemented).
 

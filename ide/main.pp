@@ -556,6 +556,9 @@ type
     function DoOpenFileAndJumpToIdentifier(const AFilename, AnIdentifier: string;
         PageIndex: integer; Flags: TOpenFlags): TModalResult; override;
     function DoSaveAll(Flags: TSaveFlags): TModalResult;
+{$IFDEF UseStartLazarus}
+    procedure DoRestart;
+{$ENDIF}
     function DoOpenMainUnit(ProjectLoading: boolean): TModalResult;
     function DoRevertMainUnit: TModalResult;
     function DoViewUnitsAndForms(OnlyForms: boolean): TModalResult;
@@ -2398,38 +2401,8 @@ end;
 
 {$IFDEF UseStartLazarus}
 procedure TMainIDE.mnuRestartClicked(Sender: TObject);
-
-  procedure StartStarter;
-  var
-    StartLazProcess: TProcess;
-    ExeName: string;
-  begin
-    StartLazProcess := TProcess.Create(nil);
-    try
-      StartLazProcess.CurrentDirectory := ExtractFileDir(ParamStr(0));
-      ExeName := AppendPathDelim(StartLazProcess.CurrentDirectory) +
-        'startlazarus' + GetDefaultExecutableExt;
-      if not FileExists(ExeName) then begin
-        ShowMessage(format(lisCannotFindLazarusStarter,
-          [LineEnding, ExeName]));
-        exit;
-      end;
-      StartLazProcess.CommandLine := format('%s --lazarus-pid=%d',
-        [ExeName, ProcessID]);
-      StartLazProcess.Execute;
-    finally
-      StartLazProcess.Free;
-    end;
-  end;
-  
 begin
-  mnuQuitClicked(Sender);
-  if Application.Terminated then begin
-    if StartedByStartLazarus then
-      ExitCode := 99
-    else
-      StartStarter;
-  end;
+  DoRestart;
 end;
 {$ENDIF}
 
@@ -6269,6 +6242,42 @@ begin
   // ToDo: save package, cvs settings, ...
 end;
 
+{$IFDEF UseStartLazarus}
+procedure TMainIDE.DoRestart;
+  procedure StartStarter;
+  var
+    StartLazProcess: TProcess;
+    ExeName: string;
+  begin
+    StartLazProcess := TProcess.Create(nil);
+    try
+      StartLazProcess.CurrentDirectory := ExtractFileDir(ParamStr(0));
+      ExeName := AppendPathDelim(StartLazProcess.CurrentDirectory) +
+        'startlazarus' + GetDefaultExecutableExt;
+      if not FileExists(ExeName) then begin
+        ShowMessage(format(lisCannotFindLazarusStarter,
+          [LineEnding, ExeName]));
+        exit;
+      end;
+      StartLazProcess.CommandLine := format('%s --lazarus-pid=%d',
+        [ExeName, ProcessID]);
+      StartLazProcess.Execute;
+    finally
+      StartLazProcess.Free;
+    end;
+  end;
+
+begin
+  mnuQuitClicked(Self);
+  if Application.Terminated then begin
+    if StartedByStartLazarus then
+      ExitCode := 99
+    else
+      StartStarter;
+  end;
+end;
+{$ENDIF}
+
 //-----------------------------------------------------------------------------
 
 function TMainIDE.DoRunExternalTool(Index: integer): TModalResult;
@@ -6382,10 +6391,15 @@ begin
                          EnvironmentOptions.MakeFilename,
                          IDEBuildFlags+[blfUseMakeIDECfg,blfDontClean]);
     if Result<>mrOk then exit;
+    
   finally
     DoCheckFilesOnDisk;
     MessagesView.EndBlock;
   end;
+{$IFDEF UseStartLazarus}
+  if (Result=mrOK) and MiscellaneousOptions.BuildLazOpts.RestartAfterBuild then
+     mnuRestartClicked(nil);
+{$ENDIF}
 end;
 
 function TMainIDE.DoExecuteCompilationTool(Tool: TCompilationTool;
@@ -10955,6 +10969,10 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.787  2004/10/31 21:17:34  vincents
+  - Implemented restarting by starting startlazarus on unix (for 1.9.x only).
+  - Add Restart After Succesfull Build CheckBox to the Configure Build Lazarus dialog.
+
   Revision 1.786  2004/10/30 16:24:05  mattias
   disabled alClient RemainingClientRect adjust
 

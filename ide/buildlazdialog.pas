@@ -61,7 +61,7 @@ type
   
   TBuildLazarusItem = class
   private
-    fCommands: array[TMakeMode] of string;
+    FCommands: array[TMakeMode] of string;
     FDefaultMakeMode: TMakeMode;
     FDescription: string;
     FDirectory: string;
@@ -94,7 +94,7 @@ type
   
   TBuildLazarusOptions = class
   private
-    fCleanAll: boolean;
+    FCleanAll: boolean;
     FGlobals: TGlobalCompilerOptions;
     FItemCodeTools: TBuildLazarusItem;
     FItemExamples: TBuildLazarusItem;
@@ -107,15 +107,17 @@ type
     FItemStarter: TBuildLazarusItem;
     {$ENDIF}
     FItemSynEdit: TBuildLazarusItem;
-    fExtraOptions: string;
+    FExtraOptions: string;
+    FRestartAfterBuild: boolean;
     FTargetDirectory: string;
     fTargetOS: string;
     fLCLPlatform: TLCLPlatform;
     fStaticAutoInstallPackages: TStringList;
     FWithStaticPackages: boolean;
-    fItems: TList; // list of TBuildLazarusItem
+    FItems: TList; // list of TBuildLazarusItem
     function GetCount: integer;
     function GetItems(Index: integer): TBuildLazarusItem;
+    procedure SetRestartAfterBuild(const AValue: boolean);
     procedure SetTargetDirectory(const AValue: string);
     procedure SetTargetOS(const AValue: string);
     procedure SetWithStaticPackages(const AValue: boolean);
@@ -145,8 +147,8 @@ type
     property ItemStarter: TBuildLazarusItem read FItemStarter;
     {$ENDIF}
     property ItemExamples: TBuildLazarusItem read FItemExamples;
-    property CleanAll: boolean read fCleanAll write fCleanAll;
-    property ExtraOptions: string read fExtraOptions write fExtraOptions;
+    property CleanAll: boolean read FCleanAll write FCleanAll;
+    property ExtraOptions: string read FExtraOptions write FExtraOptions;
     property TargetOS: string read fTargetOS write SetTargetOS;
     property LCLPlatform: TLCLPlatform read fLCLPlatform write fLCLPlatform;
     property StaticAutoInstallPackages: TStringList
@@ -155,6 +157,8 @@ type
                                      write SetTargetDirectory;
     property WithStaticPackages: boolean read FWithStaticPackages
                                          write SetWithStaticPackages;
+    property RestartAfterBuild: boolean read FRestartAfterBuild
+                                        write SetRestartAfterBuild;
     property Globals: TGlobalCompilerOptions read FGlobals;
   end;
   
@@ -166,6 +170,7 @@ type
     BuildAllButton: TButton;
     ItemsListBox: TListBox;
     WithStaticPackagesCheckBox: TCheckBox;
+    RestartAfterBuildCheckBox: TCheckBox;
     OptionsLabel: TLabel;
     OptionsEdit: TEdit;
     LCLInterfaceRadioGroup: TRadioGroup;
@@ -549,17 +554,13 @@ var
 begin
   x:=10;
   y:=10;
-  w:=ClientWidth-150;
-  with CleanAllCheckBox do begin
-    SetBounds(x,y,w,Height);
-    inc(y,Height+5);
-  end;
   with BuildAllButton do begin
     SetBounds(x,y,200,Height);
     inc(y,Height+5);
   end;
+  w:=ClientWidth-150;
   with ItemsListBox do begin
-    SetBounds(x,y,w,Max(30,Parent.ClientHeight-200));
+    SetBounds(x,y,w,Max(30,Parent.ClientHeight-195));
     inc(y,Height+5);
   end;
   with OptionsLabel do begin
@@ -593,10 +594,19 @@ begin
     x:=TargetDirectoryLabel.Left;
     inc(y,Height+3);
   end;
+  with RestartAfterBuildCheckBox do begin
+    SetBounds(x,y,Parent.ClientWidth-x-10,Height);
+    inc(y,Height+3);
+  end;
 
   inc(x,w+10);
-  y:=ItemsListBox.Top;
+  y:=BuildAllButton.Top;
   w:=ClientWidth-10-x;
+  with CleanAllCheckBox do begin
+    SetBounds(x,y,w,Height);
+  end;
+
+  y:=ItemsListBox.Top;
   with LCLInterfaceRadioGroup do begin
     SetBounds(x,y,w,150);
     inc(y,Height+60);
@@ -759,6 +769,7 @@ begin
   OptionsEdit.Text:=Options.ExtraOptions;
   LCLInterfaceRadioGroup.ItemIndex:=ord(Options.LCLPlatform);
   WithStaticPackagesCheckBox.Checked:=Options.WithStaticPackages;
+  RestartAfterBuildCheckBox.Checked:=Options.RestartAfterBuild;
   TargetOSEdit.Text:=Options.TargetOS;
   
   Invalidate;
@@ -772,6 +783,7 @@ begin
   Options.ExtraOptions:=OptionsEdit.Text;
   Options.LCLPlatform:=TLCLPlatform(LCLInterfaceRadioGroup.ItemIndex);
   Options.WithStaticPackages:=WithStaticPackagesCheckBox.Checked;
+  Options.RestartAfterBuild:=RestartAfterBuildCheckBox.Checked;
   Options.TargetOS:=TargetOSEdit.Text;
   
   DestOptions.Assign(Options);
@@ -918,6 +930,13 @@ begin
     {$ENDIF}
   end;
 
+  RestartAfterBuildCheckBox:=TCheckBox.Create(Self);
+  with RestartAfterBuildCheckBox do begin
+    Name:='RestartAfterBuildCheckBox';
+    Parent:=Self;
+    Caption:=lisLazBuildRestartAfterBuild;
+  end;
+
   OkButton:=TButton.Create(Self);
   with OkButton do begin
     Parent:=Self;
@@ -951,14 +970,16 @@ begin
       MakeModeNames[Items[i].DefaultMakeMode]);
   end;
 
-  XMLConfig.SetDeleteValue(Path+'CleanAll/Value',fCleanAll,true);
-  XMLConfig.SetDeleteValue(Path+'ExtraOptions/Value',fExtraOptions,'');
+  XMLConfig.SetDeleteValue(Path+'CleanAll/Value',FCleanAll,true);
+  XMLConfig.SetDeleteValue(Path+'ExtraOptions/Value',FExtraOptions,'');
   XMLConfig.SetDeleteValue(Path+'TargetOS/Value',TargetOS,'');
   XMLConfig.SetDeleteValue(Path+'LCLPlatform/Value',
                            LCLPlatformNames[fLCLPlatform],
                            GetDefaultLCLWidgetType);
   XMLConfig.SetDeleteValue(Path+'TargetDirectory/Value',
                            FTargetDirectory,DefaultTargetDirectory);
+  XMLConfig.SetDeleteValue(Path+'RestartAfterBuild/Value',FRestartAfterBuild,
+                           true);
   XMLConfig.SetDeleteValue(Path+'WithStaticPackages/Value',FWithStaticPackages,
                            true);
 
@@ -981,12 +1002,13 @@ begin
   LCLPlatform:=Source.LCLPlatform;
   TargetDirectory:=Source.TargetDirectory;
   WithStaticPackages:=Source.WithStaticPackages;
+  RestartAfterBuild:=Source.RestartAfterBuild;
   fStaticAutoInstallPackages.Assign(Source.fStaticAutoInstallPackages);
   for i:=0 to Source.Count-1 do begin
     SrcItem:=Source.Items[i];
     NewItem:=TBuildLazarusItem.Create;
     NewItem.Assign(SrcItem);
-    fItems.Add(NewItem);
+    FItems.Add(NewItem);
   end;
   FItemLCL:=FindName('LCL');
   FItemSynEdit:=FindName('SynEdit');
@@ -1005,7 +1027,7 @@ procedure TBuildLazarusOptions.SetBuildAll;
 var
   i: Integer;
 begin
-  fCleanAll:=true;
+  FCleanAll:=true;
   for i:=0 to Count-1 do Items[i].MakeMode:=mmBuild;
 end;
 
@@ -1042,14 +1064,15 @@ begin
       Path+'Build'+Items[i].Name+'/Value',
       MakeModeNames[Items[i].MakeMode]));
   end;
-  fCleanAll:=XMLConfig.GetValue(Path+'CleanAll/Value',true);
-  fExtraOptions:=XMLConfig.GetValue(Path+'ExtraOptions/Value','');
+  FCleanAll:=XMLConfig.GetValue(Path+'CleanAll/Value',true);
+  FExtraOptions:=XMLConfig.GetValue(Path+'ExtraOptions/Value','');
   TargetOS:=XMLConfig.GetValue(Path+'TargetOS/Value','');
   fLCLPlatform:=StrToLCLPlatform(XMLConfig.GetValue(Path+'LCLPlatform/Value',
                                  GetDefaultLCLWidgetType));
   FTargetDirectory:=AppendPathDelim(SetDirSeparators(
                   XMLConfig.GetValue(Path+'TargetDirectory/Value',
                                      DefaultTargetDirectory)));
+  FRestartAfterBuild:=XMLConfig.GetValue(Path+'RestartAfterBuild/Value',true);
   FWithStaticPackages:=XMLConfig.GetValue(Path+'WithStaticPackages/Value',true);
 
   // auto install packages
@@ -1077,7 +1100,13 @@ end;
 
 function TBuildLazarusOptions.GetItems(Index: integer): TBuildLazarusItem;
 begin
-  Result:=TBuildLazarusItem(fItems[Index]);
+  Result:=TBuildLazarusItem(FItems[Index]);
+end;
+
+procedure TBuildLazarusOptions.SetRestartAfterBuild(const AValue: boolean);
+begin
+  if FRestartAfterBuild=AValue then exit;
+  FRestartAfterBuild:=AValue;
 end;
 
 procedure TBuildLazarusOptions.SetWithStaticPackages(const AValue: boolean);
@@ -1090,8 +1119,8 @@ constructor TBuildLazarusOptions.Create;
 begin
   inherited Create;
   FGlobals:=TGlobalCompilerOptions.Create;
-  fItems:=TList.Create;
-  fStaticAutoInstallPackages:=TStringList.Create;
+  FItems:=TList.Create;
+  FStaticAutoInstallPackages:=TStringList.Create;
   Clear;
   CreateDefaults;
 end;
@@ -1099,8 +1128,8 @@ end;
 destructor TBuildLazarusOptions.Destroy;
 begin
   Clear;
-  fStaticAutoInstallPackages.Free;
-  fItems.Free;
+  FStaticAutoInstallPackages.Free;
+  FItems.Free;
   FGlobals.Free;
   inherited Destroy;
 end;
@@ -1109,8 +1138,8 @@ procedure TBuildLazarusOptions.Clear;
 var
   i: Integer;
 begin
-  fCleanAll:=true;
-  fExtraOptions:='';
+  FCleanAll:=true;
+  FExtraOptions:='';
   FTargetDirectory:=DefaultTargetDirectory;
   TargetOS:='';
   fLCLPlatform:=StrToLCLPlatform(GetDefaultLCLWidgetType);
@@ -1122,7 +1151,7 @@ begin
   for i:=0 to FItems.Count-1 do begin
     Items[i].Free;
   end;
-  fItems.Clear;
+  FItems.Clear;
 
   FItemLCL:=nil;
   FItemSynEdit:=nil;
@@ -1142,52 +1171,52 @@ begin
   // LCL
   FItemLCL:=TBuildLazarusItem.Create(
     'LCL',lisBuildLCL,'lcl',mmCleanBuild);
-  fItems.Add(FItemLCL);
+  FItems.Add(FItemLCL);
 
   // SynEdit
   FItemSynEdit:=TBuildLazarusItem.Create(
     'SynEdit',lisBuildSynEdit,'components/synedit',mmBuild);
-  fItems.Add(FItemSynEdit);
+  FItems.Add(FItemSynEdit);
 
   // CodeTools
   FItemCodeTools:=TBuildLazarusItem.Create(
     'CodeTools',lisBuildCodeTools,'components/codetools',mmBuild);
-  fItems.Add(FItemCodeTools);
+  FItems.Add(FItemCodeTools);
 
   // package registration units
   FItemPkgReg:=TBuildLazarusItem.Create(
     'PackageRegistration',lisBuildPkgReg,'packager/registration',
     mmBuild);
-  fItems.Add(FItemPkgReg);
+  FItems.Add(FItemPkgReg);
 
   // IDE Interface
   FItemIDEIntf:=TBuildLazarusItem.Create(
     'IDEIntf',lisBuildIDEIntf,'ideintf',mmBuild);
-  fItems.Add(FItemIDEIntf);
+  FItems.Add(FItemIDEIntf);
 
   // JITForm
   FItemJITForm:=TBuildLazarusItem.Create(
     'JITForm',lisBuildJITForm,'designer/jitform',mmBuild);
-  fItems.Add(FItemJITForm);
+  FItems.Add(FItemJITForm);
 
   // IDE
   FItemIDE:=TBuildLazarusItem.Create('IDE',lisBuildIDE,'',mmBuild);
   FItemIDE.Commands[mmBuild]:='ide';
   FItemIDE.Commands[mmCleanBuild]:='cleanide ide';
-  fItems.Add(FItemIDE);
+  FItems.Add(FItemIDE);
 
   {$IFDEF UseStartLazarus}
   // Starter
   FItemStarter:=TBuildLazarusItem.Create('Starter',lisBuildStarter,'',mmBuild);
   FItemStarter.Commands[mmBuild]:='starter';
   FItemStarter.Commands[mmCleanBuild]:='starter';
-  fItems.Add(FItemStarter);
+  FItems.Add(FItemStarter);
   {$ENDIF}
 
   // Examples
   FItemExamples:=TBuildLazarusItem.Create(
     'Examples',lisBuildExamples,'examples',mmBuild);
-  fItems.Add(FItemExamples);
+  FItems.Add(FItemExamples);
 end;
 
 function TBuildLazarusOptions.IndexOf(Item: TBuildLazarusItem): integer;
@@ -1200,12 +1229,12 @@ end;
 
 function TBuildLazarusItem.GetCommands(Mode: TMakeMode): string;
 begin
-  Result:=fCommands[Mode];
+  Result:=FCommands[Mode];
 end;
 
 procedure TBuildLazarusItem.SetCommands(Mode: TMakeMode; const AValue: string);
 begin
-  fCommands[Mode]:=AValue;
+  FCommands[Mode]:=AValue;
 end;
 
 procedure TBuildLazarusItem.SetDefaultMakeMode(const AValue: TMakeMode);
@@ -1262,11 +1291,11 @@ end;
 
 procedure TBuildLazarusItem.Clear;
 begin
-  fCommands[mmNone]:='';
-  fCommands[mmBuild]:='all';
-  fCommands[mmCleanBuild]:='clean all';
+  FCommands[mmNone]:='';
+  FCommands[mmBuild]:='all';
+  FCommands[mmCleanBuild]:='clean all';
   FDirectory:='';
-  fName:='';
+  FName:='';
   FMakeMode:=mmNone;
 end;
 

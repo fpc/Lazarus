@@ -1442,13 +1442,13 @@ resourcestring
   lisLazBuildLCLInterface = 'LCL interface';
   lisLazBuildBuildJITForm = 'Build JITForm';
   lisLazBuildWithStaticPackages = 'With Packages';
+  lisLazBuildRestartAfterBuild = 'Restart After Successfull Build';
   lisLazBuildOk = 'Ok';
-  lisClDirKeepAllTextFiles = 'Keep all text files';
   lisLazBuildCancel = 'Cancel';
   lisLazBuildNone = 'None';
   lisLazBuildBuild = 'Build';
   lisLazBuildCleanBuild = 'Clean+Build';
-   
+
   // compiler
   lisCompilerErrorInvalidCompiler = 'Error: invalid compiler: %s';
   lisCompilerHintYouCanSetTheCompilerPath = 'Hint: you can set the compiler '
@@ -2487,6 +2487,7 @@ resourcestring
   lisClDirCleanSubDirectories = 'Clean sub directories';
   lisClDirRemoveFilesMatchingFilter = 'Remove files matching filter';
   lisClDirSimpleSyntaxEGInsteadOf = 'Simple Syntax (e.g. * instead of .*)';
+  lisClDirKeepAllTextFiles = 'Keep all text files';
   lisClDirKeepFilesMatchingFilter = 'Keep files matching filter';
   lisClDirCleanDirectory = 'Clean Directory';
   
