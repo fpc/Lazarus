@@ -274,7 +274,9 @@ type
 {$ENDIF}
     procedure WMKillFocus(var Msg: TWMKillFocus); message WM_KILLFOCUS;
 {$IFDEF SYN_LAZARUS}
+{$IFDEF USE_SYNEDIT_MOUSEWHEEL}
     procedure WMMouseWheel(var Msg: TLMMouseEvent); message LM_MOUSEWHEEL;
+{$ENDIF}
 {$ELSE}
     procedure WMMouseWheel(var Msg: TMessage); message WM_MOUSEWHEEL;
     procedure WMSetCursor(var Msg: TWMSetCursor); message WM_SETCURSOR;
@@ -333,7 +335,9 @@ type
 {$ifndef SYN_LAZARUS}
     fBorderStyle: TBorderStyle;
 {$endif}
+{$ifdef USE_SYNEDIT_MOUSEWHEEL}
     fMouseWheelAccumulator: integer;
+{$endif}    
     fHideSelection: boolean;
     fOverwriteCaret: TSynEditCaretType;
     fInsertCaret: TSynEditCaretType;
@@ -3645,6 +3649,7 @@ begin
   if fGutterWidth <> Value then begin
     fGutterWidth := Value;
     fTextOffset := fGutterWidth + 2 - (LeftChar - 1) * fCharWidth;
+    fBookmarkOpt.XOffset := Value - 18;
     if HandleAllocated then begin
       {$IFDEF SYN_LAZARUS}
       fCharsInWindow := Max(1,(ClientWidth - fGutterWidth - 2 - ScrollBarWidth)
@@ -4072,11 +4077,19 @@ begin
     fTopLine := Value;
     UpdateScrollBars;
     if Abs(Delta) < fLinesInWindow then
-      {$IFDEF SYN_LAZARUS}
-      Invalidate
-      {$ELSE}
-      ScrollWindow(Handle, 0, fTextHeight * Delta, nil, nil)
-      {$ENDIF}
+{$ifndef SYN_LAZARUS}    
+      ScrollWindow(Handle, 0, fTextHeight * Delta, nil, nil);
+{$else}      
+    begin
+      // TODO: SW_SMOOTHSCROLL --> can't get it work
+      if not ScrollWindowEx(Handle, 0, fTextHeight * Delta, nil, nil, 0, nil, 
+        SW_INVALIDATE) then
+      begin
+        // scrollwindow failed, invalidate all
+        Invalidate;
+      end;
+    end
+{$endif}      
     else
       Invalidate;
     StatusChanged([scTopLine]);
@@ -6785,6 +6798,7 @@ begin
 end;
 
 {$IFDEF SYN_LAZARUS}
+{$IFDEF USE_SYNEDIT_MOUSEWHEEL}
 
 procedure TCustomSynEdit.WMMouseWheel(var Msg: TLMMouseEvent);
 var
@@ -6822,6 +6836,7 @@ begin
   Update;
 end;
 
+{$ENDIF}
 {$ELSE}
 
 procedure TCustomSynEdit.WMMouseWheel(var Msg: TMessage);

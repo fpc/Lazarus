@@ -608,6 +608,12 @@ const
 
   DLGC_WANTCHARS = $80;
 
+{ScrollWindowEx}
+  SW_SMOOTHSCROLL = 16;
+  SW_ERASE = 4;
+  SW_INVALIDATE = 2;
+  SW_SCROLLCHILDREN = 1;
+
 {owner drawn constants}
   ODT_MENU = 1;
   ODT_LISTBOX = 2;
@@ -2007,6 +2013,9 @@ end.
 
 {
   $Log$
+  Revision 1.62  2004/06/30 17:14:11  micha
+  let synedit use scrollwindowex, if that does not work, use invalidate
+
   Revision 1.61  2004/05/14 17:17:29  micha
   add measureitem message and struct
 
