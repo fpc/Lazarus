@@ -667,7 +667,7 @@ begin
     AsteriskPos:=0;
     BracketMaskPos:=0;
     while (DirStartMask<DirEndMask) and (DirStartFile<DirEndFile) do begin
-//debugl('AAA1 ',DirStartMask,' ',Mask[DirStartMask],' - ',DirStartFile,' ',Filename[DirStartFile]);
+      //debugl('FilenameIsMatching ',DirStartMask,' ',Mask[DirStartMask],' - ',DirStartFile,' ',Filename[DirStartFile]);
       case Mask[DirStartMask] of
       '?':
         begin

@@ -1596,7 +1596,7 @@ begin
       for i:=0 to AliasStrings.Count-1 do begin
         AValue:=AliasStrings.Names[i];
         MappedValue:=AliasStrings.Values[AValue];
-        //writeln('AAA1 MappedValue=',MappedValue,' AValue=',AValue,' ',Values.IndexOf(AValue));
+        //writeln('TCustomPropertyLink.MapValues MappedValue=',MappedValue,' AValue=',AValue,' ',Values.IndexOf(AValue));
         if Values.IndexOf(AValue)>=0 then
           MappedValues.Add(MappedValue);
       end;
