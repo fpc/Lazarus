@@ -435,9 +435,9 @@ begin
     // create handle if not already done, need to show!
     if (AIndex >= 0) and (AIndex < ANotebook.PageCount) then
     begin
+      NotebookTabChanged(ANotebook, AIndex);
       PageHandle := ANotebook.CustomPage(AIndex).Handle;
       SetWindowPos(PageHandle, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW);
-      NotebookTabChanged(ANotebook, AIndex);
     end;
     if (OldPageIndex >= 0) and (OldPageIndex<>AIndex)
     and (OldPageIndex < ANotebook.PageCount)
