@@ -5690,6 +5690,7 @@ end;
 function TMainIDE.DoBuildLazarus(Flags: TBuildLazarusFlags): TModalResult;
 var
   PkgOptions: string;
+  IDEBuildFlags: TBuildLazarusFlags;
 begin
   try
     // first compile all lazarus components (LCL, SynEdit, CodeTools, ...)
@@ -5721,10 +5722,17 @@ begin
     end;
     {$ENDIF}
 
+    // save extra options
+    IDEBuildFlags:=Flags+[blfOnlyIDE];
+    Result:=SaveIDEMakeOptions(MiscellaneousOptions.BuildLazOpts,
+                     MacroList,PkgOptions,IDEBuildFlags);
+    if Result<>mrOk then exit;
+
+    // make ide
     SourceNotebook.ClearErrorLines;
     Result:=BuildLazarus(MiscellaneousOptions.BuildLazOpts,
                          EnvironmentOptions.ExternalTools,MacroList,
-                         PkgOptions,Flags+[blfOnlyIDE]);
+                         PkgOptions,IDEBuildFlags+[blfUseMakeIDECfg]);
     if Result<>mrOk then exit;
   finally
     DoCheckFilesOnDisk;
@@ -8659,6 +8667,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.554  2003/05/05 13:40:26  mattias
+  ide extra options are now saved, so creating a packaged ide is now possible on commandline
+
   Revision 1.553  2003/05/04 21:48:52  mattias
   added parsing make errors
 
