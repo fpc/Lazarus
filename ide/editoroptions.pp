@@ -1480,6 +1480,59 @@ begin
       DefFGCol:=clBlack;
     end;
   end
+  else if lowercase(SynColorScheme)='pascal classic' then begin
+    // defaults for pascal classic color scheme
+    DefBGCol:=clNavy;
+    DefFGCol:=clYellow;
+    if AttriName='Assembler' then begin
+      DefBGCol:=clNone;
+      DefFGCol:=clLime;
+    end else if AttriName='Comment' then begin
+      DefBGCol:=clNone;
+      DefFGCol:=clSilver;
+    end else if AttriName='Directive' then begin
+      DefBGCol:=clNone;
+      DefFGCol:=clSilver;
+    end else if AttriName='Reserved word' then begin
+      DefBGCol:=clNone;
+      DefFGCol:=clWhite;
+    end else if AttriName='Number' then begin
+      DefBGCol:=clNone;
+      DefFGCol:=clYellow;
+    end else if AttriName='String' then begin
+      DefBGCol:=clNone;
+      DefFGCol:=clYellow;
+    end else if AttriName='Symbol' then begin
+      DefBGCol:=clNone;
+      DefFGCol:=clYellow;
+    end else if AttriName=AdditionalHighlightAttributes[ahaTextBlock] then begin
+      DefBGCol:=clBlue;
+      DefFGCol:=clWhite
+    end else if AttriName=AdditionalHighlightAttributes[ahaExecutionPoint] 
+    then begin
+      DefBGCol:=clAqua;
+      DefFGCol:=clBlack;
+    end else if AttriName=AdditionalHighlightAttributes[ahaEnabledBreakpoint]
+    then begin
+      DefBGCol:=clRed;
+      DefFGCol:=clWhite;
+    end else if AttriName=AdditionalHighlightAttributes[ahaDisabledBreakpoint]
+    then begin
+      DefBGCol:=clLime;
+      DefFGCol:=clRed;
+    end else if AttriName=AdditionalHighlightAttributes[ahaInvalidBreakpoint]
+    then begin
+      DefBGCol:=clOlive;
+      DefFGCol:=clLime;
+    end else if AttriName=AdditionalHighlightAttributes[ahaUnknownBreakpoint]
+    then begin
+      DefBGCol:=clNone;
+      DefFGCol:=clNone;
+    end else if AttriName=AdditionalHighlightAttributes[ahaErrorLine] then begin
+      DefBGCol:=clMaroon;
+      DefFGCol:=clWhite;
+    end;
+  end
   else if lowercase(SynColorScheme)='ocean'  then begin
     // default for ocean color scheme
     DefBGCol:=clNavy;
@@ -4405,6 +4458,7 @@ begin
       BeginUpdate;
       // ToDo: fill also with custom color schemes
       Add(DefaultColorScheme);
+      Add('Pascal Classic');
       Add('Twilight');
       Add('Ocean');
       EndUpdate;
