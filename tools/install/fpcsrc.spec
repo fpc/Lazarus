@@ -18,7 +18,7 @@ BuildRoot: %{_tmppath}/fpcsrc-build%{version}
 %define __find_provides /tmp/do_nothing.sh
 %define __find_requires /tmp/do_nothing.sh
 
-# The normal redhat rpm scripts does not recognize properly, what files to strip
+# The normal redhat rpm scripts do not recognize properly, what files to strip
 # Hook our own strip command
 %define __strip /tmp/smart_strip.sh
 

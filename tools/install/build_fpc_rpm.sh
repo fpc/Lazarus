@@ -73,7 +73,7 @@ FPCMakefile=$TmpDir/Makefile
 SmartStripScript=smart_strip.sh
 
 # update smart_strip.sh
-cp $SmartStripScript $TmpDir/install/
+#cp $SmartStripScript $TmpDir/install/
 
 if [ "$PkgType" = "deb" ]; then
   # build fpc debs
@@ -126,11 +126,8 @@ else
   SrcPatch=fpcsrc-patch
   SmartSripScript=smart_strip.sh
 
-  # patch sources -> This should eventually go to the fpc cvs
   # update smart_strip.sh
-  cp $SmartSripScript $TmpDir/install/
-
-  #patch -l -p2 -d $TmpDir/ -i $SrcPatch
+  # ATM not needed: cp $SmartSripScript $TmpDir/install/
 
   # change spec file
   cat $SpecFile | \
@@ -149,29 +146,30 @@ else
   #fi
 
   # change Makefile for new rpmbuild, if not already done
-  cd $TmpDir
-  if [ -n `grep -q rpmbuild Makefile` ]; then
-    cat Makefile | \
-      sed -e 's/rpm\( --nodeps -ba .*\)$/rpm\1 || rpmbuild\1/g' \
-      > New.Makefile
-    mv New.Makefile Makefile
-  fi
-  cd -
+  # ATM not needed:
+  #cd $TmpDir
+  #if [ -n `grep -q rpmbuild Makefile` ]; then
+  #  cat Makefile | \
+  #    sed -e 's/rpm\( --nodeps -ba .*\)$/rpm\1 || rpmbuild\1/g' \
+  #    > New.Makefile
+  #  mv New.Makefile Makefile
+  #fi
+  #cd -
   
   # fix Makefile bug: it tests /usr/src/redhat, instaed of /usr/src/redhat/RPMS
-  cd $TmpDir
-  cat Makefile | \
-    sed -e 's#ifeq ($(wildcard $(REDHATDIR)),)#ifeq ($(wildcard $(REDHATDIR)/RPMS),)#' \
-    > New.Makefile
-  mv New.Makefile Makefile
-  cd -
+  #cd $TmpDir
+  #cat Makefile | \
+  #  sed -e 's#ifeq ($(wildcard $(REDHATDIR)),)#ifeq ($(wildcard $(REDHATDIR)/RPMS),)#' \
+  #  > New.Makefile
+  #mv New.Makefile Makefile
+  #cd -
 
   # fix fpc.spec bug: smart_strip.sh is searched at wrong location
-  SmartStripWhileBuild="/usr/src/redhat/BUILD/fpc-$CompilerVersion.$CompilerRelease.$CompilerPatch/smart_strip.sh"
-  cat $SpecFile | \
-    sed -e 's# %{buildroot}/smart_strip.sh# '"$SmartStripWhileBuild"'#' \
-    > $SpecFile.New
-  mv $SpecFile.New $SpecFile
+  #SmartStripWhileBuild="/usr/src/redhat/BUILD/fpc-$CompilerVersion.$CompilerRelease.$CompilerPatch/smart_strip.sh"
+  #cat $SpecFile | \
+  #  sed -e 's# %{buildroot}/smart_strip.sh# '"$SmartStripWhileBuild"'#' \
+  #  > $SpecFile.New
+  #mv $SpecFile.New $SpecFile
 
   #----------------------------------------------------------------------------
   # compile
