@@ -514,9 +514,8 @@ begin
       Result:='Create a new program.';
 
     niiPackage:
-      Result:='Create a new package.'#13#13
-             +'A package is a collection of units and components. '
-             +'For example a library.';
+      Result:='Create a new standard package.'#13#13
+             +'A package is a collection of units and components.';
 
   else
     Result:=''
@@ -564,7 +563,7 @@ begin
   NewCategory:=TNewIDEItemCategory.Create('Package');
   Add(NewCategory);
   NewCategory.Add(
-    TNewIDEItemTemplate.Create(niiPackage,'Package',niifCopy,[]));
+    TNewIDEItemTemplate.Create(niiPackage,'Standard Package',niifCopy,[]));
   {$ENDIF}
 end;
 
