@@ -98,3 +98,25 @@ begin
 end;
 [UninstallDelete]
 Name: {app}\compilertest.pas; Type: files
+[Registry]
+Root: HKCR; SubKey: .lpr; ValueType: string; ValueData: LazarusProject; Flags: uninsdeletekeyifempty uninsdeletevalue
+Root: HKCR; SubKey: LazarusProject; ValueType: string; ValueName: ; ValueData: Lazarus Project; Flags: uninsdeletekeyifempty uninsdeletevalue
+Root: HKCR; SubKey: LazarusProject\DefaultIcon; ValueType: string; ValueData: {app}\images\LazarusProject.ico; Flags: uninsdeletekeyifempty uninsdeletevalue
+Root: HKCR; SubKey: LazarusProject\shell\open; ValueType: string; ValueName: ; ValueData: &Open Project; Flags: uninsdeletekeyifempty uninsdeletevalue
+Root: HKCR; SubKey: LazarusProject\shell\open\command; ValueType: string; ValueName: ; ValueData: "\""{app}\lazarus.exe\"" \""%1\"""; Flags: uninsdeletekeyifempty uninsdeletevalue
+Root: HKCR; SubKey: .lfm; ValueType: string; ValueName: ; ValueData: LazarusForm; Flags: uninsdeletekeyifempty uninsdeletevalue
+Root: HKCR; SubKey: LazarusForm; ValueType: string; ValueName: ; ValueData: Lazarus Form; Flags: uninsdeletekeyifempty uninsdeletevalue
+Root: HKCR; SubKey: LazarusForm\DefaultIcon; ValueType: string; ValueName: ; ValueData: {app}\images\LazarusForm.ico; Flags: uninsdeletekeyifempty uninsdeletevalue
+Root: HKCR; SubKey: LazarusForm\shell\open; ValueType: string; ValueName: ; ValueData: &Edit Form; Flags: uninsdeletekeyifempty uninsdeletevalue
+Root: HKCR; SubKey: LazarusForm\shell\open\command; ValueType: string; ValueName: ; ValueData: "\""Notepad.exe\"" \""%1\"""; Flags: uninsdeletekeyifempty uninsdeletevalue
+Root: HKCR; SubKey: .pas; ValueType: string; ValueName: ; ValueData: LazarusUnit; Flags: uninsdeletekeyifempty uninsdeletevalue
+Root: HKCR; SubKey: .pp; ValueType: string; ValueName: ; ValueData: LazarusUnit; Flags: uninsdeletekeyifempty uninsdeletevalue
+Root: HKCR; SubKey: LazarusUnit; ValueType: string; ValueName: ; ValueData: Object Pascal Unit; Flags: uninsdeletekeyifempty uninsdeletevalue
+Root: HKCR; SubKey: LazarusUnit\DefaultIcon; ValueType: string; ValueName: ; ValueData: {app}\images\LazarusSource.ico; Flags: uninsdeletekeyifempty uninsdeletevalue
+Root: HKCR; SubKey: LazarusUnit\shell\open; ValueType: string; ValueName: ; ValueData: &Edit Source; Flags: uninsdeletekeyifempty uninsdeletevalue
+Root: HKCR; SubKey: LazarusUnit\shell\open\command; ValueType: string; ValueName: ; ValueData: "\""Notepad.exe\"" \""%1\"""; Flags: uninsdeletekeyifempty uninsdeletevalue
+Root: HKCR; SubKey: .inc; ValueType: string; ValueName: ; ValueData: LazarusInclude; Flags: uninsdeletekeyifempty uninsdeletevalue
+Root: HKCR; SubKey: LazarusInclude; ValueType: string; ValueName: ; ValueData: Object Pascal Include; Flags: uninsdeletekeyifempty uninsdeletevalue
+Root: HKCR; SubKey: LazarusInclude\DefaultIcon; ValueType: string; ValueName: ; ValueData: {app}\images\LazarusSource.ico; Flags: uninsdeletekeyifempty uninsdeletevalue
+Root: HKCR; SubKey: LazarusInclude\shell\open; ValueType: string; ValueName: ; ValueData: &Edit Source; Flags: uninsdeletekeyifempty uninsdeletevalue
+Root: HKCR; SubKey: LazarusInclude\shell\open\command; ValueType: string; ValueName: ; ValueData: "\""Notepad.exe\"" \""%1\"""; Flags: uninsdeletekeyifempty uninsdeletevalue
