@@ -531,6 +531,7 @@ type
     procedure SaveSrcEditorProjectSpecificSettings(AnUnitInfo: TUnitInfo);
     procedure SaveSourceEditorProjectSpecificSettings;
     function DoShowSaveProjectAsDialog: TModalResult;
+    function DoUpdateLRSFromLFM(const LRSFilename: string): TModalResult;
 
     // methods for open project, create project from source
     function DoCompleteLoadingProjectInfo: TModalResult;
@@ -3283,12 +3284,12 @@ begin
   ResourceCode:=nil;
   if AnUnitInfo.HasResources then begin
     //writeln('TMainIDE.DoLoadResourceFile A "',AnUnitInfo.Filename,'" "',AnUnitInfo.ResourceFileName,'"');
-    // first try to find the resource file via the unit source
+    // first try to find the resource file (.lrs) via the unit source
     LinkIndex:=-1;
     ResourceCode:=CodeToolBoss.FindNextResourceFile(
       AnUnitInfo.Source,LinkIndex);
     // if unit source has errors, then show the error and try the last resource
-    // file
+    // file (.lrs)
     if (ResourceCode=nil) and (CodeToolBoss.ErrorMessage<>'') then begin
       if not IgnoreSourceErrors then
         DoJumpToCodeToolBossError;
@@ -4510,6 +4511,27 @@ begin
   Result:=mrOk;
 end;
 
+function TMainIDE.DoUpdateLRSFromLFM(const LRSFilename: string): TModalResult;
+var
+  LFMFilename: String;
+begin
+  Result:=mrOk;
+  // check if there is a .lrs file
+  if LRSFilename='' then exit;
+  if not FilenameIsAbsolute(LRSFilename) then exit;
+  LFMFilename:=ChangeFileExt(LRSFilename,'.lfm');
+  if LRSFilename=LFMFilename then exit;
+  // check if there is a .lfm file
+  if not FileExists(LFMFilename) then exit;
+  // check if .lrs file is newer than .lfm file
+  if FileExists(LRSFilename) and (FileAge(LFMFilename)<=FileAge(LRSFilename))
+  then exit;
+  debugln('TMainIDE.DoUpdateLRSFromLFM ',LRSFilename,' ',dbgs(FileAge(LFMFilename)),' ',dbgs(FileAge(LRSFilename)));
+  // the .lrs file does not exists, or is older than the .lfm file
+  // -> update .lrs file
+  Result:=ConvertLFMToLRSFileInteractive(LFMFilename,LRSFilename);
+end;
+
 function TMainIDE.DoCompleteLoadingProjectInfo: TModalResult;
 begin
   UpdateCaption;
@@ -5630,6 +5652,7 @@ var
   i: integer;
   DestFilename: string;
   SkipSavingMainSource: Boolean;
+  AnUnitInfo: TUnitInfo;
 begin
   Result:=mrCancel;
   if not (ToolStatus in [itNone,itDebugger]) then begin
@@ -5646,9 +5669,10 @@ begin
   // check that all new units are saved first to get valid filenames
   // (this can alter the mainunit: e.g. used unit names)
   for i:=0 to Project1.UnitCount-1 do begin
-    if (Project1.Units[i].Loaded) and (Project1.Units[i].IsVirtual)
+    AnUnitInfo:=Project1.Units[i];
+    if (AnUnitInfo.Loaded) and (AnUnitInfo.IsVirtual)
     and (Project1.MainUnitID<>i) then begin
-      Result:=DoSaveEditorFile(Project1.Units[i].EditorIndex,
+      Result:=DoSaveEditorFile(AnUnitInfo.EditorIndex,
            [sfSaveAs,sfProjectSaving]
            +[sfSaveToTestDir,sfCheckAmbigiousFiles]*Flags);
       if (Result=mrAbort) or (Result=mrCancel) then exit;
@@ -5729,8 +5753,19 @@ begin
       end;
     end;
   end;
+  
+  // update all lrs files
+  AnUnitInfo:=Project1.FirstPartOfProject;
+  while AnUnitInfo<>nil do begin
+    if AnUnitInfo.HasResources then begin
+      Result:=DoUpdateLRSFromLFM(AnUnitInfo.ResourceFileName);
+      if Result=mrIgnore then Result:=mrOk;
+      if Result<>mrOk then exit;
+    end;
+    AnUnitInfo:=AnUnitInfo.NextPartOfProject;
+  end;
 
-DebugLn('TMainIDE.DoSaveProject End');
+  DebugLn('TMainIDE.DoSaveProject End');
 end;
 
 function TMainIDE.DoCloseProject: TModalResult;
@@ -11422,6 +11457,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.851  2005/02/28 22:43:48  mattias
+  implemented updating lrs files from lfm files
+
   Revision 1.850  2005/02/28 17:24:18  mattias
   replaced save as auto rename checkboxes with radiogroup  from smace and mg
 

@@ -37,8 +37,8 @@ unit DialogProcs;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Dialogs, FileUtil, CodeCache,
-  CodeToolManager, {$IFNDEF VER1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF},
+  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Dialogs, FileUtil,
+  CodeCache, CodeToolManager, {$IFNDEF VER1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF},
   IDEProcs, LazarusIDEStrConsts;
 
 type
@@ -58,6 +58,7 @@ function CopyFileWithErrorDialogs(const SrcFilename, DestFilename: string;
   ExtraButtons: TMsgDlgButtons): TModalResult;
 function LoadCodeBuffer(var ACodeBuffer: TCodeBuffer; const AFilename: string;
   Flags: TLoadBufferFlags): TModalResult;
+function SaveCodeBuffer(var ACodeBuffer: TCodeBuffer): TModalResult;
 function CreateEmptyFile(const Filename: string;
   ErrorButtons: TMsgDlgButtons): TModalResult;
 function CheckFileIsWritable(const Filename: string;
@@ -68,6 +69,8 @@ function DeleteFileInteractive(const Filename: string;
   ErrorButtons: TMsgDlgButtons): TModalResult;
 function SaveStringToFile(const Filename, Content: string;
   ErrorButtons: TMsgDlgButtons): TModalResult;
+function ConvertLFMToLRSFileInteractive(const LFMFilename,
+  LRSFilename: string): TModalResult;
 
 
 implementation
@@ -164,6 +167,19 @@ begin
     if ACodeBuffer<>nil then
       Result:=mrOk;
   end;
+end;
+
+function SaveCodeBuffer(var ACodeBuffer: TCodeBuffer): TModalResult;
+begin
+  repeat
+    if ACodeBuffer.Save then begin
+      Result:=mrOk;
+    end else begin
+      Result:=MessageDlg('Write error',
+        'Unable to write "'+ACodeBuffer.Filename+'"',
+        mtError,[mbAbort,mbRetry,mbIgnore],0);
+    end;
+  until Result<>mrRetry;
 end;
 
 function CreateEmptyFile(const Filename: string; ErrorButtons: TMsgDlgButtons
@@ -268,6 +284,51 @@ begin
          'Write error: '+E.Message+#13
          +'File: '+Filename,mtError,[mbAbort]+ErrorButtons,0);
     end;
+  end;
+end;
+
+function ConvertLFMToLRSFileInteractive(const LFMFilename,
+  LRSFilename: string): TModalResult;
+var
+  LFMMemStream, LRSMemStream: TMemoryStream;
+  LFMBuffer: TCodeBuffer;
+  LRSBuffer: TCodeBuffer;
+begin
+  // read lfm file
+  Result:=LoadCodeBuffer(LFMBuffer,LFMFilename,[lbfUpdateFromDisk]);
+  if Result<>mrOk then exit;
+  LFMMemStream:=nil;
+  LRSMemStream:=nil;
+  try
+    LFMMemStream:=TMemoryStream.Create;
+    LFMBuffer.SaveToStream(LFMMemStream);
+    LFMMemStream.Position:=0;
+    LRSMemStream:=TMemoryStream.Create;
+    // convert
+    if not LFMtoLRSstream(LFMMemStream,LRSMemStream) then begin
+      Result:=MessageDlg('Stream Error',
+        'Unable to update the binary resource file'#13
+        +LRSFilename+#13
+        +'from file the text resource file'#13
+        +LFMFilename+#13
+        +#13
+        +'Probably the text file is corrupt.',
+        mtError,[mbCancel,mbAbort,mbIgnore],0);
+      exit;
+    end;
+    LRSMemStream.Position:=0;
+    // save lrs file
+    LRSBuffer:=CodeToolBoss.CreateFile(LRSFilename);
+    if (LRSBuffer<>nil) then begin
+      LRSBuffer.LoadFromStream(LRSMemStream);
+      Result:=SaveCodeBuffer(LRSBuffer);
+    end else begin
+      Result:=mrCancel;
+      debugln('ConvertLFMToLRSFileInteractive unable to create codebuffer ',LRSFilename);
+    end;
+  finally
+    LFMMemStream.Free;
+    LRSMemStream.Free;
   end;
 end;
 
