@@ -532,7 +532,8 @@ type
     function  IscellSelected(aCol,aRow: Integer): Boolean;
     function  IscellVisible(aCol, aRow: Integer): Boolean;
     procedure LoadFromFile(FileName: string);
-    function  MouseToCell(Mouse: TPoint): TPoint;
+    function  MouseToCell(Mouse: TPoint): TPoint; overload;
+    procedure MouseToCell(X,Y: Integer; var ACol,ARow: Integer); overload;
     function  MouseToLogcell(Mouse: TPoint): TPoint;
     function  MouseToGridZone(X,Y: Integer; CellCoords: Boolean): TGridZone;
     procedure MoveColRow(IsColumn: Boolean; FromIndex, ToIndex: Integer);
@@ -912,7 +913,7 @@ var
   R: TRect;
 begin
   R:=FGCache.VisibleGrid;
-  Result:=r.Right-r.left+1;//+FFixedCols;
+  Result:=R.Right-R.left+1;
 end;
 
 function TCustomGrid.GetVisibleRowCount: Integer;
@@ -920,7 +921,7 @@ var
   R: TRect;
 begin
   R:=FGCache.VisibleGrid;
-  Result:=r.bottom-r.top+1;//+FFixedRows;
+  Result:=r.bottom-r.top+1;
 end;
 
 function TCustomGrid.GetLeftCol: Integer;
@@ -1089,6 +1090,30 @@ procedure TCustomGrid.AdjustCount(IsColumn: Boolean; OldValue, newValue: Integer
     if FCol > FCols.Count - 1 then FCol := FCols.Count - 1;
     UpdateSelectionRange;
   end;
+  procedure FixTopLeft;
+  var
+    oldTL: TPoint;
+    Diff: Integer;
+  begin
+    OldTL:=FTopLeft;
+    if IsColumn then begin
+      if OldTL.X+VisibleColCount>FCols.Count then begin
+        OldTL.X := FCols.Count - VisibleColCount;
+        if OldTL.X<FixedCols then
+          OldTL.X := FixedCols;
+      end;
+    end else begin
+      if OldTL.Y+VisibleRowCount>FRows.Count then begin
+        OldTL.Y := FRows.Count - VisiblerowCount;
+        if OldTL.Y<FixedRows then
+          OldTL.Y:=FixedRows;
+      end;
+    end;
+    if not PointIgual(OldTL, FTopleft) then begin
+      fTopLeft := OldTL;
+      topleftChanged;
+    end;
+  end;
 var
   OldCount: integer;
 begin
@@ -1119,6 +1144,7 @@ begin
     end;
     SizeChanged(OldCount, OldValue);
   end;
+  FixTopleft;
   FixSelection;
   VisualChange;
 end;
@@ -3152,6 +3178,14 @@ begin
   Result.Y:= OffsetToColRow(False,True, Mouse.y, d);
 end;
 
+procedure TCustomGrid.MouseToCell(X,Y: Integer; var ACol,ARow: Integer);
+var
+   d: Integer;
+begin
+  aCol:= OffsetToColRow(True, True, X, d);
+  aRow:= OffsetToColRow(False,True, Y, d);
+end;
+
 { Convert a fisical Mouse coordinate into logical a cell coordinate }
 function TCustomGrid.MouseToLogcell(Mouse: TPoint): TPoint;
 var
@@ -4882,7 +4916,8 @@ procedure TStringGrid.DrawCell(aCol, aRow: Integer; aRect: TRect;
 begin
   inherited DrawCell(aCol, aRow, aRect, aState);
   if DefaultDrawing then begin
-    Canvas.TextRect(aRect,ARect.Left+3,ARect.Top, Cells[aCol,aRow]);
+    //Canvas.TextRect(aRect,ARect.Left+3,ARect.Top, Cells[aCol,aRow]);
+    Canvas.TextRect(aRect,ARect.Left,ARect.Top, Cells[aCol,aRow]);
     //MyTExtRect(aRect, 3, 0, Cells[aCol,aRow], Canvas.Textstyle.Clipping);
   end;
 end;
