@@ -125,6 +125,7 @@ type
   TSelectionSortCompare = function(Index1, Index2: integer): integer of object;
   
   TControlSelState = (cssOnlyNonVisualNeedsUpdate,
+                      cssOnlyVisualNeedsUpdate,
                       cssBoundsNeedsUpdate,
                       cssBoundsNeedsSaving);
   TControlSelStates = set of TControlSelState;
@@ -178,6 +179,7 @@ type
     FNotSaveBounds: boolean;
     FStates: TControlSelStates;
     FOnlyNonVisualComponentsSelected: boolean;
+    FOnlyVisualComponentsSelected: boolean;
 
     FOnChange: TNotifyEvent;
 
@@ -296,6 +298,7 @@ type
     procedure Sort(SortProc: TSelectionSortCompare);
     property Visible:boolean read FVisible write SetVisible;
     function OnlyNonVisualComponentsSelected: boolean;
+    function OnlyVisualComponentsSelected: boolean;
   end;
 
 
@@ -468,7 +471,7 @@ begin
   FChangedDuringLock:=false;
   FRubberbandActive:=false;
   FNotSaveBounds:=false;
-  FStates:=[cssOnlyNonVisualNeedsUpdate];
+  FStates:=[cssOnlyNonVisualNeedsUpdate,cssOnlyVisualNeedsUpdate];
 end;
 
 destructor TControlSelection.Destroy;
@@ -1110,7 +1113,7 @@ begin
   NewSelectedControl:=TSelectedControl.Create(AComponent);
   if NewSelectedControl.ParentForm<>FCustomForm then Clear;
   Result:=FControls.Add(NewSelectedControl);
-  Include(FStates,cssOnlyNonVisualNeedsUpdate);
+  FStates:=FStates+[cssOnlyNonVisualNeedsUpdate,cssOnlyVisualNeedsUpdate];
   if Count=1 then SetCustomForm;
   UpdateBounds;
   SaveBounds;
@@ -1131,7 +1134,7 @@ begin
   if Index<0 then exit;
   Items[Index].Free;
   FControls.Delete(Index);
-  Include(FStates,cssOnlyNonVisualNeedsUpdate);
+  FStates:=FStates+[cssOnlyNonVisualNeedsUpdate,cssOnlyVisualNeedsUpdate];
   if Count=0 then SetCustomForm;
   UpdateBounds;
   SaveBounds;
@@ -1143,7 +1146,7 @@ var i:integer;
 begin
   for i:=0 to FControls.Count-1 do Items[i].Free;
   FControls.Clear;
-  Include(FStates,cssOnlyNonVisualNeedsUpdate);
+  FStates:=FStates+[cssOnlyNonVisualNeedsUpdate,cssOnlyVisualNeedsUpdate];
   FCustomForm:=nil;
   UpdateBounds;
   SaveBounds;
@@ -1460,20 +1463,30 @@ end;
 function TControlSelection.OnlyNonVisualComponentsSelected: boolean;
 var i: integer;
 begin
+writeln('TControlSelection.OnlyNonVisualComponentsSelected ',cssOnlyNonVisualNeedsUpdate in FStates,' ',FOnlyNonVisualComponentsSelected);
   if cssOnlyNonVisualNeedsUpdate in FStates then begin
-    if FControls.Count=0 then begin
-      Result:=false;
-    end else begin
-      Result:=true;
-      for i:=0 to FControls.Count-1 do
-        Result:=Result and (not (Items[i].Component is TControl));
-    end;
+    Result:=true;
+    for i:=0 to FControls.Count-1 do
+      Result:=Result and (not (Items[i].Component is TControl));
     FOnlyNonVisualComponentsSelected:=Result;
     Exclude(FStates,cssOnlyNonVisualNeedsUpdate);
   end else
     Result:=FOnlyNonVisualComponentsSelected;
 end;
 
+function TControlSelection.OnlyVisualComponentsSelected: boolean;
+var i: integer;
+begin
+writeln('TControlSelection.OnlyVisualComponentsSelected ',cssOnlyVisualNeedsUpdate in FStates,' ',FOnlyVisualComponentsSelected);
+  if cssOnlyVisualNeedsUpdate in FStates then begin
+    Result:=true;
+    for i:=0 to FControls.Count-1 do
+      Result:=Result and (Items[i].Component is TControl);
+    FOnlyVisualComponentsSelected:=Result;
+    Exclude(FStates,cssOnlyVisualNeedsUpdate);
+  end else
+    Result:=FOnlyVisualComponentsSelected;
+end;
 
 function TControlSelection.CompareInts(i1, i2: integer): integer;
 begin
@@ -1650,7 +1663,8 @@ begin
 end;
 
 procedure TControlSelection.MirrorHorizontal;
-var i, ALeft, ARight, Middle: integer;
+var
+  i, ALeft, ARight, Middle, NewLeft: integer;
 begin
   if (FControls.Count=0) or (Items[0].IsTopLvl) then exit;
   BeginResizing;
@@ -1667,14 +1681,19 @@ begin
   // move components
   for i:=0 to FControls.Count-1 do begin
     if Items[i].IsTopLvl then continue;
-    Items[i].Left:=2*Middle-Items[i].Left-Items[i].Width;
+    NewLeft:=2*Middle-Items[i].Left-Items[i].Width;
+    NewLeft:=Max(NewLeft,ALeft);
+    NewLeft:=Min(NewLeft,ARight-Items[i].Width);
+    Items[i].Left:=NewLeft;
   end;
 
   EndResizing(false);
+  UpdateRealBounds;
 end;
 
 procedure TControlSelection.MirrorVertical;
-var i, ATop, ABottom, Middle: integer;
+var
+  i, ATop, ABottom, Middle, NewTop: integer;
 begin
   if (FControls.Count=0) or (Items[0].IsTopLvl) then exit;
   BeginResizing;
@@ -1691,10 +1710,14 @@ begin
   // move components
   for i:=0 to FControls.Count-1 do begin
     if Items[i].IsTopLvl then continue;
-    Items[i].Top:=2*Middle-Items[i].Top-Items[i].Height;
+    NewTop:=2*Middle-Items[i].Top-Items[i].Height;
+    NewTop:=Max(NewTop,ATop);
+    NewTop:=Min(NewTop,ABottom-Items[i].Height);
+    Items[i].Top:=NewTop;
   end;
 
   EndResizing(false);
+  UpdateRealBounds;
 end;
 
 procedure TControlSelection.SizeComponents(
