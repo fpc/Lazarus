@@ -181,14 +181,20 @@ end;
 {$IFDEF GTK1}
 function InternalGtkShowWindow(AForm: TCustomForm): gint; cdecl;
 var
-  XDisplay: PDisplay;
-  XWindow: TWindow;
+  XDisplay: xlib.PDisplay;
+  XWindow: X.TWindow;
+  FormWidget: PGtkWidget;
+  FormWindow: PGdkWindowPrivate;
 begin
   Result := 0;
-  XWindow := GDK_WINDOW_XWINDOW (PGdkWindowPrivate(PGtkWidget(AForm.Handle)^.window));
-  XDisplay := GDK_WINDOW_XDISPLAY (PGdkWindowPrivate(PGtkWidget(AForm.Handle)^.window));
+  if not AForm.HandleAllocated then exit;
+  FormWidget:=PGtkWidget(AForm.Handle);
+  FormWindow:=PGdkWindowPrivate(FormWidget^.window);
+  if FormWindow<>nil then exit;
+  XWindow := GDK_WINDOW_XWINDOW (FormWindow);
+  XDisplay := GDK_WINDOW_XDISPLAY (FormWindow);
   if (XDisplay<>nil) and (XWindow>0) then
-    XSetInputFocus(XDisplay, XWindow, RevertToNone, CurrentTime);
+    XSetInputFocus(XDisplay, XWindow, X.RevertToNone, X.CurrentTime);
 end;
 {$ENDIF}
 {------------------------------------------------------------------------------
@@ -205,8 +211,10 @@ var
   GdkWindow: PGdkWindow;
   AForm: TCustomForm;
   {$IFDEF GTK1}
-  XDisplay: PDisplay;
-  XWindow: TWindow;
+  XDisplay: xlib.PDisplay;
+  XWindow: x.TWindow;
+  FormWidget: PGtkWidget;
+  FormWindow: PGdkWindowPrivate;
   {$ENDIF}
 begin
   {$IFDEF VerboseFocus}
@@ -233,11 +241,15 @@ begin
       {$ENDIF}
       // how to set the keyboard focus to the raised window?
       {$IFDEF GTK1}
-      XWindow := GDK_WINDOW_XWINDOW (PGdkWindowPrivate(PGtkWidget(AForm.Handle)^.window));
-      XDisplay := GDK_WINDOW_XDISPLAY (PGdkWindowPrivate(PGtkWidget(AForm.Handle)^.window));
-      XMapWindow(XDisplay, XWindow);
-      // a horrible horrible hack to give "something" time to unminimize the window
-      gtk_timeout_add(50, TGtkFunction(@InternalGtkShowWindow), AForm);
+      FormWidget:=PGtkWidget(AForm.Handle);
+      FormWindow:=PGdkWindowPrivate(FormWidget^.window);
+      if FormWindow<>nil then begin
+        XWindow := GDK_WINDOW_XWINDOW (FormWindow);
+        XDisplay := GDK_WINDOW_XDISPLAY (FormWindow);
+        XMapWindow(XDisplay, XWindow);
+        // a horrible horrible hack to give "something" time to unminimize the window
+        gtk_timeout_add(50, TGtkFunction(@InternalGtkShowWindow), AForm);
+      end;
       {$ENDIF}
 {$ifdef gtk2}
       gtk_window_present(PGtkWindow(hWnd));
@@ -8990,6 +9002,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.410  2005/03/16 12:30:15  mattias
+  added some checks to avoid crashes
+
   Revision 1.409  2005/03/16 11:36:21  mattias
   improved gtk1 intf switching focus to another form  from Andrew Haines
 
