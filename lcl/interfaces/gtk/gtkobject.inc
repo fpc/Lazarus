@@ -3668,7 +3668,8 @@ begin
       else
         P := gtk_menu_item_new;
       gtk_widget_set_sensitive(pgtkwidget(p), TMenuItem(Sender).Enabled);
-
+      if TMenuItem(Sender).RightJustify then
+        gtk_menu_item_right_justify(pgtkmenuitem(p));
       gtk_widget_show (p);
     end;
 
@@ -5329,6 +5330,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.158  2002/08/08 17:26:38  lazarus
+  MG: added property TMenuItems.RightJustify
+
   Revision 1.157  2002/08/08 10:33:50  lazarus
   MG: main bar speedbar open arrow now shows recent projects and files
 
