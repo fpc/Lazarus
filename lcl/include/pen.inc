@@ -46,8 +46,12 @@ begin
   if FColor <> value
   then begin
     FreeHandle;
-    FColor := value;
+    {$IFDEF UseFPCanvas}
+    SetColor(Value,TColorToFPColor(Value));
+    {$ELSE}
+    FColor := Value;
     Changed;
+    {$ENDIF}
   end;
 end;
 
@@ -64,7 +68,7 @@ begin
   then begin
     FreeHandle;
     {$IFDEF UseFPCanvas}
-    inherited Style := Value;
+    inherited SetStyle(Value);
     {$ELSE}
     FStyle:=Value;
     {$ENDIF}
@@ -85,7 +89,7 @@ begin
   then begin
     FreeHandle;
     {$IFDEF UseFPCanvas}
-    inherited Mode := Value;
+    inherited SetMode(Value);
     {$ELSE}
     FMode:=Value;
     {$ENDIF}
@@ -106,7 +110,7 @@ begin
   then begin
     FreeHandle;
     {$IFDEF UseFPCanvas}
-    inherited Width := Value;
+    inherited SetWidth(Value);
     {$ELSE}
     FWidth:=Value;
     {$ENDIF}
@@ -126,9 +130,10 @@ begin
   inherited Create;
   FHandle := 0;
   {$IFDEF UseFPCanvas}
-  inherited Width := 1;
-  inherited Style := psSolid;
-  inherited Mode := pmCopy;
+  inherited SetWidth(1);
+  inherited SetStyle(psSolid);
+  inherited SetMode(pmCopy);
+  inherited SetFPColor(colBlack);
   {$ELSE}
   FWidth := 1;
   FStyle := psSolid;
@@ -162,7 +167,11 @@ begin
   if Source is TPen
   then begin
     Width := TPen(Source).Width;
+    {$IFDEF UseFPCanvas}
+    SetColor(TFPCanvasHelper(Source).Color,TFPCanvasHelper(Source).FPColor);
+    {$ELSE}
     Color := TPen(Source).Color;
+    {$ENDIF}
     Style := TPen(Source).Style;
   end
   else
@@ -197,7 +206,11 @@ end;
 function TPen.GetHandle: HPEN;
 const
   PEN_STYLES: array[TPenStyle] of Word = (
-    PS_SOLID,PS_DASH,PS_DOT,PS_DASHDOT,PS_DASHDOTDOT,PS_NULL,PS_INSIDEFRAME);
+    PS_SOLID,PS_DASH,PS_DOT,PS_DASHDOT,PS_DASHDOTDOT,PS_NULL,PS_INSIDEFRAME
+    {$IFDEF UseFPCanvas}
+    ,PS_DOT // TODO psPattern
+    {$ENDIF}
+    );
 var
   LogPen: TLogPen;
   CachedPen: TBlockResourceCacheDescriptor;
@@ -270,11 +283,29 @@ begin
   end else
     inherited DoCopyProps(From);
 end;
+
+procedure TPen.SetColor(const NewColor: TColor; const NewFPColor: TFPColor);
+begin
+  if (NewColor=Color) and (NewFPColor=FPColor) then exit;
+  FColor:=NewColor;
+  inherited SetFPColor(NewFPColor);
+  Changed;
+end;
+
+procedure TPen.SetFPColor(const AValue: TFPColor);
+begin
+  if FPColor=AValue then exit;
+  SetColor(FPColorToTColor(AValue),AValue);
+end;
+
 {$ENDIF}
 
 { =============================================================================
 
   $Log$
+  Revision 1.17  2005/01/07 21:02:59  mattias
+  TFont, TBrush, TPen can now be used with fpCanvas
+
   Revision 1.16  2004/12/23 22:38:18  mattias
   implemented TIElementName of link of RTTI controls for set elements
 

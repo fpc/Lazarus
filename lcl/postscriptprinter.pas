@@ -861,7 +861,6 @@ end;
 
 procedure TPSObject.Changed;
 begin
-  //Assert(False, Format('Trace:[TgraphicsObject.Changed] %s', [ClassName]));
   if Assigned(FOnChange) then FOnChange(Self);
 end;
 

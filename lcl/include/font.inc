@@ -535,6 +535,7 @@ begin
   FCharSet:=DefFontData.CharSet;
   {$IFDEF UseFPCanvas}
   inherited SetName(DefFontData.Name);
+  inherited SetFPColor(colBlack);
   {$ELSE}
   FFontName:=DefFontData.Name;
   {$ENDIF}
@@ -557,7 +558,11 @@ begin
         BeginUpdate;
         try
           CharSet:= TFont(Source).CharSet;
+          {$IFDEF UseFPCanvas}
+          SetColor(TFPCanvasHelper(Source).Color,TFPCanvasHelper(Source).FPColor);
+          {$ELSE}
           Color := TFont(Source).Color;
+          {$ENDIF}
           Height := TFont(Source).Height;
           Name := TFont(Source).Name;
           Pitch := TFont(Source).Pitch;
@@ -758,7 +763,7 @@ procedure TFont.SetColor(Value : TColor);
 begin
   if FColor <> Value then begin
     {$IFDEF UseFPCanvas}
-    SetColor(Value,FPColorToTColor(Value));
+    SetColor(Value,TColorToFPColor(Value));
     {$ELSE}
     FColor := Value;
     Changed;
@@ -1046,14 +1051,15 @@ begin
     FCharSet:=FontData.CharSet;
     {$IFDEF UseFPCanvas}
     inherited SetName(FontData.Name);
+    bold;
     if (fsBold in OldStyle)<>(fsBold in FStyle) then
-      inherited Bold:=fsBold in FStyle;
+      inherited SetFlags(5,fsBold in FStyle);
     if (fsItalic in OldStyle)<>(fsItalic in FStyle) then
-      inherited Italic:=fsItalic in FStyle;
+      inherited SetFlags(6,fsItalic in FStyle);
     if (fsUnderline in OldStyle)<>(fsUnderline in FStyle) then
-      inherited Underline:=fsUnderline in FStyle;
+      inherited SetFlags(7,fsUnderline in FStyle);
     if (fsStrikeOut in OldStyle)<>(fsStrikeOut in FStyle) then
-      inherited StrikeTrough:=fsStrikeOut in FStyle;
+      inherited SetFlags(8,fsStrikeOut in FStyle);
     {$ELSE}
     FFontName:=FontData.Name;
     {$ENDIF}
@@ -1093,6 +1099,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.26  2005/01/07 21:02:59  mattias
+  TFont, TBrush, TPen can now be used with fpCanvas
+
   Revision 1.25  2005/01/07 18:40:10  mattias
   clean up, added GetRGBValues
 

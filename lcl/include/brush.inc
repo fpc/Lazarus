@@ -45,8 +45,12 @@ begin
   if FColor <> Value
   then begin
     FreeHandle;
+    {$IFDEF UseFPCanvas}
+    SetColor(Value,TColorToFPColor(Value));
+    {$ELSE}
     FColor := Value;
     Changed;
+    {$ENDIF}
   end;
 end;
 
@@ -59,10 +63,13 @@ end;
  ------------------------------------------------------------------------------}
 Procedure TBrush.SetStyle(Value : TBrushStyle);
 begin
-  if FStyle <> Value
-  then begin
+  if Style <> Value then begin
     FreeHandle;
+    {$IFDEF UseFPCanvas}
+    inherited SetStyle(Value);
+    {$ELSE}
     FStyle := Value;
+    {$ENDIF}
     Changed;
   end;
 end;
@@ -97,7 +104,11 @@ begin
   FBitmap := nil;
   FHandle := 0;
   FColor := clWhite;
+  {$IFDEF UseFPCanvas}
+  inherited SetStyle(bsSolid);
+  {$ELSE}
   FStyle := bsSolid;
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -125,7 +136,11 @@ begin
   if Source is TBrush
   then begin
     Bitmap := TBrush(Source).Bitmap;
+    {$IFDEF UseFPCanvas}
+    SetColor(TFPCanvasHelper(Source).Color,TFPCanvasHelper(Source).FPColor);
+    {$ELSE}
     Color := TBrush(Source).Color;
+    {$ENDIF}
     Style := TBrush(Source).Style;
   end
   else
@@ -175,12 +190,12 @@ begin
       end else
       begin
         lbHatch := 0;
-        case FStyle of
+        case Style of
           bsSolid: lbStyle := BS_SOLID;
           bsClear: lbStyle := BS_HOLLOW;
         else
           lbStyle := BS_HATCHED;
-          lbHatch := Ord(FStyle) - Ord(bsHorizontal);
+          lbHatch := Ord(Style) - Ord(bsHorizontal);
         end;
       end;
       lbColor := ColorRef(FColor);
@@ -219,9 +234,56 @@ begin
   end;
 end;
 
+procedure TBrush.DoChange(var Msg);
+begin
+  Changed;
+end;
+
+{$IFDEF UseFPCanvas}
+procedure TBrush.DoAllocateResources;
+begin
+  inherited DoAllocateResources;
+  GetHandle;
+end;
+
+procedure TBrush.DoDeAllocateResources;
+begin
+  FreeHandle;
+  inherited DoDeAllocateResources;
+end;
+
+procedure TBrush.DoCopyProps(From: TFPCanvasHelper);
+begin
+  if From is TBrush then begin
+    FreeHandle;
+    inherited DoCopyProps(From);
+    //TODO: query new parameters
+    Changed;
+  end else
+    inherited DoCopyProps(From);
+end;
+
+procedure TBrush.SetColor(const NewColor: TColor; const NewFPColor: TFPColor);
+begin
+  if (NewColor=Color) and (NewFPColor=FPColor) then exit;
+  FColor:=NewColor;
+  inherited SetFPColor(NewFPColor);
+  Changed;
+end;
+
+procedure TBrush.SetFPColor(const AValue: TFPColor);
+begin
+  if FPColor=AValue then exit;
+  SetColor(FPColorToTColor(AValue),AValue);
+end;
+{$ENDIF}
+
 { =============================================================================
 
   $Log$
+  Revision 1.14  2005/01/07 21:02:59  mattias
+  TFont, TBrush, TPen can now be used with fpCanvas
+
   Revision 1.13  2004/12/22 23:54:21  mattias
   started TControl.AnchorSide
 

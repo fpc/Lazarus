@@ -494,9 +494,9 @@ type
     procedure DoDeAllocateResources; override;
     procedure DoCopyProps(From: TFPCanvasHelper); override;
     procedure SetFlags(Index: integer; AValue: boolean); override;
-    procedure SetColor(const NewColor: TColor; const NewFPColor: TFPColor); virtual;
     procedure SetName(AValue: string); override;
     procedure SetSize(AValue: integer); override;
+    procedure SetColor(const NewColor: TColor; const NewFPColor: TFPColor); virtual;
     procedure SetFPColor(const AValue: TFPColor); override;
     {$ELSE}
     procedure SetName(const AValue: string);
@@ -582,6 +582,8 @@ type
     procedure DoAllocateResources; override;
     procedure DoDeAllocateResources; override;
     procedure DoCopyProps(From: TFPCanvasHelper); override;
+    procedure SetColor(const NewColor: TColor; const NewFPColor: TFPColor); virtual;
+    procedure SetFPColor(const AValue: TFPColor); override;
     {$ENDIF}
     function GetHandle: HPEN;
     procedure SetHandle(const Value: HPEN);
@@ -596,9 +598,15 @@ type
     property Handle: HPEN read GetHandle write SetHandle;
   published
     property Color: TColor read FColor write SetColor default clBlack;
+    {$IFDEF UseFPCanvas}
+    property Mode default pmCopy;
+    property Style default psSolid;
+    property Width default 1;
+    {$ELSE}
     property Mode: TPenMode read FMode write SetMode default pmCopy;
     property Style: TPenStyle read FStyle write SetStyle default psSolid;
     property Width: Integer read FWidth write SetWidth default 1;
+    {$ENDIF}
   end;
 
 
@@ -618,29 +626,48 @@ type
     constructor Create;
   end;
 
+  {$IFDEF UseFPCanvas}
+  TBrush = class(TFPCustomBrush)
+  {$ELSE}
   TBrush = class(TGraphicsObject)
+  {$ENDIF}
   private
     FHandle: HBrush;
+    FBrushHandleCached: boolean;
     FColor: TColor;
     FBitmap: TBitmap;
+    {$IFDEF UseFPCanvas}
+    {$ELSE}
     FStyle: TBrushStyle;
-    FBrushHandleCached: boolean;
+    {$ENDIF}
     procedure FreeHandle;
+    Procedure DoChange(var Msg); message LM_CHANGED;
   protected
+    {$IFDEF UseFPCanvas}
+    procedure DoAllocateResources; override;
+    procedure DoDeAllocateResources; override;
+    procedure DoCopyProps(From: TFPCanvasHelper); override;
+    procedure SetColor(const NewColor: TColor; const NewFPColor: TFPColor); virtual;
+    procedure SetFPColor(const AValue: TFPColor); override;
+    {$ENDIF}
     function GetHandle: HBRUSH;
     procedure SetBitmap(Value: TBitmap);
     procedure SetColor(Value: TColor);
     procedure SetHandle(const Value: HBRUSH);
-    Procedure SetStyle(Value: TBrushStyle);
+    Procedure SetStyle(Value: TBrushStyle); {$IFDEF UseFPCanvas}override;{$ENDIF}
   public
     procedure Assign(Source: TPersistent); override;
-    constructor Create;
+    constructor Create; {$IFDEF UseFPCanvas}override;{$ENDIF}
     destructor Destroy; override;
     property Bitmap: TBitmap read FBitmap write SetBitmap;
     property Handle: HBRUSH read GetHandle write SetHandle;
   published
     property Color: TColor read FColor write SetColor default clWhite;
+    {$IFDEF UseFPCanvas}
+    property Style default bsSolid;
+    {$ELSE}
     property Style: TBrushStyle read FStyle write SetStyle default bsSolid;
+    {$ENDIF}
   end;
 
 
@@ -1875,6 +1902,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.168  2005/01/07 21:02:59  mattias
+  TFont, TBrush, TPen can now be used with fpCanvas
+
   Revision 1.167  2005/01/07 18:40:10  mattias
   clean up, added GetRGBValues
 

@@ -3156,6 +3156,7 @@ function TMainIDE.CreateNewForm(NewUnitInfo: TUnitInfo;
 var
   CInterface: TComponentInterface;
   NewComponent: TComponent;
+  new_x, new_y: integer;
 begin
   if not AncestorType.InheritsFrom(TComponent) then
     RaiseException('TMainIDE.CreateNewForm invalid AncestorType');
@@ -3176,12 +3177,16 @@ begin
     FormEditor1 := TFormEditor.Create;
   FormEditor1.ClearSelection;
 
+  // Figure out where we want to put the new form
+  new_x:=ObjectInspector1.Left+ObjectInspector1.Width; //+60;
+  new_y:=MainIDEBar.Top+MainIDEBar.Height; //+80;
+  if screen.width-new_x>=ObjectInspector1.left then inc(new_x, 60) else new_x:=16;
+  if screen.height-new_y>=MainIDEBar.top then inc(new_y, 80) else new_y:=24;
+  
   // create jit component
   CInterface := TComponentInterface(
     FormEditor1.CreateComponent(nil,TComponentClass(AncestorType),
-      ObjectInspector1.Left+ObjectInspector1.Width+60,
-      MainIDEBar.Top+MainIDEBar.Height+80,
-      400,300));
+      new_x, new_y, 400,300));
   FormEditor1.SetComponentNameAndClass(CInterface,
     NewUnitInfo.ComponentName,'T'+NewUnitInfo.ComponentName);
   NewComponent:=CInterface.Component;
@@ -11325,6 +11330,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.822  2005/01/07 21:02:59  mattias
+  TFont, TBrush, TPen can now be used with fpCanvas
+
   Revision 1.821  2005/01/07 17:40:59  mattias
   fixed TTabSheet.SetPageControl
 
