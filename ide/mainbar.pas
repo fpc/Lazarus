@@ -1591,7 +1591,7 @@ var
 begin
   Result:=mrOk;
   exit;
-  
+  UnitTree:=nil;
   
   EndPos:=1;
   while EndPos<=length(UnitPath) do begin
