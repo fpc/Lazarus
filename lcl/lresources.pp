@@ -67,7 +67,7 @@ function LFMtoLRSfile(LFMfilename:ansistring):boolean;
  // returns true if successful
 function LFMtoLRSstream(LFMStream,LFCStream:TStream):boolean;
  // returns true if successful
-function FindLFMClassName(LFMStream:TStream):AnsiString;
+function FindLFMClassName(LFMStream: TStream):AnsiString;
 function CreateLFMFile(AComponent: TComponent; LFMStream: TStream): integer;
 
 type
@@ -195,7 +195,7 @@ begin
     // remember last non identifier char position
     if (not (c in ['a'..'z','A'..'Z','0'..'9','_'])) then
       StartPos:=LFMStream.Position;
-    LFMStream.Read(c,1);
+    if LFMStream.Read(c,1)<>1 then exit;
     if LFMStream.Position>1000 then exit;
   until c in [#10,#13];
   if StartPos<0 then exit;

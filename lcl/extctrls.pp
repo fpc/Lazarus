@@ -426,26 +426,26 @@ type
     FColumns    : integer;
     FReading    : boolean;
     FOnClick    : TNotifyEvent;
-    procedure ItemsChanged (Sender : TObject);
-    procedure Clicked(Sender : TObject); virtual;
+    procedure ItemsChanged(Sender: TObject);
+    procedure Clicked(Sender: TObject); virtual;
     procedure DoPositionButtons;
   protected
     procedure UpdateRadioButtonStates;
     procedure ReadState(Reader: TReader); override;
-    procedure SetItem (value : TStrings);
-    procedure SetColumns (value : integer);
-    procedure SetItemIndex (value : integer);
-    function GetItemIndex : integer;
+    procedure SetItem(Value: TStrings);
+    procedure SetColumns(Value: integer);
+    procedure SetItemIndex(Value: integer);
+    function GetItemIndex: integer;
     procedure WMSize(var Message: TLMSize); message LM_SIZE;
   protected
-    property ItemIndex : integer read GetItemIndex write SetItemIndex default -1;
-    property Items : TStrings read FItems write SetItem;
-    property Columns : integer read FColumns write SetColumns default 1;
-    property OnClick : TNotifyEvent read FOnClick write FOnClick;
+    property ItemIndex: integer read GetItemIndex write SetItemIndex default -1;
+    property Items: TStrings read FItems write SetItem;
+    property Columns: integer read FColumns write SetColumns default 1;
+    property OnClick: TNotifyEvent read FOnClick write FOnClick;
   public
     constructor Create (AOwner : TComponent); override;
     destructor Destroy; override;
-    function CanModify : boolean; virtual;
+    function CanModify: boolean; virtual;
     procedure CreateWnd; override;
     function Rows: integer;
   end;
@@ -753,6 +753,9 @@ end.
 
  {
   $Log$
+  Revision 1.67  2003/07/10 15:17:43  mattias
+  fixed reading empty stream and TCustomRadioGroup.ItemsChanged
+
   Revision 1.66  2002/08/19 15:15:23  mattias
   implemented TPairSplitter
 

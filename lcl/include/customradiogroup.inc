@@ -63,7 +63,7 @@ begin
   ControlStyle := ControlStyle + [csCaptureMouse, csClickEvents, csSetCaption,
                                   csDoubleClicks];
   FItems      := TStringList.Create;
-  TStringList(FItems).OnChanging := @ItemsChanged;
+  //TStringList(FItems).OnChanging := @ItemsChanged;
   TStringList(FItems).OnChange := @ItemsChanged;
   FItemIndex  := -1;
   FButtonList := TList.Create;
@@ -174,13 +174,10 @@ end;
   Params:  sender : object calling this proc. (in fact the FItems instance)
   Returns: Nothing
 
-  Set the FColumns property which determines the no columns in
-  which the radiobuttons should be arranged.
-  Range: 1 .. ???
  ------------------------------------------------------------------------------}
 procedure TCustomRadioGroup.ItemsChanged (Sender : TObject);
 begin
-  if HandleAllocated and (csLoading in ComponentState) then
+  if HandleAllocated and (not (csLoading in ComponentState)) then
     RecreateWnd;
   OwnerFormDesignerModified(Self);
 end;
@@ -380,6 +377,9 @@ end;
 
 {
   $Log$
+  Revision 1.22  2003/07/10 15:17:43  mattias
+  fixed reading empty stream and TCustomRadioGroup.ItemsChanged
+
   Revision 1.21  2003/06/19 09:26:58  mattias
   fixed changing unitname during update
 
