@@ -4,7 +4,7 @@
 #
 
 [package]
-name=lcl
+name=lazarus/lcl
 version=0.8a
 
 [target]
@@ -46,3 +46,4 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/allunits$(PPUEXT)
 
 all: cleartarget allunits$(PPUEXT) $(TARGET_DIRS)
+

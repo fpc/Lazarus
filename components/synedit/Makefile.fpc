@@ -4,8 +4,8 @@
 #
 
 [package]
-name=synedit
-version=0.8
+name=lazarus/synedit
+version=0.8a
 
 [compiler]
 unitdir=../../lcl/units/$(LCL_PLATFORM) ../../lcl/units .
