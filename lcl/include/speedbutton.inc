@@ -38,7 +38,7 @@ begin
   FGlyph.OnChange := @GlyphChanged;
 
   SetBounds(0, 0, 23, 22);
-  ControlStyle := [csCaptureMouse, csDoubleClicks];
+  ControlStyle := ControlStyle + [csCaptureMouse] - [csSetCaption];
 
   {set default alignment}
   Align := alNone;
@@ -302,7 +302,7 @@ begin
     BrushStyle:= bsSolid;}
   
   DrawFlags:=DFCS_BUTTONPUSH;
-  if Flat then inc(DrawFlags,DFCS_FLAT);
+  if Flat and (not (csDesigning in ComponentState)) then inc(DrawFlags,DFCS_FLAT);
   if FState in [bsDown, bsExclusive] then inc(DrawFlags,DFCS_PUSHED);
   if FMouseInControl then inc(DrawFlags,DFCS_CHECKED);
   if not Enabled then inc(DrawFlags,DFCS_INACTIVE);
@@ -421,14 +421,11 @@ procedure TSpeedButton.UpdateTracking;
 var
   P : TPoint;
 begin
-  Assert(False,'Trace:[Update Tracking]');
-  
-  if FFlat and Enabled 
+  if FFlat and Enabled
   then begin
     GetCursorPos(p);
     FMouseInControl := not (FindDragTarget(P, True) = Self);
-    Assert(False, Format('Trace:[TSpeedButton.UpdateTracking] ParentHandle: 0x%x', [Integer(self.parent.handle)]));
-    if FMouseInControl 
+    if FMouseInControl
     then Perform(CM_MOUSELEAVE,0,0)
     else Perform(CM_MOUSEENTER,0,0);
   end;
@@ -445,13 +442,13 @@ end;
 procedure TSpeedButton.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   inherited MouseDown(Button, Shift, X, Y);
+  
   if csDesigning in ComponentState then exit;
+  
   if (Button = mbLeft) and Enabled
   then begin
-    Assert(False,'Trace:[TSpeedButton.MouseDown] Checking FDown');
-    if not FDown 
+    if not FDown
     then begin
-      Assert(False,'Trace:[TSpeedButton.MouseDown] It wasn''t down, so now it will display it down!');
       FState := bsDown;
       Invalidate;
     end;
@@ -470,23 +467,25 @@ procedure TSpeedButton.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
   NewState: TButtonState;
 begin
-  Assert(False,Format('Trace:[TSpeedButton.MouseMove] X:%d Y:%d', [X, Y]));
   inherited MouseMove(Shift, X, Y);
+  
   if csDesigning in ComponentState then exit;
 
   if FDragging 
   then begin
     Assert(False,'Trace:FDragging is true');
-    if not FDown 
-    then NewState := bsUp
-    else NewState := bsExclusive;
+    if not FDown then
+      NewState := bsUp
+    else
+      NewState := bsExclusive;
     
-    if  (X >= 0) and (X < ClientWidth) 
-    and (Y >= 0) and (Y <= ClientHeight) 
+    if  (X >= 0) and (X < Width)
+    and (Y >= 0) and (Y < Height)
     then begin
-      if FDown 
-      then NewState := bsExclusive 
-      else NewState := bsDown;
+      if FDown then
+        NewState := bsExclusive
+      else
+        NewState := bsDown;
     end;
     
     if NewState <> FState 
@@ -518,14 +517,14 @@ procedure TSpeedButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
 var
   DoClick: Boolean;
 begin
-writeln('TSpeedButton.MouseUp A ',Name);
-  Assert(False,'Trace:TSPEEDBUTTON.MOUSEUP');
   inherited MouseUp(Button, Shift, X, Y);
+  
   if csDesigning in ComponentState then exit;
+  
   if FDragging
   then begin
     FDragging := False;
-    DoClick := (X >= 0) and (X < ClientWidth) and (Y >= 0) and (Y <= ClientHeight);
+    DoClick := (X >= 0) and (X < Width) and (Y >= 0) and (Y <= Height);
     
     if FGroupIndex = 0 
     then begin
@@ -548,7 +547,6 @@ writeln('TSpeedButton.MouseUp A ',Name);
     if DoClick then Click;
     UpdateTracking;
   end;
-writeln('TSpeedButton.MouseUp B ',Name);
 end;
 
 {------------------------------------------------------------------------------
@@ -631,11 +629,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TSpeedButton.CMMouseEnter(var Message :TLMessage);
 begin
-  Assert(False,'Trace:[TSpeedButton.CMMouseEnter]');
-
   inherited CMMouseEnter(Message);
 
   if csDesigning in ComponentState then exit;
+  
   if  {FFlat and }not FMouseInControl
   and Enabled and (GetCapture = 0) 
   then begin
@@ -652,15 +649,14 @@ end;
  ------------------------------------------------------------------------------}
 procedure TSpeedButton.CMMouseLeave(var Message :TLMessage);
 begin
-  Assert(False,'Trace:[TSpeedButton.CMMouseLeave]');
-
   inherited CMMouseLeave(Message);
 
   if csDesigning in ComponentState then exit;
+  
   if  {FFlat and }FMouseInControl
   and Enabled and not FDragging
   then begin
-    FMouseInCOntrol := False;
+    FMouseInControl := False;
     Invalidate;
   end;
 end;
@@ -674,6 +670,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.21  2002/08/30 12:32:21  lazarus
+  MG: MoveWindowOrgEx, Splitted FWinControls/FControls, TControl drawing, Better DesignerDrawing, ...
+
   Revision 1.20  2002/08/27 06:34:26  lazarus
   MG: fixed codetools proc collection
 
