@@ -1925,7 +1925,7 @@ begin
 
   FHintWindow := THintWindow.Create(nil);
 
-  FHIntWindow.Visible := False;
+  FHintWindow.Visible := False;
   FHintWindow.Caption := '';
   FHintWindow.HideInterval := 4000;
   FHintWindow.AutoHide := False;
@@ -1950,7 +1950,9 @@ begin
   Gotodialog.free;
   
   FHintTimer.free;
+  FHintTimer:=nil;
   FHintWindow.Free;
+  FHintWindow:=nil;
 
   inherited Destroy;
 end;
@@ -3472,12 +3474,11 @@ end;
 Procedure TSourceNotebook.EditorMouseMove(Sender : TObject; Shift: TShiftstate;
   X,Y : Integer);
 begin
-    if FHintWIndow.Visible then
-     FHintWindow.Visible := False;
+  if FHintWIndow.Visible then
+    FHintWindow.Visible := False;
 
   FHintTimer.Enabled := False;
-  FHintTimer.Enabled := EditorOpts.AutoToolTipSymbTools
-                                       and ([ssLeft,ssRight,ssMiddle]*Shift=[]);
+  FHintTimer.Enabled := EditorOpts.AutoToolTipSymbTools;
 end;
 
 Procedure TSourceNotebook.HintTimer(sender : TObject);
@@ -3538,7 +3539,7 @@ Procedure TSourceNotebook.EditorMouseDown(Sender : TObject;
   Button : TMouseButton; Shift: TShiftstate; X, Y: Integer);
 begin
   if FHIntWindow.Visible then
-     FHintWindow.Visible := False;
+    FHintWindow.Visible := False;
      
   FHintTimer.Enabled := False;
 end;
@@ -3560,7 +3561,7 @@ end;
 Procedure TSourceNotebook.AddWatchAtCursor(Sender : TObject);
 begin
   if Assigned(OnAddWatchAtCursor) then
-     OnAddWatchAtCursor(Self);
+    OnAddWatchAtCursor(Self);
 end;
 
 Procedure TSourceNotebook.BreakPointCreated(Sender : TObject; Line : Integer);

@@ -43,10 +43,12 @@ const
   if the InterfaceObject uses a callback instead of delivering a LM_Timer 
   message.
  ------------------------------------------------------------------------------}
-procedure TimerCBProc(Handle: HWND; message : cardinal; IDEvent: Integer; Time: Cardinal);
+procedure TimerCBProc(Handle: HWND; message : cardinal; IDEvent: Integer;
+  Time: Cardinal);
 begin
-   // Cast Handle back to timer
-  TTimer(Handle).Timer (message);
+  // Cast Handle back to timer
+  if (Handle<>0) then
+    TTimer(Handle).Timer (message);
 end;
 
 {------------------------------------------------------------------------------
@@ -88,9 +90,9 @@ procedure TTimer.KillTimer;
 begin
   Assert(False, 'Trace:In TTimer.KillTimer');
   if FTimerID <> cIdNoTimer then begin
-     InterfaceObject.KillTimer (integer(Self), FTimerID);
+    InterfaceObject.KillTimer (integer(Self), FTimerID);
+    FTimerID := cIdNoTimer;
   end;
-  FTimerID := cIdNoTimer;
 end;
 
 {------------------------------------------------------------------------------
@@ -103,8 +105,8 @@ end;
 procedure TTimer.UpdateTimer;
 begin
   KillTimer;
-  if (FEnabled) and (FInterval > 0) and Assigned (FOnTimer) 
-    then FTimerID := InterfaceObject.SetTimer(Integer(Self), 0, FInterval, @TimerCBProc);
+  if (FEnabled) and (FInterval > 0) and Assigned (FOnTimer) then
+    FTimerID := InterfaceObject.SetTimer(Integer(Self), 0, FInterval, @TimerCBProc);
 end;
 
 {------------------------------------------------------------------------------
@@ -118,7 +120,7 @@ procedure TTimer.Timer (var msg);
 begin
   Assert(false, 'Trace:Timer received a message -TIMER');
   if Assigned (FOnTimer) and (FEnabled) and (FInterval > 0) then
-      FOnTimer(Self);
+    FOnTimer(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -147,8 +149,8 @@ begin
   Assert(False, 'Trace:In TTimer.SetEnabled');
   if (Value <> FEnabled) then
   begin
-     FEnabled := value;
-     UpdateTimer;
+    FEnabled := value;
+    UpdateTimer;
   end;
 end;
 
@@ -164,13 +166,16 @@ begin
   Assert(False, 'Trace:In TTimer.SetInterval');
   if (value <> FInterval) then
   begin
-     FInterval := value;
-     UpdateTimer;
+    FInterval := value;
+    UpdateTimer;
   end;
 end;
 
- {
+{
   $Log$
+  Revision 1.6  2002/10/14 19:00:49  lazarus
+  MG: fixed zombie timers
+
   Revision 1.5  2002/05/10 06:05:55  lazarus
   MG: changed license to LGPL
 
