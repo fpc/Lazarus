@@ -1761,22 +1761,6 @@ begin
     GDK_Visual_Ref(GObject^.PaletteVisual);
   end;
   GObject^.PaletteColormap := GDK_Colormap_new(GObject^.PaletteVisual, GdkTrue);
-  GObject^.SystemPalette := False;
-  GObject^.PaletteRealized := False;
-  GObject^.VisualType := GDK_VISUAL_PSEUDO_COLOR;
-  GObject^.PaletteVisual := nil;
-
-  {$IFDEF DebugGDKTraps}
-  BeginGDKErrorTrap;
-  {$ENDIF}
-
-  GObject^.PaletteVisual := gdk_visual_get_best_with_type(GObject^.VisualType);
-  if GObject^.PaletteVisual = nil
-  then begin
-    GObject^.PaletteVisual := GDK_Visual_Get_System;
-    GDK_Visual_Ref(GObject^.PaletteVisual);
-  end;
-  GObject^.PaletteColormap := GDK_Colormap_new(GObject^.PaletteVisual, GdkTrue);
 
   {$IFDEF DebugGDKTraps}
   EndGDKErrorTrap;
@@ -8940,6 +8924,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.401  2005/02/23 01:21:54  marc
+  - Removed double commit (?)
+
   Revision 1.400  2005/02/23 01:12:47  marc
   + Added RemoveProp winapi call
   * Some maintenace on winapi/lclintf files
