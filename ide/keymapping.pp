@@ -45,14 +45,14 @@ const
   ecNextEditor           = ecUserFirst + 7;
   ecPrevEditor           = ecUserFirst + 8;
 
-  ecPeriod               = ecUserFirst + 9;
+  ecPeriod               = ecUserFirst + 10;
 
-  ecFindPrevious         = ecUserFirst + 10;
-  ecFindInFiles          = ecUserFirst + 11;
-  ecJumpBack             = ecUserFirst + 12;
-  ecJumpForward          = ecUserFirst + 13;
-  ecAddJumpPoint         = ecUserFirst + 14;
-  ecViewJumpHistory      = ecUserFirst + 15;
+  ecFindPrevious         = ecUserFirst + 11;
+  ecFindInFiles          = ecUserFirst + 12;
+  ecJumpBack             = ecUserFirst + 13;
+  ecJumpForward          = ecUserFirst + 14;
+  ecAddJumpPoint         = ecUserFirst + 15;
+  ecViewJumpHistory      = ecUserFirst + 16;
 
   ecFindDeclaration      = ecUserFirst + 20;
   ecFindBlockOtherEnd    = ecUserFirst + 21;
@@ -443,11 +443,11 @@ begin
     ecQuit: Result:= 'quit';
 
     // search menu
-    ecFind: Result:= 'Find Text';
-    ecFindNext: Result:= 'Find Next';
+    ecFind: Result:= 'Find text';
+    ecFindNext: Result:= 'Find next';
     ecFindPrevious: Result:= 'Find Previous';
     ecFindInFiles: Result:= 'Find in files';
-    ecReplace: Result:= 'Replace Text';
+    ecReplace: Result:= 'Replace text';
     ecFindProcedureDefinition: Result:= 'find procedure definition';
     ecFindProcedureMethod: Result:= 'find procedure method';
     ecGotoLineNumber: Result:= 'goto line number';
@@ -1048,7 +1048,7 @@ begin
 
   // create default keymapping
 
-  // selection
+  // moving
   C:=Categories[AddCategory('CursorMoving','Cursor moving commands')];
   Add(C,'Move cursor word left',ecWordLeft, VK_LEFT, [ssCtrl],VK_UNKNOWN,[]);
   Add(C,'Move cursor word right',ecWordRight, VK_RIGHT, [ssCtrl],VK_UNKNOWN,[]);
@@ -1062,6 +1062,10 @@ begin
   Add(C,'Move cursor to bottom of page',ecPageBottom, VK_NEXT, [ssCtrl],VK_UNKNOWN,[]);
   Add(C,'Move cursor to absolute beginning',ecEditorTop,VK_HOME,[ssCtrl],VK_UNKNOWN,[]);
   Add(C,'Move cursor to absolute end',ecEditorBottom,VK_END,[ssCtrl],VK_UNKNOWN,[]);
+  Add(C,'Scroll up one line',ecScrollUp, VK_UP, [ssCtrl],VK_UNKNOWN,[]);
+  Add(C,'Scroll down one line',ecScrollDown, VK_DOWN, [ssCtrl],VK_UNKNOWN,[]);
+  Add(C,'Scroll left one char',ecScrollLeft, VK_UNKNOWN, [],VK_UNKNOWN,[]);
+  Add(C,'Scroll right one char',ecScrollRight, VK_UNKNOWN, [],VK_UNKNOWN,[]);
 
   // selection
   C:=Categories[AddCategory('Selection','Text selection commands')];
@@ -1081,15 +1085,25 @@ begin
   Add(C,'Select to absolute beginning',ecSelEditorTop,VK_HOME, [ssShift,ssCtrl],VK_UNKNOWN,[]);
   Add(C,'Select to absolute end',ecSelEditorBottom,VK_END, [ssShift,ssCtrl],VK_UNKNOWN,[]);
 
-  // simple tools
-  C:=Categories[AddCategory('SimpleTools','Simple tools commands')];
+  // editing
+  C:=Categories[AddCategory('editing commands','Text editing commands')];
   Add(C,'Indent block',ecBlockIndent,VK_I,[ssCtrl],VK_UNKNOWN,[]);
   Add(C,'Unindent block',ecBlockUnindent,VK_U,[ssCtrl],VK_UNKNOWN,[]);
+  Add(C,'Delete last char',ecDeleteLastChar,VK_BACK, [],VK_BACK, [ssShift]);
+  Add(C,'Delete char at cursor',ecDeleteChar,VK_DELETE,[],VK_UNKNOWN,[]);
+  Add(C,'Delete to end of word',ecDeleteWord,VK_T,[ssCtrl],VK_UNKNOWN,[]);
+  Add(C,'Delete to start of word',ecDeleteLastWord,VK_BACK,[ssCtrl],VK_UNKNOWN,[]);
+  Add(C,'Delete to beginning of line',ecDeleteBOL,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Delete to end of line',ecDeleteEOL,VK_Y,[ssCtrl,ssShift],VK_UNKNOWN,[]);
+  Add(C,'Delete current line',ecDeleteLine,VK_Y,[ssCtrl],VK_UNKNOWN,[]);
+  Add(C,'Delete whole text',ecClearAll,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Break line and move cursor',ecLineBreak,VK_RETURN,[],VK_UNKNOWN,[]);
+  Add(C,'Break line, leave cursor',ecInsertLine,VK_N,[ssCtrl],VK_UNKNOWN,[]);
 
   // command commands
   C:=Categories[AddCategory('CommandCommands','Command commands')];
   Add(C,'Undo',ecUndo,VK_Z,[ssCtrl],VK_UNKNOWN,[]);
-  Add(C,'Redo',ecRedo,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Redo',ecRedo,VK_Z,[ssCtrl,ssShift],VK_UNKNOWN,[]);
   
   // search & replace
   C:=Categories[AddCategory('SearchReplace','Search and Replace commands')];

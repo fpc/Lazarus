@@ -614,14 +614,14 @@ Begin
   GetDialogPosition(FindReplaceDlg.Width,FindReplaceDlg.Height,ALeft,ATop);
   FindReplaceDlg.Left:=ALeft;
   FindReplaceDlg.Top:=ATop;
-  if (FindReplaceDlg.ShowModal <> mrCancel) then begin
-    if Replace then
-      InputHistories.AddToReplaceHistory(FindReplaceDlg.ReplaceText)
-    else
-      InputHistories.AddToFindHistory(FindReplaceDlg.FindText);
-    InputHistories.Save;
-    DoFindAndReplace;
-  end;
+  if (FindReplaceDlg.ShowModal = mrCancel) then exit;
+  
+  if Replace then
+    InputHistories.AddToReplaceHistory(FindReplaceDlg.ReplaceText)
+  else
+    InputHistories.AddToFindHistory(FindReplaceDlg.FindText);
+  InputHistories.Save;
+  DoFindAndReplace;
 End;
 
 {------------------------------F I N D  A G A I N ----------------------------}
