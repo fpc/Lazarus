@@ -29,9 +29,13 @@ unit Chart;
 interface
 
 uses
-  SysUtils, Classes, LCLProc, Controls, ExtCtrls, Graphics, Dialogs;
+  SysUtils, Classes, LCLProc, LCLIntf, LCLType, Controls, ExtCtrls, Graphics,
+  Dialogs;
 
 type
+
+  TPosLabel=(plLeft, plCenter, plRight);
+
   { TCustomBarChart }
 
   TBar = class(TCollectionItem)
@@ -47,6 +51,7 @@ type
     FUpdateCount: Integer;
     FBars: TCollection;
     FDepth: byte;
+    FLabelPosition:TPosLabel;
     function NormalizeScaleUnits(OldScale: Integer): Integer;
   protected
     procedure Paint; override;
@@ -59,8 +64,9 @@ type
     function BarCount: Integer;
     procedure BeginUpdate;
     procedure EndUpdate;
-  public
+  published
     property Depth: byte read FDepth write FDepth;
+    property LabelPosition: TPosLabel read FLabelPosition write FLabelPosition;
   end;
   
   
@@ -83,7 +89,6 @@ type
     property ClientWidth;
     property Color;
     property Constraints;
-    property Depth: byte;
     property DragMode;
     property Enabled;
     property Font;
@@ -125,6 +130,7 @@ begin
   inherited Create(AOwner);
   FBars:=TCollection.Create(TBar);
   FDepth:=5;
+  FLabelPosition:=plLeft;
   SetInitialBounds(0,0,150,120);
 end;
 
@@ -181,7 +187,7 @@ procedure TCustomBarChart.Paint;
 
 var
   i,k,j,h,w,h1,HMax,VMax: integer;
-
+  bx,by:integer;
   NScaleLines : Integer;
   ScaleUnits  : Integer;
   PixelPerUnit: Double;
@@ -205,6 +211,8 @@ var
 
 begin
   inherited Paint;
+  bx:=GetSystemMetrics(SM_CXEDGE);
+  by:=GetSystemMetrics(SM_CYEDGE);
   hmax:=10;
   vmax:=0;
   for i:=0 to FBars.Count-1 do
@@ -234,7 +242,7 @@ begin
   Canvas.MoveTo(hmax,h1+FDepth);
   Canvas.LineTo(hmax,h1+FDepth+h);
   Canvas.LineTo(hmax+w,h1+FDepth+h);
-  Canvas.TextOut(0,0,Caption);
+  Canvas.TextOut(bx,by,Caption);
   j:=Canvas.TextWidth(IntTostr(VMax));
   if VMax=0 then
      begin
@@ -286,21 +294,24 @@ begin
     s:=IntToStr(m);
     w:=z+(RBC-FDepth) div 2;
     Canvas.MoveTo(Hmax+BL+Fdepth div 2,w);
-    Canvas.LineTo(Hmax+BL+Fdepth+5,w);
+    Canvas.LineTo(Hmax+BL+Fdepth+5-bx,w);
     Canvas.Brush.Color:=clYellow;
     with rc do
       begin
-      left:=hmax+BL+FDepth+5;
-      right:=left+Canvas.TextWidth(s)+6;
-      top:=Canvas.TextHeight(s) div 2+3;
-      bottom:=w+top;
-      top:=bottom-2*top;
+      left:=hmax+BL+FDepth+5-bx;
+      right:=left+Canvas.TextWidth(s)+2*bx;
+      top:=w-Canvas.TextHeight(s) div 2-by;
+      bottom:=w+Canvas.TextHeight(s) div 2+by;
       end;
     Canvas.Rectangle(rc);
     //debugln('TCustomBarChart.Paint A ',dbgs(rc),' s="',s,'"');
-    Canvas.TextRect(rc,rc.Left,rc.Top,s);
+    Canvas.TextOut(rc.Left+bx,rc.Top+by,s);
     Canvas.Font.Color:=Font.Color;
-    Canvas.TextRect(Rect(0,z,hmax-5,z+RBC),0,z,ts.FSName);
+    case FLabelPosition of
+      plLeft: Canvas.TextOut(bx,z,ts.FSName);
+      plCenter: Canvas.TextOut(HMax+((BL-Canvas.TextWidth(ts.FSName)) div 2),z,ts.FSName);
+      plRight: Canvas.TextOut(HMax+BL-Canvas.TextWidth(ts.FSName)-bx,z,ts.FSName);
+    end;
     end;
   Canvas.Pen.Style:=psSolid;
 end;
@@ -312,6 +323,10 @@ end;
 
 procedure TCustomBarChart.BeginUpdate;
 begin
+  if FUpdateCount=0 then begin
+    Canvas.Brush.Color:=Color;
+    Canvas.FillRect(GetClientRect);
+  end;
   Inc(FUpdateCount);
 end;
 
@@ -321,7 +336,7 @@ begin
     raise Exception.Create('TCustomBarChart.EndUpdate');
   Dec(FUpdateCount);
   If FUpdateCount=0 then
-    Repaint;
+    Invalidate;
 end;
 
 function TCustomBarChart.BarCount: Integer;
