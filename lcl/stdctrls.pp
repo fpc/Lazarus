@@ -114,6 +114,8 @@ type
 
 
   TCustomGroupBox = class (TWinControl) {class(TCustomControl) }
+  protected
+    procedure AdjustClientRect(var Rect: TRect); override;
   public
     constructor Create(AOwner : TComponent); Override;
   end;
@@ -581,6 +583,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.25  2002/04/21 06:53:54  lazarus
+  MG: fixed save lrs to test dir
+
   Revision 1.24  2002/04/18 08:09:03  lazarus
   MG: added include comments
 

@@ -452,17 +452,10 @@ begin
   // find MainCode (= the start source, e.g. a unit/program/package source)
   Result:=Code;
   if Result=nil then exit;
-  while (not FilenameHasSourceExt(Result.Filename)) do begin
-    // source is no begin of unit/program/package
-    // perhaps it is included by another source
-    if Result.LastIncludedByFile<>'' then begin
-      // source is included
-      Result:=SourceCache.LoadFile(Result.LastIncludedByFile);
-      if Result=nil then exit;
-    end else begin
-      // source was never parsed
-      exit;
-    end;
+  // if this is an include file, find the top level source
+  while (Result.LastIncludedByFile<>'') do begin
+    Result:=SourceCache.LoadFile(Result.LastIncludedByFile);
+    if Result=nil then exit;
   end;
   if FilenameHasSourceExt(Result.Filename) and (Result.Scanner=nil) then begin
     // create a scanner for the unit/program
@@ -1100,13 +1093,13 @@ var ResCode: TCodeBuffer;
   LinkIndex: integer;
 begin
   Result:=false;
-{$IFDEF CTDEBUG}
-writeln('TCodeToolManager.AddLazarusResource A ',Code.Filename,' ResourceName=',ResourceName,' ',length(ResourceData));
-{$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.AddLazarusResource A ',Code.Filename,' ResourceName=',ResourceName,' ',length(ResourceData));
+  {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
-{$IFDEF CTDEBUG}
-writeln('TCodeToolManager.AddLazarusResource B ');
-{$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.AddLazarusResource B ');
+  {$ENDIF}
   try
     LinkIndex:=-1;
     ResCode:=FCurCodeTool.FindNextIncludeInInitialization(LinkIndex);
@@ -1124,9 +1117,9 @@ var ResCode: TCodeBuffer;
   LinkIndex: integer;
 begin
   Result:=false;
-{$IFDEF CTDEBUG}
-writeln('TCodeToolManager.RemoveLazarusResource A ',Code.Filename,' ResourceName=',ResourceName);
-{$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.RemoveLazarusResource A ',Code.Filename,' ResourceName=',ResourceName);
+  {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
     LinkIndex:=-1;

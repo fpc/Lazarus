@@ -2601,7 +2601,7 @@ var
   Driver: TAbstractObjectWriter;
   Writer:TWriter;
   ACaption, AText: string;
-  CompResourceCode, LFMFilename, TestFilename: string;
+  CompResourceCode, LFMFilename, TestFilename, ResTestFilename: string;
 begin
   // save lrs - lazarus resource file and lfm - lazarus form text file
   // Note: When there is a bug in the source, no resource code can be found,
@@ -2635,11 +2635,18 @@ begin
                      [mbAbort, mbRetry, mbIgnore], 0);
           if Result=mrAbort then exit;
           if Result=mrIgnore then Result:=mrOk;
+          FormSavingOk:=false;
         end;
       until Result<>mrRetry;
       // create lazarus form resource code
       if FormSavingOk then begin
-        if ResourceCode<>nil then begin
+        if (sfSaveToTestDir in Flags) then begin
+          ResTestFilename:=ChangeFileExt(GetTestUnitFilename(AnUnitInfo),
+                                         ResourceFileExt);
+          ResourceCode:=CodeToolBoss.CreateFile(ResTestFilename);
+          FormSavingOk:=(ResourceCode<>nil);
+        end;
+        if FormSavingOk then begin
           // there is no bug in the source, so the resource code should be
           // changed too
           MemStream:=TMemoryStream.Create;
@@ -2653,20 +2660,26 @@ begin
           finally
             MemStream.Free;
           end;
-{$IFDEF IDE_DEBUG}
-writeln('TMainIDE.SaveFileResources E ',CompResourceCode);
-{$ENDIF}
+        end;
+        if FormSavingOk then begin
+          {$IFDEF IDE_DEBUG}
+          writeln('TMainIDE.SaveFileResources E ',CompResourceCode);
+          {$ENDIF}
           // replace lazarus form resource code
-          if (not CodeToolBoss.AddLazarusResource(ResourceCode,
-             'T'+AnUnitInfo.FormName,CompResourceCode)) then
-          begin
-            ACaption:='Resource error';
-            AText:='Unable to add resource '
-              +'T'+AnUnitInfo.FormName+':FORMDATA to resource file '#13
-              +'"'+ResourceCode.FileName+'".'#13
-              +'Probably a syntax error.';
-            Result:=MessageDlg(ACaption, AText, mtError, [mbIgnore, mbAbort],0);
-            if Result=mrAbort then exit;
+          if not (sfSaveToTestDir in Flags) then begin
+            if (not CodeToolBoss.AddLazarusResource(ResourceCode,
+               'T'+AnUnitInfo.FormName,CompResourceCode)) then
+            begin
+              ACaption:='Resource error';
+              AText:='Unable to add resource '
+                +'T'+AnUnitInfo.FormName+':FORMDATA to resource file '#13
+                +'"'+ResourceCode.FileName+'".'#13
+                +'Probably a syntax error.';
+              Result:=MessageDlg(ACaption, AText, mtError, [mbIgnore, mbAbort],0);
+              if Result=mrAbort then exit;
+            end;
+          end else begin
+            ResourceCode.Source:=CompResourceCode;
           end;
         end;
         if (not (sfSaveToTestDir in Flags)) then begin
@@ -2681,9 +2694,9 @@ writeln('TMainIDE.SaveFileResources E ',CompResourceCode);
             end;
           end;
           if LFMCode<>nil then begin
-{$IFDEF IDE_DEBUG}
-writeln('TMainIDE.SaveFileResources E2 LFM=',LFMCode.Filename);
-{$ENDIF}
+            {$IFDEF IDE_DEBUG}
+            writeln('TMainIDE.SaveFileResources E2 LFM=',LFMCode.Filename);
+            {$ENDIF}
             repeat
               try
                 // transform binary to text
@@ -2718,10 +2731,10 @@ writeln('TMainIDE.SaveFileResources E2 LFM=',LFMCode.Filename);
       BinCompStream.Free;
     end;
   end;
-{$IFDEF IDE_DEBUG}
-if ResourceCode<>nil then
-  writeln('TMainIDE.SaveFileResources F ',ResourceCode.Modified);
-{$ENDIF}
+  {$IFDEF IDE_DEBUG}
+  if ResourceCode<>nil then
+    writeln('TMainIDE.SaveFileResources F ',ResourceCode.Modified);
+  {$ENDIF}
   if ResourceCode<>nil then begin
     if not (sfSaveToTestDir in Flags) then begin
       if (ResourceCode.Modified) then begin
@@ -2739,9 +2752,9 @@ if ResourceCode<>nil then
     end;
   end;
   Result:=mrOk;
-{$IFDEF IDE_DEBUG}
-writeln('TMainIDE.SaveFileResources G ',LFMCode<>nil);
-{$ENDIF}
+  {$IFDEF IDE_DEBUG}
+  writeln('TMainIDE.SaveFileResources G ',LFMCode<>nil);
+  {$ENDIF}
 end;
 
 function TMainIDE.DoOpenNotExistingFile(const AFileName: string;
@@ -3292,7 +3305,7 @@ writeln('TMainIDE.DoNewEditorUnit A NewFilename=',NewFilename);
   end else begin
     FCodeLastActivated:=true;
   end;
-writeln('TMainIDE.DoNewUnit end');
+  writeln('TMainIDE.DoNewUnit end');
   {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
 end;
 
@@ -3303,7 +3316,7 @@ var ActiveSrcEdit:TSourceEditor;
   TestFilename: string;
   ResourceCode, LFMCode: TCodeBuffer;
 begin
-writeln('TMainIDE.DoSaveEditorUnit A PageIndex=',PageIndex,' SaveAs=',sfSaveAs in Flags,' SaveToTestDir=',sfSaveToTestDir in Flags);
+  writeln('TMainIDE.DoSaveEditorUnit A PageIndex=',PageIndex,' SaveAs=',sfSaveAs in Flags,' SaveToTestDir=',sfSaveToTestDir in Flags);
   {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
   Result:=mrCancel;
   if ToolStatus<>itNone then begin
@@ -3378,9 +3391,9 @@ writeln('TMainIDE.DoSaveEditorUnit A PageIndex=',PageIndex,' SaveAs=',sfSaveAs i
       exit;
   end;
 
-{$IFDEF IDE_DEBUG}
-writeln('*** HasResources=',ActiveUnitInfo.HasResources);
-{$ENDIF}
+  {$IFDEF IDE_DEBUG}
+  writeln('*** HasResources=',ActiveUnitInfo.HasResources);
+  {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
   // save resource file and lfm file
   if (ResourceCode<>nil) or (ActiveUnitInfo.Form<>nil) then begin
@@ -3396,7 +3409,7 @@ writeln('*** HasResources=',ActiveUnitInfo.HasResources);
   end;
   SourceNoteBook.UpdateStatusBar;
   
-writeln('TMainIDE.DoSaveEditorUnit END');
+  writeln('TMainIDE.DoSaveEditorUnit END');
   Result:=mrOk;
 end;
 
@@ -3408,7 +3421,7 @@ var ActiveSrcEdit: TSourceEditor;
   i:integer;
   OldDesigner: TDesigner;
 begin
-writeln('TMainIDE.DoCloseEditorUnit A PageIndex=',PageIndex);
+  writeln('TMainIDE.DoCloseEditorUnit A PageIndex=',PageIndex);
   Result:=mrCancel;
   GetUnitWithPageIndex(PageIndex,ActiveSrcEdit,ActiveUnitInfo);
   if ActiveUnitInfo=nil then exit;
@@ -6222,6 +6235,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.280  2002/04/21 06:53:52  lazarus
+  MG: fixed save lrs to test dir
+
   Revision 1.279  2002/04/16 08:55:04  lazarus
   MG: added path editor for compiler options
 
