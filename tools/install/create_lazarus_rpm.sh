@@ -17,7 +17,7 @@ fi
 FPCRPMVersion=`echo $FPCRPM | sed -e 's/fpc-//g'`
 
 Date=$Year$Month$Day
-LazVersion=0.9.2.4
+LazVersion=0.9.3
 LazRelease=`echo $FPCRPM | sed -e 's/-/_/g'`
 SrcTGZ=lazarus-$Date.tgz
 TmpDir=/tmp/lazarus$LazVersion

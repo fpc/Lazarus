@@ -342,7 +342,8 @@ Var
       Sibling := Parent.Controls[i];
       if (Sibling is TRadioButton) and (Sibling<>RadioButton) and
          (TRadioButton(Sibling).HandleAllocated) then
-         Windows.SendMessage(TRadioButton(Sibling).Handle, BM_SETCHECK, Windows.WParam(BST_UNCHECKED), 0);
+         Windows.SendMessage(TRadioButton(Sibling).Handle, BM_SETCHECK,
+            Windows.WParam(BST_UNCHECKED), 0);
     end;
   end;
   
@@ -354,8 +355,7 @@ Var
   begin
     with ComboBox do begin
       Index := ItemIndex;
-      // Index might be -1,
-      // if current text is not in the list.
+      // Index might be -1, if current text is not in the list.
       if (Index>=0) then
         Text := Items[Index]
     end;
@@ -1464,6 +1464,9 @@ end;
 
 {
   $Log$
+  Revision 1.173  2004/12/17 09:00:47  vincents
+  set version to 0.9.3
+
   Revision 1.172  2004/12/16 14:29:12  micha
   fix showmodal to remember disabled windows (fixes bug 478, and more)
 

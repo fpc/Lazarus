@@ -1,5 +1,5 @@
 :: This setting need to change for every build
-SET LAZVERSION=0.9.2.4
+SET LAZVERSION=0.9.3
 
 :: These settings are dependent on the configuration of the build machine
 :: Path to the Inno Setup Compiler
@@ -9,7 +9,7 @@ SET ISCC="C:\Program Files\Inno Setup 4\iscc.exe"
 SET FPCCVSDIR=c:\lazarus\source\fpc-1.9
 
 :: Path to the lazarus sources checked out of cvs
-SET LAZCVSDIR=c:\lazarus\source\lazcvs
+SET LAZCVSDIR=c:\lazarus\source\lazarus
 
 :: Path to fpc 1.0.10 compiler
 SET RELEASE_PPC=c:\fpc\bin\ppc386-release.exe
