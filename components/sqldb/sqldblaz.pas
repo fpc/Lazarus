@@ -1,6 +1,5 @@
-{  This file was automatically created by Lazarus. Do not edit!
-  This source is only used to compile and install
-  the package Sqldblaz 0.9.5.
+{ This file was automatically created by Lazarus. Do not edit!
+This source is only used to compile and install the package.
  }
 
 unit Sqldblaz; 
@@ -8,7 +7,8 @@ unit Sqldblaz;
 interface
 
 uses
-  registersqldb, sqldb, LazarusPackageIntf; 
+  registersqldb, sqldb, ibconnection, pqconnection, mysql4conn, 
+    LazarusPackageIntf; 
 
 implementation
 
