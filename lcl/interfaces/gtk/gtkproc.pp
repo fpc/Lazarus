@@ -36,6 +36,11 @@ uses
   FileCtrl, LResources, Math, GTKGlobals;
 
 
+procedure laz_gdk_gc_set_dashes(gc:PGdkGC; dash_offset:gint;
+  dashlist:Pgint8; n:gint); cdecl; external gdkdll name 'gdk_gc_set_dashes';
+
+
+
 (* GTKCallback.inc headers *)
 procedure EventTrace(const TheMessage : string; data : pointer);
 function gtkNoteBookCloseBtnClicked(Widget: PGtkWidget;
