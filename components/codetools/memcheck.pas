@@ -43,10 +43,6 @@ interface
 
 {$IFNDEF VER1_0}
 
-{$IFNDEF VER1_9_8}
-  {$DEFINE HasSysFPCGetHeapStatus}
-{$ENDIF}
-
 {$goto on}
 
 Procedure DumpHeap;
@@ -867,7 +863,7 @@ begin
      inc(i);
      if i>getmem_cnt then
       begin
-         writeln(ptext^,'error in linked list of heap_mem_info');
+         Writeln(ptext^,'error in linked list of heap_mem_info');
          halt(1);
       end;
    end;
@@ -886,7 +882,7 @@ var
   i : ptrint;
 {$IFDEF HASGETHEAPSTATUS}
   ExpectedHeapFree : ptrint;
-  {$IFDEF HasSysFPCGetHeapStatus}
+  {$IFDEF HASGETFPCHEAPSTATUS}
     status : TFPCHeapStatus;
   {$ELSE}
     status : THeapStatus;
@@ -901,8 +897,8 @@ begin
   Writeln(ptext^,freemem_cnt,' memory blocks freed     : ',freemem_size,'/',freemem8_size);
   Writeln(ptext^,getmem_cnt-freemem_cnt,' unfreed memory blocks : ',getmem_size-freemem_size);
 {$IFDEF HASGETHEAPSTATUS}
-  {$IFDEF HasSysFPCGetHeapStatus}
-    status:=SysFPCGetHeapStatus;
+  {$IFDEF HASGETFPCHEAPSTATUS}
+    status:=SysGetFPCHeapStatus;
   {$ELSE}
     SysGetHeapStatus(status);
   {$ENDIF}
@@ -994,7 +990,7 @@ end;
 *****************************************************************************}
 
 {$IFDEF HASGETHEAPSTATUS}
-  {$IFDEF HasSysFPCGetHeapStatus}
+  {$IFDEF HASGETFPCHEAPSTATUS}
   function TraceGetHeapStatus: THeapStatus;
   begin
     Result:=SysGetHeapStatus;
@@ -1002,7 +998,7 @@ end;
 
   function TraceGetFPCHeapStatus: TFPCHeapStatus;
   begin
-    Result:=SysFPCGetHeapStatus;
+    Result:=SysGetFPCHeapStatus;
   end;
   {$ELSE}
   procedure TraceGetHeapStatus(var status:THeapStatus);
@@ -1078,7 +1074,7 @@ const
     MemSize : @TraceMemSize;
 {$IFDEF HASGETHEAPSTATUS}
     GetHeapStatus : @TraceGetHeapStatus;
-    {$IFDEF HasSysFPCGetHeapStatus}
+    {$IFDEF HASGETFPCHEAPSTATUS}
       GetFPCHeapStatus : @TraceGetFPCHeapStatus;
     {$ENDIF}
 {$ELSE}
@@ -1092,7 +1088,7 @@ const
 procedure TraceInit;
 {$IFDEF HASGETHEAPSTATUS}
 var
-  {$IFDEF HasSysFPCGetHeapStatus}
+  {$IFDEF HASGETFPCHEAPSTATUS}
     initheapstatus : TFPCHeapStatus;
   {$ELSE}
     initheapstatus : THeapStatus;
@@ -1100,8 +1096,8 @@ var
 {$ENDIF}
 begin
 {$IFDEF HASGETHEAPSTATUS}
-  {$IFDEF HasSysFPCGetHeapStatus}
-  initheapstatus:=SysFPCGetHeapStatus;
+  {$IFDEF HASGETFPCHEAPSTATUS}
+  initheapstatus:=SysGetFPCHeapStatus;
   EntryMemUsed:=initheapstatus.CurrHeapUsed;
   {$ELSE}
   SysGetHeapStatus(initheapstatus);
@@ -2395,6 +2391,9 @@ end.
 
 {
   $Log$
+  Revision 1.40  2005/03/05 00:51:07  marc
+  * Fixed compilation
+
   Revision 1.39  2005/03/02 15:16:55  mattias
   fixed fpc 1.9.9 compilation
 
