@@ -18,6 +18,9 @@
 {------------------------------------------------------------------------------}
 destructor TForm.Destroy;
 begin
+  {$IFDEF VER1_0}
+  BeforeDestruction;
+  {$ENDIF}
   Assert(False, 'Trace:Destroying signals for TForm');
   inherited Destroy;
 end;
