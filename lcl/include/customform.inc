@@ -1264,11 +1264,8 @@ var
   Control: TWinControl;
 begin
   inherited Loaded;
-  if FMenu<>nil then begin
-    writeln('TCustomForm.Loaded A ',Name,':',ClassName,' ',ClientHeight);
+  if FMenu<>nil then
     FMenu.HandleNeeded;
-    writeln('TCustomForm.Loaded B ',Name,':',ClassName,' ',ClientHeight);
-  end;
   if ActiveControl <> nil then
   begin
     Control := ActiveControl;
@@ -1430,6 +1427,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.103  2003/06/13 14:38:01  mattias
+  fixed using streamed clientwith/height for child anchors
+
   Revision 1.102  2003/06/13 06:05:49  mattias
   started context diff
 

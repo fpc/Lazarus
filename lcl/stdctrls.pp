@@ -143,6 +143,8 @@ type
     property Align;
     property Anchors;
     property Caption;
+    property ClientHeight;
+    property ClientWidth;
     property Color;
     property Constraints;
     property Ctl3D;
@@ -1459,6 +1461,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.97  2003/06/13 14:38:01  mattias
+  fixed using streamed clientwith/height for child anchors
+
   Revision 1.96  2003/06/12 16:18:23  mattias
   applied TComboBox fix for grabbing keys from Yoyong
 
