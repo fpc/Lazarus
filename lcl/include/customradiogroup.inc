@@ -82,8 +82,9 @@ end;
  ------------------------------------------------------------------------------}
 destructor TCustomRadioGroup.Destroy;
 begin
-  FItems.Free;
-  FButtonList.Free;
+  FreeAndNil(FItems);
+  FreeAndNil(FButtonList);
+  FreeAndNil(FHiddenButton);
   inherited Destroy;
 end;
 
@@ -118,6 +119,13 @@ begin
     Temp.OnClick := @Clicked;
     FButtonList.Add(Temp);
   end;
+  if FHiddenButton=nil then begin
+    FHiddenButton:=TRadioButton.Create(nil);
+    with FHiddenButton do begin
+      Name:='HiddenRadioButton';
+      Visible:=false;
+    end;
+  end;
     
   //writeln('[TCustomRadioGroup.CreateWnd] C ',Name,':',ClassName,' FItems.Count=',FItems.Count,' HandleAllocated=',HandleAllocated);
   if (FItemIndex>=FItems.Count) then FItemIndex:=FItems.Count-1;
@@ -132,6 +140,12 @@ begin
       Temp.Caption := FItems[i];
       Temp.Parent := Self;
     end;
+    with FHiddenButton do begin
+      FHiddenButton.Visible:=false;
+      Parent:=Self;
+      FHiddenButton.CreateHandle;
+    end;
+    
     DoPositionButtons;
 
     for i:=0 to FItems.Count-1 do begin
@@ -139,6 +153,7 @@ begin
       Temp.Checked := (i = FItemIndex);
       Temp.Visible := true;
     end;
+    FHiddenButton.Checked:=(fItemIndex=-1);
   end;
   //writeln('[TCustomRadioGroup.CreateWnd] F ',Name,':',ClassName,' FItems.Count=',FItems.Count,' HandleAllocated=',HandleAllocated,' ItemIndex=',ItemIndex);
 
@@ -203,7 +218,7 @@ end;
 
   Select one of the radiobuttons
  ------------------------------------------------------------------------------}
-procedure TCustomRadioGroup.SetItemIndex (Value : integer);
+procedure TCustomRadioGroup.SetItemIndex(Value : integer);
 begin
   if Value = FItemIndex then exit;
   if FReading then
@@ -214,11 +229,17 @@ begin
 
     if (HandleAllocated) then
     begin
+      // the radiobuttons are grouped by the widget interface
+      // and some does not allow to uncheck all buttons in a group
+      // Therefore there is a hidden button
+      FItemIndex:=Value;
       if (FItemIndex <> -1) then
-        TRadioButton (FButtonList [FItemIndex]).Checked := false;
-      FItemIndex := Value;
-      if (Value <> -1) then
-        TRadioButton (FButtonList [Value]).Checked := true;
+        TRadioButton(FButtonList[FitemIndex]).Checked := true
+      else
+        FHiddenButton.Checked:=true;
+      // this has automatically unset the old button. But they do not recognize
+      // it. Update the states.
+      UpdateRadioButtonStates;
 
       OwnerFormDesignerModified(Self);
     end
@@ -235,22 +256,7 @@ end;
   Retrieve the index of the radiobutton currently selected.
  ------------------------------------------------------------------------------}
 function TCustomRadioGroup.GetItemIndex : integer;
-var
-  i: integer;
 begin
-  if (HandleAllocated) then
-  begin
-    i := FButtonList.Count-1;
-    // This nasty little loop is neccessary because the group is not informed
-    // when a button is pressed
-    while (i>=0) do
-    begin	// find the actice button
-      if TRadioButton (FButtonList [i]).Checked
-      then break;
-      dec (i);
-    end;
-    FItemIndex := i;
-  end;
   Result := FItemIndex;
 end;
 
@@ -303,8 +309,8 @@ end;
  ------------------------------------------------------------------------------}
 Procedure TCustomRadioGroup.Clicked(Sender : TObject);
 Begin
-  GetItemIndex;
   if FCreatingWnd then exit;
+  UpdateRadioButtonStates;
   if Assigned (FOnClick) then FOnClick(Self);
 end;
 
@@ -337,7 +343,7 @@ begin
       Temp.SetBounds(nextLeft,nextTop,rbWidth,vertDist);
 
       inc (i);
-      if (i MOD FColumns) = 0 then begin
+      if (i mod FColumns) = 0 then begin
         inc(nextTop, vertDist);
         nextLeft := 10;
       end else begin
@@ -347,8 +353,24 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  procedure TCustomRadioGroup.UpdateRadioButtonStates;
+ ------------------------------------------------------------------------------}
+procedure TCustomRadioGroup.UpdateRadioButtonStates;
+var
+  i: Integer;
+begin
+  FItemIndex:=-1;
+  FHiddenButton.Checked;
+  for i:=0 to FButtonList.Count-1 do
+    if TRadioButton(FButtonList[i]).Checked then FItemIndex:=i;
+end;
+
 {
   $Log$
+  Revision 1.19  2003/03/17 20:50:30  mattias
+  fixed TRadioGroup.ItemIndex=-1
+
   Revision 1.18  2003/03/17 09:41:52  mattias
   fixed TCustomRadioGroup.SetItemIndex
 

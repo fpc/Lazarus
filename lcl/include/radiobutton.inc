@@ -53,6 +53,7 @@ constructor TRadioButton.Create(AnOwner : TComponent);
 begin
   inherited Create(AnOwner);
   fCompStyle := csRadioButton;
+  fAutoGroup:=true;
   AutoSize := True;
 end;
 
@@ -67,8 +68,37 @@ procedure TRadioButton.SetText(const Value: TCaption);
 begin
   if Text=Value then exit;
   Inherited SetText(Value);
-  RecreateWnd;
-  DoAutoSize;
+  if not (csLoading in ComponentState) then begin
+    RecreateWnd;
+    DoAutoSize;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  function TRadioButton.GetAutoGroup: boolean;
+ ------------------------------------------------------------------------------}
+function TRadioButton.GetAutoGroup: boolean;
+begin
+  Result:=fAutoGroup;
+end;
+
+{------------------------------------------------------------------------------
+  function TRadioButton.AutoGroupIsStored: boolean;
+ ------------------------------------------------------------------------------}
+function TRadioButton.AutoGroupIsStored: boolean;
+begin
+  Result:=fAutoGroup;
+end;
+
+{------------------------------------------------------------------------------
+  procedure TRadioButton.SetAutoGroup(const AValue: boolean);
+ ------------------------------------------------------------------------------}
+procedure TRadioButton.SetAutoGroup(const AValue: boolean);
+begin
+  if AValue=fAutoGroup then exit;
+  fAutoGroup:=AValue;
+  if (not HandleAllocated) or (csLoading in ComponentState) then exit;
+  SetRadioButtonGroupMode(Handle,fAutoGroup);
 end;
 
 {------------------------------------------------------------------------------
@@ -106,6 +136,9 @@ end;
 
 {
   $Log$
+  Revision 1.12  2003/03/17 20:50:30  mattias
+  fixed TRadioGroup.ItemIndex=-1
+
   Revision 1.11  2002/11/27 15:40:36  mattias
   fixed resize request
 

@@ -161,8 +161,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomCheckBox.ApplyChanges;
 begin
-  if HandleAllocated and (not (csLoading in ComponentState)) then
+  if HandleAllocated and (not (csLoading in ComponentState)) then begin
     CNSendMessage(LM_SetValue,Self,@fState);
+  end;
 end;
 
 procedure TCustomCheckBox.SetText(const Value: TCaption);
@@ -185,6 +186,9 @@ begin
 end;
 {
   $Log$
+  Revision 1.11  2003/03/17 20:50:30  mattias
+  fixed TRadioGroup.ItemIndex=-1
+
   Revision 1.10  2003/03/09 17:44:12  mattias
   finshed Make Resourcestring dialog and implemented TToggleBox
 

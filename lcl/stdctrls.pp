@@ -806,6 +806,11 @@ type
   {TRadioButton}
    
   TRadioButton = class(TCustomCheckBox)
+  private
+    fAutoGroup: boolean;
+    function AutoGroupIsStored: boolean;
+    function GetAutoGroup: boolean;
+    procedure SetAutoGroup(const AValue: boolean);
   protected
     procedure DoAutoSize; override;
     procedure SetText(const Value: TCaption); override;
@@ -813,6 +818,8 @@ type
     constructor Create (AnOwner: TComponent); override;
   published
     property Anchors;
+    property AutoGroup: boolean read GetAutoGroup write SetAutoGroup
+                                                       stored AutoGroupIsStored;
     property AutoSize;
     property AllowGrayed;
     property Caption;
@@ -1395,6 +1402,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.81  2003/03/17 20:50:30  mattias
+  fixed TRadioGroup.ItemIndex=-1
+
   Revision 1.80  2003/03/17 08:51:09  mattias
   added IsWindowVisible
 
