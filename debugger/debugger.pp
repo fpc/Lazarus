@@ -595,7 +595,6 @@ type
                      const AParams: array of const): Boolean;
     procedure SetEnvironment(const AValue: TStrings);
     procedure SetFileName(const AValue: String);
-    procedure SetWorkingDir (const AValue: String );
   protected
     function  CreateBreakPoints: TDBGBreakPoints; virtual;
     function  CreateLocals: TDBGLocals; virtual;
@@ -607,7 +606,6 @@ type
     procedure DoOutput(const AText: String);
     procedure DoState(const OldState: TDBGState); virtual;
     function  ChangeFileName: Boolean; virtual;
-    function  ChangeWorkingDir: Boolean; virtual;
     function  GetCommands: TDBGCommands;
     function  GetSupportedCommands: TDBGCommands; virtual;
     function  RequestCommand(const ACommand: TDBGCommand;
@@ -661,7 +659,7 @@ type
     property State: TDBGState read FState;                                       // The current state of the debugger
     property SupportedCommands: TDBGCommands read GetSupportedCommands;          // All available commands of the debugger
     property Watches: TDBGWatches read FWatches;                                 // list of all watches localvars etc
-    property WorkingDir: String read FWorkingDir write SetWorkingDir;            // The wirking dir of the exe being debugged
+    property WorkingDir: String read FWorkingDir write FWorkingDir;              // The wirking dir of the exe being debugged
   end;
   
 const
@@ -739,11 +737,6 @@ end;
 { =========================================================================== }
 
 function TDebugger.ChangeFileName: Boolean;
-begin
-  Result := True;
-end;
-
-function TDebugger.ChangeWorkingDir: Boolean;
 begin
   Result := True;
 end;
@@ -988,13 +981,6 @@ begin
     FWatches.DoStateChange;
     DoState(OldState);
   end;
-end;
-
-procedure TDebugger.SetWorkingDir (const AValue: String );
-begin
-  if FWorkingDir = AValue then exit;
-  FWorkingDir := AValue;
-  ChangeWorkingDir;
 end;
 
 procedure TDebugger.InitTargetStart;
@@ -2470,8 +2456,8 @@ end;
 end.
 { =============================================================================
   $Log$
-  Revision 1.40  2003/06/09 14:16:52  marc
-  MWE: + Added working dir
+  Revision 1.41  2003/06/09 14:30:47  marc
+  MWE: + Added working dir.
 
   Revision 1.39  2003/06/03 16:12:14  mattias
   fixed loading bookmarks for editor index 0
