@@ -1588,6 +1588,11 @@ end;
 
 procedure TCodeToolManager.AfterApplyingChanges;
 begin
+  // clear all codetrees of changed buffers
+  if FCurCodeTool<>nil then
+    FCurCodeTool.Clear;
+    
+  // user callback
   if Assigned(FOnAfterApplyChanges) then
     FOnAfterApplyChanges(Self);
 end;
