@@ -29,6 +29,7 @@ end;
  ------------------------------------------------------------------------------}
 Destructor TScreen.Destroy;
 begin
+  FHintFont.Free;
   FFormList.Free;
   inherited Destroy;
 end;
