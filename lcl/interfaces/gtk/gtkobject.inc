@@ -3607,7 +3607,9 @@ begin
     csMenuBar :
     begin
        P := gtk_menu_bar_new();
-       gtk_container_add(GTK_Container(GetFixedWidget(Pointer(TWinControl(TMenu(Sender).Owner).Handle))), P);
+       gtk_container_add(
+         GTK_Container(
+           GetFixedWidget(Pointer(TWinControl(TMenu(Sender).Owner).Handle))), P);
        SetAccelGroup(p, gtk_accel_group_get_default);
        gtk_widget_show(p);
     end;
@@ -3620,15 +3622,16 @@ begin
         tempInt := pos('&', Caption);
         if tempInt <> 0 then
         begin
-           StrTemp[tempInt - 1] := '_';
-           P := gtk_menu_item_new_with_label('');
-           SetAccelKey(P, gtk_label_parse_uline(PGTKLabel(PGTKBin(p)^.Child), StrTemp));
+          StrTemp[tempInt - 1] := '_';
+          P := gtk_menu_item_new_with_label('');
+          SetAccelKey(P, gtk_label_parse_uline(PGTKLabel(PGTKBin(p)^.Child), StrTemp));
         end
         else
         P := gtk_menu_item_new_with_label(Strtemp)
       end
       else
-      P := gtk_menu_item_new;
+        P := gtk_menu_item_new;
+      gtk_widget_set_sensitive(pgtkwidget(p), TMenuItem(Sender).Enabled);
 
       gtk_widget_show (p);
     end;
@@ -5279,6 +5282,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.153  2002/08/05 08:56:56  lazarus
+  MG: TMenuItems can now be enabled and disabled
+
   Revision 1.152  2002/08/05 07:43:29  lazarus
   MG: fixed BadCursor bug and Circle Reference of FixedWidget of csPanel
 
