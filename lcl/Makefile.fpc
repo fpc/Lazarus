@@ -1,9 +1,10 @@
+#   $Id$
 #
 #   Makefile.fpc for Lazarus for Free Pascal
 #
 
 [targets]
-programs=allunits
+units=allunits
 
 [require]
 options=-Ca
@@ -14,6 +15,9 @@ units=$(basename $(wildcard $(UNITTARGETDIR)/*$(PPUEXT)))
 files=$(wildcard $(UNITTARGETDIR)/*$(OEXT))
 
 [dirs]
+# target dir needs to be . or a full path otherwise the 
+# unittargetdir will be corrupt
+targetdir=.
 unittargetdir=./units
 unitdir=$(UNITTARGETDIR) . ./interfaces/$(LCLPLATFORM) 
 incdir=./include ./interfaces/$(LCLPLATFORM)
@@ -29,9 +33,11 @@ endif
 
 [defaults]
 
+
 [rules]
 cleartarget:
-        -$(DEL) allunits$(EXEEXT)
+        -$(DEL) $(UNITTARGETDIR)/allunits$(PPUEXT)
 
-all: cleartarget allunits$(EXEEXT)
-        -$(DEL) allunits$(EXEEXT)
+all: cleartarget allunits$(PPUEXT)
+        -$(DEL) $(UNITTARGETDIR)/allunits$(PPUEXT)
+
