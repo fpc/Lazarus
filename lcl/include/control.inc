@@ -2096,7 +2096,7 @@ end;
 {------------------------------------------------------------------------------
   TControl InvalidateControl
 ------------------------------------------------------------------------------}
-procedure TControl.InvalidateControl(IsVisible, IsOpaque : Boolean);
+procedure TControl.InvalidateControl(CtrlIsVisible, CtrlIsOpaque: Boolean);
 var
   Rect: TRect;
 
@@ -2132,24 +2132,24 @@ begin
   or ([csLoading,csDestroying]*ComponentState<>[])
   then exit;
 
-  if (IsVisible or (csDesigning in ComponentState)
+  if (CtrlIsVisible or (csDesigning in ComponentState)
   and not (csNoDesignVisible in ControlStyle))
   then begin
     Rect := BoundsRect;
-    InvalidateRect(Parent.Handle, @Rect, not (IsOpaque or
+    InvalidateRect(Parent.Handle, @Rect, not (CtrlIsOpaque or
       (csOpaque in Parent.ControlStyle) or BackgroundClipped));
   end;
 end;
 
 {------------------------------------------------------------------------------
-  procedure TControl.InvalidateControl(IsVisible, IsOpaque,
+  procedure TControl.InvalidateControl(CtrlIsVisible, CtrlIsOpaque,
     IgnoreWinControls: Boolean);
 ------------------------------------------------------------------------------}
-procedure TControl.InvalidateControl(IsVisible, IsOpaque,
+procedure TControl.InvalidateControl(CtrlIsVisible, CtrlIsOpaque,
   IgnoreWinControls: Boolean);
 begin
   if IgnoreWinControls and (Self is TWinControl) then exit;
-  InvalidateControl(IsVisible,IsOpaque);
+  InvalidateControl(CtrlIsVisible,CtrlIsOpaque);
 end;
 
 {------------------------------------------------------------------------------}
@@ -3190,6 +3190,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.196  2004/06/24 17:59:18  mattias
+  fixed compilation for fpc 1.0.10
+
   Revision 1.195  2004/06/20 21:21:49  micha
   fix GetVisible to return this control's visibility, instead introduce IsVisible to check for recursive visibility
 

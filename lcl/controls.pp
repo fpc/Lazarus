@@ -920,8 +920,8 @@ type
     function ChildClassAllowed(ChildClass: TClass): boolean; virtual;
     procedure Loaded; override;
     procedure AssignTo(Dest: TPersistent); override;
-    procedure InvalidateControl(IsVisible, IsOpaque : Boolean);
-    procedure InvalidateControl(IsVisible, IsOpaque, IgnoreWinControls: Boolean);
+    procedure InvalidateControl(CtrlIsVisible, CtrlIsOpaque : Boolean);
+    procedure InvalidateControl(CtrlIsVisible, CtrlIsOpaque, IgnoreWinControls: Boolean);
     procedure FontChanged(Sender: TObject); virtual;
     function GetAction: TBasicAction; virtual;
     function RealGetText: TCaption; virtual;
@@ -2322,6 +2322,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.212  2004/06/24 17:59:18  mattias
+  fixed compilation for fpc 1.0.10
+
   Revision 1.211  2004/06/20 21:21:49  micha
   fix GetVisible to return this control's visibility, instead introduce IsVisible to check for recursive visibility
 

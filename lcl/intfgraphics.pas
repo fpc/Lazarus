@@ -128,10 +128,10 @@ type
     FAlphaReadRawImageBits: TOnReadRawImageBits;
     FAlphaWriteRawImageBits: TOnWriteRawImageBits;
     procedure SetAutoCreateMask(const AValue: boolean);
-    procedure SetUsePalette (Value:boolean);override;
   protected
     OnGetInternalColor: TOnGetLazIntfImagePixel;
     OnSetInternalColor: TOnSetLazIntfImagePixel;
+    procedure SetUsePalette (Value: boolean); override;
     procedure SetInternalColor(x, y: integer; const Value: TFPColor); override;
     function GetInternalColor(x, y: integer): TFPColor; override;
     procedure SetInternalPixel (x,y:integer; Value:integer); override;
