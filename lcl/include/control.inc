@@ -622,6 +622,11 @@ begin
     Result := Width;
 end;
 
+function TControl.GetVisible: Boolean;
+begin
+  Result := FVisible and ((Parent = nil) or (Parent.Visible));
+end;
+
 {------------------------------------------------------------------------------}
 {       TControl SetTabOrder                                                   }
 {------------------------------------------------------------------------------}
@@ -3185,6 +3190,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.194  2004/06/20 20:25:47  micha
+  fix tabbing to next control to skip invisible notebook pages
+
   Revision 1.193  2004/06/17 20:52:18  mattias
   fixed setting ImageIndex when TMenuItem.ActionChange
 

@@ -172,6 +172,16 @@ begin
   DebugLn('TCustomPage.SetPageIndex Old=',dbgs(PageIndex),' New=',dbgs(AValue));
 end;
 
+function TCustomPage.GetVisible: Boolean;
+begin
+  if Parent is TCustomNotebook then
+  begin
+    Result := PageIndex = TCustomNotebook(Parent).PageIndex;
+  end else begin
+    Result := true;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   function TCustomPage.CanTab: boolean;
  ------------------------------------------------------------------------------}

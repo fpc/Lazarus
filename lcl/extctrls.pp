@@ -77,6 +77,7 @@ type
     property Flags: TPageFlags read FFlags write FFlags;
     procedure CMHitTest(var Message: TLMNCHITTEST); message CM_HITTEST;
     procedure DestroyHandle; override;
+    function GetVisible: Boolean; override;
     function GetPageIndex: integer;
     procedure SetPageIndex(AValue: Integer);
     property TabVisible: Boolean read GetTabVisible write SetTabVisible default True;
@@ -929,6 +930,9 @@ end.
 
  {
   $Log$
+  Revision 1.105  2004/06/20 20:25:47  micha
+  fix tabbing to next control to skip invisible notebook pages
+
   Revision 1.104  2004/06/01 09:58:35  mattias
   implemented setting TCustomPage.PageIndex  from Andrew Haines
 

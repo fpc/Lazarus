@@ -2064,7 +2064,7 @@ end;
 procedure TWinControl.ControlKeyDown(var Key: Word; Shift: TShiftState);
 begin
   // handle tab keys
-  if (Key=VK_Tab) and ((Shift=[]) or (Shift=[ssShift])) and Focused then begin
+  if (Key=VK_Tab) and ((Shift+[ssShift])=[ssShift]) and Focused then begin
     Key:=VK_UNKNOWN;
     PerformTab(not (ssShift in Shift));
   end;
@@ -3659,6 +3659,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.237  2004/06/20 20:25:47  micha
+  fix tabbing to next control to skip invisible notebook pages
+
   Revision 1.236  2004/06/01 09:58:35  mattias
   implemented setting TCustomPage.PageIndex  from Andrew Haines
 

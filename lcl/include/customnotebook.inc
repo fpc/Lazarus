@@ -520,6 +520,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomNotebook.SetPageIndex(AValue: Integer);
 begin
+  if (AValue < 0) or (AValue >= PageCount) then exit;
   if fPageIndex = AValue then exit;
   fPageIndex := AValue;
   UpdateAllDesignerFlags;
@@ -803,6 +804,9 @@ end;}
 { =============================================================================
 
   $Log$
+  Revision 1.50  2004/06/20 20:25:47  micha
+  fix tabbing to next control to skip invisible notebook pages
+
   Revision 1.49  2004/06/01 09:58:35  mattias
   implemented setting TCustomPage.PageIndex  from Andrew Haines
 
