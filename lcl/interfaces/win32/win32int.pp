@@ -131,8 +131,11 @@ Type
     Procedure SetLimitText(Window: HWND; Limit: Word);
 
     Procedure ShowHide(Sender: TObject);
+    procedure ChangeActivePage(const Data: TLMNotebookEvent);
+    procedure AddAllNBPages(Notebook: TCustomNotebook);
+    procedure RemoveAllNBPages(Notebook: TCustomNotebook);
     Procedure AddNBPage(Notebook: TCustomNotebook; NewPage: TCustomPage; Index: Integer);
-    Procedure RemoveNBPage(Parent: TObject; Index: Integer);
+    procedure RemoveNBPage(Notebook: TCustomNotebook; Index: Integer);
     Procedure SetText(Window: HWND; Data: Pointer);
     Procedure SetColor(Sender : TObject);
     Procedure SetPixel(Sender: TObject; Data: Pointer);
@@ -272,6 +275,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.88  2004/06/29 08:03:08  micha
+  fix showtabs for win32 interface
+
   Revision 1.87  2004/06/20 20:36:55  micha
   remove old obsolete/commented toolbutton code
   rename lazarusform classname to window, because we use it for panels, notebookpages, etc too

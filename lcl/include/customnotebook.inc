@@ -752,7 +752,7 @@ begin
   if not HandleAllocated or (csLoading in ComponentState) then exit;
   Msg.Parent := Self;
   Msg.fCompStyle := fCompStyle;
-  Msg.ShowTabs := fShowTabs or (csDesigning in ComponentState);
+  Msg.ShowTabs := fShowTabs;
   {$IFDEF NOTEBOOK_DEBUG}
   DebugLn('[TCustomNotebook.DoSendShowTabs] A ',Name);
   {$ENDIF}
@@ -804,6 +804,9 @@ end;}
 { =============================================================================
 
   $Log$
+  Revision 1.52  2004/06/29 08:03:08  micha
+  fix showtabs for win32 interface
+
   Revision 1.51  2004/06/24 17:45:33  mattias
   fixed TMenuItem.GetIconSize
 

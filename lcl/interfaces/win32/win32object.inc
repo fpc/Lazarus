@@ -411,7 +411,6 @@ Var
   S: String;
   TBB: TBBUTTON;
   WindowStyle: Integer; //used by LM_SETTABPOSITION
-  OldPageIndex: Integer; //used by LM_SETITEMINDEX of a csNotebook
   AMenu: TMenu;
   TheWinControl: TWinControl;
 
@@ -743,13 +742,17 @@ activate_time : the time at which the activation event occurred.
       End;
       LM_REMOVEPAGE:
       Begin
-        RemoveNBPage(TControl(Sender), TLMNotebookEvent(Data^).Page);
+        RemoveNBPage(Sender as TCustomNotebook, TLMNotebookEvent(Data^).Page);
       End;
       LM_SHOWTABS:
       Begin
         Result := Ord(True);
-        (Sender As TWinControl).Visible := TLMNotebookEvent(Data^).ShowTabs;
-        ShowHide(Sender);
+        if TLMNotebookEvent(Data^).ShowTabs then
+        begin
+          AddAllNBPages(Sender as TCustomNotebook);
+        end else begin
+          RemoveAllNBPages(Sender as TCustomNotebook);
+        end;
       End;
       LM_SETTABPOSITION :
       Begin
@@ -885,21 +888,7 @@ activate_time : the time at which the activation event occurred.
           csNotebook:
           Begin
             Assert(False, 'Trace:Setting Page to ' + IntToStr(TLMNotebookEvent(Data^).Page));
-            with TLMNotebookEvent(Data^) do
-            begin
-              OldPageIndex := SendMessage(Handle,TCM_GETCURSEL,0,0);
-              Windows.SendMessage(Handle,TCM_SETCURSEL, Windows.WPARAM(Page),0);
-              if not (csDestroying in (Parent as TCustomNotebook).ComponentState) then
-              begin
-                // create handle if not already done, need to show!
-                if (Page>=0) and (Page < TCustomNotebook(Parent).PageCount) then 
-                  ShowWindow(TCustomNotebook(Parent).CustomPage(Page).Handle, SW_SHOW);
-                if (OldPageIndex>=0) and (OldPageIndex<>Page)
-                and (OldPageIndex < TCustomNotebook(Parent).PageList.Count)
-                and (TCustomNotebook(Parent).CustomPage(OldPageIndex).HandleAllocated)
-                  then ShowWindow(TCustomNotebook(Parent).CustomPage(OldPageIndex).Handle, SW_HIDE);
-              end;
-            end;
+            ChangeActivePage(TLMNotebookEvent(Data^));
           End;
         End;
       End;
@@ -2671,6 +2660,91 @@ Begin
 End;
 
 { -----------------------------------------------------------------------------
+  Method: TWin32WidgetSet.AddAllNBPages
+  Params: Notebook - A notebook control
+  Returns: Nothing
+
+  Adds all pages to notebook (showtabs becomes true)
+ ------------------------------------------------------------------------------}
+procedure TWin32WidgetSet.AddAllNBPages(Notebook: TCustomNotebook);
+var
+  TCI: TC_ITEM;
+  I, Res: Integer;
+  lPage: TCustomPage;
+begin
+  for I := 0 to Notebook.PageCount - 1 do
+  begin
+    lPage := Notebook.Page[I];
+    // check if already shown
+    TCI.Mask := TCIF_PARAM;
+    Res := Windows.SendMessage(Notebook.Handle, TCM_GETITEM, I, LPARAM(@TCI));
+    if (Res = 0) or (dword(TCI.lParam) <> lPage.Handle) then
+    begin
+      TCI.Mask := TCIF_TEXT or TCIF_PARAM;
+      TCI.pszText := PChar(lPage.Caption);
+      TCI.lParam := lPage.Handle;
+      Windows.SendMessage(Notebook.Handle, TCM_INSERTITEM, I, LPARAM(@TCI));
+    end;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TWin32WidgetSet.RemoveAllNBPages
+  Params: Notebook - The notebook control
+  Returns: Nothing
+
+  Removes all pages from a notebook control (showtabs becomes false)
+ ------------------------------------------------------------------------------}
+procedure TWin32WidgetSet.RemoveAllNBPages(Notebook: TCustomNotebook);
+var
+  I: Integer;
+  R: TRect;
+begin
+  for I := Notebook.PageCount - 1 downto 0 do
+    RemoveNBPage(Notebook, I);
+  // Adjust page size to fit in tabcontrol, need bounds of notebook in client of parent
+  Self.GetClientRect(Notebook.Handle, R);
+  R.Right := R.Right - R.Left;
+  R.Bottom := R.Bottom - R.Top;
+  for I := 0 to Notebook.PageCount - 1 do
+    ResizeChild(Notebook.Page[I], R.Left, R.Top, R.Right, R.Bottom);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TWin32WidgetSet.ChangeActivePage
+  Params: Data - The notebook setitemindex message
+  Returns: Nothing
+
+  Changes the active page to one specified in data
+ ------------------------------------------------------------------------------}
+procedure TWin32WidgetSet.ChangeActivePage(const Data: TLMNotebookEvent);
+var
+  OldPageIndex: Integer;
+  PageHandle: HWND;
+  Handle: HWND;
+begin
+  with Data do
+  begin
+    Handle := TWinControl(Parent).Handle;
+    OldPageIndex := SendMessage(Handle, TCM_GETCURSEL, 0, 0);
+    Windows.SendMessage(Handle, TCM_SETCURSEL, Windows.WPARAM(Page), 0);
+    if not (csDestroying in (Parent as TCustomNotebook).ComponentState) then
+    begin
+      // create handle if not already done, need to show!
+      if (Page>=0) and (Page < TCustomNotebook(Parent).PageCount) then
+      begin
+        PageHandle := TCustomNotebook(Parent).CustomPage(Page).Handle;
+        SetWindowPos(PageHandle, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW);
+      end;
+      if (OldPageIndex>=0) and (OldPageIndex<>Page)
+      and (OldPageIndex < TCustomNotebook(Parent).PageList.Count)
+      and (TCustomNotebook(Parent).CustomPage(OldPageIndex).HandleAllocated)
+        then ShowWindow(TCustomNotebook(Parent).CustomPage(OldPageIndex).Handle, SW_HIDE);
+    end;
+  end;
+end;
+
+{ -----------------------------------------------------------------------------
   Method: TWin32WidgetSet.AddNBPage
   Params: Notebook - A notebook control
           NewPage - Page to insert
@@ -2714,10 +2788,10 @@ End;
 
   Removes a page from a notebook control
  ------------------------------------------------------------------------------}
-Procedure TWin32WidgetSet.RemoveNBPage(Parent: TObject; Index: Integer);
+procedure TWin32WidgetSet.RemoveNBPage(Notebook: TCustomNotebook; Index: Integer);
 Begin
   Assert(false, 'Trace:Removing a notebook page');
-  Windows.SendMessage((Parent As TCustomNotebook).Handle, TCM_DELETEITEM, Windows.WPARAM(Index), 0);
+  Windows.SendMessage(Notebook.Handle, TCM_DELETEITEM, Windows.WPARAM(Index), 0);
 End;
 
 {------------------------------------------------------------------------------
@@ -3237,6 +3311,9 @@ End;
 
 {
   $Log$
+  Revision 1.215  2004/06/29 08:03:08  micha
+  fix showtabs for win32 interface
+
   Revision 1.214  2004/06/20 21:21:49  micha
   fix GetVisible to return this control's visibility, instead introduce IsVisible to check for recursive visibility
 
