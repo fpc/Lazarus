@@ -84,6 +84,12 @@ type
     procedure OnApplicationIdle(Sender: TObject);
   private
     function DoShowSavePackageAsDialog(APackage: TLazPackage): TModalResult;
+    function CompileRequiredPackages(APackage: TLazPackage): TModalResult;
+    function CheckPackageGraphForCompilation(APackage: TLazPackage): TModalResult;
+    function DoPreparePackageOutputDirectory(APackage: TLazPackage): TModalResult;
+    function DoSavePackageCompiledState(APackage: TLazPackage;
+      const CompilerFilename, CompilerParams: string): TModalResult;
+    function CheckIfPackageNeedsCompilation(APackage: TLazPackage): boolean;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -96,7 +102,7 @@ type
 
     procedure LoadInstalledPackages; override;
     function AddPackageToGraph(APackage: TLazPackage): TModalResult;
-
+    
     function ShowConfigureCustomComponents: TModalResult; override;
     function DoNewPackage: TModalResult; override;
     function DoShowOpenInstalledPckDlg: TModalResult; override;
@@ -159,7 +165,7 @@ var
   Flags: TPkgCompileFlags;
 begin
   Flags:=[];
-  if CompileAll then Include(Flags,pcfCompileAll);
+  if CompileAll then Include(Flags,pcfCleanCompile);
   Result:=DoCompilePackage(APackage,Flags);
 end;
 
@@ -523,6 +529,197 @@ begin
 
   // success
   Result:=mrOk;
+end;
+
+function TPkgManager.CompileRequiredPackages(APackage: TLazPackage
+  ): TModalResult;
+var
+  AutoPackages: TList;
+  i: Integer;
+begin
+  AutoPackages:=PackageGraph.GetAutoCompilationOrder(APackage);
+  if AutoPackages<>nil then begin
+    try
+      i:=0;
+      while i<AutoPackages.Count do begin
+        Result:=DoCompilePackage(TLazPackage(AutoPackages[i]),
+                      [pcfDoNotCompileDependencies,pcfOnlyIfNeeded,
+                       pcfAutomatic]);
+        if Result<>mrOk then exit;
+        inc(i);
+      end;
+    finally
+      AutoPackages.Free;
+    end;
+  end;
+  Result:=mrOk;
+end;
+
+function TPkgManager.CheckPackageGraphForCompilation(APackage: TLazPackage
+  ): TModalResult;
+var
+  PathList: TList;
+begin
+  // check for broken dependencies
+  PathList:=PackageGraph.FindBrokenDependencyPath(APackage);
+  if PathList<>nil then begin
+    DoShowPackageGraphPathList(PathList);
+    Result:=MessageDlg('Broken dependency',
+      'A required packages was not found. See package graph.',
+      mtError,[mbCancel,mbAbort],0);
+    exit;
+  end;
+
+  // check for circle dependencies
+  PathList:=PackageGraph.FindCircleDependencyPath(APackage);
+  if PathList<>nil then begin
+    DoShowPackageGraphPathList(PathList);
+    Result:=MessageDlg('Circle in package dependencies',
+      'There is a circle in the required packages. See package graph.',
+      mtError,[mbCancel,mbAbort],0);
+    exit;
+  end;
+  
+  Result:=mrOk;
+end;
+
+function TPkgManager.DoSavePackageCompiledState(APackage: TLazPackage;
+  const CompilerFilename, CompilerParams: string): TModalResult;
+var
+  XMLConfig: TXMLConfig;
+  StateFile: String;
+begin
+  StateFile:=APackage.GetStateFilename;
+  try
+    ClearFile(StateFile,true);
+    XMLConfig:=TXMLConfig.Create(StateFile);
+    try
+      XMLConfig.SetValue('Compiler/Value',CompilerFilename);
+      XMLConfig.SetValue('Params/Value',CompilerParams);
+      XMLConfig.Flush;
+    finally
+      XMLConfig.Free;
+    end;
+    APackage.LastCompilerFilename:=CompilerFilename;
+    APackage.LastCompilerParams:=CompilerParams;
+    APackage.StateFileDate:=FileAge(StateFile);
+    APackage.Flags:=APackage.Flags+[lpfStateFileLoaded];
+  except
+    on E: Exception do begin
+      Result:=MessageDlg('Error writing file',
+        'Unable to write state file "'+StateFile+'"'#13
+        +'of package '+APackage.IDAsString+'.',
+        mtError,[mbAbort,mbCancel],0);
+      exit;
+    end;
+  end;
+
+  Result:=MainIDE.DoDeleteAmbigiousFiles(StateFile);
+  if Result<>mrOk then exit;
+end;
+
+function TPkgManager.DoPreparePackageOutputDirectory(APackage: TLazPackage
+  ): TModalResult;
+var
+  OutputDir: String;
+  StateFile: String;
+begin
+  OutputDir:=APackage.GetOutputDirectory;
+  StateFile:=APackage.GetStateFilename;
+
+  // create the output directory
+  if not ForceDirectory(OutputDir) then begin
+    Result:=MessageDlg('Unable to create directory',
+      'Unable to create output directory "'+OutputDir+'"'#13
+      +'for package '+APackage.IDAsString+'.',
+      mtError,[mbCancel,mbAbort],0);
+    exit;
+  end;
+
+  // delete old Compile State file
+  if FileExists(StateFile) and not DeleteFile(StateFile) then begin
+    Result:=MessageDlg('Unable to delete file',
+      'Unable to delete old state file "'+StateFile+'"'#13
+      +'for package '+APackage.IDAsString+'.',
+      mtError,[mbCancel,mbAbort],0);
+    exit;
+  end;
+  APackage.Flags:=APackage.Flags-[lpfStateFileLoaded];
+  
+  Result:=mrOk;
+end;
+
+function TPkgManager.CheckIfPackageNeedsCompilation(APackage: TLazPackage
+  ): boolean;
+var
+  OutputDir: String;
+  SrcFilename: String;
+  CompilerFilename: String;
+  CompilerParams: String;
+  StateFilename: String;
+  StateFileAge: Integer;
+  i: Integer;
+  XMLConfig: TXMLConfig;
+  CurFile: TPkgFile;
+begin
+  Result:=true;
+
+writeln('TPkgManager.CheckIfPackageNeedsCompilation A ',APackage.IDAsString);
+  // check state file
+  StateFilename:=APackage.GetStateFilename;
+  if not FileExists(StateFilename) then exit;
+
+  StateFileAge:=FileAge(StateFilename);
+  
+  // read the state file
+  if (not (lpfStateFileLoaded in APackage.Flags))
+  or (APackage.StateFileDate<>StateFileAge) then begin
+    try
+      XMLConfig:=TXMLConfig.Create(StateFilename);
+      try
+        APackage.LastCompilerFilename:=
+          XMLConfig.GetValue('Compiler/Value','');
+        APackage.LastCompilerParams:=
+          XMLConfig.GetValue('Params/Value','');
+      finally
+        XMLConfig.Free;
+      end;
+      APackage.StateFileDate:=StateFileAge;
+    except
+      on E: Exception do begin
+        MessageDlg('Error reading file',
+          'Unable to read state file "'+StateFilename+'"'#13
+          +'of package '+APackage.IDAsString+'.',
+          mtError,[mbCancel],0);
+        exit;
+      end;
+    end;
+    APackage.Flags:=APackage.Flags+[lpfStateFileLoaded];
+  end;
+  
+  OutputDir:=APackage.GetOutputDirectory;
+  SrcFilename:=OutputDir+APackage.GetCompileSourceFilename;
+  CompilerFilename:=APackage.GetCompilerFilename;
+  CompilerParams:=APackage.CompilerOptions.MakeOptionsString(
+                               APackage.CompilerOptions.DefaultMakeOptionsFlags)
+                 +' '+CreateRelativePath(SrcFilename,APackage.Directory);
+
+  // check compiler command
+  if CompilerFilename<>APackage.LastCompilerFilename then exit;
+  if CompilerParams<>APackage.LastCompilerParams then exit;
+  
+  // check main source file
+  if StateFileAge<FileAge(SrcFilename) then exit;
+  
+  // check package files
+  for i:=0 to APackage.FileCount-1 do begin
+    CurFile:=APackage.Files[i];
+    if FileExists(CurFile.Filename)
+    and (StateFileAge<FileAge(CurFile.Filename)) then exit;
+  end;
+
+writeln('TPkgManager.CheckIfPackageNeedsCompilation END ',APackage.IDAsString);
+  Result:=false;
 end;
 
 constructor TPkgManager.Create(TheOwner: TComponent);
@@ -904,79 +1101,88 @@ end;
 function TPkgManager.DoCompilePackage(APackage: TLazPackage;
   Flags: TPkgCompileFlags): TModalResult;
 var
-  PathList: TList;
   PkgCompileTool: TExternalToolOptions;
   OutputDir: String;
   SrcFilename: String;
+  CompilerFilename: String;
+  CompilerParams: String;
 begin
   Result:=mrCancel;
   
+writeln('TPkgManager.DoCompilePackage A ',APackage.IDAsString,' Flags=',PkgCompileFlagsToString(Flags));
+  
   if APackage.AutoCreated then exit;
 
-  // check for broken dependencies
-  PathList:=PackageGraph.FindBrokenDependencyPath(APackage);
-  if PathList<>nil then begin
-    DoShowPackageGraphPathList(PathList);
-    Result:=MessageDlg('Broken dependency',
-      'A required packages was not found. See package graph.',
-      mtError,[mbCancel,mbAbort],0);
-    exit;
+  // check graph for circles and broken dependencies
+  if not (pcfDoNotCompileDependencies in Flags) then begin
+    Result:=CheckPackageGraphForCompilation(APackage);
+    if Result<>mrOk then exit;
   end;
   
-  // check for circle dependencies
-  PathList:=PackageGraph.FindCircleDependencyPath(APackage);
-  if PathList<>nil then begin
-    DoShowPackageGraphPathList(PathList);
-    Result:=MessageDlg('Circle in package dependencies',
-      'There is a circle in the required packages. See package graph.',
-      mtError,[mbCancel,mbAbort],0);
-    exit;
+  // save all open files
+  if not (pcfAutomatic in Flags) then begin
+    Result:=MainIDE.DoSaveForBuild;
+    if Result<>mrOk then exit;
   end;
-  
-  // create the output directory
-  OutputDir:=APackage.GetOutputDirectory;
-  if not ForceDirectory(OutputDir) then begin
-    Result:=MessageDlg('Unable to create directory',
-      'Unable to create output directory "'+OutputDir+'"'#13
-      +'for package '+APackage.IDAsString+'.',
-      mtError,[mbCancel,mbAbort],0);
+
+  // automatically compile required packages
+  if not (pcfDoNotCompileDependencies in Flags) then begin
+    Result:=CompileRequiredPackages(APackage);
+    if Result<>mrOk then exit;
+  end;
+
+  // check if compilation is neccessary
+  if ([pcfOnlyIfNeeded,pcfCleanCompile]*Flags<>[])
+  and (not CheckIfPackageNeedsCompilation(APackage)) then begin
+    Result:=mrOk;
     exit;
   end;
 
-  // save everything
-  Result:=MainIDE.DoSaveForBuild;
+  Result:=DoPreparePackageOutputDirectory(APackage);
   if Result<>mrOk then exit;
-  
-  // update dependencies
-  
-  // ToDo
-  
-  
+    
   // create package main source file
   Result:=DoSavePackageMainSource(APackage,Flags);
   if Result<>mrOk then exit;
-  SrcFilename:=CreateRelativePath(OutputDir+APackage.GetCompileSourceFilename,
-                                  APackage.Directory);
 
   // create external tool to run the compiler
+  OutputDir:=APackage.GetOutputDirectory;
+  SrcFilename:=CreateRelativePath(OutputDir+APackage.GetCompileSourceFilename,
+                                  APackage.Directory);
+  CompilerFilename:=APackage.GetCompilerFilename;
+  CompilerParams:=APackage.CompilerOptions.MakeOptionsString(
+                               APackage.CompilerOptions.DefaultMakeOptionsFlags)
+                 +' '+SrcFilename;
+
   PkgCompileTool:=TExternalToolOptions.Create;
-  PkgCompileTool.Title:='Compiling package '+APackage.IDAsString;
-  PkgCompileTool.Filename:=APackage.CompilerOptions.CompilerPath;
-  PkgCompileTool.ScanOutputForFPCMessages:=true;
-  PkgCompileTool.ScanOutputForMakeMessages:=true;
-  PkgCompileTool.WorkingDirectory:=APackage.Directory;
-  PkgCompileTool.CmdLineParams:=APackage.CompilerOptions.MakeOptionsString
-                                +' '+SrcFilename;
+  try
+    PkgCompileTool.Title:='Compiling package '+APackage.IDAsString;
+    PkgCompileTool.Filename:=CompilerFilename;
+    PkgCompileTool.ScanOutputForFPCMessages:=true;
+    PkgCompileTool.ScanOutputForMakeMessages:=true;
+    PkgCompileTool.WorkingDirectory:=APackage.Directory;
+    PkgCompileTool.CmdLineParams:=CompilerParams;
 
-  // clear old errors
-  SourceNotebook.ClearErrorLines;
+    // clear old errors
+    SourceNotebook.ClearErrorLines;
 
-  // compile package
-  Result:=EnvironmentOptions.ExternalTools.Run(PkgCompileTool,MainIDE.MacroList);
+    // compile package
+    Result:=EnvironmentOptions.ExternalTools.Run(PkgCompileTool,MainIDE.MacroList);
+    if Result=mrOk then begin
+      // compilation succeded -> write state file
+      Result:=DoSavePackageCompiledState(APackage,
+                                         CompilerFilename,CompilerParams);
+      if Result<>mrOk then exit;
+    end;
+  finally
+    // clean up
+    PkgCompileTool.Free;
 
-  // clean up
-  PkgCompileTool.Free;
-  MainIDE.DoCheckFilesOnDisk;
+    if not (pcfAutomatic in Flags) then begin
+      // check for changed files on disk
+      MainIDE.DoCheckFilesOnDisk;
+    end;
+  end;
 
   Result:=mrOk;
 end;

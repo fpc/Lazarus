@@ -337,8 +337,9 @@ type
                        //    package requires this package)
     lpfVisited,        // Used by the PackageGraph to avoid double checking
     lpfDestroying,     // set during destruction
-    lpfSkipSaving,
-    lpfCircle
+    lpfSkipSaving,     // Used by PkgBoss to skip saving
+    lpfCircle,         // Used by the PackageGraph to mark circles
+    lpfStateFileLoaded // state file data valid
     );
   TLazPackageFlags = set of TLazPackageFlag;
   
@@ -372,6 +373,8 @@ type
     FFlags: TLazPackageFlags;
     FIconFile: string;
     FInstalled: TPackageInstallType;
+    FLastCompilerFilename: string;
+    FLastCompilerParams: string;
     FMacros: TTransferMacroList;
     FModifiedLock: integer;
     FPackageEditor: TBasePackageEditor;
@@ -379,6 +382,7 @@ type
     FReadOnly: boolean;
     FRemovedFiles: TList; // TList of TPkgFile
     FRegistered: boolean;
+    FStateFileDate: longint;
     FUsageOptions: TPkgAdditionalCompilerOptions;
     function GetAutoIncrementVersionOnBuild: boolean;
     function GetAutoUpdate: boolean;
@@ -429,6 +433,8 @@ type
     procedure GetInheritedCompilerOptions(var OptionsList: TList);
     function GetCompileSourceFilename: string;
     function GetOutputDirectory: string;
+    function GetStateFilename: string;
+    function GetCompilerFilename: string;
     // files
     function FindPkgFile(const AFilename: string;
                          ResolveLinks, IgnoreRemoved: boolean): TPkgFile;
@@ -491,13 +497,18 @@ type
     property Flags: TLazPackageFlags read FFlags write SetFlags;
     property IconFile: string read FIconFile write SetIconFile;
     property Installed: TPackageInstallType read FInstalled write SetInstalled;
-    property Registered: boolean read FRegistered write SetRegistered;
+    property LastCompilerFilename: string read FLastCompilerFilename
+                                          write FLastCompilerFilename;
+    property LastCompilerParams: string read FLastCompilerParams
+                                        write FLastCompilerParams;
+    property Macros: TTransferMacroList read FMacros;
     property Modified: boolean read GetModified write SetModified;
     property PackageType: TLazPackageType read FPackageType write SetPackageType;
     property ReadOnly: boolean read FReadOnly write SetReadOnly;
+    property Registered: boolean read FRegistered write SetRegistered;
     property RemovedFilesCount: integer read GetRemovedCount;
     property RemovedFiles[Index: integer]: TPkgFile read GetRemovedFiles;
-    property Macros: TTransferMacroList read FMacros;
+    property StateFileDate: longint read FStateFileDate write FStateFileDate;
     property UsageOptions: TPkgAdditionalCompilerOptions
       read FUsageOptions;
   end;
@@ -529,7 +540,8 @@ const
     'RunTime', 'DesignTime', 'RunAndDesignTime');
   LazPackageFlagNames: array[TLazPackageFlag] of string = (
     'lpfAutoIncrementVersionOnBuild', 'lpfModified', 'lpfAutoUpdate',
-    'lpfNeeded', 'lpfVisited', 'lpfDestroying', 'lpfSkipSaving', 'lpfCircle');
+    'lpfNeeded', 'lpfVisited', 'lpfDestroying', 'lpfSkipSaving', 'lpfCircle',
+    'lpfStateFileLoaded');
     
 var
   // All TPkgDependency are added to this AVL tree (sorted for names, not version!)
@@ -1499,6 +1511,7 @@ begin
   FCompilerOptions:=TPkgCompilerOptions.Create(Self);
   FCompilerOptions.ParsedOpts.OnLocalSubstitute:=@SubstitutePkgMacro;
   FCompilerOptions.ParsedOpts.InvalidateGraphOnChange:=true;
+  FCompilerOptions.DefaultMakeOptionsFlags:=[ccloNoLinkerOpts];
   FUsageOptions:=TPkgAdditionalCompilerOptions.Create(Self);
   FUsageOptions.ParsedOpts.OnLocalSubstitute:=@SubstitutePkgMacro;
   Clear;
@@ -2070,6 +2083,17 @@ begin
     Result:=CompilerOptions.ParsedOpts.GetParsedValue(pcosOutputDir);
   end else
     Result:='';
+end;
+
+function TLazPackage.GetStateFilename: string;
+begin
+  Result:=GetOutputDirectory
+          +ChangeFileExt(GetCompileSourceFilename,'.compiled');
+end;
+
+function TLazPackage.GetCompilerFilename: string;
+begin
+  Result:=CompilerOptions.ParsedOpts.GetParsedValue(pcosCompilerPath);
 end;
 
 { TPkgComponent }

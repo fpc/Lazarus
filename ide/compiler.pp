@@ -133,7 +133,7 @@ begin
     if BuildAll then
       CmdLine := CmdLine+' -B';
     CmdLine := CmdLine
-               + ' '+ AProject.CompilerOptions.MakeOptionsString(ProjectFilename)
+               + ' '+ AProject.CompilerOptions.MakeOptionsString(ProjectFilename,[])
                + ' '+ PrepareCmdLineOption(ProjectFilename);
     if Assigned(FOnCmdLineCreate) then begin
       Abort:=false;
@@ -190,6 +190,9 @@ end.
 
 {
   $Log$
+  Revision 1.41  2003/04/17 18:56:10  mattias
+  implemented compilation of dependencies
+
   Revision 1.40  2003/03/13 23:27:22  mattias
   localized codetools options
 

@@ -2548,6 +2548,7 @@ begin
       +'designer'+ds+'jitform;'
       +'debugger;'
       +'packager;'
+      +'packager'+ds+'registration;'
       +'components'+ds+'synedit;'
       +'components'+ds+'codetools;'
       +'components'+ds+'custom;'
@@ -2629,7 +2630,8 @@ begin
   DirTempl.AddChild(TDefineTemplate.Create('components path addition',
     Format(ctsAddsDirToSourcePath,['synedit']),
     ExternalMacroStart+'SrcPath',
-      '..'+ds+'components'+ds+'synedit;'
+       'registration;'
+      +'..'+ds+'components'+ds+'synedit;'
       +'..'+ds+'components'+ds+'codetools;'
       +'..'+ds+'components'+ds+'custom;'
       +SrcPath

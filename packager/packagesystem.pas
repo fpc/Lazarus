@@ -154,6 +154,7 @@ type
     procedure MarkNeededPackages;
     function FindBrokenDependencyPath(APackage: TLazPackage): TList;
     function FindCircleDependencyPath(APackage: TLazPackage): TList;
+    function GetAutoCompilationOrder(APackage: TLazPackage): TList;
   public
     // packages handling
     function CreateNewPackage(const Prefix: string): TLazPackage;
@@ -1034,6 +1035,40 @@ begin
     Pkg.Flags:=Pkg.Flags-[lpfVisited,lpfCircle];
   end;
   FindCircle(APackage,Result);
+end;
+
+function TLazPackageGraph.GetAutoCompilationOrder(APackage: TLazPackage
+  ): TList;
+  
+  procedure GetTopologicalOrder(const FirstDependency: TPkgDependency);
+  var
+    Dependency: TPkgDependency;
+    RequiredPackage: TLazPackage;
+  begin
+    Dependency:=FirstDependency;
+    while Dependency<>nil do begin
+      if Dependency.LoadPackageResult=lprSuccess then begin
+        RequiredPackage:=Dependency.RequiredPackage;
+        if not (lpfVisited in RequiredPackage.Flags) then begin
+          RequiredPackage.Flags:=RequiredPackage.Flags+[lpfVisited];
+          if RequiredPackage.AutoUpdate then begin
+            // add first all needed packages
+            GetTopologicalOrder(RequiredPackage.FirstRequiredDependency);
+            // then add this package
+            if Result=nil then Result:=TList.Create;
+            Result.Add(RequiredPackage);
+          end;
+        end;
+      end;
+      Dependency:=Dependency.NextRequiresDependency;
+    end;
+  end;
+  
+begin
+  Result:=nil;
+  MarkAllPackagesAsNotVisited;
+  APackage.Flags:=APackage.Flags+[lpfVisited];
+  GetTopologicalOrder(APackage.FirstRequiredDependency);
 end;
 
 procedure TLazPackageGraph.MarkAllPackagesAsNotVisited;

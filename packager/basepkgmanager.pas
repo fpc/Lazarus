@@ -59,7 +59,10 @@ type
   TPkgOpenFlags = set of TPkgOpenFlag;
 
   TPkgCompileFlag = (
-    pcfCompileAll
+    pcfCleanCompile,  // append -B to the compiler options
+    pcfDoNotCompileDependencies,
+    pcfOnlyIfNeeded,
+    pcfAutomatic
     );
   TPkgCompileFlags = set of TPkgCompileFlag;
 
@@ -92,8 +95,68 @@ type
 
 var
   PkgBoss: TBasePkgManager;
+  
+const
+  PkgSaveFlagNames: array[TPkgSaveFlag] of string = (
+    'psfSaveAs',
+    'psfAskBeforeSaving'
+    );
+
+  PkgOpenFlagNames: array[TPkgOpenFlag] of string = (
+    'pofAddToRecent'
+    );
+
+  PkgCompileFlagNames: array[TPkgCompileFlag] of string = (
+    'pcfCleanCompile',
+    'pcfDoNotCompileDependencies',
+    'pcfOnlyIfNeeded',
+    'pcfAutomatic'
+    );
+
+function PkgSaveFlagsToString(Flags: TPkgSaveFlags): string;
+function PkgOpenFlagsToString(Flags: TPkgOpenFlags): string;
+function PkgCompileFlagsToString(Flags: TPkgCompileFlags): string;
 
 implementation
+
+function PkgSaveFlagsToString(Flags: TPkgSaveFlags): string;
+var
+  f: TPkgSaveFlag;
+begin
+  Result:='';
+  for f:=Low(TPkgSaveFlag) to High(TPkgSaveFlag) do begin
+    if not (f in Flags) then continue;
+    if Result<>'' then Result:=Result+',';
+    Result:=Result+PkgSaveFlagNames[f];
+  end;
+  Result:='['+Result+']';
+end;
+
+function PkgOpenFlagsToString(Flags: TPkgOpenFlags): string;
+var
+  f: TPkgOpenFlag;
+begin
+  Result:='';
+  for f:=Low(TPkgOpenFlag) to High(TPkgOpenFlag) do begin
+    if not (f in Flags) then continue;
+    if Result<>'' then Result:=Result+',';
+    Result:=Result+PkgOpenFlagNames[f];
+  end;
+  Result:='['+Result+']';
+end;
+
+function PkgCompileFlagsToString(Flags: TPkgCompileFlags): string;
+var
+  f: TPkgCompileFlag;
+begin
+  Result:='';
+  for f:=Low(TPkgCompileFlag) to High(TPkgCompileFlag) do begin
+    if not (f in Flags) then continue;
+    if Result<>'' then Result:=Result+',';
+    Result:=Result+PkgCompileFlagNames[f];
+  end;
+  Result:='['+Result+']';
+end;
 
 initialization
   PkgBoss:=nil;

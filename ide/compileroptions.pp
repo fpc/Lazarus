@@ -116,10 +116,16 @@ type
 
 
   { TBaseCompilerOptions }
+  
+  TCompilerCmdLineOption = (
+    ccloNoLinkerOpts  // exclude linker options
+    );
+  TCompilerCmdLineOptions = set of TCompilerCmdLineOption;
 
   TBaseCompilerOptions = class
   private
     FBaseDirectory: string;
+    FDefaultMakeOptionsFlags: TCompilerCmdLineOptions;
     fInheritedOptions: array[TInheritedCompilerOption] of string;
     fInheritedOptParseStamps: integer;
     fInheritedOptGraphStamps: integer;
@@ -211,6 +217,7 @@ type
     fAdditionalConfigFile: Boolean;
     fConfigFilePath: String;
     fCustomOptions: string;
+    procedure SetDefaultMakeOptionsFlags(const AValue: TCompilerCmdLineOptions);
   protected
     procedure SetBaseDirectory(const AValue: string); virtual;
     procedure SetCompilerPath(const AValue: String); virtual;
@@ -239,8 +246,9 @@ type
     procedure Assign(CompOpts: TBaseCompilerOptions); virtual;
     function IsEqual(CompOpts: TBaseCompilerOptions): boolean; virtual;
     
-    function MakeOptionsString: String;
-    function MakeOptionsString(const MainSourceFileName: string): String; virtual;
+    function MakeOptionsString(Flags: TCompilerCmdLineOptions): String;
+    function MakeOptionsString(const MainSourceFileName: string;
+      Flags: TCompilerCmdLineOptions): String; virtual;
     function CustomOptionsAsString: string;
     function ConvertSearchPathToCmdLine(const switch, paths: String): String;
     function ConvertOptionsToCmdLine(const Delim, Switch, OptionStr: string): string;
@@ -253,6 +261,7 @@ type
     function MergeLinkerOptions(const OldOptions, AddOptions: string): string;
     function MergeCustomOptions(const OldOptions, AddOptions: string): string;
     function GetDefaultMainSourceFileName: string; virtual;
+    function NeedsLinkerOpts: boolean;
   public
     { Properties }
     property Owner: TObject read fOwner write fOwner;
@@ -261,6 +270,7 @@ type
     property ParsedOpts: TParsedCompilerOptions read FParsedOpts;
     property BaseDirectory: string read FBaseDirectory write SetBaseDirectory;
     property TargetFilename: String read fTargetFilename write fTargetFilename;
+    property DefaultMakeOptionsFlags: TCompilerCmdLineOptions read FDefaultMakeOptionsFlags write SetDefaultMakeOptionsFlags;
 
     property XMLFile: String read fXMLFile write fXMLFile;
     property XMLConfigFile: TXMLConfig read xmlconfig write xmlconfig;
@@ -733,6 +743,13 @@ begin
   ParsedOpts.SetUnparsedValue(pcosCompilerPath,fCompilerPath);
 end;
 
+procedure TBaseCompilerOptions.SetDefaultMakeOptionsFlags(
+  const AValue: TCompilerCmdLineOptions);
+begin
+  if FDefaultMakeOptionsFlags=AValue then exit;
+  FDefaultMakeOptionsFlags:=AValue;
+end;
+
 procedure TBaseCompilerOptions.SetBaseDirectory(const AValue: string);
 begin
   if FBaseDirectory=AValue then exit;
@@ -1160,20 +1177,26 @@ begin
   Result:='';
 end;
 
+function TBaseCompilerOptions.NeedsLinkerOpts: boolean;
+begin
+  Result:=not (ccloNoLinkerOpts in fDefaultMakeOptionsFlags);
+end;
+
 {------------------------------------------------------------------------------
   TBaseCompilerOptions MakeOptionsString
 ------------------------------------------------------------------------------}
-function TBaseCompilerOptions.MakeOptionsString: String;
+function TBaseCompilerOptions.MakeOptionsString(Flags: TCompilerCmdLineOptions
+  ): String;
 begin
-  Result:=MakeOptionsString(GetDefaultMainSourceFileName)
+  Result:=MakeOptionsString(GetDefaultMainSourceFileName,Flags);
 end;
 
 {------------------------------------------------------------------------------
   function TBaseCompilerOptions.MakeOptionsString(
-    const MainSourceFilename: string): String;
+    const MainSourceFilename: string; Flags: TCompilerCmdLineOptions): String;
 ------------------------------------------------------------------------------}
 function TBaseCompilerOptions.MakeOptionsString(
-  const MainSourceFilename: string): String;
+  const MainSourceFilename: string; Flags: TCompilerCmdLineOptions): String;
 var
   switches, tempsw: String;
   InhLinkerOpts: String;
@@ -1509,7 +1532,7 @@ Processor specific options:
     switches := switches + ' -gl';
 
   { Use Heaptrc Unit }
-  if (UseHeaptrc) then
+  if (UseHeaptrc) and (not (ccloNoLinkerOpts in Flags)) then
     switches := switches + ' -gh';
 
   { Generate code gprof }
@@ -1517,7 +1540,7 @@ Processor specific options:
     switches := switches + ' -pg';
 
   { Strip Symbols }
-  if (StripSymbols) then
+  if (StripSymbols) and (not (ccloNoLinkerOpts in Flags)) then
     switches := switches + ' -Xs';
 
   { Link Style
@@ -1525,23 +1548,26 @@ Processor specific options:
      -XS = Link with static libraries 
      -XX = Link smart
   }
-  case (LinkStyle) of
-    1:  switches := switches + ' -XD';
-    2:  switches := switches + ' -XS';
-    3:  switches := switches + ' -XX';
-  end;
+  if (not (ccloNoLinkerOpts in Flags)) then
+    case (LinkStyle) of
+      1:  switches := switches + ' -XD';
+      2:  switches := switches + ' -XS';
+      3:  switches := switches + ' -XX';
+    end;
 
   // additional Linker options
-  if PassLinkerOptions then begin
+  if PassLinkerOptions and (not (ccloNoLinkerOpts in Flags)) then begin
     CurLinkerOptions:=ParsedOpts.GetParsedValue(pcosLinkerOptions);
     if (CurLinkerOptions<>'') then
       switches := switches + ' ' + ConvertOptionsToCmdLine(' ','-k', CurLinkerOptions);
   end;
 
   // inherited Linker options
-  InhLinkerOpts:=GetInheritedOption(icoLinkerOptions,true);
-  if InhLinkerOpts<>'' then
-    switches := switches + ' ' + ConvertOptionsToCmdLine(' ','-k', InhLinkerOpts);
+  if (not (ccloNoLinkerOpts in Flags)) then begin
+    InhLinkerOpts:=GetInheritedOption(icoLinkerOptions,true);
+    if InhLinkerOpts<>'' then
+      switches := switches + ' ' + ConvertOptionsToCmdLine(' ','-k', InhLinkerOpts);
+  end;
 
   { ---------------- Other Tab -------------------- }
 
@@ -1617,14 +1643,18 @@ Processor specific options:
     switches := switches + ' ' + ConvertSearchPathToCmdLine('-Fi', InhIncludePath);
 
   // library path
-  CurLibraryPath:=ParsedOpts.GetParsedValue(pcosLibraryPath);
-  if (CurLibraryPath <> '') then
-    switches := switches + ' ' + ConvertSearchPathToCmdLine('-Fl', CurLibraryPath);
+  if (not (ccloNoLinkerOpts in Flags)) then begin
+    CurLibraryPath:=ParsedOpts.GetParsedValue(pcosLibraryPath);
+    if (CurLibraryPath <> '') then
+      switches := switches + ' ' + ConvertSearchPathToCmdLine('-Fl', CurLibraryPath);
+  end;
     
   // inherited library path
-  InhLibraryPath:=GetInheritedOption(icoLibraryPath,true);
-  if (InhLibraryPath <> '') then
-    switches := switches + ' ' + ConvertSearchPathToCmdLine('-Fl', InhLibraryPath);
+  if (not (ccloNoLinkerOpts in Flags)) then begin
+    InhLibraryPath:=GetInheritedOption(icoLibraryPath,true);
+    if (InhLibraryPath <> '') then
+      switches := switches + ' ' + ConvertSearchPathToCmdLine('-Fl', InhLibraryPath);
+  end;
 
   // object path
   CurObjectPath:=ParsedOpts.GetParsedValue(pcosObjectPath);
@@ -1653,7 +1683,8 @@ Processor specific options:
   
   { Unit output directory }
   if UnitOutputDirectory<>'' then
-    CurOutputDir:=ParsedOpts.GetParsedValue(pcosOutputDir)
+    CurOutputDir:=CreateRelativePath(ParsedOpts.GetParsedValue(pcosOutputDir),
+                                     BaseDirectory)
   else
     CurOutputDir:='';
   if CurOutputDir<>'' then
@@ -2203,20 +2234,20 @@ begin
   ModalResult:=mrCancel;
 end;
 
-{------------------------------------------------------------------------------}
-{  TfrmCompilerOptions ButtonApplyClicked                                      }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TfrmCompilerOptions ButtonApplyClicked
+------------------------------------------------------------------------------}
 procedure TfrmCompilerOptions.ButtonApplyClicked(Sender: TObject);
 begin
   // Apply any changes
   PutCompilerOptions;
 end;
 
-{------------------------------------------------------------------------------}
-{  TfrmCompilerOptions ButtonTestClicked                                       }
-{     This function is for testing the MakeOptionsString function only. Remove }
-{     this function and its button when the function is working correctly.     }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TfrmCompilerOptions ButtonTestClicked
+     This function is for testing the MakeOptionsString function only. Remove
+     this function and its button when the function is working correctly.
+------------------------------------------------------------------------------}
 procedure TfrmCompilerOptions.ButtonTestClicked(Sender: TObject);
 var
   teststr: String;
@@ -2226,7 +2257,7 @@ begin
   Assert(False, 'Trace:Test MakeOptionsString function');
 
   PutCompilerOptions;
-  teststr := CompilerOpts.MakeOptionsString;
+  teststr := CompilerOpts.MakeOptionsString(CompilerOpts.DefaultMakeOptionsFlags);
   WriteLn('CompilerOpts.MakeOptionsString: ' + teststr);
   i:=1;
   LineLen:=0;
@@ -2281,8 +2312,12 @@ end;
   TfrmCompilerOptions GetCompilerOptions
 ------------------------------------------------------------------------------}
 procedure TfrmCompilerOptions.GetCompilerOptions;
-var i: integer;
+var
+  i: integer;
+  EnabledLinkerOpts: Boolean;
 begin
+  EnabledLinkerOpts:=CompilerOpts.NeedsLinkerOpts;
+  
   { Get the compiler options and apply them to the dialog }
   case CompilerOpts.Style of
       1: radStyleIntel.Checked := true;
@@ -2310,6 +2345,7 @@ begin
   chkChecksOverflow.Checked := CompilerOpts.OverflowChecks;
   chkChecksStack.Checked := CompilerOpts.StackChecks;
 
+  grpHeapSize.Enabled:=EnabledLinkerOpts;
   edtHeapSize.Text := IntToStr(CompilerOpts.HeapSize);
 
   case CompilerOpts.Generate of
@@ -2336,18 +2372,22 @@ begin
   chkDebugDBX.Checked := CompilerOpts.GenerateDebugDBX;
   chkUseLineInfoUnit.Checked := CompilerOpts.UseLineInfoUnit;
   chkUseHeaptrc.Checked := CompilerOpts.UseHeaptrc;
+  chkUseHeaptrc.Enabled:=EnabledLinkerOpts;
   chkGenGProfCode.Checked := CompilerOpts.GenGProfCode;
   chkSymbolsStrip.Checked := CompilerOpts.StripSymbols;
+  chkSymbolsStrip.Enabled:=EnabledLinkerOpts;
 
   case CompilerOpts.LinkStyle of
     1: radLibsLinkDynamic.Checked := true;
     2: radLibsLinkStatic.Checked := true;
     3: radLibsLinkSmart.Checked := true;
   end;
+  grpLinkLibraries.Enabled:=EnabledLinkerOpts;
 
   chkOptionsLinkOpt.Checked := CompilerOpts.PassLinkerOptions;
   edtOptionsLinkOpt.Text := CompilerOpts.LinkerOptions;
-  
+  grpOptions.Enabled:=EnabledLinkerOpts;
+
   chkErrors.Checked := CompilerOpts.ShowErrors;
   chkWarnings.Checked := CompilerOpts.ShowWarn;
   chkNotes.Checked := CompilerOpts.ShowNotes;
@@ -2379,6 +2419,7 @@ begin
   edtOtherUnits.Text := CompilerOpts.OtherUnitFiles;
   edtIncludeFiles.Text := CompilerOpts.IncludeFiles;
   edtLibraries.Text := CompilerOpts.Libraries;
+  grpLibraries.Enabled:=EnabledLinkerOpts;
   edtCompiler.Text := CompilerOpts.CompilerPath;
   edtUnitOutputDir.Text := CompilerOpts.UnitOutputDirectory;
   
@@ -2410,13 +2451,13 @@ begin
   OldCompOpts.Assign(CompilerOpts);
 
   if (radStyleIntel.Checked) then
-      CompilerOpts.Style := 1
+    CompilerOpts.Style := 1
   else if (radStyleATT.Checked) then
-      CompilerOpts.Style := 2
+    CompilerOpts.Style := 2
   else if (radStyleAsIs.Checked) then
-      CompilerOpts.Style := 3
+    CompilerOpts.Style := 3
   else
-      CompilerOpts.Style := 1;
+    CompilerOpts.Style := 1;
 
   CompilerOpts.D2Extensions := chkSymD2Ext.Checked;
   CompilerOpts.CStyleOperators := chkSymCOper.Checked;
@@ -2446,32 +2487,32 @@ begin
     CompilerOpts.HeapSize := hs;
 
   if (radGenFaster.Checked) then
-      CompilerOpts.Generate := 1
+    CompilerOpts.Generate := 1
   else if (radGenSmaller.Checked) then
-      CompilerOpts.Generate := 2
+    CompilerOpts.Generate := 2
   else
-      CompilerOpts.Generate := 1;
+    CompilerOpts.Generate := 1;
 
   if (radTarget386.Checked) then
-      CompilerOpts.TargetProcessor := 1
+    CompilerOpts.TargetProcessor := 1
   else if (radTargetPent.Checked) then
-      CompilerOpts.TargetProcessor := 2
+    CompilerOpts.TargetProcessor := 2
   else if (radTargetPentPro.Checked) then
-      CompilerOpts.TargetProcessor := 3
+    CompilerOpts.TargetProcessor := 3
   else
-      CompilerOpts.TargetProcessor := 1;
+    CompilerOpts.TargetProcessor := 1;
 
   CompilerOpts.VariablesInRegisters := chkOptVarsInReg.Checked;
   CompilerOpts.UncertainOptimizations := chkOptUncertain.Checked;
 
   if (radOptLevel1.Checked) then
-      CompilerOpts.OptimizationLevel := 1
+    CompilerOpts.OptimizationLevel := 1
   else if (radOptLevel2.Checked) then
-      CompilerOpts.OptimizationLevel := 2
+    CompilerOpts.OptimizationLevel := 2
   else if (radOptLevel3.Checked) then
-      CompilerOpts.OptimizationLevel := 3
+    CompilerOpts.OptimizationLevel := 3
   else
-      CompilerOpts.OptimizationLevel := 1;
+    CompilerOpts.OptimizationLevel := 1;
 
   CompilerOpts.GenerateDebugInfo := chkDebugGDB.Checked;
   CompilerOpts.GenerateDebugDBX := chkDebugDBX.Checked;
