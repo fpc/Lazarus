@@ -110,7 +110,7 @@ begin
 end;
 
 { Protected Methods}
-procedure TDBListBox.KeyPress(var Key: TCharacter);
+procedure TDBListBox.KeyPress(var Key: char);
 begin
   inherited KeyPress(Key);
   case Key of
@@ -196,6 +196,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.7  2004/08/30 16:37:58  mattias
+  added OnUTF8KeyPresss
+
   Revision 1.6  2004/08/30 10:49:20  mattias
   fixed focus catch for combobox csDropDownList
 

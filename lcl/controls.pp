@@ -330,7 +330,8 @@ type
 
 
   TKeyEvent = procedure(Sender: TObject; var Key: Word; Shift:TShiftState) of Object;
-  TKeyPressEvent = procedure(Sender: TObject; var Key: TCharacter) of Object;
+  TKeyPressEvent = procedure(Sender: TObject; var Key: char) of Object;
+  TUTF8KeyPressEvent = procedure(Sender: TObject; var UTF8Key: string) of Object;
 
   TMouseEvent = Procedure(Sender: TOBject; Button: TMouseButton;
                           Shift: TShiftState; X, Y: Integer) of object;
@@ -1319,6 +1320,7 @@ type
     FOnEnter: TNotifyEvent;
     FOnExit: TNotifyEvent;
     FOnUnDock: TUnDockEvent;
+    FOnUTF8KeyPress: TUTF8KeyPressEvent;
     FParentWindow: hwnd;
     FParentCtl3D: Boolean;
     FRealizeBoundsLockCount: integer;
@@ -1425,13 +1427,15 @@ type
     function  DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; dynamic;
     function  DoKeyDown(var Message: TLMKey): Boolean;
     function  DoKeyPress(var Message: TLMKey): Boolean;
+    function DoUTF8KeyPress(var UTF8Key: string): boolean; dynamic;
     function  DoKeyUp(var Message: TLMKey): Boolean;
     procedure ControlKeyDown(var Key: Word; Shift: TShiftState); dynamic;
     procedure KeyDown(var Key: Word; Shift: TShiftState); dynamic;
     procedure KeyDownBeforeInterface(var Key: Word; Shift: TShiftState); dynamic;
     procedure KeyDownAfterInterface(var Key: Word; Shift: TShiftState); dynamic;
-    procedure KeyPress(var Key: TCharacter); dynamic;
+    procedure KeyPress(var Key: char); dynamic;
     procedure KeyUp(var Key: Word; Shift: TShiftState); dynamic;
+    procedure UTF8KeyPress(var UTF8Key: string); dynamic;
   protected
     Function  FindNextControl(CurrentControl: TControl; GoForward,
                               CheckTabStop, CheckParent, OnlyWinControls
@@ -1498,6 +1502,7 @@ type
     property OnExit: TNotifyEvent read FOnExit write FOnExit;
     property OnKeyDown: TKeyEvent read FOnKeyDown write FOnKeyDown;
     property OnKeyPress: TKeyPressEvent read FOnKeyPress write FOnKeyPress;
+    property OnUTF8KeyPress: TUTF8KeyPressEvent read FOnUTF8KeyPress write FOnUTF8KeyPress;
     property OnKeyUp: TKeyEvent read FOnKeyUp write FOnKeyUp;
     property OnMouseWheel: TMouseWheelEvent read FOnMouseWheel write FOnMouseWheel;
     property OnMouseWheelDown: TMouseWheelUpDownEvent read FOnMouseWheelDown write FOnMouseWheelDown;
@@ -1556,6 +1561,7 @@ type
     procedure HandleNeeded;
     function BrushCreated: Boolean;
     procedure EraseBackground(DC: HDC); virtual;
+    function UTF8KeyPressMessage(var UTF8Key: string; RepeatCount: integer): boolean; dynamic;
   public
     property BoundsLockCount: integer read FBoundsLockCount;
     property Brush: TBrush read GetBrush;
@@ -2405,6 +2411,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.242  2004/08/30 16:37:58  mattias
+  added OnUTF8KeyPresss
+
   Revision 1.241  2004/08/30 16:11:02  mattias
   changed GTK2 IFDEF to USE_UTF8BIDI_LCL
 

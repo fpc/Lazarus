@@ -52,11 +52,6 @@ uses
   Classes, SysUtils;
 
 type
-{$IFDEF USE_UTF8BIDI_LCL}
-  TCharacter = WideChar;
-{$ELSE USE_UTF8BIDI_LCL}
-  TCharacter = Char;
-{$ENDIF USE_UTF8BIDI_LCL}
   PRect = ^TRect;
   UINT = LongWord;
   PPoint = ^TPoint;
@@ -2238,6 +2233,9 @@ end.
 
 {
   $Log$
+  Revision 1.65  2004/08/30 16:37:58  mattias
+  added OnUTF8KeyPresss
+
   Revision 1.64  2004/08/30 16:11:02  mattias
   changed GTK2 IFDEF to USE_UTF8BIDI_LCL
 

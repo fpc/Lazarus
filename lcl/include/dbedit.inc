@@ -134,7 +134,7 @@ begin
 end;
 
 { Protected Methods}
-procedure TDBEdit.KeyPress(var Key: TCharacter);
+procedure TDBEdit.KeyPress(var Key: char);
 begin
   inherited KeyPress(Key);
   case Key of
@@ -237,6 +237,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.9  2004/08/30 16:37:58  mattias
+  added OnUTF8KeyPresss
+
   Revision 1.8  2004/08/22 22:57:35  mattias
   added OnActiveChange  from Joost
 

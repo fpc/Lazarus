@@ -358,8 +358,6 @@ const
   // End of Windows Compatability and messages
   //-------------
 
-
-
 type
   UINT = LongWord;
   BOOL = Boolean;
@@ -1058,6 +1056,9 @@ end.
 
 {
   $Log$
+  Revision 1.72  2004/08/30 16:37:58  mattias
+  added OnUTF8KeyPresss
+
   Revision 1.71  2004/08/25 17:08:10  micha
   use new lcl interface methods instead of messages (for win32; twscustomlistview)
 

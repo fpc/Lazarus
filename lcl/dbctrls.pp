@@ -132,7 +132,7 @@ Type
     procedure SetDataField(Value: string);
     procedure SetDataSource(Value: TDataSource);
   protected
-    procedure KeyPress(var Key: TCharacter); override;
+    procedure KeyPress(var Key: char); override;
 
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent;
@@ -260,7 +260,7 @@ Type
     procedure SetDataField(Value: string);
     procedure SetDataSource(Value: TDataSource);
   protected
-    procedure KeyPress(var Key: TCharacter); override;
+    procedure KeyPress(var Key: char); override;
 
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent;
@@ -1248,6 +1248,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.22  2004/08/30 16:37:58  mattias
+  added OnUTF8KeyPresss
+
   Revision 1.21  2004/08/30 16:11:02  mattias
   changed GTK2 IFDEF to USE_UTF8BIDI_LCL
 

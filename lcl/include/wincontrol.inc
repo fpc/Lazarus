@@ -1627,6 +1627,19 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function TWinControl.UTF8KeyPressMessage(var UTF8Key: string;
+    RepeatCount: integer): boolean;
+
+  Called by the interface after the navigation and specials keys are handled
+  (e.g. after KeyDown).
+------------------------------------------------------------------------------}
+function TWinControl.UTF8KeyPressMessage(var UTF8Key: string;
+  RepeatCount: integer): boolean;
+begin
+  Result:=(RepeatCount>0) and DoUTF8KeyPress(UTF8Key)
+end;
+
+{------------------------------------------------------------------------------
   TWinControl ControlAtPos
   Params: const Pos : TPoint
           AllowDisabled: Boolean
@@ -2105,19 +2118,27 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  TWinControl KeyUp
+  TWinControl KeyPress
 ------------------------------------------------------------------------------}
-Procedure TWinControl.KeyUp(var Key: Word; shift : TShiftState);
+Procedure TWinControl.KeyPress(var Key: char);
 begin
-  if Assigned(FOnKeyUp) then FOnKeyUp(Self, Key, Shift);
+  if Assigned(FOnKeyPress) then FOnKeyPress(Self, Key);
 end;
 
 {------------------------------------------------------------------------------
   TWinControl KeyPress
 ------------------------------------------------------------------------------}
-Procedure TWinControl.KeyPress(var Key: TCharacter);
+procedure TWinControl.UTF8KeyPress(var UTF8Key: string);
 begin
-  if Assigned(FOnKeyPress) then FOnKeyPress(Self, Key);
+  if Assigned(FOnUTF8KeyPress) then FOnUTF8KeyPress(Self, UTF8Key);
+end;
+
+{------------------------------------------------------------------------------
+  TWinControl KeyUp
+------------------------------------------------------------------------------}
+Procedure TWinControl.KeyUp(var Key: Word; shift : TShiftState);
+begin
+  if Assigned(FOnKeyUp) then FOnKeyUp(Self, Key, Shift);
 end;
 
 {------------------------------------------------------------------------------
@@ -2217,24 +2238,34 @@ begin
   Result := False;
 end;
 
-{------------------------------------------------------------------------------}
-{  TWinControl DoKeyPress                                                      }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TWinControl DoKeyPress
+  
+  Returns True if key handled
+------------------------------------------------------------------------------}
 Function TWinControl.DoKeyPress(Var Message : TLMKey): Boolean;
 var
   F: TCustomForm;
-  C: TCharacter;
+  C: char;
+  AParent: TWinControl;
 begin
   Result := True;
-  F := GetParentForm(Self);
-  if  (F <> nil)
-  and (F <> Self)
-  and (F.KeyPreview)
-  and (TWinControl(F).DoKeyPress(Message)) then Exit;
+
+  // let each parent form with keypreview handle the key
+  AParent:=Parent;
+  while (AParent<>nil) do begin
+    if (AParent is TCustomForm) then begin
+      F := TCustomForm(AParent);
+      if  (F.KeyPreview)
+      and (F.DoKeyPress(Message)) then Exit;
+    end;
+    AParent:=AParent.Parent;
+  end;
+
   if not (csNoStdEvents in ControlStyle)
   then with Message do
   begin
-    C := TCharacter(CharCode);
+    C := char(CharCode);
     KeyPress(C);
     CharCode := Ord(C);
     if Char(CharCode) = #0 then Exit;
@@ -2243,20 +2274,60 @@ begin
   Result := False;
 End;
 
-{------------------------------------------------------------------------------}
-{  TWinControl DoKeyUp                                                      }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TWinControl DoUTF8KeyPress
+
+  Returns True if key handled
+------------------------------------------------------------------------------}
+function TWinControl.DoUTF8KeyPress(var UTF8Key: string): boolean;
+var
+  AParent: TWinControl;
+  F: TCustomForm;
+begin
+  Result:=true;
+  
+  // let each parent form with keypreview handle the key
+  AParent:=Parent;
+  while (AParent<>nil) do begin
+    if (AParent is TCustomForm) then begin
+      F := TCustomForm(AParent);
+      if  (F.KeyPreview)
+      and (F.DoUTF8KeyPress(UTF8Key)) then Exit;
+    end;
+    AParent:=AParent.Parent;
+  end;
+  
+  if not (csNoStdEvents in ControlStyle) then begin
+    UTF8KeyPress(UTF8Key);
+    if UTF8Key='' then exit;
+  end;
+  
+  Result := False;
+end;
+
+{------------------------------------------------------------------------------
+  TWinControl DoKeyUp
+
+  Returns True if key handled
+------------------------------------------------------------------------------}
 Function TWinControl.DoKeyUp(Var Message : TLMKey): Boolean;
 var
   F: TCustomForm;
   ShiftState: TShiftState;
+  AParent: TWinControl;
 begin
   Result := True;
-  F := GetParentForm(Self);
-  if  (F <> nil)
-  and (F <> Self)
-  and (F.KeyPreview)
-  and (TWinControl(F).DoKeyUp(Message)) then Exit;
+
+  // let each parent form with keypreview handle the key
+  AParent:=Parent;
+  while (AParent<>nil) do begin
+    if (AParent is TCustomForm) then begin
+      F := TCustomForm(AParent);
+      if  (F.KeyPreview)
+      and (F.DoKeyUp(Message)) then Exit;
+    end;
+    AParent:=AParent.Parent;
+  end;
 
   with Message do
   begin
@@ -3827,6 +3898,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.268  2004/08/30 16:37:58  mattias
+  added OnUTF8KeyPresss
+
   Revision 1.267  2004/08/30 10:49:20  mattias
   fixed focus catch for combobox csDropDownList
 

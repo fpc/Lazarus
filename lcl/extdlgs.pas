@@ -134,7 +134,7 @@ type
     function TitleStored: Boolean;
   protected
     procedure Change; dynamic;
-    procedure CalcKey(var Key: TCharacter); dynamic;
+    procedure CalcKey(var Key: char); dynamic;
     procedure DisplayChange; dynamic;
   public
     constructor Create(AOwner: TComponent); override;
@@ -163,7 +163,7 @@ type
     FCalcPanel: TPanel;
     FDisplayPanel: TPanel;
     FDisplayLabel: TLabel;
-    procedure FormKeyPress(Sender: TObject; var Key: TCharacter);
+    procedure FormKeyPress(Sender: TObject; var Key: char);
     procedure CopyItemClick(Sender: TObject);
     function GetValue: Double;
     procedure PasteItemClick(Sender: TObject);
@@ -171,7 +171,7 @@ type
   protected
     procedure OkClick(Sender: TObject);
     procedure CancelClick(Sender: TObject);
-    procedure CalcKey(Sender: TObject; var Key: TCharacter);
+    procedure CalcKey(Sender: TObject; var Key: char);
     procedure DisplayChange(Sender: TObject);
     Procedure InitForm(ALayout : TCalculatorLayout); virtual;
     Property MainPanel: TPanel Read FMainPanel;
@@ -573,7 +573,7 @@ type
     FControl: TControl;
     procedure SetCalcText(const Value: string);
     procedure CheckFirst;
-    procedure CalcKey(Key: TCharacter);
+    procedure CalcKey(Key: char);
     procedure Clear;
     procedure Error;
     procedure SetDisplay(R: Double);
@@ -586,7 +586,7 @@ type
     procedure TextChanged; virtual;
   public
     constructor CreateLayout(AOwner: TComponent; ALayout: TCalculatorLayout);
-    procedure CalcKeyPress(Sender: TObject; var Key: TCharacter);
+    procedure CalcKeyPress(Sender: TObject; var Key: char);
     procedure Copy;
     procedure Paste;
     Function WorkingPrecision : Integer;
@@ -751,7 +751,7 @@ begin
 end;
 
 
-procedure TCalculatorPanel.CalcKey(Key: TCharacter);
+procedure TCalculatorPanel.CalcKey(Key: char);
 var
   R: Double;
 begin
@@ -853,7 +853,7 @@ begin
   FOperator:='=';
 end;
 
-procedure TCalculatorPanel.CalcKeyPress(Sender: TObject; var Key: TCharacter);
+procedure TCalculatorPanel.CalcKeyPress(Sender: TObject; var Key: char);
 
 var
   Btn: TCustomSpeedButton;
@@ -1010,7 +1010,7 @@ begin
   else Result:=FValue;
 end;
 
-procedure TCalculatorDialog.CalcKey(var Key: TCharacter);
+procedure TCalculatorDialog.CalcKey(var Key: char);
 begin
   if Assigned(FOnCalcKey) then FOnCalcKey(Self, Key);
 end;
@@ -1133,7 +1133,7 @@ begin
 end;
 
 
-procedure TCalculatorForm.FormKeyPress(Sender: TObject; var Key: TCharacter);
+procedure TCalculatorForm.FormKeyPress(Sender: TObject; var Key: char);
 begin
   TCalculatorPanel(FCalcPanel).CalcKeyPress(Sender, Key);
 end;
@@ -1168,7 +1168,7 @@ begin
   ModalResult:=mrCancel;
 end;
 
-procedure TCalculatorForm.CalcKey(Sender: TObject; var Key: TCharacter);
+procedure TCalculatorForm.CalcKey(Sender: TObject; var Key: char);
 begin
   if (Owner <> nil) and (Owner is TCalculatorDialog) then
     TCalculatorDialog(Owner).CalcKey(Key);

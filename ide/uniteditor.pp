@@ -169,11 +169,11 @@ type
     Procedure ReParent(AParent: TWinControl);
 
     Procedure ProcessCommand(Sender: TObject;
-       var Command: TSynEditorCommand; var AChar: TCharacter; Data: pointer);
+       var Command: TSynEditorCommand; var AChar: char; Data: pointer);
     Procedure ProcessUserCommand(Sender: TObject;
-       var Command: TSynEditorCommand; var AChar: TCharacter; Data: pointer);
+       var Command: TSynEditorCommand; var AChar: char; Data: pointer);
     Procedure UserCommandProcessed(Sender: TObject;
-       var Command: TSynEditorCommand; var AChar: TCharacter; Data: pointer);
+       var Command: TSynEditorCommand; var AChar: char; Data: pointer);
     Procedure ccOnTimer(sender: TObject);
     Procedure ccAddMessage(Texts: String);
 
@@ -458,10 +458,10 @@ type
     procedure MoveActivePageLeft;
     procedure MoveActivePageRight;
     Procedure ProcessParentCommand(Sender: TObject;
-       var Command: TSynEditorCommand; var AChar: TCharacter; Data: pointer;
+       var Command: TSynEditorCommand; var AChar: char; Data: pointer;
        var Handled: boolean);
     Procedure ParentCommandProcessed(Sender: TObject;
-       var Command: TSynEditorCommand; var AChar: TCharacter; Data: pointer;
+       var Command: TSynEditorCommand; var AChar: char; Data: pointer;
        var Handled: boolean);
 
     // marks
@@ -906,7 +906,7 @@ begin
 end;
 
 Procedure TSourceEditor.ProcessCommand(Sender: TObject;
-  var Command: TSynEditorCommand; var AChar: TCharacter; Data: pointer);
+  var Command: TSynEditorCommand; var AChar: char; Data: pointer);
 // these are normal commands for synedit, define extra actions here
 // otherwise use ProcessUserCommand
 begin
@@ -966,7 +966,7 @@ begin
 end;
 
 Procedure TSourceEditor.ProcessUserCommand(Sender: TObject;
-  var Command: TSynEditorCommand; var AChar: TCharacter; Data: pointer);
+  var Command: TSynEditorCommand; var AChar: char; Data: pointer);
 // define all extra keys here, that should are not handled by synedit
 var
   I: Integer;
@@ -1136,7 +1136,7 @@ Begin
 end;
 
 Procedure TSourceEditor.UserCommandProcessed(Sender: TObject;
-  var Command: TSynEditorCommand; var AChar: TCharacter; Data: pointer);
+  var Command: TSynEditorCommand; var AChar: char; Data: pointer);
 var Handled: boolean;
 begin
   Handled:=true;
@@ -3863,7 +3863,7 @@ end;
 procedure TSourceNotebook.ViewCallStackClick(Sender: TObject);
 var
   Command: TSynEditorCommand;
-  AChar: TCharacter;
+  AChar: char;
   Data: pointer;
   Handled: boolean;
 begin
@@ -4197,7 +4197,7 @@ Begin
 end;
 
 Procedure TSourceNotebook.ProcessParentCommand(Sender: TObject;
-  var Command: TSynEditorCommand; var AChar: TCharacter; Data: pointer;
+  var Command: TSynEditorCommand; var AChar: char; Data: pointer;
   var Handled: boolean);
 begin
   FProcessingCommand:=true;
@@ -4270,7 +4270,7 @@ begin
 end;
 
 Procedure TSourceNotebook.ParentCommandProcessed(Sender: TObject;
-  var Command: TSynEditorCommand; var AChar: TCharacter; Data: pointer;
+  var Command: TSynEditorCommand; var AChar: char; Data: pointer;
   var Handled: boolean);
 begin
   if Assigned(FOnUserCommandProcessed) then begin

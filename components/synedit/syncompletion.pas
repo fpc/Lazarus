@@ -86,7 +86,7 @@ type
     {$ENDIF}
     procedure SetCurrentString(const Value: string);
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
-    procedure KeyPress(var Key: TCharacter); override;
+    procedure KeyPress(var Key: char); override;
     procedure Paint; override;
     procedure ScrollGetFocus(Sender: TObject);
     procedure Deactivate; override;
@@ -217,9 +217,9 @@ type
     procedure backspace(Sender: TObject);
     procedure Cancel(Sender: TObject);
     procedure Validate(Sender: TObject; Shift: TShiftState);
-    procedure KeyPress(Sender: TObject; var Key: TCharacter);
+    procedure KeyPress(Sender: TObject; var Key: char);
     procedure EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure EditorKeyPress(Sender: TObject; var Key: TCharacter);
+    procedure EditorKeyPress(Sender: TObject; var Key: char);
     function GetPreviousToken(FEditor: TCustomSynEdit): string;
     function GetFEditor: TCustomSynEdit;
     function GetEditor(i: integer): TCustomSynEdit;
@@ -260,7 +260,7 @@ type
       override;
     procedure EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
       virtual;
-    procedure EditorKeyPress(Sender: TObject; var Key: TCharacter); virtual;
+    procedure EditorKeyPress(Sender: TObject; var Key: char); virtual;
     function GetPreviousToken(aEditor: TCustomSynEdit): string;
   public
     constructor Create(AOwner: TComponent); override;
@@ -402,7 +402,7 @@ begin
   {$ENDIF}
 end;
 
-procedure TSynBaseCompletionForm.KeyPress(var Key: TCharacter);
+procedure TSynBaseCompletionForm.KeyPress(var Key: char);
 begin
   case key of //
     #33..'z': begin
@@ -1020,7 +1020,7 @@ begin
     end;
 end;
 
-procedure TSynCompletion.KeyPress(Sender: TObject; var Key: TCharacter);
+procedure TSynCompletion.KeyPress(Sender: TObject; var Key: char);
 var
   F: TSynBaseCompletionForm;
 begin
@@ -1126,7 +1126,7 @@ begin
     result := '';
 end;
 
-procedure TSynCompletion.EditorKeyPress(Sender: TObject; var Key: TCharacter);
+procedure TSynCompletion.EditorKeyPress(Sender: TObject; var Key: char);
 var
   i: integer;
 begin
@@ -1290,7 +1290,7 @@ begin
   end;
 end;
 
-procedure TSynAutoComplete.EditorKeyPress(Sender: TObject; var Key: TCharacter);
+procedure TSynAutoComplete.EditorKeyPress(Sender: TObject; var Key: char);
 var
   i: integer;
 begin
