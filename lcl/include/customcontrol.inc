@@ -64,6 +64,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomControl.WMPaint(var Message: TLMPaint);
 begin
+  if (csDestroying in ComponentState) or (not HandleAllocated) then exit;
   Include(FControlState, csCustomPaint);
   inherited WMPaint(Message);
   Paint; // TODO move this to the PaintWindow function;
@@ -75,6 +76,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.6  2003/06/20 12:56:53  mattias
+  reduced paint messages on destroy
+
   Revision 1.5  2002/08/25 14:32:10  lazarus
   MG: calendar now ignores double clicks
 
