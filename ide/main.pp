@@ -3103,7 +3103,6 @@ begin
         // create jitform
         CInterface := TComponentInterface(
           FormEditor1.CreateFormFromStream(BinLFMStream));
-writeln('AAA1 CInterface=',HexStr(Cardinal(CInterface),8));
         if CInterface=nil then begin
           ACaption:='Form load error';
           AText:='Unable to build form from file '#13
@@ -7129,8 +7128,8 @@ end.
 
 { =============================================================================
   $Log$
-  Revision 1.385  2002/09/16 17:17:53  lazarus
-  MG: fixed mem leak of componentinterfaces
+  Revision 1.386  2002/09/16 17:19:05  lazarus
+  MG: reduced output
 
   Revision 1.384  2002/09/16 16:06:19  lazarus
   MG: replaced halt with raiseexception
