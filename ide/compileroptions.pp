@@ -46,16 +46,16 @@ uses
   LazarusIDEStrConsts;
 
 type
-  { Compiler Options object used to hold the compiler options }
+  { TBaseCompilerOptions }
 
-  TCompilerOptions = class(TObject)
+  TBaseCompilerOptions = class(TObject)
   private
     FModified: boolean;
     FOnModified: TNotifyEvent;
     fOptionsString: String;
     xmlconfig: TXMLConfig;
 
-    fProjectFile: String;
+    fXMLFile: String;
     fTargetFilename: string;
     fLoaded: Boolean;
 
@@ -135,17 +135,19 @@ type
     fConfigFilePath: String;
     fCustomOptions: string;
 
-    procedure LoadTheCompilerOptions;
-    procedure SaveTheCompilerOptions;
+    procedure LoadTheCompilerOptions(const Path: string);
+    procedure SaveTheCompilerOptions(const Path: string);
     procedure SetModified(const AValue: boolean);
   public
     constructor Create;
     destructor Destroy; override;
 
+    procedure LoadFromXMLConfig(AXMLConfig: TXMLConfig; const Path: string);
+    procedure SaveToXMLConfig(AXMLConfig: TXMLConfig; const Path: string);
     procedure LoadCompilerOptions(UseExistingFile: Boolean);
     procedure SaveCompilerOptions(UseExistingFile: Boolean);
-    procedure Assign(CompOpts: TCompilerOptions);
-    function IsEqual(CompOpts: TCompilerOptions): boolean;
+    procedure Assign(CompOpts: TBaseCompilerOptions);
+    function IsEqual(CompOpts: TBaseCompilerOptions): boolean;
     
     function MakeOptionsString: String;
     function MakeOptionsString(const MainSourceFileName: string): String;
@@ -159,7 +161,7 @@ type
     property Modified: boolean read FModified write SetModified;
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
 
-    property ProjectFile: String read fProjectFile write fProjectFile;
+    property XMLFile: String read fXMLFile write fXMLFile;
     property TargetFilename: String read fTargetFilename write fTargetFilename;
     property XMLConfigFile: TXMLConfig read xmlconfig write xmlconfig;
     property Loaded: Boolean read fLoaded write fLoaded;
@@ -242,7 +244,48 @@ type
     property ConfigFilePath: String read fConfigFilePath write fConfigFilePath;
     property CustomOptions: string read fCustomOptions write fCustomOptions;
   end;
+  
+  
+  { TAdditionalCompilerOptions
+    Additional Compiler options are used by packages to define, what a project
+    or a package or the IDE needs to use the package.
+  }
+  
+  TAdditionalCompilerOptions = class
+  private
+    FCustomOptions: string;
+    FIncludePath: string;
+    FLibraryPath: string;
+    FLinkerOptions: string;
+    FObjectPath: string;
+    FUnitPath: string;
+    procedure SetCustomOptions(const AValue: string);
+    procedure SetIncludePath(const AValue: string);
+    procedure SetLibraryPath(const AValue: string);
+    procedure SetLinkerOptions(const AValue: string);
+    procedure SetObjectPath(const AValue: string);
+    procedure SetUnitPath(const AValue: string);
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear;
+    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+  public
+    property UnitPath: string read FUnitPath write SetUnitPath;
+    property IncludePath: string read FIncludePath write SetIncludePath;
+    property ObjectPath: string read FObjectPath write SetObjectPath;
+    property LibraryPath: string read FLibraryPath write SetLibraryPath;
+    property LinkerOptions: string read FLinkerOptions write SetLinkerOptions;
+    property CustomOptions: string read FCustomOptions write SetCustomOptions;
+  end;
 
+
+  { TCompilerOptions }
+
+  TCompilerOptions = class(TBaseCompilerOptions)
+  end;
+  
 
   { Compiler options form }
   
@@ -399,7 +442,7 @@ type
     function GetOtherSourcePath: string;
     procedure SetOtherSourcePath(const AValue: string);
   public
-    CompilerOpts: TCompilerOptions;
+    CompilerOpts: TBaseCompilerOptions;
 
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -425,9 +468,9 @@ const
   Config_Filename = 'compileroptions.xml';
 
 {------------------------------------------------------------------------------}
-{  TCompilerOptions Constructor                                                }
+{  TBaseCompilerOptions Constructor                                                }
 {------------------------------------------------------------------------------}
-constructor TCompilerOptions.Create;
+constructor TBaseCompilerOptions.Create;
 begin
   inherited Create;
   Assert(False, 'Trace:Compiler Options Class Created');
@@ -436,29 +479,51 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-{  TCompilerOptions Destructor                                                 }
+{  TBaseCompilerOptions Destructor                                                 }
 {------------------------------------------------------------------------------}
-destructor TCompilerOptions.Destroy;
+destructor TBaseCompilerOptions.Destroy;
 begin
   inherited Destroy;
 end;
 
-{------------------------------------------------------------------------------}
-{  TfrmCompilerOptions LoadCompilerOptions                                     }
-{------------------------------------------------------------------------------}
-procedure TCompilerOptions.LoadCompilerOptions(UseExistingFile: Boolean);
+{------------------------------------------------------------------------------
+  procedure TBaseCompilerOptions.LoadFromXMLConfig(AXMLConfig: TXMLConfig;
+    const Path: string);
+------------------------------------------------------------------------------}
+procedure TBaseCompilerOptions.LoadFromXMLConfig(AXMLConfig: TXMLConfig;
+  const Path: string);
+begin
+  XMLConfigFile := AXMLConfig;
+  LoadTheCompilerOptions(Path);
+end;
+
+{------------------------------------------------------------------------------
+  procedure TBaseCompilerOptions.SaveToXMLConfig(XMLConfig: TXMLConfig;
+    const Path: string);
+------------------------------------------------------------------------------}
+procedure TBaseCompilerOptions.SaveToXMLConfig(AXMLConfig: TXMLConfig;
+  const Path: string);
+begin
+  XMLConfigFile := AXMLConfig;
+  SaveTheCompilerOptions(Path);
+end;
+
+{------------------------------------------------------------------------------
+  TfrmCompilerOptions LoadCompilerOptions
+------------------------------------------------------------------------------}
+procedure TBaseCompilerOptions.LoadCompilerOptions(UseExistingFile: Boolean);
 var
   confPath: String;
 begin
   if (UseExistingFile and (XMLConfigFile <> nil)) then
   begin
-    LoadTheCompilerOptions;
+    LoadTheCompilerOptions('');
   end
   else
   begin
     confPath := GetXMLConfigPath;
     XMLConfigFile := TXMLConfig.Create(SetDirSeparators(confPath));
-    LoadTheCompilerOptions;
+    LoadTheCompilerOptions('');
     XMLConfigFile.Free;
     XMLConfigFile := nil;
   end;
@@ -468,14 +533,17 @@ end;
 {------------------------------------------------------------------------------}
 {  TfrmCompilerOptions LoadTheCompilerOptions                                  }
 {------------------------------------------------------------------------------}
-procedure TCompilerOptions.LoadTheCompilerOptions;
+procedure TBaseCompilerOptions.LoadTheCompilerOptions(const Path: string);
 var
   p: String;
 begin
   { Load the compiler options from the XML file }
+  if Path='' then
+    p:='CompilerOptions/Target/'
+  else
+    p:=Path;
 
   { Target }
-  p:='CompilerOptions/Target/';
   TargetFilename := XMLConfigFile.GetValue(p+'Filename/Value', '');
 
   { SearchPaths }
@@ -562,19 +630,19 @@ end;
 {------------------------------------------------------------------------------}
 {  TfrmCompilerOptions SaveCompilerOptions                                     }
 {------------------------------------------------------------------------------}
-procedure TCompilerOptions.SaveCompilerOptions(UseExistingFile: Boolean);
+procedure TBaseCompilerOptions.SaveCompilerOptions(UseExistingFile: Boolean);
 var
   confPath: String;
 begin
   if ((UseExistingFile) and (XMLConfigFile <> nil)) then
   begin
-    SaveTheCompilerOptions;
+    SaveTheCompilerOptions('');
   end
   else
   begin
     confPath := GetXMLConfigPath;
     XMLConfigFile := TXMLConfig.Create(SetDirSeparators(confPath));
-    SaveTheCompilerOptions;
+    SaveTheCompilerOptions('');
     XMLConfigFile.Free;
     XMLConfigFile := nil;
   end;
@@ -584,14 +652,17 @@ end;
 {------------------------------------------------------------------------------}
 {  TfrmCompilerOptions SaveTheCompilerOptions                                  }
 {------------------------------------------------------------------------------}
-procedure TCompilerOptions.SaveTheCompilerOptions;
+procedure TBaseCompilerOptions.SaveTheCompilerOptions(const Path: string);
 var
   P: string;
 begin
   { Save the compiler options to the XML file }
-  
+  if Path='' then
+    p:='CompilerOptions/Target/'
+  else
+    p:=Path;
+
   { Target }
-  p:='CompilerOptions/Target/';
   XMLConfigFile.SetDeleteValue(p+'Filename/Value', TargetFilename,'');
 
   { SearchPaths }
@@ -677,7 +748,7 @@ begin
   XMLConfigFile.Flush;
 end;
 
-procedure TCompilerOptions.SetModified(const AValue: boolean);
+procedure TBaseCompilerOptions.SetModified(const AValue: boolean);
 begin
   if FModified=AValue then exit;
   FModified:=AValue;
@@ -686,37 +757,33 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-{  TCompilerOptions CreateTargetFilename                                       }
+{  TBaseCompilerOptions CreateTargetFilename                                       }
 {------------------------------------------------------------------------------}
-function TCompilerOptions.CreateTargetFilename(
+function TBaseCompilerOptions.CreateTargetFilename(
   const MainSourceFileName: string): string;
-var Ext: string;
 begin
   if (TargetFilename <> '') then begin
     Result:=ExtractFilePath(MainSourceFileName)+TargetFilename;
   end else begin
-    if MainSourceFileName<>'' then begin
-      Result:=ExtractFileName(MainSourceFileName);
-      Ext:=ExtractFileExt(Result);
-      Result:=copy(Result,1,length(Result)-length(Ext));
-      Result:=lowercase(Result);
-      if fTargetOS = 'win32'
-         then Result:=Result+'.exe';
+    Result:=ExtractFileNameOnly(MainSourceFileName);
+    if Result<>'' then begin
       Result:=ExtractFilePath(MainSourceFileName)+Result;
+      if fTargetOS = 'win32' then
+        Result:=Result+'.exe';
     end else
       Result:='';
   end;
 end;
 
 {------------------------------------------------------------------------------}
-{  TCompilerOptions MakeOptionsString                                          }
+{  TBaseCompilerOptions MakeOptionsString                                          }
 {------------------------------------------------------------------------------}
-function TCompilerOptions.MakeOptionsString: String;
+function TBaseCompilerOptions.MakeOptionsString: String;
 begin
   Result:=MakeOptionsString('')
 end;
 
-function TCompilerOptions.MakeOptionsString(
+function TBaseCompilerOptions.MakeOptionsString(
   const MainSourceFilename: string): String;
 var
   switches, tempsw: String;
@@ -1182,7 +1249,7 @@ begin
   Result := fOptionsString;
 end;
 
-function TCompilerOptions.CustomOptionsAsString: string;
+function TBaseCompilerOptions.CustomOptionsAsString: string;
 var
   i: Integer;
 begin
@@ -1195,9 +1262,9 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-{  TCompilerOptions ParseSearchPaths                                           }
+{  TBaseCompilerOptions ParseSearchPaths                                           }
 {------------------------------------------------------------------------------}
-function TCompilerOptions.ParseSearchPaths(const switch, paths: String): String;
+function TBaseCompilerOptions.ParseSearchPaths(const switch, paths: String): String;
 var
   tempsw, SS, Delim: String;
   M: Integer;
@@ -1241,9 +1308,9 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  TCompilerOptions ParseOptions
+  TBaseCompilerOptions ParseOptions
  ------------------------------------------------------------------------------}
-function TCompilerOptions.ParseOptions(const Delim, Switch, 
+function TBaseCompilerOptions.ParseOptions(const Delim, Switch,
   OptionStr: string): string;
 var Startpos, EndPos: integer;
 begin
@@ -1261,16 +1328,15 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  TCompilerOptions GetXMLConfigPath
+  TBaseCompilerOptions GetXMLConfigPath
  ------------------------------------------------------------------------------}
-function TCompilerOptions.GetXMLConfigPath: String;
+function TBaseCompilerOptions.GetXMLConfigPath: String;
 var
   fn: String;
 begin
   // Setup the filename to write to
-  if (ProjectFile <> '') then
-    fn := ProjectFile
-  else
+  fn := XMLFile;
+  if (fn = '') then
     fn := Config_Filename;
   Result := GetPrimaryConfigPath + '/' + fn;
   CopySecondaryConfigFile(fn);
@@ -1278,9 +1344,9 @@ end;
 
 
 {------------------------------------------------------------------------------}
-{  TCompilerOptions Clear                                                      }
+{  TBaseCompilerOptions Clear                                                      }
 {------------------------------------------------------------------------------}
-procedure TCompilerOptions.Clear;
+procedure TBaseCompilerOptions.Clear;
 begin
   fOptionsString := '';
   fLoaded := false;
@@ -1361,7 +1427,7 @@ begin
   fCustomOptions := '';
 end;
 
-procedure TCompilerOptions.Assign(CompOpts: TCompilerOptions);
+procedure TBaseCompilerOptions.Assign(CompOpts: TBaseCompilerOptions);
 begin
   fOptionsString := CompOpts.fOptionsString;
   fLoaded := CompOpts.fLoaded;
@@ -1441,7 +1507,7 @@ begin
   fCustomOptions := CompOpts.fCustomOptions;
 end;
 
-function TCompilerOptions.IsEqual(CompOpts: TCompilerOptions): boolean;
+function TBaseCompilerOptions.IsEqual(CompOpts: TBaseCompilerOptions): boolean;
 begin
   Result:=
     // search paths
@@ -1797,11 +1863,11 @@ var
   code: LongInt;
   hs: LongInt;
   i: integer;
-  OldCompOpts: TCompilerOptions;
+  OldCompOpts: TBaseCompilerOptions;
 begin
   { Put the compiler options into the TCompilerOptions class to be saved }
   
-  OldCompOpts:=TCompilerOptions.Create;
+  OldCompOpts:=TBaseCompilerOptions.Create;
   OldCompOpts.Assign(CompilerOpts);
 
   if (radStyleIntel.Checked) then
@@ -3336,5 +3402,86 @@ begin
 end;
 
   
+{ TAdditionalCompilerOptions }
+
+procedure TAdditionalCompilerOptions.SetCustomOptions(const AValue: string);
+begin
+  if FCustomOptions=AValue then exit;
+  FCustomOptions:=AValue;
+end;
+
+procedure TAdditionalCompilerOptions.SetIncludePath(const AValue: string);
+begin
+  if FIncludePath=AValue then exit;
+  FIncludePath:=AValue;
+end;
+
+procedure TAdditionalCompilerOptions.SetLibraryPath(const AValue: string);
+begin
+  if FLibraryPath=AValue then exit;
+  FLibraryPath:=AValue;
+end;
+
+procedure TAdditionalCompilerOptions.SetLinkerOptions(const AValue: string);
+begin
+  if FLinkerOptions=AValue then exit;
+  FLinkerOptions:=AValue;
+end;
+
+procedure TAdditionalCompilerOptions.SetObjectPath(const AValue: string);
+begin
+  if FObjectPath=AValue then exit;
+  FObjectPath:=AValue;
+end;
+
+procedure TAdditionalCompilerOptions.SetUnitPath(const AValue: string);
+begin
+  if FUnitPath=AValue then exit;
+  FUnitPath:=AValue;
+end;
+
+constructor TAdditionalCompilerOptions.Create;
+begin
+  Clear;
+end;
+
+destructor TAdditionalCompilerOptions.Destroy;
+begin
+  inherited Destroy;
+end;
+
+procedure TAdditionalCompilerOptions.Clear;
+begin
+  FCustomOptions:='';
+  FIncludePath:='';
+  FLibraryPath:='';
+  FLinkerOptions:='';
+  FObjectPath:='';
+  FUnitPath:='';
+end;
+
+procedure TAdditionalCompilerOptions.LoadFromXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string);
+begin
+  Clear;
+  fCustomOptions:=XMLConfig.GetValue(Path+'CustomOptions/Value','');
+  FIncludePath:=XMLConfig.GetValue(Path+'IncludePath/Value','');
+  FLibraryPath:=XMLConfig.GetValue(Path+'LibraryPath/Value','');
+  fLinkerOptions:=XMLConfig.GetValue(Path+'LinkerOptions/Value','');
+  FObjectPath:=XMLConfig.GetValue(Path+'ObjectPath/Value','');
+  FUnitPath:=XMLConfig.GetValue(Path+'UnitPath/Value','');
+end;
+
+procedure TAdditionalCompilerOptions.SaveToXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string);
+begin
+  XMLConfig.SetDeleteValue(Path+'CustomOptions/Value',fCustomOptions,'');
+  XMLConfig.SetDeleteValue(Path+'IncludePath/Value',FIncludePath,'');
+  XMLConfig.SetDeleteValue(Path+'LibraryPath/Value',FLibraryPath,'');
+  XMLConfig.SetDeleteValue(Path+'LinkerOptions/Value',fLinkerOptions,'');
+  XMLConfig.SetDeleteValue(Path+'ObjectPath/Value',FObjectPath,'');
+  XMLConfig.SetDeleteValue(Path+'UnitPath/Value',FUnitPath,'');
+end;
+
 end.
 

@@ -18,7 +18,7 @@ exampledirs=examples
 options=-gl
 unitdir=components/custom \
         lcl/units lcl/units/$(LCL_PLATFORM) designer designer/units debugger \
-        components/units .
+        packager components/units .
 includedir=include include/$(OS_TARGET)
 targetdir=.
 
@@ -70,6 +70,8 @@ cleanide:
         $(DEL) $(wildcard ./designer/*$(PPUEXT))
         $(DEL) $(wildcard ./debugger/*$(OEXT))
         $(DEL) $(wildcard ./debugger/*$(PPUEXT))
+        $(DEL) $(wildcard ./packager/*$(OEXT))
+        $(DEL) $(wildcard ./packager/*$(PPUEXT))
 ifeq ($(OS_TARGET), win32)
         $(DEL) $(wildcard *.res)
         $(DEL) lazarus.owr

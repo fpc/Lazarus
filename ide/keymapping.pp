@@ -109,14 +109,14 @@ const
   ecNew                  = ecUserFirst + 201;
   ecNewUnit              = ecUserFirst + 202;
   ecNewForm              = ecUserFirst + 203;
-  ecOpen                 = ecUserFirst + 204;
-  ecRevert               = ecUserFirst + 205;
-  ecSave                 = ecUserFirst + 206;
-  ecSaveAs               = ecUserFirst + 207;
-  ecSaveAll              = ecUserFirst + 208;
-  ecClose                = ecUserFirst + 209;
-  ecCloseAll             = ecUserFirst + 210;
-  ecQuit                 = ecUserFirst + 211;
+  ecOpen                 = ecUserFirst + 205;
+  ecRevert               = ecUserFirst + 206;
+  ecSave                 = ecUserFirst + 207;
+  ecSaveAs               = ecUserFirst + 208;
+  ecSaveAll              = ecUserFirst + 209;
+  ecClose                = ecUserFirst + 210;
+  ecCloseAll             = ecUserFirst + 211;
+  ecQuit                 = ecUserFirst + 212;
 
   ecJumpToEditor         = ecUserFirst + 300;
   ecToggleFormUnit       = ecUserFirst + 301;

@@ -49,7 +49,8 @@ uses
 {$ENDIF}
   Classes, SysUtils, LCLLinux, LCLType, Laz_XMLCfg, LazConf, CompilerOptions,
   FileCtrl, CodeToolManager, CodeCache, Forms, Controls, EditorOptions, Dialogs,
-  IDEProcs, RunParamsOpts, ProjectDefs, EditDefineTree, DefineTemplates;
+  IDEProcs, RunParamsOpts, ProjectDefs, EditDefineTree, DefineTemplates,
+  PackageDefs;
 
 type
   TUnitInfo = class;
@@ -1216,7 +1217,6 @@ begin
 
         // Save the compiler options
         CompilerOptions.XMLConfigFile := xmlconfig;
-        CompilerOptions.ProjectFile := confPath;
         CompilerOptions.SaveCompilerOptions(true);
         
         // save the Publish Options
@@ -1315,7 +1315,6 @@ begin
     {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject E reading comp sets');{$ENDIF}
     // Load the compiler options
     CompilerOptions.XMLConfigFile := xmlconfig;
-    CompilerOptions.ProjectFile := MainFilename;
     CompilerOptions.LoadCompilerOptions(true);
     CreateProjectDefineTemplate(CompilerOptions,FSrcPath);
 
@@ -2203,6 +2202,9 @@ end.
 
 {
   $Log$
+  Revision 1.92  2003/02/28 10:14:28  mattias
+  started package system (packager)
+
   Revision 1.91  2003/02/26 12:44:52  mattias
   readonly flag is now only saved if user set
 

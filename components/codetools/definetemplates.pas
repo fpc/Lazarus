@@ -2470,6 +2470,7 @@ begin
        'designer;'
       +'designer'+ds+'jitform;'
       +'debugger;'
+      +'packager;'
       +'components'+ds+'synedit;'
       +'components'+ds+'codetools;'
       +'components'+ds+'custom;'
@@ -2483,6 +2484,84 @@ begin
   // turn Nested comments on
   MainDir.AddChild(TDefineTemplate.Create('Nested Comments',
     ctsNestedCommentsOn,ExternalMacroStart+'NestedComments','',da_DefineRecurse));
+
+
+  // include
+
+  // designer
+  DirTempl:=TDefineTemplate.Create('Designer',ctsDesignerDirectory,
+    '','designer',da_Directory);
+  DirTempl.AddChild(TDefineTemplate.Create('LCL path addition',
+    Format(ctsAddsDirToSourcePath,['lcl']),
+    ExternalMacroStart+'SrcPath',
+      '..'+ds+'lcl'
+      +';..'+ds+'lcl'+ds+'interfaces'+ds+WidgetType
+      +';'+SrcPath
+    ,da_Define));
+  DirTempl.AddChild(TDefineTemplate.Create('main path addition',
+    Format(ctsAddsDirToSourcePath,[ctsLazarusMainDirectory]),
+    ExternalMacroStart+'SrcPath',
+    '..;'+SrcPath
+    ,da_Define));
+  DirTempl.AddChild(TDefineTemplate.Create('components path addition',
+    Format(ctsAddsDirToSourcePath,['synedit']),
+    ExternalMacroStart+'SrcPath',
+      '..'+ds+'components'+ds+'synedit;'
+      +'..'+ds+'components'+ds+'codetools;'
+      +'..'+ds+'components'+ds+'custom;'
+      +'jitform;'
+      +SrcPath
+    ,da_Define));
+  DirTempl.AddChild(TDefineTemplate.Create('includepath addition',
+    Format(ctsIncludeDirectoriesPlusDirs,['include']),
+    ExternalMacroStart+'IncPath',
+    '..'+ds+'include;..'+ds+'include'+ds+TargetOS,
+    da_Define));
+  MainDir.AddChild(DirTempl);
+
+  // images
+
+  // debugger
+  DirTempl:=TDefineTemplate.Create('Debugger',ctsDebuggerDirectory,
+    '','debugger',da_Directory);
+  DirTempl.AddChild(TDefineTemplate.Create('LCL path addition',
+    Format(ctsAddsDirToSourcePath,['lcl']),
+    ExternalMacroStart+'SrcPath',
+      '..'+ds+'lcl'
+      +';..'+ds+'lcl'+ds+'interfaces'+ds+WidgetType
+      +';'+SrcPath
+    ,da_DefineRecurse));
+  MainDir.AddChild(DirTempl);
+
+  // packager
+  DirTempl:=TDefineTemplate.Create('Packager',ctsDesignerDirectory,
+    '','packager',da_Directory);
+  DirTempl.AddChild(TDefineTemplate.Create('LCL path addition',
+    Format(ctsAddsDirToSourcePath,['lcl']),
+    ExternalMacroStart+'SrcPath',
+      '..'+ds+'lcl'
+      +';..'+ds+'lcl'+ds+'interfaces'+ds+WidgetType
+      +';'+SrcPath
+    ,da_Define));
+  DirTempl.AddChild(TDefineTemplate.Create('main path addition',
+    Format(ctsAddsDirToSourcePath,[ctsLazarusMainDirectory]),
+    ExternalMacroStart+'SrcPath',
+    '..;'+SrcPath
+    ,da_Define));
+  DirTempl.AddChild(TDefineTemplate.Create('components path addition',
+    Format(ctsAddsDirToSourcePath,['synedit']),
+    ExternalMacroStart+'SrcPath',
+      '..'+ds+'components'+ds+'synedit;'
+      +'..'+ds+'components'+ds+'codetools;'
+      +'..'+ds+'components'+ds+'custom;'
+      +SrcPath
+    ,da_Define));
+  DirTempl.AddChild(TDefineTemplate.Create('includepath addition',
+    Format(ctsIncludeDirectoriesPlusDirs,['include']),
+    ExternalMacroStart+'IncPath',
+    '..'+ds+'include;..'+ds+'include'+ds+TargetOS,
+    da_Define));
+  MainDir.AddChild(DirTempl);
 
   // examples
   DirTempl:=TDefineTemplate.Create('Examples',
@@ -2590,54 +2669,6 @@ begin
     +';..'+ds+'components'+ds+'codetools'
     +';'+SrcPath
     ,da_Define));
-  MainDir.AddChild(DirTempl);
-
-
-  // include
-  
-  // designer
-  DirTempl:=TDefineTemplate.Create('Designer',ctsDesignerDirectory,
-    '','designer',da_Directory);
-  DirTempl.AddChild(TDefineTemplate.Create('LCL path addition',
-    Format(ctsAddsDirToSourcePath,['lcl']),
-    ExternalMacroStart+'SrcPath',
-      '..'+ds+'lcl'
-      +';..'+ds+'lcl'+ds+'interfaces'+ds+WidgetType
-      +';'+SrcPath
-    ,da_Define));
-  DirTempl.AddChild(TDefineTemplate.Create('main path addition',
-    Format(ctsAddsDirToSourcePath,[ctsLazarusMainDirectory]),
-    ExternalMacroStart+'SrcPath',
-    '..;'+SrcPath
-    ,da_Define));
-  DirTempl.AddChild(TDefineTemplate.Create('components path addition',
-    Format(ctsAddsDirToSourcePath,['synedit']),
-    ExternalMacroStart+'SrcPath',
-      '..'+ds+'components'+ds+'synedit;'
-      +'..'+ds+'components'+ds+'codetools;'
-      +'..'+ds+'components'+ds+'custom;'
-      +'jitform;'
-      +SrcPath
-    ,da_Define));
-  DirTempl.AddChild(TDefineTemplate.Create('includepath addition',
-    Format(ctsIncludeDirectoriesPlusDirs,['include']),
-    ExternalMacroStart+'IncPath',
-    '..'+ds+'include;..'+ds+'include'+ds+TargetOS,
-    da_Define));
-  MainDir.AddChild(DirTempl);
-
-  // images
-  
-  // debugger
-  DirTempl:=TDefineTemplate.Create('Debugger',ctsDebuggerDirectory,
-    '','debugger',da_Directory);
-  DirTempl.AddChild(TDefineTemplate.Create('LCL path addition',
-    Format(ctsAddsDirToSourcePath,['lcl']),
-    ExternalMacroStart+'SrcPath',
-      '..'+ds+'lcl'
-      +';..'+ds+'lcl'+ds+'interfaces'+ds+WidgetType
-      +';'+SrcPath
-    ,da_DefineRecurse));
   MainDir.AddChild(DirTempl);
 
   if MainDir<>nil then begin

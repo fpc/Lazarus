@@ -104,6 +104,7 @@ resourcestring
   
   lisMenuNewUnit = 'New Unit';
   lisMenuNewForm = 'New Form';
+  lisMenuNewOther = 'New ...';
   lisMenuOpen = 'Open';
   lisMenuRevert = 'Revert';
   lisMenuOpenRecent = 'Open Recent';

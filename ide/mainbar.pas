@@ -79,14 +79,15 @@ type
   TSaveFlags = set of TSaveFlag;
   
   // open file flags
-  TOpenFlag = (ofProjectLoading,// this open is part of opening a whole project
-               ofOnlyIfExists,  // do not auto create non existing files
-               ofRevert,        // reload file if already open
-               ofQuiet,         // less messages
-               ofAddToRecent,   // add file to recent files
-               ofRegularFile,   // open as regular file (e.g. not a whole project)
-               ofVirtualFile    // open the virtual file
-               );
+  TOpenFlag = (
+    ofProjectLoading,// this open is part of opening a whole project
+    ofOnlyIfExists,  // do not auto create non existing files
+    ofRevert,        // reload file if already open
+    ofQuiet,         // less messages
+    ofAddToRecent,   // add file to recent files
+    ofRegularFile,   // open as regular file (e.g. not a whole project)
+    ofVirtualFile    // open the virtual file
+    );
   TOpenFlags = set of TOpenFlag;
   
   // revert file flags
@@ -146,8 +147,9 @@ type
     mnuWindows: TMenuItem;
     mnuHelp: TMenuItem;
 
-    itmFileNewUnit : TMenuItem;
-    itmFileNewForm : TMenuItem;
+    itmFileNewUnit: TMenuItem;
+    itmFileNewForm: TMenuItem;
+    itmFileNewOther: TMenuItem;
     itmFileOpen: TMenuItem;
     itmFileRevert: TMenuItem;
     itmFileRecentOpen: TMenuItem;
@@ -420,6 +422,13 @@ begin
   itmFileNewForm.Caption := lisMenuNewForm;
   itmFileNewForm.Graphic:=LoadPixmap('menu_new');
   mnuFile.Add(itmFileNewForm);
+
+  itmFileNewOther := TMenuItem.Create(Self);
+  itmFileNewOther.Name:='itmFileNewOther';
+  itmFileNewOther.Caption := lisMenuNewOther;
+  itmFileNewOther.Graphic:=LoadPixmap('menu_new');
+  itmFileNewOther.Enabled:=false;
+  mnuFile.Add(itmFileNewOther);
 
   mnuFile.Add(CreateMenuSeparator);
 
@@ -1028,7 +1037,7 @@ begin
   itmToolMakeResourceString := TMenuItem.Create(Self);
   itmToolMakeResourceString.Name:='itmToolMakeResourceString';
   itmToolMakeResourceString.Caption := lisMenuMakeResourceString;
-  //itmToolMakeResourceString.Enabled:=false;
+  itmToolMakeResourceString.Enabled:=false;
   mnuTools.Add(itmToolMakeResourceString);
 
   mnuTools.Add(CreateMenuSeparator);
@@ -1097,6 +1106,7 @@ begin
   with EditorOpts.KeyMap do begin
     itmFileNewUnit.ShortCut:=CommandToShortCut(ecNewUnit);
     itmFileNewForm.ShortCut:=CommandToShortCut(ecNewForm);
+    itmFileNewOther.ShortCut:=CommandToShortCut(ecNew);
     itmFileOpen.ShortCut:=CommandToShortCut(ecOpen);
     itmFileRevert.ShortCut:=CommandToShortCut(ecRevert);
     //itmFileRecentOpen.ShortCut:=CommandToShortCut(ec);

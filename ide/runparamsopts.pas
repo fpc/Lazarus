@@ -370,7 +370,7 @@ begin
     else
       Pages.Add(dlgRunOLocal);
     Pages.Add(dlgRunOEnvironment);
-    Visible:=true;
+    PageIndex:=0;
   end;
 
   SetupLocalPage;
@@ -434,7 +434,6 @@ begin
     Parent:=NoteBook.Page[0];
     SetBounds(
       5,CmdLineParametersGroupBox.Top+CmdLineParametersGroupBox.Height+10,w,60);
-    Visible:=true;
   end;
   
   UseLaunchingApplicationCheckBox:=TCheckBox.Create(Self);
@@ -443,9 +442,7 @@ begin
     Parent:=NoteBook.Page[0];
     SetBounds(15,
       CmdLineParametersGroupBox.Top+CmdLineParametersGroupBox.Height+10,245,25);
-    Caption:=dlgUseLaunchingApp ;
-    Checked:=false;
-    Visible:=true;
+    Caption:=dlgUseLaunchingApp;
   end;
   
   UseLaunchingApplicationComboBox:=TComboBox.Create(Self);

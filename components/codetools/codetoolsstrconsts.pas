@@ -182,6 +182,7 @@ ResourceString
   ctsCustomComponentsDirectory = 'Custom Components Directory';
   ctsToolsDirectory = 'Tools Directory';
   ctsDesignerDirectory = 'Designer Directory';
+  ctsPackagerDirectory = 'Packager Directory';
   ctsLazarusMainDirectory = 'lazarus main directory';
   ctsDebuggerDirectory = 'Debugger Directory';
   ctsLazarusSources = 'Lazarus Sources';
