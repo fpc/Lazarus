@@ -29,8 +29,6 @@ unit IdentCompletionTool;
 
 {$mode objfpc}{$H+}
 
-{$ifdef FPC}{$mode objfpc}{$endif}{$H+}
-
 interface
 
 {$I codetools.inc}
