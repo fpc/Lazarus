@@ -5090,9 +5090,9 @@ begin
   GetMem(SelectionColor,4*SizeOf(GDouble));
   try
     Color:=ColorToRGB(Color);
-    SelectionColor[0]:=(Color and $ff)/255;
-    SelectionColor[1]:=((Color shr 8) and $ff)/255;
-    SelectionColor[2]:=((Color shr 16) and $ff)/255;
+    SelectionColor[0]:=GDouble(Color and $ff)/255;
+    SelectionColor[1]:=GDouble((Color shr 8) and $ff)/255;
+    SelectionColor[2]:=GDouble((Color shr 16) and $ff)/255;
     SelectionColor[3]:=0.0;
     colorSel := GTK_COLOR_SELECTION(
       (GTK_COLOR_SELECTION_DIALOG(ColorSelection))^.colorsel);
@@ -6576,6 +6576,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.282  2002/11/12 10:16:18  lazarus
+  MG: fixed TMainMenu creation
+
   Revision 1.281  2002/11/09 18:13:33  lazarus
   MG: fixed gdkwindow checks
 
