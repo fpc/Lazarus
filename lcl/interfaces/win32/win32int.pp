@@ -19,11 +19,6 @@
  
 Unit Win32Int;
 
-{ $I checkcompiler.inc}
-
-{$MODE OBJFPC} 
-{$LONGSTRINGS ON}
-
 Interface
 
 {$IFDEF Trace}
@@ -38,13 +33,6 @@ Uses
   Windows, Classes, ComCtrls, Controls, Dialogs, DynHashArray, ExtCtrls, Forms,
   GraphType, InterfaceBase, LCLLinux, LCLType, LMessages, StdCtrls, SysUtils,
   VCLGlobals, Win32Def;
-
-Var
-  AppName: PChar;
-  FormClassName: PChar;
-
-Const
-  ClsName = 'LazarusForm';
 
 Type
   { Virtual alignment-control record }
@@ -224,6 +212,7 @@ Type
 
 Const
   BOOL_RESULT: Array[Boolean] Of String = ('False', 'True');
+  ClsName = 'LazarusForm';
 
 Var
   OldClipboardViewer: HWND;
@@ -250,6 +239,11 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.13  2002/04/03 03:41:29  lazarus
+  Keith:
+    * Removed more obsolete code
+    * Compiles again!
+
   Revision 1.12  2002/04/03 01:52:42  lazarus
   Keith: Removed obsolete code, in preperation of a pending TWin32Object cleanup
 
