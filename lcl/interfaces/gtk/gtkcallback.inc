@@ -5,8 +5,7 @@
 {$ENDIF}
 
 var
-
-MCaptureHandle : LongInt;
+FCaptureHandle : Longint;  //temporary change because of an error in the CVS code
 
 // temp solution to fill msgqueue
 function DeliverPostMessage(const Target: Pointer; var Message): GBoolean;
@@ -372,9 +371,9 @@ begin
 
   if ssLeft in ShiftState then WriteLN(Format('[GTKMotionNotify] widget: 0x%p', [widget]));
   
-  if (Pointer(MCaptureHandle) <> widget) 
-  and (MCaptureHandle <> 0)
-  then  WriteLN(Format('[GTKMotionNotify] Capture differs -->  cap:0x%x gtk:0x%p', [MCaptureHandle, gtk_grab_get_current]));
+  if (Pointer(FCaptureHandle) <> widget)
+  and (FCaptureHandle <> 0)
+  then  WriteLN(Format('[GTKMotionNotify] Capture differs -->  cap:0x%x gtk:0x%p', [FCaptureHandle, gtk_grab_get_current]));
 end;
 
 function gtkMouseBtnPress( widget: PGtkWidget; event : pgdkEventButton; data: gPointer) : GBoolean; cdecl;
@@ -1109,6 +1108,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.15  2001/01/12 18:10:54  lazarus
+  Changes for keyevents in the editor.
+  Shane
+
   Revision 1.14  2001/01/11 20:16:47  lazarus
   Added some TImageList code.
   Added a bookmark resource with 10 resource images.

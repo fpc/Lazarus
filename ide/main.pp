@@ -183,6 +183,9 @@ type
 
   public
     constructor Create(AOwner: TComponent); override;
+
+    Function SearchPaths : String;
+
     procedure LoadMainMenu;
     Procedure FormKill(Sender : TObject);
     Procedure SetFlags(SLIst : TUnitInfo);
@@ -1145,6 +1148,11 @@ Control.SetDesigning(Value);
 end;
 
 
+Function TMainIDE.SearchPaths : String;
+Begin
+    Result :=  CompilerOpts.OtherUnitFiles;
+End;
+
 
 {
 ------------------------------------------------------------------------
@@ -1894,6 +1902,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.39  2001/01/12 18:10:53  lazarus
+  Changes for keyevents in the editor.
+  Shane
+
   Revision 1.38  2001/01/09 21:06:06  lazarus
   Started taking KeyDown messages in TDesigner
   Shane

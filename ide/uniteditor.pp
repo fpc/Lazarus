@@ -102,7 +102,7 @@ type
 
     Procedure BookMarkToggle(Value : Integer);
     Procedure BookMarkGoto(Value : Integer);
-
+    Procedure EditorKeyDown(Sender : TObject; var Key: Word; Shift : TShiftState);
 
     property Editor : TmwCustomEdit read FEditor;
 
@@ -112,7 +112,6 @@ type
     Procedure AddControlCode(_Control : TComponent);
     Procedure RemoveControlCode(_Control : TComponent);
     Procedure SelectText(LineNum,CharStart,LineNum2,CharEnd : Integer);
-    Procedure KeyPressed(Sender : TObject; var key: char);
     Procedure CreateFormUnit(AForm : TCustomForm);
     Procedure CreateNewUnit;
     Function IsControlUnit : Boolean;
@@ -148,6 +147,7 @@ type
     FOnOpenFile : TNotifyFileEvent;
     FOnCloseFile : TNotifyFileEvent;
     FOnSaveFile : TNotifyFileEvent;
+    FMainIDE : TComponent;
     Function GetEmpty : Boolean;  //look at the # of pages
   protected
     Function CreateNotebook : Boolean;
@@ -180,12 +180,13 @@ type
     property OnOpenFile : TNotifyFileEvent read FOnOPenFile write FOnOPenFile;
     property OnSaveFile : TNotifyFileEvent read FOnSaveFile write FOnSaveFile;
     property Empty : Boolean read GetEmpty;
+    property MainIDE : TComponent read FMainIDE;
   end;
 
 
 implementation
 uses
-  LCLLinux,TypInfo,LResources;
+  LCLLinux,TypInfo,LResources,Main;
 
 { TSourceEditor }
 
@@ -340,6 +341,11 @@ var
   Texts : String;
   EditorLine : String;
   X : Integer;
+  Found : Boolean;
+  SearchDir : String;
+  AppDIr : String;
+  TempDir : String;
+  Num : Integer;
 Begin
   //get the text by the cursor.
   EditorLine := FEditor.Lines.Strings[GetCurrentCursorYLine-1];
@@ -361,11 +367,52 @@ Begin
   if not(((ord(upcase(Texts[x])) >= 65) and (ord(upcase(Texts[x])) <= 90))) then dec(x);
   Texts := Copy(Texts,1,X);
 
+  if Length(Texts) <= 1 then Exit;
+
+  Found := False;
+  //check the current directory
+  Found := True;
   if FileExists(Lowercase(Texts)) then TSOurceNotebook(FAOwner).OpenFile(Lowercase(Texts))
      else
   if FileExists(Lowercase(Texts)+'.pp') then TSOurceNotebook(FAOwner).OpenFile(Lowercase(Texts)+'.pp')
      else
-  if FileExists(Lowercase(Texts)+'.pas') then TSOurceNotebook(FAOwner).OpenFile(Lowercase(Texts)+'.pas');
+  if FileExists(Lowercase(Texts)+'.pas') then TSOurceNotebook(FAOwner).OpenFile(Lowercase(Texts)+'.pas')
+     else
+     Found := False;
+
+// check the default LCL directory if not Found
+     Found := True;
+  AppDir := ExtractFilePath(Application.Exename);
+  if FileExists(AppDir+'lcl'+AppDir[Length(AppDir)]+Lowercase(Texts)) then TSOurceNotebook(FAOwner).OpenFile(AppDir+'lcl'+AppDir[Length(AppDir)]+Lowercase(Texts))
+     else
+  if FileExists(AppDir+'lcl'+AppDir[Length(AppDir)]+Lowercase(Texts)+'.pp') then TSOurceNotebook(FAOwner).OpenFile(AppDir+'lcl'+AppDir[Length(AppDir)]+Lowercase(Texts)+'.pp')
+     else
+  if FileExists(AppDir+'lcl'+AppDir[Length(AppDir)]+Lowercase(Texts)+'.pas') then TSOurceNotebook(FAOwner).OpenFile(AppDir+'lcl'+AppDir[Length(AppDir)]+Lowercase(Texts)+'.pas')
+     else
+     Found := False;
+
+
+// if Not Found then
+//Get the search directories
+  SearchDir := TMainIDE(TSourceNotebook(FAOwner).MainIDE).SearchPaths;
+  Writeln('Searcvhdir is '+Searchdir);
+  Num := pos(';',SearchDir);
+  While (not Found) and (SearchDir <> '') do
+  Begin
+  if Num = 0 then Num := Length(SearchDir)+1;
+  TempDir := Copy(SearchDir,1,num-1);
+  Delete(SearchDir,1,Num);
+  Found := True;
+  if FileExists(TempDir+Lowercase(Texts)) then TSOurceNotebook(FAOwner).OpenFile(TempDir+Lowercase(Texts))
+     else
+  if FileExists(TempDir+Lowercase(Texts)+'.pp') then TSOurceNotebook(FAOwner).OpenFile(TempDir+Lowercase(Texts)+'.pp')
+     else
+  if FileExists(TempDir+Lowercase(Texts)+'.pas') then TSOurceNotebook(FAOwner).OpenFile(TempDir+Lowercase(Texts)+'.pas')
+     else
+     Found := False;
+  Num := pos(';',SearchDir);
+  end; //while
+
 
 Writeln('FILE TO OPEN WAS '+Texts);
 end;
@@ -385,6 +432,14 @@ Procedure TSourceEditor.ToggleBreakpointClicked(Sender : TObject);
 Begin
 
 end;
+
+
+Procedure TSourceEditor.EditorKeyDown(Sender : TObject; var Key: Word; Shift : TShiftState);
+Begin
+Writeln('Editor Key Down');
+Writeln('KEY IS ='+Inttostr(key));
+end;
+
 
 
 Procedure TSourceEditor.CreateEditor(AOwner : TComponent; AParent: TWinControl);
@@ -424,7 +479,7 @@ FEditor := TmwCustomEdit.Create(FAOwner);
                      KeyAttri.Foreground := clGreen;
                    end;
          end;
-      OnKeyPress := @KeyPRessed;
+      OnKeyDown := @EditorKeyDown;
   end;
 FEditor.Lines.Assign(FSource);
 
@@ -582,14 +637,10 @@ Begin
    FEditor.BlockEnd := P;
 end;
 
-Procedure TSourceEditor.KeyPressed(Sender : TObject; var key: char);
-Begin
-
-end;
 
 Function TSourceEditor.GetModified : Boolean;
 Begin
-Result := FSource <> FEditor.Lines;
+Result := FEditor.Modified;
 end;
 
 //Get's the ancestor of the FControl.
@@ -699,6 +750,7 @@ Begin
   try
     FEditor.Lines.LoadFromFile(FileName);
     FUnitName := Filename;
+    FModified := False;
   except
     Result := False;
   end;
@@ -773,6 +825,7 @@ begin
   Top := 0;
   Width := 600;
   height := 600;
+  FMainIDE := AOwner;
 
   FSourceEditorList := TList.Create;
   FSaveDialog := TSaveDialog.Create(Self);
@@ -1013,13 +1066,6 @@ Begin
 End;
 
 
-
-
-
-
-
-
-
 Procedure TSourceNotebook.OpenFile(FileName: String);
 Var
     TempEditor : TSourceEditor;
@@ -1030,7 +1076,7 @@ Begin
       TempEditor := NewSE(-1);
       TempEditor.Filename := Filename;
       TempEditor.OPen;
-      Notebook1.Pages.Strings[Notebook1.Pageindex] := TempEditor.UnitName;
+      Notebook1.Pages.Strings[Notebook1.Pageindex] := ExtractFileName(TempEditor.UnitName);
       end;
 
 end;
