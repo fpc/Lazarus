@@ -53,7 +53,9 @@ properly:
   password is 'cvs' without the ''
 
   []$ cvs -z3 co -r FIXES_1_0_0 fpc
-  
+  []$ cd fpc/fcl
+  []$ cvs -z3 update -dP -r HEAD
+
   This will create a directory fpc, which can be later used in the IDE.
 
   Hint:
