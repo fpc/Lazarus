@@ -2774,6 +2774,10 @@ begin
     SetBounds(5,GridGroupBox.Top+GridGroupBox.Height+5,
               Max(Parent.ClientWidth-2*Left,10),100);
   end;
+  with RubberbandGroupBox do begin
+    SetBounds(5,FormEditMiscGroupBox.Top+FormEditMiscGroupBox.Height+5,
+              Max(Parent.ClientWidth-2*Left,10),100);
+  end;
 end;
 
 procedure TEnvironmentOptionsDialog.ResizeObjectInspectorPage;
@@ -3152,22 +3156,25 @@ begin
 end;
 
 procedure TEnvironmentOptionsDialog.FormEditMiscGroupBoxResize(Sender: TObject);
+var
+  w: Integer;
 begin
+  w:=(FormEditMiscGroupBox.ClientWidth div 2)-10;
   with ShowComponentCaptionsCheckBox do begin
-    SetBounds(5,5,Parent.ClientWidth-2*Left,Height);
+    SetBounds(5,5,w,Height);
   end;
 
   with ShowEditorHintsCheckBox do begin
     SetBounds(ShowComponentCaptionsCheckBox.Left,
               ShowComponentCaptionsCheckBox.Top
                +ShowComponentCaptionsCheckBox.Height+5,
-              ShowComponentCaptionsCheckBox.Width,Height);
+              w,Height);
   end;
 
   with AutoCreateFormsOnOpenCheckBox do begin
     SetBounds(ShowEditorHintsCheckBox.Left,
               ShowEditorHintsCheckBox.Top+ShowEditorHintsCheckBox.Height+5,
-              ShowEditorHintsCheckBox.Width,Height);
+              w,Height);
   end;
 end;
 
