@@ -78,6 +78,8 @@ type
         IgnoreJumpCentered: boolean): boolean;
     function FindNodeInTree(ATree: TAVLTree;
         const UpperCode: string): TCodeTreeNodeExtension;
+    procedure WriteCodeTreeNodeExtTree(ExtTree: TAVLTree);
+  public
     property AdjustTopLineDueToComment: boolean
         read FAdjustTopLineDueToComment write FAdjustTopLineDueToComment;
   end;
@@ -442,6 +444,7 @@ begin
                                ProcNode,[phpInUpperCase,phpIgnoreForwards],
                                false);
       if Result then exit;
+      
       // there is no proc with same name and param list
       // gather forward procs
       if (ProcNode.Parent.Desc=ctnImplementation)
@@ -451,12 +454,17 @@ begin
         StartNode:=ProcNode.Parent.FirstChild;
       SearchForNodes:=GatherProcNodes(StartNode,
          [phpInUpperCase,phpIgnoreProcsWithBody,phpIgnoreMethods],'');
+
       // gather proc bodies
       SearchInNodes:=GatherProcNodes(StartNode,
          [phpInUpperCase,phpIgnoreForwards,phpIgnoreMethods],'');
+
       try
         // remove corresponding procs
-        RemoveCorrespondingProcNodes(SearchInNodes,SearchForNodes,true);
+        RemoveCorrespondingProcNodes(SearchForNodes,SearchInNodes,true);
+
+        //writeln('TMethodJumpingCodeTool.FindJumpPoint 2E Unforwarded Body Procs:');
+        //WriteCodeTreeNodeExtTree(SearchInNodes);
 
         // search for a proc body with same name
         // and no corresponding forward proc
@@ -573,69 +581,80 @@ begin
         exit;
       end else begin
         // search forward procedure
+        {$IFDEF CTDEBUG}
+        writeln('TMethodJumpingCodeTool.FindJumpPoint 5A searching exact forward proc ...');
+        {$ENDIF}
         Result:=FindBestProcNode(ProcNode,[phpInUpperCase],
                              StartNode,[phpInUpperCase,phpIgnoreProcsWithBody],
                              false);
-        if not Result then begin
-          // there is no proc with same name and param list
-          // gather forward procs
-          if (ProcNode.Parent.Desc=ctnImplementation)
-          and (ProcNode.Parent.PriorBrother.FirstChild<>nil) then
-            StartNode:=ProcNode.Parent.PriorBrother.FirstChild
-          else
-            StartNode:=ProcNode.Parent.FirstChild;
-          SearchInNodes:=GatherProcNodes(StartNode,
-             [phpInUpperCase,phpIgnoreProcsWithBody,phpIgnoreMethods],'');
-          // gather proc bodies
-          SearchForNodes:=GatherProcNodes(StartNode,
-             [phpInUpperCase,phpIgnoreForwards,phpIgnoreMethods],'');
-          try
-            // remove corresponding procs
-            RemoveCorrespondingProcNodes(SearchInNodes,SearchForNodes,true);
+        if Result then exit;
+        
+        {$IFDEF CTDEBUG}
+        writeln('TMethodJumpingCodeTool.FindJumpPoint 5B searching similar forward proc');
+        {$ENDIF}
+        // there is no proc with same name and param list
+        // gather forward procs
+        if (ProcNode.Parent.Desc=ctnImplementation)
+        and (ProcNode.Parent.PriorBrother.FirstChild<>nil) then
+          StartNode:=ProcNode.Parent.PriorBrother.FirstChild
+        else
+          StartNode:=ProcNode.Parent.FirstChild;
+        SearchInNodes:=GatherProcNodes(StartNode,
+           [phpInUpperCase,phpIgnoreProcsWithBody,phpIgnoreMethods],'');
+           
+        // gather proc bodies
+        SearchForNodes:=GatherProcNodes(StartNode,
+           [phpInUpperCase,phpIgnoreForwards,phpIgnoreMethods],'');
 
-            // search for a forward proc with same name
-            // and no corresponding proc body
-            SearchedProcname:=ExtractProcName(ProcNode,[phpInUpperCase]);
-            DefAVLNode:=SearchInNodes.FindLowest;
-            while DefAVLNode<>nil do begin
-              ANode:=TCodeTreeNodeExtension(DefAVLNode.Data).Node;
-              if (ANode.StartPos<ProcNode.StartPos)
-              and (CompareNodeIdentChars(ANode.FirstChild,SearchedProcname)=0)
-              then begin
-                // proc body found
-                Result:=JumpToProc(ProcNode,JumpToProcAttr,
-                                   ANode,JumpToProcAttr);
-                exit;
-              end;
-              DefAVLNode:=SearchInNodes.FindSuccessor(DefAVLNode);
+        try
+          // remove corresponding procs
+          RemoveCorrespondingProcNodes(SearchForNodes,SearchInNodes,true);
+
+          //writeln('TMethodJumpingCodeTool.FindJumpPoint 5E Forward Procs without body');
+          //WriteCodeTreeNodeExtTree(SearchInNodes);
+
+          // search for a forward proc with same name
+          // and no corresponding proc body
+          SearchedProcname:=ExtractProcName(ProcNode,[phpInUpperCase]);
+          DefAVLNode:=SearchInNodes.FindLowest;
+          while DefAVLNode<>nil do begin
+            ANode:=TCodeTreeNodeExtension(DefAVLNode.Data).Node;
+            if (ANode.StartPos<ProcNode.StartPos)
+            and (CompareNodeIdentChars(ANode.FirstChild,SearchedProcname)=0)
+            then begin
+              // proc body found
+              Result:=JumpToProc(ProcNode,JumpToProcAttr,
+                                 ANode,JumpToProcAttr);
+              exit;
             end;
-
-            // search for a forward proc with same param list
-            // and no corresponding proc body
-            SearchedParamList:=ExtractProcHead(ProcNode,[phpInUpperCase,
-                        phpWithStart,phpWithoutClassKeyword,phpWithoutClassName,
-                        phpWithoutName]);
-            DefAVLNode:=SearchInNodes.FindLowest;
-            while DefAVLNode<>nil do begin
-              ANode:=TCodeTreeNodeExtension(DefAVLNode.Data).Node;
-              if (ANode.StartPos<ProcNode.StartPos)
-              and (CompareTextIgnoringSpace(SearchedParamList,
-                ExtractProcHead(ANode,[phpInUpperCase,phpWithStart,
-                    phpWithoutClassKeyword,phpWithoutClassName,phpWithoutName]),
-                    false)=0) then
-              begin
-                // proc body found
-                Result:=JumpToProc(ProcNode,JumpToProcAttr,
-                                   ANode,JumpToProcAttr);
-                exit;
-              end;
-              DefAVLNode:=SearchInNodes.FindSuccessor(DefAVLNode);
-            end;
-
-          finally
-            NodeExtMemManager.DisposeAVLTree(SearchForNodes);
-            NodeExtMemManager.DisposeAVLTree(SearchInNodes);
+            DefAVLNode:=SearchInNodes.FindSuccessor(DefAVLNode);
           end;
+
+          // search for a forward proc with same param list
+          // and no corresponding proc body
+          SearchedParamList:=ExtractProcHead(ProcNode,[phpInUpperCase,
+                      phpWithStart,phpWithoutClassKeyword,phpWithoutClassName,
+                      phpWithoutName]);
+          DefAVLNode:=SearchInNodes.FindLowest;
+          while DefAVLNode<>nil do begin
+            ANode:=TCodeTreeNodeExtension(DefAVLNode.Data).Node;
+            if (ANode.StartPos<ProcNode.StartPos)
+            and (CompareTextIgnoringSpace(SearchedParamList,
+              ExtractProcHead(ANode,[phpInUpperCase,phpWithStart,
+                  phpWithoutClassKeyword,phpWithoutClassName,phpWithoutName]),
+                  false)=0) then
+            begin
+              // proc body found
+              Result:=JumpToProc(ProcNode,JumpToProcAttr,
+                                 ANode,JumpToProcAttr);
+              exit;
+            end;
+            DefAVLNode:=SearchInNodes.FindSuccessor(DefAVLNode);
+          end;
+
+        finally
+          NodeExtMemManager.DisposeAVLTree(SearchForNodes);
+          NodeExtMemManager.DisposeAVLTree(SearchInNodes);
         end;
       end;
     end;
@@ -643,8 +662,8 @@ begin
       exit;
     end else begin
       // no proc found
+      // -> try parent proc ...
       ProcNode:=ProcNode.Parent;
-      // try parent proc ...
     end;
   end; //while (ProcNode<>nil) and (ProcNode.Desc=ctnProcedure) do begin
 end;
@@ -877,6 +896,30 @@ begin
       exit;
   end;
   Result:=nil;
+end;
+
+procedure TMethodJumpingCodeTool.WriteCodeTreeNodeExtTree(ExtTree: TAVLTree);
+var
+  AVLNode: TAVLTreeNode;
+  ANodeExt: TCodeTreeNodeExtension;
+begin
+  writeln('TMethodJumpingCodeTool.WriteCodeTreeNodeExtTree ExtTree.Count=',ExtTree.Count);
+  AVLNode:=ExtTree.FindLowest;
+  while AVLNode<>nil do begin
+    ANodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
+    write('  ');
+    if ANodeExt.Node<>nil then begin
+      write('Node=',ANodeExt.Node.DescAsString,' Node.Start=',ANodeExt.Node.StartPos);
+      write(' "',StringToPascalConst(copy(Src,ANodeExt.Node.StartPos,30)),'"');
+    end else
+      write('Node=nil');
+    write(' Position=',ANodeExt.Position);
+    write(' Txt="',ANodeExt.Txt,'"');
+    write(' ExtTxt1="',ANodeExt.ExtTxt1,'"');
+    write(' ExtTxt2="',ANodeExt.ExtTxt2,'"');
+    writeln();
+    AVLNode:=ExtTree.FindSuccessor(AVLNode);
+  end;
 end;
 
 function TMethodJumpingCodeTool.JumpToCleanPos(NewCleanPos,
