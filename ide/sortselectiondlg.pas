@@ -28,7 +28,9 @@
 
   Author: Mattias Gaertner
   
-
+  Abstract:
+    TSortSelectionDialog is a dialog to setup the parameters for sorting
+    text selection.
 }
 unit SortSelectionDlg;
 
@@ -38,15 +40,16 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, SynEdit, Buttons, StdCtrls, ExtCtrls,
-  IDEOptionDefs, Dialogs, BasicCodeTools, AVL_Tree;
+  IDEOptionDefs, Dialogs, BasicCodeTools, AVL_Tree, EditorOptions,
+  SynEditHighlighter;
   
 type
   TSortDirection = (sdAscending, sdDescending);
-  TSortDomain = (sdWords, sdLines);
+  TSortDomain = (sdWords, sdLines, sdParagraphs);
   
   TSortSelDlgState = (ssdPreviewNeedsUpdate, ssdSortedTextNeedsUpdate);
   TSortSelDlgStates = set of TSortSelDlgState;
-
+  
   TSortSelectionDialog = class(TForm)
     PreviewGroupBox: TGroupBox;
     PreviewSynEdit: TSynEdit;
@@ -92,6 +95,7 @@ type
   end;
   
 function ShowSortSelectionDialog(const TheText: string;
+  Highlighter: TSynCustomHighlighter;
   var SortedText: string): TModalResult;
 function SortText(const TheText: string; Direction: TSortDirection;
   Domain: TSortDomain; CaseSensitive, IgnoreSpace: boolean): string;
@@ -99,15 +103,19 @@ function SortText(const TheText: string; Direction: TSortDirection;
 implementation
 
 function ShowSortSelectionDialog(const TheText: string;
+  Highlighter: TSynCustomHighlighter;
   var SortedText: string): TModalResult;
 var
   SortSelectionDialog: TSortSelectionDialog;
 begin
   SortSelectionDialog:=TSortSelectionDialog.Create(Application);
   SortSelectionDialog.TheText:=TheText;
+  SortSelectionDialog.PreviewSynEdit.Highlighter:=Highlighter;
+  EditorOpts.GetSynEditSelectedColor(SortSelectionDialog.PreviewSynEdit);
   Result:=SortSelectionDialog.ShowModal;
   if Result=mrOk then
     SortedText:=SortSelectionDialog.SortedText;
+  IDEDialogLayoutList.SaveLayout(SortSelectionDialog);
   SortSelectionDialog.Free;
 end;
 
@@ -155,6 +163,9 @@ end;
 
 function SortText(const TheText: string; Direction: TSortDirection;
   Domain: TSortDomain; CaseSensitive, IgnoreSpace: boolean): string;
+const
+  IdentChars = ['_','a'..'z','A'..'Z'];
+  SpaceChars = [' ',#9];
 var
   Settings: TTextBlockCompareSettings;
   Tree: TAVLTree;
@@ -167,6 +178,9 @@ var
   LastBlock: TTextBlock;
   LastChar: Char;
   Last2Char: Char;
+  HeaderIndent: Integer;
+  CurIndent: Integer;
+  CurPos: Integer;
 begin
   Result:=TheText;
   if Result='' then exit;
@@ -178,38 +192,91 @@ begin
   // create AVL tree
   Tree:=TAVLTree.Create(@CompareTextBlock);
   
-  // collect blocks
-  StartPos:=1;
+  // collect text blocks
   TxtLen:=length(TheText);
-  while StartPos<=TxtLen do begin
-    EndPos:=StartPos+1;
-    while (EndPos<=TxtLen) do begin
-      case Domain of
-      sdWords:
-        // check if word start
-        if (TheText[EndPos] in ['_','a'..'z','A'..'Z'])
-        and (EndPos>1)
-        and (not (TheText[EndPos-1] in ['_','a'..'z','A'..'Z']))
-        then
-          break;
+  case Domain of
+  
+  sdParagraphs:
+  begin
+    // paragraphs:
+    //   A paragraph is here a header line and all the lines to the next header
+    //   line. A header line has the same indent as the first selected line.
 
-      sdLines:
-        // check if LineEnd
-        if (TheText[EndPos] in [#10,#13]) then begin
-          inc(EndPos);
-          if (EndPos<=TxtLen) and (TheText[EndPos] in [#10,#13])
-          and (TheText[EndPos]<>TheText[EndPos-1]) then
-            inc(EndPos);
-          break;
-        end;
+    // find indent in first line
+    HeaderIndent:=0;
+    while (HeaderIndent<TxtLen) and (TheText[HeaderIndent+1] in SpaceChars) do
+      inc(HeaderIndent);
 
+    // split text into blocks
+    StartPos:=1;
+    EndPos:=StartPos;
+    while EndPos<=TxtLen do begin
+      CurPos:=EndPos;
+      // find indent of current line
+      while (CurPos<=TxtLen) and (TheText[CurPos] in SpaceChars) do
+        inc(CurPos);
+      CurIndent:=CurPos-EndPos;
+      if CurIndent=HeaderIndent then begin
+        // new block
+        if EndPos>StartPos then
+          Tree.Add(
+            TTextBlock.Create(Settings,@TheText[StartPos],EndPos-StartPos));
+        StartPos:=EndPos;
       end;
-      inc(EndPos);
+      EndPos:=CurPos;
+      // add line to block
+      // read line
+      while (EndPos<=TxtLen) and (not (TheText[EndPos] in [#10,#13])) do
+        inc(EndPos);
+      // read line end
+      if (EndPos<=TxtLen) then begin
+        inc(EndPos);
+        if (EndPos<=TxtLen) and (TheText[EndPos] in [#10,#13])
+        and (TheText[EndPos]<>TheText[EndPos-1]) then
+          inc(EndPos);
+      end;
     end;
-    if EndPos>TxtLen then EndPos:=TxtLen+1;
     if EndPos>StartPos then
       Tree.Add(TTextBlock.Create(Settings,@TheText[StartPos],EndPos-StartPos));
-    StartPos:=EndPos;
+  end;
+  
+  sdWords, sdLines:
+  begin
+    StartPos:=1;
+    while StartPos<=TxtLen do begin
+      EndPos:=StartPos+1;
+      while (EndPos<=TxtLen) do begin
+        case Domain of
+        sdWords:
+          // check if word start
+          if (TheText[EndPos] in IdentChars)
+          and (EndPos>1)
+          and (not (TheText[EndPos-1] in IdentChars))
+          then
+            break;
+
+        sdLines:
+          // check if LineEnd
+          if (TheText[EndPos] in [#10,#13]) then begin
+            inc(EndPos);
+            if (EndPos<=TxtLen) and (TheText[EndPos] in [#10,#13])
+            and (TheText[EndPos]<>TheText[EndPos-1]) then
+              inc(EndPos);
+            break;
+          end;
+
+        end;
+        inc(EndPos);
+      end;
+      if EndPos>TxtLen then EndPos:=TxtLen+1;
+      if EndPos>StartPos then
+        Tree.Add(TTextBlock.Create(Settings,@TheText[StartPos],EndPos-StartPos));
+      StartPos:=EndPos;
+    end;
+  end;
+  
+  else
+    writeln('ERROR: Domain not implemented');
   end;
   
   // build sorted text
@@ -219,7 +286,7 @@ begin
     ABlock:=TTextBlock(ANode.Data);
     Result:=Result+copy(TheText,ABlock.Start-PChar(TheText)+1,ABlock.Len);
     case Domain of
-    sdLines:
+    sdLines,sdParagraphs:
       if not (Result[length(Result)] in [#10,#13]) then begin
         // this was the last line before the sorting
         // if it moved, then copy the line end of the new last line
@@ -292,10 +359,13 @@ end;
 
 procedure TSortSelectionDialog.DomainRadioGroupClick(Sender: TObject);
 begin
-  if DomainRadioGroup.ItemIndex=0 then
-    Domain:=sdLines
+  case DomainRadioGroup.ItemIndex of
+  0: Domain:=sdLines;
+  1: Domain:=sdWords;
+  2: Domain:=sdParagraphs;
   else
-    Domain:=sdWords;
+    Domain:=sdLines;
+  end;
 end;
 
 procedure TSortSelectionDialog.IgnoreSpaceCheckBoxClick(Sender: TObject);
@@ -414,7 +484,8 @@ begin
       BeginUpdate;
       Add('Lines');
       Add('Words');
-      Columns:=2;
+      Add('Paragraphs');
+      Columns:=3;
       EndUpdate;
     end;
     OnClick:=@DomainRadioGroupClick;
