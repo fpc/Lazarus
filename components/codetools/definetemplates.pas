@@ -241,6 +241,8 @@ type
     procedure RemoveProjectSpecificOnly;
     procedure RemoveProjectSpecificAndParents;
     procedure RemoveNonAutoCreated;
+    function GetIncludePathForDirectory(const Directory: string): string;
+    function GetSrcPathForDirectory(const Directory: string): string;
     constructor Create;
     destructor Destroy; override;
     function  ConsistencyCheck: integer; // 0 = ok
@@ -1307,6 +1309,29 @@ begin
   if FFirstDefineTemplate=nil then exit;
   FFirstDefineTemplate.MarkNonAutoCreated;
   RemoveMarked;
+end;
+
+function TDefineTree.GetIncludePathForDirectory(const Directory: string
+  ): string;
+var ExprEval: TExpressionEvaluator;
+begin
+  ExprEval:=GetDefinesForDirectory(Directory);
+  if ExprEval<>nil then begin
+    Result:=ExprEval.Variables[ExternalMacroStart+'IncPath'];
+  end else begin
+    Result:='';
+  end;
+end;
+
+function TDefineTree.GetSrcPathForDirectory(const Directory: string): string;
+var ExprEval: TExpressionEvaluator;
+begin
+  ExprEval:=GetDefinesForDirectory(Directory);
+  if ExprEval<>nil then begin
+    Result:=ExprEval.Variables[ExternalMacroStart+'SrcPath'];
+  end else begin
+    Result:='';
+  end;
 end;
 
 function TDefineTree.GetDefinesForDirectory(

@@ -149,6 +149,10 @@ type
           read FOnBeforeApplyChanges write FOnBeforeApplyChanges;
     property OnAfterApplyChanges: TOnAfterApplyChanges
           read FOnAfterApplyChanges write FOnAfterApplyChanges;
+          
+    // defines
+    function GetIncludePathForDirectory(const Directory: string): string;
+    function GetSrcPathForDirectory(const Directory: string): string;
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -454,6 +458,18 @@ end;
 function TCodeToolManager.ApplyChanges: boolean;
 begin
   Result:=SourceChangeCache.Apply;
+end;
+
+function TCodeToolManager.GetIncludePathForDirectory(const Directory: string
+  ): string;
+begin
+  Result:=DefineTree.GetIncludePathForDirectory(Directory);
+end;
+
+function TCodeToolManager.GetSrcPathForDirectory(const Directory: string
+  ): string;
+begin
+  Result:=DefineTree.GetSrcPathForDirectory(Directory);
 end;
 
 function TCodeToolManager.InitCurCodeTool(Code: TCodeBuffer): boolean;

@@ -152,7 +152,7 @@ begin
   // Include Path
   if CompOpts.IncludeFiles<>'' then begin
     // add include paths
-    ProjTempl.AddChild(TDefineTemplate.Create('INCLUDEPATH',
+    ProjTempl.AddChild(TDefineTemplate.Create('IncludePath',
       'include path addition',ExternalMacroStart+'INCPATH',
       ConvertTransferMacrosToExternalMacros(CompOpts.IncludeFiles)+';'
       +'$('+ExternalMacroStart+'INCPATH)',

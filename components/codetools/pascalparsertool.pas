@@ -1221,7 +1221,8 @@ begin
       end else if UpAtomIs('EXTERNAL') then begin
         HasForwardModifier:=true;
         ReadNextAtom;
-        ReadConstant(true,false,[]);
+        if not UpAtomIs('NAME') then
+          ReadConstant(true,false,[]);
         if UpAtomIs('NAME') or UpAtomIs('INDEX') then begin
           ReadNextAtom;
           ReadConstant(true,false,[]);

@@ -694,6 +694,7 @@ begin
 
   // output filter
   TheOutputFilter:=TOutputFilter.Create;
+  TheOutputFilter.OnGetIncludePath:=@CodeToolBoss.GetIncludePathForDirectory;
 
   // compiler interface
   TheCompiler := TCompiler.Create;
@@ -6223,6 +6224,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.242  2002/03/08 11:37:40  lazarus
+  MG: outputfilter can now find include files
+
   Revision 1.241  2002/03/07 14:14:23  lazarus
   MG: fixed find declaration new nodecache flags, find next
 
