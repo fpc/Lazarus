@@ -118,7 +118,7 @@ end;
 
 procedure TBitmap.ReadStream(Stream: TStream; Size: Longint);
 type
-  BITMAP = record
+  BITMAP = packed record
           bmType : Longint;
           bmWidth : Longint;
           bmHeight : Longint;
@@ -129,7 +129,7 @@ type
        end;
   PBITMAP = ^BITMAP;
 
-  BITMAPINFOHEADER = record
+  BITMAPINFOHEADER = packed record
           biSize : DWORD;
           biWidth : Longint;
           biHeight : Longint;
@@ -143,14 +143,14 @@ type
           biClrImportant : DWORD;
        end;
 
-  RGBQUAD = record
+  RGBQUAD = packed record
           rgbBlue : BYTE;
           rgbGreen : BYTE;
           rgbRed : BYTE;
-          rgbReserved : BYTE;
+   //       rgbReserved : BYTE;
        end;
 
-  BITMAPINFO = record
+  BITMAPINFO = packed record
           bmiHeader : BITMAPINFOHEADER;
           bmiColors : array[0..0] of RGBQUAD;
        end;
@@ -211,7 +211,7 @@ begin
       GetMem(Bits,ImgSize);
       try
         ReadSize:=Stream.Read(Bits^,ImgSize);
-        if ReadSize<>InfoSize then
+        if ReadSize<>ImgSize then
           raise EInOutError.Create('Invalid windows bitmap (bits)');
 
         // ToDo: create a bitmap handle
@@ -311,6 +311,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.4  2001/03/12 09:40:44  lazarus
+  MG: bugfix for readstream
+
   Revision 1.3  2001/03/05 14:20:04  lazarus
   added streaming to tgraphic, added tpicture
 
