@@ -1927,7 +1927,7 @@ var CleanCursorPos, Indent, insertPos: integer;
         // -> find it and jump to
 
         // reparse code
-        BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos,[]);
+        BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos,[],true);
         // find CodeTreeNode at cursor
         CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
 
@@ -2362,7 +2362,7 @@ begin
   Result:=false;
   if (SourceChangeCache=nil) then 
     RaiseException('need a SourceChangeCache');
-  BuildTreeAndGetCleanPos(trAll,CursorPos, CleanCursorPos,[]);
+  BuildTreeAndGetCleanPos(trAll,CursorPos, CleanCursorPos,[],true);
 
   // find CodeTreeNode at cursor
   CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);

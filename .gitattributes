@@ -67,6 +67,7 @@ components/synedit/synhighlighterxml.pas svneol=native#text/pascal
 components/synedit/synmacrorecorder.pas svneol=native#text/pascal
 components/synedit/synmemo.pas svneol=native#text/pascal
 components/synedit/syntextdrawer.pp svneol=native#text/pascal
+components/turbopower_ipro/ipdefine.inc svneol=native#text/pascal
 debugger/breakpointsdlg.lfm svneol=native#text/plain
 debugger/breakpointsdlg.lrs svneol=native#text/pascal
 debugger/breakpointsdlg.pp svneol=native#text/pascal
