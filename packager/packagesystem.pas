@@ -885,7 +885,8 @@ begin
     UsageOptions.UnitPath:=
       '$(LazarusDir)/lcl/units;$(LazarusDir)/lcl/units/$(LCLWidgetType)';
     // add include path
-    CompilerOptions.IncludeFiles:='$(LazarusDir)/lcl/include';
+    CompilerOptions.IncludeFiles:=
+      '$(LazarusDir)/lcl/include;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)';
 
     // use the lcl/units/allunits.o file as indicator,
     // if LCL has been recompiled
