@@ -1,13 +1,13 @@
 object DirSelDlg: TDirSelDlg
   ActiveControl = TV
-  BorderStyle = bsdialog
+  BorderStyle = BSDIALOG
   Caption = 'Select Directory'
   ClientHeight = 330
   ClientWidth = 335
-  FormStyle = fsstayontop
+  FormStyle = FSSTAYONTOP
   OnCreate = FormCreate
   OnShow = FormShow
-  Position = poscreencenter
+  Position = POSCREENCENTER
   HorzScrollBar.Page = 336
   HorzScrollBar.Range = 14
   VertScrollBar.Page = 331
@@ -17,8 +17,8 @@ object DirSelDlg: TDirSelDlg
   Top = 234
   Width = 335
   object Panel1: TPanel
-    Align = albottom
-    BevelOuter = bvnone
+    Align = ALBOTTOM
+    BevelOuter = BVNONE
     ClientHeight = 41
     ClientWidth = 335
     TabOrder = 0
@@ -27,7 +27,7 @@ object DirSelDlg: TDirSelDlg
     Top = 289
     Width = 335
     object Button1: TButton
-      Anchors = [akright, akbottom]
+      Anchors = [AKRIGHT, AKBOTTOM]
       ModalResult = 1
       Caption = 'OK'
       TabStop = True
@@ -38,7 +38,7 @@ object DirSelDlg: TDirSelDlg
       Width = 75
     end
     object Button2: TButton
-      Anchors = [akright, akbottom]
+      Anchors = [AKRIGHT, AKBOTTOM]
       ModalResult = 2
       Cancel = True
       Caption = 'Cancel'
@@ -51,8 +51,8 @@ object DirSelDlg: TDirSelDlg
     end
   end
   object Panel2: TPanel
-    Align = alleft
-    BevelOuter = bvnone
+    Align = ALLEFT
+    BevelOuter = BVNONE
     ClientHeight = 265
     ClientWidth = 7
     TabOrder = 1
@@ -62,8 +62,8 @@ object DirSelDlg: TDirSelDlg
     Width = 7
   end
   object Panel3: TPanel
-    Align = altop
-    BevelOuter = bvnone
+    Align = ALTOP
+    BevelOuter = BVNONE
     ClientHeight = 24
     ClientWidth = 335
     TabOrder = 2
@@ -73,7 +73,7 @@ object DirSelDlg: TDirSelDlg
     object Label1: TLabel
       Caption = '&Directory'
       FocusControl = TV
-      Layout = tlcenter
+      Layout = TLCENTER
       Left = 140
       Height = 15
       Top = 4
@@ -81,8 +81,8 @@ object DirSelDlg: TDirSelDlg
     end
   end
   object Panel4: TPanel
-    Align = alright
-    BevelOuter = bvnone
+    Align = ALRIGHT
+    BevelOuter = BVNONE
     ClientHeight = 265
     ClientWidth = 7
     TabOrder = 3
@@ -93,14 +93,15 @@ object DirSelDlg: TDirSelDlg
     Width = 7
   end
   object TV: TTreeView
-    Align = alclient
+    Align = ALCLIENT
     Constraints.MinHeight = 100
     Constraints.MinWidth = 100
     DefaultItemHeight = 17
+    DragCursor = 65524
     ParentColor = True
     ParentCtl3D = False
     ParentFont = True
-    ScrollBars = ssvertical
+    ScrollBars = SSVERTICAL
     TabOrder = 4
     OnDblClick = TVItemDoubleClick
     OnExpanded = TVExpanded

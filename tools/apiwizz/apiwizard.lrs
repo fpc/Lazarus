@@ -3,18 +3,18 @@
 LazarusResources.Add('TApiWizForm','FORMDATA',[
   'TPF0'#11'TApiWizForm'#10'ApiWizForm'#7'Caption'#6#7'ApiWiZZ'#12'ClientHeight'
   +#3#17#1#11'ClientWidth'#3#248#1#8'OnCreate'#7#16'ApiWizFormCreate'#8'Positio'
-  +'n'#7#16'podefaultposonly'#18'HorzScrollBar.Page'#3#249#1#18'VertScrollBar.P'
+  +'n'#7#16'PODEFAULTPOSONLY'#18'HorzScrollBar.Page'#3#249#1#18'VertScrollBar.P'
   +'age'#3#18#1#4'Left'#3'f'#1#6'Height'#3#17#1#3'Top'#3#185#0#5'Width'#3#248#1
-  +#0#6'TLabel'#10'lblDeclare'#7'Caption'#6#12'Declaration:'#6'Layout'#7#5'tlto'
-  +'p'#4'Left'#2#4#6'Height'#2#16#3'Top'#2'D'#5'Width'#2'x'#0#0#6'TLabel'#10'lb'
-  +'lLazarus'#7'Caption'#6#12'Lazarus dir:'#6'Layout'#7#5'tltop'#4'Left'#2#4#6
+  +#0#6'TLabel'#10'lblDeclare'#7'Caption'#6#12'Declaration:'#6'Layout'#7#5'TLTO'
+  +'P'#4'Left'#2#4#6'Height'#2#16#3'Top'#2'D'#5'Width'#2'x'#0#0#6'TLabel'#10'lb'
+  +'lLazarus'#7'Caption'#6#12'Lazarus dir:'#6'Layout'#7#5'TLTOP'#4'Left'#2#4#6
   +'Height'#2#16#3'Top'#2#16#5'Width'#2'x'#0#0#5'TEdit'#10'txtDeclare'#7'Anchor'
-  +'s'#11#5'aktop'#6'akleft'#7'akright'#0#7'TabStop'#9#8'TabOrder'#2#0#4'Left'#2
+  +'s'#11#5'AKTOP'#6'AKLEFT'#7'AKRIGHT'#0#7'TabStop'#9#8'TabOrder'#2#0#4'Left'#2
   +#4#6'Height'#2#24#3'Top'#2'X'#5'Width'#3#236#1#0#0#7'TButton'#11'cmdGenerate'
-  +#7'Anchors'#11#7'akright'#8'akbottom'#0#7'Caption'#6#8'Generate'#7'TabStop'#9
+  +#7'Anchors'#11#7'AKRIGHT'#8'AKBOTTOM'#0#7'Caption'#6#8'Generate'#7'TabStop'#9
   +#8'TabOrder'#2#2#7'OnClick'#7#16'cmdGenerateClick'#4'Left'#3#165#1#6'Height'
   +#2#28#3'Top'#3#238#0#5'Width'#2'K'#0#0#5'TEdit'#10'txtLazarus'#7'Anchors'#11
-  +#5'aktop'#6'akleft'#7'akright'#0#7'TabStop'#9#8'TabOrder'#2#1#4'Left'#2#4#6
+  +#5'AKTOP'#6'AKLEFT'#7'AKRIGHT'#0#7'TabStop'#9#8'TabOrder'#2#1#4'Left'#2#4#6
   +'Height'#2#24#3'Top'#2'$'#5'Width'#3#236#1#3'Tag'#3#237#1#0#0#11'TRadioGroup'
   +#10'rdgApiType'#7'Caption'#6#8'Api type'#9'ItemIndex'#2#0#13'Items.Strings'#1
   +#6#19'win32 compatibility'#6#13'LCL interface'#0#7'OnClick'#7#15'rdgApiTypeC'
@@ -26,10 +26,10 @@ LazarusResources.Add('TApiWizForm','FORMDATA',[
   +#6#5'win32'#0#4'Left'#2#26#6'Height'#2'P'#3'Top'#2#30#5'Width'#3#128#0#4'Dat'
   +'a'#10#7#0#0#0#3#0#0#0#2#2#2#0#0#12'TRadioButton'#13'rbIndependent'#8'AutoSi'
   +'ze'#9#11'AllowGrayed'#9#7'Caption'#6#11'Independent'#7'Checked'#9#5'State'#7
-  +#9'cbchecked'#10'DragCursor'#7#9'crDefault'#8'TabOrder'#2#1#7'TabStop'#9#7'O'
-  +'nClick'#7#25'rbPlatformDependencyClick'#4'Left'#2#10#6'Height'#2#20#3'Top'#2
+  +#9'CBCHECKED'#10'DragCursor'#4#244#255#0#0#8'TabOrder'#2#1#7'TabStop'#9#7'On'
+  +'Click'#7#25'rbPlatformDependencyClick'#4'Left'#2#10#6'Height'#2#20#3'Top'#2
   +#3#5'Width'#2's'#0#0#12'TRadioButton'#11'rbDependent'#8'AutoSize'#9#11'Allow'
-  +'Grayed'#9#7'Caption'#6#9'Dependent'#10'DragCursor'#7#9'crDefault'#8'TabOrde'
-  +'r'#2#2#7'TabStop'#9#7'OnClick'#7#25'rbPlatformDependencyClick'#4'Left'#2#10
-  +#6'Height'#2#20#3'Top'#2#30#5'Width'#2'j'#0#0#0#0
+  +'Grayed'#9#7'Caption'#6#9'Dependent'#10'DragCursor'#4#244#255#0#0#8'TabOrder'
+  +#2#2#7'TabStop'#9#7'OnClick'#7#25'rbPlatformDependencyClick'#4'Left'#2#10#6
+  +'Height'#2#20#3'Top'#2#30#5'Width'#2'j'#0#0#0#0
 ]);

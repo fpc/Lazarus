@@ -12,13 +12,14 @@ object Form1: TForm1
   Top = 249
   Width = 455
   object tv_eg1: TTreeView
-    Align = alleft
+    Align = ALLEFT
     DefaultItemHeight = 17
+    DragCursor = 65524
     HideSelection = False
     Indent = 19
     ParentCtl3D = False
     TabOrder = 0
-    Options = [tvoautoitemheight, tvokeepcollapsednodes, tvoshowbuttons, tvoshowlines, tvoshowroot, tvotooltips]
+    Options = [TVOAUTOITEMHEIGHT, TVOKEEPCOLLAPSEDNODES, TVOSHOWBUTTONS, TVOSHOWLINES, TVOSHOWROOT, TVOTOOLTIPS]
     Height = 427
     Width = 196
   end

@@ -10,7 +10,7 @@ object DocEditorWnd: TDocEditorWnd
   Top = 167
   Width = 598
   object ButtonsPanel: TPanel
-    Align = altop
+    Align = ALTOP
     Caption = 'ButtonsPanel'
     ClientHeight = 28
     ClientWidth = 598
@@ -20,8 +20,9 @@ object DocEditorWnd: TDocEditorWnd
     Width = 598
   end
   object ContextTreeview: TTreeView
-    Align = alleft
+    Align = ALLEFT
     DefaultItemHeight = 17
+    DragCursor = 65524
     ParentCtl3D = False
     TabOrder = 1
     Height = 368
@@ -29,7 +30,7 @@ object DocEditorWnd: TDocEditorWnd
     Width = 121
   end
   object FilesNotebook: TNotebook
-    Align = alclient
+    Align = ALCLIENT
     Left = 121
     Height = 368
     Top = 28

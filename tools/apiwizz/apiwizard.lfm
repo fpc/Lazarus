@@ -3,7 +3,7 @@ object ApiWizForm: TApiWizForm
   ClientHeight = 273
   ClientWidth = 504
   OnCreate = ApiWizFormCreate
-  Position = podefaultposonly
+  Position = PODEFAULTPOSONLY
   HorzScrollBar.Page = 505
   VertScrollBar.Page = 274
   Left = 358
@@ -12,7 +12,7 @@ object ApiWizForm: TApiWizForm
   Width = 504
   object lblDeclare: TLabel
     Caption = 'Declaration:'
-    Layout = tltop
+    Layout = TLTOP
     Left = 4
     Height = 16
     Top = 68
@@ -20,14 +20,14 @@ object ApiWizForm: TApiWizForm
   end
   object lblLazarus: TLabel
     Caption = 'Lazarus dir:'
-    Layout = tltop
+    Layout = TLTOP
     Left = 4
     Height = 16
     Top = 16
     Width = 120
   end
   object txtDeclare: TEdit
-    Anchors = [aktop, akleft, akright]
+    Anchors = [AKTOP, AKLEFT, AKRIGHT]
     TabStop = True
     TabOrder = 0
     Left = 4
@@ -36,7 +36,7 @@ object ApiWizForm: TApiWizForm
     Width = 492
   end
   object cmdGenerate: TButton
-    Anchors = [akright, akbottom]
+    Anchors = [AKRIGHT, AKBOTTOM]
     Caption = 'Generate'
     TabStop = True
     TabOrder = 2
@@ -47,7 +47,7 @@ object ApiWizForm: TApiWizForm
     Width = 75
   end
   object txtLazarus: TEdit
-    Anchors = [aktop, akleft, akright]
+    Anchors = [AKTOP, AKLEFT, AKRIGHT]
     TabStop = True
     TabOrder = 1
     Left = 4
@@ -100,7 +100,8 @@ object ApiWizForm: TApiWizForm
       AllowGrayed = True
       Caption = 'Independent'
       Checked = True
-      State = cbchecked
+      State = CBCHECKED
+      DragCursor = 65524
       TabOrder = 1
       TabStop = True
       OnClick = rbPlatformDependencyClick
@@ -113,6 +114,7 @@ object ApiWizForm: TApiWizForm
       AutoSize = True
       AllowGrayed = True
       Caption = 'Dependent'
+      DragCursor = 65524
       TabOrder = 2
       TabStop = True
       OnClick = rbPlatformDependencyClick
