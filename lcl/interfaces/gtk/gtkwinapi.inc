@@ -4879,8 +4879,8 @@ begin
     end;
 }
 // Writeln('SetCapture result is '+inttostr(result));
-   if MCaptureHandle <>  0 then
-     SendMessage(MCaptureHandle, LM_CAPTURECHANGED, 0, Result);
+    if MCaptureHandle <>  0 then
+      SendMessage(MCaptureHandle, LM_CAPTURECHANGED, 0, Result);
   end;
      
   Assert(False, Format('Trace:< [TgtkObject.SetCapture] 0x%x --> 0x%x', [Value, Result]));
@@ -6134,6 +6134,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.113  2002/08/27 18:45:15  lazarus
+  MG: propedits text improvements from Andrew, uncapturing, improved comobobox
+
   Revision 1.112  2002/08/27 06:40:51  lazarus
   MG: ShortCut support for buttons from Andrew
 
