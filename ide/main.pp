@@ -2804,7 +2804,9 @@ writeln('[TMainIDE.DoOpenEditorFile] C');
       if NewBuf<>nil then begin
         LFMFilename:=ChangeFileExt(NewBuf.Filename,'.lfm');
         if FileExists(LFMFilename) then
-          NewBuf:=CodeToolBoss.LoadFile(LFMFilename);
+          NewBuf:=CodeToolBoss.LoadFile(LFMFilename)
+        else
+          NewBuf:=nil;
       end;
     end;
     
@@ -4962,7 +4964,7 @@ var
   ActiveUnitInfo: TUnitInfo;
   NewJumpPoint: TProjectJumpHistoryPosition;
 begin
-writeln('[TMainIDE.OnSrcNoteBookAddJumpPoint] A Line=',ACaretXY.Y,',DeleteForwardHistory=',DeleteForwardHistory,' Count=',Project.JumpHistory.Count,',HistoryIndex=',Project.JumpHistory.HistoryIndex);
+//writeln('[TMainIDE.OnSrcNoteBookAddJumpPoint] A Line=',ACaretXY.Y,',DeleteForwardHistory=',DeleteForwardHistory,' Count=',Project.JumpHistory.Count,',HistoryIndex=',Project.JumpHistory.HistoryIndex);
   ActiveUnitInfo:=Project.UnitWithEditorIndex(APageIndex);
   if (ActiveUnitInfo=nil) then exit;
   NewJumpPoint:=TProjectJumpHistoryPosition.Create(ActiveUnitInfo.Filename,
@@ -4972,8 +4974,8 @@ writeln('[TMainIDE.OnSrcNoteBookAddJumpPoint] A Line=',ACaretXY.Y,',DeleteForwar
     NewJumpPoint);
   if Project.JumpHistory.HistoryIndex=Project.JumpHistory.Count-2 then
     Project.JumpHistory.HistoryIndex:=Project.JumpHistory.Count-1;
-writeln('[TMainIDE.OnSrcNoteBookAddJumpPoint] END Line=',ACaretXY.Y,',DeleteForwardHistory=',DeleteForwardHistory,' Count=',Project.JumpHistory.Count,',HistoryIndex=',Project.JumpHistory.HistoryIndex);
-Project.JumpHistory.WriteDebugReport;
+//writeln('[TMainIDE.OnSrcNoteBookAddJumpPoint] END Line=',ACaretXY.Y,',DeleteForwardHistory=',DeleteForwardHistory,' Count=',Project.JumpHistory.Count,',HistoryIndex=',Project.JumpHistory.HistoryIndex);
+//Project.JumpHistory.WriteDebugReport;
 end;
 
 Procedure TMainIDE.OnSrcNotebookDeleteLastJumPoint(Sender: TObject);
@@ -4987,7 +4989,7 @@ var DestIndex, UnitIndex, NewHistoryIndex: integer;
   ActiveSrcEdit: TSourceEditor;
   DestJumpPoint: TProjectJumpHistoryPosition;
 begin
-writeln('[TMainIDE.OnSrcNotebookJumpToHistoryPoint] A Back=',Action=jhaBack);
+//writeln('[TMainIDE.OnSrcNotebookJumpToHistoryPoint] A Back=',Action=jhaBack);
   { jumping back/forward is also a jump, that's why the current source position
     should be saved to the jump history before the jump.
     The InsertSmart method prevents putting positions twice in the history. }
@@ -4995,7 +4997,7 @@ writeln('[TMainIDE.OnSrcNotebookJumpToHistoryPoint] A Back=',Action=jhaBack);
   // update jump history (e.g. delete jumps to closed editors)
   Project.JumpHistory.DeleteInvalidPositions;
   
-writeln('[TMainIDE.OnSrcNotebookJumpToHistoryPoint] B Count=',Project.JumpHistory.Count,',HistoryIndex=',Project.JumpHistory.HistoryIndex);
+//writeln('[TMainIDE.OnSrcNotebookJumpToHistoryPoint] B Count=',Project.JumpHistory.Count,',HistoryIndex=',Project.JumpHistory.HistoryIndex);
   DestIndex:=Project.JumpHistory.HistoryIndex;
   if Action=jhaForward then begin
     inc(DestIndex,2);
@@ -5004,7 +5006,7 @@ writeln('[TMainIDE.OnSrcNotebookJumpToHistoryPoint] B Count=',Project.JumpHistor
   end;
   if (DestIndex<0) or (DestIndex>=Project.JumpHistory.Count) then exit;
   DestJumpPoint:=Project.JumpHistory[DestIndex];
-writeln('[TMainIDE.OnSrcNotebookJumpToHistoryPoint] C Line=',DestJumpPoint.CaretXY.Y);
+//writeln('[TMainIDE.OnSrcNotebookJumpToHistoryPoint] C Line=',DestJumpPoint.CaretXY.Y);
   NewHistoryIndex:=Project.JumpHistory.HistoryIndex;
   if Action=jhaBack then begin
     dec(NewHistoryIndex);
@@ -5029,8 +5031,8 @@ writeln('[TMainIDE.OnSrcNotebookJumpToHistoryPoint] C Line=',DestJumpPoint.Caret
     end;
     NewPageIndex:=Project.Units[UnitIndex].EditorIndex;
   end;
-writeln('[TMainIDE.OnSrcNotebookJumpToHistoryPoint] END Count=',Project.JumpHistory.Count,',HistoryIndex=',Project.JumpHistory.HistoryIndex);
-Project.JumpHistory.WriteDebugReport;
+//writeln('[TMainIDE.OnSrcNotebookJumpToHistoryPoint] END Count=',Project.JumpHistory.Count,',HistoryIndex=',Project.JumpHistory.HistoryIndex);
+//Project.JumpHistory.WriteDebugReport;
 end;
 
 Procedure TMainIDE.OnSrcNotebookViewJumpHistory(Sender : TObject);
@@ -5149,6 +5151,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.169  2001/12/10 22:39:36  lazarus
+  MG: added perl highlighter
+
   Revision 1.168  2001/12/10 16:22:40  lazarus
   MG: started open file at cursor
 

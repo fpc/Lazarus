@@ -7,18 +7,18 @@
 
  /***************************************************************************
 }
-unit allunits;
+unit AllUnits;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  syntextdrawer, syneditkeycmds, synedittypes, syneditstrconst,
-  syneditsearch, syneditmiscprocs, syneditmiscclasses, synedittextbuffer,
-  synedit, synedithighlighter, synhighlighterpas, syncompletion,
-  syneditautocomplete, synhighlighterhtml, synhighlightercpp, synhighlighterxml,
-  synhighlighterlfm;
+  SynTextDrawer, SynEditKeyCmds, SynEditTypes, SynEditStrConst,
+  SynEditSearch, SynEditMiscProcs, SynEditmiscClasses, SynEditTextbuffer,
+  SynEdit, SynEditHighlighter, SynhighlighterPas, SynCompletion,
+  SynEditAutoComplete, SynhighlighterHTML, SynhighlighterCPP, SynHighlighterXML,
+  SynHighlighterLFM, SynHighlighterPerl;
 	
 implementation
 
@@ -27,6 +27,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.9  2001/12/10 22:39:37  lazarus
+  MG: added perl highlighter
+
   Revision 1.8  2001/12/06 10:15:06  lazarus
   MG: added xml and lfm highlighter
 

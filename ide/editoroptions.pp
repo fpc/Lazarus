@@ -8,14 +8,14 @@
     Currently only for TSynEdit.
 
   ToDo:
-   - Code template adding does not scroll listbox and the synedit is all white 
-   - color schemes, key mapping schemes
+   - Code template adding does not scroll listbox
+   - key mapping schemes
    - Resizing
    - SetSynEditSettings
    - nicer TColorButton
    - create LFM file
 }
-unit editoroptions;
+unit EditorOptions;
 
 {$mode objfpc}{$H+}
 
@@ -30,7 +30,7 @@ uses
 {$ifdef NEW_EDITOR_SYNEDIT}
   SynEdit, SynEditHighlighter, SynEditAutoComplete, SynEditKeyCmds,
   SynHighlighterPas, SynHighlighterHTML, SynHighlighterCPP, SynHighlighterXML,
-  SynHighlighterLFM,
+  SynHighlighterLFM, SynHighlighterPerl,
 {$else}
   mwCustomEdit, mwPasSyn, mwHighlighter,
 {$endif}
@@ -52,7 +52,7 @@ type
 
   TLazSyntaxHighlighter =
     (lshNone, lshText, lshFreePascal, lshDelphi, lshLFM, lshXML, lshHTML,
-     lshCPP);
+     lshCPP, lshPerl);
 
   TAdditionalHilightAttribute = (ahaNone, ahaTextBlock, ahaExecutionPoint,
     ahaEnabledBreakpoint, ahaDisabledBreakpoint, ahaErrorLine);
@@ -71,7 +71,7 @@ const
   
   LazSyntaxHighlighterClasses: array[TLazSyntaxHighlighter] of TCustomSynClass =
     ( nil, nil, TSynPasSyn, TSynPasSyn, TSynLFMSyn, TSynXMLSyn, TSynHTMLSyn,
-      TSynCPPSyn);
+      TSynCPPSyn, TSynPerlSyn);
     
 type
   { TEditOptLanguageInfo stores lazarus IDE additional information
@@ -477,7 +477,8 @@ const
      'LFM',
      'XML',
      'HTML',
-     'C++'
+     'C++',
+     'Perl'
    );
 
 var
@@ -502,7 +503,7 @@ const
   CompatibleLazSyntaxHilighter:
     array[TLazSyntaxHighlighter] of TLazSyntaxHighlighter= (
         lshNone, lshText, lshFreePascal, lshFreePascal, lshLFM, lshXML, lshHTML,
-        lshCPP
+        lshCPP, lshPerl
       );
       
   DefaultColorScheme = 'Default';
@@ -843,6 +844,37 @@ begin
       Add('Number=Number');
       Add('Space=Space');
       Add('String=String');
+      Add('Symbol=Symbol');
+    end;
+  end;
+  Add(NewInfo);
+  
+  // create info for Perl
+  NewInfo:=TEditOptLanguageInfo.Create;
+  with NewInfo do begin
+    TheType:=CompatibleLazSyntaxHilighter[lshPerl];
+    SynClass:=LazSyntaxHighlighterClasses[TheType];
+    FileExtensions:='pl;pm;cgi';
+    SampleSource:=
+      '#!/usr/bin/perl'#13+
+      '# Perl sample code'#13+
+      ''#13+
+      '$i = "10";'#13+
+      'print "$ENV{PATH}\n";'#13+
+      '($i =~ /\d+/) || die "Error\n";'#13+
+      ''#13+
+      '# Text Block'#13+
+      ''#13+
+      #13;
+    AddAttrSampleLines[ahaTextBlock]:=8;
+    MappedAttributes:=TStringList.Create;
+    with MappedAttributes do begin
+      Add('Comment=Comment');
+      Add('Identifier=Identifier');
+      Add('KeyAttri=Reserved_word');
+      Add('NumberAttri=Number');
+      Add('SpaceAttri=Space');
+      Add('StringAttri=String');
       Add('Symbol=Symbol');
     end;
   end;

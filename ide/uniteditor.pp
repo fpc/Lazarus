@@ -3,9 +3,6 @@
                                UnitEditor.pp
                              -------------------
 
-
-
-
  ***************************************************************************/
 
 /***************************************************************************
@@ -97,7 +94,7 @@ type
     FOnMouseDown: TMouseEvent;
     FOnKeyDown: TKeyEvent;
 
-    Procedure EditorMouseMoved(Sender: TObject; Shift: TShiftState; X,Y: Integer);
+    Procedure EditorMouseMoved(Sender: TObject; Shift: TShiftState; X,Y:Integer);
     Procedure EditorMouseDown(Sender: TObject; Button: TMouseButton;
           Shift: TShiftState; X,Y: Integer);
     Procedure EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -678,19 +675,19 @@ end;
 
 procedure TSourceEditor.OnReplace(Sender: TObject; const ASearch, AReplace:
   string; Line, Column: integer; var Action: TSynReplaceAction);
-var a:integer;
-  ACaption,AText:AnsiString;
+var a,x,y:integer;
+  AText:AnsiString;
 begin
-  ACaption:='Prompt for replace';
   AText:='Replace this occurrence of '''+ASearch+''' with '''+AReplace+'''?';
 
-//  a:=Application.MessageBox(PChar(AText),PChar(ACaption),MB_YESNOCANCEL);
-  a:=MessageDlg(ACaption,AText,mtconfirmation,[mbyes, mbno, mbcancel],0);
+  GetDialogPosition(300,150,X,Y);
+  a:=MessageDlgPos(AText,mtconfirmation,
+            [mbYes,mbYesToAll,mbNo,mbCancel],0,X,Y);
 
   case a of
     mrYes:Action:=raReplace;
     mrNo :Action:=raSkip;
-    mrAll:Action:=raReplaceAll;
+    mrAll,mrYesToAll:Action:=raReplaceAll;
   else
     Action:=raCancel;
   end;

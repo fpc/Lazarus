@@ -13,7 +13,7 @@ units=syntextdrawer syneditkeycmds synedittypes syneditstrconst \
   syneditsearch syneditmiscprocs syneditmiscclasses synedittextbuffer \
   synedit synedithighlighter synhighlighterpas syncompletion \
   syneditautocomplete synhighlighterhtml synhighlightercpp \
-  synhighlighterxml synhighlighterlfm
+  synhighlighterxml synhighlighterlfm synhighlighterperl
 
 [default]
             

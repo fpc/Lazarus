@@ -237,7 +237,8 @@ type
     function GetTokenPos: Integer; override;
     procedure Next; override;
     procedure ResetRange; override;
-    procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: string; LineNumber:Integer); override;
+    procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: string;
+      LineNumber:Integer); override;
     procedure SetRange(Value: Pointer); override;
     function UseUserSettings(settingIndex: integer): boolean; override;
     procedure EnumUserSettings(settings: TStrings); override;

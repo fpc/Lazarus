@@ -429,8 +429,8 @@ function MessageDlgPos(const aMsg: string; DlgType: TMsgDlgType;
 var
   aDialog : TForm;
 begin
-  writeln ('MessageDlgPos ****** NOT YET FULLY IMPLEMENTED ********');
   aDialog := CreateMessageDialog (aMsg, DlgType, buttons);
+  aDialog.Position:=poDefault;
   aDialog.Left := x;
   aDialog.Top := y;
   Result := aDialog.ShowModal;
@@ -463,6 +463,9 @@ end;
 
 {
    $Log$
+   Revision 1.8  2001/12/10 22:39:37  lazarus
+   MG: added perl highlighter
+
    Revision 1.7  2001/10/16 10:51:10  lazarus
    MG: added clicked event to TButton, MessageDialog reacts to return key
 

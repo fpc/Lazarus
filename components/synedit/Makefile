@@ -147,7 +147,7 @@ endif
 PACKAGESDIR:=$(wildcard $(FPCDIR) $(FPCDIR)/packages)
 override PACKAGE_NAME=lazarus
 override PACKAGE_VERSION=0.8
-override TARGET_UNITS+=syntextdrawer syneditkeycmds synedittypes syneditstrconst syneditsearch syneditmiscprocs syneditmiscclasses synedittextbuffer synedit synedithighlighter synhighlighterpas syncompletion syneditautocomplete synhighlighterhtml synhighlightercpp synhighlighterxml synhighlighterlfm
+override TARGET_UNITS+=syntextdrawer syneditkeycmds synedittypes syneditstrconst syneditsearch syneditmiscprocs syneditmiscclasses synedittextbuffer synedit synedithighlighter synhighlighterpas syncompletion syneditautocomplete synhighlighterhtml synhighlightercpp synhighlighterxml synhighlighterlfm synhighlighterperl
 override DIST_ZIPNAME=lazarus.synedit.$(ZIPSUFFIX)
 override COMPILER_OPTIONS+=-gl
 override COMPILER_UNITDIR+=$(COMPILER_UNITTARGETDIR) ../../lcl/units ../../lcl/units/$(LCLPLATFORM)
