@@ -277,6 +277,9 @@ end.
 
 {
   $Log$
+  Revision 1.25  2004/03/26 21:20:54  vincents
+  Fixed line endings
+
   Revision 1.24  2004/03/17 19:59:56  marc
   * Fixes some typos and changes uses clause cases
 

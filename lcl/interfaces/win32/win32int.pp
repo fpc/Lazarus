@@ -224,6 +224,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.75  2004/03/26 21:20:54  vincents
+  Fixed line endings
+
   Revision 1.74  2004/03/19 00:53:34  marc
   * Removed all ComponentCreateHandle routines
 

@@ -460,6 +460,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.179  2004/03/26 21:20:54  vincents
+  Fixed line endings
+
   Revision 1.178  2004/03/24 01:21:41  marc
   * Simplified signals for gtkwsbutton
 
