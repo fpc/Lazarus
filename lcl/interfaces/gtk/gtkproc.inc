@@ -1918,7 +1918,9 @@ procedure ConnectInternalWidgetsSignals(AWidget: PGtkWidget;
     ChildEntry: PGSList;
     ChildWidget: PGtkWidget;
   begin
+    //if AWinControl is TListView then writeln('ConnectChilds A ',HexStr(Cardinal(TheWidget),8));
     if GtkWidgetIsA(TheWidget,GTK_TYPE_CONTAINER) then begin
+      //if AWinControl is TListView then writeln('ConnectChilds B ');
       // this is a container widget -> connect all childs
       ContainerWidget:=PGtkContainer(TheWidget);
       ChildEntry:=ContainerWidget^.resize_widgets;
@@ -1929,15 +1931,18 @@ procedure ConnectInternalWidgetsSignals(AWidget: PGtkWidget;
       end;
     end;
     if GtkWidgetIsA(TheWidget,GTK_TYPE_BIN) then begin
+      //if AWinControl is TListView then writeln('ConnectChilds C ');
       BinWidget:=PGtkBin(TheWidget);
       ConnectSignals(BinWidget^.child);
     end;
     if GtkWidgetIsA(TheWidget,GTK_TYPE_SCROLLED_WINDOW) then begin
+      //if AWinControl is TListView then writeln('ConnectChilds D ');
       ScrolledWindow:=PGtkScrolledWindow(TheWidget);
       ConnectSignals(ScrolledWindow^.hscrollbar);
       ConnectSignals(ScrolledWindow^.vscrollbar);
     end;
     if GtkWidgetIsA(TheWidget,GTK_TYPE_COMBO) then begin
+      //if AWinControl is TListView then writeln('ConnectChilds E ');
       ConnectSignals(PGtkCombo(TheWidget)^.entry);
       ConnectSignals(PGtkCombo(TheWidget)^.button);
     end;
@@ -1949,14 +1954,20 @@ procedure ConnectInternalWidgetsSignals(AWidget: PGtkWidget;
     DesignSignalType: TDesignSignalType;
     DesignFlags: TConnectSignalFlags;
   begin
+    //if AWinControl is TListView then writeln('ConnectSignals A ',HexStr(Cardinal(TheWidget),8));
     if TheWidget=nil then exit;
     
     // check if TheWidget belongs to another LCL object
     LCLObject:=GetLCLObject(TheWidget);
     HiddenLCLObject:=GetHiddenLCLObject(TheWidget);
-    if (LCLObject<>nil) and (LCLObject<>AWinControl) then exit;
-    if (HiddenLCLObject<>nil) and (HiddenLCLObject<>AWinControl) then exit;
+    if (LCLObject<>nil) and (LCLObject<>AWinControl) then begin
+      exit;
+    end;
+    if (HiddenLCLObject<>nil) and (HiddenLCLObject<>AWinControl) then begin
+      exit;
+    end;
 
+    //if AWinControl is TListView then writeln('ConnectSignals B ',HexStr(Cardinal(TheWidget),8));
     // connect signals needed for design mode:
     for DesignSignalType:=Low(TDesignSignalType) to High(TDesignSignalType) do
     begin
@@ -4091,6 +4102,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.178  2003/06/03 10:29:22  mattias
+  implemented updates between source marks and breakpoints
+
   Revision 1.177  2003/06/03 08:02:33  mattias
   implemented showing source lines in breakpoints dialog
 
