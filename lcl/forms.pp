@@ -1649,8 +1649,12 @@ end;
 
 constructor TApplicationProperties.Create(AOwner: TComponent);
 begin
-  If (FindRootDesigner(Self)<>nil) then
-    WE_MIGHT_BE_DESIGNING := True;
+  If (FindRootDesigner(Self)<>nil) or
+    (FindRootDesigner(AOwner)<>nil) or
+    (Application.Title = 'lazarus')
+  then
+    WE_MIGHT_BE_DESIGNING := True;//temp hack, should be replaced later
+                                  //with (csDesigning in ComponentState)
 
   If WE_MIGHT_BE_DESIGNING then begin
     FCaptureExceptions:=true;
