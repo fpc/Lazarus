@@ -1811,6 +1811,7 @@ var
   Style : TTextStyle;
   OldColor : TColor;
 begin
+  FillChar(Style,SizeOf(Style),0);
   With Style do begin
     Alignment := taLeftJustify;
     Layout := tlCenter;

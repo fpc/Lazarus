@@ -698,7 +698,8 @@ begin
     RRGN := CreateRectRgn(R.Left,R.Top,R.Right, R.Bottom);
     Result := SelectClipRGN(DC, RRGN);
     DeleteObject(RRGN);
-  end;
+  end else
+    Result:=ERROR;
   DeleteObject(Clip);
   If Result <> ERROR then begin
     RRGN := CreateRectRgn(Left, Top, Right, Bottom);
@@ -1511,6 +1512,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.72  2002/02/09 02:30:56  mattias
+  added patch from Jeroen van Idekinge
+
   Revision 1.71  2002/02/09 01:48:23  mattias
   renamed TinterfaceObject.Init to AppInit and TWinControls can now contain childs in gtk
 

@@ -159,29 +159,26 @@ begin
   if (FGDIObjects.Count > 0)  
   then begin  
     WriteLN(Format('[TgtkObject.Destroy] WARNING: There are %d unreleased GDIObjects, a detailed dump follows:' ,[FGDIObjects.Count]));  
-    for GDIType := Low(GDIType) to High(GDIType) do 
-    begin
-      for GDIType := Low(GDIType) to High(GDIType) do 
-        GDITypeCount[GDIType] := 0;
-        
-      n:=0;
-      write('[TgtkObject.Destroy]   GDIOs:');
-      HashItem := FGDIObjects.FirstHashItem;
-      while (HashItem <> nil) do 
-      begin
-        if n < 7 
-        then write(' ',HexStr(Cardinal(HashItem^.Item),8));
-        
-        Inc(GDITypeCount[PGdiObject(HashItem^.Item)^.GDIType]);
-        HashItem := HashItem^.Next;
-        Inc(n);
-      end; 
-      Writeln();
+    for GDIType := Low(GDIType) to High(GDIType) do
+      GDITypeCount[GDIType] := 0;
       
-      for GDIType := Low(GDIType) to High(GDIType) do 
-        if GDITypeCount[GDIType] > 0 
-        then WriteLN(Format('[TgtkObject.Destroy]   %s: %d', [GDITYPENAME[GDIType], GDITypeCount[GDIType]]));
+    n:=0;
+    write('[TgtkObject.Destroy]   GDIOs:');
+    HashItem := FGDIObjects.FirstHashItem;
+    while (HashItem <> nil) do
+    begin
+      if n < 7
+      then write(' ',HexStr(Cardinal(HashItem^.Item),8));
+
+      Inc(GDITypeCount[PGdiObject(HashItem^.Item)^.GDIType]);
+      HashItem := HashItem^.Next;
+      Inc(n);
     end;
+    Writeln();
+    
+    for GDIType := Low(GDIType) to High(GDIType) do 
+      if GDITypeCount[GDIType] > 0 then
+        WriteLN(Format('[TgtkObject.Destroy]   %s: %d', [GDITYPENAME[GDIType], GDITypeCount[GDIType]]));
   end;
 
   if FMessageQueue.Count > 0 
@@ -3125,7 +3122,9 @@ begin
   ClientWidget:=GetFixedWidget(MainWidget);
   WinWidgetInfo:=GetWidgetInfo(MainWidget,false);
   if WinWidgetInfo<>nil then
-    ImplWidget:=WinWidgetInfo^.ImplementationWidget;
+    ImplWidget:=WinWidgetInfo^.ImplementationWidget
+  else
+    ImplWidget:=nil;
 
   gtk_signal_handlers_destroy(PGtkObject(MainWidget));
   if (ClientWidget<>nil) and (ClientWidget<>MainWidget) then
@@ -6717,6 +6716,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.299  2002/02/09 02:30:56  mattias
+  added patch from Jeroen van Idekinge
+
   Revision 1.298  2002/02/09 01:48:23  mattias
   renamed TinterfaceObject.Init to AppInit and TWinControls can now contain childs in gtk
 
