@@ -1,4 +1,3 @@
-
 {  $Id$  }
 {
  /***************************************************************************
@@ -1517,6 +1516,9 @@ end.
 
 {
   $Log$
+  Revision 1.15  2002/09/11 15:04:49  lazarus
+  MG: added stringhashlist.pas
+
   Revision 1.14  2002/09/10 06:49:18  lazarus
   MG: scrollingwincontrol from Andrew
 
