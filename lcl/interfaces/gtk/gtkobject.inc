@@ -3941,12 +3941,10 @@ begin
 
   csForm :
     begin
-      Assert(Sender is TForm);
-
-      if csDesigning in TForm(Sender).ComponentState then
+      if csDesigning in TCustomForm(Sender).ComponentState then
         ABorderStyle:=bsSizeable
       else
-        ABorderStyle:=TForm(Sender).BorderStyle;
+        ABorderStyle:=TCustomForm(Sender).BorderStyle;
       
       p := gtk_window_new(FormStyleMap[ABorderStyle]);
 
@@ -3987,6 +3985,13 @@ begin
         Drag_Icon := gdk_pixmap_colormap_create_from_xpm_d (nil,
                              gtk_widget_get_colormap (p), @Drag_Mask,
                              nil, @IMGDrag_Icon);
+
+      // main menu
+      if (TCustomForm(Sender).Menu<>nil)
+      and (TCustomForm(Sender).Menu.HandleAllocated) then begin
+        gtk_box_pack_start(Box, PGtkWidget(TCustomForm(Sender).Menu.Handle),
+                           False, False, 0);
+      end;
     end;
 
   csFrame :
@@ -4147,8 +4152,10 @@ begin
         RaiseException('MainMenu without form');
       if ParentForm.Menu<>TMenu(Sender) then
         RaiseException('form has already a MainMenu');
-      Box := PGTKBin(ParentForm.Handle)^.Child;
-      gtk_box_pack_start(Box, p, False, False, 0);
+      if ParentForm.HandleAllocated then begin
+        Box := PGTKBin(ParentForm.Handle)^.Child;
+        gtk_box_pack_start(Box, p, False, False, 0);
+      end;
       gtk_widget_show(p);
     end;
 
@@ -4797,7 +4804,7 @@ begin
   
   // get the menu container and its components: pixmap and label
   MenuWidget:=gtk_notebook_get_menu_label(PGtkNoteBook(NotebookWidget),
-                                             PageWidget);
+                                          PageWidget);
   if MenuWidget<>nil then begin
     MenuPixmapWidget:=gtk_object_get_data(PGtkObject(MenuWidget), 'TabPixmap');
     MenuLabelWidget:=gtk_object_get_data(PGtkObject(MenuWidget), 'TabLabel');
@@ -6510,6 +6517,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.264  2002/10/24 08:56:30  lazarus
+  MG: fixed TnoteBook AddPage and double creation of MeinMenu
+
   Revision 1.263  2002/10/24 06:12:43  lazarus
   MG: minor cleanups
 
