@@ -581,7 +581,6 @@ Begin
         Begin
           If Handle <> 0 Then
           begin
-            RemoveProp(Handle, 'Lazarus');
             DestroyAcceleratorTable(Windows.GetProp(Handle, 'Accel'));
             DestroyWindow(Handle);
           end;
@@ -2887,6 +2886,9 @@ End;
 
 {
   $Log$
+  Revision 1.148  2003/12/19 18:20:02  micha
+  delay property removal until wm_destroy (thx vincent)
+
   Revision 1.147  2003/12/19 18:18:17  micha
   fix window activation z-order
 
