@@ -500,9 +500,9 @@ begin
    begin 
       if TMenu(AObject).HandleAllocated then handle := TMenu(AObject).Items.Handle 
    end
-   else if (AObject is TCustomDialog) then
+   else if (AObject is TCommonDialog) then
    begin
-      {if TCustomDialog(AObject).HandleAllocated then } handle := TCustomDialog(AObject).Handle
+      {if TCommonDialog(AObject).HandleAllocated then } handle := TCommonDialog(AObject).Handle
    end
    else begin
       Assert(False, 'Trace:Message received with unhandled class-type'); 
@@ -654,6 +654,10 @@ end;
 
  {
   $Log$
+  Revision 1.3  2000/08/10 10:55:45  lazarus
+  Changed TCustomDialog to TCommonDialog
+  Shane
+
   Revision 1.2  2000/07/30 21:48:34  lazarus
   MWE:
     = Moved ObjectToGTKObject to GTKProc unit

@@ -282,7 +282,7 @@ begin
             Assert(False, 'Trace:removing timer!!!');
             gtk_timeout_remove((Sender as TTimer).TimerID);
          end
-         else if (Sender is TWinControl) or (Sender is TCustomDialog) 
+         else if (Sender is TWinControl) or (Sender is TCommonDialog)
             then gtk_widget_destroy( PGtkWidget(Handle))
          else
             Assert (False, Format ('Trace:Dont know how to destroy component %s', [sender.classname]));
@@ -445,12 +445,12 @@ begin
 
       LM_ShowModal :
       begin
-         if Sender is TCustomDialog then
+         if Sender is TCommonDialog then
          begin
             // Should be done elsewhere (eg via SetLabel) not here!
-            pStr:= StrAlloc(Length(TCustomDialog(Sender).Title) + 1);
+            pStr:= StrAlloc(Length(TCommonDialog(Sender).Title) + 1);
             try
-               StrPCopy(pStr, TCustomDialog(Sender).Title);
+               StrPCopy(pStr, TCommonDialog(Sender).Title);
                gtk_window_set_title(PGtkWindow(handle), pStr);
             finally
                StrDispose(pStr);
@@ -1481,8 +1481,8 @@ begin
    end
    else if (Sender is TMenu) 
       then CompStyle := TMenu(Sender).FCompStyle
-   else if (Sender is TCustomDialog) 
-      then CompStyle := TCustomDialog(Sender).FCompStyle
+   else if (Sender is TCommonDialog)
+      then CompStyle := TCommonDialog(Sender).FCompStyle
    else if (Sender is TTimer) 
       then CompStyle := csTimer;
 
@@ -1905,8 +1905,8 @@ begin
      then TMenuItem(Sender).Handle := HMenu(p)
    else if (Sender is TMenu)
      then TMenu(Sender).Items.Handle := HMenu(p)
-   else if (Sender is TCustomDialog) 
-     then TCustomDialog(Sender).Handle:= THandle(p);
+   else if (Sender is TCommonDialog)
+     then TCommonDialog(Sender).Handle:= THandle(p);
 
 
 //Set these for functions like GetWindowLong  Added 01/07/2000
@@ -2619,6 +2619,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.7  2000/08/10 10:55:45  lazarus
+  Changed TCustomDialog to TCommonDialog
+  Shane
+
   Revision 1.6  2000/08/09 18:32:10  lazarus
   Added more code for the find function.
   Shane

@@ -1,19 +1,19 @@
 {******************************************************************************
-                                  TCustomDialog
+                                  TCommonDialog
  ******************************************************************************}
 {------------------------------------------------------------------------------
-  Method: TCustomDialog.Create
+  Method: TCommonDialog.Create
   Params:  AOwner: the owner of the class
   Returns: Nothing
 
   Constructor for the class.
  ------------------------------------------------------------------------------}
-constructor TCustomDialog.Create (AOwner : TComponent);
+constructor TCommonDialog.Create (AOwner : TComponent);
 begin
    inherited Create(AOwner);
 end;
 
-function TCustomDialog.Execute : boolean;
+function TCommonDialog.Execute : boolean;
 begin
   FUserChoice := mrNone;
   CNSendMessage(LM_CREATE, Self, nil);
@@ -22,7 +22,7 @@ begin
   FHandle := 0;
 end;
 
-function TCustomDialog.DoExecute : boolean;
+function TCommonDialog.DoExecute : boolean;
 begin
   if Assigned(FOnShow) then FOnShow(Self);
   Assert(False, 'Trace:Calling dialog - LM_SHOWMODAL');
@@ -38,6 +38,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.2  2000/08/10 10:55:45  lazarus
+  Changed TCustomDialog to TCommonDialog
+  Shane
+
   Revision 1.1  2000/07/13 10:28:25  michael
   + Initial import
 

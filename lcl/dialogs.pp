@@ -47,9 +47,7 @@ const
 
 
 type
-//   TCustomDialog = class(TComponent)
-//   TCustomDialog = class(TWinControl)
-   TCustomDialog = class(TCustomForm)
+   TCommonDialog = class(TComponent)
    private
      FHandle : integer;
      FOnShow, FOnClose : TNotifyEvent;
@@ -57,7 +55,7 @@ type
      FUserChoice: integer;
    protected
    public
-//      FCompStyle : LongInt;
+      FCompStyle : LongInt;
       constructor Create (AOwner : TComponent); override;
       function DoExecute : boolean; virtual;
       function Execute : boolean; virtual;
@@ -68,7 +66,7 @@ type
       property OnShow : TNotifyEvent read FOnShow write FOnShow;
    end;
 
-   TFileDialog = class(TCustomDialog)
+   TFileDialog = class(TCommonDialog)
    private
       FFileName : String;
       FFilter: String;
@@ -92,7 +90,7 @@ type
    end;
 
 
-   TColorDialog = class(TCustomDialog)
+   TColorDialog = class(TCommonDialog)
    private
       FColor : TColor;
    public
@@ -100,7 +98,7 @@ type
       property Color : TColor read FColor write FColor;
    end;
 
-   TFontDialog = class(TCustomDialog)
+   TFontDialog = class(TCommonDialog)
    private
       FFontName : String;
    public
@@ -113,7 +111,7 @@ implementation
 uses
   SysUtils;
 
-{$I customdialog.inc}
+{$I commondialog.inc}
 {$I filedialog.inc}
 {$I colordialog.inc}
 {$I fontdialog.inc}
@@ -122,6 +120,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.3  2000/08/10 10:55:45  lazarus
+  Changed TCustomDialog to TCommonDialog
+  Shane
+
   Revision 1.2  2000/08/09 18:32:10  lazarus
   Added more code for the find function.
   Shane

@@ -397,7 +397,7 @@ end;
 
 function gtkDialogOKclickedCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
-   theDialog : TCustomDialog;
+   theDialog : TCommonDialog;
    Fpointer : Pointer;
    colorArray : array[0..2] of double;
    colorsel : GTK_COLOR_SELECTION;
@@ -405,9 +405,9 @@ var
    FontName : String;
 begin
    Result := True;
-   theDialog := TCustomDialog(data);
+   theDialog := TCommonDialog(data);
    FPointer := Pointer(theDialog.Handle);
-//   gtk_grab_remove(PgtkWidget(TCustomDialog(data).Handle));
+//   gtk_grab_remove(PgtkWidget(TCommonDialog(data).Handle));
    if theDialog is TFileDialog then
    begin
       TFileDialog(data).FileName := gtk_file_selection_get_filename(PGtkFileSelection(FPointer));
@@ -436,11 +436,11 @@ begin
 
 function gtkDialogCancelclickedCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
-   theDialog : TCustomDialog;
+   theDialog : TCommonDialog;
 begin
    Result := True;
-   theDialog := TCustomDialog(data);
-//   gtk_grab_remove(PgtkWidget(TCustomDialog(data).Handle));
+   theDialog := TCommonDialog(data);
+//   gtk_grab_remove(PgtkWidget(TCommonDialog(data).Handle));
    if theDialog is TFileDialog then
    begin
       TFileDialog(data).FileName := '';
@@ -451,11 +451,11 @@ begin
 
 function gtkDialogDestroyCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
-   theDialog : TCustomDialog;
+   theDialog : TCommonDialog;
 begin
    Result := True;
-   theDialog := TCustomDialog(data);
-//   gtk_grab_remove(PgtkWidget(TCustomDialog(data).Handle));
+   theDialog := TCommonDialog(data);
+//   gtk_grab_remove(PgtkWidget(TCommonDialog(data).Handle));
  {  if theDialog is TFileDialog then
    begin
       TFileDialog(data).FileName := '';
@@ -1032,6 +1032,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.3  2000/08/10 10:55:45  lazarus
+  Changed TCustomDialog to TCommonDialog
+  Shane
+
   Revision 1.2  2000/07/30 21:48:33  lazarus
   MWE:
     = Moved ObjectToGTKObject to GTKProc unit
