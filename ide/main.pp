@@ -1029,6 +1029,7 @@ begin
   FreeThenNil(TheOutputFilter);
   FreeThenNil(MacroList);
   FreeThenNil(LazProjectFileDescriptors);
+  FreeThenNil(LazProjectDescriptors);
   // IDE options objects
   FreeThenNil(CodeToolsOpts);
   FreeThenNil(MiscellaneousOptions);
@@ -10906,6 +10907,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.782  2004/10/01 19:56:10  vincents
+  fix LazProjectDescriptors memleak
+
   Revision 1.781  2004/10/01 11:23:07  mattias
   implemented custom project types
 
