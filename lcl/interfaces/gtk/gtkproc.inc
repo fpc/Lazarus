@@ -483,22 +483,44 @@ end;
  ------------------------------------------------------------------------------}
 function GtkPaintMessageToPaintMessage(const GtkPaintMsg: TLMGtkPaint;
   FreeGtkPaintMsg: boolean): TLMPaint;
+var
+  PS : PPaintStruct;
 begin
   Result.Msg:=LM_PAINT;
-  Result.DC:=GetDC(THandle(GtkPaintMsg.Data.Widget));
-  Result.Unused:=0;
+  New(PS);
+  PS^.hDC:=0;
+  If GtkPaintMsg.Data.RepaintAll then
+    PS^.rcPaint := Rect(0,0,0,0)
+  else
+    PS^.rcPaint := GtkPaintMsg.Data.Rect;
+  Result.DC:=BeginPaint(THandle(GtkPaintMsg.Data.Widget), PS^);
+  Result.PaintStruct:=PS;
   Result.Result:=0;
   if FreeGtkPaintMsg then
     GtkPaintMsg.Data.Free;
 end;
 
 procedure FinalizePaintMessage(Msg: PLMessage);
+var
+  PS : PPaintStruct;
+  DC : TDeviceContext;
 begin
   if Msg^.Msg=LM_PAINT then begin
-    if Msg^.WParam<>0 then begin
-      ReleaseDC(0,Msg^.WParam);
-      Msg^.WParam:=0;
-    end;
+    If Msg^.LParam <> 0 then begin
+       PS := PPaintStruct(Msg^.LParam);
+       If Msg^.WParam<>0 then
+         DC := TDeviceContext(Msg^.WParam)
+       else
+         DC := TDeviceContext(PS^.hdc);
+       EndPaint(THandle(DC.wnd), PS^);
+       Dispose(PS);
+       Msg^.LParam:=0;
+       Msg^.WParam:=0;
+    end else
+      if Msg^.WParam<>0 then begin
+        ReleaseDC(0,Msg^.WParam);
+        Msg^.WParam:=0;
+      end;
   end else
   if Msg^.Msg=LM_GtkPAINT then begin
     FreeThenNil(TLMGtkPaint(Msg^).Data);
@@ -506,12 +528,26 @@ begin
 end;
 
 procedure FinalizePaintTagMsg(Msg: PMsg);
+var
+  PS : PPaintStruct;
+  DC : TDeviceContext;
 begin
   if Msg^.Message=LM_PAINT then begin
-    if Msg^.WParam<>0 then begin
-      ReleaseDC(0,Msg^.WParam);
-      Msg^.WParam:=0;
-    end;
+    If Msg^.LParam <> 0 then begin
+       PS := PPaintStruct(Msg^.LParam);
+       If Msg^.WParam<>0 then
+         DC := TDeviceContext(Msg^.WParam)
+       else
+         DC := TDeviceContext(PS^.hdc);
+       EndPaint(THandle(DC.wnd), PS^);
+       Dispose(PS);
+       Msg^.LParam:=0;
+       Msg^.WParam:=0;
+    end else
+      if Msg^.WParam<>0 then begin
+        ReleaseDC(0,Msg^.WParam);
+        Msg^.WParam:=0;
+      end;
   end else
   if Msg^.Message=LM_GtkPAINT then begin
     FreeThenNil(TObject(Msg^.WParam));
@@ -4707,6 +4743,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.207  2003/09/17 19:40:46  ajgenius
+  Initial DoubleBuffering Support for GTK2
+
   Revision 1.206  2003/09/17 15:26:41  mattias
   fixed removing TPage
 

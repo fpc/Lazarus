@@ -35,6 +35,19 @@ const
 
 //##apiwiz##sps##   // Do not remove
 
+function TgtkObject.BeginPaint(Handle: hWnd; Var PS : TPaintStruct) : hdc;
+begin
+  PS.hDC:=GetDC(Handle);
+  Result := PS.hDC;
+end;
+
+Function TgtkObject.EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer;
+begin
+  Result:=1;
+  if PS.HDC <> 0 then
+    ReleaseDC(Handle, PS.HDC);
+end;
+
 {------------------------------------------------------------------------------
   Method:   Arc
   Params:   x,y,width,height,angle1,angle2
@@ -7074,25 +7087,29 @@ begin
       end;
       {$ENDIF}
       if Msg=LM_GtkPAINT then begin
-        // convert LM_GtkPAINT to LM_PAINT
         GtkPaintData:=TLMGtkPaintData(AMessage.wParam);
-        AMessage.Msg := LM_PAINT;
-        PaintDC:= GetDC(THandle(HandleWnd));
-        AMessage.WParam := PaintDC;
-        if (GtkPaintData<>nil) and (not GtkPaintData.RepaintAll) then begin
-          DCOrigin:=GetDCOffset(TDeviceContext(PaintDC));
-          //writeln('TGTKObject.SendMessage C ',DCOrigin.X,',',DCOrigin.Y);
-          with GtkPaintData.Rect do
-            IntersectClipRect(PaintDC,Left-DCOrigin.X,Top-DCOrigin.Y,
-                              Right-DCOrigin.X,Bottom-DCOrigin.Y);
-        end;
-        GtkPaintData.Free;
+        // convert LM_GtkPAINT to LM_PAINT
+         AMessage := TLMessage(GtkPaintMessageToPaintMessage(TLMGtkPaint(AMessage), True));
+        {$IfDef GTK1}
+         if (GtkPaintData<>nil) and (not GtkPaintData.RepaintAll) then begin
+           DCOrigin:=GetDCOffset(TDeviceContext(PaintDC));
+            with GtkPaintData.Rect do
+              IntersectClipRect(PaintDC,Left-DCOrigin.X,Top-DCOrigin.Y,
+                                Right-DCOrigin.X,Bottom-DCOrigin.Y);
+          end;
+        {$EndIf}
       end;
     end;
 
     // deliver it
     Result := DeliverMessage(Target, AMessage);
-    
+
+    if Msg=LM_GtkPAINT then begin
+      FinalizePaintMessage(@AMessage);
+      if (csDesigning in TComponent(Target).ComponentState)
+      and (TObject(Target) is TWinControl) then
+        SendPaintMessagesForInternalWidgets(TWinControl(Target));
+    end else
     if (AMessage.Msg=LM_PAINT) and (AMessage.WParam<>0) then begin
       // free DC
       ReleaseDC(0,AMessage.WParam);
@@ -8777,6 +8794,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.283  2003/09/17 19:40:46  ajgenius
+  Initial DoubleBuffering Support for GTK2
+
   Revision 1.282  2003/09/16 11:35:14  mattias
   started TDBCheckBox
 

@@ -53,8 +53,6 @@ uses
 type
   TGtk2Object = class(TGtkObject)
   public
-    function GetCursorPos(var lpPoint: TPoint ): Boolean; override;
-    function LoadStockPixmap(StockID: longint) : HBitmap; override;
     {$Ifdef USE_PANGO} // we should implement pango for gtk2 soon
     function DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer; override;
     function ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean; override;
@@ -63,6 +61,12 @@ type
     function GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean; override;
     procedure UpdateDCTextMetric(DC: TDeviceContext); override;
     {$EndIf}
+
+    function BeginPaint(Handle: hWnd; Var PS : TPaintStruct) : hdc; override;
+    Function EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer; override;
+
+    function GetCursorPos(var lpPoint: TPoint ): Boolean; override;
+    function LoadStockPixmap(StockID: longint) : HBitmap; override;
   end;
 
 
@@ -893,6 +897,41 @@ end;
 
 {$EndIf}
 
+function Tgtk2Object.BeginPaint(Handle: hWnd; Var PS : TPaintStruct) : hdc;
+var
+  paintrect : TGDKRectangle;
+begin
+  result := Inherited BeginPaint(Handle, PS);
+
+  If (Handle <> 0) and (not GTK_WIDGET_DOUBLE_BUFFERED((PGTKWidget(Handle)))) then
+  begin
+    paintrect.x := PS.rcPaint.Left;
+    paintrect.y := PS.rcPaint.Top;
+    paintrect.width := PS.rcPaint.Right- PS.rcPaint.Left;
+    paintrect.height := PS.rcPaint.Bottom - PS.rcPaint.Top;
+    if (paintrect.width <= 0) or (paintrect.height <=0) then begin
+      paintrect.x := 0;
+      paintrect.y := 0;
+      gdk_drawable_get_size(TDeviceContext(Result).Drawable, @paintrect.width, @paintrect.height);
+    end;
+    gdk_window_freeze_updates(TDeviceContext(Result).Drawable);
+    gdk_window_begin_paint_rect (TDeviceContext(Result).Drawable, @paintrect);
+  end;
+end;
+
+Function Tgtk2Object.EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer;
+begin
+  If (Handle <> 0) and (not GTK_WIDGET_DOUBLE_BUFFERED((PGTKWidget(Handle)))) then
+  begin
+    if PS.HDC <> 0 then begin
+      gdk_window_end_paint (TDeviceContext(PS.HDC).Drawable);
+      gdk_window_thaw_updates(TDeviceContext(PS.HDC).Drawable);
+    end;
+  end;
+
+  result := Inherited EndPaint(Handle, PS);
+end;
+
 {------------------------------------------------------------------------------
   Function: GetCursorPos
   Params:  lpPoint: The cursorposition
@@ -1001,6 +1040,9 @@ end.
 
 {
   $Log$
+  Revision 1.13  2003/09/17 19:40:46  ajgenius
+  Initial DoubleBuffering Support for GTK2
+
   Revision 1.12  2003/09/15 16:42:02  ajgenius
   mostly fixed ExtTextOut
 

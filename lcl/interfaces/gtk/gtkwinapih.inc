@@ -21,6 +21,8 @@
 }
 
 //##apiwiz##sps##   // Do not remove
+function BeginPaint(Handle: hWnd; Var PS : TPaintStruct) : hdc; override;
+Function EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer; override;
 
 function Arc(DC: HDC; x,y,width,height,angle1,angle2 : Integer): Boolean; override;
 function AngleChord(DC: HDC; x,y,width,height,angle1,angle2 : Integer): Boolean; override;
@@ -212,6 +214,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.77  2003/09/17 19:40:46  ajgenius
+  Initial DoubleBuffering Support for GTK2
+
   Revision 1.76  2003/08/26 08:12:33  mattias
   applied listbox/combobox patch from Karl
 

@@ -547,7 +547,7 @@ type
   TLMPaint = packed record
     Msg: Cardinal;
     DC: HDC;
-    Unused: Longint;
+    PaintStruct: PPaintStruct;
     Result: Longint;
   end;
 
@@ -1057,6 +1057,9 @@ end.
 
 {
   $Log$
+  Revision 1.53  2003/09/17 19:40:46  ajgenius
+  Initial DoubleBuffering Support for GTK2
+
   Revision 1.52  2003/08/25 16:43:32  mattias
   moved many graphics types form graphtype.pp to graphics.pp
 

@@ -191,7 +191,10 @@ var
 begin
 //  Assert(False, 'Trace:[GTKAPIWidgetClient_Realize]');
   gtk_widget_set_flags(Widget, GTK_REALIZED);
-
+  {$Ifdef GTK2}
+  gtk_widget_set_double_buffered(Widget, False);
+  gtk_widget_set_redraw_on_allocate(Widget, False);
+  {$EndIf}
   with Attributes do
   begin
     Window_type := gdk_window_child;
@@ -934,6 +937,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.49  2003/09/17 19:40:46  ajgenius
+  Initial DoubleBuffering Support for GTK2
+
   Revision 1.48  2003/09/11 21:33:12  ajgenius
   partly fixed TWinControl(csFixed)
 

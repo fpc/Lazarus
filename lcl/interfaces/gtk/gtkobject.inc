@@ -5317,6 +5317,10 @@ begin
 
   Box := CreateFormContents(Result);
   gtk_container_add(PGtkContainer(Result), Box);
+  {$IfDef GTK2}
+  //so we can double buffer ourselves, eg, the Form Designer
+  gtk_widget_set_double_buffered (Box, False);
+  {$EndIf}
   gtk_widget_show(Box);
 
   //drag icons
@@ -8168,6 +8172,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.417  2003/09/17 19:40:46  ajgenius
+  Initial DoubleBuffering Support for GTK2
+
   Revision 1.416  2003/09/17 15:26:41  mattias
   fixed removing TPage
 
