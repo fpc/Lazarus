@@ -3367,6 +3367,79 @@ begin
   Result[NewLength]:=#0;
 end;
 
+{-------------------------------------------------------------------------------
+  Function RemoveAmpersands(Src: PChar; LineLength : Longint) : PChar;
+
+  Creates a new PChar removing all escaping ampersands.
+-------------------------------------------------------------------------------}
+function RemoveAmpersands(Src: PChar; LineLength : Longint) : PChar;
+var
+  i, j: Longint;
+  ShortenChars, NewLength, SrcLength: integer;
+begin
+  // count ampersands and find first ampersand
+  ShortenChars:= 0;  // chars to delete
+  SrcLength:= LineLength;
+
+  { Look for amperands. If found, check if it is an escaped ampersand.
+    If it is, don't count it in. }
+  i:=0;
+  while i<SrcLength do begin
+    if Src[i] = '&' then begin
+      if (i < SrcLength - 1) and (Src[i+1] = '&') then begin
+        // escaping ampersand found
+        inc(ShortenChars);
+        inc(i,2);
+        Continue;
+      end
+      else
+        inc(ShortenChars);
+    end;
+    inc(i);
+  end;
+  // create new PChar
+  NewLength:= SrcLength - ShortenChars;
+
+  Result:=StrAlloc(NewLength+1); // +1 for #0 char at end
+
+  // copy string without ampersands
+  i:=0;
+  j:=0;
+  while (j < NewLength) do begin
+    if Src[i] <> '&' then begin
+      // copy normal char
+      Result[j]:= Src[i];
+    end else begin
+      // ampersand
+      if (i < (SrcLength - 1)) and (Src[i+1] = '&') then begin
+        // escaping ampersand found
+        inc(i);
+        Result[j]:='&';
+      end else
+        // delete single ampersand
+        dec(j);
+    end;
+    Inc(i);
+    Inc(j);
+  end;
+  Result[NewLength]:=#0;
+end;
+
+{-------------------------------------------------------------------------------
+  Function GetTextExtentIgnoringAmpersands(Font : PGDKFont; Str : PChar; 
+                    LineLength : Longint; lbearing, rbearing, width, ascent, descent : Pgint);
+
+  Gets text extent of a string, ignoring escaped Ampersands.
+-------------------------------------------------------------------------------}
+Procedure GetTextExtentIgnoringAmpersands(Font : PGDKFont; Str : PChar;
+  LineLength : Longint; lbearing, rbearing, width, ascent, descent : Pgint);
+var
+  NewStr : PChar;
+begin
+  NewStr := RemoveAmpersands(Str, LineLength);
+  gdk_text_extents(Font, NewStr, StrLen(NewStr), lbearing, rBearing, width, ascent, descent);
+end;
+
 {------------------------------------------------------------------------------
   Method:   GDKPixel2GDIRGB
   Params:
@@ -3480,6 +3553,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.127  2002/10/15 22:28:06  lazarus
+  AJ: added forcelinebreaks
+
   Revision 1.126  2002/10/15 16:01:37  lazarus
   MG: fixed timers
 
