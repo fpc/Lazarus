@@ -4733,6 +4733,15 @@ begin
   until Result<>mrRetry;
 end;
 
+{-------------------------------------------------------------------------------
+  TMainIDE DoBackupFile
+
+  Params:  const Filename:string;
+           IsPartOfProject:boolean
+  Returns: TModalResult
+
+  Rename existing file to backup file.
+-------------------------------------------------------------------------------}
 function TMainIDE.DoBackupFile(const Filename:string; 
   IsPartOfProject:boolean): TModalResult;
 var BackupFilename, CounterFilename: string;
@@ -4752,8 +4761,7 @@ begin
     exit;
   FilePath:=ExtractFilePath(Filename);
   FileExt:=ExtractFileExt(Filename);
-  FileNameOnly:=ExtractFilename(Filename);
-  FileNameOnly:=copy(FilenameOnly,1,length(FilenameOnly)-length(FileExt));
+  FileNameOnly:=ExtractFilenameOnly(Filename);
   if BackupInfo.SubDirectory<>'' then begin
     SubDir:=FilePath+BackupInfo.SubDirectory;
     repeat
@@ -4853,9 +4861,9 @@ begin
   end;
   // backup file
   repeat
-    if not RenameFile(Filename,BackupFilename) then begin
-      ACaption:='Rename file failed';
-      AText:='Unable to rename file "'+Filename+'" to "'+BackupFilename+'"!';
+    if not BackupFile(Filename,BackupFilename) then begin
+      ACaption:='Backup file failed';
+      AText:='Unable to backup file "'+Filename+'" to "'+BackupFilename+'"!';
       Result:=MessageDlg(ACaption,AText,mterror,[mbabort,mbretry,mbignore],0);
       if Result=mrAbort then exit;
       if Result=mrIgnore then Result:=mrOk;
@@ -6362,6 +6370,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.296  2002/05/16 14:01:45  lazarus
+  MG: backuping files now save file attributes/permissions
+
   Revision 1.295  2002/05/16 13:00:55  lazarus
   MG: fixed changing syntax highlighter on save as
 

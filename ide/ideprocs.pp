@@ -41,6 +41,7 @@ const
 function FilenameIsAbsolute(Filename: string):boolean;
 function DirectoryExists(DirectoryName: string): boolean;
 function ForceDirectory(DirectoryName: string): boolean;
+function BackupFile(const Filename, BackupFilename: string): boolean;
 function ExtractFileNameOnly(const AFilename: string): string;
 procedure CheckIfFileIsExecutable(const AFilename: string);
 function FileIsExecutable(const AFilename: string): boolean;
@@ -487,6 +488,48 @@ procedure FreeThenNil(var Obj: TObject);
 begin
   Obj.Free;
   Obj:=nil;
+end;
+
+{-------------------------------------------------------------------------------
+  BackupFile
+
+  Params: const Filename, BackupFilename: string
+  Result: boolean
+  
+  Rename Filename to Backupfilename and create empty Filename with same
+  file attributes
+-------------------------------------------------------------------------------}
+function BackupFile(const Filename, BackupFilename: string): boolean;
+var
+  FHandle: Integer;
+  {$IFDEF Win32}
+  OldAttr: Longint;
+  {$ELSE}
+  OldInfo: Stat;
+  {$ENDIF}
+begin
+  Result:=false;
+  // store file attributes
+  {$IFDEF Win32}
+  OldAttr:=FileGetAttr(Filename);
+  {$ELSE}
+  FStat(Filename,OldInfo);
+  {$ENDIF}
+  // rename file
+  if not RenameFile(Filename,BackupFilename) then exit;
+  // create empty file
+  FHandle:=FileCreate(FileName);
+  FileClose(FHandle);
+  // restore file attributes
+  {$IFDEF Win32}
+  FileSetAttr(FileName,OldAttr);
+  {$ELSE}
+  Chmod(Filename,
+         OldInfo.Mode and (STAT_IRWXO+STAT_IRWXG+STAT_IRWXU
+                           +STAT_ISUID+STAT_ISGID+STAT_ISVTX));
+  {$ENDIF}
+
+  Result:=true;
 end;
 
 end.
