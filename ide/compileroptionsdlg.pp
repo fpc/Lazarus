@@ -450,7 +450,14 @@ procedure TfrmCompilerOptions.ButtonCheckClicked(Sender: TObject);
 begin
   // Apply any changes and test
   PutCompilerOptions;
-  if Assigned(OnTest) then OnTest(CompilerOpts);
+  if Assigned(OnTest) then begin
+    btnCheck.Enabled:=false;
+    try
+      OnTest(CompilerOpts);
+    finally
+      btnCheck.Enabled:=true;
+    end;
+  end;
 end;
 
 {------------------------------------------------------------------------------
