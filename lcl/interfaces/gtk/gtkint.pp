@@ -230,6 +230,7 @@ var
   Cursor_SizeNS   : pGDKCursor;
   Cursor_SizeNESW : pGDKCursor;
   Cursor_SizeWE   : pGDKCursor;
+  Cursor_Help     : pGDKCursor;
 
   Styles : TStrings;
 
@@ -482,6 +483,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.71  2002/09/06 22:32:21  lazarus
+  Enabled cursor property + property editor.
+
   Revision 1.70  2002/09/05 12:11:44  lazarus
   MG: TNotebook is now streamable
 
