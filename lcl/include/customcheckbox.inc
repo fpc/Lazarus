@@ -83,6 +83,7 @@ end;
 constructor TCustomCheckBox.Create(TheOwner : TComponent);
 begin
   Inherited Create(TheOwner);
+  fCompStyle := csCheckbox;
   FState       := cbUnchecked;
   FAllowGrayed := True;
   Height:=20;
@@ -193,6 +194,9 @@ end;
 
 {
   $Log$
+  Revision 1.14  2003/09/16 11:35:14  mattias
+  started TDBCheckBox
+
   Revision 1.13  2003/03/25 16:56:57  mattias
   implemented TButtonControl.UseOnChange
 

@@ -105,7 +105,8 @@ end;
 procedure TDBRadioGroup.DataChange(Sender: TObject);
 begin
   if FDataLink.Field<>nil then
-    Value:=FDataLink.Field.Text
+    // ToDo: Use Field.Text
+    Value:=FDataLink.Field.DisplayText
   else
     Value:='';
 end;
@@ -113,7 +114,8 @@ end;
 procedure TDBRadioGroup.UpdateData(Sender: TObject);
 begin
   if FDataLink.Field<>nil then
-    FDataLink.Field.Text:=Value;
+    // ToDo: Use Field.Text
+    FDataLink.Field.AsString:=Value;
 end;
 
 function TDBRadioGroup.GetButtonValue(Index: Integer): string;
@@ -124,6 +126,18 @@ begin
     Result:=Items[Index]
   else
     Result:='';
+end;
+
+procedure TDBRadioGroup.UpdateRadioButtonStates;
+var
+  OldValue: String;
+begin
+  OldValue:=Value;
+  inherited UpdateRadioButtonStates;
+  Value := GetButtonValue(ItemIndex);
+  if (Value<>OldValue) then begin
+    if FDataLink.Editing then FDataLink.Modified;
+  end;
 end;
 
 constructor TDBRadioGroup.Create(TheOwner: TComponent);

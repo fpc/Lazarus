@@ -433,7 +433,7 @@ type
     procedure Clicked(Sender: TObject); virtual;
     procedure DoPositionButtons;
   protected
-    procedure UpdateRadioButtonStates;
+    procedure UpdateRadioButtonStates; virtual;
     procedure ReadState(Reader: TReader); override;
     procedure SetItem(Value: TStrings);
     procedure SetColumns(Value: integer);
@@ -756,6 +756,9 @@ end.
 
  {
   $Log$
+  Revision 1.73  2003/09/16 11:35:14  mattias
+  started TDBCheckBox
+
   Revision 1.72  2003/09/15 22:02:02  mattias
   implemented TDBRadioGroup
 

@@ -5484,8 +5484,10 @@ var
   gdkRect : TGDKRectangle;
   Widget, PaintWidget: PGtkWidget;
   LCLObject: TObject;
+  {$IfDef Win32}
   AWindow: PGdkWindow;
   Event : TGDKEvent;
+  {$ENDIF}
 begin
   //  Writeln(format('Rect = %d,%d,%d,%d',[rect^.left,rect^.top,rect^.Right,rect^.Bottom]));
   Widget:=PGtkWidget(aHandle);
@@ -5526,21 +5528,21 @@ begin
     end;
   {$EndIf}
 
-  {$IfNDef Win32}
+  {$IfDef Win32}
+  if bErase then begin
+    AWindow:=GetControlWindow(PaintWidget);
+    if AWindow<>nil then
+      gdk_window_clear_area(AWindow,
+                            gdkRect.X,gdkRect.Y,gdkRect.Width,gdkRect.Height);
+  end;
+  gtk_widget_draw(PaintWidget, @gdkRect);
+  {$Else}
   if bErase then
     gtk_widget_queue_clear_area(PaintWidget,
                           gdkRect.X,gdkRect.Y,gdkRect.Width,gdkRect.Height);
 
   gtk_widget_queue_draw_area(PaintWidget,
                              gdkRect.X,gdkRect.Y,gdkRect.Width,gdkRect.Height);
-  {$Else}
-  if bErase then begin
-    AWindow:=GetControlWindow(PaintWidget);
-    if AWindow<>nil then
-      gdk_window_clear_area(AWindow,
-                          gdkRect.X,gdkRect.Y,gdkRect.Width,gdkRect.Height);
-  end;
-  gtk_widget_draw(PaintWidget, @gdkRect);
   {$EndIf}
 end;
 
@@ -8775,6 +8777,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.282  2003/09/16 11:35:14  mattias
+  started TDBCheckBox
+
   Revision 1.281  2003/09/15 15:43:04  mattias
   fixed gtk2interface package
 

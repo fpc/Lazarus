@@ -37,7 +37,7 @@ interface
 
 uses
   Classes, SysUtils, DB, Forms, Controls, Graphics, Dialogs, StdCtrls, Buttons,
-  MaskEdit, LMessages;
+  MaskEdit, LMessages, ExtCtrls;
 
 Type
   { TFieldDataLink }
@@ -191,7 +191,7 @@ Type
     function GetDataSource: TDataSource;
     function GetField: TField;
 
-    Procedure SetItems(Values : TStrings);
+    Procedure SetItems(Values : TStrings); override;
 
     function GetReadOnly: Boolean;
     procedure SetReadOnly(Value: Boolean);
@@ -254,6 +254,7 @@ Type
     procedure UpdateData(Sender: TObject);
     property DataLink: TFieldDataLink read FDataLink;
     function GetButtonValue(Index: Integer): string;
+    procedure UpdateRadioButtonStates; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -282,8 +283,86 @@ Type
   end;
 
 
+  { TDBCheckBox }
+
+  TDBCheckBox = class(TCustomCheckBox)
+  private
+    FDataLink: TFieldDataLink;
+    FValueCheck: string;
+    FValueUncheck: string;
+    function GetDataField: string;
+    function GetDataSource: TDataSource;
+    function GetField: TField;
+    function GetReadOnly: Boolean;
+    procedure SetDataField(const AValue: string);
+    procedure SetDataSource(const AValue: TDataSource);
+    procedure SetReadOnly(const AValue: Boolean);
+    procedure SetValueCheck(const AValue: string);
+    procedure SetValueUncheck(const AValue: string);
+    function ValueEqualsField(const AValue, AFieldText: string): boolean;
+  protected
+    function GetFieldCheckState: TCheckBoxState; virtual;
+    procedure DataChange(Sender: TObject); virtual;
+    procedure UpdateData(Sender: TObject); virtual;
+  public
+    constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
+    property Checked;
+    property Field: TField read GetField;
+    property State;
+  published
+    property AllowGrayed;
+    property Anchors;
+    property AutoSize;
+    property Caption;
+    property DataField: string read GetDataField write SetDataField;
+    property DataSource: TDataSource read GetDataSource write SetDataSource;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property Enabled;
+    property Hint;
+    property OnChange;
+    property OnClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
+    property OnEnter;
+    property OnExit;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnStartDrag;
+    property ParentShowHint;
+    property PopupMenu;
+    property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
+    property ShowHint;
+    property TabOrder;
+    property TabStop;
+    property UseOnChange;
+    property ValueChecked: string read FValueCheck write SetValueCheck;
+    property ValueUnchecked: string read FValueUncheck write SetValueUncheck;
+    property Visible;
+  end;
+
+// ToDo: Move this to db.pp
+function ExtractFieldName(const Fields: string; var StartPos: Integer): string;
+
 
 implementation
+
+
+function ExtractFieldName(const Fields: string; var StartPos: Integer): string;
+var
+  i: Integer;
+begin
+  i:=StartPos;
+  while (i<=Length(Fields)) and (Fields[i]<>';') do Inc(i);
+  Result:=Trim(Copy(Fields,StartPos,i-StartPos));
+  if (i<=Length(Fields)) and (Fields[i]=';') then Inc(i);
+  StartPos:=i;
+end;
+
 
 {TFieldDataLink  Private Methods}
 
@@ -595,12 +674,16 @@ end;
 {$Include dbtext.inc}
 {$Include dblistbox.inc}
 {$Include dbradiogroup.inc}
+{$Include dbcheckbox.inc}
 
 end.
 
 { =============================================================================
 
   $Log$
+  Revision 1.4  2003/09/16 11:35:14  mattias
+  started TDBCheckBox
+
   Revision 1.3  2003/09/15 22:02:02  mattias
   implemented TDBRadioGroup
 

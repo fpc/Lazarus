@@ -18,7 +18,6 @@
 constructor TCheckbox.Create(AOwner : TComponent);
 begin
   inherited Create(AOwner);
-  fCompStyle := csCheckbox;
   AutoSize := True;
 end;
 
@@ -70,6 +69,9 @@ end;
 
 {
   $Log$
+  Revision 1.9  2003/09/16 11:35:14  mattias
+  started TDBCheckBox
+
   Revision 1.8  2002/10/03 00:08:50  lazarus
   AJ: TCustomLabel Autosize, TCustomCheckbox '&' shortcuts started
 

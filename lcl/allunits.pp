@@ -38,7 +38,8 @@ uses
   Buttons, Extctrls, Registry, Calendar, Clipbrd, Forms, LCLLinux, Spin,
   Comctrls, Graphics, StdCtrls, Arrow, Controls, ImgList, Menus, Toolwin,
   Dialogs, Messages, Clistbox, ActnList, Grids, MaskEdit,
-  Printers, PostScriptPrinter, CheckLst, PairSplitter, DirSel, ExtDlgs;
+  Printers, PostScriptPrinter, CheckLst, PairSplitter, DirSel, ExtDlgs,
+  DBCtrls;
 
 implementation
 
@@ -47,6 +48,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.29  2003/09/16 11:35:14  mattias
+  started TDBCheckBox
+
   Revision 1.28  2003/09/02 21:32:56  mattias
   implemented TOpenPictureDialog
 
