@@ -752,7 +752,8 @@ begin
   if WidgetGetSelStart(Widget)=NewStart then exit;
   // sometimes the gtk freezes the memo, canges something and emits the change
   // event. Then the LCL gets notified and wants to react: force thaw (unfreeze)
-  gtk_text_thaw(PGtkText(Widget));
+  if GTK_IS_TEXT(Widget) then
+    gtk_text_thaw(PGtkText(Widget));
   gtk_editable_set_position(PGtkOldEditable(Widget), NewStart);
 end;
 

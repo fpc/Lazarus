@@ -255,7 +255,6 @@ var
   i: Integer;
 begin
   Result:=AText;
-  Escape := False;
   i:=1;
   while i<length(Result) do begin
     if Result[i]=AEscapeChar then
@@ -317,6 +316,9 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.13  2005/02/05 14:46:09  mattias
+  fixed compilation
+
   Revision 1.12  2005/02/05 14:06:13  marc
   * Applied (modified) patch from Colin Western
 
