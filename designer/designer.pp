@@ -2018,6 +2018,7 @@ begin
         IconRect:=Rect(ItemLeft+NonVisualCompBorder,ItemTop+NonVisualCompBorder,
              ItemRight-NonVisualCompBorder,ItemBottom-NonVisualCompBorder);
         Brush.Color:=clBtnFace;
+        //writeln('TDesigner.DrawNonVisualComponents A ',IconRect.Left,',',IconRect.Top,',',IconRect.Right,',',IconRect.Bottom);
         FillRect(Rect(IconRect.Left,IconRect.Top,
            IconRect.Right+1,IconRect.Bottom+1));
       end;

@@ -99,6 +99,7 @@ function GetComponentTop(AComponent: TComponent): integer;
 function GetComponentWidth(AComponent: TComponent): integer;
 function GetComponentHeight(AComponent: TComponent): integer;
 
+procedure InvalidateDesignerRect(aHandle: HWND; ARect: pRect);
 
 implementation
 
@@ -241,6 +242,20 @@ begin
   end else begin
     Result:=NonVisualCompWidth;
   end;
+end;
+
+procedure InvalidateDesignerRect(aHandle: HWND; ARect: pRect);
+const
+  ExtraInvalidateFrame = 3;
+var
+  InvRect: TRect;
+begin
+  InvRect:=ARect^;
+  dec(InvRect.Left,ExtraInvalidateFrame);
+  dec(InvRect.Top,ExtraInvalidateFrame);
+  inc(InvRect.Right,ExtraInvalidateFrame);
+  inc(InvRect.Bottom,ExtraInvalidateFrame);
+  InvalidateRect(aHandle,@InvRect,false);
 end;
 
 function GetParentLevel(AControl: TControl): integer;

@@ -510,7 +510,7 @@ var
   ARect: TRect;
 begin
   GetRect(ARect);
-  InvalidateRect(AForm.Handle,@ARect,false);
+  InvalidateDesignerRect(AForm.Handle,@ARect);
 end;
 
 
@@ -612,7 +612,8 @@ begin
   CompRect.Top:=LongRec(FComponent.DesignInfo).Hi;
   CompRect.Right:=CompRect.Left+NonVisualCompWidth;
   CompRect.Bottom:=CompRect.Top+NonVisualCompWidth;
-  InvalidateRect(AForm.Handle,@CompRect,false);
+  //writeln('TSelectedControl.InvalidateNonVisualComponent A ',CompRect.Left,',',CompRect.Top,',',CompRect.Right,',',CompRect.Bottom);
+  InvalidateDesignerRect(AForm.Handle,@CompRect);
 end;
 
 function TSelectedControl.GetLeft: integer;
@@ -817,8 +818,14 @@ procedure TControlSelection.GrabberMove(Grabber: TGrabber; const OldRect,
   NewRect: TRect);
 begin
   if FForm=nil then exit;
-  InvalidateRect(FForm.Handle,@OldRect,false);
-  InvalidateRect(FForm.Handle,@NewRect,false);
+  {if Grabber.Positions=[gpTop,gpLeft] then begin
+    writeln('TControlSelection.GrabberMove ',
+      ' OldRect=',OldRect.Left,',',OldRect.Top,',',OldRect.Right,',',OldRect.Bottom,
+      ' NewRect=',NewRect.Left,',',NewRect.Top,',',NewRect.Right,',',NewRect.Bottom,
+      ' ');
+  end;}
+  InvalidateDesignerRect(FForm.Handle,@OldRect);
+  InvalidateDesignerRect(FForm.Handle,@NewRect);
 end;
 
 function TControlSelection.GetCacheGuideLines: boolean;
@@ -935,7 +942,7 @@ begin
           LineRect:=FGuideLinesCache[g].PaintedLine;
           if LineRect.Top=LineRect.Bottom then inc(LineRect.Bottom);
           if LineRect.Left=LineRect.Right then inc(LineRect.Right);
-          InvalidateRect(FForm.Handle,@LineRect,false);
+          InvalidateDesignerRect(FForm.Handle,@LineRect);
         end;
       end;
     Exclude(FStates,cssGuideLinesPainted);

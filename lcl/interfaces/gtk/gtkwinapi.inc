@@ -5743,7 +5743,7 @@ begin
   
   if bErase then
     gtk_widget_queue_clear_area(PaintWidget,
-                          gdkRect.X,gdkRect.Y,gdkRect.Width,gdkRect.Height);
+                              gdkRect.X,gdkRect.Y,gdkRect.Width,gdkRect.Height);
 
   gtk_widget_queue_draw_area(PaintWidget,
                              gdkRect.X,gdkRect.Y,gdkRect.Width,gdkRect.Height);
@@ -9057,6 +9057,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.298  2003/11/08 22:53:11  mattias
+  workaround for gtk1 invalidate bug
+
   Revision 1.297  2003/11/03 22:37:41  mattias
   fixed vert scrollbar, implemented GetDesignerDC
 
