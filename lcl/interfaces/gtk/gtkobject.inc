@@ -3675,6 +3675,7 @@ writeln('  WriteTargetLists WWW END');
   end;
   {$ENDIF}
   
+  {$IFNDEF WIN32}
   procedure ClearTargetLists(Widget: PGtkWidget);
   // MG: Reading in gtk internas is dirty, but there seems to be no other way
   //     to clear the old target lists
@@ -3700,6 +3701,7 @@ writeln('  WriteTargetLists WWW END');
     writeln('  ClearTargetLists WWW END');
     {$ENDIF}
   end;
+  {$ENDIF}
   
 var c: TClipboardType;
 begin
@@ -3711,7 +3713,9 @@ writeln('[TgtkObject.SetClipboardWidget] ',ClipboardWidget<>nil,' -> ',TargetWid
     {$IFDEF DEBUG_CLIPBOARD}
     WriteTargetLists(ClipboardWidget);
     {$ENDIF}
+    {$IFNDEF WIN32}
     ClearTargetLists(ClipboardWidget);
+    {$ENDIF}
     {$IFDEF DEBUG_CLIPBOARD}
     WriteTargetLists(ClipboardWidget);
     {$ENDIF}
@@ -3729,8 +3733,10 @@ writeln('[TgtkObject.SetClipboardWidget] ',ClipboardWidget<>nil,' -> ',TargetWid
     // add all supported targets for all clipboard types
     for c:=Low(TClipboardType) to High(TClipboardType) do begin
       if (ClipboardTargetEntries[c]<>nil) then begin
+        {$IFNDEF WIN32}
         gtk_selection_add_targets(ClipboardWidget,ClipboardTypeAtoms[c],
                   ClipboardTargetEntries[c],ClipboardTargetEntryCnt[c]);
+        {$ENDIF}
       end;
     end;
   end;
@@ -3744,6 +3750,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.102  2002/01/24 15:40:59  lazarus
+  MG: deactivated clipboard setting target list for win32
+
   Revision 1.101  2002/01/08 16:02:45  lazarus
   Minor changes to TListView.
   Added TImageList to the IDE

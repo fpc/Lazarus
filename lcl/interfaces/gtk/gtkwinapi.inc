@@ -4337,6 +4337,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.59  2002/01/24 15:40:59  lazarus
+  MG: deactivated clipboard setting target list for win32
+
   Revision 1.58  2002/01/21 14:17:47  lazarus
   MG: added find-block-start and renamed find-block-other-end
 
