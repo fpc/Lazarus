@@ -2047,7 +2047,9 @@ begin
     ReadNextAtom;
     if CurPos.Flag<>cafSemicolon then
       SaveRaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',GetAtom]);
-  end else if UpAtomIs('PUBLIC') or UpAtomIs('EXTERNAL') then begin
+    ReadNextAtom;
+  end;
+  if UpAtomIs('PUBLIC') or UpAtomIs('EXTERNAL') then begin
     if NodeHasParentOfType(CurNode,ctnClass) then
       // class visibility keyword 'public'
       UndoReadNextAtom
@@ -2056,8 +2058,10 @@ begin
       if UpAtomIs('EXTERNAL') then begin
         // read external name
         ReadNextAtom;
-        AtomIsIdentifier(true);
-        ReadNextAtom;
+        if CurPos.Flag<>cafSemicolon then begin
+          AtomIsIdentifier(true);
+          ReadNextAtom;
+        end;
       end else
         ReadNextAtom;
       if UpAtomIs('NAME') then begin
@@ -2067,9 +2071,7 @@ begin
           SaveRaiseExceptionFmt(ctsStrExpectedButAtomFound,
                             [ctsStringConstant,GetAtom]);
         ReadConstant(true,false,[]);
-        UndoReadNextAtom;
       end;
-      ReadNextAtom;
       if CurPos.Flag<>cafSemicolon then
         SaveRaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',GetAtom]);
     end;

@@ -819,6 +819,7 @@ begin
     Add('SHL',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('SHR',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('IN' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('='  ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('<'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('>'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('<>' ,{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -856,6 +857,7 @@ begin
   WordIsLvl4Operator:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(WordIsLvl4Operator);
   with WordIsLvl4Operator do begin
+    Add('=' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('<' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('>' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('<>',{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -867,6 +869,7 @@ begin
   WordIsBooleanOperator:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(WordIsBooleanOperator);
   with WordIsBooleanOperator do begin
+    Add('=' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('<' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('>' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('<>',{$ifdef FPC}@{$endif}AllwaysTrue);
