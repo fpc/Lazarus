@@ -86,7 +86,7 @@ Begin
                //Get edit and item sizes
                Windows.GetClientRect(FWin32List,@R);
                FEditHeight:= R.Bottom;    
-               FItemHeight:= SendMessage(FWin32List,CB_GETITEMHEIGHT,0,0);
+               FItemHeight:= Windows.SendMessage(FWin32List,CB_GETITEMHEIGHT,0,0);
                FDDownCount:= TComboBox(FSender).DropDownCount;
                If FDDownCount = 0 then FDDownCount:= 8;
     	       end;
@@ -141,19 +141,28 @@ End;
 Procedure TWin32ListStringList.Assign(Source: TPersistent);
 Var
   Counter: Integer;
+  EditText: String;
 Begin
   { Do not call inherited Assign as it does things we do not want to happen }
   If Source Is TStrings Then
   Begin
-    SendMessage(FWin32List,FFlagResetContent, 0, 0); // Clear;
+    // save any text in edit box
+    if FSender.FCompStyle=csComboBox then
+      CNSendMessage(LM_GETTEXT, FSender, @EditText);
+
+    Windows.SendMessage(FWin32List, FFlagResetContent, 0, 0);
     For Counter := TStrings(Source).Count - 1 DownTo 0 Do 
-      SendMessage(FWin32List,FFlagAddString, 0, LPARAM(PChar(TStrings(Source)[Counter]))); //Insert
+      Windows.SendMessage(FWin32List, FFlagAddString, 0, LPARAM(PChar(TStrings(Source)[Counter]))); //Insert
+
     if FSender.FCompStyle=csComboBox Then
     begin
       if Count = 0 then
         SetComboHeight(FSender,FSender.Left,FSender.Top,FSender.Width,FEditHeight + FItemHeight + 2)
       else
         SetComboHeight(FSender,FSender.Left,FSender.Top,FSender.Width,FEditHeight + FDDownCount*FItemHeight + 2);
+
+      // restore text in edit box
+      CNSendMessage(LM_SETLABEL, FSender, PChar(EditText));
     end;
   End
   Else
@@ -174,8 +183,8 @@ Begin
     Raise Exception.Create('Out of bounds.')
   Else
   Begin
-  	Getmem(Item,SendMessage(FWin32List,FFlagGetTextLen,Index,0)+1);
-    SendMessage(FWin32List, FFlagGetText, Index, LPARAM(Item));  
+  	Getmem(Item,Windows.SendMessage(FWin32List,FFlagGetTextLen,Index,0)+1);
+    Windows.SendMessage(FWin32List, FFlagGetText, Index, LPARAM(Item));
   End;      
   Result := StrPas(Item);
   Dispose(Item);
@@ -189,7 +198,7 @@ End;
  ------------------------------------------------------------------------------}
 Function TWin32ListStringList.GetCount: Integer;
 Begin
-  Result := SendMessage(FWin32List, FFlagGetCount, 0, 0);
+  Result := Windows.SendMessage(FWin32List, FFlagGetCount, 0, 0);
 End;
 
 {------------------------------------------------------------------------------
@@ -203,7 +212,7 @@ Begin
   if FSender.FCompStyle=csComboBox Then
     SetComboHeight(FSender,FSender.Left,FSender.Top,FSender.Width,
                    FEditHeight + FItemHeight + 2);
-  SendMessage(FWin32List,FFlagResetContent, 0, 0);
+  Windows.SendMessage(FWin32List,FFlagResetContent, 0, 0);
 End;  
 
 {------------------------------------------------------------------------------
@@ -218,7 +227,7 @@ Begin
   and (GetCount <= 1) Then
     SetComboHeight(FSender,FSender.Left,FSender.Top,FSender.Width,
                    FEditHeight + FItemHeight + 2);
-  SendMessage(FWin32List,FFlagDeleteString, Index, 0);
+  Windows.SendMessage(FWin32List,FFlagDeleteString, Index, 0);
 End;
 
 {------------------------------------------------------------------------------
@@ -234,9 +243,9 @@ Begin
     SetComboHeight(FSender,FSender.Left,FSender.Top,FSender.Width,
                    FEditHeight + FDDownCount*FItemHeight + 2);
   If FSorted Then
-    SendMessage(FWin32List,FFlagAddString, 0, LPARAM(PChar(S)))
+    Windows.SendMessage(FWin32List,FFlagAddString, 0, LPARAM(PChar(S)))
   Else 
-    SendMessage(FWin32List,FFlagInsertString, Index, LPARAM(PChar(S))); 
+    Windows.SendMessage(FWin32List,FFlagInsertString, Index, LPARAM(PChar(S)));
 End;
 
 {*************************************************************}
@@ -315,7 +324,7 @@ End;
  ------------------------------------------------------------------------------}
 Procedure TWin32CListStringList.Clear;
 Begin
-  SendMessage(FWin32CList, LB_RESETCONTENT, 0, 0);
+  Windows.SendMessage(FWin32CList, LB_RESETCONTENT, 0, 0);
 End;
 
 {------------------------------------------------------------------------------
@@ -326,7 +335,7 @@ End;
  ------------------------------------------------------------------------------}
 procedure TWin32CListStringList.Delete(Index: Integer);
 begin
-  SendMessage(FWin32CList, LB_DELETESTRING, Index, 0);
+  Windows.SendMessage(FWin32CList, LB_DELETESTRING, Index, 0);
 end;
 
 {------------------------------------------------------------------------------
@@ -343,8 +352,8 @@ Begin
     Raise Exception.Create('Out of bounds.')
   Else
   Begin
-  	Getmem(Item,SendMessage(FWin32CList,LB_GETTEXTLEN,Index,0)+1);
-    SendMessage(FWin32CList, LB_GETTEXT, Index, LPARAM(Item));
+  	Getmem(Item,Windows.SendMessage(FWin32CList,LB_GETTEXTLEN,Index,0)+1);
+    Windows.SendMessage(FWin32CList, LB_GETTEXT, Index, LPARAM(Item));
     Result := StrPas(Item);
     Dispose(Item);
   End;
@@ -358,7 +367,7 @@ End;
  ------------------------------------------------------------------------------}
 Function TWin32CListStringList.GetCount: Integer;
 Begin
-  Result := SendMessage(FWin32CList, LB_GETCOUNT, 0, 0);
+  Result := Windows.SendMessage(FWin32CList, LB_GETCOUNT, 0, 0);
 End;
 
 {------------------------------------------------------------------------------
@@ -369,7 +378,7 @@ End;
  ------------------------------------------------------------------------------}
 Function TWin32CListStringList.GetObject(Index: Integer): TObject;
 Begin
-  HWND(Result) := SendMessage(FWin32CList, LB_GETITEMDATA, Index, 0);
+  HWND(Result) := Windows.SendMessage(FWin32CList, LB_GETITEMDATA, Index, 0);
 End;
 
 {------------------------------------------------------------------------------
@@ -381,9 +390,9 @@ End;
 Procedure TWin32CListStringList.Insert(Index: Integer; Const S: String);
 Begin
   If FSorted Then
-    SendMessage(FWin32CList,LB_ADDSTRING, 0, LPARAM(PChar(S)))
+    Windows.SendMessage(FWin32CList,LB_ADDSTRING, 0, LPARAM(PChar(S)))
   Else 
-    SendMessage(FWin32CList,LB_INSERTSTRING, Index, LPARAM(PChar(S))); 
+    Windows.SendMessage(FWin32CList,LB_INSERTSTRING, Index, LPARAM(PChar(S)));
 End;
 
 {------------------------------------------------------------------------------
@@ -394,7 +403,7 @@ End;
  ------------------------------------------------------------------------------}
 Procedure TWin32CListStringList.PutObject(Index: Integer; AObject: TObject);
 Begin
-  SendMessage(FWin32CList, LB_SETITEMDATA, Index, LPARAM(AObject));
+  Windows.SendMessage(FWin32CList, LB_SETITEMDATA, Index, LPARAM(AObject));
 End;
 
 {$IFDEF H_PLUS}
@@ -406,6 +415,9 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.17  2003/08/27 09:33:26  mattias
+  implements SET_LABEL from Micha
+
   Revision 1.16  2003/08/26 08:12:33  mattias
   applied listbox/combobox patch from Karl
 

@@ -77,7 +77,7 @@ Type
 
     Procedure CreateComponent(Sender: TObject);
     Function RecreateWnd(Sender: TObject): Integer; virtual;
-    Function  GetText(Sender: TComponent; var Data: String): Boolean; virtual;
+    Function  GetText(Sender: TComponent; Handle: HWND; var Data: String): Boolean; virtual;
     Procedure SetLabel(Sender: TObject; Data: Pointer);
     Procedure AddChild(Parent, Child: HWND);
     Procedure ResizeChild(Sender: TObject; Left, Top, Width, Height: Integer);
@@ -191,6 +191,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.36  2003/08/27 09:33:26  mattias
+  implements SET_LABEL from Micha
+
   Revision 1.35  2003/08/26 08:12:33  mattias
   applied listbox/combobox patch from Karl
 

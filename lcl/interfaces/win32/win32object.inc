@@ -182,7 +182,7 @@ End;
   Retrieves the text from a Windows control. This is a replacement for
   the LM_GetText message.
  ------------------------------------------------------------------------------}
-Function TWin32Object.GetText(Sender: TComponent; Var Data: String): Boolean;
+Function TWin32Object.GetText(Sender: TComponent; Handle: HWND; var Data: String): Boolean;
 Var
   CapLen: Cardinal;
   Caption: PChar;
@@ -192,20 +192,21 @@ Begin
   Assert(False, Format('Trace:TWin32Object.GetText - Start --> %S', [Sender.ClassName]));
   Data := '';
   Result := True;
-  Case (Sender as TControl).FCompStyle Of
+  Case TControl(Sender).FCompStyle Of
     csComboBox:
     Begin
-      CapLen := SendMessage((Sender As TWinControl).Handle, CB_GETLBTEXTLEN, CNSendMessage(LM_GETITEMINDEX, Sender, Nil), 0);
-      Caption := StrAlloc(CapLen + 1);
-      SendMessage((Sender As TWinControl).Handle, CB_GETLBTEXT, CNSendMessage(LM_GETITEMINDEX, Sender, Nil), LPARAM(Caption));
+      // + 1 = terminating null character
+      CapLen := Windows.SendMessage(Handle, WM_GETTEXTLENGTH, 0, 0) + 1;
+      Caption := StrAlloc(CapLen);
+      Windows.SendMessage(Handle, WM_GETTEXT, CapLen, LPARAM(Caption));
       Data := StrPas(Caption);
       StrDispose(Caption);
     End;
     csEdit, csMemo:
     Begin
-      CapLen := GetWindowTextLength((Sender As TWinControl).Handle);
+      CapLen := GetWindowTextLength(Handle);
       Caption := StrAlloc(CapLen + 1);
-      GetWindowText((Sender As TWinControl).Handle, Caption, CapLen + 1);
+      GetWindowText(Handle, Caption, CapLen + 1);
       Data := StrPas(Caption);
       StrDispose(Caption);
     End;
@@ -231,7 +232,6 @@ Begin
     Else
       Result := False;
   End;
-  // Result := Data <> '';
 End;
 
 {------------------------------------------------------------------------------
@@ -311,7 +311,10 @@ Begin
     Begin
       Assert(False, Format('Trace:TWin32Object.SetLabel - Got %S', [CS_To_String(TControl(Sender).FCompStyle)]));
       Assert(False, Format('Trace:TWin32Object.SetLabel - label --> %S', [String(PChar(Data))]));
-      Assert(False, 'Trace:TWin32Object.SetLabel - I''m not sure if this''ll work');
+      if TCustomComboBox(Sender).Style = csDropDownList then
+        Windows.SendMessage(Handle, CB_SELECTSTRING, -1, LPARAM(Data))
+      else
+        Windows.SendMessage(Handle, WM_SETTEXT, 0, LPARAM(Data));
     End;
     csMemo:
     Begin
@@ -844,7 +847,7 @@ activate_time :	the time at which the activation event occurred.
         End;
         LM_GETTEXT :
         Begin
-          Result := Integer(GetText(Sender As TComponent,PString(Data)^));
+          Result := Integer(GetText(TComponent(Sender), Handle, PString(Data)^));
         End;
         LM_GETITEMINDEX :
         Begin
@@ -1805,6 +1808,10 @@ Var
   //TCI: TC_ITEM;
 Const
   BitsPerPixel: Array[Boolean] Of Cardinal = (3, 1);
+  ComboBoxStyles: array[TComboBoxStyle] of DWORD = (
+    CBS_DROPDOWN, CBS_SIMPLE, CBS_DROPDOWNLIST,
+    CBS_DROPDOWNLIST or CBS_OWNERDRAWFIXED,
+    CBS_DROPDOWNLIST or CBS_OWNERDRAWVARIABLE);
 Begin
   Assert(False, 'Trace:CreateComponent - Start');
   Assert(False, 'Trace:CreateComponent - Value of Sender is $' + IntToHex(LongInt(Sender), 8));
@@ -1933,7 +1940,8 @@ Begin
     End;
     csComboBox:
     Begin
-      Window := CreateWindow('COMBOBOX', Nil, Flags Or CBS_DROPDOWN or WS_VSCROLL, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
+      Flags := Flags or ComboBoxStyles[TCustomComboBox(Sender).Style];
+      Window := CreateWindow('COMBOBOX', Nil, Flags or WS_VSCROLL or CBS_AUTOHSCROLL or CBS_HASSTRINGS, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       SetProp(Window, 'Lazarus', Sender);
     End;
     csImage:
@@ -2870,6 +2878,9 @@ End;
 
 {
   $Log$
+  Revision 1.98  2003/08/27 09:33:26  mattias
+  implements SET_LABEL from Micha
+
   Revision 1.97  2003/08/27 08:14:37  mattias
   fixed system fonts for win32 intf
 
