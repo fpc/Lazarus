@@ -34,7 +34,7 @@ interface
 
 uses
   Classes, SysUtils, IDEProcs, Forms, Controls, Buttons, ExtCtrls, StdCtrls,
-  LResources, Project, SynEdit, LCLType;
+  LResources, Project, SynEdit, LCLType, DiffPatch;
 
 type
   TDiskDiffsDlg = class(TForm)
