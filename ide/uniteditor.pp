@@ -291,11 +291,15 @@ type
     var NewTopLine, NewPageIndex: integer; Action: TJumpHistoryAction) of object;
   TOnAddJumpPoint = procedure(ACaretXY: TPoint; ATopLine: integer; 
     APageIndex: integer; DeleteForwardHistory: boolean) of object;
+  TOnMovingPage = procedure(Sender: TObject;
+    OldPageIndex, NewPageIndex: integer) of object;
 
   TSourceNotebook = class(TForm)
+    // popup menu
     ReadOnlyMenuItem: TMenuItem;
     ShowLineNumbersMenuItem: TMenuItem;
-  
+    MoveEditorLeftMenuItem: TMenuItem;
+    MoveEditorRightMenuItem: TMenuItem;
     procedure SrcPopUpMenuPopup(Sender: TObject);
     Procedure BookMarkClicked(Sender : TObject);
     Procedure BookMarkGotoClicked(Sender : TObject);
@@ -309,11 +313,14 @@ type
     Procedure BookmarkGoTo(Index: Integer);
     Procedure BookMarkSet(Value : Integer);
     Procedure BookMarkToggle(Value : Integer);
+    procedure MoveEditorLeftClicked(Sender: TObject);
+    procedure MoveEditorRightClicked(Sender: TObject);
     procedure EditorPropertiesClicked(Sender: TObject);
   private
     FMainIDE : TComponent;
     FFormEditor : TFormEditor;
     FOnCtrlMouseUp: TMouseEvent;
+    FOnMovingPage: TOnMovingPage;
     FSourceEditorList : TList; // list of TSourceEditor
     FCodeTemplateModul: TSynEditAutoComplete;
     FKeyStrokes: TSynEditKeyStrokes;
@@ -391,6 +398,11 @@ type
 
     Procedure NextEditor;
     Procedure PrevEditor;
+    procedure MoveEditor(OldPageIndex, NewPageIndex: integer);
+    procedure MoveEditorLeft(PageIndex: integer);
+    procedure MoveEditorRight(PageIndex: integer);
+    procedure MoveActivePageLeft;
+    procedure MoveActivePageRight;
     Procedure ProcessParentCommand(Sender: TObject;
        var Command: TSynEditorCommand; var AChar: char; Data: pointer;
        var Handled: boolean);
@@ -497,6 +509,8 @@ type
        read FOnFindDeclarationClicked write FOnFindDeclarationClicked;
     property OnJumpToHistoryPoint: TOnJumpToHistoryPoint
        read FOnJumpToHistoryPoint write FOnJumpToHistoryPoint;
+    property OnMovingPage: TOnMovingPage
+       read FOnMovingPage write FOnMovingPage;
     property OnNewClicked : TNotifyEvent
        read FOnNewClicked write FOnNewClicked;
     property OnOpenClicked : TNotifyEvent
@@ -2424,6 +2438,8 @@ begin
     SetBookmarkMenuItem[i].Checked:=(FindBookmark(i)<>nil);
     GotoBookmarkMenuItem[i].Checked:=SetBookmarkMenuItem[i].Checked;
   end;
+  MoveEditorLeftMenuItem.Enabled:=(NoteBook<>nil) and (NoteBook.PageCount>1);
+  MoveEditorRightMenuItem.Enabled:=(NoteBook<>nil) and (NoteBook.PageCount>1);
 end;
 
 Procedure TSourceNotebook.BuildPopupMenu;
@@ -2542,13 +2558,26 @@ Begin
       MenuItem.Add(SubMenuItem);
 
   SrcPopupMenu.Items.Add(Seperator);
+
+  MoveEditorLeftMenuItem := TMenuItem.Create(Self);
+  MoveEditorLeftMenuItem.Name := 'MoveEditorLeftMenuItem';
+  MoveEditorLeftMenuItem.Caption := 'Move Editor Left';
+  MoveEditorLeftMenuItem.OnClick :=@MoveEditorLeftClicked;
+  SrcPopupMenu.Items.Add(MoveEditorLeftMenuItem);
+
+  MoveEditorRightMenuItem := TMenuItem.Create(Self);
+  MoveEditorRightMenuItem.Name := 'MoveEditorRightMenuItem';
+  MoveEditorRightMenuItem.Caption := 'Move Editor Right';
+  MoveEditorRightMenuItem.OnClick :=@MoveEditorRightClicked;
+  SrcPopupMenu.Items.Add(MoveEditorRightMenuItem);
+
+  SrcPopupMenu.Items.Add(Seperator);
+
   MenuItem := TMenuItem.Create(Self);
   MenuItem.Name := 'EditorPropertiesMenuItem';
   MenuItem.Caption := 'Editor properties';
   MenuItem.OnClick :=@EditorPropertiesClicked;
   SrcPopupMenu.Items.Add(MenuItem);
-
-
 end;
 
 {-------------------------------------------------------------------------------
@@ -2745,6 +2774,7 @@ end;
 
 Procedure TSourceNotebook.NextEditor;
 Begin
+  if NoteBook=nil then exit;
   if Notebook.PageIndex < Notebook.Pages.Count-1 then
     Notebook.PageIndex := Notebook.PageIndex+1
   else
@@ -2753,11 +2783,53 @@ End;
 
 Procedure TSourceNotebook.PrevEditor;
 Begin
+  if NoteBook=nil then exit;
   if Notebook.PageIndex > 0 then
     Notebook.PageIndex := Notebook.PageIndex-1
   else
     NoteBook.PageIndex := NoteBook.Pages.Count-1;
 End;
+
+procedure TSourceNotebook.MoveEditor(OldPageIndex, NewPageIndex: integer);
+begin
+  if (NoteBook=nil) or (NoteBook.PageCount<=1)
+  or (OldPageIndex=NewPageIndex)
+  or (OldPageIndex<0) or (OldPageIndex>=Notebook.PageCount)
+  or (NewPageIndex<0) or (NewPageIndex>=Notebook.PageCount) then exit;
+  if Assigned(OnMovingPage) then
+    OnMovingPage(Self,OldPageIndex,NewPageIndex);
+  NoteBook.Pages.Move(OldPageIndex,NewPageIndex);
+end;
+
+procedure TSourceNotebook.MoveEditorLeft(PageIndex: integer);
+begin
+  if (NoteBook=nil) or (NoteBook.PageCount<=1) then exit;
+  if PageIndex>0 then
+    MoveEditor(PageIndex,PageIndex-1)
+  else
+    MoveEditor(PageIndex,NoteBook.PageCount-1);
+end;
+
+procedure TSourceNotebook.MoveEditorRight(PageIndex: integer);
+begin
+  if (NoteBook=nil) or (NoteBook.PageCount<=1) then exit;
+  if PageIndex<Notebook.PageCount-1 then
+    MoveEditor(PageIndex,PageIndex+1)
+  else
+    MoveEditor(PageIndex,0);
+end;
+
+procedure TSourceNotebook.MoveActivePageLeft;
+begin
+  if (NoteBook=nil) then exit;
+  MoveEditorLeft(NoteBook.PageIndex);
+end;
+
+procedure TSourceNotebook.MoveActivePageRight;
+begin
+  if (NoteBook=nil) then exit;
+  MoveEditorRight(NoteBook.PageIndex);
+end;
 
 Procedure TSourceNotebook.FindClicked(Sender : TObject);
 var TempEditor:TSourceEditor;
@@ -2958,6 +3030,16 @@ Begin
     begin
       MenuItem.Caption := copy(MenuItem.Caption,1,Length(MenuItem.Caption)-1);
     end;
+end;
+
+procedure TSourceNotebook.MoveEditorLeftClicked(Sender: TObject);
+begin
+  MoveActivePageLeft;
+end;
+
+procedure TSourceNotebook.MoveEditorRightClicked(Sender: TObject);
+begin
+  MoveActivePageRight;
 end;
 
 {This is called from outside to toggle a bookmark}
@@ -3284,6 +3366,12 @@ begin
 
   ecPrevEditor :
     PrevEditor;
+    
+  ecMoveEditorLeft:
+    MoveActivePageLeft;
+
+  ecMoveEditorRight:
+    MoveActivePageRight;
 
   ecOpenFileAtCursor:
     OpenAtCursorClicked(self);
