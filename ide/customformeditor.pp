@@ -39,7 +39,8 @@ uses
   MemCheck,
 {$ENDIF}
   // LCL+FCL
-  Classes, SysUtils, TypInfo, Math, LCLProc, Controls, Forms, Menus, Dialogs,
+  Classes, SysUtils, TypInfo, Math, LCLProc, Graphics, Controls, Forms, Menus,
+  Dialogs,
   // components
   AVL_Tree, PropEdits, ObjectInspector, IDECommands,
   // IDE
@@ -157,10 +158,12 @@ each control that's dropped onto the form
     function PasteSelectionFromClipboard(Flags: TComponentPasteSelectionFlags
                                          ): Boolean; override;
 
-    // JIT forms
+    // JIT components
     function IsJITComponent(AComponent: TComponent): boolean;
     function GetJITListOfType(AncestorType: TComponentClass): TJITComponentList;
     function FindJITList(AComponent: TComponent): TJITComponentList;
+    function FindJITListByClassName(const AComponentClassName: string
+                                    ): TJITComponentList;
     function GetDesignerForm(AComponent: TComponent): TCustomForm; override;
     function FindNonControlForm(LookupRoot: TComponent): TNonControlForm;
     function CreateNonControlForm(LookupRoot: TComponent): TNonControlForm;
@@ -172,6 +175,8 @@ each control that's dropped onto the form
     procedure RenameJITMethod(AComponent: TComponent;
                            const OldMethodName, NewMethodName: shortstring);
     procedure SaveHiddenDesignerFormProperties(AComponent: TComponent);
+    function FindJITComponentByClassName(const AComponentClassName: string
+                                         ): TComponent;
     
     // designers
     function DesignerCount: integer; override;
@@ -201,8 +206,9 @@ each control that's dropped onto the form
       const NewName, NewClassName: shortstring);
       
     // define properties
-    procedure GetDefineProperties(const AComponentClassname: string;
-                                  List: TStrings);
+    procedure FindDefineProperty(const APersistentClassName,
+                                 AncestorClassName, Identifier: string;
+                                 var IsDefined: boolean);
 
     // keys
     function TranslateKeyToDesignerCommand(Key: word; Shift: TShiftState): word;
@@ -219,7 +225,7 @@ each control that's dropped onto the form
   
   TDefinePropertiesCacheItem = class
   public
-    ComponentClassname: string;
+    PersistentClassname: string;
     RegisteredComponent: TRegisteredComponent;
     DefineProperties: TStrings;
     destructor Destroy; override;
@@ -245,11 +251,15 @@ each control that's dropped onto the form
   end;
   
   
-  { TDefinePropertiesComponent( }
+  { TDefinePropertiesPersistent }
   
-  TDefinePropertiesComponent = class(TComponent)
+  TDefinePropertiesPersistent = class(TPersistent)
+  private
+    FTarget: TPersistent;
   public
+    constructor Create(TargetPersistent: TPersistent);
     procedure PublicDefineProperties(Filer: TFiler);
+    property Target: TPersistent read FTarget;
   end;
   
   
@@ -257,7 +267,7 @@ each control that's dropped onto the form
 function CompareComponentInterfaces(Data1, Data2: Pointer): integer;
 function CompareComponentAndInterface(Key, Data: Pointer): integer;
 function CompareDefPropCacheItems(Item1, Item2: TDefinePropertiesCacheItem): integer;
-function CompareCompClassNameAndDefPropCacheItem(Key: Pointer;
+function ComparePersClassNameAndDefPropCacheItem(Key: Pointer;
                                      Item: TDefinePropertiesCacheItem): integer;
 
 implementation
@@ -286,13 +296,13 @@ end;
 function CompareDefPropCacheItems(Item1, Item2: TDefinePropertiesCacheItem
   ): integer;
 begin
-  Result:=CompareText(Item1.ComponentClassname,Item2.ComponentClassname);
+  Result:=CompareText(Item1.PersistentClassname,Item2.PersistentClassname);
 end;
 
-function CompareCompClassNameAndDefPropCacheItem(Key: Pointer;
+function ComparePersClassNameAndDefPropCacheItem(Key: Pointer;
                                      Item: TDefinePropertiesCacheItem): integer;
 begin
-  Result:=CompareText(AnsiString(Key),Item.ComponentClassname);
+  Result:=CompareText(AnsiString(Key),Item.PersistentClassname);
 end;
 
 { TComponentInterface }
@@ -1008,6 +1018,17 @@ begin
     Result:=nil;
 end;
 
+function TCustomFormEditor.FindJITListByClassName(
+  const AComponentClassName: string): TJITComponentList;
+begin
+  if JITFormList.FindComponentByClassName(AComponentClassName)>=0 then
+    Result:=JITFormList
+  else if JITDataModuleList.FindComponentByClassName(AComponentClassName)>=0 then
+    Result:=JITDataModuleList
+  else
+    Result:=nil;
+end;
+
 function TCustomFormEditor.GetDesignerForm(AComponent: TComponent
   ): TCustomForm;
 var
@@ -1100,6 +1121,20 @@ begin
   NonControlForm:=FindNonControlForm(AComponent);
   if NonControlForm<>nil then
     NonControlForm.DoSaveBounds;
+end;
+
+function TCustomFormEditor.FindJITComponentByClassName(
+  const AComponentClassName: string): TComponent;
+var
+  JITComponentList: TJITComponentList;
+  i: LongInt;
+begin
+  Result:=nil;
+  JITComponentList:=FindJITListByClassName(AComponentClassName);
+  if JITComponentList=nil then exit;
+  i:=JITComponentList.FindComponentByClassName(AComponentClassName);
+  if i<0 then exit;
+  Result:=JITComponentList[i];
 end;
 
 function TCustomFormEditor.DesignerCount: integer;
@@ -1404,51 +1439,134 @@ begin
   AComponent.Name:=NewName;
 end;
 
-procedure TCustomFormEditor.GetDefineProperties(
-  const AComponentClassname: string; List: TStrings);
+procedure TCustomFormEditor.FindDefineProperty(
+  const APersistentClassName, AncestorClassName, Identifier: string;
+  var IsDefined: boolean);
 var
+  AutoFreePersistent: Boolean;
+  APersistent: TPersistent;
   CacheItem: TDefinePropertiesCacheItem;
-  AComponent: TComponent;
   DefinePropertiesReader: TDefinePropertiesReader;
   ANode: TAVLTreeNode;
+  OldClassName: String;
+  DefinePropertiesPersistent: TDefinePropertiesPersistent;
+
+  function CreateTempPersistent(
+    const APersistentClass: TPersistentClass): boolean;
+  begin
+    Result:=false;
+    try
+      if APersistentClass.InheritsFrom(TComponent) then
+        APersistent:=TComponentClass(APersistentClass).Create(nil)
+      else if APersistentClass.InheritsFrom(TGraphic) then
+        APersistent:=TGraphicClass(APersistentClass).Create
+      else
+        APersistent:=APersistentClass.Create;
+      Result:=true;
+      AutoFreePersistent:=true;
+    except
+      on E: Exception do begin
+        debugln('TCustomFormEditor.GetDefineProperties Error creating ',
+          APersistentClass.Classname,
+          ': ',E.Message);
+      end;
+    end;
+  end;
+  
+  function GetDefinePersistent(const AClassName: string): Boolean;
+  var
+    APersistentClass: TPersistentClass;
+  begin
+    Result:=false;
+    // try to find the AClassName in the registered components
+    if APersistent=nil then begin
+      CacheItem.RegisteredComponent:=IDEComponentPalette.FindComponent(AClassname);
+      if (CacheItem.RegisteredComponent<>nil)
+      and (CacheItem.RegisteredComponent.ComponentClass<>nil) then begin
+        debugln('TCustomFormEditor.GetDefineProperties Component is registered');
+        if not CreateTempPersistent(CacheItem.RegisteredComponent.ComponentClass)
+        then exit;
+      end;
+    end;
+    
+    // try to find the AClassName in the registered TPersistent classes
+    if APersistent=nil then begin
+      APersistentClass:=Classes.GetClass(AClassName);
+      if APersistentClass<>nil then begin
+        debugln('TCustomFormEditor.GetDefineProperties Persistent is registered');
+        if not CreateTempPersistent(APersistentClass) then exit;
+      end;
+    end;
+
+    if APersistent=nil then begin
+      // try to find the AClassName in the open forms/datamodules
+      APersistent:=FindJITComponentByClassName(AClassName);
+      if APersistent<>nil then
+        debugln('TCustomFormEditor.GetDefineProperties Component is a resource');
+    end;
+
+    // try default classes
+    if (APersistent=nil) and (CompareText(AClassName,'TDataModule')=0) then
+    begin
+      if not CreateTempPersistent(TDataModule) then exit;
+    end;
+    if (APersistent=nil) and (CompareText(AClassName,'TForm')=0) then begin
+      if not CreateTempPersistent(TForm) then exit;
+    end;
+    
+    Result:=true;
+  end;
+  
 begin
-  List.Clear;
+  IsDefined:=false;
   if FDefineProperties=nil then
     FDefineProperties:=TAVLTree.Create(@CompareDefPropCacheItems);
-  ANode:=FDefineProperties.FindKey(PChar(AComponentClassname),
-                                      @CompareCompClassNameAndDefPropCacheItem);
+  ANode:=FDefineProperties.FindKey(PChar(APersistentClassName),
+                                      @ComparePersClassNameAndDefPropCacheItem);
   if ANode=nil then begin
     // cache component class, try to retrieve the define properties
     CacheItem:=TDefinePropertiesCacheItem.Create;
-    CacheItem.ComponentClassname:=AComponentClassname;
+    CacheItem.PersistentClassname:=APersistentClassName;
     FDefineProperties.Add(CacheItem);
-    CacheItem.RegisteredComponent:=IDEComponentPalette.FindComponent(
-                                                           AComponentClassname);
-    if (CacheItem.RegisteredComponent<>nil)
-    and (CacheItem.RegisteredComponent.ComponentClass<>nil) then begin
+    debugln('TCustomFormEditor.GetDefineProperties APersistentClassName="',APersistentClassName,'" AncestorClassName="',AncestorClassName,'"');
+
+    APersistent:=nil;
+    AutoFreePersistent:=false;
+
+    if not GetDefinePersistent(APersistentClassName) then exit;
+    if (APersistent=nil) then begin
+      if not GetDefinePersistent(AncestorClassName) then exit;
+    end;
+
+    if APersistent<>nil then begin
+      //debugln('TCustomFormEditor.GetDefineProperties Getting define properties for ',APersistent.ClassName);
       // try creating a component class and call DefineProperties
-      AComponent:=nil;
       DefinePropertiesReader:=nil;
+      DefinePropertiesPersistent:=nil;
       try
         try
-          AComponent:=CacheItem.RegisteredComponent.ComponentClass.Create(nil);
           DefinePropertiesReader:=TDefinePropertiesReader.Create;
-          TDefinePropertiesComponent(AComponent).PublicDefineProperties(
+          DefinePropertiesPersistent:=
+                                TDefinePropertiesPersistent.Create(APersistent);
+          DefinePropertiesPersistent.PublicDefineProperties(
                                                         DefinePropertiesReader);
         except
           on E: Exception do begin
-            debugln('TCustomFormEditor.GetDefineProperties Error creating ',
+            debugln('TCustomFormEditor.GetDefineProperties Error calling DefineProperties for ',
               CacheItem.RegisteredComponent.ComponentClass.Classname,
               ': ',E.Message);
           end;
         end;
-        try
-          AComponent.Free;
-        except
-          on E: Exception do begin
-            debugln('TCustomFormEditor.GetDefineProperties Error freeing ',
-              CacheItem.RegisteredComponent.ComponentClass.Classname,
-              ': ',E.Message);
+        // free component
+        if AutoFreePersistent then begin
+          try
+            OldClassName:=APersistent.ClassName;
+            APersistent.Free;
+          except
+            on E: Exception do begin
+              debugln('TCustomFormEditor.GetDefineProperties Error freeing ',
+                OldClassName,': ',E.Message);
+            end;
           end;
         end;
       finally
@@ -1458,17 +1576,21 @@ begin
           CacheItem.DefineProperties:=TStringList.Create;
           CacheItem.DefineProperties.Assign(
                                     DefinePropertiesReader.DefinePropertyNames);
-          debugln('TCustomFormEditor.GetDefineProperties CompClass=',AComponentClassname,
-            ' DefineProps=',CacheItem.DefineProperties.Text);
-          DefinePropertiesReader.Free;
+          debugln('TCustomFormEditor.GetDefineProperties Class=',APersistentClassName,
+            ' DefineProps="',CacheItem.DefineProperties.Text,'"');
         end;
+        DefinePropertiesReader.Free;
+        DefinePropertiesPersistent.Free;
       end;
+    end else begin
+      debugln('TCustomFormEditor.GetDefineProperties Persistent is NOT registered');
     end;
+    //debugln('TCustomFormEditor.GetDefineProperties END APersistentClassName="',APersistentClassName,'" AncestorClassName="',AncestorClassName,'"');
   end else begin
     CacheItem:=TDefinePropertiesCacheItem(ANode.Data);
   end;
   if CacheItem.DefineProperties<>nil then
-    List.Assign(CacheItem.DefineProperties);
+    IsDefined:=CacheItem.DefineProperties.IndexOf(Identifier)>=0;
 end;
 
 procedure TCustomFormEditor.JITListReaderError(Sender: TObject;
@@ -1665,6 +1787,7 @@ end;
 
 procedure TDefinePropertiesReader.AddPropertyName(const Name: string);
 begin
+  //debugln('TDefinePropertiesReader.AddPropertyName Name="',Name,'"');
   if FDefinePropertyNames=nil then FDefinePropertyNames:=TStringList.Create;
   if FDefinePropertyNames.IndexOf(Name)<=0 then
     FDefinePropertyNames.Add(Name);
@@ -1688,11 +1811,18 @@ begin
   AddPropertyName(Name);
 end;
 
-{ TDefinePropertiesComponent }
+{ TDefinePropertiesPersistent }
 
-procedure TDefinePropertiesComponent.PublicDefineProperties(Filer: TFiler);
+constructor TDefinePropertiesPersistent.Create(TargetPersistent: TPersistent);
 begin
-  DefineProperties(Filer);
+  FTarget:=TargetPersistent;
+end;
+
+procedure TDefinePropertiesPersistent.PublicDefineProperties(Filer: TFiler);
+begin
+  //debugln('TDefinePropertiesPersistent.PublicDefineProperties A ',ClassName);
+  Target.DefineProperties(Filer);
+  //debugln('TDefinePropertiesPersistent.PublicDefineProperties END ',ClassName);
 end;
 
 end.

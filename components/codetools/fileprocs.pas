@@ -106,6 +106,8 @@ function DbgS(const e: extended): string;
 function DbgS(const b: boolean): string;
 
 function DbgS(const i1,i2,i3,i4: integer): string;
+function DbgSName(const p: TObject): string;
+function DbgStr(const StringWithSpecialChars: string): string;
 
 
 implementation
@@ -946,6 +948,34 @@ end;
 function DbgS(const i1, i2, i3, i4: integer): string;
 begin
   Result:=dbgs(i1)+','+dbgs(i2)+','+dbgs(i3)+','+dbgs(i4);
+end;
+
+function DbgSName(const p: TObject): string;
+begin
+  if p=nil then
+    Result:='nil'
+  else if p is TComponent then
+    Result:=TComponent(p).Name+':'+p.ClassName
+  else
+    Result:=p.ClassName;
+end;
+
+function DbgStr(const StringWithSpecialChars: string): string;
+var
+  i: Integer;
+  s: String;
+begin
+  Result:=StringWithSpecialChars;
+  i:=1;
+  while (i<=length(Result)) do begin
+    case Result[i] of
+    ' '..#126: inc(i);
+    else
+      s:='#'+IntToStr(ord(Result[i]));
+      Result:=copy(Result,1,i-1)+s+copy(Result,i+1,length(Result)-i);
+      inc(i,length(s));
+    end;
+  end;
 end;
 
 //------------------------------------------------------------------------------

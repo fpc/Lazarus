@@ -1284,7 +1284,16 @@ const
 
 (***************************************************************************
  ***************************************************************************)
+
+procedure Register;
+
 implementation
+
+procedure Register;
+begin
+  RegisterClasses([TBitmap,TPixmap,TPortableNetworkGraphic,TPicture,
+                   TFont,TPen,TBrush,TRegion]);
+end;
 
 function SendIntfMessage(LM_Message: integer; Sender: TObject;
   Data: pointer): integer;
@@ -1747,6 +1756,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.149  2004/09/14 10:23:44  mattias
+  implemented finding DefineProperties in registered TPersistent, implemented auto commenting of missing units for Delphi unit conversion
+
   Revision 1.148  2004/09/13 15:33:07  micha
   rename AutoReDraw to AutoRedraw, as "Re" is not a word
 

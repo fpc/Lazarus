@@ -274,7 +274,7 @@ resourcestring
   lisUnableToWriteFileError = 'Unable to write file %s%s%s%sError: %s';
   lisErrorCreatingLrs = 'Error creating lrs';
   lisLFMFileNotFound = 'LFM file not found';
-  lisUnitSNotFound = 'Unit(s) not found';
+  lisUnitsNotFound = 'Unit(s) not found';
   lisTheFollowingUnitsWereNotFound1EitherTheseUnitsAreN = 'The following '
     +'units were not found:%s%s%s%s1) Either these units are not in the unit '
     +'path, then you can abort now, fix the unit path and try again.%s2) Or '

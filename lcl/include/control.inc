@@ -2292,6 +2292,19 @@ begin
   if Action <> nil then ActionChange(Action, True);
 end;
 
+{------------------------------------------------------------------------------
+  procedure TControl.DefineProperties(Filer: TFiler);
+------------------------------------------------------------------------------}
+procedure TControl.DefineProperties(Filer: TFiler);
+begin
+  // Optimiziation:
+  // do not call inherited: TComponent only defines 'Left' and 'Top' and
+  // TControl has them as regular properties.
+end;
+
+{------------------------------------------------------------------------------
+  procedure TControl.AssignTo(Dest: TPersistent);
+------------------------------------------------------------------------------}
 procedure TControl.AssignTo(Dest: TPersistent);
 begin
   if Dest is TCustomAction then
@@ -2305,17 +2318,17 @@ begin
   else inherited AssignTo(Dest);
 end;
 
-{------------------------------------------------------------------------------}
-{  TControl SetBounds                                                          }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TControl SetBounds
+------------------------------------------------------------------------------}
 procedure TControl.SetBounds(ALeft, ATop, AWidth, AHeight : integer);
 begin
   ChangeBounds(ALeft, ATop, AWidth, AHeight);
 end;
 
-{------------------------------------------------------------------------------}
-{  TControl SetConstraints                                                     }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TControl SetConstraints
+------------------------------------------------------------------------------}
 procedure TControl.SetConstraints(const Value : TSizeConstraints);
 begin
   FConstraints.Assign(Value);
@@ -3273,6 +3286,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.217  2004/09/14 10:23:44  mattias
+  implemented finding DefineProperties in registered TPersistent, implemented auto commenting of missing units for Delphi unit conversion
+
   Revision 1.216  2004/09/12 13:21:37  micha
   remove obsolete message LM_DRAGINFOCHANGED
 

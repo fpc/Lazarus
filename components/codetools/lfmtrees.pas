@@ -59,6 +59,9 @@ type
     destructor Destroy; override;
     procedure Unbind;
     procedure AddChild(ANode: TLFMTreeNode);
+    function GetIdentifier: string;
+    procedure FindIdentifier(var IdentStart, IdentEnd: integer);
+    function GetPath: string;
   end;
   
   TLFMTreeNodeClass = class of TLFMTreeNode;
@@ -73,9 +76,10 @@ type
     NamePosition: integer;
     TypeName: string;
     TypeNamePosition: integer;
-    DefineProperties: TSTrings;
+    AncestorTool: TObject; // TFindDeclarationTool
+    AncestorNode: TObject; // TCodeTreeNode
+    AncestorContextValid: boolean;
     constructor CreateVirtual; override;
-    destructor Destroy; override;
   end;
 
   { TLFMNameParts }
@@ -221,6 +225,7 @@ type
     function FindParentError: TLFMError;
     function FindContextNode: TLFMTreeNode;
     function IsMissingObjectType: boolean;
+    function GetNodePath: string;
   end;
   
   { TLFMTree }
@@ -339,7 +344,8 @@ begin
   NewError.Source:=LFMBuffer;
   NewError.Position:=ErrorPosition;
   NewError.Caret:=PositionToCaret(NewError.Position);
-  DebugLn('TLFMTree.AddError ',NewError.AsString);
+  DebugLn('TLFMTree.AddError ',NewError.AsString,
+          ' NodePath=',NewError.GetNodePath);
   NewError.AddToTree(Self);
 end;
 
@@ -623,6 +629,7 @@ begin
   if ANode=nil then exit;
   ANode.Unbind;
   ANode.Parent:=Self;
+  ANode.Tree:=Tree;
   ANode.PrevSibling:=LastChild;
   LastChild:=ANode;
   if FirstChild=nil then FirstChild:=ANode;
@@ -630,17 +637,86 @@ begin
     ANode.PrevSibling.NextSibling:=ANode;
 end;
 
+function TLFMTreeNode.GetIdentifier: string;
+var
+  IdentStart, IdentEnd: integer;
+begin
+  Result:='';
+  if (Tree=nil) or (Tree.LFMBuffer=nil) or (StartPos<1) then exit;
+  FindIdentifier(IdentStart,IdentEnd);
+  if IdentStart<1 then exit;
+  Result:=copy(Tree.LFMBuffer.Source,IdentStart,IdentEnd-IdentStart);
+end;
+
+procedure TLFMTreeNode.FindIdentifier(var IdentStart, IdentEnd: integer);
+var
+  Src: String;
+  SrcLen: Integer;
+begin
+  IdentStart:=-1;
+  IdentEnd:=-1;
+  if (Tree=nil) or (Tree.LFMBuffer=nil) or (StartPos<1) then exit;
+  Src:=Tree.LFMBuffer.Source;
+  SrcLen:=length(Src);
+  IdentStart:=StartPos;
+  while (IdentStart<=SrcLen) and (Src[IdentStart] in [#0..#32]) do
+    inc(IdentStart);
+  IdentEnd:=IdentStart;
+  while (IdentEnd<=SrcLen)
+  and (Src[IdentEnd] in ['A'..'Z','a'..'z','0'..'9','_','.']) do
+    inc(IdentEnd);
+
+  if TheType=lfmnObject then begin
+    // skip object/inherited
+    IdentStart:=IdentEnd;
+    while (IdentStart<=SrcLen) and (Src[IdentStart] in [#0..#32]) do
+      inc(IdentStart);
+    IdentEnd:=IdentStart;
+    while (IdentEnd<=SrcLen)
+    and (Src[IdentEnd] in ['A'..'Z','a'..'z','0'..'9','_','.']) do
+      inc(IdentEnd);
+  end;
+  //debugln('TLFMTreeNode.FindIdentifier ',copy(Src,IdentStart,IdentEnd-IdentStart),' ',DbgStr(copy(Src,StartPos,20)));
+  
+  if IdentEnd<=IdentStart then begin
+    IdentStart:=-1;
+    IdentEnd:=-1;
+  end;
+end;
+
+function TLFMTreeNode.GetPath: string;
+var
+  ANode: TLFMTreeNode;
+  PrependStr: String;
+begin
+  Result:='';
+  ANode:=Self;
+  while ANode<>nil do begin
+    PrependStr:=ANode.GetIdentifier;
+    {PrependStr:=PrependStr+'('+dbgs(ANode.StartPos)+','+dbgs(ANode.EndPos)+')';
+    if (ANode.Tree<>nil) then begin
+      if (ANode.Tree.LFMBuffer<>nil) then begin
+        PrependStr:=PrependStr+'"'+DbgStr(copy(ANode.Tree.LFMBuffer.Source,ANode.StartPos,20))+'"';
+      end else begin
+        PrependStr:=PrependStr+'noLFMBuf';
+      end;
+    end else begin
+      PrependStr:=PrependStr+'noTree';
+    end;}
+    if PrependStr<>'' then begin
+      if Result<>'' then
+        Result:='/'+Result;
+       Result:=PrependStr+Result;
+    end;
+    ANode:=ANode.Parent;
+  end;
+end;
+
 { TLFMObjectNode }
 
 constructor TLFMObjectNode.CreateVirtual;
 begin
   TheType:=lfmnObject;
-end;
-
-destructor TLFMObjectNode.Destroy;
-begin
-  DefineProperties.Free;
-  inherited Destroy;
 end;
 
 { TLFMPropertyNode }
@@ -810,6 +886,14 @@ begin
       and (Node is TLFMObjectNode)
       and (TLFMObjectNode(Node).TypeName<>'')
       and (TLFMObjectNode(Node).TypeNamePosition=Position);
+end;
+
+function TLFMError.GetNodePath: string;
+begin
+  if Node<>nil then
+    Result:=Node.GetPath
+  else
+    Result:='';
 end;
 
 { TLFMNameParts }

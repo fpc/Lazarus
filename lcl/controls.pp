@@ -934,6 +934,7 @@ type
     function  GetPalette: HPalette; virtual;
     function ChildClassAllowed(ChildClass: TClass): boolean; virtual;
     procedure Loaded; override;
+    procedure DefineProperties(Filer: TFiler); override;
     procedure AssignTo(Dest: TPersistent); override;
     procedure InvalidateControl(CtrlIsVisible, CtrlIsOpaque: Boolean);
     procedure InvalidateControl(CtrlIsVisible, CtrlIsOpaque, IgnoreWinControls: Boolean);
@@ -2400,6 +2401,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.247  2004/09/14 10:23:44  mattias
+  implemented finding DefineProperties in registered TPersistent, implemented auto commenting of missing units for Delphi unit conversion
+
   Revision 1.246  2004/09/09 22:00:37  mattias
   started TTabControlNotebookStrings
 

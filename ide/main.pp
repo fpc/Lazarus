@@ -398,8 +398,9 @@ type
                                                    var RealDir: string);
     procedure CodeToolBossGetVirtualDirectoryDefines(DefTree: TDefineTree;
                                                      DirDef: TDirectoryDefines);
-    procedure OnCodeToolBossGetDefineProperties(Sender: TObject;
-                          const ComponentClassName: string; var List: TStrings);
+    procedure OnCodeToolBossFindDefineProperty(Sender: TObject;
+               const PersistentClassName, AncestorClassName, Identifier: string;
+               var IsDefined: boolean);
     function MacroFunctionProject(Data: Pointer): boolean;
     procedure OnCompilerGraphStampIncreased;
 
@@ -6747,12 +6748,7 @@ begin
     if Result<>mrOk then exit;
   end else
     LRSFilename:='';
-  // add {$mode delphi} directive
-  // remove windows unit and add LResources, LCLIntf
-  // remove {$R *.dfm} or {$R *.xfm} directive
-  // add initialization
-  // add {$i unit.lrs} directive
-  // comment all missing units in uses sections
+
   writeln('TMainIDE.DoConvertDelphiUnit Convert delphi source');
   OldOpenEditorsOnCodeToolChange:=FOpenEditorsOnCodeToolChange;
   FOpenEditorsOnCodeToolChange:=true;
@@ -6761,6 +6757,13 @@ begin
       Result:=mrCancel;
       exit;
     end;
+
+    // add {$mode delphi} directive
+    // remove windows unit and add LResources, LCLIntf
+    // remove {$R *.dfm} or {$R *.xfm} directive
+    // add initialization
+    // add {$i unit.lrs} directive
+    // TODO: fix delphi ambigiousities like incomplete proc implementation headers
     Result:=ConvertDelphiSourceToLazarusSource(LazarusUnitFilename,
                                                LRSFilename<>'');
     if Result<>mrOk then begin
@@ -8727,7 +8730,7 @@ begin
     OnBeforeApplyChanges:=@OnBeforeCodeToolBossApplyChanges;
     OnAfterApplyChanges:=@OnAfterCodeToolBossApplyChanges;
     OnSearchUsedUnit:=@OnCodeToolBossSearchUsedUnit;
-    OnGetDefinePropertiesForClass:=@OnCodeToolBossGetDefineProperties;
+    OnFindDefineProperty:=@OnCodeToolBossFindDefineProperty;
   end;
 
   CodeToolsOpts.AssignGlobalDefineTemplatesToTree(CodeToolBoss.DefineTree);
@@ -8929,11 +8932,12 @@ begin
     Project1.GetVirtualDefines(DefTree,DirDef);
 end;
 
-procedure TMainIDE.OnCodeToolBossGetDefineProperties(Sender: TObject;
-  const ComponentClassName: string; var List: TStrings);
+procedure TMainIDE.OnCodeToolBossFindDefineProperty(Sender: TObject;
+  const PersistentClassName, AncestorClassName, Identifier: string;
+  var IsDefined: boolean);
 begin
-  List:=TStringList.Create;
-  FormEditor1.GetDefineProperties(ComponentClassName,List);
+  FormEditor1.FindDefineProperty(PersistentClassName,AncestorClassName,
+                                 Identifier,IsDefined);
 end;
 
 function TMainIDE.MacroFunctionProject(Data: Pointer): boolean;
@@ -10700,6 +10704,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.770  2004/09/14 10:23:44  mattias
+  implemented finding DefineProperties in registered TPersistent, implemented auto commenting of missing units for Delphi unit conversion
+
   Revision 1.769  2004/09/12 22:57:29  mattias
   implemented autofixing MainUnit IDE directive PathDelim by Vincent
 

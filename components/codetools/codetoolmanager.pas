@@ -60,8 +60,9 @@ type
                                const TheUnitName, TheUnitInFilename: string
                                ): TCodeBuffer of object;
   TOnCodeToolCheckAbort = function: boolean of object;
-  TOnGetDefinePropertiesForClass = procedure(Sender: TObject;
-    const ComponentClassName: string; var List: TStrings) of object;
+  TOnFindDefineProperty = procedure(Sender: TObject;
+    const PersistentClassName, AncestorClassName, Identifier: string;
+    var IsDefined: boolean) of object;
 
   TCodeToolManager = class
   private
@@ -84,8 +85,8 @@ type
     FOnBeforeApplyChanges: TOnBeforeApplyChanges;
     FOnCheckAbort: TOnCodeToolCheckAbort;
     FOnGatherExternalChanges: TOnGatherExternalChanges;
-    FOnGetDefineProperties: TOnGetDefineProperties;
-    FOnGetDefinePropertiesForClass: TOnGetDefinePropertiesForClass;
+    FOnFindDefinePropertyForContext: TOnFindDefinePropertyForContext;
+    FOnFindDefineProperty: TOnFindDefineProperty;
     FOnSearchUsedUnit: TOnSearchUsedUnit;
     FResourceTool: TResourceCodeTool;
     FSetPropertyVariablename: string;
@@ -366,11 +367,12 @@ type
           MissingUnits: TStrings): boolean;
 
     // resources
-    property OnGetDefineProperties: TOnGetDefineProperties
-                       read FOnGetDefineProperties write FOnGetDefineProperties;
-    property OnGetDefinePropertiesForClass: TOnGetDefinePropertiesForClass
-                                           read FOnGetDefinePropertiesForClass
-                                           write FOnGetDefinePropertiesForClass;
+    property OnFindDefinePropertyForContext: TOnFindDefinePropertyForContext
+                                          read FOnFindDefinePropertyForContext
+                                          write FOnFindDefinePropertyForContext;
+    property OnFindDefineProperty: TOnFindDefineProperty
+                                           read FOnFindDefineProperty
+                                           write FOnFindDefineProperty;
     function FindLFMFileName(Code: TCodeBuffer): string;
     function CheckLFM(UnitCode, LFMBuf: TCodeBuffer;
           var LFMTree: TLFMTree;
@@ -389,9 +391,10 @@ type
           KeepPath: boolean): boolean;
     function RenameIncludeDirective(Code: TCodeBuffer; LinkIndex: integer;
           const NewFilename: string; KeepPath: boolean): boolean;
-    procedure DefaultGetDefineProperties(Sender: TObject;
-                       const ClassContext: TFindContext; LFMNode: TLFMTreeNode;
-                       const IdentName: string; var DefineProperties: TStrings);
+    procedure DefaultFindDefinePropertyForContext(Sender: TObject;
+                       const ClassContext, AncestorClassContext: TFindContext;
+                       LFMNode: TLFMTreeNode;
+                       const IdentName: string; var IsDefined: boolean);
 
     // register proc
     function HasInterfaceRegisterProc(Code: TCodeBuffer;
@@ -510,7 +513,7 @@ constructor TCodeToolManager.Create;
 begin
   inherited Create;
   FCheckFilesOnDisk:=true;
-  FOnGetDefineProperties:=@DefaultGetDefineProperties;
+  FOnFindDefinePropertyForContext:=@DefaultFindDefinePropertyForContext;
   DefineTree:=TDefineTree.Create;
   DefineTree.OnReadValue:=@OnDefineTreeReadValue;
   DefinePool:=TDefinePool.Create;
@@ -2213,7 +2216,7 @@ begin
   {$ENDIF}
   if not InitCurCodeTool(UnitCode) then exit;
   try
-    Result:=FCurCodeTool.CheckLFM(LFMBuf,LFMTree,OnGetDefineProperties,
+    Result:=FCurCodeTool.CheckLFM(LFMBuf,LFMTree,OnFindDefinePropertyForContext,
                                   RootMustBeClassInIntf,ObjectsMustExists);
   except
     on e: Exception do HandleException(e);
@@ -2342,17 +2345,23 @@ begin
   end;
 end;
 
-procedure TCodeToolManager.DefaultGetDefineProperties(Sender: TObject;
-  const ClassContext: TFindContext; LFMNode: TLFMTreeNode;
-  const IdentName: string; var DefineProperties: TStrings);
+procedure TCodeToolManager.DefaultFindDefinePropertyForContext(Sender: TObject;
+  const ClassContext, AncestorClassContext: TFindContext; LFMNode: TLFMTreeNode;
+  const IdentName: string; var IsDefined: boolean);
 var
-  ComponentClassName: String;
+  PersistentClassName: String;
+  AncestorClassName: String;
 begin
-  if Assigned(OnGetDefinePropertiesForClass) then begin
-    ComponentClassName:=ClassContext.Tool.ExtractClassName(
+  if Assigned(OnFindDefineProperty) then begin
+    PersistentClassName:=ClassContext.Tool.ExtractClassName(
                                                        ClassContext.Node,false);
-    OnGetDefinePropertiesForClass(ClassContext.Tool,ComponentClassName,
-                                  DefineProperties);
+    AncestorClassName:='';
+    if AncestorClassContext.Tool<>nil then
+     AncestorClassName:=AncestorClassContext.Tool.ExtractClassName(
+                                               AncestorClassContext.Node,false);
+    OnFindDefineProperty(ClassContext.Tool,
+                         PersistentClassName,AncestorClassName,IdentName,
+                         IsDefined);
   end;
 end;
 

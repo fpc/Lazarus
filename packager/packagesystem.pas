@@ -913,6 +913,7 @@ begin
     AddFile('maskedit.pp','MaskEdit',pftUnit,[pffHasRegisterProc],cpBase);
     AddFile('checklst.pas','CheckLst',pftUnit,[pffHasRegisterProc],cpBase);
     AddFile('forms.pp','Forms',pftUnit,[pffHasRegisterProc],cpBase);
+    AddFile('graphics.pp','Graphics',pftUnit,[pffHasRegisterProc],cpBase);
     AddFile('grids.pas','Grids',pftUnit,[pffHasRegisterProc],cpBase);
     AddFile('controls.pp','Controls',pftUnit,[pffHasRegisterProc],cpBase);
     AddFile('dialogs.pp','Dialogs',pftUnit,[pffHasRegisterProc],cpBase);

@@ -274,7 +274,7 @@ begin
     end;
     writeln('FixMissingUnits FindMissingUnits="',MissingUnitsText,'"');
     // ask user if missing units should be commented
-    Result:=MessageDlg(lisUnitSNotFound,
+    Result:=MessageDlg(lisUnitsNotFound,
       Format(lisTheFollowingUnitsWereNotFound1EitherTheseUnitsAreN, [#13,
         MissingUnitsText, #13, #13, #13, #13, #13, #13]),
       mtConfirmation,[mbYes,mbAbort],0);

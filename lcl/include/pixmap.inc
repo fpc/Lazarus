@@ -260,7 +260,6 @@ begin
   Result:=true;
 end;
 
-
 { TPixmap }
 
 function TPixmap.LazarusResourceTypeValid(const ResourceType: string): boolean;
@@ -298,6 +297,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.30  2004/09/14 10:23:44  mattias
+  implemented finding DefineProperties in registered TPersistent, implemented auto commenting of missing units for Delphi unit conversion
+
   Revision 1.29  2004/04/10 17:58:57  mattias
   implemented mainunit hints for include files
 

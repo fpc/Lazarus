@@ -54,9 +54,10 @@ uses
   SourceChanger, CustomCodeTool, CodeToolsStructs;
 
 type
-  TOnGetDefineProperties = procedure(Sender: TObject;
-    const ClassContext: TFindContext; LFMNode: TLFMTreeNode;
-    const IdentName: string; var DefineProperties: TStrings) of object;
+  TOnFindDefinePropertyForContext = procedure(Sender: TObject;
+    const ClassContext, AncestorClassContext: TFindContext;
+    LFMNode: TLFMTreeNode;
+    const IdentName: string; var IsDefined: boolean) of object;
 
 
   TStandardCodeTool = class(TIdentCompletionTool)
@@ -123,7 +124,7 @@ type
           KeepPath: boolean;
           SourceChangeCache: TSourceChangeCache): boolean;
     function CheckLFM(LFMBuf: TCodeBuffer; var LFMTree: TLFMTree;
-                  const OnGetDefineProperties: TOnGetDefineProperties;
+                  const OnFindDefineProperty: TOnFindDefinePropertyForContext;
                   RootMustBeClassInIntf, ObjectsMustExists: boolean): boolean;
 
     // Application.Createform statements
@@ -1119,7 +1120,7 @@ begin
 end;
 
 function TStandardCodeTool.CheckLFM(LFMBuf: TCodeBuffer; var LFMTree: TLFMTree;
-  const OnGetDefineProperties: TOnGetDefineProperties;
+  const OnFindDefineProperty: TOnFindDefinePropertyForContext;
   RootMustBeClassInIntf, ObjectsMustExists: boolean): boolean;
 var
   RootContext: TFindContext;
@@ -1133,6 +1134,9 @@ var
   var
     PropertyNode: TLFMPropertyNode;
     ObjectNode: TLFMObjectNode;
+    AncestorClassContext: TFindContext;
+    Params: TFindDeclarationParams;
+    IsDefined: Boolean;
   begin
     Result:=false;
     if (not (LFMNode is TLFMPropertyNode)) then exit;
@@ -1140,20 +1144,58 @@ var
     if (PropertyNode.Parent=nil)
     or (not (PropertyNode.Parent is TLFMObjectNode)) then exit;
     ObjectNode:=TLFMObjectNode(PropertyNode.Parent);
-    if ObjectNode.DefineProperties=nil then begin
-      // fetch define properties
-      if Assigned(OnGetDefineProperties) then begin
-        OnGetDefineProperties(Self,ClassContext,LFMNode,IdentName,
-          ObjectNode.DefineProperties);
+    // find define property
+    IsDefined:=false;
+    if Assigned(OnFindDefineProperty) then begin
+      AncestorClassContext:=CleanFindContext;
+      if ClassContext.Tool=Self then begin
+        // the class is defined in this source
+        // -> try to find the ancestor class
+        if ObjectNode.AncestorContextValid then begin
+          AncestorClassContext:=CreateFindContext(
+                                  TFindDeclarationTool(ObjectNode.AncestorTool),
+                                  TCodeTreeNode(ObjectNode.AncestorNode));
+        end else begin
+          {$IFDEF VerboseCheckLFM}
+          debugln('FindNonPublishedDefineProperty Class is defined in this source: search ancestor ... ');
+          {$ENDIF}
+          Params:=TFindDeclarationParams.Create;
+          try
+            Params.Flags:=[fdfSearchInAncestors,fdfExceptionOnNotFound,
+                           fdfExceptionOnPredefinedIdent];
+            Params.ContextNode:=ClassContext.Node;
+            try
+              if ClassContext.Tool.FindAncestorOfClass(ClassContext.Node,
+                Params,true) then
+              begin
+                {$IFDEF VerboseCheckLFM}
+                debugln('FindNonPublishedDefineProperty Ancestor found');
+                {$ENDIF}
+                AncestorClassContext:=CreateFindContext(Params);
+                ObjectNode.AncestorTool:=AncestorClassContext.Tool;
+                ObjectNode.AncestorNode:=AncestorClassContext.Node;
+              end;
+            except
+              // ignore search/parse errors
+              on E: ECodeToolError do ;
+            end;
+          finally
+            Params.Free;
+          end;
+          ObjectNode.AncestorContextValid:=true;
+        end;
+      end;
+      OnFindDefineProperty(Self,ClassContext,AncestorClassContext,LFMNode,
+        IdentName,IsDefined);
+      if IsDefined then begin
+        //debugln('FindNonPublishedDefineProperty Path=',LFMNode.GetPath,' IdentName="',IdentName,'"');
       end else begin
-        // create the default define properties for TComponent
-        ObjectNode.DefineProperties:=TStringList.Create;
-        ObjectNode.DefineProperties.Add('LEFT');
-        ObjectNode.DefineProperties.Add('TOP');
+        {$IFDEF VerboseCheckLFM}
+        debugln('FindNonPublishedDefineProperty Path=',LFMNode.GetPath,' NO DEFINE PROPERTIES');
+        {$ENDIF}
       end;
     end;
-    Result:=(ObjectNode.DefineProperties<>nil)
-        and (ObjectNode.DefineProperties.IndexOf(IdentName)>=0);
+    Result:=IsDefined;
   end;
 
   function FindLFMIdentifier(LFMNode: TLFMTreeNode;
@@ -1208,6 +1250,7 @@ var
       end;
     end else begin
       // no node found
+      // -> search in DefineProperties
       if SearchAlsoInDefineProperties then begin
         if FindNonPublishedDefineProperty(LFMNode,DefaultErrorPosition,
           IdentName,ClassContext)
@@ -1410,7 +1453,7 @@ var
     CheckLFMObjectValues(LFMObject,ClassContext);
   end;
   
-  function FindClassNodeForProperty(LFMProperty: TLFMPropertyNode;
+  function FindClassNodeForPropertyType(LFMProperty: TLFMPropertyNode;
     DefaultErrorPosition: integer; const PropertyContext: TFindContext
     ): TFindContext;
   var
@@ -1469,7 +1512,8 @@ var
     SearchContext:=ParentContext;
     for i:=0 to LFMProperty.NameParts.Count-1 do begin
       if SearchContext.Node.Desc=ctnProperty then begin
-        SearchContext:=FindClassNodeForProperty(LFMProperty,
+        // get the type of the property and search the class node
+        SearchContext:=FindClassNodeForPropertyType(LFMProperty,
           LFMProperty.NameParts.NamePositions[i],SearchContext);
         if SearchContext.Node=nil then exit;
       end;
@@ -1564,17 +1608,22 @@ begin
   //DebugLn('TStandardCodeTool.CheckLFM A');
   // create tree from LFM file
   LFMTree:=TLFMTree.Create;
-  //DebugLn('TStandardCodeTool.CheckLFM parsing LFM ...');
-  if not LFMTree.Parse(LFMBuf) then exit;
-  // parse unit and find LookupRoot
-  //DebugLn('TStandardCodeTool.CheckLFM parsing unit ...');
-  BuildTree(true);
-  // find every identifier
-  //DebugLn('TStandardCodeTool.CheckLFM checking identifiers ...');
-  CurRootLFMNode:=LFMTree.Root;
-  while CurRootLFMNode<>nil do begin
-    if not CheckLFMRoot(CurRootLFMNode) then exit;
-    CurRootLFMNode:=CurRootLFMNode.NextSibling;
+  ActivateGlobalWriteLock;
+  try
+    //DebugLn('TStandardCodeTool.CheckLFM parsing LFM ...');
+    if not LFMTree.Parse(LFMBuf) then exit;
+    // parse unit and find LookupRoot
+    //DebugLn('TStandardCodeTool.CheckLFM parsing unit ...');
+    BuildTree(true);
+    // find every identifier
+    //DebugLn('TStandardCodeTool.CheckLFM checking identifiers ...');
+    CurRootLFMNode:=LFMTree.Root;
+    while CurRootLFMNode<>nil do begin
+      if not CheckLFMRoot(CurRootLFMNode) then exit;
+      CurRootLFMNode:=CurRootLFMNode.NextSibling;
+    end;
+  finally
+    DeactivateGlobalWriteLock;
   end;
 
   Result:=LFMTree.FirstError=nil;
@@ -2639,6 +2688,7 @@ function TStandardCodeTool.ConvertDelphiToLazarusSource(AddLRSCode: boolean;
     InsertPos: Integer;
   begin
     Result:=false;
+    BuildTree(true);
     if not FindModeDirective(false,ModeDirectivePos) then begin
       // add {$MODE Delphi} behind source type
       if Tree.Root=nil then exit;
@@ -2649,7 +2699,10 @@ function TStandardCodeTool.ConvertDelphiToLazarusSource(AddLRSCode: boolean;
       InsertPos:=CurPos.EndPos;
       SourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,
         '{$MODE Delphi}');
+      if not SourceChangeCache.Apply then exit;
     end;
+    // changing mode requires rescan
+    BuildTree(false);
     Result:=true;
   end;
 
@@ -2764,7 +2817,6 @@ function TStandardCodeTool.ConvertDelphiToLazarusSource(AddLRSCode: boolean;
 begin
   Result:=false;
   if SourceChangeCache=nil then exit;
-  BuildTree(false);
   SourceChangeCache.MainScanner:=Scanner;
   SourceChangeCache.BeginUpdate;
   try

@@ -25,15 +25,19 @@ procedure TGraphic.DefineProperties(Filer: TFiler);
 
   function DoWrite: Boolean;
   begin
+    //debugln('TGraphic.DefineProperties DoWrite A ',dbgs(Filer.Ancestor <> nil));
     if Filer.Ancestor <> nil then
       Result := not (Filer.Ancestor is TGraphic) or
         not Equals(TGraphic(Filer.Ancestor))
     else
       Result := not Empty;
+    //debugln('TGraphic.DefineProperties DoWrite End ');
   end;
 
 begin
+  //debugln('TGraphic.DefineProperties A ',dbgs(Filer<>nil),' ',Filer.ClassName);
   Filer.DefineBinaryProperty('Data', @ReadData, @WriteData, DoWrite);
+  //debugln('TGraphic.DefineProperties END');
 end;
 
 function TGraphic.GetPalette: HPALETTE;
