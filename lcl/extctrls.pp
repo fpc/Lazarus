@@ -173,7 +173,7 @@ type
     //property MultiLine: boolean read fMultiLine write SetMultiLine default false;
     property Page[Index: Integer]: TPage read GetPage;
     property PageCount : integer read GetPageCount;
-    property PageIndex: Integer read GetPageIndex write SetPageIndex default 0;
+    property PageIndex: Integer read GetPageIndex write SetPageIndex default -1;
     property PageList: TList read fPageList;
     property Pages: TStrings read fAccess write SetPages;
     property OnPageChanged: TNotifyEvent read fOnPageChanged write fOnPageChanged;
@@ -562,6 +562,9 @@ end.
 
  {
   $Log$
+  Revision 1.50  2003/01/27 13:49:16  mattias
+  reduced speedbutton invalidates, added TCanvas.Frame
+
   Revision 1.49  2003/01/21 23:07:14  mattias
   applied patch from Jesus for many grid improvements
 
