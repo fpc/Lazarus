@@ -147,6 +147,7 @@ type
     procedure MoveNBPage(ANoteBook, APage: TObject; NewIndex: Integer);virtual;
 
     procedure ListViewChangeItem(TheListView: TObject; Index: integer);
+    procedure BringFormToFront(Sender: TObject);
 
     procedure SetText(Child,Data : Pointer);virtual;
     procedure SetColor(Sender : TObject);virtual;
@@ -307,6 +308,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.101  2002/11/09 18:13:33  lazarus
+  MG: fixed gdkwindow checks
+
   Revision 1.100  2002/11/09 15:02:07  lazarus
   MG: fixed LM_LVChangedItem, OnShowHint, small bugs
 
