@@ -1401,6 +1401,7 @@ var DefTempl, MainDir,
           end;
         until FindNext(FileInfo)<>0;
       end;
+      FindClose(FileInfo);
     end;
   
   begin
@@ -1451,6 +1452,7 @@ var DefTempl, MainDir,
             AddFPCSourceLinkForUnit(UnitName);
           until FindNext(FileInfo)<>0;
         end;
+        FindClose(FileInfo);
       end;
       PathStart:=PathEnd;
     end;
@@ -1509,6 +1511,11 @@ begin
   PackagesDir:=TDefineTemplate.Create('Packages','Package directories','',
      'packages',da_Directory);
   MainDir.AddChild(PackagesDir);
+  
+  if UnitTree<>nil then begin
+    UnitTree.FreeAndClear;
+    UnitTree.Free;
+  end;
 end;
 
 function TDefinePool.CreateLazarusSrcTemplate(
