@@ -1609,6 +1609,11 @@ begin
   Result := 0;
 end;
 
+procedure TInterfaceBase.SendCachedLCLMessages;
+begin
+
+end;
+
 function TInterfaceBase.SendMessage(HandleWnd: HWND; Msg: Cardinal; wParam: LongInt; lParam: LongInt): Integer;
 begin
   Result := 0;
@@ -1765,6 +1770,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.57  2002/10/16 16:58:22  lazarus
+  MG: moved SendCachedLCLMessages
+
   Revision 1.56  2002/10/14 18:36:56  lazarus
   AJ: Improvements/Fixes to new PromptUser API
 
