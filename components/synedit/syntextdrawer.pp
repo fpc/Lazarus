@@ -918,8 +918,8 @@ begin
     Windows.SetBkColor(DC, ColorToRGB(FBkColor));
     {$ELSE}
     FSavedFont := SelectObject(DC, FCrntFont);
-    LCLLinux.SetTextColor(DC, ColorToRGB(FColor));
-    LCLLinux.SetBkColor(DC, ColorToRGB(FBkColor));
+    LCLLinux.SetTextColor(DC, FColor);
+    LCLLinux.SetBkColor(DC, FBkColor);
     {$ENDIF}
     DoSetCharExtra(FCharExtra);
   end;
@@ -1010,7 +1010,11 @@ begin
   begin
     FColor := Value;
     if FDC <> 0 then
+      {$IFDEF SYN_LAZARUS}
+      SetTextColor(FDC, Value);
+      {$ELSE}
       SetTextColor(FDC, ColorToRGB(Value));
+      {$ENDIF}
   end;
 end;
 
@@ -1021,7 +1025,7 @@ begin
     FBkColor := Value;
     if FDC <> 0 then
       {$IFDEF SYN_LAZARUS}
-      LCLLinux.SetBkColor(FDC, ColorToRGB(Value));
+      LCLLinux.SetBkColor(FDC, Value);
       {$ELSE}
       Windows.SetBkColor(FDC, ColorToRGB(Value));
       {$ENDIF}

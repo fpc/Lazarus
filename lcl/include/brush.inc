@@ -166,7 +166,7 @@ begin
           lbHatch := Ord(FBrushData.Style) - Ord(bsHorizontal);
         end;
       end;
-      lbColor := ColorToRGB(FBrushData.Color);
+      lbColor := FBrushData.Color;
     end;
     FBrushData.Handle := CreateBrushIndirect(LogBrush);
   end;
@@ -194,6 +194,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.3  2002/09/18 17:07:24  lazarus
+  MG: added patch from Andrew
+
   Revision 1.2  2002/05/10 06:05:51  lazarus
   MG: changed license to LGPL
 
