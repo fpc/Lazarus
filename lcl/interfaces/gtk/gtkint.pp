@@ -235,6 +235,7 @@ var
   Cursor_SizeNS   : pGDKCursor;
   Cursor_SizeNESW : pGDKCursor;
   Cursor_SizeWE   : pGDKCursor;
+  Cursor_SizeAll  : pGDKCursor;
   Cursor_Help     : pGDKCursor;
 
   Styles : TStrings;
@@ -488,6 +489,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.74  2002/09/16 15:56:01  lazarus
+  Resize cursors in designer.
+
   Revision 1.73  2002/09/12 05:56:16  lazarus
   MG: gradient fill, minor issues from Andrew
 
