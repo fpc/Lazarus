@@ -61,6 +61,7 @@ function DeleteObject(GDIObject: HGDIOBJ): Boolean;  override;
 function DestroyCaret(Handle : HWND): Boolean; override;
 Function DrawFrameControl(DC: HDC; var Rect : TRect; uType, uState : Cardinal) : Boolean; override;
 function DrawEdge(DC: HDC; var Rect: TRect; edge: Cardinal; grfFlags: Cardinal): Boolean; override;
+function DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer; Override;
 
 function Ellipse(DC: HDC; x1,y1,x2,y2: Integer): Boolean; override;
 function EnableMenuItem(hndMenu: HMENU; uIDEnableItem: Integer; bEnable: Boolean): Boolean; override;
@@ -92,6 +93,7 @@ function GetScrollInfo(Handle: HWND; BarFlag: Integer; var ScrollInfo: TScrollIn
 function GetStockObject(Value: Integer): LongInt; override;
 function GetSysColor(nIndex: Integer): DWORD; override;
 function GetSystemMetrics(nIndex: Integer): Integer;  override;
+function GetTextColor(DC: HDC) : TColorRef; Override;
 function GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean; override;
 function GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;  override;
 Function GetWindowLong(Handle : hwnd; int: Integer): Longint; override;
@@ -166,10 +168,19 @@ Function TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean;
 
 
 Function WindowFromPoint(Point : TPoint) : HWND; override;
+
+Procedure InitializeCriticalSection(var CritSection: TCriticalSection); Override;
+Procedure EnterCriticalSection(var CritSection: TCriticalSection); Override;
+Procedure LeaveCriticalSection(var CritSection: TCriticalSection); Override;
+Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
+
 //##apiwiz##eps##   // Do not remove
 { =============================================================================
 
   $Log$
+  Revision 1.41  2002/08/19 20:34:48  lazarus
+  MG: improved Clipping, TextOut, Polygon functions
+
   Revision 1.40  2002/08/17 15:45:36  lazarus
   MG: removed ClientRectBugfix defines
 
