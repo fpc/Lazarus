@@ -4132,6 +4132,13 @@ begin
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoOpenEditorFile START');{$ENDIF}
   Result:=mrCancel;
 
+  // replace macros
+  if ofConvertMacros in Flags then begin
+    if not MacroList.SubstituteStr(AFilename) then exit;
+    AFilename:=ExpandFilename(AFilename);
+  end;
+
+  // normalize filename
   AFilename:=TrimFilename(AFilename);
   FilenameNoPath:=ExtractFilename(AFilename);
   
@@ -8124,6 +8131,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.509  2003/04/06 22:39:47  mattias
+  implemented searching packages
+
   Revision 1.508  2003/04/04 22:14:32  mattias
   implemented LCL and FCL packages, started package registration
 
