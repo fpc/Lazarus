@@ -112,10 +112,17 @@ end;
  ------------------------------------------------------------------------------}
 function GtkWidgetIsA(Widget: PGtkWidget; AType: TGtkType): boolean;
 begin
+  {$IFDEF GTK2}
+  Result:=(Widget<>nil)
+    and (PGtkTypeObject(Widget)^.g_class<>nil)
+    and gtk_type_is_a(PGtkTypeClass(PGtkTypeObject(Widget)^.g_class)^.g_type,
+                      AType);
+  {$ELSE}
   Result:=(Widget<>nil)
     and (PGtkTypeObject(Widget)^.klass<>nil)
     and gtk_type_is_a(PGtkTypeClass(PGtkTypeObject(Widget)^.klass)^.thetype,
                       AType);
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -391,6 +398,7 @@ Procedure AllocGDIColor(DC: hDC; GDIColor: PGDIColor);
 var
   RGBColor : Longint;
 begin
+  if DC=0 then ;
   if not (cfColorAllocated in GDIColor^.ColorFlags) then begin
     Case GDIColor^.ColorRef of
       clScrollbar..clEndColors:
@@ -4072,6 +4080,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.174  2003/05/26 21:28:22  mattias
+  fixed absolute file
+
   Revision 1.173  2003/05/26 20:05:21  mattias
   made compiling gtk2 interface easier
 
