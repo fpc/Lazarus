@@ -2796,16 +2796,14 @@ var MenuInfo: MENUITEMINFO;
     if (maxWidth>=TMenuItem(Sender).Bitmap.Width) and (maxHeight>=TMenuItem(Sender).Bitmap.Height) then Result:=TMenuItem(Sender).Bitmap.Handle
     else
     begin
-      newWidth:=min(maxWidth, TMenuItem(Sender).Bitmap.Width);
-      newHeight:=min(maxHeight, TMenuItem(Sender).Bitmap.Height);
       hdcScreen:=GetDC(GetDesktopWindow);
       hdcOrigBitmap:=CreateCompatibleDC(hdcScreen);
       hdcNewBitmap:=CreateCompatibleDC(hdcScreen);
+      hbmpCheck:=CreateCompatibleBitmap(hdcScreen, maxWidth, maxHeight);
       ReleaseDC(GetDesktopWindow, hdcScreen);
-      hbmpCheck:=CreateCompatibleBitmap(hdcScreen, newWidth, newHeight);
       OldOrigBitmap:=SelectObject(hdcOrigBitmap, TMenuItem(Sender).Bitmap.Handle);
       OldCheckmark:=SelectObject(hdcNewBitmap, hbmpCheck);
-      StretchBlt(hdcNewBitmap, 0, 0, newWidth, newHeight, hdcOrigBitmap, 0, 0, TMenuItem(Sender).Bitmap.Width, TMenuItem(Sender).Bitmap.Height, SRCCOPY);
+      StretchBlt(hdcNewBitmap, 0, 0, maxWidth, maxHeight, hdcOrigBitmap, 0, 0, TMenuItem(Sender).Bitmap.Width, TMenuItem(Sender).Bitmap.Height, SRCCOPY);
       SelectObject(hdcOrigBitmap, OldOrigBitmap);
       hbmpCheck:=SelectObject(hdcNewBitmap, OldCheckmark);
       DeleteDC(hdcNewBitmap);
@@ -2890,6 +2888,9 @@ End;
 
 {
   $Log$
+  Revision 1.142  2003/12/16 21:04:02  micha
+  fix menuitem icon patch, hdcScreen released too soon
+
   Revision 1.141  2003/12/15 21:57:16  micha
   checklistbox, implement object+checked; from vincent
 
