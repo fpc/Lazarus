@@ -988,10 +988,6 @@ begin
   fRange := rsUnknown;
   fAsmStart := False;
   fDefaultFilter := SYNS_FilterPascal;
-  
-writeln('SYNPASSYN ---------------- operator=',KeyHash('operator'));  
-writeln('SYNPASSYN ---------------- as=',KeyHash('as'));  
-  
 end; { Create }
 
 procedure TSynPasSyn.SetLine(NewValue: string; LineNumber:Integer);

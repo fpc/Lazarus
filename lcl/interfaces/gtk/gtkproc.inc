@@ -456,8 +456,8 @@ begin
     // map all other keys to VK_IRREGULAR + 
     VirtualKey := VK_IRREGULAR + KeyCode;
 
-writeln('GetGTKKeyInfo KeyCode=',KeyCode,' VirtualKey=',VirtualKey
-,' SysKey=',SysKey,' Extended=',Extended,' Toggle=',Toggle);
+//writeln('GetGTKKeyInfo KeyCode=',KeyCode,' VirtualKey=',VirtualKey
+//,' SysKey=',SysKey,' Extended=',Extended,' Toggle=',Toggle);
 
 //  Assert(False, Format('Trace:[GetGTKKeyInfo] Event^.KeyVal %d, Event^.State %d, KeyCode %d, VirtualKey %d, SysKey %d, Extended %d, CtrlDown %d', [Integer(Event^.KeyVal), Integer(Event^.State), Integer(KeyCode), Integer(VirtualKey), Integer(SysKey), Integer(Extended), Integer(CtrlDown)]));
 end;
@@ -740,6 +740,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.18  2001/06/20 17:00:20  lazarus
+  MG: alternative key bugfix, shiftstate bugfix
+
   Revision 1.17  2001/06/20 13:35:51  lazarus
   MG: added VK_IRREGULAR and key grabbing
 

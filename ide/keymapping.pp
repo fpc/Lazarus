@@ -633,20 +633,30 @@ begin
 end;
 
 procedure TKeyMappingEditForm.OkButtonClick(Sender:TObject);
-var NewKey1,NewKey2,a:integer;
+var NewKey1,NewKey2:integer;
   NewShiftState1,NewShiftState2:TShiftState;
-  s,ACaption,AText:AnsiString;
+  ACaption,AText:AnsiString;
   DummyRelation:TKeyCommandRelation;
+  
+  function StrToVKCode(s: string): integer;
+  var i: integer;
+  begin
+    if copy(s,1,6)='Word(''' then
+      Result:=StrToIntDef(copy(s,7,length(s)-8),VK_UNKNOWN)
+    else if s<>'none' then begin
+      for i:=1 to 200 do
+        if KeyAndShiftStateToStr(i,[])=s then
+          Result:=i;
+    end else
+      Result:=VK_UNKNOWN;
+  end;
+  
 begin
   NewKey1:=VK_UNKNOWN;
   NewShiftState1:=[];
   NewKey2:=VK_UNKNOWN;
   NewShiftState2:=[];
-  s:=Key1KeyComboBox.Text;
-  if s<>'none' then
-    for a:=1 to 145 do
-      if KeyAndShiftStateToStr(a,[])=s then
-        NewKey1:=a;
+  NewKey1:=StrToVKCode(Key1KeyComboBox.Text);
   if NewKey1<>VK_UNKNOWN then begin
     if Key1CtrlCheckBox.Checked then include(NewShiftState1,ssCtrl);
     if Key1AltCheckBox.Checked then include(NewShiftState1,ssAlt);
@@ -661,11 +671,7 @@ begin
     Application.MessageBox(PChar(AText),PChar(ACaption),0);
     exit;
   end;
-  s:=Key2KeyComboBox.Text;
-  if s<>'none' then
-    for a:=1 to 145 do
-      if KeyAndShiftStateToStr(a,[])=s then
-        NewKey2:=a;
+  NewKey2:=StrToVKCode(Key2KeyComboBox.Text);
   if (NewKey1=NewKey2) and (NewShiftState1=NewShiftState2) then
     NewKey2:=VK_UNKNOWN;
   if NewKey2<>VK_UNKNOWN then begin
@@ -1050,8 +1056,13 @@ begin
     while KeyCnt<=MaxKeyCnt do begin
       Key:=ASynEditKeyStrokes.Add;
       Key.Command:=Relations[a].Command;
-      Key.Key:=Relations[a].Key1;
-      Key.Shift:=Relations[a].Shift1;
+      if KeyCnt=1 then begin
+        Key.Key:=Relations[a].Key1;
+        Key.Shift:=Relations[a].Shift1;
+      end else begin
+        Key.Key:=Relations[a].Key2;
+        Key.Shift:=Relations[a].Shift2;
+      end;
       Key.Key2:=VK_UNKNOWN;
       Key.Shift2:=[];
       inc(KeyCnt);

@@ -799,7 +799,7 @@ Begin
       CodeCompletionTimer.OnTimer := @CCOnTimer;
       CodeCompletionTimer.Enabled := True;
     end;
-
+    
   else
     TSourceNotebook(FaOwner).ProcessParentCommand(self,Command,aChar,Data);
   end;  //case
@@ -1996,14 +1996,18 @@ end;
 Procedure TSourceNotebook.NextEditor;
 Begin
   if Notebook.PageIndex < Notebook.Pages.Count-1 then
-     Notebook.Pageindex := Notebook.Pageindex+1;
+    Notebook.PageIndex := Notebook.PageIndex+1
+  else
+    NoteBook.PageIndex := 0;
 End;
 
 
 Procedure TSourceNotebook.PrevEditor;
 Begin
   if Notebook.PageIndex > 0 then
-     Notebook.Pageindex := Notebook.Pageindex-1;
+    Notebook.PageIndex := Notebook.PageIndex-1
+  else
+    NoteBook.PageIndex := NoteBook.Pages.Count-1;
 End;
 
 
