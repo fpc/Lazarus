@@ -171,6 +171,7 @@ type
     FIndent: integer;
     FItemIndex: integer;
     FNameFont, FDefaultValueFont, FValueFont: TFont;
+    FNewComboBoxItems: TStringList;
     FOnModified: TNotifyEvent;
     FPreferredSplitterX: integer; // best splitter position
     FPropertyEditorHook: TPropertyEditorHook;
@@ -673,6 +674,7 @@ begin
   FreeAndNil(FExpandedProperties);
   FreeAndNil(FHintTimer);
   FreeAndNil(FHintWindow);
+  FreeAndNil(FNewComboBoxItems);
   inherited Destroy;
 end;
 
@@ -900,8 +902,9 @@ begin
     if OldValue<>NewValue then begin
       if FCurrentEdit=ValueEdit then
         ValueEdit.Text:=NewValue
-      else
-        ValueComboBox.Text:=NewValue;
+      else begin
+        FillComboboxItems;
+      end;
     end;
   end;
 end;
@@ -1092,12 +1095,11 @@ begin
   end;
 end;
 
-procedure TOICustomPropertyGrid.AddStringToComboBox(const s:string);
-var NewIndex:integer;
+procedure TOICustomPropertyGrid.AddStringToComboBox(const s: string);
 begin
-  NewIndex:=ValueComboBox.Items.Add(s);
-  if ValueComboBox.Text=s then
-    ValueComboBox.ItemIndex:=NewIndex;
+  if FNewComboBoxItems=nil then
+    FNewComboBoxItems:=TStringList.Create;
+  FNewComboBoxItems.Add(s);
 end;
 
 procedure TOICustomPropertyGrid.ExpandRow(Index:integer);
@@ -1198,17 +1200,29 @@ procedure TOICustomPropertyGrid.FillComboboxItems;
 var
   NewRow: TOIPropertyGridRow;
   NewValue: String;
+  NewItemIndex: LongInt;
 begin
   NewRow:=Rows[FItemIndex];
   NewValue:=NewRow.Editor.GetVisualValue;
   ValueComboBox.MaxLength:=NewRow.Editor.GetEditLimit;
   ValueComboBox.Items.BeginUpdate;
-  ValueComboBox.Items.Text:='';
-  ValueComboBox.Items.Clear;
   ValueComboBox.Sorted:=paSortList in NewRow.Editor.GetAttributes;
   ValueComboBox.Enabled:=not NewRow.IsReadOnly;
   NewRow.Editor.GetValues(@AddStringToComboBox);
+  if FNewComboBoxItems<>nil then begin
+    FNewComboBoxItems.Sorted:=paSortList in NewRow.Editor.GetAttributes;
+    if not ValueComboBox.Items.Equals(FNewComboBoxItems) then begin
+      ValueComboBox.Items.Assign(FNewComboBoxItems);
+    end;
+    FreeAndNil(FNewComboBoxItems);
+  end else begin
+    ValueComboBox.Items.Text:='';
+    ValueComboBox.Items.Clear;
+  end;
   ValueComboBox.Text:=NewValue;
+  NewItemIndex:=ValueComboBox.Items.IndexOf(NewValue);
+  if NewItemIndex>=0 then
+    ValueComboBox.ItemIndex:=NewItemIndex;
   ValueComboBox.Items.EndUpdate;
 end;
 
