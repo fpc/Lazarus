@@ -176,6 +176,11 @@ begin
   Result:=(FImage<>nil) and (FImage.FMaskHandle<>0);
 end;
 
+function TBitmap.PaletteAllocated: boolean;
+begin
+  Result:=FPalette<>0;
+end;
+
 function TBitmap.LazarusResourceTypeValid(const ResourceType: string): boolean;
 begin
   Result:=((ClassType=TBitmap) or (ClassType=TPixmap) or (ClassType=TIcon))
@@ -284,6 +289,7 @@ begin
     if UseWidth<1 then UseWidth:=1;
     if UseHeight<1 then UseHeight:=1;
     FImage.FHandle:= CreateBitmap(UseWidth, UseHeight, 1, n, nil);
+    //writeln('TBitMap.HandleNeeded Self=',HexStr(Cardinal(Self),8),' FImage.FHandle=',HexStr(Cardinal(FImage.FHandle),8),' n=',n);
     FImage.FDIB.dsbm.bmWidth := Width;
     FImage.FDIB.dsbm.bmHeight := Height;
   end;
@@ -414,6 +420,7 @@ begin
       FreeCanvasContext;
       OldImage:=FImage;
       FImage:=NewImage;
+      //writeln('TBitMap.UnshareImage Self=',HexStr(Cardinal(Self),8),' FImage.FHandle=',HexStr(Cardinal(FImage.FHandle),8));
       NewImage:=nil; // transaction sucessful
       OldImage.Release;
     finally
@@ -993,6 +1000,7 @@ begin
   FImage.FreeHandle;
   // get the properties from new bitmap
   FImage.FHandle:=Value;
+  //writeln('TBitMap.SetHandle Self=',HexStr(Cardinal(Self),8),' FImage.FHandle=',HexStr(Cardinal(FImage.FHandle),8));
   FillChar(FImage.FDIB, SizeOf(FImage.FDIB), 0);
   if FImage.FHandle <> 0 then
     GetObject(FImage.FHandle, SizeOf(FImage.FDIB), @FImage.FDIB);
@@ -1134,6 +1142,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.78  2004/03/06 15:37:43  mattias
+  fixed FreeDC
+
   Revision 1.77  2004/03/03 23:35:55  mattias
   accelerated TActionList editor  from Radek
 

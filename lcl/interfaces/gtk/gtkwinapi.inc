@@ -792,9 +792,8 @@ begin
   BeginGDKErrorTrap;
   {$ENDIF}
 
-  // if the bitcount is the system depth create a Pixmap
-  // if depth is 1 then a Bitmap
-  // else an image
+  // if the bitcount is 1 then create a gdkbitmap
+  // else create a gdkpixmap
 
   {if BitCount > 1
   then begin
@@ -803,7 +802,7 @@ begin
     If BitCount = 1 then begin
       GdiObject^.GDIBitmapType := gbBitmap;
       GdiObject^.GDIBitmapObject :=
-        gdk_pixmap_new(DefGdkWindow, Width, Height, BitCount);
+        gdk_bitmap_create_from_data(DefGdkWindow, nil, Width, Height);
       GdiObject^.Visual := gdk_window_get_visual(GdiObject^.GDIBitmapObject);
     end
     else begin
@@ -1000,101 +999,103 @@ const
   HATCH_VERTICAL  : array[0..7] of Byte = ($08, $08, $08, $08, $08, $08, $08, $08);
 var
   GObject: PGdiObject;
-  sError: String;
+  ok: Boolean;
 begin
   Assert(False, Format('Trace:> [TGtkWidgetSet.CreateBrushIndirect]  Style: %d, Color: %8x', [LogBrush.lbStyle, LogBrush.lbColor]));
 
-  sError := '';
-
+  ok:=false;
+  
   {$IFDEF DebugGDKTraps}
   BeginGDKErrorTrap;
   {$ENDIF}
 
 //write('CreateBrushIndirect->');
   GObject := NewGDIObject(gdiBrush);
-//writeln('[TGtkWidgetSet.CreateBrushIndirect] ',HexStr(Cardinal(GObject),8));
-  GObject^.IsNullBrush := False;
-  with LogBrush do
-  begin
-    case lbStyle of
- //     BS_HOLLOW,         // Hollow brush.
-       BS_NULL:           // Same as BS_HOLLOW.
-        begin
-          //GObject^.GDIBrushFill := GDK_STIPPLED;
-          //GObject^.GDIBrushPixmap :=
-          //  gdk_bitmap_create_from_data(nil, @HATCH_NULL, 8, 8);
-	  GObject^.IsNullBrush := True;
-        end;
-
-      BS_SOLID:          // Solid brush.
-        begin
-          GObject^.GDIBrushFill := GDK_SOLID;
-        end;
-
-      BS_HATCHED:        // Hatched brush.
-        begin
-          GObject^.GDIBrushFill := GDK_STIPPLED;
-          case lbHatch of
-            HS_BDIAGONAL:
-              GObject^.GDIBrushPixmap := gdk_bitmap_create_from_data(
-                 nil, @HATCH_BDIAGONAL, 8, 8);
-            HS_CROSS:
-              GObject^.GDIBrushPixmap := gdk_bitmap_create_from_data(
-                 nil, @HATCH_CROSS, 8, 8);
-            HS_DIAGCROSS:
-              GObject^.GDIBrushPixmap := gdk_bitmap_create_from_data(
-                 nil, @HATCH_DIAGCROSS, 8, 8);
-            HS_FDIAGONAL:
-              GObject^.GDIBrushPixmap := gdk_bitmap_create_from_data(
-                 nil, @HATCH_FDIAGONAL, 8, 8);
-            HS_HORIZONTAL:
-              GObject^.GDIBrushPixmap := gdk_bitmap_create_from_data(
-                 nil, @HATCH_HORIZONTAL, 8, 8);
-            HS_VERTICAL:
-              GObject^.GDIBrushPixmap := gdk_bitmap_create_from_data(
-                 nil, @HATCH_VERTICAL, 8, 8);
-            else
-              sError := Format('WARNING: [TGtkWidgetSet.CreateBrushIndirect] Got unsupported Hatch %d', [lbHatch]);
+  try
+  //writeln('[TGtkWidgetSet.CreateBrushIndirect] ',HexStr(Cardinal(GObject),8));
+    GObject^.IsNullBrush := False;
+    with LogBrush do
+    begin
+      case lbStyle of
+   //     BS_HOLLOW,         // Hollow brush.
+         BS_NULL:           // Same as BS_HOLLOW.
+          begin
+            //GObject^.GDIBrushFill := GDK_STIPPLED;
+            //GObject^.GDIBrushPixmap :=
+            //  gdk_bitmap_create_from_data(nil, @HATCH_NULL, 8, 8);
+  	  GObject^.IsNullBrush := True;
           end;
-        end;
 
-      BS_DIBPATTERN,     // A pattern brush defined by a device-independent
-           // bitmap (DIB) specification. If lbStyle is BS_DIBPATTERN, the
-           // lbHatch member contains a handle to a packed DIB.Windows 95:
-           // Creating brushes from bitmaps or DIBs larger than 8x8 pixels
-           // is not supported. If a larger bitmap is given, only a portion
-           // of the bitmap is used.
-      BS_DIBPATTERN8X8,  // Same as BS_DIBPATTERN.
-      BS_DIBPATTERNPT,   // A pattern brush defined by a device-independent
-           // bitmap (DIB) specification. If lbStyle is BS_DIBPATTERNPT, the
-           // lbHatch member contains a pointer to a packed DIB.
-      BS_PATTERN,        // Pattern brush defined by a memory bitmap.
-      BS_PATTERN8X8:     // Same as BS_PATTERN.
-        begin
-          GObject^.GDIBrushFill := GDK_TILED;
-          if IsValidGDIObject(lbHatch) and (PGdiObject(lbHatch)^.GDIType = gdiBitmap)
-          then GObject^.GDIBrushPixmap := PGdiObject(lbHatch)^.GDIBitmapObject
-          else sError := 'WARNING: [TGtkWidgetSet.CreateBrushIndirect] Got unsupported bitmap';
-        end;
+        BS_SOLID:          // Solid brush.
+          begin
+            GObject^.GDIBrushFill := GDK_SOLID;
+          end;
 
-      else
-        sError := Format('WARNING: [TGtkWidgetSet.CreateBrushIndirect] Got unsupported Style %d'
-                        , [lbStyle]);
+        BS_HATCHED:        // Hatched brush.
+          begin
+            GObject^.GDIBrushFill := GDK_STIPPLED;
+            case lbHatch of
+              HS_BDIAGONAL:
+                GObject^.GDIBrushPixmap := gdk_bitmap_create_from_data(
+                   nil, @HATCH_BDIAGONAL, 8, 8);
+              HS_CROSS:
+                GObject^.GDIBrushPixmap := gdk_bitmap_create_from_data(
+                   nil, @HATCH_CROSS, 8, 8);
+              HS_DIAGCROSS:
+                GObject^.GDIBrushPixmap := gdk_bitmap_create_from_data(
+                   nil, @HATCH_DIAGCROSS, 8, 8);
+              HS_FDIAGONAL:
+                GObject^.GDIBrushPixmap := gdk_bitmap_create_from_data(
+                   nil, @HATCH_FDIAGONAL, 8, 8);
+              HS_HORIZONTAL:
+                GObject^.GDIBrushPixmap := gdk_bitmap_create_from_data(
+                   nil, @HATCH_HORIZONTAL, 8, 8);
+              HS_VERTICAL:
+                GObject^.GDIBrushPixmap := gdk_bitmap_create_from_data(
+                   nil, @HATCH_VERTICAL, 8, 8);
+              else
+                RaiseGDBException('invalid lbHatch');
+            end;
+          end;
+
+        BS_DIBPATTERN,     // A pattern brush defined by a device-independent
+             // bitmap (DIB) specification. If lbStyle is BS_DIBPATTERN, the
+             // lbHatch member contains a handle to a packed DIB.Windows 95:
+             // Creating brushes from bitmaps or DIBs larger than 8x8 pixels
+             // is not supported. If a larger bitmap is given, only a portion
+             // of the bitmap is used.
+        BS_DIBPATTERN8X8,  // Same as BS_DIBPATTERN.
+        BS_DIBPATTERNPT,   // A pattern brush defined by a device-independent
+             // bitmap (DIB) specification. If lbStyle is BS_DIBPATTERNPT, the
+             // lbHatch member contains a pointer to a packed DIB.
+        BS_PATTERN,        // Pattern brush defined by a memory bitmap.
+        BS_PATTERN8X8:     // Same as BS_PATTERN.
+          begin
+            GObject^.GDIBrushFill := GDK_TILED;
+            if IsValidGDIObject(lbHatch) and (PGdiObject(lbHatch)^.GDIType = gdiBitmap)
+            then GObject^.GDIBrushPixmap := PGdiObject(lbHatch)^.GDIBitmapObject
+            else
+              RaiseGDBException('unsupported bitmap');
+          end;
+
+        else
+          RaiseGDBException(Format('unsupported Style %d',[lbStyle]));
+      end;
+
+      {$IFDEF DebugGDKTraps}
+      EndGDKErrorTrap;
+      {$ENDIF}
+
+      If GObject^.IsNullBrush then
+        SetGDIColorRef(GObject^.GDIBrushColor,lbColor);
     end;
-
-    {$IFDEF DebugGDKTraps}
-    EndGDKErrorTrap;
-    {$ENDIF}
-
-    If (sError = '') and not GObject^.IsNullBrush then
-      SetGDIColorRef(GObject^.GDIBrushColor,lbColor);
-  end;
-  if sError = '' then
-    Result := HBRUSH(GObject)
-  else begin
-    Assert(False, 'Trace:' + sError);
-    Result := 0;
-    DisposeGDIObject(GObject)
+    Result := HBRUSH(GObject);
+    ok:=true;
+  finally
+    if not ok then begin
+      Result:=0;
+      DisposeGDIObject(GObject);
+    end;
   end;
   Assert(False, Format('Trace:< [TGtkWidgetSet.CreateBrushIndirect] Got --> %x', [Result]));
 end;
@@ -2082,78 +2083,89 @@ end;
 
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.DeleteObject(GDIObject: HGDIOBJ): Boolean;
+
+  procedure RaiseInvalidGDIObject;
+  begin
+    RaiseGDBException('TGtkWidgetSet.DeleteObject invalid GdiObject='+HexStr(Cardinal(GdiObject),8));
+  end;
+
 var
   GDIObjectExists: boolean;
 begin
+  if GDIObject=0 then begin
+    Result:=true;
+    exit;
+  end;
   // Find out if we want to release internal GDI object
   GDIObjectExists:=FGDIObjects.Contains(PGDIObject(GDIObject));
   Result:=GDIObjectExists;
-  if GDIObjectExists then begin
-    with PGdiObject(GDIObject)^ do
-    begin
-      case GDIType of
-        gdiFont:
-          begin
-            if GDIFontObject<>nil then
-            {$Ifdef GTK2}
-             pango_font_description_free(GDIFontObject);
-            {$Else}
-            gdk_font_unref(GDIFontObject);
-            {$EndIf}
-          end;
-        gdiBrush:
-          begin
-            BeginGDKErrorTrap;
-            if (GDIBrushPixmap <> nil)
-            then gdk_bitmap_unref(GDIBrushPixmap);
-            EndGDKErrorTrap;
-
-            FreeGDIColor(@GDIBrushColor);
-          end;
-        gdiBitmap:
-          begin
-            BeginGDKErrorTrap;
-            if (GDIBitmapObject <> nil)
-            then gdk_bitmap_unref(GDIBitmapObject);
-            If Visual <> nil then
-              gdk_visual_unref(Visual);
-            If Colormap <> nil then
-              gdk_colormap_unref(Colormap);
-            EndGDKErrorTrap;
-          end;
-        gdiPen:
-          begin
-            FreeGDIColor(@GDIPenColor);
-          end;
-        gdiRegion:
-          begin
-            if (GDIRegionObject <> nil) then
-              gdk_region_destroy(GDIRegionObject);
-          end;
-        gdiPalette:
-          begin
-            BeginGDKErrorTrap;
-            If PaletteVisual <> nil then
-              gdk_visual_unref(PaletteVisual);
-            If PaletteColormap <> nil then
-              gdk_colormap_unref(PaletteColormap);
-            EndGDKErrorTrap;
-
-            RGBTable.Free;
-            IndexTable.Free;
-          end;
-        else begin
-          Result:= false;
-          writeln('[TGtkWidgetSet.DeleteObject] TODO : Unimplemented GDI type');
-          Assert(False, 'Trace:TODO : Unimplemented GDI object in delete object');
+  if not GDIObjectExists then begin
+    RaiseInvalidGDIObject;
+  end;
+  with PGdiObject(GDIObject)^ do
+  begin
+    case GDIType of
+      gdiFont:
+        begin
+          if GDIFontObject<>nil then
+          {$Ifdef GTK2}
+           pango_font_description_free(GDIFontObject);
+          {$Else}
+          gdk_font_unref(GDIFontObject);
+          {$EndIf}
         end;
+      gdiBrush:
+        begin
+          BeginGDKErrorTrap;
+          if (GDIBrushPixmap <> nil)
+          then gdk_bitmap_unref(GDIBrushPixmap);
+          EndGDKErrorTrap;
+
+          FreeGDIColor(@GDIBrushColor);
+        end;
+      gdiBitmap:
+        begin
+          BeginGDKErrorTrap;
+          if (GDIBitmapObject <> nil)
+          then gdk_bitmap_unref(GDIBitmapObject);
+          If Visual <> nil then
+            gdk_visual_unref(Visual);
+          If Colormap <> nil then
+            gdk_colormap_unref(Colormap);
+          EndGDKErrorTrap;
+        end;
+      gdiPen:
+        begin
+          FreeGDIColor(@GDIPenColor);
+        end;
+      gdiRegion:
+        begin
+          if (GDIRegionObject <> nil) then
+            gdk_region_destroy(GDIRegionObject);
+        end;
+      gdiPalette:
+        begin
+          BeginGDKErrorTrap;
+          If PaletteVisual <> nil then
+            gdk_visual_unref(PaletteVisual);
+          If PaletteColormap <> nil then
+            gdk_colormap_unref(PaletteColormap);
+          EndGDKErrorTrap;
+
+          RGBTable.Free;
+          IndexTable.Free;
+        end;
+      else begin
+        Result:= false;
+        writeln('[TGtkWidgetSet.DeleteObject] TODO : Unimplemented GDI type');
+        Assert(False, 'Trace:TODO : Unimplemented GDI object in delete object');
       end;
     end;
-
-    { Dispose of the GDI object }
-    //writeln('[TGtkWidgetSet.DeleteObject] ',Result,'  ',HexStr(GDIObject,8),'  ',FGDIObjects.Count);
-    DisposeGDIObject(PGDIObject(GDIObject));
   end;
+
+  { Dispose of the GDI object }
+  //writeln('[TGtkWidgetSet.DeleteObject] ',Result,'  ',HexStr(GDIObject,8),'  ',FGDIObjects.Count);
+  DisposeGDIObject(PGDIObject(GDIObject));
 end;
 
 {------------------------------------------------------------------------------
@@ -4520,13 +4532,13 @@ begin
                      biBitCount := word(gdk_drawable_get_depth(GDIPixmapObject));
                      gdk_drawable_get_size(GDIPixmapObject,@biWidth, @biHeight);
                   end;
-                gbImage :
+                {obsolete: gbImage :
                   If GDI_RGBImageObject <> nil then
                     With GDI_RGBImageObject^ do begin
                       biHeight := Height;
                       biWidth := Width;
                       biBitCount := Depth;
-                    end;
+                    end;}
               end;
 
               If Visual = nil then begin
@@ -6888,11 +6900,14 @@ begin
         ReleaseDC(0,HDC(pSavedDC));
         aDC.SavedContext:=nil;
       end;
-      { Release all graphic objects }
+      
+      // Release all graphic objects
       DeleteObject(HGDIObj(aDC.CurrentBrush));
       DeleteObject(HGDIObj(aDC.CurrentPen));
       DeleteObject(HGDIObj(aDC.CurrentFont));
-      DeleteObject(HGDIObj(aDC.CurrentBitmap));
+      // bitmaps are not auto created, they are set via SelectObject
+      // -> user must free it
+      // ... DeleteObject(HGDIObj(aDC.CurrentBitmap));
       //DeleteObject(HGDIObj(aDC.CurrentPalette));
       DeleteObject(HGDIObj(aDC.ClipRegion));
       {FreeGDIColor(aDC.CurrentTextColor);
@@ -7207,15 +7222,25 @@ end;
 
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.SelectObject(DC: HDC; GDIObj: HGDIOBJ): HGDIOBJ;
-//var
-//  Color: TGdkColor;
-begin
-  //TODO: Finish this;
-  Assert(False, Format('trace:> [TGtkWidgetSet.SelectObject] DC: 0x%x', [DC]));
 
+  procedure RaiseInvalidGDIType;
+  begin
+    RaiseException('TGtkWidgetSet.SelectObject Invalid GDIType '+IntToStr(ord(PGdiObject(GDIObj)^.GDIType)));
+  end;
+
+begin
   Result := 0;
+
+  {if not IsValidDC(DC) then begin
+    writeln('TGtkWidgetSet.SelectObject invalid DC ',HexStr(Cardinal(DC),8));
+  end;
+  if not IsValidGDIObject(GDIObj) then begin
+    writeln('TGtkWidgetSet.SelectObject invalid GDIObj ',HexStr(Cardinal(GDIObj),8));
+  end;}
+
   if IsValidDC(DC) and IsValidGDIObject(GDIObj)
   then begin
+    //writeln('TGtkWidgetSet.SelectObject DC=',HexStr(Cardinal(DC),8),' GDIObj=',HexStr(Cardinal(GDIObj),8),' GDIType=',ord(PGdiObject(GDIObj)^.GDIType),' ',ord(gdiBitmap),' ',ord(gdiRegion));
     case PGdiObject(GDIObj)^.GDIType of
 
       gdiBitmap:
@@ -7228,14 +7253,16 @@ begin
             gdk_gc_unref(GC);
             GC:=nil;
           end;
-          with PGdiObject(GDIObj)^ do
+          with CurrentBitmap^ do
             case GDIBitmapType of
               gbPixmap: Drawable := GDIPixmapObject;
               gbBitmap: Drawable := GDIBitmapObject;
-              gbImage:  Drawable := nil;//GDI_RGBImageObject;
+              {obsolete: gbImage:  Drawable := nil;//GDI_RGBImageObject;}
             else
               Drawable := nil;
             end;
+          //writeln('TGtkWidgetSet.SelectObject DC=',HexStr(Cardinal(DC),8),' GDIBitmap=',HexStr(Cardinal(CurrentBitmap),8),
+          //' GDIBitmapType=',ord(CurrentBitmap^.GDIBitmapType),' Drawable=',HexStr(Cardinal(Drawable),8));
 
           GC := gdk_gc_new(Drawable);
 
@@ -7298,11 +7325,13 @@ begin
             ClipRegion:=0;
         end;
       end;
+      
+    else
+      RaiseInvalidGDIType;
     end;
   end;
 //writeln('[TGtkWidgetSet.SelectObject] GDI=',HexStr(Cardinal(GDIObj),8)
 // ,'  Old=',Hexstr(Cardinal(Result),8));
-  Assert(False, Format('trace:< [TGtkWidgetSet.SelectObject] DC: 0x%x  --> 0x%x', [DC, Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -8691,6 +8720,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.337  2004/03/06 15:37:43  mattias
+  fixed FreeDC
+
   Revision 1.336  2004/03/05 00:31:52  marc
   * Renamed TGtkObject to TGtkWidgetSet
 

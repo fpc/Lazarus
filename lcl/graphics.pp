@@ -1015,6 +1015,7 @@ type
     procedure FreeImage;
     function HandleAllocated: boolean;
     function MaskHandleAllocated: boolean;
+    function PaletteAllocated: boolean;
     function LazarusResourceTypeValid(const ResourceType: string): boolean; virtual;
     procedure LoadFromStream(Stream: TStream); override;
     procedure LoadFromLazarusResource(const ResName: String); override;
@@ -1223,7 +1224,9 @@ type
   TBitmapCanvas = class(TCanvas)
   private
     FBitmap: TBitmap;
+    FOldBitmapValid: boolean;
     FOldBitmap: HBitmap;
+    FOldPaletteValid: boolean;
     FOldPalette: HPALETTE;
     procedure FreeDC;
   protected
@@ -1598,6 +1601,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.127  2004/03/06 15:37:43  mattias
+  fixed FreeDC
+
   Revision 1.126  2004/03/03 23:35:55  mattias
   accelerated TActionList editor  from Radek
 

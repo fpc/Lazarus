@@ -37,12 +37,12 @@ uses
   {$ELSE}
   glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf}
   {$ENDIF}
-  Classes, LCLIntf, LCLType, VclGlobals, LCLMemManager, DynHashArray,
+  Classes, LCLIntf, LCLProc, LCLType, VclGlobals, LCLMemManager, DynHashArray,
   GraphType;
 
 type
   TGDIType = (gdiBitmap, gdiBrush, gdiFont, gdiPen, gdiRegion, gdiPalette);
-  TGDIBitmapType = (gbBitmap, gbPixmap, gbImage);
+  TGDIBitmapType = (gbBitmap, gbPixmap{obsolete:, gbImage});
 
   PGDIRGB = ^TGDIRGB;
   TGDIRGB = record
@@ -51,13 +51,14 @@ type
     Blue: Byte;
   end;
 
+  {obsolete:
   PGDI_RGBImage = ^TGDI_RGBImage;
   TGDI_RGBImage = record
     Height,
     Width: Integer;
     Depth: Byte;
     Data: array[0..0] of TGDIRGB;
-  end;
+  end;}
   
   TGDIColorFlag = (cfColorAllocated);
   TGDIColorFlags = set of TGDIColorFlag;
@@ -72,6 +73,7 @@ type
 
   PGDIObject = ^TGDIObject;
   TGDIObject = record
+    RefCount: integer;
     Next: PGDIObject; // 'Next' is used by the internal mem manager
     case GDIType: TGDIType of
       gdiBitmap: (
@@ -81,7 +83,7 @@ type
         case GDIBitmapType: TGDIBitmapType of
           gbBitmap: (GDIBitmapObject: PGdkBitmap); // pixmap with depth 1
           gbPixmap: (GDIPixmapObject: PGdkPixmap); // normal pixmap
-          gbImage : (GDI_RGBImageObject: PGDI_RGBImage);
+          {obsolete: gbImage : (GDI_RGBImageObject: PGDI_RGBImage);}
       );
       gdiBrush: ( 
         // ToDo: add bitmap mask
@@ -121,20 +123,20 @@ type
         SystemPalette : Boolean;
 
         //or, Has it been added to the system palette?
-        PaletteRealized : Boolean;
+        PaletteRealized: Boolean;
 
         //Type of visual expected
-        VisualType  : TGdkVisualType;
+        VisualType: TGdkVisualType;
 
         //Actual visual created
-        PaletteVisual : PGDKVisual;
+        PaletteVisual: PGDKVisual;
 
         //Colormap for mapping colors
-        PaletteColormap : PGDKColormap;
+        PaletteColormap: PGDKColormap;
 
         //For mapping from Index to RGB
-        RGBTable : TDynHashArray;
-        IndexTable : TDynHashArray;
+        RGBTable: TDynHashArray;
+        IndexTable: TDynHashArray;
       );
   end;
 
@@ -149,7 +151,7 @@ type
     dcfPenSelected, // pen changed and needs selecting
     dcfPenInvalid,  // pen is not a valid GDIObject
     dcfTextMetricsValid,
-    dcfDoubleBuffer // Drawable is a double buffer
+    dcfDoubleBuffer  // Drawable is a double buffer
     );
   TDeviceContextsFlags = set of TDeviceContextsFlag;
   
@@ -211,7 +213,7 @@ type
     LCLObject: TObject;               // the object which created this widget
     ClientWidget: PGTKWidget;         // the widget which contains the childwidgets
                                       // used to be "fixed" or "core-child"
-    ImplementationWidget: PGTKWidget; // the widget which implements the mainfunctionality
+    ImplementationWidget: PGTKWidget; // the widget which implements the main functionality
                                       // For a TListBox the GTKList is the ImplementationWidget
                                       // and the scrollbox around it is the handle
                                       // So in most cases handle = ImplementationWidget
@@ -395,6 +397,9 @@ end;
 
 procedure TGDIObjectMemManager.DisposeGDIObject(AGDIObject: PGDIObject);
 begin
+  //writeln('TGDIObjectMemManager.DisposeGDIObject ',HexStr(Cardinal(AGDIObject),8));
+  if AGDIObject^.RefCount>0 then
+    RaiseGDBException('');
   if (FFreeCount<FMinFree) or (FFreeCount<((FCount shr 3)*FMaxFreeRatio)) then
   begin
     // add AGDIObject to Free list
@@ -429,10 +434,11 @@ begin
   end;
   FillChar(Result^, SizeOf(TGDIObject), 0);
   inc(FCount);
+  //writeln('TGDIObjectMemManager.NewGDIObject ',HexStr(Cardinal(Result),8));
 end;
 
 
-// memory system for PDeviceContext(s) ---------------------------------------------
+// memory system for TDeviceContext(s) ---------------------------------------------
 type
   TDeviceContextMemManager = class(TLCLMemManager)
   protected
@@ -554,6 +560,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.55  2004/03/06 15:37:43  mattias
+  fixed FreeDC
+
   Revision 1.54  2004/02/27 00:42:41  marc
   * Interface CreateComponent splitup
   * Implemented CreateButtonHandle on GTK interface

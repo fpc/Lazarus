@@ -154,6 +154,7 @@ begin
   OldHandle:=SelectObject(FHandle, Pen.Handle);
   if (OldHandle<>Pen.Handle) and (FSavedPenHandle=0) then
     FSavedPenHandle:=OldHandle;
+  SetPenPos(FPenPos);
   Include(FState, csPenValid);
 //  SetROP2(FHandle, PenModes[Pen.Mode]);
 end;
@@ -1096,7 +1097,6 @@ begin
     begin
       Include(FState, csHandleValid);
       FHandle := NewHandle;
-      SetPenPos(FPenPos);
     end;
     //writeln('[TCanvas.SetHandle] END Handle=',HexStr(FHandle,8));
   end;
@@ -1261,6 +1261,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.71  2004/03/06 15:37:43  mattias
+  fixed FreeDC
+
   Revision 1.70  2004/03/03 23:35:55  mattias
   accelerated TActionList editor  from Radek
 

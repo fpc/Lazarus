@@ -1865,10 +1865,10 @@ var
              StartScan + NumScans);
          {$EndIf}
         end;
-      gbImage :
+      {obsolete: gbImage :
         If Bitmap^.GDI_RGBImageObject <> nil then begin
           Writeln('WARNING : [TGtkWidgetSet.GetDIBits] support for gdiImage unimplimented!.');
-        end;
+        end;}
     end;
   end;
 
@@ -2547,18 +2547,18 @@ var
       gbBitmap: case TDeviceContext(DestDC).CurrentBitmap^.GDIBitmapType of
                 gbBitmap: Result:=DrawableToDrawable;
                 gbPixmap: Result:=BitmapToPixmap;
-                gbImage:  Result:=BitmapToImage;
+                {obsolete: gbImage:  Result:=BitmapToImage;}
                 end;
       gbPixmap: case TDeviceContext(DestDC).CurrentBitmap^.GDIBitmapType of
                 gbBitmap: Result:=PixmapToBitmap;
                 gbPixmap: Result:=DrawableToDrawable;
-                gbImage:  Result:=PixmapToImage;
+                {obsolete: gbImage:  Result:=PixmapToImage;}
                 end;
-      gbImage:  case TDeviceContext(DestDC).CurrentBitmap^.GDIBitmapType of
+      {obsolete: gbImage:  case TDeviceContext(DestDC).CurrentBitmap^.GDIBitmapType of
                 gbBitmap: Result:=ImageToBitmap;
                 gbPixmap: Result:=ImageToDrawable;
                 gbImage:  Result:=ImageToImage;
-                end;
+                end;}
       end
     else
       Result := Unsupported;
@@ -2570,7 +2570,7 @@ var
       case TDeviceContext(SrcDC).CurrentBitmap^.GDIBitmapType of
       gbBitmap: Result:=PixmapToDrawable;
       gbPixmap: Result:=PixmapToDrawable;
-      gbImage:  Result:=ImageToDrawable;
+      {obsolete: gbImage:  Result:=ImageToDrawable;}
       end
     else
       Result := Unsupported;
@@ -2582,10 +2582,20 @@ var
       case TDeviceContext(DestDC).CurrentBitmap^.GDIBitmapType of
       gbBitmap: Result:=Unsupported;
       gbPixmap: Result:=Unsupported;
-      gbImage:  Result:=Unsupported;
+      {obsolete: gbImage:  Result:=Unsupported;}
       end
     else
       Result := Unsupported;
+  end;
+  
+  procedure RaiseSrcDrawableNil;
+  begin
+    RaiseException('TGtkWidgetSet.StretchCopyArea SrcDC='+HexStr(Cardinal(SrcDevContext),8)+' Drawable=nil');
+  end;
+
+  procedure RaiseDestDrawableNil;
+  begin
+    RaiseException('TGtkWidgetSet.StretchCopyArea DestDC='+HexStr(Cardinal(DestDevContext),8)+' Drawable=nil');
   end;
 
 var
@@ -2612,12 +2622,14 @@ begin
     SrcDCOrigin:=GetDCOffset(TDeviceContext(SrcDC));
     Inc(XSrc,SrcDCOrigin.X);
     Inc(YSrc,SrcDCOrigin.Y);
+    if Drawable=nil then RaiseSrcDrawableNil;
     gdk_window_get_size(PGdkWindow(Drawable),@SrcWholeWidth,@SrcWholeHeight);
   end;
   with DestDevContext do begin
     DestDCOrigin:=GetDCOffset(TDeviceContext(DestDC));
     Inc(X,DestDCOrigin.X);
     Inc(Y,DestDCOrigin.Y);
+    if Drawable=nil then RaiseDestDrawableNil;
     gdk_window_get_size(PGdkWindow(Drawable),@DestWholeWidth,@DestWholeHeight);
   end;
 
@@ -8199,7 +8211,7 @@ begin
            case GDIBitmapType of
              gbPixmap: Result := GDIPixmapObject <> nil;
              gbBitmap: Result := GDIBitmapObject <> nil;
-             gbImage:  Result := GDI_RGBImageObject <> nil;
+             {obsolete: gbImage:  Result := GDI_RGBImageObject <> nil;}
            else
              Result := False;
            end;
@@ -8586,6 +8598,7 @@ begin
   Assert(False, Format('Trace:> [TGtkWidgetSet.NewGDIObject]', []));
   Result:=GtkDef.NewPGDIObject;
   Result^.GDIType := GDIType;
+  inc(Result^.RefCount);
   FGDIObjects.Add(Result);
 //writeln('[TGtkWidgetSet.NewGDIObject] ',HexStr(Cardinal(Result),8),'  ',FGDIObjects.Count);
   Assert(False, Format('Trace:< [TGtkWidgetSet.NewGDIObject] FGDIObjects --> 0x%p', [Result]));
@@ -8601,9 +8614,11 @@ end;
 procedure TGtkWidgetSet.DisposeGDIObject(GDIObject: PGdiObject);
 begin
   if FGDIObjects.Contains(GDIObject) then begin
+    dec(GDIObject^.RefCount);
     FGDIObjects.Remove(GDIObject);
     GtkDef.DisposePGDIObject(GDIObject);
-  end;
+  end else
+    RaiseGDBException('');
 end;
 
 {------------------------------------------------------------------------------
@@ -9268,6 +9283,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.476  2004/03/06 15:37:43  mattias
+  fixed FreeDC
+
   Revision 1.475  2004/03/05 00:31:52  marc
   * Renamed TGtkObject to TGtkWidgetSet
 

@@ -867,6 +867,9 @@ begin
     // ATM we are creating one image/mask for each icon.
     // But eventually there should only be one TBitmap.
     SrcRect := Bounds(0, 0, Width, Height);
+    
+    //writeln('TCustomImageList.ReadData NewCount=',NewCount);
+
     BeginUpdate;
     try
       for Row := 0 to (Image.Height div Height) - 1 do
@@ -1166,6 +1169,9 @@ end;
 {
 
   $Log$
+  Revision 1.30  2004/03/06 15:37:43  mattias
+  fixed FreeDC
+
   Revision 1.29  2004/03/02 22:37:36  mattias
   clean up for TBitmapImage sharing
 

@@ -348,8 +348,8 @@ procedure RealizeGDKColor(ColorMap: PGdkColormap; Color: PGDKColor);
 procedure RealizeGtkStyleColor(Style: PGTKStyle; Color: PGDKColor);
 Function GetSysGCValues(Color: TColorRef; ThemeWidget: PGtkWidget): TGDKGCValues;
 
-Function GDKPixel2GDIRGB(Pixel : Longint; Visual : PGDKVisual;
-  Colormap : PGDKColormap) : TGDIRGB;
+Function GDKPixel2GDIRGB(Pixel: Longint; Visual: PGDKVisual;
+  Colormap: PGDKColormap) : TGDIRGB;
 
 function CompareGDIColor(const Color1, Color2: TGDIColor): boolean;
 function CompareGDIFill(const Fill1, Fill2: TGdkFill): boolean;
@@ -532,7 +532,7 @@ procedure UnshareWindowAccelGroups(AWindow: PGtkWidget);
 // pixmaps
 procedure GetGdkPixmapFromGraphic(LCLGraphic: TGraphic;
   var IconImg, IconMask: PGdkPixmap; var Width, Height: integer);
-function NewGDI_RGBImage(const AWidth, AHeight: Integer; const ADepth: Byte): PGDI_RGBImage;
+{obsolete: function NewGDI_RGBImage(const AWidth, AHeight: Integer; const ADepth: Byte): PGDI_RGBImage;}
 Procedure SetGCRasterOperation(TheGC: PGDKGC; Rop: Cardinal);
 Procedure MergeClipping(DestinationDC: TDeviceContext; DestinationGC: PGDKGC;
   X,Y,Width,Height: integer; ClipMergeMask: PGdkPixmap;

@@ -890,7 +890,8 @@ end;
 
   Creates a RawImage
  ------------------------------------------------------------------------------}
-function NewGDI_RGBImage(const AWidth, AHeight: Integer; const ADepth: Byte): PGDI_RGBImage;
+{obsolete:
+ function NewGDI_RGBImage(const AWidth, AHeight: Integer; const ADepth: Byte): PGDI_RGBImage;
 begin
   Result := AllocMem(SizeOf(TGDI_RGBImage) + ((AWidth * AHeight) - 1) * SizeOf(TGDIRGB));
 //  FillChar(Result^, SizeOf(TGDI_RGBImage), 0);
@@ -900,7 +901,7 @@ begin
     Width := AWidth;
     Depth := ADepth;
   end;
-end;
+end;}
 
 procedure SetGCRasterOperation(TheGC: PGDKGC; Rop: Cardinal);
 begin
@@ -6463,15 +6464,11 @@ begin
     Colormap := GDK_Colormap_Get_System;
   end;
   
-  BeginGDKErrorTrap;
-
   gdk_colormap_query_color(colormap, pixel, @color);
 
   Result.Red := Color.Red shr 8;
   Result.Green := Color.Green shr 8;
   Result.Blue := Color.Blue shr 8;
-
-  EndGDKErrorTrap;
 end;
 
 {------------------------------------------------------------------------------
@@ -6632,6 +6629,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.266  2004/03/06 15:37:43  mattias
+  fixed FreeDC
+
   Revision 1.265  2004/03/05 00:31:52  marc
   * Renamed TGtkObject to TGtkWidgetSet
 

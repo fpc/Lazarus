@@ -1,7 +1,7 @@
 // included by graphics.pp
 
 {******************************************************************************
-                                  TBITMAPCANVAS
+                                  TBitmapCanvas
  ******************************************************************************
 
  *****************************************************************************
@@ -18,58 +18,63 @@
  *****************************************************************************
 }
 {------------------------------------------------------------------------------
-  Method: TBitMapCanvas.Create
+  Method: TBitmapCanvas.Create
   Params:  ABitMap: the owner of the class
   Returns: Nothing
 
   Constructor for the class.
  ------------------------------------------------------------------------------}
-constructor TBitMapCanvas.Create(ABitmap : TBitMap);
+constructor TBitmapCanvas.Create(ABitmap : TBitMap);
 begin
   inherited Create;
   FBitmap := ABitmap;
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TBitMapCanvas.CreateHandle
+  Method:  TBitmapCanvas.CreateHandle
   Params:  None
   Returns: Nothing
 
-  Creates the handle ( = object).
+  Creates the handle.
  ------------------------------------------------------------------------------}
-procedure TBitMapCanvas.CreateHandle;
+procedure TBitmapCanvas.CreateHandle;
 var
   DC: HDC;
 begin
-  FreeDC;
+  if HandleAllocated then exit;
   if FBitmap = nil then exit;
   FBitmap.HandleNeeded;
   FBitmap.PaletteNeeded;
   DC := CreateCompatibleDC(0);
 
-  if not FBitmap.HandleAllocated then
-    FOldBitmap := 0
-  else
+  FOldBitmap := 0;
+  FOldBitmapValid:=false;
+  if FBitmap.HandleAllocated then begin
     FOldBitmap := SelectObject(DC, FBitmap.Handle);
+    FOldBitmapValid:=true;
+  end;
 
-  if FBitmap.FPalette = 0 then
-    FOldPalette := 0
-  else begin
+  FOldPalette:=0;
+  FOldPaletteValid:=false;
+  if FBitmap.PaletteAllocated then begin
     FOldPalette := SelectPalette(DC, FBitmap.FPalette, True);
+    FOldPaletteValid:=true;
     RealizePalette(DC);
   end;
 
   Handle := DC;
+  //writeln('TBitmapCanvas.CreateHandle END Self=',HexStr(Cardinal(Self),8),' DC=',HexStr(Cardinal(DC),8),
+  //  ' Handle=',HexStr(Cardinal(GetUpdatedHandle([csHandleValid])),8));
 end;
 
 {------------------------------------------------------------------------------
-  Method: TBitMapCanvas.Destroy
+  Method: TBitmapCanvas.Destroy
   Params:  None
   Returns: Nothing
 
   Destructor for the class.
  ------------------------------------------------------------------------------}
-destructor TBitMapCanvas.Destroy;
+destructor TBitmapCanvas.Destroy;
 begin
   FreeDC;
   inherited Destroy;
@@ -87,14 +92,17 @@ var
   OldHandle: HBITMAP;
 begin
   if not HandleAllocated then exit;
+  //writeln('TBitmapCanvas.FreeDC START Self=',HexStr(Cardinal(Self),8),' FBitmap=',HexStr(Cardinal(FBitmap),8));
   if FBitmap<>nil then begin
-    if FOldBitmap <> 0 then begin
+    if FOldBitmapValid then begin
       SelectObject(FHandle, FOldBitmap);
       FOldBitmap:=0;
+      FOldBitmapValid:=false;
     end;
-    if FOldPalette <> 0 then begin
+    if FOldPaletteValid then begin
       SelectPalette(FHandle, FOldPalette, True);
       FOldPalette:=0;
+      FOldPaletteValid:=false;
     end;
     OldHandle := FHandle;
     Handle := 0;
@@ -109,6 +117,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.10  2004/03/06 15:37:43  mattias
+  fixed FreeDC
+
   Revision 1.9  2004/03/02 22:37:36  mattias
   clean up for TBitmapImage sharing
 
