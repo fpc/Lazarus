@@ -54,6 +54,8 @@ type
   TOnCompilePackage =
     function(Sender: TObject; APackage: TLazPackage;
              CompileAll: boolean): TModalResult of object;
+  TOnInstallPackage =
+    function(Sender: TObject; APackage: TLazPackage): TModalResult of object;
   TOnCreateNewPkgFile =
     function(Sender: TObject;
              const Params: TAddToPkgResult): TModalResult  of object;
@@ -174,6 +176,7 @@ type
     FOnFreeEditor: TOnFreePkgEditor;
     FOnGetIDEFileInfo: TGetIDEFileStateEvent;
     FOnGetUnitRegisterInfo: TOnGetUnitRegisterInfo;
+    FOnInstallPackage: TOnInstallPackage;
     FOnOpenFile: TOnOpenFile;
     FOnOpenPackage: TOnOpenPackage;
     FOnSavePackage: TOnSavePackage;
@@ -202,6 +205,7 @@ type
     function CompilePackage(APackage: TLazPackage;
                             CompileAll: boolean): TModalResult;
     procedure UpdateAllEditors;
+    function InstallPackage(APackage: TLazPackage): TModalResult;
   public
     property Editors[Index: integer]: TPackageEditorForm read GetEditors;
     property OnCreateNewFile: TOnCreateNewPkgFile read FOnCreateNewFile
@@ -216,6 +220,8 @@ type
     property OnSavePackage: TOnSavePackage read FOnSavePackage write FOnSavePackage;
     property OnCompilePackage: TOnCompilePackage read FOnCompilePackage
                                                  write FOnCompilePackage;
+    property OnInstallPackage: TOnInstallPackage read FOnInstallPackage
+                                                 write FOnInstallPackage;
   end;
   
 var
@@ -447,7 +453,7 @@ end;
 
 procedure TPackageEditorForm.InstallBitBtnClick(Sender: TObject);
 begin
-
+  PackageEditors.InstallPackage(LazPackage);
 end;
 
 procedure TPackageEditorForm.MaxVersionEditChange(Sender: TObject);
@@ -1764,8 +1770,9 @@ var
   APackage: TLazPackage;
 begin
   Result:=mrCancel;
-  if PackageGraph.OpenDependency(Dependency,APackage)=lprSuccess then
+  if PackageGraph.OpenDependency(Dependency)=lprSuccess then
   begin
+    APackage:=Dependency.RequiredPackage;
     if Assigned(OnOpenPackage) then Result:=OnOpenPackage(Sender,APackage);
   end;
 end;
@@ -1803,6 +1810,11 @@ var
   i: Integer;
 begin
   for i:=0 to Count-1 do Editors[i].UpdateAll;
+end;
+
+function TPackageEditors.InstallPackage(APackage: TLazPackage): TModalResult;
+begin
+  if Assigned(OnInstallPackage) then Result:=OnInstallPackage(Self,APackage);
 end;
 
 { TPackageEditorLayout }

@@ -46,15 +46,6 @@ type
   TRegisterUnitProc = procedure(const TheUnitName: string;
                                 RegisterProc: TRegisterProc) of object;
 
-var
-  RegisterUnitProc: TRegisterUnitProc;
-  
-procedure RegisterUnit(const TheUnitName: string; RegisterProc: TRegisterProc);
-procedure RegisterPackage(const ThePackageName: string;
-                          RegisterProc: TRegisterProc);
-
-implementation
-
 type
   TRegisteredPackage = record
     Name: string;
@@ -63,7 +54,15 @@ type
   PRegisteredPackage = ^TRegisteredPackage;
 
 var
-  RegisteredPackages: TList;
+  RegisteredPackages: TList; // list of PRegisteredPackage
+  RegisterUnitProc: TRegisterUnitProc;
+  
+procedure RegisterUnit(const TheUnitName: string; RegisterProc: TRegisterProc);
+procedure RegisterPackage(const ThePackageName: string;
+                          RegisterProc: TRegisterProc);
+procedure ClearRegisteredPackages;
+
+implementation
 
 procedure RegisterUnit(const TheUnitName: string; RegisterProc: TRegisterProc);
 begin
@@ -82,13 +81,7 @@ begin
   RegisteredPackages.Add(NewRegisteredPackage);
 end;
 
-procedure InternalInit;
-begin
-  RegisterUnitProc:=nil;
-  RegisteredPackages:=nil;
-end;
-
-procedure InternalFinal;
+procedure ClearRegisteredPackages;
 var
   RegisteredPackage: PRegisteredPackage;
   i: Integer;
@@ -101,6 +94,17 @@ begin
     RegisteredPackages.Free;
     RegisteredPackages:=nil;
   end;
+end;
+
+procedure InternalInit;
+begin
+  RegisterUnitProc:=nil;
+  RegisteredPackages:=nil;
+end;
+
+procedure InternalFinal;
+begin
+  ClearRegisteredPackages;
 end;
 
 initialization

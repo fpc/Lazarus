@@ -79,6 +79,7 @@ type
     FErrorMsg: string;
     FFCLPackage: TLazPackage;
     FItems: TList;   // unsorted list of TLazPackage
+    FLazarusBasePackages: TList;
     FLCLPackage: TLazPackage;
     FOnAddPackage: TPkgAddedEvent;
     FOnBeginUpdate: TNotifyEvent;
@@ -182,11 +183,12 @@ type
     procedure RegisterComponentsHandler(const Page: string;
                                     ComponentClasses: array of TComponentClass);
     procedure RegistrationError(const Msg: string);
-    procedure RegisterStaticPackages;
+    procedure RegisterStaticBasePackages;
     procedure RegisterStaticPackage(APackage: TLazPackage;
                                     RegisterProc: TRegisterProc);
     procedure RegisterDefaultPackageComponent(const Page, UnitName: ShortString;
                                               ComponentClass: TComponentClass);
+    procedure CallRegisterProc(RegisterProc: TRegisterProc);
   public
     // dependency handling
     procedure AddDependencyToPackage(APackage: TLazPackage;
@@ -194,8 +196,9 @@ type
     procedure RemoveDependencyFromPackage(APackage: TLazPackage;
                          Dependency: TPkgDependency; AddToRemovedList: boolean);
     procedure ChangeDependency(Dependency, NewDependency: TPkgDependency);
-    function OpenDependency(Dependency: TPkgDependency;
-                            var APackage: TLazPackage): TLoadPackageResult;
+    function OpenDependency(Dependency: TPkgDependency): TLoadPackageResult;
+    procedure OpenInstalledDependency(Dependency: TPkgDependency;
+                                      InstallType: TPackageInstallType);
     procedure OpenRequiredDependencyList(FirstDependency: TPkgDependency);
     procedure MoveRequiredDependencyUp(ADependency: TPkgDependency);
     procedure MoveRequiredDependencyDown(ADependency: TPkgDependency);
@@ -207,6 +210,7 @@ type
     property FCLPackage: TLazPackage read FFCLPackage;
     property LCLPackage: TLazPackage read FLCLPackage;
     property SynEditPackage: TLazPackage read FSynEditPackage;
+    property LazarusBasePackages: TList read FLazarusBasePackages;
     property DefaultPackage: TLazPackage read FDefaultPackage;
     property OnAddPackage: TPkgAddedEvent read FOnAddPackage write FOnAddPackage;
     property OnBeginUpdate: TNotifyEvent read FOnBeginUpdate write FOnBeginUpdate;
@@ -282,7 +286,6 @@ procedure TLazPackageGraph.UpdateBrokenDependenciesToPackage(
 var
   ANode: TAVLTreeNode;
   Dependency: TPkgDependency;
-  RequiredPackage: TLazPackage;
 begin
   BeginUpdate(false);
   ANode:=FindLowestPkgDependencyNodeWithName(APackage.Name);
@@ -291,7 +294,7 @@ begin
     if (Dependency.LoadPackageResult<>lprSuccess)
     and Dependency.IsCompatible(APackage) then begin
       Dependency.LoadPackageResult:=lprUndefined;
-      OpenDependency(Dependency,RequiredPackage);
+      OpenDependency(Dependency);
     end;
     ANode:=FindNextPkgDependecyNodeWithSameName(ANode);
   end;
@@ -334,6 +337,7 @@ begin
   OnGetAllRequiredPackages:=@GetAllRequiredPackages;
   FTree:=TAVLTree.Create(@CompareLazPackageID);
   FItems:=TList.Create;
+  FLazarusBasePackages:=TList.Create;
 end;
 
 destructor TLazPackageGraph.Destroy;
@@ -356,6 +360,7 @@ procedure TLazPackageGraph.Clear;
 var
   i: Integer;
 begin
+  FLazarusBasePackages.Clear;
   for i:=FItems.Count-1 downto 0 do Delete(i);
 end;
 
@@ -685,28 +690,16 @@ begin
       if FRegistrationFile=nil then begin
         RegistrationError('Unit not found: "'+FRegistrationUnitName+'"');
       end else begin
-        RegistrationError(
-          'Unit "'+FRegistrationUnitName+'" was deleted from package');
+        if not (pffReportedAsRemoved in FRegistrationFile.Flags) then begin
+          RegistrationError(
+            'Unit "'+FRegistrationUnitName+'" was removed from package');
+          FRegistrationFile.Flags:=
+                                 FRegistrationFile.Flags+[pffReportedAsRemoved];
+        end;
       end;
       exit;
     end;
-    // check registration procedure
-    if RegisterProc=nil then begin
-      RegistrationError('Register procedure is nil');
-      exit;
-    end;
-    {$IFNDEF StopOnRegError}
-    try
-    {$ENDIF}
-      // call the registration procedure
-      RegisterProc();
-    {$IFNDEF StopOnRegError}
-    except
-      on E: Exception do begin
-        RegistrationError(E.Message);
-      end;
-    end;
-    {$ENDIF}
+    CallRegisterProc(RegisterProc);
     // clean up
   finally
     FRegistrationUnitName:='';
@@ -961,7 +954,6 @@ end;
 
 procedure TLazPackageGraph.AddPackage(APackage: TLazPackage);
 var
-  RequiredPackage: TLazPackage;
   Dependency: TPkgDependency;
 begin
   BeginUpdate(true);
@@ -971,7 +963,7 @@ begin
   // open all required dependencies
   Dependency:=APackage.FirstRequiredDependency;
   while Dependency<>nil do begin
-    OpenDependency(Dependency,RequiredPackage);
+    OpenDependency(Dependency);
     Dependency:=Dependency.NextRequiresDependency;
   end;
   
@@ -983,24 +975,31 @@ begin
 end;
 
 procedure TLazPackageGraph.ReplacePackage(OldPackage, NewPackage: TLazPackage);
+var
+  OldInstalled: TPackageInstallType;
 begin
   BeginUpdate(true);
+  OldInstalled:=OldPackage.Installed;
   Delete(fItems.IndexOf(OldPackage));
+  NewPackage.Installed:=OldInstalled;
   AddPackage(NewPackage);
   EndUpdate;
 end;
 
 procedure TLazPackageGraph.AddStaticBasePackages;
+
+  procedure AddStaticBasePackage(NewPackage: TLazPackage;
+    var PackageVariable: TLazPackage);
+  begin
+    PackageVariable:=NewPackage;
+    AddPackage(NewPackage);
+    FLazarusBasePackages.Add(NewPackage);
+  end;
+
 begin
-  // FCL
-  FFCLPackage:=CreateFCLPackage;
-  AddPackage(FFCLPackage);
-  // LCL
-  FLCLPackage:=CreateLCLPackage;
-  AddPackage(FLCLPackage);
-  // SynEdit
-  FSynEditPackage:=CreateSynEditPackage;
-  AddPackage(FSynEditPackage);
+  AddStaticBasePackage(CreateFCLPackage,FFCLPackage);
+  AddStaticBasePackage(CreateLCLPackage,FLCLPackage);
+  AddStaticBasePackage(CreateSynEditPackage,FSynEditPackage);
   // the default package will be added on demand
   FDefaultPackage:=CreateDefaultPackage;
 end;
@@ -1365,6 +1364,12 @@ var
   Dependency: TPkgDependency;
 begin
   Result:=false;
+  if OldPackage.Broken and (AnsiCompareText(OldPackage.Name,NewPackage.Name)=0)
+  then begin
+    Result:=true;
+    exit;
+  end;
+
   if PackageIsNeeded(OldPackage) then exit;
 
   // check all used-by dependencies
@@ -1395,7 +1400,7 @@ begin
   Result:=true;
 end;
 
-procedure TLazPackageGraph.RegisterStaticPackages;
+procedure TLazPackageGraph.RegisterStaticBasePackages;
 begin
   BeginUpdate(true);
   // IDE built-in packages
@@ -1414,17 +1419,15 @@ begin
   end;
   RegistrationPackage:=nil;
 
-  // installed packages
-  // ToDo
-
   EndUpdate;
 end;
 
 procedure TLazPackageGraph.RegisterStaticPackage(APackage: TLazPackage;
   RegisterProc: TRegisterProc);
 begin
+  if AbortRegistration then exit;
   RegistrationPackage:=APackage;
-  RegisterProc();
+  CallRegisterProc(RegisterProc);
   APackage.Registered:=true;
   RegistrationPackage:=nil;
 end;
@@ -1445,15 +1448,36 @@ begin
   RegisterComponentsHandler(Page,[ComponentClass]);
 end;
 
+procedure TLazPackageGraph.CallRegisterProc(RegisterProc: TRegisterProc);
+begin
+  if AbortRegistration then exit;
+
+  // check registration procedure
+  if RegisterProc=nil then begin
+    RegistrationError('Register procedure is nil');
+    exit;
+  end;
+  {$IFNDEF StopOnRegError}
+  try
+  {$ENDIF}
+    // call the registration procedure
+    RegisterProc();
+  {$IFNDEF StopOnRegError}
+  except
+    on E: Exception do begin
+      RegistrationError(E.Message);
+    end;
+  end;
+  {$ENDIF}
+end;
+
 procedure TLazPackageGraph.AddDependencyToPackage(APackage: TLazPackage;
   Dependency: TPkgDependency);
-var
-  RequiredPackage: TLazPackage;
 begin
   BeginUpdate(true);
   APackage.AddRequiredDependency(Dependency);
   Dependency.LoadPackageResult:=lprUndefined;
-  OpenDependency(Dependency,RequiredPackage);
+  OpenDependency(Dependency);
   EndUpdate;
 end;
 
@@ -1470,20 +1494,18 @@ end;
 
 procedure TLazPackageGraph.ChangeDependency(Dependency,
   NewDependency: TPkgDependency);
-var
-  RequiredPackage: TLazPackage;
 begin
   if Dependency.Compare(NewDependency)=0 then exit;
   BeginUpdate(true);
   Dependency.Assign(NewDependency);
   Dependency.LoadPackageResult:=lprUndefined;
-  OpenDependency(Dependency,RequiredPackage);
+  OpenDependency(Dependency);
   DoDependencyChanged(Dependency);
   EndUpdate;
 end;
 
-function TLazPackageGraph.OpenDependency(Dependency: TPkgDependency;
-  var APackage: TLazPackage): TLoadPackageResult;
+function TLazPackageGraph.OpenDependency(Dependency: TPkgDependency
+  ): TLoadPackageResult;
 var
   ANode: TAVLTreeNode;
   PkgLink: TPackageLink;
@@ -1516,19 +1538,65 @@ begin
     fChanged:=true;
     EndUpdate;
   end;
-  APackage:=Dependency.RequiredPackage;
   Result:=Dependency.LoadPackageResult;
+end;
+
+procedure TLazPackageGraph.OpenInstalledDependency(Dependency: TPkgDependency;
+  InstallType: TPackageInstallType);
+var
+  BrokenPackage: TLazPackage;
+begin
+  OpenDependency(Dependency);
+  if Dependency.LoadPackageResult<>lprSuccess then begin
+    // a valid lpk file of the installed package can not be found
+    // -> create a broken package
+    BrokenPackage:=TLazPackage.Create;
+    with BrokenPackage do begin
+      BeginUpdate;
+      Broken:=true;
+      AutoCreated:=true;
+      Name:=Dependency.PackageName;
+      Filename:='';
+      Version.SetValues(0,0,0,0);
+      Author:='?';
+      License:='?';
+      AutoUpdate:=false;
+      Description:='This package is installed, but the lpk file was not found.'
+                  +'All its components are deactivated. Please fix this.';
+      PackageType:=lptDesignTime;
+      Installed:=pitStatic;
+      CompilerOptions.UnitOutputDirectory:='';
+
+      // add lazarus registration unit path
+      UsageOptions.UnitPath:='';
+
+      Modified:=false;
+      EndUpdate;
+    end;
+    AddPackage(BrokenPackage);
+
+    // tell the user
+    MessageDlg('Package file not found',
+      'The package "'+BrokenPackage.Name+'" is installed, '
+      +'but no valid package file was found.'#13
+      +'A broken dummy package was created.',
+      mtError,[mbOk],0);
+
+    // open it
+    if OpenDependency(Dependency)<>lprSuccess then
+      RaiseException('TLazPackageGraph.OpenInstalledDependency');
+  end;
+  Dependency.RequiredPackage.Installed:=InstallType;
 end;
 
 procedure TLazPackageGraph.OpenRequiredDependencyList(
   FirstDependency: TPkgDependency);
 var
   Dependency: TPkgDependency;
-  RequiredPackage: TLazPackage;
 begin
   Dependency:=FirstDependency;
   while Dependency<>nil do begin
-    OpenDependency(Dependency,RequiredPackage);
+    OpenDependency(Dependency);
     Dependency:=Dependency.NextRequiresDependency;
   end;
 end;

@@ -1271,13 +1271,10 @@ begin
       and (Flags=ADefineTemplate.Flags)
       and (Owner=ADefineTemplate.Owner);
   if not Result then begin
-writeln('TDefineTemplate.IsEqual DIFF 1 ',Name,' ',ADefineTemplate.Name,' ',
-HexStr(Cardinal(Owner),8),' ',HexStr(Cardinal(ADefineTemplate.Owner),8));
     exit;
   end;
   if CheckSubNodes then begin
     if (ChildCount<>ADefineTemplate.ChildCount) then begin
-writeln('TDefineTemplate.IsEqual DIFF 2 ',Name,' ',ADefineTemplate.Name,' ',ChildCount,' ',ADefineTemplate.ChildCount);
       Result:=false;
       exit;
     end;

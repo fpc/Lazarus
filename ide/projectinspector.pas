@@ -215,7 +215,6 @@ var
   AddResult: TAddToProjectResult;
   NewFile: TUnitInfo;
   i: Integer;
-  RequiredPackage: TLazPackage;
 begin
   if ShowAddToProjectDlg(LazProject,AddResult)<>mrOk then exit;
   
@@ -238,7 +237,7 @@ begin
     begin
       BeginUpdate;
       LazProject.AddRequiredDependency(AddResult.Dependency);
-      PackageGraph.OpenDependency(AddResult.Dependency,RequiredPackage);
+      PackageGraph.OpenDependency(AddResult.Dependency);
       UpdateItems;
       EndUpdate;
     end;
@@ -317,14 +316,13 @@ end;
 procedure TProjectInspectorForm.ReAddMenuItemClick(Sender: TObject);
 var
   Dependency: TPkgDependency;
-  RequiredPackage: TLazPackage;
 begin
   Dependency:=GetSelectedDependency;
   if (Dependency=nil) or (not Dependency.Removed)
   or (not CheckAddingDependency(LazProject,Dependency)) then exit;
   BeginUpdate;
   LazProject.ReaddRemovedDependency(Dependency);
-  PackageGraph.OpenDependency(Dependency,RequiredPackage);
+  PackageGraph.OpenDependency(Dependency);
   EndUpdate;
 end;
 

@@ -46,12 +46,13 @@ uses
   {$ENDIF}
   Classes, SysUtils, LCLProc, Forms, Controls, FileCtrl,
   Dialogs, Menus, CodeToolManager, CodeCache, Laz_XMLCfg, AVL_Tree,
-  LazarusIDEStrConsts, KeyMapping, EnvironmentOpts, IDEProcs, ProjectDefs,
-  InputHistory, IDEDefs, Project, ComponentReg, UComponentManMain,
+  LazarusIDEStrConsts, KeyMapping, EnvironmentOpts, MiscOptions, IDEProcs,
+  ProjectDefs, InputHistory, IDEDefs, Project, ComponentReg, UComponentManMain,
   PackageEditor, AddToPackageDlg, PackageDefs, PackageLinks, PackageSystem,
   OpenInstalledPkgDlg, PkgGraphExplorer, BrokenDependenciesDlg, CompilerOptions,
-  ExtToolDialog, ExtToolEditDlg, EditDefineTree, DefineTemplates,
+  ExtToolDialog, ExtToolEditDlg, EditDefineTree, DefineTemplates, LazConf,
   ProjectInspector, ComponentPalette, UnitEditor, AddFileToAPackageDlg,
+  LazarusPackageIntf,
   BasePkgManager, MainBar;
 
 type
@@ -61,6 +62,8 @@ type
       APackage: TLazPackage; CompileAll: boolean): TModalResult;
     function OnPackageEditorCreateFile(Sender: TObject;
                                    const Params: TAddToPkgResult): TModalResult;
+    function OnPackageEditorInstallPackage(Sender: TObject;
+      APackage: TLazPackage): TModalResult;
     function OnPackageEditorOpenPackage(Sender: TObject; APackage: TLazPackage
                                         ): TModalResult;
     function OnPackageEditorSavePackage(Sender: TObject; APackage: TLazPackage;
@@ -88,6 +91,8 @@ type
     procedure IDEComponentPaletteEndUpdate(Sender: TObject;
       PaletteChanged: boolean);
   private
+    FirstInstalledDependency: TPkgDependency;
+    FirstAutoInstallDependency: TPkgDependency;
     // helper functions
     function DoShowSavePackageAsDialog(APackage: TLazPackage): TModalResult;
     function CompileRequiredPackages(APackage: TLazPackage;
@@ -107,6 +112,10 @@ type
     function DoGetUnitRegisterInfo(const AFilename: string;
                           var TheUnitName: string; var HasRegisterProc: boolean;
                           IgnoreErrors: boolean): TModalResult;
+    procedure SaveAutoInstallDependencies;
+    procedure LoadStaticBasePackages;
+    procedure LoadStaticCustomPackages;
+    function LoadInstalledPackage(const PackageName: string): TLazPackage;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -121,6 +130,7 @@ type
     function GetDefaultSaveDirectoryForFile(const Filename: string): string; override;
 
     procedure LoadInstalledPackages; override;
+    procedure UnloadInstalledPackages;
     procedure UpdateVisibleComponentPalette; override;
     
     function AddPackageToGraph(APackage: TLazPackage): TModalResult;
@@ -153,7 +163,11 @@ type
     function OnRenameFile(const OldFilename,
                           NewFilename: string): TModalResult; override;
     function DoAddActiveUnitToAPackage: TModalResult;
-                          
+    function DoInstallPackage(APackage: TLazPackage): TModalResult;
+    function DoCompileAutoInstallPackages(Flags: TPkgCompileFlags
+                                          ): TModalResult; override;
+    function DoSaveAutoInstallConfig: TModalResult; override;
+    function DoGetIDEInstallPackageOptions: string; override;
 
     function OnProjectInspectorOpen(Sender: TObject): boolean; override;
   end;
@@ -264,6 +278,12 @@ begin
 
   Result:=MainIDE.DoNewEditorFile(nuUnit,Params.UnitFilename,NewSource,
                     [nfOpenInEditor,nfIsNotPartOfProject,nfSave,nfAddToRecent]);
+end;
+
+function TPkgManager.OnPackageEditorInstallPackage(Sender: TObject;
+  APackage: TLazPackage): TModalResult;
+begin
+  Result:=DoInstallPackage(APackage);
 end;
 
 procedure TPkgManager.OnPackageEditorFreeEditor(APackage: TLazPackage);
@@ -578,12 +598,13 @@ begin
   writeln('TPkgManager.CompileRequiredPackages A ');
   AutoPackages:=PackageGraph.GetAutoCompilationOrder(APackage,FirstDependency);
   if AutoPackages<>nil then begin
+    writeln('TPkgManager.CompileRequiredPackages B Count=',AutoPackages.Count);
     try
       i:=0;
       while i<AutoPackages.Count do begin
         Result:=DoCompilePackage(TLazPackage(AutoPackages[i]),
                       [pcfDoNotCompileDependencies,pcfOnlyIfNeeded,
-                       pcfAutomatic]);
+                       pcfDoNotSaveEditorFiles]);
         if Result<>mrOk then exit;
         inc(i);
       end;
@@ -630,7 +651,7 @@ begin
       mtError,[mbCancel,mbAbort],0);
     exit;
   end;
-
+  
   writeln('TPkgManager.CheckPackageGraphForCompilation END');
   Result:=mrOk;
 end;
@@ -821,8 +842,12 @@ begin
         OtherStateFile:=RequiredPackage.OutputStateFile;
         MainIDE.MacroList.SubstituteStr(OtherStateFile);
         if FileExists(OtherStateFile)
-        and (FileAge(OtherStateFile)>StateFileAge) then
+        and (FileAge(OtherStateFile)>StateFileAge) then begin
+          writeln('TPkgManager.CheckIfPackageNeedsCompilation  Required ',
+            RequiredPackage.IDAsString,' OtherState file "',OtherStateFile,'"'
+            ,' is newer than State file ',APackage.IDAsString);
           exit;
+        end;
       end;
     end;
     Dependency:=Dependency.NextRequiresDependency;
@@ -969,6 +994,92 @@ begin
   Result:=mrOk;
 end;
 
+procedure TPkgManager.SaveAutoInstallDependencies;
+var
+  Dependency: TPkgDependency;
+  sl: TStringList;
+begin
+  sl:=TStringList.Create;
+  Dependency:=FirstAutoInstallDependency;
+  while Dependency<>nil do begin
+    sl.Add(Dependency.PackageName);
+    Dependency:=Dependency.NextRequiresDependency;
+  end;
+  MiscellaneousOptions.BuildLazOpts.AutoInstallPackages.Assign(sl);
+  sl.Free;
+end;
+
+procedure TPkgManager.LoadStaticBasePackages;
+var
+  i: Integer;
+  BasePackage: TLazPackage;
+  Dependency: TPkgDependency;
+begin
+  // create static base packages
+  PackageGraph.AddStaticBasePackages;
+
+  // add them to auto install list
+  for i:=0 to PackageGraph.LazarusBasePackages.Count-1 do begin
+    BasePackage:=TLazPackage(PackageGraph.LazarusBasePackages[i]);
+    Dependency:=BasePackage.CreateDependencyForThisPkg;
+    PackageGraph.OpenDependency(Dependency);
+    Dependency.AddToList(FirstAutoInstallDependency,pdlRequires);
+  end;
+
+  // register them
+  PackageGraph.RegisterStaticBasePackages;
+end;
+
+procedure TPkgManager.LoadStaticCustomPackages;
+var
+  StaticPackages: TList;
+  StaticPackage: PRegisteredPackage;
+  i: Integer;
+  APackage: TLazPackage;
+begin
+  StaticPackages:=LazarusPackageIntf.RegisteredPackages;
+  if StaticPackages=nil then exit;
+  for i:=0 to StaticPackages.Count-1 do begin
+    StaticPackage:=PRegisteredPackage(StaticPackages[i]);
+    
+    // check package name
+    if (StaticPackage^.Name='') or (not IsValidIdent(StaticPackage^.Name))
+    then begin
+      writeln('TPkgManager.LoadStaticCustomPackages Invalid Package Name: "',
+        BinaryStrToText(StaticPackage^.Name),'"');
+      continue;
+    end;
+    
+    // check register procedure
+    if (StaticPackage^.RegisterProc=nil) then begin
+      writeln('TPkgManager.LoadStaticCustomPackages',
+        ' Package "',StaticPackage^.Name,'" has no register procedure.');
+      continue;
+    end;
+    
+    // load package
+    APackage:=LoadInstalledPackage(StaticPackage^.Name);
+    
+    // register
+    PackageGraph.RegisterStaticPackage(APackage,StaticPackage^.RegisterProc);
+  end;
+  ClearRegisteredPackages;
+end;
+
+function TPkgManager.LoadInstalledPackage(const PackageName: string
+  ): TLazPackage;
+var
+  NewDependency: TPkgDependency;
+begin
+  writeln('TPkgManager.LoadInstalledPackage PackageName="',PackageName,'"');
+  NewDependency:=TPkgDependency.Create;
+  NewDependency.Owner:=Self;
+  NewDependency.PackageName:=PackageName;
+  NewDependency.AddToList(FirstInstalledDependency,pdlRequires);
+  PackageGraph.OpenInstalledDependency(NewDependency,pitStatic);
+  Result:=NewDependency.RequiredPackage;
+end;
+
 constructor TPkgManager.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
@@ -995,6 +1106,7 @@ begin
   PackageEditors.OnFreeEditor:=@OnPackageEditorFreeEditor;
   PackageEditors.OnSavePackage:=@OnPackageEditorSavePackage;
   PackageEditors.OnCompilePackage:=@OnPackageEditorCompilePackage;
+  PackageEditors.OnInstallPackage:=@OnPackageEditorInstallPackage;
   
   CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
     'PKGSRCPATH',nil,@MacroFunctionPkgSrcPath);
@@ -1076,15 +1188,22 @@ end;
 procedure TPkgManager.LoadInstalledPackages;
 begin
   IDEComponentPalette.BeginUpdate(true);
-
-  // static packages
-  PackageGraph.AddStaticBasePackages;
-  PackageGraph.RegisterStaticPackages;
-  
-  // dynamic packages
-  // ToDo
-
+  LoadStaticBasePackages;
+  LoadStaticCustomPackages;
   IDEComponentPalette.EndUpdate;
+end;
+
+procedure TPkgManager.UnloadInstalledPackages;
+var
+  Dependency: TPkgDependency;
+begin
+  // break and free auto installed packages
+  while FirstAutoInstallDependency<>nil do begin
+    Dependency:=FirstAutoInstallDependency;
+    Dependency.RequiredPackage:=nil;
+    Dependency.RemoveFromList(FirstAutoInstallDependency,pdlRequires);
+    Dependency.Free;
+  end;
 end;
 
 procedure TPkgManager.UpdateVisibleComponentPalette;
@@ -1173,7 +1292,6 @@ procedure TPkgManager.AddProjectDependency(AProject: TProject;
   APackage: TLazPackage);
 var
   NewDependency: TPkgDependency;
-  RequiredPackage: TLazPackage;
 begin
   {$IFNDEF EnablePkgs}
   exit;
@@ -1186,7 +1304,7 @@ begin
   // add a dependency for the package to the project
   NewDependency:=APackage.CreateDependencyForThisPkg;
   AProject.AddRequiredDependency(NewDependency);
-  PackageGraph.OpenDependency(NewDependency,RequiredPackage);
+  PackageGraph.OpenDependency(NewDependency);
 end;
 
 procedure TPkgManager.AddProjectRegCompDependency(AProject: TProject;
@@ -1220,8 +1338,8 @@ var
 begin
   // create a new package with standard dependencies
   NewPackage:=PackageGraph.CreateNewPackage('NewPackage');
-  NewPackage.AddRequiredDependency(
-    PackageGraph.FCLPackage.CreateDependencyForThisPkg);
+  PackageGraph.AddDependencyToPackage(NewPackage,
+                            PackageGraph.FCLPackage.CreateDependencyForThisPkg);
   NewPackage.Modified:=false;
 
   // open a package editor
@@ -1470,7 +1588,7 @@ begin
   end;
   
   // save all open files
-  if not (pcfAutomatic in Flags) then begin
+  if not (pcfDoNotSaveEditorFiles in Flags) then begin
     Result:=MainIDE.DoSaveForBuild;
     if Result<>mrOk then exit;
   end;
@@ -1510,7 +1628,7 @@ begin
   end;
   
   // save all open files
-  if not (pcfAutomatic in Flags) then begin
+  if not (pcfDoNotSaveEditorFiles in Flags) then begin
     Result:=MainIDE.DoSaveForBuild;
     if Result<>mrOk then exit;
   end;
@@ -1594,7 +1712,7 @@ begin
       // clean up
       PkgCompileTool.Free;
 
-      if not (pcfAutomatic in Flags) then begin
+      if not (pcfDoNotSaveEditorFiles in Flags) then begin
         // check for changed files on disk
         MainIDE.DoCheckFilesOnDisk;
       end;
@@ -1617,7 +1735,6 @@ var
   CodeBuffer: TCodeBuffer;
   CurUnitName: String;
   RegistrationCode: String;
-  fs: TFileStream;
   HeaderSrc: String;
   OutputDir: String;
 begin
@@ -1697,7 +1814,7 @@ begin
       +RegistrationCode
       +'end;'+e
       +e
-      +'initialization'
+      +'initialization'+e
       +'  RegisterPackage('''+APackage.Name+''',@Register)'
       +e
       +'end.'+e;
@@ -1706,22 +1823,8 @@ begin
   Src:=HeaderSrc+Src;
 
   // save source
-  try
-    fs:=TFileStream.Create(SrcFilename,fmCreate);
-    try
-      fs.Write(Src[1],length(Src));
-    finally
-      fs.Free;
-    end;
-  except
-    on E: Exception do begin
-      Result:=MessageDlg('Error writing file',
-        'Unable to write package main source file'#13
-        +'"'+SrcFilename+'".',
-        mtError,[mbCancel,mbAbort],0);
-      exit;
-    end;
-  end;
+  Result:=MainIDE.DoSaveStringToFile(SrcFilename,Src,'package main source file');
+  if Result<>mrOk then exit;
 
   Result:=mrOk;
 end;
@@ -1812,10 +1915,166 @@ begin
   Result:=ShowAddFileToAPackageDlg(Filename,TheUnitName,HasRegisterProc);
 end;
 
+function TPkgManager.DoInstallPackage(APackage: TLazPackage): TModalResult;
+var
+  Dependency: TPkgDependency;
+begin
+  PackageGraph.BeginUpdate(false);
+  try
+    // save package
+    if APackage.IsVirtual or APackage.Modified then begin
+      Result:=DoSavePackage(APackage,[]);
+      if Result<>mrOk then exit;
+    end;
+
+    // check consistency
+    Result:=CheckPackageGraphForCompilation(APackage,nil);
+    if Result<>mrOk then exit;
+
+    // add package to auto installed packages
+    if APackage.AutoInstall=pitNope then begin
+      APackage.AutoInstall:=pitStatic;
+      Dependency:=APackage.CreateDependencyForThisPkg;
+      Dependency.AddToList(FirstAutoInstallDependency,pdlRequires);
+      PackageGraph.OpenDependency(Dependency);
+      SaveAutoInstallDependencies;
+    end;
+    
+    // ask user to rebuilt Lazarus now
+    Result:=MessageDlg('Rebuild Lazarus?',
+      'The package "'+APackage.IDAsString+'" was marked for installation.'#13
+      +'Currently lazarus only supports static linked packages. The real '
+      +'installation needs rebuilding of lazarus.'#13
+      +'Should lazarus now be rebuilt?',
+      mtConfirmation,[mbYes,mbNo],0);
+    if Result=mrNo then begin
+      Result:=mrOk;
+      exit;
+    end;
+    
+    // rebuild Lazarus
+    Result:=MainIDE.DoBuildLazarus([blfWithStaticPackages]);
+    if Result<>mrOk then exit;
+
+  finally
+    PackageGraph.EndUpdate;
+  end;
+  Result:=mrOk;
+end;
+
+function TPkgManager.DoCompileAutoInstallPackages(
+  Flags: TPkgCompileFlags): TModalResult;
+begin
+  PackageGraph.BeginUpdate(false);
+  try
+    // check consistency
+    Result:=CheckPackageGraphForCompilation(nil,FirstAutoInstallDependency);
+    if Result<>mrOk then exit;
+
+    // save all open files
+    if not (pcfDoNotSaveEditorFiles in Flags) then begin
+      Result:=MainIDE.DoSaveForBuild;
+      if Result<>mrOk then exit;
+    end;
+    
+    // compile all auto install dependencies
+    Result:=CompileRequiredPackages(nil,FirstAutoInstallDependency);
+    if Result<>mrOk then exit;
+    
+  finally
+    PackageGraph.EndUpdate;
+  end;
+  Result:=mrOk;
+end;
+
+function TPkgManager.DoSaveAutoInstallConfig: TModalResult;
+var
+  ConfigDir: String;
+  StaticPackagesInc: String;
+  StaticPckIncludeFile: String;
+  Dependency: TPkgDependency;
+  TargetDir: String;
+begin
+  ConfigDir:=AppendPathDelim(GetPrimaryConfigPath);
+  
+  // create auto install package list for the Lazarus uses section
+  StaticPackagesInc:='';
+  Dependency:=FirstAutoInstallDependency;
+  while Dependency<>nil do begin
+    if not Dependency.RequiredPackage.AutoCreated then
+      StaticPackagesInc:=StaticPackagesInc+Dependency.PackageName+','+EndOfLine;
+    Dependency:=Dependency.NextRequiresDependency;
+  end;
+  StaticPckIncludeFile:=ConfigDir+'staticpackages.inc';
+  Result:=MainIDE.DoSaveStringToFile(StaticPckIncludeFile,StaticPackagesInc,
+                                     'static packages config file');
+  if Result<>mrOk then exit;
+
+  TargetDir:=MiscellaneousOptions.BuildLazOpts.TargetDirectory;
+  MainIDE.MacroList.SubstituteStr(TargetDir);
+  if not ForceDirectory(TargetDir) then begin
+    Result:=MessageDlg('Unable to create directory',
+      'Unable to create target directory for lazarus:'#13
+      +'"'+TargetDir+'".'#13
+      +'This directory is needed for the new changed lazarus IDE '
+      +'with your custom packages.',
+      mtError,[mbCancel,mbAbort],0);
+    exit;
+  end;
+
+  Result:=mrOk;
+end;
+
+function TPkgManager.DoGetIDEInstallPackageOptions: string;
+  
+  procedure AddOption(const s: string);
+  begin
+    if s='' then exit;
+    if Result='' then
+      Result:=s
+    else
+      Result:=Result+' '+s;
+  end;
+  
+var
+  PkgList: TList;
+  AddOptionsList: TList;
+  InheritedOptionStrings: TInheritedCompOptsStrings;
+  ConfigDir: String;
+  TargetDir: String;
+begin
+  Result:='';
+  if not Assigned(OnGetAllRequiredPackages) then exit;
+  
+  // get all required packages
+  OnGetAllRequiredPackages(FirstAutoInstallDependency,PkgList);
+  if PkgList=nil then exit;
+  // get all usage options
+  AddOptionsList:=GetUsageOptionsList(PkgList);
+  PkgList.Free;
+  // combine options of same type
+  GatherInheritedOptions(AddOptionsList,InheritedOptionStrings);
+  // convert options to compiler parameters
+  Result:=InheritedOptionsToCompilerParameters(InheritedOptionStrings,[]);
+  
+  // add activate-static-packages option
+  AddOption('-dAddStaticPkgs');
+  
+  // add include path to config directory
+  ConfigDir:=AppendPathDelim(GetPrimaryConfigPath);
+  AddOption('-Fi'+ConfigDir);
+  
+  // add target option
+  TargetDir:=MiscellaneousOptions.BuildLazOpts.TargetDirectory;
+  MainIDE.MacroList.SubstituteStr(TargetDir);
+  
+  // ToDo write a function in lazconf for this
+  AddOption('-FE'+TargetDir);
+end;
+
 function TPkgManager.OnProjectInspectorOpen(Sender: TObject): boolean;
 var
   Dependency: TPkgDependency;
-  RequiredPackage: TLazPackage;
 begin
   Result:=false;
   if (Sender=nil) or (not (Sender is TProjectInspectorForm)) then exit;
@@ -1823,9 +2082,9 @@ begin
   if Dependency=nil then exit;
   // user has selected a dependency -> open package
   Result:=true;
-  if PackageGraph.OpenDependency(Dependency,RequiredPackage)<>lprSuccess then
+  if PackageGraph.OpenDependency(Dependency)<>lprSuccess then
     exit;
-  DoOpenPackage(RequiredPackage);
+  DoOpenPackage(Dependency.RequiredPackage);
 end;
 
 function TPkgManager.DoClosePackageEditor(APackage: TLazPackage): TModalResult;

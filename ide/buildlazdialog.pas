@@ -36,12 +36,24 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, StdCtrls, ExtCtrls, Buttons, LResources,
   Laz_XMLCfg, LazarusIDEStrConsts, ExtToolDialog, ExtToolEditDlg,
-  TransferMacros, LazConf;
+  TransferMacros, LazConf, FileCtrl, IDEProcs;
 
 type
-  TMakeMode = (mmNone, mmBuild, mmCleanBuild);
-  TLCLPlatform = (lpGtk, lpGtk2, lpGnome, lpWin32);
-
+  TMakeMode = (
+    mmNone,
+    mmBuild,
+    mmCleanBuild
+    );
+  TMakeModes = set of TMakeMode;
+    
+  TLCLPlatform = (
+    lpGtk,
+    lpGtk2,
+    lpGnome,
+    lpWin32
+    );
+  TLCLPlatforms = set of TLCLPlatform;
+  
   TBuildLazarusOptions = class
   private
     fBuildJITForm: TMakeMode;
@@ -54,10 +66,14 @@ type
     fCleanAll: boolean;
     fMakeFilename: string;
     fExtraOptions: string;
+    FTargetDirectory: string;
     fTargetOS: string;
     fLCLPlatform: TLCLPlatform;
+    fAutoInstallPackages: TStringList;
+    procedure SetTargetDirectory(const AValue: string);
   public
     constructor Create;
+    destructor Destroy; override;
     procedure Load(XMLConfig: TXMLConfig; const Path: string);
     procedure Save(XMLConfig: TXMLConfig; const Path: string);
     property BuildLCL: TMakeMode read fBuildLCL write fBuildLCL;
@@ -73,6 +89,8 @@ type
     property ExtraOptions: string read fExtraOptions write fExtraOptions;
     property TargetOS: string read fTargetOS write fTargetOS;
     property LCLPlatform: TLCLPlatform read fLCLPlatform write fLCLPlatform;
+    property AutoInstallPackages: TStringList read fAutoInstallPackages;
+    property TargetDirectory: string read FTargetDirectory write SetTargetDirectory;
   end;
 
   TConfigureBuildLazarusDlg = class(TForm)
@@ -111,7 +129,8 @@ function ShowConfigureBuildLazarusDlg(
   Options: TBuildLazarusOptions): TModalResult;
 
 function BuildLazarus(Options: TBuildLazarusOptions;
-  ExternalTools: TExternalToolList; Macros: TTransferMacroList): TModalResult;
+  ExternalTools: TExternalToolList; Macros: TTransferMacroList;
+  const PackageOptions: string): TModalResult;
 
 implementation
 
@@ -126,6 +145,8 @@ const
   LCLPlatformNames: array[TLCLPlatform] of string = (
       'gtk', 'gtk2', 'gnome', 'win32'
     );
+    
+  DefaultTargetDirectory = '$(ConfDir)/bin';
 
 function GetTranslatedMakeModes(MakeMode: TMakeMode): string;
 begin
@@ -170,9 +191,11 @@ begin
 end;
 
 function BuildLazarus(Options: TBuildLazarusOptions;
-  ExternalTools: TExternalToolList; Macros: TTransferMacroList): TModalResult;
+  ExternalTools: TExternalToolList; Macros: TTransferMacroList;
+  const PackageOptions: string): TModalResult;
 var
   Tool: TExternalToolOptions;
+  IDEOptions: String;
   
   procedure SetMakeParams(MakeMode: TMakeMode;
     const ExtraOpts, TargetOS: string);
@@ -294,8 +317,13 @@ begin
       // build IDE
       Tool.Title:=lisBuildIDE;
       Tool.WorkingDirectory:='$(LazarusDir)';
+      IDEOptions:=Options.ExtraOptions;
+      if PackageOptions<>'' then begin
+        if IDEOptions<>'' then IDEOptions:=IDEOptions+' ';
+        IDEOptions:=IDEOptions+PackageOptions;
+      end;
       if Options.ExtraOptions<>'' then
-        Tool.CmdLineParams:='OPT='''+Options.ExtraOptions+''' '
+        Tool.CmdLineParams:='OPT='''+IDEOptions+''' '
       else
         Tool.CmdLineParams:='';
       if Options.TargetOS<>'' then
@@ -673,49 +701,101 @@ end;
 
 procedure TBuildLazarusOptions.Save(XMLConfig: TXMLConfig; const Path: string);
 begin
-  XMLConfig.SetValue(Path+'BuildLCL/Value',MakeModeNames[fBuildLCL]);
-  XMLConfig.SetValue(Path+'BuildComponents/Value',MakeModeNames[fBuildComponents]);
-  XMLConfig.SetValue(Path+'BuildSynEdit/Value',MakeModeNames[fBuildSynEdit]);
-  XMLConfig.SetValue(Path+'BuildCodeTools/Value',MakeModeNames[fBuildCodeTools]);
-  XMLConfig.SetValue(Path+'BuildJITForm/Value',MakeModeNames[fBuildJITForm]);
-  XMLConfig.SetValue(Path+'BuildIDE/Value',MakeModeNames[fBuildIDE]);
-  XMLConfig.SetValue(Path+'BuildExamples/Value',MakeModeNames[fBuildExamples]);
-  XMLConfig.SetValue(Path+'CleanAll/Value',fCleanAll);
-  XMLConfig.SetValue(Path+'ExtraOptions/Value',fExtraOptions);
-  XMLConfig.SetValue(Path+'TargetOS/Value',fTargetOS);
-  XMLConfig.SetValue(Path+'MakeFilename/Value',fMakeFilename);
-  XMLConfig.SetValue(Path+'LCLPlatform/Value',LCLPlatformNames[fLCLPlatform]);
+  XMLConfig.SetDeleteValue(Path+'BuildLCL/Value',
+                           MakeModeNames[fBuildLCL],
+                           MakeModeNames[mmNone]);
+  XMLConfig.SetDeleteValue(Path+'BuildComponents/Value',
+                           MakeModeNames[fBuildComponents],
+                           MakeModeNames[mmBuild]);
+  XMLConfig.SetDeleteValue(Path+'BuildSynEdit/Value',
+                           MakeModeNames[fBuildSynEdit],
+                           MakeModeNames[mmNone]);
+  XMLConfig.SetDeleteValue(Path+'BuildCodeTools/Value',
+                           MakeModeNames[fBuildCodeTools],
+                           MakeModeNames[mmNone]);
+  XMLConfig.SetDeleteValue(Path+'BuildJITForm/Value',
+                           MakeModeNames[fBuildJITForm],
+                           MakeModeNames[mmBuild]);
+  XMLConfig.SetDeleteValue(Path+'BuildIDE/Value',
+                           MakeModeNames[fBuildIDE],
+                           MakeModeNames[mmBuild]);
+  XMLConfig.SetDeleteValue(Path+'BuildExamples/Value',
+                           MakeModeNames[fBuildExamples],
+                           MakeModeNames[mmBuild]);
+  XMLConfig.SetDeleteValue(Path+'CleanAll/Value',fCleanAll,true);
+  XMLConfig.SetDeleteValue(Path+'ExtraOptions/Value',fExtraOptions,'');
+  XMLConfig.SetDeleteValue(Path+'TargetOS/Value',fTargetOS,'');
+  XMLConfig.SetDeleteValue(Path+'MakeFilename/Value',fMakeFilename,'');
+  XMLConfig.SetDeleteValue(Path+'LCLPlatform/Value',
+                           LCLPlatformNames[fLCLPlatform],
+                           LCLPlatformNames[lpGtk]);
+  XMLConfig.SetDeleteValue(Path+'TargetDirectory/Value',
+                           FTargetDirectory,DefaultTargetDirectory);
+  // auto install packages
+  SaveStringList(XMLConfig,fAutoInstallPackages,Path+'AutoInstallPackages/');
 end;
 
 procedure TBuildLazarusOptions.Load(XMLConfig: TXMLConfig; const Path: string);
 begin
   fBuildLCL:=StrToMakeMode(XMLConfig.GetValue(Path+'BuildLCL/Value',
-                                              MakeModeNames[fBuildLCL]));
+                                              MakeModeNames[mmBuild]));
   fBuildComponents:=StrToMakeMode(XMLConfig.GetValue(Path+'BuildComponents/Value',
-                                              MakeModeNames[fBuildComponents]));
+                                              MakeModeNames[mmBuild]));
   fBuildSynEdit:=StrToMakeMode(XMLConfig.GetValue(Path+'BuildSynEdit/Value',
-                                    MakeModeNames[fBuildSynEdit]));
+                                    MakeModeNames[mmNone]));
   fBuildCodeTools:=StrToMakeMode(XMLConfig.GetValue(Path+'BuildCodeTools/Value',
-                                      MakeModeNames[fBuildCodeTools]));
+                                      MakeModeNames[mmNone]));
   fBuildJITForm:=StrToMakeMode(XMLConfig.GetValue(Path+'BuildJITForm/Value',
-                                              MakeModeNames[fBuildJITForm]));
+                                              MakeModeNames[mmBuild]));
   fBuildIDE:=StrToMakeMode(XMLConfig.GetValue(Path+'BuildIDE/Value',
-                                              MakeModeNames[fBuildIDE]));
+                                              MakeModeNames[mmBuild]));
   fBuildExamples:=StrToMakeMode(XMLConfig.GetValue(Path+'BuildExamples/Value',
-                                                MakeModeNames[fBuildExamples]));
-  fCleanAll:=XMLConfig.GetValue(Path+'CleanAll/Value',fCleanAll);
-  fExtraOptions:=XMLConfig.GetValue(Path+'ExtraOptions/Value',fExtraOptions);
+                                                MakeModeNames[mmBuild]));
+  fCleanAll:=XMLConfig.GetValue(Path+'CleanAll/Value',true);
+  fExtraOptions:=XMLConfig.GetValue(Path+'ExtraOptions/Value','');
   fTargetOS:=XMLConfig.GetValue(Path+'TargetOS/Value','');
-  fMakeFilename:=XMLConfig.GetValue(Path+'MakeFilename/Value',fMakeFilename);
+  fMakeFilename:=XMLConfig.GetValue(Path+'MakeFilename/Value','');
   fLCLPlatform:=StrToLCLPlatform(XMLConfig.GetValue(Path+'LCLPlatform/Value',
-                                 LCLPlatformNames[fLCLPlatform]));
+                                 LCLPlatformNames[lpGtk]));
+  FTargetDirectory:=AppendPathDelim(SetDirSeparators(
+                  XMLConfig.GetValue(Path+'TargetDirectory/Value',
+                                     DefaultTargetDirectory)));
+
+  // auto install packages
+  LoadStringList(XMLConfig,fAutoInstallPackages,Path+'AutoInstallPackages/');
+end;
+
+procedure TBuildLazarusOptions.SetTargetDirectory(const AValue: string);
+begin
+  if FTargetDirectory=AValue then exit;
+  FTargetDirectory:=AValue;
 end;
 
 constructor TBuildLazarusOptions.Create;
 begin
   inherited Create;
+  fBuildJITForm:=mmBuild;
+  fBuildLCL:=mmNone;
+  fBuildComponents:=mmBuild;
+  fBuildSynEdit:=mmNone;
+  fBuildCodeTools:=mmNone;
+  fBuildIDE:=mmBuild;
+  fBuildExamples:=mmBuild;
+  fCleanAll:=true;
   fMakeFilename:='';
+  fExtraOptions:='';
+  FTargetDirectory:=DefaultTargetDirectory;
+  fTargetOS:='';
   fLCLPlatform:=lpGtk;
+
+  // auto install packages
+  fAutoInstallPackages:=TStringList.Create;
+end;
+
+destructor TBuildLazarusOptions.Destroy;
+begin
+  fAutoInstallPackages.Free;
+  inherited Destroy;
 end;
 
 

@@ -122,7 +122,8 @@ type
   TPkgFileTypes = set of TPkgFileType;
 
   TPkgFileFlag = (
-    pffHasRegisterProc // file is unit and has a 'register' procedure
+    pffHasRegisterProc,  // file is unit and has a 'register' procedure
+    pffReportedAsRemoved // file has been reported as removed
     );
   TPkgFileFlags = set of TPkgFileFlag;
   
@@ -419,6 +420,7 @@ type
     FAuthor: string;
     FAutoCreated: boolean;
     FAutoInstall: TPackageInstallType;
+    FBroken: boolean;
     FCompilerOptions: TPkgCompilerOptions;
     FComponents: TList; // TList of TPkgComponent
     FDefineTemplates: TLazPackageDefineTemplates;
@@ -554,6 +556,7 @@ type
     property AutoInstall: TPackageInstallType read FAutoInstall
                                               write SetAutoInstall;
     property AutoUpdate: boolean read GetAutoUpdate write SetAutoUpdate;
+    property Broken: boolean read FBroken write FBroken;
     property CompilerOptions: TPkgCompilerOptions read FCompilerOptions;
     property ComponentCount: integer read GetComponentCount;
     property Components[Index: integer]: TPkgComponent read GetComponents;
@@ -615,7 +618,7 @@ const
   PkgFileTypeIdents: array[TPkgFileType] of string = (
     'Unit', 'LFM', 'LRS', 'Include', 'Text', 'Binary');
   PkgFileFlag: array[TPkgFileFlag] of string = (
-    'pffHasRegisterProc');
+    'pffHasRegisterProc', 'pffReportedAsRemoved');
   PkgDependencyFlagNames: array[TPkgDependencyFlag] of string = (
     'pdfMinVersion', 'pdfMaxVersion');
   LazPackageTypeNames: array[TLazPackageType] of string = (

@@ -95,6 +95,7 @@ resourcestring
   lisProjectUnitPath = 'Project Unit Path';
   lisProjectIncPath = 'Project Include Path';
   lisProjectSrcPath = 'Project Src Path';
+  lisConfigDirectory = 'Lazarus config directory';
 
   // main bar menu
   lisMenuFile = '&File';

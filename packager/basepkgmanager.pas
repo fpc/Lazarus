@@ -62,7 +62,7 @@ type
     pcfCleanCompile,  // append -B to the compiler options
     pcfDoNotCompileDependencies,
     pcfOnlyIfNeeded,
-    pcfAutomatic
+    pcfDoNotSaveEditorFiles
     );
   TPkgCompileFlags = set of TPkgCompileFlag;
 
@@ -108,6 +108,10 @@ type
                           NewFilename: string): TModalResult; virtual; abstract;
 
     function OnProjectInspectorOpen(Sender: TObject): boolean; virtual; abstract;
+    function DoCompileAutoInstallPackages(Flags: TPkgCompileFlags
+                                          ): TModalResult; virtual; abstract;
+    function DoSaveAutoInstallConfig: TModalResult; virtual; abstract;
+    function DoGetIDEInstallPackageOptions: string; virtual; abstract;
   end;
 
 var

@@ -115,16 +115,24 @@ type
   TOpenFlags = set of TOpenFlag;
   
   // revert file flags
-  TRevertFlag = (rfQuiet);
+  TRevertFlag = (
+    rfQuiet
+    );
   TRevertFlags = set of TRevertFlag;
   
   // close file flags
-  TCloseFlag = (cfSaveFirst, // check if modified and save
-                cfProjectClosing);
+  TCloseFlag = (
+    cfSaveFirst, // check if modified and save
+    cfProjectClosing
+    );
   TCloseFlags = set of TCloseFlag;
   
   // load buffer flags
-  TLoadBufferFlag = (lbfUpdateFromDisk, lbfRevert, lbfCheckIfText);
+  TLoadBufferFlag = (
+    lbfUpdateFromDisk,
+    lbfRevert,
+    lbfCheckIfText
+    );
   TLoadBufferFlags = set of TLoadBufferFlag;
 
   // codetools flags
@@ -134,6 +142,12 @@ type
     ctfActivateAbortMode   // activate the CodeToolBoss.Abortable mode
     );
   TCodeToolsFlags = set of TCodeToolsFlag;
+  
+  // build lazarus flags
+  TBuildLazarusFlag = (
+    blfWithStaticPackages
+    );
+  TBuildLazarusFlags = set of TBuildLazarusFlag;
 
 
   { TMainIDEBar }
@@ -359,7 +373,8 @@ type
     function IsTestUnitFilename(const AFilename: string): boolean; virtual; abstract;
     function GetRunCommandLine: string; virtual; abstract;
     procedure GetIDEFileState(Sender: TObject; const AFilename: string;
-      NeededFlags: TIDEFileStateFlags; var ResultFlags: TIDEFileStateFlags); virtual; abstract;
+                        NeededFlags: TIDEFileStateFlags;
+                        var ResultFlags: TIDEFileStateFlags); virtual; abstract;
 
     function DoNewEditorFile(NewUnitType: TNewUnitType;
         NewFilename: string; const NewSource: string;
@@ -371,15 +386,18 @@ type
         const AFilename: string): TModalResult; virtual;
     function DoCheckCreatingFile(const AFilename: string;
         CheckReadable: boolean): TModalResult; virtual;
-    
+    function DoSaveStringToFile(const Filename, Src,
+                      FileDescription: string): TModalResult; virtual; abstract;
+
+    function DoBuildLazarus(Flags: TBuildLazarusFlags): TModalResult; virtual; abstract;
     function DoSaveForBuild: TModalResult; virtual; abstract;
-    
     function DoCheckFilesOnDisk: TModalResult; virtual; abstract;
     function DoCheckAmbigiousSources(const AFilename: string;
       Compiling: boolean): TModalResult;
     function DoBackupFile(const Filename:string;
       IsPartOfProject:boolean): TModalResult; virtual; abstract;
-    function DoDeleteAmbigiousFiles(const Filename:string): TModalResult; virtual; abstract;
+    function DoDeleteAmbigiousFiles(const Filename:string
+                                    ): TModalResult; virtual; abstract;
 
     procedure UpdateWindowsMenu; virtual;
     procedure SaveEnvironment; virtual; abstract;

@@ -280,8 +280,9 @@ begin
     Dependency:=Pkg.FirstRequiredDependency;
     while Dependency<>nil do begin
       // find required package
-      if PackageGraph.OpenDependency(Dependency,ChildPackage)=lprSuccess then
+      if PackageGraph.OpenDependency(Dependency)=lprSuccess then
       begin
+        ChildPackage:=Dependency.RequiredPackage;
         // package found
         NodeText:=ChildPackage.IDAsString;
         if SearchParentNodeWithText(Node,NodeText)<>nil then
