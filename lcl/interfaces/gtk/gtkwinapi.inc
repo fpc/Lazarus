@@ -3126,71 +3126,19 @@ end;
   Params:  none
   Returns: Nothing
 
-
+  hWnd is any widget.
+  The DC will be created for the client area.
  ------------------------------------------------------------------------------}
 function TgtkObject.GetDC(hWnd: HWND): HDC;
-var
-  aDC: TDeviceContext;
-  ClientWidget: PGtkWidget;
-  GdiObject: PGdiObject;
-  Values: TGdkGCValues;
-  X,Y : Longint;
 begin
-  Assert(False, Format('trace:> [TgtkObject.GetDC] hWND: 0x%x', [hWnd]));
-  aDC := nil;
-
-  aDC := NewDC;
-  aDC.hWnd := hWnd;
-
-  if hWnd = 0
-  then begin
-    FillChar(Values, SizeOf(Values), #0);
-  end
-  else begin
-    // create a new devicecontext for this window
-    ClientWidget := GetFixedWidget(Pointer(hWnd));
-    if ClientWidget = nil
-    then begin
-      Assert(False, 'trace:WARNING: [TgtkObject.GetDC] Widget has no fixed, using widget itself');
-      ClientWidget := Pointer(hWnd);
-    end;
-
-    aDC.SpecialOrigin:=GtkWidgetIsA(ClientWidget,GTK_LAYOUT_GET_TYPE);
-    aDC.Drawable := GetControlWindow(ClientWidget);
-    if aDC.Drawable = nil
-    then begin
-      Assert(False, 'Trace:[TgtkObject.GetDC] Force widget creation');
-      //force creation
-      gtk_widget_realize(ClientWidget);
-      aDC.Drawable := GetControlWindow(ClientWidget);
-    end;
-    aDC.GC := gdk_gc_new(aDC.Drawable);
-    gdk_window_get_size(aDC.Drawable, @X, @Y);
-    gdk_gc_set_function(aDC.GC, GDK_COPY);
-
-    gdk_gc_get_values(aDC.GC, @Values);
-  end;
-
-  if aDC <> nil
-  then begin
-    if Values.Font <> nil
-    then begin
-      GdiObject:=NewGDIObject(gdiFont);
-      GdiObject^.GDIFontObject := Values.Font;
-      gdk_font_ref(Values.Font);
-    end
-    else GdiObject := CreateDefaultFont;
-
-    aDC.CurrentFont := GdiObject;
-    aDC.CurrentBrush := CreateDefaultBrush;
-    aDC.CurrentPen := CreateDefaultPen;
-  end;
-  
-
-  Result := HDC(aDC);
-  Assert(False, Format('trace:< [TgtkObject.GetDC] Got 0x%x', [Result]));
+  Result:=CreateDCForWidget(PGtkWidget(hWnd),nil);
 end;
 
+{------------------------------------------------------------------------------
+  function TgtkObject.GetDeviceCaps(DC: HDC; Index: Integer): Integer;
+
+
+ ------------------------------------------------------------------------------}
 function TgtkObject.GetDeviceCaps(DC: HDC; Index: Integer): Integer;
 begin
   Result := -1;
@@ -5759,11 +5707,14 @@ begin
 
   if Target<>nil then begin
     if (Msg=LM_PAINT) or (Msg=LM_GtkPaint) then begin
-      // The LCL repaints controls in a top-down hierachy. But the gtk sends
-      // gtkdraw events bottom-up. So, controls at the bottom are repainted
-      // many times. To avoid this the queue is checked for LM_PAINT messages
-      // for the parent control. If there is a parent LM_PAINT, this message
-      // is ignored.
+      (* MG: old trick. Not used anymore, but it might be, that someday there
+             will be component, that works better with this, so it is kept.
+      
+        The LCL repaints controls in a top-down hierachy. But the gtk sends
+        gtkdraw events bottom-up. So, controls at the bottom are repainted
+        many times. To avoid this the queue is checked for LM_PAINT messages
+        for the parent control. If there is a parent LM_PAINT, this message
+        is ignored.
       {if (Target is TControl) then begin
         ParentControl:=TControl(Target).Parent;
         while ParentControl<>nil do begin
@@ -5775,7 +5726,7 @@ begin
           end;
           ParentControl:=ParentControl.Parent;
         end;
-      end;}
+      end;} *)
       if Msg=LM_GtkPAINT then begin
         // convert LM_GtkPAINT to LM_PAINT
         AMessage.Msg := LM_PAINT;
@@ -5786,9 +5737,14 @@ begin
     // deliver it
     Result := DeliverMessage(Target, AMessage);
     
-    // free DC
-    if AMessage.Msg=LM_PAINT then
+    if (AMessage.Msg=LM_PAINT) and (AMessage.WParam<>0) then begin
+      // free DC
       ReleaseDC(0,AMessage.WParam);
+      
+      if (csDesigning in TComponent(Target).ComponentState)
+      and (TObject(Target) is TWinControl) then
+        SendPaintMessagesForInternalWidgets(TWinControl(Target));
+    end;
   end;
 end;
 
@@ -7243,6 +7199,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.153  2002/10/10 08:51:15  lazarus
+  MG: added paint messages for some gtk internal widgets
+
   Revision 1.152  2002/10/09 20:08:41  lazarus
   Cleanups
 
