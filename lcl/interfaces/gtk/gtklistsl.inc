@@ -46,13 +46,23 @@ end;
 ------------------------------------------------------------------------------}
 function gtkListItemDrawAfterCB(Widget: PGtkWidget; area: PGDKRectangle;
   data: gPointer) : GBoolean; cdecl;
-//var
-  //Msg: TLM_;
+var
+  Msg: TLMDrawItems;
 begin
   Result:=true;
-  //writeln('gtkListItemDrawCB ');
   
-  //Result := DeliverMessage(Data, Msg);
+  exit;
+  
+  writeln('gtkListItemDrawCB ');
+  FillChar(Msg,SizeOf(Msg),0);
+  Msg.Msg:=CN_DrawItem;
+  New(Msg.DrawItemStruct);
+  try
+  
+    Result := DeliverMessage(Data, Msg)=0;
+  finally
+    Dispose(Msg.DrawItemStruct);
+  end;
 end;
 
 
@@ -126,7 +136,7 @@ begin
   if Source is TStrings then begin
     Clear;
     for Counter:= TStrings(Source).Count - 1 downto 0 do begin
-      Insert(0, TStrings(Source)[Counter]);
+      InsertObject(0, TStrings(Source)[Counter],TStrings(Source).Objects[Counter]);
     end;
   end else inherited Assign(Source);
 //writeln('[TGtkListStringList.Assign] END ',Source.Classname);
@@ -426,6 +436,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.9  2002/10/03 18:04:46  lazarus
+  MG: started customdrawitem
+
   Revision 1.8  2002/10/03 14:47:31  lazarus
   MG: added TComboBox.OnPopup+OnCloseUp+ItemWidth
 
