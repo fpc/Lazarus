@@ -4198,31 +4198,33 @@ begin
   Include(Params.Flags,fdfExceptionOnNotFound);
   TargetContext:=FindBaseTypeOfNode(Params,TargetNode);
   Params.Flags:=OldInput.Flags;
-  if (TargetContext.Node.Desc=ctnSetType) then begin
-    {$IFDEF ShowExprEval}
-    writeln('[TFindDeclarationTool.IsCompatible] TargetContext.Node.Desc=ctnSetType',
-    ' "',copy(TargetContext.Tool.Src,TargetContext.Node.Parent.StartPos,20),'"');
-    {$ENDIF}
-    if (ExpressionType.Desc<>xtConstSet) then
-      exit;
-    // both are sets, compare type of sets
-    if (ExpressionType.SubDesc<>xtNone) then begin
-    
-      // ToDo: check if enums of expression fits into enums of target
-      
-      // ToDo: ppu, ppw, dcu
-
-      Result:=tcCompatible;
-    end else
-      // the empty set is compatible to all kinds of sets
-      Result:=tcExact;
-    exit;
-  end;
+  
   // compare node base type and ExpressionType
   if (ExpressionType.Context.Node<>nil)
   and (ExpressionType.Context.Node=TargetContext.Node) then begin
     // same base type
     Result:=tcExact;
+  end
+  else if (TargetContext.Node.Desc=ctnSetType) then begin
+    {$IFDEF ShowExprEval}
+    writeln('[TFindDeclarationTool.IsCompatible] TargetContext.Node.Desc=ctnSetType',
+    ' "',copy(TargetContext.Tool.Src,TargetContext.Node.Parent.StartPos,20),'"');
+    {$ENDIF}
+    if (ExpressionType.Desc=xtConstSet) then begin
+      // both are sets, compare type of sets
+      if (ExpressionType.SubDesc<>xtNone) then begin
+
+        // ToDo: check if enums of expression fits into enums of target
+
+        // ToDo: ppu, ppw, dcu
+
+        Result:=tcCompatible;
+      end else
+        // the empty set is compatible to all kinds of sets
+        Result:=tcExact;
+    end else begin
+    
+    end;
   end else begin
     NodeExprType:=CleanExpressionType;
     NodeExprType.Desc:=xtContext;

@@ -35,6 +35,7 @@ interface
 {$I codetools.inc}
 
 {$DEFINE CTDEBUG}
+{ $DEFINE ShowAllProcs}
 
 uses
   {$IFDEF MEM_CHECK}
@@ -678,15 +679,10 @@ var
   ParamCompatibility: TTypeCompatibility;
   FirstParameterNode: TCodeTreeNode;
 begin
-  {$IFDEF CTDEBUG}
-  writeln('[TEventsCodeTool.CollectPublishedMethods] A ',
-  ' Node=',FoundContext.Node.DescAsString,
-  ' "',copy(FoundContext.Tool.Src,FoundContext.Node.StartPos,50),'"',
-  ' Tool=',FoundContext.Tool.MainFilename);
-  {$ENDIF}
   if (FoundContext.Node.Desc=ctnProcedure) then begin
-    {$IFDEF CTDEBUG}
-    writeln('[TEventsCodeTool.CollectPublishedMethods] B ',
+    {$IFDEF ShowAllProcs}
+    writeln('');
+    writeln('[TEventsCodeTool.CollectPublishedMethods] A ',
     ' Node=',FoundContext.Node.DescAsString,
     ' "',copy(FoundContext.Tool.Src,FoundContext.Node.StartPos,50),'"',
     ' Tool=',FoundContext.Tool.MainFilename);
@@ -697,10 +693,11 @@ begin
       FirstParameterNode,
       SearchedExprList,false,
       Params,SearchedCompatibilityList);
-    if ParamCompatibility=tcExact then begin
-    {$IFDEF CTDEBUG}
-    writeln('ParamCompatibility=',TypeCompatibilityNames[ParamCompatibility]);
+    {$IFDEF ShowAllProcs}
+    writeln('[TEventsCodeTool.CollectPublishedMethods] A',
+      ' ParamCompatibility=',TypeCompatibilityNames[ParamCompatibility]);
     {$ENDIF}
+    if ParamCompatibility=tcExact then begin
 
       // ToDo: ppu, ppw, dcu
 
