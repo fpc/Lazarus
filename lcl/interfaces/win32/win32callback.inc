@@ -214,6 +214,14 @@ Begin
         ScrollBar := LParam;
       End;
     End;
+    WM_ERASEBKGND:
+    Begin
+      LMessage.Msg := LM_ERASEBKGND;
+      LMessage.WParam := WParam;
+      LMessage.LParam := LParam;
+      Result := 1;
+      WinProcess := false;
+    End;
     WM_KEYDOWN:
     Begin
       With TLMKey(LMessage) Do
@@ -547,6 +555,9 @@ end;
 
 {
   $Log$
+  Revision 1.33  2003/07/02 20:18:28  mattias
+  more cleanups from Micha
+
   Revision 1.32  2003/07/01 22:02:55  mattias
   fixed formstyle and redrawing from Micha
 

@@ -65,21 +65,41 @@ Begin
     end;
   end;
   Assert(False,'Trace:FTimerWindow: ' +  IntToStr(FTimerWindow));
+
   if FTimerWindow<>0 then
   begin
     DestroyWindow(FTimerWindow);
     FTimerWindow := 0;
   end;
+
+  if FToolTipWindow <> 0 then
+  begin
+    DestroyWindow(FToolTipWindow);
+    FToolTipWindow := 0;
+  end;
+
+  if FStockNullBrush <> 0 then
+  begin
+    DeleteObject(FStockNullBrush);
+    DeleteObject(FStockBlackBrush);
+    DeleteObject(FStockLtGrayBrush);
+    DeleteObject(FStockGrayBrush);
+    DeleteObject(FStockDkGrayBrush);
+    DeleteObject(FStockWhiteBrush);
+  end;
+
   FMessageQueue.Free;
   FDeviceContexts.Free;
   FGDIObjects.Free;
   FKeyStateList.Free;
   FTimerData.Free;
 
+  if FAccelGroup <> 0 then
+    DestroyAcceleratorTable(FAccelGroup);
+
   Windows.UnregisterClass(@ClsName, System.HInstance);
   Windows.UnregisterClass(@TimerClsName, System.HInstance);
   Windows.UnregisterClass(@ToolBtnClsName, System.HInstance);
-  DestroyAcceleratorTable(FAccelGroup);
 
   Inherited Destroy;
 End;
@@ -1178,7 +1198,7 @@ Begin
     HInstance := System.HInstance;
     HIcon := LoadIcon(0, IDI_Application);
     HCursor := LoadCursor(0, IDC_Arrow);
-    HBrBackground := GetSysColorBrush(Color_BtnFace);
+    HBrBackground := 0; {GetSysColorBrush(Color_BtnFace);}
     LPSzMenuName := Nil;
     LPSzClassName := @ClsName;
   End;
@@ -1656,7 +1676,7 @@ Begin
 
   Assert(False, 'Trace:CreateComponent - 1');
 
-  Flags := WS_Child Or WS_Visible;
+  Flags := WS_Child Or WS_Visible or WS_CLIPSIBLINGS or WS_CLIPCHILDREN;
   Assert(False, 'Trace:Setting flags');
   Window := HWND(Nil);
   Assert(False, 'Trace:Setting window');
@@ -2697,6 +2717,9 @@ End;
 
 {
   $Log$
+  Revision 1.68  2003/07/02 20:18:28  mattias
+  more cleanups from Micha
+
   Revision 1.67  2003/07/02 19:35:26  mattias
   fixed AV on start from Vincent
 
