@@ -911,6 +911,7 @@ function TPascalParserTool.KeyWordFuncClassMethod: boolean;
    destructor Destroy;  override;
    class function X: integer;
    static function X: integer;
+   function Intf.Method = ImplementingMethodName;
 
  proc specifiers without parameters:
    stdcall, virtual, abstract, dynamic, overload, override, cdecl, inline
@@ -942,20 +943,30 @@ begin
   CurNode.Desc:=ctnProcedureHead;
   CurNode.SubDesc:=ctnsNeedJITParsing;
   ReadNextAtom;
-  if (CurPos.Flag=cafPoint) then begin
-    // first identifier was interface name
+  if (CurPos.Flag<>cafPoint) then begin
+    // read rest
+    ParseAttr:=[pphIsMethod];
+    if IsFunction then Include(ParseAttr,pphIsFunction);
+    ReadTilProcedureHeadEnd(ParseAttr,HasForwardModifier);
+  end else begin
+    // Method resolution clause (e.g. function Intf.Method = MethodName)
+    CurNode.Parent.Desc:=ctnMethodMap;
+    // read Method name of interface
+    ReadNextAtom;
+    AtomIsIdentifier(true);
+    // read '='
+    ReadNextAtomIsChar('=');
+    // read implementing method name
     ReadNextAtom;
     AtomIsIdentifier(true);
     ReadNextAtom;
+    if CurPos.Flag<>cafSemicolon then
+      UndoReadNextAtom;
   end;
-  // read rest
-  ParseAttr:=[pphIsMethod];
-  if IsFunction then Include(ParseAttr,pphIsFunction);
-  ReadTilProcedureHeadEnd(ParseAttr,HasForwardModifier);
   // close procedure header
   CurNode.EndPos:=CurPos.EndPos;
   EndChildNode;
-  // close procedure
+  // close procedure / method map
   CurNode.EndPos:=CurPos.EndPos;
   EndChildNode;
   Result:=true;
@@ -1189,6 +1200,7 @@ function TPascalParserTool.ReadTilProcedureHeadEnd(
    destructor Destroy;  override;
    class function X: integer;
    function QWidget_mouseGrabber(): QWidgetH; cdecl;
+   procedure Intf.Method = ImplementingMethodName;
 
  proc specifiers without parameters:
    stdcall, virtual, abstract, dynamic, overload, override, cdecl, inline

@@ -81,6 +81,7 @@ const
   ctnClassGUID       = 35;
 
   ctnProperty        = 40;
+  ctnMethodMap       = 41;
   
   ctnProcedure       = 50;
   ctnProcedureHead   = 51;
@@ -300,6 +301,7 @@ begin
   ctnConstDefinition: Result:='Const';
 
   ctnProperty: Result:='Property';
+  ctnMethodMap: Result:='Method Map';
 
   ctnIdentifier: Result:='Identifier';
   ctnArrayType: Result:='Array Type';

@@ -134,14 +134,7 @@ type
     Action: TDefineAction;
     Flags: TDefineTemplateFlags;
     function  Level: integer;
-    property ChildCount: integer read FChildCount;
-    property Parent: TDefineTemplate read FParent;
-    property Next: TDefineTemplate read FNext;
-    property Prior: TDefineTemplate read FPrior;
-    property FirstChild: TDefineTemplate read FFirstChild;
-    property LastChild: TDefineTemplate read FLastChild;
-    property Marked: boolean read FMarked write FMarked;
-    
+    function GetFirstSibling: TDefineTemplate;
     procedure AddChild(ADefineTemplate: TDefineTemplate);
     procedure InsertBehind(APrior: TDefineTemplate);
     procedure InsertInFront(ANext: TDefineTemplate);
@@ -179,6 +172,14 @@ type
     destructor Destroy; override;
     function  ConsistencyCheck: integer; // 0 = ok
     procedure WriteDebugReport;
+  public
+    property ChildCount: integer read FChildCount;
+    property Parent: TDefineTemplate read FParent;
+    property Next: TDefineTemplate read FNext;
+    property Prior: TDefineTemplate read FPrior;
+    property FirstChild: TDefineTemplate read FFirstChild;
+    property LastChild: TDefineTemplate read FLastChild;
+    property Marked: boolean read FMarked write FMarked;
   end;
 
   //---------------------------------------------------------------------------
@@ -253,6 +254,9 @@ type
     procedure RemoveNonAutoCreated;
     function GetIncludePathForDirectory(const Directory: string): string;
     function GetSrcPathForDirectory(const Directory: string): string;
+    function GetPPUSrcPathForDirectory(const Directory: string): string;
+    function GetPPWSrcPathForDirectory(const Directory: string): string;
+    function GetDCUSrcPathForDirectory(const Directory: string): string;
     constructor Create;
     destructor Destroy; override;
     function  ConsistencyCheck: integer; // 0 = ok
@@ -275,7 +279,7 @@ type
     procedure Move(SrcIndex, DestIndex: integer);
     property EnglishErrorMsgFilename: string
         read FEnglishErrorMsgFilename write SetEnglishErrorMsgFilename;
-    function CreateFPCTemplate(const PPC386Path: string;
+    function CreateFPCTemplate(const PPC386Path, TestPascalFile: string;
         var UnitSearchPath: string): TDefineTemplate;
     function CreateFPCSrcTemplate(const FPCSrcDir,
         UnitSearchPath: string;
@@ -1035,6 +1039,12 @@ begin
   end;
 end;
 
+function TDefineTemplate.GetFirstSibling: TDefineTemplate;
+begin
+  Result:=Self;
+  while Result.Prior<>nil do Result:=Result.Prior;
+end;
+
 function TDefineTemplate.SelfOrParentContainsFlag(
   AFlag: TDefineTemplateFlag): boolean;
 var Node: TDefineTemplate;
@@ -1243,6 +1253,42 @@ begin
   ExprEval:=GetDefinesForDirectory(Directory);
   if ExprEval<>nil then begin
     Result:=ExprEval.Variables[ExternalMacroStart+'SrcPath'];
+  end else begin
+    Result:='';
+  end;
+end;
+
+function TDefineTree.GetPPUSrcPathForDirectory(const Directory: string
+  ): string;
+var ExprEval: TExpressionEvaluator;
+begin
+  ExprEval:=GetDefinesForDirectory(Directory);
+  if ExprEval<>nil then begin
+    Result:=ExprEval.Variables[ExternalMacroStart+'PPUSrcPath'];
+  end else begin
+    Result:='';
+  end;
+end;
+
+function TDefineTree.GetPPWSrcPathForDirectory(const Directory: string
+  ): string;
+var ExprEval: TExpressionEvaluator;
+begin
+  ExprEval:=GetDefinesForDirectory(Directory);
+  if ExprEval<>nil then begin
+    Result:=ExprEval.Variables[ExternalMacroStart+'PPWSrcPath'];
+  end else begin
+    Result:='';
+  end;
+end;
+
+function TDefineTree.GetDCUSrcPathForDirectory(const Directory: string
+  ): string;
+var ExprEval: TExpressionEvaluator;
+begin
+  ExprEval:=GetDefinesForDirectory(Directory);
+  if ExprEval<>nil then begin
+    Result:=ExprEval.Variables[ExternalMacroStart+'DCUSrcPath'];
   end else begin
     Result:='';
   end;
@@ -1759,63 +1805,108 @@ begin
 end;
 
 function TDefinePool.CreateFPCTemplate(
-  const PPC386Path: string;
+  const PPC386Path, TestPascalFile: string;
   var UnitSearchPath: string): TDefineTemplate;
-// create makro definitions for the freepascal compiler
+// create symbol definitions for the freepascal compiler
 // To get reliable values the compiler itself is asked for
+var
+  LastDefTempl: TDefineTemplate;
+  ShortTestFile: string;
+  
+  procedure AddTemplate(NewDefTempl: TDefineTemplate);
+  begin
+    if NewDefTempl=nil then exit;
+    if LastDefTempl<>nil then
+      NewDefTempl.InsertBehind(LastDefTempl);
+    LastDefTempl:=NewDefTempl;
+  end;
+  
+  function FindSymbol(const SymbolName: string): TDefineTemplate;
+  begin
+    Result:=LastDefTempl;
+    while (Result<>nil)
+    and (AnsiComparetext(Result.Variable,SymbolName)<>0) do
+      Result:=Result.Prior;
+  end;
 
-  procedure ProcessOutputLine(var LastDefTempl: TDefineTemplate; Line: string);
+  procedure DefineSymbol(const SymbolName, SymbolValue: string);
   var NewDefTempl: TDefineTemplate;
-    MacroName, MacroValue, UpLine: string;
+  begin
+    NewDefTempl:=FindSymbol(SymbolName);
+    if NewDefTempl=nil then begin
+      NewDefTempl:=TDefineTemplate.Create('Define '+SymbolName,
+           ctsDefaultppc386Symbol,SymbolName,'',da_DefineRecurse);
+      AddTemplate(NewDefTempl);
+    end else begin
+      NewDefTempl.Value:=SymbolValue;
+    end;
+  end;
+
+  procedure UndefineSymbol(const SymbolName: string);
+  var
+    ADefTempl: TDefineTemplate;
+  begin
+    ADefTempl:=FindSymbol(SymbolName);
+    if ADefTempl=nil then exit;
+    if LastDefTempl=ADefTempl then LastDefTempl:=ADefTempl.Prior;
+    ADefTempl.Free;
+  end;
+
+  procedure ProcessOutputLine(var Line: string);
+  var
+    SymbolName, SymbolValue, UpLine: string;
     i: integer;
   begin
-    NewDefTempl:=nil;
     UpLine:=UpperCaseStr(Line);
+    i:=length(ShortTestFile);
+    if (length(Line)>i)
+    and (AnsiCompareText(LeftStr(Line,i),ShortTestFile)=0)
+    and (Line[i+1]='(') then begin
+      inc(i);
+      while (i<length(Line)) and (Line[i]<>')') do inc(i);
+      inc(i);
+      while (i<length(Line)) and (Line[i]=' ') do inc(i);
+      if (i<=length(Line)) then begin
+        System.Delete(Line,1,i-1);
+        System.Delete(UpLine,1,i-1);
+      end;
+    end;
     if copy(UpLine,1,15)='MACRO DEFINED: ' then begin
-      MacroName:=copy(UpLine,16,length(Line)-15);
-      NewDefTempl:=TDefineTemplate.Create('Define '+MacroName,
-           ctsDefaultppc386Macro,MacroName,'',da_DefineRecurse);
-    end else if copy(UpLine,1,15)='MACRO UNDEFINED: ' then begin
-      MacroName:=copy(UpLine,16,length(Line)-15);
-      
-      // ToDo: delete macro definition
-      
+      SymbolName:=copy(UpLine,16,length(Line)-15);
+      DefineSymbol(SymbolName,'');
+    end else if copy(UpLine,1,17)='MACRO UNDEFINED: ' then begin
+      SymbolName:=copy(UpLine,18,length(Line)-17);
+      UndefineSymbol(SymbolName);
     end else if copy(UpLine,1,6)='MACRO ' then begin
       System.Delete(Line,1,6);
       System.Delete(UpLine,1,6);
       i:=1;
       while (i<=length(Line)) and (Line[i]<>' ') do inc(i);
-      MacroName:=copy(UpLine,1,i-1);
-      inc(i);
+      SymbolName:=copy(UpLine,1,i-1);
+      inc(i); // skip '='
       System.Delete(Line,1,i-1);
       System.Delete(UpLine,1,i-1);
       if copy(UpLine,1,7)='SET TO ' then begin
-        MacroValue:=copy(Line,8,length(Line)-7);
-        NewDefTempl:=TDefineTemplate.Create('Define '+MacroName,
-             ctsDefaultppc386Macro,MacroName,MacroValue,da_DefineRecurse);
+        SymbolValue:=copy(Line,8,length(Line)-7);
+        DefineSymbol(SymbolName,SymbolValue);
       end;
     end else if copy(UpLine,1,17)='USING UNIT PATH: ' then begin
       UnitSearchPath:=UnitSearchPath+copy(Line,18,length(Line)-17)+#13;
     end;
-    if NewDefTempl<>nil then begin
-      if LastDefTempl<>nil then
-        NewDefTempl.InsertBehind(LastDefTempl);
-      LastDefTempl:=NewDefTempl;
-    end;
   end;
   
 // function TDefinePool.CreateFPCTemplate(
-//  const PPC386Path: string): TDefineTemplate;
-var CmdLine, BogusFilename: string;
+//   const PPC386Path: string): TDefineTemplate;
+var CmdLine: string;
   i, OutLen, LineStart: integer;
   TheProcess : TProcess;
   OutputLine, Buf, TargetOS, SrcOS, TargetProcessor: String;
-  DefTempl, NewDefTempl: TDefineTemplate;
+  NewDefTempl: TDefineTemplate;
 begin
   Result:=nil;
   UnitSearchPath:='';
   if (PPC386Path='') or (not FileIsExecutable(PPC386Path)) then exit;
-  DefTempl:=nil;
+  LastDefTempl:=nil;
   // find all initial compiler macros and all unit paths
   // -> ask compiler with the -va switch
   SetLength(Buf,1024);
@@ -1823,11 +1914,8 @@ begin
     CmdLine:=PPC386Path+' -va ';
     if FileExists(EnglishErrorMsgFilename) then
       CmdLine:=CmdLine+'-Fr'+EnglishErrorMsgFilename+' ';
-    // give compiler a not existing file, so that it will return quickly
-    BogusFilename:='bogus';
-    i:=1;
-    while FileExists(BogusFilename+IntToStr(i)+'.pp') do inc(i);
-    CmdLine:=CmdLine+BogusFilename+'.pp';
+    CmdLine:=CmdLine+TestPascalFile;
+    ShortTestFile:=ExtractFileName(TestPascalFile);
 
     TheProcess := TProcess.Create(nil);
     TheProcess.CommandLine := CmdLine;
@@ -1846,7 +1934,7 @@ begin
         while i<=OutLen do begin
           if Buf[i] in [#10,#13] then begin
             OutputLine:=OutputLine+copy(Buf,LineStart,i-LineStart);
-            ProcessOutputLine(DefTempl,OutputLine);
+            ProcessOutputLine(OutputLine);
             OutputLine:='';
             if (i<OutLen) and (Buf[i+1] in [#10,#13]) and (Buf[i]<>Buf[i+1])
             then
@@ -1882,9 +1970,7 @@ begin
           NewDefTempl:=TDefineTemplate.Create('Define TargetOS',
             ctsDefaultppc386TargetOperatingSystem,
             ExternalMacroStart+'TargetOS',TargetOS,da_DefineRecurse);
-          if DefTempl<>nil then
-            NewDefTempl.InsertBehind(DefTempl);
-          DefTempl:=NewDefTempl;
+          AddTemplate(NewDefTempl);
           if TargetOS='linux' then
             SrcOS:='unix'
           else
@@ -1892,9 +1978,7 @@ begin
           NewDefTempl:=TDefineTemplate.Create('Define SrcOS',
             ctsDefaultppc386SourceOperatingSystem,
             ExternalMacroStart+'SrcOS',SrcOS,da_DefineRecurse);
-          if DefTempl<>nil then
-            NewDefTempl.InsertBehind(DefTempl);
-          DefTempl:=NewDefTempl;
+          AddTemplate(NewDefTempl);
           break;
         end;
         inc(i);
@@ -1923,9 +2007,7 @@ begin
             ctsDefaultppc386TargetProcessor,
             ExternalMacroStart+'TargetProcessor',TargetProcessor,
             da_DefineRecurse);
-          if DefTempl<>nil then
-            NewDefTempl.InsertBehind(DefTempl);
-          DefTempl:=NewDefTempl;
+          AddTemplate(NewDefTempl);
           break;
         end;
         inc(i);
@@ -1936,14 +2018,16 @@ begin
     end;
 
     // add
-    if (DefTempl<>nil) then begin
-      while (DefTempl.Prior<>nil) do DefTempl:=DefTempl.Prior;
+    if (LastDefTempl<>nil) then begin
       Result:=TDefineTemplate.Create('Free Pascal Compiler',
         ctsFreePascalCompilerInitialMacros,'','',da_Block);
-      Result.AddChild(DefTempl);
+      Result.AddChild(LastDefTempl.GetFirstSibling);
       Result.Flags:=[dtfAutoGenerated];
     end;
   except
+    on E: Exception do begin
+      writeln('ERROR: TDefinePool.CreateFPCTemplate: ',E.Message);
+    end;
   end;
 end;
 

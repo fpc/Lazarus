@@ -8,6 +8,9 @@ parser_m_macro_undefined=03102_M_Macro undefined: $1
 parser_m_macro_set_to=03103_M_Macro $1 set to $2
 % When \var{-vm} is used, the compiler tells you what values macros get.
 
+general_d_defining_symbol=11037_D_Defining symbol: $1
+general_d_undefining_symbol=11038_D_Undefining symbol: $1
+
 general_t_exepath=01003_T_Using executable path: $1
 % When the \var{-vt} switch is used, this line tells you where the compiler
 % looks for it's binaries.
@@ -25,6 +28,7 @@ general_t_objectpath=01007_T_Using object path: $1
 % When the \var{-vt} switch is used, this line tells you where the compiler
 % looks for object files you link in (files used in \var{\{\$L xxx\}} statements).
 % You can set this path with the \var{-Fo} option.
+
 
 # end.
 

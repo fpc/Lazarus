@@ -47,7 +47,7 @@ uses
   Classes, SysUtils, LCLLinux, Forms, Controls, Buttons, StdCtrls, ComCtrls,
   ExtCtrls, Menus, LResources, Graphics, Dialogs, ImgList, SynEdit, Laz_XMLCfg,
   DefineTemplates, CodeToolManager, CodeToolsOptions, CodeToolsDefPreview,
-  TransferMacros, InputFileDialog, IDEOptionDefs;
+  TransferMacros, InputFileDialog, IDEOptionDefs, LazConf;
 
 type
   TCodeToolsDefinesEditor = class(TForm)
@@ -707,7 +707,7 @@ procedure TCodeToolsDefinesEditor.InsertFPCProjectDefinesTemplateMenuItemClick(
   Sender: TObject);
 var InputFileDlg: TInputFileDialog;
   UnitSearchPath, UnitLinkList, DefaultFPCSrcDir, DefaultCompiler,
-  CompilerPath, FPCSrcDIr: string;
+  CompilerPath, FPCSrcDir: string;
   DirTemplate, FPCTemplate, FPCSrcTemplate: TDefineTemplate;
 begin
   InputFileDlg:=GetInputFileDialog;
@@ -752,7 +752,7 @@ begin
     writeln('  CompilerPath="',CompilerPath,'"');
     if (CompilerPath<>'') and (CompilerPath<>DefaultCompiler) then
       FPCTemplate:=Boss.DefinePool.CreateFPCTemplate(CompilerPath,
-                                                     UnitSearchPath)
+                                CreateCompilerTestPascalFilename,UnitSearchPath)
     else
       FPCTemplate:=nil;
 
@@ -822,7 +822,8 @@ begin
     if Macros<>nil then Macros.SubstituteStr(CompilerPath);
     writeln('  CompilerPath="',CompilerPath,'"');
     
-    FPCTemplate:=Boss.DefinePool.CreateFPCTemplate(CompilerPath,s);
+    FPCTemplate:=Boss.DefinePool.CreateFPCTemplate(CompilerPath,
+                                           CreateCompilerTestPascalFilename,s);
     if FPCTemplate=nil then exit;
     FPCTemplate.Name:='Free Pascal Compiler ('+CompilerPath+')';
     InsertTemplate(FPCTemplate);
@@ -865,7 +866,8 @@ begin
     if Macros<>nil then Macros.SubstituteStr(CompilerPath);
     writeln('  CompilerPath="',CompilerPath,'"');
 
-    FPCTemplate:=Boss.DefinePool.CreateFPCTemplate(CompilerPath,UnitSearchPath);
+    FPCTemplate:=Boss.DefinePool.CreateFPCTemplate(CompilerPath,
+                               CreateCompilerTestPascalFilename,UnitSearchPath);
     if FPCTemplate=nil then begin
       writeln('ERROR: unable to get FPC Compiler Macros from "',CompilerPath,'"');
       exit;

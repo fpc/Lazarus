@@ -147,7 +147,7 @@ ResourceString
   // definetemplates
   ctsUnknownFunction = 'Unknown function %s';
   ctsSyntaxErrorInExpr = 'Syntax Error in expression "%s"';
-  ctsDefaultppc386Macro = 'Default ppc386 macro';
+  ctsDefaultppc386Symbol = 'Default ppc386 symbol';
   ctsDefaultppc386TargetOperatingSystem = 'Default ppc386 target Operating System';
   ctsDefaultppc386SourceOperatingSystem = 'Default ppc386 source Operating System';
   ctsDefaultppc386TargetProcessor = 'Default ppc386 target processor';

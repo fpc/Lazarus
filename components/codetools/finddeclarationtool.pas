@@ -800,6 +800,7 @@ var CleanCursorPos: integer;
         if (CursorNode.Desc=ctnClass)
         and (CleanCursorPos<ClassNode.FirstChild.StartPos) then begin
           // identifier is an ancestor/interface identifier
+          CursorNode:=CursorNode.Parent;
           DirectSearch:=true;
           SkipChecks:=true;
         end;
