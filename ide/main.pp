@@ -549,7 +549,7 @@ type
       ActiveUnitInfo: TUnitInfo;
       NewSource: TCodeBuffer; NewX, NewY, NewTopLine: integer;
       AddJumpPoint: boolean): TModalResult;
-    procedure DoJumpToCodeToolBossError;
+    procedure DoJumpToCodeToolBossError; override;
     procedure UpdateSourceNames;
     procedure SaveSourceEditorChangesToCodeCache(PageIndex: integer); override;
     procedure ApplyCodeToolChanges;
@@ -8548,6 +8548,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.537  2003/04/25 14:40:49  mattias
+  implemented add file to a package dialog
+
   Revision 1.536  2003/04/24 16:44:28  mattias
   implemented define templates for projects with packages
 
