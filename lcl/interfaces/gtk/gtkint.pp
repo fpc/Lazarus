@@ -42,6 +42,8 @@ interface
 {$ENDIF}
 {off $Define Critical_Sections_Support}
 
+{off $Define Disable_GC_SysColors}
+
 uses
   InterfaceBase, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf} gtk, gdk,
   glib, SysUtils, LMessages, Classes, Controls, Forms, VclGlobals, 
@@ -168,6 +170,7 @@ type
 {$I gtklistslh.inc}
 
   function GetDCOffset(DC: PDeviceContext): TPoint;
+  function GetSysGCValues(Color : TColorRef) : TGDKGCValues;
 
 implementation
 
@@ -489,6 +492,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.75  2002/09/18 17:07:28  lazarus
+  MG: added patch from Andrew
+
   Revision 1.74  2002/09/16 15:56:01  lazarus
   Resize cursors in designer.
 
