@@ -274,7 +274,6 @@ end;
 
 procedure InternalFinal;
 var i: integer;
-  t: PGtkITimerinfo;
   ced: PClipboardEventData;
   c: TClipboardType;
 begin
@@ -304,6 +303,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.106  2002/11/23 13:50:04  mattias
+  removed unused variable
+
   Revision 1.105  2002/11/23 13:48:44  mattias
   added Timer patch from Vincent Snijders
 
