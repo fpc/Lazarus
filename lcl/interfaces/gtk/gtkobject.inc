@@ -94,8 +94,37 @@ end;
   Passes command line options to the gtk engine
  ------------------------------------------------------------------------------}
 procedure Tgtkobject.PassCmdLineOptions;
+
+  function SearchOption(const Option: string; Remove: boolean): boolean;
+  var
+    i: Integer;
+  begin
+    Result:=false;
+    if Option='' then exit;
+    i:=0;
+    while i<argc do begin
+      if AnsiStrComp(PChar(Option),argv[i])=0 then begin
+        // option exists
+        Result:=true;
+        if Remove then begin
+          // remove option from parameters, so that no other parameter parsed
+          // can see it.
+          dec(argc);
+          while i<argc do begin
+            argv[i]:=argv[i+1];
+            inc(i);
+          end;
+          argv[i]:=nil;
+        end;
+        exit;
+      end;
+      inc(i);
+    end;
+  end;
+
 begin
   gtk_init(@argc,@argv);
+  UseTransientForModalWindows:=not SearchOption('--lcl-no-transient',true);
 end;
 
 {------------------------------------------------------------------------------
@@ -339,6 +368,7 @@ type
     Component: TComponent;
     IsModal: boolean;
     SortIndex: integer;
+    TransientWindow: PGtkWindow;
   end;
 
 var
@@ -355,9 +385,10 @@ var
   ATransientWindow2: PTransientWindow;
   ParentTransientWindow: PTransientWindow;
 begin
+  if not UseTransientForModalWindows then exit;
   AllWindows:=nil;
 
-  // find all current visible gtkwindows
+  // find all currently visible gtkwindows
   List := gdk_window_get_toplevels;
   while List <> nil do
   begin
@@ -365,7 +396,6 @@ begin
     then begin
       gdk_window_get_user_data(PGDKWindow(List^.Data), @Window);
       if GtkWidgetIsA(PGtkWidget(Window),GTK_WINDOW_TYPE)
-      and GTK_WIDGET_VISIBLE(PGtkWidget(Window))
       then begin
         // visible window found -> add to list
         New(ATransientWindow);
@@ -452,14 +482,23 @@ begin
     ParentTransientWindow:=nil;
     for i:=0 to AllWindows.Count-1 do begin
       ATransientWindow:=PTransientWindow(AllWindows[i]);
-      if ATransientWindow^.Component=nil then continue;
-      if ParentTransientWindow<>nil then begin
-        //writeln('Set TRANSIENT Parent=',ParentTransientWindow^.Component.Name,':',ParentTransientWindow^.Component.ClassName,' ',ParentTransientWindow^.SortIndex,
-        //' Child=',ATransientWindow^.Component.Name,':',ATransientWindow^.Component.ClassName,' ',ATransientWindow^.SortIndex);
-        gtk_window_set_transient_for(ATransientWindow^.GtkWindow,
-                                     ParentTransientWindow^.GtkWindow);
+      if ATransientWindow^.Component<>nil then begin
+        if ParentTransientWindow<>nil then begin
+          //writeln('Set TRANSIENT Parent=',ParentTransientWindow^.Component.Name,':',ParentTransientWindow^.Component.ClassName,' ',ParentTransientWindow^.SortIndex,
+          //' Child=',ATransientWindow^.Component.Name,':',ATransientWindow^.Component.ClassName,' ',ATransientWindow^.SortIndex);
+          ATransientWindow^.TransientWindow:=ParentTransientWindow^.GtkWindow;
+          gtk_window_set_transient_for(ATransientWindow^.GtkWindow,
+                                       ParentTransientWindow^.GtkWindow);
+        end;
+        ParentTransientWindow:=ATransientWindow;
       end;
-      ParentTransientWindow:=ATransientWindow;
+    end;
+    
+    for i:=0 to AllWindows.Count-1 do begin
+      ATransientWindow:=PTransientWindow(AllWindows[i]);
+      if ATransientWindow^.TransientWindow=nil then continue;
+      gtk_window_set_transient_for(ATransientWindow^.GtkWindow,
+                                   ATransientWindow^.TransientWindow);
     end;
   end;
 
@@ -3500,12 +3539,12 @@ begin
   end;
   ClearAccelKey(Widget);
 
-  RemoveCallbacks(Sender);
-
   if GtkWidgetIsA(Widget,GTK_WINDOW_TYPE) then begin
     //writeln('tgtkObject.DestroyLCLControl Untransient ',Sender.ClassName);
     UntransientWindow(PGtkWindow(Widget));
   end;
+
+  RemoveCallbacks(Sender);
 
   if Sender is TControl then begin
     case TControl(Sender).fCompStyle of
@@ -7072,6 +7111,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.343  2003/03/26 19:25:27  mattias
+  added transient deactivation option and updated localization
+
   Revision 1.342  2003/03/26 00:21:25  mattias
   implemented build lazarus extra options -d
 
