@@ -685,7 +685,7 @@ type
 
 
 { Bitmap Header Definition }
-  PBitmap = ^TBitmap;
+  PBitmap = ^TagBitmap;
   tagBITMAP = packed record
     bmType: Longint;
     bmWidth: Longint;
@@ -695,7 +695,6 @@ type
     bmBitsPixel: Word;
     bmBits: Pointer;
   end;
-  TBitmap = tagBITMAP;
   BITMAP = tagBITMAP;
 
 { ********************************** }
@@ -716,7 +715,7 @@ type
   PDIBSection = ^TDIBSection;
 
   tagDIBSECTION = packed record
-    dsBm: TBitmap;
+    dsBm: TagBitmap;
     dsBmih: pointer;//TBitmapInfoHeader;
     dsBitfields: array[0..2] of DWORD;
     dshSection: THandle;
@@ -1406,6 +1405,9 @@ end.
 
 {
   $Log$
+  Revision 1.8  2002/07/29 13:39:07  lazarus
+  MG: removed ambigious TBitmap from LCLType and added Escape key to MessageDlgs
+
   Revision 1.7  2002/06/04 15:17:22  lazarus
   MG: improved TFont for XLFD font names
 

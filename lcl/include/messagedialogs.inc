@@ -39,6 +39,8 @@ type
     Internal class used to build a MessageBox. 
   }
   TMessageBox = class (TForm)
+    procedure MessageBoxKeyDown(Sender: TObject; var Key: Word;
+          Shift: TShiftState);
   private
     FBitmap : TBitmap;
     FDlgType : TMsgDlgType;
@@ -99,6 +101,7 @@ begin
   FButtons    := [mbOk];
   FRelayoutNeeded := false;
   FUpdateCounter := 0;
+  OnKeyDown:=@MessageBoxKeyDown;
   OnActivate:=@FormActivate;
 end;
 
@@ -171,6 +174,23 @@ end;
 function TMessageBox.LineHeight: integer;
 begin
   Result:=Canvas.TextHeight('ABCDEFGHIJKLMNOPQRSTUVWXYZgp09')+8;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TMessageBox.MessageBoxKeyDown
+
+  OnKeyDown Event handler for messages dialogs.
+  The 'Escape' key has the same meaning as a Cancel or Abort click.
+ ------------------------------------------------------------------------------}
+procedure TMessageBox.MessageBoxKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key=VK_Escape) then begin
+    if mbCancel in FButtons then
+      ModalResult:=mrCancel
+    else if mbAbort in FButtons then
+      ModalResult:=mrAbort;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -475,6 +495,9 @@ end;
 
 {
    $Log$
+   Revision 1.11  2002/07/29 13:39:07  lazarus
+   MG: removed ambigious TBitmap from LCLType and added Escape key to MessageDlgs
+
    Revision 1.10  2002/06/06 07:23:24  lazarus
    MG: small fixes to reduce form repositioing
 
