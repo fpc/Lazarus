@@ -124,6 +124,7 @@ type
 
     // edit->insert text->general
     procedure mnuEditInsertGPLNoticeClick(Sender: TObject);
+    procedure mnuEditInsertLGPLNoticeClick(Sender: TObject);
     procedure mnuEditInsertUsernameClick(Sender: TObject);
     procedure mnuEditInsertDateTimeClick(Sender: TObject);
     procedure mnuEditInsertChangeLogEntryClick(Sender: TObject);
@@ -1412,6 +1413,7 @@ begin
 
   // insert text->general
   itmEditInsertGPLNotice.OnClick:=@mnuEditInsertGPLNoticeClick;
+  itmEditInsertLGPLNotice.OnClick:=@mnuEditInsertLGPLNoticeClick;
   itmEditInsertUsername.OnClick:=@mnuEditInsertUsernameClick;
   itmEditInsertDateTime.OnClick:=@mnuEditInsertDateTimeClick;
   itmEditInsertChangeLogEntry.OnClick:=@mnuEditInsertChangeLogEntryClick;
@@ -7832,6 +7834,11 @@ begin
   DoEditMenuCommand(ecInsertGPLNotice);
 end;
 
+procedure TMainIDE.mnuEditInsertLGPLNoticeClick(Sender: TObject);
+begin
+  DoEditMenuCommand(ecInsertLGPLNotice);
+end;
+
 procedure TMainIDE.mnuEditInsertUsernameClick(Sender: TObject);
 begin
   DoEditMenuCommand(ecInsertUserName);
@@ -7988,6 +7995,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.492  2003/03/16 11:07:41  mattias
+  fixed insert text GPL and LGPL
+
   Revision 1.491  2003/03/16 08:44:17  mattias
   fixed run and wait script
 
