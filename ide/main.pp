@@ -183,6 +183,7 @@ type
     // run menu
     procedure mnuBuildProjectClicked(Sender : TObject);
     procedure mnuBuildAllProjectClicked(Sender : TObject);
+    procedure mnuAbortBuildProjectClicked(Sender : TObject);
     procedure mnuRunProjectClicked(Sender : TObject);
     procedure mnuPauseProjectClicked(Sender : TObject);
     procedure mnuStepIntoProjectClicked(Sender : TObject);
@@ -496,6 +497,7 @@ type
     procedure DoWarnAmbigiousFiles;
     function DoSaveForBuild: TModalResult; override;
     function DoBuildProject(BuildAll: boolean): TModalResult;
+    function DoAbortBuild: TModalResult;
     function DoInitProjectRun: TModalResult; override;
     function DoRunProject: TModalResult;
     function SomethingOfProjectIsModified: boolean;
@@ -1492,6 +1494,7 @@ begin
   inherited;
   itmProjectBuild.OnClick := @mnuBuildProjectClicked;
   itmProjectBuildAll.OnClick := @mnuBuildAllProjectClicked;
+  itmProjectAbortBuild.OnClick := @mnuAbortBuildProjectClicked;
   itmProjectRun.OnClick := @mnuRunProjectClicked;
   itmProjectPause.Enabled := false;
   itmProjectPause.OnClick := @mnuPauseProjectClicked;
@@ -1792,6 +1795,7 @@ begin
 
    ecBuild,
    ecBuildAll:    DoBuildProject(Command=ecBuildAll);
+   ecAbortBuild:  DoAbortBuild;
     
    ecRun:         DoRunProject;
    ecPause:       DebugBoss.DoPauseProject;
@@ -2263,6 +2267,11 @@ end;
 Procedure TMainIDE.mnuBuildAllProjectClicked(Sender : TObject);
 Begin
   DoBuildProject(true);
+end;
+
+Procedure TMainIDE.mnuAbortBuildProjectClicked(Sender : TObject);
+Begin
+  DoAbortBuild;
 end;
 
 Procedure TMainIDE.mnuRunProjectClicked(Sender : TObject);
@@ -5570,6 +5579,13 @@ begin
 
   // check sources
   DoCheckFilesOnDisk;
+end;
+
+function TMainIDE.DoAbortBuild: TModalResult;
+begin
+  Result:=mrOk;
+  if ToolStatus<>itBuilder then exit;
+  TheOutputFilter.StopExecute:=true;
 end;
 
 function TMainIDE.DoInitProjectRun: TModalResult;
@@ -9338,6 +9354,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.620  2003/07/08 11:30:22  mattias
+  added Abort Build
+
   Revision 1.619  2003/07/07 18:06:05  mattias
   fixed switching TARGET_OS
 

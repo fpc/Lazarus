@@ -297,6 +297,7 @@ type
     // run menu
     itmProjectBuild: TMenuItem;
     itmProjectBuildAll: TMenuItem;
+    itmProjectAbortBuild: TMenuItem;
     itmProjectRun: TMenuItem;
     itmProjectPause: TMenuItem;
     itmProjectStepInto: TMenuItem;
@@ -1112,6 +1113,11 @@ begin
   itmProjectBuildAll.Graphic:=LoadPixmap('menu_buildall');
   mnuRun.Add(itmProjectBuildAll);
 
+  itmProjectAbortBuild := TMenuItem.Create(Self);
+  itmProjectAbortBuild.Name:='itmProjectAbortBuild';
+  itmProjectAbortBuild.Caption := lisMenuAbortBuild;
+  mnuRun.Add(itmProjectAbortBuild);
+
   mnuRun.Add(CreateMenuSeparator);
 
   itmProjectRun := TMenuItem.Create(Self);
@@ -1426,6 +1432,7 @@ begin
     // run menu
     itmProjectBuild.ShortCut:=CommandToShortCut(ecBuild);
     itmProjectBuildAll.ShortCut:=CommandToShortCut(ecBuildAll);
+    itmProjectAbortBuild.ShortCut:=CommandToShortCut(ecAbortBuild);
     itmProjectRun.ShortCut:=CommandToShortCut(ecRun);
     itmProjectPause.ShortCut:=CommandToShortCut(ecPause);
     itmProjectStepInto.ShortCut:=CommandToShortCut(ecStepInto);

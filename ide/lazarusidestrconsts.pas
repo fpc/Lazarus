@@ -195,6 +195,7 @@ resourcestring
   
   lisMenuBuild = 'Build';
   lisMenuBuildAll = 'Build all';
+  lisMenuAbortBuild = 'Abort Build';
   lisMenuProjectRun = 'Run';
   lisMenuPause = 'Pause';
   lisMenuStepInto = 'Step into';
@@ -1131,6 +1132,7 @@ resourcestring
   // run menu
   srkmecBuild                     = 'build program/project';
   srkmecBuildAll                  = 'build all files of program/project';
+  srkmecAbortBuild                = 'abort build';
   srkmecRun                       = 'run program';
   srkmecPause                     = 'pause program';
   srkmecStopProgram               = 'stop program';

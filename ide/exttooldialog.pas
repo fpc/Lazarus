@@ -320,7 +320,11 @@ begin
               TheProcess.WaitOnExit;
               TheProcess.Free;
             end;
-            if not ErrorOccurred then
+            if ErrorOccurred then
+              Result:=mrCancel
+            else if TheOutputFilter.Aborted then
+              Result:=mrAbort
+            else
               Result:=mrOk;
           except
             on e: EOutputFilterError do begin

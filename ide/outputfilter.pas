@@ -72,6 +72,7 @@ type
     procedure InternalSetCurrentDirectory(const Dir: string);
   public
     ErrorExists: boolean;
+    Aborted: boolean;
     function Execute(TheProcess: TProcess): boolean;
     function GetSourcePosition(const Line: string; var Filename:string;
       var CaretXY: TPoint; var MsgType: TErrorType): boolean;
@@ -159,9 +160,16 @@ begin
 
   OutputLine:='';
   ErrorExists:=true;
+  Aborted:=false;
   repeat
     Application.ProcessMessages;
-    if StopExecute then exit;
+    if StopExecute then begin
+      TheProcess.Terminate(0);
+      Aborted:=true;
+      Result:=false;
+      ReadLine('aborted',true);
+      break;
+    end;
     
     if TheProcess.Output<>nil then
       Count:=TheProcess.Output.Read(Buf[1],length(Buf))

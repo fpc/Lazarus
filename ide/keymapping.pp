@@ -157,15 +157,16 @@ const
 
   // compile menu
   ecBuild                = ecUserFirst + 400;
-  ecRun                  = ecUserFirst + 401;
-  ecPause                = ecUserFirst + 402;
-  ecStepInto             = ecUserFirst + 403;
-  ecStepOver             = ecUserFirst + 404;
-  ecRunToCursor          = ecUserFirst + 405;
-  ecStopProgram          = ecUserFirst + 406;
-  ecBuildAll             = ecUserFirst + 407;
-  ecBuildLazarus         = ecUserFirst + 408;
+  ecBuildAll             = ecUserFirst + 401;
+  ecAbortBuild           = ecUserFirst + 402;
+  ecRun                  = ecUserFirst + 403;
+  ecPause                = ecUserFirst + 404;
+  ecStepInto             = ecUserFirst + 405;
+  ecStepOver             = ecUserFirst + 406;
+  ecRunToCursor          = ecUserFirst + 407;
+  ecStopProgram          = ecUserFirst + 408;
   ecResetDebugger        = ecUserFirst + 409;
+  ecBuildLazarus         = ecUserFirst + 410;
 
   // project menu
   ecNewProject           = ecUserFirst + 500;
@@ -628,6 +629,7 @@ begin
     // run menu (menu string resource)
     ecBuild                 : Result:= srkmecBuild;
     ecBuildAll              : Result:= srkmecBuildAll;
+    ecAbortBuild            : Result:= srkmecAbortBuild;
     ecRun                   : Result:= srkmecRun;
     ecPause                 : Result:= srkmecPause;
     ecStepInto              : Result:= lisMenuStepInto;
@@ -1474,6 +1476,7 @@ begin
   C:=Categories[AddCategory('RunMenu',srkmCatRunMenu,caAll)];
   Add(C,'Build project/program',ecBuild,VK_F9,[ssCtrl],VK_UNKNOWN,[]);
   Add(C,'Build all files of project/program',ecBuildAll,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Abort building',ecAbortBuild,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Run program',ecRun,VK_F9,[],VK_UNKNOWN,[]);
   Add(C,'Pause program',ecPause,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Step into',ecStepInto,VK_F7,[],VK_UNKNOWN,[]);
