@@ -38,6 +38,27 @@ begin
     end;
 end;
 
+procedure TCustomForm.CloseModal;
+var
+  CloseAction: TCloseAction;
+begin
+  try
+    CloseAction := caNone;
+    if CloseQuery then
+    begin
+      CloseAction := caHide;
+      DoClose(CloseAction);
+    end;
+    case CloseAction of
+      caNone: ModalResult := 0;
+      //caFree: Release;
+    end;
+  except
+    ModalResult := 0;
+    Application.HandleException(Self);
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Method: TCustomForm.BeforeDestruction
   Params:  None
@@ -949,24 +970,53 @@ begin
   ReleaseCapture;
 
   Include(FFormState, fsModal);
+  {ActiveWindow := GetActiveWindow;
+  SaveFocusCount := FocusCount;
+  Screen.FSaveFocusedList.Insert(0, Screen.FFocusedForm);
+  Screen.FFocusedForm := Self;
+  SaveCursor := Screen.Cursor;
+  Screen.Cursor := crDefault;
+  SaveCount := Screen.FCursorCount;
+  WindowList := DisableTaskWindows(0);}
   ModalResult := 0;
-
-  Show;
-  CNSendMessage(LM_ShowModal, Self, nil);
-  Repeat
-    Application.HandleMessage;
-    If ModalResult <> 0 then Close;
-    If Application.FTerminate then ModalResult := mrCancel;
-  until ModalResult <> 0;
-
-  Exclude(FFormState, fsModal);
-
-  Result := ModalResult;
+  try
+    Show;
+    try
+      CNSendMessage(LM_ShowModal, Self, nil);
+      Repeat
+        Application.HandleMessage;
+        {if ModalResult <> 0 then Close;
+        if Application.FTerminate then ModalResult := mrCancel;}
+        if Application.FTerminate then ModalResult := mrCancel else
+          if ModalResult <> 0 then CloseModal;
+      until ModalResult <> 0;
+      Result := ModalResult;
+      //if GetActiveWindow <> Handle then ActiveWindow := 0;
+    finally
+      Hide;
+    end;
+  finally
+    {if Screen.FCursorCount = SaveCount then
+      Screen.Cursor := SaveCursor
+    else Screen.Cursor := crDefault;
+    EnableTaskWindows(WindowList);
+    if Screen.FSaveFocusedList.Count > 0 then
+    begin
+      Screen.FFocusedForm := Screen.FSaveFocusedList.First;
+      Screen.FSaveFocusedList.Remove(Screen.FFocusedForm);
+    end else Screen.FFocusedForm := nil;
+    if ActiveWindow <> 0 then SetActiveWindow(ActiveWindow);
+    FocusCount := SaveFocusCount;}
+    Exclude(FFormState, fsModal);
+  end;
 end;
 
 { =============================================================================
 
   $Log$
+  Revision 1.40  2002/04/26 15:31:06  lazarus
+  MG: made ShowModal more dlephi compatible
+
   Revision 1.39  2002/04/26 12:26:50  lazarus
   MG: improved clean up
 

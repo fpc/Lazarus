@@ -90,6 +90,7 @@ type
     FPosition : TPosition;
     FWindowState : TWindowState;
     Procedure ClientWndProc(var Message: TLMessage);
+    procedure CloseModal;
     procedure DoCreate;
     procedure DoDestroy;
     Procedure SetActiveControl(Value : TWinControl);
