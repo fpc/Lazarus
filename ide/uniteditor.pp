@@ -1569,6 +1569,7 @@ begin
     else
       if FileExists('lazarus.dci') then
         AutoCompleteList.LoadFromFile('lazarus.dci');
+    IndentToTokenStart:=EditorOpts.CodeTemplateIndentToTokenStart;
     OnTokenNotFound:=@OnCodeTemplateTokenNotFound;
     EndOfTokenChr:='[]{},.;:"+-*^@$\<>=''';
   end;
@@ -2979,6 +2980,7 @@ Begin
     else
       if FileExists('lazarus.dci') then
         AutoCompleteList.LoadFromFile('lazarus.dci');
+    IndentToTokenStart:=EditorOpts.CodeTemplateIndentToTokenStart;
   end;
   
   EditorOpts.KeyMap.AssignTo(FKeyStrokes);

@@ -29,7 +29,11 @@ uses
   SynEdit, SynEditKeyCmds, XMLCfg, Dialogs;
 
 const
-  // editor commands constants. see syneditkeycmds.pp for more
+  { editor commands constants. see syneditkeycmds.pp for more
+  
+  These values can change from version to version, so DO NOT save them to file!
+  
+  }
   ecFind               = ecUserFirst + 1;
   ecFindAgain          = ecUserFirst + 2;
   ecFindNext           = ecFindAgain;
@@ -53,6 +57,7 @@ const
   ecFindDeclaration    = ecUserFirst + 20;
   ecFindBlockOtherEnd  = ecUserFirst + 21;
   ecFindBlockStart     = ecUserFirst + 22;
+  ecOpenFileAtCursor   = ecUserFirst + 23;
 
   ecWordCompletion     = ecUserFirst + 100;
   ecCompleteCode       = ecUserFirst + 101;
@@ -60,25 +65,61 @@ const
   ecSyntaxCheck        = ecUserFirst + 103;
   ecGuessUnclosedBlock = ecUserFirst + 104;
 
-  ecSave               = ecUserFirst + 200;
-  ecOpen               = ecSave      + 1;
-  ecClose              = ecOpen      + 1;
-  ecBuild              = ecClose     + 1;
-  ecRun                = ecBuild     + 1;
-  ecPause              = ecRun       + 1;
-  ecStepInto           = ecPause     + 1;
-  ecStepOver           = ecStepInto  + 1;
-  ecRunToCursor        = ecStepOver  + 1;
-  ecStopProgram        = ecRunToCursor + 1;
-  ecBuildAll           = ecStopProgram + 1;
-  ecBuildLazarus       = ecBuildAll  + 1;
+  ecNew                = ecUserFirst + 201;
+  ecNewUnit            = ecUserFirst + 202;
+  ecNewForm            = ecUserFirst + 203;
+  ecOpen               = ecUserFirst + 204;
+  ecSave               = ecUserFirst + 205;
+  ecSaveAs             = ecUserFirst + 206;
+  ecSaveAll            = ecUserFirst + 207;
+  ecClose              = ecUserFirst + 208;
+  ecCloseAll           = ecUserFirst + 209;
+  ecQuit               = ecUserFirst + 210;
 
   ecJumpToEditor       = ecUserFirst + 300;
   ecToggleFormUnit     = ecUserFirst + 301;
-  
-  ecExtToolFirst       = ecUserFirst + 400;
-  ecExtToolLast        = ecUserFirst + 499;
+  ecToggleObjectInsp   = ecUserFirst + 302;
+  ecToggleProjectExpl  = ecUserFirst + 303;
+  ecToggleCodeExpl     = ecUserFirst + 304;
+  ecToggleMessages     = ecUserFirst + 305;
+  ecToggleWatches      = ecUserFirst + 306;
+  ecToggleBreakPoints  = ecUserFirst + 307;
+  ecToggleDebuggerOut  = ecUserFirst + 308;
+  ecViewUnits          = ecUserFirst + 309;
+  ecViewForms          = ecUserFirst + 310;
 
+  ecBuild              = ecUserFirst + 400;
+  ecRun                = ecUserFirst + 401;
+  ecPause              = ecUserFirst + 402;
+  ecStepInto           = ecUserFirst + 403;
+  ecStepOver           = ecUserFirst + 404;
+  ecRunToCursor        = ecUserFirst + 405;
+  ecStopProgram        = ecUserFirst + 406;
+  ecBuildAll           = ecUserFirst + 407;
+  ecBuildLazarus       = ecUserFirst + 408;
+
+  ecExtToolFirst       = ecUserFirst + 500;
+  ecExtToolLast        = ecUserFirst + 599;
+
+  ecNewProject         = ecUserFirst + 700;
+  ecOpenProject        = ecUserFirst + 701;
+  ecSaveProject        = ecUserFirst + 702;
+  ecSaveProjectAs      = ecUserFirst + 703;
+  ecAddCurUnitToProj   = ecUserFirst + 704;
+  ecRemoveFromProj     = ecUserFirst + 705;
+  ecViewProjectSource  = ecUserFirst + 706;
+  ecProjectOptions     = ecUserFirst + 707;
+
+  ecRunParameters      = ecUserFirst + 800;
+  ecCompilerOptions    = ecUserFirst + 801;
+  ecExtToolSettings    = ecUserFirst + 802;
+  ecConfigBuildLazarus = ecUserFirst + 803;
+  ecEnvironmentOptions = ecUserFirst + 804;
+  ecEditorOptions      = ecUserFirst + 805;
+  ecCodeToolsOptions   = ecUserFirst + 806;
+
+  ecAboutLazarus       = ecUserFirst + 900;
+  
   ecGotoEditor1        = ecUserFirst + 2000;
   ecGotoEditor2        = ecGotoEditor1 + 1;
   ecGotoEditor3        = ecGotoEditor2 + 1;
@@ -93,36 +134,61 @@ const
 
 type
   //---------------------------------------------------------------------------
+  // TKeyCommandCategory is used to divide the key commands in handy packets
+  TKeyCommandCategory = class(TList)
+  public
+    Name: string;
+    Description: string;
+    Parent: TKeyCommandCategory;
+    procedure Clear; override;
+    procedure Delete(Index: Integer);
+    constructor Create(const AName, ADescription: string);
+  end;
+  
+  //---------------------------------------------------------------------------
   // class for storing the keys of a single command (key-command relationship)
   TKeyCommandRelation = class
   private
+    fParent: TKeyCommandCategory;
+    procedure SetParent(const AValue: TKeyCommandCategory);
   public
-    Name:ShortString;
-    Command:TSynEditorCommand;  // see the ecXXX constants above
-    Key1:word;
-    Shift1:TShiftState;
-    Key2:word;
-    Shift2:TShiftState;
-    constructor Create(AName:ShortString;ACommand:TSynEditorCommand;
-      AKey1:Word;AShift1:TShiftState;AKey2:Word;AShift2:TShiftState);
+    Name: ShortString;
+    Command: TSynEditorCommand;  // see the ecXXX constants above
+    Key1: word;
+    Shift1: TShiftState;
+    Key2: word;
+    Shift2: TShiftState;
+    property Parent: TKeyCommandCategory read fParent write SetParent;
+    constructor Create(AParent: TKeyCommandCategory; AName:ShortString;
+      ACommand:TSynEditorCommand;
+      AKey1:Word; AShift1:TShiftState; AKey2:Word; AShift2:TShiftState);
+    function AsShortCut: TShortCut;
   end;
 
   //---------------------------------------------------------------------------
   // class for a list of key - command relations
   TKeyCommandRelationList = class
   private
-    fRelations:TList;
+    fRelations: TList; // list of TKeyCommandRelation, sorted with Command
+    fCategories: TList;// list of TKeyCommandCategory
     fExtToolCount: integer;
+    function GetCategory(Index: integer): TKeyCommandCategory;
     function GetRelation(Index:integer):TKeyCommandRelation;
-    function Add(Name:shortstring;Command:TSynEditorCommand;
+    function AddCategory(const Name, Description: string): integer;
+    function Add(Category: TKeyCommandCategory; const Name:shortstring;
+       Command:TSynEditorCommand;
        Key1:Word; Shift1:TShiftState; 
        Key2:Word; Shift2:TShiftState):integer;
     function ShiftStateToStr(Shift:TShiftState):AnsiString;
     procedure SetExtToolCount(NewCount: integer);
   public
-    function Count:integer;
-    function Find(AKey:Word; AShiftState:TShiftState):TKeyCommandRelation;
-    function FindByCommand(ACommand:TSynEditorCommand):TKeyCommandRelation;
+    function Count: integer;
+    function CategoryCount: integer;
+    function Find(AKey:Word; AShiftState:TShiftState): TKeyCommandRelation;
+    function FindByCommand(ACommand:TSynEditorCommand): TKeyCommandRelation;
+    function FindCategoryByName(const CategoryName: string): TKeyCommandCategory;
+    function IndexOf(ARelation: TKeyCommandRelation): integer;
+    function CommandToShortCut(ACommand: TSynEditorCommand): TShortCut;
     function LoadFromXMLConfig(XMLConfig:TXMLConfig; Prefix:AnsiString):boolean;
     function SaveToXMLConfig(XMLConfig:TXMLConfig; Prefix:AnsiString):boolean;
     procedure AssignTo(ASynEditKeyStrokes:TSynEditKeyStrokes);
@@ -130,6 +196,7 @@ type
     destructor Destroy; override;
     property ExtToolCount: integer read fExtToolCount write SetExtToolCount;
     property Relations[Index:integer]:TKeyCommandRelation read GetRelation;
+    property Categories[Index: integer]: TKeyCommandCategory read GetCategory;
   end;
 
   //---------------------------------------------------------------------------
@@ -161,7 +228,7 @@ type
     procedure DeactivateGrabbing;
     procedure SetComboBox(AComboBox: TComboBox; AValue: string);
   public
-    constructor Create(AOwner:TComponent); override;
+    constructor Create(TheOwner:TComponent); override;
     KeyCommandRelationList:TKeyCommandRelationList;
     KeyIndex:integer;
   end;
@@ -176,8 +243,14 @@ function StrToVKCode(s: string): integer;
 
 var KeyMappingEditForm: TKeyMappingEditForm;
 
+const
+  KeyCategoryToolMenuName = 'ToolMenu';
 
 implementation
+
+
+const
+  KeyMappingFormatVersion = 2;
 
 function StrToVKCode(s: string): integer;
 var i: integer;
@@ -249,129 +322,97 @@ begin
     ecRight: Result:= 'Right';
     ecUp: Result:= 'Up';
     ecDown: Result:= 'Down';
-    ecWordLeft: Result:= 'WordLeft';
-    ecWordRight: Result:= 'WordRight';
-    ecLineStart: Result:= 'LineStart';
-    ecLineEnd: Result:= 'LineEnd';
-    ecPageUp: Result:= 'PageUp';
-    ecPageDown: Result:= 'PageDown';
-    ecPageLeft: Result:= 'PageLeft';
-    ecPageRight: Result:= 'PageRight';
-    ecPageTop: Result:= 'PageTop';
-    ecPageBottom: Result:= 'PageBottom';
-    ecEditorTop: Result:= 'EditorTop';
-    ecEditorBottom: Result:= 'EditorBottom';
-    ecGotoXY: Result:= 'GotoXY';
+    ecWordLeft: Result:= 'Word Left';
+    ecWordRight: Result:= 'Word Right';
+    ecLineStart: Result:= 'Line Start';
+    ecLineEnd: Result:= 'Line End';
+    ecPageUp: Result:= 'Page Up';
+    ecPageDown: Result:= 'Page Down';
+    ecPageLeft: Result:= 'Page Left';
+    ecPageRight: Result:= 'Page Right';
+    ecPageTop: Result:= 'Page Top';
+    ecPageBottom: Result:= 'Page Bottom';
+    ecEditorTop: Result:= 'Editor Top';
+    ecEditorBottom: Result:= 'Editor Bottom';
+    ecGotoXY: Result:= 'Goto XY';
     ecSelLeft: Result:= 'SelLeft';
     ecSelRight: Result:= 'SelRight';
-    ecSelUp: Result:= 'SelUp';
-    ecSelDown: Result:= 'SelDown';
-    ecSelWordLeft: Result:= 'SelWordLeft';
-    ecSelWordRight: Result:= 'SelWordRight';
-    ecSelLineStart: Result:= 'SelLineStart';
-    ecSelLineEnd: Result:= 'SelLineEnd';
-    ecSelPageUp: Result:= 'SelPageUp';
-    ecSelPageDown: Result:= 'SelPageDown';
-    ecSelPageLeft: Result:= 'SelPageLeft';
-    ecSelPageRight: Result:= 'SelPageRight';
-    ecSelPageTop: Result:= 'SelPageTop';
-    ecSelPageBottom: Result:= 'SelPageBottom';
-    ecSelEditorTop: Result:= 'SelEditorTop';
-    ecSelEditorBottom: Result:= 'SelEditorBottom';
-    ecSelGotoXY: Result:= 'SelGotoXY';
-    ecSelectAll: Result:= 'SelectAll';
-    ecDeleteLastChar: Result:= 'DeleteLastChar';
-    ecDeleteChar: Result:= 'DeleteChar';
-    ecDeleteWord: Result:= 'DeleteWord';
-    ecDeleteLastWord: Result:= 'DeleteLastWord';
-    ecDeleteBOL: Result:= 'DeleteBOL';
-    ecDeleteEOL: Result:= 'DeleteEOL';
-    ecDeleteLine: Result:= 'DeleteLine';
-    ecClearAll: Result:= 'ClearAll';
-    ecLineBreak: Result:= 'LineBreak';
-    ecInsertLine: Result:= 'InsertLine';
+    ecSelUp: Result:= 'Sel Up';
+    ecSelDown: Result:= 'Sel Down';
+    ecSelWordLeft: Result:= 'Sel Word Left';
+    ecSelWordRight: Result:= 'Sel Word Right';
+    ecSelLineStart: Result:= 'Sel Line Start';
+    ecSelLineEnd: Result:= 'Sel Line End';
+    ecSelPageUp: Result:= 'Sel Page Up';
+    ecSelPageDown: Result:= 'Sel Page Down';
+    ecSelPageLeft: Result:= 'Sel Page Left';
+    ecSelPageRight: Result:= 'Sel Page Right';
+    ecSelPageTop: Result:= 'Sel Page Top';
+    ecSelPageBottom: Result:= 'Sel Page Bottom';
+    ecSelEditorTop: Result:= 'Sel Editor Top';
+    ecSelEditorBottom: Result:= 'Sel Editor Bottom';
+    ecSelGotoXY: Result:= 'Sel Goto XY';
+    ecSelectAll: Result:= 'Select All';
+    ecDeleteLastChar: Result:= 'Delete Last Char';
+    ecDeleteChar: Result:= 'Delete Char';
+    ecDeleteWord: Result:= 'Delete Word';
+    ecDeleteLastWord: Result:= 'Delete Last Word';
+    ecDeleteBOL: Result:= 'Delete BOL';
+    ecDeleteEOL: Result:= 'Delete EOL';
+    ecDeleteLine: Result:= 'Delete Line';
+    ecClearAll: Result:= 'Clear All';
+    ecLineBreak: Result:= 'Line Break';
+    ecInsertLine: Result:= 'Insert Line';
     ecChar: Result:= 'Char';
-    ecImeStr: Result:= 'ImeStr';
+    ecImeStr: Result:= 'Ime Str';
     ecUndo: Result:= 'Undo';
     ecRedo: Result:= 'Redo';
     ecCut: Result:= 'Cut';
     ecCopy: Result:= 'Copy';
     ecPaste: Result:= 'Paste';
-    ecScrollUp: Result:= 'ScrollUp';
-    ecScrollDown: Result:= 'ScrollDown';
-    ecScrollLeft: Result:= 'ScrollLeft';
-    ecScrollRight: Result:= 'ScrollRight';
-    ecInsertMode: Result:= 'InsertMode';
-    ecOverwriteMode: Result:= 'OverwriteMode';
-    ecToggleMode: Result:= 'ToggleMode';
-    ecBlockIndent: Result:= 'BlockIndent';
-    ecBlockUnindent: Result:= 'BlockUnindent';
+    ecScrollUp: Result:= 'Scroll Up';
+    ecScrollDown: Result:= 'Scroll Down';
+    ecScrollLeft: Result:= 'Scroll Left';
+    ecScrollRight: Result:= 'Scroll Right';
+    ecInsertMode: Result:= 'Insert Mode';
+    ecOverwriteMode: Result:= 'Overwrite Mode';
+    ecToggleMode: Result:= 'Toggle Mode';
+    ecBlockIndent: Result:= 'Block Indent';
+    ecBlockUnindent: Result:= 'Block Unindent';
     ecTab: Result:= 'Tab';
-    ecShiftTab: Result:= 'ShiftTab';
-    ecMatchBracket: Result:= 'MatchBracket';
-    ecNormalSelect: Result:= 'NormalSelect';
-    ecColumnSelect: Result:= 'ColumnSelect';
-    ecLineSelect: Result:= 'LineSelect';
-    ecAutoCompletion: Result:= 'AutoCompletion';
-    ecUserFirst: Result:= 'UserFirst';
-    ecGotoMarker0: Result:= 'GotoMarker0';
-    ecGotoMarker1: Result:= 'GotoMarker1';
-    ecGotoMarker2: Result:= 'GotoMarker2';
-    ecGotoMarker3: Result:= 'GotoMarker3';
-    ecGotoMarker4: Result:= 'GotoMarker4';
-    ecGotoMarker5: Result:= 'GotoMarker5';
-    ecGotoMarker6: Result:= 'GotoMarker6';
-    ecGotoMarker7: Result:= 'GotoMarker7';
-    ecGotoMarker8: Result:= 'GotoMarker8';
-    ecGotoMarker9: Result:= 'GotoMarker9';
-    ecSetMarker0: Result:= 'SetMarker0';
-    ecSetMarker1: Result:= 'SetMarker1';
-    ecSetMarker2: Result:= 'SetMarker2';
-    ecSetMarker3: Result:= 'SetMarker3';
-    ecSetMarker4: Result:= 'SetMarker4';
-    ecSetMarker5: Result:= 'SetMarker5';
-    ecSetMarker6: Result:= 'SetMarker6';
-    ecSetMarker7: Result:= 'SetMarker7';
-    ecSetMarker8: Result:= 'SetMarker8';
-    ecSetMarker9: Result:= 'SetMarker9';
+    ecShiftTab: Result:= 'Shift Tab';
+    ecMatchBracket: Result:= 'Match Bracket';
+    ecNormalSelect: Result:= 'Normal Select';
+    ecColumnSelect: Result:= 'Column Select';
+    ecLineSelect: Result:= 'Line Select';
+    ecAutoCompletion: Result:= 'Auto Completion';
+    ecUserFirst: Result:= 'User First';
+    ecGotoMarker0: Result:= 'Goto Marker 0';
+    ecGotoMarker1: Result:= 'Goto Marker 1';
+    ecGotoMarker2: Result:= 'Goto Marker 2';
+    ecGotoMarker3: Result:= 'Goto Marker 3';
+    ecGotoMarker4: Result:= 'Goto Marker 4';
+    ecGotoMarker5: Result:= 'Goto Marker 5';
+    ecGotoMarker6: Result:= 'Goto Marker 6';
+    ecGotoMarker7: Result:= 'Goto Marker 7';
+    ecGotoMarker8: Result:= 'Goto Marker 8';
+    ecGotoMarker9: Result:= 'Goto Marker 9';
+    ecSetMarker0: Result:= 'Set Marker 0';
+    ecSetMarker1: Result:= 'Set Marker 1';
+    ecSetMarker2: Result:= 'Set Marker 2';
+    ecSetMarker3: Result:= 'Set Marker 3';
+    ecSetMarker4: Result:= 'Set Marker 4';
+    ecSetMarker5: Result:= 'Set Marker 5';
+    ecSetMarker6: Result:= 'Set Marker 6';
+    ecSetMarker7: Result:= 'Set Marker 7';
+    ecSetMarker8: Result:= 'Set Marker 8';
+    ecSetMarker9: Result:= 'Set Marker 9';
+    ecPeriod: Result:= 'period';
 
-    ecFind: Result:= 'Find text';
-    ecFindNext: Result:= 'Find next';
-    ecFindPrevious: Result:= 'Find previous';
-    ecFindInFiles: Result:= 'Find in files';
-    ecReplace: Result:= 'Replace text';
-    ecFindProcedureDefinition: Result:= 'find procedure definition';
-    ecFindProcedureMethod: Result:= 'find procedure method';
-    ecGotoLineNumber: Result:= 'goto line number';
-    ecJumpBack: Result:='jump back';
-    ecJumpForward: Result:='jump forward';
-    ecAddJumpPoint: Result:='add jump point';
-    ecViewJumpHistory: Result:='view jump history';
-    ecFindDeclaration: Result:='find declaration';
-    ecFindBlockOtherEnd: Result:='find block other end';
-    ecFindBlockStart: Result:='find block start';
+    // sourcenotebook
+    ecJumpToEditor: Result:='jump to editor';
     ecNextEditor: Result:= 'next editor';
     ecPrevEditor: Result:= 'previous editor';
-    ecPeriod: Result:= 'period';
-    ecWordCompletion: Result:= 'word completion';
-    ecCompleteCode: Result:= 'complete code';
-    ecIdentCompletion: Result:= 'identifier completion';
-    ecSyntaxCheck: Result:='syntax check';
-    ecGuessUnclosedBlock: Result:='guess unclosed block';
-    ecSave: Result:= 'save';
-    ecOpen: Result:= 'open';
-    ecClose: Result:= 'close';
-    ecBuild: Result:= 'build program/project';
-    ecBuildAll: Result:= 'build all files of program/project';
-    ecBuildLazarus: Result:= 'build lazarus';
-    ecRun: Result:= 'run program';
-    ecPause: Result:= 'pause program';
-    ecStepInto: Result:= 'step into';
-    ecStepOver: Result:= 'step over';
-    ecRunToCursor: Result:= 'run to cursor';
-    ecStopProgram: Result:= 'stop program';
-    ecJumpToEditor: Result:='jump to editor';
-    ecToggleFormUnit: Result:='toggle between form and unit';
     ecGotoEditor1: Result:='goto editor 1';
     ecGotoEditor2: Result:='goto editor 2';
     ecGotoEditor3: Result:='goto editor 3';
@@ -382,7 +423,78 @@ begin
     ecGotoEditor8: Result:='goto editor 8';
     ecGotoEditor9: Result:='goto editor 9';
     ecGotoEditor0: Result:='goto editor 10';
-    ecExtToolFirst..ecExtToolLast: 
+
+    // file menu
+    ecNew: Result:='new';
+    ecNewUnit: Result:='new unit';
+    ecNewForm: Result:='new form';
+    ecOpen: Result:= 'open';
+    ecSave: Result:= 'save';
+    ecSaveAs: Result:= 'save as';
+    ecSaveAll: Result:= 'save all';
+    ecClose: Result:= 'close';
+    ecCloseAll: Result:= 'close all';
+    ecQuit: Result:= 'quit';
+
+    // search menu
+    ecFind: Result:= 'Find Text';
+    ecFindNext: Result:= 'Find Next';
+    ecFindPrevious: Result:= 'Find Previous';
+    ecFindInFiles: Result:= 'Find in files';
+    ecReplace: Result:= 'Replace Text';
+    ecFindProcedureDefinition: Result:= 'find procedure definition';
+    ecFindProcedureMethod: Result:= 'find procedure method';
+    ecGotoLineNumber: Result:= 'goto line number';
+    ecJumpBack: Result:='jump back';
+    ecJumpForward: Result:='jump forward';
+    ecAddJumpPoint: Result:='add jump point';
+    ecViewJumpHistory: Result:='view jump history';
+    ecOpenFileAtCursor: Result:='open file at cursor';
+    
+    // view menu
+    ecToggleFormUnit: Result:= 'switch between form and source';
+    ecToggleObjectInsp: Result:= 'view object inspector';
+    ecToggleProjectExpl: Result:= 'view project explorer';
+    ecToggleCodeExpl: Result:= 'view code explorer';
+    ecToggleMessages: Result:= 'view messages';
+    ecToggleWatches: Result:= 'view watches';
+    ecToggleBreakPoints: Result:= 'view breakpoints';
+    ecToggleDebuggerOut: Result:= 'view debugger output';
+    ecViewUnits: Result:= 'view units';
+    ecViewForms: Result:= 'view forms';
+
+    // codetools
+    ecWordCompletion: Result:= 'word completion';
+    ecCompleteCode: Result:= 'complete code';
+    ecIdentCompletion: Result:= 'identifier completion';
+    ecSyntaxCheck: Result:='syntax check';
+    ecGuessUnclosedBlock: Result:='guess unclosed block';
+    ecFindDeclaration: Result:='find declaration';
+    ecFindBlockOtherEnd: Result:='find block other end';
+    ecFindBlockStart: Result:='find block start';
+
+    ecBuild: Result:= 'build program/project';
+    ecBuildAll: Result:= 'build all files of program/project';
+    ecRun: Result:= 'run program';
+    ecPause: Result:= 'pause program';
+    ecStepInto: Result:= 'step into';
+    ecStepOver: Result:= 'step over';
+    ecRunToCursor: Result:= 'run to cursor';
+    ecStopProgram: Result:= 'stop program';
+    
+    ecRunParameters: Result:= 'run parameters';
+    ecCompilerOptions: Result:= 'compiler options';
+    ecExtToolSettings: Result:= 'external tools settings';
+    ecConfigBuildLazarus: Result:= 'configure build-lazarus';
+    ecEnvironmentOptions: Result:= 'environment options';
+    ecEditorOptions: Result:= 'editor options';
+    ecCodeToolsOptions: Result:= 'codetools options';
+
+    // help menu
+    ecAboutLazarus: Result:= 'about lazarus';
+
+    ecBuildLazarus: Result:= 'build lazarus';
+    ecExtToolFirst..ecExtToolLast:
               Result:='external tool '+IntToStr(cmd-ecExtToolFirst+1);
     
     else
@@ -507,11 +619,11 @@ end;
 
 { TKeyMappingEditForm }
 
-constructor TKeyMappingEditForm.Create(AOwner:TComponent);
+constructor TKeyMappingEditForm.Create(TheOwner:TComponent);
 var a:integer;
   s:AnsiString;
 begin
-  inherited Create(AOwner);
+  inherited Create(TheOwner);
   if LazarusResources.Find(ClassName)=nil then begin
     SetBounds((Screen.Width-200) div 2,(Screen.Height-270) div 2,216,310);
     Caption:='Edit keys for command';
@@ -869,8 +981,8 @@ end;
 
 { TKeyCommandRelation }
 
-constructor TKeyCommandRelation.Create(AName:ShortString;
-  ACommand:TSynEditorCommand;
+constructor TKeyCommandRelation.Create(AParent: TKeyCommandCategory;
+  AName:ShortString; ACommand:TSynEditorCommand;
   AKey1:Word;AShift1:TShiftState;AKey2:Word;AShift2:TShiftState);
 begin
   Name:=AName;
@@ -879,104 +991,202 @@ begin
   Shift1:=AShift1;
   Key2:=AKey2;
   Shift2:=AShift2;
+  Parent:=AParent;
+end;
+
+procedure TKeyCommandRelation.SetParent(const AValue: TKeyCommandCategory);
+begin
+  if Parent<>AValue then begin
+    // unbind
+    if Parent<>nil then begin
+      Parent.Remove(Self);
+    end;
+    // bind
+    fParent:=AValue;
+    if Parent<>nil then begin
+      Parent.Add(Self);
+    end;
+  end;
+end;
+
+function TKeyCommandRelation.AsShortCut: TShortCut;
+begin
+  Result:=Key1;
+  if ssCtrl in Shift1 then
+    Result:=Result+scCtrl;
+  if ssShift in Shift1 then
+    Result:=Result+scShift;
+  if ssAlt in Shift1 then
+    Result:=Result+scAlt;
 end;
 
 { TKeyCommandRelationList }
 
 constructor TKeyCommandRelationList.Create;
+var C: TKeyCommandCategory;
 begin
   inherited Create;
   FRelations:=TList.Create;
+  fCategories:=TList.Create;
   fExtToolCount:=0;
 
-  // normal synedit commands
-  Add('Select All',ecSelectAll,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add('Copy selection to clipboard',ecCopy,VK_C,[ssCtrl],VK_Insert,[ssCtrl]);
-  Add('Cut selection to clipboard',ecCut,VK_X,[ssCtrl],VK_Delete,[ssShift]);
-  Add('Paste clipboard to current position',ecPaste,VK_V,[ssCtrl],VK_Insert,[ssShift]);
-  Add('Undo',ecUndo,VK_Z,[ssCtrl],VK_UNKNOWN,[]);
-  Add('Redo',ecRedo,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add('Normal selection mode',ecNormalSelect,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add('Column selection mode',ecColumnSelect,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add('Line selection mode',ecLineSelect,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add('Go to matching bracket',ecMatchBracket,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add('Indent block',ecBlockIndent,VK_I,[ssCtrl],VK_UNKNOWN,[]);
-  Add('Unindent block',ecBlockUnindent,VK_U,[ssCtrl],VK_UNKNOWN,[]);
-  Add('Go to marker 0',ecGotoMarker0,VK_0,[ssCtrl],VK_UNKNOWN,[]);
-  Add('Go to marker 1',ecGotoMarker1,VK_1,[ssCtrl],VK_UNKNOWN,[]);
-  Add('Go to marker 2',ecGotoMarker2,VK_2,[ssCtrl],VK_UNKNOWN,[]);
-  Add('Go to marker 3',ecGotoMarker3,VK_3,[ssCtrl],VK_UNKNOWN,[]);
-  Add('Go to marker 4',ecGotoMarker4,VK_4,[ssCtrl],VK_UNKNOWN,[]);
-  Add('Go to marker 5',ecGotoMarker5,VK_5,[ssCtrl],VK_UNKNOWN,[]);
-  Add('Go to marker 6',ecGotoMarker6,VK_6,[ssCtrl],VK_UNKNOWN,[]);
-  Add('Go to marker 7',ecGotoMarker7,VK_7,[ssCtrl],VK_UNKNOWN,[]);
-  Add('Go to marker 8',ecGotoMarker8,VK_8,[ssCtrl],VK_UNKNOWN,[]);
-  Add('Go to marker 9',ecGotoMarker9,VK_9,[ssCtrl],VK_UNKNOWN,[]);
-  Add('Set marker 0',ecSetMarker0,VK_0,[ssShift,ssCtrl],VK_UNKNOWN,[]);
-  Add('Set marker 1',ecSetMarker1,VK_1,[ssShift,ssCtrl],VK_UNKNOWN,[]);
-  Add('Set marker 2',ecSetMarker2,VK_2,[ssShift,ssCtrl],VK_UNKNOWN,[]);
-  Add('Set marker 3',ecSetMarker3,VK_3,[ssShift,ssCtrl],VK_UNKNOWN,[]);
-  Add('Set marker 4',ecSetMarker4,VK_4,[ssShift,ssCtrl],VK_UNKNOWN,[]);
-  Add('Set marker 5',ecSetMarker5,VK_5,[ssShift,ssCtrl],VK_UNKNOWN,[]);
-  Add('Set marker 6',ecSetMarker6,VK_6,[ssShift,ssCtrl],VK_UNKNOWN,[]);
-  Add('Set marker 7',ecSetMarker7,VK_7,[ssShift,ssCtrl],VK_UNKNOWN,[]);
-  Add('Set marker 8',ecSetMarker8,VK_8,[ssShift,ssCtrl],VK_UNKNOWN,[]);
-  Add('Set marker 9',ecSetMarker9,VK_9,[ssShift,ssCtrl],VK_UNKNOWN,[]);
-  Add('Code template completion',ecAutoCompletion,VK_J,[ssCtrl],VK_UNKNOWN,[]);
-
-  // user defined commands
-  Add('Word completion',ecWordCompletion,VK_W,[ssCtrl],VK_UNKNOWN,[]);
-  Add('Complete code',ecCompleteCode,VK_C,[ssCtrl,ssShift],VK_UNKNOWN,[]);
-  Add('Identifier completion',ecIdentCompletion,VK_SPACE,[ssCtrl],VK_UNKNOWN,[]);
-  Add('Syntax check',ecSyntaxCheck,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add('Guess unclosed block',ecGuessUnclosedBlock,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-
-  Add('Find text',ecFind,VK_F,[SSCtrl],VK_UNKNOWN,[]);
-  Add('Find next',ecFindNext,VK_F3,[],VK_UNKNOWN,[]);
-  Add('Find previous',ecFindPrevious,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add('Find in files',ecFindInFiles,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add('Replace text',ecReplace,VK_R,[SSCtrl],VK_UNKNOWN,[]);
-  Add('Find procedure definiton',ecFindProcedureDefinition,
-                                 VK_UP,[ssShift,SSCtrl],VK_UNKNOWN,[]);
-  Add('Find procedure method',ecFindProcedureMethod,
-                                 VK_DOWN,[ssShift,SSCtrl],VK_UNKNOWN,[]);
-  Add('Find declaration',ecFindDeclaration,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add('Find block other end',ecFindBlockOtherEnd,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add('Find block start',ecFindBlockStart,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add('Go to line number',ecGotoLineNumber,VK_G,[ssCtrl],VK_UNKNOWN,[]);
-  Add('Jump back',ecJumpBack,VK_H,[ssCtrl],VK_UNKNOWN,[]);
-  Add('Jump forward',ecJumpForward,VK_H,[ssCtrl,ssShift],VK_UNKNOWN,[]);
-  Add('Add jump point',ecAddJumpPoint,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add('View jump history',ecViewJumpHistory,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  // create default keymapping
   
-  Add('Go to next editor',ecNextEditor, VK_S, [ssShift,ssCtrl], VK_UNKNOWN, []);
-  Add('Go to prior editor',ecPrevEditor, VK_A, [ssShift,ssCtrl], VK_UNKNOWN, []);
+  // selection
+  C:=Categories[AddCategory('Selection','Text selection commands')];
+  Add(C,'Select All',ecSelectAll,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Copy selection to clipboard',ecCopy,VK_C,[ssCtrl],VK_Insert,[ssCtrl]);
+  Add(C,'Cut selection to clipboard',ecCut,VK_X,[ssCtrl],VK_Delete,[ssShift]);
+  Add(C,'Paste clipboard to current position',ecPaste,VK_V,[ssCtrl],VK_Insert,[ssShift]);
+  Add(C,'Normal selection mode',ecNormalSelect,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Column selection mode',ecColumnSelect,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Line selection mode',ecLineSelect,VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
-  Add('Save',ecSave,VK_S,[ssCtrl],VK_UNKNOWN,[]);
-  Add('Open',ecOpen,VK_O,[ssCtrl],VK_UNKNOWN,[]);
-  Add('Close',ecClose,VK_F4,[ssCtrl],VK_UNKNOWN,[]);
-  Add('Build project/program',ecBuild,VK_F9,[ssCtrl],VK_UNKNOWN,[]);
-  Add('Build all files of project/program',ecBuildAll,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add('Build Lazarus',ecBuildLazarus,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add('Run program',ecRun,VK_F9,[],VK_UNKNOWN,[]);
-  Add('Pause program',ecPause,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add('Step into',ecStepInto,VK_F7,[],VK_UNKNOWN,[]);
-  Add('Step over',ecStepOver,VK_F8,[],VK_UNKNOWN,[]);
-  Add('Run to cursor',ecStepOver,VK_F4,[],VK_UNKNOWN,[]);
-  Add('Stop program',ecStepOver,VK_F2,[SSCtrl],VK_UNKNOWN,[]);
+  // simple tools
+  C:=Categories[AddCategory('SimpleTools','Simple tools commands')];
+  Add(C,'Indent block',ecBlockIndent,VK_I,[ssCtrl],VK_UNKNOWN,[]);
+  Add(C,'Unindent block',ecBlockUnindent,VK_U,[ssCtrl],VK_UNKNOWN,[]);
 
-  Add('Go to source editor 1',ecGotoEditor0,VK_1,[ssAlt],VK_UNKNOWN,[]);
-  Add('Go to source editor 2',ecGotoEditor0,VK_2,[ssAlt],VK_UNKNOWN,[]);
-  Add('Go to source editor 3',ecGotoEditor0,VK_3,[ssAlt],VK_UNKNOWN,[]);
-  Add('Go to source editor 4',ecGotoEditor0,VK_4,[ssAlt],VK_UNKNOWN,[]);
-  Add('Go to source editor 5',ecGotoEditor0,VK_5,[ssAlt],VK_UNKNOWN,[]);
-  Add('Go to source editor 6',ecGotoEditor0,VK_6,[ssAlt],VK_UNKNOWN,[]);
-  Add('Go to source editor 7',ecGotoEditor0,VK_7,[ssAlt],VK_UNKNOWN,[]);
-  Add('Go to source editor 8',ecGotoEditor0,VK_8,[ssAlt],VK_UNKNOWN,[]);
-  Add('Go to source editor 9',ecGotoEditor0,VK_9,[ssAlt],VK_UNKNOWN,[]);
-  Add('Go to source editor 10',ecGotoEditor0,VK_0,[ssAlt],VK_UNKNOWN,[]);
+  // command commands
+  C:=Categories[AddCategory('CommandCommands','Command commands')];
+  Add(C,'Undo',ecUndo,VK_Z,[ssCtrl],VK_UNKNOWN,[]);
+  Add(C,'Redo',ecRedo,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  
+  // search & replace
+  C:=Categories[AddCategory('SearchReplace','Search and Replace commands')];
+  Add(C,'Go to matching bracket',ecMatchBracket,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Find text',ecFind,VK_F,[SSCtrl],VK_UNKNOWN,[]);
+  Add(C,'Find next',ecFindNext,VK_F3,[],VK_UNKNOWN,[]);
+  Add(C,'Find previous',ecFindPrevious,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Find in files',ecFindInFiles,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Replace text',ecReplace,VK_R,[SSCtrl],VK_UNKNOWN,[]);
+  Add(C,'Go to line number',ecGotoLineNumber,VK_G,[ssCtrl],VK_UNKNOWN,[]);
+  Add(C,'Jump back',ecJumpBack,VK_H,[ssCtrl],VK_UNKNOWN,[]);
+  Add(C,'Jump forward',ecJumpForward,VK_H,[ssCtrl,ssShift],VK_UNKNOWN,[]);
+  Add(C,'Add jump point',ecAddJumpPoint,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'View jump history',ecViewJumpHistory,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Open file at cursor',ecOpenFileAtCursor,VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
-  Add('Toggle between Unit and Form',ecToggleFormUnit,VK_F12,[],VK_UNKNOWN,[]);
+  // marker
+  C:=Categories[AddCategory('Marker','Marker commands')];
+  Add(C,'Go to marker 0',ecGotoMarker0,VK_0,[ssCtrl],VK_UNKNOWN,[]);
+  Add(C,'Go to marker 1',ecGotoMarker1,VK_1,[ssCtrl],VK_UNKNOWN,[]);
+  Add(C,'Go to marker 2',ecGotoMarker2,VK_2,[ssCtrl],VK_UNKNOWN,[]);
+  Add(C,'Go to marker 3',ecGotoMarker3,VK_3,[ssCtrl],VK_UNKNOWN,[]);
+  Add(C,'Go to marker 4',ecGotoMarker4,VK_4,[ssCtrl],VK_UNKNOWN,[]);
+  Add(C,'Go to marker 5',ecGotoMarker5,VK_5,[ssCtrl],VK_UNKNOWN,[]);
+  Add(C,'Go to marker 6',ecGotoMarker6,VK_6,[ssCtrl],VK_UNKNOWN,[]);
+  Add(C,'Go to marker 7',ecGotoMarker7,VK_7,[ssCtrl],VK_UNKNOWN,[]);
+  Add(C,'Go to marker 8',ecGotoMarker8,VK_8,[ssCtrl],VK_UNKNOWN,[]);
+  Add(C,'Go to marker 9',ecGotoMarker9,VK_9,[ssCtrl],VK_UNKNOWN,[]);
+  Add(C,'Set marker 0',ecSetMarker0,VK_0,[ssShift,ssCtrl],VK_UNKNOWN,[]);
+  Add(C,'Set marker 1',ecSetMarker1,VK_1,[ssShift,ssCtrl],VK_UNKNOWN,[]);
+  Add(C,'Set marker 2',ecSetMarker2,VK_2,[ssShift,ssCtrl],VK_UNKNOWN,[]);
+  Add(C,'Set marker 3',ecSetMarker3,VK_3,[ssShift,ssCtrl],VK_UNKNOWN,[]);
+  Add(C,'Set marker 4',ecSetMarker4,VK_4,[ssShift,ssCtrl],VK_UNKNOWN,[]);
+  Add(C,'Set marker 5',ecSetMarker5,VK_5,[ssShift,ssCtrl],VK_UNKNOWN,[]);
+  Add(C,'Set marker 6',ecSetMarker6,VK_6,[ssShift,ssCtrl],VK_UNKNOWN,[]);
+  Add(C,'Set marker 7',ecSetMarker7,VK_7,[ssShift,ssCtrl],VK_UNKNOWN,[]);
+  Add(C,'Set marker 8',ecSetMarker8,VK_8,[ssShift,ssCtrl],VK_UNKNOWN,[]);
+  Add(C,'Set marker 9',ecSetMarker9,VK_9,[ssShift,ssCtrl],VK_UNKNOWN,[]);
+  
+  // codetools
+  C:=Categories[AddCategory('CodeTools','CodeTools commands')];
+  Add(C,'Code template completion',ecAutoCompletion,VK_J,[ssCtrl],VK_UNKNOWN,[]);
+  Add(C,'Word completion',ecWordCompletion,VK_W,[ssCtrl],VK_UNKNOWN,[]);
+  Add(C,'Complete code',ecCompleteCode,VK_C,[ssCtrl,ssShift],VK_UNKNOWN,[]);
+  Add(C,'Identifier completion',ecIdentCompletion,VK_SPACE,[ssCtrl],VK_UNKNOWN,[]);
+  Add(C,'Syntax check',ecSyntaxCheck,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Guess unclosed block',ecGuessUnclosedBlock,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Find procedure definiton',ecFindProcedureDefinition,
+                                 VK_UP,[ssShift,SSCtrl],VK_UNKNOWN,[]);
+  Add(C,'Find procedure method',ecFindProcedureMethod,
+                                 VK_DOWN,[ssShift,SSCtrl],VK_UNKNOWN,[]);
+  Add(C,'Find declaration',ecFindDeclaration,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Find block other end',ecFindBlockOtherEnd,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Find block start',ecFindBlockStart,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+
+  // source notebook
+  C:=Categories[AddCategory('SourceNotebook','Source Notebook commands')];
+  Add(C,'Go to next editor',ecNextEditor, VK_S, [ssShift,ssCtrl], VK_UNKNOWN, []);
+  Add(C,'Go to prior editor',ecPrevEditor, VK_A, [ssShift,ssCtrl], VK_UNKNOWN, []);
+  Add(C,'Go to source editor 1',ecGotoEditor0,VK_1,[ssAlt],VK_UNKNOWN,[]);
+  Add(C,'Go to source editor 2',ecGotoEditor0,VK_2,[ssAlt],VK_UNKNOWN,[]);
+  Add(C,'Go to source editor 3',ecGotoEditor0,VK_3,[ssAlt],VK_UNKNOWN,[]);
+  Add(C,'Go to source editor 4',ecGotoEditor0,VK_4,[ssAlt],VK_UNKNOWN,[]);
+  Add(C,'Go to source editor 5',ecGotoEditor0,VK_5,[ssAlt],VK_UNKNOWN,[]);
+  Add(C,'Go to source editor 6',ecGotoEditor0,VK_6,[ssAlt],VK_UNKNOWN,[]);
+  Add(C,'Go to source editor 7',ecGotoEditor0,VK_7,[ssAlt],VK_UNKNOWN,[]);
+  Add(C,'Go to source editor 8',ecGotoEditor0,VK_8,[ssAlt],VK_UNKNOWN,[]);
+  Add(C,'Go to source editor 9',ecGotoEditor0,VK_9,[ssAlt],VK_UNKNOWN,[]);
+  Add(C,'Go to source editor 10',ecGotoEditor0,VK_0,[ssAlt],VK_UNKNOWN,[]);
+  
+  // file menu
+  C:=Categories[AddCategory('FileMenu','File menu commands')];
+  Add(C,'New',ecNew,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'NewUnit',ecNewUnit,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'NewForm',ecNewForm,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Open',ecOpen,VK_O,[ssCtrl],VK_UNKNOWN,[]);
+  Add(C,'Save',ecSave,VK_S,[ssCtrl],VK_UNKNOWN,[]);
+  Add(C,'SaveAs',ecSaveAs,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'SaveAll',ecSaveAll,VK_S,[ssCtrl,ssShift],VK_UNKNOWN,[]);
+  Add(C,'Close',ecClose,VK_F4,[ssCtrl],VK_UNKNOWN,[]);
+  Add(C,'CloseAll',ecCloseAll,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Quit',ecQuit,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+
+  // view menu
+  C:=Categories[AddCategory('ViewMenu','View menu commands')];
+  Add(C,'Toggle view Object Inspector',ecToggleObjectInsp,VK_F11,[],VK_UNKNOWN,[]);
+  Add(C,'Toggle view Project Explorer',ecToggleProjectExpl,VK_F11,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
+  Add(C,'Toggle view Code Explorer',ecToggleCodeExpl,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Toggle view Messages',ecToggleMessages,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Toggle view Watches',ecToggleWatches,VK_W,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
+  Add(C,'Toggle view Breakpoints',ecToggleBreakPoints,VK_B,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
+  Add(C,'Toggle view Debugger Output',ecToggleDebuggerOut,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'View Units',ecViewUnits,VK_F12,[ssCtrl],VK_UNKNOWN,[]);
+  Add(C,'View Forms',ecViewForms,VK_F12,[ssShift],VK_UNKNOWN,[]);
+  Add(C,'Focus to source editor',ecJumpToEditor,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Toggle between Unit and Form',ecToggleFormUnit,VK_F12,[],VK_UNKNOWN,[]);
+
+  // project menu
+  C:=Categories[AddCategory('ProjectMenu','Project menu commands')];
+  Add(C,'New project',ecNewProject,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Open project',ecOpenProject,VK_F11,[ssCtrl],VK_UNKNOWN,[]);
+  Add(C,'Save project',ecSaveProject,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Save project as',ecSaveProjectAs,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'add active unit to project',ecAddCurUnitToProj,VK_F11,[ssShift],VK_UNKNOWN,[]);
+  Add(C,'remove active unit from project',ecRemoveFromProj,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'View project source',ecViewProjectSource,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'View project options',ecProjectOptions,VK_F11,[ssShift,ssCtrl],VK_UNKNOWN,[]);
+
+  // run menu
+  C:=Categories[AddCategory('RunMenu','Run menu commands')];
+  Add(C,'Build project/program',ecBuild,VK_F9,[ssCtrl],VK_UNKNOWN,[]);
+  Add(C,'Build all files of project/program',ecBuildAll,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Run program',ecRun,VK_F9,[],VK_UNKNOWN,[]);
+  Add(C,'Pause program',ecPause,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Step into',ecStepInto,VK_F7,[],VK_UNKNOWN,[]);
+  Add(C,'Step over',ecStepOver,VK_F8,[],VK_UNKNOWN,[]);
+  Add(C,'Run to cursor',ecStepOver,VK_F4,[],VK_UNKNOWN,[]);
+  Add(C,'Stop program',ecStepOver,VK_F2,[SSCtrl],VK_UNKNOWN,[]);
+  Add(C,'Compiler options',ecCompilerOptions,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Run parameters',ecRunParameters,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+
+  // tools menu
+  C:=Categories[AddCategory(KeyCategoryToolMenuName,'Tools menu commands')];
+  Add(C,'External Tools settings',ecExtToolSettings,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Build Lazarus',ecBuildLazarus,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Configure "Build Lazarus"',ecConfigBuildLazarus,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+
+  // environment menu
+  C:=Categories[AddCategory('EnvironmentMenu','Environment menu commands')];
+  Add(C,'General environment options',ecEnvironmentOptions,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Editor options',ecEditorOptions,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'CodeTools options',ecCodeToolsOptions,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+
+  // help menu
+  C:=Categories[AddCategory('HelpMenu','Help menu commands')];
+  Add(C,'About Lazarus',ecAboutLazarus,VK_UNKNOWN,[],VK_UNKNOWN,[]);
 end;
 
 destructor TKeyCommandRelationList.Destroy;
@@ -985,6 +1195,9 @@ begin
   for a:=0 to FRelations.Count-1 do
     Relations[a].Free;
   FRelations.Free;
+  for a:=0 to fCategories.Count-1 do
+    Categories[a].Free;
+  fCategories.Free;
   inherited Destroy;
 end;
 
@@ -1004,33 +1217,42 @@ begin
   Result:=FRelations.Count;
 end;
 
-function TKeyCommandRelationList.Add(Name:shortstring; 
+function TKeyCommandRelationList.Add(Category: TKeyCommandCategory;
+  const Name:shortstring;
   Command:TSynEditorCommand;
   Key1:Word; Shift1:TShiftState; Key2:Word; Shift2:TShiftState):integer;
 begin
-  Result:=FRelations.Add(TKeyCommandRelation.Create(Name,Command
+  Result:=FRelations.Add(TKeyCommandRelation.Create(Category,Name,Command
       ,Key1,Shift1,Key2,Shift2));
 end;
 
 procedure TKeyCommandRelationList.SetExtToolCount(NewCount: integer);
 var i: integer;
+  ExtToolCat: TKeyCommandCategory;
+  ExtToolRelation: TKeyCommandRelation;
 begin
   if NewCount=fExtToolCount then exit;
+  ExtToolCat:=FindCategoryByName(KeyCategoryToolMenuName);
   if NewCount>fExtToolCount then begin
     // increase available external tool commands
     while NewCount>fExtToolCount do begin
-      Add('External tool '+IntToStr(fExtToolCount),
+      Add(ExtToolCat,'External tool '+IntToStr(fExtToolCount),
            ecExtToolFirst+fExtToolCount,VK_UNKNOWN,[],VK_UNKNOWN,[]);
       inc(fExtToolCount);
     end;
   end else begin
     // decrease available external tool commands
-    i:=Count-1;
+    // they are always at the end of the Tools menu
+    i:=ExtToolCat.Count-1;
     while (i>=0) and (fExtToolCount>NewCount) do begin
-      if (Relations[i].Command>=ecExtToolFirst)
-      and (Relations[i].Command<=ecExtToolLast) then begin
-        fRelations.Delete(i);
-        dec(fExtToolCount);
+      if TObject(ExtToolCat[i]) is TKeyCommandRelation then begin
+        ExtToolRelation:=TKeyCommandRelation(ExtToolCat[i]);
+        if (ExtToolRelation.Command>=ecExtToolFirst)
+        and (ExtToolRelation.Command<=ecExtToolLast) then begin
+          fRelations.Remove(ExtToolRelation);
+          ExtToolCat.Delete(i);
+          dec(fExtToolCount);
+        end;
       end;
       dec(i);
     end;
@@ -1064,16 +1286,21 @@ var a,b,p:integer;
   end;
 
 // LoadFromXMLConfig
+var FileVersion: integer;
 begin
+  FileVersion:=XMLConfig.GetValue(Prefix+'Version/Value',0);
   ExtToolCount:=XMLConfig.GetValue(Prefix+'ExternalToolCount/Value',0);
   for a:=0 to FRelations.Count-1 do begin
     Name:=lowercase(Relations[a].Name);
     for b:=1 to length(Name) do
-      if Name[b]=' ' then Name[b]:='_';
-    with Relations[a] do 
+      if not (Name[b] in ['a'..'z','A'..'Z','0'..'9']) then Name[b]:='_';
+    with Relations[a] do
       DefaultStr:=IntToStr(Key1)+','+ShiftStateToStr(Shift1)
               +','+IntToStr(Key2)+','+ShiftStateToStr(Shift2);
-    NewValue:=XMLConfig.GetValue(Prefix+Name,DefaultStr);
+    if FileVersion<2 then
+      NewValue:=XMLConfig.GetValue(Prefix+Name,DefaultStr)
+    else
+      NewValue:=XMLConfig.GetValue(Prefix+Name+'/Value',DefaultStr);
     p:=1;
     with Relations[a] do begin
       Key1:=ReadNextInt;
@@ -1091,15 +1318,16 @@ var a,b:integer;
   Name:ShortString;
   s:AnsiString;
 begin
+  XMLConfig.SetValue(Prefix+'Version/Value',KeyMappingFormatVersion);
   XMLConfig.SetValue(Prefix+'ExternalToolCount/Value',ExtToolCount);
   for a:=0 to FRelations.Count-1 do begin
     Name:=lowercase(Relations[a].Name);
     for b:=1 to length(Name) do
-      if Name[b]=' ' then Name[b]:='_';
-    with Relations[a] do 
+      if not (Name[b] in ['a'..'z','A'..'Z','0'..'9']) then Name[b]:='_';
+    with Relations[a] do
       s:=IntToStr(Key1)+','+ShiftStateToStr(Shift1)
         +','+IntToStr(Key2)+','+ShiftStateToStr(Shift2);
-    XMLConfig.SetValue(Prefix+Name,s);
+    XMLConfig.SetValue(Prefix+Name+'/Value',s);
   end;
   Result:=true;
 end;
@@ -1188,6 +1416,76 @@ begin
   end;
 end;
 
+function TKeyCommandRelationList.GetCategory(Index: integer
+  ): TKeyCommandCategory;
+begin
+  Result:=TKeyCommandCategory(fCategories[Index]);
+end;
+
+function TKeyCommandRelationList.CategoryCount: integer;
+begin
+  Result:=fCategories.Count;
+end;
+
+function TKeyCommandRelationList.AddCategory(const Name, Description: string
+  ): integer;
+begin
+  Result:=fCategories.Add(TKeyCommandCategory.Create(Name,Description));
+end;
+
+function TKeyCommandRelationList.FindCategoryByName(const CategoryName: string
+  ): TKeyCommandCategory;
+var i: integer;
+begin
+  for i:=0 to CategoryCount-1 do
+    if CategoryName=Categories[i].Name then begin
+      Result:=Categories[i];
+      exit;
+    end;
+  Result:=nil;
+end;
+
+function TKeyCommandRelationList.IndexOf(ARelation: TKeyCommandRelation
+  ): integer;
+begin
+  Result:=fRelations.IndexOf(ARelation);
+end;
+
+function TKeyCommandRelationList.CommandToShortCut(ACommand: TSynEditorCommand
+  ): TShortCut;
+var ARelation: TKeyCommandRelation;
+begin
+  ARelation:=FindByCommand(ACommand);
+  if ARelation<>nil then
+    Result:=ARelation.AsShortCut
+  else
+    Result:=VK_UNKNOWN;
+end;
+
+{ TKeyCommandCategory }
+
+procedure TKeyCommandCategory.Clear;
+begin
+  Name:='';
+  Description:='';
+  inherited Clear;
+end;
+
+procedure TKeyCommandCategory.Delete(Index: Integer);
+begin
+  TObject(Items[Index]).Free;
+  inherited Delete(Index);
+end;
+
+constructor TKeyCommandCategory.Create(const AName, ADescription: string);
+begin
+  inherited Create;
+  Name:=AName;
+  Description:=ADescription;
+end;
+
+
+//------------------------------------------------------------------------------
 initialization
   KeyMappingEditForm:=nil;
 

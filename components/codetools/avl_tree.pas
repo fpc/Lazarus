@@ -52,9 +52,11 @@ type
     procedure BalanceAfterInsert(ANode: TAVLTreeNode);
     procedure BalanceAfterDelete(ANode: TAVLTreeNode);
     function FindInsertPos(Data: Pointer): TAVLTreeNode;
+    procedure SetOnCompare(const AValue: TListSortCompare);
   public
     Root: TAVLTreeNode;
     function Find(Data: Pointer): TAVLTreeNode;
+    function FindNearest(Data: Pointer): TAVLTreeNode;
     function FindSuccessor(ANode: TAVLTreeNode): TAVLTreeNode;
     function FindPrecessor(ANode: TAVLTreeNode): TAVLTreeNode;
     function FindLowest: TAVLTreeNode;
@@ -64,7 +66,7 @@ type
     procedure Delete(ANode: TAVLTreeNode);
     procedure MoveDataLeftMost(var ANode: TAVLTreeNode);
     procedure MoveDataRightMost(var ANode: TAVLTreeNode);
-    property OnCompare: TListSortCompare read FOnCompare write FOnCompare;
+    property OnCompare: TListSortCompare read FOnCompare write SetOnCompare;
     procedure Clear;
     procedure FreeAndClear;
     procedure FreeAndDelete(ANode: TAVLTreeNode);
@@ -598,6 +600,21 @@ begin
     Comp:=OnCompare(Data,Result.Data);
     if Comp=0 then exit;
     if Comp<0 then begin
+      Result:=Result.Left
+    end else begin
+      Result:=Result.Right
+    end;
+  end;
+end;
+
+function TAVLTree.FindNearest(Data: Pointer): TAVLTreeNode;
+var Comp: integer;
+begin
+  Result:=Root;
+  while (Result<>nil) do begin
+    Comp:=OnCompare(Data,Result.Data);
+    if Comp=0 then exit;
+    if Comp<0 then begin
       if Result.Left<>nil then
         Result:=Result.Left
       else
@@ -832,6 +849,38 @@ begin
     end;
   finally
     ms.Free;
+  end;
+end;
+
+procedure TAVLTree.SetOnCompare(const AValue: TListSortCompare);
+var List: PPointer;
+  ANode: TAVLTreeNode;
+  i, OldCount: integer;
+begin
+  if FOnCompare=AValue then exit;
+  // sort the tree again
+  if Count>0 then begin
+    OldCount:=Count;
+    GetMem(List,SizeOf(Pointer)*OldCount);
+    try
+      // save the data in a list
+      ANode:=FindLowest;
+      i:=0;
+      while ANode<>nil do begin
+        List[i]:=ANode.Data;
+        inc(i);
+        ANode:=FindSuccessor(ANode);
+      end;
+      // clear the tree
+      Clear;
+      // set the new compare function
+      FOnCompare:=AValue;
+      // re-add all nodes
+      for i:=0 to OldCount-1 do
+        Add(List[i]);
+    finally
+      FreeMem(List);
+    end;
   end;
 end;
 

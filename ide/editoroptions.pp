@@ -24,8 +24,7 @@ interface
 {$define NEW_EDITOR_SYNEDIT}
 
 uses
-  LCLLinux,
- LCLType,
+  LCLLinux, LCLType,
   Forms, Classes, SysUtils, ComCtrls, Buttons, StdCtrls, ExtCtrls, LazConf,
   FileCtrl, GraphType, Graphics, Controls, Dialogs, LResources, IDEProcs,
 {$ifdef NEW_EDITOR_SYNEDIT}
@@ -158,6 +157,7 @@ type
     fAutoToolTipSymbTools:boolean;
     fAutoDelayInMSec:integer;
     fCodeTemplateFileName:Ansistring;
+    fCTemplIndentToTokenStart: boolean;
     
     // Find- and replace-history
     FFindHistory: TStringList;
@@ -249,6 +249,8 @@ type
        read fAutoDelayInMSec write fAutoDelayInMSec default 1000;
     property CodeTemplateFileName:Ansistring
        read fCodeTemplateFileName write fCodeTemplateFileName;
+    property CodeTemplateIndentToTokenStart: boolean
+       read fCTemplIndentToTokenStart write fCTemplIndentToTokenStart;
 
     // Find- and replace-history
     property FindHistory: TStringList read FFindHistory write FFindHistory;
@@ -282,6 +284,7 @@ type
   TEditorOptionsForm = class(TForm)
   published
     MainNoteBook:TNoteBook;
+    ImageList: TImageList;
 
     // general options
     EditorOptionsGroupBox:TGroupBox;
@@ -339,7 +342,7 @@ type
     KeyMappingSchemeLabel:TLabel;
     KeyMappingSchemeComboBox:TComboBox;
     KeyMappingHelpLabel:TLabel;
-    KeyMappingListBox:TListBox;
+    KeyMappingTreeView:TTreeView;
     KeyMappingConsistencyCheckButton:TButton;
 
     // Color options
@@ -386,6 +389,7 @@ type
     CodeTemplateDeleteButton:TButton;
     CodeTemplateCodeLabel:TLabel;
     CodeTemplateCodePreview:TPreviewEditor;
+    CodeTemplateIndentTypeRadioGroup: TRadioGroup;
     SynAutoComplete:TSynEditAutoComplete;
 
     // buttons at bottom
@@ -403,7 +407,7 @@ type
     procedure EditorFontButtonClick(Sender:TObject);
 
     // key mapping
-    procedure KeyMappingListBoxMouseUp(Sender:TObject;
+    procedure KeyMappingTreeViewMouseUp(Sender:TObject;
        Button:TMouseButton;  Shift:TShiftState;  X,Y:integer);
     procedure KeyMappingConsistencyCheckButtonClick(Sender: TObject);
 
@@ -417,7 +421,7 @@ type
     procedure SetAttributeToDefaultButtonClick(Sender: TObject);
     procedure SetAllAttributesToDefaultButtonClick(Sender: TObject);
 
-    // code Tools
+    // code tools
     procedure CodeTemplateListBoxMouseUp(Sender:TObject;
        Button:TMouseButton;  Shift:TShiftState;  X,Y:integer);
     procedure CodeTemplateFileNameButtonClick(Sender:TObject);
@@ -452,8 +456,9 @@ type
 
     // keymapping
     procedure SetupKeyMappingsPage;
-    function KeyMappingRelationToString(Index:integer):AnsiString;
-    procedure FillKeyMappingListBox;
+    function KeyMappingRelationToString(Index:integer): String;
+    function KeyMappingRelationToString(KeyRelation: TKeyCommandRelation): String;
+    procedure FillKeyMappingTreeView;
 
     // color
     procedure SetupColorPage;
@@ -602,7 +607,7 @@ begin
           sp:=ep;
         end else inc(ep);
       end;
-      if ep>sp then
+      if (ep>sp) or ((Value<>'') and (Value[length(Value)] in [#10,#13])) then
         sl.Add(copy(Value,sp,ep-sp));
     end;
     if ACustomSynAutoComplete.AutoCompleteList.Equals(sl)=false then begin
@@ -1113,6 +1118,9 @@ begin
     fCodeTemplateFileName:=
       XMLConfig.GetValue('EditorOptions/CodeTools/CodeTemplateFileName'
         ,SetDirSeparators(GetPrimaryConfigPath+'/lazarus.dci'));
+    fCTemplIndentToTokenStart:=
+      XMLConfig.GetValue('EditorOptions/CodeTools/CodeTemplateIndentToTokenStart/Value'
+        ,false);
         
     // Find- and replace-history
     fMaxFindHistory:=XMLConfig.GetValue(
@@ -1220,13 +1228,15 @@ begin
       ,fAutoDelayInMSec);
     XMLConfig.SetValue('EditorOptions/CodeTools/CodeTemplateFileName'
       ,fCodeTemplateFileName);
+    XMLConfig.GetValue('EditorOptions/CodeTools/CodeTemplateIndentToTokenStart/Value'
+        ,fCTemplIndentToTokenStart);
 
     // Find- and replace-history
     XMLConfig.SetValue('EditorOptions/Find/History/Max',FMaxFindHistory);
     SaveRecentList(XMLConfig,FFindHistory,'EditorOptions/Find/History/Find/');
     SaveRecentList(XMLConfig,FReplaceHistory,
         'EditorOptions/Find/History/Replace/');
-        
+
         
     XMLConfig.Flush;
   except
@@ -1828,6 +1838,16 @@ end;
 { TEditorOptionsForm }
 
 constructor TEditorOptionsForm.Create(AnOwner:TComponent);
+
+  procedure AddResImg(const ResName: string);
+  var Pixmap: TPixmap;
+  begin
+    Pixmap:=TPixmap.Create;
+    Pixmap.TransparentColor:=clWhite;
+    Pixmap.LoadFromLazarusResource(ResName);
+    ImageList.Add(Pixmap,nil)
+  end;
+
 var a:integer;
   s:Ansistring;
 begin
@@ -1851,6 +1871,15 @@ begin
       Pages.Add('Key Mappings');
       Pages.Add('Color');
       Pages.Add('Code Tools');
+    end;
+    
+    ImageList:=TImageList.Create(Self);
+    with ImageList do begin
+      Name:='ImageList';
+      Width:=22;
+      Height:=22;
+      AddResImg('keymapcategory');
+      AddResImg('keymaprelation');
     end;
 
     SetupGeneralPage;
@@ -1900,7 +1929,7 @@ begin
   // display options
   
   // key mappings
-  FillKeyMappingListBox;
+  FillKeyMappingTreeView;
   
   // color options
   LanguageComboBox.Text:=PreviewSyn.LanguageName;
@@ -1926,6 +1955,10 @@ begin
       Selected[0]:=true;
       ShowCurCodeTemplate;
     end;
+  if EditorOpts.CodeTemplateIndentToTokenStart then
+    CodeTemplateIndentTypeRadioGroup.ItemIndex:=0
+  else
+    CodeTemplateIndentTypeRadioGroup.ItemIndex:=1;
   FormCreating:=false;
 end;
 
@@ -2375,23 +2408,24 @@ begin
   UpdatingColor:=false;
 end;
 
-procedure TEditorOptionsForm.KeyMappingListBoxMouseUp(Sender:TObject;
+procedure TEditorOptionsForm.KeyMappingTreeViewMouseUp(Sender:TObject;
   Button:TMouseButton;  Shift:TShiftState;  X,Y:integer);
-var a:integer;
+var i:integer;
+  ARelation: TKeyCommandRelation;
+  ANode: TTreeNode;
 begin
   if Button=mbRight then begin
-    a:=KeyMappingListBox.Items.Count-1;
-    while (a>=0) and (KeyMappingListBox.Selected[a]=false) do
-      dec(a);
-    if a>=0 then begin
-      if ShowKeyMappingEditForm(a,EditorOpts.KeyMap)=mrOk then begin
-        // There is a bug in ListBox
-        //KeyMappingListBox.Items[a]:=KeyMappingRelationToString(a);
-        // workaround:
-        FillKeyMappingListBox;
-        for a:=Low(PreviewEdits) to High(PreviewEdits) do
-          if PreviewEdits[a]<>nil then
-            EditorOpts.KeyMap.AssignTo(PreviewEdits[a].KeyStrokes);
+    ANode:=KeyMappingTreeView.GetNodeAt(X,Y);
+    if (ANode<>nil) and (ANode.Data<>nil)
+    and (TObject(ANode.Data) is TKeyCommandRelation) then begin
+      ARelation:=TKeyCommandRelation(ANode.Data);
+      i:=EditorOpts.KeyMap.IndexOf(ARelation);
+      if (i>=0)
+      and (ShowKeyMappingEditForm(i,EditorOpts.KeyMap)=mrOk) then begin
+        ANode.Text:=KeyMappingRelationToString(ARelation);
+        for i:=Low(PreviewEdits) to High(PreviewEdits) do
+          if PreviewEdits[i]<>nil then
+            EditorOpts.KeyMap.AssignTo(PreviewEdits[i].KeyStrokes);
       end;
     end;
   end;
@@ -2703,16 +2737,25 @@ begin
   end;
 end;
 
-// keymapping
+// keymapping ------------------------------------------------------------------
 
 function TEditorOptionsForm.KeyMappingRelationToString(
-  Index:integer):AnsiString;
+  Index:integer):String;
+begin
+  Result:=KeyMappingRelationToString(EditorOpts.KeyMap.Relations[Index]);
+end;
+
+function TEditorOptionsForm.KeyMappingRelationToString(
+  KeyRelation: TKeyCommandRelation): String;
 var s:AnsiString;
 begin
-  with EditorOpts.KeyMap.Relations[Index] do begin
+  with KeyRelation do begin
     Result:=copy(Name,1,37);
-    SetLength(s,(37-length(Result))*2);
-    FillChar(s[1],length(s),'.');
+    if length(Result)<37 then begin
+      SetLength(s,(37-length(Result)));
+      FillChar(s[1],length(s),' ');
+    end else
+      s:='';
     Result:=Result+s;
     if (Key1=VK_UNKNOWN) and (Key2=VK_UNKNOWN) then
       Result:=Result+'none'
@@ -2721,17 +2764,33 @@ begin
     else
       Result:=Result+KeyAndShiftStateToStr(Key1,Shift1)+'  or  '+
            KeyAndShiftStateToStr(Key2,Shift2);
-    end;
+    Result:=Result;
+  end;
 end;
 
-procedure TEditorOptionsForm.FillKeyMappingListBox;
-var a:integer;
+procedure TEditorOptionsForm.FillKeyMappingTreeView;
+var i, j: integer;
+  NewCategoryNode, NewKeyNode: TTreeNode;
+  CurCategory: TKeyCommandCategory;
+  CurKeyRelation: TKeyCommandRelation;
 begin
-  with KeyMappingListBox.Items do begin
+  with KeyMappingTreeView do begin
     BeginUpdate;
-    Clear;
-    for a:=0 to EditorOpts.KeyMap.Count-1 do
-      Add(KeyMappingRelationToString(a));
+    Items.Clear;
+    for i:=0 to EditorOpts.KeyMap.CategoryCount-1 do begin
+      CurCategory:=EditorOpts.KeyMap.Categories[i];
+      NewCategoryNode:=Items.AddObject(nil,CurCategory.Description,CurCategory);
+      NewCategoryNode.ImageIndex:=0;
+      NewCategoryNode.SelectedIndex:=NewCategoryNode.ImageIndex;
+      for j:=0 to CurCategory.Count-1 do begin
+        CurKeyRelation:=TKeyCommandRelation(CurCategory[j]);
+        NewKeyNode:=Items.AddChildObject(NewCategoryNode,
+          KeyMappingRelationToString(CurKeyRelation),CurKeyRelation);
+        NewKeyNode.ImageIndex:=1;
+        NewKeyNode.SelectedIndex:=NewKeyNode.ImageIndex;
+      end;
+      NewCategoryNode.Expanded:=true;
+    end;
     EndUpdate;
   end;
 end;
@@ -2760,7 +2819,7 @@ begin
           sp:=ep;
         end else inc(ep);
       end;
-      if ep>sp then
+      if (ep>sp) or ((s<>'') and (s[length(s)] in [#10,#13])) then
         CodeTemplateCodePreview.Lines.Add(copy(s,sp,ep-sp));
       break;
     end;
@@ -2773,14 +2832,20 @@ end;
 procedure TEditorOptionsForm.SaveCurCodeTemplate;
 var
   NewValue: string;
+  l: integer;
 begin
   if CurCodeTemplate<0 then exit;
   NewValue:=CodeTemplateCodePreview.Lines.Text;
+  // remove last end EOL
   if NewValue<>'' then begin
-    if copy(NewValue,length(NewValue)-1,2)=#10#13 then
-      NewValue:=copy(NewValue,1,length(NewValue)-2)
-    else if NewValue[length(NewValue)] in [#10,#13] then
-      NewValue:=copy(NewValue,1,length(NewValue)-1);
+    l:=length(NewValue);
+    if NewValue[l] in [#10,#13] then begin
+      dec(l);
+      if (l>0) and (NewValue[l] in [#10,#13])
+      and (NewValue[l]<>NewValue[l+1]) then
+        dec(l);
+      SetLength(NewValue,l);
+    end;
   end;
   SynAutoComplete.CompletionValues[CurCodeTemplate]:=NewValue;
 end;
@@ -3603,7 +3668,7 @@ begin
     Height:=16;
     Text:=EditorOpts.KeyMappingScheme;
     Enabled:=false;
-    Show;
+    Visible:=true;
   end;
 
   KeyMappingSchemeLabel:=TLabel.Create(Self);
@@ -3615,7 +3680,7 @@ begin
     Width:=KeyMappingSchemeComboBox.Left-Left;
     Height:=16;
     Caption:='Key Mapping Scheme';
-    Show;
+    Visible:=true;
   end;
 
   KeyMappingConsistencyCheckButton:=TButton.Create(Self);
@@ -3629,7 +3694,7 @@ begin
     Height:=23;
     Caption:='Check consistency';
     OnClick:=@KeyMappingConsistencyCheckButtonClick;
-    Show;
+    Visible:=true;
   end;
 
   KeyMappingHelpLabel:=TLabel.Create(Self);
@@ -3641,19 +3706,22 @@ begin
     Width:=MaxX-Left-Left;
     Height:=16;
     Caption:='Hint: right click on the command you want to edit';
-    Show;
+    Visible:=true;
   end;
 
-  KeyMappingListBox:=TListBox.Create(Self);
-  with KeyMappingListBox do begin
-    Name:='KeyMappingListBox';
+  KeyMappingTreeView:=TTreeView.Create(Self);
+  with KeyMappingTreeView do begin
+    Name:='KeyMappingTreeView';
     Parent:=MainNoteBook.Page[2];
     Top:=KeyMappingHelpLabel.Top+KeyMappingHelpLabel.Height+2;
     Left:=0;
     Width:=MaxX-Left-Left;
     Height:=MaxY-Top;
-    OnMouseUp:=@KeyMappingListBoxMouseUp;
-    Show;
+    Options:=[tvoAutoExpand, tvoReadOnly, tvoShowButtons, tvoShowRoot,
+      tvoShowLines, tvoRowSelect, tvoKeepCollapsedNodes, tvoShowSeparators];
+    OnMouseUp:=@KeyMappingTreeViewMouseUp;
+    Images:=Self.ImageList;
+    Visible:=true;
   end;
 end;
 
@@ -3973,7 +4041,7 @@ begin
     Width:=MaxX-Left-Left;
     Height:=110;
     Caption:='Automatic features';
-    Show;
+    Visible:=true;
   end;
 
   AutoCodeCompletionCheckBox:=TCheckBox.Create(Self);
@@ -3987,7 +4055,7 @@ begin
     Caption:='Code completion';
     Checked:=EditorOpts.AutoCodeCompletion;
     Enabled:=false;
-    Show;
+    Visible:=true;
   end;
 
   AutoCodeParametersCheckBox:=TCheckBox.Create(Self);
@@ -4001,7 +4069,7 @@ begin
     Caption:='Code parameters';
     Checked:=EditorOpts.AutoCodeParameters;
     Enabled:=false;
-    Show;
+    Visible:=true;
   end;
 
   AutoToolTipExprEvalCheckBox:=TCheckBox.Create(Self);
@@ -4015,7 +4083,7 @@ begin
     Caption:='Tooltip expression evaluation';
     Checked:=EditorOpts.AutoToolTipExprEval;
     Enabled:=false;
-    Show;
+    Visible:=true;
   end;
 
   AutoToolTipSymbToolsCheckBox:=TCheckBox.Create(Self);
@@ -4028,7 +4096,7 @@ begin
     Height:=AutoCodeCompletionCheckBox.Height;
     Caption:='Tooltip symbol Tools';
     Checked:=EditorOpts.AutoToolTipSymbTools;
-    Show;
+    Visible:=true;
   end;
 
   AutoDelayLabel:=TLabel.Create(Self);
@@ -4039,7 +4107,7 @@ begin
     Left:=AutoCodeCompletionCheckBox.Left+AutoCodeCompletionCheckBox.Width+17;
     Width:=70;
     Caption:='Delay';
-    Show;
+    Visible:=true;
   end;
 
   AutoDelayTrackBar:=TTrackBar.Create(Self);
@@ -4054,7 +4122,7 @@ begin
     Height:=10;
     Position:=EditorOpts.AutoDelayInMSec div 250;
     TickMarks:=tmBottomRight;
-    Show;
+    Visible:=true;
   end;
 
   AutoDelayMinLabel:=TLabel.Create(Self);
@@ -4065,7 +4133,7 @@ begin
     Left:=AutoCodeCompletionCheckBox.Left+AutoCodeCompletionCheckBox.Width+15;
     Width:=70;
     Caption:='0.5 sec';
-    Show;
+    Visible:=true;
   end;
 
   AutoDelayMaxLabel:=TLabel.Create(Self);
@@ -4076,7 +4144,7 @@ begin
     Left:=AutoDelayTrackBar.Left+AutoDelayTrackBar.Width-30;
     Width:=70;
     Caption:='1.5 sec';
-    Show;
+    Visible:=true;
   end;
 
   CodeTemplatesGroupBox:=TGroupBox.Create(Self);
@@ -4088,7 +4156,7 @@ begin
     Width:=AutomaticFeaturesGroupBox.Width;
     Height:=250;
     Caption:='Code templates';
-    Show;
+    Visible:=true;
   end;
 
   CodeTemplateFileNameLabel:=TLabel.Create(Self);
@@ -4099,7 +4167,7 @@ begin
     Left:=7;
     Width:=110;
     Caption:='Template file name';
-    Show;
+    Visible:=true;
   end;
 
   CodeTemplateFileNameComboBox:=TComboBox.Create(Self);
@@ -4113,7 +4181,7 @@ begin
     OnChange:=@ComboBoxOnChange;
     OnKeyDown:=@ComboBoxOnKeyDown;
     OnExit:=@ComboBoxOnExit;
-    Show;
+    Visible:=true;
   end;
 
   CodeTemplateFileNameButton:=TButton.Create(Self);
@@ -4126,18 +4194,7 @@ begin
     Height:=Width;
     Caption:='...';
     OnClick:=@CodeTemplateFileNameButtonClick;
-    Show;
-  end;
-
-  CodeTemplatesLabel:=TLabel.Create(Self);
-  with CodeTemplatesLabel do begin
-    Name:='CodeTemplatesLabel';
-    Parent:=CodeTemplatesGroupBox;
-    Top:=CodeTemplateFileNameLabel.Top+CodeTemplateFileNameLabel.Height+12;
-    Left:=CodeTemplateFileNameLabel.Left;
-    Width:=60;
-    Caption:='Templates';
-    Show;
+    Visible:=true;
   end;
 
   CodeTemplateAddButton:=TButton.Create(Self);
@@ -4146,11 +4203,11 @@ begin
     Parent:=CodeTemplatesGroupBox;
     Top:=CodeTemplateFileNameComboBox.Top+CodeTemplateFileNameComboBox.Height+10;
     Width:=50;
-    Left:=CodeTemplatesGroupBox.Width-Width-9;
+    Left:=CodeTemplateFileNameLabel.Left;
     Height:=23;
     Caption:='Add...';
     OnClick:=@CodeTemplateButtonClick;
-    Show;
+    Visible:=true;
   end;
 
   CodeTemplateEditButton:=TButton.Create(Self);
@@ -4163,7 +4220,7 @@ begin
     Height:=CodeTemplateAddButton.Height;
     Caption:='Edit...';
     OnClick:=@CodeTemplateButtonClick;
-    Show;
+    Visible:=true;
   end;
 
   CodeTemplateDeleteButton:=TButton.Create(Self);
@@ -4176,7 +4233,18 @@ begin
     Height:=CodeTemplateAddButton.Height;
     Caption:='Delete';
     OnClick:=@CodeTemplateButtonClick;
-    Show;
+    Visible:=true;
+  end;
+
+  CodeTemplatesLabel:=TLabel.Create(Self);
+  with CodeTemplatesLabel do begin
+    Name:='CodeTemplatesLabel';
+    Parent:=CodeTemplatesGroupBox;
+    Top:=CodeTemplateFileNameLabel.Top+CodeTemplateFileNameLabel.Height+12;
+    Left:=CodeTemplateAddButton.Left+CodeTemplateAddButton.Width+5;
+    Width:=60;
+    Caption:='Templates';
+    Visible:=true;
   end;
 
   CodeTemplateListBox:=TListBox.Create(Self);
@@ -4185,10 +4253,10 @@ begin
     Parent:=CodeTemplatesGroupBox;
     Top:=CodeTemplatesLabel.Top;
     Left:=CodeTemplatesLabel.Left+CodeTemplatesLabel.Width+5;
-    Width:=CodeTemplateEditButton.Left-5-Left;
+    Width:=Parent.ClientWidth-8-Left;
     Height:=80;
     OnMouseUp:=@CodeTemplateListBoxMouseUp;
-    Show;
+    Visible:=true;
   end;
 
   CodeTemplateCodeLabel:=TLabel.Create(Self);
@@ -4200,7 +4268,7 @@ begin
     Width:=CodeTemplatesLabel.Width;
     Height:=CodeTemplatesLabel.Height;
     Caption:='Code';
-    Show;
+    Visible:=true;
   end;
 
   CodeTemplateCodePreview:=TPreviewEditor.Create(Self);
@@ -4209,11 +4277,29 @@ begin
     Parent:=CodeTemplatesGroupBox;
     Top:=CodeTemplateCodeLabel.Top;
     Left:=CodeTemplateCodeLabel.Left+CodeTemplateCodeLabel.Width+5;
-    Width:=CodeTemplateEditButton.Left-5-Left;
+    Width:=CodeTemplateListBox.Width;
     Height:=CodeTemplatesGroupBox.ClientHeight-20-Top;
     Lines.Clear;
     Gutter.Visible:=false;
-    Show;
+    Visible:=true;
+  end;
+  
+  CodeTemplateIndentTypeRadioGroup:=TRadioGroup.Create(Self);
+  with CodeTemplateIndentTypeRadioGroup do begin
+    Name:='CodeTemplateIndentTypeRadioGroup';
+    Parent:=CodeTemplatesGroupBox;
+    Left:=CodeTemplateAddButton.Left;
+    Top:=CodeTemplateCodeLabel.Top+CodeTemplateCodeLabel.Height+15;
+    Width:=CodeTemplateCodePreview.Left-Left-8;
+    Height:=70;
+    Caption:='Indent code to';
+    with Items do begin
+      BeginUpdate;
+      Add('Token start');
+      Add('Line start');
+      EndUpdate;
+    end;
+    Visible:=true;
   end;
 
   CurCodeTemplate:=-1;
@@ -4305,6 +4391,8 @@ begin
   EditorOpts.AutoToolTipExprEval:=AutoToolTipExprEvalCheckBox.Checked;
   EditorOpts.AutoDelayInMSec:=AutoDelayTrackBar.Position*250;
   EditorOpts.CodeTemplateFileName:=CodeTemplateFileNameComboBox.Text;
+  EditorOpts.CodeTemplateIndentToTokenStart:=
+    (CodeTemplateIndentTypeRadioGroup.ItemIndex=0);
 
   EditorOpts.Save;
 
@@ -4337,6 +4425,7 @@ end;
 initialization
 
 {$I lazarus_dci.lrs}
+{$I editoroptions.lrs}
 
 end.
 

@@ -48,7 +48,9 @@ uses
 type
   // TBeautifyCodeOptions
   TClassPartInsertPolicy = (cpipAlphabetically, cpipLast);
-  TProcedureInsertPolicy = (pipAlphabetically, pipLast, pipClassOrder);
+  TMethodInsertPolicy = (mipAlphabetically, mipLast, mipClassOrder);
+  TForwardProcInsertPolicy = (fpipLast, fpipInFrontOfMethods, fpipBehindMethods);
+
   TWordPolicy = (wpNone, wpLowerCase, wpUpperCase, wpLowerCaseFirstLetterUp);
   TAtomType = (atNone, atKeyword, atIdentifier, atColon, atSemicolon, atComma,
                atPoint, atAt, atNumber, atStringConstant, atNewLine,
@@ -69,7 +71,8 @@ type
     LineEnd: string; // default: #13#10
     Indent: integer;
     ClassPartInsertPolicy: TClassPartInsertPolicy;
-    ProcedureInsertPolicy: TProcedureInsertPolicy;
+    MethodInsertPolicy: TMethodInsertPolicy;
+    ForwardProcInsertPolicy: TForwardProcInsertPolicy;
     KeyWordPolicy: TWordPolicy;
     IdentifierPolicy: TWordPolicy;
     DoNotSplitLineInFront: TAtomTypes;
@@ -183,10 +186,12 @@ const
   ClassPartInsertPolicyNames: array[TClassPartInsertPolicy] of shortstring = (
       'Alphabetically', 'Last'
     );
-    
-  ProcedureInsertPolicyNames: array[TProcedureInsertPolicy] of shortstring = (
+  MethodInsertPolicyNames: array[TMethodInsertPolicy] of shortstring = (
       'Alphabetically', 'Last', 'ClassOrder'
     );
+  ForwardProcInsertPolicyNames: array[TForwardProcInsertPolicy] of shortstring =
+    ('Last', 'InFrontOfMethods', 'BehindMethods');
+    
     
   DefaultDoNotSplitLineInFront: TAtomTypes =
     [atColon,atComma,atSemicolon,atPoint];
@@ -197,9 +202,9 @@ const
 function AtomTypeNameToType(const s: string): TAtomType;
 function WordPolicyNameToPolicy(const s: string): TWordPolicy;
 function ClassPartPolicyNameToPolicy(const s: string): TClassPartInsertPolicy;
-function ProcedureInsertPolicyNameToPolicy(
-  const s: string): TProcedureInsertPolicy;
-
+function MethodInsertPolicyNameToPolicy(const s: string): TMethodInsertPolicy;
+function ForwardProcInsertPolicyNameToPolicy(
+  const s: string): TForwardProcInsertPolicy;
 
 implementation
 
@@ -225,12 +230,20 @@ begin
   Result:=cpipLast;
 end;
 
-function ProcedureInsertPolicyNameToPolicy(
-  const s: string): TProcedureInsertPolicy;
+function MethodInsertPolicyNameToPolicy(
+  const s: string): TMethodInsertPolicy;
 begin
-  for Result:=Low(TProcedureInsertPolicy) to High(TProcedureInsertPolicy) do
-    if AnsiCompareText(ProcedureInsertPolicyNames[Result],s)=0 then exit;
-  Result:=pipLast;
+  for Result:=Low(TMethodInsertPolicy) to High(TMethodInsertPolicy) do
+    if AnsiCompareText(MethodInsertPolicyNames[Result],s)=0 then exit;
+  Result:=mipLast;
+end;
+
+function ForwardProcInsertPolicyNameToPolicy(
+  const s: string): TForwardProcInsertPolicy;
+begin
+  for Result:=Low(TForwardProcInsertPolicy) to High(TForwardProcInsertPolicy) do
+    if AnsiCompareText(ForwardProcInsertPolicyNames[Result],s)=0 then exit;
+  Result:=fpipBehindMethods;
 end;
 
 function CompareSourceChangeCacheEntry(NodeData1, NodeData2: pointer): integer;
@@ -652,7 +665,8 @@ begin
   LineEnd:={$IFDEF win32}#13+{$ENDIF}#10;
   Indent:=2;
   ClassPartInsertPolicy:=cpipLast;
-  ProcedureInsertPolicy:=pipClassOrder;
+  MethodInsertPolicy:=mipClassOrder;
+  ForwardProcInsertPolicy:=fpipBehindMethods;
   KeyWordPolicy:=wpLowerCase;
   IdentifierPolicy:=wpNone;
   DoNotSplitLineInFront:=DefaultDoNotSplitLineInFront;
@@ -667,7 +681,7 @@ end;
 
 procedure TBeautifyCodeOptions.AddAtom(var s:string; NewAtom: string);
 var
-  RestLineLen, LastLineEndInAtom, LastIndent: integer;
+  RestLineLen, LastLineEndInAtom: integer;
 begin
   if NewAtom='' then exit;
 //writeln('[TBeautifyCodeOptions.AddAtom]  NewAtom=',NewAtom,' s="',s,'"');

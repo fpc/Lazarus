@@ -1587,7 +1587,8 @@ writeln('');
     Result.Text := S;
     // move node in tree (tree of TTreeNode)
     Result.InternalMove(Node,AddMode);
-    if (Owner<>nil) and Owner.AutoExpand and (Node.Parent<>nil) then
+    if (Owner<>nil) and Owner.AutoExpand and (Node<>nil) and (Node.Parent<>nil)
+    then
       Node.Parent.Expanded:=true;
     if (FUpdateCount=0) and (Owner<>nil) then
       Owner.Invalidate;
@@ -2290,6 +2291,7 @@ begin
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := @ImageListChange;
   FSelectedColor:=clActiveCaption;
+  fSeparatorColor:=clGray;
   FStateChangeLink := TChangeLink.Create;
   FStateChangeLink.OnChange := @ImageListChange;
   FStates:=[tvsMaxLvlNeedsUpdate,tvsMaxRightNeedsUpdate,tvsScrollbarChanged];
@@ -3791,6 +3793,7 @@ begin
     end;
     // draw separator
     if (tvoShowSeparators in FOptions) then begin
+      Pen.Color:=SeparatorColor;
       MoveTo(NodeRect.Left,NodeRect.Bottom-1);
       LineTo(NodeRect.Right,NodeRect.Bottom-1);
     end;
@@ -4335,6 +4338,14 @@ begin
   if AllNodes then begin
     Items.WriteDebugReport(Prefix+'  ',true);
   end;
+end;
+
+procedure TCustomTreeView.SetSeparatorColor(const AValue: TColor);
+begin
+  if fSeparatorColor=AValue then exit;
+  fSeparatorColor:=AValue;
+  if tvoShowSeparators in Options then
+    Invalidate;
 end;
 
 // back to comctrls.pp

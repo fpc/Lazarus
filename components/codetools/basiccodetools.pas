@@ -125,13 +125,13 @@ function LineEndCount(const Txt: string; var LengthOfLastLine:integer): integer;
 function FindFirstNonSpaceCharInLine(const Source: string;
     Position: integer): integer;
 function GetLineIndent(const Source: string; Position: integer): integer;
-function FindFirstLineEndInFrontOfInCode(const Source: string;
-    Position: integer; NestedComments: boolean): integer;
-function FindFirstLineEndAfterInCode(const Source: string;
-    Position: integer; NestedComments: boolean): integer;
 function FindLineEndOrCodeInFrontOfPosition(const Source: string;
     Position: integer; NestedComments: boolean): integer;
 function FindLineEndOrCodeAfterPosition(const Source: string;
+    Position: integer; NestedComments: boolean): integer;
+function FindFirstLineEndInFrontOfInCode(const Source: string;
+    Position: integer; NestedComments: boolean): integer;
+function FindFirstLineEndAfterInCode(const Source: string;
     Position: integer; NestedComments: boolean): integer;
 function ReplacementNeedsLineEnd(const Source: string;
     FromPos, ToPos, NewLength, MaxLineLength: integer): boolean;
@@ -1470,12 +1470,19 @@ end;
 
 function CompareTextIgnoringSpace(const Txt1, Txt2: string;
   CaseSensitive: boolean): integer;
+{ Txt1  Txt2  Result
+   A     B      1
+   A     AB     1
+   A;    A      -1
+}
 var P1, P2, Len1, Len2: integer;
+  InIdentifier: boolean;
 begin
   P1:=1;
   P2:=1;
   Len1:=length(Txt1);
   Len2:=length(Txt2);
+  InIdentifier:=false;
   while (P1<=Len1) and (P2<=Len2) do begin
     if (CaseSensitive and (Txt1[P1]=Txt2[P2]))
     or ((not CaseSensitive) and (UpChars[Txt1[P1]]=UpChars[Txt2[P2]])) then
@@ -1483,34 +1490,26 @@ begin
       inc(P1);
       inc(P2);
     end else begin
-      if ord(Txt1[P1])<=ord(' ') then begin
-        // space in Txt1
-        
-        // 'var Name' <> 'varName'
-        // 'Name ;' = 'Name;'
-        if (IsIDChar[Txt2[P2]]) and (P2>1) and (IsIDChar[Txt2[P2-1]]) then begin
+      // different chars found
+      if InIdentifier and (IsIDChar[Txt1[P1]] xor IsIDChar[Txt2[P2]]) then begin
+        // one identifier is longer than the other
+        if IsIDChar[Txt1[P1]] then
+          // identifier in Txt1 is longer than in Txt2
+          Result:=-1
+        else
+          // identifier in Txt2 is longer than in Txt1
           Result:=+1;
-          exit;
-        end else begin
-          // ignore spaces in Txt1
-          repeat
-            inc(P1);
-          until (P1>Len1) or (ord(Txt1[P1])>ord(' '));
-        end;
-      end else if ord(Txt2[P2])<=ord(' ') then begin
-        // space in Txt2
-        
-        // 'varName' <> 'var Name'
-        // 'Name;' = 'Name ;'
-        if (IsIDChar[Txt1[P1]]) and (P1>1) and (IsIDChar[Txt1[P1-1]]) then begin
-          Result:=-1;
-          exit;
-        end else begin
-          // ignore spaces in Txt1
-          repeat
-            inc(P2);
-          until (P2>Len2) or (ord(Txt2[P2])>ord(' '));
-        end;
+        exit;
+      end else if (ord(Txt1[P1])<=ord(' ')) then begin
+        // ignore/skip spaces in Txt1
+        repeat
+          inc(P1);
+        until (P1>Len1) or (ord(Txt1[P1])>ord(' '));
+      end else if (ord(Txt2[P2])<=ord(' ')) then begin
+        // ignore/skip spaces in Txt2
+        repeat
+          inc(P2);
+        until (P2>Len2) or (ord(Txt2[P2])>ord(' '));
       end else begin
         // Txt1<>Txt2
         if (CaseSensitive and (Txt1[P1]>Txt2[P2]))
@@ -1521,17 +1520,24 @@ begin
         exit;
       end;
     end;
+    InIdentifier:=IsIDChar[Txt1[P1]];
   end;
+  // one text was totally read -> check the rest of the other one
+  // skip spaces
   while (P1<=Len1) and (ord(Txt1[P1])<=ord(' ')) do
     inc(P1);
   while (P2<=Len2) and (ord(Txt2[P2])<=ord(' ')) do
     inc(P2);
   if (P1>Len1) then begin
+    // rest of P1 was only space
     if (P2>Len2) then
+      // rest of P2 was only space
       Result:=0
     else
+      // there is some text at the end of P2
       Result:=1;
   end else begin
+    // there is some text at the end of P1
     Result:=-1
   end;
 end;

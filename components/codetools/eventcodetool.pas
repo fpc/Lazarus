@@ -655,8 +655,8 @@ writeln('[TEventsCodeTool.InsertNewMethodToClass] G');
 writeln('[TEventsCodeTool.InsertNewMethodToClass] H');
 {$ENDIF}
       // find a nice insert position for the proc body
-      case SourceChangeCache.BeautifyCodeOptions.ProcedureInsertPolicy of
-        pipAlphabetically:
+      case SourceChangeCache.BeautifyCodeOptions.MethodInsertPolicy of
+        mipAlphabetically:
           // insert proc in alphabetic order
           begin
             AnAVLNode:=ClassBodyProcs.Root;
@@ -695,9 +695,9 @@ writeln('[TEventsCodeTool.InsertNewMethodToClass] H');
                                       InsertNode.EndPos,Scanner.NestedComments);
             end;
           end;
-        else  // pipLast
+        else  // mipLast
         
-          // ToDo: pipClassOrder
+          // ToDo: mipClassOrder
         
           // insert proc body behind last proc body
           begin

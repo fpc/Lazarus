@@ -1382,7 +1382,7 @@ type
     FSaveItems: TStringList;
     //FSaveTopIndex: Integer;
     FScrollBars: TScrollStyle;
-    FScrolledLeft: integer; // horizontal scrolled pixels (hidden pixels at top)
+    FScrolledLeft: integer; // horizontal scrolled pixels (hidden pixels at left)
     FScrolledTop: integer;  // vertical scrolled pixels (hidden pixels at top)
     FSelectedColor: TColor;
     FSelectedNode: TTreeNode;
@@ -1394,6 +1394,7 @@ type
     FTreeLineColor: TColor;
     FTreeNodes: TTreeNodes;
     FUpdateCount: integer;
+    fSeparatorColor: TColor;
     //FWideText: WideString;
     procedure CanvasChanged(Sender: TObject);
     //procedure CMColorChanged(var Message: TMessage); message CM_COLORCHANGED;
@@ -1445,6 +1446,7 @@ type
     procedure SetScrolledTop(AValue: integer);
     procedure SetSelectedColor(Value: TColor);
     procedure SetSelection(Value: TTreeNode);
+    procedure SetSeparatorColor(const AValue: TColor);
     procedure SetShowButton(Value: Boolean);
     procedure SetShowLines(Value: Boolean);
     procedure SetShowRoot(Value: Boolean);
@@ -1594,6 +1596,7 @@ type
       read FScrollBars write SetScrollBars default ssBoth;
     property Selected: TTreeNode read GetSelection write SetSelection;
     property SelectionColor: TColor read FSelectedColor write SetSelectedColor;
+    property SeparatorColor: TColor read fSeparatorColor write SetSeparatorColor;
     property TopItem: TTreeNode read GetTopItem write SetTopItem;
     property TreeLineColor: TColor read FTreeLineColor write FTreeLineColor;
   end;
@@ -1747,6 +1750,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.19  2002/02/28 12:09:10  lazarus
+  MG: fixes, code creation policies, keymap categories, menu shortcuts
+
   Revision 1.18  2002/02/03 00:24:00  lazarus
   TPanel implemented.
   Basic graphic primitives split into GraphType package, so that we can

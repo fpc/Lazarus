@@ -91,7 +91,7 @@ type
 
     itmSeperator: TMenuItem;
 
-    itmFileNew : TMenuItem;
+    itmFileNewUnit : TMenuItem;
     itmFileNewForm : TMenuItem;
     itmFileOpen: TMenuItem;
     itmFileRecentOpen: TMenuItem;
@@ -107,6 +107,9 @@ type
     itmEditCut: TMenuItem; 
     itmEditCopy: TMenuItem; 
     itmEditPaste: TMenuItem; 
+    itmEditIndentBlock: TMenuItem;
+    itmEditUnindentBlock: TMenuItem;
+    itmEditCompleteCode: TMenuItem;
 
     itmSearchFind: TMenuItem;
     itmSearchFindNext: TMenuItem;
@@ -118,13 +121,16 @@ type
     itmJumpForward: TMenuItem;
     itmAddJumpPoint: TMenuItem;
     itmJumpHistory: TMenuItem;
+    itmFindBlockOtherEnd: TMenuItem;
+    itmFindBlockStart: TMenuItem;
+    itmFindDeclaration: TMenuItem;
+    itmOpenFileAtCursor: TMenuItem;
 
     itmViewInspector: TMenuItem;
     itmViewProject: TMenuItem; 
     itmViewUnits : TMenuItem;
     itmViewCodeExplorer : TMenuItem;
     itmViewForms : TMenuItem;
-    itmViewFile : TMenuItem;
     itmViewMessage : TMenuItem;
     itmViewwatches : TMenuItem;
     itmViewBreakpoints : TMenuItem;
@@ -190,12 +196,21 @@ type
     procedure mnuCloseAllClicked(Sender : TObject);
     procedure mnuQuitClicked(Sender : TObject);
 
+    // search menu
+    procedure mnuSearchFindBlockOtherEnd(Sender: TObject);
+    procedure mnuSearchFindBlockStart(Sender: TObject);
+    procedure mnuSearchFindDeclaration(Sender: TObject);
+    procedure mnuSearchOpenFileAtCursor(Sender: TObject);
+
     // edit menu
     procedure mnuEditUndoClicked(Sender: TObject);
     procedure mnuEditRedoClicked(Sender: TObject);
     procedure mnuEditCutClicked(Sender: TObject);
     procedure mnuEditCopyClicked(Sender: TObject);
     procedure mnuEditPasteClicked(Sender: TObject);
+    procedure mnuEditIndentBlockClicked(Sender: TObject);
+    procedure mnuEditUnindentBlockClicked(Sender: TObject);
+    procedure mnuEditCompleteCodeClicked(Sender: TObject);
 
     // view menu
     procedure mnuViewInspectorClicked(Sender : TObject);
@@ -207,7 +222,6 @@ type
     procedure mnuViewBreakPointsClick(Sender : TObject);
     procedure mnuViewDebugOutputClick(Sender : TObject);
     procedure MessageViewDblClick(Sender : TObject);
-
     procedure mnuToggleFormUnitClicked(Sender : TObject);
 
     // project menu
@@ -357,6 +371,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure LoadMainMenu;
+    procedure LoadMenuShortCuts;
     procedure LoadSpeedbuttons;
 
 
@@ -623,7 +638,6 @@ begin
     Width := Self.ClientWidth - Left;
     Height := 60; //Self.ClientHeight - ComponentNotebook.Top;
     OnMouseMove := @MainMouseMoved;
-
   end;
 
   PageCount := 0;
@@ -766,6 +780,10 @@ begin
   itmJumpForward.OnClick := @SourceNotebook.JumpForwardClicked;
   itmAddJumpPoint.OnClick := @SourceNotebook.AddJumpPointClicked;
   itmJumpHistory.OnClick := @SourceNotebook.ViewJumpHistoryClicked;
+  itmFindBlockStart.OnClick:=@mnuSearchFindBlockStart;
+  itmFindBlockOtherEnd.OnClick:=@mnuSearchFindBlockOtherEnd;
+  itmFindDeclaration.OnClick:=@mnuSearchFindDeclaration;
+  itmOpenFileAtCursor.OnClick:=@mnuSearchOpenFileAtCursor;
 
   // message view
   FMessagesViewBoundsRectValid:=false;
@@ -819,7 +837,9 @@ begin
   TheControlSelection:=TControlSelection.Create;
   TheControlSelection.OnChange:=@OnControlSelectionChanged;
 
+{$IFDEF IDE_DEBUG}
 writeln('TMainIDE.Create A ***********');
+{$ENDIF}
 {$IFDEF IDE_MEM_CHECK}
 CheckHeap(IntToStr(GetMem_Cnt));
 {$ENDIF}
@@ -833,7 +853,9 @@ CheckHeap(IntToStr(GetMem_Cnt));
   and (DoOpenProjectFile(EnvironmentOptions.LastSavedProjectFile)=mrOk) then
   begin
     // last project loaded
+{$IFDEF IDE_DEBUG}
 writeln('TMainIDE.Create last project loaded successfully');
+{$ENDIF}
 {$IFDEF IDE_MEM_CHECK}
 CheckHeap(IntToStr(GetMem_Cnt));
 {$ENDIF}
@@ -841,7 +863,9 @@ CheckHeap(IntToStr(GetMem_Cnt));
     // create new project
     DoNewProject(ptApplication);
     
+{$IFDEF IDE_DEBUG}
 writeln('TMainIDE.Create B');
+{$ENDIF}
 {$IFDEF IDE_MEM_CHECK}
 CheckHeap(IntToStr(GetMem_Cnt));
 {$ENDIF}
@@ -1137,11 +1161,11 @@ begin
 // File
 //--------------
   
-  itmFileNew := TMenuItem.Create(Self);
-  itmFileNew.Name:='itmFileNew';
-  itmFileNew.Caption := 'New Unit';
-  itmFileNew.OnClick := @mnuNewUnitClicked; // ToDo:  new dialog
-  mnuFile.Add(itmFileNew);
+  itmFileNewUnit := TMenuItem.Create(Self);
+  itmFileNewUnit.Name:='itmFileNewUnit';
+  itmFileNewUnit.Caption := 'New Unit';
+  itmFileNewUnit.OnClick := @mnuNewUnitClicked; // ToDo:  new dialog
+  mnuFile.Add(itmFileNewUnit);
 
   itmFileNewForm := TMenuItem.Create(Self);
   itmFileNewForm.Name:='itmFileNewForm';
@@ -1168,7 +1192,6 @@ begin
   itmFileSave := TMenuItem.Create(Self);
   itmFileSave.Name:='itmFileSave';
   itmFileSave.Caption := 'Save';
-  itmFileSave.ShortCut:= VK_S or scCtrl;
   itmFileSave.OnClick := @mnuSaveClicked;
   mnuFile.Add(itmFileSave);
 
@@ -1181,7 +1204,6 @@ begin
   itmFileSaveAll := TMenuItem.Create(Self);
   itmFileSaveAll.Name:='itmFileSaveAll';
   itmFileSaveAll.Caption := 'Save All';
-  itmFileSaveAll.ShortCut:= VK_S or scCtrl or scShift;
   itmFileSaveAll.OnClick := @mnuSaveAllClicked;
   mnuFile.Add(itmFileSaveAll);
 
@@ -1214,14 +1236,12 @@ begin
   itmEditUndo := TMenuItem.Create(nil);
   itmEditUndo.Name:='itmEditUndo';
   itmEditUndo.Caption := 'Undo';
-  itmEditUndo.ShortCut:= VK_Z or scCtrl;
   itmEditUndo.OnClick:=@mnuEditUndoClicked;
   mnuEdit.Add(itmEditUndo);
 
   itmEditRedo := TMenuItem.Create(nil);
   itmEditRedo.Name:='itmEditRedo';
   itmEditRedo.Caption := 'Redo';
-  itmEditRedo.ShortCut:= VK_Z or scCtrl or scShift;
   itmEditRedo.OnClick:=@mnuEditRedoClicked;
   mnuEdit.Add(itmEditRedo);
 
@@ -1230,23 +1250,43 @@ begin
   itmEditCut  := TMenuItem.Create(nil);
   itmEditCut.Name:='itmEditCut';
   itmEditCut.Caption := 'Cut';
-  itmEditCut.Shortcut:= VK_X or scCtrl;
   itmEditCut.OnClick:=@mnuEditCutClicked;
   mnuEdit.Add(itmEditCut);
 
   itmEditCopy := TMenuItem.Create(nil);
   itmEditCopy.Name:='itmEditCopy';
   itmEditCopy.Caption := 'Copy';
-  itmEditCopy.ShortCut:= VK_C or scCtrl;
   itmEditCopy.OnClick:=@mnuEditCopyClicked;
   mnuEdit.Add(itmEditCopy);
 
   itmEditPaste := TMenuItem.Create(nil);
   itmEditPaste.Name:='itmEditPaste';
   itmEditPaste.Caption := 'Paste';
-  itmEditPaste.Shortcut:= VK_V or scCtrl;
   itmEditPaste.OnClick:=@mnuEditPasteClicked;
   mnuEdit.Add(itmEditPaste);
+
+  mnuEdit.Add(CreateSeperator);
+  
+  itmEditIndentBlock := TMenuItem.Create(nil);
+  itmEditIndentBlock.Name:='itmEditIndentBlock';
+  itmEditIndentBlock.Caption := 'Indent selection';
+  itmEditIndentBlock.OnClick:=@mnuEditIndentBlockClicked;
+  mnuEdit.Add(itmEditIndentBlock);
+
+  itmEditUnindentBlock := TMenuItem.Create(nil);
+  itmEditUnindentBlock.Name:='itmEditUnindentBlock';
+  itmEditUnindentBlock.Caption := 'Unindent selection';
+  itmEditUnindentBlock.OnClick:=@mnuEditUnindentBlockClicked;
+  mnuEdit.Add(itmEditUnindentBlock);
+
+  mnuEdit.Add(CreateSeperator);
+  
+  itmEditCompleteCode := TMenuItem.Create(nil);
+  itmEditCompleteCode.Name:='itmEditCompleteCode';
+  itmEditCompleteCode.Caption := 'Complete Code';
+  itmEditCompleteCode.OnClick:=@mnuEditCompleteCodeClicked;
+  mnuEdit.Add(itmEditCompleteCode);
+
 
 //--------------
 // Search
@@ -1255,20 +1295,17 @@ begin
   itmSearchFind := TMenuItem.Create(nil);
   itmSearchFind.Name:='itmSearchFind';
   itmSearchFind.Caption := 'Find';
-  itmSearchFind.ShortCut:= VK_F or scCtrl;
   mnuSearch.add(itmSearchFind);
 
   itmSearchFindNext := TMenuItem.Create(nil);
   itmSearchFindNext.Name:='itmSearchFindNext';
   itmSearchFindNext.Caption := 'Find &Next';
-  itmSearchFindNext.ShortCut:= VK_F3;
   itmSearchFindNext.Enabled := False;
   mnuSearch.add(itmSearchFindNext);
 
   itmSearchFindPrevious := TMenuItem.Create(nil);
   itmSearchFindPrevious.Name:='itmSearchFindPrevious';
   itmSearchFindPrevious.Caption := 'Find &Previous';
-  itmSearchFindPrevious.ShortCut:= VK_F3 or scShift;
   itmSearchFindPrevious.Enabled := False;
   mnuSearch.add(itmSearchFindPrevious);
 
@@ -1281,7 +1318,6 @@ begin
   itmSearchReplace := TMenuItem.Create(nil);
   itmSearchReplace.Name:='itmSearchReplace';
   itmSearchReplace.Caption := 'Replace';
-  itmSearchReplace.ShortCut:= VK_R or scCtrl;
   mnuSearch.add(itmSearchReplace);
 
   mnuSearch.Add(CreateSeperator);
@@ -1289,7 +1325,6 @@ begin
   itmGotoLine := TMenuItem.Create(nil);
   itmGotoLine.Name:='itmGotoLine';
   itmGotoLine.Caption := 'Goto line';
-  itmGotoLine.ShortCut:= VK_G or scAlt;
   mnuSearch.add(itmGotoLine);
   
   mnuSearch.Add(CreateSeperator);
@@ -1313,6 +1348,28 @@ begin
   itmJumpHistory.Name:='itmJumpHistory';
   itmJumpHistory.Caption := 'View Jump-History';
   mnuSearch.add(itmJumpHistory);
+
+  mnuSearch.Add(CreateSeperator);
+
+  itmFindBlockOtherEnd := TMenuItem.Create(nil);
+  itmFindBlockOtherEnd.Name:='itmFindBlockOtherEnd';
+  itmFindBlockOtherEnd.Caption := 'Find other end of code block';
+  mnuSearch.add(itmFindBlockOtherEnd);
+
+  itmFindBlockStart := TMenuItem.Create(nil);
+  itmFindBlockStart.Name:='itmFindBlockStart';
+  itmFindBlockStart.Caption := 'Find code block start';
+  mnuSearch.add(itmFindBlockStart);
+
+  itmFindDeclaration := TMenuItem.Create(nil);
+  itmFindDeclaration.Name:='itmFindDeclaration';
+  itmFindDeclaration.Caption := 'Find Declaration at cursor';
+  mnuSearch.add(itmFindDeclaration);
+
+  itmOpenFileAtCursor := TMenuItem.Create(nil);
+  itmOpenFileAtCursor.Name:='itmOpenFileAtCursor';
+  itmOpenFileAtCursor.Caption := 'Open filename at cursor';
+  mnuSearch.add(itmOpenFileAtCursor);
   
 //--------------
 // View
@@ -1321,14 +1378,12 @@ begin
   itmViewInspector := TMenuItem.Create(Self);
   itmViewInspector.Name:='itmViewInspector';
   itmViewInspector.Caption := 'Object Inspector';
-  itmViewInspector.ShortCut := VK_F11;
   itmViewInspector.OnClick := @mnuViewInspectorClicked;
   mnuView.Add(itmViewInspector);
 
   itmViewProject  := TMenuItem.Create(Self);
   itmViewProject.Name:='itmViewProject';
   itmViewProject.Caption := 'Project Explorer';
-  itmViewProject.ShortCut:= VK_F11 or scCtrl or scAlt;
   mnuView.Add(itmViewProject);
 
   mnuView.Add(CreateSeperator);
@@ -1344,14 +1399,12 @@ begin
   itmViewUnits := TMenuItem.Create(Self);
   itmViewUnits.Name:='itmViewUnits';
   itmViewUnits.Caption := 'Units...';
-  itmViewUnits.Shortcut:= VK_F12 or scCtrl;
   itmViewUnits.OnClick := @mnuViewUnitsClicked;
   mnuView.Add(itmViewUnits);
 
   itmViewForms := TMenuItem.Create(Self);
   itmViewForms.Name:='itmViewForms';
   itmViewForms.Caption := 'Forms...';
-  itmViewForms.ShortCut:= VK_F12 or scShift;
   itmViewForms.OnClick := @mnuViewFormsClicked;
   mnuView.Add(itmViewForms);
 
@@ -1366,14 +1419,12 @@ begin
   itmViewWatches := TMenuItem.Create(Self);
   itmViewWatches.Name:='itmViewWatches';
   itmViewWatches.Caption := 'Watches';
-  itmViewWatches.ShortCut:= VK_W or scCtrl or scAlt;
   itmViewWatches.OnClick := @mnuViewWatchesClick;
   mnuView.Add(itmViewWatches);
 
   itmViewBreakPoints := TMenuItem.Create(Self);
   itmViewBreakPoints.Name:='itmViewBreakPoints';
   itmViewBreakPoints.Caption := 'BreakPoints';
-  itmViewBreakPoints.Shortcut := VK_B or scCtrl or scAlt;
   itmViewBreakPoints.OnClick := @mnuViewBreakPointsClick;
   mnuView.Add(itmViewBreakPoints);
 
@@ -1396,7 +1447,6 @@ begin
   itmProjectOpen := TMenuItem.Create(Self);
   itmProjectOpen.Name:='itmProjectOpen';
   itmProjectOpen.Caption := 'Open Project';
-  itmProjectOpen.ShortCut:= VK_F11 or scCtrl;
   itmProjectOpen.OnClick := @mnuOpenProjectClicked;
   mnuProject.Add(itmProjectOpen);
 
@@ -1425,7 +1475,6 @@ begin
   itmProjectAddTo := TMenuItem.Create(Self);
   itmProjectAddTo.Name:='itmProjectAddTo';
   itmProjectAddTo.Caption := 'Add active unit to Project';
-  itmProjectAddTo.ShortCut:= VK_F11 or scShift;
   itmProjectAddTo.OnClick := @mnuAddToProjectClicked;
   mnuProject.Add(itmProjectAddTo);
 
@@ -1448,7 +1497,6 @@ begin
   itmProjectOptions := TMenuItem.Create(Self);
   itmProjectOptions.Name:='itmProjectOptions';
   itmProjectOptions.Caption := 'Project Options...';
-  itmProjectOptions.ShortCut:= VK_F11 or scCtrl or scShift;
   itmProjectOptions.OnClick := @mnuProjectOptionsClicked;
   mnuProject.Add(itmProjectOptions);
 
@@ -1473,7 +1521,6 @@ begin
   itmProjectRun := TMenuItem.Create(Self);
   itmProjectRun.Name:='itmProjectRun';
   itmProjectRun.Caption := 'Run';
-  itmProjectRun.ShortCut:= VK_F9;
   itmProjectRun.OnClick := @mnuRunProjectClicked;
   mnuRun.Add(itmProjectRun);
 
@@ -1487,28 +1534,24 @@ begin
   itmProjectStepInto := TMenuItem.Create(Self);
   itmProjectStepInto.Name:='itmProjectStepInto';
   itmProjectStepInto.Caption := 'Step into';
-  itmProjectStepInto.ShortCut:= VK_F7;
   itmProjectStepInto.OnClick := @mnuStepIntoProjectClicked;
   mnuRun.Add(itmProjectStepInto);
 
   itmProjectStepOver := TMenuItem.Create(Self);
   itmProjectStepOver.Name:='itmProjectStepOver';
   itmProjectStepOver.Caption := 'Step over';
-  itmProjectStepOver.ShortCut:= VK_F8;
   itmProjectStepOver.OnClick := @mnuStepOverProjectClicked;
   mnuRun.Add(itmProjectStepOver);
 
   itmProjectRunToCursor := TMenuItem.Create(Self);
   itmProjectRunToCursor.Name:='itmProjectRunToCursor';
   itmProjectRunToCursor.Caption := 'Run to cursor';
-  itmProjectRunToCursor.ShortCut:= VK_F4;
   itmProjectRunToCursor.OnClick := @mnuRunToCursorProjectClicked;
   mnuRun.Add(itmProjectRunToCursor);
 
   itmProjectStop := TMenuItem.Create(Self);
   itmProjectStop.Name:='itmProjectStop';
   itmProjectStop.Caption := 'Stop';
-  itmProjectStop.ShortCut:= VK_F2 or scCtrl;
   itmProjectStop.OnClick := @mnuStopProjectClicked;
   mnuRun.Add(itmProjectStop);
 
@@ -1539,7 +1582,6 @@ begin
   itmToolSyntaxCheck := TMenuItem.Create(Self);
   itmToolSyntaxCheck.Name:='itmToolSyntaxCheck';
   itmToolSyntaxCheck.Caption := 'Quick syntax check';
-  itmToolSyntaxCheck.ShortCut:= VK_Q or scCtrl;
   itmToolSyntaxCheck.OnClick := @mnuToolSyntaxCheckClicked;
   mnuTools.Add(itmToolSyntaxCheck);
 
@@ -1593,6 +1635,7 @@ begin
   itmHelpAboutLazarus.OnCLick := @mnuHelpAboutLazarusClicked;
   mnuHelp.Add(itmHelpAboutLazarus);
 
+  LoadMenuShortCuts;
 end;
 {------------------------------------------------------------------------------}
 
@@ -2300,8 +2343,10 @@ var EditorOptionsForm: TEditorOptionsForm;
 Begin
   EditorOptionsForm:=TEditorOptionsForm.Create(Application);
   try
-    if EditorOptionsForm.ShowModal=mrOk then
+    if EditorOptionsForm.ShowModal=mrOk then begin
       SourceNotebook.ReloadEditorOptions;
+      LoadMenuShortCuts;
+    end;
   finally
     EditorOptionsForm.Free;
   end;
@@ -4898,7 +4943,9 @@ procedure TMainIDE.DoArrangeSourceEditorAndMessageView;
 begin
   DoShowMessagesView;
 
-  if (SourceNotebook.Top+SourceNotebook.Height) > MessagesView.Top then
+  if (iwpDefault=EnvironmentOptions.IDEWindowLayoutList.ItemByFormID(
+    DefaultSourceNoteBookName).WindowPlacement)
+  and ((SourceNotebook.Top+SourceNotebook.Height) > MessagesView.Top) then
     SourceNotebook.Height := Max(50,Min(SourceNotebook.Height,
        MessagesView.Top-SourceNotebook.Top));
 end;
@@ -5095,6 +5142,8 @@ var CompilerUnitSearchPath: string;
 begin
   FOpenEditorsOnCodeToolChange:=false;
   
+  CodeToolsOpts.AssignTo(CodeToolBoss);
+  
   if (not FileExists(EnvironmentOptions.CompilerFilename)) then begin
     writeln('');
     writeln('NOTE: Compiler Filename not set! (see Environment Options)');
@@ -5247,6 +5296,7 @@ begin
     BlockBegin:=CaretXY;
     BlockEnd:=CaretXY;
     TopLine:=NewTopLine;
+    LeftChar:=Max(NewX-CharsInWindow,1);
     SetFocus;
   end;
   BringWindowToTop(SourceNoteBook.Handle);
@@ -5982,6 +6032,21 @@ begin
   DoEditMenuCommand(ecUndo);
 end;
 
+procedure TMainIDE.mnuEditIndentBlockClicked(Sender: TObject);
+begin
+  DoEditMenuCommand(ecBlockIndent);
+end;
+
+procedure TMainIDE.mnuEditUnindentBlockClicked(Sender: TObject);
+begin
+  DoEditMenuCommand(ecBlockUnindent);
+end;
+
+procedure TMainIDE.mnuEditCompleteCodeClicked(Sender: TObject);
+begin
+  DoCompleteCodeAtCursor;
+end;
+
 procedure TMainIDE.DoEditMenuCommand(EditorCommand: integer);
 var
   ActiveSourceEditor: TSourceEditor;
@@ -6030,6 +6095,109 @@ begin
   end;
 end;
 
+procedure TMainIDE.LoadMenuShortCuts;
+begin
+  with EditorOpts.KeyMap do begin
+    itmFileNewUnit.ShortCut:=CommandToShortCut(ecNewUnit);
+    itmFileNewForm.ShortCut:=CommandToShortCut(ecNewForm);
+    itmFileOpen.ShortCut:=CommandToShortCut(ecOpen);
+    //itmFileRecentOpen.ShortCut:=CommandToShortCut(ec);
+    itmFileSave.ShortCut:=CommandToShortCut(ecSave);
+    itmFileSaveAs.ShortCut:=CommandToShortCut(ecSaveAs);
+    itmFileSaveAll.ShortCut:=CommandToShortCut(ecSaveAll);
+    itmFileClose.ShortCut:=CommandToShortCut(ecClose);
+    itmFileCloseAll.ShortCut:=CommandToShortCut(ecCloseAll);
+    itmFileQuit.ShortCut:=CommandToShortCut(ecQuit);
+
+    itmEditUndo.ShortCut:=CommandToShortCut(ecUndo);
+    itmEditRedo.ShortCut:=CommandToShortCut(ecRedo);
+    itmEditCut.ShortCut:=CommandToShortCut(ecCut);
+    itmEditCopy.ShortCut:=CommandToShortCut(ecCopy);
+    itmEditPaste.ShortCut:=CommandToShortCut(ecPaste);
+    itmEditIndentBlock.ShortCut:=CommandToShortCut(ecBlockIndent);
+    itmEditUnindentBlock.ShortCut:=CommandToShortCut(ecBlockUnindent);
+    itmEditCompleteCode.ShortCut:=CommandToShortCut(ecCompleteCode);
+
+    itmSearchFind.ShortCut:=CommandToShortCut(ecFind);
+    itmSearchFindNext.ShortCut:=CommandToShortCut(ecFindNext);
+    itmSearchFindPrevious.ShortCut:=CommandToShortCut(ecFindPrevious);
+    itmSearchFindInFiles.ShortCut:=CommandToShortCut(ecFindInFiles);
+    itmSearchReplace.ShortCut:=CommandToShortCut(ecReplace);
+    itmGotoLine.ShortCut:=CommandToShortCut(ecGotoLineNumber);
+    itmJumpBack.ShortCut:=CommandToShortCut(ecJumpBack);
+    itmJumpForward.ShortCut:=CommandToShortCut(ecJumpForward);
+    itmAddJumpPoint.ShortCut:=CommandToShortCut(ecAddJumpPoint);
+    itmJumpHistory.ShortCut:=CommandToShortCut(ecViewJumpHistory);
+    itmFindBlockOtherEnd.ShortCut:=CommandToShortCut(ecFindBlockOtherEnd);
+    itmFindBlockStart.ShortCut:=CommandToShortCut(ecFindBlockStart);
+    itmFindDeclaration.ShortCut:=CommandToShortCut(ecFindDeclaration);
+    itmOpenFileAtCursor.ShortCut:=CommandToShortCut(ecOpenFileAtCursor);
+
+    itmViewInspector.ShortCut:=CommandToShortCut(ecToggleObjectInsp);
+    itmViewProject.ShortCut:=CommandToShortCut(ecToggleProjectExpl);
+    itmViewUnits.ShortCut:=CommandToShortCut(ecViewUnits);
+    itmViewCodeExplorer.ShortCut:=CommandToShortCut(ecToggleCodeExpl);
+    itmViewForms.ShortCut:=CommandToShortCut(ecViewForms);
+    itmViewMessage.ShortCut:=CommandToShortCut(ecToggleMessages);
+    itmViewWatches.ShortCut:=CommandToShortCut(ecToggleWatches);
+    itmViewBreakpoints.ShortCut:=CommandToShortCut(ecToggleBreakPoints);
+    itmViewDebugOutput.ShortCut:=CommandToShortCut(ecToggleDebuggerOut);
+
+    itmProjectNew.ShortCut:=CommandToShortCut(ecNewProject);
+    itmProjectOpen.ShortCut:=CommandToShortCut(ecOpenProject);
+    //itmProjectRecentOpen.ShortCut:=CommandToShortCut(ec);
+    itmProjectSave.ShortCut:=CommandToShortCut(ecSaveProject);
+    itmProjectSaveAs.ShortCut:=CommandToShortCut(ecSaveProjectAs);
+    itmProjectAddTo.ShortCut:=CommandToShortCut(ecAddCurUnitToProj);
+    itmProjectRemoveFrom.ShortCut:=CommandToShortCut(ecRemoveFromProj);
+    itmProjectViewSource.ShortCut:=CommandToShortCut(ecViewProjectSource);
+    itmProjectOptions.ShortCut:=CommandToShortCut(ecProjectOptions);
+
+    itmProjectBuild.ShortCut:=CommandToShortCut(ecBuild);
+    itmProjectBuildAll.ShortCut:=CommandToShortCut(ecBuildAll);
+    itmProjectRun.ShortCut:=CommandToShortCut(ecRun);
+    itmProjectPause.ShortCut:=CommandToShortCut(ecPause);
+    itmProjectStepInto.ShortCut:=CommandToShortCut(ecStepInto);
+    itmProjectStepOver.ShortCut:=CommandToShortCut(ecStepOver);
+    itmProjectRunToCursor.ShortCut:=CommandToShortCut(ecRunToCursor);
+    itmProjectStop.ShortCut:=CommandToShortCut(ecStopProgram);
+    itmProjectCompilerSettings.ShortCut:=CommandToShortCut(ecCompilerOptions);
+    itmProjectRunParameters.ShortCut:=CommandToShortCut(ecRunParameters);
+
+    itmToolConfigure.ShortCut:=CommandToShortCut(ecExtToolSettings);
+    itmToolSyntaxCheck.ShortCut:=CommandToShortCut(ecSyntaxCheck);
+    itmToolGuessUnclosedBlockCheck.ShortCut:=CommandToShortCut(ecGuessUnclosedBlock);
+    itmToolBuildLazarus.ShortCut:=CommandToShortCut(ecBuildLazarus);
+    itmToolConfigureBuildLazarus.ShortCut:=CommandToShortCut(ecConfigBuildLazarus);
+
+    itmEnvGeneralOptions.ShortCut:=CommandToShortCut(ecEnvironmentOptions);
+    itmEnvEditorOptions.ShortCut:=CommandToShortCut(ecEditorOptions);
+    itmEnvCodeToolsOptions.ShortCut:=CommandToShortCut(ecCodeToolsOptions);
+
+    itmHelpAboutLazarus.ShortCut:=CommandToShortCut(ecAboutLazarus);
+  end;
+end;
+
+procedure TMainIDE.mnuSearchFindBlockOtherEnd(Sender: TObject);
+begin
+  DoGoToPascalBlockOtherEnd;
+end;
+
+procedure TMainIDE.mnuSearchFindBlockStart(Sender: TObject);
+begin
+  DoGoToPascalBlockStart;
+end;
+
+procedure TMainIDE.mnuSearchFindDeclaration(Sender: TObject);
+begin
+  DoFindDeclarationAtCursor;
+end;
+
+procedure TMainIDE.mnuSearchOpenFileAtCursor(Sender: TObject);
+begin
+  // ToDo
+end;
+
 
 //-----------------------------------------------------------------------------
 
@@ -6044,6 +6212,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.236  2002/02/28 12:09:07  lazarus
+  MG: fixes, code creation policies, keymap categories, menu shortcuts
+
   Revision 1.235  2002/02/25 23:04:23  lazarus
   MG: added close all menuitem
 

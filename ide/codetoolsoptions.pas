@@ -1,6 +1,6 @@
 { /***************************************************************************
-                   codetoolsoptions.pas  -  Lazarus IDE unit
-                   -----------------------------------------
+                 codetoolsoptions.pas  -  Lazarus IDE unit
+                 -----------------------------------------
 
  ***************************************************************************/
 
@@ -43,7 +43,7 @@ type
     // CodeCreation
     FLineLength: integer;
     FClassPartInsertPolicy: TClassPartInsertPolicy;
-    FProcedureInsertPolicy: TProcedureInsertPolicy;
+    FMethodInsertPolicy: TMethodInsertPolicy;
     FKeyWordPolicy : TWordPolicy;
     FIdentifierPolicy: TWordPolicy;
     FDoNotSplitLineInFront: TAtomTypes;
@@ -82,8 +82,8 @@ type
     property LineLength: integer read FLineLength write FLineLength;
     property ClassPartInsertPolicy: TClassPartInsertPolicy
       read FClassPartInsertPolicy write FClassPartInsertPolicy;
-    property ProcedureInsertPolicy: TProcedureInsertPolicy
-      read FProcedureInsertPolicy write FProcedureInsertPolicy;
+    property MethodInsertPolicy: TMethodInsertPolicy
+      read FMethodInsertPolicy write FMethodInsertPolicy;
     property KeyWordPolicy : TWordPolicy
       read FKeyWordPolicy write FKeyWordPolicy;
     property IdentifierPolicy: TWordPolicy
@@ -121,7 +121,7 @@ type
     
     // Code Creation
     ClassPartInsertPolicyRadioGroup: TRadioGroup;
-    ProcedureInsertPolicyRadioGroup: TRadioGroup;
+    MethodInsertPolicyRadioGroup: TRadioGroup;
     KeyWordPolicyRadioGroup: TRadioGroup;
     IdentifierPolicyRadioGroup: TRadioGroup;
     PropertyPrePostfixesGroupBox: TGroupBox;
@@ -313,13 +313,17 @@ begin
     FLineLength:=XMLConfig.GetValue(
       'CodeToolsOptions/LineLengthXMLConfig/Value',80);
     FClassPartInsertPolicy:=ClassPartPolicyNameToPolicy(XMLConfig.GetValue(
-      'CodeToolsOptions/ClassPartInsertPolicy/Value','Last'));
-    FProcedureInsertPolicy:=ProcedureInsertPolicyNameToPolicy(XMLConfig.GetValue(
-      'CodeToolsOptions/ProcedureInsertPolicy/Value','Last'));
+      'CodeToolsOptions/ClassPartInsertPolicy/Value',
+      ClassPartInsertPolicyNames[cpipAlphabetically]));
+    FMethodInsertPolicy:=MethodInsertPolicyNameToPolicy(XMLConfig.GetValue(
+      'CodeToolsOptions/MethodInsertPolicy/Value',
+      MethodInsertPolicyNames[mipClassOrder]));
     FKeyWordPolicy:=WordPolicyNameToPolicy(XMLConfig.GetValue(
-      'CodeToolsOptions/KeyWordPolicy/Value','LowerCase'));
+      'CodeToolsOptions/KeyWordPolicy/Value',
+      WordPolicyNames[wpLowerCase]));
     FIdentifierPolicy:=WordPolicyNameToPolicy(XMLConfig.GetValue(
-      'CodeToolsOptions/IdentifierPolicy/Value','None'));
+      'CodeToolsOptions/IdentifierPolicy/Value',
+      WordPolicyNames[wpNone]));
     FDoNotSplitLineInFront:=ReadAtomTypesFromXML(XMLConfig,
       'CodeToolsOptions/DoNotSplitLineInFront/',DefaultDoNotSplitLineInFront);
     FDoNotSplitLineAfter:=ReadAtomTypesFromXML(XMLConfig,
@@ -369,8 +373,8 @@ begin
       'CodeToolsOptions/LineLengthXMLConfig/Value',FLineLength);
     XMLConfig.SetValue('CodeToolsOptions/ClassPartInsertPolicy/Value',
       ClassPartInsertPolicyNames[FClassPartInsertPolicy]);
-    XMLConfig.SetValue('CodeToolsOptions/ProcedureInsertPolicy/Value',
-      ProcedureInsertPolicyNames[FProcedureInsertPolicy]);
+    XMLConfig.SetValue('CodeToolsOptions/MethodInsertPolicy/Value',
+      MethodInsertPolicyNames[FMethodInsertPolicy]);
     XMLConfig.SetValue('CodeToolsOptions/KeyWordPolicy/Value',
       WordPolicyNames[FKeyWordPolicy]);
     XMLConfig.SetValue('CodeToolsOptions/IdentifierPolicy/Value',
@@ -432,7 +436,7 @@ begin
     // CodeCreation
     FLineLength:=CodeToolsOpts.FLineLength;
     FClassPartInsertPolicy:=CodeToolsOpts.FClassPartInsertPolicy;
-    FProcedureInsertPolicy:=CodeToolsOpts.FProcedureInsertPolicy;
+    FMethodInsertPolicy:=CodeToolsOpts.FMethodInsertPolicy;
     FKeyWordPolicy:=CodeToolsOpts.FKeyWordPolicy;
     FIdentifierPolicy:=CodeToolsOpts.FIdentifierPolicy;
     FDoNotSplitLineInFront:=CodeToolsOpts.FDoNotSplitLineInFront;
@@ -461,7 +465,7 @@ begin
   // CodeCreation
   FLineLength:=80;
   FClassPartInsertPolicy:=cpipLast;
-  FProcedureInsertPolicy:=pipClassOrder;
+  FMethodInsertPolicy:=mipClassOrder;
   FKeyWordPolicy:=wpLowerCase;
   FIdentifierPolicy:=wpNone;
   FDoNotSplitLineInFront:=DefaultDoNotSplitLineInFront;
@@ -487,7 +491,7 @@ begin
     // CodeCreation
     and (FLineLength=CodeToolsOpts.FLineLength)
     and (FClassPartInsertPolicy=CodeToolsOpts.FClassPartInsertPolicy)
-    and (FProcedureInsertPolicy=CodeToolsOpts.FProcedureInsertPolicy)
+    and (FMethodInsertPolicy=CodeToolsOpts.FMethodInsertPolicy)
     and (FKeyWordPolicy=CodeToolsOpts.FKeyWordPolicy)
     and (FIdentifierPolicy=CodeToolsOpts.FIdentifierPolicy)
     and (FDoNotSplitLineInFront=CodeToolsOpts.FDoNotSplitLineInFront)
@@ -521,7 +525,7 @@ begin
   with Boss.SourceChangeCache do begin
     BeautifyCodeOptions.LineLength:=LineLength;
     BeautifyCodeOptions.ClassPartInsertPolicy:=ClassPartInsertPolicy;
-    BeautifyCodeOptions.ProcedureInsertPolicy:=ProcedureInsertPolicy;
+    BeautifyCodeOptions.MethodInsertPolicy:=MethodInsertPolicy;
     BeautifyCodeOptions.KeyWordPolicy:=KeyWordPolicy;
     BeautifyCodeOptions.IdentifierPolicy:=IdentifierPolicy;
     BeautifyCodeOptions.DoNotSplitLineInFront:=DoNotSplitLineInFront;
@@ -683,20 +687,19 @@ begin
       Add('Last');
       EndUpdate;
     end;
-    Enabled:=false;
     Visible:=true;
   end;
 
-  ProcedureInsertPolicyRadioGroup:=TRadioGroup.Create(Self);
-  with ProcedureInsertPolicyRadioGroup do begin
-    Name:='ProcedureInsertPolicyRadioGroup';
+  MethodInsertPolicyRadioGroup:=TRadioGroup.Create(Self);
+  with MethodInsertPolicyRadioGroup do begin
+    Name:='MethodInsertPolicyRadioGroup';
     Parent:=NoteBook.Page[1];
     SetBounds(ClassPartInsertPolicyRadioGroup.Left
       +ClassPartInsertPolicyRadioGroup.Width+8,
       ClassPartInsertPolicyRadioGroup.Top,
       ClassPartInsertPolicyRadioGroup.Width,
       ClassPartInsertPolicyRadioGroup.Height);
-    Caption:='Procedure insert policy';
+    Caption:='Method insert policy';
     with Items do begin
       BeginUpdate;
       Add('Alphabetically');
@@ -704,7 +707,6 @@ begin
       Add('Class order');
       EndUpdate;
     end;
-    Enabled:=false;
     Visible:=true;
   end;
 
@@ -1058,14 +1060,14 @@ begin
     // cpipLast
     ClassPartInsertPolicyRadioGroup.ItemIndex:=1;
   end;
-  case Options.ProcedureInsertPolicy of
-  pipAlphabetically:
-    ProcedureInsertPolicyRadioGroup.ItemIndex:=0;
-  pipLast:
-    ProcedureInsertPolicyRadioGroup.ItemIndex:=1;
+  case Options.MethodInsertPolicy of
+  mipAlphabetically:
+    MethodInsertPolicyRadioGroup.ItemIndex:=0;
+  mipLast:
+    MethodInsertPolicyRadioGroup.ItemIndex:=1;
   else
-    // pipClassOrder
-    ProcedureInsertPolicyRadioGroup.ItemIndex:=2;
+    // mipClassOrder
+    MethodInsertPolicyRadioGroup.ItemIndex:=2;
   end;
   case Options.KeyWordPolicy of
   wpLowerCase:
@@ -1116,10 +1118,10 @@ begin
   0: Options.ClassPartInsertPolicy:=cpipAlphabetically;
   1: Options.ClassPartInsertPolicy:=cpipLast;
   end;
-  case ProcedureInsertPolicyRadioGroup.ItemIndex of
-  0: Options.ProcedureInsertPolicy:=pipAlphabetically;
-  1: Options.ProcedureInsertPolicy:=pipLast;
-  2: Options.ProcedureInsertPolicy:=pipClassOrder;
+  case MethodInsertPolicyRadioGroup.ItemIndex of
+  0: Options.MethodInsertPolicy:=mipAlphabetically;
+  1: Options.MethodInsertPolicy:=mipLast;
+  2: Options.MethodInsertPolicy:=mipClassOrder;
   end;
   case KeyWordPolicyRadioGroup.ItemIndex of
   0: Options.KeyWordPolicy:=wpNone;
@@ -1218,10 +1220,10 @@ begin
   0: Options.ClassPartInsertPolicy:=cpipAlphabetically;
   1: Options.ClassPartInsertPolicy:=cpipLast;
   end;
-  case ProcedureInsertPolicyRadioGroup.ItemIndex of
-  0: Options.ProcedureInsertPolicy:=pipAlphabetically;
-  1: Options.ProcedureInsertPolicy:=pipLast;
-  2: Options.ProcedureInsertPolicy:=pipClassOrder;
+  case MethodInsertPolicyRadioGroup.ItemIndex of
+  0: Options.MethodInsertPolicy:=mipAlphabetically;
+  1: Options.MethodInsertPolicy:=mipLast;
+  2: Options.MethodInsertPolicy:=mipClassOrder;
   end;
   case KeyWordPolicyRadioGroup.ItemIndex of
   0: Options.KeyWordPolicy:=wpNone;

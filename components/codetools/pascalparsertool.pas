@@ -84,6 +84,7 @@ type
       phpWithOfObject,       // extract 'of object'
       phpWithComments,       // extract comments
       phpInUpperCase,        // turn to uppercase
+      phpTrimSpace,          // skip unneeded spaces
       phpWithoutBrackets,    // skip start- and end-bracket of parameter list
       phpIgnoreForwards,     // skip forward procs
       phpIgnoreProcsWithBody,// skip procs with begin..end
@@ -2867,6 +2868,7 @@ begin
   if LastAtoms.Count>0 then begin
     LastAtomEndPos:=LastAtoms.GetValueAt(0).EndPos;
     if phpWithComments in Attr then begin
+      // add space/comment between pascal atoms
       if phpInUpperCase in Attr then
         ExtractMemStream.Write(UpperSrc[LastAtomEndPos],
              CurPos.StartPos-LastAtomEndPos)
@@ -2875,8 +2877,14 @@ begin
              CurPos.StartPos-LastAtomEndPos)
     end else if (CurPos.StartPos>LastAtomEndPos) 
     and (ExtractMemStream.Position>0) then begin
-      ExtractMemStream.Write(' ',1);
-      LastStreamPos:=ExtractMemStream.Position;
+      // some code was skipped
+      if (not (phpTrimSpace in Attr))
+      or ((CurPos.StartPos<=SrcLen) and (IsIdentStartChar[Src[CurPos.StartPos]])
+        and (IsIdentChar[Src[LastAtomEndPos-1]]))
+      then begin
+        ExtractMemStream.Write(' ',1);
+        LastStreamPos:=ExtractMemStream.Position;
+      end;
     end;
   end;
   if AddAtom then begin
@@ -3070,7 +3078,7 @@ begin
   Result:=StartNode;
   while Result<>nil do begin
     if (Result.Desc=ctnVarDefinition)
-    and (CompareNodeUpSrc(Result,UpperVarName)=0) then
+    and (CompareNodeIdentChars(Result,UpperVarName)=0) then
       exit;
     Result:=FindNextNodeOnSameLvl(Result);
   end;

@@ -71,6 +71,7 @@ type
     fParsed: boolean;
     {$IFDEF SYN_LAZARUS}
     fOnTokenNotFound: TOnTokenNotFound;
+    fIndentToTokenStart: boolean;
     {$ENDIF}
     procedure CompletionListChanged(Sender: TObject);
     function GetCompletions: TStrings;
@@ -114,6 +115,8 @@ type
     {$IFDEF SYN_LAZARUS}
     property OnTokenNotFound: TOnTokenNotFound
       read fOnTokenNotFound write fOnTokenNotFound;
+    property IndentToTokenStart: boolean
+      read fIndentToTokenStart write fIndentToTokenStart;
     {$ENDIF}
   end;
 
@@ -125,6 +128,7 @@ type
     property EndOfTokenChr;
     {$IFDEF SYN_LAZARUS}
     property OnTokenNotFound;
+    property IndentToTokenStart;
     {$ENDIF}
   end;
 
@@ -288,12 +292,32 @@ begin
         AEditor.BlockBegin := Point(p.x - Len, p.y);
         AEditor.BlockEnd := p;
         // indent the completion string if necessary, determine the caret pos
-        IndentLen := p.x - Len - 1;
+        {$IFDEF SYN_LAZARUS}
+        if IndentToTokenStart then begin
+        {$ENDIF}
+          IndentLen := p.x - Len - 1;
+        {$IFDEF SYN_LAZARUS}
+        end else begin
+          // indent as line of token
+          IndentLen:=1;
+          if (p.y>0) and (p.y<=AEditor.Lines.Count) then begin
+            s:=AEditor.Lines[p.y-1];
+            while (IndentLen<p.x) and (s[IndentLen]<=' ') do inc(IndentLen);
+          end;
+          dec(IndentLen);
+        end;
+        {$ENDIF}
         p := AEditor.BlockBegin;
         NewCaretPos := FALSE;
         Temp := TStringList.Create;
         try
           Temp.Text := fCompletionValues[i];
+          {$IFDEF SYN_LAZARUS}
+          s:=fCompletionValues[i];
+          if (s<>'') and (s[length(s)] in [#10,#13]) then
+            Temp.Add('');
+          {$ENDIF}
+
           // indent lines
           if (IndentLen > 0) and (Temp.Count > 1) then
           begin
@@ -325,8 +349,14 @@ begin
           s := Temp.Text;
           // strip the trailing #13#10 that was appended by the stringlist
           i := Length(s);
-          if (i >= 2) and (s[i - 1] = #13) and (s[i] = #10) then
-            SetLength(s, i - 2);
+          {$IFDEF SYN_LAZARUS}
+          if (i>=1) and (s[i] in [#10,#13]) then begin
+            dec(i);
+            if (i>=1) and (s[i] in [#10,#13]) and (s[i]<>s[i+1]) then
+              dec(i);
+            SetLength(s, i);
+          end;
+          {$ENDIF}
         finally
           Temp.Free;
         end;

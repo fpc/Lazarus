@@ -82,6 +82,8 @@ type
     
     function FindDeepestNodeAtPos(P: integer;
       ExceptionOnNotFound: boolean): TCodeTreeNode;
+    function FindDeepestNodeAtPos(StartNode: TCodeTreeNode; P: integer;
+      ExceptionOnNotFound: boolean): TCodeTreeNode;
     function CaretToCleanPos(Caret: TCodeXYPosition;
         var CleanPos: integer): integer;  // 0=valid CleanPos
               //-1=CursorPos was skipped, CleanPos between two links
@@ -126,10 +128,8 @@ type
         const AnAtom: shortstring): boolean; // 0=current, 1=prior current, ...
     function GetAtom: string;
     function GetUpAtom: string;
-    function CompareNodeSrc(ANode: TCodeTreeNode;
-        const ASource: string): integer;
-    function CompareNodeUpSrc(ANode: TCodeTreeNode;
-        const ASource: string): integer;
+    function CompareNodeIdentChars(ANode: TCodeTreeNode;
+        const AnUpperIdent: string): integer;
     function CompareSrcIdentifiers(
       CleanStartPos1, CleanStartPos2: integer): boolean;
     function CompareSrcIdentifier(CleanStartPos: integer;
@@ -316,57 +316,45 @@ begin
   Result:=UpAtomIs(AnAtom);
 end;
 
-function TCustomCodeTool.CompareNodeSrc(ANode: TCodeTreeNode;
-  const ASource: string): integer;
-var ASrcLen, i, NodeSrcLen : integer;
+function TCustomCodeTool.CompareNodeIdentChars(ANode: TCodeTreeNode;
+  const AnUpperIdent: string): integer;
+var AnIdentLen, i, NodeSrcLen, MinLen, p: integer;
 begin
   if (ANode.StartPos<=SrcLen) and (ANode.EndPos<=SrcLen+1)
   and (ANode.StartPos>=1) then begin
-    ASrcLen:=length(ASource);
+    AnIdentLen:=length(AnUpperIdent);
     NodeSrcLen:=ANode.EndPos-ANode.StartPos;
-    if ASrcLen=NodeSrcLen then begin
-      for i:=1 to ASrcLen do
-        if ASource[i]<>Src[ANode.StartPos-1+i] then begin
-          if ASource[i]>Src[ANode.StartPos-1+i] then
-            Result:=1
-          else
-            Result:=-1;
-          exit;
-        end;
-      Result:=0;
-    end else if ASrcLen<NodeSrcLen then
-      Result:=1
+    if AnIdentLen<NodeSrcLen then
+      MinLen:=AnIdentLen
     else
-      Result:=-1;
-  end else
-    Result:=-1;
-end;
-
-function TCustomCodeTool.CompareNodeUpSrc(ANode: TCodeTreeNode;
-  const ASource: string): integer;
-var ASrcLen, i, NodeSrcLen : integer;
-begin
-  if (ANode.StartPos<=SrcLen) and (ANode.EndPos<=SrcLen+1)
-  and (ANode.StartPos>=1) then begin
-    ASrcLen:=length(ASource);
-    NodeSrcLen:=ANode.EndPos-ANode.StartPos;
-    if ASrcLen<=NodeSrcLen then begin
-      i:=1;
-      while (i<=ASrcLen) and (IsIdentChar[Src[ANode.StartPos-1+i]]) do begin
-        if ASource[i]<>UpperSrc[ANode.StartPos-1+i] then begin
-          if ASource[i]>UpperSrc[ANode.StartPos-1+i] then
-            Result:=1
-          else
-            Result:=-1;
-          exit;
-        end;
-        inc(i);
+      MinLen:=NodeSrcLen;
+    i:=1;
+    p:=ANode.StartPos-1+i;
+    while (i<=MinLen) and (IsIdentChar[Src[p]]) do begin
+      if AnUpperIdent[i]<>UpperSrc[p] then begin
+        // identifiers different in one letter
+        if UpperSrc[p]>AnUpperIdent[i] then
+          Result:=-1
+        else
+          Result:=1;
+        exit;
       end;
-      Result:=0;
+      inc(i);
+      inc(p);
+    end;
+    if (i>MinLen) and (i>AnIdentLen) then begin
+      // node is longer than AnUpperIdent
+      if (i>NodeSrcLen) or (not IsIdentChar[Src[p]]) then
+        // node identifier is equal to AnUpperIdent
+        Result:=0
+      else
+        // node Identifier is longer than AnUpperIdent
+        Result:=-1;
     end else
-      Result:=-1;
+      // node identifier is shorter than AnUpperIdent
+      Result:=1
   end else
-    Result:=-1;
+    Result:=1;
 end;
 
 function TCustomCodeTool.CompareSrcIdentifiers(
@@ -1276,30 +1264,29 @@ end;
 
 function TCustomCodeTool.FindDeepestNodeAtPos(P: integer;
   ExceptionOnNotFound: boolean): TCodeTreeNode;
+begin
+  Result:=FindDeepestNodeAtPos(Tree.Root,P,ExceptionOnNotFound);
+end;
 
-  function SearchInNode(ANode: TCodeTreeNode): TCodeTreeNode;
-  begin
-    if ANode<>nil then begin
+function TCustomCodeTool.FindDeepestNodeAtPos(StartNode: TCodeTreeNode;
+  P: integer; ExceptionOnNotFound: boolean): TCodeTreeNode;
+begin
+  if StartNode<>nil then begin
 //writeln('SearchInNode ',NodeDescriptionAsString(ANode.Desc),
 //',',ANode.StartPos,',',ANode.EndPos,', p=',p,
 //' "',copy(Src,ANode.StartPos,4),'" - "',copy(Src,ANode.EndPos-5,4),'"');
-      if (ANode.StartPos<=P) and ((ANode.EndPos>P) or (ANode.EndPos<1)) then
-      begin
-        // first search in childs
-        Result:=SearchInNode(ANode.FirstChild);
-        if Result=nil then
-          // no child found -> take this node
-          Result:=ANode;
-      end else
-        // search in next node
-        Result:=SearchInNode(ANode.NextBrother);
+    if (StartNode.StartPos<=P)
+    and ((StartNode.EndPos>P) or (StartNode.EndPos<1)) then begin
+      // first search in childs
+      Result:=FindDeepestNodeAtPos(StartNode.FirstChild,P,false);
+      if Result=nil then
+        // no child found -> take this node
+        Result:=StartNode;
     end else
-      Result:=nil;
-  end;
-
-// TCustomCodeTool.FindDeepestNodeAtPos
-begin
-  Result:=SearchInNode(Tree.Root);
+      // search in next node
+      Result:=FindDeepestNodeAtPos(StartNode.NextBrother,P,false);
+  end else
+    Result:=nil;
   if (Result=nil) and ExceptionOnNotFound then begin
     MoveCursorToCleanPos(P);
     RaiseException('no node found at cursor');

@@ -34,6 +34,8 @@ interface
 
 {$I codetools.inc}
 
+{ $DEFINE CTDEBUG}
+
 uses
   {$IFDEF MEM_CHECK}
   MemCheck,
@@ -76,6 +78,72 @@ implementation
 
 function TMethodJumpingCodeTool.FindJumpPoint(CursorPos: TCodeXYPosition;
   var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+
+const
+  JumpToProcAttr = [phpInUpperCase,phpTrimSpace,phpWithoutClassName,
+      phpWithVarModifiers,phpWithParameterNames,phpWithResultType];
+
+  function JumpToProc(
+    FromProcNode: TCodeTreeNode; FromProcAttr: TProcHeadAttributes;
+    ToProcNode: TCodeTreeNode; ToProcAttr: TProcHeadAttributes): boolean;
+  // compare both proc heads
+  // if there is a difference then jump to the difference
+  // if there is a body then jump to the body
+  // else jump to the proc name
+  var
+    FromProcHead, ToProcHead: string;
+    DiffPos: integer;
+  begin
+{$IFDEF CTDEBUG}
+writeln('TMethodJumpingCodeTool.FindJumpPoint.JumpToProc A ',FromProcNode<>nil,' ',ToProcNode<>nil);
+{$ENDIF}
+    FromProcHead:=ExtractProcHead(FromProcNode,FromProcAttr);
+    ToProcHead:=ExtractProcHead(ToProcNode,ToProcAttr);
+{$IFDEF CTDEBUG}
+writeln('TMethodJumpingCodeTool.FindJumpPoint.JumpToProc B FromProcHead="',FromProcHead,'"',
+' ToProcHead="',ToProcHead,'"');
+{$ENDIF}
+    // search for difference in filtered proc headers
+    DiffPos:=1;
+    while (DiffPos<=length(FromProcHead)) and (DiffPos<=length(ToProcHead))
+    and (FromProcHead[DiffPos]=ToProcHead[DiffPos]) do
+      inc(DiffPos);
+    if (DiffPos>length(ToProcHead)) and (DiffPos<=length(FromProcHead)) then
+      DiffPos:=length(ToProcHead);
+{$IFDEF CTDEBUG}
+writeln('TMethodJumpingCodeTool.FindJumpPoint.JumpToProc C DiffPos=',DiffPos,' length(ToProcHead)=',length(ToProcHead));
+{$ENDIF}
+    if DiffPos<=length(ToProcHead) then begin
+      // procs differ -> search difference in code
+      ExtractSearchPos:=DiffPos;
+      try
+        ExtractProcHead(ToProcNode,ToProcAttr);
+        DiffPos:=ExtractFoundPos;
+      finally
+        ExtractSearchPos:=-1;
+      end;
+{$IFDEF CTDEBUG}
+writeln('TMethodJumpingCodeTool.FindJumpPoint.JumpToProc D CleanDiffPos=',DiffPos);
+{$ENDIF}
+      Result:=JumpToCleanPos(DiffPos,ToProcNode.StartPos,NewPos,NewTopLine,true);
+    end else begin
+      // procs are equal
+      if (ToProcNode.LastChild.Desc=ctnBeginBlock) then begin
+{$IFDEF CTDEBUG}
+writeln('TMethodJumpingCodeTool.FindJumpPoint.JumpToProc E proc has body');
+{$ENDIF}
+        // proc has a body -> jump to start of body
+        Result:=FindJumpPointInProcNode(ToProcNode,NewPos,NewTopLine);
+      end else begin
+        // proc has no body -> jump to proc name
+{$IFDEF CTDEBUG}
+writeln('TMethodJumpingCodeTool.FindJumpPoint.JumpToProc F proc has no body');
+{$ENDIF}
+        Result:=JumpToCleanPos(ToProcNode.FirstChild.StartPos,
+                               ToProcNode.StartPos,NewPos,NewTopLine,false);
+      end;
+    end;
+  end;
   
   function FindBestProcNode(
     SearchForProcNode: TCodeTreeNode; SearchForProcAttr: TProcHeadAttributes;
@@ -85,9 +153,9 @@ function TMethodJumpingCodeTool.FindJumpPoint(CursorPos: TCodeXYPosition;
   // search for a proc node with same name and jump to difference in param list
   // returns true on jumped, false if no target proc found
   var SearchedProcHead: string;
-    FromProcHead, ToProcHead: string;
-    Attr: TProcHeadAttributes;
-    DiffPos: integer;
+    //FromProcHead, ToProcHead: string;
+    //Attr: TProcHeadAttributes;
+    //DiffPos: integer;
     ProcNode: TCodeTreeNode;
   begin
     Result:=false;
@@ -98,7 +166,8 @@ function TMethodJumpingCodeTool.FindJumpPoint(CursorPos: TCodeXYPosition;
 writeln('TMethodJumpingCodeTool.FindJumpPoint.FindBestProcNode A ',ProcNode<>nil,' "',SearchedProcHead,'"');
 {$ENDIF}
     if ProcNode<>nil then begin
-      Result:=FindJumpPointInProcNode(ProcNode,NewPos,NewTopLine);
+      Result:=JumpToProc(SearchForProcNode,JumpToProcAttr,
+                         ProcNode,JumpToProcAttr);
       exit;
     end;
     // there is no exact corresponding proc
@@ -116,33 +185,8 @@ writeln('TMethodJumpingCodeTool.FindJumpPoint.FindBestProcNode B ',ProcNode<>nil
 {$ENDIF}
     if ProcNode<>nil then begin
       // there is a proc with the same name, but with different parameters
-      // -> search first difference
-      
-      // extract the two procedures
-      Attr:=[phpInUpperCase,phpWithoutClassName];
-      FromProcHead:=ExtractProcHead(SearchForProcNode,Attr);
-      ToProcHead:=ExtractProcHead(ProcNode,Attr);
-      // search for difference in filtered proc headers
-      DiffPos:=1;
-      while (DiffPos<=length(FromProcHead)) and (DiffPos<=length(ToProcHead))
-      and (FromProcHead[DiffPos]=ToProcHead[DiffPos]) do
-        inc(DiffPos);
-{$IFDEF CTDEBUG}
-writeln('TMethodJumpingCodeTool.FindJumpPoint.FindBestProcNode C "',FromProcHead,'" <> "',ToProcHead,'" DiffPos=',DiffPos,' ',copy(ToProcHead,DiffPos,5));
-{$ENDIF}
-      // search difference in code
-      ExtractSearchPos:=DiffPos;
-      try
-        ExtractProcHead(ProcNode,Attr);
-        DiffPos:=ExtractFoundPos;
-      finally
-        ExtractSearchPos:=-1;
-      end;
-{$IFDEF CTDEBUG}
-writeln('TMethodJumpingCodeTool.FindJumpPoint.FindBestProcNode C ',DiffPos);
-{$ENDIF}
-      // move cursor to first difference in procedure head
-      Result:=JumpToCleanPos(DiffPos,ProcNode.StartPos,NewPos,NewTopLine,true);
+      Result:=JumpToProc(SearchForProcNode,JumpToProcAttr,
+                         ProcNode,JumpToProcAttr);
     end;
   end;
   
@@ -253,19 +297,8 @@ writeln('TMethodJumpingCodeTool.FindJumpPoint M ',DiffNode<>nil,' ',DiffTxtPos);
 {$ENDIF}
         if DiffNode<>nil then begin
           ProcNode:=TCodeTreeNodeExtension(DiffNode.Data).Node;
-          ExtractSearchPos:=DiffTxtPos;
-          ExtractProcHead(ProcNode,[phpWithParameterNames,phpFindCleanPosition]);
-          DiffTxtPos:=ExtractFoundPos;
-{$IFDEF CTDEBUG}
-writeln('TMethodJumpingCodeTool.FindJumpPoint N ',DiffTxtPos);
-{$ENDIF}
-          if DiffTxtPos>0 then begin
-            // move cursor to first difference in procedure head
-            Result:=JumpToCleanPos(DiffTxtPos,ProcNode.StartPos,
-                                   NewPos,NewTopLine,true);
-          end else
-            // find good position in procedure body
-            Result:=FindJumpPointInProcNode(ProcNode,NewPos,NewTopLine);
+          Result:=JumpToProc(CursorNode,JumpToProcAttr,
+                             ProcNode,JumpToProcAttr);
         end;
       finally
         NodeExtMemManager.DisposeAVLTree(SearchForNodes);
@@ -351,18 +384,8 @@ writeln('TMethodJumpingCodeTool.FindJumpPoint 4G ',DiffNode<>nil);
 {$ENDIF}
             if DiffNode<>nil then begin
               ProcNode:=TCodeTreeNodeExtension(DiffNode.Data).Node;
-              ExtractSearchPos:=DiffTxtPos;
-              ExtractProcHead(ProcNode,[phpWithParameterNames,
-                             phpFindCleanPosition]);
-              DiffTxtPos:=ExtractFoundPos;
-              if DiffTxtPos>0 then begin
-                // move cursor to first difference in procedure head
-                Result:=JumpToCleanPos(DiffTxtPos,ProcNode.StartPos,
-                                       NewPos,NewTopLine,true);
-              end else
-                // find good position in procedure body
-                Result:=FindJumpPointInProcNode(ProcNode,NewPos,NewTopLine);
-              exit;
+              Result:=JumpToProc(CursorNode,JumpToProcAttr,
+                                 ProcNode,JumpToProcAttr);
             end;
           finally
             NodeExtMemManager.DisposeAVLTree(SearchForNodes);

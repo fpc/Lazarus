@@ -176,6 +176,8 @@ type
     Node: TCodeTreeNode;
     Txt: string;
     ExtTxt1, ExtTxt2: string;
+    Position: integer;
+    Data: Pointer;
     Next: TCodeTreeNodeExtension;
     procedure Clear;
     constructor Create;
@@ -212,6 +214,7 @@ var
 // useful functions
 function NodeDescriptionAsString(Desc: TCodeTreeNodeDesc): string;
 function CompareCodeTreeNodeExt(NodeData1, NodeData2: pointer): integer;
+function CompareCodeTreeNodeExtWithPos(NodeData1, NodeData2: pointer): integer;
 
 implementation
 
@@ -288,6 +291,19 @@ begin
   NodeExt1:=TCodeTreeNodeExtension(NodeData1);
   NodeExt2:=TCodeTreeNodeExtension(NodeData2);
   Result:=CompareTextIgnoringSpace(NodeExt1.Txt,NodeExt2.Txt,false);
+end;
+
+function CompareCodeTreeNodeExtWithPos(NodeData1, NodeData2: pointer): integer;
+var NodeExt1Pos, NodeExt2Pos: integer;
+begin
+  NodeExt1Pos:=TCodeTreeNodeExtension(NodeData1).Position;
+  NodeExt2Pos:=TCodeTreeNodeExtension(NodeData2).Position;
+  if NodeExt1Pos<NodeExt2Pos then
+    Result:=1
+  else if NodeExt1Pos>NodeExt2Pos then
+    Result:=-1
+  else
+    Result:=0;
 end;
 
 { TCodeTreeNode }
@@ -498,6 +514,8 @@ begin
   ExtTxt1:='';
   ExtTxt2:='';
   Node:=nil;
+  Position:=-1;
+  Data:=nil;
 end;
 
 constructor TCodeTreeNodeExtension.Create;

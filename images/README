@@ -5,6 +5,8 @@ in xpm format.
 mainicon.lrs - This is the IDE program icon.
 laz_images.lrs - The icons for the speedbuttons (Open, Save, Run,...)
 components_images.lrs - Icons and pics for lcl components
+editoroptions.lrs - Icons for editor options
+
 
 How to update the image resources:
 
@@ -38,4 +40,9 @@ cd <lazarusdir>/images/components/
 cd <lazarusdir>/images/sourceeditor/
 ../../tools/lazres ../bookmark.lrs *.xpm
 
+
+5. editoroptions.lrs
+
+cd <lazarusdir>/images/
+../tools/lazres ../editoroptions.lrs keymaprelation.xpm keymapcategory.xpm
 
