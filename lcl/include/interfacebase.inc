@@ -199,14 +199,14 @@ begin
   Result := false;
 end;
 
-function TInterfaceBase.Frame3d(DC: HDC; var Rect: TRect; const FrameWidth : integer; const Style : TBevelCut) : boolean;
+function TInterfaceBase.Frame3d(DC: HDC; var Rect: TRect;
+  const FrameWidth : integer; const Style : TBevelCut) : boolean;
 begin
   Result:= false;
 end;
 
 Function TInterfaceBase.GetActiveWindow : HWND;
 begin
-  // Your default here
   Result := 0;
 end;
 
@@ -220,10 +220,14 @@ begin
   Result := False;
 end;
 
+Function TInterfaceBase.GetClientBounds(handle : HWND; var Rect : TRect) : Boolean;
+begin
+  Result := False;
+end;
+
 Function TInterfaceBase.GetClientRect(handle : HWND; var Rect : TRect) : Boolean;
 begin
-  // Your default here
-   Result := False;
+  Result := False;
 end;
 
 function TInterfaceBase.GetCursorPos(var lpPoint: TPoint): Boolean;
@@ -231,7 +235,8 @@ begin
   Result := False;
 end;
 
-function TInterfaceBase.GetCharABCWidths(DC: HDC; p2, p3: UINT; const ABCStructs): Boolean;  //pbd
+function TInterfaceBase.GetCharABCWidths(DC: HDC; p2, p3: UINT;
+  const ABCStructs): Boolean;
 begin
   Result := False;
 end;
@@ -326,7 +331,6 @@ end;
 
 Function TInterfaceBase.InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean) : Boolean;
 begin
-  // Your default here
   Result := false;
 end;
 
@@ -565,6 +569,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.29  2002/05/24 07:16:31  lazarus
+  MG: started mouse bugfix and completed Makefile.fpc
+
   Revision 1.28  2002/05/10 06:05:52  lazarus
   MG: changed license to LGPL
 
