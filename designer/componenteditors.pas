@@ -161,7 +161,7 @@ type
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
     function IsInInlined: Boolean; override;
-    procedure Copy; virtual; override;
+    procedure Copy; override;
     procedure PrepareItem(Index: Integer; const AnItem: TMenuItem); override;
     property Component: TComponent read FComponent;
     property Designer: TComponentEditorDesigner read GetDesigner;

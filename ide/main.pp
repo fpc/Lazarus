@@ -8125,12 +8125,14 @@ begin
     writeln('NOTE: Compiler Filename not set! (see Environment Options)');
   end;
 
-  if (EnvironmentOptions.LazarusDirectory='') then begin
+  if (EnvironmentOptions.LazarusDirectory='')
+  or not FileExists(EnvironmentOptions.LazarusDirectory) then begin
     writeln('');
     writeln(
       'NOTE: Lazarus Source Directory not set!  (see Environment Options)');
   end;
-  if (EnvironmentOptions.FPCSourceDirectory='') then begin
+  if (EnvironmentOptions.FPCSourceDirectory='')
+  or not FileExists(EnvironmentOptions.FPCSourceDirectory) then begin
     writeln('');
     writeln('NOTE: FPC Source Directory not set! (see Environment Options)');
   end;
@@ -8228,6 +8230,7 @@ var
   CurOptions: String;
   TargetOS, TargetProcessor: string;
   UnitLinksValid: boolean;
+  i: Integer;
 begin
   if Project1.CompilerOptions.TargetOS<>'' then
     CurOptions:='-T'+Project1.CompilerOptions.TargetOS
@@ -8259,8 +8262,19 @@ begin
     CurDefinesCompilerOptions:=CurOptions;
     CodeToolBoss.DefineTree.ReplaceRootSameNameAddFirst(CompilerTemplate);
     UnitLinksValid:=OnlyIfCompilerChanged
-      and InputHistories.FPCConfigCache.Valid(true)
-      and (InputHistories.FPCConfigCache.FindItem(CurOptions)>=0);
+      and InputHistories.FPCConfigCache.Valid(true);
+    if UnitLinksValid then begin
+      i:=InputHistories.FPCConfigCache.FindItem(CurOptions);
+      if i<0 then begin
+        UnitLinksValid:=false;
+      end else begin
+        if CompareFilenames(InputHistories.FPCConfigCache.Items[i].FPCSrcDir,
+          EnvironmentOptions.FPCSourceDirectory)<>0 then
+        begin
+          UnitLinksValid:=false;
+        end;
+      end;
+    end;
     //writeln('TMainIDE.RescanCompilerDefines B rescanning FPC sources  UnitLinksValid=',UnitLinksValid);
     
     // create compiler macros to simulate the Makefiles of the FPC sources
@@ -10082,6 +10096,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.666  2003/11/14 13:13:14  mattias
+  fixed checking fpcsrcdir changes
+
   Revision 1.665  2003/11/08 11:16:45  mattias
   added search result window from Jason
 
