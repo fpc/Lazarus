@@ -666,9 +666,11 @@ activate_time :	the time at which the activation event occurred.
             Finally
                StrDispose(PStr);
             End;
-          End;
-          SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_Style) Or WS_DLGFRAME);
-          ShowWindow(Handle, SW_Show);
+          End
+          Else begin          
+            EnumThreadWindows(GetWindowThreadProcessId(Handle,nil),@DisableWindowsProc, Handle);
+            ShowWindow(Handle, SW_Show);
+          end;
         End;
         LM_TB_BUTTONCOUNT:
         Begin
@@ -2194,6 +2196,9 @@ Begin
   Else
   Begin
     Assert(False, 'TRACE: [TWin32Object.ShowHide] Hiding the window');
+    If Sender Is TCustomForm then
+      If fsModal in TCustomForm(Sender).FormState then
+        EnumThreadWindows(GetWindowThreadProcessId(Handle,nil),@EnableWindowsProc, Handle); 
     ShowWindow(Handle, SW_HIDE);
   End;
 End;
@@ -2729,6 +2734,9 @@ End;
 
 {
   $Log$
+  Revision 1.81  2003/08/09 16:30:34  mattias
+  fixed LM_ShowModal for win32 intf from Karl
+
   Revision 1.80  2003/07/30 21:56:32  marc
   * Fixed LM_APPENDTEXT buffer overrun
 

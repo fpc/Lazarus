@@ -23,6 +23,35 @@
 {*************************************************************}
 
 {-----------------------------------------------------------------------------
+  Function: DisableWindowsProc
+  Params: Window - handle of toplevel windows to be disabled
+          Data   - handle of current window
+  Returns: Whether the enumeration should continue
+
+  Used in LM_SHOWMODAL to disable the windows of applicaion thread except the current
+ -----------------------------------------------------------------------------}
+Function DisableWindowsProc(Window: Hwnd; Data: LParam): LongBool; StdCall;
+Begin
+  Result:=true;
+  If Data <> Window Then
+    EnableWindow(Window,False);
+End;
+
+{-----------------------------------------------------------------------------
+  Function: EnableWindowsProc
+  Params: Window - handle of toplevel windows to be enabled
+          Data   - nothing
+  Returns: Whether the enumeration should continue
+
+  Used in LM_SHOWMODAL to enable the windows of applicaion thread
+ -----------------------------------------------------------------------------}
+Function EnableWindowsProc(Window: Hwnd; Data: LParam): LongBool; StdCall;
+Begin
+  Result:=true;
+  EnableWindow(Window,True);
+End;
+
+{-----------------------------------------------------------------------------
   Function: PropEnumProc
   Params: Window - The window with the property
           Str    - The property name
@@ -609,6 +638,9 @@ end;
 
 {
   $Log$
+  Revision 1.46  2003/08/09 16:30:33  mattias
+  fixed LM_ShowModal for win32 intf from Karl
+
   Revision 1.45  2003/07/31 19:56:50  mattias
   fixed double messages SETLabel
 

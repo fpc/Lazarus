@@ -654,7 +654,7 @@ begin
     Result := ExtractFileName(GetExeName);
     Ext := ExtractFileExt(Result);
     If Ext <> '' then
-      Delete(Result, Length(Result) - Length(Ext) - 1, Length(Ext) + 1);
+      Delete(Result, Length(Result) - Length(Ext) + 1, Length(Ext));
   end
   else
     Result := FTitle;
@@ -1098,6 +1098,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.60  2003/08/09 16:30:33  mattias
+  fixed LM_ShowModal for win32 intf from Karl
+
   Revision 1.59  2003/07/16 16:53:59  mattias
   added TApplication.CaptureExceptions
 
