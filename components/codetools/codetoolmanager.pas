@@ -414,7 +414,9 @@ begin
           +' '+AnException.Message;
       end;
     end;
-    WriteDebugReport(true,false,false,false,false);
+{$IFDEF CTDEBUG}
+WriteDebugReport(true,false,false,false,false);
+{$ENDIF}
     writeln('### TCodeToolManager.HandleException: '+AnException.Message);
   end;
   if not FCatchExceptions then raise AnException;
