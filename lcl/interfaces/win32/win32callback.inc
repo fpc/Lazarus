@@ -84,40 +84,26 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
- Function: OverlayWindowProc
+ Function: CallDefaultWndProc
  Params: Window - The window that receives a message
          Msg    - The message received
          WParam - Word parameter
          LParam - Long-integer parameter
-  Returns: 0 if Msg is handled; non-zero long-integer result otherwise
+ Returns: 0 if Msg is handled; non-zero long-integer result otherwise
 
-  Handles messages specifically for the window used by GetDesignerDC
+ Passes message on to 'default' handler. This can be a control specific window
+ procedure or the default window procedure.
  ------------------------------------------------------------------------------}
-function OverlayWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
-    LParam: Windows.LParam): LResult; stdcall;
+function CallDefaultWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
+  LParam: Windows.LParam): LResult;
 var
-  PS: PAINTSTRUCT;
   PrevWndProc: Pointer;
 begin
-  case Msg of
-    WM_ERASEBKGND:
-    begin
-      Result := 1;
-    end;
-    WM_PAINT:
-    begin
-      Windows.BeginPaint(Window, @PS);
-      Windows.EndPaint(Window, @PS);
-      Result := 1;
-    end;
+  PrevWndProc := Pointer(Windows.GetProp(Window, 'DefWndProc'));
+  if PrevWndProc = nil then
+    Result := Windows.DefWindowProc(Window, Msg, WParam, LParam)
   else
-    // default handling of message
-    PrevWndProc := GetProp(Window, 'DefWndProc');
-    if PrevWndProc = nil then
-      Result := Windows.DefWindowProc(Window, Msg, WParam, LParam)
-    else
-      Result := Windows.CallWindowProc(Windows.WNDPROC(PrevWndProc), Window, Msg, WParam, LParam);
-  end;
+    Result := Windows.CallWindowProc(Windows.WNDPROC(PrevWndProc), Window, Msg, WParam, LParam);
 end;
 
 {------------------------------------------------------------------------------
@@ -128,8 +114,8 @@ end;
          LParam - Long-integer parameter
   Returns: 0 if Msg is handled; non-zero long-integer result otherwise
 
-  Handles the messages sent to the current window by Windows or other
-  applications
+  Handles the messages sent to the specified window, in parameter Window, by 
+  Windows or other applications
  ------------------------------------------------------------------------------}
 Function WindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
     LParam: Windows.LParam): LResult; stdcall;
@@ -144,7 +130,6 @@ Var
   TheWinControl: TWinControl;
   WinProcess: Boolean;
   NotifyUserInput: Boolean;
-  PrevWndProc: Pointer;
 
   LMInsertText: TLMInsertText; // used by CB_INSERTSTRING, LB_INSERTSTRING
   LMScroll: TLMScroll; // used by WM_HSCROLL
@@ -315,7 +300,7 @@ Begin
       Case Lo(WParam) Of
         WA_ACTIVE, WA_CLICKACTIVE:
         Begin
-          LMessage.Msg := LM_ACTIVATE;
+          LMessage.Msg := LM_ACTIVATE
         End;
         WA_INACTIVE:
         Begin
@@ -806,11 +791,7 @@ Begin
 
   If WinProcess Then
   begin
-    PrevWndProc := GetProp(Window, 'DefWndProc');
-    if PrevWndProc = nil then
-      PLMsg^.Result := Windows.DefWindowProc(Window, Msg, WParam, LParam)
-    else
-      PLMsg^.Result := Windows.CallWindowProc(Windows.WNDPROC(PrevWndProc), Window, Msg, WParam, LParam);
+    PLMsg^.Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
   end;
 
   Case Msg Of
@@ -901,7 +882,6 @@ Begin
     end;
   end;
 
-
   // application processing
   if NotifyUserInput then
     NotifyApplicationUserInput(PLMsg^.Msg);
@@ -936,6 +916,128 @@ Begin
   Assert(False, 'Trace:WindowProc - Exit');
 End;
 
+{------------------------------------------------------------------------------
+ Function: OverlayWindowProc
+ Params: Window - The window that receives a message
+         Msg    - The message received
+         WParam - Word parameter
+         LParam - Long-integer parameter
+  Returns: 0 if Msg is handled; non-zero long-integer result otherwise
+
+  Handles messages specifically for the window used by GetDesignerDC
+ ------------------------------------------------------------------------------}
+function OverlayWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
+    LParam: Windows.LParam): LResult; stdcall;
+var
+  PS: PAINTSTRUCT;
+begin
+  case Msg of
+    WM_ERASEBKGND:
+    begin
+      Result := 1;
+    end;
+    WM_PAINT:
+    begin
+      Windows.BeginPaint(Window, @PS);
+      Windows.EndPaint(Window, @PS);
+      Result := 1;
+    end;
+  else
+    Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+ Function: ComboBoxWindowProc
+ Params: Window - The window that receives a message
+         Msg    - The message received
+         WParam - Word parameter
+         LParam - Long-integer parameter
+  Returns: 0 if Msg is handled; non-zero long-integer result otherwise
+
+  Handles the messages sent to a combobox control by Windows or other
+  applications
+ ------------------------------------------------------------------------------}
+function ComboBoxWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
+    LParam: Windows.LParam): LResult; stdcall;
+begin
+  // darn MS: if combobox has edit control, and combobox receives focus, it
+  // passes it on to the edit, so it will send a WM_KILLFOCUS; inhibit
+  if (Msg = WM_KILLFOCUS) and (Windows.GetTopWindow(Window) <> HWND(nil)) then
+  begin
+    // continue normal processing, don't send to lcl
+    Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
+  end else begin
+    // normal processing
+    Result := WindowProc(Window, Msg, WParam, LParam);
+  end;
+end;
+    
+{------------------------------------------------------------------------------
+ Function: ComboBoxEditWindowProc
+ Params: Window - The window that receives a message
+         Msg    - The message received
+         WParam - Word parameter
+         LParam - Long-integer parameter
+  Returns: 0 if Msg is handled; non-zero long-integer result otherwise
+
+  Handles the messages sent to the edit child of a combobox control by Windows 
+  or other applications
+ ------------------------------------------------------------------------------}
+function ComboBoxEditWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
+    LParam: Windows.LParam): LResult; stdcall;
+var
+  LMessage: TLMessage;
+  LMKey: TLMKey;
+  PLMsg: PLMessage;
+  NotifyUserInput: Boolean;
+begin
+  // filter messages we want to send to LCL
+  if (Msg = WM_KILLFOCUS) or (Msg = WM_SETFOCUS) or 
+     ((Msg >= WM_KEYFIRST) and (Msg <= WM_KEYLAST)) then
+  begin
+    // TODO: code copied from WindowProc
+    PLMsg := @LMessage;
+    case Msg of
+      WM_KILLFOCUS, WM_SETFOCUS:
+      begin
+        LMessage.Msg := Msg;
+      end;
+      WM_KEYDOWN:
+      begin
+        NotifyUserInput := True;
+        PLMsg:=@LMKey;
+        with LMKey Do
+        begin
+          Msg := LM_KEYDOWN;
+          KeyData := LParam;
+          CharCode := Word(WParam);
+          Assert(False,Format('WM_KEYDOWN KeyData= %d CharCode= %d ',[KeyData,CharCode]));
+        end;
+      end;
+      WM_KEYUP:
+      begin
+        NotifyUserInput := True;
+        PLMsg:=@LMKey;
+        with LMKey do
+        begin
+          Msg := LM_KEYUP;
+          KeyData := LParam;
+          CharCode := Word(WParam);
+          Assert(False,Format('WM_KEYUP KeyData= %d CharCode= %d ',[KeyData,CharCode]));
+        end;
+      end;
+    end;
+    // application processing
+    if NotifyUserInput then
+      NotifyApplicationUserInput(PLMsg^.Msg);
+
+    DeliverMessage(TObject(Windows.GetProp(GetParent(Window), 'Wincontrol')), PLMsg^);
+  end;
+    
+  Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
+end;
+    
 {------------------------------------------------------------------------------
  Function: ToolBtnWindowProc
  Params: Window_hwnd - The window that receives a message for the window
@@ -1006,6 +1108,9 @@ end;
 
 {
   $Log$
+  Revision 1.94  2004/02/26 21:01:42  micha
+  fixed: focussing issue combobox
+
   Revision 1.93  2004/02/21 10:11:36  micha
     1. pressing the Return key in ObjectInspector when editing a value throws an exception
     2. placing TPairSplitter component on the form produces "Division by zero"

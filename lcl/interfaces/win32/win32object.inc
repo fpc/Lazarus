@@ -1908,7 +1908,7 @@ Var
   MenuHandle: HMENU;
   Caption : String;
   Flags, FlagsEx: DWord;
-  DoSubClass: Boolean;
+  SubClassWndProc: Pointer;
   StrCaption: PChar;
   WindowTitle: PChar;
   pClassName: PChar;
@@ -1941,7 +1941,7 @@ Begin
   Else
     Parent := FAppHandle;
 
-  DoSubClass := true;
+  SubClassWndProc := @WindowProc;
   AlternateCreateWindow := false;
   CompStyle := csNone;
   WindowTitle := nil;
@@ -2023,7 +2023,7 @@ Begin
       pClassName := 'SysMonthCal32';
       WindowTitle := StrCaption;
       Flags := WS_CHILD or WS_VISIBLE;
-      DoSubClass := False;
+      SubClassWndProc := nil;
     End;
     csCheckbox:
     Begin
@@ -2038,6 +2038,7 @@ Begin
         Flags:= Flags or CBS_SORT;
       pClassName := 'COMBOBOX';
       Flags := Flags or WS_VSCROLL or CBS_AUTOHSCROLL or CBS_HASSTRINGS;
+      SubClassWndProc := @ComboBoxWindowProc;
     End;
     csImage:
     Begin
@@ -2093,7 +2094,7 @@ Begin
       Assert(False, 'Trace:TODO: Figure out what component style csFixed is and code the component.  No component created.');
       pClassName := @ClsName;
       WindowTitle := StrCaption;
-      DoSubClass := false;
+      SubClassWndProc := nil;
     End;
     csForm:
     Begin
@@ -2124,7 +2125,7 @@ Begin
       Top := LongInt(CW_USEDEFAULT);
       Width := LongInt(CW_USEDEFAULT);
       Height := LongInt(CW_USEDEFAULT);
-      DoSubClass := false;
+      SubClassWndProc := nil;
     End;
     csHintWindow:
     Begin
@@ -2136,7 +2137,7 @@ Begin
       Top := LongInt(CW_USEDEFAULT);
       Width := LongInt(CW_USEDEFAULT);
       Height := LongInt(CW_USEDEFAULT);
-      DoSubClass := false;
+      SubClassWndProc := nil;
     End;
     csFrame, csGroupBox:
     Begin
@@ -2207,7 +2208,7 @@ Begin
       FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
       pClassName := @ClsName;
       Flags := Flags or WS_HSCROLL or WS_VSCROLL;
-      DoSubClass := false;
+      SubClassWndProc := nil;
     End;
     csScrolledWindow:
     Begin
@@ -2219,7 +2220,7 @@ Begin
       Top := LongInt(CW_USEDEFAULT);
       Width := LongInt(CW_USEDEFAULT);
       Height := LongInt(CW_USEDEFAULT);
-      DoSubClass := false;
+      SubClassWndProc := nil;
     End;
     csStatusBar:
     Begin
@@ -2256,7 +2257,7 @@ Begin
     Begin
       pClassName := ToolBtnClsName;
       Flags := 0;
-      DoSubClass := false;
+      SubClassWndProc := nil;
     End;
     // TCustomPage - Notebook page
     csPage:
@@ -2264,13 +2265,13 @@ Begin
       Assert(False, 'Trace:Create a csPage component.');
       pClassName := @ClsName;
       Flags := Flags and DWORD(not WS_VISIBLE);
-      DoSubClass := false;
+      SubClassWndProc := nil;
     End;
     csPanel:
     Begin
       Assert(False, 'Trace:Create a csPanel component.');
       pClassName := @ClsName;
-      DoSubClass := false;
+      SubClassWndProc := nil;
     End;
     csProgressBar:
     Begin
@@ -2356,8 +2357,15 @@ Begin
     TWinControl(Sender).Handle := Window;
     If Window <> HWND(Nil) Then
     begin
-      if DoSubClass then
-        SetProp(Window, 'DefWndProc', Pointer(SetWindowLong(Window, GWL_WNDPROC, LongInt(@WindowProc))));
+      if SubClassWndProc <> nil then
+        Windows.SetProp(Window, 'DefWndProc', Windows.SetWindowLong(Window, GWL_WNDPROC, LongInt(SubClassWndProc)));
+      // subclass edit control of combobox too
+      if CompStyle = csCombobox then
+      begin
+        Buddy := Windows.GetTopWindow(Window);
+	if Buddy <> HWND(nil) then
+	  Windows.SetProp(Buddy, 'DefWndProc', Windows.SetWindowLong(Buddy, GWL_WNDPROC, LongInt(@ComboBoxEditWindowProc)));
+      end;
       Windows.SendMessage(Window, WM_SETFONT, WParam(FMessageFont), 0);
     end;
     If Buddy <> HWND(Nil) Then
@@ -3005,6 +3013,9 @@ End;
 
 {
   $Log$
+  Revision 1.175  2004/02/26 21:01:42  micha
+  fixed: focussing issue combobox
+
   Revision 1.174  2004/02/23 08:19:04  micha
   revert intf split
 
