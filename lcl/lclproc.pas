@@ -433,6 +433,18 @@ begin
       end;
       inc(APos);
     end;
+    // search a space boundary
+    if SplitPos=0 then begin
+      APos:=CurMaxLineLength;
+      while APos>1 do begin
+        if (Src[APos-1] in [' ',#9])
+        and (not (Src[APos] in [' ',#9])) then begin
+          SplitPos:=APos;
+          break;
+        end;
+        dec(APos);
+      end;
+    end;
     // search a word boundary
     if SplitPos=0 then begin
       APos:=CurMaxLineLength;
