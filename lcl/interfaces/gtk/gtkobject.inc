@@ -369,15 +369,17 @@ var
   box1      : pgtkWidget;            // currently only used for TBitBtn
   pixmapwid : pGtkWidget;            // currently only used for TBitBtn, possibly replace with pixmap!!!!
   pLabel    : PgtkWidget;            // currently only used as extra label-widget for TBitBtn
-  Num       : Integer;               // currently only used for LM_INSERTTOOLBUTTON
+  Num       : Integer;               // currently only used for LM_INSERTTOOLBUTTON and LM_ADDITEM
   pStr2     : PChar;                 // currently only used for LM_INSERTTOOLBUTTON
   GList     : pGList;                // Only used for listboxes, replace with widget!!!!!
   SelectionMode : TGtkSelectionMode; // currently only used for listboxes
   ListItem  : PGtkListItem;          // currently only used for listboxes
+  AddItemListItem : TListItem;
   Rect      : TRect;
   FormIconGdiObject: PGdiObject;     // currently only used by LM_SETFORMICON
   QueueItem, OldQueueItem: PLazQueueItem; // currently only used by LM_DESTROY
   MsgPtr    : PMsg;                  // currently only used by LM_DESTROY
+  Count     : Integer;               //Used in TListView LM_LV_CHANGEITEM
 
 begin
   Result := 0;   //default value just in case nothing sets it
@@ -462,7 +464,59 @@ begin
                end;
          end;
       end;
+      {Used by:
+        TListView
 
+      }
+      LM_LV_DELETEITEM :
+      begin
+        if (Sender is TListView) then
+        begin
+          Num := Integer(data^);
+          gtk_clist_remove(PgtkCList(handle),Num);
+        end;
+      end;
+      LM_LV_CHANGEITEM :
+      begin
+        if (Sender is TListView) then
+        begin
+          Num := Integer(data^);
+          if Num <= PGTKCList(Handle)^.rows-1 then
+             Begin
+             AddItemListItem := TListView(sender).Items[Num];
+             gtk_clist_set_text(PgtkCList(handle),num,0,@AddItemListItem.Caption);
+             //redo every column text
+             for Count := 1 to PgtkCList(Handle)^.Columns-1 do
+                 begin
+                   //if there aren't anymore subitems then get out.
+                   if AddItemListItem.SubItems.Count < Count then Break;
+                   pStr := StrAlloc(length(AddItemListItem.SubItems.Strings[Count-1]) + 1);
+                   StrPCopy(pStr, AddItemListItem.SubItems.Strings[Count-1]);
+                   gtk_clist_set_text(PgtkCList(handle),num,Count,pStr);
+                   StrDispose(pStr);
+
+                 end;
+                 
+             end;
+             
+        
+        end;
+      end;
+      
+      LM_LV_ADDITEM :
+      begin
+        if (Sender is TListView) then
+        begin
+          //get last item and add it..
+          Num := gtk_clist_append(PgtkCList(handle),nil);
+          AddItemListItem := TListView(sender).Items[TListView(sender).Items.Count];
+          if AddItemListItem <> nil then
+            Begin
+             gtk_clist_set_text(PgtkCList(handle),num,0,@AddItemListItem.Caption);
+             
+            end;
+        end;
+      end;
       LM_BRINGTOFRONT:
       begin
 {         Assert(False, 'Trace:TODO:bringtofront');
@@ -2068,6 +2122,17 @@ begin
          GetWidgetInfo(p, True)^.ImplementationWidget := TempWidget;
          SetMainWidget(p, TempWidget);
       end;
+      
+      csListView :
+      Begin
+         P := PgtkWidget(gtk_clist_new(6));
+
+         gtk_clist_set_column_title(PgtkCList(P),0,'Column1');
+         gtk_clist_set_column_title(PgtkCList(P),1,'Column2');
+         gtk_clist_column_titles_show(PgtkCList(P));
+         gtk_widget_show(P);
+      end;
+      
 
       csEdit :
       begin
@@ -2927,6 +2992,9 @@ var
    Widget    : PGtkWidget;
    xAlign    : gfloat;
    yAlign    : gfloat;
+   I         : Integer;
+   ColName   : String;
+   pColName : PChar;
 begin
    result := 0;     // default if nobody sets it
 
@@ -3032,6 +3100,42 @@ begin
            gtk_misc_set_alignment(PGTKMISC(Handle), xAlign, yAlign);
            gtk_label_set_line_wrap(PGTKLABEL(Handle),WordWrap);
          end;
+      csListView :
+         With TCustomListView(sender) do
+            Begin
+               //set up columns..
+               //
+               Writeln('in SetPRoperties for ListView.  Columns is ',PgtkcList(handle)^.columns);
+               gtk_clist_freeze(PgtkCList(handle));
+               for I := 0 to Columns.Count-1 do
+                 Begin
+                   ColName := Columns.Strings[i];
+                   GetMem(pColName,Length(colname)+1);
+                   pColName := StrPcopy(pColName,ColName);
+                   gtk_clist_set_column_title(Pgtkclist(handle),I,pColName);
+//                   if (i+1) > PgtkcList(handle)^.Columns-1 then
+//                      gtk_clist_append(PgtkCList(handle),@pColName)
+//                      else
+//                      gtk_clist_Set_Column_title(PgtkcList(handle),I,pColName);
+                   freemem(pColName);
+                 end;
+                 while I <= PgtkcList(handle)^.Columns-1 do
+                    begin
+                      inc(i);
+                      //delete a column...
+                    end;
+                 if (TCustomListView(sender).ViewStyle = vsReport) then
+                 gtk_clist_column_titles_show(PgtkCList(handle))
+                 else
+                 gtk_clist_column_titles_Hide(PgtkCList(handle));
+
+                 gtk_clist_set_sort_column(PgtkCList(handle),TCustomListView(sender).SortColumn);
+                 gtk_clist_set_auto_sort(PgtkCList(handle),TCustomListView(sender).Sorted);
+               //
+               //do items...
+               //
+               gtk_clist_thaw(PgtkCList(handle));
+            end;
       else
          Assert (true, Format ('WARNING:[TgtkObject.SetProperties] failed for %s', [Sender.ClassName]));
    end;
@@ -3486,7 +3590,13 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.88  2001/12/14 18:38:56  lazarus
+  Changed code for TListView
+  Added a generic Breakpoints dialog
+  Shane
+
   Revision 1.87  2001/12/12 20:19:19  lazarus
+
     Modified the the GTKFileSelection so that it will handle and use
     CTRL and SHIFT keys in a fashion similar to Windows.
 

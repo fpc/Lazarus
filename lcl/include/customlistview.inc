@@ -10,20 +10,55 @@ begin
  {fix this call it is a hack}
 
  fCompStyle := csListView;
- CreateComponent(AOwner);
-
- Left := 2;
- Top := 2;
- Width := 300;
- Height := 300;
-
-// ******************************
-// the following line has been commented out so that gtk dependency can be
-// removed from all files. The following function needs to be moved.   MAH
-//
-// gtk_container_add(PgtkContainer(ParentWindow.fComponent),fComponent);
+ fViewStyle := vsList;
+ fSorted := False;
+ fSortColumn := 0;
+ Setbounds(2,2,300,300);
+ Columns := TViewColumns.Create(self);
+ FListItems := TListITems.Create(self);
+// Columns.Add('Column1');
+// Columns.Add('Column2');
 
 end;
+
+
+{------------------------------------------------------------------------------}
+{   TCustomListView ColumnsChanged                                             }
+{------------------------------------------------------------------------------}
+Procedure TCustomListView.ColumnsChanged;
+Begin
+  //notify the interface....
+  CNSendMessage(LM_SETPROPERTIES,self,nil);
+End;
+
+{------------------------------------------------------------------------------}
+{   TCustomListView ItemChanged                                             }
+{------------------------------------------------------------------------------}
+Procedure TCustomListView.ItemChanged(Index : Integer);  //called by TListItems
+Begin
+  //notify the interface....
+  CNSendMessage(LM_LV_CHANGEITEM,self,@Index);
+End;
+
+{------------------------------------------------------------------------------}
+{   TCustomListView ItemChanged                                             }
+{------------------------------------------------------------------------------}
+Procedure TCustomListView.ItemDeleted(Index : Integer);  //called by TListItems
+Begin
+  //notify the interface....
+  CNSendMessage(LM_LV_DELETEITEM,self,@Index);
+End;
+
+
+
+{------------------------------------------------------------------------------}
+{   TCustomListView ItemAdded                                             }
+{------------------------------------------------------------------------------}
+Procedure TCustomListView.ItemAdded;
+Begin
+  //notify the interface....
+  CNSendMessage(LM_LV_ADDITEM,self,nil);
+End;
 
 {------------------------------------------------------------------------------}
 {   TCustomListView SetItems                                                   }
@@ -46,11 +81,45 @@ procedure TCustomListView.InsertItem(Item : TListItem);
 begin
 end;
 
+{------------------------------------------------------------------------------}
+{   TCustomListView SetViewStyle                                               }
+{------------------------------------------------------------------------------}
+procedure TCustomListView.SetViewStyle(Value : TViewStyle);
+begin
+  if FViewStyle = Value then Exit;
+  FViewStyle := Value;
+  CNSendMessage(LM_SETPROPERTIES,self,nil);
+end;
+
+
+{------------------------------------------------------------------------------}
+{   TCustomListView SetSorted                                                  }
+{------------------------------------------------------------------------------}
+procedure TCustomListView.SetSorted(Value : Boolean);
+begin
+  if FSorted = Value then Exit;
+  FSorted := Value;
+  CNSendMessage(LM_SETPROPERTIES,self,nil);
+end;
+
+{------------------------------------------------------------------------------}
+{   TCustomListView SetSortColumn                                              }
+{------------------------------------------------------------------------------}
+procedure TCustomListView.SetSortColumn(Value : Integer);
+begin
+  if FSortColumn = Value then Exit;
+  FSortColumn := Value;
+  CNSendMessage(LM_SETPROPERTIES,self,nil);
+end;
+
+
+
 
 {------------------------------------------------------------------------------}
 {   TCustomListView Destructor                                                 }
 {------------------------------------------------------------------------------}
 destructor TCustomListView.Destroy;
 begin
+  Columns.Free;
  inherited Destroy;
 end;

@@ -398,41 +398,81 @@ type
  TListItems = class(TPersistent)
   private
     FOwner : TCustomListView;
+    FItems : TList;
     Function GetCount : Integer;
   protected
     Function GetItem(Index : Integer): TListItem;
-    procedure SetCount(Value : Integer);
     procedure SetITem(Index : Integer; Value : TListItem);
+    Procedure ItemChanged(sender : TObject);  //called by the onchange of the tstringlist in TListItem
   public
     constructor Create(AOwner : TCustomListView);
     destructor Destroy; override;
     function Add:TListItem;
     Procedure Delete(Index : Integer);
     function Insert(Index : Integer) : TListItem;
-    property Count : Integer read GetCount write SetCount;
+    property Count : Integer read GetCount;
     property Item[Index : Integer]: TListItem read GetItem write SetItem; default;
     property Owner : TCustomListView read FOwner;
   end;
 
 
+ 
+ TViewColumns = class(TStringList)
+   private
+     Listview : TCustomListView;
+   public
+     constructor Create(Aowner : TCustomListView);
+     Function Add(const S : String): Integer; override;
+     Procedure Assign(source : TPersistent); override;
+     Procedure Delete(Index : Integer); override;
+ end;
+ 
+ TViewStyle = (vsList,vsReport);
+ 
  TCustomListView = class(TWinControl)
   private
     //FReadOnly : Boolean;
     FListItems : TListItems;
+    FColumns : TViewColumns;
+    FViewStyle : TViewStyle;
+    FSorted    : Boolean;
+    FSortColumn : Integer;
     procedure SetItems(Value : TListItems);
   protected
     ParentWindow : TScrolledWindow;
     procedure Delete(Item : TListItem);
     procedure InsertItem(Item : TListItem);
+    Procedure SetViewStyle (value : TViewStyle);
+    Procedure SetSortColumn(Value : Integer);
+    Procedure SetSorted(Value : Boolean);
+    Procedure ItemChanged(Index : Integer);  //called by TListItems
+    Procedure ItemDeleted(Index : Integer);  //called by TListItems
+    Procedure ColumnsChanged; //called by TListItems
+    Procedure ItemAdded;  //called by TListItems
     property Items : TListItems read FListItems write SetItems;
   public
     constructor Create(Aowner: TComponent); override;
     destructor Destroy; override;
+    property Columns : TViewColumns read FColumns write FColumns;
+    property ViewStyle : TViewStyle read FViewStyle write SetViewStyle;
+    property Sorted : Boolean read FSorted write SetSorted;
+    property SortColumn : Integer read FSortColumn write SetSortColumn;
   end;
 
  TListView = class(TCustomListView)
   published
+    property Columns;
     property Items;
+    property Visible;
+    property ViewStyle;
+    property OnMOuseMOve;
+    property OnClick;
+    property OnDblClick;
+    property OnMouseDown;
+    property OnMOuseUp;
+    property OnKeyPress;
+    property OnKeyUp;
+    property OnKeyDown;
   end;
 
   TProgressBarOrientation = (pbHorizontal, pbVertical, pbRightToLeft, pbTopDown);
@@ -929,12 +969,18 @@ end;
 {$I toolbutton.inc}
 {$I toolbar.inc}
 {$I trackbar.inc}
+{$I viewcolumns.inc}
 
 end.
 
 { =============================================================================
 
   $Log$
+  Revision 1.6  2001/12/14 18:38:55  lazarus
+  Changed code for TListView
+  Added a generic Breakpoints dialog
+  Shane
+
   Revision 1.5  2001/09/30 08:34:49  lazarus
   MG: fixed mem leaks and fixed range check errors
 

@@ -3,6 +3,9 @@
 {------------------------------------------------------------------------------}
 constructor TListItem.Create(AOwner : TListItems);
 begin
+  FOwner := AOwner;
+  SubItems := TStringList.Create;
+  TStringList(SubItems).OnChange := @FOwner.ItemChanged;
 end;
 
 {------------------------------------------------------------------------------}
@@ -10,6 +13,8 @@ end;
 {------------------------------------------------------------------------------}
 procedure TListItem.SetCaption(const Value : String);
 begin
+  FCaption := Value;
+  FOwner.ItemChanged(self);
 end;
 
 {------------------------------------------------------------------------------}
@@ -17,7 +22,10 @@ end;
 {------------------------------------------------------------------------------}
 function TListItem.GetIndex : Integer;
 begin
-  Result := 0;
+  if Assigned(FOwner) then
+    Result := FOwner.FItems.IndexOf(self)
+    else
+    Result := -1;
 end;
 
 {------------------------------------------------------------------------------}
@@ -25,6 +33,8 @@ end;
 {------------------------------------------------------------------------------}
 procedure TListItem.SetSubItems(Value : TStrings);
 begin
+  SubItems.Assign(Value);
+  //call itemchanged here r does the onchange event fire for each?
 end;
 
 {------------------------------------------------------------------------------}
@@ -32,6 +42,7 @@ end;
 {------------------------------------------------------------------------------}
 procedure TListItem.Delete;
 begin
+  free;
 end;
 
 {------------------------------------------------------------------------------}
@@ -39,5 +50,8 @@ end;
 {------------------------------------------------------------------------------}
 destructor TListItem.Destroy;
 begin
+ SubItems.Free;
  Inherited Destroy;
 end;
+
+

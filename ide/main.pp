@@ -40,7 +40,7 @@ uses
   PropEdits, ControlSelection, UnitEditor, CompilerOptions, EditorOptions,
   EnvironmentOpts, TransferMacros, KeyMapping, ProjectOpts, IDEProcs, Process,
   UnitInfoDlg, Debugger, DBGWatch,RunParamsOpts, ExtToolDialog, MacroPromptDlg,
-  LMessages, ProjectDefs, Watchesdlg;
+  LMessages, ProjectDefs, Watchesdlg,BreakPointsdlg;
 
 const
   Version_String = '0.8.1 alpha';
@@ -122,6 +122,7 @@ type
     itmViewFile : TMenuItem;
     itmViewMessage : TMenuItem;
     itmViewwatches : TMenuItem;
+    itmViewBreakpoints : TMenuItem;
 
     itmProjectNew: TMenuItem;
     itmProjectOpen: TMenuItem;
@@ -178,6 +179,7 @@ type
     procedure mnuViewCodeExplorerClick(Sender : TObject);
     procedure mnuViewMessagesClick(Sender : TObject);
     procedure mnuViewWatchesClick(Sender : TObject);
+    procedure mnuViewBreakPointsClick(Sender : TObject);
     procedure MessageViewDblClick(Sender : TObject);
 
     procedure mnuToggleFormUnitClicked(Sender : TObject);
@@ -700,6 +702,10 @@ begin
   Watches_Dlg := TWatchesDlg.Create(Self);
   Watches_Dlg.OnWatchAddedEvent := @OnWatchAdded;
 
+
+  //TBreakPointsDlg
+  BreakPoints_Dlg := TBreakPointsDlg.Create(Self);
+
   TheDebugger := TDebugger.Create;
   // control selection (selected components on edited form)
   TheControlSelection:=TControlSelection.Create;
@@ -1208,6 +1214,12 @@ begin
   itmViewWatches.Caption := 'Watches';
   itmViewWatches.OnClick := @mnuViewWatchesClick;
   mnuView.Add(itmViewWatches);
+
+  itmViewBreakPoints := TMenuItem.Create(Self);
+  itmViewBreakPoints.Name:='itmViewBreakPoints';
+  itmViewBreakPoints.Caption := 'BreakPoints';
+  itmViewBreakPoints.OnClick := @mnuViewBreakPointsClick;
+  mnuView.Add(itmViewBreakPoints);
 //--------------
 // Project
 //--------------
@@ -5205,6 +5217,13 @@ begin
 //  CreateLFM(Insertwatch);
 end;
 
+procedure TMainIDE.mnuViewBreakPointsClick(Sender : TObject);
+begin
+  BreakPoints_dlg.Show;
+//  CreateLFM(Watches_Dlg);
+//  CreateLFM(Insertwatch);
+end;
+
 Procedure TMainIDE.OnDebuggerWatchChanged(Sender : TObject);
 begin
   Writeln('OnDebuggerWatchChanged');
@@ -5277,6 +5296,11 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.180  2001/12/14 18:38:55  lazarus
+  Changed code for TListView
+  Added a generic Breakpoints dialog
+  Shane
+
   Revision 1.179  2001/12/13 23:09:57  lazarus
   MG: enhanced code caching, fixed CursorToCleanPos and beautify statement
 

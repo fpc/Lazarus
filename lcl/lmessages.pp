@@ -280,12 +280,18 @@ LM_MONTHCHANGED = LM_USER+65;
 LM_YEARCHANGED = LM_USER+66;
 LM_DAYCHANGED = LM_USER+67;
 
+//TListView
+LM_LV_ADDITEM = LM_USER+68;
+LM_LV_CHANGEITEM = LM_USER + 69;
+LM_LV_DELETEITEM = LM_USER + 70;
+
 LM_CB_FIRST = LM_USER+100;
 LM_CB_GETCOUNT = LM_CB_FIRST+1;
 LM_CB_GETTEXT = LM_CB_FIRST+2;
 LM_CB_ADDTEXT = LM_CB_FIRST+3;
 
 LM_CB_LAST = LM_CB_FIRST+10;  //LM_USER+110
+
 
 
 LM_UNKNOWN = LM_User+99;
@@ -781,6 +787,11 @@ end.
 
 {
   $Log$
+  Revision 1.16  2001/12/14 18:38:55  lazarus
+  Changed code for TListView
+  Added a generic Breakpoints dialog
+  Shane
+
   Revision 1.15  2001/12/10 07:47:58  lazarus
   MG: fixed typo
 
