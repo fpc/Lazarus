@@ -2682,7 +2682,7 @@ begin
     end;
   end;
   {$Else}
-    Writeln('WARNING: [TgtkObject.SetColor] NOT Support under Win32 GTK')
+    Writeln('WARNING: [TgtkObject.SetColor] NOT supported under Win32 GTK')
   {$EndIf}
 end;
 
@@ -6824,6 +6824,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.315  2002/12/29 18:13:38  mattias
+  identifier completion: basically working, still hidden
+
   Revision 1.314  2002/12/28 21:44:51  mattias
   further cleanup
 
