@@ -22,6 +22,10 @@ unit AllLCLUnits;
 
 {$mode objfpc}{$H+}
 
+{$IFDEF VER1_0_10}
+  {$DEFINE DisableFPImage}
+{$ENDIF}
+
 interface
 
 uses
@@ -48,6 +52,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.9  2004/02/10 00:38:43  mattias
+  deactivated fpImage or fpc 1.0.10
+
   Revision 1.8  2004/02/02 22:01:51  mattias
   fpImage is now used as default, deactivate it with -dDisableFPImage
 

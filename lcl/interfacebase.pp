@@ -33,8 +33,8 @@ interface
 {$endif}
 
 uses
-  Classes, SysUtils, Math, FPCAdds, LCLStrConsts, LCLType, LCLProc, VCLGlobals,
-  LMessages, GraphType, GraphMath, IntfStrConsts;
+  Classes, SysUtils, Math, FPCAdds, LCLType, LCLProc, VCLGlobals, LMessages,
+  GraphType, GraphMath, IntfStrConsts;
 
 type
 
@@ -111,6 +111,9 @@ end.
 
 {
   $Log$
+  Revision 1.42  2004/02/10 00:38:43  mattias
+  deactivated fpImage or fpc 1.0.10
+
   Revision 1.41  2004/01/11 16:38:29  marc
   * renamed (Check|Enable)MenuItem to MenuItemSet(Check|Enable)
   + Started with accelerator nameing routines

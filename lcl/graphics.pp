@@ -31,6 +31,12 @@ interface
 {$ASSERTIONS ON}
 {$endif}
 
+
+{$IFDEF VER1_0_10}
+  {$DEFINE DisableFPImage}
+{$ENDIF}
+
+
 uses
   SysUtils, Classes, FPCAdds,
   {$IFNDEF DisableFPImage}
@@ -1442,6 +1448,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.114  2004/02/10 00:38:43  mattias
+  deactivated fpImage or fpc 1.0.10
+
   Revision 1.113  2004/02/10 00:21:04  mattias
   fixed TImage background for transparent images
 
