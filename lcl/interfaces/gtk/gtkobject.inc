@@ -2663,18 +2663,11 @@ var
       gbBitmap: case TDeviceContext(DestDC).CurrentBitmap^.GDIBitmapType of
                 gbBitmap: Result:=DrawableToDrawable;
                 gbPixmap: Result:=BitmapToPixmap;
-                {obsolete: gbImage:  Result:=BitmapToImage;}
                 end;
       gbPixmap: case TDeviceContext(DestDC).CurrentBitmap^.GDIBitmapType of
                 gbBitmap: Result:=PixmapToBitmap;
                 gbPixmap: Result:=DrawableToDrawable;
-                {obsolete: gbImage:  Result:=PixmapToImage;}
                 end;
-      {obsolete: gbImage:  case TDeviceContext(DestDC).CurrentBitmap^.GDIBitmapType of
-                gbBitmap: Result:=ImageToBitmap;
-                gbPixmap: Result:=ImageToDrawable;
-                gbImage:  Result:=ImageToImage;
-                end;}
       end
     else
       Result := Unsupported;
@@ -2686,7 +2679,6 @@ var
       case TDeviceContext(SrcDC).CurrentBitmap^.GDIBitmapType of
       gbBitmap: Result:=PixmapToDrawable;
       gbPixmap: Result:=PixmapToDrawable;
-      {obsolete: gbImage:  Result:=ImageToDrawable;}
       end
     else
       Result := Unsupported;
@@ -2698,7 +2690,6 @@ var
       case TDeviceContext(DestDC).CurrentBitmap^.GDIBitmapType of
       gbBitmap: Result:=Unsupported;
       gbPixmap: Result:=Unsupported;
-      {obsolete: gbImage:  Result:=Unsupported;}
       end
     else
       Result := Unsupported;
@@ -9394,6 +9385,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.492  2004/04/08 18:27:51  mattias
+  fixed memleak in TDefaultComponentEditor.Edit
+
   Revision 1.491  2004/04/05 11:41:06  mattias
   fixed retrieving gdkbitmaps  LineEnding=rileDWordBoundary
 

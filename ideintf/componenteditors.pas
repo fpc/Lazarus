@@ -183,13 +183,16 @@ type
     FFirst: TPropertyEditor;
     FBest: TPropertyEditor;
     FContinue: Boolean;
+    FPropEditCandidates: TList; // list of TPropertyEditor
     procedure CheckEdit(Prop: TPropertyEditor);
   protected
     procedure EditProperty(const Prop: TPropertyEditor;
       var Continue: Boolean); virtual;
+    procedure ClearPropEditorCandidates;
   public
     constructor Create(AComponent: TComponent;
       ADesigner: TComponentEditorDesigner); override;
+    destructor Destroy; override;
     procedure Edit; override;
     function GetVerbCount: Integer; override;
     function GetVerb(Index: Integer): string; override;
@@ -428,6 +431,9 @@ procedure TDefaultComponentEditor.CheckEdit(Prop: TPropertyEditor);
 begin
   if FContinue then
     EditProperty(Prop, FContinue);
+  if FPropEditCandidates=nil then
+    FPropEditCandidates:=TList.Create;
+  FPropEditCandidates.Add(Prop);
 end;
 
 procedure TDefaultComponentEditor.EditProperty(const Prop: TPropertyEditor;
@@ -458,11 +464,28 @@ begin
         ReplaceBest;
 end;
 
+procedure TDefaultComponentEditor.ClearPropEditorCandidates;
+var
+  i: Integer;
+begin
+  if FPropEditCandidates=nil then exit;
+  for i:=0 to FPropEditCandidates.Count-1 do
+    TObject(FPropEditCandidates[i]).Free;
+  FPropEditCandidates.Free;
+  FPropEditCandidates:=nil;
+end;
+
 constructor TDefaultComponentEditor.Create(AComponent: TComponent;
   ADesigner: TComponentEditorDesigner);
 begin
   inherited Create(AComponent, ADesigner);
   FBestEditEvent:='OnCreate';
+end;
+
+destructor TDefaultComponentEditor.Destroy;
+begin
+  ClearPropEditorCandidates;
+  inherited Destroy;
 end;
 
 procedure TDefaultComponentEditor.Edit;
@@ -491,6 +514,7 @@ begin
   finally
     FFirst := nil;
     FBest := nil;
+    ClearPropEditorCandidates;
   end;
 end;
 

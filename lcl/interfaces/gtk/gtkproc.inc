@@ -936,6 +936,7 @@ var
   Region: PGdiObject;
   RGNType : Longint;
   OffsetXY: TPoint;
+  //ClipMergeMaskWidth, ClipMergeMaskHeight: integer;
 begin
   {$IFDEF VerboseStretchCopyArea}
   writeln('MergeClipping START DestinationDC=',HexStr(Cardinal(DestinationDC),8),
@@ -990,6 +991,8 @@ begin
   end;
 
   // merge the source clipping mask into the temporary mask
+  //gdk_window_get_size(ClipMergeMask,@ClipMergeMaskWidth,@ClipMergeMaskHeight);
+  //writeln('MergeClipping A MergeMask Size=',ClipMergeMaskWidth,',',ClipMergeMaskHeight);
   gdk_draw_pixmap(NewClipMask, temp_gc,
                   ClipMergeMask, ClipMergeMaskX, ClipMergeMaskY,
                   0, 0, Width, Height);
@@ -6744,6 +6747,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.274  2004/04/08 18:27:51  mattias
+  fixed memleak in TDefaultComponentEditor.Edit
+
   Revision 1.273  2004/04/03 18:08:40  mattias
   fixed TLabel.AutoWrap=true and label on formless parent in gtk intf
 
