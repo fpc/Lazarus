@@ -4404,6 +4404,25 @@ end;
 
 Procedure TgtkObject.FinishComponentCreate(Sender : TObject;
   Handle : Pointer; SetupProps : Boolean);
+
+  {procedure SetWidgetFont(AWinControl: TWinControl; AWidget: PGtkWidget);
+  var
+    AStyle: PGtkStyle;
+  begin
+    writeln('SetWidgetFont A ',AWinControl.Name,':',AWinControl.ClassName,' AWidget=',HexStr(Cardinal(AWidget),8));
+    AStyle:=gtk_widget_get_style(AWidget);
+    if Style=nil then begin
+      writeln('SetWidgetFont B no style');
+      exit;
+    end;
+    AGdkFont:=AStyle^.Font;
+    if AGdkFont=nil then begin
+      writeln('SetWidgetFont C no font');
+      exit;
+    end;
+    
+  end;}
+  
 begin
   // MWE: next will be obsoleted by WinWidgetInfo
   //Set these for functions like GetWindowLong  Added 01/07/2000
@@ -4442,6 +4461,8 @@ begin
     {$IfNDef win32}
     if Sender is TCustomForm then
       gtk_widget_set_app_paintable(Handle,true);
+    //if AComponent is TWinControl then
+    //  SetWidgetFont(TWinControl(Sender),PGtkWidget(Handle));
     {$EndIf}
     HookSignals(Sender);
   end;
@@ -7325,6 +7346,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.369  2003/06/09 09:20:27  mattias
+  removed menubar.inc
+
   Revision 1.368  2003/06/07 09:34:21  mattias
   added ambigius compiled unit test for packages
 
