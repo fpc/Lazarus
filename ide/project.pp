@@ -40,8 +40,7 @@ type
 
   TOnFileBackup = function(const FileToBackup:string; 
                            IsPartOfProject:boolean):TModalResult of object;
-  TOnLoadSaveFilename = procedure(var Filename:string; Load:boolean) of object;
-  TOnUnitNameChange = procedure(AnUnitInfo: TUnitInfo; 
+  TOnUnitNameChange = procedure(AnUnitInfo: TUnitInfo;
        const OldUnitName, NewUnitName: string;  var Allowed: boolean) of object;
 
   //---------------------------------------------------------------------------
@@ -605,6 +604,7 @@ begin
   fIconPath := '';
   fJumpHistory:=TProjectJumpHistory.Create;
   fJumpHistory.OnCheckPosition:=@JumpHistoryCheckPosition;
+  fJumpHistory.OnLoadSaveFilename:=@OnLoadSaveFilename;
   fMainUnit := -1;
   fModified := false;
   fOutputDirectory := '.';
@@ -1304,6 +1304,9 @@ end.
 
 {
   $Log$
+  Revision 1.50  2002/02/25 23:18:54  lazarus
+  MG: jump history will now try to save relative filenames
+
   Revision 1.49  2002/02/08 21:08:00  lazarus
   MG: saving of virtual project files will now save the whole project
 

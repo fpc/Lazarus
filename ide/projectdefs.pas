@@ -30,6 +30,8 @@ uses
   Classes, SysUtils, XMLCfg, IDEProcs;
 
 type
+  TOnLoadSaveFilename = procedure(var Filename:string; Load:boolean) of object;
+
   //---------------------------------------------------------------------------
   TProjectBookmark = class
   private
@@ -138,7 +140,7 @@ type
     property LogExpressionResult: boolean 
           read fLogExpressionResult write fLogExpressionResult;
     property PassCount: integer read fPassCount write fPassCount;
- end;
+  end;
 
   TProjectBreakPointList = class
   private
@@ -166,6 +168,7 @@ type
     FCaretXY: TPoint;
     FFilename: string;
     FTopLine: integer;
+    fOnLoadSaveFilename: TOnLoadSaveFilename;
   public
     procedure Assign(APosition: TProjectJumpHistoryPosition);
     constructor Create(const AFilename: string; ACaretXY: TPoint; 
@@ -176,6 +179,8 @@ type
     property CaretXY: TPoint read FCaretXY write FCaretXY;
     property Filename: string read FFilename write FFilename;
     property TopLine: integer read FTopLine write FTopLine;
+    property OnLoadSaveFilename: TOnLoadSaveFilename
+        read fOnLoadSaveFilename write fOnLoadSaveFilename;
   end;
 
   TCheckPositionEvent = 
@@ -187,6 +192,7 @@ type
     FOnCheckPosition: TCheckPositionEvent;
     FPositions:TList;  // list of TProjectJumpHistoryPosition
     FMaxCount: integer;
+    fOnLoadSaveFilename: TOnLoadSaveFilename;
     function GetPositions(Index:integer):TProjectJumpHistoryPosition;
     procedure SetPositions(Index:integer; APosition: TProjectJumpHistoryPosition);
   public
@@ -214,6 +220,8 @@ type
     property MaxCount: integer read FMaxCount write FMaxCount;
     property OnCheckPosition: TCheckPositionEvent
        read FOnCheckPosition write FOnCheckPosition;
+    property OnLoadSaveFilename: TOnLoadSaveFilename
+        read fOnLoadSaveFilename write fOnLoadSaveFilename;
   end;
 
 function ProjectWatchTypeNameToType(const s: string): TProjectWatchType;
@@ -580,17 +588,25 @@ end;
 
 procedure TProjectJumpHistoryPosition.LoadFromXMLConfig(
   XMLConfig: TXMLConfig; const Path: string);
+var AFilename: string;
 begin
   FCaretXY.Y:=XMLConfig.GetValue(Path+'Caret/Line',0);
   FCaretXY.X:=XMLConfig.GetValue(Path+'Caret/Column',0);
   FTopLine:=XMLConfig.GetValue(Path+'Caret/TopLine',0);
-  FFilename:=XMLConfig.GetValue(Path+'Filename/Value','');
+  AFilename:=XMLConfig.GetValue(Path+'Filename/Value','');
+  if Assigned(fOnLoadSaveFilename) then
+    fOnLoadSaveFilename(AFilename,true);
+  fFilename:=AFilename;
 end;
 
 procedure TProjectJumpHistoryPosition.SaveToXMLConfig(
   XMLConfig: TXMLConfig; const Path: string);
+var AFilename: string;
 begin
-  XMLConfig.SetValue(Path+'Filename/Value',FFilename);
+  AFilename:=Filename;
+  if Assigned(fOnLoadSaveFilename) then
+    fOnLoadSaveFilename(AFilename,false);
+  XMLConfig.SetValue(Path+'Filename/Value',AFilename);
   XMLConfig.SetValue(Path+'Caret/Line',FCaretXY.Y);
   XMLConfig.SetValue(Path+'Caret/Column',FCaretXY.X);
   XMLConfig.SetValue(Path+'Caret/TopLine',FTopLine);
@@ -620,6 +636,7 @@ function TProjectJumpHistory.Add(
   APosition: TProjectJumpHistoryPosition):integer;
 begin
   Result:=FPositions.Add(APosition);
+  APosition.OnLoadSaveFilename:=OnLoadSaveFilename;
   FHistoryIndex:=Count-1;
   if Count>MaxCount then DeleteFirst;
 end;
@@ -753,6 +770,7 @@ end;
 procedure TProjectJumpHistory.Insert(Index: integer;
   APosition: TProjectJumpHistoryPosition);
 begin
+  APosition.OnLoadSaveFilename:=OnLoadSaveFilename;
   if Count=MaxCount then begin
     if Index>0 then begin
       DeleteFirst;
