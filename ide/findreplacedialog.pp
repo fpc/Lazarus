@@ -49,20 +49,6 @@ type
                            FindDlgComponent: TFindDlgComponent) of Object;
 
   TLazFindReplaceDialog = class(TForm)
-  private
-    FOnKey: TOnFindDlgKey;
-    fReplaceAllClickedLast:boolean;
-    function GetComponentText(c: TFindDlgComponent): string;
-    procedure SetComponentText(c: TFindDlgComponent; const AValue: string);
-    procedure SetOnKey(const AValue: TOnFindDlgKey);
-    procedure SetOptions(NewOptions:TSynSearchOptions);
-    function GetOptions:TSynSearchOptions;
-    function GetFindText:AnsiString;
-    procedure SetFindText(NewFindText:AnsiString);
-    function GetReplaceText:AnsiString;
-    procedure SetReplaceText(NewReplaceText:AnsiString);
-    procedure SetComboBoxText(AComboBox:TComboBox;const AText:AnsiString);
-  public
     TextToFindLabel:TLabel;
     ReplaceWithLabel:TLabel;
     TextToFindComboBox:TComboBox;
@@ -78,13 +64,27 @@ type
     OkButton:TButton;
     ReplaceAllButton:TButton;
     CancelButton:TButton;
-    
-    constructor Create(TheOwner:TComponent); override;
     procedure TextToFindComboboxKeyDown(Sender: TObject; var Key:Word;
-       Shift:TShiftState);  
+       Shift:TShiftState);
     procedure OkButtonClick(Sender:TObject);
     procedure ReplaceAllButtonClick(Sender:TObject);
     procedure CancelButtonClick(Sender:TObject);
+  private
+    FOnKey: TOnFindDlgKey;
+    fReplaceAllClickedLast:boolean;
+    function GetComponentText(c: TFindDlgComponent): string;
+    procedure SetComponentText(c: TFindDlgComponent; const AValue: string);
+    procedure SetOnKey(const AValue: TOnFindDlgKey);
+    procedure SetOptions(NewOptions:TSynSearchOptions);
+    function GetOptions:TSynSearchOptions;
+    function GetFindText:AnsiString;
+    procedure SetFindText(NewFindText:AnsiString);
+    function GetReplaceText:AnsiString;
+    procedure SetReplaceText(NewReplaceText:AnsiString);
+    procedure SetComboBoxText(AComboBox:TComboBox;const AText:AnsiString);
+  public
+    constructor Create(TheOwner:TComponent); override;
+  public
     property Options:TSynSearchOptions read GetOptions write SetOptions;
     property FindText:AnsiString read GetFindText write SetFindText;
     property ReplaceText:AnsiString read GetReplaceText write SetReplaceText;
@@ -331,15 +331,18 @@ procedure TLazFindReplaceDialog.TextToFindComboBoxKeyDown(
 var Component: TFindDlgComponent;
 begin
   //writeln('TLazFindReplaceDialog.TextToFindComboBoxKeyDown Key=',Key,' RETURN=',VK_RETURN,' TAB=',VK_TAB,' DOWN=',VK_DOWN,' UP=',VK_UP);
-  if (Key=VK_RETURN) then
-    OkButtonClick(Sender)
-  else if (Key=VK_ESCAPE) then
-    CancelButtonClick(Sender)
-  else if Key=VK_TAB then begin
+  if (Key=VK_RETURN) then begin
+    OkButtonClick(Sender);
+    Key:=VK_UNKNOWN;
+  end else if (Key=VK_ESCAPE) then begin
+    CancelButtonClick(Sender);
+    Key:=VK_UNKNOWN;
+  end else if Key=VK_TAB then begin
     if (Sender=TextToFindComboBox) and (ReplaceTextComboBox.Enabled) then
       ReplaceTextComboBox.SetFocus;
     if Sender=ReplaceTextComboBox then
       TextToFindComboBox.SetFocus;
+    Key:=VK_UNKNOWN;
   end else if Assigned(OnKey) then begin
     if Sender=TextToFindComboBox then
       Component:=fdcText
