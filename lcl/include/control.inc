@@ -669,30 +669,26 @@ end;
 {       TControl.DoDragMsg
 }
 {------------------------------------------------------------------------------}
-Procedure TControl.DoDragMsg(var Dragmsg : TCMDrag);
+Procedure TControl.DoDragMsg(var Dragmsg: TCMDrag);
 var
-Accepts : Boolean;
-S : TObject;
+  Accepts: Boolean;
+  S: TObject;
+  P: TPoint;
 Begin
-with DragMSg, Dragrec^ do
-   Begin
-    S := Source;
-    with ScreentoClient(pos) do
+  S := DragMsg.Dragrec^.Source;
+  Accepts := True;
+  P:=ScreenToClient(DragMsg.Dragrec^.pos);
+  case DragMsg.DragMessage of
+   dmDragEnter, dmDragLeave, dmDragMove:
     begin
-    case DragMessage of
-        dmDragEnter, dmDragLeave, dmDragMove:
-           begin
-            Accepts := True;
-            case DragMessage of
-                dmDragEnter : DragOver(S,X,Y,dsDragEnter,Accepts);
-                dmDragLeave : DragOver(S,X,Y,dsDragLeave,Accepts);
-                dmDragMove : DragOver(S,X,Y,dsDragMove,Accepts);
-              end;
-            Result := ord(Accepts);
-           end;
-         end; //case
-    end;//with
-   end;  //with
+      case DragMsg.DragMessage of
+        dmDragEnter : DragOver(S,P.X,P.Y,dsDragEnter,Accepts);
+        dmDragLeave : DragOver(S,P.X,P.Y,dsDragLeave,Accepts);
+        dmDragMove : DragOver(S,P.X,P.Y,dsDragMove,Accepts);
+      end;
+      DragMsg.Result := ord(Accepts);
+    end;
+  end; //case
 end;
 
 {------------------------------------------------------------------------------}
@@ -2108,6 +2104,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.126  2003/06/07 17:14:12  mattias
+  small changes for fpc 1.1
+
   Revision 1.125  2003/05/28 08:46:24  mattias
   break;points dialog now gets the items without debugger
 
