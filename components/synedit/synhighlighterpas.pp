@@ -555,8 +555,13 @@ end;
 function TSynPasSyn.Func23: TtkTokenKind;
 begin
   if KeyComp('End') then begin
-    Result := tkKey;
-    fRange := rsUnknown;
+    if ((fToIdent<3) or (fLine[fToIdent-2]<>'@') or (fLine[fToIdent-1]<>'@'))
+    then begin
+      Result := tkKey;
+      fRange := rsUnknown;
+    end else begin
+      Result := tkKey; // @@end label
+    end;
   end else
     if KeyComp('In') then Result := tkKey else Result := tkIdentifier;
 end;
