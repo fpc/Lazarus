@@ -70,9 +70,10 @@ end;
 procedure TMainForm.Button1Click(Sender : TObject);
 begin
    ShowMessage ('First simple test!');
+   writeln('Go to second dialog');
    MessageDlg  ('Caption', 'Two buttons now...', mtError, [mbOK,mbCancel], 0);
    MessageDlg  ('Warning, not fully implemented', mtWarning, [mbYes, mbNo, mbOK,mbCancel], 0);
-   ShowMessageFmt ('The show will end now'+#13+'%s'+#13+'Good bye!!!', [MainForm.Caption]);
+   ShowMessageFmt ('The show will end now'+LineEnding+'%s'+LineEnding+'Good bye!!!', [MainForm.Caption]);
    close;
 end;
 
@@ -84,6 +85,9 @@ begin
 end.
 {
    $Log$
+   Revision 1.5  2002/09/03 20:02:01  lazarus
+   Intermediate UI patch to show a bug.
+
    Revision 1.4  2002/08/30 10:06:07  lazarus
    Fixed alignment of multiline TLabel.
    Simplified and prettified MessageBoxen.

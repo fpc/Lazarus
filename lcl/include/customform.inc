@@ -964,7 +964,7 @@ Function TCustomForm.ShowModal : Integer;
   SaveCount: Integer;
   ActiveWindow: HWnd;}
 begin
-//writeln('[TCustomForm.ShowModal] START ',Classname);
+  //writeln('[TCustomForm.ShowModal] START ',Classname);
   if Visible or not Enabled or (fsModal in FFormState) or
     (FormStyle = fsMDIChild) then
     raise EInvalidOperation.Create('TCustomForm.ShowModal impossible');
@@ -983,11 +983,12 @@ begin
   SaveCount := Screen.FCursorCount;
   WindowList := DisableTaskWindows(0);}
   ModalResult := 0;
+
   try
     Show;
     try
       CNSendMessage(LM_SHOWMODAL, Self, nil);
-      Repeat
+      repeat
         { Delphi calls Application.HandleMessage
           But HandleMessage processes all pending events and then calls idle,
           which will wait for new messages. Under Win32 there always a next
@@ -1001,6 +1002,7 @@ begin
         if ModalResult<>0 then break;
         Application.Idle;
       until ModalResult <> 0;
+      
       Result := ModalResult;
       //if GetActiveWindow <> Handle then ActiveWindow := 0;
     finally
@@ -1025,7 +1027,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.56  2002/09/03 20:02:01  lazarus
+  Intermediate UI patch to show a bug.
+
   Revision 1.55  2002/09/03 11:32:49  lazarus
+
   Added shortcut keys to labels
   Support for alphabetically sorting the properties
   Standardize message and add shortcuts ala Kylix

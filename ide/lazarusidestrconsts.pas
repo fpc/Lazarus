@@ -194,7 +194,7 @@ ResourceString
   lisSelectDFMFiles = 'Select Delphi form files (*.dfm)';
 
   // dialogs
-  lisSaveChangesToProject = 'Save changes to project?';
+  lisSaveChangesToProject = 'Save changes to project %s?';
   lisProjectChanged = 'Project changed';
 
   lisFPCSourceDirectoryError = 'FPC Source Directory error';

@@ -106,7 +106,7 @@ procedure TCustomLabel.SetShowAccelChar(Val : boolean);
 begin
   if Val <> FShowAccelChar then begin
     FShowAccelChar:= Val;
-    CNSendMessage(LM_SETLABEL, Self, PChar(Caption));
+    if HandleAllocated then CNSendMessage(LM_SETLABEL, Self, PChar(Caption));
   end;
 end;
 
@@ -144,7 +144,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.6  2002/09/03 20:02:01  lazarus
+  Intermediate UI patch to show a bug.
+
   Revision 1.5  2002/09/03 11:32:49  lazarus
+
   Added shortcut keys to labels
   Support for alphabetically sorting the properties
   Standardize message and add shortcuts ala Kylix

@@ -94,6 +94,7 @@ begin
   FMsgLines   := TStringList.Create;
   FLabel      := TLabel.Create(Self);
   FLabel.Alignment:= taLeftJustify;
+  FLabel.ShowAccelChar:= false;
   FLabel.Parent:= Self;
   FLabel.Visible:= true;
   
@@ -168,9 +169,9 @@ end;
 function TMessageBox.LineWidth(Index: integer): integer;
 begin
   if (Index>=0) and (Index<FMsgLines.Count) then
-    Result:=Canvas.TextWidth(FMsgLines[Index])
+    Result:= Canvas.TextWidth(FMsgLines[Index])
   else
-    Result:=0;
+    Result:= 0;
 end;
 
 {------------------------------------------------------------------------------
@@ -244,8 +245,7 @@ begin
   FDlgType := value;
   FBitmap.Free;
   FBitmap := TBitmap.Create; 
-  FBitmap.Handle := CreatePixmapIndirect(@mtImages[FDlgType],
-                         ColorToRGB(clBtnFace));
+  FBitmap.Handle := CreatePixmapIndirect(@mtImages[FDlgType], ColorToRGB(clBtnFace));
   if DefaultCaption then
     Caption := cMtCaption[FDlgType];
 end;
@@ -279,7 +279,6 @@ const
   cBtnDist   = cBtnWidth + 4;
   cMinLeft   = cBitmapX + cBitmapWidth + cLabelSpacing;
 var
-  aButton     : TBitBtn;    // temp. variable to create buttons
   aBitmap     : TBitmap;    // temp. variable to create bitmaps for buttons
   curBtn      : TMsgDlgBtn; // variable to loop through TMsgDlgButtons
   ButtonLeft  : integer;    // left position of button(s)
@@ -291,11 +290,11 @@ var
   i, j        : integer;
   ButtonIndex : integer;
 begin
-  if FUpdateCounter>0 then exit;
+  if FUpdateCounter > 0 then exit;
   
   // calculate label width
   LabelWidth:= 0;
-  for i:=0 to FMsgLines.Count-1 do begin
+  for i:=0 to FMsgLines.Count - 1 do begin
     j:=LineWidth(i);
     if j > LabelWidth then LabelWidth:= j;
   end;
@@ -329,15 +328,15 @@ begin
   // set up labels
   FLabel.SetBounds(LabelLeft, cLabelSpacing, LabelWidth, LabelHeight);
   Flabel.Caption:= Trim(FMsgLines.Text);
-  
+
   // create the buttons
   ButtonIndex := -1;
   for curBtn := low(TMsgDlgBtn) to high(TMsgDlgBtn) do begin
     if curBtn in FButtons then begin
       inc(ButtonIndex);
-      aButton := TBitBtn.Create(self);
-      With aButton do begin
-        Parent  := Self;
+      
+      with TBitBtn.Create(Self) do begin
+        Parent:= Self;
         SetBounds (ButtonLeft, 2 * cLabelSpacing + reqHeight, cBtnWidth, cBtnHeight);
         inc(ButtonLeft, cBtnDist);
         Layout  := blGlyphLeft;
@@ -373,9 +372,8 @@ end;
 procedure TMessageBox.EndUpdate;
 begin
   dec(FUpdateCounter);
-  if FUpdateCounter<0 then FUpdateCounter:=0;
-  if (FUpdateCounter=0) and (FRelayoutNeeded) then
-    ReLayout;
+  if FUpdateCounter<0 then FUpdateCounter:= 0;
+  if (FUpdateCounter = 0) and FRelayoutNeeded then ReLayout;
 end;
 
 // ---------------------------------------------------------------------------
@@ -385,13 +383,13 @@ function CreateMessageDialog(const aMsg: string; DlgType: TMsgDlgType;
 var
   msgbox : TMessageBox;
 begin
-  msgbox := TMessageBox.Create (application);
+  msgbox:= TMessageBox.Create(Application);
   msgbox.BeginUpdate;
   msgbox.theMessage := aMsg;
   msgBox.DialogType := DlgType;
   msgBox.Buttons    := buttons;
   msgbox.EndUpdate;
-  Result := msgbox;
+  Result:= msgbox;
 end;
 
 function CreateMessageDialogWithCap(const aCaption, aMsg: string;
@@ -399,14 +397,14 @@ function CreateMessageDialogWithCap(const aCaption, aMsg: string;
 var
   msgbox : TMessageBox;
 begin
-  msgbox := TMessageBox.Create (Application);
+  msgbox:= TMessageBox.Create(Application);
   msgbox.BeginUpdate;
   msgbox.theMessage := aMsg;
   msgBox.DialogType := DlgType;
   msgBox.Buttons    := buttons;
   msgBox.Caption    := aCaption;
   msgbox.EndUpdate;
-  Result := msgbox;
+  Result:= msgbox;
 end;
 
 function MessageDlg(const aMsg: string; DlgType: TMsgDlgType;
@@ -474,6 +472,9 @@ end;
 
 {
    $Log$
+   Revision 1.13  2002/09/03 20:02:01  lazarus
+   Intermediate UI patch to show a bug.
+
    Revision 1.12  2002/08/30 10:06:07  lazarus
    Fixed alignment of multiline TLabel.
    Simplified and prettified MessageBoxen.
