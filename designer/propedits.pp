@@ -4509,14 +4509,15 @@ end;
 procedure TPropertyEditorHook.Modified(Sender: TObject);
 var
   i: Integer;
+  AForm: TCustomForm;
 begin
   i:=GetHandlerCount(htModified);
   while GetNextHandlerIndex(htModified,i) do
     TPropHookModified(FHandlers[htModified][i])(Sender);
   if FLookupRoot<>nil then begin
-    if (FLookupRoot is TCustomForm)
-    and (TCustomForm(FLookupRoot).Designer<>nil) then
-      TCustomForm(FLookupRoot).Designer.Modified;
+    AForm:=GetDesignerForm(FLookupRoot);
+    if (AForm<>nil) and (AForm.Designer<>nil) then
+      AForm.Designer.Modified;
   end;
 end;
 

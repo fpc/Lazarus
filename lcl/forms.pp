@@ -802,6 +802,7 @@ type
     FOnCreate: TNotifyEvent;
     FOnDestroy: TNotifyEvent;
     FOldCreateOrder: Boolean;
+    function OldCreateOrderIsStored: boolean;
     procedure ReadHeight(Reader: TReader);
     procedure ReadHorizontalOffset(Reader: TReader);
     procedure ReadVerticalOffset(Reader: TReader);
@@ -828,7 +829,8 @@ type
   published
     property OnCreate: TNotifyEvent read FOnCreate write FOnCreate;
     property OnDestroy: TNotifyEvent read FOnDestroy write FOnDestroy;
-    property OldCreateOrder: Boolean read FOldCreateOrder write FOldCreateOrder;
+    property OldCreateOrder: Boolean read FOldCreateOrder write FOldCreateOrder
+                                                  stored OldCreateOrderIsStored;
   end;
 
 const
@@ -1021,14 +1023,14 @@ function InitResourceComponent(Instance: TComponent;
     CompResource:TLResource;
     MemStream: TMemoryStream;
   begin
-//writeln('[InitComponent] ',ClassType.Classname,' ',Instance<>nil);
+    //writeln('[InitComponent] ',ClassType.Classname,' ',Instance<>nil);
     Result:=false;
     if (ClassType=TComponent) or (ClassType=RootAncestor) then exit;
     if Assigned(ClassType.ClassParent) then
       Result:=InitComponent(ClassType.ClassParent);
     CompResource:=LazarusResources.Find(ClassType.ClassName);
     if (CompResource = nil) or (CompResource.Value='') then exit;
-//writeln('[InitComponent] CompResource found for ',ClassType.Classname);
+    //writeln('[InitComponent] CompResource found for ',ClassType.Classname);
     if (ClassType.InheritsFrom(TForm))
     and (CompResource.ValueType<>'FORMDATA') then exit;
     MemStream:=TMemoryStream.Create;
@@ -1037,9 +1039,6 @@ function InitResourceComponent(Instance: TComponent;
       MemStream.Position:=0;
       //writeln('Form Stream "',ClassType.ClassName,'" Signature=',copy(CompResource.Value,1,4));
       try
-        if Instance.Name='' then begin
-
-        end;
         Instance:=MemStream.ReadComponent(Instance);
       except
         on E: Exception do begin
@@ -1061,12 +1060,12 @@ begin
   //GlobalNameSpace.BeginWrite; // hold lock across all ancestor loads (performance)
   try
     //LocalizedLoading:=(Instance.ComponentState * [csInline,csLoading])=[];
-    //if LocalizedLoading then BeginGloabelLoading; // push new loadlist onto stack
+    //if LocalizedLoading then BeginGlobalLoading; // push new loadlist onto stack
     try
       Result:=InitComponent(Instance.ClassType);
-      //if LocalizedLoading then NotifyGloablLoading; // call Loaded
+      //if LocalizedLoading then NotifyGlobalLoading; // call Loaded
     finally
-      //if LocalizedLoading then EndGloablLoading; // pop loadlist off stack
+      //if LocalizedLoading then EndGlobalLoading; // pop loadlist off stack
     end;
   finally
     //GlobalNameSpace.EndWrite;
@@ -1318,6 +1317,11 @@ begin
   FDesignSize.Y := Reader.ReadInteger;
 end;
 
+function TDataModule.OldCreateOrderIsStored: boolean;
+begin
+  Result:=FOldCreateOrder;
+end;
+
 procedure TDataModule.WriteWidth(Writer: TWriter);
 begin
   Writer.WriteInteger(FDesignSize.X);
@@ -1360,7 +1364,7 @@ initialization
   Screen:= TScreen.Create(nil);
   Application:= TApplication.Create(nil);
   
-  {$IFDEF VER1_0_8}
+  {$IFDEF UseFCLDataModule}
   RegisterInitComponentHandler(TComponent,@InitResourceComponent);
   {$ENDIF}
   // keep this comment, there is parser a bug in fpc 1.0.x
