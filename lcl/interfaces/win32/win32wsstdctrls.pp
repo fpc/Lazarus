@@ -483,22 +483,28 @@ end;
 
 procedure TWin32WSCustomListBox.SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean);
 begin
-  if ACustomListBox.FCompStyle = csListBox then
-    Windows.SendMessage(ACustomListBox.Handle, LB_SELITEMRANGE, Windows.WParam(ASelected), Windows.LParam(MakeLParam(AIndex, AIndex)))
+  if ACustomListBox.MultiSelect then
+    Windows.SendMessage(ACustomListBox.Handle, LB_SETSEL, 
+      Windows.WParam(ASelected), Windows.LParam(AIndex))
+  else
+  if ASelected then
+    SetItemIndex(ACustomListBox, AIndex)
+  else
+    SetItemIndex(ACustomListBox, -1);
 end;
 
 procedure TWin32WSCustomListBox.SetBorder(const ACustomListBox: TCustomListBox);
 var
   Handle: HWND;
+  StyleEx: dword;
 begin
-  if ACustomListBox.FCompStyle in [csListBox, csCListBox] then
-  begin
-    Handle := ACustomListBox.Handle;
-    if ACustomListBox.BorderStyle = TBorderStyle(bsSingle) Then
-      SetWindowLong(Handle, GWL_EXSTYLE, GetWindowLong(Handle, GWL_EXSTYLE) or WS_EX_CLIENTEDGE)
-    else
-      SetWindowLong(Handle, GWL_EXSTYLE, GetWindowLong(Handle, GWL_EXSTYLE) and not WS_EX_CLIENTEDGE);
-  end;
+  Handle := ACustomListBox.Handle;
+  StyleEx := GetWindowLong(Handle, GWL_EXSTYLE);
+  if ACustomListBox.BorderStyle = TBorderStyle(bsSingle) Then
+    StyleEx := StyleEx or WS_EX_CLIENTEDGE
+  else
+    StyleEx := StyleEx and not WS_EX_CLIENTEDGE;
+  SetWindowLong(Handle, GWL_EXSTYLE, StyleEx);
 end;
 
 procedure TWin32WSCustomListBox.SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer);
@@ -506,15 +512,13 @@ var
   Handle: HWND;
 begin
   Handle := ACustomListBox.Handle;
-  case ACustomListBox.FCompStyle of
-    csListBox, csCListBox:
-    begin
-      if ACustomListBox.MultiSelect then
-        Windows.SendMessage(Handle, LB_SETSEL, Windows.WPARAM(true), Windows.LParam(AIndex))
-      else
-        Windows.SendMessage(Handle, LB_SETCURSEL, Windows.WParam(AIndex), 0);
-    end;
-  end;
+  if ACustomListBox.MultiSelect then
+  begin
+    // deselect all items first
+    Windows.SendMessage(Handle, LB_SETSEL, Windows.WParam(false), -1);
+    Windows.SendMessage(Handle, LB_SETSEL, Windows.WParam(true), Windows.LParam(AIndex));
+  end else
+    Windows.SendMessage(Handle, LB_SETCURSEL, Windows.WParam(AIndex), 0);
 end;
 
 procedure TWin32WSCustomListBox.SetSelectionMode(const ACustomListBox: TCustomListBox;
@@ -531,12 +535,7 @@ end;
 
 procedure TWin32WSCustomListBox.SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean);
 begin
-  case ACustomListBox.FCompStyle of
-    csListBox:
-      TWin32ListStringList(AList).Sorted := ASorted;
-    csCListBox:
-      TWin32CListStringList(AList).Sorted := ASorted;
-  end;
+  TWin32ListStringList(AList).Sorted := ASorted;
 end;
 
 procedure TWin32WSCustomListBox.SetTopIndex(const ACustomListBox: TCustomListBox; const NewTopIndex: integer);

@@ -48,6 +48,7 @@ type
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class function  GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
+    class procedure SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean); override;
   end;
 
 
@@ -93,6 +94,11 @@ begin
   Handle := ACustomListBox.Handle;
   Result := TWin32CListStringList.Create(Handle, ACustomListBox)
   GetWindowInfo(Handle)^.List := Result;
+end;
+
+procedure TWin32WSCustomCListBox.SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean);
+begin
+  TWin32CListStringList(AList).Sorted := ASorted;
 end;
 
 initialization
