@@ -764,7 +764,7 @@ procedure CheckPointer(p : pointer);[saveregisters,public, alias : 'FPC_CHECKPOI
 var
   i  : ptrint;
   pp : pheap_mem_info;
-{$IF gov32 or win32}
+{$IF go32v2 or win32}
   get_ebp,stack_top : longword;
   data_end : longword;
 {$ENDIF}
@@ -2289,9 +2289,9 @@ Procedure SetExtraInfoString(func : ExtraInfoStringType);
   end;
 
 // additions for codetools
-{$DEFINE MC_Implementation}
+{$DEFINE MC_ImplementationEnd}
 {$i memcheck_laz.inc}
-{$UNDEF MC_Implementation}
+{$UNDEF MC_ImplementationEnd}
 
 Initialization
   EntryMemUsed:=System.HeapSize-MemAvail;
@@ -2318,6 +2318,9 @@ end.
 
 {
   $Log$
+  Revision 1.32  2004/07/13 21:57:53  vincents
+  fix typos in defines
+
   Revision 1.31  2004/07/12 20:59:25  mattias
   updated memcheck.pas and made it more easy to update
 
