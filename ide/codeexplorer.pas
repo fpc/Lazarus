@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
   ComCtrls,
-  CodeToolManager, CodeCache, CodeTree, PascalParserTool,
+  CodeToolManager, CodeAtom, CodeCache, CodeTree, PascalParserTool,
   EnvironmentOpts, IDEOptionDefs, LazarusIDEStrConsts, InputHistory, IDEProcs,
   Menus;
 
@@ -15,7 +15,7 @@ type
   TOnGetCodeTree =
     procedure(Sender: TObject; var ACodeTool: TCodeTool) of object;
   TOnJumpToCode = procedure(Sender: TObject; const Filename: string;
-    CleanPos: integer) of object;
+    const Caret: TPoint; TopLine: integer) of object;
 
   TCodeExplorerViewFlag = (
     cevRefreshNeeded,
@@ -34,6 +34,7 @@ type
     procedure CodeExplorerViewCLOSE(Sender: TObject; var Action: TCloseAction);
     procedure CodeExplorerViewCREATE(Sender: TObject);
     procedure CodeExplorerViewRESIZE(Sender: TObject);
+    procedure CodeTreeviewDBLCLICK(Sender: TObject);
     procedure CodeTreeviewDELETION(Sender: TObject; Node: TTreeNode);
     procedure JumpToMenuitemCLICK(Sender: TObject);
     procedure RefreshButtonCLICK(Sender: TObject);
@@ -122,6 +123,11 @@ begin
     SetBounds(0,y,Parent.ClientWidth,Parent.ClientHeight-y);
 end;
 
+procedure TCodeExplorerView.CodeTreeviewDBLCLICK(Sender: TObject);
+begin
+  JumpToSelection;
+end;
+
 procedure TCodeExplorerView.CodeTreeviewDELETION(Sender: TObject;
   Node: TTreeNode);
 begin
@@ -191,9 +197,23 @@ var
   NodeImageIndex: Integer;
 begin
   if CodeNode=nil then exit;
+  
   // don't show statements, parameter lists
   if (CodeNode.Desc in AllPascalStatements)
   or (CodeNode.Desc in [ctnProcedureHead,ctnParameterList]) then exit;
+  
+  if CodeNode.FirstChild=CodeNode.LastChild then begin
+    // node has no childs or one child
+    // don't show boring details
+    if CodeNode.Desc in [ctnIdentifier,ctnEnumerationType,ctnRangedArrayType,
+      ctnOpenArrayType,ctnOfConstType,ctnRangeType,ctnTypeType,ctnFileType,
+      ctnVariantType]
+    then begin
+      CreateNodes(ACodeTool,CodeNode.FirstChild,ParentViewNode,InFrontViewNode,
+                  true);
+      exit;
+    end;
+  end;
 
   NodeData:=TViewNodeData.Create(CodeNode);
   NodeText:=GetNodeDescription(ACodeTool,CodeNode);
@@ -275,6 +295,8 @@ var
   CurNode: TViewNodeData;
   Caret: TCodeXYPosition;
   NewTopLine: integer;
+  CodeBuffer: TCodeBuffer;
+  ACodeTool: TCodeTool;
 begin
   CurItem:=CodeTreeview.Selected;
   if CurItem=nil then exit;
@@ -286,12 +308,11 @@ begin
   ACodeTool:=nil;
   CodeToolBoss.Explore(CodeBuffer,ACodeTool,false);
   if ACodeTool=nil then exit;
-  ACodeTool.CleanPosToCaretAndTopLine(CurNode.StartPos,
-        );
-  
-  
+  if not ACodeTool.CleanPosToCaretAndTopLine(CurNode.StartPos,Caret,NewTopLine)
+  then exit;
+
   if Assigned(OnJumpToCode) then
-    OnJumpToCode(Self,MainFilename,CurNode.StartPos);
+    OnJumpToCode(Self,Caret.Code.Filename,Point(Caret.X,Caret.Y),NewTopLine);
 end;
 
 initialization
