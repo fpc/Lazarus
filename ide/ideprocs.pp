@@ -645,7 +645,7 @@ end;
   Translates all resourcestrings of the resource string files:
     - lclstrconsts.pas
     - codetoolsstrconsts.pas
-    - lazarusstrconsts.pas
+    - lazarusidestrconsts.pas
 -------------------------------------------------------------------------------}
 procedure TranslateResourceStrings(const BaseDirectory, CustomLang: string);
 var
