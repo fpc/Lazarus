@@ -294,6 +294,7 @@ type
     procedure AdjustCount(IsColumn:Boolean; OldValue, NewValue:Integer);
     procedure CacheVisibleGrid;
     procedure CheckFixedCount(aCol,aRow,aFCol,aFRow: Integer);
+    procedure CheckCount(aNewColCount, aNewRowCount: Integer);
     function  doColSizing(X,Y: Integer): Boolean;
     function  doRowSizing(X,Y: Integer): Boolean;
     procedure doColMoving(X,Y: Integer);
@@ -913,6 +914,7 @@ var
   OldCount: integer;
 begin
   if IsColumn then begin
+
     AddDel(FCols, NewValue);
     FGCache.AccumWidth.Count:=NewValue;
     OldCount:=RowCount;
@@ -952,6 +954,7 @@ begin
   else begin
     OldC:=FCols.Count;
     CheckFixedCount(Valor, RowCount, FFixedCols, FFixedRows);
+    CheckCount(Valor, RowCount);
     AdjustCount(True, OldC, Valor);
   end;
 end;
@@ -966,6 +969,7 @@ begin
   else begin
     OldR:=FRows.Count;
     CheckFixedCount(ColCount, Valor, FFixedCols, FFixedRows);
+    CheckCount(ColCount, Valor);
     AdjustCount(False, OldR, Valor);
   end;
 end;
@@ -2034,6 +2038,20 @@ begin
   if (aRow=0)and(aFRow=0) then // Invalid grid, ok
   else if (aFRow>=aRow) and not (csLoading in ComponentState) then
     raise EGridException.Create(rsFixedRowsTooBig);
+end;
+
+procedure TCustomGrid.CheckCount(aNewColCount, aNewRowCount: Integer);
+var
+  NewCol,NewRow: Integer;
+begin
+  if HandleAllocated then begin
+    if Col >= aNewColCount then NewCol := aNewColCount-1
+    else                        NewCol := Col;
+    if Row >= aNewRowCount then NewRow := aNewRowCount-1
+    else                        NewRow := Row;
+    if (NewCol>=0) and (NewRow>=0) and ((NewCol <> Col) or (NewRow <> Row)) then
+    MoveNextSelectable(false, NewCol, NewRow);
+  end;
 end;
 
 { Save to the cache the current visible grid (excluding fixed cells) }
