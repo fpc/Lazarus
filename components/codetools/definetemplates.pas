@@ -1446,22 +1446,18 @@ var
 
       da_UndefineAll:
         // Undefine every value for current and sub directories
-        begin
-          DirDef.Values.Clear;
-        end;
+        DirDef.Values.Clear;
 
       da_If, da_ElseIf:
         begin
           // test expression in value
           EvalResult:=DirDef.Values.Eval(ReadValue(DefTempl.Value,CurPath));
-          if EvalResult='1' then
-            CalculateIfChilds
-          else if DirDef.Values.ErrorPosition>=0 then begin
+          if DirDef.Values.ErrorPosition>=0 then begin
             FErrorDescription:=Format(ctsSyntaxErrorInExpr,
                                   [ReadValue(DefTempl.Value,CurPath)]);
             FErrorTemplate:=DefTempl;
-            exit;
-          end;
+          end else if EvalResult='1' then
+            CalculateIfChilds;
         end;
       da_IfDef:
         // test if variable is defined
@@ -1494,7 +1490,8 @@ var
         end;
       end;
       if ErrorTemplate<>nil then exit;
-      DefTempl:=DefTempl.Next;
+      if DefTempl<>nil then
+        DefTempl:=DefTempl.Next;
     end;
   end;
 
@@ -2373,9 +2370,9 @@ begin
   // lcl/interfaces/gtk
   IntfDirTemplate:=TDefineTemplate.Create('gtkIntfDirectory',
     ctsGtkIntfDirectory,'','gtk',da_Directory);
-    // if $(LCLWidgetType)=gtk2
-    IfTemplate:=TDefineTemplate.Create('IF LCLWidgetType=gtk2',
-      ctsIfLCLWidgetTypeEqualsGtk2,'','$(LCLWidgetType)=gtk2',da_If);
+    // if LCLWidgetType=gtk2
+    IfTemplate:=TDefineTemplate.Create('IF '+WidgetType+'=gtk2',
+      ctsIfLCLWidgetTypeEqualsGtk2,'',WidgetType+'=gtk2',da_If);
       // then define gtk2
       IfTemplate.AddChild(TDefineTemplate.Create('Define gtk2',
         ctsDefineMacroGTK2,'gtk2','',da_Define));
