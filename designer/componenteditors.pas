@@ -37,6 +37,7 @@ type
   protected
     function GetPropertyEditorHook: TPropertyEditorHook; virtual; abstract;
   public
+    function CreateUniqueComponentName(const AClassName: string): string; virtual; abstract;
     property PropertyEditorHook: TPropertyEditorHook read GetPropertyEditorHook;
   end;
 
@@ -132,6 +133,7 @@ type
     function IsInInlined: Boolean; virtual; abstract;
     function GetComponent: TComponent; virtual; abstract;
     function GetDesigner: TComponentEditorDesigner; virtual; abstract;
+    function GetHook(var Hook: TPropertyEditorHook): boolean; virtual; abstract;
   end;
 
   TComponentEditorClass = class of TBaseComponentEditor;
@@ -161,6 +163,7 @@ type
     procedure PrepareItem(Index: Integer; const AnItem: TMenuItem); override;
     property Component: TComponent read FComponent;
     property Designer: TComponentEditorDesigner read GetDesigner;
+    function GetHook(var Hook: TPropertyEditorHook): boolean; override;
   end;
 
 
@@ -182,14 +185,16 @@ type
   end;
   
 { TNotebookComponentEditor
-  The default component editor for TNotebook. It adds the following menu items
-  to the popupmenu of the designer:
-  ToDo:
-  'Insert page', 'Delete page', 'Move page left', 'Move page right',
-  'Select all pages'}
+  The default component editor for TNotebook. }
   TNotebookComponentEditor = class(TDefaultComponentEditor)
   protected
+    procedure AddNewPageToDesigner(Index: integer); virtual;
+    procedure DoAddPage; virtual;
     procedure DoInsertPage; virtual;
+    procedure DoDeletePage; virtual;
+    procedure DoMoveActivePageLeft; virtual;
+    procedure DoMoveActivePageRight; virtual;
+    procedure DoMoveActivePage(CurIndex, NewIndex: Integer); virtual;
   public
     procedure ExecuteVerb(Index: Integer); override;
     function GetVerb(Index: Integer): string; override;
@@ -459,6 +464,14 @@ begin
   // Intended for descendents to implement
 end;
 
+function TComponentEditor.GetHook(var Hook: TPropertyEditorHook): boolean;
+begin
+  Result:=false;
+  if GetDesigner=nil then exit;
+  Hook:=GetDesigner.PropertyEditorHook;
+  Result:=Hook<>nil;
+end;
+
 { TDefaultComponentEditor }
 
 procedure TDefaultComponentEditor.CheckEdit(Prop: TPropertyEditor);
@@ -501,8 +514,8 @@ var
   Components: TComponentSelectionList;
   PropertyEditorHook: TPropertyEditorHook;
 begin
-  PropertyEditorHook:=Designer.PropertyEditorHook;
-  if PropertyEditorHook=nil then exit;
+  PropertyEditorHook:=nil;
+  if not GetHook(PropertyEditorHook) then exit;
   Components := TComponentSelectionList.Create;
   FContinue := True;
   Components.Add(Component);
@@ -519,6 +532,7 @@ begin
   finally
     FFirst := nil;
     FBest := nil;
+    Components.Free;
   end;
 end;
 
@@ -526,29 +540,109 @@ end;
 { TNotebookComponentEditor }
 
 const
-  nbvInsertPage    = 0;
-  nbvDeletePage    = 1;
-  nbvMovePageLeft  = 2;
-  nbvMovePageRight = 3;
+  nbvAddPage       = 0;
+  nbvInsertPage    = 1;
+  nbvDeletePage    = 2;
+  nbvMovePageLeft  = 3;
+  nbvMovePageRight = 4;
+
+procedure TNotebookComponentEditor.AddNewPageToDesigner(Index: integer);
+var
+  Hook: TPropertyEditorHook;
+  NewPage: TPage;
+  NewName: string;
+begin
+  Hook:=nil;
+  if not GetHook(Hook) then exit;
+  NewPage:=NoteBook.Page[Index];
+writeln('TNotebookComponentEditor.AddNewPageToDesigner ',NewPage<>nil,' ',Hook<>nil);
+  NewName:=GetDesigner.CreateUniqueComponentName(NewPage.ClassName);
+  NewPage.Caption:=NewName;
+  NewPage.Name:=NewName;
+writeln('TNotebookComponentEditor.AddNewPageToDesigner ',Index);
+  NoteBook.PageIndex:=Index;
+writeln('TNotebookComponentEditor.AddNewPageToDesigner ',NoteBook.PageIndex);
+  Hook.ComponentAdded(NewPage,true);
+  GetDesigner.Modified;
+end;
+
+procedure TNotebookComponentEditor.DoAddPage;
+var
+  Hook: TPropertyEditorHook;
+begin
+  if not GetHook(Hook) then exit;
+  NoteBook.Pages.Add('');
+  AddNewPageToDesigner(NoteBook.PageCount-1);
+end;
 
 procedure TNotebookComponentEditor.DoInsertPage;
+var
+  Hook: TPropertyEditorHook;
+  NewIndex: integer;
 begin
+  if not GetHook(Hook) then exit;
+  NewIndex:=Notebook.PageIndex;
+  if NewIndex<0 then NewIndex:=0;
+  Notebook.Pages.Insert(NewIndex,'');
+  AddNewPageToDesigner(NewIndex);
+end;
 
+procedure TNotebookComponentEditor.DoDeletePage;
+var
+  Hook: TPropertyEditorHook;
+  OldIndex: integer;
+begin
+  OldIndex:=Notebook.PageIndex;
+  if (OldIndex>=0) and (OldIndex<Notebook.PageCount) then begin
+    if not GetHook(Hook) then exit;
+    Hook.DeleteComponent(TComponent(NoteBook.PageList[OldIndex]));
+    GetDesigner.Modified;
+  end;
+end;
+
+procedure TNotebookComponentEditor.DoMoveActivePageLeft;
+var
+  Index: integer;
+begin
+  Index:=NoteBook.PageIndex;
+  if (Index<0) then exit;
+  DoMoveActivePage(Index,Index-1);
+end;
+
+procedure TNotebookComponentEditor.DoMoveActivePageRight;
+var
+  Index: integer;
+begin
+  Index:=NoteBook.PageIndex;
+  if (Index>=0)
+  and (Index>=NoteBook.PageCount-1) then exit;
+  DoMoveActivePage(Index,Index+1);
+end;
+
+procedure TNotebookComponentEditor.DoMoveActivePage(
+  CurIndex, NewIndex: Integer);
+begin
+writeln('TNotebookComponentEditor.DoMoveActivePage ',CurIndex,' -> ',NewIndex,
+' ',NoteBook.Pages.ClassName);
+  NoteBook.Pages.Move(CurIndex,NewIndex);
+  GetDesigner.Modified;
 end;
 
 procedure TNotebookComponentEditor.ExecuteVerb(Index: Integer);
 begin
   case Index of
+    nbvAddPage:       DoAddPage;
     nbvInsertPage:    DoInsertPage;
-    nbvDeletePage:    ;
-    nbvMovePageLeft:  ;
-    nbvMovePageRight: ;
+    nbvDeletePage:    DoDeletePage;
+    nbvMovePageLeft:  DoMoveActivePageLeft;
+    nbvMovePageRight: DoMoveActivePageRight;
   end;
 end;
 
 function TNotebookComponentEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
+    nbvAddPage:       Result:='Add page';
     nbvInsertPage:    Result:='Insert page';
     nbvDeletePage:    Result:='Delete page';
     nbvMovePageLeft:  Result:='Move page left';
@@ -560,7 +654,7 @@ end;
 
 function TNotebookComponentEditor.GetVerbCount: Integer;
 begin
-  Result:=4;
+  Result:=5;
 end;
 
 procedure TNotebookComponentEditor.PrepareItem(Index: Integer;
@@ -568,7 +662,8 @@ procedure TNotebookComponentEditor.PrepareItem(Index: Integer;
 begin
   inherited PrepareItem(Index, AnItem);
   case Index of
-    nbvInsertPage:    ;
+    nbvAddPage:       ;
+    nbvInsertPage:    AnItem.Enabled:=Notebook.PageIndex>=0;
     nbvDeletePage:    AnItem.Enabled:=Notebook.PageIndex>=0;
     nbvMovePageLeft:  AnItem.Enabled:=Notebook.PageIndex>0;
     nbvMovePageRight: AnItem.Enabled:=Notebook.PageIndex<Notebook.PageCount-1;

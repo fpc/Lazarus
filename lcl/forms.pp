@@ -330,14 +330,17 @@ type
   end;
 
 
-
   TProcedure = procedure;
 
 
 function KeysToShiftState(Keys:Word): TShiftState;
 function KeyDataToShiftState(KeyData: Longint): TShiftState;
+
 function GetParentForm(Control:TControl): TCustomForm;
+function FindDesigner(AComponent: TComponent): TIDesigner;
+
 function IsAccel(VK : Word; const Str : ShortString): Boolean;
+
 function InitResourceComponent(Instance: TComponent; RootAncestor: TClass):Boolean;
 
 
@@ -392,7 +395,7 @@ end;
 
 function GetParentForm(Control:TControl): TCustomForm;
 begin
-  while Control.parent <> nil do
+  while Control.Parent <> nil do
     Control := Control.Parent;
   if Control is TCustomForm 
   then Result := TCustomForm(Control) 
@@ -471,6 +474,28 @@ begin
   end;
 end;
 
+
+function FindDesigner(AComponent: TComponent): TIDesigner;
+var
+  Form: TCustomForm;
+begin
+  Result:=nil;
+  if AComponent=nil then exit;
+  while (AComponent<>nil) do begin
+    if (AComponent is TCustomForm) then begin
+      Form:=TCustomForm(AComponent);
+      if Form.Parent=nil then begin
+        Result:=Form.Designer;
+        exit;
+      end;
+    end;
+    if AComponent is TControl then begin
+      AComponent:=TControl(AComponent).Parent;
+    end else begin
+      exit;
+    end;
+  end;
+end;
 
 //==============================================================================
 

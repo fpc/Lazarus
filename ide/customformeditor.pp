@@ -121,7 +121,7 @@ TCustomFormEditor
     Procedure RemoveFromComponentInterfaceList(Value :TIComponentInterface);
     procedure SetSelectedComponents(TheSelectedComponents : TComponentSelectionList);
     procedure OnObjectInspectorModified(Sender: TObject);
-    procedure SetObj_Inspector(AnObjectInspector: TObjectInspector);
+    procedure SetObj_Inspector(AnObjectInspector: TObjectInspector); virtual;
   public
     JITFormList : TJITForms;
     constructor Create;
@@ -132,8 +132,12 @@ TCustomFormEditor
     Function FormModified : Boolean; override;
     Function FindComponentByName(const Name : ShortString) : TIComponentInterface; override;
     Function FindComponent(AComponent: TComponent): TIComponentInterface; override;
+    
     function GetComponentEditor(AComponent: TComponent): TBaseComponentEditor;
-    Function GetFormComponent : TIComponentInterface; override;
+    Function GetFormComponent: TIComponentInterface; override;
+    function CreateUniqueComponentName(AComponent: TComponent): string;
+    function CreateUniqueComponentName(const AClassName: string;
+      OwnerComponent: TComponent): string;
 //    Function CreateComponent(CI : TIComponentInterface; TypeName : String;
     Function CreateComponentInterface(AComponent: TComponent): TIComponentInterface;
 
@@ -143,7 +147,7 @@ TCustomFormEditor
     Procedure SetFormNameAndClass(CI: TIComponentInterface; 
       const NewFormName, NewClassName: shortstring);
     Procedure ClearSelected;
-    property SelectedComponents : TComponentSelectionList 
+    property SelectedComponents: TComponentSelectionList
       read FSelectedComponents write SetSelectedComponents;
     property Obj_Inspector : TObjectInspector
       read FObj_Inspector write SetObj_Inspector;
@@ -684,33 +688,28 @@ end;
 Function TCustomFormEditor.CreateComponent(ParentCI : TIComponentInterface;
   TypeClass : TComponentClass;  X,Y,W,H : Integer): TIComponentInterface;
 Var
-  Temp : TComponentInterface;
-  TempName    : String;
-  Found : Boolean;
-  I, Num,NewFormIndex : Integer;
+  Temp: TComponentInterface;
+  NewFormIndex: Integer;
   CompLeft, CompTop, CompWidth, CompHeight: integer;
-  DummyComponent:TComponent;
+  OwnerComponent: TComponent;
   ParentComponent: TComponent;
 Begin
   writeln('[TCustomFormEditor.CreateComponent] Class='''+TypeClass.ClassName+'''');
   {$IFDEF IDE_MEM_CHECK}CheckHeap('TCustomFormEditor.CreateComponent A '+IntToStr(GetMem_Cnt));{$ENDIF}
   Temp := TComponentInterface.Create;
-  {$IFDEF IDE_MEM_CHECK}CheckHeap('TCustomFormEditor.CreateComponent B '+IntToStr(GetMem_Cnt));{$ENDIF}
-  if Assigned(ParentCI) then
+
+  OwnerComponent:=nil;
+  if Assigned(ParentCI) and (ParentCI.IsTControl) then
   begin
     ParentComponent:=TComponentInterface(ParentCI).Component;
-    if (not(ParentComponent is TCustomForm))
-    and Assigned(ParentComponent.Owner)
-    then
-      Temp.FComponent := TypeClass.Create(ParentComponent.Owner)
-    else
-      Temp.FComponent := TypeClass.Create(ParentComponent);
+    OwnerComponent:=GetParentForm(TControl(ParentComponent));
+    if OwnerComponent=nil then
+      OwnerComponent:=ParentComponent;
+    Temp.FComponent := TypeClass.Create(OwnerComponent);
   end else begin
     //this should be a form
     ParentComponent:=nil;
-    {$IFDEF IDE_MEM_CHECK}CheckHeap('TCustomFormEditor.CreateComponent B2 '+IntToStr(GetMem_Cnt));{$ENDIF}
     NewFormIndex := JITFormList.AddNewJITForm;
-    {$IFDEF IDE_MEM_CHECK}CheckHeap('TCustomFormEditor.CreateComponent B3 '+IntToStr(GetMem_Cnt));{$ENDIF}
     if NewFormIndex >= 0 then
       Temp.FComponent := JITFormList[NewFormIndex]
     else begin
@@ -738,32 +737,8 @@ Begin
     end;
 
   {$IFDEF IDE_MEM_CHECK}CheckHeap('TCustomFormEditor.CreateComponent D '+IntToStr(GetMem_Cnt));{$ENDIF}
-  if ParentCI <> nil then Begin
-    TempName := Temp.Component.ClassName;
-    delete(TempName,1,1);
-    {$IfNDef VER1_1}
-    //make it more presentable
-    TempName := TempName[1] + lowercase(Copy(TempName,2,length(tempname)));
-    {$EndIf}
-    Num := 0;
-    Found := True;
-    While Found do Begin
-      Found := False;
-      inc(num);
-      for I := 0 to Temp.Component.Owner.ComponentCount-1 do
-      begin
-        DummyComponent:=Temp.Component.Owner.Components[i];
-        if AnsiCompareText(DummyComponent.Name,TempName+IntToStr(Num))=0 then
-        begin
-          Found := True;
-          break;
-        end;
-      end;
-    end;
-    Temp.Component.Name := TempName+IntToStr(Num);
-  end;
+  Temp.Component.Name := CreateUniqueComponentName(Temp.Component);
 
-  {$IFDEF IDE_MEM_CHECK}CheckHeap('TCustomFormEditor.CreateComponent E '+IntToStr(GetMem_Cnt));{$ENDIF}
   if (Temp.Component is TControl) then
   Begin
     CompLeft:=X;
@@ -841,6 +816,42 @@ Begin
   Result := nil;
 end;
 
+function TCustomFormEditor.CreateUniqueComponentName(AComponent: TComponent
+  ): string;
+begin
+  Result:='';
+  if (AComponent=nil) then exit;
+  Result:=AComponent.Name;
+  if (AComponent.Owner=nil) or (Result<>'') then exit;
+  Result:=CreateUniqueComponentName(AComponent.ClassName,AComponent.Owner);
+end;
+
+function TCustomFormEditor.CreateUniqueComponentName(const AClassName: string;
+  OwnerComponent: TComponent): string;
+var
+  i, j: integer;
+begin
+  Result:=AClassName;
+  if (OwnerComponent=nil) or (Result='') then exit;
+  i:=1;
+  while true do begin
+    j:=OwnerComponent.ComponentCount-1;
+    Result:=AClassName;
+    if (length(Result)>1) and (Result[1]='T') then
+      Result:=RightStr(Result,length(Result)-1);
+    {$IfNDef VER1_1}
+    //make it more presentable
+    Result := Result[1] + lowercase(Copy(Result,2,length(Result)));
+    {$EndIf}
+    Result:=Result+IntToStr(i);
+    while (j>=0)
+    and (AnsiCompareText(Result,OwnerComponent.Components[j].Name)<>0) do
+      dec(j);
+    if j<0 then exit;
+    inc(i);
+  end;
+end;
+
 Procedure TCustomFormEditor.ClearSelected;
 Begin
   FSelectedComponents.Clear;
@@ -873,9 +884,17 @@ procedure TCustomFormEditor.SetObj_Inspector(
   AnObjectInspector: TObjectInspector);
 begin
   if AnObjectInspector=FObj_Inspector then exit;
-  if FObj_Inspector<>nil then FObj_Inspector.OnModified:=nil;
+  if FObj_Inspector<>nil then begin
+    FObj_Inspector.OnModified:=nil;
+  end;
+
   FObj_Inspector:=AnObjectInspector;
-  FObj_Inspector.OnModified:=@OnObjectInspectorModified;
+  
+  if FObj_Inspector<>nil then begin
+    FObj_Inspector.OnModified:=@OnObjectInspectorModified;
+  end;
 end;
 
+
 end.
+

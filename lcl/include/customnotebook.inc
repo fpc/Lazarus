@@ -73,25 +73,69 @@ begin
     Msg.fCompStyle := fNotebook.fCompStyle;
     Msg.Str := S;
     {$IFDEF NOTEBOOK_DEBUG}
-    writeln('[TNBPages.Put] A ',Index,' ',S);
+    writeln('[TNBPages.Put] A ',fNoteBook.Name,' ',Index,' ',S);
     {$ENDIF}
     CNSendMessage(LM_SetLabel, fNotebook, @Msg);
     {$IFDEF NOTEBOOK_DEBUG}
-    writeln('[TNBPages.Put] B ');
+    writeln('[TNBPages.Put] B ',fNoteBook.Name);
     {$ENDIF}
   end;
+end;
+
+procedure TNBPages.RemovePage(Index: integer);
+var
+  Msg: TLMNotebookEvent;
+  NewPageIndex: integer;
+begin
+  // Make sure Index is in the range of valid pages to delete
+  {$IFDEF NOTEBOOK_DEBUG}
+  writeln('TNBPages.RemovePage A ',fNoteBook.Name,' Index=',Index,
+    ' fPageList.Count=',fPageList.Count,' fNoteBook.PageIndex=',fNoteBook.PageIndex);
+  {$ENDIF}
+  if (Index >= 0) and
+     (Index < fPageList.Count) then
+  begin
+    if not (csLoading in fNoteBook.ComponentState) then begin
+      // If that page is showing, then show the next page before deleting it
+      NewPageIndex:=fNoteBook.PageIndex;
+      if (Index = fNoteBook.PageIndex) then begin
+        if NewPageIndex<fPageList.Count-1 then
+          // switch current page to next (right) page
+          inc(NewPageIndex)
+        else if fPageList.Count>0 then
+          // switch to previous (left) page
+          dec(NewPageIndex)
+        else
+          // deleting last page
+          NewPageIndex:=-1;
+      end;
+      fNoteBook.PageIndex:=NewPageIndex;
+    end;
+    if (FNoteBook.HandleAllocated) and (TPage(fPageList[Index]).HandleAllocated)
+    then begin
+      Msg.Parent := fNotebook;
+      Msg.fCompStyle := fNotebook.fCompStyle;
+      Msg.Page := Index;
+      CNSendMessage(LM_REMOVEPAGE, fNotebook, @Msg);
+    end;
+    fPageList.Delete(Index);
+    if not (csLoading in fNoteBook.ComponentState) then begin
+      if NewPageIndex>=Index then
+        fNoteBook.PageIndex:=NewPageIndex-1;
+    end;
+  end;
+  {$IFDEF NOTEBOOK_DEBUG}
+  writeln('TNBPages.RemovePage END ',fNoteBook.Name,' Index=',Index,' fPageList.Count=',fPageList.Count,' fNoteBook.PageIndex=',fNoteBook.PageIndex);
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
   TNBPages Clear
  ------------------------------------------------------------------------------}
 procedure TNBPages.Clear;
-var
-  i: Integer;
 begin
-  for i := 0 to fPageList.Count - 1 do
-    TPage(fPageList[I]).Free;
-  fPageList.Clear;
+  while fPageList.Count>0 do
+    Delete(fPageList.Count-1);
 end;
 
 {------------------------------------------------------------------------------
@@ -99,48 +143,24 @@ end;
  ------------------------------------------------------------------------------}
 procedure TNBPages.Delete(Index: Integer);
 var
-  Msg: TLMNotebookEvent;
-  NewPageIndex: integer;
+  APage: TPage;
 begin
   // Make sure Index is in the range of valid pages to delete 
   {$IFDEF NOTEBOOK_DEBUG}
   //writeln('TNBPages.Delete A Index=',Index);
-  writeln('TNBPages.Delete B Index=',Index,' fPageList.Count=',fPageList.Count,' fNoteBook.PageIndex=',fNoteBook.PageIndex);
+  writeln('TNBPages.Delete B ',fNoteBook.Name,' Index=',Index,' fPageList.Count=',fPageList.Count,' fNoteBook.PageIndex=',fNoteBook.PageIndex);
   {$ENDIF}
   if (Index >= 0) and
      (Index < fPageList.Count) then
   begin
-    // If that page is showing, then show the next page before deleting it
-    NewPageIndex:=fNoteBook.PageIndex;
-    if (Index = fNoteBook.PageIndex) then begin
-      if NewPageIndex<fPageList.Count-1 then
-        // switch current page to next (right) page
-        inc(NewPageIndex)
-      else if fPageList.Count>0 then
-        // switch to previous (left) page
-        dec(NewPageIndex)
-      else
-        // deleting last page
-        NewPageIndex:=-1;
-    end;
-    fNoteBook.PageIndex:=NewPageIndex;
-    if (FNoteBook.HandleAllocated)
-    and (not (csLoading in FNoteBook.ComponentState)) then begin
-      Msg.Parent := fNotebook;
-      Msg.fCompStyle := fNotebook.fCompStyle;
-      Msg.Page := Index;
-      CNSendMessage(LM_REMOVEPAGE, fNotebook, @Msg);
-    end;
-    TPage(fPageList[Index]).Free;
-    fPageList.Delete(Index);
-    if NewPageIndex>=Index then
-      fNoteBook.PageIndex:=NewPageIndex-1;
+    APage:=TPage(fPageList[Index]);
+    RemovePage(Index);
+    APage.Free;
   end;
   {$IFDEF NOTEBOOK_DEBUG}
-  writeln('TNBPages.Delete END Index=',Index,' fPageList.Count=',fPageList.Count,' fNoteBook.PageIndex=',fNoteBook.PageIndex);
+  writeln('TNBPages.Delete END ',fNoteBook.Name,' Index=',Index,' fPageList.Count=',fPageList.Count,' fNoteBook.PageIndex=',fNoteBook.PageIndex);
   {$ENDIF}
 end;
-
 
 {------------------------------------------------------------------------------
   TNBPages Insert
@@ -148,16 +168,28 @@ end;
 procedure TNBPages.Insert(Index: Integer; const S: String);
 var
   tmpPage: TPage;
+  NewOwner: TComponent;
 begin
-  tmpPage := TPage.Create(fNotebook);
+  {$IFDEF NOTEBOOK_DEBUG}
+  writeln('TNBPages.Insert A ',fNoteBook.Name,' Index=',Index,' S="',S,'"');
+  {$ENDIF}
+  NewOwner:=fNotebook.Owner;
+  if NewOwner=nil then
+    NewOwner:=fNotebook;
+  tmpPage := TPage.Create(fNotebook.Owner);
   with tmpPage do
   begin
-    Parent := fNotebook;
     Caption := S;
     Visible := true;
   end;
 
+  {$IFDEF NOTEBOOK_DEBUG}
+  writeln('TNBPages.Insert B ',fNoteBook.Name,' Index=',Index,' S="',S,'"');
+  {$ENDIF}
   InsertPage(Index,tmpPage);
+  {$IFDEF NOTEBOOK_DEBUG}
+  writeln('TNBPages.Insert END ',fNoteBook.Name,' Index=',Index,' S="',S,'"');
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -166,8 +198,22 @@ end;
 procedure TNBPages.InsertPage(Index:integer; APage: TPage);
 var
   Msg: TLMNotebookEvent;
+  NewZPosition: integer;
 begin
+  {$IFDEF NOTEBOOK_DEBUG}
+  writeln('TNBPages.InsertPage A ',fNoteBook.Name,' Index=',Index,' Name=',APage.Name,' Caption=',APage.Caption);
+  {$ENDIF}
+  if Index<fPageList.Count then
+    NewZPosition:=fNoteBook.GetControlIndex(TPage(fPageList[Index]))
+  else
+    NewZPosition:=-1;
   fPageList.Insert(Index,APage);
+  APage.Parent := fNotebook;
+  if NewZPosition>=0 then
+    fNoteBook.SetControlIndex(APage,NewZPosition);
+
+  // this is workaround til visible=true is default in TControl
+  APage.Visible:=true;
 
   if FNoteBook.HandleAllocated
   and (not (csLoading in FNoteBook.ComponentState))
@@ -178,26 +224,66 @@ begin
     Msg.Page := Index;
 
     CNSendMessage(LM_ADDPAGE, fNotebook, @Msg);
-
-    fNoteBook.PageIndex := Index;
+    if fNoteBook.PageIndex = Index then
+      fNoteBook.DoSendPageIndex
+    else
+      fNoteBook.PageIndex := Index;
   end;
+  {$IFDEF NOTEBOOK_DEBUG}
+  writeln('TNBPages.InsertPage END ',fNoteBook.Name,' Index=',Index,' Name=',APage.Name,' Caption=',APage.Caption);
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
   TNBPages Move
  ------------------------------------------------------------------------------}
 procedure TNBPages.Move(CurIndex, NewIndex: Integer);
-// ToDo
-//var
-// theObject: TObject;
+var
+  APage: TPage;
+  Msg: TLMNotebookEvent;
+  NewControlIndex, NewPageIndex: integer;
 begin
-  // move TPage components
-  //fPageList.Move(CurIndex, NewIndex);
-  //theObject := fPageList[CurIndex];
-  //fPageList[CurIndex] := fPageList[NewIndex];
-  //fPageList[NewIndex] := theObject;
-  //MoveThePage(CurIndex, NewIndex);
-  { Still need to implement }
+  if CurIndex=NewIndex then exit;
+  
+  APage:=TPage(fPageList[CurIndex]);
+  
+  // calculate new control index (i.e. ZOrderPosition)
+  if NewIndex>=fPageList.Count-1 then
+    NewControlIndex:=fNoteBook.ControlCount-1
+  else
+    NewControlIndex:=fNoteBook.GetControlIndex(TPage(fPageList[NewIndex]));
+    
+  // calculate new PageIndex
+  if fNoteBook.PageIndex=CurIndex then
+    NewPageIndex:=NewIndex
+  else if fNoteBook.PageIndex>CurIndex then begin
+    if fNoteBook.PageIndex<=NewIndex then
+      NewPageIndex:=fNoteBook.PageIndex-1;
+  end else begin
+    if fNoteBook.PageIndex>=NewIndex then
+      NewPageIndex:=fNoteBook.PageIndex+1;
+  end;
+
+  // move Page in fPageList
+  fPageList.Move(CurIndex, NewIndex);
+  
+  // move in wincontrol list
+  fNoteBook.SetControlIndex(APage,NewControlIndex);
+
+  // move Page in notebook handle
+  if FNoteBook.HandleAllocated
+  and (not (csLoading in FNoteBook.ComponentState))
+  then begin
+    Msg.Parent := TControl(fNotebook);
+    Msg.Child := APage;
+    Msg.fCompStyle := fNotebook.fCompStyle;
+    Msg.Page := NewIndex;
+
+    CNSendMessage(LM_MOVEPAGE, fNotebook, @Msg);
+  end;
+
+  // update PageIndex
+  fNoteBook.PageIndex:=NewPageIndex;
 end;
 
 
@@ -230,23 +316,30 @@ end;
   Creates the interface object.
  ------------------------------------------------------------------------------}
 procedure TCustomNotebook.CreateWnd;
-var
-  n: Integer;
-  Msg: TLMNotebookEvent;
 begin
   inherited CreateWnd;
+  DoCreateWnd;
+end;
 
-  Assert(False, 'Trace:[TCustomNotebook.CreateWnd] add pages');
-  for n := 0 to FPageList.Count -1 do begin
-    // this is workaround til visible=true is default in TControl
-    TControl(FPageList[n]).Visible:=true;
-    
+{------------------------------------------------------------------------------
+  procedure TCustomNotebook.DoCreateWnd;
+
+  Creates the handles for the pages and updates the notebook handle.
+ ------------------------------------------------------------------------------}
+procedure TCustomNotebook.DoCreateWnd;
+var
+  i: Integer;
+  Msg: TLMNotebookEvent;
+begin
+  fAddingPages:=true;
+  for i := 0 to FPageList.Count -1 do begin
     Msg.Parent := Self;
-    Msg.Child := TControl(FPageList[n]);
+    Msg.Child := TControl(FPageList[i]);
     Msg.fCompStyle := FCompStyle;
-    Msg.Page := n;
+    Msg.Page := i;
     CNSendMessage(LM_ADDPAGE, Self, @Msg);
   end;
+  fAddingPages:=false;
 
   DoSendShowTabs;
   DoSendTabPosition;
@@ -340,19 +433,15 @@ end;
   TCustomNotebook GetPageIndex
  ------------------------------------------------------------------------------}
 function TCustomNotebook.GetPageIndex: Integer;
-//var
-//  Msg: TLMNotebookEvent;
 begin
-//we don't have to query the contol.  FPageindex should track this along with the pagechanged handler.
-{  if HandleAllocated
-  then begin
-    Msg.Parent := Self;
-    Msg.fCompStyle := fCompStyle;
-    CNSendMessage(LM_GETITEMINDEX, Self, @Msg);
-    fPageIndex := Msg.Page;
-  end;}
-
+  //we don't have to query the control.
+  //  FPageindex should track this along with the pagechanged handler.
   Result := fPageIndex;
+end;
+
+function TCustomNotebook.IsStoredActivePage: boolean;
+begin
+  Result:=false;
 end;
 
 {------------------------------------------------------------------------------
@@ -410,25 +499,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  TCustomNotebook GetChildOwner
- ------------------------------------------------------------------------------}
-function TCustomNotebook.GetChildOwner: TComponent;
-begin
-  Result := Self;
-end;
-
-{------------------------------------------------------------------------------
-  TCustomNotebook GetChildren
- ------------------------------------------------------------------------------}
-procedure TCustomNotebook.GetChildren(Proc: TGetChildProc; Root: TComponent);
-var
-  i: LongInt;
-begin
-  for i := 0 to fPageList.Count - 1 do
-    Proc(TControl(fPageList[i]));
-end;
-
-{------------------------------------------------------------------------------
   TCustomNotebook ReadState
  ------------------------------------------------------------------------------}
 procedure TCustomNotebook.ReadState(Reader: TAbstractReader);
@@ -479,6 +549,12 @@ Begin
   if Assigned(fOnPageChanged) then fOnPageChanged(self);
 end;
 
+procedure TCustomNotebook.Loaded;
+begin
+  inherited Loaded;
+  if HandleAllocated then DoCreateWnd;
+end;
+
 {------------------------------------------------------------------------------
   TCustomNotebook CNNotify
  ------------------------------------------------------------------------------}
@@ -489,10 +565,13 @@ Begin
       TCN_SELCHANGE:
         Begin
           //set the page from the NMHDR^.idfrom
-          FPageIndex := NMHDR^.idfrom;
-          if FPageIndex>=PageCount then
-            FPageIndex:=-1;
-          Change;
+          if (not (csLoading in ComponentState))
+          and (not fAddingPages) then begin
+            FPageIndex := NMHDR^.idfrom;
+            if FPageIndex>=PageCount then
+              FPageIndex:=-1;
+            Change;
+          end;
         end;
     else
       begin
@@ -513,13 +592,14 @@ begin
   if not HandleAllocated or (csLoading in ComponentState) then exit;
   Msg.Parent := Self;
   Msg.fCompStyle := fCompStyle;
+  if (FPageIndex<0) and (PageCount>0) then fPageIndex:=0;
   Msg.Page := FPageIndex;
   {$IFDEF NOTEBOOK_DEBUG}
-  writeln('[TCustomNotebook.SetPageIndex] A');
+  writeln('[TCustomNotebook.DoSendPageIndex] A ',Name,' PageIndex=',fPageIndex);
   {$ENDIF}
   CNSendMessage(LM_SETITEMINDEX, Self, @Msg);
   {$IFDEF NOTEBOOK_DEBUG}
-  writeln('[TCustomNotebook.SetPageIndex] B');
+  writeln('[TCustomNotebook.DoSendPageIndex] B');
   {$ENDIF}
 end;
 
@@ -535,11 +615,11 @@ begin
   Msg.fCompStyle := fCompStyle;
   Msg.ShowTabs := fShowTabs;
   {$IFDEF NOTEBOOK_DEBUG}
-  writeln('[TCustomNotebook.SetShowTabs] A');
+  writeln('[TCustomNotebook.DoSendShowTabs] A ',Name);
   {$ENDIF}
   CNSendMessage(LM_SHOWTABS, Self, @Msg);
   {$IFDEF NOTEBOOK_DEBUG}
-  writeln('[TCustomNotebook.SetShowTabs] B');
+  writeln('[TCustomNotebook.DoSendShowTabs] B ',Name);
   {$ENDIF}
 end;
 
@@ -554,7 +634,6 @@ begin
   Msg.Parent := Self;
   Msg.fCompStyle := fCompStyle;
   Msg.TabPosition := @fTabPosition;
-  //InterfaceObject.IntCNSendMessage2(LM_SETTABPOSITION, Self, nil, @fTabPosition);
   CNSendMessage(LM_SetTabPosition, Self, @Msg);
 end;
 
@@ -586,6 +665,9 @@ end;}
 { =============================================================================
 
   $Log$
+  Revision 1.21  2002/09/05 12:11:43  lazarus
+  MG: TNotebook is now streamable
+
   Revision 1.20  2002/09/02 20:05:44  lazarus
   MG: fixed GetActivePage
 

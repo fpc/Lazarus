@@ -79,7 +79,9 @@ function GetParentFormRelativeTopLeft(Component: TComponent): TPoint;
 function GetParentFormRelativeBounds(Component: TComponent): TRect;
 function GetParentFormRelativeClientOrigin(Component: TComponent): TPoint;
 function GetParentFormRelativeParentClientOrigin(Component: TComponent): TPoint;
+
 function GetFormRelativeMousePosition(Form: TCustomForm): TPoint;
+
 function ComponentIsTopLvl(AComponent: TComponent): boolean;
 procedure GetComponentBounds(AComponent: TComponent;
   var Left, Top, Width, Height: integer);
@@ -89,7 +91,9 @@ function GetComponentWidth(AComponent: TComponent): integer;
 function GetComponentHeight(AComponent: TComponent): integer;
 
 
+
 implementation
+
 
 function GetParentFormRelativeTopLeft(Component: TComponent): TPoint;
 var
