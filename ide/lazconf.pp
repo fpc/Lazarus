@@ -167,6 +167,8 @@ end;
 
 function GetDefaultCompilerFilename: string;
 begin
+  Result:='undefined';
+  
   {$IFDEF CPUi386}
     {$IFDEF windows}
     Result:='ppc386.exe';
@@ -176,6 +178,21 @@ begin
   {$ENDIF}
   {$IFDEF CPUPowerPC}
   Result:='ppcppc';
+  {$ENDIF}
+  {$IFDEF CPUSparc}
+  Result:='ppcsparc';
+  {$ENDIF}
+  {$IFDEF CPUM68K}
+  Result:='ppc86k';
+  {$ENDIF}
+  {$IFDEF CPUALPHA}
+  Result:='ppcaxp';
+  {$ENDIF}
+  {$IFDEF CPUX86_64}
+  Result:='ppcx64';
+  {$ENDIF}
+  {$IFDEF CPUARM}
+  Result:='ppcarm';
   {$ENDIF}
 end;
 
@@ -225,6 +242,9 @@ end.
 
 {
   $Log$
+  Revision 1.36  2005/02/27 16:13:45  marc
+  + Added all possible compilernames
+
   Revision 1.35  2004/12/09 14:30:12  vincents
   moved GetLanguageIDs from Translations to LazConf
 
