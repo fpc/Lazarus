@@ -79,6 +79,8 @@ procedure RaiseGDBException(const Msg: string);
 procedure MakeMinMax(var i1, i2: integer);
 procedure CalculateLeftTopWidthHeight(X1,Y1,X2,Y2: integer;
   var Left,Top,Width,Height: integer);
+  
+function BreakString(const s: string; MaxLineLength, Indent: integer): string;
 
 implementation
 
@@ -397,6 +399,56 @@ begin
     Top:=Y2;
     Height:=Y1 - Y2;
   end;
+end;
+
+function BreakString(const s: string; MaxLineLength, Indent: integer): string;
+const
+  NewLine = {$IfDef win32}#13+{$EndIf}#10;
+var
+  SrcLen: Integer;
+  APos: Integer;
+  Src: String;
+  SplitPos: Integer;
+  CurMaxLineLength: Integer;
+begin
+  Result:='';
+  Src:=s;
+  CurMaxLineLength:=MaxLineLength;
+  if Indent>MaxLineLength-2 then Indent:=MaxLineLength-2;
+  if Indent<0 then MaxLineLength:=0;
+  repeat
+    SrcLen:=length(Src);
+    if SrcLen<=CurMaxLineLength then begin
+      Result:=Result+Src;
+      break;
+    end;
+    // split line
+    // search a word boundary
+    APos:=CurMaxLineLength;
+    if APos>SrcLen then APos:=SrcLen;
+    SplitPos:=0;
+    while APos>1 do begin
+      if (Src[APos] in ['A'..'Z','a'..'z'])
+      and (not (Src[APos-1] in ['A'..'Z','a'..'z'])) then begin
+        SplitPos:=APos;
+        break;
+      end;
+      dec(APos);
+    end;
+    if SplitPos=0 then begin
+      // no word boundary found -> split chars
+      SplitPos:=CurMaxLineLength;
+    end;
+    // append part and newline
+    Result:=Result+copy(Src,1,SplitPos-1)+NewLine;
+    // append indent
+    if Indent>0 then
+      Result:=Result+StringOfChar(' ',Indent);
+    // calculate new LineLength
+    CurMaxLineLength:=MaxLineLength-Indent;
+    // cut string
+    Src:=copy(Src,SplitPos,length(Src)-SplitPos+1);
+  until false;
 end;
 
 initialization
