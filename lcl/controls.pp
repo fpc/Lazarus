@@ -25,7 +25,7 @@
 unit Controls;
      
 {$mode objfpc}{$H+}
-
+{off $DEFINE BUFFERED_WMPAINT}
 interface
 
 {$ifdef Trace}
@@ -1847,6 +1847,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.156  2003/10/16 19:43:44  ajgenius
+  disable Buffering in TWinControl.WM_PAINT
+
   Revision 1.155  2003/10/06 10:50:10  mattias
   added recursion to InvalidateClientRectCache
 

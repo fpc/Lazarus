@@ -2384,10 +2384,12 @@ end;
 procedure TWinControl.WMPaint(var Msg: TLMPaint);
 var
   DC,MemDC : HDC;
+{$ifdef BUFFERED_WMPAINT}
   MemBitmap, OldBitmap : HBITMAP;
-  PS : TPaintStruct;
   MemWidth: Integer;
   MemHeight: Integer;
+{$ENDIF}
+  PS : TPaintStruct;
   ClientBoundRect: TRect;
 begin
   //writeln('[TWinControl.WMPaint] ',Name,':',ClassName,'  ',HexStr(Msg.DC,8));
@@ -2412,6 +2414,7 @@ begin
   else begin
     // NOTE: not every interface uses this part
     //writeln('TWinControl.WMPaint Painting doublebuffered ',Name,':',classname);
+{$ifdef BUFFERED_WMPAINT}
     DC := GetDC(0);
     MemWidth:=Width;
     MemHeight:=Height;
@@ -2419,10 +2422,14 @@ begin
     ReleaseDC(0, DC);
     MemDC := CreateCompatibleDC(0);
     OldBitmap := SelectObject(MemDC, MemBitmap);
+{$ENDIF}
     try
       // Fetch a DC of the whole Handle (including client area)
       DC := BeginPaint(Handle, PS);
       if DC=0 then exit;
+{$ifNdef BUFFERED_WMPAINT}
+      MemDC := DC;
+{$ENDIF}
       // erase background
       Include(FFlags,wcfEraseBackground);
       Perform(LM_ERASEBKGND, MemDC, 0);
@@ -2439,13 +2446,17 @@ begin
       Msg.DC := 0;
       // restore the DC origin
       MoveWindowOrgEx(MemDC,-ClientBoundRect.Left,-ClientBoundRect.Top);
+{$ifdef BUFFERED_WMPAINT}
       BitBlt(DC, 0,0, MemWidth, MemHeight, MemDC, 0, 0, SRCCOPY);
+{$ENDIF}
       EndPaint(Handle, PS);
     finally
       Exclude(FFlags,wcfEraseBackground);
+{$ifdef BUFFERED_WMPAINT}
       SelectObject(MemDC, OldBitmap);
       DeleteDC(MemDC);
       DeleteObject(MemBitmap);
+{$ENDIF}
     end;
   end;
   Assert(False, Format('Trace:< [TWinControl.WMPaint] %s', [ClassName]));
@@ -3125,6 +3136,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.177  2003/10/16 19:43:44  ajgenius
+  disable Buffering in TWinControl.WM_PAINT
+
   Revision 1.176  2003/10/06 10:50:10  mattias
   added recursion to InvalidateClientRectCache
 
