@@ -39,7 +39,7 @@ interface
 
 uses
   Classes, SysUtils, Dialogs, Graphics, ExtCtrls, Buttons, Menus, LResources,
-  AVL_Tree, ComponentReg, PackageDefs, LazarusIDEStrConsts;
+  AVL_Tree, ComponentReg, IDEProcs, PackageDefs, LazarusIDEStrConsts;
 
 const
   ComponentPaletteBtnWidth  = 25;
@@ -251,6 +251,8 @@ begin
     fUnregisteredIcon.Free;
     fUnregisteredIcon:=nil;
   end;
+  PopupMenu.Free;
+  PopupMenu:=nil;
   inherited Destroy;
 end;
 
@@ -350,6 +352,7 @@ begin
     CurPage:=Pages[i];
     if not CurPage.Visible then continue;
     CurNoteBookPage:=TPage(CurPage.PageComponent);
+    if not (CurNoteBookPage is TPage) then RaiseException('CurNoteBookPage');
     ButtonX:=0;
     // create selection button
     if CurPage.SelectButton=nil then begin
@@ -389,7 +392,7 @@ begin
             Hint := CurComponent.ComponentClass.ClassName;
             SetBounds(ButtonX,0,ComponentPaletteBtnWidth,ComponentPaletteBtnHeight);
             inc(ButtonX,ComponentPaletteBtnWidth+2);
-            PopupMenu:=Self.PopupMenu;
+            CurBtn.PopupMenu:=Self.PopupMenu;
           end;
         end;
       end else if CurComponent.Button<>nil then begin
