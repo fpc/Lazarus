@@ -2,7 +2,7 @@
 #
 # Author: Mattias Gaertner
 #
-# Creates the fpdoc HTML output for the LCL
+# Creates the fpdoc HTML output for the gtk interface
 
 set -x
 set -e
@@ -12,13 +12,13 @@ if [ -z $FPDoc ]; then
   FPDoc=fpdoc
 fi
 
-XMLSrcDir=../xml/lcl/
-PasSrcDir=../../lcl/
+XMLSrcDir=../xml/lcl/interfaces/gtk/
+PasSrcDir=../../lcl/interfaces/gtk/
 InputFileList=inputfile.txt
 
 # create unit list
 cd $PasSrcDir
-UnitList=`echo *.pp *.pas`
+UnitList=`echo *.pp *.pas | sed -e 's/\*.*\b//g'`
 cd -
 
 # create description file list
@@ -31,11 +31,11 @@ done
 # create input file list
 rm -f $InputFileList
 for unit in $UnitList; do
-  echo $PasSrcDir$unit -Fi${PasSrcDir}include >> $InputFileList
+  echo $PasSrcDir$unit -dGTK1 >> $InputFileList
 done
 
-$FPDoc $DescrFiles --input=@$InputFileList --content=lcl.cnt --package=lcl \
-  --format=html
+$FPDoc $DescrFiles --input=@$InputFileList --content=gtkinterface.cnt \
+  --import=lcl.cnt,../lcl/ --package=gtkinterface --format=html
 
 # end.
 
