@@ -334,6 +334,7 @@ type
           var RealDir: string);
     procedure CodeToolBossGetVirtualDirectoryDefines(DefTree: TDefineTree;
           DirDef: TDirectoryDefines);
+    function MacroFunctionProject(Data: Pointer): boolean;
     procedure OnCompilerGraphStampIncreased;
 
     // MessagesView events
@@ -941,6 +942,7 @@ begin
   SaveEnvironment;
   SaveIncludeLinks;
   InputHistories.Save;
+  PkgBoss.SaveSettings;
   if TheControlSelection<>nil then TheControlSelection.Clear;
   if SourceNoteBook<>nil then SourceNoteBook.ClearUnUsedEditorComponents(true);
 end;
@@ -2339,7 +2341,7 @@ begin
     frmCompilerOptions.CompilerOpts:=Project1.CompilerOptions;
     frmCompilerOptions.GetCompilerOptions;
     if frmCompilerOptions.ShowModal=mrOk then begin
-      CreateProjectDefineTemplate(Project1.CompilerOptions);
+      Project1.DefineTemplates.AllChanged;
     end;
   finally
     frmCompilerOptions.Free;
@@ -2420,7 +2422,8 @@ begin
       if LazSrcDirTemplate<>nil then begin
         CmdLineDefines:=CodeToolBoss.DefinePool.CreateFPCCommandLineDefines(
                                 StdDefTemplLazarusBuildOpts,
-                                MiscellaneousOptions.BuildLazOpts.ExtraOptions);
+                                MiscellaneousOptions.BuildLazOpts.ExtraOptions,
+                                true,CodeToolsOpts);
         CodeToolBoss.DefineTree.ReplaceChild(LazSrcDirTemplate,CmdLineDefines,
                                              StdDefTemplLazarusBuildOpts);
       end;
@@ -2577,13 +2580,14 @@ var EnvironmentOptionsDialog: TEnvironmentOptionsDialog;
     // ask the compiler for its settings
     CompilerTemplate:=CodeToolBoss.DefinePool.CreateFPCTemplate(
                       EnvironmentOptions.CompilerFilename,
-                      CreateCompilerTestPascalFilename,CompilerUnitSearchPath);
+                      CreateCompilerTestPascalFilename,CompilerUnitSearchPath,
+                      CodeToolsOpts);
     if CompilerTemplate<>nil then begin
       CodeToolBoss.DefineTree.ReplaceRootSameNameAddFirst(CompilerTemplate);
       // create compiler macros to simulate the Makefiles of the FPC sources
       FPCSrcTemplate:=CodeToolBoss.DefinePool.CreateFPCSrcTemplate(
         CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'FPCSrcDir'],
-        CompilerUnitSearchPath, false, CompilerUnitLinks);
+        CompilerUnitSearchPath, false, CompilerUnitLinks,CodeToolsOpts);
       if FPCSrcTemplate<>nil then begin
         CodeToolBoss.DefineTree.RemoveRootDefineTemplateByName(
                                                        FPCSrcTemplate.Name);
@@ -3807,9 +3811,8 @@ begin
   // load required packages
   PkgBoss.OpenProjectDependencies(Project1);
 
-  Result:=LoadCodeToolsDefines(CodeToolBoss,CodeToolsOpts,
-                               Project1.ProjectInfoFile);
-  CreateProjectDefineTemplate(Project1.CompilerOptions);
+  Project1.DefineTemplates.AllChanged;
+  Result:=mrOk;
 end;
 
 procedure TMainIDE.OnCopyFile(const Filename: string; var Copy: boolean;
@@ -4785,8 +4788,7 @@ writeln('TMainIDE.DoNewProject A');
     // rebuild codetools defines
     // (i.e. remove old project specific things and create new)
     IncreaseCompilerParseStamp;
-    Result:=LoadCodeToolsDefines(CodeToolBoss,CodeToolsOpts,'');
-    CreateProjectDefineTemplate(Project1.CompilerOptions);
+    Project1.DefineTemplates.AllChanged;
   finally
     Project1.EndUpdate;
   end;
@@ -4856,8 +4858,6 @@ begin
     EnvironmentOptions.Save(false);
     SaveIncludeLinks;
     UpdateCaption;
-    Result:=SaveProjectSpecificCodeToolsDefines(CodeToolBoss,
-                                                Project1.ProjectInfoFile);
     if Result=mrAbort then exit;
   end;
 
@@ -5266,8 +5266,7 @@ begin
     PkgBoss.AddDefaultDependencies(Project1);
 
     // rebuild project specific codetools defines
-    Result:=LoadCodeToolsDefines(CodeToolBoss,CodeToolsOpts,
-                                 Project1.ProjectInfoFile);
+    // ToDo
   finally
     Project1.EndUpdate;
   end;
@@ -6823,7 +6822,6 @@ end;
 procedure TMainIDE.InitCodeToolBoss;
 // initialize the CodeToolBoss, which is the frontend for the codetools.
 //  - sets a basic set of compiler macros
-// ToDo: build a frontend for the codetools and save the settings
 
   procedure AddTemplate(ADefTempl: TDefineTemplate; AddToPool: boolean; 
     const ErrorMsg: string);
@@ -6832,9 +6830,9 @@ procedure TMainIDE.InitCodeToolBoss;
       writeln('');
       writeln(ErrorMsg);
     end else begin;
-      CodeToolBoss.DefineTree.Add(ADefTempl);
       if AddToPool then
-        CodeToolBoss.DefinePool.Add(ADefTempl.CreateCopy(false));
+        CodeToolBoss.DefinePool.Add(ADefTempl.CreateCopy(false,true,true));
+      CodeToolBoss.DefineTree.Add(ADefTempl);
     end;
   end;
 
@@ -6851,6 +6849,9 @@ begin
     @CodeToolBossGetVirtualDirectoryAlias;
   CodeToolBoss.DefineTree.OnGetVirtualDirectoryDefines:=
     @CodeToolBossGetVirtualDirectoryDefines;
+
+  CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
+    'PROJECT',nil,@MacroFunctionProject);
 
   CodeToolsOpts.AssignTo(CodeToolBoss);
   if (not FileExists(EnvironmentOptions.CompilerFilename)) then begin
@@ -6883,7 +6884,8 @@ begin
   with CodeToolBoss.DefinePool do begin
     // start the compiler and ask for his settings
     ADefTempl:=CreateFPCTemplate(EnvironmentOptions.CompilerFilename,
-                       CreateCompilerTestPascalFilename,CompilerUnitSearchPath);
+                       CreateCompilerTestPascalFilename,CompilerUnitSearchPath,
+                       CodeToolsOpts);
     AddTemplate(ADefTempl,false,
       'NOTE: Could not create Define Template for Free Pascal Compiler');
       
@@ -6894,9 +6896,8 @@ begin
                                                         CompilerUnitSearchPath);
     ADefTempl:=CreateFPCSrcTemplate(
             CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'FPCSrcDir'],
-            CompilerUnitSearchPath,
-            not UnitLinksChanged,
-            CompilerUnitLinks);
+            CompilerUnitSearchPath, not UnitLinksChanged,
+            CompilerUnitLinks,CodeToolsOpts);
     // save unitlinks
     if UnitLinksChanged
     or (InputHistories.LastFPCUnitLinks<>InputHistories.LastFPCUnitLinks)
@@ -6912,7 +6913,7 @@ begin
     ADefTempl:=CreateLazarusSrcTemplate(
       '$('+ExternalMacroStart+'LazarusDir)',
       '$('+ExternalMacroStart+'LCLWidgetType)',
-      MiscellaneousOptions.BuildLazOpts.ExtraOptions);
+      MiscellaneousOptions.BuildLazOpts.ExtraOptions,CodeToolsOpts);
     AddTemplate(ADefTempl,true,
       'NOTE: Could not create Define Template for Lazarus Sources');
   end;
@@ -6930,6 +6931,8 @@ begin
     OnAfterApplyChanges:=@OnAfterCodeToolBossApplyChanges;
     OnSearchUsedUnit:=@OnCodeToolBossSearchUsedUnit;
   end;
+  
+  CodeToolsOpts.AssignGlobalDefineTemplatesToTree(CodeToolBoss.DefineTree);
   
   CompilerGraphStampIncreased:=@OnCompilerGraphStampIncreased;
 
@@ -7021,6 +7024,25 @@ procedure TMainIDE.CodeToolBossGetVirtualDirectoryDefines(DefTree: TDefineTree;
 begin
   if (Project1<>nil) and Project1.IsVirtual then
     Project1.GetVirtualDefines(DefTree,DirDef);
+end;
+
+function TMainIDE.MacroFunctionProject(Data: Pointer): boolean;
+var
+  FuncData: PReadFunctionData;
+  Param: String;
+begin
+  Result:=true;
+  if Project1=nil then exit;
+  FuncData:=PReadFunctionData(Data);
+  Param:=FuncData^.Param;
+  if AnsiCompareText(Param,'SrcPath')=0 then
+    FuncData^.Result:=Project1.CompilerOptions.GetSrcPath(false)
+  else if AnsiCompareText(Param,'IncPath')=0 then
+    FuncData^.Result:=Project1.CompilerOptions.GetIncludePath(false)
+  else if AnsiCompareText(Param,'UnitPath')=0 then
+    FuncData^.Result:=Project1.CompilerOptions.GetUnitPath(false)
+  else
+    FuncData^.Result:='';
 end;
 
 procedure TMainIDE.OnCompilerGraphStampIncreased;
@@ -7413,7 +7435,7 @@ var AFilename: string;
 begin
   // save include file relationships
   AFilename:=AppendPathDelim(GetPrimaryConfigPath)+CodeToolsIncludeLinkFile;
-  CodeToolBoss.SourceCache.SaveIncludeLinksToFile(AFilename);
+  CodeToolBoss.SourceCache.SaveIncludeLinksToFile(AFilename,true);
 end;
 
 function TMainIDE.DoMakeResourceString: TModalResult;
@@ -8526,6 +8548,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.536  2003/04/24 16:44:28  mattias
+  implemented define templates for projects with packages
+
   Revision 1.535  2003/04/22 18:53:12  mattias
   implemented compiling project dependencies and auto add dependency
 
