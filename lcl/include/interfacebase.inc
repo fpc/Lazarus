@@ -932,7 +932,7 @@ begin
   Points := nil;
   Count := 0;
   PolyBezierArcPoints(X,Y,Width,Height,Angle1, Angle2, 0, Points, Count);
-  Count += 2;
+  Inc(Count,2);
   ReallocMem(Points, Count*SizeOf(TPoint));
   Points[Count - 2] := CenterPoint(Rect(X,Y,X+Width,Y+Height));
   Points[Count - 1] := Points[0];
@@ -1219,6 +1219,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.42  2002/08/25 13:31:35  lazarus
+  MG: replaced C-style operators
+
   Revision 1.41  2002/08/21 10:46:37  lazarus
   MG: fixed unreleased gdiRegions
 
