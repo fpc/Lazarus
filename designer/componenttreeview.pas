@@ -17,8 +17,8 @@
     TComponent. TControls are shown in a hierachic view.
     It supports
       - multi selecting components
-      - editing the creation order
-      - editing the TControl.Parent hierachy
+      - ToDo: editing the creation order
+      - ToDo: editing the TControl.Parent hierachy
     For an usage example, see the object inspector.
 
   ToDo:
@@ -51,6 +51,7 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure RebuildComponentNodes; virtual;
+    procedure UpdateComponentNodesValues; virtual;
     function CreateNodeCaption(AComponent: TComponent): string; virtual;
   public
     property Selections: TComponentSelectionList read GetSelections
@@ -72,7 +73,11 @@ begin
     FComponentList.Clear;
   end else begin
     if FComponentList.IsEqual(PropertyEditorHook.LookupRoot,NewSelections) then
+    begin
+      // nodes ok, but maybe node values needs update
+      UpdateComponentNodesValues;
       exit;
+    end;
   end;
   FComponentList.LookupRoot:=PropertyEditorHook.LookupRoot;
   FComponentList.Selection.Assign(NewSelections);
@@ -156,6 +161,7 @@ procedure TComponentTreeView.RebuildComponentNodes;
       if CurControl is TWinControl then
         AddChildControls(TWinControl(CurControl),NewNode);
     end;
+    ANode.Expanded:=true;
   end;
 
 var
@@ -204,6 +210,23 @@ begin
   OldExpanded.Apply(Self);
   OldExpanded.Free;
   EndUpdate;
+end;
+
+procedure TComponentTreeView.UpdateComponentNodesValues;
+
+  procedure UpdateComponentNode(ANode: TTreeNode);
+  var
+    AComponent: TComponent;
+  begin
+    if ANode=nil then exit;
+    AComponent:=TComponent(ANode.Data);
+    ANode.Text:=CreateNodeCaption(AComponent);
+    UpdateComponentNode(ANode.GetFirstChild);
+    UpdateComponentNode(ANode.GetNextSibling);
+  end;
+
+begin
+  UpdateComponentNode(Items.GetFirstNode);
 end;
 
 function TComponentTreeView.CreateNodeCaption(AComponent: TComponent): string;

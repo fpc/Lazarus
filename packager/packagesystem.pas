@@ -886,6 +886,7 @@ begin
     // add unit paths
     UsageOptions.UnitPath:=
       '$(LazarusDir)/lcl/units;$(LazarusDir)/lcl/units/$(LCLWidgetType)';
+    UsageOptions.CustomOptions:='-dLCL';
     // add include path
     CompilerOptions.IncludeFiles:=
       '$(LazarusDir)/lcl/include;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)';

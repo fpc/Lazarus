@@ -3094,13 +3094,15 @@ end;
 procedure TLazPackageDefineTemplates.UpdateDefinesForCustomDefines;
 var
   OptionsDefTempl: TDefineTemplate;
+  NewCustomOptions: String;
 begin
   if (not LazPackage.NeedsDefineTemplates) or (not Active) then exit;
 
   // check if something has changed
-  if FLastCustomOptions=LazPackage.CompilerOptions.CustomOptions then exit;
-  
-  FLastCustomOptions:=LazPackage.CompilerOptions.CustomOptions;
+  NewCustomOptions:=LazPackage.CompilerOptions.GetCustomOptions;
+  if FLastCustomOptions=NewCustomOptions then exit;
+
+  FLastCustomOptions:=NewCustomOptions;
   OptionsDefTempl:=CodeToolBoss.DefinePool.CreateFPCCommandLineDefines(
                           'Custom Options',FLastCustomOptions,false,LazPackage);
   if OptionsDefTempl=nil then begin
@@ -3115,7 +3117,7 @@ begin
 
   // create custom options
   // The custom options are enclosed by an IFDEF #PkgSrcMark<PckId> template.
-  // Each source directory defines this variable, so that the settings will
+  // Each source directory defines this variable, so that the settings will be
   // activated for every source directory.
   if (FMain=nil) then UpdateMain;
   if FCustomDefines=nil then begin
@@ -3128,6 +3130,8 @@ begin
     FCustomDefines.Value:='#PkgSrcMark'+LazPackage.IDAsWord;
   end;
   FCustomDefines.ReplaceChild(OptionsDefTempl);
+
+  CodeToolBoss.DefineTree.ClearCache;
 end;
 
 { TBasePackageEditor }
