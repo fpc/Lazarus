@@ -152,8 +152,10 @@ end;
 
 procedure TCustomMemo.ControlKeyDown(var Key: Word; Shift: TShiftState);
 begin
-  if (Key=VK_RETURN) and (Shift=[]) then exit;
-  if (Key=VK_TAB) and (Shift-[ssShift]=[]) then exit;
+  if not ReadOnly then begin
+    if (Key=VK_RETURN) and (Shift=[]) then exit;
+    if (Key=VK_TAB) and (Shift-[ssShift]=[]) then exit;
+  end;
   inherited ControlKeyDown(Key, Shift);
 end;
 
@@ -178,6 +180,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.33  2005/03/10 09:06:34  mattias
+  TCustomMemo: check for navigations keys only if not ReadOnly
+
   Revision 1.32  2005/01/01 14:38:36  mattias
   fixed loading TMemo.Lines - During Loading
 
