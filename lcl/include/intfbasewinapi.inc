@@ -307,7 +307,7 @@ var
     For I := 1 to Length(Source) do
       If Source[I] = ' ' then
         If not Breakable(Result, I) then
-          Result.Add(Pointer(I));
+          Result.Add(Pointer(PtrInt(I)));
     If not Breakable(Result, Length(Source)) then
       Result.Add(Pointer(PtrInt(Length(Source))));
     If not Breakable(Result, 0) then
@@ -1404,6 +1404,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.15  2004/12/19 19:29:04  marc
+  * x86_64 fix: Conversion if integer to pointer
+
   Revision 1.14  2004/12/19 19:26:05  marc
   * x86_64 fix: Conversion if integer to pointer
 
