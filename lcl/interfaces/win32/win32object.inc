@@ -2021,6 +2021,13 @@ Begin
     End;
     csProgressBar:
     Begin
+      with TProgressBar(Sender) do
+      begin
+        if Smooth then
+          Flags := Flags or PBS_SMOOTH;
+        if (Orientation = pbVertical) or (Orientation = pbTopDown) then
+          Flags := Flags or PBS_VERTICAL;
+      end;
       Window := CreateWindow(PROGRESS_CLASS, nil, Flags, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       SetProp(Window, 'Lazarus', Sender);
       SetName(Window, StrTemp);
@@ -2452,7 +2459,7 @@ begin
     csProgressBar:
       With (TProgressBar(Sender)) Do
       Begin
-        SendMessage(Handle, PBM_SETRANGE, 0, MakeLParam(SendMessage(Handle, PBM_GETRANGE, WPARAM(True), 0), 0));
+        SendMessage(Handle, PBM_SETRANGE, 0, MakeLParam(Min, Max));
         SendMessage(Handle, PBM_SETPOS, Position, 0);
         If Smooth Then
           SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) Or PBS_SMOOTH)
@@ -2666,6 +2673,9 @@ End;
 
 {
   $Log$
+  Revision 1.56  2003/06/25 20:48:48  mattias
+  fixed progressbar from Micha
+
   Revision 1.55  2003/06/25 15:27:18  mattias
   fixed timer calling conventions from Micha
 
