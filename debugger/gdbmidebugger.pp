@@ -61,6 +61,8 @@ type
     FExceptionBreakID: Integer;
     function  FindBreakpoint(const ABreakpoint: Integer): TDBGBreakPoint;
     function  GDBEvaluate(const AExpression: String; var AResult: String): Boolean;
+    function  GDBGetText(const ALocation: Pointer): String; overload;
+    function  GDBGetText(const AExpression: String): String; overload;
     function  GDBRun: Boolean;
     function  GDBPause: Boolean;
     function  GDBStart(const AContinueRunning: Boolean): Boolean;
@@ -476,6 +478,26 @@ begin
   ResultList.Free;
 end;
 
+function TGDBMIDebugger.GDBGetText(const ALocation: Pointer): String;
+begin
+  Result := GDBGetText(Format('%d', [Integer(ALocation)]));
+end;
+
+function TGDBMIDebugger.GDBGetText(const AExpression: String ): String;
+var
+  S: String;
+  ResultList: TStringList;
+begin
+  if not ExecuteCommand('x/s %s', [AExpression], S, True)
+  then begin
+    Result := '';
+  end
+  else begin
+    WriteLN('GetText: ', S);
+    Result := GetPart('\t ''', '', S);
+  end;
+end;
+
 function TGDBMIDebugger.GDBJumpTo(const ASource: String;
   const ALine: Integer): Boolean;
 begin
@@ -856,16 +878,54 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String): Boolean;
   procedure ProcessException;
   var
     S: String;
-    ExceptionName: String;
+    ExceptionName, ExceptionMessage: String;
     ResultList: TStringList;
     Location: TDBGLocationRec;
   begin
     ExceptionName := 'Unknown';
-    if ExecuteCommand('-data-evaluate-expression pshortstring(^pointer(^Pointer(^Pointer($fp+8)^)^+12)^)^', [], S, False)
+    if ExecuteCommand('-data-evaluate-expression pshortstring(^pointer(^pointer(^pointer($fp+8)^)^+12)^)^', [], S, False)
     then begin
       ResultList := CreateMIValueList(S);
       ExceptionName := ResultList.Values['value'];
       ExceptionName := GetPart('''', '''', ExceptionName);
+      ResultList.Free;
+    end;
+    
+    ExceptionMessage := GDBGetText('Exception(^pointer(^pointer($fp+8)^)^).FMessage');
+
+    Location.SrcLine := -1;
+    Location.SrcFile := '';
+    Location.Adress := nil;
+    Location.FuncName := '';
+    if ExecuteCommand('info line * ^pointer($fp+12)^', [], S, True)
+    then begin
+      Location.SrcLine := StrToIntDef(GetPart('Line ', ' of', S), -1);
+      Location.SrcFile := GetPart('\"', '\"', S);
+    end;
+
+    if ExecuteCommand('-data-evaluate-expression ^pointer($fp+12)^', [], S, False)
+    then begin
+      ResultList := CreateMIValueList(S);
+      Location.Adress := Pointer(StrToIntDef(ResultList.Values['value'], 0));
+      ResultList.Free;
+    end;
+
+    DoException(-1, Format('%s: %s', [ExceptionName, ExceptionMessage]));
+    DoCurrent(Location);
+  end;
+  
+  procedure ProcessBreak;
+  var
+    S: String;
+    ErrorNo: Integer;
+    ResultList: TStringList;
+    Location: TDBGLocationRec;
+  begin
+    ErrorNo := -1;
+    if ExecuteCommand('-data-evaluate-expression ^pointer($fp+12)^', [], S, False)
+    then begin
+      ResultList := CreateMIValueList(S);
+      ErrorNo := StrToIntDef(ResultList.Values['value'], 0);
       ResultList.Free;
     end;
 
@@ -886,12 +946,8 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String): Boolean;
       ResultList.Free;
     end;
 
-    DoException(-1, ExceptionName);
+    DoException(ErrorNo, Format('RunError(%d)', [ErrorNo]));
     DoCurrent(Location);
-  end;
-  
-  procedure ProcessBreak;
-  begin
   end;
 
 var
@@ -1671,6 +1727,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.14  2003/05/28 00:58:50  marc
+  MWE: * Reworked breakpoint handling
+
   Revision 1.13  2003/05/27 20:58:12  mattias
   implemented enable and deleting breakpoint in breakpoint dlg
 
