@@ -627,7 +627,8 @@ const
   VKEY_FLAG_ALT      = $04;
   VKEY_FLAG_KEY_MASK = $07;
   VKEY_FLAG_EXT      = $10; // extended key
-  
+  VKEY_FLAG_MULTI_VK = $20; // key has more than one VK
+
 
 type
   TVKeyRecord = packed record

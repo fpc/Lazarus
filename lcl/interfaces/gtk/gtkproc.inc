@@ -1279,9 +1279,10 @@ end;
 {$IFDEF UNIX}
 {$DEFINE InitKeyboardTables}
 procedure InitKeyboardTables;
-  procedure FindVKeyInfo(const AKeySym: TKeySym; var AVKey: Byte; var AExtended: Boolean);
+  procedure FindVKeyInfo(const AKeySym: TKeySym; var AVKey: Byte; var AExtended, AHasMultiVK: Boolean);
   begin
     AExtended := False;
+    AHasMultiVK := False;
     AVKey := $FF;
 
     case AKeySym of
@@ -1308,8 +1309,6 @@ procedure InitKeyboardTables;
         end;
       end;
 
-      GDK_KEY_KP_Space:     AVKey := VK_SPACE;
-      GDK_KEY_KP_ENTER:     AVKey := VK_Return;
       GDK_KEY_Tab,
       GDK_KEY_ISO_Left_Tab,
       GDK_KEY_KP_Tab:       AVKey := VK_TAB;
@@ -1362,79 +1361,82 @@ procedure InitKeyboardTables;
         AExtended := True;
         AVKey := VK_END;
       end;
+      
+      // Keypad
+      GDK_KEY_KP_ENTER:
+      begin
+        AExtended := True;
+        AVKey := VK_Return;
+      end;
+      GDK_KEY_KP_Space, GDK_KEY_KP_Begin:
+      begin
+        AVKey := VK_CLEAR;
+        AHasMultiVK := True;
+      end;
       GDK_KEY_KP_INSERT:
       begin
         // Keypad key is not extended
         AVKey := VK_INSERT;
+        AHasMultiVK := True;
       end;
       GDK_KEY_KP_HOME:
       begin
         // Keypad key is not extended
         AVKey := VK_HOME;
+        AHasMultiVK := True;
       end;
       GDK_KEY_KP_LEFT:
       begin
         // Keypad key is not extended
         AVKey := VK_LEFT;
+        AHasMultiVK := True;
       end;
       GDK_KEY_KP_UP:
       begin
         // Keypad key is not extended
         AVKey := VK_UP;
+        AHasMultiVK := True;
       end;
       GDK_KEY_KP_RIGHT:
       begin
         // Keypad key is not extended
         AVKey := VK_RIGHT;
+        AHasMultiVK := True;
       end;
       GDK_KEY_KP_DOWN:
       begin
         // Keypad key is not extended
         AVKey := VK_DOWN;
+        AHasMultiVK := True;
       end;
       GDK_KEY_KP_PAGE_UP:
       begin
         // Keypad key is not extended
         AVKey := VK_PRIOR;
+        AHasMultiVK := True;
       end;
       GDK_KEY_KP_PAGE_DOWN:
       begin
         // Keypad key is not extended
         AVKey := VK_NEXT;
+        AHasMultiVK := True;
       end;
       GDK_KEY_KP_END:
       begin
         // Keypad key is not extended
         AVKey := VK_END;
+        AHasMultiVK := True;
       end;
       GDK_KEY_Num_Lock:
       begin
         AExtended := True;
         AVKey := VK_NUMLOCK;
       end;
-      GDK_KEY_KP_F1:
+      GDK_KEY_KP_F1..GDK_KEY_KP_F4:
       begin
         // I guess it is extended to differentiate between normal Fn
         AExtended := True;
-        AVKey := VK_F1;
-      end;
-      GDK_KEY_KP_F2:
-      begin
-        // I guess it is extended to differentiate between normal Fn
-        AExtended := True;
-        AVKey := VK_F2;
-      end;
-      GDK_KEY_KP_F3:
-      begin
-        // I guess it is extended to differentiate between normal Fn
-        AExtended := True;
-        AVKey := VK_F3;
-      end;
-      GDK_KEY_KP_F4:
-      begin
-        // I guess it is extended to differentiate between normal Fn
-        AExtended := True;
-        AVKey := VK_F4;
+        AVKey := VK_F1 + AKeySym - GDK_KEY_KP_F1;
       end;
       GDK_KEY_KP_Multiply:
       begin
@@ -1450,6 +1452,7 @@ procedure InitKeyboardTables;
       begin
         // Keypad key is not extended
         AVKey := VK_SEPARATOR;
+        AHasMultiVK := True;
       end;
       GDK_KEY_KP_Subtract:
       begin
@@ -1460,6 +1463,13 @@ procedure InitKeyboardTables;
       begin
         // Keypad key is not extended
         AVKey := VK_DECIMAL;
+        AHasMultiVK := True;
+      end;
+      GDK_KEY_KP_Delete:
+      begin
+        // Keypad key is not extended
+        AVKey := VK_DELETE;
+        AHasMultiVK := True;
       end;
       GDK_KEY_KP_Divide:
       begin
@@ -1470,6 +1480,7 @@ procedure InitKeyboardTables;
       begin
         // Keypad key is not extended, it is identified by VK
         AVKey := VK_NUMPAD0 + AKeySym - GDK_KEY_KP_0;
+        AHasMultiVK := True;
       end;
       
       GDK_KEY_BackSpace:    AVKey := VK_BACK;
@@ -1755,6 +1766,10 @@ const
     $00,
     VKEY_FLAG_EXT
   );
+  MULTIFLAG: array[Boolean] of Byte = (
+    $00,
+    VKEY_FLAG_MULTI_VK
+  );
   XEVENTSTATE: array[0..3] of DWord = (
     0,
     GDK_SHIFT_MASK,
@@ -1768,7 +1783,7 @@ var
   LoKey, HiKey: Integer;
   KeySym: array[0..3] of TKeySym;
   VKey, FreeVK, Flags, idx: Byte;
-  Extended, HasKey, ComputeVK, WarningShown: Boolean;
+  HasMultiVK, DoMultiVK, Extended, HasKey, ComputeVK, WarningShown: Boolean;
   K: PVKeyArray1;
   KeySymChars: array[0..16] of Char;
   KeySymCharLen: Integer;
@@ -1799,7 +1814,7 @@ begin
       if (VKey = $FF) and (KeySym[m] <> 0)
       then begin
         HasKey := True;
-        FindVKeyInfo(KeySym[m], VKey, Extended);
+        FindVKeyInfo(KeySym[m], VKey, Extended, HasMultiVK);
       end;
     end;
     // Continue if there is no keysym found
@@ -1811,19 +1826,23 @@ begin
       VKey := FreeVK;
       NextFreeVK(FreeVK);
     end;
-
+    
+    // The keypadkeys have 2 VK_keycodes :(
+    // In that case we have to FIndKeyInfo for every keysym
+    DoMultiVK := HasMultiVK;
+    
     for m := 0 to 3 do
     begin
       if KeySym[m] = 0 then Continue;
       if (m > 1) and (KeySym[m] = KeySym[m - 2]) then Continue;
 
-      if VKey <> $FF
-      then
+      if DoMultiVK
+      then FindVKeyInfo(KeySym[m], VKey, Extended, HasMultiVK);
 
       if VKey = $FF
       then Flags := $FF
       else begin
-        Flags := KEYFLAGS[m] or EXTFLAG[Extended];
+        Flags := KEYFLAGS[m] or EXTFLAG[Extended] or MULTIFLAG[DoMultiVK];
         MVKeyInfo[VKey].KeySym[m] := KeySym[m];
       end;
 
@@ -5454,6 +5473,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.219  2003/10/19 16:33:10  marc
+  * Fixed VKey keypad handling
+
   Revision 1.218  2003/10/17 03:21:21  ajgenius
   fix GTK2 compiling for new Keyboard changes
 

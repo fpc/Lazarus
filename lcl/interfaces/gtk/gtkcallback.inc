@@ -604,7 +604,10 @@ var
   begin
     Result := False;
     if Event^.Length > 1 then Exit;
-    
+
+    // to be delphi compatible we should not send a space here
+    if Event^.KeyVal = GDK_KEY_KP_SPACE then Exit;
+
     // Check if CTRL is pressed
     if ((Event^.State and GDK_CONTROL_MASK) <> 0)
     then begin
@@ -2855,10 +2858,10 @@ var
 
 const
   STATE_MAP: array[0..3] of Byte = (
-    GDK_SHIFT_MASK,
-    GDK_CONTROL_MASK,
-    GDK_MOD1_MASK,
-    GDK_MOD4_MASK
+    GDK_SHIFT_MASK,   // shift
+    GDK_CONTROL_MASK, // control
+    GDK_MOD1_MASK,    // alt
+    GDK_MOD4_MASK     // win
   );
   VK_MAP: array[0..3] of array[0..2] of Byte = (
     // (Main key, alt key 1, alt key 2) to check
@@ -2888,8 +2891,11 @@ begin
 
   if VKey.VKey = $FF
   then begin
-    WriteLN('[WARNING] Key pressed without VKey: ',
-      {$IFDEF GTK2} Event^._String {$ELSE} Event^.theString {$ENDIF} );
+    if Pressed
+    then WriteLN(Format('[WARNING] Key pressed without VKey: K=0x%x S="%s"', [
+      Event^.KeyVal,
+      {$IFDEF GTK2} Event^._String {$ELSE} Event^.theString {$ENDIF}
+    ]));
     Exit;
   end;
   
@@ -2909,7 +2915,7 @@ begin
     GDK_Key_Alt_L:      UpdateList(VK_LMENU, Pressed);
     GDK_Key_Alt_R:      UpdateList(VK_RMENU, Pressed);
   end;
-
+  
   // Recheck the list against the modifiers
   for n := 0 to High(STATE_MAP) do
   begin
@@ -2922,6 +2928,18 @@ begin
     UpdateList(VK_MAP[n][1], (STATE_MAP[n] and Event^.State) <> 0);
     UpdateList(VK_MAP[n][2], (STATE_MAP[n] and Event^.State) <> 0);
   end;
+  
+  // if the VKey has multiple VK_codes then SHIFT distinguishes between them
+  // In that case SHIFT is not pressed
+  // On the next event the shift flag will be restored based on modifiers
+  if Pressed and ((VKey.Flags and VKEY_FLAG_MULTI_VK) <> 0)
+  then begin
+    UpdateList(VK_SHIFT, False);
+    UpdateList(VK_LSHIFT, False);
+    UpdateList(VK_RSHIFT, False);
+  end;
+
+
 
 end;
 
@@ -3174,6 +3192,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.204  2003/10/19 16:33:10  marc
+  * Fixed VKey keypad handling
+
   Revision 1.203  2003/10/17 03:21:21  ajgenius
   fix GTK2 compiling for new Keyboard changes
 
