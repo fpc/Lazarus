@@ -201,7 +201,11 @@ begin
   FDeleting := True;
   HasChildren := false;
   Unbind;
-  if Owner<>nil then dec(Owner.FCount);
+  if Owner<>nil then begin
+    if Owner.Owner<>nil then
+      Owner.Owner.Delete(self);
+    dec(Owner.FCount);
+  end;
   {if Owner.Owner.FLastDropTarget = Self then
     Owner.Owner.FLastDropTarget := nil;
   Node := Parent;
@@ -1728,9 +1732,10 @@ end;
 
 procedure TTreeNodes.Delete(Node: TTreeNode);
 begin
-  if Owner<>nil then
-  //if (Node.ItemId = nil) then
-    Owner.Delete(Node);
+  //Calling Owner.Delete is done in by TTreeNode.Destroy
+  //if Owner<>nil then
+  ////if (Node.ItemId = nil) then
+  //  Owner.Delete(Node);
   Node.Delete;
 end;
 
