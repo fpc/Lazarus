@@ -19,7 +19,7 @@ interface
 resourcestring
   //
   oisObjectInspector = 'Object Inspector';
-  oisItemsSelected = ' items selected';
+  oisItemsSelected = '%u items selected';
   
   oiscAdd = '&Add';
   oiscDelete = '&Delete';

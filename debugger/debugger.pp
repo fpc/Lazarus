@@ -856,13 +856,6 @@ type
     procedure SetState(const AValue: TDBGState);
     procedure InitTargetStart; virtual;
   public
-    constructor Create(const AExternalDebugger: String); virtual; {Virtual constructor makes no sense}
-                        //MWE: there will be a day that they do make sense :-)
-                        // MG: there will be a day that they do make troubles :)
-                        //MWE: do they ?
-                        //MWE: Now they do make sense !
-    destructor Destroy; override;
-
     class function Caption: String; virtual;         // The name of the debugger as shown in the debuggeroptions
     class function ExePaths: String; virtual;        // The default locations of the exe
 
@@ -870,7 +863,15 @@ type
     class function CreateProperties: TDebuggerProperties; virtual;         // Creates and initializes debuggerproperties
     class function GetProperties: TDebuggerProperties;                     // Get the current properties
     class procedure SetProperties(const AProperties: TDebuggerProperties); // Set the current properties
-    
+
+  public
+    constructor Create(const AExternalDebugger: String); virtual; {Virtual constructor makes no sense}
+                        //MWE: there will be a day that they do make sense :-)
+                        // MG: there will be a day that they do make troubles :)
+                        //MWE: do they ?
+                        //MWE: Now they do make sense !
+    destructor Destroy; override;
+
     procedure Init; virtual;                         // Initializes the debugger
     procedure Done; virtual;                         // Kills the debugger
     procedure Run;                                   // Starts / continues debugging
@@ -968,7 +969,7 @@ const
   );
   
 var
-  MDebuggerProperties: TDebuggerProperties;
+  MDebuggerPropertiesList: TStringlist;
 
 function DBGCommandNameToCommand(const s: string): TDBGCommand;
 begin
@@ -1099,10 +1100,14 @@ begin
 end;
 
 class function TDebugger.CreateProperties: TDebuggerProperties; 
+var
+  idx: Integer;
 begin
   Result := TDebuggerProperties.Create;
-  if MDebuggerProperties <> nil
-  then Result.Assign(MDebuggerProperties);
+  if MDebuggerPropertiesList = nil then Exit;
+  idx := MDebuggerPropertiesList.IndexOf(ClassName);
+  if idx = -1 then Exit;
+  Result.Assign(TDebuggerProperties(MDebuggerPropertiesList.Objects[idx]));
 end;
 
 function TDebugger.CreateSignals: TDBGSignals;
@@ -1234,10 +1239,20 @@ begin
 end;
 
 class function TDebugger.GetProperties: TDebuggerProperties;
+var
+  idx: Integer;
 begin
-  if MDebuggerProperties = nil
-  then MDebuggerProperties := CreateProperties;
-  Result := MDebuggerProperties;
+  if MDebuggerPropertiesList = nil
+  then MDebuggerPropertiesList := TStringList.Create;
+  idx := MDebuggerPropertiesList.IndexOf(ClassName);
+  if idx = -1
+  then begin
+    Result := CreateProperties;
+    MDebuggerPropertiesList.AddObject(ClassName, Result)
+  end
+  else begin
+    Result := TDebuggerProperties(MDebuggerPropertiesList.Objects[idx]);
+  end;
 end;
 
 function TDebugger.GetState: TDBGState;
@@ -1340,15 +1355,15 @@ begin
 end;
 
 class procedure TDebugger.SetProperties(const AProperties: TDebuggerProperties);
+var
+  Props: TDebuggerProperties;
 begin
-  if (AProperties=nil) or (AProperties=MDebuggerProperties) then exit;
-  if MDebuggerProperties = nil 
-  then begin
-    GetProperties;
-    if MDebuggerProperties = nil // they weren't created ?
-    then Exit;
-  end;
-  MDebuggerProperties.Assign(AProperties);
+  if AProperties = nil then Exit;
+  Props := GetProperties;
+  if Props = AProperties then Exit;
+
+  if Props = nil then Exit; // they weren't created ?
+  Props.Assign(AProperties);
 end;
 
 procedure TDebugger.SetState(const AValue: TDBGState);
@@ -3132,16 +3147,32 @@ begin
   inherited SetItem(Aindex, AValue);
 end;
 
+procedure DoFinalization;
+var
+  n: Integer;
+begin
+  if MDebuggerPropertiesList <> nil
+  then begin
+    for n := 0 to MDebuggerPropertiesList.Count - 1 do
+      MDebuggerPropertiesList.Objects[n].Free;
+    FreeAndNil(MDebuggerPropertiesList);
+  end;
+end;
+
 initialization
-  MDebuggerProperties := nil;
+  MDebuggerPropertiesList := nil;
 
 finalization
-  MDebuggerProperties.Free;
-  MDebuggerProperties:=nil;
+  DoFinalization;
+
 
 end.
 { =============================================================================
   $Log$
+  Revision 1.56  2004/01/04 03:53:36  marc
+  * Changed TComponentSelectionList to TPersistentSelectionList
+  + Added SSHdebugger property
+
   Revision 1.55  2004/01/03 01:17:25  marc
   + Added debugger optioes
 

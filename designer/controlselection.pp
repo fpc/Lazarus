@@ -353,7 +353,7 @@ type
     procedure Clear;
     function AssignComponent(AComponent:TComponent): boolean;
     procedure Assign(AControlSelection: TControlSelection);
-    procedure AssignSelection(ASelection: TComponentSelectionList);
+    procedure AssignSelection(const ASelection: TPersistentSelectionList);
     function IsSelected(AComponent: TComponent): Boolean;
     function IsOnlySelected(AComponent: TComponent): Boolean;
     procedure SaveBounds;
@@ -1823,9 +1823,11 @@ begin
   DoChange;
 end;
 
-procedure TControlSelection.AssignSelection(ASelection: TComponentSelectionList
-  );
-var i:integer;
+procedure TControlSelection.AssignSelection(
+  const ASelection: TPersistentSelectionList);
+var
+  i:integer;
+  instance: TPersistent;
 begin
   if (cssNotSavingBounds in FStates) then exit;
   Include(FStates,cssNotSavingBounds);
@@ -1833,7 +1835,10 @@ begin
   Clear;
   FControls.Capacity:=ASelection.Count;
   for i:=0 to ASelection.Count-1 do
-    Add(ASelection[i]);
+  begin
+    Instance := ASelection[i];
+    if Instance is TComponent then Add(TComponent(Instance));
+  end;
   SetCustomForm;
   UpdateBounds;
   Exclude(FStates,cssNotSavingBounds);

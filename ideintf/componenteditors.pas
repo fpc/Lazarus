@@ -435,7 +435,6 @@ end;
 
 procedure TDefaultComponentEditor.Edit;
 var
-  Components: TComponentSelectionList;
   PropertyEditorHook: TPropertyEditorHook;
   NewLookupRoot: TPersistent;
 begin
@@ -448,20 +447,18 @@ begin
   FContinue := True;
   FFirst := nil;
   FBest := nil;
-  Components := TComponentSelectionList.Create;
   try
-    Components.Add(Component);
-    GetComponentProperties(Components, tkAny, PropertyEditorHook,
-                           @CheckEdit, nil);
-    if FContinue then
+    GetPersistentProperties(Component, tkAny, PropertyEditorHook, @CheckEdit, nil);
+    if FContinue
+    then begin
       if Assigned(FBest) then
         FBest.Edit
       else if Assigned(FFirst) then
         FFirst.Edit;
+    end;
   finally
     FFirst := nil;
     FBest := nil;
-    Components.Free;
   end;
 end;
 

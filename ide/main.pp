@@ -975,7 +975,7 @@ end;
 
 procedure TMainIDE.OIOnSelectComponents(Sender: TObject);
 begin
-  TheControlSelection.AssignSelection(ObjectInspector1.Selections);
+  TheControlSelection.AssignSelection(ObjectInspector1.Selection);
 end;
 
 procedure TMainIDE.OIOnShowOptions(Sender: TObject);
@@ -8162,18 +8162,19 @@ end;
 
 procedure TMainIDE.OnControlSelectionChanged(Sender: TObject);
 var
-  NewSelectedComponents : TComponentSelectionList;
+  NewSelection: TPersistentSelectionList;
   i: integer;
 begin
   {$IFDEF IDE_DEBUG}
   writeln('[TMainIDE.OnControlSelectionChanged]');
   {$ENDIF}
   if (TheControlSelection=nil) or (FormEditor1=nil) then exit;
-  NewSelectedComponents:=TComponentSelectionList.Create;
+
+  NewSelection:=TPersistentSelectionList.Create;
   for i:=0 to TheControlSelection.Count-1 do
-    NewSelectedComponents.Add(TheControlSelection[i].Component);
-  FormEditor1.SelectedComponents:=NewSelectedComponents;
-  NewSelectedComponents.Free;
+    NewSelection.Add(TheControlSelection[i].Component);
+  FormEditor1.Selection:=NewSelection;
+  NewSelection.Free;
   {$IFDEF IDE_DEBUG}
   writeln('[TMainIDE.OnControlSelectionChanged] END');
   {$ENDIF}
@@ -10264,6 +10265,10 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.693  2004/01/04 03:53:35  marc
+  * Changed TComponentSelectionList to TPersistentSelectionList
+  + Added SSHdebugger property
+
   Revision 1.692  2004/01/04 00:05:51  mattias
   added double click for menu editor
 

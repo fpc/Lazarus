@@ -1197,6 +1197,7 @@ resourcestring
   srkmecunknown                   = 'unknown editor command';
    
   //Key strings
+  //TODO: remove, they are meved to IntfStrConsts
   srVK_UNKNOWN    = 'Unknown';
   srVK_LBUTTON    = 'Mouse Button Left';
   srVK_RBUTTON    = 'Mouse Button Right';

@@ -117,12 +117,12 @@ each control that's dropped onto the form
   private
     FComponentInterfaces: TAVLTree; // tree of TComponentInterface sorted for
                                     // component
-    FSelectedComponents: TComponentSelectionList;
+    FSelection: TPersistentSelectionList;
     FObj_Inspector: TObjectInspector;
     function GetPropertyEditorHook: TPropertyEditorHook;
   protected
     FNonControlForms: TAVLTree; // tree of TNonControlForm sorted for LookupRoot
-    procedure SetSelectedComponents(TheSelectedComponents : TComponentSelectionList);
+    procedure SetSelection(const ASelection: TPersistentSelectionList);
     procedure OnObjectInspectorModified(Sender: TObject);
     procedure SetObj_Inspector(AnObjectInspector: TObjectInspector); virtual;
     procedure JITListReaderError(Sender: TObject; ErrorType: TJITFormError;
@@ -177,8 +177,8 @@ each control that's dropped onto the form
     
     function TranslateKeyToDesignerCommand(Key: word; Shift: TShiftState): word;
   public
-    property SelectedComponents: TComponentSelectionList
-                           read FSelectedComponents write SetSelectedComponents;
+    property Selection: TPersistentSelectionList read FSelection
+                                                 write SetSelection;
     property Obj_Inspector: TObjectInspector
                                      read FObj_Inspector write SetObj_Inspector;
     property PropertyEditorHook: TPropertyEditorHook read GetPropertyEditorHook;
@@ -647,7 +647,7 @@ begin
   inherited Create;
   FComponentInterfaces := TAVLTree.Create(@CompareComponentInterfaces);
   FNonControlForms:=TAVLTree.Create(@CompareNonControlForms);
-  FSelectedComponents := TComponentSelectionList.Create;
+  FSelection := TPersistentSelectionList.Create;
   
   JITFormList := TJITForms.Create;
   JITFormList.OnReaderError:=@JITListReaderError;
@@ -662,30 +662,29 @@ end;
 destructor TCustomFormEditor.Destroy;
 begin
   DesignerMenuItemClick:=nil;
-  JITFormList.Free;
-  JITDataModuleList.Free;
-  FComponentInterfaces.Free;
-  FSelectedComponents.Free;
-  FNonControlForms.Free;
+  FreeAndNil(JITFormList);
+  FreeAndNil(JITDataModuleList);
+  FreeAndNil(FComponentInterfaces);
+  FreeAndNil(FSelection);
+  FreeAndNil(FNonControlForms);
   inherited Destroy;
 end;
 
-procedure TCustomFormEditor.SetSelectedComponents(
-  TheSelectedComponents: TComponentSelectionList);
+procedure TCustomFormEditor.SetSelection(
+  const ASelection: TPersistentSelectionList);
 begin
-  FSelectedComponents.Assign(TheSelectedComponents);
-  if FSelectedComponents.Count>0 then begin
+  FSelection.Assign(ASelection);
+  if FSelection.Count>0 then begin
     Obj_Inspector.PropertyEditorHook.LookupRoot:=
-      GetLookupRootForComponent(FSelectedComponents[0]);
+      GetLookupRootForComponent(FSelection[0]);
   end;
-  Obj_Inspector.Selections := FSelectedComponents;
+  Obj_Inspector.Selection := FSelection;
 end;
 
 Function TCustomFormEditor.AddSelected(Value : TComponent) : Integer;
 Begin
-  FSelectedComponents.Add(Value);
-  Result := FSelectedComponents.Count;
-  Obj_Inspector.Selections := FSelectedComponents;
+  Result := FSelection.Add(Value) + 1;
+  Obj_Inspector.Selection := FSelection;
 end;
 
 Procedure TCustomFormEditor.DeleteControl(AComponent: TComponent;
@@ -1203,7 +1202,7 @@ end;
 
 Procedure TCustomFormEditor.ClearSelected;
 Begin
-  FSelectedComponents.Clear;
+  FSelection.Clear;
 end;
 
 function TCustomFormEditor.TranslateKeyToDesignerCommand(Key: word;
@@ -1231,19 +1230,24 @@ begin
 end;
 
 procedure TCustomFormEditor.OnObjectInspectorModified(Sender: TObject);
-var CustomForm: TCustomForm;
+var
+  CustomForm: TCustomForm;
+  Instance: TPersistent;
 begin
-  if (FSelectedComponents<>nil) and (FSelectedComponents.Count>0) then begin
-    if FSelectedComponents[0] is TCustomForm then
-      CustomForm:=TCustomForm(FSelectedComponents[0])
-    else if (FSelectedComponents[0].Owner<>nil)
-    and (FSelectedComponents[0].Owner is TCustomForm) then
-      CustomForm:=TCustomForm(FSelectedComponents[0].Owner)
-    else
-      CustomForm:=nil;
-    if (CustomForm<>nil) and (CustomForm.Designer<>nil) then
-      CustomForm.Designer.Modified;
-  end;
+  if (FSelection = nil)
+  or (FSelection.Count <= 0) then Exit;
+  
+  Instance := FSelection[0];
+  if Instance is TCustomForm
+  then CustomForm:=TCustomForm(Instance)
+  else if (Instance is TComponent)
+      and (TComponent(Instance).Owner <> nil)
+      and (TComponent(Instance).Owner is TCustomForm)
+      then CustomForm:=TCustomForm(TComponent(Instance).Owner)
+      else CustomForm:=nil;
+      
+  if (CustomForm<>nil) and (CustomForm.Designer<>nil) then
+    CustomForm.Designer.Modified;
 end;
 
 procedure TCustomFormEditor.SetObj_Inspector(

@@ -94,9 +94,7 @@ type
     FPropertyEditorHook: TPropertyEditorHook;
     FExceptionDeleteList: TStringList;
     FOldDebuggerPathAndParams: string;
-    FDebuggerSpecificComponents: TList;
     FCurDebuggerClass: TDebuggerClass; // currently shown debugger class
-    FCurDebuggerObject: TDebugger; // currently shown debugger object
     procedure AddExceptionLine(const AException: TIDEException; AName: String);
     procedure AddSignalLine(const ASignal: TIDESignal);
     procedure FetchDebuggerClass;
@@ -191,52 +189,16 @@ end;
 procedure TDebuggerOptionsForm.FetchDebuggerSpecificOptions;
 var
   i: Integer;
-  AMemo: TMemo;
-  //Selection: TComponentSelectionList;
 begin
-
-//  FPropertyEditorHook.LookupRoot := nil;
-  {ThePropertyEditorHook.LookupRoot:=FCurDebuggerObject;
-  Selection:=TComponentSelectionList.Create;
-  if FCurDebuggerObject<>nil then
-    Selection.Add(AComponent);
-  PropertyGrid.Selections:=Selection;
-  Selection.Free;}
-
-  // clear debugger specific options components
-  if FDebuggerSpecificComponents=nil then
-    FDebuggerSpecificComponents:=TList.Create;
-  for i:=0 to FDebuggerSpecificComponents.Count-1 do
-    TComponent(FDebuggerSpecificComponents[i]).Free;
-  FDebuggerSpecificComponents.Clear;
+//  FPropertyEditorHook.LookupRoot := FCurDebuggerClass.GetProperties;
+  PropertyGrid.Clear;
+  PropertyGrid.Selection.Clear;
 
   if FCurDebuggerClass = nil then Exit;
 
-//  FPropertyEditorHook.LookupRoot := FCurDebuggerClass.GetProperties;
-  PropertyGrid.Clear;
-//  PropertyGrid.Selections.Add(FCurDebuggerClass.GetProperties);
+  // todo: use create properties to allow cancel
+  PropertyGrid.Selection.Add(FCurDebuggerClass.GetProperties);
   PropertyGrid.BuildPropertyList;
-
-  // create debugger specific options components
-  // temp hack
-  if AnsiCompareText(FCurDebuggerClass.ClassName, 'TSSHGDBMIDEBUGGER')=0
-  then begin
-    AMemo:=TMemo.Create(Self);
-    FDebuggerSpecificComponents.Add(AMemo);
-    with AMemo do
-    begin
-      Name:='DebOptsSpecMemo1';
-      Parent:=gbDebuggerSpecific;
-      SetBounds(5,5,Parent.Width-15,Parent.Height-40);
-      WordWrap:=true;
-      ReadOnly:=true;
-      Caption:='The GNU debugger through ssh allows to remote debug via a ssh'
-        +' connection. See docs/RemoteDebugging.txt for details. The path'
-        +' must contain the ssh client filename, the hostname with an optional'
-        +' username and the filename of gdb on the remote computer.'
-        +' For example: "/usr/bin/ssh username@hostname gdb"';
-    end;
-  end;
 end;
 
 function TDebuggerOptionsForm.GetDebuggerClass: TDebuggerClass;
@@ -258,14 +220,6 @@ begin
   if FCurDebuggerClass = AClass then Exit;
   FCurDebuggerClass := AClass;
   FetchDebuggerSpecificOptions;
-  // destroy, replace or destroy Debugger instance
-  {if (FCurDebuggerObject<>nil)
-  and ((FCurDebuggerClass=nil)
-    or (not (FCurDebuggerObject is FCurDebuggerClass)))
-  then
-    FreeAndNil(FCurDebuggerObject);
-  if (FCurDebuggerObject=nil) and (FCurDebuggerClass<>nil) then
-    FCurDebuggerObject:=FCurDebuggerClass.Create('');}
 end;
 
 procedure TDebuggerOptionsForm.clbExceptionsCLICK (Sender: TObject );
@@ -415,7 +369,6 @@ begin
     Align:=alClient;
     SplitterX:=120;
   end;
-//  pnlDebugSpecific.Visible := False;
 
   FetchDebuggerClass;
 
@@ -425,9 +378,8 @@ end;
 
 procedure TDebuggerOptionsForm.DebuggerOptionsFormDESTROY(Sender: TObject);
 begin
-  FreeAndNil(FDebuggerSpecificComponents);
   FreeAndNil(FExceptionDeleteList);
-  FreeAndNil(FCurDebuggerObject);
+  FreeAndNil(FPropertyEditorHook);
 end;
 
 

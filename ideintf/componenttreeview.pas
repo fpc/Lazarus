@@ -42,9 +42,9 @@ type
   private
     FComponentList: TBackupComponentList;
     FPropertyEditorHook: TPropertyEditorHook;
-    function GetSelections: TComponentSelectionList;
+    function GetSelection: TPersistentSelectionList;
     procedure SetPropertyEditorHook(const AValue: TPropertyEditorHook);
-    procedure SetSelections(const NewSelections: TComponentSelectionList);
+    procedure SetSelection(const NewSelection: TPersistentSelectionList);
   protected
     procedure DoSelectionChanged; override;
   public
@@ -54,8 +54,8 @@ type
     procedure UpdateComponentNodesValues; virtual;
     function CreateNodeCaption(APersistent: TPersistent): string; virtual;
   public
-    property Selections: TComponentSelectionList read GetSelections
-                                                 write SetSelections;
+    property Selection: TPersistentSelectionList read GetSelection
+                                                 write SetSelection;
     property PropertyEditorHook: TPropertyEditorHook
                            read FPropertyEditorHook write SetPropertyEditorHook;
     property OnSelectionChanged;
@@ -65,15 +65,15 @@ implementation
 
 { TComponentTreeView }
 
-procedure TComponentTreeView.SetSelections(
-  const NewSelections: TComponentSelectionList);
+procedure TComponentTreeView.SetSelection(
+  const NewSelection: TPersistentSelectionList);
 begin
   if (PropertyEditorHook=nil) then begin
     if (FComponentList.LookupRoot=nil) then
       exit;
     FComponentList.Clear;
   end else begin
-    if FComponentList.IsEqual(PropertyEditorHook.LookupRoot,NewSelections) then
+    if FComponentList.IsEqual(PropertyEditorHook.LookupRoot,NewSelection) then
     begin
       // nodes ok, but maybe node values needs update
       UpdateComponentNodesValues;
@@ -81,7 +81,7 @@ begin
     end;
   end;
   FComponentList.LookupRoot:=PropertyEditorHook.LookupRoot;
-  FComponentList.Selection.Assign(NewSelections);
+  FComponentList.Selection.Assign(NewSelection);
   RebuildComponentNodes;
 end;
 
@@ -89,9 +89,9 @@ procedure TComponentTreeView.DoSelectionChanged;
 var
   ANode: TTreeNode;
   AComponent: TComponent;
-  NewSelection: TComponentSelectionList;
+  NewSelection: TPersistentSelectionList;
 begin
-  NewSelection:=TComponentSelectionList.Create;
+  NewSelection:=TPersistentSelectionList.Create;
   try
     if (PropertyEditorHook<>nil)
     and (PropertyEditorHook.LookupRoot<>nil)
@@ -124,7 +124,7 @@ begin
   RebuildComponentNodes;
 end;
 
-function TComponentTreeView.GetSelections: TComponentSelectionList;
+function TComponentTreeView.GetSelection: TPersistentSelectionList;
 begin
   Result:=FComponentList.Selection;
 end;
@@ -157,7 +157,7 @@ procedure TComponentTreeView.RebuildComponentNodes;
       NewNode:=Items.AddChild(ANode,CreateNodeCaption(CurControl));
       NewNode.Data:=CurControl;
       NewNode.ImageIndex:=-1;
-      NewNode.MultiSelected:=Selections.IndexOf(CurControl)>=0;
+      NewNode.MultiSelected:=Selection.IndexOf(CurControl)>=0;
       if CurControl is TWinControl then
         AddChildControls(TWinControl(CurControl),NewNode);
     end;
@@ -185,7 +185,7 @@ begin
     RootNode:=Items.Add(nil,CreateNodeCaption(RootObject));
     RootNode.Data:=RootObject;
     RootNode.ImageIndex:=-1;
-    RootNode.MultiSelected:=Selections.IndexOf(RootObject)>=0;
+    RootNode.MultiSelected:=Selection.IndexOf(RootObject)>=0;
 
     // add components in creation order and TControl.Parent relationship
     if RootObject is TComponent then begin
@@ -201,7 +201,7 @@ begin
         NewNode:=Items.AddChild(RootNode,CreateNodeCaption(AComponent));
         NewNode.Data:=AComponent;
         NewNode.ImageIndex:=-1;
-        NewNode.MultiSelected:=Selections.IndexOf(AComponent)>=0;
+        NewNode.MultiSelected:=Selection.IndexOf(AComponent)>=0;
         if AComponent is TWinControl then
           AddChildControls(TWinControl(AComponent),NewNode);
       end;

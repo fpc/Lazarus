@@ -1252,34 +1252,36 @@ end;
 // --------------------------------------------------------------------------------------------------------------//
 procedure TDesignerMainMenu.OnComponentModified(Sender: TComponent);
 var
-  SelectedComponents: TComponentSelectionList;
+  Selection: TPersistentSelectionList;
   i: Integer;
-  AComponent: TComponent;
-  AMenuItem: TMenuItem;
+  Instance: TPersistent;
+  MenuItem: TMenuItem;
   InvalidateNeeded: Boolean;
-  ADesignerMenuItem: PDesignerMenuItem;
+  DesignerMenuItem: PDesignerMenuItem;
 begin
-  SelectedComponents:=TComponentSelectionList.Create;
-  GlobalDesignHook.GetSelectedComponents(SelectedComponents);
+  Selection := TPersistentSelectionList.Create;
+  GlobalDesignHook.GetSelection(Selection);
   try
     InvalidateNeeded:=false;
-    for i:=SelectedComponents.Count-1 downto 0 do begin
-      AComponent:=SelectedComponents[i];
-      if AComponent is TMenuItem then begin
-        AMenuItem:=TMenuItem(AComponent);
+    for i := Selection.Count - 1 downto 0 do
+    begin
+      Instance := Selection[i];
+      if Instance is TMenuItem
+      then begin
+        MenuItem:=TMenuItem(Instance);
         // ToDo
         // how to get the Designer menu item?
-        ADesignerMenuItem:=GetDesignerMenuItem(Root, AMenuItem.Name);
-        if ADesignerMenuItem<>nil then begin
-          ChangeCaption(ADesignerMenuItem,AMenuItem.Caption);
-          InvalidateNeeded:=true;
-        end;
+        DesignerMenuItem:=GetDesignerMenuItem(Root, MenuItem.Name);
+        if DesignerMenuItem = nil then Continue;
+        
+        ChangeCaption(DesignerMenuItem, MenuItem. Caption);
+        InvalidateNeeded := true;
       end;
     end;
     if InvalidateNeeded then
       Parent.Invalidate;
   finally
-    SelectedComponents.Free;
+    Selection.Free;
   end;
 end;
 

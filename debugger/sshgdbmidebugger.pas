@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, SysUtils, Dialogs, Controls, LazConf, GDBMIDebugger, DBGUtils,
-  BaseDebugManager;
+  BaseDebugManager, Debugger, PropEdits, Graphics;
   
 type
   TSSHGDBMIDebugger = class(TGDBMIDebugger)
@@ -46,6 +46,7 @@ type
   protected
     function ParseInitialization: Boolean; override;
   public
+    class function CreateProperties: TDebuggerProperties; override;         // Creates and initializes debuggerproperties
     class function Caption: String; override;
     class function ExePaths: String; override;
   end;
@@ -53,12 +54,62 @@ type
 
 implementation
 
+type
+  TSSHGDBMIDebuggerProperties = class(TDebuggerProperties)
+  private
+    FNote: String; //dummy
+  published
+    property Note: String read FNote write FNote;
+  end;
+  
+  TSSHGDBMINotePropertyEditor = class(TStringPropertyEditor)
+  private
+  protected
+  public
+    function GetAttributes: TPropertyAttributes; override;
+    function GetValue: ansistring; override;
+    procedure SetValue(const NewValue: ansistring); override;
+    procedure PropMeasureHeight(const NewValue: ansistring;  ACanvas:TCanvas;
+                                var AHeight:Integer); override;
+  end;
+
+{ TSSHGDBMINotePropertyEditor }
+
+function TSSHGDBMINotePropertyEditor.GetAttributes: TPropertyAttributes;
+begin
+  Result := [paReadOnly];
+end;
+
+function TSSHGDBMINotePropertyEditor.GetValue: ansistring;
+begin
+  Result := 'The GNU debugger through ssh allows to remote debug via a ssh'
+          + ' connection. See docs/RemoteDebugging.txt for details. The path'
+          + ' must contain the ssh client filename, the hostname with an optional'
+          + ' username and the filename of gdb on the remote computer.'
+          + ' For example: "/usr/bin/ssh username@hostname gdb"';
+end;
+
+procedure TSSHGDBMINotePropertyEditor.PropMeasureHeight(const NewValue: ansistring; ACanvas: TCanvas; var AHeight: Integer);
+begin
+  AHeight := 100;
+end;
+
+procedure TSSHGDBMINotePropertyEditor.SetValue (const NewValue: ansistring);
+begin
+  // cannot write to note
+end;
+
 
 { TSSHGDBMIDebugger }
 
 function TSSHGDBMIDebugger.Caption: String;
 begin
   Result := 'GNU debugger through SSH (gdb)';
+end;
+
+function TSSHGDBMIDebugger.CreateProperties: TDebuggerProperties;
+begin
+  Result := TSSHGDBMIDebuggerProperties.Create;
 end;
 
 function TSSHGDBMIDebugger.ExePaths: String;
@@ -147,12 +198,18 @@ begin
 end;
 
 initialization
-  RegisterDebugger(TSSHGDBMIDebugger);
+  RegisterPropertyEditor(TypeInfo(String), TSSHGDBMIDebuggerProperties, 'Note', TSSHGDBMINotePropertyEditor);
   
+  RegisterDebugger(TSSHGDBMIDebugger);
+
 end.
 { =============================================================================
 
   $Log$
+  Revision 1.7  2004/01/04 03:53:36  marc
+  * Changed TComponentSelectionList to TPersistentSelectionList
+  + Added SSHdebugger property
+
   Revision 1.6  2003/12/27 11:22:37  mattias
   minor fixes
 

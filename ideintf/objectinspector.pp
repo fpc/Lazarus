@@ -168,7 +168,7 @@ type
   TOIPropertyGrid = class(TCustomControl)
   private
     FChangeStep: integer;
-    FComponentList: TComponentSelectionList;
+    FSelection: TPersistentSelectionList;
     FPropertyEditorHook: TPropertyEditorHook;
     FFilter: TTypeKinds;
     FItemIndex:integer;
@@ -216,7 +216,7 @@ type
     procedure PaintRow(ARow:integer);
     procedure DoPaint(PaintOnlyChangedValues:boolean);
 
-    procedure SetSelections(const NewSelections:TComponentSelectionList);
+    procedure SetSelection(const ASelection:TPersistentSelectionList);
     procedure SetPropertyEditorHook(NewPropertyEditorHook:TPropertyEditorHook);
 
     procedure AddPropertyEditor(PropEditor: TPropertyEditor);
@@ -259,8 +259,8 @@ type
     ValueComboBox:TComboBox;
     ValueButton:TButton;
 
-    property Selections: TComponentSelectionList read FComponentList
-                                                 write SetSelections;
+    property Selection: TPersistentSelectionList read FSelection
+                                                 write SetSelection;
     property PropertyEditorHook: TPropertyEditorHook
                            read FPropertyEditorHook write SetPropertyEditorHook;
     procedure BuildPropertyList;
@@ -343,7 +343,7 @@ type
     procedure OnMainPopupMenuPopup(Sender: TObject);
     procedure HookRefreshPropertyValues;
   private
-    FComponentList: TComponentSelectionList;
+    FSelection: TPersistentSelectionList;
     FComponentTreeHeight: integer;
     FDefaultItemHeight: integer;
     FFlags: TOIFlags;
@@ -361,12 +361,12 @@ type
     procedure SetDefaultItemHeight(const AValue: integer);
     procedure SetOnShowOptions(const AValue: TNotifyEvent);
     procedure SetPropertyEditorHook(NewValue:TPropertyEditorHook);
-    procedure SetSelections(const NewSelections:TComponentSelectionList);
+    procedure SetSelection(const ASelection:TPersistentSelectionList);
     procedure AddComponentToList(AComponent:TComponent; List: TStrings);
     procedure HookLookupRootChange;
     procedure OnGridModified(Sender: TObject);
     procedure SetAvailComboBoxText;
-    procedure HookGetSelectedComponents(Selection: TComponentSelectionList);
+    procedure HookGetSelection(const ASelection: TPersistentSelectionList);
     procedure SetShowComponentTree(const AValue: boolean);
     procedure SetUsePairSplitter(const AValue: boolean);
     procedure CreatePairSplitter;
@@ -375,7 +375,7 @@ type
   public
     constructor Create(AnOwner: TComponent); override;
     destructor Destroy; override;
-    procedure RefreshSelections;
+    procedure RefreshSelection;
     procedure RefreshPropertyValues;
     procedure RebuildPropertyLists;
     procedure FillComponentComboBox;
@@ -387,8 +387,8 @@ type
   public
     property DefaultItemHeight: integer read FDefaultItemHeight
                                         write SetDefaultItemHeight;
-    property Selections: TComponentSelectionList
-                                        read FComponentList write SetSelections;
+    property Selection: TPersistentSelectionList
+                                        read FSelection write SetSelection;
     property OnAddAvailComponent: TOnAddAvailableComponent
                    read FOnAddAvailableComponent write FOnAddAvailableComponent;
     property OnSelectComponentsInOI: TNotifyEvent
@@ -427,7 +427,7 @@ constructor TOIPropertyGrid.CreateWithParams(AnOwner:TComponent;
   DefItemHeight: integer);
 begin
   inherited Create(AnOwner);
-  FComponentList:=TComponentSelectionList.Create;
+  FSelection:=TPersistentSelectionList.Create;
   FPropertyEditorHook:=APropertyEditorHook;
   FFilter:=TypeFilter;
   FItemIndex:=-1;
@@ -600,7 +600,7 @@ begin
   FItemIndex:=-1;
   for a:=0 to FRows.Count-1 do Rows[a].Free;
   FreeAndNil(FRows);
-  FreeAndNil(FComponentList);
+  FreeAndNil(FSelection);
   FreeAndNil(FValueFont);
   FreeAndNil(FNameFont);
   FreeAndNil(FExpandedProperties);
@@ -631,8 +631,8 @@ begin
   Result:=0;
 end;
 
-procedure TOIPropertyGrid.SetSelections(
-  const NewSelections:TComponentSelectionList);
+procedure TOIPropertyGrid.SetSelection(
+  const ASelection: TPersistentSelectionList);
 var
   CurRow:TOIPropertyGridRow;
   OldSelectedRowPath:string;
@@ -640,7 +640,7 @@ begin
   OldSelectedRowPath:=PropertyPath(ItemIndex);
   ItemIndex:=-1;
   ClearRows;
-  FComponentList.Assign(NewSelections);
+  FSelection.Assign(ASelection);
   BuildPropertyList;
   CurRow:=GetRowByPath(OldSelectedRowPath);
   if CurRow<>nil then
@@ -653,7 +653,7 @@ begin
   if FPropertyEditorHook=NewPropertyEditorHook then exit;
   FPropertyEditorHook:=NewPropertyEditorHook;
   IncreaseChangeStep;
-  SetSelections(FComponentList);
+  SetSelection(FSelection);
 end;
 
 function TOIPropertyGrid.PropertyPath(Index:integer):string;
@@ -980,7 +980,7 @@ begin
   for a:=0 to FRows.Count-1 do Rows[a].Free;
   FRows.Clear;
   // get properties
-  GetComponentProperties(FComponentList,FFilter,FPropertyEditorHook,
+  GetPersistentProperties(FSelection, FFilter, FPropertyEditorHook,
     @AddPropertyEditor,nil);
   // sort
   FRows.Sort(@SortGridRows);
@@ -2196,7 +2196,7 @@ begin
   inherited Create(AnOwner);
   Caption := oisObjectInspector;
   FPropertyEditorHook:=nil;
-  FComponentList:=TComponentSelectionList.Create;
+  FSelection:=TPersistentSelectionList.Create;
   FUpdatingAvailComboBox:=false;
   Name := DefaultObjectInspectorName;
   FDefaultItemHeight := 22;
@@ -2282,7 +2282,7 @@ end;
 
 destructor TObjectInspector.Destroy;
 begin
-  FComponentList.Free;
+  FreeAndNil(FSelection);
   inherited Destroy;
 end;
 
@@ -2297,18 +2297,17 @@ begin
     FPropertyEditorHook.AddHandlerChangeLookupRoot(@HookLookupRootChange);
     FPropertyEditorHook.AddHandlerRefreshPropertyValues(
                                                 @HookRefreshPropertyValues);
-    FPropertyEditorHook.AddHandlerGetSelectedComponents(
-                                                    @HookGetSelectedComponents);
+    FPropertyEditorHook.AddHandlerGetSelection(@HookGetSelection);
     // select root component
-    FComponentList.Clear;
+    FSelection.Clear;
     if (FPropertyEditorHook<>nil) and (FPropertyEditorHook.LookupRoot<>nil)
     and (FPropertyEditorHook.LookupRoot is TComponent) then
-      FComponentList.Add(TComponent(FPropertyEditorHook.LookupRoot));
+      FSelection.Add(TComponent(FPropertyEditorHook.LookupRoot));
     FillComponentComboBox;
     PropertyGrid.PropertyEditorHook:=FPropertyEditorHook;
     EventGrid.PropertyEditorHook:=FPropertyEditorHook;
     ComponentTree.PropertyEditorHook:=FPropertyEditorHook;
-    RefreshSelections;
+    RefreshSelection;
   end;
 end;
 
@@ -2379,7 +2378,7 @@ begin
   if FUpdatingAvailComboBox then exit;
   FUpdatingAvailComboBox:=true;
   if ComponentTree<>nil then
-    ComponentTree.Selections:=FComponentList;
+    ComponentTree.Selection:=FSelection;
   NewList:=TStringList.Create;
   try
     if (FPropertyEditorHook<>nil)
@@ -2467,23 +2466,22 @@ begin
   end;
 end;
 
-procedure TObjectInspector.SetSelections(
-  const NewSelections:TComponentSelectionList);
+procedure TObjectInspector.SetSelection(
+  const ASelection:TPersistentSelectionList);
 begin
-//writeln('[TObjectInspector.SetSelections] ',NewSelections.Count);
-  if FComponentList.IsEqual(NewSelections) then exit;
-  FComponentList.Assign(NewSelections);
+  if FSelection.IsEqual(ASelection) then exit;
+  FSelection.Assign(ASelection);
   SetAvailComboBoxText;
-  RefreshSelections;
+  RefreshSelection;
 end;
 
-procedure TObjectInspector.RefreshSelections;
+procedure TObjectInspector.RefreshSelection;
 begin
-  PropertyGrid.Selections:=FComponentList;
-  EventGrid.Selections:=FComponentList;
-  ComponentTree.Selections:=FComponentList;
+  PropertyGrid.Selection := FSelection;
+  EventGrid.Selection := FSelection;
+  ComponentTree.Selection := FSelection;
   ComponentTree.MakeSelectionVisible;
-  if (not Visible) and (FComponentList.Count>0) then
+  if (not Visible) and (FSelection.Count>0) then
     Visible:=true;
 end;
 
@@ -2510,10 +2508,10 @@ var NewComponent,Root:TComponent;
 
   procedure SetSelectedComponent(c:TComponent);
   begin
-    if (FComponentList.Count=1) and (FComponentList[0]=c) then exit;
-    FComponentList.Clear;
-    FComponentList.Add(c);
-    RefreshSelections;
+    if (FSelection.Count=1) and (FSelection[0]=c) then exit;
+    FSelection.Clear;
+    FSelection.Add(c);
+    RefreshSelection;
     if Assigned(FOnSelectComponentsInOI) then
       FOnSelectComponentsInOI(Self);
   end;
@@ -2542,9 +2540,9 @@ end;
 procedure TObjectInspector.ComponentTreeSelectionChanged(Sender: TObject);
 begin
   if (PropertyEditorHook=nil) or (PropertyEditorHook.LookupRoot=nil) then exit;
-  if FComponentList.IsEqual(ComponentTree.Selections) then exit;
-  FComponentList.Assign(ComponentTree.Selections);
-  RefreshSelections;
+  if FSelection.IsEqual(ComponentTree.Selection) then exit;
+  Fselection.Assign(ComponentTree.Selection);
+  RefreshSelection;
   if Assigned(FOnSelectComponentsInOI) then
     FOnSelectComponentsInOI(Self);
 end;
@@ -2592,19 +2590,19 @@ end;
 
 procedure TObjectInspector.SetAvailComboBoxText;
 begin
-  if FComponentList.Count=1 then
-    AvailCompsComboBox.Text:=ComponentToString(FComponentList[0])
-  else if FComponentList.Count>1 then
-    AvailCompsComboBox.Text:=IntToStr(FComponentList.Count)+oisItemsSelected
+  case FSelection.Count of
+    1: AvailCompsComboBox.Text:=ComponentToString(FSelection[0]);
+    0: AvailCompsComboBox.Text:='';
   else
-    AvailCompsComboBox.Text:='';
+    AvailCompsComboBox.Text:=Format(oisItemsSelected, [FSelection.Count]);
+  end;
 end;
 
-procedure TObjectInspector.HookGetSelectedComponents(
-  Selection: TComponentSelectionList);
+procedure TObjectInspector.HookGetSelection(
+  const ASelection: TPersistentSelectionList);
 begin
-  if Selection=nil then exit;
-  Selection.Assign(FComponentList);
+  if ASelection=nil then exit;
+  ASelection.Assign(FSelection);
 end;
 
 procedure TObjectInspector.SetShowComponentTree(const AValue: boolean);
@@ -2717,7 +2715,7 @@ begin
     ValueEdit.Parent:=Parent;
     ValueComboBox.Parent:=Parent;
     ValueButton.Parent:=Parent;
-    Selections:=Self.FComponentList;
+    Selection:=Self.FSelection;
     Align:=alClient;
     PopupMenu:=MainPopupMenu;
     OnModified:=@OnGridModified;
@@ -2732,7 +2730,7 @@ begin
     ValueEdit.Parent:=Parent;
     ValueComboBox.Parent:=Parent;
     ValueButton.Parent:=Parent;
-    Selections:=Self.FComponentList;
+    Selection:=Self.FSelection;
     Align:=alClient;
     PopupMenu:=MainPopupMenu;
     OnModified:=@OnGridModified;

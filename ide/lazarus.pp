@@ -34,7 +34,7 @@ program Lazarus;
 
 {$mode objfpc}{$H+}
 
-{$I ide.inc}
+//{$I ide.inc}
 
 {$IFDEF WIN32}
   {$R *.res}
@@ -99,6 +99,10 @@ end.
 
 {
   $Log$
+  Revision 1.53  2004/01/04 03:53:35  marc
+  * Changed TComponentSelectionList to TPersistentSelectionList
+  + Added SSHdebugger property
+
   Revision 1.52  2003/08/18 14:40:29  mattias
   deactivated memcheck
 
