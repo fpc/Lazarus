@@ -156,7 +156,8 @@ ResourceString
   rsErrorReadingProperty = 'Error reading %s%s%s: %s';
   rsInvalidFormObjectStream = 'invalid Form object stream';
   rsScrollBarOutOfRange = 'ScrollBar property out of range';
-  rsInvalidDate = 'Invalid Date :%s';
+  rsInvalidDate = 'Invalid Date : %s';
+  rsInvalidDateRangeHint = 'Invalid Date: %s. Must be between %s and %s';
   rsErrorOccurredInAtAddressFrame = 'Error occurred in %s at %sAddress %s%s'
     +' Frame %s';
   rsException = 'Exception';

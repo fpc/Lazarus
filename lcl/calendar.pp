@@ -223,21 +223,16 @@ end;
 procedure TCustomCalendar.SetDateTime(const AValue: TDateTime);
 {$IFDEF WIN32}
 var
-  NewestCalendarMinDate,NewestCalendarMaxDate,OldestMinDate,OldestMaxDate:integer;
+  CalendarMinDate,CalendarMaxDate: integer;
 {$ENDIF}
 begin
   if AValue=FDate then exit;
-  {$IFDEF WIN32}
-  NewestCalendarMinDate:=0;
-  NewestCalendarMaxDate:=trunc(MaxDateTime);
-  OldestMinDate:=4294913499;
-  OldestMaxDate:=4294967295;
-  if not(((AValue>=NewestCalendarMinDate)and(AValue<=NewestCalendarMaxDate))or
-     ((AValue>=OldestMinDate)and(AValue<=OldestMaxDate)))then begin
-    raise EInvalidDate.CreateFmt(rsInvalidDate, ['must be in '+
-      DateToStr(OldestMinDate)+'-'+DateToStr(NewestCalendarMaxDate)]);
-    exit
-  end;
+  {$IFDEF WIN32} // TODO: move this test to the win32 interface?
+  CalendarMinDate:=-53787;// 14 sep 1752, start of Gregorian calendar in England
+  CalendarMaxDate:=trunc(MaxDateTime);
+  if not ((AValue>=CalendarMinDate)and(AValue<=CalendarMaxDate)) then
+    raise EInvalidDate.CreateFmt(rsInvalidDateRangeHint, [DateToStr(AValue),
+        DateToStr(CalendarMinDate), DateToStr(CalendarMaxDate)]);
   {$ENDIF}
   FDate:=AValue;
   FDateAsString:=FormatDateTime(ShortDateFormat,FDate);
