@@ -833,16 +833,17 @@ begin
 //write('CreateBrushIndirect->');
   GObject := NewGDIObject(gdiBrush);
 //writeln('[TgtkObject.CreateBrushIndirect] ',HexStr(Cardinal(GObject),8));
-
+  GObject^.IsNullBrush := False; 
   with LogBrush do
   begin
     case lbStyle of
  //     BS_HOLLOW,         // Hollow brush.
        BS_NULL:           // Same as BS_HOLLOW.
         begin
-          GObject^.GDIBrushFill := GDK_STIPPLED;
-          GObject^.GDIBrushPixmap :=
-            gdk_bitmap_create_from_data(nil, @HATCH_NULL, 8, 8);
+          //GObject^.GDIBrushFill := GDK_STIPPLED;
+          //GObject^.GDIBrushPixmap :=
+          //  gdk_bitmap_create_from_data(nil, @HATCH_NULL, 8, 8);
+	  GObject^.IsNullBrush := True;   
         end;
         
       BS_SOLID:          // Solid brush.
@@ -901,7 +902,8 @@ begin
                         , [lbStyle]);
     end;
 
-    SetGDIColorRef(GObject^.GDIBrushColor,lbColor);
+    If (sError = '') and not GObject^.IsNullBrush then
+      SetGDIColorRef(GObject^.GDIBrushColor,lbColor);
   end;
   if sError = '' then
     Result := HBRUSH(GObject)
@@ -2344,13 +2346,15 @@ begin
 //      gdk_colormap_free_colors(gdk_colormap_get_system, @InnerBR, 1);
       
       //Draw interiour
-      if (grfFlags and BF_MIDDLE) = BF_MIDDLE
+      if ((grfFlags and BF_MIDDLE) = BF_MIDDLE) and 
+        not CurrentBrush^.IsNullBrush
       then begin
         Width := R.Right - R.Left + 1;
         Height := R.Bottom - R.Top + 1;
         SelectGDKBrushProps(DC);
         DCOrigin:=GetDCOffset(TDeviceContext(DC));
-        gdk_draw_rectangle(Drawable, GC, 1, R.Left+DCOrigin.X, R.Top+DCOrigin.Y,
+        If not CurrentBrush^.IsNullBrush then
+	  gdk_draw_rectangle(Drawable, GC, 1, R.Left+DCOrigin.X, R.Top+DCOrigin.Y,
                            Width, Height);
       end;
 
@@ -2687,7 +2691,8 @@ begin
       // first draw interior in brush color
       SelectGDKBrushProps(DC);
       DCOrigin:=GetDCOffset(TDeviceContext(DC));
-      gdk_draw_arc(Drawable, GC, 1, x+DCOrigin.X, y+DCOrigin.Y, Width, Height,
+      If not CurrentBrush^.IsNullBrush then
+        gdk_draw_arc(Drawable, GC, 1, x+DCOrigin.X, y+DCOrigin.Y, Width, Height,
                    0, 360 shl 6);
 
       // Draw outline
@@ -2891,7 +2896,8 @@ begin
       end;
       SelectGDKBrushProps(DC);
       DCOrigin:=GetDCOffset(TDeviceContext(DC));
-      gdk_draw_rectangle(Drawable, GC, 1,
+      If not CurrentBrush^.IsNullBrush then
+        gdk_draw_rectangle(Drawable, GC, 1,
                          Rect.Left+DCOrigin.X, Rect.Top+DCOrigin.Y,
                          Width, Height);
       // Restore current brush
@@ -5063,18 +5069,19 @@ begin
       // first draw interior in brush color
       SelectGDKBrushProps(DC);
 
-      if Winding then begin
-        Tmp := CreateRectRGN(0,0,0,0);
-        GetClipRGN(DC, Tmp);
-        RGN := CreatePolygonRgn(Points, NumPts, True);
-        ExtSelectClipRGN(DC, RGN, RGN_AND);
-        DeleteObject(RGN);
-        GetClipBox(DC, @ClipRect);
-	FillRect(DC, ClipRect, HBrush(CurrentBrush));
-        SelectClipRGN(DC, Tmp);
-        DeleteObject(Tmp);
-      end else
-        gdk_draw_polygon(Drawable, GC, 1, PointArray, NumPts);
+      If not CurrentBrush^.IsNullBrush then
+        if Winding then begin
+          Tmp := CreateRectRGN(0,0,0,0);
+          GetClipRGN(DC, Tmp);
+          RGN := CreatePolygonRgn(Points, NumPts, True);
+          ExtSelectClipRGN(DC, RGN, RGN_AND);
+          DeleteObject(RGN);
+          GetClipBox(DC, @ClipRect);
+  	  FillRect(DC, ClipRect, HBrush(CurrentBrush));
+          SelectClipRGN(DC, Tmp);
+          DeleteObject(Tmp);
+        end else
+          gdk_draw_polygon(Drawable, GC, 1, PointArray, NumPts);
 
       // draw outline
 
@@ -5377,7 +5384,8 @@ begin
       // first draw interior in brush color
       SelectGDKBrushProps(DC);
       DCOrigin:=GetDCOffset(TDeviceContext(DC));
-      gdk_draw_rectangle(Drawable, GC, 1, Left+DCOrigin.X, Top+DCOrigin.Y,
+      If not CurrentBrush^.IsNullBrush then
+        gdk_draw_rectangle(Drawable, GC, 1, Left+DCOrigin.X, Top+DCOrigin.Y,
                          Width, Height);
 
       // Draw outline
@@ -6948,7 +6956,8 @@ var
       CurrentBrush := PGdiObject(Brush);
       SelectedColors := dcscCustom;
       SelectGDKBrushProps(DC);
-      gdk_draw_rectangle(Scale^.GDIPixmapObject, GC, 1, 0, 0, Width, Height);
+      If not CurrentBrush^.IsNullBrush then
+        gdk_draw_rectangle(Scale^.GDIPixmapObject, GC, 1, 0, 0, Width, Height);
       // Restore current brush
       SelectedColors := dcscCustom;
       CurrentBrush := OldCurrentBrush;
@@ -7485,6 +7494,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.177  2002/10/30 17:43:37  lazarus
+  AJ: added IsNullBrush checks to reduce pointless color allocations & GDK function calls
+
   Revision 1.176  2002/10/29 23:14:28  lazarus
   MG: removed interfaces
 
