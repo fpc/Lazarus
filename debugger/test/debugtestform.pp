@@ -87,7 +87,7 @@ implementation
 
 uses
   SysUtils,
-  GDBDebugger, DBGBreakPoint;
+  GDBMIDebugger;
 
 procedure TDebugTestForm.Loaded;
 begin
@@ -120,7 +120,7 @@ procedure TDebugTestForm.cmdInitClick(Sender: TObject);
 begin
   if FDebugger = nil 
   then begin
-    FDebugger := TGDBDebugger.Create;
+    FDebugger := TGDBMIDebugger.Create;
     FDebugger.OnDbgOutput := @DBGOutput;
     FDebugger.OnOutput := @DBGTargetOutput;
     FDebugger.OnCurrent := @DBGCurrent;
@@ -130,9 +130,10 @@ begin
     // Something strange going on here, 
     // sometimes the form crashes during load with Application as owner
     // sometimes the form crashes during load with nil as owner
-    FOutputForm := TDBGOutputForm.Create(nil);
-    FOutputForm.OnDestroy := @OutputFormDestroy;
-    FOutputForm.Show;
+//    FOutputForm := TDBGOutputForm.Create(nil);
+//    FOutputForm.OnDestroy := @OutputFormDestroy;
+//    FOutputForm.Show;
+    FOutputForm := nil;
   end;
   FDebugger.Init;
   FDebugger.FileName := txtFileName.Text;
@@ -191,7 +192,7 @@ end;
 
 procedure TDebugTestForm.cmdCommandClick(Sender: TObject);
 begin
-  TGDBDebugger(FDebugger).TestCmd(txtCommand.Text);
+  TGDBMIDebugger(FDebugger).TestCmd(txtCommand.Text);
 end;
 
 procedure TDebugTestForm.cmdClearClick(Sender: TObject);
@@ -260,6 +261,12 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.4  2002/03/09 02:03:59  lazarus
+  MWE:
+    * Upgraded gdb debugger to gdb/mi debugger
+    * Set default value for autpopoup
+    * Added Clear popup to debugger output window
+
   Revision 1.3  2002/02/05 23:16:48  lazarus
   MWE: * Updated tebugger
        + Added debugger to IDE

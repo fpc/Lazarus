@@ -59,6 +59,7 @@ debugger/dbgoutputform.pp svneol=native#text/pascal
 debugger/dbgwatch.pp svneol=native#text/pascal
 debugger/debugger.pp svneol=native#text/pascal
 debugger/gdbdebugger.pp svneol=native#text/pascal
+debugger/gdbmidebugger.pp svneol=native#text/pascal
 debugger/tdbgoutputform.lfm svneol=native#text/plain
 debugger/test/debugtest.pp svneol=native#text/pascal
 debugger/test/debugtestform.pp svneol=native#text/pascal

@@ -11,7 +11,8 @@
 constructor TPopupMenu.Create(AOwner : TComponent);
 begin
   inherited Create(AOwner);
-  FCompStyle := csPopupMenu;
+  FCompStyle := csPopupMenu; 
+  FAutoPopup := True;
 end;
 
 Procedure TPopupMenu.PopUp(X,Y : Integer);
@@ -27,6 +28,12 @@ end;
 
 {
   $Log$
+  Revision 1.3  2002/03/09 02:03:59  lazarus
+  MWE:
+    * Upgraded gdb debugger to gdb/mi debugger
+    * Set default value for autpopoup
+    * Added Clear popup to debugger output window
+
   Revision 1.2  2000/12/22 19:55:38  lazarus
   Added the Popupmenu code to the LCL.
   Now you can right click on the editor and a PopupMenu appears.

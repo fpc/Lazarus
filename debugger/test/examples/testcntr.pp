@@ -14,7 +14,10 @@ begin
     repeat 
       Write(Format('[%.10d] ', [m]));
       Inc(m);
-      for n := 0 to 79 do Write('.');
+      for n := 0 to 79 do 
+      begin
+        Write('*');
+      end;
       WriteLN;
     until m mod 10 = 0;
     Wait(10);

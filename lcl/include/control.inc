@@ -403,9 +403,9 @@ end;
 {------------------------------------------------------------------------------}
 {       TControl GetPopupMenu                                 }
 {------------------------------------------------------------------------------}
-Function TControl.GetPopupMenu: TPopupMenu;
-Begin
-Result := FPopupMenu;
+function TControl.GetPopupMenu: TPopupMenu;
+begin
+  Result := FPopupMenu;
 end;
 
 {------------------------------------------------------------------------------}
@@ -445,7 +445,7 @@ begin
         begin
         if not (csDoubleClicks in ControlStyle) then
           begin
-          case MEssage.Msg of
+          case Message.Msg of
             LM_LButtonDBLCLK,
             LM_RBUTTONDBLCLK,
             LM_MBUTTONDBLCLK:
@@ -1349,6 +1349,12 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.34  2002/03/09 02:03:59  lazarus
+  MWE:
+    * Upgraded gdb debugger to gdb/mi debugger
+    * Set default value for autpopoup
+    * Added Clear popup to debugger output window
+
   Revision 1.33  2002/03/08 11:37:42  lazarus
   MG: outputfilter can now find include files
 
