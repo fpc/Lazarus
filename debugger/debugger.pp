@@ -1332,11 +1332,11 @@ begin
   end;
 end;
 
-class procedure SetProperties(const AProperties: TDebuggerProperties);
+class procedure TDebugger.SetProperties(const AProperties: TDebuggerProperties);
 begin
   if MDebuggerProperties = nil 
   then begin
-    GetDebuggerProperties;
+    GetProperties;
     if MDebuggerProperties = nil // they weren't created ?
     then Exit;
   end;
@@ -3133,6 +3133,9 @@ finalization
 end.
 { =============================================================================
   $Log$
+  Revision 1.53  2003/12/27 01:30:35  mattias
+  fixed compilation
+
   Revision 1.52  2003/12/27 01:05:03  marc
   + Added debugger properties
 
