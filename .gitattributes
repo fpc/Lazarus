@@ -114,7 +114,6 @@ ide/formeditor.pp svneol=native#text/pascal
 ide/global.inc svneol=native#text/pascal
 ide/global.pp svneol=native#text/pascal
 ide/idecomp.pp svneol=native#text/pascal
-ide/ideeditor.pp svneol=native#text/pascal
 ide/include/linux/lazconf.inc svneol=native#text/pascal
 ide/include/win32/lazconf.inc svneol=native#text/pascal
 ide/lazarus.pp svneol=native#text/pascal

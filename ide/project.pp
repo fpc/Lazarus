@@ -27,7 +27,7 @@ unit project;
 interface
 
 uses
-  Classes, Global, SysUtils, IdeEditor, IniFiles,mwCustomEdit, FORMS,dlgMessage;
+  Classes, Global, SysUtils, IniFiles,mwCustomEdit, FORMS,dlgMessage;
 
 type
 
@@ -100,9 +100,9 @@ begin
   //have to check this later
   INIFIle.WriteString('Modules','EditWindowCount','1');
 
-  INIFile.WriteInteger('EditWindow0','ViewCount',IdeEditor1.Notebook1.Pages.Count);
-  INIFile.WriteInteger('EditWindow0','CurrentView',IdeEditor1.Notebook1.PageIndex);
-  for I := 0 to ideEditor1.Notebook1.Pages.Count-1 do
+//  INIFile.WriteInteger('EditWindow0','ViewCount',IdeEditor1.Notebook1.Pages.Count);
+//  INIFile.WriteInteger('EditWindow0','CurrentView',IdeEditor1.Notebook1.PageIndex);
+{  for I := 0 to ideEditor1.Notebook1.Pages.Count-1 do
   begin
   
     //Determine what entry each notebook is displaying.
@@ -130,17 +130,17 @@ begin
        end;
     end;
   end;
-  if IdeEditor1.Visible 
+  if IdeEditor1.Visible
   then INIFile.WriteInteger('EditWindow0','Visible',1)
   else INIFile.WriteInteger('EditWindow0','Visible',0);
-
+}
 //Write out screen coords
-  INIFile.WriteInteger('EditWindow0','Left',ideEditor1.Left);
+{  INIFile.WriteInteger('EditWindow0','Left',ideEditor1.Left);
   INIFile.WriteInteger('EditWindow0','Top',ideEditor1.Top);
   INIFile.WriteInteger('EditWindow0','Height',ideEditor1.Height);
   INIFile.WriteInteger('EditWindow0','Width',ideEditor1.Width);
   INIFile.WriteInteger('EditWindow0','CurrentView',ideEditor1.Notebook1.Pageindex);
-
+ }
   INIFile.WriteInteger('Main Window','Create',1);
   INIFile.WriteInteger('Main Window','Visible',1);
   INIFile.WriteInteger('Main Window','State',0);  //0 = normal?
@@ -223,28 +223,28 @@ begin
         {debug}
         Assert(False, 'Trace:NAME = '+TUnitInfo(FUnits.Items[TempInt]).Name);
         
-        ideEditor1.AddPage(TUnitInfo(FUnits.Items[TempInt]).Name,TUnitInfo(FUnits.Items[TempInt]).Source);
+//        ideEditor1.AddPage(TUnitInfo(FUnits.Items[TempInt]).Name,TUnitInfo(FUnits.Items[TempInt]).Source);
       end;
       TempInt := INIFIle.ReadInteger('EditWindow'+inttostr(i),'CurrentView',0);
-      ideEditor1.Notebook1.Pageindex := tempint;
+//      ideEditor1.Notebook1.Pageindex := tempint;
     end;
     
     Assert(False, 'Trace:Read Visible');
     Assert(False, 'Trace:I = '+Inttostr(i));
 
-    ideEditor1.Visible := (INIFile.ReadInteger('EditWindow'+inttostr(i),'Visible',0) = 1);
+{    ideEditor1.Visible := (INIFile.ReadInteger('EditWindow'+inttostr(i),'Visible',0) = 1);
     ideEditor1.Left := INIFIle.ReadInteger('EditWindow'+inttostr(i),'Left',0);
     ideEditor1.Top := INIFIle.ReadInteger('EditWindow'+inttostr(i),'Top',0);
     ideEditor1.Width := INIFIle.ReadInteger('EditWindow'+inttostr(i),'Width',300);
     ideEditor1.Height := INIFIle.ReadInteger('EditWindow'+inttostr(i),'Height',400);
-
+ }
   end;
 
   Assert(False, 'Trace:For loop : ViewCount = '+Inttostr(ViewCount));
 
   for i := 0 to ViewCount - 1 do
   begin
-    TempEditor := ideEditor1.GetEditorfromPage(i);
+//    TempEditor := ideEditor1.GetEditorfromPage(i);
     tempEditor.CaretX := INIFIle.ReadInteger('View'+inttostr(i),'CursorX',0);
     tempEditor.CaretY := INIFIle.ReadInteger('View'+inttostr(i),'CursorY',0);
     tempEditor.TopLine := INIFIle.ReadInteger('View'+inttostr(i),'TopLine',0);
@@ -293,6 +293,13 @@ end;
 end.
 {
   $Log$
+  Revision 1.2  2000/12/19 18:43:13  lazarus
+  Removed IDEEDITOR.  This causes the PROJECT class to not function.
+  Saving projects no longer works.
+
+  I added TSourceNotebook and TSourceEditor.  They do all the work for saving/closing/opening units.  Somethings work but they are in early development.
+  Shane
+
   Revision 1.1  2000/07/13 10:27:48  michael
   + Initial import
 

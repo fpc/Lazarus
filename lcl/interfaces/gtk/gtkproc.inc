@@ -453,7 +453,7 @@ end;
 
 {------------------------------------------------------------------------------
   Procedure: DeliverMessage
-  Params:    Message: thje message to process
+  Params:    Message: the message to process
   Returns:   True if handled
 
   Generic function whih calls the WindowProc if defined, otherwise the 
@@ -668,6 +668,13 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.6  2000/12/19 18:43:13  lazarus
+  Removed IDEEDITOR.  This causes the PROJECT class to not function.
+  Saving projects no longer works.
+
+  I added TSourceNotebook and TSourceEditor.  They do all the work for saving/closing/opening units.  Somethings work but they are in early development.
+  Shane
+
   Revision 1.5  2000/10/09 22:50:32  lazarus
   MWE:
     * fixed some selection code

@@ -75,12 +75,6 @@ begin
    Result := DeliverMessage(Data, Mess) = 0;
 end;
 
-//  TLMPaint = packed record
-//    Msg: Cardinal;
-//    DC: HDC;
-//    Unused: Longint;
-//    Result: Longint;
-//  end;
 function gtkdraw(Widget: PGtkWidget; area : PgdkRectangle; data: gPointer) : GBoolean; cdecl;
 var
    MSG: TLMPaint;
@@ -106,6 +100,25 @@ begin
    MSG.Unused := 0;
 
    Result := DeliverPostMessage(Data, MSG);
+end;
+
+
+function gtkfrmactivate( widget: PGtkWidget; Event : TgdkEventFocus; data: gPointer) : GBoolean; cdecl;
+var
+   Mess : TLMActivate;
+begin
+   EventTrace('activate', data);
+   Mess.Msg := LM_ACTIVATE;
+   Result := DeliverPostMessage(Data, Mess);
+end;
+
+function gtkfrmdeactivate( widget: PGtkWidget; Event : TgdkEventFocus; data: gPointer) : GBoolean; cdecl;
+var
+   Mess : TLMActivate;
+begin
+   EventTrace('deactivate', data);
+   Mess.Msg := LM_DEACTIVATE;
+   Result := DeliverPostMessage(Data, Mess);
 end;
 
 function GTKMap(Widget: PGTKWidget; Data: gPointer): GBoolean; cdecl;
@@ -1077,6 +1090,13 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.9  2000/12/19 18:43:13  lazarus
+  Removed IDEEDITOR.  This causes the PROJECT class to not function.
+  Saving projects no longer works.
+
+  I added TSourceNotebook and TSourceEditor.  They do all the work for saving/closing/opening units.  Somethings work but they are in early development.
+  Shane
+
   Revision 1.8  2000/11/29 21:22:35  lazarus
   New Object Inspector code
   Shane

@@ -271,12 +271,14 @@ LM_EXIT	   = LM_USER+60;
 LM_SCREENINIT = LM_USER+61;
 LM_CLOSEQUERY = LM_USER+62;
 LM_DRAGSTART = LM_USER+63;
-LM_CB_FIRST = LM_USER+64;
+LM_DEACTIVATE = LM_USER+64;  //used when a form is no longer in front
+
+LM_CB_FIRST = LM_USER+100;
 LM_CB_GETCOUNT = LM_CB_FIRST+1;
 LM_CB_GETTEXT = LM_CB_FIRST+2;
 LM_CB_ADDTEXT = LM_CB_FIRST+3;
 
-LM_CB_LAST = LM_CB_FIRST+10;  //LM_USER+74
+LM_CB_LAST = LM_CB_FIRST+10;  //LM_USER+110
 
 LM_UNKNOWN = LM_User+99;
 
@@ -425,6 +427,14 @@ TLMMove = record
       Pos: TSmallPoint;
       Result: Longint);
 end;
+
+TLMActivate = record
+    Msg: Cardinal;
+    Active: BOOL;
+    Minimized : WordBool;
+    ActiveWindow : HWND;
+    Result: Longint;
+  end;
 
 TLMNCActivate = record
     Msg: Cardinal;
@@ -773,6 +783,13 @@ end.
 
 {
   $Log$
+  Revision 1.6  2000/12/19 18:43:13  lazarus
+  Removed IDEEDITOR.  This causes the PROJECT class to not function.
+  Saving projects no longer works.
+
+  I added TSourceNotebook and TSourceEditor.  They do all the work for saving/closing/opening units.  Somethings work but they are in early development.
+  Shane
+
   Revision 1.5  2000/11/29 21:22:35  lazarus
   New Object Inspector code
   Shane

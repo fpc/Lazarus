@@ -32,7 +32,7 @@ uses
   Spin, project,sysutils, global,
   compileroptions, Controls, graphics, extctrls, Dialogs, dlgMEssage,
   Designer, process, idecomp, Find_dlg, FormEditor, AbstractFormEditor,
-  CustomFormEditor, ObjectInspector, ControlSelection;
+  CustomFormEditor, ObjectInspector, ControlSelection, UnitEditor;
 
 const
   STANDARDBTNCOUNT = 50;
@@ -129,6 +129,9 @@ type
     Procedure mnuViewUnitsClicked(Sender : TObject);
     Procedure mnuViewFormsClicked(Sender : TObject);
 
+    Procedure mnuToggleFormClicked(Sender : TObject);
+    Procedure CodeorFormActivated(Sender : TObject);
+
     Procedure mnuViewColorClicked(Sender : TObject);
     Procedure mnuViewFontClicked(Sender : TObject);
     procedure mnuNewProjectClicked(Sender : TObject);
@@ -152,6 +155,8 @@ type
     procedure OIOnAddAvailableComponent(AComponent:TComponent; var Allowed:boolean);
     procedure OIOnSelectComponent(AComponent:TComponent);
   private
+    FCodeLastActivated : Boolean; //used for toggling between code and forms
+    FControlLastActivated : TObject;
     Function CreateSeperator : TMenuItem;
     Procedure SetBtnDefaults(Control : Pointer;I,Page : Integer);
     Function ReturnActiveUnitList : TUnitInfo;
@@ -199,12 +204,12 @@ var
   Form1 : TForm1;
   FormEditor1 : TFormEditor;
   ObjectInspector1 : TObjectInspector;
-
+  SourceNotebook : TSourceNotebook;
   TagInc : Integer;
 implementation
 
 uses
-  TestForm, IDEEditor,mwCustomEdit,gtk,ViewUnit_dlg,ViewForm_dlg, Math;
+  TestForm, ViewUnit_dlg,ViewForm_dlg, Math;
 
 { TForm1 }
 
@@ -226,6 +231,8 @@ begin
   height := 125;
   Position:= poDesigned;
   Name := 'Form1';
+
+
   LoadMainMenu;
 
   MouseDownControl:=nil;
@@ -414,7 +421,7 @@ begin
     Enabled := True;
     Top := 25;
     Left := Speedbutton6.Left + 26;
-//    OnClick := @mnuToggleFormCLicked;
+    OnClick := @mnuToggleFormCLicked;
     Glyph := Pixmap1;
     Visible := True;
     Name := 'Speedbutton7';
@@ -643,6 +650,7 @@ begin
   Compiler1 := TCompiler.Create;
   Compiler1.OutputString := @Messagedlg.Add;
 
+{ Create other forms }
   ObjectInspector1 := TObjectInspector.Create(Self);
   ObjectInspector1.SetBounds(0,Top+Height+5,230,600);
   ObjectInspector1.OnAddAvailComponent:=@OIOnAddAvailableComponent;
@@ -652,6 +660,14 @@ begin
 
   FormEditor1 := TFormEditor.Create;
   FormEditor1.Obj_Inspector := ObjectInspector1;
+
+  SourceNotebook := TSourceNotebook.Create(self);
+  SourceNotebook.OnActivate := @CodeorFormActivated;
+  itmFileSave.OnClick := @SourceNotebook.SaveClicked;
+  itmFileSaveAs.OnClick := @SourceNotebook.SaveAsClicked;
+  itmFileSaveAll.OnClick := @SourceNotebook.SaveAllClicked;
+  itmFileClose.OnClick := @SourceNotebook.CloseClicked;
+
 
 end;
 
@@ -690,20 +706,11 @@ end;
 
 procedure TForm1.ButtonClick(Sender : TObject);
 Begin
-  TestForm1.Show;
-  IDEEditor1.Show;
-
 End;
 
 {------------------------------------------------------------------------------}
 procedure TForm1.FormShow(Sender : TObject);
 Begin
-  //Set default location for IDEEDitor;
-   IDEEditor1.Position := poDesigned;
-   IDEeditor1.Left := 0;
-   IdeEditor1.Top := Top+Height;
-
-  Assert(False, 'Trace:++++++++++++++____________++++++++++IN TMAINs FORMSHOW');
 
 end;
 
@@ -780,23 +787,19 @@ begin
 
   itmFileSave := TMenuItem.Create(Self);
   itmFileSave.Caption := 'Save';
-  itmFileSave.OnClick := @mnuSaveClicked;
   mnuFile.Add(itmFileSave);
 
   itmFileSaveAs := TMenuItem.Create(Self);
   itmFileSaveAs.Caption := 'Save As';
-  itmFileSaveAs.OnClick := @mnuSaveAsClicked;
   mnuFile.Add(itmFileSaveAs);
 
   itmFileSaveAll := TMenuItem.Create(Self);
   itmFileSaveAll.Caption := 'Save All';
-  itmFileSaveAll.OnClick := @mnuSaveAllClicked;
   mnuFile.Add(itmFileSaveAll);
 
 
   itmFileClose := TMenuItem.Create(Self);
   itmFileClose.Caption := 'Close';
-  itmFileClose.OnClick := @mnuCloseClicked;
   itmFileClose.Enabled := False;
   mnuFile.Add(itmFileClose);
 
@@ -985,16 +988,7 @@ var
   SList : TUnitInfo;
   TempNum : Integer;
 begin
-  TempNum := ideEditor1.Notebook1.PageIndex;
-  if TempNum < 0 then Exit;
-  
-  for I := 0 to Project1.UnitList.Count-1  do
-  begin
-    SList := TUnitInfo(Project1.UnitList.Items[I]);
-    if SList.Page = TempNum 
-    then break;
-  end;
-  Result := SList;
+
 end;
 
 function TForm1.RenameUnit(OldUnitName, NewUnitName : string; SList : TUnitInfo) : Boolean;
@@ -1078,35 +1072,12 @@ Begin
 End;
 
 Procedure TForm1.ReAssignEditorLines(SList : TUnitInfo);
-var
-TempEdit : TmwCustomEdit;
 Begin
-if SList.page <> -1 then
-  begin
-  TempEdit := IdeEditor1.GetEditorFromPage(SList.Page);
-  if TempEdit <> nil then
-     Begin
-      TempEdit.Lines.Assign(SList.Source);
-      IdeEditor1.Notebook1.pages.Strings[SList.Page] := SList.Name;
-     end;
-
-  end;
 
 end;
 
 Procedure TForm1.ReAssignSourcefromEditor(var SList : TUnitInfo);
-var
-TempEdit : TmwCustomEdit;
 Begin
-if SList.page <> -1 then
-  begin
-  TempEdit := IdeEditor1.GetEditorFromPage(SList.Page);
-  if TempEdit <> nil then
-     Begin
-      SList.Source.Assign(TempEdit.Lines);
-     end;
-
-  end;
 
 end;
 
@@ -1257,57 +1228,43 @@ Begin
 end;
 
 procedure TForm1.mnuSaveClicked(Sender : TObject);
-var SList : TUnitInfo;
 begin
-  Assert(False, 'Trace:In save dialog');
-  SList := ReturnActiveUnitList;
-  if SList = nil then Exit;
-  Assert(False, 'Trace:Calling save by unit');
-  SaveByUnit(SList);
+//this is no longer used.  TSourceNotebook.SaveClicked is called
 end;
 
 {------------------------------------------------------------------------------}
 
 Procedure TForm1.mnuSaveAsClicked(Sender : TObject);
-var
-  SList : TUnitInfo;
 Begin
-  SList := ReturnActiveUnitList;
-  if SList = nil then Exit;
-  Assert(False, 'Trace:SLIST.PAGE is '+inttostr(SList.Page));
-  SaveDialog1.Title := 'Save '+SList.Name+' as :';
-  if SList.Filename <> '' then
-    SaveDialog1.Filename := SList.Filename
-  else
-    SaveDialog1.Filename := ExtractFilePath(Project1.Name)+SList.Name;
-
-  if SaveDialog1.Execute then
-  begin
-    RenameUnit(SList.Name, ExtractFileName(SaveDialog1.Filename),SList);
-    SList.Filename := SaveDialog1.Filename;
-  end
-  else
-    Exit;
-
-  SaveByUnit(SList);
+//this is no longer used.  TSourceNotebook.SaveAsClicked is called
 end;
 
 Procedure TForm1.mnuSaveAllClicked(Sender : TObject);
-var
-SList : TUnitInfo;
-TempNum : Integer;
-I : Integer;
 Begin
-
-For I := 0 to Project1.UnitList.Count-1  do
-            Begin
-            SList := TUnitInfo(Project1.UnitList.Items[I]);
-            if not(SaveByUnit(SList)) then exit;
-      end;
+//this is no longer used.  TSourceNotebook.SaveAllClicked is called
 
 End;
 
 
+Procedure TForm1.mnuToggleFormClicked(Sender : TObject);
+Begin
+writeln('Toggle form clicked');
+
+if FCodeLastActivated then
+   SourceNotebook.DisplayFormforActivePage
+   else
+   SourceNotebook.DisplayCodeforControl(FControlLastActivated);
+end;
+
+
+Procedure TForm1.CodeorFormActivated(Sender : TObject);
+Begin
+FCodeLastActivated := (TForm(Sender) = TForm(SourceNotebook));
+if FCodeLastActivated then Writeln('TRUE') else Writeln('False');
+
+FControlLastActivated := Sender;
+
+end;
 
 
 {
@@ -1398,32 +1355,8 @@ end;
 {  mnuNewClicked}
 
 procedure TForm1.mnuNewClicked(Sender : TObject);
-var
-  SList : TUnitInfo;
-  TempName : string;
 begin
 
-  TempName:= '';
-  SList:= CreateUnit(TempName);
-  SList.Flags := pfSource;
-  with SList.Source do begin
-    { Add the default lines }
-    Add('unit ' + TempName + ';');
-    Add('');
-    Add('{$mode objfpc}');
-    Add('');
-    Add('interface');
-    Add('');
-    Add('implementation');
-    Add('');
-    Add('end.');
-  end;
-  
-  ideEditor1.AddPage(SList.Name,SList.Source);
-  SList.Page := ideEditor1.Notebook1.Pageindex;  //keep track of what page it is on
-  Project1.AddUnit(SList);
-  UpdateViewDialogs;
-  IdeEditor1.Visible:= true;
 end;
 
 function TForm1.FindDesigner(ChildComponent:TComponent):TDesigner;
@@ -1676,9 +1609,13 @@ begin
   TempForm.Designer :=
     TDesigner.Create(TCustomForm(CInterface.Control));
   TDesigner(TempForm.Designer).FormEditor := FormEditor1;
+
+  TDesigner(tempForm.Designer).SourceEditor := SourceNotebook.CreateUnitFromForm(TempForm);
+
   TempForm.OnMouseDown := @MouseDownOnControl;
   TempForm.OnMouseUp := @MouseUpOnControl;
   TempForm.OnMouseMove := @MouseMoveOnControl;
+  TempForm.OnActivate := @CodeOrFormActivated;
   TempForm.Show;
 
   ObjectInspector1.RootComponent := TForm(CInterface.Control);
@@ -1694,77 +1631,12 @@ var
   SList : TUnitInfo;
   Texts : String;
 begin
-Assert(False, 'Trace:******************OPEN DIALOG***************');
-OpenDialog1.Title := 'Open file:';
-  if OpenDialog1.Execute then
-   begin
-    Str := TStringList.Create;
-    try
-      SList := TUnitInfo.Create;
-      SList.Filename := OpenDialog1.Filename;
-      Assert(False, 'Trace:Filename := '+OpenDialog1.Filename);
-      with SList.Source do
-           LoadFromFile(SList.Filename);
-      Assert(False, 'Trace:Filename := '+SList.Filename);
 
-      //Determine unit name and form name
-        SetFlags(SList);
-        SetName_Form(SLIst);
-      Assert(False, 'Trace:Name of new formname is '+SList.FormName);
-      IDEEditor1.AddPage(SList.Name,SList.Source);
-      SList.Page := ideEditor1.Notebook1.Pageindex;  //keep track of what page it's on
-      Project1.AddUnit(SList);
-      UpdateViewDialogs;
-      ideEditor1.Show;
-    except
-    end;
-    itmFileClose.Enabled := True;
-  end;
-
-Assert(False, 'Trace:******************OPEN DIALOG EXIT***************');
 end;
 {------------------------------------------------------------------------------}
 
 Procedure TForm1.mnuCloseClicked(Sender : TObject);
-Var
-TempNum : Integer;
-I : Integer;
-SList : TUnitInfo;
-Found : Boolean;
-TempEdit : TmwCustomEdit;
 Begin
-// close the active notebook page.  If there isn't one then this menu shouldn't be enabled
-Found := False;
-TempNum := ideEditor1.Notebook1.PageIndex;
-if TempNum < 0 then Exit;
-
-For I := 0 to Project1.UnitList.Count-1  do
-  Begin
-    SList := TUnitInfo(Project1.UnitList.Items[I]);
-    If SList.Page = TempNum then
-       Begin
-       TempEdit := IdeEditor1.GetEditorFromPage(TempNum);
-       if TempEdit <> nil then
-  SList.Source.Assign(TempEdit.Lines);
-
-       SList.Page := -1;
-       Found := True;
-       break;
-       end;
-  End;
-if Found then
-Begin
-  ideEditor1.DeletePage(ideEditor1.Notebook1.PageIndex);
-   {  Subtract one from each unit's "page" that's after the deleted page to
-      account for the deletion of this page.}
-
-  for I := 0 to Project1.UnitList.Count-1 do
-      Begin
-      SList := TUnitInfo(Project1.UnitList.Items[I]);
-      if SList.Page > TempNum then
-         SList.page := SList.page -1;
-      end;
-end;
 
 end;
 
@@ -1805,90 +1677,18 @@ begin
 end;
 
 Procedure TForm1.mnuViewUnitsClicked(Sender : TObject);
-var
-SList : TUnitInfo;
-I : Integer;
-Tempstr : String;
 Begin
-if Project1.Unitlist.COunt = 0 then Exit;
-ViewUnits1.ShowModal;
-if (ViewUnits1.ModalResult = mrOK) then
-  Begin
-        SList := nil;
-  //Find it by name based on what's in Edit1.text
-    if ViewUnits1.Edit1.Text = '' then Exit;
-    TempStr := ViewUnits1.Edit1.Text;
-    For I := 0 to Project1.UnitList.Count -1 do
-       if Uppercase(TUnitInfo(Project1.UnitList.Items[i]).Name) = Uppercase(TempStr) then
-             Begin
-              SList := TUnitInfo(Project1.UnitList.Items[I]);
-              Break;
-             end;
 
-        if SList <> nil then
-        Begin
-        Assert(False, 'Trace:' + SList.Name+' selected via the listbox');
-        Assert(False, 'Trace:Page = '+inttostr(SList.Page));
-        If SList.Page = -1 then
-         begin
-            ideEditor1.AddPage(SList.Name,SList.Source);
-            SList.Page := ideEditor1.Notebook1.Pageindex;
-         end
-         else
-         IdeEditor1.Notebook1.Pageindex := SList.Page;
-        ideEditor1.Show;
-        End;
- End
- else
-Assert(False, 'Trace:OK NOT PRESSED');
 end;
 
 Procedure TForm1.mnuViewFormsClicked(Sender : TObject);
-var
-  SList : TUnitInfo;
-  Texts : String;
-  I : Integer;
 Begin
-if Project1.Unitlist.COunt = 0 then Exit;
-  ViewForms1.ShowModal;
 
-  if ViewForms1.ModalResult = mrOK 
-  then begin
-    if ViewForms1.Listbox1.Items.Count > 0
-    then begin
-      for I := 0 to ViewForms1.ListBox1.Items.Count-1 do
-        if ViewForms1.ListBox1.Selected[I] 
-        then Texts := ViewForms1.Listbox1.Items.Strings[I];
-                //Try and find an SList item where the formname equals Texts
-      for I := 0 to Project1.UnitList.Count-1 do
-      begin
-        SList := TUnitInfo(Project1.UnitList.Items[I]);
-        if SList.FormName = Texts
-        then Break
-        else SList := nil;
-      end;
-    end;     
-    if SList <> nil 
-    then begin
-        Assert(False, 'Trace:' + SList.Name+' selected via the listbox');
-      If SList.Page = -1
-      then begin
-        ideEditor1.AddPage(SList.Name,SList.Source);
-        SList.Page := ideEditor1.Notebook1.Pageindex;
-      end
-      else
-        IdeEditor1.Notebook1.Pageindex := SList.Page;
-
-     ideEditor1.Show;
-     //TODO: Write the following procedure to draw the DESIGN form
-     //  DrawForm(SList);
-    end;
-  end;
 end;
 
 Procedure TForm1.mnuViewCodeExplorerClick(Sender : TObject);
 begin
-  IDEEditor1.Show;
+SourceNotebook.Show;
 end;
 
 Procedure TForm1.mnuViewMessagesClick(Sender : TObject);
@@ -1897,116 +1697,7 @@ Begin
 End;
 
 Procedure TForm1.DoFind(Sender : TObject);
-var
-Source : TStrings;
-Str : String;
-CaseSensitive : Boolean;
-I : Integer;
-Findtext : String;
-CharCount : Integer;
-Found : Boolean;
-StartLineNUmber : Integer;
-Searchto : Integer;
-FoundAt  : Integer;
 Begin
-Found := False;
-if (IDeEditor1.Visible) then
-   begin
-   if (Sender is TFindDialog) then StartLineNumber := 0
-   else
-   StartLineNumber := IDEEditor1.CurrentCursorYLine-1;
-
-   IDEEditor1.BringToFront;
-   CaseSensitive := FindDialog1.cbCaseSensitive.Checked;
-   FindText := FindDialog1.FindText;
-   if not CaseSensitive then
-   FindText := Uppercase(FindText);
-   Source := IDEEditor1.CurrentSource;
-   if Source <> nil then
-      begin
-      CharCount := 0;
-      if FindDialog1.rgForwardBack.ItemIndex = 0 then
-      Begin
-      for I := StartLineNumber to Source.Count-1 do
-               Begin
-               Str := Source.Strings[i];
-Writeln('Str = '+Str);
-Writeln(Source.Strings[i]);
-
-               //check to see if you should be checking CASE
-               if not CaseSensitive then Str := UpperCase(str);
-
-               if (pos(FindText,Str) <> 0) then
-                  begin
-                  FoundAt := Pos(FindText,Str);
-               {if the text we are searching for appears more than once on a line,
-              the POS function only finds the first one.  Therefore, if we find the text
-                   and this function is called by something other than the FindDialog,
-              and we are on the same line as the cursor we need to DELETE what we found and
-             search again.  The problem is that effects placing the cursor in the right spot.
-            So, when we delete it, if we find it again we place th cursor to the spot the POS
-           function stated plus the difference between the STRING we are searching and the one
-                                          in the editor}
-               //first check to see if we are still on the first line
-               Found := True;
-               if (I = StartLineNumber) and not(Sender is TFindDialog) then
-                  Begin
-                  while (pos(FindText,str) +(Length(Source.Strings[i]) - Length(Str)) <= IDEEDITOR1.CurrentCursorXLine) and (pos(findtext,str) <> 0) do
-                     Begin
-                     Delete(Str,FoundAt,Length(FindText));
-                     end;
-                  if (pos(FindText,str) <> 0) then
-                     Begin
-                       Found := true;
-                       FoundAt :=pos(FindText,str);
-                     end;
-                  end;
-
-               FoundAt := pos(FindText,str) + (Length(Source.Strings[i]) - Length(Str));
-Writeln('***********************************************');
-Writeln('***********************************************');
-Writeln('***********************************************');
-Writeln('***FOUNDAT='+inttostr(foundat)+'********************************************');
-Writeln('***********************************************');
-Writeln('***********************************************');
-               if Found then
-                 Begin
-                  IDEEditor1.CurrentCursorYLine := I+1;
-                  IDEEditor1.CurrentCursorXLine := FoundAt;
-                  IDEEditor1.SelectText(I+1,FoundAt,I+1,FoundAt+Length(FindText));
-                  Break;
-                 end;
-                  end;
-                  CharCount := CharCount + Length(Str);
-               end;
-      end
-      else  {search backwards}
-      Begin
-      if StartLineNumber = 0 then StartLineNUmber := Source.Count-1;
-      for I := StartLineNumber downto 0 do
-               Begin
-               Str := Source.Strings[i];
-               //check to see if you should be checking CASE
-               if not CaseSensitive then Str := UpperCase(str);
-               if pos(FindText,Str) <> 0 then
-                  begin
-                  IDEEditor1.CurrentCursorYLine := I+1;
-                  IDEEditor1.CurrentCursorXLine := pos(FindText,Str);
-                  IDEEditor1.SelectText(I+1,pos(FindText,Str),I+1,pos(FindText,Str)+Length(FindText));
-                  Found := True;
-                  Break;
-                  end;
-                  CharCount := CharCount + Length(Str);
-               end;
-      end;
-
-
-      end;
-
-
-   end;
-if not found then
-   Application.Messagebox('Text not found','Error',MB_OK);
 
 end;
 
@@ -2193,62 +1884,7 @@ result := Texts;
 end;
 
 Procedure TForm1.MessageViewDblClick(Sender : TObject);
-var
-Texts  : String;
-num    : Integer;
-LineNum, ColNum : Integer;
-UnitName : String;
-SList : TUnitInfo;
-I     : Integer;
-Found : Boolean;
-tempEditor : TmwCustomEdit;
 Begin
-//get line number and unit name
-Texts :=  Messagedlg.Message;
-If Texts = '' then Exit;
-LineNum := Compiler1.GetLineNumber(Texts);
-ColNum := Compiler1.GetColumnNumber(Texts);
-UnitName := Compiler1.GetUnitName(Texts);
-
-//run through the units and load the offending one
-//this needs to be changed in case the offending one isn't a "project" file.
-if pos('.',UnitName) > 0 then
-UnitName := Copy(ExtractFileName(UnitName),1,pos('.',UnitName)-1);
-
-found := False;
-
-Assert(False, 'Trace:Unitname is '+unitname);
-for I := 0 to Project1.UnitList.Count-1 do
-    Begin
-    SList := TUnitInfo(Project1.UnitList[i]);
-    Assert(False, 'Trace:Slist says the name is '+slist.name);
-    if uppercase(SList.Name) = Uppercase(UnitName) then break;
-    end;
-
-if uppercase(SList.Name) = Uppercase(UnitName) then
-   Begin
-   Assert(False, 'Trace:Found a match');
-   if SList.Page <> -1 then
-		IdeEditor1.Notebook1.Pageindex := SList.Page
-   else
-     Begin
-     ideEditor1.AddPage(SList.Name,SList.Source);
-     SList.Page := ideEditor1.Notebook1.Pageindex;  //keep track of what page it is on
-     end;
-
-     if not(ideeditor1.visible) then ideeditor1.Show
-        else
-        ideEditor1.SetFocus;
-
-     TempEditor := ideEditor1.GetEditorfromPage(SList.page);
-     if TempEditor = nil then Exit;
-      TempEditor.CaretX := ColNum;
-      TempEditor.CaretY := LineNum;
-      TempEditor.SetFocus;
-   End;
-
-
-
 
 end;
 
@@ -2260,6 +1896,13 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.19  2000/12/19 18:43:12  lazarus
+  Removed IDEEDITOR.  This causes the PROJECT class to not function.
+  Saving projects no longer works.
+
+  I added TSourceNotebook and TSourceEditor.  They do all the work for saving/closing/opening units.  Somethings work but they are in early development.
+  Shane
+
   Revision 1.18  2000/12/15 18:25:16  lazarus
   Changes from Mattias and I.
   Shane

@@ -9,6 +9,7 @@ begin
   inherited AttachSignals;
   SetCallback(LM_CONFIGUREEVENT);
   SetCallback(LM_CLOSEQUERY);
+  SetCallBack(LM_Activate);
 end;
 
 {------------------------------------------------------------------------------}
@@ -131,6 +132,18 @@ begin
     Exclude(FFormState, fsShowing);
   end;
 
+end;
+
+{------------------------------------------------------------------------------
+  Method: TCustomForm.WMActivate
+  Params:   Msg: When the form is Activated
+  Returns:  nothing
+
+  Paint event handler.
+ ------------------------------------------------------------------------------}
+Procedure TCustomForm.WMActivate(var Message : TLMActivate);
+Begin
+if Assigned(FOnActivate) then FOnActivate(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -336,11 +349,12 @@ var
 
 begin
 // Assert(False, 'Trace:-----------------IN TCUSTOMFORM WNDPROC-------------------');
+
   with Message do
   case Msg of
     LM_ACTIVATE, LM_SETFOCUS, LM_KILLFOCUS:
       begin
-        if not FocusMEssages then Exit;
+        if not FocusMessages then Exit;
         if (MSg = LM_SetFocus) and not (csDesigning in ComponentState) 
         then begin
           FocusHandle := 0;
@@ -806,6 +820,13 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.7  2000/12/19 18:43:13  lazarus
+  Removed IDEEDITOR.  This causes the PROJECT class to not function.
+  Saving projects no longer works.
+
+  I added TSourceNotebook and TSourceEditor.  They do all the work for saving/closing/opening units.  Somethings work but they are in early development.
+  Shane
+
   Revision 1.6  2000/11/30 21:43:38  lazarus
   Changed TDesigner.  It's now notified when a control is added to it's CustomForm.
   It's created in main.pp when New Form is selected.

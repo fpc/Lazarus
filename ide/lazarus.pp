@@ -33,7 +33,6 @@ uses
   main,
   testform,
   compileroptions,
-  IdeEditor,
   viewunit_dlg,  //dialog used to list the units in a project
   viewform_dlg;  //dialog to display the forms in the project
 
@@ -55,7 +54,6 @@ begin
    Application.CreateForm(TForm1, Form1);
    Application.CreateForm(TfrmCompilerOptions, frmCompilerOptions);
    Application.CreateForm(TTestForm, TestForm1);
-   Application.CreateForm(TIDEEditor, IdeEditor1);
    Application.CreateForm(TViewUnits1, ViewUnits1);
    Application.CreateForm(TViewForms1, ViewForms1);
    SplashForm.StartTimer;
@@ -65,6 +63,13 @@ end.
 
 {
   $Log$
+  Revision 1.5  2000/12/19 18:43:12  lazarus
+  Removed IDEEDITOR.  This causes the PROJECT class to not function.
+  Saving projects no longer works.
+
+  I added TSourceNotebook and TSourceEditor.  They do all the work for saving/closing/opening units.  Somethings work but they are in early development.
+  Shane
+
   Revision 1.4  2000/09/10 23:08:29  lazarus
   MWE:
     + Added CreateCompatibeleBitamp function

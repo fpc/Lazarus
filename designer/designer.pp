@@ -25,7 +25,7 @@ unit designer;
 interface
 
 uses
-  classes, Forms, controls, lmessages, graphics, ControlSelection, FormEditor;
+  classes, Forms, controls, lmessages, graphics, ControlSelection, FormEditor, UnitEditor;
 
 type
   TGridPoint = record
@@ -37,17 +37,15 @@ type
   private
     FCustomForm: TCustomForm;
     FFormEditor : TFormEditor;
+    FSourceEditor : TSourceEditor;
     function GetIsControl: Boolean;
     procedure SetIsControl(Value: Boolean);
-    FSource : TStringList;
-    Function GetFormAncestor : String;
   protected
-    Function NewModuleSource(nmUnitName, nmForm, nmAncestor: String) : Boolean;
   public
     ControlSelection : TControlSelection;
     constructor Create(customform : TCustomform);
     destructor Destroy; override;
-    Function AddControlCode(Control : TComponent) : Boolean;
+    Procedure AddControlCode(Control : TComponent);
     procedure CreateNew(FileName : string);
     procedure LoadFile(FileName: string);
 
@@ -59,7 +57,7 @@ type
     property IsControl: Boolean read GetIsControl write SetIsControl;
     property Form: TCustomForm read FCustomForm write FCustomForm;
     property FormEditor : TFormEditor read FFormEditor write FFormEditor;
-    property FormAncestor : String read GetFormAncestor;
+    property SourceEditor : TSourceEditor read FSourceEditor write FSourceEditor;
  end;
 
  implementation
@@ -77,48 +75,19 @@ var
   I : Integer;
 begin
   inherited Create;
-
-
   FCustomForm := CustomForm;
-  FSource := TStringList.Create;
-  //create the code for the unit
-
-  if UpperCase(copy(FormAncestor,1,4))='FORM' then
-    nmUnit:='Unit'+copy(FormAncestor,5,length(FormAncestor)-4)
-  else
-    nmUnit:='Unit1';
-  NewModuleSource(nmUnit,CustomForm.Name,FormAncestor);
-
-  // The controlselection should NOT be owned by the form.
-  // When it is it shows up in the OI
-  // XXX ToDo: The OI should ask the formeditor for a good list of components
   ControlSelection := TControlSelection.Create(CustomForm);
 
-  try
-    Writeln('**********************************************');
-    for I := 1 to FSource.Count do
-    writeln(FSource.Strings[i-1]);
-    Writeln('**********************************************');
-  except
-    Application.MessageBox('error','error',0);
-  end;
+  //the source is created when the form is created.
+  //the TDesigner is created is MAin.pp and then TDesigner.SourceEditor := SourceNotebook.CreateFormFromUnit(CustomForm);
+
+
 end;
 
 destructor TDesigner.Destroy;
 Begin
   ControlSelection.free;
-  FSource.Free;
-
   Inherited;
-end;
-
-Function TDesigner.GetFormAncestor : String;
-var
-  PI : PTypeInfo;
-begin
-  PI := FCustomForm.ClassInfo;
-  Result := PI^.Name;
-  Delete(Result,1,1);
 end;
 
 
@@ -142,7 +111,7 @@ Begin
 
 end;
 
-Function TDesigner.NewModuleSource(nmUnitName, nmForm, nmAncestor: String): Boolean;
+{Function TDesigner.NewModuleSource(nmUnitName, nmForm, nmAncestor: String): Boolean;
 Var
   I : Integer;
 Begin
@@ -173,59 +142,15 @@ Begin
    except
      Result := False;
    end;
-end;
-
-Function TDesigner.AddControlCode(Control : TComponent) : Boolean;
-var
-  PT : PTypeData;
-  PI : PTypeInfo;
-  nmControlType : String;
-  I : Integer;
-  NewSource : String;
-begin
-  //get the control name
-  PI := Control.ClassInfo;
-  nmControlType := PI^.Name;
-
-//find the place in the code to add this now.
-//Anyone have good method sfor parsing the source to find spots like this?
-//here I look for the Name of the customform, the word "Class", and it's ancestor on the same line
-//not very good because it could be a comment or just a description of the class.
-//but for now I'll use it.
-For I := 0 to FSource.Count-1 do
-    if (pos(FormAncestor,FSource.Strings[i]) <> 0) and (pos(FCustomForm.Name,FSource.Strings[i]) <> 0) and (pos('CLASS',Uppercase(FSource.Strings[i])) <> 0) then
-        Break;
-
-
-
-  //if I => FSource.Count then I didn't find the line...
-  If I < FSource.Count then
-     Begin
-       //alphabetical
-       inc(i);
-       NewSource := Control.Name+' : '+nmControlType+';';
-
-       //  Here I decide if I need to try and insert the control's text code in any certain order.
-       //if there's no controls then I just insert it, otherwise...
-       if TWincontrol(Control.Owner).ControlCount > 0 then
-       while NewSource > (trim(FSource.Strings[i])) do
-         inc(i);
-
-          FSource.Insert(i,'       '+NewSource);
-     end;
-//debugging
-  try
-    Writeln('**********************************************');
-    for I := 1 to FSource.Count do
-    writeln(FSource.Strings[i-1]);
-    Writeln('**********************************************');
-  except
-    Application.MessageBox('error','error',0);
-  end;
-//debugging end
-
 
 end;
+}
+
+Procedure TDesigner.AddControlCode(Control : TComponent);
+Begin
+FSourceEditor.AddControlCode(Control);
+end;
+
 
 procedure TDesigner.Notification(AComponent: TComponent; Operation: TOperation);
 Begin

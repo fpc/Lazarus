@@ -76,6 +76,7 @@ type
     FKeyPreview: Boolean;
     FMenu : TMainMenu;
     FModalResult : TModalResult;
+    FOnActivate: TNotifyEvent;
     FOnCreate: TNotifyEvent;
     FOnDestroy: TNotifyEvent;
     FOnHide: TNotifyEvent;
@@ -98,6 +99,7 @@ type
     Function GetCanvas: TControlCanvas;
     Function IsForm : Boolean;
     { events }
+    Procedure WMActivate(var Message : TLMActivate); message LM_Activate;
     procedure WMPaint(var message: TLMPaint); message LM_PAINT;
     procedure WMSize(var message: TLMSize); message LM_Size;
     procedure WMShowWindow(var message: TLMShowWindow); message LM_SHOWWINDOW;
@@ -125,6 +127,7 @@ type
     property FormStyle : TFormStyle read FFormStyle write SetFormStyle default fsNormal;
     property Position : TPosition read FPosition write SetPosition default poDesigned;
     {events}
+    property OnActivate: TNotifyEvent read FOnActivate write FOnActivate;
     property OnCreate: TNotifyEvent read FOnCreate write FOnCreate;
     property OnDestroy: TNotifyEvent read FOnDestroy write FOnDestroy;
     property OnHide: TNotifyEvent read FOnHide write FOnHide;
@@ -175,6 +178,7 @@ type
       property Position;
       property Visible;
 //      property WindowState;
+      property OnActivate;
       property OnCreate;
       property OnDestroy;
       property OnShow;
@@ -325,6 +329,7 @@ end;
 initialization
   Screen:= TScreen.Create(nil);
   Application:= TApplication.Create(nil);
+  Focusmessages := True;
 
 finalization
   Application.Free;

@@ -1206,7 +1206,13 @@ begin
 
     LM_ACTIVATE :
     begin
-      ConnectSignal(gObject, 'activate', @gtkactivateCB);
+      if (Sender is TCustomForm) then
+         Begin
+         ConnectSignal(gObject, 'focus-in-event', @gtkfrmactivate);
+         ConnectSignal(gObject, 'focus-out-event', @gtkfrmdeactivate);
+         end
+      else
+         ConnectSignal(gObject, 'activate', @gtkactivateCB);
     end;
 
     LM_ACTIVATEITEM :
@@ -2666,6 +2672,13 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.10  2000/12/19 18:43:13  lazarus
+  Removed IDEEDITOR.  This causes the PROJECT class to not function.
+  Saving projects no longer works.
+
+  I added TSourceNotebook and TSourceEditor.  They do all the work for saving/closing/opening units.  Somethings work but they are in early development.
+  Shane
+
   Revision 1.9  2000/10/09 22:50:32  lazarus
   MWE:
     * fixed some selection code

@@ -63,7 +63,7 @@ var
 implementation
 
 uses
-  IdeEditor, mwCustomEdit;
+   mwCustomEdit;
 
 {$I global.inc}
 
@@ -73,6 +73,13 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.4  2000/12/19 18:43:12  lazarus
+  Removed IDEEDITOR.  This causes the PROJECT class to not function.
+  Saving projects no longer works.
+
+  I added TSourceNotebook and TSourceEditor.  They do all the work for saving/closing/opening units.  Somethings work but they are in early development.
+  Shane
+
   Revision 1.3  2000/12/01 18:12:40  lazarus
   Modified Gloabal so TDesignForm isn't included anymore.
   Shane
