@@ -58,7 +58,7 @@ interface
 { $DEFINE ShowNodeCache}
 { $DEFINE ShowBaseTypeCache}
 { $DEFINE ShowCacheDependencies}
-{$DEFINE ShowCollect}
+{ $DEFINE ShowCollect}
 
 
 uses

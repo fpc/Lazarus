@@ -30,7 +30,9 @@ begin
   Height := GetSystemMetrics(SM_CYHSCROLL);
   SetBounds(0,0,width,height);
   TabStop := True;
-  ControlStyle := [csFramed, csDoubleClicks, csOpaque];
+  ControlStyle := ControlStyle + [csFramed, csDoubleClicks, csOpaque]
+                               - [csAcceptsControls, csDoubleClicks,
+                                  csCaptureMouse, csSetCaption];
   FKind := sbHorizontal;
   FPosition := 0;
   FMin := 0;

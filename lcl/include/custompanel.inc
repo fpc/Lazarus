@@ -33,8 +33,9 @@ constructor TCustomPanel.Create (AOwner : TComponent);
 begin
   inherited Create (AOwner);
   FCompStyle:= csPanel;
-  ControlStyle := [csAcceptsControls, csCaptureMouse, csClickEvents,
-    csSetCaption, csOpaque, csDoubleClicks, csReplicatable, csNoFocus];
+  ControlStyle := ControlStyle + [csAcceptsControls, csCaptureMouse,
+    csClickEvents, csSetCaption, csOpaque, csDoubleClicks, csReplicatable,
+    csNoFocus];
   FBevelOuter := bvRaised;
   FBevelInner := bvNone;
   FBevelWidth := 1;

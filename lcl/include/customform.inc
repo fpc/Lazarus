@@ -23,7 +23,7 @@
 {------------------------------------------------------------------------------}
 {       TCustomForm ClientWndProc                                              }
 {------------------------------------------------------------------------------}
-Procedure TCustomForm.ClientWndProc(var MEssage: TLMessage);
+Procedure TCustomForm.ClientWndProc(var Message: TLMessage);
 
   procedure Default;
     begin
@@ -719,8 +719,8 @@ Begin
   FFormState := [];
   FMenu	:= nil;	
 
-  ControlStyle := [csAcceptsControls, csCaptureMouse, csClickEvents,
-    csSetCaption, csDoubleClicks];
+  ControlStyle := ControlStyle + [csAcceptsControls, csCaptureMouse,
+                                  csClickEvents, csSetCaption, csDoubleClicks];
   Left := 0;
   Top := 0;
   Width := 320;
@@ -1025,6 +1025,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.52  2002/08/30 12:32:20  lazarus
+  MG: MoveWindowOrgEx, Splitted FWinControls/FControls, TControl drawing, Better DesignerDrawing, ...
+
   Revision 1.51  2002/08/24 12:54:59  lazarus
   MG: fixed mouse capturing, OI edit focus
 

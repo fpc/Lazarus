@@ -23,7 +23,7 @@
     TTreeView for LCL
 
   ToDo:
-    - move nodes
+    - Multiselection
     - custom draw
     - Drag&Drop
     - Editing
@@ -3673,13 +3673,13 @@ begin
   with Canvas do begin
     // draw nodes
     Node:=TopItem;
-//write('[TCustomTreeView.DoPaint] A Node=',HexStr(Cardinal(Node),8));
-//if Node<>nil then writeln(' Node.Text=',Node.Text) else writeln('');
+    //write('[TCustomTreeView.DoPaint] A Node=',HexStr(Cardinal(Node),8));
+    //if Node<>nil then writeln(' Node.Text=',Node.Text) else writeln('');
     while Node<>nil do begin
       DoPaintNode(Node);
       Node:=Node.GetNextVisible;
-//write('[TCustomTreeView.DoPaint] B Node=',HexStr(Cardinal(Node),8));
-//if Node<>nil then writeln(' Node.Text=',Node.Text) else writeln('');
+    //write('[TCustomTreeView.DoPaint] B Node=',HexStr(Cardinal(Node),8));
+    //if Node<>nil then writeln(' Node.Text=',Node.Text) else writeln('');
     end;
     // draw unused space below nodes
     SpaceRect:=Rect(BorderWidth,BorderWidth,
@@ -3688,11 +3688,11 @@ begin
     Node:=BottomItem;
     if Node<>nil then
       SpaceRect.Top:=Node.Top+Node.Height-FScrolledTop+BorderWidth;
-//if Node<>nil then writeln('BottomItem=',BottomItem.text) else writeln('NO BOTTOMITEM!!!!!!!!!');
-// TWinControl(Parent).InvalidateRect(Self,SpaceRect,true);
+    //if Node<>nil then writeln('BottomItem=',BottomItem.text) else writeln('NO BOTTOMITEM!!!!!!!!!');
+    // TWinControl(Parent).InvalidateRect(Self,SpaceRect,true);
     if (FBackgroundColor<>clNone) and (SpaceRect.Top<SpaceRect.Bottom) then
     begin
-//writeln('  SpaceRect=',SpaceRect.Left,',',SpaceRect.Top,',',SpaceRect.Right,',',SpaceRect.Bottom);
+      //writeln('  SpaceRect=',SpaceRect.Left,',',SpaceRect.Top,',',SpaceRect.Right,',',SpaceRect.Bottom);
       Brush.Color:=FBackgroundColor;
       FillRect(SpaceRect);
     end;
@@ -3730,7 +3730,7 @@ var NodeRect: TRect;
     Blue:=AColor and $ff;
     if Red+Green+Blue>$180 then
       Result:=clBlack;
-//writeln('[TCustomTreeView.DoPaintNode.InvertColor] Result=',Result,' ',Red,',',Green,',',Blue);
+    //writeln('[TCustomTreeView.DoPaintNode.InvertColor] Result=',Result,' ',Red,',',Green,',',Blue);
   end;
 
   function DrawTreeLines(CurNode: TTreeNode): integer;

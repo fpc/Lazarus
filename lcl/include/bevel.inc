@@ -16,7 +16,7 @@
 Constructor TBevel.Create(AOwner:TComponent);
 Begin
   Inherited Create(AOwner);
-  ControlStyle:=ControlStyle-[csSetCaption];
+  ControlStyle:=ControlStyle-[csSetCaption,csOpaque];
   FStyle:=bsLowered;
   FShape:=bsBox;
 
@@ -63,7 +63,8 @@ End;
 
 Procedure TBevel.Paint;
 Var
-  Colora, Colorb:TColor;
+  Colora, Colorb: TColor;
+  ALeft, ATop: integer;
 Begin
   Case Style Of
   bsRaised:
@@ -79,75 +80,78 @@ Begin
   End;
   Canvas.Pen.Width:=1;
   
+  ALeft:=0;
+  ATop:=0;
+  
   Case Shape Of
   bsBox:
     With Canvas Do
     Begin
       Pen.Color:=Colora;
-      MoveTo(Left, Top + Height - 1);
-      LineTo(Left, Top);
-      LineTo(Left + Width - 2, Top);
+      MoveTo(ALeft, ATop + Height - 1);
+      LineTo(ALeft, ATop);
+      LineTo(ALeft + Width - 1, ATop);
       Pen.Color:=Colorb;
-      LineTo(Left + Width - 2, Top + Height - 1);
-      LIneTo(Left , Top + Height - 1);
+      LineTo(ALeft + Width - 1, ATop + Height - 1);
+      LineTo(ALeft , ATop + Height - 1);
     End;
   bsFrame:
     With Canvas Do
     Begin
       Pen.Color:=Colora;
-      MoveTo(Left, Top + Height - 1);
-      LineTo(Left, Top);
-      LineTo(Left + Width - 1, Top);
-      MoveTo(Left + Width - 2, Top + 1);
-      LineTo(Left + Width - 2, Top + Height - 2);
-      LineTo(Left + 1, Top + Height - 2);
+      MoveTo(ALeft, ATop + Height - 1);
+      LineTo(ALeft, ATop);
+      LineTo(ALeft + Width - 1, ATop);
+      MoveTo(ALeft + Width - 2, ATop + 1);
+      LineTo(ALeft + Width - 2, ATop + Height - 2);
+      LineTo(ALeft + 1, ATop + Height - 2);
       Pen.Color:=Colorb;
-      MoveTo(Left + 1, Top + Height - 2);
-      LineTo(Left + 1, Top + 1);
-      LineTo(Left + Width - 2, Top + 1);
-      MoveTo(Left + Width - 1, Top);
-      LineTo(Left + Width - 1, Top + Height - 1);
-      LineTo(Left, Top + Height - 1);
+      MoveTo(ALeft + 1, ATop + Height - 2);
+      LineTo(ALeft + 1, ATop + 1);
+      LineTo(ALeft + Width - 2, ATop + 1);
+      MoveTo(ALeft + Width - 1, ATop);
+      LineTo(ALeft + Width - 1, ATop + Height - 1);
+      LineTo(ALeft, ATop + Height - 1);
     End;
   bsTopLine:
     With Canvas Do
     Begin
       Pen.Color:=Colora;
-      MoveTo(Left, Top);
-      LineTo(Left + Width - 1, Top);
+      MoveTo(ALeft, ATop);
+      LineTo(ALeft + Width - 1, ATop);
       Pen.Color:=Colorb;
-      MoveTo(Left, Top + 1);
-      LineTo(Left + Width - 1, Top + 1);
+      MoveTo(ALeft, ATop + 1);
+      LineTo(ALeft + Width - 1, ATop + 1);
     End;
   bsBottomLine:
     With Canvas Do
     Begin
       Pen.Color:=Colorb;
-      MoveTo(Left, Top + Height - 1);
-      LineTo(Left + Width - 1, Top + Height - 1);
+      MoveTo(ALeft, ATop + Height - 1);
+      LineTo(ALeft + Width - 1, ATop + Height - 1);
       Pen.Color:=Colora;
-      MoveTo(Left, Top + Height - 2);
-      LineTo(Left + Width - 1, Top + Height - 2);
+      MoveTo(ALeft, ATop + Height - 2);
+      LineTo(ALeft + Width - 1, ATop + Height - 2);
     End;
   bsLeftLine:
     With Canvas Do
     Begin
       Pen.Color:=Colora;
-      MoveTo(Left, Top);
-      LineTo(Left, Top + Height - 1);
+      MoveTo(ALeft, ATop);
+      LineTo(ALeft, ATop + Height - 1);
       Pen.Color:=Colorb;
-      MoveTo(Left + 1, Top);
-      LineTo(Left + 1, Top + Height - 1);
+      MoveTo(ALeft + 1, ATop);
+      LineTo(ALeft + 1, ATop + Height - 1);
     End;
   bsRightLine:
     With Canvas Do
     Begin
       Pen.Color:=Colorb;
-      MoveTo(Left + Width - 1, Top);
-      LineTo(Left + Width - 1, Top + Height - 1);
+      MoveTo(ALeft + Width - 1, ATop);
+      LineTo(ALeft + Width - 1, ATop + Height - 1);
       Pen.Color:=Colora;
-      MoveTo(Left + Width - 2, Top);
-      LineTo(Left + Width - 2, Top + Height);
+      MoveTo(ALeft + Width - 2, ATop);
+      LineTo(ALeft + Width - 2, ATop + Height);
     End;
   End;
 End;
@@ -245,6 +249,9 @@ End;
 
 {
   $Log$
+  Revision 1.7  2002/08/30 12:32:20  lazarus
+  MG: MoveWindowOrgEx, Splitted FWinControls/FControls, TControl drawing, Better DesignerDrawing, ...
+
   Revision 1.6  2002/06/04 15:17:22  lazarus
   MG: improved TFont for XLFD font names
 

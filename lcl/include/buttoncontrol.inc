@@ -34,6 +34,7 @@ end;
 constructor TButtonControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  ControlStyle:=ControlStyle-[csDoubleClicks,csTripleClicks,csAcceptsControls];
 end;
 
 // included by stdctrls.pp

@@ -60,7 +60,8 @@ constructor TCustomRadioGroup.Create (AOwner : TComponent);
 begin
   inherited Create (AOwner);
   FCreatingWnd := false;
-  ControlStyle := [csCaptureMouse, csClickEvents, csSetCaption, csDoubleClicks];
+  ControlStyle := ControlStyle + [csCaptureMouse, csClickEvents, csSetCaption,
+                                  csDoubleClicks];
   FItems      := TStringList.Create;
   TStringList(FItems).OnChanging := @ItemsChanged;
   TStringList(FItems).OnChange := @ItemsChanged;
@@ -336,6 +337,9 @@ end;
 
 {
   $Log$
+  Revision 1.13  2002/08/30 12:32:20  lazarus
+  MG: MoveWindowOrgEx, Splitted FWinControls/FControls, TControl drawing, Better DesignerDrawing, ...
+
   Revision 1.12  2002/08/17 15:45:32  lazarus
   MG: removed ClientRectBugfix defines
 

@@ -151,7 +151,7 @@ Function SetTextCharacterExtra(_HDC: HDC; NCharExtra: Integer): Integer; Overrid
 Function SetTextColor(DC: HDC; Color: TColorRef): TColorRef; Override;
 Function SetTimer(HWnd: HWND; NIDEvent, uElapse: Integer; LPTimerFunc: TFNTimerProc): Integer; Override;
 Function SetWindowLong(Handle: HWND; Idx: Integer; NewLong: LongInt): LongInt; Override;
-Function SetWindowOrgEx(DC: HDC; NewX, NewY: Integer; Var Point: TPoint): Boolean; Override;
+Function SetWindowOrgEx(DC: HDC; NewX, NewY: Integer; Var OldPoint: TPoint): Boolean; Override;
 Function SetWindowPos(HWnd: HWND; HWndInsertAfter: HWND; X, Y, CX, CY: Integer; UFlags: UINT): Boolean; Override;
 Function ShowCaret(HWnd: HWND): Boolean; Override;
 Function ShowScrollBar(Handle: HWND; WBar: Integer; BShow: Boolean): Boolean; Override;
@@ -172,6 +172,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.13  2002/08/30 12:32:25  lazarus
+  MG: MoveWindowOrgEx, Splitted FWinControls/FControls, TControl drawing, Better DesignerDrawing, ...
+
   Revision 1.12  2002/08/28 09:40:52  lazarus
   MG: reduced paint messages and DC getting/releasing
 

@@ -163,7 +163,6 @@ type
     FOldHeight: integer;
 
     FCustomForm: TCustomForm;
-    FCanvas: TCanvas;
     FGrabbers: array[TGrabIndex] of TGrabber;
     FGrabberSize: integer;
     FGrabberColor: TColor;
@@ -293,7 +292,7 @@ type
     property RubberbandActive: boolean read FRubberbandActive write FRubberbandActive;
     procedure DrawRubberband(DC: TDesignerDeviceContext);
     procedure SelectWithRubberBand(ACustomForm:TCustomForm; ExclusiveOr: boolean);
-    
+
     procedure Sort(SortProc: TSelectionSortCompare);
     property Visible:boolean read FVisible write SetVisible;
     function OnlyNonVisualComponentsSelected: boolean;
@@ -464,7 +463,6 @@ begin
     FGrabbers[g].Cursor:=GRAB_CURSOR[g];
   end;
   FCustomForm:=nil;
-  FCanvas:=TCanvas.Create;
   FActiveGrabber:=nil;
   FUpdateLock:=0;
   FChangedDuringLock:=false;
@@ -479,7 +477,6 @@ begin
   Clear;
   FControls.Free;
   for g:=Low(TGrabIndex) to High(TGrabIndex) do FGrabbers[g].Free;
-  FCanvas.Free;
   inherited Destroy;
 end;
 
@@ -1287,7 +1284,8 @@ var OldBrushColor:TColor;
   Diff: TPoint;
 //  OldFormHandle: HDC;
 begin
-  if (Count=0) or (FCustomForm=nil) or Items[0].IsTopLvl then exit;
+  if (Count=0) or (FCustomForm=nil)
+  or IsSelected(FCustomForm) then exit;
   
   Diff:=DC.FormOrigin;
 {
@@ -1296,23 +1294,19 @@ writeln('[DrawGrabbers] Form=',FormOrigin.X,',',FormOrigin.Y
    ,' Grabber1=',FGrabbers[0].Left,',',FGrabbers[0].Top
    ,' Selection=',FLeft,',',FTop);
 }
-//  OldFormHandle:=FCustomForm.Canvas.Handle;
   DC.Save;
-  FCanvas.Handle:=DC.DC;
-  with FCanvas do begin
+  with DC.Canvas do begin
     OldBrushColor:=Brush.Color;
     Brush.Color:=FGrabberColor;
     for g:=Low(TGrabIndex) to High(TGrabIndex) do
       FillRect(Rect(
-         Diff.X+FGrabbers[g].Left
-        ,Diff.Y+FGrabbers[g].Top
-        ,Diff.X+FGrabbers[g].Left+FGrabbers[g].Width
-        ,Diff.Y+FGrabbers[g].Top+FGrabbers[g].Height
+         FGrabbers[g].Left-Diff.X
+        ,FGrabbers[g].Top-Diff.Y
+        ,FGrabbers[g].Left-Diff.X+FGrabbers[g].Width
+        ,FGrabbers[g].Top-Diff.Y+FGrabbers[g].Height
       ));
     Brush.Color:=OldbrushColor;
   end;
-  FCanvas.Handle:=0;
-//  FCustomForm.Canvas.Handle:=OldFormHandle;
 end;
 
 procedure TControlSelection.DrawMarkerAt(ACanvas: TCanvas;
@@ -1331,30 +1325,25 @@ begin
   end;
 end;
 
-procedure TControlSelection.DrawMarker(AComponent:TComponent;
+procedure TControlSelection.DrawMarker(AComponent: TComponent;
   DC: TDesignerDeviceContext);
 var
-  ALeft,ATop:integer;
-  AControlOrigin,DCOrigin:TPoint;
-  AControl: TControl;
+  CompLeft, CompTop, CompWidth, CompHeight: integer;
+  CompOrigin, DCOrigin: TPoint;
 begin
-  if (Count<2) or (FCustomForm=nil) or (AComponent is TCustomForm)
+  if (Count<2)
+  or (FCustomForm=nil)
+  or (AComponent.Owner<>DC.Form)
+  or (AComponent is TCustomForm)
   or (not IsSelected(AComponent)) then exit;
-  if AComponent is TControl then begin
-    AControl:=TControl(AComponent);
-    AControlOrigin:=AControl.Parent.ClientOrigin;
-  end else begin
-    if (not (AComponent.Owner is TCustomForm)) then exit;
-    AControlOrigin:=TCustomForm(AComponent.Owner).ClientOrigin;
-  end;
-  Inc(AControlOrigin.X,GetComponentLeft(AControl));
-  Inc(AControlOrigin.Y,GetComponentTop(AControl));
-  DCOrigin:=DC.DCorigin;
-  ALeft:=AControlOrigin.X-DCOrigin.X;
-  ATop:=AControlOrigin.Y-DCOrigin.Y;
   
+  GetComponentBounds(AComponent,CompLeft,CompTop,CompWidth,CompHeight);
+  CompOrigin:=GetParentFormRelativeParentClientOrigin(AComponent);
+  DCOrigin:=DC.FormOrigin;
+  CompLeft:=CompLeft+CompOrigin.X-DCOrigin.X;
+  CompTop:=CompTop+CompOrigin.Y-DCOrigin.Y;
+
   DC.Save;
-  FCanvas.Handle:=DC.DC;
 {
 writeln('DrawMarker A ',FCustomForm.Name
     ,' Control=',AControl.Name,',',AControlOrigin.X,',',AControlOrigin.Y
@@ -1362,8 +1351,7 @@ writeln('DrawMarker A ',FCustomForm.Name
     ,' DC=',Hexstr(FCustomForm.Canvas.Handle,8),' ',HexStr(Cardinal(Pointer(FCustomForm)),8)
     );
 }
-  DrawMarkerAt(FCanvas,ALeft,ATop,AControl.Width,AControl.Height);
-  FCanvas.Handle:=0;
+  DrawMarkerAt(DC.Canvas,CompLeft,CompTop,CompWidth,CompHeight);
 end;
 
 procedure TControlSelection.DrawRubberband(DC: TDesignerDeviceContext);
@@ -1375,19 +1363,18 @@ var Diff: TPoint;
     procedure InvertPixel(x,y:integer);
     //var c:TColor;
     begin
-      //c:=FCanvas.Pixels[x,y];
+      //c:=DC.Canvas.Pixels[x,y];
       //c:=c xor $ffffff;
-      //FCanvas.Pixels[x,y]:=c;
-      FCanvas.MoveTo(Diff.X+x,Diff.Y+y);
-      FCanvas.LineTo(Diff.X+x+1,Diff.Y+y);
+      //DC.Canvas.Pixels[x,y]:=c;
+      DC.Canvas.MoveTo(x-Diff.X,y-Diff.Y);
+      DC.Canvas.LineTo(x-Diff.X+1,y-Diff.Y);
     end;
 
   var OldPenColor: TColor;
   begin
-    if FCanvas=nil then exit;
     if x1>x2 then begin i:=x1; x1:=x2; x2:=i; end;
     if y1>y2 then begin i:=y1; y1:=y2; y2:=i; end;
-    with FCanvas do begin
+    with DC.Canvas do begin
       OldPenColor:=Brush.Color;
       Pen.Color:=clBlack;
       i:=x1+1;
@@ -1409,12 +1396,10 @@ var Diff: TPoint;
 // DrawRubberband
 begin
   if (FCustomForm=nil) then exit;
-  Diff:=Dc.FormOrigin;
+  Diff:=DC.FormOrigin;
   DC.Save;
-  FCanvas.Handle:=DC.DC;
   with FRubberBandBounds do
     DrawInvertFrameRect(Left,Top,Right,Bottom);
-  FCanvas.Handle:=0;
 end;
 
 procedure TControlSelection.SelectWithRubberBand(ACustomForm:TCustomForm; 
@@ -1783,8 +1768,19 @@ end;
 
 procedure TControlSelection.DrawGuideLines(DC: TDesignerDeviceContext);
 var
+  DCOrigin: TPoint;
+
+  procedure DrawLine(ARect: TRect; AColor: TColor);
+  begin
+    with DC.Canvas do begin
+      Pen.Color:=AColor;
+      MoveTo(ARect.Left-DCOrigin.X,ARect.Top-DCOrigin.Y);
+      LineTo(ARect.Right-DCOrigin.X,ARect.Bottom-DCOrigin.Y);
+    end;
+  end;
+
+var
   OldPenColor:TColor;
-  Diff: TPoint;
   LeftGuideLineExists, RightGuideLineExists,
   TopGuideLineExists, BottomGuideLineExists: boolean;
   LeftGuideLine, RightGuideLine, TopGuideLine, BottomGuideLine: TRect;
@@ -1798,38 +1794,22 @@ begin
   and (not TopGuideLineExists) and (not BottomGuideLineExists)
   then exit;
   
-  Diff:=DC.FormOrigin;
   DC.Save;
-  FCanvas.Handle:=DC.DC;
-  with FCanvas do begin
-    OldPenColor:=Pen.Color;
-    // draw bottom guideline
-    if BottomGuideLineExists then begin
-      Pen.Color:=EnvironmentOptions.GuideLineColorRightBottom;
-      MoveTo(BottomGuideLine.Left+Diff.X,BottomGuideLine.Top+Diff.Y);
-      LineTo(BottomGuideLine.Right+Diff.X,BottomGuideLine.Bottom+Diff.Y);
-    end;
-    // draw top guideline
-    if TopGuideLineExists then begin
-      Pen.Color:=EnvironmentOptions.GuideLineColorLeftTop;
-      MoveTo(TopGuideLine.Left+Diff.X,TopGuideLine.Top+Diff.Y);
-      LineTo(TopGuideLine.Right+Diff.X,TopGuideLine.Bottom+Diff.Y);
-    end;
-    // draw right guideline
-    if RightGuideLineExists then begin
-      Pen.Color:=EnvironmentOptions.GuideLineColorRightBottom;
-      MoveTo(RightGuideLine.Left+Diff.X,RightGuideLine.Top+Diff.Y);
-      LineTo(RightGuideLine.Right+Diff.X,RightGuideLine.Bottom+Diff.Y);
-    end;
-    // draw left guideline
-    if LeftGuideLineExists then begin
-      Pen.Color:=EnvironmentOptions.GuideLineColorLeftTop;
-      MoveTo(LeftGuideLine.Left+Diff.X,LeftGuideLine.Top+Diff.Y);
-      LineTo(LeftGuideLine.Right+Diff.X,LeftGuideLine.Bottom+Diff.Y);
-    end;
-    Pen.Color:=OldPenColor;
-  end;
-  FCanvas.Handle:=0;
+  DCOrigin:=DC.FormOrigin;
+  OldPenColor:=DC.Canvas.Pen.Color;
+  // draw bottom guideline
+  if BottomGuideLineExists then
+    DrawLine(BottomGuideLine,EnvironmentOptions.GuideLineColorRightBottom);
+  // draw top guideline
+  if TopGuideLineExists then
+    DrawLine(TopGuideLine,EnvironmentOptions.GuideLineColorLeftTop);
+  // draw right guideline
+  if RightGuideLineExists then
+    DrawLine(RightGuideLine,EnvironmentOptions.GuideLineColorRightBottom);
+  // draw left guideline
+  if LeftGuideLineExists then
+    DrawLine(LeftGuideLine,EnvironmentOptions.GuideLineColorLeftTop);
+  DC.Canvas.Pen.Color:=OldPenColor;
 end;
 
 procedure TControlSelection.Sort(SortProc: TSelectionSortCompare);

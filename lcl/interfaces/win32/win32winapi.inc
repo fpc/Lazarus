@@ -2057,12 +2057,13 @@ End;
 
   Sets the window origin of the device context by using the specified coordinates.
  ------------------------------------------------------------------------------}
-Function TWin32Object.SetWindowOrgEx(DC: HDC; NewX, NewY: Integer; Var Point: TPoint): Boolean;
+Function TWin32Object.SetWindowOrgEx(DC: HDC; NewX, NewY: Integer;
+  Var OldPoint: TPoint): Boolean;
 Begin
 //writeln('[TWin32Object.SetWindowOrgEx] ', NewX, ' ', NewY);
 // ToDo: move origin
 
-  Result := Windows.SetWindowOrgEx(DC, NewX, NewY, @Point);
+  Result := Windows.SetWindowOrgEx(DC, NewX, NewY, @OldPoint);
 End;
 
 {------------------------------------------------------------------------------
@@ -2289,6 +2290,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.17  2002/08/30 12:32:25  lazarus
+  MG: MoveWindowOrgEx, Splitted FWinControls/FControls, TControl drawing, Better DesignerDrawing, ...
+
   Revision 1.16  2002/08/29 16:22:02  lazarus
   Make CreatePixmapIndirect work for Win32. Work done by Markus Luedin.
 

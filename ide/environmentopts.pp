@@ -101,10 +101,10 @@ type
 
     // form editor
     FShowGrid: boolean;
-    FGridColor: TColor;
     FSnapToGrid: boolean;
     FGridSizeX: integer;
     FGridSizeY: integer;
+    FGridColor: TColor;
     FShowGuideLines: boolean;
     FSnapToGuideLines: boolean;
     FGuideLineColorLeftTop: TColor;

@@ -33,7 +33,7 @@ unit DesignerProcs;
 interface
 
 uses
-  Classes, SysUtils, LCLLinux, Forms, Controls, LCLType;
+  Classes, SysUtils, LCLLinux, Forms, Controls, LCLType, Graphics;
 
 type
   TDesignerDCFlag = (ddcDCOriginValid, ddcFormOriginValid,
@@ -42,6 +42,7 @@ type
 
   TDesignerDeviceContext = class
   private
+    FCanvas: TCanvas;
     FDC: HDC;
     FDCOrigin: TPoint;   // DC origin on desktop
     FFlags: TDesignerDCFlags;
@@ -53,14 +54,20 @@ type
     function GetFormClientOrigin: TPoint;
     function GetFormOrigin: TPoint;
   public
+    constructor Create;
+    destructor Destroy; override;
     procedure SetDC(AForm: TCustomForm; aDC: HDC);
     procedure Clear;
     procedure Save;
     procedure Restore;
+    property Canvas: TCanvas read FCanvas;
     property DC: HDC read FDC;
-    property FormOrigin: TPoint read GetFormOrigin;// DC origin relative to designer Form
-    property DCOrigin: TPoint read GetDCOrigin;
-    property FormClientOrigin: TPoint read GetFormClientOrigin;
+    property Form: TCustomForm read FForm;
+    property FormOrigin: TPoint
+      read GetFormOrigin;// DC origin relative to designer Form
+    property DCOrigin: TPoint read GetDCOrigin; // DC origin on Desktop
+    property FormClientOrigin: TPoint
+      read GetFormClientOrigin;// Form Client Origin on desktop
   end;
 
 const
@@ -265,6 +272,18 @@ begin
   Result:=FFormOrigin;
 end;
 
+constructor TDesignerDeviceContext.Create;
+begin
+  inherited Create;
+  FCanvas:=TCanvas.Create;
+end;
+
+destructor TDesignerDeviceContext.Destroy;
+begin
+  FCanvas.Free;
+  inherited Destroy;
+end;
+
 procedure TDesignerDeviceContext.SetDC(AForm: TCustomForm; aDC: HDC);
 begin
   Clear;
@@ -281,8 +300,10 @@ end;
 
 procedure TDesignerDeviceContext.Save;
 begin
-  if FSavedDC=0 then
+  if FSavedDC=0 then begin
     FSavedDC:=SaveDC(DC);
+    FCanvas.Handle:=FDC;
+  end;
 end;
 
 procedure TDesignerDeviceContext.Restore;
@@ -290,6 +311,7 @@ begin
   if FSavedDC<>0 then begin
     RestoreDC(DC,FSavedDC);
     FSavedDC:=0;
+    FCanvas.Handle:=0;
   end;
 end;
 
