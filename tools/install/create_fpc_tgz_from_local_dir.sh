@@ -4,14 +4,24 @@ set -e
 #set -x
 
 FPCSrcDir=$1
-OutputFile=fpcsrc-1.0.7-1.tgz
+OutputFile=$2
+
+fpcsrc-1.0.7-1.tgz
+
+Usage="Usage: $0 <fpc_source_directory> <outputfile>"
 
 if [ "x$FPCSrcDir" = "x" ]; then
-  echo "Usage: $0 <fpc_source_directory>"
+  echo $Usage
   exit
 fi
+
+if [ "x$OutputFile" = "x" ]; then
+  echo $Usage
+  exit
+fi
+
 if [ ! -d $FPCSrcDir/compiler ]; then
-  echo "The directory does not look like a fpc source directory (fpc/)"
+  echo "The directory $FPCSrcDir does not look like a fpc source directory (fpc/)"
   exit
 fi
 

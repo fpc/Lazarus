@@ -12,15 +12,22 @@ Creating the fpcsrc tgz:
   There are two ways to do it and so there are two scripts. The first downloads
   the fpc cvs and packs it. The second uses an existing fpc cvs directory,
   copies it, remove unnecessary files and packs it. The second script is
-  therefore much faster, but it may miss removing all old, unnecessary files.
+  therefore much faster, but it may miss removing every old, unnecessary files.
   
   The download and pack script:
-  The script create_fpc_snapshot_tgz.sh makes a cvs export of the
-  fpc FIXES_1_0_0 branch and compress it to fpcsrc-1.0.7-1.tgz.
+  The script create_fpc_snapshot_tgz.sh makes a cvs export of the fpc.
+  
+  For the current 1.0.7 use
+  ./create_fpc_snapshot_tgz.sh fpcsrc-1.0.7-20030315.tgz -r FIXES_1_0_0
+
+  For the the 1.1 from december 25, 2002 use
+  ./create_fpc_snapshot_tgz.sh fpcsrc-1.1-20021225.tgz -D 25/12/02
+  
 
   The copy and pack script:
   The script create_fpc_tgz_from_local_dir.sh needs as parameter the fpc cvs
-  directory and compress it to fpcsrc-1.0.7-1.tgz.
+  directory and compress it to a tgz. For example
+  ./create_fpc_tgz_from_local_dir.sh ~/pascal/fpc fpc-1.0.7.tgz
 
 
 Creating the lazarus tgz:

@@ -3,7 +3,13 @@
 #set -x
 set -e
 
-OutFile=lazarus-0.8.5-1.tgz
+OutputFile=$1
+Usage="$0 outputfilename"
+
+if [ "x$OutputFile" = "x" ]; then
+  echo $Usage
+  exit
+fi
 
 echo "downloading lazarus cvs ..."
 cd /tmp
@@ -15,11 +21,8 @@ cvs -z3 export -r HEAD lazarus
 echo "packing ..."
 tar cvzf lazarus.tgz lazarus
 cd -
-mv /tmp/lazarus.tgz $OutFile
+mv /tmp/lazarus.tgz $OutputFile
 rm -rf /tmp/lazarus
-
-echo ""
-echo "NOTE: DON'T FORGET TO PUT THE $OutFile INTO /usr/src/redhat/SOURCES/"
 
 # end.
 

@@ -59,10 +59,10 @@ end;
 {------------------------------------------------------------------------------}
 {   TListItem SetSubItemImages                                                 }
 {------------------------------------------------------------------------------}
-procedure TListItem.SetSubItemImages(aIndex: Integer; const AValue: Integer);
+procedure TListItem.SetSubItemImages(AnIndex: Integer; const AValue: Integer);
 begin
-  if (aIndex >= 0) and (aIndex < SubItems.Count) then
-    SubItems.Objects[aIndex] := TObject(Pointer(aValue));
+  if (AnIndex >= 0) and (AnIndex < SubItems.Count) then
+    SubItems.Objects[AnIndex] := TObject(Pointer(aValue));
 end;
 
 {------------------------------------------------------------------------------}
@@ -125,10 +125,10 @@ end;
 {------------------------------------------------------------------------------}
 {   TListItem GetSubItemImages                                                 }
 {------------------------------------------------------------------------------}
-function TListItem.GetSubItemImages(aIndex: Integer): Integer;
+function TListItem.GetSubItemImages(ANIndex: Integer): Integer;
 begin
- if (aIndex >= 0) and (aIndex < SubItems.Count) then
-    Result := Integer(SubItems.Objects[aIndex])
+ if (AnIndex >= 0) and (AnIndex < SubItems.Count) then
+    Result := Integer(SubItems.Objects[AnIndex])
   else
     Result := -1;
 end;
@@ -147,6 +147,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.15  2003/03/15 13:26:07  mattias
+  fixes for fpc 1.1
+
   Revision 1.14  2003/02/24 19:00:42  mattias
   added TlistView.SubItem improvements from Olivier Guilbaud
 

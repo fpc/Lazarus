@@ -161,8 +161,8 @@ type
     procedure SetCaption(const AValue : String);
 //    Procedure SetSubItems(Value : TStrings);
     function GetIndex : Integer;
-    function GetSubItemImages(aIndex: Integer): Integer;
-    procedure SetSubItemImages(aIndex: Integer; const AValue: Integer);
+    function GetSubItemImages(AnIndex: Integer): Integer;
+    procedure SetSubItemImages(AnIndex: Integer; const AValue: Integer);
   protected
     Procedure ItemChanged(sender : TObject);  //called by the onchange of the tstringlist in TListItem
     function IsEqual(Item : TListItem) : Boolean;
@@ -181,7 +181,7 @@ type
     property Owner : TListItems read FOwner;
     property Selected: Boolean index 3 read GetState write SetState;
     property SubItems : TStrings read FSubItems write FSubItems;//SetSubItems;
-    property SubItemImages[Index: Integer]: Integer
+    property SubItemImages[AnIndex: Integer]: Integer
       read GetSubItemImages write SetSubItemImages;
   end;
   
@@ -1724,6 +1724,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.67  2003/03/15 13:26:07  mattias
+  fixes for fpc 1.1
+
   Revision 1.66  2003/03/11 07:46:43  mattias
   more localization for gtk- and win32-interface and lcl
 
