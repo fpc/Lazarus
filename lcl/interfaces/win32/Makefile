@@ -153,6 +153,7 @@ endif
 PACKAGESDIR:=$(wildcard $(FPCDIR) $(FPCDIR)/packages)
 override PACKAGE_NAME=lcl
 override TARGET_UNITS+=interfaces
+override CLEAN_FILES+=$(wildcard ../../units/win32/*$(OEXT)) $(wildcard ../../units/win32/*$(PPUEXT)) $(wildcard ../../units/win32/*$(STATICLIBEXT))
 override COMPILER_OPTIONS+=-gl -S2 -Sh
 override COMPILER_UNITDIR+=../../units
 override COMPILER_UNITTARGETDIR+=../../units/win32

@@ -18,6 +18,9 @@ options=-gl -S2 -Sh
 unitdir=../../units
 unittargetdir=../../units/win32
 
+[clean]
+files=$(wildcard ../../units/win32/*$(OEXT)) $(wildcard ../../units/win32/*$(PPUEXT)) $(wildcard ../../units/win32/*$(STATICLIBEXT))
+
 [rules]
 cleartarget:
         $(DEL) $(wildcard ../../units/interfaces.*)
