@@ -56,34 +56,51 @@ type
   { TPackageEditorForm }
 
   TPackageEditorForm = class(TBasePackageEditor)
+    // buttons
     SaveBitBtn: TBitBtn;
     CompileBitBtn: TBitBtn;
     AddBitBtn: TBitBtn;
     RemoveBitBtn: TBitBtn;
     InstallBitBtn: TBitBtn;
     OptionsBitBtn: TBitBtn;
+    // items
     FilesTreeView: TTreeView;
+    // properties
     FilePropsGroupBox: TGroupBox;
+    // file properties
     CallRegisterProcCheckBox: TCheckBox;
     RegisteredPluginsGroupBox: TGroupBox;
     RegisteredListBox: TListBox;
+    // dependency properties
+    UseMinVersionCheckBox: TCheckBox;
+    MinVersionEdit: TEdit;
+    UseMaxVersionCheckBox: TCheckBox;
+    MaxVersionEdit: TEdit;
+    // statusbar
     StatusBar: TStatusBar;
+    // hidden components
     ImageList: TImageList;
     FilesPopupMenu: TPopupMenu;
     procedure AddBitBtnClick(Sender: TObject);
+    procedure CallRegisterProcCheckBoxClick(Sender: TObject);
     procedure FilePropsGroupBoxResize(Sender: TObject);
     procedure FilesPopupMenuPopup(Sender: TObject);
     procedure FilesTreeViewSelectionChanged(Sender: TObject);
     procedure OpenFileMenuItemClick(Sender: TObject);
     procedure PackageEditorFormResize(Sender: TObject);
+    procedure ReAddMenuItemClick(Sender: TObject);
     procedure RegisteredListBoxDrawItem(Control: TWinControl; Index: Integer;
       ARect: TRect; State: TOwnerDrawState);
     procedure RemoveBitBtnClick(Sender: TObject);
     procedure SaveBitBtnClick(Sender: TObject);
+    procedure UseMaxVersionCheckBoxClick(Sender: TObject);
+    procedure UseMinVersionCheckBoxClick(Sender: TObject);
   private
     FLazPackage: TLazPackage;
     FilesNode: TTreeNode;
     RequiredPackagesNode: TTreeNode;
+    RemovedFilesNode: TTreeNode;
+    RemovedRequiredNode: TTreeNode;
     FPlugins: TStringList;
     procedure SetLazPackage(const AValue: TLazPackage);
     procedure SetupComponents;
@@ -94,10 +111,10 @@ type
     procedure UpdateRequiredPkgs;
     procedure UpdateSelectedFile;
     procedure UpdateStatusBar;
-    procedure DoSave;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    procedure DoSave;
   public
     property LazPackage: TLazPackage read FLazPackage write SetLazPackage;
   end;
@@ -149,8 +166,18 @@ var
 
 implementation
 
-
 uses Math;
+
+var
+  ImageIndexFiles: integer;
+  ImageIndexRemovedFiles: integer;
+  ImageIndexRequired: integer;
+  ImageIndexRemovedRequired: integer;
+  ImageIndexUnit: integer;
+  ImageIndexRegisterUnit: integer;
+  ImageIndexText: integer;
+  ImageIndexBinary: integer;
+
 
 { TPackageEditorForm }
 
@@ -193,6 +220,37 @@ begin
   FilePropsGroupBox.SetBounds(x,y,w,h);
 end;
 
+procedure TPackageEditorForm.ReAddMenuItemClick(Sender: TObject);
+var
+  CurNode: TTreeNode;
+  NodeIndex: Integer;
+  PkgFile: TPkgFile;
+  AFilename: String;
+  Dependency: TPkgDependency;
+begin
+  CurNode:=FilesTreeView.Selected;
+  if CurNode=nil then exit;
+  NodeIndex:=CurNode.Index;
+  if CurNode.Parent<>nil then begin
+    if (CurNode.Parent=RemovedFilesNode) then begin
+      // re-add file
+      PkgFile:=LazPackage.RemovedFiles[NodeIndex];
+      AFilename:=PkgFile.Filename;
+      if not CheckAddingUnitFilename(LazPackage,d2ptUnit,
+        PackageEditors.OnGetIDEFileInfo,AFilename) then exit;
+      PkgFile.Filename:=AFilename;
+      LazPackage.UnremovePkgFile(PkgFile);
+      UpdateAll;
+    end else if (CurNode.Parent=RemovedRequiredNode) then begin
+      // re-add dependency
+      Dependency:=LazPackage.RemovedRequiredPkgs[NodeIndex];
+      if not CheckAddingDependency(LazPackage,Dependency) then exit;
+      LazPackage.UnremoveRequiredPkg(Dependency);
+      UpdateAll;
+    end;
+  end;
+end;
+
 procedure TPackageEditorForm.FilesPopupMenuPopup(Sender: TObject);
 var
   CurNode: TTreeNode;
@@ -206,7 +264,7 @@ var
       CurMenuItem:=TMenuItem.Create(Self);
       FilesPopupMenu.Items.Add(CurMenuItem);
     end else
-      CurMenuItem:=FilesPopupMenu.Items[FilesPopupMenu.Items.Count-1];
+      CurMenuItem:=FilesPopupMenu.Items[ItemCnt];
     CurMenuItem.Caption:=ACaption;
     CurMenuItem.OnClick:=AnEvent;
     inc(ItemCnt);
@@ -216,10 +274,20 @@ begin
   CurNode:=FilesTreeView.Selected;
   ItemCnt:=0;
   if CurNode<>nil then begin
-    if CurNode.Parent=FilesNode then begin
-      AddPopupMenuItem('Open file',@OpenFileMenuItemClick);
-    end else if (CurNode.Parent=RequiredPackagesNode) then begin
-      AddPopupMenuItem('Open package',@OpenFileMenuItemClick);
+    if CurNode.Parent<>nil then begin
+      if CurNode.Parent=FilesNode then begin
+        AddPopupMenuItem('Open file',@OpenFileMenuItemClick);
+        AddPopupMenuItem('Remove file from package',@RemoveBitBtnClick);
+      end else if (CurNode.Parent=RequiredPackagesNode) then begin
+        AddPopupMenuItem('Open package',@OpenFileMenuItemClick);
+        AddPopupMenuItem('Remove dependency from package',@RemoveBitBtnClick);
+      end else if (CurNode.Parent=RemovedFilesNode) then begin
+        AddPopupMenuItem('Open file',@OpenFileMenuItemClick);
+        AddPopupMenuItem('Add file to package',@ReAddMenuItemClick);
+      end else if (CurNode.Parent=RemovedRequiredNode) then begin
+        AddPopupMenuItem('Open package',@OpenFileMenuItemClick);
+        AddPopupMenuItem('Add dependency to package',@ReAddMenuItemClick);
+      end;
     end;
   end else begin
 
@@ -244,12 +312,20 @@ begin
   CurNode:=FilesTreeView.Selected;
   if CurNode=nil then exit;
   NodeIndex:=CurNode.Index;
-  if CurNode.Parent=FilesNode then begin
-    CurFile:=LazPackage.Files[NodeIndex];
-    PackageEditors.OpenFile(Self,CurFile.Filename);
-  end else if CurNode.Parent=RequiredPackagesNode then begin
-    CurDependency:=LazPackage.RequiredPkgs[NodeIndex];
-    PackageEditors.OpenDependency(Self,CurDependency);
+  if CurNode.Parent<>nil then begin
+    if CurNode.Parent=FilesNode then begin
+      CurFile:=LazPackage.Files[NodeIndex];
+      PackageEditors.OpenFile(Self,CurFile.Filename);
+    end else if CurNode.Parent=RequiredPackagesNode then begin
+      CurDependency:=LazPackage.RequiredPkgs[NodeIndex];
+      PackageEditors.OpenDependency(Self,CurDependency);
+    end else if CurNode.Parent=RemovedFilesNode then begin
+      CurFile:=LazPackage.RemovedFiles[NodeIndex];
+      PackageEditors.OpenFile(Self,CurFile.Filename);
+    end else if CurNode.Parent=RemovedRequiredNode then begin
+      CurDependency:=LazPackage.RemovedRequiredPkgs[NodeIndex];
+      PackageEditors.OpenDependency(Self,CurDependency);
+    end;
   end;
 end;
 
@@ -301,6 +377,7 @@ var
   ANode: TTreeNode;
   NodeIndex: Integer;
   CurFile: TPkgFile;
+  CurDependency: TPkgDependency;
 begin
   ANode:=FilesTreeView.Selected;
   if (ANode=nil) or LazPackage.ReadOnly then begin
@@ -319,11 +396,23 @@ begin
         mtConfirmation,[mbYes,mbNo],0)=mrNo
       then
         exit;
-      LazPackage.DeleteFile(CurFile);
+      LazPackage.RemoveFile(CurFile);
     end;
-    UpdateFiles;
+    UpdateAll;
   end else if ANode.Parent=RequiredPackagesNode then begin
-
+    // get current dependency
+    CurDependency:=LazPackage.RequiredPkgs[NodeIndex];
+    if CurDependency<>nil then begin
+      // confirm deletion
+      if MessageDlg('Remove Dependency?',
+        'Remove dependency "'+CurDependency.AsString+'"'#13
+        +'from package "'+LazPackage.IDAsString+'"?',
+        mtConfirmation,[mbYes,mbNo],0)=mrNo
+      then
+        exit;
+      LazPackage.RemoveRequiredDependency(CurDependency);
+    end;
+    UpdateAll;
   end;
 end;
 
@@ -332,23 +421,58 @@ begin
   DoSave;
 end;
 
+procedure TPackageEditorForm.UseMaxVersionCheckBoxClick(Sender: TObject);
+begin
+  MaxVersionEdit.Enabled:=UseMaxVersionCheckBox.Checked;
+end;
+
+procedure TPackageEditorForm.UseMinVersionCheckBoxClick(Sender: TObject);
+begin
+  MinVersionEdit.Enabled:=UseMinVersionCheckBox.Checked;
+end;
+
 procedure TPackageEditorForm.FilePropsGroupBoxResize(Sender: TObject);
 var
   y: Integer;
+  x: Integer;
 begin
+  // components for files
   with CallRegisterProcCheckBox do
     SetBounds(3,0,Parent.ClientWidth,Height);
 
   y:=CallRegisterProcCheckBox.Top+CallRegisterProcCheckBox.Height+3;
-  with RegisteredPluginsGroupBox do begin
+  with RegisteredPluginsGroupBox do
     SetBounds(0,y,Parent.ClientWidth,Parent.ClientHeight-y);
-  end;
+    
+  // components for dependencies
+  x:=5;
+  y:=5;
+  with UseMinVersionCheckBox do
+    SetBounds(x,y,150,MinVersionEdit.Height);
+  inc(x,UseMinVersionCheckBox.Width+5);
+
+  with MinVersionEdit do
+    SetBounds(x,y,120,Height);
+    
+  x:=5;
+  inc(y,MinVersionEdit.Height+5);
+  with UseMaxVersionCheckBox do
+    SetBounds(x,y,UseMinVersionCheckBox.Width,MaxVersionEdit.Height);
+  inc(x,UseMaxVersionCheckBox.Width+5);
+
+  with MaxVersionEdit do
+    SetBounds(x,y,MinVersionEdit.Width,Height);
 end;
 
 procedure TPackageEditorForm.AddBitBtnClick(Sender: TObject);
 var
   AddParams: TAddToPkgResult;
 begin
+  if LazPackage.ReadOnly then begin
+    UpdateButtons;
+    exit;
+  end;
+  
   if ShowAddToPackageDlg(LazPackage,AddParams,PackageEditors.OnGetIDEFileInfo,
     PackageEditors.OnGetUnitRegisterInfo)
     <>mrOk
@@ -361,7 +485,6 @@ begin
       // add file
       with AddParams do
         LazPackage.AddFile(UnitFilename,UnitName,FileType,PkgFileFlags,cpNormal);
-      UpdateFiles;
     end;
 
   d2ptNewComponent:
@@ -369,11 +492,9 @@ begin
       // add file
       with AddParams do
         LazPackage.AddFile(UnitFilename,UnitName,FileType,PkgFileFlags,cpNormal);
-      UpdateFiles;
       // add dependency
       if AddParams.Dependency<>nil then begin
         LazPackage.AddRequiredDependency(AddParams.Dependency);
-        UpdateRequiredPkgs;
       end;
       // open file in editor
       PackageEditors.CreateNewFile(Self,AddParams);
@@ -383,13 +504,37 @@ begin
     begin
       // add dependency
       LazPackage.AddRequiredDependency(AddParams.Dependency);
-      UpdateRequiredPkgs;
     end;
     
   end;
+  LazPackage.Modified:=true;
   
-  UpdateSelectedFile;
-  UpdateStatusBar;
+  UpdateAll;
+end;
+
+procedure TPackageEditorForm.CallRegisterProcCheckBoxClick(Sender: TObject);
+var
+  CurNode: TTreeNode;
+  NodeIndex: Integer;
+  CurFile: TPkgFile;
+begin
+  CurNode:=FilesTreeView.Selected;
+  if (CurNode=nil) then exit;
+  if (CurNode.Parent=FilesNode) then begin
+    NodeIndex:=CurNode.Index;
+    if NodeIndex>=LazPackage.FileCount then exit;
+    CurFile:=LazPackage.Files[NodeIndex];
+    CurFile.HasRegisteredProc:=CallRegisterProcCheckBox.Checked;
+    LazPackage.Modified:=true;
+    UpdateAll;
+  end;
+  if (RemovedFilesNode<>nil) and (CurNode.Parent=RemovedFilesNode) then begin
+    NodeIndex:=CurNode.Index;
+    if NodeIndex>=LazPackage.RemovedFilesCount then exit;
+    CurFile:=LazPackage.RemovedFiles[NodeIndex];
+    CurFile.HasRegisteredProc:=CallRegisterProcCheckBox.Checked;
+    UpdateAll;
+  end;
 end;
 
 procedure TPackageEditorForm.SetLazPackage(const AValue: TLazPackage);
@@ -437,11 +582,21 @@ begin
     Width:=16;
     Height:=16;
     Name:='ImageList';
+    ImageIndexFiles:=Count;
     AddResImg('pkg_files');
+    ImageIndexRemovedFiles:=Count;
+    AddResImg('pkg_removedfiles');
+    ImageIndexRequired:=Count;
     AddResImg('pkg_required');
-    AddResImg('pkg_conflict');
+    ImageIndexRemovedRequired:=Count;
+    AddResImg('pkg_removedrequired');
+    ImageIndexUnit:=Count;
     AddResImg('pkg_unit');
+    ImageIndexRegisterUnit:=Count;
+    AddResImg('pkg_registerunit');
+    ImageIndexText:=Count;
     AddResImg('pkg_text');
+    ImageIndexBinary:=Count;
     AddResImg('pkg_binary');
   end;
   
@@ -502,10 +657,10 @@ begin
     BeginUpdate;
     Images:=ImageList;
     FilesNode:=Items.Add(nil,'Files');
-    FilesNode.ImageIndex:=0;
+    FilesNode.ImageIndex:=ImageIndexFiles;
     FilesNode.SelectedIndex:=FilesNode.ImageIndex;
     RequiredPackagesNode:=Items.Add(nil,'Required Packages');
-    RequiredPackagesNode.ImageIndex:=1;
+    RequiredPackagesNode.ImageIndex:=ImageIndexRequired;
     RequiredPackagesNode.SelectedIndex:=RequiredPackagesNode.ImageIndex;
     EndUpdate;
     PopupMenu:=FilesPopupMenu;
@@ -526,6 +681,7 @@ begin
     Name:='CallRegisterProcCheckBox';
     Parent:=FilePropsGroupBox;
     Caption:='Register unit';
+    OnClick:=@CallRegisterProcCheckBoxClick;
   end;
 
   RegisteredPluginsGroupBox:=TGroupBox.Create(Self);
@@ -542,6 +698,36 @@ begin
     Align:=alClient;
     ItemHeight:=23;
     OnDrawItem:=@RegisteredListBoxDrawItem;
+  end;
+  
+  UseMinVersionCheckBox:=TCheckBox.Create(Self);
+  with UseMinVersionCheckBox do begin
+    Name:='UseMinVersionCheckBox';
+    Parent:=FilePropsGroupBox;
+    Caption:='Minimum Version:';
+    OnClick:=@UseMinVersionCheckBoxClick;
+  end;
+  
+  MinVersionEdit:=TEdit.Create(Self);
+  with MinVersionEdit do begin
+    Name:='MinVersionEdit';
+    Parent:=FilePropsGroupBox;
+    Text:='';
+  end;
+
+  UseMaxVersionCheckBox:=TCheckBox.Create(Self);
+  with UseMaxVersionCheckBox do begin
+    Name:='UseMaxVersionCheckBox';
+    Parent:=FilePropsGroupBox;
+    Caption:='Maximum Version:';
+    OnClick:=@UseMaxVersionCheckBoxClick;
+  end;
+
+  MaxVersionEdit:=TEdit.Create(Self);
+  with MaxVersionEdit do begin
+    Name:='MaxVersionEdit';
+    Parent:=FilePropsGroupBox;
+    Text:='';
   end;
 
   StatusBar:=TStatusBar.Create(Self);
@@ -565,8 +751,13 @@ begin
 end;
 
 procedure TPackageEditorForm.UpdateTitle;
+var
+  NewCaption: String;
 begin
-  Caption:='Package '+FLazPackage.Name;
+  NewCaption:='Package '+FLazPackage.Name;
+  if LazPackage.Modified then
+    NewCaption:=NewCaption+'*';
+  Caption:=NewCaption;
 end;
 
 procedure TPackageEditorForm.UpdateButtons;
@@ -576,12 +767,31 @@ begin
   CompileBitBtn.Enabled:=(not LazPackage.IsVirtual);
   AddBitBtn.Enabled:=not LazPackage.ReadOnly;
   RemoveBitBtn.Enabled:=(not LazPackage.ReadOnly)
-     and (FilesTreeView.Selected<>nil) and (FilesTreeView.Selected.Parent<>nil);
-  InstallBitBtn.Enabled:=(not LazPackage.IsVirtual);
+     and (FilesTreeView.Selected<>nil)
+     and ((FilesTreeView.Selected.Parent=FilesNode)
+           or (FilesTreeView.Selected.Parent=RequiredPackagesNode));
+  InstallBitBtn.Enabled:=true;
   OptionsBitBtn.Enabled:=true;
 end;
 
 procedure TPackageEditorForm.UpdateFiles;
+
+  procedure SetImageIndex(ANode: TTreeNode; PkgFile: TPkgFile);
+  begin
+    case PkgFile.FileType of
+    pftUnit:
+      if PkgFile.HasRegisteredProc then
+        ANode.ImageIndex:=ImageIndexRegisterUnit
+      else
+        ANode.ImageIndex:=ImageIndexUnit;
+    pftText: ANode.ImageIndex:=ImageIndexText;
+    pftBinary: ANode.ImageIndex:=ImageIndexBinary;
+    else
+      ANode.ImageIndex:=-1;
+    end;
+    ANode.SelectedIndex:=ANode.ImageIndex;
+  end;
+
 var
   Cnt: Integer;
   i: Integer;
@@ -589,22 +799,17 @@ var
   CurNode: TTreeNode;
   NextNode: TTreeNode;
 begin
-  Cnt:=LazPackage.FileCount;
   FilesTreeView.BeginUpdate;
+  
+  // files
   CurNode:=FilesNode.GetFirstChild;
+  Cnt:=LazPackage.FileCount;
   for i:=0 to Cnt-1 do begin
     if CurNode=nil then
       CurNode:=FilesTreeView.Items.AddChild(FilesNode,'');
     CurFile:=LazPackage.Files[i];
     CurNode.Text:=CurFile.GetShortFilename;
-    case CurFile.FileType of
-    pftUnit: CurNode.ImageIndex:=3;
-    pftText: CurNode.ImageIndex:=4;
-    pftBinary: CurNode.ImageIndex:=5;
-    else
-      CurNode.ImageIndex:=-1;
-    end;
-    CurNode.SelectedIndex:=CurNode.ImageIndex;
+    SetImageIndex(CurNode,CurFile);
     CurNode:=CurNode.GetNextSibling;
   end;
   while CurNode<>nil do begin
@@ -613,6 +818,36 @@ begin
     CurNode:=NextNode;
   end;
   FilesNode.Expanded:=true;
+  
+  // removed files
+  if LazPackage.RemovedFilesCount>0 then begin
+    if RemovedFilesNode=nil then begin
+      RemovedFilesNode:=
+        FilesTreeView.Items.Add(RequiredPackagesNode,
+                'Removed Files (are not saved)');
+      RemovedFilesNode.ImageIndex:=ImageIndexRemovedFiles;
+      RemovedFilesNode.SelectedIndex:=RemovedFilesNode.ImageIndex;
+    end;
+    CurNode:=RemovedFilesNode.GetFirstChild;
+    Cnt:=LazPackage.RemovedFilesCount;
+    for i:=0 to Cnt-1 do begin
+      if CurNode=nil then
+        CurNode:=FilesTreeView.Items.AddChild(RemovedFilesNode,'');
+      CurFile:=LazPackage.RemovedFiles[i];
+      CurNode.Text:=CurFile.GetShortFilename;
+      SetImageIndex(CurNode,CurFile);
+      CurNode:=CurNode.GetNextSibling;
+    end;
+    while CurNode<>nil do begin
+      NextNode:=CurNode.GetNextSibling;
+      CurNode.Free;
+      CurNode:=NextNode;
+    end;
+    RemovedFilesNode.Expanded:=true;
+  end else begin
+    FreeAndNil(RemovedFilesNode);
+  end;
+  
   FilesTreeView.EndUpdate;
 end;
 
@@ -624,9 +859,11 @@ var
   CurDependency: TPkgDependency;
   NextNode: TTreeNode;
 begin
-  Cnt:=LazPackage.RequiredPkgCount;
   FilesTreeView.BeginUpdate;
+  
+  // required packages
   CurNode:=RequiredPackagesNode.GetFirstChild;
+  Cnt:=LazPackage.RequiredPkgCount;
   for i:=0 to Cnt-1 do begin
     if CurNode=nil then
       CurNode:=FilesTreeView.Items.AddChild(RequiredPackagesNode,'');
@@ -642,6 +879,36 @@ begin
     CurNode:=NextNode;
   end;
   RequiredPackagesNode.Expanded:=true;
+  
+  // removed required packages
+  Cnt:=LazPackage.RemovedRequiredPkgCount;
+  if Cnt>0 then begin
+    if RemovedRequiredNode=nil then begin
+      RemovedRequiredNode:=
+        FilesTreeView.Items.Add(nil,'Removed required packages (are not saved)');
+      RemovedRequiredNode.ImageIndex:=ImageIndexRemovedRequired;
+      RemovedRequiredNode.StateIndex:=RemovedRequiredNode.ImageIndex;
+    end;
+    CurNode:=RemovedRequiredNode.GetFirstChild;
+    for i:=0 to Cnt-1 do begin
+      if CurNode=nil then
+        CurNode:=FilesTreeView.Items.AddChild(RemovedRequiredNode,'');
+      CurDependency:=LazPackage.RemovedRequiredPkgs[i];
+      CurNode.Text:=CurDependency.AsString;
+      CurNode.ImageIndex:=RemovedRequiredNode.ImageIndex;
+      CurNode.SelectedIndex:=CurNode.ImageIndex;
+      CurNode:=CurNode.GetNextSibling;
+    end;
+    while CurNode<>nil do begin
+      NextNode:=CurNode.GetNextSibling;
+      CurNode.Free;
+      CurNode:=NextNode;
+    end;
+    RemovedRequiredNode.Expanded:=true;
+  end else begin
+    FreeAndNil(RemovedRequiredNode);
+  end;
+
   FilesTreeView.EndUpdate;
 end;
 
@@ -655,33 +922,67 @@ var
   CurLine: string;
   CurListIndex: Integer;
   RegCompCnt: Integer;
+  Dependency: TPkgDependency;
 begin
   CurNode:=FilesTreeView.Selected;
-  FilePropsGroupBox.Enabled:=(CurNode<>nil) and (CurNode.Parent=FilesNode);
   FPlugins.Clear;
+  CurFile:=nil;
+  Dependency:=nil;
   if CurNode<>nil then begin
-    CallRegisterProcCheckBox.Enabled:=not LazPackage.ReadOnly;
     NodeIndex:=CurNode.Index;
-    if CurNode.Parent=FilesNode then begin
-      // get current package file
-      CurFile:=LazPackage.Files[NodeIndex];
-      // set Register Unit checkbox
-      CallRegisterProcCheckBox.Checked:=pffHasRegisterProc in CurFile.Flags;
-      // fetch all registered plugins
-      CurListIndex:=0;
-      RegCompCnt:=CurFile.ComponentCount;
-      for i:=0 to RegCompCnt-1 do begin
-        CurComponent:=CurFile.Components[i];
-        CurLine:=CurComponent.ComponentClass.ClassName;
-        FPlugins.AddObject(CurLine,CurComponent);
-        inc(CurListIndex);
+    if CurNode.Parent<>nil then begin
+      if CurNode.Parent=FilesNode then begin
+        // get current file
+        CurFile:=LazPackage.Files[NodeIndex];
+      end else if (CurNode.Parent=RequiredPackagesNode) then begin
+        // get current dependency
+        Dependency:=LazPackage.RequiredPkgs[NodeIndex];
+      end else if (CurNode.Parent=RemovedFilesNode) then begin
+        // get current removed file
+        CurFile:=LazPackage.RemovedFiles[NodeIndex];
+      end else if (CurNode.Parent=RemovedRequiredNode) then begin
+        // get current removed dependency
+        Dependency:=LazPackage.RemovedRequiredPkgs[NodeIndex];
       end;
-      // put them in the RegisteredListBox
-      RegisteredListBox.Items.Assign(FPlugins);
-    end else begin
-      CallRegisterProcCheckBox.Checked:=false;
-      RegisteredListBox.Items.Clear;
     end;
+  end;
+    
+  // make components visible
+  UseMinVersionCheckBox.Visible:=Dependency<>nil;
+  MinVersionEdit.Visible:=Dependency<>nil;
+  UseMaxVersionCheckBox.Visible:=Dependency<>nil;
+  MaxVersionEdit.Visible:=Dependency<>nil;
+  CallRegisterProcCheckBox.Visible:=CurFile<>nil;
+  RegisteredPluginsGroupBox.Visible:=CurFile<>nil;
+
+  if CurFile<>nil then begin
+    FilePropsGroupBox.Enabled:=true;
+    FilePropsGroupBox.Caption:='File Properties';
+    // set Register Unit checkbox
+    CallRegisterProcCheckBox.Enabled:=not LazPackage.ReadOnly;
+    CallRegisterProcCheckBox.Checked:=pffHasRegisterProc in CurFile.Flags;
+    // fetch all registered plugins
+    CurListIndex:=0;
+    RegCompCnt:=CurFile.ComponentCount;
+    for i:=0 to RegCompCnt-1 do begin
+      CurComponent:=CurFile.Components[i];
+      CurLine:=CurComponent.ComponentClass.ClassName;
+      FPlugins.AddObject(CurLine,CurComponent);
+      inc(CurListIndex);
+    end;
+    // put them in the RegisteredListBox
+    RegisteredListBox.Items.Assign(FPlugins);
+  end else if Dependency<>nil then begin
+    FilePropsGroupBox.Enabled:=true;
+    FilePropsGroupBox.Caption:='Dependency Properties';
+    UseMinVersionCheckBox.Checked:=pdfMinVersion in Dependency.Flags;
+    MinVersionEdit.Text:=Dependency.MinVersion.AsString;
+    MinVersionEdit.Enabled:=pdfMinVersion in Dependency.Flags;
+    UseMaxVersionCheckBox.Checked:=pdfMaxVersion in Dependency.Flags;
+    MaxVersionEdit.Text:=Dependency.MaxVersion.AsString;
+    MaxVersionEdit.Enabled:=pdfMaxVersion in Dependency.Flags;
+  end else begin
+    FilePropsGroupBox.Enabled:=false;
   end;
 end;
 

@@ -572,6 +572,7 @@ begin
       try
         XMLConfig:=TXMLConfig.Create(AFilename);
         try
+          APackage.Filename:=AFilename;
           APackage.LoadFromXMLConfig(XMLConfig,'Package/');
         finally
           XMLConfig.Free;
@@ -584,7 +585,6 @@ begin
           exit;
         end;
       end;
-      APackage.Filename:=AFilename;
       APackage.Modified:=false;
 
       Result:=AddPackageToGraph(APackage);
@@ -635,6 +635,7 @@ begin
   try
     XMLConfig:=TXMLConfig.Create(APackage.Filename);
     try
+      XMLConfig.Clear;
       APackage.SaveToXMLConfig(XMLConfig,'Package/');
       XMLConfig.Flush;
     finally

@@ -134,8 +134,6 @@ type
     procedure OnIteratePackages(APackageID: TLazPackageID);
     procedure AutoCompleteNewComponent;
     procedure AutoCompleteNewComponentUnitName;
-    function CheckUnitFilename(AddFileType: TAddToPkgType;
-      var AFilename: string): boolean;
     procedure UpdateAddUnitInfo;
   public
     Params: TAddToPkgResult;
@@ -155,6 +153,11 @@ type
 function ShowAddToPackageDlg(Pkg: TLazPackage; var Params: TAddToPkgResult;
   OnGetIDEFileInfo: TGetIDEFileStateEvent;
   OnGetUnitRegisterInfo: TOnGetUnitRegisterInfo): TModalResult;
+function CheckAddingUnitFilename(LazPackage: TLazPackage;
+  AddFileType: TAddToPkgType; OnGetIDEFileInfo: TGetIDEFileStateEvent;
+  var AFilename: string): boolean;
+function CheckAddingDependency(LazPackage: TLazPackage;
+  NewDependency: TPkgDependency): boolean;
 
 
 implementation
@@ -177,6 +180,169 @@ begin
   AddDlg.Free;
 end;
 
+function CheckAddingUnitFilename(LazPackage: TLazPackage;
+  AddFileType: TAddToPkgType; OnGetIDEFileInfo: TGetIDEFileStateEvent;
+  var AFilename: string): boolean;
+var
+  AnUnitName: String;
+  PkgFile: TPkgFile;
+  Msg: String;
+  IDEFileFlags: TIDEFileStateFlags;
+begin
+  Result:=false;
+
+  // normalize filename
+  AFilename:=TrimFilename(AFilename);
+  if (not FilenameIsAbsolute(AFilename)) then begin
+    if LazPackage.HasDirectory then
+      AFilename:=LazPackage.Directory+AFilename
+    else begin
+      MessageDlg('Invalid filename',
+        'The filename "'+AFilename+'" is ambigious.'#13
+        +'Please specifiy a filename with full path.',
+        mtError,[mbCancel],0);
+      exit;
+    end;
+  end;
+
+  // check if file exists
+  if not FileExists(AFilename) then begin
+    if AddFileType=d2ptUnit then begin
+      MessageDlg('File not found',
+        'File "'+AFilename+'" not found.',mtError,[mbCancel],0);
+      exit;
+    end;
+  end;
+
+  // check file extension
+  if not FilenameIsPascalUnit(AFilename) then begin
+    MessageDlg('File not unit',
+      'Pascal units must have the extension .pp or .pas',
+      mtWarning,[mbCancel],0);
+    exit;
+  end;
+
+  // check unitname
+  AnUnitName:=ExtractFileNameOnly(AFilename);
+  if not IsValidIdent(AnUnitName) then begin
+    MessageDlg('File not unit',
+      +'"'+AnUnitName+'" is not a valid unit name.',
+      mtWarning,[mbCancel],0);
+    exit;
+  end;
+
+  // check if unitname already exists in package
+  PkgFile:=PackageGraph.FindUnit(LazPackage,AnUnitName,true,true);
+  if PkgFile<>nil then begin
+    if PkgFile.LazPackage=LazPackage then begin
+      MessageDlg('Unitname already exists',
+        'The unitname "'+AnUnitName+'" already exists in this package.',
+        mtError,[mbCancel],0);
+      exit;
+    end else begin
+      if MessageDlg('Unitname already exists',
+        'The unitname "'+AnUnitName+'" already exists in the package:'#13
+        +PkgFile.LazPackage.IDAsString,
+        mtWarning,[mbCancel,mbIgnore],0)<>mrIgnore then exit;
+    end;
+  end;
+
+  // check if unitname is a componentclass
+  if IDEComponentPalette.FindComponent(AnUnitName)<>nil then begin
+    if MessageDlg('Ambigious Unit Name',
+      'The unit name "'+AnUnitName+'" is the same as an registered component.'#13
+      +'Using this can cause strange error messages.',
+      mtWarning,[mbCancel,mbIgnore],0)<>mrIgnore
+    then
+      exit;
+  end;
+
+  // check if file already exists in package
+  PkgFile:=LazPackage.FindPkgFile(AFilename,true,true);
+  if PkgFile<>nil then begin
+    Msg:='File "'+AFilename+'" already exists in the project.';
+    if PkgFile.Filename<>AFilename then
+      Msg:=#13+'Existing file: "'+PkgFile.Filename+'"';
+    MessageDlg('File already exists',Msg,mtError,[mbCancel],0);
+    exit;
+  end;
+
+  // check if file is part of project or marked readonly
+  if Assigned(OnGetIDEFileInfo) then begin
+    IDEFileFlags:=[];
+    OnGetIDEFileInfo(nil,AFilename,[ifsPartOfProject,ifsReadOnly],
+                     IDEFileFlags);
+    if (ifsPartOfProject in IDEFileFlags) then begin
+      MessageDlg('File is used',
+        'The file "'+AFilename+'" is part of the current project.'#13
+        +'It is a bad idea to share files between projects and packages.',
+        mtError,[mbCancel],0);
+      exit;
+    end;
+    if (ifsReadOnly in IDEFileFlags) then begin
+      MessageDlg('File is readonly',
+        'The file "'+AFilename+'" is marked as readonly.',
+        mtError,[mbCancel],0);
+      exit;
+    end;
+  end;
+
+  // ok
+  Result:=true;
+end;
+
+function CheckAddingDependency(LazPackage: TLazPackage;
+  NewDependency: TPkgDependency): boolean;
+var
+  NewPckName: String;
+begin
+  Result:=false;
+
+  NewPckName:=NewDependency.PackageName;
+
+  // check Max-Min version
+  if (pdfMinVersion in NewDependency.Flags)
+  and (pdfMaxVersion in NewDependency.Flags)
+  and (NewDependency.MaxVersion.Compare(NewDependency.MinVersion)<0) then
+  begin
+    MessageDlg('Invalid Min-Max version',
+      'The Maximum Version is lower than the Minimim Version.',
+      mtError,[mbCancel],0);
+    exit;
+  end;
+
+  // check packagename
+  if not IsValidIdent(NewPckName) then begin
+    MessageDlg('Invalid packagename',
+      'The package name "'+NewPckName+'" is invalid.'#13
+      +'Plase choose an existing package.',
+      mtError,[mbCancel],0);
+    exit;
+  end;
+
+  // check if package is already required
+  if LazPackage.FindDependencyByName(NewPckName)<>nil then begin
+    MessageDlg('Dependency already exists',
+      'The package has already a dependency for the package "'+NewPckName+'".',
+      mtError,[mbCancel],0);
+    exit;
+  end;
+
+  // check if required package exists
+  if PackageGraph.FindWithDependency(NewDependency,fpfSearchPackageEverywhere)
+    =nil then
+  begin
+    MessageDlg('Package not found',
+      'The packagename "'+NewPckName+'" was not found.'#13
+      +'Please choose an existing package.',
+      mtError,[mbCancel],0);
+    exit;
+  end;
+  
+  Result:=true;
+end;
+
+
 { TAddToPackageDlg }
 
 procedure TAddToPackageDlg.AddUnitButtonClick(Sender: TObject);
@@ -191,7 +357,8 @@ begin
     Include(Params.PkgFileFlags,pffHasRegisterProc);
 
   // check filename
-  if not CheckUnitFilename(Params.AddType,Params.UnitFilename) then exit;
+  if not CheckAddingUnitFilename(LazPackage,Params.AddType,
+    OnGetIDEFileInfo,Params.UnitFilename) then exit;
 
   // check unitname
   if AnsiCompareText(Params.UnitName,ExtractFileNameOnly(Params.UnitFilename))<>0
@@ -428,7 +595,8 @@ begin
   end;
 
   // check filename
-  if not CheckUnitFilename(Params.AddType,Params.UnitFilename) then exit;
+  if not CheckAddingUnitFilename(LazPackage,Params.AddType,
+    OnGetIDEFileInfo,Params.UnitFilename) then exit;
 
   // create dependency if needed
   PkgComponent:=
@@ -517,7 +685,6 @@ end;
 procedure TAddToPackageDlg.NewDependButtonClick(Sender: TObject);
 var
   NewDependency: TPkgDependency;
-  NewPckName: String;
 begin
   NewDependency:=TPkgDependency.Create;
   try
@@ -547,26 +714,10 @@ begin
       end;
       NewDependency.Flags:=NewDependency.Flags+[pdfMaxVersion];
     end;
-    // check packagename
-    NewPckName:=DependPkgNameComboBox.Text;
-    if not IsValidIdent(NewPckName) then begin
-      MessageDlg('Invalid packagename',
-        'The packagename "'+NewPckName+'" is invalid.'#13
-        +'Plase choose an existing package.',
-        mtError,[mbCancel],0);
-      exit;
-    end;
-    NewDependency.PackageName:=NewPckName;
-    if PackageGraph.FindWithDependency(NewDependency,fpfSearchPackageEverywhere)
-      =nil then
-    begin
-      MessageDlg('Package not found',
-        'The packagename "'+DependPkgNameComboBox.Text+'" was not found.'#13
-        +'Please choose an existing package.',
-        mtError,[mbCancel],0);
-      exit;
-    end;
     
+    NewDependency.PackageName:=DependPkgNameComboBox.Text;
+    if not CheckAddingDependency(LazPackage,NewDependency) then exit;
+
     // ok
     Params.Dependency:=NewDependency;
     NewDependency:=nil;
@@ -948,116 +1099,6 @@ begin
   if LazPackage.HasDirectory then
     NewFileName:=LazPackage.Directory+NewFileName;
   ComponentUnitFileEdit.Text:=NewFileName;
-end;
-
-function TAddToPackageDlg.CheckUnitFilename(AddFileType: TAddToPkgType;
-  var AFilename: string): boolean;
-var
-  AnUnitName: String;
-  PkgFile: TPkgFile;
-  Msg: String;
-  IDEFileFlags: TIDEFileStateFlags;
-begin
-  Result:=false;
-  
-  // normalize filename
-  AFilename:=TrimFilename(AFilename);
-  if (not FilenameIsAbsolute(AFilename)) then begin
-    if LazPackage.HasDirectory then
-      AFilename:=LazPackage.Directory+AFilename
-    else begin
-      MessageDlg('Invalid filename',
-        'The filename "'+AFilename+'" is ambigious.'#13
-        +'Please specifiy a filename with full path.',
-        mtError,[mbCancel],0);
-      exit;
-    end;
-  end;
-  
-  // check if file exists
-  if not FileExists(AFilename) then begin
-    if AddFileType=d2ptUnit then begin
-      MessageDlg('File not found',
-        'File "'+AFilename+'" not found.',mtError,[mbCancel],0);
-      exit;
-    end;
-  end;
-  
-  // check file extension
-  if not FilenameIsPascalUnit(AFilename) then begin
-    MessageDlg('File not unit',
-      'Pascal units must have the extension .pp or .pas',
-      mtWarning,[mbCancel],0);
-    exit;
-  end;
-  
-  // check unitname
-  AnUnitName:=ExtractFileNameOnly(AFilename);
-  if not IsValidIdent(AnUnitName) then begin
-    MessageDlg('File not unit',
-      +'"'+AnUnitName+'" is not a valid unit name.',
-      mtWarning,[mbCancel],0);
-    exit;
-  end;
-  
-  // check if unitname already exists in package
-  PkgFile:=PackageGraph.FindUnit(LazPackage,AnUnitName,true,true);
-  if PkgFile<>nil then begin
-    if PkgFile.LazPackage=LazPackage then begin
-      MessageDlg('Unitname already exists',
-        'The unitname "'+AnUnitName+'" already exists in this package.',
-        mtError,[mbCancel],0);
-      exit;
-    end else begin
-      if MessageDlg('Unitname already exists',
-        'The unitname "'+AnUnitName+'" already exists in the package:'#13
-        +PkgFile.LazPackage.IDAsString,
-        mtWarning,[mbCancel,mbIgnore],0)<>mrIgnore then exit;
-    end;
-  end;
-  
-  // check if unitname is a componentclass
-  if IDEComponentPalette.FindComponent(AnUnitName)<>nil then begin
-    if MessageDlg('Ambigious Unit Name',
-      'The unit name "'+AnUnitName+'" is the same as an registered component.'#13
-      +'Using this can cause strange error messages.',
-      mtWarning,[mbCancel,mbIgnore],0)<>mrIgnore
-    then
-      exit;
-  end;
-  
-  // check if file already exists in package
-  PkgFile:=LazPackage.FindPkgFile(AFilename,true,true);
-  if PkgFile<>nil then begin
-    Msg:='File "'+AFilename+'" already exists in the project.';
-    if PkgFile.Filename<>AFilename then
-      Msg:=#13+'Existing file: "'+PkgFile.Filename+'"';
-    MessageDlg('File already exists',Msg,mtError,[mbCancel],0);
-    exit;
-  end;
-  
-  // check if file is part of project or marked readonly
-  if Assigned(OnGetIDEFileInfo) then begin
-    IDEFileFlags:=[];
-    OnGetIDEFileInfo(Self,AFilename,[ifsPartOfProject,ifsReadOnly],
-                     IDEFileFlags);
-    if (ifsPartOfProject in IDEFileFlags) then begin
-      MessageDlg('File is used',
-        'The file "'+AFilename+'" is part of the current project.'#13
-        +'It is a bad idea to share files between projects and packages.',
-        mtError,[mbCancel],0);
-      exit;
-    end;
-    if (ifsReadOnly in IDEFileFlags) then begin
-      MessageDlg('File is readonly',
-        'The file "'+AFilename+'" is marked as readonly.',
-        mtError,[mbCancel],0);
-      exit;
-    end;
-  end;
-
-  // ok
-  Result:=true;
 end;
 
 procedure TAddToPackageDlg.UpdateAddUnitInfo;
