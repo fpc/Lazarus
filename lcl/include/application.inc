@@ -394,6 +394,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.18  2002/03/04 10:01:01  lazarus
+  MG: fixed synedit crash on exit
+
   Revision 1.17  2002/01/27 23:35:33  lazarus
   MG: added error message, when lcl has abstract widget interface object
 

@@ -38,9 +38,10 @@ uses
    Forms;  // MG: GTKInt uses forms, so the application object is destroyed
            //   in the forms finalization section AFTER this finalization
            //   section. But the lcl objects need the gtk to close clean.
-           //   Therefore the application object is freed here.
-           //  P.S.: This is only a workaround till the interfaces are below
-           //    the lcl.
+           //   Therefore the application object is freed here before the
+           //   InterfaceObject.
+           //   Probably this is the case for all interfaces, so this should be
+           //   moved to forms.pp.
 
 initialization
 
