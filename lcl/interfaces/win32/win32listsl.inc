@@ -157,7 +157,7 @@ Begin
   Begin
     // save any text in edit box
     if FSender.FCompStyle=csComboBox then
-      TWin32WSWinControl.GetText(FSender, EditText);
+      TWin32WSCustomComboBox.GetText(FSender, EditText);
 
     Windows.SendMessage(FWin32List, FFlagResetContent, 0, 0);
     For Counter := 0 To (TStrings(Source).Count - 1) Do
@@ -170,7 +170,7 @@ Begin
     begin
       SetComboHeight(FSender, FSender.Left, FSender.Top, FSender.Width, ComboHeight);
       // restore text in edit box
-      TWin32WSWinControl.SetText(FSender, EditText);
+      TWin32WSCustomComboBox.SetText(FSender, EditText);
     end;
   End
   Else
@@ -549,6 +549,9 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.35  2004/11/04 12:05:14  micha
+  fix remember edit string in combobox after assigning strings to list (fixes find in files dialog search in lazarus)
+
   Revision 1.34  2004/09/18 11:06:47  micha
   remove LM_RECREATEWND message, as it is not used by LCL
 
