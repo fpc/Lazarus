@@ -1299,7 +1299,6 @@ Begin
   Result := Integer(Windows.GetWindowRect(Handle, @Rect));
 End;
 
-{$IFDEF ClientRectBugFix}
 Function TWin32Object.GetWindowSize(Handle : hwnd; var Width, Height: integer): boolean;
 var
   R: TRect;
@@ -1311,7 +1310,6 @@ begin
     Height := bottom - top;
   end;
 end;
-{$ENDIF}
 
 {------------------------------------------------------------------------------
   Method:  HideCaret
@@ -2307,6 +2305,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.20  2002/10/01 10:16:34  lazarus
+  MG: removed last clientrectbugfix switches
+
   Revision 1.19  2002/09/18 17:07:30  lazarus
   MG: added patch from Andrew
 

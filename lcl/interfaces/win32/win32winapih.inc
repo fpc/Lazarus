@@ -100,10 +100,7 @@ Function GetTextMetrics(DC: HDC; Var TM: TTextMetric): Boolean; Override;
 Function GetWindowLong(Handle: HWND; Int: Integer): LongInt; Override;
 Function GetWindowOrgEx(DC: HDC; Var P: TPoint): Integer; Override;
 Function GetWindowRect(Handle: HWND; Var Rect: TRect): Integer; Override;
-
-{$IFDEF ClientRectBugFix}
 Function GetWindowSize(Handle : hwnd; var Width, Height: integer): boolean;
-{$ENDIF}
 
 Function HideCaret(HWnd: HWND): Boolean; Override;
 
@@ -176,6 +173,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.15  2002/10/01 10:16:34  lazarus
+  MG: removed last clientrectbugfix switches
+
   Revision 1.14  2002/09/10 06:49:25  lazarus
   MG: scrollingwincontrol from Andrew
 
