@@ -834,6 +834,7 @@ begin
   WordIsPredefinedIdentifier:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(WordIsPredefinedIdentifier);
   with WordIsPredefinedIdentifier do begin
+    Add('POINTER'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('INT64'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CARDINAL'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('QWORD'      ,{$ifdef FPC}@{$endif}AllwaysTrue);

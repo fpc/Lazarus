@@ -178,8 +178,8 @@ type
           var NewX, NewY, NewTopLine: integer): boolean;
 
     // functions for events in the object inspector
-    procedure GetCompatibleMethods(Code: TCodeBuffer; const AClassName: string;
-          TypeData: PTypeData; Proc: TGetStringProc);
+    function GetCompatibleMethods(Code: TCodeBuffer; const AClassName: string;
+          TypeData: PTypeData; Proc: TGetStringProc): boolean;
     function MethodExists(Code:TCodeBuffer; const AClassName,
           AMethodName: string; TypeData: PTypeData): boolean;
     function JumpToMethodBody(Code: TCodeBuffer;
@@ -712,18 +712,19 @@ writeln('TCodeToolManager.GuessUnclosedBlock END ');
 {$ENDIF}
 end;
 
-procedure TCodeToolManager.GetCompatibleMethods(Code: TCodeBuffer;
-  const AClassName: string; TypeData: PTypeData; Proc: TGetStringProc);
+function TCodeToolManager.GetCompatibleMethods(Code: TCodeBuffer;
+  const AClassName: string; TypeData: PTypeData; Proc: TGetStringProc): boolean;
 begin
 {$IFDEF CTDEBUG}
 writeln('TCodeToolManager.GetCompatibleMethods A ',Code.Filename,' Classname=',AClassname);
 {$ENDIF}
+  Result:=InitCurCodeTool(Code);
   if not InitCurCodeTool(Code) then exit;
   try
-    FCurCodeTool.GetCompatiblePublishedMethods(UpperCaseStr(AClassName),
+    Result:=FCurCodeTool.GetCompatiblePublishedMethods(UpperCaseStr(AClassName),
        TypeData,Proc);
   except
-    on e: Exception do HandleException(e);
+    on e: Exception do Result:=HandleException(e);
   end;
 end;
 

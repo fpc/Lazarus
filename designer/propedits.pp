@@ -2052,6 +2052,7 @@ end;
 
 procedure TMethodPropertyEditor.GetValues(Proc: TGetStringProc);
 begin
+writeln('### TMethodPropertyEditor.GetValues');
   PropertyHook.GetMethods(GetTypeData(GetPropType), Proc);
 end;
 
