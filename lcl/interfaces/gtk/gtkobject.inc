@@ -1449,8 +1449,8 @@ begin
 
           If (Sender <> Application.MainForm)
           and Application.MainForm.HandleAllocated then begin
-            gtk_window_set_transient_for(PGtkWindow(handle),
-              PGtkWindow(Application.MainForm.handle));
+            //gtk_window_set_transient_for(PGtkWindow(handle),
+            //  PGtkWindow(Application.MainForm.handle));
           end;
         end;
         gtk_window_set_modal(PGtkWindow(handle), true);
@@ -5876,6 +5876,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.224  2002/09/30 20:37:09  lazarus
+  MG: fixed transient of modal forms
+
   Revision 1.223  2002/09/30 20:19:12  lazarus
   MG: fixed flickering of modal forms
 
