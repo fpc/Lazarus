@@ -44,6 +44,16 @@ interface
 {$DEFINE HasDefaultValues}
 {$ENDIF}
 
+// FPC 1.9.7 and later have exceptions which contain stack frames
+// If you are using an early version of fpc 1.9.7 you can define
+// ExceptionHasNoFrames to disable using stackframes.
+{$IFDEF VER1_0}
+{$DEFINE ExceptionHasNoFrames}
+{$ENDIF}
+{$IFDEF VER1_9_6}
+{$DEFINE ExceptionHasNoFrames}
+{$ENDIF}
+
 uses
   Classes, SysUtils, Math, LCLStrConsts, LCLType, LCLProc, LCLIntf,
   InterfaceBase, LResources, GraphType, Graphics, Menus, LMessages, CustomTimer,
@@ -1212,14 +1222,10 @@ end;
 
 
 //------------------------------------------------------------------------------
-{$IFNDEF VER1_0}
-  {$IFNDEF VER1_9_6}
-procedure ExceptionOccurred(Sender: TObject; Addr:Pointer; FrameCount:Longint; Frames: PPointer);
-  {$ELSE}
+{$IFDEF ExceptionHasNoFrames}
 procedure ExceptionOccurred(Sender: TObject; Addr,Frame: Pointer);
-  {$ENDIF}
 {$ELSE}
-procedure ExceptionOccurred(Sender: TObject; Addr,Frame: Pointer);
+procedure ExceptionOccurred(Sender: TObject; Addr:Pointer; FrameCount:Longint; Frames: PPointer);
 {$ENDIF}
 Begin
   DebugLn('[FORMS.PP] ExceptionOccurred ');
@@ -1227,8 +1233,9 @@ Begin
   HandlingException:=true;
   if Sender<>nil then begin
     DebugLn('  Sender=',Sender.ClassName);
-    if Sender is Exception then
+    if Sender is Exception then begin
       DebugLn('  Exception=',Exception(Sender).Message);
+    end;
   end else
     DebugLn('  Sender=nil');
   if Application<>nil then
