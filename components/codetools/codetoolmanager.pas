@@ -39,7 +39,7 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, CodeCompletionTool, CodeTree, CodeAtom, SourceChanger,
+  Classes, SysUtils, EventCodeTool, CodeTree, CodeAtom, SourceChanger,
   DefineTemplates, CodeCache, ExprEval, LinkScanner, KeywordFuncLists, TypInfo,
   AVL_Tree, CustomCodeTool, FindDeclarationTool;
 
@@ -50,6 +50,8 @@ type
   TOnBeforeApplyChanges = procedure(Manager: TCodeToolManager;
                                     var Abort: boolean) of object;
   TOnAfterApplyChanges = procedure(Manager: TCodeToolManager) of object;
+  
+  TCodeTool = TEventsCodeTool;
 
   TCodeToolManager = class
   private
@@ -58,7 +60,7 @@ type
     FCatchExceptions: boolean;
     FCheckFilesOnDisk: boolean;
     FCompleteProperties: boolean;
-    FCurCodeTool: TCodeCompletionCodeTool; // current codetool
+    FCurCodeTool: TCodeTool; // current codetool
     FCursorBeyondEOL: boolean;
     FErrorCode: TCodeBuffer;
     FErrorColumn: integer;
@@ -499,7 +501,7 @@ begin
           +' If this is an include file, please open the main source first.';
     exit;
   end;
-  FCurCodeTool:=TCodeCompletionCodeTool(GetCodeToolForSource(MainCode,true));
+  FCurCodeTool:=TCodeTool(GetCodeToolForSource(MainCode,true));
   FCurCodeTool.ErrorPosition.Code:=nil;
 {$IFDEF CTDEBUG}
 writeln('[TCodeToolManager.InitCurCodeTool] ',Code.Filename,' ',Code.SourceLength);
@@ -1106,7 +1108,9 @@ end;
 
 function TCodeToolManager.RenameMainInclude(Code: TCodeBuffer;
   const NewFilename: string; KeepPath: boolean): boolean;
-var LinkIndex: integer;
+var
+  LinkIndex: integer;
+  OldIgnoreMissingIncludeFiles: boolean;
 begin
   Result:=false;
 {$IFDEF CTDEBUG}
@@ -1114,10 +1118,13 @@ writeln('TCodeToolManager.RenameMainInclude A ',Code.Filename,' NewFilename=',Ne
 {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
+    OldIgnoreMissingIncludeFiles:=FCurCodeTool.Scanner.IgnoreMissingIncludeFiles;
+    FCurCodeTool.Scanner.IgnoreMissingIncludeFiles:=true;
     LinkIndex:=-1;
     if FCurCodeTool.FindNextIncludeInInitialization(LinkIndex)=nil then exit;
     Result:=FCurCodeTool.RenameInclude(LinkIndex,NewFilename,KeepPath,
                        SourceChangeCache);
+    FCurCodeTool.Scanner.IgnoreMissingIncludeFiles:=OldIgnoreMissingIncludeFiles;
   except
     on e: Exception do Result:=HandleException(e);
   end;
@@ -1388,11 +1395,11 @@ begin
           +' If this is an include file, please open the main source first.');
       exit;
     end;
-    Result:=TCodeCompletionCodeTool.Create;
+    Result:=TCodeTool.Create;
     Result.Scanner:=Code.Scanner;
     FSourceTools.Add(Result);
   end;
-  with TCodeCompletionCodeTool(Result) do begin
+  with TCodeTool(Result) do begin
     AdjustTopLineDueToComment:=Self.AdjustTopLineDueToComment;
     AddInheritedCodeToOverrideMethod:=Self.AddInheritedCodeToOverrideMethod;
     CompleteProperties:=Self.CompleteProperties;

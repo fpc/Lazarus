@@ -76,9 +76,9 @@ type
       // extract attributes:
       phpWithStart,          // proc keyword e.g. 'function', 'class procedure'
       phpWithoutClassKeyword,// without 'class' proc keyword
-      phpWithoutName,        // skip function name
-      phpAddClassname,       // extract/add 'ClassName.'
+      phpAddClassName,       // extract/add 'ClassName.'
       phpWithoutClassName,   // skip classname
+      phpWithoutName,        // skip function name
       phpWithoutParamList,   // skip param list
       phpWithVarModifiers,   // extract 'var', 'out', 'const'
       phpWithParameterNames, // extract parameter names
@@ -243,6 +243,7 @@ type
         ProcSpec: TProcedureSpecifier): boolean;
     function ProcNodeHasSpecifier(ProcNode: TCodeTreeNode;
         ProcSpec: TProcedureSpecifier): boolean;
+    function ClassSectionNodeStartsWithWord(ANode: TCodeTreeNode): boolean;
 
     constructor Create;
     destructor Destroy; override;
@@ -3546,6 +3547,18 @@ begin
   // ToDo: ppu, ppw, dcu
 
   Result:=MoveCursorToProcSpecifier(ProcNode,ProcSpec);
+end;
+
+function TPascalParserTool.ClassSectionNodeStartsWithWord(
+  ANode: TCodeTreeNode): boolean;
+var p: integer;
+begin
+  Result:=false;
+  if ANode=nil then exit;
+  p:=ANode.StartPos;
+  while (p<ANode.EndPos) and (IsIdentChar[Src[p]]) do inc(p);
+  if (p=ANode.StartPos) then exit;
+  Result:=true;
 end;
 
 procedure TPascalParserTool.BuildSubTreeForProcHead(ProcNode: TCodeTreeNode);

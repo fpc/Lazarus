@@ -41,7 +41,9 @@ type
   TOnFileBackup = function(const FileToBackup:string; 
                            IsPartOfProject:boolean):TModalResult of object;
   TOnUnitNameChange = procedure(AnUnitInfo: TUnitInfo;
-       const OldUnitName, NewUnitName: string;  var Allowed: boolean) of object;
+       const OldUnitName, NewUnitName: string;
+       CheckIfAllowed: boolean;
+       var Allowed: boolean) of object;
 
   //---------------------------------------------------------------------------
   TNewUnitType = (
@@ -60,7 +62,7 @@ type
     fEditorIndex: integer;
     fFileName: string;
     fForm: TComponent;
-    fFormName: string; // classname is always T<fFormName>
+    fFormName: string; // classname is always T<FormName>
         // this attribute contains the formname even if the unit is not loaded
     fHasResources: boolean;
     fIsPartOfProject: boolean;
@@ -160,7 +162,8 @@ type
     function OnUnitFileBackup(const Filename:string;
                               IsPartOfProject:boolean):TModalResult;
     procedure OnUnitNameChange(AnUnitInfo: TUnitInfo; 
-       const OldUnitName, NewUnitName: string;  var Allowed: boolean);
+       const OldUnitName, NewUnitName: string;  CheckIfAllowed: boolean;
+       var Allowed: boolean);
     function JumpHistoryCheckPosition(
        APosition:TProjectJumpHistoryPosition): boolean;
     procedure SetSrcPath(const NewSrcPath: string);
@@ -179,7 +182,7 @@ type
     procedure RemoveUnit(Index:integer);
     function IndexOf(AUnitInfo: TUnitInfo):integer;
     function IndexOfUnitWithName(const AnUnitName:string;
-       OnlyProjectUnits:boolean):integer;
+       OnlyProjectUnits:boolean; IgnoreUnit: TUnitInfo):integer;
     function IndexOfUnitWithForm(AForm: TComponent;
        OnlyProjectUnits:boolean):integer;
     function IndexOfFilename(const AFilename: string): integer;
@@ -471,11 +474,10 @@ begin
     if NewUnitName<>'' then begin
       Allowed:=true;
       if Assigned(fOnUnitNameChange) then
-        fOnUnitNameChange(Self,fUnitName,NewUnitName,Allowed);
-      if not Allowed then exit;
+        fOnUnitNameChange(Self,fUnitName,NewUnitName,false,Allowed);
+      // (ignore Allowed)
       if fSource<>nil then begin
         CodeToolBoss.RenameSource(fSource,NewUnitName);
-        CodeToolBoss.RenameMainInclude(fSource,NewUnitName+'.lrs',true);
       end;
       fUnitName:=NewUnitName;
       fModified:=true;
@@ -955,23 +957,24 @@ begin
 end;
 
 function TProject.NewUniqueFormName(NewUnitType:TNewUnitType):string;
-// NewUniqueFormName(NewUnitType:TNewUnitType)
 
   function FormNameExists(const AFormName: string): boolean;
   var i: integer;
   begin
     Result:=true;
     for i:=0 to UnitCount-1 do begin
-      if Units[i].Form<>nil then begin
+      if (Units[i].Form<>nil) then begin
         if AnsiCompareText(Units[i].Form.Name,AFormName)=0 then exit;
         if AnsiCompareText(Units[i].Form.ClassName,'T'+AFormName)=0 then exit;
-      end else if Units[i].FormName<>'' then begin
+      end else if (Units[i].FormName<>'')
+      and ((Units[i].IsPartOfProject) or (Units[i].Loaded)) then begin
         if AnsiCompareText(Units[i].FormName,AFormName)=0 then exit;
       end;
     end;
     Result:=false;
   end;
 
+// NewUniqueFormName(NewUnitType:TNewUnitType)
 var i: integer;
   Prefix: string;
 begin
@@ -1010,12 +1013,13 @@ begin
 end;
 
 function TProject.IndexOfUnitWithName(const AnUnitName:string; 
-  OnlyProjectUnits:boolean):integer;
+  OnlyProjectUnits:boolean; IgnoreUnit: TUnitInfo):integer;
 begin
   Result:=UnitCount-1;
   while (Result>=0) do begin
-    if (OnlyProjectUnits and Units[Result].IsPartOfProject) 
-    or (not OnlyProjectUnits) then begin
+    if ((OnlyProjectUnits and Units[Result].IsPartOfProject)
+    or (not OnlyProjectUnits))
+    and (IgnoreUnit<>Units[Result]) then begin
       if (AnsiCompareText(Units[Result].UnitName,AnUnitName)=0) then
         exit;
     end;
@@ -1234,18 +1238,22 @@ begin
 end;
 
 procedure TProject.OnUnitNameChange(AnUnitInfo: TUnitInfo; 
-  const OldUnitName, NewUnitName: string;  var Allowed: boolean);
+  const OldUnitName, NewUnitName: string;  CheckIfAllowed: boolean;
+  var Allowed: boolean);
 var i:integer;
 begin
   if AnUnitInfo.IsPartOfProject then begin
-    // check if no other project unit has this name
-    for i:=0 to UnitCount-1 do
-      if (Units[i].IsPartOfProject)
-      and (Units[i]<>AnUnitInfo) and (Units[i].UnitName<>'') 
-      and (lowercase(Units[i].UnitName)=lowercase(NewUnitName)) then begin
-        Allowed:=false;
-        exit;
+    if CheckIfAllowed then begin
+      // check if no other project unit has this name
+      for i:=0 to UnitCount-1 do begin
+        if (Units[i].IsPartOfProject)
+        and (Units[i]<>AnUnitInfo) and (Units[i].UnitName<>'')
+        and (lowercase(Units[i].UnitName)=lowercase(NewUnitName)) then begin
+          Allowed:=false;
+          exit;
+        end;
       end;
+    end;
     if (OldUnitName<>'') and (ProjectType in [ptProgram, ptApplication]) then
     begin
       // rename unit in program uses section
@@ -1304,6 +1312,9 @@ end.
 
 {
   $Log$
+  Revision 1.52  2002/03/21 22:44:08  lazarus
+  MG: fixes for save-as and form streaming exceptions
+
   Revision 1.51  2002/03/05 08:14:59  lazarus
   MG: updates for codetools defines editor
 

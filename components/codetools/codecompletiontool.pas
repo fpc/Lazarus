@@ -21,14 +21,19 @@
   Author: Mattias Gaertner
 
   Abstract:
-    TCodeCompletionCodeTool enhances TEventsCodeTool.
+    TCodeCompletionCodeTool enhances TMethodJumpingCodeTool.
     
+    Code Completion is
+      - complete properties
+          - complete property statements
+          - add private variables and private access methods
+      - add missing method bodies
+          - add useful statements
+      - add missing forward proc bodies
 
   ToDo:
     -ProcExists: search procs in ancestors too
     -VarExists: search vars in ancestors too
-    -pipClassOrder
-    -proc body -> add proc definition
 }
 unit CodeCompletionTool;
 
@@ -42,35 +47,47 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, CodeTree, CodeAtom, PascalParserTool, EventCodeTool,
+  Classes, SysUtils, CodeTree, CodeAtom, PascalParserTool, MethodJumpTool,
   SourceLog, KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache, AVL_Tree,
   TypInfo, SourceChanger;
 
 type
-  NewClassPart = (ncpProcs, ncpVars);
+  TNewClassPart = (ncpPrivateProcs, ncpPrivateVars,
+                   ncpPublishedProcs, ncpPublishedVars);
 
-  TCodeCompletionCodeTool = class(TEventsCodeTool)
+  TCodeCompletionCodeTool = class(TMethodJumpingCodeTool)
   private
     ASourceChangeCache: TSourceChangeCache;
-    ClassNode, StartNode: TCodeTreeNode;
+    ClassNode: TCodeTreeNode; // the class that is to be completed
+    StartNode: TCodeTreeNode; // the first variable/method/GUID node in ClassNode
     FAddInheritedCodeToOverrideMethod: boolean;
     FCompleteProperties: boolean;
-    FirstInsert: TCodeTreeNodeExtension;
+    FirstInsert: TCodeTreeNodeExtension; // first of a list of insert requests
     FSetPropertyVariablename: string;
     JumpToProcName: string;
     NewPrivatSectionIndent, NewPrivatSectionInsertPos: integer;
-    function ProcExists(const NameAndParams: string): boolean;
-    function VarExists(const UpperName: string): boolean;
-    procedure AddInsert(PosNode: TCodeTreeNode;
-        const CleanDef, Def, IdentifierName, Body: string);
-    function NodeExtIsVariable(ANodeExt: TCodeTreeNodeExtension): boolean;
-    function CompleteProperty(PropNode: TCodeTreeNode): boolean;
-    procedure InsertNewClassParts(PartType: NewClassPart);
-    function InsertAllNewClassParts: boolean;
     procedure AddNewPropertyAccessMethodsToClassProcs(ClassProcs: TAVLTree;
         const TheClassName: string);
     procedure CheckForOverrideAndAddInheritedCode(ClassProcs: TAVLTree);
+    function CompleteProperty(PropNode: TCodeTreeNode): boolean;
+    procedure SetCodeCompleteClassNode(const AClassNode: TCodeTreeNode);
+    procedure SetCodeCompleteSrcChgCache(const AValue: TSourceChangeCache);
+  protected
+    function ProcExistsInCodeCompleteClass(const NameAndParams: string): boolean;
+    function VarExistsInCodeCompleteClass(const UpperName: string): boolean;
+    procedure AddClassInsertion(PosNode: TCodeTreeNode;
+        const CleanDef, Def, IdentifierName, Body: string;
+        TheType: TNewClassPart);
+    procedure FreeClassInsertionList;
+    procedure InsertNewClassParts(PartType: TNewClassPart);
+    function InsertAllNewClassParts: boolean;
     function CreateMissingProcBodies: boolean;
+    function NodeExtIsVariable(ANodeExt: TCodeTreeNodeExtension): boolean;
+    function NodeExtIsPrivate(ANodeExt: TCodeTreeNodeExtension): boolean;
+    property CodeCompleteClassNode: TCodeTreeNode
+      read ClassNode write SetCodeCompleteClassNode;
+    property CodeCompleteSrcChgCache: TSourceChangeCache
+      read ASourceChangeCache write SetCodeCompleteSrcChgCache;
   public
     function CompleteCode(CursorPos: TCodeXYPosition;
         var NewPos: TCodeXYPosition; var NewTopLine: integer;
@@ -84,13 +101,13 @@ type
       read FAddInheritedCodeToOverrideMethod write FAddInheritedCodeToOverrideMethod;
   end;
 
-
+  
 implementation
 
 
 { TCodeCompletionCodeTool }
 
-function TCodeCompletionCodeTool.ProcExists(
+function TCodeCompletionCodeTool.ProcExistsInCodeCompleteClass(
   const NameAndParams: string): boolean;
 // NameAndParams should be uppercase and contains the proc name and the
 // parameter list without names and default values
@@ -114,7 +131,27 @@ begin
   end;
 end;
 
-function TCodeCompletionCodeTool.VarExists(const UpperName: string): boolean;
+procedure TCodeCompletionCodeTool.SetCodeCompleteClassNode(
+  const AClassNode: TCodeTreeNode);
+begin
+  FreeClassInsertionList;
+  BuildSubTreeForClass(ClassNode);
+  ClassNode:=AClassNode;
+  StartNode:=ClassNode.FirstChild;
+  while (StartNode<>nil) and (StartNode.FirstChild=nil) do
+    StartNode:=StartNode.NextBrother;
+  if StartNode<>nil then StartNode:=StartNode.FirstChild;
+end;
+
+procedure TCodeCompletionCodeTool.SetCodeCompleteSrcChgCache(
+  const AValue: TSourceChangeCache);
+begin
+  ASourceChangeCache:=AValue;
+  ASourceChangeCache.MainScanner:=Scanner;
+end;
+
+function TCodeCompletionCodeTool.VarExistsInCodeCompleteClass(
+  const UpperName: string): boolean;
 var ANodeExt: TCodeTreeNodeExtension;
 begin
   Result:=false;
@@ -134,12 +171,26 @@ begin
   end;
 end;
 
-procedure TCodeCompletionCodeTool.AddInsert(PosNode: TCodeTreeNode;
-  const CleanDef, Def, IdentifierName, Body: string);
+procedure TCodeCompletionCodeTool.AddClassInsertion(PosNode: TCodeTreeNode;
+  const CleanDef, Def, IdentifierName, Body: string; TheType: TNewClassPart);
+{ add an insert request entry to the list of insertions
+  For example: a request to insert a new variable or a new method to the class
+
+  PosNode:   The node, to which the request belongs. e.g. the property node, if
+             the insert is the auto created privat variable
+  CleanDef:  The skeleton of the new insertion. e.g. the variablename or the
+             method header without parameter names.
+  Def:       The insertion code.
+  IdentifierName: e.g. the variablename or the method name
+  Body:      optional. Normally a method body is auto created. This overrides
+             the body code.
+  TheType:   see TNewClassPart
+
+}
 var NewInsert, InsertPos, LastInsertPos: TCodeTreeNodeExtension;
 begin
 {$IFDEF CTDEBUG}
-writeln('[TCodeCompletionCodeTool.AddInsert] ',CleanDef,',',Def,',',Identifiername);
+writeln('[TCodeCompletionCodeTool.AddClassInsertion] ',CleanDef,',',Def,',',Identifiername);
 {$ENDIF}
   NewInsert:=NodeExtMemManager.NewNode;
   with NewInsert do begin
@@ -148,6 +199,7 @@ writeln('[TCodeCompletionCodeTool.AddInsert] ',CleanDef,',',Def,',',Identifierna
     ExtTxt1:=Def;
     ExtTxt2:=IdentifierName;
     ExtTxt3:=Body;
+    Flags:=ord(TheType);
   end;
   if FirstInsert=nil then begin
     FirstInsert:=NewInsert;
@@ -187,18 +239,38 @@ end;}
   end;
 end;
 
+procedure TCodeCompletionCodeTool.FreeClassInsertionList;
+// dispose all new variables/procs definitions
+var ANodeExt: TCodeTreeNodeExtension;
+begin
+  while FirstInsert<>nil do begin
+    ANodeExt:=FirstInsert;
+    FirstInsert:=FirstInsert.Next;
+    NodeExtMemManager.DisposeNode(ANodeExt);
+  end;
+end;
+
 function TCodeCompletionCodeTool.NodeExtIsVariable(
   ANodeExt: TCodeTreeNodeExtension): boolean;
 // a variable has the form 'Name:Type;'
-var APos, TxtLen: integer;
+//var APos, TxtLen: integer;
 begin
-  APos:=1;
+  Result:=(ANodeExt.Flags=ord(ncpPrivateVars))
+       or (ANodeExt.Flags=ord(ncpPublishedProcs));
+{  APos:=1;
   TxtLen:=length(ANodeExt.ExtTxt1);
   while (APos<=TxtLen) and (IsIdentChar[ANodeExt.ExtTxt1[APos]]) do
     inc(APos);
   while (APos<=TxtLen) and (IsSpaceChar[ANodeExt.ExtTxt1[APos]]) do
     inc(APos);
-  Result:=(APos<=TxtLen) and (ANodeExt.ExtTxt1[APos]=':');
+  Result:=(APos<=TxtLen) and (ANodeExt.ExtTxt1[APos]=':');}
+end;
+
+function TCodeCompletionCodeTool.NodeExtIsPrivate(
+  ANodeExt: TCodeTreeNodeExtension): boolean;
+begin
+  Result:=(ANodeExt.Flags=ord(ncpPrivateVars))
+       or (ANodeExt.Flags=ord(ncpPrivateProcs));
 end;
 
 function TCodeCompletionCodeTool.CompleteProperty(
@@ -378,7 +450,7 @@ writeln('[TCodeCompletionCodeTool.CompleteProperty] read specifier needed');
         end;
       end;
       // check if function exists
-      if not ProcExists(CleanAccessFunc) then begin
+      if not ProcExistsInCodeCompleteClass(CleanAccessFunc) then begin
 {$IFDEF CTDEBUG}
 writeln('[TCodeCompletionCodeTool.CompleteProperty] CleanAccessFunc ',CleanAccessFunc,' does not exist');
 {$ENDIF}
@@ -419,7 +491,8 @@ writeln('[TCodeCompletionCodeTool.CompleteProperty] Error reading param list');
         end;
         // add new Insert Node
         if CompleteProperties then
-          AddInsert(PropNode,CleanAccessFunc,AccessFunc,AccessParam,'');
+          AddClassInsertion(PropNode,CleanAccessFunc,AccessFunc,AccessParam,'',
+                            ncpPrivateProcs);
       end;
     end else begin
       // the read identifier is a variable
@@ -428,11 +501,11 @@ writeln('[TCodeCompletionCodeTool.CompleteProperty] Error reading param list');
              +copy(Src,Parts[ppName].StartPos,
                Parts[ppName].EndPos-Parts[ppName].StartPos);
       VariableName:=AccessParam;
-      if not VarExists(UpperCaseStr(AccessParam)) then begin
+      if not VarExistsInCodeCompleteClass(UpperCaseStr(AccessParam)) then begin
         // variable does not exist yet -> add insert demand for variable
         if CompleteProperties then
-          AddInsert(PropNode,UpperCaseStr(AccessParam),
-                    AccessParam+':'+PropType+';',AccessParam,'');
+          AddClassInsertion(PropNode,UpperCaseStr(AccessParam),
+                    AccessParam+':'+PropType+';',AccessParam,'',ncpPrivateVars);
       end;
     end;
     if (Parts[ppRead].StartPos<0) and CompleteProperties then begin
@@ -495,7 +568,7 @@ writeln('[TCodeCompletionCodeTool.CompleteProperty] write specifier needed');
         end;
       end;
       // check if procedure exists
-      if not ProcExists(CleanAccessFunc) then begin
+      if not ProcExistsInCodeCompleteClass(CleanAccessFunc) then begin
         // add insert demand for function
         // build function code
         ProcBody:='';
@@ -548,15 +621,16 @@ writeln('[TCodeCompletionCodeTool.CompleteProperty] write specifier needed');
         end;
         // add new Insert Node
         if CompleteProperties then
-          AddInsert(PropNode,CleanAccessFunc,AccessFunc,AccessParam,ProcBody);
+          AddClassInsertion(PropNode,CleanAccessFunc,AccessFunc,AccessParam,
+                            ProcBody,ncpPrivateProcs);
       end;
     end else begin
       // the write identifier is a variable
-      if not VarExists(UpperCaseStr(AccessParam)) then begin
+      if not VarExistsInCodeCompleteClass(UpperCaseStr(AccessParam)) then begin
         // variable does not exist yet -> add insert demand for variable
         if CompleteProperties then
-          AddInsert(PropNode,UpperCaseStr(AccessParam),
-                    AccessParam+':'+PropType+';',AccessParam,'');
+          AddClassInsertion(PropNode,UpperCaseStr(AccessParam),
+                    AccessParam+':'+PropType+';',AccessParam,'',ncpPrivateVars);
       end;
     end;
     if (Parts[ppWrite].StartPos<0) and CompleteProperties then begin
@@ -598,14 +672,16 @@ writeln('[TCodeCompletionCodeTool.CompleteProperty] stored specifier needed');
         +BeautifyCodeOpts.PropertyStoredIdentPostfix;
     CleanAccessFunc:=UpperCaseStr(AccessParam);
     // check if procedure exists
-    if (not ProcExists(CleanAccessFunc)) and (not VarExists(CleanAccessFunc))
+    if (not ProcExistsInCodeCompleteClass(CleanAccessFunc))
+    and (not VarExistsInCodeCompleteClass(CleanAccessFunc))
     then begin
       // add insert demand for function
       // build function code
       AccessFunc:='function '+AccessParam+':boolean;';
       // add new Insert Node
       if CompleteProperties then
-        AddInsert(PropNode,CleanAccessFunc,AccessFunc,AccessParam,'');
+        AddClassInsertion(PropNode,CleanAccessFunc,AccessFunc,AccessParam,'',
+                          ncpPrivateProcs);
     end;
     if Parts[ppStored].StartPos<0 then begin
       // insert stored specifier
@@ -618,9 +694,9 @@ writeln('[TCodeCompletionCodeTool.CompleteProperty] stored specifier needed');
   Result:=true;
 end;
 
-procedure TCodeCompletionCodeTool.InsertNewClassParts(PartType: NewClassPart);
+procedure TCodeCompletionCodeTool.InsertNewClassParts(PartType: TNewClassPart);
 var ANodeExt: TCodeTreeNodeExtension;
-  PrivatNode, ANode, InsertNode: TCodeTreeNode;
+  ClassSectionNode, ANode, InsertNode: TCodeTreeNode;
   Indent, InsertPos: integer;
   CurCode: string;
   IsVariable: boolean;
@@ -629,23 +705,41 @@ begin
   // insert all nodes of specific type
   while ANodeExt<>nil do begin
     IsVariable:=NodeExtIsVariable(ANodeExt);
-    if ((PartType=ncpVars)=IsVariable) then begin
-      // search a privat section in front of the node
-      PrivatNode:=ANodeExt.Node.Parent.PriorBrother;
-      while (PrivatNode<>nil) and (PrivatNode.Desc<>ctnClassPrivate) do
-        PrivatNode:=PrivatNode.PriorBrother;
-      if PrivatNode=nil then begin
-        // there is no privat section node in front of the property
+    if (ord(PartType)=ANodeExt.Flags) then begin
+      // search a destination section
+      if NodeExtIsPrivate(ANodeExt) then begin
+        // search a privat section in front of the node
+        ClassSectionNode:=ANodeExt.Node.Parent.PriorBrother;
+        while (ClassSectionNode<>nil)
+        and (ClassSectionNode.Desc<>ctnClassPrivate) do
+          ClassSectionNode:=ClassSectionNode.PriorBrother;
+      end else begin
+        // insert into first published section
+        ClassSectionNode:=ClassNode.FirstChild;
+        // the first class section is always a published section, even if there
+        // is no 'published' keyword. If the class starts with the 'published'
+        // keyword, then it will be more beautiful to insert vars and procs to
+        // this second published section
+        if (ClassSectionNode.FirstChild=nil)
+        and (ClassSectionNode.NextBrother<>nil)
+        and (ClassSectionNode.NextBrother.Desc=ctnClassPublished)
+        then
+          ClassSectionNode:=ClassSectionNode.NextBrother;
+      end;
+      if ClassSectionNode=nil then begin
+        // there is no existing class section node
         // -> insert in the new one
         Indent:=NewPrivatSectionIndent
                     +ASourceChangeCache.BeautifyCodeOptions.Indent;
         InsertPos:=NewPrivatSectionInsertPos;
       end else begin
-        // there is a privat section in front of the property
+        // there is an existing class section to insert into
         InsertNode:=nil; // the new part will be inserted after this node
                          //   nil means insert as first
-        ANode:=PrivatNode.FirstChild;
-        if PartType=ncpProcs then begin
+        ANode:=ClassSectionNode.FirstChild;
+        if (ANode<>nil) and (ANode.Desc=ctnClassGUID) then
+          ANode:=ANode.NextBrother;
+        if not IsVariable then begin
           // insert procs after variables
           while (ANode<>nil) and (ANode.Desc=ctnVarDefinition) do begin
             InsertNode:=ANode;
@@ -656,7 +750,7 @@ begin
           cpipAlphabetically:
             begin
               while ANode<>nil do begin
-                if (PartType=ncpVars) then begin
+                if (IsVariable) then begin
                   if (ANode.Desc<>ctnVarDefinition)
                   or (CompareNodeIdentChars(ANode,ANodeExt.Txt)<0) then
                     break;
@@ -684,7 +778,7 @@ begin
           // cpipLast
           begin
             while ANode<>nil do begin
-              if (PartType=ncpVars) and (ANode.Desc<>ctnVarDefinition) then
+              if (IsVariable) and (ANode.Desc<>ctnVarDefinition) then
                 break;
               InsertNode:=ANode;
               ANode:=ANode.NextBrother;
@@ -698,9 +792,9 @@ begin
                        Scanner.NestedComments);
         end else begin
           // insert as first variable/proc
-          Indent:=GetLineIndent(Src,PrivatNode.StartPos)
+          Indent:=GetLineIndent(Src,ClassSectionNode.StartPos)
                     +ASourceChangeCache.BeautifyCodeOptions.Indent;
-          InsertPos:=FindFirstLineEndAfterInCode(Src,PrivatNode.StartPos,
+          InsertPos:=FindFirstLineEndAfterInCode(Src,ClassSectionNode.StartPos,
                        Scanner.NestedComments);
         end;
       end;
@@ -725,7 +819,7 @@ end;
   
 function TCodeCompletionCodeTool.InsertAllNewClassParts: boolean;
 var ANodeExt: TCodeTreeNodeExtension;
-  PrivatNode, ANode, TopMostNode: TCodeTreeNode;
+  PrivatNode, ANode, TopMostPrivateNode: TCodeTreeNode;
   PublishedNeeded: boolean;
 begin
   if FirstInsert=nil then begin
@@ -733,26 +827,33 @@ begin
     exit;
   end;
   NewPrivatSectionInsertPos:=-1;
-  // search topmost node
-  TopMostNode:=nil;
+  NewPrivatSectionIndent:=0;
+  PublishedNeeded:=false;
+  PrivatNode:=nil;
+  // search topmost node of private node extensions
+  TopMostPrivateNode:=nil;
   ANodeExt:=FirstInsert;
   while ANodeExt<>nil do begin
-    if (TopMostNode=nil) or (TopMostNode.StartPos>ANodeExt.Node.StartPos) then
-      TopMostNode:=ANodeExt.Node;
+    if ((TopMostPrivateNode=nil)
+    or (TopMostPrivateNode.StartPos>ANodeExt.Node.StartPos))
+      and (NodeExtIsPrivate(ANodeExt))
+    then
+      TopMostPrivateNode:=ANodeExt.Node;
     ANodeExt:=ANodeExt.Next;
   end;
-  // search privat section in front of topmost node
-  PrivatNode:=TopMostNode.Parent.PriorBrother;
-  while (PrivatNode<>nil) and (PrivatNode.Desc<>ctnClassPrivate) do
-    PrivatNode:=PrivatNode.PriorBrother;
-  PublishedNeeded:=false;
+  if TopMostPrivateNode<>nil then begin
+    // search privat section in front of topmost node
+    PrivatNode:=TopMostPrivateNode.Parent.PriorBrother;
+    while (PrivatNode<>nil) and (PrivatNode.Desc<>ctnClassPrivate) do
+      PrivatNode:=PrivatNode.PriorBrother;
+  end;
   if PrivatNode=nil then begin
     { Insert a new private section in front of topmost node
       normally the best place for a new private section is at the end of
       the first published section. But if a privat variable is already
       needed in the first published section, then the new private section
       must be inserted in front of all }
-    if (ClassNode.FirstChild.EndPos>TopMostNode.StartPos) then begin
+    if (ClassNode.FirstChild.EndPos>TopMostPrivateNode.StartPos) then begin
       // topmost node is in the first section
       // -> insert as the first section
       ANode:=ClassNode.FirstChild;
@@ -774,15 +875,19 @@ begin
         ASourceChangeCache.BeautifyCodeOptions.BeautifyKeyWord('private'));
   end;
 
-  InsertNewClassParts(ncpVars);
-  InsertNewClassParts(ncpProcs);
-  
+  InsertNewClassParts(ncpPrivateVars);
+  InsertNewClassParts(ncpPrivateProcs);
+
   if PublishedNeeded then begin
     ASourceChangeCache.Replace(gtNewLine,gtNewLine,
       NewPrivatSectionInsertPos,NewPrivatSectionInsertPos,
       GetIndentStr(NewPrivatSectionIndent)+
         ASourceChangeCache.BeautifyCodeOptions.BeautifyKeyWord('published'));
   end;
+  
+  InsertNewClassParts(ncpPublishedVars);
+  InsertNewClassParts(ncpPublishedProcs);
+
   Result:=true;
 end;
 
@@ -1214,10 +1319,9 @@ function TCodeCompletionCodeTool.CompleteCode(CursorPos: TCodeXYPosition;
   var NewPos: TCodeXYPosition; var NewTopLine: integer;
   SourceChangeCache: TSourceChangeCache): boolean;
 var CleanCursorPos, Dummy, Indent, insertPos: integer;
-  CursorNode, ProcNode, ImplementationNode, SectionNode,
+  CursorNode, ProcNode, ImplementationNode, SectionNode, AClassNode,
   ANode: TCodeTreeNode;
   ProcCode: string;
-  ANodeExt: TCodeTreeNodeExtension;
 begin
   Result:=false;
   if (SourceChangeCache=nil) then 
@@ -1226,20 +1330,18 @@ begin
   BuildTreeAndGetCleanPos(false,CursorPos, CleanCursorPos);
   // find CodeTreeNode at cursor
   CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
-  ASourceChangeCache:=SourceChangeCache;
-  SourceChangeCache.MainScanner:=Scanner;
+  CodeCompleteSrcChgCache:=SourceChangeCache;
 {$IFDEF CTDEBUG}
 writeln('TCodeCompletionCodeTool.CompleteCode A CleanCursorPos=',CleanCursorPos,' NodeDesc=',NodeDescriptionAsString(CursorNode.Desc));
 {$ENDIF}
   ImplementationNode:=FindImplementationNode;
   if ImplementationNode=nil then ImplementationNode:=Tree.Root;
-  FirstInsert:=nil;
 
   // first test if in a class
-  ClassNode:=CursorNode;
-  while (ClassNode<>nil) and (ClassNode.Desc<>ctnClass) do
-    ClassNode:=ClassNode.Parent;
-  if ClassNode<>nil then begin
+  AClassNode:=CursorNode;
+  while (AClassNode<>nil) and (AClassNode.Desc<>ctnClass) do
+    AClassNode:=AClassNode.Parent;
+  if AClassNode<>nil then begin
 {$IFDEF CTDEBUG}
 writeln('TCodeCompletionCodeTool.CompleteCode In-a-class ',NodeDescriptionAsString(ClassNode.Desc));
 {$ENDIF}
@@ -1249,13 +1351,7 @@ writeln('TCodeCompletionCodeTool.CompleteCode In-a-class ',NodeDescriptionAsStri
 {$IFDEF CTDEBUG}
 writeln('TCodeCompletionCodeTool.CompleteCode C ',CleanCursorPos,', |',copy(Src,CleanCursorPos,8));
 {$ENDIF}
-    BuildSubTreeForClass(ClassNode);
-    StartNode:=ClassNode.FirstChild;
-    while (StartNode<>nil) and (StartNode.FirstChild=nil) do
-      StartNode:=StartNode.NextBrother;
-    if StartNode=nil then 
-      RaiseException('error parsing class');
-    StartNode:=StartNode.FirstChild;
+    CodeCompleteClassNode:=AClassNode;
     JumpToProcName:='';
     try
       // go through all properties and procs
@@ -1348,12 +1444,7 @@ writeln('TCodeCompletionCodeTool.CompleteCode Adjust Cursor ... ');
       end;
 
     finally
-      // dispose all new variables/procs definitions
-      while FirstInsert<>nil do begin
-        ANodeExt:=FirstInsert;
-        FirstInsert:=FirstInsert.Next;
-        NodeExtMemManager.DisposeNode(ANodeExt);
-      end;
+      FreeClassInsertionList;
     end;
     
   end else begin

@@ -45,7 +45,6 @@ uses
 type
   TCustomCodeTool = class(TObject)
   private
-    //FIgnoreMissingIncludeFiles: boolean;
     FLastScannerChangeStep: integer;
     FScanner: TLinkScanner;
     FOnGetGlobalWriteLockInfo: TOnGetWriteLockInfo;

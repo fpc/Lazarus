@@ -48,6 +48,7 @@ uses
 
 const
   PascalCompilerDefine = ExternalMacroStart+'Compiler';
+  MissingIncludeFileCode = 1;
 
 type
 //----------------------------------------------------------------------------
@@ -152,6 +153,7 @@ type
     FDirectiveFuncList: TKeyWordFunctionList;
     FSkipDirectiveFuncList: TKeyWordFunctionList;
     FMacrosOn: boolean;
+    FMissingIncludeFile: boolean;
     FIncludeStack: TList; // list of TSourceLink
     FSkippingTillEndif: boolean;
     FSkipIfLevel: integer;
@@ -227,6 +229,8 @@ type
     property InitialValues: TExpressionEvaluator
         read FInitValues write FInitValues;
     property MainCode: pointer read FMainCode write SetMainCode;
+    property MissingIncludeFile: boolean
+        read FMissingIncludeFile write FMissingIncludeFile;
     property NestedComments: boolean read FNestedComments;
     property CompilerMode: TCompilerMode read FCompilerMode write FCompilerMode;
     property PascalCompiler: TPascalCompiler
@@ -395,6 +399,7 @@ var i: integer;
   PLink: PSourceLink;
   PStamp: PSourceChangeStep;
 begin
+  FMissingIncludeFile:=false;
   for i:=0 to FIncludeStack.Count-1 do begin
     PLink:=PSourceLink(FIncludeStack[i]);
     PSourceLinkMemManager.DisposePSourceLink(PLink);
@@ -963,6 +968,8 @@ var i: integer;
 begin
   Result:=true;
   if FForceUpdateNeeded then exit;
+  if MissingIncludeFile and not IgnoreMissingIncludeFiles then
+    exit;
   if Assigned(OnGetGlobalWriteLockInfo) then begin
     OnGetGlobalWriteLockInfo(GlobalWriteLockIsSet,GlobalWriteLockStep);
     if GlobalWriteLockIsSet then begin
@@ -1435,6 +1442,11 @@ begin
   end else begin
     if (not IgnoreMissingIncludeFiles) then begin
       RaiseException('include file not found "'+AFilename+'"')
+    end else begin
+      // add a dummy link
+      AddLink(CleanedLen+1,SrcPos,MissingIncludeFileCode);
+      AddLink(CleanedLen+1,SrcPos,Code);
+      MissingIncludeFile:=true;
     end;
   end;
 end;

@@ -619,6 +619,11 @@ end;
 function TStandardCodeTool.RenameInclude(LinkIndex: integer;
   const NewFilename: string; KeepPath: boolean;
   SourceChangeCache: TSourceChangeCache): boolean;
+{ change filename in an include directive
+  if KeepPath is true and the include dircetive contains a path
+  (relative or absolute), then this path is kept and only the filename is
+  replaced
+}
 var IncludeStart, IncludeEnd, FileStart, FileNameStart, FileEnd: integer;
 begin
   Result:=false;

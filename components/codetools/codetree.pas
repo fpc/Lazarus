@@ -201,6 +201,7 @@ type
     ExtTxt1, ExtTxt2, ExtTxt3: string;
     Position: integer;
     Data: Pointer;
+    Flags: cardinal;
     Next: TCodeTreeNodeExtension;
     procedure Clear;
     constructor Create;
@@ -550,6 +551,7 @@ begin
   Node:=nil;
   Position:=-1;
   Data:=nil;
+  Flags:=0;
 end;
 
 constructor TCodeTreeNodeExtension.Create;

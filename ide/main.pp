@@ -2519,12 +2519,15 @@ function TMainIDE.DoSaveEditorUnit(PageIndex:integer;
 var ActiveSrcEdit:TSourceEditor;
   ActiveUnitInfo:TUnitInfo;
   SaveDialog:TSaveDialog;
-  NewUnitName,NewFilename,NewPageName:string;
+  OldFilename, OldFilePath, LFMFilename: string;
+  NewUnitName, NewFilename, NewFilePath, NewPageName,
+  NewResFilename, NewResFilePath:string;
   AText,ACaption,CompResourceCode,TestFilename: string;
   SaveAsFileExt, SaveAsFilename: string;
   MemStream,BinCompStream,TxtCompStream:TMemoryStream;
   Driver: TAbstractObjectWriter;
   Writer:TWriter;
+  FormSavingOk: boolean;
   ResourceCode, LFMCode, NewSource: TCodeBuffer;
   LinkIndex: integer;
 begin
@@ -2565,6 +2568,7 @@ CheckHeap(IntToStr(GetMem_Cnt));
   if (not SaveToTestDir) and (ActiveUnitInfo.IsVirtual) then
     SaveAs:=true;
   
+  LFMCode:=nil;
   if ActiveUnitInfo.HasResources then begin
     LinkIndex:=-1;
 {$IFDEF IDE_DEBUG}
@@ -2576,16 +2580,25 @@ CodeToolBoss.SourceCache.WriteAllFileNames;
 {$IFDEF IDE_DEBUG}
 writeln('TMainIDE.DoSaveEditorUnit B2 ',ResourceCode<>nil);
 {$ENDIF}
-    LFMCode:=nil;
-    if (ResourceCode<>nil) and (not ResourceCode.IsVirtual) then begin
-      Result:=DoLoadCodeBuffer(LFMCode,
-          ChangeFileExt(ResourceCode.Filename,'.lfm'),false,false,true);
-      if Result<>mrOk then exit;
+    LFMFilename:=ChangeFileExt(ResourceCode.Filename,'.lfm');
+    if (ResourceCode<>nil) and (not ResourceCode.IsVirtual)
+    and (ActiveUnitInfo.Form<>nil) and (FileExists(LFMFilename)) then
+    begin
+      Result:=DoLoadCodeBuffer(LFMCode,LFMFilename,false,false,true);
+      if not (Result in [mrOk,mrIgnore]) then exit;
       Result:=mrCancel;
     end;
-  end else
+    if ResourceCode<>nil then
+      NewResFileName:=ResourceCode.Filename
+    else
+      NewResFileName:='';
+  end else begin
     ResourceCode:=nil;
-    
+    NewResFilename:='';
+  end;
+
+  OldFilename:=ActiveUnitInfo.FileName;
+  OldFilePath:=ExtractFilePath(OldFilename);
   if SaveAs and (not SaveToTestDir) then begin
     // let user choose a filename
     SaveDialog:=TSaveDialog.Create(Application);
@@ -2611,45 +2624,105 @@ writeln('TMainIDE.DoSaveEditorUnit B2 ',ResourceCode<>nil);
       if SaveDialog.Execute then begin
         NewFilename:=ExpandFilename(SaveDialog.Filename);
         EnvironmentOptions.LastOpenDialogDir:=ExtractFilePath(NewFilename);
+        NewUnitName:=ExtractFileNameOnly(NewFilename);
+        if Project.IndexOfUnitWithName(NewUnitName,true,ActiveUnitInfo)>=0 then
+        begin
+          Result:=MessageDlg('Unitname already in project',
+             'The unit "'+NewUnitName+'" already exists.'#13
+             +'Ignore will force the renaming,'#13
+             +'Cancel will cancel the saving of this source and'#13
+             +'Abort will abort the whole saving.',
+              mtConfirmation,[mbIgnore,mbCancel,mbAbort],0);
+          if Result=mrIgnore then
+            Result:=mrCancel
+          else
+            exit;
+        end;
         if ExtractFileExt(NewFilename)='' then
           NewFilename:=NewFilename+SaveAsFileExt;
+        NewFilePath:=ExtractFilePath(NewFilename);
         if FileExists(NewFilename) then begin
           ACaption:='Overwrite file?';
           AText:='A file "'+NewFilename+'" already exists.'#13'Replace it?';
-          if MessageDlg(ACaption, AText, mtconfirmation,[mbok,mbCancel],0)
+          if MessageDlg(ACaption, AText, mtConfirmation,[mbok,mbCancel],0)
+             =mrCancel then exit;
+        end;
+        if not DirectoryExists(NewFilePath) then begin
+          ACaption:='Directory not found';
+          AText:='The destination directory'#13+
+            '"'+NewFilePath+'" does not exist.';
+          if MessageDlg(ACaption, AText, mtConfirmation,[mbCancel],0)
              =mrCancel then exit;
         end;
         EnvironmentOptions.AddToRecentOpenFiles(NewFilename);
+        if ResourceCode=nil then begin
+          // there are no resource files -> remove any resource files in the
+          // destination
+          NewResFilename:=ChangeFileExt(NewFilename,'.lfm');
+          if (not DeleteFile(NewResFilename))
+          and (MessageDlg('Delete failed','Deleting of file "'+NewResFilename+'"'
+               +' failed.',mtError,[mbIgnore,mbCancel],0)=mrCancel) then exit;
+          NewResFilename:=ChangeFileExt(NewFilename,'.lrs');
+          if (not DeleteFile(NewResFilename))
+          and (MessageDlg('Delete failed','Deleting of file "'+NewResFilename+'"'
+               +' failed.',mtError,[mbIgnore,mbCancel],0)=mrCancel) then exit;
+        end;
+        // save source in the new position
         if not CodeToolBoss.SaveBufferAs(ActiveUnitInfo.Source,NewFilename,
                NewSource) then exit;
         if ResourceCode<>nil then begin
           // rename Resource file and form text file
-          // the resource include line in the code will be changed later when
+          // the resource include line in the code will be changed later after
           // changing the unitname
-          CodeToolBoss.SaveBufferAs(ResourceCode,
-            ChangeFileExt(NewFilename,ResourceFileExt),ResourceCode);
+          NewResFilePath:=ExtractFilePath(ResourceCode.Filename);
+          if FilenameIsAbsolute(OldFilePath)
+          and (OldFilePath=copy(NewResFilePath,1,length(OldFilePath))) then
+          begin
+            // resource code was in the same or in a sub directory of source
+            // -> try to keep this relationship
+            NewResFilePath:=NewFilePath
+               +copy(ResourceCode.Filename,length(OldFilePath)+1,
+                 length(ResourceCode.Filename));
+            if not DirectoryExists(NewResFilePath) then
+              NewResFilePath:=NewFilePath;
+          end else begin
+            // resource code was not in the same or in a sub dircetoy of source
+            // copy resource into the same directory as the source
+            NewResFilePath:=NewFilePath;
+          end;
+          NewResFilename:=NewResFilePath
+                          +ExtractFileNameOnly(NewFilename)+ResourceFileExt;
+          CodeToolBoss.SaveBufferAs(ResourceCode,NewResFilename,ResourceCode);
 {$IFDEF IDE_DEBUG}
 writeln('TMainIDE.DoSaveEditorUnit D ',ResourceCode<>nil);
+writeln('   NewResFilePath="',NewResFilePath,'" NewResFilename="',NewresFilename,'"');
 if ResourceCode<>nil then writeln('*** ResourceFileName ',ResourceCode.Filename);
 {$ENDIF}
           LFMCode:=nil;
-        end else begin
-          // removing support files
-          // The IDE automatically opens lfm files. SaveAs makes sure, that
-          // there is no old lfm file left, which does not belong to the file
-          DeleteFile(ChangeFileExt(NewFilename,'.lfm'));
-        end;
+        end else
+          NewResFilename:='';
 {$IFDEF IDE_DEBUG}
 writeln('TMainIDE.DoSaveEditorUnit C ',ResourceCode<>nil);
 {$ENDIF}
         ActiveUnitInfo.Source:=NewSource;
         ActiveUnitInfo.Modified:=false;
         ActiveSrcEdit.CodeBuffer:=NewSource; // the code is not changed, thus the marks are kept
-        NewUnitName:=ExtractFileNameOnly(ActiveUnitInfo.Filename);
-        // change unitname in source (resource filename is also changed)
+        // change unitname in project and in source
         ActiveUnitInfo.UnitName:=NewUnitName;
+        if ResourceCode<>nil then begin
+          // change resource include filename in source
+          CodeToolBoss.RenameMainInclude(ActiveUnitInfo.Source,
+            ExtractRelativePath(NewFilePath,NewResFilename),false);
+        end;
+        
         LinkIndex:=-1;
         ResourceCode:=CodeToolBoss.FindNextResourceFile(NewSource,LinkIndex);
+{$IFDEF IDE_DEBUG}
+if ResourceCode<>nil then
+  writeln('AAA4 Final ResourceCode="',ResourceCode.Filename,'"')
+else
+  writeln('AAA4 Final ResourceCode=NIL');
+{$ENDIF}
         // change unitname on SourceNotebook
         NewPageName:=SourceNoteBook.FindUniquePageName(
             ActiveUnitInfo.Filename,SourceNoteBook.NoteBook.PageIndex);
@@ -2697,6 +2770,7 @@ CheckHeap(IntToStr(GetMem_Cnt));
 
     if (ActiveUnitInfo.Form<>nil) then begin
       // stream component to resource code and to lfm file
+      FormSavingOk:=true;
       
       // stream component to binary stream
       BinCompStream:=TMemoryStream.Create;
@@ -2726,71 +2800,73 @@ CheckHeap(IntToStr(GetMem_Cnt));
           end;
         until Result<>mrRetry;
         // create lazarus form resource code
-        MemStream:=TMemoryStream.Create;
-        try
-          BinCompStream.Position:=0;
-          BinaryToLazarusResourceCode(BinCompStream,MemStream
-            ,'T'+ActiveUnitInfo.FormName,'FORMDATA');
-          MemStream.Position:=0;
-          SetLength(CompResourceCode,MemStream.Size);
-          MemStream.Read(CompResourceCode[1],length(CompResourceCode));
-        finally
-          MemStream.Free;
-        end;
+        if FormSavingOk then begin
+          MemStream:=TMemoryStream.Create;
+          try
+            BinCompStream.Position:=0;
+            BinaryToLazarusResourceCode(BinCompStream,MemStream
+              ,'T'+ActiveUnitInfo.FormName,'FORMDATA');
+            MemStream.Position:=0;
+            SetLength(CompResourceCode,MemStream.Size);
+            MemStream.Read(CompResourceCode[1],length(CompResourceCode));
+          finally
+            MemStream.Free;
+          end;
 {$IFDEF IDE_DEBUG}
 writeln('TMainIDE.DoSaveEditorUnit E ',CompResourceCode);
 {$ENDIF}
-        // replace lazarus form resource code
-        if (not CodeToolBoss.AddLazarusResource(ResourceCode,
-           'T'+ActiveUnitInfo.FormName,CompResourceCode)) then
-        begin
-          ACaption:='Resource error';
-          AText:='Unable to add resource '
-            +'T'+ActiveUnitInfo.FormName+':FORMDATA to resource file '#13
-            +'"'+ResourceCode.FileName+'".'#13
-            +'Probably a syntax error.';
-          Result:=MessageDlg(ACaption, AText, mterror, [mbok, mbcancel], 0);
-          if Result=mrCancel then Result:=mrAbort;
-          exit;
-        end;
-        if (not SaveToTestDir) then begin
-          // save lfm file
-          if LFMCode=nil then begin
-            LFMCode:=CodeToolBoss.CreateFile(
-                            ChangeFileExt(ResourceCode.Filename,'.lfm'));
+          // replace lazarus form resource code
+          if (not CodeToolBoss.AddLazarusResource(ResourceCode,
+             'T'+ActiveUnitInfo.FormName,CompResourceCode)) then
+          begin
+            ACaption:='Resource error';
+            AText:='Unable to add resource '
+              +'T'+ActiveUnitInfo.FormName+':FORMDATA to resource file '#13
+              +'"'+ResourceCode.FileName+'".'#13
+              +'Probably a syntax error.';
+            Result:=MessageDlg(ACaption, AText, mterror, [mbok, mbcancel], 0);
+            if Result=mrCancel then Result:=mrAbort;
+            exit;
           end;
-          if LFMCode<>nil then begin
+          if (not SaveToTestDir) then begin
+            // save lfm file
+            if LFMCode=nil then begin
+              LFMCode:=CodeToolBoss.CreateFile(
+                              ChangeFileExt(ResourceCode.Filename,'.lfm'));
+            end;
+            if LFMCode<>nil then begin
 {$IFDEF IDE_DEBUG}
 writeln('TMainIDE.DoSaveEditorUnit E2 LFM=',LFMCode.Filename);
 {$ENDIF}
-            repeat
-              try
-                // transform binary to text
-                TxtCompStream:=TMemoryStream.Create;
+              repeat
                 try
-                  BinCompStream.Position:=0;
-                  ObjectBinaryToText(BinCompStream,TxtCompStream);
-                  TxtCompStream.Position:=0;
-                  LFMCode.LoadFromStream(TxtCompStream);
-                  Result:=DoSaveCodeBufferToFile(LFMCode,LFMCode.Filename,
-                                   ActiveUnitInfo.IsPartOfProject);
-                  if not Result=mrOk then exit;
-                  Result:=mrCancel;
-                finally
-                  TxtCompStream.Free;
+                  // transform binary to text
+                  TxtCompStream:=TMemoryStream.Create;
+                  try
+                    BinCompStream.Position:=0;
+                    ObjectBinaryToText(BinCompStream,TxtCompStream);
+                    TxtCompStream.Position:=0;
+                    LFMCode.LoadFromStream(TxtCompStream);
+                    Result:=DoSaveCodeBufferToFile(LFMCode,LFMCode.Filename,
+                                     ActiveUnitInfo.IsPartOfProject);
+                    if not Result=mrOk then exit;
+                    Result:=mrCancel;
+                  finally
+                    TxtCompStream.Free;
+                  end;
+                except
+                  ACaption:='Streaming error';
+                  AText:='Unable to transform binary component stream of '
+                     +ActiveUnitInfo.FormName+':T'+ActiveUnitInfo.FormName
+                     +' into text.';
+                  Result:=MessageDlg(ACaption, AText, mtError,
+                                      [mbAbort, mbRetry, mbIgnore], 0);
+                  if Result=mrAbort then exit;
+                  if Result=mrIgnore then Result:=mrOk;
                 end;
-              except
-                ACaption:='Streaming error';
-                AText:='Unable to transform binary component stream of '
-                   +ActiveUnitInfo.FormName+':T'+ActiveUnitInfo.FormName
-                   +' into text.';
-                Result:=MessageDlg(ACaption, AText, mtError,
-                                    [mbAbort, mbRetry, mbIgnore], 0);
-                if Result=mrAbort then exit;
-                if Result=mrIgnore then Result:=mrOk;
-              end;
-            until Result<>mrRetry;
-            Result:=mrCancel;
+              until Result<>mrRetry;
+              Result:=mrCancel;
+            end;
           end;
         end;
       finally
@@ -2893,7 +2969,7 @@ function TMainIDE.DoOpenEditorFile(const AFileName:string;
   ProjectLoading, OnlyIfExists:boolean):TModalResult;
 var Ext,ACaption,AText:string;
   i,BookmarkID:integer;
-  ReOpen:boolean;
+  ReOpen, FormLoadingOk:boolean;
   NewUnitInfo:TUnitInfo;
   NewPageName, NewProgramName, LFMFilename: string;
   NewSrcEdit: TSourceEditor;
@@ -3063,6 +3139,7 @@ writeln('[TMainIDE.DoOpenEditorFile] C');
   // read form data
   if (NewUnitInfo.Unitname<>'') then begin
     // this is a unit -> try to find the lfm file
+    FormLoadingOk:=true;
     LFMFilename:=ChangeFileExt(NewUnitInfo.Filename,'.lfm');
     NewBuf:=nil;
     if FileExists(LFMFilename) then begin
@@ -3105,43 +3182,50 @@ writeln('[TMainIDE.DoOpenEditorFile] C');
               Result:=MessageDlg(ACaption, AText, mterror, [mbok, mbcancel], 0);
               if Result=mrCancel then Result:=mrAbort;
               if Result<>mrOk then exit;
+              FormLoadingOk:=false;
             end;
           end;
         finally
           TxtLFMStream.Free;
         end;
-        if not Assigned(FormEditor1) then
-          FormEditor1 := TFormEditor.Create;
-        if not ProjectLoading then FormEditor1.ClearSelected;
+        if FormLoadingOk then begin
+          if not Assigned(FormEditor1) then
+            FormEditor1 := TFormEditor.Create;
+          if not ProjectLoading then FormEditor1.ClearSelected;
 
-        // create jitform
-        CInterface := TComponentInterface(
-          FormEditor1.CreateFormFromStream(BinLFMStream));
-        if CInterface=nil then begin
-          ACaption:='Form load error';
-          AText:='Unable to build form from file '#13
-                      +'"'+NewBuf.Filename+'".';
-          Result:=MessageDlg(ACaption, AText, mterror, [mbok, mbcancel], 0);
-          if Result=mrCancel then Result:=mrAbort;
-          if Result<>mrOk then exit;
-        end;
-        TempForm:=TForm(CInterface.Control);
-        NewUnitInfo.Form:=TempForm;
-        SetDefaultsForForm(TempForm);
-        NewUnitInfo.FormName:=TempForm.Name;
-        // show form
-        TDesigner(TempForm.Designer).SourceEditor := SourceNoteBook.GetActiveSE;
+          // create jitform
+          CInterface := TComponentInterface(
+            FormEditor1.CreateFormFromStream(BinLFMStream));
+          if CInterface=nil then begin
+            ACaption:='Form load error';
+            AText:='Unable to build form from file '#13
+                        +'"'+NewBuf.Filename+'".';
+            Result:=MessageDlg(ACaption, AText, mterror, [mbok, mbcancel], 0);
+            if Result=mrCancel then Result:=mrAbort;
+            if Result<>mrOk then exit;
+            TempForm:=nil;
+            NewUnitInfo.Form:=TempForm;
+          end else begin
+            TempForm:=TForm(CInterface.Control);
+            NewUnitInfo.Form:=TempForm;
+            SetDefaultsForForm(TempForm);
+            NewUnitInfo.FormName:=TempForm.Name;
+            // show form
+            TDesigner(TempForm.Designer).SourceEditor:=
+              SourceNoteBook.GetActiveSE;
 
-        if not ProjectLoading then begin
-          TempForm.Show;
-          FCodeLastActivated:=false;
-        end;
-        SetDesigning(TempForm,True);
-        
-        // select the new form (object inspector, formeditor, control selection)
-        if not ProjectLoading then begin
-          PropertyEditorHook1.LookupRoot := TForm(CInterface.Control);
-          TDesigner(TempForm.Designer).SelectOnlyThisComponent(TempForm);
+            if not ProjectLoading then begin
+              TempForm.Show;
+              FCodeLastActivated:=false;
+            end;
+            SetDesigning(TempForm,True);
+
+            // select the new form (object inspector, formeditor, control selection)
+            if not ProjectLoading then begin
+              PropertyEditorHook1.LookupRoot := TForm(CInterface.Control);
+              TDesigner(TempForm.Designer).SelectOnlyThisComponent(TempForm);
+            end;
+          end;
         end;
 {$IFDEF IDE_DEBUG}
 writeln('[TMainIDE.DoOpenEditorFile] LFM end');
@@ -3922,7 +4006,8 @@ begin
           +'"';
       if (Project.ProjectType in [ptProgram, ptApplication])
       and (ActiveUnitInfo.UnitName<>'')
-      and (Project.IndexOfUnitWithName(ActiveUnitInfo.UnitName,true)>=0) then
+      and (Project.IndexOfUnitWithName(ActiveUnitInfo.UnitName,
+          true,ActiveUnitInfo)>=0) then
       begin
         MessageDlg('Unable to add '+s+' to project, because there is already a '
            +'unit with the same name in the project.',mtInformation,[mbOk],0);
@@ -6288,6 +6373,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.247  2002/03/21 22:44:06  lazarus
+  MG: fixes for save-as and form streaming exceptions
+
   Revision 1.246  2002/03/18 12:29:53  lazarus
   MG: added complete properties checkbox and ecSaveAll
 
