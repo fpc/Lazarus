@@ -715,6 +715,166 @@ begin
     gtk_accel_group_get_default(), GDKKey, GDKModifier, GTK_ACCEL_VISIBLE);
 end;
 
+{$IFDEF ClientRectBugFix}
+{------------------------------------------------------------------------------
+  TgtkObject SetSizeNotification
+  Params: Widget: PGtkWidget  A widget that is the handle of a lcl control.
+
+  When the gtk sends a size signal, it is not send directly to the LCL. All gtk
+  size/move messages are collected and only the last one for each widget is sent
+  to the LCL.
+  This is neccessary, because the gtk sends size messages several times and
+  it replays resizes. Since the LCL reacts to every size notification and
+  resizes child controls, this results in a perpetuum mobile.
+ ------------------------------------------------------------------------------}
+procedure SaveSizeNotification(Widget: PGtkWidget);
+{$IFDEF VerboseSizeMsg}
+var
+  LCLControl: TWinControl;
+{$ENDIF}
+begin
+  {$IFDEF VerboseSizeMsg}
+  write('SaveSizeNotification Widget=',HexStr(Cardinal(Widget),8));
+  LCLControl:=TWinControl(GetLCLObject(Widget));
+  if (LCLControl<>nil) then begin
+    if LCLControl is TWinControl then
+      writeln(' ',LCLControl.Name,':',LCLControl.ClassName)
+    else
+      writeln(' ERROR: ',LCLControl.ClassName);
+  end else begin
+    writeln(' ERROR: LCLControl=nil');
+  end;
+  {$ENDIF}
+  if not FWidgetsResized.Contains(Widget) then
+    FWidgetsResized.Add(Widget);
+end;
+
+{------------------------------------------------------------------------------
+  TgtkObject SaveClientSizeNotification
+  Params: FixWidget: PGtkWidget  A widget that is the fixed widget
+                                 of a lcl control.
+
+  When the gtk sends a size signal, it is not send directly to the LCL. All gtk
+  size/move messages are collected and only the last one for each widget is sent
+  to the LCL.
+  This is neccessary, because the gtk sends size messages several times and
+  it replays resizes. Since the LCL reacts to every size notification and
+  resizes child controls, this results in a perpetuum mobile.
+ ------------------------------------------------------------------------------}
+procedure SaveClientSizeNotification(FixWidget: PGtkWidget);
+{$IFDEF VerboseSizeMsg}
+var
+  LCLControl: TWinControl;
+  MainWidget: PGtkWidget;
+{$ENDIF}
+begin
+  {$IFDEF VerboseSizeMsg}
+  MainWidget:=GetMainWidget(FixWidget);
+  write('SaveClientSizeNotification',
+    ' FixWidget=',HexStr(Cardinal(FixWidget),8),
+    ' MainWIdget=',HexStr(Cardinal(MainWidget),8));
+  LCLControl:=TWinControl(GetLCLObject(MainWidget));
+  if (LCLControl<>nil) then begin
+    if LCLControl is TWinControl then
+      writeln(' ',LCLControl.Name,':',LCLControl.ClassName)
+    else
+      writeln(' ERROR: ',LCLControl.ClassName);
+  end else begin
+    writeln(' ERROR: LCLControl=nil');
+  end;
+  {$ENDIF}
+  if not FFixWidgetsResized.Contains(FixWidget) then
+    FFixWidgetsResized.Add(FixWidget);
+end;
+
+{-------------------------------------------------------------------------------
+  CreateTopologicalSortedWidgets
+  Params: HashArray: TDynHashArray  of PGtkWidget
+  
+  Creates a topologically sorted TList of PGtkWidget.
+-------------------------------------------------------------------------------}
+function CreateTopologicalSortedWidgets(HashArray: TDynHashArray): TList;
+type
+  PTopologicalEntry = ^TTopologicalEntry;
+  TTopologicalEntry = record
+      Widget: PGtkWidget;
+      ParentLevel: integer;
+    end;
+    
+  function GetParentLevel(AControl: TControl): integer;
+  // nil has lvl -1
+  // a control without parent has lvl 0
+  begin
+    Result:=-1;
+    while AControl<>nil do begin
+      inc(Result);
+      AControl:=AControl.Parent;
+    end;
+  end;
+  
+var
+  TopologicalList: PTopologicalEntry;
+  HashItem: PDynHashArrayItem;
+  i, Lvl, MaxLevel: integer;
+  LCLControl: TControl;
+  LevelCounts: PInteger;
+begin
+  writeln(' KKK0');
+  Result:=TList.Create;
+  if HashArray.Count=0 then exit;
+  
+  // put all widgets into an array and calculate their parent levels
+  GetMem(TopologicalList,SizeOf(TTopologicalEntry)*HashArray.Count);
+  HashItem:=HashArray.FirstHashItem;
+  i:=0;
+  MaxLevel:=0;
+  writeln(' KKK1 HashArray.Count=',HashArray.Count);
+  while HashItem<>nil do begin
+    TopologicalList[i].Widget:=HashItem^.Item;
+    writeln(' KKK21 i=',i,' Widget=',HexStr(Cardinal(TopologicalList[i].Widget),8));
+    LCLControl:=TControl(GetLCLObject(TopologicalList[i].Widget));
+    if (LCLControl=nil) or (not (LCLControl is TControl)) then
+      raise Exception.Create('CreateTopologicalSortedWidgets: '
+                             +'Widget without LCL control');
+    Lvl:=GetParentLevel(LCLControl);
+    TopologicalList[i].ParentLevel:=Lvl;
+    if MaxLevel<Lvl then
+      MaxLevel:=Lvl;
+    writeln(' KKK2 i=',i,' Lvl=',Lvl,' MaxLvl=',MaxLevel,' LCLControl=',LCLControl.Name,':',LCLControl.ClassName);
+    inc(i);
+    HashItem:=HashItem^.Next;
+  end;
+  inc(MaxLevel);
+  
+  // bucket sort the widgets
+  
+  // count each number of levels (= bucketsizes)
+  GetMem(LevelCounts,SizeOf(Integer)*MaxLevel);
+  FillChar(LevelCounts^,SizeOf(Integer)*MaxLevel,0);
+  for i:=0 to HashArray.Count-1 do
+    inc(LevelCounts[TopologicalList[i].ParentLevel]);
+
+  // calculate bucketends
+  for i:=1 to MaxLevel-1 do
+    inc(LevelCounts[i],LevelCounts[i-1]);
+
+  // bucket sort the widgets in Result
+  Result.Count:=HashArray.Count;
+  for i:=0 to HashArray.Count-1 do
+    Result[i]:=nil;
+  for i:=0 to HashArray.Count-1 do begin
+    Lvl:=TopologicalList[i].ParentLevel;
+    dec(LevelCounts[Lvl]);
+    writeln(' KKK5 i=',i,' Lvl=',Lvl,' LevelCounts[Lvl]=',LevelCounts[Lvl],
+    ' Widget=',HexStr(Cardinal(TopologicalList[i].Widget),8));
+    Result[LevelCounts[Lvl]]:=TopologicalList[i].Widget;
+  end;
+  
+  FreeMem(LevelCounts);
+  FreeMem(TopologicalList);
+end;
+{$ENDIF}
+
 // ----------------------------------------------------------------------
 // OBSOLETE ???
 // ----------------------------------------------------------------------
@@ -932,6 +1092,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.37  2002/05/12 04:56:21  lazarus
+  MG: client rect bugs nearly completed
+
   Revision 1.36  2002/05/10 06:05:57  lazarus
   MG: changed license to LGPL
 
