@@ -439,24 +439,12 @@ begin
 end;
 
 function  TWin32WSCustomListBox.GetItemIndex(const ACustomListBox: TCustomListBox): integer;
-var
-  Handle: HWND;
 begin
-  Handle := ACustomListBox.Handle;
-  case ACustomListBox.FCompStyle of
-    csListBox, csCListBox:
-    begin
-      Result := SendMessage(Handle, LB_GETCURSEL, 0, 0);
-      if Result = LB_ERR then
-      begin
-        Assert(False, 'Trace:[TWin32WidgetSet.IntSendMessage3] Could not retrieve item index via LM_GETITEMINDEX; try selecting an item first');
-        Result := -1;
-      end;
-    end;
-    csNotebook:
-    begin
-      Result := SendMessage(Handle, TCM_GETCURSEL, 0, 0);
-    end;
+  Result := SendMessage(ACustomListBox.Handle, LB_GETCURSEL, 0, 0);
+  if Result = LB_ERR then
+  begin
+    Assert(false, 'Trace:[TWin32WSCustomListBox.GetItemIndex] could not retrieve itemindex, try selecting an item first');
+    Result := -1;
   end;
 end;
 
@@ -483,13 +471,7 @@ var
   Handle: HWND;
 begin
   Handle := ACustomListBox.Handle;
-  if ACustomListBox.fCompStyle = csCListBox then 
-    Result := TWin32CListStringList.Create(Handle, ACustomListBox)
-  else
-  if ACustomListBox.fCompStyle = csCheckListBox then 
-    Result := TWin32CheckListBoxStrings.Create(Handle, ACustomListBox)
-  else
-    Result := TWin32ListStringList.Create(Handle, ACustomListBox);
+  Result := TWin32ListStringList.Create(Handle, ACustomListBox);
   GetWindowInfo(Handle)^.List := Result;
 end;
 

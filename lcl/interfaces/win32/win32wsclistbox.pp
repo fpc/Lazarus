@@ -47,6 +47,7 @@ type
   public
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
+    class function  GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
   end;
 
 
@@ -83,6 +84,15 @@ begin
   Windows.SendMessage(Params.Window, LB_SETCOLUMNWIDTH, Windows.WPARAM(
     TCListBox(AWinControl).Width div (TCListBox(AWinControl).ListColumns)), 0);
   Result := Params.Window;
+end;
+
+function  TWin32WSCustomCListBox.GetStrings(const ACustomListBox: TCustomListBox): TStrings;
+var
+  Handle: HWND;
+begin
+  Handle := ACustomListBox.Handle;
+  Result := TWin32CListStringList.Create(Handle, ACustomListBox)
+  GetWindowInfo(Handle)^.List := Result;
 end;
 
 initialization

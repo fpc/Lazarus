@@ -33,9 +33,9 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  CheckLst,
+  Classes, CheckLst, StdCtrls,
 ////////////////////////////////////////////////////
-  WSCheckLst, WSLCLClasses, Win32Int, Windows;
+  WSCheckLst, WSLCLClasses, Win32Int, Win32Proc, Windows;
 
 type
 
@@ -47,6 +47,7 @@ type
   public
     class function  GetChecked(const ACheckListBox: TCustomCheckListBox;
       const AIndex: integer): boolean; override;
+    class function  GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
     class procedure SetChecked(const ACheckListBox: TCustomCheckListBox;
       const AIndex: integer; const AChecked: boolean); override;
   end;
@@ -58,6 +59,15 @@ function  TWin32WSCustomCheckListBox.GetChecked(const ACheckListBox: TCustomChec
   const AIndex: integer): boolean;
 begin
   Result := TWin32CheckListBoxStrings(ACheckListBox.Items).Checked[AIndex];
+end;
+
+function  TWin32WSCustomCheckListBox.GetStrings(const ACustomListBox: TCustomListBox): TStrings;
+var
+  Handle: HWND;
+begin
+  Handle := ACustomListBox.Handle;
+  Result := TWin32CheckListBoxStrings.Create(Handle, ACustomListBox);
+  GetWindowInfo(Handle)^.List := Result;
 end;
 
 procedure TWin32WSCustomCheckListBox.SetChecked(const ACheckListBox: TCustomCheckListBox;
