@@ -21,8 +21,8 @@
  *                                                                         *
  ***************************************************************************
 }
-uses
-  DOS; // .. invincible DOS ..
+//uses
+//  DOS; // .. invincible DOS ..
 
 const
   DefaultFPCSrcDirs: array[1..1] of string = (
@@ -169,6 +169,9 @@ end;
 
 {
   $Log$
+  Revision 1.12  2003/08/25 11:58:59  marco
+   * fixed duplicate dos reference
+
   Revision 1.11  2003/08/18 10:02:37  mattias
   fixed win32 lazconf and improved enclose selection
 
