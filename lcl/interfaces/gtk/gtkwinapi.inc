@@ -2759,7 +2759,7 @@ var
   LineStart, LineEnd, StrEnd: PChar;
   Width, Height: Integer;
   TopY, LineLen, LineHeight : Integer;
-  TXTPt : TPoint;
+  TxtPt : TPoint;
   UseFont : PGDKFont;
   UnRef : Boolean;
   DCOrigin: TPoint;
@@ -2768,12 +2768,30 @@ var
   procedure DrawTextLine;
   var
     UnderLineLen, Y: integer;
+    CurDistX: PInteger;
+    CharsWritten, CurX, i: integer;
+    LinePos: PChar;
   begin
     with TDeviceContext(DC) do begin
-      gdk_draw_text(Drawable, UseFont, GC, TxtPt.X, TxtPt.Y,
-                    LineStart, LineLen);
-      gdk_draw_text(Drawable, UseFont, GC, 0,0,
-                    'A'#0,2);
+      if Dx=nil then begin
+        // no dist array -> write as one block
+        gdk_draw_text(Drawable, UseFont, GC, TxtPt.X, TxtPt.Y,
+                      LineStart, LineLen);
+      end else begin
+        // dist array -> write each char separately
+        CharsWritten:=integer(LineStart-Str);
+        if DCTextMetric.IsDoubleByteChar then
+          CharsWritten:=CharsWritten div 2;
+        CurDistX:=Dx+CharsWritten*SizeOf(Integer);
+        CurX:=TxtPt.X;
+        LinePos:=LineStart;
+        for i:=1 to LineLen do begin
+          gdk_draw_text(Drawable, UseFont, GC, CurX, TxtPt.Y, LinePos, 1);
+          inc(LinePos);
+          inc(CurX,CurDistX^);
+          inc(CurDistX);
+        end;
+      end;
       if UnderLine then begin
         UnderLineLen := Rect^.Right-Rect^.Left;
         Y := TxtPt.Y + 1;
@@ -7536,6 +7554,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.193  2002/12/07 08:42:09  mattias
+  improved ExtTxtOut: support for char dist array
+
   Revision 1.192  2002/12/05 22:16:33  mattias
   double byte char font started
 
