@@ -1180,7 +1180,7 @@ begin
     if UpAtomIs('ARRAY') then begin
       if (phpCreateNodes in Attr) then begin
         CreateChildNode;
-        CurNode.Desc:=ctnArrayType;
+        CurNode.Desc:=ctnOpenArrayType;
       end;
       if not Extract then ReadNextAtom else ExtractNextAtom(copying,Attr);
       if not UpAtomIs('OF') then
@@ -2773,11 +2773,14 @@ function TPascalParserTool.KeyWordFuncTypeArray: boolean;
 }
 begin
   CreateChildNode;
-  CurNode.Desc:=ctnArrayType;
+  // first set the type to open arrar (an array type without brackets)
+  CurNode.Desc:=ctnOpenArrayType;
   ReadNextAtom;
   if (CurPos.Flag=cafEdgedBracketOpen) then begin
     repeat
       ReadNextAtom;
+      // this is a ranged array -> change type
+      CurNode.Desc:=ctnRangedArrayType;
       CreateChildNode;
       CurNode.Desc:=ctnRangeType;
       ReadSubRange(true);

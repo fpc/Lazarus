@@ -89,22 +89,23 @@ const
   ctnParameterList   = 52;
 
   ctnIdentifier      = 60;
-  ctnArrayType       = 61;
-  ctnOfConstType     = 62;
-  ctnRecordType      = 63;
-  ctnRecordCase      = 64;
-  ctnRecordVariant   = 65;
-  ctnProcedureType   = 66;
-  ctnSetType         = 67;
-  ctnRangeType       = 68;
-  ctnEnumerationType = 69;
-  ctnEnumIdentifier  = 70;
-  ctnLabelType       = 71;
-  ctnTypeType        = 72;
-  ctnFileType        = 73;
-  ctnPointerType     = 74;
-  ctnClassOfType     = 75;
-  ctnVariantType     = 76;
+  ctnRangedArrayType = 61;
+  ctnOpenArrayType   = 62;
+  ctnOfConstType     = 63;
+  ctnRecordType      = 64;
+  ctnRecordCase      = 65;
+  ctnRecordVariant   = 66;
+  ctnProcedureType   = 67;
+  ctnSetType         = 68;
+  ctnRangeType       = 69;
+  ctnEnumerationType = 70;
+  ctnEnumIdentifier  = 71;
+  ctnLabelType       = 72;
+  ctnTypeType        = 73;
+  ctnFileType        = 74;
+  ctnPointerType     = 75;
+  ctnClassOfType     = 76;
+  ctnVariantType     = 77;
 
   ctnBeginBlock      = 80;
   ctnAsmBlock        = 81;
@@ -129,7 +130,8 @@ const
      [ctnTypeDefinition,ctnVarDefinition,ctnConstDefinition];
   AllPascalTypes =
      [ctnClass,ctnClassInterface,
-      ctnIdentifier,ctnArrayType,ctnRecordType,ctnRecordCase,ctnRecordVariant,
+      ctnIdentifier,ctnOpenArrayType,ctnRangedArrayType,ctnRecordType,
+      ctnRecordCase,ctnRecordVariant,
       ctnProcedureType,ctnSetType,ctnRangeType,ctnEnumerationType,
       ctnEnumIdentifier,ctnLabelType,ctnTypeType,ctnFileType,ctnPointerType,
       ctnClassOfType,ctnVariantType];
@@ -309,7 +311,8 @@ begin
   ctnMethodMap: Result:='Method Map';
 
   ctnIdentifier: Result:='Identifier';
-  ctnArrayType: Result:='Array Type';
+  ctnOpenArrayType: Result:='Open Array Type';
+  ctnRangedArrayType: Result:='Ranged Array Type';
   ctnRecordType: Result:='Record Type';
   ctnRecordCase: Result:='Record Case';
   ctnRecordVariant: Result:='Record Variant';

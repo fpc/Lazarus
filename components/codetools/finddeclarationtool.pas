@@ -3015,12 +3015,6 @@ begin
     writeln('[TFindDeclarationTool.FindExpressionResultType] Operand: ',
       ExprTypeToString(CurExprType));
     {$ENDIF}
-    if CurExprType.Desc=xtNone then exit;
-    // read operator
-    ReadNextAtom;
-    {$IFDEF ShowExprEval}
-    writeln('[TFindDeclarationTool.FindExpressionResultType] Operator: ',GetAtom,' CurPos.EndPos=',CurPos.EndPos,' EndPos=',EndPos);
-    {$ENDIF}
     // put operand on stack
     inc(StackPtr);
     if StackPtr>High(ExprStack) then
@@ -3028,11 +3022,18 @@ begin
     ExprStack[StackPtr].Operand:=CurExprType;
     ExprStack[StackPtr].theOperator.StartPos:=-1;
     ExprStack[StackPtr].OperatorLvl:=5;
-    if CurPos.EndPos>EndPos then begin
-      // expression completely parsed
+    // read operator
+    ReadNextAtom;
+    {$IFDEF ShowExprEval}
+    writeln('[TFindDeclarationTool.FindExpressionResultType] Operator: ',
+      GetAtom,' CurPos.EndPos=',CurPos.EndPos,' EndPos=',EndPos);
+    {$ENDIF}
+    // check if expression completely parsed
+    if (CurPos.EndPos>EndPos) or (CurExprType.Desc=xtNone) then begin
       // -> execute stack
       ExecuteStack;
       Result:=ExprStack[StackPtr].Operand;
+      Params.Flags:=OldFlags;
       exit;
     end;
     if not WordIsBinaryOperator.DoItUpperCase(UpperSrc,CurPos.StartPos,
@@ -3041,6 +3042,7 @@ begin
       RaiseBinaryOperatorNotFound;
     // put operator on stack
     ExprStack[StackPtr].theOperator:=CurPos;
+    // find operator precendence level
     if WordIsLvl1Operator.DoItUpperCase(UpperSrc,CurPos.StartPos,
             CurPos.EndPos-CurPos.StartPos)
     then
@@ -3060,12 +3062,10 @@ begin
     else
       RaiseInternalError;
     // execute stack if possible
-    ReadNextAtom;
     ExecuteStack;
+    // move cursor to next atom (= next operand start)
+    ReadNextAtom;
   until false;
-  ExecuteStack;
-  Result:=ExprStack[0].Operand;
-  Params.Flags:=OldFlags;
 end;
 
 function TFindDeclarationTool.FindIdentifierInUsesSection(
@@ -3745,6 +3745,7 @@ var
   var
     ProcNode: TCodeTreeNode;
     IdentFound: boolean;
+    OldFlags: TFindDeclarationFlags;
   begin
     // for example  'AnObject[3]'
     
@@ -3774,14 +3775,11 @@ var
             ExprType.Desc:=xtContext;
             ExprType.Context.Node:=ProcNode.FirstChild;
           end else begin
-            Params.Save(OldInput);
-            try
-              Include(Params.Flags,fdfFunctionResult);
-              ExprType.Desc:=xtContext;
-              ExprType.Context:=FindBaseTypeOfNode(Params,ProcNode);
-            finally
-              Params.Load(OldInput);
-            end;
+            OldFlags:=Params.Flags;
+            Include(Params.Flags,fdfFunctionResult);
+            ExprType.Desc:=xtContext;
+            ExprType.Context:=FindBaseTypeOfNode(Params,ProcNode);
+            Params.Flags:=OldFlags;
           end;
           exit;
         end;
@@ -3962,7 +3960,7 @@ var
     end;
     case ExprType.Context.Node.Desc of
 
-    ctnArrayType:
+    ctnOpenArrayType,ctnRangedArrayType:
       // the array type is the last child node
       ExprType.Context:=ExprType.Context.Tool.FindBaseTypeOfNode(Params,
                                                ExprType.Context.Node.LastChild);
@@ -4306,8 +4304,9 @@ begin
   {$IFDEF ShowExprEval}
   writeln('[TFindDeclarationTool.ReadOperandTypeAtCursor] A Atom=',GetAtom);
   {$ENDIF}
-  if UpAtomIs('INHERITED') or (AtomIsIdentifier(false))
-  or AtomIsChar('(') then begin
+  if (AtomIsIdentifier(false))
+  or (CurPos.Flag=cafRoundBracketOpen)
+  or UpAtomIs('INHERITED') then begin
     // read variable
     SubStartPos:=CurPos.StartPos;
     EndPos:=FindEndOfVariable(SubStartPos,false);
@@ -4411,11 +4410,26 @@ begin
         if Result.Desc<>xtContext then exit;
         ParamNode:=Result.Context.Node;
         case ParamNode.Desc of
+
         ctnEnumerationType:
           // Low(enum)   has the type of the enum
           if (ParamNode.Parent<>nil)
           and (ParamNode.Parent.Desc=ctnTypeDefinition) then
             Result.Context.Node:=ParamNode.Parent;
+
+        ctnOpenArrayType:
+          // array without explicit range -> open array
+          // Low(Open array) is ordinal integer
+          Result.Desc:=xtConstOrdInteger;
+
+        ctnRangedArrayType:
+          begin
+            // array with explicit range
+            // Low(array[SubRange])  has the type of the subrange
+            MoveCursorToNodeStart(ParamNode.FirstChild);
+            Result:=ReadOperandTypeAtCursor(Params);
+          end;
+            
         else
           writeln('NOTE: unimplemented Low(type) type=',ParamNode.DescAsString);
         end;
@@ -5147,7 +5161,7 @@ begin
             then
               Result:=tcCompatible;
               
-          ctnArrayType:
+          ctnRangedArrayType,ctnOpenArrayType:
             // ToDo: check range and type of arrayfields
             begin
               Result:=tcCompatible;
@@ -5182,9 +5196,9 @@ begin
       if ((TargetNode.Desc
              in [ctnClass,ctnClassInterface,ctnProcedure])
         and (ExpressionType.Desc=xtNil))
-      or ((TargetNode.Desc=ctnArrayType)
-        and (TargetNode.FirstChild<>nil)
-        and (TargetNode.FirstChild.Desc=ctnOfConstType)
+      or ((TargetNode.Desc in [ctnOpenArrayType,ctnRangedArrayType])
+        and (TargetNode.LastChild<>nil)
+        and (TargetNode.LastChild.Desc=ctnOfConstType)
         and (ExpressionType.Desc=xtConstSet))
       then
         Result:=tcCompatible
