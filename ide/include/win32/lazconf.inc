@@ -156,6 +156,11 @@ begin
   List.Add('c:\windows\temp\');
 end;
 
+function GetDefaultLCLWidgetType: string;
+begin
+  Result:='win32';
+end;
+
 {---------------------------------------------------------------------------
   procedure InternalInit;
  ---------------------------------------------------------------------------}
@@ -169,6 +174,9 @@ end;
 
 {
   $Log$
+  Revision 1.16  2003/09/17 22:06:56  mattias
+  implemented default lcl widget type
+
   Revision 1.15  2003/09/09 11:22:17  mattias
   added fileexists for secondary config files
 

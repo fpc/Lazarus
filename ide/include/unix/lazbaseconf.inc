@@ -169,6 +169,11 @@ begin
   List.Add('/var/tmp/');
 end;
 
+function GetDefaultLCLWidgetType: string;
+begin
+  Result:='gtk';
+end;
+
 {---------------------------------------------------------------------------
   procedure InternalInit;
  ---------------------------------------------------------------------------}

@@ -1140,7 +1140,7 @@ begin
   Libraries := f(XMLConfigFile.GetValue(p+'Libraries/Value', ''));
   OtherUnitFiles := f(XMLConfigFile.GetValue(p+'OtherUnitFiles/Value', ''));
   UnitOutputDirectory := f(XMLConfigFile.GetValue(p+'UnitOutputDirectory/Value', ''));
-  LCLWidgetType := XMLConfigFile.GetValue(p+'LCLWidgetType/Value', 'gtk');
+  LCLWidgetType := XMLConfigFile.GetValue(p+'LCLWidgetType/Value', '');
   ObjectPath := f(XMLConfigFile.GetValue(p+'ObjectPath/Value', ''));
   SrcPath := f(XMLConfigFile.GetValue(p+'SrcPath/Value', ''));
 
@@ -2106,7 +2106,7 @@ begin
   ObjectPath:='';
   SrcPath:='';
   DebugPath:='';
-  fLCLWidgetType := 'gtk';
+  fLCLWidgetType := '';
   
   // parsing
   fStyle := 1;
@@ -2842,8 +2842,10 @@ begin
   Options.DebugPath := edtDebugPath.Text;
 
   i:=LCLWidgetTypeRadioGroup.Itemindex;
-  if i<0 then i:=0;
-  Options.LCLWidgetType:= LCLWidgetTypeRadioGroup.Items[i];
+  if i<=0 then
+    Options.LCLWidgetType:=''
+  else
+    Options.LCLWidgetType:= LCLWidgetTypeRadioGroup.Items[i];
 
   // parsing
   if (radStyleIntel.Checked) then
@@ -4479,10 +4481,11 @@ begin
     Parent := PathPage;
     Left := grpOtherUnits.Left;
     Top:= y;
-    Width:=300;
+    Width:=Self.ClientWidth-28;
     Height:=45;
     Caption:=dlgLCLWidgetType;
     with Items do begin
+      Add(Format(lisCOdefault, [GetDefaultLCLWidgetType]));
       Add('gnome');
       Add('gtk');
       Add('gtk2');

@@ -7023,7 +7023,7 @@ begin
       s:=Project1.CompilerOptions.LCLWidgetType
     else
       s:='';
-    if s='' then s:='gtk';
+    if (s='') or (s='default') then s:=GetDefaultLCLWidgetType;
   end else if MacroName='fpcsrcdir' then begin
     Handled:=true;
     s:=EnvironmentOptions.FPCSourceDirectory;
@@ -9792,6 +9792,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.648  2003/09/17 22:06:56  mattias
+  implemented default lcl widget type
+
   Revision 1.647  2003/09/15 15:03:05  mattias
   Import and Export of package compiler options
 

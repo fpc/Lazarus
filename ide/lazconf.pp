@@ -81,6 +81,8 @@ uses
   
   procedure GetDefaultCompilerFilenames(List: TStrings);
   procedure GetDefaultTestBuildDirs(List: TStrings);
+  
+  function GetDefaultLCLWidgetType: string;
 
 const
   // ToDo: find the constant in the fpc units.
@@ -138,6 +140,9 @@ end.
 
 {
   $Log$
+  Revision 1.19  2003/09/17 22:06:56  mattias
+  implemented default lcl widget type
+
   Revision 1.18  2003/09/10 12:13:48  mattias
   implemented Import and Export of compiler options
 
