@@ -1311,6 +1311,7 @@ resourcestring
   rsLanguagePolishISO   = 'Polish(ISO 8859-2)';
   rsLanguagePolishWin   = 'Polish(CP1250)';
   rsLanguageItalian     = 'Italian';
+  rsLanguageItalianISO  = 'Italian(ISO 8859-1)';
   rsLanguageCatalan     = 'Catalan';
   rsLanguageFinnish     = 'Finnish';
   rsLanguageHebrew      = 'Hebrew';

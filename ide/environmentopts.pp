@@ -94,6 +94,7 @@ type
     llFrench,
     llGerman,
     llItalian,
+    llItalianISO_8859_1,
     llPolish,
     llPolishISO_8859_2,
     llPolishCP1251,
@@ -115,6 +116,7 @@ const
     'French',
     'German',
     'Italian',
+    'Italian(ISO 8859-1)',
     'Polish',
     'Polish(ISO 8859-2)',
     'Polish(CP1250)',    
@@ -127,7 +129,8 @@ const
   );
 
   LazarusLanguageIDs: array[TLazarusLanguage] of string = (
-    '', 'ca', 'en', 'fr', 'de', 'it', 'pl', 'pliso', 'plwin', 'ru', 'ruwin', 'es', 'fi', 'he', 'ar'
+    '', 'ca', 'en', 'fr', 'de', 'it', 'itiso', 'pl', 'pliso', 'plwin',
+    'ru', 'ruwin', 'es', 'fi', 'he', 'ar'
   );
   
   
@@ -689,21 +692,22 @@ function GetLazarusLanguageNames(aLangId: TLazarusLanguage) : String;
 begin
   Result := '?';
   Case aLangId of
-    llAutomatic        : Result := rsLanguageAutomatic;
-    llEnglish          : Result := rsLanguageEnglish;
-    llGerman           : Result := rsLanguageDeutsch;
-    llSpanish          : Result := rsLanguageSpanish;
-    llFrench           : Result := rsLanguageFrench;
-    llRussian          : Result := rsLanguageRussian;
-    llRussianCP1251    : Result := rsLanguageRussianWin;
-    llPolish           : Result := rsLanguagePolish;
-    llPolishISO_8859_2 : Result := rsLanguagePolishISO;
-    llPolishCP1251     : Result := rsLanguagePolishWin;
-    llItalian          : Result := rsLanguageItalian;
-    llCatalan          : Result := rsLanguageCatalan;
-    llFinnish          : Result := rsLanguageFinnish;
-    llHebrew           : Result := rsLanguageHebrew;
-    llArabic           : Result := rsLanguageArabic;
+    llAutomatic         : Result := rsLanguageAutomatic;
+    llEnglish           : Result := rsLanguageEnglish;
+    llGerman            : Result := rsLanguageDeutsch;
+    llSpanish           : Result := rsLanguageSpanish;
+    llFrench            : Result := rsLanguageFrench;
+    llRussian           : Result := rsLanguageRussian;
+    llRussianCP1251     : Result := rsLanguageRussianWin;
+    llPolish            : Result := rsLanguagePolish;
+    llPolishISO_8859_2  : Result := rsLanguagePolishISO;
+    llPolishCP1251      : Result := rsLanguagePolishWin;
+    llItalian           : Result := rsLanguageItalian;
+    llItalianISO_8859_1 : Result := rsLanguageItalianISO;
+    llCatalan           : Result := rsLanguageCatalan;
+    llFinnish           : Result := rsLanguageFinnish;
+    llHebrew            : Result := rsLanguageHebrew;
+    llArabic            : Result := rsLanguageArabic;
   end;
 end;
 
