@@ -76,8 +76,10 @@ Begin
 
     SH := Source.Bottom - Source.Top;
     SW := Source.Right - Source.Left;
+    if (SH=0) and (SW=0) then exit;
     DH := Dest.Bottom - Dest.Top;
     DW := Dest.Right - Dest.Left;
+    if (Dh=0) and (DW=0) then exit;
     StretchBlt(FHandle, Dest.Left, Dest.Top, DW, DH,
       Canvas.FHandle, Source.Left, Source.Top, SW, SH, CopyMode);
   end;
@@ -1169,6 +1171,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.44  2003/06/13 10:37:20  mattias
+  fixed AV on StretchDraw 0x0
+
   Revision 1.43  2003/04/02 13:23:23  mattias
   fixed default font
 
