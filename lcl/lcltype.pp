@@ -1145,6 +1145,27 @@ const
 
 
 //==============================================
+// Stock Pixmap Types
+//==============================================
+  idButtonBase = 0;
+  idButtonOk = idButtonBase + 1;
+  idButtonCancel = idButtonBase + 2;
+  idButtonHelp = idButtonBase + 3;
+  idButtonYes = idButtonBase + 4;
+  idButtonNo = idButtonBase + 5;
+  idButtonClose = idButtonBase + 6;
+  idButtonAbort = idButtonBase + 7;
+  idButtonRetry = idButtonBase + 8;
+  idButtonIgnore = idButtonBase + 9;
+  idButtonAll = idButtonBase + 10;
+
+  idDialogBase = $FF;
+  idDialogWarning = idDialogBase + 1;
+  idDialogError = idDialogBase + 2;
+  idDialogInfo = idDialogBase + 3;
+  idDialogConfirm = idDialogBase + 4;
+
+//==============================================
 // SystemMetrics constants
 //==============================================
 
@@ -1598,6 +1619,9 @@ end.
 
 {
   $Log$
+  Revision 1.20  2002/10/10 13:29:08  lazarus
+  AJ: added LoadStockPixmap routine & minor fixes to/for GNOMEInt
+
   Revision 1.19  2002/10/04 14:24:14  lazarus
   MG: added DrawItem to TComboBox/TListBox
 

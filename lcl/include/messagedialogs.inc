@@ -245,7 +245,7 @@ begin
   FDlgType := value;
   FBitmap.Free;
   FBitmap := TBitmap.Create; 
-  FBitmap.Handle := CreatePixmapIndirect(@mtImages[FDlgType], ColorToRGB(clBtnFace));
+  FBitmap.Handle := LoadStockPixmap(mtImages[FDlgType]);
   if DefaultCaption then
     Caption := cMtCaption[FDlgType];
 end;
@@ -376,8 +376,7 @@ begin
         Layout  := blGlyphLeft;
         // ToDo: when TBitmap streaming is working, load image from resource 
         aBitmap := TBitmap.Create;
-        aBitmap.Handle := CreatePixmapIndirect(@mbImages [curBtn],
-                ColorToRGB(clBtnFace));
+        aBitmap.Handle := LoadStockPixmap(mbImages[curBtn]);
         Glyph   := aBitmap;
         ModalResult := cMbResult[curBtn];
         Caption := cMbCaption[curBtn];
@@ -597,6 +596,9 @@ end;
 
 {
    $Log$
+   Revision 1.15  2002/10/10 13:29:08  lazarus
+   AJ: added LoadStockPixmap routine & minor fixes to/for GNOMEInt
+
    Revision 1.14  2002/09/27 20:52:23  lazarus
    MWE: Applied patch from "Andrew Johnson" <aj_genius@hotmail.com>
 

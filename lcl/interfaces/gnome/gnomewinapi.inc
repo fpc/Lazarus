@@ -28,7 +28,41 @@
 //  {$DEFINE ASSERT_IS_ON}
 {$EndIf}
 
+Function TGnomeObject.LoadStockPixmap(StockID: longint) : HBitmap;
+var
+  Pixmap : PGDIObject;
+  StockName : PChar;
+begin
+  Case StockID Of
+    idButtonOk : StockName := GNOME_STOCK_BUTTON_OK;
+    idButtonCancel : StockName := GNOME_STOCK_BUTTON_CANCEL;
+    idButtonYes : StockName := GNOME_STOCK_BUTTON_YES;
+    idButtonNo : StockName := GNOME_STOCK_BUTTON_NO;
+    idButtonHelp : StockName := GNOME_STOCK_BUTTON_HELP;
+    idButtonAbort : StockName := GNOME_STOCK_BUTTON_CANCEL;
+    idButtonClose : StockName := GNOME_STOCK_PIXMAP_QUIT;
+    else begin
+      Result := inherited LoadStockPixmap(StockID);
+      exit;
+    end;
+  end;
+  Pixmap := NewGDIObject(gdiBitmap);
+  With Pixmap^ do begin
+    GDIBitmapType := gbPixmap;
+    gnome_stock_pixmap_gdk(STOCKName, nil, @GDIPixmapObject, @GDIBitmapMaskObject);
+  end;
+  Result := HBitmap(Pixmap);
+end;
+
 {$IfDef ASSERT_IS_ON}
   {$UNDEF ASSERT_IS_ON}
   {$C-}
 {$EndIf}
+
+{
+  $Log$
+  Revision 1.2  2002/10/10 13:29:08  lazarus
+  AJ: added LoadStockPixmap routine & minor fixes to/for GNOMEInt
+
+  
+}

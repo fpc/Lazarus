@@ -263,12 +263,13 @@ const
         (mrYes, mrNo, mrOK, mrCAncel, mrAbort, mrRetry, mrIgnore, mrAll,
          mrNoToAll, mrYesToAll, 0);
 
-type
-   PCharArray32x32 = Array [0..36]  of PChar;
-
-var
-   mtImages   : Array [TMsgDlgType] of PCharArray32x32;
-   mbImages   : array [TMsgDlgBtn] of PCharArray;
+   mtImages   : Array [TMsgDlgType] of Longint = (
+     idDialogWarning, idDialogError, idDialogInfo, idDialogConfirm,
+     idDialogInfo);
+   mbImages   : array [TMsgDlgBtn] of longint = (
+     idButtonYes, idButtonNo, idButtonOK, idButtonCancel, idButtonAbort,
+     idButtonRetry, idButtonIgnore, idButtonAll,idButtonAll, idButtonAll,
+     idButtonHelp);
 
 
 {$I commondialog.inc}
@@ -280,33 +281,9 @@ begin
 end;
 
 {$I fontdialog.inc}
-{$I messagedialogpixmaps.inc}
 {$I messagedialogs.inc}
 
-procedure InitImages;
-begin
-   mbImages[mbYes]    := IMGOK_Check;
-   mbImages[mbNo]     := IMGCancel_X;
-   mbImages[mbOK]     := IMGOK_Check;
-   mbImages[mbCancel] := IMGCancel_X;
-   mbImages[mbAbort]  := IMGCancel_X; 
-   mbImages[mbRetry]  := IMGClose;
-   mbImages[mbIgnore] := IMGClose;
-   mbImages[mbAll]    := IMGAll_Check;
-   mbImages[mbNoToAll]:= IMGAll_Check;
-   mbImages[mbYesToAll]:= IMGAll_Check;
-   mbImages[mbHelp]   := IMGHELP;
-
-   mtImages [MtWarning     ] := IMGWarning;
-   mtImages [MtError       ] := IMGError;
-   mtImages [MtInformation ] := IMGInfo;
-   mtImages [MtConfirmation] := IMGConfirmation;
-   mtImages [MtCustom      ] := IMGInfo;
-end;
-
 initialization
-
-   InitImages;
 
 finalization
 
@@ -315,6 +292,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.19  2002/10/10 13:29:08  lazarus
+  AJ: added LoadStockPixmap routine & minor fixes to/for GNOMEInt
+
   Revision 1.18  2002/09/27 20:52:21  lazarus
   MWE: Applied patch from "Andrew Johnson" <aj_genius@hotmail.com>
 

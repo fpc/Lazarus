@@ -100,7 +100,7 @@ Begin
 
   if Glyph <> nil then Glyph.free;
   Bitmap1 := TBitmap.Create;
-  Bitmap1.Handle := CreatePixmapIndirect(@BitBtnImages[FKInd], ColorToRGB(clBtnFace));
+  Bitmap1.Handle := LoadStockPixmap(BitBtnImages[Value]);
 
   Caption := BitBtnCaption[fKind];
 

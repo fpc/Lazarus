@@ -18,3 +18,12 @@
  *****************************************************************************
 }
 
+    Function LoadStockPixmap(StockID: longint) : HBitmap; override;
+
+{
+  $Log$
+  Revision 1.2  2002/10/10 13:29:08  lazarus
+  AJ: added LoadStockPixmap routine & minor fixes to/for GNOMEInt
+
+  
+}
