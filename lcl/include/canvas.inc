@@ -130,7 +130,7 @@ begin
   if (OldHandle<>Brush.Handle) and (FSavedBrushHandle=0) then
     FSavedBrushHandle:=OldHandle;
   Include(FState, csBrushValid);
-  SetBkColor(FHandle, ColorToRGB(Brush.Color));
+  SetBkColor(FHandle, Brush.Color);
   SetBkMode(FHandle, TRANSPARENT);
 end;
 
@@ -165,7 +165,7 @@ begin
   if (OldHandle<>Font.Handle) and (FSavedFontHandle=0) then
     FSavedFontHandle:=OldHandle;
   Include(FState, csFontValid);
-  SetTextColor(FHandle, ColorToRGB(Font.Color));
+  SetTextColor(FHandle, Font.Color);
 end;
 
 {------------------------------------------------------------------------------
@@ -555,6 +555,29 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:   TCanvas.RoundRect
+  Params:   X1, Y1, X2, Y2, RX, RY
+  Returns:  Nothing
+
+ ------------------------------------------------------------------------------}
+Procedure TCanvas.RoundRect(X1, Y1, X2, Y2: Integer; RX,RY : Integer);
+begin
+  RequiredState([csHandleValid, csBrushValid, csPenValid]);
+  LCLLinux.RoundRect(FHandle, X1, Y1, X2, Y2, RX, RY);
+end;
+
+{------------------------------------------------------------------------------
+  Method:   TCanvas.RoundRect
+  Params:   Rect, RX, RY
+  Returns:  Nothing
+
+ ------------------------------------------------------------------------------}
+Procedure TCanvas.RoundRect(const Rect : TRect; RX,RY : Integer);
+begin
+  RoundRect(Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, RX, RY);
+end;
+
+{------------------------------------------------------------------------------
   Method:   TCanvas.TextRect
   Params:   Rect, X, Y, Text
   Returns:  Nothing
@@ -625,6 +648,7 @@ begin
   If Style.SystemFont then begin
     RequiredState([csHandleValid]);
     SelectObject(Self.Handle, GetStockObject(SYSTEM_FONT));
+    SetTextColor(Self.Handle, Font.Color);
   end
   else
     RequiredState([csHandleValid, csFontValid]);
@@ -1041,6 +1065,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.27  2002/09/18 17:07:24  lazarus
+  MG: added patch from Andrew
+
   Revision 1.26  2002/09/12 15:35:57  lazarus
   MG: small bugfixes
 
