@@ -32,7 +32,8 @@ interface
 
 uses
   Classes, SysUtils, LCLLinux, XMLCfg, LazConf, CompilerOptions, FileCtrl,
-  CodeToolManager, CodeCache, Forms, Controls, EditorOptions, Dialogs, IDEProcs;
+  CodeToolManager, CodeCache, Forms, Controls, EditorOptions, Dialogs, IDEProcs,
+  RunParamsOpts;
 
 type
   //---------------------------------------------------------------------------
@@ -192,12 +193,12 @@ type
 
 
   //---------------------------------------------------------------------------
-  TProjectType =   // for a description see ProjectTypeDescriptions
+  TProjectType =   // for a description see ProjectTypeDescriptions below
      (ptApplication, ptProgram, ptCustomProgram); 
 
   TProject = class(TObject)
   private
-    xmlcfg: TXMLConfig;
+    xmlconfig: TXMLConfig;
 
     { Variables }
     fActiveEditorIndexAtStart: integer;
@@ -214,6 +215,7 @@ type
     fTitle: String;
     fUnitList: TList;  // list of TUnitInfo
     fUnitOutputDirectory: String;
+    fRunParameterOptions: TRunParamsOptions;
 
     function GetProjectInfoFile: string;
     function GetTargetFilename: string;
@@ -275,6 +277,7 @@ type
     property ProjectInfoFile: string
        read GetProjectInfoFile write SetProjectInfoFile;
     property ProjectType: TProjectType read fProjectType write fProjectType;
+    property RunParameterOptions: TRunParamsOptions read fRunParameterOptions;
     property TargetFileExt: String read fTargetFileExt write fTargetFileExt;
     property TargetFilename: string read GetTargetFilename write SetTargetFilename;
     property Title: String read fTitle write fTitle;
@@ -293,7 +296,10 @@ const
       // ptApplication
       'Application'#13
       +'A graphical lcl/freepascal program. The program file is '
-      +'automatically maintained by lazarus.'
+      +'automatically maintained by lazarus.'#13
+      +#13
+      +'WARNING:'#13
+      +'Form editing is under development and should not be used.'
 
       // ptProgram
       ,'Program:'#13
@@ -862,7 +868,7 @@ begin
   inherited Create;
 
   Assert(False, 'Trace:Project Class Created');
-  XMLCfg := nil;
+  xmlconfig := nil;
 
   fProjectType:=TheProjectType;
 
@@ -874,6 +880,7 @@ begin
   fModified := false;
   fOutputDirectory := '.';
   fProjectFile := '';
+  fRunParameterOptions:=TRunParamsOptions.Create;
   fTargetFileExt := DefaultTargetFileExt;
   fTitle := '';
   fUnitList := TList.Create;  // list of TUnitInfo
@@ -928,8 +935,9 @@ destructor TProject.Destroy;
 begin
   Clear;
   fBookmarks.Free;
-  if (XMLCfg <> nil) then XMLCfg.Free;
+  if (xmlconfig <> nil) then xmlconfig.Free;
   fUnitList.Free;
+  fRunParameterOptions.Free;
   fCompilerOptions.Free;
 
   inherited Destroy;
@@ -951,39 +959,42 @@ begin
     Result:=fOnFileBackup(confPath,true);
     if Result=mrAbort then exit;
   end;
-  xmlcfg := TXMLConfig.Create(SetDirSeparators(confPath));
+  xmlconfig := TXMLConfig.Create(SetDirSeparators(confPath));
 
   try
     repeat
       try
-        xmlcfg.SetValue('ProjectOptions/General/ProjectType/Value',
+        xmlconfig.SetValue('ProjectOptions/General/ProjectType/Value',
             ProjectTypeNames[ProjectType]);
-        xmlcfg.SetValue('ProjectOptions/General/MainUnit/Value', MainUnit);
-        xmlcfg.SetValue('ProjectOptions/General/ActiveEditorIndexAtStart/Value'
+        xmlconfig.SetValue('ProjectOptions/General/MainUnit/Value', MainUnit);
+        xmlconfig.SetValue('ProjectOptions/General/ActiveEditorIndexAtStart/Value'
             ,ActiveEditorIndexAtStart);
-        xmlcfg.SetValue('ProjectOptions/General/IconPath/Value', IconPath);
-        xmlcfg.SetValue('ProjectOptions/General/TargetFileExt/Value'
+        xmlconfig.SetValue('ProjectOptions/General/IconPath/Value', IconPath);
+        xmlconfig.SetValue('ProjectOptions/General/TargetFileExt/Value'
             ,TargetFileExt);
-        xmlcfg.SetValue('ProjectOptions/General/Title/Value', Title);
-        xmlcfg.SetValue('ProjectOptions/General/OutputDirectory/Value'
+        xmlconfig.SetValue('ProjectOptions/General/Title/Value', Title);
+        xmlconfig.SetValue('ProjectOptions/General/OutputDirectory/Value'
             ,OutputDirectory);
-        xmlcfg.SetValue('ProjectOptions/General/UnitOutputDirectory/Value'
+        xmlconfig.SetValue('ProjectOptions/General/UnitOutputDirectory/Value'
             ,UnitOutputDirectory);
-        fBookmarks.SaveToXMLConfig(xmlcfg,'ProjectOptions/');
+        fBookmarks.SaveToXMLConfig(xmlconfig,'ProjectOptions/');
 
         // Set options for each Unit
-        xmlcfg.SetValue('ProjectOptions/Units/Count',UnitCount);
+        xmlconfig.SetValue('ProjectOptions/Units/Count',UnitCount);
         for i := 0 to UnitCount - 1 do begin
           Units[i].SaveToXMLConfig(
-            xmlcfg,'ProjectOptions/Units/Unit'+IntToStr(i)+'/');
+            xmlconfig,'ProjectOptions/Units/Unit'+IntToStr(i)+'/');
         end;
 
         // Save the compiler options
-        CompilerOptions.XMLConfigFile := xmlcfg;
+        CompilerOptions.XMLConfigFile := xmlconfig;
         CompilerOptions.ProjectFile := confPath;
         CompilerOptions.SaveCompilerOptions(true);
+        
+        // save the Run Parameter Options
+        RunParameterOptions.Save(xmlconfig,'ProjectOptions/');
 
-        xmlcfg.Flush;
+        xmlconfig.Flush;
         Modified:=false;
       except
         ACaption:='Write error';
@@ -994,8 +1005,8 @@ begin
       end;
     until Result<>mrRetry;
   finally
-    xmlcfg.Free;
-    xmlcfg:=nil;
+    xmlconfig.Free;
+    xmlconfig:=nil;
   end;
   Result := mrOk;
 end;
@@ -1013,46 +1024,49 @@ begin
 
   ProjectInfoFile:=LPIFilename;
   try
-    xmlcfg := TXMLConfig.Create(ProjectInfoFile);
+    xmlconfig := TXMLConfig.Create(ProjectInfoFile);
   except
-    MessageDlg('Unable to read the project info file "'+ProjectInfoFile+'".'
+    MessageDlg('Unable to read the project info file'#13'"'+ProjectInfoFile+'".'
         ,mtError,[mbOk],0);
     Result:=mrCancel;
     exit;
   end;
 
   try
-    ProjectType := ProjectTypeNameToType(xmlcfg.GetValue(
+    ProjectType := ProjectTypeNameToType(xmlconfig.GetValue(
        'ProjectOptions/General/ProjectType/Value', ''));
-    MainUnit := xmlcfg.GetValue('ProjectOptions/General/MainUnit/Value', -1);
-    ActiveEditorIndexAtStart := xmlcfg.GetValue(
+    MainUnit := xmlconfig.GetValue('ProjectOptions/General/MainUnit/Value', -1);
+    ActiveEditorIndexAtStart := xmlconfig.GetValue(
        'ProjectOptions/General/ActiveEditorIndexAtStart/Value', -1);
-    IconPath := xmlcfg.GetValue('ProjectOptions/General/IconPath/Value', './');
-    TargetFileExt := xmlcfg.GetValue(
+    IconPath := xmlconfig.GetValue('ProjectOptions/General/IconPath/Value', './');
+    TargetFileExt := xmlconfig.GetValue(
        'ProjectOptions/General/TargetFileExt/Value', DefaultTargetFileExt);
-    Title := xmlcfg.GetValue('ProjectOptions/General/Title/Value', '');
-    OutputDirectory := xmlcfg.GetValue(
+    Title := xmlconfig.GetValue('ProjectOptions/General/Title/Value', '');
+    OutputDirectory := xmlconfig.GetValue(
        'ProjectOptions/General/OutputDirectory/Value', '.');
-    UnitOutputDirectory := xmlcfg.GetValue(
+    UnitOutputDirectory := xmlconfig.GetValue(
        'ProjectOptions/General/UnitOutputDirectory/Value', '.');
-    fBookmarks.LoadFromXMLConfig(xmlcfg,'ProjectOptions/');
+    fBookmarks.LoadFromXMLConfig(xmlconfig,'ProjectOptions/');
 
-    NewUnitCount:=xmlcfg.GetValue('ProjectOptions/Units/Count',0);
+    NewUnitCount:=xmlconfig.GetValue('ProjectOptions/Units/Count',0);
     for i := 0 to NewUnitCount - 1 do begin
       NewUnitInfo:=TUnitInfo.Create(nil);
       AddUnit(NewUnitInfo,false);
       NewUnitInfo.LoadFromXMLConfig(
-         xmlcfg,'ProjectOptions/Units/Unit'+IntToStr(i)+'/');
+         xmlconfig,'ProjectOptions/Units/Unit'+IntToStr(i)+'/');
     end;
 
     // Load the compiler options
-    CompilerOptions.XMLConfigFile := xmlcfg;
+    CompilerOptions.XMLConfigFile := xmlconfig;
     CompilerOptions.ProjectFile := ProjectFile;
     CompilerOptions.LoadCompilerOptions(true);
 
+    // load the Run Parameter Options
+    RunParameterOptions.Load(xmlconfig,'ProjectOptions/');
+    
   finally
-    xmlcfg.Free;
-    xmlcfg:=nil;
+    xmlconfig.Free;
+    xmlconfig:=nil;
   end;
 
   Result := mrOk;
@@ -1123,11 +1137,13 @@ end;
 procedure TProject.Clear;
 var i:integer;
 begin
-  if XMLCfg<>nil then XMLCfg.Free;
-  XMLCfg:=nil;
+  if xmlconfig<>nil then xmlconfig.Free;
+  xmlconfig:=nil;
 
   for i:=0 to UnitCount-1 do Units[i].Free;
   fUnitList.Clear;
+  
+  fRunParameterOptions.Clear;
 
   fActiveEditorIndexAtStart := -1;
   fBookmarks.Clear;
@@ -1469,7 +1485,6 @@ begin
     if (OldUnitName<>'') and (ProjectType in [ptProgram, ptApplication]) then
     begin
       // rename unit in program uses section
-writeln('TProject.OnUnitNameChange A');
       CodeToolBoss.RenameUsedUnit(Units[MainUnit].Source
         ,OldUnitName,NewUnitName,'');
     end;
@@ -1489,6 +1504,9 @@ end.
 
 {
   $Log$
+  Revision 1.35  2001/11/06 12:20:33  lazarus
+  MG: added Run Parameter Options - not enabled yet
+
   Revision 1.34  2001/11/05 18:18:18  lazarus
   added popupmenu+arrows to notebooks, added target filename
 

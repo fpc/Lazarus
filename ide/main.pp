@@ -39,7 +39,7 @@ uses
   IDEComp, AbstractFormEditor, FormEditor, CustomFormEditor, ObjectInspector,
   PropEdits, ControlSelection, UnitEditor, CompilerOptions, EditorOptions,
   EnvironmentOpts, TransferMacros, KeyMapping, ProjectOpts, IDEProcs, Process,
-  UnitInfoDlg, Debugger;
+  UnitInfoDlg, Debugger, RunParamsOpts;
 
 const
   Version_String = '0.8 alpha';
@@ -112,6 +112,7 @@ type
     itmProjectRunToCursor: TMenuItem;
     itmProjectStop: TMenuItem;
     itmProjectCompilerSettings: TMenuItem;
+    itmProjectRunParameters: TMenuItem;
 
     itmEditUndo: TMenuItem; 
     itmEditRedo: TMenuItem; 
@@ -164,6 +165,7 @@ type
     Procedure mnuViewFormsClicked(Sender : TObject);
 
     procedure mnuToggleFormUnitClicked(Sender : TObject);
+    
     procedure mnuNewProjectClicked(Sender : TObject);
     procedure mnuOpenProjectClicked(Sender : TObject);
     procedure mnuSaveProjectClicked(Sender : TObject);
@@ -171,6 +173,8 @@ type
     procedure mnuAddToProjectClicked(Sender : TObject);
     procedure mnuRemoveFromProjectClicked(Sender : TObject);
     procedure mnuViewProjectSourceClicked(Sender : TObject);
+    procedure mnuProjectOptionsClicked(Sender : TObject);
+    
     procedure mnuBuildProjectClicked(Sender : TObject);
     procedure mnuRunProjectClicked(Sender : TObject);
     procedure mnuPauseProjectClicked(Sender : TObject);
@@ -178,8 +182,8 @@ type
     procedure mnuStepOverProjectClicked(Sender : TObject);
     procedure mnuRunToCursorProjectClicked(Sender : TObject);
     procedure mnuStopProjectClicked(Sender : TObject);
+    procedure mnuRunParametersClicked(Sender : TObject);
     procedure mnuProjectCompilerSettingsClicked(Sender : TObject);
-    procedure mnuProjectOptionsClicked(Sender : TObject);
 
     procedure mnuViewCodeExplorerClick(Sender : TObject);
     procedure mnuViewMessagesClick(Sender : TObject);
@@ -1159,7 +1163,13 @@ begin
   itmProjectCompilerSettings.Caption := 'Compiler Options...';
   itmProjectCompilerSettings.OnClick := @mnuProjectCompilerSettingsClicked;
   mnuRun.Add(itmProjectCompilerSettings);
-  
+
+  itmProjectRunParameters := TMenuItem.Create(Self);
+  itmProjectRunParameters.Name:='itmProjectRunParameters';
+  itmProjectRunParameters.Caption := 'Run Parameters ...';
+  itmProjectRunParameters.OnClick := @mnuRunParametersClicked;
+  mnuRun.Add(itmProjectRunParameters);
+
 //--------------
 // Environment
 //--------------
@@ -1726,6 +1736,13 @@ begin
   DoOpenMainUnit(false);
 end;
 
+procedure TMainIDE.mnuProjectOptionsClicked(Sender : TObject);
+begin
+  if ShowProjectOptionsDialog(Project)=mrOk then begin
+    
+  end;
+end;
+
 Procedure TMainIDE.mnuBuildProjectClicked(Sender : TObject);
 Begin
   DoBuildProject;
@@ -1776,12 +1793,14 @@ begin
   end;
 end;
 
-procedure TMainIDE.mnuProjectOptionsClicked(Sender : TObject);
+procedure TMainIDE.mnuRunParametersClicked(Sender : TObject);
 begin
-  if ShowProjectOptionsDialog(Project)=mrOk then begin
+  if ShowRunParamsOptsDlg(Project.RunParameterOptions)=mrOk then begin
     
   end;
 end;
+
+
 
 //------------------------------------------------------------------------------
 
@@ -3337,7 +3356,8 @@ writeln('[TMainIDE.DoRunProject] A');
           TheProcess.Execute;
         except
           on e: Exception do begin
-            AText:='Error running program "'+ProgramFilename+'": '+e.Message;
+            AText:='Error running program'#13'"'+ProgramFilename+'"'#13
+               +'Error: '+e.Message;
             MessageDlg(AText,mterror,[mbok], 0);
           end;
         end;
@@ -4409,6 +4429,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.136  2001/11/06 12:20:30  lazarus
+  MG: added Run Parameter Options - not enabled yet
+
   Revision 1.135  2001/11/05 18:18:13  lazarus
   added popupmenu+arrows to notebooks, added target filename
 
@@ -9042,6 +9065,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.136  2001/11/06 12:20:30  lazarus
+  MG: added Run Parameter Options - not enabled yet
+
   Revision 1.135  2001/11/05 18:18:13  lazarus
   added popupmenu+arrows to notebooks, added target filename
 

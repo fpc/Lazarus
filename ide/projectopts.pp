@@ -109,8 +109,6 @@ begin
     SetupFormsPage;
     SetupApplicationPage;
 
-    NoteBook.Show;
-
     CancelButton:=TButton.Create(Self);
     with CancelButton do begin
       Name:='CancelButton';
