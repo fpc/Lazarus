@@ -385,6 +385,14 @@ begin
   CursorToGDKCursor[crSizeNS]   := GDK_SB_V_DOUBLE_ARROW;
   CursorToGDKCursor[crSizeNWSE] := GDK_TOP_LEFT_CORNER;
   CursorToGDKCursor[crSizeWE]   := GDK_SB_H_DOUBLE_ARROW;
+  CursorToGDKCursor[crSizeNW]   := GDK_TOP_LEFT_CORNER;
+  CursorToGDKCursor[crSizeN]    := GDK_TOP_SIDE;
+  CursorToGDKCursor[crSizeNE]   := GDK_TOP_RIGHT_CORNER;
+  CursorToGDKCursor[crSizeW]    := GDK_LEFT_SIDE;
+  CursorToGDKCursor[crSizeE]    := GDK_RIGHT_SIDE;
+  CursorToGDKCursor[crSizeSW]   := GDK_BOTTOM_LEFT_CORNER;
+  CursorToGDKCursor[crSizeS]    := GDK_BOTTOM_SIDE;
+  CursorToGDKCursor[crSizeSE]   := GDK_BOTTOM_RIGHT_CORNER;
   CursorToGDKCursor[crUpArrow]  := GDK_LEFT_PTR;
   CursorToGDKCursor[crHourGlass]:= GDK_CLOCK;
   CursorToGDKCursor[crDrag]     := GDK_SAILBOAT;
@@ -432,6 +440,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.219  2005/01/13 22:07:10  mattias
+  added mouse cursors for 8 uni directions, imlemented for gtk
+
   Revision 1.218  2005/01/08 11:03:18  mattias
   implemented TPen.Mode=pmXor  from Jesus
 

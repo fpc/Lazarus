@@ -238,10 +238,18 @@ const
   crCross       = TCursor(-3);
   crIBeam       = TCursor(-4);
   crSize        = TCursor(-22);
-  crSizeNESW    = TCursor(-6);
+  crSizeNESW    = TCursor(-6); // diagonal north east - south west
   crSizeNS      = TCursor(-7);
   crSizeNWSE    = TCursor(-8);
   crSizeWE      = TCursor(-9);
+  crSizeNW      = TCursor(-23);
+  crSizeN       = TCursor(-24);
+  crSizeNE      = TCursor(-25);
+  crSizeW       = TCursor(-26);
+  crSizeE       = TCursor(-27);
+  crSizeSW      = TCursor(-28);
+  crSizeS       = TCursor(-29);
+  crSizeSE      = TCursor(-30);
   crUpArrow     = TCursor(-10);
   crHourGlass   = TCursor(-11);
   crDrag        = TCursor(-12);
@@ -256,7 +264,7 @@ const
   crHandPoint   = TCursor(-21);
   crSizeAll     = TCursor(-22);
 
-  crLow         = TCursor(-22);
+  crLow         = TCursor(-30);
 
 type
   TWndMethod = procedure(var TheMessage: TLMessage) of Object;
@@ -2808,6 +2816,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.266  2005/01/13 22:07:10  mattias
+  added mouse cursors for 8 uni directions, imlemented for gtk
+
   Revision 1.265  2005/01/08 14:23:56  micha
   move taborder and tabstop to twincontrol
 

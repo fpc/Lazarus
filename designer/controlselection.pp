@@ -489,9 +489,9 @@ implementation
 
 const
   GRAB_CURSOR: array[TGrabIndex] of TCursor = (
-    crSizeNWSE, crSizeNS, crSizeNESW,
-    crSizeWE,             crSizeWE,
-    crSizeNESW, crSizeNS, crSizeNWSE
+    crSizeNW,   crSizeN,  crSizeNE,
+    crSizeW,              crSizeE,
+    crSizeSW,   crSizeS,  crSizeSE
   );
 
   GRAB_POSITIONS:  array [TGrabIndex] of TGrabPositions = (
