@@ -32,7 +32,7 @@ interface
 uses 
   InterfaceBase, gtk, gdk, glib, SysUtils, LMessages, Classes, Controls,
   ExtCtrls,Forms,Dialogs, VclGlobals, StdCtrls, ComCtrls, LCLLinux, LCLType,
-  gtkDef, DynHashArray, LazQueue, Calendar, Arrow, GraphType,Spin;
+  gtkDef, DynHashArray, LazQueue, Calendar, Arrow, GraphType,Spin, CommCtrl;
 
 type
   TgtkObject = class(TInterfaceBase)
@@ -325,6 +325,12 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.33  2002/03/27 00:33:54  lazarus
+  MWE:
+    * Cleanup in lmessages
+    * Added Listview selection and notification events
+    + introduced commctrl
+
   Revision 1.32  2002/03/25 17:59:20  lazarus
   GTK Cleanup
   Shane
