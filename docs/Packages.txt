@@ -1,0 +1,182 @@
+Overview over the lazarus package system
+========================================
+
+What is a lazarus package:
+  A lazarus package is a collection of units and components, containing
+  information how they can be compiled and how they can be used by projects or
+  other packages or the IDE. In contrary to Delphi, packages are not limited
+  to libraries and they can be OS independent.
+  (Delphi: a package is a specially compiled library used by applications,
+  the IDE or both. Delphi packages require compiler magic, which fpc is not
+  capable of at the moment and of course this magic is OS dependent.)
+  
+  Currently the FreePascal compiler only supports static packages. Therefore
+  you must compile and restart the IDE, each time a package is installed or
+  uninstalled.
+
+  A lazarus package is distinguished by the name and its version.
+
+--------------------------------------------------------------------------------
+
+Quick Start:
+============
+
+To see the packagesystem in action and to get used to it, do the following:
+
+- Create a new package:
+  File->New... -> Package -> Standard Package
+  A package editor opens
+- Use the Save button at top left.
+- Depending on your 'naming' setting in the 'environment options',
+  the IDE will ask you to save the file lowercase. Say yes.
+- Congratulations: You have just created your first package.
+
+
+- Add a new component:
+  - Use the Add button -> New component
+  - Choose a component in the ancestor type combobox.
+    For instance: TBevel.
+  - Click Ok
+    The file will be added to the package and opened
+    in the editor
+- Install the package by clicking the 'install' button in the top of the
+  package editor.
+  Lazarus will save the package and ask you,
+  if the IDE should be rebuilt. Say yes.
+  The packages are statically linked, so a restart of the IDE is needed.
+- Restart Lazarus and see your new component in the component palette
+  (For example: A TBevel1 will be on the 'Additional' page).
+- Congratulations: You have just installed your first package with your first
+  package component.
+
+
+Now you can have a look at the new IDE items.
+
+--------------------------------------------------------------------------------
+
+
+The IDE menu items for packages:
+================================
+
+File->New... -> Package -> Standard Package
+  Creates a new package.
+
+Project -> Project Inspector
+  Here you can see, what packages are required by the currently open project.
+  You can add new dependencies and remove unneeded ones.
+
+Run -> Compiler options -> Inherited
+  Here you can see what compiler options are inherited from which package.
+
+Components -> 5 new items
+  - 'Open package'
+    A dialog shows all open packages with their state.
+    
+  - 'Open package file'
+    Open a .lpk file
+    
+  - 'Open recent package'
+    Open a recently open package file (lpk file)
+    
+  - 'Package Graph'
+    The package graph shows all open packages and their dependencies.
+
+
+--------------------------------------------------------------------------------
+
+The theory:
+===========
+
+- Each Lazarus package has a .lpk file. A package is identified by its name
+and its version. The name must correspond to the lpk filename. For example:
+Name: Package1, Version: 1.0, Filename: /home/.../package1.lpk.
+The IDE automatically creates the main source file (package1.pas). See below.
+
+- The lpk file contains information about the required packages, the files
+it uses, how to compile them, and what is needed to use the package by
+other packages/projects. The directory where the lpk file is, is called the
+"package directory".
+
+- The IDE maintains a list of all package files (packagelinks.xml). Everytime a
+package is opened in the IDE it will be added to this list. When a package is
+opened, the IDE automatically opens all required packages via this list.
+
+- There are three base packages: FCL, LCL and SynEdit. These are parts of
+the IDE and so they are autocreated, readonly and have no lpk file.
+
+- Normally a package has a source directory with some pascal units. And
+normally the lpk file will be there too. A package has also an output
+directory. Default is the subdirectory 'lib' in the package directory.
+
+- Before a package is compiled the IDE checks all required packages and if
+they need update and have the auto update flag, they are compiled first.
+Then the IDE creates the package main source file. If the lpk file was
+package1.lpk, then the main source file is package1.pas. This file contains
+all units in the uses section plus a 'Register' procedure, which is called in
+the intialization section. For example:
+
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+{ This file was automatically created by Lazarus. Do not edit!
+  This source is only used to compile and install
+  the package GTKOpenGL 1.0.
+}
+
+unit GTKOpenGL;
+
+interface
+
+uses
+  GTKGLArea, GTKGLArea_Int, NVGL, NVGLX, LazarusPackageIntf;
+
+implementation
+
+procedure Register;
+begin
+  RegisterUnit('GTKGLArea', @GTKGLArea.Register);
+end;
+
+initialization
+  RegisterPackage('GTKOpenGL', @Register)
+end.
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+
+
+- Then the compiler is called and the package is compiled to the output
+directory.
+
+- After successful compilation the state file is created. The state file is put
+into the output directory. It has the name <packagename>.compiled and contains
+the information, how the package was compiled. This state file is used by
+the IDE to check if update is needed. For example: gtkopengl.compiled:
+
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+<?xml version="1.0"?>
+<CONFIG>
+  <Compiler Value="/usr/bin/ppc386" Date="781388725"/>
+  <Params Value=" -Rintel -S2cgi -CD -Ch8000000 -OG1p1
+    -Tlinux -gl -vewnhi -l -Fu../../../lcl/units
+    -Fu../../../lcl/units/gtk -Fu../../../packager/units
+    -Fu. -FElib/ gtkopengl.pas"/>
+</CONFIG>
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+
+
+- The IDE opens all needed packages automatically. This means, it opens all
+installed packages, all packages marked for installation (auto install), all
+packages with an open Editor, all packages required by the project and all
+packages required by one of the other packages. Unneeded packages are
+automatically unloaded, when the IDE becomes idle.
+
+- The IDE never opens two packages with the same name at the same time. When
+the user opens another package file with the same name as an already opened
+package the IDE will ask to replace the old one.
+
+- The IDE maintains two extra sets of packages: The 'installed' packages and
+the 'auto install' packages. The auto install packages will be linked into
+the IDE on next compile. It creates two new files in the config directory:
+staticpackages.inc and idemake.cfg. Then it calls
+'make ide OPT=@/path/to/your/config/idemake.cfg' to compile itself.
+
+
