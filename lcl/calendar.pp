@@ -60,7 +60,9 @@ Type
     FMonthChanged: TNotifyEvent;
     FYearChanged: TNotifyEvent;
     FPropsChanged: boolean;
+    function GetDateTime: TDateTime;
     function ReadOnlyIsStored: boolean;
+    procedure SetDateTime(const AValue: TDateTime);
     procedure SetReadOnly(const AValue: Boolean);
     Procedure GetProps;
     Procedure SetProps;
@@ -79,7 +81,8 @@ Type
     procedure InitializeWnd; override;
     procedure AddControl; override;
   published
-    Property Date: String read GetDate write SetDate;
+    Property Date: String read GetDate write SetDate stored false;
+    Property DateTime: TDateTime read GetDateTime write SetDateTime;
     property DisplaySettings : TDisplaySettings read GetDisplaySettings write SetDisplaySettings;
     property ReadOnly : Boolean read FReadOnly write SetReadOnly stored ReadOnlyIsStored;
     property Visible;
@@ -149,7 +152,7 @@ begin
   if FDateAsString=AValue then exit;
   try
     {$IFDEF VerboseCalenderSetDate}
-    writeln('TCalendar.SetDate AValue=',AValue,' FDateAsString=',FDateAsString,' FDate=',FDate,' ShortDateFormat=',ShortDateFormat);
+    writeln('TCalendar.SetDate A AValue=',AValue,' FDateAsString=',FDateAsString,' FDate=',FDate,' ShortDateFormat=',ShortDateFormat);
     {$ENDIF}
     NewDate:=StrToDate(AValue);  //test to see if date valid ....
     // no exception => set valid date
@@ -187,15 +190,37 @@ begin
   Result:=FReadOnly;
 end;
 
+function TCalendar.GetDateTime: TDateTime;
+begin
+  Result:=FDate;
+end;
+
+procedure TCalendar.SetDateTime(const AValue: TDateTime);
+var
+  OldDate: TDateTime;
+begin
+  OldDate:=FDate;
+  FDate:=AValue;
+  FDateAsString:=FormatDateTime(ShortDateFormat,FDate);
+  {$IFDEF VerboseCalenderSetDate}
+  writeln('TCalendar.SetDateTime FDate=',FDate,' FDateAsString=',FDateAsString,' ShortDateFormat=',ShortDateFormat);
+  {$ENDIF}
+  if OldDate=FDate then exit;
+  SetProps;
+end;
+
 Procedure TCalendar.GetProps;
 var
   Temp : TLMCalendar;
 begin
-  if HandleAllocated and (not (csLoading in ComponentState)) then
+  if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then
   begin
     CNSendMessage(LM_GETVALUE, Self, @temp);	// Get the info
     FDate := Temp.Date;
     FDateAsString := FormatDateTime(ShortDateFormat,FDate);
+    {$IFDEF VerboseCalenderSetDate}
+    writeln('TCalendar.GetProps A ',FDate,' ',FDateAsString);
+    {$ENDIF}
   end;
 end;
 
@@ -203,15 +228,15 @@ Procedure TCalendar.SetProps;
 var
   Temp : TLMCalendar;
 begin
-  if HandleAllocated and (not (csLoading in ComponentState)) then
+  if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then
   begin
     FPropsChanged:=false;
-    {$IFDEF VerboseCalenderSetDate}
-    writeln('TCalendar.SetProps FDate=',FDate,' FDateAsString=',FDateAsString,' ShortDateFormat=',ShortDateFormat);
-    {$ENDIF}
     Temp.Date := FDate;
     Temp.DisplaySettings := FDisplaySettings;
     Temp.ReadOnly := fReadOnly;
+    {$IFDEF VerboseCalenderSetDate}
+    writeln('TCalendar.SetProps A ',FDate,' ',FDateAsString);
+    {$ENDIF}
     CNSendMessage(LM_SETVALUE, Self, @temp);	// Get the info
   End else begin
     FPropsChanged:=true;

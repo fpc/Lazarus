@@ -1194,8 +1194,7 @@ const
 type
   TDummyClassForPropTypes = class (TPersistent)
   private
-    FDate: TDateProperty;
-    FDateTime: TDateTimePropertyEditor;
+    FDateTime: TDateTime;
     FList:PPropList;
     FCount:integer;
     FComponent:TComponent;
@@ -1207,7 +1206,6 @@ type
     FLines:TStrings;
     FColumns: TListColumns;
     FModalResult:TModalResult;
-    FTime: TTimePropertyEditor;
   public
     function PTypeInfos(const PropName:shortstring):PTypeInfo;
     constructor Create;
@@ -1223,9 +1221,7 @@ type
     property Columns:TListColumns read FColumns;
     property ModalResult:TModalResult read FModalResult;
     property ShortCut: TShortCut read FShortCut;
-    property Date: TDateProperty read FDate;
-    property Time: TTimePropertyEditor read FTime;
-    property DateTime: TDateTimePropertyEditor read FDateTime;
+    property DateTime: TDateTime read FDateTime;
   end;
 
 //==============================================================================
@@ -3746,16 +3742,20 @@ var
   DT: TDateTime;
 begin
   DT := TDateTime(GetFloatValue);
-  if DT = 0.0 then Result := '' else
-  Result := DateToStr(DT);
+  if DT = 0.0 then
+    Result := ''
+  else
+    Result := DateToStr(DT);
 end;
 
 procedure TDateProperty.SetValue(const Value: string);
 var
   DT: TDateTime;
 begin
-  if Value = '' then DT := 0.0
-  else DT := StrToDate(Value);
+  if Value = '' then
+    DT := 0.0
+  else
+    DT := StrToDate(Value);
   SetFloatValue(DT);
 end;
 
@@ -5243,7 +5243,7 @@ begin
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TTime'),
     nil,'',TShortCutPropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TDateTime'),
-    nil,'',TShortCutPropertyEditor);
+    nil,'',TDateTimePropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TCursor'),
     nil,'',TCursorPropertyEditor);
   RegisterPropertyEditor(ClassTypeInfo(TComponent),nil
