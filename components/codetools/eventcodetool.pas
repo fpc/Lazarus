@@ -88,8 +88,6 @@ type
         const AMethodName: string; ATypeInfo: PTypeInfo;
         SourceChangeCache: TSourceChangeCache): boolean;
 
-    function MethodTypeDataToStr(TypeData: PTypeData;
-        Attr: TProcHeadAttributes): string;
     function CreateExprListFromMethodTypeData(TypeData: PTypeData;
         Params: TFindDeclarationParams): TExprTypeList;
     function FindPublishedMethodNodeInClass(ClassNode: TCodeTreeNode;
@@ -97,6 +95,8 @@ type
     function FindProcNodeInImplementation(const UpperClassName,
         UpperMethodName: string; BuildTreeBefore: boolean): TCodeTreeNode;
     function MethodTypeInfoToStr(ATypeInfo: PTypeInfo): string;
+    function MethodTypeDataToStr(TypeData: PTypeData;
+        Attr: TProcHeadAttributes): string;
   end;
 
 
@@ -485,53 +485,43 @@ function TEventsCodeTool.CreatePublishedMethod(const UpperClassName,
   SourceChangeCache: TSourceChangeCache): boolean;
 var ClassNode: TCodeTreeNode;
 begin
-  ActivateGlobalWriteLock;
-  try
-    BuildTree(false);
-    if not EndOfSourceFound then exit;
-    ClassNode:=FindClassNodeInInterface(UpperClassName,true,false);
-    Result:=CreatePublishedMethod(ClassNode,AMethodName,ATypeInfo,
-                 SourceChangeCache);
-  finally
-    DeactivateGlobalWriteLock;
-  end;
+  BuildTree(false);
+  if not EndOfSourceFound then exit;
+  ClassNode:=FindClassNodeInInterface(UpperClassName,true,false);
+  Result:=CreatePublishedMethod(ClassNode,AMethodName,ATypeInfo,
+               SourceChangeCache);
 end;
 
 function TEventsCodeTool.CreatePublishedMethod(ClassNode: TCodeTreeNode;
   const AMethodName: string; ATypeInfo: PTypeInfo;
   SourceChangeCache: TSourceChangeCache): boolean;
-var PublishedNode, ANode: TCodeTreeNode;
+var PublishedNode: TCodeTreeNode;
   NewMethod: string;
 begin
   Result:=false;
   if (ClassNode=nil) or (ClassNode.Desc<>ctnClass) or (AMethodName='')
   or (ATypeInfo=nil) or (SourceChangeCache=nil) or (Scanner=nil) then exit;
-  ActivateGlobalWriteLock;
-  try
-    // convert TypeInfo to string
-    NewMethod:=MethodTypeInfoToStr(ATypeInfo);
+  // convert TypeInfo to string
+  NewMethod:=MethodTypeInfoToStr(ATypeInfo);
 {$IFDEF CTDEBUG}
 writeln('[TEventsCodeTool.CreatePublishedMethod] A NewMethod="',NewMethod,'"');
 {$ENDIF}
-    // add method to published section
-    SourceChangeCache.MainScanner:=Scanner;
-    BuildSubTreeForClass(ClassNode);
-    PublishedNode:=ClassNode.FirstChild;
-    if PublishedNode=nil then exit;
-    if (PublishedNode.StartPos=PublishedNode.EndPos)
-    and (PublishedNode.NextBrother<>nil)
-    and (PublishedNode.NextBrother.Desc=ctnClassPublished) then
-      PublishedNode:=PublishedNode.NextBrother;
+  // add method to published section
+  SourceChangeCache.MainScanner:=Scanner;
+  BuildSubTreeForClass(ClassNode);
+  PublishedNode:=ClassNode.FirstChild;
+  if PublishedNode=nil then exit;
+  if (PublishedNode.StartPos=PublishedNode.EndPos)
+  and (PublishedNode.NextBrother<>nil)
+  and (PublishedNode.NextBrother.Desc=ctnClassPublished) then
+    PublishedNode:=PublishedNode.NextBrother;
 //    NewMethod:=MethodKindAsString[TypeData^.MethodKind]+' '+AMethodName+
 //        MethodTypeDataToStr(TypeData,[phpWithVarModifiers,phpWithParameterNames]);
 
-    // ToDo: check if parts already exists
+  // ToDo: check if parts already exists
 
-    Result:=InsertNewMethodToClass(PublishedNode,AMethodName,NewMethod,
-                SourceChangeCache);
-  finally
-    DeactivateGlobalWriteLock;
-  end;
+  Result:=InsertNewMethodToClass(PublishedNode,AMethodName,NewMethod,
+              SourceChangeCache);
 end;
 
 function TEventsCodeTool.InsertNewMethodToClass(

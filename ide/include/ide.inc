@@ -13,7 +13,7 @@
 
 { $DEFINE IDE_DEBUG}
 
-{ $DEFINE TestEvents}
+{$DEFINE TestEvents}
 
 // end.
 

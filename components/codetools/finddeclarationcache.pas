@@ -95,6 +95,9 @@ const
   AllNodeCacheDescs = [ctnClass, ctnProcedure, ctnRecordType, ctnWithStatement];
   
 type
+  TNodeCacheEntryFlag = (ncefSearchedInParents, ncefSearchedInAncestors);
+  TNodeCacheEntryFlags = set of TNodeCacheEntryFlag;
+
   PCodeTreeNodeCacheEntry = ^TCodeTreeNodeCacheEntry;
   TCodeTreeNodeCacheEntry = record
     Identifier: PChar;
@@ -103,6 +106,7 @@ type
     NewNode: TCodeTreeNode;
     NewTool: TPascalParserTool;
     NewCleanPos: integer;
+    Flags: TNodeCacheEntryFlags;
     NextEntry: PCodeTreeNodeCacheEntry; // used for mem manager
   end;
 
@@ -126,7 +130,8 @@ type
       InFront: boolean): PCodeTreeNodeCacheEntry;
     function Find(Identifier: PChar): PCodeTreeNodeCacheEntry;
     procedure Add(Identifier: PChar; CleanStartPos, CleanEndPos: integer;
-      NewNode: TCodeTreeNode; NewTool: TPascalParserTool; NewCleanPos: integer);
+      NewNode: TCodeTreeNode; NewTool: TPascalParserTool; NewCleanPos: integer;
+      Flags: TNodeCacheEntryFlags);
     procedure Clear;
     procedure BindToOwner(NewOwner: TCodeTreeNode);
     procedure UnbindFromOwner;
@@ -237,12 +242,17 @@ type
     Node: TCodeTreeNode): boolean;
   procedure FinalizeNodeStack(NodeStack: PCodeTreeNodeStack);
 
+const
+  ncefAllSearchRanges = [ncefSearchedInAncestors,ncefSearchedInParents];
+
 var
   GlobalIdentifierTree: TGlobalIdentifierTree;
   InterfaceIdentCacheEntryMemManager: TInterfaceIdentCacheEntryMemManager;
   NodeCacheEntryMemManager: TNodeCacheEntryMemManager;
   NodeCacheMemManager: TNodeCacheMemManager;
   BaseTypeCacheMemManager: TBaseTypeCacheMemManager;
+
+
 
 implementation
 
@@ -574,7 +584,8 @@ end;
 
 procedure TCodeTreeNodeCache.Add(Identifier: PChar;
   CleanStartPos, CleanEndPos: integer;
-  NewNode: TCodeTreeNode; NewTool: TPascalParserTool; NewCleanPos: integer);
+  NewNode: TCodeTreeNode; NewTool: TPascalParserTool; NewCleanPos: integer;
+  Flags: TNodeCacheEntryFlags);
 
   procedure AddNewEntry;
   var NewEntry: PCodeTreeNodeCacheEntry;
@@ -592,12 +603,15 @@ procedure TCodeTreeNodeCache.Add(Identifier: PChar;
 var
   OldEntry: PCodeTreeNodeCacheEntry;
   OldNode: TAVLTreeNode;
+  NewSearchRangeFlags: TNodeCacheEntryFlags;
 
   procedure RaiseConflictException;
   var s: string;
   begin
     s:='[TCodeTreeNodeCache.Add] internal error:'
-        +' conflicting cache nodes: ';
+        +' conflicting cache nodes: Ident='+GetIdentifier(Identifier);
+    if Owner<>nil then
+    s:=s+' Owner='+Owner.DescAsString;
     s:=s+' Old: Start='+IntToStr(OldEntry^.CleanStartPos)
              +' End='+IntToStr(OldEntry^.CleanEndPos);
     if OldEntry^.NewNode<>nil then
@@ -630,25 +644,22 @@ begin
     AddNewEntry;
   end else begin
     // identifier was already searched in this range
+    NewSearchRangeFlags:=(ncefAllSearchRanges * (OldEntry^.Flags+Flags));
     OldEntry:=PCodeTreeNodeCacheEntry(OldNode.Data);
-    if (NewNode=OldEntry^.NewNode)
-    and (NewTool=OldEntry^.NewTool) then
+    if ((NewNode=OldEntry^.NewNode)
+    and (NewTool=OldEntry^.NewTool))
+    or ((OldEntry^.NewNode=nil) and (NewSearchRangeFlags<>[])) then
     begin
-      // same FindContext with connected search ranges
+      // same FindContext or better FindContext with overlapping search ranges
       // -> combine search ranges
       if OldEntry^.CleanStartPos>CleanStartPos then
         OldEntry^.CleanStartPos:=CleanStartPos;
       if OldEntry^.CleanEndPos<CleanEndPos then
         OldEntry^.CleanEndPos:=CleanEndPos;
+      OldEntry^.Flags:=OldEntry^.Flags+NewSearchRangeFlags;
     end else begin
-      // different FindContext with connected search ranges
-      if (OldEntry^.CleanStartPos=CleanEndPos)
-      or (OldEntry^.CleanEndPos=CleanStartPos) then begin
-        // add new entry
-        AddNewEntry;
-      end else begin
-        RaiseConflictException;
-      end;
+      // different FindContext with overlapping search ranges
+      RaiseConflictException;
     end;
   end;
 end;
@@ -715,8 +726,8 @@ begin
   Result:=FindNearestAVLNode(Identifier,CleanStartPos,CleanEndPos,true);
   if Result<>nil then begin
     Entry:=PCodeTreeNodeCacheEntry(Result.Data);
-    if (CleanStartPos>Entry^.CleanEndPos)
-    or (CleanEndPos<Entry^.CleanStartPos) then begin
+    if (CleanStartPos>=Entry^.CleanEndPos)
+    or (CleanEndPos<=Entry^.CleanStartPos) then begin
       // node is not in range
       Result:=nil;
     end;

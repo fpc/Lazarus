@@ -279,7 +279,7 @@ type
       CreateIfNotExists: boolean): TCodeTreeNodeCache;
     procedure AddResultToNodeCaches(Identifier: PChar;
       StartNode, EndNode: TCodeTreeNode; SearchedForward: boolean;
-      Params: TFindDeclarationParams);
+      Params: TFindDeclarationParams; SearchRangeFlags: TNodeCacheEntryFlags);
     function FindDeclarationOfIdentifier(
       Params: TFindDeclarationParams): boolean;
     function FindContextNodeAtCursor(
@@ -833,12 +833,13 @@ function TFindDeclarationTool.FindIdentifierInContext(
     true, if NewPos+NewTopLine valid
 }
 var
-  LastContextNode, StartContextNode, FirstSearchedNode,
+  LastContextNode, StartContextNode, FirstSearchedNode, LastSearchedNode,
   ContextNode: TCodeTreeNode;
   IsForward: boolean;
   IdentifierFoundResult: TIdentifierFoundResult;
   LastNodeCache: TCodeTreeNodeCache;
   LastCacheEntry: PCodeTreeNodeCacheEntry;
+  SearchRangeFlags: TNodeCacheEntryFlags;
 
   function FindInNodeCache: boolean;
   var
@@ -876,10 +877,16 @@ var
   end;
   
 begin
+  Result:=false;
   ContextNode:=Params.ContextNode;
   StartContextNode:=ContextNode;
   FirstSearchedNode:=nil;
-  Result:=false;
+  LastSearchedNode:=nil;
+  SearchRangeFlags:=[];
+  if fdfSearchInParentNodes in Params.Flags then
+    Include(SearchRangeFlags,ncefSearchedInParents);
+  if fdfSearchInAncestors in Params.Flags then
+    Include(SearchRangeFlags,ncefSearchedInAncestors);
   if ContextNode=nil then begin
     RaiseException('[TFindDeclarationTool.FindIdentifierInContext] '
       +' internal error: Params.ContextNode=nil');
@@ -908,6 +915,7 @@ if (ContextNode.Desc=ctnClass) then
           exit;
         end;
         if FirstSearchedNode=nil then FirstSearchedNode:=ContextNode;
+        LastSearchedNode:=ContextNode;
 
         case ContextNode.Desc of
 
@@ -1089,6 +1097,8 @@ writeln('[TFindDeclarationTool.FindIdentifierInContext] no prior node accessible
 {$IFDEF ShowTriedContexts}
 //writeln('[TFindDeclarationTool.FindIdentifierInContext] Searching prior node of ',ContextNode.DescAsString);
 {$ENDIF}
+          LastSearchedNode:=ContextNode;
+
           if (ContextNode.Desc=ctnClass) then begin
             if (fdfSearchInAncestors in Params.Flags) then begin
           
@@ -1172,14 +1182,14 @@ writeln('[TFindDeclarationTool.FindIdentifierInContext] Searching in Parent  Con
     and (FirstSearchedNode<>nil) then begin
       // add result to caches
       AddResultToNodeCaches(Params.Identifier,FirstSearchedNode,ContextNode,
-        fdfSearchForward in Params.Flags,Params);
+        fdfSearchForward in Params.Flags,Params,SearchRangeFlags);
     end;
   end;
   // if we are here, the identifier was not found
   if FirstSearchedNode<>nil then begin
     // add result to cache
-    AddResultToNodeCaches(Params.Identifier,FirstSearchedNode,ContextNode,
-      fdfSearchForward in Params.Flags,nil);
+    AddResultToNodeCaches(Params.Identifier,FirstSearchedNode,LastSearchedNode,
+      fdfSearchForward in Params.Flags,nil,SearchRangeFlags);
   end;
 
   if fdfExceptionOnNotFound in Params.Flags then begin
@@ -3772,7 +3782,7 @@ end;
 
 procedure TFindDeclarationTool.AddResultToNodeCaches(Identifier: PChar;
   StartNode, EndNode: TCodeTreeNode; SearchedForward: boolean;
-  Params: TFindDeclarationParams);
+  Params: TFindDeclarationParams; SearchRangeFlags: TNodeCacheEntryFlags);
 var Node: TCodeTreeNode;
   CurNodeCache, LastNodeCache: TCodeTreeNodeCache;
   CleanStartPos, CleanEndPos: integer;
@@ -3832,7 +3842,7 @@ writeln('  CleanStartPos=',CleanStartPos,' CleanEndPos=',CleanEndPos);
         CurNodeCache:=TCodeTreeNodeCache(Node.Cache);
         if LastNodeCache<>CurNodeCache then begin
           CurNodeCache.Add(Identifier,CleanStartPos,CleanEndPos,
-                           NewNode,NewTool,NewCleanPos);
+                           NewNode,NewTool,NewCleanPos,SearchRangeFlags);
           LastNodeCache:=CurNodeCache;
         end;
       end;
