@@ -499,7 +499,7 @@ begin
           // Remove spaces
           while S[DECL_OFFSET[ProcType]] = ' ' do Delete(S, DECL_OFFSET[ProcType], 1);
 
-          System.Insert(' TInterfaceBase.', S, DECL_OFFSET[ProcType]);
+          System.Insert(' TWidgetSet.', S, DECL_OFFSET[ProcType]);
           with ProcLines do
           begin
             Clear;
@@ -524,7 +524,8 @@ begin
           // for now they can all be based on the check caption
           PlatformPrefix := cbgLCLPlatform.Items[PlatformIdx];
           PlatformDir := PlatformPrefix;
-          PlatformObject := 'T' + UpperCase(PlatformPrefix) + 'Object';
+          PlatformObject := 'T' + PlatformPrefix + 'WidgetSet';
+          PlatformObject[2] := UpperCase(PlatformObject[2]);
 
           //------------------
           // open *winapih.inc
@@ -605,6 +606,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.6  2004/03/05 01:08:27  marc
+  * Updated for new WidgetSet names
+
   Revision 1.5  2004/02/27 00:42:41  marc
   * Interface CreateComponent splitup
   * Implemented CreateButtonHandle on GTK interface
