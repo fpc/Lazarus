@@ -1983,7 +1983,7 @@ Begin
     OnComponentAdded:=@OnDesignerComponentAdded;
     OnComponentDeleted:=@OnDesignerComponentDeleted;
     OnGetNonVisualCompIconCanvas:=
-      @TComponentPalette(IDEComponentPalette).OnGetNonVisualCompIconCanvas;
+           @TComponentPalette(IDEComponentPalette).OnGetNonVisualCompIconCanvas;
     OnGetSelectedComponentClass:=@OnDesignerGetSelectedComponentClass;
     OnModified:=@OnDesignerModified;
     OnProcessCommand:=@OnProcessIDECommand;
@@ -9020,6 +9020,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.594  2003/06/03 08:02:33  mattias
+  implemented showing source lines in breakpoints dialog
+
   Revision 1.593  2003/06/01 21:09:09  mattias
   implemented datamodules
 
