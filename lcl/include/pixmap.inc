@@ -17,7 +17,7 @@
  *****************************************************************************
 }
 
-function TestStreamIsXPM(Stream: TMemoryStream): boolean;
+function TestStreamIsXPM(Stream: TCustomMemoryStream): boolean;
 type
   TXPMRange = (xrCode,xrStaticKeyWord, xrCharKeyWord);
   
@@ -286,6 +286,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.25  2004/02/24 19:40:17  mattias
+  TBitmap can now read form streams without knowing the size
+
   Revision 1.24  2004/02/02 22:01:51  mattias
   fpImage is now used as default, deactivate it with -dDisableFPImage
 

@@ -18,7 +18,8 @@
  *****************************************************************************
 }
 
-function TestStreamBitmapNativeType(Stream: TMemoryStream): TBitmapNativeType;
+function TestStreamBitmapNativeType(
+  Stream: TCustomMemoryStream): TBitmapNativeType;
 begin
   if TestStreamIsBMP(Stream) then
     Result:=bnWinBitmap
@@ -28,7 +29,7 @@ begin
     Result:=bnNone;
 end;
 
-function TestStreamIsBMP(Stream: TMemoryStream): boolean;
+function TestStreamIsBMP(Stream: TCustomMemoryStream): boolean;
 var
   BmpHeadbfType: word;
   ReadSize: Integer;
@@ -57,7 +58,7 @@ begin
     // -> check if already shared
     SrcBitmap:=TBitmap(Source);
     if SrcBitmap.FImage=FImage then exit;
-    
+
     //writeln('TBitMap.Assign A  RefCount=',FImage.RefCount);
     // image is not shared => new image data
     // -> free canvas (interface handles)
@@ -156,6 +157,7 @@ end;
 
 procedure TBitMap.FreeImage;
 begin
+  UnshareImage(false);
   Handle := 0;
 end;
 
@@ -307,7 +309,7 @@ end;
 
 procedure TBitMap.LoadFromStream(Stream: TStream);
 begin
-  ReadStream(Stream, Stream.Size - Stream.Position);
+  ReadStream(Stream, true, Stream.Size - Stream.Position);
 end;
 
 procedure TBitMap.LoadFromResourceName(Instance: THandle; const ResName: String);
@@ -421,7 +423,7 @@ begin
   FImage.SaveStreamType:=bnNone;
 end;
 
-procedure TBitmap.ReadStream(Stream: TStream; Size: Longint);
+procedure TBitmap.ReadStream(Stream: TStream; UseSize: boolean; Size: Longint);
 
   procedure RaiseInvalidBitmapHeader;
   begin
@@ -431,22 +433,29 @@ procedure TBitmap.ReadStream(Stream: TStream; Size: Longint);
 
 {$IFNDEF DisableFPImage}
 var
-  MemStream: TMemoryStream;
+  CacheStream: TStream;
   StreamType: TBitmapNativeType;
   ReaderClass: TFPCustomImageReaderClass;
 begin
-  MemStream:=nil;
+  CacheStream:=nil;
   try
     // create mem stream if not already done (to read the image type)
-    if (Stream is TMemoryStream) then begin
-      MemStream:=TMemoryStream(Stream);
+    if (Stream is TCustomMemoryStream) then begin
+      CacheStream:=Stream;
+    end else if UseSize then begin
+      CacheStream:=TMemoryStream.Create;
+      CacheStream.CopyFrom(Stream,Size);
+      CacheStream.Position:=0;
     end else begin
-      MemStream:=TMemoryStream.Create;
-      MemStream.CopyFrom(Stream,Size);
-      MemStream.Position:=0;
+      // size is unknown and type is not TMemoryStream
+      // ToDo: create cache stream from Stream
+      CacheStream:=Stream;
     end;
     // get image type
-    StreamType:=TestStreamBitmapNativeType(MemStream);
+    if CacheStream is TCustomMemoryStream then
+      StreamType:=TestStreamBitmapNativeType(TCustomMemoryStream(CacheStream))
+    else
+      StreamType:=bnWinBitmap;
     ReaderClass:=nil;
     case StreamType of
     bnWinBitmap:  ReaderClass:=TFPReaderBMP;
@@ -454,10 +463,10 @@ begin
     else
       RaiseInvalidBitmapHeader;
     end;
-    ReadStreamWithFPImage(MemStream,Size,ReaderClass);
+    ReadStreamWithFPImage(CacheStream,UseSize,Size,ReaderClass);
   finally
-    if MemStream<>Stream then
-      MemStream.Free;
+    if CacheStream<>Stream then
+      CacheStream.Free;
   end;
 end;
 {$ELSE if DisableFPImage}
@@ -618,14 +627,14 @@ end;
 
 procedure TBitmap.SetWidthHeight(NewWidth, NewHeight: integer);
 begin
-  with FImage do
-    if (FDIB.dsbm.bmHeight <> NewHeight) or (FDIB.dsbm.bmWidth <> NewWidth) then
-    begin
-      FreeImage;
-      FDIB.dsbm.bmWidth := NewWidth;
-      FDIB.dsbm.bmHeight := NewHeight;
-      Changed(Self);
-    end;
+  if (FImage.FDIB.dsbm.bmHeight <> NewHeight)
+  or (FImage.FDIB.dsbm.bmWidth <> NewWidth) then
+  begin
+    FreeImage;
+    FImage.FDIB.dsbm.bmWidth := NewWidth;
+    FImage.FDIB.dsbm.bmHeight := NewHeight;
+    Changed(Self);
+  end;
 end;
 
 procedure TBitmap.WriteStream(Stream: TStream; WriteSize: Boolean);
@@ -796,48 +805,85 @@ begin
     MemStream.CopyFrom(Stream,Size);
     FreeSaveStream;
     FImage.FSaveStream:=MemStream;
-  end else
-    MemStream:=FImage.SaveStream;
+  end;
   FImage.SaveStreamType:=bnNone;
   FImage.SaveStream.Position:=0;
 end;
 
 {$IFNDEF DisableFPImage}
-procedure TBitmap.ReadStreamWithFPImage(Stream: TStream; Size: Longint;
-  ReaderClass: TFPCustomImageReaderClass);
+{------------------------------------------------------------------------------
+  procedure TBitmap.ReadStreamWithFPImage(Stream: TStream; UseSize: boolean;
+    Size: Longint; ReaderClass: TFPCustomImageReaderClass);
+    
+  Clear old bitmap and read new bitmap form stream.
+  Stream: source stream. After reading Position will be at end of bitmap.
+  UseSize: if True, Size is used. If False then Size is calculated
+           automatically.
+  Size: Only used when UseSize=True. This amount of bytes are read.
+------------------------------------------------------------------------------}
+procedure TBitmap.ReadStreamWithFPImage(Stream: TStream; UseSize: boolean;
+  Size: Longint; ReaderClass: TFPCustomImageReaderClass);
 var
   IntfImg: TLazIntfImage;
   ImgReader: TFPCustomImageReader;
   ImgHandle, ImgMaskHandle: HBitmap;
   NewSaveStream: TMemoryStream;
+  SrcStream: TStream;
+  OldStreamPosition: TStreamSeekType;
+  ImgSize: TStreamSeekType;
+  
+  procedure StoreOriginal(OriginalStream: TStream; Size: integer);
+  begin
+    StoreOriginalStream(OriginalStream,Size);
+    NewSaveStream:=FImage.SaveStream;
+    NewSaveStream.Position:=0;
+    // hide SaveStream during reading (so that it won't be destroyed)
+    FImage.SaveStream:=nil;
+  end;
+  
 begin
   UnshareImage(false);
-  if Size = 0 then begin
+  if UseSize and (Size = 0) then begin
     Width:=0;
     Height:=0;
     exit;
   end;
-  StoreOriginalStream(Stream,Size);
 
   IntfImg:=nil;
   ImgReader:=nil;
-  // hide SaveStream during reading (so that it won't be destroyed)
-  NewSaveStream:=FImage.SaveStream;
+  NewSaveStream:=nil;
+  if UseSize then begin
+    StoreOriginal(Stream,Size);
+    SrcStream:=NewSaveStream;
+  end else begin
+    FreeSaveStream;
+    SrcStream:=Stream;
+  end;
   try
-    FImage.SaveStream:=nil;
     // read image
     IntfImg:=TLazIntfImage.Create(0,0);
     IntfImg.GetDescriptionFromDevice(0);
     ImgReader:=ReaderClass.Create;
     InitFPImageReader(ImgReader);
-    NewSaveStream.Position:=0;
-    IntfImg.LoadFromStream(NewSaveStream,ImgReader);
+    OldStreamPosition:=SrcStream.Position;
+    IntfImg.LoadFromStream(SrcStream,ImgReader);
+    ImgSize:=SrcStream.Position-OldStreamPosition;
+    if not UseSize then begin
+      // now the size is known -> store stream
+      //writeln('TBitmap.ReadStreamWithFPImage SrcStream=',SrcStream.ClassName,' ImgSize=',ImgSize);
+      SrcStream.Position:=OldStreamPosition;
+      StoreOriginal(SrcStream,integer(ImgSize));
+    end else begin
+      // set position
+      if Size<>ImgSize then
+        SrcStream.Position:=OldStreamPosition+Size;
+    end;
     FinalizeFPImageReader(ImgReader);
     IntfImg.CreateBitmap(ImgHandle,ImgMaskHandle,false);
     Handle:=ImgHandle;
     MaskHandle:=ImgMaskHandle;
   finally
-    // restore save stream
+    // set save stream
     FImage.SaveStream:=NewSaveStream;
     // clean up
     IntfImg.Free;
@@ -934,15 +980,13 @@ begin
   // free old handles
   FreeCanvasContext;
   UnshareImage(false);
-  with FImage do begin
-    FreeHandle;
-    // get the properties from new bitmap
-    FHandle:=Value;
-    FillChar(FDIB, SizeOf(FDIB), 0);
-    if FHandle <> 0 then
-      GetObject(FHandle, SizeOf(FDIB), @FDIB);
-    Changed(Self);
-  end;
+  FImage.FreeHandle;
+  // get the properties from new bitmap
+  FImage.FHandle:=Value;
+  FillChar(FImage.FDIB, SizeOf(FImage.FDIB), 0);
+  if FImage.FHandle <> 0 then
+    GetObject(FImage.FHandle, SizeOf(FImage.FDIB), @FImage.FDIB);
+  Changed(Self);
 end;
 
 procedure TBitmap.SetMaskHandle(Value: HBITMAP);
@@ -1011,8 +1055,7 @@ end;
 
 function TBitmap.GetHeight: Integer;
 begin
-  with FImage do
-    Result := FDIB.dsbm.bmHeight;
+  Result := FImage.FDIB.dsbm.bmHeight;
 end;
 
 function TBitmap.GetPalette: HPALETTE;
@@ -1022,8 +1065,7 @@ end;
 
 function TBitmap.GetWidth: Integer;
 begin
-  with FImage do
-    Result := FDIB.dsbm.bmWidth;
+  Result := FImage.FDIB.dsbm.bmWidth;
 end;
 
 procedure TBitmap.ReadData(Stream: TStream);
@@ -1031,7 +1073,7 @@ var
   Size: Longint;
 begin
   Stream.Read(Size, SizeOf(Size));
-  ReadStream(Stream, Size);
+  ReadStream(Stream, true, Size);
 end;
 
 procedure TBitmap.WriteData(Stream: TStream);
@@ -1066,6 +1108,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.72  2004/02/24 19:40:17  mattias
+  TBitmap can now read form streams without knowing the size
+
   Revision 1.71  2004/02/23 08:19:04  micha
   revert intf split
 

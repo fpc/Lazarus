@@ -995,7 +995,8 @@ type
     procedure WriteData(Stream: TStream); override;
     procedure StoreOriginalStream(Stream: TStream; Size: integer); virtual;
     {$IFNDEF DisableFPImage}
-    procedure ReadStreamWithFPImage(Stream: TStream; Size: Longint;
+    procedure ReadStreamWithFPImage(Stream: TStream; UseSize: boolean;
+                               Size: Longint;
                                ReaderClass: TFPCustomImageReaderClass); virtual;
     procedure WriteStreamWithFPImage(Stream: TStream; WriteSize: boolean;
                                WriterClass: TFPCustomImageWriterClass); virtual;
@@ -1022,7 +1023,7 @@ type
     Procedure LoadFromXPMFile(const Filename : String);
     procedure Mask(ATransparentColor: TColor);
     procedure SaveToStream(Stream: TStream); override;
-    procedure ReadStream(Stream: TStream; Size: Longint); virtual;
+    procedure ReadStream(Stream: TStream; UseSize: boolean; Size: Longint); virtual;
     procedure WriteStream(Stream: TStream; WriteSize: Boolean); virtual;
     Function ReleaseHandle: HBITMAP;
     function ReleasePalette: HPALETTE;
@@ -1067,7 +1068,7 @@ type
       const FileExtension: string): TFPCustomImageWriterClass; override;
     {$ENDIF}
     function LazarusResourceTypeValid(const ResourceType: string): boolean; override;
-    procedure ReadStream(Stream: TStream; Size: Longint); override;
+    procedure ReadStream(Stream: TStream; UseSize: boolean; Size: Longint); override;
     procedure WriteStream(Stream: TStream; WriteSize: Boolean); override;
     function GetDefaultMimeType: string; override;
   end;
@@ -1137,9 +1138,9 @@ var
   OnLoadGraphicFromClipboardFormat: TOnLoadGraphicFromClipboardFormat;
   OnSaveGraphicToClipboardFormat: TOnSaveGraphicToClipboardFormat;
 
-function TestStreamBitmapNativeType(Stream: TMemoryStream): TBitmapNativeType;
-function TestStreamIsBMP(Stream: TMemoryStream): boolean;
-function TestStreamIsXPM(Stream: TMemoryStream): boolean;
+function TestStreamBitmapNativeType(Stream: TCustomMemoryStream): TBitmapNativeType;
+function TestStreamIsBMP(Stream: TCustomMemoryStream): boolean;
+function TestStreamIsXPM(Stream: TCustomMemoryStream): boolean;
 function XPMToPPChar(const XPM: string): PPChar;
 function LazResourceXPMToPPChar(const ResourceName: string): PPChar;
 function ReadXPMFromStream(Stream: TStream; Size: integer): PPChar;
@@ -1451,6 +1452,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.120  2004/02/24 19:40:17  mattias
+  TBitmap can now read form streams without knowing the size
+
   Revision 1.119  2004/02/23 08:19:04  micha
   revert intf split
 

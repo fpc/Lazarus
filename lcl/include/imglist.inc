@@ -652,7 +652,7 @@ begin
     for i:=0 to NewCount-1 do begin
       NewImage:=TBitMap.Create;
       Stream.Read(CurSize, SizeOf(CurSize));
-      NewImage.ReadStream(Stream,CurSize);
+      NewImage.ReadStream(Stream,true,CurSize);
       NewImage.Transparent:=True;
       AddDirect(NewImage,nil);
     end;
@@ -1082,6 +1082,9 @@ end;
 {
 
   $Log$
+  Revision 1.24  2004/02/24 19:40:17  mattias
+  TBitmap can now read form streams without knowing the size
+
   Revision 1.23  2004/02/22 10:43:20  mattias
   added child-parent checks
 

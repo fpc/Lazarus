@@ -40,10 +40,11 @@ begin
   Result:=(ResourceType='PNG');
 end;
 
-procedure TPortableNetworkGraphic.ReadStream(Stream: TStream; Size: Longint);
+procedure TPortableNetworkGraphic.ReadStream(Stream: TStream; UseSize: boolean;
+  Size: Longint);
 begin
 {$IFNDEF DisableFPImage}
-  ReadStreamWithFPImage(Stream,Size,TFPReaderPNG);
+  ReadStreamWithFPImage(Stream,UseSize,Size,TFPReaderPNG);
 {$ELSE}
   RaiseGDBException('TPortableNetworkGraphic.ReadStream needs FPImage');
 {$ENDIF}
