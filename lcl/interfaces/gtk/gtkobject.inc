@@ -1516,8 +1516,10 @@ begin
          if (Sender as TWinControl).fCompStyle = csListBox then
          begin
            { Get the child in question of that index }
-           ListItem:= g_list_nth_data(PGtkList(GetCoreChildWidget(PGtkWidget(Handle)))^.children, Integer(Data^));
-           Result:= g_list_index(PGtkList(GetCoreChildWidget(PGtkWidget(Handle)))^.selection, ListItem);
+           ListItem:= g_list_nth_data(PGtkList(
+             GetCoreChildWidget(PGtkWidget(Handle)))^.children, Integer(Data^));
+           Result:= g_list_index(PGtkList(
+             GetCoreChildWidget(PGtkWidget(Handle)))^.selection, ListItem);
          end
          else if (Sender as TControl).fCompStyle = csCListBox then
          begin
@@ -1536,7 +1538,8 @@ begin
       LM_SETLIMITTEXT :
       begin
          if (Sender is TControl) and (TControl(Sender).fCompStyle = csComboBox) 
-            then gtk_entry_set_max_length(PGtkEntry(PGtkCombo(Handle)^.entry), Integer(Data^));
+         then gtk_entry_set_max_length(PGtkEntry(PGtkCombo(Handle)^.entry),
+                                       Integer(Data^));
       end;
  
       LM_SORT :
@@ -1599,8 +1602,10 @@ begin
             else 
               SelectionMode:= GTK_SELECTION_BROWSE;
             case TControl(Sender).fCompStyle of
-              csListBox  : gtk_list_set_selection_mode(PGtkList(GetCoreChildWidget(PGtkWidget(Handle))), SelectionMode);
-              csCListBox : gtk_clist_set_selection_mode(PGtkCList(GetCoreChildWidget(PGtkWidget(Handle))),SelectionMode);
+              csListBox  : gtk_list_set_selection_mode(PGtkList(
+                        GetCoreChildWidget(PGtkWidget(Handle))), SelectionMode);
+              csCListBox : gtk_clist_set_selection_mode(PGtkCList(
+                        GetCoreChildWidget(PGtkWidget(Handle))),SelectionMode);
             else
               Assert (true, 'WARNING:[TgtkObject.IntSendMessage3] usage of LM_SETSELMODE unimplemented for actual component');
             end;
@@ -1697,10 +1702,18 @@ var
 begin
   Result := True;
   case Sender.fCompStyle of
-     csComboBox: Text := StrPas(gtk_entry_get_text(PGtkEntry(PGtkCombo((Sender as TWinControl).Handle)^.entry)));
-     csEdit    : Text := StrPas(gtk_entry_get_text(PgtkEntry((Sender as TWinControl).Handle)));
+     csComboBox:
+       Text := StrPas(gtk_entry_get_text(PGtkEntry(PGtkCombo(
+                                      (Sender as TWinControl).Handle)^.entry)));
+       
+     csEdit    :
+       Text := StrPas(gtk_entry_get_text(
+                                    PgtkEntry((Sender as TWinControl).Handle)));
+
      csMemo    : begin
-                    CS := gtk_editable_get_chars(PGtkEditable(GetCoreChildWidget(PGtkWidget((Sender as TWinControl).Handle))), 0, -1);
+                    CS := gtk_editable_get_chars(PGtkEditable(
+                                GetCoreChildWidget(PGtkWidget(
+                                  (Sender as TWinControl).Handle))), 0, -1);
                     Text := StrPas(CS);
                     g_free(CS);
                  end;
@@ -2059,17 +2072,21 @@ begin
     LM_CHANGED :
        if sender is TTrackBar then
        begin
-         ConnectSenderSignal(gtk_Object(gtk_range_get_adjustment(GTK_RANGE(gObject))) , 'value_changed', @gtkvaluechanged);
+         ConnectSenderSignal(gtk_Object(
+                   gtk_range_get_adjustment(GTK_RANGE(gObject))) ,
+                      'value_changed', @gtkvaluechanged);
        end
        else
        if sender is TNotebook then
          ConnectSenderSignal(gObject, 'switch-page', @gtkswitchpage)
        else
        if sender is TCustomCombobox then
-         ConnectSenderSignal (PGtkObject(PGtkCombo(gobject)^.entry), 'changed', @gtkchangedCB)
+         ConnectSenderSignal (PGtkObject(
+                   PGtkCombo(gobject)^.entry), 'changed', @gtkchangedCB)
        else 
        if Sender is TCustomMemo then
-         ConnectSenderSignal(PgtkObject(GetCoreChildWidget(PgtkWidget(TCustomMemo(sender).handle))),'changed', @gtkchanged_editbox)
+         ConnectSenderSignal(PgtkObject(GetCoreChildWidget(PgtkWidget(
+                   TCustomMemo(sender).handle))),'changed', @gtkchanged_editbox)
        else
          ConnectSenderSignal(gObject, 'changed', @gtkchanged_editbox);
 
@@ -2345,25 +2362,31 @@ begin
     LM_CUTTOCLIP :
     begin
       if (sender is TCustomMemo) then
-      ConnectSenderSignal(PgtkObject(GetCoreChildWidget(PgtkWidget(TCustomMemo(sender).handle))), 'cut-clipboard', @gtkcuttoclip)
+        ConnectSenderSignal(PgtkObject(GetCoreChildWidget(
+          PgtkWidget(TCustomMemo(sender).handle))),
+          'cut-clipboard', @gtkcuttoclip)
       else
-      ConnectSenderSignal(gObject, 'cut-clipboard', @gtkcuttoclip);
+        ConnectSenderSignal(gObject, 'cut-clipboard', @gtkcuttoclip);
     end;
 
     LM_COPYTOCLIP :
     begin
       if (sender is TCustomMemo) then
-      ConnectSenderSignal(PgtkObject(GetCoreChildWidget(PgtkWidget(TCustomMemo(sender).handle))), 'copy-clipboard', @gtkcopytoclip)
+        ConnectSenderSignal(PgtkObject(GetCoreChildWidget(
+          PgtkWidget(TCustomMemo(sender).handle))),
+          'copy-clipboard', @gtkcopytoclip)
       else
-      ConnectSenderSignal(gObject, 'copy-clipboard', @gtkcopytoclip);
+        ConnectSenderSignal(gObject, 'copy-clipboard', @gtkcopytoclip);
     end;
 
     LM_PASTEFROMCLIP :
     begin
       if (sender is TCustomMemo) then
-      ConnectSenderSignal(PgtkObject(GetCoreChildWidget(PgtkWidget(TCustomMemo(sender).handle))), 'paste-clipboard', @gtkpastefromclip)
+        ConnectSenderSignal(PgtkObject(GetCoreChildWidget(
+          PgtkWidget(TCustomMemo(sender).handle))),
+          'paste-clipboard', @gtkpastefromclip)
       else
-      ConnectSenderSignal(gObject, 'paste-clipboard', @gtkpastefromclip);
+        ConnectSenderSignal(gObject, 'paste-clipboard', @gtkpastefromclip);
     end;
 
     LM_HSCROLL:
@@ -5334,6 +5357,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.177  2002/08/24 12:55:00  lazarus
+  MG: fixed mouse capturing, OI edit focus
+
   Revision 1.176  2002/08/24 08:07:15  lazarus
   MG: fixed double click recognition
 
