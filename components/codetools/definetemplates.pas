@@ -3085,9 +3085,10 @@ begin
   DirTempl:=TDefineTemplate.Create('Debugger',ctsDebuggerDirectory,
     '','debugger',da_Directory);
   DirTempl.AddChild(TDefineTemplate.Create('LCL path addition',
-    Format(ctsAddsDirToSourcePath,['lcl']),
+    Format(ctsAddsDirToSourcePath,['lcl, components']),
     ExternalMacroStart+'SrcPath',
       '..'
+      +';..'+ds+'components'+ds+'codetools'
       +';..'+ds+'lcl'
       +';..'+ds+'lcl'+ds+'interfaces'+ds+WidgetType
       +';'+SrcPath

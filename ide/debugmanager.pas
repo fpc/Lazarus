@@ -343,26 +343,16 @@ const
 begin
   if FDialogs[ADialogType] = nil
   then begin
-    //try
-      FDialogs[ADialogType] := DEBUGDIALOGCLASS[ADialogType].Create(Self);
-    {except
-      on E: Exception do begin
-        WriteLN('[ERROR] IDE: Probably FPC bug #1888 caused an exception while creating class ''', DEBUGDIALOGCLASS[ADialogType].ClassName, '''');
-        WriteLN('[ERROR] IDE: Exception message: ', E.Message);
-        Exit;
-      end;
-    end;}
+    FDialogs[ADialogType] := DEBUGDIALOGCLASS[ADialogType].Create(Self);
     FDialogs[ADialogType].Name:=
       NonModalIDEWindowNames[DebugDlgIDEWindow[ADialogType]];
     FDialogs[ADialogType].Tag := Integer(ADialogType);
     FDialogs[ADialogType].OnDestroy := @DebugDialogDestroy;
     DoInitDebugger;
     FDialogs[ADialogType].Debugger := FDebugger;
-writeln('TDebugManager.ViewDebugDialog A ',FDialogs[ADialogType].Name);
     EnvironmentOptions.IDEWindowLayoutList.Apply(
                               FDialogs[ADialogType],FDialogs[ADialogType].Name);
   end;
-writeln('TDebugManager.ViewDebugDialog B ',FDialogs[ADialogType].Name,' ',FDialogs[ADialogType].Left,',',FDialogs[ADialogType].Top,',',FDialogs[ADialogType].Width,',',FDialogs[ADialogType].Height);
   FDialogs[ADialogType].Show;
   FDialogs[ADialogType].BringToFront;
 end;
@@ -680,6 +670,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.15  2003/05/20 21:41:07  mattias
+  started loading/saving breakpoints
+
   Revision 1.14  2003/05/18 10:42:57  mattias
   implemented deleting empty submenus
 

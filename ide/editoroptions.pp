@@ -157,6 +157,7 @@ type
     fCtrlMouseLinks: boolean;
     fUndoAfterSave:boolean;
     fUseSyntaxHighlight:boolean;
+    FCopyWordAtCursorOnCopyNone: boolean;
     fBlockIndent:integer;
     fUndoLimit:integer;
     fTabWidth:integer;
@@ -188,6 +189,7 @@ type
     fAutoDelayInMSec:integer;
     fCodeTemplateFileName:Ansistring;
     fCTemplIndentToTokenStart: boolean;
+    procedure SetCopyWordAtCursorOnCopyNone(const AValue: boolean);
   public
     constructor Create;
     destructor Destroy;  override;
@@ -228,6 +230,8 @@ type
         read fFindTextAtCursor write fFindTextAtCursor default true;
     property UseSyntaxHighlight:boolean
         read fUseSyntaxHighlight write fUseSyntaxHighlight default true;
+    property CopyWordAtCursorOnCopyNone: boolean read FCopyWordAtCursorOnCopyNone
+                                            write SetCopyWordAtCursorOnCopyNone;
     property BlockIndent:integer read fBlockIndent write fBlockIndent default 2;
     property UndoLimit:integer read fUndoLimit write fUndoLimit default 32767;
     property TabWidth:integer read fTabWidth write fTabWidth default 8;
@@ -324,6 +328,7 @@ type
     DoubleClickLineCheckBox:TCheckBox;
     FindTextAtCursorCheckBox:TCheckBox;
     UseSyntaxHighlightCheckBox:TCheckBox;
+    CopyWordAtCursorOnCopyNoneCheckBox:TCheckBox;
     MouseLinksCheckBox: TCheckBox;
     BlockIndentComboBox:TComboBox;
     BlockIndentLabel:TLabel;
@@ -1028,6 +1033,12 @@ end;
 
 { TEditorOptions }
 
+procedure TEditorOptions.SetCopyWordAtCursorOnCopyNone(const AValue: boolean);
+begin
+  if FCopyWordAtCursorOnCopyNone=AValue then exit;
+  FCopyWordAtCursorOnCopyNone:=AValue;
+end;
+
 constructor TEditorOptions.Create;
 var ConfFileName: string;
   fs:TFileStream;
@@ -1053,6 +1064,7 @@ begin
   // General options
   fCtrlMouseLinks:=true;
   fShowTabCloseButtons:=true;
+  FCopyWordAtCursorOnCopyNone:=true;
   fBlockIndent:=2;
   fUndoLimit:=32767;
   fTabWidth:=8;
@@ -1140,6 +1152,8 @@ begin
       XMLConfig.GetValue('EditorOptions/General/Editor/CtrlMouseLinks',true);
     fShowTabCloseButtons:=
       XMLConfig.GetValue('EditorOptions/General/Editor/ShowTabCloseButtons',true);
+    FCopyWordAtCursorOnCopyNone:=
+      XMLConfig.GetValue('EditorOptions/General/Editor/CopyWordAtCursorOnCopyNone',true);
     fUndoAfterSave:=
       XMLConfig.GetValue('EditorOptions/General/Editor/UndoAfterSave',true);
     fFindTextAtCursor:=
@@ -1147,11 +1161,11 @@ begin
     fUseSyntaxHighlight:=
       XMLConfig.GetValue('EditorOptions/General/Editor/UseSyntaxHighlight',true);
     fBlockIndent:=
-      XMLConfig.GetValue('EditorOptions/General/Editor/BlockIndent',fBlockIndent);
+      XMLConfig.GetValue('EditorOptions/General/Editor/BlockIndent',2);
     fUndoLimit:=
-      XMLConfig.GetValue('EditorOptions/General/Editor/UndoLimit',fUndoLimit);
+      XMLConfig.GetValue('EditorOptions/General/Editor/UndoLimit',32767);
     fTabWidth:=
-      XMLConfig.GetValue('EditorOptions/General/Editor/TabWidth',fTabWidth);
+      XMLConfig.GetValue('EditorOptions/General/Editor/TabWidth',8);
 
     // Display options
     fVisibleRightMargin:=
@@ -1248,42 +1262,52 @@ begin
         SynEditOptName:='';
       end;
       if SynEditOptName<>'' then begin
-        XMLConfig.SetValue('EditorOptions/General/Editor/'+SynEditOptName,
-            SynEditOpt in fSynEditOptions);
+        XMLConfig.SetDeleteValue('EditorOptions/General/Editor/'+SynEditOptName,
+            SynEditOpt in fSynEditOptions,SynEditOpt in SynEditDefaultOptions);
       end;
     end;
 
-    XMLConfig.SetValue('EditorOptions/General/Editor/CtrlMouseLinks'
-      ,fCtrlMouseLinks);
-    XMLConfig.SetValue('EditorOptions/General/Editor/ShowTabCloseButtons'
-      ,fShowTabCloseButtons);
-    XMLConfig.SetValue('EditorOptions/General/Editor/UndoAfterSave'
-      ,fUndoAfterSave);
-    XMLConfig.SetValue('EditorOptions/General/Editor/FindTextAtCursor'
-      ,fFindTextAtCursor);
-    XMLConfig.SetValue('EditorOptions/General/Editor/UseSyntaxHighlight'
-      ,fUseSyntaxHighlight);
-    XMLConfig.SetValue('EditorOptions/General/Editor/BlockIndent'
-      ,fBlockIndent);
-    XMLConfig.SetValue('EditorOptions/General/Editor/UndoLimit'
-      ,fUndoLimit);
-    XMLConfig.SetValue('EditorOptions/General/Editor/TabWidth'
-      ,fTabWidth);
+    XMLConfig.SetDeleteValue('EditorOptions/General/Editor/CtrlMouseLinks'
+      ,fCtrlMouseLinks,true);
+    XMLConfig.SetDeleteValue('EditorOptions/General/Editor/ShowTabCloseButtons'
+      ,fShowTabCloseButtons,true);
+    XMLConfig.SetDeleteValue(
+      'EditorOptions/General/Editor/CopyWordAtCursorOnCopyNone',
+      FCopyWordAtCursorOnCopyNone,true);
+    XMLConfig.SetDeleteValue('EditorOptions/General/Editor/UndoAfterSave'
+      ,fUndoAfterSave,true);
+    XMLConfig.SetDeleteValue('EditorOptions/General/Editor/FindTextAtCursor'
+      ,fFindTextAtCursor,true);
+    XMLConfig.SetDeleteValue('EditorOptions/General/Editor/UseSyntaxHighlight'
+      ,fUseSyntaxHighlight,true);
+    XMLConfig.SetDeleteValue('EditorOptions/General/Editor/BlockIndent'
+      ,fBlockIndent,2);
+    XMLConfig.SetDeleteValue('EditorOptions/General/Editor/UndoLimit'
+      ,fUndoLimit,32767);
+    XMLConfig.SetDeleteValue('EditorOptions/General/Editor/TabWidth'
+      ,fTabWidth,8);
 
     // Display options
-    XMLConfig.SetValue('EditorOptions/Display/VisibleRightMargin'
-      ,fVisibleRightMargin);
-    XMLConfig.SetValue('EditorOptions/Display/VisibleGutter',fVisibleGutter);
-    XMLConfig.SetValue('EditorOptions/Display/ShowLineNumbers',fShowLineNumbers);
-    XMLConfig.SetValue('EditorOptions/Display/GutterColor',fGutterColor);
-    XMLConfig.SetValue('EditorOptions/Display/GutterWidth',fGutterWidth);
-    XMLConfig.SetValue('EditorOptions/Display/RightMargin',fRightMargin);
-    XMLConfig.SetValue('EditorOptions/Display/RightMarginColor',fRightMarginColor);
-    XMLConfig.SetValue('EditorOptions/Display/EditorFont',fEditorFont);
-    XMLConfig.SetValue('EditorOptions/Display/EditorFontHeight'
-      ,fEditorFontHeight);
-    XMLConfig.SetValue('EditorOptions/Display/ExtraLineSpacing'
-      ,fExtraLineSpacing);
+    XMLConfig.SetDeleteValue('EditorOptions/Display/VisibleRightMargin'
+      ,fVisibleRightMargin,true);
+    XMLConfig.SetDeleteValue('EditorOptions/Display/VisibleGutter',
+      fVisibleGutter,true);
+    XMLConfig.SetDeleteValue('EditorOptions/Display/ShowLineNumbers',
+      fShowLineNumbers,true);
+    XMLConfig.SetDeleteValue('EditorOptions/Display/GutterColor',
+      fGutterColor,clBtnFace);
+    XMLConfig.SetDeleteValue('EditorOptions/Display/GutterWidth',
+      fGutterWidth,30);
+    XMLConfig.SetDeleteValue('EditorOptions/Display/RightMargin',
+      fRightMargin,80);
+    XMLConfig.SetDeleteValue('EditorOptions/Display/RightMarginColor',
+      fRightMarginColor,clBtnFace);
+    XMLConfig.SetDeleteValue('EditorOptions/Display/EditorFont',
+      fEditorFont,'courier');
+    XMLConfig.SetDeleteValue('EditorOptions/Display/EditorFontHeight'
+      ,fEditorFontHeight,12);
+    XMLConfig.SetDeleteValue('EditorOptions/Display/ExtraLineSpacing'
+      ,fExtraLineSpacing,1);
 
     // Key Mappings options
     XMLConfig.SetValue('EditorOptions/KeyMapping/Scheme',fKeyMappingScheme);
@@ -1299,20 +1323,21 @@ begin
     end;
 
     // Code Tools options
-    XMLConfig.SetValue('EditorOptions/CodeTools/AutoIdentifierCompletion'
-      ,fAutoIdentifierCompletion);
-    XMLConfig.SetValue('EditorOptions/CodeTools/AutoCodeParameters'
-      ,fAutoCodeParameters);
-    XMLConfig.SetValue('EditorOptions/CodeTools/AutoToolTipExprEval'
-      ,fAutoToolTipExprEval);
-    XMLConfig.SetValue('EditorOptions/CodeTools/AutoToolTipSymbTools'
-      ,fAutoToolTipSymbTools);
-    XMLConfig.SetValue('EditorOptions/CodeTools/AutoDelayInMSec'
-      ,fAutoDelayInMSec);
-    XMLConfig.SetValue('EditorOptions/CodeTools/CodeTemplateFileName'
-      ,fCodeTemplateFileName);
-    XMLConfig.GetValue('EditorOptions/CodeTools/CodeTemplateIndentToTokenStart/Value'
-        ,fCTemplIndentToTokenStart);
+    XMLConfig.SetDeleteValue('EditorOptions/CodeTools/AutoIdentifierCompletion'
+      ,fAutoIdentifierCompletion,true);
+    XMLConfig.SetDeleteValue('EditorOptions/CodeTools/AutoCodeParameters'
+      ,fAutoCodeParameters,true);
+    XMLConfig.SetDeleteValue('EditorOptions/CodeTools/AutoToolTipExprEval'
+      ,fAutoToolTipExprEval,true);
+    XMLConfig.SetDeleteValue('EditorOptions/CodeTools/AutoToolTipSymbTools'
+      ,fAutoToolTipSymbTools,false);
+    XMLConfig.SetDeleteValue('EditorOptions/CodeTools/AutoDelayInMSec'
+      ,fAutoDelayInMSec,1000);
+    XMLConfig.SetDeleteValue('EditorOptions/CodeTools/CodeTemplateFileName'
+      ,fCodeTemplateFileName,'');
+    XMLConfig.SetDeleteValue(
+      'EditorOptions/CodeTools/CodeTemplateIndentToTokenStart/Value'
+      ,fCTemplIndentToTokenStart,false);
 
 
     XMLConfig.Flush;
@@ -1973,8 +1998,6 @@ begin
     SetupKeyMappingsPage;
     SetupColorPage;
     SetupCodeToolsPage;
-
-    MainNoteBook.Show;
 
     SetupButtonBar;
   end;
@@ -2641,7 +2664,6 @@ begin
       Top:=0;
       Width:=Self.ClientWidth-4;
       Height:=Self.ClientHeight-50;
-      Show;
     end;
 
     BackButton:=TButton.Create(Self);
@@ -2654,7 +2676,6 @@ begin
       Left:=((Self.ClientWidth-4)-Width) div 2;
       Top:=Self.ClientHeight-38;
       OnClick:=@BackButtonClick;
-      Show;
     end;
   end;
 end;
@@ -3158,7 +3179,6 @@ begin
     Width:=MaxX-10;
     Height:=24*11; // 24 pixels per line
     Caption:=lismenueditoroptions;
-    Show;
   end;
 
   // many, many checkboxes ...
@@ -3175,7 +3195,6 @@ begin
     Caption:=dlgAltSetClMode;
     Checked:=eoAltSetsColumnMode in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
-    Show;
   end;
 
   AutoIndentCheckBox:=TCheckBox.Create(Self);
@@ -3189,7 +3208,6 @@ begin
     Caption:=dlgAutoIdent;
     Checked:=eoAutoIndent in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
-    Show;
   end;
 
   BracketHighlightCheckBox:=TCheckBox.Create(Self);
@@ -3203,7 +3221,6 @@ begin
     Caption:=dlgBracHighlight;
     Checked:=eoBracketHighlight in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
-    Show;
   end;
 
   DragDropEditingCheckBox:=TCheckBox.Create(Self);
@@ -3217,7 +3234,6 @@ begin
     Caption:=dlgDragDropEd;
     Checked:=eoDragDropEditing in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
-    Show;
   end;
 
   DropFilesCheckBox:=TCheckBox.Create(Self);
@@ -3232,7 +3248,6 @@ begin
     Checked:=eoDropFiles in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
     Enabled:=false;
-    Show;
   end;
 
   HalfPageScrollCheckBox:=TCheckBox.Create(Self);
@@ -3246,7 +3261,6 @@ begin
     Caption:=dlgHalfPageScroll;
     Checked:=eoHalfPageScroll in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
-    Show;
   end;
 
   KeepCaretXCheckBox:=TCheckBox.Create(Self);
@@ -3260,7 +3274,6 @@ begin
     Caption:=dlgKeepCaretX;
     Checked:=eoKeepCaretX in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
-    Show;
   end;
 
   PersistentCaretCheckBox:=TCheckBox.Create(Self);
@@ -3274,7 +3287,6 @@ begin
     Caption:=dlgPersistentCaret;
     Checked:=eoPersistentCaret in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
-    Show;
   end;
 
   ScrollByOneLessCheckBox:=TCheckBox.Create(Self);
@@ -3288,7 +3300,6 @@ begin
     Caption:=dlgScrollByOneLess;
     Checked:=eoScrollByOneLess in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
-    Show;
   end;
 
   ScrollPastEoFCheckBox:=TCheckBox.Create(Self);
@@ -3302,7 +3313,6 @@ begin
     Caption:=dlgScrollPastEndFile;
     Checked:=eoScrollPastEoF in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
-    Show;
   end;
 
   MouseLinksCheckBox:=TCheckBox.Create(Self);
@@ -3315,7 +3325,6 @@ begin
     Height:=AltSetsColumnModeCheckBox.Height;
     Caption:=dlgMouseLinks;
     Checked:=EditorOpts.CtrlMouseLinks;
-    Show;
   end;
 
   // right side
@@ -3330,7 +3339,6 @@ begin
     Caption:=dlgScrollPastEndLine;
     Checked:=eoScrollPastEoL in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
-    Show;
   end;
 
   ShowCloseBtnInNoteBookCheckBox:=TCheckBox.Create(Self);
@@ -3344,7 +3352,6 @@ begin
     Caption:=dlgCloseButtonsNotebook;
     Checked:=EditorOpts.ShowTabCloseButtons;
     OnClick:=@GeneralCheckBoxOnClick;
-    Show;
   end;
 
   ShowScrollHintCheckBox:=TCheckBox.Create(Self);
@@ -3359,7 +3366,6 @@ begin
     Caption:=dlgShowScrollHint;
     Checked:=eoShowScrollHint in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
-    Show;
   end;
 
   SmartTabsCheckBox:=TCheckBox.Create(Self);
@@ -3373,7 +3379,6 @@ begin
     Caption:=dlgSmartTabs;
     Checked:=eoSmartTabs in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
-    Show;
   end;
 
   TabsToSpacesCheckBox:=TCheckBox.Create(Self);
@@ -3387,7 +3392,6 @@ begin
     Caption:=dlgTabsToSpaces;
     Checked:=eoTabsToSpaces in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
-    Show;
   end;
 
   TrimTrailingSpacesCheckBox:=TCheckBox.Create(Self);
@@ -3401,7 +3405,6 @@ begin
     Caption:=dlgTrimTrailingSpaces ;
     Checked:=eoTrimTrailingSpaces in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
-    Show;
   end;
 
   UndoAfterSaveCheckBox:=TCheckBox.Create(Self);
@@ -3415,7 +3418,6 @@ begin
     Caption:=dlgUndoAfterSave;
     Checked:=EditorOpts.UndoAfterSave;
     OnClick:=@GeneralCheckBoxOnClick;
-    Show;
   end;
 
   DoubleClickLineCheckBox:=TCheckBox.Create(Self);
@@ -3429,7 +3431,6 @@ begin
     Caption:=dlgDoubleClickLine;
     Checked:=eoDoubleClickSelectsLine in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
-    Show;
   end;
 
   FindTextAtCursorCheckBox:=TCheckBox.Create(Self);
@@ -3443,7 +3444,6 @@ begin
     Caption:=dlgFindTextatCursor;
     Checked:=EditorOpts.FindTextAtCursor;
     OnClick:=@GeneralCheckBoxOnClick;
-    Show;
   end;
 
   UseSyntaxHighlightCheckBox:=TCheckBox.Create(Self);
@@ -3457,10 +3457,22 @@ begin
     Caption:=dlgUseSyntaxHighlight;
     Checked:=EditorOpts.UseSyntaxHighlight;
     OnClick:=@GeneralCheckBoxOnClick;
-    Show;
   end;
 
-  // 
+  CopyWordAtCursorOnCopyNoneCheckBox:=TCheckBox.Create(Self);
+  with CopyWordAtCursorOnCopyNoneCheckBox do begin
+    Name:='CopyWordAtCursorOnCopyNoneCheckBox';
+    Parent:=EditorOptionsGroupBox;
+    Top:=UseSyntaxHighlightCheckBox.Top+UseSyntaxHighlightCheckBox.Height+5;
+    Left:=ShowScrollHintCheckBox.Left;
+    Width:=ChkBoxW;
+    Height:=AltSetsColumnModeCheckBox.Height;
+    Caption:=dlgCopyWordAtCursorOnCopyNone;
+    Checked:=EditorOpts.CopyWordAtCursorOnCopyNone;
+    OnClick:=@GeneralCheckBoxOnClick;
+  end;
+
+  //
 
   BlockIndentComboBox:=TComboBox.Create(Self);
   with BlockIndentComboBox do begin
@@ -3479,7 +3491,6 @@ begin
     OnChange:=@ComboBoxOnChange;
     OnKeyDown:=@ComboBoxOnKeyDown;
     OnExit:=@ComboBoxOnExit;
-    Show;
   end;
 
   BlockIndentLabel:=TLabel.Create(Self);
@@ -3490,7 +3501,6 @@ begin
     Left:=EditorOptionsGroupBox.Left+2;
     Width:=BlockIndentComboBox.Left-2-Left;
     Caption:=dlgBlockIndent;
-    Show;
   end;
 
   UndoLimitComboBox:=TComboBox.Create(Self);
@@ -3509,7 +3519,6 @@ begin
     OnChange:=@ComboBoxOnChange;
     OnKeyDown:=@ComboBoxOnKeyDown;
     OnExit:=@ComboBoxOnExit;
-    Show;
   end;
 
   UndoLimitLabel:=TLabel.Create(Self);
@@ -3520,7 +3529,6 @@ begin
     Left:=EditorOptionsGroupBox.Left+2;
     Width:=UndoLimitComboBox.Left-Left-2;
     Caption:=dlgUndoLimit;
-    Show;
   end;
 
   TabWidthsComboBox:=TComboBox.Create(Self);
@@ -3540,7 +3548,6 @@ begin
     OnChange:=@ComboBoxOnChange;
     OnKeyDown:=@ComboBoxOnKeyDown;
     OnExit:=@ComboBoxOnExit;
-    Show;
   end;
 
   TabWidthsLabel:=TLabel.Create(Self);
@@ -3551,7 +3558,6 @@ begin
     Left:=EditorOptionsGroupBox.Left+2;
     Width:=TabWidthsComboBox.Left-Left-2;
     Caption:='Tab widths:';
-    Show;
   end;
 end;
 
@@ -3720,6 +3726,13 @@ begin
     Height:=AltSetsColumnModeCheckBox.Height;
   end;
 
+  with CopyWordAtCursorOnCopyNoneCheckBox do begin
+    Top:=UseSyntaxHighlightCheckBox.Top+UseSyntaxHighlightCheckBox.Height+5;
+    Left:=ShowScrollHintCheckBox.Left;
+    Width:=ChkBoxW;
+    Height:=AltSetsColumnModeCheckBox.Height;
+  end;
+
   //
 
   with BlockIndentComboBox do begin
@@ -3775,7 +3788,6 @@ begin
     Width:=MaxX-10;
     Height:=109;
     Caption:=dlgMarginGutter;
-    Show;
   end;
 
   VisibleRightMarginCheckBox:=TCheckBox.Create(Self);
@@ -3790,7 +3802,6 @@ begin
     Checked:=EditorOpts.VisibleRightMargin;
     OnClick:=@GeneralCheckBoxOnClick;
     Enabled:=false;
-    Show;
   end;
 
   VisibleGutterCheckBox:=TCheckBox.Create(Self);
@@ -3804,7 +3815,6 @@ begin
     Caption:=dlgVisibleGutter;
     Checked:=EditorOpts.VisibleGutter;
     OnClick:=@GeneralCheckBoxOnClick;
-    Show;
   end;
 
   ShowLineNumbersCheckBox:=TCheckBox.Create(Self);
@@ -3818,7 +3828,6 @@ begin
     Caption:=dlgShowLineNumbers ;
     Checked:=EditorOpts.ShowLineNumbers;
     OnClick:=@GeneralCheckBoxOnClick;
-    Show;
   end;
 
   RightMarginComboBox:=TComboBox.Create(Self);
@@ -3837,7 +3846,6 @@ begin
     OnChange:=@ComboBoxOnChange;
     OnKeyDown:=@ComboBoxOnKeyDown;
     OnExit:=@ComboBoxOnExit;
-    Show;
   end;
 
   RightMarginLabel:=TLabel.Create(Self);
@@ -3848,7 +3856,6 @@ begin
     Left:=RightMarginComboBox.Left+2;
     Width:=150;
     Caption:=dlgRightMargin ;
-    Show;
   end;
 
   RightMarginColorButton:=TColorButton.Create(Self);
@@ -3862,7 +3869,6 @@ begin
     BorderWidth:=2;
     ButtonColor:=EditorOpts.RightMarginColor;
     OnColorChanged:=@ColorButtonColorChanged;
-    Show;
   end;
 
   RightMarginColorLabel:=TLabel.Create(Self);
@@ -3873,7 +3879,6 @@ begin
     Left:=RightMarginComboBox.Left+2;
     Width:=150;
     Caption:=dlgRightMarginColor ;
-    Show;
   end;
 
   GutterWidthComboBox:=TComboBox.Create(Self);
@@ -3895,7 +3900,6 @@ begin
     OnChange:=@ComboBoxOnChange;
     OnKeyDown:=@ComboBoxOnKeyDown;
     OnExit:=@ComboBoxOnExit;
-    Show;
   end;
 
   GutterWidthLabel:=TLabel.Create(Self);
@@ -3906,7 +3910,6 @@ begin
     Left:=GutterWidthComboBox.Left+2;
     Width:=130;
     Caption:=dlgGutterWidth ;
-    Show;
   end;
 
   GutterColorButton:=TColorButton.Create(Self);
@@ -3920,7 +3923,6 @@ begin
     BorderWidth:=2;
     ButtonColor:=EditorOpts.GutterColor;
     OnColorChanged:=@ColorButtonColorChanged;
-    Show;
   end;
 
   GutterColorLabel:=TLabel.Create(Self);
@@ -3931,7 +3933,6 @@ begin
     Left:=GutterWidthComboBox.Left+2;
     Width:=130;
     Caption:=dlgGutterColor ;
-    Show;
   end;
 
   EditorFontGroupBox:=TGroupBox.Create(Self);
@@ -3943,7 +3944,6 @@ begin
     Width:=MarginAndGutterGroupBox.Width;
     Height:=120;
     Caption:=dlgDefaultEditorFont;
-    Show;
   end;
 
   EditorFontComboBox:=TComboBox.Create(Self);
@@ -3957,7 +3957,6 @@ begin
     OnChange:=@ComboBoxOnChange;
     OnKeyDown:=@ComboBoxOnKeyDown;
     OnExit:=@ComboBoxOnExit;
-    Show;
   end;
 
   EditorFontButton:=TButton.Create(Self);
@@ -3970,7 +3969,6 @@ begin
     Height:=Width;
     Caption:='...';
     OnClick:=@EditorFontButtonClick;
-    Show;
   end;
 
   EditorFontLabel:=TLabel.Create(Self);
@@ -3981,7 +3979,6 @@ begin
     Left:=EditorFontComboBox.Left+2;
     Width:=130;
     Caption:=dlgEditorFont ;
-    Show;
   end;
 
   EditorFontHeightComboBox:=TComboBox.Create(Self);
@@ -4004,7 +4001,6 @@ begin
     OnChange:=@ComboBoxOnChange;
     OnKeyDown:=@ComboBoxOnKeyDown;
     OnExit:=@ComboBoxOnExit;
-    Show;
   end;
 
   EditorFontHeightLabel:=TLabel.Create(Self);
@@ -4015,7 +4011,6 @@ begin
     Left:=EditorFontHeightComboBox.Left+2;
     Width:=150;
     Caption:=dlgEditorFontHeight ;
-    Show;
   end;
 
   ExtraLineSpacingComboBox:=TComboBox.Create(Self);
@@ -4035,7 +4030,6 @@ begin
     OnChange:=@ComboBoxOnChange;
     OnKeyDown:=@ComboBoxOnKeyDown;
     OnExit:=@ComboBoxOnExit;
-    Show;
   end;
 
   ExtraLineSpacingLabel:=TLabel.Create(Self);
@@ -4046,7 +4040,6 @@ begin
     Left:=ExtraLineSpacingComboBox.Left+2;
     Width:=150;
     Caption:=dlgExtraLineSpacing ;
-    Show;
   end;
 
   DisplayPreview:=TPreviewEditor.Create(Self);
@@ -4060,7 +4053,6 @@ begin
     Height:=MaxY-Top-2;
     OnSpecialLineColors:=@Self.OnSpecialLineColors;
     ReadOnly:=true;
-    Show;
   end;
 end;
 
@@ -5170,7 +5162,6 @@ begin
     Left:=Self.Width-Width-10;
     Caption:=dlgCancel;
     OnClick:=@CancelButtonClick;
-    Show;
   end;
 
   OkButton:=TButton.Create(Self);
@@ -5183,7 +5174,6 @@ begin
     Left:=CancelButton.Left-10-Width;
     Caption:='Ok';
     OnClick:=@OkButtonClick;
-    Show;
   end;
 end;
 
@@ -5226,6 +5216,8 @@ begin
   // general
   EditorOpts.ShowTabCloseButtons:=ShowCloseBtnInNoteBookCheckBox.Checked;
   EditorOpts.UndoAfterSave:=UndoAfterSaveCheckBox.Checked;
+  EditorOpts.CopyWordAtCursorOnCopyNone:=
+                                     CopyWordAtCursorOnCopyNoneCheckBox.Checked;
   EditorOpts.FindTextAtCursor:=FindTextAtCursorCheckBox.Checked;
   EditorOpts.UseSyntaxHighlight:=UseSyntaxHighlightCheckBox.Checked;
   EditorOpts.CtrlMouseLinks:=MouseLinksCheckBox.Checked;
