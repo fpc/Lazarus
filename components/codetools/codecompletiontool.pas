@@ -516,7 +516,7 @@ function TCodeCompletionCodeTool.AddLocalVariable(
   var NewPos: TCodeXYPosition;
   var NewTopLine: integer; SourceChangeCache: TSourceChangeCache): boolean;
 var
-  CursorNode, ProcNode, BeginNode, VarSectionNode, VarNode: TCodeTreeNode;
+  CursorNode, ParentNode, BeginNode, VarSectionNode, VarNode: TCodeTreeNode;
   Indent, InsertPos: integer;
   InsertTxt: string;
   OldCodePos: TCodePosition;
@@ -531,34 +531,21 @@ begin
 
   //writeln('TCodeCompletionCodeTool.AddLocalVariable A2 ',CursorNode<>nil);
   
-  // find proc at cursor
-  ProcNode:=CursorNode;
-  while (ProcNode<>nil) and (ProcNode.Desc<>ctnProcedure) do begin
-    ProcNode:=ProcNode.Parent;
-  end;
-  if ProcNode=nil then begin
-    writeln('TCodeCompletionCodeTool.AddLocalVariable - Not in Procedure');
+  // find parent block node at cursor
+  BeginNode:=CursorNode.GetNodeOfType(ctnBeginBlock);
+  if (BeginNode=nil) or (BeginNode.Parent=nil) then begin
+    writeln('TCodeCompletionCodeTool.AddLocalVariable - Not in Begin Block');
     exit;
   end;
-  
-  //writeln('TCodeCompletionCodeTool.AddLocalVariable B ');
+  ParentNode:=BeginNode.Parent;
 
-  // find main begin block of proc
-  BeginNode:=ProcNode.FirstChild;
-  while (BeginNode<>nil) and (BeginNode.Desc<>ctnBeginBlock) do
-    BeginNode:=BeginNode.NextBrother;
-  if BeginNode=nil then begin
-    writeln('TCodeCompletionCodeTool.AddLocalVariable - Procedure without Begin Block');
-    exit;
-  end;
-  
   //writeln('TCodeCompletionCodeTool.AddLocalVariable C ');
 
   // find last 'var' section node
   VarSectionNode:=BeginNode;
   while (VarSectionNode<>nil) and (VarSectionNode.Desc<>ctnVarSection) do
     VarSectionNode:=VarSectionNode.PriorBrother;
-    
+
   InsertTxt:=VariableName+':'+VariableType+';';
   //writeln('TCodeCompletionCodeTool.AddLocalVariable C ',InsertTxt,' ');
 
