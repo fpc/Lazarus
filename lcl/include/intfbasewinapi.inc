@@ -156,7 +156,7 @@ function TWidgetSet.CreateFontIndirectEx(const LogFont: TLogFont;
 begin
   // this functions is needed, because the fontname in TLogFont is limited to
   // 32 characters. If the interface does not support long font names, it can
-  // simple omitt this function
+  // simple omit this function
   Result := CreateFontIndirect(LogFont);
 end;
 
@@ -1404,6 +1404,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.13  2004/08/10 22:09:02  mattias
+  fixed uninitialised LogFont
+
   Revision 1.12  2004/05/11 12:16:47  mattias
   replaced writeln by debugln
 

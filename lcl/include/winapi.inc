@@ -890,6 +890,7 @@ var
   LogFont: TLogFont;
 begin
   DebugLn('CreateFont Name="',FaceName,'"');
+  FillChar(LogFont,SizeOf(LogFont),0);
   with LogFont do
   begin
     lfHeight := Height;
@@ -1299,6 +1300,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.114  2004/08/10 22:09:03  mattias
+  fixed uninitialised LogFont
+
   Revision 1.113  2004/05/11 12:16:47  mattias
   replaced writeln by debugln
 
