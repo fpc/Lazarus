@@ -1722,14 +1722,8 @@ begin
       ConnectSignal(gFixed, 'draw', @GTKDraw);
     end;
 
-    LM_EXPOSEEVENT :
-    begin
-//      ConnectSignal(gFixed, 'expose-event', @gtkexposeevent)
-    end;
-
     LM_FOCUS :
     begin
-      //ConnectSignal(gObject, 'focus', @gtkfocusCB);
       if (sender is TCustomComboBox) then
          Begin
           ConnectSignal(PgtkObject(PgtkCombo(TCustomComboBox(sender).handle)^.entry), 'focus-in-event', @gtkFocusCB);
@@ -1780,8 +1774,8 @@ begin
 
     LM_MOUSEMOVE:
     begin
-      if (sender is TComboBox) 
-      then Begin
+      if (sender is TComboBox) then
+      Begin
         ConnectSignal(PgtkObject(PgtkCombo(TComboBox(sender).handle)^.entry), 'motion-notify-event', @GTKMotionNotify, GDK_POINTER_MOTION_MASK);
         ConnectSignal(PgtkObject(PgtkCombo(TComboBox(sender).handle)^.button), 'motion-notify-event', @GTKMotionNotify, GDK_POINTER_MOTION_MASK);
       end
@@ -1841,16 +1835,18 @@ begin
 
     LM_ENTER :
     begin
-      if sender is TButton 
-      then ConnectSignal(gObject, 'enter', @gtkenterCB)
-      else ConnectSignal(gObject, 'focus-in-event', @gtkFocusInNotifyCB); //TODO: check this focus in is mapped to focus
+      if sender is TButton then
+         ConnectSignal(gObject, 'enter', @gtkenterCB)
+      else
+         ConnectSignal(gObject, 'focus-in-event', @gtkFocusInNotifyCB); //TODO: check this focus in is mapped to focus
     end;
 
     LM_EXIT :
     begin
-      if sender is TButton 
-      then ConnectSignal(gObject, 'leave', @gtkleaveCB)
-      else ConnectSignal(gObject, 'focus-out-event', @gtkFocusOutNotifyCB);
+      if sender is TButton then
+         ConnectSignal(gObject, 'leave', @gtkleaveCB)
+      else
+         ConnectSignal(gObject, 'focus-out-event', @gtkFocusOutNotifyCB);
     end;
 
     LM_LEAVE :
@@ -3845,6 +3841,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.113  2002/03/29 19:11:38  lazarus
+  Added Triple Click
+  Shane
+
   Revision 1.112  2002/03/27 00:33:54  lazarus
   MWE:
     * Cleanup in lmessages
