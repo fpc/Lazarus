@@ -7779,7 +7779,14 @@ end;
 
 procedure TCustomSynEdit.ClearAll;
 begin
+  {$IFDEF SYN_LAZARUS}
+  BeginUndoBlock;
+  SelectAll;
+  SelText:='';
+  EndUndoBlock;
+  {$ELSE}
   Lines.Clear;
+  {$ENDIF}
 end;
 
 procedure TCustomSynEdit.ClearSelection;

@@ -55,6 +55,8 @@ type
     fDoNotLoad: boolean;
     procedure Loaded; override;
     function FindNode(const APath: String; PathHasValue: boolean): TDomNode;
+    function ExtendedToStr(const e: extended): string;
+    function StrToExtended(const s: string; const ADefault: extended): extended;
   public
     constructor Create(const AFilename: String); overload;
     constructor CreateClean(const AFilename: String);
@@ -64,12 +66,17 @@ type
     function  GetValue(const APath, ADefault: String): String;
     function  GetValue(const APath: String; ADefault: Integer): Integer;
     function  GetValue(const APath: String; ADefault: Boolean): Boolean;
+    function  GetExtendedValue(const APath: String;
+                               const ADefault: extended): extended;
     procedure SetValue(const APath, AValue: String);
     procedure SetDeleteValue(const APath, AValue, DefValue: String);
     procedure SetValue(const APath: String; AValue: Integer);
     procedure SetDeleteValue(const APath: String; AValue, DefValue: Integer);
     procedure SetValue(const APath: String; AValue: Boolean);
     procedure SetDeleteValue(const APath: String; AValue, DefValue: Boolean);
+    procedure SetExtendedValue(const APath: String; const AValue: extended);
+    procedure SetDeleteExtendedValue(const APath: String;
+                                     const AValue, DefValue: extended);
     procedure DeletePath(const APath: string);
     procedure DeleteValue(const APath: string);
     property Modified: Boolean read FModified;
@@ -203,6 +210,12 @@ begin
     Result := ADefault;
 end;
 
+function TXMLConfig.GetExtendedValue(const APath: String;
+  const ADefault: extended): extended;
+begin
+  Result:=StrToExtended(GetValue(APath,ExtendedToStr(ADefault)),ADefault);
+end;
+
 procedure TXMLConfig.SetValue(const APath, AValue: String);
 var
   Node, Child: TDOMNode;
@@ -279,6 +292,21 @@ begin
     SetValue(APath,AValue);
 end;
 
+procedure TXMLConfig.SetExtendedValue(const APath: String;
+  const AValue: extended);
+begin
+  SetValue(APath,ExtendedToStr(AValue));
+end;
+
+procedure TXMLConfig.SetDeleteExtendedValue(const APath: String; const AValue,
+  DefValue: extended);
+begin
+  if AValue=DefValue then
+    DeleteValue(APath)
+  else
+    SetExtendedValue(APath,AValue);
+end;
+
 procedure TXMLConfig.DeletePath(const APath: string);
 var
   Node: TDomNode;
@@ -336,6 +364,35 @@ begin
   Result:=nil;
 end;
 
+function TXMLConfig.ExtendedToStr(const e: extended): string;
+var
+  OldDecimalSeparator: Char;
+  OldThousandSeparator: Char;
+begin
+  OldDecimalSeparator:=DecimalSeparator;
+  OldThousandSeparator:=ThousandSeparator;
+  DecimalSeparator:='.';
+  ThousandSeparator:=',';
+  Result:=FloatToStr(e);
+  DecimalSeparator:=OldDecimalSeparator;
+  ThousandSeparator:=OldThousandSeparator;
+end;
+
+function TXMLConfig.StrToExtended(const s: string; const ADefault: extended
+  ): extended;
+var
+  OldDecimalSeparator: Char;
+  OldThousandSeparator: Char;
+begin
+  OldDecimalSeparator:=DecimalSeparator;
+  OldThousandSeparator:=ThousandSeparator;
+  DecimalSeparator:='.';
+  ThousandSeparator:=',';
+  Result:=StrToFloatDef(s,ADefault);
+  DecimalSeparator:=OldDecimalSeparator;
+  ThousandSeparator:=OldThousandSeparator;
+end;
+
 procedure TXMLConfig.SetFilename(const AFilename: String);
 var
   cfg: TDOMElement;
@@ -372,6 +429,9 @@ end;
 end.
 {
   $Log$
+  Revision 1.13  2005/03/23 08:45:37  mattias
+  made synedit ClearText undoable
+
   Revision 1.12  2004/11/10 15:25:32  mattias
   updated memcheck.pas from heaptrc.pp
 
