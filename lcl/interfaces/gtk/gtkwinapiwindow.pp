@@ -200,7 +200,6 @@ end;
 function GTKAPIWidgetClient_KeyPress(Widget: PGTKWidget;
   Event: PGDKEventKey): gint; cdecl;
 begin
-//  Assert(False, 'Trace:[GTKAPIWidgetClient_KeyPress]');
   // supress further processing
   Result := gtk_True;
 end;
@@ -217,7 +216,6 @@ end;
 function GTKAPIWidgetClient_FocusIn(Widget: PGTKWidget;
   Event: PGdkEventFocus): gint; cdecl;
 begin
-//  Assert(False, 'Trace:[GTKAPIWidgetClient_FocusIn]');
   gtk_widget_set_flags(Widget, GTK_HAS_FOCUS);
   GTKAPIWidgetClient_DrawCaret(PGTKAPIWidgetClient(Widget));
   Result := gtk_False;
@@ -226,7 +224,6 @@ end;
 function GTKAPIWidgetClient_FocusOut(Widget: PGTKWidget;
   Event: PGdkEventFocus): gint; cdecl;
 begin
-//  Assert(False, 'Trace:[GTKAPIWidgetClient_FocusOut]');
   gtk_widget_unset_flags(Widget, GTK_HAS_FOCUS);
   GTKAPIWidgetClient_DrawCaret(PGTKAPIWidgetClient(Widget));
   Result := gtk_False;
@@ -331,7 +328,7 @@ end;
 
 procedure GTKAPIWidgetClient_HideCaret(Client: PGTKAPIWidgetClient); 
 begin
-//writeln('[GTKAPIWidgetClient_HideCaret] A Client=',HexStr(Cardinal(Client),8));
+  //writeln('[GTKAPIWidgetClient_HideCaret] A Client=',HexStr(Cardinal(Client),8));
   if Client = nil
   then begin
     WriteLn('WARNING: [GTKAPIWidgetClient_HideCaret] Got nil client');
@@ -407,12 +404,12 @@ begin
       );
 
       // draw caret
-{writeln('GTKAPIWidgetClient_DrawCaret B Client=',HexStr(Cardinal(Client),8)
-,' ',cardinal(PGTKWidget(Client)^.theStyle)
-,' ',cardinal(PGTKWidget(Client)^.Window)
-,' ',Width
-,' ',Height
-);}
+      {writeln('GTKAPIWidgetClient_DrawCaret B Client=',HexStr(Cardinal(Client),8)
+      ,' ',cardinal(PGTKWidget(Client)^.theStyle)
+      ,' ',cardinal(PGTKWidget(Client)^.Window)
+      ,' ',Width
+      ,' ',Height
+      );}
       if (PGTKWidget(Client)^.theStyle<>nil) 
       and (PGTKWidget(Client)^.Window<>nil)
       and (Width>0) and (Height>0) then begin
@@ -424,7 +421,7 @@ begin
         gdk_gc_set_function(ForeGroundGC,GDK_invert);
         
         // draw the caret
-//writeln('DRAWING');
+        //writeln('DRAWING');
         gdk_draw_rectangle(
           PGTKWidget(Client)^.Window, 
           ForeGroundGC,
@@ -439,7 +436,7 @@ begin
       IsDrawn := True;
     end;
     
-//writeln('GTKAPIWidgetClient_DrawCaret A Client=',HexStr(Cardinal(Client),8),' Timer=',Timer,' Blink=',Blinking,' Visible=',Visible,' ShowHideOnFocus=',ShowHideOnFocus,' Focus=',gtk_widget_has_focus(Widget),' IsDrawn=',IsDrawn,' W=',Width,' H=',Height);
+    //writeln('GTKAPIWidgetClient_DrawCaret A Client=',HexStr(Cardinal(Client),8),' Timer=',Timer,' Blink=',Blinking,' Visible=',Visible,' ShowHideOnFocus=',ShowHideOnFocus,' Focus=',gtk_widget_has_focus(Widget),' IsDrawn=',IsDrawn,' W=',Width,' H=',Height);
     if Visible and Blinking and (Timer = 0) 
     and (not ShowHideOnFocus or HasFocus)
     then
@@ -449,7 +446,7 @@ end;
 
 procedure GTKAPIWidgetClient_ShowCaret(Client: PGTKAPIWidgetClient); 
 begin
-//writeln('[GTKAPIWidgetClient_ShowCaret] A Client=',HexStr(Cardinal(Client),8));
+  //writeln('[GTKAPIWidgetClient_ShowCaret] A Client=',HexStr(Cardinal(Client),8));
   if Client = nil 
   then begin
     WriteLn('WARNING: [GTKAPIWidgetClient_ShowCaret] Got nil client');
@@ -465,7 +462,7 @@ procedure GTKAPIWidgetClient_CreateCaret(Client: PGTKAPIWidgetClient;
 var
   IsVisible: Boolean;
 begin
-//writeln('********** [GTKAPIWidgetClient_CreateCaret] A Client=',HexStr(Cardinal(Client),8),' Width=',AWidth,' Height=',AHeight,' Bitmap=',ABitmap<>nil);
+  //writeln('********** [GTKAPIWidgetClient_CreateCaret] A Client=',HexStr(Cardinal(Client),8),' Width=',AWidth,' Height=',AHeight,' Bitmap=',ABitmap<>nil);
   if Client = nil 
   then begin
     WriteLn('WARNING: [GTKAPIWidgetClient_CreateCaret] Got nil client');
@@ -493,7 +490,7 @@ end;
 
 procedure GTKAPIWidgetClient_DestroyCaret(Client: PGTKAPIWidgetClient); 
 begin
-//writeln('********** [GTKAPIWidgetClient_DestroyCaret] A Client=',HexStr(Cardinal(Client),8));
+  //writeln('********** [GTKAPIWidgetClient_DestroyCaret] A Client=',HexStr(Cardinal(Client),8));
   if Client = nil 
   then begin
     WriteLn('WARNING: [GTKAPIWidgetClient_DestroyCaret] Got nil client');
@@ -509,7 +506,7 @@ begin
     end;
     Pixmap := nil;
   end;
-//writeln('********** B[GTKAPIWidgetClient_DestroyCaret] A Client=',HexStr(Cardinal(Client),8));
+  //writeln('********** B[GTKAPIWidgetClient_DestroyCaret] A Client=',HexStr(Cardinal(Client),8));
 end;
 
 procedure GTKAPIWidgetClient_SetCaretPos(Client: PGTKAPIWidgetClient;
@@ -517,7 +514,7 @@ procedure GTKAPIWidgetClient_SetCaretPos(Client: PGTKAPIWidgetClient;
 var
   IsVisible: Boolean;
 begin
-//Writeln('[GTKAPIWIDGETCLIENT] SetCaretPos '+inttostr(ax)+','+Inttostr(ay));
+  //Writeln('[GTKAPIWIDGETCLIENT] SetCaretPos '+inttostr(ax)+','+Inttostr(ay));
 
   if Client = nil 
   then begin
@@ -730,6 +727,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.28  2002/06/05 17:02:31  lazarus
+  MG: fixed finddeclaration Result in with statement
+
   Revision 1.27  2002/06/05 12:34:00  lazarus
   MG: fixed fonts in XLFD format and styles
 
