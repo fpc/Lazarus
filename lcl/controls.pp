@@ -273,7 +273,9 @@ type
     csPaintCopy,
     csCustomPaint,
     csDestroyingHandle,
-    csDocking);
+    csDocking,
+    csVisibleSetInLoading
+    );
   TControlState = set of TControlStateType;
 
 
@@ -1342,6 +1344,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.69  2002/09/08 10:01:59  lazarus
+  MG: fixed streaming visible=false
+
   Revision 1.68  2002/09/06 22:32:20  lazarus
   Enabled cursor property + property editor.
 

@@ -1497,9 +1497,11 @@ begin
   if FVisible <> Value then
   begin
     FVisible := Value;
-    Perform(CM_VISIBLECHANGED, Ord(Value), 0);
-    RequestAlign;
+      Perform(CM_VISIBLECHANGED, Ord(Value), 0);
+      RequestAlign;
   end;
+  if (csLoading in ComponentState) then
+    ControlState:=ControlState+[csVisibleSetInLoading];
 end;
 
 {------------------------------------------------------------------------------}
@@ -1803,6 +1805,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.83  2002/09/08 10:01:59  lazarus
+  MG: fixed streaming visible=false
+
   Revision 1.82  2002/09/07 19:35:42  lazarus
   Visible property is by default true.
 
