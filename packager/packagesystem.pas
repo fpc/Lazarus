@@ -37,7 +37,14 @@ unit PackageSystem;
 
 interface
 
+{off $DEFINE IDE_MEM_CHECK}
+
+{$DEFINE StopOnRegError}
+
 uses
+{$IFDEF IDE_MEM_CHECK}
+  MemCheck,
+{$ENDIF}
   Classes, SysUtils, AVL_Tree, FileCtrl, Forms, Controls, Dialogs,
   LazarusIDEStrConsts, IDEProcs, PackageLinks, PackageDefs, LazarusPackageIntf,
   ComponentReg, RegisterLCL, RegisterFCL;
@@ -78,7 +85,6 @@ type
     FItems: TList;   // unsorted list of TLazPackage
     function GetPackages(Index: integer): TLazPackage;
     procedure SetAbortRegistration(const AValue: boolean);
-    procedure SetErrorMsg(const AValue: string);
     procedure SetRegistrationPackage(const AValue: TLazPackage);
     function CreateFCLPackage: TLazPackage;
     function CreateLCLPackage: TLazPackage;
@@ -123,7 +129,7 @@ type
                                               write SetRegistrationPackage;
     property RegistrationUnitName: string read FRegistrationUnitName;
     property RegistrationFile: TPkgFile read FRegistrationFile;
-    property ErrorMsg: string read FErrorMsg write SetErrorMsg;
+    property ErrorMsg: string read FErrorMsg write FErrorMsg;
     property AbortRegistration: boolean read FAbortRegistration
                                         write SetAbortRegistration;
     property FCLPackage: TLazPackage read FFCLPackage;
@@ -158,12 +164,6 @@ procedure TLazPackageGraph.SetAbortRegistration(const AValue: boolean);
 begin
   if FAbortRegistration=AValue then exit;
   FAbortRegistration:=AValue;
-end;
-
-procedure TLazPackageGraph.SetErrorMsg(const AValue: string);
-begin
-  if FErrorMsg=AValue then exit;
-  FErrorMsg:=AValue;
 end;
 
 procedure TLazPackageGraph.SetRegistrationPackage(const AValue: TLazPackage);
@@ -401,12 +401,12 @@ begin
       RegistrationError('Register procedure is nil');
       exit;
     end;
-    {$IFNDEF StopOnError}
+    {$IFNDEF StopOnRegError}
     try
     {$ENDIF}
       // call the registration procedure
       RegisterProc();
-    {$IFNDEF StopOnError}
+    {$IFNDEF StopOnRegError}
     except
       on E: Exception do begin
         RegistrationError(E.Message);
@@ -428,6 +428,9 @@ var
   NewPkgComponent: TPkgComponent;
   CurClassname: string;
 begin
+  {$IFDEF IDE_MEM_CHECK}
+  CheckHeap('TLazPackageGraph.RegisterComponentsHandler Page='+Page);
+  {$ENDIF}
   if AbortRegistration or (Low(ComponentClasses)>High(ComponentClasses)) then
     exit;
 
@@ -447,7 +450,7 @@ begin
   for i:=Low(ComponentClasses) to High(ComponentClasses) do begin
     CurComponent:=ComponentClasses[i];
     if (CurComponent=nil) then continue;
-    {$IFNDEF StopOnError}
+    {$IFNDEF StopOnRegError}
     try
     {$ENDIF}
       CurClassname:=CurComponent.Classname;
@@ -455,7 +458,7 @@ begin
         RegistrationError('Invalid component class');
         continue;
       end;
-    {$IFNDEF StopOnError}
+    {$IFNDEF StopOnRegError}
     except
       on E: Exception do begin
         RegistrationError(E.Message);

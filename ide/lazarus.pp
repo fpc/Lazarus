@@ -40,7 +40,9 @@ program Lazarus;
   {$R *.res}
 {$ENDIF}
 
-uses 
+{off $DEFINE IDE_MEM_CHECK}
+
+uses
   //cmem,
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
@@ -88,6 +90,9 @@ end.
 
 {
   $Log$
+  Revision 1.40  2003/04/08 09:04:07  mattias
+  fixed registration for fpc 1.0.x
+
   Revision 1.39  2002/10/26 15:15:42  lazarus
   MG: broke LCL<->interface circles
 

@@ -271,7 +271,7 @@ const
 
 procedure Register;
 begin
-  RegisterComponentsProc('Dialogs',[TOpenDialog,TSaveDialog,
+  RegisterComponents('Dialogs',[TOpenDialog,TSaveDialog,
                                     TColorDialog,TFontDialog]);
 end;
 
@@ -340,6 +340,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.29  2003/04/08 09:04:07  mattias
+  fixed registration for fpc 1.0.x
+
   Revision 1.28  2003/04/04 16:35:24  mattias
   started package registration
 
