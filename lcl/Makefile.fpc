@@ -28,6 +28,7 @@ implicitunits= \
   dirsel \
   dynamicarray \
   dynhasharray \
+  editbtn \
   extctrls \
   extdlgs \
   extendedstrings \

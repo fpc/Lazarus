@@ -91,7 +91,7 @@ type
     property Handle : integer read FHandle write SetHandle;
     property Title : string read FTitle write FTitle;
     property UserChoice : integer read FUserChoice write FUserChoice;
-    procedure Close;
+    procedure Close; virtual;
     procedure DoShow; virtual;
     procedure DoClose; virtual;
     function HandleAllocated: boolean;
@@ -423,6 +423,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.39  2003/12/23 20:40:43  mattias
+  added TEditButton, TFileNameEdit, TDirectoryEdit, TDateEdit, TCalcEdit from Michael V.C.
+
   Revision 1.38  2003/10/15 20:33:36  ajgenius
   add csForm, start fixing Style matching for syscolors and fonts
 

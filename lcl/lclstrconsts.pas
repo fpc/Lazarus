@@ -72,7 +72,7 @@ ResourceString
    
   // Select font dialog
   rsSelectFontTitle     = 'Select a font';
-   
+  
   // gtk interface
   rsWarningUnremovedPaintMessages = ' WARNING: There are %s unremoved LM_'
     +'PAINT/LM_GtkPAINT message links left.';
@@ -127,6 +127,7 @@ ResourceString
   
   // StringHashList, LResource, Menus, ExtCtrls, ImgList, Spin
   // StdCtrls, Calendar, CustomTimer, Forms, Grids, LCLProc, Controls, ComCtrls,
+  // ExtDlgs, EditBtn
   sInvalidActionRegistration = 'Invalid action registration';
   sInvalidActionUnregistration = 'Invalid action unregistration';
   sInvalidActionEnumeration = 'Invalid action enumeration';
@@ -175,9 +176,10 @@ ResourceString
   rsCanNotFocus = 'Can not focus';
   rsListIndexExceedsBounds = 'List index exceeds bounds (%d)';
   rsResourceNotFound = 'Resource %s not found';
+  rsCalculator = 'Calculator';
+  rsError      = 'Error';
+  rsPickDate   = 'Select a date';
 
-
-   
 implementation
 
 end.

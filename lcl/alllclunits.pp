@@ -39,7 +39,7 @@ uses
   Comctrls, Graphics, StdCtrls, Arrow, Controls, ImgList, Menus, Toolwin,
   Dialogs, Messages, Clistbox, ActnList, Grids, MaskEdit,
   Printers, PostScriptPrinter, CheckLst, PairSplitter, DirSel, ExtDlgs,
-  DBCtrls, DBGrids;
+  DBCtrls, DBGrids, EditBtn;
 
 implementation
 
@@ -48,6 +48,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.5  2003/12/23 20:40:43  mattias
+  added TEditButton, TFileNameEdit, TDirectoryEdit, TDateEdit, TCalcEdit from Michael V.C.
+
   Revision 1.4  2003/12/07 09:07:22  mattias
   fixed ambigious units registry and forms
 
