@@ -88,9 +88,8 @@ type
     procedure ClearButtons; override;
     function SelectButton(Button: TComponent): boolean;
     procedure UpdateNoteBookButtons;
-    procedure OnGetNonVisualCompIconCanvas(Sender: TObject;
-        AComponent: TComponent; var IconCanvas: TCanvas;
-        var IconWidth, IconHeight: integer);
+    procedure OnGetNonVisualCompIcon(Sender: TObject;
+        AComponent: TComponent; var Icon: TBitmap);
     function FindComponent(const CompClassName: string
                            ): TRegisteredComponent; override;
     procedure RegisterCustomIDEComponents(
@@ -510,12 +509,10 @@ begin
   //writeln('TComponentPalette.UpdateNoteBookButtons END');
 end;
 
-procedure TComponentPalette.OnGetNonVisualCompIconCanvas(Sender: TObject;
-  AComponent: TComponent; var IconCanvas: TCanvas; var IconWidth,
-  IconHeight: integer);
+procedure TComponentPalette.OnGetNonVisualCompIcon(Sender: TObject;
+  AComponent: TComponent; var Icon: TBitmap);
 var
   ARegComp: TRegisteredComponent;
-  Icon: TBitmap;
 begin
   if AComponent<>nil then
     ARegComp:=FindComponent(AComponent.ClassName)
@@ -526,9 +523,6 @@ begin
   end else begin
     Icon:=GetUnregisteredIcon;
   end;
-  IconCanvas:=Icon.Canvas;
-  IconWidth:=Icon.Width;
-  IconHeight:=Icon.Height;
 end;
 
 function TComponentPalette.FindComponent(const CompClassName: string

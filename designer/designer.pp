@@ -59,9 +59,8 @@ type
     of object;
   TOnPersistentDeleted = procedure(Sender: TObject; APersistent: TPersistent)
     of object;
-  TOnGetNonVisualCompIconCanvas = procedure(Sender: TObject;
-    AComponent: TComponent; var IconCanvas: TCanvas;
-    var IconWidth, IconHeight: integer) of object;
+  TOnGetNonVisualCompIcon = procedure(Sender: TObject;
+    AComponent: TComponent; var Icon: TBitmap) of object;
   TOnRenameComponent = procedure(Designer: TDesigner; AComponent: TComponent;
     const NewName: string) of object;
   TOnProcessCommand = procedure(Sender: TObject; Command: word;
@@ -95,7 +94,7 @@ type
     FOnCloseQuery: TNotifyEvent;
     FOnPersistentAdded: TOnPersistentAdded;
     FOnPersistentDeleted: TOnPersistentDeleted;
-    FOnGetNonVisualCompIconCanvas: TOnGetNonVisualCompIconCanvas;
+    FOnGetNonVisualCompIcon: TOnGetNonVisualCompIcon;
     FOnGetSelectedComponentClass: TOnGetSelectedComponentClass;
     FOnModified: TNotifyEvent;
     FOnPasteComponent: TOnPasteComponent;
@@ -275,9 +274,8 @@ type
                                  read FOnPersistentAdded write FOnPersistentAdded;
     property OnPersistentDeleted: TOnPersistentDeleted
                              read FOnPersistentDeleted write FOnPersistentDeleted;
-    property OnGetNonVisualCompIconCanvas: TOnGetNonVisualCompIconCanvas
-                                            read FOnGetNonVisualCompIconCanvas
-                                            write FOnGetNonVisualCompIconCanvas;
+    property OnGetNonVisualCompIcon: TOnGetNonVisualCompIcon
+                      read FOnGetNonVisualCompIcon write FOnGetNonVisualCompIcon;
     property OnGetSelectedComponentClass: TOnGetSelectedComponentClass
                                              read FOnGetSelectedComponentClass
                                              write FOnGetSelectedComponentClass;
@@ -2047,11 +2045,10 @@ end;
 
 procedure TDesigner.DrawNonVisualComponents(aDDC: TDesignerDeviceContext);
 var
-  i, j, ItemLeft, ItemTop, ItemRight, ItemBottom,
-  IconWidth, IconHeight: integer;
+  i, j, ItemLeft, ItemTop, ItemRight, ItemBottom: integer;
   Diff, ItemLeftTop: TPoint;
   IconRect: TRect;
-  IconCanvas: TCanvas;
+  Icon: TBitmap;
   AComponent: TComponent;
 begin
   for i:=0 to FLookupRoot.ComponentCount-1 do begin
@@ -2088,17 +2085,18 @@ begin
         FillRect(Rect(IconRect.Left,IconRect.Top,
            IconRect.Right+1,IconRect.Bottom+1));
       end;
-      if Assigned(FOnGetNonVisualCompIconCanvas) then begin
-        IconCanvas:=nil;
-        FOnGetNonVisualCompIconCanvas(Self,AComponent
-             ,IconCanvas,IconWidth,IconHeight);
-        if IconCanvas<>nil then begin
-          inc(IconRect.Left,(NonVisualCompIconWidth-IconWidth) div 2);
-          inc(IconRect.Top,(NonVisualCompIconWidth-IconHeight) div 2);
-          IconRect.Right:=IconRect.Left+IconWidth;
-          IconRect.Bottom:=IconRect.Top+IconHeight;
-          aDDC.Canvas.CopyRect(IconRect, IconCanvas,
-             Rect(0,0,IconWidth,IconHeight));
+      if Assigned(FOnGetNonVisualCompIcon) then begin
+        Icon:=nil;
+        FOnGetNonVisualCompIcon(Self,AComponent,Icon);
+        if Icon<>nil then begin
+          inc(IconRect.Left,(NonVisualCompIconWidth-Icon.Width) div 2);
+          inc(IconRect.Top,(NonVisualCompIconWidth-Icon.Height) div 2);
+          IconRect.Right:=IconRect.Left+Icon.Width;
+          IconRect.Bottom:=IconRect.Top+Icon.Height;
+          StretchMaskBlt(aDDC.Canvas.Handle, IconRect.Left, IconRect.Top,
+            IconRect.Right-IconRect.Left, IconRect.Bottom-IconRect.Top, 
+            Icon.Canvas.Handle, 0, 0, Icon.Width, Icon.Height,
+            Icon.MaskHandle, 0, 0, SRCCOPY);
         end;
       end;
       if (ControlSelection.Count>1)

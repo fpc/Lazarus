@@ -2313,8 +2313,8 @@ Begin
     OnCloseQuery:=@OnDesignerCloseQuery;
     OnPersistentAdded:=@OnDesignerPersistentAdded;
     OnPersistentDeleted:=@OnDesignerPersistentDeleted;
-    OnGetNonVisualCompIconCanvas:=
-           @TComponentPalette(IDEComponentPalette).OnGetNonVisualCompIconCanvas;
+    OnGetNonVisualCompIcon:=
+           @TComponentPalette(IDEComponentPalette).OnGetNonVisualCompIcon;
     OnGetSelectedComponentClass:=@OnDesignerGetSelectedComponentClass;
     OnModified:=@OnDesignerModified;
     OnPasteComponent:=@OnDesignerPasteComponent;
@@ -11292,6 +11292,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.819  2005/01/05 10:55:51  micha
+  draw nonvisual components transparently
+
   Revision 1.818  2005/01/03 12:09:24  mattias
   implemented saving minimized/maximized state
 
