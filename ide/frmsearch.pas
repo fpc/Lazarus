@@ -34,8 +34,8 @@ uses
   // LCL
   Classes, SysUtils, LResources, LCLType, LCLIntf, Forms, Controls, Graphics,
   Dialogs, ExtCtrls, StdCtrls, Buttons, FileCtrl,
-  // synedit
-  SynRegExpr,
+  // synedit, codetools
+  SynRegExpr, SourceLog, KeywordFuncLists,
   // ide
   LazarusIDEStrConsts, InputHistory, FindInFilesDlg, SearchResultView;
 
@@ -188,151 +188,174 @@ begin
 end;//DoSearch
 
 procedure TSearchForm.SearchFile(TheFileName: string);
-  {DoNormalSearch is called if the search is not a Regular expression}
-  procedure DoNormalSearch;
-  var
-    ThisFile: TStringList;   //The File being searched
-    Lines:      integer;     //Loop Counter
-    Match:      integer;     //Position of match in line.
-    StartWord:  boolean;     //Does the word start with a sperator charater?
-    EndWord:    boolean;     //Does the word end with a seperator charater?
-    TheLine:    string;      //Temp Storage for the current line in the file.
-    TempSearch: string;      //Temp Storage for the search string.
-    MatchLen: integer;
+  const
+    WordBreakChars = ['.', ',', ';', ':', '"', '''', '!', '?', '[', ']', '(',
+                  ')', '{', '}', '^', '-', '=', '+', '*', '/', '\', '|', ' '];
+    WhiteSpaceChars = [' ',#10,#13,#9];
 
- const
-  WordBreakChars = ['.', ',', ';', ':', '"', '''', '!', '?', '[', ']', '(',
-                ')', '{', '}', '^', '-', '=', '+', '*', '/', '\', '|', ' '];
-  begin
-    try
-      ThisFile:= TStringList.Create;
-      MatchLen:= Length(fSearchFor);
-      //if this is not a regular expression search
-      if (Not fCaseSensitive) then
-        TempSearch:= UpperCase(fSearchFor)
-      else
-        TempSearch:= fSearchFor;
-      ThisFile.LoadFromFile(TheFileName);
-      for Lines:= 0 to ThisFile.Count -1 do
-      begin
-        Application.ProcessMessages;
-        TheLine:= Trim(ThisFile.Strings[Lines]);
-        if not fCaseSensitive then
-          TheLine:= UpperCase(TheLine);
-        Match:= pos(TempSearch,TheLine);
-        //look at the char before and after the match to see if they are in
-        //our list of word seperator charaters.
-        if fWholeWord and (Match > 0) then
-        begin //is this the first word on the line or does the word start with
-              //one of the word seperator charaters.
-          if (Match = 1) or (TheLine[Match-1] in WordBreakChars) then
-            StartWord := True
-          else
-            StartWord := False;
-          EndWord:= False;
-          if StartWord then // evaluate end only if start is true.
-          begin
-            if (Match + length(TempSearch) >= length(TheLine)) or
-                (TheLine[Match + Length(TempSearch)] in WordBreakChars) then
-              EndWord:= True
-          end;//if
-          if StartWord And EndWord then
-          begin
-            SearchResultsView.AddMatch(fResultsWindow,
-                                       TheFileName,Point(match,lines+1),
-                                       Trim(ThisFile.Strings[Lines]),
-                                       match, MatchLen);
-            UpdateMatches;
-          end;//if
-        end;//if
-        if not fWholeWord and (Match > 0) then
-        begin
-          SearchResultsView.AddMatch(fResultsWindow,
-                                     TheFileName,Point(match,lines+1),
-                                     Trim(ThisFile.Strings[Lines]),
-                                     match, MatchLen);
-          UpdateMatches;
-        end;//if
-         if fAbort and not fAborting then
-         begin
-           fResultsList.Insert(0,fAbortString);
-           fAborting:= True;
-           break;
-         end
-         else if fAbort then
-         begin
-           break;
-         end;//if
-       end;//for
-    finally
-      FreeAndNil(ThisFile);
-    end;//Try-finally
-  end;//DoNormalSearch
-
-  {DoRegExpSearch is called if the search is a regular expression}
-  procedure DoRegExpSearch;
+  function SearchInLine(const SearchStr: string; SrcLog: TSourceLog;
+    LineNumber: integer; WholeWords: boolean;
+    var MatchStartInLine: integer): boolean;
+  // search SearchStr in SrcLog line
+  // returns MatchStartInLine=1 for start of line
   var
-    ThisFile:   TStringList;
-    Lines:      integer;     //Loop Counter
-    Match:      integer;     //Position of match in line.
-    MatchLen:   integer;
-    TheLine:    string;      //Temp Storage for the current line in the file.
-    RE:         TRegExpr;    //Regular expression search engine
+    LineRange: TLineRange;
+    Src: String;
+    StartPos: PChar;
+    EndPos: PChar;
+    i: Integer;
+    SearchLen: Integer;
+    LineStartPos: PChar;
+    FirstChar: Char;
+    Found: Boolean;
+    CharInFront: PChar;
+    CharBehind: PChar;
   begin
-     try
-      ThisFile:= TStringList.Create;
+    Result:=false;
+    if SearchStr='' then exit;
+    SrcLog.GetLineRange(LineNumber,LineRange);
+    Src:=SrcLog.Source;
+    SearchLen:=length(SearchStr);
+    LineStartPos:=@Src[LineRange.StartPos];
+    StartPos:=LineStartPos;
+    EndPos:=@Src[LineRange.EndPos-SearchLen];
+    FirstChar:=SearchStr[1];
+    while (StartPos<EndPos) do begin
+      if FirstChar=StartPos^ then begin
+        i:=1;
+        while (i<=SearchLen) and (StartPos[i-1]=SearchStr[i]) do
+          inc(i);
+        if i>SearchLen then begin
+          Found:=true;
+          MatchStartInLine:=StartPos-LineStartPos+1;
+          if WholeWords then begin
+            CharInFront:=StartPos-1;
+            CharBehind:=StartPos+SearchLen;
+            if ((MatchStartInLine=1)
+                or (CharInFront^ in WordBreakChars))
+            and ((StartPos=EndPos)
+                 or (CharBehind^ in WordBreakChars))
+            then begin
+              // word start and word end
+            end else begin
+              // not whole word
+              Found:=false;
+            end;
+          end;
+          if Found then begin
+            Result:=true;
+            exit;
+          end;
+        end;
+      end;
+      inc(StartPos);
+    end;
+  end;
+  
+  function TrimLineAndMatch(const Line: string; var APosition: integer): string;
+  var
+    StartPos: Integer;
+    EndPos: Integer;
+  begin
+    StartPos:=1;
+    while (StartPos<=length(Line)) and (Line[StartPos] in WhiteSpaceChars) do
+      inc(StartPos);
+    EndPos:=length(Line)+1;
+    while (EndPos>=StartPos) and (Line[EndPos-1] in WhiteSpaceChars) do
+      dec(EndPos);
+    dec(APosition,StartPos-1);
+    Result:=copy(Line,StartPos,EndPos-StartPos);
+  end;
+
+{Start SearchFile ============================================================}
+var
+  ThisFile: TSourceLog;   //The original File being searched
+  UpperFile: TSourceLog;  //The working File being searched
+  Lines:      integer;    //Loop Counter
+  Match:      integer;    //Position of match in line.
+  TempSearch: string;     //Temp Storage for the search string.
+  MatchLen: integer;
+  CurLine: String;
+  RE: TRegExpr;
+  Found: Boolean;
+begin
+  ThisFile:=nil;
+  UpperFile:=nil;
+  RE:=nil;
+  fResultsList.BeginUpdate;
+  try
+    MatchLen:= Length(fSearchFor);
+    TempSearch:= fSearchFor;
+
+    ThisFile:= TSourceLog.Create('');
+    ThisFile.LoadFromFile(TheFileName);
+    if fCaseSensitive then begin
+      UpperFile:=ThisFile;
+    end else begin
+      UpperFile:=TSourceLog.Create(UpperCaseStr(ThisFile.Source));
+      TempSearch:=UpperCaseStr(TempSearch);
+    end;
+
+    if fRegExp then begin
+      //Set up the regular expression search engine.
       RE:= TRegExpr.Create;
-      //Set up the search engine.
       With RE do
       begin
         Expression:= fSearchFor;
         ModifierI:= not fCaseSensitive;
         ModifierM:= False;  //for now
-      end;//with
-      ThisFile.LoadFromFile(TheFileName);
-      for Lines:= 0 to ThisFile.Count - 1 do
-      begin
+      end;
+    end;
+
+    //writeln('TheFileName=',TheFileName,' len=',ThisFile.SourceLength,' Cnt=',ThisFile.LineCount,' TempSearch=',TempSearch);
+    Application.ProcessMessages;
+    for Lines:= 0 to ThisFile.LineCount -1 do
+    begin
+      if (Lines and $ff)=$ff then
         Application.ProcessMessages;
-        TheLine:= Trim(ThisFile[Lines]);
-        if RE.Exec(TheLine) then
-        begin
+      Found:=false;
+      if fRegExp then begin
+        // search every line for regular expression
+        CurLine:=ThisFile.GetLine(Lines);
+        if RE.Exec(CurLine) then begin
+          Found:=true;
           Match:= RE.MatchPos[0];
           MatchLen:= Re.MatchLen[0];
-          
-          SearchResultsView.AddMatch(fResultsWindow,
-                                     TheFileName,Point(match,lines+1),
-                                     TheLine,
-                                     match, MatchLen);
-          UpdateMatches;
-        end;//if
-        if fAbort and not fAborting then
-        begin
-          fResultsList.Insert(0,fAbortString);
-          fAborting:= True;
-          break;
-        end
-        else if fAbort then
-        begin
-          break;
-        end;//if
-      end;//for
-    finally
-      FreeAndNil(ThisFile);
-      FreeAndNil(RE);
-    end;//try-finally
-  end;//DoRegExpSearch
-
-{Start SearchFile ============================================================}
-begin
-  try
-    fResultsList.BeginUpdate;
-    if not fRegExp then
-      DoNormalSearch
-    else
-      DoRegExpSearch;
+        end;
+      end else begin
+        Found:=SearchInLine(TempSearch,UpperFile,Lines,fWholeWord,Match);
+        if Found then
+          CurLine:=ThisFile.GetLine(Lines);
+      end;
+      if Found then begin
+        CurLine:=TrimLineAndMatch(CurLine,Match);
+        SearchResultsView.AddMatch(fResultsWindow,
+                                   TheFileName,Point(Match,lines+1),
+                                   CurLine, Match, MatchLen);
+        UpdateMatches;
+      end;
+      
+      // check abort
+      if fAbort and not fAborting then
+      begin
+        fResultsList.Insert(0,fAbortString);
+        fAborting:= True;
+        break;
+      end
+      else if fAbort then
+      begin
+        break;
+      end;//if
+      
+    end;//for
   finally
+    if ThisFile=UpperFile then
+      UpperFile:=nil;
+    FreeAndNil(ThisFile);
+    FreeAndNil(UpperFile);
+    FreeAndNil(RE);
     fResultsList.EndUpdate;
-  end;//finally
+  end;
 end;//SearchFile
 
 
