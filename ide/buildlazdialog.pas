@@ -51,6 +51,7 @@ type
     fCleanAll: boolean;
     fMakeFilename: string;
     fExtraOptions: string;
+    fTargetOS: string;
   public
     constructor Create;
     procedure Load(XMLConfig: TXMLConfig; const Path: string);
@@ -65,6 +66,7 @@ type
     property CleanAll: boolean read fCleanAll write fCleanAll;
     property MakeFilename: string read fMakeFilename write fMakeFilename;
     property ExtraOptions: string read fExtraOptions write fExtraOptions;
+    property TargetOS: string read fTargetOS write fTargetOS;
   end;
 
   TConfigureBuildLazarusDlg = class(TForm)
@@ -78,6 +80,8 @@ type
     BuildExamplesRadioGroup: TRadioGroup;
     OptionsLabel: TLabel;
     OptionsEdit: TEdit;
+    TargetOSLabel: TLabel;
+    TargetOSEdit: TEdit;
     OkButton: TButton;
     CancelButton: TButton;
     procedure BuildAllButtonClick(Sender: TObject);
@@ -142,12 +146,14 @@ function BuildLazarus(Options: TBuildLazarusOptions;
 var
   Tool: TExternalToolOptions;
   
-  procedure SetMakeParams(MakeMode: TMakeMode; ExtraOpts: string);
+  procedure SetMakeParams(MakeMode: TMakeMode; ExtraOpts: string; TargetOS: string);
   begin
     if MakeMode=mmBuild then
       Tool.CmdLineParams:='all'
     else
       Tool.CmdLineParams:='clean all';
+    if TargetOS<>'' then
+      Tool.CmdLineParams:= 'OS_TARGET='+ TargetOS+' '+Tool.CmdLineParams;
     if ExtraOpts<>'' then
       Tool.CmdLineParams:='OPT='''+ExtraOpts+''' '+Tool.CmdLineParams;
   end;
@@ -168,6 +174,8 @@ begin
       Tool.Title:='Clean Lazarus Source';
       Tool.WorkingDirectory:='$(LazarusDir)';
       Tool.CmdLineParams:='cleanall';
+//      if Options.TargetOS<>'' then
+//        Tool.CmdLineParams:= 'OS_TARGET='+ Options.TargetOS+' '+Tool.CmdLineParams;
       Result:=ExternalTools.Run(Tool,Macros);
       if Result<>mrOk then exit;
     end;
@@ -175,7 +183,7 @@ begin
       // build lcl
       Tool.Title:='Build LCL';
       Tool.WorkingDirectory:='$(LazarusDir)/lcl';
-      SetMakeParams(Options.BuildLCL,Options.ExtraOptions);
+      SetMakeParams(Options.BuildComponents,Options.ExtraOptions,Options.TargetOS);
       Result:=ExternalTools.Run(Tool,Macros);
       if Result<>mrOk then exit;
     end;
@@ -183,7 +191,7 @@ begin
       // build components
       Tool.Title:='Build Component';
       Tool.WorkingDirectory:='$(LazarusDir)/components';
-      SetMakeParams(Options.BuildComponents,Options.ExtraOptions);
+      SetMakeParams(Options.BuildComponents,Options.ExtraOptions,Options.TargetOS);
       Result:=ExternalTools.Run(Tool,Macros);
       if Result<>mrOk then exit;
     end else begin
@@ -191,7 +199,7 @@ begin
         // build SynEdit
         Tool.Title:='Build SynEdit';
         Tool.WorkingDirectory:='$(LazarusDir)/components/synedit';
-        SetMakeParams(Options.BuildSynEdit,Options.ExtraOptions);
+        SetMakeParams(Options.BuildComponents,Options.ExtraOptions,Options.TargetOS);
         Result:=ExternalTools.Run(Tool,Macros);
         if Result<>mrOk then exit;
       end;
@@ -199,7 +207,7 @@ begin
         // build CodeTools
         Tool.Title:='Build CodeTools';
         Tool.WorkingDirectory:='$(LazarusDir)/components/codetools';
-        SetMakeParams(Options.BuildCodeTools,Options.ExtraOptions);
+        SetMakeParams(Options.BuildComponents,Options.ExtraOptions,Options.TargetOS);
         Result:=ExternalTools.Run(Tool,Macros);
         if Result<>mrOk then exit;
       end;
@@ -212,6 +220,8 @@ begin
         Tool.CmdLineParams:='OPT='''+Options.ExtraOptions+''' '
       else
         Tool.CmdLineParams:='';
+      if Options.TargetOS<>'' then
+        Tool.CmdLineParams:= 'OS_TARGET='+ Options.TargetOS+' '+Tool.CmdLineParams;
       if Options.BuildIDE=mmBuild then
         Tool.CmdLineParams:=Tool.CmdLineParams+'ide'
       else
@@ -223,7 +233,7 @@ begin
       // build Examples
       Tool.Title:='Build Examples';
       Tool.WorkingDirectory:='$(LazarusDir)/examples';
-      SetMakeParams(Options.BuildExamples,Options.ExtraOptions);
+      SetMakeParams(Options.BuildComponents,Options.ExtraOptions,Options.TargetOS);
       Result:=ExternalTools.Run(Tool,Macros);
       if Result<>mrOk then exit;
     end;
@@ -241,7 +251,7 @@ begin
   inherited Create(AnOwner);
   if LazarusResources.Find(Classname)=nil then begin
     Width:=350;
-    Height:=415;
+    Height:=435;
     Position:=poScreenCenter;
     Caption:='Configure "Build Lazarus"';
     OnResize:=@ConfigureBuildLazarusDlgResize;
@@ -370,6 +380,28 @@ begin
       Visible:=true;
     end;
 
+    TargetOSLabel:=TLabel.Create(Self);
+    with TargetOSLabel do begin
+      Name:='TargetOSLabel';
+      Parent:=Self;
+      SetBounds(10,
+                OptionsLabel.Top+OptionsLabel.Height+12,
+                80,Height);
+      Caption:='Target OS:';
+      Visible:=true;
+    end;
+
+    TargetOSEdit:=TEdit.Create(Self);
+    with TargetOSEdit do begin
+      Name:='TargetOSEdit';
+      Parent:=Self;
+      SetBounds(TargetOSLabel.Left+TargetOSLabel.Width+5,
+                TargetOSLabel.Top,
+                OptionsEdit.Width,
+                Height);
+      Visible:=true;
+    end;
+
     OkButton:=TButton.Create(Self);
     with OkButton do begin
       Parent:=Self;
@@ -445,6 +477,13 @@ begin
             OptionsLabel.Top,
             BuildExamplesRadioGroup.Width-OptionsLabel.Width-5,
             OptionsEdit.Height);
+  TargetOSLabel.SetBounds(10,
+                OptionsLabel.Top+OptionsLabel.Height+12,
+                80,TargetOsLabel.Height);
+  TargetOSEdit.SetBounds(TargetOSLabel.Left+TargetOSLabel.Width+5,
+                TargetOSLabel.Top,
+                OptionsEdit.Width,
+                TargetOSEdit.Height);
   OkButton.SetBounds(Self.ClientWidth-180,Self.ClientHeight-38,80,25);
   CancelButton.SetBounds(Self.ClientWidth-90,OkButton.Top,
               OkButton.Width,OkButton.Height);
@@ -470,6 +509,7 @@ begin
   BuildIDERadioGroup.ItemIndex:=MakeModeToInt(Options.BuildIDE);
   BuildExamplesRadioGroup.ItemIndex:=MakeModeToInt(Options.BuildExamples);
   OptionsEdit.Text:=Options.ExtraOptions;
+  TargetOSEdit.Text:=Options.TargetOS;
 end;
 
 procedure TConfigureBuildLazarusDlg.Save(Options: TBuildLazarusOptions);
@@ -483,6 +523,7 @@ begin
   Options.BuildIDE:=IntToMakeMode(BuildIDERadioGroup.ItemIndex);
   Options.BuildExamples:=IntToMakeMode(BuildExamplesRadioGroup.ItemIndex);
   Options.ExtraOptions:=OptionsEdit.Text;
+  Options.TargetOS:=TargetOSEdit.Text;
 end;
 
 function TConfigureBuildLazarusDlg.MakeModeToInt(MakeMode: TMakeMode): integer;
@@ -515,6 +556,7 @@ begin
   XMLConfig.SetValue(Path+'BuildExamples/Value',MakeModeNames[fBuildExamples]);
   XMLConfig.SetValue(Path+'CleanAll/Value',fCleanAll);
   XMLConfig.SetValue(Path+'ExtraOptions/Value',fExtraOptions);
+  XMLConfig.SetValue(Path+'TargetOS/Value',fTargetOS);
   XMLConfig.SetValue(Path+'MakeFilename/Value',fMakeFilename);
 end;
 
@@ -534,6 +576,7 @@ begin
                                                 MakeModeNames[fBuildExamples]));
   fCleanAll:=XMLConfig.GetValue(Path+'CleanAll/Value',fCleanAll);
   fExtraOptions:=XMLConfig.GetValue(Path+'ExtraOptions/Value',fExtraOptions);
+  fTargetOS:=XMLConfig.GetValue(Path+'TargetOS/Value',fTargetOS);
   fMakeFilename:=XMLConfig.GetValue(Path+'MakeFilename/Value',fMakeFilename);
 end;
 

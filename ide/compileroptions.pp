@@ -80,6 +80,7 @@ type
     fVarsInReg: Boolean;
     fUncertainOpt: Boolean;
     fOptLevel: Integer;
+    fTargetOS: String;
     
     fGenDebugInfo: Boolean;
     fGenDebugDBX: Boolean;
@@ -168,6 +169,7 @@ type
     property VariablesInRegisters: Boolean read fVarsInReg write fVarsInReg;
     property UncertainOptimizations: Boolean read fUncertainOpt write fUncertainOpt;
     property OptimizationLevel: Integer read fOptLevel write fOptLevel;
+    property TargetOS: string read fTargetOS write fTargetOS;
     
     property GenerateDebugInfo: Boolean read fGenDebugInfo write fGenDebugInfo;
     property GenerateDebugDBX: Boolean read fGenDebugDBX write fGenDebugDBX;
@@ -290,6 +292,8 @@ type
     radOptLevel1: TRadioButton;
     radOptLevel2: TRadioButton;
     radOptLevel3: TRadioButton;
+
+    TargetOSRadioGroup: TRadioGroup;
 
     { Linking Controls }
     grpDebugging: TGroupBox;
@@ -466,6 +470,7 @@ begin
   VariablesInRegisters := XMLConfigFile.GetValue('CompilerOptions/CodeGeneration/Optimizations/VariablesInRegisters/Value', false);
   UncertainOptimizations := XMLConfigFile.GetValue('CompilerOptions/CodeGeneration/Optimizations/UncertainOptimizations/Value', false);
   OptimizationLevel := XMLConfigFile.GetValue('CompilerOptions/CodeGeneration/Optimizations/OptimizationLevel/Value', 1);
+  TargetOS := XMLConfigFile.GetValue('CompilerOptions/CodeGeneration/TargetOS/Value', 'linux');
 
   { Linking }
   GenerateDebugInfo := XMLConfigFile.GetValue('CompilerOptions/Linking/Debugging/GenerateDebugInfo/Value', false);
@@ -568,6 +573,7 @@ begin
   XMLConfigFile.SetValue('CompilerOptions/CodeGeneration/Optimizations/VariablesInRegisters/Value', VariablesInRegisters);
   XMLConfigFile.SetValue('CompilerOptions/CodeGeneration/Optimizations/UncertainOptimizations/Value', UncertainOptimizations);
   XMLConfigFile.SetValue('CompilerOptions/CodeGeneration/Optimizations/OptimizationLevel/Value', OptimizationLevel);
+  XMLConfigFile.SetValue('CompilerOptions/CodeGeneration/TargetOS/Value', TargetOS);
 
   { Linking }
   XMLConfigFile.SetValue('CompilerOptions/Linking/Debugging/GenerateDebugInfo/Value', GenerateDebugInfo);
@@ -629,9 +635,8 @@ begin
       Ext:=ExtractFileExt(Result);
       Result:=copy(Result,1,length(Result)-length(Ext));
       Result:=lowercase(Result);
-      {$IFDEF win32}
-      Result:=Result+'.exe';
-      {$ENDIF}
+      if fTargetOS = 'win32'
+         then Result:=Result+'.exe';
       Result:=ExtractFilePath(MainSourceFileName)+Result;
     end else
       Result:='';
@@ -933,6 +938,15 @@ begin
     3:  switches := switches + 'p3';
   end;
 
+  { Target OS
+       GO32V1 = DOS and version 1 of the DJ DELORIE extender (no longer maintained).
+       GO32V2 = DOS and version 2 of the DJ DELORIE extender.
+       LINUX = LINUX.
+       OS2 = OS/2 (2.x) using the EMX extender.
+       WIN32 = Windows 32 bit. }
+  { Only linux and win32 are in the dialog at this moment}
+  if TargetOS<>'' then
+     switches := switches + ' -T' + TargetOS;
   { --------------- Linking Tab ------------------- }
   
   { Debugging }
@@ -1087,12 +1101,6 @@ begin
   -uxxx = Undefine symbol name xxx
   
   -s = Do not call assembler or linker. Write ppas.bat/ppas.sh script.
-  -T = Target OS
-       GO32V1 = DOS and version 1 of the DJ DELORIE extender (no longer maintained).
-       GO32V2 = DOS and version 2 of the DJ DELORIE extender.
-       LINUX = LINUX.
-       OS2 = OS/2 (2.x) using the EMX extender.
-       WIN32 = Windows 32 bit.
 
   -Xc = Link with C library (LINUX only)
        
@@ -1226,6 +1234,7 @@ begin
   fVarsInReg := false;
   fUncertainOpt := false;
   fOptLevel := 1;
+  fTargetOS := 'linux';
     
   fGenDebugInfo := false;
   fGenDebugDBX := false;
@@ -1298,6 +1307,7 @@ begin
   fVarsInReg := CompOpts.fVarsInReg;
   fUncertainOpt := CompOpts.fUncertainOpt;
   fOptLevel := CompOpts.fOptLevel;
+  fTargetOS := CompOpts.fTargetOS;
 
   fGenDebugInfo := CompOpts.fGenDebugInfo;
   fGenDebugDBX := CompOpts.fGenDebugDBX;
@@ -1595,6 +1605,9 @@ begin
   i:=LCLWidgetTypeRadioGroup.Items.IndexOf(CompilerOpts.LCLWidgetType);
   if i<0 then i:=0;
   LCLWidgetTypeRadioGroup.ItemIndex:=i;
+  i:=TargetOSRadioGroup.Items.IndexOf(CompilerOpts.TargetOS);
+  if i<0 then i:=0;
+  TargetOSRadioGroup.ItemIndex:=i;
 end;
 
 {------------------------------------------------------------------------------}
@@ -1723,6 +1736,10 @@ begin
   i:=LCLWidgetTypeRadioGroup.Itemindex;
   if i<0 then i:=0;
   CompilerOpts.LCLWidgetType:= LCLWidgetTypeRadioGroup.Items[i];
+
+  i:=TargetOSRadioGroup.Itemindex;
+  if i<0 then i:=0;
+  CompilerOpts.TargetOS:= TargetOSRadioGroup.Items[i];
 end;
 
 {------------------------------------------------------------------------------}
@@ -2227,6 +2244,24 @@ begin
     Height := 16;
     Width := 330;
     Visible := True;
+  end;
+
+  TargetOSRadioGroup:=TRadioGroup.Create(Self);
+  with TargetOSRadioGroup do begin
+    Name:='TargetOSRadioGroup';
+    Parent:=nbMain.Page[Page];
+    Left := grpOtherUnits.Left;
+    Top:=grpOptimizations.Top+grpOptimizations.Height+5;
+    Width:=150;
+    Height:=45;
+    Caption:=dlgTargetOS;
+    with Items do begin
+      Add('linux');
+      Add('win32');
+    end;
+    Columns:=2;
+    ItemIndex:=0;
+    Visible:=true;
   end;
 
 end;

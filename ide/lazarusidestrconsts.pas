@@ -508,6 +508,7 @@ resourcestring
   dlgLevel1Opt = 'Level 1 (Quick Optimizations)';
   dlgLevel2Opt = 'Level 2 (Level 1 + Slower Optimizations)';
   dlgLevel3Opt = 'Level 3 (Level 2 + Uncertain)';
+  dlgTargetOS = 'Target OS';
   dlgCODebugging = 'Debugging:';
   dlgCOGDB = 'Generate Debugging Info For GDB (Slows Compiling)';
   dlgCODBX = 'Generate Debugging Info For DBX (Slows Compiling)';
