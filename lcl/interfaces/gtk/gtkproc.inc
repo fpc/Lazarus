@@ -2052,9 +2052,15 @@ begin
           else Msg.msg := LM_CHAR;
         end;
 
-        if Event^.Length = 0
-        then Msg.CharCode := Event^.KeyVal // non ASCII key was pressed
-        else Msg.CharCode := ord(EventString^);
+        if Event^.Length = 0 then begin
+          // non ASCII key was pressed
+          {$IFDEF GTK2}
+          Msg.CharCode := gdk_keyval_to_unicode(Event^.KeyVal);
+          {$ELSE}
+          Msg.CharCode := Event^.KeyVal;
+          {$ENDIF}
+        end else
+          Msg.CharCode := ord(EventString^);
         Msg.Result:=0;
         // send the message directly (not queued) to the LCL
         Result := DeliverMessage(TargetData, Msg) = 0;
@@ -7105,6 +7111,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.292  2004/08/16 16:03:52  mattias
+  added UniCode keyvals
+
   Revision 1.291  2004/08/12 15:50:46  mazen
   + add support for passing non ASCII key values
   * need to check for $F000 if it is the correct value

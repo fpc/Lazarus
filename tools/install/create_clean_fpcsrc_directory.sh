@@ -34,7 +34,7 @@ if [ `which rsync` ]; then
         --exclude=".#*" --exclude="*.~*" --exclude="*.bak" \
         --exclude="*.orig" --exclude="*.rej" --exclude="*.bak" \
         --exclude=".xvpics" --exclude="*.compiled" --exclude="killme*" \
-        --exclude=".gdb_hist*"
+        --exclude=".gdb_hist*" \
         $SrcDir $DestDir
 else
   cp -a $SrcDir $DestDir

@@ -994,9 +994,9 @@ begin
   end;
   Result := wawType;
 end;
-
+{$IFDEF GTK1}
 function Laz_GTK_OBJECT_CONSTRUCTED(AnObject: PGtkObject): gboolean; cdecl;external gtkdll name 'gtk_object_constructed';
-
+{$ENDIF GTK1}
 function GTKAPIWidget_new: PGTKWidget;
 var
   APIWidget: PGTKAPIWidget;
@@ -1146,6 +1146,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.62  2004/08/16 16:03:52  mattias
+  added UniCode keyvals
+
   Revision 1.61  2004/08/15 16:11:32  mattias
   replaced rotten gtk_widget_newv by gtk_type_new
 

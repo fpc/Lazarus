@@ -3431,10 +3431,15 @@ procedure TCollectionPropertyEditorForm.PropagateList;
 var
   I : Longint;
   CurItem: String;
+  Cnt: Integer;
 begin
   CollectionList.Items.BeginUpdate;
+  if Collection<>nil then
+    Cnt:=Collection.Count
+  else
+    Cnt:=0;
   // add or replace list items
-  for I:= 0 to Collection.Count - 1 do begin
+  for I:=0 to Cnt - 1 do begin
     CurItem:=Collection.Items[I].DisplayName;
     if i>=CollectionList.Items.Count then
       CollectionList.Items.Add(CurItem)
@@ -3442,7 +3447,7 @@ begin
       CollectionList.Items[I]:=CurItem;
   end;
   // delete unneeded list items
-  while CollectionList.Items.Count>Collection.Count do begin
+  while CollectionList.Items.Count>Cnt do begin
     CollectionList.Items.Delete(CollectionList.Items.Count-1);
   end;
   CollectionList.Items.EndUpdate;
@@ -3582,12 +3587,17 @@ begin
 end;
 
 Procedure TCollectionPropertyEditor.Edit;
+var
+  TheCollection: TCollection;
 begin
+  TheCollection := TCollection(GetObjectValue);
+  if TheCollection=nil then
+    raise Exception.Create('Collection=nil');
   If Assigned(CollectionForm) then
     CollectionForm.Free;
   CollectionForm := TCollectionPropertyEditorForm.Create(Application);
   with CollectionForm do begin
-    Collection := TCollection(GetObjectValue);
+    Collection := TheCollection;
     PropertyName := GetPropInfo^.Name;
     PersistentName := '';
     Caption := 'Editing ' + GetPropInfo^.Name;

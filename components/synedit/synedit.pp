@@ -604,7 +604,7 @@ type
 {$IFDEF SYN_COMPILER_4_UP}
     function ExecuteAction(ExeAction: TBasicAction): boolean; override;
 {$ENDIF}
-    procedure ExecuteCommand(Command: TSynEditorCommand; AChar: char;
+    procedure ExecuteCommand(Command: TSynEditorCommand; AChar: TCharacter;
       Data: pointer); virtual;
     function GetBookMark(BookMark: integer; var X, Y: integer): boolean;
     function GetHighlighterAttriAtRowCol(XY: TPoint; var Token: string;
@@ -5807,7 +5807,36 @@ begin
   DoOnCommandProcessed(Command, AChar, Data);
 end;
 
-procedure TCustomSynEdit.ExecuteCommand(Command: TSynEditorCommand; AChar: char;
+{$IFDEF USE_WCHAR_LCL}
+function UnicodeToUtf8(aWideChar:WideChar):String[3];
+var
+  w:Word;
+begin
+  w:= Word(aWideChar);
+  case w of
+    0..$7f:
+      begin
+        Result[1]:=char(w);
+        SetLength(Result,1);
+      end;
+    $80..$7ff:
+      begin
+        Result[1]:=char($c0 or (w shr 6));
+        Result[2]:=char($80 or (w and $3f));
+        SetLength(Result,2);
+      end;
+    else
+      begin
+        Result[1]:=char($e0 or (w shr 12));
+        Result[2]:=char($80 or ((w shr 6)and $3f));
+        Result[3]:=char($80 or (w and $3f));
+        SetLength(Result,3);
+      end;
+  end;
+end;
+{$ENDIF USE_WCHAR_LCL}
+
+procedure TCustomSynEdit.ExecuteCommand(Command: TSynEditorCommand; AChar: TCharacter;
   Data: pointer);
 const
   ALPHANUMERIC = DIGIT + ALPHA_UC + ALPHA_LC;
@@ -5849,8 +5878,8 @@ var
         SelectionMode);
     SetSelText('');
   end;
-{end}                                                                           //mh 2000-10-30
-
+{end}
+                                                                           //mh 2000-10-30
 begin
   IncPaintLock;
   try
@@ -6284,8 +6313,13 @@ begin
               if bChangeScroll then Include(fOptions, eoScrollPastEol);
               StartOfBlock := CaretXY;
               if fInserting then begin
+{$IFDEF USE_WCHAR_LCL}
+                System.Insert(UnicodeToUtf8(AChar), Temp, CaretX);
+                CaretX := CaretX + length(UnicodeToUtf8(AChar));
+{$ELSE USE_WCHAR_LCL}
                 System.Insert(AChar, Temp, CaretX);
                 CaretX := CaretX + 1;
+{$ENDIF USE_WCHAR_LCL}
                 TrimmedSetLine(CaretY - 1, Temp);                               //JGF 2000-09-23
                 fUndoList.AddChange(crInsert, StartOfBlock, CaretXY, '',
                   smNormal);
