@@ -1908,6 +1908,7 @@ procedure TGTKObject.SetCallback(Msg : LongInt; Sender : TObject);
     RealizeHandler, Handler: PGTKHandler;
     RealizeID, SignalID: guint;
     WinWidgetInfo: PWinWidgetInfo;
+    MainWidget: PGtkWidget;
   begin
     if ACallBackProc <> nil then
     begin
@@ -1957,7 +1958,10 @@ procedure TGTKObject.SetCallback(Msg : LongInt; Sender : TObject);
       
       // update signal mask which will be set in the realize handler
       if ReqSignalMask <> 0 then begin
-        WinWidgetInfo:=GetWidgetInfo(PGtkWidget(AnObject),true);
+        MainWidget:=GetMainWidget(PGtkWidget(AnObject));
+        if MainWidget=nil then
+          MainWidget:=PGtkWidget(AnObject);
+        WinWidgetInfo:=GetWidgetInfo(MainWidget,true);
         WinWidgetInfo^.EventMask:=WinWidgetInfo^.EventMask or ReqSignalMask;
       end;
       // -> register realize handler
@@ -2579,7 +2583,7 @@ begin
     Begin
       case (sender as TControl).FCompStyle of
 
-        csButton,csBitBtn :
+        csButton,csBitBtn:
         Begin
           SetCallback(LM_CLICKED,Sender);
         End;
@@ -5262,6 +5266,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.149  2002/07/23 07:40:51  lazarus
+  MG: fixed get widget position for inherited gdkwindows
+
   Revision 1.148  2002/07/20 13:47:03  lazarus
   MG: fixed eventmask for realized windows
 
