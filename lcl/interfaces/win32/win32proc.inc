@@ -1,5 +1,7 @@
+// included by win32int.pp
+
 {******************************************************************************
-                        Misc Support Functs  
+                        Misc Support Functs
  ******************************************************************************
    used by:
      win32object.inc
@@ -255,7 +257,7 @@ End;
   Params: Message - Event name
           Data    - Object which fired this event
   Returns: Nothing
-  
+
   Displays a trace about an event
  ------------------------------------------------------------------------------}
 Procedure EventTrace(Message: String; Data: TObject);
@@ -366,14 +368,14 @@ End;
 
 {------------------------------------------------------------------------------
   Procedure: GetWin32KeyInfo
-  Params:  Event      - Requested info  
+  Params:  Event      - Requested info
            KeyCode    - the ASCII key code of the eventkey
            VirtualKey - the virtual key code of the eventkey
            SysKey     - True If the key is a syskey
            ExtEnded   - True If the key is an extended key
            Toggle     - True If the key is a toggle key and its value is on
   Returns: Nothing
-  
+
   GetWin32KeyInfo returns information about the given key event
  ------------------------------------------------------------------------------}
 Procedure GetWin32KeyInfo(Const Event: Integer; Var KeyCode, VirtualKey: Word; Var SysKey, Extended, Toggle: Boolean);
@@ -393,7 +395,7 @@ End;
   Params:    Message - The message to process
   Returns:   True If handled
 
-  Generic function which calls the WindowProc if defined, otherwise the 
+  Generic function which calls the WindowProc if defined, otherwise the
   dispatcher
  ------------------------------------------------------------------------------}
 Function DeliverMessage(Const Target: Pointer; Var Message): Integer;
@@ -483,14 +485,14 @@ Begin
       Handle := TWinControl(AObject).Handle
   End
   Else If (AObject Is TMenuItem) Then
-  Begin 
+  Begin
     If TMenuItem(AObject).HandleAllocated Then
-      Handle := TMenuItem(AObject).Handle 
+      Handle := TMenuItem(AObject).Handle
   End
   Else If (AObject Is TMenu) Then
-  Begin 
+  Begin
     If TMenu(AObject).HandleAllocated Then
-      Handle := TMenu(AObject).Items.Handle 
+      Handle := TMenu(AObject).Items.Handle
   End
   Else If (AObject Is TCommonDialog) Then
   Begin
@@ -499,7 +501,7 @@ Begin
   End
   Else
   Begin
-    Assert(False, Format('Trace:[ObjectToHWND] Message received With unhandled class-type <%s>', [AObject.ClassName])); 
+    Assert(False, Format('Trace:[ObjectToHWND] Message received With unhandled class-type <%s>', [AObject.ClassName]));
   End;
   Result := Handle;
   If Handle = 0 Then
@@ -514,7 +516,7 @@ End;
 {-------------------------------------------------------------------------------
   function LCLBoundsNeedsUpdate(Sender: TWinControl;
     SendSizeMsgOnDiff: boolean): boolean;
-    
+
   Returns true if LCL bounds and win32 bounds differ for the control.
 -------------------------------------------------------------------------------}
 function LCLControlSizeNeedsUpdate(Sender: TWinControl;
@@ -576,7 +578,7 @@ var AccelCount: integer; {number of accelerators in table}
       inc(i);
     end;
   end;
-  
+
   function GetVirtFromState(const AState: TShiftState): word;
   begin
     Result := FVIRTKEY;
@@ -584,7 +586,7 @@ var AccelCount: integer; {number of accelerators in table}
     if ssCtrl in AState then Result := Result or FCONTROL;
     if ssShift in AState then Result := Result or FSHIFT;
   end;
-  
+
 Begin
   OldAccel := AnAccelTable;
   NullAccel := nil;
@@ -617,7 +619,7 @@ End;
 {-------------------------------------------------------------------------------
   function GetLCLClientOriginOffset(Sender: TObject;
     var LeftOffset, TopOffset: integer): boolean;
-    
+
   Returns the difference between the client origin of a win32 handle
   and the definition of the LCL counterpart.
   For example:
@@ -702,6 +704,9 @@ End;
  { =============================================================================
 
   $Log$
+  Revision 1.29  2003/11/18 07:20:40  micha
+  added "included by" notice at top of file
+
   Revision 1.28  2003/10/06 10:50:10  mattias
   added recursion to InvalidateClientRectCache
 

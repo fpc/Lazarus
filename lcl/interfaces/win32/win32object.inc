@@ -1,3 +1,5 @@
+// included by win32int.pp
+
 {
  *****************************************************************************
  *                                                                           *
@@ -2810,6 +2812,9 @@ End;
 
 {
   $Log$
+  Revision 1.130  2003/11/18 07:20:40  micha
+  added "included by" notice at top of file
+
   Revision 1.129  2003/11/16 17:13:20  marc
   * Applied patch from Martin Smat
 

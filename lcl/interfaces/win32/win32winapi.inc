@@ -1,3 +1,5 @@
+// included by win32int.pp
+
 {******************************************************************************
                          All Windows API implementations.
                    Initial Revision : Sat Nov 13 12:53:53 1999
@@ -2788,6 +2790,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.74  2003/11/18 07:20:40  micha
+  added "included by" notice at top of file
+
   Revision 1.73  2003/11/14 21:17:59  micha
   new maskblt method for transparency blitting
 

@@ -1,3 +1,5 @@
+// included by win32int.pp
+
 {******************************************************************************
                                  win32listslh.inc
                  TWin32ListStringList and TWin32CListStringList
@@ -18,11 +20,11 @@
  *****************************************************************************
 }
 
-{$IFOPT H+} 
-  {$DEFINE H_PLUS} 
+{$IFOPT H+}
+  {$DEFINE H_PLUS}
 {$ELSE}
   {$H+}
-{$ENDIF} 
+{$ENDIF}
 
 Type
   TWin32ListStringList = Class(TStrings)
@@ -59,7 +61,7 @@ Type
   TWin32CListStringList = Class(TStrings)
   Private
     FWin32CList: HWND;
-    FSender: TWinControl; // Needed to recreate the window 
+    FSender: TWinControl; // Needed to recreate the window
     FSorted: Boolean;
   Protected
     Function Get(Index: Integer): String; Override;
@@ -86,6 +88,9 @@ Type
 { =============================================================================
 
   $Log$
+  Revision 1.11  2003/11/18 07:20:40  micha
+  added "included by" notice at top of file
+
   Revision 1.10  2003/10/02 11:18:09  mattias
   clean ups from Karl
 

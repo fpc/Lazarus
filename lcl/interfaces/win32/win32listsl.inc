@@ -1,9 +1,11 @@
+// included by win32int.pp
+
 {******************************************************************************
                                  win32listsl.inc
                  TWin32ListStringList and TWin32CListStringList
-                 
+
  ******************************************************************************
- 
+
  *****************************************************************************
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
@@ -18,12 +20,12 @@
  *****************************************************************************
 }
 
-{$IFOPT H+} 
-  {$DEFINE H_PLUS} 
+{$IFOPT H+}
+  {$DEFINE H_PLUS}
 {$ELSE}
   {$H+}
   {$UNDEF H_PLUS}
-{$ENDIF} 
+{$ENDIF}
 
 {*************************************************************}
 {                      Default compare function               }
@@ -54,8 +56,8 @@ end;
 
 {------------------------------------------------------------------------------
   Method: TWin32ListStringList.Create
-  Params: 
-  Returns: 
+  Params:
+  Returns:
 
  ------------------------------------------------------------------------------}
 Constructor TWin32ListStringList.Create(List : HWND; TheOwner: TWinControl);
@@ -68,7 +70,7 @@ Begin
     //Assert(False, 'Trace:Unspecified list window');
   FWin32List := List;
   FSender := TheOwner;
- 
+
   //Set proper win32 flags for ComboBox/ListBox and get/set Combo Height
   case FSender.FCompStyle of
     csComboBox:begin
@@ -82,7 +84,7 @@ Begin
                FFlagAddString:=CB_ADDSTRING;
                //Get edit and item sizes
                Windows.GetClientRect(FWin32List,@R);
-               FEditHeight:= R.Bottom;    
+               FEditHeight:= R.Bottom;
                FItemHeight:= Windows.SendMessage(FWin32List,CB_GETITEMHEIGHT,0,0);
                FDDownCount:= TComboBox(FSender).DropDownCount;
                If FDDownCount = 0 then FDDownCount:= 8;
@@ -105,8 +107,8 @@ End;
 
 {------------------------------------------------------------------------------
   Method: TWin32ListStringList.SetSorted
-  Params: 
-  Returns: 
+  Params:
+  Returns:
 
  ------------------------------------------------------------------------------}
 Procedure TWin32ListStringList.SetSorted(Val: Boolean);
@@ -120,21 +122,21 @@ End;
 
 {------------------------------------------------------------------------------
   Method: TWin32ListStringList.Sort
-  Params: 
-  Returns: 
+  Params:
+  Returns:
 
  ------------------------------------------------------------------------------}
 Procedure TWin32ListStringList.Sort;
 Begin
   // The win api doesn't allow to change the sort on the fly,
-  // so is needed to recreate the window 
+  // so is needed to recreate the window
   CNSendMessage(LM_RECREATEWND,FSender,Nil);
 End;
 
 {------------------------------------------------------------------------------
   Method: TWin32ListStringList.Assign
-  Params: 
-  Returns: 
+  Params:
+  Returns:
 
  ------------------------------------------------------------------------------}
 Procedure TWin32ListStringList.Assign(Source: TPersistent);
@@ -150,7 +152,7 @@ Begin
       CNSendMessage(LM_GETTEXT, FSender, @EditText);
 
     Windows.SendMessage(FWin32List, FFlagResetContent, 0, 0);
-    For Counter := 0 To (TStrings(Source).Count - 1) Do 
+    For Counter := 0 To (TStrings(Source).Count - 1) Do
       Windows.SendMessage(FWin32List, FFlagAddString, 0, LPARAM(PChar(TStrings(Source)[Counter]))); //Insert
 
     if FSender.FCompStyle=csComboBox Then
@@ -170,8 +172,8 @@ End;
 
 {------------------------------------------------------------------------------
   Method: TWin32ListStringList.Get
-  Params: 
-  Returns: 
+  Params:
+  Returns:
 
  ------------------------------------------------------------------------------}
 Function TWin32ListStringList.Get(Index: Integer): String;
@@ -184,15 +186,15 @@ Begin
   Begin
   	Getmem(Item,Windows.SendMessage(FWin32List,FFlagGetTextLen,Index,0)+1);
     Windows.SendMessage(FWin32List, FFlagGetText, Index, LPARAM(Item));
-  End;      
+  End;
   Result := StrPas(Item);
   Dispose(Item);
 End;
 
 {------------------------------------------------------------------------------
   Method: TWin32ListStringList.GetCount
-  Params: 
-  Returns: 
+  Params:
+  Returns:
 
  ------------------------------------------------------------------------------}
 Function TWin32ListStringList.GetCount: Integer;
@@ -202,22 +204,22 @@ End;
 
 {------------------------------------------------------------------------------
   Method: TWin32ListStringList.Clear
-  Params: 
-  Returns: 
+  Params:
+  Returns:
 
  ------------------------------------------------------------------------------}
 Procedure TWin32ListStringList.Clear;
-Begin	
+Begin
   if FSender.FCompStyle=csComboBox Then
     SetComboHeight(FSender,FSender.Left,FSender.Top,FSender.Width,
                    FEditHeight + FItemHeight + 2);
   Windows.SendMessage(FWin32List,FFlagResetContent, 0, 0);
-End;  
+End;
 
 {------------------------------------------------------------------------------
   Method: TWin32ListStringList.Delete
-  Params: 
-  Returns: 
+  Params:
+  Returns:
 
  ------------------------------------------------------------------------------}
 Procedure TWin32ListStringList.Delete(Index: Integer);
@@ -231,19 +233,19 @@ End;
 
 {------------------------------------------------------------------------------
   Method: TWin32ListStringList.Insert
-  Params: 
-  Returns: 
+  Params:
+  Returns:
 
  ------------------------------------------------------------------------------}
 Procedure TWin32ListStringList.Insert(Index: Integer; Const S: String);
 Begin
-  If (FSender.FCompStyle = csComboBox) 
+  If (FSender.FCompStyle = csComboBox)
   and (GetCount = 0) Then
     SetComboHeight(FSender,FSender.Left,FSender.Top,FSender.Width,
                    FEditHeight + FDDownCount*FItemHeight + 2);
   If FSorted Then
     Windows.SendMessage(FWin32List,FFlagAddString, 0, LPARAM(PChar(S)))
-  Else 
+  Else
     Windows.SendMessage(FWin32List,FFlagInsertString, Index, LPARAM(PChar(S)));
 End;
 
@@ -253,8 +255,8 @@ End;
 
 {------------------------------------------------------------------------------
   Method: TWin32CListStringList.Create
-  Params: 
-  Returns: 
+  Params:
+  Returns:
 
  ------------------------------------------------------------------------------}
 Constructor TWin32CListStringList.Create(List : HWND; TheOwner: TWinControl);
@@ -269,8 +271,8 @@ End;
 
 {------------------------------------------------------------------------------
   Method: TWin32CListStringList.SetSorted
-  Params: 
-  Returns: 
+  Params:
+  Returns:
 
  ------------------------------------------------------------------------------}
 Procedure TWin32CListStringList.SetSorted(Val: Boolean);
@@ -284,21 +286,21 @@ End;
 
 {------------------------------------------------------------------------------
   Method: TWin32CListStringList.Sort
-  Params: 
-  Returns: 
+  Params:
+  Returns:
 
  ------------------------------------------------------------------------------}
 Procedure TWin32CListStringList.Sort;
 Begin
   // The win api doesn't allow to change the sort on the fly,
-  // so is needed to recreate the window 
+  // so is needed to recreate the window
   CNSendMessage(LM_RECREATEWND,FSender,Nil);
 End;
 
 {------------------------------------------------------------------------------
   Method: TWin32CListStringList.Assign
-  Params: 
-  Returns: 
+  Params:
+  Returns:
 
  ------------------------------------------------------------------------------}
 Procedure TWin32CListStringList.Assign(Source: TPersistent);
@@ -309,17 +311,17 @@ Begin
   If Source Is TStrings Then
   Begin
     Clear;
-    For Counter :=  0 To (TStrings(Source).Count - 1) Do 
+    For Counter :=  0 To (TStrings(Source).Count - 1) Do
       InsertObject(0, TStrings(Source)[Counter], TStrings(Source).Objects[Counter]);
-  End 
+  End
   Else
     Inherited Assign(Source);
 End;
 
 {------------------------------------------------------------------------------
   Method: TWin32CListStringList.Clear
-  Params: 
-  Returns: 
+  Params:
+  Returns:
 
  ------------------------------------------------------------------------------}
 Procedure TWin32CListStringList.Clear;
@@ -329,8 +331,8 @@ End;
 
 {------------------------------------------------------------------------------
   Method: TWin32CListStringList.Delete
-  Params: 
-  Returns: 
+  Params:
+  Returns:
 
  ------------------------------------------------------------------------------}
 procedure TWin32CListStringList.Delete(Index: Integer);
@@ -340,12 +342,12 @@ end;
 
 {------------------------------------------------------------------------------
   Method: TWin32CListStringList.Get
-  Params: 
-  Returns: 
+  Params:
+  Returns:
 
  ------------------------------------------------------------------------------}
 Function TWin32CListStringList.Get(Index: Integer): String;
-Var 
+Var
   Item: PChar;
 Begin
   If (Index < 0) Or (Index >= Count) Then
@@ -361,8 +363,8 @@ End;
 
 {------------------------------------------------------------------------------
   Method: TWin32CListStringList.GetCount
-  Params: 
-  Returns: 
+  Params:
+  Returns:
 
  ------------------------------------------------------------------------------}
 Function TWin32CListStringList.GetCount: Integer;
@@ -372,8 +374,8 @@ End;
 
 {------------------------------------------------------------------------------
   Method: TWin32CListStringList.GetObject
-  Params: 
-  Returns: 
+  Params:
+  Returns:
 
  ------------------------------------------------------------------------------}
 Function TWin32CListStringList.GetObject(Index: Integer): TObject;
@@ -383,22 +385,22 @@ End;
 
 {------------------------------------------------------------------------------
   Method: TWin32CListStringList.Insert
-  Params: 
-  Returns: 
+  Params:
+  Returns:
 
  ------------------------------------------------------------------------------}
 Procedure TWin32CListStringList.Insert(Index: Integer; Const S: String);
 Begin
   If FSorted Then
     Windows.SendMessage(FWin32CList,LB_ADDSTRING, 0, LPARAM(PChar(S)))
-  Else 
+  Else
     Windows.SendMessage(FWin32CList,LB_INSERTSTRING, Index, LPARAM(PChar(S)));
 End;
 
 {------------------------------------------------------------------------------
   Method: TWin32CListStringList.PutObject
-  Params: 
-  Returns: 
+  Params:
+  Returns:
 
  ------------------------------------------------------------------------------}
 Procedure TWin32CListStringList.PutObject(Index: Integer; AObject: TObject);
@@ -415,6 +417,9 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.21  2003/11/18 07:20:40  micha
+  added "included by" notice at top of file
+
   Revision 1.20  2003/10/02 11:18:09  mattias
   clean ups from Karl
 

@@ -1,3 +1,5 @@
+// included by win32int.pp
+
 {******************************************************************************
   All Windows API related stuff goes here.
 
@@ -189,6 +191,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.40  2003/11/18 07:20:40  micha
+  added "included by" notice at top of file
+
   Revision 1.39  2003/11/14 21:17:59  micha
   new maskblt method for transparency blitting
 
