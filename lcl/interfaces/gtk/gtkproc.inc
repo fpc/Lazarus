@@ -1001,18 +1001,21 @@ end;
 
 
 {------------------------------------------------------------------------------
-  procedure: ConnectHiddenWidgetsSignals
+  procedure: ConnectInternalWidgetsSignals
   Params:  AWinControl: TWinControl
   Returns: Nothing
 
   Connects hidden child widgets signals.
-  Many widgets create internally used child widgets (e.g. scrollbars). In
-  Design mode these widgets should not auto react themselves, but send messages
-  to the lcl. Therefore these widgets are also connected to our signal handlers.
+  Many gtk widgets create internally child widgets (e.g. scrollbars). In
+  Design mode these widgets should not auto react themselves, but instead send
+  messages to the lcl. Therefore these widgets are connected to special
+  signal handlers.
+  This procedure is called by the realize after handler of all LCL widgets
+  and each time the design mode of a LCL control changes.
  ------------------------------------------------------------------------------}
-procedure ConnectHiddenWidgetsSignals(AWinControl: TWinControl);
+procedure ConnectInternalWidgetsSignals(AWinControl: TWinControl);
 
-  procedure ConnectHiddenChilds(AWidget: PGtkWidget); forward;
+  procedure ConnectInternalChilds(AWidget: PGtkWidget); forward;
 
   procedure ConnectSignal(AWidget: PGtkWidget; SignalName: PChar;
     const ACallBackProc: Pointer; ConnectBefore: boolean);
@@ -2207,6 +2210,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.62  2002/08/19 08:50:28  lazarus
+  MG: fixed parser for Clx enums and empty param lists
+
   Revision 1.61  2002/08/17 11:38:04  lazarus
   MG: fixed keygrabbing key translation
 
