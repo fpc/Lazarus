@@ -32,6 +32,7 @@ end;
 destructor TButtonGlyph.Destroy;
 Begin
   FOriginal.Free;
+  FOriginal:=nil;
   inherited Destroy;
 end;
 

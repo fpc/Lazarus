@@ -425,7 +425,7 @@ begin
             Name:='PaletteBtnPage'+IntToStr(i)+'_'+IntToStr(j)
                   +'_'+CurComponent.ComponentClass.ClassName;
             Parent := CurNoteBookPage;
-            Glyph := CurComponent.Icon;
+            Glyph := CurComponent.GetIconCopy;
             Width := ComponentPaletteBtnWidth;
             Height := ComponentPaletteBtnHeight;
             GroupIndex := 1;
