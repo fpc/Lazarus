@@ -72,7 +72,10 @@ begin
       Top :=0;
       Width := Self.Width;
       Height := Self.Height;
-      Pages.Strings[0] := 'Page 1';
+      if Pages.PageCount>0 then
+        Pages.Strings[0] := 'Page 1'
+      else
+        Pages.Add('Page 1');
       Pages.Add('Page 2');
       Pages.Add('Page 3');
       Pages.Add('Page 4');
@@ -89,7 +92,10 @@ begin
       Top := 50;
       Width := Parent.Width - 50;
       Height := Parent.Height - 80;
-      Pages.Strings[0] := 'Page 1';
+      if Pages.PageCount>0 then
+        Pages.Strings[0] := 'Page 1'
+      else
+        Pages.Add('Page 1');
       Pages.Add('Page 2');
       Pages.Add('Page 3');
       Pages.Add('Page 4');
@@ -258,6 +264,9 @@ end.
 
 {
   $Log$
+  Revision 1.3  2002/09/02 19:10:27  lazarus
+  MG: TNoteBook now starts with no Page and TPage has no auto names
+
   Revision 1.2  2002/05/10 06:57:50  lazarus
   MG: updated licenses
 

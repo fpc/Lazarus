@@ -64,9 +64,9 @@ var
   Msg: TLMNotebookEvent;
 begin
   TPage(fPageList[Index]).Caption := S;
-  TPage(fPageList[Index]).Name := S;
 
-  if FNoteBook.HandleAllocated 
+  if (FNoteBook.HandleAllocated)
+  and (not (csLoading in FNoteBook.ComponentState))
   then begin
     Msg.Parent := fNotebook;
     Msg.Child := TPage(fPageList[Index]);
@@ -116,16 +116,16 @@ begin
       if NewPageIndex<fPageList.Count-1 then
         // switch current page to next (right) page
         inc(NewPageIndex)
-      else if fPageList.Count>1 then
+      else if fPageList.Count>0 then
         // switch to previous (left) page
         dec(NewPageIndex)
       else
         // deleting last page
-        // TODO: delete contents but not last page
-        exit;
+        NewPageIndex:=-1;
     end;
     fNoteBook.PageIndex:=NewPageIndex;
-    if FNoteBook.HandleAllocated then begin
+    if (FNoteBook.HandleAllocated)
+    and (not (csLoading in FNoteBook.ComponentState)) then begin
       Msg.Parent := fNotebook;
       Msg.fCompStyle := fNotebook.fCompStyle;
       Msg.Page := Index;
@@ -152,7 +152,6 @@ begin
   tmpPage := TPage.Create(fNotebook);
   with tmpPage do
   begin
-    Name    := S;
     Parent := fNotebook;
     Caption := S;
     Visible := true;
@@ -171,6 +170,7 @@ begin
   fPageList.Insert(Index,APage);
 
   if FNoteBook.HandleAllocated
+  and (not (csLoading in FNoteBook.ComponentState))
   then begin
     Msg.Parent := TControl(fNotebook);
     Msg.Child := APage;
@@ -218,13 +218,10 @@ begin
   fAccess := TNBPages.Create(fPageList, Self);
   fPageIndex := -1;
   { Create the first notebook page }
-  fAccess.Add('Default');
-
-  fPageIndex := 0;
-  //Exclude(fComponentStyle, csInheritable);
+  fPageIndex := -1;
 
   TabPosition := tpTop;
-  ShowTabs := False;
+  ShowTabs := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -253,9 +250,9 @@ begin
     CNSendMessage(LM_ADDPAGE, Self, @Msg);
   end;
 
-  SetShowTabs(FShowTabs);
-  SetTabPosition(fTabPosition);
-  SetPageIndex(FPageIndex);
+  DoSendShowTabs;
+  DoSendTabPosition;
+  DoSendPageIndex;
 end;
 
 {------------------------------------------------------------------------------
@@ -315,7 +312,6 @@ procedure TCustomNotebook.SetImages(const AValue: TImageList);
 begin
   if FImages=AValue then exit;
   FImages:=AValue;
-  if (csLoading in ComponentState) then exit;
   UpdateTabProperties;
 end;
 
@@ -325,7 +321,6 @@ begin
   if FOptions=AValue then exit;
   ChangedOptions:=(FOptions-AValue)+(AValue-FOptions);
   FOptions:=AValue;
-  if (csLoading in ComponentState) then exit;
   if nboShowCloseButtons in ChangedOptions then
     UpdateTabProperties;
 end;
@@ -334,22 +329,10 @@ end;
   TCustomNotebook SetPageIndex
  ------------------------------------------------------------------------------}
 procedure TCustomNotebook.SetPageIndex(Value: Integer);
-var
-  Msg: TLMNotebookEvent;
 begin
+  if fPageIndex = Value then exit;
   fPageIndex := Value;
-  if HandleAllocated then begin
-    Msg.Parent := Self;
-    Msg.fCompStyle := fCompStyle;
-    Msg.Page := Value;
-    {$IFDEF NOTEBOOK_DEBUG}
-    writeln('[TCustomNotebook.SetPageIndex] A');
-    {$ENDIF}
-    CNSendMessage(LM_SETITEMINDEX, Self, @Msg);
-    {$IFDEF NOTEBOOK_DEBUG}
-    writeln('[TCustomNotebook.SetPageIndex] B');
-    {$ENDIF}
-  end;
+  DoSendPageIndex;
 end;
 
 {------------------------------------------------------------------------------
@@ -399,42 +382,21 @@ end;
 {------------------------------------------------------------------------------
   TCustomNotebook SetShowTabs
  ------------------------------------------------------------------------------}
-procedure TCustomNotebook.SetShowTabs(Value: Boolean);
-var
-  Msg: TLMNotebookEvent;
+procedure TCustomNotebook.SetShowTabs(AValue: Boolean);
 begin
-  fShowTabs := Value;
-  if HandleAllocated
-  then begin
-    Msg.Parent := Self;
-    Msg.fCompStyle := fCompStyle;
-    Msg.ShowTabs := fShowTabs;
-    {$IFDEF NOTEBOOK_DEBUG}
-    writeln('[TCustomNotebook.SetShowTabs] A');
-    {$ENDIF}
-    CNSendMessage(LM_SHOWTABS, Self, @Msg);
-    {$IFDEF NOTEBOOK_DEBUG}
-    writeln('[TCustomNotebook.SetShowTabs] B');
-    {$ENDIF}
-  end;
+  if fShowTabs=AValue then exit;
+  fShowTabs := AValue;
+  DoSendShowTabs;
 end;
 
 {------------------------------------------------------------------------------
   TCustomNotebook SetTabPosition
  ------------------------------------------------------------------------------}
 procedure TCustomNotebook.SetTabPosition(tabPos: TTabPosition);
-var
-  Msg: TLMNotebookEvent;
 begin
+  if fTabPosition = tabPos then exit;
   fTabPosition := tabPos;
-  if HandleAllocated
-  then begin
-    Msg.Parent := Self;
-    Msg.fCompStyle := fCompStyle;
-    Msg.TabPosition := @fTabPosition;
-    //InterfaceObject.IntCNSendMessage2(LM_SETTABPOSITION, Self, nil, @fTabPosition);
-    CNSendMessage(LM_SetTabPosition, Self, @Msg);
-  end;
+  DoSendTabPosition;
 end;
 
 {------------------------------------------------------------------------------
@@ -478,7 +440,7 @@ end;
 {------------------------------------------------------------------------------
   TCustomNotebook ShowControl
  ------------------------------------------------------------------------------}
-procedure TCustomNotebook.ShowControl(AControl: TControl);
+procedure TCustomNotebook.ShowControl(APage: TControl);
 var
   i: LongInt;
 begin
@@ -487,7 +449,7 @@ begin
     the page that contains that control. This method is necessary
     for compatibility with Delphi }
   for i := 0 to fPageList.Count - 1 do begin
-    if TControl(fPageList[i]) = AControl then begin
+    if TControl(fPageList[i]) = APage then begin
       PageIndex := i;
       Exit;
     end;
@@ -504,6 +466,7 @@ end;
 procedure TCustomNotebook.UpdateTabProperties;
 var i: integer;
 begin
+  if not HandleAllocated or (csLoading in ComponentState) then exit;
   for i := 0 to PageCount - 1 do
     CNSendMessage(LM_NB_UpdateTab, Page[i], nil);
 end;
@@ -527,6 +490,8 @@ Begin
         Begin
           //set the page from the NMHDR^.idfrom
           FPageIndex := NMHDR^.idfrom;
+          if FPageIndex>=PageCount then
+            FPageIndex:=-1;
           Change;
         end;
     else
@@ -536,6 +501,61 @@ Begin
         writeln('');
       end;
     end;
+end;
+
+{------------------------------------------------------------------------------
+  procedure TCustomNotebook.DoSendPageIndex;
+ ------------------------------------------------------------------------------}
+procedure TCustomNotebook.DoSendPageIndex;
+var
+  Msg: TLMNotebookEvent;
+begin
+  if not HandleAllocated or (csLoading in ComponentState) then exit;
+  Msg.Parent := Self;
+  Msg.fCompStyle := fCompStyle;
+  Msg.Page := FPageIndex;
+  {$IFDEF NOTEBOOK_DEBUG}
+  writeln('[TCustomNotebook.SetPageIndex] A');
+  {$ENDIF}
+  CNSendMessage(LM_SETITEMINDEX, Self, @Msg);
+  {$IFDEF NOTEBOOK_DEBUG}
+  writeln('[TCustomNotebook.SetPageIndex] B');
+  {$ENDIF}
+end;
+
+{------------------------------------------------------------------------------
+  procedure TCustomNotebook.DoSendShowTabs;
+ ------------------------------------------------------------------------------}
+procedure TCustomNotebook.DoSendShowTabs;
+var
+  Msg: TLMNotebookEvent;
+begin
+  if not HandleAllocated or (csLoading in ComponentState) then exit;
+  Msg.Parent := Self;
+  Msg.fCompStyle := fCompStyle;
+  Msg.ShowTabs := fShowTabs;
+  {$IFDEF NOTEBOOK_DEBUG}
+  writeln('[TCustomNotebook.SetShowTabs] A');
+  {$ENDIF}
+  CNSendMessage(LM_SHOWTABS, Self, @Msg);
+  {$IFDEF NOTEBOOK_DEBUG}
+  writeln('[TCustomNotebook.SetShowTabs] B');
+  {$ENDIF}
+end;
+
+{------------------------------------------------------------------------------
+  procedure TCustomNotebook.DoSendTabPosition;
+ ------------------------------------------------------------------------------}
+procedure TCustomNotebook.DoSendTabPosition;
+var
+  Msg: TLMNotebookEvent;
+begin
+  if not HandleAllocated or (csLoading in ComponentState) then exit;
+  Msg.Parent := Self;
+  Msg.fCompStyle := fCompStyle;
+  Msg.TabPosition := @fTabPosition;
+  //InterfaceObject.IntCNSendMessage2(LM_SETTABPOSITION, Self, nil, @fTabPosition);
+  CNSendMessage(LM_SetTabPosition, Self, @Msg);
 end;
 
 {------------------------------------------------------------------------------
@@ -566,6 +586,9 @@ end;}
 { =============================================================================
 
   $Log$
+  Revision 1.19  2002/09/02 19:10:28  lazarus
+  MG: TNoteBook now starts with no Page and TPage has no auto names
+
   Revision 1.18  2002/06/08 17:16:02  lazarus
   MG: added close buttons and images to TNoteBook and close buttons to source editor
 

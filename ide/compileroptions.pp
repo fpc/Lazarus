@@ -1361,7 +1361,10 @@ begin
   nbmain.Left := 0;
 
   // Add the pages 
-  nbMain.Pages.Strings[0] := 'Search Paths';
+  if nbMain.PageCount>0 then
+    nbMain.Pages[0] := 'Search Paths'
+  else
+    nbMain.Pages.Add('Search Paths');
   nbMain.Pages.Add('Parsing');
   nbMain.Pages.Add('Code Generation');
   nbMain.Pages.Add('Linking');

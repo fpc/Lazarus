@@ -591,7 +591,10 @@ begin
       Name:='NoteBook';
       Parent:=Self;
       SetBounds(0,0,Self.ClientWidth,Self.ClientHeight-50);
-      Pages[0]:='General';
+      if PageCount>0 then
+        Pages[0]:='General'
+      else
+        Pages.Add('General');;
       Pages.Add('Code Creation');
       Pages.Add('Line Splitting');
       Pages.Add('Space');

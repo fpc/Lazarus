@@ -1444,7 +1444,10 @@ begin
   CreateWinControl(ValueNoteBook,TNoteBook,'ValueNoteBook',
                    SelectedItemGroupBox);
   with ValueNoteBook do begin
-    Pages[0]:='Value as Text';
+    if PageCount>0 then
+      Pages[0]:='Value as Text'
+    else
+      Pages.Add('Value as Text');
     Pages.Add('Value as File Paths');
     OnPageChanged:=@ValueNoteBookPageChanged;
     OnResize:=@ValueNoteBookResize;

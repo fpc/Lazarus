@@ -138,7 +138,10 @@ begin
       Name:='NoteBook';
       Parent:=Self;
       SetBounds(0,0,Self.ClientWidth,Self.ClientHeight-50);
-      Pages[0]:='Application';
+      if PageCount>0 then
+        Pages[0]:='Application'
+      else
+        Pages.Add('Application');
       Pages.Add('Forms');
       Pages.Add('Info');
       Visible:=true;

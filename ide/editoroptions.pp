@@ -1860,7 +1860,10 @@ begin
       Left:=0;
       Width:=Self.Width;
       Height:=Self.Height-50;
-      Pages.Strings[0]:='General';
+      if PageCount>0 then
+        Pages.Strings[0]:='General'
+      else
+        Pages.Add('General');
       Pages.Add('Display');
       Pages.Add('Key Mappings');
       Pages.Add('Color');

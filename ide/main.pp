@@ -911,7 +911,7 @@ begin
     RegCompPage := RegCompList.Pages[i];
     if RegCompPage.Name <> '' then
     Begin
-      if (PageCount = 0) then
+      if (PageCount = 0) and (ComponentNotebook.PageCount>0) then
         ComponentNotebook.Pages.Strings[PageCount] := RegCompPage.Name
       else
         ComponentNotebook.Pages.Add(RegCompPage.Name);
@@ -6731,6 +6731,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.358  2002/09/02 19:10:25  lazarus
+  MG: TNoteBook now starts with no Page and TPage has no auto names
+
   Revision 1.357  2002/08/31 11:37:07  lazarus
   MG: fixed destroying combobox
 
