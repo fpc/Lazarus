@@ -1860,15 +1860,12 @@ begin
 end;
 
 function CreateLRSReader(s: TStream; var DestroyDriver: boolean): TReader;
-{$IFDEF NewLRSStreamer}
 var
   p: Pointer;
   Driver: TAbstractObjectReader;
-{$ENDIF}
 begin
   Result:=TReader.Create(s,4096);
   DestroyDriver:=false;
-  {$IFDEF NewLRSStreamer}
   if Result.Driver.ClassType=LRSObjectReaderClass then exit;
   // hack to set a write protected variable.
   // DestroyDriver:=true; TReader will free it
@@ -1876,18 +1873,13 @@ begin
   p:=@Result.Driver;
   Result.Driver.Free;
   TAbstractObjectReader(p^):=Driver;
-  {$ENDIF}
 end;
 
 function CreateLRSWriter(s: TStream; var DestroyDriver: boolean): TWriter;
 var
   Driver: TAbstractObjectWriter;
 begin
-  {$IFDEF NewLRSStreamer}
   Driver:=LRSObjectWriterClass.Create(s,4096);
-  {$ELSE}
-  Driver:=TBinaryObjectWriter.Create(s,4096);
-  {$ENDIF}
   DestroyDriver:=true;
   Result:=TWriter.Create(Driver);
 end;
