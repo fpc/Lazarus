@@ -2266,9 +2266,9 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  TWinControl Create Component
+  procedure TWinControl.CreateComponent(TheOwner : TComponent);
 ------------------------------------------------------------------------------}
-procedure TWinControl.CreateComponent(AOwner : TComponent);
+procedure TWinControl.CreateComponent(TheOwner : TComponent);
 begin
   if HandleAllocated then
     RaiseGDBException('TWinControl.CreateComponent: Handle already created');
@@ -2592,6 +2592,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.125  2003/04/04 09:19:22  mattias
+  activated TDataSource
+
   Revision 1.124  2003/03/28 19:39:54  mattias
   started typeinfo for double extended
 
