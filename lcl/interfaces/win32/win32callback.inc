@@ -1166,6 +1166,7 @@ Begin
           and (not lWinControl.ClientRectNeedsInterfaceUpdate) then
             exit;
           lWinControl.InvalidateClientRectCache(true);
+          lWinControl.DoAdjustClientRectChange;
         end;
         OverlayWindow := GetWindowInfo(Window)^.Overlay;
         if OverlayWindow <> 0 then
@@ -1482,6 +1483,9 @@ end;
 
 {
   $Log$
+  Revision 1.171  2004/12/15 17:51:16  micha
+  fix clientrect size on show form with menu (lazarus ide, component palette height too great)
+
   Revision 1.170  2004/12/01 22:38:36  vincents
   fixed error, when more than one timer was disabled in a timer callback.
 

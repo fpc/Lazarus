@@ -425,8 +425,6 @@ begin
   begin
     AWinControl := TWinControl(AMenu.Owner);
     Windows.SetMenu(AWinControl.Handle, AMenu.Handle);
-    // inform LCL of changed client size
-    AWinControl.DoAdjustClientRectChange;
   end;
 end;
 
@@ -711,6 +709,9 @@ end;
 
 {
   $Log$
+  Revision 1.300  2004/12/15 17:51:16  micha
+  fix clientrect size on show form with menu (lazarus ide, component palette height too great)
+
   Revision 1.299  2004/11/04 16:57:32  micha
   remove obsolete and unused method twin32widgetset.settext
 
