@@ -37,25 +37,35 @@ unit SearchResultView;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
   ComCtrls, ExtCtrls, StdCtrls, Buttons, LCLType,
   IDEOptionDefs, LazarusIDEStrConsts, EnvironmentOpts, InputHistory,
   FindInFilesDlg, Project, MainIntf;
 
 
- {TLazSearchMatchPos}
 type
+  { TLazSearchMatchPos }
+  
   TLazSearchMatchPos = class(TObject)
   private
+    FFilename: string;
+    FFilePosition: TPoint;
     fMatchStart: integer;
     fMatchLen: integer;
+    FShownFilename: string;
+    FTheText: string;
   public
     property MatchStart: integer read fMatchStart write fMatchStart;
     property MatchLen: integer read fMatchLen write fMatchLen;
-end;//TLazSearchMatchPos
+    property Filename: string read FFilename write FFilename;
+    property FilePosition: TPoint read FFilePosition write FFilePosition;
+    property TheText: string read FTheText write FTheText;
+    property ShownFilename: string read FShownFilename write FShownFilename;
+  end;//TLazSearchMatchPos
 
- {TLazSearch}
-type
+
+  { TLazSearch }
+
   TLazSearch = Class(TObject)
   private
     fSearchString: string;
@@ -69,28 +79,32 @@ type
     property SearchDirectory: string read fSearchDirectory
                                      write fSearchDirectory;
     property SearchMask: string read fSearchMask write fSearchMask;
-end;//TLazSearch
+  end;//TLazSearch
 
- {TLazSearchResultLB}
-type
+
+  { TLazSearchResultLB }
+
   TLazSearchResultLB = Class(TCustomListBox)
   private
     fSearchObject: TLazSearch;
     fUpdateStrings: TStrings;
     fUpdating: boolean;
     fUpdateCount: integer;
+    fShortenPathNeeded: boolean;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     property SearchObject: TLazSearch read fSearchObject write fSearchObject;
     procedure BeginUpdate;
     procedure EndUpdate;
+    procedure ShortenPaths;
     property UpdateItems: TStrings read fUpdateStrings write fUpdateStrings;
     property UpdateState: boolean read fUpdating;
-end;
+  end;
 
-{TSearchResultsView}
-type
+
+  { TSearchResultsView }
+
   TSearchResultsView = class(TForm)
     btnSearchAgain: TBUTTON;
     ResultsNoteBook: TNOTEBOOK;
@@ -107,7 +121,6 @@ type
     Procedure LazLBMouseWheel(Sender: TObject; Shift: TShiftState;
                    WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
   private
-    { private declarations }
     function PageExists(const APageName: string): boolean;
     function GetPageIndex(APageName: string): integer;
     function GetListBox(APageIndex: integer): TLazSearchResultLB;
@@ -119,7 +132,6 @@ type
     fListBoxFont: TFont;
     fMouseOverIndex: integer;
   public
-    { public declarations }
     function AddResult(const ResultsName: string;
                         const SearchText: string;
                         const ADirectory: string;
@@ -128,8 +140,11 @@ type
     function GetSourcePositon: TPoint;
     function GetSourceFileName: string;
     function GetSelectedText: string;
+    function GetSelectedMatchPos: TLazSearchMatchPos;
     procedure BringResultsToFront(const APageName: string);
-    procedure AddMatch(const AIndex: integer; const TheText: string;
+    procedure AddMatch(const AIndex: integer;
+                       const Filename: string; const FilePosition: TPoint;
+                       const TheText: string;
                        const MatchStart: integer; const MatchLen: integer);
     procedure BeginUpdate(AIndex: integer);
     procedure EndUpdate(AIndex: integer);
@@ -169,7 +184,7 @@ begin
   fListBoxFont.Height:= 12;
   fListBoxFont.Style:= [];
   fOnSelectionChanged:= nil;
-  self.ShowHint:= True;
+  ShowHint:= True;
   fMouseOverIndex:= -1;
 end;//Create
 
@@ -211,12 +226,13 @@ begin
 end;//LazLBMouseWheel
 
 procedure TSearchResultsView.AddMatch(const AIndex: integer;
-                                      const TheText: string;
-                                      const MatchStart: integer;
-                                      const MatchLen: integer);
+  const Filename: string; const FilePosition: TPoint;
+  const TheText: string;
+  const MatchStart: integer; const MatchLen: integer);
 var
   CurrentLB: TLazSearchResultLB;
   SearchPos: TLazSearchMatchPos;
+  ShownText: String;
 begin
   CurrentLB:= GetListBox(AIndex);
   if Assigned(CurrentLB) then
@@ -224,10 +240,19 @@ begin
     SearchPos:= TLazSearchMatchPos.Create;
     SearchPos.MatchStart:= MatchStart;
     SearchPos.MatchLen:= MatchLen;
+    SearchPos.Filename:=Filename;
+    SearchPos.FilePosition:=FilePosition;
+    SearchPos.TheText:=TheText;
+    SearchPos.ShownFilename:=SearchPos.Filename;
+    ShownText:=SearchPos.ShownFilename
+                   +' ('+IntToStr(SearchPos.FilePosition.Y)
+                   +','+IntToStr(SearchPos.FilePosition.X)+')'
+                   +' '+SearchPos.TheText;
     if CurrentLB.UpdateState then
-      CurrentLB.UpdateItems.AddObject(TheText, SearchPos)
+      CurrentLB.UpdateItems.AddObject(ShownText, SearchPos)
     else
-      CurrentLB.Items.AddObject(TheText, SearchPos);
+      CurrentLB.Items.AddObject(ShownText, SearchPos);
+    CurrentLB.ShortenPaths;
   end;//if
 end;//AddMatch
 
@@ -302,7 +327,7 @@ begin
   end;//if
 end;//GetItems
 
-procedure TSearchResultsView.ResultsNoteBookClosetabclicked(Sender: TObject);
+procedure TSearchResultsView.ResultsNoteBookCloseTabclicked(Sender: TObject);
 begin
   if (Sender is TPage) then
   begin
@@ -355,10 +380,10 @@ end;//PageExists
 {Add Result will create a tab in the Results view window with an new
  list box or focus an existing listbox and update it's searchoptions.}
 function TSearchResultsView.AddResult(const ResultsName: string;
-                        const SearchText: string;
-                        const ADirectory: string;
-                        const AMask: string;
-                        const TheOptions: TLazFindInFileSearchOptions): integer;
+  const SearchText: string;
+  const ADirectory: string;
+  const AMask: string;
+  const TheOptions: TLazFindInFileSearchOptions): integer;
 var
   NewListBox: TLazSearchResultLB;
   NewPage: LongInt;
@@ -390,11 +415,11 @@ begin
             OnDblClick:= @ListBoxDoubleClicked;
             Style:= lbOwnerDrawFixed;
             OnDrawItem:= @ListBoxDrawItem;
-            Font.Name:= fListBoxFont.Name;
-            Font.Height:= fListBoxFont.Height;
             OnShowHint:= @LazLBShowHint;
             OnMouseMove:= @LazLBMousemove;
             OnMouseWheel:= @LazLBMouseWheel;
+            Font.Name:=fListBoxFont.Name;
+            Font.Height:=fListBoxFont.Height;
             ShowHint:= true;
             NewLIstBox.Canvas.Color:= clWhite;
           end;//with
@@ -414,6 +439,9 @@ end;//AddResult
 
 
 procedure TSearchResultsView.LazLBShowHint(Sender: TObject; HintInfo: Pointer);
+var
+  MatchPos: TLazSearchMatchPos;
+  HintStr: string;
 begin
   if Sender is TLazSearchResultLB then
   begin
@@ -421,7 +449,18 @@ begin
     begin
       if (fMouseOverIndex >= 0) and (fMouseOverIndex < Items.Count) then
       begin
-        Hint:= Items[fMouseOverIndex];
+        if Items.Objects[fMouseOverIndex] is TLazSearchMatchPos then
+          MatchPos:= TLazSearchMatchPos(Items.Objects[fMouseOverIndex])
+        else
+          MatchPos:= nil;
+        if MatchPos<>nil then
+          HintStr:=MatchPos.Filename
+                   +' ('+IntToStr(MatchPos.FilePosition.Y)
+                   +','+IntToStr(MatchPos.FilePosition.X)+')'
+                   +' '+MatchPos.TheText
+        else
+          HintStr:=Items[fMouseOverIndex];
+        Hint:= HintStr;
       end;//if
     end;//with
   end;//if
@@ -440,24 +479,27 @@ var
   TheTop: integer;
   MatchPos: TLazSearchMatchPos;
   TextEnd: integer;
+  ShownMatchStart: LongInt;
 begin
   With Control as TLazSearchResultLB do
   begin
     Canvas.FillRect(ARect);
-    TheText:= Items[Index];
     if Items.Objects[Index] is TLazSearchMatchPos then
       MatchPos:= TLazSearchMatchPos(Items.Objects[Index])
     else
       MatchPos:= nil;
-      
+    TheText:= Items[Index];
+
     if Assigned(MatchPos) then
     begin
       TheTop:= ARect.Top;
       BoldLen:= MatchPos.MatchLen;
-      FirstPart:= copy(TheText,1,MatchPos.MatchStart - 1);
-      BoldPart:= copy(TheText,MatchPos.MatchStart ,BoldLen);
-      LastPart:= copy(TheText, MatchPos.MatchStart + BoldLen,
-                      Length(TheText) - (MatchPos.MatchStart + BoldLen) + 2);
+      ShownMatchStart:=length(TheText)-length(MatchPos.TheText)
+                       +MatchPos.MatchStart;
+      FirstPart:= copy(TheText,1,ShownMatchStart - 1);
+      BoldPart:= copy(TheText,ShownMatchStart ,BoldLen);
+      LastPart:= copy(TheText, ShownMatchStart + BoldLen,
+                      Length(TheText) - (ShownMatchStart + BoldLen) + 2);
       Canvas.TextOut(ARect.Left, TheTop, FirstPart);
       TextEnd:= ARect.Left + Canvas.TextWidth(FirstPart);
       Canvas.Font.Style:= Canvas.Font.Style + [fsBold];
@@ -489,58 +531,28 @@ begin
 end;//ListBoxDoubleClicked
 
 {Returns the Position within the source file from a properly formated search
- reslut}
+ result}
 function TSearchResultsView.GetSourcePositon: TPoint;
 var
-  i: integer;
-  strTemp: string;
-  strResults: string;
+  MatchPos: TLazSearchMatchPos;
 begin
-  strResults:= GetSelectedText;
-  result.x:= -1;
-  result.y:= -1;
-  i:= pos('(',strResults);
-  if i > 0 then
-  begin
-    inc(i);
-    While (i < length(strResults)) and (strResults[i] <> ',') do
-    begin
-      strTemp:= StrTemp + strResults[i];
-      inc(i);
-    end;//while
-    if (i < Length(StrResults)) and (strResults[i] = ',') then
-    begin
-      result.y:= StrToInt(strTemp);
-      inc(i);
-      strTemp:= '';
-      While (i < length(strResults)) and (strResults[i] <> ')') do
-      begin
-        strTemp:= strResults[i];
-        inc(i);
-      end;//while
-      if (i < Length(strResults)) and (strResults[i] = ')' ) then
-       result.x:= StrToInt(strTemp);
-    end;//if
-  end;//if
-end;//GetSource Positon
+  Result.x:= -1;
+  Result.y:= -1;
+  MatchPos:=GetSelectedMatchPos;
+  if MatchPos=nil then exit;
+  Result:=MatchPos.FilePosition;
+end;//GetSourcePositon
 
 {Returns The file name portion of a properly formated search result}
 function TSearchResultsView.GetSourceFileName: string;
 var
-  strResults: string;
-  i: integer;
+  MatchPos: TLazSearchMatchPos;
 begin
-  strResults:= GetSelectedText;
-  i:= pos('(', strResults);
-  dec(i);
-  if i > 0 then
-  begin
-    result:= copy(strResults, 1, i);
-  end
+  MatchPos:=GetSelectedMatchPos;
+  if MatchPos=nil then
+    Result:=''
   else
-  begin
-    result:= '';
-  end;
+    Result:=MatchPos.Filename;
 end;//GetSourceFileName
 
 {Returns the selected text in the currently active listbox.}
@@ -567,6 +579,34 @@ begin
     end;//if
   end;//if
 end;//GetSelectedText
+
+function TSearchResultsView.GetSelectedMatchPos: TLazSearchMatchPos;
+var
+  ThePage: TPage;
+  TheListBox: TLazSearchResultLB;
+  i: integer;
+  AnObject: TObject;
+begin
+  Result:= nil;
+  i:= ResultsNoteBook.PageIndex;
+  if i > -1 then
+  begin
+    ThePage:= ResultsNoteBook.Page[i];
+    if Assigned(ThePage) then
+    begin
+      TheListBox:= GetListBox(ThePage.PageIndex);
+      if Assigned(TheListBox) then
+      begin
+        i:= TheListBox.ItemIndex;
+        if i > -1 then begin
+          AnObject:=TheListBox.Items.Objects[i];
+          if AnObject is TLazSearchMatchPos then
+            Result:=TLazSearchMatchPos(AnObject);
+        end;
+      end;//if
+    end;//if
+  end;//if
+end;
 
 function TSearchResultsView.GetPageIndex(APageName: string): integer;
 var
@@ -655,28 +695,83 @@ procedure TLazSearchResultLB.EndUpdate;
 var
   i: integer;
 begin
+  if (fUpdateCount = 0) then
+    RaiseGDBException('TLazSearchResultLB.EndUpdate');
   dec(fUpdateCount);
-  if (fUpdateCount < 0) then
-    fUpdateCount:= 0;
   if (fUpdateCount = 0) then
   begin
+    ShortenPaths;
     fUpdating:= false;
     for i:= 0 to Items.Count -1 do
     begin
-      try
-        if Assigned(Items.Objects[i]) then
-        begin
-          Items.Objects[i].free;
-        end;//if
-      except
-        writeln('Exception in TLazSearchResultLB.EndUpdate,' +
-                ' Pointer assigned free failed');
-      end;//except
+      if Assigned(Items.Objects[i]) then
+      begin
+        Items.Objects[i].free;
+      end;//if
     end;//for
     Items.Assign(fUpdateStrings);
   end;//if
 end;//EndUpdate
 
+procedure TLazSearchResultLB.ShortenPaths;
+var
+  i: Integer;
+  AnObject: TObject;
+  SharedPath: String;
+  MatchPos: TLazSearchMatchPos;
+  SrcList: TStrings;
+  SharedLen: Integer;
+  ShownText: String;
+begin
+  if fUpdateCount>0 then begin
+    fShortenPathNeeded:=true;
+    exit;
+  end;
+  fShortenPathNeeded:=false;
+  
+  if fUpdating then
+    SrcList:=fUpdateStrings
+  else
+    SrcList:=Items;
+  
+  // find shared path (the path of all filenames, that is the same)
+  SharedPath:='';
+  for i:=0 to SrcList.Count-1 do begin
+    AnObject:=SrcList.Objects[i];
+    if AnObject is TLazSearchMatchPos then begin
+      MatchPos:=TLazSearchMatchPos(AnObject);
+      if i=0 then
+        SharedPath:=ExtractFilePath(MatchPos.Filename)
+      else if (SharedPath<>'') then begin
+        SharedLen:=0;
+        while (SharedLen<length(MatchPos.Filename))
+        and (SharedLen<length(SharedPath))
+        and (MatchPos.Filename[SharedLen+1]=SharedPath[SharedLen+1])
+        do
+          inc(SharedLen);
+        if SharedLen<>length(SharedPath) then
+          SharedPath:=copy(SharedPath,1,SharedLen);
+      end;
+    end;
+  end;
+  
+  // shorten shown paths
+  SharedLen:=length(SharedPath);
+  for i:=0 to SrcList.Count-1 do begin
+    AnObject:=SrcList.Objects[i];
+    if AnObject is TLazSearchMatchPos then begin
+      MatchPos:=TLazSearchMatchPos(AnObject);
+      MatchPos.ShownFilename:=copy(MatchPos.Filename,SharedLen+1,
+                                   length(MatchPos.Filename));
+      ShownText:=MatchPos.ShownFilename
+                     +' ('+IntToStr(MatchPos.FilePosition.Y)
+                     +','+IntToStr(MatchPos.FilePosition.X)+')'
+                     +' '+MatchPos.TheText;
+      SrcList[i]:=ShownText;
+      SrcList.Objects[i]:=MatchPos;
+    end;
+  end;
+end;
 
 initialization
   {$I searchresultview.lrs}

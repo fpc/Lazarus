@@ -3517,7 +3517,7 @@ begin
     except
       on E: ERegExpr do
         MessageDlg(lisUEErrorInRegularExpression, E.Message,mtError,
-                  [mbCancel],0);
+                   [mbCancel],0);
     end;//except
   finally
     SearchResultsView.EndUpdate(ListIndex);

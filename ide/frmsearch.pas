@@ -198,7 +198,6 @@ procedure TSearchForm.SearchFile(TheFileName: string);
     EndWord:    boolean;     //Does the word end with a seperator charater?
     TheLine:    string;      //Temp Storage for the current line in the file.
     TempSearch: string;      //Temp Storage for the search string.
-    TheHeader: string;
     MatchLen: integer;
 
  const
@@ -239,23 +238,19 @@ procedure TSearchForm.SearchFile(TheFileName: string);
           end;//if
           if StartWord And EndWord then
           begin
-            TheHeader:= TheFileName +'('+IntToStr(lines+1)+ ','+ IntToStr(match)
-                        +')' + ' ';
             SearchResultsView.AddMatch(fResultsWindow,
-                                      TheHeader + Trim(ThisFile.Strings[Lines]),
-                                      match + Length(TheHeader),
-                                      MatchLen);
+                                       TheFileName,Point(match,lines+1),
+                                       Trim(ThisFile.Strings[Lines]),
+                                       match, MatchLen);
             UpdateMatches;
           end;//if
         end;//if
         if not fWholeWord and (Match > 0) then
         begin
-          TheHeader:= TheFileName +'('+IntToStr(lines+1)+ ','+ IntToStr(match)
-                      +')' + ' ';
           SearchResultsView.AddMatch(fResultsWindow,
-                                     TheHeader + Trim(ThisFile.Strings[Lines]),
-                                     match + Length(TheHeader),
-                                     MatchLen);
+                                     TheFileName,Point(match,lines+1),
+                                     Trim(ThisFile.Strings[Lines]),
+                                     match, MatchLen);
           UpdateMatches;
         end;//if
          if fAbort and not fAborting then
@@ -282,8 +277,7 @@ procedure TSearchForm.SearchFile(TheFileName: string);
     Match:      integer;     //Position of match in line.
     MatchLen:   integer;
     TheLine:    string;      //Temp Storage for the current line in the file.
-    TheHeader:  string;
-    RE:         TRegExpr;    //Regular expression search engin
+    RE:         TRegExpr;    //Regular expression search engine
   begin
      try
       ThisFile:= TStringList.Create;
@@ -305,11 +299,10 @@ procedure TSearchForm.SearchFile(TheFileName: string);
           Match:= RE.MatchPos[0];
           MatchLen:= Re.MatchLen[0];
           
-          TheHeader:= TheFileName +'('+IntToStr(lines+1)+ ','+ IntToStr(match)
-                      +')' + ' ';
-          SearchResultsView.AddMatch(fResultsWindow,TheHeader + TheLine,
-                                     match + Length(TheHeader),
-                                     MatchLen);
+          SearchResultsView.AddMatch(fResultsWindow,
+                                     TheFileName,Point(match,lines+1),
+                                     TheLine,
+                                     match, MatchLen);
           UpdateMatches;
         end;//if
         if fAbort and not fAborting then
