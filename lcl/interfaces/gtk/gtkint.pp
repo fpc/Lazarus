@@ -42,11 +42,13 @@ interface
   { $DEFINE VerboseGetClientRect}
 {$ENDIF}
 { $DEFINE VerboseMouseBugfix}
+{$DEFINE enable_gdkpixbuf}
 
 uses 
-  InterfaceBase, gtk, gdk, glib, SysUtils, LMessages, Classes, Controls,
-  Forms, VclGlobals, LCLLinux, LCLType, gtkDef, DynHashArray, LazQueue,
-  GraphType, GraphicsMath;
+  InterfaceBase, {$Ifdef enable_gdkpixbuf}gdkpixbuf,{$EndIf} gtk, gdk, 
+  glib, SysUtils, LMessages, Classes, Controls, Forms, VclGlobals, 
+  LCLLinux, LCLType, gtkDef, DynHashArray, LazQueue, GraphType, 
+  GraphicsMath;
 
 type
   TgtkObject = class(TInterfaceBase)
@@ -397,6 +399,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.56  2002/08/13 07:08:24  lazarus
+  MG: added gdkpixbuf.pp and changes from Andrew Johnson
+
   Revision 1.55  2002/08/08 18:05:46  lazarus
   MG: added graphics extensions from Andrew Johnson
 
