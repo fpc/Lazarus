@@ -427,6 +427,7 @@ type
     procedure SetItemIndex (value : integer);
     function GetItemIndex : integer;
     procedure WMSize(var Message: TLMSize); message LM_SIZE;
+  protected
     property ItemIndex : integer read GetItemIndex write SetItemIndex default -1;
     property Items : TStrings read FItems write SetItem;
     property Columns : integer read FColumns write SetColumns default 1;
@@ -436,6 +437,7 @@ type
     destructor Destroy; override;
     function CanModify : boolean; virtual;
     procedure CreateWnd; override;
+    function Rows: integer;
   end;
 
 
@@ -453,6 +455,61 @@ type
     property Columns;
     property Visible;
     property OnClick;
+  end;
+  
+  
+  { TCustomCheckGroup }
+  
+  TCheckGroupClicked = procedure(Sender: TObject; Index: integer) of object;
+  
+  TCustomCheckGroup = class(TCustomGroupBox)
+  private
+    FButtonList : TList; // list of TCheckBox
+    FCreatingWnd: boolean;
+    FItems      : TStrings;
+    FColumns    : integer;
+    FOnItemClick: TCheckGroupClicked;
+    procedure UpdateItems;
+    function GetChecked(Index: integer): boolean;
+    procedure ItemsChanged (Sender : TObject);
+    procedure DoPositionButtons;
+    procedure SetChecked(Index: integer; const AValue: boolean);
+    procedure Clicked(Sender: TObject);
+    procedure DoClick(Index: integer);
+  protected
+    procedure SetItems(Value: TStrings);
+    procedure SetColumns(Value: integer);
+    procedure WMSize(var Message: TLMSize); message LM_SIZE;
+    procedure DefineProperties(Filer: TFiler); override;
+    procedure ReadData(Stream: TStream);
+    procedure WriteData(Stream: TStream);
+    procedure Loaded; override;
+    procedure DoOnResize; override;
+  public
+    constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
+    function Rows: integer;
+  public
+    property Items: TStrings read FItems write SetItems;
+    property Checked[Index: integer]: boolean read GetChecked write SetChecked;
+    property Columns: integer read FColumns write SetColumns default 1;
+    property OnItemClick: TCheckGroupClicked read FOnItemClick write FOnItemClick;
+  end;
+
+
+  { TCheckGroup }
+
+  TCheckGroup = class(TCustomCheckGroup)
+  public
+  published
+    property Align;
+    property Caption;
+    property Enabled;
+    property Items;
+    property Columns;
+    property Visible;
+    property OnItemClick;
+    property OnResize;
   end;
 
 
@@ -553,17 +610,20 @@ uses Math;
 {$I idletimer.inc}
 {$I shape.inc}
 {$I paintbox.inc}
+{$I customcheckgroup.inc}
 {$I customradiogroup.inc}
 {$I custompanel.inc}
 {$I radiogroup.inc}
 {$I bevel.inc}
 {$I image.inc}
 
-
 end.
 
  {
   $Log$
+  Revision 1.53  2003/03/17 23:39:30  mattias
+  added TCheckGroup
+
   Revision 1.52  2003/03/17 20:50:30  mattias
   fixed TRadioGroup.ItemIndex=-1
 
