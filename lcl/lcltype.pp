@@ -148,6 +148,7 @@ const
   DT_CALCRECT = $400;
   DT_NOPREFIX = $800;
   DT_INTERNAL = $1000;
+  DT_EDITCONTROL = $2000;
 
 //==============================================
 // Draw frame constants
@@ -1621,6 +1622,9 @@ end.
 
 {
   $Log$
+  Revision 1.22  2002/10/15 17:09:53  lazarus
+  AJ: fixed GTK DrawText to use WordWrap, and add DT_EditControl
+
   Revision 1.21  2002/10/12 16:36:39  lazarus
   AJ: added new QueryUser/NotifyUser
 

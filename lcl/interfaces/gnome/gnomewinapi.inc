@@ -203,14 +203,17 @@ begin
       If Lines <> nil then begin
         Line := Lines^.Rows;
         While Line <> nil do begin
+          If (((Flags and DT_EditControl) = DT_EditControl) and
+            (tm.tmHeight > (theRect.Bottom - theRect.Top))) or
+            (theRect.Top > theRect.Bottom)
+          then
+            break;
           If Line^.Data <> nil then begin
             LineInfo := PGnomeIconTextInfoRow(Line^.Data)^;
             DrawLine(LineInfo.theText, LineInfo.Text_Length, theRect.Top);
             Inc(theRect.Top, TM.tmHeight);
           end;
           Line := Line^.Next;
-          If theRect.Top > theRect.Bottom then
-            Break;
         end;
         Result := 1;
       end;
@@ -501,6 +504,9 @@ end;
 
 {
   $Log$
+  Revision 1.8  2002/10/15 17:09:54  lazarus
+  AJ: fixed GTK DrawText to use WordWrap, and add DT_EditControl
+
   Revision 1.7  2002/10/14 18:36:57  lazarus
   AJ: Improvements/Fixes to new PromptUser API
 
