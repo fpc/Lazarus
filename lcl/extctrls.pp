@@ -262,6 +262,10 @@ type
      Property Width;
   End;
 
+  {
+    @abstract(Base class for TRadioGroup.)
+    (currently) maintained by Stefan Hille (stoppok@osibisa.ms.sub.org)
+  }
   TCustomRadioGroup = class(TCustomGroupBox)
   public
     constructor Create (AOwner : TComponent); override;
@@ -274,7 +278,9 @@ type
     FItemIndex  : integer;
     FColumns    : integer;
     FReading    : boolean;
+    FOnClick    : TNotifyEvent;
     procedure ItemsChanged (Sender : TObject);
+    procedure Clicked(Sender : TObject); virtual;
   protected
     procedure ReadState(Reader: TReader); override;
     procedure SetItem (value : TStrings);
@@ -284,8 +290,13 @@ type
     property ItemIndex : integer read GetItemIndex write SetItemIndex default -1;
     property Items : TStrings read FItems write SetItem;
     property Columns : integer read FColumns write SetColumns default 1;
+    property OnClick : TNotifyEvent read FOnClick write FOnClick;
   end;
 
+  {
+    @abstract(Group of radiobuttons.)
+    (currently) maintained by Stefan Hille (stoppok@osibisa.ms.sub.org)
+  }
   TRadioGroup = class(TCustomRadioGroup)
   public
      constructor Create (AOwner : TComponent); override;
@@ -321,6 +332,9 @@ end.
 
  {
   $Log$
+  Revision 1.10  2001/04/17 21:39:17  lazarus
+  + added working OnClick support for TCustomRadiogroup, stoppok
+
   Revision 1.9  2001/04/06 22:28:09  lazarus
   * TTimer uses winapi interface now instead of sendmessage interface, stoppok
 
