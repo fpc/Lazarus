@@ -100,7 +100,7 @@ begin
     thetype := GNOME_STOCK_PIXMAP_TYPE_DATA;
     Width := 20;
     Height := 18;
-    theLabel := Ampersands2Underscore(PChar(rsMbYesToAll));
+    theLabel := RemoveAmpersands(PChar(rsMbYesToAll), Length(rsMbYesToAll));
     xpm_data := PPgchar(@IMGALL_Check[0]);
   end;
   gnome_stock_pixmap_register(LAZARUS_STOCK_BUTTON_YESALL, GNOME_STOCK_PIXMAP_REGULAR,PGnomeStockPixmapEntry(LAZBTNYESALL));
@@ -110,7 +110,7 @@ begin
     thetype := GNOME_STOCK_PIXMAP_TYPE_DATA;
     Width := 20;
     Height := 18;
-    theLabel := Ampersands2Underscore(PChar(rsMbNOToAll));
+    theLabel := RemoveAmpersands(PChar(rsMbNOToAll), Length(rsMbNOToAll));
     xpm_data := PPgchar(@IMGALL_Check[0]);
   end;
   gnome_stock_pixmap_register(LAZARUS_STOCK_BUTTON_NOALL, GNOME_STOCK_PIXMAP_REGULAR,PGnomeStockPixmapEntry(LAZBTNNOALL));
@@ -120,7 +120,7 @@ begin
     thetype := GNOME_STOCK_PIXMAP_TYPE_DATA;
     Width := 20;
     Height := 18;
-    theLabel := Ampersands2Underscore(PChar(rsMbAbort));
+    theLabel := RemoveAmpersands(PChar(rsMbAbort), Length(rsMbAbort));
     xpm_data := PPgchar(@IMGCancel_X[0]);
   end;
   gnome_stock_pixmap_register(LAZARUS_STOCK_BUTTON_ABORT, GNOME_STOCK_PIXMAP_REGULAR,PGnomeStockPixmapEntry(LAZBTNABORT));
@@ -130,7 +130,7 @@ begin
     thetype := GNOME_STOCK_PIXMAP_TYPE_DATA;
     Width := 20;
     Height := 18;
-    theLabel := Ampersands2Underscore(PChar(rsMbRetry));
+    theLabel := RemoveAmpersands(PChar(rsMbRetry), Length(rsMbRetry));
     xpm_data := PPgchar(@IMGOK_Check[0]);
   end;
   gnome_stock_pixmap_register(LAZARUS_STOCK_BUTTON_RETRY, GNOME_STOCK_PIXMAP_REGULAR,PGnomeStockPixmapEntry(LAZBTNRETRY));
@@ -140,7 +140,7 @@ begin
     thetype := GNOME_STOCK_PIXMAP_TYPE_DATA;
     Width := 20;
     Height := 18;
-    theLabel := Ampersands2Underscore(PChar(rsMbIgnore));
+    theLabel := RemoveAmpersands(PChar(rsMbIgnore), Length(rsMbIgnore));
     xpm_data := PPgchar(@IMGOK_Check[0]);
   end;
   gnome_stock_pixmap_register(LAZARUS_STOCK_BUTTON_IGNORE, GNOME_STOCK_PIXMAP_REGULAR,PGnomeStockPixmapEntry(LAZBTNIGNORE));
@@ -163,19 +163,16 @@ begin
   gtk_set_locale ();
 
   // call init and pass cmd line args
-  gnome_init('lazarus', '0.8.5a', argc, argv);
+  gnome_init(PChar(Application.Title), '0.8.5a', argc, argv);
 
   If Assigned(Screen) then
     FillScreenFonts(Screen.Fonts);
 
   // read gtk rc file
-  FRCFileParsed:=true;
   ParseRCFile;
 
   // Initialize Stringlist for holding styles
   Styles := TStringlist.Create;
-
-  LoadGDKCursors;
 
   gtk_key_snooper_install(@GTKKeySnooper, @FKeyStateList);
 
@@ -278,6 +275,9 @@ end.
 
 {
   $Log$
+  Revision 1.13  2002/10/30 18:45:52  lazarus
+  AJ: fixed compiling & removed '_' from custom stock items
+
   Revision 1.12  2002/10/26 15:15:50  lazarus
   MG: broke LCL<->interface circles
 
