@@ -98,21 +98,25 @@ type
     
     // styles
     procedure FreeAllStyles; virtual;
+    Function GetCompStyle(Sender : TObject) : Longint; Virtual;
 
+    // show, hide and invalidate
     procedure ReDraw(Child : Pointer);virtual;
     procedure ShowHide(Sender : TObject);virtual;
 
-    Function GetCompStyle(Sender : TObject) : Longint; Virtual;
-    Procedure HookSignals(Sender : TObject); virtual;  //hooks all signals for controls
+    // create and destroy
     function CreateComboBox(ComboBoxObject: TObject): Pointer;
     function CreateAPIWidget(AWinControl: TWinControl): PGtkWidget;
     function CreateForm(ACustomForm: TCustomForm): PGtkWidget;
     procedure CreateComponent(Sender : TObject);virtual;
     Procedure FinishComponentCreate(Sender : TObject; Handle : Pointer;
       SetupProps : Boolean); Virtual;
-    procedure DestroyLCLControl(Sender : TObject);virtual;
+    procedure DestroyLCLComponent(Sender : TObject);virtual;
+    function  RecreateWnd(Sender: TObject): Integer; virtual;
     procedure AddChild(Parent,Child : Pointer; Left,Top: Integer);virtual;
     procedure AssignSelf(Child ,Data : Pointer);virtual;
+
+    // clipboard
     procedure SetClipboardWidget(TargetWidget: PGtkWidget);virtual;
     
     // device contexts
@@ -144,6 +148,7 @@ type
     function InternalGetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT;
       BitSize : Longint; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT; DIB : Boolean): Integer;virtual;
 
+    // RC file
     procedure SetRCFilename(const AValue: string);virtual;
     procedure CheckRCFilename;virtual;
     procedure ParseRCFile;virtual;
@@ -166,13 +171,15 @@ type
     function GetTopIndex(Sender: TObject): integer;
     function SetTopIndex(Sender: TObject; NewTopIndex: integer): integer;
 
-    // forms
+    // forms and dialogs
     procedure BringFormToFront(Sender: TObject);
     procedure SetWindowSizeAndPosition(Window: PGtkWindow;
       AWinControl: TWinControl);virtual;
     procedure ShowModal(Sender: TObject); virtual;
     procedure UpdateTransientWindows; virtual;
+    procedure UntransientWindow(GtkWindow: PGtkWindow);
 
+    // misc
     Function GetCaption(Sender : TObject) : String; virtual;
     function  GetText(Sender: TComponent; var Text: String): Boolean; virtual;
     procedure SetText(Child,Data : Pointer);virtual;
@@ -192,15 +199,13 @@ type
       var Lines: PPChar; var LineCount: integer);
 
     // control functions for messages, callbacks
+    Procedure HookSignals(Sender : TObject); virtual;  //hooks all signals for controls
     procedure ResizeChild(Sender : TObject; Left,Top,Width,Height : Integer);virtual;
     procedure SetResizeRequest(Widget: PGtkWidget);virtual;
     procedure UnsetResizeRequest(Widget: PGtkWidget);virtual;
-
     function HashPaintMessage(p: pointer): integer;virtual;
     function FindPaintMessage(HandleWnd: HWnd): PLazQueueItem;virtual;
-
     procedure RemoveCallbacks(Sender : TObject); virtual;
-    function  RecreateWnd(Sender: TObject): Integer; virtual;
   public
     // for gtk specific components:
     procedure SetCallback(Msg : LongInt; Sender : TObject); virtual;
@@ -330,6 +335,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.123  2003/03/17 13:00:35  mattias
+  improved but not fixed transient windows
+
   Revision 1.122  2003/03/15 18:32:38  mattias
   implemented transient windows for all cases
 
