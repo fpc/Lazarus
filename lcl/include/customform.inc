@@ -1007,11 +1007,18 @@ begin
     try
       CNSendMessage(LM_ShowModal, Self, nil);
       Repeat
-        Application.HandleMessage;
+        { Delphi calls Application.HandleMessage
+          But HandleMessage processes all pending events and then calls idle,
+          which will wait for new messages. Under Win32 there always a next
+          message, so it works there. The LCL is OS independent, and so it uses
+          a better way: }
+        InterfaceObject.HandleEvents; // process all events
         if Application.FTerminate then
           ModalResult := mrCancel
         else if ModalResult <> 0 then
           CloseModal;
+        if ModalResult<>0 then break;
+        Application.Idle;
       until ModalResult <> 0;
       Result := ModalResult;
       //if GetActiveWindow <> Handle then ActiveWindow := 0;
@@ -1037,6 +1044,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.49  2002/07/05 09:09:20  lazarus
+  MG: fixed TCustomForm.ShowModal reacting to ModalResult
+
   Revision 1.48  2002/06/19 19:46:09  lazarus
   MG: Form Editing: snapping, guidelines, modified on move/resize, creating components in csDesigning, ...
 
