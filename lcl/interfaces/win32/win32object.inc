@@ -349,8 +349,6 @@ Begin
           TWin32WSWinControl.SetText(Sender as TWinControl, S);
         end;
       End;
-      LM_SETTEXT:
-        SetText(Handle, Data);
       LM_ADDCHILD:
       Begin
         Assert(False, 'Trace:Adding a child to Parent');
@@ -2817,6 +2815,9 @@ End;
 
 {
   $Log$
+  Revision 1.237  2004/09/10 11:20:44  micha
+  remove LM_SETTEXT message as it is not used
+
   Revision 1.236  2004/09/10 09:43:13  micha
   convert LM_SETLABEL message to interface methods
 

@@ -3156,8 +3156,6 @@ begin
       handle := hwnd(ObjectToGtkObject(Sender));
       Case LM_Message of
 
-      LM_SetText  : SetText(PgtkWidget(Handle), Data);
-
       LM_AddChild :
       begin
         {$IFDEF OldToolBar}
@@ -8931,6 +8929,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.544  2004/09/10 11:20:44  micha
+  remove LM_SETTEXT message as it is not used
+
   Revision 1.543  2004/09/10 09:43:13  micha
   convert LM_SETLABEL message to interface methods
 

@@ -59,7 +59,6 @@ const
   LM_RESIZECHILDREN = LM_ComUser+13;
   LM_AddPage        = LM_ComUser+15;
   LM_GetLineCount   = LM_ComUser+16;
-  LM_SETTEXT        = LM_ComUser+17;
   LM_GETTEXT        = LM_ComUser+18;
   LM_CANVASCREATE   = LM_ComUser+19;
   LM_ReDraw         = LM_ComUser+26;
@@ -871,7 +870,6 @@ begin
   LM_RESIZECHILDREN :Result:='LM_RESIZECHILDREN';
   LM_AddPage        :Result:='LM_AddPage';
   LM_GetLineCount   :Result:='LM_GetLineCount';
-  LM_SETTEXT        :Result:='LM_SETTEXT';
   LM_GETTEXT        :Result:='LM_GETTEXT';
   LM_CANVASCREATE   :Result:='LM_CANVASCREATE';
   LM_ReDraw         :Result:='LM_ReDraw';
@@ -1038,6 +1036,9 @@ end.
 
 {
   $Log$
+  Revision 1.78  2004/09/10 11:20:44  micha
+  remove LM_SETTEXT message as it is not used
+
   Revision 1.77  2004/09/10 09:43:12  micha
   convert LM_SETLABEL message to interface methods
 
