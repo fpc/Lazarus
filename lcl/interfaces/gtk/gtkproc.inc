@@ -2604,29 +2604,53 @@ begin
   Str := Tmp;
 end;
 
-Function Ampersands2Underscore(var Str : PChar) : Longint;
+{-------------------------------------------------------------------------------
+  Function Ampersands2Underscore(Src: PChar) : PChar;
+
+  Creates a new PChar. Replaces the first ampersand with an underscore
+  and deletes all other ampersands.
+-------------------------------------------------------------------------------}
+Function Ampersands2Underscore(Src: PChar) : PChar;
 var
-  I, L : Longint;
-  AStr : AnsiString;
+  i, j: Longint;
+  AmpersandCount, FirstAmpersand, NewLength: integer;
 begin
-  Result := -1;
-  Try
-    L := StrLen(Str);
-    SetLength(AStr, L);
-    For I := 0 to L do
-      AStr[I + 1] := Str[I];
-    Result := DeleteAmpersands(AStr);
-    If Result <> -1 then
-      Insert('_', AStr, Result);
-    if Str <> nil then begin
-      For I := 0 to L do
-        Str[I] := #0;
-      For I := 0 to Length(AStr) do
-        Str[I] := AStr[I+1]
+  // count ampersands and find first ampersand
+  AmpersandCount:=0;
+  FirstAmpersand:=-1;
+  NewLength:=StrLen(Src);
+  for i:=0 to NewLength-1 do begin
+    if Src[i]='&' then begin
+      inc(AmpersandCount);
+      if FirstAmpersand<0 then FirstAmpersand:=i;
     end;
-  except
-    Assert(False, Format('trace: [Ampersands2Underscore] unknown error occured',[]));
   end;
+  // create new PChar
+  if AmpersandCount>1 then
+    dec(NewLength,AmpersandCount-1);
+  Result:=StrAlloc(NewLength+1); // +1 for #0 char at end
+  // copy string without ampersands
+  i:=0;
+  j:=0;
+  while (j<NewLength) do begin
+    if Src[i]<>'&' then begin
+      // copy normal char
+      Result[j]:=Src[i];
+      inc(i);
+      inc(j);
+    end else begin
+      if i=FirstAmpersand then begin
+        // replace  first ampersand with underscore
+        Result[j]:='_';
+        inc(i);
+        inc(j);
+      end else begin
+        // skip ampersand
+        inc(i);
+      end;
+    end;
+  end;
+  Result[NewLength]:=#0;
 end;
 {$IFDEF ASSERT_IS_ON}
   {$UNDEF ASSERT_IS_ON}
@@ -2636,6 +2660,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.82  2002/08/31 10:55:16  lazarus
+  MG: fixed range check error in ampersands2underscore
+
   Revision 1.81  2002/08/31 07:58:22  lazarus
   MG: fixed resetting comobobox text
 
