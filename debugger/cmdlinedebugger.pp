@@ -216,7 +216,9 @@ begin
   then begin
     FDbgProcess := TProcess.Create(nil);
     FDbgProcess.CommandLine := ExternalDebugger + ' ' + AOptions;
-    FDbgProcess.Options:= [poUsePipes, {poNoConsole,} poStdErrToOutPut, poNewProcessGroup];
+    // TODO: under win9x and winMe should be created with console,
+    // otherwise no break can be sent.
+    FDbgProcess.Options:= [poUsePipes, poNoConsole, poStdErrToOutPut, poNewProcessGroup];
     FDbgProcess.ShowWindow := swoNone;
     FDbgProcess.Environment := DebuggerEnvironment;
   end;
@@ -401,6 +403,9 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.38  2004/11/19 12:18:50  vincents
+  create debugger without console.
+
   Revision 1.37  2004/11/02 23:25:02  marc
   * Introduced another method of interrupting gdb on win32
 
