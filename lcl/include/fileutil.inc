@@ -425,7 +425,7 @@ begin
   {$IFDEF win32}
   raise Exception.Create('"'+AFilename+'" is not symlink');
   {$ELSE}
-  if {$IFDEF Ver1_0}Linux.ReadLink{$ELSE}Unix.FpReadLink{$ENDIF}(AFilename)='' then begin
+  if {$IFDEF Ver1_0}Linux.ReadLink{$ELSE}FpReadLink{$ENDIF}(AFilename)='' then begin
     AText:='"'+AFilename+'"';
     case {$ifdef ver1_0} LinuxError {$else} fpGetErrno() {$endif} of
     {$IFDEF Ver1_0}sys_eacces{$ELSE}ESysEAcces{$ENDIF}:
@@ -455,7 +455,7 @@ begin
   {$IFDEF win32}
   Result:=false;
   {$ELSE}
-  Result:=({$IFDEF Ver1_0}Linux.ReadLink{$ELSE}Unix.FpReadLink{$ENDIF}(AFilename)<>'');
+  Result:=({$IFDEF Ver1_0}Linux.ReadLink{$ELSE}FpReadLink{$ENDIF}(AFilename)<>'');
   {$ENDIF}
 end;
 
@@ -605,7 +605,7 @@ begin
 
   {$ELSE}
   repeat
-    LinkFilename:={$IFDEF Ver1_0}Linux.ReadLink{$ELSE}Unix.FpReadLink{$ENDIF}(Result);
+    LinkFilename:={$IFDEF Ver1_0}Linux.ReadLink{$ELSE}FpReadLink{$ENDIF}(Result);
     if LinkFilename='' then begin
       AText:='"'+Filename+'"';
       case {$ifdef ver1_0} LinuxError {$else} fpGetErrno() {$endif} of
@@ -1069,6 +1069,9 @@ end;
 
 {
   $Log$
+  Revision 1.4  2004/11/15 19:59:32  mattias
+  fixed compilation for current FPC 1.9.5
+
   Revision 1.3  2004/11/10 15:25:32  mattias
   updated memcheck.pas from heaptrc.pp
 

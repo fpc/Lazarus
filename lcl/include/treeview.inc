@@ -3361,7 +3361,7 @@ begin
   //' ANode.AreParentsExpanded=',ANode.AreParentsExpanded);
   if Result then begin
     //DebugLn('[TCustomTreeView.IsNodeVisible] B Node=',HexStr(Cardinal(ANode),8),
-    //' ',FScrolledTop,'>=',ANode.Top,'+',ANode.Height,' or ',FScrolledTop,'+',ClientHeight,'<',ANode.Top);
+    //  ' ',dbgs(FScrolledTop)+'>=',dbgs(ANode.Top+ANode.Height)+' or =',dbgs(FScrolledTop),'+'+dbgs(ClientHeight)+'<',dbgs(ANode.Top));
     if (FScrolledTop>=ANode.Top+ANode.Height)
     or (FScrolledTop+(ClientHeight-ScrollBarWidth)-2*BorderWidth<ANode.Top)
     then

@@ -17,5 +17,5 @@ begin
 end; 
 
 initialization
-  RegisterPackage('JPEGForLazarus', @Register)
+  RegisterPackage('JPEGForLazarus', @Register); 
 end.
