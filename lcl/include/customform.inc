@@ -82,6 +82,12 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomForm.BeforeDestruction;
 begin
+  //GlobalNameSpace.BeginWrite;
+  Destroying;
+  Screen.FSaveFocusedList.Remove(Self);
+  RemoveFixupReferences(Self, '');
+  //if FOleForm <> nil then FOleForm.OnDestroy;
+  if FormStyle <> fsMDIChild then Hide;
   DoDestroy;
   inherited BeforeDestruction;
 end;
@@ -96,16 +102,21 @@ end;
 destructor TCustomForm.Destroy;
 begin
   //writeln('[TCustomForm.Destroy] A ',Name,':',ClassName);
-  Assert(False, Format('Trace: [TCustomForm.Destroy] %s', [ClassName]));
-  FMenu.Free;
-  FMenu:=nil;
-  FCanvas.Free;
-  FCanvas:=nil;
-  FIcon.Free;
-  FIcon:=nil;
-  //writeln('[TCustomForm.Destroy] B ',Name,':',ClassName);
-  inherited Destroy;
-  //writeln('[TCustomForm.Destroy] END ',Name,':',ClassName);
+  if not (csDestroying in ComponentState) then ;//GlobalNameSpace.BeginWrite;
+  try
+    FMenu.Free;
+    FMenu:=nil;
+    FCanvas.Free;
+    FCanvas:=nil;
+    FIcon.Free;
+    FIcon:=nil;
+    Screen.RemoveForm(Self);
+    //writeln('[TCustomForm.Destroy] B ',Name,':',ClassName);
+    inherited Destroy;
+    //writeln('[TCustomForm.Destroy] END ',Name,':',ClassName);
+  finally
+    //GlobalNameSpace.EndWrite;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -887,9 +898,79 @@ end;
 {       TCustomForm Method SetFocusedControl                                              }
 {------------------------------------------------------------------------------}
 function TCustomForm.SetFocusedControl(Control : TWinControl): Boolean;
+{var
+  FocusHandle: HWnd;
+  TempControl: TWinControl;}
 begin
-//TODO: SetFocusedControl
   Result := True;
+  // ToDo:
+ { Result := False;
+  Inc(FocusCount);
+  if FDesigner = nil then
+    if Control <> Self then
+      FActiveControl := Control else
+      FActiveControl := nil;
+  Screen.FActiveControl := Control;
+  Screen.FActiveCustomForm := Self;
+  Screen.FCustomForms.Remove(Self);
+  Screen.FCustomForms.Insert(0, Self);
+  if Self is TForm then
+  begin
+    Screen.FActiveForm := TForm(Self);
+    Screen.FForms.Remove(Self);
+    Screen.FForms.Insert(0, Self);
+  end
+  else Screen.FActiveForm := nil;
+  if not (csFocusing in Control.ControlState) then
+  begin
+    Control.ControlState := Control.ControlState + [csFocusing];
+    try
+      if Screen.FFocusedForm <> Self then
+      begin
+        if Screen.FFocusedForm <> nil then
+        begin
+          FocusHandle := Screen.FFocusedForm.Handle;
+          Screen.FFocusedForm := nil;
+          if not SendFocusMessage(FocusHandle, CM_DEACTIVATE) then Exit;
+        end;
+        Screen.FFocusedForm := Self;
+        if not SendFocusMessage(Handle, CM_ACTIVATE) then Exit;
+      end;
+      if FFocusedControl = nil then FFocusedControl := Self;
+      if FFocusedControl <> Control then
+      begin
+        while (FFocusedControl <> nil) and not
+          FFocusedControl.ContainsControl(Control) do
+        begin
+          FocusHandle := FFocusedControl.Handle;
+          FFocusedControl := FFocusedControl.Parent;
+          if not SendFocusMessage(FocusHandle, CM_EXIT) then Exit;
+        end;
+        while FFocusedControl <> Control do
+        begin
+          TempControl := Control;
+          while TempControl.Parent <> FFocusedControl do
+            TempControl := TempControl.Parent;
+          FFocusedControl := TempControl;
+          if not SendFocusMessage(TempControl.Handle, CM_ENTER) then Exit;
+        end;
+        TempControl := Control.Parent;
+        while TempControl <> nil do
+        begin
+          if TempControl is TScrollingWinControl then
+            TScrollingWinControl(TempControl).AutoScrollInView(Control);
+          TempControl := TempControl.Parent;
+        end;
+        Perform(CM_FOCUSCHANGED, 0, Longint(Control));
+        if (FActiveOleControl <> nil) and (FActiveOleControl <> Control) then
+          FActiveOleControl.Perform(CM_UIDEACTIVATE, 0, 0);
+      end;
+    finally
+      Control.ControlState := Control.ControlState - [csFocusing];
+    end;
+    Screen.UpdateLastActive;
+    Result := True;
+  end;}
 end;
 
 {------------------------------------------------------------------------------}
@@ -980,31 +1061,31 @@ end;
 {  TCustomForm ShowModal                                                       }
 {------------------------------------------------------------------------------}
 Function TCustomForm.ShowModal : Integer;
-{var
-  WindowList: Pointer;
+var
+  //WindowList: Pointer;
   SaveFocusCount: Integer;
-  SaveCursor: TCursor;
-  SaveCount: Integer;
-  ActiveWindow: HWnd;}
+  //SaveCursor: TCursor;
+  //SaveCount: Integer;
+  ActiveWindow: HWnd;
 begin
+  CancelDrag;
   //writeln('[TCustomForm.ShowModal] START ',Classname);
-  if Visible or not Enabled or (fsModal in FFormState) or
-    (FormStyle = fsMDIChild) then
+  if Visible or not Enabled or (fsModal in FFormState)
+  or (FormStyle = fsMDIChild) then
     raise EInvalidOperation.Create('TCustomForm.ShowModal impossible');
-  { TODO : This has to be changed by WM_VISIBLECHANGED. Implement appropriate callback !!! }
-  //Kill capture when opening another dialog
+  // Kill capture when opening another dialog
   if GetCapture <> 0 then SendMessage(GetCapture,LM_CANCELMODE,0,0);
   ReleaseCapture;
 
   Include(FFormState, fsModal);
-  {ActiveWindow := GetActiveWindow;
+  ActiveWindow := GetActiveWindow;
   SaveFocusCount := FocusCount;
   Screen.FSaveFocusedList.Insert(0, Screen.FFocusedForm);
   Screen.FFocusedForm := Self;
-  SaveCursor := Screen.Cursor;
-  Screen.Cursor := crDefault;
-  SaveCount := Screen.FCursorCount;
-  WindowList := DisableTaskWindows(0);}
+  //SaveCursor := Screen.Cursor;
+  //Screen.Cursor := crDefault;
+  //SaveCount := Screen.FCursorCount;
+  //WindowList := DisableTaskWindows(0);
   ModalResult := 0;
 
   try
@@ -1014,7 +1095,7 @@ begin
       repeat
         { Delphi calls Application.HandleMessage
           But HandleMessage processes all pending events and then calls idle,
-          which will wait for new messages. Under Win32 there always a next
+          which will wait for new messages. Under Win32 there is always a next
           message, so it works there. The LCL is OS independent, and so it uses
           a better way: }
         InterfaceObject.HandleEvents; // process all events
@@ -1027,22 +1108,24 @@ begin
       until ModalResult <> 0;
       
       Result := ModalResult;
-      //if GetActiveWindow <> Handle then ActiveWindow := 0;
+      if GetActiveWindow <> Handle then ActiveWindow := 0;
     finally
       Hide;
     end;
   finally
     {if Screen.FCursorCount = SaveCount then
       Screen.Cursor := SaveCursor
-    else Screen.Cursor := crDefault;
-    EnableTaskWindows(WindowList);
+    else
+      Screen.Cursor := crDefault;
+    EnableTaskWindows(WindowList);}
     if Screen.FSaveFocusedList.Count > 0 then
     begin
-      Screen.FFocusedForm := Screen.FSaveFocusedList.First;
+      Screen.FFocusedForm := TCustoMForm(Screen.FSaveFocusedList.First);
       Screen.FSaveFocusedList.Remove(Screen.FFocusedForm);
-    end else Screen.FFocusedForm := nil;
+    end else
+      Screen.FFocusedForm := nil;
     if ActiveWindow <> 0 then SetActiveWindow(ActiveWindow);
-    FocusCount := SaveFocusCount;}
+    FocusCount := SaveFocusCount;
     Exclude(FFormState, fsModal);
   end;
 end;
@@ -1050,7 +1133,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.58  2002/09/09 14:01:05  lazarus
+  MG: improved TScreen and ShowModal
+
   Revision 1.57  2002/09/09 06:27:06  lazarus
+
   Form deactivation fixes.
 
   Revision 1.56  2002/09/03 20:02:01  lazarus

@@ -248,9 +248,11 @@ type
 
   TScreen = class(TComponent)
   private
+    FFocusedForm: TCustomForm;
     FFormList: TList;
     FHintFont : TFont;
     FPixelsPerInch : integer;
+    FSaveFocusedList: TList;
     function GetFormCount: Integer;
     function GetForms(IIndex: Integer): TForm;
     function GetHeight : Integer;
@@ -340,6 +342,12 @@ type
 function KeysToShiftState(Keys:Word): TShiftState;
 function KeyDataToShiftState(KeyData: Longint): TShiftState;
 
+type
+  TFocusState = type Pointer;
+
+function SaveFocusState: TFocusState;
+procedure RestoreFocusState(FocusState: TFocusState);
+
 function GetParentForm(Control:TControl): TCustomForm;
 function FindRootDesigner(AComponent: TComponent): TIDesigner;
 
@@ -362,8 +370,9 @@ uses
 
 const
   FocusMessages : Boolean = true;
+  FocusCount: Integer = 0;
 
-
+//------------------------------------------------------------------------------
 procedure ExceptionOccurred(Sender : TObject; Addr,Frame : Pointer);
 var
   Mess : String;
@@ -376,7 +385,29 @@ Begin
     writeln(Mess);
 end;
 
+//------------------------------------------------------------------------------
+// The focus state is just the focus count for now. To save having to allocate
+// anything, I just map the Integer to the TFocusState.
+function SaveFocusState: TFocusState;
+begin
+  Result := TFocusState(FocusCount);
+end;
 
+procedure RestoreFocusState(FocusState: TFocusState);
+begin
+  FocusCount := Integer(FocusState);
+end;
+
+function SendFocusMessage(Window: HWnd; Msg: Word): Boolean;
+var
+  Count: Integer;
+begin
+  Count := FocusCount;
+  SendMessage(Window, Msg, 0, 0);
+  Result := (FocusCount = Count);
+end;
+
+//------------------------------------------------------------------------------
 function KeysToShiftState(Keys:Word): TShiftState;
 begin
   Result := [];
@@ -397,6 +428,7 @@ begin
   if KeyData and $20000000 <> 0 then Include(Result, ssAlt);
 end;
 
+//------------------------------------------------------------------------------
 function GetParentForm(Control:TControl): TCustomForm;
 begin
   while Control.Parent <> nil do
@@ -406,11 +438,11 @@ begin
   else Result := nil;
 end;
 
+//------------------------------------------------------------------------------
 function IsAccel(VK : Word; const Str : ShortString): Boolean;
 begin
   Result := true;
 end;
-
 
 
 //==============================================================================
