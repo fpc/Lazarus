@@ -4766,7 +4766,7 @@ begin
     end else
     if AButton=LibrariesPathEditBtn then begin
       OldPath:=edtLibraries.Text;
-      Templates:='';
+      Templates:=SetDirSeparators('/usr/X11R6/lib;/sw/lib');
     end else
     if AButton=DebugPathEditBtn then begin
       OldPath:=edtDebugPath.Text;
