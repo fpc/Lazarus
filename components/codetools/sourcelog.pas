@@ -136,6 +136,7 @@ type
     procedure Move(Pos, Len, MoveTo: integer);
     function LoadFromFile(const Filename: string): boolean; virtual;
     function SaveToFile(const Filename: string): boolean; virtual;
+    function GetLines(StartLine, EndLine: integer): string;
     function IsEqual(sl: TStrings): boolean;
     procedure Assign(sl: TStrings);
     procedure AssignTo(sl: TStrings);
@@ -671,6 +672,26 @@ begin
   except
     Result:=false;
   end;
+end;
+
+function TSourceLog.GetLines(StartLine, EndLine: integer): string;
+var
+  StartPos: Integer;
+  EndPos: Integer;
+begin
+  BuildLineRanges;
+  if StartLine<1 then StartLine:=1;
+  if EndLine>LineCount then EndLine:=LineCount;
+  if StartLine<=EndLine then begin
+    StartPos:=FLineRanges[StartLine-1].StartPos;
+    if EndLine<LineCount then
+      EndPos:=FLineRanges[EndLine].StartPos
+    else
+      EndPos:=FLineRanges[EndLine-1].EndPos;
+    SetLength(Result,EndPos-StartPos);
+    System.Move(FSource[StartPos],Result[1],length(Result));
+  end else
+    Result:='';
 end;
 
 function TSourceLog.IsEqual(sl: TStrings): boolean;

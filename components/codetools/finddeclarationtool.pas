@@ -588,6 +588,9 @@ type
       Params: TFindDeclarationParams): TTypeCompatibility;
     function IsBaseCompatible(const TargetType, ExpressionType: TExpressionType;
       Params: TFindDeclarationParams): TTypeCompatibility;
+  protected
+    function OpenCodeToolForUnit(UnitNameAtom, UnitInFileAtom: TAtomPosition;
+      ExceptionOnNotFound: boolean): TFindDeclarationTool;
   public
     procedure BuildTree(OnlyInterfaceNeeded: boolean); override;
     destructor Destroy; override;
@@ -3043,18 +3046,8 @@ begin
         // identifier not found
       end;
     end else begin
-      // open the unit and search the identifier in the interface
-      NewCodeTool:=FindCodeToolForUsedUnit(UnitNameAtom,InAtom,false);
-      if NewCodeTool=nil then begin
-        MoveCursorToCleanPos(UnitNameAtom.StartPos);
-        RaiseExceptionInstance(
-          ECodeToolUnitNotFound.Create(Self,
-                                       Format(ctsUnitNotFound,[GetAtom(UnitNameAtom)]),
-                                       GetAtom(UnitNameAtom)));
-      end else if NewCodeTool=Self then begin
-        MoveCursorToCleanPos(UnitNameAtom.StartPos);
-        RaiseExceptionFmt(ctsIllegalCircleInUsedUnits,[GetAtom(UnitNameAtom)]);
-      end;
+      // open the unit
+      NewCodeTool:=OpenCodeToolForUnit(UnitNameAtom,InAtom,false);
       // search the identifier in the interface of the used unit
       Params.Save(OldInput);
       Params.Flags:=[fdfIgnoreUsedUnits]+(fdfGlobalsSameIdent*Params.Flags)
@@ -5125,6 +5118,25 @@ begin
   ' Result=',TypeCompatibilityNames[Result]
   );
   {$ENDIF}
+end;
+
+function TFindDeclarationTool.OpenCodeToolForUnit(UnitNameAtom,
+  UnitInFileAtom: TAtomPosition;
+  ExceptionOnNotFound: boolean): TFindDeclarationTool;
+begin
+  // open the unit
+  Result:=FindCodeToolForUsedUnit(UnitNameAtom,UnitInFileAtom,
+                                  ExceptionOnNotFound);
+  if Result=nil then begin
+    MoveCursorToCleanPos(UnitNameAtom.StartPos);
+    RaiseExceptionInstance(
+      ECodeToolUnitNotFound.Create(Self,
+                                   Format(ctsUnitNotFound,[GetAtom(UnitNameAtom)]),
+                                   GetAtom(UnitNameAtom)));
+  end else if Result=Self then begin
+    MoveCursorToCleanPos(UnitNameAtom.StartPos);
+    RaiseExceptionFmt(ctsIllegalCircleInUsedUnits,[GetAtom(UnitNameAtom)]);
+  end;
 end;
 
 procedure TFindDeclarationTool.DoDeleteNodes;

@@ -46,11 +46,13 @@ type
     P: integer;
     Code: TCodeBuffer;
   end;
+  PCodePosition = ^TCodePosition;
 
   TCodeXYPosition = record
     X, Y: integer;
     Code: TCodeBuffer;
   end;
+  PCodeXYPosition = ^TCodeXYPosition;
 
   TCommonAtomFlag = (
     cafNone,

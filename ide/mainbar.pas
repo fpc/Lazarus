@@ -1037,7 +1037,6 @@ begin
   itmToolMakeResourceString := TMenuItem.Create(Self);
   itmToolMakeResourceString.Name:='itmToolMakeResourceString';
   itmToolMakeResourceString.Caption := lisMenuMakeResourceString;
-  itmToolMakeResourceString.Enabled:=false;
   mnuTools.Add(itmToolMakeResourceString);
 
   mnuTools.Add(CreateMenuSeparator);

@@ -27,6 +27,10 @@
  ***************************************************************************
 
   Author: Mattias Gaertner
+  
+  Abstract:
+    TNewOtherDialog is the dialog, which is shown, when the user selects the
+    File->New... menuitem and lets the user choose what to create.
 
 }
 unit NewDialog;
@@ -189,6 +193,7 @@ begin
   if Result=mrOk then begin
     ItemType:=NewOtherDialog.ItemType.CreateCopy;
   end;
+  IDEDialogLayoutList.SaveLayout(NewOtherDialog);
   NewOtherDialog.Free;
 end;
 

@@ -28,6 +28,7 @@
       - lazarus resources
       - Application.CreateForm statements
       - published variables
+      - resource strings
 
 }
 unit StdCodeTools;
@@ -47,7 +48,7 @@ uses
   Classes, SysUtils, CodeToolsStrConsts, CodeTree, CodeAtom,
   IdentCompletionTool, PascalParserTool, SourceLog, KeywordFuncLists,
   BasicCodeTools, LinkScanner, CodeCache, AVL_Tree, TypInfo, SourceChanger,
-  CustomCodeTool;
+  CustomCodeTool, CodeToolsStructs;
 
 type
   TStandardCodeTool = class(TIdentCompletionTool)
@@ -162,8 +163,8 @@ type
       ResolveComments: boolean): boolean;
           
     // resource strings
-    function FindNextResourceStringSection(CursorPos: TCodeXYPosition;
-      var ResStrPos: TCodeXYPosition; IgnoreUsedUnits: boolean): boolean;
+    function GatherResourceStringSections(CursorPos: TCodeXYPosition;
+      PositionList: TCodeXYPositions): boolean;
   end;
 
 
@@ -1198,12 +1199,12 @@ type
     scatInherited, scatPoint, scatUp,
     scatEdgedBracketOpen, scatEdgedBracketClose,
     scatRoundBracketOpen, scatRoundBracketClose);
-{const
+const
   StrConstTokenTypeName: array[TStrConstTokenType] of string = (
     'scatNone', 'scatStrConst', 'scatPlus', 'scatIdent',
     'scatInherited', 'scatPoint', 'scatUp',
     'scatEdgedBracketOpen', 'scatEdgedBracketClose',
-    'scatRoundBracketOpen', 'scatRoundBracketClose');}
+    'scatRoundBracketOpen', 'scatRoundBracketClose');
 
   function GetCurrentTokenType: TStrConstTokenType;
   begin
@@ -1241,15 +1242,15 @@ begin
   EndPos:=CursorPos;
   Result:=true;
   BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos,[]);
-  //writeln('TStandardCodeTool.GetStringConstBounds A ',CleanCursorPos,' "',copy(Src,CleanCursorPos-5,5),'" | "',copy(Src,CleanCursorPos,5),'"');
+  writeln('TStandardCodeTool.GetStringConstBounds A ',CleanCursorPos,' "',copy(Src,CleanCursorPos-5,5),'" | "',copy(Src,CleanCursorPos,5),'"');
   GetCleanPosInfo(-1,CleanCursorPos,ResolveComments,SameArea);
-  //writeln('TStandardCodeTool.GetStringConstBounds B ',SameArea.StartPos,'-',SameArea.EndPos,' "',copy(Src,SameArea.StartPos,SameArea.EndPos-SameArea.StartPos),'"');
+  writeln('TStandardCodeTool.GetStringConstBounds B ',SameArea.StartPos,'-',SameArea.EndPos,' "',copy(Src,SameArea.StartPos,SameArea.EndPos-SameArea.StartPos),'"');
   if (SameArea.EndPos=SameArea.StartPos) or (SameArea.StartPos>SrcLen) then
     exit;
   // read til end of string constant
   MoveCursorToCleanPos(SameArea.StartPos);
   ReadNextAtom;
-  //writeln('TStandardCodeTool.GetStringConstBounds F ',GetAtom);
+  writeln('TStandardCodeTool.GetStringConstBounds read til end of string  ',GetAtom);
   CurrentToken:=GetCurrentTokenType;
   if (CurrentToken=scatNone) then exit;
   repeat
@@ -1257,10 +1258,10 @@ begin
     ReadNextAtom;
     LastToken:=CurrentToken;
     CurrentToken:=GetCurrentTokenType;
-    //writeln('TStandardCodeTool.GetStringConstBounds G ',GetAtom,' EndCleanPos=',EndCleanPos,
-    //' LastToken=',StrConstTokenTypeName[LastToken],
-    //' CurrentToken=',StrConstTokenTypeName[CurrentToken],
-    //' ',StrConstTokenTypeName[GetCurrentTokenType]);
+    writeln('TStandardCodeTool.GetStringConstBounds Read Forward: ',GetAtom,' EndCleanPos=',EndCleanPos,
+    ' LastToken=',StrConstTokenTypeName[LastToken],
+    ' CurrentToken=',StrConstTokenTypeName[CurrentToken],
+    ' ',StrConstTokenTypeName[GetCurrentTokenType]);
     case CurrentToken of
     scatNone, scatEdgedBracketClose, scatRoundBracketClose:
       if not (LastToken in [scatStrConst,scatIdent,scatUp,
@@ -1297,20 +1298,20 @@ begin
     end;
   until false;
 
-  // read til end of string constant
+  // read til start of string constant
   MoveCursorToCleanPos(SameArea.StartPos);
   ReadNextAtom;
-  //writeln('TStandardCodeTool.GetStringConstBounds H ',GetAtom);
+  writeln('TStandardCodeTool.GetStringConstBounds Read til start of string ',GetAtom);
   CurrentToken:=GetCurrentTokenType;
   repeat
     StartCleanPos:=CurPos.StartPos;
     ReadPriorAtom;
-    //writeln('TStandardCodeTool.GetStringConstBounds I ',GetAtom,' StartCleanPos=',StartCleanPos);
+    writeln('TStandardCodeTool.GetStringConstBounds Read backward: ',GetAtom,' StartCleanPos=',StartCleanPos);
     LastToken:=CurrentToken;
     CurrentToken:=GetCurrentTokenType;
     case CurrentToken of
     scatNone, scatEdgedBracketOpen, scatRoundBracketOpen:
-      if not (LastToken in [scatStrConst,scatIdent]) then
+      if not (LastToken in [scatStrConst,scatIdent,scatPlus]) then
         exit
       else
         break;
@@ -1351,20 +1352,82 @@ begin
   Result:=true;
 end;
 
-function TStandardCodeTool.FindNextResourceStringSection(
-  CursorPos: TCodeXYPosition; var ResStrPos: TCodeXYPosition;
-  IgnoreUsedUnits: boolean): boolean;
+function TStandardCodeTool.GatherResourceStringSections(
+  CursorPos: TCodeXYPosition; PositionList: TCodeXYPositions): boolean;
+  
+  function SearchInUsesSection(UsesNode: TCodeTreeNode): boolean;
+  var
+    InAtom, UnitNameAtom: TAtomPosition;
+    NewCodeTool: TPascalParserTool;
+    ANode: TCodeTreeNode;
+    NewCaret: TCodeXYPosition;
+  begin
+    Result:=false;
+    MoveCursorToUsesEnd(UsesNode);
+    repeat
+      ReadPriorUsedUnit(UnitNameAtom, InAtom);
+      //writeln('TStandardCodeTool.GatherResourceStringSections Uses ',GetAtom(UnitNameAtom));
+      // open the unit
+      NewCodeTool:=OpenCodeToolForUnit(UnitNameAtom,InAtom,false);
+      NewCodeTool.BuildTree(true);
+      // search all resource string sections in the interface
+      ANode:=NewCodeTool.FindInterfaceNode;
+      if (ANode<>nil) and (ANode.LastChild<>nil) then begin
+        ANode:=ANode.LastChild;
+        while ANode<>nil do begin
+          if ANode.Desc=ctnResStrSection then begin
+            if not NewCodeTool.CleanPosToCaret(ANode.StartPos,NewCaret) then
+              break;
+            writeln('TStandardCodeTool.GatherResourceStringSections Found Other ',NewCodeTool.MainFilename,' Y=',NewCaret.Y);
+            PositionList.Add(NewCaret);
+          end;
+          ANode:=ANode.PriorBrother;
+        end;
+      end;
+      // restore the cursor
+      MoveCursorToCleanPos(UnitNameAtom.StartPos);
+      ReadPriorAtom; // read keyword 'uses' or comma
+      //writeln('TStandardCodeTool.GatherResourceStringSections Uses B ',GetAtom);
+    until not AtomIsChar(',');
+    Result:=true;
+  end;
+  
 var
   CleanCursorPos: integer;
-  //CursorNode: TCodeTreeNode;
+  CursorNode: TCodeTreeNode;
+  NewCaret: TCodeXYPosition;
+  ANode: TCodeTreeNode;
 begin
   Result:=false;
+  writeln('TStandardCodeTool.GatherResourceStringSections A ');
   BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos,[]);
-  //CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
-  // ToDo
-  
-  exit;
-  
+  CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
+  PositionList.Clear;
+  ANode:=CursorNode;
+  while ANode<>nil do begin
+    case ANode.Desc of
+    
+    ctnResStrSection:
+      begin
+        if not CleanPosToCaret(ANode.StartPos,NewCaret) then exit;
+        writeln('TStandardCodeTool.GatherResourceStringSections Found Same Y=',NewCaret.Y);
+        PositionList.Add(NewCaret);
+      end;
+      
+    ctnUsesSection:
+      if not SearchInUsesSection(ANode) then break;
+      
+    end;
+    
+    // go to next node
+    if ANode.PriorBrother<>nil then begin
+      ANode:=ANode.PriorBrother;
+      if (ANode.Desc=ctnInterface) and (ANode.LastChild<>nil) then
+        ANode:=ANode.LastChild;
+    end else begin
+      ANode:=ANode.Parent;
+    end;
+  end;
   Result:=true;
 end;
 

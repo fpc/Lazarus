@@ -42,7 +42,7 @@ uses
   Classes, SysUtils, CodeToolsStrConsts, EventCodeTool, CodeTree, CodeAtom,
   SourceChanger, DefineTemplates, CodeCache, ExprEval, LinkScanner,
   KeywordFuncLists, TypInfo, AVL_Tree, CustomCodeTool, FindDeclarationTool,
-  IdentCompletionTool, ResourceCodeTool;
+  IdentCompletionTool, ResourceCodeTool, CodeToolsStructs;
 
 type
   TCodeToolManager = class;
@@ -98,6 +98,7 @@ type
     procedure CreateScanner(Code: TCodeBuffer);
     function InitCurCodeTool(Code: TCodeBuffer): boolean;
     function InitResourceTool: boolean;
+    procedure ClearPositions;
     function FindCodeToolForSource(Code: TCodeBuffer): TCustomCodeTool;
     function GetCodeToolForSource(Code: TCodeBuffer;
       ExceptionOnError: boolean): TCustomCodeTool;
@@ -129,6 +130,7 @@ type
     GlobalValues: TExpressionEvaluator;
     IdentifierList: TIdentifierList;
     IdentifierHistory: TIdentifierHistoryList;
+    Positions: TCodeXYPositions;
     
     procedure ActivateWriteLock;
     procedure DeactivateWriteLock;
@@ -233,8 +235,12 @@ type
           var NewX, NewY, NewTopLine: integer): boolean;
     function FindSmartHint(Code: TCodeBuffer; X,Y: integer): string;
     
-    // gather identifiers
+    // gather identifiers (i.e. all visible)
     function GatherIdentifiers(Code: TCodeBuffer; X,Y: integer): boolean;
+    
+    // resource string sections
+    function GatherResourceStringSections(
+          Code: TCodeBuffer; X,Y: integer): boolean;
     
     // expressions
     function GetStringConstBounds(Code: TCodeBuffer; X,Y: integer;
@@ -411,6 +417,7 @@ begin
   {$IFDEF CTDEBUG}
   writeln('[TCodeToolManager.Destroy] B');
   {$ENDIF}
+  Positions.Free;
   IdentifierHistory.Free;
   IdentifierList.Free;
   FSourceTools.FreeAndClear;
@@ -607,6 +614,14 @@ begin
   Result:=true;
 end;
 
+procedure TCodeToolManager.ClearPositions;
+begin
+  if Positions=nil then
+    Positions:=TCodeXYPositions.Create
+  else
+    Positions.Clear;
+end;
+
 function TCodeToolManager.HandleException(AnException: Exception): boolean;
 var ErrorSrcTool: TCustomCodeTool;
 begin
@@ -797,6 +812,27 @@ begin
   {$IFDEF CTDEBUG}
   writeln('TCodeToolManager.GatherIdentifiers END ');
   {$ENDIF}
+end;
+
+function TCodeToolManager.GatherResourceStringSections(Code: TCodeBuffer; X,
+  Y: integer): boolean;
+var
+  CursorPos: TCodeXYPosition;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.GatherResourceStringSections A ',Code.Filename,' x=',x,' y=',y);
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  CursorPos.X:=X;
+  CursorPos.Y:=Y;
+  CursorPos.Code:=Code;
+  ClearPositions;
+  try
+    Result:=FCurCodeTool.GatherResourceStringSections(CursorPos,Positions);
+  except
+    on e: Exception do HandleException(e);
+  end;
 end;
 
 function TCodeToolManager.GetStringConstBounds(Code: TCodeBuffer; X, Y: integer;
