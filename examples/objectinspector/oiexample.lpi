@@ -1,23 +1,24 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="2"/>
+    <Version Value="5"/>
     <General>
-      <ProjectType Value="Application"/>
-      <Flags>
-        <SaveClosedFiles Value="False"/>
-        <SaveOnlyProjectUnits Value="True"/>
-      </Flags>
       <MainUnit Value="0"/>
       <ActiveEditorIndexAtStart Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
       <Title Value="Example for the Object Inspector"/>
     </General>
+    <JumpHistory Count="1" HistoryIndex="0">
+      <Position1>
+        <Filename Value="mainunit.pas"/>
+        <Caret Line="67" Column="17" TopLine="44"/>
+      </Position1>
+    </JumpHistory>
     <Units Count="2">
       <Unit0>
         <CursorPos X="6" Y="10"/>
-        <EditorIndex Value="3"/>
+        <EditorIndex Value="1"/>
         <Filename Value="oiexample.lpr"/>
         <IsPartOfProject Value="True"/>
         <Loaded Value="True"/>
@@ -26,14 +27,14 @@
         <UsageCount Value="21"/>
       </Unit0>
       <Unit1>
-        <CursorPos X="19" Y="68"/>
+        <CursorPos X="39" Y="25"/>
         <EditorIndex Value="0"/>
         <Filename Value="mainunit.pas"/>
         <ComponentName Value="Form1"/>
         <IsPartOfProject Value="True"/>
         <Loaded Value="True"/>
         <ResourceFilename Value="mainunit.lrs"/>
-        <TopLine Value="44"/>
+        <TopLine Value="1"/>
         <UnitName Value="MainUnit"/>
         <UsageCount Value="21"/>
       </Unit1>
@@ -52,17 +53,20 @@
     </RunParams>
     <RequiredPackages Count="1">
       <Item1>
-        <PackageName Value="LCL"/>
-        <MinVersion Major="1" Valid="True"/>
+        <PackageName Value="IDEIntf"/>
       </Item1>
     </RequiredPackages>
   </ProjectOptions>
   <CompilerOptions>
+    <Version Value="3"/>
     <SearchPaths>
       <OtherUnitFiles Value="$(LazarusDir)/;$(LazarusDir)/components/units/"/>
       <LCLWidgetType Value="gtk"/>
       <SrcPath Value="$(LazarusDir)/designer/"/>
     </SearchPaths>
+    <CodeGeneration>
+      <Generate Value="Faster"/>
+    </CodeGeneration>
     <Other>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
