@@ -235,7 +235,7 @@ msgid "(unknown macro: %s)"
 msgstr ""
 
 #: lazarusidestrconsts:lislazarusversionstring
-msgid "0.9.3 beta"
+msgid "0.9.4 beta"
 msgstr ""
 
 #: lazarusidestrconsts:lisa2pchooseanexistingfile
@@ -5665,6 +5665,10 @@ msgstr ""
 #: lazarusidestrconsts:rslanguagespanish
 msgid "Spanish"
 msgstr "espanja"
+
+#: lazarusidestrconsts:rslanguagespanishutf
+msgid "Spanish (UTF8)"
+msgstr ""
 
 #: lazarusidestrconsts:lisuidsrc
 msgid "Src"

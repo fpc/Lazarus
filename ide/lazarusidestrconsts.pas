@@ -1414,6 +1414,7 @@ resourcestring
   rsLanguageEnglish     = 'English';
   rsLanguageDeutsch     = 'Deutsch';
   rsLanguageSpanish     = 'Spanish';
+  rsLanguageSpanishUTF  = 'Spanish (UTF8)';
   rsLanguageFrench      = 'French';
   rsLanguageRussian     = 'Russian';
   rsLanguageRussianWin  = 'Russian(CP1251)';
