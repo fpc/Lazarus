@@ -1403,27 +1403,35 @@ begin
   if XLine > Length(EditorLine) then Exit;
   
   //walk backwards to a space or non-standard character.
-  while (((ord(upcase(EditorLine[XLine])) >= 65)
-        and (ord(upcase(EditorLine[xLine])) <= 90)) or
-        ((ord(EditorLine[XLine]) >= ord('1'))
-        and (ord(EditorLine[XLine]) <= ord('0'))))  and (XLine>1)  do
+  while (
+        (upcase(EditorLine[XLine]) in (['A'..'Z'])) or
+        (upcase(EditorLine[XLine]) in (['0'..'9']))
+        ) and
+        (XLine>1) do
     dec(xLine);
+
   if ( (XLine > 1) and (XLine < Length(EditorLine))) then Inc(xLine);
+  
   Texts := Copy(EditorLine,XLine,length(EditorLine));  //chop off the beginning
 
   XLine := 1;
-  while (((ord(upcase(Texts[xLine])) >= 65) and (ord(upcase(Texts[xLine])) <= 90))
-        or ((ord(EditorLine[XLine]) >= ord('1'))
-        and (ord(EditorLine[XLine]) <= ord('0'))))
-        and (XLine< length(Texts)) do
-   inc(xLine);
+
+  while (
+        (upcase(Texts[XLine]) in (['A'..'Z'])) or
+        (upcase(Texts[XLine]) in (['0'..'9']))
+        ) and
+        (XLine< Length(Texts)) do
+
+    inc(xLine);
 
   if (XLine < Length(Texts) ) and (XLine >1)  then dec(xLine);
 
-  if not((((ord(upcase(Texts[xLine])) >= 65) and (ord(upcase(Texts[xLine])) <= 90)))
-          or ((ord(EditorLine[XLine]) >= ord('1'))
-          and (ord(EditorLine[XLine]) <= ord('0'))))  then
+  if not(
+        (upcase(Texts[XLine]) in (['A'..'Z'])) or
+        (upcase(Texts[XLine]) in (['0'..'9']))
+        ) then
     dec(xLine);
+
   Texts := Copy(Texts,1,XLine);
 
   Result := Texts;
@@ -1588,9 +1596,9 @@ begin
   FHintWindow := THintWindow.Create(nil);
 
   FHIntWindow.Visible := False;
-  FHintWindow.Caption := 'This is a hint window'#13#10'NEat huh?';
+  FHintWindow.Caption := '';
   FHintWindow.HideInterval := 4000;
-  FHintWindow.AutoHide := True;
+  FHintWindow.AutoHide := False;
 
 end;
 
@@ -2887,9 +2895,17 @@ begin
   TextPosition.Y := cPosition.Y - 28;
   AHint := SE.GetWordAtPosition(TextPosition);
 
+  //defaults for now just to demonstrate
+  if lowercase(AHint) = 'integer' then
+     AHint := 'type System.integer: -2147483648..214748347 system.pas'
+     else
+  if lowercase(AHint) = 'real' then
+     AHint := 'type System.Real: Double -system.pas';
+
+
   if AHint = '' then Exit;
   
-  Writeln('cPosition ius ',cPosition.x,',',cPosition.y);
+//  Writeln('cPosition ius ',cPosition.x,',',cPosition.y);
   Rect := FHintWindow.CalcHintRect(0,AHint,nil);  //no maxwidth
 //  Position := ClientToScreen(FLastMouseMovePos);
   Rect.Left := cPosition.X+Left+10;
