@@ -820,7 +820,9 @@ procedure TDesigner.ValidateRename(AComponent: TComponent;
   const CurName, NewName: string);
 Begin
   // check if contol is initialized
-  if CurName='' then exit;
+  if (CurName='') or (NewName='')
+  or ((AComponent<>nil) and (csDestroying in AComponent.ComponentState)) then
+    exit;
   // check if control is the form
   if AComponent=nil then AComponent:=FCustomForm;
   // consistency check
