@@ -907,6 +907,7 @@ lcl/stdctrls.pp svneol=native#text/pascal
 lcl/stringhashlist.pas svneol=native#text/pascal
 lcl/templates/template.inc svneol=native#text/pascal
 lcl/templates/template.pp svneol=native#text/pascal
+lcl/textstrings.pas svneol=native#text/pascal
 lcl/toolwin.pp svneol=native#text/pascal
 lcl/utrace.pp svneol=native#text/pascal
 lcl/vclglobals.pp svneol=native#text/pascal
