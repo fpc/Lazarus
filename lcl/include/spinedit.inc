@@ -20,8 +20,25 @@
 procedure TSpinEdit.UpdateControl;
 begin
   if not HandleAllocated then exit;
+  if MaxValue<MinValue then fMaxValue:=MinValue;
+  if Value<fMinValue then Value:=fMinValue;
+  if Value>fMaxValue then Value:=fMaxValue;
   CNSendMessage(LM_SetProperties,Self,nil);
   fValueNeedsUpdate:=false;
+end;
+
+procedure TSpinEdit.SetMaxValue(const AValue: single);
+begin
+  if FMaxValue=AValue then exit;
+  FMaxValue:=AValue;
+  UpdateControl;
+end;
+
+procedure TSpinEdit.SetMinValue(const AValue: single);
+begin
+  if FMinValue=AValue then exit;
+  FMinValue:=AValue;
+  UpdateControl;
 end;
 
 {-----------------------------------------------------------------------------}
@@ -77,6 +94,8 @@ begin
   fDecimals := 2;
   fValue := 1;
   fValueNeedsUpdate := true;
+  fMinValue := 1;
+  fMaxValue := 100;
 
   SetBounds(1,1,50,20);
 end;

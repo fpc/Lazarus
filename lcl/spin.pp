@@ -37,9 +37,13 @@ type
   TSpinEdit = class(TWinControl)
   private
     fDecimals : Integer;
+    FMaxValue: single;
+    FMinValue: single;
     fValue    : Single;
     fClimbRate : Single;
     fValueNeedsUpdate: boolean;
+    procedure SetMaxValue(const AValue: single);
+    procedure SetMinValue(const AValue: single);
     Procedure UpdateControl;
   protected
     procedure SetDecimals(num : Integer);
@@ -52,15 +56,17 @@ type
     destructor Destroy; override;
   published
     property Align;
-    property Decimal_Places : Integer read fDecimals write SetDecimals;
+    property Decimal_Places: Integer read fDecimals write SetDecimals;
     property Enabled;
-    property Value: Single read GetValue write SetValue;
     property Climb_Rate : Single read fClimbRate write SetClimbRate;
-    property Visible;
+    property MinValue: single read FMinValue write SetMinValue;
+    property MaxValue: single read FMaxValue write SetMaxValue;
     property OnEnter;
     property OnExit;
     property PopupMenu;
     property ShowHint;
+    property Value: Single read GetValue write SetValue;
+    property Visible;
   end;
 
 Implementation

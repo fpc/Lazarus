@@ -308,7 +308,7 @@ writeln('[TExternalToolList.Run] ',CmdLine);
           try
             try
               TheOutputFilter.Execute(TheProcess);
-              TheOutputFilter.ReadLine('"'+Title+'" successfully runned :)',
+              TheOutputFilter.ReadLine('"'+Title+'" completed',
                                        true);
             finally
               TheProcess.WaitOnExit;

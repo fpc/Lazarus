@@ -374,6 +374,8 @@ resourcestring
   dlgAmbigWarn = 'Warn on compile';
   dlgIgnoreVerb = 'Ignore';
   dlgBackColor = 'Background color';
+  dlgOIMiscellaneous = 'Miscellaneous';
+  dlgOIItemHeight = 'Item height';
   dlgEnvColors = 'Colors';
   dlgEnvBackupHelpNote =
     'Notes: Project files are all files in the project directory';

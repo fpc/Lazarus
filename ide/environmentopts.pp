@@ -38,7 +38,7 @@ uses
   MemCheck,
 {$ENDIF}
   Classes, SysUtils, Forms, Controls, Buttons, GraphType, Graphics, Laz_XMLCfg,
-  ObjectInspector, ExtCtrls, StdCtrls, EditorOptions, LResources, LazConf,
+  ObjectInspector, ExtCtrls, StdCtrls, Spin, EditorOptions, LResources, LazConf,
   Dialogs, ExtToolDialog, IDEProcs, IDEOptionDefs, InputHistory,
   LazarusIDEStrConsts, FileCtrl;
 
@@ -349,7 +349,12 @@ type
   TOnSaveEnvironmentSettings = procedure (Sender: TObject;
         EnvironmentOptions: TEnvironmentOptions) of object;
 
-  { form for environment options }
+  { TEnvironmentOptionsDialog: form for environment options }
+  
+  TEnvOptsDialogPage = (eodpLanguage, eodpAutoSave, eodpDesktop, eodpMainHints,
+    eodpWindowPositions, eodpFormEditor, eodpObjectInspector, eodpFiles,
+    eodpBackup, eodpNaming);
+  
   TEnvironmentOptionsDialog = class(TForm)
     NoteBook: TNoteBook;
 
@@ -412,9 +417,12 @@ type
     RubberbandSelectsGrandChildsCheckBox: TCheckBox;
 
     // object inspector
-    ObjectInspectorGroupBox: TGroupBox;
+    ObjectInspectorColorsGroupBox: TGroupBox;
     OIBackgroundColorLabel: TLabel;
     OIBackgroundColorButton: TColorButton;
+    OIMiscGroupBox: TGroupBox;
+    OIDefaultItemHeightSpinEdit: TSpinEdit;
+    OIDefaultItemHeightLabel: TLabel;
 
     // Files
     MaxRecentOpenFilesLabel: TLabel;
@@ -480,6 +488,7 @@ type
     FOldFPCSourceDir: string;
     FOldDebuggerFilename: string;
     FOldTestDir: string;
+    procedure SetCategoryPage(const AValue: TEnvOptsDialogPage);
     procedure SetupFilesPage(Page: integer);
     procedure SetupDesktopPage(Page: integer);
     procedure SetupFormEditorPage(Page: integer);
@@ -502,6 +511,7 @@ type
       read FOnSaveEnvironmentSettings write FOnSaveEnvironmentSettings;
     property OnLoadEnvironmentSettings: TOnLoadEnvironmentSettings
       read FOnLoadEnvironmentSettings write FOnLoadEnvironmentSettings;
+    property CategoryPage: TEnvOptsDialogPage write SetCategoryPage;
   public
     procedure ReadSettings(AnEnvironmentOptions: TEnvironmentOptions);
     procedure WriteSettings(AnEnvironmentOptions: TEnvironmentOptions);
@@ -2034,6 +2044,23 @@ begin
   end;
 end;
 
+procedure TEnvironmentOptionsDialog.SetCategoryPage(
+  const AValue: TEnvOptsDialogPage);
+var
+  p: Integer;
+begin
+  case AValue of
+    eodpFiles: p:=0;
+    eodpLanguage, eodpAutoSave, eodpDesktop, eodpMainHints,
+    eodpWindowPositions: p:=1;
+    eodpFormEditor: p:=2;
+    eodpObjectInspector: p:=3;
+    eodpBackup: p:=4;
+    eodpNaming: p:=5;
+  end;
+  Notebook.PageIndex:=p;
+end;
+
 procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
 
   procedure SetupGridGroupBox;
@@ -2046,7 +2073,6 @@ procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
       Top:=2;
       Width:=200;
       Caption:=dlgQShowGrid;
-      Visible:=true;
     end;
 
     GridColorButton:=TColorButton.Create(Self);
@@ -2057,7 +2083,6 @@ procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
       Top:=ShowGridCheckBox.Top+ShowGridCheckBox.Height+5;
       Width:=50;
       Height:=25;
-      Visible:=true;
     end;
 
     GridColorLabel:=TLabel.Create(Self);
@@ -2068,7 +2093,6 @@ procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
       Top:=GridColorButton.Top+2;
       Width:=80;
       Caption:=dlgGridColor;
-      Visible:=true;
     end;
 
     SnapToGridCheckBox:=TCheckBox.Create(Self);
@@ -2080,7 +2104,6 @@ procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
       Width:=ShowGridCheckBox.Width;
       Height:=ShowGridCheckBox.Height;
       Caption:=dlgQSnapToGrid;
-      Visible:=true;
     end;
 
     GridSizeXLabel:=TLabel.Create(Self);
@@ -2091,7 +2114,6 @@ procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
       Top:=SnapToGridCheckBox.Top+SnapToGridCheckBox.Height+5;
       Width:=80;
       Caption:=dlgGridX;
-      Visible:=true;
     end;
 
     GridSizeXComboBox:=TComboBox.Create(Self);
@@ -2114,7 +2136,6 @@ procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
         Add('30');
         EndUpdate;
       end;
-      Visible:=true;
     end;
 
     GridSizeYLabel:=TLabel.Create(Self);
@@ -2122,10 +2143,9 @@ procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
       Name:='GridSizeYLabel';
       Parent:=GridGroupBox;
       Left:=GridSizeXLabel.Left;
-      Top:=GridSizeXLabel.Top+GridSizeXLabel.Height+5;
+      Top:=GridSizeXComboBox.Top+GridSizeXComboBox.Height+3;
       Width:=GridSizeXLabel.Width;
       Caption:=dlgGridY;
-      Visible:=true;
     end;
 
     GridSizeYComboBox:=TComboBox.Create(Self);
@@ -2148,7 +2168,6 @@ procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
         Add('30');
         EndUpdate;
       end;
-      Visible:=true;
     end;
   end;
 
@@ -2687,7 +2706,7 @@ end;
 procedure TEnvironmentOptionsDialog.ResizeObjectInspectorPage;
 begin
   // object inspector
-  with ObjectInspectorGroupBox do begin
+  with ObjectInspectorColorsGroupBox do begin
     Left:=6;
     Top:=2;
     Width:=200;
@@ -2704,8 +2723,27 @@ begin
   with OIBackgroundColorLabel do begin
     Left:=OIBackgroundColorButton.Left+OIBackgroundColorButton.Width+5;
     Top:=OIBackgroundColorButton.Top;
-    Width:=Max(ObjectInspectorGroupBox.ClientWidth-Left-5,10);
+    Width:=Max(ObjectInspectorColorsGroupBox.ClientWidth-Left-5,10);
     Height:=23;
+  end;
+
+  with OIMiscGroupBox do begin
+    Left:=ObjectInspectorColorsGroupBox.Left;
+    Top:=ObjectInspectorColorsGroupBox.Top+ObjectInspectorColorsGroupBox.Height+5;
+    Width:=200;
+    Height:=55;
+  end;
+
+  with OIDefaultItemHeightSpinEdit do begin
+    Left:=6;
+    Top:=4;
+    Width:=50;
+  end;
+
+  with OIDefaultItemHeightLabel do begin
+    Left:=OIDefaultItemHeightSpinEdit.Left+OIDefaultItemHeightSpinEdit.Width+5;
+    Top:=OIDefaultItemHeightSpinEdit.Top+2;
+    Width:=OIMiscGroupBox.ClientWidth-Left-5;
   end;
 end;
 
@@ -3139,6 +3177,8 @@ begin
     // object inspector
     OIBackgroundColorButton.ButtonColor:=
        ObjectInspectorOptions.GridBackgroundColor;
+    OIDefaultItemHeightSpinEdit.Value:=
+       ObjectInspectorOptions.DefaultItemHeight;
        
     // window minimizing
     MinimizeAllOnMinimizeMainCheckBox.Checked:=MinimizeAllOnMinimizeMain;
@@ -3265,7 +3305,9 @@ begin
     // object inspector
     ObjectInspectorOptions.GridBackgroundColor:=
        OIBackgroundColorButton.ButtonColor;
-       
+    ObjectInspectorOptions.DefaultItemHeight:=
+      round(OIDefaultItemHeightSpinEdit.Value);
+
     // window minimizing
     MinimizeAllOnMinimizeMain:=MinimizeAllOnMinimizeMainCheckBox.Checked;
 
@@ -3399,39 +3441,69 @@ begin
   MaxX:=ClientWidth-5;
   
   // object inspector
-  ObjectInspectorGroupBox:=TGroupBox.Create(Self);
-  with ObjectInspectorGroupBox do begin
-    Name:='ObjectInspectorGroupBox';
+  ObjectInspectorColorsGroupBox:=TGroupBox.Create(Self);
+  with ObjectInspectorColorsGroupBox do begin
+    Name:='ObjectInspectorColorsGroupBox';
     Parent:=NoteBook.Page[Page];
     Left:=6;
     Top:=2;
     Width:=(MaxX div 2) - 15;
     Height:=55;
     Caption:=dlgEnvColors;
-    Visible:=true;
   end;
 
   OIBackgroundColorButton:=TColorButton.Create(Self);
   with OIBackgroundColorButton do begin
     Name:='OIBackgroundColorButton';
-    Parent:=ObjectInspectorGroupBox;
+    Parent:=ObjectInspectorColorsGroupBox;
     Left:=6;
     Top:=6;
     Width:=50;
     Height:=25;
-    Visible:=true;
   end;
 
   OIBackgroundColorLabel:=TLabel.Create(Self);
   with OIBackgroundColorLabel do begin
     Name:='OIBackgroundColorLabel';
-    Parent:=ObjectInspectorGroupBox;
+    Parent:=ObjectInspectorColorsGroupBox;
     Left:=OIBackgroundColorButton.Left+OIBackgroundColorButton.Width+5;
-    Top:=OIBackgroundColorButton.Top;
-    Width:=ObjectInspectorGroupBox.ClientWidth-Left-5;
+    Top:=OIBackgroundColorButton.Top+2;
+    Width:=ObjectInspectorColorsGroupBox.ClientWidth-Left-5;
     Height:=23;
     Caption:=dlgBackColor;
-    Visible:=true;
+  end;
+  
+  OIMiscGroupBox:=TGroupBox.Create(Self);
+  with OIMiscGroupBox do begin
+    Name:='OIMiscGroupBox';
+    Parent:=NoteBook.Page[Page];
+    Left:=ObjectInspectorColorsGroupBox.Left;
+    Top:=ObjectInspectorColorsGroupBox.Top+ObjectInspectorColorsGroupBox.Height+5;
+    Width:=200;
+    Height:=55;
+    Caption:=dlgOIMiscellaneous;
+  end;
+  
+  OIDefaultItemHeightSpinEdit:=TSpinEdit.Create(Self);
+  with OIDefaultItemHeightSpinEdit do begin
+    Name:='OIDefaultItemHeightSpinEdit';
+    Parent:=OIMiscGroupBox;
+    Left:=6;
+    Top:=4;
+    Width:=50;
+    Decimal_Places:=0;
+    MinValue:=0;
+    MaxValue:=100;
+  end;
+
+  OIDefaultItemHeightLabel:=TLabel.Create(Self);
+  with OIDefaultItemHeightLabel do begin
+    Name:='OIDefaultItemHeightLabel';
+    Parent:=OIMiscGroupBox;
+    Left:=OIDefaultItemHeightSpinEdit.Left+OIDefaultItemHeightSpinEdit.Width+5;
+    Top:=OIDefaultItemHeightSpinEdit.Top+2;
+    Width:=OIMiscGroupBox.ClientWidth-Left-5;
+    Caption:=dlgOIItemHeight;
   end;
 end;
 

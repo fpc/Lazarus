@@ -49,6 +49,7 @@ type
   TOIOptions = class
   private
     FCustomXMLCfg: TXMLConfig;
+    FDefaultItemHeight: integer;
     FFilename:string;
     FFileAge: longint;
     FXMLCfg: TXMLConfig;
@@ -87,6 +88,8 @@ type
       read FPropertyGridSplitterX write FPropertyGridSplitterX;
     property EventGridSplitterX:integer
       read FEventGridSplitterX write FEventGridSplitterX;
+    property DefaultItemHeight: integer
+      read FDefaultItemHeight write FDefaultItemHeight;
 
     property GridBackgroundColor: TColor 
       read FGridBackgroundColor write FGridBackgroundColor;
@@ -275,7 +278,8 @@ type
     procedure Paint;  override;
     procedure Clear;
     constructor CreateWithParams(AnOwner:TComponent;
-       APropertyEditorHook:TPropertyEditorHook;  TypeFilter:TTypeKinds);
+       APropertyEditorHook:TPropertyEditorHook;  TypeFilter:TTypeKinds;
+       DefItemHeight: integer);
     destructor Destroy;  override;
     function ConsistencyCheck: integer;
   end;
@@ -285,29 +289,42 @@ type
     var Allowed:boolean) of object;
 
   TOnSelectComponentInOI = procedure(AComponent:TComponent) of object;
+  
+  TOIFlag = (
+    oifRebuildPropListsNeeded
+    );
+  TOIFlags = set of TOIFlag;
 
   TObjectInspector = class (TForm)
     AvailCompsComboBox: TComboBox;
-    NoteBook:TNoteBook;
-    PropertyGrid:TOIPropertyGrid;
-    EventGrid:TOIPropertyGrid;
-    StatusBar:TStatusBar;
-    MainPopupMenu:TPopupMenu;
-    ColorsPopupMenuItem:TMenuItem;
-    BackgroundColPopupMenuItem:TMenuItem;
-    ShowHintsPopupMenuItem:TMenuItem;
+    NoteBook: TNoteBook;
+    PropertyGrid: TOIPropertyGrid;
+    EventGrid: TOIPropertyGrid;
+    StatusBar: TStatusBar;
+    MainPopupMenu: TPopupMenu;
+    ColorsPopupMenuItem: TMenuItem;
+    BackgroundColPopupMenuItem: TMenuItem;
+    ShowHintsPopupMenuItem: TMenuItem;
+    ShowOptionsPopupMenuItem: TMenuItem;
     procedure AvailComboBoxCloseUp(Sender: TObject);
     procedure OnBackgroundColPopupMenuItemClick(Sender :TObject);
     procedure OnShowHintPopupMenuItemClick(Sender :TObject);
+    procedure OnShowOptionsPopupMenuItemClick(Sender :TObject);
     procedure PropEditRefreshPropertyValues;
   private
     FComponentList: TComponentSelectionList;
+    FDefaultItemHeight: integer;
+    FFlags: TOIFlags;
+    FOnShowOptions: TNotifyEvent;
     FPropertyEditorHook:TPropertyEditorHook;
-    FUpdatingAvailComboBox:boolean;
     FOnAddAvailableComponent:TOnAddAvailableComponent;
     FOnSelectComponentInOI:TOnSelectComponentInOI;
     FOnModified: TNotifyEvent;
+    FUpdateLock: integer;
+    FUpdatingAvailComboBox:boolean;
     function ComponentToString(c:TComponent):string;
+    procedure SetDefaultItemHeight(const AValue: integer);
+    procedure SetOnShowOptions(const AValue: TNotifyEvent);
     procedure SetPropertyEditorHook(NewValue:TPropertyEditorHook);
     procedure SetSelections(const NewSelections:TComponentSelectionList);
     procedure AddComponentToAvailComboBox(AComponent:TComponent);
@@ -315,11 +332,18 @@ type
     procedure OnGridModified(Sender: TObject);
     procedure SetAvailComboBoxText;
   public
-    property Selections:TComponentSelectionList 
-      read FComponentList write SetSelections;
+    constructor Create(AnOwner: TComponent); override;
+    destructor Destroy; override;
     procedure RefreshSelections;
     procedure RefreshPropertyValues;
+    procedure RebuildPropertyLists;
     procedure FillComponentComboBox;
+    procedure BeginUpdate;
+    procedure EndUpdate;
+  public
+    property DefaultItemHeight: integer read FDefaultItemHeight write SetDefaultItemHeight;
+    property Selections:TComponentSelectionList 
+      read FComponentList write SetSelections;
     property OnAddAvailComponent:TOnAddAvailableComponent
       read FOnAddAvailableComponent write FOnAddAvailableComponent;
     property OnSelectComponentInOI:TOnSelectComponentInOI
@@ -327,8 +351,7 @@ type
     property PropertyEditorHook:TPropertyEditorHook 
       read FPropertyEditorHook write SetPropertyEditorHook;
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
-    constructor Create(AnOwner: TComponent); override;
-    destructor Destroy; override;
+    property OnShowOptions: TNotifyEvent read FOnShowOptions write SetOnShowOptions;
   end;
 
 const
@@ -352,7 +375,8 @@ end;
 { TOIPropertyGrid }
 
 constructor TOIPropertyGrid.CreateWithParams(AnOwner:TComponent;
-  APropertyEditorHook:TPropertyEditorHook;  TypeFilter:TTypeKinds);
+  APropertyEditorHook:TPropertyEditorHook;  TypeFilter:TTypeKinds;
+  DefItemHeight: integer);
 begin
   inherited Create(AnOwner);
   FComponentList:=TComponentSelectionList.Create;
@@ -428,7 +452,10 @@ begin
     Parent:=Self;
   end;
 
-  FDefaultItemHeight:=ValueComboBox.Height-3;
+  if DefItemHeight<3 then
+    FDefaultItemHeight:=ValueComboBox.Height-3
+  else
+    FDefaultItemHeight:=DefItemHeight;
 
   BuildPropertyList;
   
@@ -1244,11 +1271,8 @@ begin
       end;
     end;
     if FCurrentEdit<>nil then begin
-      // edit component
+      // resize the edit component
       EditCompRect.Left:=EditCompRect.Left-1;
-      // XXX
-      //
-      EditCompRect.Bottom:=EditCompRect.Top+FCurrentEdit.Height;
       if not CompareRectangles(FCurrentEdit.BoundsRect,EditCompRect) then begin
         FCurrentEdit.BoundsRect:=EditCompRect;
         FCurrentEdit.Invalidate;
@@ -1907,6 +1931,7 @@ begin
   FHeight:=400;
   FPropertyGridSplitterX:=110;
   FEventGridSplitterX:=110;
+  FDefaultItemHeight:=0;
 
   FGridBackgroundColor:=clBtnFace;
 end;
@@ -1939,13 +1964,19 @@ begin
     FEventGridSplitterX:=XMLConfig.GetValue(
        'ObjectInspectorOptions/Bounds/EventGridSplitterX',110);
     if FEventGridSplitterX<10 then FEventGridSplitterX:=10;
+    FDefaultItemHeight:=XMLConfig.GetValue(
+       'ObjectInspectorOptions/Bounds/DefaultItemHeight',0);
+    if FDefaultItemHeight<0 then FDefaultItemHeight:=0;
 
     FGridBackgroundColor:=XMLConfig.GetValue(
          'ObjectInspectorOptions/GridBackgroundColor',clBtnFace);
     FShowHints:=XMLConfig.GetValue(
          'ObjectInspectorOptions/ShowHints',false);
   except
-    exit;
+    on E: Exception do begin
+      writeln('ERROR: TOIOptions.Load: ',E.Message);
+      exit;
+    end;
   end;
   Result:=true;
 end;
@@ -1970,6 +2001,8 @@ begin
     XMLConfig.SetValue(
        'ObjectInspectorOptions/Bounds/EventGridSplitterX'
        ,FEventGridSplitterX);
+    XMLConfig.SetValue(
+       'ObjectInspectorOptions/Bounds/DefaultItemHeight',FDefaultItemHeight);
 
     XMLConfig.SetValue('ObjectInspectorOptions/GridBackgroundColor'
        ,FGridBackgroundColor);
@@ -1977,7 +2010,10 @@ begin
 
     if XMLConfig<>CustomXMLCfg then XMLConfig.Flush;
   except
-    exit;
+    on E: Exception do begin
+      writeln('ERROR: TOIOptions.Save: ',E.Message);
+      exit;
+    end;
   end;
   Result:=true;
 end;
@@ -1990,6 +2026,7 @@ begin
   FHeight:=AnObjInspector.Height;
   FPropertyGridSplitterX:=AnObjInspector.PropertyGrid.PrefferedSplitterX;
   FEventGridSplitterX:=AnObjInspector.EventGrid.PrefferedSplitterX;
+  FDefaultItemHeight:=AnObjInspector.DefaultItemHeight;
   FGridBackgroundColor:=AnObjInspector.PropertyGrid.BackgroundColor;
   FShowHints:=AnObjInspector.PropertyGrid.ShowHint;
 end;
@@ -2003,6 +2040,7 @@ begin
   AnObjInspector.PropertyGrid.SplitterX:=FPropertyGridSplitterX;
   AnObjInspector.EventGrid.PrefferedSplitterX:=FEventGridSplitterX;
   AnObjInspector.EventGrid.SplitterX:=FEventGridSplitterX;
+  AnObjInspector.DefaultItemHeight:=FDefaultItemHeight;
   AnObjInspector.PropertyGrid.BackgroundColor:=FGridBackgroundColor;
   AnObjInspector.PropertyGrid.ShowHint:=FShowHints;
   AnObjInspector.EventGrid.BackgroundColor:=FGridBackgroundColor;
@@ -2069,6 +2107,9 @@ begin
   AddPopupMenuItem(ShowHintsPopupMenuItem,nil
      ,'ShowHintPopupMenuItem','Show Hints','Grid hints'
      ,@OnShowHintPopupMenuItemClick,false,true,true);
+  AddPopupMenuItem(ShowOptionsPopupMenuItem,nil
+     ,'ShowOptionsPopupMenuItem','Options',''
+     ,@OnShowOptionsPopupMenuItemClick,false,true,FOnShowOptions<>nil);
 
   PopupMenu:=MainPopupMenu;
 
@@ -2106,7 +2147,8 @@ begin
       ,[tkUnknown, tkInteger, tkChar, tkEnumeration, tkFloat, tkSet{, tkMethod}
       , tkSString, tkLString, tkAString, tkWString, tkVariant
       {, tkArray, tkRecord, tkInterface}, tkClass, tkObject, tkWChar, tkBool
-      , tkInt64, tkQWord]);
+      , tkInt64, tkQWord],
+      FDefaultItemHeight);
   with PropertyGrid do begin
     Name:='PropertyGrid';
     Parent:=NoteBook.Page[0];
@@ -2122,7 +2164,7 @@ begin
 
   // event grid
   EventGrid:=TOIPropertyGrid.CreateWithParams(Self,PropertyEditorHook,
-                                              [tkMethod]);
+                                              [tkMethod],FDefaultItemHeight);
   with EventGrid do begin
     Name:='EventGrid';
     Parent:=NoteBook.Page[1];
@@ -2164,6 +2206,32 @@ end;
 function TObjectInspector.ComponentToString(c: TComponent): string;
 begin
   Result:=c.GetNamePath+': '+c.ClassName;
+end;
+
+procedure TObjectInspector.SetDefaultItemHeight(const AValue: integer);
+var
+  NewValue: Integer;
+begin
+  NewValue:=AValue;
+  if NewValue<0 then
+    NewValue:=0
+  else if NewValue=0 then
+    NewValue:=22
+  else if (NewValue>0) and (NewValue<10) then
+    NewValue:=10
+  else if NewValue>100 then NewValue:=100;
+  if FDefaultItemHeight=NewValue then exit;
+  FDefaultItemHeight:=NewValue;
+  PropertyGrid.DefaultItemHeight:=FDefaultItemHeight;
+  EventGrid.DefaultItemHeight:=FDefaultItemHeight;
+  RebuildPropertyLists;
+end;
+
+procedure TObjectInspector.SetOnShowOptions(const AValue: TNotifyEvent);
+begin
+  if FOnShowOptions=AValue then exit;
+  FOnShowOptions:=AValue;
+  ShowOptionsPopupMenuItem.Visible:=FOnShowOptions<>nil;
 end;
 
 procedure TObjectInspector.AddComponentToAvailComboBox(AComponent: TComponent);
@@ -2217,6 +2285,23 @@ begin
     AvailCompsComboBox.ItemIndex:=a;
 end;
 
+procedure TObjectInspector.BeginUpdate;
+begin
+  inc(FUpdateLock);
+end;
+
+procedure TObjectInspector.EndUpdate;
+begin
+  dec(FUpdateLock);
+  if FUpdateLock<0 then begin
+    writeln('ERROR TObjectInspector.EndUpdate');
+  end;
+  if FUpdateLock=0 then begin
+    if oifRebuildPropListsNeeded in FFLags then
+      RebuildPropertyLists;
+  end;
+end;
+
 procedure TObjectInspector.SetSelections(
   const NewSelections:TComponentSelectionList);
 begin
@@ -2239,6 +2324,17 @@ procedure TObjectInspector.RefreshPropertyValues;
 begin
   PropertyGrid.RefreshPropertyValues;
   EventGrid.RefreshPropertyValues;
+end;
+
+procedure TObjectInspector.RebuildPropertyLists;
+begin
+  if FUpdateLock>0 then
+    Include(FFLags,oifRebuildPropListsNeeded)
+  else begin
+    Exclude(FFLags,oifRebuildPropListsNeeded);
+    PropertyGrid.BuildPropertyList;
+    EventGrid.BuildPropertyList;
+  end;
 end;
 
 procedure TObjectInspector.AvailComboBoxCloseUp(Sender:TObject);
@@ -2313,6 +2409,11 @@ procedure TObjectInspector.OnShowHintPopupMenuItemClick(Sender : TObject);
 begin
   PropertyGrid.ShowHint:=not PropertyGrid.ShowHint;
   EventGrid.ShowHint:=not EventGrid.ShowHint;
+end;
+
+procedure TObjectInspector.OnShowOptionsPopupMenuItemClick(Sender: TObject);
+begin
+  if Assigned(FOnShowOptions) then FOnShowOptions(Sender);
 end;
 
 procedure TObjectInspector.PropEditRefreshPropertyValues;
