@@ -1,0 +1,14 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TForm1','FORMDATA',[
+  'TPF0'#6'TForm1'#5'Form1'#7'Caption'#6#5'Form1'#12'ClientHeight'#3','#1#11'Cl'
+  +'ientWidth'#3#144#1#8'OnCreate'#7#11'Form1Create'#9'OnDestroy'#7#12'Form1Des'
+  +'troy'#13'PixelsPerInch'#2'Z'#18'HorzScrollBar.Page'#3#145#1#18'VertScrollBa'
+  +'r.Page'#3'-'#1#4'Left'#3'"'#1#6'Height'#3','#1#3'Top'#3#163#0#5'Width'#3#144
+  +#1#0#7'TTIGrid'#7'TIGrid1'#11'BorderStyle'#7#8'bsSingle'#5'Color'#7#7'clWhit'
+  +'e'#16'DefaultRowHeight'#2#24#10'FixedColor'#7#9'clBtnFace'#7'Options'#11#15
+  +'goFixedVertLine'#15'goFixedHorzLine'#10'goVertLine'#10'goHorzLine'#13'goRan'
+  +'geSelect'#14'goSmoothScroll'#0#4'Left'#2'('#6'Height'#3#166#0#3'Top'#2'@'#5
+  +'Width'#3'<'#1#9'ColWidths'#1#2'@'#2'@'#2'@'#2'@'#2'@'#0#10'RowHeights'#1#2
+  +#24#2#24#2#24#2#24#2#24#0#0#0#0
+]);

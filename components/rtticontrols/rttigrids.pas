@@ -134,8 +134,9 @@ type
     procedure SetListObject(const AValue: TObject);
     procedure SetTIOptions(const NewOptions: TTIGridOptions);
   protected
-    procedure ReloadTIList;
     procedure LoadCollection;
+    procedure LoadTList;
+    procedure RebuildGridLayout; virtual;
     procedure AddHeaderPropertyEditor(Prop: TPropertyEditor);
     procedure DrawCell(aCol, aRow: Integer; aRect: TRect;
                        aState: TGridDrawState); override;
@@ -148,6 +149,7 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure Loaded; override;
+    procedure ReloadTIList;
     procedure ClearProperties;
     procedure DefaultDrawCell(aCol, aRow: Integer; var aRect: TRect;
                               aState: TGridDrawState); virtual;
@@ -164,17 +166,16 @@ type
                       var ObjectIndex, PropertyIndex: integer;
                       var CellType: TTIGridCellType);
   public
-    property ListObject: TObject read FListObject write SetListObject;
-    property ListDirection: TTIListDirection read FListDirection
-                    write SetListDirection default tldObjectsAsRows;
     property DefaultRowHeight default 20;
     property Filter: TTypeKinds read FFilter write SetFilter default AllTypeKinds;
-    property PropertyEditorHook: TPropertyEditorHook read FHeaderPropHook;
-    property TIObjectCount: integer read FTIObjectCount;
-    property PropertyCount: integer read GetPropertyCount;
-    property Properties[Index: integer]: TTIGridProperty read GetProperties;
+    property ListDirection: TTIListDirection read FListDirection
+                    write SetListDirection default tldObjectsAsRows;
+    property ListObject: TObject read FListObject write SetListObject;
     property OnHeaderClick: THdrEvent read FOnHeaderClick write FOnHeaderClick;
     property OnHeaderSized: THdrEvent read FOnHeaderSized write FOnHeaderSized;
+    property Properties[Index: integer]: TTIGridProperty read GetProperties;
+    property PropertyCount: integer read GetPropertyCount;
+    property TIObjectCount: integer read FTIObjectCount;
     property TIOptions: TTIGridOptions read FTIOptions write SetTIOptions;
   end;
   
@@ -194,15 +195,19 @@ type
     property DefaultDrawing;
     property DefaultRowHeight;
     property Enabled;
+    property Filter;
     property FixedColor;
     property FixedCols;
     property FixedRows;
     property Flat;
     property Font;
+    property ListDirection;
     property OnDblClick;
     property OnEditButtonClick;
     property OnEnter;
     property OnExit;
+    property OnHeaderClick;
+    property OnHeaderSized;
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
@@ -217,6 +222,7 @@ type
     property ShowHint;
     property TabOrder;
     property TabStop;
+    property TIOptions;
     property TitleFont;
     property Visible;
   end;
@@ -285,21 +291,37 @@ begin
   Exclude(FTIStates,tgsRebuildTIListNeeded);
   if FListObject is TCollection then begin
     LoadCollection;
+  end else if FListObject is TList then begin
+    LoadTList;
   end else begin
-    // ListObject is not valid -> Clear
-    Clear;
+    // ListObject is not valid
   end;
 end;
 
 procedure TTICustomGrid.LoadCollection;
 var
   TheCollection: TCollection;
-  CurItem: TCollectionItem;
-  HeaderLines: LongInt;
-  PropCount: LongInt;
 begin
   TheCollection:=FListObject as TCollection;
   FTIObjectCount:=TheCollection.Count;
+  RebuildGridLayout;
+end;
+
+procedure TTICustomGrid.LoadTList;
+var
+  TheList: TList;
+begin
+  TheList:=FListObject as TList;
+  FTIObjectCount:=TheList.Count;
+  RebuildGridLayout;
+end;
+
+procedure TTICustomGrid.RebuildGridLayout;
+var
+  CurItem: TPersistent;
+  HeaderLines: LongInt;
+  PropCount: LongInt;
+begin
   if ListDirection=tldObjectsAsRows then begin
     HeaderLines:=FixedRows;
     RowCount:=HeaderLines+FTIObjectCount
@@ -309,7 +331,7 @@ begin
   end;
   // get first object to create the grid header
   if FTIObjectCount=0 then exit;
-  CurItem:=TheCollection.Items[0];
+  CurItem:=GetTIObject(0);
   if not (CurItem is TPersistent) then begin
     debugln('TTICustomGrid.LoadCollection First CollectionItem=',dbgsName(CurItem));
     exit;
@@ -525,7 +547,7 @@ begin
     end
     else begin
       CurObject:=GetTIObject(ObjectIndex);
-      if CurObject<>nil then begin
+      if (CurObject<>nil) then begin
         ok:=false;
         Hook:=nil;
         try
@@ -578,11 +600,35 @@ begin
 end;
 
 function TTICustomGrid.GetTIObject(Index: integer): TPersistent;
+var
+  List: TList;
+  AnObject: TObject;
+  ACollection: TCollection;
 begin
   Result:=nil;
   if (Index<0) or (Index>=TIObjectCount) then exit;
   if ListObject is TCollection then begin
-    Result:=TCollection(ListObject).Items[Index];
+    ACollection:=TCollection(ListObject);
+    if csDesigning in ComponentState then begin
+      try
+        Result:=ACollection.Items[Index];
+      except
+      end;
+    end else begin
+      Result:=ACollection.Items[Index];
+    end;
+  end else if ListObject is TList then begin
+    List:=TList(ListObject);
+    if csDesigning in ComponentState then begin
+      try
+        AnObject:=TObject(List[Index]);
+        Result:=AnObject as TPersistent;
+      except
+      end;
+    end else begin
+      AnObject:=TObject(List[Index]);
+      Result:=AnObject as TPersistent;
+    end;
   end;
 end;
 
