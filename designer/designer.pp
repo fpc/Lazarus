@@ -52,6 +52,8 @@ type
     ComponentClass: TRegisteredComponent) of object;
   TOnRemoveComponent = procedure(Sender: TObject; Component: TComponent)
     of object;
+  TOnComponentDeleted = procedure(Sender: TObject; Component: TComponent)
+    of object;
   TOnGetNonVisualCompIconCanvas = procedure(Sender: TObject;
     AComponent: TComponent; var IconCanvas: TCanvas;
     var IconWidth, IconHeight: integer) of object;
@@ -60,7 +62,12 @@ type
   TOnProcessCommand = procedure(Sender: TObject; Command: word;
     var Handled: boolean) of object;
     
-  TDesignerFlag = (dfHasSized, dfDuringPaintControl,dfShowHints);
+  TDesignerFlag = (
+    dfHasSized,
+    dfDuringPaintControl,
+    dfShowHints,
+    dfDestroyingForm
+    );
   TDesignerFlags = set of TDesignerFlag;
 
   TDesigner = class(TComponentEditorDesigner)
@@ -71,7 +78,7 @@ type
     FFlags: TDesignerFlags;
     FGridColor: TColor;
     FOnComponentAdded: TOnComponentAdded;
-    FOnComponentListChanged: TNotifyEvent;
+    FOnComponentDeleted: TOnComponentDeleted;
     FOnGetSelectedComponentClass: TOnGetSelectedComponentClass;
     FOnGetNonVisualCompIconCanvas: TOnGetNonVisualCompIconCanvas;
     FOnModified: TNotifyEvent;
@@ -134,6 +141,7 @@ type
     Procedure KeyUp(Sender: TControl; var TheMessage:TLMKEY);
 
     procedure DoDeleteSelectedComponents;
+    procedure DoDeleteComponent(AComponent: TComponent; FreeComponent: boolean);
     procedure MarkComponentForDeletion(AComponent: TComponent);
     function ComponentIsMarkedForDeletion(AComponent: TComponent): boolean;
     function GetSelectedComponentClass: TRegisteredComponent;
@@ -159,13 +167,13 @@ type
     
     constructor Create(Customform : TCustomform;
        AControlSelection: TControlSelection);
+    procedure DeleteFormAndFree;
     destructor Destroy; override;
 
     procedure Modified; override;
     Procedure SelectOnlyThisComponent(AComponent:TComponent); override;
     function InvokeComponentEditor(AComponent: TComponent;
       MenuIndex: integer): boolean;
-    Procedure RemoveComponent(AComponent: TComponent);
 
     function NonVisualComponentLeftTop(AComponent: TComponent): TPoint;
     function NonVisualComponentAtPos(x,y: integer): TComponent;
@@ -177,6 +185,7 @@ type
 
     function IsDesignMsg(Sender: TControl;
        var TheMessage: TLMessage): Boolean; override;
+    Procedure RemoveComponentAndChilds(AComponent: TComponent);
     procedure Notification(AComponent: TComponent;
        Operation: TOperation); override;
     procedure ValidateRename(AComponent: TComponent;
@@ -189,9 +198,8 @@ type
        aDDC: TDesignerDeviceContext);
     procedure DrawNonVisualComponents(aDDC: TDesignerDeviceContext);
 
-    property ShowGrid: boolean read GetShowGrid write SetShowGrid;
+    property Flags: TDesignerFlags read FFlags;
     property Form: TCustomForm read FCustomForm write FCustomForm;
-    property TheFormEditor: TCustomFormEditor read FTheFormEditor write FTheFormEditor;
     property GridSizeX: integer read GetGridSizeX write SetGridSizeX;
     property GridSizeY: integer read GetGridSizeY write SetGridSizeY;
     property GridColor: TColor read GetGridColor write SetGridColor;
@@ -200,8 +208,8 @@ type
        read FOnActivated write FOnActivated;
     property OnComponentAdded: TOnComponentAdded
        read FOnComponentAdded write FOnComponentAdded;
-    property OnComponentListChanged: TNotifyEvent
-       read FOnComponentListChanged write FOnComponentListChanged;
+    property OnComponentDeleted: TOnComponentDeleted
+       read FOnComponentDeleted write FOnComponentDeleted;
     property OnGetSelectedComponentClass: TOnGetSelectedComponentClass
        read FOnGetSelectedComponentClass write FOnGetSelectedComponentClass;
     property OnProcessCommand: TOnProcessCommand
@@ -219,9 +227,11 @@ type
        read FOnUnselectComponentClass write FOnUnselectComponentClass;
     property OnGetNonVisualCompIconCanvas: TOnGetNonVisualCompIconCanvas
        read FOnGetNonVisualCompIconCanvas write FOnGetNonVisualCompIconCanvas;
+    property ShowGrid: boolean read GetShowGrid write SetShowGrid;
     property ShowHints: boolean read GetShowHints write SetShowHints;
     property SnapToGrid: boolean read GetSnapToGrid write SetSnapToGrid;
     property SourceEditor : TSourceEditor read FSourceEditor write FSourceEditor;
+    property TheFormEditor: TCustomFormEditor read FTheFormEditor write FTheFormEditor;
   end;
 
 
@@ -264,6 +274,13 @@ begin
   DeletingComponents:=TList.Create;
 end;
 
+procedure TDesigner.DeleteFormAndFree;
+begin
+  Include(FFlags,dfDestroyingForm);
+  TheFormEditor.DeleteControl(Form,true);
+  Free;
+end;
+
 destructor TDesigner.Destroy;
 Begin
   if FPopupMenu<>nil then
@@ -274,43 +291,6 @@ Begin
   DDC.Free;
   DeletingComponents.Free;
   Inherited Destroy;
-end;
-
-Procedure TDesigner.RemoveComponent(AComponent :TComponent);
-var
-  i: integer;
-  AWinControl: TWinControl;
-  ChildControl: TControl;
-Begin
-  {$IFDEF VerboseDesigner}
-  Writeln('[TDesigner.RemoveControl] ',AComponent.Name,':',AComponent.ClassName);
-  {$ENDIF}
-  if AComponent=Form then exit;
-  // remove all child controls owned by the form
-  if (AComponent is TWinControl) then begin
-    AWinControl:=TWinControl(AComponent);
-    i:=AWinControl.ControlCount-1;
-    while (i>=0) do begin
-      ChildControl:=AWinControl.Controls[i];
-      if ChildControl.Owner=Form then begin
-        RemoveComponent(ChildControl);
-        // the component list of the form has changed
-        // -> restart the search
-        i:=AWinControl.ControlCount-1;
-      end else
-        dec(i);
-    end;
-  end;
-  // remove component
-  if Assigned(FOnRemoveComponent) then
-    FOnRemoveComponent(Self,AComponent);
-  {$IFDEF VerboseDesigner}
-  Writeln('[TDesigner.RemoveControl] C ',AComponent.Name,':',AComponent.ClassName);
-  {$ENDIF}
-  Form.Invalidate;
-  // this sends a message to notification and removes it from the controlselection
-  TheFormEditor.DeleteControl(AComponent);
-  DeletingComponents.Remove(AComponent);
 end;
 
 Procedure TDesigner.NudgeControl(DiffX, DiffY : Integer);
@@ -982,7 +962,7 @@ Begin
 
   Handled:=false;
   Command:=FTheFormEditor.TranslateKeyToDesignerCommand(
-                                                 TheMessage.CharCode,Shift);
+                                                     TheMessage.CharCode,Shift);
   if Assigned(OnProcessCommand) and (Command<>ecNone) then begin
     OnProcessCommand(Self,Command,Handled);
     Handled:=Handled or (Command=ecNone);
@@ -1054,9 +1034,26 @@ begin
     MarkComponentForDeletion(ControlSelection[i].Component);
   // clear selection by selecting the form
   SelectOnlythisComponent(FCustomForm);
+  Form.Invalidate;
   // delete marked components
   while DeletingComponents.Count>0 do
-    RemoveComponent(TComponent(DeletingComponents[DeletingComponents.Count-1]));
+    RemoveComponentAndChilds(
+      TComponent(DeletingComponents[DeletingComponents.Count-1]));
+end;
+
+procedure TDesigner.DoDeleteComponent(AComponent: TComponent;
+  FreeComponent: boolean);
+begin
+  PopupMenuComponentEditor:=nil;
+  if TheFormEditor.FindComponent(AComponent)<>nil then begin
+    ControlSelection.Remove(AComponent);
+    if Assigned(FOnRemoveComponent) then
+      FOnRemoveComponent(Self,AComponent);
+    TheFormEditor.DeleteControl(AComponent,FreeComponent);
+    DeletingComponents.Remove(AComponent);
+    if Assigned(FOnComponentDeleted) then
+      FOnComponentDeleted(Self,AComponent);
+  end;
 end;
 
 procedure TDesigner.MarkComponentForDeletion(AComponent: TComponent);
@@ -1112,6 +1109,38 @@ Begin
   if Assigned(FOnModified) then FOnModified(Self);
 end;
 
+Procedure TDesigner.RemoveComponentAndChilds(AComponent :TComponent);
+var
+  i: integer;
+  AWinControl: TWinControl;
+  ChildControl: TControl;
+Begin
+  {$IFDEF VerboseDesigner}
+  Writeln('[TDesigner.RemoveComponentAndChilds] ',AComponent.Name,':',AComponent.ClassName);
+  {$ENDIF}
+  if AComponent=Form then exit;
+  // remove all child controls owned by the form
+  if (AComponent is TWinControl) then begin
+    AWinControl:=TWinControl(AComponent);
+    i:=AWinControl.ControlCount-1;
+    while (i>=0) do begin
+      ChildControl:=AWinControl.Controls[i];
+      if ChildControl.Owner=Form then begin
+        RemoveComponentAndChilds(ChildControl);
+        // the component list of the form has changed
+        // -> restart the search
+        i:=AWinControl.ControlCount-1;
+      end else
+        dec(i);
+    end;
+  end;
+  // remove component
+  {$IFDEF VerboseDesigner}
+  Writeln('[TDesigner.RemoveComponentAndChilds] C ',AComponent.Name,':',AComponent.ClassName);
+  {$ENDIF}
+  DoDeleteComponent(AComponent,true);
+end;
+
 procedure TDesigner.Notification(AComponent: TComponent; Operation: TOperation);
 Begin
   if Operation = opInsert then begin
@@ -1125,10 +1154,7 @@ Begin
     writeln('[TDesigner.Notification] opRemove ',
             AComponent.Name,':',AComponent.ClassName);
     {$ENDIF}
-    PopupMenuComponentEditor:=nil;
-    ControlSelection.Remove(AComponent);
-    TheFormEditor.DeleteControl(AComponent);
-    DeletingComponents.Remove(AComponent);
+    DoDeleteComponent(AComponent,false);
   end;
 end;
 
