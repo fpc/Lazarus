@@ -384,14 +384,14 @@ Var
     DestroyWindow(Buddy);
   end;
 
-  procedure DestroyComboEditWindowInfo(ComboBox: TCustomComboBox);
+  procedure DisposeComboEditWindowInfo(ComboBox: TCustomComboBox);
   var
     Buddy: HWND;
+    BuddyWindowInfo: PWindowInfo;
   begin
     Buddy := Windows.GetTopWindow(ComboBox.Handle);
-    writeln('DestroyComboEditWindowInfo ', Buddy);
     if Buddy<>HWND(nil) then
-      Dispose(GetWindowInfo(Buddy));
+      DisposeWindowInfo(Buddy);
   end;
   
 Begin
@@ -615,7 +615,7 @@ Begin
       if lWinControl is TCustomSpinEdit then
         DestroySpinEditBuddy(TCustomSpinEdit(lWinControl));
       if lWinControl is TCustomComboBox then
-        DestroyComboEditWindowInfo(TCustomComboBox(lWinControl));
+        DisposeComboEditWindowInfo(TCustomComboBox(lWinControl));
       EnumProps(Window, @PropEnumProc);
       LMessage.Msg := LM_DESTROY;
       PostQuitMessage(0);
@@ -633,8 +633,10 @@ Begin
       // TODO: this could crash for a MenuItem.
       WindowInfo := GetWindowInfo(PDrawItemStruct(LParam)^.hwndItem);
       lWinControl := WindowInfo^.WinControl;
+      {$IFDEF MSG_DEBUG|}
       with PDrawItemStruct(LParam)^ do
         writeln(format('Received WM_DRAWITEM type %d handle %x', [ctlType, hwndItem]));
+      {$ENDIF}
 
       if (lWinControl is TCustomListbox) and
             (TCustomListBox(lWinControl).Style <> lbStandard) then
@@ -1219,11 +1221,8 @@ Begin
       WM_NCDESTROY:
       begin
         // free our own data associated with window
-        if Windows.RemoveProp(Window, PChar(dword(WindowInfoAtom))) <> 0 then
-        begin
-          Dispose(WindowInfo);
+        if DisposeWindowInfo(Window) then
           WindowInfo := nil;
-        end;
       end;
     end;
   end; 
@@ -1467,6 +1466,10 @@ end;
 
 {
   $Log$
+  Revision 1.165  2004/11/17 23:06:29  vincents
+  centralized dispose windowinfo
+  removed debug info
+
   Revision 1.164  2004/11/17 22:20:42  vincents
   fixed memleak with windowinfo of comboedit.
 

@@ -82,6 +82,7 @@ function BorderStyleToWin32Flags(Style: TFormBorderStyle): DWORD;
 function BorderStyleToWin32FlagsEx(Style: TFormBorderStyle): DWORD;
 function GetFileVersion(FileName: string): dword;
 function AllocWindowInfo(Window: HWND): PWindowInfo;
+function DisposeWindowInfo(Window: HWND): boolean;
 function GetWindowInfo(Window: HWND): PWindowInfo;
 
 var
@@ -917,6 +918,16 @@ begin
   FillChar(WindowInfo^, sizeof(WindowInfo^), 0);
   Windows.SetProp(Window, PChar(dword(WindowInfoAtom)), dword(WindowInfo));
   Result := WindowInfo;
+end;
+
+function DisposeWindowInfo(Window: HWND): boolean;
+var
+  WindowInfo: PWindowInfo;
+begin
+  WindowInfo := PWindowInfo(Windows.GetProp(Window, PChar(dword(WindowInfoAtom))));
+  Result := Windows.RemoveProp(Window, PChar(dword(WindowInfoAtom)))<>0;
+  if Result then
+    Dispose(WindowInfo);
 end;
 
 function GetWindowInfo(Window: HWND): PWindowInfo;
