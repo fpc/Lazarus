@@ -659,7 +659,8 @@ begin
   end;
 end;
 
-function GetWidgetInfo(const Widget: Pointer; const Create: Boolean): PWinWidgetInfo;
+function GetWidgetInfo(const Widget: Pointer;
+  const Create: Boolean): PWinWidgetInfo;
 begin
   if Widget = nil
   then begin
@@ -667,8 +668,8 @@ begin
   end
   else begin
     Result := gtk_object_get_data(Widget, 'widgetinfo');
-    if (Result = nil) and Create 
-    then Result := CreateWidgetInfo(Widget);
+    if (Result = nil) and Create then
+      Result := CreateWidgetInfo(Widget);
   end;
 end;
 
@@ -1331,6 +1332,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.44  2002/06/09 14:00:42  lazarus
+  MG: fixed persistent caret and implemented Form.BorderStyle=bsNone
+
   Revision 1.43  2002/06/04 15:17:23  lazarus
   MG: improved TFont for XLFD font names
 
