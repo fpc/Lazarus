@@ -1450,7 +1450,14 @@ Begin
        //save and close the project
      end;
 
-  //Create a new project
+
+  {TODO:
+     Display new project dialog to allow the type of project to be selected
+     Create the new project from a template for that project type
+  }
+
+
+  // This is temporary code until the project dialog and templates is created
 
   Project.ProjectFile := 'Project1.lpr';
   Project.MainUnit := 'Unit1';
@@ -1520,6 +1527,12 @@ end;
 Procedure TMainIDE.mnuOpenProjectClicked(Sender : TObject);
 Begin
   Assert(False, 'Trace:Open Project Clicked');
+
+  {TODO:
+     Display File Open dialog with .lpr as the filter
+     Put the selected file into a TProject
+     Open the project file and all unit files in the SourceNotebook
+  }
 end;
 
 Procedure TMainIDE.mnuSaveProjectClicked(Sender : TObject);
@@ -1529,8 +1542,49 @@ Begin
 end;
 
 procedure TMainIDE.mnuSaveProjectAsClicked(Sender : TObject);
+var
+  savdlg: TSaveDialog;
 begin
   Assert(False, 'Trace:Save Project As Clicked');
+try
+  {TODO:
+     Display File Save dialog with .lpr as the filter
+     Put the selected filename into the TProject
+     Save the project file and all unit files
+  }
+
+  savdlg := TSaveDialog.Create(Self);
+  try
+    savdlg.Title := 'Save Project ' + Project.Title + ' as: ';
+    if (Project.ProjectFile <> '') then
+    begin
+      savdlg.Filename := Project.ProjectFile;
+    end
+    else
+    begin
+      if (SourceNotebook.ActiveFileName <> '') then
+        savdlg.Filename := SourceNotebook.ActiveFileName
+      else
+        savdlg.Filename := SourceNotebook.ActiveUnitName + '.lpr';
+    end;
+
+    if (savdlg.Execute) then
+    begin
+      Project.ProjectFile := savdlg.Filename;
+      Project.WriteProject;
+      {TODO:
+         Add code to fire OnSaveFile event somewhere????
+              if assigned(FOnSaveFile) then FOnSaveFile(TObject(SourceNotebook.GetActiveSE), Project.ProjectFile);
+      }
+    end
+    else
+      Exit;
+  finally
+    savdlg.Free;
+  end;
+except
+  on E: Exception do WriteLN('Exception: ' + E.Message);
+end;
 end;
 
 Procedure TMainIDE.mnuBuildProjectClicked(Sender : TObject);
@@ -1625,6 +1679,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.58  2001/02/08 06:09:25  lazarus
+  Partially implemented Save Project As menu selection.               CAW
+
   Revision 1.57  2001/02/06 13:38:57  lazarus
   Fixes from Mattias for EditorOPtions
   Fixes to COmpiler that should allow people to compile if their path is set up.
