@@ -176,6 +176,4 @@ implementation
          Result := Assigned(klass) and (PGtkTypeClass(klass)^.thetype = GTK_TYPE_GL_AREA);
       end;
 
-{$PACKRECORDS DEFAULT}
-
 end.

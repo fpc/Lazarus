@@ -100,6 +100,7 @@ var
   i, Cnt: integer;
 begin
   LockSelectionChange;
+  
   // save ItemIndex on destroy handle
   if ([csDestroying,csLoading]*ComponentState=[]) then
     GetItemIndex;

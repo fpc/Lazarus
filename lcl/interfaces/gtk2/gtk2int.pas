@@ -159,7 +159,7 @@ uses
 // Gtk2WSMenus,
 // Gtk2WSPairSplitter,
 // Gtk2WSSpin,
-// Gtk2WSStdCtrls,
+ Gtk2WSStdCtrls,
 // Gtk2WSToolwin,
 ////////////////////////////////////////////////////
   gtkProc;
@@ -595,6 +595,9 @@ end.
 
 {
   $Log$
+  Revision 1.38  2005/02/03 16:51:29  mattias
+  improved gtk2 listbox  from Andrew Haines
+
   Revision 1.37  2005/01/23 11:43:38  mattias
   fixed expandingtabs in synedit painting
 
