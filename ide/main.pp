@@ -993,7 +993,7 @@ begin
   with ComponentNotebook do begin
     Parent := Self;
     Name := 'ComponentNotebook';
-    Left := pnlSpeedButtons.Left + pnlSpeedButtons.Width + 2;
+    Left := pnlSpeedButtons.Left + pnlSpeedButtons.Width;
     Top := 0;
     Width := Self.ClientWidth - Left;
     Height := 60; //Self.ClientHeight - ComponentNotebook.Top;
@@ -3307,10 +3307,9 @@ begin
             SourceNoteBook.GetActiveSE;
 
           if not (ofProjectLoading in Flags) then begin
-            TempForm.Show;
+            TempForm.Hide; Show;
             FDisplayState:= dsForm;
           end;
-          SetDesigning(TempForm,True);
 
           // select the new form (object inspector, formeditor, control selection)
           if not (ofProjectLoading in Flags) then begin
@@ -7882,6 +7881,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.483  2003/03/11 22:56:41  mattias
+  added visiblechanging
+
   Revision 1.482  2003/03/11 11:05:50  mattias
   fixed toggle form or src button
 
