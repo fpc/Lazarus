@@ -20,6 +20,18 @@
 
 { TPortableNetworkGraphic }
 
+function TPortableNetworkGraphic.GetFPReaderForFileExt(
+  const FileExtension: string): TFPCustomImageReaderClass;
+begin
+  Result:=TFPReaderPNG;
+end;
+
+function TPortableNetworkGraphic.GetFPWriterForFileExt(
+  const FileExtension: string): TFPCustomImageWriterClass;
+begin
+  Result:=TFPWriterPNG;
+end;
+
 function TPortableNetworkGraphic.LazarusResourceTypeValid(
   const ResourceType: string): boolean;
 begin

@@ -81,7 +81,10 @@ var
 begin
   New(NewFormat);
   with NewFormat^ do begin
-    Extension := AnsiLowerCase(Ext);
+    if (Ext<>'') and (Ext[1]='.') then
+      Extension := AnsiLowerCase(copy(Ext,2,length(Ext)-1))
+    else
+      Extension := AnsiLowerCase(Ext);
     GraphicClass := AClass;
     Description := Desc;
   end;
@@ -97,13 +100,16 @@ function TPicFileFormatsList.FindExt(const Ext: string): TGraphicClass;
 var
   I: Integer;
 begin
-  for I := Count-1 downto 0 do
-    with PPicFileFormat(Items[I])^ do
-      if AnsiCompareText(Extension,Ext)=0 then
-      begin
-        Result := GraphicClass;
-        Exit;
-      end;
+  if Ext<>'' then
+    for I := Count-1 downto 0 do
+      with PPicFileFormat(Items[I])^ do
+        if (AnsiCompareText(Extension,Ext)=0)
+        or ((Ext[1]='.')
+            and (AnsiCompareText(Extension,copy(Ext,2,length(Ext)-1))=0)) then
+        begin
+          Result := GraphicClass;
+          Exit;
+        end;
   Result := nil;
 end;
 
@@ -304,6 +310,37 @@ var
 begin
   GetPicFileFormats.BuildFilterStrings(GraphicClass,Descriptions,Result);
 end;
+
+function GetGraphicClassForFileExtension(const FileExt: string): TGraphicClass;
+begin
+  Result:=GetPicFileFormats.FindExt(FileExt);
+end;
+
+{$IFDEF UseFPImage}
+function GetFPImageReaderForFileExtension(const FileExt: string
+  ): TFPCustomImageReaderClass;
+var
+  GraphicClass: TGraphicClass;
+begin
+  GraphicClass:=GetGraphicClassForFileExtension(FileExt);
+  if GraphicClass<>nil then
+    Result:=GraphicClass.GetFPReaderForFileExt(FileExt)
+  else
+    Result:=nil;
+end;
+
+function GetFPImageWriterForFileExtension(const FileExt: string
+  ): TFPCustomImageWriterClass;
+var
+  GraphicClass: TGraphicClass;
+begin
+  GraphicClass:=GetGraphicClassForFileExtension(FileExt);
+  if GraphicClass<>nil then
+    Result:=GraphicClass.GetFPWriterForFileExt(FileExt)
+  else
+    Result:=nil;
+end;
+{$ENDIF}
 
 //--TPicture--------------------------------------------------------------------
 

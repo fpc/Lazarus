@@ -803,7 +803,6 @@ procedure TBitmap.FinalizeFPImageWriter(ImgWriter: TFPCustomImageWriter);
 begin
 
 end;
-
 {$ENDIF}
 
 procedure TBitMap.SaveToStream(Stream: TStream);
@@ -855,6 +854,38 @@ begin
   // ToDo
   Result := 0;
 end;
+
+{$IFDEF UseFPImage}
+function TBitmap.GetFPReaderForFileExt(const FileExtension: string
+  ): TFPCustomImageReaderClass;
+begin
+  Result:=nil;
+  if (AnsiCompareText(ClassName,'TBitmap')=0)
+  or (AnsiCompareText(ClassName,'TPixmap')=0) then begin
+    if (AnsiCompareText(FileExtension,'.bmp')=0)
+    or (AnsiCompareText(FileExtension,'bmp')=0) then
+      Result:=TFPReaderBMP
+    else if (AnsiCompareText(FileExtension,'.xpm')=0)
+    or (AnsiCompareText(FileExtension,'xpm')=0) then
+      Result:=TLazReaderXPM;
+  end;
+end;
+
+function TBitmap.GetFPWriterForFileExt(const FileExtension: string
+  ): TFPCustomImageWriterClass;
+begin
+  Result:=nil;
+  if (AnsiCompareText(ClassName,'TBitmap')=0)
+  or (AnsiCompareText(ClassName,'TPixmap')=0) then begin
+    if (AnsiCompareText(FileExtension,'.bmp')=0)
+    or (AnsiCompareText(FileExtension,'bmp')=0) then
+      Result:=TFPWriterBMP
+    else if (AnsiCompareText(FileExtension,'.xpm')=0)
+    or (AnsiCompareText(FileExtension,'xpm')=0) then
+      Result:=TLazWriterXPM;
+  end;
+end;
+{$ENDIF}
 
 function TBitmap.GetEmpty: boolean;
 begin
@@ -918,6 +949,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.47  2003/09/12 14:59:43  mattias
+  added searching for fpImage reader/writer
+
   Revision 1.46  2003/09/10 19:15:15  mattias
   implemented copying graphics from/to clipboard
 

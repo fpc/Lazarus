@@ -124,6 +124,7 @@ else
     sed -e 's/^Version: .*/Version: '"$LazVersion/" \
         -e 's/^Release: .*/Release: '"$LazRelease/" \
     > $SpecFile.New
+  #      -e 's/\(%define builddocdir.*\)/%define __strip smart_strip.sh\n\n\1/' \
   #      -e 's/^\%{fpcdir}\/samplecfg .*/%{fpcdir}\/samplecfg %{_libdir}\/fpc\/\\\$version/' \
   mv $SpecFile.New $SpecFile
   if [ "$WithDOCS" = "no" ]; then
@@ -133,6 +134,9 @@ else
     > $SpecFile.New
     mv $SpecFile.New $SpecFile
   fi
+  
+  # add smart_strip.sh
+  #cp smart_strip.sh $TmpDir
 
   # change Makefile for new rpmbuild, if not already done
   cd $TmpDir

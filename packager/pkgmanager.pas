@@ -1044,15 +1044,22 @@ var
   CurFile: TPkgFile;
   CurUnitName: String;
   SrcDirs: String;
+  PkgDir: String;
+  PkgOutputDir: String;
 
   function CheckFile(const ShortFilename: string): TModalResult;
   var
     AmbigiousFilename: String;
+    SearchFlags: TSearchFileInPathFlags;
   begin
     Result:=mrOk;
-    AmbigiousFilename:=SearchFileInPath(ShortFilename,APackage.Directory,
-                                        SrcDirs,';',[]);
-    if AmbigiousFilename<>'' then begin
+    SearchFlags:=[];
+    if CompareFilenames(PkgDir,PkgOutputDir)=0 then
+      Include(SearchFlags,sffDontSearchInBasePath);
+    repeat
+      AmbigiousFilename:=SearchFileInPath(ShortFilename,PkgDir,SrcDirs,';',
+                                          SearchFlags);
+      if (AmbigiousFilename='') then exit;
       Result:=MessageDlg('Ambigious Unit found',
         'The file "'+AmbigiousFilename+'"'#13
         +'was found in one of the source directories of the package '
@@ -1074,8 +1081,9 @@ var
           exit;
         end;
         Result:=mrOk;
-      end;
-    end;
+      end else
+        break;
+    until false;
   end;
   
 begin
@@ -1084,7 +1092,10 @@ begin
   // A source directory is a directory with a used unit and it is not the output
   // directory
   SrcDirs:=APackage.GetSourceDirs(true,true);
+  PkgOutputDir:=AppendPathDelim(APackage.GetOutputDirectory);
+  SrcDirs:=RemoveSearchPaths(SrcDirs,PkgOutputDir);
   if SrcDirs='' then exit;
+  PkgDir:=AppendPathDelim(APackage.Directory);
   for i:=0 to APackage.FileCount-1 do begin
     CurFile:=APackage.Files[i];
     if CurFile.FileType<>pftUnit then continue;

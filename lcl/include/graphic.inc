@@ -1,3 +1,4 @@
+// included by graphics.pp
 {
  *****************************************************************************
  *                                                                           *
@@ -12,6 +13,8 @@
  *                                                                           *
  *****************************************************************************
 }
+
+{ TGraphic }
 
 constructor TGraphic.Create;
 begin
@@ -186,6 +189,20 @@ begin
     FModified := False;
 end;
 
+{$IFDEF UseFPImage}
+function TGraphic.GetFPReaderForFileExt(const FileExtension: string
+  ): TFPCustomImageReaderClass;
+begin
+  Result:=nil;
+end;
+
+function TGraphic.GetFPWriterForFileExt(const FileExtension: string
+  ): TFPCustomImageWriterClass;
+begin
+  Result:=nil;
+end;
+{$ENDIF}
+
 procedure TGraphic.SetTransparent(Value: Boolean);
 begin
   if Value <> FTransparent then begin
@@ -194,4 +211,5 @@ begin
   end;
 end;
 
+// included by graphics.pp
 

@@ -493,6 +493,7 @@ var
   DirEndPos: Integer;
   CurDirLen: Integer;
   i: Integer;
+  CurDirEndPos: Integer;
 begin
   Result:=-1;
   DirLen:=length(Directory);
@@ -501,6 +502,13 @@ begin
     exit;
   DirEndPos:=DirStartPos;
   while (DirEndPos<=DirLen) and (Directory[DirEndPos]<>';') do inc(DirEndPos);
+  // ignore PathDelim at end
+  if (DirEndPos>DirStartPos) and (Directory[DirEndPos-1]=PathDelim) then begin
+    while (DirEndPos>DirStartPos) and (Directory[DirEndPos-1]=PathDelim) do
+      dec(DirEndPos);
+    // check if it is the root path '/'
+    if DirEndPos=DirStartPos then DirEndPos:=DirStartPos+1;
+  end;
   CurDirLen:=DirEndPos-DirStartPos;
   PathLen:=length(SearchPath);
   EndPos:=1;
@@ -512,7 +520,17 @@ begin
     end;
     EndPos:=StartPos;
     while (EndPos<=PathLen) and (SearchPath[EndPos]<>';') do inc(EndPos);
-    if EndPos-StartPos=CurDirLen then begin
+    CurDirEndPos:=EndPos;
+    // ignore PathDelim at end
+    if (CurDirEndPos>StartPos) and (SearchPath[CurDirEndPos-1]=PathDelim) then
+    begin
+      while (CurDirEndPos>StartPos) and (SearchPath[CurDirEndPos-1]=PathDelim)
+      do
+        dec(CurDirEndPos);
+      // check if it is the root path '/'
+      if CurDirEndPos=StartPos then CurDirEndPos:=StartPos+1;
+    end;
+    if CurDirEndPos-StartPos=CurDirLen then begin
       i:=CurDirLen-1;
       while i>=0 do begin
         if SearchPath[StartPos+i]<>Directory[DirStartPos+i] then break;

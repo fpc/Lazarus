@@ -34,7 +34,7 @@ interface
 uses
   SysUtils, Classes,
   {$IFDEF UseFPImage}
-  FPImage, FPReadPNG, FPWritePNG, FPWriteBMP, IntfGraphics,
+  FPImage, FPReadPNG, FPWritePNG, FPReadBMP, FPWriteBMP, IntfGraphics,
   {$ENDIF}
   LCLStrConsts, vclGlobals, LMessages, LCLType, LCLProc, LCLLinux, LResources,
   GraphType, GraphMath;
@@ -477,7 +477,6 @@ type
     FOnChange: TNotifyEvent;
     FOnProgress: TProgressEvent;
     FPaletteModified: Boolean;
-    procedure SetModified(Value: Boolean);
   protected
     procedure Changed(Sender: TObject); virtual;
     function Equals(Graphic: TGraphic): Boolean; virtual;
@@ -496,6 +495,7 @@ type
     procedure SetPalette(Value: HPALETTE); virtual;
     procedure SetTransparent(Value: Boolean); virtual;
     procedure SetWidth(Value: Integer); virtual; abstract;
+    procedure SetModified(Value: Boolean);
     procedure WriteData(Stream: TStream); virtual;
   public
     constructor Create;
@@ -514,6 +514,12 @@ type
       FormatID: TClipboardFormat); virtual;
     procedure GetSupportedSourceMimeTypes(List: TStrings); virtual;
     function GetDefaultMimeType: string; virtual;
+    {$IFDEF UseFPImage}
+    class function GetFPReaderForFileExt(
+      const FileExtension: string): TFPCustomImageReaderClass; virtual;
+    class function GetFPWriterForFileExt(
+      const FileExtension: string): TFPCustomImageWriterClass; virtual;
+    {$ENDIF}
   public
     property Empty: Boolean read GetEmpty;
     property Height: Integer read GetHeight write SetHeight;
@@ -921,6 +927,12 @@ type
     procedure SaveToStream(Stream: TStream); override;
     Function ReleaseHandle: HBITMAP;
     function ReleasePalette: HPALETTE;
+    {$IFDEF UseFPImage}
+    class function GetFPReaderForFileExt(
+      const FileExtension: string): TFPCustomImageReaderClass; override;
+    class function GetFPWriterForFileExt(
+      const FileExtension: string): TFPCustomImageWriterClass; override;
+    {$ENDIF}
   public
     property Canvas: TCanvas read GetCanvas write FCanvas;
     property Handle: HBITMAP read GetHandle write SetHandle;
@@ -948,6 +960,12 @@ type
   
   TPortableNetworkGraphic = class(TBitmap)
   public
+    {$IFDEF UseFPImage}
+    class function GetFPReaderForFileExt(
+      const FileExtension: string): TFPCustomImageReaderClass; override;
+    class function GetFPWriterForFileExt(
+      const FileExtension: string): TFPCustomImageWriterClass; override;
+    {$ENDIF}
     function LazarusResourceTypeValid(const ResourceType: string): boolean; override;
     procedure ReadStream(Stream: TStream; Size: Longint); override;
     procedure WriteStream(Stream: TStream; WriteSize: Boolean); override;
@@ -972,6 +990,13 @@ type
 function GraphicFilter(GraphicClass: TGraphicClass): string;
 function GraphicExtension(GraphicClass: TGraphicClass): string;
 function GraphicFileMask(GraphicClass: TGraphicClass): string;
+function GetGraphicClassForFileExtension(const FileExt: string): TGraphicClass;
+{$IFDEF UseFPImage}
+function GetFPImageReaderForFileExtension(const FileExt: string
+  ): TFPCustomImageReaderClass;
+function GetFPImageWriterForFileExtension(const FileExt: string
+  ): TFPCustomImageWriterClass;
+{$ENDIF}
 
 type
   // Color / Identifier mapping
@@ -1231,6 +1256,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.91  2003/09/12 14:59:43  mattias
+  added searching for fpImage reader/writer
+
   Revision 1.90  2003/09/10 19:15:15  mattias
   implemented copying graphics from/to clipboard
 
