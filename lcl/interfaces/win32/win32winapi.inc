@@ -1721,6 +1721,11 @@ Begin
   Assert(False, Format('Trace:< [TWin32Object.Rectangle] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d', [DC, X1, Y1, X2, Y2]));
 End;
 
+function TWin32Object.RectVisible(dc : hdc; const ARect: TRect) : Boolean;
+begin
+  Result := Windows.RectVisible(DC, LPRECT(@ARect)^);
+end;
+
 {------------------------------------------------------------------------------
   Method:  ReleaseCapture
   Params:  none
@@ -2310,6 +2315,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.40  2003/07/03 17:19:20  mattias
+  added RectVisible from Micha
+
   Revision 1.39  2003/07/03 08:05:53  mattias
   fixed Criticalsection from Vincent
 

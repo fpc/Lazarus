@@ -1894,7 +1894,7 @@ Begin
     End;
     csFrame, csGroupBox, csPanel:
     Begin
-      Window := CreateWindow('BUTTON', StrTemp, Flags Or BS_GROUPBOX Or BS_TOP, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
+      Window := CreateWindow('BUTTON', StrTemp, Flags Or BS_GROUPBOX, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       SetProp(Window, 'Lazarus', Sender);
       SetName(Window, StrTemp);
     End;
@@ -1956,7 +1956,7 @@ Begin
     End;
     csNotebook:
     Begin
-      Window := CreateWindow(WC_TABCONTROL, Nil, Flags Or WS_CLIPSIBLINGS, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
+      Window := CreateWindow(WC_TABCONTROL, Nil, Flags, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       SetProp(Window, 'Lazarus', Sender);
       SetName(Window, StrTemp);
     End;
@@ -1990,13 +1990,6 @@ Begin
       Window := CreateWindow(ClsName, strTemp, WS_OVERLAPPEDWINDOW Or WS_HSCROLL Or WS_VSCROLL Or WS_Visible, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, HWND(Nil), HMENU(Nil), HInstance, Nil);
       SetProp(Window, 'Lazarus', Sender);
       SetName(Window, strTemp);
-    End;
-    csSpeedButton:
-    Begin
-      Assert(False, 'Trace:TODO: Code the speed button control');
-      Window := CreateWindow('Button', StrTemp, Flags Or BS_PUSHBUTTON, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
-      SetProp(Window, 'Lazarus', Sender);
-      SetName(Window, StrTemp);
     End;
     csSpinEdit:
     Begin
@@ -2708,6 +2701,9 @@ End;
 
 {
   $Log$
+  Revision 1.70  2003/07/03 17:19:19  mattias
+  added RectVisible from Micha
+
   Revision 1.69  2003/07/03 08:05:53  mattias
   fixed Criticalsection from Vincent
 

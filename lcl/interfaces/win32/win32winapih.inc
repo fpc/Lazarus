@@ -129,6 +129,7 @@ function RadialChord(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean; 
 function RadialPie(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean; override;
 Function RealizePalette(DC: HDC): Cardinal; Override;
 Function Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean; Override;
+function RectVisible(dc : hdc; const ARect: TRect) : Boolean; Override;
 Function ReleaseCapture: Boolean; Override;
 Function ReleaseDC(HWnd: HWND; DC: HDC): Integer; Override;
 Function RestoreDC(DC: HDC; SavedDC: Integer): Boolean; Override;
@@ -175,6 +176,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.25  2003/07/03 17:19:20  mattias
+  added RectVisible from Micha
+
   Revision 1.24  2003/07/02 15:56:15  mattias
   fixed win32 painting and started creating bitmaps from rawimages
 
