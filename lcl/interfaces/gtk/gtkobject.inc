@@ -1342,7 +1342,7 @@ begin
         ShowHide(Sender);
       end;
 
-    LM_SetCursor : SetCursor(TWinControl(Sender), Data);
+    LM_SetCursor : gtkproc.SetCursor(TWinControl(Sender), Data);
 
     LM_SetLabel  : SetLabel(Sender,Data);
 
@@ -1358,7 +1358,7 @@ begin
       begin
         // change cursor
         if Sender is TWinControl then
-          SetCursor(TWinControl(Sender), Data);
+          gtkproc.SetCursor(TWinControl(Sender), Data);
       end;
 
     LM_RECREATEWND : Result := RecreateWnd(sender);
@@ -6733,6 +6733,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.306  2002/12/26 11:00:14  mattias
+  added included by to unitinfo and a few win32 functions
+
   Revision 1.305  2002/12/25 14:21:28  mattias
   fixed setting activecontrol to nil when removing component
 
