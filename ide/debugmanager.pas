@@ -450,6 +450,7 @@ end;
 procedure TDebugManager.OnDebuggerException(Sender: TObject;
   const AExceptionID: Integer; const AExceptionText: String);
 begin
+  if Destroying then exit;
   MessageDlg('Error',
     Format('Project %s raised exception class %d with message ''%s''.',
            [Project1.Title, AExceptionID, AExceptionText]),
@@ -458,6 +459,7 @@ end;
 
 procedure TDebugManager.OnDebuggerOutput(Sender: TObject; const AText: String);
 begin
+  if Destroying then exit;
   if FDialogs[ddtOutput] <> nil
   then TDbgOutputForm(FDialogs[ddtOutput]).AddText(AText);
 end;
@@ -478,6 +480,8 @@ var
 begin
   if (ADebugger<>FDebugger) or (ADebugger=nil) then
     RaiseException('TDebugManager.OnDebuggerChangeState');
+
+  if Destroying then exit;
 
   WriteLN('[TDebugManager.OnDebuggerChangeState] state: ', STATENAME[FDebugger.State]);
 
@@ -558,6 +562,7 @@ var
   n: Integer;
 begin
   if (Sender<>FDebugger) or (Sender=nil) then exit;
+  if Destroying then exit;
 
   //TODO: Show assembler window if no source can be found.
   if ALocation.SrcLine = -1 
@@ -666,6 +671,7 @@ const
 var
   CurDialog: TDebuggerDlg;
 begin
+  if Destroying then exit;
   if FDialogs[ADialogType] = nil
   then begin
     FDialogs[ADialogType] := DEBUGDIALOGCLASS[ADialogType].Create(Self);
@@ -760,6 +766,8 @@ destructor TDebugManager.Destroy;
 var
   DialogType: TDebugDialogType;
 begin                          
+  FDestroying:=true;
+  
   for DialogType := Low(TDebugDialogType) to High(TDebugDialogType) do 
     DestroyDebugDialog(DialogType);
   
@@ -868,7 +876,7 @@ var
   CurBreakPoint: TDBGBreakPoint;
   SrcFilename: String;
 begin
-  if AnUnitInfo.EditorIndex<0 then exit;
+  if (AnUnitInfo.EditorIndex<0) or Destroying then exit;
   ASrcEdit:=SourceNotebook.Editors[AnUnitInfo.EditorIndex];
   // set breakpoints for this unit
   SrcFilename:=AnUnitInfo.Filename;
@@ -927,7 +935,7 @@ begin
     RaiseException('TDebugManager.CreateSourceMarkForBreakPoint');
   ManagedBreakPoint:=TManagedBreakPoint(ABreakpoint);
 
-  if (ManagedBreakPoint.SourceMark<>nil) then exit;
+  if (ManagedBreakPoint.SourceMark<>nil) or Destroying then exit;
   if ASrcEdit=nil then
     GetSourceEditorForBreakPoint(ManagedBreakPoint,ASrcEdit);
   if ASrcEdit=nil then exit;
@@ -1035,7 +1043,7 @@ begin
   WriteLN('[TDebugManager.DoInitDebugger] A');
 
   Result:=mrCancel;
-  if Project1.MainUnitID < 0 then Exit;
+  if (Project1.MainUnitID < 0) or Destroying then Exit;
 
   LaunchingCmdLine:=MainIDE.GetRunCommandLine;
   SplitCmdLine(LaunchingCmdLine,LaunchingApplication,LaunchingParams);
@@ -1116,7 +1124,7 @@ function TDebugManager.DoPauseProject: TModalResult;
 begin
   Result := mrCancel;
   if (MainIDE.ToolStatus <> itDebugger)
-  or (FDebugger = nil)
+  or (FDebugger = nil) or Destroying
   then Exit;
   FDebugger.Pause;
   Result := mrOk;
@@ -1126,7 +1134,7 @@ function TDebugManager.DoStepIntoProject: TModalResult;
 begin
   if (MainIDE.DoInitProjectRun <> mrOK)
   or (MainIDE.ToolStatus <> itDebugger)
-  or (FDebugger = nil)
+  or (FDebugger = nil) or Destroying
   then begin
     Result := mrAbort;
     Exit;
@@ -1140,7 +1148,7 @@ function TDebugManager.DoStepOverProject: TModalResult;
 begin
   if (MainIDE.DoInitProjectRun <> mrOK)
   or (MainIDE.ToolStatus <> itDebugger)
-  or (FDebugger = nil)
+  or (FDebugger = nil) or Destroying
   then begin
     Result := mrAbort;
     Exit;
@@ -1155,7 +1163,7 @@ begin
   Result := mrCancel;
   SourceNotebook.ClearExecutionLines;
   if (MainIDE.ToolStatus <> itDebugger)
-  or (FDebugger=nil)
+  or (FDebugger=nil) or Destroying
   then Exit;
 
   FDebugger.Stop;
@@ -1205,7 +1213,8 @@ end;
 
 procedure TDebugManager.RunDebugger;
 begin
-  if FDebugger <> nil then FDebugger.Run;
+  if Destroying then exit;
+  if (FDebugger <> nil) then FDebugger.Run;
 end;
 
 procedure TDebugManager.EndDebugging;
@@ -1216,10 +1225,11 @@ end;
 function TDebugManager.Evaluate(const AExpression: String;
   var AResult: String): Boolean;
 begin
-  Result := (MainIDE.ToolStatus = itDebugger)
+  Result := (not Destroying)
+        and (MainIDE.ToolStatus = itDebugger)
         and (dcEvaluate in DebugBoss.Commands)
         and (FDebugger <> nil)
-        and FDebugger.Evaluate(AExpression, AResult);
+        and FDebugger.Evaluate(AExpression, AResult)
 end;
 
 function TDebugManager.DoCreateBreakPoint(const AFilename: string;
@@ -1286,7 +1296,7 @@ var
 begin
   if (MainIDE.DoInitProjectRun <> mrOK)
   or (MainIDE.ToolStatus <> itDebugger)
-  or (FDebugger = nil)
+  or (FDebugger = nil) or Destroying
   then begin
     Result := mrAbort;
     Exit;
@@ -1330,6 +1340,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.36  2003/05/29 07:25:02  mattias
+  added Destroying flag, debugger now always shuts down
+
   Revision 1.35  2003/05/28 22:43:21  marc
   MWE: * Fixed adding/removing breakpoints while paused
 

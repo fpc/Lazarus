@@ -44,8 +44,8 @@ uses
 
 type
   TBaseDebugManager = class(TComponent)
-  private
   protected
+    FDestroying: boolean;
     FBreakPoints: TDBGBreakPoints;
     function  GetState: TDBGState; virtual; abstract;
     function  GetCommands: TDBGCommands; virtual; abstract;
@@ -77,10 +77,12 @@ type
     function DoDeleteBreakPointAtMark(const ASourceMark: TSourceMark
                                      ): TModalResult; virtual; abstract;
     function DoCreateWatch(const AExpression: string): TModalResult; virtual; abstract;
-    
+
+  public
     property Commands: TDBGCommands read GetCommands;  // All current available commands of the debugger
     property State: TDBGState read GetState;           // The current state of the debugger
     property BreakPoints: TDBGBreakPoints read FBreakpoints;
+    property Destroying: boolean read FDestroying;
   end;
 
 var
