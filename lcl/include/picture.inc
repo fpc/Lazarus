@@ -13,7 +13,6 @@ type
   TPicFileFormatsList = class(TList)
   public
     constructor Create;
-    procedure Clear;
     destructor Destroy; override;
     procedure Add(const Ext, Desc: String; AClass: TGraphicClass);
     function FindExt(Ext: string): TGraphicClass;
@@ -37,7 +36,7 @@ var
   p: PPicFileFormat;
 begin
   for I := 0 to Count-1 do begin
-    p:=PFileFormat(Pointer(Items[I]));
+    p:=PPicFileFormat(Pointer(Items[I]));
     Dispose(p);
   end;
   inherited Destroy;
@@ -63,7 +62,7 @@ var
 begin
   Ext := AnsiLowerCase(Ext);
   for I := Count-1 downto 0 do
-    with PFileFormat(Items[I])^ do
+    with PPicFileFormat(Items[I])^ do
       if Extension = Ext then
       begin
         Result := GraphicClass;
@@ -79,7 +78,7 @@ var
 begin
   for I := Count-1 downto 0 do
   begin
-    Result := PFileFormat(Items[I])^.GraphicClass;
+    Result := PPicFileFormat(Items[I])^.GraphicClass;
     if AnsiLowerCase(Result.ClassName) = AnsiLowerCase(AClassname) then
       Exit;
   end;
@@ -89,11 +88,11 @@ end;
 procedure TPicFileFormatsList.Remove(AClass: TGraphicClass);
 var
   I: Integer;
-  P: PFileFormat;
+  P: PPicFileFormat;
 begin
   for I := Count-1 downto 0 do
   begin
-    P := PFileFormat(Items[I]);
+    P := PPicFileFormat(Items[I]);
     if P^.GraphicClass.InheritsFrom(AClass) then
     begin
       Dispose(P);
@@ -106,13 +105,13 @@ procedure TPicFileFormatsList.BuildFilterStrings(GraphicClass: TGraphicClass;
   var Descriptions, Filters: string);
 var
   C, I: Integer;
-  P: PFileFormat;
+  P: PPicFileFormat;
 begin
   Descriptions := '';
   Filters := '';
   C := 0;
   for I := Count-1 downto 0 do begin
-    P := PFileFormat(Items[I]);
+    P := PPicFileFormat(Items[I]);
     if P^.GraphicClass.InheritsFrom(GraphicClass) and (P^.Extension <> '') then
       with P^ do
       begin
@@ -133,21 +132,21 @@ begin
 end;
 
 const
-  PictureFileFormats: TFileFormatsList = nil;
+  PictureFileFormats: TPicFileFormatsList = nil;
 
-function GetPicFileFormats: TFileFormatsList;
+function GetPicFileFormats: TPicFileFormatsList;
 begin
   if PictureFileFormats = nil then 
     PictureFileFormats := TPicFileFormatsList.Create;
   Result := PictureFileFormats;
 end;
 
-function GetPicClipboardFormats: TPicClipboardFormats;
+{function GetPicClipboardFormats: TPicClipboardFormats;
 begin
   if PicClipboardFormats = nil then
     PicClipboardFormats := TPicClipboardFormats.Create;
   Result := PicClipboardFormats;
-end;
+end;}
 
 //--TPicture--------------------------------------------------------------------
 
@@ -155,8 +154,8 @@ end;
 constructor TPicture.Create;
 begin
   inherited Create;
-  GetFileFormats;
-  GetClipboardFormats;
+  GetPicFileFormats;
+  //GetClipboardFormats;
 end;
 
 destructor TPicture.Destroy;
@@ -253,7 +252,7 @@ var
 begin
   Ext := ExtractFileExt(Filename);
   System.Delete(Ext, 1, 1); // delete '.'
-  GraphicClass := GetFileFormats.FindExt(Ext);
+  GraphicClass := GetPicFileFormats.FindExt(Ext);
   if GraphicClass = nil then
     raise EInvalidGraphic.CreateFmt('Unknown picture extension', [Ext]);
 
@@ -327,7 +326,7 @@ end;
 class procedure TPicture.RegisterFileFormat(const AnExtension,
   ADescription: string; AGraphicClass: TGraphicClass);
 begin
-  GetFileFormats.Add(AnExtension, ADescription, AGraphicClass);
+  GetPicFileFormats.Add(AnExtension, ADescription, AGraphicClass);
 end;
 
 procedure TPicture.RegisterClipboardFormat(FormatID: TClipboardFormat;
@@ -338,7 +337,7 @@ end;
 
 class procedure TPicture.UnRegisterGraphicClass(AClass: TGraphicClass);
 begin
-  if GetFileFormats <> nil then GetFileFormats.Remove(AClass);
+  if GetPicFileFormats <> nil then GetPicFileFormats.Remove(AClass);
   //if ClipboardFormats <> nil then ClipboardFormats.Remove(AClass);
 end;
 
@@ -362,7 +361,7 @@ var
 begin
   Stream.Read(GraphicClassName[0], 1);
   Stream.Read(GraphicClassName[1], length(GraphicClassName));
-  GraphicClass := GetFileFormats.FindClassName(GraphicClassName);
+  GraphicClass := GetPicFileFormats.FindClassName(GraphicClassName);
   NewGraphic := nil;
   if GraphicClass <> nil then
   begin

@@ -100,7 +100,7 @@ end;
 procedure TGraphic.SetModified(Value: Boolean);
 begin
   if Value then
-    Changed(Self);
+    Changed(Self)
   else
     FModified := False;
 end;
