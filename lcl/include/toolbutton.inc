@@ -147,7 +147,7 @@ procedure TToolButton.Paint;
     Points[3]:=Point(ArrowRect.Right,ArrowRect.Top);
     Canvas.Brush.Color:=clBlack;
     Canvas.Pen.Color:=clBlack;
-    Canvas.Polygon(@Points[1],3);
+    Canvas.Polygon(@Points[1],3,false);
   end;
 
 var
@@ -556,14 +556,14 @@ begin
 end;
 
 procedure TToolButton.GetCurrentIcon(var ImageList: TCustomImageList;
-  var Index: integer);
+  var TheIndex: integer);
 begin
   ImageList:=nil;
-  Index:=-1;
+  TheIndex:=-1;
   if (ImageIndex<0) or (FToolBar=nil) then exit;
   
   if Style in [tbsButton,tbsDropDown,tbsCheck] then begin
-    Index:=ImageIndex;
+    TheIndex:=ImageIndex;
     if Enabled and FMouseInControl then
       // if mouse over button then use HotImages
       ImageList:=FToolBar.HotImages
@@ -576,7 +576,7 @@ begin
       if (ImageList=nil) or (ImageList.Count<=ImageIndex) then begin
         // no icon available
         ImageList:=nil;
-        Index:=-1;
+        TheIndex:=-1;
       end;
     end;
   end;
@@ -1192,6 +1192,9 @@ end;
 
 {
   $Log$
+  Revision 1.16  2004/02/28 10:16:02  mattias
+  fixed 1.0.x compilation
+
   Revision 1.15  2004/02/23 23:15:13  mattias
   improved FindDragTarget
 

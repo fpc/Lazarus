@@ -6370,7 +6370,7 @@ begin
 
         // if we are here it's our first
         FirstFound := True;
-        AAccelChar := LowerCase(AText[n]);
+        AAccelChar := System.lowerCase(AText[n]);
         // is there a next char we can underline ?
         if n <= Length(APattern)
         then APattern[n] := '_';
@@ -6632,6 +6632,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.264  2004/02/28 10:16:02  mattias
+  fixed 1.0.x compilation
+
   Revision 1.263  2004/02/28 00:34:36  mattias
   fixed CreateComponent for buttons, implemented basic Drag And Drop
 

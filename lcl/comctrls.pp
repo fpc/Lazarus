@@ -841,7 +841,7 @@ type
     constructor Create(TheOwner: TComponent); override;
     function CheckMenuDropdown: Boolean; dynamic;
     procedure GetCurrentIcon(var ImageList: TCustomImageList;
-                             var Index: integer); virtual;
+                             var TheIndex: integer); virtual;
     property Index: Integer read GetIndex;
   published
     property Action;
@@ -2241,6 +2241,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.118  2004/02/28 10:16:02  mattias
+  fixed 1.0.x compilation
+
   Revision 1.117  2004/02/28 00:34:35  mattias
   fixed CreateComponent for buttons, implemented basic Drag And Drop
 

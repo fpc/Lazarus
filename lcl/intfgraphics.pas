@@ -2836,7 +2836,20 @@ end;
 
 { TLazReaderBMP }
 
-function BmpRGBAToFPColor(Const RGBA: TColorRGBA): TFPcolor;
+type
+  TColorBmpRGB=packed record
+    B,G,R: Byte;
+  end;
+  PColorBmpRGB = ^TColorBmpRGB;
+
+  TColorBmpRGBA=packed record
+  case Boolean of
+    False:(B,G,R,A: Byte);
+    True:(RGB: TColorBmpRGB);
+  end;
+  PColorBmpRGBA = ^TColorBmpRGBA;
+
+function BmpRGBAToFPColor(Const RGBA: TColorBmpRGBA): TFPcolor;
 var
   NewAlpha: Byte;
 begin
@@ -2850,7 +2863,7 @@ begin
     end;
 end;
 
-Function RGBToFPColor(Const RGB: TColorRGB) : TFPColor;
+Function BmpRGBToFPColor(Const RGB: TColorBmpRGB) : TFPColor;
 begin
   with Result,RGB do
     begin
@@ -2878,13 +2891,13 @@ end;
 procedure TLazReaderBMP.SetupRead(nPalette, nRowBits: Integer; Stream: TStream);
 {$ifdef VER1_0}
 type
-  tcolinfo = ARRAY [0..0] OF TColorRGBA;
+  tcolinfo = ARRAY [0..0] OF TColorBmpRGBA;
   pcolinfo = ^tcolinfo;
 var
   ColInfo: pcolinfo;
 {$else}
 var
-  ColInfo: ARRAY OF TColorRGBA;
+  ColInfo: ARRAY OF TColorBmpRGBA;
 {$endif}
   i: Integer;
 begin
@@ -2892,29 +2905,30 @@ begin
     begin
     GetMem(FPalette, nPalette*SizeOf(TFPColor));
 {$ifdef VER1_0}
-    GetMem(ColInfo, nPalette*Sizeof(TColorRGBA));
+    GetMem(ColInfo, nPalette*Sizeof(TColorBmpRGBA));
     if BFI.biClrUsed>0 then
-      Stream.Read(ColInfo^[0],BFI.ClrUsed*SizeOf(TColorRGBA))
+      Stream.Read(ColInfo^[0],BFI.biClrUsed*SizeOf(TColorBmpRGBA))
     else // Seems to me that this is dangerous.
-      Stream.Read(ColInfo^[0],nPalette*SizeOf(TColorRGBA));
+      Stream.Read(ColInfo^[0],nPalette*SizeOf(TColorBmpRGBA));
     for i := 0 to nPalette-1 do
       FPalette[i] := BmpRGBAToFPColor(ColInfo^[i]);
 {$else}
     SetLength(ColInfo, nPalette);
     if BFI.biClrUsed>0 then
-      Stream.Read(ColInfo[0],BFI.biClrUsed*SizeOf(TColorRGBA))
+      Stream.Read(ColInfo[0],BFI.biClrUsed*SizeOf(TColorBmpRGBA))
     else // Seems to me that this is dangerous.
-      Stream.Read(ColInfo[0],nPalette*SizeOf(TColorRGBA));
+      Stream.Read(ColInfo[0],nPalette*SizeOf(TColorBmpRGBA));
     for i := 0 to High(ColInfo) do
       FPalette[i] := BmpRGBAToFPColor(ColInfo[i]);
 {$endif}
     end
   else if BFI.biClrUsed>0 then { Skip palette }
-    Stream.Position := Stream.Position + BFI.biClrUsed*SizeOf(TColorRGBA);
+    Stream.Position := Stream.Position
+                      + TStreamSeekType(BFI.biClrUsed*SizeOf(TColorBmpRGBA));
   ReadSize:=((nRowBits + 31) div 32) shl 2;
   GetMem(LineBuf,ReadSize);
 {$ifdef VER1_0}
-    FreeMem(ColInfo, nPalette*Sizeof(TColorRGBA));
+    FreeMem(ColInfo, nPalette*Sizeof(TColorBmpRGBA));
 {$endif}
 end;
 
@@ -2947,10 +2961,10 @@ begin
       Raise FPImageException.Create('16 bpp bitmaps not supported');
    24 :
       for Column:=0 to img.Width-1 do
-        img.colors[Column,Row]:=RGBToFPColor(PColorRGB(LineBuf)[Column]);
+        img.colors[Column,Row]:=BmpRGBToFPColor(PColorBmpRGB(LineBuf)[Column]);
    32 :
       for Column:=0 to img.Width-1 do
-        img.colors[Column,Row]:=BmpRGBAToFPColor(PColorRGBA(LineBuf)[Column]);
+        img.colors[Column,Row]:=BmpRGBAToFPColor(PColorBmpRGBA(LineBuf)[Column]);
     end;
 end;
 
@@ -2960,7 +2974,7 @@ Var
 begin
   Stream.Read(BFI,SizeOf(BFI));
   { This will move past any junk after the BFI header }
-  Stream.Position:=Stream.Position-SizeOf(BFI)+BFI.biSize;
+  Stream.Position:=Stream.Position-TStreamSeekType(SizeOf(BFI)+BFI.biSize);
   with BFI do
     begin
     if (biCompression<>0) then
