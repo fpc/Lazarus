@@ -2298,6 +2298,7 @@ begin
   SetDefaultsForForm(NewForm);
 
   NewUnitInfo.FormName:=NewForm.Name;
+  NewUnitInfo.FormResourceName:=NewUnitInfo.FormName;
   if NewUnitInfo.IsPartOfProject then
     Project1.AddCreateFormToProjectFile(NewForm.ClassName,NewForm.Name);
     
@@ -2650,6 +2651,11 @@ begin
           {$ENDIF}
           // replace lazarus form resource code
           if not (sfSaveToTestDir in Flags) then begin
+            if (AnUnitInfo.FormName<>AnUnitInfo.FormResourceName)
+            and (AnUnitInfo.FormResourceName<>'') then begin
+              CodeToolBoss.RemoveLazarusResource(ResourceCode,
+                                               'T'+AnUnitInfo.FormResourceName);
+            end;
             if (not CodeToolBoss.AddLazarusResource(ResourceCode,
                'T'+AnUnitInfo.FormName,CompResourceCode)) then
             begin
@@ -2662,6 +2668,7 @@ begin
               if Result=mrAbort then exit;
             end else begin
               AnUnitInfo.ResourceFileName:=ResourceCode.Filename;
+              AnUnitInfo.FormResourceName:=AnUnitInfo.FormName;
             end;
           end else begin
             ResourceCode.Source:=CompResourceCode;
@@ -2935,6 +2942,7 @@ begin
           AnUnitInfo.Form:=TempForm;
           SetDefaultsForForm(TempForm);
           AnUnitInfo.FormName:=TempForm.Name;
+          AnUnitInfo.FormResourceName:=AnUnitInfo.FormName;
           // show form
           TDesigner(TempForm.Designer).SourceEditor:=
             SourceNoteBook.GetActiveSE;
@@ -3305,7 +3313,8 @@ begin
   // create source code
   if NewUnitType in [nuForm] then begin
     NewUnitInfo.FormName:=Project1.NewUniqueFormName(NewUnitType);
-    CodeToolBoss.CreateFile(ChangeFileExt(NewFilename,'.lrs'));
+    NewUnitInfo.FormResourceName:='';
+    CodeToolBoss.CreateFile(ChangeFileExt(NewFilename,ResourceFileExt));
   end;
   NewUnitInfo.CreateStartCode(NewUnitType,NewUnitName);
   
@@ -6594,6 +6603,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.345  2002/08/21 07:16:57  lazarus
+  MG: reduced mem leak of clipping stuff, still not fixed
+
   Revision 1.344  2002/08/19 18:24:25  lazarus
   MG: fixed mouse coords while component dragging
 

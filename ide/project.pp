@@ -76,8 +76,9 @@ type
     fEditorIndex: integer;
     fFileName: string;
     fForm: TComponent;
-    fFormName: string; // classname is always T<FormName>
-        // this attribute contains the formname even if the unit is not loaded
+    fFormName: string; { classname is always T<FormName>
+         this attribute contains the formname even if the unit is not loaded }
+    fFormResourceName: string;
     fHasResources: boolean; // source has resource file
     FIgnoreFileDateOnDiskValid: boolean;
     FIgnoreFileDateOnDisk: longint;
@@ -150,6 +151,8 @@ type
     property Filename: String read GetFilename;
     property Form: TComponent read fForm write SetForm;
     property FormName: string read fFormName write fFormName;
+    property FormResourceName: string
+          read fFormResourceName write fFormResourceName;
     property HasResources: boolean read GetHasResources write fHasResources;
     property IsPartOfProject: boolean
           read fIsPartOfProject write fIsPartOfProject;
@@ -508,6 +511,7 @@ begin
   fFilename := '';
   fForm := nil;
   fFormName := '';
+  fFormResourceName := '';
   fHasResources := false;
   FIgnoreFileDateOnDiskValid:=false;
   fIsPartOfProject := false;
@@ -1876,6 +1880,9 @@ end.
 
 {
   $Log$
+  Revision 1.72  2002/08/21 07:16:59  lazarus
+  MG: reduced mem leak of clipping stuff, still not fixed
+
   Revision 1.71  2002/08/07 09:55:28  lazarus
   MG: codecompletion now checks for filebreaks, savefile now checks for filedate
 
