@@ -201,7 +201,7 @@ type
     function GetFormat(FormatID: TClipboardFormat; Stream: TStream): Boolean;
     procedure SupportedFormats(List: TStrings);
     procedure SupportedFormats(var AFormatCount: integer;
-                    var FormatList: PClipboardFormat);
+                               var FormatList: PClipboardFormat);
     function GetTextBuf(Buffer: PChar; BufSize: Integer): Integer;
     function HasFormat(FormatID: TClipboardFormat): Boolean;
     function HasPictureFormat: boolean;
@@ -210,7 +210,7 @@ type
     procedure SetComponent(Component: TComponent);
     procedure SetFormat(FormatID: TClipboardFormat; Stream: TStream);
     procedure SetSupportedFormats(AFormatCount: integer;
-                    FormatList: PClipboardFormat);
+                                  FormatList: PClipboardFormat);
     procedure SetTextBuf(Buffer: PChar);
     property AsText: string read GetAsText write SetAsText;
     property ClipboardType: TClipboardType read FClipboardType;
@@ -346,6 +346,9 @@ end.
 
 {
   $Log$
+  Revision 1.11  2003/06/17 15:57:27  mattias
+  made compiler options TargetOS more general
+
   Revision 1.10  2002/10/24 10:05:50  lazarus
   MG: broke graphics.pp <-> clipbrd.pp circle
 

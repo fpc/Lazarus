@@ -539,7 +539,8 @@ type
     radOptLevel2: TRadioButton;
     radOptLevel3: TRadioButton;
 
-    TargetOSRadioGroup: TRadioGroup;
+    TargetOSGroupBox: TGroupBox;
+    TargetOSComboBox: TComboBox;
 
     { Linking Controls }
     LinkingPage: TPage;
@@ -1134,7 +1135,7 @@ begin
   VariablesInRegisters := XMLConfigFile.GetValue(p+'Optimizations/VariablesInRegisters/Value', false);
   UncertainOptimizations := XMLConfigFile.GetValue(p+'Optimizations/UncertainOptimizations/Value', false);
   OptimizationLevel := XMLConfigFile.GetValue(p+'Optimizations/OptimizationLevel/Value', 1);
-  TargetOS := XMLConfigFile.GetValue(p+'TargetOS/Value', 'linux');
+  TargetOS := XMLConfigFile.GetValue(p+'TargetOS/Value', '');
 
   { Linking }
   p:='CompilerOptions/Linking/';
@@ -1268,7 +1269,7 @@ begin
   XMLConfigFile.SetDeleteValue(p+'Optimizations/VariablesInRegisters/Value', VariablesInRegisters,false);
   XMLConfigFile.SetDeleteValue(p+'Optimizations/UncertainOptimizations/Value', UncertainOptimizations,false);
   XMLConfigFile.SetDeleteValue(p+'Optimizations/OptimizationLevel/Value', OptimizationLevel,1);
-  XMLConfigFile.SetDeleteValue(p+'TargetOS/Value', TargetOS,'linux');
+  XMLConfigFile.SetDeleteValue(p+'TargetOS/Value', TargetOS,'');
   XMLConfigFile.SetDeleteValue(p+'LinkStyle/Value', LinkStyle,1);
 
   { Linking }
@@ -2084,7 +2085,7 @@ begin
   fVarsInReg := false;
   fUncertainOpt := false;
   fOptLevel := 1;
-  fTargetOS := 'linux';
+  fTargetOS := '';
     
   // linking
   fGenDebugInfo := false;
@@ -2628,9 +2629,10 @@ begin
   i:=LCLWidgetTypeRadioGroup.Items.IndexOf(CompilerOpts.LCLWidgetType);
   if i<0 then i:=0;
   LCLWidgetTypeRadioGroup.ItemIndex:=i;
-  i:=TargetOSRadioGroup.Items.IndexOf(CompilerOpts.TargetOS);
+  i:=TargetOSComboBox.Items.IndexOf(CompilerOpts.TargetOS);
   if i<0 then i:=0;
-  TargetOSRadioGroup.ItemIndex:=i;
+  TargetOSComboBox.ItemIndex:=i;
+  TargetOSComboBox.Text:=CompilerOpts.TargetOS;
 
   // parsing
   case CompilerOpts.Style of
@@ -2760,6 +2762,7 @@ var
   hs: LongInt;
   i: integer;
   OldCompOpts: TBaseCompilerOptions;
+  NewTargetOS: String;
 begin
   { Put the compiler options into the TCompilerOptions class to be saved }
   if ReadOnly then exit;
@@ -2892,10 +2895,11 @@ begin
   
   CompilerOpts.StopAfterErrCount := StrToIntDef(edtErrorCnt.Text,1);
     
-
-  i:=TargetOSRadioGroup.Itemindex;
-  if i<0 then i:=0;
-  CompilerOpts.TargetOS:= TargetOSRadioGroup.Items[i];
+    
+  NewTargetOS:=TargetOSComboBox.Text;
+  if (NewTargetOS<>'') and (not IsValidIdent(NewTargetOS)) then
+    NewTargetOS:='';
+  CompilerOpts.TargetOS:=NewTargetOS;
 
   // compilation
   CompilerOpts.ExecuteBefore.Command := ExecuteBeforeCommandEdit.Text;
@@ -3495,20 +3499,30 @@ begin
     Width := 330;
   end;
 
-  TargetOSRadioGroup:=TRadioGroup.Create(Self);
-  with TargetOSRadioGroup do begin
-    Name:='TargetOSRadioGroup';
+  TargetOSGroupBox:=TGroupBox.Create(Self);
+  with TargetOSGroupBox do begin
+    Name:='TargetOSGroupBox';
     Parent := CodeGenPage;
     Left := grpOtherUnits.Left;
     Top:=grpOptimizations.Top+grpOptimizations.Height+5;
     Width:=150;
     Height:=45;
     Caption:=dlgTargetOS;
+  end;
+
+  TargetOSComboBox:=TComboBox.Create(Self);
+  with TargetOSComboBox do begin
+    Name:='TargetOSComboBox';
+    Parent := TargetOSGroupBox;
+    Align:=alTop;
     with Items do begin
-      Add('linux');
-      Add('win32');
+      Add('(default)');
+      Add('FreeBSD');
+      Add('Linux');
+      Add('NetBSD');
+      Add('OpenBSD');
+      Add('Win32');
     end;
-    Columns:=2;
     ItemIndex:=0;
   end;
 end;
