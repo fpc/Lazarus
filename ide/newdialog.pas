@@ -250,7 +250,7 @@ end;
 
 procedure TNewOtherDialog.ItemsTreeViewDblClick(Sender: TObject);
 begin
-  OkButton.Click;
+  OkButtonClick(Self);
 end;
 
 procedure TNewOtherDialog.SetupComponents;
