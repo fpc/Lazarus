@@ -33,7 +33,20 @@ end;
 {-----------------------------------------------}
 Procedure TCanvas.Draw(X,Y : Integer; Graphic : TGraphic);
 begin
+  If Assigned(Graphic) then
+    StretchDraw(Rect(X, Y, Graphic.Width + X,Graphic.Height + Y), Graphic);
+end;
 
+{-----------------------------------------------}
+{--  TCanvas.StretchDraw --}
+{-----------------------------------------------}
+procedure TCanvas.StretchDraw(const Rect: TRect; Graphic: TGraphic);
+begin
+  if Assigned(Graphic) then
+  begin
+    RequiredState([csHandleValid, csPenValid]);
+    Graphic.Draw(Self, Rect);
+  end;
 end;
 
 {-----------------------------------------------}
@@ -586,8 +599,15 @@ begin
   If not Style.ShowPrefix then
     Options := Options or DT_NOPREFIX;
 
+  If Style.SystemFont then begin
+    Options := Options or DT_INTERNAL;
+    RequiredState([csHandleValid]);
+    SelectObject(Self.Handle, GetStockObject(SYSTEM_FONT));
+  end
+  else
+    RequiredState([csHandleValid, csFontValid]);
+
   fRect := Rect;
-  RequiredState([csHandleValid, csFontValid]);
   DrawText(Self.Handle, pChar(Text), Length(Text), fRect, DT_CALCRECT or Options);
   case Style.Alignment of
     taRightJustify : OffsetRect(fRect, Rect.Right - fRect.Right, 0);
@@ -601,7 +621,12 @@ begin
     RequiredState([csHandleValid, csBrushValid]);
     FillRect(fRect);
   end;
-  RequiredState([csHandleValid, csFontValid]);
+  If Style.SystemFont then begin
+    RequiredState([csHandleValid]);
+    SelectObject(Self.Handle, GetStockObject(SYSTEM_FONT));
+  end
+  else
+    RequiredState([csHandleValid, csFontValid]);
   DrawText(Self.Handle, pChar(Text), Length(Text), fRect, Options)
 end;
 
@@ -1015,6 +1040,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.25  2002/09/03 08:07:19  lazarus
+  MG: image support, TScrollBox, and many other things from Andrew
+
   Revision 1.24  2002/08/30 13:43:37  lazarus
   MG: fixed drawing of non visual components in designer
 
