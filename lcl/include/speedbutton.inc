@@ -38,7 +38,7 @@ begin
   FGlyph.OnChange := @GlyphChanged;
 
   SetBounds(0, 0, 23, 22);
-  ControlStyle := ControlStyle + [csCaptureMouse] - [csSetCaption];
+  ControlStyle := ControlStyle + [csCaptureMouse]-[csSetCaption]-csMultiClicks;
 
   {set default alignment}
   Align := alNone;
@@ -439,8 +439,10 @@ end;
   Returns:  nothing
 
  ------------------------------------------------------------------------------}
-procedure TSpeedButton.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+procedure TSpeedButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
 begin
+writeln('TSpeedButton.MouseDown A ');
   inherited MouseDown(Button, Shift, X, Y);
   
   if csDesigning in ComponentState then exit;
@@ -517,6 +519,7 @@ procedure TSpeedButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
 var
   DoClick: Boolean;
 begin
+writeln('TSpeedButton.MouseUp A ');
   inherited MouseUp(Button, Shift, X, Y);
   
   if csDesigning in ComponentState then exit;
@@ -670,6 +673,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.22  2002/09/01 16:11:21  lazarus
+  MG: double, triple and quad clicks now works
+
   Revision 1.21  2002/08/30 12:32:21  lazarus
   MG: MoveWindowOrgEx, Splitted FWinControls/FControls, TControl drawing, Better DesignerDrawing, ...
 
