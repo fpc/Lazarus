@@ -74,6 +74,7 @@ type
     procedure mnuNewUnitClicked(Sender : TObject);
     procedure mnuNewFormClicked(Sender : TObject);
     procedure mnuOpenClicked(Sender : TObject);
+    procedure mnuOpenRecentClicked(Sender : TObject);
     procedure mnuRevertClicked(Sender : TObject);
     procedure mnuSaveClicked(Sender : TObject);
     procedure mnuSaveAsClicked(Sender : TObject);
@@ -158,6 +159,10 @@ type
     procedure OpenFileDownArrowClicked(Sender : TObject);
     procedure mnuOpenFilePopupClick(Sender : TObject);
     procedure ControlClick(Sender : TObject);
+    
+    // Global IDE events
+    Procedure OnProcessIDECommand(Sender: TObject; Command: word;
+      var Handled: boolean);
 
     // SourceNotebook events
     Procedure OnSrcNoteBookActivated(Sender : TObject);
@@ -179,8 +184,6 @@ type
     Procedure OnSrcNotebookFindDeclaration(Sender : TObject);
     Procedure OnSrcNotebookJumpToHistoryPoint(var NewCaretXY: TPoint;
       var NewTopLine, NewPageIndex: integer; Action: TJumpHistoryAction);
-    Procedure OnSrcNotebookProcessCommand(Sender: TObject; Command: integer;
-      var Handled: boolean);
     Procedure OnSrcNoteBookCtrlMouseUp(Sender : TObject;
       Button : TMouseButton; Shift: TShiftstate; X, Y: Integer);
     Procedure OnSrcNotebookSaveAll(Sender : TObject);
@@ -188,7 +191,6 @@ type
     Procedure OnSrcNotebookToggleFormUnit(Sender : TObject);
     Procedure OnSrcNotebookViewJumpHistory(Sender : TObject);
 
-    
     // ObjectInspector + PropertyEditorHook events
     procedure OIOnSelectComponent(AComponent:TComponent);
     procedure OnPropHookGetMethods(TypeData:PTypeData; Proc:TGetStringProc);
@@ -218,7 +220,7 @@ type
     Procedure OnDesignerActivated(Sender : TObject);
     procedure OnDesignerRenameComponent(ADesigner: TDesigner;
       AComponent: TComponent; const NewName: string);
-      
+
     procedure OnControlSelectionChanged(Sender: TObject);
 
     // Environment options dialog events
@@ -384,6 +386,10 @@ type
       var ActiveUnitInfo:TUnitInfo); override;
     procedure GetUnitWithPageIndex(PageIndex:integer;
       var ActiveSourceEditor:TSourceEditor; var ActiveUnitInfo:TUnitInfo);
+    procedure GetDesignerUnit(ADesigner: TDesigner;
+      var ActiveSourceEditor:TSourceEditor; var ActiveUnitInfo:TUnitInfo);
+    procedure GetUnitWithForm(AForm: TCustomForm;
+      var ActiveSourceEditor:TSourceEditor; var ActiveUnitInfo:TUnitInfo);
     function GetSourceEditorForUnitInfo(AnUnitInfo: TUnitInfo): TSourceEditor;
     procedure UpdateDefaultPascalFileExtensions;
     function CreateSrcEditPageName(const AnUnitName, AFilename: string;
@@ -406,12 +412,16 @@ type
     // useful frontend methods
     procedure DoSwitchToFormSrc(var ActiveSourceEditor:TSourceEditor;
       var ActiveUnitInfo:TUnitInfo);
+    procedure DoSwitchToFormSrc(ADesigner: TDesigner;
+      var ActiveSourceEditor:TSourceEditor; var ActiveUnitInfo:TUnitInfo);
     procedure UpdateCaption;
     function DoConvertDFMFileToLFMFile(const DFMFilename: string): TModalResult;
     
     // methods for codetools
     procedure InitCodeToolBoss;
     function BeginCodeTool(var ActiveSrcEdit: TSourceEditor;
+      var ActiveUnitInfo: TUnitInfo; SwitchToFormSrc: boolean): boolean;
+    function BeginCodeTool(ADesigner: TDesigner; var ActiveSrcEdit: TSourceEditor;
       var ActiveUnitInfo: TUnitInfo; SwitchToFormSrc: boolean): boolean;
     function DoJumpToCodePos(ActiveSrcEdit: TSourceEditor;
       ActiveUnitInfo: TUnitInfo;
@@ -1033,7 +1043,7 @@ begin
   SourceNotebook.OnNewClicked := @OnSrcNotebookFileNew;
   SourceNotebook.OnOpenClicked := @OnSrcNotebookFileOpen;
   SourceNotebook.OnOpenFileAtCursorClicked := @OnSrcNotebookFileOpenAtCursor;
-  SourceNotebook.OnProcessUserCommand := @OnSrcNotebookProcessCommand;
+  SourceNotebook.OnProcessUserCommand := @OnProcessIDECommand;
   SourceNotebook.OnCtrlMouseUp := @OnSrcNoteBookCtrlMouseUp;
   SourceNotebook.OnSaveClicked := @OnSrcNotebookFileSave;
   SourceNotebook.OnSaveAsClicked := @OnSrcNotebookFileSaveAs;
@@ -1226,7 +1236,7 @@ end;
 procedure TMainIDE.SetRecentFilesMenu;
 begin
   SetRecentSubMenu(itmFileRecentOpen,EnvironmentOptions.RecentOpenFiles,
-                    @mnuOpenClicked);
+                    @mnuOpenRecentClicked);
 end;
 
 procedure TMainIDE.SetRecentProjectFilesMenu;
@@ -1435,38 +1445,47 @@ var OpenDialog: TOpenDialog;
   AFilename: string;
   I  : Integer;
 begin
-  if (Sender=itmFileOpen) or (Sender=OpenFileSpeedBtn)
-  or (Sender is TSourceNoteBook) then begin
-    OpenDialog:=TOpenDialog.Create(Application);
-    try
-      InputHistories.ApplyFileDialogSettings(OpenDialog);
-      OpenDialog.Title:=lisOpenFile;
-      OpenDialog.Options:=OpenDialog.Options+[ofAllowMultiSelect];
-      if OpenDialog.Execute and (OpenDialog.Files.Count>0) then begin
-        For I := 0 to OpenDialog.Files.Count-1 do
-          Begin
-            AFilename:=ExpandFilename(OpenDialog.Files.Strings[i]);
-            if DoOpenEditorFile(AFilename,-1,[ofAddToRecent])=mrOk then begin
-            
-            end;
+  OpenDialog:=TOpenDialog.Create(Application);
+  try
+    InputHistories.ApplyFileDialogSettings(OpenDialog);
+    OpenDialog.Title:=lisOpenFile;
+    OpenDialog.Options:=OpenDialog.Options+[ofAllowMultiSelect];
+    if OpenDialog.Execute and (OpenDialog.Files.Count>0) then begin
+      For I := 0 to OpenDialog.Files.Count-1 do
+        Begin
+          AFilename:=ExpandFilename(OpenDialog.Files.Strings[i]);
+          if DoOpenEditorFile(AFilename,-1,[ofAddToRecent])=mrOk then begin
+          
           end;
-        UpdateEnvironment;
-      end;
-      InputHistories.StoreFileDialogSettings(OpenDialog);
-    finally
-      OpenDialog.Free;
-    end;
-  end else if Sender is TMenuItem then begin
-    AFileName:=ExpandFilename(TMenuItem(Sender).Caption);
-    if DoOpenEditorFile(AFilename,-1,[ofAddToRecent])=mrOk then begin
+        end;
       UpdateEnvironment;
-    end else begin
-      // open failed
-      if not FileExists(AFilename) then begin
-        // file does not exist -> delete it from recent file list
-        EnvironmentOptions.RemoveFromRecentOpenFiles(AFilename);
-        UpdateEnvironment;
-      end;
+    end;
+    InputHistories.StoreFileDialogSettings(OpenDialog);
+  finally
+    OpenDialog.Free;
+  end;
+end;
+
+procedure TMainIDE.mnuOpenRecentClicked(Sender: TObject);
+
+  procedure UpdateEnvironment;
+  begin
+    SetRecentFilesMenu;
+    SaveEnvironment;
+  end;
+
+var
+  AFilename: string;
+begin
+  AFileName:=ExpandFilename(TMenuItem(Sender).Caption);
+  if DoOpenEditorFile(AFilename,-1,[ofAddToRecent])=mrOk then begin
+    UpdateEnvironment;
+  end else begin
+    // open failed
+    if not FileExists(AFilename) then begin
+      // file does not exist -> delete it from recent file list
+      EnvironmentOptions.RemoveFromRecentOpenFiles(AFilename);
+      UpdateEnvironment;
     end;
   end;
 end;
@@ -1572,14 +1591,29 @@ begin
   mnuToggleFormUnitClicked(Sender);
 end;
 
-Procedure TMainIDE.OnSrcNotebookProcessCommand(Sender: TObject;
-  Command: integer;  var Handled: boolean);
+Procedure TMainIDE.OnProcessIDECommand(Sender: TObject;
+  Command: word;  var Handled: boolean);
+var
+  ASrcEdit: TSourceEditor;
+  AnUnitInfo: TUnitInfo;
 begin
   Handled:=true;
+  
   case Command of
+   ecSave:
+     if Sender is TDesigner then begin
+       GetDesignerUnit(TDesigner(Sender),ASrcEdit,AnUnitInfo);
+       if (AnUnitInfo<>nil) and (AnUnitInfo.EditorIndex>=0) then
+         DoSaveEditorFile(AnUnitInfo.EditorIndex,[sfCheckAmbigiousFiles]);
+     end else if Sender is TSourceNotebook then
+       mnuSaveClicked(Self);
+
+   ecOpen:
+     mnuOpenClicked(Self);
+
    ecSaveAll:
      DoSaveAll([sfCheckAmbigiousFiles]);
-  
+
    ecBuild,
    ecBuildAll:    DoBuildProject(Command=ecBuildAll);
     
@@ -1767,6 +1801,7 @@ Begin
     OnModified:=@OnDesignerModified;
     OnActivated:=@OnDesignerActivated;
     OnRenameComponent:=@OnDesignerRenameComponent;
+    OnProcessCommand:=@OnProcessIDECommand;
     ShowHints:=EnvironmentOptions.ShowEditorHints;
   end;
 end;
@@ -4904,6 +4939,35 @@ begin
   end;
 end;
 
+procedure TMainIDE.GetDesignerUnit(ADesigner: TDesigner;
+  var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo);
+begin
+  if ADesigner<>nil then begin
+    GetUnitWithForm(ADesigner.Form,ActiveSourceEditor,ActiveUnitInfo);
+  end else begin
+    ActiveSourceEditor:=nil;
+    ActiveUnitInfo:=nil;
+  end;
+end;
+
+procedure TMainIDE.GetUnitWithForm(AForm: TCustomForm;
+  var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo);
+var
+  i: integer;
+begin
+  if AForm<>nil then begin
+    i:=Project1.IndexOfUnitWithForm(AForm,false,nil);
+    if i>=0 then begin
+      ActiveUnitInfo:=Project1.Units[i];
+      ActiveSourceEditor:=SourceNoteBook.FindSourceEditorWithPageIndex(
+        ActiveUnitInfo.EditorIndex);
+      exit;
+    end;
+  end;
+  ActiveSourceEditor:=nil;
+  ActiveUnitInfo:=nil;
+end;
+
 function TMainIDE.GetSourceEditorForUnitInfo(AnUnitInfo: TUnitInfo
   ): TSourceEditor;
 begin
@@ -5552,9 +5616,9 @@ end;
 
 procedure TMainIDE.OnDesignerComponentAdded(Sender: TObject;
   AComponent: TComponent; AComponentClass: TRegisteredComponent);
-var i: integer;
-  ActiveForm: TCustomForm;
+var
   ActiveUnitInfo: TUnitInfo;
+  ActiveSrcEdit: TSourceEditor;
   FormClassName: string;
 begin
   if not (Sender is TDesigner) then begin
@@ -5562,19 +5626,13 @@ begin
             Sender.ClassName);
     exit;
   end;
-  ActiveForm:=TDesigner(Sender).Form;
-  i:=Project1.IndexOfUnitWithForm(ActiveForm,false,nil);
-  if i<0 then begin
-    raise Exception.Create('[TMainIDE.OnDesignerComponentAdded] Error: '
-                          +'form without source');
-  end;
-  ActiveUnitInfo:=Project1.Units[i];
-  
+  BeginCodeTool(TDesigner(Sender),ActiveSrcEdit,ActiveUnitInfo,true);
+
   // add needed unit to source
   CodeToolBoss.AddUnitToMainUsesSection(ActiveUnitInfo.Source,
                                         AComponentClass.UnitName,'');
   // add component definition to form source
-  FormClassName:=ActiveForm.ClassName;
+  FormClassName:=TDesigner(Sender).Form.ClassName;
   if not CodeToolBoss.PublishedVariableExists(ActiveUnitInfo.Source,
     FormClassName,AComponent.Name) then begin
     // ! AddPublishedVariable does not rebuild the CodeTree, so we need
@@ -5589,8 +5647,10 @@ procedure TMainIDE.OnDesignerRemoveComponent(Sender: TObject;
 var i: integer;
   ActiveForm: TCustomForm;
   ActiveUnitInfo: TUnitInfo;
+  ActiveSrcEdit: TSourceEditor;
   FormClassName: string;
 begin
+  BeginCodeTool(TDesigner(Sender),ActiveSrcEdit,ActiveUnitInfo,true);
   ActiveForm:=TDesigner(Sender).Form;
   if ActiveForm=nil then begin
     writeln('[TMainIDE.OnDesignerAddComponent] Error: TDesigner without a form');
@@ -5815,10 +5875,19 @@ end;
 function TMainIDE.BeginCodeTool(var ActiveSrcEdit: TSourceEditor;
   var ActiveUnitInfo: TUnitInfo; SwitchToFormSrc: boolean): boolean;
 begin
+  Result:=BeginCodeTool(nil,ActiveSrcEdit,ActiveUnitInfo,SwitchToFormSrc);
+end;
+
+function TMainIDE.BeginCodeTool(ADesigner: TDesigner;
+  var ActiveSrcEdit: TSourceEditor; var ActiveUnitInfo: TUnitInfo;
+  SwitchToFormSrc: boolean): boolean;
+begin
   Result:=false;
   if SourceNoteBook.NoteBook=nil then exit;
   if SwitchToFormSrc then
-    DoSwitchToFormSrc(ActiveSrcEdit,ActiveUnitInfo)
+    DoSwitchToFormSrc(ADesigner,ActiveSrcEdit,ActiveUnitInfo)
+  else if Designer<>nil then
+    GetDesignerUnit(ADesigner,ActiveSrcEdit,ActiveUnitInfo)
   else
     GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
   if (ActiveSrcEdit=nil) or (ActiveUnitInfo=nil) then exit;
@@ -6190,7 +6259,7 @@ end;
 Procedure TMainIDE.OnDesignerActivated(Sender : TObject);
 begin
   FCodeLastActivated:=False;
-  FLastFormActivated := TCustomForm(Sender);
+  FLastFormActivated := TDesigner(Sender).Form;
 end;
 
 procedure TMainIDE.OnDesignerRenameComponent(ADesigner: TDesigner;
@@ -6212,7 +6281,7 @@ var
   end;
   
 begin
-  BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,false);
+  BeginCodeTool(ADesigner,ActiveSrcEdit,ActiveUnitInfo,true);
   ActiveUnitInfo:=Project1.UnitWithForm(ADesigner.Form);
   if CodeToolBoss.IsKeyWord(ActiveUnitInfo.Source,NewName) then
     raise Exception.Create('Component name "'+Newname+'" is keyword');
@@ -6269,7 +6338,7 @@ begin
   end;
 end;
 
-Procedure TMainIDE.OnSrcNoteBookAddJumpPoint(ACaretXY: TPoint; 
+Procedure TMainIDE.OnSrcNoteBookAddJumpPoint(ACaretXY: TPoint;
   ATopLine: integer; APageIndex: integer; DeleteForwardHistory: boolean);
 var
   ActiveUnitInfo: TUnitInfo;
@@ -6492,17 +6561,26 @@ end;
 
 procedure TMainIDE.DoSwitchToFormSrc(var ActiveSourceEditor: TSourceEditor;
   var ActiveUnitInfo: TUnitInfo);
+begin
+  DoSwitchToFormSrc(nil,ActiveSourceEditor,ActiveUnitInfo);
+end;
+
+procedure TMainIDE.DoSwitchToFormSrc(ADesigner: TDesigner;
+  var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo);
 var i: integer;
 begin
-  if PropertyEditorHook1.LookupRoot<>nil then begin
-    i:=Project1.IndexOfUnitWithForm(PropertyEditorHook1.LookupRoot,false,nil);
+  if (ADesigner<>nil) then
+    i:=Project1.IndexOfUnitWithForm(ADesigner.Form,false,nil)
+  else if PropertyEditorHook1.LookupRoot<>nil then
+    i:=Project1.IndexOfUnitWithForm(PropertyEditorHook1.LookupRoot,false,nil)
+  else
+    i:=-1;
+  if (i>=0) then begin
+    i:=Project1.Units[i].EditorIndex;
     if (i>=0) then begin
-      i:=Project1.Units[i].EditorIndex;
-      if (i>=0) then begin
-        SourceNoteBook.NoteBook.PageIndex:=i;
-        GetCurrentUnit(ActiveSourceEditor,ActiveUnitInfo);
-        exit;
-      end;
+      SourceNoteBook.NoteBook.PageIndex:=i;
+      GetCurrentUnit(ActiveSourceEditor,ActiveUnitInfo);
+      exit;
     end;
   end;
   ActiveSourceEditor:=nil;
@@ -6814,6 +6892,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.367  2002/09/09 12:36:34  lazarus
+  MG: added keymapping to designer
+
   Revision 1.366  2002/09/08 12:23:40  lazarus
   MG: TComponentPropertyEditor now shows child properties
 

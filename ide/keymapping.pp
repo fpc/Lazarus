@@ -44,6 +44,8 @@ const
   These values can change from version to version, so DO NOT save them to file!
   
   }
+  ecNone                 = SynEditKeyCmds.ecNone;
+  
   ecFind                 = ecUserFirst + 1;
   ecFindAgain            = ecUserFirst + 2;
   ecFindNext             = ecFindAgain;
@@ -156,6 +158,15 @@ const
 
 
 type
+  TCommandArea = (caSourceEditor, caDesigner);
+  TCommandAreas = set of TCommandArea;
+  
+const
+  caAll = [caSourceEditor, caDesigner];
+  caSrcEditOnly = [caSourceEditor];
+  caDesignOnly = [caDesigner];
+  
+type
   //---------------------------------------------------------------------------
   // TKeyCommandCategory is used to divide the key commands in handy packets
   TKeyCommandCategory = class(TList)
@@ -163,9 +174,11 @@ type
     Name: string;
     Description: string;
     Parent: TKeyCommandCategory;
+    Areas: TCommandAreas;
     procedure Clear; override;
     procedure Delete(Index: Integer);
-    constructor Create(const AName, ADescription: string);
+    constructor Create(const AName, ADescription: string;
+      TheAreas: TCommandAreas);
   end;
   
   //---------------------------------------------------------------------------
@@ -176,14 +189,14 @@ type
     procedure SetParent(const AValue: TKeyCommandCategory);
   public
     Name: ShortString;
-    Command: TSynEditorCommand;  // see the ecXXX constants above
+    Command: word;  // see the ecXXX constants above
     Key1: word;
     Shift1: TShiftState;
     Key2: word;
     Shift2: TShiftState;
     property Parent: TKeyCommandCategory read fParent write SetParent;
     constructor Create(AParent: TKeyCommandCategory; AName:ShortString;
-      ACommand:TSynEditorCommand;
+      ACommand: word;
       AKey1:Word; AShift1:TShiftState; AKey2:Word; AShift2:TShiftState);
     function AsShortCut: TShortCut;
   end;
@@ -197,9 +210,10 @@ type
     fExtToolCount: integer;
     function GetCategory(Index: integer): TKeyCommandCategory;
     function GetRelation(Index:integer):TKeyCommandRelation;
-    function AddCategory(const Name, Description: string): integer;
+    function AddCategory(const Name, Description: string;
+       TheAreas: TCommandAreas): integer;
     function Add(Category: TKeyCommandCategory; const Name:shortstring;
-       Command:TSynEditorCommand;
+       Command:word;
        Key1:Word; Shift1:TShiftState; 
        Key2:Word; Shift2:TShiftState):integer;
     function ShiftStateToStr(Shift:TShiftState):AnsiString;
@@ -207,14 +221,18 @@ type
   public
     function Count: integer;
     function CategoryCount: integer;
-    function Find(AKey:Word; AShiftState:TShiftState): TKeyCommandRelation;
-    function FindByCommand(ACommand:TSynEditorCommand): TKeyCommandRelation;
+    function Find(AKey:Word; AShiftState:TShiftState;
+      Areas: TCommandAreas): TKeyCommandRelation;
+    function FindByCommand(ACommand:word): TKeyCommandRelation;
     function FindCategoryByName(const CategoryName: string): TKeyCommandCategory;
+    function TranslateKey(AKey:Word; AShiftState:TShiftState;
+      Areas: TCommandAreas): word;
     function IndexOf(ARelation: TKeyCommandRelation): integer;
-    function CommandToShortCut(ACommand: TSynEditorCommand): TShortCut;
+    function CommandToShortCut(ACommand: word): TShortCut;
     function LoadFromXMLConfig(XMLConfig:TXMLConfig; Prefix:AnsiString):boolean;
     function SaveToXMLConfig(XMLConfig:TXMLConfig; Prefix:AnsiString):boolean;
-    procedure AssignTo(ASynEditKeyStrokes:TSynEditKeyStrokes);
+    procedure AssignTo(ASynEditKeyStrokes:TSynEditKeyStrokes;
+      Areas: TCommandAreas);
     constructor Create;
     destructor Destroy; override;
     property ExtToolCount: integer read fExtToolCount write SetExtToolCount;
@@ -261,7 +279,7 @@ function ShowKeyMappingEditForm(Index:integer;
    AKeyCommandRelationList:TKeyCommandRelationList):TModalResult;
 function KeyStrokesConsistencyErrors(ASynEditKeyStrokes:TSynEditKeyStrokes;
    Protocol: TStrings; var Index1,Index2:integer):integer;
-function EditorCommandToDescriptionString(cmd: TSynEditorCommand):AnsiString;
+function EditorCommandToDescriptionString(cmd: word):AnsiString;
 function StrToVKCode(s: string): integer;
 
 var KeyMappingEditForm: TKeyMappingEditForm;
@@ -344,7 +362,7 @@ begin
     end;
 end;
 
-function EditorCommandToDescriptionString(cmd: TSynEditorCommand):AnsiString;
+function EditorCommandToDescriptionString(cmd: word):AnsiString;
 begin
   case cmd of
     ecNone: Result:= 'None';
@@ -561,29 +579,31 @@ begin
     Key1:=ASynEditKeyStrokes[a];
     for b:=a+1 to ASynEditKeyStrokes.Count-1 do begin
       Key2:=ASynEditKeyStrokes[b];
-      if (Key1.Command<>Key2.Command) 
-      and (Key1.Key<>VK_UNKNOWN)
-      and (Key1.Key=Key2.Key) and (Key1.Shift=Key2.Shift) then begin
-        if (Key1.Key2=VK_UNKNOWN) or (Key2.Key2=VK_UNKNOWN)
-        or ((Key1.Key2=Key2.Key2) and (Key1.Shift2=Key2.Shift2)) then begin
-          // consistency error
-          if Result=0 then begin
-            Index1:=a;
-            Index2:=b;
-          end;
-          inc(Result);
-          if Protocol<>nil then begin
-            Protocol.Add('Conflict '+IntToStr(Result));
-            Protocol.Add('    command1 "'
-              +EditorCommandToDescriptionString(Key1.Command)+'"'
-              +'->'+KeyAndShiftStateToStr(Key1.Key,Key1.Shift));
-            Protocol.Add(' conflicts with ');
-            Protocol.Add('    command2 "'
-              +EditorCommandToDescriptionString(Key2.Command)+'"'
-              +'->'+KeyAndShiftStateToStr(Key2.Key,Key2.Shift)
-             );
-            Protocol.Add('');
-          end;
+      if (Key1.Key=VK_UNKNOWN)
+      or (Key1.Command=Key2.Command)
+      then
+        continue;
+      if ((Key1.Key=Key2.Key) and (Key1.Shift=Key2.Shift))
+      or ((Key1.Key2<>VK_UNKNOWN)
+        and (Key1.Key2=Key2.Key) and (Key1.Shift2=Key2.Shift2)) then
+      begin
+        // consistency error
+        if Result=0 then begin
+          Index1:=a;
+          Index2:=b;
+        end;
+        inc(Result);
+        if Protocol<>nil then begin
+          Protocol.Add('Conflict '+IntToStr(Result));
+          Protocol.Add('    command1 "'
+            +EditorCommandToDescriptionString(Key1.Command)+'"'
+            +'->'+KeyAndShiftStateToStr(Key1.Key,Key1.Shift));
+          Protocol.Add(' conflicts with ');
+          Protocol.Add('    command2 "'
+            +EditorCommandToDescriptionString(Key2.Command)+'"'
+            +'->'+KeyAndShiftStateToStr(Key2.Key,Key2.Shift)
+           );
+          Protocol.Add('');
         end;
       end;
     end;
@@ -884,7 +904,7 @@ procedure TKeyMappingEditForm.OkButtonClick(Sender:TObject);
 var NewKey1,NewKey2:integer;
   NewShiftState1,NewShiftState2:TShiftState;
   ACaption,AText:AnsiString;
-  DummyRelation:TKeyCommandRelation;
+  DummyRelation, CurRelation:TKeyCommandRelation;
 begin
   NewKey1:=VK_UNKNOWN;
   NewShiftState1:=[];
@@ -896,7 +916,9 @@ begin
     if Key1AltCheckBox.Checked then include(NewShiftState1,ssAlt);
     if Key1ShiftCheckBox.Checked then include(NewShiftState1,ssShift);
   end;
-  DummyRelation:=KeyCommandRelationList.Find(NewKey1,NewShiftState1);
+  CurRelation:=KeyCommandRelationList.Relations[KeyIndex];
+  DummyRelation:=KeyCommandRelationList.Find(NewKey1,NewShiftState1,
+                                                      CurRelation.Parent.Areas);
   if (DummyRelation<>nil) 
   and (DummyRelation<>KeyCommandRelationList.Relations[KeyIndex]) then begin
     ACaption:='No No No';
@@ -916,7 +938,8 @@ begin
     if Key2AltCheckBox.Checked then include(NewShiftState2,ssAlt);
     if Key2ShiftCheckBox.Checked then include(NewShiftState2,ssShift);
   end;
-  DummyRelation:=KeyCommandRelationList.Find(NewKey2,NewShiftState2);
+  DummyRelation:=KeyCommandRelationList.Find(NewKey2,NewShiftState2,
+                                                      CurRelation.Parent.Areas);
   if (DummyRelation<>nil) 
   and (DummyRelation<>KeyCommandRelationList.Relations[KeyIndex]) then begin
     ACaption:='No No No';
@@ -930,7 +953,7 @@ begin
     NewShiftState1:=NewShiftState2;
     NewKey2:=VK_UNKNOWN;
   end;
-  with KeyCommandRelationList.Relations[KeyIndex] do begin
+  with CurRelation do begin
     Key1:=NewKey1;
     Shift1:=NewShiftState1;
     Key2:=NewKey2;
@@ -1034,7 +1057,7 @@ end;
 { TKeyCommandRelation }
 
 constructor TKeyCommandRelation.Create(AParent: TKeyCommandCategory;
-  AName:ShortString; ACommand:TSynEditorCommand;
+  AName:ShortString; ACommand:word;
   AKey1:Word;AShift1:TShiftState;AKey2:Word;AShift2:TShiftState);
 begin
   Name:=AName;
@@ -1085,7 +1108,7 @@ begin
   // create default keymapping
 
   // moving
-  C:=Categories[AddCategory('CursorMoving','Cursor moving commands')];
+  C:=Categories[AddCategory('CursorMoving','Cursor moving commands',caSrcEditOnly)];
   Add(C,'Move cursor word left',ecWordLeft, VK_LEFT, [ssCtrl],VK_UNKNOWN,[]);
   Add(C,'Move cursor word right',ecWordRight, VK_RIGHT, [ssCtrl],VK_UNKNOWN,[]);
   Add(C,'Move cursor to line start',ecLineStart, VK_HOME, [],VK_UNKNOWN,[]);
@@ -1104,7 +1127,7 @@ begin
   Add(C,'Scroll right one char',ecScrollRight, VK_UNKNOWN, [],VK_UNKNOWN,[]);
 
   // selection
-  C:=Categories[AddCategory('Selection','Text selection commands')];
+  C:=Categories[AddCategory('Selection','Text selection commands',caSrcEditOnly)];
   Add(C,'Select All',ecSelectAll,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Copy selection to clipboard',ecCopy,VK_C,[ssCtrl],VK_Insert,[ssCtrl]);
   Add(C,'Cut selection to clipboard',ecCut,VK_X,[ssCtrl],VK_Delete,[ssShift]);
@@ -1127,7 +1150,7 @@ begin
   Add(C,'Uncomment selection',ecSelectionUncomment,VK_UNKNOWN, [],VK_UNKNOWN,[]);
 
   // editing
-  C:=Categories[AddCategory('editing commands','Text editing commands')];
+  C:=Categories[AddCategory('editing commands','Text editing commands',caSrcEditOnly)];
   Add(C,'Indent block',ecBlockIndent,VK_I,[ssCtrl],VK_UNKNOWN,[]);
   Add(C,'Unindent block',ecBlockUnindent,VK_U,[ssCtrl],VK_UNKNOWN,[]);
   Add(C,'Delete last char',ecDeleteLastChar,VK_BACK, [],VK_BACK, [ssShift]);
@@ -1142,12 +1165,12 @@ begin
   Add(C,'Break line, leave cursor',ecInsertLine,VK_N,[ssCtrl],VK_UNKNOWN,[]);
 
   // command commands
-  C:=Categories[AddCategory('CommandCommands','Command commands')];
+  C:=Categories[AddCategory('CommandCommands','Command commands',caAll)];
   Add(C,'Undo',ecUndo,VK_Z,[ssCtrl],VK_UNKNOWN,[]);
   Add(C,'Redo',ecRedo,VK_Z,[ssCtrl,ssShift],VK_UNKNOWN,[]);
   
   // search & replace
-  C:=Categories[AddCategory('SearchReplace','Search and Replace commands')];
+  C:=Categories[AddCategory('SearchReplace','Text search and replace commands',caSrcEditOnly)];
   Add(C,'Go to matching bracket',ecMatchBracket,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Find text',ecFind,VK_F,[SSCtrl],VK_UNKNOWN,[]);
   Add(C,'Find next',ecFindNext,VK_F3,[],VK_UNKNOWN,[]);
@@ -1162,7 +1185,7 @@ begin
   Add(C,'Open file at cursor',ecOpenFileAtCursor,VK_RETURN,[ssCtrl],VK_UNKNOWN,[]);
 
   // marker
-  C:=Categories[AddCategory('Marker','Marker commands')];
+  C:=Categories[AddCategory('Marker','Text marker commands',caSrcEditOnly)];
   Add(C,'Go to marker 0',ecGotoMarker0,VK_0,[ssCtrl],VK_UNKNOWN,[]);
   Add(C,'Go to marker 1',ecGotoMarker1,VK_1,[ssCtrl],VK_UNKNOWN,[]);
   Add(C,'Go to marker 2',ecGotoMarker2,VK_2,[ssCtrl],VK_UNKNOWN,[]);
@@ -1185,7 +1208,7 @@ begin
   Add(C,'Set marker 9',ecSetMarker9,VK_9,[ssShift,ssCtrl],VK_UNKNOWN,[]);
   
   // codetools
-  C:=Categories[AddCategory('CodeTools','CodeTools commands')];
+  C:=Categories[AddCategory('CodeTools','CodeTools commands',caSrcEditOnly)];
   Add(C,'Code template completion',ecAutoCompletion,VK_J,[ssCtrl],VK_UNKNOWN,[]);
   Add(C,'Word completion',ecWordCompletion,VK_W,[ssCtrl],VK_UNKNOWN,[]);
   Add(C,'Complete code',ecCompleteCode,VK_C,[ssCtrl,ssShift],VK_UNKNOWN,[]);
@@ -1204,7 +1227,7 @@ begin
   Add(C,'Goto include directive',ecGotoIncludeDirective,VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // source notebook
-  C:=Categories[AddCategory('SourceNotebook','Source Notebook commands')];
+  C:=Categories[AddCategory('SourceNotebook','Source Notebook commands',caAll)];
   Add(C,'Go to next editor',ecNextEditor, VK_S, [ssShift,ssCtrl], VK_UNKNOWN, []);
   Add(C,'Go to prior editor',ecPrevEditor, VK_A, [ssShift,ssCtrl], VK_UNKNOWN, []);
   Add(C,'Go to source editor 1',ecGotoEditor0,VK_1,[ssAlt],VK_UNKNOWN,[]);
@@ -1219,7 +1242,7 @@ begin
   Add(C,'Go to source editor 10',ecGotoEditor0,VK_0,[ssAlt],VK_UNKNOWN,[]);
   
   // file menu
-  C:=Categories[AddCategory('FileMenu','File menu commands')];
+  C:=Categories[AddCategory('FileMenu','File menu commands',caAll)];
   Add(C,'New',ecNew,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'NewUnit',ecNewUnit,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'NewForm',ecNewForm,VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1233,7 +1256,7 @@ begin
   Add(C,'Quit',ecQuit,VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // view menu
-  C:=Categories[AddCategory('ViewMenu','View menu commands')];
+  C:=Categories[AddCategory('ViewMenu','View menu commands',caAll)];
   Add(C,'Toggle view Object Inspector',ecToggleObjectInsp,VK_F11,[],VK_UNKNOWN,[]);
   Add(C,'Toggle view Project Explorer',ecToggleProjectExpl,VK_F11,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   Add(C,'Toggle view Code Explorer',ecToggleCodeExpl,VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1249,7 +1272,7 @@ begin
   Add(C,'Toggle between Unit and Form',ecToggleFormUnit,VK_F12,[],VK_UNKNOWN,[]);
 
   // project menu
-  C:=Categories[AddCategory('ProjectMenu','Project menu commands')];
+  C:=Categories[AddCategory('ProjectMenu','Project menu commands',caAll)];
   Add(C,'New project',ecNewProject,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Open project',ecOpenProject,VK_F11,[ssCtrl],VK_UNKNOWN,[]);
   Add(C,'Save project',ecSaveProject,VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1260,7 +1283,7 @@ begin
   Add(C,'View project options',ecProjectOptions,VK_F11,[ssShift,ssCtrl],VK_UNKNOWN,[]);
 
   // run menu
-  C:=Categories[AddCategory('RunMenu','Run menu commands')];
+  C:=Categories[AddCategory('RunMenu','Run menu commands',caAll)];
   Add(C,'Build project/program',ecBuild,VK_F9,[ssCtrl],VK_UNKNOWN,[]);
   Add(C,'Build all files of project/program',ecBuildAll,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Run program',ecRun,VK_F9,[],VK_UNKNOWN,[]);
@@ -1273,20 +1296,20 @@ begin
   Add(C,'Run parameters',ecRunParameters,VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // tools menu
-  C:=Categories[AddCategory(KeyCategoryToolMenuName,'Tools menu commands')];
+  C:=Categories[AddCategory(KeyCategoryToolMenuName,'Tools menu commands',caAll)];
   Add(C,'External Tools settings',ecExtToolSettings,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Build Lazarus',ecBuildLazarus,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Configure "Build Lazarus"',ecConfigBuildLazarus,VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // environment menu
-  C:=Categories[AddCategory('EnvironmentMenu','Environment menu commands')];
+  C:=Categories[AddCategory('EnvironmentMenu','Environment menu commands',caAll)];
   Add(C,'General environment options',ecEnvironmentOptions,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Editor options',ecEditorOptions,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'CodeTools options',ecCodeToolsOptions,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'CodeTools defines editor',ecCodeToolsDefinesEd,VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // help menu
-  C:=Categories[AddCategory('HelpMenu','Help menu commands')];
+  C:=Categories[AddCategory('HelpMenu','Help menu commands',caAll)];
   Add(C,'About Lazarus',ecAboutLazarus,VK_UNKNOWN,[],VK_UNKNOWN,[]);
 end;
 
@@ -1320,7 +1343,7 @@ end;
 
 function TKeyCommandRelationList.Add(Category: TKeyCommandCategory;
   const Name:shortstring;
-  Command:TSynEditorCommand;
+  Command:word;
   Key1:Word; Shift1:TShiftState; Key2:Word; Shift2:TShiftState):integer;
 begin
   Result:=FRelations.Add(TKeyCommandRelation.Create(Category,Name,Command
@@ -1443,22 +1466,24 @@ begin
   Result:=IntToStr(i);
 end;
 
-function TKeyCommandRelationList.Find(AKey:Word; AShiftState:TShiftState
-  ):TKeyCommandRelation;
+function TKeyCommandRelationList.Find(AKey:Word; AShiftState:TShiftState;
+  Areas: TCommandAreas):TKeyCommandRelation;
 var a:integer;
 begin
   Result:=nil;
   if AKey=VK_UNKNOWN then exit;
-  for a:=0 to FRelations.Count-1 do with Relations[a] do
+  for a:=0 to FRelations.Count-1 do with Relations[a] do begin
+    if Parent.Areas*Areas=[] then continue;
     if ((Key1=AKey) and (Shift1=AShiftState)) 
     or ((Key2=AKey) and (Shift2=AShiftState)) then begin
       Result:=Relations[a];
       exit;
     end;
+  end;
 end;
 
 function TKeyCommandRelationList.FindByCommand(
-  ACommand:TSynEditorCommand):TKeyCommandRelation;
+  ACommand:word):TKeyCommandRelation;
 var a:integer;
 begin
   Result:=nil;
@@ -1470,14 +1495,19 @@ begin
 end;
 
 procedure TKeyCommandRelationList.AssignTo(
-  ASynEditKeyStrokes:TSynEditKeyStrokes);
-var a,b,MaxKeyCnt,KeyCnt:integer;
+  ASynEditKeyStrokes:TSynEditKeyStrokes; Areas: TCommandAreas);
+var
+  a,b,MaxKeyCnt,KeyCnt:integer;
   Key:TSynEditKeyStroke;
 begin
   for a:=0 to FRelations.Count-1 do begin
-    if Relations[a].Key1=VK_UNKNOWN then MaxKeyCnt:=0
-    else if Relations[a].Key2=VK_UNKNOWN then MaxKeyCnt:=1
-    else MaxKeyCnt:=2;
+    if (Relations[a].Key1=VK_UNKNOWN)
+    or ((Relations[a].Parent.Areas*Areas)=[]) then
+      MaxKeyCnt:=0
+    else if Relations[a].Key2=VK_UNKNOWN then
+      MaxKeyCnt:=1
+    else
+      MaxKeyCnt:=2;
     KeyCnt:=1;
     b:=0;
     while b<ASynEditKeyStrokes.Count do begin
@@ -1528,10 +1558,10 @@ begin
   Result:=fCategories.Count;
 end;
 
-function TKeyCommandRelationList.AddCategory(const Name, Description: string
-  ): integer;
+function TKeyCommandRelationList.AddCategory(const Name, Description: string;
+  TheAreas: TCommandAreas): integer;
 begin
-  Result:=fCategories.Add(TKeyCommandCategory.Create(Name,Description));
+  Result:=fCategories.Add(TKeyCommandCategory.Create(Name,Description,TheAreas));
 end;
 
 function TKeyCommandRelationList.FindCategoryByName(const CategoryName: string
@@ -1546,13 +1576,25 @@ begin
   Result:=nil;
 end;
 
+function TKeyCommandRelationList.TranslateKey(AKey: Word;
+  AShiftState: TShiftState; Areas: TCommandAreas): word;
+var
+  ARelation: TKeyCommandRelation;
+begin
+  ARelation:=Find(AKey,AShiftState,Areas);
+  if ARelation<>nil then
+    Result:=ARelation.Command
+  else
+    Result:=ecNone;
+end;
+
 function TKeyCommandRelationList.IndexOf(ARelation: TKeyCommandRelation
   ): integer;
 begin
   Result:=fRelations.IndexOf(ARelation);
 end;
 
-function TKeyCommandRelationList.CommandToShortCut(ACommand: TSynEditorCommand
+function TKeyCommandRelationList.CommandToShortCut(ACommand: word
   ): TShortCut;
 var ARelation: TKeyCommandRelation;
 begin
@@ -1578,11 +1620,13 @@ begin
   inherited Delete(Index);
 end;
 
-constructor TKeyCommandCategory.Create(const AName, ADescription: string);
+constructor TKeyCommandCategory.Create(const AName, ADescription: string;
+  TheAreas: TCommandAreas);
 begin
   inherited Create;
   Name:=AName;
   Description:=ADescription;
+  Areas:=TheAreas;
 end;
 
 
