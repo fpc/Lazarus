@@ -1540,18 +1540,20 @@ begin
     UpdateWindowsMenu;
     
     // load the cmd line files
-    OpenFlags:=[ofAddToRecent,ofRegularFile];
-    for i:=0 to CmdLineFiles.Count-1 do
-      Begin
-        AFilename:=CleanAndExpandFilename(CmdLineFiles.Strings[i]);
-        if i<CmdLineFiles.Count then
-          Include(OpenFlags,ofMultiOpen)
-        else
-          Exclude(OpenFlags,ofMultiOpen);
-        if DoOpenEditorFile(AFilename,-1,OpenFlags)=mrAbort then begin
-          break;
+    if CmdLineFiles<>nil then begin
+      OpenFlags:=[ofAddToRecent,ofRegularFile];
+      for i:=0 to CmdLineFiles.Count-1 do
+        Begin
+          AFilename:=CleanAndExpandFilename(CmdLineFiles.Strings[i]);
+          if i<CmdLineFiles.Count then
+            Include(OpenFlags,ofMultiOpen)
+          else
+            Exclude(OpenFlags,ofMultiOpen);
+          if DoOpenEditorFile(AFilename,-1,OpenFlags)=mrAbort then begin
+            break;
+          end;
         end;
-      end;
+    end;
 
     {$IFDEF IDE_DEBUG}
     writeln('TMainIDE.Create B');
@@ -11373,6 +11375,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.826  2005/01/09 23:28:18  mattias
+  fixed loading no unit at start
+
   Revision 1.825  2005/01/09 23:16:19  mattias
   implemented loading command line filenames at start
 

@@ -24,6 +24,7 @@ begin
 
   fImageIndex:=-1;
   fCompStyle := csPage;
+  fTabVisible := True;
   ControlStyle := ControlStyle + [csAcceptsControls,csDesignFixedBounds];
 
   // height and width dependent on parent, align to client rect
@@ -49,13 +50,15 @@ end;
 
 function TCustomPage.GetTabVisible: Boolean;
 begin
-  // ToDo
-  Result:=true;
+ Result := fTabVisible;
+
 end;
 
 procedure TCustomPage.SetTabVisible(const AValue: Boolean);
 begin
-  // ToDo
+  if AValue = FTabVisible then exit;
+  TCustomNotebook(Parent).ChildPageSetTabVisible(Self, AValue, PageIndex);
+  fTabVisible := AValue;
 end;
 
 {------------------------------------------------------------------------------
@@ -86,7 +89,6 @@ var
 begin
   if AParent=Parent then exit;
   CheckNewParent(AParent);
-
   OldParent:=Parent;
   if (OldParent<>AParent) and (OldParent<>nil)
   and (OldParent is TCustomNotebook)
@@ -97,7 +99,9 @@ begin
     if i>=0 then begin
       Include(FFlags,pfRemoving);
       try
+        TabVisible := False;
         ParentNotebook.RemovePage(i);
+        //ParentNoteBook.ChildPageSetTabVisible(Self, False, i);
       finally
         Exclude(FFlags,pfRemoving);
       end;
@@ -110,8 +114,10 @@ begin
   and (Parent is TCustomNotebook) then begin
     // add to new pagelist
     ParentNotebook:=TCustomNotebook(Parent);
-    if ParentNotebook.PageList.IndexOf(Self)<0 then
+    if ParentNotebook.PageList.IndexOf(Self)<0 then begin
       ParentNotebook.InsertPage(Self, ParentNotebook.PageCount);
+      //ParentNoteBook.ChildPageSetTabVisible(Self, FTabVisible, ParentNotebook.PageCount);
+    end;
   end;
 end;
 

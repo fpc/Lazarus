@@ -50,6 +50,7 @@ type
 
   TCustomPage = class(TWinControl)
   private
+    FTabVisible: Boolean;
     FFlags: TPageFlags;
     FImageIndex: integer;
     function GetTabVisible: Boolean;
@@ -145,6 +146,7 @@ type
     function GetPageIndex: Integer;
     procedure InsertPage(APage: TCustomPage; Index: Integer);
     function IsStoredActivePage: boolean;
+    procedure ChildPageSetTabVisible(APage: TCustomPage; AValue: Boolean; AIndex: Integer);
     procedure MoveTab(Sender: TObject; NewIndex: Integer);
     procedure WSMovePage(APage: TCustomPage; NewIndex: Integer);
     procedure RemovePage(Index: Integer);
@@ -984,6 +986,9 @@ end.
 
  {
   $Log$
+  Revision 1.127  2005/01/09 23:28:18  mattias
+  fixed loading no unit at start
+
   Revision 1.126  2005/01/07 20:51:10  micha
   swap TCustomStaticText and TCustomLabel
 

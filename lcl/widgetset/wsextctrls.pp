@@ -65,6 +65,7 @@ type
 
     class function GetNotebookMinTabHeight(const AWinControl: TWinControl): integer; virtual;
     class function GetNotebookMinTabWidth(const AWinControl: TWinControl): integer; virtual;
+    class function GetPageRealIndex(const ANotebook: TCustomNotebook; AIndex: Integer): Integer; virtual;
     class procedure SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer); virtual;
     class procedure SetTabCaption(const ANotebook: TCustomNotebook; const AChild: TCustomPage; const AText: string); virtual;
     class procedure SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition); virtual;
@@ -231,6 +232,11 @@ function TWSCustomNotebook.GetNotebookMinTabWidth(const AWinControl: TWinControl
   ): integer;
 begin
   Result:=60;
+end;
+
+function TWSCustomNotebook.GetPageRealIndex(const ANotebook: TCustomNotebook; AIndex: Integer): Integer;
+begin
+  Result := AIndex;
 end;
 
 procedure TWSCustomNotebook.SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer);

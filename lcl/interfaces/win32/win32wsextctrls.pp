@@ -66,6 +66,7 @@ type
     class procedure RemovePage(const ANotebook: TCustomNotebook; 
       const AIndex: integer); override;
 
+    class function GetPageRealIndex(const ANotebook: TCustomNotebook; AIndex: Integer): Integer; override;
     class procedure SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer); override;
     class procedure SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition); override;
     class procedure ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean); override;
@@ -398,7 +399,8 @@ end;
 procedure TWin32WSCustomNotebook.MovePage(const ANotebook: TCustomNotebook; 
   const AChild: TCustomPage; const NewIndex: integer);
 begin
-  // TODO: implement me!
+  RemovePage(ANotebook, AChild.PageIndex);
+  AddPage(ANotebook,AChild,NewIndex);
 end;
 
 procedure TWin32WSCustomNotebook.RemovePage(const ANotebook: TCustomNotebook; 
@@ -407,15 +409,27 @@ begin
   Windows.SendMessage(ANotebook.Handle, TCM_DELETEITEM, Windows.WPARAM(AIndex), 0);
 end;
 
+function TWin32WSCustomNotebook.GetPageRealIndex(const ANotebook: TCustomNotebook; AIndex: Integer): Integer;
+var
+X: Integer;
+begin
+  Result := AIndex;
+  for X := 0 to AIndex-1 do begin
+    if ANotebook.Page[X].TabVisible = False then Dec(Result);
+  end;
+end;
+
 procedure TWin32WSCustomNotebook.SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer);
 var
   OldPageIndex: Integer;
   PageHandle: HWND;
   Handle: HWND;
+  RealIndex: Integer;
 begin
   Handle := ANotebook.Handle;
   OldPageIndex := SendMessage(Handle, TCM_GETCURSEL, 0, 0);
-  SendMessage(Handle, TCM_SETCURSEL, Windows.WParam(AIndex), 0);
+  RealIndex := GetPageRealIndex(ANotebook,AIndex);
+  SendMessage(Handle, TCM_SETCURSEL, Windows.WParam(RealIndex), 0);
   if not (csDestroying in ANotebook.ComponentState) then
   begin
     // create handle if not already done, need to show!
