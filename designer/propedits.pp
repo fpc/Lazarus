@@ -9,6 +9,7 @@ unit propedits;
     For more information see the big comment part below.
 
   ToDo:
+    -filter double properties
     -digits for floattypes -> I hope, I have guessed right
     -TIntegerSet missing -> taking my own
     -Save ColorDialog settings
@@ -823,76 +824,10 @@ type
 
 //==============================================================================
 
-{ TMessageDialog
-  The TMessageDialog form is a simple dialog like Delphis ShowMessage
-}
-
-type
-  TMessageDialog = class(TForm)
-  public
-    OkButton:TButton;
-    TextLabel:TLabel;
-    procedure OkButtonClick(Sender:TObject);
-    constructor Create(AOwner: TComponent); override;
-  end;
-
-procedure ShowMessageDialog(const s:ansistring);
-
-//==============================================================================
-
 implementation
 
 uses Dialogs, Math;
 
-//==============================================================================
-// simple error messages
-
-procedure ShowMessageDialog(const s:ansistring);
-var MessageDialog:TMessageDialog;
-begin
-  MessageDialog:=TMessageDialog.Create(Application);
-  MessageDialog.TextLabel.Caption:=s;
-  try
-    MessageDialog.ShowModal;
-  finally
-    MessageDialog.Free;
-  end;
-end;
-
-constructor TMessageDialog.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  //Position:=poFormCenter;
-  SetBounds((Screen.Width-400) div 2,(Screen.Height-100) div 2,400,100);
-
-  // OkButton
-  OkButton:=TButton.Create(Self);
-  with OkButton do begin
-    Name:='OkButton';
-    Parent:=Self;
-    Caption:='OK';
-    SetBounds(150,70,100,20);
-    OnClick:=@OkButtonClick;
-    Show;
-  end;
-
-  // TextLabel
-  TextLabel:=TLabel.Create(Self);
-  with TextLabel do begin
-    Name:='TextLabel';
-    Parent:=Self;
-    WordWrap:=true;
-    SetBounds(10,10,380,20);
-    Show;
-  end;
-end;
-
-procedure TMessageDialog.OkButtonClick(Sender:TObject);
-begin
-  ModalResult:=mrOk;
-end;
-
-//==============================================================================
 
 const
 { TypeKinds  see typinfo.pp
@@ -953,91 +888,6 @@ begin
   if negated then Result:=-Result;
 end;
 
-// XXX ToDo: These variables/functions should be moved to graphics.pp  ------
-
-{ Color mapping routines }
-
-const
-  Colors: array[0..41] of TIdentMapEntry = (
-    (Value: clBlack; Name: 'clBlack'),
-    (Value: clMaroon; Name: 'clMaroon'),
-    (Value: clGreen; Name: 'clGreen'),
-    (Value: clOlive; Name: 'clOlive'),
-    (Value: clNavy; Name: 'clNavy'),
-    (Value: clPurple; Name: 'clPurple'),
-    (Value: clTeal; Name: 'clTeal'),
-    (Value: clGray; Name: 'clGray'),
-    (Value: clSilver; Name: 'clSilver'),
-    (Value: clRed; Name: 'clRed'),
-    (Value: clLime; Name: 'clLime'),
-    (Value: clYellow; Name: 'clYellow'),
-    (Value: clBlue; Name: 'clBlue'),
-    (Value: clFuchsia; Name: 'clFuchsia'),
-    (Value: clAqua; Name: 'clAqua'),
-    (Value: clWhite; Name: 'clWhite'),
-    (Value: clScrollBar; Name: 'clScrollBar'),
-    (Value: clBackground; Name: 'clBackground'),
-    (Value: clActiveCaption; Name: 'clActiveCaption'),
-    (Value: clInactiveCaption; Name: 'clInactiveCaption'),
-    (Value: clMenu; Name: 'clMenu'),
-    (Value: clWindow; Name: 'clWindow'),
-    (Value: clWindowFrame; Name: 'clWindowFrame'),
-    (Value: clMenuText; Name: 'clMenuText'),
-    (Value: clWindowText; Name: 'clWindowText'),
-    (Value: clCaptionText; Name: 'clCaptionText'),
-    (Value: clActiveBorder; Name: 'clActiveBorder'),
-    (Value: clInactiveBorder; Name: 'clInactiveBorder'),
-    (Value: clAppWorkSpace; Name: 'clAppWorkSpace'),
-    (Value: clHighlight; Name: 'clHighlight'),
-    (Value: clHighlightText; Name: 'clHighlightText'),
-    (Value: clBtnFace; Name: 'clBtnFace'),
-    (Value: clBtnShadow; Name: 'clBtnShadow'),
-    (Value: clGrayText; Name: 'clGrayText'),
-    (Value: clBtnText; Name: 'clBtnText'),
-    (Value: clInactiveCaptionText; Name: 'clInactiveCaptionText'),
-    (Value: clBtnHighlight; Name: 'clBtnHighlight'),
-    (Value: cl3DDkShadow; Name: 'cl3DDkShadow'),
-    (Value: cl3DLight; Name: 'cl3DLight'),
-    (Value: clInfoText; Name: 'clInfoText'),
-    (Value: clInfoBk; Name: 'clInfoBk'),
-    (Value: clNone; Name: 'clNone'));
-
-function ColorToIdent(Color: Longint; var Ident: AnsiString): Boolean;
-begin
-  Result := IntToIdent(Color, Ident, Colors);
-end;
-
-function IdentToColor(const Ident: shortstring; var Color: Longint): Boolean;
-begin
-  Result := IdentToInt(Ident, Color, Colors);
-end;
-
-{function ColorToRGB(Color: TColor): Longint;
-begin
-  if Color < 0 then
-    Result := GetSysColor(Color and $000000FF) else
-    Result := Color;
-end;}
-
-function ColorToString(Color: TColor): AnsiString;
-begin
-  if not ColorToIdent(Color, Result) then
-    Result:='$'+HexStr(Color,8);
-end;
-
-function StringToColor(const S: shortstring): TColor;
-begin
-  if not IdentToColor(S, Longint(Result)) then
-    Result := TColor(StrToInt(S));
-end;
-
-procedure GetColorValues(Proc: TGetStringProc);
-var
-  I: Integer;
-begin
-  for I := Low(Colors) to High(Colors) do Proc(Colors[I].Name);
-end;
-
 // -----------------------------------------------------------
 
 var
@@ -1082,22 +932,50 @@ type
   end;
 
 constructor TPropInfoList.Create(Instance:TPersistent; Filter:TTypeKinds);
-var AllSize:integer;
-  TypeInfo : PTypeInfo;
+var 
+  BigList: PPropList;
+  TypeInfo: PTypeInfo;
+  TypeData: PTypeData;
+  PropInfo: PPropInfo;
+  CurCount, i: integer;
 begin
   TypeInfo:=Instance.ClassInfo;
-
-  // get filtered count
-  // XXX, Delphi can do this easier. Must talk to typinfo developer...
-  AllSize:=GetTypeData(TypeInfo)^.Propcount * SizeOf(Pointer);
-  GetMem(FList,AllSize);
-  FCount:=GetPropList(TypeInfo,Filter,FList);
-  FreeMem(FList,AllSize);
-
-  // get PropInfoList
+  TypeData:=GetTypeData(TypeInfo);
+  GetMem(BigList,TypeData^.PropCount * SizeOf(Pointer));
+  FCount:=0;
+  repeat
+    // read all property infos of current class
+    PropInfo:=(@TypeData^.UnitName+Length(TypeData^.UnitName)+1);
+    CurCount:=PWord(PropInfo)^;
+    // Now point PropInfo to first propinfo record.
+    inc(Longint(PropInfo),SizeOf(Word));
+    while CurCount>0 do begin
+      if PropInfo^.PropType^.Kind in Filter then begin
+        // check if name already exists in list
+        i:=FCount-1;
+        while (i>=0) and (BigList^[i]^.Name<>PropInfo^.Name) do 
+          dec(i);
+        if (i<0) then begin
+          // add property info to BigList
+          BigList^[FCount]:=PropInfo;
+          inc(FCount);
+        end;
+      end;
+      // point PropInfo to next propinfo record.
+      // Located at Name[Length(Name)+1] !
+      PropInfo:=PPropInfo(pointer(@PropInfo^.Name)+PByte(@PropInfo^.Name)^+1);
+      dec(CurCount);
+    end;
+    TypeInfo:=TypeData^.ParentInfo;
+    if TypeInfo=nil then break;
+    TypeData:=GetTypeData(TypeInfo);
+  until false;
+    
+  // create FList
   FSize:=FCount * SizeOf(Pointer);
   GetMem(FList,FSize);
-  GetPropList(TypeInfo,Filter,FList);
+  Move(BigList^,FList^,FSize);
+  FreeMem(BigList);
 end;
 
 destructor TPropInfoList.Destroy;

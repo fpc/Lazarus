@@ -28,7 +28,7 @@ begin
   Assert(False, 'Trace:Calling dialog - LM_SHOWMODAL');
   CNSendMessage(LM_SHOWMODAL, Self, nil);
   repeat
-     Application.ProcessMessages;
+     Application.HandleMessage;
   until FUserChoice <> mrNone;
   Result := (FUserChoice = mrOk);
   if Assigned(FOnClose) then FOnClose(Self);
@@ -38,6 +38,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.2  2001/08/05 10:14:50  lazarus
+  MG: removed double props in OI, small bugfixes
+
   Revision 1.1  2000/08/10 11:01:06  lazarus
   Adding commondialog.pp and removing customdialog.inc
 

@@ -600,8 +600,18 @@ type
 var 
   { Stores information about the current screen }
   ScreenInfo : TLMScreenInit;
+
+
+// Color / Identifier mapping
+type
+  TGetColorStringProc = procedure(const s:ansistring) of object;
   
+function ColorToIdent(Color: Longint; var Ident: AnsiString): Boolean;
+function IdentToColor(const Ident: shortstring; var Color: Longint): Boolean;
 function ColorToRGB(Color: TColor): Longint;
+function ColorToString(Color: TColor): AnsiString;
+function StringToColor(const S: shortstring): TColor;
+procedure GetColorValues(Proc: TGetColorStringProc);
   
 
 (***************************************************************************
@@ -628,6 +638,63 @@ type
   end;
 
 
+{ Color mapping routines }
+
+const
+  Colors: array[0..41] of TIdentMapEntry = (
+    (Value: clBlack; Name: 'clBlack'),
+    (Value: clMaroon; Name: 'clMaroon'),
+    (Value: clGreen; Name: 'clGreen'),
+    (Value: clOlive; Name: 'clOlive'),
+    (Value: clNavy; Name: 'clNavy'),
+    (Value: clPurple; Name: 'clPurple'),
+    (Value: clTeal; Name: 'clTeal'),
+    (Value: clGray; Name: 'clGray'),
+    (Value: clSilver; Name: 'clSilver'),
+    (Value: clRed; Name: 'clRed'),
+    (Value: clLime; Name: 'clLime'),
+    (Value: clYellow; Name: 'clYellow'),
+    (Value: clBlue; Name: 'clBlue'),
+    (Value: clFuchsia; Name: 'clFuchsia'),
+    (Value: clAqua; Name: 'clAqua'),
+    (Value: clWhite; Name: 'clWhite'),
+    (Value: clScrollBar; Name: 'clScrollBar'),
+    (Value: clBackground; Name: 'clBackground'),
+    (Value: clActiveCaption; Name: 'clActiveCaption'),
+    (Value: clInactiveCaption; Name: 'clInactiveCaption'),
+    (Value: clMenu; Name: 'clMenu'),
+    (Value: clWindow; Name: 'clWindow'),
+    (Value: clWindowFrame; Name: 'clWindowFrame'),
+    (Value: clMenuText; Name: 'clMenuText'),
+    (Value: clWindowText; Name: 'clWindowText'),
+    (Value: clCaptionText; Name: 'clCaptionText'),
+    (Value: clActiveBorder; Name: 'clActiveBorder'),
+    (Value: clInactiveBorder; Name: 'clInactiveBorder'),
+    (Value: clAppWorkSpace; Name: 'clAppWorkSpace'),
+    (Value: clHighlight; Name: 'clHighlight'),
+    (Value: clHighlightText; Name: 'clHighlightText'),
+    (Value: clBtnFace; Name: 'clBtnFace'),
+    (Value: clBtnShadow; Name: 'clBtnShadow'),
+    (Value: clGrayText; Name: 'clGrayText'),
+    (Value: clBtnText; Name: 'clBtnText'),
+    (Value: clInactiveCaptionText; Name: 'clInactiveCaptionText'),
+    (Value: clBtnHighlight; Name: 'clBtnHighlight'),
+    (Value: cl3DDkShadow; Name: 'cl3DDkShadow'),
+    (Value: cl3DLight; Name: 'cl3DLight'),
+    (Value: clInfoText; Name: 'clInfoText'),
+    (Value: clInfoBk; Name: 'clInfoBk'),
+    (Value: clNone; Name: 'clNone'));
+
+function ColorToIdent(Color: Longint; var Ident: AnsiString): Boolean;
+begin
+  Result := IntToIdent(Color, Ident, Colors);
+end;
+
+function IdentToColor(const Ident: shortstring; var Color: Longint): Boolean;
+begin
+  Result := IdentToInt(Ident, Color, Colors);
+end;
+
 function ColorToRGB(Color: TColor): Longint;
 begin
   if (Color and SYS_COLOR_BASE) <> 0
@@ -636,6 +703,26 @@ begin
   Result := Result and $FFFFFF;
   //WriteLN(Format('[ColorToRGB] Color %8x --> RGB %8x', [Color, Result]));
 end;
+
+function ColorToString(Color: TColor): AnsiString;
+begin
+  if not ColorToIdent(Color, Result) then
+    Result:='$'+HexStr(Color,8);
+end;
+
+function StringToColor(const S: shortstring): TColor;
+begin
+  if not IdentToColor(S, Longint(Result)) then
+    Result := TColor(StrToInt(S));
+end;
+
+procedure GetColorValues(Proc: TGetColorStringProc);
+var
+  I: Integer;
+begin
+  for I := Low(Colors) to High(Colors) do Proc(Colors[I].Name);
+end;
+
 
 {$I graphicsobject.inc}
 {$I graphic.inc}
@@ -656,6 +743,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.12  2001/08/05 10:14:50  lazarus
+  MG: removed double props in OI, small bugfixes
+
   Revision 1.11  2001/06/26 00:08:35  lazarus
   MG: added code for form icons from Rene E. Beszon
 
