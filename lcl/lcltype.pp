@@ -118,7 +118,6 @@ type
 
 
 const
-
   ETO_OPAQUE = 2;
   ETO_CLIPPED = 4;
 
@@ -1406,7 +1405,7 @@ type
   PTextMetricW = ^TTextMetricW;
   PTextMetric = PTextMetricA;
 
-  tagTEXTMETRICA = record
+  tagTextMetricA = record
     tmHeight: Longint;
     tmAscent: Longint;
     tmDescent: Longint;
@@ -1681,6 +1680,9 @@ end.
 
 {
   $Log$
+  Revision 1.27  2002/12/05 22:16:28  mattias
+  double byte char font started
+
   Revision 1.26  2002/11/23 13:48:43  mattias
   added Timer patch from Vincent Snijders
 

@@ -416,12 +416,7 @@ begin
       // find out whether the font `IsDBCSFont'
       DC := GetDC(0);
       hOldFont := SelectObject(DC, ABaseFont.Handle);
-      {$IFDEF SYN_LAZARUS}
-      // ToDo Font  DBCS double byte char set
-      IsDBCSFont:=false;
-      {$ELSE}
       IsDBCSFont := (0 <> (GCP_DBCS and GetFontLanguageInfo(DC)));
-      {$ENDIF}
       SelectObject(DC, hOldFont);
       ReleaseDC(0, DC);
     except
@@ -1303,12 +1298,8 @@ var
   c: Char;
 begin
   for c := Low(Char) to High(Char) do
-    {$IFNDEF SYN_LAZARUS}
     if IsDBCSLeadByte(Byte(c)) then
       Include(LeadBytes, c);
-    {$ELSE}
-    // ToDo  DBCS double byte char set
-    {$ENDIF}
 end;
 {$ENDIF} // HE_LEADBYTES
 
