@@ -71,7 +71,7 @@ uses
   UnitEditor, EditDefineTree, CodeToolsOptions, IDEOptionDefs, CodeToolsDefines,
   DiffDialog, DiskDiffsDialog, UnitInfoDlg, EditorOptions, ViewUnit_dlg,
   // rest of the ide
-  LazarusIDEStrConsts, LazConf, MsgView, EnvironmentOpts,
+  IDEDefs, LazarusIDEStrConsts, LazConf, MsgView, EnvironmentOpts,
   TransferMacros, KeyMapping, IDEProcs, ExtToolDialog, ExtToolEditDlg,
   MacroPromptDlg, OutputFilter, BuildLazDialog, MiscOptions,
   InputHistory, UnitDependencies, ClipBoardHistory, ProcessList,
@@ -432,7 +432,8 @@ type
 
     // files/units
     function DoNewEditorFile(NewUnitType: TNewUnitType;
-        NewFilename: string; NewFlags: TNewFlags): TModalResult;
+        NewFilename: string; const NewSource: string;
+        NewFlags: TNewFlags): TModalResult; override;
     function DoNewOther: TModalResult;
     function DoSaveEditorFile(PageIndex:integer;
         Flags: TSaveFlags): TModalResult;
@@ -531,7 +532,7 @@ type
       AddJumpPoint: boolean): TModalResult;
     procedure DoJumpToCodeToolBossError;
     procedure UpdateSourceNames;
-    procedure SaveSourceEditorChangesToCodeCache(PageIndex: integer);
+    procedure SaveSourceEditorChangesToCodeCache(PageIndex: integer); override;
     procedure ApplyCodeToolChanges;
     procedure DoJumpToProcedureSection;
     procedure DoFindDeclarationAtCursor;
@@ -565,6 +566,8 @@ type
       var Handled, Abort: boolean);
     function OnMacroPromptFunction(const s:string; var Abort: boolean):string;
     procedure OnCmdLineCreate(var CmdLine: string; var Abort:boolean);
+    procedure GetIDEFileState(Sender: TObject; const AFilename: string;
+      NeededFlags: TIDEFileStateFlags; var ResultFlags: TIDEFileStateFlags); override;
 
     // form editor and designer
     property SelectedComponent : TRegisteredComponent 
@@ -1619,12 +1622,12 @@ end;
 
 procedure TMainIDE.mnuNewUnitClicked(Sender : TObject);
 begin
-  DoNewEditorFile(nuUnit,'',[]);
+  DoNewEditorFile(nuUnit,'','',[nfOpenInEditor,nfCreateDefaultSrc]);
 end;
 
 procedure TMainIDE.mnuNewFormClicked(Sender : TObject);
 begin
-  DoNewEditorFile(nuForm,'',[]);
+  DoNewEditorFile(nuForm,'','',[nfOpenInEditor,nfCreateDefaultSrc]);
 end;
 
 procedure TMainIDE.mnuNewOtherClicked(Sender: TObject);
@@ -3285,9 +3288,11 @@ begin
   begin
     // create new file
     if FilenameIsPascalSource(AFilename) then
-      Result:=DoNewEditorFile(nuUnit,AFilename,[])
+      Result:=DoNewEditorFile(nuUnit,AFilename,'',
+                              [nfOpenInEditor,nfCreateDefaultSrc])
     else
-      Result:=DoNewEditorFile(nuEmpty,AFilename,[]);
+      Result:=DoNewEditorFile(nuEmpty,AFilename,'',
+                              [nfOpenInEditor,nfCreateDefaultSrc]);
   end;
 end;
 
@@ -3833,38 +3838,75 @@ begin
 end;
   
 function TMainIDE.DoNewEditorFile(NewUnitType:TNewUnitType;
-  NewFilename: string; NewFlags: TNewFlags):TModalResult;
+  NewFilename: string; const NewSource: string;
+  NewFlags: TNewFlags): TModalResult;
+
+  function BeautifySrc(const s: string): string;
+  begin
+    Result:=CodeToolBoss.SourceChangeCache.BeautifyCodeOptions.
+                  BeautifyStatement(s,0);
+  end;
+
 var NewUnitInfo:TUnitInfo;
   NewSrcEdit: TSourceEditor;
   NewUnitName: string;
   NewBuffer: TCodeBuffer;
+  OldUnitIndex: Integer;
 begin
   writeln('TMainIDE.DoNewEditorFile A NewFilename=',NewFilename);
   SaveSourceEditorChangesToCodeCache(-1);
+
+  // convert macros in filename
+  if nfConvertMacros in NewFlags then begin
+    if not MacroList.SubstituteStr(NewFilename) then begin
+      Result:=mrCancel;
+      exit;
+    end;
+  end;
   
+  // create new codebuffer and apply naming conventions
   Result:=CreateNewCodeBuffer(NewUnitType,NewFilename,NewBuffer,NewUnitName);
   if Result<>mrOk then exit;
-  Result:=mrCancel;
 
   NewFilename:=NewBuffer.Filename;
-  NewUnitInfo:=TUnitInfo.Create(NewBuffer);
+  OldUnitIndex:=Project1.IndexOfFilename(NewFilename);
+  if OldUnitIndex>=0 then begin
+    // the file is not really new
+    NewUnitInfo:=Project1.Units[OldUnitIndex];
+    // close form
+    CloseDesignerForm(NewUnitInfo);
+    // assign source
+    NewUnitInfo.Source:=NewBuffer;
+  end else
+    NewUnitInfo:=TUnitInfo.Create(NewBuffer);
 
   // create source code
-  if NewUnitType in [nuForm] then begin
-    NewUnitInfo.FormName:=Project1.NewUniqueFormName(NewUnitType);
-    NewUnitInfo.FormResourceName:='';
-    CodeToolBoss.CreateFile(ChangeFileExt(NewFilename,ResourceFileExt));
+  if nfCreateDefaultSrc in NewFlags then begin
+    if NewUnitType in [nuForm] then begin
+      NewUnitInfo.FormName:=Project1.NewUniqueFormName(NewUnitType);
+      NewUnitInfo.FormResourceName:='';
+      CodeToolBoss.CreateFile(ChangeFileExt(NewFilename,ResourceFileExt));
+    end;
+    NewUnitInfo.CreateStartCode(NewUnitType,NewUnitName);
+  end else begin
+    if nfBeautifySrc in NewFlags then
+      NewBuffer.Source:=BeautifySrc(NewSource)
+    else
+      NewBuffer.Source:=NewSource;
+    NewUnitInfo.Modified:=true;
   end;
-  NewUnitInfo.CreateStartCode(NewUnitType,NewUnitName);
   
   // add to project
   with NewUnitInfo do begin
     Loaded:=true;
     IsPartOfProject:=(nfIsPartOfProject in NewFlags)
-                     or Project1.FileIsInProjectDir(NewFilename);
+                     or (Project1.FileIsInProjectDir(NewFilename)
+                         and (not (nfIsNotPartOfProject in NewFlags)));
   end;
-  Project1.AddUnit(NewUnitInfo,(NewUnitType in [nuForm, nuUnit])
-                              and NewUnitInfo.IsPartOfProject);
+  if OldUnitIndex<0 then begin
+    Project1.AddUnit(NewUnitInfo,(NewUnitType in [nuForm, nuUnit])
+                                 and NewUnitInfo.IsPartOfProject);
+  end;
                               
   // syntax highlighter type
   if NewUnitType in [nuForm, nuUnit] then begin
@@ -3874,33 +3916,49 @@ begin
       ExtensionToLazSyntaxHighlighter(ExtractFileExt(NewFilename))
   end;
 
-  // create a new sourceeditor
-  SourceNotebook.NewFile(CreateSrcEditPageName(NewUnitInfo.UnitName,
-                                               NewUnitInfo.Filename,-1),
-                         NewUnitInfo.Source,true);
-  itmFileClose.Enabled:=True;
-  itmFileCloseAll.Enabled:=True;
-  NewSrcEdit:=SourceNotebook.GetActiveSE;
-  NewSrcEdit.SyntaxHighlighterType:=NewUnitInfo.SyntaxHighlighter;
-  Project1.InsertEditorIndex(SourceNotebook.NoteBook.PageIndex);
-  NewUnitInfo.EditorIndex:=SourceNotebook.NoteBook.PageIndex;
+  if nfOpenInEditor in NewFlags then begin
+    // open a new sourceeditor
+    SourceNotebook.NewFile(CreateSrcEditPageName(NewUnitInfo.UnitName,
+                                                 NewUnitInfo.Filename,-1),
+                           NewUnitInfo.Source,true);
+    itmFileClose.Enabled:=True;
+    itmFileCloseAll.Enabled:=True;
+    NewSrcEdit:=SourceNotebook.GetActiveSE;
+    NewSrcEdit.SyntaxHighlighterType:=NewUnitInfo.SyntaxHighlighter;
+    Project1.InsertEditorIndex(SourceNotebook.NoteBook.PageIndex);
+    NewUnitInfo.EditorIndex:=SourceNotebook.NoteBook.PageIndex;
 
-  // create form
-  if NewUnitType in [nuForm] then begin
-    Result:=CreateNewForm(NewUnitInfo);
-    if Result<>mrOk then exit;
-    Result:=mrCancel;
-  end;
+    // create form
+    if NewUnitType in [nuForm] then begin
+      Result:=CreateNewForm(NewUnitInfo);
+      if Result<>mrOk then exit;
+    end;
 
-  // show form and select form
-  if NewUnitType in [nuForm] then begin
-    // show form
-    TDesigner(TCustomForm(NewUnitInfo.Form).Designer).SourceEditor :=
-      SourceNoteBook.GetActiveSE;
-    ShowDesignForm(TCustomForm(NewUnitInfo.Form));
+    // show form and select form
+    if NewUnitType in [nuForm] then begin
+      // show form
+      TDesigner(TCustomForm(NewUnitInfo.Form).Designer).SourceEditor :=
+        SourceNoteBook.GetActiveSE;
+      ShowDesignForm(TCustomForm(NewUnitInfo.Form));
+    end else begin
+      FDisplayState:= dsSource;
+    end;
+
+    if nfSave in NewFlags then begin
+      NewUnitInfo.Modified:=true;
+      Result:=DoSaveEditorFile(NewUnitInfo.EditorIndex,[sfCheckAmbigiousFiles]);
+      if Result<>mrOk then exit;
+    end;
   end else begin
-    FDisplayState:= dsSource;
+    // do not open in editor
+    
+    if nfSave in NewFlags then begin
+      NewBuffer.Save;
+    end;
   end;
+  
+
+  Result:=mrOk;
   writeln('TMainIDE.DoNewEditorFile end ',NewUnitInfo.Filename);
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoNewUnit end');{$ENDIF}
 end;
@@ -3914,9 +3972,12 @@ begin
     if Result<>mrOk then exit;
     case NewIDEItem.TheType of
     // files
-    niiText: Result:=DoNewEditorFile(nuText,'',[]);
-    niiUnit: Result:=DoNewEditorFile(nuUnit,'',[]);
-    niiForm: Result:=DoNewEditorFile(nuForm,'',[]);
+    niiText: Result:=DoNewEditorFile(nuText,'','',
+                                     [nfOpenInEditor,nfCreateDefaultSrc]);
+    niiUnit: Result:=DoNewEditorFile(nuUnit,'','',
+                                     [nfOpenInEditor,nfCreateDefaultSrc]);
+    niiForm: Result:=DoNewEditorFile(nuForm,'','',
+                                     [nfOpenInEditor,nfCreateDefaultSrc]);
     // projects
     niiApplication: DoNewProject(ptApplication);
     niiFPCProject: DoNewProject(ptProgram);
@@ -4637,7 +4698,8 @@ writeln('TMainIDE.DoNewProject A');
        +';'+
         '$(LazarusDir)'+ds+'lcl'+ds+'interfaces'+ds+'$(LCLWidgetType)';
       // create a first form unit
-      DoNewEditorFile(nuForm,'',[nfIsPartOfProject]);
+      DoNewEditorFile(nuForm,'','',
+                      [nfIsPartOfProject,nfOpenInEditor,nfCreateDefaultSrc]);
     end;
     
   ptProgram,ptCustomProgram:
@@ -6116,6 +6178,30 @@ begin
   Abort:=not MacroList.SubstituteStr(CmdLine);
 end;
 
+procedure TMainIDE.GetIDEFileState(Sender: TObject; const AFilename: string;
+  NeededFlags: TIDEFileStateFlags; var ResultFlags: TIDEFileStateFlags);
+var
+  AnUnitInfo: TUnitInfo;
+begin
+  ResultFlags:=[];
+  AnUnitInfo:=Project1.UnitInfoWithFilename(AFilename);
+  if AnUnitInfo<>nil then begin
+    // readonly
+    if (ifsReadOnly in NeededFlags) and AnUnitInfo.ReadOnly then
+      Include(ResultFlags,ifsReadOnly);
+    // part of project
+    if (ifsPartOfProject in NeededFlags) and AnUnitInfo.IsPartOfProject then
+      Include(ResultFlags,ifsPartOfProject);
+    // open in editor
+    if (ifsOpenInEditor in NeededFlags) and (AnUnitInfo.EditorIndex>=0) then
+      Include(ResultFlags,ifsOpenInEditor);
+  end else begin
+    // readonly
+    if (ifsReadOnly in NeededFlags) and (not FileIsWritable(AFilename)) then
+      Include(ResultFlags,ifsReadOnly);
+  end;
+end;
+
 function TMainIDE.DoJumpToCompilerMessage(Index:integer;
   FocusEditor: boolean): boolean;
 var MaxMessages: integer;
@@ -7254,10 +7340,9 @@ begin
   Files.Free;
   if OpenDiffInEditor then begin
     NewDiffFilename:=CreateSrcEditPageName('','diff.txt',-1);
-    Result:=DoNewEditorFile(nuText,NewDiffFilename,[]);
+    Result:=DoNewEditorFile(nuText,NewDiffFilename,DiffText,[nfOpenInEditor]);
     GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
     if ActiveSrcEdit=nil then exit;
-    ActiveSrcEdit.EditorComponent.Lines.Text:=DiffText;
   end;
 end;
 
@@ -8131,6 +8216,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.511  2003/04/07 23:49:03  mattias
+  implemented adding units to packages
+
   Revision 1.510  2003/04/07 12:12:12  mattias
   implemented auto completion for add new component to package
 

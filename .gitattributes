@@ -190,6 +190,7 @@ ide/formeditor.pp svneol=native#text/pascal
 ide/global.inc svneol=native#text/pascal
 ide/global.pp svneol=native#text/pascal
 ide/idecomp.pp svneol=native#text/pascal
+ide/idedefs.pas svneol=native#text/pascal
 ide/ideoptiondefs.pas svneol=native#text/pascal
 ide/ideprocs.pp svneol=native#text/pascal
 ide/include/freebsd/lazconf.inc svneol=native#text/pascal
