@@ -1512,12 +1512,13 @@ begin
       LM_GETSELSTART :
       begin
         if (Sender is TControl) then begin
-	  case TControl(Sender).fCompStyle of
-	  csComboBox:
-            Result:= gtk_editable_get_position(PGtkEditable(PGtkCombo(Handle)^.entry)) + 1;
-	  csEdit:
+          case TControl(Sender).fCompStyle of
+          csComboBox:
+            Result:= gtk_editable_get_position(PGtkEditable(
+                                               PGtkCombo(Handle)^.entry)) + 1;
+          csEdit:
             Result:= gtk_editable_get_position(PGtkEditable(Handle)) + 1;
-	  end;    
+          end;
         end;
       end;
           
@@ -1525,10 +1526,10 @@ begin
       begin
         if (Sender is TControl) then begin
           case TControl(Sender).fCompStyle of
-	  csComboBox: 
+          csComboBox:
             Result:= PGtkEditable(PGtkCombo(Handle)^.entry)^.selection_end_pos
                      - PGtkEditable(PGtkCombo(Handle)^.entry)^.selection_start_pos;
-	  csEdit:
+          csEdit:
             Result:= PGtkEditable(Handle)^.selection_end_pos
                      - PGtkEditable(Handle)^.selection_start_pos;
           end;
@@ -1547,33 +1548,36 @@ begin
       LM_SETSELSTART : 
       begin
         if (Sender is TControl) then begin
-	  case TControl(Sender).fCompStyle of
-	  csComboBox:
-            gtk_editable_set_position(PGtkEditable(PGtkCombo(Handle)^.entry), Integer(Data));
-	  csEdit:
+          case TControl(Sender).fCompStyle of
+          csComboBox:
+            gtk_editable_set_position(PGtkEditable(PGtkCombo(Handle)^.entry),
+                                      Integer(Data));
+	        csEdit:
             gtk_editable_set_position(PGtkEditable(Handle), Integer(Data));
-	  end;    
+	        end;
         end;
       end;
           
       LM_SETSELLEN :
       begin
         if (Sender is TControl) then begin
-	  case TControl(Sender).fCompStyle of
-  	  csComboBox:
+	        case TControl(Sender).fCompStyle of
+  	      csComboBox:
             begin
               gtk_editable_select_region(PGtkEditable(PGtkCombo(Handle)^.entry),
                 gtk_editable_get_position(PGtkEditable(PGtkCombo(Handle)^.entry)),
-                gtk_editable_get_position(PGtkEditable(PGtkCombo(Handle)^.entry)) + Integer(Data));
+                gtk_editable_get_position(PGtkEditable(PGtkCombo(Handle)^.entry))
+                          + Integer(Data));
             end;
-	  csEdit:
+            
+	        csEdit:
             begin
               gtk_editable_select_region(PGtkEditable(Handle),
-              gtk_editable_get_position(PGtkEditable(Handle)),
-              gtk_editable_get_position(PGtkEditable(Handle)) + Integer(Data));
+                gtk_editable_get_position(PGtkEditable(Handle)),
+                gtk_editable_get_position(PGtkEditable(Handle)) + Integer(Data));
             end;
-	  end;    
-	end;  
+      	  end;
+      	end;
       end;  
  
       LM_GetLineCount :
@@ -1796,7 +1800,8 @@ begin
    csComboBox:
      begin
        Text := StrPas(gtk_entry_get_text(PGtkEntry(PGtkCombo(
-                                    TWinControl(Sender).Handle)^.entry)));
+                                         TComboBox(Sender).Handle)^.entry)));
+       //writeln(' TGtkObject.GetText "',Text,'"');
      end;
      
    csEdit    :
@@ -2033,7 +2038,10 @@ begin
     SetNotebookPageTabLabel;
     
   csComboBox    :
-    SetComboBoxText(PGtkCombo(TComboBox(Sender).Handle), PLabel);
+    begin
+      //writeln('SetLabel: ',PLabel);
+      SetComboBoxText(PGtkCombo(TComboBox(Sender).Handle), PLabel);
+    end;
 
   else
     Assert(True, Format ('WARNING: [TgtkObject.SetLabel] --> not handled for class %s ', [Sender.ClassName]));
@@ -3307,6 +3315,7 @@ begin
   gtk_entry_set_max_length(PGtkEntry(ComboWidget^.entry),ComboBox.MaxLength);
 
   // Text
+  writeln('CreateComboBox: ',ComboBox.Text);
   SetComboBoxText(ComboWidget,PChar(ComboBox.Text));
 end;
 
@@ -5495,6 +5504,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.189  2002/08/31 07:58:21  lazarus
+  MG: fixed resetting comobobox text
+
   Revision 1.188  2002/08/30 13:46:32  lazarus
   MG: added failure exit
 
