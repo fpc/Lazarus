@@ -1770,6 +1770,10 @@ begin
       Add(dlgSrcEdit);
       Add(dlgMsgs);
       Add(dlgObjInsp);
+      Add(lisMenuProjectInspector);
+      Add(lisCodeExplorer);
+      Add(lisMenuPackageGraph);
+      Add(dlgUnitDepCaption);
       EndUpdate;
     end;
     OnMouseUp:=@WindowPositionsListBoxMouseUp;
@@ -3966,6 +3970,10 @@ begin
   1: WindowPositionsBox.Layout:=FLayouts.ItemByEnum(nmiwSourceNoteBookName);
   2: WindowPositionsBox.Layout:=FLayouts.ItemByEnum(nmiwMessagesViewName);
   3: WindowPositionsBox.Layout:=FLayouts.ItemByFormID(DefaultObjectInspectorName);
+  4: WindowPositionsBox.Layout:=FLayouts.ItemByEnum(nmiwProjectInspector);
+  5: WindowPositionsBox.Layout:=FLayouts.ItemByEnum(nmiwCodeExplorerName);
+  6: WindowPositionsBox.Layout:=FLayouts.ItemByEnum(nmiwPkgGraphExplorer);
+  7: WindowPositionsBox.Layout:=FLayouts.ItemByEnum(nmiwUnitDependenciesName);
   end;
   if Index>=0 then
     WindowPositionsBox.Caption:=WindowPositionsListBox.Items[Index];
