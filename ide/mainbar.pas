@@ -64,8 +64,9 @@ type
   TLoadBufferFlags = set of TLoadBufferFlag;
 
   TMainIDEBar = class(TForm)
+  
+    // the speedbuttons panel for frequently used IDE functions
     pnlSpeedButtons : TPanel;
-
     ViewUnitsSpeedBtn   : TSpeedButton;
     ViewFormsSpeedBtn   : TSpeedButton;
     NewUnitSpeedBtn     : TSpeedButton;
@@ -80,8 +81,8 @@ type
     StepIntoSpeedButton : TSpeedButton;
     StepOverSpeedButton : TSpeedButton;
     OpenFilePopUpMenu   : TPopupMenu;
-    GlobalMouseSpeedButton: TSpeedButton;
 
+    // MainMenu
     mnuMain: TMainMenu;
 
     mnuFile: TMenuItem;
@@ -130,6 +131,7 @@ type
     itmFindBlockStart: TMenuItem;
     itmFindDeclaration: TMenuItem;
     itmOpenFileAtCursor: TMenuItem;
+    itmGotoIncludeDirective: TMenuItem;
 
     itmViewInspector: TMenuItem;
     itmViewProject: TMenuItem;
@@ -177,8 +179,11 @@ type
 
     itmHelpAboutLazarus: TMenuItem;
 
+    // component palette
     ComponentNotebook : TNotebook;
+    GlobalMouseSpeedButton: TSpeedButton;
 
+    // hints. Note/ToDo: hints should be controlled by the lcl, this is a workaround
     HintTimer1 : TTimer;
     HintWindow1 : THintWindow;
   public

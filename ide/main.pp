@@ -61,7 +61,6 @@ type
     procedure mnuNewUnitClicked(Sender : TObject);
     procedure mnuNewFormClicked(Sender : TObject);
     procedure mnuOpenClicked(Sender : TObject);
-    procedure mnuOpenFileAtCursorClicked(Sender : TObject);
     procedure mnuSaveClicked(Sender : TObject);
     procedure mnuSaveAsClicked(Sender : TObject);
     procedure mnuSaveAllClicked(Sender : TObject);
@@ -74,6 +73,9 @@ type
     procedure mnuSearchFindBlockStart(Sender: TObject);
     procedure mnuSearchFindDeclaration(Sender: TObject);
     procedure mnuSearchOpenFileAtCursor(Sender: TObject);
+    procedure mnuFindDeclarationClicked(Sender : TObject);
+    procedure mnuOpenFileAtCursorClicked(Sender : TObject);
+    procedure mnuGotoIncludeDirectiveClicked(Sender : TObject);
 
     // edit menu
     procedure mnuEditUndoClicked(Sender: TObject);
@@ -134,8 +136,7 @@ type
 
     procedure OpenFileDownArrowClicked(Sender : TObject);
     procedure ControlClick(Sender : TObject);
-    procedure mnuFindDeclarationClicked(Sender : TObject);
-    
+
     // SourceNotebook events
     Procedure OnSrcNoteBookActivated(Sender : TObject);
     Procedure OnSrcNoteBookAddJumpPoint(ACaretXY: TPoint; ATopLine: integer; 
@@ -268,7 +269,7 @@ type
     function DoOpenUnknownFile(const AFileName:string;
         Flags: TOpenFlags; var NewUnitInfo: TUnitInfo): TModalResult;
     procedure DoRestoreBookMarks(AnUnitInfo: TUnitInfo; ASrcEdit:TSourceEditor);
-    function DoOpenFileInSourceNoteBook(AnUnitInfo: TUnitInfo;
+    function DoOpenFileInSourceNotebook(AnUnitInfo: TUnitInfo;
         Flags: TOpenFlags): TModalResult;
     function DoLoadLFM(AnUnitInfo: TUnitInfo; Flags: TOpenFlags): TModalResult;
     
@@ -294,7 +295,7 @@ type
         SaveFirst: boolean):TModalResult;
     function DoOpenEditorFile(const AFileName:string;
         Flags: TOpenFlags): TModalResult; override;
-    function DoOpenFileAtCursor(Sender: TObject):TModalResult;
+    function DoOpenFileAtCursor(Sender: TObject): TModalResult;
     function DoSaveAll: TModalResult;
     function DoOpenMainUnit(ProjectLoading: boolean): TModalResult;
     function DoViewUnitsAndForms(OnlyForms: boolean): TModalResult;
@@ -360,6 +361,7 @@ type
     procedure DoGoToPascalBlockOtherEnd;
     procedure DoGoToPascalBlockStart;
     procedure DoJumpToGuessedUnclosedBlock(FindNext: boolean);
+    procedure DoGotoIncludeDirective;
     procedure SaveIncludeLinks;
 
     // methods for debugging, compiling and external tools
@@ -1320,6 +1322,12 @@ begin
   itmOpenFileAtCursor.Name:='itmOpenFileAtCursor';
   itmOpenFileAtCursor.Caption := 'Open filename at cursor';
   mnuSearch.add(itmOpenFileAtCursor);
+  
+  itmGotoIncludeDirective := TMenuItem.Create(nil);
+  itmGotoIncludeDirective.Name:='itmGotoIncludeDirective';
+  itmGotoIncludeDirective.Caption := 'Goto include directive';
+  itmGotoIncludeDirective.OnClick:=@mnuGotoIncludeDirectiveClicked;
+  mnuSearch.add(itmGotoIncludeDirective);
 end;
 
 procedure TMainIDE.SetupViewMenu;
@@ -1714,6 +1722,11 @@ begin
   DoOpenFileAtCursor(Sender);  
 end;
 
+procedure TMainIDE.mnuGotoIncludeDirectiveClicked(Sender : TObject);
+begin
+  DoGotoIncludeDirective;
+end;
+
 procedure TMainIDE.mnuSaveClicked(Sender : TObject);
 begin
   if SourceNoteBook.NoteBook=nil then exit;
@@ -1728,8 +1741,7 @@ end;
 
 procedure TMainIDE.mnuSaveAllClicked(Sender : TObject);
 begin
-  if SourceNoteBook.NoteBook=nil then exit;
-  DoSaveAll;  
+  DoSaveAll;
 end;
 
 procedure TMainIDE.mnuCloseClicked(Sender : TObject);
@@ -1818,6 +1830,9 @@ begin
      
    ecFindBlockStart:
      DoGoToPascalBlockStart;
+     
+   ecGotoIncludeDirective:
+     DoGotoIncludeDirective;
     
    ecCompleteCode:
      DoCompleteCodeAtCursor;
@@ -3188,7 +3203,7 @@ begin
                                Project1.ProjectInfoFile);
 end;
 
-function TMainIDE.DoOpenFileInSourceNoteBook(AnUnitInfo: TUnitInfo;
+function TMainIDE.DoOpenFileInSourceNotebook(AnUnitInfo: TUnitInfo;
   Flags: TOpenFlags): TModalResult;
 var NewSrcEdit: TSourceEditor;
   NewPageName, AFilename: string;
@@ -5548,6 +5563,28 @@ writeln('[TMainIDE.DoGoToPascalBlockEnd] ************');
     DoJumpToCodeToolBossError;
 end;
 
+procedure TMainIDE.DoGotoIncludeDirective;
+var ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+  NewSource: TCodeBuffer;
+  NewX, NewY, NewTopLine: integer;
+begin
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,false) then exit;
+{ $IFDEF IDE_DEBUG}
+writeln('');
+writeln('[TMainIDE.DoGotoIncludeDirective] ************');
+{ $ENDIF}
+  if CodeToolBoss.FindEnclosingIncludeDirective(ActiveUnitInfo.Source,
+    ActiveSrcEdit.EditorComponent.CaretX,
+    ActiveSrcEdit.EditorComponent.CaretY,
+    NewSource,NewX,NewY,NewTopLine) then
+  begin
+    DoJumpToCodePos(ActiveSrcEdit, ActiveUnitInfo,
+      NewSource, NewX, NewY, NewTopLine, false);
+  end else
+    DoJumpToCodeToolBossError;
+end;
+
 procedure TMainIDE.SaveIncludeLinks;
 var AFilename: string;
 begin
@@ -6095,6 +6132,7 @@ begin
     itmFindBlockStart.ShortCut:=CommandToShortCut(ecFindBlockStart);
     itmFindDeclaration.ShortCut:=CommandToShortCut(ecFindDeclaration);
     itmOpenFileAtCursor.ShortCut:=CommandToShortCut(ecOpenFileAtCursor);
+    itmGotoIncludeDirective.ShortCut:=CommandToShortCut(ecGotoIncludeDirective);
 
     itmViewInspector.ShortCut:=CommandToShortCut(ecToggleObjectInsp);
     itmViewProject.ShortCut:=CommandToShortCut(ecToggleProjectExpl);
@@ -6174,6 +6212,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.263  2002/03/28 11:49:48  lazarus
+  MG: added search function: Goto Include Directive
+
   Revision 1.262  2002/03/28 09:34:06  lazarus
   MG: show objectinspector only if needed
 

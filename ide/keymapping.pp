@@ -34,104 +34,105 @@ const
   These values can change from version to version, so DO NOT save them to file!
   
   }
-  ecFind               = ecUserFirst + 1;
-  ecFindAgain          = ecUserFirst + 2;
-  ecFindNext           = ecFindAgain;
-  ecReplace            = ecUserFirst + 3;
+  ecFind                 = ecUserFirst + 1;
+  ecFindAgain            = ecUserFirst + 2;
+  ecFindNext             = ecFindAgain;
+  ecReplace              = ecUserFirst + 3;
   ecFindProcedureDefinition = ecUserFirst + 4;
-  ecFindProcedureMethod = ecUserFirst + 5;
-  ecGotoLineNumber     = ecUserFirst + 6;
+  ecFindProcedureMethod  = ecUserFirst + 5;
+  ecGotoLineNumber       = ecUserFirst + 6;
 
-  ecNextEditor         = ecUserFirst + 7;
-  ecPrevEditor         = ecUserFirst + 8;
+  ecNextEditor           = ecUserFirst + 7;
+  ecPrevEditor           = ecUserFirst + 8;
 
-  ecPeriod             = ecUserFirst + 9;
+  ecPeriod               = ecUserFirst + 9;
 
-  ecFindPrevious       = ecUserFirst + 10;
-  ecFindInFiles        = ecUserFirst + 11;
-  ecJumpBack           = ecUserFirst + 12;
-  ecJumpForward        = ecUserFirst + 13;
-  ecAddJumpPoint       = ecUserFirst + 14;
-  ecViewJumpHistory    = ecUserFirst + 15;
+  ecFindPrevious         = ecUserFirst + 10;
+  ecFindInFiles          = ecUserFirst + 11;
+  ecJumpBack             = ecUserFirst + 12;
+  ecJumpForward          = ecUserFirst + 13;
+  ecAddJumpPoint         = ecUserFirst + 14;
+  ecViewJumpHistory      = ecUserFirst + 15;
 
-  ecFindDeclaration    = ecUserFirst + 20;
-  ecFindBlockOtherEnd  = ecUserFirst + 21;
-  ecFindBlockStart     = ecUserFirst + 22;
-  ecOpenFileAtCursor   = ecUserFirst + 23;
+  ecFindDeclaration      = ecUserFirst + 20;
+  ecFindBlockOtherEnd    = ecUserFirst + 21;
+  ecFindBlockStart       = ecUserFirst + 22;
+  ecOpenFileAtCursor     = ecUserFirst + 23;
+  ecGotoIncludeDirective = ecUserFirst + 24;
 
-  ecWordCompletion     = ecUserFirst + 100;
-  ecCompleteCode       = ecUserFirst + 101;
-  ecIdentCompletion    = ecUserFirst + 102;
-  ecSyntaxCheck        = ecUserFirst + 103;
-  ecGuessUnclosedBlock = ecUserFirst + 104;
+  ecWordCompletion       = ecUserFirst + 100;
+  ecCompleteCode         = ecUserFirst + 101;
+  ecIdentCompletion      = ecUserFirst + 102;
+  ecSyntaxCheck          = ecUserFirst + 103;
+  ecGuessUnclosedBlock   = ecUserFirst + 104;
 
-  ecNew                = ecUserFirst + 201;
-  ecNewUnit            = ecUserFirst + 202;
-  ecNewForm            = ecUserFirst + 203;
-  ecOpen               = ecUserFirst + 204;
-  ecSave               = ecUserFirst + 205;
-  ecSaveAs             = ecUserFirst + 206;
-  ecSaveAll            = ecUserFirst + 207;
-  ecClose              = ecUserFirst + 208;
-  ecCloseAll           = ecUserFirst + 209;
-  ecQuit               = ecUserFirst + 210;
+  ecNew                  = ecUserFirst + 201;
+  ecNewUnit              = ecUserFirst + 202;
+  ecNewForm              = ecUserFirst + 203;
+  ecOpen                 = ecUserFirst + 204;
+  ecSave                 = ecUserFirst + 205;
+  ecSaveAs               = ecUserFirst + 206;
+  ecSaveAll              = ecUserFirst + 207;
+  ecClose                = ecUserFirst + 208;
+  ecCloseAll             = ecUserFirst + 209;
+  ecQuit                 = ecUserFirst + 210;
 
-  ecJumpToEditor       = ecUserFirst + 300;
-  ecToggleFormUnit     = ecUserFirst + 301;
-  ecToggleObjectInsp   = ecUserFirst + 302;
-  ecToggleProjectExpl  = ecUserFirst + 303;
-  ecToggleCodeExpl     = ecUserFirst + 304;
-  ecToggleMessages     = ecUserFirst + 305;
-  ecToggleWatches      = ecUserFirst + 306;
-  ecToggleBreakPoints  = ecUserFirst + 307;
-  ecToggleDebuggerOut  = ecUserFirst + 308;
-  ecViewUnits          = ecUserFirst + 309;
-  ecViewForms          = ecUserFirst + 310;
-  ecToggleLocals       = ecUserFirst + 311;
+  ecJumpToEditor         = ecUserFirst + 300;
+  ecToggleFormUnit       = ecUserFirst + 301;
+  ecToggleObjectInsp     = ecUserFirst + 302;
+  ecToggleProjectExpl    = ecUserFirst + 303;
+  ecToggleCodeExpl       = ecUserFirst + 304;
+  ecToggleMessages       = ecUserFirst + 305;
+  ecToggleWatches        = ecUserFirst + 306;
+  ecToggleBreakPoints    = ecUserFirst + 307;
+  ecToggleDebuggerOut    = ecUserFirst + 308;
+  ecViewUnits            = ecUserFirst + 309;
+  ecViewForms            = ecUserFirst + 310;
+  ecToggleLocals         = ecUserFirst + 311;
 
-  ecBuild              = ecUserFirst + 400;
-  ecRun                = ecUserFirst + 401;
-  ecPause              = ecUserFirst + 402;
-  ecStepInto           = ecUserFirst + 403;
-  ecStepOver           = ecUserFirst + 404;
-  ecRunToCursor        = ecUserFirst + 405;
-  ecStopProgram        = ecUserFirst + 406;
-  ecBuildAll           = ecUserFirst + 407;
-  ecBuildLazarus       = ecUserFirst + 408;
+  ecBuild                = ecUserFirst + 400;
+  ecRun                  = ecUserFirst + 401;
+  ecPause                = ecUserFirst + 402;
+  ecStepInto             = ecUserFirst + 403;
+  ecStepOver             = ecUserFirst + 404;
+  ecRunToCursor          = ecUserFirst + 405;
+  ecStopProgram          = ecUserFirst + 406;
+  ecBuildAll             = ecUserFirst + 407;
+  ecBuildLazarus         = ecUserFirst + 408;
 
-  ecExtToolFirst       = ecUserFirst + 500;
-  ecExtToolLast        = ecUserFirst + 599;
+  ecExtToolFirst         = ecUserFirst + 500;
+  ecExtToolLast          = ecUserFirst + 599;
 
-  ecNewProject         = ecUserFirst + 700;
-  ecOpenProject        = ecUserFirst + 701;
-  ecSaveProject        = ecUserFirst + 702;
-  ecSaveProjectAs      = ecUserFirst + 703;
-  ecAddCurUnitToProj   = ecUserFirst + 704;
-  ecRemoveFromProj     = ecUserFirst + 705;
-  ecViewProjectSource  = ecUserFirst + 706;
-  ecProjectOptions     = ecUserFirst + 707;
+  ecNewProject           = ecUserFirst + 700;
+  ecOpenProject          = ecUserFirst + 701;
+  ecSaveProject          = ecUserFirst + 702;
+  ecSaveProjectAs        = ecUserFirst + 703;
+  ecAddCurUnitToProj     = ecUserFirst + 704;
+  ecRemoveFromProj       = ecUserFirst + 705;
+  ecViewProjectSource    = ecUserFirst + 706;
+  ecProjectOptions       = ecUserFirst + 707;
 
-  ecRunParameters      = ecUserFirst + 800;
-  ecCompilerOptions    = ecUserFirst + 801;
-  ecExtToolSettings    = ecUserFirst + 802;
-  ecConfigBuildLazarus = ecUserFirst + 803;
-  ecEnvironmentOptions = ecUserFirst + 804;
-  ecEditorOptions      = ecUserFirst + 805;
-  ecCodeToolsOptions   = ecUserFirst + 806;
-  ecCodeToolsDefinesEd = ecUserFirst + 807;
+  ecRunParameters        = ecUserFirst + 800;
+  ecCompilerOptions      = ecUserFirst + 801;
+  ecExtToolSettings      = ecUserFirst + 802;
+  ecConfigBuildLazarus   = ecUserFirst + 803;
+  ecEnvironmentOptions   = ecUserFirst + 804;
+  ecEditorOptions        = ecUserFirst + 805;
+  ecCodeToolsOptions     = ecUserFirst + 806;
+  ecCodeToolsDefinesEd   = ecUserFirst + 807;
 
-  ecAboutLazarus       = ecUserFirst + 900;
+  ecAboutLazarus         = ecUserFirst + 900;
   
-  ecGotoEditor1        = ecUserFirst + 2000;
-  ecGotoEditor2        = ecGotoEditor1 + 1;
-  ecGotoEditor3        = ecGotoEditor2 + 1;
-  ecGotoEditor4        = ecGotoEditor3 + 1;
-  ecGotoEditor5        = ecGotoEditor4 + 1;
-  ecGotoEditor6        = ecGotoEditor5 + 1;
-  ecGotoEditor7        = ecGotoEditor6 + 1;
-  ecGotoEditor8        = ecGotoEditor7 + 1;
-  ecGotoEditor9        = ecGotoEditor8 + 1;
-  ecGotoEditor0        = ecGotoEditor9 + 1;
+  ecGotoEditor1          = ecUserFirst + 2000;
+  ecGotoEditor2          = ecGotoEditor1 + 1;
+  ecGotoEditor3          = ecGotoEditor2 + 1;
+  ecGotoEditor4          = ecGotoEditor3 + 1;
+  ecGotoEditor5          = ecGotoEditor4 + 1;
+  ecGotoEditor6          = ecGotoEditor5 + 1;
+  ecGotoEditor7          = ecGotoEditor6 + 1;
+  ecGotoEditor8          = ecGotoEditor7 + 1;
+  ecGotoEditor9          = ecGotoEditor8 + 1;
+  ecGotoEditor0          = ecGotoEditor9 + 1;
 
 
 type
@@ -452,7 +453,8 @@ begin
     ecAddJumpPoint: Result:='add jump point';
     ecViewJumpHistory: Result:='view jump history';
     ecOpenFileAtCursor: Result:='open file at cursor';
-    
+    ecGotoIncludeDirective: Result:='goto to include directive of current include file';
+
     // view menu
     ecToggleFormUnit: Result:= 'switch between form and source';
     ecToggleObjectInsp: Result:= 'view object inspector';
@@ -1041,6 +1043,16 @@ begin
 
   // selection
   C:=Categories[AddCategory('CursorMoving','Cursor moving commands')];
+  Add(C,'Move cursor word left',ecWordLeft, VK_LEFT, [ssCtrl],VK_UNKNOWN,[]);
+  Add(C,'Move cursor word right',ecWordRight, VK_RIGHT, [ssCtrl],VK_UNKNOWN,[]);
+  Add(C,'Move cursor to line start',ecLineStart, VK_HOME, [],VK_UNKNOWN,[]);
+  Add(C,'Move cursor to line end',ecLineEnd, VK_END, [],VK_UNKNOWN,[]);
+  Add(C,'Move cursor up one page',ecPageUp, VK_PRIOR, [],VK_UNKNOWN,[]);
+  Add(C,'Move cursor down one page',ecPageDown, VK_NEXT, [],VK_UNKNOWN,[]);
+  Add(C,'Move cursor left one page',ecPageLeft,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Move cursor right one page',ecPageRight,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Move cursor to top of page',ecPageTop, VK_PRIOR, [ssCtrl],VK_UNKNOWN,[]);
+  Add(C,'Move cursor to bottom of page',ecPageBottom, VK_NEXT, [ssCtrl],VK_UNKNOWN,[]);
   Add(C,'Move cursor to absolute beginning',ecEditorTop,VK_HOME,[ssCtrl],VK_UNKNOWN,[]);
   Add(C,'Move cursor to absolute end',ecEditorBottom,VK_END,[ssCtrl],VK_UNKNOWN,[]);
 
@@ -1125,6 +1137,7 @@ begin
   Add(C,'Find declaration',ecFindDeclaration,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Find block other end',ecFindBlockOtherEnd,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Find block start',ecFindBlockStart,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Goto include directive',ecGotoIncludeDirective,VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // source notebook
   C:=Categories[AddCategory('SourceNotebook','Source Notebook commands')];
@@ -1175,8 +1188,8 @@ begin
   Add(C,'Open project',ecOpenProject,VK_F11,[ssCtrl],VK_UNKNOWN,[]);
   Add(C,'Save project',ecSaveProject,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Save project as',ecSaveProjectAs,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'add active unit to project',ecAddCurUnitToProj,VK_F11,[ssShift],VK_UNKNOWN,[]);
-  Add(C,'remove active unit from project',ecRemoveFromProj,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Add active unit to project',ecAddCurUnitToProj,VK_F11,[ssShift],VK_UNKNOWN,[]);
+  Add(C,'Remove active unit from project',ecRemoveFromProj,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'View project source',ecViewProjectSource,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'View project options',ecProjectOptions,VK_F11,[ssShift,ssCtrl],VK_UNKNOWN,[]);
 

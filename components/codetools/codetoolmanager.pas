@@ -190,6 +190,11 @@ type
     function FindDeclaration(Code: TCodeBuffer; X,Y: integer;
           var NewCode: TCodeBuffer;
           var NewX, NewY, NewTopLine: integer): boolean;
+          
+    // find include directive
+    function FindEnclosingIncludeDirective(Code: TCodeBuffer; X,Y: integer;
+          var NewCode: TCodeBuffer;
+          var NewX, NewY, NewTopLine: integer): boolean;
 
     // functions for events in the object inspector
     function GetCompatiblePublishedMethods(Code: TCodeBuffer;
@@ -645,6 +650,34 @@ writeln('TCodeToolManager.FindDeclaration B ',FCurCodeTool.Scanner<>nil);
 {$IFDEF CTDEBUG}
 writeln('TCodeToolManager.FindDeclaration END ');
 {$ENDIF}
+end;
+
+function TCodeToolManager.FindEnclosingIncludeDirective(Code: TCodeBuffer; X,
+  Y: integer; var NewCode: TCodeBuffer; var NewX, NewY, NewTopLine: integer
+  ): boolean;
+var
+  CursorPos: TCodeXYPosition;
+  NewPos: TCodeXYPosition;
+begin
+  Result:=false;
+{$IFDEF CTDEBUG}
+writeln('TCodeToolManager.FindEnclosingIncludeDirective A ',Code.Filename,' x=',x,' y=',y);
+{$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  CursorPos.X:=X;
+  CursorPos.Y:=Y;
+  CursorPos.Code:=Code;
+  try
+    Result:=FCurCodeTool.FindEnclosingIncludeDirective(CursorPos,
+                                                       NewPos,NewTopLine);
+    if Result then begin
+      NewX:=NewPos.X;
+      NewY:=NewPos.Y;
+      NewCode:=NewPos.Code;
+    end;
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
 end;
 
 function TCodeToolManager.FindBlockCounterPart(Code: TCodeBuffer;

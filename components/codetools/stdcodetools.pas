@@ -62,7 +62,7 @@ type
     function GetSourceName: string;
     function RenameSource(const NewName: string;
         SourceChangeCache: TSourceChangeCache): boolean;
-
+        
     // uses sections
     function FindUnitInUsesSection(UsesNode: TCodeTreeNode;
           const UpperUnitName: string;
@@ -127,6 +127,10 @@ type
     function FindBlockStart(CursorPos: TCodeXYPosition;
       var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
     function GuessUnclosedBlock(CursorPos: TCodeXYPosition;
+      var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+      
+    // include directives
+    function FindEnclosingIncludeDirective(CursorPos: TCodeXYPosition;
       var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
   end;
 
@@ -1151,7 +1155,26 @@ writeln('TStandardCodeTool.GuessUnclosedBlock A CursorPos=',CursorPos.X,',',Curs
   BuildBlockKeyWordFuncList;
   if ReadTilGuessedUnclosedBlock(CleanCursorPos,false) then
     Result:=CleanPosToCaretAndTopLine(CurPos.StartPos,NewPos,NewTopLine);
- WriteDebugTreeReport;
+  //WriteDebugTreeReport;
+end;
+
+function TStandardCodeTool.FindEnclosingIncludeDirective(
+  CursorPos: TCodeXYPosition; var NewPos: TCodeXYPosition;
+  var NewTopLine: integer): boolean;
+var
+  CleanCursorPos, LinkIndex, NewCleanPos: integer;
+begin
+  Result:=false;
+  BuildTreeAndGetCleanPos(false,CursorPos,CleanCursorPos);
+  LinkIndex:=Scanner.LinkIndexAtCleanPos(CleanCursorPos);
+  LinkIndex:=Scanner.FindParentLink(LinkIndex);
+  if LinkIndex<0 then
+    // this is no include file
+    exit;
+  NewPos.Code:=TCodeBuffer(Scanner.Links[LinkIndex].Code);
+  // calculate the directive end bracket
+  NewCleanPos:=Scanner.Links[LinkIndex].CleanedPos+Scanner.LinkSize(LinkIndex)-1;
+  Result:=CleanPosToCaretAndTopLine(NewCleanPos,NewPos,NewTopLine);
 end;
 
 function TStandardCodeTool.ReadTilGuessedUnclosedBlock(

@@ -199,6 +199,9 @@ type
     function LinkCount: integer;
     function LinkIndexAtCleanPos(ACleanPos: integer): integer;
     function LinkSize(Index: integer): integer;
+    function FindFirstSiblingLink(LinkIndex: integer): integer;
+    function FindParentLink(LinkIndex: integer): integer;
+    
     function CleanedSrc: string;
     function CursorToCleanPos(ACursorPos: integer; ACode: pointer;
         var ACleanPos: integer): integer; // 0=valid CleanPos
@@ -206,10 +209,12 @@ type
               // 1=CursorPos beyond scanned code
     function CleanedPosToCursor(ACleanedPos: integer; var ACursorPos: integer;
         var ACode: Pointer): boolean;
+        
     function WholeRangeIsWritable(CleanStartPos, CleanEndPos: integer): boolean;
     procedure FindCodeInRange(CleanStartPos, CleanEndPos: integer;
         UniqueSortedCodeList: TList);
     procedure DeleteRange(CleanStartPos,CleanEndPos: integer);
+    
     property OnGetSource: TOnGetSource read FOnGetSource write FOnGetSource;
     property OnLoadSource: TOnLoadSource read FOnLoadSource write FOnLoadSource;
     property OnDeleteSource: TOnDeleteSource
@@ -467,6 +472,47 @@ begin
     Result:=Links[Index+1].CleanedPos-Links[Index].CleanedPos
   else
     Result:=CleanedLen-Links[Index].CleanedPos;
+end;
+
+function TLinkScanner.FindFirstSiblingLink(LinkIndex: integer): integer;
+{ find link of the start of the code
+  e.g. The resulting link SrcPos is always 1
+       if LinkIndex is in the main code, the result will be 0
+       if LinkIndex is in an include file, the result will be the first link of
+       the include file. If the include file is included multiple times, it is
+       treated as if they are different files.
+
+  ToDo: if include file include itself, directly or indirectly
+}
+var
+  LastIndex: integer;
+begin
+  Result:=LinkIndex;
+  if LinkIndex>=0 then begin
+    LastIndex:=LinkIndex;
+    while (Result>=0) do begin
+      if Links[Result].Code=Links[LinkIndex].Code then begin
+        if Links[Result].SrcPos>Links[LastIndex].SrcPos then begin
+          // the include file was (in-)directly included by itself
+          // -> skip
+          Result:=FindParentLink(Result);
+        end else if Links[Result].SrcPos=1 then begin
+          // start found
+          exit;
+        end;
+        LastIndex:=Result;
+      end else
+        dec(Result);
+    end;
+  end;
+end;
+
+function TLinkScanner.FindParentLink(LinkIndex: integer): integer;
+// a parent link is the link of the include directive
+// or in other words: the link in front of the first sibling link
+begin
+  Result:=FindFirstSiblingLink(LinkIndex);
+  if Result>=0 then dec(Result);
 end;
 
 function TLinkScanner.LinkIndexAtCleanPos(ACleanPos: integer): integer;
