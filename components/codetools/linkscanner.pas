@@ -434,9 +434,9 @@ begin
   m:=0;
   while r>=l do begin
     m:=(l+r) shr 1;
-    if UniqueSortedCodeList[m]<ACode then
+    if ACode<UniqueSortedCodeList[m] then
       r:=m-1
-    else if UniqueSortedCodeList[m]>ACode then
+    else if ACode>UniqueSortedCodeList[m] then
       l:=m+1
     else begin
       Result:=m;
@@ -454,14 +454,14 @@ begin
   m:=0;
   while r>=l do begin
     m:=(l+r) shr 1;
-    if UniqueSortedCodeList[m]<ACode then
+    if ACode<UniqueSortedCodeList[m] then
       r:=m-1
-    else if UniqueSortedCodeList[m]>ACode then
+    else if ACode>UniqueSortedCodeList[m] then
       l:=m+1
     else
       exit;
   end;
-  if (m<UniqueSortedCodeList.Count) and (UniqueSortedCodeList[m]<ACode) then
+  if (m<UniqueSortedCodeList.Count) and (ACode>UniqueSortedCodeList[m]) then
     inc(m);
   UniqueSortedCodeList.Insert(m,ACode);
 end;

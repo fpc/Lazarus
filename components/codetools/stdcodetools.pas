@@ -1130,9 +1130,9 @@ function TStandardCodeTool.ReplaceIdentifiers(IdentList: TStrings;
             begin
               // identifier found -> replace
               IdentEnd:=IdentStart+length(IdentList[i]);
-              writeln('TStandardCodeTool.ReplaceIdentifiers replacing: ',
-              ' "',copy(CurSource,IdentStart,IdentEnd-IdentStart),'" -> "',IdentList[i+1],'" at ',IdentStart
-              );
+              //writeln('TStandardCodeTool.ReplaceIdentifiers replacing: ',
+              //' "',copy(CurSource,IdentStart,IdentEnd-IdentStart),'" -> "',IdentList[i+1],'" at ',IdentStart
+              //);
               SourceChangeCache.ReplaceEx(gtNone,gtNone,1,1,
                 ACode,IdentStart,IdentEnd,IdentList[i+1]);
               break;

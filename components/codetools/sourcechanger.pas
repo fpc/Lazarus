@@ -776,7 +776,7 @@ end;
 function TSourceChangeCache.BufferIsModified(ACode: TCodeBuffer): boolean;
 begin
   UpdateBuffersToModify;
-  Result:=FBuffersToModify.IndexOf(ACode)>=0;
+  Result:=IndexOfCodeInUniqueList(ACode,FBuffersToModify)>=0;
 end;
 
 procedure TSourceChangeCache.UpdateBuffersToModify;
