@@ -43,7 +43,7 @@ interface
 {$endif}
 
 uses
-  SysUtils, LCLLinux, LCLType, VCLGlobals, Classes, Controls, LMessages,
+  SysUtils, LCLLinux, LCLType, VCLGlobals, Classes, LMessages, Controls,
   GraphType, GraphicsMath;
 
 type
@@ -81,7 +81,8 @@ type
 
 implementation
 
-Uses StdCtrls;
+Uses
+  StdCtrls;
 
 {$I interfacebase.inc}
 
@@ -94,6 +95,9 @@ end.
 
 {
   $Log$
+  Revision 1.13  2002/09/19 16:45:54  lazarus
+  MG: fixed Menu.Free and gdkwindow=nil bug
+
   Revision 1.12  2002/08/19 20:34:47  lazarus
   MG: improved Clipping, TextOut, Polygon functions
 
