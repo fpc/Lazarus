@@ -197,7 +197,7 @@ function SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;
 function ShowCaret(hWnd: HWND): Boolean; override;
 function ShowScrollBar(Handle: HWND; wBar: Integer; bShow: Boolean): Boolean; override;
 function ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean; override;
-function StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Rop: Cardinal): Boolean; override;
+function StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; ROp: Cardinal): Boolean; override;
 function StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean; override;
 
 Function TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean; override;
@@ -214,6 +214,9 @@ Function WindowFromPoint(Point : TPoint) : HWND; override;
 { =============================================================================
 
   $Log$
+  Revision 1.84  2004/01/22 11:23:36  mattias
+  started MaskBlt for gtkIF and applied patch for dir dlg in env opts from Vincent
+
   Revision 1.83  2004/01/10 18:00:42  mattias
   fixed GetWindowOrgEx, added GetDCOriginRelativeToWindow
 

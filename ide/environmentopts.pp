@@ -534,6 +534,7 @@ type
     procedure CompilerPathGroupBoxResize(Sender: TObject);
     procedure FPCSourceDirGroupBoxResize(Sender: TObject);
     procedure FilesButtonClick(Sender: TObject);
+    procedure DirectoriesButtonClick(Sender: TObject);
     procedure FormEditMiscGroupBoxResize(Sender: TObject);
     procedure GridGroupBoxResize(Sender: TObject);
     procedure GuideLinesGroupBoxResize(Sender: TObject);
@@ -2117,7 +2118,7 @@ begin
     Name:='LazarusDirButton';
     Parent:=LazarusDirGroupBox;
     Caption:='...';
-    OnClick:=@FilesButtonClick;
+    OnClick:=@DirectoriesButtonClick;
   end;
 
   CompilerPathGroupBox:=TGroupBox.Create(Self);
@@ -2172,7 +2173,7 @@ begin
     Name:='FPCSourceDirButton';
     Parent:=FPCSourceDirGroupBox;
     Caption:='...';
-    OnClick:=@FilesButtonClick;
+    OnClick:=@DirectoriesButtonClick;
   end;
 
   TestBuildDirGroupBox:=TGroupBox.Create(Self);
@@ -2202,7 +2203,7 @@ begin
     Name:='TestBuildDirButton';
     Parent:=TestBuildDirGroupBox;
     Caption:='...';
-    OnClick:=@FilesButtonClick;
+    OnClick:=@DirectoriesButtonClick;
   end;
 end;
 
@@ -3026,10 +3027,35 @@ begin
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist];
     // set title
+    OpenDialog.Title:=lisChooseCompilerPath;
+
+    if OpenDialog.Execute then begin
+      AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
+
+      // check compiler filename
+      SetComboBoxText(CompilerPathComboBox,AFilename);
+      CheckExecutable(FOldCompilerFilename,CompilerPathComboBox.Text,
+        lisEnvOptDlgInvalidCompilerFilename,
+        lisEnvOptDlgInvalidCompilerFilenameMsg);
+    end;
+    InputHistories.StoreFileDialogSettings(OpenDialog);
+  finally
+    OpenDialog.Free;
+  end;
+end;
+
+procedure TEnvironmentOptionsDialog.DirectoriesButtonClick(Sender: TObject);
+var
+  OpenDialog: TSelectDirectoryDialog;
+  ADirectoryName: string;
+begin
+  OpenDialog:=TSelectDirectoryDialog.Create(Application);
+  try
+    InputHistories.ApplyFileDialogSettings(OpenDialog);
+    OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist];
+    // set title
     if Sender=LazarusDirButton then
       OpenDialog.Title:=lisChooseLazarusSourceDirectory
-    else if Sender=CompilerPathButton then
-      OpenDialog.Title:=lisChooseCompilerPath
     else if Sender=FPCSourceDirButton then
       OpenDialog.Title:=lisChooseFPCSourceDir
     else if Sender=TestBuildDirButton then
@@ -3038,25 +3064,19 @@ begin
       exit;
 
     if OpenDialog.Execute then begin
-      AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
+      ADirectoryName:=CleanAndExpandFilename(OpenDialog.Filename);
 
       if Sender=LazarusDirButton then begin
         // check lazarus directory
-        SetComboBoxText(LazarusDirComboBox,AFilename);
+        SetComboBoxText(LazarusDirComboBox,ADirectoryName);
         CheckLazarusDir;
-      end else if Sender=CompilerPathButton then begin
-        // check compiler filename
-        SetComboBoxText(CompilerPathComboBox,AFilename);
-        CheckExecutable(FOldCompilerFilename,CompilerPathComboBox.Text,
-          lisEnvOptDlgInvalidCompilerFilename,
-          lisEnvOptDlgInvalidCompilerFilenameMsg);
       end else if Sender=FPCSourceDirButton then begin
         // check fpc source directory
-        SetComboBoxText(FPCSourceDirComboBox,AFilename);
+        SetComboBoxText(FPCSourceDirComboBox,ADirectoryName);
         IsFPCSourceDir;
       end else if Sender=TestBuildDirButton then begin
         // check test directory
-        SetComboBoxText(TestBuildDirComboBox,AFilename);
+        SetComboBoxText(TestBuildDirComboBox,ADirectoryName);
         CheckTestDir;
       end;
 

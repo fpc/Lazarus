@@ -60,8 +60,8 @@ begin
     end;
    // MessE.WheelDelta := 1;
     //MessE.State := state;
-    MessE.X := Trunc(x);
-    MessE.Y := Trunc(y);
+    MessE.X := TruncToInt(x);
+    MessE.Y := TruncToInt(y);
 
 
     if MessE.Msg <> LM_NULL then

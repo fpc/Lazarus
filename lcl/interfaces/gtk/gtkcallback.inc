@@ -1168,7 +1168,7 @@ begin
     TControl(Data).Name,':',TControl(Data).ClassName,
     ' Widget=',HexStr(Cardinal(Widget),8),
     ' DSO=',DesignOnlySignal,
-    ' Event^.X=',trunc(Event^.X),' Event^.Y=',trunc(Event^.Y)
+    ' Event^.X=',TruncToInt(Event^.X),' Event^.Y=',TruncToInt(Event^.Y)
     );
   {$ENDIF}
 
@@ -1456,7 +1456,7 @@ begin
     ' Widget=',HexStr(Cardinal(Widget),8),
     ' ControlWidget=',HexStr(Cardinal(TWinControl(Data).Handle),8),
     ' DSO=',DesignOnlySignal,
-    ' ',Trunc(Event^.X),',',Trunc(Event^.Y),
+    ' ',TruncToInt(Event^.X),',',TruncToInt(Event^.Y),
     ' Type=',Event^.theType);
   {$ENDIF}
   //writeln('DDD1 MousePress Widget=',HexStr(Cardinal(Widget),8),
@@ -1508,7 +1508,7 @@ begin
   {writeln('[gtkMouseBtnPressAfter] ',
     TControl(Data).Name,':',TObject(Data).ClassName,
     ' Widget=',HexStr(Cardinal(Widget),8),
-    ' ',Trunc(Event^.X),',',Trunc(Event^.Y));}
+    ' ',TruncToInt(Event^.X),',',TruncToInt(Event^.Y));}
   {$ENDIF}
 
   UpdateMouseCaptureControl;
@@ -1630,7 +1630,7 @@ begin
     TComponent(Data).Name,':',TObject(Data).ClassName,' ',
     ' Widget=',HexStr(Cardinal(Widget),8),
     ' DSO=',DesignOnlySignal,
-    ' ',Trunc(Event^.X),',',Trunc(Event^.Y),' Btn=',event^.Button);
+    ' ',TruncToInt(Event^.X),',',TruncToInt(Event^.Y),' Btn=',event^.Button);
   {$ENDIF}
 
   //writeln('EEE1 MouseRelease Widget=',HexStr(Cardinal(Widget),8),
@@ -1675,7 +1675,7 @@ begin
   {$IFDEF VerboseMouseBugfix}
   {writeln('[gtkMouseBtnReleaseAfter] ',
     TControl(Data).Name,':',TObject(Data).ClassName,' ',
-    Trunc(Event^.X),',',Trunc(Event^.Y));}
+    TruncToInt(Event^.X),',',TruncToInt(Event^.Y));}
   {$ENDIF}
 
   // stop the signal, so that it is not sent to the parent widgets
@@ -2732,11 +2732,11 @@ var
   Mask: TGdkModifierType;
   Status : GBoolean;
 begin
-  Assert(False, Format('Trace:[GTKHScrollCB] Value: %d', [Round(Adjustment^.Value)]));
+  Assert(False, Format('Trace:[GTKHScrollCB] Value: %d', [RoundToInt(Adjustment^.Value)]));
 
   OldValue := Integer(gtk_object_get_data(PGTKObject(Adjustment), 'OldValue'));
   gtk_object_set_data(PGTKObject(Adjustment), 'OldValue',
-                      Pointer(Longint(Round(Adjustment^.Value))));
+                      Pointer(RoundToInt(Adjustment^.Value)));
   Scroll := gtk_object_get_data(PGTKObject(Adjustment), 'ScrollBar');
 
   // Get rounded values
@@ -2744,10 +2744,10 @@ begin
   begin
     V := RoundToInt(Value);
     U := RoundToInt(Upper);
-    //L := Round(Lower);
+    //L := RoundToInt(Lower);
     StepI := RoundToInt(Step_Increment);
     PageI := RoundToInt(Page_Increment);
-    //Page := Round(Page_Size);
+    //Page := RoundToInt(Page_Size);
   end;
   
   // get keystates
@@ -2799,11 +2799,11 @@ var
   Mask: TGdkModifierType;
   Status : GBoolean;
 begin
-  Assert(False, Format('Trace:[GTKVScrollCB] Value: %d', [Round(Adjustment^.Value)]));
+  Assert(False, Format('Trace:[GTKVScrollCB] Value: %d', [RoundToInt(Adjustment^.Value)]));
 
   OldValue := Integer(gtk_object_get_data(PGTKObject(Adjustment), 'OldValue'));
   gtk_object_set_data(PGTKObject(Adjustment), 'OldValue',
-                      Pointer(Longint(Round(Adjustment^.Value))));
+                      Pointer(RoundToInt(Adjustment^.Value)));
   Scroll := gtk_object_get_data(PGTKObject(Adjustment), 'ScrollBar');
 
   // Get rounded values
@@ -2811,10 +2811,10 @@ begin
   begin
     V := RoundToInt(Value);
     U := RoundToInt(Upper);
-    //L := Round(Lower);
+    //L := RoundToInt(Lower);
     StepI := RoundToInt(Step_Increment);
     PageI := RoundToInt(Page_Increment);
-    //Page := Round(Page_Size);
+    //Page := RoundToInt(Page_Size);
   end;
   
   // get keystates
@@ -3230,6 +3230,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.214  2004/01/22 11:23:36  mattias
+  started MaskBlt for gtkIF and applied patch for dir dlg in env opts from Vincent
+
   Revision 1.213  2004/01/14 20:09:49  mattias
   added TColorDialog debugging
 

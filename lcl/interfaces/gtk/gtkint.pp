@@ -203,6 +203,10 @@ type
       Desc: PRawImageDescription): boolean;
     function GetRawImageFromGdkWindow(GDKWindow: PGdkWindow;
       const SrcRect: TRect; var NewRawImage: TRawImage): boolean;
+    function StretchCopyArea(DestDC: HDC; X, Y, Width, Height: Integer;
+      SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer;
+      Mask: HBITMAP; XMask, YMask: Integer;
+      Rop: Cardinal): Boolean;
 
     // RC file
     procedure SetRCFilename(const AValue: string);virtual;
@@ -418,6 +422,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.167  2004/01/22 11:23:36  mattias
+  started MaskBlt for gtkIF and applied patch for dir dlg in env opts from Vincent
+
   Revision 1.166  2004/01/10 22:34:20  mattias
   started double buffering for gtk intf
 

@@ -1621,7 +1621,7 @@ procedure TGtkObject.LoadFromPixbufFile(Bitmap: TObject; Filename: PChar);
 var
   TheBitmap: TBitmap;
 
-  function LoadFile : Boolean;
+  function LoadFile: Boolean;
   {$Ifndef NoGdkPixbufLib}
   var
     Src : PGDKPixbuf;
@@ -2201,6 +2201,526 @@ begin
   end;
 
   Result:=true;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TgtkObject.StretchCopyArea
+  Params:  DestDC:                The destination devicecontext
+           X, Y:                  The left/top corner of the destination rectangle
+           Width, Height:         The size of the destination rectangle
+           SrcDC:                 The source devicecontext
+           XSrc, YSrc:            The left/top corner of the source rectangle
+           SrcWidth, SrcHeight:   The size of the source rectangle
+           Mask:                  An optional mask
+           XMask, YMask:          Only used if Mask<>nil
+           Rop:                   The raster operation to be performed
+  Returns: True if succesful
+
+  The StretchBlt function copies a bitmap from a source rectangle into a
+  destination rectangle using the specified raster operation. If needed it
+  resizes the bitmap to fit the dimensions of the destination rectangle.
+  Sizing is done according to the stretching mode currently set in the
+  destination device context.
+  If SrcDC contains a mask the pixmap will be copied with this transparency.
+
+  ToDo: Mirroring, extended NonDrawable support (Image, Bitmap, etc)
+ ------------------------------------------------------------------------------}
+function TgtkObject.StretchCopyArea(DestDC: HDC; X, Y, Width, Height: Integer;
+  SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer;
+  Mask: HBITMAP; XMask, YMask: Integer;
+  Rop: Cardinal): Boolean;
+//type
+//  TBltFunction = function: Boolean;
+var
+  fGC: PGDKGC;
+  SrcDevContext, DestDevContext: TDeviceContext;
+  SrcGDIBitmap: PGdiObject;
+  TempPixmap, TempMaskPixmap: PGdkPixmap;
+  NewClipMask: PGdkPixmap;
+  SizeChange, ROpIsSpecial: Boolean;
+  CopyingWholeSrc: Boolean;
+  SrcWholeWidth, SrcWholeHeight: integer;
+  DestWholeWidth, DestWholeHeight: integer;
+
+  Procedure ResetClipping(DestGC : PGDKGC);
+  begin
+    ResetGCClipping(DestDC,DestGC);
+    if (NewClipMask <> nil) then begin
+      gdk_bitmap_unref(NewClipMask);
+      NewClipMask:=nil;
+    end;
+  end;
+
+  Function ScaleAndROP(DestGC: PGDKGC;
+    Src: PGDKDrawable; SrcPixmap, SrcMaskPixmap: PGdkPixmap): Boolean;
+  var
+    Depth: Integer;
+  begin
+    {$IFDEF VerboseStretchCopyArea}
+    
+    writeln('ScaleAndROP START DestGC=',HexStr(Cardinal(DestGC),8),
+      ' SrcPixmap=',HexStr(Cardinal(SrcPixmap),8),
+      ' SrcMaskPixmap=',HexStr(Cardinal(SrcMaskPixmap),8));
+    {$ENDIF}
+    Result := False;
+
+    if DestGC = nil
+    then begin
+      WriteLn('WARNING: [TgtkObject.StretchCopyArea] Uninitialized DestGC');
+      exit;
+    end;
+
+    // copy the destination GC values into the temporary GC (fGC)
+    GDK_GC_COPY(fGC, DestGC);
+
+    // clear any previous clipping in the temporary GC (fGC)
+    gdk_gc_set_clip_region(fGC,nil);
+    gdk_gc_set_clip_rectangle(fGC,nil);
+
+    if CopyingWholeSrc then ;
+
+    if SizeChange then begin
+      {$IFDEF VerboseStretchCopyArea}
+      Depth:=gdk_visual_get_system^.Depth;
+      writeln('ScaleAndROP Scaling buffer: ',Width,' x ',Height,' x ',Depth,' CopyingWholeSrc=',CopyingWholeSrc);
+      {$ENDIF}
+      // Scale the src part to a temporary pixmap with the size of the
+      // destination rectangle
+      Result := ScalePixmap(fGC,
+                            SrcPixmap,XSrc,YSrc,SrcWidth,SrcHeight,
+                            GDK_ColorMap_Get_System,
+                            Width,Height,TempPixmap);
+      if not Result then begin
+        writeln('WARNING: ScaleAndROP ScalePixmap for pixmap failed');
+        exit;
+      end;
+      // same for mask
+      if SrcMaskPixmap<>nil then begin
+        writeln('WARNING: ScaleAndROP  Scaling mask not yet implemented');
+        {ColorMap:=gdk_colormap_new(gdk_visual_get_best_with_depth(1),2);
+        Result := ScalePixmap(DestGC,
+                              SrcMaskPixmap,XSrc,YSrc,SrcWidth,SrcHeight,
+                              ColorMap,
+                              Width,Height,TempMaskPixmap);
+        gdk_colormap_unref(ColorMap);
+        if not Result then begin
+          writeln('WARNING: ScaleAndROP ScalePixmap for mask failed');
+          exit;
+        end;}
+      end;
+
+    end else if ROpIsSpecial then begin
+      // no scaling, but special ROp
+
+      Depth:=gdk_visual_get_system^.Depth;
+      {$IFDEF VerboseStretchCopyArea}
+      writeln('ScaleAndROP Creating rop buffer: ',Width,' x ',Height,' x ',Depth);
+      {$ENDIF}
+      TempPixmap := gdk_pixmap_new(nil,SrcWidth,SrcHeight,Depth);
+      gdk_window_copy_area(TempPixmap, fGC, 0, 0,
+         Src, XSrc, YSrc, SrcWidth, SrcHeight);
+    end;
+
+    // set raster operation in the destination GC
+    SetGCRasterOperation(DestGC,ROP);
+
+    Result:=true;
+  end;
+
+  Procedure ROPFillBuffer(DC : hDC);
+  var
+    OldCurrentBrush: PGdiObject;
+    Brush : hBrush;
+  begin
+    if TempPixmap=nil then exit;
+    if (ROp=WHITENESS) or (ROp=BLACKNESS) or (ROp=DSTINVERT) then begin
+      {$IFDEF VerboseStretchCopyArea}
+      writeln('ROPFillBuffer ROp=',ROp);
+      {$ENDIF}
+      with TDeviceContext(DC) do
+      begin
+        // Temporarily hold the old brush to
+        // replace it with the given brush
+        OldCurrentBrush := CurrentBrush;
+        If ROP = WHITENESS then
+          Brush := GetStockObject(WHITE_BRUSH)
+        else
+          Brush := GetStockObject(BLACK_BRUSH);
+        CurrentBrush := PGdiObject(Brush);
+        SelectedColors := dcscCustom;
+        SelectGDKBrushProps(DC);
+
+        If not CurrentBrush^.IsNullBrush then begin
+          BeginGDKErrorTrap;
+          gdk_draw_rectangle(TempPixmap, GC, 1, 0, 0, Width, Height);
+          EndGDKErrorTrap;
+        end;
+        // Restore current brush
+        SelectedColors := dcscCustom;
+        CurrentBrush := OldCurrentBrush;
+      end;
+    end;
+  end;
+  
+  function SrcDevBitmapToDrawable: Boolean;
+  var
+    SrcPixmap, MaskPixmap: PGdkPixmap;
+  begin
+    Result:=true;
+    {$IFDEF VerboseStretchCopyArea}
+    writeln('SrcDevBitmapToDrawable Start');
+    {$ENDIF}
+    SrcGDIBitmap:=SrcDevContext.CurrentBitmap;
+    if (SrcGDIBitmap=nil) then begin
+      writeln('SrcDevBitmapToDrawable NOTE: SrcDevContext.CurrentBitmap=nil');
+      exit;
+    end;
+    SrcPixmap:=SrcGDIBitmap^.GDIPixmapObject;
+    MaskPixmap:=nil;
+    if (Mask<>0) then
+      MaskPixmap:=PGdiObject(Mask)^.GDIBitmapMaskObject;
+    if MaskPixmap=nil then
+      MaskPixmap:=SrcGDIBitmap^.GDIBitmapMaskObject;
+
+    if (MaskPixmap=nil) and (not SizeChange) and (ROP=SRCCOPY)
+    then begin
+      // simply copy the area
+      {$IFDEF VerboseStretchCopyArea}
+      writeln('SrcDevBitmapToDrawable Simple copy');
+      {$ENDIF}
+      BeginGDKErrorTrap;
+      gdk_window_copy_area(DestDevContext.Drawable, DestDevContext.GC, X, Y,
+        SrcPixmap, XSrc, YSrc, Width, Height);
+      EndGDKErrorTrap;
+
+      exit;
+    end;
+
+
+    // create a temporary graphic context for the scale and raster operations
+    fGC := GDK_GC_New(DestDevContext.Drawable);
+
+    // perform raster operation and scaling into Scale and fGC
+    DestDevContext.SelectedColors := dcscCustom;
+    If not ScaleAndROP(DestDevContext.GC, SrcDevContext.Drawable, SrcPixmap,
+      MaskPixmap)
+    then begin
+      writeln('WARNING: SrcDevBitmapToDrawable: ScaleAndROP failed');
+      exit;
+    end;
+    {$IFDEF VerboseStretchCopyArea}
+    writeln('SrcDevBitmapToDrawable TempPixmap=',HexStr(Cardinal(TempPixmap),8),' TempMaskPixmap=',HexStr(Cardinal(TempMaskPixmap),8));
+    {$ENDIF}
+    if TempPixmap<>nil then begin
+      SrcPixmap:=TempPixmap;
+      XSrc:=0;
+      YSrc:=0;
+      SrcWidth:=Width;
+      SrcHeight:=Height;
+    end;
+    if TempMaskPixmap<>nil then begin
+      MaskPixmap:=TempMaskPixmap;
+      XMask:=0;
+      YMask:=0;
+    end;
+
+    GDK_GC_Unref(fGC);
+
+    Case ROP of
+      WHITENESS, BLACKNESS :
+        ROPFillBuffer(DestDC);
+    end;
+
+    {$IFDEF VerboseStretchCopyArea}
+    writeln('SrcDevBitmapToDrawable ',
+      ' SrcPixmap=',HexStr(Cardinal(SrcPixmap),8),
+      ' XSrc=',XSrc,' YSrc=',YSrc,' SrcWidth=',SrcWidth,' SrcHeight=',SrcHeight,
+      ' MaskPixmap=',HexStr(Cardinal(MaskPixmap),8),
+      ' XMask=',XMask,' YMask=',YMask,
+      '');
+    {$ENDIF}
+
+    // set clipping mask for transparency
+    MergeClipping(DestDevContext, DestDevContext.GC, X,Y,Width,Height,
+                  MaskPixmap,XMask,YMask,
+                  NewClipMask);
+
+    // draw image
+    BeginGDKErrorTrap;
+    gdk_window_copy_area(DestDevContext.Drawable, DestDevContext.GC, X, Y,
+      SrcPixmap, XSrc, YSrc, SrcWidth, SrcHeight);
+    EndGDKErrorTrap;
+    // unset clipping mask for transparency
+    ResetClipping(DestDevContext.GC);
+
+    // restore raster operation to SRCCOPY
+    GDK_GC_Set_Function(DestDevContext.GC, GDK_Copy);
+
+    Result:=True;
+  end;
+
+  function DrawableToDrawable: Boolean;
+  begin
+    {$IFDEF VerboseStretchCopyArea}
+    writeln('DrawableToDrawable Start');
+    {$ENDIF}
+    Result:=SrcDevBitmapToDrawable;
+  end;
+
+  function PixmapToDrawable: Boolean;
+  begin
+    {$IFDEF VerboseStretchCopyArea}
+    writeln('PixmapToDrawable Start');
+    {$ENDIF}
+    Result:=SrcDevBitmapToDrawable;
+  end;
+
+  function ImageToImage: Boolean;
+  begin
+    WriteLn('WARNING: [TgtkObject.StretchCopyArea] ImageToImage unimplemented!');
+    Result:=false;
+  end;
+
+  function ImageToDrawable: Boolean;
+  begin
+    WriteLn('WARNING: [TgtkObject.StretchCopyArea] ImageToDrawable unimplemented!');
+    Result:=false;
+  end;
+
+  function ImageToBitmap: Boolean;
+  begin
+    WriteLn('WARNING: [TgtkObject.StretchCopyArea] ImageToBitmap unimplemented!');
+    Result:=false;
+  end;
+
+  function PixmapToImage: Boolean;
+  begin
+    WriteLn('WARNING: [TgtkObject.StretchCopyArea] PixmapToImage unimplemented!');
+    Result:=false;
+  end;
+
+  function PixmapToBitmap: Boolean;
+  begin
+    WriteLn('WARNING: [TgtkObject.StretchCopyArea] PixmapToBitmap unimplemented!');
+    Result:=false;
+  end;
+
+  function BitmapToImage: Boolean;
+  begin
+    WriteLn('WARNING: [TgtkObject.StretchCopyArea] BitmapToImage unimplemented!');
+    Result:=false;
+  end;
+
+  function BitmapToPixmap: Boolean;
+  begin
+    WriteLn('WARNING: [TgtkObject.StretchCopyArea] BitmapToPixmap unimplemented!');
+    Result:=false;
+  end;
+
+  function Unsupported: Boolean;
+  begin
+    WriteLn('WARNING: [TgtkObject.StretchCopyArea] Destination and/or Source '
+      + 'unsupported!!');
+    Result:=false;
+  end;
+
+  //----------
+  function NoDrawableToNoDrawable: Boolean;
+  begin
+    If (SrcDevContext.CurrentBitmap <> nil) and
+      (DestDevContext.CurrentBitmap <> nil)
+    then
+      case SrcDevContext.CurrentBitmap^.GDIBitmapType of
+      gbBitmap: case TDeviceContext(DestDC).CurrentBitmap^.GDIBitmapType of
+                gbBitmap: Result:=DrawableToDrawable;
+                gbPixmap: Result:=BitmapToPixmap;
+                gbImage:  Result:=BitmapToImage;
+                end;
+      gbPixmap: case TDeviceContext(DestDC).CurrentBitmap^.GDIBitmapType of
+                gbBitmap: Result:=PixmapToBitmap;
+                gbPixmap: Result:=DrawableToDrawable;
+                gbImage:  Result:=PixmapToImage;
+                end;
+      gbImage:  case TDeviceContext(DestDC).CurrentBitmap^.GDIBitmapType of
+                gbBitmap: Result:=ImageToBitmap;
+                gbPixmap: Result:=ImageToDrawable;
+                gbImage:  Result:=ImageToImage;
+                end;
+      end
+    else
+      Result := Unsupported;
+  end;
+
+  function NoDrawableToDrawable: Boolean;
+  begin
+    If SrcDevContext.CurrentBitmap <> nil then
+      case TDeviceContext(SrcDC).CurrentBitmap^.GDIBitmapType of
+      gbBitmap: Result:=PixmapToDrawable;
+      gbPixmap: Result:=PixmapToDrawable;
+      gbImage:  Result:=ImageToDrawable;
+      end
+    else
+      Result := Unsupported;
+  end;
+
+  function DrawableToNoDrawable: Boolean;
+  begin
+    If DestDevContext.CurrentBitmap <> nil then
+      case TDeviceContext(DestDC).CurrentBitmap^.GDIBitmapType of
+      gbBitmap: Result:=Unsupported;
+      gbPixmap: Result:=Unsupported;
+      gbImage:  Result:=Unsupported;
+      end
+    else
+      Result := Unsupported;
+  end;
+
+var
+  DCOrigin: TPoint;
+  NewSrcWidth: Integer;
+  NewSrcHeight: Integer;
+  NewWidth: Integer;
+  NewHeight: Integer;
+begin
+  Result := IsValidDC(DestDC) and IsValidDC(SrcDC);
+  {$IFDEF VerboseStretchCopyArea}
+  writeln('StretchCopyArea Start ',Result);
+  {$ENDIF}
+  if not Result then exit;
+  if (Width=0) or (Height=0) then exit;
+  if (SrcWidth=0) or (SrcHeight=0) then exit;
+  SizeChange:=(Width<>SrcWidth) or (Height<>SrcHeight);
+  ROpIsSpecial:=(ROp<>SRCCOPY);
+  SrcDevContext:=TDeviceContext(SrcDC);
+  DestDevContext:=TDeviceContext(DestDC);
+
+  with SrcDevContext do begin
+    DCOrigin:=GetDCOffset(TDeviceContext(SrcDC));
+    Inc(XSrc,DCOrigin.X);
+    Inc(YSrc,DCOrigin.Y);
+    gdk_window_get_size(PGdkWindow(Drawable),@SrcWholeWidth,@SrcWholeHeight);
+  end;
+  with DestDevContext do begin
+    DCOrigin:=GetDCOffset(TDeviceContext(DestDC));
+    Inc(X,DCOrigin.X);
+    Inc(Y,DCOrigin.Y);
+    gdk_window_get_size(PGdkWindow(Drawable),@DestWholeWidth,@DestWholeHeight);
+  end;
+
+  {$IFDEF VerboseStretchCopyArea}
+  writeln('TgtkObject.StretchCopyArea BEFORE CLIPPING X=',X,' Y=',Y,' Width=',Width,' Height=',Height,
+    ' XSrc=',XSrc,' YSrc=',YSrc,' SrcWidth=',SrcWidth,' SrcHeight=',SrcHeight,
+    ' SrcDrawable=',HexStr(Cardinal(TDeviceContext(SrcDC).Drawable),8),
+    ' DestDrawable=',HexStr(Cardinal(TDeviceContext(DestDC).Drawable),8),
+    ' Mask=',HexStr(Cardinal(Mask),8),' XMask=',XMask,' YMask=',YMask,
+    ' SizeChange=',SizeChange,' ROpIsSpecial=',ROpIsSpecial,
+    ' DestWhole=',DestWholeWidth,',',DestWholeHeight,
+    ' SrcWhole=',SrcWholeWidth,',',SrcWholeHeight,
+    '');
+  {$ENDIF}
+
+  if (X>=DestWholeWidth) or (Y>=DestWholeHeight) then exit;
+  if (X+Width<=0) then exit;
+  if (Y+Height<=0) then exit;
+  if (XSrc>=SrcWholeWidth) or (YSrc>=SrcWholeHeight) then exit;
+  if (XSrc+SrcWidth<=0) then exit;
+  if (YSrc+SrcHeight<=0) then exit;
+
+  // gdk does not allow copying areas, party laying out of bounds
+  // -> clip
+
+  // clip src to the left
+  if (XSrc<0) then begin
+    NewSrcWidth:=SrcWidth+XSrc;
+    NewWidth:=((Width*NewSrcWidth) div SrcWidth);
+    {$IFDEF VerboseStretchCopyArea}
+    writeln('StretchCopyArea Cliping Src to left NewSrcWidth=',NewSrcWidth,' NewWidth=',NewWidth);
+    {$ENDIF}
+    if NewWidth=0 then exit;
+    inc(X,Width-NewWidth);
+    if (X>=DestWholeWidth) then exit;
+    XSrc:=0;
+    SrcWidth:=NewSrcWidth;
+  end;
+
+  // clip src to the top
+  if (YSrc<0) then begin
+    NewSrcHeight:=SrcHeight+YSrc;
+    NewHeight:=((Height*NewSrcHeight) div SrcHeight);
+    {$IFDEF VerboseStretchCopyArea}
+    writeln('StretchCopyArea Cliping Src to top NewSrcHeight=',NewSrcHeight,' NewHeight=',NewHeight);
+    {$ENDIF}
+    if NewHeight=0 then exit;
+    inc(Y,Height-NewHeight);
+    if (Y>=DestWholeHeight) then exit;
+    YSrc:=0;
+    SrcHeight:=NewSrcHeight;
+  end;
+
+  // clip src to the right
+  if (XSrc+SrcWidth>SrcWholeWidth) then begin
+    NewSrcWidth:=SrcWholeWidth-XSrc;
+    Width:=((Width*NewSrcWidth) div SrcWidth);
+    {$IFDEF VerboseStretchCopyArea}
+    writeln('StretchCopyArea Cliping Src to right NewSrcWidth=',NewSrcWidth,' NewWidth=',Width);
+    {$ENDIF}
+    if (Width=0) then exit;
+    if (X+Width<=0) then exit;
+    SrcWidth:=NewSrcWidth;
+  end;
+
+  // clip src to the bottom
+  if (YSrc+SrcHeight>SrcWholeHeight) then begin
+    NewSrcHeight:=SrcWholeHeight-YSrc;
+    Height:=((Height*NewSrcHeight) div SrcHeight);
+    {$IFDEF VerboseStretchCopyArea}
+    writeln('StretchCopyArea Cliping Src to bottom NewSrcHeight=',NewSrcHeight,' NewHeight=',Height);
+    {$ENDIF}
+    if (Height=0) then exit;
+    if (Y+Height<=0) then exit;
+    SrcHeight:=NewSrcHeight;
+  end;
+
+  CopyingWholeSrc:=(XSrc=0) and (YSrc=0)
+                   and (SrcWholeWidth=SrcWidth) and (SrcWholeHeight=SrcHeight);
+
+
+  if Mask=0 then begin
+    XMask:=XSrc;
+    YMask:=YSrc;
+  end;
+
+  // mark temporary scaling/rop buffers as uninitialized
+  TempPixmap:=nil;
+  TempMaskPixmap:=nil;
+
+  {$IFDEF VerboseStretchCopyArea}
+  writeln('TgtkObject.StretchCopyArea AFTER CLIPPING X=',X,' Y=',Y,' Width=',Width,' Height=',Height,
+    ' XSrc=',XSrc,' YSrc=',YSrc,' SrcWidth=',SrcWidth,' SrcHeight=',SrcHeight,
+    ' SrcDrawable=',HexStr(Cardinal(TDeviceContext(SrcDC).Drawable),8),
+    ' DestDrawable=',HexStr(Cardinal(TDeviceContext(DestDC).Drawable),8),
+    ' Mask=',HexStr(Cardinal(Mask),8),' XMask=',XMask,' YMask=',YMask,
+    ' SizeChange=',SizeChange,' ROpIsSpecial=',ROpIsSpecial,
+    ' CopyingWholeSrc=',CopyingWholeSrc);
+  {$ENDIF}
+
+  If TDeviceContext(SrcDC).Drawable = nil then begin
+    If TDeviceContext(DestDC).Drawable = nil then
+      Result := NoDrawableToNoDrawable
+    else
+      Result := NoDrawableToDrawable;
+  end
+  else begin
+    If TDeviceContext(DestDC).Drawable = nil then
+      Result := DrawableToNoDrawable
+    else
+      Result := DrawableToDrawable;
+  end;
+  
+  if TempPixmap<>nil then
+    gdk_pixmap_unref(TempPixmap);
+  if TempMaskPixmap<>nil then
+    gdk_pixmap_unref(TempMaskPixmap);
 end;
 
 procedure TGtkObject.ListViewChangeItem(TheListView: TObject; Index: integer);
@@ -8691,6 +9211,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.454  2004/01/22 11:23:36  mattias
+  started MaskBlt for gtkIF and applied patch for dir dlg in env opts from Vincent
+
   Revision 1.453  2004/01/14 20:09:50  mattias
   added TColorDialog debugging
 

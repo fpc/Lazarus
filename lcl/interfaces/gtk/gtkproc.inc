@@ -191,9 +191,9 @@ var
 begin
   gtk_color_selection_get_color(colorsel, @colorArray[0]);
   Color^.pixel := 0;
-  Color^.red := gushort(Trunc(colorArray[0] * $FFFF));
-  Color^.green := gushort(Trunc(colorArray[1] * $FFFF));
-  Color^.blue := gushort(Trunc(colorArray[2] * $FFFF));
+  Color^.red := gushort(TruncToCardinal(colorArray[0] * $FFFF));
+  Color^.green := gushort(TruncToCardinal(colorArray[1] * $FFFF));
+  Color^.blue := gushort(TruncToCardinal(colorArray[2] * $FFFF));
   {$IFDEF VerboseColorDialog}
   writeln('gtk_color_selection_get_current_color ',
     ' Red=',HexStr(Cardinal(Color^.Red),8),
@@ -302,12 +302,10 @@ begin
 end;
 
 {$IfNDef NoGdkPixbufLib}
-
 Procedure gdk_pixbuf_render_pixmap_and_mask(pixbuf : PGdkPixbuf; var pixmap_return : PGdkPixmap; var mask_return : PGdkBitmap; alpha_threshold : gint);
 begin
   gdkpixbuf.gdk_pixbuf_render_pixmap_and_mask(pixbuf, @pixmap_return, @mask_return, alpha_threshold);
 end;
-
 {$EndIf}
 
 Function gdk_drawable_get_depth(Drawable : PGDKDrawable) : gint;
@@ -471,7 +469,9 @@ var
   Xerror : gint;
 begin
   Dec(GdkTrapCalls);
-  if (not GdkTrapIsSet) or (GdkTrapCalls > 0) then
+  if (not GdkTrapIsSet) then
+    RaiseGDBException('EndGDKErrorTrap without BeginGDKErrorTrap');
+  if (GdkTrapCalls > 0) then
     exit;
     
   Xerror := gdk_error_trap_pop;
@@ -872,6 +872,255 @@ begin
     Depth := ADepth;
   end;
 end;
+
+procedure SetGCRasterOperation(TheGC: PGDKGC; Rop: Cardinal);
+begin
+  Case ROP of
+    WHITENESS,
+    BLACKNESS,
+    SRCCOPY :
+      GDK_GC_Set_Function(TheGC, GDK_Copy);
+    SRCPAINT :
+      GDK_GC_Set_Function(TheGC, GDK_NOOP);
+    SRCAND :
+      GDK_GC_Set_Function(TheGC, GDK_Clear);
+    SRCINVERT :
+      GDK_GC_Set_Function(TheGC, GDK_XOR);
+    SRCERASE :
+      GDK_GC_Set_Function(TheGC, GDK_AND);
+    NOTSRCCOPY :
+      GDK_GC_Set_Function(TheGC, GDK_OR_REVERSE);
+    NOTSRCERASE :
+      GDK_GC_Set_Function(TheGC, GDK_AND);
+    MERGEPAINT :
+      GDK_GC_Set_Function(TheGC, GDK_Copy_Invert);
+    DSTINVERT :
+      GDK_GC_Set_Function(TheGC, GDK_INVERT);
+    else begin
+      gdk_gc_set_function(TheGC, GDK_COPY);
+      WriteLn('WARNING: [SetRasterOperation] Got unknown/unsupported CopyMode!!');
+    end;
+  end;
+end;
+
+procedure MergeClipping(DestinationDC: TDeviceContext; DestinationGC: PGDKGC;
+  X, Y, Width, Height: integer; ClipMergeMask: PGdkPixmap;
+  ClipMergeMaskX, ClipMergeMaskY: integer;
+  var NewClipMask: PGdkPixmap);
+// merge ClipMergeMask into the destination clipping mask at the
+// destination rectangle
+var
+  temp_gc : PGDKGC;
+  temp_color : TGDKColor;
+  Region: PGdiObject;
+  RGNType : Longint;
+  OffsetXY: TPoint;
+begin
+  {$IFDEF VerboseStretchCopyArea}
+  writeln('MergeClipping START DestinationDC=',HexStr(Cardinal(DestinationDC),8),
+    ' DestinationGC=',HexStr(Cardinal(DestinationGC),8),
+    ' X=',X,' Y=',Y,' Width=',Width,' Height=',Height,
+    ' ClipMergeMask=',HexStr(Cardinal(ClipMergeMask),8),
+    ' ClipMergeMaskX=',ClipMergeMaskX,' ClipMergeMaskY=',ClipMergeMaskY);
+  {$ENDIF}
+
+  // activate clipping region of destination
+  SelectGDIRegion(HDC(DestinationDC));
+  NewClipMask := nil;
+  if (ClipMergeMask = nil) then exit;
+
+  BeginGDKErrorTrap;
+  // create temporary mask with the size of the destination rectangle
+  NewClipMask := PGdkBitmap(gdk_pixmap_new(nil, width, height, 1));
+  // create temporary GC for combination mask
+  temp_gc := gdk_gc_new(NewClipMask);
+  gdk_gc_set_clip_region(temp_gc, nil); // no default clipping
+  gdk_gc_set_clip_rectangle(temp_gc, nil);
+
+  // clear mask
+  temp_color.pixel := 0;
+  gdk_gc_set_foreground(temp_gc, @temp_color);
+  gdk_draw_rectangle(NewClipMask, temp_gc, 1, 0, 0, width, height);
+  gdk_draw_rectangle(NewClipMask, temp_gc, 0, 0, 0, width, height);
+
+  // copy the destination clipping mask into the temporary mask
+  with DestinationDC do begin
+    If (ClipRegion <> 0) then begin
+      Region:=PGDIObject(ClipRegion);
+      RGNType := RegionType(Region^.GDIRegionObject);
+      If (RGNType <> ERROR) and (RGNType <> NULLREGION) then begin
+        // destination has a clipping mask
+        {$IFDEF VerboseStretchCopyArea}
+        writeln('MergeClipping Destination has clipping mask -> apply to temp GC');
+        {$ENDIF}
+        // -> copy the destination clipping mask to the temporary mask
+        //    The X,Y coordinate in the destination relates to
+        //    0,0 in the temporary mask.
+        //    The clip region of dest is always at 0,0 in dest
+        OffsetXY:=Point(-X,-Y);
+        // 1. Move the region
+        gdk_region_offset(Region^.GDIRegionObject,OffsetXY.X,OffsetXY.Y);
+        // 2. Apply region to temporary mask
+        gdk_gc_set_clip_region(temp_gc, Region^.GDIRegionObject);
+        // 3. Undo moving the region
+        gdk_region_offset(Region^.GDIRegionObject,-OffsetXY.X,-OffsetXY.Y);
+      end;
+    end;
+  end;
+
+  // merge the source clipping mask into the temporary mask
+  gdk_draw_pixmap(NewClipMask, temp_gc,
+                  ClipMergeMask, ClipMergeMaskX, ClipMergeMaskY,
+                  0, 0, Width, Height);
+
+  // free the temporary GC
+  gdk_gc_destroy(temp_gc);
+
+  // apply the new mask to the destination GC
+  // The new mask has only the size of the destination rectangle, not of
+  // the whole destination. Apply it to destination and move it to the right
+  // position.
+  gdk_gc_set_clip_mask(DestinationGC, NewClipMask);
+  gdk_gc_set_clip_origin(DestinationGC, x, y);
+  EndGDKErrorTrap;
+end;
+
+procedure ResetGCClipping(DC: HDC; GC: PGDKGC);
+begin
+  BeginGDKErrorTrap;
+  gdk_gc_set_clip_mask(GC, nil);
+  gdk_gc_set_clip_origin (GC, 0,0);
+  SelectGDIRegion(DC);
+  EndGDKErrorTrap;
+end;
+
+function ScalePixmap(ScaleGC: PGDKGC;
+  SrcPixmap: PGdkPixmap; SrcX, SrcY, SrcWidth, SrcHeight: integer;
+  SrcColorMap: PGdkColormap;
+  NewWidth, NewHeight: integer;
+  var NewPixmap: PGdkPixmap) : Boolean;
+{$Ifndef NoGdkPixbufLib}
+var
+  ScaleSrc, ScaleDest: PGDKPixbuf;
+  ShrinkWidth,
+  ShrinkHeight : Boolean;
+  ScaleMethod : TGDKINTERPTYPE;
+  DummyMask: PGdkPixmap;
+  SrcWholeWidth, SrcWholeHeight: integer;
+  {$IFDEF VerboseStretchCopyArea}
+  NewWholeWidth, NewWholeHeight: integer;
+  {$ENDIF}
+begin
+  {$IFDEF VerboseStretchCopyArea}
+  writeln('ScalePixmap ScaleGC=',HexStr(Cardinal(ScaleGC),8),
+    ' SrcPixmap=',HexStr(Cardinal(SrcPixmap),8),
+    ' SrcX=',SrcX,' SrcY=',SrcY,' SrcWidth=',SrcWidth,' SrcHeight=',SrcHeight,
+    ' NewPixmap=',HexStr(Cardinal(NewPixmap),8),
+    ' NewWidth=',NewWidth,' NewHeight=',NewHeight);
+  {$ENDIF}
+  Result := False;
+  if SrcPixmap=nil then begin
+    writeln('WARNING: ScalePixmap SrcPixmap=nil');
+    exit;
+  end;
+  if NewPixmap<>nil then begin
+    writeln('WARNING: ScalePixmap NewPixmap<>nil');
+    exit;
+  end;
+
+  ScaleSRC := nil;
+  ScaleDest := nil;
+
+  gdk_window_get_size(PGDKWindow(SrcPixmap),@SrcWholeWidth,@SrcWholeHeight);
+  if SrcX+SrcWidth>SrcWholeWidth then begin
+    writeln('WARNING: ScalePixmap SrcX+SrcWidth>SrcWholeWidth');
+  end;
+  if SrcY+SrcHeight>SrcWholeHeight then begin
+    writeln('WARNING: ScalePixmap SrcY+SrcHeight>SrcWholeHeight');
+  end;
+
+  // calculate ScaleMethod
+  ShrinkWidth := NewWidth < SrcWidth;
+  ShrinkHeight := NewHeight < SrcHeight;
+  //GDKPixbuf Scaling is not done in the same way as Windows
+  //but by rights ScaleMethod should really be chosen based
+  //on the destination device's internal flag
+  {GDK_INTERP_NEAREST,GDK_INTERP_TILES,
+  GDK_INTERP_BILINEAR,GDK_INTERP_HYPER);}
+  If ShrinkWidth and ShrinkHeight then
+    ScaleMethod := GDK_INTERP_TILES
+  else
+    If ShrinkWidth or ShrinkHeight then
+      ScaleMethod := GDK_INTERP_BILINEAR//GDK_INTERP_HYPER
+    else
+      ScaleMethod := GDK_INTERP_BILINEAR;
+
+  // Creating PixBuf from pixmap
+  {$IFDEF VerboseStretchCopyArea}
+  writeln('ScalePixmap Creating PixBuf from pixmap SrcWhole=',SrcWholeWidth,',',SrcWholeHeight);
+  {$ENDIF}
+  ScaleSRC := gdk_pixbuf_get_from_drawable(nil,SrcPixmap,
+    SrcColorMap,0,0,SrcX,SrcY,SrcWidth,SrcHeight);
+  If ScaleSRC = nil then begin
+    writeln('WARNING: ScalePixmap ScaleSRC=nil');
+    exit;
+  end;
+
+  // Scaling PixBuf
+  {$IFDEF VerboseStretchCopyArea}
+  writeln('ScalePixmap Scaling PixBuf ',
+    ' Width=',gdk_pixbuf_get_width(ScaleSrc),
+    ' Height=',gdk_pixbuf_get_height(ScaleSrc),
+    ' HasAlpha=',gdk_pixbuf_get_has_alpha(ScaleSrc),
+    ' RowStride=',gdk_pixbuf_get_rowstride(ScaleSrc),
+    '');
+  {$ENDIF}
+  ScaleDest := gdk_pixbuf_scale_simple(ScaleSRC,NewWidth,NewHeight,ScaleMethod);
+  GDK_Pixbuf_Unref(ScaleSRC);
+  If ScaleDest = nil then begin
+    writeln('WARNING: ScalePixmap ScaleDest=nil');
+    exit;
+  end;
+  BeginGDKErrorTrap;
+
+  // Creating pixmap from scaled pixbuf
+  {$IFDEF VerboseStretchCopyArea}
+  writeln('ScalePixmap Creating pixmap from scaled pixbuf',
+    ' Width=',gdk_pixbuf_get_width(ScaleDest),
+    ' Height=',gdk_pixbuf_get_height(ScaleDest),
+    ' HasAlpha=',gdk_pixbuf_get_has_alpha(ScaleDest),
+    ' RowStride=',gdk_pixbuf_get_rowstride(ScaleDest),
+    '');
+  {$ENDIF}
+  DummyMask:=nil;
+  gdk_pixbuf_render_pixmap_and_mask(ScaleDest,NewPixmap,DummyMask,0);
+
+  // clean up
+  {$IFDEF VerboseStretchCopyArea}
+  gdk_window_get_size(PGDKWindow(NewPixmap),@NewWholeWidth,@NewWholeHeight);
+  writeln('ScalePixmap RESULT NewPixmap=',HexStr(Cardinal(NewPixmap),8),
+    ' DummyMask=',HexStr(Cardinal(DummyMask),8),
+    ' NewWidth=',NewWholeWidth,' NewHeight=',NewWholeHeight,
+    '');
+  {$ENDIF}
+  if DummyMask<>nil then gdk_pixmap_unref(DummyMask);
+  EndGDKErrorTrap;
+  GDK_Pixbuf_Unref(ScaleDest);
+  Result := True;
+{$Else not NoGdkPixbufLib}
+begin
+  WriteLn('ScalePixmap GDKPixbuf support has been disabled, no stretching is available!');
+  Result := True;
+{$EndIf}
+end;
+
+{$IfDef Win32}
+Procedure gdk_window_copy_area(Dest : PGDKWindow; GC : PGDKGC; X,
+  Y : Longint; SRC : PGDKWindow; XSRC, YSRC, Width, Height : Longint);
+begin
+  gdk_draw_pixmap(Dest, GC, Src, XSrc, YSrc, X, Y, Width, Height);
+End;
+{$EndIf}
 
 {------------------------------------------------------------------------------
   Function: AllocGDKColor
@@ -2557,10 +2806,10 @@ begin
       if GtkWidgetIsA(Fixed,GTK_LAYOUT_GET_TYPE) then begin
         Adjustment:=gtk_layout_get_hadjustment(PGtkLayout(Fixed));
         if Adjustment<>nil then
-          dec(Result.X,Trunc(Adjustment^.Value-Adjustment^.Lower));
+          dec(Result.X,TruncToInt(Adjustment^.Value-Adjustment^.Lower));
         Adjustment:=gtk_layout_get_vadjustment(PGtkLayout(Fixed));
         if Adjustment<>nil then
-          dec(Result.Y,Trunc(Adjustment^.Value-Adjustment^.Lower));
+          dec(Result.Y,TruncToInt(Adjustment^.Value-Adjustment^.Lower));
       end;
     end;
   end else begin
@@ -5816,6 +6065,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.247  2004/01/22 11:23:36  mattias
+  started MaskBlt for gtkIF and applied patch for dir dlg in env opts from Vincent
+
   Revision 1.246  2004/01/18 11:03:01  mattias
   added finnish translation
 

@@ -99,7 +99,7 @@ begin
     if VertAdj=nil then
       AdjValue:=y
     else
-      AdjValue:=round(VertAdj^.value)+y;
+      AdjValue:=RoundToInt(VertAdj^.value)+y;
     GListItem:=ListWidget^.children;
     while GListItem<>nil do begin
       inc(Result);
@@ -160,7 +160,7 @@ begin
     if VertAdj=nil then
       AdjValue:=0
     else
-      AdjValue:= (-round(VertAdj^.value));
+      AdjValue:= (-RoundToInt(VertAdj^.value));
     GListItem:=ListWidget^.children;
     while GListItem<>nil do begin
       ListItemWidget:=PGtkWidget(GListItem^.data);
@@ -293,6 +293,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.12  2004/01/22 11:23:36  mattias
+  started MaskBlt for gtkIF and applied patch for dir dlg in env opts from Vincent
+
   Revision 1.11  2004/01/12 13:43:12  mattias
   improved and activated new statusbar
 

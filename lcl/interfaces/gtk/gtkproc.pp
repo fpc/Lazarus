@@ -27,7 +27,7 @@ interface
 {off $DEFINE GDK_ERROR_TRAP_FLUSH}
 {$DEFINE REPORT_GDK_ERRORS}
 
-{.$DEFINE VerboseAccelerator}
+{off $DEFINE VerboseAccelerator}
 
 uses
   SysUtils, Classes, FPCAdds,
@@ -207,9 +207,6 @@ function ClipboardSelectionLostOwnershipHandler(TargetWidget: PGtkWidget;
 Procedure GTKStyleChanged(Widget: PGtkWidget; previous_style :
   PGTKStyle; Data: Pointer); cdecl;
 
-function DeliverPostMessage(const Target: Pointer; var TheMessage): GBoolean;
-function DeliverMessage(const Target: Pointer; var AMessage): Integer;
-
 // gtkDragCallback.inc headers
 Function edit_drag_data_received(widget : pgtkWidget;
 			          Context : pGdkDragContext;
@@ -248,31 +245,45 @@ function gtkLVEndSelection(AList: PGTKCList; AData: gPointer): GBoolean; cdecl;
 function gtkComboBoxShowCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtkComboBoxHideCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 
+//==============================================================================
 // functions
-procedure Set_RC_Name(Sender : TObject; AWidget: PGtkWidget);
 
+// debugging
 procedure RaiseException(const Msg: string);
-
-function CreatePChar(const s: string): PChar;
-function ComparePChar(P1, P2: PChar): boolean;
-function FindChar(c: char; p:PChar; Max: integer): integer;
-
 function GtkWidgetIsA(Widget: PGtkWidget; AType: TGtkType): boolean;
 function GetWidgetClassName(Widget: PGtkWidget): string;
 function GetWidgetDebugReport(Widget: PGtkWidget): string;
 function GetWindowDebugReport(AWindow: PGDKWindow): string;
 function GetDrawableDebugReport(ADrawable: PGDKDrawable): string;
+
+// gtk resources
+procedure Set_RC_Name(Sender : TObject; AWidget: PGtkWidget);
+
+// messages
+function DeliverPostMessage(const Target: Pointer; var TheMessage): GBoolean;
+function DeliverMessage(const Target: Pointer; var AMessage): Integer;
+
+// PChar
+function CreatePChar(const s: string): PChar;
+function ComparePChar(P1, P2: PChar): boolean;
+function FindChar(c: char; p:PChar; Max: integer): integer;
+
+// flags
 function WidgetIsDestroyingHandle(Widget: PGtkWidget): boolean;
 procedure SetWidgetIsDestroyingHandle(Widget: PGtkWidget);
 function ComponentIsDestroyingHandle(AWinControl: TWinControl): boolean;
 function LockOnChange(GtkObject: PGtkObject; LockOffset: integer): integer;
+
+// glib
+procedure MoveGListLinkBehind(First, Item, After: PGList);
+
+// properties
 function ObjectToGTKObject(const AnObject: TObject): PGtkObject;
 function GetMainWidget(const Widget: Pointer): Pointer;
 procedure SetMainWidget(const ParentWidget, ChildWidget: Pointer);
 function GetFixedWidget(const Widget: Pointer): Pointer;
 procedure SetFixedWidget(const ParentWidget, FixedWidget: Pointer);
 Function GetControlWindow(Widget: Pointer) : PGDKWindow;
-function GetDCOffset(DC: TDeviceContext): TPoint;
 function CreateWidgetInfo(const Widget: Pointer): PWinWidgetInfo;
 function GetWidgetInfo(const Widget: Pointer; const Create: Boolean): PWinWidgetInfo;
 procedure FreeWinWidgetInfo(Widget: Pointer);
@@ -282,34 +293,40 @@ function GetLCLObject(const Widget: Pointer): TObject;
 function GetParentLCLObject(Widget: PGtkWidget): TObject;
 procedure SetHiddenLCLObject(const Widget: Pointer; const AnObject: TObject);
 function GetHiddenLCLObject(const Widget: Pointer): TObject;
-Procedure FixedMoveControl(Parent, Child : PGTKWIdget; Left, Top : Longint);
-Procedure FixedPutControl(Parent, Child : PGTKWidget; Left, Top : Longint);
 function GetParentWidget(Child: PGtkWidget): PGtkWidget;
 function GetParentFixedWidget(Child: PGtkWidget): PGtkWidget;
 function FindFixedChild(ParentFixed: PGtkFixed; Child: PGtkWidget): PGList;
-procedure MoveGListLinkBehind(First, Item, After: PGList);
 
+// fixed widgets
+Procedure FixedMoveControl(Parent, Child : PGTKWIdget; Left, Top : Longint);
+Procedure FixedPutControl(Parent, Child : PGTKWidget; Left, Top : Longint);
+
+// caret
 procedure HideCaretOfWidgetGroup(ChildWidget: PGtkWidget;
   var MainWidget: PGtkWidget; var CaretWasVisible: boolean);
 
+// combobox
 procedure SetComboBoxText(ComboWidget: PGtkCombo; NewText: PChar);
 function GetComboBoxItemIndex(ComboBox: TComboBox): integer;
 procedure SetComboBoxItemIndex(ComboBox: TComboBox; Index: integer);
 
+// paint messages
 function GtkPaintMessageToPaintMessage(const GtkPaintMsg: TLMGtkPaint;
   FreeGtkPaintMsg: boolean): TLMPaint;
 procedure FinalizePaintMessage(Msg: PLMessage);
 procedure FinalizePaintTagMsg(Msg: PMsg);
 
-function NewGDI_RGBImage(const AWidth, AHeight: Integer; const ADepth: Byte): PGDI_RGBImage;
-
+// DC
+function GetDCOffset(DC: TDeviceContext): TPoint;
 function CopyDCData(DestinationDC, SourceDC: TDeviceContext): Boolean;
 
+// region
 Function RegionType(RGN: PGDKRegion): Longint;
 Procedure SelectGDIRegion(const DC: HDC);
-function GDKRegionAsString(RGN: PGDKRegion): string;
 function CreateRectGDKRegion(const ARect: TRect): PGDKRegion;
+function GDKRegionAsString(RGN: PGDKRegion): string;
 
+// color
 Procedure FreeGDIColor(GDIColor : PGDIColor);
 Procedure AllocGDIColor(DC: hDC; GDIColor: PGDIColor);
 procedure BuildColorRefFromGDKColor(var GDIColor : TGDIColor);
@@ -323,10 +340,18 @@ function TColortoTGDKColor(const value : TColor) : TGDKColor;
 procedure UpdateSysColorMap(Widget: PGtkWidget);
 function IsBackgroundColor(Color: TColor): boolean;
 
+procedure RealizeGDKColor(ColorMap: PGdkColormap; Color: PGDKColor);
+procedure RealizeGtkStyleColor(Style: PGTKStyle; Color: PGDKColor);
+Function GetSysGCValues(Color: TColorRef; ThemeWidget: PGtkWidget): TGDKGCValues;
+
+Function GDKPixel2GDIRGB(Pixel : Longint; Visual : PGDKVisual;
+  Colormap : PGDKColormap) : TGDIRGB;
+
 function CompareGDIColor(const Color1, Color2: TGDIColor): boolean;
 function CompareGDIFill(const Fill1, Fill2: TGdkFill): boolean;
 function CompareGDIBrushes(Brush1, Brush2: PGdiObject): boolean;
 
+// palette
 function PaletteIndexExists(Pal : PGDIObject; I : longint): Boolean;
 function PaletteRGBExists(Pal : PGDIObject; RGB : longint): Boolean;
 function PaletteAddIndex(Pal : PGDIObject; I, RGB : Longint): Boolean;
@@ -353,17 +378,24 @@ function GetVKeyInfo(const AVKey: Byte): TVKeyInfo;
 function IsToggleKey(const AVKey: Byte): Boolean;
 //function GTKEventState2ShiftState(KeyState: Word): TShiftState;
 //function KeyToListCode_(KeyCode, VirtKeyCode: Word; Extended: boolean): integer;
+procedure gdk_event_key_get_string(Event : PGDKEventKey; var theString : Pointer);
+function gdk_event_get_type(Event : Pointer) : guint;
+procedure RememberKeyEventWasHandledByLCL(Event: PGdkEventKey);
+function KeyEventWasHandledByLCL(Event: PGdkEventKey): boolean;
 // ----
 
+// common dialogs
 procedure StoreCommonDialogSetup(ADialog: TCommonDialog);
 procedure DestroyCommonDialogAddOns(ADialog: TCommonDialog);
 
+// notebook
 function GetGtkNoteBookDummyPage(ANoteBookWidget: PGtkNoteBook): PGtkWidget;
 procedure SetGtkNoteBookDummyPage(ANoteBookWidget: PGtkNoteBook;
   DummyWidget: PGtkWidget);
 procedure UpdateNoteBookClientWidget(ANoteBook: TObject);
 function GetGtkNoteBookPageCount(ANoteBookWidget: PGtkNoteBook): integer;
 
+// coordinate transformation
 function GetWidgetOrigin(TheWidget: PGtkWidget): TPoint;
 function GetWidgetClientOrigin(TheWidget: PGtkWidget): TPoint;
 function TranslateGdkPointToClientArea(SourceWindow: PGdkWindow;
@@ -372,6 +404,13 @@ procedure ReleaseMouseCapture(OnlyIfCapturedByLCL: boolean);
 procedure UpdateMouseCaptureControl;
 procedure SetCursor(AWinControl : TWinControl; Data: Pointer);
 
+{$IFNDEF GTK2_2}
+// MWE:
+// TODO: check if the new keyboard routines require X on GTK2
+function X11Display: Pointer;
+{$ENDIF}
+
+// designing
 type
   TConnectSignalFlag = (
     csfAfter,            // connect after signal
@@ -424,12 +463,6 @@ const
 var
   DesignSignalMasks: array[TDesignSignalType] of TDesignSignalMask;
   
-{$IFNDEF GTK2_2}
-// MWE:
-// TODO: check if the new keyboard routines require X on GTK2
-function X11Display: Pointer;
-{$ENDIF}
-
 procedure InitDesignSignalMasks;
 function DesignSignalNameToType(Name: PChar; After: boolean): TDesignSignalType;
 function GetDesignSignalMask(Widget: PGtkWidget): TDesignSignalMask;
@@ -437,6 +470,7 @@ procedure SetDesignSignalMask(Widget: PGtkWidget; NewMask: TDesignSignalMask);
 function GetDesignOnlySignalFlag(Widget: PGtkWidget;
   DesignSignalType: TDesignSignalType): boolean;
 
+// signals
 procedure ConnectSignal(const AnObject:PGTKObject; const ASignal: PChar;
   const ACallBackProc: Pointer; LCLComponent: TComponent;
   const ReqSignalMask: TGdkEventMask; SFlags: TConnectSignalFlags);
@@ -473,8 +507,25 @@ procedure Accelerate(Component: TComponent; const Widget : PGtkWidget;
 procedure ShareWindowAccelGroups(AWindow: PGtkWidget);
 procedure UnshareWindowAccelGroups(AWindow: PGtkWidget);
 
+// pixmaps
 procedure GetGdkPixmapFromGraphic(LCLGraphic: TGraphic;
   var IconImg, IconMask: PGdkPixmap; var Width, Height: integer);
+function NewGDI_RGBImage(const AWidth, AHeight: Integer; const ADepth: Byte): PGDI_RGBImage;
+Procedure SetGCRasterOperation(TheGC: PGDKGC; Rop: Cardinal);
+Procedure MergeClipping(DestinationDC: TDeviceContext; DestinationGC: PGDKGC;
+  X,Y,Width,Height: integer; ClipMergeMask: PGdkPixmap;
+  ClipMergeMaskX, ClipMergeMaskY: integer;
+  var NewClipMask: PGdkPixmap);
+Procedure ResetGCClipping(DC: HDC; GC: PGDKGC);
+function ScalePixmap(ScaleGC: PGDKGC;
+  SrcPixmap: PGdkPixmap; SrcX, SrcY, SrcWidth, SrcHeight: integer;
+  SrcColorMap: PGdkColormap;
+  NewWidth, NewHeight: integer;
+  var NewPixmap: PGdkPixmap) : Boolean;
+{$IfDef Win32}
+Procedure gdk_window_copy_area(Dest : PGDKWindow; GC : PGDKGC; X,
+  Y : Longint; SRC : PGDKWindow; XSRC, YSRC, Width, Height : Longint);
+{$EndIf}
 
 // menus
 function MENU_ITEM_CLASS(widget: PGtkWidget): PGtkMenuItemClass;
@@ -492,6 +543,7 @@ function CreateMenuItem(LCLMenuItem: TMenuItem): Pointer;
 procedure GetGdkPixmapFromMenuItem(LCLMenuItem: TMenuItem;
   var IconImg, IconMask: PGdkPixmap; var Width, Height: integer);
 
+// size messages
 procedure SaveSizeNotification(Widget: PGtkWidget);
 procedure SaveClientSizeNotification(FixWidget: PGtkWidget);
 function CreateTopologicalSortedWidgets(HashArray: TDynHashArray): TList;
@@ -501,8 +553,10 @@ function RequestSelectionData(ClipboardWidget: PGtkWidget;
   ClipboardType: TClipboardType;  FormatID: cardinal): TGtkSelectionData;
 procedure FreeClipboardTargetEntries(ClipboardType: TClipboardType);
 
+// forms
 Function CreateFormContents(AForm: TCustomForm; var FormWidget: Pointer): Pointer;
 
+// style
 function IndexOfStyle(const WName : String): integer;
 Procedure ReleaseStyle(const WName : String);
 function GetStyle(const WName : String) : PGTKStyle;
@@ -526,17 +580,11 @@ function GetDefaultFontName: string;
 Procedure FillScreenFonts(ScreenFonts : TStrings);
 function GetTextHeight(DCTextMetric: TDevContextTextMetric): integer;
 
-procedure RealizeGDKColor(ColorMap: PGdkColormap; Color: PGDKColor);
-procedure RealizeGtkStyleColor(Style: PGTKStyle; Color: PGDKColor);
-Function GetSysGCValues(Color: TColorRef; ThemeWidget: PGtkWidget): TGDKGCValues;
-
-
-Function GDKPixel2GDIRGB(Pixel : Longint; Visual : PGDKVisual;
-  Colormap : PGDKColormap) : TGDIRGB;
-
+// decoration
 Function GetWindowDecorations(AForm : TCustomForm) : Longint;
 Function GetWindowFunction(AForm : TCustomForm) : Longint;
 
+// mouse cursor
 function GetGDKMouseCursor(Cursor: TCursor): PGdkCursor;
 Procedure FreeGDKCursors;
 
@@ -547,12 +595,7 @@ function gtk_widget_get_ythickness(Style : PGTKStyle) : gint; overload;
 function gtk_widget_get_xthickness(Style : PGTKWidget) : gint; overload;
 function gtk_widget_get_ythickness(Style : PGTKWidget) : gint; overload;
 
-// keyboard
-procedure gdk_event_key_get_string(Event : PGDKEventKey; var theString : Pointer);
-function gdk_event_get_type(Event : Pointer) : guint;
-procedure RememberKeyEventWasHandledByLCL(Event: PGdkEventKey);
-function KeyEventWasHandledByLCL(Event: PGdkEventKey): boolean;
-
+// debugging
 procedure BeginGDKErrorTrap;
 procedure EndGDKErrorTrap;
 
@@ -790,10 +833,6 @@ finalization
   {$ENDIF}
   {$ENDIF}
 
-  GdkTrapCalls := 0;
-  EndGDKErrorTrap;
-  
   DoneKeyboardTables;
-  
 end.
 

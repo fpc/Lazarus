@@ -95,9 +95,9 @@ Function GetAncestor(Const HWnd: HWND; Const Flag: UINT): HWND; StdCall; Externa
 Function GetComboBoxInfo(Const hwndCombo: HWND; pcbi: PCOMBOBOXINFO): BOOL; StdCall; External 'user32';
 
 { Functions allocate and dealocate memory used in ole32 functions
-  i.e. BrowseForFolder dialog functions}
-function CoTaskMemAlloc(cb : ULONG) : PVOID; external 'ole32.dll' name 'CoTaskMemAlloc';
-procedure CoTaskMemFree(pv : PVOID); external 'ole32.dll' name 'CoTaskMemFree';
+  e.g. BrowseForFolder dialog functions}
+function CoTaskMemAlloc(cb : ULONG) : PVOID; stdcall; external 'ole32.dll' name 'CoTaskMemAlloc';
+procedure CoTaskMemFree(pv : PVOID); stdcall; external 'ole32.dll' name 'CoTaskMemFree';
 
 
 { Miscellaneous functions }

@@ -909,7 +909,7 @@ end;
 function TCalcEdit.GetAsFloat: Double;
 begin
   Try
-    Result:=StrToDouble(Text);
+    Result:=StrToDouble(Trim(Text));
   except
     Result:=0.0;
   end;
