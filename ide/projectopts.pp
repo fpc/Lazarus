@@ -171,7 +171,6 @@ begin
   end;
 
   IDEDialogLayoutList.ApplyLayout(Self, 430, 375);
-
 end;
 
 procedure TProjectOptionsDialog.SetupApplicationPage;
@@ -244,25 +243,18 @@ end;
 
 procedure TProjectOptionsDialog.SetupFormsPage;
 begin
-  NoteBook.Page[1].OnResize:=@OnFormsPageResize;
-
   FormsAutoCreatedLabel:=TLabel.Create(Self);
   with FormsAutoCreatedLabel do begin
     Parent:=NoteBook.Page[1];
-    Left:=40;
-    Top:=4;
-    Width:=150;
-    Height:=23;
+    SetBounds(40,4,Width,Height);
     Caption:=dlgAutoCreateForms;
+    AutoSize:=true;
   end;
 
   FormsAutoCreatedListBox:=TListBox.Create(Self);
   with FormsAutoCreatedListBox do begin
     Parent:=NoteBook.Page[1];
-    Left:=40;
-    Top:=28;
-    Width:=165;
-    Height:=228;
+    SetBounds(40,28,Width,Height);
     MultiSelect:=true;
   end;
 
@@ -271,9 +263,8 @@ begin
     Parent:=NoteBook.Page[1];
     Left:=FormsAutoCreatedListBox.Left+FormsAutoCreatedListBox.Width+45;
     Top:=FormsAutoCreatedLabel.Top;
-    Width:=FormsAutoCreatedLabel.Width;
-    Height:=FormsAutoCreatedLabel.Height;
     Caption:=dlgAvailableForms;
+    AutoSize:=true;
   end;
 
   FormsAvailFormsListBox:=TListBox.Create(Self);
@@ -337,10 +328,10 @@ begin
     Parent:=NoteBook.Page[1];
     Left:=FormsAutoCreatedListBox.Left+5;
     Top:=FormsAutoCreatedListBox.Top+FormsAutoCreatedListBox.Height+5;
-    Width:=400;
-    Height:=25;
     Caption:=dlgAutoCreateNewForms;
   end;
+
+  NoteBook.Page[1].OnResize:=@OnFormsPageResize;
 end;
 
 procedure TProjectOptionsDialog.SetupMiscPage;
