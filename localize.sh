@@ -31,7 +31,7 @@ done
 # Object Inspector
 rstconv -i objinspstrconsts.rst -o languages/objinspstrconsts.po
 tools/updatepofiles languages/objinspstrconsts.po
-for lang in de es fr ru pl; do
+for lang in de es fr ru pl it; do
   msgfmt languages/objinspstrconsts.$lang.po \
     -o languages/objinspstrconsts.$lang.mo
 done
@@ -40,7 +40,7 @@ done
 rstconv -i components/units/codetoolsstrconsts.rst \
   -o components/codetools/languages/codetools.po
 ./tools/updatepofiles components/codetools/languages/codetools.po
-for lang in de fr pl; do
+for lang in de fr pl it; do
   msgfmt components/codetools/languages/codetools.$lang.po \
     -o components/codetools/languages/codetools.$lang.mo
 done
