@@ -1130,6 +1130,7 @@ type
     property Enabled;
     property FocusControl;
     property Font;
+    property Layout;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
@@ -1217,6 +1218,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.179  2005/01/07 21:36:37  micha
+  publish Layout property (compatibility with situation before swap with tstatictext)
+
   Revision 1.178  2005/01/07 20:51:11  micha
   swap TCustomStaticText and TCustomLabel
 
