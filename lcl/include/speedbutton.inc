@@ -256,7 +256,7 @@ var
   DrawFlags, GlyphWidth, GlyphHeight: Integer;
   Offset, OffsetCap: TPoint;
   ClientSize, TotalSize, TextSize: TSize;
-  BrushStyle : TBrushStyle;
+  //BrushStyle : TBrushStyle;
   M, S : integer;
 
 begin
@@ -276,10 +276,10 @@ begin
   PaintRect := Bounds(Left, Top, Width, Height);
 //  PaintRect := Rect(0, 0, Width, Height);
 
-  if Transparent and not (csDesigning in ComponentState) then
+  {if Transparent and not (csDesigning in ComponentState) then
     BrushStyle:= bsClear
   else
-    BrushStyle:= bsSolid;
+    BrushStyle:= bsSolid;}
   
   Canvas.Brush.Color:= clBtnFace;
   Canvas.FillRect(PaintRect);
@@ -653,6 +653,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.13  2002/02/25 17:08:50  lazarus
+  MG: reduced hints
+
   Revision 1.12  2002/02/24 20:51:24  lazarus
   Improved TSpeedButton (Glyph, Spacing, Margin, drawing)
   Added PageCount to TNotebook
