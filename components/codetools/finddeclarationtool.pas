@@ -1316,6 +1316,7 @@ var
       end else begin
         // the default property is searched
         if PropertyIsDefault(ContextNode) then begin
+          Params.SetResult(Self,ContextNode);
           Result:=SetResultBeforeExit(true,true);
         end;
       end;
@@ -1784,7 +1785,17 @@ begin
       end else
       if (Result.Node.Desc=ctnProperty) then begin
         // this is a property -> search the type definition of the property
-        if ReadTilTypeOfProperty(Result.Node) then begin
+        MoveCursorToNodeStart(Result.Node);
+        ReadNextAtom; // read 'property'
+        ReadNextAtom; // read name
+        ReadNextAtom;
+        if CurPos.Flag=cafEdgedBracketOpen then begin
+          // this is an indexed property
+          exit;
+        end;
+        if CurPos.Flag=cafPoint then begin
+          ReadNextAtom;
+          AtomIsIdentifier(true);
           OldPos:=CurPos.StartPos;
           // property has type
           Params.Save(OldInput);
@@ -3153,9 +3164,10 @@ var
           Params.ContextNode:=CurContext.Node;
         end;
 
-        // check identifier must be checked for overloaded procs
-        if IsIdentifierEndOfVariable
-        and (fdfIgnoreOverloadedProcs in StartFlags)
+        // check identifier for overloaded procs
+        if (NextAtomType<>vatRoundBracketOpen)
+        or (IsIdentifierEndOfVariable
+            and (fdfIgnoreOverloadedProcs in StartFlags))
         then
           Include(Params.Flags,fdfIgnoreOverloadedProcs)
         else
@@ -3177,7 +3189,6 @@ var
         Params.Load(OldInput);
       end;
     end;
-    
     ResolveBaseTypeOfIdentifier;
   end;
 
@@ -3289,22 +3300,53 @@ var
       CurContext:=CurContext.Tool.FindBaseTypeOfNode(Params,
                                                     CurContext.Node.FirstChild);
 
-    ctnClass:
+    ctnClass, ctnProperty:
       begin
-        // search default property in class
-        Params.Save(OldInput);
-        Params.Flags:=[fdfSearchInAncestors,fdfExceptionOnNotFound]
-                      +fdfGlobals*Params.Flags
-                      +fdfAllClassVisibilities*Params.Flags;
-        // special identifier for default property
-        Params.SetIdentifier(Self,'[',nil);
-        Params.ContextNode:=CurContext.Node;
-        CurContext.Tool.FindIdentifierInContext(Params);
-        CurContext:=Params.NewCodeTool.FindBaseTypeOfNode(
-                                                         Params,Params.NewNode);
-        Params.Load(OldInput);
+        if CurContext.Node.Desc=ctnClass then begin
+          // search default property in class
+          Params.Save(OldInput);
+          Params.Flags:=[fdfSearchInAncestors,fdfExceptionOnNotFound]
+                        +fdfGlobals*Params.Flags
+                        +fdfAllClassVisibilities*Params.Flags;
+          // special identifier for default property
+          Params.SetIdentifier(CurContext.Tool,'[',nil);
+          Params.ContextNode:=CurContext.Node;
+          CurContext.Tool.FindIdentifierInContext(Params);
+          CurContext:=CreateFindContext(Params);
+          Params.Load(OldInput);
+        end;
+        // find base type of property
+        if CurContext.Tool.ReadTilTypeOfProperty(CurContext.Node) then begin
+          // property has type
+          Params.Save(OldInput);
+          try
+            Params.SetIdentifier(CurContext.Tool,
+                                 @CurContext.Tool.Src[CurPos.StartPos],nil);
+            Params.Flags:=[fdfSearchInParentNodes,fdfExceptionOnNotFound]
+                          +(fdfGlobals*Params.Flags)
+                          -[fdfIgnoreUsedUnits];
+            Params.ContextNode:=CurContext.Node.Parent;
+            if FindIdentifierInContext(Params) then begin
+              if Params.NewNode.Desc in [ctnTypeDefinition] then begin
+                CurContext:=Params.NewCodeTool.FindBaseTypeOfNode(Params,
+                                                                 Params.NewNode)
+              end else begin
+                // not a type
+                CurContext.Tool.ReadTilTypeOfProperty(CurContext.Node);
+                RaiseExceptionFmt(ctsStrExpectedButAtomFound,
+                                  [ctsTypeIdentifier,GetAtom]);
+              end;
+            end else begin
+              // predefined identifier
+            end;
+          finally
+            Params.Load(OldInput);
+          end;
+        end else
+          CurContext.Tool.RaiseExceptionFmt(ctsStrExpectedButAtomFound,
+                                            [ctsIdentifier,GetAtom]);
       end;
-
+      
     ctnIdentifier:
       begin
         MoveCursorToNodeStart(CurContext.Node);
@@ -3319,13 +3361,6 @@ var
           ReadNextAtom;
           RaiseExceptionFmt(ctsIllegalQualifier,[GetAtom]);
         end;
-      end;
-
-    ctnProperty:
-      begin
-        // indexed property without base type
-        // => property type is predefined
-        // -> completed
       end;
 
     else
@@ -3527,8 +3562,9 @@ begin
 
     // ToDo: ppu, ppw, dcu files
 
-    ExtractPropType(Node,false);
-    ConvertIdentifierAtCursor;
+    ExtractPropType(Node,false,true);
+    if CurPos.Flag<>cafEdgedBracketOpen then
+      ConvertIdentifierAtCursor;
   end;
 end;
 

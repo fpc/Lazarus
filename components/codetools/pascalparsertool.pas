@@ -183,7 +183,7 @@ type
     function ExtractPropName(PropNode: TCodeTreeNode;
         InUpperCase: boolean): string;
     function ExtractPropType(PropNode: TCodeTreeNode;
-        InUpperCase: boolean): string;
+        InUpperCase, EmptyIfIndexed: boolean): string;
     function ExtractProcName(ProcNode: TCodeTreeNode;
         Attr: TProcHeadAttributes): string;
     function ExtractProcHead(ProcNode: TCodeTreeNode;
@@ -2917,7 +2917,7 @@ begin
 end;
 
 function TPascalParserTool.ExtractPropType(PropNode: TCodeTreeNode;
-  InUpperCase: boolean): string;
+  InUpperCase, EmptyIfIndexed: boolean): string;
 begin
   Result:='';
   if (PropNode=nil) or (PropNode.Desc<>ctnProperty) then exit;
@@ -2927,7 +2927,8 @@ begin
   ReadNextAtom;
   AtomIsIdentifier(true);
   ReadNextAtom;
-  if CurPos.Flag=cafRoundBracketOpen then begin
+  if CurPos.Flag=cafEdgedBracketOpen then begin
+    if EmptyIfIndexed then exit;
     ReadTilBracketClose(true);
     ReadNextAtom;
   end;

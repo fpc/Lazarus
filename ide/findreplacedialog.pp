@@ -106,6 +106,7 @@ begin
     Caption:='';
     Width:=400;
     Height:=285;
+    Position:=poDesigned;
 
     {$IFDEF DeleteMeWhenComboBoxFocusIsFixed}
     TextToFindComboBox:=TEdit.Create(Self);
