@@ -520,7 +520,7 @@ var
   OldState: TWindowState;
 begin
   {$IFDEF CHECK_POSITION}
-  DebugLn('[TCustomForm.WMSize] Name=',Name,' Class=',ClassName,' Message.Width=',Message.Width,' Message.Height=',Message.Height);
+  DebugLn('[TCustomForm.WMSize] ',DbgSName(Self),' Message.SizeType=',dbgs(Message.SizeType),' Message.Width=',dbgs(Message.Width),' Message.Height=',dbgs(Message.Height));
   {$ENDIF}
   Assert(False, 'Trace:WMSIZE in TCustomForm');
   if not (csDesigning in ComponentState) then begin
@@ -553,6 +553,7 @@ begin
     FRestoredTop := Top;
     FRestoredWidth := Width;
     FRestoredHeight := Height;
+    //DebugLn('[TCustomForm.WMSize] saving restored bounds ',DbgSName(Self),' ',dbgs(FRestoredWidth),'x',dbgs(FRestoredHeight));
   end;
 End;
 
@@ -884,6 +885,17 @@ end;
 function TCustomForm.ColorIsStored: boolean;
 begin
   Result:=(Color<>clBtnFace);
+end;
+
+procedure TCustomForm.DoSetBounds(ALeft, ATop, AWidth, AHeight: integer);
+begin
+  inherited DoSetBounds(ALeft, ATop, AWidth, AHeight);
+  if WindowState=wsNormal then begin
+    FRestoredLeft:=Left;
+    FRestoredTop:=Top;
+    FRestoredWidth:=Width;
+    FRestoredHeight:=Height;
+  end;
 end;
 
 procedure TCustomForm.DoDock(NewDockSite: TWinControl; var ARect: TRect);
@@ -1852,6 +1864,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.173  2005/01/25 20:07:03  mattias
+  fixed updating restored form bounds for forms without handle
+
   Revision 1.172  2005/01/21 22:08:11  micha
   implement restored size, let lazarus ide store restored size
 

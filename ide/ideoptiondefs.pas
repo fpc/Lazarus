@@ -725,12 +725,14 @@ end;
 
 procedure TIDEWindowLayout.GetCurrentPosition;
 begin
+  //debugln('TIDEWindowLayout.GetCurrentPosition ',DbgSName(Self),' ',FormID,' ',IDEWindowPlacementNames[WindowPlacement]);
   case WindowPlacement of
   iwpRestoreWindowGeometry, iwpRestoreWindowSize:
     ReadCurrentCoordinates;
 
   end;
   ReadCurrentState;
+  //debugln('TIDEWindowLayout.GetCurrentPosition ',DbgSName(Self),' ',FormID,' Width=',dbgs(Width));
 end;
 
 { TIDEWindowLayoutList }
