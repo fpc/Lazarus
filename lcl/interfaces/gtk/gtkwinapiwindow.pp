@@ -282,7 +282,6 @@ begin
     WriteLn('WARNING: [GTKAPIWidgetClient_HideCaret] Got nil client');
     Exit;
   end;
-
   Client^.Caret.Visible := False;
   GTKAPIWidgetClient_DrawCaret(Client);
 end;
@@ -318,14 +317,14 @@ begin
     end
     else
     if Visible
-    and gtk_widget_has_focus(PGTKWidget(Client))
+    and gtk_widget_has_focus(Widget)
     and (not IsDrawn)
     then begin
       if Pixmap <> nil then
         Assert(False, 'Trace:TODO: [GTKAPIWidgetClient_ShowCaret] Implement bitmap');
       
       //Create backbitmap if needed
-      if BackPixmap = nil 
+      if (BackPixmap = nil) and (Widget^.Window<>nil)
       then BackPixmap := gdk_pixmap_new(Widget^.Window, Width, Height, -1);
       
       if (BackPixmap <> nil) and (Widget<>nil) and ((Widget^.theStyle)<>nil)
@@ -334,7 +333,7 @@ begin
         PGTKStyle(Widget^.theStyle)^.bg_gc[GTK_STATE_NORMAL], 
         Widget^.Window, X, Y, 0, 0, Width, Height
       );
-
+      
       // draw caret
       if PGTKStyle(PGTKWidget(Client)^.theStyle)<>nil then
         gdk_draw_rectangle(
@@ -345,7 +344,8 @@ begin
       IsDrawn := True;
     end;
     
-    if Visible and Blinking and (Timer = 0) then
+    if Visible and Blinking and (Timer = 0) and gtk_widget_has_focus(Widget)
+    then
       Timer := gtk_timeout_add(500, @GTKAPIWidgetClient_Timer, Client);
   end;
 end;
@@ -574,6 +574,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.10  2001/07/02 15:17:24  lazarus
+  MG: fixed wordcompletion and carettimer nonfocus bug
+
   Revision 1.9  2001/06/14 23:13:30  lazarus
   MWE:
     * Fixed some syntax errors for the latest 1.0.5 compiler

@@ -957,7 +957,7 @@ begin
   fPassLinkerOpt := false;
   fLinkerOptions := '';
     
-  fShowErrors := false;
+  fShowErrors := true;
   fShowWarn := true;
   fShowNotes := true;
   fShowHints := true;

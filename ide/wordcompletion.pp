@@ -117,12 +117,12 @@ begin
     while (i>=0) and (AWordList.Count<MaxResults) do begin
       NewWord:=FWordBuffer[i];
       if CaseSensitive then begin
-        if copy(NewWord,1,PrefixLen)<>Prefix then
-          exit;
-      end else if uppercase(copy(NewWord,1,PrefixLen))<>UpPrefix then
-        exit
-      else if (NewWord=Prefix) then exit;
-      Add(NewWord);
+        if copy(NewWord,1,PrefixLen)=Prefix then
+          Add(NewWord);
+      end else if uppercase(copy(NewWord,1,PrefixLen))=UpPrefix then begin
+        if NewWord<>Prefix then
+          Add(NewWord)
+      end;
       dec(i);
     end;
     if AWordList.Count>=MaxResults then exit;
@@ -164,8 +164,8 @@ begin
                     if (j>PrefixLen) and (copy(LineText,x,i-x)<>Prefix) then
                       Add(copy(LineText,x,i-x))
                   end;
+                  if AWordList.Count>=MaxResults then exit;
                 end;
-                if AWordList.Count>=MaxResults then exit;
                 x:=i;
               end else
                 inc(x);

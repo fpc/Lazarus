@@ -700,17 +700,17 @@ Begin
     if TCustomSynEdit(Sender).ReadOnly=false then begin
       CurrentCompletionType:=ctCodeCompletion;
       TextS := FEditor.LineText;
-      i := FEditor.CaretX;
+      i := FEditor.CaretX - 1;
       if i > length(TextS) then
         TextS2 := ''
       else begin
         dec(i);
         while (i > 0) and (TextS[i] in ['a'..'z','A'..'Z','0'..'9','_']) do
           dec(i);
-        TextS2 := copy(TextS, i + 1, FEditor.CaretX - i - 1);
+        TextS2 := Trim(copy(TextS, i + 1, FEditor.CaretX - i - 1));
       end;
       with TCustomSynEdit(Sender) do
-        P := ClientToScreen(Point(CaretXPix - length('constructor  ')*CharWidth
+        P := ClientToScreen(Point(CaretXPix - length(TextS2)*CharWidth
                 , CaretYPix + LineHeight));
       aCompletion.Editor:=TCustomSynEdit(Sender);
       aCompletion.Execute(TextS2,P.X,P.Y);
@@ -1351,9 +1351,7 @@ begin
     with aCompletion do
       Begin
         EndOfTokenChr:='()[]';
-writeln('AAAA 1');
         Width:=400;
-writeln('AAAA 2');
         OnExecute := @ccExecute;
         OnCancel := @ccCancel;
         OnCodeCompletion := @ccComplete;
