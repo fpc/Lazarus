@@ -252,6 +252,8 @@ type
     function FindLFMFileName(Code: TCodeBuffer): string;
     function FindNextResourceFile(Code: TCodeBuffer;
           var LinkIndex: integer): TCodeBuffer;
+    function AddLazarusResourceHeaderComment(Code: TCodeBuffer;
+          const CommentText: string): boolean;
     function FindLazarusResource(Code: TCodeBuffer;
           const ResourceName: string): TAtomPosition;
     function AddLazarusResource(Code: TCodeBuffer;
@@ -1180,6 +1182,22 @@ begin
   end;
 end;
 
+function TCodeToolManager.AddLazarusResourceHeaderComment(Code: TCodeBuffer;
+  const CommentText: string): boolean;
+begin
+  Result:=false;
+  if not InitResourceTool then exit;
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.AddLazarusResourceHeaderComment A ',Code.Filename,' CommentText=',CommentText);
+  {$ENDIF}
+  try
+    Result:=GetResourceTool.AddLazarusResourceHeaderComment(Code,
+      '{ '+CommentText+' }'+SourceChangeCache.BeautifyCodeOptions.LineEnd);
+  except
+    on e: Exception do HandleException(e);
+  end;
+end;
+
 function TCodeToolManager.FindLazarusResource(Code: TCodeBuffer;
   const ResourceName: string): TAtomPosition;
 begin
@@ -1189,7 +1207,7 @@ begin
   writeln('TCodeToolManager.FindLazarusResource A ',Code.Filename,' ResourceName=',ResourceName);
   {$ENDIF}
   try
-    Result:=GetResourceTool.FindLazarusResource(Code,ResourceName);
+    Result:=GetResourceTool.FindLazarusResource(Code,ResourceName,-1);
   except
     on e: Exception do HandleException(e);
   end;

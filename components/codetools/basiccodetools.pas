@@ -119,6 +119,8 @@ function ReadRawNextPascalAtom(const Source:string;
 
 //----------------------------------------------------------------------------
 // comments
+function FindNextNonSpace(const ASource: string; StartPos: integer
+    ): integer;
 function FindCommentEnd(const ASource: string; StartPos: integer;
     NestedComments: boolean): integer;
 function FindNextCompilerDirective(const ASource: string; StartPos: integer;
@@ -171,6 +173,7 @@ function CompareIdentifiers(Identifier1, Identifier2: PChar): integer;
 function CleanCodeFromComments(const DirtyCode: string;
     NestedComments: boolean): string;
 function TrimCodeSpace(const ACode: string): string;
+function CodeIsOnlySpace(const ACode: string; FromPos, ToPos: integer): boolean;
 
 //-----------------------------------------------------------------------------
 
@@ -965,6 +968,17 @@ begin
 
   end;
   if Result>MaxPos+1 then Result:=MaxPos+1;
+end;
+
+function FindNextNonSpace(const ASource: string; StartPos: integer
+  ): integer;
+var
+  SrcLen: integer;
+begin
+  SrcLen:=length(ASource);
+  Result:=StartPos;
+  while (Result<=SrcLen) and (ASource[Result] in [' ',#9,#10,#13]) do
+    inc(Result);
 end;
 
 function FindCommentEnd(const ASource: string; StartPos: integer;
@@ -1952,6 +1966,25 @@ begin
     end;
   end;
   SetLength(Result,ResultPos-1);
+end;
+
+function CodeIsOnlySpace(const ACode: string; FromPos, ToPos: integer): boolean;
+var
+  SrcLen: integer;
+  CodePos: integer;
+begin
+  Result:=true;
+  SrcLen:=length(ACode);
+  if ToPos>SrcLen then ToPos:=SrcLen;
+  CodePos:=FromPos;
+  while (CodePos<=ToPos) do begin
+    if ACode[CodePos] in [' ',#9,#10,#13] then
+      inc(CodePos)
+    else begin
+      Result:=false;
+      exit;
+    end;
+  end;
 end;
 
 function CountNeededLineEndsToAddForward(const Src: string;
