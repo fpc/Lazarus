@@ -86,8 +86,11 @@ type
     itmProjectNew: TMenuItem;
     itmProjectOpen: TMenuItem;
     itmProjectSave: TMenuItem;
+    itmProjectSaveAs: TMenuItem;
     itmProjectBuild: TMenuItem;
     itmProjectRun: TMenuItem;
+    itmProjectOptions: TMenuItem;
+    itmProjectCompilerSettings: TMenuItem;
 
     itmFileNewForm : TMenuItem;
     itmFileOpen: TMenuItem;
@@ -105,7 +108,6 @@ type
     itmSearchFindAgain: TMenuItem;
     itmViewInspector: TMenuItem;
     itmViewProject: TMenuItem; 
-    itmViewProjectOptions: TMenuItem;
     itmViewUnits : TMenuItem;
     itmViewCodeExplorer : TMenuItem;
     itmViewForms : TMenuItem;
@@ -113,18 +115,17 @@ type
     itmViewColors : TMenuItem;
     itmViewFont : TMenuItem;
     itmViewMessage : TMenuItem;
-    itmViewCompilerSettings: TMenuItem;
     itmEnvironmentOptions: TMenuItem; 
     CheckBox1 : TCheckBox; 
     Notebook1 : TNotebook;
     cmdTest: TButton;
     cmdTest2: TButton;
     LAbel2 : TLabel;
+
 { event handlers }
     procedure mnuNewFormClicked(Sender : TObject);
     procedure mnuQuitClicked(Sender : TObject);
     procedure mnuViewInspectorClicked(Sender : TObject);
-    procedure mnuViewCompilerSettingsClicked(Sender : TObject);
     Procedure mnuViewUnitsClicked(Sender : TObject);
     Procedure mnuViewFormsClicked(Sender : TObject);
 
@@ -136,8 +137,11 @@ type
     procedure mnuNewProjectClicked(Sender : TObject);
     procedure mnuOpenProjectClicked(Sender : TObject);
     procedure mnuSaveProjectClicked(Sender : TObject);
+    procedure mnuSaveProjectAsClicked(Sender : TObject);
     procedure mnuBuildProjectClicked(Sender : TObject);
     procedure mnuRunProjectClicked(Sender : TObject);
+    procedure mnuProjectCompilerSettingsClicked(Sender : TObject);
+    procedure mnuProjectOptionsClicked(Sender : TObject);
     procedure mnuViewCodeExplorerClick(Sender : TObject);
     procedure mnuViewMessagesClick(Sender : TObject);
     procedure mnuSearchFindClicked(Sender : TObject);
@@ -157,6 +161,7 @@ type
     FCodeLastActivated : Boolean; //used for toggling between code and forms
     FControlLastActivated : TObject;
     FSelectedComponent : TRegisteredComponent;
+    fProject: TProject;
 
     Function CreateSeperator : TMenuItem;
     Function ReturnActiveUnitList : TUnitInfo;
@@ -188,6 +193,7 @@ type
     MouseDownPos, MouseUpPos, LastMouseMovePos : TPoint;
     MouseDownControl: TObject;
     property SelectedComponent : TRegisteredComponent read FSelectedComponent write FSelectedComponent;
+    property Project: TProject read fProject write fProject;
   end;
 
 
@@ -219,10 +225,7 @@ uses
 { TMainIDE }
 
 
-  constructor TMainIDE.Create(AOwner: TComponent);
-
-
-
+constructor TMainIDE.Create(AOwner: TComponent);
 
   function LoadResource(ResourceName:string; PixMap:TPixMap):boolean;
   var
@@ -659,7 +662,7 @@ begin
   //Onpaint := @FormPaint;
 
 
-  Project1 := TProject.Create;
+  Project := TProject.Create;
   Self.OnShow := @FormShow;
 {  MessageDlg := TMessageDlg.Create(self);
   MessageDlg.Caption := 'Compiler Messages';
@@ -901,15 +904,6 @@ begin
 
   mnuView.Add(CreateSeperator);
 
-  itmViewProjectOptions := TMenuItem.Create(Self);
-  itmViewProjectOptions.Caption := 'Project Options';
-  mnuView.Add(itmViewProjectOptions);
-
-  itmViewCompilerSettings := TMenuItem.Create(Self);
-  itmViewCompilerSettings.Caption := 'Compiler Options';
-  itmViewCompilerSettings.OnClick := @mnuViewCompilerSettingsClicked;
-  mnuView.Add(itmViewCompilerSettings);
-  
   itmViewCodeExplorer := TMenuItem.Create(Self);
   itmViewCodeExplorer.Caption := 'Code Explorer';
   itmViewCodeExplorer.OnClick := @mnuViewCodeExplorerClick;
@@ -957,7 +951,7 @@ begin
   mnuProject.Add(itmProjectNew);
 
   itmProjectOpen := TMenuItem.Create(Self);
-  itmProjectOpen.Caption := 'Open Project';
+  itmProjectOpen.Caption := 'Open Project...';
   itmProjectOpen.OnClick := @mnuOpenProjectClicked;
   mnuProject.Add(itmProjectOpen);
 
@@ -966,6 +960,10 @@ begin
   itmProjectSave.OnClick := @mnuSaveProjectClicked;
   mnuProject.Add(itmProjectSave);
 
+  itmProjectSaveAs := TMenuItem.Create(Self);
+  itmProjectSaveAs.Caption := 'Save Project As...';
+  itmProjectSaveAs.OnClick := @mnuSaveProjectAsClicked;
+  mnuProject.Add(itmProjectSaveAs);
 
   mnuProject.Add(CreateSeperator);
 
@@ -979,6 +977,18 @@ begin
   itmProjectRun.Caption := 'Run';
   itmProjectRun.OnClick := @mnuRunProjectClicked;
   mnuProject.Add(itmProjectRun);
+
+  mnuProject.Add(CreateSeperator);
+
+  itmProjectCompilerSettings := TMenuItem.Create(Self);
+  itmProjectCompilerSettings.Caption := 'Compiler Options...';
+  itmProjectCompilerSettings.OnClick := @mnuProjectCompilerSettingsClicked;
+  mnuProject.Add(itmProjectCompilerSettings);
+  
+  itmProjectOptions := TMenuItem.Create(Self);
+  itmProjectOptions.Caption := 'Project Options...';
+  itmProjectOptions.OnClick := @mnuProjectOptionsClicked;
+  mnuProject.Add(itmProjectOptions);
 
 //--------------
 // Environment
@@ -1067,9 +1077,9 @@ SList : TUnitInfo;
 Begin
 ViewUnits1.Listbox1.Items.Clear;
 ViewForms1.Listbox1.Items.Clear;
-For I := 0 to Project1.UnitList.Count -1 do
+For I := 0 to Project.UnitList.Count -1 do
    Begin
-    SList := TUnitInfo(Project1.UnitList.Items[I]);
+    SList := TUnitInfo(Project.UnitList.Items[I]);
     ViewUnits1.Listbox1.Items.Add(SList.Name);
     if SList.FormName <> '' then
     ViewForms1.Listbox1.Items.Add(SList.FormName);
@@ -1496,14 +1506,14 @@ begin
 //if there is a project loaded, check if it should be saved
 
 //free the unitlist objects
-if Project1.UnitList.Count > 0 then
-  For I := 0 to Project1.UnitList.Count -1 do
+if Project.UnitList.Count > 0 then
+  For I := 0 to Project.UnitList.Count -1 do
             Begin
-            SList := TUnitInfo(Project1.UnitList.Items[I]);
+            SList := TUnitInfo(Project.UnitList.Items[I]);
             SList.Destroy;
             end;
 
-Project1.UnitList.Free;
+Project.Free;
 
 Close;
 end;
@@ -1517,10 +1527,6 @@ end;
 
 
 {------------------------------------------------------------------------------}
-procedure TMainIDE.mnuViewCompilerSettingsClicked(Sender : TObject);
-begin
- frmCompilerOptions.Show;
-end;
 
 Procedure TMainIDE.mnuViewUnitsClicked(Sender : TObject);
 Begin
@@ -1544,6 +1550,17 @@ Begin
   Messagedlg.Show;
 End;
 
+Procedure TMainIDE.mnuViewColorClicked(Sender : TObject);
+begin
+  ColorDialog1.Execute;
+end;
+
+
+Procedure TMainIDE.mnuViewFontClicked(Sender : TObject);
+Begin
+  FontDialog1.Execute;
+end;
+
 Procedure TMainIDE.DoFind(Sender : TObject);
 Begin
 
@@ -1560,6 +1577,8 @@ Begin
 DoFind(itmSearchFindAgain);
 End;
 
+{------------------------------------------------------------}
+
 Procedure TMainIDE.mnuNewProjectClicked(Sender : TObject);
 var
   SList : TUnitInfo;
@@ -1567,21 +1586,24 @@ Begin
   Assert(False, 'Trace:New Project Clicked');
 end;
 
-{------------------------------------------------------------}
-
 Procedure TMainIDE.mnuOpenProjectClicked(Sender : TObject);
 Begin
-
+  Assert(False, 'Trace:Open Project Clicked');
 end;
 
 Procedure TMainIDE.mnuSaveProjectClicked(Sender : TObject);
 Begin
-
+  Assert(False, 'Trace:Save Project Clicked');
 end;
 
+procedure TMainIDE.mnuSaveProjectAsClicked(Sender : TObject);
+begin
+  Assert(False, 'Trace:Save Project As Clicked');
+end;
 
 Procedure TMainIDE.mnuBuildProjectClicked(Sender : TObject);
 Begin
+  Assert(False, 'Trace:Build Project Clicked');
 if SourceNotebook.Empty then Begin
    Application.MessageBox('No units loaded.  Load a program first!','Error',mb_OK);
    Exit;
@@ -1613,6 +1635,7 @@ var
   TheProcess : TProcess;
   TheProgram : String;
 begin
+  Assert(False, 'Trace:Run Project Clicked');
 if SourceNotebook.Empty then Begin
    Application.MessageBox('No units loaded.  Load a program first!','Error',mb_OK);
    Exit;
@@ -1636,21 +1659,18 @@ if SourceNotebook.Empty then Begin
 
 end;
 
-
-Procedure TMainIDE.mnuViewColorClicked(Sender : TObject);
+procedure TMainIDE.mnuProjectCompilerSettingsClicked(Sender : TObject);
 begin
+ frmCompilerOptions.Show;
+end;
 
-ColorDialog1.Execute;
-
-
+procedure TMainIDE.mnuProjectOptionsClicked(Sender : TObject);
+begin
+  Assert(False, 'Trace:Project Options Clicked');
+ //frmProjectOptions.Show;
 end;
 
 
-Procedure TMainIDE.mnuViewFontClicked(Sender : TObject);
-Begin
-FontDialog1.Execute;
-
-end;
 
 Function TMainIDE.ReturnFormName(Source : TStringlist) : String;
 Var
@@ -1794,6 +1814,11 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.50  2001/01/29 05:46:30  lazarus
+  Moved Project Options and Compiler Options menus to the Project menu.
+  Added Project property to TMainIDE class to allow the project to be
+  accessed from other units.                                            CAW
+
   Revision 1.49  2001/01/18 13:27:30  lazarus
   Minor changees
   Shane
