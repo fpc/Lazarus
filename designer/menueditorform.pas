@@ -38,10 +38,9 @@ interface
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs, LResources,
   StdCtrls, Buttons, ExtCtrls, LMessages, DesignerMenu, Menus, GraphType,
-  ComponentEditors, Designer, LazarusIDEStrConsts;
+  ComponentEditors, Designer, LazarusIDEStrConsts, PropEdits;
 
 type
-
   TMainMenuEditorForm = class(TForm)
   private
     fDesignerMainMenu: TDesignerMainMenu;
@@ -53,6 +52,7 @@ type
     Label_menus: TLabel;
     //DesignerPopupMenu: TPopupMenu;
   //  fEditor: TComponentEditor;
+    procedure OnComponentDeleting(AComponent: TComponent);
   public
     constructor CreateWithMenu(aOwner: TComponent; aMenu: TMenu; aEditor: TComponentEditor; aDesigner: TDesigner);
     destructor Destroy; override;
@@ -72,21 +72,33 @@ type
   protected
   public
     constructor Create(AComponent: TComponent; ADesigner: TComponentEditorDesigner); override;
+    destructor Destroy; override;
     procedure Edit; override;
     property Menu: TMainMenu read fMenu write fMenu;
-    
-//    function Menu: TMenu;
   end;
+
+var
+  MainMenuEditorForm: TMainMenuEditorForm;
 
 implementation
 
 { TMainMenuEditorForm }
+
+procedure TMainMenuEditorForm.OnComponentDeleting(AComponent: TComponent);
+var
+  i: Integer;
+begin
+  if FindRootDesigner(AComponent)<>fDesigner then exit;
+  i:=List_menus.Items.IndexOf(AComponent.Name);
+  if i>=0 then List_menus.Items.Delete(i);
+end;
 
 constructor TMainMenuEditorForm.CreateWithMenu(aOwner: TComponent; aMenu: TMenu; aEditor: TComponentEditor; aDesigner: TDesigner);
 var
   Cmp: TPanel;
   Cmp2: TScrollBox;
   i: Integer;
+  CurComponent: TComponent;
 begin
   inherited Create(AOwner);
   
@@ -133,7 +145,6 @@ begin
     Top:=10;
     Width:=180;
     Height:=20;
-    // content of "Text" is generated from LazarusIDEStrConsts
     Text:=lisMenuEditorSelectMenu;
   end;
   
@@ -145,23 +156,22 @@ begin
     Top:=30;
     Width:=180;
     Height:=180;
-    OnCLick:=@SelectMenuClick;
+    OnClick:=@SelectMenuClick;
   end;
   
   for i:=0 to aDesigner.Form.ComponentCount - 1 do
   begin
-    if (aDesigner.Form.Components[i] is TMainMenu) or (aDesigner.Form.Components[i] is TPopupMenu) then
+    CurComponent:=aDesigner.Form.Components[i];
+    if (CurComponent is TMainMenu) or (CurComponent is TPopupMenu) then
     begin
-      List_menus.Items.Add(aDesigner.Form.Components[i].Name);
+      List_menus.Items.Add(CurComponent.Name);
     end;
   end;
   for i:=0 to List_menus.Items.Count - 1 do
     begin
-      //writeln(aMenu.Name,' --- ',List_menus.Items[i]);
       if (aMenu.Name = List_menus.Items[i]) then
       begin
         List_menus.Selected[i]:=true;
-        //writeln('Mam ho .....');
       end;
     end;
   
@@ -174,10 +184,14 @@ begin
     LoadMainMenu;
     SetCoordinates(10,10,0,DesignerMainMenu.Root);
   end;
+
+  GlobalDesignHook.AddHandlerComponentDeleting(@OnComponentDeleting);
 end;
 
 destructor TMainMenuEditorForm.Destroy;
 begin
+  if GlobalDesignHook<>nil then
+    GlobalDesignHook.RemoveAllHandlersForObject(Self);
   inherited Destroy;
 end;
 
@@ -231,12 +245,20 @@ begin
   fDesigner:=TDesigner(aDesigner);
 end;
 
+destructor TMainMenuComponentEditor.Destroy;
+begin
+  if MainMenuEditorForm.DesignerMainMenu.Editor=Self then begin
+    FreeThenNil(MainMenuEditorForm);
+  end;
+  inherited Destroy;
+end;
+
 procedure TMainMenuComponentEditor.Edit;
-var
-  MainMenuEditorForm: TMainMenuEditorForm;
 begin
   //if Menu=nil then RaiseGDBException('TMainMenuComponentEditor.Edit Menu=nil');
-  MainMenuEditorForm:=TMainMenuEditorForm.CreateWithMenu(Application, TMenu(GetComponent), Self, fDesigner);
+  if MainMenuEditorForm=nil then
+    MainMenuEditorForm:=TMainMenuEditorForm.CreateWithMenu(Application,
+                                          TMenu(GetComponent), Self, fDesigner);
   MainMenuEditorForm.Show;
   //MainMenuEditorForm.Free;
 end;

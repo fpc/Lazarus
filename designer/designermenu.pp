@@ -136,7 +136,7 @@ type
     procedure SaveAsTemplateClick(Sender: TObject);
     procedure DeleteFromTemplateClick(Sender: TObject);
     procedure OnComponentModified(Sender: TComponent);
-    
+
     // Functions for editing menus
     function AddNewItemBefore(MenuItem: PDesignerMenuItem; Ident: string): PDesignerMenuItem;
     function AddNewItemAfter(MenuItem: PDesignerMenuItem; Ident: string): PDesignerMenuItem;
@@ -266,7 +266,7 @@ begin
   DesignerPopupMenu.Items.Add(PopupMenuItem);
 
   //Handle for renaming a caption in the OI for some menuitem to rename also a
-  // propriet designermenuitem
+  // designermenuitem
   GlobalDesignHook.AddHandlerModified(@OnComponentModified);
 
   new(Root);
