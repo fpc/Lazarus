@@ -232,7 +232,7 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TCustomForm.SetVisible(Value : boolean);
 Begin
-//writeln('[TCustomForm.SetVisible] START ',Name,':',ClassName,' ',Value,' ',(fsCreating in FFormState),' ',FormUpdating);
+//writeln('[TCustomForm.SetVisible] START2 ',Name,':',ClassName,' ',Value,' ',(fsCreating in FFormState),' ',FormUpdating);
   if Value then
     Include(FFormState, fsVisible)
   else
@@ -1200,6 +1200,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.71  2002/11/12 16:18:46  lazarus
+  MG fixed hidden component page
+
   Revision 1.70  2002/11/09 18:13:33  lazarus
   MG: fixed gdkwindow checks
 

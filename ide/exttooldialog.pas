@@ -317,8 +317,11 @@ writeln('[TExternalToolList.Run] ',CmdLine);
             Result:=mrOk;
           except
             on e: EOutputFilterError do begin
+              writeln('TExternalToolList.Run ',E.Message);
               ErrorOccurred:=true;
-            end;
+            end
+            else
+              raise
           end;
         finally
           if Assigned(OnFreeOutputFilter) then

@@ -255,8 +255,9 @@ var NewPage:TRegisteredComponentPage;
   a:integer;
   NewComp:TRegisteredComponent;
 begin
+  // the hidden page is the empty ''
   if (High(ComponentClasses)-Low(ComponentClasses)<0)
-  or (Page='') or (UnitName='') then exit;
+  or (UnitName='') then exit;
   if not IsValidIdent(UnitName) then begin
     raise EComponentError.Create(
       'RegisterComponents: Invalid unitname "'+UnitName+'"');
