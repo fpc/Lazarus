@@ -1347,6 +1347,8 @@ function TLazPackageGraph.FindAmbigiousUnits(APackage: TLazPackage;
 // returns true, if ambigious units found
 // There can either be a conflict between two files (File1,File2)
 // or between a file and a package (File1,ConflictPkg)
+const
+  FileTypes = PkgFileUnitTypes-[pftVirtualUnit];
 var
   PackageTreeOfUnitTrees: TAVLTree; // tree of TPkgUnitsTree
   
@@ -1370,7 +1372,7 @@ var
     PackageTreeOfUnitTrees.Add(Result);
     for i:=0 to Pkg.FileCount-1 do begin
       PkgFile:=Pkg.Files[i];
-      if (PkgFile.FileType in PkgFileUnitTypes) and (PkgFile.UnitName<>'') then
+      if (PkgFile.FileType in FileTypes) and (PkgFile.UnitName<>'') then
         Result.Add(PkgFile);
     end;
   end;
@@ -1396,7 +1398,7 @@ var
     end;
     for i:=0 to Pkg1.FileCount-1 do begin
       PkgFile1:=Pkg1.Files[i];
-      if (PkgFile1.FileType in PkgFileUnitTypes)
+      if (PkgFile1.FileType in FileTypes)
       and (PkgFile1.UnitName<>'') then begin
         // check if a unit of Pkg1 exists in Pkg2
         PkgFile2:=UnitsTreeOfPkg2.FindPkgFileWithUnitName(PkgFile1.UnitName);
@@ -1474,6 +1476,7 @@ function TLazPackageGraph.FindFPCConflictUnit(APackage: TLazPackage;
   var
     Cnt: Integer;
     i: Integer;
+    CurFile: TPkgFile;
   begin
     Result:=false;
     if (Pkg1=nil) or (lpfVisited in Pkg1.Flags)
@@ -1486,10 +1489,13 @@ function TLazPackageGraph.FindFPCConflictUnit(APackage: TLazPackage;
     end;
     Cnt:=Pkg1.FileCount;
     for i:=0 to Cnt-1 do begin
-      Result:=CheckUnitName(Pkg1.Files[i].UnitName);
-      if Result then begin
-        File1:=Pkg1.Files[i];
-        exit;
+      CurFile:=Pkg1.Files[i];
+      if CurFile.FileType in (PkgFileUnitTypes-[pftVirtualUnit]) then begin
+        Result:=CheckUnitName(CurFile.UnitName);
+        if Result then begin
+          File1:=CurFile;
+          exit;
+        end;
       end;
     end;
     Result:=CheckDependencyList(Pkg1.FirstRequiredDependency);
