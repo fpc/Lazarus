@@ -25,10 +25,11 @@ begin
   FKind := bkCustom;
   FLayout := blGlyphLeft;
   FSpacing := 3;
+  fMargin:=-1;
   FButtonGlyph := TButtonGlyph.Create;
   FButtonGlyph.OnChange := @GlyphChanged;
   Align := alNone;
-  SetInitialBounds(1,1,75,25);
+  SetInitialBounds(0,0,75,25);
   RealizeKind;
 end;
 
@@ -122,6 +123,15 @@ Begin
   if FLayout = AValue then Exit;
   FLayout := AValue;
   if HandleAllocated then
+    CNSendMessage(LM_LAYOUTCHANGED,Self,nil);
+end;
+
+procedure TBitBtn.SetMargin(const AValue: integer);
+begin
+  if FMargin=AValue then exit;
+  FMargin:=AValue;
+  if HandleAllocated then
+    //still send the layout message because it still calls the same procedure
     CNSendMessage(LM_LAYOUTCHANGED,Self,nil);
 end;
 

@@ -143,12 +143,14 @@ type
     FButtonGlyph: TButtonGlyph;
     FKind: TBitBtnKind;
     FLayout: TButtonLayout;
+    FMargin: integer;
     FSpacing: Integer;
     Function GetGlyph: TBitmap;
     Function IsGlyphStored: Boolean;
     Procedure SetGlyph(AValue: TBitmap);
     Procedure SetKind(AValue: TBitBtnKind);
     Procedure SetLayout(AValue: TButtonLayout);
+    procedure SetMargin(const AValue: integer);
     Procedure SetSpacing(AValue: Integer);
     procedure RealizeKind;
 
@@ -170,6 +172,7 @@ type
     property Glyph: TBitmap read GetGlyph write SetGlyph stored IsGlyphStored;
     property Kind: TBitBtnKind read FKind write SetKind default bkCustom;
     property Layout: TButtonLayout read FLayout write SetLayout default blGlyphLeft;
+    property Margin: integer read FMargin write SetMargin default -1;
     property ModalResult;
     property OnChangeBounds;
     property OnClick;
@@ -327,6 +330,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.62  2004/03/17 13:10:01  mattias
+  added TBitBtn.Margin
+
   Revision 1.61  2004/02/27 00:42:41  marc
   * Interface CreateComponent splitup
   * Implemented CreateButtonHandle on GTK interface
