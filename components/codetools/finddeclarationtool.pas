@@ -1759,7 +1759,7 @@ begin
     Params.SetResult(CleanFindContext);
   end;
   {$IFDEF CTDEBUG}
-  DbgOut'[TFindDeclarationTool.FindDeclarationOfIdentAtCursor] Ident=',
+  DbgOut('[TFindDeclarationTool.FindDeclarationOfIdentAtCursor] Ident=',
     '"',GetIdentifier(Params.Identifier),'" ');
   if Params.NewNode<>nil then
     DebugLn('Node=',Params.NewNode.DescAsString,' ',Params.NewCodeTool.MainFilename)
@@ -1858,17 +1858,17 @@ var
       // cached result found
       Params.SetResult(LastCacheEntry);
       {$IFDEF ShowNodeCache}
-      DbgOut':::: TFindDeclarationTool.FindIdentifierInContext.FindInNodeCache');
+      DbgOut(':::: TFindDeclarationTool.FindIdentifierInContext.FindInNodeCache');
       DebugLn(' Ident=',GetIdentifier(Params.Identifier),
                ' Wanted=[',NodeCacheEntryFlagsAsString(NodeCacheEntryFlags),']',
                ' Cache=[',NodeCacheEntryFlagsAsString(LastCacheEntry^.Flags),']'
              );
       DebugLn('    ContextNode=',ContextNode.DescAsString,
-              ' StartPos=',ContextNode.StartPos,
-              ' EndPos=',ContextNode.EndPos,
+              ' StartPos=',DbgS(ContextNode.StartPos),
+              ' EndPos=',DbgS(ContextNode.EndPos),
               ' Self=',MainFilename);
-      DebugLn('  LastCacheEntry(Pos=',LastCacheEntry^.CleanStartPos,
-              '-',LastCacheEntry^.CleanEndPos,')');
+      DebugLn('  LastCacheEntry(Pos=',DbgS(LastCacheEntry^.CleanStartPos),
+              '-',DbgS(LastCacheEntry^.CleanEndPos),')');
       if (Params.NewNode<>nil) then
         DebugLn('   NewTool=',Params.NewCodeTool.MainFilename,
                 ' NewNode=',Params.NewNode.DescAsString)
@@ -1933,10 +1933,9 @@ var
       DebugLn('[TFindDeclarationTool.FindIdentifierInContext] COLLECT CheckResult Ident=',
       '"',GetIdentifier(Params.Identifier),'"',
       ' File="',ExtractFilename(MainFilename)+'"',
-      ' Flags=[',FindDeclarationFlagsAsString(Params.Flags),']',
-      ' NewResult=',NewResult,
-      ' CallOnIdentifierFound=',CallOnIdentifierFound,
-      );
+      ' Flags=[',FindDeclarationFlagsAsString(Params.Flags)+']',
+      ' NewResult=',DbgS(NewResult),
+      ' CallOnIdentifierFound=',DbgS(CallOnIdentifierFound));
     end;
     {$ENDIF}
     if NewResult then begin
@@ -2809,10 +2808,10 @@ begin
     FinalizeNodeStack(@NodeStack);
   end;
   {$IFDEF ShowFoundIdentifier}
-  DbgOut'[TFindDeclarationTool.FindBaseTypeOfNode] END Node=');
-  if Node<>nil then DbgOutNode.DescAsString) else DbgOut'NIL');
-  DbgOut' Result=');
-  if Result.Node<>nil then DbgOutResult.Node.DescAsString) else DbgOut'NIL');
+  DbgOut('[TFindDeclarationTool.FindBaseTypeOfNode] END Node=');
+  if Node<>nil then DbgOut(Node.DescAsString) else DbgOut('NIL');
+  DbgOut(' Result=');
+  if Result.Node<>nil then DbgOut(Result.Node.DescAsString) else DbgOut('NIL');
   DebugLn('');
   {$ENDIF}
 end;
@@ -4073,7 +4072,7 @@ begin
       // identifier in cache found
       {$IFDEF ShowInterfaceCache}
       DebugLn('[TFindDeclarationTool.FindIdentifierInInterface] Ident already in cache:',
-      ' Exists=',CacheEntry^.Node<>nil);
+      ' Exists=',DbgS(CacheEntry^.Node<>nil));
       {$ENDIF}
       if CacheEntry^.Node=nil then begin
         // identifier not in this interface
@@ -5320,12 +5319,12 @@ begin
     RaiseIdentExpected;
 
   {$IFDEF ShowExprEval}
-  DbgOut'[TFindDeclarationTool.ReadOperandTypeAtCursor] END ',
+  DbgOut('[TFindDeclarationTool.ReadOperandTypeAtCursor] END ',
   ExpressionTypeDescNames[Result.Desc]);
   if Result.Context.Node<>nil then
-    DbgOut' Context.Node=',Result.Context.Node.DescAsString)
+    DbgOut(' Context.Node=',Result.Context.Node.DescAsString)
   else
-    DbgOut' Context.Node=nil');
+    DbgOut(' Context.Node=nil');
   DebugLn('');
   {$ENDIF}
 end;
@@ -6402,7 +6401,8 @@ begin
     end;
   end;
   {$IFDEF ShowCacheDependencies}
-  DebugLn('[TFindDeclarationTool.NodeCacheGlobalWriteLockStepDidNotChange] Result=',Result,' ',MainFilename);
+  DebugLn('[TFindDeclarationTool.NodeCacheGlobalWriteLockStepDidNotChange] Result=',
+          DbgS(Result),' ',MainFilename);
   {$ENDIF}
 end;
 
@@ -6431,7 +6431,8 @@ begin
     Result:=UpdateNeeded(Scanner.ScanTillInterfaceEnd);
   finally
     {$IFDEF ShowCacheDependencies}
-    DebugLn('[TFindDeclarationTool.CheckDependsOnNodeCaches] Result=',Result,' ',MainFilename);
+    DebugLn('[TFindDeclarationTool.CheckDependsOnNodeCaches] Result=',
+            DbgS(Result),' ',MainFilename);
     {$ENDIF}
     FCheckingNodeCacheDependencies:=false;
     if Result then ClearNodeCaches(true);
@@ -6461,7 +6462,8 @@ begin
   and ((FDependsOnCodeTools=nil) or (FDependsOnCodeTools.Count=0)) then
     exit;
   {$IFDEF ShowCacheDependencies}
-  DebugLn('[TFindDeclarationTool.ClearNodeCaches] Force=',Force,' ',MainFilename);
+  DebugLn('[TFindDeclarationTool.ClearNodeCaches] Force=',
+          DbgS(Force),' ',MainFilename);
   {$ENDIF}
     
   // quick check: check if in the same GlobalWriteLockStep
@@ -6667,44 +6669,44 @@ begin
   if beVerbose then begin
     DebugLn('(((((((((((((((((((((((((((==================');
     
-    DbgOut'TFindDeclarationTool.AddResultToNodeCaches ',
+    DbgOut('TFindDeclarationTool.AddResultToNodeCaches ',
     ' Ident=',GetIdentifier(Params.Identifier));
-    DbgOut' SearchedForward=',SearchedForward);
-    DbgOut' Flags=[');
-    if ncefSearchedInParents in SearchRangeFlags then DbgOut'Parents');
-    if ncefSearchedInAncestors in SearchRangeFlags then DbgOut',Ancestors');
+    DbgOut(' SearchedForward=',DbgS(SearchedForward));
+    DbgOut(' Flags=[');
+    if ncefSearchedInParents in SearchRangeFlags then DbgOut('Parents');
+    if ncefSearchedInAncestors in SearchRangeFlags then DbgOut(',Ancestors');
     DebugLn(']');
     
-    DbgOut'     StartNode=',StartNode.DescAsString,
-      '(',StartNode.StartPos,'-',StartNode.EndPos,')=',
+    DbgOut('     StartNode=',StartNode.DescAsString,
+      '('+DbgS(StartNode.StartPos),'-',DbgS(StartNode.EndPos)+')=',
       WriteSrcPos(Self,StartNode.StartPos));
     NodeOwner:=FindOwnerOfCodeTreeNode(StartNode);
-    if NodeOwner<>Self then DbgOut' StartNodeOwner=',NodeOwnerAsString(NodeOwner));
+    if NodeOwner<>Self then DbgOut(' StartNodeOwner=',NodeOwnerAsString(NodeOwner));
     DebugLn('');
     
     if EndNode<>nil then
-      DbgOut' EndNode=',EndNode.DescAsString,
-        '(',EndNode.StartPos,'-',EndNode.EndPos,')=',
+      DbgOut(' EndNode=',EndNode.DescAsString,
+        '('+DbgS(EndNode.StartPos),'-',DbgS(EndNode.EndPos)+')=',
         WriteSrcPos(Self,EndNode.StartPos))
     else
-      DbgOut' EndNode=nil');
+      DbgOut(' EndNode=nil');
     NodeOwner:=FindOwnerOfCodeTreeNode(EndNode);
-    if NodeOwner<>Self then DbgOut' EndNodeOwner=',NodeOwnerAsString(NodeOwner));
+    if NodeOwner<>Self then DbgOut(' EndNodeOwner=',NodeOwnerAsString(NodeOwner));
     DebugLn('');
 
     DebugLn('     Self=',ExtractFileName(MainFilename));
     
     if NewNode<>nil then begin
       DebugLn('       NewNode=',NewNode.DescAsString,
-              '(',NewNode.StartPos,'-',NewNode.EndPos,')=',
+              '(',DbgS(NewNode.StartPos),'-',DbgS(NewNode.EndPos),')=',
               WriteSrcPos(NewTool,NewNode.StartPos),
                  ' NewTool=',ExtractFileName(NewTool.MainFilename));
     end else begin
       DebugLn('       NOT FOUND');
     end;
     
-    DebugLn('  CleanStartPos=',CleanStartPos,' ',WriteSrcPos(Self,CleanStartPos));
-    DebugLn('  CleanEndPos=',CleanEndPos,' ',WriteSrcPos(Self,CleanEndPos));
+    DebugLn('  CleanStartPos=',DbgS(CleanStartPos),' ',WriteSrcPos(Self,CleanStartPos));
+    DebugLn('  CleanEndPos=',DbgS(CleanEndPos),' ',WriteSrcPos(Self,CleanEndPos));
   end;
   {$ENDIF}
   LastNodeCache:=nil;
@@ -6777,16 +6779,16 @@ var i: integer;
   BaseTypeCache: TBaseTypeCache;
 begin
   {$IFDEF ShowBaseTypeCache}
-  DbgOut'[TFindDeclarationTool.CreateBaseTypeCaches] ',
-  ' StackPtr=',NodeStack^.StackPtr);
+  DbgOut('[TFindDeclarationTool.CreateBaseTypeCaches] ',
+  ' StackPtr=',DbgS(NodeStack^.StackPtr));
   DebugLn(' Self=',MainFilename);
   if Result.Node<>nil then
-    DbgOut' Result=',Result.Node.DescAsString,
-       ' Start=',Result.Node.StartPos,
-       ' End=',Result.Node.EndPos,
-       ' "',copy(Src,Result.Node.StartPos,15),'" ',Result.Tool.MainFilename)
+    DbgOut(' Result='+Result.Node.DescAsString,
+       ' Start='+DbgS(Result.Node.StartPos),
+       ' End='+DbgS(Result.Node.EndPos),
+       ' "'+copy(Src,Result.Node.StartPos,15)+'" ',Result.Tool.MainFilename)
   else
-    DbgOut' Result=nil');
+    DbgOut(' Result=nil');
   DebugLn('');
   {$ENDIF}
   for i:=0 to (NodeStack^.StackPtr-1) do begin
@@ -6794,7 +6796,7 @@ begin
     if (Node.Cache=nil)
     and ((Result.Tool<>Self) or (Result.Node<>Node)) then begin
       {$IFDEF ShowBaseTypeCache}
-      DebugLn('  i=',i,' Node=',Node.DescAsString,' "',copy(Src,Node.StartPos,15),'"');
+      DebugLn('  i=',DbgS(i),' Node=',Node.DescAsString,' "',copy(Src,Node.StartPos,15),'"');
       {$ENDIF}
       BaseTypeCache:=CreateNewBaseTypeCache(Node);
       if BaseTypeCache<>nil then begin
