@@ -1388,30 +1388,8 @@ begin
 end;
 
 procedure TProject.SetProjectFile(const NewProjectFilename: string);
-var ExpProjFilename,NewProgramName,Ext:string;
-  NewSource: TCodeBuffer;
 begin
-  ExpProjFilename:=NewProjectFilename;
-  DoDirSeparators(ExpProjFilename);
-  ExpProjFilename:=ExpandFilename(ExpProjFilename);
-  if ExpProjFilename=fProjectFile then exit;
-  Ext:=ExtractFileExt(ExpProjFilename);
-  if ProjectType in [ptProgram, ptApplication] then begin
-    // change programname in source
-    NewProgramName:=ExtractFilename(ExpProjFilename);
-    NewProgramName:=copy(NewProgramName,1,length(NewProgramName)-length(Ext));
-    if MainUnit>=0 then
-      CodeToolBoss.RenameSource(Units[MainUnit].Source,NewProgramName);
-  end;
-  if MainUnit>=0 then begin
-    NewSource:=CodeToolBoss.CreateFile(ChangeFileExt(ExpProjFilename
-       ,ProjectDefaultExt[ProjectType]));
-    if Units[MainUnit].Source<>nil then
-      NewSource.Source:=Units[MainUnit].Source.Source;
-    Units[MainUnit].Source:=NewSource;
-    Units[MainUnit].Modified:=true;
-  end;
-  fProjectFile:=ExpProjFilename;
+  fProjectFile:=NewProjectFilename;
   Modified:=true;
 end;
 
@@ -1491,6 +1469,9 @@ end.
 
 {
   $Log$
+  Revision 1.28  2001/10/10 22:13:13  lazarus
+  MG: fixed create project from program file
+
   Revision 1.27  2001/10/09 09:46:50  lazarus
   MG: added codetools, fixed synedit unindent, fixed MCatureHandle
 

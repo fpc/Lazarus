@@ -1808,7 +1808,7 @@ var ActiveSrcEdit:TSourceEditor;
   ResourceCode, LFMCode, NewSource: TCodeBuffer;
   LinkIndex: integer;
 begin
-writeln('TMainIDE.DoSaveEditorUnit A PageIndex=',PageIndex);
+writeln('TMainIDE.DoSaveEditorUnit A PageIndex=',PageIndex,' SaveAs=',SaveAs,' SaveToTestDir=',SaveToTestDir);
 {$IFDEF IDE_MEM_CHECK}
 CheckHeap(IntToStr(GetMem_Cnt));
 {$ENDIF}
@@ -2176,9 +2176,10 @@ CheckHeap(IntToStr(GetMem_Cnt));
       NewProgramName:=CodeToolBoss.GetSourceName(PreReadBuf);
       if NewProgramName<>'' then begin
         if FileExists(ChangeFileExt(AFilename,'.lpi')) then begin
-          AText:='The file "'+AFilename+'"'
-                +' seems to be the program file of an existing lazarus project.'
-                +' Open project? Cancel will load the source.';
+          AText:='The file "'+AFilename+'"'#13
+              +'seems to be the program file of an existing lazarus project.'#13
+              +'Open project?'#13
+              +'Cancel will load the source.';
           ACaption:='Project info file detected';
           if MessageDlg(ACaption, AText, mtconfirmation, 
                [mbok, mbcancel], 0)=mrOk then
@@ -2187,10 +2188,10 @@ CheckHeap(IntToStr(GetMem_Cnt));
             exit;
           end;
         end else begin
-          AText:='The file "'+AFilename+'"'
-              +' seems to be a program. Close current project'
-              +' and create a new lazarus project for this program?'
-              +'  Cancel will load the source.';
+          AText:='The file "'+AFilename+'"'#13
+              +'seems to be a program. Close current project'
+              +' and create a new lazarus project for this program?'#13
+              +'Cancel will load the source.';
           ACaption:='Program detected';
           if MessageDlg(ACaption, AText, mtconfirmation,
               [mbok, mbcancel], 0)=mrOk then 
@@ -2341,13 +2342,14 @@ end;
 
 function TMainIDE.DoOpenMainUnit(ProjectLoading: boolean): TModalResult;
 var MainUnitInfo: TUnitInfo;
-  NewPageName: string;
+  NewPageName, Ext: string;
   NewSrcEdit: TSourceEditor;
 begin
 //writeln('[TMainIDE.DoOpenMainUnit] A');
   Result:=mrCancel;
   if Project.MainUnit<0 then exit;
   MainUnitInfo:=Project.Units[Project.MainUnit];
+//writeln('TMainIDE.DoOpenMainUnit B1 ',MainUnitInfo.Source.SourceLength);
   if MainUnitInfo.Loaded then begin
     // already loaded switch to source editor
     SourceNotebook.NoteBook.PageIndex:=MainUnitInfo.EditorIndex;
@@ -2355,18 +2357,16 @@ begin
     exit;
   end;
   // MainUnit not loaded -> create source editor
-  NewPageName:=MainUnitInfo.Unitname;
-//writeln('TMainIDE.DoOpenMainUnit A ',NewPageName);
+  NewPageName:=ExtractFileName(MainUnitInfo.Filename);
+  Ext:=uppercase(ExtractFileExt(MainUnitInfo.Filename));
+  if (Ext='.PAS') or (Ext='.PP') then
+    NewPageName:=copy(NewPageName,1,length(NewPageName)-length(Ext));
+//writeln('TMainIDE.DoOpenMainUnit B ',NewPageName,'  ',MainUnitInfo.Source.SourceLength);
   if NewpageName='' then
     NewPageName:=CodeToolBoss.GetSourceName(MainUnitInfo.Source);
-  if NewPageName='' then begin
-    NewPageName:=ExtractFileName(MainUnitInfo.Filename);
-    NewPageName:=copy(NewPageName,1,
-      length(NewPageName)-length(ExtractFileExt(NewPageName)));
-  end;
   if NewPageName='' then
     NewPageName:='mainunit';
-//writeln('TMainIDE.DoOpenMainUnit B ',NewPageName);
+//writeln('TMainIDE.DoOpenMainUnit C ',NewPageName);
   SourceNotebook.NewFile(NewPageName,MainUnitInfo.Source);
   if not ProjectLoading then
     Project.InsertEditorIndex(SourceNotebook.NoteBook.PageIndex);
@@ -2535,7 +2535,7 @@ begin
     Result:=mrAbort;
     exit;
   end;
-writeln('TMainIDE.DoSaveProject A');
+writeln('TMainIDE.DoSaveProject A SaveAs=',SaveAs,' SaveToTestDir=',SaveToTestDir);
   // check that all new units are saved first to get valid filenames
   for i:=0 to Project.UnitCount-1 do begin
     if (Project.Units[i].Loaded) and (Project.Units[i].IsVirtual)
@@ -2558,6 +2558,7 @@ writeln('TMainIDE.DoSaveProject A');
         MainUnitInfo.EditorIndex);
       if MainUnitSrcEdit.Modified then begin
         MainUnitInfo.Source.Assign(MainUnitSrcEdit.Source);
+writeln('  >>> ',MainUnitInfo.Source.SourceLength);
         MainUnitInfo.Modified:=true;
       end;
     end;
@@ -2584,6 +2585,7 @@ writeln('TMainIDE.DoSaveProject A');
     end;
   end;
 
+writeln('  AAA ',Project.ProjectFile);
   SaveAs:=SaveAs or (Project.ProjectFile='');
   if SaveAs and (not SaveToTestDir) then begin
     // let user choose a filename
@@ -2829,7 +2831,7 @@ var NewProjectType:TProjectType;
   ProgramTitle, Ext: string;
   MainUnitInfo: TUnitInfo;
 begin
-writeln('[TMainIDE.DoCreateProjectForProgram] A');
+//writeln('[TMainIDE.DoCreateProjectForProgram] A');
   Result:=mrCancel;
 
   if SomethingOfProjectIsModified then begin
@@ -2881,7 +2883,7 @@ writeln('[TMainIDE.DoCreateProjectForProgram] A');
  
   UpdateCaption;
 
-writeln('[TMainIDE.DoCreateProjectForProgram] END');
+//writeln('[TMainIDE.DoCreateProjectForProgram] END');
   Result:=mrOk;
 end;
 
@@ -3879,8 +3881,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.116  2001/10/10 17:55:01  lazarus
-  MG: fixed caret lost, gtk cleanup, bracket lvls, bookmark saving
+  Revision 1.117  2001/10/10 22:13:13  lazarus
+  MG: fixed create project from program file
 
   Revision 1.115  2001/10/09 09:46:49  lazarus
   MG: added codetools, fixed synedit unindent, fixed MCatureHandle
