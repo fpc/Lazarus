@@ -516,6 +516,7 @@ end;
 function TCodeToolManager.HandleException(AnException: Exception): boolean;
 var ErrorSrcTool: TCustomCodeTool;
 begin
+writeln(' BBB ');
   fErrorMsg:=AnException.Message;
   if not ((AnException is ELinkScannerError) or (AnException is ECodeToolError))
   then begin

@@ -1343,6 +1343,16 @@ writeln('[TFindDeclarationTool.FindIdentifierInContext] Searching in Parent  Con
               // do not search again in this node, go on ...
               ;
               
+            ctnVarDefinition, ctnConstDefinition:
+              if (ContextNode.Parent<>nil)
+              and (ContextNode.Parent.Desc=ctnParameterList) then begin
+                // pascal allows declarations like: 'var a: a;' in parameters
+                // -> skip variable and search in next context node
+                ;
+              end else begin
+                break;
+              end;
+              
             ctnProcedure:
               begin
                 Result:=FindIdentifierInClassOfMethod(ContextNode,Params);
@@ -1992,13 +2002,25 @@ writeln('[TFindDeclarationTool.FindBaseTypeOfNode] Class is forward');
           if IsPredefinedIdentifier then
             Exclude(Params.Flags,fdfExceptionOnNotFound);
           Params.ContextNode:=Result.Node.Parent;
+          if (Params.ContextNode.Desc in [ctnVarDefinition,ctnConstDefinition])
+          then
+            // pascal allows things like 'var a: a;' -> skip var definition
+            Params.ContextNode:=Params.ContextNode.Parent;
           if Params.ContextNode.Desc=ctnParameterList then
+            // skip search in parameter list
             Params.ContextNode:=Params.ContextNode.Parent;
           if Params.ContextNode.Desc=ctnProcedureHead then
+            // skip search in proc parameters
             Params.ContextNode:=Params.ContextNode.Parent;
-          if FindIdentifierInContext(Params) then
+          if FindIdentifierInContext(Params) then begin
+            if NodeExistsInStack(@NodeStack,Params.NewNode) then begin
+              // circle detected
+              Params.NewCodeTool.MoveCursorToNodeStart(Params.NewNode);
+              Params.NewCodeTool.RaiseException('circle in definitions'
+                +' (identifier='+GetIdentifier(Params.Identifier)+')');
+            end;
             Result:=Params.NewCodeTool.FindBaseTypeOfNode(Params,Params.NewNode)
-          else
+          end else
             // predefined identifier
             Result:=CreateFindContext(Self,Result.Node);
           exit;
@@ -4324,7 +4346,6 @@ begin
 end;
 
 procedure TExprTypeList.Add(ExprType: TExpressionType);
-var NewSize: integer;
 begin
   inc(Count);
   if Count>Capacity then Grow;
