@@ -18,7 +18,7 @@ uses
   CodeToolManager, CustomCodeTool, PascalParserTool, FindDeclarationTool,
   StdCodeTools, MethodJumpTool, EventCodeTool, CodeCompletionTool, LinkScanner,
   BasicCodeTools, CodeTree, CodeAtom, SourceChanger, CodeCache,
-  KeywordFuncLists, SourceLog, ExprEval, AVL_Tree, DefineTemplates;
+  KeywordFuncLists, SourceLog, ExprEval, DefineTemplates, FileProcs, AVL_Tree;
 
 
 implementation
@@ -28,6 +28,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.5  2001/12/15 22:57:19  lazarus
+  MG: added find declaration (not useful yet)
+
   Revision 1.4  2001/12/12 21:11:29  lazarus
   MG: started finddeclarationtool
 

@@ -140,6 +140,11 @@ type
           var NewCode: TCodeBuffer;
           var NewX, NewY, NewTopLine: integer): boolean;
 
+    // find declaration
+    function FindDeclaration(Code: TCodeBuffer; X,Y: integer;
+          var NewCode: TCodeBuffer;
+          var NewX, NewY, NewTopLine: integer): boolean;
+
     // functions for events in the object inspector
     procedure GetCompatibleMethods(Code: TCodeBuffer; const AClassName: string;
           TypeData: PTypeData; Proc: TGetStringProc);
@@ -496,7 +501,6 @@ begin
 writeln('TCodeToolManager.JumpToMethod A ',Code.Filename,' x=',x,' y=',y);
 {$ENDIF}
   if not InitCodeTool(Code) then exit;
-  // use MethodJumpingCodeTool
   CursorPos.X:=X;
   CursorPos.Y:=Y;
   CursorPos.Code:=Code;
@@ -515,6 +519,39 @@ writeln('TCodeToolManager.JumpToMethod B ',FCodeTool.Scanner<>nil);
   end;
 {$IFDEF CTDEBUG}
 writeln('TCodeToolManager.JumpToMethod END ');
+{$ENDIF}
+end;
+
+function TCodeToolManager.FindDeclaration(Code: TCodeBuffer; X,Y: integer;
+  var NewCode: TCodeBuffer;
+  var NewX, NewY, NewTopLine: integer): boolean;
+var
+  CursorPos: TCodeXYPosition;
+  NewPos: TCodeXYPosition;
+begin
+  Result:=false;
+{$IFDEF CTDEBUG}
+writeln('TCodeToolManager.FindDeclaration A ',Code.Filename,' x=',x,' y=',y);
+{$ENDIF}
+  if not InitCodeTool(Code) then exit;
+  CursorPos.X:=X;
+  CursorPos.Y:=Y;
+  CursorPos.Code:=Code;
+{$IFDEF CTDEBUG}
+writeln('TCodeToolManager.FindDeclaration B ',FCodeTool.Scanner<>nil);
+{$ENDIF}
+  try
+    Result:=FCodeTool.FindDeclaration(CursorPos,NewPos,NewTopLine);
+    if Result then begin
+      NewX:=NewPos.X;
+      NewY:=NewPos.Y;
+      NewCode:=NewPos.Code;
+    end;
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+{$IFDEF CTDEBUG}
+writeln('TCodeToolManager.FindDeclaration END ');
 {$ENDIF}
 end;
 

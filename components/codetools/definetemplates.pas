@@ -22,9 +22,10 @@
 
   Abstract:
     This unit is a support unit for the code tools. It manages compilation
-    information which is not stored in the source, like Makefile information and
-    compiler command line options. This information is needed to successfully
-    find the right units, include files, predefined variables, etc..
+    information, which is not stored in the source, like Makefile information
+    and compiler command line options. This information is needed to
+    successfully find the right units, include files, predefined variables,
+    etc..
     
     The information is stored in a TDefineTree, which contains nodes of type
     TDefineTemplate. Each TDefineTemplate is a tree of defines, undefines,
@@ -1459,7 +1460,7 @@ var DefTempl, MainDir,
   end;
 
 // function TDefinePool.CreateFPCSrcTemplate(
-//  const FPCSrcDir: string): TDefineTemplate;
+//   const FPCSrcDir: string): TDefineTemplate;
 begin
   Result:=nil;
   if FPCSrcDir='' then exit;

@@ -41,9 +41,10 @@ uses
   {$ENDIF}
   Classes, SysUtils, CodeTree, CodeAtom, CustomCodeTool, SourceLog,
   KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache, AVL_Tree, TypInfo,
-  PascalParserTool;
+  PascalParserTool, FileProcs, DefineTemplates;
 
 type
+  // searchpath delimiter is semicolon
   TOnGetSearchPath = function(Sender: TObject): string;
 
   TFindDeclarationTool = class(TPascalParserTool)
@@ -55,7 +56,8 @@ type
   public
     function FindDeclaration(CursorPos: TCodeXYPosition;
       var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
-    function FindUnit(const AnUnitName, AnUnitInFilename: string): TCodeBuffer;
+    function FindUnitSource(const AnUnitName,
+      AnUnitInFilename: string): TCodeBuffer;
     property OnGetUnitSourceSearchPath: TOnGetSearchPath
       read FOnGetUnitSourceSearchPath write FOnGetUnitSourceSearchPath;
   end;
@@ -86,6 +88,9 @@ writeln('TFindDeclarationTool.FindDeclaration B');
   r:=CaretToCleanPos(CursorPos, CleanCursorPos);
   if (r<>0) and (r<>-1) then
     RaiseException('Cursor outside of code');
+{$IFDEF CTDEBUG}
+writeln('TFindDeclarationTool.FindDeclaration C CleanCursorPos=',CleanCursorPos);
+{$ENDIF}
   // find CodeTreeNode at cursor
   CursorNode:=FindDeepestNodeAtPos(CleanCursorPos);
   if CursorNode=nil then
@@ -110,6 +115,9 @@ writeln('TFindDeclarationTool.FindDeclarationInUsesSection A');
 {$ENDIF}
   // reparse uses section
   MoveCursorToNodeStart(UsesNode);
+  ReadNextAtom;
+  if not UpAtomIs('USES') then
+    RaiseException('syntax error: expected uses, but '+GetAtom+' found');
   repeat
     ReadNextAtom;  // read name
     if CurPos.StartPos>CleanPos then break;
@@ -135,7 +143,7 @@ writeln('TFindDeclarationTool.FindDeclarationInUsesSection A');
                      UnitInFilePos.EndPos-UnitInFilePos.StartPos)
       else
         UnitInFilename:='';
-      NewPos.Code:=FindUnit(UnitName,UnitInFilename);
+      NewPos.Code:=FindUnitSource(UnitName,UnitInFilename);
       if NewPos.Code=nil then
         RaiseException('unit not found: '+UnitName);
       NewPos.X:=1;
@@ -154,15 +162,144 @@ writeln('TFindDeclarationTool.FindDeclarationInUsesSection END cursor not on uni
 {$ENDIF}
 end;
 
-function TFindDeclarationTool.FindUnit(const AnUnitName,
+function TFindDeclarationTool.FindUnitSource(const AnUnitName,
   AnUnitInFilename: string): TCodeBuffer;
+
+  function LoadFile(const ExpandedFilename: string;
+    var NewCode: TCodeBuffer): boolean;
+  begin
+    NewCode:=TCodeBuffer(Scanner.OnLoadSource(Self,ExpandedFilename));
+    Result:=NewCode<>nil;
+  end;
+  
+  function SearchUnitFileInDir(const ADir, AnUnitName: string): TCodeBuffer;
+  var APath: string;
+  begin
+    APath:=ADir;
+    if (APath<>'') and (APath[length(APath)]<>OSDirSeparator) then
+      APath:=APath+OSDirSeparator;
+    {$IFNDEF win32}
+    if LoadFile(ADir+lowercase(AnUnitName)+'.pp',Result) then exit;
+    if LoadFile(ADir+lowercase(AnUnitName)+'.pas',Result) then exit;
+    {$ENDIF}
+    if LoadFile(ADir+AnUnitName+'.pp',Result) then exit;
+    if LoadFile(ADir+AnUnitName+'.pas',Result) then exit;
+    Result:=nil;
+  end;
+
+  function SearchUnitFileInPath(const APath, TheUnitName: string): TCodeBuffer;
+  var PathStart, PathEnd: integer;
+  begin
+    PathStart:=1;
+    while PathStart<=length(APath) do begin
+      PathEnd:=PathStart;
+      while (PathEnd<=length(APath)) and (APath[PathEnd]<>';') do inc(PathEnd);
+      if PathEnd>PathStart then begin
+        Result:=SearchUnitFileInDir(copy(APath,PathStart,PathEnd-PathStart),
+                                    TheUnitName);
+        if Result<>nil then exit;
+      end;
+      PathStart:=PathEnd+1;
+    end;
+    Result:=nil;
+  end;
+
+  function SearchFileInPath(const APath, RelativeFilename: string): TCodeBuffer;
+  var PathStart, PathEnd: integer;
+    ADir: string;
+  begin
+    PathStart:=1;
+    while PathStart<=length(APath) do begin
+      PathEnd:=PathStart;
+      while (PathEnd<=length(APath)) and (APath[PathEnd]<>';') do inc(PathEnd);
+      if PathEnd>PathStart then begin
+        ADir:=copy(APath,PathStart,PathEnd-PathStart);
+        if (ADir<>'') and (ADir[length(ADir)]<>OSDirSeparator) then
+          ADir:=ADir+OSDirSeparator;
+        if LoadFile(ADir+RelativeFilename,Result) then exit;
+      end;
+      PathStart:=PathEnd+1;
+    end;
+    Result:=nil;
+  end;
+  
+  function SearchUnitInUnitLinks(const TheUnitName: string): TCodeBuffer;
+  var UnitLinks, CurFilename: string;
+    UnitLinkStart, UnitLinkEnd: integer;
+  begin
+    Result:=nil;
+    UnitLinks:=Scanner.Values['$('+ExternalMacroStart+'UnitLinks)'];
+    UnitLinkStart:=1;
+    while UnitLinkStart<=length(UnitLinks) do begin
+      UnitLinkEnd:=UnitLinkStart;
+      while (UnitLinkEnd<=length(UnitLinks)) and (UnitLinks[UnitLinkEnd]<>' ')
+      do
+        inc(UnitLinkEnd);
+      if UnitLinkEnd>UnitLinkStart then begin
+        if AnsiCompareText(TheUnitName,
+                     copy(UnitLinks,UnitLinkStart,UnitLinkEnd-UnitLinkStart))=0
+        then begin
+          // unit found -> parse filename
+          UnitLinkStart:=UnitLinkEnd+1;
+          UnitLinkEnd:=UnitLinkStart;
+          while (UnitLinkEnd<=length(UnitLinks))
+          and (UnitLinks[UnitLinkEnd]<>#13) do
+            inc(UnitLinkEnd);
+          if UnitLinkEnd>UnitLinkStart then begin
+            CurFilename:=copy(UnitLinks,UnitLinkStart,UnitLinkEnd-UnitLinkStart);
+            LoadFile(CurFilename,Result);
+            exit;
+          end;
+        end;
+      end else
+        break;
+      UnitLinkStart:=UnitLinkEnd+1;
+    end;
+  end;
+
+
+var CurDir, UnitSrcSearchPath: string;
+  MainCodeIsVirtual: boolean;
 begin
 {$IFDEF CTDEBUG}
 writeln('TFindDeclarationTool.FindUnit A AnUnitName=',AnUnitName,' AnUnitInFilename=',AnUnitInFilename);
 {$ENDIF}
   Result:=nil;
-
-  
+  if (AnUnitName='') or (Scanner=nil) or (Scanner.MainCode=nil)
+  or (not (TObject(Scanner.MainCode) is TCodeBuffer))
+  or (Scanner.OnLoadSource=nil) then
+    exit;
+  if Assigned(OnGetUnitSourceSearchPath) then
+    UnitSrcSearchPath:=OnGetUnitSourceSearchPath(Self)
+  else
+    UnitSrcSearchPath:=Scanner.Values['$('+ExternalMacroStart+'SrcPath)'];
+  if AnUnitInFilename<>'' then begin
+    // unitname in 'filename'
+    if FilenameIsAbsolute(AnUnitInFilename) then begin
+      Result:=TCodeBuffer(Scanner.OnLoadSource(Self,AnUnitInFilename));
+    end else begin
+      // search AnUnitInFilename in searchpath
+      Result:=SearchFileInPath(UnitSrcSearchPath,AnUnitInFilename);
+    end;
+  end else begin
+    // normal unit name -> search as the compiler would search
+    // first search in current directory (= where the maincode is)
+    MainCodeIsVirtual:=TCodeBuffer(Scanner.MainCode).IsVirtual;
+    if not MainCodeIsVirtual then begin
+      CurDir:=ExtractFilePath(TCodeBuffer(Scanner.MainCode).Filename);
+    end else begin
+      CurDir:='';
+    end;
+    Result:=SearchUnitFileInDir(CurDir,AnUnitName);
+    if Result=nil then begin
+      // search in search path
+      Result:=SearchUnitFileInPath(UnitSrcSearchPath,AnUnitName);
+      if Result=nil then begin
+        // search in FPC source directory
+        Result:=SearchUnitInUnitLinks(AnUnitName);
+      end;
+    end;
+  end;
 end;
 
 end.
