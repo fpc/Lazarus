@@ -5694,6 +5694,13 @@ var
   PkgOptions: string;
   IDEBuildFlags: TBuildLazarusFlags;
 begin
+  if ToolStatus<>itNone then begin
+    MessageDlg(lisNotNow,
+      lisYouCanNotBuildLazarusWhileDebuggingOrCompiling,
+      mtError,[mbCancel],0);
+    Result:=mrCancel;
+    exit;
+  end;
   try
     // first compile all lazarus components (LCL, SynEdit, CodeTools, ...)
     SourceNotebook.ClearErrorLines;
@@ -6916,7 +6923,8 @@ var
   begin
     if CompiledSrcExt='' then exit;
     // get unit path for compiled units
-    UnitPath:=TrimSearchPath(BaseDir+';'+StartUnitPath,BaseDir);
+    UnitPath:=BaseDir+';'+StartUnitPath;
+    UnitPath:=TrimSearchPath(UnitPath,BaseDir);
 
     // Extract all directories with compiled units
     CompiledUnitPath:='';
@@ -6932,7 +6940,10 @@ var
       if FindFirstFileWithExt(CurDir,CompiledSrcExt)<>'' then
         CompiledUnitPath:=CompiledUnitPath+';'+CurDir;
     end;
-    
+    {$IFDEF VerboseFindSourceFile}
+    writeln('TMainIDE.SearchIndirectIncludeFile CompiledUnitPath="',CompiledUnitPath,'"');
+    {$ENDIF}
+
     // collect all src paths for the compiled units
     AllSrcPaths:=CompiledUnitPath;
     PathPos:=1;
@@ -6942,6 +6953,9 @@ var
       CurSrcPath:=TrimSearchPath(CurSrcPath,CurDir);
       AllSrcPaths:=MergeSearchPaths(AllSrcPaths,CurSrcPath);
     end;
+    {$IFDEF VerboseFindSourceFile}
+    writeln('TMainIDE.SearchIndirectIncludeFile AllSrcPaths="',AllSrcPaths,'"');
+    {$ENDIF}
     // add fpc src directories
     // ToDo
     
@@ -6954,10 +6968,16 @@ var
       CurIncPath:=TrimSearchPath(CurIncPath,CurDir);
       AllIncPaths:=MergeSearchPaths(AllIncPaths,CurIncPath);
     end;
-    
+    {$IFDEF VerboseFindSourceFile}
+    writeln('TMainIDE.SearchIndirectIncludeFile AllIncPaths="',AllIncPaths,'"');
+    {$ENDIF}
+
     SearchFile:=AFilename;
     SearchPath:=AllIncPaths;
     Result:=SearchFileInPath(SearchFile,BaseDir,SearchPath,';',[]);
+    {$IFDEF VerboseFindSourceFile}
+    writeln('TMainIDE.SearchIndirectIncludeFile Result="',Result,'"');
+    {$ENDIF}
     MarkPathAsSearched(SearchPath);
   end;
   
@@ -6976,15 +6996,33 @@ begin
   if (fsfSearchForProject in Flags)
   and (CompareFilenames(BaseDir,TrimFilename(Project1.ProjectDirectory))=0)
   then
-    StartUnitPath:=Project1.CompilerOptions.OtherUnitFiles
+    StartUnitPath:=Project1.CompilerOptions.GetUnitPath(false)
   else
     StartUnitPath:=CodeToolBoss.GetUnitPathForDirectory(BaseDir);
   StartUnitPath:=TrimSearchPath(StartUnitPath,BaseDir);
 
   // search file in base directory
   Result:=TrimFilename(BaseDir+AFilename);
+  {$IFDEF VerboseFindSourceFile}
+  writeln('TMainIDE.FindSourceFile trying Base "',Result,'"');
+  {$ENDIF}
   if FileExists(Result) then exit;
   MarkPathAsSearched(BaseDir);
+  
+  // search file in debug path
+  if fsfUseDebugPath in Flags then begin
+    SearchFile:=AFilename;
+    SearchPath:=TrimSearchPath(Project1.CompilerOptions.DebugPath,
+                               Project1.ProjectDirectory);
+    if SearchPath<>'' then begin
+      Result:=SearchFileInPath(SearchFile,BaseDir,SearchPath,';',[]);
+      {$IFDEF VerboseFindSourceFile}
+      writeln('TMainIDE.FindSourceFile trying debug path "',SearchPath,'" Result=',Result);
+      {$ENDIF}
+      if Result<>'' then exit;
+      MarkPathAsSearched(SearchPath);
+    end;
+  end;
 
   // if file is pascal unit, search via unit paths
   if FilenameIsPascalUnit(SearchFile) then begin
@@ -6992,6 +7030,9 @@ begin
     SearchFile:=AFilename;
     SearchPath:=StartUnitPath;
     Result:=SearchFileInPath(SearchFile,BaseDir,SearchPath,';',[]);
+    {$IFDEF VerboseFindSourceFile}
+    writeln('TMainIDE.FindSourceFile trying start unit path "',SearchPath,'" Result=',Result);
+    {$ENDIF}
     if Result<>'' then exit;
     MarkPathAsSearched(SearchPath);
 
@@ -7000,14 +7041,20 @@ begin
     if CompiledSrcExt<>'' then begin
       SearchFile:=ChangeFileExt(LowerCase(ExtractFilename(AFilename)),
                                 CompiledSrcExt);
-      SearchPath:=Project1.CompilerOptions.GetUnitPath(false);
+      SearchPath:=StartUnitPath;
       CompiledFilename:=SearchFileInPath(SearchFile,BaseDir,SearchPath,';',[]);
+      {$IFDEF VerboseFindSourceFile}
+      writeln('TMainIDE.FindSourceFile trying compiled units in "',SearchPath,'" CompiledFilename=',CompiledFilename);
+      {$ENDIF}
       if CompiledFilename<>'' then begin
         // compiled version found -> search for source in CompiledSrcPath
         CurBaseDir:=ExtractFilePath(CompiledFilename);
         SearchPath:=CodeToolBoss.GetCompiledSrcPathForDirectory(CurBaseDir);
         SearchFile:=ExtractFilename(AFilename);
         Result:=SearchFileInPath(SearchFile,CurBaseDir,SearchPath,';',[]);
+        {$IFDEF VerboseFindSourceFile}
+        writeln('TMainIDE.FindSourceFile trying indirect path "',SearchPath,'" Result=',Result);
+        {$ENDIF}
         if Result<>'' then exit;
       end;
     end;
@@ -7015,6 +7062,9 @@ begin
     // search unit in fpc source directory
     Result:=CodeToolBoss.FindUnitInUnitLinks(BaseDir,
                                              ExtractFilenameOnly(AFilename));
+    {$IFDEF VerboseFindSourceFile}
+    writeln('TMainIDE.FindSourceFile trying unit links Result=',Result);
+    {$ENDIF}
     if Result<>'' then exit;
   end;
   
@@ -7022,17 +7072,23 @@ begin
     // search in include path
     SearchFile:=AFilename;
     if (fsfSearchForProject in Flags) then
-      SearchPath:=Project1.CompilerOptions.IncludeFiles
+      SearchPath:=Project1.CompilerOptions.GetIncludePath(false)
     else
       SearchPath:=CodeToolBoss.GetIncludePathForDirectory(BaseDir);
     SearchPath:=TrimSearchPath(SearchPath,BaseDir);
     Result:=SearchFileInPath(SearchFile,BaseDir,SearchPath,';',[]);
+    {$IFDEF VerboseFindSourceFile}
+    writeln('TMainIDE.FindSourceFile trying include path "',SearchPath,'" Result=',Result);
+    {$ENDIF}
     if Result<>'' then exit;
     MarkPathAsSearched(SearchPath);
 
     // search include file in source directories of all required packages
     SearchFile:=AFilename;
     Result:=PkgBoss.FindIncludeFileInProjectDependencies(Project1,SearchFile);
+    {$IFDEF VerboseFindSourceFile}
+    writeln('TMainIDE.FindSourceFile trying packages "',SearchPath,'" Result=',Result);
+    {$ENDIF}
     if Result<>'' then exit;
 
     Result:=SearchIndirectIncludeFile;
@@ -9000,6 +9056,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.583  2003/05/26 10:34:47  mattias
+  implemented search, fixed double loading breakpoints
+
   Revision 1.582  2003/05/25 22:16:07  mattias
   implemented compilation tools Before and After
 
