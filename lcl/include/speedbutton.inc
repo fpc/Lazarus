@@ -407,6 +407,8 @@ begin
     TXTStyle.Alignment := taLeftJustify;
     TXTStyle.Layout := tlTop;
     TXTStyle.SystemFont := True;//Match System Default Style
+    //Canvas.Font.Color := clBtnText;//Match Button Default
+    //SelectClipRGN(Canvas.Handle, 0);//THIS SHOULDN'T BE NEEDED!!
     Canvas.TextRect(PaintRect, OffsetCap.X, OffsetCap.Y, Caption, TXTStyle);
   end;
 end;
@@ -620,7 +622,7 @@ begin
 
   if csDesigning in ComponentState then exit;
   
-  if  {FFlat and }not FMouseInControl
+  if  not FMouseInControl
   and Enabled and (GetCapture = 0) 
   then begin
     FMouseInControl := True;
@@ -640,7 +642,7 @@ begin
 
   if csDesigning in ComponentState then exit;
   
-  if  {FFlat and }FMouseInControl
+  if  FMouseInControl
   and Enabled and not FDragging
   then begin
     FMouseInControl := False;
@@ -657,6 +659,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.29  2002/09/18 17:07:25  lazarus
+  MG: added patch from Andrew
+
   Revision 1.28  2002/09/13 11:49:47  lazarus
   Cleanups, extended TStatusBar, graphic control cleanups.
 
