@@ -157,6 +157,8 @@ type
     procedure WriteDebugReport;
   end;
   
+  EDynHashArrayException = class(Exception);
+  
 const
   ItemMemManager: TDynHashArrayItemMemManager = nil;
 
@@ -437,7 +439,7 @@ begin
       exit(FHashCacheIndex);
     if not Assigned(FCustomHashFunction) then begin
       if not Assigned(FOwnerHashFunction) then begin
-        Result:=integer(Cardinal(Key)+(Cardinal(Key) mod 17)) mod FCapacity;
+        Result:=Integer((Cardinal(Key)+(Cardinal(Key) mod 17)) mod Cardinal(FCapacity));
       end else
         Result:=FOwnerHashFunction(Key);
     end else
@@ -447,6 +449,10 @@ begin
       writeln(' DAMN: ',HexStr(Cardinal(Key),8),' ',FHashCacheIndex,'<>',Result);
       raise Exception.Create('GROSSER MIST');
     end;}
+    // Check if the owner or custon function has returned something valid
+    if (Result < 0)
+    or (Result >= FCapacity)
+    then raise EDynHashArrayException.CreateFmt('Invalid index %d for key %p', [Result, Key]);
   end else
     Result:=-1;
 end;
@@ -472,6 +478,7 @@ begin
     SetCapacity(FCapacity*2-1);
   end;
   Index:=IndexOf(Item);
+  if Index < 0 then Exit;
   HashItem:=NewHashItem;
   HashItem^.Item:=Item;
   if FItems[Index]=nil then begin
@@ -527,6 +534,7 @@ begin
   if not ADynHashArrayItem^.IsOverflow then begin
     // Item is first item with hash
     Index:=IndexOf(ADynHashArrayItem^.Item);
+    if Index < 0 then Exit; // should not happen
     OldNext:=ADynHashArrayItem^.Next;
     if (OldNext=nil) or (not (OldNext^.IsOverflow)) then
       FItems[Index]:=nil
@@ -657,6 +665,7 @@ begin
   Result:=nil;
   if FItems<>nil then begin
     Index:=IndexOfKey(Key);
+    if Index < 0 then Exit; // should not happen
     HashItem:=FItems[Index];
     if (HashItem<>nil)
     and Assigned(OnGetKeyForHashItem) then begin
@@ -724,6 +733,14 @@ begin
   while CurHashItem<>nil do begin
     NextHashItem:=CurHashItem^.Next;
     Index:=IndexOf(CurHashItem^.Item);
+    if Index < 0
+    then begin
+      // ??? something bad happenend
+      // should we dispose current item ?
+      // Anyhow, skip it.
+      CurHashItem := NextHashItem;
+      Continue;
+    end;
     CurHashItem^.IsOverFlow:=false;
     CurHashItem^.Prior:=nil;
     if FItems[Index]=nil then begin
