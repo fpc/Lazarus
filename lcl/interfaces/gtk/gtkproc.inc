@@ -8001,6 +8001,52 @@ begin
   {$EndIf}
 end;
 
+{$IFDEF GTK1}
+{$IFNDEF Ver1_0}
+var
+  FirstScreenCalled: Boolean = False;
+  FirstScreenResult: Boolean = False;
+  
+function GetFirstScreen: Boolean;
+var
+  nMonitors: cint;
+  XineramaScreenInfo: PXineramaScreenInfo;
+  opcode, firstevent, firsterror: cint;
+  XineramaLib: TLibHandle;
+  pXineramaIsActive: function (dpy: PDisplay):TBool;cdecl;
+  pXineramaQueryScreens: function (dpy: PDisplay;
+    number: Pcint): PXineramaScreenInfo;cdecl;
+begin
+  if not FirstScreenCalled then
+    if XQueryExtension(X11Display, 'XINERAMA', @opcode, @firstevent,
+      @firsterror)
+    then begin
+      XineramaLib := LoadLibrary('libXinerama.so');
+      if XineramaLib <> nil then begin
+        Pointer(pXineramaIsActive) :=
+                                GetProcAddress(XineramaLib, 'XineramaIsActive');
+        Pointer(pXineramaQueryScreens) :=
+                            GetProcAddress(XineramaLib, 'XineramaQueryScreens');
+        if (pXineramaIsActive <> nil) and (pXineramaQueryScreens <> nil) and
+          pXineramaIsActive(X11Display)
+        then begin
+          XineramaScreenInfo := pXineramaQueryScreens(X11Display, @nMonitors);
+          if (nMonitors > 0) and (nMonitors < 10) then begin
+            FirstScreen.x := XineramaScreenInfo^.width;
+            FirstScreen.y := XineramaScreenInfo^.height;
+            XFree(XineramaScreenInfo);
+            FirstScreenResult := True;
+          end;
+        end;
+        FreeLibrary(XineramaLib);
+      end;
+    end;
+  FirstScreenCalled := True;
+  Result := FirstScreenResult;
+end;
+{$ENDIF}
+{$ENDIF}
+
 {$IFDEF ASSERT_IS_ON}
   {$UNDEF ASSERT_IS_ON}
   {$C-}
@@ -8011,6 +8057,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.336  2005/02/19 16:19:19  mattias
+  added xinerama recognition fro gtk1/fpc1_9+  from C Western
+
   Revision 1.335  2005/02/17 02:10:53  mattias
   fixed gtk2 intf checking if signal already connected
 

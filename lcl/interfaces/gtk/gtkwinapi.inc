@@ -5268,11 +5268,21 @@ begin
       end;
     SM_CXSCREEN:
       begin
-        result := gdk_Screen_Width;
+        {$IFDEF GTK1} { Partial fix for multi monitor systems - force use of first one }
+        if GetFirstScreen then
+          result := FirstScreen.x
+        else
+        {$ENDIF}
+          result := gdk_Screen_Width;
       end;
     SM_CYSCREEN:
       begin
-        result := gdk_Screen_Height;
+        {$IFDEF GTK1}
+        if GetFirstScreen then
+          result := FirstScreen.y
+        else
+        {$ENDIF}
+          result := gdk_Screen_Height;
       end;
     SM_CXSIZE:
       begin
@@ -8895,6 +8905,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.397  2005/02/19 16:19:19  mattias
+  added xinerama recognition fro gtk1/fpc1_9+  from C Western
+
   Revision 1.396  2005/02/17 00:05:25  mattias
   fixed some gtk2 intf warnings
 

@@ -31,29 +31,32 @@ interface
 
 uses
   {$IFDEF win32}
-  // use windows unit first,
-  // if not, Rect and Point are taken from the windows unit instead of classes.
-  Windows, // needed for keyboard handling
+    // use windows unit first,
+    // if not, Rect and Point are taken from the windows unit instead of classes.
+    Windows, // needed for keyboard handling
   {$endif}
   SysUtils, Classes, FPCAdds,
   {$IFDEF UNIX}
-{$ifndef VER1_0}
-  baseunix, unix,
-{$endif}
-  {$IFDEF GTK1}
-  // MWE:
-  // TODO: check if the new keyboard routines require X on GTK2
-  X, XLib, XUtil, //Font retrieval and Keyboard handling
-  {$ENDIF}
+    {$ifndef VER1_0}
+      baseunix, unix,
+    {$endif}
+    {$IFDEF GTK1}
+      // MWE:
+      // TODO: check if the new keyboard routines require X on GTK2
+      X, XLib, XUtil, //Font retrieval and Keyboard handling
+      {$IFNDEF VER1_0}
+        Xinerama,
+      {$ENDIF not  VER1_0}
+    {$ENDIF not Gtk1}
   {$ENDIF}
   InterfaceBase,
   {$IFDEF gtk2}
-  glib2, gdk2pixbuf, gdk2, gtk2, Pango,
-  {$IFNDEF win32}
-  X, XLib, XUtil, //Keyboard handling
-  {$ENDIF}
+    glib2, gdk2pixbuf, gdk2, gtk2, Pango,
+    {$IFDEF UNIX}
+    X, XLib, XUtil, //Keyboard handling
+    {$ENDIF}
   {$ELSE}
-  glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf} GtkFontCache,
+    glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf} GtkFontCache,
   {$ENDIF}
   LMessages, LCLProc, LCLStrConsts, LCLIntf, LCLType, DynHashArray,
   GraphType, GraphMath, Graphics, GTKWinApiWindow, LResources, Controls, Forms,
@@ -825,7 +828,12 @@ procedure EndGDKErrorTrap;
                                   x, y, width, height: gint): PGdkImage;
   Function gdk_drawable_get_colormap(Drawable: PGDKDrawable): PGdkColormap;
   
-  //function gdk_event_get_type():
+  {$IFNDEF VER1_0}
+  // Xinerama
+  function GetFirstScreen: Boolean;
+  {$ENDIF}
+var
+  FirstScreen: TPoint;
 {$EndIF GTK1}
 
 {$Ifdef GTK2}
@@ -852,10 +860,8 @@ procedure EndGDKErrorTrap;
 
 implementation
 
-{$IFDEF USE_UTF8BIDI_LCL}
-uses
-  utf8bidi;
-{$ENDIF}
+
+uses {$IFDEF USE_UTF8BIDI_LCL} utf8bidi, {$ENDIF} dynlibs;
 
 const
   VKEY_FLAG_SHIFT    = $01;

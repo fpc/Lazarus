@@ -135,6 +135,7 @@ end;
 procedure TGtkWSCommonDialog.ShowModal(const ACommonDialog: TCommonDialog);
 var
   GtkWindow: PGtkWindow;
+  Requisition: TGtkRequisition;
 begin    
   ReleaseMouseCapture;
   GtkWindow:=PGtkWindow(ACommonDialog.Handle);
@@ -142,6 +143,14 @@ begin
   if ACommonDialog is TColorDialog then
     SetColorDialogColor(PGtkColorSelection(GtkWindow),
                         TColorDialog(ACommonDialog).Color);
+  {$IFDEF Gtk1}
+  if GetFirstScreen then begin
+    { Fix multi screen problems, at least partially by forcing dialog to centre of first screen }
+    gtk_widget_size_request(PGtkWidget(GtkWindow), @Requisition);
+    gtk_widget_set_uposition(PGtkWidget(GtkWindow), (FirstScreen.x - Requisition.width) div 2,
+                                                    (FirstScreen.y - Requisition.height) div 2);
+  end else
+  {$ENDIF}
   gtk_window_set_position(GtkWindow, GTK_WIN_POS_CENTER);
   GtkWindowShowModal(GtkWindow);
 end;
