@@ -44,10 +44,10 @@ uses
   Classes, Controls, Forms, Buttons, ComCtrls, SysUtils, Dialogs, FormEditor,
   FindReplaceDialog, EditorOptions, CustomFormEditor, KeyMapping, StdCtrls,
   Compiler, MsgView, WordCompletion, CodeToolManager, CodeCache, SourceLog,
-  SynEdit, SynEditHighlighter, SynHighlighterPas, SynEditAutoComplete,
-  SynEditKeyCmds, SynCompletion, GraphType, Graphics, Extctrls, Menus, Splash,
-  FindInFilesDlg, LMessages, IDEProcs, IDEOptionDefs, InputHistory,
-  LazarusIDEStrConsts, BaseDebugManager, Debugger;
+  SynEditTypes, SynEdit, SynEditHighlighter, SynHighlighterPas,
+  SynEditAutoComplete, SynEditKeyCmds, SynCompletion, GraphType, Graphics,
+  Extctrls, Menus, FindInFilesDlg, LMessages, IDEProcs, IDEOptionDefs,
+  InputHistory, LazarusIDEStrConsts, BaseDebugManager, Debugger;
 
 type
   TSourceNoteBook = class;
@@ -716,7 +716,9 @@ begin
 
   // Fill in history items
   FindReplaceDlg.TextToFindComboBox.Items.Assign(InputHistories.FindHistory);
-  if Replace then FindReplaceDlg.ReplaceTextComboBox.Items.Assign(InputHistories.ReplaceHistory);
+  if Replace then
+    FindReplaceDlg.ReplaceTextComboBox.Items.Assign(
+                                                 InputHistories.ReplaceHistory);
 
   with EditorComponent do begin
     if EditorOpts.FindTextAtCursor then begin
@@ -738,9 +740,8 @@ begin
   end;
   
   if Replace then
-    InputHistories.AddToReplaceHistory(FindReplaceDlg.ReplaceText)
-  else
-    InputHistories.AddToFindHistory(FindReplaceDlg.FindText);
+    InputHistories.AddToReplaceHistory(FindReplaceDlg.ReplaceText);
+  InputHistories.AddToFindHistory(FindReplaceDlg.FindText);
   InputHistories.Save;
   DoFindAndReplace;
 End;
