@@ -403,13 +403,16 @@ Begin
     End;
     WM_COMMAND:
     Begin
-      if LParam=0 then OwnerObject := GetMenuItemObject {menuitem or shortcut}
-      else OwnerObject := TObject(GetProp(LParam, 'Wincontrol'));      
-
-// is this for speedbuttons?
-//      If ((OwnerObject Is TControl) And (Not (OwnerObject Is TButton))) Then
-//        CallEvent(OwnerObject, TControl(OwnerObject).OnClick, Nil, etNotify)
-
+      if LParam=0 then 
+      begin
+        OwnerObject := GetMenuItemObject; {menuitem or shortcut}
+      end else begin
+        OwnerObject := TObject(GetProp(LParam, 'Wincontrol'));      
+        // buddy controls use 'awincontrol' to designate associated wincontrol
+        if OwnerObject = nil then
+          OwnerObject := TObject(GetProp(LParam, 'AWincontrol'));
+      end;
+          
       if OwnerObject is TMenuItem then
       begin
         if (Hi(WParam) = 0) or (Hi(WParam) = 1) then
@@ -451,21 +454,14 @@ Begin
     End;
     WM_CTLCOLORMSGBOX..WM_CTLCOLORSTATIC:
     Begin
-      if HWnd(Windows.GetProp(Window, 'Overlay')) = HWnd(LParam) then
+      MsgObject := TObject(GetProp(LParam, 'Wincontrol'));
+      if MsgObject is TWinControl then
       begin
-        LMessage.Result := Windows.GetStockObject(NULL_BRUSH);
-        Windows.SetBkMode(HDC(WParam), TRANSPARENT);
+        Windows.SetTextColor(HDC(WParam), Windows.COLORREF(ColorToRGB(TWinControl(MsgObject).Font.Color)));
+        Windows.SetBkColor(HDC(WParam), Windows.COLORREF(ColorToRGB(TWinControl(MsgObject).Brush.Color)));
+        LMessage.Result := LResult(TWinControl(MsgObject).Brush.Handle);
+        // Override default handling
         WinProcess := false;
-      end else begin
-        MsgObject := TObject(GetProp(LParam, 'WinControl'));
-        if MsgObject is TWinControl then
-        begin
-          Windows.SetTextColor(HDC(WParam), Windows.COLORREF(ColorToRGB(TWinControl(MsgObject).Font.Color)));
-          Windows.SetBkColor(HDC(WParam), Windows.COLORREF(ColorToRGB(TWinControl(MsgObject).Brush.Color)));
-          LMessage.Result := LResult(TWinControl(MsgObject).Brush.Handle);
-          // Override default handling
-          WinProcess := false;
-        end;
       end;
     End;
     WM_COPY:
@@ -1088,7 +1084,8 @@ begin
     end;
     WM_KEYFIRST..WM_KEYLAST, WM_MOUSEFIRST..WM_MOUSELAST:
     begin
-      Windows.PostMessage(TWinControl(Windows.GetProp(Window, 'Wincontrol')).Handle, Msg, WParam, LParam);
+      // parent of overlay is the form
+      Windows.PostMessage(Windows.GetParent(Window), Msg, WParam, LParam);
     end;
   else
     Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
@@ -1180,7 +1177,7 @@ begin
     if NotifyUserInput then
       NotifyApplicationUserInput(PLMsg^.Msg);
 
-    DeliverMessage(TObject(Windows.GetProp(GetParent(Window), 'Wincontrol')), PLMsg^);
+    DeliverMessage(TObject(Windows.GetProp(Window, 'AWinControl')), PLMsg^);
   end;
     
   Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
@@ -1256,6 +1253,9 @@ end;
 
 {
   $Log$
+  Revision 1.119  2004/06/20 13:58:15  micha
+  fix combobox edit being gray
+
   Revision 1.118  2004/06/19 15:10:04  micha
   fix spinedit not firing onchange event
 

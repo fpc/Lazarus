@@ -2608,7 +2608,7 @@ Begin
     If Buddy <> HWND(Nil) Then
     begin
       Windows.SetProp(Buddy, 'DefWndProc', Windows.SetWindowLong(Buddy, GWL_WNDPROC, LongInt(SubClassWndProc)));
-      Windows.SetProp(Buddy, 'Wincontrol', dword(Sender));
+      Windows.SetProp(Buddy, 'AWincontrol', dword(Sender));
       Windows.SendMessage(Buddy, WM_SETFONT, WParam(FMessageFont), 0);
     end;
   End
@@ -3281,6 +3281,9 @@ End;
 
 {
   $Log$
+  Revision 1.212  2004/06/20 13:58:15  micha
+  fix combobox edit being gray
+
   Revision 1.211  2004/06/20 13:00:04  micha
   fix groupbox-parent bug condition, use buddy
 
