@@ -1215,7 +1215,6 @@ begin
 end;
 
 procedure TMainIDE.SetupObjectInspector;
-
 begin
   ObjectInspector1 := TObjectInspector.Create(Self);
   ObjectInspector1.OnSelectPersistentsInOI:=@OIOnSelectPersistents;
@@ -10442,6 +10441,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.734  2004/07/03 13:06:28  mattias
+  improved key handling for OI
+
   Revision 1.733  2004/07/02 16:12:29  mattias
   started HelpIntf - the IDE interface for the help system
 

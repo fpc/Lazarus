@@ -1413,7 +1413,7 @@ type
     procedure KeyDownBeforeInterface(var Key: Word; Shift: TShiftState); dynamic;
     procedure KeyDownAfterInterface(var Key: Word; Shift: TShiftState); dynamic;
     procedure KeyPress(var Key: Char); dynamic;
-    procedure KeyUp(var Key: Word; Shift : TShiftState); dynamic;
+    procedure KeyUp(var Key: Word; Shift: TShiftState); dynamic;
   protected
     Function  FindNextControl(CurrentControl: TControl; GoForward,
                               CheckTabStop, CheckParent, OnlyWinControls
@@ -2330,6 +2330,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.221  2004/07/03 13:06:29  mattias
+  improved key handling for OI
+
   Revision 1.220  2004/07/03 11:11:08  mattias
   TGTKListStringList now keeps selection on Put and Move
 

@@ -168,27 +168,27 @@ type
   
   TOIPropertyGrid = class(TCustomControl)
   private
-    FChangeStep: integer;
-    FSelection: TPersistentSelectionList;
-    FPropertyEditorHook: TPropertyEditorHook;
-    FFilter: TTypeKinds;
-    FItemIndex:integer;
-    FRows:TList;
-    FExpandingRow:TOIPropertyGridRow;
-    FTopY:integer;
-    FDefaultItemHeight:integer;
-    FSplitterX:integer; // current splitter position
-    FPreferredSplitterX: integer; // best splitter position
-    FIndent:integer;
     FBackgroundColor:TColor;
-    FNameFont,FDefaultValueFont,FValueFont:TFont;
-    FCurrentEdit: TWinControl;  // nil or ValueEdit or ValueComboBox
+    FChangeStep: integer;
     FCurrentButton: TWinControl; // nil or ValueButton
+    FCurrentEdit: TWinControl;  // nil or ValueEdit or ValueComboBox
     FCurrentEditorLookupRoot: TPersistent;
+    FDefaultItemHeight:integer;
     FDragging:boolean;
-    FOnModified: TNotifyEvent;
     FExpandedProperties:TStringList;
+    FExpandingRow:TOIPropertyGridRow;
+    FFilter: TTypeKinds;
+    FIndent:integer;
+    FItemIndex:integer;
+    FNameFont,FDefaultValueFont,FValueFont:TFont;
+    FOnModified: TNotifyEvent;
+    FPreferredSplitterX: integer; // best splitter position
+    FPropertyEditorHook: TPropertyEditorHook;
+    FRows:TList;
+    FSelection: TPersistentSelectionList;
+    FSplitterX:integer; // current splitter position
     FStates: TOIPropertyGridStates;
+    FTopY:integer;
 
     // hint stuff
     FHintTimer : TTimer;
@@ -233,11 +233,13 @@ type
     procedure ValueEditMouseDown(Sender: TObject; Button:TMouseButton;
       Shift: TShiftState; X,Y:integer);
     procedure ValueEditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure ValueEditKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ValueEditExit(Sender: TObject);
     procedure ValueEditChange(Sender: TObject);
     procedure ValueComboBoxExit(Sender: TObject);
     procedure ValueComboBoxChange(Sender: TObject);
     procedure ValueComboBoxKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure ValueComboBoxKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ValueComboBoxCloseUp(Sender: TObject);
     procedure ValueComboBoxDropDown(Sender: TObject);
     procedure ValueButtonClick(Sender: TObject);
@@ -254,9 +256,10 @@ type
     procedure MouseMove(Shift:TShiftState; X,Y:integer);  override;
     procedure MouseUp(Button:TMouseButton; Shift:TShiftState; X,Y:integer); override;
     
-    procedure KeyDown(var Key : Word; Shift : TShiftState); override;
-    procedure HandleStandardKeys(var Key : Word; Shift : TShiftState);
-    
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+    procedure HandleStandardKeys(var Key: Word; Shift: TShiftState); virtual;
+    procedure HandleKeyUp(var Key: Word; Shift: TShiftState); virtual;
+
     procedure EraseBackground(DC: HDC); override;
     
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
@@ -296,7 +299,7 @@ type
     property ExpandedProperties:TStringList 
        read FExpandedProperties write FExpandedProperties;
     function PropertyPath(Index:integer):string;
-    function GetRowByPath(const PropPath:string):TOIPropertyGridRow;
+    function GetRowByPath(const PropPath:string): TOIPropertyGridRow;
 
     function MouseToIndex(y:integer;MustExist:boolean):integer;
     function GetActiveRow: TOIPropertyGridRow;
@@ -311,8 +314,9 @@ type
     procedure Paint;  override;
     procedure Clear;
     constructor CreateWithParams(AnOwner: TComponent;
-       APropertyEditorHook: TPropertyEditorHook;  TypeFilter: TTypeKinds;
-       DefItemHeight: integer);
+                                 APropertyEditorHook: TPropertyEditorHook;
+                                 TypeFilter: TTypeKinds;
+                                 DefItemHeight: integer);
     destructor Destroy;  override;
     function ConsistencyCheck: integer;
   end;
@@ -349,6 +353,7 @@ type
     procedure AvailComboBoxCloseUp(Sender: TObject);
     procedure ComponentTreeSelectionChanged(Sender: TObject);
     procedure ObjectInspectorResize(Sender: TObject);
+    procedure OnGriddKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure OnSetDefaultPopupmenuItemClick(Sender: TObject);
     procedure OnUndoPopupmenuItemClick(Sender: TObject);
     procedure OnBackgroundColPopupMenuItemClick(Sender: TObject);
@@ -390,6 +395,7 @@ type
     procedure DestroyNoteBook;
     procedure CreateNoteBook;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+    procedure KeyUp(var Key: Word; Shift: TShiftState); override;
   public
     constructor Create(AnOwner: TComponent); override;
     destructor Destroy; override;
@@ -490,6 +496,7 @@ begin
     OnExit:=@ValueEditExit;
     OnChange:=@ValueEditChange;
     OnKeyDown:=@ValueEditKeyDown;
+    OnKeyUp:=@ValueEditKeyUp;
   end;
 
   ValueComboBox:=TComboBox.Create(Self);
@@ -504,6 +511,7 @@ begin
     //OnChange:=@ValueComboBoxChange; the on change event is called even,
                                    // if the user is editing
     OnKeyDown:=@ValueComboBoxKeyDown;
+    OnKeyUp:=@ValueComboBoxKeyUp;
     OnDropDown:=@ValueComboBoxDropDown;
     OnCloseUp:=@ValueComboBoxCloseUp;
     OnDrawItem:=@ValueComboBoxDrawItem;
@@ -839,6 +847,12 @@ begin
   HandleStandardKeys(Key,Shift);
 end;
 
+procedure TOIPropertyGrid.ValueEditKeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  HandleKeyUp(Key,Shift);
+end;
+
 procedure TOIPropertyGrid.ValueEditExit(Sender: TObject);
 begin
   SetRowValue;
@@ -871,6 +885,12 @@ procedure TOIPropertyGrid.ValueComboBoxKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   HandleStandardKeys(Key,Shift);
+end;
+
+procedure TOIPropertyGrid.ValueComboBoxKeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  HandleKeyUp(Key,Shift);
 end;
 
 procedure TOIPropertyGrid.ValueButtonClick(Sender: TObject);
@@ -1310,6 +1330,11 @@ begin
     Handled:=false;
   end;
   if Handled then Key:=VK_UNKNOWN;
+end;
+
+procedure TOIPropertyGrid.HandleKeyUp(var Key: Word; Shift: TShiftState);
+begin
+  if (Key<>VK_UNKNOWN) and Assigned(OnKeyUp) then OnKeyUp(Self,Key,Shift);
 end;
 
 procedure TOIPropertyGrid.EraseBackground(DC: HDC);
@@ -2638,6 +2663,12 @@ begin
     ComponentTree.Height:=ClientHeight div 4;
 end;
 
+procedure TObjectInspector.OnGriddKeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Assigned(OnRemainingKeyUp) then OnRemainingKeyUp(Self,Key,Shift);
+end;
+
 procedure TObjectInspector.OnSetDefaultPopupmenuItemClick(Sender: TObject);
 var
   CurGrid: TOIPropertyGrid;
@@ -2818,6 +2849,7 @@ begin
     Align:=alClient;
     PopupMenu:=MainPopupMenu;
     OnModified:=@OnGridModified;
+    OnKeyUp:=@OnGriddKeyUp;
   end;
 
   // event grid
@@ -2835,6 +2867,7 @@ begin
     Align:=alClient;
     PopupMenu:=MainPopupMenu;
     OnModified:=@OnGridModified;
+    OnKeyUp:=@OnGriddKeyUp;
   end;
 end;
 
@@ -2848,6 +2881,11 @@ begin
     if Key=VK_UNKNOWN then exit;
   end;
   inherited KeyDown(Key, Shift);
+end;
+
+procedure TObjectInspector.KeyUp(var Key: Word; Shift: TShiftState);
+begin
+  inherited KeyUp(Key, Shift);
   if (Key<>VK_UNKNOWN) and Assigned(OnRemainingKeyUp) then
     OnRemainingKeyUp(Self,Key,Shift);
 end;
