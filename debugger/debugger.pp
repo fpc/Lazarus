@@ -71,7 +71,7 @@ type
     dsRun,
     dsError
     );
-
+    
 {
   Debugger states
   --------------------------------------------------------------------------
@@ -103,7 +103,11 @@ type
 
 }
 
+const
+  XMLBreakPointsNode = 'BreakPoints';
+  XMLWatchesNode = 'Watches';
 
+type
 { ---------------------------------------------------------
   TDebuggerNotification is a reference counted baseclass
   for handling notifications for locals, watches, breakpoints etc.
@@ -765,12 +769,12 @@ var
 begin
   Arguments:=XMLConfig.GetValue(Path+'Arguments/Value','');
   BreakPointGroups.LoadFromXMLConfig(XMLConfig,Path+'BreakPointGroups/');
-  BreakPoints.LoadFromXMLConfig(XMLConfig,Path+'BreakPoints/',OnLoadFilename,
-                                @BreakPointGroups.GetGroupByName);
+  BreakPoints.LoadFromXMLConfig(XMLConfig,Path+XMLBreakPointsNode+'/',
+                               OnLoadFilename,@BreakPointGroups.GetGroupByName);
   LoadStringList(XMLConfig,Environment, Path+'Environment/');
   AFilename:=XMLConfig.GetValue(Path+'ExternalDebugger/Value','');
   if Assigned(OnLoadFilename) then OnLoadFilename(AFilename);
-  Watches.LoadFromXMLConfig(XMLConfig,Path+'Watches/');
+  Watches.LoadFromXMLConfig(XMLConfig,Path+XMLWatchesNode+'/');
 end;
 
 procedure TDebugger.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
@@ -780,11 +784,12 @@ var
 begin
   XMLConfig.SetDeleteValue(Path+'Arguments/Value',Arguments,'');
   BreakPointGroups.SaveToXMLConfig(XMLConfig,Path+'BreakPointGroups/');
-  BreakPoints.SaveToXMLConfig(XMLConfig,Path+'BreakPoints/',OnSaveFilename);
+  BreakPoints.SaveToXMLConfig(XMLConfig,Path+XMLBreakPointsNode+'/',
+                              OnSaveFilename);
   SaveStringList(XMLConfig,Environment,Path+'Environment/');
   AFilename:=ExternalDebugger;
   if Assigned(OnSaveFilename) then OnSaveFilename(AFilename);
-  Watches.SaveToXMLConfig(XMLConfig,Path+'Watches/');
+  Watches.SaveToXMLConfig(XMLConfig,Path+XMLWatchesNode+'/');
 end;
 
 procedure TDebugger.Pause;
@@ -1947,6 +1952,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.20  2003/05/21 16:19:12  mattias
+  implemented saving breakpoints and watches
+
   Revision 1.19  2003/05/21 08:09:04  mattias
   started loading/saving watches
 

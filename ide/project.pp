@@ -62,13 +62,16 @@ type
        const OldUnitName, NewUnitName: string;
        CheckIfAllowed: boolean;
        var Allowed: boolean) of object;
+  TOnLoadProjectInfo = procedure(TheProject: TProject;
+                                 XMLConfig: TXMLConfig) of object;
+  TOnSaveProjectInfo = procedure(TheProject: TProject;
+                                 XMLConfig: TXMLConfig) of object;
 
   //---------------------------------------------------------------------------
   TUnitInfo = class(TObject)
   private
     fAutoRevertLockCount: integer;
     fBookmarks: TFileBookmarks;
-    fBreakpoints: TProjectBreakPointList;
     fCursorPos: TPoint;
     fCustomHighlighter: boolean; // do not change highlighter on file extension change
     fEditorIndex: integer;
@@ -165,8 +168,6 @@ type
     property PrevPartOfProject: TUnitInfo read fPrevPartOfProject;
   public
     property Bookmarks: TFileBookmarks read FBookmarks write FBookmarks;
-    property Breakpoints: TProjectBreakPointList
-                                           read fBreakpoints write fBreakpoints;
     property CursorPos: TPoint read fCursorPos write fCursorPos;
     property CustomHighlighter: boolean
                                read fCustomHighlighter write fCustomHighlighter;
@@ -290,6 +291,8 @@ type
     FOnBeginUpdate: TNotifyEvent;
     FOnEndUpdate: TEndUpdateProjectEvent;
     fOnFileBackup: TOnFileBackup;
+    FOnLoadProjectInfo: TOnLoadProjectInfo;
+    FOnSaveProjectInfo: TOnSaveProjectInfo;
     fProjectDirectory: string;
     fProjectInfoFile: String;  // the lpi filename
     fProjectType: TProjectType;
@@ -402,6 +405,8 @@ type
     function FileIsInProjectDir(const AFilename: string): boolean;
     procedure GetVirtualDefines(DefTree: TDefineTree; DirDef: TDirectoryDefines);
     function SearchFile(const Filename,SearchPaths,InitialDir:string):string;
+    procedure ShortenFilename(var AFilename: string);
+    procedure LongenFilename(var AFilename: string);
 
     // bookmarks
     procedure SetBookmark(AnUnitInfo: TUnitInfo; X,Y,ID: integer);
@@ -450,6 +455,10 @@ type
     property OnBeginUpdate: TNotifyEvent read FOnBeginUpdate write FOnBeginUpdate;
     property OnEndUpdate: TEndUpdateProjectEvent read FOnEndUpdate write FOnEndUpdate;
     property OnFileBackup: TOnFileBackup read fOnFileBackup write fOnFileBackup;
+    property OnSaveProjectInfo: TOnSaveProjectInfo read FOnSaveProjectInfo
+                                                   write FOnSaveProjectInfo;
+    property OnLoadProjectInfo: TOnLoadProjectInfo read FOnLoadProjectInfo
+                                                   write FOnLoadProjectInfo;
     property ProjectDirectory: string read fProjectDirectory;
     property ProjectInfoFile: string
                                read GetProjectInfoFile write SetProjectInfoFile;
@@ -543,7 +552,6 @@ begin
   inherited Create;
   Assert(False, 'Project Unit Info Class Created');
   FBookmarks:=TFileBookmarks.Create;
-  fBreakPoints:=TProjectBreakPointList.Create;
   Clear;
   Source := ACodeBuffer;
   if Source=nil then
@@ -556,7 +564,6 @@ end;
 destructor TUnitInfo.Destroy;
 begin
   Source:=nil;
-  FreeAndNil(fBreakPoints);
   FreeAndNil(FBookmarks);
   Project:=nil;
   inherited Destroy;
@@ -661,7 +668,6 @@ end;
 procedure TUnitInfo.Clear;
 begin
   FBookmarks.Clear;
-  fBreakPoints.Clear;
   fCursorPos.X := -1;
   fCursorPos.Y := -1;
   fCustomHighlighter := false;
@@ -713,7 +719,6 @@ begin
   XMLConfig.SetDeleteValue(Path+'TopLine/Value',fTopLine,-1);
   XMLConfig.SetDeleteValue(Path+'UnitName/Value',fUnitName,'');
   XMLConfig.SetDeleteValue(Path+'UsageCount/Value',round(fUsageCount),-1);
-  fBreakpoints.SaveToXMLConfig(XMLConfig,Path);
   FBookmarks.SaveToXMLConfig(XMLConfig,Path+'Bookmarks/');
 end;
 
@@ -752,7 +757,6 @@ begin
     if IsPartOfProject then
       UpdateUsageCount(uuIsPartOfProject,1);
   end;
-  fBreakpoints.LoadFromXMLConfig(XMLConfig,Path);
   FBookmarks.LoadFromXMLConfig(XMLConfig,Path+'Bookmarks/');
 end;
 
@@ -1351,6 +1355,8 @@ begin
       // save dependencies
       SavePkgDependencyList(XMLConfig,'ProjectOptions/RequiredPackages/',
         FFirstRequiredDependency,pdlRequires);
+        
+      if Assigned(OnSaveProjectInfo) then OnSaveProjectInfo(Self,XMLConfig);
 
       xmlconfig.Flush;
       Modified:=false;
@@ -1459,6 +1465,9 @@ begin
       // load the dependencies
       LoadPkgDependencyList(XMLConfig,'ProjectOptions/RequiredPackages/',
         FFirstRequiredDependency,pdlRequires,Self,true);
+
+      if Assigned(OnLoadProjectInfo) then OnLoadProjectInfo(Self,XMLConfig);
+
     finally
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject freeing xml');{$ENDIF}
       xmlconfig.Free;
@@ -1843,6 +1852,16 @@ begin
     SetCurrentDir(OldDir);
   end;
   Result:='';
+end;
+
+procedure TProject.ShortenFilename(var AFilename: string);
+begin
+  OnLoadSaveFilename(AFilename,false);
+end;
+
+procedure TProject.LongenFilename(var AFilename: string);
+begin
+  OnLoadSaveFilename(AFilename,true);
 end;
 
 function TProject.GetMainResourceFilename(AnUnitInfo: TUnitInfo):string;
@@ -2663,6 +2682,9 @@ end.
 
 {
   $Log$
+  Revision 1.120  2003/05/21 16:19:12  mattias
+  implemented saving breakpoints and watches
+
   Revision 1.119  2003/05/12 14:47:45  mattias
   reduced output
 

@@ -39,7 +39,7 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, Forms, Controls, Dialogs, Menus, FileCtrl,
+  Classes, SysUtils, Forms, Controls, Dialogs, Menus, FileCtrl, Laz_XMLCfg,
   CompilerOptions, EditorOptions, EnvironmentOpts, KeyMapping, UnitEditor,
   Project, IDEProcs, Debugger, RunParamsOpts, ExtToolDialog, IDEOptionDefs,
   LazarusIDEStrConsts, ProjectDefs, BaseDebugManager, MainBar, DebuggerDlg,
@@ -67,14 +67,16 @@ type
 
     // Debugger events
     procedure OnDebuggerChangeState(Sender: TObject);
-    procedure OnDebuggerCurrentLine(Sender: TObject; const ALocation: TDBGLocationRec);
+    procedure OnDebuggerCurrentLine(Sender: TObject;
+                                    const ALocation: TDBGLocationRec);
     procedure OnDebuggerOutput(Sender: TObject; const AText: String);
-    procedure OnDebuggerException(Sender: TObject; const AExceptionID: Integer; const AExceptionText: String);
+    procedure OnDebuggerException(Sender: TObject; const AExceptionID: Integer;
+                                  const AExceptionText: String);
   private
     FBreakPoints: TDBGBreakPoints; // Points to debugger breakpoints if available
-                                   // Else to own objet
+                                   // Else to own object
     FWatches: TDBGWatches;         // Points to debugger watches if available
-                                   // Else to own objet
+                                   // Else to own object
     FDialogs: array[TDebugDialogType] of TDebuggerDlg;
 
     FDebugger: TDebugger;
@@ -91,6 +93,8 @@ type
     procedure ConnectMainBarEvents; override;
     procedure ConnectSourceNotebookEvents; override;
     procedure SetupMainBarShortCuts; override;
+    
+    procedure SaveProjectSpecificInfo(XMLConfig: TXMLConfig); override;
 
     function DoInitDebugger: TModalResult; override;
     function DoPauseProject: TModalResult; override;
@@ -101,7 +105,8 @@ type
     
     procedure RunDebugger; override;
     procedure EndDebugging; override;
-    function Evaluate(const AExpression: String; var AResult: String): Boolean; override;
+    function Evaluate(const AExpression: String;
+                      var AResult: String): Boolean; override;
 
   end;
   
@@ -129,7 +134,7 @@ end;
 
 procedure TDebugManager.OnSrcNotebookAddWatchesAtCursor(Sender : TObject);
 var
-  SE : TSourceEditor;
+  SE: TSourceEditor;
   WatchVar: String;
   NewWatch: TdbgWatch;
 begin
@@ -143,16 +148,21 @@ begin
 
   NewWatch := FWatches.Add(WatchVar);
   NewWatch.Enabled := True;
+  Project1.Modified:=true;
 end;
 
-procedure TDebugManager.OnSrcNotebookCreateBreakPoint(Sender: TObject; Line: Integer);
+procedure TDebugManager.OnSrcNotebookCreateBreakPoint(Sender: TObject;
+  Line: Integer);
 var
   NewBreak: TDBGBreakPoint;
 begin
   if SourceNotebook.Notebook = nil then Exit;
 
-  NewBreak := FBreakPoints.Add(ExtractFilename(TSourceNotebook(sender).GetActiveSe.FileName), Line);
+  NewBreak := FBreakPoints.Add(
+                  ExtractFilename(TSourceNotebook(Sender).GetActiveSe.FileName),
+                  Line);
   NewBreak.Enabled := True;
+  Project1.Modified:=true;
 end;
 
 procedure TDebugManager.OnSrcNotebookDeleteBreakPoint(Sender: TObject; Line: Integer);
@@ -160,6 +170,7 @@ begin
   if SourceNotebook.Notebook = nil then Exit;
 
   FBreakPoints.Find(ExtractFilename(TSourceNotebook(sender).GetActiveSe.FileName), Line).Free;
+  Project1.Modified:=true;
 end;
 
 //-----------------------------------------------------------------------------
@@ -438,6 +449,17 @@ begin
   end;
 end;
 
+procedure TDebugManager.SaveProjectSpecificInfo(XMLConfig: TXMLConfig);
+begin
+  if FDebugger=nil then begin
+    FBreakPoints.SaveToXMLConfig(XMLConfig,'Debugging/'+XMLBreakPointsNode+'/',
+                                 @Project1.ShortenFilename);
+    FWatches.SaveToXMLConfig(XMLConfig,'Debugging/'+XMLWatchesNode+'/');
+  end else begin
+    FDebugger.SaveToXMLConfig(XMLConfig,'Debugging/',@Project1.ShortenFilename);
+  end;
+end;
+
 //-----------------------------------------------------------------------------
 // Debugger routines
 //-----------------------------------------------------------------------------
@@ -670,6 +692,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.16  2003/05/21 16:19:12  mattias
+  implemented saving breakpoints and watches
+
   Revision 1.15  2003/05/20 21:41:07  mattias
   started loading/saving breakpoints
 
