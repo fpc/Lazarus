@@ -49,6 +49,7 @@ unit DefineTemplates;
 
 { $Define VerboseDefineCache}
 { $Define VerboseFPCSrcScan}
+{ $Define ShowTriedFiles}
 
 interface
 
@@ -506,7 +507,7 @@ begin
   Filename:='';
   if TheUnitName='' then exit;
   {$IFDEF ShowTriedFiles}
-  writeln('TFindDeclarationTool.FindUnitSource.SearchUnitInUnitLinks length(UnitLinks)=',length(UnitLinks));
+  writeln('SearchUnitInUnitLinks length(UnitLinks)=',length(UnitLinks));
   {$ENDIF}
   if UnitLinkStart<1 then
     UnitLinkStart:=1;
@@ -521,8 +522,8 @@ begin
     UnitLinkLen:=UnitLinkEnd-UnitLinkStart;
     if UnitLinkLen>0 then begin
       {$IFDEF ShowTriedFiles}
-      writeln('  unit "',copy(UnitLinks,UnitLinkStart,UnitLinkEnd-UnitLinkStart),'" ',CompareSubStrings(TheUnitName,UnitLinks,1,
-        UnitLinkStart,UnitLinkLen,false));
+      writeln('  unit "',copy(UnitLinks,UnitLinkStart,UnitLinkEnd-UnitLinkStart),'" ',
+        AnsiStrLIComp(PChar(TheUnitName),@UnitLinks[UnitLinkStart],UnitLinkLen));
       {$ENDIF}
       if (UnitLinkLen=length(TheUnitName))
       and (AnsiStrLIComp(PChar(TheUnitName),@UnitLinks[UnitLinkStart],
