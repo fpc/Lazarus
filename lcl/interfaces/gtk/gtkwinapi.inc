@@ -1480,7 +1480,8 @@ begin
   DObj := PGdiObject(Dest);
   S1Obj := PGdiObject(Src1);
   S2Obj := PGdiObject(Src2);
-  Continue :=  IsValidGDIObject(Dest) and IsValidGDIObject(Src1)and IsValidGDIObject(Src2);
+  Continue := IsValidGDIObject(Dest) and IsValidGDIObject(Src1)
+              and IsValidGDIObject(Src2);
   If Not Continue then begin
     WriteLn('WARNING: [TgtkObject.CombineRgn] Invalid HRGN');
     Result := Error;
@@ -1543,7 +1544,8 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.ExtSelectClipRGN(dc: hdc; rgn : hrgn; Mode : Longint) : Integer;
+function TgtkObject.ExtSelectClipRGN(dc: hdc; rgn : hrgn;
+  Mode : Longint) : Integer;
 var
   OldC, Clip,
   Tmp : hRGN;
@@ -4263,6 +4265,8 @@ begin
         then pDC^.CurrentPen := nil;     
         if pSavedDC^.CurrentBrush = pDC^.CurrentBrush 
         then pDC^.CurrentBrush := nil;   
+        if pSavedDC^.ClipRegion = pDC^.ClipRegion
+        then pSavedDC^.ClipRegion := 0;
         ReleaseDC(0,HDC(pSavedDC));
         pDC^.SavedContext:=nil;
       end;
@@ -4271,10 +4275,10 @@ begin
       DeleteObject(HGDIObj(pDC^.CurrentPen));
       DeleteObject(HGDIObj(pDC^.CurrentFont));
       DeleteObject(HGDIObj(pDC^.CurrentBitmap));
+      SelectClipRGN(DC, 0);
       try
         { On root window, we don't allocate a graphics context }
         if pDC^.GC <> nil then begin
-          SelectClipRGN(DC, 0);
           gdk_gc_unref(pDC^.GC);
         end;
       except
@@ -4468,16 +4472,17 @@ begin
   if Result <> ERROR
   then with PDeviceContext(DC)^ do
   begin
-    if GC = nil
+    if (GC = nil) and (RGN <> 0)
     then begin
       WriteLn('WARNING: [TgtkObject.SelectClipRGN] Uninitialized GC');
       Result := ERROR;
     end
     else begin
-      If RGN = 0 then begin
+      If (RGN = 0) or (GC = nil) then begin
         DeleteObject(ClipRegion);
         ClipRegion := 0;
-        SelectGDIRegion(DC);
+        if GC<>nil then
+          SelectGDIRegion(DC);
       end
       else
         If IsValidGDIObject(RGN) then begin
@@ -5959,6 +5964,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.96  2002/08/21 07:16:59  lazarus
+  MG: reduced mem leak of clipping stuff, still not fixed
+
   Revision 1.95  2002/08/19 20:34:48  lazarus
   MG: improved Clipping, TextOut, Polygon functions
 
