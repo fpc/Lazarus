@@ -731,7 +731,7 @@ var
 begin
   Result:=false;
   CurSrcDir:=CleanAndExpandDirectory(DirectoryName);
-  if SysUtils.FindFirst(CurSrcDir+FindMask,faAnyFile,FileInfo)=0 then begin
+  if SysUtils.FindFirst(CurSrcDir+GetAllFilesMask,faAnyFile,FileInfo)=0 then begin
     repeat
       // check if special file
       if (FileInfo.Name='.') or (FileInfo.Name='..') then continue;
@@ -927,6 +927,9 @@ end;
 
 {
   $Log$
+  Revision 1.43  2004/03/12 11:54:57  vincents
+  fixed 1.0.x compilation, removed double constants
+
   Revision 1.42  2004/03/11 00:07:26  mattias
   added TFileListBox  from Luis
 

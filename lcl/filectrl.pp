@@ -41,7 +41,13 @@ interface
 {$endif}
 
 uses
-  Classes, SysUtils, StdCtrls;
+  Classes, SysUtils,
+{$ifdef VER1_0}
+// fpc 1.0.x needs unit in which redefined unit originally is defined
+// otherwise IE 55665566 occurs.
+   Controls,
+{$endif}
+   StdCtrls;
 
 Type
 
@@ -71,7 +77,7 @@ Type
     procedure UpdateFileList; virtual;
     procedure Click; override;
     procedure Loaded; override;
-    function IndexOfFile(const Filename: string): integer;
+    function IndexOfFile(const AFilename: string): integer;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -194,13 +200,6 @@ uses
   {$IFDEF Ver1_0}Linux{$ELSE}Unix,BaseUnix{$ENDIF};
 {$ENDIF}
 
-const
-  {$IFDEF Win32}
-  FindMask = '*.*';
-  {$ELSE}
-  FindMask = '*';
-  {$ENDIF}
-
 var
   UpChars: array[char] of char;
 
@@ -262,7 +261,7 @@ begin
   UpdateFileList;
 end;
 
-function TCustomFileListBox.IndexOfFile(const Filename: string): integer;
+function TCustomFileListBox.IndexOfFile(const AFilename: string): integer;
 begin
   Result:=0;
   while (Result<Items.Count)
@@ -287,7 +286,7 @@ end;
 
 function TCustomFileListBox.MaskIsStored: boolean;
 begin
-  Result:=(FMask<>FindMask);
+  Result:=(FMask<>GetAllFilesMask);
 end;
 
 procedure TCustomFileListBox.SetDrive(const AValue: Char);
@@ -330,7 +329,7 @@ var
 begin
   inherited Create(AOwner);
   //Initializes DirectorySeparator and the Mask property.
-  FMask := FindMask;
+  FMask := GetAllFilesMask;
   //Initializes the FileType property.
   FFileType := [ftNormal];
   //Initializes the Directory and Drive properties to the current directory.
@@ -367,6 +366,9 @@ end.
 
 {
   $Log$
+  Revision 1.23  2004/03/12 11:54:57  vincents
+  fixed 1.0.x compilation, removed double constants
+
   Revision 1.22  2004/03/11 00:07:26  mattias
   added TFileListBox  from Luis
 
