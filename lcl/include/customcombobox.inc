@@ -52,9 +52,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomComboBox.AttachSignals; 
 begin
+   Writeln('[TCustomComboBox] AttachSignals');
    inherited AttachSignals;
    Assert(False, Format('Trace:[TCustomComboBox.AttachSignals] %s', [ClassName]));
    SetCallback (LM_CHANGED);
+   Writeln('[TCustomComboBox] Exiting AttachSignals');
 end;
 
 {------------------------------------------------------------------------------
@@ -132,6 +134,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomComboBox.DoChange(var Msg);
 begin
+  Writeln('[TCustomComboBox] DoChange');
   if Assigned(FOnChange) then FOnChange(Self);
 end;
 
@@ -321,6 +324,10 @@ end;
 
 {
   $Log$
+  Revision 1.4  2001/01/28 03:51:42  lazarus
+  Fixed the problem with Changed for ComboBoxs
+  Shane
+
   Revision 1.3  2000/11/29 21:22:35  lazarus
   New Object Inspector code
   Shane

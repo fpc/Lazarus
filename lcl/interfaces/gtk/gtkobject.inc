@@ -1213,7 +1213,7 @@ begin
        else if sender is TCustomCombobox
           then ConnectSignal (PGtkObject(PGtkCombo(gobject)^.entry), 'changed', @gtkchangedCB)
        else 
-            ConnectSignal(gObject, 'changed', @gtkchangedCB);
+            ConnectSignal(gObject, 'changed', @gtkchanged_editbox);
 
     LM_CLICKED :
     begin
@@ -2587,6 +2587,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.22  2001/01/28 03:51:42  lazarus
+  Fixed the problem with Changed for ComboBoxs
+  Shane
+
   Revision 1.21  2001/01/24 23:26:40  lazarus
   MWE:
     = moved some types to gtkdef

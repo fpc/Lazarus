@@ -76,7 +76,19 @@ var
 begin
    Result := True;
    EventTrace('changed', data);
-   Mess.Msg := CM_TEXTCHANGED; //  Changed on 01/04/2001 from LM_CHANGED to CM_TEXTCHANGED by Shane for TCustomEdit
+
+   Mess.Msg := LM_CHANGED;
+   Result := DeliverMessage(Data, Mess) = 0;
+end;
+
+function gtkchanged_editbox( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
+var
+   Mess : TLMessage;
+begin
+   Result := True;
+   EventTrace('changed', data);
+
+   Mess.Msg := CM_TEXTCHANGED;
    Result := DeliverMessage(Data, Mess) = 0;
 end;
 
@@ -1098,6 +1110,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.19  2001/01/28 03:51:42  lazarus
+  Fixed the problem with Changed for ComboBoxs
+  Shane
+
   Revision 1.18  2001/01/24 23:26:40  lazarus
   MWE:
     = moved some types to gtkdef
