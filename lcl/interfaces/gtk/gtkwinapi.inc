@@ -2167,7 +2167,7 @@ begin
     end
     else begin
       // TODO: implement other parameters.
-      ADC := SaveDC(DC);
+      //ADC := SaveDC(DC);
       //pStr := StrAlloc(Count + 1);
       //StrLCopy(pStr, Str, Count);
       //pStr[Count] := #0;
@@ -2234,7 +2234,7 @@ begin
         //                TxtPt.X, TxtPt.Y, pchar(OldText), length(OldText));
         //end;
       end;
-      RestoreDC(DC, ADC);
+      //RestoreDC(DC, ADC);
       //StrDispose(pStr);
     end;
   end;
@@ -5989,6 +5989,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.101  2002/08/21 13:51:31  lazarus
+  MG: removed SaveDC and RestoreDC in ExtTextOut
+
   Revision 1.100  2002/08/21 13:35:25  lazarus
   MG: accelerations for synedit
 
