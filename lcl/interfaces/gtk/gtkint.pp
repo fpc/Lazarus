@@ -146,6 +146,8 @@ type
     procedure RemoveNBPage(ANoteBook: TObject; Index: Integer);virtual;
     procedure MoveNBPage(ANoteBook, APage: TObject; NewIndex: Integer);virtual;
 
+    procedure ListViewChangeItem(TheListView: TObject; Index: integer);
+
     procedure SetText(Child,Data : Pointer);virtual;
     procedure SetColor(Sender : TObject);virtual;
     Procedure SetPixel(Sender : TObject; Data : Pointer);virtual;
@@ -305,6 +307,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.100  2002/11/09 15:02:07  lazarus
+  MG: fixed LM_LVChangedItem, OnShowHint, small bugs
+
   Revision 1.99  2002/11/02 22:25:36  lazarus
   MG: implemented TMethodList and Application Idle handlers
 
