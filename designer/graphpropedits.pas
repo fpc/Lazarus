@@ -553,7 +553,8 @@ begin
 end;
 
 procedure TColorPropertyEditor.ListDrawValue(const CurValue:ansistring;
-Index:integer; ACanvas:TCanvas;  const ARect:TRect; AState: TPropEditDrawState);
+  Index:integer; ACanvas:TCanvas;  const ARect:TRect;
+  AState: TPropEditDrawState);
 
   function ColorToBorderColor(AColor: TColor): TColor;
   type
@@ -577,10 +578,9 @@ var
   vRight,vBottom: Integer;
   vOldPenColor, vOldBrushColor: TColor;
 begin
-  vRight := (ARect.Bottom - ARect.Top) {* 2} + ARect.Left - 2;
+  vRight := (ARect.Bottom - ARect.Top) + ARect.Left - 2;
   vBottom:=ARect.Bottom-2;
-  with ACanvas do
-  try
+  with ACanvas do begin
     // save off things
     vOldPenColor := Pen.Color;
     vOldBrushColor := Brush.Color;
@@ -593,21 +593,20 @@ begin
     Brush.Color := StringToColor(CurValue);
     Pen.Color := ColorToBorderColor(ColorToRGB(Brush.Color));
     Rectangle(ARect.Left + 1, ARect.Top + 1, vRight - 1, vBottom - 1);
-
+    
     // restore the things we twiddled with
     Brush.Color := vOldBrushColor;
     Pen.Color := vOldPenColor;
-  finally
-    inherited ListDrawValue(CurValue, Index, ACanvas,
-                            Rect(vRight, ARect.Top, ARect.Right, ARect.Bottom),
-                            AState);
   end;
+  inherited ListDrawValue(CurValue, Index, ACanvas,
+                          Rect(vRight, ARect.Top, ARect.Right, ARect.Bottom),
+                          AState);
 end;
 
 procedure TColorPropertyEditor.ListMeasureWidth(const CurValue:ansistring;
-  Index:integer;  ACanvas:TCanvas;  var AWidth:Integer);
+  Index:integer; ACanvas:TCanvas;  var AWidth:Integer);
 begin
-  AWidth := AWidth + ACanvas.TextHeight('M') {* 2};
+  AWidth := ACanvas.TextWidth('clGradientInactiveCaption')+25;
 end;
 
 procedure TColorPropertyEditor.SetValue(const NewValue: ansistring);
@@ -679,9 +678,9 @@ begin
 end;
 
 procedure TBrushStylePropertyEditor.ListMeasureWidth(const CurValue: ansistring;
-  Index:integer;  ACanvas: TCanvas; var AWidth: Integer);
+  Index:integer; ACanvas: TCanvas; var AWidth: Integer);
 begin
-  AWidth := AWidth + ACanvas.TextHeight('A') {* 2};
+  AWidth := 130;
 end;
 
 { TPenStylePropertyEditor }
@@ -741,9 +740,9 @@ begin
 end;
 
 procedure TPenStylePropertyEditor.ListMeasureWidth(const CurValue: ansistring;
-  Index:integer;  ACanvas: TCanvas; var AWidth: Integer);
+  Index:integer; ACanvas: TCanvas; var AWidth: Integer);
 begin
-  AWidth := AWidth + ACanvas.TextHeight('X') * 2;
+  AWidth := 130;
 end;
 
 { TFontPropertyEditor }
