@@ -142,6 +142,7 @@ var
   CurDesigner: TDesigner;
   CaptureGrabber:TGrabber;
 Begin
+  Writeln('MouseMoveOnForm');
   CaptureGrabber:=GetCaptureGrabber;
   if CaptureGrabber<>nil then begin
     CaptureGrabber.CaptureMouseMove(TControl(Sender),Shift,X,Y);
@@ -161,6 +162,7 @@ var
 //  CInterface : TComponentInterface;
   CaptureGrabber:TGrabber;
 Begin
+  Writeln('MouseUpOnForm');
   CaptureGrabber:=GetCaptureGrabber;
   if CaptureGrabber<>nil then begin
     CaptureGrabber.CaptureMouseUp(TControl(Sender),Button,Shift,X,Y);
@@ -220,6 +222,7 @@ end;
 
 procedure TDesigner.MouseDownOnControl(Sender : TControl; Message : TLMessage);
 Begin
+  Writeln('MouseDownOnControl');
   if GetCaptureGrabber<>nil then exit;
 
   MouseDownPos.X := TLMMOuse(Message).pos.X;
@@ -348,6 +351,8 @@ var
   Shift : TShiftState;
   X,Y : Integer;
 Begin
+  Writeln('MouseMoveOnControl');
+
   X :=TLMMouse(Message).Pos.x;
   Y := TLMMouse(Message).Pos.Y;
   if (TLMMouse(Message).keys and MK_LButton) = MK_LButton then
@@ -364,11 +369,15 @@ Begin
 
   CaptureGrabber:=GetCaptureGrabber;
   if CaptureGrabber<>nil then begin
+    Writeln('CaptureGrabber is <> nil');
     CaptureGrabber.CaptureMouseMove(TControl(Sender),Shift,X,Y);
   end else begin
     if Assigned(MouseDownControl) then begin
+    Writeln('MouseDownControl is assigned');
       if FMainIDE.SelectedComponent = nil then begin
         // mouse pointer button pressed
+    Writeln('SelectedComponent = nil');
+
         if not (Sender is TCustomForm) then begin
           // move selection
              ControlSelection.MoveSelection(
