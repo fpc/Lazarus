@@ -1001,9 +1001,9 @@ var
   FormIconGdiObject: PGdiObject;     // currently only used by LM_SETFORMICON
   Count     : Integer;               //Used in TListView LM_LV_CHANGEITEM
   Titles    : Array [0..255] of PChar;
-  BitImage : TBitmap;
-  Geometry : TGdkGeometry;
-  Accel : integer;
+  BitImage  : TBitmap;
+  Geometry  : TGdkGeometry;
+  Accel     : integer;
 begin
   Result := 0;   //default value just in case nothing sets it
 
@@ -1085,10 +1085,6 @@ begin
          end;
       end;
       
-      {Used by:
-        TListView
-
-      }
       LM_LV_DELETEITEM :
       begin
         if (Sender is TListView) then
@@ -1139,29 +1135,39 @@ begin
       end;
       
       LM_LV_ADDITEM :
+      if (Sender is TListView) then
       begin
-        if (Sender is TListView) then
-        begin
-          Widget:= GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
+        Widget:= GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
 
-          //get last item and add it..
-          pStr := StrAlloc(length('Test') + 1);
-          StrPCopy(pStr, 'Test');
-          
-          // ToDo: make this dynamic
-          
-          Titles[0] := pStr;
-          for Count := 1 to 255 do
-            Titles[Count] := nil;
-          Num := gtk_clist_append(PgtkCList(Widget),@Titles);
-          StrDispose(pStr);
+        //get last item and add it..
+        pStr := StrAlloc(length('Test') + 1);
+        StrPCopy(pStr, 'Test');
+        
+        // ToDo: make this dynamic
+        
+        Titles[0] := pStr;
+        for Count := 1 to 255 do
+          Titles[Count] := nil;
+        Num := gtk_clist_append(PgtkCList(Widget),@Titles);
+        StrDispose(pStr);
 
-          AddItemListItem := TListView(sender).Items[TListView(sender).Items.Count-1];
-          if AddItemListItem <> nil then
-            Begin
-             gtk_clist_set_text(PgtkCList(Widget),num,0,@AddItemListItem.Caption);
-            end;
-        end;
+        AddItemListItem := TListView(sender).Items[TListView(sender).Items.Count-1];
+        if AddItemListItem <> nil then
+          Begin
+           gtk_clist_set_text(PgtkCList(Widget),num,0,@AddItemListItem.Caption);
+          end;
+      end;
+
+      LM_LV_SELECTITEM:
+      if (Sender is TListView) then
+      begin
+        Widget:= GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
+        gtk_clist_unselect_all(PGtkCList(Widget));
+        
+        writeln('LM_LV_SELECTITEM ',TListItem(Data).Index);
+        
+        if Data<>nil then
+          gtk_clist_select_row(PGtkCList(Widget),TListItem(Data).Index,0);
       end;
       
       LM_BRINGTOFRONT:
@@ -3575,6 +3581,7 @@ var
    ParentForm: TCustomForm;
    Accel : PChar;
    SetupProps : boolean;
+   Titles: PPGChar;
 
   procedure Set_RC_Name(AWidget: PGtkWidget);
   var RCName: string;
@@ -3884,7 +3891,19 @@ begin
         gtk_clist_set_shadow_type(PGtkCList(TempWidget),GTK_SHADOW_IN);
         gtk_clist_column_titles_passive (GTK_CLIST (TempWidget));
 
-        //gtk_container_add(PGtkContainer(p), TempWidget);
+        // add items (the item properties are set via LM_SETPROPERTIES)
+        GetMem(Titles,SizeOf(PChar)*2);
+        for TempInt:=0 to Items.Count-1 do begin
+          if Items[TempInt].Caption<>'' then
+            Titles[0] := PChar(Items[TempInt].Caption)
+          else
+            Titles[0] := #0;
+          Titles[1] := nil;
+          gtk_clist_append(PgtkCList(TempWidget),Titles);
+        end;
+        FreeMem(Titles);
+
+        // set columns properties
         for TempInt := 0 to Columns.Count - 1 do begin
           with Columns[TempInt] do begin
             // set title
@@ -3911,9 +3930,10 @@ begin
                                              MaxWidth);
           end;
         end;
+
       end;
       gtk_clist_column_titles_passive (GTK_CLIST (TempWidget));
-      
+
       gtk_container_add(GTK_CONTAINER(p),TempWidget);
       GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.hscrollbar, GTK_CAN_FOCUS);
       GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.vscrollbar, GTK_CAN_FOCUS);
@@ -3924,7 +3944,7 @@ begin
                     gtk_scrolled_window_get_vadjustment(PGtkScrolledWindow(p)));
       gtk_container_set_focus_hadjustment(PGtkContainer(TempWidget),
                     gtk_scrolled_window_get_hadjustment(PGtkScrolledWindow(p)));
-      gtk_widget_show(TempWidget);
+      gtk_widget_show_all(TempWidget);
       gtk_widget_show(p);
 
       SetMainWidget(p, TempWidget);
@@ -5094,26 +5114,26 @@ begin
        
     csListView :
       begin
-        //set up columns..
-                
+        // set up columns..
+
         Widget:= GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
         
         gtk_clist_freeze(PgtkCList(Widget));
         for I := 0 to TListview(sender).Columns.Count-1 do
         begin
           gtk_clist_set_column_title(Pgtkclist(Widget),I,
-                                  PChar(TListview(sender).Columns[i].Caption));
+                                 PChar(TListview(sender).Columns[i].Caption));
 
-          //set column alignment
+          // set column alignment
           gtk_clist_set_column_justification(PgtkCList(Widget),I,
                    aGTKJUSTIFICATION[TListview(sender).Columns[i].Alignment]);
-          //set auto sizing
+          // set auto sizing
           gtk_clist_set_column_auto_resize(PgtkCList(Widget),I,
                    TListview(sender).Columns[i].AutoSize);
-          //set width
+          // set width
           gtk_clist_set_column_width(PgtkCList(Widget),I,
                    TListview(sender).Columns[i].Width);
-          //set Visible
+          // set Visible
           gtk_clist_set_column_visibility(PgtkCList(Widget),I,
                    TListview(sender).Columns[i].Visible);
           // set MinWidth
@@ -5129,7 +5149,7 @@ begin
         end;
 
         //sorting
-        if (TListview(sender).ViewStyle = vsReport) 
+        if (TListview(sender).ViewStyle = vsReport)
         then gtk_clist_column_titles_show(PgtkCList(Widget))
         else gtk_clist_column_titles_Hide(PgtkCList(Widget));
 
@@ -5147,59 +5167,47 @@ begin
         //
         for I := 0 to TListview(sender).Items.Count-1 do
         begin
-          GetMem(pRowText,Length(TListItem(TListview(sender).Items[i]).Caption)+1);
-          try
-            StrPcopy(pRowText,TListItem(TListview(sender).Items[i]).Caption);
-            gtk_clist_set_text(Pgtkclist(Widget),0,I+1,pRowText);
+          pRowText:=PChar(TListItem(TListview(sender).Items[i]).Caption);
+          gtk_clist_set_text(Pgtkclist(Widget),I,0,pRowText);
 
-            //do image if one is assigned....
-            // TODO: Largeimage support
-            Writeln('Starting image section');
-            if  (TListview(sender).SmallImages <> nil) 
-            and (TListItem(TListview(sender).Items[i]).ImageIndex > -1) 
+          //do image if one is assigned....
+          // TODO: Largeimage support
+          if  (TListview(sender).SmallImages <> nil)
+          and (TListItem(TListview(sender).Items[i]).ImageIndex > -1) 
+          then begin
+            Writeln('Checking images');
+            if (TListItem(TListview(sender).Items[i]).ImageIndex
+              < TListview(sender).SmallImages.Count)
             then begin
-              Writeln('Checking images');
-              if (TListItem(TListview(sender).Items[i]).ImageIndex
-                < TListview(sender).SmallImages.Count)
-              then begin
-                //draw image
-                Writeln('drawing image');
-                Writeln('TListItem(TListview(sender).Items[i]).ImageIndex is ',TListItem(TListview(sender).Items[i]).ImageIndex);
-                      
-                BitImage := TBitmap.Create;
-                TListview(sender).SmallImages.GetBitmap(
-                   TListItem(TListview(sender).Items[i]).ImageIndex,BitImage);
-                
-                gtk_clist_set_pixmap(Pgtkclist(Widget),I,0,
-                  pgdkPixmap(PgdiObject(BitImage.handle)^.GDIBitmapObject),
-                  nil);
-                {$IfNDef Win32}
-                gtk_clist_set_pixtext(Pgtkclist(Widget),I,0,pRowText,3,
-                  pgdkPixmap(PgdiObject(BitImage.handle)^.GDIBitmapObject),
-                  nil);
-                {$EndIF}
+              //draw image
+              Writeln('drawing image');
+              Writeln('TListItem(TListview(sender).Items[i]).ImageIndex is ',TListItem(TListview(sender).Items[i]).ImageIndex);
+                    
+              BitImage := TBitmap.Create;
+              TListview(sender).SmallImages.GetBitmap(
+                 TListItem(TListview(sender).Items[i]).ImageIndex,BitImage);
+              
+              gtk_clist_set_pixmap(Pgtkclist(Widget),I,0,
+                pgdkPixmap(PgdiObject(BitImage.handle)^.GDIBitmapObject),
+                nil);
+              {$IfNDef Win32}
+              gtk_clist_set_pixtext(Pgtkclist(Widget),I,0,pRowText,3,
+                pgdkPixmap(PgdiObject(BitImage.handle)^.GDIBitmapObject),
+                nil);
+              {$EndIF}
 //                      bitimage.Free;
-              end;
             end;
-          finally
-            freemem(pRowText);
           end;
-            
+
           if (TListview(sender).ViewStyle = vsReport) 
           then begin //columns showing
             for X := 1 to TListview(sender).Columns.Count-1 do
             begin
               if ( X <= TListItem(TListview(sender).Items[i]).SubItems.Count) 
               then begin
-                GetMem(pRowText,Length(TListItem(
-                  TListview(sender).Items[i]).SubItems.Strings[X-1])+1);
-                try
-                  pRowText := StrPcopy(pRowText,TListItem(
-                    TListview(sender).Items[i]).SubItems.Strings[X-1]);
-                  gtk_clist_set_text(Pgtkclist(Widget),X,I+1,pRowText);
-                finally
-                  freemem(pRowText);
-                end;
+                pRowText:=PChar(TListItem(
+                  TListview(sender).Items[i]).SubItems.Strings[X-1]);
+                gtk_clist_set_text(Pgtkclist(Widget),I,X,pRowText);
               end;
             end;  //for loop
           end;
@@ -5817,6 +5825,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.209  2002/09/10 10:00:27  lazarus
+  MG: TListView now works handleless and SetSelection implemented
+
   Revision 1.208  2002/09/10 06:49:20  lazarus
   MG: scrollingwincontrol from Andrew
 
