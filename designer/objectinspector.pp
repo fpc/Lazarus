@@ -2089,6 +2089,7 @@ begin
     else
       Pages.Add(oisProperties);
     Pages.Add(oisEvents);
+    PageIndex:=0;
     PopupMenu:=MainPopupMenu;
     Align:= alClient;
     Visible:=true;
