@@ -15,18 +15,18 @@ sub usage(){
 
 Replace strings in files with perl search and replace syntax
 
-usage: $0 [-hRvnb] -t text -r replacetext -f filemask file1 file2 ...
+usage: $0 [-hRvnb] -f text -r replacetext -m filemask file1 file2 ...
 
- -h        : this (help) message
- -f        : find text
- -r        : replace with this text
- -R        : recursive
- -i        : case insensitive
- -v        : verbose
- -s        : write summary
- -n        : simulate, do not change files
- -b        : replace in binary files too
- -m        : file mask, useful for recursive
+ -h            : this (help) message
+ -f <text>     : find text
+ -r <text>     : replace with this text
+ -R            : recursive
+ -i            : case insensitive
+ -v            : verbose
+ -s            : write summary
+ -n            : simulate, do not change files
+ -b            : replace in binary files too
+ -m <filemask> : file mask, useful for recursive
 
 examples:
   Replace in file1.txt and file2.txt all a with b

@@ -26,9 +26,9 @@ if [ "x$1" = "xdeb" ]; then
   shift
 fi
 
-FPCSourceDir=$1
+FPCSrcDir=$1
 shift
-if [ "x$FPCSourceDir" = "x" ]; then
+if [ "x$FPCSrcDir" = "x" ]; then
   echo $Usage
   exit -1
 fi
@@ -40,6 +40,10 @@ if [ "x$LazRelease" = "x" ]; then
   exit -1
 fi
 
+if [ ! -d $FPCSrcDir/compiler ]; then
+  echo "The directory $FPCSrcDir does not look like a fpc source directory (fpc/)"
+  exit -1
+fi
 
 #------------------------------------------------------------------------------
 # patching
@@ -49,13 +53,12 @@ fi
 TmpDir=/tmp/fpc_patchdir
 if [ "$WithTempDir" = "yes" ]; then
   rm -rf $TmpDir
-  mkdir $TmpDir
-  rsync -aq --exclude="*.ppu" --exclude="*.o" --exclude="*.ppw" \
-    --exclude=".#*" --exclude="*~" --exclude="*.bak" \
-    --exclude="CVS" --exclude="cvslog" --exclude="*.orig" --exclude="*.rej" \
-    $FPCSourceDir $TmpDir
+
+  ppc386 -Fu../../lcl/units/i386/linux cvsexportlocal.pas
+  echo "extracting FPC from local cvs ..."
+  ./cvsexportlocal $FPCSrcDir $TmpDir
 else
-  TmpDir=$FPCSourceDir
+  TmpDir=$FPCSrcDir
 fi
 
 # retrieve the version information
@@ -80,7 +83,7 @@ ReplaceScript=replace_in_files.pl
 
 
 # set version numbers in all Makefiles
-perl replace_in_files.pl -nsR -f '=\d.\d.\d' -r =1.9.5 -m 'Makefile.*' $TmpDir/*
+perl replace_in_files.pl -sR -f '=\d.\d.\d' -r =$CompilerVersionStr -m 'Makefile(.fpc)?' $TmpDir/*
 
 # update smart_strip.sh
 #cp $SmartStripScript $TmpDir/install/
@@ -146,39 +149,6 @@ else
   #      -e 's/\(%define builddocdir.*\)/%define __strip smart_strip.sh\n\n\1/' \
   #      -e 's/^\%{fpcdir}\/samplecfg .*/%{fpcdir}\/samplecfg %{_libdir}\/fpc\/\\\$version/' \
   mv $SpecFile.New $SpecFile
-  #if [ "$WithDOCS" = "no" ]; then
-    #cat $SpecFile | \
-    #  sed -e 's/^\(.*\bmake\b.*\bdocs\b\)/#\1/g' \
-    #      -e 's/^\(%doc.*\*\.pdf\)/#\1/g' \
-    #> $SpecFile.New
-    #mv $SpecFile.New $SpecFile
-  #fi
-
-  # change Makefile for new rpmbuild, if not already done
-  # ATM not needed:
-  #cd $TmpDir
-  #if [ -n `grep -q rpmbuild Makefile` ]; then
-  #  cat Makefile | \
-  #    sed -e 's/rpm\( --nodeps -ba .*\)$/rpm\1 || rpmbuild\1/g' \
-  #    > New.Makefile
-  #  mv New.Makefile Makefile
-  #fi
-  #cd -
-  
-  # fix Makefile bug: it tests /usr/src/redhat, instaed of /usr/src/redhat/RPMS
-  #cd $TmpDir
-  #cat Makefile | \
-  #  sed -e 's#ifeq ($(wildcard $(REDHATDIR)),)#ifeq ($(wildcard $(REDHATDIR)/RPMS),)#' \
-  #  > New.Makefile
-  #mv New.Makefile Makefile
-  #cd -
-
-  # fix fpc.spec bug: smart_strip.sh is searched at wrong location
-  #SmartStripWhileBuild="/usr/src/redhat/BUILD/fpc-$CompilerVersion.$CompilerRelease.$CompilerPatch/smart_strip.sh"
-  #cat $SpecFile | \
-  #  sed -e 's# %{buildroot}/smart_strip.sh# '"$SmartStripWhileBuild"'#' \
-  #  > $SpecFile.New
-  #mv $SpecFile.New $SpecFile
 
   #----------------------------------------------------------------------------
   # compile
@@ -192,6 +162,12 @@ else
     make rpm
   fi
   cd -
+  
+  #----------------------------------------------------------------------------
+  # put rpms to normal places
+  #----------------------------------------------------------------------------
+  cp $TmpDir/fpc-*.i386.rpm /usr/src/redhat/RPMS/i386/
+  cp $TmpDir/fpc-*.src.rpm /usr/src/redhat/SRPMS/
 fi
 
 # end.
