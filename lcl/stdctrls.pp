@@ -181,9 +181,12 @@ type
   TCustomComboBox = class(TWinControl)
   private
     FAutoDropDown: Boolean;
+    FCanvas: TCanvas;
     FDropDownCount: Integer;
+    FDroppedDown: boolean;
     FItemHeight: integer;
     FItemIndex: integer;
+    FItemWidth: integer;
     FItems: TStrings;
     fMaxLength: integer;
     FOnChange : TNotifyEvent;
@@ -196,8 +199,12 @@ type
     FSelStart: integer;
     FSorted : boolean;
     FStyle : TComboBoxStyle;
+    function GetDroppedDown: Boolean;
+    function GetItemWidth: Integer;
+    procedure SetItemWidth(const AValue: Integer);
     procedure SetItems(Value : TStrings);
-    procedure CNDrawItems(var Message : TLMDrawItems); message CN_DrawItem;
+    procedure CNDrawItems(var TheMessage : TLMDrawItems); message CN_DrawItem;
+    procedure CNCommand(var TheMessage : TLMCommand); message CN_Command;
   protected
     procedure CreateHandle; override;
     procedure DestroyHandle; override;
@@ -209,6 +216,7 @@ type
     procedure Select; dynamic;
     procedure DropDown; dynamic;
     procedure CloseUp; dynamic;
+    procedure AdjustDropDown; virtual;
 
     function GetItemCount: Integer; //override;
     function GetItemHeight: Integer; virtual;
@@ -220,6 +228,7 @@ type
     procedure InitializeWnd; override;
     function SelectItem(const AnItem: String): Boolean;
     procedure SetDropDownCount(const AValue: Integer); virtual;
+    procedure SetDroppedDown(const AValue: Boolean); virtual;
     procedure SetItemHeight(const AValue: Integer); virtual;
     procedure SetItemIndex(Val : integer); virtual;
     procedure SetMaxLength(Val : integer); virtual;
@@ -234,6 +243,7 @@ type
     property Items: TStrings read FItems write SetItems;
     property ItemHeight: Integer read GetItemHeight write SetItemHeight;
     property ItemIndex: integer read GetItemIndex write SetItemIndex;
+    property ItemWidth: Integer read GetItemWidth write SetItemWidth;
     property MaxLength: integer read GetMaxLength write SetMaxLength default 0;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnCloseUp: TNotifyEvent read FOnCloseUp write FOnCloseUp;
@@ -254,10 +264,13 @@ type
       MaxHistoryCount: integer; SetAsText, CaseSensitive: boolean);
     procedure Clear; //override;
     procedure ClearSelection; //override;
+    property DroppedDown: Boolean read GetDroppedDown write SetDroppedDown;
     procedure MeasureItem(Index: Integer; var TheHeight: Integer); virtual;
     procedure SelectAll;
+
     property AutoDropDown: Boolean
       read FAutoDropDown write FAutoDropDown default False;
+    property Canvas: TCanvas read FCanvas;
     property SelLength: integer read GetSelLength write SetSelLength;
     property SelStart: integer read GetSelStart write SetSelStart;
     property SelText: String read GetSelText write SetSelText;
@@ -276,6 +289,7 @@ type
     property Enabled;
     property Font;
     property ItemHeight;
+    property ItemWidth;
     property Items;
     property MaxLength;
     property ParentCtl3D;
@@ -290,6 +304,8 @@ type
     property Visible;
     property OnChange;
     property OnClick;
+    property OnCloseUp;
+    property OnDropDown;
     property OnEnter;
     property OnExit;
     property OnKeyPress;
@@ -1299,6 +1315,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.51  2002/10/03 14:47:30  lazarus
+  MG: added TComboBox.OnPopup+OnCloseUp+ItemWidth
+
   Revision 1.50  2002/10/03 00:08:50  lazarus
   AJ: TCustomLabel Autosize, TCustomCheckbox '&' shortcuts started
 

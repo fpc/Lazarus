@@ -28,19 +28,21 @@ type
   TGtkListStringList = class(TStrings)
   private
     FGtkList : PGtkList;
+    FOwner: TWinControl;
     FSorted : boolean;
   protected
     function Get(Index : Integer) : string; override;
     function GetCount : integer; override;
     procedure SetSorted(Val : boolean); virtual;
   public
-    constructor Create(List : PGtkList);
+    constructor Create(List : PGtkList; TheOwner: TWinControl);
     procedure Assign(Source : TPersistent); override;
     procedure Clear; override;
     procedure Delete(Index : integer); override;
     procedure Insert(Index : integer; const S: string); override;
     procedure Sort; virtual;
     property Sorted : boolean read FSorted write SetSorted;
+    property Owner: TWinControl read FOwner;
   end;
 
   TGtkCListStringList = class(TStrings)
@@ -72,6 +74,9 @@ type
 { =============================================================================
 
   $Log$
+  Revision 1.4  2002/10/03 14:47:31  lazarus
+  MG: added TComboBox.OnPopup+OnCloseUp+ItemWidth
+
   Revision 1.3  2002/05/10 06:05:57  lazarus
   MG: changed license to LGPL
 

@@ -357,10 +357,10 @@ type
   end;
 
   TLMNoParams = record
-      Msg: Cardinal;
-      Unused: array[0..3] of Word;
-      Result: Longint;
-    end;
+    Msg: Cardinal;
+    Unused: array[0..3] of Word;
+    Result: Longint;
+  end;
 
   TLMScreenInit = record
     PixelsPerInchX : Integer;
@@ -500,7 +500,7 @@ type
     Result: Longint;
   end;
 
- TLMNotify = packed record
+  TLMNotify = packed record
     Msg: Cardinal;
     IDCtrl: Longint;
     NMHdr: PNMHdr;
@@ -775,7 +775,30 @@ type
     NewModifier : TShiftState;
   end;
 
-        
+  TLMCommand = packed record
+    Msg: Cardinal;
+    ItemID: Word;
+    NotifyCode: Word;
+    Ctl: HWND;
+    Result: Longint;
+  end;
+
+
+{ Combo Box Notification Codes }
+
+const
+  CBN_ERRSPACE     = (-1);
+  CBN_SELCHANGE    = 1;
+  CBN_DBLCLK       = 2;
+  CBN_SETFOCUS     = 3;
+  CBN_KILLFOCUS    = 4;
+  CBN_EDITCHANGE   = 5;
+  CBN_EDITUPDATE   = 6;
+  CBN_DROPDOWN     = 7;
+  CBN_CLOSEUP      = 8;
+  CBN_SELENDOK     = 9;
+  CBN_SELENDCANCEL = 10;
+
         
 function GetMessageName(const AMessage: Integer):  String;
 
@@ -824,15 +847,15 @@ begin
     LM_INSERTTOOLBUTTON : Result :='LM_INSERTTOOLBUTTON';
     LM_DELETETOOLBUTTON : Result :='LM_DELETETOOLBUTTON';
     LM_SetCursor        : Result :='LM_SetCursor       ';
-    LM_IMAGECHANGED     : Result :='LM_IMAGECHANGED     ';
-    LM_LAYOUTCHANGED    : Result :='LM_LAYOUTCHANGED    ';
+    LM_IMAGECHANGED     : Result :='LM_IMAGECHANGED    ';
+    LM_LAYOUTCHANGED    : Result :='LM_LAYOUTCHANGED   ';
     LM_BTNDEFAULT_CHANGED: Result :='LM_BTNDEFAULT_CHANGED';
-    LM_LOADXPM          : Result :='LM_LOADXPM          ';
-    LM_DRAGINFOCHANGED  : Result :='LM_DRAGINFOCHANGED  ';
+    LM_LOADXPM          : Result :='LM_LOADXPM         ';
+    LM_DRAGINFOCHANGED  : Result :='LM_DRAGINFOCHANGED ';
 //    LM_SETENABLED       : Result :='LM_SETENABLED       ';
-    LM_BRINGTOFRONT     : Result :='LM_BRINGTOFRONT     ';   
-    LM_CB_GETCOUNT         : Result :='LM_CB_GETCOUNT         ';
-    LM_SETSHORTCUT      : Result := 'LM_SETSHORTCUT';
+    LM_BRINGTOFRONT     : Result :='LM_BRINGTOFRONT    ';
+    LM_CB_GETCOUNT      : Result :='LM_CB_GETCOUNT     ';
+    LM_SETSHORTCUT      : Result :='LM_SETSHORTCUT     ';
     
     // additional for TNoteBook
     LM_NB_UpdateTab     : Result := 'LM_NB_UpdateTab';
@@ -848,6 +871,9 @@ end.
 
 {
   $Log$
+  Revision 1.33  2002/10/03 14:47:29  lazarus
+  MG: added TComboBox.OnPopup+OnCloseUp+ItemWidth
+
   Revision 1.32  2002/09/16 08:54:03  lazarus
   MG: gtk mlouse events can now be fetched before or after
 

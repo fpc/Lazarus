@@ -78,12 +78,13 @@ procedure TCustomComboBox.DrawItem(Index: Integer; Rect: TRect;
   State: TCustomDrawItemState);
 begin
   //TControlCanvas(FCanvas).UpdateTextFlags;
-  if Assigned(FOnDrawItem) then FOnDrawItem(Self, Index, Rect, State);
-  {else
+  if Assigned(FOnDrawItem) then
+    FOnDrawItem(Self, Index, Rect, State)
+  else
   begin
     FCanvas.FillRect(Rect);
     FCanvas.TextOut(Rect.Left + 2, Rect.Top, Items[Index]);
-  end;}
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -210,7 +211,7 @@ end;
 {------------------------------------------------------------------------------
   procedure TCustomComboBox.DropDown;
 
-  Returns the selected part of text-field.
+  Called whenever the list popups.
  ------------------------------------------------------------------------------}
 procedure TCustomComboBox.DropDown;
 begin
@@ -220,11 +221,28 @@ end;
 {------------------------------------------------------------------------------
   procedure TCustomComboBox.CloseUp;
 
-  Returns the selected part of text-field.
+  Called whenever the list hides.
  ------------------------------------------------------------------------------}
 procedure TCustomComboBox.CloseUp;
 begin
   if Assigned(FOnCloseUp) then FOnCloseUp(Self);
+end;
+
+{------------------------------------------------------------------------------
+  procedure TCustomComboBox.AdjustDropDown;
+
+ ------------------------------------------------------------------------------}
+procedure TCustomComboBox.AdjustDropDown;
+var
+  Count, MinItemsWidth, MinItemsHeight: Integer;
+begin
+  if (not HandleAllocated) or (not DroppedDown) then exit;
+  Count := Items.Count;
+  if Count > DropDownCount then Count := DropDownCount;
+  if Count < 1 then Count := 1;
+  MinItemsWidth:=ItemWidth;
+  MinItemsHeight:=Count*ItemHeight;
+  SetComboMinDropDownSize(Handle,MinItemsWidth,MinItemsHeight,Count);
 end;
 
 {------------------------------------------------------------------------------
@@ -415,6 +433,50 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function TCustomComboBox.GetDroppedDown: Boolean;
+
+  Returns true, if list is shown.
+ ------------------------------------------------------------------------------}
+function TCustomComboBox.GetDroppedDown: Boolean;
+begin
+  Result:=FDroppedDown;
+end;
+
+{------------------------------------------------------------------------------
+  function TCustomComboBox.GetItemWidth: Integer;
+
+  The ItemWidth is the minimum pixels, that is allocated for the items in the
+  dropdown list.
+ ------------------------------------------------------------------------------}
+function TCustomComboBox.GetItemWidth: Integer;
+begin
+  Result:=FItemWidth;
+end;
+
+{------------------------------------------------------------------------------
+  function TCustomComboBox.GetDroppedDown: Boolean;
+
+
+ ------------------------------------------------------------------------------}
+procedure TCustomComboBox.SetDroppedDown(const AValue: Boolean);
+begin
+  // ToDo
+end;
+
+{------------------------------------------------------------------------------
+  procedure TCustomComboBox.SetItemWidth(const AValue: Integer);
+
+  The ItemWidth is the minimum pixels, that is allocated for the items in the
+  dropdown list.
+ ------------------------------------------------------------------------------}
+procedure TCustomComboBox.SetItemWidth(const AValue: Integer);
+begin
+  if FItemWidth=AValue then exit;
+  FItemWidth:=AValue;
+  AdjustDropDown;
+end;
+
+{------------------------------------------------------------------------------
   Method: TCustomComboBox.SetItems
   Params: value - stringlist with items for combobox
   Returns: nothing
@@ -444,6 +506,8 @@ begin
   FItems := TStringlist.Create;
   FItemIndex:=-1;
   FDropDownCount:=8;
+  FCanvas := TControlCanvas.Create;
+  TControlCanvas(FCanvas).Control := Self;
 //   FItems:= TComboBoxStrings.Create;
 //   TComboBoxStrings(FItems).ComboBox := Self;
 end;
@@ -458,6 +522,8 @@ end;
 destructor TCustomComboBox.Destroy;
 begin
   if HandleAllocated then DestroyHandle;
+  FCanvas.Free;
+  FCanvas:=nil;
   FItems.Free;
   FItems:=nil;
   inherited Destroy;
@@ -582,19 +648,89 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Procedure TCustomComboBox.CNDrawItems(var Message : TLMDrawItems);
+  Procedure TCustomComboBox.CNDrawItems(var TheMessage : TLMDrawItems);
 
   Handler for custom drawing items.
  ------------------------------------------------------------------------------}
-Procedure TCustomComboBox.CNDrawItems(var Message : TLMDrawItems);
-Begin
-  // ToDo
+Procedure TCustomComboBox.CNDrawItems(var TheMessage : TLMDrawItems);
+//var
+  //State: TOwnerDrawState;
+begin
+
+  {with Message.DrawItemStruct^ do
+  begin
+    State := TOwnerDrawState(LongRec(itemState).Lo);
+    if itemState and ODS_COMBOBOXEDIT <> 0 then
+      Include(State, odComboBoxEdit);
+    if itemState and ODS_DEFAULT <> 0 then
+      Include(State, odDefault);
+    FCanvas.Handle := hDC;
+    FCanvas.Font := Font;
+    FCanvas.Brush := Brush;
+    if (Integer(itemID) >= 0) and (odSelected in State) then
+    begin
+      FCanvas.Brush.Color := clHighlight;
+      FCanvas.Font.Color := clHighlightText
+    end;
+    if Integer(itemID) >= 0 then
+      DrawItem(itemID, rcItem, State) else
+      FCanvas.FillRect(rcItem);
+    if odFocused in State then DrawFocusRect(hDC, rcItem);
+    FCanvas.Handle := 0;
+  end;}
+end;
+
+{------------------------------------------------------------------------------
+  procedure TCustomComboBox.CNCommand(var TheMessage: TLMCommand);
+
+  Handler for various notifications.
+ ------------------------------------------------------------------------------}
+procedure TCustomComboBox.CNCommand(var TheMessage: TLMCommand);
+begin
+  case TheMessage.NotifyCode of
+    {CBN_DBLCLK:
+      DblClick;
+    CBN_EDITCHANGE:
+      Change;}
+    CBN_DROPDOWN:
+      begin
+        FDroppedDown:=true;
+        DropDown;
+        AdjustDropDown;
+      end;
+    {CBN_SELCHANGE:
+      begin
+        Text := Items[ItemIndex];
+        Click;
+        Select;
+      end;}
+    CBN_CLOSEUP:
+      begin
+        FDroppedDown:=false;
+        CloseUp;
+      end;
+    {CBN_SETFOCUS:
+      begin
+        FIsFocused := True;
+        FFocusChanged := True;
+        SetIme;
+      end;
+    CBN_KILLFOCUS:
+      begin
+        FIsFocused := False;
+        FFocusChanged := True;
+        ResetIme;
+      end;}
+  end;
 end;
 
 // included by stdctrls.pp
 
 {
   $Log$
+  Revision 1.16  2002/10/03 14:47:30  lazarus
+  MG: added TComboBox.OnPopup+OnCloseUp+ItemWidth
+
   Revision 1.15  2002/10/02 14:23:23  lazarus
   MG: added various history lists
 
