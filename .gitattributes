@@ -236,6 +236,7 @@ ide/projectopts.lrs svneol=native#text/pascal
 ide/projectopts.pp svneol=native#text/pascal
 ide/publishmodule.pas svneol=native#text/pascal
 ide/publishprojectdlg.lfm svneol=native#text/plain
+ide/publishprojectdlg.lrs svneol=native#text/pascal
 ide/publishprojectdlg.pas svneol=native#text/pascal
 ide/runparamsopts.pas svneol=native#text/pascal
 ide/sortselectiondlg.pas svneol=native#text/pascal

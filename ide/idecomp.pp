@@ -341,7 +341,6 @@ begin
   RegisterComponents('Data Access','Db',[TDatasource,TDatabase]);
 {$ENDIF}
 {$IFDEF INTERBASE}
-//Interbase
   RegisterComponents('Interbase Data Access','Interbase',[TIBStoredProc,
           TIBQuery,TIBDatabase]);
 {$ENDIF}

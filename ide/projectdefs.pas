@@ -260,7 +260,7 @@ type
     procedure SetUseIncludeFileFilter(const AValue: boolean);
   public
     constructor Create;
-    destructor Destroy;
+    destructor Destroy; override;
     procedure Clear;
     procedure LoadDefaults;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const APath: string);
