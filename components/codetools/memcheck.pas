@@ -686,7 +686,7 @@ procedure CheckPointer(p : pointer);[saveregisters,public, alias : 'FPC_CHECKPOI
 var
   i  : longint;
   pp : pheap_mem_info;
-  {$ifdef win32}get_ebp: cradinal;{$endif}
+  {$ifdef win32}get_ebp: cardinal;{$endif}
   {$ifdef go32v2}
   stack_top : cardinal;
   data_end : cardinal;
