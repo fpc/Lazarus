@@ -185,10 +185,18 @@ end;
  ------------------------------------------------------------------------------}
 procedure TgtkObject.SetWindowSizeAndPosition(Window: PGtkWindow;
   AWinControl: TWinControl);
+var
+  Width, Height: integer;
 begin
-  gtk_window_set_default_size(Window,AWinControl.Width,AWinControl.Height);
+  Width:=AWinControl.Width;
+  if Width<0 then
+    Width:=0;
+  Height:=AWinControl.Height;
+  if Height<0 then
+    Height:=0;
+  gtk_window_set_default_size(Window,Width,Height);
   gtk_widget_set_usize(PGtkWidget(Window), -1,-1);
-  gtk_widget_set_usize(PGtkWidget(Window),AWinControl.Width,AWinControl.Height);
+  gtk_widget_set_usize(PGtkWidget(Window),Width,Height);
   gtk_widget_set_uposition(PGtkWidget(Window),AWinControl.Left,AWinControl.Top);
 end;
 
@@ -207,7 +215,7 @@ procedure TgtkObject.SendCachedLCLMessages;
     LCLControl: TControl;
     IsTopLevelWidget: boolean;
     TopologicalList: TList; // list of PGtkWidget;
-    i: integer;
+    i, LCLWidth, LCLHeight: integer;
   begin
     if FWidgetsWithResizeRequest.Count=0 then exit;
     {$IFDEF VerboseSizeMsg}
@@ -234,7 +242,13 @@ procedure TgtkObject.SendCachedLCLMessages;
 
       if not IsTopLevelWidget then begin
         // resize widget
-        gtk_widget_set_usize(Widget, LCLControl.Width, LCLControl.Height);
+        LCLWidth:=LCLControl.Width;
+        if LCLWidth<0 then
+          LCLWidth:=0;
+        LCLHeight:=LCLControl.Height;
+        if LCLHeight<0 then
+          LCLHeight:=0;
+        gtk_widget_set_usize(Widget, LCLWidth, LCLHeight);
         // move widget on the fixed widget of parent control
         ParentWidget:=pgtkWidget(LCLControl.Parent.Handle);
         ParentFixed := GetFixedWidget(ParentWidget);
@@ -321,7 +335,9 @@ procedure TGtkObject.SendCachedGtkMessages;
     GtkLeft:=MainWidget^.Allocation.X;
     GtkTop:=MainWidget^.Allocation.Y;
     GtkWidth:=MainWidget^.Allocation.Width;
+    if GtkWidth<0 then GtkWidth:=0;
     GtkHeight:=MainWidget^.Allocation.Height;
+    if GtkHeight<0 then GtkHeight:=0;
     
     IsTopLevelWidget:=(LCLControl is TCustomForm)
                       and (LCLControl.Parent=nil);
@@ -5993,6 +6009,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.240  2002/10/08 17:51:41  lazarus
+  MG: fixed settings negative widget sizes
+
   Revision 1.239  2002/10/08 16:15:44  lazarus
   MG: fixed small typos and accelerated TDynHashArray.Contains
 
