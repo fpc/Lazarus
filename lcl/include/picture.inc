@@ -178,7 +178,27 @@ begin
   Result := TBitmap(Graphic);
 end;
 
+function TPicture.GetPixmap: TPixmap;
+begin
+  Result:=nil;
+end;
+
+function TPicture.GetIcon: TIcon;
+begin
+  Result:=nil;
+end;
+
 procedure TPicture.SetBitmap(Value: TBitmap);
+begin
+  SetGraphic(Value);
+end;
+
+procedure TPicture.SetPixmap(Value: TPixmap);
+begin
+  SetGraphic(Value);
+end;
+
+procedure TPicture.SetIcon(Value: TIcon);
 begin
   SetGraphic(Value);
 end;
@@ -239,6 +259,21 @@ begin
   if FGraphic <> nil then FGraphic.SaveToFile(Filename);
 end;
 
+procedure TPicture.LoadFromClipboardFormat(FormatID: TClipboardFormat);
+begin
+
+end;
+
+procedure TPicture.SaveToClipboardFormat(FormatID: TClipboardFormat);
+begin
+
+end;
+
+function TPicture.SupportsClipboardFormat(FormatID: TClipboardFormat): Boolean;
+begin
+  Result:=false;
+end;
+
 procedure TPicture.Assign(Source: TPersistent);
 begin
   if Source = nil then
@@ -255,6 +290,12 @@ class procedure TPicture.RegisterFileFormat(const AnExtension,
   ADescription: string; AGraphicClass: TGraphicClass);
 begin
   GetFileFormats.Add(AnExtension, ADescription, AGraphicClass);
+end;
+
+procedure TPicture.RegisterClipboardFormat(FormatID: TClipboardFormat;
+  AGraphicClass: TGraphicClass);
+begin
+
 end;
 
 class procedure TPicture.UnRegisterGraphicClass(AClass: TGraphicClass);

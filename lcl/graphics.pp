@@ -113,6 +113,8 @@ const
 
 type
   TBitmap = class;
+  TPixmap = class;
+  TIcon = class;
 
   TGraphicsObject = class(TPersistent)
   private
@@ -351,13 +353,13 @@ type
     procedure ForceType(GraphicType: TGraphicClass);
     function GetBitmap: TBitmap;
     function GetPixmap: TPixmap;
-    function GetIconp: TIcon;
+    function GetIcon: TIcon;
     function GetHeight: Integer;
     function GetWidth: Integer;
     procedure ReadData(Stream: TStream);
     procedure SetBitmap(Value: TBitmap);
     procedure SetPixmap(Value: TPixmap);
-    procedure SetIconp(Value: TIcon);
+    procedure SetIcon(Value: TIcon);
     procedure SetGraphic(Value: TGraphic);
     procedure WriteData(Stream: TStream);
   protected
@@ -744,6 +746,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.26  2002/03/09 12:03:41  lazarus
+  MG: started real graphics
+
   Revision 1.25  2002/03/09 11:55:13  lazarus
   MG: fixed class method completion
 
