@@ -36,7 +36,7 @@ uses
   Forms, Controls, LCLType, Classes,
 ////////////////////////////////////////////////////
   WSForms, WSLCLClasses, Windows, SysUtils, WinExt, 
-  Win32Int, Win32Proc, Win32WSControls;
+  InterfaceBase, Win32Int, Win32Proc, Win32WSControls;
 
 type
 
@@ -249,6 +249,9 @@ begin
     Width := LongInt(CW_USEDEFAULT);
     Height := LongInt(CW_USEDEFAULT);
     SubClassWndProc := nil;
+    if ((Application = nil) or (Application.MainForm <> lForm)) 
+        and lForm.ShowInTaskBar then
+      Parent := 0;
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);
@@ -321,7 +324,11 @@ end;
 procedure TWin32WSCustomForm.SetShowInTaskbar(const AForm: TCustomForm;
   const AValue: Boolean);
 begin
-  {$Warning TODO: TWin32WSCustomForm.SetShowInTaskbar}
+  if (Application <> nil) and (AForm = Application.MainForm) then
+    exit;
+
+  AForm.DestroyHandle;
+  AForm.HandleNeeded;
 end;
 
 procedure TWin32WSCustomForm.ShowModal(const ACustomForm: TCustomForm);

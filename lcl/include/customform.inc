@@ -208,6 +208,16 @@ begin
   Result:=FKeyPreview=true;
 end;
 
+function TCustomForm.IsShowInTaskBarStored: boolean;
+begin
+  Result := FShowInTaskBar <> GetShowInTaskBarDefault;
+end;
+
+function TCustomForm.GetShowInTaskBarDefault: boolean;
+begin
+  Result := (Application = nil) or (Application.MainForm = Self);
+end;
+
 procedure TCustomForm.SetCancelControl(NewControl: TControl);
 var
   OldCancelControl: TControl;
@@ -1188,8 +1198,8 @@ end;
 procedure TCustomForm.SetShowInTaskbar(Value: Boolean);
 begin
   if Value = FShowInTaskbar then exit;
-  TWSCustomFormClass(WidgetSetClass).SetShowInTaskbar(Self, Value);
   FShowInTaskbar := Value;
+  TWSCustomFormClass(WidgetSetClass).SetShowInTaskbar(Self, Value);
 end;
 
 {------------------------------------------------------------------------------
@@ -1198,7 +1208,7 @@ end;
 constructor TCustomForm.Create(AOwner : TComponent);
 begin
   //DebugLn('[TCustomForm.Create] A Class=',Classname);
-  FShowInTaskbar := True;
+  FShowInTaskbar := GetShowInTaskBarDefault;
   BeginFormUpdate;
   try
     CreateNew(AOwner, 1);
@@ -1905,6 +1915,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.181  2005/03/25 08:58:11  micha
+  implement ShowInTaskBar for win32 intf
+
   Revision 1.180  2005/03/19 23:36:26  mattias
   implemented TCustomForm.ShowInTaskBar for gtk1+2  from Andrew Haines
 

@@ -1487,7 +1487,6 @@ type
     procedure CreateHandle; virtual;
     procedure CreateParams(var Params: TCreateParams); virtual;
     procedure CreateWnd; virtual; //creates the window
-    procedure DestroyHandle; virtual;
     procedure DestroyWnd; virtual;
     procedure DoFlipChildren; dynamic;
     procedure FixupTabList;
@@ -1578,6 +1577,8 @@ type
     constructor CreateParented(ParentWindow: HWnd);
     class function CreateParentedControl(ParentWindow: HWnd): TWinControl;
     destructor Destroy; override;
+    { TODO: DestroyHandle needed by win32 intf }
+    procedure DestroyHandle; virtual;
     procedure DockDrop(DockObject: TDragDockObject; X, Y: Integer); dynamic;
     Function CanFocus: Boolean;
     function GetControlIndex(AControl: TControl): integer;
@@ -2890,6 +2891,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.289  2005/03/25 08:58:11  micha
+  implement ShowInTaskBar for win32 intf
+
   Revision 1.288  2005/03/11 14:40:37  mattias
   moved CM_ message constants from crontrols.pp to lmessages.pp to break circles and clean up controls.pp
 

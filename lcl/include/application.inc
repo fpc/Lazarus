@@ -1406,8 +1406,8 @@ begin
   if (Instance is TForm) then begin
     AForm:=TForm(Instance);
     if (FMainForm = nil) and (AForm.FormStyle=fsNormal) then begin
-      AForm.HandleNeeded;
       FMainForm := AForm;
+      AForm.HandleNeeded;
     end else begin
       if not Assigned(FFormList) then
         FFormList := TList.Create;
@@ -1464,6 +1464,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.111  2005/03/25 08:58:11  micha
+  implement ShowInTaskBar for win32 intf
+
   Revision 1.110  2005/03/10 09:02:11  mattias
   handle tab key in ControlKeyDown in TCustomEdit and TCustomComboBox
 

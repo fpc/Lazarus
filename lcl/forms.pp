@@ -413,6 +413,8 @@ type
     procedure DoDestroy;
     procedure IconChanged(Sender: TObject);
     function IsKeyPreviewStored: boolean;
+    function IsShowInTaskBarStored: boolean;
+    function GetShowInTaskBarDefault: boolean;
     procedure SetActive(AValue: Boolean);
     procedure SetActiveControl(AWinControl: TWinControl);
     procedure SetBorderIcons(NewIcons: TBorderIcons);
@@ -555,7 +557,7 @@ type
     property RestoredWidth: integer read FRestoredWidth;
     property RestoredHeight: integer read FRestoredHeight;
     property ShowInTaskBar: Boolean read FShowInTaskbar write SetShowInTaskBar
-                                    default True;
+                                    stored IsShowInTaskBarStored;
     property TextHeight: Longint read FDummyTextHeight write FDummyTextHeight
                                  stored False;
     property Visible write SetVisible stored VisibleIsStored default false;
