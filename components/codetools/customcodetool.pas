@@ -1377,7 +1377,7 @@ end;
 function TCustomCodeTool.UpdateNeeded(OnlyInterfaceNeeded: boolean): boolean;
 begin
 {$IFDEF CTDEBUG}
-writeln('TCustomCodeTool.UpdateNeeded A ',Scanner<>nil);
+writeln('TCustomCodeTool.UpdateNeeded A ',Scanner<>nil,' FForceUpdateNeeded=',FForceUpdateNeeded);
 {$ENDIF}
   if FForceUpdateNeeded then begin
     Result:=true;
@@ -1387,7 +1387,7 @@ writeln('TCustomCodeTool.UpdateNeeded A ',Scanner<>nil);
            or (Scanner.UpdateNeeded(OnlyInterfaceNeeded, CheckFilesOnDisk));
   FForceUpdateNeeded:=Result;
 {$IFDEF CTDEBUG}
-writeln('TCustomCodeTool.UpdateNeeded END');
+writeln('TCustomCodeTool.UpdateNeeded END  Result=',Result);
 {$ENDIF}
 end;
 
@@ -1474,7 +1474,6 @@ procedure TCustomCodeTool.DoDeleteNodes;
 begin
   Tree.Clear;
 end;
-
 
 { ECodeToolError }
 

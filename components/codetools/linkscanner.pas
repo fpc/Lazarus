@@ -59,6 +59,10 @@ type
   TOnCheckFileOnDisk = function(Code: Pointer): boolean of object;
   TOnGetInitValues = function(Code: Pointer): TExpressionEvaluator of object;
   TOnIncludeCode = procedure(ParentCode, IncludeCode: Pointer) of object;
+  TOnSetWriteLock = procedure(Lock: boolean) of object;
+  TOnGetWriteLockInfo = procedure(var WriteLockIsSet: boolean;
+    var WriteLockStep: integer) of object;
+
 
   TSourceLink = record
     CleanedPos: integer;
@@ -98,6 +102,9 @@ type
     FIgnoreMissingIncludeFiles: boolean;
     FNestedComments: boolean;
     FForceUpdateNeeded: boolean;
+    FLastGlobalWriteLockStep: integer;
+    FOnGetGlobalWriteLockInfo: TOnGetWriteLockInfo;
+    FOnSetGlobalWriteLock: TOnSetWriteLock;
     function GetLinks(Index: integer): TSourceLink;
     procedure SetLinks(Index: integer; const Value: TSourceLink);
     procedure SetSource(ACode: Pointer); // set current source
@@ -215,9 +222,17 @@ type
     property ScanTillInterfaceEnd: boolean
         read FScanTillInterfaceEnd write SetScanTillInterfaceEnd;
     procedure Scan(TillInterfaceEnd, CheckFilesOnDisk: boolean);
+    
     function UpdateNeeded(OnlyInterfaceNeeded,
         CheckFilesOnDisk: boolean): boolean;
     property ChangeStep: integer read FChangeStep;
+    procedure ActivateGlobalWriteLock;
+    procedure DeactivateGlobalWriteLock;
+    property OnGetGlobalWriteLockInfo: TOnGetWriteLockInfo
+      read FOnGetGlobalWriteLockInfo write FOnGetGlobalWriteLockInfo;
+    property OnSetGlobalWriteLock: TOnSetWriteLock
+      read FOnSetGlobalWriteLock write FOnSetGlobalWriteLock;
+
     procedure Clear;
     function ConsistencyCheck: integer;
     procedure WriteDebugReport;
@@ -851,9 +866,29 @@ function TLinkScanner.UpdateNeeded(
 var i: integer;
   SrcLog: TSourceLog;
   NewInitValues: TExpressionEvaluator;
+  GlobalWriteLockIsSet: boolean;
+  GlobalWriteLockStep: integer;
 begin
   Result:=true;
   if FForceUpdateNeeded then exit;
+  if Assigned(OnGetGlobalWriteLockInfo) then begin
+    OnGetGlobalWriteLockInfo(GlobalWriteLockIsSet,GlobalWriteLockStep);
+    if GlobalWriteLockIsSet then begin
+      // The global write lock is set. That means, input variables and code are
+      // frozen
+      if (FLastGlobalWriteLockStep=GlobalWriteLockStep) then begin
+        // source and values did not change since last UpdateNeeded check
+        // -> check only if ScanRange has increased
+        if (OnlyInterfaceNeeded=false) and (not EndOfSourceFound) then exit;
+        Result:=false;
+        exit;
+      end else begin
+        // this is the first check in this GlobalWriteLockStep
+        FLastGlobalWriteLockStep:=GlobalWriteLockStep;
+        // proceed normally ...
+      end;
+    end;
+  end;
   FForceUpdateNeeded:=true;
 //writeln('TLinkScanner.UpdateNeeded A OnlyInterface=',OnlyInterfaceNeeded,' EndOfSourceFound=',EndOfSourceFound);
   if LinkCount=0 then exit;
@@ -1627,6 +1662,16 @@ begin
     if Link.CleanedPos<=CleanStartPos then break;
     dec(LinkIndex);
   end;
+end;
+
+procedure TLinkScanner.ActivateGlobalWriteLock;
+begin
+  if Assigned(OnSetGlobalWriteLock) then OnSetGlobalWriteLock(true);
+end;
+
+procedure TLinkScanner.DeactivateGlobalWriteLock;
+begin
+  if Assigned(OnSetGlobalWriteLock) then OnSetGlobalWriteLock(false);
 end;
 
 

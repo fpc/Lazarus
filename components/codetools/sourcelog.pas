@@ -659,8 +659,10 @@ end;
 
 procedure TSourceLog.IncreaseChangeStep;
 begin
-  if FChangeStep=$7fffffff then FChangeStep:=-$7fffffff
-  else inc(FChangeStep);
+  if FChangeStep<>$7fffffff then
+    inc(FChangeStep)
+  else
+    FChangeStep:=-$7fffffff;
 //writeln('[TSourceLog.IncreaseChangeStep] ',FChangeStep,',',HexStr(Cardinal(Self),8));
 end;
 

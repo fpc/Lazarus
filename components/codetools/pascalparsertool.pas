@@ -214,6 +214,7 @@ type
     function NodeHasParentOfType(ANode: TCodeTreeNode;
         NodeDesc: TCodeTreeNodeDesc): boolean;
     function PropertyIsDefault(PropertyNode: TCodeTreeNode): boolean;
+    
     constructor Create;
     destructor Destroy; override;
   end;
@@ -467,15 +468,15 @@ end;
 
 procedure TPascalParserTool.BuildTree(OnlyInterfaceNeeded: boolean);
 begin
-writeln('TPascalParserTool.BuildTree A OnlyInterfaceNeeded=',OnlyInterfaceNeeded,
-  '  ',TCodeBuffer(Scanner.MainCode).Filename);
 {$IFDEF MEM_CHECK}
 CheckHeap('TBasicCodeTool.BuildTree A '+IntToStr(GetMem_Cnt));
 {$ENDIF}
-  if not UpdateNeeded(OnlyInterfaceNeeded) then exit;
 {$IFDEF CTDEBUG}
-writeln('TPascalParserTool.BuildTree B');
+writeln('TPascalParserTool.BuildTree A');
 {$ENDIF}
+  if not UpdateNeeded(OnlyInterfaceNeeded) then exit;
+writeln('TPascalParserTool.BuildTree B OnlyInterfaceNeeded=',OnlyInterfaceNeeded,
+  '  ',TCodeBuffer(Scanner.MainCode).Filename);
 //CheckHeap('TBasicCodeTool.BuildTree B '+IntToStr(GetMem_Cnt));
   BeginParsing(true,OnlyInterfaceNeeded);
   InterfaceSectionFound:=false;

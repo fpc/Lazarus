@@ -71,6 +71,8 @@ type
     FSourceTools: TAVLTree; // tree of TCustomCodeTool
     FVisibleEditorLines: integer;
     FWriteExceptions: boolean;
+    FWriteLockCount: integer;// Set/Unset counter
+    FWriteLockStep: integer; // current write lock ID
     function OnScannerGetInitValues(Code: Pointer): TExpressionEvaluator;
     procedure OnDefineTreeReadValue(Sender: TObject; const VariableName: string;
                                     var Value: string);
@@ -90,6 +92,11 @@ type
     function HandleException(AnException: Exception): boolean;
     function OnGetCodeToolForBuffer(Sender: TObject;
       Code: TCodeBuffer): TFindDeclarationTool;
+    procedure ActivateWriteLock;
+    procedure DeactivateWriteLock;
+    procedure OnToolSetWriteLock(Lock: boolean);
+    procedure OnToolGetWriteLockInfo(var WriteLockIsSet: boolean;
+      var WriteLockStep: integer);
   public
     DefinePool: TDefinePool; // definition templates (rules)
     DefineTree: TDefineTree; // cache for defines (e.g. initial compiler values)
@@ -433,6 +440,8 @@ begin
     // create a scanner for the unit/program
     Result.Scanner:=TLinkScanner.Create;
     Result.Scanner.OnGetInitValues:=@OnScannerGetInitValues;
+    Result.Scanner.OnSetGlobalWriteLock:=@OnToolSetWriteLock;
+    Result.Scanner.OnGetGlobalWriteLockInfo:=@OnToolGetWriteLockInfo;
   end;
 end;
 
@@ -1358,6 +1367,35 @@ writeln('[TCodeToolManager.OnGetCodeToolForBuffer]'
   ,' Code=',Code.Filename);
 {$ENDIF}
   Result:=TFindDeclarationTool(GetCodeToolForSource(Code,true));
+end;
+
+procedure TCodeToolManager.ActivateWriteLock;
+begin
+  if FWriteLockCount=0 then begin
+    // start a new write lock
+    if FWriteLockStep<>$7fffffff then
+      inc(FWriteLockStep)
+    else
+      FWriteLockStep:=-$7fffffff;
+  end;
+  inc(FWriteLockCount);
+end;
+
+procedure TCodeToolManager.DeactivateWriteLock;
+begin
+  if FWriteLockCount>0 then dec(FWriteLockCount);
+end;
+
+procedure TCodeToolManager.OnToolGetWriteLockInfo(var WriteLockIsSet: boolean;
+  var WriteLockStep: integer);
+begin
+  WriteLockIsSet:=FWriteLockCount>0;
+  WriteLockStep:=FWriteLockStep;
+end;
+
+procedure TCodeToolManager.OnToolSetWriteLock(Lock: boolean);
+begin
+  if Lock then ActivateWriteLock else DeactivateWriteLock;
 end;
 
 function TCodeToolManager.ConsistencyCheck: integer;

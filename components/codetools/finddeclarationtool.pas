@@ -293,9 +293,9 @@ type
 
   TFindDeclarationTool = class(TPascalParserTool)
   private
-    FOnGetUnitSourceSearchPath: TOnGetSearchPath;
-    FOnGetCodeToolForBuffer: TOnGetCodeToolForBuffer;
     FInterfaceIdentifierCache: TInterfaceIdentifierCache;
+    FOnGetCodeToolForBuffer: TOnGetCodeToolForBuffer;
+    FOnGetUnitSourceSearchPath: TOnGetSearchPath;
     {$IFDEF CTDEBUG}
     DebugPrefix: string;
     procedure IncPrefix;
@@ -388,10 +388,10 @@ type
       AnUnitInFilename: string): TCodeBuffer;
     property InterfaceIdentifierCache: TInterfaceIdentifierCache
       read FInterfaceIdentifierCache;
-    property OnGetUnitSourceSearchPath: TOnGetSearchPath
-      read FOnGetUnitSourceSearchPath write FOnGetUnitSourceSearchPath;
     property OnGetCodeToolForBuffer: TOnGetCodeToolForBuffer
       read FOnGetCodeToolForBuffer write FOnGetCodeToolForBuffer;
+    property OnGetUnitSourceSearchPath: TOnGetSearchPath
+      read FOnGetUnitSourceSearchPath write FOnGetUnitSourceSearchPath;
   end;
 
   //----------------------------------------------------------------------------
@@ -563,76 +563,81 @@ var CleanCursorPos: integer;
   Params: TFindDeclarationParams;
 begin
   Result:=false;
-  // build code tree
+  Scanner.ActivateGlobalWriteLock;
+  try
+    // build code tree
 {$IFDEF CTDEBUG}
 writeln(DebugPrefix,'TFindDeclarationTool.FindDeclaration A CursorPos=',CursorPos.X,',',CursorPos.Y);
 {$ENDIF}
-  BuildTreeAndGetCleanPos(false,CursorPos,CleanCursorPos);
+    BuildTreeAndGetCleanPos(false,CursorPos,CleanCursorPos);
 {$IFDEF CTDEBUG}
 writeln(DebugPrefix,'TFindDeclarationTool.FindDeclaration C CleanCursorPos=',CleanCursorPos);
 {$ENDIF}
-  // find CodeTreeNode at cursor
-  CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
-  if IsIncludeDirectiveAtPos(CleanCursorPos,CursorNode.StartPos,NewPos.Code)
-  then begin
-    NewPos.X:=1;
-    NewPos.Y:=1;
-    NewTopLine:=1;
-    Result:=true;
-    exit;
-  end;
+    // find CodeTreeNode at cursor
+    CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
+    if IsIncludeDirectiveAtPos(CleanCursorPos,CursorNode.StartPos,NewPos.Code)
+    then begin
+      NewPos.X:=1;
+      NewPos.Y:=1;
+      NewTopLine:=1;
+      Result:=true;
+      exit;
+    end;
 {$IFDEF CTDEBUG}
 writeln('TFindDeclarationTool.FindDeclaration D CursorNode=',NodeDescriptionAsString(CursorNode.Desc));
 {$ENDIF}
-  if CursorNode.Desc=ctnUsesSection then begin
-    // find used unit
-    Result:=FindDeclarationInUsesSection(CursorNode,CleanCursorPos,
-                                         NewPos,NewTopLine);
-  end else begin
-    // first test if in a class
-    ClassNode:=CursorNode;
-    while (ClassNode<>nil) and (ClassNode.Desc<>ctnClass) do
-      ClassNode:=ClassNode.Parent;
-    if ClassNode<>nil then begin
-      // cursor is in class/object definition
-      if (ClassNode.SubDesc and ctnsForwardDeclaration)=0 then begin
-        // parse class and build CodeTreeNodes for all properties/methods
-        BuildSubTreeForClass(ClassNode);
+    if CursorNode.Desc=ctnUsesSection then begin
+      // find used unit
+      Result:=FindDeclarationInUsesSection(CursorNode,CleanCursorPos,
+                                           NewPos,NewTopLine);
+    end else begin
+      // first test if in a class
+      ClassNode:=CursorNode;
+      while (ClassNode<>nil) and (ClassNode.Desc<>ctnClass) do
+        ClassNode:=ClassNode.Parent;
+      if ClassNode<>nil then begin
+        // cursor is in class/object definition
+        if (ClassNode.SubDesc and ctnsForwardDeclaration)=0 then begin
+          // parse class and build CodeTreeNodes for all properties/methods
+          BuildSubTreeForClass(ClassNode);
+          CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
+        end;
+      end;
+      if CursorNode.Desc=ctnBeginBlock then begin
+        BuildSubTreeForBeginBlock(CursorNode);
         CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
       end;
-    end;
-    if CursorNode.Desc=ctnBeginBlock then begin
-      BuildSubTreeForBeginBlock(CursorNode);
-      CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
-    end;
-    MoveCursorToCleanPos(CleanCursorPos);
-    while (CurPos.StartPos>1) and (IsIdentChar[Src[CurPos.StartPos-1]]) do
-      dec(CurPos.StartPos);
-    if (CurPos.StartPos>=1) and (IsIdentStartChar[Src[CurPos.StartPos]]) then
-    begin
-      CurPos.EndPos:=CurPos.StartPos;
-      while (CurPos.EndPos<=SrcLen) and IsIdentChar[Src[CurPos.EndPos]] do
-        inc(CurPos.EndPos);
-      // find declaration of identifier
-      Params:=TFindDeclarationParams.Create;
-      try
-        Params.ContextNode:=CursorNode;
-        Params.SetIdentifier(Self,@Src[CurPos.StartPos],@CheckSrcIdentifier);
-        Params.Flags:=[fdfSearchInAncestors,fdfSearchInParentNodes,
-                       fdfExceptionOnNotFound];
-        Result:=FindDeclarationOfIdentifier(Params);
-        if Result then begin
-          Params.ConvertResultCleanPosToCaretPos;
-          NewPos:=Params.NewPos;
-          NewTopLine:=Params.NewTopLine;
+      MoveCursorToCleanPos(CleanCursorPos);
+      while (CurPos.StartPos>1) and (IsIdentChar[Src[CurPos.StartPos-1]]) do
+        dec(CurPos.StartPos);
+      if (CurPos.StartPos>=1) and (IsIdentStartChar[Src[CurPos.StartPos]]) then
+      begin
+        CurPos.EndPos:=CurPos.StartPos;
+        while (CurPos.EndPos<=SrcLen) and IsIdentChar[Src[CurPos.EndPos]] do
+          inc(CurPos.EndPos);
+        // find declaration of identifier
+        Params:=TFindDeclarationParams.Create;
+        try
+          Params.ContextNode:=CursorNode;
+          Params.SetIdentifier(Self,@Src[CurPos.StartPos],@CheckSrcIdentifier);
+          Params.Flags:=[fdfSearchInAncestors,fdfSearchInParentNodes,
+                         fdfExceptionOnNotFound];
+          Result:=FindDeclarationOfIdentifier(Params);
+          if Result then begin
+            Params.ConvertResultCleanPosToCaretPos;
+            NewPos:=Params.NewPos;
+            NewTopLine:=Params.NewTopLine;
+          end;
+        finally
+          Params.Free;
         end;
-      finally
-        Params.Free;
+      end else begin
+        // find declaration of not identifier
+
       end;
-    end else begin
-      // find declaration of not identifier
-      
     end;
+  finally
+    Scanner.DeactivateGlobalWriteLock;
   end;
 end;
 
@@ -3851,7 +3856,8 @@ begin
   while IsIdentChar[Identifier[Len]] do inc(Len);
   GetMem(Result,Len+1);
   Move(Identifier^,Result^,Len+1);
-  if FItems=nil then FItems:=TAVLTree.Create(@CompareIdentifiers);
+  if FItems=nil then
+    FItems:=TAVLTree.Create(TListSortCompare(@CompareIdentifiers));
   FItems.Add(Result);
 end;
 
