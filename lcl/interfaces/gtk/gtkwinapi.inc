@@ -2773,7 +2773,7 @@ var
     LinePos: PChar;
   begin
     with TDeviceContext(DC) do begin
-      if Dx=nil then begin
+      if (Dx=nil) then begin
         // no dist array -> write as one block
         gdk_draw_text(Drawable, UseFont, GC, TxtPt.X, TxtPt.Y,
                       LineStart, LineLen);
@@ -2806,23 +2806,9 @@ begin
   if Result
   then with TDeviceContext(DC) do
   begin
-    if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil) then begin
-      UseFont := GetDefaultFont;
-      UnRef := True;
-      UnderLine := false;
-    end else begin
-      UseFont := CurrentFont^.GDIFontObject;
-      UnRef := False;
-      UnderLine := (CurrentFont^.LogFont.lfUnderline<>0);
-    end;
-
     if GC = nil
     then begin
       WriteLn('WARNING: [TgtkObject.ExtTextOut] Uninitialized GC');
-      Result := False;
-    end
-    else if UseFont = nil then begin
-      WriteLn('WARNING: [TgtkObject.ExtTextOut] Missing Font');
       Result := False;
     end
     else if ((Options and (ETO_OPAQUE+ETO_CLIPPED)) <> 0)
@@ -2831,7 +2817,46 @@ begin
       Result := False;
     end else begin
       // TODO: implement other parameters.
+      
+      // to reduce flickering calculate first and then paint
       DCOrigin:=GetDCOffset(TDeviceContext(DC));
+
+      UseFont:=nil;
+      if (Str<>nil) and (Count>0) then begin
+        if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil) then begin
+          UseFont := GetDefaultFont;
+          UnRef := True;
+          UnderLine := false;
+        end else begin
+          UseFont := CurrentFont^.GDIFontObject;
+          UnRef := False;
+          UnderLine := (CurrentFont^.LogFont.lfUnderline<>0);
+        end;
+
+        if UseFont = nil then begin
+          WriteLn('WARNING: [TgtkObject.ExtTextOut] Missing Font');
+          Result := False;
+        end else begin
+          if (Options and ETO_CLIPPED) <> 0 then
+          begin
+            X := Rect^.Left;
+            Y := Rect^.Top;
+            IntersectClipRect(DC, Rect^.Left, Rect^.Top,
+                              Rect^.Right, Rect^.Bottom);
+          end;
+          LineLen := FindChar(#10,Str,Count);
+          TopY := Y;
+          UpdateDCTextMetric(TDeviceContext(DC));
+          TxtPt.X := X + DCOrigin.X;
+          {$IfDef Win32}
+          LineHeight := DCTextMetric.TextMetric.tmHeight div 2;
+          {$Else}
+          LineHeight := DCTextMetric.TextMetric.tmAscent;
+          {$EndIf}
+          TxtPt.Y := TopY + LineHeight + DCOrigin.Y;
+        end;
+      end;
+      
       if ((Options and ETO_OPAQUE) <> 0) then
       begin
         Width := Rect^.Right - Rect^.Left;
@@ -2842,46 +2867,33 @@ begin
                            Rect^.Left+DCOrigin.X, Rect^.Top+DCOrigin.Y,
                            Width, Height);
       end;
-      if (Options and ETO_CLIPPED) <> 0 then
-      begin
-        X := Rect^.Left;
-        Y := Rect^.Top;
-        IntersectClipRect(DC, Rect^.Left, Rect^.Top,
-                          Rect^.Right, Rect^.Bottom);
-      end;
-      LineLen := FindChar(#10,Str,Count);
-      TopY := Y;
-      UpdateDCTextMetric(TDeviceContext(DC));
-      TxtPt.X := X + DCOrigin.X;
-      {$IfDef Win32}
-      LineHeight := DCTextMetric.TextMetric.tmHeight div 2;
-      {$Else}
-      LineHeight := DCTextMetric.TextMetric.tmAscent;
-      {$EndIf}
-      TxtPt.Y := TopY + LineHeight + DCOrigin.Y;
-      SelectGDKTextProps(DC);
-      LineStart:=Str;
-      if LineLen < 0 then begin
-        LineLen:=Count;
-        if Count> 0 then DrawTextLine;
-      end else
-      Begin  //write multiple lines
-        StrEnd:=Str+Count;
-        while LineStart < StrEnd do begin
-          LineEnd:=LineStart+LineLen;
-          if LineLen>0 then DrawTextLine;
-          inc(TxtPt.Y,LineHeight);
-          LineStart:=LineEnd+1; // skip #10
-          if (LineStart<StrEnd) and (LineStart^=#13) then
-            inc(LineStart); // skip #10
-          Count:=StrEnd-LineStart;
-          LineLen:=FindChar(#10,LineStart,Count);
-          if LineLen<0 then
-            LineLen:=Count;
+
+      if UseFont<>nil then begin
+        SelectGDKTextProps(DC);
+
+        LineStart:=Str;
+        if LineLen < 0 then begin
+          LineLen:=Count;
+          if Count> 0 then DrawTextLine;
+        end else
+        Begin  //write multiple lines
+          StrEnd:=Str+Count;
+          while LineStart < StrEnd do begin
+            LineEnd:=LineStart+LineLen;
+            if LineLen>0 then DrawTextLine;
+            inc(TxtPt.Y,LineHeight);
+            LineStart:=LineEnd+1; // skip #10
+            if (LineStart<StrEnd) and (LineStart^=#13) then
+              inc(LineStart); // skip #10
+            Count:=StrEnd-LineStart;
+            LineLen:=FindChar(#10,LineStart,Count);
+            if LineLen<0 then
+              LineLen:=Count;
+          end;
         end;
+        If UnRef then
+          GDK_Font_UnRef(UseFont);
       end;
-      If UnRef then
-        GDK_Font_UnRef(UseFont);
     end;
   end;
   Assert(False, Format('trace:< [TgtkObject.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
@@ -7554,6 +7566,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.194  2002/12/22 22:42:55  mattias
+  custom controls now support child wincontrols
+
   Revision 1.193  2002/12/07 08:42:09  mattias
   improved ExtTxtOut: support for char dist array
 
