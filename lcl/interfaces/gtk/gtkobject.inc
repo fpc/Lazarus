@@ -763,6 +763,7 @@ var
   ColorMap: PGdkColormap;
   P: Pointer;
   TheBitmap: TBitmap;
+  Width, Height : Longint;
 begin
   if not (Bitmap is TBitmap) then
     raise Exception.Create('TGtkObject.LoadFromXPMFile Bitmap is not TBitmap: '
@@ -783,7 +784,52 @@ begin
     gdk_pixmap_colormap_create_from_xpm(Window,Colormap,
            @(GdiObject^.GDIBitmapMaskObject), p, Filename);
   GdiObject^.GDIBitmapType:=gbPixmap;
+  gdk_window_get_size(GdiObject^.GDIPixmapObject, @Width, @Height);
   TheBitmap.Handle := HBITMAP(GdiObject);
+  If GdiObject^.GDIBitmapMaskObject <> nil then
+    TheBitmap.Transparent := True
+  else
+    TheBitmap.Transparent := False;
+end;
+
+procedure TGtkObject.LoadFromPixbufFile(Bitmap: TObject; Filename: PChar);
+var
+  TheBitmap: TBitmap;
+
+  function LoadFile : Boolean;
+  {$Ifndef NoGdkPixbufLib}
+  var
+    Src : PGDKPixbuf;
+    Tmp : hBitmap;
+    Width, Height : Longint;
+  begin
+    Result := False;
+    SRC := nil;
+    SRC := gdk_pixbuf_new_from_file(FileName);
+    If SRC = nil then
+      exit;
+    Width := gdk_pixbuf_get_width(Src);
+    Height := gdk_pixbuf_get_width(Src);
+    TMP := CreateCompatibleBitmap(-1, Width, Height);
+    gdk_pixbuf_render_pixmap_and_mask(Src,@PGDIObject(TMP)^.GDIPixmapObject,
+      PPGDKBitmap(@PGDIObject(TMP)^.GDIBitmapMaskObject),clWhite);
+    TheBitmap.Handle := TMP;
+    GDK_Pixbuf_Unref(Src);
+    Result := True;
+  {$Else not NoGdkPixbufLib}
+  begin
+    WriteLn('WARNING: [TgtkObject.LoadFromPixbufFile] GDKPixbuf support has been disabled, unable to load files!');
+    Result := True;
+  {$EndIf}
+  end;
+
+begin
+  if not (Bitmap is TBitmap) then
+    raise Exception.Create('TGtkObject.LoadFromPixbufFile Bitmap is not TBitmap: '
+                           +Bitmap.ClassName);
+  TheBitmap:=TBitmap(Bitmap);
+  if not LoadFile then
+    Writeln('WARNING: [TgtkObject.LoadFromPixbufFile] loading file FAILED!');
 end;
 
 {------------------------------------------------------------------------------
@@ -1139,12 +1185,15 @@ begin
       end;
 
 //SH: think of TBitmap.handle!!!!
-      LM_LOADXPM:
+     LM_LOADXPM:
          Begin
-            if (sender is TBitmap) then
-            Begin
-              LoadFromXPMFile(TBitmap(Sender),PChar(data));
-            end;
+           if (sender is TBitmap) then
+             If LowerCase(ExtractFileExt(String(PChar(Data)))) = '.xpm' then
+             Begin
+               LoadFromXPMFile(TBitmap(Sender),PChar(data));
+             end
+             else
+               LoadFromPixbufFile(TBitmap(Sender),PChar(data));
          end;
 
 
@@ -3361,7 +3410,8 @@ const
 var
    Caption : ansistring;          // the caption of "Sender"
    StrTemp : PChar;               // same as "caption" but as PChar
-   TempWidget : PGTKWidget;       // pointer to gtk-widget (local use when neccessary)
+   TempWidget,
+   TempWidget2 : PGTKWidget;       // pointer to gtk-widget (local use when neccessary)
    p          : pointer;          // ptr to the newly created GtkWidget
    CompStyle,                     // componentstyle (type) of GtkWidget which will be created
    TempInt   : Integer;           // local use when neccessary
@@ -3939,14 +3989,38 @@ begin
        gtk_scale_set_digits (PGTKSCALE (P), 0);
     end;
 
+    csScrollBox :
+    begin
+      Assert(Sender is TScrollBox);
+      P := gtk_scrolled_window_new(nil,nil);
+
+      TempWidget := gtk_viewport_new(nil,Nil);
+      GTK_Viewport_Set_Shadow_Type(PGTKViewport(TempWidget), GTK_Shadow_In);
+
+      gtk_container_add(p, TempWidget);
+      gtk_object_set_data(pgtkObject(p),'viewport',TempWidget);
+      gtk_widget_show(TempWidget);
+
+      TempWidget2 := gtk_fixed_new();
+      gtk_container_add(PGTKContainer(TempWidget), TempWidget2);
+      gtk_widget_show(TempWidget2);
+      SetFixedWidget(p, TempWidget2);
+      SetMainWidget(p, TempWidget2);
+
+      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.hscrollbar, GTK_CAN_FOCUS);
+      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.vscrollbar, GTK_CAN_FOCUS);
+      gtk_scrolled_window_set_policy(PGtkScrolledWindow(p),
+                                     GTK_POLICY_AUTOMATIC,
+                                     GTK_POLICY_AUTOMATIC);
+    end;
+
   end; //end case
 
   // MWE: next will be obsoleted by WinWidgetInfo
   //Set these for functions like GetWindowLong  Added 01/07/2000
-  {}
-  SetLCLObject(p, Sender);
   if p <> nil then
   Begin
+    SetLCLObject(p, Sender);
     gtk_object_set_data(pgtkObject(p),'Style',0);
     gtk_object_set_data(pgtkObject(p),'ExStyle',0);
   end;
@@ -3974,10 +4048,10 @@ begin
 
   StrDispose(StrTemp);
   if P <> nil then begin
-    {$IFNDEF win32}
+    {$IfNDef win32}
     if Sender is TCustomForm then
       gtk_widget_set_app_paintable(p,true);
-    {$ENDIF}
+    {$EndIf}
     HookSignals(Sender);
   end;
 end;
@@ -5587,6 +5661,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.194  2002/09/03 08:07:20  lazarus
+  MG: image support, TScrollBox, and many other things from Andrew
+
   Revision 1.193  2002/09/02 19:10:28  lazarus
   MG: TNoteBook now starts with no Page and TPage has no auto names
 
