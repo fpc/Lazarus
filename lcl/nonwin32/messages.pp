@@ -40,7 +40,6 @@ const
   WM_MOUSEMOVE     = LM_MOUSEMOVE;
   WM_NCHITTEST     = LM_NCHITTEST;
   WM_QUIT          = LM_QUIT;
-  WM_SETCURSOR     = LM_SETCURSOR;
   WM_SETFOCUS      = LM_SETFOCUS;
   WM_SIZE          = LM_SIZE;
   WM_SYSCHAR       = LM_SYSCHAR;
@@ -57,7 +56,6 @@ type
   TWMMouse          = TLMMouse;
   TWMNCHITTEST      = TLMNCHITTEST;
   TWMSCROLL         = TLMSCROLL;
-  TWMSETCURSOR      = TLMSETCURSOR;
   TWMSetFocus       = TLMSetFocus;
   TWMSIZE           = TLMSIZE;
   TWMHScroll        = TLMHScroll;
