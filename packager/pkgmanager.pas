@@ -739,6 +739,7 @@ procedure TPkgManager.OnApplicationIdle(Sender: TObject);
 begin
   if (Screen.ActiveCustomForm<>nil)
   and (fsModal in Screen.ActiveCustomForm.FormState) then exit;
+  if PackageGraph = nil then Exit;
   PackageGraph.CloseUnneededPackages;
 end;
 

@@ -1962,7 +1962,17 @@ begin
   ExponentAndSign:=Exponent or ((e.ExponentAndSign and $8000) shr 4);
   // i386 extended has leading 1, double has not (shl 1)
   // i386 has 64 bit, double has 52 bit (shr 12)
-  Mantissa:=(e.Mantissa shl 1) shr 12;
+  {$IFDEF FPC_REQUIRES_PROPER_ALIGNMENT}
+    {$IFDEF ENDIAN_BIG}
+    // accessing Mantissa will couse trouble, copy it first
+    System.Move(e.Mantissa, Mantissa, SizeOf(Mantissa));
+    Mantissa := (Mantissa shl 1) shr 12;
+    {$ELSE ENDIAN_BIG}
+    Mantissa := (e.Mantissa shl 1) shr 12;
+    {$ENDIF ENDIAN_BIG}
+  {$ELSE FPC_REQUIRES_PROPER_ALIGNMENT}
+  Mantissa := (e.Mantissa shl 1) shr 12;
+  {$ENDIF FPC_REQUIRES_PROPER_ALIGNMENT}
   // put together
   QWord(Result):=Mantissa or (qword(ExponentAndSign) shl 52);
 end;
@@ -2405,22 +2415,20 @@ begin
 end;
 
 function TLRSObjectReader.ReadFloat: Extended;
-{$ifdef Endian_BIG}
+{$ifndef FPC_HAS_TYPE_EXTENDED}
 var
   e: array[1..10] of byte;
 {$endif}
 begin
-  {$ifdef Endian_BIG}
-  if SizeOf(extended)=10 then begin
-    Read(Result, 10);
-    ReverseBytes(@Result,10);
-  end else begin
-    Read(e,10);
-    Result:=ConvertLRSExtendedToDouble(@e);
-  end;
-  {$else not Endian_BIG}
+  {$ifdef FPC_HAS_TYPE_EXTENDED}
   Read(Result, 10);
-  {$endif}
+  {$ifdef ENDIAN_BIG}
+  ReverseBytes(@Result, 10);
+  {$endif ENDIAN_BIG}
+  {$else FPC_HAS_TYPE_EXTENDED}
+  Read(e, 10);
+  Result := ConvertLRSExtendedToDouble(@e);
+  {$endif FPC_HAS_TYPE_EXTENDED}
 end;
 
 function TLRSObjectReader.ReadSingle: Single;

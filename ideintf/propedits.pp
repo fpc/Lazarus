@@ -1589,6 +1589,17 @@ end;
 
 // -----------------------------------------------------------
 
+function AlignToPtr(const p: Pointer): Pointer;
+begin
+{$IFDEF FPC_REQUIRES_PROPER_ALIGNMENT}
+  Result := Align(p, SizeOf(Pointer));
+{$ELSE}
+  Result := p;
+{$ENDIF}
+end;
+
+// -----------------------------------------------------------
+
 var
   PropertyEditorMapperList:TList;
   PropertyClassList:TList;
@@ -1619,6 +1630,7 @@ var
   TypeInfo: PTypeInfo;
   TypeData: PTypeData;
   PropInfo: PPropInfo;
+  PropData: ^TPropData;
   CurCount, i: integer;
   //CurParent: TClass;
 begin
@@ -1633,10 +1645,10 @@ begin
     // read all property infos of current class
     TypeData:=GetTypeData(TypeInfo);
     // skip unitname
-    PropInfo:=(@TypeData^.UnitName+Length(TypeData^.UnitName)+1);
+    PropData:=AlignToPtr(Pointer(@TypeData^.UnitName)+Length(TypeData^.UnitName)+1);
     // read property count
-    CurCount:=PWord(PropInfo)^;
-    inc(PtrInt(PropInfo),SizeOf(Word));
+    CurCount:=PropData^.PropCount;
+    PropInfo:=@PropData^.PropList;
 
     {writeln('TPropInfoList.Create D ',CurCount,' TypeData^.ClassType=',DbgS(TypeData^.ClassType));
     writeln('TPropInfoList.Create E ClassName="',TypeData^.ClassType.ClassName,'"',
@@ -1667,7 +1679,7 @@ begin
       end;
       // point PropInfo to next propinfo record.
       // Located at Name[Length(Name)+1] !
-      PropInfo:=PPropInfo(pointer(@PropInfo^.Name)+PByte(@PropInfo^.Name)^+1);
+      PropInfo:=PPropInfo(AlignToPtr(pointer(@PropInfo^.Name)+PByte(@PropInfo^.Name)^+1));
       dec(CurCount);
     end;
     TypeInfo:=TypeData^.ParentInfo;
@@ -2889,9 +2901,11 @@ end;
 function TEnumPropertyEditor.OrdValueToVisualValue(OrdValue: longint): string;
 var
   L: Longint;
+  TypeData: PTypeData;
 begin
   L := OrdValue;
-  with GetTypeData(GetPropType)^ do
+  TypeData := GetTypeData(GetPropType);
+  with TypeData^ do
     if (L < MinValue) or (L > MaxValue) then L := MaxValue;
   Result := GetEnumName(GetPropType, L);
 end;

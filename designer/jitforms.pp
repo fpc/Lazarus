@@ -243,23 +243,36 @@ type
   PMethodNameTable =  ^TMethodNameTable;
 
   PFieldClassTable = ^TFieldClassTable;
-  TFieldClassTable = packed record
+  TFieldClassTable = 
+{$ifndef FPC_REQUIRES_PROPER_ALIGNMENT}
+  packed
+{$endif FPC_REQUIRES_PROPER_ALIGNMENT}
+  record  
     Count: Word;
     Entries: array[Word] of TPersistentClass;
   end;
 
   PFieldInfo = ^TFieldInfo;
-  TFieldInfo = packed record
+  TFieldInfo = 
+{$ifndef FPC_REQUIRES_PROPER_ALIGNMENT}
+  packed
+{$endif FPC_REQUIRES_PROPER_ALIGNMENT}
+  record  
     FieldOffset: LongWord;
     ClassTypeIndex: Word;
     Name: ShortString;
   end;
 
   PFieldTable = ^TFieldTable;
-  TFieldTable = packed record
+  TFieldTable = 
+{$ifndef FPC_REQUIRES_PROPER_ALIGNMENT}
+  packed
+{$endif FPC_REQUIRES_PROPER_ALIGNMENT}
+  record  
     FieldCount: Word;
     ClassTable: PFieldClassTable;
-    // Fields: array[Word] of TFieldInfo;  Elements have variant size!
+    { should be array[Word] of TFieldinfo;  but Elements have variant size! force at least proper alignment }
+    Fields: array[0..0] of TFieldInfo;
   end;
 
 function GetVMTSize(AClass: TClass): integer;
@@ -488,15 +501,19 @@ begin
     end;
   end;
   Result:=Result+'}';
-  FieldInfo := PFieldInfo(Pointer(FieldTable) + 6);
-  Result:=Result+' Fields={';
-  for i:=0 to FieldTable^.FieldCount-1 do begin
-    if i>0 then Result:=Result+',';
-    Result:=Result+IntToStr(i)+':Name="'+FieldInfo^.Name+'"'
-      +':Offset='+IntToStr(FieldInfo^.FieldOffset);
-    Inc(Pointer(FieldInfo), 7 + Length(FieldInfo^.Name));
+  FieldInfo := @FieldTable^.Fields;
+  Result := Result + ' Fields={';
+  for i := 0 to FieldTable^.FieldCount-1 do begin
+    if i > 0 then Result:=Result+',';
+    Result := Result + IntToStr(i) 
+      + ':Name="' + FieldInfo^.Name + '"'
+      + ':Offset=' +IntToStr(FieldInfo^.FieldOffset);
+    FieldInfo := @FieldInfo^.Name + 1 + Length(FieldInfo^.Name);
+    {$ifndef FPC_REQUIRES_PROPER_ALIGNMENT}
+    FieldInfo := Align(FieldInfo, SizeOf(Pointer));
+    {$endif FPC_REQUIRES_PROPER_ALIGNMENT}
   end;
-  Result:=Result+'}';
+  Result := Result+'}';
 end;
 
 //------------------------------------------------------------------------------
@@ -998,8 +1015,12 @@ begin
   NewFieldTable^.ClassTable:=NewClassTable;
 
   // set vmtTypeInfo
-  TypeDataSize:=SizeOf(TTypeData)+2; // TTypeData + one word for new prop count
-  TypeInfoSize:=SizeOf(TTypeKind)+1+length(NewClassName)+TypeDataSize;
+  TypeDataSize := SizeOf(TTypeData) + 2; // TTypeData + one word for new prop count
+  {$ifdef FPC_REQUIRES_PROPER_ALIGNMENT}
+  if TypeDataSize and (SizeOf(Pointer) - 1) <> 0
+  then Inc(TypeDataSize, SizeOf(Pointer)); // a few bytes to much, but atleast enough 
+  {$endif}
+  TypeInfoSize := SizeOf(TTypeKind) + 1 + length(NewClassName) + TypeDataSize;
   {$warnings off}
   if SizeOf(TTypeKind)<>1 then
     raise Exception.Create('CreateNewClass SizeOf(TTypeInfo^.Kind)<>1');
@@ -1022,6 +1043,9 @@ begin
   NewTypeData^.PropCount:=GetTypeData(NewTypeData^.ParentInfo)^.PropCount;
   NewTypeData^.UnitName:=NewUnitName;
   AddedPropCount:=PWord(@(NewTypeData^.UnitName)+Length(NewTypeData^.UnitName)+1);
+  {$ifdef FPC_REQUIRES_PROPER_ALIGNMENT}
+  AddedPropCount := Align(AddedPropCount, SizeOf(Pointer));
+  {$endif}
   AddedPropCount^:=0;
 
   // copy the standard methods
