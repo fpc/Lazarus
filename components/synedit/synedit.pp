@@ -2146,6 +2146,16 @@ begin
 end;
 
 procedure TCustomSynEdit.MouseMove(Shift: TShiftState; X, Y: Integer);
+
+  {$IFDEF SYN_LAZARUS}
+  function MouseIsCaptured: boolean;
+  // Not all interfaces have a fixed mousecapture like windows.
+  // this is a heuristic
+  begin
+    Result:=MouseCapture or Focused;
+  end;
+  {$ENDIF}
+
 var
   Z: integer;
 begin
@@ -2165,15 +2175,16 @@ begin
     If Cursor <> crDefault then
       Cursor := crDefault;
 
-  if {$IFNDEF SYN_LAZARUS}MouseCapture and{$ENDIF}
-    (sfWaitForDragging in fStateFlags) then begin
+  if {$IFDEF SYN_LAZARUS}MouseIsCaptured{$ELSE}MouseCapture{$ENDIF}
+  and (sfWaitForDragging in fStateFlags) then begin
     if (Abs(fMouseDownX - X) >= GetSystemMetrics(SM_CXDRAG))
       or (Abs(fMouseDownY - Y) >= GetSystemMetrics(SM_CYDRAG))
     then begin
       Exclude(fStateFlags, sfWaitForDragging);
       BeginDrag(false);
     end;
-  end else if (ssLeft in Shift) {$IFNDEF SYN_LAZARUS}and MouseCapture{$ENDIF}
+  end else if (ssLeft in Shift)
+  and {$IFDEF SYN_LAZARUS}MouseIsCaptured{$ELSE}MouseCapture{$ENDIF}
   then begin
 //DebugLn(' TCustomSynEdit.MouseMove CAPTURE Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y,' Client=',ClientWidth-ScrollBarWidth,',',ClientHeight-ScrollBarWidth);
     if (X >= fGutterWidth)
