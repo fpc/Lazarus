@@ -1821,6 +1821,7 @@ type
     property StateImages;
     property TabOrder;
     property TabStop default True;
+    property Tag;
     property ToolTips;
     property Visible;
     property OnAdvancedCustomDraw;
@@ -1954,6 +1955,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.105  2004/02/02 20:00:45  mattias
+  published TTreeView.Tab
+
   Revision 1.104  2004/02/02 19:48:01  mattias
   fixed removing TStatusBar panels in gtk
 
