@@ -1,4 +1,3 @@
-unit objectinspector;
 {
   Author: Mattias Gaertner
 
@@ -22,15 +21,16 @@ unit objectinspector;
 
    - a lot more ...  see XXX
 }
+unit ObjectInspector;
 
 {$MODE OBJFPC}{$H+}
 
 interface
 
 uses
-  Forms, SysUtils, Buttons, Classes, Graphics, GraphType, StdCtrls, LCLType, LCLLinux, Controls,
-  ComCtrls, ExtCtrls, PropEdits, TypInfo, Messages, LResources, XMLCfg, Menus,
-  Dialogs;
+  Forms, SysUtils, Buttons, Classes, Graphics, GraphType, StdCtrls, LCLType,
+  LCLLinux, Controls, ComCtrls, ExtCtrls, PropEdits, TypInfo, Messages,
+  LResources, XMLCfg, Menus, Dialogs;
 
 type
 
@@ -51,6 +51,7 @@ type
     FEventGridSplitterX: integer;
 
     FGridBackgroundColor: TColor;
+    FShowHints: boolean;
   public
     constructor Create;
     destructor Destroy;  override;
@@ -72,6 +73,8 @@ type
 
     property GridBackgroundColor: TColor 
       read FGridBackgroundColor write FGridBackgroundColor;
+    property ShowHints: boolean
+      read FShowHints write FShowHints;
   end;
 
   TOIPropertyGrid = class;
@@ -253,8 +256,11 @@ type
     MainPopupMenu:TPopupMenu;
     ColorsPopupMenuItem:TMenuItem;
     BackgroundColPopupMenuItem:TMenuItem;
+    ShowHintsPopupMenuItem:TMenuItem;
     procedure AvailComboBoxChange(Sender:TObject);
     procedure OnBackgroundColPopupMenuItemClick(Sender :TObject);
+    procedure OnShowHintPopupMenuItemClick(Sender :TObject);
+    procedure FormResize(Sender: TObject);
   private
     FComponentList: TComponentSelectionList;
     FPropertyEditorHook:TPropertyEditorHook;
@@ -269,7 +275,7 @@ type
     procedure PropEditLookupRootChange;
     procedure OnGridModified(Sender: TObject);
   public
-    procedure SetBounds(aLeft,aTop,aWidth,aHeight:integer); override;
+    //procedure SetBounds(aLeft,aTop,aWidth,aHeight:integer); override;
     property Selections:TComponentSelectionList 
       read FComponentList write SetSelections;
     procedure RefreshSelections;
@@ -289,7 +295,9 @@ type
 
 //******************************************************************************
 
+
 implementation
+
 
 { TOIPropertyGrid }
 
@@ -1231,6 +1239,7 @@ var
   Window2 : TWInControl;
 begin
   FHintTimer.Enabled := False;
+  if not ShowHint then exit;
 
   Position := Mouse.CursorPos;
   Window := FindLCLWindow(Position);
@@ -1238,11 +1247,11 @@ begin
 
   //get the parent until parent is nil
   While Window.Parent <> nil do
-  Window := Window.Parent;
+    Window := Window.Parent;
 
   Window2 := self;
   while Window2.Parent <> nil do
-     Window2 := Window2.Parent;
+    Window2 := Window2.Parent;
      
   if (window <> Window2) then Exit;
 
@@ -1297,7 +1306,6 @@ begin
   Rect.Bottom := Rect.Top + Rect.Bottom+3;
 
   FHintWindow.ActivateHint(Rect,AHint);
-
 end;
 
 Procedure TOIPropertyGrid.ResetHintTimer(Sender : TObject; Shift: TShiftstate; X,Y : Integer);
@@ -1512,6 +1520,8 @@ begin
 
       FGridBackgroundColor:=XMLConfig.GetValue(
            'ObjectInspectorOptions/GridBackgroundColor',clBtnFace);
+      FShowHints:=XMLConfig.GetValue(
+           'ObjectInspectorOptions/ShowHints',false);
     finally
       XMLConfig.Free;
     end;
@@ -1544,6 +1554,7 @@ begin
 
       XMLConfig.SetValue('ObjectInspectorOptions/GridBackgroundColor'
          ,FGridBackgroundColor);
+      XMLConfig.SetValue('ObjectInspectorOptions/ShowHints',FShowHints);
     finally
       XMLConfig.Flush;
       XMLConfig.Free;
@@ -1563,6 +1574,7 @@ begin
   FPropertyGridSplitterX:=AnObjInspector.PropertyGrid.SplitterX;
   FEventGridSplitterX:=AnObjInspector.EventGrid.SplitterX;
   FGridBackgroundColor:=AnObjInspector.PropertyGrid.BackgroundColor;
+  FShowHints:=AnObjInspector.PropertyGrid.ShowHint;
 end;
 
 procedure TOIOptions.AssignTo(AnObjInspector: TObjectInspector);
@@ -1574,7 +1586,9 @@ begin
     AnObjInspector.EventGrid.SplitterX:=FEventGridSplitterX;
   end;
   AnObjInspector.PropertyGrid.BackgroundColor:=FGridBackgroundColor;
+  AnObjInspector.PropertyGrid.ShowHint:=FShowHints;
   AnObjInspector.EventGrid.BackgroundColor:=FGridBackgroundColor;
+  AnObjInspector.EventGrid.ShowHint:=FShowHints;
 end;
 
 
@@ -1619,7 +1633,7 @@ begin
     Name:='StatusBar';
     Parent:=Self;
     SimpleText:='All';
-    Show;
+    Visible:=true;
   end;
 
   // PopupMenu
@@ -1633,6 +1647,9 @@ begin
   AddPopupMenuItem(BackgroundColPopupMenuItem,ColorsPopupMenuItem
      ,'BackgroundColPopupMenuItem','Background','Grid background color'
      ,@OnBackgroundColPopupMenuItemClick,false,true,true);
+  AddPopupMenuItem(ShowHintsPopupMenuItem,nil
+     ,'ShowHintPopupMenuItem','Show Hints','Grid hints'
+     ,@OnShowHintPopupMenuItemClick,false,true,true);
 
   PopupMenu:=MainPopupMenu;
 
@@ -1645,7 +1662,7 @@ begin
     Text:='';
     OnChange:=@AvailComboBoxChange;
     //Sorted:=true;
-    Show;
+    Visible:=true;
   end;
 
   // NoteBook
@@ -1656,7 +1673,7 @@ begin
     Pages.Strings[0]:='Properties';
     Pages.Add('Events');
     PopupMenu:=MainPopupMenu;
-    Show;
+    Visible:=true;
   end;
 
   // property grid
@@ -1675,7 +1692,7 @@ begin
     Align:=alClient;
     PopupMenu:=MainPopupMenu;
     OnModified:=@OnGridModified;
-    Show;
+    Visible:=true;
   end;
 
   // event grid
@@ -1690,9 +1707,10 @@ begin
     Align:=alClient;
     PopupMenu:=MainPopupMenu;
     OnModified:=@OnGridModified;
-    Show;
+    Visible:=true;
   end;
 
+  OnResize:=@FormResize;
 end;
 
 destructor TObjectInspector.Destroy;
@@ -1830,12 +1848,12 @@ begin
   EventGrid.RefreshPropertyValues;
 end;
 
-procedure TObjectInspector.SetBounds(aLeft,aTop,aWidth,aHeight:integer);
+{procedure TObjectInspector.SetBounds(aLeft,aTop,aWidth,aHeight:integer);
 begin
 //writeln('[TObjectInspector.SetBounds] ',aLeft,',',aTop,',',aWidth,',',aHeight);
   inherited SetBounds(aLeft,aTop,aWidth,aHeight);
   DoInnerResize;
-end;
+end;}
 
 procedure TObjectInspector.AvailComboBoxChange(Sender:TObject);
 var NewComponent,Root:TComponent;
@@ -1893,6 +1911,17 @@ end;
 procedure TObjectInspector.OnGridModified(Sender: TObject);
 begin
   if Assigned(FOnModified) then FOnModified(Self);
+end;
+
+procedure TObjectInspector.OnShowHintPopupMenuItemClick(Sender : TObject);
+begin
+  PropertyGrid.ShowHint:=not PropertyGrid.ShowHint;
+  EventGrid.ShowHint:=not EventGrid.ShowHint;
+end;
+
+procedure TObjectInspector.FormResize(Sender: TObject);
+begin
+  DoInnerResize;
 end;
 
 end.
