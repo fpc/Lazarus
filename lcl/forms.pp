@@ -714,7 +714,7 @@ function KeysToShiftState(Keys:Word): TShiftState;
 function KeyDataToShiftState(KeyData: Longint): TShiftState;
 
 type
-  TFocusState = type Pointer;
+  TFocusState = Pointer;
 
 function SaveFocusState: TFocusState;
 procedure RestoreFocusState(FocusState: TFocusState);

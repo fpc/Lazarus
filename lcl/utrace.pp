@@ -23,16 +23,17 @@ uses sysutils;
 
 type
   TAssertErrorProc = procedure(Const Msg,FN :ShortString;
-                               LineNo,TheAddr : Longint);
+        LineNo: LongInt; TheAddr: {$IFDEF New1_1}Pointer{$ELSE}Longint{$ENDIF});
 
 var
   TraceFileName : string;
-  OldProcPointer : Pointer;  // the current Assert Error Handler
+  OldProcPointer : TAssertErrorProc;  // the current Assert Error Handler
 
 
 implementation
 
-procedure TraceAssertHandler(Const Msg,FN : ShortString;LineNo,TheAddr : Longint);
+procedure TraceAssertHandler(Const Msg,FN : ShortString;
+  LineNo: LongInt; TheAddr: {$IFDEF New1_1}Pointer{$ELSE}Longint{$ENDIF});
 var
    fileH  : Text;
 begin
@@ -57,7 +58,7 @@ begin
       {$I+}
    end
    else
-      TAssertErrorProc(oldProcPointer)(Msg, FN, LineNo, TheAddr);
+      oldProcPointer(Msg, FN, LineNo, TheAddr);
 
 end;
 
