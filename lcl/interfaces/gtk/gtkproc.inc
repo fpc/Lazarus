@@ -3155,6 +3155,11 @@ begin
         gtk_widget_ensure_style(PGTKTooltips(TP)^.Tip_Window);
         StyleObject^.Style:=GTK_RC_GET_STYLE(PGTKTooltips(TP)^.Tip_Window);
       end
+    else
+      If AnsiCompareText(WName,'gtk_default')=0 then begin
+        StyleObject^.Widget := nil;
+        StyleObject^.Style := gtk_style_new;
+      end
     else begin
       FreeStyleObject(StyleObject);
       exit;
@@ -3164,7 +3169,8 @@ begin
       StyleObject^.Style:=GTK_RC_GET_STYLE(StyleObject^.Widget);
     end;
     If StyleObject^.Style <> nil then
-      StyleObject^.Style:=GTK_Style_Ref(StyleObject^.Style);
+      If AnsiCompareText(WName,'gtk_default')<>0 then
+        StyleObject^.Style:=GTK_Style_Ref(StyleObject^.Style);
     if StyleObject^.Style <> nil then begin
       Styles.AddObject(WName, TObject(StyleObject));
       Result:=StyleObject^.Style;
@@ -3213,11 +3219,9 @@ var
 begin
   Result := nil;
   Style := GetStyle('default');
-  UnRefStyle := False;
-  if Style = nil then begin
-    Style := gtk_style_new;
-    UnRefStyle := True;
-  end;
+  if Style = nil then
+    Style := GetStyle('gtk_default');
+
   If Style <> nil then begin
     If Style^.Font <> nil then
        Result := Style^.Font
@@ -3234,9 +3238,6 @@ begin
 
   If Result <> nil then
     Result := gdk_font_ref(Result);
-
-  If (Style <> nil) and UnRefStyle then
-    gtk_style_unref(Style);
 end;
 
 Function GetSysGCValues(Color : TColorRef) : TGDKGCValues;
@@ -3824,6 +3825,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.138  2002/10/21 18:21:38  lazarus
+  AJ:minor styles improvement; fixed drawing checks under all(?) themes
+
   Revision 1.137  2002/10/21 14:40:52  lazarus
   MG: fixes for 1.1
 
