@@ -588,7 +588,7 @@ writeln('TFindDeclarationTool.FindDeclaration D CursorNode=',NodeDescriptionAsSt
           Params.Free;
         end;
       end else begin
-        // find declaration of not identifier
+        // find declaration of not identifier, e.g. numeric label
 
       end;
     end;

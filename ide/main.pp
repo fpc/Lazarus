@@ -5136,7 +5136,7 @@ procedure TMainIDE.InitCodeToolBoss;
     end else begin;
       CodeToolBoss.DefineTree.Add(ADefTempl);
       if AddToPool then
-        CodeToolBoss.DefinePool.Add(ADefTempl.CreateCopy);
+        CodeToolBoss.DefinePool.Add(ADefTempl.CreateCopy(false));
     end;
   end;
 
@@ -6216,6 +6216,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.240  2002/03/05 14:52:15  lazarus
+  MG: updates for codetools defines
+
   Revision 1.239  2002/03/05 08:14:58  lazarus
   MG: updates for codetools defines editor
 

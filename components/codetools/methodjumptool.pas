@@ -554,9 +554,9 @@ begin
 //writeln('[TMethodJumpingCodeTool.FindFirstDifferenceNode] B ',SearchInNode<>nil);
     cmp:=CompareCodeTreeNodeExt(Result.Data,SearchInNode.Data);
     
-NodeTxt1:=TCodeTreeNodeExtension(Result.Data).Txt;
-NodeTxt2:=TCodeTreeNodeExtension(SearchInNode.Data).Txt;
-writeln('[TMethodJumpingCodeTool.FindFirstDifferenceNode] ',NodeTxt1,' ?',cmp,'= ',NodeTxt2);
+//NodeTxt1:=TCodeTreeNodeExtension(Result.Data).Txt;
+//NodeTxt2:=TCodeTreeNodeExtension(SearchInNode.Data).Txt;
+//writeln('[TMethodJumpingCodeTool.FindFirstDifferenceNode] ',NodeTxt1,' ?',cmp,'= ',NodeTxt2);
 
     if cmp<0 then begin
       // result node not found in SearchInNodes

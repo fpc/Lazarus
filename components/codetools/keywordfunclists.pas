@@ -103,15 +103,33 @@ implementation
 var
   CharToHash: array[char] of integer;
   IsIdentChar: array[char] of boolean;
+  UpWords: array[word] of word;
 
 function UpperCaseStr(const s: string): string;
+var i, l, l2: integer;
+  pSrc, pDest: PWord;
+begin
+  l:=length(s);
+  SetLength(Result,l);
+  if l>0 then begin
+    pDest:=@Result[1];
+    pSrc:=@s[1];
+    l2:=(l shr 1)-1;
+    for i:=0 to l2 do
+      pDest[i]:=UpWords[pSrc[i]];
+    if odd(l) then
+      Result[l]:=UpChars[s[l]];
+  end;
+end;
+
+{function UpperCaseStr(const s: string): string;
 var i, l: integer;
 begin
   l:=length(s);
   SetLength(Result,l);
   for i:=1 to l do
     Result[i]:=UpChars[s[i]];
-end;
+end;}
 
 function IsUpperCaseStr(const s: string): boolean;
 var i, l: integer;
@@ -476,7 +494,9 @@ end;
 var KeyWordLists: TList;
 
 procedure InternalInit;
-var c: char;
+var
+  c: char;
+  w: word;
 begin
   for c:=Low(UpChars) to High(UpChars) do begin
     case c of
@@ -487,7 +507,9 @@ begin
     UpChars[c]:=upcase(c);
     IsIdentChar[c]:=(c in ['a'..'z','A'..'Z','0'..'9','_']);
   end;
-  
+  for w:=Low(word) to High(word) do
+    UpWords[w]:=ord(UpChars[chr(w and $ff)])+(ord(UpChars[chr(w shr 8)]) shl 8);
+
   KeyWordLists:=TList.Create;
   IsKeyWordMethodSpecifier:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(IsKeyWordMethodSpecifier);
