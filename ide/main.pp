@@ -6091,9 +6091,11 @@ begin
   for PageIndex:=0 to SourceNotebook.NoteBook.PageCount-1 do begin
     AnUnitInfo:=Project1.UnitWithEditorIndex(PageIndex);
     if AnUnitInfo=nil then continue;
-    if FilenameIsPascalUnit(AnUnitInfo.Filename) then
-      SourceName:=CodeToolBoss.GetCachedSourceName(AnUnitInfo.Source)
-    else
+    if FilenameIsPascalUnit(AnUnitInfo.Filename) then begin
+      SourceName:=CodeToolBoss.GetCachedSourceName(AnUnitInfo.Source);
+      if SourceName<>'' then
+        AnUnitInfo.UnitName:=SourceName;
+    end else
       SourceName:='';
     PageName:=CreateSrcEditPageName(SourceName,AnUnitInfo.Filename,PageIndex);
     SourceNotebook.NoteBook.Pages[PageIndex]:=PageName;
@@ -7128,6 +7130,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.387  2002/09/17 21:33:14  lazarus
+  MG: accelerated designer mouse move and added Delete Selection to designer popupmenu
+
   Revision 1.386  2002/09/16 17:19:05  lazarus
   MG: reduced output
 
