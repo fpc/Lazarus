@@ -588,10 +588,35 @@ procedure TCodeTreeNodeCache.Add(Identifier: PChar;
     NewEntry^.NewCleanPos:=NewCleanPos;
     FItems.Add(NewEntry);
   end;
-
+  
 var
   OldEntry: PCodeTreeNodeCacheEntry;
   OldNode: TAVLTreeNode;
+
+  procedure RaiseConflictException;
+  var s: string;
+  begin
+    s:='[TCodeTreeNodeCache.Add] internal error:'
+        +' conflicting cache nodes: ';
+    s:=s+' Old: Start='+IntToStr(OldEntry^.CleanStartPos)
+             +' End='+IntToStr(OldEntry^.CleanEndPos);
+    if OldEntry^.NewNode<>nil then
+      s:=s+' Node='+OldEntry^.NewNode.DescAsString
+    else
+      s:=s+' Node=nil';
+    if OldEntry^.NewTool<>nil then
+      s:=s+' Tool='+OldEntry^.NewTool.MainFilename;
+    s:=s+' New: Start='+IntToStr(CleanStartPos)
+             +' End='+IntToStr(CleanEndPos);
+    if NewNode<>nil then
+      s:=s+' Node='+NewNode.DescAsString
+    else
+      s:=s+' Node=nil';
+    if NewTool<>nil then
+      s:=s+' Tool='+NewTool.MainFilename;
+    raise Exception.Create(s);
+  end;
+
 begin
   if CleanStartPos>=CleanEndPos then
     raise Exception.Create('[TCodeTreeNodeCache.Add] internal error:'
@@ -622,8 +647,7 @@ begin
         // add new entry
         AddNewEntry;
       end else begin
-        raise Exception.Create('[TCodeTreeNodeCache.Add] internal error:'
-          +' conflicting cache nodes');
+        RaiseConflictException;
       end;
     end;
   end;

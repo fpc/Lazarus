@@ -511,7 +511,6 @@ type
     function GetValue: ansistring; override;
     procedure GetValues(Proc: TGetStringProc); override;
     procedure SetValue(const NewValue: ansistring); override;
-
     procedure ListMeasureWidth(const CurValue:ansistring; Index:integer;
       ACanvas:TCanvas;  var AWidth:Integer);  override;
     procedure ListDrawValue(const CurValue:ansistring; Index:integer;
@@ -597,24 +596,24 @@ type
 //==============================================================================
 
 { RegisterPropertyEditor
-  Registers a new property editor for the given type.  When a component is
-  selected the Object Inspector will create a property editor for each
-  of the component's properties.  The property editor is created based on
-  the type of the property.  If,for example,the property type is an
-  Integer,the property editor for Integer will be created (by default
+  Registers a new property editor for the given type.
+  When a component is selected the Object Inspector will create a property
+  editor for each of the component's properties. The property editor is created
+  based on the type of the property. If, for example, the property type is an
+  Integer, the property editor for Integer will be created (by default
   that would be TIntegerPropertyEditor). Most properties do not need specialized
-  property editors.  For example, if the property is an ordinal type the
-  default property editor will restrict the range to the ordinal subtype
-  range (e.g. a property of type TMyRange=1..10 will only allow values
-  between 1 and 10 to be entered into the property).  Enumerated types will
-  display a drop-down list of all the enumerated values (e.g. TShapes =
-  (sCircle,sSquare,sTriangle) will be edited by a drop-down list containing
-  only sCircle,sSquare and sTriangle).  A property editor need only be
-  created if default property editor or none of the existing property editors
-  are sufficient to edit the property.  This is typically because the
-  property is an object.  The properties are looked up newest to oldest.
-  This allows and existing property editor replaced by a custom property
-  editor.
+  property editors.
+  For example, if the property is an ordinal type the default property editor
+  will restrict the range to the ordinal subtype range (e.g. a property of type
+  TMyRange=1..10 will only allow values between 1 and 10 to be entered into the
+  property).  Enumerated types will display a drop-down list of all the
+  enumerated values (e.g. TShapes = (sCircle,sSquare,sTriangle) will be edited
+  by a drop-down list containing only sCircle,sSquare and sTriangle).
+  A property editor needs only be created if default property editor or none of
+  the existing property editors are sufficient to edit the property.  This is
+  typically because the property is an object.
+  The registered types are looked up newest to oldest.
+  This allows an existing property editor replaced by a custom property editor.
 
     PropertyEditorType
       The type information pointer returned by the TypeInfo built-in function
@@ -694,19 +693,22 @@ type
   // lookup root
   TPropHookChangeLookupRoot = procedure of object;
   // methods
-  TPropHookCreateMethod = function(const Name:ShortString; TypeData:PTypeData): TMethod of object;
+  TPropHookCreateMethod = function(const Name:ShortString;
+    ATypeInfo:PTypeInfo): TMethod of object;
   TPropHookGetMethodName = function(const Method:TMethod): ShortString of object;
   TPropHookGetMethods = procedure(TypeData:PTypeData; Proc:TGetStringProc) of object;
-  TPropHookMethodExists = function(const Name:ShortString):boolean of object;
+  TPropHookMethodExists = function(const Name:ShortString; TypeData: PTypeData;
+    var MethodIsCompatible,MethodIsPublished,IdentIsMethod: boolean):boolean of object;
   TPropHookRenameMethod = procedure(const CurName, NewName:ShortString) of object;
   TPropHookShowMethod = procedure(const Name:ShortString) of object;
   TPropHookMethodFromAncestor = function(const Method:TMethod):boolean of object;
-  TPropHookChainCall = procedure(const MethodName, InstanceName, InstanceMethod:ShortString;
-    TypeData:PTypeData) of object;
+  TPropHookChainCall = procedure(const MethodName, InstanceName,
+    InstanceMethod:ShortString; TypeData:PTypeData) of object;
   // components
   TPropHookGetComponent = function(const Name:ShortString):TComponent of object;
   TPropHookGetComponentName = function(AComponent:TComponent):ShortString of object;
-  TPropHookGetComponentNames = procedure(TypeData:PTypeData; Proc:TGetStringProc) of object;
+  TPropHookGetComponentNames = procedure(TypeData:PTypeData;
+    Proc:TGetStringProc) of object;
   TPropHookGetRootClassName = function:ShortString of object;
   // persistent objects
   TPropHookGetObject = function(const Name:ShortString):TPersistent of object;
@@ -749,10 +751,11 @@ type
     // lookup root
     property LookupRoot:TComponent read FLookupRoot write SetLookupRoot;
     // methods
-    function CreateMethod(const Name:ShortString; TypeData:PTypeData): TMethod;
+    function CreateMethod(const Name:ShortString; ATypeInfo:PTypeInfo): TMethod;
     function GetMethodName(const Method:TMethod): ShortString;
     procedure GetMethods(TypeData:PTypeData; Proc:TGetStringProc);
-    function MethodExists(const Name:ShortString):boolean;
+    function MethodExists(const Name:ShortString; TypeData: PTypeData;
+      var MethodIsCompatible,MethodIsPublished,IdentIsMethod: boolean):boolean;
     procedure RenameMethod(const CurName, NewName:ShortString);
     procedure ShowMethod(const Name:ShortString);
     function MethodFromAncestor(const Method:TMethod):boolean;
@@ -2057,7 +2060,7 @@ writeln('### TMethodPropertyEditor.GetValues');
 end;
 
 procedure TMethodPropertyEditor.SetValue(const NewValue: ansistring);
-
+  {
   procedure CheckChainCall(const MethodName: shortstring; Method: TMethod);
   var
     Persistent: TPersistent;
@@ -2081,32 +2084,75 @@ procedure TMethodPropertyEditor.SetValue(const NewValue: ansistring);
       end;
     end;
   end;
-
+  }
 var
-  NewMethod: Boolean;
+  CreateNewMethod: Boolean;
   CurValue: ansistring;
-  OldMethod: TMethod;
-  NewMethodExists: boolean;
+  //OldMethod: TMethod;
+  NewMethodExists,NewMethodIsCompatible,NewMethodIsPublished,
+  NewIdentIsMethod: boolean;
 begin
+writeln('### TMethodPropertyEditor.SetValue A');
   CurValue:= GetValue;
-  NewMethodExists:=PropertyHook.MethodExists(NewValue);
-  if (CurValue <> '') and (NewValue <> '')
-  and (Uppercase(CurValue)<>UpperCase(NewValue))
-  and (not NewMethodExists)
-  and (not PropertyHook.MethodFromAncestor(GetMethodValue)) then
-    PropertyHook.RenameMethod(CurValue, NewValue)
-  else
-  begin
-    NewMethod := (NewValue <> '') and not NewMethodExists;
-    OldMethod := GetMethodValue;
-    SetMethodValue(PropertyHook.CreateMethod(NewValue, GetTypeData(GetPropType)));
-    if NewMethod then begin
-      if (PropCount = 1) and (OldMethod.Data <> nil) and (OldMethod.Code <> nil)
+  NewMethodExists:=PropertyHook.MethodExists(NewValue,GetTypeData(GetPropType),
+                   NewMethodIsCompatible,NewMethodIsPublished,NewIdentIsMethod);
+writeln('### TMethodPropertyEditor.SetValue B NewMethodExists=',NewMethodExists,' NewMethodIsCompatible=',NewMethodIsCompatible,' ',NewMethodIsPublished,' ',NewIdentIsMethod);
+exit;
+  if NewMethodExists then begin
+    if not NewIdentIsMethod then begin
+      if MessageDlg('Incompatible Identifier',
+        'The identifier "'+NewValue+'" is not a method.'#13
+        +'Press OK to undo,'#13
+        +'press Ignore to force it.',mtWarning,[mbOk,mbIgnore],0)=mrOk
       then
-        CheckChainCall(NewValue, OldMethod);
+        exit;
+    end;
+    if not NewMethodIsPublished then begin
+      if MessageDlg('Incompatible Method',
+        'The method "'+NewValue+'" is not published.'#13
+        +'Press OK to undo,'#13
+        +'press Ignore to force it.',mtWarning,[mbOk,mbIgnore],0)=mrOk
+      then
+        exit;
+    end;
+    if not NewMethodIsCompatible then begin
+      if MessageDlg('Incompatible Method',
+        'The method "'+NewValue+'" is incompatible to this event.'#13
+        +'Press OK to undo,'#13
+        +'press Ignore to force it.',mtWarning,[mbOk,mbIgnore],0)=mrOk
+      then
+        exit;
+    end;
+  end;
+  if NewMethodExists and (CurValue=NewValue) then exit;
+writeln('### TMethodPropertyEditor.SetValue C');
+  if (CurValue <> '') and (NewValue <> '')
+  and (CurValue<>NewValue)
+  and (not NewMethodExists)
+  and (not PropertyHook.MethodFromAncestor(GetMethodValue)) then begin
+    // rename the method
+    // Note:
+    //   All other not selected properties that use this method, contains just
+    //   the TMethod record. So, changing the name in the jitform will change
+    //   all other event names in all other components automatically.
+writeln('### TMethodPropertyEditor.SetValue D');
+    PropertyHook.RenameMethod(CurValue, NewValue)
+  end else
+  begin
+writeln('### TMethodPropertyEditor.SetValue E');
+    CreateNewMethod := (NewValue <> '') and not NewMethodExists;
+    //OldMethod := GetMethodValue;
+    SetMethodValue(PropertyHook.CreateMethod(NewValue,GetPropType));
+writeln('### TMethodPropertyEditor.SetValue F');
+    if CreateNewMethod then begin
+      {if (PropCount = 1) and (OldMethod.Data <> nil) and (OldMethod.Code <> nil)
+      then
+        CheckChainCall(NewValue, OldMethod);}
+writeln('### TMethodPropertyEditor.SetValue G');
       PropertyHook.ShowMethod(NewValue);
     end;
   end;
+writeln('### TMethodPropertyEditor.SetValue END');
 end;
 
 { TComponentPropertyEditor }
@@ -2772,10 +2818,10 @@ end;
 { TPropertyEditorHook }
 
 function TPropertyEditorHook.CreateMethod(const Name:Shortstring;
-TypeData:PTypeData): TMethod;
+  ATypeInfo:PTypeInfo): TMethod;
 begin
-  if Assigned(FOnCreateMethod) then
-    Result:=FOnCreateMethod(Name,TypeData)
+  if (Name<>'') and (ATypeInfo<>nil) and Assigned(FOnCreateMethod) then
+    Result:=FOnCreateMethod(Name,ATypeInfo)
   else begin
     Result.Code:=nil;
     Result.Data:=nil;
@@ -2807,13 +2853,20 @@ begin
     FOnGetMethods(TypeData,Proc);
 end;
 
-function TPropertyEditorHook.MethodExists(const Name:Shortstring):boolean;
+function TPropertyEditorHook.MethodExists(const Name:Shortstring;
+  TypeData: PTypeData;
+  var MethodIsCompatible, MethodIsPublished, IdentIsMethod: boolean):boolean;
 begin
   // check if a published method with given name exists in LookupRoot
   if Assigned(FOnMethodExists) then
-    Result:=FOnMethodExists(Name)
-  else
+    Result:=FOnMethodExists(Name,TypeData,
+                            MethodIsCompatible,MethodIsPublished,IdentIsMethod)
+  else begin
     Result:=Assigned(LookupRoot) and (LookupRoot.MethodAddress(Name)<>nil);
+    MethodIsCompatible:=Result;
+    MethodIsPublished:=Result;
+    IdentIsMethod:=Result;
+  end;
 end;
 
 procedure TPropertyEditorHook.RenameMethod(const CurName, NewName:ShortString);
@@ -2831,13 +2884,20 @@ begin
 end;
 
 function TPropertyEditorHook.MethodFromAncestor(const Method:TMethod):boolean;
+var AncestorClass: TClass;
 begin
   // check if given Method is not in LookupRoot source,
   // but in one of its ancestors
   if Assigned(FOnMethodFromAncestor) then
     Result:=FOnMethodFromAncestor(Method)
-  else
-    Result:=false;
+  else begin
+    if (Method.Data<>nil) then begin
+      AncestorClass:=TObject(Method.Data).ClassParent;
+      Result:=(AncestorClass<>nil)
+              and (AncestorClass.MethodName(Method.Code)<>'');
+    end else
+      Result:=false;
+  end;
 end;
 
 procedure TPropertyEditorHook.ChainCall(const AMethodName, InstanceName,
@@ -2911,12 +2971,14 @@ function TPropertyEditorHook.GetObjectName(Instance:TPersistent):Shortstring;
 begin
   if Assigned(FOnGetObjectName) then
     Result:=FOnGetObjectName(Instance)
-  else
-    Result:='';
+  else begin
+    if Instance is TComponent then
+      Result:=TComponent(Instance).Name;
+  end;
 end;
 
 procedure TPropertyEditorHook.GetObjectNames(TypeData:PTypeData;
-Proc:TGetStringProc);
+  Proc:TGetStringProc);
 begin
   if Assigned(FOnGetObjectNames) then
     FOnGetObjectNames(TypeData,Proc);
@@ -2937,14 +2999,10 @@ end;
 
 procedure TPropertyEditorHook.SetLookupRoot(AComponent:TComponent);
 begin
-try
   if FLookupRoot=AComponent then exit;
   FLookupRoot:=AComponent;
   if Assigned(FOnChangeLookupRoot) then
     FOnChangeLookupRoot();
-except
-  Writeln('Exception in PropEdits.pp SetLookupRoot');
-end;
 end;
 
 

@@ -99,6 +99,7 @@ const
   ctnFileType        = 73;
   ctnPointerType     = 74;
   ctnClassOfType     = 75;
+  ctnVariantType     = 76;
   
   ctnBeginBlock      = 80;
   ctnAsmBlock        = 81;
@@ -125,7 +126,7 @@ const
       ctnIdentifier,ctnArrayType,ctnRecordType,ctnRecordCase,ctnRecordVariant,
       ctnProcedureType,ctnSetType,ctnRangeType,ctnEnumerationType,
       ctnEnumIdentifier,ctnLabelType,ctnTypeType,ctnFileType,ctnPointerType,
-      ctnClassOfType];
+      ctnClassOfType,ctnVariantType];
   AllSourceTypes =
      [ctnProgram,ctnPackage,ctnLibrary,ctnUnit];
   AllUsableSourceTypes =
