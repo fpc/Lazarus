@@ -1114,7 +1114,7 @@ function TFindDeclarationTool.FindUnitSource(const AnUnitName,
     Result:=nil;
     UnitLinks:=Scanner.Values[ExternalMacroStart+'UnitLinks'];
     {$IFDEF ShowTriedFiles}
-    //writeln('TFindDeclarationTool.FindUnitSource.SearchUnitInUnitLinks');
+    writeln('TFindDeclarationTool.FindUnitSource.SearchUnitInUnitLinks length(UnitLinks)=',length(UnitLinks));
     {$ENDIF}
     UnitLinkStart:=1;
     while UnitLinkStart<=length(UnitLinks) do begin

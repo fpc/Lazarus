@@ -85,9 +85,21 @@ type
   //---------------------------------------------------------------------------
   // TDefineTemplate is a list of TDefineEntry
   // TDefineEntry stores a define action, the variablename and the value
-  TDefineAction = (da_None, da_Block, da_Define, da_DefineRecurse, da_Undefine,
-     da_UndefineRecurse, da_UndefineAll, da_If, da_IfDef, da_IfNDef, da_ElseIf,
-     da_Else, da_Directory);
+  TDefineAction = (
+     da_None,
+     da_Block,
+     da_Define,
+     da_DefineRecurse,
+     da_Undefine,
+     da_UndefineRecurse,
+     da_UndefineAll,
+     da_If,
+     da_IfDef,
+     da_IfNDef,
+     da_ElseIf,
+     da_Else,
+     da_Directory
+     );
 
 const
   DefineActionBlocks = [da_Block, da_Directory, da_If, da_IfDef, da_IfNDef,
@@ -1444,7 +1456,7 @@ var
           EvalResult:=DirDef.Values.Eval(ReadValue(DefTempl.Value,CurPath));
           if EvalResult='1' then
             CalculateIfChilds
-          else if EvalResult='0' then begin
+          else if DirDef.Values.ErrorPosition>=0 then begin
             FErrorDescription:=Format(ctsSyntaxErrorInExpr,
                                   [ReadValue(DefTempl.Value,CurPath)]);
             FErrorTemplate:=DefTempl;
