@@ -95,7 +95,7 @@ const
       'i386', 'powerpc', 'm68k'
     );
 
-  Lazarus_CPU_OS_Widget_Combinations: array[1..20] of string = (
+  Lazarus_CPU_OS_Widget_Combinations: array[1..21] of string = (
     'i386-linux-gtk',
     'i386-linux-gnome',
     'i386-linux-gtk2',
@@ -115,7 +115,8 @@ const
     'i386-win32-win32',
     'i386-win32-gtk',
     'powerpc-darwin-gtk',
-    'powerpc-darwin-gtk2'
+    'powerpc-darwin-gtk2',
+    'powerpc-darwin-carbon'
     );
 
 type
@@ -3377,11 +3378,11 @@ function TDefinePool.CreateLazarusSrcTemplate(
   const LazarusSrcDir, WidgetType, ExtraOptions: string;
   Owner: TObject): TDefineTemplate;
 type
-  TLazWidgetSet = (wsGtk, wsGtk2, wsGnome, wsWin32);
+  TLazWidgetSet = (wsGtk, wsGtk2, wsGnome, wsWin32, wsCarbon);
 const
   ds: char = PathDelim;
   LazWidgetSets: array[TLazWidgetSet] of string = (
-    'gtk','gtk2','gnome','win32');
+    'gtk','gtk2','gnome','win32','carbon');
 
   function D(const Filename: string): string;
   begin
@@ -3754,6 +3755,14 @@ begin
 
   // <LazarusSrcDir>/lcl/interfaces/win32
   // no special
+
+  // <LazarusSrcDir>/lcl/interfaces/carbon
+  IntfDirTemplate:=TDefineTemplate.Create('carbonIntfDirectory',
+    ctsIntfDirectory,'','carbon',da_Directory);
+    // then define carbon1
+    IntfDirTemplate.AddChild(TDefineTemplate.Create('Define carbon1',
+      ctsDefineMacroCarbon1,'carbon1','',da_Define));
+  SubDirTempl.AddChild(IntfDirTemplate);
 
   // <LazarusSrcDir>/components
   DirTempl:=TDefineTemplate.Create('Components',ctsComponentsDirectory,

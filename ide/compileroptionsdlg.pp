@@ -2361,6 +2361,7 @@ end;
 procedure TfrmCompilerOptions.SetupSearchPathsTab(Page: integer);
 var
   y: Integer;
+  LCLInterface: TLCLPlatform;
 begin
   // Setup the Search Paths Tab
   PathPage:=nbMain.Page[Page];
@@ -2601,10 +2602,9 @@ begin
     Caption:=lisLCLWidgetType+' (various)';
     with Items do begin
       Add(Format(lisCOdefault, [GetDefaultLCLWidgetType]));
-      Add('gnome');
-      Add('gtk');
-      Add('gtk2');
-      Add('win32');
+      for LCLInterface:=Low(TLCLPlatform) to High(TLCLPlatform) do begin
+        Items.Add(LCLPlatformNames[LCLInterface]);
+      end;
     end;
     Columns:=Items.Count;
     ItemIndex:=1;

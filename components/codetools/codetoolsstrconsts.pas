@@ -196,6 +196,7 @@ ResourceString
   ctsDefineMacroGTK1 = 'Define macro gtk1';
   ctsDefineMacroGTK2 = 'Define macro gtk2';
   ctsDefineMacroGnome2 = 'Define macro gnome2';
+  ctsDefineMacroCarbon1 = 'Define macro carbon1';
   ctsGtk2IntfDirectory = 'gtk2 interface directory';
   ctsGnomeIntfDirectory = 'gnome interface directory';
   ctsComponentsDirectory = 'Components Directory';

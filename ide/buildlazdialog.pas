@@ -49,14 +49,6 @@ type
     );
   TMakeModes = set of TMakeMode;
     
-  TLCLPlatform = (
-    lpGtk,
-    lpGtk2,
-    lpGnome,
-    lpWin32
-    );
-  TLCLPlatforms = set of TLCLPlatform;
-  
   TBuildLazarusFlag = (
     blfWithoutLinkingIDE,
     blfOnlyIDE,
@@ -236,10 +228,7 @@ const
   MakeModeNames: array[TMakeMode] of string = (
       'None', 'Build', 'Clean+Build'
     );
-  LCLPlatformNames: array[TLCLPlatform] of string = (
-      'gtk', 'gtk2', 'gnome', 'win32'
-    );
-    
+
   DefaultTargetDirectory = ''; //'$(ConfDir)/bin';
 
 function GetTranslatedMakeModes(MakeMode: TMakeMode): string;
@@ -610,7 +599,7 @@ begin
   y:=ItemsListBox.Top;
   w:=ClientWidth-10-x;
   with LCLInterfaceRadioGroup do begin
-    SetBounds(x,y,w,120);
+    SetBounds(x,y,w,150);
     inc(y,Height+60);
   end;
   with WithStaticPackagesCheckBox do begin

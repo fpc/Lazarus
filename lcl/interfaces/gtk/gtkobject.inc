@@ -3164,7 +3164,6 @@ begin
   else
     begin
       handle := hwnd(ObjectToGtkObject(Sender));
-      //???   if handle = nil then assert (false, Format ('Trace:  [TGtkWidgetSet.IntSendMessage3] %s --> got handle=nil',[Sender.ClassName]));
       Case LM_Message of
 
       LM_SetText  : SetText(PgtkWidget(Handle), Data);
@@ -9274,6 +9273,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.538  2004/09/06 22:24:52  mattias
+  started the carbon LCL interface
+
   Revision 1.537  2004/09/02 09:17:00  mattias
   improved double byte char fonts for gtk1, started synedit UTF8 support
 

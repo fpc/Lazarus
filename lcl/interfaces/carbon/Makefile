@@ -252,16 +252,12 @@ override LCLCOMPONENTDIR:=$(wildcard $(LCLDIR)/.. $(LCLDIR)/../components $(LCLD
 export LCLDIR LCLUNITDIR LCLCOMPONENTDIR
 override REQUIRE_PACKAGESDIR+=$(LCLCOMPONENTDIR)
 override COMPILER_UNITDIR+=$(LCLUNITDIR)
-ifndef LCL_PLATFORM
-ifeq ($(OS_TARGET),win32)
-LCL_PLATFORM=win32
-else
-LCL_PLATFORM=gtk
-endif
-endif
-export LCL_PLATFORM
-override DEFAULT_DIR=$(LCL_PLATFORM)
-override TARGET_DIRS+=gtk gtk2 win32 gnome qt carbon
+override TARGET_UNITS+=interfaces
+override TARGET_IMPLICITUNITS+=carbonint
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override COMPILER_OPTIONS+=-gl -dcarbon1
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)/$(OS_TARGET) .
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)/$(OS_TARGET)/carbon
 ifdef REQUIRE_UNITSDIR
 override UNITSDIR+=$(REQUIRE_UNITSDIR)
 endif
@@ -989,480 +985,401 @@ else
 TAROPT=vz
 TAREXT=.tar.gz
 endif
-override REQUIRE_PACKAGES=rtl 
+override REQUIRE_PACKAGES=rtl rtl fcl
 ifeq ($(OS_TARGET),linux)
 ifeq ($(CPU_TARGET),i386)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_NETDB=1
+REQUIRE_PACKAGES_LIBASYNC=1
+REQUIRE_PACKAGES_PTHREADS=1
+REQUIRE_PACKAGES_FCL=1
 REQUIRE_PACKAGES_PASJPEG=1
 REQUIRE_PACKAGES_IBASE=1
 REQUIRE_PACKAGES_MYSQL=1
 REQUIRE_PACKAGES_SQLITE=1
-REQUIRE_PACKAGES_NETDB=1
-REQUIRE_PACKAGES_LIBASYNC=1
-REQUIRE_PACKAGES_X11=1
-REQUIRE_PACKAGES_OPENGL=1
-REQUIRE_PACKAGES_PTHREADS=1
-REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 endif
 ifeq ($(OS_TARGET),linux)
 ifeq ($(CPU_TARGET),m68k)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_NETDB=1
+REQUIRE_PACKAGES_LIBASYNC=1
+REQUIRE_PACKAGES_PTHREADS=1
+REQUIRE_PACKAGES_FCL=1
 REQUIRE_PACKAGES_PASJPEG=1
 REQUIRE_PACKAGES_IBASE=1
 REQUIRE_PACKAGES_MYSQL=1
 REQUIRE_PACKAGES_SQLITE=1
-REQUIRE_PACKAGES_NETDB=1
-REQUIRE_PACKAGES_LIBASYNC=1
-REQUIRE_PACKAGES_X11=1
-REQUIRE_PACKAGES_OPENGL=1
-REQUIRE_PACKAGES_PTHREADS=1
-REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 endif
 ifeq ($(OS_TARGET),linux)
 ifeq ($(CPU_TARGET),powerpc)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_NETDB=1
+REQUIRE_PACKAGES_LIBASYNC=1
+REQUIRE_PACKAGES_PTHREADS=1
+REQUIRE_PACKAGES_FCL=1
 REQUIRE_PACKAGES_PASJPEG=1
 REQUIRE_PACKAGES_IBASE=1
 REQUIRE_PACKAGES_MYSQL=1
 REQUIRE_PACKAGES_SQLITE=1
-REQUIRE_PACKAGES_NETDB=1
-REQUIRE_PACKAGES_LIBASYNC=1
-REQUIRE_PACKAGES_X11=1
-REQUIRE_PACKAGES_OPENGL=1
-REQUIRE_PACKAGES_PTHREADS=1
-REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 endif
 ifeq ($(OS_TARGET),linux)
 ifeq ($(CPU_TARGET),sparc)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_NETDB=1
+REQUIRE_PACKAGES_LIBASYNC=1
+REQUIRE_PACKAGES_PTHREADS=1
+REQUIRE_PACKAGES_FCL=1
 REQUIRE_PACKAGES_PASJPEG=1
 REQUIRE_PACKAGES_IBASE=1
 REQUIRE_PACKAGES_MYSQL=1
 REQUIRE_PACKAGES_SQLITE=1
-REQUIRE_PACKAGES_NETDB=1
-REQUIRE_PACKAGES_LIBASYNC=1
-REQUIRE_PACKAGES_X11=1
-REQUIRE_PACKAGES_OPENGL=1
-REQUIRE_PACKAGES_PTHREADS=1
-REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 endif
 ifeq ($(OS_TARGET),linux)
 ifeq ($(CPU_TARGET),x86_64)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_NETDB=1
+REQUIRE_PACKAGES_LIBASYNC=1
+REQUIRE_PACKAGES_PTHREADS=1
+REQUIRE_PACKAGES_FCL=1
 REQUIRE_PACKAGES_PASJPEG=1
 REQUIRE_PACKAGES_IBASE=1
 REQUIRE_PACKAGES_MYSQL=1
 REQUIRE_PACKAGES_SQLITE=1
-REQUIRE_PACKAGES_NETDB=1
-REQUIRE_PACKAGES_LIBASYNC=1
-REQUIRE_PACKAGES_X11=1
-REQUIRE_PACKAGES_OPENGL=1
-REQUIRE_PACKAGES_PTHREADS=1
-REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 endif
 ifeq ($(OS_TARGET),linux)
 ifeq ($(CPU_TARGET),arm)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_NETDB=1
+REQUIRE_PACKAGES_LIBASYNC=1
+REQUIRE_PACKAGES_PTHREADS=1
+REQUIRE_PACKAGES_FCL=1
 REQUIRE_PACKAGES_PASJPEG=1
 REQUIRE_PACKAGES_IBASE=1
 REQUIRE_PACKAGES_MYSQL=1
 REQUIRE_PACKAGES_SQLITE=1
-REQUIRE_PACKAGES_NETDB=1
-REQUIRE_PACKAGES_LIBASYNC=1
-REQUIRE_PACKAGES_X11=1
-REQUIRE_PACKAGES_OPENGL=1
-REQUIRE_PACKAGES_PTHREADS=1
-REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 endif
 ifeq ($(OS_TARGET),go32v2)
 ifeq ($(CPU_TARGET),i386)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_FCL=1
 REQUIRE_PACKAGES_PASJPEG=1
 REQUIRE_PACKAGES_IBASE=1
 REQUIRE_PACKAGES_NETDB=1
 REQUIRE_PACKAGES_LIBASYNC=1
-REQUIRE_PACKAGES_OPENGL=1
-REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 endif
 ifeq ($(OS_TARGET),win32)
 ifeq ($(CPU_TARGET),i386)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_NETDB=1
+REQUIRE_PACKAGES_FCL=1
 REQUIRE_PACKAGES_PASJPEG=1
 REQUIRE_PACKAGES_IBASE=1
 REQUIRE_PACKAGES_MYSQL=1
 REQUIRE_PACKAGES_SQLITE=1
-REQUIRE_PACKAGES_NETDB=1
 REQUIRE_PACKAGES_LIBASYNC=1
-REQUIRE_PACKAGES_OPENGL=1
-REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 endif
 ifeq ($(OS_TARGET),os2)
 ifeq ($(CPU_TARGET),i386)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_FCL=1
 REQUIRE_PACKAGES_PASJPEG=1
 REQUIRE_PACKAGES_IBASE=1
 REQUIRE_PACKAGES_NETDB=1
 REQUIRE_PACKAGES_LIBASYNC=1
-REQUIRE_PACKAGES_OPENGL=1
-REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 endif
 ifeq ($(OS_TARGET),freebsd)
 ifeq ($(CPU_TARGET),i386)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_NETDB=1
+REQUIRE_PACKAGES_LIBASYNC=1
+REQUIRE_PACKAGES_PTHREADS=1
+REQUIRE_PACKAGES_FCL=1
 REQUIRE_PACKAGES_PASJPEG=1
 REQUIRE_PACKAGES_IBASE=1
 REQUIRE_PACKAGES_MYSQL=1
 REQUIRE_PACKAGES_SQLITE=1
-REQUIRE_PACKAGES_NETDB=1
-REQUIRE_PACKAGES_LIBASYNC=1
-REQUIRE_PACKAGES_X11=1
-REQUIRE_PACKAGES_OPENGL=1
-REQUIRE_PACKAGES_PTHREADS=1
-REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 endif
 ifeq ($(OS_TARGET),freebsd)
 ifeq ($(CPU_TARGET),m68k)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_NETDB=1
+REQUIRE_PACKAGES_LIBASYNC=1
+REQUIRE_PACKAGES_PTHREADS=1
+REQUIRE_PACKAGES_FCL=1
 REQUIRE_PACKAGES_PASJPEG=1
 REQUIRE_PACKAGES_IBASE=1
 REQUIRE_PACKAGES_MYSQL=1
 REQUIRE_PACKAGES_SQLITE=1
-REQUIRE_PACKAGES_NETDB=1
-REQUIRE_PACKAGES_LIBASYNC=1
-REQUIRE_PACKAGES_X11=1
-REQUIRE_PACKAGES_OPENGL=1
-REQUIRE_PACKAGES_PTHREADS=1
-REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 endif
 ifeq ($(OS_TARGET),freebsd)
 ifeq ($(CPU_TARGET),x86_64)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_NETDB=1
+REQUIRE_PACKAGES_LIBASYNC=1
+REQUIRE_PACKAGES_PTHREADS=1
+REQUIRE_PACKAGES_FCL=1
 REQUIRE_PACKAGES_PASJPEG=1
 REQUIRE_PACKAGES_IBASE=1
 REQUIRE_PACKAGES_MYSQL=1
 REQUIRE_PACKAGES_SQLITE=1
-REQUIRE_PACKAGES_NETDB=1
-REQUIRE_PACKAGES_LIBASYNC=1
-REQUIRE_PACKAGES_X11=1
-REQUIRE_PACKAGES_OPENGL=1
-REQUIRE_PACKAGES_PTHREADS=1
-REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 endif
 ifeq ($(OS_TARGET),beos)
 ifeq ($(CPU_TARGET),i386)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_FCL=1
 REQUIRE_PACKAGES_PASJPEG=1
 REQUIRE_PACKAGES_IBASE=1
 REQUIRE_PACKAGES_NETDB=1
 REQUIRE_PACKAGES_LIBASYNC=1
-REQUIRE_PACKAGES_OPENGL=1
-REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 endif
 ifeq ($(OS_TARGET),netbsd)
 ifeq ($(CPU_TARGET),i386)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_NETDB=1
+REQUIRE_PACKAGES_LIBASYNC=1
+REQUIRE_PACKAGES_FCL=1
 REQUIRE_PACKAGES_PASJPEG=1
 REQUIRE_PACKAGES_IBASE=1
 REQUIRE_PACKAGES_MYSQL=1
 REQUIRE_PACKAGES_SQLITE=1
-REQUIRE_PACKAGES_NETDB=1
-REQUIRE_PACKAGES_LIBASYNC=1
-REQUIRE_PACKAGES_X11=1
-REQUIRE_PACKAGES_OPENGL=1
-REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 endif
 ifeq ($(OS_TARGET),netbsd)
 ifeq ($(CPU_TARGET),m68k)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_NETDB=1
+REQUIRE_PACKAGES_LIBASYNC=1
+REQUIRE_PACKAGES_FCL=1
 REQUIRE_PACKAGES_PASJPEG=1
 REQUIRE_PACKAGES_IBASE=1
 REQUIRE_PACKAGES_MYSQL=1
 REQUIRE_PACKAGES_SQLITE=1
-REQUIRE_PACKAGES_NETDB=1
-REQUIRE_PACKAGES_LIBASYNC=1
-REQUIRE_PACKAGES_X11=1
-REQUIRE_PACKAGES_OPENGL=1
-REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 endif
 ifeq ($(OS_TARGET),netbsd)
 ifeq ($(CPU_TARGET),powerpc)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_NETDB=1
+REQUIRE_PACKAGES_LIBASYNC=1
+REQUIRE_PACKAGES_FCL=1
 REQUIRE_PACKAGES_PASJPEG=1
 REQUIRE_PACKAGES_IBASE=1
 REQUIRE_PACKAGES_MYSQL=1
 REQUIRE_PACKAGES_SQLITE=1
-REQUIRE_PACKAGES_NETDB=1
-REQUIRE_PACKAGES_LIBASYNC=1
-REQUIRE_PACKAGES_X11=1
-REQUIRE_PACKAGES_OPENGL=1
-REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 endif
 ifeq ($(OS_TARGET),netbsd)
 ifeq ($(CPU_TARGET),sparc)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_NETDB=1
+REQUIRE_PACKAGES_LIBASYNC=1
+REQUIRE_PACKAGES_FCL=1
 REQUIRE_PACKAGES_PASJPEG=1
 REQUIRE_PACKAGES_IBASE=1
 REQUIRE_PACKAGES_MYSQL=1
 REQUIRE_PACKAGES_SQLITE=1
-REQUIRE_PACKAGES_NETDB=1
-REQUIRE_PACKAGES_LIBASYNC=1
-REQUIRE_PACKAGES_X11=1
-REQUIRE_PACKAGES_OPENGL=1
-REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 endif
 ifeq ($(OS_TARGET),amiga)
 ifeq ($(CPU_TARGET),m68k)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_FCL=1
 REQUIRE_PACKAGES_PASJPEG=1
 REQUIRE_PACKAGES_IBASE=1
 REQUIRE_PACKAGES_NETDB=1
 REQUIRE_PACKAGES_LIBASYNC=1
-REQUIRE_PACKAGES_OPENGL=1
-REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 endif
 ifeq ($(OS_TARGET),atari)
 ifeq ($(CPU_TARGET),m68k)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_FCL=1
 REQUIRE_PACKAGES_PASJPEG=1
 REQUIRE_PACKAGES_IBASE=1
 REQUIRE_PACKAGES_NETDB=1
 REQUIRE_PACKAGES_LIBASYNC=1
-REQUIRE_PACKAGES_OPENGL=1
-REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 endif
 ifeq ($(OS_TARGET),sunos)
 ifeq ($(CPU_TARGET),i386)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_FCL=1
 REQUIRE_PACKAGES_PASJPEG=1
 REQUIRE_PACKAGES_IBASE=1
 REQUIRE_PACKAGES_NETDB=1
 REQUIRE_PACKAGES_LIBASYNC=1
-REQUIRE_PACKAGES_OPENGL=1
-REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 endif
 ifeq ($(OS_TARGET),sunos)
 ifeq ($(CPU_TARGET),sparc)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_FCL=1
 REQUIRE_PACKAGES_PASJPEG=1
 REQUIRE_PACKAGES_IBASE=1
 REQUIRE_PACKAGES_NETDB=1
 REQUIRE_PACKAGES_LIBASYNC=1
-REQUIRE_PACKAGES_OPENGL=1
-REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 endif
 ifeq ($(OS_TARGET),qnx)
 ifeq ($(CPU_TARGET),i386)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_FCL=1
 REQUIRE_PACKAGES_PASJPEG=1
 REQUIRE_PACKAGES_IBASE=1
 REQUIRE_PACKAGES_NETDB=1
 REQUIRE_PACKAGES_LIBASYNC=1
-REQUIRE_PACKAGES_OPENGL=1
-REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 endif
 ifeq ($(OS_TARGET),netware)
 ifeq ($(CPU_TARGET),i386)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_FCL=1
 REQUIRE_PACKAGES_PASJPEG=1
 REQUIRE_PACKAGES_IBASE=1
 REQUIRE_PACKAGES_NETDB=1
 REQUIRE_PACKAGES_LIBASYNC=1
-REQUIRE_PACKAGES_OPENGL=1
-REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 endif
 ifeq ($(OS_TARGET),openbsd)
 ifeq ($(CPU_TARGET),i386)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_NETDB=1
+REQUIRE_PACKAGES_LIBASYNC=1
+REQUIRE_PACKAGES_FCL=1
 REQUIRE_PACKAGES_PASJPEG=1
 REQUIRE_PACKAGES_IBASE=1
 REQUIRE_PACKAGES_MYSQL=1
 REQUIRE_PACKAGES_SQLITE=1
-REQUIRE_PACKAGES_NETDB=1
-REQUIRE_PACKAGES_LIBASYNC=1
-REQUIRE_PACKAGES_X11=1
-REQUIRE_PACKAGES_OPENGL=1
-REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 endif
 ifeq ($(OS_TARGET),openbsd)
 ifeq ($(CPU_TARGET),m68k)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_NETDB=1
+REQUIRE_PACKAGES_LIBASYNC=1
+REQUIRE_PACKAGES_FCL=1
 REQUIRE_PACKAGES_PASJPEG=1
 REQUIRE_PACKAGES_IBASE=1
 REQUIRE_PACKAGES_MYSQL=1
 REQUIRE_PACKAGES_SQLITE=1
-REQUIRE_PACKAGES_NETDB=1
-REQUIRE_PACKAGES_LIBASYNC=1
-REQUIRE_PACKAGES_X11=1
-REQUIRE_PACKAGES_OPENGL=1
-REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 endif
 ifeq ($(OS_TARGET),wdosx)
 ifeq ($(CPU_TARGET),i386)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_FCL=1
 REQUIRE_PACKAGES_PASJPEG=1
 REQUIRE_PACKAGES_IBASE=1
 REQUIRE_PACKAGES_NETDB=1
 REQUIRE_PACKAGES_LIBASYNC=1
-REQUIRE_PACKAGES_OPENGL=1
-REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 endif
 ifeq ($(OS_TARGET),palmos)
 ifeq ($(CPU_TARGET),m68k)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_FCL=1
 REQUIRE_PACKAGES_PASJPEG=1
 REQUIRE_PACKAGES_IBASE=1
 REQUIRE_PACKAGES_NETDB=1
 REQUIRE_PACKAGES_LIBASYNC=1
-REQUIRE_PACKAGES_OPENGL=1
-REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 endif
 ifeq ($(OS_TARGET),macos)
 ifeq ($(CPU_TARGET),powerpc)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_FCL=1
 REQUIRE_PACKAGES_PASJPEG=1
 REQUIRE_PACKAGES_IBASE=1
 REQUIRE_PACKAGES_NETDB=1
 REQUIRE_PACKAGES_LIBASYNC=1
-REQUIRE_PACKAGES_OPENGL=1
-REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 endif
 ifeq ($(OS_TARGET),darwin)
 ifeq ($(CPU_TARGET),powerpc)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_NETDB=1
+REQUIRE_PACKAGES_LIBASYNC=1
+REQUIRE_PACKAGES_PTHREADS=1
+REQUIRE_PACKAGES_FCL=1
 REQUIRE_PACKAGES_PASJPEG=1
 REQUIRE_PACKAGES_IBASE=1
 REQUIRE_PACKAGES_MYSQL=1
 REQUIRE_PACKAGES_SQLITE=1
-REQUIRE_PACKAGES_NETDB=1
-REQUIRE_PACKAGES_LIBASYNC=1
-REQUIRE_PACKAGES_OPENGL=1
-REQUIRE_PACKAGES_PTHREADS=1
-REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 endif
 ifeq ($(OS_TARGET),emx)
 ifeq ($(CPU_TARGET),i386)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_FCL=1
 REQUIRE_PACKAGES_PASJPEG=1
 REQUIRE_PACKAGES_IBASE=1
 REQUIRE_PACKAGES_NETDB=1
 REQUIRE_PACKAGES_LIBASYNC=1
-REQUIRE_PACKAGES_OPENGL=1
-REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 endif
 ifeq ($(OS_TARGET),watcom)
 ifeq ($(CPU_TARGET),i386)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_FCL=1
 REQUIRE_PACKAGES_PASJPEG=1
 REQUIRE_PACKAGES_IBASE=1
 REQUIRE_PACKAGES_NETDB=1
 REQUIRE_PACKAGES_LIBASYNC=1
-REQUIRE_PACKAGES_OPENGL=1
-REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 endif
 ifeq ($(OS_TARGET),morphos)
 ifeq ($(CPU_TARGET),powerpc)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_FCL=1
 REQUIRE_PACKAGES_PASJPEG=1
 REQUIRE_PACKAGES_IBASE=1
 REQUIRE_PACKAGES_NETDB=1
 REQUIRE_PACKAGES_LIBASYNC=1
-REQUIRE_PACKAGES_OPENGL=1
-REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 endif
 ifdef REQUIRE_PACKAGES_RTL
@@ -1515,6 +1432,110 @@ endif
 endif
 ifdef UNITDIR_PASZLIB
 override COMPILER_UNITDIR+=$(UNITDIR_PASZLIB)
+endif
+endif
+ifdef REQUIRE_PACKAGES_NETDB
+PACKAGEDIR_NETDB:=$(firstword $(subst /Makefile.fpc,,$(strip $(wildcard $(addsuffix /netdb/Makefile.fpc,$(PACKAGESDIR))))))
+ifneq ($(PACKAGEDIR_NETDB),)
+ifneq ($(wildcard $(PACKAGEDIR_NETDB)/$(OS_TARGET)),)
+UNITDIR_NETDB=$(PACKAGEDIR_NETDB)/$(OS_TARGET)
+else
+UNITDIR_NETDB=$(PACKAGEDIR_NETDB)
+endif
+ifdef CHECKDEPEND
+$(PACKAGEDIR_NETDB)/$(FPCMADE):
+	$(MAKE) -C $(PACKAGEDIR_NETDB) $(FPCMADE)
+override ALLDEPENDENCIES+=$(PACKAGEDIR_NETDB)/$(FPCMADE)
+endif
+else
+PACKAGEDIR_NETDB=
+UNITDIR_NETDB:=$(subst /Package.fpc,,$(strip $(wildcard $(addsuffix /netdb/Package.fpc,$(UNITSDIR)))))
+ifneq ($(UNITDIR_NETDB),)
+UNITDIR_NETDB:=$(firstword $(UNITDIR_NETDB))
+else
+UNITDIR_NETDB=
+endif
+endif
+ifdef UNITDIR_NETDB
+override COMPILER_UNITDIR+=$(UNITDIR_NETDB)
+endif
+endif
+ifdef REQUIRE_PACKAGES_LIBASYNC
+PACKAGEDIR_LIBASYNC:=$(firstword $(subst /Makefile.fpc,,$(strip $(wildcard $(addsuffix /libasync/Makefile.fpc,$(PACKAGESDIR))))))
+ifneq ($(PACKAGEDIR_LIBASYNC),)
+ifneq ($(wildcard $(PACKAGEDIR_LIBASYNC)/$(OS_TARGET)),)
+UNITDIR_LIBASYNC=$(PACKAGEDIR_LIBASYNC)/$(OS_TARGET)
+else
+UNITDIR_LIBASYNC=$(PACKAGEDIR_LIBASYNC)
+endif
+ifdef CHECKDEPEND
+$(PACKAGEDIR_LIBASYNC)/$(FPCMADE):
+	$(MAKE) -C $(PACKAGEDIR_LIBASYNC) $(FPCMADE)
+override ALLDEPENDENCIES+=$(PACKAGEDIR_LIBASYNC)/$(FPCMADE)
+endif
+else
+PACKAGEDIR_LIBASYNC=
+UNITDIR_LIBASYNC:=$(subst /Package.fpc,,$(strip $(wildcard $(addsuffix /libasync/Package.fpc,$(UNITSDIR)))))
+ifneq ($(UNITDIR_LIBASYNC),)
+UNITDIR_LIBASYNC:=$(firstword $(UNITDIR_LIBASYNC))
+else
+UNITDIR_LIBASYNC=
+endif
+endif
+ifdef UNITDIR_LIBASYNC
+override COMPILER_UNITDIR+=$(UNITDIR_LIBASYNC)
+endif
+endif
+ifdef REQUIRE_PACKAGES_PTHREADS
+PACKAGEDIR_PTHREADS:=$(firstword $(subst /Makefile.fpc,,$(strip $(wildcard $(addsuffix /pthreads/Makefile.fpc,$(PACKAGESDIR))))))
+ifneq ($(PACKAGEDIR_PTHREADS),)
+ifneq ($(wildcard $(PACKAGEDIR_PTHREADS)/$(OS_TARGET)),)
+UNITDIR_PTHREADS=$(PACKAGEDIR_PTHREADS)/$(OS_TARGET)
+else
+UNITDIR_PTHREADS=$(PACKAGEDIR_PTHREADS)
+endif
+ifdef CHECKDEPEND
+$(PACKAGEDIR_PTHREADS)/$(FPCMADE):
+	$(MAKE) -C $(PACKAGEDIR_PTHREADS) $(FPCMADE)
+override ALLDEPENDENCIES+=$(PACKAGEDIR_PTHREADS)/$(FPCMADE)
+endif
+else
+PACKAGEDIR_PTHREADS=
+UNITDIR_PTHREADS:=$(subst /Package.fpc,,$(strip $(wildcard $(addsuffix /pthreads/Package.fpc,$(UNITSDIR)))))
+ifneq ($(UNITDIR_PTHREADS),)
+UNITDIR_PTHREADS:=$(firstword $(UNITDIR_PTHREADS))
+else
+UNITDIR_PTHREADS=
+endif
+endif
+ifdef UNITDIR_PTHREADS
+override COMPILER_UNITDIR+=$(UNITDIR_PTHREADS)
+endif
+endif
+ifdef REQUIRE_PACKAGES_FCL
+PACKAGEDIR_FCL:=$(firstword $(subst /Makefile.fpc,,$(strip $(wildcard $(addsuffix /fcl/Makefile.fpc,$(PACKAGESDIR))))))
+ifneq ($(PACKAGEDIR_FCL),)
+ifneq ($(wildcard $(PACKAGEDIR_FCL)/$(OS_TARGET)),)
+UNITDIR_FCL=$(PACKAGEDIR_FCL)/$(OS_TARGET)
+else
+UNITDIR_FCL=$(PACKAGEDIR_FCL)
+endif
+ifdef CHECKDEPEND
+$(PACKAGEDIR_FCL)/$(FPCMADE):
+	$(MAKE) -C $(PACKAGEDIR_FCL) $(FPCMADE)
+override ALLDEPENDENCIES+=$(PACKAGEDIR_FCL)/$(FPCMADE)
+endif
+else
+PACKAGEDIR_FCL=
+UNITDIR_FCL:=$(subst /Package.fpc,,$(strip $(wildcard $(addsuffix /fcl/Package.fpc,$(UNITSDIR)))))
+ifneq ($(UNITDIR_FCL),)
+UNITDIR_FCL:=$(firstword $(UNITDIR_FCL))
+else
+UNITDIR_FCL=
+endif
+endif
+ifdef UNITDIR_FCL
+override COMPILER_UNITDIR+=$(UNITDIR_FCL)
 endif
 endif
 ifdef REQUIRE_PACKAGES_PASJPEG
@@ -1619,188 +1640,6 @@ endif
 endif
 ifdef UNITDIR_SQLITE
 override COMPILER_UNITDIR+=$(UNITDIR_SQLITE)
-endif
-endif
-ifdef REQUIRE_PACKAGES_NETDB
-PACKAGEDIR_NETDB:=$(firstword $(subst /Makefile.fpc,,$(strip $(wildcard $(addsuffix /netdb/Makefile.fpc,$(PACKAGESDIR))))))
-ifneq ($(PACKAGEDIR_NETDB),)
-ifneq ($(wildcard $(PACKAGEDIR_NETDB)/$(OS_TARGET)),)
-UNITDIR_NETDB=$(PACKAGEDIR_NETDB)/$(OS_TARGET)
-else
-UNITDIR_NETDB=$(PACKAGEDIR_NETDB)
-endif
-ifdef CHECKDEPEND
-$(PACKAGEDIR_NETDB)/$(FPCMADE):
-	$(MAKE) -C $(PACKAGEDIR_NETDB) $(FPCMADE)
-override ALLDEPENDENCIES+=$(PACKAGEDIR_NETDB)/$(FPCMADE)
-endif
-else
-PACKAGEDIR_NETDB=
-UNITDIR_NETDB:=$(subst /Package.fpc,,$(strip $(wildcard $(addsuffix /netdb/Package.fpc,$(UNITSDIR)))))
-ifneq ($(UNITDIR_NETDB),)
-UNITDIR_NETDB:=$(firstword $(UNITDIR_NETDB))
-else
-UNITDIR_NETDB=
-endif
-endif
-ifdef UNITDIR_NETDB
-override COMPILER_UNITDIR+=$(UNITDIR_NETDB)
-endif
-endif
-ifdef REQUIRE_PACKAGES_LIBASYNC
-PACKAGEDIR_LIBASYNC:=$(firstword $(subst /Makefile.fpc,,$(strip $(wildcard $(addsuffix /libasync/Makefile.fpc,$(PACKAGESDIR))))))
-ifneq ($(PACKAGEDIR_LIBASYNC),)
-ifneq ($(wildcard $(PACKAGEDIR_LIBASYNC)/$(OS_TARGET)),)
-UNITDIR_LIBASYNC=$(PACKAGEDIR_LIBASYNC)/$(OS_TARGET)
-else
-UNITDIR_LIBASYNC=$(PACKAGEDIR_LIBASYNC)
-endif
-ifdef CHECKDEPEND
-$(PACKAGEDIR_LIBASYNC)/$(FPCMADE):
-	$(MAKE) -C $(PACKAGEDIR_LIBASYNC) $(FPCMADE)
-override ALLDEPENDENCIES+=$(PACKAGEDIR_LIBASYNC)/$(FPCMADE)
-endif
-else
-PACKAGEDIR_LIBASYNC=
-UNITDIR_LIBASYNC:=$(subst /Package.fpc,,$(strip $(wildcard $(addsuffix /libasync/Package.fpc,$(UNITSDIR)))))
-ifneq ($(UNITDIR_LIBASYNC),)
-UNITDIR_LIBASYNC:=$(firstword $(UNITDIR_LIBASYNC))
-else
-UNITDIR_LIBASYNC=
-endif
-endif
-ifdef UNITDIR_LIBASYNC
-override COMPILER_UNITDIR+=$(UNITDIR_LIBASYNC)
-endif
-endif
-ifdef REQUIRE_PACKAGES_X11
-PACKAGEDIR_X11:=$(firstword $(subst /Makefile.fpc,,$(strip $(wildcard $(addsuffix /x11/Makefile.fpc,$(PACKAGESDIR))))))
-ifneq ($(PACKAGEDIR_X11),)
-ifneq ($(wildcard $(PACKAGEDIR_X11)/$(OS_TARGET)),)
-UNITDIR_X11=$(PACKAGEDIR_X11)/$(OS_TARGET)
-else
-UNITDIR_X11=$(PACKAGEDIR_X11)
-endif
-ifdef CHECKDEPEND
-$(PACKAGEDIR_X11)/$(FPCMADE):
-	$(MAKE) -C $(PACKAGEDIR_X11) $(FPCMADE)
-override ALLDEPENDENCIES+=$(PACKAGEDIR_X11)/$(FPCMADE)
-endif
-else
-PACKAGEDIR_X11=
-UNITDIR_X11:=$(subst /Package.fpc,,$(strip $(wildcard $(addsuffix /x11/Package.fpc,$(UNITSDIR)))))
-ifneq ($(UNITDIR_X11),)
-UNITDIR_X11:=$(firstword $(UNITDIR_X11))
-else
-UNITDIR_X11=
-endif
-endif
-ifdef UNITDIR_X11
-override COMPILER_UNITDIR+=$(UNITDIR_X11)
-endif
-endif
-ifdef REQUIRE_PACKAGES_OPENGL
-PACKAGEDIR_OPENGL:=$(firstword $(subst /Makefile.fpc,,$(strip $(wildcard $(addsuffix /opengl/Makefile.fpc,$(PACKAGESDIR))))))
-ifneq ($(PACKAGEDIR_OPENGL),)
-ifneq ($(wildcard $(PACKAGEDIR_OPENGL)/$(OS_TARGET)),)
-UNITDIR_OPENGL=$(PACKAGEDIR_OPENGL)/$(OS_TARGET)
-else
-UNITDIR_OPENGL=$(PACKAGEDIR_OPENGL)
-endif
-ifdef CHECKDEPEND
-$(PACKAGEDIR_OPENGL)/$(FPCMADE):
-	$(MAKE) -C $(PACKAGEDIR_OPENGL) $(FPCMADE)
-override ALLDEPENDENCIES+=$(PACKAGEDIR_OPENGL)/$(FPCMADE)
-endif
-else
-PACKAGEDIR_OPENGL=
-UNITDIR_OPENGL:=$(subst /Package.fpc,,$(strip $(wildcard $(addsuffix /opengl/Package.fpc,$(UNITSDIR)))))
-ifneq ($(UNITDIR_OPENGL),)
-UNITDIR_OPENGL:=$(firstword $(UNITDIR_OPENGL))
-else
-UNITDIR_OPENGL=
-endif
-endif
-ifdef UNITDIR_OPENGL
-override COMPILER_UNITDIR+=$(UNITDIR_OPENGL)
-endif
-endif
-ifdef REQUIRE_PACKAGES_PTHREADS
-PACKAGEDIR_PTHREADS:=$(firstword $(subst /Makefile.fpc,,$(strip $(wildcard $(addsuffix /pthreads/Makefile.fpc,$(PACKAGESDIR))))))
-ifneq ($(PACKAGEDIR_PTHREADS),)
-ifneq ($(wildcard $(PACKAGEDIR_PTHREADS)/$(OS_TARGET)),)
-UNITDIR_PTHREADS=$(PACKAGEDIR_PTHREADS)/$(OS_TARGET)
-else
-UNITDIR_PTHREADS=$(PACKAGEDIR_PTHREADS)
-endif
-ifdef CHECKDEPEND
-$(PACKAGEDIR_PTHREADS)/$(FPCMADE):
-	$(MAKE) -C $(PACKAGEDIR_PTHREADS) $(FPCMADE)
-override ALLDEPENDENCIES+=$(PACKAGEDIR_PTHREADS)/$(FPCMADE)
-endif
-else
-PACKAGEDIR_PTHREADS=
-UNITDIR_PTHREADS:=$(subst /Package.fpc,,$(strip $(wildcard $(addsuffix /pthreads/Package.fpc,$(UNITSDIR)))))
-ifneq ($(UNITDIR_PTHREADS),)
-UNITDIR_PTHREADS:=$(firstword $(UNITDIR_PTHREADS))
-else
-UNITDIR_PTHREADS=
-endif
-endif
-ifdef UNITDIR_PTHREADS
-override COMPILER_UNITDIR+=$(UNITDIR_PTHREADS)
-endif
-endif
-ifdef REQUIRE_PACKAGES_FCL
-PACKAGEDIR_FCL:=$(firstword $(subst /Makefile.fpc,,$(strip $(wildcard $(addsuffix /fcl/Makefile.fpc,$(PACKAGESDIR))))))
-ifneq ($(PACKAGEDIR_FCL),)
-ifneq ($(wildcard $(PACKAGEDIR_FCL)/$(OS_TARGET)),)
-UNITDIR_FCL=$(PACKAGEDIR_FCL)/$(OS_TARGET)
-else
-UNITDIR_FCL=$(PACKAGEDIR_FCL)
-endif
-ifdef CHECKDEPEND
-$(PACKAGEDIR_FCL)/$(FPCMADE):
-	$(MAKE) -C $(PACKAGEDIR_FCL) $(FPCMADE)
-override ALLDEPENDENCIES+=$(PACKAGEDIR_FCL)/$(FPCMADE)
-endif
-else
-PACKAGEDIR_FCL=
-UNITDIR_FCL:=$(subst /Package.fpc,,$(strip $(wildcard $(addsuffix /fcl/Package.fpc,$(UNITSDIR)))))
-ifneq ($(UNITDIR_FCL),)
-UNITDIR_FCL:=$(firstword $(UNITDIR_FCL))
-else
-UNITDIR_FCL=
-endif
-endif
-ifdef UNITDIR_FCL
-override COMPILER_UNITDIR+=$(UNITDIR_FCL)
-endif
-endif
-ifdef REQUIRE_PACKAGES_GTK
-PACKAGEDIR_GTK:=$(firstword $(subst /Makefile.fpc,,$(strip $(wildcard $(addsuffix /gtk/Makefile.fpc,$(PACKAGESDIR))))))
-ifneq ($(PACKAGEDIR_GTK),)
-ifneq ($(wildcard $(PACKAGEDIR_GTK)/$(OS_TARGET)),)
-UNITDIR_GTK=$(PACKAGEDIR_GTK)/$(OS_TARGET)
-else
-UNITDIR_GTK=$(PACKAGEDIR_GTK)
-endif
-ifdef CHECKDEPEND
-$(PACKAGEDIR_GTK)/$(FPCMADE):
-	$(MAKE) -C $(PACKAGEDIR_GTK) $(FPCMADE)
-override ALLDEPENDENCIES+=$(PACKAGEDIR_GTK)/$(FPCMADE)
-endif
-else
-PACKAGEDIR_GTK=
-UNITDIR_GTK:=$(subst /Package.fpc,,$(strip $(wildcard $(addsuffix /gtk/Package.fpc,$(UNITSDIR)))))
-ifneq ($(UNITDIR_GTK),)
-UNITDIR_GTK:=$(firstword $(UNITDIR_GTK))
-else
-UNITDIR_GTK=
-endif
-endif
-ifdef UNITDIR_GTK
-override COMPILER_UNITDIR+=$(UNITDIR_GTK)
 endif
 endif
 ifndef NOCPUDEF
@@ -1938,10 +1777,55 @@ ifeq ($(FULL_SOURCE),$(FULL_TARGET))
 EXECPPAS:=@$(PPAS)
 endif
 endif
+.PHONY: fpc_units
+ifneq ($(TARGET_UNITS),)
+override ALLTARGET+=fpc_units
+override UNITPPUFILES=$(addsuffix $(PPUEXT),$(TARGET_UNITS))
+override IMPLICITUNITPPUFILES=$(addsuffix $(PPUEXT),$(TARGET_IMPLICITUNITS))
+override INSTALLPPUFILES+=$(UNITPPUFILES) $(IMPLICITUNITPPUFILES)
+override CLEANPPUFILES+=$(UNITPPUFILES) $(IMPLICITUNITPPUFILES)
+endif
+fpc_units: $(UNITPPUFILES)
 ifdef TARGET_RSTS
 override RSTFILES=$(addsuffix $(RSTEXT),$(TARGET_RSTS))
 override CLEANRSTFILES+=$(RSTFILES)
 endif
+.PHONY: fpc_all fpc_smart fpc_debug fpc_release
+$(FPCMADE): $(ALLDEPENDENCIES) $(ALLTARGET)
+	@$(ECHOREDIR) Compiled > $(FPCMADE)
+fpc_all: $(FPCMADE)
+fpc_smart:
+	$(MAKE) all LINKSMART=1 CREATESMART=1
+fpc_debug:
+	$(MAKE) all DEBUG=1
+fpc_release:
+	$(MAKE) all RELEASE=1
+.SUFFIXES: $(EXEEXT) $(PPUEXT) $(OEXT) .pas .lpr .dpr .pp .rc .res
+%$(PPUEXT): %.pp
+	$(COMPILER) $<
+	$(EXECPPAS)
+%$(PPUEXT): %.pas
+	$(COMPILER) $<
+	$(EXECPPAS)
+%$(EXEEXT): %.pp
+	$(COMPILER) $<
+	$(EXECPPAS)
+%$(EXEEXT): %.pas
+	$(COMPILER) $<
+	$(EXECPPAS)
+%$(EXEEXT): %.lpr
+	$(COMPILER) $<
+	$(EXECPPAS)
+%$(EXEEXT): %.dpr
+	$(COMPILER) $<
+	$(EXECPPAS)
+%.res: %.rc
+	windres -i $< -o $@
+vpath %.pp $(COMPILER_SOURCEDIR) $(COMPILER_INCLUDEDIR)
+vpath %.pas $(COMPILER_SOURCEDIR) $(COMPILER_INCLUDEDIR)
+vpath %.lpr $(COMPILER_SOURCEDIR) $(COMPILER_INCLUDEDIR)
+vpath %.dpr $(COMPILER_SOURCEDIR) $(COMPILER_INCLUDEDIR)
+vpath %$(PPUEXT) $(COMPILER_UNITTARGETDIR)
 .PHONY: fpc_install fpc_sourceinstall fpc_exampleinstall
 ifdef INSTALL_UNITS
 override INSTALLPPUFILES+=$(addsuffix $(PPUEXT),$(INSTALL_UNITS))
@@ -2174,290 +2058,30 @@ endif
 fpc_makefile_sub2: $(addsuffix _makefile_dirs,$(TARGET_DIRS) $(TARGET_EXAMPLEDIRS))
 fpc_makefile_dirs: fpc_makefile_sub1 fpc_makefile_sub2
 fpc_makefiles: fpc_makefile fpc_makefile_dirs
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_GNOME=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-ifdef TARGET_DIRS_GTK
-gtk_all:
-	$(MAKE) -C gtk all
-gtk_debug:
-	$(MAKE) -C gtk debug
-gtk_smart:
-	$(MAKE) -C gtk smart
-gtk_release:
-	$(MAKE) -C gtk release
-gtk_examples:
-	$(MAKE) -C gtk examples
-gtk_shared:
-	$(MAKE) -C gtk shared
-gtk_install:
-	$(MAKE) -C gtk install
-gtk_sourceinstall:
-	$(MAKE) -C gtk sourceinstall
-gtk_exampleinstall:
-	$(MAKE) -C gtk exampleinstall
-gtk_distinstall:
-	$(MAKE) -C gtk distinstall
-gtk_zipinstall:
-	$(MAKE) -C gtk zipinstall
-gtk_zipsourceinstall:
-	$(MAKE) -C gtk zipsourceinstall
-gtk_zipexampleinstall:
-	$(MAKE) -C gtk zipexampleinstall
-gtk_zipdistinstall:
-	$(MAKE) -C gtk zipdistinstall
-gtk_clean:
-	$(MAKE) -C gtk clean
-gtk_distclean:
-	$(MAKE) -C gtk distclean
-gtk_cleanall:
-	$(MAKE) -C gtk cleanall
-gtk_info:
-	$(MAKE) -C gtk info
-gtk_makefiles:
-	$(MAKE) -C gtk makefiles
-gtk:
-	$(MAKE) -C gtk all
-.PHONY: gtk_all gtk_debug gtk_smart gtk_release gtk_examples gtk_shared gtk_install gtk_sourceinstall gtk_exampleinstall gtk_distinstall gtk_zipinstall gtk_zipsourceinstall gtk_zipexampleinstall gtk_zipdistinstall gtk_clean gtk_distclean gtk_cleanall gtk_info gtk_makefiles gtk
-endif
-ifdef TARGET_DIRS_GTK2
-gtk2_all:
-	$(MAKE) -C gtk2 all
-gtk2_debug:
-	$(MAKE) -C gtk2 debug
-gtk2_smart:
-	$(MAKE) -C gtk2 smart
-gtk2_release:
-	$(MAKE) -C gtk2 release
-gtk2_examples:
-	$(MAKE) -C gtk2 examples
-gtk2_shared:
-	$(MAKE) -C gtk2 shared
-gtk2_install:
-	$(MAKE) -C gtk2 install
-gtk2_sourceinstall:
-	$(MAKE) -C gtk2 sourceinstall
-gtk2_exampleinstall:
-	$(MAKE) -C gtk2 exampleinstall
-gtk2_distinstall:
-	$(MAKE) -C gtk2 distinstall
-gtk2_zipinstall:
-	$(MAKE) -C gtk2 zipinstall
-gtk2_zipsourceinstall:
-	$(MAKE) -C gtk2 zipsourceinstall
-gtk2_zipexampleinstall:
-	$(MAKE) -C gtk2 zipexampleinstall
-gtk2_zipdistinstall:
-	$(MAKE) -C gtk2 zipdistinstall
-gtk2_clean:
-	$(MAKE) -C gtk2 clean
-gtk2_distclean:
-	$(MAKE) -C gtk2 distclean
-gtk2_cleanall:
-	$(MAKE) -C gtk2 cleanall
-gtk2_info:
-	$(MAKE) -C gtk2 info
-gtk2_makefiles:
-	$(MAKE) -C gtk2 makefiles
-gtk2:
-	$(MAKE) -C gtk2 all
-.PHONY: gtk2_all gtk2_debug gtk2_smart gtk2_release gtk2_examples gtk2_shared gtk2_install gtk2_sourceinstall gtk2_exampleinstall gtk2_distinstall gtk2_zipinstall gtk2_zipsourceinstall gtk2_zipexampleinstall gtk2_zipdistinstall gtk2_clean gtk2_distclean gtk2_cleanall gtk2_info gtk2_makefiles gtk2
-endif
-ifdef TARGET_DIRS_WIN32
-win32_all:
-	$(MAKE) -C win32 all
-win32_debug:
-	$(MAKE) -C win32 debug
-win32_smart:
-	$(MAKE) -C win32 smart
-win32_release:
-	$(MAKE) -C win32 release
-win32_examples:
-	$(MAKE) -C win32 examples
-win32_shared:
-	$(MAKE) -C win32 shared
-win32_install:
-	$(MAKE) -C win32 install
-win32_sourceinstall:
-	$(MAKE) -C win32 sourceinstall
-win32_exampleinstall:
-	$(MAKE) -C win32 exampleinstall
-win32_distinstall:
-	$(MAKE) -C win32 distinstall
-win32_zipinstall:
-	$(MAKE) -C win32 zipinstall
-win32_zipsourceinstall:
-	$(MAKE) -C win32 zipsourceinstall
-win32_zipexampleinstall:
-	$(MAKE) -C win32 zipexampleinstall
-win32_zipdistinstall:
-	$(MAKE) -C win32 zipdistinstall
-win32_clean:
-	$(MAKE) -C win32 clean
-win32_distclean:
-	$(MAKE) -C win32 distclean
-win32_cleanall:
-	$(MAKE) -C win32 cleanall
-win32_info:
-	$(MAKE) -C win32 info
-win32_makefiles:
-	$(MAKE) -C win32 makefiles
-win32:
-	$(MAKE) -C win32 all
-.PHONY: win32_all win32_debug win32_smart win32_release win32_examples win32_shared win32_install win32_sourceinstall win32_exampleinstall win32_distinstall win32_zipinstall win32_zipsourceinstall win32_zipexampleinstall win32_zipdistinstall win32_clean win32_distclean win32_cleanall win32_info win32_makefiles win32
-endif
-ifdef TARGET_DIRS_GNOME
-gnome_all:
-	$(MAKE) -C gnome all
-gnome_debug:
-	$(MAKE) -C gnome debug
-gnome_smart:
-	$(MAKE) -C gnome smart
-gnome_release:
-	$(MAKE) -C gnome release
-gnome_examples:
-	$(MAKE) -C gnome examples
-gnome_shared:
-	$(MAKE) -C gnome shared
-gnome_install:
-	$(MAKE) -C gnome install
-gnome_sourceinstall:
-	$(MAKE) -C gnome sourceinstall
-gnome_exampleinstall:
-	$(MAKE) -C gnome exampleinstall
-gnome_distinstall:
-	$(MAKE) -C gnome distinstall
-gnome_zipinstall:
-	$(MAKE) -C gnome zipinstall
-gnome_zipsourceinstall:
-	$(MAKE) -C gnome zipsourceinstall
-gnome_zipexampleinstall:
-	$(MAKE) -C gnome zipexampleinstall
-gnome_zipdistinstall:
-	$(MAKE) -C gnome zipdistinstall
-gnome_clean:
-	$(MAKE) -C gnome clean
-gnome_distclean:
-	$(MAKE) -C gnome distclean
-gnome_cleanall:
-	$(MAKE) -C gnome cleanall
-gnome_info:
-	$(MAKE) -C gnome info
-gnome_makefiles:
-	$(MAKE) -C gnome makefiles
-gnome:
-	$(MAKE) -C gnome all
-.PHONY: gnome_all gnome_debug gnome_smart gnome_release gnome_examples gnome_shared gnome_install gnome_sourceinstall gnome_exampleinstall gnome_distinstall gnome_zipinstall gnome_zipsourceinstall gnome_zipexampleinstall gnome_zipdistinstall gnome_clean gnome_distclean gnome_cleanall gnome_info gnome_makefiles gnome
-endif
-ifdef TARGET_DIRS_QT
-qt_all:
-	$(MAKE) -C qt all
-qt_debug:
-	$(MAKE) -C qt debug
-qt_smart:
-	$(MAKE) -C qt smart
-qt_release:
-	$(MAKE) -C qt release
-qt_examples:
-	$(MAKE) -C qt examples
-qt_shared:
-	$(MAKE) -C qt shared
-qt_install:
-	$(MAKE) -C qt install
-qt_sourceinstall:
-	$(MAKE) -C qt sourceinstall
-qt_exampleinstall:
-	$(MAKE) -C qt exampleinstall
-qt_distinstall:
-	$(MAKE) -C qt distinstall
-qt_zipinstall:
-	$(MAKE) -C qt zipinstall
-qt_zipsourceinstall:
-	$(MAKE) -C qt zipsourceinstall
-qt_zipexampleinstall:
-	$(MAKE) -C qt zipexampleinstall
-qt_zipdistinstall:
-	$(MAKE) -C qt zipdistinstall
-qt_clean:
-	$(MAKE) -C qt clean
-qt_distclean:
-	$(MAKE) -C qt distclean
-qt_cleanall:
-	$(MAKE) -C qt cleanall
-qt_info:
-	$(MAKE) -C qt info
-qt_makefiles:
-	$(MAKE) -C qt makefiles
-qt:
-	$(MAKE) -C qt all
-.PHONY: qt_all qt_debug qt_smart qt_release qt_examples qt_shared qt_install qt_sourceinstall qt_exampleinstall qt_distinstall qt_zipinstall qt_zipsourceinstall qt_zipexampleinstall qt_zipdistinstall qt_clean qt_distclean qt_cleanall qt_info qt_makefiles qt
-endif
-ifdef TARGET_DIRS_CARBON
-carbon_all:
-	$(MAKE) -C carbon all
-carbon_debug:
-	$(MAKE) -C carbon debug
-carbon_smart:
-	$(MAKE) -C carbon smart
-carbon_release:
-	$(MAKE) -C carbon release
-carbon_examples:
-	$(MAKE) -C carbon examples
-carbon_shared:
-	$(MAKE) -C carbon shared
-carbon_install:
-	$(MAKE) -C carbon install
-carbon_sourceinstall:
-	$(MAKE) -C carbon sourceinstall
-carbon_exampleinstall:
-	$(MAKE) -C carbon exampleinstall
-carbon_distinstall:
-	$(MAKE) -C carbon distinstall
-carbon_zipinstall:
-	$(MAKE) -C carbon zipinstall
-carbon_zipsourceinstall:
-	$(MAKE) -C carbon zipsourceinstall
-carbon_zipexampleinstall:
-	$(MAKE) -C carbon zipexampleinstall
-carbon_zipdistinstall:
-	$(MAKE) -C carbon zipdistinstall
-carbon_clean:
-	$(MAKE) -C carbon clean
-carbon_distclean:
-	$(MAKE) -C carbon distclean
-carbon_cleanall:
-	$(MAKE) -C carbon cleanall
-carbon_info:
-	$(MAKE) -C carbon info
-carbon_makefiles:
-	$(MAKE) -C carbon makefiles
-carbon:
-	$(MAKE) -C carbon all
-.PHONY: carbon_all carbon_debug carbon_smart carbon_release carbon_examples carbon_shared carbon_install carbon_sourceinstall carbon_exampleinstall carbon_distinstall carbon_zipinstall carbon_zipsourceinstall carbon_zipexampleinstall carbon_zipdistinstall carbon_clean carbon_distclean carbon_cleanall carbon_info carbon_makefiles carbon
-endif
-all: $(addsuffix _all,$(DEFAULT_DIR))
-debug: $(addsuffix _debug,$(DEFAULT_DIR))
-smart: $(addsuffix _smart,$(DEFAULT_DIR))
-release: $(addsuffix _release,$(DEFAULT_DIR))
-examples: $(addsuffix _examples,$(DEFAULT_DIR))
-shared: $(addsuffix _shared,$(DEFAULT_DIR))
-install: fpc_install $(addsuffix _install,$(DEFAULT_DIR))
-sourceinstall: fpc_sourceinstall $(addsuffix _sourceinstall,$(DEFAULT_DIR))
-exampleinstall: fpc_exampleinstall $(addsuffix _exampleinstall,$(DEFAULT_DIR))
-distinstall: $(addsuffix _distinstall,$(DEFAULT_DIR))
-zipinstall: $(addsuffix _zipinstall,$(DEFAULT_DIR))
-zipsourceinstall: $(addsuffix _zipsourceinstall,$(DEFAULT_DIR))
-zipexampleinstall: $(addsuffix _zipexampleinstall,$(DEFAULT_DIR))
-zipdistinstall: $(addsuffix _zipdistinstall,$(DEFAULT_DIR))
-clean: $(addsuffix _clean,$(DEFAULT_DIR))
-distclean: $(addsuffix _distclean,$(DEFAULT_DIR))
-cleanall: $(addsuffix _cleanall,$(DEFAULT_DIR))
+debug: fpc_debug
+smart: fpc_smart
+release: fpc_release
+examples:
+shared:
+install: fpc_install
+sourceinstall: fpc_sourceinstall
+exampleinstall: fpc_exampleinstall
+distinstall:
+zipinstall:
+zipsourceinstall:
+zipexampleinstall:
+zipdistinstall:
+clean: fpc_clean
+distclean: fpc_distclean
+cleanall: fpc_cleanall
 info: fpc_info
-makefiles: fpc_makefiles $(addsuffix _makefiles,$(DEFAULT_DIR))
-.PHONY: all debug smart release examples shared install sourceinstall exampleinstall distinstall zipinstall zipsourceinstall zipexampleinstall zipdistinstall clean distclean cleanall info makefiles
+makefiles: fpc_makefiles
+.PHONY: debug smart release examples shared install sourceinstall exampleinstall distinstall zipinstall zipsourceinstall zipexampleinstall zipdistinstall clean distclean cleanall info makefiles
 ifneq ($(wildcard fpcmake.loc),)
 include fpcmake.loc
 endif
+.PHONY: cleartarget all
+cleartarget:
+	-$(DEL) $(COMPILER_UNITTARGETDIR)/interfaces$(PPUEXT) \
+		$(COMPILER_UNITTARGETDIR)/interfaces$(OEXT)
+all: cleartarget interfaces$(PPUEXT)

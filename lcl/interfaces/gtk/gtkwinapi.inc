@@ -1,3 +1,5 @@
+// included by gtkint.pp
+
 {******************************************************************************
                          All GTK Winapi implementations.
                    Initial Revision  : Sat Nov 13 12:53:53 1999
@@ -8729,6 +8731,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.365  2004/09/06 22:24:52  mattias
+  started the carbon LCL interface
+
   Revision 1.364  2004/09/02 09:17:00  mattias
   improved double byte char fonts for gtk1, started synedit UTF8 support
 

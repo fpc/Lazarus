@@ -47,7 +47,23 @@ interface
 
 uses
   SysUtils, Classes, FileCtrl;
+
+type
+  TLCLPlatform = (
+    lpGtk,
+    lpGtk2,
+    lpGnome,
+    lpWin32,
+    lpCarbon
+    );
+  TLCLPlatforms = set of TLCLPlatform;
   
+const
+  LCLPlatformNames: array[TLCLPlatform] of string = (
+      'gtk', 'gtk2', 'gnome', 'win32', 'carbon'
+    );
+
+
   { Config Path Functions }
 
   { The primary config path is the local or user specific path.
@@ -190,6 +206,9 @@ end.
 
 {
   $Log$
+  Revision 1.30  2004/09/06 22:24:52  mattias
+  started the carbon LCL interface
+
   Revision 1.29  2004/08/20 09:47:36  mattias
   added darwin libpaths to Makefile and LCL Usage lib paths
 
