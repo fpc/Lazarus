@@ -1044,8 +1044,9 @@ function DeliverMessage(const Target: Pointer; var AMessage): Integer;
 begin
   if Target=nil then writeln('[DeliverMessage] Target = nil');
   {$IFDEF VerboseDeliverMessage}
-  writeln('DeliverMessage ',TComponent(Target).Name,':',TObject(Target).ClassName,
-          ' Message=',TLMessage(AMessage).Msg);
+  writeln('DeliverMessage ',HexStr(Cardinal(Target),8),
+    ' ',TComponent(Target).Name,':',TObject(Target).ClassName,
+    ' Message=',GetMessageName(TLMessage(AMessage).Msg));
   {$ENDIF}
   if TObject(Target) is TControl then
   begin
@@ -1058,7 +1059,6 @@ begin
   
   Result := TLMessage(AMessage).Result;
 end;
-
 
 {------------------------------------------------------------------------------
   Function: ObjectToGTKObject
@@ -3949,6 +3949,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.155  2002/12/27 17:12:38  mattias
+  added more Delphi win32 compatibility functions
+
   Revision 1.154  2002/12/22 23:13:31  mattias
   fixed mem leak of tooltips in GetStyle
 
