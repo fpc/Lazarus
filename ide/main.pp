@@ -279,6 +279,7 @@ type
     procedure OnAfterCodeToolBossApplyChanges(Manager: TCodeToolManager);
     function OnCodeToolBossSearchUsedUnit(const SrcFilename: string;
           const TheUnitName, TheUnitInFilename: string): TCodeBuffer;
+    function OnCodeToolBossCheckAbort: boolean;
 
     // MessagesView events
     procedure MessagesViewSelectionChanged(sender : TObject);
@@ -472,6 +473,7 @@ type
     
     // methods for codetools
     procedure InitCodeToolBoss;
+    procedure ActivateCodeToolAbortableMode;
     function BeginCodeTool(var ActiveSrcEdit: TSourceEditor;
       var ActiveUnitInfo: TUnitInfo; Flags: TCodeToolsFlags): boolean;
     function BeginCodeTool(ADesigner: TDesigner; var ActiveSrcEdit: TSourceEditor;
@@ -6246,6 +6248,15 @@ begin
   end;
 end;
 
+procedure TMainIDE.ActivateCodeToolAbortableMode;
+begin
+  if ToolStatus=itNone then
+    RaiseException('TMainIDE.ActivateCodeToolAbortableMode Error 1');
+  ToolStatus:=itCodeTools;
+  CodeToolBoss.OnCheckAbort:=@OnCodeToolBossCheckAbort;
+  CodeToolBoss.Abortable:=true;
+end;
+
 procedure TMainIDE.OnBeforeCodeToolBossApplyChanges(Manager: TCodeToolManager;
   var Abort: boolean);
 // the CodeToolBoss built a list of Sources that will be modified
@@ -6290,6 +6301,14 @@ begin
   Result:=AnUnitInfo.Source;
 end;
 
+function TMainIDE.OnCodeToolBossCheckAbort: boolean;
+begin
+  Result:=true;
+  if ToolStatus<>itCodeTools then exit;
+  Application.ProcessMessages;
+  Result:=ToolStatus<>itCodeTools;
+end;
+
 procedure TMainIDE.SaveSourceEditorChangesToCodeCache(PageIndex: integer);
 // save all open sources to code tools cache
 var i: integer;
@@ -6328,7 +6347,8 @@ function TMainIDE.BeginCodeTool(ADesigner: TDesigner;
   Flags: TCodeToolsFlags): boolean;
 begin
   Result:=false;
-  if SourceNoteBook.NoteBook=nil then exit;
+  if (SourceNoteBook.NoteBook=nil)
+  or (ToolStatus in [itCodeTools,itCodeToolAborting]) then exit;
   if ctfSwitchToFormSource in Flags then
     DoSwitchToFormSrc(ADesigner,ActiveSrcEdit,ActiveUnitInfo)
   else if Designer<>nil then
@@ -6339,6 +6359,8 @@ begin
   SaveSourceEditorChangesToCodeCache(-1);
   CodeToolBoss.VisibleEditorLines:=ActiveSrcEdit.EditorComponent.LinesInWindow;
   
+  if ctfActivateAbortMode in Flags then
+    ActivateCodeToolAbortableMode;
 
   Result:=true;
 end;
@@ -6703,9 +6725,31 @@ end;
 
 procedure TMainIDE.OnSrcNotebookShowHintForSource(SrcEdit: TSourceEditor;
   ClientPos: TPoint; CaretPos: TPoint);
+var
+  ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+  Identifier, SmartHintStr: string;
 begin
-  InitCodeToolBoss
-  // do a find declaration
+  if (ToolStatus<>itNone) or (SrcEdit=nil) then exit;
+  // check if there is an identifier
+  Identifier:=SrcEdit.GetWordFromCaret(CaretPos);
+  if (Identifier='') or (not IsValidIdent(Identifier)) then exit;
+  SourceNotebook.SetActiveSE(SrcEdit);
+
+  if not BeginCodeTool(ActiveSrcEdit, ActiveUnitInfo,
+    [{ctfActivateAbortMode}]) then exit;
+  {$IFDEF IDE_DEBUG}
+  writeln('');
+  writeln('[TMainIDE.OnSrcNotebookShowHintForSource] ************ ',ActiveUnitInfo.Source.Filename,' X=',CaretPos.X,' Y=',CaretPos.Y);
+  {$ENDIF}
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.OnSrcNotebookShowHintForSource A');{$ENDIF}
+  SmartHintStr:=CodeToolBoss.FindSmartHint(ActiveUnitInfo.Source,
+    CaretPos.X,CaretPos.Y);
+  CodeToolBoss.Abortable:=false;
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.OnSrcNotebookShowHintForSource B');{$ENDIF}
+
+  if SmartHintStr<>'' then
+    SrcEdit.ActivateHint(ClientPos,SmartHintStr);
 end;
 
 procedure TMainIDE.OnSrcNoteBookActivated(Sender : TObject);
@@ -6958,7 +7002,10 @@ end;
 
 procedure TMainIDE.OnApplicationUserInput(Sender: TObject; Msg: Cardinal);
 begin
-
+  if ToolStatus=itCodeTools then begin
+    // abort codetools
+    ToolStatus:=itCodeToolAborting;
+  end;
 end;
 
 //this is fired when the editor is focused, changed, ?.  Anything that causes the status change
@@ -7437,6 +7484,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.428  2002/11/10 21:49:23  lazarus
+  MG: added smart hints in edit mode
+
   Revision 1.427  2002/11/09 18:13:30  lazarus
   MG: fixed gdkwindow checks
 
