@@ -121,6 +121,8 @@ procedure LoadStringList(XMLConfig: TXMLConfig; List: TStrings;
   const Path: string);
 procedure SaveStringList(XMLConfig: TXMLConfig; List: TStrings;
   const Path: string);
+function FindProgram(const Programname, BaseDirectory: string;
+  WithBaseDirectory: boolean): string;
 
 // text conversion
 function TabsToSpaces(const s: string; TabWidth: integer): string;
@@ -143,6 +145,7 @@ function EnvironmentAsStringList: TStringList;
 procedure AssignEnvironmentTo(DestStrings, Overrides: TStrings);
 function GetCurrentUserName: string;
 function GetCurrentMailAddress: string;
+procedure GetProgramSearchPath(var SearchPath: string; var Delim: char);
 
 // debugging
 procedure RaiseException(const Msg: string);
@@ -1041,6 +1044,21 @@ begin
   Result:=true;
 end;
 
+function FindProgram(const Programname, BaseDirectory: string;
+  WithBaseDirectory: boolean): string;
+var
+  Flags: TSearchFileInPathFlags;
+  SearchPath: string;
+  Delim: char;
+begin
+  Flags:=[];
+  if not WithBaseDirectory then
+    Include(Flags,sffDontSearchInBasePath);
+  GetProgramSearchPath(SearchPath,Delim);
+  Result:=FileCtrl.SearchFileInPath(Programname,BaseDirectory,SearchPath,
+                                    Delim,Flags);
+end;
+
 {-------------------------------------------------------------------------------
   TabsToSpaces
 
@@ -1561,6 +1579,12 @@ end;
 function GetCurrentMailAddress: string;
 begin
   Result:='<'+GetCurrentUserName+'@'+GetEnv('HOSTNAME')+'>';
+end;
+
+procedure GetProgramSearchPath(var SearchPath: string; var Delim: char);
+begin
+  SearchPath:=GetEnv('PATH');
+  Delim:=':';
 end;
 
 {------------------------------------------------------------------------------
