@@ -39,12 +39,15 @@ endif
 export LCL_PLATFORM
 endif
 
+export RCPP?=$(strip $(wildcard $(addsuffix /cpp$(SRCEXEEXT), $(SEARCHPATH))))
+
 [rules]
 .PHONY: lcl components ide tools all clean
 .SUFFIXES: .rc .res
 
 %.res: %.rc
-        windres -i $< -o $@ --preprocessor $(strip $(wildcard $(addsuffix /cpp$(SRCEXEEXT), $(SEARCHPATH))))
+        windres -i $< -o $@ --preprocessor $(RCPP)
+#        $(strip $(wildcard $(addsuffix /cpp$(SRCEXEEXT), $(SEARCHPATH))))
 
 ide:
 ifeq ($(OS_TARGET), win32)
