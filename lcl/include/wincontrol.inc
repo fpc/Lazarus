@@ -2344,6 +2344,19 @@ Begin
 end;
 
 {------------------------------------------------------------------------------
+  Method: TWinControl.LMKillFocus
+  Params:   Msg: The message
+  Returns:  nothing
+
+  event handler.
+ ------------------------------------------------------------------------------}
+procedure TWinControl.WMKillFocus(var Message: TLMKillFocus);
+begin
+  Assert(False, Format('Trace: TODO: [TWinControl.LMKillFocus] %s', [ClassName]));
+  DoExit;
+end;
+
+{------------------------------------------------------------------------------
   Method: TWinControl.WMPaint
   Params:   Msg: The paint message
   Returns:  nothing
@@ -2512,19 +2525,6 @@ Begin
 
 //Inherited ;
 end;
-
-{------------------------------------------------------------------------------
-  Method: TWinControl.LMKillFocus
-  Params:   Msg: The message
-  Returns:  nothing
-
-  event handler.
- ------------------------------------------------------------------------------}
-procedure TWinControl.WMKillFocus(var Message: TLMKillFocus);
-begin            
-  Assert(False, Format('Trace: TODO: [TWinControl.LMKillFocus] %s', [ClassName]));
-  DoExit;
-end;                          
 
 {------------------------------------------------------------------------------
   Method: TWinControl.WMShowWindow
@@ -3096,6 +3096,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.173  2003/09/25 09:01:54  mattias
+  increased rpm version
+
   Revision 1.172  2003/09/23 08:00:46  mattias
   improved OnEnter for gtkcombo
 
