@@ -819,8 +819,8 @@ end;
 {------------------------------------------------------------------------------}
 {  TWinControl FindNextControl                                                 }
 {------------------------------------------------------------------------------}
-Function TWinControl.FindNextControl(CurrentControl : TControl;
-  GoForward, CheckTabStop, CheckParent : Boolean) : TControl;
+Function TWinControl.FindNextControl(CurrentControl: TControl;
+  GoForward, CheckTabStop, CheckParent, OnlyWinControls: Boolean) : TControl;
 var
   List : TList;
   Next : TControl;
@@ -840,13 +840,15 @@ begin
       Repeat
         If GoForward then
           Inc(I);
-	If (I < List.Count) and (List[I] <> nil) then begin
-	  Next := TControl(List[I]);
-	  If ((Not CheckTabStop or Next.TabStop) and
-	    (not CheckParent or (Next.Parent = Self)))
-	    and (Next.Enabled and Next.Visible)
-	  then
-	    Result := Next;
+        If (I < List.Count) and (List[I] <> nil) then begin
+          Next := TControl(List[I]);
+          If ((Not CheckTabStop or Next.TabStop) and
+            (not CheckParent or (Next.Parent = Self)))
+            and (Next.Enabled and Next.Visible)
+          then begin
+            if not OnlyWinControls or (Next is TWinControl) then
+              Result := Next;
+          end;
         end;
       until (Result <> nil) or (I = J) or (I >= List.Count);
     end;
@@ -855,9 +857,20 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------}
-{  TWinControl GetTabOrderList                                                 }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  function TWinControl.FindNextControl(CurrentControl: TWinControl; GoForward,
+    CheckTabStop, CheckParent: Boolean): TWinControl;
+------------------------------------------------------------------------------}
+function TWinControl.FindNextControl(CurrentControl: TWinControl; GoForward,
+  CheckTabStop, CheckParent: Boolean): TWinControl;
+begin
+  Result:=TWinControl(FindNextControl(CurrentControl,
+                                      GoForward,CheckTabStop,CheckParent));
+end;
+
+{------------------------------------------------------------------------------
+  TWinControl GetTabOrderList
+------------------------------------------------------------------------------}
 Procedure TWinControl.GetTabOrderList(List : TList);
 var
   I : Integer;
@@ -2550,6 +2563,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.110  2002/12/28 12:42:38  mattias
+  focus fixes, reduced lpi size
+
   Revision 1.109  2002/12/27 17:46:04  mattias
   fixed SetColor
 
