@@ -193,8 +193,7 @@ Begin
     WM_DESTROY:
     Begin
       Assert(False, 'Trace:WindowProc - Got WM_DESTROY');
-      For C := 0 To WndList.Count - 1 Do
-        EnumProps(HWND(WndList[C]), @PropEnumProc);
+      EnumProps(Window, @PropEnumProc);
       LMessage.Msg := LM_DESTROY;
       PostQuitMessage(0);
     End;
@@ -554,6 +553,9 @@ end;
 
 {
   $Log$
+  Revision 1.35  2003/07/03 21:39:44  mattias
+  fixed remove props on destroy from Micha
+
   Revision 1.34  2003/07/03 08:05:53  mattias
   fixed Criticalsection from Vincent
 
