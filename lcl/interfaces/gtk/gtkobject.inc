@@ -1376,25 +1376,22 @@ begin
 
       LM_AddChild :
       begin
-         Assert(False, 'Trace:Adding a child to Parent');
-         If (TWinControl(Sender).Parent is TToolbar) then
-         Begin
-           //  Assert(False, Format('Trace:  [TgtkObject.IntSendMessage3] %s --> %s   ---calling INSERTBUTTON from Add Child', [AParent.ClassName, Sender.ClassNAme]));
-           exit;
-         end
-         else Begin
-            AParent := (Sender as TWinControl).Parent;
-            if Not Assigned(AParent) then
-               Begin
-                 Assert(true, Format('Trace: [TgtkObject.IntSendMessage3] %s --> Parent is not assigned', [Sender.ClassName]));
-
-               end
-               else
-               Begin
-                Assert(False, Format('Trace:  [TgtkObject.IntSendMessage3] %s --> Calling Add Child: %s', [AParent.ClassName, Sender.ClassNAme]));
-                AddChild(Pgtkwidget(AParent.Handle), PgtkWidget(Handle), AParent.Left, AParent.Top);
-               end;
-         end;
+        Assert(False, 'Trace:Adding a child to Parent');
+        If (TWinControl(Sender).Parent is TToolbar) then
+        Begin
+          //  Assert(False, Format('Trace:  [TgtkObject.IntSendMessage3] %s --> %s   ---calling INSERTBUTTON from Add Child', [AParent.ClassName, Sender.ClassNAme]));
+          exit;
+        end
+        else Begin
+          AParent := (Sender as TWinControl).Parent;
+          if Not Assigned(AParent) then Begin
+            Assert(true, Format('Trace: [TgtkObject.IntSendMessage3] %s --> Parent is not assigned', [Sender.ClassName]));
+          end
+          else Begin
+            Assert(False, Format('Trace:  [TgtkObject.IntSendMessage3] %s --> Calling Add Child: %s', [AParent.ClassName, Sender.ClassNAme]));
+            AddChild(Pgtkwidget(AParent.Handle), PgtkWidget(Handle), AParent.Left, AParent.Top);
+          end;
+        end;
       end;
       
       LM_LV_DELETEITEM :
@@ -1444,11 +1441,14 @@ begin
 
       LM_BTNDEFAULT_CHANGED :
       Begin
-        if (TButton(Sender).Default)
-        and (GTK_WIDGET_CAN_DEFAULT(pgtkwidget(handle))) then
-          gtk_widget_grab_default(pgtkwidget(handle))
-        else
-          gtk_widget_Draw_Default(pgtkwidget(Handle));  //this isn't right but I'm not sure what to call
+        if (TButton(Sender).Default) then begin
+        writeln('AAA1 ',TButton(Sender).Name,':',TButton(Sender).ClassName);
+          TButton(Sender).SetFocus;
+          //and (GTK_WIDGET_CAN_DEFAULT(pgtkwidget(handle))) then
+          //  gtk_widget_grab_default(pgtkwidget(handle))
+          //else
+          //  gtk_widget_Draw_Default(pgtkwidget(Handle));  //this isn't right but I'm not sure what to call
+        end;
       end;
 
       LM_DESTROY :
@@ -6734,6 +6734,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.304  2002/12/25 11:53:47  mattias
+  Button.Default now sets focus
+
   Revision 1.303  2002/12/22 23:07:28  mattias
   mem leak with tooltips, fix from Jeroen
 
