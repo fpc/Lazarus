@@ -8016,6 +8016,9 @@ begin
     if not (csDesigning in ComponentState) then
       AForm.Hide;
   end;
+  
+  // minimize IDE
+  MainIDEBar.HideIDE;
 end;
 
 procedure TMainIDE.HideUnmodifiedDesigners;
@@ -8036,6 +8039,10 @@ procedure TMainIDE.UnhideIDE;
 var
   AForm: TCustomForm;
 begin
+  // unminimize IDE
+  MainIDEBar.UnhideIDE;
+
+  // show other windows
   while HiddenWindowsOnRun.Count>0 do begin
     AForm:=TCustomForm(HiddenWindowsOnRun[0]);
     if (csDesigning in ComponentState) then
@@ -11526,6 +11533,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.861  2005/03/23 09:13:29  mattias
+  implemented minimizing IDE main bar on run
+
   Revision 1.860  2005/03/21 11:12:25  mattias
   implemented IDE start protocol and avoiding loading a crashing project twice  from Andrew Haines
 

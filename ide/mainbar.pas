@@ -39,8 +39,8 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, StdCtrls, Buttons, Menus, ComCtrls, Controls, ExtCtrls, Dialogs,
-  Forms;
+  Classes, StdCtrls, Forms, Controls, Buttons, Menus, ComCtrls, ExtCtrls,
+  Dialogs;
 
 type
   { TMainIDEBar }
@@ -265,12 +265,31 @@ type
     // component palette
     ComponentNotebook : TNotebook;
     GlobalMouseSpeedButton: TSpeedButton;
+  private
+    FOldWindowState: TWindowState;
+  public
+    procedure HideIDE;
+    procedure UnhideIDE;
   end;
 
 var
   MainIDEBar: TMainIDEBar;
 
 implementation
+
+{ TMainIDEBar }
+
+procedure TMainIDEBar.HideIDE;
+begin
+  if WindowState=wsMinimized then exit;
+  FOldWindowState:=WindowState;
+  WindowState:=wsMinimized;
+end;
+
+procedure TMainIDEBar.UnhideIDE;
+begin
+  WindowState:=FOldWindowState;
+end;
 
 end.
 
