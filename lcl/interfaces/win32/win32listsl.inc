@@ -397,8 +397,11 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.13  2003/08/13 21:23:10  mattias
+  fixed log
+
   Revision 1.12  2003/08/13 16:26:07  mattias
-  fixed combobox height from Vincent
+  fixed combobox height from Karl
 
   Revision 1.10  2003/07/28 06:42:42  mattias
   removed debuggging SetName, Patch from Karl Brandt

@@ -179,8 +179,11 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.31  2003/08/13 21:23:10  mattias
+  fixed log
+
   Revision 1.30  2003/08/13 16:26:07  mattias
-  fixed combobox height from Vincent
+  fixed combobox height from Karl
 
   Revision 1.29  2003/07/29 07:38:09  marc
   + Added GetCursorPos

@@ -2740,11 +2740,14 @@ End;
 
 {
   $Log$
+  Revision 1.86  2003/08/13 21:23:10  mattias
+  fixed log
+
   Revision 1.85  2003/08/13 16:26:07  mattias
-  fixed combobox height from Vincent
+  fixed combobox height from Karl
 
   Revision 1.84  2003/08/12 16:09:54  mattias
-  fixed sizing from Vincent
+  fixed sizing from Karl
 
   Revision 1.83  2003/08/12 14:02:54  mattias
   fixed keypress/keyup, createcaret on synedit focus
