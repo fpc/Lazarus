@@ -1039,7 +1039,7 @@ begin
     // so for now I do it this way.
     // later, I'll create the cursor in the CreateComponent
     // (or something like that)
-    CNSendMessage(LM_SetCursor,Self,Nil);
+    if not(csDesigning in ComponentState) then CNSendMessage(LM_SETCURSOR, Self, nil);
   end;
 end;
 
@@ -1798,6 +1798,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.86  2002/09/16 15:56:01  lazarus
+  Resize cursors in designer.
+
   Revision 1.85  2002/09/10 06:49:19  lazarus
   MG: scrollingwincontrol from Andrew
 
