@@ -136,7 +136,6 @@ type
     procedure DoDeleteSelectedComponents;
     procedure MarkComponentForDeletion(AComponent: TComponent);
     function ComponentIsMarkedForDeletion(AComponent: TComponent): boolean;
-    //procedure DoCreateComponent(AComponent);
     function GetSelectedComponentClass: TRegisteredComponent;
     Procedure NudgeControl(DiffX, DiffY: Integer);
     Procedure NudgeSize(DiffX, DiffY: Integer);
@@ -451,16 +450,19 @@ function TDesigner.SizeControl(Sender: TControl; TheMessage: TLMSize):boolean;
 begin
   Result:=true;
   Sender.Dispatch(TheMessage);
-  if (ControlSelection.IsSelected(Sender)) then begin
-    {writeln('###  TDesigner.SizeControl ',Sender.Name,':',Sender.ClassName,
-      ' ',Sender.Width,',',Sender.Height,
-      ' Type=',TheMessage.SizeType
-      ,' ',TheMessage.Width,',',TheMessage.Height,' Pos=',Sender.Left,',',Sender.Top);}
-    if not ControlSelection.IsResizing then begin
-      ControlSelection.UpdateBounds;
-      if Assigned(FOnPropertiesChanged) then
-        FOnPropertiesChanged(Self);
+  if ControlSelection.SelectionForm=Form then begin
+    if (ControlSelection.IsSelected(Sender)) then begin
+      {writeln('###  TDesigner.SizeControl ',Sender.Name,':',Sender.ClassName,
+        ' ',Sender.Width,',',Sender.Height,
+        ' Type=',TheMessage.SizeType
+        ,' ',TheMessage.Width,',',TheMessage.Height,' Pos=',Sender.Left,',',Sender.Top);}
+      if not ControlSelection.IsResizing then begin
+        ControlSelection.UpdateBounds;
+        if Assigned(FOnPropertiesChanged) then
+          FOnPropertiesChanged(Self);
+      end;
     end;
+    ControlSelection.InvalidGuideLinesCache;
   end;
 end;
 
@@ -468,11 +470,14 @@ function TDesigner.MoveControl(Sender: TControl; TheMessage: TLMMove):boolean;
 begin
   Result:=true;
   Sender.Dispatch(TheMessage);
-  if (ControlSelection.IsSelected(Sender)) then begin
-    //    writeln('***  LM_Move ',Sender.Name,':',Sender.ClassName);
-    ControlSelection.UpdateBounds;
-    if Assigned(FOnPropertiesChanged) then
-      FOnPropertiesChanged(Self);
+  if ControlSelection.SelectionForm=Form then begin
+    if (ControlSelection.IsSelected(Sender)) then begin
+      //    writeln('***  LM_Move ',Sender.Name,':',Sender.ClassName);
+      ControlSelection.UpdateBounds;
+      if Assigned(FOnPropertiesChanged) then
+        FOnPropertiesChanged(Self);
+    end;
+    ControlSelection.InvalidGuideLinesCache;
   end;
 end;
 
