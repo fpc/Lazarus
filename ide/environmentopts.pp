@@ -93,7 +93,7 @@ type
   
 const
   LazarusLanguageNames: array[TLazarusLanguage] of string = (
-    'Automatic (default is english)', 'English', 'Deutsch', 'Espanol'
+    'Automatic (default is english)', 'English', 'Deutsch', 'Español'
   );
 
   LazarusLanguageIDs: array[TLazarusLanguage] of string = (
